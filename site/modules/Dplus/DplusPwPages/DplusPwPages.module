@@ -55,6 +55,36 @@
 			);
 		}
 
+		public function init() {
+			$this->addHookProperty('Page(template=dplus-function)::pagenbr', function($event) {
+				$page = $event->object;
+				$event->return = $this->wire('input')->pageNum;
+			});
+
+			$this->addHook('Page(template=dplus-function)::paginate', function($event) {
+				$page = $event->object;
+				$pagenbr = $event->arguments(0);
+				$event->return = $this->paginate_page($page, $pagenbr);
+			});
+
+			$this->addHook('Page(template=dplus-function)::get_pagecount', function($event) {
+				$page = $event->object;
+				$count = $event->arguments(0);
+				$totalpages = ceil($count / $this->wire('session')->display);
+				$event->return = $totalpages == 0 ? 1 : $totalpages;
+			});
+
+			$this->addHookBefore('Page(template=dplus-function)::render', function($event) {
+				if ($this->wire('input')->get->display) {
+					$this->wire('session')->display = $this->wire('input')->get->text('display');
+				} else {
+					if (!$this->wire('session')->display) {
+						$this->wire('session')->display = $this->wire('config')->showonpage;
+					}
+				}
+			});
+		}
+
 		/**
 		 * ProcessWire Installer Function
 		 * NOTE: Runs when installed through ProcessWire
@@ -266,4 +296,22 @@
 			}
 			return $pw_page->save();
 		}
+
+		public function paginate_page(Page $page, $pagenbr) {
+			$url = $page->url;
+
+			if (strpos($url, 'page') !== false) {
+				$regex = "((page)\d{1,3})";
+				$replace = ($pagenbr > 1) ? "page".$pagenbr : "";
+				$url = preg_replace($regex, $replace, $url);
+			} else {
+				$insertafter = "$page->name/";
+				$regex = "(($insertafter))";
+				$replace = ($pagenbr > 1) ? $insertafter."page".$pagenbr."/" : $insertafter;
+				$url = preg_replace($regex, $replace, $url);
+			}
+			return $url;
+		}
+
+
 	}
