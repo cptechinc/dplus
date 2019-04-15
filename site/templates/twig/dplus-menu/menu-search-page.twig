@@ -1,0 +1,7 @@
+{% include 'dplus-menu/menu-search-form.twig' %}
+
+{% if items.count > 0 %}
+	{% include 'dplus-menu/menu-list.twig' %}
+{% else %}
+	{% include 'util/alert.twig' with {'type': 'warning','iconclass': 'fa fa-warning fa-2x', 'title': 'No Functions / Menus match your search', 'message': 'Please try again'} %}
+{% endif %}

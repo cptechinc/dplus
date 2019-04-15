@@ -1,0 +1,43 @@
+{
+    "name": "cptechinc/soft-wm",
+    "type": "library",
+    "description": "",
+    "keywords": [ "dplus-wm", "wm","warehouse-management" ],
+    "license": "MPL-2.0",
+    "homepage": "https://processwire.com",
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/cptechinc/purl.git"
+        }
+    ],
+    "authors": [
+        {
+            "name": "Barbara Bullemer",
+            "email": "barbara@cptechinc.com",
+            "homepage": "https://www.cptechinc.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Paul Gomez",
+            "email": "paul@cptechinc.com",
+            "homepage": "https://www.cptechinc.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "ext-gd": "*",
+        "jwage/purl": "dev-cptechinc",
+        "twig/twig": "^2.0",
+        "propel/propel": "~2.0@dev",
+        "cptechinc/dplus-model": "dev-master",
+        "cptechinc/dpluso-model": "dev-master"
+    },
+    "autoload": {
+        "files": [
+            "wire/core/ProcessWire.php"
+        ]
+    }
+}

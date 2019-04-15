@@ -1,0 +1,34 @@
+# Processwire Directories
+wire
+site/assets
+site/modules/Helloworld
+site/modules/InputfieldCKEditor
+
+# Project Configurations
+site/config.php
+/vendor
+
+# Twig Cache
+site/templates/twig/cache/
+
+# Code Editor Files
+
+# VS Code files
+.vscode
+
+# Atom files
+.ftpconfig
+.ftpignore
+project.cson
+
+
+
+# DW Dreamweaver added files
+_notes
+_compareTemp
+dwsync.xml
+dw_php_codehinting.config
+*.mno
+
+
+

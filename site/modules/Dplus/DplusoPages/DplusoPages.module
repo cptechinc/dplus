@@ -1,0 +1,74 @@
+<?php namespace ProcessWire;
+
+	require_once(__DIR__ . '/../DplusPwPages/DplusPwPages.module');
+	
+	class DplusoPages extends DplusPwPages implements Module {
+		protected $fields = array(
+			'dplus_function' => array(
+				'name'  => 'dplus_function',
+				'type'  => 'text',
+				'label' => 'Dplus Function'
+			),
+			'pw_template' => array(
+				'name'  => 'pw_template',
+				'type'  => 'text',
+				'label' => 'pw_template'
+			)
+		);
+
+		protected $templates = array(
+			'dplus-menu' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('dplus_function', 'pw_template', 'summary')
+			),
+			'dplus-function' => array(
+				'name'   => 'dplus-function',
+				'fields' => array('dplus_function', 'pw_template', 'summary')
+			),
+			'user-page' => array(
+				'name'   => 'user-page',
+				'fields' => array()
+			),
+			'login' => array(
+				'name'   => 'login',
+				'fields' => array()
+			)
+		);
+
+		protected $pages = array(
+			'user-page' => array(
+				'template' => 'user-page',
+				'name'     => 'user',
+				'title'    => 'User',
+				'summary'  => '',
+				'parent'   => '/'
+			),
+			'login' => array(
+				'template' => 'login',
+				'name'     => 'login',
+				'title'    => 'Login',
+				'summary'  => '',
+				'parent'   => '/user/'
+			)
+		);
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dpluso Pages Modules',
+				'version' => 101,
+				'summary' => 'Installs and creates Dpluso Pages',
+				'singular' => true,
+				'autoload' => true,
+				'requires' => array('DplusPwPages'),
+				//'installs' => array('DplusoSalesOrder'),
+			);
+		}
+	}

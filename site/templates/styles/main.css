@@ -1,0 +1,95 @@
+/**************************************
+ 	General Styles
+ **************************************/
+html {
+	position: relative;
+	height: 100%;
+}
+
+body { height: 100%;}
+
+footer {
+	width: 100%;
+	padding-top: 15px;
+}
+
+.container.page {
+	min-height: 100%;
+	height: 100%;
+	height: auto;
+	padding-bottom:200px;
+}
+
+.breadcrumb .breadcrumb-item::before {color: white;}
+
+.top-margin {
+	margin-top: 32px;
+}
+
+.highlight {background: #efcc00; }
+a .highlight {color: #000;}
+.highlight a {color: #0f7864; }
+
+#back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 12;
+    display: none;
+}
+
+.fa-1-2x {
+    font-size: 1.2em;
+}
+
+/**************************************
+ 	Navbar Styles
+ **************************************/
+#yt-menu {
+	width: 300px;
+	border: 1px solid #ccc;
+	z-index: 13; 
+	position: absolute;
+	box-shadow: 5px 10px 15px 5px rgba(0,0,0,.1);
+	margin-top: 0px;
+	display: none;
+}
+
+#yt-menu .nav-item:hover {
+	background: #ccc;
+}
+
+
+/**************************************
+ 	Login Styles
+ **************************************/
+.login-form {
+	width: 100%;
+	max-width: 500px;
+	padding: 15px;
+	margin: auto
+}
+
+.jumbotron.page-banner {
+	padding: 1rem 1rem;
+}
+
+
+/*==============================================================
+	FUELUX STYLES
+==============================================================*/
+	.fuelux .datepicker-calendar-days td button, .fuelux .datepicker-calendar-header .title {
+		cursor: pointer;
+	}
+
+	.fuelux .datepicker-calendar-days td.selected.current-day b,
+	.fuelux .datepicker-calendar-days td.selected.current-day button {
+		color: #fff;
+	}
+
+	.fuelux .datepicker-calendar-days td.current-day span {
+		background: #007bff;
+	}
+	.fuelux .datepicker-calendar-days td.current-day button {
+		color: #fff;
+	}

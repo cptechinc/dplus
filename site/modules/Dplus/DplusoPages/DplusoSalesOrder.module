@@ -1,0 +1,18 @@
+<?php namespace ProcessWire;
+
+	class DplusoPagesSalesOrder extends DplusoPages implements Module {
+		
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dpluso Sales Order Pages',
+				'version' => 101,
+				'summary' => 'Installs and creates Dpluso Sales OrderPages',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+
+		public function install() {
+			
+		}
+	}

@@ -1,0 +1,37 @@
+<div class="text-center">
+	<div class="login-form mt-4">
+			<p class="text-center">
+				<img class="mb-4" src="{{ appconfig.logo_large.url }}" alt="{{ appconfig.title }} logo">
+			</p>
+			<h2 class="text-center mb-3">{{ appconfig.title }}</h2>
+			
+			<div class="alert alert-danger" role="alert">
+				<i class="fa fa-warning" aria-hidden="true"></i> <strong>Error!</strong> Wrong Username / Password
+			</div>
+			<form action="" method="post" class="allow-enterkey-submit">
+				<input type="hidden" name="action" value="login">
+				<div class="fields">
+					<div class="input-group input-group-lg form-group">
+						<label for="username" class="sr-only">Username</label>
+						<span class="input-group-prepend">
+							<span class="btn btn-outline-secondary input-group-text"><i class="fa fa-user" aria-hidden="true"></i> </span>
+						</span>
+						<input type="text" class="form-control" name="username" id="username" placeholder="username" autocapitalize="off" autofocus>
+					</div>
+					<div class="input-group input-group-lg form-group">
+						<label for="password" class="sr-only">Password</label>
+						<span class="input-group-prepend">
+							<span class="btn btn-outline-secondary input-group-text"><i class="fa fa-lock" aria-hidden="true"></i> </span>
+						</span>
+						<input type="password" class="form-control" name="password" id="password" placeholder="password">
+					</div>
+				</div>
+				
+				<p class="text-center">
+					<button type="submit" class="btn btn-lg btn-success btn-block">Sign in</button>
+				</p>
+				<hr>
+			</form>
+		</div>
+	</div>
+</div>

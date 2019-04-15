@@ -1,0 +1,15 @@
+<div class="card mb-4">
+	<div class="card-header d-flex justify-content-between bg-primary">
+		<a class="text-white" data-toggle="collapse" href="#sales-order-list" role="button" aria-expanded="false" aria-controls="sales-order-list">
+			Open Orders <i class="fa fa-caret-down" aria-hidden="true"></i>
+		</a>
+		<span class="badge badge-pill badge-light">{{ orders_count }}</span>
+	</div>
+	<div class="collapse" id="sales-order-list">
+		{% include 'sales-orders/sales-orders-list.twig' with {'orderpage': url_order} %}
+		
+		<div class="card-footer bg-secondary">
+			<a href="{{ url_order_list }}" class="text-white">View More Sales Orders <i class="fa fa-sign-in" aria-hidden="true"></i></a>
+		</div>
+	</div>
+</div>

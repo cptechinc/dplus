@@ -1,0 +1,262 @@
+<?php namespace ProcessWire;
+
+	class DplusPwPages extends WireData implements Module {
+		protected $fields = array(
+			/* Example
+			'dplus_function' => array(
+				'name'  => 'dplus_function',
+				'type'  => 'text',
+				'label' => 'Dplus Function'
+			)
+			*/
+		);
+
+		protected $templates = array(
+			/* Example
+			'dplus-menu' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('dplus_function', 'pw_template', 'summary')
+				'paginated' => false
+			)
+			 */
+		);
+
+		protected $pages = array(
+			/* Example
+			'user-page' => array(
+				'template' => 'user-page',
+				'name'    => 'user',
+				'title'   => 'User',
+				'summary' => '',
+				'parent'  => '/',
+				'parent-new' => '/'			)
+			*/
+		);
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dplus Create ProcesWire Pages',
+				'version' => 101,
+				'summary' => 'Dplus Create ProcesWire Pages Base Class',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+
+		/**
+		 * ProcessWire Installer Function
+		 * NOTE: Runs when installed through ProcessWire
+		 * @return void
+		 */
+		public function ___install() {
+			$this->install_fields();
+			$this->install_templates();
+			$this->install_pages();
+		}
+
+		/**
+		 * ProcessWire removal Function
+		 * NOTE: Runs when removed through ProcessWire
+		 * @return void
+		 */
+		public function ___uninstall() {
+			
+		}
+
+		public function update() {
+			$this->install_fields();
+			$this->install_templates();
+			$this->install_pages();
+		}
+
+
+	/* =============================================================
+		Module Functions
+	============================================================= */
+		/**
+		 * Installs (updates | creates) the fields
+		 * @return void
+		 */
+		protected function install_fields() {
+			foreach ($this->fields as $fieldname => $field) {
+				if (boolval($this->wire('fields')->get($field['name']))) {
+					$this->update_field($field);
+				} else {
+					$this->create_field($field);
+				}
+			}
+		}
+
+		/**
+		 * Installs (updates | creates) the templates
+		 * @return void
+		 */
+		protected function install_templates() {
+			foreach ($this->templates as $templatename => $template) {
+				if ($this->wire('templates')->get($templatename)) {
+					$this->update_template($templatename);	
+				} else {
+					$this->create_template($templatename);
+				}
+			} 
+		}
+
+		/**
+		 * Installs (updates | creates) the pages
+		 * @return void
+		 */
+		protected function install_pages() {
+			foreach ($this->pages as $pagename => $page) {
+				$pagepath = $page['parent'].$page['name']."/";
+
+				if (boolval($this->wire('pages')->find($pagepath)->count)) {
+					$this->update_page($page);
+				} else {
+					$this->create_page($page);
+				}
+			}
+		}
+
+		
+
+		/**
+		 * Creates Field for Template
+		 * NOTE Field is an element from the array created from $this->get_fields()
+		 * @param  array  $field array('name' => 'ordernumber', 'type' => 'Text', 'size', => '20', 'column' => 'varchar(20)');
+		 * @return bool          Was Field able to be saved?
+		 */
+		protected function create_field(array $field) {
+			$f = new Field(); // create new field object
+			$f->type = ucfirst($field['type']); // get a field type
+			$f->name = $field['name'];
+			$f->label = $field['name'];
+			return $f->save();
+		}
+
+		/**
+		 * Updates Field for Template
+		 * NOTE Field is an element from the array created from $this->get_fields()
+		 * @param  array  $field array('name' => 'ordernumber', 'type' => 'Text', 'size', => '20', 'column' => 'varchar(20)');
+		 * @return bool          Was Field able to be saved?
+		 */
+		protected function update_field(array $field) {
+			$f = wire('fields')->get($field['name']);
+			$f->type = ucfirst($field['type']); // get a field type
+			$f->name = $field['name'];
+			$f->label = $field['name'];
+			return $f->save();
+		}
+
+		/**
+		 * Creates Field Group for Template
+		 * @return bool Was Field Group Saved?
+		 */
+		protected function create_fieldgroup($template) {
+			$pw_fields = new Fieldgroup();
+			$pw_fields->name = $template;
+			return $pw_fields->save();
+		}
+
+		/**
+		 * Updates Field Group for Template
+		 * @return bool Was Field Group Saved?
+		 */
+		protected function update_fieldgroup($template) {
+			$pw_fields = wire('templates')->get($template)->fieldgroup;
+			
+			if (get_class($pw_fields) != 'ProcessWire\Fieldgroup') {
+				$this->create_fieldgroup($template);
+				$pw_fields = wire('templates')->get($template)->fieldgroup;
+			}
+			$templatefields = $this->templates[$template]['fields'];
+
+			foreach ($templatefields as $fieldname) {
+				$field = $this->fields[$fieldname];
+
+				if (boolval(wire('fields')->get($field['name'])) == false) {
+					$this->create_field($field);
+				} else {
+					$this->update_field($field);
+				}
+
+				$pw_field = wire('fields')->get($field['name']);
+				$pw_fields->add($pw_field);
+			}
+			return $pw_fields->save();
+		}
+
+		/**
+		 * Creates Template
+		 * @uses create_fieldgroup()
+		 * @return bool Was Template able to be saved?
+		 */
+		protected function create_template($template) {
+			$t = new Template();
+			$t->name = $template;
+			$this->create_fieldgroup($template);
+			$t->fieldgroup = $this->wire('fieldgroups')->get($template);
+			$this->allowPageNum = $this->templates[$template]['paginated'] ? 1 : 0;
+			$this->slashPageNum = 1;
+			$template->save();
+		}
+
+		/**
+		 * Updates Template
+		 * @uses update_fieldgroup()
+		 * @return bool Was Template able to be saved?
+		 */
+		protected function update_template($template) {
+			$template = wire('templates')->get($template);
+			$this->update_fieldgroup($template);
+			$template->fieldgroup = wire('templates')->get($template)->fieldgroup;;
+			$this->allowPageNum = $this->templates[$template]['paginated'] ? 1 : 0;
+			$this->slashPageNum = 1;
+			$template->save();
+		}
+
+		/**
+		 * Updates Existing Page
+		 * @param  string $page
+		 * @return bool        Was Page updated?
+		 */
+		protected function update_page($page) {
+			$pagepath = $page['parent'].$page['name']."/";
+			$parentpath = isset($page['parent-new']) ? $page['parent-new'] : $page['parent'];
+
+			$pw_page = $this->wire('pages')->get($pagepath);
+			$pw_page->template = $page['template'];
+			$pw_page->parent = $this->wire('pages')->get($parentpath);
+			$pw_page->name = $page['name'];
+			$pw_page->title = $page['title'];
+
+			foreach ($this->templates[$page['name']]['fields'] as $fieldname) {
+				$pw_page->$fieldname = $page[$fieldname];
+			}
+			return $pw_page->save();
+		}
+
+		/**
+		 * Creates Page
+		 * @param  string $page
+		 * @return bool        Was Page created?
+		 */
+		protected function create_page($page) {
+			$pw_page = new Page();
+			$pw_page->template = $page['template'];
+			$pw_page->parent = $this->wire('pages')->get($page['parent']);
+			$pw_page->name = $page['name'];
+			$pw_page->title = $page['title'];
+			
+			foreach ($this->templates[$page['name']]['fields'] as $fieldname) {
+				$pw_page->$fieldname = $page[$fieldname];
+			}
+			return $pw_page->save();
+		}
+	}
