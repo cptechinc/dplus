@@ -4,14 +4,14 @@
 				<img class="mb-4" src="{{ appconfig.logo_large.url }}" alt="{{ appconfig.title }} logo">
 			</p>
 			<h2 class="text-center mb-3">{{ appconfig.title }}</h2>
-			
+
 			{% if login_error %}
 				<div class="alert alert-danger" role="alert">
 					<i class="fa fa-warning" aria-hidden="true"></i> <strong>Error!</strong> Wrong Username / Password
 				</div>
 			{% endif %}
-			
-			<form action="" method="post" class="allow-enterkey-submit">
+
+			<form action="{{ page.formurl }}" method="post" class="allow-enterkey-submit">
 				<input type="hidden" name="action" value="login">
 				<div class="fields">
 					<div class="input-group input-group-lg form-group">
@@ -29,7 +29,7 @@
 						<input type="password" class="form-control" name="password" id="password" placeholder="password">
 					</div>
 				</div>
-				
+
 				<p class="text-center">
 					<button type="submit" class="btn btn-lg btn-success btn-block">Sign in</button>
 				</p>
