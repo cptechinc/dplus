@@ -1,0 +1,70 @@
+<?php namespace ProcessWire;
+	require_once(__DIR__ . '/DplusoPages.module');
+
+	class DplusoPagesSalesOrder extends DplusoPages implements Module {
+
+		protected $fields = array();
+
+		protected $templates = array(
+			'sales-orders' => array(
+				'name'   => 'sales-orders',
+				'fields' => array()
+			),
+			'sales-history-orders' => array(
+				'name'   => 'sales-history-orders',
+				'fields' => array()
+			),
+			'sales-order-view' => array(
+				'name'   => 'sales-order-view',
+				'fields' => array()
+			)
+		);
+
+		protected $pages = array(
+			'mso' => array(
+				'template'       => 'dplus-menu',
+				'name'           => 'mso',
+				'title'          => 'Sales Orders',
+				'summary'        => '',
+				'parent'         => '/',
+				'dplus_function' => 'mso'
+			),
+			'sales-orders' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'sales-orders',
+				'title'          => 'Sales Orders',
+				'summary'        => 'View / Search through Open Orders',
+				'parent'         => '/mso/',
+				'dplus_function' => 'mso',
+				'pw_template'    => 'sales-orders'
+			),
+			'sales-order' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'sales-order',
+				'title'          => 'Sales Order',
+				'summary'        => 'View Sales Order',
+				'parent'         => '/mso/',
+				'dplus_function' => 'mso',
+				'pw_template'    => 'sales-order'
+			),
+			'sales-history' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'sales-history',
+				'title'          => 'Sales History',
+				'summary'        => 'View Sales History Orders',
+				'parent'         => '/mso/',
+				'dplus_function' => '',
+				'pw_template'    => 'sales-history-orders'
+			),
+		);
+
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dpluso Sales Order Pages',
+				'version' => 101,
+				'summary' => 'Installs and creates Dpluso Sales Order Pages',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+	}
