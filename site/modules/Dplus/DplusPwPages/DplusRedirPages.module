@@ -1,0 +1,48 @@
+<?php namespace ProcessWire;
+
+	class DplusRedirPages extends DplusPwPages implements Module {
+		protected $fields = array(
+			'redir_file' => array(
+				'name'  => 'redir_file',
+				'type'  => 'text',
+				'label' => 'Redirect File Name'
+			)
+		);
+
+		protected $templates = array(
+			'redir' => array(
+				'name'   => 'redir',
+				'fields' => array('redir_file', 'summary'),
+				'paginated' => false
+			)
+		);
+
+		protected $pages = array(
+			'user-redir' => array(
+				'template' => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'User Dplus Redirects',
+				'parent'  => '/user/',
+				'redir_file' => 'user'
+			)
+		);
+
+		/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dplus Create ProcesWire Redirect Pages',
+				'version' => 101,
+				'summary' => 'Dplus Create ProcesWire Redirect Pages',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+	}
