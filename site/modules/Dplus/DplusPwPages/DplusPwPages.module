@@ -204,7 +204,7 @@
 			$t->fieldgroup = $this->wire('fieldgroups')->get($template);
 			$this->allowPageNum = $this->templates[$template]['paginated'] ? 1 : 0;
 			$this->slashPageNum = 1;
-			$template->save();
+			$t->save();
 		}
 
 		/**
@@ -213,12 +213,12 @@
 		 * @return bool Was Template able to be saved?
 		 */
 		protected function update_template($template) {
-			$template = wire('templates')->get($template);
+			$t = wire('templates')->get($template);
 			$this->update_fieldgroup($template);
-			$template->fieldgroup = wire('templates')->get($template)->fieldgroup;;
+			$t->fieldgroup = wire('templates')->get($template)->fieldgroup;;
 			$this->allowPageNum = $this->templates[$template]['paginated'] ? 1 : 0;
 			$this->slashPageNum = 1;
-			$template->save();
+			$t->save();
 		}
 
 		/**
