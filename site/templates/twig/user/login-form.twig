@@ -5,9 +5,12 @@
 			</p>
 			<h2 class="text-center mb-3">{{ appconfig.title }}</h2>
 			
-			<div class="alert alert-danger" role="alert">
-				<i class="fa fa-warning" aria-hidden="true"></i> <strong>Error!</strong> Wrong Username / Password
-			</div>
+			{% if login_error %}
+				<div class="alert alert-danger" role="alert">
+					<i class="fa fa-warning" aria-hidden="true"></i> <strong>Error!</strong> Wrong Username / Password
+				</div>
+			{% endif %}
+			
 			<form action="" method="post" class="allow-enterkey-submit">
 				<input type="hidden" name="action" value="login">
 				<div class="fields">
