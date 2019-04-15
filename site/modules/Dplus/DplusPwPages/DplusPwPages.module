@@ -32,6 +32,11 @@
 				'parent-new' => '/'			)
 			*/
 		);
+
+		protected $pw_fields = array(
+			'summary'
+		);
+
 	/* =============================================================
 		ProcessWire Module Functions
 	============================================================= */
@@ -67,7 +72,7 @@
 		 * @return void
 		 */
 		public function ___uninstall() {
-			
+
 		}
 
 		public function update() {
@@ -101,11 +106,11 @@
 		protected function install_templates() {
 			foreach ($this->templates as $templatename => $template) {
 				if ($this->wire('templates')->get($templatename)) {
-					$this->update_template($templatename);	
+					$this->update_template($templatename);
 				} else {
 					$this->create_template($templatename);
 				}
-			} 
+			}
 		}
 
 		/**
@@ -124,8 +129,6 @@
 			}
 		}
 
-		
-
 		/**
 		 * Creates Field for Template
 		 * NOTE Field is an element from the array created from $this->get_fields()
@@ -136,7 +139,7 @@
 			$f = new Field(); // create new field object
 			$f->type = ucfirst($field['type']); // get a field type
 			$f->name = $field['name'];
-			$f->label = $field['name'];
+			$f->label = $field['label'];
 			return $f->save();
 		}
 
@@ -150,7 +153,7 @@
 			$f = wire('fields')->get($field['name']);
 			$f->type = ucfirst($field['type']); // get a field type
 			$f->name = $field['name'];
-			$f->label = $field['name'];
+			$f->label = $field['label'];
 			return $f->save();
 		}
 
@@ -170,7 +173,7 @@
 		 */
 		protected function update_fieldgroup($template) {
 			$pw_fields = wire('templates')->get($template)->fieldgroup;
-			
+
 			if (get_class($pw_fields) != 'ProcessWire\Fieldgroup') {
 				$this->create_fieldgroup($template);
 				$pw_fields = wire('templates')->get($template)->fieldgroup;
@@ -180,10 +183,12 @@
 			foreach ($templatefields as $fieldname) {
 				$field = $this->fields[$fieldname];
 
-				if (boolval(wire('fields')->get($field['name'])) == false) {
+				if (boolval(wire('fields')->get($fieldname)) == false) {
 					$this->create_field($field);
 				} else {
-					$this->update_field($field);
+					if (!in_array($fieldname, $this->pw_fields)) {
+						$this->update_field($field);
+					}
 				}
 
 				$pw_field = wire('fields')->get($field['name']);
@@ -231,12 +236,14 @@
 			$parentpath = isset($page['parent-new']) ? $page['parent-new'] : $page['parent'];
 
 			$pw_page = $this->wire('pages')->get($pagepath);
+			$pw_page->of(false);
 			$pw_page->template = $page['template'];
 			$pw_page->parent = $this->wire('pages')->get($parentpath);
 			$pw_page->name = $page['name'];
 			$pw_page->title = $page['title'];
 
 			foreach ($this->templates[$page['name']]['fields'] as $fieldname) {
+
 				$pw_page->$fieldname = $page[$fieldname];
 			}
 			return $pw_page->save();
@@ -253,7 +260,7 @@
 			$pw_page->parent = $this->wire('pages')->get($page['parent']);
 			$pw_page->name = $page['name'];
 			$pw_page->title = $page['title'];
-			
+
 			foreach ($this->templates[$page['name']]['fields'] as $fieldname) {
 				$pw_page->$fieldname = $page[$fieldname];
 			}

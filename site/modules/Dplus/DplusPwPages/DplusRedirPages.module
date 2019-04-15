@@ -25,7 +25,15 @@
 				'summary'    => 'User Dplus Redirects',
 				'parent'  => '/user/',
 				'redir_file' => 'user'
-			)
+			),
+			'page-redir' => array(
+				'template' => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Page Redirects',
+				'parent'  => '/',
+				'redir_file' => 'redirect'
+			),
 		);
 
 		/* =============================================================
