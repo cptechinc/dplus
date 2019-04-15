@@ -18,6 +18,15 @@
 				$session->loc = $pages->get('/redir/')->url;
 			}
 			break;
+		case 'logout':
+			$data = array("DBNAME=$dplusdb", 'LOGOUT');
+			$session->loc = $pages->get('template=login')->url;
+
+			// if (WhseSession::does_sessionexist(session_id())) {
+			// 	$whsesession = WhseSession::load(session_id());
+			// 	$whsesession->end_session();
+			// }
+			break;
 	}
 
 	if (!empty($data)) {

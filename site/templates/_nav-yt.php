@@ -25,7 +25,7 @@
 					</form>
 				</li>
 				<li class="nav-item bg-danger">
-					<a class="nav-link text-white" href="#">Logout <i class="fa fa-sign-out" aria-hidden="true"></i></a>
+					<a class="nav-link text-white" href="<?= $pages->get('/user/redir/')->url."?action=logout"; ?>">Logout <i class="fa fa-sign-out" aria-hidden="true"></i></a>
 				</li>
 			</ul>
 		</nav>
