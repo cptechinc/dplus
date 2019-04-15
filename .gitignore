@@ -3,6 +3,8 @@ wire
 site/assets
 site/modules/Helloworld
 site/modules/InputfieldCKEditor
+site/modules/JqueryDataTables
+site/modules/ProcessExportProfile
 
 # Project Configurations
 site/config.php

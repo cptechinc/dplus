@@ -45,9 +45,10 @@ if ($page->id != $config->errorpage_dplusdb) {
 
 	$con = Propel\Runtime\Propel::getWriteConnection(SalesOrderTableMap::DATABASE_NAME);
 	$con->useDebug(true);
+
+	$templates_nosignin = array('login', 'redir');
 	
-	
-	if ($page->template != 'login' && LogpermQuery::create()->is_loggedin(session_id()) == false) {
+	if (!in_array($page->template, $templates_nosignin) && LogpermQuery::create()->is_loggedin(session_id()) == false) {
 		$session->redirect($pages->get('template=login')->url, $http301 = false);
 	}
 
@@ -101,4 +102,3 @@ $config->twig = new Twig_Environment($loader, [
 ]);
 $config->twig->addExtension(new Twig\Extension\DebugExtension());
 include($config->paths->templates."/twig/util/functions.php");
-
