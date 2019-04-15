@@ -1,0 +1,91 @@
+<?php namespace ProcessWire;
+	require_once(__DIR__ . '/DplusoPages.module');
+
+	class DplusoPagesWarehouse extends DplusoPages implements Module {
+
+		protected $fields = array();
+
+		protected $templates = array(
+			'whse-binr' => array(
+				'name'   => 'whse-binr',
+				'fields' => array()
+			),
+			'whse-binr-from' => array(
+				'name'   => 'whse-binr-from',
+				'fields' => array()
+			),
+			'whse-binr-to' => array(
+				'name'   => 'whse-binr-from',
+				'fields' => array()
+			),
+			'whse-binr-contents' => array(
+				'name'   => 'whse-binr-contents',
+				'fields' => array()
+			)
+		);
+
+		protected $pages = array(
+			'warehouse-menu' => => array(
+				'template'       => 'warehouse-menu',
+				'name'           => 'warehouse',
+				'title'          => 'Warehouse',
+				'summary'        => '',
+				'parent'         => '/',
+				'dplus_function' => 'wm'
+			),
+			'menu-binr' => => array(
+				'template'       => 'warehouse-menu',
+				'name'           => 'binr',
+				'title'          => 'Bin Reassignment',
+				'summary'        => 'Bin Reassignment Menu',
+				'parent'         => '/warehouse/',
+				'dplus_function' => 'mbinr'
+			),
+			'whse-binr' => array(
+				'template'       => 'whse-binr',
+				'name'           => 'binr',
+				'title'          => 'Bin Reassignment',
+				'summary'        => 'Move Bin Item',
+				'parent'         => '/warehouse/binr/',
+				'dplus_function' => 'pbinr',
+				'pw_template'    => 'whse-binr'
+			),
+			'whse-binr-from' => array(
+				'template'       => 'whse-binr-from',
+				'name'           => 'move-from',
+				'title'          => 'Move From',
+				'summary'        => 'Move Single items from same from bin',
+				'parent'         => '/warehouse/binr/',
+				'dplus_function' => 'pbnrf',
+				'pw_template'    => 'whse-binr-from'
+			),
+			'whse-binr-to' => array(
+				'template'       => 'whse-binr-to',
+				'name'           => 'move-to',
+				'title'          => 'Move To',
+				'summary'        => 'Move Single items to the same to bin',
+				'parent'         => '/warehouse/binr/',
+				'dplus_function' => 'pbnrt',
+				'pw_template'    => 'whse-binr-to'
+			),
+			'whse-binr-contents' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'sales-history',
+				'title'          => 'Move Bin Contents',
+				'summary'        => 'Move all Bin Items',
+				'parent'         => '/warehouse/binr/',
+				'dplus_function' => 'pmvbn',
+				'pw_template'    => 'whse-binr-contents'
+			),
+		);
+
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dpluso Sales Order Pages',
+				'version' => 101,
+				'summary' => 'Installs and creates Dpluso Sales Order Pages',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+	}
