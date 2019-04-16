@@ -48,7 +48,7 @@ a .highlight {color: #000;}
 #yt-menu {
 	width: 300px;
 	border: 1px solid #ccc;
-	z-index: 13; 
+	z-index: 13;
 	position: absolute;
 	box-shadow: 5px 10px 15px 5px rgba(0,0,0,.1);
 	margin-top: 0px;
@@ -78,18 +78,18 @@ a .highlight {color: #000;}
 /*==============================================================
 	FUELUX STYLES
 ==============================================================*/
-	.fuelux .datepicker-calendar-days td button, .fuelux .datepicker-calendar-header .title {
-		cursor: pointer;
-	}
+.fuelux .datepicker-calendar-days td button, .fuelux .datepicker-calendar-header .title {
+	cursor: pointer;
+}
 
-	.fuelux .datepicker-calendar-days td.selected.current-day b,
-	.fuelux .datepicker-calendar-days td.selected.current-day button {
-		color: #fff;
-	}
+.fuelux .datepicker-calendar-days td.selected.current-day b,
+.fuelux .datepicker-calendar-days td.selected.current-day button {
+	color: #fff;
+}
 
-	.fuelux .datepicker-calendar-days td.current-day span {
-		background: #007bff;
-	}
-	.fuelux .datepicker-calendar-days td.current-day button {
-		color: #fff;
-	}
+.fuelux .datepicker-calendar-days td.current-day span {
+	background: #007bff;
+}
+.fuelux .datepicker-calendar-days td.current-day button {
+	color: #fff;
+}

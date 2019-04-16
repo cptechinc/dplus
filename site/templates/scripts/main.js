@@ -7,9 +7,9 @@ var nav = '#yt-menu';
 $(function() {
 	$(window).scroll(function() {
 		if ($(this).scrollTop() > 50) {
-			$('#back-to-top').fadeIn(); 
+			$('#back-to-top').fadeIn();
 		} else {
-			$('#back-to-top').fadeOut(); 
+			$('#back-to-top').fadeOut();
 		}
 	});
 
@@ -28,4 +28,18 @@ $(function() {
 function toggle_nav() {
 	$(nav).toggle();
 	$(nav).find('input[name=q]').focus();
+}
+
+$(function() {
+	$('[data-toggle="tooltip"]').tooltip();
+	init_datepicker();
+});
+
+function init_datepicker() {
+	$('.datepicker').each(function(index) {
+		$(this).datepicker({
+			date: $(this).find('.date-input').val(),
+			allowPastDates: true,
+		});
+	});
 }
