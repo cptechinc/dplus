@@ -1,4 +1,4 @@
-<nav class="text-center">
+<div class="col-sm-6 mx-auto mt-3">
     <ul class="pagination">
         <li class="page-item {{ (pagenbr == 1) ? 'disabled' : '' }}">
             <a href="{{ page.paginate(pagenbr - 1) }}" class="page-link" aria-label="Previous">
@@ -18,4 +18,4 @@
             </a>
         </li>
     </ul>
-</nav>
+</div>
