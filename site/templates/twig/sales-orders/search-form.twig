@@ -1,86 +1,90 @@
-<form action="" method="get" class="">
-	<input type="hidden" name="filter" value="filter">
+<div class="card mb-3">
+    <div class="card-body">
+        <form action="" method="get" class="">
+        	<input type="hidden" name="filter" value="filter">
 
-	<div class="row">
-		<div class="col-sm-2">
-			<h4>Order #</h4>
-			<input class="form-control form-group inline" type="text" name="ordernumber[]" value="" placeholder="From Order #">
-			<input class="form-control form-group inline" type="text" name="ordernumber[]" value="" placeholder="Through Order #">
-		</div>
-		<div class="col-sm-2">
-			<h4>Cust ID</h4>
-			<div class="input-group form-group">
-				<input class="form-control form-group inline" type="text" name="custid[]" id="sales-order-cust-from" value="" placeholder="From CustID">
-				<span class="input-group-btn">
-					<button type="button" class="btn btn-default not-round get-custid-search" data-field="#sales-order-cust-from"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
-				</span>
-			</div>
-			<div class="input-group form-group">
-				<input class="form-control form-group inline" type="text" name="custid[]" id="sales-order-cust-to" value="" placeholder="Through CustID">
-				<span class="input-group-btn">
-					<button type="button" class="btn btn-default not-round get-custid-search" data-field="#sales-order-cust-to"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
-				</span>
-			</div>
-		</div>
-		<div class="col-sm-2">
-			<h4>Cust PO</h4>
-			<input class="form-control inline" type="text" name="custpo[]" value="" placeholder="Cust PO">
-		</div>
-		<div class="col-sm-2">
-			<h4>Order Total</h4>
-			<div class="input-group form-group">
-				<input class="form-control form-group inline" type="text" name="total_order[]" id="order-total-min" value="" placeholder="From Order Total">
-				<span class="input-group-btn">
-					<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-down" aria-hidden="true"></span> <span class="sr-only">Min</span> </button>
-				</span>
-			</div>
-			<div class="input-group form-group">
-				<input class="form-control form-group inline" type="text" name="total_order[]" id="order-total-max" value="" placeholder="Through Order Total">
-				<span class="input-group-btn">
-					<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-up" aria-hidden="true"></span> <span class="sr-only">Max</span> </button>
-				</span>
-			</div>
-		</div>
-		<div class="col-sm-2">
-			<h4>Order Date</h4>
-            <label for="afterdate">From Date</label>
-            {% set name = 'afterdate' %}
-            {% set value = '' %}
-            {% include 'util/date-picker.twig' %}
+        	<div class="row">
+        		<div class="col-sm-2">
+        			<h4>Order #</h4>
+        			<input class="form-control form-group inline" type="text" name="ordernumber[]" value="" placeholder="From Order #">
+        			<input class="form-control form-group inline" type="text" name="ordernumber[]" value="" placeholder="Through Order #">
+        		</div>
+        		<div class="col-sm-2">
+        			<h4>Cust ID</h4>
+        			<div class="input-group form-group">
+        				<input class="form-control form-group inline" type="text" name="custid[]" id="sales-order-cust-from" value="" placeholder="From CustID">
+        				<span class="input-group-btn">
+        					<button type="button" class="btn btn-default not-round get-custid-search" data-field="#sales-order-cust-from"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
+        				</span>
+        			</div>
+        			<div class="input-group form-group">
+        				<input class="form-control form-group inline" type="text" name="custid[]" id="sales-order-cust-to" value="" placeholder="Through CustID">
+        				<span class="input-group-btn">
+        					<button type="button" class="btn btn-default not-round get-custid-search" data-field="#sales-order-cust-to"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
+        				</span>
+        			</div>
+        		</div>
+        		<div class="col-sm-2">
+        			<h4>Cust PO</h4>
+        			<input class="form-control inline" type="text" name="custpo[]" value="" placeholder="Cust PO">
+        		</div>
+        		<div class="col-sm-2">
+        			<h4>Order Total</h4>
+        			<div class="input-group form-group">
+        				<input class="form-control form-group inline" type="text" name="total_order[]" id="order-total-min" value="" placeholder="From Order Total">
+        				<span class="input-group-btn">
+        					<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-down" aria-hidden="true"></span> <span class="sr-only">Min</span> </button>
+        				</span>
+        			</div>
+        			<div class="input-group form-group">
+        				<input class="form-control form-group inline" type="text" name="total_order[]" id="order-total-max" value="" placeholder="Through Order Total">
+        				<span class="input-group-btn">
+        					<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-up" aria-hidden="true"></span> <span class="sr-only">Max</span> </button>
+        				</span>
+        			</div>
+        		</div>
+        		<div class="col-sm-2">
+        			<h4>Order Date</h4>
+                    <label for="afterdate">From Date</label>
+                    {% set name = 'afterdate' %}
+                    {% set value = '' %}
+                    {% include 'util/date-picker.twig' %}
 
-            <label for="beforedate">Through Date</label>
-            {% set name = 'beforedate' %}
-            {% set value = '' %}
-            {% include 'util/date-picker.twig' %}
-		</div>
-        <div class="col-sm-2">
-			<h4>Status</h4>
-			<label>New</label>
-			<input class="pull-right" type="checkbox" name="status[]" value="N" ></br>
+                    <label for="beforedate">Through Date</label>
+                    {% set name = 'beforedate' %}
+                    {% set value = '' %}
+                    {% include 'util/date-picker.twig' %}
+        		</div>
+                <div class="col-sm-2">
+        			<h4>Status</h4>
+        			<label>New</label>
+        			<input class="pull-right" type="checkbox" name="status[]" value="N" ></br>
 
-			<label>Invoice</label>
-			<input class="pull-right" type="checkbox" name="status[]" value="I" ></br>
+        			<label>Invoice</label>
+        			<input class="pull-right" type="checkbox" name="status[]" value="I" ></br>
 
-			<label>Picked</label>
-			<input class="pull-right" type="checkbox" name="status[]" value="P" ></br>
+        			<label>Picked</label>
+        			<input class="pull-right" type="checkbox" name="status[]" value="P" ></br>
 
-            <label>Verified</label>
-			<input class="pull-right" type="checkbox" name="status[]" value="V" ></br>
-		</div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-sm-12 form-group">
-			<button class="btn btn-success btn-block" type="submit">Search <i class="fa fa-search" aria-hidden="true"></i></button>
-		</div>
-		<div class="col-sm-12 form-group">
-			{% if input.get.filter %}
-				<div>
-					<a href="" class="btn btn-warning btn-block">
-						Clear Search <i class="fa fa-search-minus" aria-hidden="true"></i>
-					</a>
-				</div>
-			{% endif %}
-		</div>
-	</div>
-</form>
+                    <label>Verified</label>
+        			<input class="pull-right" type="checkbox" name="status[]" value="V" ></br>
+        		</div>
+        	</div>
+        	<br>
+        	<div class="row">
+        		<div class="col-sm-12 form-group">
+        			<button class="btn btn-success btn-block" type="submit">Search <i class="fa fa-search" aria-hidden="true"></i></button>
+        		</div>
+                {% if input.get.filter %}
+            		<div class="col-sm-12 form-group">
+        				<div>
+        					<a href="" class="btn btn-warning btn-block">
+        						Clear Search <i class="fa fa-search-minus" aria-hidden="true"></i>
+        					</a>
+        				</div>
+            		</div>
+                {% endif %}
+        	</div>
+        </form>
+    </div>
+</div>
