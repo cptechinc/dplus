@@ -19,20 +19,36 @@
 
 		protected $pages = array(
 			'user-redir' => array(
-				'template' => 'redir',
+				'template'   => 'redir',
 				'name'       => 'redir',
 				'title'      => 'redir',
 				'summary'    => 'User Dplus Redirects',
-				'parent'  => '/user/',
+				'parent'     => '/user/',
 				'redir_file' => 'user'
 			),
 			'page-redir' => array(
-				'template' => 'redir',
+				'template'   => 'redir',
 				'name'       => 'redir',
 				'title'      => 'redir',
 				'summary'    => 'Page Redirects',
-				'parent'  => '/',
+				'parent'     => '/',
 				'redir_file' => 'redirect'
+			),
+			'warehouse-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Warehouse Redirects',
+				'parent'     => '/',
+				'redir_file' => 'warehouse'
+			),
+			'binr-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Warehouse Redirects',
+				'parent'     => '/',
+				'redir_file' => 'binr'
 			),
 		);
 
