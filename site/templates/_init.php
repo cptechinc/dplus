@@ -47,7 +47,7 @@ if ($page->id != $config->errorpage_dplusdb) {
 	$con->useDebug(true);
 
 	$templates_nosignin = array('login', 'redir');
-	
+
 	if (!in_array($page->template, $templates_nosignin) && LogpermQuery::create()->is_loggedin(session_id()) == false) {
 		$session->redirect($pages->get('template=login')->url, $http301 = false);
 	}
@@ -78,8 +78,8 @@ $config->scripts->append(hash_templatefile('scripts/main.js'));
 // BUILD AND INSTATIATE CLASSES
 $page->fullURL = new Purl\Url($page->httpUrl);
 $page->fullURL->path = '';
-if (!empty($config->filename) && $config->filename != '/') {
-	$page->fullURL->join($config->filename);
+if (!empty($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != '/') {
+	$page->fullURL->join($_SERVER['REQUEST_URI']);
 }
 
 // SET CONFIG PROPERTIES
