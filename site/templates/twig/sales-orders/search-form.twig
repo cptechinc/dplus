@@ -45,12 +45,12 @@
 						<h5>Order Date</h5>
 						<label for="afterdate">From Date</label>
 						{% set name = 'orderdate1' %}
-						{% set value = "input.get.text('orderdate1')" %}
+						{% set value = input.get.text('orderdate1') %}
 						{% include 'util/date-picker.twig' %}
 
 						<label for="beforedate">Through Date</label>
 						{% set name = 'orderdate2' %}
-						{% set value = "input.get.text('orderdate2')" %}
+						{% set value = input.get.text('orderdate2') %}
 						{% include 'util/date-picker.twig' %}
 					</div>
 					<div class="col-sm-4">
