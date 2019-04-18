@@ -2,13 +2,11 @@
 
 	class DplusPwPages extends WireData implements Module {
 		protected $fields = array(
-			/* Example
 			'dplus_function' => array(
 				'name'  => 'dplus_function',
 				'type'  => 'text',
 				'label' => 'Dplus Function'
 			)
-			*/
 		);
 
 		protected $templates = array(
@@ -24,17 +22,21 @@
 		protected $pages = array(
 			/* Example
 			'user-page' => array(
-				'template' => 'user-page',
-				'name'    => 'user',
-				'title'   => 'User',
-				'summary' => '',
-				'parent'  => '/',
-				'parent-new' => '/'			)
+				'code'       => 'user-page',
+				'template'   => 'user-page',
+				'name'       => 'user',
+				'title'      => 'User',
+				'summary'    => '',
+				'parent'     => '/',
+				'parent-new' => '/' NOTE ** Optional **
+				'dplus_function' => NOTE ** If Needed by template **
+			)
 			*/
 		);
 
 		protected $pw_fields = array(
-			'summary'
+			'summary',
+			'title'
 		);
 
 	/* =============================================================
@@ -216,12 +218,11 @@
 				if (boolval(wire('fields')->get($fieldname)) == false) {
 					$this->create_field($field);
 				} else {
-					if (!in_array($fieldname, $this->pw_fields)) {
+					if (!in_array($fieldname, $this->pw_fields) && in_array($fieldname, $this->fields)) {
 						$this->update_field($field);
 					}
 				}
-
-				$pw_field = wire('fields')->get($field['name']);
+				$pw_field = wire('fields')->get($fieldname);
 				$pw_fields->add($pw_field);
 			}
 			return $pw_fields->save();
@@ -236,6 +237,7 @@
 			$t = new Template();
 			$t->name = $template;
 			$this->create_fieldgroup($template);
+			$this->update_fieldgroup($template);
 			$t->fieldgroup = $this->wire('fieldgroups')->get($template);
 			$this->allowPageNum = $this->templates[$template]['paginated'] ? 1 : 0;
 			$this->slashPageNum = 1;
@@ -272,10 +274,10 @@
 			$pw_page->name = $page['name'];
 			$pw_page->title = $page['title'];
 
-			foreach ($this->templates[$page['name']]['fields'] as $fieldname) {
-
+			foreach ($this->templates[$page['template']]['fields'] as $fieldname) {
 				$pw_page->$fieldname = $page[$fieldname];
 			}
+			echo "<br>";
 			return $pw_page->save();
 		}
 
