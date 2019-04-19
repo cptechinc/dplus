@@ -14,7 +14,7 @@
 
 	if ($input->get->filter) {
 		if ($input->get->text('ordernumber1') || $input->get->text('ordernumber2')) {
-			$query->filterByOrdn(array($input->get->text('ordernumber1'), $input->get->text('ordernumber2')));
+			$query->filterByOrderNumber(array($input->get->text('ordernumber1'), $input->get->text('ordernumber2')));
 		}
 
 		if ($input->get->text('custid1')) {
