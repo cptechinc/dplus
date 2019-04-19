@@ -13,13 +13,24 @@
 	// filterByOehdstat - no range
 
 	if ($input->get->filter) {
-		if ($input->get->text('ordernumber1') || $input->get->text('ordernumber2')) {
+		if ($input->get->text('ordernumber1') && $input->get->text('ordernumber2')) {
 			$query->filterByOrderNumber(array($input->get->text('ordernumber1'), $input->get->text('ordernumber2')));
+		} else if ($input->get->text('ordernumber1')) {
+			$query->filterByOrderNumber($input->get->text('ordernumber1'));
+		} else if ($input->get->text('ordernumber2')) {
+			$query->filterByOrderNumber($input->get->text('ordernumber2'));
 		}
 
-		if ($input->get->text('custid1')) {
-			$custid = strtoupper($input->get->text('custid1'));
-			$query->filterByArcucustid("%$custid%", Criteria::LIKE);
+		if ($input->get->text('custid1') || $input->get->text('custid2')) {
+			$custid1 = strtoupper($input->get->text('custid1'));
+			$custid2 = strtoupper($input->get->text('custid2'));
+			if ($custid1 && $custid2) {
+				$query->filterByCustId(array($custid1, $custid2));
+			} else if ($custid1) {
+				$query->filterByCustId("%$custid1%");
+			} else if ($custid2) {
+				$query->filterByCustId("%$custid2%");
+			}
 		}
 
 		if ($input->get->text('custpo')) {
@@ -27,16 +38,28 @@
 			$query->filterByOehdcustpo("%$custpo%", Criteria::LIKE);
 		}
 
-		if ($input->get->text('orderdate1')) {
-			$orderdate = date_format($input->get->text('orderdate1'), 'Ymd');
-			$query->filterByOehdordrdate("%$orderdate%", Criteria::LIKE);
+		if ($input->get->text('orderdate1') || $input->get->text('orderdate2')) {
+			$orderdate1 = date("Ymd", strtotime($input->get->text('orderdate1')));
+			if (empty($input->get->text('orderdate2'))) {
+				$orderdate2 = date('Ymd');
+			} else {
+				$orderdate2 = date("Ymd", strtotime($input->get->text('orderdate2')));
+			}
+			if ($orderdate1 && $orderdate2) {
+				$query->filterByOrderDate(array($orderdate1, $orderdate2));
+			} else if ($orderdate1) {
+				$query->filterByOrderDate($orderdate1);
+			} else if ($orderdate2) {
+				$query->filterByOrderDate($orderdate2);
+			}
 		}
 
-		// works with two
-		// does not work with just min
-		// works with just max
-		if ($input->get->text('order_total1') || $input->get->text('order_total2')) {
-			$query->filterByOehdordrtot(array('min' => $input->get->text('order_total1'), 'max' => $input->get->text('order_total2')));
+		if ($input->get->text('order_total1') && $input->get->text('order_total2')) {
+			$query->filterByOrderTotal(array($input->get->text('order_total1'), $input->get->text('order_total2')));
+		} else if ($input->get->text('order_total1')) {
+			$query->filterByOehdordrtot($input->get->text('order_total1'), Criteria::GREATER_EQUAL);
+		} else if ($input->get->text('order_total2')) {
+			$query->filterByOehdordrtot($input->get->text('order_total2'), Criteria::LESS_EQUAL);
 		}
 	}
 
