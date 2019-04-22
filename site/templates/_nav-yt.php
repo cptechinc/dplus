@@ -14,7 +14,7 @@
 					</li>
 				<?php endforeach; ?>
 				<li>
-					<form action="<?= $pages->get('template=menu')->url; ?>" class="mt-1 mb-3">
+					<form action="<?= $pages->get('template=menu')->url; ?>" class="mt-1 mb-3 allow-enterkey-submit">
 						<label for="nav-menu-search">Dplus Code</label>
 						<div class="input-group mb-3">
 							<input type="text" class="form-control" name="q" id="nav-menu-search">
