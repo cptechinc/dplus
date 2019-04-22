@@ -14,15 +14,29 @@ $(function() {
 	});
 
 	// scroll body to 0px on click
-   $('#back-to-top').click(function () {
-	   $('#back-to-top').tooltip('hide');
-	   $('body,html').animate({ scrollTop: 0 }, 800);
-	   return false;
-   });
+	$('#back-to-top').click(function () {
+		$('#back-to-top').tooltip('hide');
+		$('body,html').animate({ scrollTop: 0 }, 800);
+		return false;
+	});
 
-   $("body").on('show', '#yt-menu', function() {
-	   alert('');
-   });
+	$("body").on('show', '#yt-menu', function() {
+		alert('');
+	});
+
+	$("body").on('keypress', 'form:not(.allow-enterkey-submit) input', function(e) {
+			if (e.which === 13) {
+				e.preventDefault();
+				var input = $(this);
+
+				if (input.closest('form').attr('tab-inputs') == "true") {
+					var $canfocus = $('input:not([type=hidden])');
+					var index = $canfocus.index(this) + 1;
+					if (index >= $canfocus.length) index = 0;
+					$canfocus.eq(index).focus();
+				}
+			}
+		});
 });
 
 function toggle_nav() {

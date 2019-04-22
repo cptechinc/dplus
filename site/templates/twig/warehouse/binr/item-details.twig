@@ -1,0 +1,34 @@
+<table class="table table-condensed table-striped">
+	<tr>
+		<td><b>Derived From:</b> {{ item.xorigin|upper }}</td>
+		<td>{{ item.xitemid }}</td>
+	</tr>
+	{% if (item.is_lotted() or item.is_serialized()) %}
+		<tr>
+			<td>{{ item.get_itemtypepropertydesc()|upper }}</td>
+			<td>{{ item.get_itemidentifier() }}</td>
+		</tr>
+	{% endif %}
+	<tr>
+		<td>Item ID</td>
+		<td>{{ item.itemid }}</td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>{{ item.desc1 }}</td>
+	</tr>
+	{% if (item.desc2 is not empty) %}
+		<tr>
+			<td></td>
+			<td>{{ item.desc2 }}</td>
+		</tr>
+	{% endif %}
+	<tr>
+		<td>Primary Bin</td>
+		<td>{{ item.primebin }}</td>
+	</tr>
+	<tr>
+		<td>Current Bin</td>
+		<td>{{ item.bin }}</td>
+	</tr>
+</table>

@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "d1eba150235e9216ebe4dd6354948d94",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "e9e9960718470e9ddc9e9bf16a52f5971391b450"
+                "reference": "7386af3d8c54b4478a6ebd3fa035a22abea1ed50"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/e9e9960718470e9ddc9e9bf16a52f5971391b450",
-                "reference": "e9e9960718470e9ddc9e9bf16a52f5971391b450",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/7386af3d8c54b4478a6ebd3fa035a22abea1ed50",
+                "reference": "7386af3d8c54b4478a6ebd3fa035a22abea1ed50",
                 "shasum": ""
             },
             "type": "library",
@@ -38,7 +38,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2019-04-18T19:03:02+00:00"
+            "time": "2019-04-19T14:46:34+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
@@ -760,12 +760,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "3159201d9091909b1cc29da9098d91c0db18f4dc"
+                "reference": "15d2acb7d6cc906a64234daffae250e32b3e4e2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/3159201d9091909b1cc29da9098d91c0db18f4dc",
-                "reference": "3159201d9091909b1cc29da9098d91c0db18f4dc",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/15d2acb7d6cc906a64234daffae250e32b3e4e2a",
+                "reference": "15d2acb7d6cc906a64234daffae250e32b3e4e2a",
                 "shasum": ""
             },
             "require": {
@@ -844,7 +844,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2019-04-17T15:26:35+00:00"
+            "time": "2019-04-19T14:28:43+00:00"
         },
         {
             "name": "symfony/yaml",

@@ -3,37 +3,57 @@
 
 	class DplusoPagesWarehouse extends DplusoPages implements Module {
 
-		protected $fields = array();
+		protected $fields = array(
+			'dplus_function' => array(
+				'name'  => 'dplus_function',
+				'type'  => 'text',
+				'label' => 'Dplus Function'
+			)
+		);
 
 		protected $templates = array(
+			'warehouse-menu' => array(
+				'name'   => 'warehouse-menu',
+				'fields' => array('title', 'dplus_function', 'summary'),
+				'paginated' => false
+			),
+			'warehouse-function' => array(
+				'name'   => 'warehouse-function',
+				'fields' => array('title', 'dplus_function', 'pw_template', 'summary'),
+				'paginated' => false
+			),
 			'whse-binr' => array(
 				'name'   => 'whse-binr',
-				'fields' => array()
+				'fields' => array('title'),
+				'paginated' => false
 			),
 			'whse-binr-from' => array(
 				'name'   => 'whse-binr-from',
-				'fields' => array()
+				'fields' => array('title'),
+				'paginated' => false
 			),
 			'whse-binr-to' => array(
 				'name'   => 'whse-binr-from',
-				'fields' => array()
+				'fields' => array('title'),
+				'paginated' => false
 			),
 			'whse-binr-contents' => array(
 				'name'   => 'whse-binr-contents',
-				'fields' => array()
+				'fields' => array('title'),
+				'paginated' => false
 			)
 		);
 
 		protected $pages = array(
-			'warehouse-menu' => => array(
+			'warehouse-menu' => array(
 				'template'       => 'warehouse-menu',
 				'name'           => 'warehouse',
 				'title'          => 'Warehouse',
-				'summary'        => '',
+				'summary'        => 'Warehouse Management Menu',
 				'parent'         => '/',
 				'dplus_function' => 'wm'
 			),
-			'menu-binr' => => array(
+			'menu-binr' => array(
 				'template'       => 'warehouse-menu',
 				'name'           => 'binr',
 				'title'          => 'Bin Reassignment',
@@ -42,7 +62,7 @@
 				'dplus_function' => 'mbinr'
 			),
 			'whse-binr' => array(
-				'template'       => 'whse-binr',
+				'template'       => 'warehouse-function',
 				'name'           => 'binr',
 				'title'          => 'Bin Reassignment',
 				'summary'        => 'Move Bin Item',
@@ -51,7 +71,7 @@
 				'pw_template'    => 'whse-binr'
 			),
 			'whse-binr-from' => array(
-				'template'       => 'whse-binr-from',
+				'template'       => 'warehouse-function',
 				'name'           => 'move-from',
 				'title'          => 'Move From',
 				'summary'        => 'Move Single items from same from bin',
@@ -60,7 +80,7 @@
 				'pw_template'    => 'whse-binr-from'
 			),
 			'whse-binr-to' => array(
-				'template'       => 'whse-binr-to',
+				'template'       => 'warehouse-function',
 				'name'           => 'move-to',
 				'title'          => 'Move To',
 				'summary'        => 'Move Single items to the same to bin',
@@ -69,7 +89,7 @@
 				'pw_template'    => 'whse-binr-to'
 			),
 			'whse-binr-contents' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'warehouse-function',
 				'name'           => 'sales-history',
 				'title'          => 'Move Bin Contents',
 				'summary'        => 'Move all Bin Items',
@@ -81,9 +101,9 @@
 
 		public static function getModuleInfo() {
 			return array(
-				'title' => 'Dpluso Sales Order Pages',
+				'title' => 'Dplus Online Warehouse Pages',
 				'version' => 101,
-				'summary' => 'Installs and creates Dpluso Sales Order Pages',
+				'summary' => 'Installs and creates Dplus Online Warehouse Pages',
 				'singular' => true,
 				'autoload' => true,
 			);
