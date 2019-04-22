@@ -1,5 +1,5 @@
 <div class="row">
-	<div class="col-sm-6">
+	<div class="col-sm-7">
 		{% include 'warehouse/binr/item-details.twig' %}
 
 		{% if (session.get('binr') is not empty) %}
@@ -14,7 +14,7 @@
 			{% endif %}
 		{% endif %}
 
-		<form action="" method="POST" class="binr-form" id="binr-form" tab-inputs="true">
+		<form action="{{ page.formurl }}" method="POST" class="binr-form" id="binr-form" tab-inputs="true">
 			<input type="hidden" name="action" value="bin-reassign">
 			<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
 			<input type="hidden" name="itemID" value="{{ item.itemid }}">
@@ -28,13 +28,10 @@
 						<div class="input-group">
 							<input type="text" class="form-control input-sm" name="from-bin" value="{{ item.bin }}" data-bin="{{ item.bin }}">
 							<span class="input-group-btn">
-								<button type="button" class="btn btn-sm btn-default show-select-bins" data-direction="from"> <span class="fa fa-search"></span> </button>
+								<button type="button" class="btn btn-default show-select-bins" data-toggle="modal" data-target="#choose-from-bins-modal" data-input="from-bin"> <span class="fa fa-search"></span> </button>
 							</span>
 						</div>
 					</div>
-				</div>
-				<div>
-					include from bins
 				</div>
 			</div>
 			<div class="form-group">
@@ -45,7 +42,7 @@
 						<div class="input-group">
 							<input type="text" class="form-control input-sm" name="to-bin" value="{{ tobin is not empty ? tobin : '' }}">
 							<span class="input-group-btn">
-								<button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#choose-to-bins-modal" data-input="to-bin"> <span class="fa fa-search"></span> </button>
+								<button type="button" class="btn btn-default" data-toggle="modal" data-target="#choose-to-bins-modal" data-input="to-bin"> <span class="fa fa-search"></span> </button>
 							</span>
 						</div>
 					</div>
@@ -54,11 +51,11 @@
 			<div class="form-group">
 				<div class="row">
 					<div class="col-sm-6 form-group">
-						<label for="bin-qty">Qty </label> (On Hand: <span class="qty-available">Total Bin Qty // TODO</span>)
+						<label for="bin-qty">Qty </label> (On Hand: <span class="qty-available">{{ inventory.get_binqty(session.get('sessionid'), item, item.bin) }}</span>)
 						<div class="input-group">
 							<input type="text" class="form-control input-sm text-right" name="qty" value="">
 							<span class="input-group-btn">
-								<button type="submit" class="btn btn-primary btn-sm not-round use-bin-qty" data-direction="from">Use Bin Qty</button>
+								<button type="submit" class="btn btn-primary not-round use-bin-qty" data-direction="from">Use Bin Qty</button>
 							</span>
 						</div>
 					</div>
