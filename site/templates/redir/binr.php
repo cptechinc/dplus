@@ -67,7 +67,7 @@
 				$url->query->set('frombin', $frombin);
 			}
 			$session->loc = $input->$requestmethod->text('page');
-			$session->binr = 'true';
+			$session->binr = array('frombin' => $frombin, 'tobin' => $tobin);
 			break;
 		case 'move-bin-contents';
 			$frombin = $input->$requestmethod->text('from-bin');

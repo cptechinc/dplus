@@ -1,0 +1,11 @@
+<div class="mb-4">
+	{% if (whsesession.had_succeeded()) %}
+		{% set msg = item.get_itemtypedesc()|upper ~ " " ~ item.get_itemidentifier() ~ ' has been moved from ' ~ session.get('binr')['frombin'] ~ ' to ' ~ session.get('binr')['tobin']  %}
+		{% include 'util/alert.twig' with {'type': 'success','iconclass': 'fa fa-floppy-o fa-2x', 'title': 'Success!', 'message': msg} %}
+	{% elseif (whsesession.status != false) %}
+		{% include 'util/alert.twig' with {'type': 'danger','iconclass': 'fa fa-warning fa-2x', 'title': 'Error!', 'message': whsesession.status} %}
+	{% endif %}
+</div>
+<a href="{{ page.parent.url }}" class="btn btn-primary not-round">{{ page.parent.title }} Menu</a>
+&nbsp; &nbsp;
+<a href="{{ page.url }}" class="btn btn-warning not-round">Next Item</a>
