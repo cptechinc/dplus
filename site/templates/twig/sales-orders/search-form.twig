@@ -10,7 +10,7 @@
 <div id="orders-search-div" class="{{ input.get.text('filter') is empty ? 'collapse' : ''}}">
 	<div class="card mb-3">
 		<div class="card-body">
-			<form action="" method="get" class="">
+			<form action="" method="get" class="allow-enterkey-submit">
 				<input type="hidden" name="filter" value="filter">
 
 				<div class="row mt-3">
@@ -71,16 +71,16 @@
 					<div class="col-sm-4">
 						<h5>Order Status</h5>
 						<label>New</label>
-						<input class="pull-right" type="checkbox" name="status[]" value="N" ></br>
+						<input class="pull-right" type="checkbox" name="status-n" value="N" {{ input.get.text('status-n') ? 'checked' : '' }} ></br>
 
 						<label>Invoice</label>
-						<input class="pull-right" type="checkbox" name="status[]" value="I" ></br>
+						<input class="pull-right" type="checkbox" name="status-i" value="I" {{ input.get.text('status-i') ? 'checked' : '' }} ></br>
 
 						<label>Picked</label>
-						<input class="pull-right" type="checkbox" name="status[]" value="P" ></br>
+						<input class="pull-right" type="checkbox" name="status-p" value="P" {{ input.get.text('status-p') ? 'checked' : '' }} ></br>
 
 						<label>Verified</label>
-						<input class="pull-right" type="checkbox" name="status[]" value="V" ></br>
+						<input class="pull-right" type="checkbox" name="status-v" value="V" {{ input.get.text('status-v') ? 'checked' : '' }} ></br>
 					</div>
 				</div>
 				<br>

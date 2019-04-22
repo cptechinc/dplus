@@ -61,6 +61,12 @@
 		} else if ($input->get->text('order_total2')) {
 			$query->filterByOehdordrtot($input->get->text('order_total2'), Criteria::LESS_EQUAL);
 		}
+
+		if ($input->get->text('status-n') || $input->get->text('status-i') || $input->get->text('status-p') || $input->get->text('status-v')) {
+			$status = array($input->get->text('status-n'), $input->get->text('status-i'), $input->get->text('status-p'), $input->get->text('status-v'));
+			$query->filterByOrderStatus($status);
+		}
+
 	}
 
 	$count = $query->count();
