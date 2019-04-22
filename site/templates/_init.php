@@ -94,6 +94,8 @@ if ($input->get->json) {
 $appconfig = $pages->get('/config/app/');
 $siteconfig = $pages->get('/config/');
 
+$session->sessionid = session_id();
+
 $loader = new Twig_Loader_Filesystem($config->paths->templates.'twig/');
 $config->twig = new Twig_Environment($loader, [
 	'cache' => $config->paths->templates.'twig/cache/',
