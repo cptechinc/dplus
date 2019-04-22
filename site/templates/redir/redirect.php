@@ -9,7 +9,7 @@
 		if (!$user->loggedin) {
 			$url = $pages->get('template=login')->url;
 		} else {
-			$url = $roles->get($user->dplusorole)->homepage;
+			$url = $roles->get($user->dplusrole)->homepage;
 		}
 	}
 
