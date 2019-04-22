@@ -8,29 +8,29 @@
 		private $className;
 		public static $user_roles = array(
 			'default' => array(
-				'dplus-code' => '',
+				'dplus-code' => 'defaul',
 				'label' => 'Default',
-				'homepage' => ''
+				'homepage' => '/'
 			),
 			'sales-manager' => array(
 				'dplus-code' => 'slsmgr',
 				'label' => 'Sales Manager',
-				'homepage' => ''
+				'homepage' => '/dashboard/'
 			),
 			'sales-rep' => array(
 				'dplus-code' => 'slsrep',
 				'label' => 'Sales Rep',
-				'homepage' => ''
+				'homepage' => '/dashboard/'
 			),
 			'warehouse' => array(
 				'dplus-code' => 'whse',
 				'label' => 'Warehouse',
-				'homepage' => ''
+				'homepage' => '/warehouse/'
 			),
 			'warehouse-manager' => array(
 				'dplus-code' => 'whsmgr',
 				'label' => 'Warehouse Manager',
-				'homepage' => ''
+				'homepage' => '/warehouse/'
 			)
 		);
 
@@ -49,11 +49,21 @@
 		}
 
 		public function install() {
+			$this->update_user_roles();
+		}
+
+		public function update() {
+			$this->update_user_roles();
+		}
+
+		public function update_user_roles() {
 			foreach (self::$user_roles as $code => $user_role) {
 				if ($this->wire('roles')->find('name='.$user_role['dplus-code'])->count) {
 					$role = $this->wire('roles')->get('name='.$user_role['dplus-code']);
+					$role->of(false);
 				} else {
 					$role = new Role();
+					$role->of(false);
 					$role->name = $user_role['dplus-code'];
 				}
 
@@ -110,7 +120,7 @@
 		/**
 		 * Sets User Properties for Login Id, and Login Name
 		 * @uses  LogPermQuery
-		 * 
+		 *
 		 * @param  User   $user
 		 * @param  string $sessionID User SessionID
 		 * @return void
@@ -137,7 +147,7 @@
 			$user->roleid   = $logmuser->roleid;
 			$user->company  = $logmuser->company;
 			$user->email    = $logmuser->email;
-			
+
 			$function = "setup_user_$role";
 
 			if (method_exists($this, $function)) {
@@ -158,7 +168,7 @@
 		/**
 		 * Sets User Properties needed for a Sales Manager User
 		 * @uses self::setup_user_slsrep()
-		 * 
+		 *
 		 * @param  User $user
 		 * @return void
 		 */

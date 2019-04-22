@@ -1,0 +1,44 @@
+<div class="modal fade" id="choose-from-bins-modal" tabindex="-1" role="dialog" aria-labelledby="choose-from-bins-modal-label"aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="choose-from-bins-modal-label">Choose From Bin</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="list-group choose-from-bins">
+					<div class="list-group-item">
+						<div class="row">
+							<div class="col-3">
+								<h4 class="list-group-item-heading">Bin</h4>
+							</div>
+							<div class="col-3">
+								<h4 class="list-group-item-heading">{{ item.is_lotted() or item.is_serialized() ? item.get_itemtypedesc()|capitalize : '' }}</h4>
+							</div>
+							<div class="col-3">
+								<h4 class="list-group-item-heading">On Hand</h4>
+							</div>
+						</div>
+					</div>
+					{% for bin in bins %}
+						<a href="#" class="list-group-item choose-bin" data-binid="{{ bin.bin }}" data-direction="from" data-qty="{{ bin.qty }}">
+							<div class="row">
+								<div class="col-4">
+									<p class="list-group-item-text">{{ bin.bin }}</p>
+								</div>
+								<div class="col-4">
+									<p class="list-group-item-text">{{ (item.is_lotted() or item.is_serialized()) ? bin.lotserial : '' }}</p>
+								</div>
+								<div class="col-4">
+									<p class="list-group-item-text text-right">{{ bin.qty }}</p>
+								</div>
+							</div>
+						</a>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
