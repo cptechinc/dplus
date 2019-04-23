@@ -5,13 +5,6 @@
 	$query->filterbySalesPerson('RDB');
 	$query->orderByOehdordrdate('DESC');
 
-	// filterByOehdorigordrnbr - no range
-	// filterByArcucustid - no range
-	// filterByOehdcustpo
-	// filterByOehdordrdate - no range
-	// filterByOehdordrtot - range
-	// filterByOehdstat - no range
-
 	if ($input->get->filter) {
 		if ($input->get->text('ordernumber1') && $input->get->text('ordernumber2')) {
 			$query->filterByOrderNumber(array($input->get->text('ordernumber1'), $input->get->text('ordernumber2')));
