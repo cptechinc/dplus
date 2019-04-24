@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "content-hash": "d1eba150235e9216ebe4dd6354948d94",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "7386af3d8c54b4478a6ebd3fa035a22abea1ed50"
+                "reference": "6e18c3c6c534d039b8117c66592b4987ba406553"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/7386af3d8c54b4478a6ebd3fa035a22abea1ed50",
-                "reference": "7386af3d8c54b4478a6ebd3fa035a22abea1ed50",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/6e18c3c6c534d039b8117c66592b4987ba406553",
+                "reference": "6e18c3c6c534d039b8117c66592b4987ba406553",
                 "shasum": ""
             },
             "type": "library",
@@ -38,7 +38,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2019-04-19T14:46:34+00:00"
+            "time": "2019-04-24T16:18:43+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
@@ -46,12 +46,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dpluso-model.git",
-                "reference": "3076f3204721c5e38eae5348ffd564efcad8bd95"
+                "reference": "7d9eee91be5030c5864d26a5be6b3ed5923c5a81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/3076f3204721c5e38eae5348ffd564efcad8bd95",
-                "reference": "3076f3204721c5e38eae5348ffd564efcad8bd95",
+                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/7d9eee91be5030c5864d26a5be6b3ed5923c5a81",
+                "reference": "7d9eee91be5030c5864d26a5be6b3ed5923c5a81",
                 "shasum": ""
             },
             "type": "library",
@@ -72,7 +72,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2019-04-19T13:52:45+00:00"
+            "time": "2019-04-24T15:45:33+00:00"
         },
         {
             "name": "jeremykendall/php-domain-parser",
@@ -911,12 +911,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "bc23e516ce0c54021ba5111c233a6a7ef42ecfc0"
+                "reference": "a560bfb98fa8eb3852a0bf50ee483984d14b9fd3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/bc23e516ce0c54021ba5111c233a6a7ef42ecfc0",
-                "reference": "bc23e516ce0c54021ba5111c233a6a7ef42ecfc0",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/a560bfb98fa8eb3852a0bf50ee483984d14b9fd3",
+                "reference": "a560bfb98fa8eb3852a0bf50ee483984d14b9fd3",
                 "shasum": ""
             },
             "require": {
@@ -932,7 +932,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.8-dev"
+                    "dev-master": "2.9-dev"
                 }
             },
             "autoload": {
@@ -970,7 +970,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2019-04-17T07:12:40+00:00"
+            "time": "2019-04-24T15:24:15+00:00"
         }
     ],
     "packages-dev": [],
