@@ -16,19 +16,19 @@
 				<div class="row mt-3">
 					<div class="col-sm-4">
 						<h5>Order #</h5>
-						<input class="form-control form-group inline" type="text" name="ordernumber1" value="{{ input.get.text('ordernumber1') }}" placeholder="From Order #">
-						<input class="form-control form-group inline" type="text" name="ordernumber2" value="{{ input.get.text('ordernumber2') }}" placeholder="Through Order #">
+						<input class="form-control form-group inline" type="text" name="ordernumber_from" value="{{ input.get.text('ordernumber_from') }}" placeholder="From Order #">
+						<input class="form-control form-group inline" type="text" name="ordernumber_through" value="{{ input.get.text('ordernumber_through') }}" placeholder="Through Order #">
 					</div>
 					<div class="col-sm-4">
 						<h5>Cust ID</h5>
 						<div class="input-group form-group">
-							<input class="form-control form-group inline" type="text" name="custid1" id="sales-order-cust-from" value="{{ input.get.text('custid1') }}" placeholder="From CustID">
+							<input class="form-control form-group inline" type="text" name="custid_from" id="sales-order-cust-from" value="{{ input.get.text('custid_from') }}" placeholder="From CustID">
 							<span class="input-group-btn">
 								<button type="button" class="btn btn-default not-round get-custid-search" data-field="#sales-order-cust-from"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
 							</span>
 						</div>
 						<div class="input-group form-group">
-							<input class="form-control form-group inline" type="text" name="custid2" id="sales-order-cust-to" value="{{ input.get.text('custid2') }}" placeholder="Through CustID">
+							<input class="form-control form-group inline" type="text" name="custid_through" id="sales-order-cust-to" value="{{ input.get.text('custid_through') }}" placeholder="Through CustID">
 							<span class="input-group-btn">
 								<button type="button" class="btn btn-default not-round get-custid-search" data-field="#sales-order-cust-to"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
 							</span>
@@ -44,25 +44,25 @@
 					<div class="col-sm-4">
 						<h5>Order Date</h5>
 						<label for="afterdate">From Date</label>
-						{% set name = 'orderdate1' %}
-						{% set value = input.get.text('orderdate1') %}
+						{% set name = 'orderdate_from' %}
+						{% set value = input.get.text('orderdate_from') %}
 						{% include 'util/date-picker.twig' %}
 
 						<label for="beforedate">Through Date</label>
-						{% set name = 'orderdate2' %}
-						{% set value = input.get.text('orderdate2') %}
+						{% set name = 'orderdate_through' %}
+						{% set value = input.get.text('orderdate_through') %}
 						{% include 'util/date-picker.twig' %}
 					</div>
 					<div class="col-sm-4">
 						<h5>Order Total</h5>
 						<div class="input-group form-group">
-							<input class="form-control form-group inline" type="text" name="order_total1" id="order-total-min" value="{{ input.get.text('order_total1') }}" placeholder="From Order Total">
+							<input class="form-control form-group inline" type="text" name="order_total_from" id="order-total-min" value="{{ input.get.text('order_total_from') }}" placeholder="From Order Total">
 							<span class="input-group-btn">
 								<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-down" aria-hidden="true"></span> <span class="sr-only">Min</span> </button>
 							</span>
 						</div>
 						<div class="input-group form-group">
-							<input class="form-control form-group inline" type="text" name="order_total2" id="order-total-max" value="{{ input.get.text('order_total2') }}" placeholder="Through Order Total">
+							<input class="form-control form-group inline" type="text" name="order_total_through" id="order-total-max" value="{{ input.get.text('order_total_through') }}" placeholder="Through Order Total">
 							<span class="input-group-btn">
 								<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-up" aria-hidden="true"></span> <span class="sr-only">Max</span> </button>
 							</span>

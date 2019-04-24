@@ -6,23 +6,23 @@
 	$query->orderByOehdordrdate('DESC');
 
 	if ($input->get->filter) {
-		if ($input->get->text('ordernumber1') && $input->get->text('ordernumber2')) {
-			$query->filterByOrderNumber(array($input->get->text('ordernumber1'), $input->get->text('ordernumber2')));
-		} else if ($input->get->text('ordernumber1')) {
-			$query->filterByOrderNumber($input->get->text('ordernumber1'));
-		} else if ($input->get->text('ordernumber2')) {
-			$query->filterByOrderNumber($input->get->text('ordernumber2'));
+		if ($input->get->text('ordernumber_from') && $input->get->text('ordernumber_through')) {
+			$query->filterByOrderNumber(array($input->get->text('ordernumber_from'), $input->get->text('ordernumber_through')));
+		} else if ($input->get->text('ordernumber_from')) {
+			$query->filterByOrderNumber($input->get->text('ordernumber_from'));
+		} else if ($input->get->text('ordernumber_through')) {
+			$query->filterByOrderNumber($input->get->text('ordernumber_through'));
 		}
 
-		if ($input->get->text('custid1') || $input->get->text('custid2')) {
-			$custid1 = strtoupper($input->get->text('custid1'));
-			$custid2 = strtoupper($input->get->text('custid2'));
-			if ($custid1 && $custid2) {
-				$query->filterByCustId(array($custid1, $custid2));
-			} else if ($custid1) {
-				$query->filterByCustId("%$custid1%");
-			} else if ($custid2) {
-				$query->filterByCustId("%$custid2%");
+		if ($input->get->text('custid_from') || $input->get->text('custid_through')) {
+			$custid_from = strtoupper($input->get->text('custid_from'));
+			$custid_through = strtoupper($input->get->text('custid_through'));
+			if ($custid_from && $custid_through) {
+				$query->filterByCustId(array($custid_from, $custid_through));
+			} else if ($custid_from) {
+				$query->filterByCustId("%$custid_from%");
+			} else if ($custid_through) {
+				$query->filterByCustId("%$custid_through%");
 			}
 		}
 
@@ -31,32 +31,32 @@
 			$query->filterByOehdcustpo("%$custpo%", Criteria::LIKE);
 		}
 
-		if ($input->get->text('orderdate1') || $input->get->text('orderdate2')) {
-			$orderdate1 = date("Ymd", strtotime($input->get->text('orderdate1')));
-			if (empty($input->get->text('orderdate2'))) {
-				$orderdate2 = date('Ymd');
+		if ($input->get->text('orderdate_from') || $input->get->text('orderdate_through')) {
+			$orderdate_from = date("Ymd", strtotime($input->get->text('orderdate_from')));
+			if (empty($input->get->text('orderdate_through'))) {
+				$orderdate_through = date('Ymd');
 			} else {
-				$orderdate2 = date("Ymd", strtotime($input->get->text('orderdate2')));
+				$orderdate_through = date("Ymd", strtotime($input->get->text('orderdate_through')));
 			}
-			if ($orderdate1 && $orderdate2) {
-				$query->filterByOrderDate(array($orderdate1, $orderdate2));
-			} else if ($orderdate1) {
-				$query->filterByOrderDate($orderdate1);
-			} else if ($orderdate2) {
-				$query->filterByOrderDate($orderdate2);
+			if ($orderdate_from && $orderdate_through) {
+				$query->filterByOrderDate(array($orderdate_from, $orderdate_through));
+			} else if ($orderdate_from) {
+				$query->filterByOrderDate($orderdate_from);
+			} else if ($orderdate_through) {
+				$query->filterByOrderDate($orderdate_through);
 			}
 		}
 
-		if ($input->get->text('order_total1') && $input->get->text('order_total2')) {
-			$query->filterByOrderTotal(array($input->get->text('order_total1'), $input->get->text('order_total2')));
-		} else if ($input->get->text('order_total1')) {
-			$query->filterByOehdordrtot($input->get->text('order_total1'), Criteria::GREATER_EQUAL);
-		} else if ($input->get->text('order_total2')) {
-			$query->filterByOehdordrtot($input->get->text('order_total2'), Criteria::LESS_EQUAL);
+		if ($input->get->text('order_total_from') && $input->get->text('order_total_through')) {
+			$query->filterByOrderTotal(array($input->get->text('order_total_from'), $input->get->text('order_total_through')));
+		} else if ($input->get->text('order_total_from')) {
+			$query->filterByOehdordrtot($input->get->text('order_total_from'), Criteria::GREATER_EQUAL);
+		} else if ($input->get->text('order_total_through')) {
+			$query->filterByOehdordrtot($input->get->text('order_total_through'), Criteria::LESS_EQUAL);
 		}
 
 		if ($input->get->text('status-n') || $input->get->text('status-i') || $input->get->text('status-p') || $input->get->text('status-v')) {
-			$status = array($input->get->text('status-n'), $input->get->text('status-i'), $input->get->text('status-p'), $input->get->text('status-v'));
+			$status = array($sanitizer->text($input->get->text('status-n')), $sanitizer->text($input->get->text('status-i')), $sanitizer->text($input->get->text('status-p')), $sanitizer->text($input->get->text('status-v')));
 			$query->filterByOrderStatus($status);
 		}
 
