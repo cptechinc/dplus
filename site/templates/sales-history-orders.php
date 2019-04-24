@@ -19,9 +19,9 @@
 			if ($custid_from && $custid_through) {
 				$query->filterByCustId(array($custid_from, $custid_through));
 			} else if ($custid_from) {
-				$query->filterByArcucustid("%$custid_from%", Criteria::LIKE);
+				$query->filterByCustId("%$custid_from%");
 			} else if ($custid_through) {
-				$query->filterByArcucustid("%$custid_through%", Criteria::LIKE);
+				$query->filterByCustId("%$custid_through%");
 			}
 		}
 
