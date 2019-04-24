@@ -1,0 +1,68 @@
+<table class="table table-sm">
+	<tr class="table-info">
+		<td>Last Sale Date</td>
+		<td class="text-right">
+			{{ convertdate(customer.lastsaledate) }}
+		</td>
+	</tr>
+	<tr>
+		<td>Highest Balance</td>
+		<td class="text-right">
+			$ {{ customer.highestbalance|number_format(2, '.', ',') }}
+		</td>
+	</tr>
+	<tr>
+		<td>Current Finance Charge</td>
+		<td class="text-right">
+			$ {{ customer.financecharge|number_format(2, '.', ',') }}
+		</td>
+	</tr>
+	<tr class="table-dark">
+		<td colspan="2" class="text-center">To Date</td>
+	</tr>
+	<tr>
+		<th>Period</th>
+		<th>
+			<div class="row">
+				<div class="col ">
+					Amount
+				</div>
+				<div class="col ">
+					Invoices
+				</div>
+			</div>
+		</th>
+	</tr>
+	<tr>
+		<td>
+			<abbr title="{{ "now"|date("F Y") }}">Month-to-date</abbr>
+		</td>
+		<td>
+			<div class="row">
+				<div class="col text-right">
+					{{ customer.mtd_sales|number_format(2, '.', ',') }}
+				</div>
+				<div class="col text-right">
+					{{ customer.mtd_invoices }}
+				</div>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td><abbr title="{{ "now"|date("Y") }}">Year-to-date</abbr></td>
+		<td>
+			<div class="row">
+				<div class="col text-right">
+					{{ customer.ytd_sales|number_format(2, '.', ',') }}
+				</div>
+				<div class="col text-right">
+					{{ customer.ytd_invoices }}
+				</div>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>Last 12 Months</td>
+		<td>{{ customer.get_lastxmonthsamount(12) }}</td>
+	</tr>
+</table>

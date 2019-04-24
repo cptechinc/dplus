@@ -1,0 +1,40 @@
+<table class="table table-sm">
+	<tr>
+		<td>Warehouse</td>
+		<td>
+			{{ customer.warehouse }}
+		</td>
+	</tr>
+	<tr>
+		<td>Ship Via</td>
+		<td>
+			{{ customer.shipvia }}
+		</td>
+	</tr>
+	<tr>
+		<td>Current Finance Charge</td>
+		<td>
+			{{ customer.taxcode }}
+		</td>
+	</tr>
+	<tr>
+		<td>Type</td>
+		<td>{{ customer.type }}</td>
+	</tr>
+	<tr>
+		<td>Terms Code</td>
+		<td>{{ customer.termscode }}</td>
+	</tr>
+	<tr>
+		<td>Price Code</td>
+		<td>{{ customer.pricecode }}</td>
+	</tr>
+	<tr>
+		<td>Credit Hold</td>
+		<td>{{ yesorno(customer.credithold)|capitalize }}</td>
+	</tr>
+	<tr>
+		<td>Tax Exempt</td>
+		<td>{{ customer.is_taxexempt() ? customer.taxexemptcode : 'N/A' }}</td>
+	</tr>
+</table>

@@ -1,0 +1,25 @@
+<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">ID</th>
+			<th scope="col">Name</th>
+			<th scope="col">Address</th>
+			<th scope="col">Last</th>
+			<th scope="col">Handle</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for customer in customers %}
+			<tr>
+				<td scope="row">
+					<a href="{{ page.url ~ '?custID=' ~ customer.id }}">{{ customer.id }}</a>
+				</td>
+				<td>{{ customer.name }}</td>
+				<td>
+					{{ customer.city ~ ', ' ~ customer.state ~ ' ' ~ customer.zip }}
+				</td>
+				<td>@mdo</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
