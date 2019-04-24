@@ -1,0 +1,53 @@
+<?php namespace ProcessWire;
+	require_once(__DIR__ . '/DplusoPages.module');
+
+	class DplusoPagesCustomer extends DplusoPages implements Module {
+
+		protected $fields = array();
+		protected $templates = array(
+			'dplus-menu' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('dplus_function', 'summary'),
+				'paginated' => false
+			),
+			'dplus-function' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('dplus_function', 'pw_template', 'summary'),
+				'paginated' => true
+			),
+			'ci-customer' => array(
+				'name'   => 'ci-customer',
+				'fields' => array(),
+			)
+		);
+
+		protected $pages = array(
+			'customer-menu' => array(
+				'template'       => 'dplus-menu',
+				'name'           => 'mci',
+				'title'          => 'Customers',
+				'summary'        => 'Customer Menu',
+				'parent'         => '/',
+				'dplus_function' => ''
+			),
+			'ci' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'ci',
+				'title'          => 'Customer Information',
+				'summary'        => 'View Customer Information',
+				'parent'         => '/mci/',
+				'dplus_function' => '',
+				'pw_template'    => 'ci-customer'
+			)
+		);
+
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dplus Online Customer Pages',
+				'version' => 101,
+				'summary' => 'Installs and creates Dplus Online Customer Pages',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+	}
