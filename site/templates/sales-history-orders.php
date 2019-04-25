@@ -14,8 +14,8 @@
 		}
 
 		if ($input->get->text('custid_from') || $input->get->text('custid_through')) {
-			$custid_from = strtoupper($input->get->text('custid_from'));
-			$custid_through = strtoupper($input->get->text('custid_through'));
+			$custid_from = $input->get->text('custid_from');
+			$custid_through = $input->get->text('custid_through');
 			if ($custid_from && $custid_through) {
 				$query->filterByCustId(array($custid_from, $custid_through));
 			} else if ($custid_from) {
@@ -26,7 +26,7 @@
 		}
 
 		if ($input->get->text('custpo')) {
-			$custpo = strtoupper($input->get->text('custpo'));
+			$custpo = $input->get->text('custpo');
 			$query->filterByOehhcustpo("%$custpo%", Criteria::LIKE);
 		}
 
