@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "content-hash": "d1eba150235e9216ebe4dd6354948d94",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "d28a6d199d244d5de5047cf4dedbe4f995df6f8a"
+                "reference": "5ae18030541b537c8e96448390b22033ed52c254"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/d28a6d199d244d5de5047cf4dedbe4f995df6f8a",
-                "reference": "d28a6d199d244d5de5047cf4dedbe4f995df6f8a",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/5ae18030541b537c8e96448390b22033ed52c254",
+                "reference": "5ae18030541b537c8e96448390b22033ed52c254",
                 "shasum": ""
             },
             "type": "library",
@@ -38,7 +38,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2019-04-25T15:38:39+00:00"
+            "time": "2019-04-25T15:45:35+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
