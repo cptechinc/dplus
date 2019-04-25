@@ -8,3 +8,9 @@
 		return ($trueorfalse === true || strtoupper($trueorfalse) == 'Y') ? 'yes' : 'no';
     });
 	$config->twig->addFunction($yesno);
+
+	// an anonymous function
+	$filter = new \Twig\TwigFilter('currency', function ($money) {
+	    return number_format($money, 2, '.', ",");
+	});
+	$config->twig->addFilter($filter);
