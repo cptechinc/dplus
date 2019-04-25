@@ -44,19 +44,27 @@ $(function() {
 			$(modal).modal('show');
 		});
 	});
-	
+
 	$("body").on("click", ".load-link", function(e) {
 		e.preventDefault();
 		var button = $(this);
 		var loadinto = $(this).data('loadinto');
 		var focuson = $(this).data('focus');
 		var href = $(this).attr('href');
-		
+
 		$(loadinto).loadin(href, function() {
 			if (focuson.length > 0) {
 				$('html, body').animate({scrollTop: $(focuson).offset().top - 60}, 1000);
 			}
 		});
+	});
+
+	$("body").on('keypress', 'form input', function(e) {
+		if ($(this).closest('form').hasClass('allow-enterkey-submit')) {
+			return true;
+		} else {
+			return e.which !== 13;
+		}
 	});
 });
 

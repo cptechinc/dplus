@@ -41,19 +41,7 @@
 				</div>
 				<hr>
 				<div class="row mt-4">
-					<div class="col-sm-4">
-						<h5>Order Date</h5>
-						<label for="afterdate">From Date</label>
-						{% set name = 'orderdate_from' %}
-						{% set value = input.get.text('orderdate_from') %}
-						{% include 'util/date-picker.twig' %}
-
-						<label for="beforedate">Through Date</label>
-						{% set name = 'orderdate_through' %}
-						{% set value = input.get.text('orderdate_through') %}
-						{% include 'util/date-picker.twig' %}
-					</div>
-					<div class="col-sm-4">
+                    <div class="col-sm-4">
 						<h5>Order Total</h5>
 						<div class="input-group form-group">
 							<input class="form-control form-group inline" type="text" name="order_total_from" id="order-total-min" value="{{ input.get.text('order_total_from') }}" placeholder="From Order Total">
@@ -69,18 +57,28 @@
 						</div>
 					</div>
 					<div class="col-sm-4">
-						<h5>Order Status</h5>
-						<label>New</label>
-						<input class="pull-right" type="checkbox" name="status[]" value="N" {{ 'N' in input.get.status ? 'checked' : '' }} ></br>
+						<h5>Date Invoiced</h5>
+						<label for="afterdate">From Date</label>
+						{% set name = 'invoicedate_from' %}
+						{% set value = input.get.text('invoicedate_from') %}
+						{% include 'util/date-picker.twig' %}
 
-						<label>Invoice</label>
-						<input class="pull-right" type="checkbox" name="status[]" value="I" {{ 'I' in input.get.status  ? 'checked' : '' }} ></br>
+						<label for="beforedate">Through Date</label>
+						{% set name = 'invoicedate_through' %}
+						{% set value = input.get.text('invoicedate_through') %}
+						{% include 'util/date-picker.twig' %}
+					</div>
+                    <div class="col-sm-4">
+						<h5>Order Date</h5>
+						<label for="afterdate">From Date</label>
+						{% set name = 'orderdate_from' %}
+						{% set value = input.get.text('orderdate_from') %}
+						{% include 'util/date-picker.twig' %}
 
-						<label>Picked</label>
-						<input class="pull-right" type="checkbox" name="status[]" value="P" {{ 'P' in input.get.status ? 'checked' : '' }} ></br>
-
-						<label>Verified</label>
-						<input class="pull-right" type="checkbox" name="status[]" value="V" {{ 'V' in input.get.status  ? 'checked' : '' }} ></br>
+						<label for="beforedate">Through Date</label>
+						{% set name = 'orderdate_through' %}
+						{% set value = input.get.text('orderdate_through') %}
+						{% include 'util/date-picker.twig' %}
 					</div>
 				</div>
 				<br>
