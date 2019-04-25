@@ -59,7 +59,6 @@
 			$status = array($sanitizer->text($input->get->text('status-n')), $sanitizer->text($input->get->text('status-i')), $sanitizer->text($input->get->text('status-p')), $sanitizer->text($input->get->text('status-v')));
 			$query->filterByOrderStatus($status);
 		}
-
 	}
 
 	$count = $query->count();
