@@ -16,6 +16,7 @@
 		if ($input->get->text('custid_from') || $input->get->text('custid_through')) {
 			$custid_from = $input->get->text('custid_from');
 			$custid_through = $input->get->text('custid_through');
+
 			if ($custid_from && $custid_through) {
 				$query->filterByCustId(array($custid_from, $custid_through));
 			} else if ($custid_from) {
@@ -40,11 +41,13 @@
 
 		if ($input->get->text('invoicedate_from') || $input->get->text('invoicedate_through')) {
 			$invoicedate_from = date("Ymd", strtotime($input->get->text('invoicedate_from')));
+
 			if (empty($input->get->text('invoicedate_through'))) {
 				$invoicedate_through = date('Ymd');
 			} else {
 				$invoicedate_through = date("Ymd", strtotime($input->get->text('invoicedate_through')));
 			}
+
 			if ($invoicedate_from && $invoicedate_through) {
 				$query->filterByInvoiceDate(array($invoicedate_from, $invoicedate_through));
 			} else if ($invoicedate_from) {
@@ -56,11 +59,13 @@
 
 		if ($input->get->text('orderdate_from') || $input->get->text('orderdate_through')) {
 			$orderdate_from = date("Ymd", strtotime($input->get->text('orderdate_from')));
+
 			if (empty($input->get->text('orderdate_through'))) {
 				$orderdate_through = date('Ymd');
 			} else {
 				$orderdate_through = date("Ymd", strtotime($input->get->text('orderdate_through')));
 			}
+
 			if ($orderdate_from && $orderdate_through) {
 				$query->filterByOrderDate(array($orderdate_from, $orderdate_through));
 			} else if ($orderdate_from) {
@@ -69,7 +74,6 @@
 				$query->filterByOrderDate($orderdate_through);
 			}
 		}
-
 	}
 
 	$orders = $query->paginate($input->pageNum, 10);
