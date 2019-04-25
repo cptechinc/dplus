@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "d1eba150235e9216ebe4dd6354948d94",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "5ae18030541b537c8e96448390b22033ed52c254"
+                "reference": "2c405f582f1bd815286355d7219b5e715e6ef587"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/5ae18030541b537c8e96448390b22033ed52c254",
-                "reference": "5ae18030541b537c8e96448390b22033ed52c254",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/2c405f582f1bd815286355d7219b5e715e6ef587",
+                "reference": "2c405f582f1bd815286355d7219b5e715e6ef587",
                 "shasum": ""
             },
             "type": "library",
@@ -38,7 +38,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2019-04-25T15:45:35+00:00"
+            "time": "2019-04-25T16:10:38+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
@@ -46,12 +46,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dpluso-model.git",
-                "reference": "7d9eee91be5030c5864d26a5be6b3ed5923c5a81"
+                "reference": "4427ffdb1adb53b15b536c15ef1e7312e0644df5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/7d9eee91be5030c5864d26a5be6b3ed5923c5a81",
-                "reference": "7d9eee91be5030c5864d26a5be6b3ed5923c5a81",
+                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/4427ffdb1adb53b15b536c15ef1e7312e0644df5",
+                "reference": "4427ffdb1adb53b15b536c15ef1e7312e0644df5",
                 "shasum": ""
             },
             "type": "library",
@@ -72,7 +72,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2019-04-24T15:45:33+00:00"
+            "time": "2019-04-25T18:07:11+00:00"
         },
         {
             "name": "jeremykendall/php-domain-parser",
