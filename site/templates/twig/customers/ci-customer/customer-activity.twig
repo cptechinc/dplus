@@ -6,9 +6,19 @@
 		</td>
 	</tr>
 	<tr>
+		<td>Sales Orders</td>
+		<td class="text-right">{{ customer.get_orders_count() }}</td>
+	</tr>
+	<tr>
+		<td>Amount</td>
+		<td class="text-right">
+			$ {{ customer.get_orders_amount()|currency }}
+		</td>
+	</tr>
+	<tr>
 		<td>Highest Balance</td>
 		<td class="text-right">
-			$ {{ customer.highestbalance|number_format(2, '.', ',') }}
+			$ {{ customer.highestbalance|currency }}
 		</td>
 	</tr>
 	<tr>
@@ -18,7 +28,7 @@
 		</td>
 	</tr>
 	<tr class="table-dark">
-		<td colspan="2" class="text-center">To Date</td>
+		<td colspan="2" class="text-center text-dark">Invoices</td>
 	</tr>
 	<tr>
 		<th>Period</th>
@@ -40,7 +50,7 @@
 		<td>
 			<div class="row">
 				<div class="col text-right">
-					{{ customer.mtd_sales|number_format(2, '.', ',') }}
+					{{ customer.mtd_sales|currency }}
 				</div>
 				<div class="col text-right">
 					{{ customer.mtd_invoices }}
@@ -53,7 +63,7 @@
 		<td>
 			<div class="row">
 				<div class="col text-right">
-					{{ customer.ytd_sales|number_format(2, '.', ',') }}
+					{{ customer.ytd_sales|currency }}
 				</div>
 				<div class="col text-right">
 					{{ customer.ytd_invoices }}
@@ -63,6 +73,15 @@
 	</tr>
 	<tr>
 		<td>Last 12 Months</td>
-		<td>{{ customer.get_lastxmonthsamount(12) }}</td>
+		<td>
+			<div class="row">
+				<div class="col text-right">
+					{{ customer.get_lastxmonthsamount(12)|currency }}
+				</div>
+				<div class="col text-right">
+					{{ customer.get_lastxmonthscount(12) }}
+				</div>
+			</div>
+		</td>
 	</tr>
 </table>
