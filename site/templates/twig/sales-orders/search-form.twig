@@ -71,16 +71,16 @@
 					<div class="col-sm-4">
 						<h5>Order Status</h5>
 						<label>New</label>
-						<input class="pull-right" type="checkbox" name="status-n" value="N" {{ input.get.text('status-n') ? 'checked' : '' }} ></br>
+						<input class="pull-right" type="checkbox" name="status[]" value="N" {{ 'N' in input.get.status ? 'checked' : '' }} ></br>
 
 						<label>Invoice</label>
-						<input class="pull-right" type="checkbox" name="status-i" value="I" {{ input.get.text('status-i') ? 'checked' : '' }} ></br>
+						<input class="pull-right" type="checkbox" name="status[]" value="I" {{ 'I' in input.get.status  ? 'checked' : '' }} ></br>
 
 						<label>Picked</label>
-						<input class="pull-right" type="checkbox" name="status-p" value="P" {{ input.get.text('status-p') ? 'checked' : '' }} ></br>
+						<input class="pull-right" type="checkbox" name="status[]" value="P" {{ 'P' in input.get.status ? 'checked' : '' }} ></br>
 
 						<label>Verified</label>
-						<input class="pull-right" type="checkbox" name="status-v" value="V" {{ input.get.text('status-v') ? 'checked' : '' }} ></br>
+						<input class="pull-right" type="checkbox" name="status[]" value="V" {{ 'V' in input.get.status  ? 'checked' : '' }} ></br>
 					</div>
 				</div>
 				<br>

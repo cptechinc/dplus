@@ -55,10 +55,22 @@
 			$query->filterByOehdordrtot($input->get->text('order_total_through'), Criteria::LESS_EQUAL);
 		}
 
-		if ($input->get->text('status-n') || $input->get->text('status-i') || $input->get->text('status-p') || $input->get->text('status-v')) {
-			$status = array($sanitizer->text($input->get->text('status-n')), $sanitizer->text($input->get->text('status-i')), $sanitizer->text($input->get->text('status-p')), $sanitizer->text($input->get->text('status-v')));
-			$query->filterByOrderStatus($status);
+		if ($input->get->status) {
+			$statuses = array();
+
+			foreach ($input->get->status as $status) {
+				$sanitized = $sanitizer->text($status);
+
+				if (array_key_exists($sanitized, SalesOrder::$status_descriptions)) {
+					$statuses[] = $sanitized;
+				}
+			}
+			$query->filterByOrderStatus($statuses);
+		} else {
+			$input->get->status = array();
 		}
+	} else {
+		$input->get->status = array();
 	}
 
 	$count = $query->count();

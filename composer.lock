@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "6e18c3c6c534d039b8117c66592b4987ba406553"
+                "reference": "5ae18030541b537c8e96448390b22033ed52c254"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/6e18c3c6c534d039b8117c66592b4987ba406553",
-                "reference": "6e18c3c6c534d039b8117c66592b4987ba406553",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/5ae18030541b537c8e96448390b22033ed52c254",
+                "reference": "5ae18030541b537c8e96448390b22033ed52c254",
                 "shasum": ""
             },
             "type": "library",
@@ -38,7 +38,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2019-04-24T16:18:43+00:00"
+            "time": "2019-04-25T15:45:35+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
@@ -911,12 +911,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "a560bfb98fa8eb3852a0bf50ee483984d14b9fd3"
+                "reference": "bcc34c4bb7a3391b1d769d0711067c66ae54cb82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/a560bfb98fa8eb3852a0bf50ee483984d14b9fd3",
-                "reference": "a560bfb98fa8eb3852a0bf50ee483984d14b9fd3",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/bcc34c4bb7a3391b1d769d0711067c66ae54cb82",
+                "reference": "bcc34c4bb7a3391b1d769d0711067c66ae54cb82",
                 "shasum": ""
             },
             "require": {
@@ -970,7 +970,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2019-04-24T15:24:15+00:00"
+            "time": "2019-04-25T12:27:56+00:00"
         }
     ],
     "packages-dev": [],
