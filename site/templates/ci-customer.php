@@ -12,6 +12,7 @@
 	} else {
 		if ($input->get->q) {
 			$q = $input->get->text('q');
+			$page->title = "CI: Searching for '$q'";
 			$col_custid = Customer::get_aliasproperty('custid');
 			$col_name = Customer::get_aliasproperty('name');
 			$columns = array($col_custid, $col_name);

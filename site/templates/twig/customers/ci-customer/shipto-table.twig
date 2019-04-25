@@ -1,31 +1,50 @@
-<table class="table">
-	<tr>
-		<td>Shipto</td>
-		<td>
-			<select name="" class="form-control form-control-sm" id="">
-				{% for shipto in customer.get_shiptos() %}
-					<option value="{{ shipto.id }}">{{ shipto.name }}</option>
-				{% endfor %}
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<td>Address</td>
-		<td>
-			{{ shipto.address1 }} <br>
-			{% if (shipto.address2 is not empty) %}
-				{{ shipto.address2 }} <br>
-			{% endif %}
+<div class="card">
+	<div class="card-header">
+		<span class="h3">Customer Shiptos</span>
+	</div>
+    <ul class="list-group list-group-flush">
+	    <li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					Shipto:
+				</div>
+				<div class="col-sm-7">
+					<select name="" class="form-control form-control-sm" id="">
+						{% for shipto in customer.get_shiptos() %}
+							<option value="{{ shipto.id }}">{{ shipto.name }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		</li>
+	    <li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					Address:
+				</div>
+				<div class="col-sm-7">
+					{{ shipto.address1 }} <br>
+					{% if (shipto.address2 is not empty) %}
+						{{ shipto.address2 }} <br>
+					{% endif %}
 
-			{% if (shipto.address3 is not empty) %}
-				{{ shipto.address3 }} <br>
-			{% endif %}
+					{% if (shipto.address3 is not empty) %}
+						{{ shipto.address3 }} <br>
+					{% endif %}
 
-			{{ shipto.city ~ ', ' ~ shipto.state ~ ' ' ~ shipto.zip }}
-		</td>
-	</tr>
-	<tr>
-		<td>Salesperson</td>
-		<td>{{ shipto.salesperson1 }}</td>
-	</tr>
-</table>
+					{{ shipto.city ~ ', ' ~ shipto.state ~ ' ' ~ shipto.zip }}
+				</div>
+			</div>
+		</li>
+	    <li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					Salesperson:
+				</div>
+				<div class="col-sm-7">
+					{{ shipto.salesperson1 }}
+				</div>
+			</div>
+		</li>
+    </ul>
+</div>

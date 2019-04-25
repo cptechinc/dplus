@@ -1,4 +1,5 @@
-<div class="row">
+{% include 'customers/ci-customer/customer-buttons.twig' %}
+<div class="row mb-4">
 	<div class="col-sm-6">
 		{% include 'customers/ci-customer/customer-table.twig' %}
 	</div>
@@ -6,14 +7,12 @@
 		{% include 'customers/ci-customer/shipto-table.twig' %}
 	</div>
 </div>
-<div class="row">
-	<div class="col-sm-4">
+<div class="row mb-4">
+	<div class="col-sm-6">
+		{% include 'customers/ci-customer/customer-ar-data.twig' %}
+	</div>
+	<div class="col-sm-6">
 		<h4>Customer Activity</h4>
 		{% include 'customers/ci-customer/customer-activity.twig' %}
-	</div>
-
-	<div class="col-sm-4">
-		<h4>Customer AR</h4>
-		{% include 'customers/ci-customer/customer-ar-data.twig' %}
 	</div>
 </div>

@@ -1,32 +1,57 @@
-<table class="table">
-	<tr>
-		<td>Customer</td>
-		<td>
-			{{ customer.id }} <br>
-			{{ customer.name }}
-		</td>
-	</tr>
-	<tr>
-		<td>Address</td>
-		<td>
-			{{ customer.address1 }} <br>
-			{% if (customer.address2 is not empty) %}
-				{{ customer.address2 }} <br>
-			{% endif %}
+<div class="card bg-info">
+	<div class="card-header border-info">
+		<span class="h3 text-white">Customer Information</span>
+	</div>
+    <ul class="list-group list-group-flush">
+	    <li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					<p class="font-weight-bold">Customer:</p>
+				</div>
+				<div class="col-sm-7">
+					<p class="font-weight-bold">{{ customer.id }} <br>
+					{{ customer.name }}</p>
+				</div>
+			</div>
+		</li>
+	    <li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					<p class="font-weight-bold">Address:</p>
+				</div>
+				<div class="col-sm-7">
+					<p>{{ customer.address1 }} <br>
+					{% if (customer.address2 is not empty) %}
+						{{ customer.address2 }} <br>
+					{% endif %}
 
-			{% if (customer.address3 is not empty) %}
-				{{ customer.address3 }} <br>
-			{% endif %}
+					{% if (customer.address3 is not empty) %}
+						{{ customer.address3 }} <br>
+					{% endif %}
 
-			{{ customer.city ~ ', ' ~ customer.state ~ ' ' ~ customer.zip }}
-		</td>
-	</tr>
-	<tr>
-		<td>Salesperson</td>
-		<td>{{ customer.salesperson1 }}</td>
-	</tr>
-	<tr>
-		<td>Number of Shiptos</td>
-		<td>{{ customer.count_shiptos() }}</td>
-	</tr>
-</table>
+					{{ customer.city ~ ', ' ~ customer.state ~ ' ' ~ customer.zip }}</p>
+				</div>
+			</div>
+		</li>
+	    <li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					<p class="font-weight-bold">Salesperson:</p>
+				</div>
+				<div class="col-sm-7">
+					<p>{{ customer.salesperson1 }}</p>
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					<p class="font-weight-bold">Number of Shiptos:</p>
+				</div>
+				<div class="col-sm-7">
+					<p>{{ customer.count_shiptos() }}</p>
+				</div>
+			</div>
+		</li>
+    </ul>
+</div>

@@ -1,40 +1,87 @@
-<table class="table table-sm">
-	<tr>
-		<td>Warehouse</td>
-		<td>
-			{{ customer.warehouse }}
-		</td>
-	</tr>
-	<tr>
-		<td>Ship Via</td>
-		<td>
-			{{ customer.shipvia }}
-		</td>
-	</tr>
-	<tr>
-		<td>Current Finance Charge</td>
-		<td>
-			{{ customer.taxcode }}
-		</td>
-	</tr>
-	<tr>
-		<td>Type</td>
-		<td>{{ customer.type }}</td>
-	</tr>
-	<tr>
-		<td>Terms Code</td>
-		<td>{{ customer.termscode }}</td>
-	</tr>
-	<tr>
-		<td>Price Code</td>
-		<td>{{ customer.pricecode }}</td>
-	</tr>
-	<tr>
-		<td>Credit Hold</td>
-		<td>{{ yesorno(customer.credithold)|capitalize }}</td>
-	</tr>
-	<tr>
-		<td>Tax Exempt</td>
-		<td>{{ customer.is_taxexempt() ? customer.taxexemptcode : 'N/A' }}</td>
-	</tr>
-</table>
+<div class="card">
+	<div class="card-header">
+		<span class="h3">Customer AR</span>
+	</div>
+	<ul class="list-group list-group-flush">
+	    <li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-10">
+					Warehouse:
+				</div>
+				<div class="col-sm-2">
+					{{ customer.warehouse }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-10">
+					Ship Via:
+				</div>
+				<div class="col-sm-2">
+					{{ customer.shipvia }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-10">
+					Current Finance Charge:
+				</div>
+				<div class="col-sm-2">
+					{{ customer.taxcode }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-10">
+					Type:
+				</div>
+				<div class="col-sm-2">
+					{{ customer.type }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-10">
+					Terms Code:
+				</div>
+				<div class="col-sm-2">
+					{{ customer.termscode }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-10">
+					Price Code:
+				</div>
+				<div class="col-sm-2">
+					{{ customer.pricecode }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-10">
+					Credit Hold:
+				</div>
+				<div class="col-sm-2">
+					{{ yesorno(customer.credithold)|capitalize }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-10">
+					Tax Exempt:
+				</div>
+				<div class="col-sm-2">
+					{{ customer.is_taxexempt() ? customer.taxexemptcode : 'N/A' }}
+				</div>
+			</div>
+		</li>
+	</ul>
+</div>
