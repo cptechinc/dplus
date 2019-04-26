@@ -3,6 +3,7 @@
 		<i class="fa fa-arrow-left" aria-hidden="true"></i> Return to {{ page.parent.title }}
 	</a>
 </div>
+
 <form action="{{ page.formurl }}" method="post" class="allow-enterkey-submit">
     <input type="hidden" name="action" value="inventory-search">
     <input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
