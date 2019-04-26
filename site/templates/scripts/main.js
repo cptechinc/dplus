@@ -25,18 +25,24 @@ $(function() {
 	});
 
 	$("body").on('keypress', 'form:not(.allow-enterkey-submit) input', function(e) {
-			if (e.which === 13) {
-				e.preventDefault();
-				var input = $(this);
+		if (e.which === 13) {
+			e.preventDefault();
+			var input = $(this);
 
-				if (input.closest('form').attr('tab-inputs') == "true") {
-					var $canfocus = $('input:not([type=hidden])');
-					var index = $canfocus.index(this) + 1;
-					if (index >= $canfocus.length) index = 0;
-					$canfocus.eq(index).focus();
-				}
+			if (input.closest('form').attr('tab-inputs') == "true") {
+				var $canfocus = $('input:not([type=hidden])');
+				var index = $canfocus.index(this) + 1;
+				if (index >= $canfocus.length) index = 0;
+				$canfocus.eq(index).focus();
 			}
-		});
+		}
+	});
+	
+	$("[data-toggle=collapse]").click(function(e) {
+		var button = $(this);
+		var target = button.data('target');
+		$(target).toggleClass('show');
+	});
 });
 
 function toggle_nav() {
