@@ -1,0 +1,40 @@
+<div class="card mb-4">
+	<a class="btn card-header bg-info text-white text-left" data-toggle="collapse" href="#customer-sales-orders" role="button" aria-expanded="false" aria-controls="customer-sales-orders">
+		Customer Sales Orders&ensp;<i class="fa fa-caret-down"></i>
+	</a>
+	<div class="list-group collapse" id="customer-sales-orders">
+		<div class="list-group-item list-group-item-action bg-light">
+			<div class="row">
+				<div class="col">Order Number</div>
+				<div class="col">Customer</div>
+				<div class="col">Customer PO</div>
+				<div class="col">Ship-to</div>
+				<div class="col text-right">Order Total</div>
+				<div class="col">Order Date</div>
+				<div class="col">Status</div>
+			</div>
+		</div>
+		{% if orders.count > 0 %}
+			{% for order in orders %}
+				<a href="{{ orderpage ~ '?ordn=' ~ order.ordernumber }}" class="list-group-item list-group-item-action">
+					<div class="row">
+						<div class="col">{{ order.ordernumber }}</div>
+						<div class="col">{{ order.custid }}</div>
+						<div class="col">{{ order.custpo }}</div>
+						<div class="col">{{ order.shiptoid }}</div>
+						<div class="col text-right">{{ order.total_total }}</div>
+						<div class="col">{{ convertdate(order.date_ordered) }}</div>
+						<div class="col">{{ order.status()|capitalize }}</div>
+					</div>
+				</a>
+			{% endfor %}
+		{% else %}
+			<div class="list-group-item">
+				<div class="row">
+					<div class="col text-center">There are no results to display.</div>
+				</div>
+			</div>
+		{% endif %}
+		{% include 'util/paginator.twig' %}
+	</div>
+</div>

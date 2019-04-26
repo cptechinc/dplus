@@ -1,0 +1,29 @@
+<div class="card mb-4">
+    <a class="btn card-header bg-info text-white text-left" data-toggle="collapse" href="#customer-contacts" role="button" aria-expanded="false" aria-controls="customer-contacts">
+        Customer Contacts&ensp;<i class="fa fa-caret-down"></i>
+    </a>
+    <div class="list-group collapse" id="customer-contacts">
+    	<div class="list-group-item bg-light font-weight-bold">
+    		<div class="row">
+    			<div class="col">Name</div>
+    			<div class="col">Shipto</div>
+    			<div class="col">Title</div>
+    			<div class="col">Phone</div>
+    			<div class="col">Email</div>
+    			<div class="col">Edit</div>
+    		</div>
+    	</div>
+		{% for contact in contacts %}
+			<div class="list-group-item">
+				<div class="row">
+					<div class="col"><a href="" class="link">{{ contact.arcpcontid }}</a></div>
+					<div class="col">{{ contact.arstshipid }}</div>
+					<div class="col">{{ contact.arcptitl }}</div>
+					<div class="col">Phone</div>
+					<div class="col">Email</div>
+					<div class="col">Edit</div>
+				</div>
+			</div>
+		{% endfor %}
+    </div>
+</div>

@@ -1,0 +1,25 @@
+<div class="card mb-4">
+    <a class="btn card-header bg-info text-white text-left" data-toggle="collapse" href="#customer-actions" role="button" aria-expanded="false" aria-controls="customer-actions">
+        Customer Actions&ensp;<i class="fa fa-caret-down"></i>
+    </a>
+    <div class="list-group collapse" id="customer-actions">
+    	<div class="list-group-item bg-light font-weight-bold">
+    		<div class="row">
+    			<div class="col">Due</div>
+    			<div class="col">Type</div>
+    			<div class="col">Subtype</div>
+    			<div class="col">Regarding/Title</div>
+    		</div>
+    	</div>
+		{% for action in actions %}
+			<div class="list-group-item">
+				<div class="row">
+					<div class="col"><a href="" class="link">{{ action.duedate|date("m/d/Y") }}</a></div>
+					<div class="col">{{ action.actiontype }}</div>
+					<div class="col">{{ action.actionsubtype }}</div>
+					<div class="col">{{ action.title }}</div>
+				</div>
+			</div>
+		{% endfor %}
+    </div>
+</div>
