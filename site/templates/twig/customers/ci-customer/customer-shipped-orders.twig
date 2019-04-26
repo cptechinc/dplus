@@ -3,7 +3,7 @@
 		Customer Shipped Orders&ensp;<i class="fa fa-caret-down"></i>
 	</a>
 	<div class="list-group collapse" id="customer-shipped-orders">
-    	<div class="list-group-item list-group-item-action bg-light">
+    	<div class="list-group-item bg-light font-weight-bold">
     		<div class="row">
     			<div class="col">Order Number</div>
     			<div class="col">Customer</div>
@@ -35,5 +35,6 @@
     			</div>
     		</div>
     	{% endif %}
+        {% include 'util/paginator.twig' %}
     </div>
 </div>
