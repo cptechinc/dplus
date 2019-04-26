@@ -1,5 +1,6 @@
 <?php
 	use Map\SalesOrderTableMap;
+	use Map\WhsesessionTableMap;
 
 /**
  * Initialization file for template files
@@ -45,6 +46,11 @@ if ($page->id != $config->errorpage_dplusdb) {
 
 	$con = Propel\Runtime\Propel::getWriteConnection(SalesOrderTableMap::DATABASE_NAME);
 	$con->useDebug(true);
+
+	$dpluso = Propel\Runtime\Propel::getWriteConnection(WhsesessionTableMap::DATABASE_NAME);
+	$dpluso->useDebug(true);
+
+
 
 	$templates_nosignin = array('login', 'redir');
 

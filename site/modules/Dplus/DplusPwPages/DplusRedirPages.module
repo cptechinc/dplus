@@ -39,7 +39,7 @@
 				'name'       => 'redir',
 				'title'      => 'redir',
 				'summary'    => 'Warehouse Redirects',
-				'parent'     => '/',
+				'parent'     => '/warehouse/',
 				'redir_file' => 'warehouse'
 			),
 			'binr-redir' => array(
@@ -47,9 +47,17 @@
 				'name'       => 'redir',
 				'title'      => 'redir',
 				'summary'    => 'Warehouse Redirects',
-				'parent'     => '/',
+				'parent'     => '/warehouse/binr/',
 				'redir_file' => 'binr'
 			),
+			'inventory-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Warehouse Inventory Redirects',
+				'parent'     => '/warehouse/inventory/',
+				'redir_file' => 'binr'
+			)
 		);
 
 		/* =============================================================
