@@ -42,6 +42,17 @@ a .highlight {color: #000;}
     font-size: 1.2em;
 }
 
+.breadcrumb-item+.breadcrumb-item::before {
+    display: inline-block;
+    padding-right: 0.5rem;
+    color: #6c757d;
+    content: "/"
+}
+
+.breadcrumb-item.active {
+    color: #FF304F;
+}
+
 /**************************************
  	Navbar Styles
  **************************************/
