@@ -9,23 +9,27 @@
 		$customer = $query->findOneByCustid($custID);
 
 		$query = ContactQuery::create();
-		$contacts = $query->filterByArcucustid($custID);
+		$query->filterByArcucustid($custID);
+		$contacts = $query->paginate($input->pageNum, 10);
 
 		$query = UseractionsQuery::create();
-		$actions = $query->groupByCustomerlink($custID);
+		$query->groupByCustomerlink($custID);
+		$actions = $query->paginate($input->pageNum, 10);
 
 		$query = SalesOrderQuery::create();
-		$orders = $query->filterByArcucustid($custID);
+		$query->filterByArcucustid($custID);
+		$orders = $query->paginate($input->pageNum, 10);
 
 		$query = SalesHistoryQuery::create();
-		$shippedorders = $query->filterByArcucustid($custID);
+		$query->filterByArcucustid($custID);
+		$shippedorders = $query->paginate($input->pageNum, 10);
 
 		$page->title = "CI: $customer->name";
 		$page->body  = $config->twig->render('customers/customer-page.twig', ['page' => $page, 'customer' => $customer]);
-		$page->body  .= $config->twig->render('customers/ci-customer/customer-contacts.twig', ['page' => $page, 'customer' => $customer, 'contacts' => $contacts]);
-		$page->body  .= $config->twig->render('customers/ci-customer/customer-actions.twig', ['page' => $page, 'customer' => $customer, 'actions' => $actions]);
-		$page->body  .= $config->twig->render('customers/ci-customer/customer-sales-orders.twig', ['page' => $page, 'customer' => $customer, 'orders' => $orders]);
-		$page->body  .= $config->twig->render('customers/ci-customer/customer-shipped-orders.twig', ['page' => $page, 'customer' => $customer, 'orders' => $shippedorders]);
+		$page->body  .= $config->twig->render('customers/ci-customer/customer-actions.twig', ['page' => $page, 'customer' => $customer, 'actions' => $actions, 'pagenbr' => $input->pageNum, 'resultscount'=> $actions->getNbResults()]);
+		$page->body  .= $config->twig->render('customers/ci-customer/customer-contacts.twig', ['page' => $page, 'customer' => $customer, 'contacts' => $contacts, 'pagenbr' => $input->pageNum, 'resultscount'=> $contacts->getNbResults()]);
+		$page->body  .= $config->twig->render('customers/ci-customer/customer-sales-orders.twig', ['page' => $page, 'customer' => $customer, 'orders' => $orders, 'pagenbr' => $input->pageNum, 'resultscount'=> $orders->getNbResults()]);
+		$page->body  .= $config->twig->render('customers/ci-customer/customer-shipped-orders.twig', ['page' => $page, 'customer' => $customer, 'orders' => $shippedorders, 'pagenbr' => $input->pageNum, 'resultscount'=> $shippedorders->getNbResults()]);
 	} else {
 		if ($input->get->q) {
 			$q = $input->get->text('q');

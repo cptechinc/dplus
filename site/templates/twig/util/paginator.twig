@@ -13,7 +13,7 @@
             {% endif %}
         {% endfor %}
         <li class="page-item {{ (pagenbr == page.get_pagecount(resultscount)) ? 'disabled' : '' }}">
-            <a href="{{ page.paginate(pagenbr + 1) ~ '?' ~ page.fullURL.query  }}" aria-label="Next" class="page-link ">
+            <a href="{{ page.paginate(pagenbr + 1) ~ '?' ~ page.fullURL.query  }}" aria-label="Next" class="page-link">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>
