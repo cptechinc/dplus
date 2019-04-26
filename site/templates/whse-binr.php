@@ -20,17 +20,25 @@
 			if (InvsearchQuery::create()->countDistinctItemid(session_id(), $binID) == 1) {
 				$item = InvsearchQuery::create()->findOneBySessionidBin(session_id(), $binID);
 
-				if ($item->is_lotted() || $item->is_serialized()) {
-					$items = InvsearchQuery::create()->findByItemidDistinct();
-					$page->body = __DIR__."/inventory-results.php";
-				} else {
+				if (InvsearchQuery::create()->countByItemID(session_id(), $item->itemid, $binID) == 1) {
 					$pageurl = $page->fullURL->getUrl();
 					$url = $page->parent('template=warehouse-menu,name=binr')->child('template=redir')->url."?action=search-item-bins&itemID=$item->itemid&page=$pageurl";
 					$session->redirect($url, $http301 = false);
+				} else {
+					if ($item->is_lotted() || $item->is_serialized()) {
+						$resultscount = InvsearchQuery::create()->countByItemID(session_id(), $item->itemid, $binID);
+						$items = InvsearchQuery::create()->findByItemidDistinct(session_id(), $item->itemid);
+
+						$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'resultscount' => $resultscount, 'item' => $item, 'items' => $items]);
+					} else {
+						$pageurl = $page->fullURL->getUrl();
+						$url = $page->parent('template=warehouse-menu,name=binr')->child('template=redir')->url."?action=search-item-bins&itemID=$item->itemid&page=$pageurl";
+						$session->redirect($url, $http301 = false);
+					}
 				}
 			} else {
 				// TODO TEST
-				$items = InvsearchQuery::create()->findByItemidDistinct();
+				$items = InvsearchQuery::create()->findByItemidDistinct(session_id(), $item->itemid);
 				$page->body = __DIR__."/inventory-results.php";
 			}
 		}
