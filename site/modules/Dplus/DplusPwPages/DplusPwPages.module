@@ -79,6 +79,11 @@
 				$event->return = $this->wire('input')->pageNum;
 			});
 
+			$this->addHookProperty('Page::print', function($event) {
+				$page = $event->object;
+				$event->return = isset($page->print) ? $page->print : false;
+			});
+
 			$this->addHook('Page(template=dplus-function)::paginate', function($event) {
 				$page = $event->object;
 				$pagenbr = $event->arguments(0);
