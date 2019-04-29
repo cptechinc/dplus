@@ -16,7 +16,7 @@
 		$page->title = "Find Item Inquiry for $scan";
 		$inventory = InvsearchQuery::create();
 		$resultscount = InvsearchQuery::create()->countDistinctItemid(session_id());
-		$items = InvsearchQuery::create()->findByItemidDistinct(session_id());
+		$items = InvsearchQuery::create()->findDistinctItems(session_id());
 		$page->body .= $config->twig->render('warehouse/inventory/find-item/results.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'inventory' => $inventory, 'warehouse' => $warehouse]);
 	}
 

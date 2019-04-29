@@ -3,6 +3,10 @@
 		<a href="{{ page.url }}" class="btn btn-primary not-round">
 			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Search
 		</a>
+		&nbsp;
+		<a href="{{ page.child.url ~ '?' ~ page.fullURL.query }}" class="btn btn-primary not-round">
+			<i class="fa fa-print" aria-hidden="true"></i> Print
+		</a>
 	</div>
 {% endif %}
 <div class="row">
@@ -15,14 +19,15 @@
 						<p class="list-group-item-text">{{ item.desc1 }}</p>
 
 						{% if (item.is_serialized() or item.is_lotted()) %}
-							<p class="list-group-item-text bg-light"><strong>Bin:</strong> (MULTIPLE) <strong>Qty:</strong> {{ inventory.get_total_itemid_qty(item.sessionid, item.itemid) }}</p>
-
-							<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ item.itemid }}-lotserial" aria-expanded="false" aria-controls="{{ item.itemid }}-lotserial">
-								Show / Hide {{ item.get_itemtypepropertydesc()|upper ~ "S" }}
-							</button>
-							<div class="collapse" id="{{ item.itemid }}-lotserial">
+							<p class="list-group-item-text bg-light"><strong>Bin:</strong> (MULTIPLE) <strong>Qty:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid) }}</p>
+							{% if (not page.print) %}
+								<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ item.itemid }}-lotserial" aria-expanded="false" aria-controls="{{ item.itemid }}-lotserial">
+									Show / Hide {{ item.get_itemtypepropertydesc()|upper ~ "S" }}
+								</button>
+							{% endif %}
+							<div class="{{ not page.print ? 'collapse' : '' }}" id="{{ item.itemid }}-lotserial">
 								<div class="list-group">
-									{% for lotserial in inventory.get_item_lotserials(item.sessionid, item.itemid) %}
+									{% for lotserial in inventory.get_lotserials_itemid(item.sessionid, item.itemid) %}
 										<div class="list-group-item p-1">
 											<div class="row">
 												<div class="col">
