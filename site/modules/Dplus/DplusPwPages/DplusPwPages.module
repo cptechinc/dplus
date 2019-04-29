@@ -84,6 +84,11 @@
 				$event->return = isset($page->print) ? $page->print : false;
 			});
 
+			$this->addHookProperty('Page::show_title', function($event) {
+				$page = $event->object;
+				$event->return = isset($page->show_title) ? $page->show_title : true;
+			});
+
 			$this->addHook('Page(template=dplus-function)::paginate', function($event) {
 				$page = $event->object;
 				$pagenbr = $event->arguments(0);
