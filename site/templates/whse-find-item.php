@@ -1,6 +1,6 @@
 <?php
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
-	$warehouse = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
+	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
 
 	$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;
 
