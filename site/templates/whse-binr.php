@@ -49,7 +49,7 @@
 					$items = InvsearchQuery::create()->findDistinctItems(session_id(), $binID);
 					$inventory = InvsearchQuery::create();
 
-					$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'resultscount' => $resultscount, 'item' => $item, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
+					$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
 				} else {
 					$pageurl = $page->fullURL->getUrl();
 					$url = $page->parent('template=warehouse-menu,name=binr')->child('template=redir')->url."?action=search-item-bins&itemID=$item->itemid&page=$pageurl";
@@ -58,7 +58,7 @@
 			} else {
 				// TODO TEST
 				$items = InvsearchQuery::create()->findDistinctItems(session_id(), $item->itemid);
-				$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'resultscount' => $resultscount, 'item' => $item, 'items' => $items]);
+				$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items]);
 			}
 		}
 	} elseif (!empty($input->get->serialnbr) | !empty($input->get->lotnbr) | !empty($input->get->itemID)) {
