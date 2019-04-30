@@ -1,6 +1,7 @@
 <?php
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
+	$config->scripts->append(hash_templatefile('scripts/warehouse/shared.js'));
 	$config->scripts->append(hash_templatefile('scripts/warehouse/binr.js'));
 	$binID = $input->get->text('binID');
 
@@ -22,10 +23,10 @@
 			$event->return = $url->getUrl();
 		});
 
-
-		$page->binr_itemURL = new Purl\Url($page->parent('template=warehouse-menu')->child('template=redir')->url);
-		$page->binr_itemURL->query->set('action', 'search-item-bins');
-		$page->binr_itemURL->query->set('page', $page->fullURL->getURL());
+		$page->addHookProperty('Page::scan', function($event) {
+			$p = $event->object;
+			$event->return = !empty($p->scan) ? $p->scan : false;
+		});
 
 		if ($binID) {
 			$page->binr_itemURL->query->set('binID', $binID);
@@ -48,7 +49,6 @@
 					$resultscount = InvsearchQuery::create()->countByItemID(session_id(), $item->itemid, $binID);
 					$items = InvsearchQuery::create()->findDistinctItems(session_id(), $binID);
 					$inventory = InvsearchQuery::create();
-
 					$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
 				} else {
 					$pageurl = $page->fullURL->getUrl();
@@ -114,6 +114,12 @@
 				// 3. Choose To Bin Modals
 				$page->body .= $config->twig->render('warehouse/binr/to-bins-modal.twig', ['currentbins' => $currentbins, 'warehouse' => $warehouse, 'session' => $session, 'item' => $item, 'inventory' => $inventory]);
 				$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+
+				// 4. Warehouse Config JS
+				$bins = BincntlQuery::create()->get_warehousebins($whsesession->whseid)->toArray();
+				$validbins = BininfoQuery::create()->filterByItemid(session_id(), $item->itemid)->find()->toArray('Bin');
+				$jsconfig = array('warehouse' => array('id' => $whsesession->whseid, 'binarrangement' => $warehouse->get_binarrangementdescription(), 'bins' => $bins));
+				$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('warehouse' => $jsconfig, 'validfrombins' => $validbins)]);
 			}
 		} else {
 			$items = InvsearchQuery::create()->findBySessionid(session_id());
