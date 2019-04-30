@@ -6,6 +6,7 @@ $(function() {
 
 	/**
 	 * The Order of Functions based on Order of Events
+	 * NOTE: variables warehouse & validfrombins are generated at run time by the whse-binr template
 	 * 1. Select Item (only if theres a list)
 	 * 2. Show From bin selection
 	 * 3. Choose From Bin
