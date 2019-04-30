@@ -56,7 +56,7 @@
 				'title'      => 'redir',
 				'summary'    => 'Warehouse Inventory Redirects',
 				'parent'     => '/warehouse/inventory/',
-				'redir_file' => 'binr'
+				'redir_file' => 'inventory'
 			)
 		);
 
