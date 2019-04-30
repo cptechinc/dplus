@@ -18,7 +18,7 @@
 						{% if (item.is_serialized() or item.is_lotted()) %}
 							<p class="list-group-item-text bg-light"><strong>Bin:</strong> (MULTIPLE) <strong>Qty:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid) }}</p>
 
-							<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ item.itemid }}-lotserial" aria-expanded="false" aria-controls="{{ item.itemid }}-lotserial">
+							<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse-force" data-target="#{{ item.itemid }}-lotserial" aria-expanded="false" aria-controls="{{ item.itemid }}-lotserial">
 								Show / Hide {{ item.get_itemtypepropertydesc()|upper ~ "S" }}
 							</button>
 							<div class="collapse" id="{{ item.itemid }}-lotserial">

@@ -37,8 +37,8 @@ $(function() {
 			}
 		}
 	});
-	
-	$("[data-toggle=collapse]").click(function(e) {
+
+	$("[data-toggle=collapse-force]").click(function(e) {
 		var button = $(this);
 		var target = button.data('target');
 		$(target).toggleClass('show');
