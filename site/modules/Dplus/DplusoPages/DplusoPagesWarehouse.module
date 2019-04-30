@@ -121,6 +121,22 @@
 				'summary'        => 'Print Location(s) for an Item',
 				'parent'         => '/warehouse/inventory/find-item/'
 			),
+			'whse-bin-inquiry' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'bin-inquiry',
+				'title'          => 'Bin Inquiry',
+				'summary'        => 'Show Items in a bin',
+				'parent'         => '/warehouse/inventory/',
+				'dplus_function' => 'pbini',
+				'pw_template'    => 'whse-bin-inquiry'
+			),
+			'whse-bin-inquiry-print' => array(
+				'template'       => 'print',
+				'name'           => 'print',
+				'title'          => 'print',
+				'summary'        => 'Print Items in Bin',
+				'parent'         => '/warehouse/inventory/bin-inquiry/'
+			),
 		);
 
 		public static function getModuleInfo() {
