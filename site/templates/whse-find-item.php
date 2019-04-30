@@ -21,6 +21,7 @@
 	}
 
 	if ($page->print) {
+		$page->show_title = true;
 		include __DIR__ . "/blank-page.php";
 	} else {
 		include __DIR__ . "/basic-page.php";
