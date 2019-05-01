@@ -8,13 +8,13 @@
 		$query = CustomerQuery::create();
 		$customer = $query->findOneByCustid($custID);
 
-		$query = ContactQuery::create();
-		$query->filterByArcucustid($custID);
-		$contacts = $query->paginate($input->pageNum, 10);
-
 		$query = UseractionsQuery::create();
 		$query->groupByCustomerlink($custID);
 		$actions = $query->paginate($input->pageNum, 10);
+
+		$query = ContactQuery::create();
+		$query->filterByArcucustid($custID);
+		$contacts = $query->paginate($input->pageNum, 10);
 
 		$query = SalesOrderQuery::create();
 		$query->filterByArcucustid($custID);
@@ -31,6 +31,7 @@
 		$page->body  .= $config->twig->render('customers/ci-customer/customer-sales-orders.twig', ['page' => $page, 'customer' => $customer, 'orders' => $orders, 'pagenbr' => $input->pageNum, 'resultscount'=> $orders->getNbResults()]);
 		$page->body  .= $config->twig->render('customers/ci-customer/customer-shipped-orders.twig', ['page' => $page, 'customer' => $customer, 'orders' => $shippedorders, 'pagenbr' => $input->pageNum, 'resultscount'=> $shippedorders->getNbResults()]);
 	} else {
+		$query = CustomerQuery::create();
 		if ($input->get->q) {
 			$q = $input->get->text('q');
 			$page->title = "CI: Searching for '$q'";
