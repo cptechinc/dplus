@@ -35,6 +35,18 @@
 			)
 		);
 
+		const DEFAULT_PAGEARRAY = array(
+			'template'   => 'user-page',
+			'name'       => 'user',
+			'title'      => 'User',
+			'summary'    => '',
+			'parent'     => '/',
+			'parent-new' => '',
+			'dplus_function' => false,
+			'has_print'   => false
+		);
+
+
 		protected $pages = array(
 			/* Example
 			'user-page' => array(
@@ -46,6 +58,7 @@
 				'parent'     => '/',
 				'parent-new' => '/' NOTE ** Optional **
 				'dplus_function' => NOTE ** If Needed by template **
+				'has_print'   => true / false NOTE If needed by page
 			)
 			*/
 		);
@@ -184,6 +197,28 @@
 				} else {
 					$this->create_page($page);
 				}
+
+				if (boolval($this->wire('pages')->find($pagepath)->count) && isset($page['has_print'])) {
+					if ($page['has_print']) {
+						$this->install_printpage($pagepath, $page);
+					}
+				}
+			}
+		}
+
+		protected function install_printpage($parentpath, array $parent) {
+			$pagepath = "{$parentpath}print/";
+			$page = self::DEFAULT_PAGEARRAY;
+			$page['parent']   = $parentpath;
+			$page['summary']  = $parent['summary'];
+			$page['template'] = 'print';
+			$page['name']     = 'print';
+			$page['title']    = 'print';
+
+			if (boolval($this->wire('pages')->find($pagepath)->count)) {
+				$this->update_page($page);
+			} else {
+				$this->create_page($page);
 			}
 		}
 
@@ -297,8 +332,11 @@
 		 */
 		protected function update_page($page) {
 			$pagepath = $page['parent'].$page['name']."/";
-			$parentpath = isset($page['parent-new']) ? $page['parent-new'] : $page['parent'];
-
+			$parentpath = $page['parent'];
+			
+			if (isset($page['parent-new'])) {
+				$parentpath = (!empty($page['parent-new'])) ? $page['parent-new'] : $page['parent'];
+			}
 			$pw_page = $this->wire('pages')->get($pagepath);
 			$pw_page->of(false);
 			$pw_page->template = $page['template'];

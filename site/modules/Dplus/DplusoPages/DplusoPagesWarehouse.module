@@ -88,6 +88,15 @@
 				'dplus_function' => 'pbnrt',
 				'pw_template'    => 'whse-binr-to'
 			),
+			'whse-binr-from' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'move-from',
+				'title'          => 'Move From',
+				'summary'        => 'Move Single items from the same bin',
+				'parent'         => '/warehouse/binr/',
+				'dplus_function' => 'pbnrf',
+				'pw_template'    => 'whse-binr-from'
+			),
 			'whse-binr-contents' => array(
 				'template'       => 'warehouse-function',
 				'name'           => 'sales-history',
@@ -112,14 +121,8 @@
 				'summary'        => 'Find Location(s) for an Item',
 				'parent'         => '/warehouse/inventory/',
 				'dplus_function' => 'pfini',
-				'pw_template'    => 'whse-find-item'
-			),
-			'whse-find-item-print' => array(
-				'template'       => 'print',
-				'name'           => 'print',
-				'title'          => 'print',
-				'summary'        => 'Print Location(s) for an Item',
-				'parent'         => '/warehouse/inventory/find-item/'
+				'pw_template'    => 'whse-find-item',
+				'has_print'      => true
 			),
 			'whse-bin-inquiry' => array(
 				'template'       => 'warehouse-function',
@@ -128,14 +131,8 @@
 				'summary'        => 'Show Items in a bin',
 				'parent'         => '/warehouse/inventory/',
 				'dplus_function' => 'pbini',
-				'pw_template'    => 'whse-bin-inquiry'
-			),
-			'whse-bin-inquiry-print' => array(
-				'template'       => 'print',
-				'name'           => 'print',
-				'title'          => 'print',
-				'summary'        => 'Print Items in Bin',
-				'parent'         => '/warehouse/inventory/bin-inquiry/'
+				'pw_template'    => 'whse-bin-inquiry',
+				'has_print'      => true
 			),
 		);
 
