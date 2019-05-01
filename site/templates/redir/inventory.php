@@ -75,7 +75,7 @@
 			if ($input->$requestmethod->page) {
 				$page = $input->$requestmethod->text('page');
 			} else {
-				$page = $config->pages->inventory_bininquiry;
+				$page = $pages->get('/warehouse/inventory/bin-inquiry/')->url;
 			}
 
 			$url = new Purl\Url($page);
