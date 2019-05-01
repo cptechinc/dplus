@@ -2,6 +2,13 @@
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
 
+	$page->frombin = '';
+	if ($input->get->frombin) {
+		$binID = $input->get->text('frombin');
+		$page->frombin = $binID;
+	} else {
+		$binID = $input->get->text('binID');
+	}
 	if ($input->get->scan) {
 		$scan = $input->get->text('scan');
 		$page->scan = $scan;
@@ -99,7 +106,6 @@
 
 				$page->body = $config->twig->render('warehouse/binr/binr-result.twig', ['session' => $session, 'page' => $page, 'whsesession' => $whsesession, 'item' => $item, 'url' => $nexturl]);
 				$session->remove('binr');
-			} else {
 			} else { // Prepare Binr Form
 				$inventory = InvsearchQuery::create();
 				$currentbins = BininfoQuery::create()->filterByItem(session_id(), $item)->select_bin_qty()->find();
@@ -121,18 +127,15 @@
 				$jsconfig = array('warehouse' => array('id' => $whsesession->whseid, 'binarrangement' => $warehouse->get_binarrangementdescription(), 'bins' => $bins));
 				$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('warehouse' => $jsconfig, 'validfrombins' => $validbins)]);
 			}
-		} else {
 		} else { // Show Inventory Search Results
 			$items = InvsearchQuery::create()->findBySessionid(session_id());
 			$inventory = InvsearchQuery::create();
 			$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'inventory' => $inventory]);
 		}
-	} else {
 	} else { // Show Item Form
 		$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;
 		$page->body    = $config->twig->render('warehouse/item-form.twig', ['page' => $page]);
 	}
-
 
 	// Add JS
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));

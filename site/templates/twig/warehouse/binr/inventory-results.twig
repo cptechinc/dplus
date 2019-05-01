@@ -16,14 +16,14 @@
 						<p class="list-group-item-text">{{ item.desc1 }}</p>
 
 						{% if (item.is_serialized() or item.is_lotted()) %}
-							<p class="list-group-item-text bg-light"><strong>Bin:</strong> (MULTIPLE) <strong>Qty:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid) }}</p>
+							<p class="list-group-item-text bg-light"><strong>Bin:</strong> (MULTIPLE) <strong>Qty:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid, page.frombin) }}</p>
 
 							<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ item.itemid|attrJS }}-lotserial" aria-expanded="false" aria-controls="{{ item.itemid }}-lotserial">
 								Show / Hide {{ item.get_itemtypepropertydesc()|upper ~ "S" }}
 							</button>
 							<div class="collapse" id="{{ item.itemid|attrJS }}-lotserial">
 								<div class="list-group">
-									{% for lotserial in inventory.get_lotserials_itemid(item.sessionid, item.itemid) %}
+									{% for lotserial in inventory.get_lotserials_itemid(item.sessionid, item.itemid, page.frombin) %}
 										<a href="{{ page.binr_itemURL(item) }}" class="list-group-item p-1">
 											<div class="row">
 												<div class="col">
