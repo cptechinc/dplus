@@ -37,12 +37,6 @@ $(function() {
 			}
 		}
 	});
-
-	$("[data-toggle=collapse-force]").click(function(e) {
-		var button = $(this);
-		var target = button.data('target');
-		$(target).toggleClass('show');
-	});
 });
 
 function toggle_nav() {
