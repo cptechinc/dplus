@@ -36,7 +36,6 @@
 		if ($resultscount == 0) {
 			$items = array();
 			$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page]);
-		} elseif ($resultscount == 1) {
 		} elseif ($resultscount == 1) { // If one item is found
 			$item = InvsearchQuery::create()->findOneBySessionid(session_id());
 			$url = $page->parent('template=warehouse-menu')->child('template=redir')->url."?action=search-item-bins&itemID=$itemID&page=$pageurl";
@@ -54,54 +53,43 @@
 					$items = InvsearchQuery::create()->findDistinctItems(session_id(), $binID);
 					$inventory = InvsearchQuery::create();
 					$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
-				} else {
 				} else { // Make Inventory Request for item
 					$pageurl = $page->fullURL->getUrl();
 					$url = $page->parent('template=warehouse-menu,name=binr')->child('template=redir')->url."?action=search-item-bins&itemID=$item->itemid&page=$pageurl";
 					$session->redirect($url, $http301 = false);
 				}
 			} else {
-				// TODO TEST
 				$items = InvsearchQuery::create()->findDistinctItems(session_id(), $item->itemid);
 				$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items]);
 			}
 		}
 	} elseif (!empty($input->get->serialnbr) | !empty($input->get->lotnbr) | !empty($input->get->itemID)) {
-		if ($input->get->frombin) {
-			$binID = $input->get->text('frombin');
-		} else {
-			$binID = $input->get->text('binID');
-		}
-
 		if ($input->get->lotnbr) {
 			$lotnbr = $input->get->text('lotnbr');
-			$input->get->scan = $lotnbr;
+			$input->get->scan = $page->scan = $lotnbr;
 			$resultscount = InvsearchQuery::create()->countByLotserial(session_id(), $lotnbr, $binID);
 			$item = $resultscount == 1 ? InvsearchQuery::create()->get_lotserial(session_id(), $lotnbr, $binID) : false;
 		} if ($input->get->serialnbr) {
 			$serialnbr = $input->get->text('serialnbr');
-			$input->get->scan = $serialnbr;
+			$input->get->scan = $page->scan = $serialnbr;
 			$resultscount = InvsearchQuery::create()->countByLotserial(session_id(), $serialnbr, $binID);
-			$item = $resultscount == 1 ? InvsearchQuery::create()->get_lotserial(session_id(), $lotnbr, $binID) : false;
-		} elseif ($input->get->lotnbr) {
-			$lotnbr = $input->get->text('lotnbr');
-			$input->get->scan = $lotnbr;
-			$resultscount = InvsearchQuery::create()->countByLotserial(session_id(), $lotnbr, $binID);
 			$item = $resultscount == 1 ? InvsearchQuery::create()->get_lotserial(session_id(), $lotnbr, $binID) : false;
 		} elseif ($input->get->itemID) {
 			$itemID = $input->get->text('itemID');
-			$input->get->scan = $itemID;
+			$input->get->scan = $page->scan = $itemID;
 			$resultscount = InvsearchQuery::create()->countByItemID(session_id(), $itemID, $binID);
 			$item = $resultscount == 1 ? InvsearchQuery::create()->findOneByItemid(session_id(), $itemID, $binID) : false;
 		}
 
 		if ($resultscount == 1) {
-			if (!empty($session->get('binr'))) {
 			if (!empty($session->get('binr'))) { // Show result of BinR
 				$nexturl = new Purl\Url($page->fullURL->getUrl());
 
 				if ($input->get->tobin || $input->get->frombin) {
 					$nexturl->query->remove('itemID');
+					$nexturl->query->remove('lotnbr');
+					$nexturl->query->remove('serialnbr');
+					$nexturl->query->remove('binID');
 				}
 
 				$page->body = $config->twig->render('warehouse/binr/binr-result.twig', ['session' => $session, 'page' => $page, 'whsesession' => $whsesession, 'item' => $item, 'url' => $nexturl]);
@@ -119,7 +107,6 @@
 
 				// 3. Choose To Bin Modals
 				$page->body .= $config->twig->render('warehouse/binr/to-bins-modal.twig', ['currentbins' => $currentbins, 'warehouse' => $warehouse, 'session' => $session, 'item' => $item, 'inventory' => $inventory]);
-				$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 
 				// 4. Warehouse Config JS
 				$bins = BincntlQuery::create()->get_warehousebins($whsesession->whseid)->toArray();
