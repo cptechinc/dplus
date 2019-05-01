@@ -5,12 +5,11 @@
 		{% if (session.get('binr') is not empty) %}
 			{% if (whsesession.had_succeeded()) %}
 				<div class="alert alert-success" role="alert">
-					<strong>Success:</strong> {{ item.get_itemtypedesc()|upper ~ ': ' ~ item.get_itemidentifier()}}
+					{% set msg = item.get_itemtypedesc()|upper ~ ': ' ~ item.get_itemidentifier() %}
+					{% include 'util/alert.twig' with {'type': 'success','iconclass': 'fa fa-floppy-o fa-2x', 'title': 'Success!', 'message': msg} %}
 				</div>
 			{% elseif (whsesession.status is not empty) %}
-				<div class="alert alert-danger" role="alert">
-					<strong>Error:</strong> {{ whsesession.status }}
-				</div>
+				{% include 'util/alert.twig' with {'type': 'danger','iconclass': 'fa fa-warning fa-2x', 'title': 'Error!', 'message': whsesession.status} %}
 			{% endif %}
 		{% endif %}
 
