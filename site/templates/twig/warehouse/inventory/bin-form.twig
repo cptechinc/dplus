@@ -1,6 +1,6 @@
 <div class="form-group">
-	<a href="<?= $page->parent->url; ?>" class="btn btn-primary not-round">
-		<i class="fa fa-arrow-left" aria-hidden="true"></i> Return to Inventory Menu
+	<a href="{{ page.parent.url }}" class="btn btn-primary not-round">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Return to {{ page.parent.title }}
 	</a>
 </div>
 <form action="{{ page.formurl }}" method="post" class="select-bin-form allow-enterkey-submit">
