@@ -3,12 +3,19 @@
 	$warehouse = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
 
 	$page->frombin = '';
+	$page->tobin = '';
+
 	if ($input->get->frombin) {
 		$binID = $input->get->text('frombin');
 		$page->frombin = $binID;
 	} else {
 		$binID = $input->get->text('binID');
 	}
+
+	if ($input->get->tobin) {
+		$page->tobin = $input->get->text('tobin');
+	}
+
 	if ($input->get->scan) {
 		$scan = $input->get->text('scan');
 		$page->scan = $scan;
