@@ -3,10 +3,6 @@
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
 
-	$config->scripts->append(hash_templatefile('scripts/warehouse/shared.js'));
-	$config->scripts->append(hash_templatefile('scripts/warehouse/bin-inquiry.js'));
-	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
-
 	if ($input->get->binID) {
 		$binID = $input->get->text('binID');
 		$page->binID = $binID;
@@ -20,6 +16,11 @@
 		$page->body =  $config->twig->render('warehouse/inventory/bin-form.twig', ['page' => $page]);
 		$page->body .= $config->twig->render('warehouse/inventory/bins-modal.twig', ['warehouse' => $warehouse]);
 	}
+	
+	// Add JS
+	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+	$config->scripts->append(hash_templatefile('scripts/warehouse/shared.js'));
+	$config->scripts->append(hash_templatefile('scripts/warehouse/bin-inquiry.js'));
 
 	if ($page->print) {
 		$page->show_title = true;

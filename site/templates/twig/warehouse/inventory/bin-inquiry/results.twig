@@ -19,7 +19,7 @@
 						<p class="list-group-item-text">{{ item.desc1 }}</p>
 
 						{% if (item.is_serialized() or item.is_lotted()) %}
-							<p class="list-group-item-text bg-light"><strong>Qty:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid) }}</p>
+							<p class="list-group-item-text bg-light"><strong>Qty:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid, item.bin) }}</p>
 							{{dpluso.getLastExecutedQuery()}}
 							{% if (not page.print) %}
 								<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ item.itemid|attrJS  }}-lotserial" aria-expanded="false" aria-controls="{{ item.itemid }}-lotserial">
@@ -28,7 +28,7 @@
 							{% endif %}
 							<div class="{{ not page.print ? 'collapse' : '' }}" id="{{ item.itemid|attrJS }}-lotserial">
 								<div class="list-group">
-									{% for lotserial in inventory.get_lotserials_itemid(item.sessionid, item.itemid) %}
+									{% for lotserial in inventory.get_lotserials_itemid(item.sessionid, item.itemid, item.bin) %}
 										<div class="list-group-item p-1">
 											<div class="row">
 												<div class="col">
