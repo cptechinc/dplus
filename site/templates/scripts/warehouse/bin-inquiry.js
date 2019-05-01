@@ -84,19 +84,6 @@ $(function() {
 		return new SwalError(error, title, msg, html);
 	}
 
-
-
-	$('#exampleModal').on('show.bs.modal', function (event) {
-		var button = $(event.relatedTarget) // Button that triggered the modal
-		var modal = $(this);
-		input_bin
-		// If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-		// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-
-		modal.find('.modal-title').text('New message to ' + recipient)
-		modal.find('.modal-body input').val(recipient)
-	});
-
 	$("body").on("click", "#bins-modal .choose-bin", function(e) {
 		e.preventDefault();
 		var button = $(this);
