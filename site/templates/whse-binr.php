@@ -1,9 +1,6 @@
 <?php
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
-	$config->scripts->append(hash_templatefile('scripts/warehouse/shared.js'));
-	$config->scripts->append(hash_templatefile('scripts/warehouse/binr.js'));
-	$binID = $input->get->text('binID');
 
 	if ($input->get->scan) {
 		$scan = $input->get->text('scan');
@@ -28,29 +25,30 @@
 			$event->return = !empty($p->scan) ? $p->scan : false;
 		});
 
-		if ($binID) {
-			$page->binr_itemURL->query->set('binID', $binID);
-		}
-
+		// If no items are found
 		if ($resultscount == 0) {
 			$items = array();
 			$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page]);
 		} elseif ($resultscount == 1) {
+		} elseif ($resultscount == 1) { // If one item is found
 			$item = InvsearchQuery::create()->findOneBySessionid(session_id());
 			$url = $page->parent('template=warehouse-menu')->child('template=redir')->url."?action=search-item-bins&itemID=$itemID&page=$pageurl";
 			$session->redirect($url , $http301 = false);
 		} else {
+			// Multiple Items - count the number Distinct Item IDs
 			$resultscount = InvsearchQuery::create()->countDistinctItemid(session_id(), $binID);
 
 			if ($resultscount == 1) {
 				$item = InvsearchQuery::create()->findOneBySessionidBin(session_id(), $binID);
 
+				// If Item is Lotted / Serialized show results to choose which lot or serial to move
 				if ($item->is_lotted() || $item->is_serialized()) {
 					$resultscount = InvsearchQuery::create()->countByItemID(session_id(), $item->itemid, $binID);
 					$items = InvsearchQuery::create()->findDistinctItems(session_id(), $binID);
 					$inventory = InvsearchQuery::create();
 					$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
 				} else {
+				} else { // Make Inventory Request for item
 					$pageurl = $page->fullURL->getUrl();
 					$url = $page->parent('template=warehouse-menu,name=binr')->child('template=redir')->url."?action=search-item-bins&itemID=$item->itemid&page=$pageurl";
 					$session->redirect($url, $http301 = false);
@@ -92,6 +90,7 @@
 
 		if ($resultscount == 1) {
 			if (!empty($session->get('binr'))) {
+			if (!empty($session->get('binr'))) { // Show result of BinR
 				$nexturl = new Purl\Url($page->fullURL->getUrl());
 
 				if ($input->get->tobin || $input->get->frombin) {
@@ -101,6 +100,7 @@
 				$page->body = $config->twig->render('warehouse/binr/binr-result.twig', ['session' => $session, 'page' => $page, 'whsesession' => $whsesession, 'item' => $item, 'url' => $nexturl]);
 				$session->remove('binr');
 			} else {
+			} else { // Prepare Binr Form
 				$inventory = InvsearchQuery::create();
 				$currentbins = BininfoQuery::create()->filterByItem(session_id(), $item)->select_bin_qty()->find();
 
@@ -122,15 +122,21 @@
 				$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('warehouse' => $jsconfig, 'validfrombins' => $validbins)]);
 			}
 		} else {
+		} else { // Show Inventory Search Results
 			$items = InvsearchQuery::create()->findBySessionid(session_id());
 			$inventory = InvsearchQuery::create();
 			$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'inventory' => $inventory]);
 		}
 	} else {
+	} else { // Show Item Form
 		$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;
 		$page->body    = $config->twig->render('warehouse/item-form.twig', ['page' => $page]);
 	}
 
 
+	// Add JS
+	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+	$config->scripts->append(hash_templatefile('scripts/warehouse/shared.js'));
+	$config->scripts->append(hash_templatefile('scripts/warehouse/binr.js'));
 
 	include __DIR__ . "/basic-page.php";
