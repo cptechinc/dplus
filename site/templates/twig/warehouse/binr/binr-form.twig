@@ -40,7 +40,7 @@
 					<div class="col-sm-6 form-group">
 						<label for="to-bin">Bin</label>
 						<div class="input-group">
-							<input type="text" class="form-control input-sm" name="to-bin" value="{{ tobin is not empty ? tobin : '' }}">
+							<input type="text" class="form-control input-sm" name="to-bin" value="{{ page.tobin }}">
 							<span class="input-group-btn">
 								<button type="button" class="btn btn-default" data-toggle="modal" data-target="#choose-to-bins-modal" data-input="to-bin"> <span class="fa fa-search"></span> </button>
 							</span>
