@@ -1,0 +1,48 @@
+<div class="modal fade" id="bins-modal" tabindex="-1" role="dialog" aria-labelledby="bins-modal-label" aria-hidden="true" data-input="">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="bins-modal-label">Showing Bins for {{ warehouse.id }}</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h4>All Bins</h4>
+
+				{% if (warehouse.are_binslisted())	%}
+					<div class="list-group">
+						{% for bin in warehouse.get_bins()	%}
+							<a href="#" class="list-group-item choose-bin" data-bin="{{ bin.from }}">
+								<div class="row">
+									<div class="col-6">
+										<h6 class="list-group-item-heading">{{ bin.from }}</h6>
+									</div>
+									<div class="col-6">
+										{% if (bin.from in currentbins.toArray('binfrom')|keys)	%}
+											<h5 class="list-group-item-heading">Qty {{ inventory.get_binqty(session.get('sessionid'), item, bin.from) }}</h5>
+										{% endif %}
+									</div>
+								</div>
+								{{ bin.bindesc }}
+							</a>
+						{% endfor %}
+					</div>
+				{% else	%}
+					<table class="table table-condensed table-striped table-bordered">
+						<tr>
+							<th>Range From</th>
+							<th>Range Through</th>
+						</tr>
+						{% for bin in warehousebins	%}
+							<tr>
+								<td>{{ bin.from }}</td>
+								<td>{{ bin.through }}</td>
+							</tr>
+						{% endfor %}
+					</table>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
