@@ -10,13 +10,18 @@
 		$items = InvsearchQuery::create()->findDistinctItems(session_id(), $binID);
 		$resultscount = InvsearchQuery::create()->countDistinctItemid(session_id(), $binID);
 		$inventory = InvsearchQuery::create();
-		$page->body =  $config->twig->render('warehouse/inventory/bin-inquiry/results.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
+
+		if ($config->ajax) {
+			$page->body =  $config->twig->render('warehouse/inventory/bin-inquiry/results.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
+		} else {
+			$page->body =  $config->twig->render('warehouse/inventory/bin-inquiry/results-page.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
+		}
 	} else {
 		$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;
 		$page->body =  $config->twig->render('warehouse/inventory/bin-form.twig', ['page' => $page]);
 		$page->body .= $config->twig->render('warehouse/inventory/bins-modal.twig', ['warehouse' => $warehouse]);
 	}
-	
+
 	// Add JS
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 	$config->scripts->append(hash_templatefile('scripts/warehouse/shared.js'));
@@ -25,6 +30,8 @@
 	if ($page->print) {
 		$page->show_title = true;
 		include __DIR__ . "/blank-page.php";
+	} elseif($config->ajax) {
+		echo "<div class=''>$page->body</div>";
 	} else {
 		include __DIR__ . "/basic-page.php";
 	}
