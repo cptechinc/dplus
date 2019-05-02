@@ -83,10 +83,10 @@
 			$session->loc = $url->getUrl();
 			break;
 		case 'init-label-print':
-			$whsesession = WhseSession::load(session_id());
+			$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 			$binID = $input->$requestmethod->text('binID');
 			$itemID = $input->$requestmethod->text('itemID');
-			$url = new Purl\Url($config->pages->inventory_printitemlabel);
+			$url = new Purl\Url($pages->get('/warehouse/inventory/print-item-label/')->httpUrl);
 			$url->query->set('binID', $binID);
 
 			if (!empty($input->$requestmethod->serialnbr) | !empty($input->$requestmethod->lotnbr)) {
@@ -95,9 +95,9 @@
 				} elseif ($input->$requestmethod->lotnbr) {
 					$lotserial = $input->$requestmethod->text('lotnbr');
 				}
-				$item = InventorySearchItem::load_from_lotserial(session_id(), $lotserial);
+				$item = InvsearchQuery::create()->get_lotserial(session_id(), $lotserial);
 			} else {
-				$item = InventorySearchItem::load_from_itemid(session_id(), $itemID);
+				$item = InvsearchQuery::create()->findOneByItemid(session_id(), $itemID);
 			}
 			$data = array("DBNAME=$dplusdb", "ITEMCARTONINIT", "ITEMID=$itemID", "WHSE=$whsesession->whseid", "BIN=$binID");
 
@@ -111,31 +111,30 @@
 			$session->loc  = $url->getUrl();
 			break;
 		case 'print-thermal-label':
-			$binID = $input->$requestmethod->text('binID');
-			$itemID = $input->$requestmethod->text('itemID');
+			$binID     = $input->$requestmethod->text('binID');
+			$itemID    = $input->$requestmethod->text('itemID');
 			$lotserial = $input->$requestmethod->text('lotserial');
-			$whseID = $input->$requestmethod->text('whseID');
+			$whseID    = $input->$requestmethod->text('whseID');
 
-			if (LabelPrintSession::exists(session_id())) {
-				$labelsession = LabelPrintSession::load(session_id());
+			if (LabelPrintSessionQuery::create()->filterBySessionid(session_id())->count()) {
+				$labelsession = LabelPrintSessionQuery::create()->findOneBySessionid(session_id());
 			} else {
 				$labelsession = new LabelPrintSession();
-				$labelsession->set('sessionid', session_id());
-				$labelsession->set('itemid', $itemID);
-				$labelsession->set('bin', $binID);
-				$labelsession->set('lotserial', $lotserial);
-				$labelsession->set('whse', $whseID);
+				$labelsession->setSessionid(session_id());
+				$labelsession->setItemid($itemID);
+				$labelsession->setBin($binID);
+				$labelsession->setLotserial($lotserial);
+				$labelsession->setWhse($whseID);
 			}
+			$labelsession->setLabelBox($input->$requestmethod->text('box-label'));
+			$labelsession->setPrinterBox($input->$requestmethod->text('box-printer'));
+			$labelsession->setQtyBox($input->$requestmethod->int('box-qty'));
+			$labelsession->setNbrBoxLabels($input->$requestmethod->int('box-label-count'));
 
-			$labelsession->set('label_box', $input->$requestmethod->text('box-label'));
-			$labelsession->set('printer_box', $input->$requestmethod->text('box-printer'));
-			$labelsession->set('qty_box', $input->$requestmethod->text('box-qty'));
-			$labelsession->set('nbr_box_labels', $input->$requestmethod->text('box-label-count'));
-
-			$labelsession->set('label_master', $input->$requestmethod->text('masterpack-label'));
-			$labelsession->set('printer_master', $input->$requestmethod->text('masterpack-printer'));
-			$labelsession->set('qty_master', $input->$requestmethod->text('masterpack-qty'));
-			$labelsession->set('nbr_master_labels', $input->$requestmethod->text('masterpack-label-count'));
+			$labelsession->setLabelMaster($input->$requestmethod->text('masterpack-label'));
+			$labelsession->setPrinterMaster($input->$requestmethod->text('masterpack-printer'));
+			$labelsession->setQtyMaster($input->$requestmethod->int('masterpack-qty'));
+			$labelsession->setNbrMasterLabels($input->$requestmethod->int('masterpack-label-count'));
 			$labelsession->save();
 
 			$data = array("DBNAME=$dplusdb", "ITEMCARTONPRINT");
