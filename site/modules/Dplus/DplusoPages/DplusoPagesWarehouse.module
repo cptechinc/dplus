@@ -144,6 +144,16 @@
 				'pw_template'    => 'whse-binr-contents',
 				'has_print'      => true
 			),
+			'whse-binr-contents' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'move-contents',
+				'title'          => 'Bin Inquiry',
+				'summary'        => 'Show Items in a bin',
+				'parent'         => '/warehouse/binr/',
+				'dplus_function' => 'pmvbn',
+				'pw_template'    => 'whse-binr-contents',
+				'has_print'      => true
+			),
 		);
 
 		public static function getModuleInfo() {
