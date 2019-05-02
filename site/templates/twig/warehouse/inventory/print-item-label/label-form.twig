@@ -1,0 +1,128 @@
+<div class="form-group">
+	<a href="{{ page.url }}" class="btn btn-primary not-round">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Return to Item Form
+	</a>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<form action="{{ page.formurl }}" id="print-label-form" method="post">
+			<input type="hidden" name="action" value="print-thermal-label">
+			<input type="hidden" name="labelID" value="{{ label.labelid }}">
+			<input type="hidden" name="bin" value="{{ label.bin }}">
+			<input type="hidden" name="lotserial" value="{{ label.lotserial }}">
+			<input type="hidden" name="whseID" value="{{ whsesession.whseid }}">
+			<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
+
+			<table class="table table-striped">
+				<tr>
+					<td colspan="2" class="bg-info text-white text-center"><b>Product Label</b></td>
+				</tr>
+				<tr class="input-row">
+					<td class="control-label" for="box-label">Product Label</td>
+					<td>
+						<div class="label-input">
+							<div class="input-group">
+								<input type="text" class="form-control input-sm required" name="box-label" id="box-label" value="{{ label.label_box }}">
+								<div class="input-group-append">
+									<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#labelformats-modal" data-input="box-label">
+										<span class="fa fa-search"></span>
+									</button>
+								</div>
+							</div>
+							<br>
+							<p class="label-desc">
+								{{ labelsession.label_box is not empty ? thermal_labels.get_description(labelsession.label_box) : '' }}
+							</p>
+						</div>
+					</td>
+				</tr>
+				<tr class="input-row">
+					<td class="control-label" for="box-printer">Printer</td>
+					<td>
+						<div class="printer-input">
+							<div class="input-group">
+								<input type="text" class="form-control input-sm required" name="box-printer" id="box-printer" value="{{ labelsession.printer_box }}">
+								<div class="input-group-append">
+									<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#labelprinters-modal" data-input="box-printer">
+										<span class="fa fa-search"></span>
+									</button>
+								</div>
+							</div><br>
+							<p class="printer-desc">
+								{{ labelsession.printer_box is not empty ? printers.get_description(whsesession.whseid, labelsession.printer_box) : '' }}
+							</p>
+						</div>
+					</td>
+				</tr>
+				<tr class="input-row">
+					<td class="control-label" for="box-qty">Box Qty</td>
+					<td>
+						<input class="form-control input-sm qty required" type="number" name="box-qty" id="box-qty" value="0">
+					</td>
+				</tr>
+				<tr class="input-row">
+					<td class="control-label" for="box-label-count">Nbr of Labels</td>
+					<td>
+						<input class="form-control input-sm qty required" type="number" name="box-label-count" id="box-label-count" value="1">
+					</td>
+				</tr>
+				{% if page.show_masterpack %}
+					<tr>
+						<td colspan="2" class="bg-info text-white text-center"><b>Master Pack</b></td>
+					</tr>
+					<tr class="input-row">
+						<td class="control-label" for="masterpack-label">Master Pack Label</td>
+						<td>
+							<div class="label-input">
+								<div class="input-group">
+									<input type="text" class="form-control input-sm" name="masterpack-label" id="masterpack-label" value="{{ labelsession.label_master }}">
+									<div class="input-group-append">
+										<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#labelformats-modal" data-input="masterpack-label">
+											<span class="fa fa-search"></span>
+										</button>
+									</div>
+								</div><br>
+								<p class="label-desc">
+									{{ labelsession.label_master is not empty ? thermal_labels.get_description(labelsession.label_master) : '' }}
+								</p>
+							</div>
+						</td>
+					</tr>
+					<tr class="input-row">
+						<td class="control-label" for="masterpack-printer">Printer</td>
+						<td>
+							<div class="printer-input">
+								<div class="input-group">
+									<input type="text" class="form-control input-sm" name="masterpack-printer" id="masterpack-printer" value="{{ labelsession.printer_master }}">
+									<div class="input-group-append">
+										<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#labelprinters-modal" data-input="masterpack-printer">
+											<span class="fa fa-search"></span>
+										</button>
+									</div>
+								</div><br>
+								<p class="printer-desc">
+									{{ labelsession.printer_master is not empty ? printers.load_desc(whsesession.whseid, labelsession.printer_master) : '' }}
+								</p>
+							</div>
+						</td>
+					</tr>
+					<tr class="input-row">
+						<td class="control-label">Box Qty</td>
+						<td>
+							<input class="form-control input-sm qty" type="number" name="masterpack-qty">
+						</td>
+					</tr>
+					<tr class="input-row">
+						<td class="control-label">Nbr of Labels</td>
+						<td>
+							<input class="form-control input-sm qty" type="number" name="masterpack-label-count" value="0">
+						</td>
+					</tr>
+				{% endif %}
+			</table>
+			<button type="submit" class="btn btn-lg btn-success">
+				<i class="fa fa-print" aria-hidden="true"></i> Print Labels
+			</button>
+		</form>
+	</div>
+</div>

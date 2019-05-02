@@ -8,6 +8,11 @@
 				'name'  => 'dplus_function',
 				'type'  => 'text',
 				'label' => 'Dplus Function'
+			),
+			'show_masterpack' => array(
+				'name'  => 'show_masterpack',
+				'type'  => 'checkbox',
+				'label' => 'Show Masterpack'
 			)
 		);
 
@@ -41,10 +46,22 @@
 				'name'   => 'whse-binr-contents',
 				'fields' => array('title'),
 				'paginated' => false
+			),
+			'config-whse-label-print' => array(
+				'name'   => 'config-whse-label-print',
+				'fields' => array('show_masterpack'),
+				'paginated' => false
 			)
 		);
 
 		protected $pages = array(
+			'config-whse-label-print' => array(
+				'template'       => 'config-whse-label-print',
+				'name'           => 'print-item-label',
+				'title'          => 'Item Label Print',
+				'summary'        => 'Item Label Print Configurations',
+				'parent'         => '/config/warehouse/'
+			),
 			'warehouse-menu' => array(
 				'template'       => 'warehouse-menu',
 				'name'           => 'warehouse',
@@ -153,6 +170,16 @@
 				'dplus_function' => 'pmvbn',
 				'pw_template'    => 'whse-binr-contents',
 				'has_print'      => true
+			),
+			'whse-print-item-label' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'print-item-label',
+				'title'          => 'Print Item Label',
+				'summary'        => 'Print a Label for a bin Item',
+				'parent'         => '/warehouse/inventory/',
+				'dplus_function' => 'pilbl',
+				'pw_template'    => 'whse-print-item-label',
+				'has_print'      => false
 			),
 		);
 
