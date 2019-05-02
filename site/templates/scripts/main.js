@@ -88,5 +88,18 @@ $.fn.extend({
 			}
 		}
 		return string;
+	},
+	hasParent: function(selector) {
+		var element = $(this);
+		return $(this).closest(selector).length > 0;
+	},
+	formIsCompleted: function() {
+		var form = $(this);
+		form.find('.required').each(function() {
+			if ($(this).val() === '') {
+				return false;
+			}
+		});
+		return true;
 	}
 });
