@@ -24,7 +24,7 @@
 							<div class="collapse" id="{{ item.itemid|attrJS }}-lotserial">
 								<div class="list-group">
 									{% for lotserial in inventory.get_lotserials_itemid(item.sessionid, item.itemid, page.frombin) %}
-										<a href="{{ page.binr_itemURL(item) }}" class="list-group-item p-1">
+										<a href="{{ page.binr_itemURL(lotserial) }}" class="list-group-item p-1">
 											<div class="row">
 												<div class="col">
 													<h4 class="list-group-item-heading">
@@ -51,7 +51,7 @@
 							{% if (not warehouse.validate_bin(item.bin)) %}
 								<span class="badge badge-danger pull-right">Invalid Bin</span>
 							{% endif %}
-							<a href="" class="btn btn-primary">Choose {{ item.itemid }}</a>
+							<a href="{{ page.binr_itemURL(item) }}" class="btn btn-primary">Choose {{ item.itemid }}</a>
 						{% endif %}
 					</div>
 				{% endfor %}
