@@ -1,9 +1,12 @@
 <div class="card mb-4">
-    <a class="btn card-header bg-info text-white text-left" data-toggle="collapse" href="#customer-contacts" role="button" aria-expanded="false" aria-controls="customer-contacts">
-        Customer Contacts&ensp;<i class="fa fa-caret-down"></i>
-    </a>
-    <div class="list-group collapse" id="customer-contacts">
-    	<div class="list-group-item bg-light font-weight-bold">
+	<div class="card-header d-flex justify-content-between bg-info">
+		<a class="text-white" data-toggle="collapse" href="#customer-contacts" role="button" aria-expanded="false" aria-controls="customer-contacts">
+			Customer Contacts&ensp;<i class="fa fa-caret-down" aria-hidden="true"></i>
+		</a>
+		<span class="badge badge-pill badge-light">{{ resultscount }}</span>
+	</div>
+	<div class="collapse" id="customer-contacts">
+        <div class="list-group-item bg-light font-weight-bold">
     		<div class="row">
     			<div class="col">Name</div>
     			<div class="col">Shipto</div>
@@ -13,18 +16,28 @@
     			<div class="col">Edit</div>
     		</div>
     	</div>
-		{% for contact in contacts %}
-			<div class="list-group-item">
-				<div class="row">
-					<div class="col"><a href="" class="link">{{ contact.arcpcontid }}</a></div>
-					<div class="col">{{ contact.arstshipid }}</div>
-					<div class="col">{{ contact.arcptitl }}</div>
-					<div class="col">Phone</div>
-					<div class="col">Email</div>
-					<div class="col">Edit</div>
-				</div>
-			</div>
-		{% endfor %}
-        {% include 'util/paginator.twig' %}
-    </div>
+        {% if contacts.count > 0 %}
+    		{% for contact in contacts %}
+    			<div class="list-group-item">
+    				<div class="row">
+    					<div class="col"><a href="" class="link">{{ contact.arcpcontid }}</a></div>
+    					<div class="col">{{ contact.arstshipid }}</div>
+    					<div class="col">{{ contact.arcptitl }}</div>
+    					<div class="col">Phone</div>
+    					<div class="col">Email</div>
+    					<div class="col">Edit</div>
+    				</div>
+    			</div>
+    		{% endfor %}
+        {% else %}
+            <div class="list-group-item">
+                <div class="row">
+                    <div class="col text-center">There are no results to display.</div>
+                </div>
+            </div>
+        {% endif %}
+		<div class="card-footer bg-secondary">
+			<a href="" class="text-white">View More Customer Contacts <i class="fa fa-sign-in" aria-hidden="true"></i></a>
+		</div>
+	</div>
 </div>

@@ -1,9 +1,12 @@
 <div class="card mb-4">
-    <a class="btn card-header bg-info text-white text-left" data-toggle="collapse" href="#customer-actions" role="button" aria-expanded="false" aria-controls="customer-actions">
-        Customer Actions&ensp;<i class="fa fa-caret-down"></i>
-    </a>
-    <div class="list-group collapse" id="customer-actions">
-    	<div class="list-group-item bg-light font-weight-bold">
+	<div class="card-header d-flex justify-content-between bg-info">
+		<a class="text-white" data-toggle="collapse" href="#customer-actions" role="button" aria-expanded="false" aria-controls="customer-actions">
+			Customer Actions&ensp;<i class="fa fa-caret-down" aria-hidden="true"></i>
+		</a>
+		<span class="badge badge-pill badge-light">{{ resultscount }}</span>
+	</div>
+	<div class="collapse" id="customer-actions">
+        <div class="list-group-item bg-light font-weight-bold">
     		<div class="row">
     			<div class="col">Due</div>
     			<div class="col">Type</div>
@@ -11,16 +14,26 @@
     			<div class="col">Regarding/Title</div>
     		</div>
     	</div>
-		{% for action in actions %}
-			<div class="list-group-item">
-				<div class="row">
-					<div class="col"><a href="" class="link">{{ action.duedate|date("m/d/Y") }}</a></div>
-					<div class="col">{{ action.actiontype }}</div>
-					<div class="col">{{ action.actionsubtype }}</div>
-					<div class="col">{{ action.title }}</div>
-				</div>
-			</div>
-		{% endfor %}
-        {% include 'util/paginator.twig' %}
-    </div>
+        {% if actions.count > 0 %}
+    		{% for action in actions %}
+    			<div class="list-group-item">
+    				<div class="row">
+    					<div class="col"><a href="" class="link">{{ action.duedate|date("m/d/Y") }}</a></div>
+    					<div class="col">{{ action.actiontype }}</div>
+    					<div class="col">{{ action.actionsubtype }}</div>
+    					<div class="col">{{ action.title }}</div>
+    				</div>
+    			</div>
+    		{% endfor %}
+        {% else %}
+            <div class="list-group-item">
+                <div class="row">
+                    <div class="col text-center">There are no results to display.</div>
+                </div>
+            </div>
+        {% endif %}
+		<div class="card-footer bg-secondary">
+			<a href=" " class="text-white">View More Customer Actions <i class="fa fa-sign-in" aria-hidden="true"></i></a>
+		</div>
+	</div>
 </div>
