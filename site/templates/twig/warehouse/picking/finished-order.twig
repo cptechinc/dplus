@@ -1,0 +1,15 @@
+<div>
+	<h2>Take your Picked Items to the Shipping area</h2>
+	<table class="table table-condensed table-striped">
+		<tr>
+			<td class="control-label">Order #</td> <td class="text-right">{{ pickorder.ordn }}</td>
+		</tr>
+		<tr>
+			<td class="control-label">Customer</td> <td class="text-right">{{ pickorder.custID ~ ' - ' ~ pickorder.customername }}</td>
+		</tr>
+	</table>
+	<a href="{{ page.get_finishorderURL()  }}" class="btn btn-success">
+		<i class="fa fa-check-square" aria-hidden="true"></i> Finish Order
+	</a>
+	<a href="{{ page.get_exitorderURL()  }}" class="btn btn-danger exit-order">Exit Order</a>
+</div>
