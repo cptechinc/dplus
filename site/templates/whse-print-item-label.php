@@ -3,7 +3,7 @@
 	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
 	$page->print = false;
 	$binID = $input->get->text('binID');
-	$page->show_masterpack = $pages->get("/config/warehouse/$page->name/")->show_masterpack;
+	$page->show_masterpack = $pages->get("/config/warehouse/inventory/$page->name/")->show_masterpack;
 
 
 	$page->addHook('Page::print_itemlabelURL', function($event) {
