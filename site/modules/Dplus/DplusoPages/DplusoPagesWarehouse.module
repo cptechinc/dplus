@@ -1,6 +1,8 @@
 <?php namespace ProcessWire;
 	require_once(__DIR__ . '/DplusoPages.module');
 
+	use Purl\Url;
+
 	class DplusoPagesWarehouse extends DplusoPages implements Module {
 
 		protected $fields = array(
@@ -13,7 +15,20 @@
 				'name'  => 'show_masterpack',
 				'type'  => 'checkbox',
 				'label' => 'Show Masterpack'
-			)
+			),
+			'picking_method' => array(
+				'name'    => 'picking_method',
+				'type'    => 'select',
+				'label'   => 'Picking Method',
+				'notes'   => "Serial Reference: Users will pick serialized items that aren't imported into the system
+				Normal: User will be guided through the order",
+				'options' => array('serialref' => 'Serial Ref Picking', 'normal' => 'Normal')
+			),
+			'allow_negativeinventory' => array(
+				'name'  => 'allow_negativeinventory',
+				'type'  => 'checkbox',
+				'label' => 'Allow Negative Inventory'
+			),
 		);
 
 		protected $templates = array(
@@ -49,18 +64,40 @@
 			),
 			'config-whse-label-print' => array(
 				'name'   => 'config-whse-label-print',
-				'fields' => array('show_masterpack'),
+				'fields' => array('title', 'show_masterpack'),
 				'paginated' => false
-			)
+			),
+			'whse-picking' => array(
+				'name'   => 'whse-picking',
+				'fields' => array('title'),
+				'paginated' => false
+			),
+			'whse-picking-normal' => array(
+				'name'   => 'whse-picking-normal',
+				'fields' => array('title'),
+				'paginated' => false
+			),
+			'config-inventory' => array(
+				'name'   => 'config-inventory',
+				'fields' => array('title', 'allow_negativeinventory'),
+				'paginated' => false
+			),
 		);
 
 		protected $pages = array(
+			'config-inventory' => array(
+				'template'       => 'config-inventory',
+				'name'           => 'inventory',
+				'title'          => 'Inventory',
+				'summary'        => 'Inventory Configurations',
+				'parent'         => '/config/warehouse/'
+			),
 			'config-whse-label-print' => array(
 				'template'       => 'config-whse-label-print',
 				'name'           => 'print-item-label',
 				'title'          => 'Item Label Print',
 				'summary'        => 'Item Label Print Configurations',
-				'parent'         => '/config/warehouse/'
+				'parent'         => '/config/warehouse/inventory/'
 			),
 			'warehouse-menu' => array(
 				'template'       => 'warehouse-menu',
@@ -181,6 +218,23 @@
 				'pw_template'    => 'whse-print-item-label',
 				'has_print'      => false
 			),
+			'menu-pick' => array(
+				'template'       => 'warehouse-menu',
+				'name'           => 'picking',
+				'title'          => 'Picking',
+				'summary'        => 'Picking Menu',
+				'parent'         => '/warehouse/',
+				'dplus_function' => 'mppik'
+			),
+			'whse-picking' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'pick',
+				'title'          => 'Sales Order Picking',
+				'summary'        => 'Sales Order Picking',
+				'parent'         => '/warehouse/picking/',
+				'dplus_function' => 'porpk',
+				'pw_template'    => 'whse-picking',
+			),
 		);
 
 		public static function getModuleInfo() {
@@ -191,5 +245,43 @@
 				'singular' => true,
 				'autoload' => true,
 			);
+		}
+
+		public function init_picking() {
+			$this->addHook('Page::get_finishitemURL', function($event) {
+				$p = $event->object;
+				$item = $event->arguments(0);
+				$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
+				$url->query->set('action','finish-item');
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_skipitemURL', function($event) {
+				$p = $event->object;
+				$item = $event->arguments(0);
+				$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
+				$url->query->set('action','skip-item');
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_exitorderURL', function($event) {
+				$p = $event->object;
+				$item = $event->arguments(0);
+				$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
+				$url->query->set('action','exit-order');
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_finishorderURL', function($event) {
+				$p = $event->object;
+				$item = $event->arguments(0);
+				$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
+				$url->query->set('action','finish-order');
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
 		}
 	}

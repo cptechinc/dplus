@@ -57,7 +57,15 @@
 				'summary'    => 'Warehouse Inventory Redirects',
 				'parent'     => '/warehouse/inventory/',
 				'redir_file' => 'inventory'
-			)
+			),
+			'pick-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Sales Order Picking Redirects',
+				'parent'     => '/warehouse/picking/',
+				'redir_file' => 'picking'
+			),
 		);
 
 		/* =============================================================
