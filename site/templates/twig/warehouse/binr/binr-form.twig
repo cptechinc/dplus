@@ -26,7 +26,7 @@
 						<label for="from-bin">Bin</label>
 						<div class="input-group">
 							<input type="text" class="form-control input-sm" name="from-bin" value="{{ item.bin }}" data-bin="{{ item.bin }}">
-							<span class="input-group-btn">
+							<span class="input-group-append">
 								<button type="button" class="btn btn-default show-select-bins" data-toggle="modal" data-target="#choose-from-bins-modal" data-input="from-bin"> <span class="fa fa-search"></span> </button>
 							</span>
 						</div>
@@ -40,7 +40,7 @@
 						<label for="to-bin">Bin</label>
 						<div class="input-group">
 							<input type="text" class="form-control input-sm" name="to-bin" value="{{ page.tobin }}">
-							<span class="input-group-btn">
+							<span class="input-group-append">
 								<button type="button" class="btn btn-default" data-toggle="modal" data-target="#choose-to-bins-modal" data-input="to-bin"> <span class="fa fa-search"></span> </button>
 							</span>
 						</div>
@@ -53,7 +53,7 @@
 						<label for="bin-qty">Qty </label> (On Hand: <span class="qty-available">{{ inventory.get_binqty(session.get('sessionid'), item, item.bin) }}</span>)
 						<div class="input-group">
 							<input type="text" class="form-control input-sm text-right" name="qty" value="">
-							<span class="input-group-btn">
+							<span class="input-group-append">
 								<button type="submit" class="btn btn-primary not-round use-bin-qty" data-direction="from">Use Bin Qty</button>
 							</span>
 						</div>
