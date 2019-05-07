@@ -18,7 +18,7 @@
 			$url->query->set('binID', $binID);
 			$session->loc = $url->getUrl();
 			break;
-		case 'physical-count':
+		case 'physical-count': // TODO
 			$binID = $input->$requestmethod->text('binID');
 			$itemID = $input->$requestmethod->text('itemID');
 			$imitem = ItemMasterItem::load($itemID);
