@@ -36,6 +36,12 @@ $(function() {
 			}
 		}
 	});
+
+	$('.placard').on('accepted.fu.placard', function () {
+		var placard = $(this);
+		var form = placard.closest('form');
+		form.submit();
+	});
 });
 
 function toggle_nav() {
