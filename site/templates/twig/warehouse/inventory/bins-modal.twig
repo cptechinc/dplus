@@ -10,9 +10,9 @@
 			<div class="modal-body">
 				<h4>All Bins</h4>
 
-				{% if (warehouse.are_binslisted())	%}
+				{% if (warehouse.are_binslisted()) %}
 					<div class="list-group">
-						{% for bin in warehouse.get_bins()	%}
+						{% for bin in warehouse.get_bins() %}
 							<a href="#" class="list-group-item choose-bin" data-bin="{{ bin.from }}">
 								<div class="row">
 									<div class="col-6">
@@ -34,7 +34,7 @@
 							<th>Range From</th>
 							<th>Range Through</th>
 						</tr>
-						{% for bin in warehousebins	%}
+						{% for bin in warehousebins %}
 							<tr>
 								<td>{{ bin.from }}</td>
 								<td>{{ bin.through }}</td>
