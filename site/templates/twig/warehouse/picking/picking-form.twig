@@ -1,5 +1,8 @@
-<div>
+{% block title %}
 	<h2>Head to {{ pickitem.bin }}</h2>
+{% endblock %}
+
+{% block pickitemtable %}
 	<table class="table table-condensed table-striped">
 		<tr>
 			<td class="control-label">Order #</td> <td class="text-right" colspan="2">{{ pickitem.ordn }}</td>
@@ -48,7 +51,9 @@
 			<td class="text-right">{{ pickitem.get_casedescription(pickitem.get_qtyremaining())|raw }}</td>
 		</tr>
 	</table>
+{% endblock pickitemtable %}
 
+{% block form_addbarcode %}
 	<form action="{{ page.fullURL.getUrl() }}" method="POST" class="allow-enterkey-submit">
 		<input type="hidden" name="action" value="add-barcode">
 		<input type="hidden" name="palletnbr" value="{{ whsesession.palletnbr }}">
@@ -82,5 +87,4 @@
 			<a href="{{ page.get_exitorderURL() }}" class="btn btn-danger exit-order">Exit Order</a>
 		</div>
 	</div>
-</div>
-<h3 class="text-center">Barcodes Scanned</h3>
+{% endblock form_addbarcode %}
