@@ -22,10 +22,8 @@
 				$page->body = $config->twig->render('warehouse/picking/status.twig', ['page' => $page, 'whsesession' => $whsesession]);
 				// VALIDATE if wrong picking function is being used
 			} elseif ($whsesession->is_usingwrongfunction()) {
-				// TODO
-				$page->body = $config->paths->content."warehouse/picking/wrong-function.php";
+				$page->body = $config->twig->render('warehouse/picking/status.twig', ['page' => $page, 'whsesession' => $whsesession]);
 			} else { // SHOW STARTING BIN FORM
-				// TODO
 				$page->title = 'Choose Starting Bin';
 				$page->formurl = $page->parent->child('template=redir')->url;
 				$page->body = $config->twig->render('warehouse/picking/bin-form.twig', ['page' => $page]);
@@ -89,7 +87,6 @@
 
 				// Or check if sales order is finished
 			} elseif ($whsesession->is_orderfinished()) {
-
 				$page->body .= $config->twig->render('warehouse/picking/finished-order.twig', ['page' => $page, 'pickorder' => $pickorder]);
 			} else { // NO ITEMS TO PICK
 				if ($whsesession->is_orderfinished() || $whsesession->is_orderexited()) {
