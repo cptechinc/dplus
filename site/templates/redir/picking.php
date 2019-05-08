@@ -159,20 +159,21 @@
 			$session->loc = $input->$requestmethod->text('page');
 			break;
 		case 'finish-item':
+			$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 			$item = PickSalesOrderDetailQuery::create()->findOneBySessionid(session_id());
-			$totalpicked = $item->get_userpickedtotal();
-			$data = array("DBNAME=$dplusdb", 'ACCEPTITEM', "ORDERNBR=$item->ordernbr ", "LINENBR=$item->linenbr", "ITEMID=$item->itemnbr", "ITEMQTY=$totalpicked");
-			$session->loc = $input->$requestmethod->text('page');
-			break;
-		case 'finish-item-pick-pack':
-			$item = PickSalesOrderDetailQuery::create()->findOneBySessionid(session_id());
-			$totals = $item->get_userpickedpallettotals();
-			$session->sql = $item->get_userpickedpallettotals(true);
 			$data = array("DBNAME=$dplusdb", 'ACCEPTITEM', "ORDERNBR=$item->ordernbr ", "LINENBR=$item->linenbr", "ITEMID=$item->itemnbr");
-			foreach ($totals as $total) {
-				$pallet = str_pad($total['palletnbr'], 4, ' ');
-				$qty = str_pad($total['qty'], 10, ' ');
-				$data[] = "PALLETNBR=$pallet|QTY=$qty";
+
+			if ($whsesession->is_picking()) {
+				$totalpicked = $item->get_userpickedtotal();
+				$data[] = "ITEMQTY=$totalpicked";
+			} elseif ($whsesession->is_pickingpacking()) {
+				$pallet_totals = $item->get_userpickedtotalsbypallet();
+
+				foreach ($pallet_totals as $pallet) {
+					$palletnbr = str_pad($pallet['palletnbr'], 4, ' ');
+					$qty = str_pad($pallet['qty'], 10, ' ');
+					$data[] = "PALLETNBR=$palletnbr|QTY=$qty";
+				}
 			}
 			$session->loc = $input->$requestmethod->text('page');
 			break;
