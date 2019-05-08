@@ -344,7 +344,7 @@
 				}
 			}
 
-			foreach ($this->templates[$page['name']]['fields'] as $fieldname) {
+			foreach ($this->templates[$page['template']]['fields'] as $fieldname) {
 				$pw_page->$fieldname = $page[$fieldname];
 			}
 			return $pw_page->save();
