@@ -72,8 +72,8 @@
 				'fields' => array('title'),
 				'paginated' => false
 			),
-			'whse-picking-normal' => array(
-				'name'   => 'whse-picking-normal',
+			'whse-picking-packing' => array(
+				'name'   => 'whse-picking-packing',
 				'fields' => array('title'),
 				'paginated' => false
 			),
@@ -235,6 +235,15 @@
 				'dplus_function' => 'porpk',
 				'pw_template'    => 'whse-picking',
 			),
+			'whse-picking-packing' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'pick-pack',
+				'title'          => 'Sales Order Picking & Packing',
+				'summary'        => 'Sales Order Picking & Packing',
+				'parent'         => '/warehouse/picking/',
+				'dplus_function' => 'porpp',
+				'pw_template'    => 'whse-picking-packing',
+			),
 		);
 
 		public static function getModuleInfo() {
@@ -280,6 +289,17 @@
 				$item = $event->arguments(0);
 				$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
 				$url->query->set('action','finish-order');
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+		}
+
+		public function init_pickingpacking() {
+			$this->addHook('Page::get_addpalletURL', function($event) {
+				$p = $event->object;
+				$item = $event->arguments(0);
+				$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
+				$url->query->set('action','add-pallet');
 				$url->query->set('page', $p->fullURL->getUrl());
 				$event->return = $url->getUrl();
 			});
