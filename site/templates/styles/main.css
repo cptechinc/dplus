@@ -1,5 +1,5 @@
 /**************************************
- 	General Styles
+	General Styles
  **************************************/
 html {
 	position: relative;
@@ -31,30 +31,30 @@ a .highlight {color: #000;}
 .highlight a {color: #0f7864; }
 
 #back-to-top {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 12;
-    display: none;
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	z-index: 12;
+	display: none;
 }
 
 .fa-1-2x {
-    font-size: 1.2em;
+	font-size: 1.2em;
 }
 
 .breadcrumb-item+.breadcrumb-item::before {
-    display: inline-block;
-    padding-right: 0.5rem;
-    color: #6c757d;
-    content: "/"
+	display: inline-block;
+	padding-right: 0.5rem;
+	color: #6c757d;
+	content: "/"
 }
 
 .breadcrumb-item.active {
-    color: #FF304F;
+	color: #FF304F;
 }
 
 /**************************************
- 	Navbar Styles
+	Navbar Styles
  **************************************/
 #yt-menu {
 	width: 300px;
@@ -72,7 +72,7 @@ a .highlight {color: #000;}
 
 
 /**************************************
- 	Login Styles
+	Login Styles
  **************************************/
 .login-form {
 	width: 100%;
