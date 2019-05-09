@@ -13,14 +13,30 @@ footer {
 	padding-top: 15px;
 }
 
+/**************************************
+	Bootstrap Override Styles
+***************************************/
+.breadcrumb .breadcrumb-item::before {color: white;}
+.breadcrumb-item+.breadcrumb-item::before {
+	display: inline-block;
+	padding-right: 0.5rem;
+	color: #6c757d;
+	content: "/"
+ }
+
+.breadcrumb-item.active {
+	color: #FF304F;
+}
+
+/**************************************
+	Application Styles
+***************************************/
 .container.page {
 	min-height: 100%;
 	height: 100%;
 	height: auto;
 	padding-bottom:200px;
 }
-
-.breadcrumb .breadcrumb-item::before {color: white;}
 
 .top-margin {
 	margin-top: 32px;
@@ -42,15 +58,23 @@ a .highlight {color: #000;}
 	font-size: 1.2em;
 }
 
-.breadcrumb-item+.breadcrumb-item::before {
-	display: inline-block;
-	padding-right: 0.5rem;
-	color: #6c757d;
-	content: "/"
+a.link {
+	text-decoration: none;
+	background-color: transparent;
+	border-bottom: 3px solid #bcdcef;
+	-webkit-transition: background .15s cubic-bezier(0.33, 0.66, 0.66, 1);
+	-o-transition: background .15s cubic-bezier(0.33, 0.66, 0.66, 1);
+	transition: background .15s cubic-bezier(0.33, 0.66, 0.66, 1);
+	-webkit-box-shadow: inset 0 -4px 0 #bcdcef;
+	box-shadow: inset 0 -4px 0 #bcdcef;
 }
 
-.breadcrumb-item.active {
-	color: #FF304F;
+a.link:hover {
+	background-color: #bcdcef;
+}
+
+input.qty {
+	width: 7rem;
 }
 
 /**************************************
@@ -82,11 +106,6 @@ a .highlight {color: #000;}
 
 .jumbotron.page-banner {
 	padding: 1rem 1rem;
-}
-
-
-input.qty {
-	width: 7rem;
 }
 
 
