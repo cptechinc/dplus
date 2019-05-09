@@ -5,17 +5,17 @@
 {% block pickitemtable %}
 	<table class="table table-condensed table-striped">
 		<tr>
-			<td class="control-label">Order #</td> <td class="text-right" colspan="2">{{ pickitem.ordn }}</td>
+			<td class="control-label">Order #</td> <td class="text-right">{{ pickitem.ordn }}</td>
 		</tr>
 		<tr>
-			<td class="control-label">Bin #</td> <td class="text-right" colspan="2">{{ pickitem.bin }}</td>
+			<td class="control-label">Bin #</td> <td class="text-right">{{ pickitem.bin }}</td>
 		</tr>
 		<tr>
-			<td class="control-label">Expected Qty</td> <td class="text-right" colspan="2">{{ pickitem.binqty }}</td>
+			<td class="control-label">Expected Qty</td> <td class="text-right">{{ pickitem.binqty }}</td>
 		</tr>
 		<tr>
 			<td class="control-label">Item ID</td>
-			<td class="text-right" colspan="2">
+			<td class="text-right">
 				{{ pickitem.itemid }}
 				<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#item-info-modal">
 					Item Info
@@ -24,21 +24,19 @@
 		</tr>
 		<tr>
 			<td class="control-label">Qty Needed</td>
-			<td class="text-right">{{ pickitem.qtyordered }} Eaches</td>
-			<td class="text-right">{{ pickitem.get_casedescription(pickitem.qtyordered)|raw }}</td>
+			<td class="text-right">{{ pickitem.qtyordered }}</td>
 		</tr>
 		{% if (pickitem.has_pickedqty()) %}
 			<tr>
 				<td class="control-label">Previously Picked</td>
-				<td class="text-right">{{ pickitem.qtypulled }} Eaches</td>
-				<td class="text-right">{{ pickitem.get_casedescription(pickitem.qtypulled)|raw }}</td>
+				<td class="text-right">{{ pickitem.qtypulled }}</td>
 			</tr>
 		{% endif %}
 		<tr>
 			<td class="control-label">Qty Picked</td>
-			<td class="text-right">{{ pickitem.get_userpickedtotal() }} Eaches</td>
-			<td class="text-right">{{ pickitem.get_casedescription(pickitem.get_userpickedtotal()) |raw}}</td>
+			<td class="text-right">{{ pickitem.get_userpickedtotal() }} {{ dpluso.getLastExecutedQuery() }}</td>
 		</tr>
+
 		{% set bgcolor = '' %}
 		{% if pickitem.has_pickedtoomuch() or pickitem.has_pickedmorethanbinqty() %}
 			{% set bgcolor = 'bg-warning text-white' %}
@@ -47,8 +45,7 @@
 		{% endif %}
 		<tr class="{{ bgcolor }}">
 			<td class="control-label">Qty Remaining</td>
-			<td class="text-right">{{ pickitem.get_qtyremaining() }} Eaches</td>
-			<td class="text-right">{{ pickitem.get_casedescription(pickitem.get_qtyremaining())|raw }}</td>
+			<td class="text-right">{{ pickitem.get_qtyremaining() }}</td>
 		</tr>
 	</table>
 {% endblock pickitemtable %}
