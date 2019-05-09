@@ -1,0 +1,12 @@
+<div class="row">
+	<div class="col-sm-8">
+		<div class="list-group">
+			{% for item in items %}
+				<a href="{{ page.get_selectlineURL(item) }}" class="list-group-item">
+					<h4 class="list-group-item-heading">{{ item.itemid }}</h4>
+					<p class="list-group-item-text mb-0">{{ item.desc1 }}</p>
+				</a>
+			{% endfor %}
+		</div>
+	</div>
+</div>

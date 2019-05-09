@@ -126,6 +126,9 @@
 		case 'start-pick':
 			$data = array("DBNAME=$dplusdb", 'PICKING');
 			break;
+		case 'start-pick-unguided':
+			$data = array("DBNAME=$dplusdb", 'PICKUNGUIDED');
+			break;
 		case 'start-pick-pack':
 			$data = array("DBNAME=$dplusdb", 'PACKING');
 			break;
