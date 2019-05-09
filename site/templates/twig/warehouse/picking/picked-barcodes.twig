@@ -2,7 +2,8 @@
 <table class="table table-condensed table-striped">
 	<tr>
 		<th>Barcode</th>
-		<th>Qty</th>
+		<th>Number of Units</th>
+		<th>Qty Total</th>
 		<th class="text-center">Remove</th>
 	</tr>
 	{% for barcode in picked_barcodes %}
@@ -22,6 +23,9 @@
 						</div>
 					</div>
 				</form>
+			</td>
+			<td class="text-right">
+				{{ barcode.get_barcodeqtytotal() }}
 			</td>
 			<td class="text-center">
 				<form action="{{ page.fullURL.getUrl() }}" method="post">
