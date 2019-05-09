@@ -9,7 +9,8 @@
 		$customer = $query->findOneByCustid($custID);
 
 		$query = UseractionsQuery::create();
-		$query->groupByCustomerlink($custID);
+		$query->filterByStatusIncomplete();
+		$query->filterByCustomerlink($custID);
 		$actions = $query->paginate($input->pageNum, 10);
 
 		$query = ContactQuery::create();
@@ -25,11 +26,11 @@
 		$shippedorders = $query->paginate($input->pageNum, 10);
 
 		$page->title = "CI: $customer->name";
-		$page->body  = $config->twig->render('customers/customer-page.twig', ['page' => $page, 'customer' => $customer]);
-		$page->body  .= $config->twig->render('customers/ci-customer/customer-actions.twig', ['page' => $page, 'customer' => $customer, 'actions' => $actions, 'pagenbr' => $input->pageNum, 'resultscount'=> $actions->getNbResults()]);
-		$page->body  .= $config->twig->render('customers/ci-customer/customer-contacts.twig', ['page' => $page, 'customer' => $customer, 'contacts' => $contacts, 'pagenbr' => $input->pageNum, 'resultscount'=> $contacts->getNbResults()]);
-		$page->body  .= $config->twig->render('customers/ci-customer/customer-sales-orders.twig', ['page' => $page, 'customer' => $customer, 'orders' => $orders, 'pagenbr' => $input->pageNum, 'resultscount'=> $orders->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url]);
-		$page->body  .= $config->twig->render('customers/ci-customer/customer-shipped-orders.twig', ['page' => $page, 'customer' => $customer, 'orders' => $shippedorders, 'pagenbr' => $input->pageNum, 'resultscount'=> $shippedorders->getNbResults()]);
+		$page->body =  $config->twig->render('customers/ci/customer/header.twig', ['page' => $page, 'customer' => $customer]);
+		$page->body .= $config->twig->render('shared/actions-panel.twig', ['page' => $page, 'actions' => $actions, 'resultscount'=> $actions->getNbResults()]);
+		$page->body .= $config->twig->render('customers/ci/customer/contacts-panel.twig', ['page' => $page, 'customer' => $customer, 'contacts' => $contacts, 'resultscount'=> $contacts->getNbResults()]);
+		$page->body .= $config->twig->render('customers/ci/customer/sales-orders-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $orders, 'resultscount'=> $orders->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url, 'sales_orders_list' => $pages->get('pw_template=sales-orders')->url]);
+		$page->body .= $config->twig->render('customers/ci/customer/shipped-orders-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $shippedorders, 'resultscount'=> $shippedorders->getNbResults()]);
 	} else {
 		$query = CustomerQuery::create();
 		if ($input->get->q) {
@@ -43,7 +44,7 @@
 		$customers = $query->paginate($input->pageNum, 10);
 		$page->searchURL = $page->url;
 		$page->body = $config->twig->render('customers/customer-search.twig', ['page' => $page, 'customers' => $customers]);
-		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'pagenbr' => $input->pageNum, 'resultscount'=> $customers->getNbResults()]);
+		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $customers->getNbResults()]);
 	}
 
 	include __DIR__ . "/basic-page.php";
