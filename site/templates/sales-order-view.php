@@ -7,9 +7,10 @@
 			$order_items_query = SalesOrderDetailQuery::create();
 			$order = $order_query->findOneByOehdnbr($ordn);
 			$order_items = $order_items_query->filterByOehdnbr($ordn)->find();
+			$customer = CustomerQuery::create()->findOneByCustid($order->custid);
 			$page->title = "Sales Order #$ordn";
 			$page->listpage = $pages->get('pw_template=sales-orders');
-			$page->body = $config->twig->render('sales-orders/sales-order-page.twig', ['page' => $page, 'order' => $order, 'order_items' => $order_items]);
+			$page->body = $config->twig->render('sales-orders/sales-order-page.twig', ['page' => $page, 'order' => $order, 'customer' => $customer, 'order_items' => $order_items]);
 		} elseif (SalesHistoryQuery::create()->filterByOehhnbr($ordn)->count()) {
 			$order_query = SalesHistoryQuery::create();
 			$order = $order_query->findOneByOehhnbr($ordn);

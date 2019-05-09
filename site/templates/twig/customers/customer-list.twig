@@ -4,8 +4,9 @@
 			<th scope="col">ID</th>
 			<th scope="col">Name</th>
 			<th scope="col">Address</th>
-			<th scope="col">Last</th>
-			<th scope="col">Handle</th>
+			<th scope="col">City</th>
+			<th scope="col">State</th>
+			<th scope="col">Zip</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -17,11 +18,12 @@
 					</a>
 				</td>
 				<td>{{ customer.name }}</td>
+				<td>{{ customer.address1 }}</td>
+				<td>{{ customer.city }}</td>
+				<td>{{ customer.state }}</td>
 				<td>
-					{{ customer.city ~ ', ' ~ customer.state ~ ' ' ~ customer.zip }}
+					{{ customer.zip }}
 				</td>
-				<td></td>
-				<td>@mdo</td>
 			</tr>
 		{% endfor %}
 	</tbody>
