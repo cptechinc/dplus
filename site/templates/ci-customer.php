@@ -28,7 +28,7 @@
 		$page->body  = $config->twig->render('customers/customer-page.twig', ['page' => $page, 'customer' => $customer]);
 		$page->body  .= $config->twig->render('customers/ci-customer/customer-actions.twig', ['page' => $page, 'customer' => $customer, 'actions' => $actions, 'pagenbr' => $input->pageNum, 'resultscount'=> $actions->getNbResults()]);
 		$page->body  .= $config->twig->render('customers/ci-customer/customer-contacts.twig', ['page' => $page, 'customer' => $customer, 'contacts' => $contacts, 'pagenbr' => $input->pageNum, 'resultscount'=> $contacts->getNbResults()]);
-		$page->body  .= $config->twig->render('customers/ci-customer/customer-sales-orders.twig', ['page' => $page, 'customer' => $customer, 'orders' => $orders, 'pagenbr' => $input->pageNum, 'resultscount'=> $orders->getNbResults()]);
+		$page->body  .= $config->twig->render('customers/ci-customer/customer-sales-orders.twig', ['page' => $page, 'customer' => $customer, 'orders' => $orders, 'pagenbr' => $input->pageNum, 'resultscount'=> $orders->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url]);
 		$page->body  .= $config->twig->render('customers/ci-customer/customer-shipped-orders.twig', ['page' => $page, 'customer' => $customer, 'orders' => $shippedorders, 'pagenbr' => $input->pageNum, 'resultscount'=> $shippedorders->getNbResults()]);
 	} else {
 		$query = CustomerQuery::create();
@@ -38,7 +38,7 @@
 			$col_custid = Customer::get_aliasproperty('custid');
 			$col_name = Customer::get_aliasproperty('name');
 			$columns = array($col_custid, $col_name);
-			$query->search_filter($columns, $q);
+			$query->search_filter($columns, strtoupper($q));
 		}
 		$customers = $query->paginate($input->pageNum, 10);
 		$page->searchURL = $page->url;
