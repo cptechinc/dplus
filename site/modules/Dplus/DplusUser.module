@@ -3,6 +3,7 @@
 	use Logperm;
 	use LogmQuery;
 	use Logm;
+	use FuncpermQuery;
 
 	class DplusUser extends WireData implements Module {
 		private $className;
@@ -96,6 +97,19 @@
 				$user = $event->object;
 				$sessionID = $event->arguments(0);
 				$event->return = $this->setup_user($user, $sessionID);
+			});
+
+			$this->addHook('User::has_function', function($event) {
+				$permissions_master = FuncpermQuery::create();
+				$user = $event->object;
+				$function = $event->arguments(0);
+				$event->return = $permissions_master->does_user_have_permission($user->loginid, $function);
+			});
+
+			$this->addHook('User::get_functions', function($event) {
+				$permissions_master = FuncpermQuery::create();
+				$user = $event->object;
+				$event->return = $permissions_master->get_users_functions($user->loginid);
 			});
 		}
 
