@@ -72,7 +72,16 @@
 	*		ORDERNBR=$ordn
 	*		LINENBR=$linenbr
 	*		ITEMID=$itemID
-	*		ITEMQTY=$totalpicked
+	*		Switch ($whsesession->function)
+	*			PICKING
+	*				ITEMQTY=$totalpicked
+	*			PACKING ** One Line for each pallet
+	*				PALLETNBR=$palletnbr|QTY=$qty
+	*			PICKUNGUIDED
+	*				NOTE NORMAL ITEMS GET ONE LINE PER BIN
+	*				     LOTTED / SERIALIZED GET ONLINE PER LOT / SERIAL NUMBER
+	*				BIN=$bin|LOTSERIAL=$lotserial|QTY=$qty
+	*
 	*		break;
 	*	case 'accept-item':
 	*		- Request to finish Item pick-packing
@@ -163,13 +172,15 @@
 			break;
 		case 'finish-item':
 			$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
-			$item = PickSalesOrderDetailQuery::create()->findOneBySessionid(session_id());
-			$data = array("DBNAME=$dplusdb", 'ACCEPTITEM', "ORDERNBR=$item->ordernbr ", "LINENBR=$item->linenbr", "ITEMID=$item->itemnbr");
+
+			$data = array("DBNAME=$dplusdb", 'ACCEPTITEM', "ORDERNBR=$whsesession->ordernbr", "LINENBR=$item->linenbr", "ITEMID=$item->itemnbr");
 
 			if ($whsesession->is_picking()) {
+				$item = PickSalesOrderDetailQuery::create()->findOneBySessionid(session_id());
 				$totalpicked = $item->get_userpickedtotal();
 				$data[] = "ITEMQTY=$totalpicked";
 			} elseif ($whsesession->is_pickingpacking()) {
+				$item = PickSalesOrderDetailQuery::create()->findOneBySessionid(session_id());
 				$pallet_totals = $item->get_userpickedtotalsbypallet();
 
 				foreach ($pallet_totals as $pallet) {
@@ -177,7 +188,29 @@
 					$qty = str_pad($pallet['qty'], 10, ' ');
 					$data[] = "PALLETNBR=$palletnbr|QTY=$qty";
 				}
+			} elseif ($whsesession->is_pickingunguided()) {
+				$linenbr = $input->get->int('linenbr');
+				$pickitem = PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr(session_id(), $whsesession->ordernbr, $linenbr);
+
+				if ($pickitem->is_item_serialized() || $pickitem->is_item_lotted()) {
+					$barcodes = $pickitem->get_userpickedtotalsbybarcode();
+
+					foreach ($barcodes as $barcode) {
+						$data[] = "BIN=$barcode->bin|LOTSERIAL=$barcode->barcode|QTY=$barcode->qty";
+					}
+				} else {
+					$barcodes = $pickitem->get_userpickedtotalsbybin();
+
+					foreach ($barcodes as $barcode) {
+						$binID     = str_pad($barcode['bin'], 8, ' ');
+						$lotserial = str_pad('', 20, ' ');
+						$qty       = $barcode['qty'];
+						$data[] = "BIN=$bin|LOTSERIAL=$lotserial|QTY=$qty";
+					}
+				}
 			}
+			echo json_encode($data);
+			exit;
 			$session->loc = $input->$requestmethod->text('page');
 			break;
 		case 'skip-item':

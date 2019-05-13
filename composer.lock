@@ -46,12 +46,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dpluso-model.git",
-                "reference": "dc6b157b777e0d5c23da7dfe72ece6f5bda6d4d1"
+                "reference": "12a14936dbe948228c33b52e66de4347ba5e9d94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/dc6b157b777e0d5c23da7dfe72ece6f5bda6d4d1",
-                "reference": "dc6b157b777e0d5c23da7dfe72ece6f5bda6d4d1",
+                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/12a14936dbe948228c33b52e66de4347ba5e9d94",
+                "reference": "12a14936dbe948228c33b52e66de4347ba5e9d94",
                 "shasum": ""
             },
             "type": "library",
@@ -72,7 +72,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2019-05-09T15:42:05+00:00"
+            "time": "2019-05-10T13:54:52+00:00"
         },
         {
             "name": "jeremykendall/php-domain-parser",
@@ -911,12 +911,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "47085e8d952e633115d7d246406dccaa4b8c6412"
+                "reference": "ed3cbebe47d20fb896cc911f44b39204c220fd61"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/47085e8d952e633115d7d246406dccaa4b8c6412",
-                "reference": "47085e8d952e633115d7d246406dccaa4b8c6412",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/ed3cbebe47d20fb896cc911f44b39204c220fd61",
+                "reference": "ed3cbebe47d20fb896cc911f44b39204c220fd61",
                 "shasum": ""
             },
             "require": {
@@ -970,7 +970,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2019-05-09T15:35:47+00:00"
+            "time": "2019-05-10T06:47:07+00:00"
         }
     ],
     "packages-dev": [],

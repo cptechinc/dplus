@@ -13,10 +13,13 @@
 			$q = strtoupper($input->$requestmethod->text('scan'));
 			$binID = $input->$requestmethod->text('binID');
 			$data = array("DBNAME=$dplusdb", 'INVSEARCH', "QUERY=$q");
-			$url = new Purl\Url($input->$requestmethod->text('page'));
-			$url->query->set('scan', $q);
-			$url->query->set('binID', $binID);
-			$session->loc = $url->getUrl();
+
+			if ($input->$requestmethod->page) {
+				$url = new Purl\Url($input->$requestmethod->text('page'));
+				$url->query->set('scan', $q);
+				$url->query->set('binID', $binID);
+				$session->loc = $url->getUrl();
+			}
 			break;
 		case 'physical-count': // TODO
 			$binID = $input->$requestmethod->text('binID');

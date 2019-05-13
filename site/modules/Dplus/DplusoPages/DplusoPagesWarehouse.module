@@ -241,6 +241,10 @@
 				$p = $event->object;
 				$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
 				$url->query->set('action','finish-item');
+				
+				if ($p->fullURL->query->has('linenbr')) {
+					$url->query->set('linenbr', $p->fullURL->query->get('linenbr'));
+				}
 				$url->query->set('page', $p->fullURL->getUrl());
 				$event->return = $url->getUrl();
 			});
