@@ -28,8 +28,8 @@
 		$page->body  = $config->twig->render('customers/customer-page.twig', ['page' => $page, 'customer' => $customer]);
 		$page->body  .= $config->twig->render('customers/ci-customer/customer-actions.twig', ['page' => $page, 'customer' => $customer, 'actions' => $actions, 'pagenbr' => $input->pageNum, 'resultscount'=> $actions->getNbResults()]);
 		$page->body  .= $config->twig->render('customers/ci-customer/customer-contacts.twig', ['page' => $page, 'customer' => $customer, 'contacts' => $contacts, 'pagenbr' => $input->pageNum, 'resultscount'=> $contacts->getNbResults()]);
-		$page->body  .= $config->twig->render('customers/ci-customer/customer-sales-orders.twig', ['page' => $page, 'customer' => $customer, 'orders' => $orders, 'pagenbr' => $input->pageNum, 'resultscount'=> $orders->getNbResults()]);
-		$page->body  .= $config->twig->render('customers/ci-customer/customer-shipped-orders.twig', ['page' => $page, 'customer' => $customer, 'orders' => $shippedorders, 'pagenbr' => $input->pageNum, 'resultscount'=> $shippedorders->getNbResults()]);
+		$page->body  .= $config->twig->render('customers/ci-customer/customer-sales-orders.twig', ['page' => $page, 'pages' => $pages, 'customer' => $customer, 'orders' => $orders, 'pagenbr' => $input->pageNum, 'custid' => $custID, 'resultscount'=> $orders->getNbResults(), 'sales_orders_list' => $pages->get('pw_template=ci-sales-orders')->url]);
+		$page->body  .= $config->twig->render('customers/ci-customer/customer-shipped-orders.twig', ['page' => $page, 'customer' => $customer, 'orders' => $shippedorders, 'pagenbr' => $input->pageNum, 'custid' => $custID, 'resultscount'=> $shippedorders->getNbResults(), 'shipped_orders_list' => $pages->get('pw_template=ci-sales-history')->url]);
 	} else {
 		$query = CustomerQuery::create();
 		if ($input->get->q) {
