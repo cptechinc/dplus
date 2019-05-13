@@ -10,7 +10,7 @@
 <div id="orders-search-div" class="{{ input.get.text('filter') is empty ? 'collapse' : ''}}">
 	<div class="card mb-3">
 		<div class="card-body">
-			<form action="" method="get" class="allow-enterkey-submit">
+			<form action="" method="get" class="allow-enterkey-submit" submit-empty="false">
 				<input type="hidden" name="filter" value="filter">
 
 				<div class="row mt-3">
