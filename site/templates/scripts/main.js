@@ -25,18 +25,26 @@ $(function() {
 	});
 
 	$("body").on('keypress', 'form:not(.allow-enterkey-submit) input', function(e) {
-			if (e.which === 13) {
-				e.preventDefault();
-				var input = $(this);
+		if (e.which === 13) {
+			e.preventDefault();
+			var input = $(this);
 
-				if (input.closest('form').attr('tab-inputs') == "true") {
-					var $canfocus = $('input:not([type=hidden])');
-					var index = $canfocus.index(this) + 1;
-					if (index >= $canfocus.length) index = 0;
-					$canfocus.eq(index).focus();
-				}
+			if (input.closest('form').attr('tab-inputs') == "true") {
+				var $canfocus = $('input:not([type=hidden])');
+				var index = $canfocus.index(this) + 1;
+				if (index >= $canfocus.length) index = 0;
+				$canfocus.eq(index).focus();
 			}
+		}
+	});
+
+	$('form[submit-empty="false"]').submit(function () {
+		var $empty_fields = $(this).find(':input').filter(function () {
+			return $(this).val() === '';
 		});
+		$empty_fields.prop('disabled', true);
+		return true;
+	});
 });
 
 function toggle_nav() {
