@@ -13,11 +13,18 @@
 				'notes'       => "Unguided: User will not be guided through the order
 				Guided: User will be guided through the order",
 				'options' => array('guided' => 'Guided', 'unguided' => 'Unguided')
+			),
+			'use_singleunitqty' => array(
+				'type'        => 'checkbox',  // TRUE OR FALSE
+				'label'       => 'Use Qty unit of 1',
+				'description' => 'Use Qty unit of 1',
+				'notes'       => 'Disables use of scanning barcodes with different unit quantities'
 			)
 		);
 
 		const DEFAULT_CONFIG = array(
-			'picking_method' => 'unguided'
+			'picking_method'    => 'unguided',
+			'use_singleunitqty' => true
 		);
 
 		/**
@@ -50,6 +57,15 @@
 			$f->notes = _($traits['notes']);
 			$f->addOptions($traits['options']);
 			$f->value = $data['picking_method'];
+			$fields->add($f);
+
+			$traits = self::CONFIG_FIELDS['use_singleunitqty'];
+			$f = $modules->get('InputfieldCheckbox');
+			$f->attr('name', 'use_singleunitqty');
+			$f->attr('checked', $data['use_singleunitqty'] ? 'checked' : '' );
+			$f->label = __($traits['label']);
+			$f->description = __($traits['description']);
+			$f->notes = _($traits['notes']);
 			$fields->add($f);
 
 			return $fields;

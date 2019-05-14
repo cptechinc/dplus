@@ -1,0 +1,17 @@
+{% embed "warehouse/picking/unguided/barcode-form.twig" %}
+	{% block item_inputs %}
+		<input type="hidden" name="binID" value="">
+		<div class="row">
+			<div class="col">
+				<div class="input-group form-group">
+					<input type="text" class="form-control" name="barcode" placeholder="Lot Number">
+					<span class="input-group-append">
+						<button type="submit" class="btn btn-success">
+							<i class="fa fa-plus" aria-hidden="true"></i> Add
+						</button>
+					</span>
+				</div>
+			</div>
+		</div>
+	{% endblock item_inputs %}
+{% endembed %}

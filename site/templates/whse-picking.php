@@ -26,8 +26,13 @@
 
 	// CHECK If Sales Order is Provided
 	if ($input->get->ordn) {
-		$ordn = $input->get->text('ordn');
+		$ordn = SalesOrder::get_paddedordernumber($input->get->text('ordn'));
 		$pickorder = PickSalesOrderQuery::create()->findOneByOrdernbr($ordn);
+
+		if ($config_picking->picking_method == 'unguided') {
+			$whsesession->set('bin', 'WHSE');
+			$whsesession->save();
+		}
 
 		if ($whsesession->is_orderinvalid()) { // Validate Sales Order Number
 			$page->formurl = $page->parent->child('template=redir')->url;
@@ -35,13 +40,14 @@
 			$page->body .= "<div class='form-group'></div>";
 			$page->body .= $config->twig->render('warehouse/picking/sales-order-form.twig', ['page' => $page]);
 			// CHECK the Order is not finished
+		} elseif ($whsesession->is_usingwrongfunction()) {
+			$page->body = $config->twig->render('warehouse/picking/status.twig', ['page' => $page, 'whsesession' => $whsesession]);
 		} elseif (!$whsesession->has_bin() && !$whsesession->is_orderfinished()) {
+
 			// CHECK if the order is unpickable because it's on hold | verified | invoiced
 			if ($whsesession->is_orderonhold() || $whsesession->is_orderverified() || $whsesession->is_orderinvoiced() || $whsesession->is_ordernotfound() || (!$config_inventory->allow_negativeinventory && $whsesession->is_ordershortstocked())) {
 				$page->body = $config->twig->render('warehouse/picking/status.twig', ['page' => $page, 'whsesession' => $whsesession]);
 				// VALIDATE if wrong picking function is being used
-			} elseif ($whsesession->is_usingwrongfunction()) {
-				$page->body = $config->twig->render('warehouse/picking/status.twig', ['page' => $page, 'whsesession' => $whsesession]);
 			} else { // SHOW STARTING BIN FORM
 				$page->title = 'Choose Starting Bin';
 				$page->formurl = $page->parent->child('template=redir')->url;
@@ -68,5 +74,7 @@
 		$page->formurl = $page->parent->child('template=redir')->url;
 		$page->body = $config->twig->render('warehouse/picking/sales-order-form.twig', ['page' => $page]);
 	}
+	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+	$config->scripts->append(hash_templatefile('scripts/warehouse/pick-order.js'));
 
 	include __DIR__ . "/basic-page.php";

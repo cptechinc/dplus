@@ -205,12 +205,11 @@
 						$binID     = str_pad($barcode['bin'], 8, ' ');
 						$lotserial = str_pad('', 20, ' ');
 						$qty       = $barcode['qty'];
-						$data[] = "BIN=$bin|LOTSERIAL=$lotserial|QTY=$qty";
+						$data[]    = "BIN=$bin|LOTSERIAL=$lotserial|QTY=$qty";
 					}
 				}
 			}
-			echo json_encode($data);
-			exit;
+
 			$session->loc = $input->$requestmethod->text('page');
 			break;
 		case 'skip-item':

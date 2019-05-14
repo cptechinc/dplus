@@ -1,0 +1,364 @@
+<?php namespace ProcessWire;
+
+use InvsearchQuery;
+use WhseitempickQuery, Whseitempick;
+use PickSalesOrderDetailQuery, PickSalesOrderDetail;
+
+class DplusoWarehousePicking extends WireData implements Module {
+	/**
+	 * Processwire Session
+	 * @var Session
+	 */
+	protected $session;
+
+	/**
+	 * Session ID
+	 * @var string
+	 */
+	protected $sessionID;
+
+	/**
+	 * Order Number
+	 * @var string
+	 */
+	protected $ordn;
+
+	/**
+	 * Line Number
+	 * @var int
+	 */
+	protected $linenbr;
+
+
+	/**
+	 * Item Being Picked
+	 * @var PickSalesOrderDetail
+	 */
+	protected $pickitem;
+
+	/**
+	 * Object with config modules
+	 * @var WireData
+	 */
+	protected $config;
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Warehouse Picking Functions Module',
+			'version' => 101,
+			'summary' => 'Handles Dplus Functions',
+			'singular' => true,
+			'autoload' => false,
+		);
+	}
+
+	public function init() {
+		$this->session = $this->wire('session');
+		$this->config = new WireData();
+		$this->config->inventory = $this->wire('modules')->get('WarehouseInventoryConfig');
+		$this->config->picking   = $this->wire('modules')->get('WarehousePickingConfig');
+	}
+
+	public function set_sessionID($sessionID) {
+		$this->sessionID = $sessionID;
+	}
+
+	public function set_ordn($ordn) {
+		$this->ordn = $ordn;
+	}
+
+	public function set_linenbr($linenbr) {
+		$this->linenbr = $linenbr;
+	}
+
+	public function set_pickitem(PickSalesOrderDetail $pickitem) {
+		$this->pickitem = $pickitem;
+	}
+
+	/**
+	 * Takes the Wire Input and decides which action to take based on the
+	 * action given
+	 * @param  WireInput $input Values to pull from
+	 * @return void
+	 */
+	public function handle_barcodeaction(WireInput $input) {
+		if ($input->requestMethod('POST')) {
+			$values = $input->post;
+			$action = $values->text('action');
+
+			switch ($action) {
+				case 'add-barcode':
+					$this->add_barcode($input);
+					break;
+				case 'edit-barcode':
+					$this->edit_barcode_qty($input);
+					break;
+				case 'delete-barcode':
+					$this->delete_barcode_qty($input);
+					break;
+			}
+		}
+	}
+
+	/**
+	 * Add Barcode for Order Line
+	 * NOTE does serial logic and if Inventory allows for negative inventory
+	 * @uses self::add_pickedbarcode
+	 * @param WireInput $input [description]
+	 */
+	public function add_barcode(WireInput $input) {
+		$values = $input->post;
+
+		$barcode   = $values->text('barcode');
+		$palletnbr = $values->int('palletnbr');
+		$binID     = $values->text('binID');
+		$is_valid  = false;
+		$pickitem = $this->get_picksalesorderdetail();
+
+		if ($pickitem->is_item_serialized() && $this->has_picked_barcode($barcode)) {
+			$this->session->pickerror = "Serial # $barcode has been picked for $pickitem->itemid";
+		} else {
+
+			if ($pickitem->is_item_serialized()) {
+				$item = InvsearchQuery::create()->get_lotserial($this->sessionID, $barcode);
+				$binID = $item->bin;
+			} elseif ($pickitem->is_item_lotted()) {
+				$item = InvsearchQuery::create()->get_lotserial($this->sessionID, $barcode, $binID);
+				$binID = $item->bin;
+			} else {
+				$item = InvsearchQuery::create()->findOneByItemid($this->sessionID, $barcode, $binID);
+			}
+
+			if ($this->config->inventory->allow_negativeinventory) {
+				$is_valid = true;
+			} else {
+				if ($item) {
+					if (InvsearchQuery::create()->get_binqty($this->sessionID, $item, $binID) >= 0) {
+						$is_valid = true;
+					} else {
+						$msg = "Insufficient " . strtoupper($item->get_itemtypepropertydesc())  . " " . $item->get_itemtypepropertydesc();
+						$msg .= " from $binID";
+						$this->session->pickerror = $msg;
+					}
+				} else {
+					$this->session->pickerror = "Scan: $barcode doesn't match anything for {$pickitem->itemid}";
+				}
+			}
+
+			if ($is_valid) {
+				$this->add_pickedbarcode($pickitem $barcode, $palletnbr, $binID);
+			}
+		}
+	}
+
+	/**
+	 * Inserts record into Whseitempick for this PickSalesOrderDetail
+	 * @param PickSalesOrderDetail $pickitem  Item to add
+	 * @param string               $barcode   Barcode Scanned
+	 * @param int                  $palletnbr Pallet
+	 * @param string               $binID     Bin Picked from
+	 */
+	public function add_pickedbarcode(PickSalesOrderDetail $pickitem, $barcode, $palletnbr = 1, $binID = '') {
+		$picking_master = WhseitempickQuery::create();
+
+		$item = new Whseitempick();
+		$item->setSessionid($pickitem->sessionid);
+		$item->setOrdn($pickitem->ordernbr);
+		$item->setItemid($pickitem->itemnbr);
+		$item->setRecordnumber($picking_master->get_max_orderline_recordnumber($pickitem->sessionid, $pickitem->ordernbr, $pickitem->linenbr) + 1);
+		$item->setPalletnbr($palletnbr);
+		$item->setLinenbr($pickitem->linenbr);
+		$item->setBarcode($barcode);
+		$item->setBin($binID);
+
+		if ($barcode == $pickitem->itemid) {
+			$item->setQty(1);
+		} elseif ($pickitem->is_item_serialized()) {
+			$item->setQty(1);
+		} elseif (BarcodesQuery::create()->get_barcode_itemid($barcode) == $pickitem->itemid) {
+			$barcode_info = BarcodesQuery::create()->findOneByBarcode($barcode);
+			$item->setQty($barcode_info->qty);
+		}
+		$item->save();
+	}
+
+	/**
+	 * Updates the Whseitempick record
+	 * @param  WireInput $input Values for barcode, record, qty
+	 * @return void
+	 */
+	public function edit_barcode_qty(WireInput $input) {
+		$values = $input->post;
+		$barcode   = $values->text('barcode');
+		$palletnbr = $values->int('palletnbr');
+		$recordnbr = $values->int('recordnbr');
+		$qty       = $values->int('qty');
+
+		$picking_master = WhseitempickQuery::create();
+		$item = $picking_master->findOneBySessionidOrdnLinenbrRecordnumber($this->sessionID, $this->ordn, $this->linenbr, $recordnbr);
+		$item->setQty($qty);
+		$item->save();
+	}
+
+	/**
+	 * Deletes an Whseitempick record
+	 * @param  WireInput $input Values for barcode, record, qty
+	 * @return void
+	 */
+	public function delete_barcode_qty(WireInput $input) {
+		$values = $input->post;
+		$barcode   = $values->text('barcode');
+		$palletnbr = $values->int('palletnbr');
+		$recordnbr = $values->int('recordnbr');
+
+		$picking_master = WhseitempickQuery::create();
+		$item = $picking_master->findOneBySessionidOrdnLinenbrRecordnumber($this->sessionID, $this->ordn, $this->linenbr, $recordnbr);
+		$item->delete();
+	}
+
+	/**
+	 * Gets the Total Qty picked for this User / Session
+	 * NOTE does logic for if item is serialized / lotted,
+	 * If singleunitqty is being used
+	 * @return int  Total Qty Picked
+	 */
+	public function get_userpickedtotal() {
+		$query = WhseitempickQuery::create();
+		$pickitem = $this->get_picksalesorderdetail();
+
+		if ($pickitem->is_item_lotted() || $pickitem->is_item_serialized()) {
+			$query->addAsColumn('sum', 'sum(qty)');
+			$query->select('sum');
+			$query->filterBySessionid($this->sessionID);
+			$query->filterByOrdn($this->ordn);
+			$query->filterByLinenbr($this->linenbr);
+			return intval($query->findOne());
+		} else {
+			if ($this->config->picking->use_singleunitqty) {
+				$query->addAsColumn('sum', 'sum(qty)');
+				$query->select('sum');
+				$query->filterBySessionid($this->sessionID);
+				$query->filterByOrdn($this->ordn);
+				$query->filterByLinenbr($this->linenbr);
+				return intval($query->findOne());
+			} else {
+				return intval($query->get_lineqtytotal($this->sessionID, $this->ordn, $this->linenbr));
+			}
+		}
+	}
+
+	/**
+	 * Returns the unitqty multiplied by the number of barcodes scanned
+	 * @param  Whseitempick $pickedbarcode
+	 * @return init                        Qty
+	 */
+	public function get_barcodeqtytotal(Whseitempick $pickedbarcode) {
+		if ($this->config->picking->use_singleunitqty) {
+			return $pickedbarcode->qty;
+		} else {
+			$barcode_qty = BarcodesQuery::create()->get_barcode_qty($pickedbarcode->barcode);
+			return $pickedbarcode->qty * $barcode_qty;
+		}
+	}
+
+	/**
+	 * Returns the Picked Qty + already pulled qty for the Order, not just user
+	 * // NOTE this Total is total picked for the order, not just what the user has picked
+	 * @return int Total Picked for this item on the order
+	 */
+	public function get_orderpickedtotal() {
+		$pickitem = $this->get_picksalesorderdetail();
+		return $pickitem->qtypulled + $this->get_userpickedtotal();
+	}
+
+	/**
+	 * Returns the Quantity remaining to pull
+	 * @return int
+	 */
+	public function get_qtyremaining() {
+		$pickitem = $this->get_picksalesorderdetail();
+		return $pickitem->qtyordered - ($this->get_orderpickedtotal());
+	}
+
+	/**
+	 * Returns if Qty picked is more than needed
+	 * @return bool Has user picked too much?
+	 */
+	public function has_pickedtoomuch() {
+		$pickitem = $this->get_picksalesorderdetail();
+		return $this->get_orderpickedtotal() > $pickitem->qtyordered;
+	}
+
+	/**
+	 * Returns if User has picked more than bin qty
+	 * @return bool Did user pick more than expected Bin Qty?
+	 */
+	public function has_pickedmorethanbinqty() {
+		$pickitem = $this->get_picksalesorderdetail();
+		return $this->get_userpickedtotal() > $pickitem->binqty;
+	}
+
+	/**
+	 * Creates an array for JS config for the item
+	 *
+	 * @return array
+	 */
+	public function get_pickitem_jsconfig() {
+		$pickitem = $this->get_picksalesorderdetail();
+		return array(
+			'itemid' => $pickitem->itemnbr,
+			'qty' => [
+				'expected'     => intval($pickitem->binqty),
+				'ordered'      => intval($pickitem->qtyordered),
+				'picked'       => intval($this->get_userpickedtotal()),
+				'pulled'       => intval($pickitem->qtypulled),
+				'total_picked' => intval($this->get_orderpickedtotal()),
+				'remaining'    => intval($this->get_qtyremaining())
+			]
+		);
+	}
+
+	/**
+	 * Is negative inventory allowed?
+	 * @return bool
+	 */
+	public function allow_negativeintentory() {
+		return boolval($this->config->inventory->allow_negativeinventory);
+	}
+
+	/**
+	 * Has this barcode been used for this Sales order and Line Nbr
+	 * NOTE being used for lotted and serialized
+	 * @param  string $barcode Barcode Scan
+	 * @return bool            Is there a Whseitempick record with this barcode
+	 */
+	public function has_picked_barcode($barcode) {
+		$pickitem = $this->get_picksalesorderdetail();
+		return boolval(WhseitempickQuery::create()->has_picked_barcode($this->sessionID, $pickitem->ordernbr, $pickitem->itemnbr, $barcode, $pickitem->linenbr));
+	}
+
+	/**
+	 * Returns if the picksalesorderdetail line is being picked
+	 * @param  PickSalesOrderDetail $pickitem
+	 * @return bool                           Is picksalesorderdetail being picked?
+	 */
+	public function is_line_being_picked(PickSalesOrderDetail $pickitem) {
+		return boolval(WhseitempickQuery::create()->is_orderline_being_picked($this->sessionID, $pickitem->ordernbr, $pickitem->linenbr));
+	}
+
+	/**
+	 * Returns PickSalesOrderDetail for this session, order, line
+	 * @return PickSalesOrderDetail
+	 */
+	public function get_picksalesorderdetail() {
+		return PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr($this->sessionID, $this->ordn, $this->linenbr);
+	}
+}

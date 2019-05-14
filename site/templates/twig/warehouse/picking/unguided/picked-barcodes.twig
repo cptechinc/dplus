@@ -2,6 +2,7 @@
 <table class="table table-condensed table-striped">
 	<tr>
 		<th>Barcode</th>
+		<th>Bin</th>
 		{% if pickitem.is_item_serialized() == false %}
 			<th>Number of Units</th>
 			<th>Qty Total</th>
@@ -11,6 +12,7 @@
 	{% for barcode in picked_barcodes %}
 		<tr>
 			<td>{{ barcode.barcode }}</td>
+			<td>{{ barcode.bin }}</td>
 			{% if pickitem.is_item_serialized() == false %}
 				<td class="text-right">
 					<form action="{{ page.fullURL.getUrl() }}" method="post">
@@ -28,7 +30,7 @@
 					</form>
 				</td>
 				<td class="text-right">
-					{{ barcode.get_barcodeqtytotal() }}
+					{{ pickingsession.get_barcodeqtytotal(barcode) }}
 				</td>
 			{% endif %}
 			<td class="text-right">

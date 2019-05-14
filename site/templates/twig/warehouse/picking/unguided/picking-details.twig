@@ -23,18 +23,20 @@
 	{% endif %}
 	<tr>
 		<td class="control-label">Qty Picked</td>
-		<td class="text-right">{{ pickitem.get_userpickedtotal() }}</td>
+		<td class="text-right">{{ pickingsession.get_userpickedtotal() }}</td>
 	</tr>
-
 	{% set bgcolor = '' %}
 
-	{% if pickitem.has_pickedtoomuch() or pickitem.has_pickedmorethanbinqty() or pickitem.get_qtyremaining() > 0  %}
+	{% if pickingsession.has_pickedtoomuch() or (pickingsession.get_qtyremaining() > 0)  %}
+		{% set bgcolor = 'bg-warning text-white' %}
+	{% elseif pickingsession.allow_negativeintentory() == false %}
 		{% set bgcolor = 'bg-warning text-white' %}
 	{% else %}
 		{% set bgcolor = 'bg-success text-white' %}
 	{% endif %}
+	
 	<tr class="{{ bgcolor }}">
 		<td class="control-label">Qty Remaining</td>
-		<td class="text-right">{{ pickitem.get_qtyremaining() }}</td>
+		<td class="text-right">{{ pickingsession.get_qtyremaining() }}</td>
 	</tr>
 </table>

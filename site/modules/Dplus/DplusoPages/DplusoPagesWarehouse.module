@@ -44,11 +44,6 @@
 				'fields' => array('title'),
 				'paginated' => false
 			),
-			'config-whse-label-print' => array(
-				'name'   => 'config-whse-label-print',
-				'fields' => array('title', 'show_masterpack'),
-				'paginated' => false
-			),
 			'whse-picking' => array(
 				'name'   => 'whse-picking',
 				'fields' => array('title'),
@@ -72,13 +67,6 @@
 		);
 
 		protected $pages = array(
-			'config-whse-label-print' => array(
-				'template'       => 'config-whse-label-print',
-				'name'           => 'print-item-label',
-				'title'          => 'Item Label Print',
-				'summary'        => 'Item Label Print Configurations',
-				'parent'         => '/config/warehouse/inventory/'
-			),
 			'warehouse-menu' => array(
 				'template'       => 'warehouse-menu',
 				'name'           => 'warehouse',
@@ -241,7 +229,7 @@
 				$p = $event->object;
 				$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
 				$url->query->set('action','finish-item');
-				
+
 				if ($p->fullURL->query->has('linenbr')) {
 					$url->query->set('linenbr', $p->fullURL->query->get('linenbr'));
 				}
