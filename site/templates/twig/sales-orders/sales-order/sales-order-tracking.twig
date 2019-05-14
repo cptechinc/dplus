@@ -1,0 +1,17 @@
+<div id="tracking">
+	<h3 class="font-weight-bold">Tracking</h3>
+	<table class="table table-striped">
+		<tr>
+			<th>Ship Date</th>
+			<th>Delivery Service</th>
+			<th>Tracking Number</th>
+		</tr>
+		{% for shipment in shipments %}
+			<tr>
+				<td>{{ convertdate(shipment.shipdate, "m/d/Y") }}</td>
+				<td>{{ shipment.deliveredby }}</td>
+				<td>{{ shipment.trackingnbr }}</td>
+			</tr>
+		{% endfor %}
+	</table>
+</div>
