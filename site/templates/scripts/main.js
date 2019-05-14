@@ -42,6 +42,14 @@ $(function() {
 		var form = placard.closest('form');
 		form.submit();
 	});
+
+	$('form[submit-empty="false"]').submit(function () {
+		var $empty_fields = $(this).find(':input').filter(function () {
+			return $(this).val() === '';
+		});
+		$empty_fields.prop('disabled', true);
+		return true;
+	});
 });
 
 function toggle_nav() {

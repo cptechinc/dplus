@@ -101,6 +101,36 @@
 					}
 				}
 			});
+
+			$this->addHook('Page(template=dplus-function)::is_sorting', function($event) {
+				$page = $event->object;
+				$event->return = $this->wire('input')->get->sortby;
+			});
+
+			$this->addHook('Page(template=dplus-function)::sortby', function($event) {
+				$page = $event->object;
+				$event->return = $this->wire('input')->get->text('sortby');
+			});
+
+			$this->addHook('Page(template=dplus-function)::sortby_column', function($event) {
+				$page = $event->object;
+				$sortby = $this->wire('input')->get->text('sortby');
+				$sortby_array = explode('-', $sortby);
+				$event->return = $sortby_array[0];
+			});
+
+			$this->addHook('Page(template=dplus-function)::sortby_order', function($event) {
+				$page = $event->object;
+				$sortby = $this->wire('input')->get->text('sortby');
+				$order = 'ASC';
+
+				if (strpos($sortby, '-') !== false) {
+					$sortby_array = explode('-', $sortby);
+					$order = $sortby_array[1];
+				}
+
+				$event->return = $order;
+			});
 		}
 
 		/**
