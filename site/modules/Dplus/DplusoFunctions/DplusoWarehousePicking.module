@@ -154,7 +154,7 @@ class DplusoWarehousePicking extends WireData implements Module {
 			}
 
 			if ($is_valid) {
-				$this->add_pickedbarcode($pickitem $barcode, $palletnbr, $binID);
+				$this->add_pickedbarcode($pickitem, $barcode, $palletnbr, $binID);
 			}
 		}
 	}
