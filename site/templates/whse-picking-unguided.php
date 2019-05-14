@@ -14,7 +14,7 @@
 	if ($nbr_pickinglines > 0) {
 		if ($nbr_pickinglines == 1) {
 			$page->fullURL->query->set('linenbr', 1);
-			
+
 			$session->redirect($page->fullURL->getUrl(), $http301 = false);
 		} else {
 			if ($input->get->linenbr) {
@@ -64,7 +64,7 @@
 				}
 
 				if (InvsearchQuery::create()->countByItemid(session_id(), $scan)){
-					echo 'itemid';
+					$item = InvsearchQuery::create()->findOneByItemid(session_id(), $scan);
 				}
 
 				if (PickSalesOrderDetailQuery::create()->countBySessionidOrderItemid(session_id(), $ordn, $item->itemid)) {
@@ -72,6 +72,8 @@
 					$page->fullURL->query->set('linenbr', $linenbr);
 					$session->redirect($page->fullURL->getUrl(), $http301 = false);
 				}
+
+
 			} else {
 				$items = PickSalesOrderDetailQuery::create()->findBySessionidOrder(session_id(), $ordn);
 
