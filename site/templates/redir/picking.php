@@ -192,7 +192,7 @@
 				$linenbr = $input->get->int('linenbr');
 				$pickitem = PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr(session_id(), $whsesession->ordernbr, $linenbr);
 				$data = array("DBNAME=$dplusdb", 'ACCEPTITEM', "ORDERNBR=$whsesession->ordernbr", "LINENBR=$pickitem->linenbr", "ITEMID=$pickitem->itemnbr");
-				
+
 				if ($pickitem->is_item_serialized() || $pickitem->is_item_lotted()) {
 					$barcodes = $pickitem->get_userpickedtotalsbybarcode();
 
@@ -209,9 +209,6 @@
 						$data[]    = "BIN=$bin|LOTSERIAL=$lotserial|QTY=$qty";
 					}
 				}
-				echo json_encode($data);
-				write_dplusfile($data, $filename);
-				exit;
 			}
 
 			$session->loc = $input->$requestmethod->text('page');
