@@ -25,4 +25,28 @@ class DocumentManagement extends WireData implements Module {
 		$documents_master->filterByReference1($ordn);
 		return $documents_master->find();
 	}
+
+	public function count_salesorderdocuments($ordn) {
+		$documents_master = DocumentsQuery::create();
+		$documents_master->filterByTag(self::TAG_SALESORDER);
+		$documents_master->filterByReference1($ordn);
+		return $documents_master->count();
+	}
+
+	public function move_document($folder, $filename, $directory = '') {
+		$documents_master = DocumentsQuery::create();
+		$documents_master->filterByFolder($folder);
+		$documents_master->filterByFilename($filename);
+		$document = $documents_master->findOne();
+
+		$folder = DocumentFoldersQuery::create()->findOneByFolder($folder);
+		$this->move_file($folder->directory, $document->filename);
+	}
+
+	public function move_file($directory, $filename, $destination = '') {
+		$srcfile = "$directory/$filename";
+		$destination = empty($destination) ? $this->wire('config')->directory_webdocs : $destination;
+		$newfile = "$destination/$filename";
+		return copy($srcfile, $newfile);
+	}
 }
