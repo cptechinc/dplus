@@ -209,6 +209,9 @@
 						$data[]    = "BIN=$bin|LOTSERIAL=$lotserial|QTY=$qty";
 					}
 				}
+				echo json_encode($data);
+				write_dplusfile($data, $filename);
+				exit;
 			}
 
 			$session->loc = $input->$requestmethod->text('page');
