@@ -20,6 +20,16 @@
 					<span class="sr-only">View Tracking</span>
 				</span>
 			{% endif %}
+
+			{% if document_management.count_salesorderdocuments(order.ordernumber) %}
+				<a href="#documents" title="View Documents" aria-label="View Documents">
+					<i class="fa fa-file-text fa-2x" aria-hidden="true"></i>
+				</a>
+			{% else %}
+				<span title="View Documents" aria-label="View Documents">
+					<i class="fa fa-file-text fa-2x text-light" aria-hidden="true"></i>
+				</span>
+			{% endif %}
 		</div>
 	</div>
 

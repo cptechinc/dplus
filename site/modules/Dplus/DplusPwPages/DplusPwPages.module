@@ -9,14 +9,30 @@
 			)
 		);
 
-		protected $templates = array(
-			/* Example
+		static $default_templates = array(
 			'dplus-menu' => array(
 				'name'   => 'dplus-menu',
-				'fields' => array('dplus_function', 'pw_template', 'summary')
+				'fields' => array('dplus_function', 'summary'),
 				'paginated' => false
+			),
+			'dplus-function' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('dplus_function', 'pw_template', 'summary'),
+				'paginated' => true
 			)
-			 */
+		);
+
+		protected $templates = array(
+			'dplus-menu' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('dplus_function', 'summary'),
+				'paginated' => false
+			),
+			'dplus-function' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('dplus_function', 'pw_template', 'summary'),
+				'paginated' => true
+			)
 		);
 
 		protected $pages = array(
@@ -199,10 +215,7 @@
 		 */
 		protected function create_field(array $field) {
 			$f = new Field(); // create new field object
-			$f->type = ucfirst($field['type']); // get a field type
-			$f->name = $field['name'];
-			$f->label = $field['label'];
-			return $f->save();
+			return $this->set_fieldproperties($f, $field);
 		}
 
 		/**
@@ -213,10 +226,35 @@
 		 */
 		protected function update_field(array $field) {
 			$f = wire('fields')->get($field['name']);
+			return $this->set_fieldproperties($f, $field);
+		}
+
+		public function set_fieldproperties(Field $f, array $field) {
 			$f->type = ucfirst($field['type']); // get a field type
 			$f->name = $field['name'];
 			$f->label = $field['label'];
+
+			if (isset($field['notes'])) {
+				$f->notes = $field['notes'];
+			}
+			$function = "update_field_".$field['type'];
+
+			if (method_exists($this, $function)) {
+				$this->$function($f, $field);
+			}
+
 			return $f->save();
+		}
+
+		protected function update_field_select(Field $field, array $fieldproperties) {
+			$options = new SelectableOptionArray();
+			foreach ($fieldproperties['options'] as $option => $title) {
+				$selectoption = new SelectableOption();
+				$selectoption->title = $title;
+				$selectoption->value = $option;
+				$options->add($selectoption);
+			}
+			$field->type->setOptions($field, $options);
 		}
 
 		/**
@@ -226,7 +264,8 @@
 		protected function create_fieldgroup($template) {
 			$pw_fields = new Fieldgroup();
 			$pw_fields->name = $template;
-			return $pw_fields->save();
+			$pw_fields->save();
+			return $pw_fields;
 		}
 
 		/**
@@ -237,9 +276,9 @@
 			$pw_fields = wire('templates')->get($template)->fieldgroup;
 
 			if (get_class($pw_fields) != 'ProcessWire\Fieldgroup') {
-				$this->create_fieldgroup($template);
-				$pw_fields = wire('templates')->get($template)->fieldgroup;
+				$pw_fields = $this->create_fieldgroup($template);
 			}
+
 			$templatefields = $this->templates[$template]['fields'];
 
 			foreach ($templatefields as $fieldname) {
@@ -266,7 +305,8 @@
 		protected function create_template($template) {
 			$t = new Template();
 			$t->name = $template;
-			$this->create_fieldgroup($template);
+			$t->fieldgroup = $this->create_fieldgroup($template);
+			$t->save();
 			$this->update_fieldgroup($template);
 			$t->fieldgroup = $this->wire('fieldgroups')->get($template);
 			$this->allowPageNum = $this->templates[$template]['paginated'] ? 1 : 0;
@@ -294,6 +334,7 @@
 		 * @return bool        Was Page updated?
 		 */
 		protected function update_page($page) {
+
 			$pagepath = $page['parent'].$page['name']."/";
 			$parentpath = isset($page['parent-new']) ? $page['parent-new'] : $page['parent'];
 
@@ -304,17 +345,22 @@
 			$pw_page->name = $page['name'];
 			$pw_page->title = $page['title'];
 
+			if (in_array($page['template'], array_keys(self::$default_templates))) {
+				foreach (self::$default_templates[$page['template']]['fields'] as $fieldname) {
+					$pw_page->$fieldname = $page[$fieldname];
+				}
+			}
+
 			foreach ($this->templates[$page['template']]['fields'] as $fieldname) {
 				$pw_page->$fieldname = $page[$fieldname];
 			}
-			echo "<br>";
 			return $pw_page->save();
 		}
 
 		/**
 		 * Creates Page
 		 * @param  string $page
-		 * @return bool        Was Page created?
+		 * @return bool         Was Page created?
 		 */
 		protected function create_page($page) {
 			$pw_page = new Page();
@@ -323,7 +369,13 @@
 			$pw_page->name = $page['name'];
 			$pw_page->title = $page['title'];
 
-			foreach ($this->templates[$page['name']]['fields'] as $fieldname) {
+			if (in_array($page['template'], self::$default_templates)) {
+				foreach (self::$default_templates[$page['template']]['fields'] as $fieldname) {
+					$pw_page->$fieldname = $page[$fieldname];
+				}
+			}
+
+			foreach ($this->templates[$page['template']]['fields'] as $fieldname) {
 				$pw_page->$fieldname = $page[$fieldname];
 			}
 			return $pw_page->save();
@@ -337,13 +389,11 @@
 				$replace = ($pagenbr > 1) ? "page".$pagenbr : "";
 				$url = preg_replace($regex, $replace, $url);
 			} else {
-				$insertafter = "$page->name/";
+				$insertafter = "/$page->name/";
 				$regex = "(($insertafter))";
 				$replace = ($pagenbr > 1) ? $insertafter."page".$pagenbr."/" : $insertafter;
 				$url = preg_replace($regex, $replace, $url);
 			}
 			return $url;
 		}
-
-
 	}

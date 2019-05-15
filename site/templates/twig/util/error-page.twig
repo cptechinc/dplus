@@ -1,8 +1,8 @@
 <div class="mt-2" role="">
-    <div class="alert alert-danger mt-2" role="alert">
-		{{ msg }}
+	<div class="form-group">
+		{% include 'util/alert.twig' with {'type': 'danger','iconclass': 'fa fa-warning fa-2x', 'title': title, 'message': msg} %}
 	</div>
-    <button class="btn btn-default" onclick="window.history.back()">
-        <i class="fa fa-undo" aria-hidden="true"></i> Go Back
-    </button>
+	<button class="btn btn-default" onclick="window.history.back()">
+		<i class="fa fa-undo" aria-hidden="true"></i> Go Back
+	</button>
 </div>
