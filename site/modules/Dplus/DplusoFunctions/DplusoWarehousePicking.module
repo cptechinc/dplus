@@ -342,7 +342,7 @@ class DplusoWarehousePicking extends WireData implements Module {
 	 */
 	public function has_picked_barcode($barcode) {
 		$pickitem = $this->get_picksalesorderdetail();
-		return boolval(WhseitempickQuery::create()->has_picked_barcode($this->sessionID, $pickitem->ordernbr, $pickitem->itemnbr, $barcode, $pickitem->linenbr));
+		return boolval(WhseitempickQuery::create()->has_picked_barcode($this->sessionID, $pickitem->ordernbr, $barcode, $pickitem->linenbr));
 	}
 
 	/**
