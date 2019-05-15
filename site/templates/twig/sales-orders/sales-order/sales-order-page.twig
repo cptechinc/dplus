@@ -9,11 +9,16 @@
 				<i class="fa fa-undo" aria-hidden="true"></i> Go back
 			</a>
 		</div>
-		<div class="col">
+		<div class="col text-right">
 			{% if order.has_tracking() %}
-				<a href="#tracking" class=""><i class="fa fa-truck fa-2x" aria-hidden="true"></i></a>
+				<a href="#tracking" title="View Tracking" aria-label="View Tracking">
+					<i class="fa fa-truck fa-2x" aria-hidden="true"></i>
+				</a>
 			{% else %}
-				<i class="fa fa-truck fa-2x text-light" aria-hidden="true"></i>
+				<span title="View Tracking">
+					<i class="fa fa-truck fa-2x text-light" aria-hidden="true"></i>
+					<span class="sr-only">View Tracking</span>
+				</span>
 			{% endif %}
 		</div>
 	</div>
@@ -21,13 +26,13 @@
 </div>
 <div class="row mt-4">
 	<div class="col-sm-4">
-		<legend class="font-weight-bold text-danger">Billing</legend>
+		<legend class="font-weight-bold text-secondary">Billing</legend>
 		<address>
 
 		</address>
 	</div>
 	<div class="col-sm-4">
-		<legend class="font-weight-bold text-danger">Shipping ({{ order.shiptoid }})</legend>
+		<legend class="font-weight-bold text-secondary">Shipping ({{ order.shiptoid }})</legend>
 		<address>
 			{{ order.shipto_name }} <br>
 			{{ order.shipto_address1 }} <br>
@@ -36,7 +41,7 @@
 		</address>
 	</div>
 	<div class="col-sm-4">
-		<legend class="font-weight-bold text-danger">Order Summary</legend>
+		<legend class="font-weight-bold text-secondary">Order Summary</legend>
 		<div class="row">
 			<div class="col-sm-7">Items on Order</div>
 			<div class="col-sm-5 text-right">{{ order.count_items() }}</div>
@@ -64,7 +69,7 @@
 	</div>
 </div>
 
-<h3 class="font-weight-bold text-danger mt-4">Order Items</h3>
+<h3 class="font-weight-bold text-secondary mt-4">Order Items</h3>
 <table class="table table-striped table-borderless">
 	<thead class="bg-dark text-white font-weight-bold">
 		<tr>

@@ -1,0 +1,21 @@
+<div id="documents">
+	<h3 class="font-weight-bold text-secondary">Documents</h3>
+	<table class="table table-striped">
+		<tr class="bg-dark text-white">
+			<th>Date</th>
+			<th>Time</th>
+			<th>Title</th>
+			<th>Filename</th>
+		</tr>
+		{% for document in documents %}
+			<tr>
+				<td>{{ convertdate(document.date, "m/d/Y") }}</td>
+				<td>{{ convertdate(document.date ~ document.time[:4], "h:i A") }}</td>
+				<td>{{ document.title }}</td>
+				<td>
+					{{ document.filename }}
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+</div>
