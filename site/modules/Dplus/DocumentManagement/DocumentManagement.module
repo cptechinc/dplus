@@ -1,0 +1,28 @@
+<?php
+
+use DocumentFoldersQuery, DocumentFolders;
+use DocumentsQuery, Documents;
+
+class DocumentManagement extends WireData implements Module {
+
+	const TAG_ARINVOICES = 'AR';
+	const TAG_SALESORDER = 'SO';
+	const TAG_QUOTE = 'QT';
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Document Management',
+			'version' => 101,
+			'summary' => 'Module for getting Documents / Document Info out of Dplus',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+	public function get_salesorderdocuments($ordn) {
+		$documents_master = DocumentsQuery::create();
+		$documents_master->filterByTag(self::TAG_SALESORDER);
+		$documents_master->filterByReference1($ordn);
+		return $documents_master->find();
+	}
+}
