@@ -61,16 +61,7 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 
-		if (pickitem.item.qty.expected < pickitem.item.qty.picked) {
-			swal({
-				title: 'Bin Error',
-				text: "You have picked more than expected bin qty",
-				type: 'warning',
-				confirmButtonClass: 'btn btn-success',
-				buttonsStyling: false,
-				confirmButtonText: 'Continue'
-			});
-		} else if (pickitem.item.qty.remaining < 0) {
+		if (pickitem.item.qty.remaining < 0) {
 			swal({
 				title: 'Are you sure?',
 				text: "You have picked too much",

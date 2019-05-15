@@ -24,6 +24,7 @@
 				$pickitem = PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr(session_id(), $ordn, $linenbr);
 				$http->get($pages->get('template=redir,redir_file=inventory')->httpUrl."?action=inventory-search&scan=$pickitem->itemid&sessionID=".session_id());
 				$picked_barcodes = WhseitempickQuery::create()->get_order_pickeditems(session_id(), $ordn, $pickitem->itemid);
+
 				$jsconfig = array(
 					'pickitem' => array(
 						'item'          => $pickingsession->get_pickitem_jsconfig(),
