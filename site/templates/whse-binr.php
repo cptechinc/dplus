@@ -45,7 +45,7 @@
 			$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page]);
 		} elseif ($resultscount == 1) { // If one item is found
 			$item = InvsearchQuery::create()->findOneBySessionid(session_id());
-			$url = $page->parent('template=warehouse-menu')->child('template=redir')->url."?action=search-item-bins&itemID=$itemID&page=$pageurl";
+			$url = $page->binr_itemURL($item);
 			$session->redirect($url , $http301 = false);
 		} else {
 			// Multiple Items - count the number Distinct Item IDs
@@ -80,7 +80,7 @@
 			$serialnbr = $input->get->text('serialnbr');
 			$input->get->scan = $page->scan = $serialnbr;
 			$resultscount = InvsearchQuery::create()->countByLotserial(session_id(), $serialnbr, $binID);
-			$item = $resultscount == 1 ? InvsearchQuery::create()->get_lotserial(session_id(), $lotnbr, $binID) : false;
+			$item = $resultscount == 1 ? InvsearchQuery::create()->get_lotserial(session_id(), $serialnbr, $binID) : false;
 		} elseif ($input->get->itemID) {
 			$itemID = $input->get->text('itemID');
 			$input->get->scan = $page->scan = $itemID;
