@@ -1,10 +1,9 @@
-<h3 class="text-center">Barcodes Scanned</h3>
+<h3 class="text-center">Lot Numbers Scanned</h3>
 <table class="table table-condensed table-striped">
 	<tr>
-		<th>Barcode</th>
+		<th>Lot #</th>
 		<th>Bin</th>
-		<th>Number of Units</th>
-		<th>Qty Total</th>
+		<th>Qty</th>
 		<th class="text-center">Remove</th>
 	</tr>
 	{% for barcode in picked_barcodes %}
@@ -25,9 +24,6 @@
 						</div>
 					</div>
 				</form>
-			</td>
-			<td class="text-right">
-				{{ pickingsession.get_barcodeqtytotal(barcode) }}
 			</td>
 			<td class="text-right">
 				<form action="{{ page.fullURL.getUrl() }}" method="post">

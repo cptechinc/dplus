@@ -185,9 +185,7 @@ class DplusoWarehousePicking extends WireData implements Module {
 		$item->setBarcode($barcode);
 		$item->setBin($binID);
 
-		if ($barcode == $pickitem->itemid) {
-			$item->setQty(1);
-		} elseif ($pickitem->is_item_serialized()) {
+		if ($barcode == $pickitem->itemid || $pickitem->is_item_serialized() || $pickitem->is_item_lotted() ) {
 			$item->setQty(1);
 		} elseif (BarcodesQuery::create()->get_barcode_itemid($barcode) == $pickitem->itemid) {
 			$barcode_info = BarcodesQuery::create()->findOneByBarcode($barcode);
