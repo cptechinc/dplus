@@ -193,6 +193,7 @@
 				$pickitem = PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr(session_id(), $whsesession->ordernbr, $linenbr);
 				$data = array("DBNAME=$dplusdb", 'ACCEPTITEM', "ORDERNBR=$whsesession->ordernbr", "LINENBR=$pickitem->linenbr", "ITEMID=$pickitem->itemnbr");
 
+
 				if ($pickitem->is_item_serialized() || $pickitem->is_item_lotted()) {
 					$barcodes = $pickitem->get_userpickedtotalsbybarcode();
 
@@ -201,20 +202,19 @@
 					}
 				} else {
 					$barcodes = $pickitem->get_userpickedtotalsbybin();
-
 					foreach ($barcodes as $barcode) {
 						$binID     = str_pad($barcode['bin'], 8, ' ');
 						$lotserial = str_pad('', 20, ' ');
 						$qty       = $barcode['qty'];
-						$data[]    = "BIN=$bin|LOTSERIAL=$lotserial|QTY=$qty";
+						$data[]    = "BIN=$binID|LOTSERIAL=$lotserial|QTY=$qty";
 					}
 				}
-				echo json_encode($data);
-				write_dplusfile($data, $filename);
-				exit;
+				$url = new Purl\Url($input->$requestmethod->text('page'));
+				$url->query->remove('linenbr');
+				$input->$requestmethod->page = $url->getUrl();
 			}
-
 			$session->loc = $input->$requestmethod->text('page');
+			WhseitempickQuery::create()->filterBySessionidOrderLinenbr(session_id(), $whsesession->ordn, $linenbr)->delete();
 			break;
 		case 'skip-item':
 			$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
@@ -227,14 +227,18 @@
 			$data = array("DBNAME=$dplusdb", 'COMPLETEORDER', "ORDERNBR=$whsesession->ordn");
 			$url = new Purl\Url($input->$requestmethod->text('page'));
 			$url->query->remove('ordn');
+			$url->query->remove('linenbr');
 			$session->loc = $url->getUrl();
+			WhseitempickQuery::create()->filterBySessionidOrder(session_id(), $whsesession->ordn)->delete();
 			break;
 		case 'exit-order':
 			$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 			$data = array("DBNAME=$dplusdb", 'STOPORDER', "ORDERNBR=$whsesession->ordn");
 			$url = new Purl\Url($input->$requestmethod->text('page'));
 			$url->query->remove('ordn');
+			$url->query->remove('linenbr');
 			$session->loc = $url->getUrl();
+			WhseitempickQuery::create()->filterBySessionidOrder(session_id(), $whsesession->ordn)->delete();
 			break;
 		case 'cancel-order':
 			$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
