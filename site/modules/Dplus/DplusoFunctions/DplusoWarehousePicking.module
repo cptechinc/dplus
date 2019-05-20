@@ -3,6 +3,7 @@
 use InvsearchQuery;
 use WhseitempickQuery, Whseitempick;
 use PickSalesOrderDetailQuery, PickSalesOrderDetail;
+use BarcodesQuery, Barcodes;
 
 class DplusoWarehousePicking extends WireData implements Module {
 	/**
@@ -120,21 +121,22 @@ class DplusoWarehousePicking extends WireData implements Module {
 		$barcode   = $values->text('barcode');
 		$palletnbr = $values->int('palletnbr');
 		$binID     = $values->text('binID');
+		$scanned_binID =  $values->text('binID');
 		$is_valid  = false;
 		$pickitem = $this->get_picksalesorderdetail();
 
 		if ($pickitem->is_item_serialized() && $this->has_picked_barcode($barcode)) {
 			$this->session->pickerror = "Serial # $barcode has been picked for $pickitem->itemid";
 		} else {
+			$bincount = 0;
 
-			if ($pickitem->is_item_serialized()) {
+			if ($pickitem->is_item_serialized() || $pickitem->is_item_lotted()) {
 				$item = InvsearchQuery::create()->get_lotserial($this->sessionID, $barcode);
 				$binID = $item->bin;
-			} elseif ($pickitem->is_item_lotted()) {
-				$item = InvsearchQuery::create()->get_lotserial($this->sessionID, $barcode, $binID);
-				$binID = $item->bin;
+				$bincount = InvsearchQuery::create()->count_itembins_lotserial($this->sessionID, $item->itemid, $item->lotserial);
 			} else {
 				$item = InvsearchQuery::create()->findOneByItemid($this->sessionID, $barcode, $binID);
+				$bincount = InvsearchQuery::create()->count_itembins_itemid($this->sessionID, $item->itemid);
 			}
 
 			if ($this->config->inventory->allow_negativeinventory) {
@@ -149,12 +151,16 @@ class DplusoWarehousePicking extends WireData implements Module {
 						$this->session->pickerror = $msg;
 					}
 				} else {
-					$this->session->pickerror = "Scan: $barcode doesn't match anything for {$pickitem->itemid}";
+					$this->session->pickerror = "Scan: $barcode doesn't match anything for {$pickitem->itemid} in bin '$binID'";
 				}
 			}
 
 			if ($is_valid) {
-				$this->add_pickedbarcode($pickitem, $barcode, $palletnbr, $binID);
+				if ($bincount == 1 || !empty($scanned_binID)) {
+					$this->add_pickedbarcode($pickitem, $barcode, $palletnbr, $binID);
+				} else {
+					$this->session->pickerror = "Please Provide a bin for $barcode";
+				}
 			}
 		}
 	}
@@ -188,6 +194,24 @@ class DplusoWarehousePicking extends WireData implements Module {
 			$item->setQty($barcode_info->qty);
 		}
 		$item->save();
+	}
+
+	public function add_scannedbarcode($scan, $linenbr = 1) {
+		if (InvsearchQuery::create()->countByLotserial($this->sessionID, $scan)) {
+			$item = InvsearchQuery::create()->get_lotserial($this->sessionID, $scan);
+			$bincount = InvsearchQuery::create()->count_itembins_lotserial($this->sessionID, $item->itemid, $item->lotserial);
+		} elseif (InvsearchQuery::create()->countByItemid($this->sessionID, $scan)){
+			$item = InvsearchQuery::create()->findOneByItemid($this->sessionID, $scan);
+			$bincount = InvsearchQuery::create()->count_itembins_itemid($this->sessionID, $item->itemid);
+		}
+
+		if ($bincount == 1) {
+			$pickitem = PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr($this->sessionID, $this->ordn, $linenbr);
+			$barcode = $item->is_lotted() || $item->is_serialized() ? $item->lotserial : $item->itemid;
+			$this->add_pickedbarcode($pickitem, $barcode, 1, $item->bin);
+		} else {
+			$session->pickerror = "That item is in multiple bins";
+		}
 	}
 
 	/**
@@ -274,7 +298,8 @@ class DplusoWarehousePicking extends WireData implements Module {
 	 * // NOTE this Total is total picked for the order, not just what the user has picked
 	 * @return int Total Picked for this item on the order
 	 */
-	public function get_orderpickedtotal() {
+	public function get_orderpickedtotal($linenbr = 0) {
+		if ($linenbr) $this->set_linenbr($linenbr);
 		$pickitem = $this->get_picksalesorderdetail();
 		return $pickitem->qtypulled + $this->get_userpickedtotal();
 	}
@@ -283,7 +308,8 @@ class DplusoWarehousePicking extends WireData implements Module {
 	 * Returns the Quantity remaining to pull
 	 * @return int
 	 */
-	public function get_qtyremaining() {
+	public function get_qtyremaining($linenbr = 0) {
+		if ($linenbr) $this->set_linenbr($linenbr);
 		$pickitem = $this->get_picksalesorderdetail();
 		return $pickitem->qtyordered - ($this->get_orderpickedtotal());
 	}
@@ -354,11 +380,27 @@ class DplusoWarehousePicking extends WireData implements Module {
 		return boolval(WhseitempickQuery::create()->is_orderline_being_picked($this->sessionID, $pickitem->ordernbr, $pickitem->linenbr));
 	}
 
+	public function is_currentuser_picking(PickSalesOrderDetail $pickitem) {
+		return boolval(WhseitempickQuery::create()->is_orderline_being_picked($this->sessionID, $pickitem->ordernbr, $pickitem->linenbr));
+	}
+
 	/**
 	 * Returns PickSalesOrderDetail for this session, order, line
 	 * @return PickSalesOrderDetail
 	 */
 	public function get_picksalesorderdetail() {
 		return PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr($this->sessionID, $this->ordn, $this->linenbr);
+	}
+
+	public function insert_barcode_itemID($itemID) {
+		if (!BarcodesQuery::create()->findOneByBarcodenbr($itemID)) {
+			$barcode = new Barcodes();
+			$barcode->setBarcodenbr($itemID);
+			$barcode->setItemid($itemID);
+			$barcode->setUnitqty(1);
+			$barcode->setUom('EACH');
+			$barcode->save();
+		}
+
 	}
 }

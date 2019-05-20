@@ -29,12 +29,12 @@
 
 	{% if pickingsession.has_pickedtoomuch() or (pickingsession.get_qtyremaining() > 0)  %}
 		{% set bgcolor = 'bg-warning text-white' %}
-	{% elseif pickingsession.allow_negativeintentory() == false %}
-		{% set bgcolor = 'bg-warning text-white' %}
+	{% elseif pickingsession.get_qtyremaining() == 0 %}
+		{% set bgcolor = 'bg-success text-white' %}
 	{% else %}
 		{% set bgcolor = 'bg-success text-white' %}
 	{% endif %}
-	
+
 	<tr class="{{ bgcolor }}">
 		<td class="control-label">Qty Remaining</td>
 		<td class="text-right">{{ pickingsession.get_qtyremaining() }}</td>
