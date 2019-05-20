@@ -42,18 +42,8 @@
 			// CHECK the Order is not finished
 		} elseif ($whsesession->is_usingwrongfunction()) {
 			$page->body = $config->twig->render('warehouse/picking/status.twig', ['page' => $page, 'whsesession' => $whsesession]);
-		} elseif (!$whsesession->has_bin() && !$whsesession->is_orderfinished()) {
-
-			// CHECK if the order is unpickable because it's on hold | verified | invoiced
-			if ($whsesession->is_orderonhold() || $whsesession->is_orderverified() || $whsesession->is_orderinvoiced() || $whsesession->is_ordernotfound() || (!$config_inventory->allow_negativeinventory && $whsesession->is_ordershortstocked())) {
-				$page->body = $config->twig->render('warehouse/picking/status.twig', ['page' => $page, 'whsesession' => $whsesession]);
-				// VALIDATE if wrong picking function is being used
-			} else { // SHOW STARTING BIN FORM
-				$page->title = 'Choose Starting Bin';
-				$page->formurl = $page->parent->child('template=redir')->url;
-				$page->body = $config->twig->render('warehouse/picking/bin-form.twig', ['page' => $page]);
-				$page->body .= $config->twig->render('warehouse/picking/bins-modal.twig', ['page' => $page, 'warehouse' => $warehouse]);
-			}
+		} elseif ($whsesession->is_orderonhold() || $whsesession->is_orderverified() || $whsesession->is_orderinvoiced() || $whsesession->is_ordernotfound() || (!$config_inventory->allow_negativeinventory && $whsesession->is_ordershortstocked())) {
+			$page->body = $config->twig->render('warehouse/picking/status.twig', ['page' => $page, 'whsesession' => $whsesession]);
 		} elseif ($whsesession->needs_functionprompt()) {
 			if ($input->get->removeprompt) {
 				$whsesession->set_functionprompt(false);
