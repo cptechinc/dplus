@@ -1,10 +1,17 @@
 {% embed "warehouse/picking/unguided/barcode-form.twig" %}
 	{% block item_inputs %}
-		<input type="hidden" name="binID" value="">
 		<div class="row">
-			<div class="col">
+			<div class="col-sm-3">
+				<div class="form-group">
+					<label for="binID">Bin ID</label>
+					<input type="text" class="form-control" name="binID" placeholder="Bin ID" id="binID" value="">
+					<small id="emailHelp" class="form-text text-muted">(optional if lot is in only one bin)</small>
+				</div>
+			</div>
+			<div class="col-sm-9">
+				<label for="barcode">Lot Number</label>
 				<div class="input-group form-group">
-					<input type="text" class="form-control" name="barcode" placeholder="Lot Number">
+					<input type="text" class="form-control" name="barcode" id="barcode" placeholder="Lot Number">
 					<span class="input-group-append">
 						<button type="submit" class="btn btn-success">
 							<i class="fa fa-plus" aria-hidden="true"></i> Add
@@ -13,5 +20,6 @@
 				</div>
 			</div>
 		</div>
+
 	{% endblock item_inputs %}
 {% endembed %}

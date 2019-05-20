@@ -1,4 +1,4 @@
-<form action="{{ page.fullURL.getUrl() }}" method="POST" class="allow-enterkey-submit">
+<form action="{{ page.fullURL.getUrl() }}" method="POST" class="allow-enterkey-submit" id="barcode-form">
 	<input type="hidden" name="action" value="add-barcode">
 	<input type="hidden" name="palletnbr" value="{{ whsesession.palletnbr }}">
 	<input type="hidden" name="linenbr" value="{{ pickitem.linenbr }}">
@@ -39,12 +39,17 @@
 	{% endblock item_inputs %}
 </form>
 <div class="row">
-	<div class="col-sm-6 form-group">
+	<div class="col-sm-4 form-group">
+		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#item-availability-modal" data-input="binID">
+			View Available
+		</button>
+	</div>
+	<div class="col-sm-4 form-group">
+		<a href="{{ page.get_exitorderURL() }}" class="btn btn-danger exit-order">Exit Order</a>
+	</div>
+	<div class="col-sm-4 form-group">
 		<a href="{{ page.get_finishitemURL() }}" class="btn btn-success finish-item">
 			<i class="fa fa-check-square" aria-hidden="true"></i> Submit Item
 		</a>
-	</div>
-	<div class="col-sm-6 form-group">
-		<a href="{{ page.get_exitorderURL() }}" class="btn btn-danger exit-order">Exit Order</a>
 	</div>
 </div>
