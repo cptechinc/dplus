@@ -1,21 +1,58 @@
+<div class="form-group">
+	<a href="{{ page.get_exitorderURL() }}" class="btn btn-danger exit-order">Exit Order</a>
+</div>
 <div class="row">
-	<div class="col-sm-8">
-		<div class="list-group">
-			{% for item in items %}
-				<a href="{{ page.get_selectlineURL(item) }}" class="list-group-item">
-					<div class="row">
-						<div class="col-sm-9">
-							<h4 class="list-group-item-heading">{{ item.itemid }}</h4>
+	<div class="col-sm-12">
+		<div class="mb-5">
+			<h3>Unpicked Items</h3>
+			<div class="list-group">
+
+				{% for item in items_unpicked %}
+					<a href="{{ page.get_selectlineURL(item) }}" class="list-group-item">
+						<div class="row">
+							<div class="col-sm-6">
+								<h4 class="list-group-item-heading">{{ item.itemid }}</h4>
+								<p class="list-group-item-text mb-0">{{ item.desc1 }}</p>
+							</div>
+							<div class="col-sm-3">
+								Ordered: {{ item.qtyordered }} <br>
+								Pulled: {{ item.picked + 0 }} <br>
+								Remaining: {{ pickingsession.get_qtyremaining(item.linenbr) }}
+							</div>
+							<div class="col-sm-3 text-right">
+								{% if pickingsession.is_line_being_picked(item) %}
+									{% if pickingsession.is_currentuser_picking(item) %}
+										<span class="badge badge-info">You are picking</span>
+									{% else %}
+										<span class="badge badge-warning">Is being picked</span>
+									{% endif %}
+								{% endif %}
+							</div>
 						</div>
-						<div class="col-sm-3 text-right">
-							{% if pickingsession.is_line_being_picked(item) %}
-								<span class="badge badge-warning">Is being picked</span>
-							{% endif %}
+					</a>
+				{% endfor %}
+			</div>
+		</div>
+
+		<div>
+			<h3>Picked Items</h3>
+			<div class="list-group">
+				{% for item in items_picked %}
+					<div class="list-group-item">
+						<div class="row">
+							<div class="col-sm-9">
+								<h4 class="list-group-item-heading">{{ item.itemid }}</h4>
+							</div>
+							<div class="col-sm-3 text-right">
+								{% if pickingsession.is_line_being_picked(item) %}
+									<span class="badge badge-warning">Is being picked</span>
+								{% endif %}
+							</div>
 						</div>
+						<p class="list-group-item-text mb-0">{{ item.desc1 }}</p>
 					</div>
-					<p class="list-group-item-text mb-0">{{ item.desc1 }}</p>
-				</a>
-			{% endfor %}
+				{% endfor %}
+			</div>
 		</div>
 	</div>
 </div>
