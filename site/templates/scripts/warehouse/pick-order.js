@@ -1,5 +1,8 @@
 $(function() {
 	var input_bin = $('input[name=binID]');
+	var input_barcode = $('input[name=barcode]');
+	var form_barcode = $('form[id=barcode-form]');
+
 	/**
 	 * The Order of Functions based on Order of Events
 	 * 1. Select / Enter Sales Order
@@ -54,6 +57,26 @@ $(function() {
 		button.closest('.modal').modal('hide');
 	});
 
+	$("body").on("click", "#item-availability-modal .select-item", function(e) {
+		e.preventDefault();
+		var button    = $(this);
+		var itemID    = button.data('itemid')
+		var lotserial = button.data('lotserial');
+
+		if (input_bin.length) {
+			var binID = button.data('bin');
+			input_bin.val(binID);
+		}
+
+		if (input_barcode.length) {
+			var barcode = lotserial.length > 0 ? lotserial : itemID;
+			input_barcode.val(barcode);
+		}
+		form_barcode.submit();
+
+		button.closest('.modal').modal('hide');
+	});
+
 /////////////////////////////////////
 // 3. Finish Item / Exit Order
 ////////////////////////////////////
@@ -73,7 +96,7 @@ $(function() {
 		} else if (pickitem.item.qty.remaining > 0) {
 			swal({
 				title: 'Are you sure?',
-				text: "You have not met the Quantity Requirments",
+				text: "You have not met the Quantity Requirements",
 				type: 'warning',
 				showCancelButton: true,
 				confirmButtonClass: 'btn btn-success',
