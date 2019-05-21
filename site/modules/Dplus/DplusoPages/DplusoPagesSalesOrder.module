@@ -18,6 +18,10 @@
 				'name'   => 'sales-order-view',
 				'fields' => array()
 			),
+			'sales-order-edit' => array(
+				'name'   => 'sales-order-edit',
+				'fields' => array()
+			),
 			'sales-order-documents' => array(
 				'name'   => 'sales-order-documents',
 				'fields' => array()
@@ -49,7 +53,16 @@
 				'summary'        => 'View Sales Order',
 				'parent'         => '/mso/',
 				'dplus_function' => 'mso',
-				'pw_template'    => 'sales-order'
+				'pw_template'    => 'sales-order-view'
+			),
+			'sales-order-edit' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'edit',
+				'title'          => 'Edit Sales Order',
+				'summary'        => 'Edit Sales Order',
+				'parent'         => '/mso/sales-order/',
+				'dplus_function' => 'eso',
+				'pw_template'    => 'sales-order-edit'
 			),
 			'sales-order-documents' => array(
 				'template'       => 'dplus-function',
