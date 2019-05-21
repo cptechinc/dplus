@@ -16,6 +16,10 @@
 				$folder = $input->get->text('folder');
 				$filename = $input->get->text('document');
 				$document_management->move_document($folder, $filename);
+
+				if ($document_management->is_filewebaccessible($filename)) {
+					$session->redirect($config->url_webdocs.$filename);
+				}
 			}
 			$page->body .= $config->twig->render('sales-orders/sales-order/documents.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management]);
 

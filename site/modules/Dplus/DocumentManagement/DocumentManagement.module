@@ -1,5 +1,6 @@
 <?php
 
+use Purl\Url;
 use DocumentFoldersQuery, DocumentFolders;
 use DocumentsQuery, Documents;
 
@@ -17,6 +18,26 @@ class DocumentManagement extends WireData implements Module {
 			'singular' => true,
 			'autoload' => true,
 		);
+	}
+
+	public function init() {
+		$this->addHook('Page(pw_template=sales-order-view)::documentload', function($event) {
+			$page = $event->object;
+			$folder   = $event->arguments(0);
+			$document = $event->arguments(1);
+			$ordn     = $event->arguments(2);
+			$url = $this->wire('pages')->get('pw_template=sales-order-documents')->url;
+			$event->return = $url."?ordn=$ordn&folder=$folder&document=$document";
+		});
+
+		$this->addHook('Page(pw_template=sales-order-documents)::documentload', function($event) {
+			$page = $event->object;
+			$folder   = $event->arguments(0);
+			$document = $event->arguments(1);
+			$ordn     = $event->arguments(2);
+			$url = $this->wire('pages')->get('pw_template=sales-order-documents')->url;
+			$event->return = $url."?ordn=$ordn&folder=$folder&document=$document";
+		});
 	}
 
 	public function get_salesorderdocuments($ordn) {
@@ -48,5 +69,9 @@ class DocumentManagement extends WireData implements Module {
 		$destination = empty($destination) ? $this->wire('config')->directory_webdocs : $destination;
 		$newfile = "$destination/$filename";
 		return copy($srcfile, $newfile);
+	}
+
+	public function is_filewebaccessible($filename) {
+		return file_exists($this->wire('config')->directory_webdocs.$filename);
 	}
 }
