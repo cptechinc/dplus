@@ -12,7 +12,7 @@
 	// CHECK If there are details to pick
 	$nbr_pickinglines = PickSalesOrderDetailQuery::create()->countBySessionidOrder(session_id(), $ordn);
 	if ($nbr_pickinglines > 0) {
-		if ($nbr_pickinglines == 1) {
+		if ($nbr_pickinglines == 1 && !$input->get->linenbr) {
 			$page->fullURL->query->set('linenbr', 1);
 
 			$session->redirect($page->fullURL->getUrl(), $http301 = false);
@@ -59,8 +59,7 @@
 
 				$page->body .= $config->twig->render('warehouse/picking/bins-modal.twig', ['warehouse' => $warehouse]);
 				$inventoryresults = InvsearchQuery::create()->findByItemid(session_id(), $pickitem->itemid);
-
-				$page->body .= $config->twig->render('warehouse/picking/unguided/item-availability-modal.twig', ['inventoryresults' => $inventoryresults, 'pickitem' => $pickitem]);
+				$page->body .= $config->twig->render('warehouse/picking/unguided/item-availability-modal.twig', ['inventoryresults' => $inventoryresults, 'pickitem' => $pickitem, 'warehouse' => $warehouse]);
 				$page->body .= $config->twig->render('warehouse/picking/item-info-modal.twig', ['pickitem' => $pickitem]);
 				$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => $jsconfig]);
 

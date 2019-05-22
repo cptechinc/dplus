@@ -38,7 +38,7 @@
 		} elseif ($input->get->itemID) {
 			$itemID = $input->get->text('itemID');
 			$input->get->scan = $page->scan = $itemID;
-			$resultscount = InvsearchQuery::create()->countByItemID(session_id(), $itemID, $binID);
+			$resultscount = InvsearchQuery::create()->countByItemid(session_id(), $itemID, $binID);
 			$item = $resultscount == 1 ? InvsearchQuery::create()->findOneByItemid(session_id(), $itemID, $binID) : false;
 		}
 
