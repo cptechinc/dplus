@@ -8,6 +8,14 @@
 				</button>
 			</div>
 			<div class="modal-body">
+
+				{% if pickitem.is_item_serialized() %}
+					<div class="form-group">
+						<button class="btn btn-primary select-bin" data-bin="{{ warehouse.id }}">
+							Use Warehouse Bin
+						</button>
+					</div>
+				{% endif %}
 				<div class="list-group">
 					{% for item in inventoryresults %}
 						<a href="#" class="list-group-item p-2 select-item" data-itemid="{{ item.itemid }}" data-lotserial="{{ pickitem.is_item_serialized() or pickitem.is_item_lotted() ? item.lotserial : '' }}" data-bin="{{ item.bin }}">

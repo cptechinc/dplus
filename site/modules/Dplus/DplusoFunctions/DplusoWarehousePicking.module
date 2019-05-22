@@ -118,12 +118,14 @@ class DplusoWarehousePicking extends WireData implements Module {
 	public function add_barcode(WireInput $input) {
 		$values = $input->post;
 
-		$barcode   = $values->text('barcode');
-		$palletnbr = $values->int('palletnbr');
-		$binID     = $values->text('binID');
-		$scanned_binID =  $values->text('binID');
-		$is_valid  = false;
-		$pickitem = $this->get_picksalesorderdetail();
+		$barcode       = $values->text('barcode');
+		$palletnbr     = $values->int('palletnbr');
+		$binID         = $values->text('binID');
+		$scanned_binID = $values->text('binID');
+		$is_valid      = false;
+		$pickitem      = $this->get_picksalesorderdetail();
+
+
 
 		if ($pickitem->is_item_serialized() && $this->has_picked_barcode($barcode)) {
 			$this->session->pickerror = "Serial # $barcode has been picked for $pickitem->itemid";
@@ -131,18 +133,31 @@ class DplusoWarehousePicking extends WireData implements Module {
 			$bincount = 0;
 
 			if ($pickitem->is_item_serialized() || $pickitem->is_item_lotted()) {
+				$item_exists = boolval(InvsearchQuery::create()->countByLotserial($this->sessionID, $barcode));
 				$item = InvsearchQuery::create()->get_lotserial($this->sessionID, $barcode);
 				$binID = $item->bin;
 				$bincount = InvsearchQuery::create()->count_itembins_lotserial($this->sessionID, $item->itemid, $item->lotserial);
 			} else {
+				$item_exists = boolval(InvsearchQuery::create()->countByItemid($this->sessionID, $barcode));
 				$item = InvsearchQuery::create()->findOneByItemid($this->sessionID, $barcode, $binID);
 				$bincount = InvsearchQuery::create()->count_itembins_itemid($this->sessionID, $item->itemid);
+				$binID = $bincount == 1 ? $item->bin : '';
 			}
 
 			if ($this->config->inventory->allow_negativeinventory) {
-				$is_valid = true;
+
+				// NOTE ONLY NON LOTTED ITEMS CAN BE IN NEGATIVE INVENTORY -- ROGER
+				if ($pickitem->is_item_serialized() || $pickitem->is_item_normal()) {
+					$is_valid = true;
+
+					if (!$item_exists) {
+						$warehouse = $this->get_warehouseconfig();
+						$binID = $warehouse->bin_default;
+						$bincount = 1;
+					}
+				}
 			} else {
-				if ($item) {
+				if ($item_exists) {
 					if (InvsearchQuery::create()->get_binqty($this->sessionID, $item, $binID) >= 0) {
 						$is_valid = true;
 					} else {
@@ -390,6 +405,15 @@ class DplusoWarehousePicking extends WireData implements Module {
 		return PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr($this->sessionID, $this->ordn, $this->linenbr);
 	}
 
+	public function get_whsesession() {
+		return WhsesessionQuery::create()->findOneBySessionid($this->sessionID);
+	}
+
+	public function get_warehouseconfig() {
+		$whsesession = $this->get_whsesession();
+		return WarehouseQuery::create()->findOneByWhseid($session->whseid);
+	}
+
 	public function insert_barcode_itemID($itemID) {
 		if (!BarcodesQuery::create()->findOneByBarcodenbr($itemID)) {
 			$barcode = new Barcodes();
@@ -399,6 +423,5 @@ class DplusoWarehousePicking extends WireData implements Module {
 			$barcode->setUom('EACH');
 			$barcode->save();
 		}
-
 	}
 }
