@@ -61,7 +61,7 @@ $(function() {
 		e.preventDefault();
 		var button    = $(this);
 		var itemID    = button.data('itemid')
-		var lotserial = button.data('lotserial');
+		var lotserial = String(button.data('lotserial'));
 
 		if (input_bin.length) {
 			var binID = button.data('bin');
@@ -76,6 +76,19 @@ $(function() {
 
 		button.closest('.modal').modal('hide');
 	});
+
+	$("body").on("click", "#item-availability-modal .select-bin", function(e) {
+		e.preventDefault();
+		var button    = $(this);
+
+		if (input_bin.length) {
+			var binID = button.data('bin');
+			input_bin.val(binID);
+		}
+		button.closest('.modal').modal('hide');
+	});
+
+
 
 /////////////////////////////////////
 // 3. Finish Item / Exit Order
