@@ -1,19 +1,19 @@
 <div class="col-sm-3 mx-auto mt-3">
     <ul class="pagination">
-        <li class="page-item {{ (pagenbr == 1) ? 'disabled' : '' }}">
-            <a href="{{ page.paginate(pagenbr - 1) ~ '?' ~ page.fullURL.query }}" class="page-link" aria-label="Previous">
+        <li class="page-item {{ (page.pagenbr == 1) ? 'disabled' : '' }}">
+            <a href="{{ page.paginate(page.pagenbr - 1) ~ '?' ~ page.fullURL.query }}" class="page-link" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
-        {% for i in (pagenbr - 3)..(pagenbr + 4) %}
+        {% for i in (page.pagenbr - 3)..(page.pagenbr + 4) %}
             {% if i > 0 and i <= page.get_pagecount(resultscount) %}
-                <li class="page-item {{ (pagenbr == i) ? 'active' : '' }}">
+                <li class="page-item {{ (page.pagenbr == i) ? 'active' : '' }}">
                     <a href="{{ page.paginate(i) ~ '?' ~ page.fullURL.query  }}" class="page-link">{{ i }}</a>
                 </li>
             {% endif %}
         {% endfor %}
-        <li class="page-item {{ (pagenbr == page.get_pagecount(resultscount)) ? 'disabled' : '' }}">
-            <a href="{{ page.paginate(pagenbr + 1) ~ '?' ~ page.fullURL.query  }}" aria-label="Next" class="page-link">
+        <li class="page-item {{ (page.pagenbr == page.get_pagecount(resultscount)) ? 'disabled' : '' }}">
+            <a href="{{ page.paginate(page.pagenbr + 1) ~ '?' ~ page.fullURL.query  }}" aria-label="Next" class="page-link">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>
