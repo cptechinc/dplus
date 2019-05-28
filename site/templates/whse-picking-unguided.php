@@ -11,7 +11,9 @@
 
 	// CHECK If there are details to pick
 	$nbr_pickinglines = PickSalesOrderDetailQuery::create()->countBySessionidOrder(session_id(), $ordn);
-	if ($nbr_pickinglines > 0) {
+	if ($whsesession->is_orderfinished()) {
+		$page->body .= $config->twig->render('warehouse/picking/finished-order.twig', ['page' => $page, 'ordn' => $ordn]);
+	} elseif ($nbr_pickinglines > 0) {
 		if ($nbr_pickinglines == 1 && !$input->get->linenbr) {
 			$page->fullURL->query->set('linenbr', 1);
 
@@ -53,13 +55,13 @@
 					$page->body .= $config->twig->render('warehouse/picking/unguided/barcode-lotted-form.twig', ['page' => $page, 'whsesession' => $whsesession, 'pickitem' => $pickitem, 'pickingsession' => $pickingsession]);
 					$page->body .= $config->twig->render('warehouse/picking/unguided/picked-barcodes-lotted.twig', ['page' => $page, 'picked_barcodes' => $picked_barcodes, 'pickitem' => $pickitem, 'pickingsession' => $pickingsession]);
 				} else {
-					$page->body .= $config->twig->render('warehouse/picking/unguided/barcode-form.twig', ['page' => $page, 'whsesession' => $whsesession, 'pickitem' => $pickitem, 'config_picking' => $config_picking]);
+					$page->body .= $config->twig->render('warehouse/picking/unguided/barcode-form.twig', ['page' => $page, 'whsesession' => $whsesession, 'pickitem' => $pickitem, 'config_picking' => $config_picking, 'pickingsession' => $pickingsession]);
 					$page->body .= $config->twig->render('warehouse/picking/unguided/picked-barcodes.twig', ['page' => $page, 'picked_barcodes' => $picked_barcodes, 'pickitem' => $pickitem, 'pickingsession' => $pickingsession]);
 				}
 
 				$page->body .= $config->twig->render('warehouse/picking/bins-modal.twig', ['warehouse' => $warehouse]);
 				$inventoryresults = InvsearchQuery::create()->findByItemid(session_id(), $pickitem->itemid);
-				$page->body .= $config->twig->render('warehouse/picking/unguided/item-availability-modal.twig', ['inventoryresults' => $inventoryresults, 'pickitem' => $pickitem, 'warehouse' => $warehouse]);
+				$page->body .= $config->twig->render('warehouse/picking/unguided/item-availability-modal.twig', ['inventoryresults' => $inventoryresults, 'pickitem' => $pickitem, 'warehouse' => $warehouse, 'pickingsession' => $pickingsession]);
 				$page->body .= $config->twig->render('warehouse/picking/item-info-modal.twig', ['pickitem' => $pickitem]);
 				$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => $jsconfig]);
 
@@ -82,8 +84,9 @@
 					$page->fullURL->query->set('linenbr', $linenbr);
 
 					// IF THERE'S ONLY ONE BIN AUTO ADD THE SCANNED ITEM
+					// 5/23/2019 ROGER SAYS ONLY AUTOADD WITH SERIALIZED
 					// TODO handle with picking session
-					if ($bincount == 1) {
+					if ($bincount == 1 && $item->is_serialized()) {
 						$pickitem = PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr(session_id(), $ordn, $linenbr);
 						$barcode = $item->is_lotted() || $item->is_serialized() ? $item->lotserial : $item->itemid;
 						$pickingsession->add_pickedbarcode($pickitem, $barcode, 1, $item->bin);
@@ -115,9 +118,6 @@
 				$page->body .= $config->twig->render('warehouse/picking/unguided/select-item-form.twig', ['page' => $page, 'items_unpicked' => $items_unpicked, 'items_picked' => $items_picked, 'pickingsession' => $pickingsession]);
 			}
 		}
-		// Or check if sales order is finished
-	} elseif ($whsesession->is_orderfinished()) {
-		$page->body .= $config->twig->render('warehouse/picking/finished-order.twig', ['page' => $page, 'pickorder' => $pickorder]);
 	} else { // NO ITEMS TO PICK
 		$whsesession->setStatus("There are no detail lines available to pick for Order # $ordn");
 		if ($whsesession->is_orderfinished() || $whsesession->is_orderexited()) {
