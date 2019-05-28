@@ -1,7 +1,8 @@
 $(function() {
-	var input_bin = $('input[name=binID]');
+	var input_bin     = $('input[name=binID]');
 	var input_barcode = $('input[name=barcode]');
-	var form_barcode = $('form[id=barcode-form]');
+	var input_qty     = $('input[name=qty]');
+	var form_barcode  = $('form[id=barcode-form]');
 
 	/**
 	 * The Order of Functions based on Order of Events
@@ -62,6 +63,8 @@ $(function() {
 		var button    = $(this);
 		var itemID    = button.data('itemid')
 		var lotserial = String(button.data('lotserial'));
+		var qtyavailable = parseInt(button.data('available'));
+		var qty  = qtyavailable > pickitem.item.qty.remaining ? pickitem.item.qty.remaining : qtyavailable;
 
 		if (input_bin.length) {
 			var binID = button.data('bin');
@@ -72,7 +75,12 @@ $(function() {
 			var barcode = lotserial.length > 0 ? lotserial : itemID;
 			input_barcode.val(barcode);
 		}
-		form_barcode.submit();
+
+		input_qty.val(pickitem.item.qty.remaining);
+
+		if (!input_bin.length) {
+			form_barcode.submit();
+		}
 
 		button.closest('.modal').modal('hide');
 	});
