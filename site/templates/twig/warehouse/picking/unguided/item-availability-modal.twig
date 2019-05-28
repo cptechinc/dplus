@@ -11,14 +11,14 @@
 
 				{% if pickitem.is_item_serialized() %}
 					<div class="form-group">
-						<button class="btn btn-primary select-bin" data-bin="{{ warehouse.id }}">
+						<button class="btn btn-primary select-bin" data-bin="{{ pickingsession.get_warehouseitembin(pickitem.itemid) }}">
 							Use Warehouse Bin
 						</button>
 					</div>
 				{% endif %}
 				<div class="list-group">
 					{% for item in inventoryresults %}
-						<a href="#" class="list-group-item p-2 select-item" data-itemid="{{ item.itemid }}" data-lotserial="{{ pickitem.is_item_serialized() or pickitem.is_item_lotted() ? item.lotserial : '' }}" data-bin="{{ item.bin }}">
+						<a href="#" class="list-group-item p-2 select-item" data-itemid="{{ item.itemid }}" data-lotserial="{{ pickitem.is_item_serialized() or pickitem.is_item_lotted() ? item.lotserial : '' }}" data-bin="{{ item.bin }}" data-available="{{ item.qty }}">
 							{% if pickitem.is_item_serialized() or pickitem.is_item_lotted() %}
 								<div class="row">
 									<div class="col">
