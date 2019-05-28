@@ -1,9 +1,10 @@
 {% embed "warehouse/picking/unguided/barcode-form.twig" %}
 	{% block item_inputs %}
+		<input type="hidden" name="qty" value="1">
 		<div class="row">
 			{% if pickingsession.allow_negativeintentory() %}
 				<div class="col-sm-3">
-					<input type="text" class="form-control" name="binID" placeholder="Bin ID" value="">
+					<input type="text" class="form-control" name="binID" placeholder="Bin ID"  value="{{ pickingsession.guess_pickingbin(pickitem) }}">
 				</div>
 			{% else %}
 				<input type="hidden" name="binID" value="">
