@@ -16,8 +16,8 @@
 							</div>
 							<div class="col-sm-3">
 								Ordered: {{ item.qtyordered }} <br>
-								Pulled: {{ item.picked + 0 }} <br>
-								Remaining: {{ pickingsession.get_qtyremaining(item.linenbr) }}
+								Pulled: {{ item.qtypulled }} <br>
+								Remaining: {{ item.qtyremaining }}
 							</div>
 							<div class="col-sm-3 text-right">
 								{% if pickingsession.is_line_being_picked(item) %}
@@ -40,16 +40,25 @@
 				{% for item in items_picked %}
 					<div class="list-group-item">
 						<div class="row">
-							<div class="col-sm-9">
+							<div class="col-sm-6">
 								<h4 class="list-group-item-heading">{{ item.itemid }}</h4>
+								<p class="list-group-item-text mb-0">{{ item.desc1 }}</p>
+							</div>
+							<div class="col-sm-3">
+								Ordered: {{ item.qtyordered }} <br>
+								Pulled: {{ item.qtypulled }} <br>
+								Remaining: {{ item.qtyremaining }}
 							</div>
 							<div class="col-sm-3 text-right">
 								{% if pickingsession.is_line_being_picked(item) %}
-									<span class="badge badge-warning">Is being picked</span>
+									{% if pickingsession.is_currentuser_picking(item) %}
+										<span class="badge badge-info">You are picking</span>
+									{% else %}
+										<span class="badge badge-warning">Is being picked</span>
+									{% endif %}
 								{% endif %}
 							</div>
 						</div>
-						<p class="list-group-item-text mb-0">{{ item.desc1 }}</p>
 					</div>
 				{% endfor %}
 			</div>
