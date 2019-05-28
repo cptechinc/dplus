@@ -1,9 +1,12 @@
 <?php namespace ProcessWire;
 
-use InvsearchQuery;
+use InvsearchQuery, Invsearch;;
 use WhseitempickQuery, Whseitempick;
 use PickSalesOrderDetailQuery, PickSalesOrderDetail;
 use BarcodesQuery, Barcodes;
+use WhsesessionQuery, Whsesession;
+use WarehouseQuery, Warehouse;
+use WarehouseInventoryQuery, WarehouseInventory;
 
 class DplusoWarehousePicking extends WireData implements Module {
 	/**
@@ -68,18 +71,34 @@ class DplusoWarehousePicking extends WireData implements Module {
 		$this->config->picking   = $this->wire('modules')->get('WarehousePickingConfig');
 	}
 
+	/**
+	 * Sets Session ID
+	 * @param string $sessionID Session ID
+	 */
 	public function set_sessionID($sessionID) {
 		$this->sessionID = $sessionID;
 	}
 
+	/**
+	 * Sets Order Number
+	 * @param string $ordn Sales Order Number
+	 */
 	public function set_ordn($ordn) {
 		$this->ordn = $ordn;
 	}
 
+	/**
+	 * Sets Line Number
+	 * @param int $linenbr Line Number
+	 */
 	public function set_linenbr($linenbr) {
 		$this->linenbr = $linenbr;
 	}
 
+	/**
+	 * Sets Pick Item
+	 * @param PickSalesOrderDetail $pickitem
+	 */
 	public function set_pickitem(PickSalesOrderDetail $pickitem) {
 		$this->pickitem = $pickitem;
 	}
@@ -122,10 +141,9 @@ class DplusoWarehousePicking extends WireData implements Module {
 		$palletnbr     = $values->int('palletnbr');
 		$binID         = $values->text('binID');
 		$scanned_binID = $values->text('binID');
+		$qty           = $values->int('qty');
 		$is_valid      = false;
 		$pickitem      = $this->get_picksalesorderdetail();
-
-
 
 		if ($pickitem->is_item_serialized() && $this->has_picked_barcode($barcode)) {
 			$this->session->pickerror = "Serial # $barcode has been picked for $pickitem->itemid";
@@ -141,38 +159,41 @@ class DplusoWarehousePicking extends WireData implements Module {
 				$item_exists = boolval(InvsearchQuery::create()->countByItemid($this->sessionID, $barcode));
 				$item = InvsearchQuery::create()->findOneByItemid($this->sessionID, $barcode, $binID);
 				$bincount = InvsearchQuery::create()->count_itembins_itemid($this->sessionID, $item->itemid);
-				$binID = $bincount == 1 ? $item->bin : '';
+				$binID = $bincount == 1 ? $item->bin : $scanned_binID;
 			}
 
 			if ($this->config->inventory->allow_negativeinventory) {
 
-				// NOTE ONLY NON LOTTED ITEMS CAN BE IN NEGATIVE INVENTORY -- ROGER
+				// NOTE ONLY NON-LOTTED ITEMS CAN BE IN NEGATIVE INVENTORY -- ROGER
 				if ($pickitem->is_item_serialized() || $pickitem->is_item_normal()) {
 					$is_valid = true;
 
 					if (!$item_exists) {
 						$warehouse = $this->get_warehouseconfig();
-						$binID = $warehouse->bin_default;
+						$binID = 'WHSE'; // TODO WAREHOUSE DEFAULT
 						$bincount = 1;
+						$item_exists = true;
 					}
+				}
+			}
+
+			if ($item_exists) {
+				$item = $item ? $item : new Invsearch();
+
+				if (InvsearchQuery::create()->get_binqty($this->sessionID, $item, $binID) >= 0) {
+					$is_valid = true;
+				} else {
+					$msg = "Insufficient " . strtoupper($item->get_itemtypepropertydesc())  . " " . $item->get_itemtypepropertydesc();
+					$msg .= " from $binID";
+					$this->session->pickerror = $msg;
 				}
 			} else {
-				if ($item_exists) {
-					if (InvsearchQuery::create()->get_binqty($this->sessionID, $item, $binID) >= 0) {
-						$is_valid = true;
-					} else {
-						$msg = "Insufficient " . strtoupper($item->get_itemtypepropertydesc())  . " " . $item->get_itemtypepropertydesc();
-						$msg .= " from $binID";
-						$this->session->pickerror = $msg;
-					}
-				} else {
-					$this->session->pickerror = "Scan: $barcode doesn't match anything for {$pickitem->itemid} in bin '$binID'";
-				}
+				$this->session->pickerror = "Scan: $barcode doesn't match anything for {$pickitem->itemid} in bin '$binID'";
 			}
 
 			if ($is_valid) {
 				if ($bincount == 1 || !empty($scanned_binID)) {
-					$this->add_pickedbarcode($pickitem, $barcode, $palletnbr, $binID);
+					$this->add_pickedbarcode($pickitem, $barcode, $palletnbr, $qty, $binID);
 				} else {
 					$this->session->pickerror = "Please Provide a bin for $barcode";
 				}
@@ -185,9 +206,10 @@ class DplusoWarehousePicking extends WireData implements Module {
 	 * @param PickSalesOrderDetail $pickitem  Item to add
 	 * @param string               $barcode   Barcode Scanned
 	 * @param int                  $palletnbr Pallet
+	 * @param int                  $qty       Qty to add
 	 * @param string               $binID     Bin Picked from
 	 */
-	public function add_pickedbarcode(PickSalesOrderDetail $pickitem, $barcode, $palletnbr = 1, $binID = '') {
+	public function add_pickedbarcode(PickSalesOrderDetail $pickitem, $barcode, $palletnbr = 1, $qty = 1, $binID = '') {
 		$picking_master = WhseitempickQuery::create();
 
 		$item = new Whseitempick();
@@ -200,15 +222,25 @@ class DplusoWarehousePicking extends WireData implements Module {
 		$item->setBarcode($barcode);
 		$item->setBin($binID);
 
-		if ($barcode == $pickitem->itemid || $pickitem->is_item_serialized() || $pickitem->is_item_lotted() ) {
+		if ($pickitem->is_item_serialized()) {
 			$item->setQty(1);
-		} elseif (BarcodesQuery::create()->get_barcode_itemid($barcode) == $pickitem->itemid) {
-			$barcode_info = BarcodesQuery::create()->findOneByBarcode($barcode);
-			$item->setQty($barcode_info->qty);
+		} else {
+			if ($barcode == $pickitem->itemid || $pickitem->is_item_lotted() ) {
+				$item->setQty($qty);
+			} elseif (BarcodesQuery::create()->get_barcode_itemid($barcode) == $pickitem->itemid) {
+				$barcode_info = BarcodesQuery::create()->findOneByBarcode($barcode);
+				$item->setQty($barcode_info->qty);
+			}
 		}
+
 		$item->save();
 	}
 
+	/**
+	 * Takes Scan and Takes the information if available to add the picked barcode
+	 * @param string $scan    Scanned data
+	 * @param int    $linenbr Line Number
+	 */
 	public function add_scannedbarcode($scan, $linenbr = 1) {
 		if (InvsearchQuery::create()->countByLotserial($this->sessionID, $scan)) {
 			$item = InvsearchQuery::create()->get_lotserial($this->sessionID, $scan);
@@ -366,6 +398,22 @@ class DplusoWarehousePicking extends WireData implements Module {
 	}
 
 	/**
+	 * Inserts a Barcode record for the itemID
+	 * @param  string $itemID Item ID
+	 * @return void
+	 */
+	public function insert_barcode_itemID($itemID) {
+		if (!BarcodesQuery::create()->findOneByBarcodenbr($itemID)) {
+			$barcode = new Barcodes();
+			$barcode->setBarcodenbr($itemID);
+			$barcode->setItemid($itemID);
+			$barcode->setUnitqty(1);
+			$barcode->setUom('EACH');
+			$barcode->save();
+		}
+	}
+
+	/**
 	 * Is negative inventory allowed?
 	 * @return bool
 	 */
@@ -393,8 +441,13 @@ class DplusoWarehousePicking extends WireData implements Module {
 		return boolval(WhseitempickQuery::create()->is_orderline_being_picked($this->sessionID, $pickitem->ordernbr, $pickitem->linenbr));
 	}
 
+	/**
+	 * Is the Current User Picking that Sales Order Detail
+	 * @param  PickSalesOrderDetail $pickitem
+	 * @return bool                           Is current session picking the detail line
+	 */
 	public function is_currentuser_picking(PickSalesOrderDetail $pickitem) {
-		return boolval(WhseitempickQuery::create()->is_orderline_being_picked($this->sessionID, $pickitem->ordernbr, $pickitem->linenbr));
+		return boolval(WhseitempickQuery::create()->is_orderline_being_picked_session($this->sessionID, $pickitem->ordernbr, $pickitem->linenbr));
 	}
 
 	/**
@@ -405,23 +458,37 @@ class DplusoWarehousePicking extends WireData implements Module {
 		return PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr($this->sessionID, $this->ordn, $this->linenbr);
 	}
 
+	/**
+	 * Returns the Whsesession for this Session ID
+	 * @return Whsesession
+	 */
 	public function get_whsesession() {
 		return WhsesessionQuery::create()->findOneBySessionid($this->sessionID);
 	}
 
+	/**
+	 * Returns the Warehouse for this Whsesession
+	 * @return Whsesession
+	 */
 	public function get_warehouseconfig() {
 		$whsesession = $this->get_whsesession();
-		return WarehouseQuery::create()->findOneByWhseid($session->whseid);
+		return WhsesessionQuery::create()->findOneByWhseid($whsesession->whseid);
 	}
 
-	public function insert_barcode_itemID($itemID) {
-		if (!BarcodesQuery::create()->findOneByBarcodenbr($itemID)) {
-			$barcode = new Barcodes();
-			$barcode->setBarcodenbr($itemID);
-			$barcode->setItemid($itemID);
-			$barcode->setUnitqty(1);
-			$barcode->setUom('EACH');
-			$barcode->save();
+	public function get_warehouseitembin($itemID) {
+		$whsesession = $this->get_whsesession();
+		return WarehouseInventoryQuery::create()->get_warehouseitembin($whsesession->whseid, $itemID);
+	}
+
+	public function guess_pickingbin(PickSalesOrderDetail $pickitem) {
+		$bincount = InvsearchQuery::create()->count_itembins_itemid($pickitem->sessionid, $pickitem->itemid);
+
+		if ($bincount == 1) {
+			return InvsearchQuery::create()->findOneBinBySessionidItemid($pickitem->sessionid, $pickitem->itemid);
+		} elseif (!$pickitem->is_item_lotted()) {
+			return $this->get_warehouseitembin($pickitem->itemid);
+		} else {
+			return $this->allow_negativeintentory() ? $this->get_warehouseitembin($pickitem->itemid) : '';
 		}
 	}
 }
