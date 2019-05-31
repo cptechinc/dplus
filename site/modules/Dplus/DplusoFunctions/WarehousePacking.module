@@ -1,0 +1,106 @@
+<?php namespace ProcessWire;
+
+use WhseitempackQuery, Whseitempack;
+use PackSalesOrderDetailQuery, PackSalesOrderDetail;
+use WhsesessionQuery, Whsesession;
+use WarehouseQuery, Warehouse;
+use WarehouseInventoryQuery, WarehouseInventory;
+
+class WarehousePacking extends WireData implements Module {
+	/**
+	 * Processwire Session
+	 * @var Session
+	 */
+	protected $session;
+
+	/**
+	 * Session ID
+	 * @var string
+	 */
+	protected $sessionID;
+
+	/**
+	 * Order Number
+	 * @var string
+	 */
+	protected $ordn;
+
+
+	/**
+	 * Item Being Picked
+	 * @var PackSalesOrderDetail
+	 */
+	protected $packitem;
+
+	/**
+	 * Object with config modules
+	 * @var WireData
+	 */
+	protected $config;
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Warehouse Packing Functions Module',
+			'version' => 101,
+			'summary' => 'Handles Warehouse Packing',
+			'singular' => true,
+			'autoload' => false,
+		);
+	}
+
+	public function init() {
+		$this->session = $this->wire('session');
+		$this->config = new WireData();
+		//$this->config->inventory = $this->wire('modules')->get('WarehouseInventoryConfig');
+		//$this->config->picking   = $this->wire('modules')->get('WarehousePickingConfig');
+	}
+
+	/**
+	 * Sets Session ID
+	 * @param string $sessionID Session ID
+	 */
+	public function set_sessionID($sessionID) {
+		$this->sessionID = $sessionID;
+	}
+
+	/**
+	 * Sets Order Number
+	 * @param string $ordn Sales Order Number
+	 */
+	public function set_ordn($ordn) {
+		$this->ordn = $ordn;
+	}
+
+	/**
+	 * Returns PackSalesOrderDetail for this session, order, line
+	 * @return PackSalesOrderDetail
+	 */
+	public function get_packsalesorderdetails() {
+		return PackSalesOrderDetailQuery::create()->findBySessionidOrderLinenbr($this->sessionID, $this->ordn, $this->linenbr);
+	}
+
+	/**
+	 * Returns the Whsesession for this Session ID
+	 * @return Whsesession
+	 */
+	public function get_whsesession() {
+		return WhsesessionQuery::create()->findOneBySessionid($this->sessionID);
+	}
+
+	/**
+	 * Returns the Warehouse for this Whsesession
+	 * @return Whsesession
+	 */
+	public function get_warehouseconfig() {
+		$whsesession = $this->get_whsesession();
+		return WhsesessionQuery::create()->findOneByWhseid($whsesession->whseid);
+	}
+}

@@ -66,6 +66,14 @@
 				'parent'     => '/warehouse/picking/',
 				'redir_file' => 'picking'
 			),
+			'pack-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Sales Order Packing Redirects',
+				'parent'     => '/warehouse/packing/',
+				'redir_file' => 'packing'
+			),
 		);
 
 		/* =============================================================

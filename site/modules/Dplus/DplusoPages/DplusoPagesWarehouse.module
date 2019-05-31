@@ -63,6 +63,11 @@
 				'name'   => 'whse-picking-packing',
 				'fields' => array('title'),
 				'paginated' => false
+			),
+			'whse-packing' => array(
+				'name'   => 'whse-packing',
+				'fields' => array('title'),
+				'paginated' => false
 			)
 		);
 
@@ -211,6 +216,15 @@
 				'parent'         => '/warehouse/picking/',
 				'dplus_function' => 'porpp',
 				'pw_template'    => 'whse-picking-packing',
+			),
+			'whse-packing' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'packing',
+				'title'          => 'Sales Order Packing',
+				'summary'        => 'Sales Order Packing',
+				'parent'         => '/warehouse/',
+				'dplus_function' => 'porpp',
+				'pw_template'    => 'whse-packing',
 			),
 		);
 
