@@ -1,5 +1,4 @@
 <?php namespace ProcessWire;
-
 	use Purl\Url;
 
 	class DplusPwPages extends WireData implements Module {
@@ -157,7 +156,6 @@
 				$url->path = $this->paginate_page($page, 1);
 				$event->return = $url->getUrl();
 			});
-
 		}
 
 		/**
