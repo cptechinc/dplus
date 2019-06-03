@@ -2,7 +2,8 @@
 	use Twig\TwigFilter;
 
 	$convertdate = new Twig_Function('convertdate', function ($date, $format = 'm/d/Y') {
-		return date($format, strtotime($date));
+		$date = date($format, strtotime($date));
+		return $date == '11/30/-0001' ? '' : $date;
 	});
 	$config->twig->addFunction($convertdate);
 
