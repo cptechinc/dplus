@@ -33,6 +33,7 @@
 		$page->body .= $config->twig->render('customers/ci/customer/shipped-orders-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $shippedorders, 'resultscount'=> $shippedorders->getNbResults()]);
 	} else {
 		$query = CustomerQuery::create();
+
 		if ($input->get->q) {
 			$q = $input->get->text('q');
 			$page->title = "CI: Searching for '$q'";
@@ -41,7 +42,17 @@
 			$columns = array($col_custid, $col_name);
 			$query->search_filter($columns, strtoupper($q));
 		}
+
+
+		if ($page->has_orderby()) {
+			$orderbycolumn = $page->orderby_column;
+			$sort = $page->orderby_sort;
+			$tablecolumn = Customer::get_aliasproperty($orderbycolumn);
+			$query->sortBy($tablecolumn, $sort);
+		}
+
 		$customers = $query->paginate($input->pageNum, 10);
+
 		$page->searchURL = $page->url;
 		$page->body = $config->twig->render('customers/customer-search.twig', ['page' => $page, 'customers' => $customers]);
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $customers->getNbResults()]);

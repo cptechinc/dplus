@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+	use Purl\Url;
+
 	class DplusPwPages extends WireData implements Module {
 		protected $fields = array(
 			'dplus_function' => array(
@@ -102,26 +104,26 @@
 				}
 			});
 
-			$this->addHook('Page(template=dplus-function)::is_sorting', function($event) {
+			$this->addHook('Page(template=dplus-function)::has_orderby', function($event) {
 				$page = $event->object;
-				$event->return = $this->wire('input')->get->sortby;
+				$event->return = boolval($this->wire('input')->get->orderby);
 			});
 
-			$this->addHook('Page(template=dplus-function)::sortby', function($event) {
+			$this->addHook('Page(template=dplus-function)::orderby', function($event) {
 				$page = $event->object;
-				$event->return = $this->wire('input')->get->text('sortby');
+				$event->return = $this->wire('input')->get->text('orderby');
 			});
 
-			$this->addHook('Page(template=dplus-function)::sortby_column', function($event) {
+			$this->addHookProperty('Page(template=dplus-function)::orderby_column', function($event) {
 				$page = $event->object;
-				$sortby = $this->wire('input')->get->text('sortby');
+				$sortby = $this->wire('input')->get->text('orderby');
 				$sortby_array = explode('-', $sortby);
 				$event->return = $sortby_array[0];
 			});
 
-			$this->addHook('Page(template=dplus-function)::sortby_order', function($event) {
+			$this->addHookProperty('Page(template=dplus-function)::orderby_sort', function($event) {
 				$page = $event->object;
-				$sortby = $this->wire('input')->get->text('sortby');
+				$sortby = $this->wire('input')->get->text('orderby');
 				$order = 'ASC';
 
 				if (strpos($sortby, '-') !== false) {
@@ -131,6 +133,31 @@
 
 				$event->return = $order;
 			});
+
+			$this->addHook('Page(template=dplus-function)::get_sort', function($event) {
+				$sort = 'ASC';
+
+				$page = $event->object;
+				$column = $event->arguments(0);
+
+				if ($page->has_orderby()) {
+					if ($column == $page->orderby_column) {
+						$sort = $page->orderby_sort == 'ASC' ? 'DESC' : 'ASC';
+					}
+				}
+				$event->return = $sort;
+			});
+
+			$this->addHook('Page(template=dplus-function)::get_sortURL', function($event) {
+				$page = $event->object;
+				$column = $event->arguments(0);
+				$sort = $page->get_sort($column);
+				$url = new Url($page->fullURL->getUrl());
+				$url->query->set('orderby', "$column-$sort");
+				$url->path = $this->paginate_page($page, 1);
+				$event->return = $url->getUrl();
+			});
+
 		}
 
 		/**
