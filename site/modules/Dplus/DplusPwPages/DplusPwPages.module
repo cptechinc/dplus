@@ -1,4 +1,5 @@
 <?php namespace ProcessWire;
+	use Purl\Url;
 
 	class DplusPwPages extends WireData implements Module {
 		protected $fields = array(
@@ -331,7 +332,6 @@
 			foreach ($this->templates[$page['template']]['fields'] as $fieldname) {
 				$pw_page->$fieldname = $page[$fieldname];
 			}
-			echo "<br>";
 			return $pw_page->save();
 		}
 
@@ -361,13 +361,11 @@
 				$replace = ($pagenbr > 1) ? "page".$pagenbr : "";
 				$url = preg_replace($regex, $replace, $url);
 			} else {
-				$insertafter = "$page->name/";
+				$insertafter = "/$page->name/";
 				$regex = "(($insertafter))";
 				$replace = ($pagenbr > 1) ? $insertafter."page".$pagenbr."/" : $insertafter;
 				$url = preg_replace($regex, $replace, $url);
 			}
 			return $url;
 		}
-
-
 	}
