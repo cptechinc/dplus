@@ -5,6 +5,7 @@ use PackSalesOrderDetailQuery, PackSalesOrderDetail;
 use WhsesessionQuery, Whsesession;
 use WarehouseQuery, Warehouse;
 use WarehouseInventoryQuery, WarehouseInventory;
+use QnoteQuery, Qnote;
 
 class WarehousePacking extends WireData implements Module {
 	/**
@@ -80,11 +81,35 @@ class WarehousePacking extends WireData implements Module {
 	}
 
 	/**
+	 * Return the number of Qnote objects based fitlered by Session ID, Order Number, Line Number and Show on Pack
+	 * @return int
+	 */
+	public function count_packingnotes() {
+		return QnoteQuery::create()->filterBySessionidOrdernbrLinenbr($this->sessionID, $this->ordn)->filterByShowSalesOrderPack()->count();
+	}
+
+	/**
+	 * Return Qnote objects based fitlered by Session ID, Order Number, Line Number and Show on Pack
+	 * @return ChildQnote[]|ObjectCollection
+	 */
+	public function get_packingnotes() {
+		return QnoteQuery::create()->filterBySessionidOrdernbrLinenbr($this->sessionID, $this->ordn)->filterByShowSalesOrderPack()->find();
+	}
+
+	public function count_packsalesorderdetails() {
+		return PackSalesOrderDetailQuery::create()->countBySessionidOrder($this->sessionID, $this->ordn);
+	}
+
+	/**
 	 * Returns PackSalesOrderDetail for this session, order, line
 	 * @return PackSalesOrderDetail
 	 */
 	public function get_packsalesorderdetails() {
-		return PackSalesOrderDetailQuery::create()->findBySessionidOrderLinenbr($this->sessionID, $this->ordn, $this->linenbr);
+		return PackSalesOrderDetailQuery::create()->findBySessionidOrderGrouped($this->sessionID, $this->ordn);
+	}
+
+	public function get_line_toship($linenbr) {
+		return PackSalesOrderDetailQuery::create()->get_line_qtytoship($this->sessionID, $this->ordn, $linenbr);
 	}
 
 	/**

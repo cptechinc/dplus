@@ -9,8 +9,12 @@
 	$sessionID = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();
 
 	switch ($action) {
-		case 'start-pack':
-			$data = array("DBNAME=$dplusdb", "STARTPACK");
+		case 'start-packing':
+			$ordn = $input->$requestmethod->text('ordn');
+			$data = array("DBNAME=$dplusdb", "STARTPACK", "ORDERNBR=$ordn");
+			$url = new Purl\Url($input->$requestmethod->text('page'));
+			$url->query->set('ordn', $ordn);
+			$session->loc = $url->getUrl();
 			break;
 		case 'get-pack-notes':
 			$ordn = $input->$requestmethod->text('ordn');

@@ -12,13 +12,14 @@
 
 		if (SalesOrderQuery::create()->orderExists($ordn)) {
 			$warehousepacking->set_ordn($ordn);
-			$http->get($page->get('template=redir')->url."?action=get-pack-notes&ordn=$ordn");
-			$page->body = $config->twig->render('warehouse/packing/order-notes.twig', ['page' => $page]);
+			$http->get($pages->get('template=redir, redir_file=sales-order')->httpUrl."?action=get-order-notes&ordn=$ordn&sessionID=".session_id());
+			$page->body = $config->twig->render('warehouse/packing/order-notes.twig', ['page' => $page, 'notes' => $warehousepacking->get_packingnotes()]);
+			$page->body .= $config->twig->render('warehouse/packing/select-line-form.twig', ['page' => $page, 'warehousepacking' => $warehousepacking, 'lines' => $warehousepacking->get_packsalesorderdetails()]);
 		} else {
 			$page->body = $config->twig->render('warehouse/packing/status.twig', ['page' => $page, 'message' => "Error finding Sales Order # $ordn"]);
 		}
 	} else {
-		$page->formurl = $page->parent->child('template=redir')->url;
+		$page->formurl = $page->child('template=redir')->url;
 		$page->body = $config->twig->render('warehouse/packing/sales-order-form.twig', ['page' => $page]);
 	}
 
