@@ -1,0 +1,37 @@
+<div class="card border-info">
+	<div class="card-header bg-info">
+		<span class="h3 text-white">{{ customer.name }} Information</span>
+	</div>
+	<table class="table">
+		<tr>
+			<td class="font-weight-bold">Customer:</td>
+			<td>
+				{{ customer.id }} <br>
+				{{ customer.name }}
+			</td>
+		</tr>
+		<tr>
+			<td class="font-weight-bold">Address:</td>
+			<td>
+				{{ customer.address1 }} <br>
+				{% if (customer.address2 is not empty) %}
+					{{ customer.address2 }} <br>
+				{% endif %}
+
+				{% if (customer.address3 is not empty) %}
+					{{ customer.address3 }} <br>
+				{% endif %}
+
+				{{ customer.city ~ ', ' ~ customer.state ~ ' ' ~ customer.zip }}
+			</td>
+		</tr>
+		<tr>
+			<td class="font-weight-bold">Salesperson:</td>
+			<td>{{ customer.salesperson1 }}</td>
+		</tr>
+		<tr>
+			<td class="font-weight-bold">Number of Shiptos:</td>
+			<td>{{ customer.count_shiptos() }}</td>
+		</tr>
+	</table>
+</div>

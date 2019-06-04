@@ -10,14 +10,30 @@
 			)
 		);
 
-		protected $templates = array(
-			/* Example
+		static $default_templates = array(
 			'dplus-menu' => array(
 				'name'   => 'dplus-menu',
-				'fields' => array('dplus_function', 'pw_template', 'summary')
+				'fields' => array('dplus_function', 'summary'),
 				'paginated' => false
+			),
+			'dplus-function' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('dplus_function', 'pw_template', 'summary'),
+				'paginated' => true
 			)
-			 */
+		);
+
+		protected $templates = array(
+			'dplus-menu' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('dplus_function', 'summary'),
+				'paginated' => false
+			),
+			'dplus-function' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('dplus_function', 'pw_template', 'summary'),
+				'paginated' => true
+			)
 		);
 
 		protected $pages = array(
@@ -251,7 +267,8 @@
 		protected function create_fieldgroup($template) {
 			$pw_fields = new Fieldgroup();
 			$pw_fields->name = $template;
-			return $pw_fields->save();
+			$pw_fields->save();
+			return $pw_fields;
 		}
 
 		/**
@@ -262,9 +279,9 @@
 			$pw_fields = wire('templates')->get($template)->fieldgroup;
 
 			if (get_class($pw_fields) != 'ProcessWire\Fieldgroup') {
-				$this->create_fieldgroup($template);
-				$pw_fields = wire('templates')->get($template)->fieldgroup;
+				$pw_fields = $this->create_fieldgroup($template);
 			}
+
 			$templatefields = $this->templates[$template]['fields'];
 
 			foreach ($templatefields as $fieldname) {
@@ -291,7 +308,8 @@
 		protected function create_template($template) {
 			$t = new Template();
 			$t->name = $template;
-			$this->create_fieldgroup($template);
+			$t->fieldgroup = $this->create_fieldgroup($template);
+			$t->save();
 			$this->update_fieldgroup($template);
 			$t->fieldgroup = $this->wire('fieldgroups')->get($template);
 			$this->allowPageNum = $this->templates[$template]['paginated'] ? 1 : 0;
@@ -329,6 +347,12 @@
 			$pw_page->name = $page['name'];
 			$pw_page->title = $page['title'];
 
+			if (in_array($page['template'], self::$default_templates)) {
+				foreach (self::$default_templates[$page['template']]['fields'] as $fieldname) {
+					$pw_page->$fieldname = $page[$fieldname];
+				}
+			}
+
 			foreach ($this->templates[$page['template']]['fields'] as $fieldname) {
 				$pw_page->$fieldname = $page[$fieldname];
 			}
@@ -338,7 +362,7 @@
 		/**
 		 * Creates Page
 		 * @param  string $page
-		 * @return bool        Was Page created?
+		 * @return bool         Was Page created?
 		 */
 		protected function create_page($page) {
 			$pw_page = new Page();
@@ -346,6 +370,12 @@
 			$pw_page->parent = $this->wire('pages')->get($page['parent']);
 			$pw_page->name = $page['name'];
 			$pw_page->title = $page['title'];
+
+			if (in_array($page['template'], self::$default_templates)) {
+				foreach (self::$default_templates[$page['template']]['fields'] as $fieldname) {
+					$pw_page->$fieldname = $page[$fieldname];
+				}
+			}
 
 			foreach ($this->templates[$page['name']]['fields'] as $fieldname) {
 				$pw_page->$fieldname = $page[$fieldname];

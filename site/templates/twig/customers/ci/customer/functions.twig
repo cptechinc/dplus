@@ -1,0 +1,12 @@
+<div class="dropdown mb-3">
+	<a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		Customer Functions
+	</a>
+
+	<div class="dropdown-menu bg-light" aria-labelledby="dropdownMenuLink">
+		{% set functions = page.children() %}
+		{% for function in functions %}
+			<a class="dropdown-item" href="{{ function.url }}">{{ function.title }}</a>
+		{% endfor %}
+	</div>
+</div>
