@@ -18,7 +18,11 @@
 			'ci-customer' => array(
 				'name'   => 'ci-customer',
 				'fields' => array(),
-			)
+			),
+			'ci-phonebook' => array(
+				'name'   => 'ci-phonebook',
+				'fields' => array(),
+			),
 		);
 
 		protected $pages = array(
@@ -38,6 +42,15 @@
 				'parent'         => '/mci/',
 				'dplus_function' => '',
 				'pw_template'    => 'ci-customer'
+			),
+			'ci-index' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'phonebook',
+				'title'          => 'Customer Phonebook',
+				'summary'        => 'View Customer Phonebook',
+				'parent'         => '/mci/ci/',
+				'dplus_function' => '',
+				'pw_template'    => 'ci-phonebook'
 			),
 			'ci-shiptos' => array(
 				'template'       => 'dplus-function',
