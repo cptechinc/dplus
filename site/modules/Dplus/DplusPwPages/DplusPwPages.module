@@ -359,6 +359,7 @@
 		 * @return bool        Was Page updated?
 		 */
 		protected function update_page($page) {
+
 			$pagepath = $page['parent'].$page['name']."/";
 			$parentpath = isset($page['parent-new']) ? $page['parent-new'] : $page['parent'];
 
@@ -369,7 +370,7 @@
 			$pw_page->name = $page['name'];
 			$pw_page->title = $page['title'];
 
-			if (in_array($page['template'], self::$default_templates)) {
+			if (in_array($page['template'], array_keys(self::$default_templates))) {
 				foreach (self::$default_templates[$page['template']]['fields'] as $fieldname) {
 					$pw_page->$fieldname = $page[$fieldname];
 				}
@@ -399,7 +400,7 @@
 				}
 			}
 
-			foreach ($this->templates[$page['template']]['fields'] as $fieldname) {
+			foreach ($this->templates[$page['name']]['fields'] as $fieldname) {
 				$pw_page->$fieldname = $page[$fieldname];
 			}
 			return $pw_page->save();

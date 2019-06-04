@@ -1,7 +1,7 @@
 <?php namespace ProcessWire;
 
 	require_once(__DIR__ . '/../DplusPwPages/DplusPwPages.module');
-	
+
 	class DplusoPages extends DplusPwPages implements Module {
 		protected $fields = array(
 			'dplus_function' => array(
@@ -12,7 +12,7 @@
 			'pw_template' => array(
 				'name'  => 'pw_template',
 				'type'  => 'text',
-				'label' => 'pw_template'
+				'label' => 'ProcessWire Template'
 			)
 		);
 
