@@ -1,0 +1,37 @@
+<?php
+
+class DplusURLs extends WireData implements Module {
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus URLs Maker',
+			'version' => 101,
+			'summary' => 'Functions for getting / creating External URL Links',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+
+	/**
+	 * Returns HTML Tracking Link
+	 * @param  string $servicetype Ex. Fedex, UPS, USPS
+	 * @param  string $tracknbr    Tracking Number
+	 * @return string              URL
+	 */
+	public function get_trackingURL($servicetype, $tracknbr) {
+		$href = false;
+		if (strpos(strtolower($servicetype), 'fed') !== false) {
+			$href = "https://www.fedex.com/apps/fedextrack/?action=track&trackingnumber=$tracknbr&cntry_code=us";
+		} elseif (strpos(strtolower($servicetype), 'ups') !== false) {
+			$href = "http://wwwapps.ups.com/WebTracking/track?track=yes&trackNums=$tracknbr&loc=en_us";
+		} elseif (strpos(strtolower($servicetype), 'gro') !== false) {
+			$href = "http://wwwapps.ups.com/WebTracking/track?track=yes&trackNums=$tracknbr&loc=en_us";
+		} elseif (strpos(strtolower($servicetype), 'usps') !== false) {
+			$href = "https://tools.usps.com/go/TrackConfirmAction?tLabels=$tracknbr";
+		} elseif (strpos(strtolower($servicetype), 'spee') !== false) {
+			$href = "http://packages.speedeedelivery.com/index.php?barcodes=$tracknbr";
+		}
+		return $href;
+	}
+}

@@ -277,12 +277,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "ce7d0c7ac1e2f9115fd729e6cacf9893d4d73192"
+                "reference": "cdb677c53c03d240f52e4e455cf982728821dacc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/ce7d0c7ac1e2f9115fd729e6cacf9893d4d73192",
-                "reference": "ce7d0c7ac1e2f9115fd729e6cacf9893d4d73192",
+                "url": "https://api.github.com/repos/symfony/config/zipball/cdb677c53c03d240f52e4e455cf982728821dacc",
+                "reference": "cdb677c53c03d240f52e4e455cf982728821dacc",
                 "shasum": ""
             },
             "require": {
@@ -305,7 +305,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.3-dev"
+                    "dev-master": "4.4-dev"
                 }
             },
             "autoload": {
@@ -332,7 +332,7 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2019-04-09T10:34:11+00:00"
+            "time": "2019-05-09T07:23:25+00:00"
         },
         {
             "name": "symfony/console",

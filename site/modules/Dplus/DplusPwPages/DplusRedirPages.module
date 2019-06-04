@@ -50,6 +50,14 @@
 				'parent'     => '/',
 				'redir_file' => 'binr'
 			),
+			'order-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Sales Order Redirects',
+				'parent'     => '/mso/',
+				'redir_file' => 'sales-order'
+			),
 		);
 
 		/* =============================================================

@@ -1,0 +1,21 @@
+<div id="tracking">
+	<h3 class="font-weight-bold text-secondary">Tracking</h3>
+	<table class="table table-striped">
+		<tr class="bg-dark text-white">
+			<th>Ship Date</th>
+			<th>Delivery Service</th>
+			<th>Tracking Number</th>
+		</tr>
+		{% for shipment in shipments %}
+			<tr>
+				<td>{{ convertdate(shipment.shipdate, "m/d/Y") }}</td>
+				<td>{{ shipment.deliveredby }}</td>
+				<td>
+					<a href="{{ urlmaker.get_trackingURL(shipment.deliveredby, shipment.trackingnbr) }}" target="_blank" class="link">
+						{{ shipment.trackingnbr }}
+					</a>
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+</div>

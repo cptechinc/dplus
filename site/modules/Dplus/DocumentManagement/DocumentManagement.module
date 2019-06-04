@@ -1,0 +1,77 @@
+<?php
+
+use Purl\Url;
+use DocumentFoldersQuery, DocumentFolders;
+use DocumentsQuery, Documents;
+
+class DocumentManagement extends WireData implements Module {
+
+	const TAG_ARINVOICES = 'AR';
+	const TAG_SALESORDER = 'SO';
+	const TAG_QUOTE = 'QT';
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Document Management',
+			'version' => 101,
+			'summary' => 'Module for getting Documents / Document Info out of Dplus',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+	public function init() {
+		$this->addHook('Page(pw_template=sales-order-view)::documentload', function($event) {
+			$page = $event->object;
+			$folder   = $event->arguments(0);
+			$document = $event->arguments(1);
+			$ordn     = $event->arguments(2);
+			$url = $this->wire('pages')->get('pw_template=sales-order-documents')->url;
+			$event->return = $url."?ordn=$ordn&folder=$folder&document=$document";
+		});
+
+		$this->addHook('Page(pw_template=sales-order-documents)::documentload', function($event) {
+			$page = $event->object;
+			$folder   = $event->arguments(0);
+			$document = $event->arguments(1);
+			$ordn     = $event->arguments(2);
+			$url = $this->wire('pages')->get('pw_template=sales-order-documents')->url;
+			$event->return = $url."?ordn=$ordn&folder=$folder&document=$document";
+		});
+	}
+
+	public function get_salesorderdocuments($ordn) {
+		$documents_master = DocumentsQuery::create();
+		$documents_master->filterByTag(self::TAG_SALESORDER);
+		$documents_master->filterByReference1($ordn);
+		return $documents_master->find();
+	}
+
+	public function count_salesorderdocuments($ordn) {
+		$documents_master = DocumentsQuery::create();
+		$documents_master->filterByTag(self::TAG_SALESORDER);
+		$documents_master->filterByReference1($ordn);
+		return $documents_master->count();
+	}
+
+	public function move_document($folder, $filename, $directory = '') {
+		$documents_master = DocumentsQuery::create();
+		$documents_master->filterByFolder($folder);
+		$documents_master->filterByFilename($filename);
+		$document = $documents_master->findOne();
+
+		$folder = DocumentFoldersQuery::create()->findOneByFolder($folder);
+		$this->move_file($folder->directory, $document->filename);
+	}
+
+	public function move_file($directory, $filename, $destination = '') {
+		$srcfile = "$directory/$filename";
+		$destination = empty($destination) ? $this->wire('config')->directory_webdocs : $destination;
+		$newfile = "$destination/$filename";
+		return copy($srcfile, $newfile);
+	}
+
+	public function is_filewebaccessible($filename) {
+		return file_exists($this->wire('config')->directory_webdocs.$filename);
+	}
+}
