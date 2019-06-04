@@ -8,13 +8,20 @@
 	$http = new WireHttp();
 
 	if ($input->get->ordn) {
-		$ordn = $input->get->text('ordn');
+		$ordn = SalesOrder::get_paddedordernumber($input->get->text('ordn'));
 
 		if (SalesOrderQuery::create()->orderExists($ordn)) {
 			$warehousepacking->set_ordn($ordn);
-			$http->get($pages->get('template=redir, redir_file=sales-order')->httpUrl."?action=get-order-notes&ordn=$ordn&sessionID=".session_id());
-			$page->body = $config->twig->render('warehouse/packing/order-notes.twig', ['page' => $page, 'notes' => $warehousepacking->get_packingnotes()]);
-			$page->body .= $config->twig->render('warehouse/packing/select-line-form.twig', ['page' => $page, 'warehousepacking' => $warehousepacking, 'lines' => $warehousepacking->get_packsalesorderdetails()]);
+
+			if ($input->get->linenbr) {
+				$page->linenbr = $input->get->int('linenbr');
+				$page->body = $config->twig->render('warehouse/packing/packing-form.twig', ['page' => $page, 'warehousepacking' => $warehousepacking]);
+			} else {
+				$http->get($pages->get('template=redir, redir_file=sales-order')->httpUrl."?action=get-order-notes&ordn=$ordn&sessionID=".session_id());
+				$page->body = $config->twig->render('warehouse/packing/order-notes.twig', ['page' => $page, 'notes' => $warehousepacking->get_packingnotes()]);
+				$page->body .= $config->twig->render('warehouse/packing/select-line-form.twig', ['page' => $page, 'warehousepacking' => $warehousepacking]);
+			}
+
 		} else {
 			$page->body = $config->twig->render('warehouse/packing/status.twig', ['page' => $page, 'message' => "Error finding Sales Order # $ordn"]);
 		}

@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+use Purl\Url;
+
 use WhseitempackQuery, Whseitempack;
 use PackSalesOrderDetailQuery, PackSalesOrderDetail;
 use WhsesessionQuery, Whsesession;
@@ -62,6 +64,15 @@ class WarehousePacking extends WireData implements Module {
 		$this->config = new WireData();
 		//$this->config->inventory = $this->wire('modules')->get('WarehouseInventoryConfig');
 		//$this->config->picking   = $this->wire('modules')->get('WarehousePickingConfig');
+		//$
+		$this->addHook('Page::get_packlineURL', function($event) {
+			$p = $event->object;
+			$linenbr = $event->arguments(0);
+
+			$url = new Url($p->fullURL->getUrl());
+			$url->query->set('linenbr', $linenbr);
+			$event->return = $url->getUrl();
+		});
 	}
 
 	/**
@@ -108,8 +119,29 @@ class WarehousePacking extends WireData implements Module {
 		return PackSalesOrderDetailQuery::create()->findBySessionidOrderGrouped($this->sessionID, $this->ordn);
 	}
 
-	public function get_line_toship($linenbr) {
+	public function get_packsalesorderdetails_unpacked() {
+		return PackSalesOrderDetailQuery::create()->findBySessionidOrderGroupedUnpacked($this->sessionID, $this->ordn);
+	}
+
+	public function get_packsalesorderdetails_packed() {
+		return PackSalesOrderDetailQuery::create()->findBySessionidOrderGroupedPacked($this->sessionID, $this->ordn);
+	}
+
+	public function get_packsalesorderdetails_line($linenbr) {
+		return PackSalesOrderDetailQuery::create()->findBySessionidOrderLinenbr($this->sessionID, $this->ordn, $linenbr);
+	}
+
+
+	public function get_line_qtytoship($linenbr) {
 		return PackSalesOrderDetailQuery::create()->get_line_qtytoship($this->sessionID, $this->ordn, $linenbr);
+	}
+
+	public function get_line_qtypacked($linenbr) {
+		return PackSalesOrderDetailQuery::create()->get_line_qtypacked($this->sessionID, $this->ordn, $linenbr);
+	}
+
+	public function get_line_qtyremaining($linenbr) {
+		return PackSalesOrderDetailQuery::create()->get_line_qtyremaining($this->sessionID, $this->ordn, $linenbr);
 	}
 
 	/**

@@ -202,7 +202,7 @@
 			'whse-picking' => array(
 				'template'       => 'warehouse-function',
 				'name'           => 'pick',
-				'title'          => 'Sales Order Picking',
+				'title'          => 'Picking',
 				'summary'        => 'Sales Order Picking',
 				'parent'         => '/warehouse/picking/',
 				'dplus_function' => 'porpk',
@@ -211,7 +211,7 @@
 			'whse-picking-packing' => array(
 				'template'       => 'warehouse-function',
 				'name'           => 'pick-pack',
-				'title'          => 'Sales Order Picking & Packing',
+				'title'          => 'Picking & Packing',
 				'summary'        => 'Sales Order Picking & Packing',
 				'parent'         => '/warehouse/picking/',
 				'dplus_function' => 'porpp',
@@ -220,7 +220,7 @@
 			'whse-packing' => array(
 				'template'       => 'warehouse-function',
 				'name'           => 'packing',
-				'title'          => 'Sales Order Packing',
+				'title'          => 'Packing',
 				'summary'        => 'Sales Order Packing',
 				'parent'         => '/warehouse/',
 				'dplus_function' => 'porpp',
