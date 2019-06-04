@@ -1,4 +1,6 @@
 <?php
+	$salesorder_config = $modules->get('SalesOrdersConfig');
+	
 	if ($input->get->ordn) {
 		$ordn = $input->get->text('ordn');
 		$document_management = $modules->get('DocumentManagement');
