@@ -1,0 +1,21 @@
+<?php namespace ProcessWire;
+
+	class DplusoFunctions extends WireData implements Module {
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dpluso Functions Module',
+				'version' => 101,
+				'summary' => 'Handles Dplus Functions',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+	}

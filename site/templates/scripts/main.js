@@ -5,6 +5,9 @@
 var nav = '#yt-menu';
 
 $(function() {
+	$('[data-toggle="tooltip"]').tooltip();
+	init_datepicker();
+
 	$(window).scroll(function() {
 		if ($(this).scrollTop() > 50) {
 			$('#back-to-top').fadeIn();
@@ -18,10 +21,6 @@ $(function() {
 		$('#back-to-top').tooltip('hide');
 		$('body,html').animate({ scrollTop: 0 }, 800);
 		return false;
-	});
-
-	$("body").on('show', '#yt-menu', function() {
-		alert('');
 	});
 
 	$("body").on('keypress', 'form:not(.allow-enterkey-submit) input', function(e) {
@@ -38,6 +37,12 @@ $(function() {
 		}
 	});
 
+	$('.placard').on('accepted.fu.placard', function () {
+		var placard = $(this);
+		var form = placard.closest('form');
+		form.submit();
+	});
+
 	$('form[submit-empty="false"]').submit(function () {
 		var $empty_fields = $(this).find(':input').filter(function () {
 			return $(this).val() === '';
@@ -52,11 +57,6 @@ function toggle_nav() {
 	$(nav).find('input[name=q]').focus();
 }
 
-$(function() {
-	$('[data-toggle="tooltip"]').tooltip();
-	init_datepicker();
-});
-
 function init_datepicker() {
 	$('.datepicker').each(function(index) {
 		$(this).datepicker({
@@ -65,3 +65,55 @@ function init_datepicker() {
 		});
 	});
 }
+
+$.fn.extend({
+	loadin: function(href, callback) {
+		var parent = $(this);
+		parent.html('<div></div>');
+
+		var element = parent.find('div');
+		console.log('loading ' + href + " into " +  parent.returnelementdescription());
+		element.load(href, function() {
+			init_datepicker();
+			// init_timepicker();
+			callback();
+		});
+	},
+	returnelementdescription: function() {
+		var element = $(this);
+		var tag = element[0].tagName.toLowerCase();
+		var classes = '';
+		var id = '';
+		if (element.attr('class')) {
+			classes = element.attr('class').replace(' ', '.');
+		}
+		if (element.attr('id')) {
+			id = element.attr('id');
+		}
+		var string = tag;
+		if (classes) {
+			if (classes.length) {
+				string += '.'+classes;
+			}
+		}
+		if (id) {
+			if (id.length) {
+				string += '#'+id;
+			}
+		}
+		return string;
+	},
+	hasParent: function(selector) {
+		var element = $(this);
+		return $(this).closest(selector).length > 0;
+	},
+	formIsCompleted: function() {
+		var form = $(this);
+		form.find('.required').each(function() {
+			if ($(this).val() === '') {
+				return false;
+			}
+		});
+		return true;
+	}
+});

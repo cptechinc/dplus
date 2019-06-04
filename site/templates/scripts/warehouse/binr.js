@@ -6,6 +6,7 @@ $(function() {
 
 	/**
 	 * The Order of Functions based on Order of Events
+	 * NOTE: variables warehouse & validfrombins are generated at run time by the whse-binr template
 	 * 1. Select Item (only if theres a list)
 	 * 2. Show From bin selection
 	 * 3. Choose From Bin
@@ -134,7 +135,7 @@ $(function() {
 		} else if (validfrombins[input_frombin.val()] === undefined) {
 			error = true;
 			title = 'Invalid From Bin ID';
-			msg = 'Please Choose a valid From bin from the from bin list';
+			msg = 'Please use a valid From Bin';
 		}
 		return new SwalError(error, title, msg, html);
 	}
@@ -165,14 +166,14 @@ $(function() {
 			error = true;
 			title = 'Error';
 			msg = 'Please Fill in the To Bin';
-		} else if (whsesession.whse.bins.arranged == 'list' && whsesession.whse.bins.bins[input_tobin.val()] === undefined) {
+		} else if (warehouse.binarrangement == 'list' && warehouse.bins[input_tobin.val()] === undefined) {
 			error = true;
 			title = 'Invalid Bin ID';
-			msg = 'Please Choose a valid To bin';
-		} else if (whsesession.whse.bins.arranged == 'range') {
+			msg = 'Please use a valid To bin';
+		} else if (warehouse.binarrangement == 'range') {
 			error = true;
 
-			whsesession.whse.bins.bins.forEach(function(bin) {
+			warehouse.bins.bins.forEach(function(bin) {
 				if (input_tobin.val() >= bin.from && input_tobin.val() <= bin.through) {
 					error = false;
 				}

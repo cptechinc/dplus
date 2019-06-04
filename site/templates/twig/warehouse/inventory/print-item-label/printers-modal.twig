@@ -1,0 +1,28 @@
+<div class="modal fade" id="labelprinters-modal" tabindex="-1" role="dialog" aria-labelledby="labelprinters-modal-label" aria-hidden="true" data-input="">
+	<div class="modal-dialog modal-md" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="labelprinters-modal-label">Choose Printer</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="list-group">
+					{% for printer in printers %}
+						<a href="#" class="list-group-item select-labelprinter" data-label="{{ printer.id }}">
+							<div class="row">
+								<div class="col-6">
+									<h5 class="list-group-item-heading printer-id">{{ printer.id }}</h5>
+								</div>
+								<div class="col-6">
+									<p class="list-group-item-heading mb-0 printer-desc">{{ printer.desc }}</p>
+								</div>
+							</div>
+						</a>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

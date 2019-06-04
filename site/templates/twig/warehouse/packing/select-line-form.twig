@@ -1,0 +1,46 @@
+<div class="form-group">
+	<a href="" class="btn btn-danger exit-order">Exit Order</a>
+</div>
+<div class="row">
+	<div class="col-sm-12">
+		<div class="mb-5">
+			<div class="mb-3">
+				<h3>Remaining</h3>
+				<div class="list-group">
+					{% for line in warehousepacking.get_packsalesorderdetails_unpacked() %}
+						<a href="{{ page.get_packlineURL(line.linenbr) }}" class="list-group-item">
+							<div class="row">
+								<div class="col-sm-6">
+									<h4 class="list-group-item-heading">{{ line.itemid }}</h4>
+								</div>
+								<div class="col-sm-6">
+									To Ship: {{ warehousepacking.get_line_qtytoship(line.linenbr) }}
+									Packed: {{ warehousepacking.get_line_qtypacked(line.linenbr) }}
+									Remaining: {{ warehousepacking.get_line_qtyremaining(line.linenbr) }}
+								</div>
+							</div>
+						</a>
+					{% endfor %}
+				</div>
+			</div>
+
+			<h3>Packed</h3>
+			<div class="list-group">
+				{% for line in warehousepacking.get_packsalesorderdetails_packed() %}
+					<a href="{{ page.get_packlineURL(line.linenbr) }}" class="list-group-item">
+						<div class="row">
+							<div class="col-sm-6">
+								<h4 class="list-group-item-heading">{{ line.itemid }}</h4>
+							</div>
+							<div class="col-sm-6">
+								To Ship: {{ warehousepacking.get_line_qtytoship(line.linenbr) }}
+								Packed: {{ warehousepacking.get_line_qtypacked(line.linenbr) }}
+								Remaining: {{ warehousepacking.get_line_qtyremaining(line.linenbr) }}
+							</div>
+						</div>
+					</a>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>

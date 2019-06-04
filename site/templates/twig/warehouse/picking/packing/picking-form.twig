@@ -1,0 +1,33 @@
+{% extends 'warehouse/picking/picking-form.twig' %}
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block pickitemtable %}
+	<table class="table table-condensed mb-0">
+		<tr>
+			<td class="control-label">Current Pallet #</td>
+			<td class="text-right" colspan="2">
+				<form action="{{ page.formurl }}" method="get">
+					<input type="hidden" name="action" value="set-pallet">
+					<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
+					<select name="palletnbr" class="form-control input-sm display-inline-block qty change-pallet">
+						{% for i in 1..(pickorder.lastpalletnbr + 1) %}
+							<option value="{{ i }}" {{ i == whsesession.palletnbr ? 'selected' : '' }}>{{ i }}</option>
+						{% endfor %}
+					</select>
+				</form>
+			</td>
+			<td class="text-right">
+				<a href="{{ page.get_addpalletURL() }}" class="btn btn-success">
+					<i class="fa fa-cart-plus" aria-hidden="true"></i> Add Pallet
+				</a>
+			</td>
+		</tr>
+	</table>
+	{{ parent() }}
+{% endblock pickitemtable %}
+
+{% block form_addbarcode %}
+	{{ parent() }}
+{% endblock form_addbarcode %}

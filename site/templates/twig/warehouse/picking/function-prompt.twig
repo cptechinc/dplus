@@ -1,0 +1,7 @@
+{% set msg = 'Are you sure you want to use ' ~ whsesession.function ~ ' for this order?' %}
+<div class="form-group">
+	{% include 'util/alert.twig' with {'type': 'warning','iconclass': 'fa fa-warning fa-2x', 'title': 'Attention!', 'message': msg} %}
+</div>
+<a href="{{ page.cancelURL }}" class="btn btn-warning">Exit Order</a>
+&nbsp; &nbsp;
+<a href="{{ page.removepromptURL }}" class="btn btn-light">Use {{ whsesession.function }}</a>

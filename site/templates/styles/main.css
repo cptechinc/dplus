@@ -1,5 +1,5 @@
 /**************************************
- 	General Styles
+	General Styles
  **************************************/
 html {
 	position: relative;
@@ -13,14 +13,30 @@ footer {
 	padding-top: 15px;
 }
 
+/**************************************
+	Bootstrap Override Styles
+***************************************/
+.breadcrumb .breadcrumb-item::before {color: white;}
+.breadcrumb-item+.breadcrumb-item::before {
+	display: inline-block;
+	padding-right: 0.5rem;
+	color: #6c757d;
+	content: "/"
+ }
+
+.breadcrumb-item.active {
+	color: #FF304F;
+}
+
+/**************************************
+	Application Styles
+***************************************/
 .container.page {
 	min-height: 100%;
 	height: 100%;
 	height: auto;
 	padding-bottom:200px;
 }
-
-.breadcrumb .breadcrumb-item::before {color: white;}
 
 .top-margin {
 	margin-top: 32px;
@@ -31,15 +47,34 @@ a .highlight {color: #000;}
 .highlight a {color: #0f7864; }
 
 #back-to-top {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 12;
-    display: none;
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	z-index: 12;
+	display: none;
 }
 
 .fa-1-2x {
-    font-size: 1.2em;
+	font-size: 1.2em;
+}
+
+a.link {
+	text-decoration: none;
+	background-color: transparent;
+	border-bottom: 3px solid #bcdcef;
+	-webkit-transition: background .15s cubic-bezier(0.33, 0.66, 0.66, 1);
+	-o-transition: background .15s cubic-bezier(0.33, 0.66, 0.66, 1);
+	transition: background .15s cubic-bezier(0.33, 0.66, 0.66, 1);
+	-webkit-box-shadow: inset 0 -4px 0 #bcdcef;
+	box-shadow: inset 0 -4px 0 #bcdcef;
+}
+
+a.link:hover {
+	background-color: #bcdcef;
+}
+
+input.qty {
+	width: 7rem;
 }
 
 a.link {
@@ -58,7 +93,7 @@ a.link:hover {
 }
 
 /**************************************
- 	Navbar Styles
+	Navbar Styles
  **************************************/
 #yt-menu {
 	width: 300px;
@@ -76,11 +111,10 @@ a.link:hover {
 
 
 /**************************************
- 	Login Styles
+	Login Styles
  **************************************/
 .login-form {
 	width: 100%;
-	max-width: 500px;
 	padding: 15px;
 	margin: auto
 }

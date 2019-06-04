@@ -1,0 +1,87 @@
+{% block title %}
+	<h2>Head to {{ pickitem.bin }}</h2>
+{% endblock %}
+
+{% block pickitemtable %}
+	<table class="table table-condensed table-striped">
+		<tr>
+			<td class="control-label">Order #</td> <td class="text-right">{{ pickitem.ordn }}</td>
+		</tr>
+		<tr>
+			<td class="control-label">Bin #</td> <td class="text-right">{{ pickitem.bin }}</td>
+		</tr>
+		<tr>
+			<td class="control-label">Expected Qty</td> <td class="text-right">{{ pickitem.binqty }}</td>
+		</tr>
+		<tr>
+			<td class="control-label">Item ID</td>
+			<td class="text-right">
+				{{ pickitem.itemid }}
+				<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#item-info-modal">
+					Item Info
+				</button>
+			</td>
+		</tr>
+		<tr>
+			<td class="control-label">Qty Needed</td>
+			<td class="text-right">{{ pickitem.qtyordered }}</td>
+		</tr>
+		{% if (pickitem.has_pickedqty()) %}
+			<tr>
+				<td class="control-label">Previously Picked</td>
+				<td class="text-right">{{ pickitem.qtypulled }}</td>
+			</tr>
+		{% endif %}
+		<tr>
+			<td class="control-label">Qty Picked</td>
+			<td class="text-right">{{ pickitem.get_userpickedtotal() }}</td>
+		</tr>
+
+		{% set bgcolor = '' %}
+		{% if pickitem.has_pickedtoomuch() or pickitem.has_pickedmorethanbinqty() %}
+			{% set bgcolor = 'bg-warning text-white' %}
+		{% else %}
+			{% set bgcolor = 'bg-success text-white' %}
+		{% endif %}
+		<tr class="{{ bgcolor }}">
+			<td class="control-label">Qty Remaining</td>
+			<td class="text-right">{{ pickitem.get_qtyremaining() }}</td>
+		</tr>
+	</table>
+{% endblock pickitemtable %}
+
+{% block form_addbarcode %}
+	<form action="{{ page.fullURL.getUrl() }}" method="POST" class="allow-enterkey-submit">
+		<input type="hidden" name="action" value="add-barcode">
+		<input type="hidden" name="palletnbr" value="{{ whsesession.palletnbr }}">
+		<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
+		<div class="input-group form-group">
+			<input class="form-control" name="barcode" placeholder="Barcode" type="text" autofocus>
+			<span class="input-group-append">
+				<button type="submit" class="btn btn-success">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add
+				</button>
+			</span>
+		</div>
+	</form>
+	<div class="row">
+		<div class="col-sm-3 col-xs-6 form-group">
+			<a href="{{ page.get_finishitemURL() }}" class="btn btn-success finish-item">
+				<i class="fa fa-check-square" aria-hidden="true"></i> Submit Item
+			</a>
+		</div>
+		<div class="col-sm-3 col-xs-6 form-group">
+			<a href="{{ page.get_skipitemURL() }}" class="btn btn-light finish-item">
+				<i class="fa fa-check-square" aria-hidden="true"></i> Skip Item
+			</a>
+		</div>
+		<div class="col-sm-3 col-xs-6 form-group">
+			<button type="button" class="btn btn-warning change-bin">
+				Change Bin
+			</button>
+		</div>
+		<div class="col-sm-3 col-xs-6 form-group">
+			<a href="{{ page.get_exitorderURL() }}" class="btn btn-danger exit-order">Exit Order</a>
+		</div>
+	</div>
+{% endblock form_addbarcode %}

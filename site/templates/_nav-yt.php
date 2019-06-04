@@ -8,6 +8,7 @@
 				<li class="nav-item">
 					<a class="nav-link" href="<?= $pages->get('template=dashboard')->url; ?>"><?= $pages->get('template=dashboard')->title; ?></a>
 				</li>
+				
 				<?php foreach ($pages->get('/')->children('template=dplus-menu|menu') as $child) : ?>
 					<li class="nav-item">
 						<a class="nav-link" href="<?= $child->url; ?>"><?= $child->title; ?></a>

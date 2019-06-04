@@ -1,0 +1,34 @@
+<h3>Enter Order Number</h3>
+
+<form action="{{ page.formurl }}" method="post" class="allow-enterkey-submit sales-order-entry-form" id="sales-order-entry-form">
+	<input type="hidden" name="action" value="start-order">
+	<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
+
+	<div class="input-group form-group">
+		<input class="form-control" name="ordn" placeholder="Order #" type="text" autofocus>
+		<span class="input-group-append">
+			<button type="submit" class="btn btn-success confirm-order-assignment"> Grab Order </button>
+		</span>
+	</div>
+</form>
+
+<div class="form-group">
+	<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#so-lock-div" aria-expanded="false" aria-controls="so-lock-div">
+		Remove Sales Order Lock
+	</button>
+</div>
+
+
+<div class="collapse" id="so-lock-div">
+	<form action="{{ page.formurl }}" method="post" class="allow-enterkey-submit" id="sales-order-entry-form">
+		<input type="hidden" name="action" value="remove-order-locks">
+		<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
+
+		<div class="input-group form-group">
+			<input class="form-control" name="ordn" placeholder="Order #" type="text">
+			<span class="input-group-append">
+				<button type="submit" class="btn btn-warning"> Remove Lock </button>
+			</span>
+		</div>
+	</form>
+</div>

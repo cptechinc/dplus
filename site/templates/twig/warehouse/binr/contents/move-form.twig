@@ -1,0 +1,72 @@
+<div class="form-group">
+	<a href="{{ page.parent.url }}" class="btn btn-primary not-round">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Return to {{ page.parent.title }} Menu
+	</a>
+</div>
+
+{% if (session.get('bincm') is not empty and whsesession.had_succeeded()) %}
+	{% set results = session.get('bincm') %}
+	<div class="mb-3">
+		{% set msg = 'You moved all the items from ' ~ results['frombin'] ~ ' to ' ~ results['tobin'] %}
+		{% include 'util/alert.twig' with {'type': 'success','iconclass': 'fa fa-floppy-o fa-2x', 'title': 'Success!', 'message': msg} %}
+	</div>
+{% endif %}
+
+<form action="{{ page.formurl }}" method="GET" class="move-contents-form">
+	<input type="hidden" name="action" value="move-bin-contents">
+	<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
+
+	<div class="form-group">
+		<div class="row">
+			<div class="col-9">
+				<label for="frombin">From Bin ID</label>
+				<div class="input-group">
+					<input type="text" class="form-control bin-input" id="frombin" name="from-bin">
+					<span class="input-group-append">
+						<button type="button" class="btn btn-default" data-input="from-bin" data-toggle="modal" data-target="#bins-modal">
+							<span class="fa fa-search" aria-hidden="true"></span>
+						</button>
+					</span>
+				</div>
+			</div>
+			<div class="col-3">
+				<div class="bin-contents-toggle">
+					<label aria-hidden="true">Show Bin Contents</label>
+					<div class="input-group">
+						<button type="button" class="btn btn-primary show-bin-contents" data-toggle="modal" data-target="#bin-contents-modal">
+							View Bin <i class="fa fa-cube" aria-hidden="true"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="row">
+			<div class="col-9">
+				<label for="tobin">To Bin ID</label>
+				<div class="input-group">
+					<input type="text" class="form-control bin-input" id="tobin" name="to-bin">
+					<span class="input-group-append">
+						<button type="button" class="btn btn-default" data-input="to-bin" data-toggle="modal" data-target="#bins-modal">
+							<span class="fa fa-search" aria-hidden="true"></span>
+						</button>
+					</span>
+				</div>
+			</div>
+			<div class="col-3">
+				<div class="bin-contents-toggle">
+					<label aria-hidden="true">Show Bin Contents</label>
+					<div class="input-group">
+						<button type="button" class="btn btn-primary show-bin-contents" data-toggle="modal" data-target="#bin-contents-modal">
+							View Bin <i class="fa fa-cube" aria-hidden="true"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<button type="submit" class="btn btn-success">
+		<i class="fa fa-floppy-o" aria-hidden="true"></i> Submit
+	</button>
+</form>

@@ -1,0 +1,49 @@
+<div class="modal fade" id="item-availability-modal" tabindex="-1" role="dialog" aria-labelledby="item-availability-modal-label" aria-hidden="true" data-input="">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="item-availability-modal-label">Showing availability for {{ pickitem.itemid }}</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+
+				{% if pickitem.is_item_serialized() %}
+					<div class="form-group">
+						<button class="btn btn-primary select-bin" data-bin="{{ pickingsession.get_warehouseitembin(pickitem.itemid) }}">
+							Use Warehouse Bin
+						</button>
+					</div>
+				{% endif %}
+				<div class="list-group">
+					{% for item in inventoryresults %}
+						<a href="#" class="list-group-item p-2 select-item" data-itemid="{{ item.itemid }}" data-lotserial="{{ pickitem.is_item_serialized() or pickitem.is_item_lotted() ? item.lotserial : '' }}" data-bin="{{ item.bin }}" data-available="{{ item.qty }}">
+							{% if pickitem.is_item_serialized() or pickitem.is_item_lotted() %}
+								<div class="row">
+									<div class="col">
+										<h4 class="list-group-item-heading">
+											{{ item.get_itemtypepropertydesc()|upper ~ ": " ~ item.get_itemidentifier() }}
+										</h4>
+									</div>
+								</div>
+								<p class="list-group-item-text bg-light">
+									<strong>Bin:</strong> {{ item.bin }} <strong>Qty:</strong> {{ item.qty }}
+								</p>
+							{% else %}
+							<div class="row">
+								<div class="col">
+									<h4><strong>Bin:</strong> {{ item.bin }}</h4>
+								</div>
+								<div class="col">
+									<h4><strong>Qty:</strong> {{ item.qty }}</h4>
+								</div>
+							</div>
+							{% endif %}
+						</a>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
