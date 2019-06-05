@@ -1,0 +1,42 @@
+<h3 class="text-center">Barcodes Scanned</h3>
+<table class="table table-condensed table-striped">
+	<tr>
+		<th>Barcode</th>
+		<th>Number of Units</th>
+		<th>Qty Total</th>
+		<th class="text-center">Remove</th>
+	</tr>
+	{% for barcode in picked_barcodes %}
+		<tr>
+			<td>{{ barcode.barcode }}</td>
+			<td class="text-right">
+				<form action="{{ page.fullURL.getUrl() }}" method="post">
+					<input type="hidden" name="action" value="edit-barcode">
+					<input type="hidden" name="recordnbr" value="{{ barcode.recordnumber }}">
+					<input type="hidden" name="barcode" value="{{ barcode.barcode }}">
+					<div class="placard" data-initialize="placard">
+						<div class="placard-popup"></div>
+						<input type="number" name="qty" class="form-control qty placard-field" value="{{ barcode.qty }}">
+						<div class="placard-footer">
+							<a class="placard-cancel" href="#">Cancel</a>
+							<button class="btn btn-success btn-sm placard-accept" type="button">Save</button>
+						</div>
+					</div>
+				</form>
+			</td>
+			<td class="text-right">
+				{{ barcode.get_barcodeqtytotal() }}
+			</td>
+			<td class="text-center">
+				<form action="{{ page.fullURL.getUrl() }}" method="post">
+					<input type="hidden" name="action" value="delete-barcode">
+					<input type="hidden" name="recordnbr" value="{{ barcode.recordnumber }}">
+					<input type="hidden" name="barcode" value="{{ barcode.barcode }}">
+					<button type="submit" class="btn btn-danger btn-sm" type="button">
+						<i class="fa fa-trash" aria-hidden="true"></i> Remove
+					</button>
+				</form>
+			</td>
+		</tr>
+	{% endfor %}
+</table>

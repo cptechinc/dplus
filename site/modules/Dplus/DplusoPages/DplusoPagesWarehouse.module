@@ -1,6 +1,8 @@
 <?php namespace ProcessWire;
 	require_once(__DIR__ . '/DplusoPages.module');
 
+	use Purl\Url;
+
 	class DplusoPagesWarehouse extends DplusoPages implements Module {
 
 		protected $fields = array(
@@ -39,6 +41,31 @@
 			),
 			'whse-binr-contents' => array(
 				'name'   => 'whse-binr-contents',
+				'fields' => array('title'),
+				'paginated' => false
+			),
+			'whse-picking' => array(
+				'name'   => 'whse-picking',
+				'fields' => array('title'),
+				'paginated' => false
+			),
+			'whse-picking-unguided' => array(
+				'name'   => 'whse-picking-unguided',
+				'fields' => array('title'),
+				'paginated' => false
+			),
+			'whse-picking-guided' => array(
+				'name'   => 'whse-picking-guided',
+				'fields' => array('title'),
+				'paginated' => false
+			),
+			'whse-picking-packing' => array(
+				'name'   => 'whse-picking-packing',
+				'fields' => array('title'),
+				'paginated' => false
+			),
+			'whse-packing' => array(
+				'name'   => 'whse-packing',
 				'fields' => array('title'),
 				'paginated' => false
 			)
@@ -88,6 +115,15 @@
 				'dplus_function' => 'pbnrt',
 				'pw_template'    => 'whse-binr-to'
 			),
+			'whse-binr-from' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'move-from',
+				'title'          => 'Move From',
+				'summary'        => 'Move Single items from the same bin',
+				'parent'         => '/warehouse/binr/',
+				'dplus_function' => 'pbnrf',
+				'pw_template'    => 'whse-binr-from'
+			),
 			'whse-binr-contents' => array(
 				'template'       => 'warehouse-function',
 				'name'           => 'sales-history',
@@ -96,6 +132,99 @@
 				'parent'         => '/warehouse/binr/',
 				'dplus_function' => 'pmvbn',
 				'pw_template'    => 'whse-binr-contents'
+			),
+			'menu-inventory' => array(
+				'template'       => 'warehouse-menu',
+				'name'           => 'inventory',
+				'title'          => 'Inventory',
+				'summary'        => 'Inventory Menu',
+				'parent'         => '/warehouse/',
+				'dplus_function' => 'mivty'
+			),
+			'whse-find-item' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'find-item',
+				'title'          => 'Find Item',
+				'summary'        => 'Find Location(s) for an Item',
+				'parent'         => '/warehouse/inventory/',
+				'dplus_function' => 'pfini',
+				'pw_template'    => 'whse-find-item',
+				'has_print'      => true
+			),
+			'whse-bin-inquiry' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'bin-inquiry',
+				'title'          => 'Bin Inquiry',
+				'summary'        => 'Show Items in a bin',
+				'parent'         => '/warehouse/inventory/',
+				'dplus_function' => 'pbini',
+				'pw_template'    => 'whse-bin-inquiry',
+				'has_print'      => true
+			),
+			'whse-binr-contents' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'move-contents',
+				'title'          => 'Bin Inquiry',
+				'summary'        => 'Show Items in a bin',
+				'parent'         => '/warehouse/binr/',
+				'dplus_function' => 'pmvbn',
+				'pw_template'    => 'whse-binr-contents',
+				'has_print'      => true
+			),
+			'whse-binr-contents' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'move-contents',
+				'title'          => 'Bin Inquiry',
+				'summary'        => 'Show Items in a bin',
+				'parent'         => '/warehouse/binr/',
+				'dplus_function' => 'pmvbn',
+				'pw_template'    => 'whse-binr-contents',
+				'has_print'      => true
+			),
+			'whse-print-item-label' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'print-item-label',
+				'title'          => 'Print Item Label',
+				'summary'        => 'Print a Label for a bin Item',
+				'parent'         => '/warehouse/inventory/',
+				'dplus_function' => 'pilbl',
+				'pw_template'    => 'whse-print-item-label',
+				'has_print'      => false
+			),
+			'menu-pick' => array(
+				'template'       => 'warehouse-menu',
+				'name'           => 'picking',
+				'title'          => 'Picking',
+				'summary'        => 'Picking Menu',
+				'parent'         => '/warehouse/',
+				'dplus_function' => 'mppik'
+			),
+			'whse-picking' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'pick',
+				'title'          => 'Picking',
+				'summary'        => 'Sales Order Picking',
+				'parent'         => '/warehouse/picking/',
+				'dplus_function' => 'porpk',
+				'pw_template'    => 'whse-picking',
+			),
+			'whse-picking-packing' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'pick-pack',
+				'title'          => 'Picking & Packing',
+				'summary'        => 'Sales Order Picking & Packing',
+				'parent'         => '/warehouse/picking/',
+				'dplus_function' => 'porpp',
+				'pw_template'    => 'whse-picking-packing',
+			),
+			'whse-packing' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'packing',
+				'title'          => 'Packing',
+				'summary'        => 'Sales Order Packing',
+				'parent'         => '/warehouse/',
+				'dplus_function' => 'porpp',
+				'pw_template'    => 'whse-packing',
 			),
 		);
 
@@ -107,5 +236,62 @@
 				'singular' => true,
 				'autoload' => true,
 			);
+		}
+
+		public function init_picking() {
+			$this->addHook('Page::get_finishitemURL', function($event) {
+				$p = $event->object;
+				$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
+				$url->query->set('action','finish-item');
+
+				if ($p->fullURL->query->has('linenbr')) {
+					$url->query->set('linenbr', $p->fullURL->query->get('linenbr'));
+				}
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_skipitemURL', function($event) {
+				$p = $event->object;
+				$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
+				$url->query->set('action','skip-item');
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_exitorderURL', function($event) {
+				$p = $event->object;
+				$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
+				$url->query->set('action','exit-order');
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_finishorderURL', function($event) {
+				$p = $event->object;
+				$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
+				$url->query->set('action','finish-order');
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_selectlineURL', function($event) {
+				$p = $event->object;
+				$item = $event->arguments(0); // Instance of PickSalesOrderDetail
+				$url = new Url($p->fullURL->getUrl());
+				$url->query->set('linenbr',$item->recno);
+				$event->return = $url->getUrl();
+			});
+		}
+
+		public function init_pickingpacking() {
+			$this->addHook('Page::get_addpalletURL', function($event) {
+				$p = $event->object;
+				$item = $event->arguments(0);
+				$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
+				$url->query->set('action','add-pallet');
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
 		}
 	}

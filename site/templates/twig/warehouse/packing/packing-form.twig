@@ -1,0 +1,16 @@
+<table class="table">
+		<tr>
+			<th>Item ID</th>
+			<th>Qty to Ship</th>
+			<th>Qty Packed</th>
+			<th>Qty Remaining</th>
+		</tr>
+	{% for item in warehousepacking.get_packsalesorderdetails_line(page.linenbr) %}
+		<tr>
+			<td>{{ item.itemid }}</td>
+			<td>{{ item.qty_toship }}</td>
+			<td>{{ item.qty_packed }}</td>
+			<td>{{ item.qty_remaining }}</td>
+		</tr>
+	{% endfor %}
+</table>

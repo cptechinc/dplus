@@ -1,0 +1,163 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+use WhseitempackQuery, Whseitempack;
+use PackSalesOrderDetailQuery, PackSalesOrderDetail;
+use WhsesessionQuery, Whsesession;
+use WarehouseQuery, Warehouse;
+use WarehouseInventoryQuery, WarehouseInventory;
+use QnoteQuery, Qnote;
+
+class WarehousePacking extends WireData implements Module {
+	/**
+	 * Processwire Session
+	 * @var Session
+	 */
+	protected $session;
+
+	/**
+	 * Session ID
+	 * @var string
+	 */
+	protected $sessionID;
+
+	/**
+	 * Order Number
+	 * @var string
+	 */
+	protected $ordn;
+
+
+	/**
+	 * Item Being Picked
+	 * @var PackSalesOrderDetail
+	 */
+	protected $packitem;
+
+	/**
+	 * Object with config modules
+	 * @var WireData
+	 */
+	protected $config;
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Warehouse Packing Functions Module',
+			'version' => 101,
+			'summary' => 'Handles Warehouse Packing',
+			'singular' => true,
+			'autoload' => false,
+		);
+	}
+
+	public function init() {
+		$this->session = $this->wire('session');
+		$this->config = new WireData();
+		//$this->config->inventory = $this->wire('modules')->get('WarehouseInventoryConfig');
+		//$this->config->picking   = $this->wire('modules')->get('WarehousePickingConfig');
+		//$
+		$this->addHook('Page::get_packlineURL', function($event) {
+			$p = $event->object;
+			$linenbr = $event->arguments(0);
+
+			$url = new Url($p->fullURL->getUrl());
+			$url->query->set('linenbr', $linenbr);
+			$event->return = $url->getUrl();
+		});
+	}
+
+	/**
+	 * Sets Session ID
+	 * @param string $sessionID Session ID
+	 */
+	public function set_sessionID($sessionID) {
+		$this->sessionID = $sessionID;
+	}
+
+	/**
+	 * Sets Order Number
+	 * @param string $ordn Sales Order Number
+	 */
+	public function set_ordn($ordn) {
+		$this->ordn = $ordn;
+	}
+
+	/**
+	 * Return the number of Qnote objects based fitlered by Session ID, Order Number, Line Number and Show on Pack
+	 * @return int
+	 */
+	public function count_packingnotes() {
+		return QnoteQuery::create()->filterBySessionidOrdernbrLinenbr($this->sessionID, $this->ordn)->filterByShowSalesOrderPack()->count();
+	}
+
+	/**
+	 * Return Qnote objects based fitlered by Session ID, Order Number, Line Number and Show on Pack
+	 * @return ChildQnote[]|ObjectCollection
+	 */
+	public function get_packingnotes() {
+		return QnoteQuery::create()->filterBySessionidOrdernbrLinenbr($this->sessionID, $this->ordn)->filterByShowSalesOrderPack()->find();
+	}
+
+	public function count_packsalesorderdetails() {
+		return PackSalesOrderDetailQuery::create()->countBySessionidOrder($this->sessionID, $this->ordn);
+	}
+
+	/**
+	 * Returns PackSalesOrderDetail for this session, order, line
+	 * @return PackSalesOrderDetail
+	 */
+	public function get_packsalesorderdetails() {
+		return PackSalesOrderDetailQuery::create()->findBySessionidOrderGrouped($this->sessionID, $this->ordn);
+	}
+
+	public function get_packsalesorderdetails_unpacked() {
+		return PackSalesOrderDetailQuery::create()->findBySessionidOrderGroupedUnpacked($this->sessionID, $this->ordn);
+	}
+
+	public function get_packsalesorderdetails_packed() {
+		return PackSalesOrderDetailQuery::create()->findBySessionidOrderGroupedPacked($this->sessionID, $this->ordn);
+	}
+
+	public function get_packsalesorderdetails_line($linenbr) {
+		return PackSalesOrderDetailQuery::create()->findBySessionidOrderLinenbr($this->sessionID, $this->ordn, $linenbr);
+	}
+
+
+	public function get_line_qtytoship($linenbr) {
+		return PackSalesOrderDetailQuery::create()->get_line_qtytoship($this->sessionID, $this->ordn, $linenbr);
+	}
+
+	public function get_line_qtypacked($linenbr) {
+		return PackSalesOrderDetailQuery::create()->get_line_qtypacked($this->sessionID, $this->ordn, $linenbr);
+	}
+
+	public function get_line_qtyremaining($linenbr) {
+		return PackSalesOrderDetailQuery::create()->get_line_qtyremaining($this->sessionID, $this->ordn, $linenbr);
+	}
+
+	/**
+	 * Returns the Whsesession for this Session ID
+	 * @return Whsesession
+	 */
+	public function get_whsesession() {
+		return WhsesessionQuery::create()->findOneBySessionid($this->sessionID);
+	}
+
+	/**
+	 * Returns the Warehouse for this Whsesession
+	 * @return Whsesession
+	 */
+	public function get_warehouseconfig() {
+		$whsesession = $this->get_whsesession();
+		return WhsesessionQuery::create()->findOneByWhseid($whsesession->whseid);
+	}
+}

@@ -1,14 +1,16 @@
-<div class="text-center">
-	<div class="login-form mt-4">
+<div class="row">
+	<div class="offset-sm-3 col-sm-6">
+		<div class="login-form mt-4">
 			<p class="text-center">
 				<img class="mb-4" src="{{ appconfig.logo_large.url }}" alt="{{ appconfig.title }} logo">
 			</p>
 			<h2 class="text-center mb-3">{{ appconfig.title }}</h2>
 
 			{% if login_error %}
-				<div class="alert alert-danger" role="alert">
-					<i class="fa fa-warning" aria-hidden="true"></i> <strong>Error!</strong> Wrong Username / Password
+				<div class="form-group">
+					{% include 'util/alert.twig' with {'type': 'danger','iconclass': 'fa fa-warning fa-2x', 'title': 'Error!', 'message': 'Wrong Username / Password'} %}
 				</div>
+
 			{% endif %}
 
 			<form action="{{ page.formurl }}" method="post" class="allow-enterkey-submit">

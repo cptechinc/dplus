@@ -4,14 +4,14 @@
 
 	// Check if user was trying to log in, then handle redirect of login
 	if ($session->loggingin) {
-		$session->remove('loggingin');
 
 		if (!$user->loggedin) {
 			$url = $pages->get('template=login')->url;
 		} else {
+			$session->remove('loggingin');
 			$url = $roles->get($user->dplusrole)->homepage;
 		}
 	}
-
+	
 	header("Location: $url");
 	exit;

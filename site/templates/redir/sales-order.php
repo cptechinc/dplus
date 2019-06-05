@@ -13,14 +13,14 @@
 		case 'get-order-notes':
 			$ordn = $input->get->text('ordn');
 			$linenbr = $input->get->int('linenbr');
-			$data = array("DBNAME=$config->dplusdbname", "LQNOTE=SORD", "KEY1=$ordn", "KEY2=$linenbr");
+			$data = array("DBNAME=$dplusdb", "LQNOTE=SORD", "KEY1=$ordn", "KEY2=$linenbr");
 			break;
 	}
 
 	if (!empty($data)) {
 		write_dplusfile($data, $filename);
 		$http = new WireHttp();
-		$http->get("127.0.0.1/cgi-bin/".$config->cgis['warehouse']."?fname=$filename");
+		$http->get("127.0.0.1/cgi-bin/".$config->cgis['default']."?fname=$filename");
 	}
 
 	if (!empty($session->get('loc')) && !$config->ajax) {

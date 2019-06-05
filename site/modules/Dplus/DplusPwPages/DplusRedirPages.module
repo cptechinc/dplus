@@ -39,7 +39,7 @@
 				'name'       => 'redir',
 				'title'      => 'redir',
 				'summary'    => 'Warehouse Redirects',
-				'parent'     => '/',
+				'parent'     => '/warehouse/',
 				'redir_file' => 'warehouse'
 			),
 			'binr-redir' => array(
@@ -47,16 +47,32 @@
 				'name'       => 'redir',
 				'title'      => 'redir',
 				'summary'    => 'Warehouse Redirects',
-				'parent'     => '/',
+				'parent'     => '/warehouse/binr/',
 				'redir_file' => 'binr'
 			),
-			'order-redir' => array(
+			'inventory-redir' => array(
 				'template'   => 'redir',
 				'name'       => 'redir',
 				'title'      => 'redir',
-				'summary'    => 'Sales Order Redirects',
-				'parent'     => '/mso/',
-				'redir_file' => 'sales-order'
+				'summary'    => 'Warehouse Inventory Redirects',
+				'parent'     => '/warehouse/inventory/',
+				'redir_file' => 'inventory'
+			),
+			'pick-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Sales Order Picking Redirects',
+				'parent'     => '/warehouse/picking/',
+				'redir_file' => 'picking'
+			),
+			'pack-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Sales Order Packing Redirects',
+				'parent'     => '/warehouse/packing/',
+				'redir_file' => 'packing'
 			),
 		);
 

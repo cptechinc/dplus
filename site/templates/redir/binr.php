@@ -74,7 +74,7 @@
 			$tobin = $input->$requestmethod->text('to-bin');
 			$data = array("DBNAME=$dplusdb", 'MOVEBIN', "FROMBIN=$frombin", "TOBIN=$tobin");
 			$session->loc = $input->$requestmethod->text('page');
-			$session->bincm = json_encode(array('tobin' => $tobin, 'frombin' => $frombin));
+			$session->bincm = array('tobin' => $tobin, 'frombin' => $frombin);
 			break;
 	}
 

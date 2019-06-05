@@ -8,6 +8,8 @@
 	$filename  = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();
 	$sessionID = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();
 
+	$http = new WireHttp();
+
 	switch ($action) {
 		case 'login':
 			if ($input->post->username) {
@@ -22,16 +24,16 @@
 			$data = array("DBNAME=$dplusdb", 'LOGOUT');
 			$session->loc = $pages->get('template=login')->url;
 
-			// if (WhseSession::does_sessionexist(session_id())) {
-			// 	$whsesession = WhseSession::load(session_id());
-			// 	$whsesession->end_session();
-			// }
+			// LOGOUT WAREHOUSE SESSION
+			if (WhsesessionQuery::create()->sessionExists(session_id())) {
+				$url = $pages->get('template=warehouse-menu, dplus_function=wm')->child('template=redir')->httpUrl."?action=logout&sessionID=".session_id();
+				$http->get($url);
+			}
 			break;
 	}
 
 	if (!empty($data)) {
 		write_dplusfile($data, $filename);
-		$http = new WireHttp();
 		$http->get("127.0.0.1/cgi-bin/".$config->cgis['default']."?fname=$filename");
 	}
 

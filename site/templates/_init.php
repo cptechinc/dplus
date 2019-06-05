@@ -1,6 +1,7 @@
 <?php
 	use Map\SalesOrderTableMap;
-
+	use Map\QnoteTableMap;
+	
 /**
  * Initialization file for template files
  *
@@ -46,6 +47,9 @@ if ($page->id != $config->errorpage_dplusdb) {
 	$con = Propel\Runtime\Propel::getWriteConnection(SalesOrderTableMap::DATABASE_NAME);
 	$con->useDebug(true);
 
+	$dpluso = Propel\Runtime\Propel::getWriteConnection(QnoteTableMap::DATABASE_NAME);
+	$dpluso->useDebug(true);
+
 	$templates_nosignin = array('login', 'redir');
 
 	if (!in_array($page->template, $templates_nosignin) && LogpermQuery::create()->is_loggedin(session_id()) == false) {
@@ -54,7 +58,6 @@ if ($page->id != $config->errorpage_dplusdb) {
 
 	$user->setup(session_id());
 }
-
 
 // ADD JS AND CSS
 $config->styles->append(hash_templatefile('styles/bootstrap-grid.min.css'));

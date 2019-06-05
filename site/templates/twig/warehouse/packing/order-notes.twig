@@ -1,0 +1,12 @@
+<div class="card">
+	 <h5 class="card-header">Packing Notes</h5>
+	<div class="card-body">
+		{% if notes.count > 0 %}
+			{% for note in notes %}
+				<p class="card-text"> {{ note.notefld }} </p>
+			{% endfor %}
+		{% else %}
+			<p class="card-text">No Order Notes Found</p>
+		{% endif %}
+	</div>
+</div>

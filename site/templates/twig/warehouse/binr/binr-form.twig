@@ -5,12 +5,11 @@
 		{% if (session.get('binr') is not empty) %}
 			{% if (whsesession.had_succeeded()) %}
 				<div class="alert alert-success" role="alert">
-					<strong>Success:</strong> {{ item.get_itemtypedesc()|upper ~ ': ' ~ item.get_itemidentifier()}}
+					{% set msg = item.get_itemtypedesc()|upper ~ ': ' ~ item.get_itemidentifier() %}
+					{% include 'util/alert.twig' with {'type': 'success','iconclass': 'fa fa-floppy-o fa-2x', 'title': 'Success!', 'message': msg} %}
 				</div>
 			{% elseif (whsesession.status is not empty) %}
-				<div class="alert alert-danger" role="alert">
-					<strong>Error:</strong> {{ whsesession.status }}
-				</div>
+				{% include 'util/alert.twig' with {'type': 'danger','iconclass': 'fa fa-warning fa-2x', 'title': 'Error!', 'message': whsesession.status} %}
 			{% endif %}
 		{% endif %}
 
@@ -27,7 +26,7 @@
 						<label for="from-bin">Bin</label>
 						<div class="input-group">
 							<input type="text" class="form-control input-sm" name="from-bin" value="{{ item.bin }}" data-bin="{{ item.bin }}">
-							<span class="input-group-btn">
+							<span class="input-group-append">
 								<button type="button" class="btn btn-default show-select-bins" data-toggle="modal" data-target="#choose-from-bins-modal" data-input="from-bin"> <span class="fa fa-search"></span> </button>
 							</span>
 						</div>
@@ -40,8 +39,8 @@
 					<div class="col-sm-6 form-group">
 						<label for="to-bin">Bin</label>
 						<div class="input-group">
-							<input type="text" class="form-control input-sm" name="to-bin" value="{{ tobin is not empty ? tobin : '' }}">
-							<span class="input-group-btn">
+							<input type="text" class="form-control input-sm" name="to-bin" value="{{ page.tobin }}">
+							<span class="input-group-append">
 								<button type="button" class="btn btn-default" data-toggle="modal" data-target="#choose-to-bins-modal" data-input="to-bin"> <span class="fa fa-search"></span> </button>
 							</span>
 						</div>
@@ -54,7 +53,7 @@
 						<label for="bin-qty">Qty </label> (On Hand: <span class="qty-available">{{ inventory.get_binqty(session.get('sessionid'), item, item.bin) }}</span>)
 						<div class="input-group">
 							<input type="text" class="form-control input-sm text-right" name="qty" value="">
-							<span class="input-group-btn">
+							<span class="input-group-append">
 								<button type="submit" class="btn btn-primary not-round use-bin-qty" data-direction="from">Use Bin Qty</button>
 							</span>
 						</div>
