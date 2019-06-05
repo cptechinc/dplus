@@ -36,9 +36,12 @@
 </div>
 <div class="row mt-4">
 	<div class="col-sm-4">
-		<legend class="font-weight-bold text-secondary">Billing</legend>
+		<legend class="font-weight-bold text-secondary">Billing ({{ order.custid }})</legend>
 		<address>
-
+			{{ customer.name }} <br>
+			{{ customer.address1 }} <br>
+			{{ customer.address2 ? customer.address2 ~ "<br>" : ''}}
+			{{ customer.city ~ ', ' ~ customer.state ~ ' ' ~ customer.zip}}
 		</address>
 	</div>
 	<div class="col-sm-4">

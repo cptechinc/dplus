@@ -17,7 +17,7 @@
 			$customer = CustomerQuery::create()->findOneByCustid($order->custid);
 			$page->title = "Sales Order #$ordn";
 			$page->listpage = $pages->get('pw_template=sales-orders');
-			$page->body =  $config->twig->render('sales-orders/sales-order/sales-order-page.twig', ['page' => $page, 'order' => $order, 'order_items' => $order_items, 'document_management' => $document_management]);
+			$page->body =  $config->twig->render('sales-orders/sales-order/sales-order-page.twig', ['page' => $page, 'customer' => $customer, 'order' => $order, 'order_items' => $order_items, 'document_management' => $document_management]);
 
 			$shipments = SalesOrderShipmentQuery::create()->findByOrderNumber($ordn);
 			$urlmaker = $modules->get('DplusURLs');
@@ -30,11 +30,20 @@
 		} elseif (SalesHistoryQuery::create()->filterByOehhnbr($ordn)->count()) {
 			$order_query = SalesHistoryQuery::create();
 			$order = $order_query->findOneByOehhnbr($ordn);
+			$customer = CustomerQuery::create()->findOneByCustid($order->custid);
 			$order_items_query = SalesHistoryDetailQuery::create();
 			$order_items = $order_items_query->filterByOehhnbr($ordn)->find();
 			$page->title = "Sales Order #$ordn";
 			$page->listpage = $pages->get('pw_template=sales-history-orders');
-			$page->body = $config->twig->render('sales-orders/sales-history/sales-history-page.twig', ['page' => $page, 'order' => $order, 'order_items' => $order_items]);
+			$page->body = $config->twig->render('sales-orders/sales-history/sales-history-page.twig', ['page' => $page, 'order' => $order, 'customer' => $customer, 'order_items' => $order_items,  'document_management' => $document_management]);
+
+			$shipments = SalesOrderShipmentQuery::create()->findByOrderNumber($ordn);
+			$urlmaker = $modules->get('DplusURLs');
+			$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-tracking.twig', ['page' => $page, 'order' => $order, 'shipments' => $shipments, 'urlmaker' => $urlmaker]);
+
+			$documents = $document_management->get_salesorderdocuments($ordn);
+			$page->body .= $config->twig->render('sales-orders/sales-order/documents.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'ordn' => $ordn]);
+
 
 		} else {
 			$page->headline = $page->title = "Sales Order #$ordn could not be found";
