@@ -84,6 +84,8 @@
 			),
 		);
 
+		const USERPERM_SALESORDERS_EDIT = 'eso';
+
 		public static function getModuleInfo() {
 			return array(
 				'title' => 'Dpluso Sales Order Pages',
@@ -92,5 +94,55 @@
 				'singular' => true,
 				'autoload' => true,
 			);
+		}
+
+		public function init_salesorder_hooks() {
+			/**
+			 * Adds self::can_user_editorder() as User hook
+			 * @uses self::can_user_editorder()
+			 */
+			$this->addHook('User::can_editorder', function($event) {
+				$user = $event->object;
+				$order = $event->arguments(0);
+				$event->return = $this->can_user_editorder($user, $order);
+			});
+
+			/**
+			 * Adds self::is_user_editingorder() as User hook
+			 * @uses self::is_user_editingorder()
+			 */
+			$this->addHook('User::is_editingorder', function($event) {
+				$user = $event->object;
+				$order = $event->arguments(0);
+				$event->return = $this->is_user_editingorder($user, $order);
+			});
+		}
+
+		/**
+		 * Return if User can edit Sales Order
+		 * @param  User       $user  User
+		 * @param  SalesOrder $order Sales Order
+		 * @return bool               Can User Edit Sales Order?
+		 */
+		public function can_user_editorder(User $user, SalesOrder $order) {
+			$config_orders = $this->wire('modules')->get('SalesOrdersConfig');
+			$canedit = false;
+
+			if ($config_orders->allow_salesorderedit) {
+				if ($order->is_editable() && $user->has_function(self::USERPERM_SALESORDERS_EDIT)) {
+					$canedit = true;
+				}
+			}
+			return $canedit;
+		}
+
+		/**
+		 * Return if User is editing Sales Order
+		 * @param  User       $user  User
+		 * @param  SalesOrder $order Sales Order
+		 * @return bool              IS User is editing Sales Order?
+		 */
+		public function is_user_editingorder(User $user, SalesOrder $order) {
+			return $order->heldby == $user->loginid;
 		}
 	}

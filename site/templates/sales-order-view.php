@@ -1,10 +1,13 @@
 <?php
-	$salesorder_config = $modules->get('SalesOrdersConfig');
-	
+	$config_salesorders = $modules->get('SalesOrdersConfig');
+	$modules->get('DplusoPagesSalesOrder')->init_salesorder_hooks();
+
 	if ($input->get->ordn) {
 		$ordn = $input->get->text('ordn');
 		$document_management = $modules->get('DocumentManagement');
 
+		$http->get($pages->get('template=redir, redir_file=sales-order')->httpUrl."?action=get-order-notes&ordn=$ordn&sessionID=".session_id());
+		
 		if (SalesOrderQuery::create()->filterByOehdnbr($ordn)->count()) {
 			$order_query = SalesOrderQuery::create();
 			$order_items_query = SalesOrderDetailQuery::create();
