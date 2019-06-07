@@ -1,16 +1,42 @@
 <table class="table">
-		<tr>
-			<th>Item ID</th>
-			<th>Qty to Ship</th>
-			<th>Qty Packed</th>
-			<th>Qty Remaining</th>
-		</tr>
-	{% for item in warehousepacking.get_packsalesorderdetails_line(page.linenbr) %}
-		<tr>
-			<td>{{ item.itemid }}</td>
-			<td>{{ item.qty_toship }}</td>
-			<td>{{ item.qty_packed }}</td>
-			<td>{{ item.qty_remaining }}</td>
-		</tr>
-	{% endfor %}
+	<tr>
+		<th>Item ID</th>
+		<th>Qty to Ship</th>
+		<th>Qty Packed</th>
+		<th>Qty Remaining</th>
+	</tr>
+	<tr>
+		<td>{{ packitem.itemid }}</td>
+		<td class="text-right">{{ packitem.qty_toship }}</td>
+		<td class="text-right">{{ packitem.qty_packed }}</td>
+		<td class="text-right">{{ packitem.qty_remaining }}</td>
+	</tr>
 </table>
+<form action="{{ page.fullURL.getUrl() }}" method="POST" id="barcode-form">
+	<input type="hidden" name="action" value="add-barcode">
+	<div class="row">
+		<div class="col-sm-4 form-group">
+			<label for="carton">Carton</label>
+			<select class="form-control" id="carton" name="carton">
+				{% for i in 1..warehousepacking.get_cartoncount() %}
+					<option value="{{i}}" {{i == page.carton ? 'selected' : ''}}>{{i}}</option>
+				{% endfor %}
+			</select><br>
+			<a href="{{ page.get_addcartonURL() }}" class="btn btn-secondary">Add Carton</a>
+		</div>
+		<div class="col-sm-8">
+			{% block item_inputs %}
+
+			{% endblock item_inputs %}
+		</div>
+	</div>
+</form>
+<div class="mt-4">
+	<div class="row">
+		<div class="col-sm-4 form-group">
+			<a href="#" class="btn btn-danger">Exit Order</a>
+		</div>
+		<div class="col-sm-4 form-group"></div>
+		<div class="col-sm-4 form-group"></div>
+	</div>
+</div>
