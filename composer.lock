@@ -46,12 +46,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dpluso-model.git",
-                "reference": "f3c9542983c27d4058e03abfb63d00da2bdc5a20"
+                "reference": "23cd85bbe3e0f94b0a703ebf66dbdbf06f181089"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/f3c9542983c27d4058e03abfb63d00da2bdc5a20",
-                "reference": "f3c9542983c27d4058e03abfb63d00da2bdc5a20",
+                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/23cd85bbe3e0f94b0a703ebf66dbdbf06f181089",
+                "reference": "23cd85bbe3e0f94b0a703ebf66dbdbf06f181089",
                 "shasum": ""
             },
             "type": "library",
@@ -72,7 +72,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2019-06-05T16:01:12+00:00"
+            "time": "2019-06-07T14:06:03+00:00"
         },
         {
             "name": "jeremykendall/php-domain-parser",
