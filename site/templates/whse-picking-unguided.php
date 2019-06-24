@@ -24,7 +24,7 @@
 				$pickingsession->set_linenbr($linenbr);
 				$page->formurl = $page->parent->child('template=redir')->url;
 				$pickitem = PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr(session_id(), $ordn, $linenbr);
-				$http->get($pages->get('template=redir,redir_file=inventory')->httpUrl."?action=inventory-search&scan=$pickitem->itemid&sessionID=".session_id());
+				$http->get("127.0.0.1".$pages->get('template=redir,redir_file=inventory')->url."?action=inventory-search&scan=$pickitem->itemid&sessionID=".session_id());
 				$picked_barcodes = WhseitempickQuery::create()->get_order_pickeditems(session_id(), $ordn, $pickitem->itemid);
 				$inventory_master = InvsearchQuery::create();
 				$pickingsession->insert_barcode_itemID($pickitem->itemid);
@@ -123,7 +123,7 @@
 		if ($whsesession->is_orderfinished() || $whsesession->is_orderexited()) {
 			WhseItempickQuery::create()->filterByOrdn($ordn)->filterBySessionid(session_id())->delete();
 		}
-		//$http->get($page->parent->child('template=redir')->httpUrl."?action=start-pick-unguided&sessionID=".session_id());
+		//==$http->get("127.0.0.1".$page->parent->child('template=redir')->url."?action=start-pick-unguided&sessionID=".session_id());
 		$page->formurl = $page->parent->child('template=redir')->url;
 		$page->body = $config->twig->render('warehouse/picking/status.twig', ['page' => $page, 'whsesession' => $whsesession]);
 		$page->body .= '<div class="form-group"></div>';

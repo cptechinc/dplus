@@ -37,7 +37,7 @@
 					$page->body .= $config->twig->render('warehouse/packing/packing-form.twig', ['page' => $page, 'warehousepacking' => $warehousepacking, 'packitem' => $packitem]);
 				}
 			} else {
-				$http->get($pages->get('template=redir, redir_file=sales-order')->httpUrl."?action=get-order-notes&ordn=$ordn&sessionID=".session_id());
+				$http->get("127.0.0.1".$pages->get('template=redir, redir_file=sales-order')->url."?action=get-order-notes&ordn=$ordn&sessionID=".session_id());
 				$page->body = $config->twig->render('warehouse/packing/order-notes.twig', ['page' => $page, 'notes' => $warehousepacking->get_packingnotes()]);
 				$page->body .= $config->twig->render('warehouse/packing/select-line-form.twig', ['page' => $page, 'warehousepacking' => $warehousepacking]);
 			}
