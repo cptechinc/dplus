@@ -10,6 +10,8 @@
 		$http->get($pages->get('template=redir, redir_file=sales-order')->httpUrl."?action=get-order-notes&ordn=$ordn&sessionID=".session_id());
 
 		if (SalesOrderQuery::create()->filterByOehdnbr($ordn)->count()) {
+			$notes = QnoteQuery::create()->filterBySessionidOrdernbrLinenbr(session_id(), $ordn, $linenbr = 0);
+
 			$order_query = SalesOrderQuery::create();
 			$order_items_query = SalesOrderDetailQuery::create();
 			$order = $order_query->findOneByOehdnbr($ordn);
@@ -17,7 +19,8 @@
 			$customer = CustomerQuery::create()->findOneByCustid($order->custid);
 			$page->title = "Sales Order #$ordn";
 			$page->listpage = $pages->get('pw_template=sales-orders');
-			$page->body =  $config->twig->render('sales-orders/sales-order/sales-order-page.twig', ['page' => $page, 'customer' => $customer, 'order' => $order, 'order_items' => $order_items, 'document_management' => $document_management]);
+			$page->formurl = $pages->get('template=dplus-menu')->child('template=redir')->url;
+			$page->body =  $config->twig->render('sales-orders/sales-order/sales-order-page.twig', ['page' => $page, 'customer' => $customer, 'order' => $order, 'order_items' => $order_items, 'document_management' => $document_management, 'notes' => $notes]);
 
 			$shipments = SalesOrderShipmentQuery::create()->findByOrderNumber($ordn);
 			$urlmaker = $modules->get('DplusURLs');
@@ -25,6 +28,10 @@
 
 			$documents = $document_management->get_salesorderdocuments($ordn);
 			$page->body .= $config->twig->render('sales-orders/sales-order/documents.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'ordn' => $ordn]);
+
+			// TODO: NOTES
+			$notes = QnoteQuery::create()->filterBySessionidOrdernbrLinenbr(session_id(), $ordn, $linenbr = 0);
+			$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-notes.twig', ['page' => $page, 'notes' => $notes, 'ordn' => $ordn]);
 
 			$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-actions.twig', ['page' => $page, 'order' => $order, 'shipments' => $shipments]);
 		} elseif (SalesHistoryQuery::create()->filterByOehhnbr($ordn)->count()) {
@@ -42,8 +49,11 @@
 			$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-tracking.twig', ['page' => $page, 'order' => $order, 'shipments' => $shipments, 'urlmaker' => $urlmaker]);
 
 			$documents = $document_management->get_salesorderdocuments($ordn);
-			$page->body .= $config->twig->render('sales-orders/sales-order/documents.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'ordn' => $ordn]);
+			$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-notes.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'ordn' => $ordn]);
 
+			// TODO: NOTES
+			$notes = QnoteQuery::create()->filterBySessionidOrdernbrLinenbr(session_id(), $ordn, $linenbr = 0);
+			$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-notes.twig', ['page' => $page, 'notes' => $notes, 'ordn' => $ordn]);
 
 		} else {
 			$page->headline = $page->title = "Sales Order #$ordn could not be found";

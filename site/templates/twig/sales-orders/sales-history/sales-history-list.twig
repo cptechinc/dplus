@@ -18,7 +18,7 @@
 					<div class="col">{{ order.custid }}</div>
 					<div class="col">{{ order.custpo }}</div>
 					<div class="col">{{ order.shiptoid }}</div>
-					<div class="col text-right">{{ order.total_total }}</div>
+					<div class="col text-right">$ {{ order.total_total|number_format(2, '.', ',') }}</div>
 					<div class="col">{{ convertdate(order.date_invoiced) }}</div>
 					<div class="col">{{ convertdate(order.date_ordered) }}</div>
 				</div>

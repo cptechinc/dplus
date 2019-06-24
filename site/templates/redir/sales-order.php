@@ -22,9 +22,14 @@
 			break;
 		case 'edit-order';
 			$ordn = $input->$requestmethod->text('ordn');
+			$linenbr = $input->$requestmethod->int('linenbr');
+			$qty = $input->$requestmethod->int('qty');
+			$price = $input->$requestmethod->int('price');
 			$editorder = Ordrhed::create()->findOneBySessionidOrder(session_id(), $ordn);
-
-			// NOW SET EACH property using $editorder->set($column/$alias, $value) or $editorder->set{Columnname}($value)
+			$editorder->set('ordernumber', $ordn);
+			$editorder->set('linenbr', $linenbr);
+			$editorder->set('qty_ordered', $qty);
+			$editorder->set('price', $price);
 			$editorder->save();
 			$data = array("DBNAME=$dplusdb", 'SALESHEAD', "ORDERNO=$ordn", "CUSTID=$editorder->custid");
 			$session->loc = $input->$requestmethod->text('page');
@@ -32,10 +37,14 @@
 		case 'quick-update-line':
 			$ordn = $input->$requestmethod->text('ordn');
 			$linenbr = $input->$requestmethod->int('linenbr');
+			$qty = $input->$requestmethod->int('qty');
+			$price = $input->$requestmethod->int('price');
 			$custID = SalesOrderQuery::create()->get_custid($ordn);
 			$editline = Ordrdet::create()->findOneBySessionidOrderLinenbr(session_id(), $ordn, $linenbr);
-
-			// NOW SET EACH property using $editline->set($column/$alias, $value), or $editline->set{Columnname}($value)
+			$editline->set('ordernumber', $ordn);
+			$editline->set('linenbr', $linenbr);
+			$editline->set('qty_ordered', $qty);
+			$editline->set('price', $price);
 			$editline->save();
 			$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "CUSTID=$custID");
 			$session->loc = $input->$requestmethod->text('page');

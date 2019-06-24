@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col">
 			<a href="{{ page.listpage.url }}" class="btn btn-light">
-				<i class="fa fa-list" aria-hidden="true"></i> View Sales History List
+				<i class="fa fa-list" aria-hidden="true"></i> View Sales Orders List
 			</a>
 			&nbsp; &nbsp;
 			<a href="#" class="btn btn-light" aria-label="Return to last page" onclick="window.history.back();">
@@ -28,6 +28,16 @@
 			{% else %}
 				<span title="View Documents" aria-label="View Documents">
 					<i class="fa fa-file-text fa-2x text-light" aria-hidden="true"></i>
+				</span>
+			{% endif %}
+			<!-- TODO: need if statement for notes -->
+			{% if notes %}
+				<a href="#notes" title="View Notes" aria-label="View Notes">
+					<i class="fa fa-sticky-note-o fa-2x" aria-hidden="true"></i>
+				</a>
+			{% else %}
+				<span title="View Notes" aria-label="View Notes">
+					<i class="fa fa-sticky-note-o fa-2x text-light" aria-hidden="true"></i>
 				</span>
 			{% endif %}
 		</div>
@@ -90,18 +100,51 @@
 			<th class="text-right">Qty</th>
 			<th class="text-right">Price</th>
 			<th class="text-right">Total Price</th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>
 		{% for detail in order_items %}
 			<tr>
-				<td>
-					{{ detail.itemid }}</br>
-					<small>{{ detail.desc1 }}</small>
-				</td>
-				<td class="text-right">{{ detail.qty_ordered|number_format() }}</td>
-				<td class="text-right">$ {{ detail.price|number_format(2, '.', ',') }}</td>
-				<td class="text-right">$ {{ detail.total_price|number_format(2, '.', ',') }}</td>
+				<form action="{{ page.formurl }}" method="post" >
+					<input type="hidden" name="action" value="quick-update-line">
+					<input type="hidden" name="ordn" value="{{ order.ordernumber }}">
+					<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
+					<!-- TODO: need to remove 'not' -->
+					{% if not user.is_editingorder(order.ordernumber) %}
+						<td>
+							{{ detail.itemid }}</br>
+							<small>{{ detail.desc1 }}</small>
+						</td>
+						<td class="text-right">
+							<input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty_ordered|number_format() }}"></input>
+						</td>
+						<td class="text-right">
+							<input type="text" class="form-control text-right" size="8" name="price" value="$ {{ detail.price|number_format(2, '.', ',') }}"></input>
+						</td>
+						<td class="text-right">$ {{ detail.total_price|number_format(2, '.', ',') }}</td>
+						<td class="text-right">
+							<a href="{{ page.edit_orderURL(page, order.ordernumber, detail.linenbr) }}" class="btn btn-warning">Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></a>
+							<a href="{{ page.remove_itemURL(page, order.ordernumber, detail.linenbr) }}" class="btn btn-danger">Remove&ensp;<i class="fa fa-times" aria-hidden="true"></i></a>
+						</td>
+					{% else %}
+						<td>
+							{{ detail.itemid }}</br>
+							<small>{{ detail.desc1 }}</small>
+						</td>
+						<td class="text-right">
+							<input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty_ordered|number_format() }}" disabled ></input>
+						</td>
+						<td class="text-right">
+							<input type="text" class="form-control text-right" size="8" name="total_price" value="$ {{ detail.price|number_format(2, '.', ',') }}" disabled></input>
+						</td>
+						<td class="text-right">$ {{ detail.total_price|number_format(2, '.', ',') }}</td>
+						<td class="text-right">
+							<button class="btn btn-warning" disabled>Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+							<button href="#" class="btn btn-danger" disabled>Remove&ensp;<i class="fa fa-times" aria-hidden="true"></i></button>
+						</td>
+					{% endif %}
+				</form>
 			</tr>
 		{% endfor %}
 	</tbody>
