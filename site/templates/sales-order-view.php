@@ -15,12 +15,13 @@
 			$order_query = SalesOrderQuery::create();
 			$order_items_query = SalesOrderDetailQuery::create();
 			$order = $order_query->findOneByOehdnbr($ordn);
+			$can_editorder = $user->can_editorder($order);
 			$order_items = $order_items_query->filterByOehdnbr($ordn)->find();
 			$customer = CustomerQuery::create()->findOneByCustid($order->custid);
 			$page->title = "Sales Order #$ordn";
 			$page->listpage = $pages->get('pw_template=sales-orders');
 			$page->formurl = $pages->get('template=dplus-menu')->child('template=redir')->url;
-			$page->body =  $config->twig->render('sales-orders/sales-order/sales-order-page.twig', ['page' => $page, 'customer' => $customer, 'order' => $order, 'order_items' => $order_items, 'document_management' => $document_management, 'notes' => $notes]);
+			$page->body =  $config->twig->render('sales-orders/sales-order/sales-order-page.twig', ['page' => $page, 'customer' => $customer, 'order' => $order, 'order_items' => $order_items, 'can_editorder' => $can_editorder, 'document_management' => $document_management, 'notes' => $notes]);
 
 			$shipments = SalesOrderShipmentQuery::create()->findByOrderNumber($ordn);
 			$urlmaker = $modules->get('DplusURLs');
