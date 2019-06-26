@@ -1,7 +1,10 @@
-<?php namespace ProcessWire;
+<?php
+	namespace ProcessWire;
+
 	require_once(__DIR__ . '/DplusoPages.module');
 
 	use Purl\Url;
+	use SalesOrder;
 
 	class DplusoPagesSalesOrder extends DplusoPages implements Module {
 
@@ -138,7 +141,7 @@
 			 * Adds self::is_user_editingorder() as User hook
 			 * @uses self::is_user_editingorder()
 			 */
-			$this->addHook('Page::edit_orderURL', function($event) {
+			$this->addHook('Page::edit_itemURL', function($event) {
 				$p = $event->arguments(0);
 				$ordn = $event->arguments(1);
 				$linenbr = $event->arguments(2);
@@ -146,6 +149,19 @@
 				$url->query->set('action', 'quick-update-line');
 				$url->query->set('ordn', $ordn);
 				$url->query->set('linenbr', $linenbr);
+				$event->return = $url->getUrl();
+			});
+
+			/**
+			 * Adds self::is_user_editingorder() as User hook
+			 * @uses self::is_user_editingorder()
+			 */
+			$this->addHook('Page::edit_orderURL', function($event) {
+				$p = $event->arguments(0);
+				$ordn = $event->arguments(1);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action', 'get-order-edit');
+				$url->query->set('ordn', $ordn);
 				$event->return = $url->getUrl();
 			});
 		}
@@ -175,26 +191,6 @@
 		 * @return bool              IS User is editing Sales Order?
 		 */
 		public function is_user_editingorder(User $user, SalesOrder $order) {
-			return $order->heldby == $user->loginid;
-		}
-
-
-
-		/**
-		 * Return if User is editing Sales Order
-		 * @param  SalesOrder $order Sales Order
-		 * @return bool              IS User is editing Sales Order?
-		 */
-		public function remove_itemURL(SalesOrder $order) {
-			return $order->heldby == $user->loginid;
-		}
-
-		/**
-		 * Return if User is editing Sales Order
-		 * @param  SalesOrder $order Sales Order
-		 * @return bool              IS User is editing Sales Order?
-		 */
-		public function edit_orderURL(SalesOrder $order) {
 			return $order->heldby == $user->loginid;
 		}
 	}
