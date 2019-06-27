@@ -125,7 +125,7 @@
                         <td class="text-right">
                             <input type="text" class="form-control text-right" size="8" name="price" value="$ {{ detail.price|number_format(2, '.', ',') }}"></input>
                         </td>
-                        <td class="text-right">$ {{ detail.total_price|number_format(2, '.', ',') }}</td>
+                        <td class="text-right">$ {{ detail.totalprice|number_format(2, '.', ',') }}</td>
                         <td class="text-right">
                             <a href="{{ page.edit_itemURL(page, order.ordernumber, detail.linenbr) }}" class="btn btn-warning">Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></a>
                             <a href="{{ page.remove_itemURL(page, order.ordernumber, detail.linenbr) }}" class="btn btn-danger">Remove&ensp;<i class="fa fa-times" aria-hidden="true"></i></a>
@@ -141,7 +141,7 @@
                         <td class="text-right">
                             <input type="text" class="form-control text-right" size="8" name="total_price" value="$ {{ detail.price|number_format(2, '.', ',') }}" disabled></input>
                         </td>
-                        <td class="text-right">$ {{ detail.total_price|number_format(2, '.', ',') }}</td>
+                        <td class="text-right">$ {{ detail.totalprice|number_format(2, '.', ',') }}</td>
                         <td class="text-right">
                             <button class="btn btn-warning" disabled>Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
                             <button class="btn btn-danger" disabled>Remove&ensp;<i class="fa fa-times" aria-hidden="true"></i></button>
