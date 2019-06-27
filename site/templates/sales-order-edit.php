@@ -7,11 +7,11 @@
 		$ordn = $input->get->text('ordn');
 
 		if (SalesOrderQuery::create()->filterByOehdnbr($ordn)->count()) {
-			$order_query = SalesOrderQuery::create();
-			$order_items_query = SalesOrderDetailQuery::create();
-			$order = $order_query->findOneByOehdnbr($ordn);
-			$is_orderlocked = $user->is_editingorder($order);
-			$order_items = $order_items_query->filterByOehdnbr($ordn)->find();
+
+			$order = OrdrhedQuery::create()->findOneBySessionidOrder(session_id(), $ordn);
+			$is_orderlocked = $user->is_editingorder($ordn);
+
+			$order_items = OrdrdetQuery::create()->filterBySessionidOrder(session_id(), $ordn)->find();
 			$customer = CustomerQuery::create()->findOneByCustid($order->custid);
 			$page->title = "Editing Sales Order #$ordn";
 			$page->listpage = $pages->get('pw_template=sales-orders');

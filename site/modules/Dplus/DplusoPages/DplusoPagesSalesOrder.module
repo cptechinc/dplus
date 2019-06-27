@@ -4,7 +4,7 @@
 	require_once(__DIR__ . '/DplusoPages.module');
 
 	use Purl\Url;
-	use SalesOrder;
+	use SalesOrder, SalesOrderQuery;
 
 	class DplusoPagesSalesOrder extends DplusoPages implements Module {
 
@@ -168,11 +168,15 @@
 
 		/**
 		 * Return if User can edit Sales Order
-		 * @param  User       $user  User
-		 * @param  SalesOrder $order Sales Order
-		 * @return bool               Can User Edit Sales Order?
+		 * @param  User              $user  User
+		 * @param  SalesOrder|string $order Sales Order
+		 * @return bool                     Can User Edit Sales Order?
 		 */
-		public function can_user_editorder(User $user, SalesOrder $order) {
+		public function can_user_editorder(User $user, $order) {
+			if (get_class($order) != 'SalesOrder') {
+				$order = SalesOrderQuery::create()->findOneByOrderNumber($order);
+			}
+
 			$config_orders = $this->wire('modules')->get('SalesOrdersConfig');
 			$canedit = false;
 
@@ -187,10 +191,13 @@
 		/**
 		 * Return if User is editing Sales Order
 		 * @param  User       $user  User
-		 * @param  SalesOrder $order Sales Order
+		 * @param  SalesOrder|string $order Sales Order
 		 * @return bool              IS User is editing Sales Order?
 		 */
-		public function is_user_editingorder(User $user, SalesOrder $order) {
+		public function is_user_editingorder(User $user, $order) {
+			if (get_class($order) != 'SalesOrder') {
+				$order = SalesOrderQuery::create()->findOneByOrderNumber($order);
+			}
 			return $order->heldby == $user->loginid;
 		}
 	}

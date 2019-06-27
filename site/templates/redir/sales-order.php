@@ -32,11 +32,7 @@
 			$shipto_city = $input->$requestmethod->int('shipto_city');
 			$shipto_state = $input->$requestmethod->int('shipto_state');
 			$shipto_zip = $input->$requestmethod->int('shipto_zip');
-			$editorder = Ordrhed::create()->findOneBySessionidOrder(session_id(), $ordn);
-			$editorder->set('ordernumber', $ordn);
-			$editorder->set('linenbr', $linenbr);
-			$editorder->set('qty_ordered', $qty);
-			$editorder->set('price', $price);
+			$editorder = OrdrhedQuery::create()->findOneBySessionidOrder(session_id(), $ordn);
 			$editorder->set('shipto_name', $shipto_name);
 			$editorder->set('shipto_address', $shipto_address);
 			$editorder->set('shipto_address2', $shipto_address2);
@@ -53,12 +49,11 @@
 			$qty = $input->$requestmethod->int('qty');
 			$price = $input->$requestmethod->int('price');
 			$custID = SalesOrderQuery::create()->get_custid($ordn);
-			// Ordrdet::create not recognized
-			$editline = Ordrdet::create()->findOneBySessionidOrderLinenbr(session_id(), $ordn, $linenbr);
-			$editline->set('ordernumber', $ordn);
-			$editline->set('linenbr', $linenbr);
-			$editline->set('qty_ordered', $qty);
-			$editline->set('price', $price);
+
+			// Ordrdet::create undefined method
+			$editline = OrdrdetQuery::create()->findOneBySessionidOrderLinenbr(session_id(), $ordn, $linenbr);
+			$editline->setQty($qty);
+			$editline->setPrice($price);
 			$editline->save();
 			$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "CUSTID=$custID");
 			$session->loc = $input->$requestmethod->text('page');
