@@ -74,6 +74,14 @@
 				'parent'     => '/warehouse/packing/',
 				'redir_file' => 'packing'
 			),
+			'ii-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Item Information Redirects',
+				'parent'     => '/mii/',
+				'redir_file' => 'ii'
+			),
 		);
 
 		/* =============================================================

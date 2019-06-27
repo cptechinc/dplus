@@ -1,0 +1,67 @@
+<?php namespace ProcessWire;
+	require_once(__DIR__ . '/DplusoPages.module');
+
+	use Purl\Url;
+
+	class MiiPages extends DplusoPages implements Module {
+
+		protected $fields = array();
+		protected $templates = array(
+			'dplus-menu' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('dplus_function', 'summary'),
+				'paginated' => false
+			),
+			'dplus-function' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('dplus_function', 'pw_template', 'summary'),
+				'paginated' => true
+			),
+			'ii-item' => array(
+				'name'   => 'ci-item',
+				'fields' => array(),
+			),
+		);
+
+		protected $pages = array(
+			'ii-menu' => array(
+				'template'       => 'dplus-menu',
+				'name'           => 'mii',
+				'title'          => 'Item Information',
+				'summary'        => 'Item Information Menu',
+				'parent'         => '/',
+				'dplus_function' => ''
+			),
+			'ii' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'ii',
+				'title'          => 'Item Information',
+				'summary'        => 'View Item Information',
+				'parent'         => '/mii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-item'
+			),
+		);
+
+		public function init_iipage() {
+			$this->addHook('Page::get_itemURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-item');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+		}
+
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dplus Online Item Information Pages',
+				'version' => 101,
+				'summary' => 'Installs and creates Dplus Online Item Information  Pages',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+	}

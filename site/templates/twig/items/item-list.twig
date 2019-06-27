@@ -1,0 +1,8 @@
+<div class="list-group">
+	{% for item in items %}
+		<a href="{{page.get_itemURL(item.itemid)}}" class="list-group-item list-group-item-action">
+			<h4 class="list-group-item-heading">{{ item.itemid }}</h4>
+			<p class="list-group-item-text">{{ item.desc1 }}</p>
+		</a>
+	{% endfor %}
+</div>
