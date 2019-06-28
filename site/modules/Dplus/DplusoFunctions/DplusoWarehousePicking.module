@@ -187,6 +187,8 @@ class DplusoWarehousePicking extends WireData implements Module {
 					$msg .= " from $binID";
 					$this->session->pickerror = $msg;
 				}
+			} elseif ($pickitem->is_item_nonstock()) {
+				$is_valid = true;
 			} else {
 				$this->session->pickerror = "Scan: $barcode doesn't match anything for {$pickitem->itemid} in bin '$binID'";
 			}
@@ -194,6 +196,8 @@ class DplusoWarehousePicking extends WireData implements Module {
 			if ($is_valid) {
 				if ($bincount == 1 || !empty($scanned_binID)) {
 					$this->add_pickedbarcode($pickitem, $barcode, $palletnbr, $qty, $binID);
+				} elseif($pickitem->is_item_nonstock()) {
+					$this->add_pickedbarcode($pickitem, $barcode, $palletnbr, $qty, $binID = '');
 				} else {
 					$this->session->pickerror = "Please Provide a bin for $barcode";
 				}
@@ -488,7 +492,8 @@ class DplusoWarehousePicking extends WireData implements Module {
 		} elseif (!$pickitem->is_item_lotted()) {
 			return $this->get_warehouseitembin($pickitem->itemid);
 		} else {
-			return $this->allow_negativeintentory() ? $this->get_warehouseitembin($pickitem->itemid) : '';
+			$inventoryconfig = $this->wire('modules')->get('WarehouseInventoryConfig');
+			return $inventoryconfig->allow_negativeintentory() ? $this->get_warehouseitembin($pickitem->itemid) : '';
 		}
 	}
 }
