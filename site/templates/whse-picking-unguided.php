@@ -11,12 +11,12 @@
 
 	// CHECK If there are details to pick
 	$nbr_pickinglines = PickSalesOrderDetailQuery::create()->countBySessionidOrder(session_id(), $ordn);
+
 	if ($whsesession->is_orderfinished()) {
 		$page->body .= $config->twig->render('warehouse/picking/finished-order.twig', ['page' => $page, 'ordn' => $ordn]);
 	} elseif ($nbr_pickinglines > 0) {
 		if ($nbr_pickinglines == 1 && !$input->get->linenbr) {
 			$page->fullURL->query->set('linenbr', 1);
-
 			$session->redirect($page->fullURL->getUrl(), $http301 = false);
 		} else {
 			if ($input->get->linenbr) {
@@ -24,7 +24,11 @@
 				$pickingsession->set_linenbr($linenbr);
 				$page->formurl = $page->parent->child('template=redir')->url;
 				$pickitem = PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr(session_id(), $ordn, $linenbr);
-				$http->get("127.0.0.1".$pages->get('template=redir,redir_file=inventory')->url."?action=inventory-search&scan=$pickitem->itemid&sessionID=".session_id());
+
+				// If item is stocked, get Inventory for that item
+				if (!$pickitem->is_item_nonstock()) {
+					$http->get("127.0.0.1".$pages->get('template=redir,redir_file=inventory')->url."?action=inventory-search&scan=$pickitem->itemid&sessionID=".session_id());
+				}
 				$picked_barcodes = WhseitempickQuery::create()->get_order_pickeditems(session_id(), $ordn, $pickitem->itemid);
 				$inventory_master = InvsearchQuery::create();
 				$pickingsession->insert_barcode_itemID($pickitem->itemid);
