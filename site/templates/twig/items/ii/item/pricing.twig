@@ -10,12 +10,12 @@
 	<tbody>
 		<tr>
 			<td>Each</td>
-			<td>{{ itempricing.baseprice|currency }}</td>
+			<td class="text-right">{{ itempricing.baseprice|currency }}</td>
 		</tr>
 		{% for qty, price in itempricing.get_qtybreaks() %}
 			<tr>
 				<td>{{ qty }}</td>
-				<td>{{ price|currency }}</td>
+				<td class="text-right">{{ price|currency }}</td>
 			</tr>
 		{% endfor %}
 	</tbody>

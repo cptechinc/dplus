@@ -41,6 +41,15 @@
 				'dplus_function' => '',
 				'pw_template'    => 'ii-item'
 			),
+			'ii-stock' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'stock',
+				'title'          => 'Item Stock',
+				'summary'        => 'View Item Stock',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-stock'
+			)
 		);
 
 		public function init_iipage() {

@@ -1,7 +1,7 @@
 <?php
 	use Map\SalesOrderTableMap;
 	use Map\QnoteTableMap;
-	
+
 /**
  * Initialization file for template files
  *
@@ -73,9 +73,6 @@ $config->scripts->append(hash_templatefile('scripts/bootstrap.min.js'));
 $config->scripts->append('//www.fuelcdn.com/fuelux/3.13.0/js/fuelux.min.js');
 $config->scripts->append(hash_templatefile('scripts/uri.js'));
 $config->scripts->append(hash_templatefile('scripts/main.js'));
-$config->scripts->append(hash_templatefile('scripts/main0.js'));
-
-
 
 
 

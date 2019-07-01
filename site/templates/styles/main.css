@@ -28,6 +28,13 @@ footer {
 	color: #FF304F;
 }
 
+.toolbar-sidebar > .nav > li > a {
+	display: block;
+	padding: .25rem 1.5rem;
+	font-size: 90%;
+	color: rgba(0,0,0,.65);
+}
+
 /**************************************
 	Application Styles
 ***************************************/
@@ -78,8 +85,8 @@ input.qty {
 }
 
 a.link {
-    text-decoration: none;
-    background-color: transparent;
+	text-decoration: none;
+	background-color: transparent;
 	border-bottom: 3px solid #bcdcef;
 	-webkit-transition: background .15s cubic-bezier(0.33, 0.66, 0.66, 1);
 	-o-transition: background .15s cubic-bezier(0.33, 0.66, 0.66, 1);

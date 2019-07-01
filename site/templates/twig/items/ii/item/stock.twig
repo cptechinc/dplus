@@ -1,0 +1,20 @@
+<h4>Stock</h4>
+
+<table class="table table-striped table-sm">
+	<thead>
+		<tr>
+			{% for column in json['columns'] %}
+				<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">{{ column['heading'] }}</th>
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+		{% for warehouse in json['data'] %}
+			<tr>
+				{% for column, columndata in json['columns'] %}
+					<td class="{{ module_json.get_justifyclass(columndata['datajustify']) }}"> {{ warehouse[column] }} </td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
