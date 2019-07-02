@@ -3,6 +3,7 @@
 
 	$module_ii = $modules->get('MiiPages');
 	$module_ii->init_iipage();
+	$html = $modules->get('HtmlWriter');
 
 	if ($input->get->itemID) {
 		$itemID = $input->get->text('itemID');
@@ -18,24 +19,20 @@
 			$module_json = $modules->get('JsonDataFiles');
 			$json = $module_json->get_file(session_id(), 'ii-stock');
 
+			$toolbar = $config->twig->render('items/ii/toolbar.twig', ['page' => $page, 'item' => $item]);
+			$description = $config->twig->render('items/ii/item/description.twig', ['item' => $item]);
+			$itemdata = $config->twig->render('items/ii/item/item-data.twig', ['item' => $item, 'itempricing' => $itempricing]);
+
+			if ($module_json->had_succeeded()) {
+				$stock = $config->twig->render('items/ii/item/stock.twig', ['module_json' => $module_json, 'json' => $json]);
+			} else {
+				$stock = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "JSON Decode Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => $module_json->get_error()]);
+			}
+
 			$page->body = "<div class='row'>";
-				$page->body .= "<div class='col-sm-3'>";
-					$page->body .= $config->twig->render('items/ii/toolbar.twig', ['item' => $item]);
-				$page->body .= "</div>";
-				$page->body .= "<div class='col-sm-9'>";
-					$page->body .= $config->twig->render('items/ii/item/description.twig', ['item' => $item]);
-					$page->body .= $config->twig->render('items/ii/item/item-data.twig', ['item' => $item, 'itempricing' => $itempricing]);
-					if ($module_json->had_succeeded()) {
-						$page->body .= $config->twig->render('items/ii/item/stock.twig', ['module_json' => $module_json, 'json' => $json]);
-					} else {
-						$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "JSON Decode Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => $module_json->get_error()]);
-					}
-				$page->body .= "</div>";
+				$page->body .= $html->div('class=col-sm-2', $toolbar);
+				$page->body .= $html->div('class=col-sm-10', $description.$itemdata.$stock);
 			$page->body .= "</div>";
-
-
-
-
 
 		} else {
 			$page->headline = $page->title = "Item $itemID could not be found";
@@ -46,12 +43,12 @@
 		$query = ItemsearchQuery::create();
 		$query->filterActive();
 		$query->filterByOrigintype([Itemsearch::ORIGINTYPE_VENDOR, Itemsearch::ORIGINTYPE_ITEM]);
-		$query->where("MATCH(Itemsearch.itemid, Itemsearch.refitemid, Itemsearch.desc1, Itemsearch.desc2) AGAINST (? IN BOOLEAN MODE)", $q);
+		$query->where("MATCH(Itemsearch.itemid, Itemsearch.refitemid, Itemsearch.desc1, Itemsearch.desc2) AGAINST (? IN BOOLEAN MODE)", "*$q*");
 		$query->groupby('itemid');
 
 		if ($query->count() == 1) {
 			$item = $query->findOne();
-			$session->redirect($page->url."?itemID=$item->itemid");
+			$session->redirect($page->get_itemURL($item->itemid));
 		} else {
 			$items = $query->paginate($input->pageNum, 10);
 		}

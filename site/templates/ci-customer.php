@@ -42,8 +42,7 @@
 			$columns = array($col_custid, $col_name);
 			$query->search_filter($columns, strtoupper($q));
 		}
-
-
+		
 		if ($page->has_orderby()) {
 			$orderbycolumn = $page->orderby_column;
 			$sort = $page->orderby_sort;

@@ -6,7 +6,9 @@
 
 		const JSON_FILENAMES = array(
 			'ii' => array(
-				'stock' => 'iistkstat'
+				'stock'        => 'iistkstat',
+				'stock_whse'   => 'iistkbywhse',
+				'requirements' => 'iirequire'
 			)
 		);
 
@@ -68,6 +70,13 @@
 				$this->error = "JSON file $jsonfile not found";
 			}
 			return $json;
+		}
+
+		public function file_exists($sessionID, $jsoncode) {
+			$basefile = $this->get_filename($jsoncode);
+			$filepath = $this->wire('config')->jsonfilepath;
+			$jsonfile = $filepath."$sessionID-$basefile.json";
+			return file_exists($jsonfile);
 		}
 
 		/**

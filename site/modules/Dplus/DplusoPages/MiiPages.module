@@ -4,8 +4,32 @@
 	use Purl\Url;
 
 	class MiiPages extends DplusoPages implements Module {
+		const REQUIREMENTS_OPTIONS = array(
+			"REQ" => "requirements",
+			"AVL" => 'available'
+		);
 
-		protected $fields = array();
+		const TEMPLATES_JSONFILES = array(
+			'ii-stock'        => 'ii-stock_whse',
+			'ii-requirements' => 'ii-requirements',
+			'ii-pricing'      => 'ii-pricing'
+		);
+
+		protected $fields = array(
+			'jsoncode' => array(
+				'name'  => 'jsoncode',
+				'type'  => 'text',
+				'label' => 'JSON Datafile Code'
+			),
+			'is_formattable' => array(
+				'name'        => 'is_formattable',
+				'type'        => 'checkbox',  // TRUE OR FALSE
+				'label'       => 'Is screen formattable?',
+				'description' => 'Allow Screen Formatter to be used',
+				'notes'       => ""
+			),
+		);
+
 		protected $templates = array(
 			'dplus-menu' => array(
 				'name'   => 'dplus-menu',
@@ -17,8 +41,21 @@
 				'fields' => array('dplus_function', 'pw_template', 'summary'),
 				'paginated' => true
 			),
+			'ii-function' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('title', 'dplus_function', 'pw_template', 'jsoncode', 'is_formattable', 'summary'),
+				'paginated' => true
+			),
 			'ii-item' => array(
-				'name'   => 'ci-item',
+				'name'   => 'ii-item',
+				'fields' => array(),
+			),
+			'ii-requirements' => array(
+				'name'   => 'ii-requirements',
+				'fields' => array(),
+			),
+			'ii-pricing' => array(
+				'name'   => 'ii-pricing',
 				'fields' => array(),
 			),
 		);
@@ -42,13 +79,37 @@
 				'pw_template'    => 'ii-item'
 			),
 			'ii-stock' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'ii-function',
 				'name'           => 'stock',
-				'title'          => 'Item Stock',
+				'title'          => 'Stock',
 				'summary'        => 'View Item Stock',
 				'parent'         => '/mii/ii/',
 				'dplus_function' => '',
-				'pw_template'    => 'ii-stock'
+				'pw_template'    => 'ii-stock',
+				'jsoncode'       => 'ii-stock_whse',
+				'has_print'      => true
+			),
+			'ii-requirements' => array(
+				'template'       => 'ii-function',
+				'name'           => 'requirements',
+				'title'          => 'Requirements',
+				'summary'        => 'View Item Requirements',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-requirements',
+				'jsoncode'       => 'ii-requirements',
+				'has_print'      => true
+			),
+			'ii-pricing' => array(
+				'template'       => 'ii-function',
+				'name'           => 'pricing',
+				'title'          => 'Pricing',
+				'summary'        => 'View Item Pricing',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-pricing',
+				'has_print'      => true,
+				'jsoncode'       => 'ii-pricing'
 			)
 		);
 
@@ -58,6 +119,36 @@
 				$itemID = $event->arguments(0);
 				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
 				$url->query->set('action','ii-item');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itemstockURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-stock');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itemrequirementsURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-requirements');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itempricingURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-pricing');
 				$url->query->set('itemID', $itemID);
 				$url->query->set('page', $p->fullURL->getUrl());
 				$event->return = $url->getUrl();
@@ -72,5 +163,13 @@
 				'singular' => true,
 				'autoload' => true,
 			);
+		}
+
+		public function get_requirementsoptions() {
+			return self::REQUIREMENTS_OPTIONS;
+		}
+
+		public function get_jsondatafilename($template) {
+			return self::TEMPLATES_JSONFILES[$template];
 		}
 	}
