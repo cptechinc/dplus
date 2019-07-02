@@ -120,7 +120,7 @@
                             <small>{{ detail.desc1 }}</small>
                         </td>
                         <td class="text-right">
-                            <input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty_ordered|number_format() }}"></input>
+                            <input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}"></input>
                         </td>
                         <td class="text-right">
                             <input type="text" class="form-control text-right" size="8" name="price" value="$ {{ detail.price|number_format(2, '.', ',') }}"></input>
@@ -136,7 +136,7 @@
                             <small>{{ detail.desc1 }}</small>
                         </td>
                         <td class="text-right">
-                            <input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty_ordered|number_format() }}" disabled ></input>
+                            <input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}" disabled ></input>
                         </td>
                         <td class="text-right">
                             <input type="text" class="form-control text-right" size="8" name="total_price" value="$ {{ detail.price|number_format(2, '.', ',') }}" disabled></input>
