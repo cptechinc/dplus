@@ -1,4 +1,8 @@
 <?php
+	use Propel\Runtime\ActiveQuery\Criteria;
+
+	$html = $modules->get('HtmlWriter');
+
 	$modules->get('DplusoPagesWarehouse')->init_picking();
 	$pickingsession = $modules->get('DplusoWarehousePicking');
 	$pickingsession->set_sessionID(session_id());
@@ -29,7 +33,10 @@
 				if (!$pickitem->is_item_nonstock()) {
 					$http->get("127.0.0.1".$pages->get('template=redir,redir_file=inventory')->url."?action=inventory-search&scan=$pickitem->itemid&sessionID=".session_id());
 				}
-				$picked_barcodes = WhseitempickQuery::create()->get_order_pickeditems(session_id(), $ordn, $pickitem->itemid);
+
+				$picked_barcodes = WhseitempickQuery::create()->filterByBin('PACK', Criteria::ALT_NOT_EQUAL)->filterBySessionidOrderLinenbr(session_id(), $ordn, $pickitem->linenbr)->find;
+
+				$picked_barcodes_packbin = WhseitempickQuery::create()->filterByBin('PACK')->filterBySessionidOrderLinenbr(session_id(), $ordn, $pickitem->linenbr);
 				$inventory_master = InvsearchQuery::create();
 				$pickingsession->insert_barcode_itemID($pickitem->itemid);
 				$jsconfig = array(
@@ -54,13 +61,22 @@
 
 				if ($pickitem->is_item_serialized()) {
 					$page->body .= $config->twig->render('warehouse/picking/unguided/barcode-serialized-form.twig', ['page' => $page, 'whsesession' => $whsesession, 'pickitem' => $pickitem, 'pickingsession' => $pickingsession]);
+					$page->body .= $html->h3('class=text-center', 'Serial Numbers Scanned');
 					$page->body .= $config->twig->render('warehouse/picking/unguided/picked-barcodes-serialized.twig', ['page' => $page, 'picked_barcodes' => $picked_barcodes, 'pickitem' => $pickitem, 'pickingsession' => $pickingsession]);
+					$page->body .= $html->h3('class=text-center', 'Previously Picked Serial Numbers');
+					$page->body .= $config->twig->render('warehouse/picking/unguided/picked-barcodes-serialized.twig', ['page' => $page, 'picked_barcodes' => $picked_barcodes_packbin, 'pickitem' => $pickitem, 'pickingsession' => $pickingsession]);
 				} elseif ($pickitem->is_item_lotted()) {
 					$page->body .= $config->twig->render('warehouse/picking/unguided/barcode-lotted-form.twig', ['page' => $page, 'whsesession' => $whsesession, 'pickitem' => $pickitem, 'pickingsession' => $pickingsession]);
+					$page->body .= $html->h3('class=text-center', 'Lot Numbers Scanned');
 					$page->body .= $config->twig->render('warehouse/picking/unguided/picked-barcodes-lotted.twig', ['page' => $page, 'picked_barcodes' => $picked_barcodes, 'pickitem' => $pickitem, 'pickingsession' => $pickingsession]);
+					$page->body .= $html->h3('class=text-center', 'Previously Picked Lot Numbers');
+					$page->body .= $config->twig->render('warehouse/picking/unguided/picked-barcodes-lotted.twig', ['page' => $page, 'picked_barcodes' => $picked_barcodes_packbin, 'pickitem' => $pickitem, 'pickingsession' => $pickingsession]);
 				} else {
 					$page->body .= $config->twig->render('warehouse/picking/unguided/barcode-form.twig', ['page' => $page, 'whsesession' => $whsesession, 'pickitem' => $pickitem, 'config_picking' => $config_picking, 'pickingsession' => $pickingsession]);
+					$page->body .= $html->h3('class=text-center', 'Barcodes Scanned');
 					$page->body .= $config->twig->render('warehouse/picking/unguided/picked-barcodes.twig', ['page' => $page, 'picked_barcodes' => $picked_barcodes, 'pickitem' => $pickitem, 'pickingsession' => $pickingsession]);
+					$page->body .= $html->h3('class=text-center', 'Previously Picked Barcodes');
+					$page->body .= $config->twig->render('warehouse/picking/unguided/picked-barcodes.twig', ['page' => $page, 'picked_barcodes' => $picked_barcodes_packbin, 'pickitem' => $pickitem, 'pickingsession' => $pickingsession]);
 				}
 
 				$page->body .= $config->twig->render('warehouse/picking/bins-modal.twig', ['warehouse' => $warehouse]);
@@ -68,7 +84,6 @@
 				$page->body .= $config->twig->render('warehouse/picking/unguided/item-availability-modal.twig', ['inventoryresults' => $inventoryresults, 'pickitem' => $pickitem, 'warehouse' => $warehouse, 'pickingsession' => $pickingsession]);
 				$page->body .= $config->twig->render('warehouse/picking/item-info-modal.twig', ['pickitem' => $pickitem]);
 				$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => $jsconfig]);
-
 			} elseif ($input->get->scan) {
 				$scan = $input->get->text('scan');
 				$page->fullURL->query->remove('binID');

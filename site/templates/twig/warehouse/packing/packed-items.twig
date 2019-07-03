@@ -1,0 +1,27 @@
+<div class="mt-4">
+	<h3>Packed Items</h3>
+
+	<table class="table">
+		<tr>
+			<th>Carton #</th>
+			<th>Barcode</th>
+			<th>Remove</th>
+		</tr>
+		{% for item in packed_items %}
+			<tr>
+				<td>{{ item.carton }}</td>
+				<td>{{ item.barcode }}</td>
+				<td>
+					<form action="{{ page.fullURL.getUrl() }}" method="post">
+						<input type="hidden" name="action" value="delete-barcode">
+						<input type="hidden" name="recordnbr" value="{{ item.recordnumber }}">
+						<input type="hidden" name="barcode" value="{{ item.barcode }}">
+						<button type="submit" class="btn btn-danger btn-sm" type="button">
+							<i class="fa fa-trash" aria-hidden="true"></i> Remove
+						</button>
+					</form>
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+</div>

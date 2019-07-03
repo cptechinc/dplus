@@ -35,9 +35,11 @@
 
 				} else {
 					$page->body .= $config->twig->render('warehouse/packing/packing-form.twig', ['page' => $page, 'warehousepacking' => $warehousepacking, 'packitem' => $packitem]);
+					$page->body .= $config->twig->render('warehouse/packing/packed-items.twig', ['page' => $page, 'warehousepacking' => $warehousepacking, 'packitem' => $packitem, 'packed_items' => $packed_items]);
+					$page->body .= $config->twig->render('warehouse/packing/item-availability-modal.twig', ['packitem' => $packitem, 'inventoryresults' => $inventoryresults,]);
 				}
 			} else {
-				$http->get("127.0.0.1".$pages->get('template=redir, redir_file=sales-order')->url."?action=get-order-notes&ordn=$ordn&sessionID=".session_id());
+				//$http->get("127.0.0.1".$pages->get('template=redir, redir_file=sales-order')->url."?action=get-order-notes&ordn=$ordn&sessionID=".session_id());
 				$page->body = $config->twig->render('warehouse/packing/order-notes.twig', ['page' => $page, 'notes' => $warehousepacking->get_packingnotes()]);
 				$page->body .= $config->twig->render('warehouse/packing/select-line-form.twig', ['page' => $page, 'warehousepacking' => $warehousepacking]);
 			}
