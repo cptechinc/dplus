@@ -8,7 +8,8 @@
 			'ii' => array(
 				'stock'        => 'iistkstat',
 				'stock_whse'   => 'iistkbywhse',
-				'requirements' => 'iirequire'
+				'requirements' => 'iirequire',
+				'pricing'      => 'iiprice'
 			)
 		);
 

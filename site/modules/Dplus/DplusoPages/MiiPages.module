@@ -147,9 +147,11 @@
 			$this->addHook('Page::get_itempricingURL', function($event) {
 				$p = $event->object;
 				$itemID = $event->arguments(0);
+				$custID = $event->arguments(1);
 				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
 				$url->query->set('action','ii-pricing');
 				$url->query->set('itemID', $itemID);
+				$url->query->set('custID', $custID);
 				$url->query->set('page', $p->fullURL->getUrl());
 				$event->return = $url->getUrl();
 			});

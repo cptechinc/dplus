@@ -1,0 +1,23 @@
+<h3>Pricing Derived From</h3>
+<table class="table table-striped table-sm">
+	<thead>
+		<tr>
+			{% for column in json['columns']['pricing derived from'] %}
+				<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
+					{{ column['heading'] }}
+				</th>
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+		{% for derivedpricing in json['data']['pricing derived from'] %}
+			<tr>
+				{% for column, properties in json['columns']['pricing derived from'] %}
+					<td class="{{ module_json.get_justifyclass(properties['datajustify']) }}">
+						{{ derivedpricing[column] }}
+					</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
