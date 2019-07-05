@@ -6,8 +6,7 @@
 		<div class="col">
 			<a href="{{ page.listpage.url }}" class="btn btn-light">
 				<i class="fa fa-list" aria-hidden="true"></i> View Sales Orders List
-			</a>
-			&nbsp; &nbsp;
+			</a>&nbsp;&nbsp;
 			<a href="#" class="btn btn-light" aria-label="Return to last page" onclick="window.history.back();">
 				<i class="fa fa-undo" aria-hidden="true"></i> Go back
 			</a>
@@ -61,96 +60,101 @@
 		</div>
 	</div>
 </div>
+<h3 class="font-weight-bold text-secondary mt-4">Order Items</h3>
+
+<div class="bg-dark text-white font-weight-bold p-3">
+    <div class="row">
+        <div class="col-sm-3">Item ID</div>
+        <div class="col-sm-2 text-right">Qty</div>
+        <div class="col-sm-2 text-right">Price</div>
+        <div class="col-sm-2 text-right">Total Price</div>
+        <div class="col-sm-3 "></div>
+    </div>
+</div>
+
+{% for detail in order_items %}
+    {% if is_orderlocked %}
+        <form action="{{ page.formurl }}" class="row pt-3 px-3 allow-enterkey-submit">
+            <input type="hidden" name="action" value="quick-update-line">
+            <input type="hidden" name="ordn" value="{{ order.ordernumber }}">
+            <input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
+            <div class="col-sm-4">
+                {{ detail.itemid }}</br>
+                <small>{{ detail.desc1 }}</small>
+            </div>
+            <div class="col-sm-1 text-right">
+                <input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}"></input>
+            </div>
+            <div class="col-sm-2 text-right">
+                <input type="text" class="form-control text-right" size="8" name="price" value="$ {{ detail.price|number_format(2, '.', ',') }}"></input>
+            </div>
+            <div class="col-sm-2 text-right">
+                $ {{ detail.totalprice|number_format(2, '.', ',') }}
+            </div>
+            <div class="col-sm-3 text-right">
+                <button type="submit" class="btn btn-warning">Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+                <a href="{{ page.remove_itemURL(page, order.ordernumber, detail.linenbr) }}" class="btn btn-danger">Remove&ensp;<i class="fa fa-times" aria-hidden="true"></i></a>
+            </div>
+        </form>
+        <hr>
+    {% else %}
+        <form action="" class="row p-3">
+            <div class="col-sm-4">
+                {{ detail.itemid }}</br>
+                <small>{{ detail.desc1 }}</small>
+            </div>
+            <div class="col-sm-1 text-right">
+                <input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}" disabled></input>
+            </div>
+            <div class="col-sm-2 text-right">
+                <input type="text" class="form-control text-right" size="8" name="price" value="$ {{ detail.price|number_format(2, '.', ',') }}" disabled></input>
+            </div>
+            <div class="col-sm-2 text-right">
+                $ {{ detail.totalprice|number_format(2, '.', ',') }}
+            </div>
+            <div class="col-sm-3 text-right">
+                <button type="submit" class="btn btn-warning" disabled >Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+                <button class="btn btn-danger" disabled >Remove&ensp;<i class="fa fa-times" aria-hidden="true"></i></a>
+            </div>
+        </form>
+    {% endif %}
+{% endfor %}
+
+
 
 {% if is_orderlocked %}
     <div class="bg-light mt-5 mb-3">
         <h3 class="font-weight-bold text-danger p-3">Edit Shipping Information</h3>
     </div>
-    <form href="" method="post">
+    <form action="{{ page.formurl }}" class="allow-enterkey-submit">
         <input type="hidden" name="action" value="edit-order">
+        <input type="hidden" name="ordn" value="{{ order.ordernumber }}">
         <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" class="form-control" name="shipto_name" value="" placeholder="Name">
+            <label for="shipname">Name</label>
+            <input type="text" class="form-control" name="shipname" value="{{ order.shipname }}">
         </div>
         <div class="form-group">
-            <label for="address">Address</label>
-            <input type="text" class="form-control" name="shipto_address1" value="" placeholder="Address">
+            <label for="shipaddress">Address</label>
+            <input type="text" class="form-control" name="shipaddress" value="{{ order.shipaddress }}">
         </div>
         <div class="form-group">
-            <label for="address2">Address 2</label>
-            <input type="text" class="form-control" name="shipto_address2" value="">
+            <label for="shipaddress2">Address 2</label>
+            <input type="text" class="form-control" name="shipaddress2" value="{{ order.shipaddress2 }}">
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="city">City</label>
-                <input type="text" class="form-control" name="shipto_city" value="" placeholder="City">
+                <label for="shipcity">City</label>
+                <input type="text" class="form-control" name="shipcity" value="{{ order.shipcity }}">
             </div>
             <div class="form-group col-md-4">
-                <label for="state">State</label>
-                <select name="shipto_state" value="" class="form-control">
-                    <option selected>Choose...</option>
-                    <option>...</option>
-                </select>
+                <label for="shipstate">State</label>
+                <input type="text" class="form-control" name="shipstate" value="{{ order.shipstate }}">
             </div>
             <div class="form-group col-md-2">
-                <label for="zip">Zip</label>
-                <input type="text" class="form-control" name="shipto_zip" value="" placeholder="Zip Code">
+                <label for="shipzip">Zip</label>
+                <input type="text" class="form-control" name="shipzip" value="{{ order.shipzip }}">
             </div>
         </div>
+        <button type="submit" class="btn btn-success btn-block mt-4">Save Order&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
     </form>
-{% endif %}
-
-<h3 class="font-weight-bold text-secondary mt-4">Order Items</h3>
-<table class="table table-striped table-borderless">
-	<thead class="bg-dark text-white font-weight-bold">
-		<tr>
-			<th>Item ID</th>
-			<th class="text-right">Qty</th>
-			<th class="text-right">Price</th>
-			<th class="text-right">Total Price</th>
-            <th></th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for detail in order_items %}
-    			<tr>
-                    {% if is_orderlocked %}
-                        <td>
-                            {{ detail.itemid }}</br>
-                            <small>{{ detail.desc1 }}</small>
-                        </td>
-                        <td class="text-right">
-                            <input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}"></input>
-                        </td>
-                        <td class="text-right">
-                            <input type="text" class="form-control text-right" size="8" name="price" value="$ {{ detail.price|number_format(2, '.', ',') }}"></input>
-                        </td>
-                        <td class="text-right">$ {{ detail.totalprice|number_format(2, '.', ',') }}</td>
-                        <td class="text-right">
-                            <a href="{{ page.edit_itemURL(page, order.ordernumber, detail.linenbr) }}" class="btn btn-warning">Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></a>
-                            <a href="{{ page.remove_itemURL(page, order.ordernumber, detail.linenbr) }}" class="btn btn-danger">Remove&ensp;<i class="fa fa-times" aria-hidden="true"></i></a>
-                        </td>
-                    {% else %}
-                        <td>
-                            {{ detail.itemid }}</br>
-                            <small>{{ detail.desc1 }}</small>
-                        </td>
-                        <td class="text-right">
-                            <input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}" disabled ></input>
-                        </td>
-                        <td class="text-right">
-                            <input type="text" class="form-control text-right" size="8" name="total_price" value="$ {{ detail.price|number_format(2, '.', ',') }}" disabled></input>
-                        </td>
-                        <td class="text-right">$ {{ detail.totalprice|number_format(2, '.', ',') }}</td>
-                        <td class="text-right">
-                            <button class="btn btn-warning" disabled>Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
-                            <button class="btn btn-danger" disabled>Remove&ensp;<i class="fa fa-times" aria-hidden="true"></i></button>
-                        </td>
-                    {% endif %}
-    			</tr>
-		{% endfor %}
-	</tbody>
-</table>
-{% if is_orderlocked %}
-    <a href="" class="btn btn-success btn-block mt-5">Save Order&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></a>
 {% endif %}

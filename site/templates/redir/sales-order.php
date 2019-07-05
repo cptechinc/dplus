@@ -25,23 +25,23 @@
 			$ordn = $input->$requestmethod->text('ordn');
 			$linenbr = $input->$requestmethod->int('linenbr');
 			$qty = $input->$requestmethod->int('qty');
-			$price = $input->$requestmethod->int('price');
-			$shipto_name = $input->$requestmethod->int('shipto_name');
-			$shipto_address = $input->$requestmethod->int('shipto_address');
-			$shipto_address2 = $input->$requestmethod->int('shipto_address2');
-			$shipto_city = $input->$requestmethod->int('shipto_city');
-			$shipto_state = $input->$requestmethod->int('shipto_state');
-			$shipto_zip = $input->$requestmethod->int('shipto_zip');
+			$price = $input->$requestmethod->text('price');
+			$shipname = $input->$requestmethod->text('shipname');
+			$shipaddress = $input->$requestmethod->text('shipaddress');
+			$shipaddress2 = $input->$requestmethod->text('shipaddress2');
+			$shipcity = $input->$requestmethod->text('shipcity');
+			$shipstate = $input->$requestmethod->text('shipstate');
+			$shipzip = $input->$requestmethod->text('shipzip');
 			$editorder = OrdrhedQuery::create()->findOneBySessionidOrder(session_id(), $ordn);
-			$editorder->set('shipto_name', $shipto_name);
-			$editorder->set('shipto_address', $shipto_address);
-			$editorder->set('shipto_address2', $shipto_address2);
-			$editorder->set('shipto_city', $shipto_city);
-			$editorder->set('shipto_state', $shipto_state);
-			$editorder->set('shipto_zip', $shipto_zip);
+			$editorder->set('shipname', $shipname);
+			$editorder->set('shipaddress', $shipaddress);
+			$editorder->set('shipaddress2', $shipaddress2);
+			$editorder->set('shipcity', $shipcity);
+			$editorder->set('shipstate', $shipstate);
+			$editorder->set('shipzip', $shipzip);
 			$editorder->save();
 			$data = array("DBNAME=$dplusdb", 'SALESHEAD', "ORDERNO=$ordn", "CUSTID=$editorder->custid");
-			$session->loc = $input->$requestmethod->text('page');
+			$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
 			break;
 		case 'quick-update-line':
 			$ordn = $input->$requestmethod->text('ordn');
@@ -49,23 +49,19 @@
 			$qty = $input->$requestmethod->int('qty');
 			$price = $input->$requestmethod->int('price');
 			$custID = SalesOrderQuery::create()->get_custid($ordn);
-
-			// Ordrdet::create undefined method
-			$editline = OrdrdetQuery::create()->findOneBySessionidOrderLinenbr(session_id(), $ordn, $linenbr);
+			$editline = OrdrdetQuery::create()->findOneBySessionidOrder(session_id(), $ordn, $linenbr);
 			$editline->setQty($qty);
 			$editline->setPrice($price);
 			$editline->save();
 			$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "CUSTID=$custID");
-			$session->loc = $input->$requestmethod->text('page');
+			$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
 			break;
 		case 'remove-line':
 			$ordn = $input->$requestmethod->text('ordn');
 			$linenbr = $input->$requestmethod->int('linenbr');
-			$editline = Ordrdet::create()->findOneBySessionidOrderLinenbr(session_id(), $ordn, $linenbr);
-			$editline->setQty(0);
-			$editline->save();
-			$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "CUSTID=$custID");
-			$session->loc = $input->$requestmethod->text('page');
+			$editline = OrdrdetQuery::create()->filterBySessionidOrderLinenbr(session_id(), $ordn, $linenbr)->update(array('Qty' => '0'));
+			$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "QTY=0", "CUSTID=$custID");
+			$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
 			break;
 		case 'unlock-order':
 			$ordn = $input->$requestmethod->text('ordn');
