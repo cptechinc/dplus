@@ -1,13 +1,13 @@
 <?php
 	// Figure out page request method, then grab needed inputs
 	$requestmethod = $input->requestMethod('POST') ? 'post' : 'get';
+
 	$action = $input->$requestmethod->text('action');
 	$dplusdb = $modules->get('DplusOnlineDatabase')->db_name;
 
 	// Set up filename and sessionID in case this was made through cURL
 	$filename  = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();
 	$sessionID = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();
-
 
 	switch ($action) {
 		case 'get-order-notes':
@@ -25,7 +25,7 @@
 			$ordn = $input->$requestmethod->text('ordn');
 			$linenbr = $input->$requestmethod->int('linenbr');
 			$qty = $input->$requestmethod->int('qty');
-			$price = $input->$requestmethod->text('price');
+			$price = $input->$requestmethod->float('price');
 			$shipname = $input->$requestmethod->text('shipname');
 			$shipaddress = $input->$requestmethod->text('shipaddress');
 			$shipaddress2 = $input->$requestmethod->text('shipaddress2');
@@ -41,13 +41,18 @@
 			$editorder->set('shipzip', $shipzip);
 			$editorder->save();
 			$data = array("DBNAME=$dplusdb", 'SALESHEAD', "ORDERNO=$ordn", "CUSTID=$editorder->custid");
-			$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
+			if ($input->$requestmethod->text('saveAndExit')) {
+				$session->loc = $pages->get('template=dplus-menu')->child('template=redir')->url."?action=unlock-order&ordn=$ordn";
+				$data['UNLOCK'] = false;
+			} else {
+				$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
+			}
 			break;
 		case 'quick-update-line':
 			$ordn = $input->$requestmethod->text('ordn');
 			$linenbr = $input->$requestmethod->int('linenbr');
 			$qty = $input->$requestmethod->int('qty');
-			$price = $input->$requestmethod->int('price');
+			$price = $input->$requestmethod->float('price');
 			$custID = SalesOrderQuery::create()->get_custid($ordn);
 			$editline = OrdrdetQuery::create()->findOneBySessionidOrder(session_id(), $ordn, $linenbr);
 			$editline->setQty($qty);
@@ -66,7 +71,7 @@
 		case 'unlock-order':
 			$ordn = $input->$requestmethod->text('ordn');
 			$data = array("DBNAME=$dplusdb", 'UNLOCK', "ORDERNO=$ordn");
-			$session->loc = $pages->get('pw_template=sales-order-view');
+			$session->loc = $pages->get('pw_template=sales-order-view')->url."?ordn=$ordn";
 			break;
 	}
 

@@ -126,7 +126,7 @@
     <div class="bg-light mt-5 mb-3">
         <h3 class="font-weight-bold text-danger p-3">Edit Shipping Information</h3>
     </div>
-    <form action="{{ page.formurl }}" class="allow-enterkey-submit">
+    <form action="{{ page.formurl }}">
         <input type="hidden" name="action" value="edit-order">
         <input type="hidden" name="ordn" value="{{ order.ordernumber }}">
         <div class="form-group">
@@ -155,6 +155,7 @@
                 <input type="text" class="form-control" name="shipzip" value="{{ order.shipzip }}">
             </div>
         </div>
-        <button type="submit" class="btn btn-success btn-block mt-4">Save Order&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+        <button type="submit" class="btn btn-info btn-block mt-3">Save Order&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+        <button type="submit" class="btn btn-success btn-block mt-2" name="saveAndExit" value="unlock-order">Save and Exit&ensp;<i class="fa fa-sign-out" aria-hidden="true"></i></button>
     </form>
 {% endif %}
