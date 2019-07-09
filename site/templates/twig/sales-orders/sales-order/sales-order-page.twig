@@ -50,7 +50,9 @@
 		<address>
 			{{ customer.name }} <br>
 			{{ customer.address1 }} <br>
-			{{ customer.address2 ? customer.address2 ~ "<br>" : ''}}
+			{% if customer.address2 %}
+				{{ customer.address2 }} <br>
+			{% endif %}
 			{{ customer.city ~ ', ' ~ customer.state ~ ' ' ~ customer.zip}}
 		</address>
 	</div>
@@ -59,7 +61,9 @@
 		<address>
 			{{ order.shipto_name }} <br>
 			{{ order.shipto_address1 }} <br>
-			{{ order.shipto_address2 ? order.shipto_address2 ~ "<br>" : ''}}
+			{% if (order.shipaddress2) %}
+				{{ order.shipaddress2 }} <br>
+			{% endif %}
 			{{ order.shipto_city ~ ', ' ~ order.shipto_state ~ ' ' ~ order.shipto_zip}}
 		</address>
 	</div>
