@@ -127,10 +127,10 @@
 			 * @uses self::is_user_editingorder()
 			 */
 			$this->addHook('Page::remove_itemURL', function($event) {
-				$p = $event->arguments(0);
-				$ordn = $event->arguments(1);
-				$linenbr = $event->arguments(2);
-				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$p = $event->object;
+				$ordn = $event->arguments(0);
+				$linenbr = $event->arguments(1);
+				$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
 				$url->query->set('action', 'remove-line');
 				$url->query->set('ordn', $ordn);
 				$url->query->set('linenbr', $linenbr);
@@ -138,29 +138,23 @@
 			});
 
 			/**
-			 * Adds self::is_user_editingorder() as User hook
-			 * @uses self::is_user_editingorder()
+			 * Returns Sales Order Page URL
 			 */
-			$this->addHook('Page::edit_itemURL', function($event) {
-				$p = $event->arguments(0);
-				$ordn = $event->arguments(1);
-				$linenbr = $event->arguments(2);
-				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-				$url->query->set('action', 'quick-update-line');
+			$this->addHook('Page::edit_orderURL', function($event) {
+				$p = $event->object;
+				$ordn = $event->arguments(0);
+				$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
+				$url->query->set('action', 'get-order-edit');
 				$url->query->set('ordn', $ordn);
-				$url->query->set('linenbr', $linenbr);
 				$event->return = $url->getUrl();
 			});
 
 			/**
-			 * Adds self::is_user_editingorder() as User hook
-			 * @uses self::is_user_editingorder()
+			 * Returns Sales Order Page URL
 			 */
-			$this->addHook('Page::edit_orderURL', function($event) {
-				$p = $event->arguments(0);
-				$ordn = $event->arguments(1);
-				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-				$url->query->set('action', 'get-order-edit');
+			$this->addHook('Page::view_orderURL', function($event) {
+				$ordn = $event->arguments(0);
+				$url = new Url($this->wire('pages')->get('pw_template=sales-order-view')->url);
 				$url->query->set('ordn', $ordn);
 				$event->return = $url->getUrl();
 			});

@@ -1,0 +1,51 @@
+<div class="row mt-4">
+	<div class="col-sm-4">
+		<legend class="font-weight-bold text-secondary">Billing ({{ customer.custid }})</legend>
+		<address>
+			{{ customer.name }} <br>
+			{{ customer.address1 }} <br>
+			{% if customer.address2 %}
+				{{ customer.address2 }} <br>
+			{% endif %}
+			{{ customer.city ~ ', ' ~ customer.state ~ ' ' ~ customer.zip}}
+		</address>
+	</div>
+	<div class="col-sm-4">
+		<legend class="font-weight-bold text-secondary">Shipping ({{ order.shiptoid }})</legend>
+		<address>
+			{{ order.shipname }} <br>
+			{{ order.shipaddress }} <br>
+			{% if (order.shipaddress2) %}
+				{{ order.shipaddress2 }} <br>
+			{% endif %}
+			{{ order.shipcity ~ ', ' ~ order.shipstate ~ ' ' ~ order.shipzip}}
+		</address>
+	</div>
+	<div class="col-sm-4">
+		<legend class="font-weight-bold text-secondary">Order Summary</legend>
+		<div class="row">
+			<div class="col-sm-7">Items on Order</div>
+			<div class="col-sm-5 text-right">{{ order_items.count }}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-7">Has Tracking</div>
+			<div class="col-sm-5 text-right">{{ order.has_tracking() ? 'Yes' : 'No' }}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-7">Subtotal:</div>
+			<div class="col-sm-5 text-right">$ {{ order.subtotal_nontax|currency }}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-7">Shipping:</div>
+			<div class="col-sm-5 text-right">$ {{ order.total_freight|currency }}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-7">Tax:</div>
+			<div class="col-sm-5 text-right">$ {{ order.total_tax|currency }}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-7">Total:</div>
+			<div class="col-sm-5 text-right">$ {{ order.total_total|currency }}</div>
+		</div>
+	</div>
+</div>

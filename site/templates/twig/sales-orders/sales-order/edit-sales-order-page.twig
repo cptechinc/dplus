@@ -1,5 +1,5 @@
 <div class="mb-3">
-	{% if not is_orderlocked %}
+	{% if user.is_editingorder(order.ordernumber) == false %}
 		<div class="col alert alert-danger" role="alert"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>&ensp;The changes made will not be saved, because the order is not locked.</div>
 	{% endif %}
 	<div class="row">
@@ -9,63 +9,23 @@
 			</a>&nbsp;&nbsp;
 			<a href="#" class="btn btn-light" aria-label="Return to last page" onclick="window.history.back();">
 				<i class="fa fa-undo" aria-hidden="true"></i> Go back
+			</a>&nbsp;&nbsp;
+			<a href="{{ page.view_orderURL(order.ordernumber) }}" class="btn btn-secondary" aria-label="View Order #{{ order.ordernumber }}">
+				View Order #{{ order.ordernumber }}
 			</a>
 		</div>
 	</div>
 </div>
-<div class="row mt-4">
-	<div class="col-sm-4">
-		<legend class="font-weight-bold text-secondary">Billing ({{ customer.custid }})</legend>
-		<address>
-			{{ customer.name }} <br>
-			{{ customer.address1 }} <br>
-			{% if customer.address2 %}
-				{{ customer.address2 }} <br>
-			{% endif %}
-			{{ customer.city ~ ', ' ~ customer.state ~ ' ' ~ customer.zip}}
-		</address>
-	</div>
-	<div class="col-sm-4">
-		<legend class="font-weight-bold text-secondary">Shipping ({{ order.shiptoid }})</legend>
-		<address>
-			{{ order.shipname }} <br>
-			{{ order.shipaddress }} <br>
-			{% if (order.shipaddress2) %}
-				{{ order.shipaddress2 }} <br>
-			{% endif %}
-			{{ order.shipcity ~ ', ' ~ order.shipstate ~ ' ' ~ order.shipzip}}
-		</address>
-	</div>
-	<div class="col-sm-4">
-		<legend class="font-weight-bold text-secondary">Order Summary</legend>
-		<div class="row">
-			<div class="col-sm-7">Items on Order</div>
-			<div class="col-sm-5 text-right">{{ order_items.count }}</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-7">Has Tracking</div>
-			<div class="col-sm-5 text-right">{{ order.has_tracking() ? 'Yes' : 'No' }}</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-7">Subtotal:</div>
-			<div class="col-sm-5 text-right">$ {{ order.subtotal_nontax|number_format(2, '.', ',') }}</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-7">Shipping:</div>
-			<div class="col-sm-5 text-right">$ {{ order.total_freight|number_format(2, '.', ',') }}</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-7">Tax:</div>
-			<div class="col-sm-5 text-right">$ {{ order.total_tax|number_format(2, '.', ',') }}</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-7">Total:</div>
-			<div class="col-sm-5 text-right">$ {{ order.total_total|number_format(2, '.', ',') }}</div>
-		</div>
-	</div>
-</div>
-<h3 class="font-weight-bold text-secondary mt-4">Order Items</h3>
+{% include 'sales-orders/sales-order/order-summary.twig' %}
+<hr>
 
+{% if user.is_editingorder(order.ordernumber) %}
+	<h3 class="font-weight-bold text-secondary mt-4">Edit Shipping Information</h3>
+	{% include 'sales-orders/sales-order/edit/shipto-form.twig' %}
+	<hr>
+{% endif %}
+
+<h3 class="font-weight-bold text-secondary mt-4">Order Items</h3>
 <div class="bg-dark text-white font-weight-bold p-3">
 	<div class="row">
 		<div class="col-sm-3">Item ID</div>
@@ -77,7 +37,7 @@
 </div>
 
 {% for detail in order_items %}
-	{% if is_orderlocked %}
+	{% if user.is_editingorder(order.ordernumber) %}
 		<form action="{{ page.formurl }}" class="row pt-3 px-3 allow-enterkey-submit">
 			<input type="hidden" name="action" value="quick-update-line">
 			<input type="hidden" name="ordn" value="{{ order.ordernumber }}">
@@ -90,19 +50,19 @@
 				<input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}"></input>
 			</div>
 			<div class="col-sm-2 text-right">
-				<input type="text" class="form-control text-right" size="8" name="price" value="$ {{ detail.price|number_format(2, '.', ',') }}"></input>
+				<input type="text" class="form-control text-right" size="8" name="price" value="$ {{ detail.price|currency }}"></input>
 			</div>
 			<div class="col-sm-2 text-right">
-				$ {{ detail.totalprice|number_format(2, '.', ',') }}
+				$ {{ detail.totalprice|currency }}
 			</div>
 			<div class="col-sm-3 text-right">
 				<button type="submit" class="btn btn-warning">Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
-				<a href="{{ page.remove_itemURL(page, order.ordernumber, detail.linenbr) }}" class="btn btn-danger">Remove&ensp;<i class="fa fa-times" aria-hidden="true"></i></a>
+				<a href="{{ page.remove_itemURL(order.ordernumber, detail.linenbr) }}" class="btn btn-danger">Remove&ensp;<i class="fa fa-times" aria-hidden="true"></i></a>
 			</div>
 		</form>
 		<hr>
 	{% else %}
-		<form action="" class="row p-3">
+		<div class="row pt-3 px-3">
 			<div class="col-sm-4">
 				{{ detail.itemid }}</br>
 				<small>{{ detail.desc1 }}</small>
@@ -111,55 +71,16 @@
 				<input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}" disabled></input>
 			</div>
 			<div class="col-sm-2 text-right">
-				<input type="text" class="form-control text-right" size="8" name="price" value="$ {{ detail.price|number_format(2, '.', ',') }}" disabled></input>
+				<input type="text" class="form-control text-right" size="8" name="price" value="$ {{ detail.price|currency }}" disabled></input>
 			</div>
 			<div class="col-sm-2 text-right">
-				$ {{ detail.totalprice|number_format(2, '.', ',') }}
+				$ {{ detail.totalprice|currency }}
 			</div>
 			<div class="col-sm-3 text-right">
-				<button type="submit" class="btn btn-warning" disabled >Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+				<button class="btn btn-warning" disabled >Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
 				<button class="btn btn-danger" disabled >Remove&ensp;<i class="fa fa-times" aria-hidden="true"></i></a>
 			</div>
-		</form>
+		</div>
+		<hr>
 	{% endif %}
 {% endfor %}
-
-
-
-{% if is_orderlocked %}
-	<div class="bg-light mt-5 mb-3">
-		<h3 class="font-weight-bold text-danger p-3">Edit Shipping Information</h3>
-	</div>
-	<form action="{{ page.formurl }}">
-		<input type="hidden" name="action" value="edit-order">
-		<input type="hidden" name="ordn" value="{{ order.ordernumber }}">
-		<div class="form-group">
-			<label for="shipname">Name</label>
-			<input type="text" class="form-control" name="shipname" value="{{ order.shipname }}">
-		</div>
-		<div class="form-group">
-			<label for="shipaddress">Address</label>
-			<input type="text" class="form-control" name="shipaddress" value="{{ order.shipaddress }}">
-		</div>
-		<div class="form-group">
-			<label for="shipaddress2">Address 2</label>
-			<input type="text" class="form-control" name="shipaddress2" value="{{ order.shipaddress2 }}">
-		</div>
-		<div class="form-row">
-			<div class="form-group col-md-6">
-				<label for="shipcity">City</label>
-				<input type="text" class="form-control" name="shipcity" value="{{ order.shipcity }}">
-			</div>
-			<div class="form-group col-md-4">
-				<label for="shipstate">State</label>
-				<input type="text" class="form-control" name="shipstate" value="{{ order.shipstate }}">
-			</div>
-			<div class="form-group col-md-2">
-				<label for="shipzip">Zip</label>
-				<input type="text" class="form-control" name="shipzip" value="{{ order.shipzip }}">
-			</div>
-		</div>
-		<button type="submit" class="btn btn-info btn-block mt-3">Save Order&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
-		<button type="submit" class="btn btn-success btn-block mt-2" name="saveAndExit" value="unlock-order">Save and Exit&ensp;<i class="fa fa-sign-out" aria-hidden="true"></i></button>
-	</form>
-{% endif %}

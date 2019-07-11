@@ -41,9 +41,9 @@
 			$editorder->set('shipzip', $shipzip);
 			$editorder->save();
 			$data = array("DBNAME=$dplusdb", 'SALESHEAD', "ORDERNO=$ordn", "CUSTID=$editorder->custid");
-			if ($input->$requestmethod->text('saveAndExit')) {
+			if ($input->$requestmethod->exit) {
 				$session->loc = $pages->get('template=dplus-menu')->child('template=redir')->url."?action=unlock-order&ordn=$ordn";
-				$data['UNLOCK'] = false;
+				$data[] = 'UNLOCK';
 			} else {
 				$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
 			}
@@ -64,7 +64,10 @@
 		case 'remove-line':
 			$ordn = $input->$requestmethod->text('ordn');
 			$linenbr = $input->$requestmethod->int('linenbr');
-			$editline = OrdrdetQuery::create()->filterBySessionidOrderLinenbr(session_id(), $ordn, $linenbr)->update(array('Qty' => '0'));
+			$custID = SalesOrderQuery::create()->get_custid($ordn);
+			$editline = OrdrdetQuery::create()->findOneBySessionidOrder(session_id(), $ordn, $linenbr);
+			$editline->setQty(0);
+			$editline->save();
 			$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "QTY=0", "CUSTID=$custID");
 			$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
 			break;

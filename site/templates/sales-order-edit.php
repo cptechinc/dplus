@@ -16,7 +16,8 @@
 			$page->title = "Editing Sales Order #$ordn";
 			$page->listpage = $pages->get('pw_template=sales-orders');
 			$page->formurl = $pages->get('template=dplus-menu')->child('template=redir')->url;
-			$page->body =  $config->twig->render('sales-orders/sales-order/edit-sales-order-page.twig', ['page' => $page, 'customer' => $customer, 'order' => $order, 'order_items' => $order_items, 'is_orderlocked' => $is_orderlocked]);
+			$page->body =  $config->twig->render('sales-orders/sales-order/edit-sales-order-page.twig', ['page' => $page, 'customer' => $customer, 'order' => $order, 'order_items' => $order_items, 'user' => $user, 'is_orderlocked' => $is_orderlocked]);
+
 		} elseif (SalesHistoryQuery::create()->filterByOehhnbr($ordn)->count()) {
 			$page->headline = $page->title = "Sales Order #$ordn is not editable";
 			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Sales Order #$ordn is in Sales History"]);
