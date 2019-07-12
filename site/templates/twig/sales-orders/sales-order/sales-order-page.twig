@@ -78,19 +78,19 @@
 		</div>
 		<div class="row">
 			<div class="col-sm-7">Subtotal:</div>
-			<div class="col-sm-5 text-right">$ {{ order.subtotal_nontax|number_format(2, '.', ',') }}</div>
+			<div class="col-sm-5 text-right">$ {{ order.subtotal_nontax|currency }}</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-7">Shipping:</div>
-			<div class="col-sm-5 text-right">$ {{ order.total_freight|number_format(2, '.', ',') }}</div>
+			<div class="col-sm-5 text-right">$ {{ order.total_freight|currency }}</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-7">Tax:</div>
-			<div class="col-sm-5 text-right">$ {{ order.total_tax|number_format(2, '.', ',') }}</div>
+			<div class="col-sm-5 text-right">$ {{ order.total_tax|currency }}</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-7">Total:</div>
-			<div class="col-sm-5 text-right">$ {{ order.total_total|number_format(2, '.', ',') }}</div>
+			<div class="col-sm-5 text-right">$ {{ order.total_total|currency }}</div>
 		</div>
 	</div>
 </div>
