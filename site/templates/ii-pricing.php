@@ -5,7 +5,6 @@
 	use WarehouseQuery, Warehouse;
 	use CustomerQuery, Customer;
 
-	$jsoncode = 'ii-pricing';
 	$module_ii = $modules->get('MiiPages');
 	$module_ii->init_iipage();
 
@@ -37,7 +36,8 @@
 			if ($module_json->file_exists(session_id(), $page->jsoncode)) {
 				$session->pricingtry = 0;
 				$customer = CustomerQuery::create()->findOneByCustid($custID);
-				$page->body =  $config->twig->render('items/ii/pricing/customer-item.twig', ['page' => $page, 'customer' => $customer, 'json' => $json]);
+				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID]);
+				$page->body .= $config->twig->render('items/ii/pricing/customer-item.twig', ['page' => $page, 'customer' => $customer, 'json' => $json]);
 				$page->body .= $config->twig->render('items/ii/pricing/screen.twig', ['page' => $page, 'itemID' => $itemID, 'module_ii' => $module_ii, 'json' => $json]);
 			} else {
 				if ($session->pricingtry > 3) {

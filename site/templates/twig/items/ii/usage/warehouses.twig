@@ -1,0 +1,3 @@
+{% for id, warehouse in json['data']['24month'] if id != 'zz' %}
+	{% include 'items/ii/usage/warehouse.twig' %}
+{% endfor %}

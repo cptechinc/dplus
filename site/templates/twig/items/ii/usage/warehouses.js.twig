@@ -1,0 +1,34 @@
+$(function() {
+	{% for id, warehouse in json['data']['24month'] %}
+		$('a[href=#{{ id|attrJS }}-graph]').on('shown.bs.tab', function(e) {
+			new Morris.Line({
+				element: '{{ id|attrJS }}-chart',
+				data: {{ module_usage.create_warehouseusages(warehouse)|json_encode|raw }},
+				xLabelFormat: function (x) {
+					return  moment(x).format('MMM YYYY');
+				},
+				yLabelFormat: function (y) {
+					return '$ '+y.formatMoney()+ ' dollars';
+				},
+				xkey: 'month',
+				ykeys: [
+					'salesamount',
+					'usageamount'
+				],
+				labels: [
+					'Amount Sold',
+					'Amount Used'
+				],
+				dateFormat: function (d) {
+					var ds = new Date(d);
+					return moment(ds).format('MMM YYYY');
+				}
+			});
+		});
+
+		$('a[href=#{{ id|attrJS }}-graph]').on('hidden.bs.tab', function(e) {
+			$('a[href=#{{ id|attrJS }}-chart]').empty();
+		});
+
+	{% endfor %}
+});

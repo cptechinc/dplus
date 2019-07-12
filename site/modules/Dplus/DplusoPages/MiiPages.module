@@ -58,6 +58,14 @@
 				'name'   => 'ii-pricing',
 				'fields' => array(),
 			),
+			'ii-costing' => array(
+				'name'   => 'ii-costing',
+				'fields' => array(),
+			),
+			'ii-activity' => array(
+				'name'   => 'ii-activity',
+				'fields' => array(),
+			),
 		);
 
 		protected $pages = array(
@@ -110,6 +118,50 @@
 				'pw_template'    => 'ii-pricing',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-pricing'
+			),
+			'ii-costing' => array(
+				'template'       => 'ii-function',
+				'name'           => 'costing',
+				'title'          => 'Costing',
+				'summary'        => 'View Item Costing',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-costing',
+				'has_print'      => true,
+				'jsoncode'       => 'ii-costing'
+			),
+			'ii-usage' => array(
+				'template'       => 'ii-function',
+				'name'           => 'usage',
+				'title'          => 'Usage',
+				'summary'        => 'View Item Usage',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-usage',
+				'has_print'      => true,
+				'jsoncode'       => 'ii-usage'
+			),
+			'ii-activity' => array(
+				'template'       => 'ii-function',
+				'name'           => 'activity',
+				'title'          => 'Activity',
+				'summary'        => 'View Item Activity',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-activity',
+				'has_print'      => true,
+				'jsoncode'       => 'ii-activity'
+			),
+			'ii-components' => array(
+				'template'       => 'ii-function',
+				'name'           => 'components',
+				'title'          => 'Components',
+				'summary'        => 'View Item Components',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-components',
+				'has_print'      => true,
+				'jsoncode'       => 'ii-components'
 			)
 		);
 
@@ -154,6 +206,51 @@
 				$url->query->set('custID', $custID);
 				$url->query->set('page', $p->fullURL->getUrl());
 				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itemcostingURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-costing');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itemusageURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-usage');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itemactivityURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-activity');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itemcomponentsURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-components');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_redirURL', function($event) {
+				$p = $event->object;
+				$event->return = $p->parent('template=dplus-menu')->child('template=redir')->url;
 			});
 		}
 

@@ -1,0 +1,20 @@
+<table class="table table-striped table-sm">
+	<thead>
+		{% for column in json['columns']['last purchase'] %}
+			<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
+				{{ column['heading'] }}
+			</th>
+		{% endfor %}
+	</thead>
+	<tbody>
+		{% for lastpurchase in json['data']['last purchase'] %}
+			<tr>
+				{% for column, properties in json['columns']['last purchase'] %}
+					<td class="{{ module_json.get_justifyclass(properties['datajustify']) }}">
+						{{ lastpurchase[column] }}
+					</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

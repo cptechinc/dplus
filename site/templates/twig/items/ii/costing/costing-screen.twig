@@ -1,0 +1,18 @@
+<nav class="mb-2">
+	<div class="nav nav-pills" id="nav-tab" role="tablist">
+		<a class="nav-item nav-link h3 active" id="warehouse-tab" data-toggle="tab" href="#warehouse" role="tab" aria-controls="warehouse" aria-selected="true">Warehouse</a>
+		<a class="nav-item nav-link h3 " id="vendor-tab" data-toggle="tab" href="#vendor" role="tab" aria-controls="vendor" aria-selected="false">Vendor</a>
+		<a class="nav-item nav-link h3" id="lastpurchase-tab" data-toggle="tab" href="#lastpurchase" role="tab" aria-controls="lastpurchase" aria-selected="false">Last Purchase</a>
+	</div>
+</nav>
+<div class="tab-content" id="nav-costing">
+	<div class="tab-pane fade show active" id="warehouse" role="tabpanel" aria-labelledby="warehouse-tab">
+		{% include 'items/ii/costing/warehouse.twig' %}
+	</div>
+	<div class="tab-pane fade" id="vendor" role="tabpanel" aria-labelledby="vendor-tab">
+		{% include 'items/ii/costing/vendor.twig' %}
+	</div>
+	<div class="tab-pane fade" id="lastpurchase" role="tabpanel" aria-labelledby="lastpurchase-tab">
+		{% include 'items/ii/costing/last-purchase.twig' %}
+	</div>
+</div>

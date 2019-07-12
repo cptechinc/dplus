@@ -9,7 +9,17 @@
 				'stock'        => 'iistkstat',
 				'stock_whse'   => 'iistkbywhse',
 				'requirements' => 'iirequire',
-				'pricing'      => 'iiprice'
+				'pricing'      => 'iiprice',
+				'costing'      => 'iicost',
+				'usage'        => 'iiusage',
+				'activity'     => 'iiactivity',
+				'components' => array(
+					'kit' => 'iikit',
+					'bom' => array(
+						'single'       => 'iibomsingle',
+						'consolidated' => 'iibomcons'
+					)
+				)
 			)
 		);
 
@@ -89,7 +99,22 @@
 			$codearray = explode('-', $jsoncode);
 			$menu = $codearray[0];
 			$screen = $codearray[1];
-			return self::JSON_FILENAMES[$menu][$screen];
+
+			if (is_array(self::JSON_FILENAMES[$menu][$screen])) {
+				$subscreen = self::JSON_FILENAMES[$menu][$screen];
+				array_shift($codearray);
+				array_shift($codearray);
+				$codearray = array_filter($codearray);
+
+				while (is_array($subscreen)) {
+					$subscreen = $subscreen[$codearray[0]];
+					array_shift($codearray);
+					$codearray = array_filter($codearray);
+				}
+				return $subscreen;
+			} else {
+				return self::JSON_FILENAMES[$menu][$screen];
+			}
 		}
 
 	/* =============================================================

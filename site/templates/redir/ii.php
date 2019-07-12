@@ -76,6 +76,67 @@
 				$session->loc = $url;
 			}
 			break;
+		case 'ii-costing':
+			$data = array("DBNAME=$dplusdb", 'IICOST', "ITEMID=$itemID");
+			$session->loc = $input->$requestmethod->text('page');
+			break;
+		case 'ii-usage':
+			$data = array("DBNAME=$dplusdb", 'IIUSAGE', "ITEMID=$itemID");
+			$session->loc = $input->$requestmethod->text('page');
+			break;
+		case 'ii-activity':
+			$data = array("DBNAME=$dplusdb", 'IIACTIVITY', "ITEMID=$itemID");
+			$date = $input->$requestmethod->text('date');
+
+			if (!empty($date)) {
+				$date_ymd = date('Ymd', strtotime($date));
+				$data[] = "DATE=$date_ymd";
+			}
+			if ($input->$requestmethod->page) {
+				$url = new Purl\Url($input->$requestmethod->text('page'));
+				$url->query->set('date', $date);
+				$session->loc = $url->getUrl();
+			} else {
+				$url = $pages->get('pw_template=ii-activity')->httpUrl."?itemID=$itemID&date=$date";
+				$session->loc = $url;
+			}
+			break;
+		case 'ii-components':
+			$config_ii = $modules->get('IiConfig');
+			$data = array("DBNAME=$dplusdb");
+			$qty = $input->$requestmethod->int('qty');
+
+			if ($config_ii->option_components == 'kit') {
+				$data[] = 'IIKIT';
+			} elseif ($config_ii->option_components == 'bom') {
+				$bomtype = $input->$requestmethod->text('bomtype');
+				if ($bomtype == 'single') {
+					$data[] = 'IIBOMSINGLE';
+				} else {
+					$data[] = 'IIBOMCONS';
+				}
+			} else {
+
+			}
+
+			$data[] = "ITEMID=$itemID";
+			$data[] = "QTYNEEDED=$qty";
+
+			if ($input->$requestmethod->page) {
+				$url = new Purl\Url($input->$requestmethod->text('page'));
+				$url->query->set('qty', $qty);
+				if ($config_ii->option_components == 'bom') {
+					$url->query->set('bomtype', $bomtype);
+				}
+				$session->loc = $url->getUrl();
+			} else {
+				$url = $pages->get('pw_template=ii-components')->httpUrl."?itemID=$itemID&qty=$qty";
+				if ($config_ii->option_components == 'bom') {
+					$url .= "&bomtype=$bomtype";
+				}
+				$session->loc = $url;
+			}
+			break;
 	}
 	if (!empty($data)) {
 		write_dplusfile($data, $filename);

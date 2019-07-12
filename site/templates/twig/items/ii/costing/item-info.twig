@@ -1,0 +1,22 @@
+<div class="mb-3">
+	<table class="table table-striped table-sm">
+		<tr>
+			<th>Item ID</th>
+			<th>Sales UoM</th>
+			<th>Stan Cost</th>
+			<th>Avg Cost</th>
+			<th>Last Cost</th>
+		</tr>
+		<tr>
+			<td>
+				{{ json['itemid'] }} <br>
+				{{ json['desc1'] }} <br>
+				{{ json['desc2'] }}
+			</td>
+			<td>{{ json['sale uom'] }}</td>
+			<td class="text-right">{{ json['stan cost'] }}</td>
+			<td class="text-right">{{ json['avg cost'] }}</td>
+			<td class="text-right">{{ json['last cost'] }}</td>
+		</tr>
+	</table>
+</div>

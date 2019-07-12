@@ -1,15 +1,3 @@
-{% if page.is_print() == false %}
-	<div class="form-group">
-		<a href="{{ page.parent.url ~ '?itemID=' ~ itemID }}" class="btn btn-primary not-round">
-			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Search
-		</a>
-		&nbsp;
-		<a href="{{ page.get_printURL }}" class="btn btn-primary not-round">
-			<i class="fa fa-print" aria-hidden="true"></i> Print
-		</a>
-	</div>
-{% endif %}
-
 {% for index,warehouse in json['data'] %}
 	<div class="row">
 		<div class="col-sm-6 form-group">
