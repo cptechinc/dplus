@@ -23,9 +23,6 @@
 			break;
 		case 'edit-order';
 			$ordn = $input->$requestmethod->text('ordn');
-			$linenbr = $input->$requestmethod->int('linenbr');
-			$qty = $input->$requestmethod->int('qty');
-			$price = $input->$requestmethod->float('price');
 			$shipname = $input->$requestmethod->text('shipname');
 			$shipaddress = $input->$requestmethod->text('shipaddress');
 			$shipaddress2 = $input->$requestmethod->text('shipaddress2');
