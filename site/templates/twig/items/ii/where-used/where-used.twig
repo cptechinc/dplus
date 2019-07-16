@@ -1,0 +1,11 @@
+{% if json['error'] %}
+	{% include 'util/alert.twig' with {'type': 'warning','iconclass': 'fa fa-warning fa-2x', 'title': 'Error!', 'message': json['errormsg']} %}
+{% else  %}
+	{% if json['data']['kit'] %}
+		{% include 'items/ii/where-used/kit.twig' %}
+	{% endif %}
+
+	{% if json['data']['bom'] %}
+		{% include 'items/ii/where-used/bom.twig' %}
+	{% endif %}
+{% endif %}

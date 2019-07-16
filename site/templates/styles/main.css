@@ -99,6 +99,10 @@ a.link:hover {
 	background-color: #bcdcef;
 }
 
+.info-heading {
+	border-bottom: 2px solid #2c3e50;
+}
+
 /**************************************
 	Navbar Styles
  **************************************/

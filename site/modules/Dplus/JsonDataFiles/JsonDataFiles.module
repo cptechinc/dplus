@@ -19,7 +19,12 @@
 						'single'       => 'iibomsingle',
 						'consolidated' => 'iibomcons'
 					)
-				)
+				),
+				'whereused'  => 'iiwhereused',
+				'lotserial'  => 'iilotser',
+				'misc'       => 'iimisc',
+				'notes'      => 'iinotes',
+				'documents'  => 'docview'
 			)
 		);
 

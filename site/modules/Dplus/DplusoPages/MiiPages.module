@@ -66,6 +66,22 @@
 				'name'   => 'ii-activity',
 				'fields' => array(),
 			),
+			'ii-where-used' => array(
+				'name'   => 'ii-where-used',
+				'fields' => array(),
+			),
+			'ii-lotserial' => array(
+				'name'   => 'ii-lotserial',
+				'fields' => array(),
+			),
+			'ii-substitutes' => array(
+				'name'   => 'ii-substitutes',
+				'fields' => array(),
+			),
+			'ii-documents' => array(
+				'name'   => 'ii-documents',
+				'fields' => array(),
+			),
 		);
 
 		protected $pages = array(
@@ -162,10 +178,59 @@
 				'pw_template'    => 'ii-components',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-components'
+			),
+			'ii-where-used' => array(
+				'template'       => 'ii-function',
+				'name'           => 'where-used',
+				'title'          => 'Where Used',
+				'summary'        => 'View Item Where Used',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-where-used',
+				'has_print'      => true,
+				'jsoncode'       => 'ii-where-used'
+			),
+			'ii-lotserial' => array(
+				'template'       => 'ii-function',
+				'name'           => 'lotserial',
+				'title'          => 'Lot Serial',
+				'summary'        => 'View Item Lot Serial',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-lotserial',
+				'has_print'      => true,
+				'jsoncode'       => 'ii-lotserial'
+			),
+			'ii-substitutes' => array(
+				'template'       => 'ii-function',
+				'name'           => 'substitutes',
+				'title'          => 'Substitutes',
+				'summary'        => 'View Item Substitutes',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-substitutes',
+				'has_print'      => true,
+				'jsoncode'       => 'ii-substitutes'
+			),
+			'ii-documents' => array(
+				'template'       => 'ii-function',
+				'name'           => 'documents',
+				'title'          => 'Documents',
+				'summary'        => 'View Item Substitutes',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-documents',
+				'has_print'      => true,
+				'jsoncode'       => 'ii-documents'
 			)
 		);
 
 		public function init_iipage() {
+			$this->addHook('Page::get_redirURL', function($event) {
+				$p = $event->object;
+				$event->return = $p->parent('template=dplus-menu')->child('template=redir')->url;
+			});
+
 			$this->addHook('Page::get_itemURL', function($event) {
 				$p = $event->object;
 				$itemID = $event->arguments(0);
@@ -248,9 +313,54 @@
 				$event->return = $url->getUrl();
 			});
 
-			$this->addHook('Page::get_redirURL', function($event) {
+			$this->addHook('Page::get_itemwhereusedURL', function($event) {
 				$p = $event->object;
-				$event->return = $p->parent('template=dplus-menu')->child('template=redir')->url;
+				$itemID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-where-used');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itemlotserialURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-lotserial');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itemgeneralURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-general');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itemsubstitutesURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-substitutes');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itemdocumentsURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-documents');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
 			});
 		}
 

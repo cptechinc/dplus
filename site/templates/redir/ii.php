@@ -26,6 +26,7 @@
 			break;
 		case 'ii-stock':
 			$data = array("DBNAME=$dplusdb", 'IISTKBYWHSE', "ITEMID=$itemID");
+
 			if ($input->$requestmethod->page) {
 				$url = new Purl\Url($input->$requestmethod->text('page'));
 				$url->query->remove('q');
@@ -82,7 +83,13 @@
 			break;
 		case 'ii-usage':
 			$data = array("DBNAME=$dplusdb", 'IIUSAGE', "ITEMID=$itemID");
-			$session->loc = $input->$requestmethod->text('page');
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = $pages->get('pw_template=ii-where-used')->httpUrl."?itemID=$itemID";
+				$session->loc = $url;
+			}
 			break;
 		case 'ii-activity':
 			$data = array("DBNAME=$dplusdb", 'IIACTIVITY', "ITEMID=$itemID");
@@ -137,7 +144,89 @@
 				$session->loc = $url;
 			}
 			break;
+		case 'ii-where-used':
+			$data = array("DBNAME=$dplusdb", 'IIWHEREUSED', "ITEMID=$itemID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = $pages->get('pw_template=ii-where-used')->httpUrl."?itemID=$itemID";
+				$session->loc = $url;
+			}
+			break;
+		case 'ii-lotserial':
+			$data = array("DBNAME=$dplusdb", 'IILOTSER', "ITEMID=$itemID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = $pages->get('pw_template=ii-lotserial')->httpUrl."?itemID=$itemID";
+				$session->loc = $url;
+			}
+			break;
+		case 'ii-general':
+			$data = array("DBNAME=$dplusdb", 'IIGENERAL', "ITEMID=$itemID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = $pages->get('pw_template=ii-general')->httpUrl."?itemID=$itemID";
+				$session->loc = $url;
+			}
+			break;
+		case 'ii-usage':
+			$data = array("DBNAME=$dplusdb", 'IIUSAGE', "ITEMID=$itemID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = $pages->get('pw_template=ii-general')->httpUrl."?itemID=$itemID";
+				$session->loc = $url;
+			}
+			break;
+		case 'ii-notes':
+			$data = array("DBNAME=$dplusdb", 'IINOTES', "ITEMID=$itemID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = $pages->get('pw_template=ii-general')->httpUrl."?itemID=$itemID";
+				$session->loc = $url;
+			}
+			break;
+		case 'ii-misc':
+			$data = array("DBNAME=$dplusdb", 'IIMISC', "ITEMID=$itemID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = $pages->get('pw_template=ii-general')->httpUrl."?itemID=$itemID";
+				$session->loc = $url;
+			}
+			break;
+		case 'ii-substitutes':
+			$data = array("DBNAME=$dplusdb", 'IISUB', "ITEMID=$itemID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = $pages->get('pw_template=ii-substitutes')->httpUrl."?itemID=$itemID";
+				$session->loc = $url;
+			}
+			break;
+		case 'ii-documents':
+			$desc = ItemMasterItemQuery::create()->select(ItemMasterItem::get_aliasproperty('desc'))->findOneByItemid($itemID);
+			$data = array("DBNAME=$dplusdb", 'DOCVIEW', "FLD1CD=IT", "FLD1DATA=$itemID", "FLD1DESC=$desc");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = $pages->get('pw_template=ii-documents')->httpUrl."?itemID=$itemID";
+				$session->loc = $url;
+			}
+			break;
 	}
+
 	if (!empty($data)) {
 		write_dplusfile($data, $filename);
 		$http = new WireHttp();

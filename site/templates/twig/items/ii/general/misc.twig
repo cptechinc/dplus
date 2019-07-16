@@ -1,0 +1,18 @@
+<table class="table table-striped table-sm">
+	<thead>
+		{% for column in json['columns']['misc info'] %}
+			<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
+				{{ column['heading'] }}
+			</th>
+		{% endfor %}
+	</thead>
+	<tbody>
+		<tr>
+			{% for column, properties in json['columns']['misc info'] %}
+				<td class="{{ module_json.get_justifyclass(properties['datajustify']) }}">
+					{{ json['data']['misc info'][column] }}
+				</td>
+			{% endfor %}
+		</tr>
+	</tbody>
+</table>
