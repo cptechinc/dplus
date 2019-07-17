@@ -13,7 +13,14 @@ $(function() {
 			confirmButtonText: 'Yes!'
 		}).then(function (result) {
 			if (result) {
-				window.location.href = a.attr('href');
+                var form = $('#edit-sales-order-form');
+                var url = URI(form.attr('action'));
+                url.addQuery('action', 'unlock-order');
+                url.addQuery('ordn', form.find('input[name=ordn]').val());
+                $.get(url.toString(), function() {
+                    window.location.href = a.attr('href');
+                });
+                console.log(url.toString());
 			}
 		});
 	});
