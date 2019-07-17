@@ -9,14 +9,17 @@
 		if (SalesOrderQuery::create()->filterByOehdnbr($ordn)->count()) {
 
 			$order = OrdrhedQuery::create()->findOneBySessionidOrder(session_id(), $ordn);
-			$is_orderlocked = $user->is_editingorder($ordn);
 
 			$order_items = OrdrdetQuery::create()->filterBySessionidOrder(session_id(), $ordn)->find();
 			$customer = CustomerQuery::create()->findOneByCustid($order->custid);
 			$page->title = "Editing Sales Order #$ordn";
 			$page->listpage = $pages->get('pw_template=sales-orders');
 			$page->formurl = $pages->get('template=dplus-menu')->child('template=redir')->url;
-			$page->body =  $config->twig->render('sales-orders/sales-order/edit-sales-order-page.twig', ['page' => $page, 'customer' => $customer, 'order' => $order, 'order_items' => $order_items, 'user' => $user, 'is_orderlocked' => $is_orderlocked]);
+			$page->body =  $config->twig->render('sales-orders/sales-order/edit-sales-order-page.twig', ['page' => $page, 'customer' => $customer, 'order' => $order, 'order_items' => $order_items, 'user' => $user]);
+
+			if ($user->is_editingorder($ordn)) {
+				$config->scripts->append(hash_templatefile('scripts/orders/edit-order.js'));
+			}
 
 		} elseif (SalesHistoryQuery::create()->filterByOehhnbr($ordn)->count()) {
 			$page->headline = $page->title = "Sales Order #$ordn is not editable";

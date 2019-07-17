@@ -138,7 +138,7 @@
 			});
 
 			/**
-			 * Returns Sales Order Page URL
+			 * Returns Edit Sales Order Page URL
 			 */
 			$this->addHook('Page::edit_orderURL', function($event) {
 				$p = $event->object;
