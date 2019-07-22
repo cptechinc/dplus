@@ -1,0 +1,30 @@
+<form action="{{ page.url }}" method="POST" class="screen-formatter-form" id="screen-formatter-form">
+    <input type="hidden" name="action" value="save-formatter">
+	<input type="hidden" name="user" value="{{ user.loginid }}">
+	<div class="panel panel-default">
+		<div class="panel-heading"><h3 class="panel-title">{{ page.title }}</h3> </div>
+		<br>
+		<div class="formatter-container">
+			<div>
+				<ul class="nav nav-tabs" role="tablist">
+					{% for section, label in module_formatter.get_datasections() %}
+						<li role="presentation" class="{{ module_formatter.get_datasections()|keys[0] ? 'active' : '' }}">
+							<a href="#{{ datasection }}" aria-controls="{{ datasection }}" role="tab" data-toggle="tab">
+								{{ label }}
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+				<div class="tab-content">
+					{% for section, label in module_formatter.get_datasections() %}
+						<div role="tabpanel" class="tab-pane {{ module_formatter.get_datasections()|keys[0] ? 'active' : '' }}" id="{{ datasection }}">
+							{% include 'screen-formatters/forms/section-table.twig' %}
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<button type="button" class="btn btn-info" onclick="preview_tableformatter()"><i class="fa fa-table" aria-hidden="true"></i> Preview Table</button>
+
+</form>

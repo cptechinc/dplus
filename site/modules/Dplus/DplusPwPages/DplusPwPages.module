@@ -225,9 +225,11 @@
 		 */
 		protected function install_templates() {
 			foreach ($this->templates as $templatename => $template) {
+echo $templatename . "<br>";
 				if ($this->wire('templates')->get($templatename)) {
 					$this->update_template($templatename);
 				} else {
+
 					$this->create_template($templatename);
 				}
 			}

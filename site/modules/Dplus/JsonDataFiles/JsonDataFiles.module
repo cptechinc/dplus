@@ -24,7 +24,10 @@
 				'lotserial'  => 'iilotser',
 				'misc'       => 'iimisc',
 				'notes'      => 'iinotes',
-				'documents'  => 'docview'
+				'documents'  => 'docview',
+				'sales' => array(
+					'orders' => 'iisalesordr'
+				)
 			)
 		);
 
@@ -59,6 +62,7 @@
 		}
 
 		public function get_justifyclass($justifycode) {
+			$justifycode = substr($justifycode, 0, 1);
 			return self::JUSTIFY_CLASSES[$justifycode];
 		}
 

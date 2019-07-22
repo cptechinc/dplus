@@ -82,6 +82,10 @@
 				'name'   => 'ii-documents',
 				'fields' => array(),
 			),
+			'ii-sales-orders' => array(
+				'name'   => 'ii-sales-orders',
+				'fields' => array(),
+			),
 		);
 
 		protected $pages = array(
@@ -222,6 +226,17 @@
 				'pw_template'    => 'ii-documents',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-documents'
+			),
+			'ii-sales-orders' => array(
+				'template'       => 'ii-sales-orders',
+				'name'           => 'sales-orders',
+				'title'          => 'Sales Orders',
+				'summary'        => 'View Item Sales Orders',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-sales-orders',
+				'has_print'      => true,
+				'jsoncode'       => 'ii-sales-orders'
 			)
 		);
 
@@ -358,6 +373,16 @@
 				$itemID = $event->arguments(0);
 				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
 				$url->query->set('action','ii-documents');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itemsalesordersURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-sales-orders');
 				$url->query->set('itemID', $itemID);
 				$url->query->set('page', $p->fullURL->getUrl());
 				$event->return = $url->getUrl();

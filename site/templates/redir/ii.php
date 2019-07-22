@@ -225,6 +225,16 @@
 				$session->loc = $url;
 			}
 			break;
+		case 'ii-sales-orders':
+			$data = array("DBNAME=$dplusdb", 'IISALESORDR', "ITEMID=$itemID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = $pages->get('pw_template=ii-sales-orders')->httpUrl."?itemID=$itemID";
+				$session->loc = $url;
+			}
+			break;
 	}
 
 	if (!empty($data)) {

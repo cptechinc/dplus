@@ -1,0 +1,71 @@
+<?php namespace ProcessWire;
+	require_once(__DIR__ . '/DplusoPages.module');
+
+	use Purl\Url;
+
+	class ScreenFormatterPages extends DplusoPages implements Module {
+
+		protected $fields = array(
+			'jsoncode' => array(
+				'name'  => 'jsoncode',
+				'type'  => 'text',
+				'label' => 'JSON Datafile Code'
+			),
+			'formatter' => array(
+				'name'  => 'formatter',
+				'type'  => 'text',
+				'label' => 'Formatter Module Name'
+			),
+		);
+
+		protected $templates = array(
+			'formatter-menu' => array(
+				'name'   => 'formatter-menu',
+				'fields' => array('title', 'summary'),
+				'paginated' => true
+			),
+			'formatter-screen' => array(
+				'name'   => 'formatter-screen',
+				'fields' => array('title', 'jsoncode', 'formatter', 'summary'),
+				'paginated' => true
+			)
+		);
+
+		protected $pages = array(
+			'screen-formatter-menu' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'screen-formatters',
+				'title'          => 'Screen Formatters',
+				'summary'        => 'Screen Formatters Menu',
+				'parent'         => '/user/',
+				'pw_template'    => 'formatter-menu'
+			),
+			'ii-formatter-menu' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'ii',
+				'title'          => 'II Screen Formatters',
+				'summary'        => 'II Screen Formatters Menu',
+				'parent'         => '/user/screen-formatters/',
+				'pw_template'    => 'formatter-menu'
+			),
+			'ii-sales-orders' => array(
+				'template'       => 'formatter-screen',
+				'name'           => 'sales-orders',
+				'title'          => 'II Sales Orders',
+				'summary'        => 'II Sales Orders Formatter',
+				'parent'         => '/user/screen-formatters/ii/',
+				'formatter'      => 'IiSalesOrder',
+				'jsoncode'       => 'ii-sales-orders'
+			)
+		);
+
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dplus Online Screen Formatter Pages',
+				'version' => 101,
+				'summary' => 'Installs and creates Screen Formatter Pages',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+	}
