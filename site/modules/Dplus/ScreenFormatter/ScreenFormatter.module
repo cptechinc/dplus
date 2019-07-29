@@ -243,6 +243,94 @@
 		}
 
 		/**
+		 * Generates and Sets tableblueprint property based on
+		 * the input
+		 * @param  WireInput $input Input with field definitions
+		 * @return void
+		 */
+		public function generate_formatterfrominput(WireInput $input) {
+			$this->formatter = false;
+			$postarray = $table = array('colcount' => 0);
+			$tablesections = array_keys($this->fields);
+
+			if ($input->post->user) {
+				$userID = $input->post->text('user');
+				$this->set_userID($userID);
+			} else {
+				$this->set_userID($this->wire('user')->loginid);
+			}
+
+			foreach ($tablesections as $tablesection) {
+				$postarray[$tablesection] = array('rows' => 0, 'colcount' => 0, 'columns' => array());
+				$table[$tablesection] = array('rowcount' => 0, 'rows' => array());
+
+				foreach (array_keys($this->fields[$tablesection]) as $column) {
+					$postcolumn = str_replace(' ', '', $column);
+					$linenumber = $input->post->int($postcolumn.'-line');
+					$length = $input->post->int($postcolumn.'-length');
+					$colnumber = $input->post->int($postcolumn.'-column');
+					$label = $input->post->text($postcolumn.'-label');
+					$dateformat = $beforedecimal = $afterdecimal = false;
+					$justify_data = $input->post->text($postcolumn.'-justify-data');
+					$justify_label = $input->post->text($postcolumn.'-justify-label');
+					$is_input = $input->post->text($postcolumn.'-is-input');
+
+					if ($this->fields[$tablesection][$column]['type'] == 'D') {
+						$dateformat = $input->post->text($postcolumn.'-date-format');
+					} elseif ($this->fields[$tablesection][$column]['type'] == 'N') {
+						$beforedecimal = $input->post->int($postcolumn.'-before-decimal');
+						$afterdecimal = $input->post->int($postcolumn.'-after-decimal');
+					}
+
+					$postarray[$tablesection]['columns'][$column] = array(
+						'line' => $linenumber,
+						'column' => $colnumber,
+						'col-length' => $length,
+						'label' => $label,
+						'before-decimal' => $beforedecimal,
+						'after-decimal' => $afterdecimal,
+						'date-format' => $dateformat,
+						'input' => $is_input,
+						'data-justify' => $justify_data,
+						'label-justify' => $justify_label
+					);
+				}
+
+				foreach ($postarray[$tablesection]['columns'] as $column) {
+					if ($column['line'] > $postarray[$tablesection]['rows']) {
+						$postarray[$tablesection]['rows'] = $column['line'];
+					}
+				}
+
+				for ($i = 1; $i < ($postarray[$tablesection]['rows'] + 1); $i++) {
+					$table[$tablesection]['rows'][$i] = array('columns' => array());
+
+					foreach ($postarray[$tablesection]['columns'] as $column) {
+						if ($column['line'] == $i) {
+							$table[$tablesection]['rows'][$i]['columns'][$column['column']] = $column;
+						}
+					}
+				}
+
+				foreach ($table[$tablesection]['rows'] as $row) {
+					$columncount = 0;
+					$maxcolumn = 0;
+					foreach ($row['columns'] as $column) {
+						$columncount += $column['col-length'];
+						$maxcolumn = $column['column'] > $maxcolumn ? $column['column'] : $maxcolumn;
+					}
+					$columncount = ($maxcolumn > $columncount) ? $maxcolumn : $columncount;
+					$postarray[$tablesection]['colcount'] = $columncount;
+					$postarray['colcount'] = ($columncount > $postarray['colcount']) ? $columncount : $postarray['colcount'];
+				}
+			}
+
+			$this->formatter = $postarray;
+			$this->source = 'input';
+			$this->generate_tableblueprint();
+		}
+
+		/**
 		 * Parses through the formatter array and sets the tableblueprint
 		 * @return void
 		 */

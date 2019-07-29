@@ -13,6 +13,7 @@
 			$module_formatter->init_formatter();
 
 			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID]);
+			
 			$page->body .= $config->twig->render('items/ii/sales-orders/sales-orders.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint()]);
 		} else {
 			if ($session->salesorderstry > 3) {

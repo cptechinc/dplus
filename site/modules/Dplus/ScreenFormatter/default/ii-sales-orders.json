@@ -185,8 +185,8 @@
 				"column": 6,
 				"col-length": 1,
 				"label": "Quantity Ordered",
-				"before-decimal": false,
-				"after-decimal": false,
+				"before-decimal": 5,
+				"after-decimal": 0,
 				"date-format": false,
 				"data-justify": "right",
 				"label-justify": "left"
@@ -196,8 +196,8 @@
 				"col-length": 1,
 				"column": 7,
 				"label": "Quantity Shipped",
-				"before-decimal": false,
-				"after-decimal": false,
+				"before-decimal": 5,
+				"after-decimal": 0,
 				"date-format": false,
 				"data-justify": "right",
 				"label-justify": "left"
@@ -207,8 +207,8 @@
 				"col-length": 1,
 				"column": 8,
 				"label": "Quantity Backordered",
-				"before-decimal": false,
-				"after-decimal": false,
+				"before-decimal": 5,
+				"after-decimal": 0,
 				"date-format": false,
 				"data-justify": "right",
 				"label-justify": "left"
@@ -218,8 +218,8 @@
 				"col-length": 0,
 				"column": 0,
 				"label": "Quantity To Ship",
-				"before-decimal": false,
-				"after-decimal": false,
+				"before-decimal": 5,
+				"after-decimal": 0,
 				"date-format": false,
 				"data-justify": "right",
 				"label-justify": "left"

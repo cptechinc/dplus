@@ -3,6 +3,7 @@
 	class IiSalesOrders extends ScreenFormatter implements Module {
 
 	protected $code = 'ii-sales-orders';
+	
 
 	/**
 	 * Key Value array of Sections that exist I.E. header => Header, detail => Detail
