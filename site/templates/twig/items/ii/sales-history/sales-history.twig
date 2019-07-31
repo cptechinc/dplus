@@ -36,7 +36,7 @@
 					{% endfor %}
 				</thead>
 				<tbody>
-					{% for id, order in warehouse['invoices'] %}
+					{% for id, invoice in warehouse['invoices'] %}
 						{% for x in 1..blueprint['detail']['rowcount']  %}
 							<tr class="{{ id == 'TOTAL' ? 'bg-secondary text-white' : '' }}">
 								{% set columncount = 0 %}
@@ -46,7 +46,7 @@
 										{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 										{% set colspan = column['col-length'] %}
 										<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-											{{ module_formatter.format_celldata(order, column) }}
+											{{ module_formatter.format_celldata(invoice, column) }}
 										</td>
 									{% else %}
 										{% if columncount < blueprint['cols'] %}
@@ -89,7 +89,7 @@
 											{% set column = blueprint['lotserial']['rows'][x]['columns'][i] %}
 											{% set colspan = column['col-length'] %}
 											<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-												{{ module_formatter.format_celldata(order, column) }}
+												{{ module_formatter.format_celldata(invoice, column) }}
 											</td>
 										{% else %}
 											{% if columncount < blueprint['cols'] %}
