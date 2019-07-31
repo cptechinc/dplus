@@ -44,7 +44,12 @@
 						</span>
 					</div>
 				</div>
+				<div class="col-sm-3">
+					<label for="">Qty</label>
+					<input type="number" class="form-control" name="qty" placeholder="Qty" value="1">
+				</div>
 				<div class="col-sm-6">
+					<label for="">Item</label>
 					<div class="input-group form-group">
 						<input class="form-control" name="barcode" placeholder="Barcode" type="text">
 						<span class="input-group-append">
@@ -54,24 +59,25 @@
 						</span>
 					</div>
 				</div>
-				<div class="col-sm-3">
-					<label for="">Qty</label>
-					<input type="number" class="form-control" name="qty" placeholder="Qty" value="1">
-				</div>
 			{% endif %}
 		</div>
 	{% endblock item_inputs %}
 </form>
 <div class="row">
-	<div class="col-sm-4 form-group">
+	<div class="col-sm-3 form-group">
 		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#bins-modal" data-input="binID" title="View Warehouse Bins">
 			View Bins
 		</button>
 	</div>
-	<div class="col-sm-4 form-group">
+	<div class="col-sm-3 form-group">
+		<a href="{{ page.get_printlinelabelURL(pickitem.ordn, pickitem.linenbr) }}" class="btn btn-dark">
+			<i class="fa fa-print" aria-hidden="true"></i> Print Labels
+		</a>
+	</div>
+	<div class="col-sm-3 form-group">
 		<a href="{{ page.get_exitorderURL() }}" class="btn btn-danger exit-order">Exit Order</a>
 	</div>
-	<div class="col-sm-4 form-group">
+	<div class="col-sm-3 form-group">
 		<a href="{{ page.get_finishitemURL() }}" class="btn btn-success finish-item">
 			<i class="fa fa-check-square" aria-hidden="true"></i> Submit Item
 		</a>

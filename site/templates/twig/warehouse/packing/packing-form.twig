@@ -1,42 +1,45 @@
-<table class="table">
-	<tr>
-		<th>Item ID</th>
-		<th>Qty to Ship</th>
-		<th>Qty Packed</th>
-		<th>Qty Remaining</th>
-	</tr>
-	<tr>
-		<td>{{ packitem.itemid }}</td>
-		<td class="text-right">{{ packitem.qty_toship }}</td>
-		<td class="text-right">{{ packitem.qty_packed }}</td>
-		<td class="text-right">{{ packitem.qty_remaining }}</td>
-	</tr>
-</table>
 <form action="{{ page.fullURL.getUrl() }}" method="POST" id="barcode-form">
 	<input type="hidden" name="action" value="add-barcode">
-	<div class="row">
-		<div class="col-sm-4 form-group">
-			<label for="carton">Carton</label>
-			<select class="form-control" id="carton" name="carton">
-				{% for i in 1..warehousepacking.get_cartoncount() %}
-					<option value="{{i}}" {{i == page.carton ? 'selected' : ''}}>{{i}}</option>
-				{% endfor %}
-			</select><br>
-			<a href="{{ page.get_addcartonURL() }}" class="btn btn-secondary">Add Carton</a>
+	<input type="hidden" name="linenbr" class="form-control" value="0">
+	<div class="form-row">
+		<div class="form-group col-sm-4">
+			<label for="barcode">Item</label>
+			<input type="text" class="form-control" name="barcode" id="barcode" placeholder="Item ID / Lotserial" aria-label="Item ID / Lotserial">
 		</div>
-		<div class="col-sm-8">
-			{% block item_inputs %}
-
-			{% endblock item_inputs %}
+		<div class="form-group col-sm-2">
+			<label for="qty">Qty</label>
+			<input type="number" name="qty" class="form-control" id="qty" value="1">
+		</div>
+		<div class="form-group col-sm-3">
+			<label for="carton">Carton</label>
+			<div class="form-row mb-2">
+				<div class="col-sm-4">
+					<input type="number" name="carton" id="carton" class="form-control" value="{{ warehousepacking.get_cartoncount() }}">
+				</div>
+				<div class="col-sm-4">
+					<p class="form-control-plaintext">of</p>
+				</div>
+				<div class="col-sm-4">
+					<p class="form-control-plaintext">{{ warehousepacking.get_cartoncount() }}</p>
+				</div>
+			</div>
+			<a href="{{ page.get_addboxURL() }}" class="btn btn-secondary">Add Carton</a>
+		</div>
+		<div class="form-group col-sm-1">
+			<label for="carton">Add Item</label>
+			<button class="btn btn-success" type="submit">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Add Item
+			</button>
 		</div>
 	</div>
 </form>
-<div class="mt-4">
-	<div class="row">
-		<div class="col-sm-4 form-group">
-			<a href="#" class="btn btn-danger">Exit Order</a>
-		</div>
-		<div class="col-sm-4 form-group"></div>
-		<div class="col-sm-4 form-group"></div>
+<div class="row">
+	<div class="col-sm-4 form-group">
+		<a href="" class="btn btn-danger">Exit Order</a>
+	</div>
+	<div class="col-sm-4 form-group">
+		<a href="{{ page.get_finishpackURL(warehousepacking.get_ordn()) }}" class="btn btn-success finish-order">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i>	Save Order
+		</a>
 	</div>
 </div>
