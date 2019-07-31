@@ -26,7 +26,8 @@
 				'notes'      => 'iinotes',
 				'documents'  => 'docview',
 				'sales' => array(
-					'orders' => 'iisalesordr'
+					'orders' => 'iisalesordr',
+					'history' => 'iisaleshist'
 				)
 			)
 		);

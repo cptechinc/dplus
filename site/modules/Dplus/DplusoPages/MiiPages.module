@@ -86,6 +86,10 @@
 				'name'   => 'ii-sales-orders',
 				'fields' => array(),
 			),
+			'ii-sales-history' => array(
+				'name'   => 'ii-sales-history',
+				'fields' => array(),
+			)
 		);
 
 		protected $pages = array(
@@ -237,6 +241,17 @@
 				'pw_template'    => 'ii-sales-orders',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-sales-orders'
+			),
+			'ii-sales-history' => array(
+				'template'       => 'ii-sales-history',
+				'name'           => 'sales-history',
+				'title'          => 'Sales History',
+				'summary'        => 'View Item Sales History',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-sales-history',
+				'has_print'      => true,
+				'jsoncode'       => 'ii-sales-history'
 			)
 		);
 
@@ -384,6 +399,18 @@
 				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
 				$url->query->set('action','ii-sales-orders');
 				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itemsaleshistoryURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$date = $event->arguments(1);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-sales-history');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('date', $date);
 				$url->query->set('page', $p->fullURL->getUrl());
 				$event->return = $url->getUrl();
 			});
