@@ -25,6 +25,7 @@
 				'misc'       => 'iimisc',
 				'notes'      => 'iinotes',
 				'documents'  => 'docview',
+				'quotes' => 'iiquote',
 				'sales' => array(
 					'orders' => 'iisalesordr',
 					'history' => 'iisaleshist'

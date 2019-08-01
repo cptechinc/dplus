@@ -65,6 +65,15 @@
 				'parent'         => '/user/screen-formatters/ii/',
 				'formatter'      => 'IiSalesHistory',
 				'jsoncode'       => 'ii-sales-history'
+			),
+			'ii-quotes' => array(
+				'template'       => 'formatter-screen',
+				'name'           => 'quotes',
+				'title'          => 'II Quotes',
+				'summary'        => 'II Quotes Formatter',
+				'parent'         => '/user/screen-formatters/ii/',
+				'formatter'      => 'IiQuotes',
+				'jsoncode'       => 'ii-quotes'
 			)
 		);
 
