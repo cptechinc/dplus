@@ -10,6 +10,7 @@
 
 	/**
 	* Packing Redirect
+	* NOTE uses whseman.log
 	*
 	* @param string $action
 	*

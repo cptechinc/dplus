@@ -8,7 +8,6 @@
 	$filename  = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();
 	$sessionID = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();
 
-
 	switch ($action) {
 		case 'get-order-notes':
 			$ordn = $input->get->text('ordn');

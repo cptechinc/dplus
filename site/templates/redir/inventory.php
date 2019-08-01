@@ -10,6 +10,7 @@
 
 	/**
 	* Inventory Redirect
+	* NOTE Uses whseman.log
 	*
 	* @param string $action
 	*

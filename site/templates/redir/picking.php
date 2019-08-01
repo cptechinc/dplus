@@ -10,63 +10,71 @@
 
 	/**
 	* PICKING ORDERS REDIRECT
-	* USES the whseman.log
-	*
-	*
+	* NOTE USES the whseman.log
 	*
 	*
 	* switch ($action) {
 	* 	case 'initiate-whse':
-	* 		- Logs into warehouse management creates whsesession record
+	* 		Request Login into warehouse management
+	* 		Response: Creates whsesession record
 	*		DBNAME=$dplusdb
 	*		LOGIN=$loginID
 	*		break;
 	*	case 'start-pick':
-	*		- Starts PICKING function for session, updates whsesession record
+	*		Requests Picking Function to start
+	*		Response: sets function to PICKING in whsesession record
 	*		DBNAME=$dplusdb
 	*		LOGIN=$loginID
 	*		PICKING
 	*		break;
 	*	case 'start-pick-pack':
-	*		- Starts PICK PACK function for session, updates whsesession record
-	*		  NOTE Park / U2 Only for now
+	*		Requests Pick Pack Function to start
+	*		Response: sets function to PACKING in whsesession record
+	*		  NOTE Unused
 	*		DBNAME=$dplusdb
 	*		LOGIN=$user->loginid
 	*		PACKING
 	*		break;
 	*	case 'logout':
-	*		- Logs out of warehouse management clears whsesession record
+	*		Request Logout of Warehouse Management
+	*		Response: Remove whsesession record, removes session associated warehouse records
 	*		DBNAME=$dplusdb
 	*		LOGOUT
 	*		break;
 	*	case 'start-order':
-	*		- Requests the Order Number to start PICKING / PACKING
+	*		Request Order to PICK / PICKPACK
+	*		Response: creates wmpickhed wmpickdet records for Order
 	*		DBNAME=$dplusdb
 	*		STARTORDER
 	*		ORDERNBR=$ordn
 	*		break;
 	*	case 'select-bin':
-	*		- Sets the Starting Bin
+	*		Request Starting bin to be changed
+	*		Response: orders wmpickdet, whsesession records
 	*		DBNAME=$dplusdb
 	*		SETBIN=$bin
 	*		break;
 	*	case 'next-bin':
-	*		- Requests the Next Bin to be assigned
+	*		Request Next bin to be changed
+	*		Response: updates, reorders wmpickdet, whsesession records
 	*		DBNAME=$dplusdb
 	*		NEXTBIN
 	*		break;
 	*	case 'add-pallet':
-	*		- Requests another Pallet number to be assigned to tthis Order #
+	*		Request next available pallet number for this Order
+	*		Response: updates wmpickhed, whsesssion records
 	*		DBNAME=$dplusdb
 	*		NEWPALLET
 	*		break;
 	*	case 'set-pallet':
-	*		- Requests the pallet number to set to X
+	*		Request to set pallet number to provided pallet
+	*		Response: updates wmpickhed, wmpickdet, whsesssion records
 	*		DBNAME=$dplusdb
 	*		GOTOPALLET=$palletnbr
 	*		break;
 	*	case 'finish-item':
-	*		- Request to finish Item picking
+	*		Request Finish Line Picking, Sends picked Item qtys, applicable lotserials
+	*		Response: updates wmpickdet, whsesssion records
 	*		DBNAME=$dplusdb
 	*		ACCEPTITEM
 	*		ORDERNBR=$ordn
@@ -81,44 +89,39 @@
 	*				NOTE NORMAL ITEMS GET ONE LINE PER BIN
 	*				     LOTTED / SERIALIZED GET ONLINE PER LOT / SERIAL NUMBER
 	*				BIN=$bin|LOTSERIAL=$lotserial|QTY=$qty
-	*
-	*		break;
-	*	case 'accept-item':
-	*		- Request to finish Item pick-packing
-	*		DBNAME=$dplusdb
-	*		ACCEPTITEM
-	*		ORDERNBR=$ordn
-	*		LINENBR=$linenbr
-	*		ITEMID=$itemID
-	*		PALLETNBR=$pallet|QTY=$qty  // NOTE 1 LINE FOR EACH PALLET
 	*		break;
 	*	case 'skip-item':
-	*		- Request to skip this item
+	*		Request picking item to be skipped for now
+	*		Response: updates wmpickdet, whsesssion records
 	*		DBNAME=$dplusdb
 	*		SKIPITEM
 	*		ORDERNBR=$ordn
 	*		LINENBR=$linenbr
 	*		break;
 	*	case 'finish-order':
-	*		// Finish the order
+	*		Request finish picking order
+	*		Response: updates wmpickdet, whsesssion records
 	*		DBNAME=$dplusdb
 	*		COMPLETEORDER
 	*		ORDERNBR=$ordn
 	*		break;
 	*	case 'exit-order':
-	*		// Leave the order
+	*		Request exit picking order
+	*		Response: updates wmpickdet, whsesssion records, order locks
 	*		DBNAME=$dplusdb
 	*		STOPORDER
 	*		ORDERNBR=$ordn
 	*		break;
 	*	case 'cancel-order':
-	*		// Cancel the order Pick
+	*		Request cancel picking order
+	*		Response: updates wmpickdet, whsesssion records, order locks
 	*		DBNAME=$dplusdb
 	*		CANCELSTART
 	*		ORDERNBR=$ordn
 	*		break;
 	*	case 'remove-order-locks':
-	*		// Removes Order Pick Locks
+	*		Request remove order locks
+	*		Response: updates wmpickdet, whsesssion records, order locks
 	*		DBNAME=$dplusdb
 	*		REFRESHPD
 	*		ORDERNBR=$ordn
@@ -172,7 +175,6 @@
 			break;
 		case 'finish-item':
 			$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
-
 			$data = array("DBNAME=$dplusdb", 'ACCEPTITEM', "ORDERNBR=$whsesession->ordernbr", "LINENBR=$item->linenbr", "ITEMID=$item->itemnbr");
 
 			if ($whsesession->is_picking()) {
