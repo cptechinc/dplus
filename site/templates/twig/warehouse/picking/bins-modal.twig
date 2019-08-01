@@ -31,7 +31,7 @@
 							<th>Range From</th>
 							<th>Range Through</th>
 						</tr>
-						{% for bin in warehousebins	%}
+						{% for bin in warehouse.get_bins()	%}
 							<tr>
 								<td>{{ bin.from }}</td>
 								<td>{{ bin.through }}</td>

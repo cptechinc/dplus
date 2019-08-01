@@ -88,11 +88,27 @@ class DplusoWarehousePicking extends WireData implements Module {
 	}
 
 	/**
+	 * Returns Ordn
+	 * @return string
+	 */
+	public function get_ordn() {
+		return $this->ordn;
+	}
+
+	/**
 	 * Sets Line Number
 	 * @param int $linenbr Line Number
 	 */
 	public function set_linenbr($linenbr) {
 		$this->linenbr = $linenbr;
+	}
+
+	/**
+	 * Returns linenbr
+	 * @return string
+	 */
+	public function get_linenbr() {
+		return $this->linenbr;
 	}
 
 	/**
@@ -187,13 +203,26 @@ class DplusoWarehousePicking extends WireData implements Module {
 					$msg .= " from $binID";
 					$this->session->pickerror = $msg;
 				}
-			} else {
-				$this->session->pickerror = "Scan: $barcode doesn't match anything for {$pickitem->itemid} in bin '$binID'";
+			} elseif ($pickitem->is_item_nonstock()) {
+				$is_valid = true;
+			} else { // VALIDATE IF SCAN IS A UPC BARCODE
+				$barcodesquery = BarcodesQuery::create();
+				$barcodesquery->filterByBarcode($barcode);
+
+				if ($barcodesquery->count()) {
+					$barcode_item = $barcodesquery->findOne();
+					$is_valid = $barcode_item->itemid == $pickitem->itemid;
+				} else {
+					$this->session->pickerror = "Scan: $barcode doesn't match anything for {$pickitem->itemid} in bin '$binID'";
+				}
+
 			}
 
 			if ($is_valid) {
 				if ($bincount == 1 || !empty($scanned_binID)) {
 					$this->add_pickedbarcode($pickitem, $barcode, $palletnbr, $qty, $binID);
+				} elseif($pickitem->is_item_nonstock()) {
+					$this->add_pickedbarcode($pickitem, $barcode, $palletnbr, $qty, $binID = '');
 				} else {
 					$this->session->pickerror = "Please Provide a bin for $barcode";
 				}
@@ -325,6 +354,21 @@ class DplusoWarehousePicking extends WireData implements Module {
 	}
 
 	/**
+	 * Return the qty picked that is already in the Pack Bin
+	 * @return int Pack Bin Qty
+	 */
+	public function get_packbinqtytotal() {
+		$query = WhseitempickQuery::create();
+		$query->addAsColumn('sum', 'sum(qty)');
+		$query->select('sum');
+		$query->filterBySessionid($this->sessionID);
+		$query->filterByOrdn($this->ordn);
+		$query->filterByLinenbr($this->linenbr);
+		$query->filterByBin('PACK');
+		return intval($query->findOne());
+	}
+
+	/**
 	 * Returns the unitqty multiplied by the number of barcodes scanned
 	 * @param  Whseitempick $pickedbarcode
 	 * @return init                        Qty
@@ -346,7 +390,8 @@ class DplusoWarehousePicking extends WireData implements Module {
 	public function get_orderpickedtotal($linenbr = 0) {
 		if ($linenbr) $this->set_linenbr($linenbr);
 		$pickitem = $this->get_picksalesorderdetail();
-		return $pickitem->qtypulled + $this->get_userpickedtotal();
+		$qty_packbin = $this->get_packbinqtytotal();
+		return $pickitem->qtypulled + $this->get_userpickedtotal() - $qty_packbin;
 	}
 
 	/**
@@ -475,6 +520,13 @@ class DplusoWarehousePicking extends WireData implements Module {
 		return WhsesessionQuery::create()->findOneByWhseid($whsesession->whseid);
 	}
 
+	/**
+	 * Return Default Warehouse Bin for Item
+	 *
+	 * @param  string $itemID Item ID
+	 * @return string         Default Warehouse Bin for Item
+	 * @uses WarehouseInventoryQuery
+	 */
 	public function get_warehouseitembin($itemID) {
 		$whsesession = $this->get_whsesession();
 		return WarehouseInventoryQuery::create()->get_warehouseitembin($whsesession->whseid, $itemID);
@@ -488,7 +540,8 @@ class DplusoWarehousePicking extends WireData implements Module {
 		} elseif (!$pickitem->is_item_lotted()) {
 			return $this->get_warehouseitembin($pickitem->itemid);
 		} else {
-			return $this->allow_negativeintentory() ? $this->get_warehouseitembin($pickitem->itemid) : '';
+			$inventoryconfig = $this->wire('modules')->get('WarehouseInventoryConfig');
+			return $inventoryconfig->allow_negativeintentory() ? $this->get_warehouseitembin($pickitem->itemid) : '';
 		}
 	}
 }

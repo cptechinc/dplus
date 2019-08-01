@@ -26,7 +26,7 @@
     --gray-dark: #343a40;
     --primary: #1F2C31;
     --secondary: #FF304F;
-    --success: #43BB8C;
+    --success: #0bc449;
     --info: #0F81C7;
     --warning: #D88613;
     --danger: #E74C3C;
@@ -1091,7 +1091,7 @@ select.form-control-lg:not([size]):not([multiple]),
     width: 100%;
     margin-top: .25rem;
     font-size: 80%;
-    color: #43BB8C
+    color: #0bc449
 }
 
 .valid-tooltip {
@@ -1113,14 +1113,14 @@ select.form-control-lg:not([size]):not([multiple]),
 .form-control.is-valid,
 .was-validated .custom-select:valid,
 .custom-select.is-valid {
-    border-color: #43BB8C
+    border-color: #0bc449
 }
 
 .was-validated .form-control:valid:focus,
 .form-control.is-valid:focus,
 .was-validated .custom-select:valid:focus,
 .custom-select.is-valid:focus {
-    border-color: #43BB8C;
+    border-color: #0bc449;
     box-shadow: 0 0 0 .2rem rgba(67, 187, 140, 0.25)
 }
 
@@ -1144,7 +1144,7 @@ select.form-control-lg:not([size]):not([multiple]),
 
 .was-validated .form-check-input:valid ~ .form-check-label,
 .form-check-input.is-valid ~ .form-check-label {
-    color: #43BB8C
+    color: #0bc449
 }
 
 .was-validated .form-check-input:valid ~ .valid-feedback,
@@ -1156,7 +1156,7 @@ select.form-control-lg:not([size]):not([multiple]),
 
 .was-validated .custom-control-input:valid ~ .custom-control-label,
 .custom-control-input.is-valid ~ .custom-control-label {
-    color: #43BB8C
+    color: #0bc449
 }
 
 .was-validated .custom-control-input:valid ~ .custom-control-label::before,
@@ -1183,7 +1183,7 @@ select.form-control-lg:not([size]):not([multiple]),
 
 .was-validated .custom-file-input:valid ~ .custom-file-label,
 .custom-file-input.is-valid ~ .custom-file-label {
-    border-color: #43BB8C
+    border-color: #0bc449
 }
 
 .was-validated .custom-file-input:valid ~ .custom-file-label::before,
@@ -1507,8 +1507,8 @@ fieldset:disabled a.btn {
 
 .btn-success {
     color: #fff;
-    background-color: #43BB8C;
-    border-color: #43BB8C
+    background-color: #0bc449;
+    border-color: #0bc449
 }
 
 .btn-success:hover {
@@ -1525,8 +1525,8 @@ fieldset:disabled a.btn {
 .btn-success.disabled,
 .btn-success:disabled {
     color: #fff;
-    background-color: #43BB8C;
-    border-color: #43BB8C
+    background-color: #0bc449;
+    border-color: #0bc449
 }
 
 .btn-success:not(:disabled):not(.disabled):active,
@@ -1810,16 +1810,16 @@ fieldset:disabled a.btn {
 }
 
 .btn-outline-success {
-    color: #43BB8C;
+    color: #0bc449;
     background-color: transparent;
     background-image: none;
-    border-color: #43BB8C
+    border-color: #0bc449
 }
 
 .btn-outline-success:hover {
     color: #fff;
-    background-color: #43BB8C;
-    border-color: #43BB8C
+    background-color: #0bc449;
+    border-color: #0bc449
 }
 
 .btn-outline-success:focus,
@@ -1829,7 +1829,7 @@ fieldset:disabled a.btn {
 
 .btn-outline-success.disabled,
 .btn-outline-success:disabled {
-    color: #43BB8C;
+    color: #0bc449;
     background-color: transparent
 }
 
@@ -1837,8 +1837,8 @@ fieldset:disabled a.btn {
 .btn-outline-success:not(:disabled):not(.disabled).active,
 .show>.btn-outline-success.dropdown-toggle {
     color: #fff;
-    background-color: #43BB8C;
-    border-color: #43BB8C
+    background-color: #0bc449;
+    border-color: #0bc449
 }
 
 .btn-outline-success:not(:disabled):not(.disabled):active:focus,
@@ -3878,7 +3878,7 @@ input[type="button"].btn-block {
 
 .badge-success {
     color: #fff;
-    background-color: #43BB8C
+    background-color: #0bc449
 }
 
 .badge-success[href]:hover,
@@ -4066,11 +4066,9 @@ input[type="button"].btn-block {
 }
 
 .alert-danger {
-    /* color: #FFF;
-    background-color: #E74C3C;
-    border-color: #ebc9c9 */
-	background-color: #ebc9c9;
-	color: #72261F;
+    color: #8c2e24;
+    background-color: #ebc9c9;
+    border-color: #E74C3C
 }
 
 .alert-danger hr {
@@ -5145,7 +5143,7 @@ button.bg-secondary:focus {
 }
 
 .bg-success {
-    background-color: #43BB8C !important
+    background-color: #0bc449 !important
 }
 
 a.bg-success:hover,
@@ -5267,7 +5265,7 @@ button.bg-dark:focus {
 }
 
 .border-success {
-    border-color: #43BB8C !important
+    border-color: #0bc449 !important
 }
 
 .border-info {
@@ -7747,7 +7745,7 @@ a.text-secondary:focus {
 }
 
 .text-success {
-    color: #43BB8C !important
+    color: #0bc449 !important
 }
 
 a.text-success:hover,

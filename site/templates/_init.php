@@ -73,9 +73,12 @@ $config->scripts->append('https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jqu
 $config->scripts->append(hash_templatefile('scripts/popper.js'));
 $config->scripts->append(hash_templatefile('scripts/bootstrap.min.js'));
 $config->scripts->append('//www.fuelcdn.com/fuelux/3.13.0/js/fuelux.min.js');
+$config->scripts->append(hash_templatefile('scripts/lib/sweetalert.js'));
+$config->scripts->append(hash_templatefile('scripts/lib/bootstrap-notify.js'));
 $config->scripts->append(hash_templatefile('scripts/uri.js'));
 $config->scripts->append(hash_templatefile('scripts/lib/sweetalert.js'));
 $config->scripts->append(hash_templatefile('scripts/main.js'));
+
 
 // BUILD AND INSTATIATE CLASSES
 $page->fullURL = new Purl\Url($page->httpUrl);

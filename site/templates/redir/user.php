@@ -10,6 +10,29 @@
 
 	$http = new WireHttp();
 
+
+	/**
+	* User REDIRECT
+	*
+	*
+	* switch ($action) {
+	* 	case 'login':
+	* 		Request Login Authentication for User
+	* 		Response: logperm record
+	*		DBNAME=$dplusdb
+	*		LOGPERM
+	*		LOGINID=$username
+	*		PSWD=$password
+	*		break;
+	*	case 'logout':
+	*		Request Logout
+	*		Response: Removes logperm records and session associated records
+	*		DBNAME=$dplusdb
+	*		LOGOUT
+	*		break
+	* }
+	**/
+
 	switch ($action) {
 		case 'login':
 			if ($input->post->username) {
@@ -26,8 +49,8 @@
 
 			// LOGOUT WAREHOUSE SESSION
 			if (WhsesessionQuery::create()->sessionExists(session_id())) {
-				$url = $pages->get('template=warehouse-menu, dplus_function=wm')->child('template=redir')->httpUrl."?action=logout&sessionID=".session_id();
-				$http->get($url);
+				$url = $pages->get('template=warehouse-menu, dplus_function=wm')->child('template=redir')->url."?action=logout&sessionID=".session_id();
+				$http->get("127.0.0.1".$url);
 			}
 			break;
 	}

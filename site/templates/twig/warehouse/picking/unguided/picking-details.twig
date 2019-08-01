@@ -1,3 +1,8 @@
+<div class="form-group">
+	<a href="{{ page.url ~ '?ordn=' ~ pickitem.ordn }}" class="btn btn-primary">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Go back
+	</a>
+</div>
 <table class="table table-condensed table-striped">
 	<tr>
 		<td class="control-label">Order #</td> <td class="text-right">{{ pickitem.ordn }}</td>
@@ -5,8 +10,8 @@
 	<tr>
 		<td class="control-label">Item ID</td>
 		<td class="text-right">
-			{{ pickitem.itemid }}
-			<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#item-info-modal">
+			<b>{{ pickitem.itemid }}</b>
+			<button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#item-info-modal">
 				Item Info
 			</button>
 		</td>

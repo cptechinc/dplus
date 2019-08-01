@@ -8,6 +8,28 @@
 	$filename  = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();
 	$sessionID = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();
 
+	/**
+	* Warehouse REDIRECT
+	* NOTE Uses whseman.log
+	*
+	* switch ($action) {
+	* 	case 'login':
+	* 		Request Warehouse Login for User
+	* 		Response: whsesession record
+	*		DBNAME=$dplusdb
+	*		LOGPERM
+	*		LOGINID=$username
+	*		PSWD=$password
+	*		break;
+	*	case 'logout':
+	*		Request Logout
+	*		Response: Removes whsesession records and session associated records
+	*		DBNAME=$dplusdb
+	*		LOGOUT
+	*		break
+	* }
+	**/
+
 	switch ($action) {
 		case 'login':
 			$q = LogpermQuery::create();
