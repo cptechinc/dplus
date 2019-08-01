@@ -1,0 +1,172 @@
+<?php namespace ProcessWire;
+
+	require_once(__DIR__ . '/AttributeParser.trait.php');
+
+	class HtmlWriter extends WireData implements Module {
+		protected $name = 'HTMLWriter';
+
+		use AttributeParser;
+
+		/**
+		 * Array of HTML elements that need a closing tag
+		 * @var array
+		 */
+		protected $closeable = array(
+			'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'i', 'b', 'strong', 'code', 'pre', 'small',
+			'div', 'nav', 'ol', 'ul', 'li', 'button',
+			'table', 'tr', 'td', 'th', 'thead', 'tbody', 'tfoot',
+			'textarea', 'select', 'option', 'label', 'a', 'form', 'script',
+			'header', 'footer', 'article'
+		);
+
+		/**
+		 * Array of HTML elements that do not need a closing tag
+		 * @var array
+		 */
+		protected $emptytags = array(
+			'input', 'img', 'br', 'hr'
+		);
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+	/**
+		* If a property is not accessible then try to give them the property through
+		* a already defined method or to give them the property value
+		* @param  string $property property name
+		* @return
+		*	  1. Value returned in value call
+		*	  2. Returns the value of the property_exists
+		*	  3. Throw Error
+		*/
+		public function __get($property) {
+		  $method = "get_{$property}";
+		  if (method_exists($this, $method)) {
+			  return $this->$method();
+		  } elseif (property_exists($this, $property)) {
+			  return $this->$property;
+		  } else {
+			  $this->error("This property ($property) does not exist");
+			  return false;
+		  }
+		}
+
+	/* =============================================================
+		CLASS FUNCTIONS
+	============================================================ */
+		/**
+		* For element making functions that doesn't have a function defined, this
+		* will handle the element by invoking the create_element function on that element name and providing the
+		* parameters given to that function call
+		*
+		* @param  string $name Name of Element used
+		* @param  array  $args array of parameters given to the attempted function call
+		* @return string HTML Element
+		*/
+		public function __call($name, $args) {
+			if (!method_exists($this, $name)) {
+				$attr = isset($args[0]) ? $args[0] : '';
+				$content = isset($args[1]) ? $args[1] : '';
+				return $this->create_element($name, $attr, $content);
+			} else {
+				echo $name;
+			}
+		}
+	/**
+		* Creates HTML Element with the attributes if applicable
+		* Will close the element if closeable, and will insert the content if needed
+		* @param  string $element Element type ex. div
+		* @param  string $attr	  Attributes ex. class=sample-class btn|id=stuff
+		* @param  string $content Content if applicable
+		* @return string			 Element
+		*/
+		public function create_element($element, $attr = '', $content = '') {
+			if (in_array($element, $this->closeable)) {
+				return $this->open($element, $attr) . $content . $this->close($element);
+			} elseif (in_array($element, $this->emptytags)) {
+				return $this->open($element, $attr);
+			} else {
+				$this->error("This element $element is not defined to be called as a closing or open ended element.");
+				return false;
+			}
+		}
+
+		/**
+		* Creates a non closing element tag
+		* @param  string $element  element type
+		* @param  string $attr	  Attributes ex. class=sample-class btn|id=stuff
+		* @return string			  element tag
+		*/
+		public function open($element, $attr = '') {
+			$attr = trim($this->attributes($attr));
+			return empty($attr) ? "<$element>" : "<$element $attr>";
+		}
+
+		/**
+		 * Closes provided element, or closes the current open element
+		 * @param  string $element Element type
+		 * @return string			 Closing Element Tag
+		 */
+		public function close($element = '') {
+			return !empty($element) ? "</$element>" : '';
+		}
+
+		/**
+		 * Returns four spaces for indentation
+		 * @return string  Indentation
+		 */
+		public function indent() {
+			return '	 ';
+		}
+
+		/**
+		 * Returns HTML select element
+		 * @param  string $attr         Attributes ex. class=sample-class btn|id=stuff
+		 * @param  array  $keyvalues     Array of Key Values for the options
+		 * @param  string $selectvalue  Value to be selected
+		 * @return string               Returns String to the code, or adds the string to $this->content
+		 */
+		public function select($attr = '', array $keyvalues, $selectvalue = '') {
+			$options = '';
+
+			foreach ($keyvalues as $key => $value) {
+				$optionattr = "value=$key";
+				$optionattr .= ($key == $selectvalue) ? "|selected=noparam" : '';
+				$options .= $this->create_element('option',$optionattr, $value);
+			}
+			$select = $this->create_element('select', $attr, $options);
+
+			return $select;
+		}
+
+		/**
+		 * Makes an aria-hidden icon that can accept icons that need content
+		 * @param  string $class	CSS Class needed for the icon
+		 * @param  string $content optional
+		 * @return string			<i class="[class]" aria-hidden="true">[content]</i>
+		 */
+		public function icon($class, $content = '') {
+			return $this->i("class=$class|aria-hidden=true", $content);
+		}
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'HTML Writer',
+				'version' => 101,
+				'summary' => 'Class for writing HTML',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+
+		public function init() {
+
+		}
+}
