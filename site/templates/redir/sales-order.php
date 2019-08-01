@@ -9,6 +9,66 @@
 	$filename  = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();
 	$sessionID = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();
 
+
+	/**
+	* SALES ORDERS REDIRECT
+	*
+	*
+	* switch ($action) {
+	* 	case 'get-order-notes':
+	* 		Request Sales Order Notes from Dplus
+	* 		Response: Creates qnote table records
+	*		DBNAME=$dplusdb
+	*		LQNOTE=SORD
+	*		KEY1=$ordn
+	*		KEY2=$linenbr
+	*		break;
+	*	case 'get-order-edit':
+	*		Request Sales Order Details for Edit
+	* 		Response: Creates Ordrhed, Ordrdet records, updates logperm with lock
+	*		DBNAME=$dplusdb
+	*		ORDRDET=$ordn
+	*		CUSTID=$custID
+	*		LOCK
+	*		break;
+	*	case 'edit-order':
+	*		Request Sales Order Header Changes to be saved
+	* 		Response: Updates Ordrhed, so_header records
+	*		DBNAME=$dplusdb
+	*		SALESHEAD
+	*		ORDERNO=$ordn
+	*		CUSTID=$editorder->custid
+	*		** UNLOCK
+	*		break;
+	*	case 'quick-update-line':
+	*		Request Sales Order Detail Line to be updated
+	* 		Response: Updates Ordrdet, so_detail records
+	*		DBNAME=$dplusdb
+	*		SALEDE
+	*		ORDERNO=$ordn
+	*		LINENO=$linenbr
+	*		CUSTID=$custID
+	*		break;
+	*	case 'remove-line':
+	*		Request Sales Order Detail Line to be updated
+	* 		Response: Updates Ordrdet, so_detail records
+	*		DBNAME=$dplusdb
+	*		SALEDE
+	*		ORDERNO=$ordn
+	*		LINENO=$linenbr
+	*		QTY=0
+	*		CUSTID=$custID
+	*		break;
+	*	case 'unlock-order':
+	* 		Request Sales Order Unlock
+	* 		Response: updates dplus locks, logperm
+	*		DBNAME=$dplusdb
+	*		UNLOCK
+	*		ORDERNO=$ordn
+	*		break;
+	* }
+	**/
+
 	switch ($action) {
 		case 'get-order-notes':
 			$ordn = $input->get->text('ordn');
