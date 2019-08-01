@@ -21,7 +21,7 @@
 			$page->title = "Sales Order #$ordn";
 			$page->listpage = $pages->get('pw_template=sales-orders');
 			$page->formurl = $pages->get('template=dplus-menu')->child('template=redir')->url;
-			$page->body =  $config->twig->render('sales-orders/sales-order/sales-order-page.twig', ['page' => $page, 'customer' => $customer, 'order' => $order, 'order_items' => $order_items, 'can_editorder' => $can_editorder, 'document_management' => $document_management, 'notes' => $notes]);
+			$page->body =  $config->twig->render('sales-orders/sales-order/sales-order-page.twig', ['page' => $page, 'customer' => $customer, 'order' => $order, 'order_items' => $order_items, 'user' => $user, 'document_management' => $document_management, 'notes' => $notes]);
 
 			$shipments = SalesOrderShipmentQuery::create()->findByOrderNumber($ordn);
 			$urlmaker = $modules->get('DplusURLs');

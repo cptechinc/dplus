@@ -118,6 +118,8 @@
 		{% endfor %}
 	</tbody>
 </table>
-{% if can_editorder %}
-	<a href="{{ page.edit_orderURL(order.ordernumber) }}" class="btn btn-warning btn-block mb-5">Edit Order&ensp;<i class="fa fa-pencil" aria-hidden="true"></i></a>
+{% if user.can_editorder(order) %}
+	<a href="{{ page.edit_orderURL(order.ordernumber) }}" class="btn btn-warning btn-block mb-5">
+		Edit Order&ensp;<i class="fa fa-pencil" aria-hidden="true"></i>
+	</a>
 {% endif %}
