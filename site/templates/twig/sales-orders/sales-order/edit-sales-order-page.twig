@@ -1,0 +1,139 @@
+<div class="mb-3">
+	{% if user.is_editingorder(order.ordernumber) == false %}
+		<div class="col alert alert-danger" role="alert"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>&ensp;The changes made will not be saved, because the order is not locked.</div>
+	{% endif %}
+	<div class="row">
+		<div class="col">
+			<a href="{{ page.listpage.url }}" class="btn btn-light">
+				<i class="fa fa-list" aria-hidden="true"></i> View Sales Orders List
+			</a>
+			<a href="{{ page.view_orderURL(order.ordernumber) }}" class="btn btn-secondary" aria-label="View Order #{{ order.ordernumber }}">
+				View Order #{{ order.ordernumber }}
+			</a>
+		</div>
+	</div>
+</div>
+<div class="row mt-4">
+	<div class="col-sm-4">
+		<legend class="font-weight-bold text-secondary">Billing ({{ customer.custid }})</legend>
+		<address>
+			{{ customer.name }} <br>
+			{{ customer.address1 }} <br>
+			{% if customer.address2 %}
+				{{ customer.address2 }} <br>
+			{% endif %}
+			{{ customer.city ~ ', ' ~ customer.state ~ ' ' ~ customer.zip}}
+		</address>
+	</div>
+	<div class="col-sm-4">
+		<legend class="font-weight-bold text-secondary">Shipping ({{ order.shiptoid }})</legend>
+		<address>
+			{{ order.shipname }} <br>
+			{{ order.shipaddress }} <br>
+			{% if (order.shipaddress2) %}
+				{{ order.shipaddress2 }} <br>
+			{% endif %}
+			{{ order.shipcity ~ ', ' ~ order.shipstate ~ ' ' ~ order.shipzip}}
+		</address>
+	</div>
+	<div class="col-sm-4">
+		<legend class="font-weight-bold text-secondary">Order Summary</legend>
+		<div class="row">
+			<div class="col-sm-7">Items on Order</div>
+			<div class="col-sm-5 text-right">{{ order_items.count }}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-7">Has Tracking</div>
+			<div class="col-sm-5 text-right">{{ order.has_tracking() ? 'Yes' : 'No' }}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-7">Subtotal:</div>
+			<div class="col-sm-5 text-right">$ {{ order.subtotal_nontax|currency }}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-7">Shipping:</div>
+			<div class="col-sm-5 text-right">$ {{ order.total_freight|currency }}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-7">Tax:</div>
+			<div class="col-sm-5 text-right">$ {{ order.total_tax|currency }}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-7">Total:</div>
+			<div class="col-sm-5 text-right">$ {{ order.total_total|currency }}</div>
+		</div>
+	</div>
+</div>
+
+<hr>
+
+{% if user.is_editingorder(order.ordernumber) %}
+	<h3 class="font-weight-bold text-secondary mt-4">Edit Shipping Information</h3>
+	{% include 'sales-orders/sales-order/edit/shipto-form.twig' %}
+	<hr>
+{% endif %}
+
+<h3 class="font-weight-bold text-secondary mt-4">Order Items</h3>
+<div class="bg-dark text-white font-weight-bold p-3">
+	<div class="row">
+		<div class="col-sm-3">Item ID</div>
+		<div class="col-sm-2 text-right">Qty</div>
+		<div class="col-sm-2 text-right">Price</div>
+		<div class="col-sm-2 text-right">Total Price</div>
+		<div class="col-sm-3 "></div>
+	</div>
+</div>
+
+{% for detail in order_items %}
+	{% if user.is_editingorder(order.ordernumber) %}
+		<form action="{{ page.formurl }}" class="row pt-3 px-3 allow-enterkey-submit">
+			<input type="hidden" name="action" value="quick-update-line">
+			<input type="hidden" name="ordn" value="{{ order.ordernumber }}">
+			<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
+			<div class="col-sm-4">
+				{{ detail.itemid }}</br>
+				<small>{{ detail.desc1 }}</small>
+			</div>
+			<div class="col-sm-1 text-right">
+				<input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}"></input>
+			</div>
+			<div class="col-sm-2 text-right">
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text">$</span>
+					</div>
+					<input type="text" class="form-control text-right" name="price" value="{{ detail.price|currency }}"></input>
+				</div>
+			</div>
+			<div class="col-sm-2 text-right">
+				$ {{ detail.totalprice|currency }}
+			</div>
+			<div class="col-sm-3 text-right">
+				<button type="submit" class="btn btn-warning">Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+				<a href="{{ page.remove_itemURL(order.ordernumber, detail.linenbr) }}" class="btn btn-danger exclude">Remove&ensp;<i class="fa fa-times" aria-hidden="true"></i></a>
+			</div>
+		</form>
+		<hr>
+	{% else %}
+		<div class="row pt-3 px-3">
+			<div class="col-sm-4">
+				{{ detail.itemid }}</br>
+				<small>{{ detail.desc1 }}</small>
+			</div>
+			<div class="col-sm-1 text-right">
+				<input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}" disabled></input>
+			</div>
+			<div class="col-sm-2 text-right">
+				<input type="text" class="form-control text-right" size="8" name="price" value="$ {{ detail.price|currency }}" disabled></input>
+			</div>
+			<div class="col-sm-2 text-right">
+				$ {{ detail.totalprice|currency }}
+			</div>
+			<div class="col-sm-3 text-right">
+				<button class="btn btn-warning" disabled >Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+				<button class="btn btn-danger" disabled >Remove&ensp;<i class="fa fa-times" aria-hidden="true"></i></a>
+			</div>
+		</div>
+		<hr>
+	{% endif %}
+{% endfor %}
