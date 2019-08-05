@@ -122,8 +122,6 @@
 				} else {
 					$data[] = 'IIBOMCONS';
 				}
-			} else {
-
 			}
 
 			$data[] = "ITEMID=$itemID";
@@ -244,6 +242,7 @@
 				$date_ymd = date('Ymd', strtotime($date));
 				$data[] = "DATE=$date_ymd";
 			}
+
 			if ($input->$requestmethod->page) {
 				$url = new Purl\Url($input->$requestmethod->text('page'));
 				$url->query->set('date', $date);
@@ -252,19 +251,6 @@
 				$url = $pages->get('pw_template=ii-sales-history')->httpUrl."?itemID=$itemID&date=$date";
 				$session->loc = $url;
 			}
-
-			// $custID = $input->$requestmethod->text('custID');
-			// $shipID = $input->$requestmethod->text('shipID');
-			// $date = $input->$requestmethod->text('date');
-            // if (!empty($custID)) {$data['CUSTID'] = $custID; } if (!empty($shipID)) {$data['SHIPID'] = $shipID; }
-            // if (!empty($date)) { $data['DATE'] = date('Ymd', strtotime($date)); }
-			//
-			// if ($input->$requestmethod->page) {
-			// 	$session->loc = $input->$requestmethod->text('page');
-			// } else {
-			// 	$url = $pages->get('pw_template=ii-sales-history')->httpUrl."?itemID=$itemID";
-			// 	$session->loc = $url;
-			// }
 			break;
 	}
 
