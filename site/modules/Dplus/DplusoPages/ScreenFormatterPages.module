@@ -74,6 +74,15 @@
 				'parent'         => '/user/screen-formatters/ii/',
 				'formatter'      => 'IiQuotes',
 				'jsoncode'       => 'ii-quotes'
+			),
+			'ii-purchase-orders' => array(
+				'template'       => 'formatter-screen',
+				'name'           => 'purchase-orders',
+				'title'          => 'II Purchase Orders',
+				'summary'        => 'II Purchase Orders Formatter',
+				'parent'         => '/user/screen-formatters/ii/',
+				'formatter'      => 'IiPurchaseOrders',
+				'jsoncode'       => 'ii-purchase-orders'
 			)
 		);
 

@@ -29,6 +29,9 @@
 				'sales' => array(
 					'orders' => 'iisalesordr',
 					'history' => 'iisaleshist'
+				),
+				'purchase' => array(
+					'orders' => 'iipurchordr'
 				)
 			)
 		);
