@@ -35,9 +35,9 @@
 				{% endfor %}
 			</thead>
 			<tbody>
-				{% for id, order in warehouse['orders'] %}
+				{% for id, order in warehouse['orders'] if id != 'TOTAL' %}
 					{% for x in 1..blueprint['detail']['rowcount']  %}
-						<tr class="{{ id == 'TOTAL' ? 'bg-secondary text-white' : '' }}">
+						<tr>
 							{% set columncount = 0 %}
 							{% for i in 1..blueprint['cols'] + 1 %}
 								{% set colspan = 0 %}
@@ -45,7 +45,14 @@
 									{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 									{% set colspan = column['col-length'] %}
 									<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-										{{ module_formatter.format_celldata(order, column) }}
+										{{ module_formatter.format_celldata(order, column) }} &nbsp;
+										{% if i == 1 and order['Sales Order Number'] %}
+											{% if document_management.count_salesorderdocuments(order['Sales Order Number']) %}
+												<a href="{{ page.documentsview_salesorder(itemID, order['Sales Order Number'])}}" class="text-success" title="View Documents for Order # {{ order['Sales Order Number'] }}">
+													<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Order # {{ order['Sales Order Number'] }}</span>
+												</a>
+											{% endif %}
+										{% endif %}
 									</td>
 								{% else %}
 									{% if columncount < blueprint['cols'] %}
@@ -59,6 +66,30 @@
 					{% endfor %}
 				{% endfor %}
 			</tbody>
+			<tfoot>
+				{% set order = warehouse['orders']['TOTAL'] %}
+				{% for x in 1..blueprint['detail']['rowcount']  %}
+					<tr class="bg-secondary text-white">
+						{% set columncount = 0 %}
+						{% for i in 1..blueprint['cols'] + 1 %}
+							{% set colspan = 0 %}
+							{% if blueprint['detail']['rows'][x]['columns'][i] %}
+								{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
+								{% set colspan = column['col-length'] %}
+								<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
+									{{ module_formatter.format_celldata(order, column) }}
+								</td>
+							{% else %}
+								{% if columncount < blueprint['cols'] %}
+									{% set colspan = 1 %}
+									<td></td>
+								{% endif %}
+							{% endif %}
+							{% set columncount = columncount + colspan %}
+						{% endfor %}
+					</tr>
+				{% endfor %}
+			</tfoot>
 		</table>
 	</div>
 	<hr>
