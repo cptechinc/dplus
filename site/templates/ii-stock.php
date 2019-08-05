@@ -9,7 +9,8 @@
 
 		if ($module_json->file_exists(session_id(), $page->jsoncode)) {
 			$session->stocktry = 0;
-			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID]);
+			$refreshurl = $page->get_itemstockURL($itemID);
+			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 			$page->body .= $config->twig->render('items/ii/stock-whse/stock-screen.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'itemID' => $itemID]);
 		} else {
 			if ($session->stocktry > 3) {

@@ -36,7 +36,9 @@
 			if ($module_json->file_exists(session_id(), $page->jsoncode)) {
 				$session->pricingtry = 0;
 				$customer = CustomerQuery::create()->findOneByCustid($custID);
-				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID]);
+
+				$refreshurl = $page->get_itempricingURL($itemID, $custID);
+				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 				$page->body .= $config->twig->render('items/ii/pricing/customer-item.twig', ['page' => $page, 'customer' => $customer, 'json' => $json]);
 				$page->body .= $config->twig->render('items/ii/pricing/screen.twig', ['page' => $page, 'itemID' => $itemID, 'module_ii' => $module_ii, 'json' => $json]);
 			} else {

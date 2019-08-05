@@ -14,11 +14,11 @@
 				$session->salesorderstry = 0;
 				$module_formatter = $modules->get('IiSalesHistory');
 				$module_formatter->init_formatter();
-				
-				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID]);
+				$document_management = $modules->get('DocumentManagement');
 
-				$page->body .= $config->twig->render('items/ii/sales-history/sales-history.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint()]);
-
+				$refreshurl = $page->get_itemsaleshistoryURL($itemID, $date);
+				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
+				$page->body .= $config->twig->render('items/ii/sales-history/sales-history.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
 			} else {
 				if ($session->saleshistorytry > 3) {
 					$page->headline = $page->title = "Sales History File could not be loaded";

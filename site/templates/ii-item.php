@@ -20,7 +20,7 @@
 			$json = $module_json->get_file(session_id(), 'ii-stock');
 
 			$toolbar = $config->twig->render('items/ii/toolbar.twig', ['page' => $page, 'item' => $item]);
-			$description = $config->twig->render('items/ii/item/description.twig', ['item' => $item]);
+			$description = $config->twig->render('items/ii/item/description.twig', ['item' => $item, 'page' => $page]);
 			$itemdata = $config->twig->render('items/ii/item/item-data.twig', ['item' => $item, 'itempricing' => $itempricing]);
 
 			if ($module_json->had_succeeded()) {
@@ -43,8 +43,16 @@
 		$query = ItemsearchQuery::create();
 		$query->filterActive();
 		$query->filterByOrigintype([Itemsearch::ORIGINTYPE_VENDOR, Itemsearch::ORIGINTYPE_ITEM]);
-		$query->where("MATCH(Itemsearch.itemid, Itemsearch.refitemid, Itemsearch.desc1, Itemsearch.desc2) AGAINST (? IN BOOLEAN MODE)", "*$q*");
-		$query->groupby('itemid');
+
+		if ($query->filterByItemid($q)->count()) {
+			$query->groupby('itemid');
+		} else {
+			$query->clear();
+			$query->filterActive();
+			$query->filterByOrigintype([Itemsearch::ORIGINTYPE_VENDOR, Itemsearch::ORIGINTYPE_ITEM]);
+			$query->where("MATCH(Itemsearch.itemid, Itemsearch.refitemid, Itemsearch.desc1, Itemsearch.desc2) AGAINST (? IN BOOLEAN MODE)", "*$q*");
+			$query->groupby('itemid');
+		}
 
 		if ($query->count() == 1) {
 			$item = $query->findOne();

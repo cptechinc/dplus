@@ -4,8 +4,16 @@
 			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Item
 		</a>
 		&nbsp;
-		<a href="{{ page.get_printURL }}" class="btn btn-primary not-round">
+		<a href="{{ page.get_printURL() }}" class="btn btn-primary not-round">
 			<i class="fa fa-print" aria-hidden="true"></i> Print
 		</a>
+		&nbsp;
+		{% if refreshurl %}
+			<a href="{{ refreshurl }}" class="btn btn-primary not-round">
+				<i class="fa fa-refresh" aria-hidden="true"></i> Refresh Data
+			</a>
+			&nbsp;
+			Data Current as of {{ lastmodified|date('m/d/Y h:i A') }}
+		{% endif %}
 	</div>
 {% endif %}
