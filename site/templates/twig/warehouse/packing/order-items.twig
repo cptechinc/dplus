@@ -1,0 +1,26 @@
+<div class="mb-3">
+	<div class="list-group">
+		<div class="list-group-item bg-dark text-white">
+			<div class="row">
+				<div class="col-sm-1 text-right">Carton</div>
+				<div class="col-sm-1 text-right">Line</div>
+				<div class="col-sm-3">Item</div>
+				<div class="col-sm-2 text-right">In Box</div>
+				<div class="col-sm-1 text-right">To Ship</div>
+				<div class="col-sm-1 text-right">Packed</div>
+				<div class="col-sm-1 text-right">Remaining</div>
+			</div>
+		</div>
+		{% for line in warehousepacking.get_packsalesorderdetails() %}
+			{% if warehousepacking.get_line_qtyremaining(line.linenbr) %}
+				{% include 'warehouse/packing/order-list-group-item.twig' %}
+			{% endif %}
+		{% endfor %}
+		<div class="list-group-item bg-light">
+			<h3 class="text-center">Packed</h3>
+		</div>
+		{% for packed in warehousepacking.get_packeditems() %}
+			{% include 'warehouse/packing/packed-item.twig' %}
+		{% endfor %}
+	</div>
+</div>

@@ -3,6 +3,9 @@
 use Purl\Url;
 use DocumentFoldersQuery, DocumentFolders;
 use DocumentsQuery, Documents;
+use SalesHistoryQuery, SalesHistory;
+use SalesHistoryDetailQuery, SalesHistoryDetail;
+use SalesOrderQuery, SalesOrder;
 
 class DocumentManagement extends WireData implements Module {
 
@@ -10,6 +13,7 @@ class DocumentManagement extends WireData implements Module {
 	const TAG_SALESORDER = 'SO';
 	const TAG_QUOTE = 'QT';
 	const TAG_ITEM  = 'IT';
+	const TAG_VENDORPO = 'PO';
 
 	public static function getModuleInfo() {
 		return array(
@@ -49,8 +53,43 @@ class DocumentManagement extends WireData implements Module {
 			$event->return = $url."?itemID=$itemID&folder=$folder&document=$document";
 		});
 
+		$this->addHook('Page(pw_template=ii-sales-orders|ii-sales-history)::documentsview_salesorder', function($event) {
+			$page = $event->object;
+			$itemID    = $event->arguments(0);
+			$ordn      = $event->arguments(1);
+			$lotserial = $event->arguments(2);
+			$url = new Url($this->wire('pages')->get('pw_template=ii-documents')->url);
+			$url->query->set('itemID', $itemID);
+			$url->query->set('folder', self::TAG_SALESORDER);
+			$url->query->set('ordn', $ordn);
+
+			if (SalesHistoryQuery::create()->filterByOrderNumber(SalesOrder::get_paddedordernumber($ordn))->count()) {
+				$date = $page->fullURL->query->get('date');
+				$url->query->set('date', $date);
+				$url->query->set('folder', self::TAG_ARINVOICES);
+			}
+
+			$event->return = $url->getUrl();
+		});
 	}
 
+	/**
+	 * Return Tag Code for tag name
+	 * @uses self::TAG_*
+	 *
+	 * @param  string $tagname Tag name
+	 * @return string          Tag Code
+	 */
+	public function get_tag($tagname) {
+		$tag = strtoupper($tagname);
+		return constant("self::TAG_$tag");
+	}
+
+	/**
+	 * Return Documents objects filtered by the tag1, reference1 fields for a Sales Order
+	 * @param  string $ordn                      Sales Order Number
+	 * @return Documents[]|ObjectCollection
+	 */
 	public function get_salesorderdocuments($ordn) {
 		$documents_master = DocumentsQuery::create();
 		$documents_master->filterByTag(self::TAG_SALESORDER);
@@ -58,6 +97,11 @@ class DocumentManagement extends WireData implements Module {
 		return $documents_master->find();
 	}
 
+	/**
+	 * Return the number of Documents found filtered by the tag1, reference1 fields for a Sales Order
+	 * @param  string $ordn Sales Order Number
+	 * @return int          Number of Sales Order Documents found
+	 */
 	public function count_salesorderdocuments($ordn) {
 		$documents_master = DocumentsQuery::create();
 		$documents_master->filterByTag(self::TAG_SALESORDER);
@@ -65,6 +109,62 @@ class DocumentManagement extends WireData implements Module {
 		return $documents_master->count();
 	}
 
+	/**
+	 * Return the number of Documents found filtered by the tag1, reference1 fields for a Sales Order
+	 * @param  string $ordn Sales Order Number
+	 * @return int          Number of Sales Order Documents found
+	 */
+	public function get_saleshistorydocuments($ordn) {
+		$documents_master = DocumentsQuery::create();
+		$this->filter_saleshistoryconditions($documents_master, $ordn);
+		return $documents_master->find();
+	}
+
+	/**
+	 * Return the number of Documents found filtered by the tag1, reference1 fields for a Sales Order in History
+	 * @uses self::filter_saleshistoryconditions()
+	 *
+	 * @param  string $ordn Sales Order Number
+	 * @return int          Number of Sales History Documents found
+	 */
+	public function count_saleshistorydocuments($ordn) {
+		$documents_master = DocumentsQuery::create();
+		$this->filter_saleshistoryconditions($documents_master, $ordn);
+		return $documents_master->count();
+	}
+
+	/**
+	 * Adds Filter Conditions to the Documents Query to find Documents associated with a Sales History Order
+	 * @param  DocumentsQuery $documents_master Query to add filters to
+	 * @param  string         $ordn             Sales Order Number
+	 * @return void
+	 */
+	protected function filter_saleshistoryconditions(DocumentsQuery $documents_master, $ordn) {
+		$q = SalesHistoryDetailQuery::create();
+		$q->filterByOrderNumber($ordn);
+		$ponbrs = $q->select(SalesHistoryDetail::get_aliasproperty('vendorpo'))->find()->toArray();
+
+		$column_tag = Documents::get_aliasproperty('tag');
+		$column_reference1 = Documents::get_aliasproperty('reference1');
+
+		// Create Invoices Filter
+		$documents_master->condition('tag_invoices', "Documents.$column_tag = ?", self::TAG_ARINVOICES);
+		$documents_master->condition('reference1_invoices', "Documents.$column_reference1 = ?", $ordn);
+		$documents_master->combine(array('tag_invoices', 'reference1_invoices'), 'and', 'cond_invoices') ;
+
+		// Create Vendor PO Filter
+		$documents_master->condition('tag_vendorpo', "Documents.$column_tag = ?", self::TAG_VENDORPO);
+		$documents_master->condition('reference1_vendorpo', "Documents.$column_reference1 IN ?", $ponbrs);
+		$documents_master->combine(array('tag_vendorpo', 'reference1_vendorpo'), 'and', 'cond_vendorpo');
+
+		$documents_master->where(array('cond_invoices', 'cond_vendorpo'), 'or');
+	}
+
+	/**
+	 * Return Documents objects filtered by the tag1, reference1 fields for an Item ID
+	 * @param  string $itemID                      Item ID
+	 * @return Documents[]|ObjectCollection
+	 */
 	public function get_itemdocuments($itemID) {
 		$documents_master = DocumentsQuery::create();
 		$documents_master->filterByTag(self::TAG_ITEM);
@@ -72,6 +172,11 @@ class DocumentManagement extends WireData implements Module {
 		return $documents_master->find();
 	}
 
+	/**
+	 * Return Dthe number of ocuments found filtered by the tag1, reference1 fields for an Item ID
+	 * @param  string $itemID                      Item ID
+	 * @return Documents[]|ObjectCollection
+	 */
 	public function count_itemdocuments($itemID) {
 		$documents_master = DocumentsQuery::create();
 		$documents_master->filterByTag(self::TAG_ITEM);
@@ -79,18 +184,32 @@ class DocumentManagement extends WireData implements Module {
 		return $documents_master->count();
 	}
 
-
-
-	public function move_document($folder, $filename, $directory = '') {
+	/**
+	 * Finds a Document from the Documents table and creates a copy
+	 * @uses self::move_file()
+	 *
+	 * @param  string $folder      Which Folder to Filter the document to
+	 * @param  string $filename    File Name
+	 * @param  string $destination Directory to move the file to
+	 * @return void
+	 */
+	public function move_document($folder, $filename, $destination = '') {
 		$documents_master = DocumentsQuery::create();
 		$documents_master->filterByFolder($folder);
 		$documents_master->filterByFilename($filename);
 		$document = $documents_master->findOne();
 
 		$folder = DocumentFoldersQuery::create()->findOneByFolder($folder);
-		$this->move_file($folder->directory, $document->filename);
+		$this->move_file($folder->directory, $document->filename, $destination);
 	}
 
+	/**
+	 * Copies a file from a directory into the destination directory
+	 * @param  string $directory   Directory which the file resides
+	 * @param  string $filename    File Name
+	 * @param  string $destination Destination Directory
+	 * @return bool                Was file copied to the new directory
+	 */
 	public function move_file($directory, $filename, $destination = '') {
 		$srcfile = "$directory/$filename";
 		$destination = empty($destination) ? $this->wire('config')->directory_webdocs : $destination;
@@ -98,6 +217,11 @@ class DocumentManagement extends WireData implements Module {
 		return copy($srcfile, $newfile);
 	}
 
+	/**
+	 * Returns if file is already in the web access directory
+	 * @param  string $filename File Name
+	 * @return bool             Is the file in the web access directory?
+	 */
 	public function is_filewebaccessible($filename) {
 		return file_exists($this->wire('config')->directory_webdocs.$filename);
 	}

@@ -104,6 +104,13 @@
 			return file_exists($jsonfile);
 		}
 
+		public function file_modified($sessionID, $jsoncode) {
+			$basefile = $this->get_filename($jsoncode);
+			$filepath = $this->wire('config')->jsonfilepath;
+			$jsonfile = $filepath."$sessionID-$basefile.json";
+			return filemtime($jsonfile);
+		}
+
 		/**
 		 * Returns the base file name for json file code
 		 * @param  string $jsoncode ex. ii-stock

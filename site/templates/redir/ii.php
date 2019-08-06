@@ -122,8 +122,6 @@
 				} else {
 					$data[] = 'IIBOMCONS';
 				}
-			} else {
-
 			}
 
 			$data[] = "ITEMID=$itemID";
@@ -244,6 +242,7 @@
 				$date_ymd = date('Ymd', strtotime($date));
 				$data[] = "DATE=$date_ymd";
 			}
+
 			if ($input->$requestmethod->page) {
 				$url = new Purl\Url($input->$requestmethod->text('page'));
 				$url->query->set('date', $date);

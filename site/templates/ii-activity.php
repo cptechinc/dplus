@@ -13,7 +13,8 @@
 
 			if ($module_json->file_exists(session_id(), $page->jsoncode)) {
 				$session->activitytry = 0;
-				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID]);
+				$refreshurl = $page->get_itemcostingURL($itemID);
+				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 				$page->body .= $config->twig->render('items/ii/activity/activity-screen.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'date' => $date, 'itemID' => $itemID]);
 			} else {
 				if ($session->activitytry > 3) {

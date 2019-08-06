@@ -16,7 +16,8 @@
 
 		if ($module_json->file_exists(session_id(), $page->jsoncode)) {
 			$session->usagetry = 0;
-			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID]);
+			$refreshurl = $page->get_itemusageURL($itemID);
+			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 			$page->body .= $config->twig->render('items/ii/usage/sales-usage.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json]);
 			$page->body .= $config->twig->render('items/ii/usage/warehouses.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'module_usage' => $module_usage]);
 			$page->js = $config->twig->render('items/ii/usage/warehouses.js.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'module_usage' => $module_usage]);

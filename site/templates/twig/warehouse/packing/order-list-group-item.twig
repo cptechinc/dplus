@@ -1,0 +1,21 @@
+<div class="list-group-item">
+	<div class="row mb-1">
+		<div class="col-sm-1 text-right">0</div>
+		<div class="col-sm-1 text-right">{{ line.linenbr }}</div>
+		<div class="col-sm-3">
+			{% if line.is_item_serialized() %}
+				{{ line.itemid }}
+			{% else %}
+				<a href="#" class="choose-item" data-itemID="{{ line.itemid }}" data-linenbr="{{ line.linenbr }}" data-itemtype="{{ warehousepacking.get_itemtypecode(line.itemid) }}" data-lotserial="">
+					<span class="badge badge-secondary">{{ line.itemid }}</span>
+				</a>
+			{% endif %}
+			<br>
+			{{ line.desc1 }}
+		</div>
+		<div class="col-sm-2 text-right">0</div>
+		<div class="col-sm-1 text-right">{{ warehousepacking.get_line_qtytoship(line.linenbr) }}</div>
+		<div class="col-sm-1 text-right">{{ warehousepacking.get_line_qtypacked(line.linenbr) }}</div>
+		<div class="col-sm-1 text-right">{{ warehousepacking.get_line_qtyremaining(line.linenbr) }}</div>
+	</div>
+</div>

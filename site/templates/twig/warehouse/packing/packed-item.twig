@@ -1,0 +1,69 @@
+{% set qty_packed = warehousepacking.get_line_qtypacked(packed.linenumber) %}
+{% set qty_toship = warehousepacking.get_line_qtytoship(packed.linenumber) %}
+
+{% if qty_packed == qty_toship %}
+	{% set class =  'bg-success text-white' %}
+{% elseif qty_packed > qty_toship %}
+	{% set class =  'bg-warning' %}
+{% endif %}
+
+<div class="list-group-item {{ class }} pb-1">
+	<div class="row">
+		<div class="col-sm-1 text-right">{{ packed.carton }}</div>
+		<div class="col-sm-1 text-right">{{ packed.linenumber }}</div>
+		<div class="col-sm-3">
+			{% if packed.is_item_serialized() %}
+				{{ packed.itemid }} <br>
+				Serial: <b>{{ packed.lotserial }}</b>
+			{% elseif packed.is_item_lotted() %}
+				<a href="#" class="choose-item" data-itemid="{{ packed.itemID }}" data-linenbr="{{ packed.linenumber }}" data-itemtype="{{ warehousepacking.get_itemtypecode(packed.itemid) }}" data-lotserial="{{ packed.lotserial }}">
+					<span class="badge badge-secondary">{{ packed.itemid }}</span>
+				</a>
+				<br>
+				Serial: <b>{{ packed.lotserial }}</b>
+			{% else %}
+				<a href="#" class="choose-item" data-itemid="{{ packed.itemID }}" data-linenbr="{{ packed.linenumber }}" data-itemtype="{{ warehousepacking.get_itemtypecode(packed.itemid) }}" data-lotserial="{{ packed.lotserial }}">
+					<span class="badge badge-secondary">{{ packed.itemid }}</span>
+				</a>
+			{% endif %}
+			<br>
+			{{  warehousepacking.get_packitemdescription(packed.linenumber) }}
+		</div>
+		<div class="col-sm-2">
+			{% if packed.is_item_serialized() %}
+				{{ packed.qty }}
+			{% else %}
+				<form action="{{ page.fullURL.getUrl() }}" method="post">
+					<input type="hidden" name="action" value="edit-barcode">
+					<input type="hidden" name="linenbr" value="{{ packed.linenumber }}">
+					<input type="hidden" name="carton" value="{{ packed.carton }}">
+					<input type="hidden" name="recordnbr" value="{{ packed.recordnumber }}">
+					<div class="placard" data-initialize="placard">
+						<div class="placard-popup"></div>
+						<input type="number" name="qty" class="form-control qty placard-field" value="{{ packed.qty }}">
+						<div class="placard-footer">
+							<a class="placard-cancel" href="#">Cancel</a>
+							<button class="btn btn-success btn-sm placard-accept" type="button">Save</button>
+						</div>
+					</div>
+				</form>
+			{% endif %}
+		</div>
+		<div class="col-sm-1 text-right">{{ warehousepacking.get_line_qtytoship(packed.linenumber) }}</div>
+		<div class="col-sm-1 text-right">
+			{{ warehousepacking.get_line_qtypacked(packed.linenumber) }}
+		</div>
+		<div class="col-sm-1 text-right">{{ warehousepacking.get_line_qtyremaining(packed.linenumber) }}</div>
+		<div class="col-sm-2 text-center">
+			<form action="{{ page.fullURL.getUrl() }}" method="post">
+				<input type="hidden" name="action" value="delete-barcode">
+				<input type="hidden" name="linenbr" value="{{ packed.linenumber }}">
+				<input type="hidden" name="recordnbr" value="{{ packed.recordnumber }}">
+				<input type="hidden" name="carton" value="{{ packed.carton }}">
+				<button type="submit" class="btn btn-danger btn-sm" type="button">
+					<i class="fa fa-trash" aria-hidden="true"></i> Remove
+				</button>
+			</form>
+		</div>
+	</div>
+</div>

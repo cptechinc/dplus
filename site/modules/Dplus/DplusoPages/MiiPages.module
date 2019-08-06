@@ -456,7 +456,6 @@
 				$url->query->set('page', $p->fullURL->getUrl());
 				$event->return = $url->getUrl();
 			});
-
 			$this->addHook('Page::get_itempurchaseordersURL', function($event) {
 				$p = $event->object;
 				$itemID = $event->arguments(0);

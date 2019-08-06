@@ -1,11 +1,11 @@
 <?php
 	include_once('./ii-include.php');
+	$html = $modules->get('HtmlWriter');
 
 	if ($itemquery->count()) {
 		$page->title = "$itemID Documents";
-
 		$document_management = $modules->get('DocumentManagement');
-		$documents = $document_management->get_itemdocuments($itemID);
+		$html = $modules->get('HtmlWriter');
 
 		if ($input->get->document && $input->get->folder) {
 			$folder = $input->get->text('folder');
@@ -17,25 +17,46 @@
 			}
 		}
 
-		$page->body .= $config->twig->render('items/ii/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'itemID' => $itemID]);
+		$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID]);
 
+		if ($input->get->folder) {
+			$folder = $input->get->text('folder');
 
-		// JSON FORMAT
-		// $module_json = $modules->get('JsonDataFiles');
-		// $json = $module_json->get_file(session_id(), $page->jsoncode);
-		// if ($module_json->file_exists(session_id(), $page->jsoncode)) {
-		// 	$session->documentstry = 0;
-		// 	$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID]);
-		// 	$page->body .= $config->twig->render('items/ii/documents/documents.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json]);
-		// } else {
-		// 	if ($session->documentstry > 3) {
-		// 		$page->headline = $page->title = "Documents File could not be loaded";
-		// 		$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
-		// 	} else {
-		// 		$session->documentstry++;
-		// 		$session->redirect($page->get_itemdocumentsURL($itemID));
-		// 	}
-		// }
+			switch ($folder) {
+				case 'SO':
+					$ordn = SalesOrder::get_paddedordernumber($input->get->text('ordn'));
+					$page->title = "Sales Order #$ordn Documents";
+
+					if (SalesOrderQuery::create()->filterByOrderNumber($ordn)->count()) {
+						$documents = $document_management->get_salesorderdocuments($ordn);
+					} else {
+						$documents = array();
+					}
+
+					$href = $pages->get('pw_template=ii-sales-orders')->url."?itemID=$itemID";
+					$page->body .= $html->div('class=mb-3', $html->a("href=$href|class=btn btn-secondary", $html->icon('fa fa-arrow-left') . " Back to Item Sales Orders"));
+					$page->body .= $config->twig->render('items/ii/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'itemID' => $itemID]);
+					break;
+				case 'AR':
+					$ordn = SalesOrder::get_paddedordernumber($input->get->text('ordn'));
+					$date = $input->get->text('date');
+					$page->title = "Sales Order #$ordn Documents";
+
+					if (SalesHistoryQuery::create()->filterByOrderNumber($ordn)->count()) {
+						$documents = $document_management->get_saleshistorydocuments($ordn);
+					} else {
+						$documents = array();
+					}
+
+					$href = $pages->get('pw_template=ii-sales-history')->url."?itemID=$itemID&date=$date";
+					$page->body .= $html->div('class=mb-3', $html->a("href=$href|class=btn btn-secondary", $html->icon('fa fa-arrow-left') . " Back to Item Sales History"));
+					$page->body .= $config->twig->render('items/ii/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'itemID' => $itemID]);
+					break;
+			}
+		} else {
+			$documents = $document_management->get_itemdocuments($itemID);
+			$page->body .= $config->twig->render('items/ii/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'itemID' => $itemID]);
+		}
 	}
 
 	if ($page->print) {

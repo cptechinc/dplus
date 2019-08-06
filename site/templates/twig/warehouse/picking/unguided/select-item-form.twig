@@ -35,7 +35,16 @@
 		</div>
 
 		<div>
-			<h3>Picked Items</h3>
+			<div class="row">
+				<div class="col">
+					<h3>Picked Items</h3>
+				</div>
+				<div class="col text-right">
+					<a href="{{ page.get_printlinelabelURL(pickingsession.get_ordn(), 'ALL') }}" class="btn btn-dark">
+						<i class="fa fa-print" aria-hidden="true"></i> Print Labels for All Picked
+					</a>
+				</div>
+			</div>
 			<div class="list-group">
 				{% for item in items_picked %}
 					<div class="list-group-item">
@@ -51,12 +60,17 @@
 							</div>
 							<div class="col-sm-3 text-right">
 								{% if pickingsession.is_line_being_picked(item) %}
-									{% if pickingsession.is_currentuser_picking(item) %}
-										<span class="badge badge-info">You are picking</span>
-									{% else %}
-										<span class="badge badge-warning">Is being picked</span>
-									{% endif %}
+									<div class="mb-2">
+										{% if pickingsession.is_currentuser_picking(item) %}
+											<span class="badge badge-info">You are picking</span>
+										{% else %}
+											<span class="badge badge-warning">Is being picked</span>
+										{% endif %}
+									</div>
 								{% endif %}
+								<a href="{{ page.get_printlinelabelURL(item.ordn, item.linenbr) }}" class="btn btn-dark">
+									<i class="fa fa-print" aria-hidden="true"></i> Print Labels
+								</a>
 							</div>
 						</div>
 					</div>

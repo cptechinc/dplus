@@ -49,7 +49,7 @@
 					Current Finance Charge
 				</div>
 				<div class="col-sm-6 text-right">
-					$ {{ customer.financecharge|number_format(2, '.', ',') }}
+					$ {{ customer.financecharge|currency }}
 				</div>
 			</div>
 		</li>

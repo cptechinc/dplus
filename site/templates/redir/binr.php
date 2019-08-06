@@ -8,6 +8,47 @@
 	$filename  = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();
 	$sessionID = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();
 
+	/**
+	* BINR REDIRECT
+	* NOTE uses whseman.log
+	*
+	* switch ($action) {
+	* 	case 'inventory-search':
+	* 		Request Inventory on a seach query (itemid, lotserial)
+	* 		Response: invsearch records
+	*		DBNAME=$dplusdb
+	*		INVSEARCH
+	*		QUERY=$q
+	*		break;
+	*	case 'search-item-bins':
+	*		Request Bins that Item is in
+	*		Response: Bininfo Records with Bins that contain this item
+	*		DBNAME=$dplusdb
+	*		BININFO
+	*		ITEMID=$itemID
+	*		break;
+	*	case 'bin-reassign':
+	*		Request Item Bin Reassignment
+	*		Response: Whsesession Record has status of BINR
+	*		DBNAME=$dplusdb
+	*		BINR
+	*		ITEMID=$itemID
+	*		** SERIALNBR=$serialnbr | LOTNBR=$lotnbr
+	*		QTY=$qty
+	*		FROMBIN=$frombin
+	*		TOBIN=$tobin
+	*		break;
+	*	case 'move-contents':
+	*		Request Bin Contents to be Reassigned to another Bin
+	*		Response: Whsesession Record has status of BINR
+	*		DBNAME=$dplusdb
+	*		MOVEBIN
+	*		FROMBIN=$frombin
+	*		TOBIN=$tobin
+	*		break
+	* }
+	**/
+
 	switch ($action) {
 		case 'inventory-search':
 			$q = strtoupper($input->$requestmethod->text('scan'));

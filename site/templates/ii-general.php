@@ -19,9 +19,8 @@
 			$returntop = $html->div('class=text-right', $html->a('href=#general-nav|class=link h5', "Back to the top ".$html->icon('fa fa-arrow-circle-o-up', '')));;
 
 			$session->generaltry = 0;
-			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID]);
-
-			$page->body .= $config->twig->render('items/ii/general/links.twig', ['page' => $page, 'itemID' => $itemID]);
+			$refreshurl = $page->get_itemgeneralURL($itemID);
+			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), 'ii-misc'), 'refreshurl' => $refreshurl]);
 
 			if ($module_json->file_exists(session_id(), 'ii-usage')) {
 				$page->body .= $html->h3('id=usage|class=info-heading', 'Sales Usage');
