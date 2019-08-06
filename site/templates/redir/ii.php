@@ -252,6 +252,26 @@
 				$session->loc = $url;
 			}
 			break;
+		case 'ii-quotes':
+			$data = array("DBNAME=$dplusdb", 'IIQUOTE', "ITEMID=$itemID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = $pages->get('pw_template=ii-quotes')->httpUrl."?itemID=$itemID";
+				$session->loc = $url;
+			}
+			break;
+		case 'ii-purchase-orders':
+			$data = array("DBNAME=$dplusdb", 'IIPURCHORDR', "ITEMID=$itemID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = $pages->get('pw_template=ii-purchase-orders')->httpUrl."?itemID=$itemID";
+				$session->loc = $url;
+			}
+			break;
 	}
 
 	if (!empty($data)) {

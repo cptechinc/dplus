@@ -25,10 +25,13 @@
 				'misc'       => 'iimisc',
 				'notes'      => 'iinotes',
 				'documents'  => 'docview',
-				'quotes'     => 'iiquote',
+				'quotes' => 'iiquote',
 				'sales' => array(
 					'orders' => 'iisalesordr',
 					'history' => 'iisaleshist'
+				),
+				'purchase' => array(
+					'orders' => 'iipurchordr'
 				)
 			)
 		);

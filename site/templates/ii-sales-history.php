@@ -11,11 +11,11 @@
 			$json = $module_json->get_file(session_id(), $page->jsoncode);
 
 			if ($module_json->file_exists(session_id(), $page->jsoncode)) {
-				$session->salesorderstry = 0;
+				$session->saleshistorytry = 0;
 				$module_formatter = $modules->get('IiSalesHistory');
 				$module_formatter->init_formatter();
+        
 				$document_management = $modules->get('DocumentManagement');
-
 				$refreshurl = $page->get_itemsaleshistoryURL($itemID, $date);
 				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 				$page->body .= $config->twig->render('items/ii/sales-history/sales-history.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
