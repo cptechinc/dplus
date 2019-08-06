@@ -1,5 +1,10 @@
-<?php namespace ProcessWire;
+<?php
+	namespace ProcessWire;
+
 	require_once(__DIR__ . '/DplusoPages.module');
+
+	use Purl\Url;
+	use SalesOrder, SalesOrderQuery;
 
 	class DplusoPagesSalesOrder extends DplusoPages implements Module {
 
@@ -84,6 +89,8 @@
 			),
 		);
 
+		const USERPERM_SALESORDERS_EDIT = 'eso';
+
 		public static function getModuleInfo() {
 			return array(
 				'title' => 'Dpluso Sales Order Pages',
@@ -92,5 +99,100 @@
 				'singular' => true,
 				'autoload' => true,
 			);
+		}
+
+		public function init_salesorder_hooks() {
+			/**
+			 * Adds self::can_user_editorder() as User hook
+			 * @uses self::can_user_editorder()
+			 */
+			$this->addHook('User::can_editorder', function($event) {
+				$user = $event->object;
+				$order = $event->arguments(0);
+				$event->return = $this->can_user_editorder($user, $order);
+			});
+
+			/**
+			 * Adds self::is_user_editingorder() as User hook
+			 * @uses self::is_user_editingorder()
+			 */
+			$this->addHook('User::is_editingorder', function($event) {
+				$user = $event->object;
+				$order = $event->arguments(0);
+				$event->return = $this->is_user_editingorder($user, $order);
+			});
+
+			/**
+			 * Adds self::is_user_editingorder() as User hook
+			 * @uses self::is_user_editingorder()
+			 */
+			$this->addHook('Page::remove_itemURL', function($event) {
+				$p = $event->object;
+				$ordn = $event->arguments(0);
+				$linenbr = $event->arguments(1);
+				$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
+				$url->query->set('action', 'remove-line');
+				$url->query->set('ordn', $ordn);
+				$url->query->set('linenbr', $linenbr);
+				$event->return = $url->getUrl();
+			});
+
+			/**
+			 * Returns Edit Sales Order Page URL
+			 */
+			$this->addHook('Page::edit_orderURL', function($event) {
+				$p = $event->object;
+				$ordn = $event->arguments(0);
+				$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
+				$url->query->set('action', 'get-order-edit');
+				$url->query->set('ordn', $ordn);
+				$event->return = $url->getUrl();
+			});
+
+			/**
+			 * Returns Sales Order Page URL
+			 */
+			$this->addHook('Page::view_orderURL', function($event) {
+				$ordn = $event->arguments(0);
+				$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
+				$url->query->set('action', 'unlock-order');
+				$url->query->set('ordn', $ordn);
+				$event->return = $url->getUrl();
+			});
+		}
+
+		/**
+		 * Return if User can edit Sales Order
+		 * @param  User              $user  User
+		 * @param  SalesOrder|string $order Sales Order
+		 * @return bool                     Can User Edit Sales Order?
+		 */
+		public function can_user_editorder(User $user, $order) {
+			if (get_class($order) != 'SalesOrder') {
+				$order = SalesOrderQuery::create()->findOneByOrderNumber($order);
+			}
+
+			$config_orders = $this->wire('modules')->get('SalesOrdersConfig');
+			$canedit = false;
+
+			if ($config_orders->allow_salesorderedit) {
+				if ($order->is_editable() && $user->has_function(self::USERPERM_SALESORDERS_EDIT)) {
+					$canedit = true;
+				}
+			}
+			return $canedit;
+		}
+
+		/**
+		 * Return if User is editing Sales Order
+		 * @param  User       $user  User
+		 * @param  SalesOrder|string $order Sales Order
+		 * @return bool              IS User is editing Sales Order?
+		 */
+		public function is_user_editingorder(User $user, $order) {
+			if (get_class($order) != 'SalesOrder') {
+				$order = SalesOrderQuery::create()->findOneByOrderNumber($order);
+			}
+			return $order->heldby == $user->loginid;
 		}
 	}

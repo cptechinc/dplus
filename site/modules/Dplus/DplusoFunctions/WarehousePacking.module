@@ -1,5 +1,5 @@
 <?php namespace ProcessWire;
-
+use Map\QnoteTableMap;
 use Purl\Url;
 
 use WhseitempackQuery, Whseitempack;
@@ -8,6 +8,8 @@ use WhsesessionQuery, Whsesession;
 use WarehouseQuery, Warehouse;
 use WarehouseInventoryQuery, WarehouseInventory;
 use QnoteQuery, Qnote;
+use InvsearchQuery, Invsearch;
+use ItemMasterItemQuery, ItemMasterItem;
 
 class WarehousePacking extends WireData implements Module {
 	/**
@@ -62,27 +64,47 @@ class WarehousePacking extends WireData implements Module {
 	public function init() {
 		$this->session = $this->wire('session');
 		$this->config = new WireData();
-		//$this->config->inventory = $this->wire('modules')->get('WarehouseInventoryConfig');
+		$this->config->inventory = $this->wire('modules')->get('WarehouseInventoryConfig');
 		//$this->config->picking   = $this->wire('modules')->get('WarehousePickingConfig');
-		//$
-		$this->addHook('Page::get_packlineURL', function($event) {
+
+		$this->addHook('Page::get_addboxURL', function($event) {
 			$p = $event->object;
 			$linenbr = $event->arguments(0);
 
 			$url = new Url($p->fullURL->getUrl());
-			$url->query->set('linenbr', $linenbr);
+			$url->query->set('action', 'add-box');
 			$event->return = $url->getUrl();
 		});
 
-		$this->addHook('Page::get_addcartonURL', function($event) {
+		$this->addHook('Page::get_orderURL', function($event) {
 			$p = $event->object;
-			$linenbr = $event->arguments(0);
-
 			$url = new Url($p->fullURL->getUrl());
-			$url->query->set('action', 'add-carton');
+			$url->path = $p->child('template=redir')->url;
+			$url->query->remove('box');
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_redirURL', function($event) {
+			$p = $event->object;
+			$url = new Url($p->fullURL->getUrl());
+			$url->path = $p->child('template=redir')->url;
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_finishpackURL', function($event) {
+			$p = $event->object;
+			$ordn = $event->arguments(0);
+			$url = new Url($p->fullURL->getUrl());
+			$url->path = $p->child('template=redir')->url;
+			$url->query->set('action', 'finish-pack');
+			$url->query->set('ordn', $ordn);
 			$event->return = $url->getUrl();
 		});
 	}
+
+	/* =============================================================
+		Module Getter / Setter Functions
+	============================================================= */
 
 	/**
 	 * Sets Session ID
@@ -101,6 +123,40 @@ class WarehousePacking extends WireData implements Module {
 	}
 
 	/**
+	 * Returns Ordn
+	 * @return string
+	 */
+	public function get_ordn() {
+		return $this->ordn;
+	}
+
+	/**
+	 * Returns if Error had been saved to the $session property
+	 * @return bool Does Session have Pack Error?
+	 */
+	public function has_error() {
+		return strlen($this->session->packerror);
+	}
+
+	/**
+	 * Returns Error Message
+	 * @return string Error Message
+	 */
+	public function get_error() {
+		return $this->session->packerror;
+	}
+
+/* =============================================================
+	Order Functions
+============================================================= */
+	/**
+	 * Returns URL for Sales Order Packing
+	 * @return string Sales Order Packing URL
+	 */
+	public function get_orderURL() {
+		return $this->wire('page')->url . "?ordn=$this->ordn";
+	}
+	 /**
 	 * Return the number of Qnote objects based fitlered by Session ID, Order Number, Line Number and Show on Pack
 	 * @return int
 	 */
@@ -110,66 +166,49 @@ class WarehousePacking extends WireData implements Module {
 
 	/**
 	 * Return Qnote objects based fitlered by Session ID, Order Number, Line Number and Show on Pack
-	 * @return ChildQnote[]|ObjectCollection
+	 * @return Qnote[]|ObjectCollection
 	 */
 	public function get_packingnotes() {
 		return QnoteQuery::create()->filterBySessionidOrdernbrLinenbr($this->sessionID, $this->ordn)->filterByShowSalesOrderPack()->find();
 	}
 
+	/**
+	 * Returns the number of Sales Order Detail Lines to Pack
+	 * @return int
+	 */
 	public function count_packsalesorderdetails() {
 		return PackSalesOrderDetailQuery::create()->countBySessionidOrder($this->sessionID, $this->ordn);
 	}
 
 	/**
-	 * Returns PackSalesOrderDetail for this session, order, line
-	 * @return PackSalesOrderDetail
+	 * Returns PackSalesOrderDetails for this session, order, line
+	 * @return PackSalesOrderDetail[]|ObjectCollection
 	 */
 	public function get_packsalesorderdetails() {
 		return PackSalesOrderDetailQuery::create()->findBySessionidOrderGrouped($this->sessionID, $this->ordn);
 	}
 
 	/**
-	 * Return Sales Order Details that are unpacked
-	 * @return PackSalesOrderDetail[]|ObjectCollection
+	 * Return Whseitempack objects filtered by the sessionid, ordn columns
+	 * @return Whseitempack[]|ObjectCollection
 	 */
-	public function get_packsalesorderdetails_unpacked() {
-		return PackSalesOrderDetailQuery::create()->findBySessionidOrderGroupedUnpacked($this->sessionID, $this->ordn);
+	public function get_packeditems() {
+		$query = WhseitempackQuery::create();
+		$query->filterBySessionidOrder($this->sessionID, $this->ordn);
+		$query->groupBy(array('Carton', 'Linenumber', 'Lotserial'));
+		return $query->find();
 	}
 
-	/**
-	 * Return Sales Order Details that are packed
-	 * @return PackSalesOrderDetail[]|ObjectCollection
-	 */
-	public function get_packsalesorderdetails_packed() {
-		return PackSalesOrderDetailQuery::create()->findBySessionidOrderGroupedPacked($this->sessionID, $this->ordn);
-	}
-
-	/**
-	 * Update PackSalesOrderDetail with qty packed
-	 */
-	public function init_packsalesorderdetail_line($linenbr) {
-		$packitem = $this->get_packsalesorderdetail_line($linenbr);
-		$qty_packed = WhseitempackQuery::create()->get_orderline_qty($this->sessionID, $this->ordn, $linenbr);
-		$packitem->setQtypacked($qty_packed);
-		$packitem->setQtyremaining($packitem->qty_toship - $packitem->qty_packed);
-		$packitem->save();
-	}
-
-	/**
-	 * Return Sales Order Detail line
-	 * @return PackSalesOrderDetail[]|ObjectCollection
-	 */
-	public function get_packsalesorderdetail_line($linenbr) {
-		return PackSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr($this->sessionID, $this->ordn, $linenbr);
-	}
-
+/* =============================================================
+	Detail Line Functions
+============================================================= */
 	/**
 	 * Return Qty to ship for Line
 	 * @param  int $linenbr Line Number
 	 * @return int          Qty to ship
 	 */
 	public function get_line_qtytoship($linenbr) {
-		return PackSalesOrderDetailQuery::create()->get_line_qtytoship($this->sessionID, $this->ordn, $linenbr);
+		return intval(PackSalesOrderDetailQuery::create()->get_line_qtytoship($this->sessionID, $this->ordn, $linenbr));
 	}
 
 	/**
@@ -178,7 +217,8 @@ class WarehousePacking extends WireData implements Module {
 	 * @return int          Qty packed
 	 */
 	public function get_line_qtypacked($linenbr) {
-		return PackSalesOrderDetailQuery::create()->get_line_qtypacked($this->sessionID, $this->ordn, $linenbr);
+		$query = WhseitempackQuery::create();
+		return intval($query->get_orderline_qty($this->sessionID, $this->ordn, $linenbr));
 	}
 
 	/**
@@ -187,7 +227,22 @@ class WarehousePacking extends WireData implements Module {
 	 * @return int          Qty remaining
 	 */
 	public function get_line_qtyremaining($linenbr) {
-		return PackSalesOrderDetailQuery::create()->get_line_qtyremaining($this->sessionID, $this->ordn, $linenbr);
+		$to_ship = $this->get_line_qtytoship($linenbr);
+		$qty_packed = $this->get_line_qtypacked($linenbr);
+		return $to_ship - $qty_packed;
+	}
+
+	/**
+	 * Return Description of PackSalesOrderDetail
+	 * @param  int    $linenbr  Line Number
+	 * @return string           Description
+	 */
+	public function get_packitemdescription($linenbr) {
+		$query = PackSalesOrderDetailQuery::create();
+		$query->select('Desc1');
+		$query->filterBySessionidOrder($this->sessionID, $this->ordn);
+		$query->filterByLinenbr($linenbr);
+		return $query->findOne();
 	}
 
 	/**
@@ -216,11 +271,42 @@ class WarehousePacking extends WireData implements Module {
 	}
 
 	/**
+	 * Return Itemtype for Item ID
+	 * @param  string $itemID Item ID
+	 * @return string         Item Type Code
+	 */
+	public function get_itemtypecode($itemID) {
+		return ItemMasterItemQuery::create()->get_itemtype($itemID);
+	}
+
+	/**
 	 * Initiates current Session's cartoncount value
+	 * Gets the carton count from Whseitempack table, by getting MAX(carton)
+	 * if not then start at 1
 	 * @return void
 	 */
 	public function init_cartoncount() {
-		$this->wire('session')->cartoncount = $this->wire('session')->get('cartoncount') ? $this->wire('session')->cartoncount : 1;
+		if (!$this->wire('session')->cartoncount) {
+			$count = WhseitempackQuery::create()->get_maxcarton($this->sessionID, $this->ordn);
+			$count = !empty($count) ? $count : 1;
+			$this->wire('session')->cartoncount = $count;
+		}
+
+	}
+
+	/**
+	 * Sends HTTP GET request to save the box
+	 * @param  int    $box Box Number
+	 * @return void
+	 */
+	public function send_savepackboxrequest($box = 1) {
+		$http = new WireHttp();
+		$url = new Url($this->wire('pages')->get('pw_template=whse-packing')->child('template=redir')->url);
+		$url->query->set('action', 'save-packing-box');
+		$url->query->set('sessionID', $this->sessionID);
+		$url->query->set('ordn', $this->ordn);
+		$url->query->set('box', $box);
+		$http->get('127.0.0.1'.$url->getUrl());
 	}
 
 	/**
@@ -239,19 +325,22 @@ class WarehousePacking extends WireData implements Module {
 					break;
 				case 'edit-barcode':
 					$this->edit_barcode_qty($input);
+					$this->send_savepackboxrequest($input->post->int('carton'));
 					break;
 				case 'delete-barcode':
 					$this->delete_barcode_qty($input);
+					$this->send_savepackboxrequest($input->post->int('carton'));
 					break;
 			}
 		} else {
 			$action = $input->get->text('action');
 
 			switch ($action) {
-				case 'add-carton':
+				case 'add-box':
 					$this->wire('session')->cartoncount++;
 					$this->wire('page')->fullURL->query->remove('action');
-					$this->wire('page')->fullURL->query->set('carton', $this->wire('session')->cartoncount);
+					$this->wire('page')->fullURL->query->remove('box');
+					//$this->wire('page')->fullURL->query->set('box', $this->wire('session')->cartoncount);
 					break;
 			}
 		}
@@ -262,21 +351,135 @@ class WarehousePacking extends WireData implements Module {
 	 * @param WireInput $input
 	 */
 	public function add_barcode(WireInput $input) {
-		$packing_master = WhseitempackQuery::create();
-		$linenbr  = $input->get->int('linenbr');
-		$packitem = $this->get_packsalesorderdetail_line($linenbr);
-		$values = $input->post;
-		$barcode       = $values->text('barcode');
-		$carton        = $values->int('carton');
-		$qty           = $values->int('qty');
+		$is_valid = false;
+		$values  = $input->post;
+		$barcode = $values->text('barcode');
 
-		$item = new Whseitempack();
-		$item->setSessionid($packitem->sessionid);
-		$item->setOrdn($packitem->ordn);
-		$item->setItemid($packitem->itemid);
-		$item->setRecordnumber($packing_master->get_max_orderline_recordnumber($packitem->sessionid, $packitem->ordn, $packitem->linenbr) + 1);
-		$item->setCarton($carton);
-		$item->setLinenumber($packitem->linenbr);
+		$packquery = PackSalesOrderDetailQuery::create()->filterBySessionidOrder($this->sessionID, $this->ordn);
+
+		// ADD BARCODE / ITEM LOOKUP
+		$invquery = InvsearchQuery::create();
+		$invquery->filterBySessionid($this->sessionID);
+
+		// SEE IF SCAN CAN BE FOUND ON ITEMID OR LOTSERIAL
+		$invquery->where('Invsearch.Itemid = ?', $barcode)->_or()->where('Invsearch.Lotserial LIKE ?', $barcode);
+
+		if ($invquery->count()) {
+			$invitem = $invquery->findOne();
+
+			if ($values->linenbr) {
+				$packquery->filterByLinenbr($values->int('linenbr'));
+			}
+			$packquery->filterByItemid($invitem->itemid);
+
+			if ($packquery->count()) {
+				$is_valid = false;
+				$packline = $packquery->findOne();
+				$is_valid = $this->validate_canpack($packline, $invitem, $input);
+
+				if ($is_valid) {
+					$this->add_whseitempack($packline, $input);
+					$this->send_savepackboxrequest($input->post->int('carton'));
+				}
+			} else {
+				$this->session->packerror = "Scan: $barcode doesn't match anything for any items on this order";
+			}
+		} else {
+			if ($values->int('linenbr') <= $packquery->count()) {
+				$linenbr = $values->int('linenbr');
+				$packquery->filterByLinenbr($values->int('linenbr'));
+				$packline = $packquery->findOne();
+
+				if ($packline->is_item_nonstock() && $values->text('barcode') == 'N') {
+					$this->add_whseitempack($packline, $input);
+					$this->send_savepackboxrequest($input->post->int('carton'));
+				} else {
+					$this->session->packerror = "Scan: $barcode doesn't match anything for Line $linenbr ($packline->itemid)";
+				}
+			} else {
+				$this->session->packerror = "Scan: $barcode doesn't match anything for any items in this order";
+			}
+		}
+	}
+
+	/**
+	 * Returns if $input can be packed
+	 *
+	 * Validates using Inventory, SerialNbr Lookup
+	 * @param  PackSalesOrderDetail $packitem Detail Line that is to be packed
+	 * @param  Invsearch            $invitem  Inventory Item
+	 * @param  WireInput            $input    Input values
+	 * @return bool                           Can Item be packed?
+	 */
+	public function validate_canpack(PackSalesOrderDetail $packitem, Invsearch $invitem, WireInput $input) {
+		$values  = $input->post;
+		$is_valid = false;
+
+		if ($this->config->inventory->allow_negativeinventory) {
+			$is_valid = true;
+		} else { // VALIDATE INVENTORY
+			$inventoryquery = InvsearchQuery::create();
+			$packbinqty = $inventoryquery->get_binqty($this->sessionID, $invitem, 'PACK');
+
+			if ($packbinqty < $values->qty) {
+				$is_valid = false;
+				$this->session->packerror = "PACK bin only has $packbinqty, you tried to add $values->qty of " . $invitem->get_itemidentifier();
+			}
+		}
+
+		if ($packitem->is_item_serialized()) {
+			$serialnbr = $values->text('barcode');
+			$query = WhseitempackQuery::create();
+			$query->filterBySessionidOrder($this->sessionID, $this->ordn);
+			$query->filterByLotserial($serialnbr);
+
+			if ($query->count() > 0) {
+				$is_valid = false;
+				$this->session->packerror = "$serialnbr has already been packed for Line $packitem->linenbr ($packitem->itemid)";
+			}
+		}
+		return $is_valid;
+	}
+
+	/**
+	 * Adds WhseItemPack record for PackSalesOrderDetail line
+	 * @param PackSalesOrderDetail $packitem Detail Line that is to be packed
+	 * @param WireInput            $input    Input values e.g. carton, qty, barcode
+	 */
+	public function add_whseitempack(PackSalesOrderDetail $packitem, WireInput $input) {
+		$packing_master = WhseitempackQuery::create();
+
+		$values  = $input->post;
+		$barcode = $values->text('barcode');
+		$carton  = $values->int('carton');
+		$qty     = $values->int('qty');
+		$found_pack = false;
+
+		if ($packitem->is_item_serialized() || $packitem->is_item_lotted()) {
+			$found_pack = $packing_master->filterBySessionidOrderLinenbr($packitem->sessionid, $packitem->ordn, $packitem->linenbr)->filterByCarton($carton)->filterByLotserial($barcode)->count();
+			$item = $packing_master->filterBySessionidOrderLinenbr($packitem->sessionid, $packitem->ordn, $packitem->linenbr)->filterByCarton($carton)->filterByLotserial($barcode)->findOne();
+
+			if ($packitem->is_item_serialized()) {
+				$qty = 1;
+			} else {
+				$qty = $qty + $item->qty;
+			}
+		} else {
+			$found_pack = $item = $packing_master->filterBySessionidOrderLinenbr($packitem->sessionid, $packitem->ordn, $packitem->linenbr)->filterByCarton($carton)->count();
+			$item = $packing_master->filterBySessionidOrderLinenbr($packitem->sessionid, $packitem->ordn, $packitem->linenbr)->filterByCarton($carton)->findOne();
+			$qty = $qty + $item->qty;
+		}
+
+		if (!$found_pack) {
+			$item = new Whseitempack();
+			$item->setSessionid($packitem->sessionid);
+			$item->setOrdn($packitem->ordn);
+			$item->setItemid($packitem->itemid);
+			$item->setRecordnumber($packing_master->get_max_carton_recordnumber($packitem->sessionid, $packitem->ordn, $carton) + 1);
+			$item->setCarton($carton);
+			$item->setLinenumber($packitem->linenbr);
+		}
+
 		$item->setQty($qty);
 
 		if ($packitem->is_item_serialized() || $packitem->is_item_lotted()) {
@@ -291,14 +494,36 @@ class WarehousePacking extends WireData implements Module {
 	 * @param  WireInput $input Values for barcode, record, qty
 	 * @return void
 	 */
-	public function delete_barcode_qty(WireInput $input) {
+	public function edit_barcode_qty(WireInput $input) {
 		$values = $input->post;
-		$linenbr   = $input->get->int('linenbr');
-		$barcode   = $values->text('barcode');
+		$linenbr   = $values->int('linenbr');
 		$recordnbr = $values->int('recordnbr');
+		$carton    = $values->int('carton');
+		$qty       = $values->int('qty');
 
 		$packing_master = WhseitempackQuery::create();
-		$item = $packing_master->findOneBySessionidOrdnLinenbrRecordnumber($this->sessionID, $this->ordn, $linenbr, $recordnbr);
+		$packing_master->filterBySessionidOrdnLinenbrRecordnumber($this->sessionID, $this->ordn, $linenbr, $recordnbr);
+		$packing_master->filterByCarton($carton);
+		$item = $packing_master->findOne();
+		$item->setQty($qty);
+		$item->save();
+	}
+
+	/**
+	 * Deletes an Whseitempack record
+	 * @param  WireInput $input Values for barcode, record, qty
+	 * @return void
+	 */
+	public function delete_barcode_qty(WireInput $input) {
+		$values = $input->post;
+		$linenbr   = $values->int('linenbr');
+		$recordnbr = $values->int('recordnbr');
+		$carton    = $values->int('carton');
+
+		$packing_master = WhseitempackQuery::create();
+		$packing_master->filterBySessionidOrdnLinenbrRecordnumber($this->sessionID, $this->ordn, $linenbr, $recordnbr);
+		$packing_master->filterByCarton($carton);
+		$item = $packing_master->findOne();
 		$item->delete();
 	}
 }

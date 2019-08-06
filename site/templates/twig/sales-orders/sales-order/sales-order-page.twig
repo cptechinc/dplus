@@ -2,9 +2,8 @@
 	<div class="row">
 		<div class="col">
 			<a href="{{ page.listpage.url }}" class="btn btn-light">
-				<i class="fa fa-list" aria-hidden="true"></i> View Sales History List
+				<i class="fa fa-list" aria-hidden="true"></i> Back to Sales Orders List
 			</a>
-			&nbsp; &nbsp;
 			<a href="#" class="btn btn-light" aria-label="Return to last page" onclick="window.history.back();">
 				<i class="fa fa-undo" aria-hidden="true"></i> Go back
 			</a>
@@ -30,15 +29,29 @@
 					<i class="fa fa-file-text fa-2x text-light" aria-hidden="true"></i>
 				</span>
 			{% endif %}
+			<!-- TODO: need if statement for notes -->
+			{% if notes %}
+				<a href="#notes" title="View Notes" aria-label="View Notes">
+					<i class="fa fa-sticky-note-o fa-2x" aria-hidden="true"></i>
+				</a>
+			{% else %}
+				<span title="View Notes" aria-label="View Notes">
+					<i class="fa fa-sticky-note-o fa-2x text-light" aria-hidden="true"></i>
+				</span>
+			{% endif %}
 		</div>
 	</div>
-
 </div>
 <div class="row mt-4">
 	<div class="col-sm-4">
-		<legend class="font-weight-bold text-secondary">Billing</legend>
+		<legend class="font-weight-bold text-secondary">Billing ({{ order.custid }})</legend>
 		<address>
-
+			{{ customer.name }} <br>
+			{{ customer.address1 }} <br>
+			{% if customer.address2 %}
+				{{ customer.address2 }} <br>
+			{% endif %}
+			{{ customer.city ~ ', ' ~ customer.state ~ ' ' ~ customer.zip}}
 		</address>
 	</div>
 	<div class="col-sm-4">
@@ -46,7 +59,9 @@
 		<address>
 			{{ order.shipto_name }} <br>
 			{{ order.shipto_address1 }} <br>
-			{{ order.shipto_address2 ? order.shipto_address2 ~ "<br>" : ''}}
+			{% if (order.shipto_address2) %}
+				{{ order.shipto_address2 }} <br>
+			{% endif %}
 			{{ order.shipto_city ~ ', ' ~ order.shipto_state ~ ' ' ~ order.shipto_zip}}
 		</address>
 	</div>
@@ -62,19 +77,19 @@
 		</div>
 		<div class="row">
 			<div class="col-sm-7">Subtotal:</div>
-			<div class="col-sm-5 text-right">$ {{ order.subtotal_nontax|number_format(2, '.', ',') }}</div>
+			<div class="col-sm-5 text-right">$ {{ order.subtotal_nontax|currency }}</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-7">Shipping:</div>
-			<div class="col-sm-5 text-right">$ {{ order.total_freight|number_format(2, '.', ',') }}</div>
+			<div class="col-sm-5 text-right">$ {{ order.total_freight|currency }}</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-7">Tax:</div>
-			<div class="col-sm-5 text-right">$ {{ order.total_tax|number_format(2, '.', ',') }}</div>
+			<div class="col-sm-5 text-right">$ {{ order.total_tax|currency }}</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-7">Total:</div>
-			<div class="col-sm-5 text-right">$ {{ order.total_total|number_format(2, '.', ',') }}</div>
+			<div class="col-sm-5 text-right">$ {{ order.total_total|currency }}</div>
 		</div>
 	</div>
 </div>
@@ -97,9 +112,14 @@
 					<small>{{ detail.desc1 }}</small>
 				</td>
 				<td class="text-right">{{ detail.qty_ordered|number_format() }}</td>
-				<td class="text-right">$ {{ detail.price|number_format(2, '.', ',') }}</td>
-				<td class="text-right">$ {{ detail.total_price|number_format(2, '.', ',') }}</td>
+				<td class="text-right">{{ detail.price|currency }}</td>
+				<td class="text-right">$ {{ detail.total_price|currency }}</td>
 			</tr>
 		{% endfor %}
 	</tbody>
 </table>
+{% if user.can_editorder(order) %}
+	<a href="{{ page.edit_orderURL(order.ordernumber) }}" class="btn btn-warning btn-block mb-5">
+		Edit Order&ensp;<i class="fa fa-pencil" aria-hidden="true"></i>
+	</a>
+{% endif %}

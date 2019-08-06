@@ -68,6 +68,11 @@
 				'name'   => 'whse-packing',
 				'fields' => array('title'),
 				'paginated' => false
+			),
+			'whse-print-order-item-label' => array(
+				'name'   => 'whse-print-order-item-label',
+				'fields' => array('title'),
+				'paginated' => false
 			)
 		);
 
@@ -148,8 +153,7 @@
 				'summary'        => 'Find Location(s) for an Item',
 				'parent'         => '/warehouse/inventory/',
 				'dplus_function' => 'pfini',
-				'pw_template'    => 'whse-find-item',
-				'has_print'      => true
+				'pw_template'    => 'whse-find-item'
 			),
 			'whse-bin-inquiry' => array(
 				'template'       => 'warehouse-function',
@@ -158,8 +162,7 @@
 				'summary'        => 'Show Items in a bin',
 				'parent'         => '/warehouse/inventory/',
 				'dplus_function' => 'pbini',
-				'pw_template'    => 'whse-bin-inquiry',
-				'has_print'      => true
+				'pw_template'    => 'whse-bin-inquiry'
 			),
 			'whse-binr-contents' => array(
 				'template'       => 'warehouse-function',
@@ -168,8 +171,7 @@
 				'summary'        => 'Show Items in a bin',
 				'parent'         => '/warehouse/binr/',
 				'dplus_function' => 'pmvbn',
-				'pw_template'    => 'whse-binr-contents',
-				'has_print'      => true
+				'pw_template'    => 'whse-binr-contents'
 			),
 			'whse-binr-contents' => array(
 				'template'       => 'warehouse-function',
@@ -178,8 +180,7 @@
 				'summary'        => 'Show Items in a bin',
 				'parent'         => '/warehouse/binr/',
 				'dplus_function' => 'pmvbn',
-				'pw_template'    => 'whse-binr-contents',
-				'has_print'      => true
+				'pw_template'    => 'whse-binr-contents'
 			),
 			'whse-print-item-label' => array(
 				'template'       => 'warehouse-function',
@@ -188,8 +189,7 @@
 				'summary'        => 'Print a Label for a bin Item',
 				'parent'         => '/warehouse/inventory/',
 				'dplus_function' => 'pilbl',
-				'pw_template'    => 'whse-print-item-label',
-				'has_print'      => false
+				'pw_template'    => 'whse-print-item-label'
 			),
 			'menu-pick' => array(
 				'template'       => 'warehouse-menu',
@@ -225,6 +225,15 @@
 				'parent'         => '/warehouse/',
 				'dplus_function' => 'porpp',
 				'pw_template'    => 'whse-packing',
+			),
+			'whse-print-order-item-label' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'order-item',
+				'title'          => 'Print Item Label',
+				'summary'        => 'Print a Label for an Order Item',
+				'parent'         => '/warehouse/inventory/print-item-label/',
+				'dplus_function' => 'pilbl',
+				'pw_template'    => 'whse-print-order-item-label'
 			),
 		);
 
@@ -282,6 +291,18 @@
 				$url->query->set('linenbr',$item->recno);
 				$event->return = $url->getUrl();
 			});
+
+			$this->addHook('Page::get_printlinelabelURL', function($event) {
+				$p = $event->object;
+				$ordn    = $event->arguments(0);
+				$linenbr = $event->arguments(1);
+				$url = new Url($this->wire('pages')->get('pw_template=whse-print-pick-item-label')->url);
+				$url->query->set('ordn', $ordn);
+				$url->query->set('linenbr', $linenbr);
+				$url->query->set('returnpage', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
 		}
 
 		public function init_pickingpacking() {

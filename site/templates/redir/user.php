@@ -10,6 +10,29 @@
 
 	$http = new WireHttp();
 
+
+	/**
+	* User REDIRECT
+	*
+	*
+	* switch ($action) {
+	* 	case 'login':
+	* 		Request Login Authentication for User
+	* 		Response: logperm record
+	*		DBNAME=$dplusdb
+	*		LOGPERM
+	*		LOGINID=$username
+	*		PSWD=$password
+	*		break;
+	*	case 'logout':
+	*		Request Logout
+	*		Response: Removes logperm records and session associated records
+	*		DBNAME=$dplusdb
+	*		LOGOUT
+	*		break
+	* }
+	**/
+
 	switch ($action) {
 		case 'login':
 			if ($input->post->username) {

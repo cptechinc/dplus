@@ -1,16 +1,23 @@
 <?php
+	$config_salesorders = $modules->get('SalesOrdersConfig');
+	$modules->get('DplusoPagesSalesOrder')->init_salesorder_hooks();
+	$http = new ProcessWire\WireHttp();
+
 	if ($input->get->ordn) {
 		$ordn = $input->get->text('ordn');
-		$document_management = $modules->get('DocumentManagement');
 
 		if (SalesOrderQuery::create()->filterByOehdnbr($ordn)->count()) {
-			$order_query = SalesOrderQuery::create();
-			$order_items_query = SalesOrderDetailQuery::create();
-			$order = $order_query->findOneByOehdnbr($ordn);
-			$order_items = $order_items_query->filterByOehdnbr($ordn)->find();
-			$page->title = "Sales Order #$ordn";
+			$order = OrdrhedQuery::create()->findOneBySessionidOrder(session_id(), $ordn);
+			$order_items = OrdrdetQuery::create()->filterBySessionidOrder(session_id(), $ordn)->find();
+			$customer = CustomerQuery::create()->findOneByCustid($order->custid);
+			$page->title = "Editing Sales Order #$ordn";
 			$page->listpage = $pages->get('pw_template=sales-orders');
-			$page->body =  $config->twig->render('sales-orders/sales-order/sales-order-page.twig', ['page' => $page, 'order' => $order, 'order_items' => $order_items, 'document_management' => $document_management]);
+			$page->formurl = $pages->get('template=dplus-menu')->child('template=redir')->url;
+			$page->body =  $config->twig->render('sales-orders/sales-order/edit-sales-order-page.twig', ['page' => $page, 'customer' => $customer, 'order' => $order, 'order_items' => $order_items, 'user' => $user]);
+
+			if ($user->is_editingorder($ordn)) {
+				$config->scripts->append(hash_templatefile('scripts/orders/edit-order.js'));
+			}
 		} elseif (SalesHistoryQuery::create()->filterByOehhnbr($ordn)->count()) {
 			$page->headline = $page->title = "Sales Order #$ordn is not editable";
 			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Sales Order #$ordn is in Sales History"]);
