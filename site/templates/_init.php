@@ -96,6 +96,10 @@ if ($input->get->json) {
 	$config->json = true;
 }
 
+if ($input->get->print) {
+	$page->print = true;
+}
+
 $appconfig = $pages->get('/config/app/');
 $siteconfig = $pages->get('/config/');
 

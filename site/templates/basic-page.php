@@ -12,6 +12,7 @@
 			<ol class="breadcrumb">
 				<?php foreach ($parents as $parent) : ?>
 					<li class="breadcrumb-item">
+						<i class="fa fa-list" aria-hidden="true"></i>
 						<a href="<?= $parent->url; ?>"><?= $parent->title; ?></a>
 					</li>
 				<?php endforeach; ?>

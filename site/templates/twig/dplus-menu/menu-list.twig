@@ -7,21 +7,21 @@
 	{% endif %}
 </div>
 <div class="list-group">
-    {% for item in items %}
-        <a href="{{ item.url }}" class="list-group-item list-group-item-action">
+	{% for item in items %}
+		<a href="{{ item.url }}" class="list-group-item list-group-item-action">
 			<div class="row align-items-center">
-                <div class="col-1 ">
-                    {% if item.template == 'dplus-menu' or item.template == 'warehouse-menu' %}
-                        <i class="fa fa-list fa-2x" aria-hidden="true"></i>
-                    {% else %}
-                        <i class="fa fa-microchip fa-2x" aria-hidden="true"></i>
-                    {% endif %}
-                </div>
-                <div class="col-11">
-                    <p class="h4">{{ item.title|raw }} ({{item.dplus_function}})</p>
-                    {{ item.summary|raw }}
-                </div>
-            </div>
-        </a>
-    {% endfor %}
+				<div class="col-1 ">
+					{% if item.template == 'dplus-menu' or item.template == 'warehouse-menu' %}
+						<i class="fa fa-list fa-2x" aria-hidden="true"></i>
+					{% else %}
+						<i class="fa fa-microchip fa-2x" aria-hidden="true"></i>
+					{% endif %}
+				</div>
+				<div class="col-11">
+					<p class="h4">{{ item.title|raw }} ({{item.dplus_function}})</p>
+					{{ item.summary|raw }}
+				</div>
+			</div>
+		</a>
+	{% endfor %}
 </div>

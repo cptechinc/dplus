@@ -1,0 +1,23 @@
+<h3>Customer Pricing</h3>
+<table class="table table-striped table-sm">
+	<thead>
+		<tr>
+			{% for column in json['columns']['customer pricing'] %}
+				<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
+					{{ column['heading'] }}
+				</th>
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+		{% for pricing in json['data']['customer pricing']['cust breaks'] %}
+			<tr>
+				{% for column, properties in json['columns']['customer pricing'] %}
+					<td class="{{ module_json.get_justifyclass(properties['datajustify']) }}">
+						{{ pricing[column] }}
+					</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

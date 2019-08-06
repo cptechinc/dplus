@@ -1,0 +1,155 @@
+<?php namespace ProcessWire;
+
+	class JsonDataFiles extends WireData implements Module {
+		protected $success = true;
+		protected $error;
+
+		const JSON_FILENAMES = array(
+			'ii' => array(
+				'stock'        => 'iistkstat',
+				'stock_whse'   => 'iistkbywhse',
+				'requirements' => 'iirequire',
+				'pricing'      => 'iiprice',
+				'costing'      => 'iicost',
+				'usage'        => 'iiusage',
+				'activity'     => 'iiactivity',
+				'components' => array(
+					'kit' => 'iikit',
+					'bom' => array(
+						'single'       => 'iibomsingle',
+						'consolidated' => 'iibomcons'
+					)
+				),
+				'whereused'  => 'iiwhereused',
+				'lotserial'  => 'iilotser',
+				'misc'       => 'iimisc',
+				'notes'      => 'iinotes',
+				'documents'  => 'docview',
+				'quotes'     => 'iiquote',
+				'sales' => array(
+					'orders' => 'iisalesordr',
+					'history' => 'iisaleshist'
+				)
+			)
+		);
+
+		const JUSTIFY_CLASSES = array(
+			'r' => 'text-right',
+			'l' => 'text-left',
+			'c' => 'text-center'
+		);
+
+		/**
+		 * Return if Error was found
+		 * @return bool
+		 */
+		public function has_error() {
+			return boolval(strlen($this->error));
+		}
+
+		/**
+		 * Returns if file get was successful
+		 * @return bool
+		 */
+		public function had_succeeded() {
+			return $this->success;
+		}
+
+		/**
+		 * Returns Error Message
+		 * @return string ex.JSON file $jsonfile not found
+		 */
+		public function get_error() {
+			return $this->error;
+		}
+
+		public function get_justifyclass($justifycode) {
+			$justifycode = substr($justifycode, 0, 1);
+			return self::JUSTIFY_CLASSES[$justifycode];
+		}
+
+		/**
+		 * Return JSON FILE
+		 * @param  string $sessionID Session ID
+		 * @param  string $jsoncode  ex. ii-stock
+		 * @return array             Decoded json array
+		 */
+		public function get_file($sessionID, $jsoncode) {
+			$basefile = $this->get_filename($jsoncode);
+			$filepath = $this->wire('config')->jsonfilepath;
+			$jsonfile = $filepath."$sessionID-$basefile.json";
+			$json = array();
+
+			if (file_exists($jsonfile)) {
+				$json = json_decode(file_get_contents($jsonfile), true);
+
+				if (empty($json)) {
+					$this->success = false;
+					$this->error = "The $jsoncode JSON contains errors, JSON ERROR: ". json_last_error();
+				}
+			} else {
+				$this->success = false;
+				$this->error = "JSON file $jsonfile not found";
+			}
+			return $json;
+		}
+
+		public function file_exists($sessionID, $jsoncode) {
+			$basefile = $this->get_filename($jsoncode);
+			$filepath = $this->wire('config')->jsonfilepath;
+			$jsonfile = $filepath."$sessionID-$basefile.json";
+			return file_exists($jsonfile);
+		}
+
+		public function file_modified($sessionID, $jsoncode) {
+			$basefile = $this->get_filename($jsoncode);
+			$filepath = $this->wire('config')->jsonfilepath;
+			$jsonfile = $filepath."$sessionID-$basefile.json";
+			return filemtime($jsonfile);
+		}
+
+		/**
+		 * Returns the base file name for json file code
+		 * @param  string $jsoncode ex. ii-stock
+		 * @return string           ex. iistkstat
+		 */
+		public function get_filename($jsoncode) {
+			$codearray = explode('-', $jsoncode);
+			$menu = $codearray[0];
+			$screen = $codearray[1];
+
+			if (is_array(self::JSON_FILENAMES[$menu][$screen])) {
+				$subscreen = self::JSON_FILENAMES[$menu][$screen];
+				array_shift($codearray);
+				array_shift($codearray);
+				$codearray = array_filter($codearray);
+
+				while (is_array($subscreen)) {
+					$subscreen = $subscreen[$codearray[0]];
+					array_shift($codearray);
+					$codearray = array_filter($codearray);
+				}
+				return $subscreen;
+			} else {
+				return self::JSON_FILENAMES[$menu][$screen];
+			}
+		}
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dpluso JSON Data Files Module',
+				'version' => 101,
+				'summary' => 'Handles Dpluso JSON Data Files',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+	}

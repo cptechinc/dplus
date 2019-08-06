@@ -1,0 +1,24 @@
+{% for index,warehouse in json['data'] %}
+	<div class="row">
+		<div class="col-sm-6 form-group">
+			<h4>{{ warehouse['Whse Name'] }}</h4>
+		</div>
+		<div class="col-sm-6 form-group">
+			<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#{{ index|attrJS }}" aria-expanded="false" aria-controls="{{ warehouse['Whse Name']|attrJS }}">
+				Show / Hide
+			</button>
+		</div>
+	</div>
+
+	<div class="collapse show" id="{{ index|attrJS }}">
+		<div class="mb-2">
+			{% include 'items/ii/stock-whse/whse-stock.twig' %}
+		</div>
+
+		{% if warehouse['lots'] %}
+			<h5>Lots</h5>
+			{% include 'items/ii/stock-whse/whse-lots.twig' %}
+		{% endif %}
+	</div>
+	<hr>
+{% endfor %}

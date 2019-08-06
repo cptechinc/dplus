@@ -1,0 +1,22 @@
+<div class="table-responsive">
+	<table class="table">
+		<thead>
+			<tr>
+				{% for column in json['columns']['warehouse'] %}
+					<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
+						{{ column['heading'] }}
+					</th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				{% for column, properties in json['columns']['warehouse'] %}
+					<td class="{{ module_json.get_justifyclass(properties['datajustify']) }}">
+						{{ warehouse[column] }}
+					</td>
+				{% endfor %}
+			</tr>
+		</tbody>
+	</table>
+</div>

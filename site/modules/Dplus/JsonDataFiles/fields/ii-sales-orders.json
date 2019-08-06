@@ -1,0 +1,164 @@
+{
+	"detail": {
+		"Sales Order Number": {
+			"type": "I",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Data Source": {
+			"type": "C",
+			"headingjustify": "c",
+			"datajustify": "c"
+		},
+		"Customer PO Number": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Customer ID": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Customer Name": {
+			"type": "C",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Order Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Ship-To ID": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Ship-To Name": {
+			"type": "C",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Ship-To City/State/Zip": {
+			"type": "C",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Customer Item ID": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Order Status": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Warehouse Code": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Pick Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Verify Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Arrive Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Sales Unit of Measure": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Quantity Ordered": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Quantity Shipped": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Quantity Backordered": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Quantity To Ship": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Price": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Amount": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Requested Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Ship Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Cancel Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Special Order": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Reference Purchase Order": {
+			"type": "I",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Item Reference": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Non-Stock Vendor ID": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Non-Stock Vendor Item ID": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Non-Stock Vend Item Desc1": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Non-Stock Vend Item Desc2": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		}
+	}
+}

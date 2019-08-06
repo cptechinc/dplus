@@ -49,6 +49,13 @@
 				'title'    => 'Login',
 				'summary'  => '',
 				'parent'   => '/user/'
+			),
+			'configs' => array(
+				'template' => 'user-configs',
+				'name'     => 'configs',
+				'title'    => 'User Configs',
+				'summary'  => '',
+				'parent'   => '/user/'
 			)
 		);
 

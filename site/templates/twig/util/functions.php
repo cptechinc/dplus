@@ -21,3 +21,8 @@
 		return "js-$string";
 	});
 	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('array_key_exists', function ($array, $key) {
+		return array_key_exists($key, $array);
+	});
+	$config->twig->addFilter($filter);

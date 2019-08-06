@@ -1,0 +1,39 @@
+<?php namespace ProcessWire;
+
+class IiUsage extends WireData implements Module {
+
+	public function create_warehouseusages($warehouse) {
+		$monthsdata = array();
+
+		foreach ($warehouse['months'] as $month) {
+			$month['month'] = ($month['month'] == 'Current') ? date('Y-m') : str_replace(' ', ' 20', $month['month']);
+			$data = array(
+				'month' => date('Y-m', strtotime($month['month'])),
+				'saleamount' => (float)$month['sale amount'],
+				'usageamount' => (float)$month['usage amount']
+			);
+			if (isset($month['lost amount'])) {
+				$data['lostamount'] = (float)$month['lost amount'];
+			}
+			$monthdata[] = $data;
+		}
+		return $monthdata;
+	}
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso JSON II usage Module',
+			'version' => 101,
+			'summary' => 'Handles Dpluso JSON Data File for II usage',
+			'singular' => true,
+			'autoload' => false,
+		);
+	}
+}

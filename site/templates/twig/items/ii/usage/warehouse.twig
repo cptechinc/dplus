@@ -1,0 +1,15 @@
+<h4>{{ warehouse['whse name'] }}</h4>
+<nav class="mb-2">
+	<div class="nav nav-pills" id="nav-tab" role="tablist">
+		<a class="nav-item nav-link h5 active" id="{{ id|attrJS }}-warehouse-tab" data-toggle="tab" href="#{{ id|attrJS }}-warehouse" role="tab" aria-controls="{{ id|attrJS }}-warehouse" aria-selected="true">Warehouse</a>
+		<a class="nav-item nav-link h5" id="{{ id|attrJS }}-graph-tab" data-toggle="tab" href="#{{ id|attrJS }}-graph" role="tab" aria-controls="{{ id|attrJS }}-graph" aria-selected="false">Graph</a>
+	</div>
+</nav>
+<div class="tab-content" id="nav-costing">
+	<div class="tab-pane fade show active" id="{{ id|attrJS }}-warehouse" role="tabpanel" aria-labelledby="{{ id|attrJS }}-warehouse-tab">
+		{% include 'items/ii/usage/warehouse-table.twig' %}
+	</div>
+	<div class="tab-pane fade" id="{{ id|attrJS }}-graph" role="tabpanel" aria-labelledby="{{ id|attrJS }}-graph-tab">
+		<div id="{{ id|attrJS }}-chart"></div>
+	</div>
+</div>

@@ -34,4 +34,13 @@ class DplusURLs extends WireData implements Module {
 		}
 		return $href;
 	}
+
+	/**
+	 * Returns phone string for URL
+	 * @param  string $phone Phone Number
+	 * @return string        reformatted phone value
+	 */
+	public function generate_phoneurl($phone) {
+		return str_replace('-', '', $phone);
+	}
 }

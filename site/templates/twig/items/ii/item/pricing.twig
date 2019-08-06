@@ -1,0 +1,19 @@
+<h4>Pricing</h4>
+
+<table class="table table-striped table-sm">
+	<thead>
+		<tr> <th>Qty</th> <th>Price</th> </tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Each</td>
+			<td class="text-right">{{ itempricing.baseprice|currency }}</td>
+		</tr>
+		{% for qty, price in itempricing.get_qtybreaks() %}
+			<tr>
+				<td>{{ qty }}</td>
+				<td class="text-right">{{ price|currency }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

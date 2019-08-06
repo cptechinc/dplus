@@ -1,0 +1,40 @@
+<form action="{{ page.url }}" method="POST" class="screen-formatter-form" id="screen-formatter-form">
+	<input type="hidden" name="action" value="save-formatter">
+	<input type="hidden" name="user" value="{{ user.loginid }}">
+	<div class="panel panel-default">
+		<div class="panel-heading"><h3 class="panel-title">{{ page.title }}</h3> </div>
+		<br>
+		<div class="formatter-container">
+			<div>
+				<ul class="nav nav-tabs" role="tablist">
+					{% for section, label in module_formatter.get_datasections() %}
+						<li role="presentation" class="nav-link {{ module_formatter.get_datasections()|keys[0] ? 'active' : '' }}">
+							<a href="#{{ datasection }}" aria-controls="{{ datasection }}" role="tab" data-toggle="tab">
+								{{ label }}
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+				<div class="tab-content">
+					{% for section, label in module_formatter.get_datasections() %}
+						<div role="tabpanel" class="tab-pane fade {{ module_formatter.get_datasections()|keys[0] ? ' show active' : '' }}" id="{{ datasection }}">
+							{% include 'screen-formatters/forms/section-table.twig' %}
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-2">
+			<button type="button" class="btn btn-info" name="action" value="preview">
+				<i class="fa fa-table" aria-hidden="true"></i> Preview Table
+			</button>
+		</div>
+		<div class="col-sm-2">
+			<button type="button" class="btn btn-success" name="action" value="save">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+		</div>
+	</div>
+</form>

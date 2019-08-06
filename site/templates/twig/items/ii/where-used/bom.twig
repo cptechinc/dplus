@@ -1,0 +1,21 @@
+<h4>BOM</h4>
+<table class="table table-striped table-sm">
+	<thead>
+		{% for column in json['columns']['bom'] %}
+			<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
+				{{ column['heading'] }}
+			</th>
+		{% endfor %}
+	</thead>
+	<tbody>
+		{% for bom in json['data']['bom'] %}
+			<tr>
+				{% for column, properties in json['columns']['bom'] %}
+					<td class="{{ module_json.get_justifyclass(properties['datajustify']) }}">
+						{{ bom[column] }}
+					</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

@@ -1,0 +1,20 @@
+<div class="mb-3">
+	{% if page.parent().template == 'dplus-menu' %}
+		<a href="{{ page.parent().url }}" class="btn btn-primary">
+			<i class="fa fa-undo" aria-hidden="true"></i> &nbsp;
+			Return to {{ page.parent().title }}
+		</a>
+	{% endif %}
+</div>
+<div class="list-group">
+	{% for item in items %}
+		<a href="{{ item.url }}" class="list-group-item list-group-item-action">
+			<div class="align-items-center">
+				<div class="col-11">
+					<p class="h4">{{ item.title|raw }}</p>
+					{{ item.summary|raw }}
+				</div>
+			</div>
+		</a>
+	{% endfor %}
+</div>

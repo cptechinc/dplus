@@ -75,25 +75,25 @@
 		}
 
 		public function init() {
-			$this->addHookProperty('Page(template=dplus-function)::pagenbr', function($event) {
+			$this->addHookProperty('Page(template=dplus-function|ii-function)::pagenbr', function($event) {
 				$page = $event->object;
 				$event->return = $this->wire('input')->pageNum;
 			});
 
-			$this->addHook('Page(template=dplus-function)::paginate', function($event) {
+			$this->addHook('Page(template=dplus-function|ii-function)::paginate', function($event) {
 				$page = $event->object;
 				$pagenbr = $event->arguments(0);
 				$event->return = $this->paginate_page($page, $pagenbr);
 			});
 
-			$this->addHook('Page(template=dplus-function)::get_pagecount', function($event) {
+			$this->addHook('Page(template=dplus-function|ii-function)::get_pagecount', function($event) {
 				$page = $event->object;
 				$count = $event->arguments(0);
 				$totalpages = ceil($count / $this->wire('session')->display);
 				$event->return = $totalpages == 0 ? 1 : $totalpages;
 			});
 
-			$this->addHookBefore('Page(template=dplus-function)::render', function($event) {
+			$this->addHookBefore('Page(template=dplus-function|ii-function)::render', function($event) {
 				if ($this->wire('input')->get->display) {
 					$this->wire('session')->display = $this->wire('input')->get->text('display');
 				} else {
@@ -103,24 +103,24 @@
 				}
 			});
 
-			$this->addHook('Page(template=dplus-function)::has_orderby', function($event) {
+			$this->addHook('Page(template=dplus-function|ii-function)::has_orderby', function($event) {
 				$page = $event->object;
 				$event->return = boolval($this->wire('input')->get->orderby);
 			});
 
-			$this->addHook('Page(template=dplus-function)::orderby', function($event) {
+			$this->addHook('Page(template=dplus-function|ii-function)::orderby', function($event) {
 				$page = $event->object;
 				$event->return = $this->wire('input')->get->text('orderby');
 			});
 
-			$this->addHookProperty('Page(template=dplus-function)::orderby_column', function($event) {
+			$this->addHookProperty('Page(template=dplus-function|ii-function)::orderby_column', function($event) {
 				$page = $event->object;
 				$sortby = $this->wire('input')->get->text('orderby');
 				$sortby_array = explode('-', $sortby);
 				$event->return = $sortby_array[0];
 			});
 
-			$this->addHookProperty('Page(template=dplus-function)::orderby_sort', function($event) {
+			$this->addHookProperty('Page(template=dplus-function|ii-function)::orderby_sort', function($event) {
 				$page = $event->object;
 				$sortby = $this->wire('input')->get->text('orderby');
 				$order = 'ASC';
@@ -133,7 +133,7 @@
 				$event->return = $order;
 			});
 
-			$this->addHook('Page(template=dplus-function)::get_sort', function($event) {
+			$this->addHook('Page(template=dplus-function|ii-function)::get_sort', function($event) {
 				$sort = 'ASC';
 
 				$page = $event->object;
@@ -147,7 +147,7 @@
 				$event->return = $sort;
 			});
 
-			$this->addHook('Page(template=dplus-function)::get_sortURL', function($event) {
+			$this->addHook('Page(template=dplus-function|ii-function)::get_sortURL', function($event) {
 				$page = $event->object;
 				$column = $event->arguments(0);
 				$sort = $page->get_sort($column);
@@ -155,6 +155,23 @@
 				$url->query->set('orderby', "$column-$sort");
 				$url->path = $this->paginate_page($page, 1);
 				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_printURL', function($event) {
+				$page = $event->object;
+				$url = new Url($page->fullURL->getUrl());
+				$url->query->set('print', 'true');
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::is_print', function($event) {
+				$page = $event->object;
+				$event->return = $page->print == true;
+			});
+
+			$this->addHook('Page::pw_template', function($event) {
+				$page = $event->object;
+				$event->return = str_replace('.php', '', $page->pw_template) . '.php';
 			});
 		}
 
@@ -208,9 +225,11 @@
 		 */
 		protected function install_templates() {
 			foreach ($this->templates as $templatename => $template) {
+echo $templatename . "<br>";
 				if ($this->wire('templates')->get($templatename)) {
 					$this->update_template($templatename);
 				} else {
+
 					$this->create_template($templatename);
 				}
 			}
@@ -347,9 +366,9 @@
 		protected function update_template($template) {
 			$t = wire('templates')->get($template);
 			$this->update_fieldgroup($template);
-			$t->fieldgroup = wire('templates')->get($template)->fieldgroup;;
-			$this->allowPageNum = $this->templates[$template]['paginated'] ? 1 : 0;
-			$this->slashPageNum = 1;
+			$t->fieldgroup = wire('templates')->get($template)->fieldgroup;
+			$t->allowPageNum = $this->templates[$template]['paginated'] ? 1 : 0;
+			$t->slashPageNum = 1;
 			$t->save();
 		}
 

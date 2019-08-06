@@ -1,0 +1,26 @@
+<h3>Standard Pricing</h3>
+<p>
+	<b>Last Price Date:</b> {{json['data']['standard pricing']['last price date'] }}
+</p>
+<table class="table table-striped table-sm">
+	<thead>
+		<tr>
+			{% for column in json['columns']['standard pricing'] %}
+				<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
+					{{ column['heading'] }}
+				</th>
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+		{% for pricing in json['data']['standard pricing']['standard breaks'] %}
+			<tr>
+				{% for column, properties in json['columns']['standard pricing'] %}
+					<td class="{{ module_json.get_justifyclass(properties['datajustify']) }}">
+						{{ pricing[column] }}
+					</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
