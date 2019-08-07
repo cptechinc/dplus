@@ -2,6 +2,8 @@
 	use Map\CustomerTableMap;
 	use Propel\Runtime\ActiveQuery\Criteria;
 
+	$html = $modules->get('HtmlWriter');
+
 	if ($input->get->custID) {
 		$custID = $input->get->text('custID');
 
@@ -26,23 +28,37 @@
 		$shippedorders = $query->paginate($input->pageNum, 10);
 
 		$page->title = "CI: $customer->name";
-		$page->body =  $config->twig->render('customers/ci/customer/header.twig', ['page' => $page, 'customer' => $customer]);
+
+		$toolbar = $config->twig->render('customers/ci/toolbar.twig', ['page' => $page, 'customer' => $customer]);
+		$header =  $config->twig->render('customers/ci/customer/header.twig', ['page' => $page, 'customer' => $customer]);
+
+		$page->body = "<div class='row'>";
+			$page->body .= $html->div('class=col-sm-2', $toolbar);
+			$page->body .= $html->div('class=col-sm-10', $header);
+		$page->body .= "</div>";
+
 		$page->body .= $config->twig->render('shared/actions-panel.twig', ['page' => $page, 'actions' => $actions, 'resultscount'=> $actions->getNbResults()]);
 		$page->body .= $config->twig->render('customers/ci/customer/contacts-panel.twig', ['page' => $page, 'customer' => $customer, 'contacts' => $contacts, 'resultscount'=> $contacts->getNbResults()]);
 		$page->body .= $config->twig->render('customers/ci/customer/sales-orders-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $orders, 'resultscount'=> $orders->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url, 'sales_orders_list' => $pages->get('pw_template=sales-orders')->url]);
 		$page->body .= $config->twig->render('customers/ci/customer/shipped-orders-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $shippedorders, 'resultscount'=> $shippedorders->getNbResults()]);
 	} else {
 		$query = CustomerQuery::create();
+		$exact_query = CustomerQuery::create();
 
 		if ($input->get->q) {
-			$q = $input->get->text('q');
+			$q = strtoupper($input->get->text('q'));
+
+			if ($exact_query->filterByCustid($q)->count() == 1) {
+				$session->redirect($page->url."?custID=$q");
+			}
+
 			$page->title = "CI: Searching for '$q'";
 			$col_custid = Customer::get_aliasproperty('custid');
 			$col_name = Customer::get_aliasproperty('name');
 			$columns = array($col_custid, $col_name);
 			$query->search_filter($columns, strtoupper($q));
 		}
-		
+
 		if ($page->has_orderby()) {
 			$orderbycolumn = $page->orderby_column;
 			$sort = $page->orderby_sort;

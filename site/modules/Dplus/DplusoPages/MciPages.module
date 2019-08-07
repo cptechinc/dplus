@@ -1,7 +1,9 @@
 <?php namespace ProcessWire;
 	require_once(__DIR__ . '/DplusoPages.module');
 
-	class DplusoPagesCustomer extends DplusoPages implements Module {
+	use Purl\Url;
+
+	class MciPages extends DplusoPages implements Module {
 
 		protected $fields = array();
 		protected $templates = array(
@@ -51,7 +53,7 @@
 			'ci-index' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'phonebook',
-				'title'          => 'Customer Phonebook',
+				'title'          => 'Phonebook',
 				'summary'        => 'View Customer Phonebook',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
@@ -60,7 +62,7 @@
 			'ci-shiptos' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'shiptos',
-				'title'          => 'Customer Ship-tos',
+				'title'          => 'Ship-tos',
 				'summary'        => 'View Customer Ship-tos',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
@@ -69,7 +71,7 @@
 			'ci-contacts' => array(
 				'template'       => 'ci-function',
 				'name'           => 'contacts',
-				'title'          => 'Customer Contacts',
+				'title'          => 'Contacts',
 				'summary'        => 'View Customer Contacts',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
@@ -79,7 +81,7 @@
 			'ci-pricing' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'pricing',
-				'title'          => 'Customer Pricing',
+				'title'          => 'Pricing',
 				'summary'        => 'View Customer Pricing',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
@@ -88,7 +90,7 @@
 			'ci-sales-orders' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'sales-orders',
-				'title'          => 'Customer Sales Orders',
+				'title'          => 'Sales Orders',
 				'summary'        => 'View Customer Sales Orders',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
@@ -97,7 +99,7 @@
 			'ci-sales-history' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'sales-history',
-				'title'          => 'Customer Sales History',
+				'title'          => 'Sales History',
 				'summary'        => 'View Customer Sales History',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
@@ -106,7 +108,7 @@
 			'ci-customer-po' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'customer-po',
-				'title'          => 'Customer PO',
+				'title'          => 'Purchase Orders',
 				'summary'        => 'View Customer PO',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
@@ -115,7 +117,7 @@
 			'ci-quotes' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'quotes',
-				'title'          => 'Customer Quotes',
+				'title'          => 'Quotes',
 				'summary'        => 'View Customer Quotes',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
@@ -124,7 +126,7 @@
 			'ci-open-invoices' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'open-invoices',
-				'title'          => 'Customer Open Invoices',
+				'title'          => 'Open Invoices',
 				'summary'        => 'View Customer Open Invoices',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
@@ -133,7 +135,7 @@
 			'ci-payments' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'payments',
-				'title'          => 'Customer Payments',
+				'title'          => 'Payments',
 				'summary'        => 'View Customer Payments',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
@@ -142,7 +144,7 @@
 			'ci-credit' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'credit',
-				'title'          => 'Customer Credit',
+				'title'          => 'Credit',
 				'summary'        => 'View Customer Credit',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
@@ -151,7 +153,7 @@
 			'ci-standing-orders' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'standing-orders',
-				'title'          => 'Customer Standing Orders',
+				'title'          => 'Standing Orders',
 				'summary'        => 'View Customer Standing Orders',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
@@ -160,7 +162,7 @@
 			'ci-stock' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'stock',
-				'title'          => 'Customer Stock',
+				'title'          => 'Stock',
 				'summary'        => 'View Customer Stock',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
@@ -169,7 +171,7 @@
 			'ci-notes' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'notes',
-				'title'          => 'Customer Notes',
+				'title'          => 'Notes',
 				'summary'        => 'View Customer Notes',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
@@ -178,13 +180,30 @@
 			'ci-documents' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'documents',
-				'title'          => 'Customer Documents',
+				'title'          => 'Documents',
 				'summary'        => 'View Customer Documents',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
 				'pw_template'    => 'ci-documents'
 			),
 		);
+
+		public function init_cipage() {
+			$this->addHook('Page::get_redirURL', function($event) {
+				$p = $event->object;
+				$event->return = $p->parent('template=dplus-menu')->child('template=redir')->url;
+			});
+
+			$this->addHook('Page::get_customercontactsURL', function($event) {
+				$p = $event->object;
+				$custID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ci-contacts');
+				$url->query->set('custID', $custID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+		}
 
 		public static function getModuleInfo() {
 			return array(

@@ -30,6 +30,9 @@
 					'orders' => 'iisalesordr',
 					'history' => 'iisaleshist'
 				)
+			),
+			'ci' => array(
+				'contacts' => 'cicontact'
 			)
 		);
 

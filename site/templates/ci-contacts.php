@@ -1,0 +1,31 @@
+<?php
+	include_once('./ci-include.php');
+
+	if ($customerquery->count()) {
+		$page->title = "$custID Contacts";
+
+		$module_json = $modules->get('JsonDataFiles');
+		$json = $module_json->get_file(session_id(), $page->jsoncode);
+
+		if ($module_json->file_exists(session_id(), $page->jsoncode)) {
+			$session->cicontacttry = 0;
+			$refreshurl = $page->get_customercontactsURL($customerID);
+			$page->body .= $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
+			$page->body .= $config->twig->render('customers/ci/contacts/contacts-screen.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'date' => $date, 'itemID' => $itemID]);
+		} else {
+			if ($session->cicontacttry > 3) {
+				$page->headline = $page->title = "CI Contact File could not be loaded";
+				$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
+			} else {
+				$session->activitytry++;
+				$session->redirect($page->get_customercontactsURL($customerID));
+			}
+		}
+	}
+
+	if ($page->print) {
+		$page->show_title = true;
+		include __DIR__ . "/blank-page.php";
+	} else {
+		include __DIR__ . "/basic-page.php";
+	}
