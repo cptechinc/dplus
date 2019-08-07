@@ -209,7 +209,7 @@
 		"columns": {
 			"Lot/Serial Number": {
 				"line": 1,
-				"column": 1,
+				"column": 2,
 				"col-length": 1,
 				"label": "Lot Number",
 				"before-decimal": false,
@@ -227,7 +227,7 @@
 			},
 			"Lot/Serial Qty Received": {
 				"line": 1,
-				"column": 2,
+				"column": 3,
 				"col-length": 1,
 				"label": "Lot/Serial Qty Received",
 				"before-decimal": 7,
