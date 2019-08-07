@@ -31,7 +31,8 @@
 					'history' => 'iisaleshist'
 				),
 				'purchase' => array(
-					'orders' => 'iipurchordr'
+					'orders' => 'iipurchordr',
+					'history' => 'iipurchhist'
 				)
 			)
 		);

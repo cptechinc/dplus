@@ -1,0 +1,12 @@
+<div class="row">
+    <form action="{{ page.get_redirURL() }}" class="col-sm-4" method="post">
+        <input type="hidden" name="action" value="ii-sales-history">
+        <input type="hidden" name="itemID" value="{{ itemID }}">
+        <input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
+        <div class="form-group">
+            <label for="datepicker">Date</label>
+            {% include 'util/date-picker.twig' with {'name': 'date', 'value': "now"|date_modify("-1 year")|date("m/d/Y") } %}
+        </div>
+        <button type="submit" class="btn btn-secondary">Submit</button>
+    </form>
+</div>

@@ -272,6 +272,25 @@
 				$session->loc = $url;
 			}
 			break;
+		case 'ii-purchase-history':
+			$data = array("DBNAME=$dplusdb", 'IIPURCHHIST', "ITEMID=$itemID");
+
+			$date = $input->$requestmethod->text('date');
+
+			if (!empty($date)) {
+				$date_ymd = date('Ymd', strtotime($date));
+				$data[] = "DATE=$date_ymd";
+			}
+
+			if ($input->$requestmethod->page) {
+				$url = new Purl\Url($input->$requestmethod->text('page'));
+				$url->query->set('date', $date);
+				$session->loc = $url->getUrl();
+			} else {
+				$url = $pages->get('pw_template=ii-purchase-history')->httpUrl."?itemID=$itemID&date=$date";
+				$session->loc = $url;
+			}
+			break;
 	}
 
 	if (!empty($data)) {

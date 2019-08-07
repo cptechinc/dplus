@@ -1,0 +1,660 @@
+{
+    "error": false,
+    "errormsg": "",
+    "sessionid": "185khn6350l3739fam4vral157",
+    "itemid": "8391",
+    "date": "00000000",
+    "data": {
+        "BU": {
+            "Whse Name": "BURNSVILLE-EAGAN",
+            "orders": {
+                "1": {
+                    "Purchase Order Number": "7155",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "12/06/17",
+                    "Ship Date": "12/06/17",
+                    "Expected Date": "12/06/17",
+                    "Receipt Date": "12/06/17",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "50.00000",
+                    "Received Unit Cost": "25.00000",
+                    "Received Amount": "1250.00000",
+                    "Special Order": "N",
+                    "Non-Stock Vendor Item ID": "8391-AMS",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNETIC SPINNER DSPLY-WHTE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "25.00000",
+                    "Landed Total Cost": "1250.00000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "R120600004",
+                            "Bin Number": "RECEIVE",
+                            "Lot/Serial Qty Received": "50.00000"
+                        }
+                    }
+                },
+                "2": {
+                    "Purchase Order Number": "7111",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "02/09/17",
+                    "Ship Date": "02/09/17",
+                    "Expected Date": "02/09/17",
+                    "Receipt Date": "09/14/17",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "5.00000",
+                    "Received Unit Cost": "22.25000",
+                    "Received Amount": "111.25000",
+                    "Special Order": "N",
+                    "Non-Stock Vendor Item ID": "MAG8391",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNETIC SPINNER DSPLY-WHTE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "22.25000",
+                    "Landed Total Cost": "111.25000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "R091400004",
+                            "Bin Number": "RECEIVE",
+                            "Lot/Serial Qty Received": "5.00000"
+                        }
+                    }
+                },
+                "3": {
+                    "Purchase Order Number": "7135",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "08/11/17",
+                    "Ship Date": "08/11/17",
+                    "Expected Date": "08/11/17",
+                    "Receipt Date": "08/11/17",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "100.00000",
+                    "Received Unit Cost": "21.75000",
+                    "Received Amount": "2175.00000",
+                    "Special Order": "S",
+                    "Non-Stock Vendor Item ID": "MAG8391",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNETIC SPINNER DSPLY-WHTE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "21.75000",
+                    "Landed Total Cost": "2175.00000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "R081100004",
+                            "Bin Number": "RECEIVE",
+                            "Lot/Serial Qty Received": "100.00000"
+                        }
+                    }
+                },
+                "4": {
+                    "Purchase Order Number": "7130",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "05/16/17",
+                    "Ship Date": "05/16/17",
+                    "Expected Date": "05/16/17",
+                    "Receipt Date": "08/11/17",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "50.00000",
+                    "Received Unit Cost": "22.25000",
+                    "Received Amount": "1112.50000",
+                    "Special Order": "N",
+                    "Non-Stock Vendor Item ID": "MAG8391",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNETIC SPINNER DSPLY-WHTE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "22.25000",
+                    "Landed Total Cost": "1112.50000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "R081100002",
+                            "Bin Number": "RECEIVE",
+                            "Lot/Serial Qty Received": "50.00000"
+                        }
+                    }
+                },
+                "5": {
+                    "Purchase Order Number": "7130",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "05/16/17",
+                    "Ship Date": "05/16/17",
+                    "Expected Date": "05/16/17",
+                    "Receipt Date": "05/16/17",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "50.00000",
+                    "Received Unit Cost": "22.25000",
+                    "Received Amount": "1112.50000",
+                    "Special Order": "N",
+                    "Non-Stock Vendor Item ID": "MAG8391",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNETIC SPINNER DSPLY-WHTE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "22.25000",
+                    "Landed Total Cost": "1112.50000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "R051600004",
+                            "Bin Number": "RECEIVE",
+                            "Lot/Serial Qty Received": "50.00000"
+                        }
+                    }
+                },
+                "6": {
+                    "Purchase Order Number": "7111",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "02/09/17",
+                    "Ship Date": "02/09/17",
+                    "Expected Date": "02/09/17",
+                    "Receipt Date": "02/09/17",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "10.00000",
+                    "Received Unit Cost": "22.25000",
+                    "Received Amount": "222.50000",
+                    "Special Order": "N",
+                    "Non-Stock Vendor Item ID": "MAG8391",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNETIC SPINNER DSPLY-WHTE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "22.25000",
+                    "Landed Total Cost": "222.50000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "R020900004",
+                            "Bin Number": "RECEIVE",
+                            "Lot/Serial Qty Received": "10.00000"
+                        }
+                    }
+                },
+                "7": {
+                    "Purchase Order Number": "7099",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "12/06/16",
+                    "Ship Date": "12/06/16",
+                    "Expected Date": "12/06/16",
+                    "Receipt Date": "12/06/16",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "10.00000",
+                    "Received Unit Cost": "22.25000",
+                    "Received Amount": "222.50000",
+                    "Special Order": "N",
+                    "Non-Stock Vendor Item ID": "MAG8391",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNETIC SPINNER DSPLY-WHTE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "22.25000",
+                    "Landed Total Cost": "222.50000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "Q120600002",
+                            "Bin Number": "+",
+                            "Lot/Serial Qty Received": "10.00000"
+                        }
+                    }
+                },
+                "8": {
+                    "Purchase Order Number": "7078",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "03/30/16",
+                    "Ship Date": "03/30/16",
+                    "Expected Date": "03/30/16",
+                    "Receipt Date": "07/26/16",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "50.00000",
+                    "Received Unit Cost": "17.75000",
+                    "Received Amount": "887.50000",
+                    "Special Order": "S",
+                    "Non-Stock Vendor Item ID": "MAG8391-2016PROMO",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNETIC SPINNER DSPLY-WHTE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "ABC-10985",
+                    "Invoice Date": "07/26/16",
+                    "Quantity Invoiced": "50.00000",
+                    "Invoiced Unit Cost": "17.75000",
+                    "Invoiced Amount": "887.50000",
+                    "Landed Unit Cost": "19.53000",
+                    "Landed Total Cost": "976.25000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "Q072600002",
+                            "Bin Number": "+",
+                            "Lot/Serial Qty Received": "50.00000"
+                        }
+                    }
+                },
+                "9": {
+                    "Purchase Order Number": "7068",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "02/26/16",
+                    "Ship Date": "02/26/16",
+                    "Expected Date": "02/26/16",
+                    "Receipt Date": "03/29/16",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "210.00000",
+                    "Received Unit Cost": "22.25000",
+                    "Received Amount": "4672.50000",
+                    "Special Order": "N",
+                    "Non-Stock Vendor Item ID": "MAG8391",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNETIC SPINNER DSPLY-WHTE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "22.25000",
+                    "Landed Total Cost": "4672.50000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "Q032900002",
+                            "Bin Number": "+",
+                            "Lot/Serial Qty Received": "210.00000"
+                        }
+                    }
+                },
+                "10": {
+                    "Purchase Order Number": "7068",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "02/26/16",
+                    "Ship Date": "02/26/16",
+                    "Expected Date": "02/26/16",
+                    "Receipt Date": "02/26/16",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "800.00000",
+                    "Received Unit Cost": "22.25000",
+                    "Received Amount": "17800.00000",
+                    "Special Order": "N",
+                    "Non-Stock Vendor Item ID": "MAG8391",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNETIC SPINNER DSPLY-WHTE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "22.25000",
+                    "Landed Total Cost": "17800.00000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "Q022600003",
+                            "Bin Number": "+",
+                            "Lot/Serial Qty Received": "800.00000"
+                        }
+                    }
+                },
+                "11": {
+                    "Purchase Order Number": "7062",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "02/10/16",
+                    "Ship Date": "02/10/16",
+                    "Expected Date": "02/10/16",
+                    "Receipt Date": "02/10/16",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "35.00000",
+                    "Received Unit Cost": "15.75000",
+                    "Received Amount": "551.25000",
+                    "Special Order": "N",
+                    "Non-Stock Vendor Item ID": "MAG8391",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNETIC SPINNER DSPLY-WHTE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "15.75000",
+                    "Landed Total Cost": "551.25000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "Q021000005",
+                            "Bin Number": "+",
+                            "Lot/Serial Qty Received": "35.00000"
+                        }
+                    }
+                },
+                "12": {
+                    "Purchase Order Number": "6967",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "01/08/13",
+                    "Ship Date": "01/08/13",
+                    "Expected Date": "01/08/13",
+                    "Receipt Date": "02/10/16",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "10.00000",
+                    "Received Unit Cost": "25.00000",
+                    "Received Amount": "250.00000",
+                    "Special Order": "D",
+                    "Non-Stock Vendor Item ID": "12345",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNETIC SPINNER DSPLY-WHT",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "25.00000",
+                    "Landed Total Cost": "250.00000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "Q021000009",
+                            "Bin Number": "+",
+                            "Lot/Serial Qty Received": "10.00000"
+                        }
+                    }
+                },
+                "13": {
+                    "Purchase Order Number": "7059",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "01/25/16",
+                    "Ship Date": "01/25/16",
+                    "Expected Date": "01/25/16",
+                    "Receipt Date": "01/25/16",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "5.00000",
+                    "Received Unit Cost": "25.00000",
+                    "Received Amount": "125.00000",
+                    "Special Order": "S",
+                    "Non-Stock Vendor Item ID": "MAG8391",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNETIC SPINNER DSPLY-WHTE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "25.00000",
+                    "Landed Total Cost": "125.00000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "Q012500004",
+                            "Bin Number": "+",
+                            "Lot/Serial Qty Received": "5.00000"
+                        }
+                    }
+                },
+                "14": {
+                    "Purchase Order Number": "7043",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "08/17/15",
+                    "Ship Date": "08/17/15",
+                    "Expected Date": "08/17/15",
+                    "Receipt Date": "08/17/15",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "50.00000",
+                    "Received Unit Cost": "22.25000",
+                    "Received Amount": "1112.50000",
+                    "Special Order": "N",
+                    "Non-Stock Vendor Item ID": "MAG8391",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNETIC SPINNER DSPLY-WHTE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "22.25000",
+                    "Landed Total Cost": "1112.50000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "P081700002",
+                            "Bin Number": "+",
+                            "Lot/Serial Qty Received": "50.00000"
+                        }
+                    }
+                },
+                "15": {
+                    "Purchase Order Number": "7024",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "05/21/15",
+                    "Ship Date": "05/21/15",
+                    "Expected Date": "05/21/15",
+                    "Receipt Date": "06/12/15",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "20.00000",
+                    "Received Unit Cost": "25.00000",
+                    "Received Amount": "500.00000",
+                    "Special Order": "S",
+                    "Non-Stock Vendor Item ID": "MAG8391",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNETIC SPINNER DSPLY-WHTE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "25.00000",
+                    "Landed Total Cost": "500.00000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "P061200002",
+                            "Bin Number": "+",
+                            "Lot/Serial Qty Received": "20.00000"
+                        }
+                    }
+                },
+                "16": {
+                    "Purchase Order Number": "7027",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "06/08/15",
+                    "Ship Date": "06/08/15",
+                    "Expected Date": "06/08/15",
+                    "Receipt Date": "06/09/15",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "25.00000",
+                    "Received Unit Cost": "25.00000",
+                    "Received Amount": "625.00000",
+                    "Special Order": "S",
+                    "Non-Stock Vendor Item ID": "MAG8391",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNETIC SPINNER DSPLY-WHTE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "25.00000",
+                    "Landed Total Cost": "625.00000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "P060900002",
+                            "Bin Number": "+",
+                            "Lot/Serial Qty Received": "25.00000"
+                        }
+                    }
+                },
+                "17": {
+                    "Purchase Order Number": "6905",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "01/14/11",
+                    "Ship Date": "01/14/11",
+                    "Expected Date": "01/18/11",
+                    "Receipt Date": "10/08/14",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "3.00000",
+                    "Received Unit Cost": "3.00000",
+                    "Received Amount": "9.00000",
+                    "Special Order": "S",
+                    "Non-Stock Vendor Item ID": "43201",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNET SPINNER-WHITE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "3.00000",
+                    "Landed Total Cost": "9.00000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "O100800002",
+                            "Bin Number": "WHSE",
+                            "Lot/Serial Qty Received": "3.00000"
+                        }
+                    }
+                },
+                "TOTAL": {
+                    "Purchase Order Number": "",
+                    "Vendor ID": "",
+                    "Vendor Name": "Warehouse Total:",
+                    "Order Date": "",
+                    "Ship Date": "",
+                    "Expected Date": "",
+                    "Receipt Date": "",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "1483.00000",
+                    "Received Unit Cost": "22.08000",
+                    "Received Amount": "32739.00000",
+                    "Special Order": "",
+                    "Non-Stock Vendor Item ID": "",
+                    "Non-Stock Vend Item Desc1": "",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "50.00000",
+                    "Invoiced Unit Cost": "17.75000",
+                    "Invoiced Amount": "887.50000",
+                    "Landed Unit Cost": "",
+                    "Landed Total Cost": "",
+                    "lots": {
+                    }
+                }
+            }
+        },
+        "EF": {
+            "Whse Name": "FARM WAREHOUSE",
+            "orders": {
+                "1": {
+                    "Purchase Order Number": "6898",
+                    "Vendor ID": "RDB100",
+                    "Vendor Name": "ROBEC DISTRIBUTING CO",
+                    "Order Date": "11/11/10",
+                    "Ship Date": "11/11/10",
+                    "Expected Date": "11/18/10",
+                    "Receipt Date": "11/11/10",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "25.00000",
+                    "Received Unit Cost": "3.00000",
+                    "Received Amount": "75.00000",
+                    "Special Order": "N",
+                    "Non-Stock Vendor Item ID": "",
+                    "Non-Stock Vend Item Desc1": "COUNTER MAGNET SPINNER-WHITE",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "3.00000",
+                    "Landed Total Cost": "75.00000",
+                    "lots": {
+                        "1": {
+                            "Lot/Serial Number": "K111100004",
+                            "Bin Number": "WHSE",
+                            "Lot/Serial Qty Received": "25.00000"
+                        }
+                    }
+                },
+                "TOTAL": {
+                    "Purchase Order Number": "",
+                    "Vendor ID": "",
+                    "Vendor Name": "Warehouse Total:",
+                    "Order Date": "",
+                    "Ship Date": "",
+                    "Expected Date": "",
+                    "Receipt Date": "",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "25.00000",
+                    "Received Unit Cost": "3.00000",
+                    "Received Amount": "75.00000",
+                    "Special Order": "",
+                    "Non-Stock Vendor Item ID": "",
+                    "Non-Stock Vend Item Desc1": "",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "0.00000",
+                    "Invoiced Unit Cost": "0.00000",
+                    "Invoiced Amount": "0.00000",
+                    "Landed Unit Cost": "",
+                    "Landed Total Cost": "",
+                    "lots": {
+                    }
+                }
+            }
+        },
+        "zz": {
+            "Whse Name": "All Warehouses",
+            "orders": {
+                "TOTAL": {
+                    "Purchase Order Number": "",
+                    "Vendor ID": "",
+                    "Vendor Name": "",
+                    "Order Date": "",
+                    "Ship Date": "",
+                    "Expected Date": "",
+                    "Receipt Date": "",
+                    "Purchase Unit of Measure": "EACH",
+                    "Quantity Received": "1508.00000",
+                    "Received Unit Cost": "21.76000",
+                    "Received Amount": "32814.00000",
+                    "Special Order": "",
+                    "Non-Stock Vendor Item ID": "",
+                    "Non-Stock Vend Item Desc1": "",
+                    "Non-Stock Vend Item Desc2": "",
+                    "Invoice Number": "",
+                    "Invoice Date": "",
+                    "Quantity Invoiced": "50.00000",
+                    "Invoiced Unit Cost": "17.75000",
+                    "Invoiced Amount": "887.50000",
+                    "Landed Unit Cost": "",
+                    "Landed Total Cost": "",
+                    "lots": {
+                    }
+                }
+            }
+        }
+    }
+}
