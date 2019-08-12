@@ -22,6 +22,7 @@
 				),
 				'whereused'  => 'iiwhereused',
 				'lotserial'  => 'iilotser',
+				'substitutes' => 'iisub',
 				'misc'       => 'iimisc',
 				'notes'      => 'iinotes',
 				'documents'  => 'docview',
