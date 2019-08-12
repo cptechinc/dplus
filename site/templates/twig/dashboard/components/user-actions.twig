@@ -1,0 +1,69 @@
+{% set incompletetasks = module_useractions.get_incompletetasksquery(input).filterByDuedate({'max': 'yesterday'}).find() %}
+<div class="card mb-4">
+	<div class="card-header d-flex justify-content-between bg-primary">
+		<a class="text-white" data-toggle="collapse" href="#user-actions-list" role="button" aria-expanded="false" aria-controls="user-actions-list">
+			User Actions <i class="fa fa-caret-down" aria-hidden="true"></i>
+		</a>
+		<span class="badge badge-pill badge-light"></span>
+	</div>
+	<div class="collapse show" id="user-actions-list">
+		<div class="card-body">
+			<h3>{{ "now"|date("l, F jS Y") }}</h3>
+			<div class="row">
+				<div class="col-sm-4">
+					<h5>Overview</h5>
+					<table class="table table-striped table-sm">
+						<tr>
+							<td>Notes Created</td>
+							<td>{{ module_useractions.count_usernotescreated() }}</td>
+						</tr>
+						<tr>
+							<td>Tasks Scheduled for {{ "now"|date("m/d/Y") }}</td>
+							<td>{{ module_useractions.count_usertaskscreated() }}</td>
+						</tr>
+						<tr>
+							<td>Tasks Completed</td>
+							<td>{{ module_useractions.count_usertaskscompleted() }}</td>
+						</tr>
+						<tr>
+							<td>Tasks Rescheduled on {{ "now"|date("m/d/Y") }}</td>
+							<td>{{ module_useractions.count_usertasksrescheduled() }}</td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-sm-8">
+					<div class="list-group">
+						<div class="list-group-item bg-dark text-white">
+							<div class="row">
+								<div class="col">Due</div>
+								<div class="col">Customer</div>
+								<div class="col">Regarding / Title</div>
+								<div class="col">View</div>
+							</div>
+						</div>
+						<div class="list-group-item p-2 text-center">
+							<h6>Incomplete Tasks</h6>
+						</div>
+
+						{% for task in incompletetasks %}
+							<div class="list-group-item bg-warning text-white">
+								<div class="d-flex w-100 justify-content-between">
+									<h5 class="mb-1">{{ task.title }}</h5>
+									<small>Due: {{ task.duedate.format('m/d/Y') }}</small>
+									<span>
+										Type: {{ task.subtype_description()|capitalize  }}
+										<i class="{{ module_useractions.get_iconclass(task.actionsubtype) }}" aria-hidden="true"></i>
+									</span>
+									<a href="{{ module_useractions.get_actionURL(task) }}" class="btn btn-sm btn-primary">
+										<i class="fa fa-external-link-square" aria-hidden="true"></i> View
+									</a>
+								</div>
+								<p class="mb-1">Customer: {{ task.customerlink }}</p>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

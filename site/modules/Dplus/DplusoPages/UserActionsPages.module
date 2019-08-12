@@ -1,0 +1,39 @@
+<?php namespace ProcessWire;
+
+require_once(__DIR__ . '/DplusoPages.module');
+
+use Purl\Url;
+
+class DplusoPagesUserActions extends DplusoPages implements Module {
+
+	protected $fields = array();
+
+	protected $templates = array(
+		'user-actions' => array(
+			'name'   => 'user-actions',
+			'fields' => array()
+		)
+	);
+
+	protected $pages = array(
+		'user-actions' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'user-actions',
+			'title'          => 'User Actions',
+			'summary'        => 'View / Search through User Actions',
+			'parent'         => '/',
+			'dplus_function' => '',
+			'pw_template'    => 'user-actions'
+		)
+	);
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso User Action Pages',
+			'version' => 101,
+			'summary' => 'Installs and creates Dpluso User Action Pages',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
