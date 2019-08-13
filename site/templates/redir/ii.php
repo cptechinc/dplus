@@ -163,6 +163,7 @@
 			}
 			break;
 		case 'ii-general':
+			// does not call ii-misc, ii-notes
 			$data = array("DBNAME=$dplusdb", 'IIGENERAL', "ITEMID=$itemID");
 
 			if ($input->$requestmethod->page) {

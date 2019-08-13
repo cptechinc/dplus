@@ -20,13 +20,13 @@
 						'consolidated' => 'iibomcons'
 					)
 				),
-				'whereused'  => 'iiwhereused',
-				'lotserial'  => 'iilotser',
+				'whereused'   => 'iiwhereused',
+				'lotserial'   => 'iilotser',
 				'substitutes' => 'iisub',
-				'misc'       => 'iimisc',
-				'notes'      => 'iinotes',
-				'documents'  => 'docview',
-				'quotes' => 'iiquote',
+				'misc'        => 'iimisc',
+				'notes'       => 'iinotes',
+				'documents'   => 'docview',
+				'quotes'      => 'iiquote',
 				'sales' => array(
 					'orders' => 'iisalesordr',
 					'history' => 'iisaleshist'
