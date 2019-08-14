@@ -61,6 +61,18 @@
 				$session->loc = $url->getUrl();
 			}
 			break;
+		case 'ci-sales-history':
+			$shipID = $input->$requestmethod->text('shipID');
+			$data = array("DBNAME=$dplusdb", 'CISALESHIST', "CUSTID=$custID", "SHIPID=$shipID", "DATE=$startdate", "SALESORDRNBR= ", "ITEMID=$itemID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=ci-sales-history'));
+				$url->query->set('custID', $custID);
+				$session->loc = $url->getUrl();
+			}
+			break;
 	}
 
 	if (!empty($data)) {
