@@ -23,6 +23,16 @@
 	*		CUSTID=$custID
 	*		SHIPID=$shipID
 	*		break;
+	*	case 'ci-sales-orders':
+	* 		Request CI Sales Orders JSON file
+	* 		Response: Creates CI Sales Orders JSON file
+	*		DBNAME=$dplusdb
+	*		CISALESORDR
+	*		CUSTID=$custID
+	*		SHIPID=$shipID
+	*		SALESORDRNBR=
+	*		ITEMID=
+	*		break;
 	* }
 	**/
 
@@ -35,6 +45,18 @@
 				$session->loc = $input->$requestmethod->text('page');
 			} else {
 				$url = new Purl\Url($pages->get('pw_template=ci-contacts'));
+				$url->query->set('custID', $custID);
+				$session->loc = $url->getUrl();
+			}
+			break;
+		case 'ci-sales-orders':
+			$shipID = $input->$requestmethod->text('shipID');
+			$data = array("DBNAME=$dplusdb", 'CISALESORDR', "CUSTID=$custID", "SHIPID=$shipID", "SALESORDRNBR= ", "ITEMID= ");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=ci-sales-orders'));
 				$url->query->set('custID', $custID);
 				$session->loc = $url->getUrl();
 			}

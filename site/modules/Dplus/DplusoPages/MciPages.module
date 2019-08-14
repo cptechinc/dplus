@@ -5,7 +5,21 @@
 
 	class MciPages extends DplusoPages implements Module {
 
-		protected $fields = array();
+		protected $fields = array(
+			'jsoncode' => array(
+				'name'  => 'jsoncode',
+				'type'  => 'text',
+				'label' => 'JSON Datafile Code'
+			),
+			'is_formattable' => array(
+				'name'        => 'is_formattable',
+				'type'        => 'checkbox',  // TRUE OR FALSE
+				'label'       => 'Is screen formattable?',
+				'description' => 'Allow Screen Formatter to be used',
+				'notes'       => ""
+			),
+		);
+		
 		protected $templates = array(
 			'dplus-menu' => array(
 				'name'   => 'dplus-menu',
@@ -26,10 +40,66 @@
 				'name'   => 'ci-customer',
 				'fields' => array(),
 			),
+			'ci-pricing' => array(
+				'name'   => 'ci-pricing',
+				'fields' => array(),
+			),
+			'ci-shiptos' => array(
+				'name'   => 'ci-shiptos',
+				'fields' => array(),
+			),
+			'ci-contacts' => array(
+				'name'   => 'ci-contacts',
+				'fields' => array(),
+			),
+			'ci-sales-orders' => array(
+				'name'   => 'ci-sales-orders',
+				'fields' => array(),
+			),
+			'ci-sales-history' => array(
+				'name'   => 'ci-sales-history',
+				'fields' => array(),
+			),
+			'ci-purchase-orders' => array(
+				'name'   => 'ci-purchase-orders',
+				'fields' => array(),
+			),
+			'ci-quotes' => array(
+				'name'   => 'ci-quotes',
+				'fields' => array(),
+			),
+			'ci-open-invoices' => array(
+				'name'   => 'ci-open-invoices',
+				'fields' => array(),
+			),
+			'ci-payments' => array(
+				'name'   => 'ci-payments',
+				'fields' => array(),
+			),
+			'ci-credit' => array(
+				'name'   => 'ci-credit',
+				'fields' => array(),
+			),
+			'ci-standing-orders' => array(
+				'name'   => 'ci-standing-orders',
+				'fields' => array(),
+			),
+			'ci-stock' => array(
+				'name'   => 'ci-stock',
+				'fields' => array(),
+			),
+			'ci-notes' => array(
+				'name'   => 'ci-notes',
+				'fields' => array(),
+			),
+			'ci-documents' => array(
+				'name'   => 'ci-documents',
+				'fields' => array(),
+			),
 			'ci-phonebook' => array(
 				'name'   => 'ci-phonebook',
 				'fields' => array(),
-			),
+			)
 		);
 
 		protected $pages = array(
@@ -194,11 +264,161 @@
 				$event->return = $p->parent('template=dplus-menu')->child('template=redir')->url;
 			});
 
+			$this->addHook('Page::get_customerURL', function($event) {
+				$p = $event->object;
+				$custID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ci-customer');
+				$url->query->set('custID', $custID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_customerpricingURL', function($event) {
+				$p = $event->object;
+				$custID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ci-pricing');
+				$url->query->set('custID', $custID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_customershiptosURL', function($event) {
+				$p = $event->object;
+				$custID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ci-shiptos');
+				$url->query->set('custID', $custID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
 			$this->addHook('Page::get_customercontactsURL', function($event) {
 				$p = $event->object;
 				$custID = $event->arguments(0);
 				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
 				$url->query->set('action','ci-contacts');
+				$url->query->set('custID', $custID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_customersalesordersURL', function($event) {
+				$p = $event->object;
+				$custID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ci-sales-orders');
+				$url->query->set('custID', $custID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_customersaleshistoryURL', function($event) {
+				$p = $event->object;
+				$custID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ci-sales-history');
+				$url->query->set('custID', $custID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_customerpurchaseordersURL', function($event) {
+				$p = $event->object;
+				$custID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ci-purchase-orders');
+				$url->query->set('custID', $custID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_customerquotesURL', function($event) {
+				$p = $event->object;
+				$custID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ci-quotes');
+				$url->query->set('custID', $custID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_customeropeninvoicesURL', function($event) {
+				$p = $event->object;
+				$custID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ci-open-invoices');
+				$url->query->set('custID', $custID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_customerpaymentsURL', function($event) {
+				$p = $event->object;
+				$custID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ci-payments');
+				$url->query->set('custID', $custID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_customercreditURL', function($event) {
+				$p = $event->object;
+				$custID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ci-credit');
+				$url->query->set('custID', $custID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_customerstandingordersURL', function($event) {
+				$p = $event->object;
+				$custID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ci-standing-orders');
+				$url->query->set('custID', $custID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_customerstockURL', function($event) {
+				$p = $event->object;
+				$custID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ci-stock');
+				$url->query->set('custID', $custID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_customernotesURL', function($event) {
+				$p = $event->object;
+				$custID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ci-notes');
+				$url->query->set('custID', $custID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_customerdocumentsURL', function($event) {
+				$p = $event->object;
+				$custID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ci-documents');
+				$url->query->set('custID', $custID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_customerphonebookURL', function($event) {
+				$p = $event->object;
+				$custID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ci-phonebook');
 				$url->query->set('custID', $custID);
 				$url->query->set('page', $p->fullURL->getUrl());
 				$event->return = $url->getUrl();

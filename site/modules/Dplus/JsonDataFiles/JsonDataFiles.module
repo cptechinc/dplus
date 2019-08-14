@@ -32,7 +32,23 @@
 				)
 			),
 			'ci' => array(
-				'contacts' => 'cicontact'
+				'pricing' 	  	  => 'ciprice',
+				'ship-tos' 	  	  => 'cishiptoinfo',
+				'contacts' 	  	  => 'cicontact',
+				'sales' => array(
+					'orders' => 'cisalesordr',
+					'history' => 'cisaleshist'
+				),
+				'purchase-orders' => 'cipurchordr',
+				'quotes' 		  => 'ciquote',
+				'open-invoices'   => 'ciopeninv',
+				'payments' 		  => 'cipayment',
+				'credit' 		  => 'cicredit',
+				'standing-orders' => 'cistandingordr',
+				'stock' 		  => 'cistkstat',
+				'notes' 		  => 'cinotes',
+				'documents' 	  => 'docview',
+				'phonebook' 	  => 'cicontact'
 			)
 		);
 

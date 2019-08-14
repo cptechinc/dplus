@@ -65,7 +65,16 @@
 				'parent'         => '/user/screen-formatters/ii/',
 				'formatter'      => 'IiSalesHistory',
 				'jsoncode'       => 'ii-sales-history'
-			)
+			),
+			'ci-sales-orders' => array(
+				'template'       => 'formatter-screen',
+				'name'           => 'sales-orders',
+				'title'          => 'CI Sales Orders',
+				'summary'        => 'CI Sales Orders Formatter',
+				'parent'         => '/user/screen-formatters/ci/',
+				'formatter'      => 'CiSalesOrder',
+				'jsoncode'       => 'ci-sales-orders'
+			),
 		);
 
 		public static function getModuleInfo() {
