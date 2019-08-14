@@ -83,6 +83,33 @@
 				'parent'         => '/user/screen-formatters/ci/',
 				'formatter'      => 'CiSalesHistory',
 				'jsoncode'       => 'ci-sales-history'
+			),
+			'ci-quotes' => array(
+				'template'       => 'formatter-screen',
+				'name'           => 'quotes',
+				'title'          => 'CI Quotes',
+				'summary'        => 'CI Quotes Formatter',
+				'parent'         => '/user/screen-formatters/ci/',
+				'formatter'      => 'CiQuotes',
+				'jsoncode'       => 'ci-quotes'
+			),
+			'ci-open-invoices' => array(
+				'template'       => 'formatter-screen',
+				'name'           => 'open-invoices',
+				'title'          => 'CI Open Invoices',
+				'summary'        => 'CI Open Invoices Formatter',
+				'parent'         => '/user/screen-formatters/ci/',
+				'formatter'      => 'CiOpenInvoices',
+				'jsoncode'       => 'ci-open-invoices'
+			),
+			'ci-payments' => array(
+				'template'       => 'formatter-screen',
+				'name'           => 'payments',
+				'title'          => 'CI Payments',
+				'summary'        => 'CI Payments Formatter',
+				'parent'         => '/user/screen-formatters/ci/',
+				'formatter'      => 'CiPayments',
+				'jsoncode'       => 'ci-payments'
 			)
 		);
 

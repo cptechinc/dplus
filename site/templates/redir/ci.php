@@ -73,6 +73,42 @@
 				$session->loc = $url->getUrl();
 			}
 			break;
+		case 'ci-quotes':
+			$shipID = $input->$requestmethod->text('shipID');
+			$data = array("DBNAME=$dplusdb", 'CIQUOTE', "CUSTID=$custID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=ci-quotes'));
+				$url->query->set('custID', $custID);
+				$session->loc = $url->getUrl();
+			}
+			break;
+		case 'ci-open-invoices':
+			$shipID = $input->$requestmethod->text('shipID');
+			$data = array("DBNAME=$dplusdb", 'CIOPENINV', "CUSTID=$custID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=ci-open-invoices'));
+				$url->query->set('custID', $custID);
+				$session->loc = $url->getUrl();
+			}
+			break;
+		case 'ci-payments':
+			$shipID = $input->$requestmethod->text('shipID');
+			$data = array("DBNAME=$dplusdb", 'CIPAYMENT', "CUSTID=$custID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=ci-payments'));
+				$url->query->set('custID', $custID);
+				$session->loc = $url->getUrl();
+			}
+			break;
 	}
 
 	if (!empty($data)) {

@@ -1,0 +1,71 @@
+{
+    "data": {
+        "detail": {
+            "Invoice Number": {
+                "type": "I",
+                "headingjustify": "r",
+                "datajustify": "r"
+            },
+            "Customer PO Number": {
+                "type": "C",
+                "headingjustify": "l",
+                "datajustify": "l"
+            },
+            "Transaction Type": {
+                "type": "C",
+                "headingjustify": "c",
+                "datajustify": "c"
+            },
+            "Hold/Release": {
+                "type": "C",
+                "headingjustify": "c",
+                "datajustify": "c"
+            },
+            "Invoice Date": {
+                "type": "D",
+                "headingjustify": "c",
+                "datajustify": "l"
+            },
+            "Discount Date": {
+                "type": "D",
+                "headingjustify": "c",
+                "datajustify": "l"
+            },
+            "Due Date": {
+                "type": "D",
+                "headingjustify": "c",
+                "datajustify": "l"
+            },
+            "Terms Code": {
+                "type": "C",
+                "headingjustify": "l",
+                "datajustify": "l"
+            },
+            "Amount - Total": {
+                "type": "N",
+                "headingjustify": "r",
+                "datajustify": "r"
+            },
+            "Amount - Current": {
+                "type": "N",
+                "headingjustify": "r",
+                "datajustify": "r"
+            },
+            "Amount - Aging 1": {
+                "type": "N",
+                "headingjustify": "r",
+                "datajustify": "r"
+            },
+            "Amount - Aging 2": {
+                "type": "N",
+                "headingjustify": "r",
+                "datajustify": "r"
+            },
+            "Amount - Aging 3": {
+                "type": "N",
+                "headingjustify": "r",
+                "datajustify": "r"
+            }
+        }
+    }
+}
