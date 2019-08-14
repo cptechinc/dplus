@@ -1,0 +1,33 @@
+<?php namespace ProcessWire;
+
+	class CiPayments extends ScreenFormatter implements Module {
+
+	protected $code = 'ci-payments';
+
+
+	/**
+	 * Key Value array of Sections that exist I.E. header => Header, detail => Detail
+	 * @var string
+	 */
+	protected $datasections = array(
+		"detail" => "Detail"
+	);
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dpluso CI Payments Formatter Module',
+				'version' => 101,
+				'summary' => 'Handles CI Payments Formatter',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+	}
