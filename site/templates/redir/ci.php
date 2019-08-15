@@ -9,8 +9,8 @@
 	$filename  = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();
 	$sessionID = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();
 
-	$custID =  $input->$requestmethod->text('custIDID');
-	
+	$custID =  $input->$requestmethod->text('custID');
+
 	/**
 	* SALES ORDERS REDIRECT
 	*
