@@ -8,7 +8,7 @@
 			<div class="list-group">
 
 				{% for item in items_unpicked %}
-					<a href="{{ page.get_selectlineURL(item) }}" class="list-group-item">
+					<a href="{{ page.get_selectpickitemURL(item) }}" class="list-group-item">
 						<div class="row">
 							<div class="col-sm-6">
 								<h4 class="list-group-item-heading">{{ item.itemid }}</h4>
@@ -20,7 +20,7 @@
 								Remaining: {{ item.qtyremaining }}
 							</div>
 							<div class="col-sm-3 text-right">
-								{% if pickingsession.is_line_being_picked(item) %}
+								{% if pickingsession.is_subline_being_picked(item) %}
 									{% if pickingsession.is_currentuser_picking(item) %}
 										<span class="badge badge-info">You are picking</span>
 									{% else %}
@@ -59,7 +59,7 @@
 								Remaining: {{ item.qtyremaining }}
 							</div>
 							<div class="col-sm-3 text-right">
-								{% if pickingsession.is_line_being_picked(item) %}
+								{% if pickingsession.is_subline_being_picked(item) %}
 									<div class="mb-2">
 										{% if pickingsession.is_currentuser_picking(item) %}
 											<span class="badge badge-info">You are picking</span>
@@ -68,7 +68,7 @@
 										{% endif %}
 									</div>
 								{% endif %}
-								<a href="{{ page.get_printlinelabelURL(item.ordn, item.linenbr) }}" class="btn btn-dark">
+								<a href="{{ page.get_printlinelabelURL(item.ordn, item.linenbr, item.sublinenbr) }}" class="btn btn-dark">
 									<i class="fa fa-print" aria-hidden="true"></i> Print Labels
 								</a>
 							</div>

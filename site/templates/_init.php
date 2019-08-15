@@ -113,3 +113,7 @@ $config->twig = new Twig_Environment($loader, [
 ]);
 $config->twig->addExtension(new Twig\Extension\DebugExtension());
 include($config->paths->templates."/twig/util/functions.php");
+
+if ($page->fullURL->query) {
+	$page->title_previous = $page->title;
+}

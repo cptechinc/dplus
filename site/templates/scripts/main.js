@@ -51,6 +51,24 @@ $(function() {
 		return true;
 	});
 
+	$('input.qty-input').on('focus', function () {
+		var input = $(this);
+		input.attr('data-value', input.val());
+		input.val('');
+	});
+	
+	$('input.qty-input').on('focusout', function () {
+		var input = $(this);
+		var attr = input.attr('data-value');
+
+		if (input.val().length == 0) {
+			// For some browsers, `attr` is undefined; for others, `attr` is false. Check for both.
+			if (typeof attr !== typeof undefined && attr !== false) {
+				input.val(attr);
+			}
+		}
+	});
+
 	$.notifyDefaults({
 		type: 'success',
 		allow_dismiss: true,
@@ -155,4 +173,3 @@ function init_datepicker() {
 		});
 	});
 }
-
