@@ -45,9 +45,9 @@
 			}
 		} else { // PICKING FUNCTION
 			// CHECK If there are details to pick
-			if (PickSalesOrderDetailQuery::create()->countBySessionidOrder(session_id(), $ordn) > 0) {
+			if (PickSalesOrderDetailQuery::create()->filterBySessionidOrder(session_id(), $ordn)->count() > 0) {
 				$page->formurl = $page->parent->child('template=redir')->url;
-				$pickitem = PickSalesOrderDetailQuery::create()->findOneBySessionidOrder(session_id(), $ordn);
+				$pickitem = PickSalesOrderDetailQuery::create()->filterBySessionidOrder(session_id(), $ordn)->findOne();
 
 				if ($input->requestMethod('POST')) {
 					$action = $input->post->text('action');

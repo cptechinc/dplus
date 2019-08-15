@@ -31,9 +31,11 @@
 				$page->returnpage = $input->get->text('returnpage');
 
 				if (is_numeric($linenbr)) {
+					$sublinenbr = $input->get->int('sublinenbr');
 					$pickingsession->set_linenbr($linenbr);
+					$pickingsession->set_sublinenbr($sublinenbr);
 					$exists = boolval(SalesOrderDetailQuery::create()->filterByOrderNumberLinenbr($ordn, $linenbr)->count());
-					$pickitem = PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr(session_id(), $ordn, $linenbr);
+					$pickitem = PickSalesOrderDetailQuery::create()->filterBySessionidOrder(session_id(), $ordn)->filterByLinenbrSublinenbr($linenbr, $sublinenbr)->findOne();
 					$itemID = $pickitem->itemid;
 					$page->title = "Printing label(s) for $pickitem->itemid";
 				} else {
