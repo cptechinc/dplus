@@ -10,6 +10,7 @@
 	$sessionID = ($input->$requestmethod->sessionID) ? $input->$requestmethod->text('sessionID') : session_id();
 
 	$custID =  $input->$requestmethod->text('custIDID');
+	
 	/**
 	* SALES ORDERS REDIRECT
 	*
@@ -32,6 +33,38 @@
 	*		SHIPID=$shipID
 	*		SALESORDRNBR=
 	*		ITEMID=
+	*		break;
+	*	case 'ci-sales-history':
+	* 		Request CI Sales History JSON file
+	* 		Response: Creates CI Sales History JSON file
+	*		DBNAME=$dplusdb
+	*		CISALESHIST
+	*		CUSTID=$custID
+	*		SHIPID=$shipID
+	*		DATE=$startdate
+	*		SALESORDRNBR=
+	*		ITEMID=$itemID
+	*		break;
+	*	case 'ci-quotes':
+	* 		Request CI Quotes JSON file
+	* 		Response: Creates CI Quotes JSON file
+	*		DBNAME=$dplusdb
+	*		CIQUOTE
+	*		CUSTID=$custID
+	*		break;
+	*	case 'ci-open-invoices':
+	* 		Request CI Open Invoices JSON file
+	* 		Response: Creates CI Open Invoices JSON file
+	*		DBNAME=$dplusdb
+	*		CIOPENINV
+	*		CUSTID=$custID
+	*		break;
+	*	case 'ci-payments':
+	* 		Request CI Payments JSON file
+	* 		Response: Creates CI Payments JSON file
+	*		DBNAME=$dplusdb
+	*		CIPAYMENT
+	*		CUSTID=$custID
 	*		break;
 	* }
 	**/
