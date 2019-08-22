@@ -23,20 +23,6 @@ $(function() {
 		return false;
 	});
 
-	$("body").on('keypress', 'form:not(.allow-enterkey-submit) input', function(e) {
-		if (e.which === 13) {
-			e.preventDefault();
-			var input = $(this);
-
-			if (input.closest('form').attr('tab-inputs') == "true") {
-				var $canfocus = $('input:not([type=hidden])');
-				var index = $canfocus.index(this) + 1;
-				if (index >= $canfocus.length) index = 0;
-				$canfocus.eq(index).focus();
-			}
-		}
-	});
-
 	$('.placard').on('accepted.fu.placard', function () {
 		var placard = $(this);
 		var form = placard.closest('form');
@@ -44,7 +30,7 @@ $(function() {
 	});
 
 	$('form[submit-empty="false"]').submit(function () {
-		var empty_fields = $(this).find(':input').filter(function () {
+		var empty_fields = $(this).find(':input:not(button)').filter(function () {
 			return $(this).val() === '';
 		});
 		empty_fields.prop('disabled', true);
@@ -56,7 +42,7 @@ $(function() {
 		input.attr('data-value', input.val());
 		input.val('');
 	});
-	
+
 	$('input.qty-input').on('focusout', function () {
 		var input = $(this);
 		var attr = input.attr('data-value');
@@ -145,6 +131,9 @@ $.fn.extend({
 			}
 		});
 		return true;
+	},
+	formDisableFields: function() {
+
 	}
 });
 
