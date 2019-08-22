@@ -1,0 +1,131 @@
+{
+    "detail": {
+        "Purchase Order Number": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Vendor ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Vendor Name": {
+            "type": "C",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Order Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Ship Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Expected Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Receipt Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Purchase Unit of Measure": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Quantity Received": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Received Unit Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Received Amount": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Special Order": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Non-Stock Vendor Item ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Non-Stock Vend Item Desc1": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Non-Stock Vend Item Desc2": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Invoice Number": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Invoice Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Quantity Invoiced": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Invoiced Unit Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Invoiced Amount": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Landed Unit Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Landed Total Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        }
+    },
+    "lotserial": {
+        "Lot/Serial Number": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "u"
+        },
+        "Bin Number": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Lot/Serial Qty Received": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        }
+    }
+}

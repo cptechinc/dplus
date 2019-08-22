@@ -1,0 +1,139 @@
+{% if json['data'] %}
+	{% for id, warehouse in json['data'] %}
+		<div class="row">
+			<div class="col-sm-6 form-group">
+				<h4>{{ warehouse['Whse Name'] }}</h4>
+			</div>
+			<div class="col-sm-6 form-group">
+				<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#{{ id|attrJS }}" aria-expanded="false" aria-controls="{{ id|attrJS }}">
+					Show / Hide
+				</button>
+			</div>
+		</div>
+		<div class="collapse show" id="{{ id|attrJS }}">
+			<table class="table table-striped table-sm">
+				<thead>
+					{% for x in 0..blueprint['detail']['rowcount']  %}
+						<tr>
+							{% set columncount = 0 %}
+							{% for i in 1..blueprint['cols'] + 1 %}
+								{% set colspan = 0 %}
+								{% if blueprint['detail']['rows'][x]['columns'][i] %}
+									{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
+									{% set colspan = column['col-length'] %}
+									<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(properties['headingjustify']) }}">
+										{{ column['label'] }}
+									</th>
+								{% else %}
+									{% if columncount < blueprint['cols'] %}
+										{% set colspan = 1 %}
+										<th></th>
+									{% endif %}
+								{% endif %}
+								{% set columncount = columncount + colspan %}
+							{% endfor %}
+						</tr>
+					{% endfor %}
+				</thead>
+				<tbody>
+					{% for id, invoice in warehouse['orders'] if id != 'TOTAL' %}
+						{% for x in 1..blueprint['detail']['rowcount']  %}
+							<tr>
+								{% set columncount = 0 %}
+								{% for i in 1..blueprint['cols'] + 1 %}
+									{% set colspan = 0 %}
+									{% if blueprint['detail']['rows'][x]['columns'][i] %}
+										{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
+										{% set colspan = column['col-length'] %}
+										<td colspan="{{ colspan }}" class="border-top border-primary {{ module_formatter.get_justifyclass(column['data-justify']) }}">
+											{{ module_formatter.format_celldata(invoice, column) }} &nbsp;
+										</td>
+									{% else %}
+										{% if columncount < blueprint['cols'] %}
+											{% set colspan = 1 %}
+											<td class="border-top border-primary"></td>
+										{% endif %}
+									{% endif %}
+									{% set columncount = columncount + colspan %}
+								{% endfor %}
+							</tr>
+						{% endfor %}
+
+						{% if invoice['lots']|length > 0 %}
+							{% for x in 1..blueprint['lotserial']['rowcount']  %}
+								<tr>
+									{% set columncount = 0 %}
+									{% for i in 1..blueprint['cols'] + 1 %}
+										{% set colspan = 0 %}
+										{% if blueprint['lotserial']['rows'][x]['columns'][i] %}
+											{% set column = blueprint['lotserial']['rows'][x]['columns'][i] %}
+											{% set colspan = column['col-length'] %}
+											<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(properties['headingjustify']) }}">
+												{{ column['label'] }}
+											</th>
+										{% else %}
+											{% if columncount < blueprint['cols'] %}
+												{% set colspan = 1 %}
+												<th></th>
+											{% endif %}
+										{% endif %}
+										{% set columncount = columncount + colspan %}
+									{% endfor %}
+								</tr>
+							{% endfor %}
+							<tr>
+							{% for key, lot in invoice['lots'] %}
+								{% for x in 1..blueprint['lotserial']['rowcount']  %}
+									<tr class="{{ id == 'TOTAL' ? 'bg-secondary text-white' : '' }}">
+										{% set columncount = 0 %}
+										{% for i in 1..blueprint['cols'] + 1 %}
+											{% set colspan = 0 %}
+											{% if blueprint['lotserial']['rows'][x]['columns'][i] %}
+												{% set column = blueprint['lotserial']['rows'][x]['columns'][i] %}
+												{% set colspan = column['col-length'] %}
+												<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
+													{{ module_formatter.format_celldata(lot, column) }}
+												</td>
+											{% else %}
+												{% if columncount < blueprint['cols'] %}
+													{% set colspan = 1 %}
+													<td></td>
+												{% endif %}
+											{% endif %}
+											{% set columncount = columncount + colspan %}
+										{% endfor %}
+									</tr>
+								{% endfor %}
+							{% endfor %}
+						{% endif %}
+					{% endfor %}
+				</tbody>
+				<tfoot>
+					{% set invoice = warehouse['orders']['TOTAL'] %}
+					{% for x in 1..blueprint['detail']['rowcount']  %}
+						<tr class="bg-secondary text-white">
+							{% set columncount = 0 %}
+							{% for i in 1..blueprint['cols'] + 1 %}
+								{% set colspan = 0 %}
+								{% if blueprint['detail']['rows'][x]['columns'][i] %}
+									{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
+									{% set colspan = column['col-length'] %}
+									<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
+										{{ module_formatter.format_celldata(invoice, column) }}
+									</td>
+								{% else %}
+									{% if columncount < blueprint['cols'] %}
+										{% set colspan = 1 %}
+										<td></td>
+									{% endif %}
+								{% endif %}
+								{% set columncount = columncount + colspan %}
+							{% endfor %}
+						</tr>
+						{% endfor %}
+				</tfoot>
+			</table>
+		</div>
+		<hr>
+	{% endfor %}
+{% endif %}

@@ -20,18 +20,20 @@
 						'consolidated' => 'iibomcons'
 					)
 				),
-				'whereused'  => 'iiwhereused',
-				'lotserial'  => 'iilotser',
-				'misc'       => 'iimisc',
-				'notes'      => 'iinotes',
-				'documents'  => 'docview',
-				'quotes' => 'iiquote',
+				'whereused'   => 'iiwhereused',
+				'lotserial'   => 'iilotser',
+				'substitutes' => 'iisub',
+				'misc'        => 'iimisc',
+				'notes'       => 'iinotes',
+				'documents'   => 'docview',
+				'quotes'      => 'iiquote',
 				'sales' => array(
 					'orders' => 'iisalesordr',
 					'history' => 'iisaleshist'
 				),
 				'purchase' => array(
-					'orders' => 'iipurchordr'
+					'orders' => 'iipurchordr',
+					'history' => 'iipurchhist'
 				)
 			)
 		);
