@@ -64,7 +64,7 @@ $config->styles->append(hash_templatefile('styles/bootstrap-grid.min.css'));
 $config->styles->append(hash_templatefile('styles/theme.css'));
 $config->styles->append('//fonts.googleapis.com/css?family=Lusitana:400,700|Quattrocento:400,700');
 $config->styles->append('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
-$config->styles->append(hash_templatefile('styles/lib/fuelux.min.css'));
+$config->styles->append(hash_templatefile('styles/lib/fuelux.css'));
 $config->styles->append(hash_templatefile('styles/lib/sweetalert.css'));
 $config->styles->append(hash_templatefile('styles/main.css'));
 
@@ -72,7 +72,7 @@ $config->styles->append(hash_templatefile('styles/main.css'));
 $config->scripts->append(hash_templatefile('scripts/lib/jquery.js'));
 $config->scripts->append(hash_templatefile('scripts/popper.js'));
 $config->scripts->append(hash_templatefile('scripts/bootstrap.min.js'));
-$config->scripts->append(hash_templatefile('scripts/fuelux.js'));
+$config->scripts->append(hash_templatefile('scripts/lib/fuelux.js'));
 $config->scripts->append(hash_templatefile('scripts/lib/sweetalert.js'));
 $config->scripts->append(hash_templatefile('scripts/lib/bootstrap-notify.js'));
 $config->scripts->append(hash_templatefile('scripts/uri.js'));
