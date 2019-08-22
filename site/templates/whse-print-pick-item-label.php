@@ -24,7 +24,7 @@
 		$ordn = $input->get->text('ordn');
 		$pickingsession->set_ordn($ordn);
 
-		if (SalesOrderQuery::create()->filterByOehdnbr($ordn)->count()) {
+		if (SalesOrderQuery::create()->filterByOrdernumber($ordn)->count()) {
 			if ($input->get->linenbr) {
 				$linenbr = $input->get->text('linenbr') == 'ALL' ? $input->get->text('linenbr') : $input->get->int('linenbr');
 				$exists = $input->get->text('linenbr') == 'ALL';
