@@ -9,21 +9,16 @@
 
 		$http->get($pages->get('template=redir, redir_file=sales-order')->httpUrl."?action=get-order-notes&ordn=$ordn&sessionID=".session_id());
 
-		if (SalesOrderQuery::create()->filterByOehdnbr($ordn)->count()) {
-			$notes = QnoteQuery::create()->filterBySessionidOrdernbrLinenbr(session_id(), $ordn, $linenbr = 0);
-
-			$order_query = SalesOrderQuery::create();
-			$order_items_query = SalesOrderDetailQuery::create();
-			$order = $order_query->findOneByOehdnbr($ordn);
-			$can_editorder = $user->can_editorder($order);
-			$order_items = $order_items_query->filterByOehdnbr($ordn)->find();
+		if (SalesOrderQuery::create()->filterByOrdernumber($ordn)->count()) {
+			$order = SalesOrderQuery::create()->findOneByOrdernumber($ordn);
+			$order_items = SalesOrderDetailQuery::create()->filterByOrdernumber($ordn)->find();
 			$customer = CustomerQuery::create()->findOneByCustid($order->custid);
 			$page->title = "Sales Order #$ordn";
 			$page->listpage = $pages->get('pw_template=sales-orders');
 			$page->formurl = $pages->get('template=dplus-menu')->child('template=redir')->url;
 			$page->body =  $config->twig->render('sales-orders/sales-order/sales-order-page.twig', ['page' => $page, 'customer' => $customer, 'order' => $order, 'order_items' => $order_items, 'user' => $user, 'document_management' => $document_management, 'notes' => $notes]);
 
-			$shipments = SalesOrderShipmentQuery::create()->findByOrderNumber($ordn);
+			$shipments = SalesOrderShipmentQuery::create()->findByOrdernumber($ordn);
 			$urlmaker = $modules->get('DplusURLs');
 			$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-tracking.twig', ['page' => $page, 'order' => $order, 'shipments' => $shipments, 'urlmaker' => $urlmaker]);
 
@@ -35,17 +30,15 @@
 			$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-notes.twig', ['page' => $page, 'notes' => $notes, 'ordn' => $ordn]);
 
 			$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-actions.twig', ['page' => $page, 'order' => $order, 'shipments' => $shipments]);
-		} elseif (SalesHistoryQuery::create()->filterByOehhnbr($ordn)->count()) {
-			$order_query = SalesHistoryQuery::create();
-			$order = $order_query->findOneByOehhnbr($ordn);
+		} elseif (SalesHistoryQuery::create()->filterByOrdernumber($ordn)->count()) {
+			$order = SalesHistoryQuery::create()->findOneByOrdernumber($ordn);
 			$customer = CustomerQuery::create()->findOneByCustid($order->custid);
-			$order_items_query = SalesHistoryDetailQuery::create();
-			$order_items = $order_items_query->filterByOehhnbr($ordn)->find();
+			$order_items = SalesHistoryDetailQuery::create()->filterByOrdernumber($ordn)->find();
 			$page->title = "Sales Order #$ordn";
 			$page->listpage = $pages->get('pw_template=sales-history-orders');
 			$page->body = $config->twig->render('sales-orders/sales-history/sales-history-page.twig', ['page' => $page, 'order' => $order, 'customer' => $customer, 'order_items' => $order_items,  'document_management' => $document_management]);
 
-			$shipments = SalesOrderShipmentQuery::create()->findByOrderNumber($ordn);
+			$shipments = SalesOrderShipmentQuery::create()->findByOrdernumber($ordn);
 			$urlmaker = $modules->get('DplusURLs');
 			$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-tracking.twig', ['page' => $page, 'order' => $order, 'shipments' => $shipments, 'urlmaker' => $urlmaker]);
 

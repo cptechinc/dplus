@@ -16,6 +16,11 @@
 						<a href="<?= $parent->url; ?>"><?= $parent->title; ?></a>
 					</li>
 				<?php endforeach; ?>
+				<?php if ($page->has('title_previous')) : ?>
+					<li class="breadcrumb-item">
+						<a href="<?= $page->url; ?>"><?= $page->title_previous; ?></a>
+					</li>
+				<?php endif; ?>
 				<li class="breadcrumb-item active" aria-current="page"><?= $page->title; ?></li>
 			</ol>
 		</nav>

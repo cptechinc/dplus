@@ -1,50 +1,60 @@
 {% if (json['errormsg']) %}
 	{% include 'util/alert.twig' with {'type': 'warning','iconclass': 'fa fa-warning fa-2x', 'title': 'Error!', 'message': json['errormsg']} %}
 {% else %}
-	<h5>Kit Qty: {{ json['qty'] }}</h5>
+	<h3>Kit Qty: {{ json['qtyneeded'] }}</h3>
 
 	{% for component in json['data']['component'] %}
-		<h4>{{ component['component item'] }}</h4>
-		
-		<table class="table table-striped table-sm mb-3">
-			<thead>
-				{% for column in json['columns']['component'] %}
-					<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
-						{{ column['heading'] }}
-					</th>
-				{% endfor %}
-			</thead>
-			<tbody>
-				<tr>
-					{% for column, properties in json['columns']['component'] %}
-						<td class="{{ module_json.get_justifyclass(properties['datajustify']) }}">
-							{{ component[column] }}
-						</td>
+		<div class="row">
+			<div class="col-sm-6 form-group">
+				<h4>{{ component['component item'] }}</h4>
+			</div>
+			<div class="col-sm-6 form-group">
+				<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#{{ component['component item']|attrJS }}" aria-expanded="false" aria-controls="{{ component['component item']|attrJS }}">
+					Show / Hide
+				</button>
+			</div>
+		</div>
+		<div class="mb-4 collapse show" id="{{ component['component item']|attrJS }}">
+			<table class="table table-striped table-sm mb-3">
+				<thead>
+					{% for column in json['columns']['component'] %}
+						<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
+							{{ column['heading'] }}
+						</th>
 					{% endfor %}
-				</tr>
-			</tbody>
-		</table>
-
-		<table class="table table-striped table-sm mb-3">
-			<thead>
-				{% for column in json['columns']['warehouse'] %}
-					<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
-						{{ column['heading'] }}
-					</th>
-				{% endfor %}
-			</thead>
-			<tbody>
-				{% for warehouse in component['warehouse']  %}
+				</thead>
+				<tbody>
 					<tr>
-						{% for column, properties in json['columns']['warehouse'] %}
+						{% for column, properties in json['columns']['component'] %}
 							<td class="{{ module_json.get_justifyclass(properties['datajustify']) }}">
-								{{ warehouse[column] }}
+								{{ component[column] }}
 							</td>
 						{% endfor %}
 					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+				</tbody>
+			</table>
+
+			<table class="table table-striped table-sm mb-3">
+				<thead>
+					{% for column in json['columns']['warehouse'] %}
+						<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
+							{{ column['heading'] }}
+						</th>
+					{% endfor %}
+				</thead>
+				<tbody>
+					{% for warehouse in component['warehouse']  %}
+						<tr>
+							{% for column, properties in json['columns']['warehouse'] %}
+								<td class="{{ module_json.get_justifyclass(properties['datajustify']) }}">
+									{{ warehouse[column] }}
+								</td>
+							{% endfor %}
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 	{% endfor %}
 
 	<h6>Warehouses that meet the Requirement: {{ json['data']['whse meeting req']|join(', ') }}</h6>

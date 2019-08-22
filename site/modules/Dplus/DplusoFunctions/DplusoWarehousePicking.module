@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+use Purl\Url;
+
 use InvsearchQuery, Invsearch;;
 use WhseitempickQuery, Whseitempick;
 use PickSalesOrderDetailQuery, PickSalesOrderDetail;
@@ -33,6 +35,11 @@ class DplusoWarehousePicking extends WireData implements Module {
 	 */
 	protected $linenbr;
 
+	/**
+	 * Subline Number
+	 * @var int
+	 */
+	protected $sublinenbr = 0;
 
 	/**
 	 * Item Being Picked
@@ -110,6 +117,23 @@ class DplusoWarehousePicking extends WireData implements Module {
 	public function get_linenbr() {
 		return $this->linenbr;
 	}
+
+	/**
+	 * Sets SubLine Number
+	 * @param int $sublinenbr SubLine Number
+	 */
+	public function set_sublinenbr($sublinenbr) {
+		$this->sublinenbr = $sublinenbr;
+	}
+
+	/**
+	 * Returns SubLine Number
+	 * @param int $sublinenbr SubLine Number
+	 */
+	public function get_sublinenbr() {
+		return $this->sublinenbr;
+	}
+
 
 	/**
 	 * Sets Pick Item
@@ -245,9 +269,10 @@ class DplusoWarehousePicking extends WireData implements Module {
 		$item->setSessionid($pickitem->sessionid);
 		$item->setOrdn($pickitem->ordernbr);
 		$item->setItemid($pickitem->itemnbr);
-		$item->setRecordnumber($picking_master->get_max_orderline_recordnumber($pickitem->sessionid, $pickitem->ordernbr, $pickitem->linenbr) + 1);
+		$item->setRecordnumber($picking_master->get_max_order_subline_recordnumber($pickitem->sessionid, $pickitem->ordernbr, $pickitem->linenbr, $pickitem->sublinenbr) + 1);
 		$item->setPalletnbr($palletnbr);
 		$item->setLinenbr($pickitem->linenbr);
+		$item->setSublinenbr($pickitem->sublinenbr);
 		$item->setBarcode($barcode);
 		$item->setBin($binID);
 
@@ -266,29 +291,6 @@ class DplusoWarehousePicking extends WireData implements Module {
 	}
 
 	/**
-	 * Takes Scan and Takes the information if available to add the picked barcode
-	 * @param string $scan    Scanned data
-	 * @param int    $linenbr Line Number
-	 */
-	public function add_scannedbarcode($scan, $linenbr = 1) {
-		if (InvsearchQuery::create()->countByLotserial($this->sessionID, $scan)) {
-			$item = InvsearchQuery::create()->get_lotserial($this->sessionID, $scan);
-			$bincount = InvsearchQuery::create()->count_itembins_lotserial($this->sessionID, $item->itemid, $item->lotserial);
-		} elseif (InvsearchQuery::create()->countByItemid($this->sessionID, $scan)){
-			$item = InvsearchQuery::create()->findOneByItemid($this->sessionID, $scan);
-			$bincount = InvsearchQuery::create()->count_itembins_itemid($this->sessionID, $item->itemid);
-		}
-
-		if ($bincount == 1) {
-			$pickitem = PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr($this->sessionID, $this->ordn, $linenbr);
-			$barcode = $item->is_lotted() || $item->is_serialized() ? $item->lotserial : $item->itemid;
-			$this->add_pickedbarcode($pickitem, $barcode, 1, $item->bin);
-		} else {
-			$session->pickerror = "That item is in multiple bins";
-		}
-	}
-
-	/**
 	 * Updates the Whseitempick record
 	 * @param  WireInput $input Values for barcode, record, qty
 	 * @return void
@@ -301,7 +303,11 @@ class DplusoWarehousePicking extends WireData implements Module {
 		$qty       = $values->int('qty');
 
 		$picking_master = WhseitempickQuery::create();
-		$item = $picking_master->findOneBySessionidOrdnLinenbrRecordnumber($this->sessionID, $this->ordn, $this->linenbr, $recordnbr);
+		$picking_master->filterBySessionidOrder($this->sessionID, $this->ordn);
+		$picking_master->filterByLinenbrSublinenbr($this->linenbr, $this->sublinenbr);
+		$picking_master->filterByRecordnumber($recordnbr);
+
+		$item = $picking_master->findOne();
 		$item->setQty($qty);
 		$item->save();
 	}
@@ -318,7 +324,11 @@ class DplusoWarehousePicking extends WireData implements Module {
 		$recordnbr = $values->int('recordnbr');
 
 		$picking_master = WhseitempickQuery::create();
-		$item = $picking_master->findOneBySessionidOrdnLinenbrRecordnumber($this->sessionID, $this->ordn, $this->linenbr, $recordnbr);
+		$picking_master->filterBySessionidOrder($this->sessionID, $this->ordn);
+		$picking_master->filterByLinenbrSublinenbr($this->linenbr, $this->sublinenbr);
+		$picking_master->filterByRecordnumber($recordnbr);
+
+		$item = $picking_master->findOne();
 		$item->delete();
 	}
 
@@ -338,6 +348,7 @@ class DplusoWarehousePicking extends WireData implements Module {
 			$query->filterBySessionid($this->sessionID);
 			$query->filterByOrdn($this->ordn);
 			$query->filterByLinenbr($this->linenbr);
+			$query->filterBySublinenbr($this->sublinenbr);
 			return intval($query->findOne());
 		} else {
 			if ($this->config->picking->use_singleunitqty) {
@@ -346,9 +357,10 @@ class DplusoWarehousePicking extends WireData implements Module {
 				$query->filterBySessionid($this->sessionID);
 				$query->filterByOrdn($this->ordn);
 				$query->filterByLinenbr($this->linenbr);
+				$query->filterBySublinenbr($this->sublinenbr);
 				return intval($query->findOne());
 			} else {
-				return intval($query->get_lineqtytotal($this->sessionID, $this->ordn, $this->linenbr));
+				return intval($query->get_sublineqtytotal($this->sessionID, $this->ordn, $this->linenbr, $this->sublinenbr));
 			}
 		}
 	}
@@ -364,6 +376,7 @@ class DplusoWarehousePicking extends WireData implements Module {
 		$query->filterBySessionid($this->sessionID);
 		$query->filterByOrdn($this->ordn);
 		$query->filterByLinenbr($this->linenbr);
+		$query->filterBySublinenbr($this->sublinenbr);
 		$query->filterByBin('PACK');
 		return intval($query->findOne());
 	}
@@ -474,7 +487,7 @@ class DplusoWarehousePicking extends WireData implements Module {
 	 */
 	public function has_picked_barcode($barcode) {
 		$pickitem = $this->get_picksalesorderdetail();
-		return boolval(WhseitempickQuery::create()->has_picked_barcode($this->sessionID, $pickitem->ordernbr, $barcode, $pickitem->linenbr));
+		return boolval(WhseitempickQuery::create()->has_picked_barcode($this->sessionID, $pickitem->ordernbr, $barcode, $pickitem->linenbr, $pickitem->sublinenbr));
 	}
 
 	/**
@@ -482,8 +495,8 @@ class DplusoWarehousePicking extends WireData implements Module {
 	 * @param  PickSalesOrderDetail $pickitem
 	 * @return bool                           Is picksalesorderdetail being picked?
 	 */
-	public function is_line_being_picked(PickSalesOrderDetail $pickitem) {
-		return boolval(WhseitempickQuery::create()->is_orderline_being_picked($this->sessionID, $pickitem->ordernbr, $pickitem->linenbr));
+	public function is_subline_being_picked(PickSalesOrderDetail $pickitem) {
+		return boolval(WhseitempickQuery::create()->is_order_subline_being_picked($this->sessionID, $pickitem->ordernbr, $pickitem->linenbr, $pickitem->sublinenbr));
 	}
 
 	/**
@@ -492,7 +505,7 @@ class DplusoWarehousePicking extends WireData implements Module {
 	 * @return bool                           Is current session picking the detail line
 	 */
 	public function is_currentuser_picking(PickSalesOrderDetail $pickitem) {
-		return boolval(WhseitempickQuery::create()->is_orderline_being_picked_session($this->sessionID, $pickitem->ordernbr, $pickitem->linenbr));
+		return boolval(WhseitempickQuery::create()->is_order_subline_being_picked_session($this->sessionID, $pickitem->ordernbr, $pickitem->linenbr, $pickitem->sublinenbr));
 	}
 
 	/**
@@ -500,7 +513,10 @@ class DplusoWarehousePicking extends WireData implements Module {
 	 * @return PickSalesOrderDetail
 	 */
 	public function get_picksalesorderdetail() {
-		return PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr($this->sessionID, $this->ordn, $this->linenbr);
+		$picking_master = PickSalesOrderDetailQuery::create();
+		$picking_master->filterBySessionidOrder($this->sessionID, $this->ordn);
+		$picking_master->filterByLinenbrSublinenbr($this->linenbr, $this->sublinenbr);
+		return $picking_master->findOne();
 	}
 
 	/**

@@ -111,6 +111,11 @@
 				$user = $event->object;
 				$event->return = $permissions_master->get_users_functions($user->loginid);
 			});
+
+			$this->addHook('User::is_salesrep', function($event) {
+				$user = $event->object;
+				$event->return = $user->hasRole('slsrep');
+			});
 		}
 
 		/**
@@ -158,9 +163,9 @@
 			$role = strtolower($logmuser->role);
 			$user->addRole($role);
 			$user->dplusrole = $role;
-			$user->roleid   = $logmuser->roleid;
-			$user->company  = $logmuser->company;
-			$user->email    = $logmuser->email;
+			$user->roleid    = $logmuser->roleid;
+			$user->company   = $logmuser->company;
+			$user->email     = $logmuser->email;
 
 			$function = "setup_user_$role";
 

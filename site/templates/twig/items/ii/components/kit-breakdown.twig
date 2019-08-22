@@ -1,0 +1,30 @@
+<div class="row">
+	<div class="col-sm-6 form-group">
+		<h4> Kit Breakdown for {{ itemID }} </h4>
+	</div>
+	<div class="col-sm-6 form-group">
+		<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#{{ itemID|attrJS }}" aria-expanded="false" aria-controls="{{ itemID|attrJS }}">
+			Show / Hide
+		</button>
+	</div>
+</div>
+<div class="mb-4 collapse show" id="{{ itemID|attrJS }}">
+	<div class="row">
+		<div class="col-sm-6">
+			<table class="table table-sm">
+				<thead>
+					<th>Component</th>
+					<th>Description</th>
+					<th>Usage Rate</th>
+				</thead>
+				{% for item in items %}
+					<tr class="{{ item.has_usage ? '' : 'bg-danger text-white' }}">
+						<td>{{ item.itemid }}</td>
+						<td>{{ item.get_description() }}</td>
+						<td class="text-right">{{ item.usage }}</td>
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+</div>

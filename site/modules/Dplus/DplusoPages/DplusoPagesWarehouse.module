@@ -248,17 +248,7 @@
 		}
 
 		public function init_picking() {
-			$this->addHook('Page::get_finishitemURL', function($event) {
-				$p = $event->object;
-				$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
-				$url->query->set('action','finish-item');
 
-				if ($p->fullURL->query->has('linenbr')) {
-					$url->query->set('linenbr', $p->fullURL->query->get('linenbr'));
-				}
-				$url->query->set('page', $p->fullURL->getUrl());
-				$event->return = $url->getUrl();
-			});
 
 			$this->addHook('Page::get_skipitemURL', function($event) {
 				$p = $event->object;
@@ -288,7 +278,29 @@
 				$p = $event->object;
 				$item = $event->arguments(0); // Instance of PickSalesOrderDetail
 				$url = new Url($p->fullURL->getUrl());
-				$url->query->set('linenbr',$item->recno);
+				$url->query->set('linenbr', $item->recno);
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_selectpickitemURL', function($event) {
+				$p = $event->object;
+				$item = $event->arguments(0); // Instance of PickSalesOrderDetail
+				$url = new Url($p->fullURL->getUrl());
+				$url->query->set('linenbr', $item->linenbr);
+				$url->query->set('sublinenbr', $item->sublinenbr);
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_finishitemURL', function($event) {
+				$p = $event->object;
+				$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
+				$url->query->set('action','finish-item');
+
+				if ($p->fullURL->query->has('linenbr')) {
+					$url->query->set('linenbr', $p->fullURL->query->get('linenbr'));
+					$url->query->set('sublinenbr', $p->fullURL->query->get('sublinenbr'));
+				}
+				$url->query->set('page', $p->fullURL->getUrl());
 				$event->return = $url->getUrl();
 			});
 
@@ -296,9 +308,11 @@
 				$p = $event->object;
 				$ordn    = $event->arguments(0);
 				$linenbr = $event->arguments(1);
+				$sublinenbr = $event->arguments(2);
 				$url = new Url($this->wire('pages')->get('pw_template=whse-print-pick-item-label')->url);
 				$url->query->set('ordn', $ordn);
 				$url->query->set('linenbr', $linenbr);
+				$url->query->set('sublinenbr', $sublinenbr);
 				$url->query->set('returnpage', $p->fullURL->getUrl());
 				$event->return = $url->getUrl();
 			});

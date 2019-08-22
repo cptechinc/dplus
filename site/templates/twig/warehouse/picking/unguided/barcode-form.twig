@@ -2,6 +2,7 @@
 	<input type="hidden" name="action" value="add-barcode">
 	<input type="hidden" name="palletnbr" value="{{ whsesession.palletnbr }}">
 	<input type="hidden" name="linenbr" value="{{ pickitem.linenbr }}">
+	<input type="hidden" name="sublinenbr" value="{{ pickitem.sublinenbr }}">
 	<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
 
 	{% block item_inputs %}
@@ -24,7 +25,7 @@
 				</div>
 				<div class="col-sm-3">
 					<label for="">Qty</label>
-					<input type="number" class="form-control" name="qty" placeholder="Qty" value="1">
+					<input type="number" class="form-control qty-input text-right" name="qty" placeholder="Qty" value="1">
 				</div>
 				<div class="col-sm-3 text-right">
 					<label for="">Add Item</label> <br>
@@ -46,7 +47,7 @@
 				</div>
 				<div class="col-sm-3">
 					<label for="">Qty</label>
-					<input type="number" class="form-control" name="qty" placeholder="Qty" value="1">
+					<input type="number" class="form-control text-right qty-input" name="qty" placeholder="Qty" value="1">
 				</div>
 				<div class="col-sm-6">
 					<label for="">Item</label>
@@ -70,7 +71,7 @@
 		</button>
 	</div>
 	<div class="col-sm-3 form-group">
-		<a href="{{ page.get_printlinelabelURL(pickitem.ordn, pickitem.linenbr) }}" class="btn btn-dark">
+		<a href="{{ page.get_printlinelabelURL(pickitem.ordn, pickitem.linenbr, pickitem.sublinenbr) }}" class="btn btn-dark">
 			<i class="fa fa-print" aria-hidden="true"></i> Print Labels
 		</a>
 	</div>
