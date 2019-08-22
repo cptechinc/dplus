@@ -6,7 +6,7 @@
 	if ($input->get->ordn) {
 		$ordn = $input->get->text('ordn');
 
-		if (SalesOrderQuery::create()->filterByOehdnbr($ordn)->count()) {
+		if (SalesOrderQuery::create()->filterByOrdernumber($ordn)->count()) {
 			$order = OrdrhedQuery::create()->findOneBySessionidOrder(session_id(), $ordn);
 			$order_items = OrdrdetQuery::create()->filterBySessionidOrder(session_id(), $ordn)->find();
 			$customer = CustomerQuery::create()->findOneByCustid($order->custid);
@@ -18,7 +18,7 @@
 			if ($user->is_editingorder($ordn)) {
 				$config->scripts->append(hash_templatefile('scripts/orders/edit-order.js'));
 			}
-		} elseif (SalesHistoryQuery::create()->filterByOehhnbr($ordn)->count()) {
+		} elseif (SalesHistoryQuery::create()->filterByOrdernumber($ordn)->count()) {
 			$page->headline = $page->title = "Sales Order #$ordn is not editable";
 			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Sales Order #$ordn is in Sales History"]);
 		} else {
