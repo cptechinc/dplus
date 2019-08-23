@@ -1,0 +1,134 @@
+<?php namespace ProcessWire;
+
+use UseractionsQuery, Useractions;
+
+class UserActionsCrud extends WireData implements Module {
+
+	const RESPONSE_TEMPLATE = array(
+		'error'       => false,
+		'notifytype'  => 'success',
+		'message'     => 'Your task has been marked as complete',
+		'icon'        => 'fa fa-floppy-o fa-2x',
+		'actionID'    => '',
+		'rescheduled' => ''
+	);
+
+	const RESPONSE_TEMPLATE_SUCCESS = array(
+		'error'       => false,
+		'notifytype'  => 'success',
+		'message'     => 'Your task has been marked as complete',
+		'icon'        => 'fa fa-floppy-o fa-2x',
+		'actionID'    => '',
+		'rescheduled' => ''
+	);
+
+	const RESPONSE_TEMPLATE_ERROR = array(
+		'error'       => true,
+		'notifytype'  => 'danger',
+		'message'     => 'Your task was not able to be updated',
+		'icon'        => 'fa fa-exclamation-triangle fa-2x',
+		'actionID'    => '',
+		'rescheduled' => ''
+	);
+
+	const ACTION_SUBTYPES = array(
+		'task' => array(
+			'email',
+			'phone',
+			'followup',
+			'meeting'
+		),
+		'note' => array(
+			'general',
+			'reflection'
+		),
+		'action' => array(
+			'phone',
+			'meeting',
+			'email'
+		)
+	);
+
+	public function get_subtypes($actiontype) {
+		return self::ACTION_SUBTYPES[$actiontype];
+	}
+
+	public function process_input(WireInput $input) {
+		$values = $input->post;
+
+		if ($values->text('id')) {
+			$id = $input->get->text('id');
+			$action = UseractionsQuery::create()->findOneById($id);
+			$type = $action->actiontype;
+			$function = "process_input_$type";
+			return $this->$function($input, $action);
+		} else {
+			$response = self::RESPONSE_TEMPLATE_ERROR;
+			$response['message'] = 'Action ID was not provided';
+			return $response;
+		}
+	}
+
+	public function process_input_task(WireInput $input, Useractions $task) {
+		$values = $input->post;
+		$response = self::RESPONSE_TEMPLATE;
+
+		switch ($values->action) {
+			case 'complete-task':
+				$task->setDatecompleted(date('Y-m-d'));
+				$task->setCompleted(Useractions::STATUS_COMPLETED);
+				$task->setReflectnote($values->text('reflectnote'));
+				$saved = boolval($task->save());
+				break;
+			case 'reschedule-task':
+				$task_new = $task->copy();
+				$task_new->setDateupdated(date('Y-m-d H:i:s'));
+				$task_new->setDuedate(date('Y-m-d', strtotime($values->text('duedate'))));
+				$task_new->setActionlink($task->id);
+				$saved = boolval($task_new->save());
+
+				if ($saved) {
+					$task->setDateupdated(date('Y-m-d H:i:s'));
+					$task->setCompleted(Useractions::STATUS_RESCHEDULED);
+					$task->setRescheduledlink($task_new->id);
+					$task->save();
+					$task_new->setActionlink('');
+					$task_new->save();
+				}
+				break;
+		}
+
+		if ($saved) {
+			$response = self::RESPONSE_TEMPLATE_SUCCESS;
+			$response['message'] = $task->rescheduledlink ? 'Your task has been Rescheduled' : 'Your task has been marked as complete';
+		} else {
+			$response = self::RESPONSE_TEMPLATE_ERROR;
+			$response['message'] = $task->rescheduledlink ? 'Your task was not able to be rescheduled' : 'Your task was not able to be updated';
+		}
+
+		$response['actionID'] = $task->id;
+
+		if (isset($task_new)) {
+			$response['rescheduled'] = $task_new->id;
+		}
+		return $response;
+	}
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'User Actions CRUD',
+			'version' => 101,
+			'summary' => 'Handles CRUD methods for User Actions',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

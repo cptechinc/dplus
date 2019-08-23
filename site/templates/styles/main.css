@@ -16,10 +16,24 @@ footer {
 /**************************************
 	Bootstrap Styles
 **************************************/
-.breadcrumb .breadcrumb-item::before {
-	color: white;
+.breadcrumb .breadcrumb-item::before {color: white;}
+.breadcrumb-item+.breadcrumb-item::before {
+	display: inline-block;
+	padding-right: 0.5rem;
+	color: #6c757d;
+	content: "/"
+ }
+
+.breadcrumb-item.active {
+	color: #FF304F;
 }
 
+.toolbar-sidebar > .nav > li > a {
+	display: block;
+	padding: .25rem 1.5rem;
+	font-size: 90%;
+	color: rgba(0,0,0,.65);
+}
 
 /*==============================================================
 	FUELUX Styles
@@ -120,4 +134,11 @@ a.link:hover {
 	max-width: 500px;
 	padding: 15px;
 	margin: auto
+}
+
+/************************************** Login **************************************/
+
+#user-actions-list {
+	overflow-y: scroll;
+	max-height: 500px;
 }

@@ -1,4 +1,7 @@
-{% set incompletetasks = module_useractions.get_incompletetasksquery(input).filterByDuedate({'max': 'yesterday'}).find() %}
+{% set overduetasks = module_useractions.get_incompletetasksquery(input).filterByDuedate({'max': 'yesterday'}).find() %}
+{% set upcomingtasks = module_useractions.get_incompletetasksquery(input).filterByDuedate({'min': 'today'}).find() %}
+
+{{ dpluso.getLastExecutedQuery() }}
 <div class="card mb-4">
 	<div class="card-header d-flex justify-content-between bg-primary">
 		<a class="text-white" data-toggle="collapse" href="#user-actions-list" role="button" aria-expanded="false" aria-controls="user-actions-list">
@@ -35,30 +38,71 @@
 					<div class="list-group">
 						<div class="list-group-item bg-dark text-white">
 							<div class="row">
-								<div class="col">Due</div>
+								<div class="col">Title</div>
 								<div class="col">Customer</div>
-								<div class="col">Regarding / Title</div>
+								<div class="col">Due</div>
 								<div class="col">View</div>
 							</div>
 						</div>
 						<div class="list-group-item p-2 text-center">
-							<h6>Incomplete Tasks</h6>
+							<h6>Overdue Tasks</h6>
 						</div>
 
-						{% for task in incompletetasks %}
-							<div class="list-group-item bg-warning text-white">
-								<div class="d-flex w-100 justify-content-between">
-									<h5 class="mb-1">{{ task.title }}</h5>
-									<small>Due: {{ task.duedate.format('m/d/Y') }}</small>
-									<span>
-										Type: {{ task.subtype_description()|capitalize  }}
-										<i class="{{ module_useractions.get_iconclass(task.actionsubtype) }}" aria-hidden="true"></i>
-									</span>
-									<a href="{{ module_useractions.get_actionURL(task) }}" class="btn btn-sm btn-primary">
-										<i class="fa fa-external-link-square" aria-hidden="true"></i> View
+						{% for task in overduetasks %}
+							<div class="list-group-item pb-1 pt-1 bg-warning text-white">
+								<h5 class="mb-1">
+									<a href="{{ module_useractions.get_actionURL(task) }}" class="link text-white">
+										{{ task.title }} <i class="fa fa-external-link-square" aria-hidden="true"></i>
 									</a>
+								</h5>
+								<div class="row">
+									<div class="col">
+										<span>
+											Type: {{ task.subtype_description()|capitalize }}
+											<i class="{{ module_useractions.get_iconclass(task.actionsubtype) }}" aria-hidden="true"></i>
+										</span>
+									</div>
+									<div class="col">{{ task.customerlink }}</div>
+									<div class="col">
+										{{ task.duedate.format('m/d/Y') }}
+									</div>
+									<div class="col text-right">
+										<a href="{{ module_useractions.get_actionURL(task) }}" class="btn btn-sm btn-primary">
+											<i class="fa fa-external-link-square" aria-hidden="true"></i> View
+										</a>
+									</div>
 								</div>
-								<p class="mb-1">Customer: {{ task.customerlink }}</p>
+							</div>
+						{% endfor %}
+
+						<div class="list-group-item p-2 text-center">
+							<h6>Upcoming Tasks</h6>
+						</div>
+
+						{% for task in upcomingtasks %}
+							<div class="list-group-item pb-1 pt-1 bg-warning text-white">
+								<h5 class="mb-1">
+									<a href="{{ module_useractions.get_actionURL(task) }}" class="link text-white">
+										{{ task.title }} <i class="fa fa-external-link-square" aria-hidden="true"></i>
+									</a>
+								</h5>
+								<div class="row">
+									<div class="col">
+										<span>
+											Type: {{ task.subtype_description()|capitalize  }}
+											<i class="{{ module_useractions.get_iconclass(task.actionsubtype) }}" aria-hidden="true"></i>
+										</span>
+									</div>
+									<div class="col">{{ task.customerlink }}</div>
+									<div class="col">
+										{{ task.duedate.format('m/d/Y') }}
+									</div>
+									<div class="col text-right">
+										<a href="{{ module_useractions.get_actionURL(task) }}" class="btn btn-sm btn-primary">
+											<i class="fa fa-external-link-square" aria-hidden="true"></i> View
+										</a>
+									</div>
+								</div>
 							</div>
 						{% endfor %}
 					</div>

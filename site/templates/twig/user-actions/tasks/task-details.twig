@@ -6,6 +6,8 @@
 	{% set class_status = 'bg-warning text-white' %}
 {% endif %}
 
+{% set contact = module_useractions.get_contact(task) %}
+
 <table class="table table-sm table-striped">
 	<tr>
 		<td>
@@ -19,7 +21,9 @@
 		<td>
 			<b>Task Type:</b>
 		</td>
-		<td>{{ task.subtype_description()|capitalize }}</td>
+		<td>
+			<i class="{{ module_useractions.get_iconclass(task.actionsubtype) }}" aria-hidden="true"></i> {{ task.subtype_description()|capitalize }}
+		</td>
 	</tr>
 	<tr>
 		<td class="{{ class_status }}">
@@ -51,7 +55,7 @@
 		<td>
 			<b>Due:</b>
 		</td>
-		<td>{{ task.duedate.format('m/d/Y g:i A') }}</td>
+		<td>{{ task.duedate.format('m/d/Y') }}</td>
 	</tr>
 	{% if task.is_completed() %}
 		<tr>
@@ -101,32 +105,30 @@
 			</tr>
 		{% endif %}
 	{% endif %}
-	{% if task.has_contactlink() %}
+	<tr>
+		<td>
+			<b>Phone:</b>
+		</td>
+		<td>
+			<a href="tel:{{ contact.phone }}" class="link">{{ contact.phone|phone_us }}</a> &nbsp;
+		</td>
+	</tr>
+	{% if contact.cellphone != '' %}
 		<tr>
 			<td>
-				<b>Phone:</b>
+				<b>Cell Phone:</b>
 			</td>
 			<td>
-				<a href="tel:{{ contact.phone }}">{{ contact.phone }}</a> &nbsp;
+				<a href="tel:{{ contact.cellphone }}" class="link">{{ contact.cellphone|phone_us }}</a>
 			</td>
-		</tr>
-		{% if contact.cellphone != '' %}
-			<tr>
-				<td>
-					<b>Cell Phone:</b>
-				</td>
-				<td>
-					<a href="tel:{{ contact.cellphone }}">{{ contact.cellphone }}</a>
-				</td>
-			</tr>
-		{% endif %}
-		<tr>
-			<td>
-				<b>Email:</b>
-			</td>
-			<td><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></td>
 		</tr>
 	{% endif %}
+	<tr>
+		<td>
+			<b>Email:</b>
+		</td>
+		<td><a href="mailto:{{ contact.email }}" class="link">{{ contact.email }}</a></td>
+	</tr>
 	{% if task.has_salesorderlink() %}
 		<tr>
 			<td>

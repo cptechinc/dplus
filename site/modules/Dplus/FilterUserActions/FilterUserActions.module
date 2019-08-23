@@ -1,6 +1,8 @@
 <?php namespace ProcessWire;
 
+	use Purl\Url;
 	use UseractionsQuery, Useractions;
+	use PhoneBookQuery, PhoneBook;
 
 	class FilterUserActions extends Process implements ConfigurableModule {
 
@@ -111,11 +113,11 @@
 			$userID = !empty($userID) ? $userID : $this->wire('user')->loginid;
 			$date = $date != 'today' ? $date : date('Ymd');
 			$datecompleted = date('Y-m-d', strtotime($date));
-
 			$query = UseractionsQuery::create();
 			$query->filterByActiontype(Useractions::TYPES['task']);
 			$query->filterByAssignedto($userID);
-			$query->filterByDatecompleted($datecompleted);
+			$query->filterByStatusComplete();
+			$query->filterByDateCompletedDay($datecompleted);
 			return $query->count();
 		}
 
@@ -136,7 +138,7 @@
 			$query->filterByActiontype(Useractions::TYPES['task']);
 			$query->filterByAssignedto($userID);
 			$query->filterByStatusRescheduled();
-			$query->filterByDateupdated($datecompleted);
+			$query->filterByDateUpdatedDay($datecompleted);
 			return $query->count();
 		}
 
@@ -156,7 +158,14 @@
 		 */
 		public function get_actionURL($action) {
 			$id = (get_class($action) == 'Useractions') ? $action->id : $action;
-			return $this->wire('pages')->get('pw_template=user-actions')->url."?id=$id";
+			$page = $this->wire('page');
+			$url = new Url($this->wire('pages')->get('pw_template=user-actions')->url);
+			$url->query->set('id', $id);
+
+			if ($page->template != 'user-actions') {
+				$url->query->set('returnpage', $page->fullURL->getUrl());
+			}
+			return $url->getUrl();
 		}
 
 		/**
@@ -166,6 +175,30 @@
 		 */
 		public function get_customerURL($custID) {
 			return $this->wire('pages')->get('pw_template=ci-customer')->url."?custID=$custID";
+		}
+
+		public function get_contact(UserActions $action) {
+			$q = PhoneBookQuery::create();
+
+			if ($action->has_customerlink()) {
+				$q->filterByCustid($action->customerlink);
+
+				if ($action->has_shiptolink()) {
+					$q->filterTypeCustomerShipto();
+					$q->filterByShiptoid($action->shiptolink);
+
+					if ($action->has_contactlink()) {
+						$q->filterByContact($action->contactlink);
+					}
+				} elseif ($action->has_contactlink()) {
+					$q->filterTypeCustomerContact();
+					$q->filterByContact($action->contactlink);
+				} else {
+					$q->filterTypeCustomer();
+				}
+			}
+
+			return $q->findOne();
 		}
 
 		/* =============================================================

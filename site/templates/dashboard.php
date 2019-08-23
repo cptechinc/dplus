@@ -21,6 +21,8 @@
 	$twig_params['user']  = $user;
 	$twig_params['input'] = $input;
 
+	$twig_params['dpluso'] = $dpluso;
+
 	$page->body = $config->twig->render("dashboard/$user->dplusrole.twig", $twig_params);
 
 	include __DIR__ . "/basic-page.php";

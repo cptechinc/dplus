@@ -1,23 +1,30 @@
-<div class="row mb-2">
-	<div class="col">
-		<a href="#history" class="btn btn-primary">History</a>
+<h2 class="text-secondary">Viewing Task : {{ task.get_title() }}</h2>
+
+{% if task.has_actionlink() %}
+	<div class="row mb-2">
+		<div class="col">
+			<a href="#history" class="btn btn-primary">History</a>
+		</div>
 	</div>
-</div>
+{% endif %}
 
 {% include 'user-actions/tasks/task-details.twig' %}
 
-<div class="row">
-	<div class="col">
-		<a href="#" class="btn btn-success">
-			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-		</a>
+{% if not task.is_completed() and not task.is_rescheduled() %}
+	<div class="row mb-3">
+		<div class="col">
+			<button type="button" class="btn btn-success" data-toggle="modal" data-target="#complete-task-modal">
+				<i class="fa fa-check" aria-hidden="true"></i>  Complete Task
+			</button>
+		</div>
+		<div class="col">
+			<button type="button" class="btn btn-info" data-toggle="modal" data-target="#reschedule-task-modal">
+				<i class="fa fa-calendar" aria-hidden="true"></i> Reschedule
+			</button>
+		</div>
 	</div>
-	<div class="col">
-		<a href="#" class="btn btn-info">
-			<i class="fa fa-calendar" aria-hidden="true"></i> Reschedule
-		</a>
-	</div>
-</div>
+{% endif %}
+
 <hr>
 
 {% if task.has_actionlink() %}
@@ -27,7 +34,9 @@
 		<div class="text-center mb-2">
 			<i class="fa fa-arrow-down fa-3x" aria-hidden="true"></i>
 		</div>
-
 		{% include 'user-actions/tasks/task-details.twig' with {'task': parent} %}
 	{% endfor %}
 {% endif %}
+
+{% include 'user-actions/tasks/complete-task-modal.twig' %}
+{% include 'user-actions/tasks/reschedule-task-modal.twig' %}
