@@ -83,6 +83,15 @@
 				'parent'         => '/user/screen-formatters/ii/',
 				'formatter'      => 'IiPurchaseOrders',
 				'jsoncode'       => 'ii-purchase-orders'
+			),
+			'ii-purchase-history' => array(
+				'template'       => 'formatter-screen',
+				'name'           => 'purchase-history',
+				'title'          => 'II Purchase History',
+				'summary'        => 'II Purchase History Formatter',
+				'parent'         => '/user/screen-formatters/ii/',
+				'formatter'      => 'IiPurchaseHistory',
+				'jsoncode'       => 'ii-purchase-history'
 			)
 		);
 

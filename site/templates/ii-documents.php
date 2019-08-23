@@ -27,7 +27,7 @@
 					$ordn = SalesOrder::get_paddedordernumber($input->get->text('ordn'));
 					$page->title = "Sales Order #$ordn Documents";
 
-					if (SalesOrderQuery::create()->filterByOrderNumber($ordn)->count()) {
+					if (SalesOrderQuery::create()->filterByOrdernumber($ordn)->count()) {
 						$documents = $document_management->get_salesorderdocuments($ordn);
 					} else {
 						$documents = array();
@@ -42,7 +42,7 @@
 					$date = $input->get->text('date');
 					$page->title = "Sales Order #$ordn Documents";
 
-					if (SalesHistoryQuery::create()->filterByOrderNumber($ordn)->count()) {
+					if (SalesHistoryQuery::create()->filterByOrdernumber($ordn)->count()) {
 						$documents = $document_management->get_saleshistorydocuments($ordn);
 					} else {
 						$documents = array();

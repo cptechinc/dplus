@@ -18,7 +18,7 @@
 		$contacts = $query->paginate($input->pageNum, 10);
 
 		$query = SalesOrderQuery::create();
-		$query->filterByArcucustid($custID);
+		$query->filterBycustid($custID);
 		$orders = $query->paginate($input->pageNum, 10);
 
 		$query = SalesHistoryQuery::create();
@@ -42,7 +42,7 @@
 			$columns = array($col_custid, $col_name);
 			$query->search_filter($columns, strtoupper($q));
 		}
-		
+
 		if ($page->has_orderby()) {
 			$orderbycolumn = $page->orderby_column;
 			$sort = $page->orderby_sort;

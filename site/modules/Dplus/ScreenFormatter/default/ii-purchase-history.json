@@ -1,0 +1,239 @@
+{
+	"cols": 10,
+	"detail": {
+		"rows": 1,
+		"columns": {
+			"Purchase Order Number": {
+				"line": 1,
+				"column": 1,
+				"col-length": 1,
+				"label": "PO Nbr",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false
+			},
+			"Vendor ID": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Vendor ID",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false
+			},
+			"Vendor Name": {
+				"line": 1,
+				"column": 2,
+				"col-length": 1,
+				"label": "---- Vendor ----",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false
+			},
+			"Order Date": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Order Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y"
+			},
+			"Ship Date": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Ship Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y"
+			},
+			"Expected Date": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Expected Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y"
+			},
+			"Receipt Date": {
+				"line": 1,
+				"column": 3,
+				"col-length": 1,
+				"label": "Rcpt Dte",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y"
+			},
+			"Purchase Unit of Measure": {
+				"line": 1,
+				"column": 4,
+				"col-length": 1,
+				"label": "UOM",
+				"before-decimal": 4,
+				"after-decimal": 0,
+				"date-format": false
+			},
+			"Quantity Received": {
+				"line": 1,
+				"column": 5,
+				"col-length": 1,
+				"label": "Rcvd Qty",
+				"before-decimal": 7,
+				"after-decimal": 0,
+				"date-format": false
+			},
+			"Received Unit Cost": {
+				"line": 1,
+				"column": 6,
+				"col-length": 1,
+				"label": "Unit Cost",
+				"before-decimal": 7,
+				"after-decimal": 2,
+				"date-format": false
+			},
+			"Received Amount": {
+				"line": 1,
+				"column": 7,
+				"col-length": 1,
+				"label": "Total Cost",
+				"before-decimal": 8,
+				"after-decimal": 2,
+				"date-format": false
+			},
+			"Special Order": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Special Order",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false
+			},
+			"Non-Stock Vendor Item ID": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Non-Stock Vendor Item ID",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false
+			},
+			"Non-Stock Vend Item Desc1": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Non-Stock Vend Item Desc1",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false
+			},
+			"Non-Stock Vend Item Desc2": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Non-Stock Vend Item Desc2",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false
+			},
+			"Invoice Number": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Invoice Number",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false
+			},
+			"Invoice Date": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Invoice Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y"
+			},
+			"Quantity Invoiced": {
+				"line": 1,
+				"column": 8,
+				"col-length": 1,
+				"label": "Invc Qty",
+				"before-decimal": 7,
+				"after-decimal": 0,
+				"date-format": false
+			},
+			"Invoiced Unit Cost": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Invoiced Unit Cost",
+				"before-decimal": 7,
+				"after-decimal": 2,
+				"date-format": false
+			},
+			"Invoiced Amount": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Invoiced Amount",
+				"before-decimal": 8,
+				"after-decimal": 2,
+				"date-format": false
+			},
+			"Landed Unit Cost": {
+				"line": 1,
+				"column": 9,
+				"col-length": 1,
+				"label": "Landed Cost",
+				"before-decimal": 5,
+				"after-decimal": 2,
+				"date-format": false
+			},
+			"Landed Total Cost": {
+				"line": 1,
+				"column": 10,
+				"col-length": 1,
+				"label": "Landed Total Cost",
+				"before-decimal": 6,
+				"after-decimal": 2,
+				"date-format": false
+			}
+		}
+
+	},
+	"lotserial": {
+		"rows": 1,
+		"columns": {
+			"Lot/Serial Number": {
+				"line": 1,
+				"column": 2,
+				"col-length": 1,
+				"label": "Lot Number",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false
+			},
+			"Bin Number": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Bin Number",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false
+			},
+			"Lot/Serial Qty Received": {
+				"line": 1,
+				"column": 3,
+				"col-length": 1,
+				"label": "Lot/Serial Qty Received",
+				"before-decimal": 7,
+				"after-decimal": 0,
+				"date-format": false
+			}
+		}
+	}
+}
