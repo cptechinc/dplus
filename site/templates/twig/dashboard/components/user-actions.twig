@@ -1,7 +1,6 @@
 {% set overduetasks = module_useractions.get_incompletetasksquery(input).filterByDuedate({'max': 'yesterday'}).find() %}
 {% set upcomingtasks = module_useractions.get_incompletetasksquery(input).filterByDuedate({'min': 'today'}).find() %}
 
-{{ dpluso.getLastExecutedQuery() }}
 <div class="card mb-4">
 	<div class="card-header d-flex justify-content-between bg-primary">
 		<a class="text-white" data-toggle="collapse" href="#user-actions-list" role="button" aria-expanded="false" aria-controls="user-actions-list">

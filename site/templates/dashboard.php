@@ -1,7 +1,12 @@
 <?php
 	$twig_params = array();
 	$query = SalesOrderQuery::create();
-	$orders = $query->limit(10)->filterbySalesPerson('RDB')->orderByOehdordrdate('DESC')->find();
+	if ($user->is_salesrep()) {
+		$query->filterbySalesPerson($user->roleid);
+	}
+	$query->limit(10);
+	$query->orderByDate_ordered('DESC');
+	$orders = $query->find();
 
 	$orders_count = SalesOrderQuery::create()->filterbySalesPerson('RDB')->count();
 	$twig_params['orders']       = $orders;

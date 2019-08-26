@@ -24,7 +24,16 @@ class DplusoPagesUserActions extends DplusoPages implements Module {
 			'parent'         => '/',
 			'dplus_function' => '',
 			'pw_template'    => 'user-actions'
-		)
+		),
+		'user-actions' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'create',
+			'title'          => 'Create User Action',
+			'summary'        => 'Create User Action',
+			'parent'         => '/user-actions/',
+			'dplus_function' => '',
+			'pw_template'    => 'user-actions-create'
+		),
 	);
 
 	public static function getModuleInfo() {

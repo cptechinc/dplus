@@ -1,6 +1,7 @@
 <?php
 	$config_salesorders = $modules->get('SalesOrdersConfig');
 	$modules->get('DplusoPagesSalesOrder')->init_salesorder_hooks();
+	$module_useractions = $modules->get('FilterUserActions');
 	$http = new ProcessWire\WireHttp();
 
 	if ($input->get->ordn) {
@@ -28,6 +29,11 @@
 			// TODO: NOTES
 			$notes = QnoteQuery::create()->filterBySessionidOrdernbrLinenbr(session_id(), $ordn, $linenbr = 0);
 			$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-notes.twig', ['page' => $page, 'notes' => $notes, 'ordn' => $ordn]);
+
+			$query_useractions = $module_useractions->get_actionsquery($input);
+			$query_useractions->filterBySalesorderlink($ordn);
+			$actions = $query_useractions->find();
+			$page->body .= $config->twig->render('sales-orders/sales-order/user-actions.twig', ['page' => $page, 'module_useractions' => $module_useractions, 'actions' => $actions, 'ordn' => $ordn]);
 
 			$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-actions.twig', ['page' => $page, 'order' => $order, 'shipments' => $shipments]);
 		} elseif (SalesHistoryQuery::create()->filterByOrdernumber($ordn)->count()) {
