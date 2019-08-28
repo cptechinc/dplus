@@ -8,7 +8,7 @@
 	</div>
 {% endif %}
 
-{% include 'user-actions/tasks/task-details.twig' %}
+{% include 'user-actions/task/task-details.twig' %}
 
 {% if not task.is_completed() and not task.is_rescheduled() %}
 	<div class="row mb-3">
@@ -34,9 +34,9 @@
 		<div class="text-center mb-2">
 			<i class="fa fa-arrow-down fa-3x" aria-hidden="true"></i>
 		</div>
-		{% include 'user-actions/tasks/task-details.twig' with {'task': parent} %}
+		{% include 'user-actions/task/task-details.twig' with {'task': parent} %}
 	{% endfor %}
 {% endif %}
 
-{% include 'user-actions/tasks/complete-task-modal.twig' %}
-{% include 'user-actions/tasks/reschedule-task-modal.twig' %}
+{% include 'user-actions/task/complete-task-modal.twig' %}
+{% include 'user-actions/task/reschedule-task-modal.twig' %}

@@ -55,6 +55,40 @@ $(function() {
 		}
 	});
 
+	$('.create-action').on('click', function (e) {
+		e.preventDefault();
+		var button = $(this);
+		var uri = new URI(button.attr('href'));
+		swal({
+			title: 'Select Action Type',
+			input: 'select',
+			type: 'question',
+			confirmButtonClass: 'btn btn-sm btn-success',
+			cancelButtonClass: 'btn btn-sm btn-danger',
+			inputClass: 'form-control',
+			inputOptions: {
+				task: 'Task',
+				note: 'Note',
+				action: 'Action',
+			},
+			inputPlaceholder: 'Select an Action Type',
+			showCancelButton: true,
+			inputValidator: (value) => {
+				return new Promise(function (resolve, reject) {
+					if (value.length) {
+						resolve();
+					} else {
+						reject('You need to select an Action Type')
+					}
+				});
+
+			}
+		}).then(function (result) {
+			uri.addQuery('type', result);
+			window.location.href = uri.toString();
+		}).catch(swal.noop);
+	});
+
 	$.notifyDefaults({
 		type: 'success',
 		allow_dismiss: true,

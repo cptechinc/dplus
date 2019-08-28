@@ -31,6 +31,13 @@
 							<td>Tasks Rescheduled on {{ "now"|date("m/d/Y") }}</td>
 							<td>{{ module_useractions.count_usertasksrescheduled() }}</td>
 						</tr>
+						<tr>
+							<td colspan="2" class="bg-secondary">
+								<a href="{{ module_useractions.get_actionspageURL() }}" class="text-white">
+									View More Actions <i class="fa fa-external-link-square" aria-hidden="true"></i>
+								</a>
+							</td>
+						</tr>
 					</table>
 				</div>
 				<div class="col-sm-8">

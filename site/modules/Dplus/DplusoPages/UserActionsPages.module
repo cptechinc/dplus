@@ -4,13 +4,21 @@ require_once(__DIR__ . '/DplusoPages.module');
 
 use Purl\Url;
 
-class DplusoPagesUserActions extends DplusoPages implements Module {
+class UserActionsPages extends DplusoPages implements Module {
 
 	protected $fields = array();
 
 	protected $templates = array(
 		'user-actions' => array(
 			'name'   => 'user-actions',
+			'fields' => array()
+		),
+		'user-actions-create' => array(
+			'name'   => 'user-actions-create',
+			'fields' => array()
+		),
+		'user-actions-customer' => array(
+			'name'   => 'user-actions-customer',
 			'fields' => array()
 		)
 	);
@@ -25,7 +33,7 @@ class DplusoPagesUserActions extends DplusoPages implements Module {
 			'dplus_function' => '',
 			'pw_template'    => 'user-actions'
 		),
-		'user-actions' => array(
+		'user-actions-create' => array(
 			'template'       => 'dplus-function',
 			'name'           => 'create',
 			'title'          => 'Create User Action',
@@ -34,7 +42,46 @@ class DplusoPagesUserActions extends DplusoPages implements Module {
 			'dplus_function' => '',
 			'pw_template'    => 'user-actions-create'
 		),
+		'user-actions-customer' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'customer',
+			'title'          => 'Customer User Actions',
+			'summary'        => 'Customer User Action',
+			'parent'         => '/user-actions/',
+			'dplus_function' => '',
+			'pw_template'    => 'user-actions-customer'
+		),
 	);
+
+	public function init() {
+		$this->addHook('Page::get_createactionURL', function($event) {
+			$p = $event->object;
+			$url = new Url($this->wire('pages')->get('pw_template=user-actions-create')->url);
+
+			switch ($p->pw_template) {
+				case 'ci-customer':
+					$url->query->set('custID', $p->fullURL->query->get('custID'));
+					$url->query->set('shiptoID', $p->fullURL->query->get('shiptoID'));
+					break;
+			}
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_actionslistURL', function($event) {
+			$p = $event->object;
+
+			$url = new Url($this->wire('pages')->get('pw_template=user-actions')->url);
+			switch ($p->pw_template) {
+				case 'ci-customer':
+					$url->path = $this->wire('pages')->get('pw_template=user-actions-customer')->url;
+					$url->query->set('custID', $p->fullURL->query->get('custID'));
+					$url->query->set('shiptoID', $p->fullURL->query->get('shiptoID'));
+					break;
+			}
+
+			$event->return = $url->getUrl();
+		});
+	}
 
 	public static function getModuleInfo() {
 		return array(

@@ -20,13 +20,31 @@
 		);
 
 		const SUBTYPE_FONTAWESOME = array(
-			'email'    => 'fa fa-envelope-o',
-			'phone'    => 'fa fa-phone',
-			'followup' => 'fa fa-user'
+			'email'      => 'fa fa-envelope-o',
+			'phone'      => 'fa fa-phone',
+			'followup'   => 'fa fa-user',
+			'general'    => 'fa fa-sticky-note-o',
+			'reflection' => 'fa fa-commenting-o',
+			'meeting'    => 'fa fa-users'
 		);
 
+		/**
+		 * Return Icon Class for the subtype
+		 *
+		 * @param  string $subactiontype Subtype
+		 * @return string                Icon class
+		 */
 		public function get_iconclass($subactiontype) {
 			return self::SUBTYPE_FONTAWESOME[$subactiontype];
+		}
+
+		/**
+		 * Return Action Types
+		 *
+		 * @return array
+		 */
+		public function get_types() {
+			return $this->wire('modules')->get('UserActionsCrud')->get_types();
 		}
 
 		public function get_actions(WireInput $input) {
@@ -41,11 +59,12 @@
 		public function get_actionsquery(WireInput $input) {
 			$query = UseractionsQuery::create();
 			$this->filter_assignedto($query, $input);
+			$this->filter_customer($query, $input);
 			return $query;
 		}
 
 		/**
-		 * Adds a filter to the query
+		 * Adds the assignedto filter to the query
 		 * @uses UseractionsQuery::filterByAssignedto
 		 *
 		 * @param  UseractionsQuery $query User Actions Query
@@ -59,6 +78,31 @@
 				$assignedto = $this->wire('user')->loginid;
 			}
 			$query->filterByAssignedto($assignedto);
+			return $query;
+		}
+
+		/**
+		 * Filter the Query by CustID and ShiptoID
+		 * @uses UseractionsQuery::filterBycustID
+		 * @uses UseractionsQuery::filterByshiptoID
+		 *
+		 * @param  UseractionsQuery $query User Actions Query
+		 * @param  WireInput        $input Values to filter for
+		 * @return void
+		 */
+		public function filter_customer(UseractionsQuery $query, WireInput $input) {
+			$values = $input->get;
+
+			if ($input->get->custID) {
+				$custID = is_array($input->get->custID) ? $values->array('custID') : $shiptoID = $values->text('custID');
+				$query->filterByCustomerlink($custID);
+
+				if ($input->get->shiptoID) {
+					$shiptoID = is_array($input->get->shiptoID) ? $values->array('shiptoID') : $shiptoID = $values->text('shiptoID');
+					$query->filterByShiptolink($shiptoID);
+				}
+			}
+			return $query;
 		}
 
 		/**
@@ -142,6 +186,11 @@
 			return $query->count();
 		}
 
+		/**
+		 * Returns Query for Incomplete Tasks
+		 * @param  WireInput $input [description]
+		 * @return UseractionsQuery
+		 */
 		public function get_incompletetasksquery(WireInput $input) {
 			$query = UseractionsQuery::create();
 			$query->filterByActiontype(Useractions::TYPES['task']);
@@ -177,6 +226,20 @@
 			return $this->wire('pages')->get('pw_template=ci-customer')->url."?custID=$custID";
 		}
 
+		/**
+		 * Returns the URL to the User Actions Page
+		 * @return string
+		 */
+		public function get_actionspageURL() {
+			return $this->wire('pages')->get('pw_template=user-actions')->url;
+		}
+
+		/**
+		 * Returns Phonebook Contact for Action
+		 * NOTE filtered by appropriate columns
+		 * @param  UserActions $action [description]
+		 * @return PhoneBook
+		 */
 		public function get_contact(UserActions $action) {
 			$q = PhoneBookQuery::create();
 
@@ -197,7 +260,6 @@
 					$q->filterTypeCustomer();
 				}
 			}
-
 			return $q->findOne();
 		}
 

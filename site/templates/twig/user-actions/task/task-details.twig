@@ -65,24 +65,28 @@
 			<td>{{ task.datecompleted.format('m/d/Y g:i A') }}</td>
 		</tr>
 	{% endif %}
-	<tr>
-		<td>
-			<b>Customer:</b>
-		</td>
-		<td>
-			<a href="{{ module_useractions.get_customerURL(task.customerlink) }}" class="link">
-				{{ task.get_customer().name ~ ' (' ~ task.customerlink ~ ')' }}
-			</a>
-		</td>
-	</tr>
-	{% if task.has_shiptolink() %}
+
+	{% if task.has_customerlink() %}
 		<tr>
 			<td>
-				<b>Ship-to:</b>
+				<b>Customer:</b>
 			</td>
-			<td>{{ task.get_shipto().name ~ ' (' ~ task.shiptolink ~ ')'  }}</td>
+			<td>
+				<a href="{{ module_useractions.get_customerURL(task.customerlink) }}" class="link">
+					{{ task.get_customer().name ~ ' (' ~ task.customerlink ~ ')' }}
+				</a>
+			</td>
 		</tr>
+		{% if task.has_shiptolink() %}
+			<tr>
+				<td>
+					<b>Ship-to:</b>
+				</td>
+				<td>{{ task.get_shipto().name ~ ' (' ~ task.shiptolink ~ ')'  }}</td>
+			</tr>
+		{% endif %}
 	{% endif %}
+
 	{% if task.has_contactlink() %}
 		<tr>
 			<td>
@@ -92,18 +96,16 @@
 		</tr>
 	{% else  %}
 		<tr>
-			<td class="text-center h5" colspan="2">
+			<td class="text-center h5 bg-dark text-white" colspan="2">
 				Who to Contact
 			</td>
 		</tr>
-		{% if task.has_contactlink() %}
-			<tr>
-				<td>
-					<b>Contact: </b>
-				</td>
-				<td>{{ task.get_contact().name }}</td>
-			</tr>
-		{% endif %}
+		<tr>
+			<td>
+				<b>Contact: </b>
+			</td>
+			<td>{{ contact.contactname ? contact.contactname : contact.name }}</td>
+		</tr>
 	{% endif %}
 	<tr>
 		<td>
@@ -123,12 +125,14 @@
 			</td>
 		</tr>
 	{% endif %}
+
 	<tr>
 		<td>
 			<b>Email:</b>
 		</td>
 		<td><a href="mailto:{{ contact.email }}" class="link">{{ contact.email }}</a></td>
 	</tr>
+
 	{% if task.has_salesorderlink() %}
 		<tr>
 			<td>
@@ -137,6 +141,7 @@
 			<td>{{ task.salesorderlink }}</td>
 		</tr>
 	{% endif %}
+
 	{% if task.has_quotelink() %}
 		<tr>
 			<td>
