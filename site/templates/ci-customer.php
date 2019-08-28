@@ -1,6 +1,7 @@
 <?php
 	use Map\CustomerTableMap;
 	use Propel\Runtime\ActiveQuery\Criteria;
+	$module_useractions      = $modules->get('FilterUserActions');
 
 	if ($input->get->custID) {
 		$custID = $input->get->text('custID');
@@ -8,7 +9,7 @@
 		$query = CustomerQuery::create();
 		$customer = $query->findOneByCustid($custID);
 
-		$query = UseractionsQuery::create();
+		$query = $module_useractions->get_actionsquery($input);
 		$query->filterByStatusIncomplete();
 		$query->filterByCustomerlink($custID);
 		$actions = $query->paginate($input->pageNum, 10);
@@ -27,7 +28,7 @@
 
 		$page->title = "CI: $customer->name";
 		$page->body =  $config->twig->render('customers/ci/customer/header.twig', ['page' => $page, 'customer' => $customer]);
-		$page->body .= $config->twig->render('shared/actions-panel.twig', ['page' => $page, 'actions' => $actions, 'resultscount'=> $actions->getNbResults()]);
+		$page->body .= $config->twig->render('customers/ci/customer/actions-panel.twig', ['page' => $page, 'module_useractions' => $module_useractions, 'actions' => $actions, 'resultscount'=> $actions->getNbResults()]);
 		$page->body .= $config->twig->render('customers/ci/customer/contacts-panel.twig', ['page' => $page, 'customer' => $customer, 'contacts' => $contacts, 'resultscount'=> $contacts->getNbResults()]);
 		$page->body .= $config->twig->render('customers/ci/customer/sales-orders-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $orders, 'resultscount'=> $orders->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url, 'sales_orders_list' => $pages->get('pw_template=sales-orders')->url]);
 		$page->body .= $config->twig->render('customers/ci/customer/shipped-orders-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $shippedorders, 'resultscount'=> $shippedorders->getNbResults()]);
