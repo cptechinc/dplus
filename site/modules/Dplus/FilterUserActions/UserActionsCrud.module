@@ -295,7 +295,7 @@ class UserActionsCrud extends WireData implements Module {
 		}
 
 		if ($input->$requestmethod->ordn) {
-			$action->setOrderlink($input->$requestmethod->text('ordn'));
+			$action->setSalesorderlink($input->$requestmethod->text('ordn'));
 		}
 
 		if ($input->$requestmethod->vendorID) {
