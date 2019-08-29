@@ -31,15 +31,15 @@
 			}
 
 			if ($action->has_quotelink()) {
-				$page->title .= " Quote $action->quotelink";
+				$page->title .= " Quote # $action->quotelink";
 			}
 
 			if ($action->has_salesorderlink()) {
-				$page->title .= " Order $action->orderlink";
+				$page->title .= " Order # $action->salesorderlink";
 			}
 
 			if ($action->has_vendorlink()) {
-				$action->setVendorlink($input->get->text('vendorID'));
+				$page->title .= " Vendor # $action->vendorlink";
 			}
 
 			$page->body .= $config->twig->render("user-actions/{$action->actiontype}/create-form.twig", ['page' => $page, 'module_useractions' => $module_useractions, 'crud_useractions' => $module_useractions_crud, $action->actiontype => $action]);
