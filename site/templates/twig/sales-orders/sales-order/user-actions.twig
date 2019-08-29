@@ -6,14 +6,12 @@
 				User Actions for Sales Order # {{ ordn }} <i class="fa fa-caret-down" aria-hidden="true"></i>
 			</a>
 			<span class="badge badge-pill badge-light"></span>
-			<a href="" class="btn btn-info btn-sm pull-right" title="Add Action for Sales Order # {{ ordn }}" aria-label="Add Action for Sales Order # {{ ordn }}">
+			<a href="{{ page.get_createactionURL() }}" class="btn btn-info btn-sm pull-right create-action" title="Add Action for Sales Order # {{ ordn }}" aria-label="Add Action for Sales Order # {{ ordn }}">
 				<i class="fa fa-plus-square" aria-hidden="true"></i>
 			</a>
 		</div>
 		<div class="collapse show" id="user-actions-collapse">
-			<div class="card-body">
-				{% include 'user-actions/actions-list.twig' %}
-			</div>
+			{% include 'user-actions/actions-list.twig' %}
 		</div>
 	</div>
 </div>
