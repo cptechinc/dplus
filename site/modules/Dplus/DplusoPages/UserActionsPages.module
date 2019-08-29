@@ -63,6 +63,9 @@ class UserActionsPages extends DplusoPages implements Module {
 					$url->query->set('custID', $p->fullURL->query->get('custID'));
 					$url->query->set('shiptoID', $p->fullURL->query->get('shiptoID'));
 					break;
+				case 'sales-order-view':
+					$url->query->set('ordn', $p->fullURL->query->get('ordn'));
+					break;
 			}
 			$event->return = $url->getUrl();
 		});
