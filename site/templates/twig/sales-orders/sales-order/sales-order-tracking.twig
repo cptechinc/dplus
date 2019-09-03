@@ -6,16 +6,22 @@
 			<th>Delivery Service</th>
 			<th>Tracking Number</th>
 		</tr>
-		{% for shipment in shipments %}
+		{% if shipments.count() %}
+			{% for shipment in shipments %}
+				<tr>
+					<td>{{ convertdate(shipment.shipdate, "m/d/Y") }}</td>
+					<td>{{ shipment.deliveredby }}</td>
+					<td>
+						<a href="{{ urlmaker.get_trackingURL(shipment.deliveredby, shipment.trackingnbr) }}" target="_blank" class="link">
+							{{ shipment.trackingnbr }}
+						</a>
+					</td>
+				</tr>
+			{% endfor %}
+		{% else %}
 			<tr>
-				<td>{{ convertdate(shipment.shipdate, "m/d/Y") }}</td>
-				<td>{{ shipment.deliveredby }}</td>
-				<td>
-					<a href="{{ urlmaker.get_trackingURL(shipment.deliveredby, shipment.trackingnbr) }}" target="_blank" class="link">
-						{{ shipment.trackingnbr }}
-					</a>
-				</td>
+				<td colspan="3" class="text-center font-weight-bold">No Tracking Data Available</td>
 			</tr>
-		{% endfor %}
+		{% endif %}
 	</table>
 </div>
