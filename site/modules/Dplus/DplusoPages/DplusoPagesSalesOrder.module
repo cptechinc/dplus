@@ -30,7 +30,11 @@
 			'sales-order-documents' => array(
 				'name'   => 'sales-order-documents',
 				'fields' => array()
-			)
+			),
+			'sales-order-notes' => array(
+				'name'   => 'sales-order-notes',
+				'fields' => array()
+			),
 		);
 
 		protected $pages = array(
@@ -77,6 +81,15 @@
 				'parent'         => '/mso/sales-order/',
 				'dplus_function' => 'mso',
 				'pw_template'    => 'sales-order-documents'
+			),
+			'sales-order-notes' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'sales-order-notes',
+				'title'          => 'Sales Order Notes',
+				'summary'        => 'View Sales Order Notes',
+				'parent'         => '/mso/sales-order/',
+				'dplus_function' => 'mso',
+				'pw_template'    => 'sales-order-notes'
 			),
 			'sales-history' => array(
 				'template'       => 'dplus-function',
@@ -140,6 +153,19 @@
 			/**
 			 * Returns Edit Sales Order Page URL
 			 */
+			$this->addHook('Page::view_notesURL', function($event) {
+				$p = $event->object;
+				$ordn = $event->arguments(0);
+				$linenbr = $event->arguments(1);
+				$url = new Url($this->wire('pages')->get('pw_template=sales-order-notes')->url);
+				$url->query->set('ordn', $ordn);
+				$url->query->set('linenbr', $linenbr);
+				$event->return = $url->getUrl();
+			});
+
+			/**
+			 * Returns Edit Sales Order Page URL
+			 */
 			$this->addHook('Page::edit_orderURL', function($event) {
 				$p = $event->object;
 				$ordn = $event->arguments(0);
@@ -153,6 +179,16 @@
 			 * Returns Sales Order Page URL
 			 */
 			$this->addHook('Page::view_orderURL', function($event) {
+				$ordn = $event->arguments(0);
+				$url = new Url($this->wire('pages')->get('pw_template=sales-order-view')->url);
+				$url->query->set('ordn', $ordn);
+				$event->return = $url->getUrl();
+			});
+
+			/**
+			 * Returns Sales Order Page URL
+			 */
+			$this->addHook('Page::unlock_orderURL', function($event) {
 				$ordn = $event->arguments(0);
 				$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
 				$url->query->set('action', 'unlock-order');
