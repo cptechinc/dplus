@@ -1,0 +1,313 @@
+<?php namespace ProcessWire;
+
+	use Purl\Url;
+	use UseractionsQuery, Useractions;
+	use PhoneBookQuery, PhoneBook;
+
+	class FilterUserActions extends Process implements ConfigurableModule {
+
+		const CONFIG_FIELDS = array(
+			'allow_viewotheractions' => array(
+				'type'        => 'checkbox',  // TRUE OR FALSE
+				'label'       => 'Allow Users to view other\'s Actions?',
+				'description' => 'Allow viewing of other Actions',
+				'notes'       => ""
+			)
+		);
+
+		const DEFAULT_CONFIG = array(
+			'allow_viewotheractions' => false
+		);
+
+		const SUBTYPE_FONTAWESOME = array(
+			'email'      => 'fa fa-envelope-o',
+			'phone'      => 'fa fa-phone',
+			'followup'   => 'fa fa-user',
+			'general'    => 'fa fa-sticky-note-o',
+			'reflection' => 'fa fa-commenting-o',
+			'meeting'    => 'fa fa-users'
+		);
+
+		/**
+		 * Return Icon Class for the subtype
+		 *
+		 * @param  string $subactiontype Subtype
+		 * @return string                Icon class
+		 */
+		public function get_iconclass($subactiontype) {
+			return self::SUBTYPE_FONTAWESOME[$subactiontype];
+		}
+
+		/**
+		 * Return Action Types
+		 *
+		 * @return array
+		 */
+		public function get_types() {
+			return $this->wire('modules')->get('UserActionsCrud')->get_types();
+		}
+
+		public function get_actions(WireInput $input) {
+			$query = $this->get_actionsquery($input);
+		}
+
+		/**
+		 * Return Useractions Query
+		 * @param  WireInput         $input Values to filter for
+		 * @return UseractionsQuery         User Actions Query
+		 */
+		public function get_actionsquery(WireInput $input) {
+			$query = UseractionsQuery::create();
+			$this->filter_assignedto($query, $input);
+			$this->filter_customer($query, $input);
+			return $query;
+		}
+
+		/**
+		 * Adds the assignedto filter to the query
+		 * @uses UseractionsQuery::filterByAssignedto
+		 *
+		 * @param  UseractionsQuery $query User Actions Query
+		 * @param  WireInput        $input Values to filter for
+		 * @return void
+		 */
+		public function filter_assignedto(UseractionsQuery $query, WireInput $input) {
+			if ($input->get->assignedto) {
+				$assignedto = $input->get->text('assignedto');
+			} else {
+				$assignedto = $this->wire('user')->loginid;
+			}
+			$query->filterByAssignedto($assignedto);
+			return $query;
+		}
+
+		/**
+		 * Filter the Query by CustID and ShiptoID
+		 * @uses UseractionsQuery::filterBycustID
+		 * @uses UseractionsQuery::filterByshiptoID
+		 *
+		 * @param  UseractionsQuery $query User Actions Query
+		 * @param  WireInput        $input Values to filter for
+		 * @return void
+		 */
+		public function filter_customer(UseractionsQuery $query, WireInput $input) {
+			$values = $input->get;
+
+			if ($input->get->custID) {
+				$custID = is_array($input->get->custID) ? $values->array('custID') : $shiptoID = $values->text('custID');
+				$query->filterByCustomerlink($custID);
+
+				if ($input->get->shiptoID) {
+					$shiptoID = is_array($input->get->shiptoID) ? $values->array('shiptoID') : $shiptoID = $values->text('shiptoID');
+					$query->filterByShiptolink($shiptoID);
+				}
+			}
+			return $query;
+		}
+
+		/**
+		 * Return the Number of notes created for $userID on $date
+		 * @uses UseractionsQuery::filterByActionType, filterByAssignedto, filterByDatecreated
+		 *
+		 * @param  string $userID User ID, if blank will use User::loginid
+		 * @param  string $date   Date will convert it to Y-m-d
+		 * @return int
+		 */
+		public function count_usernotescreated($userID = '', $date = 'today') {
+			$userID = !empty($userID) ? $userID : $this->wire('user')->loginid;
+			$date = $date != 'today' ? $date : date('Ymd');
+			$datecreated = date('Y-m-d', strtotime($date));
+
+			$query = UseractionsQuery::create();
+			$query->filterByActiontype(Useractions::TYPES['note']);
+			$query->filterByAssignedto($userID);
+			$query->filterByDatecreated($datecreated);
+			return $query->count();
+		}
+
+		/**
+		 * Return the Number of tasks scheduled for $userID on $date
+		 * @uses UseractionsQuery::filterByActionType, filterByAssignedto, filterByDuedate
+		 *
+		 * @param  string $userID User ID, if blank will use User::loginid
+		 * @param  string $date   Date will convert it to Y-m-d
+		 * @return int
+		 */
+		public function count_usertaskscreated($userID = '', $date = 'today') {
+			$userID = !empty($userID) ? $userID : $this->wire('user')->loginid;
+			$date = $date != 'today' ? $date : date('Ymd');
+			$datescheduled = date('Y-m-d', strtotime($date));
+
+			$query = UseractionsQuery::create();
+			$query->filterByActiontype(Useractions::TYPES['task']);
+			$query->filterByAssignedto($userID);
+			$query->filterByDuedate($datescheduled);
+			return $query->count();
+		}
+
+		/**
+		 * Return the Number of tasks completed for $userID on $date
+		 * @uses UseractionsQuery::filterByActionType, filterByAssignedto, filterByDatecreated
+		 *
+		 * @param  string $userID User ID, if blank will use User::loginid
+		 * @param  string $date   Date will convert it to Y-m-d
+		 * @return int
+		 */
+		public function count_usertaskscompleted($userID = '', $date = 'today') {
+			$userID = !empty($userID) ? $userID : $this->wire('user')->loginid;
+			$date = $date != 'today' ? $date : date('Ymd');
+			$datecompleted = date('Y-m-d', strtotime($date));
+			$query = UseractionsQuery::create();
+			$query->filterByActiontype(Useractions::TYPES['task']);
+			$query->filterByAssignedto($userID);
+			$query->filterByStatusComplete();
+			$query->filterByDateCompletedDay($datecompleted);
+			return $query->count();
+		}
+
+		/**
+		 * Return the Number of tasks rescheduled for $userID on $date
+		 * @uses UseractionsQuery::filterByActionType, filterByAssignedto, filterByDaterescheduled
+		 *
+		 * @param  string $userID User ID, if blank will use User::loginid
+		 * @param  string $date   Date will convert it to Y-m-d
+		 * @return int
+		 */
+		public function count_usertasksrescheduled($userID = '', $date = 'today') {
+			$userID = !empty($userID) ? $userID : $this->wire('user')->loginid;
+			$date = $date != 'today' ? $date : date('Ymd');
+			$datecompleted = date('Y-m-d', strtotime($date));
+
+			$query = UseractionsQuery::create();
+			$query->filterByActiontype(Useractions::TYPES['task']);
+			$query->filterByAssignedto($userID);
+			$query->filterByStatusRescheduled();
+			$query->filterByDateUpdatedDay($datecompleted);
+			return $query->count();
+		}
+
+		/**
+		 * Returns Query for Incomplete Tasks
+		 * @param  WireInput $input [description]
+		 * @return UseractionsQuery
+		 */
+		public function get_incompletetasksquery(WireInput $input) {
+			$query = UseractionsQuery::create();
+			$query->filterByActiontype(Useractions::TYPES['task']);
+			$this->filter_assignedto($query, $input);
+			$query->filterByStatusIncomplete();
+			$query->orderByDuedate();
+			return $query;
+		}
+
+		/**
+		 * Returns URL to the Action's Page
+		 * @param  mixed  $action  Useractions or Useractions ID
+		 * @return string          URL to the Action's Page
+		 */
+		public function get_actionURL($action) {
+			$id = (get_class($action) == 'Useractions') ? $action->id : $action;
+			$page = $this->wire('page');
+			$url = new Url($this->wire('pages')->get('pw_template=user-actions')->url);
+			$url->query->set('id', $id);
+
+			if ($page->template != 'user-actions') {
+				$url->query->set('returnpage', $page->fullURL->getUrl());
+			}
+			return $url->getUrl();
+		}
+
+		/**
+		 * Returns URL to the Customer's Page
+		 * @param  mixed  $custID  Customer ID
+		 * @return string          URL to the Customer's Page
+		 */
+		public function get_customerURL($custID) {
+			return $this->wire('pages')->get('pw_template=ci-customer')->url."?custID=$custID";
+		}
+
+		/**
+		 * Returns the URL to the User Actions Page
+		 * @return string
+		 */
+		public function get_actionspageURL() {
+			return $this->wire('pages')->get('pw_template=user-actions')->url;
+		}
+
+		/**
+		 * Returns Phonebook Contact for Action
+		 * NOTE filtered by appropriate columns
+		 * @param  UserActions $action [description]
+		 * @return PhoneBook
+		 */
+		public function get_contact(UserActions $action) {
+			$q = PhoneBookQuery::create();
+
+			if ($action->has_customerlink()) {
+				$q->filterByCustid($action->customerlink);
+
+				if ($action->has_shiptolink()) {
+					$q->filterTypeCustomerShipto();
+					$q->filterByShiptoid($action->shiptolink);
+
+					if ($action->has_contactlink()) {
+						$q->filterByContact($action->contactlink);
+					}
+				} elseif ($action->has_contactlink()) {
+					$q->filterTypeCustomerContact();
+					$q->filterByContact($action->contactlink);
+				} else {
+					$q->filterTypeCustomer();
+				}
+			}
+			return $q->findOne();
+		}
+
+		/* =============================================================
+				ProcessWire Module Functions
+		=============================================================== */
+
+		public function init() {
+			parent::init();
+
+			foreach(self::DEFAULT_CONFIG as $key => $value) {
+				if (isset($this->data[$key])) {
+					$this->data[$key] = $this->data[$key];
+				} else {
+					$this->data[$key] = $value;
+				}
+			}
+		}
+
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dpluso UserActions Module',
+				'version' => 101,
+				'summary' => 'Handles Dplus UserActions and its Configurations',
+				'singular' => true,
+				'autoload' => true
+			);
+		}
+
+		static public function getModuleConfigInputfields(array $data) {
+			$modules = wire('modules');
+			$fields = new InputfieldWrapper();
+			$data = array_merge(self::DEFAULT_CONFIG, $data);
+
+			$traits = self::CONFIG_FIELDS['allow_viewotheractions'];
+			$f = $modules->get('InputfieldCheckbox');
+			$f->attr('name', 'allow_viewotheractions');
+			$f->attr('checked', $data['allow_viewotheractions'] ? 'checked' : '' );
+			$f->label = __($traits['label']);
+			$f->description = __($traits['description']);
+			$f->notes = _($traits['notes']);
+			$fields->add($f);
+
+			return $fields;
+		}
+	}

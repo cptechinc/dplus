@@ -26,3 +26,9 @@
 		return array_key_exists($key, $array);
 	});
 	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('phone_us', function ($phone) {
+		 $numbers_only = preg_replace("/[^\d]/", "", $phone);
+		 return preg_replace("/^1?(\d{3})(\d{3})(\d{4})$/", "$1-$2-$3", $numbers_only);
+	});
+	$config->twig->addFilter($filter);

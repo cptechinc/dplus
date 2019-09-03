@@ -1,0 +1,11 @@
+{% if page.is_print() == false %}
+	<div class="form-group">
+		<a href="{{ session.get('actionsreturn') }}" class="btn btn-primary not-round">
+			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back
+		</a>
+		&nbsp;
+		<a href="{{ page.get_printURL() }}" class="btn btn-primary not-round">
+			<i class="fa fa-print" aria-hidden="true"></i> Print
+		</a>
+	</div>
+{% endif %}

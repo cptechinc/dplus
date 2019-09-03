@@ -1,0 +1,325 @@
+<?php namespace ProcessWire;
+
+use UseractionsQuery, Useractions;
+
+class UserActionsCrud extends WireData implements Module {
+
+	const RESPONSE_TEMPLATE = array(
+		'error'       => false,
+		'notifytype'  => 'success',
+		'message'     => 'Your task has been marked as complete',
+		'icon'        => 'fa fa-floppy-o fa-2x',
+		'actionID'    => '',
+		'rescheduled' => ''
+	);
+
+	const RESPONSE_TEMPLATE_SUCCESS = array(
+		'error'       => false,
+		'notifytype'  => 'success',
+		'message'     => 'Your task has been marked as complete',
+		'icon'        => 'fa fa-floppy-o fa-2x',
+		'actionID'    => '',
+		'rescheduled' => ''
+	);
+
+	const RESPONSE_TEMPLATE_ERROR = array(
+		'error'       => true,
+		'notifytype'  => 'danger',
+		'message'     => 'Your task was not able to be updated',
+		'icon'        => 'fa fa-exclamation-triangle fa-2x',
+		'actionID'    => '',
+		'rescheduled' => ''
+	);
+
+	const ACTION_SUBTYPES = array(
+		'task' => array(
+			'email',
+			'phone',
+			'followup',
+			'meeting'
+		),
+		'note' => array(
+			'general',
+			'reflection'
+		),
+		'action' => array(
+			'phone',
+			'meeting',
+			'email'
+		)
+	);
+
+	const ACTION_TYPES = array('task', 'note', 'action');
+
+	/**
+	 * Return types for the Action Type
+	 * @return array              Types
+	 */
+	public function get_types() {
+		return self::ACTION_TYPES;
+	}
+
+	/**
+	 * Return Subtypes for the Action Type
+	 * @param  string $actiontype Action Type
+	 * @return array              Subtypes
+	 */
+	public function get_subtypes($actiontype) {
+		return self::ACTION_SUBTYPES[$actiontype];
+	}
+
+	/**
+	 * Returns Subtype Icon class for Subtype
+	 * @uses FilterUserActions::get_subtypeiconclass($subtype)
+	 *
+	 * @param  string $subtype Subtype
+	 * @return string          Subtype Icon class
+	 */
+	public function get_subtypeiconclass($subtype) {
+		$module = $this->wire('modules')->get('FilterUserActions');
+		return $module->get_iconclass($subtype);
+	}
+
+	/**
+	 * Processes WireInput to update Action
+	 * NOTE: Checks that id is provided or else returns with error
+	 *
+	 * @param  WireInput $input Object with $_GET && $_POST arrays
+	 * @return array            Response Array
+	 */
+	public function process_input_update(WireInput $input) {
+		$values = $input->post;
+
+		if ($values->text('id')) {
+			$id = $input->get->text('id');
+			$action = UseractionsQuery::create()->findOneById($id);
+			$type = $action->actiontype;
+			$function = "process_input_$type";
+			return $this->$function($input, $action);
+		} else {
+			$response = self::RESPONSE_TEMPLATE_ERROR;
+			$response['message'] = 'Action ID was not provided';
+			return $response;
+		}
+	}
+
+	/**
+	 * Processes WireInput to update Action
+	 *
+	 * @param  WireInput $input Object with $_GET and $_POST arrays
+	 * @return array            Response Array
+	 */
+	public function process_input_create(WireInput $input) {
+		$values = $input->post;
+		$action = $this->create_action_blank_input($input);
+		$type = $action->actiontype;
+		$function = "process_input_$type";
+		return $this->$function($input, $action);
+	}
+
+	/**
+	 * Mainipulates Useraction according the task trying to take place
+	 * NOTE Handles completing, rescheduling, creating tasks
+	 *
+	 * @param  WireInput   $input Object with $_GET and $_POST arrays
+	 * @param  Useractions $task  Task being created / updated
+	 * @return array              Response array
+	 */
+	public function process_input_task(WireInput $input, Useractions $task) {
+		$values = $input->post;
+		$response = self::RESPONSE_TEMPLATE;
+		$action_desc = "saved";
+
+		switch ($values->action) {
+			case 'complete-task':
+				$action_desc = "marked as complete";
+				$task->setDatecompleted(date('Y-m-d'));
+				$task->setCompleted(Useractions::STATUS_COMPLETED);
+				$task->setReflectnote($values->text('reflectnote'));
+				$saved = boolval($task->save());
+				break;
+			case 'reschedule-task':
+				$action_desc = "rescheduled";
+				$task_new = $task->copy();
+				$task_new->setDateupdated(date('Y-m-d H:i:s'));
+				$task_new->setDuedate(date('Y-m-d', strtotime($values->text('duedate'))));
+				$task_new->setSubtype($values->text('subtype'));
+				$task_new->setActionlink($task->id);
+				$saved = boolval($task_new->save());
+
+				if ($saved) {
+					$task->setDateupdated(date('Y-m-d H:i:s'));
+					$task->setCompleted(Useractions::STATUS_RESCHEDULED);
+					$task->setRescheduledlink($task_new->id);
+					$task->save();
+					$task_new->setActionlink('');
+					$task_new->save();
+				}
+				break;
+			case 'create-task':
+				$action_desc = "created";
+				$task = $this->create_action_blank_input($input);
+				$user = $this->wire('user');
+				$task->setCreatedby($user->loginid);
+				$task->setDateupdated(date('Y-m-d H:i:s'));
+				$task->setDatecreated(date('Y-m-d H:i:s'));
+				$task->setDuedate(date('Y-m-d', strtotime($values->text('duedate'))));
+				$task->setTitle($values->text('title'));
+				$task->setTextbody($values->text('textbody'));
+				$saved = boolval($task->save());
+				break;
+		}
+
+		if ($saved) {
+			$response = self::RESPONSE_TEMPLATE_SUCCESS;
+			$response['message'] = "Your task has been $action_desc";
+		} else {
+			$response = self::RESPONSE_TEMPLATE_ERROR;
+			$response['message'] = "Your task was not able to be $action_desc";
+		}
+
+		$response['actionID'] = $task->id;
+
+		if (isset($task_new)) {
+			$response['rescheduled'] = $task_new->id;
+		}
+		return $response;
+	}
+
+	/**
+	 * Mainipulates Useraction according the action trying to take place
+	 * NOTE Handles creating notes
+	 *
+	 * @param  WireInput   $input Object with $_GET and $_POST arrays
+	 * @param  Useractions $note  Task being created / updated
+	 * @return array              Response array
+	 */
+	public function process_input_note(WireInput $input, Useractions $note) {
+		$values = $input->post;
+		$response = self::RESPONSE_TEMPLATE;
+		$action_desc = "saved";
+
+		switch ($values->action) {
+			case 'create-note':
+				$action_desc = "created";
+				$note = $this->create_action_blank_input($input);
+				$user = $this->wire('user');
+				$note->setCreatedby($user->loginid);
+				$note->setDateupdated(date('Y-m-d H:i:s'));
+				$note->setDatecreated(date('Y-m-d H:i:s'));
+				$note->setTitle($values->text('title'));
+				$note->setTextbody($values->text('textbody'));
+				$saved = boolval($note->save());
+				break;
+		}
+
+		if ($saved) {
+			$response = self::RESPONSE_TEMPLATE_SUCCESS;
+			$response['message'] = "Your note has been $action_desc";
+		} else {
+			$response = self::RESPONSE_TEMPLATE_ERROR;
+			$response['message'] = "Your note was not able to be $action_desc";
+		}
+
+		$response['actionID'] = $note->id;
+		return $response;
+	}
+
+	/**
+	 * Mainipulates Useraction according the action trying to take place
+	 * NOTE Handles creating notes
+	 *
+	 * @param  WireInput   $input   Object with $_GET and $_POST arrays
+	 * @param  Useractions $action  Action being created / updated
+	 * @return array                Response array
+	 */
+	public function process_input_action(WireInput $input, Useractions $action) {
+		$values = $input->post;
+		$response = self::RESPONSE_TEMPLATE;
+		$action_desc = "saved";
+
+		switch ($values->action) {
+			case 'create-action':
+				$action_desc = "created";
+				$action = $this->create_action_blank_input($input);
+				$user = $this->wire('user');
+				$action->setCreatedby($user->loginid);
+				$action->setDateupdated(date('Y-m-d H:i:s'));
+				$action->setDatecreated(date('Y-m-d H:i:s'));
+				$action->setDatecompleted(date('Y-m-d'));
+				$action->setCompleted(Useractions::STATUS_COMPLETED);
+				$action->setTitle($values->text('title'));
+				$action->setTextbody($values->text('textbody'));
+				$saved = boolval($action->save());
+				break;
+		}
+
+		if ($saved) {
+			$response = self::RESPONSE_TEMPLATE_SUCCESS;
+			$response['message'] = "Your action has been $action_desc";
+		} else {
+			$response = self::RESPONSE_TEMPLATE_ERROR;
+			$response['message'] = "Your action was not able to be $action_desc";
+		}
+
+		$response['actionID'] = $action->id;
+		return $response;
+	}
+
+	/**
+	 * Creates a Useractions object and Sets all the values for the properties
+	 * from WireInput
+	 * @param  WireInput $input Object with $_GET and $_POST arrays
+	 * @return Useractions
+	 */
+	public function create_action_blank_input(WireInput $input) {
+		$requestmethod = strtolower($input->requestMethod());
+
+		$action = new Useractions();
+		$action->setActiontype($input->$requestmethod->text('type'));
+
+		if ($input->$requestmethod->subtype) {
+			$action->setActionsubtype($input->$requestmethod->text('subtype'));
+		}
+
+		if ($input->$requestmethod->custID) {
+			$action->setCustomerlink($input->$requestmethod->text('custID'));
+
+			if ($input->get->shiptoID) {
+				$action->setShiptolink($input->$requestmethod->text('shiptoID'));
+			}
+		}
+
+		if ($input->$requestmethod->qnbr) {
+			$action->setQuotelink($input->$requestmethod->text('qnbr'));
+		}
+
+		if ($input->$requestmethod->ordn) {
+			$action->setSalesorderlink($input->$requestmethod->text('ordn'));
+		}
+
+		if ($input->$requestmethod->vendorID) {
+			$action->setVendorlink($input->$requestmethod->text('vendorID'));
+		}
+
+		return $action;
+	}
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'User Actions CRUD',
+			'version' => 101,
+			'summary' => 'Handles CRUD methods for User Actions',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

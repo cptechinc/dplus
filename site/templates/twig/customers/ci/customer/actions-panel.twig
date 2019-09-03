@@ -1,41 +1,17 @@
 <div class="card mb-4">
-	<div class="card-header d-flex justify-content-between bg-primary">
+	<div class="card-header bg-primary">
 		<a class="text-white" data-toggle="collapse" href="#customer-actions" role="button" aria-expanded="false" aria-controls="customer-actions">
 			Actions&ensp;<i class="fa fa-caret-down" aria-hidden="true"></i>
 		</a>
 		<span class="badge badge-pill badge-light">{{ resultscount }}</span>
+		<a href="{{ page.get_createactionURL() }}" class="btn btn-info btn-sm create-action pull-right" aria-label="Create Action" title="Create Action">
+			<i class="fa fa-plus-square" aria-hidden="true"></i>
+		</a>
 	</div>
 	<div class="collapse" id="customer-actions">
-		<div class="list-group-item bg-light font-weight-bold">
-			<div class="row">
-				<div class="col">Due</div>
-				<div class="col">Type</div>
-				<div class="col">Subtype</div>
-				<div class="col">Regarding/Title</div>
-			</div>
-		</div>
-		{% if actions.count > 0 %}
-			{% for action in actions %}
-				{% set class = action.is_overdue() ? 'bg-warning text-white' : '' %}
-				{% set class = action.is_completed() ? 'bg-success text-white' : class %}
-				<div class="list-group-item {{ class }}">
-					<div class="row">
-						<div class="col">{{ action.duedate|date("m/d/Y") }}</div>
-						<div class="col">{{ action.actiontype }}</div>
-						<div class="col">{{ action.actionsubtype }}</div>
-						<div class="col">{{ action.title }}</div>
-					</div>
-				</div>
-			{% endfor %}
-		{% else %}
-			<div class="list-group-item">
-				<div class="row">
-					<div class="col text-center">There are no results to display.</div>
-				</div>
-			</div>
-		{% endif %}
+		{% include 'user-actions/actions-list.twig' %}
 		<div class="card-footer bg-secondary">
-			<a href=" " class="text-white">View More Actions <i class="fa fa-sign-in" aria-hidden="true"></i></a>
+			<a href="{{ page.get_actionslistURL() }}" class="text-white">View More Actions <i class="fa fa-sign-in" aria-hidden="true"></i></a>
 		</div>
 	</div>
 </div>

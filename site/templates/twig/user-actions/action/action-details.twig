@@ -1,0 +1,113 @@
+{% set contact = module_useractions.get_contact(action) %}
+
+<table class="table table-sm table-striped">
+	<tr>
+		<td>
+			<b>Action ID:</b>
+		</td>
+		<td>
+			{{ action.id }}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<b>Action Type:</b>
+		</td>
+		<td>
+			<i class="{{ module_useractions.get_iconclass(action.actionsubtype) }}" aria-hidden="true"></i> {{ action.subtype_description()|capitalize }}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<b>Written by:</b>
+		</td>
+		<td>{{ action.createdby }} on {{ action.datecreated.format('m/d/Y g:i A') }}</td>
+	</tr>
+
+	{% if action.has_customerlink() %}
+		<tr>
+			<td>
+				<b>Customer:</b>
+			</td>
+			<td>
+				<a href="{{ module_useractions.get_customerURL(action.customerlink) }}" class="link">
+					{{ action.get_customer().name ~ ' (' ~ action.customerlink ~ ')' }}
+				</a>
+			</td>
+		</tr>
+		{% if action.has_contactlink() %}
+			<tr>
+				<td>
+					<b>Action Contact:</b>
+				</td>
+				<td>{{ action.get_contact().name }}</td>
+			</tr>
+		{% else  %}
+			<tr>
+				<td class="text-center h5 bg-dark text-white" colspan="2">
+					Who to Contact
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Contact: </b>
+				</td>
+				<td>{{ contact.contactname ? contact.contactname : contact.name }}</td>
+			</tr>
+		{% endif %}
+		<tr>
+			<td>
+				<b>Phone:</b>
+			</td>
+			<td>
+				<a href="tel:{{ contact.phone }}" class="link">{{ contact.phone|phone_us }}</a> &nbsp;
+			</td>
+		</tr>
+		{% if contact.cellphone != '' %}
+			<tr>
+				<td>
+					<b>Cell Phone:</b>
+				</td>
+				<td>
+					<a href="tel:{{ contact.cellphone }}" class="link">{{ contact.cellphone|phone_us }}</a>
+				</td>
+			</tr>
+		{% endif %}
+		<tr>
+			<td>
+				<b>Email:</b>
+			</td>
+			<td><a href="mailto:{{ contact.email }}" class="link">{{ contact.email }}</a></td>
+		</tr>
+		{% if action.has_salesorderlink() %}
+			<tr>
+				<td>
+					<b>Sales Order #:</b>
+				</td>
+				<td>{{ action.salesorderlink }}</td>
+			</tr>
+		{% endif %}
+		{% if action.has_quotelink() %}
+			<tr>
+				<td>
+					<b>Quote #:</b>
+				</td>
+				<td>{{ action.quotelink }}</td>
+			</tr>
+		{% endif %}
+		<tr>
+			<td>
+				<b>Title</b>
+			</td>
+			<td>{{ action.title }}</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<b>Notes</b><br>
+				<div class="display-notes">
+					{{ action.textbody }}
+				</div>
+			</td>
+		</tr>
+	{% endif %}
+</table>

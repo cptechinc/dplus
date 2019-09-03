@@ -135,3 +135,10 @@ a.link:hover {
 	padding: 15px;
 	margin: auto
 }
+
+/************************************** Login **************************************/
+
+#user-actions-list {
+	overflow-y: scroll;
+	max-height: 500px;
+}

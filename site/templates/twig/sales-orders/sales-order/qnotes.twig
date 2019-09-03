@@ -1,0 +1,39 @@
+<div id="notes">
+	<div class="row">
+		<div class="col">
+			<h3 class="font-weight-bold text-secondary">Notes</h3>
+		</div>
+		<div class="col">
+			<a href="{{ page.view_notesURL(ordn, 0) }}" class="btn btn-primary">
+				<i class="fa fa-sticky-note" aria-hidden="true"></i> View All Notes
+			</a>
+		</div>
+	</div>
+
+	<table class="table table-striped">
+		<tr class="bg-dark text-white">
+			<th>Pick Ticket</th>
+			<th>Pack Ticket</th>
+			<th>Invoice</th>
+			<th>Acknowledgment</th>
+			<th>Note</th>
+		</tr>
+		{% if notes.count() %}
+			{% for note in notes %}
+				<tr>
+					<td>{{ note.pickticket }}</td>
+					<td>{{ note.packticket }}</td>
+					<td>{{ note.invoice }}</td>
+					<td>{{ note.acknowledgement }}</td>
+					<td>{{ note.note }}</td>
+				</tr>
+			{% endfor %}
+		{% else %}
+			<tr>
+				<td colspan="5" class="text-center bg-light font-weight-bold">
+					No Header Notes found
+				</td>
+			</tr>
+		{% endif %}
+	</table>
+</div>
