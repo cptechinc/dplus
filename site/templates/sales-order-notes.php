@@ -4,7 +4,9 @@
 
 	if ($input->requestMethod('POST')) {
 		$response = $module_qnotes_crud->process_input_salesorder($input);
-		echo var_dump($response);
+		$page->fullURL->query->remove('linenbr');
+		$session->redirect($page->fullURL->getURL());
+
 	} else {
 		if ($input->get->ordn) {
 			$ordn = $input->get->text('ordn');
@@ -18,8 +20,8 @@
 					$order_items = SalesHistoryDetailQuery::create()->filterByOrdernumber($ordn)->find();
 				}
 				$page->title = "Sales Order #$ordn Notes";
-				$page->body = $config->twig->render('sales-orders/sales-order/qnotes-page.twig', ['page' => $page, 'ordn' => $ordn, 'items' => $order_items]);
-				$page->body .= $config->twig->render('sales-orders/sales-order/notes/add-note-modal.twig', ['page' => $page, 'ordn' => $ordn, 'items' => $order_items]);
+				$page->body = $config->twig->render('sales-orders/sales-order/qnotes-page.twig', ['page' => $page, 'ordn' => $ordn, 'order' => $order, 'items' => $order_items]);
+				$page->body .= $config->twig->render('sales-orders/sales-order/notes/add-note-modal.twig', ['page' => $page, 'ordn' => $ordn]);
 				$config->scripts->append(hash_templatefile('scripts/orders/order-notes.js'));
 			} else {
 				$page->headline = "Sales Order #$ordn could not be found";
