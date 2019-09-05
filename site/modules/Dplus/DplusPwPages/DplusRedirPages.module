@@ -82,6 +82,14 @@
 				'parent'     => '/mii/',
 				'redir_file' => 'ii'
 			),
+			'cart-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Cart Redirects',
+				'parent'     => '/cart/',
+				'redir_file' => 'cart'
+			),
 		);
 
 		/* =============================================================
