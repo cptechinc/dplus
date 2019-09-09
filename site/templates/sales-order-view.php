@@ -2,12 +2,11 @@
 	$config_salesorders = $modules->get('SalesOrdersConfig');
 	$modules->get('DplusoPagesSalesOrder')->init_salesorder_hooks();
 	$module_useractions = $modules->get('FilterUserActions');
-	$http = new ProcessWire\WireHttp();
 	$html = $modules->get('HtmlWriter');
 
 	if ($input->get->ordn) {
 		$ordn = $input->get->text('ordn');
-		
+
 		if (SalesOrderQuery::create()->filterByOrdernumber($ordn)->count() || SalesHistoryQuery::create()->filterByOrdernumber($ordn)->count()) {
 			$document_management = $modules->get('DocumentManagement');
 
@@ -48,7 +47,6 @@
 			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Check if the Order Number is correct or if it is in Sales History"]);
 
 		}
-
 	} else {
 		$page->body = $config->twig->render('sales-orders/sales-order-lookup.twig', ['page' => $page]);
 	}

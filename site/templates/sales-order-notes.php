@@ -1,9 +1,9 @@
 <?php
-	$modules->get('DplusoPagesSalesOrder')->init_salesorder_hooks();
+	$modules->get('MqoPages')->init_mqopage();
 	$module_qnotes_crud = $modules->get('QnotesCrud');
 
 	if ($input->requestMethod('POST')) {
-		$response = $module_qnotes_crud->process_input_salesorder($input);
+		$response = $module_qnotes_crud->process_input_quote($input);
 		$page->fullURL->query->remove('linenbr');
 		$session->redirect($page->fullURL->getURL());
 
@@ -31,6 +31,5 @@
 			$page->body = $config->twig->render('sales-orders/sales-order-lookup.twig', ['page' => $page]);
 		}
 	}
-
 
 	include __DIR__ . "/basic-page.php";
