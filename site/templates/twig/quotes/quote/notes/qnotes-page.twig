@@ -1,6 +1,6 @@
 <div class="mb-3">
-	<a href="{{ page.parent.url }}" class="btn btn-primary">
-		<i class="fa fa-arrow-left" aria-hidden="true"></i> Go back to Cart
+	<a href="{{ page.parent.url ~ '?qnbr=' ~ qnbr }}" class="btn btn-primary">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Go back to Quotes
 	</a>
 </div>
 
@@ -15,7 +15,7 @@
 			</button>
 		</div>
 	</div>
-	{% include 'cart/notes/qnotes-list.twig' with {'notes': cart.get_notes(0) } %}
+	{% include 'quotes/quote/notes/qnotes-list.twig' with {'notes': quote.get_notes() } %}
 </div>
 
 {% for item in items %}
@@ -30,6 +30,6 @@
 		</div>
 	</div>
 	<div class="mb-3">
-		{% include 'cart/notes/qnotes-list.twig' with {'notes': cart.get_notes(item.linenbr) } %}
+		{% include 'quotes/quote/notes/qnotes-list.twig' with {'notes': item.get_notes() } %}
 	</div>
 {% endfor %}

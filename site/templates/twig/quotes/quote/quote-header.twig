@@ -1,0 +1,142 @@
+<div class="row mt-4">
+	<div class="col-sm-4">
+		<legend class="font-weight-bold text-secondary">Billing ({{ quote.custid }})</legend>
+		<address>
+			{{ quote.billto_name }} <br>
+			{{ quote.billto_address1 }} <br>
+			{% if quote.billto_address2 %}
+				{{ quote.billto_address2 }} <br>
+			{% endif %}
+			{{ quote.billto_city ~ ', ' ~ quote.billto_state ~ ' ' ~ quote.billto_zip}}
+		</address>
+		<legend class="font-weight-bold text-secondary">Shipping ({{ quote.shiptoid }})</legend>
+		<address>
+			{{ quote.shipto_name }} <br>
+			{{ quote.shipto_address1 }} <br>
+			{% if (quote.shipto_address2) %}
+				{{ quote.shipto_address2 }} <br>
+			{% endif %}
+			{{ quote.shipto_city ~ ', ' ~ quote.shipto_state ~ ' ' ~ quote.shipto_zip}}
+		</address>
+		<legend class="font-weight-bold text-secondary">Contact</legend>
+		<div class="row">
+			<div class="col-sm-5">Contact:</div>
+			<div class="col-sm-7 text-right">{{ quote.contact }}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5">Custpo:</div>
+			<div class="col-sm-7 text-right">{{ quote.custpo }}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5">Phone:</div>
+			<div class="col-sm-7 text-right">
+				<a href="mailto:{{ quote.phone }}" class="link">{{ quote.phone|phone_us }}</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5">Fax:</div>
+			<div class="col-sm-7 text-right">
+				<a href="mailto:{{ quote.fax }}" class="link">{{ quote.fax|phone_us }}</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5">Email:</div>
+			<div class="col-sm-7">
+				<a href="mailto:{{ quote.email }}" class="link">{{ quote.email }}</a>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-8">
+		<legend class="font-weight-bold text-secondary text-center">Quote Summary</legend>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="row">
+					<div class="col-sm-7">Status:</div>
+					<div class="col-sm-5 text-right">{{ quote.status }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Print Format:</div>
+					<div class="col-sm-5 text-right">{{ quote.printformat }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Items on Quote</div>
+					<div class="col-sm-5 text-right">{{ quote.count_items() }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Subtotal:</div>
+					<div class="col-sm-5 text-right">$ {{ quote.subtotal_tax|currency }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Shipping:</div>
+					<div class="col-sm-5 text-right">$ {{ quote.total_freight|currency }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Tax:</div>
+					<div class="col-sm-5 text-right">$ {{ quote.total_tax|currency }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Total:</div>
+					<div class="col-sm-5 text-right">$ {{ quote.total_total|currency }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Quote Date:</div>
+					<div class="col-sm-5 text-right">{{ quote.date_quoted|convertdate }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Review Date:</div>
+					<div class="col-sm-5 text-right">{{ quote.date_review|convertdate }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Expire Date:</div>
+					<div class="col-sm-5 text-right">{{ quote.date_expires|convertdate }}</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="row">
+					<div class="col-sm-7">Customer Price Code:</div>
+					<div class="col-sm-5 text-right">{{ quote.pricecode }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Tax Code:</div>
+					<div class="col-sm-5 text-right">{{ quote.taxcode }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Terms Code:</div>
+					<div class="col-sm-5 text-right">{{ quote.termscode }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Shipvia:</div>
+					<div class="col-sm-5 text-right">{{ quote.shipvia }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">FOB:</div>
+					<div class="col-sm-5 text-right">{{ quote.fob()|capitalize }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Delivery:</div>
+					<div class="col-sm-5 text-right">{{ quote.deliverto }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Whse:</div>
+					<div class="col-sm-5 text-right">{{ quote.whse }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Care of:</div>
+					<div class="col-sm-5 text-right">{{ quote.careof }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Salesperson 1:</div>
+					<div class="col-sm-5 text-right">{{ quote.salesperson_1 }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Salesperson 2:</div>
+					<div class="col-sm-5 text-right">{{ quote.salesperson_2 }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Salesperson 3:</div>
+					<div class="col-sm-5 text-right">{{ quote.salesperson_3 }}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

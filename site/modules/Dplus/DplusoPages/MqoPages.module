@@ -1,0 +1,101 @@
+<?php namespace ProcessWire;
+	require_once(__DIR__ . '/DplusoPages.module');
+
+	use Purl\Url;
+
+	class MqoPages extends DplusoPages implements Module {
+
+		protected $fields = array(
+
+		);
+
+		protected $templates = array(
+
+		);
+
+		protected $pages = array(
+			'mqo-menu' => array(
+				'template'       => 'dplus-menu',
+				'name'           => 'mqo',
+				'title'          => 'Quotes',
+				'summary'        => 'Quotes Menu',
+				'parent'         => '/',
+				'dplus_function' => ''
+			),
+			'quote-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Quote Redirects',
+				'parent'     => '/mqo/',
+				'redir_file' => 'quote'
+			),
+			'quotes' => array(
+				'template'       => 'dplus-menu',
+				'name'           => 'quotes',
+				'title'          => 'Quotes',
+				'summary'        => 'View / Search through Quotes',
+				'parent'         => '/mqo/',
+				'dplus_function' => 'mqo',
+				'pw_template'    => 'quotes'
+			),
+			'quote-view' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'quote',
+				'title'          => 'Quote',
+				'summary'        => 'View Quote',
+				'parent'         => '/mqo/',
+				'dplus_function' => 'mqo',
+				'pw_template'    => 'quote-view'
+			),
+			'quote-notes' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'notes',
+				'title'          => 'Quote Notes',
+				'summary'        => 'View Quote Notes',
+				'parent'         => '/mqo/quote/',
+				'dplus_function' => 'mqo',
+				'pw_template'    => 'quote-notes'
+			),
+			'quote-documents' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'documents',
+				'title'          => 'Quote Documents',
+				'summary'        => 'View Quote Documents',
+				'parent'         => '/mqo/quote/',
+				'dplus_function' => 'mqo',
+				'pw_template'    => 'quote-documents'
+			),
+		);
+
+		public function init_mqopage() {
+			$this->addHook('Page::get_redirURL', function($event) {
+				$p = $event->object;
+				$event->return = $p->parent('template=dplus-menu')->child('template=redir')->url;
+			});
+
+			/**
+			 * Returns Quote Qnotes Page URL
+			 */
+			$this->addHook('Page::view_notesURL', function($event) {
+				$p = $event->object;
+				$qnbr = $event->arguments(0);
+				$linenbr = $event->arguments(1);
+				$url = new Url($this->wire('pages')->get('pw_template=quote-notes')->url);
+				$url->query->set('qnbr', $qnbr);
+				$url->query->set('linenbr', $linenbr);
+				$event->return = $url->getUrl();
+			});
+
+		}
+
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dplus Online Quote Pages',
+				'version' => 101,
+				'summary' => 'Installs and creates Dplus Online Quote Pages',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+	}
