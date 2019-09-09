@@ -1,4 +1,4 @@
-<div id="notes">
+<div id="notes" class="mb-4">
 	<div class="row">
 		<div class="col">
 			<h3 class="font-weight-bold text-secondary">Notes</h3>
@@ -10,30 +10,31 @@
 		</div>
 	</div>
 
-	<table class="table table-striped">
-		<tr class="bg-dark text-white">
-			<th>Pick Ticket</th>
-			<th>Pack Ticket</th>
-			<th>Invoice</th>
-			<th>Acknowledgment</th>
-			<th>Note</th>
-		</tr>
-		{% if notes.count() %}
+	<div class="list-group">
+		<div class="list-group-item list-group-item-action bg-dark text-white">
+			<div class="row">
+				<div class="col">Pick Ticket</div>
+				<div class="col">Pack Ticket</div>
+				<div class="col">Invoice</div>
+				<div class="col">Acknowledgment</div>
+			</div>
+		</div>
+		{% if notes.count > 0 %}
 			{% for note in notes %}
-				<tr>
-					<td>{{ note.pickticket }}</td>
-					<td>{{ note.packticket }}</td>
-					<td>{{ note.invoice }}</td>
-					<td>{{ note.acknowledgement }}</td>
-					<td>{{ note.note }}</td>
-				</tr>
+				<div class="list-group-item">
+					<div class="row mb-1">
+						<div class="col">{{ note.pickticket }}</div>
+						<div class="col">{{ note.packticket }}</div>
+						<div class="col">{{ note.invoice }}</div>
+						<div class="col">{{ note.acknowledgement }}</div>
+					</div>
+					<p class="mb-0 notes">{{ note.note }}</p>
+				</div>
 			{% endfor %}
 		{% else %}
-			<tr>
-				<td colspan="5" class="text-center bg-light font-weight-bold">
-					No Header Notes found
-				</td>
-			</tr>
+			<div class="list-group-item text-center font-weight-bold">
+				No notes found
+			</div>
 		{% endif %}
-	</table>
+	</div>
 </div>
