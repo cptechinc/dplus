@@ -114,6 +114,10 @@ $(function() {
 				'</div>' +
 			'</div>'
 	});
+
+	$('.phone-input').keyup(function() {
+		$(this).val(format_phone($(this).val()));
+	});
 });
 
 $.fn.extend({
@@ -195,4 +199,33 @@ function init_datepicker() {
 			allowPastDates: true,
 		});
 	});
+}
+
+/*==============================================================
+	STRING FUNCTIONS
+=============================================================*/
+function validate_email(email) {
+	var emailregex = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/;
+	return emailregex.test(email);
+}
+
+function format_phone(input) {
+	// Strip all characters from the input except digits
+	input = input.replace(/\D/g,'');
+
+	// Trim the remaining input to ten characters, to preserve phone number format
+	input = input.substring(0,10);
+
+	// Based upon the length of the string, we add formatting as necessary
+	var size = input.length;
+	if (size == 0){
+		input = input;
+	} else if(size < 4){
+		input = input;
+	} else if(size < 7){
+		input = input.substring(0,3)+'-'+input.substring(3,6);
+	} else {
+		input = input.substring(0,3)+'-'+input.substring(3,6)+'-'+input.substring(6,10);
+	}
+	return input;
 }
