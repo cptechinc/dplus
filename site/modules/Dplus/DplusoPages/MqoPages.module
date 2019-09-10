@@ -68,6 +68,18 @@
 			),
 		);
 
+		public function init() {
+			/**
+			 * Adds self::can_user_editquote() as User hook
+			 * @uses self::can_user_editquote()
+			 */
+			$this->addHook('User::can_editquote', function($event) {
+				$user = $event->object;
+				$quote = $event->arguments(0);
+				$event->return = $this->can_user_editquote($user, $quote);
+			});
+		}
+
 		public function init_mqopage() {
 			$this->addHook('Page::get_redirURL', function($event) {
 				$p = $event->object;
@@ -83,10 +95,23 @@
 				$linenbr = $event->arguments(1);
 				$url = new Url($this->wire('pages')->get('pw_template=quote-notes')->url);
 				$url->query->set('qnbr', $qnbr);
-				$url->query->set('linenbr', $linenbr);
-				$event->return = $url->getUrl();
+				$hash = $linenbr > 0 ? "#line-$linenbr" : '';
+				$event->return = $url->getUrl()."$hash";
 			});
+		}
 
+		/**
+		 * Return if User can edit Quote
+		 * @param  User              $user  User
+		 * @param  Quote|string      $quote Quote uote
+		 * @return bool                     Can User Edit Quote?
+		 */
+		public function can_user_editquote(User $user, $quote) {
+			// TODO: add quote edit logic
+			return true;
+			if (get_class($quote) != 'Quote') {
+				$quote = QuoteQuery::create()->findOneByQuotenumber($quote);
+			}
 		}
 
 		public static function getModuleInfo() {

@@ -1,0 +1,7 @@
+<div class="row">
+	{% if user.can_editquote(quote) %}
+		<div class="col">
+			<button class="btn btn-block btn-warning"> <i class="fa fa-pencil" aria-hidden="true"></i> Edit Quote</button>
+		</div>
+	{% endif %}
+</div>
