@@ -28,13 +28,13 @@
 		<div class="row">
 			<div class="col-sm-5">Phone:</div>
 			<div class="col-sm-7 text-right">
-				<a href="mailto:{{ order.phone }}" class="link">{{ order.phone|phone_us }}</a>
+				<a href="tel:{{ order.phone }}" class="link">{{ order.phone|phone_us }}</a>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-5">Fax:</div>
 			<div class="col-sm-7 text-right">
-				<a href="mailto:{{ order.fax }}" class="link">{{ order.fax|phone_us }}</a>
+				<a href="tel:{{ order.fax }}" class="link">{{ order.fax|phone_us }}</a>
 			</div>
 		</div>
 		<div class="row">
@@ -81,6 +81,10 @@
 				<div class="row">
 					<div class="col-sm-7">Cust PO</div>
 					<div class="col-sm-5 text-right">{{ order.custpo }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Release #</div>
+					<div class="col-sm-5 text-right">{{ order.releasenumber }}</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-7">Shipvia</div>

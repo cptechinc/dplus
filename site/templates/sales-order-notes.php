@@ -1,9 +1,9 @@
 <?php
-	$modules->get('MqoPages')->init_mqopage();
+	$modules->get('DplusoPagesSalesOrder')->init_salesorder_hooks();
 	$module_qnotes_crud = $modules->get('QnotesCrud');
 
 	if ($input->requestMethod('POST')) {
-		$response = $module_qnotes_crud->process_input_quote($input);
+		$response = $module_qnotes_crud->process_input_salesorder($input);
 		$page->fullURL->query->remove('linenbr');
 		$session->redirect($page->fullURL->getURL());
 
