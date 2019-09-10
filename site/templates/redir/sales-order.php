@@ -80,24 +80,32 @@
 			$custID = SalesOrderQuery::create()->get_custid($ordn);
 			$data = array("DBNAME=$dplusdb", "ORDRDET=$ordn", "CUSTID=$custID", "LOCK");
 			$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
+			echo $session->loc;
 			break;
 		case 'edit-order';
 			$ordn = $input->$requestmethod->text('ordn');
-			$shipname = $input->$requestmethod->text('shipname');
-			$shipaddress = $input->$requestmethod->text('shipaddress');
-			$shipaddress2 = $input->$requestmethod->text('shipaddress2');
-			$shipcity = $input->$requestmethod->text('shipcity');
-			$shipstate = $input->$requestmethod->text('shipstate');
-			$shipzip = $input->$requestmethod->text('shipzip');
 			$editorder = OrdrhedQuery::create()->findOneBySessionidOrder(session_id(), $ordn);
-			$editorder->set('shipname', $shipname);
-			$editorder->set('shipaddress', $shipaddress);
-			$editorder->set('shipaddress2', $shipaddress2);
-			$editorder->set('shipcity', $shipcity);
-			$editorder->set('shipstate', $shipstate);
-			$editorder->set('shipzip', $shipzip);
+			$editorder->setShipname($input->$requestmethod->text('shipto_name'));
+			$editorder->setShipaddress($input->$requestmethod->text('shipto_address'));
+			$editorder->setShipaddress2($input->$requestmethod->text('shipto_address2'));
+			$editorder->setShipcity($input->$requestmethod->text('shipto_city'));
+			$editorder->setShipstate($input->$requestmethod->text('shipto_state'));
+			$editorder->setShipzip($input->$requestmethod->text('shipto_zip'));
+			$editorder->setContact($input->$requestmethod->text('contact'));
+			$editorder->setPhone($input->$requestmethod->text('phone'));
+			$editorder->setExtension($input->$requestmethod->text('phone_ext'));
+			$editorder->setFax($input->$requestmethod->text('fax'));
+			$editorder->setEmail($input->$requestmethod->text('email'));
+			$editorder->setCustpo($input->$requestmethod->text('custpo'));
+			$editorder->setReleasenbr($input->$requestmethod->text('releasenumber'));
+			$editorder->setShipviacd($input->$requestmethod->text('shipvia'));
+			$editorder->setRqstDate($input->$requestmethod->text('date_requested'));
+			$editorder->setShipcom($input->$requestmethod->text('shipcomplete'));
+			$editorder->setPaymenttype($input->$requestmethod->text('paytype'));
+
 			$editorder->save();
 			$data = array("DBNAME=$dplusdb", 'SALESHEAD', "ORDERNO=$ordn", "CUSTID=$editorder->custid");
+
 			if ($input->$requestmethod->exit) {
 				$session->loc = $pages->get('template=dplus-menu')->child('template=redir')->url."?action=unlock-order&ordn=$ordn";
 				$data[] = 'UNLOCK';

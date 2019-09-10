@@ -13,7 +13,17 @@
 			$page->title = "Editing Sales Order #$ordn";
 			$page->listpage = $pages->get('pw_template=sales-orders');
 			$page->formurl = $pages->get('template=dplus-menu')->child('template=redir')->url;
-			$page->body =  $config->twig->render('sales-orders/sales-order/edit-sales-order-page.twig', ['page' => $page, 'customer' => $customer, 'order' => $order, 'order_items' => $order_items, 'user' => $user]);
+
+			$page->body .= $config->twig->render('sales-orders/sales-order/edit/links-header.twig', ['page' => $page, 'user' => $user, 'order' => $order]);
+			$page->body .= $config->twig->render('sales-orders/sales-order/edit/sales-order-header.twig', ['page' => $page, 'customer' => $customer, 'order' => SalesOrderQuery::create()->findOneByOrdernumber($ordn)]);
+
+			if ($user->is_editingorder($order->ordernumber)) {
+				$states = StatesQuery::create()->select(['name', 'abbreviation'])->find();
+				$shipvias = ShipviaQuery::create()->find();
+
+				$page->body .= $config->twig->render('sales-orders/sales-order/edit/edit-form.twig', ['page' => $page, 'order' => $order, 'states' => $states, 'shipvias' => $shipvias]);
+			}
+			$page->body .= $config->twig->render('sales-orders/sales-order/edit/order-items.twig', ['page' => $page,'order' => $order, 'order_items' => $order_items, 'user' => $user]);
 
 			if ($user->is_editingorder($ordn)) {
 				$config->scripts->append(hash_templatefile('scripts/orders/edit-order.js'));
