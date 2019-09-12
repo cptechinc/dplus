@@ -1,5 +1,5 @@
 <?php
-	$modules->get('DplusoPagesSalesOrder')->init_salesorder_hooks();
+	$modules->get('MqoPages')->init_mqopage();
 	$module_qnotes_crud = $modules->get('QnotesCrud');
 
 	if ($input->requestMethod('POST')) {
