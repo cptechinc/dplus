@@ -7,12 +7,17 @@
 		$ordn = $input->get->text('ordn');
 
 		if (SalesOrderQuery::create()->filterByOrdernumber($ordn)->count()) {
+			if (!OrdrhedQuery::create()->filterBySessionidOrder(session_id(), $qnbr)->count()) {
+				$http = new ProcessWire\WireHttp();
+				$http->get($page->edit_orderURL($ordn));
+			}
+			
 			$order = OrdrhedQuery::create()->findOneBySessionidOrder(session_id(), $ordn);
 			$order_items = OrdrdetQuery::create()->filterBySessionidOrder(session_id(), $ordn)->find();
 			$customer = CustomerQuery::create()->findOneByCustid($order->custid);
 			$page->title = "Editing Sales Order #$ordn";
 			$page->listpage = $pages->get('pw_template=sales-orders');
-			$page->formurl = $pages->get('template=dplus-menu')->child('template=redir')->url;
+			$page->formurl = $pages->get('template=dplus-menu, name=mso')->child('template=redir')->url;
 
 			$page->body .= $config->twig->render('sales-orders/sales-order/edit/links-header.twig', ['page' => $page, 'user' => $user, 'order' => $order]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/edit/sales-order-header.twig', ['page' => $page, 'customer' => $customer, 'order' => SalesOrderQuery::create()->findOneByOrdernumber($ordn)]);
