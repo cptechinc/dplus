@@ -1,0 +1,31 @@
+<form action="{{ page.formurl }}" class="row pt-3 px-3 allow-enterkey-submit">
+	<input type="hidden" name="action" value="quick-update-line">
+	<input type="hidden" name="ordn" value="{{ quote.quotenumber }}">
+	<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
+	<div class="col-sm-4">
+		{{ detail.itemid }}</br>
+		<small>{{ detail.desccription }}</small>
+	</div>
+	<div class="col-sm-1 text-right">
+		<input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}"></input>
+	</div>
+	<div class="col-sm-2 text-right">
+		<div class="input-group">
+			<div class="input-group-prepend">
+				<span class="input-group-text">$</span>
+			</div>
+			<input type="text" class="form-control text-right" name="price" value="{{ detail.price|currency }}"></input>
+		</div>
+	</div>
+	<div class="col-sm-2 text-right">
+		$ {{ detail.price_total|currency }}
+	</div>
+	<div class="col-sm-3 text-right">
+		<button type="submit" class="btn btn-warning">
+			Save <i class="fa fa-floppy-o" aria-hidden="true"></i>
+		</button>
+		<a href="{{ page.remove_itemURL(quote.quotenumber, detail.linenbr) }}" class="btn btn-danger exclude">
+			Remove <i class="fa fa-times" aria-hidden="true"></i>
+		</a>
+	</div>
+</form>
