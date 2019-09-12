@@ -1,7 +1,7 @@
 <div class="row">
 	{% if user.can_editquote(quote) %}
 		<div class="col">
-			<button class="btn btn-block btn-warning"> <i class="fa fa-pencil" aria-hidden="true"></i> Edit Quote</button>
+			<a href="{{ page.edit_quoteURL(quote.quotenumber) }}" class="btn btn-block btn-warning"> <i class="fa fa-pencil" aria-hidden="true"></i> Edit Quote</a>
 		</div>
 	{% endif %}
 </div>
