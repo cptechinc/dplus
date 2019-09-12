@@ -31,7 +31,6 @@
 		} else {
 			$page->headline = $page->title = "Quote #$qnbr could not be found";
 			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Check if the Quote Number is correct"]);
-
 		}
 	} else {
 		$page->body = $config->twig->render('quotes/quote/lookup-form.twig', ['page' => $page]);
