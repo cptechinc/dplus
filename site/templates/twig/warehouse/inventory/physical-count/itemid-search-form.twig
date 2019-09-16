@@ -1,0 +1,22 @@
+<div class="form-group">
+	<a href="{{ page.url }}" class="btn btn-primary not-round">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Retry
+	</a>
+</div>
+
+<h3>Find By Item ID</h3>
+
+<form action="{{ page.formurl }}" method="get" class="allow-enterkey-submit">
+	<input type="hidden" name="scan" value="{{ page.scan }}">
+	<label>Scan Item ID</label>
+	<div class="form-group">
+		<div class="input-group">
+			<input class="form-control" name="q" placeholder="Item ID" type="text">
+			<span class="input-group-append">
+				<button type="submit" class="btn btn-primary">
+					<i class="fa fa-search" aria-hidden="true"></i> Submit
+				</button>
+			</span>
+		</div>
+	</div>
+</form>
