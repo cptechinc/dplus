@@ -25,20 +25,33 @@
 			$page->body .= $config->twig->render('quotes/quote/edit/quote-header.twig', ['page' => $page, 'customer' => $customer, 'quote' => $quote_readonly]);
 			$page->body .= $html->div('class=mb-3');
 
-			if ($user->is_editingquote($quote_readonly->quotenumber)) {
+			//if ($user->is_editingquote($quote_readonly->quotenumber)) {
 				$page->formurl = $pages->get('template=dplus-menu, name=mqo')->child('template=redir')->url;
-				$page->js .= $config->twig->render('quotes/quote/edit/shiptos.js.twig', ['varshiptos' => $module_edit->get_shiptos_json_array()]);
+				$page->lookupURL = $pages->get('pw_template=ii-item-lookup')->httpUrl;
+				//$page->js .= $config->twig->render('quotes/quote/edit/shiptos.js.twig', ['varshiptos' => $module_edit->get_shiptos_json_array()]);
+				$page->body .= $config->twig->render('util/js-variables.twig', ['varshiptos' => $module_edit->get_shiptos_json_array()]);
 				$page->body .= $config->twig->render('quotes/quote/edit/edit-form.twig', ['page' => $page, 'quote' => $quote_edit, 'states' => $module_edit->get_states(), 'shipvias' => $module_edit->get_shipvias(), 'warehouses' => $module_edit->get_warehouses(), 'shiptos' => $customer->get_shiptos()]);
+				$page->body .= $html->div('class=mb-3');
+				$page->body .= $config->twig->render('quotes/quote/edit/quote-items.twig', ['page' => $page, 'user' => $user, 'quote' => $quote_edit]);
+				$page->body .= $html->h3('class=text-secondary', 'Add Item');
+				$page->body .= $config->twig->render('quotes/quote/edit/add-item-form.twig', ['page' => $page, 'quote' => $quote_readonly]);
+				$page->js .= $config->twig->render('quotes/quote/edit/item-lookup.js.twig', ['page' => $page]);
+
+				if ($input->get->q) {
+					$q = $input->get->text('q');
+					$module_edit->request_itemsearch($q);
+					$results = PricingQuery::create()->findBySessionid(session_id());
+					$page->body .= $config->twig->render('cart/lookup-results.twig', ['q' => $q, 'results' => $results]);
+				}
 				$page->body .= $html->div('class=mb-3');
 
 				$config->scripts->append(hash_templatefile('scripts/quotes/edit-quote.js'));
-			}
-			$page->body .= $config->twig->render('quotes/quote/edit/quote-items.twig', ['page' => $page, 'user' => $user, 'quote' => $quote_edit]);
-
+			//}
 
 			$page->body .= $config->twig->render("quotes/quote/quote-notes.twig", ['page' => $page, 'quote' => $quote_readonly, 'notes' => $quote_readonly->get_notes()]);
 			$page->body .= $config->twig->render('quotes/quote/notes/add-note-modal.twig', ['page' => $page, 'qnbr' => $qnbr]);
 			$config->scripts->append(hash_templatefile('scripts/quotes/quote-notes.js'));
+			$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 		} else {
 			$page->headline = $page->title = "Quote #$qnbr could not be found";
 			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Check if the Quote Number is correct"]);

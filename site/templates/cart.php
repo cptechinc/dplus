@@ -20,6 +20,7 @@
 			$results = PricingQuery::create()->findBySessionid(session_id());
 			$page->body .= $config->twig->render('cart/lookup-results.twig', ['page' => $page, 'cart' => $cart, 'q' => $q, 'results' => $results]);
 		}
+		
 		$page->body .= $html->div('class=mb-4', '');
 		$page->body .= $config->twig->render('cart/cart-actions.twig', ['page' => $page, 'cart' => $cart]);
 		$page->body .= $html->div('class=mb-4', '');
