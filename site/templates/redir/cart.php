@@ -74,7 +74,7 @@
 				$session->loc = $pages->get('pw_template=cart')->url;
 			}
 			break;
-		case 'create-sales-order':
+		case 'create-order':
 			$data = array("DBNAME=$dplusdb", 'CREATESO');
 
 			if ($input->$requestmethod->page) {
