@@ -15,14 +15,6 @@
 	*
 	*
 	* switch ($action) {
-	* 	case 'get-order-notes':
-	* 		Request Sales Order Notes from Dplus
-	* 		Response: Creates qnote table records
-	*		DBNAME=$dplusdb
-	*		LQNOTE=SORD
-	*		KEY1=$ordn
-	*		KEY2=$linenbr
-	*		break;
 	*	case 'get-order-edit':
 	*		Request Sales Order Details for Edit
 	* 		Response: Creates Ordrhed, Ordrdet records, updates logperm with lock
@@ -40,6 +32,14 @@
 	*		CUSTID=$editorder->custid
 	*		** UNLOCK
 	*		break;
+	*	case 'edit-new-order':
+	* 		Request: Sales Order Details for Edit for brand new order
+	* 		Response: Updates Ordrdet, so_detail records
+	*		DBNAME=$dplusdb
+	*		ORDRDET=$ordn
+	*		CUSTID=$custID
+	*		LOCK
+	* 		break;
 	*	case 'quick-update-line':
 	*		Request Sales Order Detail Line to be updated
 	* 		Response: Updates Ordrdet, so_detail records
@@ -59,6 +59,15 @@
 	*		QTY=0
 	*		CUSTID=$custID
 	*		break;
+	*	case 'add-item':
+	* 		Request: Add Item to Order
+	* 		Response: Updates Ordrdet, so_detail records
+	* 		DBNAME=$dplusdb
+	* 		SALEDET
+	*		ORDERNO=$ordn
+	*		ITEMID=$itemID
+	*		QTY=$qty
+	* 		break;
 	*	case 'unlock-order':
 	* 		Request Sales Order Unlock
 	* 		Response: updates dplus locks, logperm
@@ -70,17 +79,17 @@
 	**/
 
 	switch ($action) {
-		case 'get-order-notes':
-			$ordn = $input->get->text('ordn');
-			$linenbr = $input->get->int('linenbr');
-			$data = array("DBNAME=$dplusdb", "LQNOTE=SORD", "KEY1=$ordn", "KEY2=$linenbr");
-			break;
 		case 'get-order-edit':
 			$ordn = $input->get->text('ordn');
 			$custID = SalesOrderQuery::create()->get_custid($ordn);
 			$data = array("DBNAME=$dplusdb", "ORDRDET=$ordn", "CUSTID=$custID", "LOCK");
 			$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
-			echo $session->loc;
+			break;
+		case 'edit-new-order':
+			$ordn = $user->get_lockedID();
+			$custID = SalesOrderQuery::create()->get_custid($ordn);
+			$data = array("DBNAME=$dplusdb", "ORDRDET=$ordn", "CUSTID=$custID", "LOCK");
+			$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
 			break;
 		case 'edit-order';
 			$ordn = $input->$requestmethod->text('ordn');
@@ -92,9 +101,9 @@
 			$editorder->setShipstate($input->$requestmethod->text('shipto_state'));
 			$editorder->setShipzip($input->$requestmethod->text('shipto_zip'));
 			$editorder->setContact($input->$requestmethod->text('contact'));
-			$editorder->setPhone($input->$requestmethod->text('phone'));
+			$editorder->setPhone(str_replace('-', '', $input->$requestmethod->text('phone')));
 			$editorder->setExtension($input->$requestmethod->text('phone_ext'));
-			$editorder->setFax($input->$requestmethod->text('fax'));
+			$editorder->setFax(str_replace('-', '', $input->$requestmethod->text('fax')));
 			$editorder->setEmail($input->$requestmethod->text('email'));
 			$editorder->setCustpo($input->$requestmethod->text('custpo'));
 			$editorder->setReleasenbr($input->$requestmethod->text('releasenumber'));
@@ -123,6 +132,14 @@
 			$editline->setPrice($price);
 			$editline->save();
 			$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "CUSTID=$custID");
+			$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
+			break;
+		case 'add-item':
+			$ordn   = $input->$requestmethod->text('ordn');
+			$itemID = $input->$requestmethod->text('itemID');
+			$qty    = $input->$requestmethod->int('qty');
+			$custID = SalesOrderQuery::create()->get_custid($ordn);
+			$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "ITEMID=$itemID", "QTY=$qty", "CUSTID=$custID");
 			$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
 			break;
 		case 'remove-line':
