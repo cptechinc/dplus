@@ -13,12 +13,11 @@
 				$http->get($page->edit_quoteURL($qnbr));
 			}
 			$page->title = "Editing Quote #$qnbr";
-			$quote_readonly = QuoteQuery::create()->filterByQuoteid($qnbr)->findOne();
-			$quote_edit =  QuothedQuery::create()->findOneBySessionidQuote(session_id(), $qnbr);
+			$quote_readonly = $module_edit->get_quote_static();
+			$quote_edit     = $module_edit->get_quote_edit();
 			$customer = CustomerQuery::create()->findOneByCustid($quote_readonly->custid);
 			$page->listpage = $pages->get('pw_template=quotes');
 
-			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Attention!", 'iconclass' => 'fa fa-exclamation-circle fa-2x', 'message' => "The changes made will not be saved, because the quote is not locked."]);
 			$page->body .= $html->div('class=mb-3');
 			$page->body .= $config->twig->render('quotes/quote/edit/links-header.twig', ['page' => $page, 'user' => $user, 'quote' => $quote_readonly]);
 			$page->body .= $html->div('class=mb-3');
@@ -29,7 +28,7 @@
 				$page->formurl = $pages->get('template=dplus-menu, name=mqo')->child('template=redir')->url;
 				$page->lookupURL = $pages->get('pw_template=ii-item-lookup')->httpUrl;
 				//$page->js .= $config->twig->render('quotes/quote/edit/shiptos.js.twig', ['varshiptos' => $module_edit->get_shiptos_json_array()]);
-				$page->body .= $config->twig->render('util/js-variables.twig', ['varshiptos' => $module_edit->get_shiptos_json_array()]);
+
 				$page->body .= $config->twig->render('quotes/quote/edit/edit-form.twig', ['page' => $page, 'quote' => $quote_edit, 'states' => $module_edit->get_states(), 'shipvias' => $module_edit->get_shipvias(), 'warehouses' => $module_edit->get_warehouses(), 'shiptos' => $customer->get_shiptos()]);
 				$page->body .= $html->div('class=mb-3');
 				$page->body .= $config->twig->render('quotes/quote/edit/quote-items.twig', ['page' => $page, 'user' => $user, 'quote' => $quote_edit]);
@@ -44,7 +43,7 @@
 					$page->body .= $config->twig->render('cart/lookup-results.twig', ['q' => $q, 'results' => $results]);
 				}
 				$page->body .= $html->div('class=mb-3');
-
+				$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('shiptos' => $module_edit->get_shiptos_json_array())]);
 				$config->scripts->append(hash_templatefile('scripts/quotes/edit-quote.js'));
 			//}
 

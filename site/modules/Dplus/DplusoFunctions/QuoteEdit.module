@@ -2,7 +2,7 @@
 
 use Purl\Url;
 use QuoteQuery, Quote;
-use QuotehedQuery, Quotehed;
+use QuothedQuery, Quothed;
 use StatesQuery, States;
 use ShipviaQuery, Shipvia;
 use CustomerShiptoQuery, CustomerShipto;
@@ -41,7 +41,7 @@ class QuoteEdit extends WireData implements Module {
 	}
 
 	/**
-	 * Returns if Cart Customer has been defined
+	 * Returns if Quote Number has been defined
 	 * @return bool
 	 */
 	public function has_qnbr() {
@@ -74,18 +74,35 @@ class QuoteEdit extends WireData implements Module {
 		$this->qnbr = $qnbr;
 	}
 
+	/**
+	 * Return US States
+	 * @return States|ObjectCollection
+	 */
 	public function get_states() {
 		return StatesQuery::create()->select(['name', 'abbreviation'])->find();
 	}
 
+	/**
+	 * Return Shipvias
+	 * @return Shipvia[]|ObjectCollection
+	 */
 	public function get_shipvias() {
 		return ShipviaQuery::create()->find();
 	}
 
+	/**
+	 * Return Warehouses
+	 * @return Warehouse[]|ObjectCollection
+	 */
 	public function get_warehouses() {
 		return WarehouseQuery::create()->find();
 	}
 
+	/**
+	 * Gets the Shipto address in an array format to be easily converted to JSON
+	 * NOTE: used for JS
+	 * @return array
+	 */
 	public function get_shiptos_json_array() {
 		$custID = $this->get_custid();
 		$columns = array('id', 'name', 'address', 'address2', 'city', 'state', 'zip');
@@ -101,6 +118,10 @@ class QuoteEdit extends WireData implements Module {
 		return $shiptos->toArray('id');
 	}
 
+	/**
+	 * Return Customer ID from Quote
+	 * @return string Customer ID
+	 */
 	public function get_custid() {
 		return  QuoteQuery::create()->select(Quote::get_aliasproperty('custid'))->findOneByQuotenumber($this->qnbr);
 	}

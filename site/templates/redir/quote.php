@@ -11,15 +11,57 @@
 
 
 	/**
-	* SALES ORDERS REDIRECT
+	* QUOTE REDIRECT
 	*
 	*
 	* switch ($action) {
 	* 	case 'get-quote-edit':
 	*		- Loads Quote for editing
-	*		DBNAME=$config->dplusdbname
+	*		DBNAME=$dplusdb
 	*		EDITQUOTE
 	*		QUOTENO=$qnbr
+	*		break;
+	*	case 'edit-new-quote':
+	*		- Loads Quote for editing
+	*		DBNAME=$dplusdb
+	*		EDITQUOTE
+	*		QUOTENO=$qnbr
+	*		break;
+	*	case 'edit-quote':
+	*		- Saves changes to Quothed
+	*		DBNAME=$dplusdb
+	*		UPDATEQUOTEHEAD
+	*		QUOTENO=$qnbr
+	*		break;
+	*	case 'quick-update-line':
+	* 		- Updates Detail Line
+	*		DBNAME=$dplusdb
+	*		SALEDET
+	*		ORDERNO=$ordn
+	*		LINENO=$linenbr
+	* 		break;
+	* 	case 'quick-update-line':
+	* 		- Updates Detail Line
+	*		DBNAME=$dplusdb
+	*		UPDATEQUOTEDETAIL
+	*		QUOTENO=$qnbr
+	*		LINENO=$linenbr
+	* 		break;
+	* 	case 'add-item':
+	* 		- Adds an Item to the Sales Order
+	* 		DBNAME=$dplusdb
+	* 		UPDATEQUOTEDETAIL
+	*		QUOTENO=$qnbr
+	*		ITEMID=$itemID
+	*		QTY=$qty
+	* 		break;
+	* 	case 'remove-line':
+	*		- Removes Detail Line
+	*		DBNAME=$dplusdb
+	*		UPDATEQUOTEDETAIL
+	*		QUOTENO=$qnbr
+	*		LINENO=$linenbr
+	*		QTY=0
 	*		break;
 	* }
 	**/
@@ -27,6 +69,11 @@
 	switch ($action) {
 		case 'get-quote-edit':
 			$qnbr = $input->$requestmethod->text('qnbr');
+			$data = array("DBNAME=$dplusdb", 'EDITQUOTE', "QUOTENO=$qnbr");
+			$session->loc = $pages->get('pw_template=quote-edit')->url."?qnbr=$qnbr";
+			break;
+		case 'edit-new-quote':
+			$qnbr = $user->get_lockedID();
 			$data = array("DBNAME=$dplusdb", 'EDITQUOTE', "QUOTENO=$qnbr");
 			$session->loc = $pages->get('pw_template=quote-edit')->url."?qnbr=$qnbr";
 			break;
@@ -40,8 +87,8 @@
 			$editquote->setShipto_state($input->$requestmethod->text('shipto_state'));
 			$editquote->setShipto_zip($input->$requestmethod->text('shipto_zip'));
 			$editquote->setContact($input->$requestmethod->text('contact'));
-			$editquote->setPhone($input->$requestmethod->text('phone'));
-			$editquote->setFaxnbr($input->$requestmethod->text('fax'));
+			$editquote->setPhone(str_replace('-', '', $input->$requestmethod->text('phone')));
+			$editquote->setFaxnbr(str_replace('-', '', $input->$requestmethod->text('fax')));
 			$editquote->setEmail($input->$requestmethod->text('email'));
 			$editquote->setCustpo($input->$requestmethod->text('custpo'));
 			$editquote->setShipviacd($input->$requestmethod->text('shipvia'));
@@ -59,6 +106,10 @@
 			}
 			break;
 		case 'unlock-quote':
+			$qnbr = $input->$requestmethod->text('qnbr');
+			$session->loc = $pages->get('pw_template=quote-view')->url."?qnbr=$qnbr";
+			break;
+		case 'order-quote':
 			$qnbr = $input->$requestmethod->text('qnbr');
 			$session->loc = $pages->get('pw_template=quote-view')->url."?qnbr=$qnbr";
 			break;
@@ -89,6 +140,21 @@
 			$qty    = $input->$requestmethod->int('qty');
 			$data = array("DBNAME=$dplusdb", 'UPDATEQUOTEDETAIL', "QUOTENO=$qnbr", "ITEMID=$itemID", "QTY=$qty");
 
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$session->loc = $pages->get('pw_template=quote-edit')->url."?qnbr=$qnbr";
+			}
+			break;
+		case 'remove-line':
+			$qnbr = $input->$requestmethod->text('qnbr');
+			$linenbr = $input->$requestmethod->int('linenbr');
+			$custID = QuoteQuery::create()->select(Quote::get_aliasproperty('custid'))->filterByQuoteid($qnbr)->findOne();
+			$detail = QuotdetQuery::create()->filterBySessionidQuote(session_id(), $qnbr)->filterByLinenbr($linenbr)->findOne();
+			$detail->setQuotqty(0);
+			$detail->setOrdrqty(0);
+			$detail->save();
+			$data = array("DBNAME=$dplusdb", 'UPDATEQUOTEDETAIL', "QUOTENO=$qnbr", "LINENO=$linenbr", "QTY=0", "CUSTID=$custID");
 			if ($input->$requestmethod->page) {
 				$session->loc = $input->$requestmethod->text('page');
 			} else {
