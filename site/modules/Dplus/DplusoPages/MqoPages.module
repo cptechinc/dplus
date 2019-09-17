@@ -32,6 +32,10 @@
 				'name'   => 'quote-edit',
 				'fields' => array()
 			),
+			'quote-order' => array(
+				'name'   => 'quote-order',
+				'fields' => array()
+			),
 		);
 
 		protected $pages = array(
@@ -96,6 +100,15 @@
 				'dplus_function' => '',
 				'pw_template'    => 'quote-edit'
 			),
+			'quote-order' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'order',
+				'title'          => 'Push Quote to Order',
+				'summary'        => 'Push Quote to Order',
+				'parent'         => '/mqo/quote/',
+				'dplus_function' => '',
+				'pw_template'    => 'quote-order'
+			),
 		);
 
 		public function init() {
@@ -137,6 +150,17 @@
 				$qnbr = $event->arguments(0);
 				$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mqo')->child('template=redir')->url);
 				$url->query->set('action', 'get-quote-edit');
+				$url->query->set('qnbr', $qnbr);
+				$event->return = $url->getUrl();
+			});
+
+			/**
+			 * Returns Push Quote to Order URL
+			 */
+			$this->addHook('Page::order_quoteURL', function($event) {
+				$p = $event->object;
+				$qnbr = $event->arguments(0);
+				$url = new Url($this->wire('pages')->get('pw_template=quote-order')->url);
 				$url->query->set('qnbr', $qnbr);
 				$event->return = $url->getUrl();
 			});
