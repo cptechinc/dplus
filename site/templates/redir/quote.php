@@ -111,7 +111,8 @@
 			break;
 		case 'order-quote':
 			$qnbr = $input->$requestmethod->text('qnbr');
-			$session->loc = $pages->get('pw_template=quote-view')->url."?qnbr=$qnbr";
+			$data = array("DBNAME=$dplusdb", 'QUOTETOORDER', "QUOTENO=$qnbr", "LINENO=ALL");
+			$session->loc = $pages->get('template=dplus-menu,name=mso')->child('template=redir')->url."?action=edit-new-order";
 			break;
 		case 'quick-update-line':
 			$qnbr = $input->$requestmethod->text('qnbr');
@@ -119,7 +120,14 @@
 			$custID = QuoteQuery::create()->select(Quote::get_aliasproperty('custid'))->filterByQuoteid($qnbr)->findOne();
 			$detail = QuotdetQuery::create()->filterBySessionidQuote(session_id(), $qnbr)->filterByLinenbr($linenbr)->findOne();
 			$detail->setQuotqty($input->$requestmethod->int('qty'));
-			$detail->setOrdrqty($input->$requestmethod->int('qty'));
+
+			if ($input->$requestmethod->orderquote) {
+				$qty = ($input->$requestmethod->checkorder) ? $input->$requestmethod->int('qty') : 0;
+				$detail->setOrdrqty($qty);
+			} else {
+				$detail->setOrdrqty($input->$requestmethod->int('qty'));
+			}
+
 			$detail->setQuotprice($input->$requestmethod->text('price'));
 			$detail->setOrdrprice($input->$requestmethod->text('price'));
 			$detail->setRshipdate($input->$requestmethod->text('date_requested'));
