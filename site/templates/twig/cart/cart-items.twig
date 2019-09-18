@@ -1,0 +1,44 @@
+<h3 class="font-weight-bold text-secondary mt-4">Cart Items</h3>
+<div class="bg-dark text-white font-weight-bold pt-3 px-3 pb-1">
+	<div class="row">
+		<div class="col-sm-3">Item ID</div>
+		<div class="col-sm-2 text-right">Qty</div>
+		<div class="col-sm-2 text-right">Price</div>
+		<div class="col-sm-2 text-right">Total Price</div>
+		<div class="col-sm-3 "></div>
+	</div>
+</div>
+
+{% for detail in cart.get_items() %}
+	<form action="{{ page.formurl }}" class="row pt-3 px-3 allow-enterkey-submit">
+		<input type="hidden" name="action" value="quick-update-line">
+		<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
+		<div class="col-sm-4">
+			{{ detail.itemid }}</br>
+			<small>{{ detail.desc1 }}</small>
+		</div>
+		<div class="col-sm-1 text-right">
+			<input type="text" class="form-control text-right qty-input" size="4" name="qty" value="{{ detail.qty|number_format() }}"></input>
+		</div>
+		<div class="col-sm-2 text-right">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<span class="input-group-text">$</span>
+				</div>
+				<input type="text" class="form-control text-right qty-input" name="price" value="{{ detail.price|currency }}"></input>
+			</div>
+		</div>
+		<div class="col-sm-2 text-right">
+			$ {{ detail.totalprice|currency }}
+		</div>
+		<div class="col-sm-3 text-right">
+			<button type="submit" class="btn btn-success">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			<a href="{{ page.remove_itemURL(detail.linenbr) }}" class="btn btn-danger exclude">
+				<i class="fa fa-times" aria-hidden="true"></i> Remove
+			</a>
+		</div>
+	</form>
+	<hr>
+{% endfor %}

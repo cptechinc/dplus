@@ -1,0 +1,104 @@
+{
+    "detail": {
+        "Order Number": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Data Source": {
+            "type": "C",
+            "headingjustify": "c",
+            "datajustify": "c"
+        },
+        "Order Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Expected Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Cancel Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Acknowledgment/ETA Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Ship Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Vendor ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Vendor Name": {
+            "type": "C",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Warehouse Code": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Purchase Unit of Measure": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Quantity On Order": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Quantity Due In": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Unit Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Amount": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Special Order": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Reference Sales Order": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Non-Stock Vendor Item ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Non-Stock Vend Item Desc1": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Non-Stock Vend Item Desc2": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        }
+    }
+}

@@ -235,6 +235,15 @@
 				'dplus_function' => 'pilbl',
 				'pw_template'    => 'whse-print-order-item-label'
 			),
+			'whse-physical-count' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'physical-count',
+				'title'          => 'Physical Count',
+				'summary'        => 'Update Inventory with Item Tag Entry',
+				'parent'         => '/warehouse/inventory/',
+				'dplus_function' => 'ite',
+				'pw_template'    => 'whse-physical-count'
+			),
 		);
 
 		public static function getModuleInfo() {
@@ -312,6 +321,16 @@
 				$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
 				$url->query->set('action','add-pallet');
 				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+		}
+
+		public function init_physicalcount() {
+			$this->addHook('Page::get_chooseitemURL', function($event) {
+				$p = $event->object;
+				$item = $event->arguments(0);
+				$url = new Url($p->fullURL->getUrl());
+				$url->query->set('recno', $item->recno);
 				$event->return = $url->getUrl();
 			});
 		}

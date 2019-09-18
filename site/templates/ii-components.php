@@ -25,6 +25,14 @@
 				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 
 				if ($config_ii->option_components == 'kit') {
+					$query_kit = KitsQuery::create();
+					$query_kit->filterByItemid($itemID);
+
+					if ($query_kit->count()) {
+						$kit_items = KitItemsQuery::create()->filterByKititemid($itemID)->find();
+						$page->body .= $config->twig->render('items/ii/components/kit-breakdown.twig', ['page' => $page, 'itemID' => $itemID,  'items' => $kit_items]);
+					}
+
 					$page->body .= $config->twig->render('items/ii/components/kit-screen.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'itemID' => $itemID]);
 				} elseif ($config_ii->option_components == 'bom') {
 					$bomtype = $input->get->text('bomtype');
@@ -52,7 +60,7 @@
 				$form = $config_ii->option_components;
 			}
 
-			$page->body .= $config->twig->render('items/ii/requirements/links.twig', ['page' => $page, 'itemID' => $itemID]);
+			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID]);
 			$page->body .= $html->h3('', $title);
 			$page->body .= $html->div('class=row', $html->div('class=col-sm-6', $form));
 		}

@@ -1,6 +1,7 @@
 <?php
 	use Map\CustomerTableMap;
 	use Propel\Runtime\ActiveQuery\Criteria;
+	$module_useractions      = $modules->get('FilterUserActions');
 
 	$html = $modules->get('HtmlWriter');
 
@@ -10,7 +11,7 @@
 		$query = CustomerQuery::create();
 		$customer = $query->findOneByCustid($custID);
 
-		$query = UseractionsQuery::create();
+		$query = $module_useractions->get_actionsquery($input);
 		$query->filterByStatusIncomplete();
 		$query->filterByCustomerlink($custID);
 		$actions = $query->paginate($input->pageNum, 10);
@@ -20,7 +21,7 @@
 		$contacts = $query->paginate($input->pageNum, 10);
 
 		$query = SalesOrderQuery::create();
-		$query->filterByArcucustid($custID);
+		$query->filterBycustid($custID);
 		$orders = $query->paginate($input->pageNum, 10);
 
 		$query = SalesHistoryQuery::create();

@@ -1,0 +1,40 @@
+<div id="notes" class="mb-4">
+	<div class="row">
+		<div class="col">
+			<h3 class="font-weight-bold text-secondary">Notes <i class="fa fa-sticky-note-o" aria-hidden="true"></i></h3>
+		</div>
+		<div class="col">
+			<a href="{{ page.view_notesURL(ordn, 0) }}" class="btn btn-primary sales-order-notes">
+				<i class="fa fa-sticky-note" aria-hidden="true"></i> View All Notes
+			</a>
+		</div>
+	</div>
+
+	<div class="list-group">
+		<div class="list-group-item list-group-item-action bg-dark text-white">
+			<div class="row">
+				<div class="col">Pick Ticket</div>
+				<div class="col">Pack Ticket</div>
+				<div class="col">Invoice</div>
+				<div class="col">Acknowledgment</div>
+			</div>
+		</div>
+		{% if notes.count > 0 %}
+			{% for note in notes %}
+				<div class="list-group-item">
+					<div class="row mb-1">
+						<div class="col">{{ note.pickticket }}</div>
+						<div class="col">{{ note.packticket }}</div>
+						<div class="col">{{ note.invoice }}</div>
+						<div class="col">{{ note.acknowledgement }}</div>
+					</div>
+					<p class="mb-0 notes">{{ note.note }}</p>
+				</div>
+			{% endfor %}
+		{% else %}
+			<div class="list-group-item text-center font-weight-bold">
+				No notes found
+			</div>
+		{% endif %}
+	</div>
+</div>

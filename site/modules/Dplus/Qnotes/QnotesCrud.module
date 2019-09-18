@@ -1,0 +1,203 @@
+<?php namespace ProcessWire;
+
+use QnoteQuery, Qnote;
+
+class QnotesCrud extends WireData implements Module {
+	const CHECKBOX_TRUE  = 'Y';
+	const CHECKBOX_FALSE = 'N';
+
+	const RESPONSE_TEMPLATE_SUCCESS = array(
+		'error'       => false,
+		'notifytype'  => 'success',
+		'message'     => 'Your task has been marked as complete',
+		'icon'        => 'fa fa-floppy-o fa-2x'
+	);
+
+	const RESPONSE_TEMPLATE_ERROR = array(
+		'error'       => true,
+		'notifytype'  => 'danger',
+		'message'     => 'Your task was not able to be updated',
+		'icon'        => 'fa fa-exclamation-triangle fa-2x'
+	);
+
+	public function process_input_salesorder(WireInput $input) {
+		$action = $input->post->text('action');
+
+		switch ($action) {
+			case 'add-note':
+				$note = $this->add_qnote_salesorder($input);
+				break;
+		}
+		$this->send_dplusrequest($note);
+	}
+
+	public function process_input_cart(WireInput $input) {
+		$action = $input->post->text('action');
+
+		switch ($action) {
+			case 'add-note':
+				$note = $this->add_qnote_cart($input);
+				break;
+		}
+		$this->send_dplusrequest($note);
+	}
+
+	public function process_input_quote(WireInput $input) {
+		$action = $input->post->text('action');
+
+		switch ($action) {
+			case 'add-note':
+				$note = $this->add_qnote_quote($input);
+				break;
+		}
+		$this->send_dplusrequest($note);
+	}
+
+
+	public function send_dplusrequest(Qnote $note) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$http = new WireHttp();
+
+		$data = array(
+			"DBNAME=$dplusdb",
+			"RQNOTE=$note->rectype",
+			"KEY1=$note->key1",
+			"KEY2=$note->key2",
+			"FORM1=$note->form1",
+			"FORM2=$note->form2",
+			"FORM3=$note->form3",
+			"FORM4=$note->form4",
+			"FORM5=$note->form5"
+		);
+
+		$this->write_dplusfile($data, $note->sessionid);
+		$http->get("127.0.0.1/cgi-bin/".$config->cgis['default']."?fname=$note->sessionid");
+	}
+
+	public function add_qnote_salesorder(WireInput $input) {
+		$query_exists = QnoteQuery::create()->filterBySessionid(session_id())->filterbyRectype(Qnote::TYPE_SALESORDER)->filterByRecno(0);
+
+		if ($query_exists->count()) {
+			$query_exists->delete();
+		}
+
+		$note = $this->create_qnote(Qnote::TYPE_SALESORDER, 0);
+
+		$requestmethod = strtolower($input->requestMethod());
+		$values = $input->$requestmethod;
+
+		$note->setKey1($values->text('ordn'));
+		$note->setKey2($values->text('linenbr'));
+		$value_keys = array('pick', 'pack', 'invoice', 'acknowledgement');
+
+		foreach ($value_keys as $key) {
+			$property = ucfirst($note->get_salesorder_property($key));
+			$function = "set$property";
+			$value = $values->text("check_$key") == self::CHECKBOX_TRUE ? self::CHECKBOX_TRUE : self::CHECKBOX_FALSE;
+			$note->$function($value);
+		}
+		$note->setForm5(self::CHECKBOX_FALSE);
+		$note->setNotefld($values->text('notes'));
+		$note->save();
+
+		return $note;
+	}
+
+	public function add_qnote_cart(WireInput $input) {
+		$query = QnoteQuery::create()->withColumn('MAX(recno)', 'max')->select('max');
+		$query->filterBySessionid(session_id())->filterbyRectype(Qnote::TYPE_CART);
+
+		$requestmethod = strtolower($input->requestMethod());
+		$values = $input->$requestmethod;
+
+		if ($values->int('sequence')){
+			$recno = $values->int('sequence');
+		} else {
+			$recno = $query->findOne() + 1;
+		}
+
+		$query_exists = QnoteQuery::create()->filterBySessionid(session_id())->filterbyRectype(Qnote::TYPE_CART)->filterbyRecno($recno);
+
+		if ($query_exists->count()) {
+			$note = $query_exists->findOne();
+		} else {
+			$note = $this->create_qnote(Qnote::TYPE_CART, 0);
+		}
+
+		$note->setKey1(session_id());
+		$note->setKey2($values->text('linenbr'));
+		$this->set_cart_formproperties($note, $values);
+		$note->setNotefld($values->text('notes'));
+		$note->save();
+
+		return $note;
+	}
+
+	public function add_qnote_quote(WireInput $input) {
+		$query_exists = QnoteQuery::create()->filterBySessionid(session_id())->filterbyRectype(Qnote::TYPE_QUOTE)->filterByRecno(0);
+
+		if ($query_exists->count()) {
+			$query_exists->delete();
+		}
+
+		$note = $this->create_qnote(Qnote::TYPE_QUOTE, 0);
+
+		$requestmethod = strtolower($input->requestMethod());
+		$values = $input->$requestmethod;
+
+		$note->setKey1($values->text('qnbr'));
+		$note->setKey2($values->text('linenbr'));
+		$this->set_cart_formproperties($note, $values);
+		$note->setNotefld($values->text('notes'));
+		$note->save();
+
+		return $note;
+	}
+
+	public function create_qnote($type, $recno = 0) {
+		$note = new Qnote();
+		$note->setSessionid(session_id());
+		$note->setRectype($type);
+		$note->setRecno($recno);
+		return $note;
+	}
+
+	public function set_cart_formproperties(Qnote $note, $values) {
+		$value_keys = array('quote', 'pick', 'pack', 'invoice', 'acknowledgement');
+		foreach ($value_keys as $key) {
+			$property = ucfirst($note->get_cart_property($key));
+			$function = "set$property";
+			$value = $values->text("check_$key") == self::CHECKBOX_TRUE ? self::CHECKBOX_TRUE : self::CHECKBOX_FALSE;
+			$note->$function($value);
+		}
+	}
+
+	/**
+	 * Writes an array one datem per line into the dplus directory
+	 * @param  array $data      Array of Lines for the request
+	 * @param  string $filename What to name File
+	 * @return void
+	 */
+	public function write_dplusfile($data, $filename) {
+		$file = '';
+		foreach ($data as $line) {
+			$file .= $line . "\n";
+		}
+		$vard = "/usr/capsys/ecomm/" . $filename;
+		$handle = fopen($vard, "w") or die("cant open file");
+		fwrite($handle, $file);
+		fclose($handle);
+	}
+
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Qnotes CRUD',
+			'version' => 101,
+			'summary' => 'Dplus Qnotes CRUD methods',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

@@ -1,0 +1,48 @@
+<div id="notes">
+	<div class="row">
+		<div class="col">
+			<h3 class="font-weight-bold text-secondary">Notes <i class="fa fa-sticky-note-o" aria-hidden="true"></i></h3>
+		</div>
+		<div class="col">
+			<a href="{{ page.view_notesURL(quote.quotenumber) }}" class="btn btn-primary">
+				<i class="fa fa-sticky-note" aria-hidden="true"></i> View All Notes
+			</a>
+		</div>
+	</div>
+
+	<div class="list-group">
+		<div class="list-group-item list-group-item-action bg-dark text-white">
+			<div class="row">
+				<div class="col">Quote</div>
+				<div class="col">Pick Ticket</div>
+				<div class="col">Pack Ticket</div>
+				<div class="col">Invoice</div>
+				<div class="col">Acknowledgment</div>
+				<div class="col">Edit</div>
+			</div>
+		</div>
+		{% if notes.count > 0 %}
+			{% for note in notes %}
+				<div class="list-group-item qnote" data-linenbr="{{ note.linenbr }}" data-sequence="{{ note.sequence }}">
+					<div class="row mb-1">
+						<div class="col check-quote">{{ note.quote }}</div>
+						<div class="col check-pick">{{ note.pickticket }}</div>
+						<div class="col check-pack">{{ note.packticket }}</div>
+						<div class="col check-invoice">{{ note.invoice }}</div>
+						<div class="col check-acknowledgement">{{ note.acknowledgement }}</div>
+						<div class="col">
+							<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#add-note-modal" data-linenbr="{{ note.linenbr }}" data-sequence="{{ note.sequence }}">
+								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+							</button>
+						</div>
+					</div>
+					<p class="mb-0 notes">{{ note.note }}</p>
+				</div>
+			{% endfor %}
+		{% else %}
+			<div class="list-group-item text-center font-weight-bold">
+				No notes found
+			</div>
+		{% endif %}
+	</div>
+</div>

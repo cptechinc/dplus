@@ -78,7 +78,7 @@
 				"before-decimal": false,
 				"after-decimal": false,
 				"date-format": "m/d/Y",
-				"data-justify": "left",
+				"data-justify": "right",
 				"label-justify": "left"
 			},
 			"Invoice Date": {
@@ -89,7 +89,7 @@
 				"before-decimal": false,
 				"after-decimal": false,
 				"date-format": false,
-				"data-justify": "left",
+				"data-justify": "right",
 				"label-justify": "left"
 			},
 			"Unit of Measure": {
@@ -111,7 +111,7 @@
 				"before-decimal": false,
 				"after-decimal": false,
 				"date-format": false,
-				"data-justify": "left",
+				"data-justify": "right",
 				"label-justify": "left"
 			},
 			"Quantity To Ship": {
@@ -122,7 +122,7 @@
 				"before-decimal": 7,
 				"after-decimal": 2,
 				"date-format": false,
-				"data-justify": "left",
+				"data-justify": "right",
 				"label-justify": "left"
 			},
 			"Unit Price": {
@@ -133,7 +133,7 @@
 				"before-decimal": 6,
 				"after-decimal": 2,
 				"date-format": false,
-				"data-justify": "left",
+				"data-justify": "right",
 				"label-justify": "left"
 			},
 			"Amount": {
@@ -144,7 +144,7 @@
 				"before-decimal": 8,
 				"after-decimal": 2,
 				"date-format": false,
-				"data-justify": "left",
+				"data-justify": "right",
 				"label-justify": "left"
 			},
 			"Unit Cost": {
@@ -155,7 +155,7 @@
 				"before-decimal": false,
 				"after-decimal": false,
 				"date-format": false,
-				"data-justify": "left",
+				"data-justify": "right",
 				"label-justify": "left"
 			},
 			"Total Cost": {
@@ -166,7 +166,7 @@
 				"before-decimal": false,
 				"after-decimal": false,
 				"date-format": false,
-				"data-justify": "left",
+				"data-justify": "right",
 				"label-justify": "left"
 			},
 			"Special Order": {
@@ -177,7 +177,7 @@
 				"before-decimal": false,
 				"after-decimal": false,
 				"date-format": false,
-				"data-justify": "left",
+				"data-justify": "right",
 				"label-justify": "left"
 			},
 			"Item Reference": {
@@ -188,7 +188,7 @@
 				"before-decimal": false,
 				"after-decimal": false,
 				"date-format": false,
-				"data-justify": "left",
+				"data-justify": "right",
 				"label-justify": "left"
 			},
 			"Pick Date": {
@@ -199,7 +199,7 @@
 				"before-decimal": false,
 				"after-decimal": false,
 				"date-format": false,
-				"data-justify": "left",
+				"data-justify": "right",
 				"label-justify": "left"
 			},
 			"Verified Date": {
@@ -210,7 +210,7 @@
 				"before-decimal": false,
 				"after-decimal": false,
 				"date-format": false,
-				"data-justify": "left",
+				"data-justify": "right",
 				"label-justify": "left"
 			},
 			"Non-Stock Vendor ID": {
@@ -292,7 +292,7 @@
 				"before-decimal": 7,
 				"after-decimal": 0,
 				"date-format": false,
-				"data-justify": "left",
+				"data-justify": "center",
 				"label-justify": "left"
 			},
 			"Lot Reference": {
@@ -314,7 +314,7 @@
 				"before-decimal": false,
 				"after-decimal": false,
 				"date-format": false,
-				"data-justify": "left",
+				"data-justify": "right",
 				"label-justify": "left"
 			}
 		}

@@ -1,0 +1,14 @@
+<div class="row">
+	{% if user.can_editquote(quote) %}
+		<div class="col">
+			<a href="{{ page.edit_quoteURL(quote.quotenumber) }}" class="btn btn-block btn-warning">
+				<i class="fa fa-pencil" aria-hidden="true"></i> Edit Quote
+			</a>
+		</div>
+		<div class="col">
+			<a href="{{ page.order_quoteURL(quote.quotenumber) }}" class="btn btn-block btn-secondary">
+				<i class="fa fa-paper-plane-o" aria-hidden="true"></i> Push to Order
+			</a>
+		</div>
+	{% endif %}
+</div>

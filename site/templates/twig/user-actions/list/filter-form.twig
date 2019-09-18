@@ -1,0 +1,27 @@
+<div class="card mb-4">
+	<div class="card-header d-flex justify-content-between bg-primary">
+		<a class="text-white" data-toggle="collapse" href="#user-actions-filter" role="button" aria-expanded="false" aria-controls="user-actions-filter">
+			Filter Actions <i class="fa fa-filter" aria-hidden="true"></i>
+		</a>
+		<span class="badge badge-pill badge-light"></span>
+	</div>
+	<div class="collapse show" id="user-actions-filter">
+		<div class="card-body">
+			<form action="">
+				<div class="row">
+					<div class="col-sm-3">
+						<h5>Action Types</h5>
+						{% for type in module_useractions.get_types() %}
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" name="type[]" value="{{ type }}" id="type-{{ type }}">
+								<label class="form-check-label" for="type-{{ type }}">
+									{{ type|capitalize }}
+								</label>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

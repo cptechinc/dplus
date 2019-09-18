@@ -1,0 +1,28 @@
+<div class="form-group">
+	<label for="custpo">Customer PO</label>
+	<input type="text" class="form-control" name="custpo" id="custpo" value="{{ order.custpo }}">
+</div>
+<div class="form-group">
+	<label for="releasenumber">Release Number</label>
+	<input type="text" class="form-control" name="releasenumber" id="releasenumber" value="{{ order.releasenumber }}">
+</div>
+<div class="form-group">
+	<label for="shipvia">Shipvia</label>
+	<select name="shipvia" id="shipvia" class="form-control">
+		{% for shipvia in shipvias %}
+			<option value="{{ shipvia.code }}" {{ shipvia.code == order.shipvia ? 'selected' : ''}}>{{ shipvia.description }}</option>
+		{% endfor %}
+	</select>
+</div>
+<div class="form-group">
+	<label for="date_requested">Request Date</label>
+	{% include 'util/date-picker.twig' with {'name': 'date_requested', 'id': 'date_requested', 'value': order.date_requested} %}
+</div>
+<div class="form-group">
+	<label for="shipcomplete">Ship complete</label>
+	{% include 'util/select.twig' with {'name': 'shipcomplete', 'id': 'shipcomplete', 'selectedvalue': order.shipcomplete, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+</div>
+<div class="form-group">
+	<label for="paytype">Payment Type</label>
+	{% include 'util/select.twig' with {'name': 'paytype', 'id': 'paytype', 'selectedvalue': order.paymenttype, 'options': {'bill': 'Bill to Account', 'cc': 'Credit Card'}} %}
+</div>

@@ -111,6 +111,18 @@
 				$user = $event->object;
 				$event->return = $permissions_master->get_users_functions($user->loginid);
 			});
+
+			$this->addHook('User::is_salesrep', function($event) {
+				$user = $event->object;
+				$event->return = $user->hasRole('slsrep');
+			});
+
+			$this->addHook('User::get_lockedID', function($event) {
+				$user = $event->object;
+				$q = LogpermQuery::create();
+				$logperm = $q->findOneBySessionid(session_id());
+				$event->return = $logperm->ordernbr;
+			});
 		}
 
 		/**
@@ -158,9 +170,9 @@
 			$role = strtolower($logmuser->role);
 			$user->addRole($role);
 			$user->dplusrole = $role;
-			$user->roleid   = $logmuser->roleid;
-			$user->company  = $logmuser->company;
-			$user->email    = $logmuser->email;
+			$user->roleid    = $logmuser->roleid;
+			$user->company   = $logmuser->company;
+			$user->email     = $logmuser->email;
 
 			$function = "setup_user_$role";
 

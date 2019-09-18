@@ -1,0 +1,34 @@
+<div class="pt-3">
+	<h4>Showing Results for <mark>{{ q }}</mark></h4>
+	<div class="list-group">
+		<div class="list-group-item bg-dark text-white font-weight-bold">
+			<div class="row">
+				<div class="col-sm-6">
+					Item ID / Description
+				</div>
+				<div class="col-sm-3">
+					Unit of Measure
+				</div>
+				<div class="col-sm-3">
+					Price
+				</div>
+			</div>
+		</div>
+		{% for item in results %}
+			<a href="#" class="list-group-item list-group-item-action item-lookup-result" data-itemid="{{ item.itemid }}">
+				<div class="row">
+					<div class="col-sm-6">
+						{{ item.itemid }} <br>
+						<small>{{ item.name1 }}</small>
+					</div>
+					<div class="col-sm-3">
+						{{ item.unitofmeasure }}
+					</div>
+					<div class="col-sm-3">
+						{{ item.price|currency }}
+					</div>
+				</div>
+			</a>
+		{% endfor %}
+	</div>
+</div>

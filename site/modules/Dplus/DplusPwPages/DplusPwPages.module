@@ -17,7 +17,22 @@
 				'paginated' => false
 			),
 			'dplus-function' => array(
-				'name'   => 'dplus-menu',
+				'name'   => 'dplus-function',
+				'fields' => array('dplus_function', 'pw_template', 'summary'),
+				'paginated' => true
+			),
+			'dplus-json' => array(
+				'name'   => 'dplus-json',
+				'fields' => array('dplus_function', 'pw_template', 'summary'),
+				'paginated' => true
+			),
+			'warehouse-menu' => array(
+				'name'   => 'warehouse-menu',
+				'fields' => array('dplus_function', 'summary'),
+				'paginated' => false
+			),
+			'warehouse-function' => array(
+				'name'   => 'warehouse-function',
 				'fields' => array('dplus_function', 'pw_template', 'summary'),
 				'paginated' => true
 			)
@@ -30,7 +45,12 @@
 				'paginated' => false
 			),
 			'dplus-function' => array(
-				'name'   => 'dplus-menu',
+				'name'   => 'dplus-function',
+				'fields' => array('dplus_function', 'pw_template', 'summary'),
+				'paginated' => true
+			),
+			'dplus-json' => array(
+				'name'   => 'dplus-json',
 				'fields' => array('dplus_function', 'pw_template', 'summary'),
 				'paginated' => true
 			)
@@ -225,11 +245,9 @@
 		 */
 		protected function install_templates() {
 			foreach ($this->templates as $templatename => $template) {
-echo $templatename . "<br>";
 				if ($this->wire('templates')->get($templatename)) {
 					$this->update_template($templatename);
 				} else {
-
 					$this->create_template($templatename);
 				}
 			}
@@ -378,7 +396,6 @@ echo $templatename . "<br>";
 		 * @return bool        Was Page updated?
 		 */
 		protected function update_page($page) {
-
 			$pagepath = $page['parent'].$page['name']."/";
 			$parentpath = isset($page['parent-new']) ? $page['parent-new'] : $page['parent'];
 
@@ -412,8 +429,9 @@ echo $templatename . "<br>";
 			$pw_page->parent = $this->wire('pages')->get($page['parent']);
 			$pw_page->name = $page['name'];
 			$pw_page->title = $page['title'];
+			$pw_page->save();
 
-			if (in_array($page['template'], self::$default_templates)) {
+			if (in_array($page['template'], array_keys(self::$default_templates))) {
 				foreach (self::$default_templates[$page['template']]['fields'] as $fieldname) {
 					$pw_page->$fieldname = $page[$fieldname];
 				}

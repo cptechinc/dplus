@@ -1,0 +1,35 @@
+<div class="mb-3">
+	<a href="{{ user.is_editingorder(ordn) ? page.edit_orderURL(ordn) : page.view_orderURL(ordn) }}" class="btn btn-primary">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Go back to Sales Order
+	</a>
+</div>
+
+<div class="mb-4">
+	<div class="row mb-1">
+		<div class="col">
+			<h4>Header Notes</h4>
+		</div>
+		<div class="col">
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-note-modal" data-linenbr="0" data-sequence="0">
+				<i class="fa fa-plus" aria-hidden="true"></i> Add Note
+			</button>
+		</div>
+	</div>
+	{% include 'sales-orders/sales-order/notes/qnotes-list.twig' with {'notes': order.get_notes()} %}
+</div>
+
+{% for item in items %}
+	<div class="row mb-1" id="line-{{ item.linenbr }}">
+		<div class="col">
+			<h4>Line Number {{ item.linenbr ~ ': ' ~ item.itemid }}</h4>
+		</div>
+		<div class="col">
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-note-modal" data-linenbr="{{ item.linenbr }}" data-sequence="0">
+				<i class="fa fa-plus" aria-hidden="true"></i> Add Note
+			</button>
+		</div>
+	</div>
+	<div class="mb-3">
+		{% include 'sales-orders/sales-order/notes/qnotes-list.twig' with {'notes': item.get_notes()} %}
+	</div>
+{% endfor %}

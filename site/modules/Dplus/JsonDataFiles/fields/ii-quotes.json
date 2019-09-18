@@ -1,0 +1,526 @@
+{
+    "header": {
+        "Quote ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Quote Status": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Order Count": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Quote Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Review Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Expire Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Customer ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Customer Name": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Customer Address 1": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Customer Address 2": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Customer Address 3": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Customer City/State/Zip": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Ship-To ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Ship-To Name": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Ship-To Address 1": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Ship-To Address 2": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Ship-To Address 3": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Ship-To City/State/Zip": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Contact": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Customer PO": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Phone Nbr": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Fax Nbr": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "E-Mail": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Cust Price Code": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Cust Price Code Desc": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Ship Via Code": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Ship Via Description": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Terms Code": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Terms Code Description": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Tax Code": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Tax Code Description": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "FOB Description": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Delivery Description": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Quote Warehouse": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Salesperson 1 ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Salesperson 1 Name": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Salesperson 2 ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Salesperson 2 Name": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Salesperson 3 ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Salesperson 3 Name": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Entered By ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Entered By Name": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Entered Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Entered Time": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        }
+    },
+    "detail": {
+        "Quote Line Number": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Item ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Item Description 1": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Item Description 2": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Customer Item ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Warehouse ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Warehouse Description": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Requested Ship Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Unit Weight": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Unit of Measure": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "1 - Quantity": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "1 - Unit Price": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "1 - Extended Amount": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "1 - Unit Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "1 - Extended Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "1 - Markup/Margin": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "1 - Indicator": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "2 - Quantity": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "2 - Unit Price": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "2 - Extended Amount": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "2 - Unit Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "2 - Extended Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "2 - Markup/Margin": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "2 - Indicator": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "3 - Quantity": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "3 - Unit Price": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "3 - Extended Amount": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "3 - Unit Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "3 - Extended Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "3 - Markup/Margin": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "3 - Indicator": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "4 - Quantity": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "4 - Unit Price": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "4 - Extended Amount": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "4 - Unit Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "4 - Extended Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "4 - Markup/Margin": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "4 - Indicator": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "5 - Quantity": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "5 - Unit Price": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "5 - Extended Amount": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "5 - Unit Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "5 - Extended Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "5 - Markup/Margin": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "5 - Indicator": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "6 - Quantity": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "6 - Unit Price": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "6 - Extended Amount": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "6 - Unit Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "6 - Extended Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "6 - Markup/Margin": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "6 - Indicator": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Order Quantity": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Order Unit Price": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Order Amount": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Status": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Status Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Lost Reason Code": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Lost Reason Description": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Lead Days": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
+        }
+    }
+}

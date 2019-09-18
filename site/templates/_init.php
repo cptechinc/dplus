@@ -64,19 +64,20 @@ $config->styles->append(hash_templatefile('styles/bootstrap-grid.min.css'));
 $config->styles->append(hash_templatefile('styles/theme.css'));
 $config->styles->append('//fonts.googleapis.com/css?family=Lusitana:400,700|Quattrocento:400,700');
 $config->styles->append('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
-$config->styles->append('//www.fuelcdn.com/fuelux/3.13.0/css/fuelux.min.css');
+$config->styles->append(hash_templatefile('styles/lib/fuelux.css'));
 $config->styles->append(hash_templatefile('styles/lib/sweetalert.css'));
 $config->styles->append(hash_templatefile('styles/main.css'));
 
 
-$config->scripts->append('https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js');
+$config->scripts->append(hash_templatefile('scripts/lib/jquery.js'));
 $config->scripts->append(hash_templatefile('scripts/popper.js'));
 $config->scripts->append(hash_templatefile('scripts/bootstrap.min.js'));
-$config->scripts->append('//www.fuelcdn.com/fuelux/3.13.0/js/fuelux.min.js');
+$config->scripts->append(hash_templatefile('scripts/lib/fuelux.js'));
 $config->scripts->append(hash_templatefile('scripts/lib/sweetalert.js'));
 $config->scripts->append(hash_templatefile('scripts/lib/bootstrap-notify.js'));
 $config->scripts->append(hash_templatefile('scripts/uri.js'));
 $config->scripts->append(hash_templatefile('scripts/lib/sweetalert.js'));
+$config->scripts->append(hash_templatefile('scripts/classes.js'));
 $config->scripts->append(hash_templatefile('scripts/main.js'));
 
 
@@ -113,3 +114,7 @@ $config->twig = new Twig_Environment($loader, [
 ]);
 $config->twig->addExtension(new Twig\Extension\DebugExtension());
 include($config->paths->templates."/twig/util/functions.php");
+
+if ($page->fullURL->query) {
+	$page->title_previous = $page->title;
+}

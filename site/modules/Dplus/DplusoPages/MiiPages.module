@@ -93,6 +93,18 @@
 			'ii-quotes' => array(
 				'name'   => 'ii-quotes',
 				'fields' => array(),
+			),
+			'ii-purchase-orders' => array(
+				'name'   => 'ii-purchase-orders',
+				'fields' => array(),
+			),
+			'ii-purchase-history' => array(
+				'name'   => 'ii-purchase-history',
+				'fields' => array(),
+			),
+			'ii-item-lookup' => array(
+				'name'   => 'ii-item-lookup',
+				'fields' => array(),
 			)
 		);
 
@@ -267,6 +279,37 @@
 				'pw_template'    => 'ii-quotes',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-quotes'
+			),
+			'ii-purchase-orders' => array(
+				'template'       => 'ii-purchase-orders',
+				'name'           => 'purchase-orders',
+				'title'          => 'Purchase Orders',
+				'summary'        => 'View Item Purchase Orders',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-purchase-orders',
+				'has_print'      => true,
+				'jsoncode'       => 'ii-purchase-orders'
+			),
+			'ii-purchase-history' => array(
+				'template'       => 'ii-purchase-history',
+				'name'           => 'purchase-history',
+				'title'          => 'Purchase History',
+				'summary'        => 'View Item Purchase History',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-purchase-history',
+				'has_print'      => true,
+				'jsoncode'       => 'ii-purchase-history'
+			),
+			'ii-item-lookup'     => array(
+				'template'       => 'dplus-json',
+				'name'           => 'Item Lookup',
+				'title'          => 'Item Lookup',
+				'summary'        => 'Look up Items',
+				'parent'         => '/mii/',
+				'dplus_function' => '',
+				'pw_template'    => 'ii-item-lookup',
 			)
 		);
 
@@ -436,6 +479,30 @@
 				$date = $event->arguments(1);
 				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
 				$url->query->set('action','ii-quotes');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('date', $date);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itempurchaseordersURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$date = $event->arguments(1);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-purchase-orders');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('date', $date);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itempurchasehistoryURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$date = $event->arguments(1);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-purchase-history');
 				$url->query->set('itemID', $itemID);
 				$url->query->set('date', $date);
 				$url->query->set('page', $p->fullURL->getUrl());

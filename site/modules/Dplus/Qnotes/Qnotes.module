@@ -1,0 +1,13 @@
+<?php namespace ProcessWire;
+
+class Qnotes extends WireData implements Module {
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Qnotes',
+			'version' => 101,
+			'summary' => 'Dplus Qnotes',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

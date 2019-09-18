@@ -24,16 +24,18 @@
 		$ordn = $input->get->text('ordn');
 		$pickingsession->set_ordn($ordn);
 
-		if (SalesOrderQuery::create()->filterByOehdnbr($ordn)->count()) {
+		if (SalesOrderQuery::create()->filterByOrdernumber($ordn)->count()) {
 			if ($input->get->linenbr) {
 				$linenbr = $input->get->text('linenbr') == 'ALL' ? $input->get->text('linenbr') : $input->get->int('linenbr');
 				$exists = $input->get->text('linenbr') == 'ALL';
 				$page->returnpage = $input->get->text('returnpage');
 
 				if (is_numeric($linenbr)) {
+					$sublinenbr = $input->get->int('sublinenbr');
 					$pickingsession->set_linenbr($linenbr);
+					$pickingsession->set_sublinenbr($sublinenbr);
 					$exists = boolval(SalesOrderDetailQuery::create()->filterByOrderNumberLinenbr($ordn, $linenbr)->count());
-					$pickitem = PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr(session_id(), $ordn, $linenbr);
+					$pickitem = PickSalesOrderDetailQuery::create()->filterBySessionidOrder(session_id(), $ordn)->filterByLinenbrSublinenbr($linenbr, $sublinenbr)->findOne();
 					$itemID = $pickitem->itemid;
 					$page->title = "Printing label(s) for $pickitem->itemid";
 				} else {

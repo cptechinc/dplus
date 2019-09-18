@@ -3,12 +3,12 @@
 		$ordn = $input->get->text('ordn');
 		$document_management = $modules->get('DocumentManagement');
 
-		if (SalesOrderQuery::create()->filterByOrderNumber($ordn)->count() || SalesHistoryQuery::create()->filterByOrderNumber($ordn)->count()) {
+		if (SalesOrderQuery::create()->filterByOrdernumber($ordn)->count() || SalesHistoryQuery::create()->filterByOrdernumber($ordn)->count()) {
 			$page->title = "Sales Order #$ordn Documents";
 
-			if (SalesOrderQuery::create()->filterByOrderNumber($ordn)->count()) {
+			if (SalesOrderQuery::create()->filterByOrdernumber($ordn)->count()) {
 				$documents = $document_management->get_salesorderdocuments($ordn);
-			} elseif (SalesHistoryQuery::create()->filterByOrderNumber($ordn)->count()) {
+			} elseif (SalesHistoryQuery::create()->filterByOrdernumber($ordn)->count()) {
 				$documents = $document_management->get_salesorderdocuments($ordn);
 			}
 
@@ -30,4 +30,5 @@
 	} else {
 		$page->body = $config->twig->render('sales-orders/sales-order-lookup.twig', ['page' => $page]);
 	}
+
 	include __DIR__ . "/basic-page.php";

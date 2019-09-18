@@ -23,20 +23,6 @@ $(function() {
 		return false;
 	});
 
-	$("body").on('keypress', 'form:not(.allow-enterkey-submit) input', function(e) {
-		if (e.which === 13) {
-			e.preventDefault();
-			var input = $(this);
-
-			if (input.closest('form').attr('tab-inputs') == "true") {
-				var $canfocus = $('input:not([type=hidden])');
-				var index = $canfocus.index(this) + 1;
-				if (index >= $canfocus.length) index = 0;
-				$canfocus.eq(index).focus();
-			}
-		}
-	});
-
 	$('.placard').on('accepted.fu.placard', function () {
 		var placard = $(this);
 		var form = placard.closest('form');
@@ -44,11 +30,63 @@ $(function() {
 	});
 
 	$('form[submit-empty="false"]').submit(function () {
-		var empty_fields = $(this).find(':input').filter(function () {
+		var empty_fields = $(this).find(':input:not(button)').filter(function () {
 			return $(this).val() === '';
 		});
 		empty_fields.prop('disabled', true);
 		return true;
+	});
+
+	$('input.qty-input').on('focus', function () {
+		var input = $(this);
+		input.attr('data-value', input.val());
+		input.val('');
+	});
+
+	$('input.qty-input').on('focusout', function () {
+		var input = $(this);
+		var attr = input.attr('data-value');
+
+		if (input.val().length == 0) {
+			// For some browsers, `attr` is undefined; for others, `attr` is false. Check for both.
+			if (typeof attr !== typeof undefined && attr !== false) {
+				input.val(attr);
+			}
+		}
+	});
+
+	$('.create-action').on('click', function (e) {
+		e.preventDefault();
+		var button = $(this);
+		var uri = new URI(button.attr('href'));
+		swal({
+			title: 'Select Action Type',
+			input: 'select',
+			type: 'question',
+			confirmButtonClass: 'btn btn-sm btn-success',
+			cancelButtonClass: 'btn btn-sm btn-danger',
+			inputClass: 'form-control',
+			inputOptions: {
+				task: 'Task',
+				note: 'Note',
+				action: 'Action',
+			},
+			inputPlaceholder: 'Select an Action Type',
+			showCancelButton: true,
+			inputValidator: (value) => {
+				return new Promise(function (resolve, reject) {
+					if (value.length) {
+						resolve();
+					} else {
+						reject('You need to select an Action Type')
+					}
+				});
+
+			}
+		}).then(function (result) {
+			uri.addQuery('type', result);
+			window.location.href = uri.toString();
+		}).catch(swal.noop);
 	});
 
 	$.notifyDefaults({
@@ -75,6 +113,10 @@ $(function() {
 					'</div>' +
 				'</div>' +
 			'</div>'
+	});
+
+	$('.phone-input').keyup(function() {
+		$(this).val(format_phone($(this).val()));
 	});
 });
 
@@ -127,6 +169,9 @@ $.fn.extend({
 			}
 		});
 		return true;
+	},
+	formDisableFields: function() {
+
 	}
 });
 
@@ -156,3 +201,31 @@ function init_datepicker() {
 	});
 }
 
+/*==============================================================
+	STRING FUNCTIONS
+=============================================================*/
+function validate_email(email) {
+	var emailregex = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/;
+	return emailregex.test(email);
+}
+
+function format_phone(input) {
+	// Strip all characters from the input except digits
+	input = input.replace(/\D/g,'');
+
+	// Trim the remaining input to ten characters, to preserve phone number format
+	input = input.substring(0,10);
+
+	// Based upon the length of the string, we add formatting as necessary
+	var size = input.length;
+	if (size == 0){
+		input = input;
+	} else if(size < 4){
+		input = input;
+	} else if(size < 7){
+		input = input.substring(0,3)+'-'+input.substring(3,6);
+	} else {
+		input = input.substring(0,3)+'-'+input.substring(3,6)+'-'+input.substring(6,10);
+	}
+	return input;
+}

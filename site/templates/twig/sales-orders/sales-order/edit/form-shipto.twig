@@ -1,0 +1,39 @@
+<div class="form-group">
+	<label for="shiptoid">ShiptoID</label>
+	<select name="shiptoid" id="shiptoid" class="form-control">
+		<option value="n/a">Drop Ship</option>
+		{% for shipto in shiptos %}
+			<option value="{{ shipto.id }}" {{ shipto.id == order.shiptoid ? 'selected' : ''}}>{{ shipto.id ~ ' - ' ~ shipto.name }}</option>
+		{% endfor %}
+	</select>
+</div>
+<div class="form-group">
+	<label for="shipname">Name</label>
+	<input type="text" class="form-control" name="shipto_name" value="{{ order.shipto_name }}">
+</div>
+<div class="form-group">
+	<label for="shipaddress">Address</label>
+	<input type="text" class="form-control" name="shipto_address" value="{{ order.shipto_address1 }}">
+</div>
+<div class="form-group">
+	<label for="shipaddress2">Address 2</label>
+	<input type="text" class="form-control" name="shipto_address2" value="{{ order.shipto_address2 }}">
+</div>
+<div class="form-row">
+	<div class="form-group col-md-6">
+		<label for="shipcity">City</label>
+		<input type="text" class="form-control" name="shipto_city" value="{{ order.shipto_city }}">
+	</div>
+	<div class="form-group col-md-4">
+		<label for="shipto_state">State</label>
+		<select name="shipto_state" id="shipto_state" class="form-control">
+			{% for state in states %}
+				<option value="{{ state.abbreviation }}" {{ state.abbreviation == order.shipto_state ? 'selected' : ''}}>{{ state.name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+	<div class="form-group col-md-2">
+		<label for="shipto_zip">Zip</label>
+		<input type="text" class="form-control" name="shipto_zip" value="{{ order.shipto_zip }}">
+	</div>
+</div>

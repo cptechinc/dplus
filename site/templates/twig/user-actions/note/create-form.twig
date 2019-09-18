@@ -1,0 +1,64 @@
+<div class="form-group">
+	<button class="btn btn-primary" onclick="window.history.back()">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Back
+	</button>
+	&nbsp;
+</div>
+
+<h4 class="text-secondary">{{ page.title }}</h4>
+
+<form action="{{ page.url }}" method="POST" id="create-note-form">
+	<input type="hidden" name="action" value="create-note">
+	<input type="hidden" name="type" value="{{ note.actiontype }}">
+	<input type="hidden" name="custID" value="{{ note.customerlink }}">
+	<input type="hidden" name="shiptoID" value="{{ note.shiptolink }}">
+	<input type="hidden" name="contactID" value="{{ note.contactlink }}">
+	<input type="hidden" name="ordn" value="{{ note.salesorderlink }}">
+	<input type="hidden" name="qnbr" value="{{ note.quotelink }}">
+	<input type="hidden" name="actionID" value="{{ note.actionlink }}">
+
+	<div class="row form-group">
+		<div class="col">
+			<label class="h6" for="actiontype">Date Created</label>
+		</div>
+		<div class="col">
+			{{ "now"|date("m/d/Y g:i A") }}
+		</div>
+	</div>
+
+	<div class="row form-group">
+		<div class="col">
+			<label class="h6" for="actiontype">Type</label>
+		</div>
+		<div class="col">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<label class="input-group-text">
+						<i aria-hidden="true" class=""></i>
+					</label>
+				</div>
+				<select name="subtype" class="form-control action-subtype-select" id="subtype" required>
+					<option value="" data-icon="fa fa-cog">Choose</option>
+
+					{% for subtype in crud_useractions.get_subtypes(note.actiontype) %}
+						<option value="{{ subtype }}" {{ subtype == note.actionsubtype ? 'selected' : ''}} data-icon="{{ crud_useractions.get_subtypeiconclass(subtype) }}">{{ subtype|capitalize }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="h6" for="title">Title</label>
+		<input type="text" name="title" class="form-control" required>
+	</div>
+
+	<div class="form-group">
+		<label class="h6" for="textbody">Notes</label>
+		<textarea name="textbody" id="textbody" class="form-control">{{ note.textbody }}</textarea>
+	</div>
+
+	<button type="submit" class="btn btn-success">
+		<i class="fa fa-floppy-o" aria-hidden="true"></i> Create Note
+	</button>
+</form>

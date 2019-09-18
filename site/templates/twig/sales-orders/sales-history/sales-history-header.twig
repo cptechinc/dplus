@@ -1,0 +1,121 @@
+<div class="row">
+	<div class="col-sm-4">
+		<legend class="font-weight-bold text-danger">Billing ({{ order.custid }})</legend>
+		<address>
+			{{ customer.name }} <br>
+			{{ customer.address1 }} <br>
+			{% if customer.address2 %}
+				{{ customer.address2 }} <br>
+			{% endif %}
+			{{ customer.city ~ ', ' ~ customer.state ~ ' ' ~ customer.zip}}
+		</address>
+
+		<legend class="font-weight-bold text-danger">Shipping ({{ order.shiptoid }})</legend>
+		<address>
+			{{ order.shipto_name }} <br>
+			{{ order.shipto_address1 }} <br>
+			{% if (order.shipaddress2) %}
+				{{ order.shipaddress2 }} <br>
+			{% endif %}
+			{{ order.shipto_city ~ ', ' ~ order.shipto_state ~ ' ' ~ order.shipto_zip}}
+		</address>
+
+		<legend class="font-weight-bold text-secondary">Contact</legend>
+		<div class="row">
+			<div class="col-sm-5">Contact:</div>
+			<div class="col-sm-7 text-right">{{ order.contact }}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5">Phone:</div>
+			<div class="col-sm-7 text-right">
+				<a href="tel:{{ order.phone }}" class="link">{{ order.phone|phone_us }}</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5">Fax:</div>
+			<div class="col-sm-7 text-right">
+				<a href="tel:{{ order.fax }}" class="link">{{ order.fax|phone_us }}</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5">Email:</div>
+			<div class="col-sm-7">
+				<a href="mailto:{{ order.email }}" class="link">{{ order.email }}</a>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-8">
+		<legend class="font-weight-bold text-danger text-center">Order Summary</legend>
+
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="row">
+					<div class="col-sm-7">Items on Order</div>
+					<div class="col-sm-5 text-right">{{ order.count_items() }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Invoice Date:</div>
+					<div class="col-sm-5 text-right">{{ convertdate(order.date_invoiced) }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Order Date:</div>
+					<div class="col-sm-5 text-right">{{ convertdate(order.date_ordered) }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Subtotal:</div>
+					<div class="col-sm-5 text-right">$ {{ order.subtotal_tax|currency }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Shipping:</div>
+					<div class="col-sm-5 text-right">$ {{ order.total_freight|currency }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Tax:</div>
+					<div class="col-sm-5 text-right">$ {{ order.total_tax|currency }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Total:</div>
+					<div class="col-sm-5 text-right">$ {{ order.total_total|currency }}</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="row">
+					<div class="col-sm-7">Status</div>
+					<div class="col-sm-5 text-right">{{ order.status()|capitalize }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Cust PO</div>
+					<div class="col-sm-5 text-right">{{ order.custpo }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Release #</div>
+					<div class="col-sm-5 text-right">{{ order.releasenumber }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Shipvia</div>
+					<div class="col-sm-5 text-right">{{ order.shipvia }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Terms Code</div>
+					<div class="col-sm-5 text-right">{{ order.termscode }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Ship Complete</div>
+					<div class="col-sm-5 text-right">{{ order.is_shipcomplete|yesorno|capitalize }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Salesperson 1:</div>
+					<div class="col-sm-5 text-right">{{ order.salesperson_1 }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Salesperson 2:</div>
+					<div class="col-sm-5 text-right">{{ order.salesperson_2 }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-7">Salesperson 3:</div>
+					<div class="col-sm-5 text-right">{{ order.salesperson_3 }}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

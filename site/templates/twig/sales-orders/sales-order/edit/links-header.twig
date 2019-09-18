@@ -1,0 +1,15 @@
+<div class="mb-3">
+	{% if user.is_editingorder(order.ordernumber) == false %}
+		<div class="col alert alert-danger" role="alert"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>&ensp;The changes made will not be saved, because the order is not locked.</div>
+	{% endif %}
+	<div class="row">
+		<div class="col">
+			<a href="{{ page.listpage.url }}" class="btn btn-light">
+				<i class="fa fa-list" aria-hidden="true"></i> View Sales Orders List
+			</a>
+			<a href="{{ page.unlock_orderURL(order.ordernumber) }}" class="btn btn-secondary" aria-label="View Order #{{ order.ordernumber }}">
+				View Order #{{ order.ordernumber }}
+			</a>
+		</div>
+	</div>
+</div>

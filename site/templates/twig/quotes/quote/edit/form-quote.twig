@@ -1,0 +1,66 @@
+<div class="form-group">
+	<label for="custpo">Customer PO</label>
+	<input type="text" class="form-control" name="custpo" id="custpo" value="{{ quote.custpo }}">
+</div>
+<div class="form-group">
+	<label for="shipvia">Shipvia</label>
+	<select name="shipvia" id="shipvia" class="form-control">
+		{% for shipvia in shipvias %}
+			<option value="{{ shipvia.code }}" {{ shipvia.code == quote.shipvia ? 'selected' : ''}}>{{ shipvia.description }}</option>
+		{% endfor %}
+	</select>
+</div>
+<div class="form-group">
+	<label for="fob">FOB</label>
+	{% include 'util/select.twig' with {'name': 'fob', 'id': 'fob', 'selectedvalue': quote.fob, 'options': quote.get_foboptions()} %}
+</div>
+<div class="form-group">
+	<label for="delivery">Delivery</label>
+	<input type="text" class="form-control" name="delivery" id="delivery" value="{{ quote.delivery }}">
+</div>
+<div class="form-group">
+	<label for="warehouse">Warehouse</label>
+	<select name="warehouse" id="shipvia" class="form-control">
+		{% for warehouse in warehouses %}
+			<option value="{{ warehouse.id }}" {{ warehouse.id == quote.warehouse ? 'selected' : ''}}>{{ warehouse.id ~ ' - ' ~ warehouse.name }}</option>
+		{% endfor %}
+	</select>
+</div>
+<div class="form-group">
+	<label for="careof">Care of</label>
+	<input type="text" class="form-control" name="careof" id="careof" value="{{ quote.careof }}">
+</div>
+
+<div class="form-group">
+	<label for="date_quoted">Quote Date</label>
+	<div class="input-group">
+		<div class="input-group-prepend">
+			<div class="input-group-text bg-primary text-white">
+				<i class="fa fa-calendar" aria-hidden="true"></i>
+			</div>
+		</div>
+		<input type="text" readonly class="form-control text-right" id="date_quoted" value="{{ quote.date_quoted }}">
+	</div>
+</div>
+<div class="form-group">
+	<label for="date_review">Review Date</label>
+	<div class="input-group">
+		<div class="input-group-prepend">
+			<div class="input-group-text bg-primary text-white">
+				<i class="fa fa-calendar" aria-hidden="true"></i>
+			</div>
+		</div>
+		<input type="text" readonly class="form-control text-right" id="date_review" value="{{ quote.date_review }}">
+	</div>
+</div>
+<div class="form-group">
+	<label for="date_expires">Expire Date</label>
+	<div class="input-group">
+		<div class="input-group-prepend">
+			<div class="input-group-text bg-primary text-white">
+				<i class="fa fa-calendar" aria-hidden="true"></i>
+			</div>
+		</div>
+		<input type="text" readonly class="form-control text-right" id="date_expires" value="{{ quote.date_expires }}">
+	</div>
+</div>

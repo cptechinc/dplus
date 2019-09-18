@@ -297,6 +297,7 @@
 			}
 			break;
 		case 'ii-general':
+			// does not call ii-misc, ii-notes
 			$data = array("DBNAME=$dplusdb", 'IIGENERAL', "ITEMID=$itemID");
 
 			if ($input->$requestmethod->page) {
@@ -385,6 +386,50 @@
 				$url = $pages->get('pw_template=ii-sales-history')->httpUrl."?itemID=$itemID&date=$date";
 				$session->loc = $url;
 			}
+			break;
+		case 'ii-quotes':
+			$data = array("DBNAME=$dplusdb", 'IIQUOTE', "ITEMID=$itemID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = $pages->get('pw_template=ii-quotes')->httpUrl."?itemID=$itemID";
+				$session->loc = $url;
+			}
+			break;
+		case 'ii-purchase-orders':
+			$data = array("DBNAME=$dplusdb", 'IIPURCHORDR', "ITEMID=$itemID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = $pages->get('pw_template=ii-purchase-orders')->httpUrl."?itemID=$itemID";
+				$session->loc = $url;
+			}
+			break;
+		case 'ii-purchase-history':
+			$data = array("DBNAME=$dplusdb", 'IIPURCHHIST', "ITEMID=$itemID");
+
+			$date = $input->$requestmethod->text('date');
+
+			if (!empty($date)) {
+				$date_ymd = date('Ymd', strtotime($date));
+				$data[] = "DATE=$date_ymd";
+			}
+
+			if ($input->$requestmethod->page) {
+				$url = new Purl\Url($input->$requestmethod->text('page'));
+				$url->query->set('date', $date);
+				$session->loc = $url->getUrl();
+			} else {
+				$url = $pages->get('pw_template=ii-purchase-history')->httpUrl."?itemID=$itemID&date=$date";
+				$session->loc = $url;
+			}
+			break;
+		case 'item-search':
+			$q = strtoupper($input->$requestmethod->text('q'));
+			$custID = !empty($input->$requestmethod->custID) ? $input->$requestmethod->text('custID') : $config->defaultweb;
+			$data = array("DBNAME=$dplusdb", "ITNOSRCH=$q", "CUSTID=$custID");
 			break;
 	}
 

@@ -1,0 +1,50 @@
+<?php namespace ProcessWire;
+	require_once(__DIR__ . '/DplusoPages.module');
+
+	class DplusoPagesCart extends DplusoPages implements Module {
+
+		protected $fields = array();
+		protected $templates = array(
+			'cart' => array(
+				'name'   => 'cart',
+				'fields' => array('dplus_function', 'summary'),
+				'paginated' => false
+			),
+			'cart-notes' => array(
+				'name'   => 'cart-notes',
+				'fields' => array(),
+				'paginated' => false
+			)
+		);
+
+		protected $pages = array(
+			'cart' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'cart',
+				'title'          => 'Cart',
+				'summary'        => 'Cart',
+				'parent'         => '/',
+				'dplus_function' => '',
+				'pw_template'    => 'cart'
+			),
+			'cart-notes' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'notes',
+				'title'          => 'Cart Notes',
+				'summary'        => 'Cart Notes',
+				'parent'         => '/cart/',
+				'dplus_function' => '',
+				'pw_template'    => 'cart-notes'
+			),
+		);
+
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dplus Online Cart Pages',
+				'version' => 101,
+				'summary' => 'Installs and creates Dplus Online Cart Pages',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+	}
