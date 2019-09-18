@@ -15,6 +15,11 @@
 				'fields' => array('dplus_function', 'pw_template', 'summary'),
 				'paginated' => true
 			),
+			'ci-function' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('title', 'dplus_function', 'pw_template', 'jsoncode', 'is_formattable', 'summary'),
+				'paginated' => true
+			),
 			'ci-customer' => array(
 				'name'   => 'ci-customer',
 				'fields' => array(),
@@ -62,13 +67,14 @@
 				'pw_template'    => 'ci-shiptos'
 			),
 			'ci-contacts' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'ci-function',
 				'name'           => 'contacts',
 				'title'          => 'Customer Contacts',
 				'summary'        => 'View Customer Contacts',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-contacts'
+				'pw_template'    => 'ci-contacts',
+				'jsoncode'       => 'ci-contacts'
 			),
 			'ci-pricing' => array(
 				'template'       => 'dplus-function',

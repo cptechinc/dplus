@@ -70,7 +70,7 @@
 	$count = $query->count();
 	$orders = $query->paginate($input->pageNum, 10);
 
-	$page->body = $config->twig->render('customers/ci-customer/orders-search-form.twig', ['page' => $page, 'input' => $input, 'custid' => $custID]);
-	$page->body .= $config->twig->render('customers/ci-customer/cust-sales-orders-list.twig', ['orders' => $orders, 'orderpage' => $pages->get('pw_template=sales-order-view')->url]);
+	$page->body = $config->twig->render('customers/ci/customer/orders-search-form.twig', ['page' => $page, 'input' => $input, 'custid' => $custID]);
+	$page->body .= $config->twig->render('customers/ci/customer/sales-orders-list.twig', ['orders' => $orders, 'orderpage' => $pages->get('pw_template=sales-order-view')->url]);
 	$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'pagenbr' => $input->pageNum, 'resultscount'=> $orders->getNbResults()]);
 	include __DIR__ . "/basic-page.php";

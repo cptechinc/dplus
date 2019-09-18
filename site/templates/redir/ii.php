@@ -10,6 +10,140 @@
 
 	$itemID = strtoupper($input->$requestmethod->text('itemID'));
 
+	/**
+	* ITEM REDIRECT
+	*
+	*
+	* switch ($action) {
+	* 	case 'ii-item':
+	* 		Request II Item JSON file
+	* 		Response: Creates II Item JSON file
+	*		DBNAME=$dplusdb
+	*		IISELECT
+	*		ITEMID=$itemID
+	*		break;
+	*	case 'ii-stock':
+	* 		Request II Stock JSON file
+	* 		Response: Creates II Stock JSON file
+	*		DBNAME=$dplusdb
+	*		IISTKBYWHSE
+	*		ITEMID=$itemID
+	*		break;
+	*	case 'ii-requirements':
+	* 		Request II Requirements JSON file
+	* 		Response: Creates II Requirements JSON file
+	*		DBNAME=$dplusdb
+	*		IIREQUIRE
+	*		ITEMID=$itemID
+	*		WHSE=$whse
+	*		REQAVL=$view
+	*		break;
+	*	case 'ii-pricing':
+	* 		Request II Pricing JSON file
+	* 		Response: Creates II Pricing JSON file
+	*		DBNAME=$dplusdb
+	*		IIPRICE
+	*		ITEMID=$itemID
+	*		break;
+	*	case 'ii-costing':
+	* 		Request II Costing JSON file
+	* 		Response: Creates II Costing JSON file
+	*		DBNAME=$dplusdb
+	*		IICOST
+	*		ITEMID=$itemID
+	*		break;
+	*	case 'ii-usage':
+	* 		Request II Usage JSON file
+	* 		Response: Creates II Usage JSON file
+	*		DBNAME=$dplusdb
+	*		IIUSAGE
+	*		ITEMID=$itemID
+	*		break;
+	*	case 'ii-activity':
+	* 		Request II Activity JSON file
+	* 		Response: Creates II Activity JSON file
+	*		DBNAME=$dplusdb
+	*		IIACTIVITY
+	*		ITEMID=$itemID
+	*		break;
+	*	case 'ii-components':
+	* 		Request II Components JSON file
+	* 		Response: Creates II Components JSON file
+	*		DBNAME=$dplusdb
+	*		IIKIT
+	*		IIBOMSINGLE
+	*	    IIBOMCONS
+	*		ITEMID=$itemID
+	*		QTYNEEDED=$qty
+	*		break;
+	*	case 'ii-where-used':
+	* 		Request II Where Used JSON file
+	* 		Response: Creates II Where Used JSON file
+	*		DBNAME=$dplusdb
+	*		IIWHEREUSED
+	*		ITEMID=$itemID
+	*		break;
+	*	case 'ii-lotserial':
+	* 		Request II Lot / Serial JSON file
+	* 		Response: Creates II Lot / Serial JSON file
+	*		DBNAME=$dplusdb
+	*		IILOTSER
+	*		ITEMID=$itemID
+	*		break;
+	*	case 'ii-general':
+	* 		Request II General JSON file
+	* 		Response: Creates II General JSON file
+	*		DBNAME=$dplusdb
+	*		IIGENERAL
+	*		ITEMID=$itemID
+	*		break;
+	*	case 'ii-notes':
+	* 		Request II Notes JSON file
+	* 		Response: Creates II Notes JSON file
+	*		DBNAME=$dplusdb
+	*		IINOTES
+	*		ITEMID=$itemID
+	*		break;
+	*	case 'ii-misc':
+	* 		Request II Misc JSON file
+	* 		Response: Creates II Misc JSON file
+	*		DBNAME=$dplusdb
+	*		IIMISC
+	*		ITEMID=$itemID
+	*		break;
+	*	case 'ii-substitutes':
+	* 		Request II Substitutes JSON file
+	* 		Response: Creates II Substitutes JSON file
+	*		DBNAME=$dplusdb
+	*		IISUB
+	*		ITEMID=$itemID
+	*		break;
+	*	case 'ii-documents':
+	* 		Request II Documents JSON file
+	* 		Response: Creates II Documents JSON file
+	*		DBNAME=$dplusdb
+	*		DOCVIEW
+	*		FLD1CD=IT
+	*		FLD1DATA=$itemID
+	*		FLD1DESC=$desc
+	*		break;
+	*	case 'ii-sales-orders':
+	* 		Request II Sales Orders JSON file
+	* 		Response: Creates II Sales Orders JSON file
+	*		DBNAME=$dplusdb
+	*		IISALESORDR
+	*		ITEMID=$itemID
+	*		break;
+	*	case 'ii-sales-history':
+	* 		Request II Sales History JSON file
+	* 		Response: Creates II Sales History JSON file
+	*		DBNAME=$dplusdb
+	*		IISALESHIST
+	*		ITEMID=$itemID
+	*		break;
+	* }
+	**/
+
 	switch ($action) {
 		case 'ii-item':
 			$data = array("DBNAME=$dplusdb", 'IISELECT', "ITEMID=$itemID");

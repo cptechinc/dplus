@@ -1,8 +1,8 @@
 <?php namespace ProcessWire;
 
-	class IiSalesOrders extends ScreenFormatter implements Module {
+	class CiQuotes extends ScreenFormatter implements Module {
 
-	protected $code = 'ii-sales-orders';
+	protected $code = 'ci-quotes';
 
 
 	/**
@@ -10,7 +10,8 @@
 	 * @var string
 	 */
 	protected $datasections = array(
-		"detail" => "Detail"
+		"detail" => "Detail",
+		"totals" => "Totals"
 	);
 
 	/* =============================================================
@@ -23,9 +24,9 @@
 		 */
 		public static function getModuleInfo() {
 			return array(
-				'title' => 'Dpluso II Sales Orders Formatter Module',
+				'title' => 'Dpluso CI Quotes Formatter Module',
 				'version' => 101,
-				'summary' => 'Handles II Sales Orders Formatter',
+				'summary' => 'Handles CI Quotes Formatter',
 				'singular' => true,
 				'autoload' => true,
 			);

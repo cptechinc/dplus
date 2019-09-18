@@ -1,0 +1,688 @@
+{
+    "cols": 6,
+    "header": {
+        "rows": 1,
+        "columns": {
+            "Invoice Number": {
+                "line": 1,
+                "column": 1,
+    			"col-length": 1,
+    			"label": "Invoice: ",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Order Number": {
+                "line": 1,
+                "column": 4,
+    			"col-length": 1,
+    			"label": "Order",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Customer PO Number": {
+                "line": 1,
+                "column": 2,
+    			"col-length": 1,
+    			"label": "Cust PO: ",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Order Date": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Order Date",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": "m/d/Y",
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Invoice Date": {
+                "line": 1,
+                "column": 3,
+    			"col-length": 1,
+    			"label": "Invce Date",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": "m/d/Y",
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Ship-To ID": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Cust PO",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Ship-To Name": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Ship-To Name",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Ship-To City/State/Zip": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Ship-To City/State/Zip",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Ship Via Code": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "hip Via",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Ship Via Description": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "hip Via Desc",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Terms Code": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Terms Code",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Terms Description": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Terms Desc",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Salesperson 1 ID": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Salesperson 1",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Salesperson 1 Name": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Salesperson 1 Name",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Salesperson 2 ID": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Salesperson 2",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Salesperson 2 Name": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Salesperson 2 Name",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Salesperson 3 ID": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Salesperson 3",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Salesperson 3 Name": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Salesperson 3 Name",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Release Number": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Release Number",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Pick Date": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Pick Date",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": "m/d/Y",
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Verify Date": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Verify Date",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": "m/d/Y",
+                "data-justify": "left",
+                "label-justify": "left"
+            }
+        }
+    },
+    "detail": {
+        "rows": 1,
+        "columns": {
+            "Item ID": {
+                "line": 1,
+                "column": 1,
+    			"col-length": 1,
+    			"label": "------ Item ID ------",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Item Description 1": {
+                "line": 1,
+                "column": 2,
+    			"col-length": 1,
+    			"label": "DESCRIPTION",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Item Description 2": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Item Desc 1",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Customer Item ID": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Customer Item ID",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Warehouse ID": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Warehouse ID",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Sales Unit of Measure": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Sales Unit of Measure",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Special Order": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Special Order",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Item Reference": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Item Reference",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Requested Date": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Rqst Date",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": "m/d/Y",
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Ship Date": {
+                "line": 1,
+                "column": 6,
+    			"col-length": 1,
+    			"label": "Ship Date",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": "m/d/Y",
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Quantity Ordered": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Quantity Ordered",
+                "before-decimal": 7,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Quantity Shipped": {
+                "line": 1,
+                "column": 3,
+    			"col-length": 1,
+    			"label": "Quantity",
+                "before-decimal": 7,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Quantity Backordered": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Quantity Backordered",
+                "before-decimal": 7,
+                "after-decimal": 3,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Unit Price": {
+                "line": 1,
+                "column": 4,
+    			"col-length": 1,
+    			"label": "Price",
+                "before-decimal": 6,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Total Amount": {
+                "line": 1,
+                "column": 5,
+    			"col-length": 1,
+    			"label": "Amount",
+                "before-decimal": 6,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Unit Cost": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Cost",
+                "before-decimal": 6,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Total Cost": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Total Cost",
+                "before-decimal": 6,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Picker Initials": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Picker Initials",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Non-Stock Vendor ID": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Non-Stock Vendor ID",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Non-Stock PO Number": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Non-Stock PO Number",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Non-Stock Vendor Item": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Non-Stock Vendor Item",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            }
+        }
+    },
+    "lotserial": {
+        "rows": 1,
+        "columns": {
+            "Lot/Serial Number": {
+                "line": 1,
+                "column": 2,
+                "col-length": 1,
+                "label": "Lot #",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Lot/Serial Qty Shipped": {
+                "line": 1,
+                "column": 3,
+                "col-length": 1,
+                "label": "Lot Qty",
+                "before-decimal": 7,
+                "after-decimal": 0,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Batch": {
+                "line": 0,
+                "column": 0,
+                "col-length": 0,
+                "label": "Batch",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Cure Date": {
+                "line": 0,
+                "column": 0,
+                "col-length": 0,
+                "label": "Cure Date",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": "m/d/Y",
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Lot Reference": {
+                "line": 1,
+                "column": 4,
+                "col-length": 1,
+                "label": "Lot Reference",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            }
+        }
+    },
+    "total": {
+        "rows": 2,
+        "columns": {
+            "Subtotal": {
+                "line": 1,
+                "column": 5,
+    			"col-length": 1,
+    			"label": "Subtotal: ",
+                "before-decimal": 6,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Tax": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Tax",
+                "before-decimal": 7,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Freight": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Freight",
+                "before-decimal": 7,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Miscellaneous": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Misc",
+                "before-decimal": 7,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Order Total": {
+                "line": 2,
+                "column": 5,
+    			"col-length": 1,
+    			"label": "Total: ",
+                "before-decimal": 7,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Number of Boxes": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Number of Boxes",
+                "before-decimal": 5,
+                "after-decimal": 0,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Total Weight": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Total Weight",
+                "before-decimal": 7,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            }
+        }
+    },
+    "shipments": {
+        "rows": 1,
+        "columns": {
+            "Tracking Number": {
+                "line": 1,
+                "column": 1,
+    			"col-length": 1,
+    			"label": "Tracking #",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Weight": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Weight",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Service Type": {
+                "line": 1,
+                "column": 2,
+    			"col-length": 1,
+    			"label": "Service Type",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Shipment Date": {
+                "line": 1,
+                "column": 3,
+    			"col-length": 1,
+    			"label": "Shipment Date",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Bill-of-Lading Number": {
+                "line": 1,
+                "column": 4,
+    			"col-length": 1,
+    			"label": "Bill-of-Lading Number",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Number of Boxes": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Number of Boxes",
+                "before-decimal": 5,
+                "after-decimal": 0,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            }
+        }
+    }
+}

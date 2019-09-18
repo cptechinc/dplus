@@ -1,0 +1,151 @@
+{
+	"cols": 9,
+	"detail": {
+        "rows": 1,
+        "columns": {
+            "Invoice Number": {
+                "line": 1,
+                "column": 1,
+    			"col-length": 1,
+    			"label": "Inv #",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Customer PO Number": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Customer PO",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Transaction Type": {
+                "line": 1,
+                "column": 2,
+    			"col-length": 1,
+    			"label": "Tp",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Hold/Release": {
+               "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Hold/Release",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Invoice Date": {
+               "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Invc Date",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": "m/d/Y",
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Discount Date": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Discount Date",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": "m/d/Y",
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Due Date": {
+                "line": 1,
+                "column": 4,
+    			"col-length": 1,
+    			"label": "Due Date",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": "m/d/Y",
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Terms Code": {
+                "line": 1,
+                "column": 3,
+    			"col-length": 1,
+    			"label": "Trms",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Amount - Total": {
+                "line": 1,
+                "column": 5,
+    			"col-length": 1,
+    			"label": "Trans Amt",
+                "before-decimal": 7,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Amount - Current": {
+                "line": 1,
+                "column": 6,
+    			"col-length": 1,
+    			"label": "Current",
+                "before-decimal": 6,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Amount - Aging 1": {
+                "line": 1,
+                "column": 7,
+    			"col-length": 1,
+    			"label": "1-30 Days",
+                "before-decimal": 6,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Amount - Aging 2": {
+                "line": 1,
+                "column": 8,
+    			"col-length": 1,
+    			"label": "31-60 Days",
+                "before-decimal": 6,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Amount - Aging 3": {
+                "line": 1,
+                "column": 9,
+    			"col-length": 1,
+    			"label": "Over 60",
+                "before-decimal": 5,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            }
+        }
+    }
+}

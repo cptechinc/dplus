@@ -1,0 +1,32 @@
+{% if json['data'] %}
+	<ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+		<li class="nav-item">
+			<a class="nav-link active" id="main-tab" data-toggle="tab" href="#main" role="tab" aria-controls="main" aria-selected="true">Main / Shipto</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" id="all-contacts-tab" data-toggle="tab" href="#all-contacts" role="tab" aria-controls="all-contacts" aria-selected="false">Customer</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" id="forms-tab" data-toggle="tab" href="#forms" role="tab" aria-controls="forms" aria-selected="false">Forms</a>
+		</li>
+	</ul>
+	<div class="tab-content mt-2" id="ii-contacts-content">
+		<div class="tab-pane fade show active" id="main" role="tabpanel" aria-labelledby="main-tab">
+			{% include 'customers/ci/contacts/customer-contact.twig' %}
+
+			{% if json['data']['shipto'] %}
+				{% for shipto in json['data']['shipto'] %}
+					{% include 'customers/ci/contacts/shipto-contact.twig' %}
+				{% endfor %}
+			{% endif %}
+		</div>
+		<div class="tab-pane fade" id="all-contacts" role="tabpanel" aria-labelledby="all-contacts-tab">
+			{% include 'customers/ci/contacts/customer-contacts-all.twig' %}
+		</div>
+		<div class="tab-pane fade" id="forms" role="tabpanel" aria-labelledby="forms-tab">
+			{% include 'customers/ci/contacts/forms-info.twig' %}
+		</div>
+	</div>
+{% else %}
+
+{% endif %}

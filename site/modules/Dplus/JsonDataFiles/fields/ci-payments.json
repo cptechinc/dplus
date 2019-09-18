@@ -1,0 +1,76 @@
+{
+    "data": {
+        "detail": {
+            "Invoice Number": {
+                "type": "I",
+                "headingjustify": "r",
+                "datajustify": "r"
+            },
+            "Customer PO Number": {
+                "type": "C",
+                "headingjustify": "l",
+                "datajustify": "l"
+            },
+            "Invoice Date": {
+                "type": "D",
+                "headingjustify": "c",
+                "datajustify": "l"
+            },
+            "Invoice Amount": {
+                "type": "N",
+                "headingjustify": "r",
+                "datajustify": "r"
+            },
+            "Payment Date": {
+                "type": "D",
+                "headingjustify": "c",
+                "datajustify": "l"
+            },
+            "Payment Amount": {
+                "type": "N",
+                "headingjustify": "r",
+                "datajustify": "r"
+            },
+            "Discount Amount": {
+                "type": "N",
+                "headingjustify": "r",
+                "datajustify": "r"
+            },
+            "Total Amount": {
+                "type": "N",
+                "headingjustify": "r",
+                "datajustify": "r"
+            },
+            "Check Number": {
+                "type": "C",
+                "headingjustify": "l",
+                "datajustify": "l"
+            },
+            "Payment Days": {
+                "type": "I",
+                "headingjustify": "r",
+                "datajustify": "r"
+            },
+            "Overdue Days": {
+                "type": "I",
+                "headingjustify": "r",
+                "datajustify": "r"
+            },
+            "Terms Code": {
+                "type": "C",
+                "headingjustify": "l",
+                "datajustify": "l"
+            },
+            "Write-Off Amount": {
+                "type": "N",
+                "headingjustify": "r",
+                "datajustify": "r"
+            },
+            "Write-Off Reason Code": {
+                "type": "C",
+                "headingjustify": "l",
+                "datajustify": "l"
+            }
+        }
+    }
+}
