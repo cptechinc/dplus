@@ -1,0 +1,112 @@
+{
+    "error": false,
+    "errormsg": "",
+    "sessionid": "e7t12u9jmd967cr7epp3pq6qm2",
+    "custid": "JAMES",
+    "shipid": "",
+    "date": "20131225",
+    "data": {
+        "NU": {
+            "Whse Name": "Nue Port",
+            "orders": {
+                "1": {
+                    "Invoice Number": "4183100",
+                    "Order Number": "4183100",
+                    "Customer PO Number": "PO-0601-0002",
+                    "Order Date": "06/01/15",
+                    "Invoice Date": "07/06/15",
+                    "Ship-To ID": "0005",
+                    "Ship-To Name": "PEP BOYS STORE #0005",
+                    "Ship-To City/State/Zip": "ST.PETERSBURG    FL 33703",
+                    "Ship Via Code": "UP2",
+                    "Ship Via Description": "UPS 2nd Day Air",
+                    "Terms Code": "10",
+                    "Terms Description": "NET 10 DAYS",
+                    "Salesperson 1 ID": "CG",
+                    "Salesperson 1 Name": "Curtis G",
+                    "Salesperson 2 ID": "30",
+                    "Salesperson 2 Name": "Salesperson 30",
+                    "Salesperson 3 ID": "2",
+                    "Salesperson 3 Name": "Salesperson 2",
+                    "Release Number": "",
+                    "Pick Date": "",
+                    "Verify Date": "07/06/15",
+                    "Ordn": "0004183100",
+                    "details": {
+                        "1": {
+                            "Item ID": "FLU400AB",
+                            "Item Description 1": "ADJUSTABLE BALLCOCK W/BRASS SHANK",
+                            "Item Description 2": "SAME AS FLU400A",
+                            "Customer Item ID": "",
+                            "Warehouse ID": "NU",
+                            "Sales Unit of Measure": "EACH",
+                            "Special Order": "S",
+                            "Item Reference": "",
+                            "Requested Date": "06/01/15",
+                            "Ship Date": "07/06/15",
+                            "Quantity Ordered": "10.00000",
+                            "Quantity Shipped": "10.00000",
+                            "Quantity Backordered": "0.00000",
+                            "Unit Price": "12.15000",
+                            "Total Amount": "121.50000",
+                            "Unit Cost": "8.00000",
+                            "Total Cost": "77.00000",
+                            "Picker Initials": "",
+                            "Non-Stock Vendor ID": "",
+                            "Non-Stock PO Number": "",
+                            "Non-Stock Vendor Item": "",
+                            "detailnotes": {
+                            },
+                            "lotserial": {
+                                "1": {
+                                    "Lot/Serial Number": "P070600001",
+                                    "Lot/Serial Qty Shipped": "10.00000",
+                                    "Batch": "",
+                                    "Cure Date": "",
+                                    "Lot Reference": ""
+                                }
+                            }
+                        }
+                    },
+                    "ordernotes": {
+                        "1": {
+                            "Order Notes": "STUFF"
+                        },
+                        "2": {
+                            "Order Notes": "Cust 1019 Customer Notes Line 1"
+                        },
+                        "3": {
+                            "Order Notes": " Cust 1019 Customer Notes Line 2"
+                        },
+                        "4": {
+                            "Order Notes": "  Cust 1019 ShipTo 0005 YYYY Line"
+                        },
+                        "5": {
+                            "Order Notes": "1  Cust 1019 ShipTo 0005 YYYY Line"
+                        },
+                        "6": {
+                            "Order Notes": " 2  Cart Header YYYY line 1"
+                        },
+                        "7": {
+                            "Order Notes": "     Cart Header YYYY Line 2"
+                        },
+                        "8": {
+                            "Order Notes": "ANother line"
+                        }
+                    },
+                    "totals": {
+                        "Subtotal": "121.50000",
+                        "Tax": "8.99000",
+                        "Freight": "0.00000",
+                        "Miscellaneous": "0.00000",
+                        "Order Total": "130.49000",
+                        "Number of Boxes": "",
+                        "Total Weight": "0.00000"
+                    },
+                    "shipments": {
+                    }
+                }
+            }
+        }
+    }
+}

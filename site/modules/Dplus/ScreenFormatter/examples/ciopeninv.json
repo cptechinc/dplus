@@ -1,0 +1,42 @@
+{
+    "error": false,
+    "errormsg": "",
+    "sessionid": "e7t12u9jmd967cr7epp3pq6qm2",
+    "custid": "JAMES",
+    "data": {
+        "invoices": {
+            "1": {
+                "Invoice Number": "4183100",
+                "Customer PO Number": "PO-0601-0002",
+                "Transaction Type": "IN",
+                "Hold/Release": "",
+                "Invoice Date": "07/06/15",
+                "Discount Date": "07/06/15",
+                "Due Date": "07/16/15",
+                "Terms Code": "10",
+                "Amount - Total": "130.49000",
+                "Amount - Current": "0.00000",
+                "Amount - Aging 1": "0.00000",
+                "Amount - Aging 2": "0.00000",
+                "Amount - Aging 3": "130.49000",
+                "Ordn": "0004183100"
+            },
+            "TOTAL": {
+                "Invoice Number": "Totals",
+                "Customer PO Number": "",
+                "Transaction Type": "",
+                "Hold/Release": "",
+                "Invoice Date": "",
+                "Discount Date": "",
+                "Due Date": "",
+                "Terms Code": "",
+                "Amount - Total": "130.49000",
+                "Amount - Current": "0.00000",
+                "Amount - Aging 1": "0.00000",
+                "Amount - Aging 2": "0.00000",
+                "Amount - Aging 3": "130.49000",
+                "Ordn": ""
+            }
+        }
+    }
+}

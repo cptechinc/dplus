@@ -1,0 +1,140 @@
+{
+	"cols": 9,
+	"detail": {
+        "rows": 1,
+        "columns": {
+           "Invoice Number": {
+                "line": 1,
+                "column": 1,
+    			"col-length": 1,
+    			"label": "Invc Nbr",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Customer PO Number": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Cust PO",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Invoice Date": {
+                "line": 1,
+                "column": 2,
+    			"col-length": 1,
+    			"label": "Invce Dte",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": "m/d/Y",
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Invoice Amount": {
+                "line": 1,
+                "column": 3,
+    			"col-length": 1,
+    			"label": "Invce Amt",
+                "before-decimal": 7,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Payment Date": {
+                "line": 1,
+                "column": 4,
+    			"col-length": 1,
+    			"label": "Pay Date",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": "m/d/Y",
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Payment Amount": {
+               "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Payment Amount",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Discount Amount": {
+               "line": 0,
+                "column": 0,
+    			"col-length": 0,
+    			"label": "Discount Amount",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Total Amount": {
+                "line": 1,
+                "column": 5,
+    			"col-length": 1,
+    			"label": "Paid + Disc",
+                "before-decimal": 7,
+                "after-decimal": 2,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "Check Number": {
+                "line": 1,
+                "column": 6,
+    			"col-length": 1,
+    			"label": "Check #",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Payment Days": {
+                "line": 1,
+                "column": 7,
+    			"col-length": 1,
+    			"label": " Days",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Overdue Days": {
+                "line": 1,
+                "column": 8,
+    			"col-length": 1,
+    			"label": "O-Day",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Terms Code": {
+                "line": 1,
+                "column": 9,
+    			"col-length": 1,
+    			"label": "Trms",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            }
+        }
+    }
+}

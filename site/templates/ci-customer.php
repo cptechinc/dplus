@@ -4,6 +4,8 @@
 	$module_useractions      = $modules->get('FilterUserActions');
 	$html = $modules->get('HtmlWriter');
 
+	$html = $modules->get('HtmlWriter');
+
 	if ($input->get->custID) {
 		$modules->get('DplusoPagesCustomer')->init_customer_hooks();
 
@@ -45,9 +47,15 @@
 
 	} else {
 		$query = CustomerQuery::create();
+		$exact_query = CustomerQuery::create();
 
 		if ($input->get->q) {
-			$q = $input->get->text('q');
+			$q = strtoupper($input->get->text('q'));
+
+			if ($exact_query->filterByCustid($q)->count() == 1) {
+				$session->redirect($page->url."?custID=$q");
+			}
+
 			$page->title = "CI: Searching for '$q'";
 			$col_custid = Customer::get_aliasproperty('custid');
 			$col_name = Customer::get_aliasproperty('name');

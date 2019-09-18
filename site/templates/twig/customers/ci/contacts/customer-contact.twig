@@ -1,0 +1,24 @@
+<h3>Customer Contact</h3>
+
+<div class="row">
+	<div class="col-sm-6">
+		<table class="table table-striped table-sm">
+			{% for key, column in json['columns']['customer']['customerleft'] %}
+				<tr>
+					<td class="{{ module_json.get_justifyclass(column['headingjustify']) }}">{{ column['heading']}}</td>
+					<td class="{{ module_json.get_justifyclass(column['datajustify']) }}">{{ json['data']['customer']['customerleft'][key] }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+	<div class="col-sm-6">
+		<table class="table table-striped table-sm">
+			{% for key, column in json['columns']['customer']['customerright'] %}
+				<tr>
+					<td class="{{ module_json.get_justifyclass(column['headingjustify']) }}">{{ column['heading']}}</td>
+					<td class="{{ module_json.get_justifyclass(column['datajustify']) }}">{{ json['data']['customer']['customerright'][key] }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+</div>
