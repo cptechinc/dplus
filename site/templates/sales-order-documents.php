@@ -30,4 +30,5 @@
 	} else {
 		$page->body = $config->twig->render('sales-orders/sales-order-lookup.twig', ['page' => $page]);
 	}
+
 	include __DIR__ . "/basic-page.php";

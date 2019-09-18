@@ -1,0 +1,35 @@
+<h5>Actions</h5>
+<div class="mt-4 mb-4">
+	<div class="row">
+		<div class="col">
+			<a href="{{ page.create_orderURL() }}" class="btn btn-primary">
+				<span class="fa-stack fa-md" aria-hidden="true">
+					<i class="fa fa-usd fa-stack-1x"></i>
+					<i class="fa fa-file-o fa-stack-2x"></i>
+				</span>
+				&nbsp;
+				Create Order
+			</a>
+		</div>
+		<div class="col">
+			<a href="{{ page.create_quoteURL() }}" class="btn btn-primary">
+				<span class="fa-stack fa-md" aria-hidden="true">
+					<i class="fa fa-quote-left fa-stack-1x"></i>
+					<i class="fa fa-file-o fa-stack-2x"></i>
+				</span>
+				&nbsp;
+				Create Quote
+			</a>
+		</div>
+		<div class="col">
+			<a href="{{ page.empty_cartURL() }}" class="btn btn-secondary">
+				<span class="fa-stack fa-md" aria-hidden="true">
+					<i class="fa fa-bars fa-stack-1x"></i>
+					<i class="fa fa-file-o fa-stack-2x"></i>
+				</span>
+				&nbsp;
+				Clear Cart
+			</a>
+		</div>
+	</div>
+</div>

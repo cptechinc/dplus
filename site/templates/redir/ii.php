@@ -292,6 +292,11 @@
 				$session->loc = $url;
 			}
 			break;
+		case 'item-search':
+			$q = strtoupper($input->$requestmethod->text('q'));
+			$custID = !empty($input->$requestmethod->custID) ? $input->$requestmethod->text('custID') : $config->defaultweb;
+			$data = array("DBNAME=$dplusdb", "ITNOSRCH=$q", "CUSTID=$custID");
+			break;
 	}
 
 	if (!empty($data)) {

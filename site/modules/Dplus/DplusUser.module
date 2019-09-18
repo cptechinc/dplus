@@ -116,6 +116,13 @@
 				$user = $event->object;
 				$event->return = $user->hasRole('slsrep');
 			});
+
+			$this->addHook('User::get_lockedID', function($event) {
+				$user = $event->object;
+				$q = LogpermQuery::create();
+				$logperm = $q->findOneBySessionid(session_id());
+				$event->return = $logperm->ordernbr;
+			});
 		}
 
 		/**

@@ -1,0 +1,26 @@
+<h3 class="font-weight-bold text-secondary mt-4">Quote Items</h3>
+<div class="bg-dark text-white font-weight-bold p-3">
+	<div class="form-row">
+		<div class="col-sm-1">Include</div>
+		<div class="col-sm-4">Item ID</div>
+		<div class="col-sm-1">Qty</div>
+		<div class="col-sm-2 text-right">Price</div>
+		<div class="col-sm-1 text-right">Total Price</div>
+		<div class="col-sm-2 text-right">Request Date</div>
+		<div class="col-sm-1"></div>
+	</div>
+</div>
+
+{% for detail in quote.get_items() %}
+	{% include 'quotes/quote/order/quote-item-form.twig' %}
+	<hr>
+{% endfor %}
+
+<form action="{{ page.formurl }}" method="post">
+	<input type="hidden" name="action" value="order-quote">
+	<input type="hidden" name="qnbr" value="{{ quote.quotenumber }}">
+	
+	<button type="submit" class="btn btn-primary">
+		<i class="fa fa-shopping-cart" aria-hidden="true"></i> Create Order
+	</button>
+</form>

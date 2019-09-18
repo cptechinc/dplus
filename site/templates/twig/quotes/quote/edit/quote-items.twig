@@ -1,0 +1,20 @@
+<h3 class="font-weight-bold text-secondary mt-4">Quote Items</h3>
+<div class="bg-dark text-white font-weight-bold p-3">
+	<div class="form-row">
+		<div class="col-sm-4">Item ID</div>
+		<div class="col-sm-1">Qty</div>
+		<div class="col-sm-2 text-right">Price</div>
+		<div class="col-sm-1 text-right">Total Price</div>
+		<div class="col-sm-2 text-right">Request Date</div>
+		<div class="col-sm-3"></div>
+	</div>
+</div>
+
+{% for detail in quote.get_items() %}
+	{# if user.is_editingquote(quote.quotenumber) #}
+		{% include 'quotes/quote/edit/quote-item-form.twig' %}
+	{# else #}
+		{# include 'quotes/quote/edit/quote-item-readonly.twig' #}
+	{# endif #}
+	<hr>
+{% endfor %}

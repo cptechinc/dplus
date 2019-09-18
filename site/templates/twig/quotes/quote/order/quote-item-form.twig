@@ -1,0 +1,39 @@
+<form action="{{ page.formurl }}" class="pt-3 px-3 detail-line-form allow-enterkey-submit" method="post">
+	<input type="hidden" name="action" value="quick-update-line">
+	<input type="hidden" name="orderquote" value="quick-update-line">
+	<input type="hidden" name="qnbr" value="{{ quote.quotenumber }}">
+	<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
+	<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
+
+	<div class="form-row">
+		<div class="col-sm-1">
+			<div class="custom-control custom-checkbox">
+				<input type="checkbox" class="custom-control-input" name="checkorder" id="{{ detail.linenbr }}-checkbox" aria-label="Add line {{ detail.linenbr }} to Order" {{ detail.qty ? 'checked' : ''}}>
+				<label class="custom-control-label" for="{{ detail.linenbr }}-checkbox"></label>
+			</div>
+		</div>
+		<div class="col-sm-4">
+			{{ detail.itemid }}<br>
+			<small>{{ detail.description }}</small>
+		</div>
+		<div class="col-sm-1 text-right">
+			<input type="text" class="form-control form-control-sm text-right underlined" size="4" name="qty" value="{{ detail.qty|number_format() }}">
+		</div>
+		<div class="col-sm-2 text-right">
+			<input type="text" class="form-control form-control-sm text-right underlined" name="price" value="{{ detail.price|currency }}">
+		</div>
+		<div class="col-sm-1 text-right">
+			<p class="form-control-plaintext">$ {{ detail.price_total|currency }}</p>
+		</div>
+		<div class="col-sm-2 text-right">
+			<div class="pull-right">
+				{% include 'util/date-picker-underlined.twig' with {'name': 'date_requested', 'id': 'date_requested', 'value': detail.date_requested} %}
+			</div>
+		</div>
+		<div class="col-sm-1 text-right">
+			<button type="submit" class="btn btn-warning" aria-label="Save Line" title="Save Line">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i>
+			</button>
+		</div>
+	</div>
+</form>

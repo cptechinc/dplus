@@ -66,6 +66,9 @@ class UserActionsPages extends DplusoPages implements Module {
 				case 'sales-order-view':
 					$url->query->set('ordn', $p->fullURL->query->get('ordn'));
 					break;
+				case 'quote-view':
+					$url->query->set('qnbr', $p->fullURL->query->get('qnbr'));
+					break;
 			}
 			$event->return = $url->getUrl();
 		});

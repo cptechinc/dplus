@@ -159,8 +159,8 @@
 				$linenbr = $event->arguments(1);
 				$url = new Url($this->wire('pages')->get('pw_template=sales-order-notes')->url);
 				$url->query->set('ordn', $ordn);
-				$url->query->set('linenbr', $linenbr);
-				$event->return = $url->getUrl();
+				$hash = $linenbr > 0 ? "#line-$linenbr" : '';
+				$event->return = $url->getUrl()."$hash";
 			});
 
 			/**
@@ -205,7 +205,7 @@
 		 */
 		public function can_user_editorder(User $user, $order) {
 			if (get_class($order) != 'SalesOrder') {
-				$order = SalesOrderQuery::create()->findOneByOrderNumber($order);
+				$order = SalesOrderQuery::create()->findOneByOrdernumber($order);
 			}
 
 			$config_orders = $this->wire('modules')->get('SalesOrdersConfig');
@@ -227,7 +227,7 @@
 		 */
 		public function is_user_editingorder(User $user, $order) {
 			if (get_class($order) != 'SalesOrder') {
-				$order = SalesOrderQuery::create()->findOneByOrderNumber($order);
+				$order = SalesOrderQuery::create()->findOneByOrdernumber($order);
 			}
 			return $order->heldby == $user->loginid;
 		}
