@@ -25,6 +25,16 @@
 				'name'   => 'dplus-json',
 				'fields' => array('dplus_function', 'pw_template', 'summary'),
 				'paginated' => true
+			),
+			'warehouse-menu' => array(
+				'name'   => 'warehouse-menu',
+				'fields' => array('dplus_function', 'summary'),
+				'paginated' => false
+			),
+			'warehouse-function' => array(
+				'name'   => 'warehouse-function',
+				'fields' => array('dplus_function', 'pw_template', 'summary'),
+				'paginated' => true
 			)
 		);
 

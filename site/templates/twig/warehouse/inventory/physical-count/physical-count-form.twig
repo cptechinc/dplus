@@ -1,0 +1,68 @@
+<div class="form-group">
+	<a href="{{ page.parent.url }}" class="btn btn-primary">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Return to {{ page.parent.title }}
+	</a>
+	&nbsp; &nbsp;
+	<a href="{{ page.url }}" class="btn btn-secondary">
+		<i class="fa fa-undo" aria-hidden="true"></i> Restart
+	</a>
+	&nbsp; &nbsp;
+	<a href="{{ page.url }}" class="btn btn-warning">
+		New Item
+	</a>
+</div>
+<h3 class="my-4 font-weight-bold text-secondary">Scanned: {{ item.scan }}</h3>
+<div class="row">
+	<form action="{{ page.formurl }}" method="get" class="col-sm-6 form-reset allow-enterkey-submit" id="physical-count-form">
+		<input type="hidden" name="action" value="physical-count-submit">
+		<input type="hidden" name="scan" value="{{ item.scan }}">
+		<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
+
+		<div class="form-group">
+			<label for="itemID">Item ID</label>
+			<div class="input-group">
+				<input type="text" class="form-control" id="itemID" name="itemID" value="{{ item.itemid }}" data-itemtype="{{ item.type }}">
+			</div>
+		</div>
+		{% if (item.is_item_serialized() or item.is_item_lotted()) %}
+			<div class="form-group">
+				<label for="lotserial">Lot / Serial</label>
+				<div class="input-group">
+					<input type="text" class="form-control" id="lotserial" name="lotserial" value="{{ item.lotserial }}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="lotserialref">Lot/Serial Ref</label>
+				<div class="input-group">
+					<input type="text" class="form-control-plaintext" id="lotserialref" name="lotserialref" value="{{ item.lotserialref }}" readonly>
+				</div>
+			</div>
+		{% else %}
+			<input type="hidden" name="lotserial" value="">
+			<input type="hidden" name="lotserialref" value="">
+		{% endif %}
+
+		<div class="form-group">
+			<label for="bin">Bin ID</label>
+			<div class="input-group">
+				<input type="text" class="form-control" id="bin" name="binID" value="{{ item.bin }}">
+			</div>
+		</div>
+		
+		<div class="form-group mb-5">
+			<label for="qty">Qty</label>
+			<div class="input-group">
+				<input type="text" class="form-control text-right qty-input" id="qty" name="qty" value="{{ item.qty }}">
+			</div>
+		</div>
+
+		<div class="d-flex w-100 justify-content-between">
+			<button type="submit" class="btn btn-success btn-lg">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Submit
+			</button>
+			<a href="{{ page.url }}" class="btn-clear btn btn-danger btn-lg">
+				<i class="fa fa-window-close" aria-hidden="true"></i> Reset
+			</a>
+		</div>
+	</form>
+</div>
