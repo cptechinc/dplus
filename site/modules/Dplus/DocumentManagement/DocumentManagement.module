@@ -81,7 +81,7 @@ class DocumentManagement extends WireData implements Module {
 			$url->query->set('folder', self::TAG_SALESORDER);
 			$url->query->set('ordn', $ordn);
 
-			if (SalesHistoryQuery::create()->filterByOrderNumber(SalesOrder::get_paddedordernumber($ordn))->count()) {
+			if (SalesHistoryQuery::create()->filterByOrdernumber(SalesOrder::get_paddedordernumber($ordn))->count()) {
 				$date = $page->fullURL->query->get('date');
 				$url->query->set('date', $date);
 				$url->query->set('folder', self::TAG_ARINVOICES);
@@ -183,7 +183,7 @@ class DocumentManagement extends WireData implements Module {
 	 */
 	protected function filter_saleshistoryconditions(DocumentsQuery $documents_master, $ordn) {
 		$q = SalesHistoryDetailQuery::create();
-		$q->filterByOrderNumber($ordn);
+		$q->filterByOrdernumber($ordn);
 		$ponbrs = $q->select(SalesHistoryDetail::get_aliasproperty('vendorpo'))->find()->toArray();
 
 		$column_tag = Documents::get_aliasproperty('tag');
