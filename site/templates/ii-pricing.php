@@ -34,6 +34,10 @@
 			$json = $module_json->get_file(session_id(), $page->jsoncode);
 
 			if ($module_json->file_exists(session_id(), $page->jsoncode)) {
+				if ($json['itemid'] != $itemID) {
+					$module_json->remove_file(session_id(), $page->jsoncode);
+					$session->redirect($page->get_itempricingURL($itemID, $custID));
+				}
 				$session->pricingtry = 0;
 				$customer = CustomerQuery::create()->findOneByCustid($custID);
 

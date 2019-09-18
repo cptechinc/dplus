@@ -12,8 +12,12 @@
 			$json = $module_json->get_file(session_id(), $page->jsoncode);
 
 			if ($module_json->file_exists(session_id(), $page->jsoncode)) {
+				if ($json['itemid'] != $itemID) {
+					$module_json->remove_file(session_id(), $page->jsoncode);
+					$session->redirect($page->get_itemactivityURL($itemID));
+				}
 				$session->activitytry = 0;
-				$refreshurl = $page->get_itemcostingURL($itemID);
+				$refreshurl = $page->get_itemactivityURL($itemID);
 				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 				$page->body .= $config->twig->render('items/ii/activity/activity-screen.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'date' => $date, 'itemID' => $itemID]);
 			} else {
@@ -22,7 +26,7 @@
 					$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
 				} else {
 					$session->activitytry++;
-					$session->redirect($page->get_itemcostingURL($itemID));
+					$session->redirect($page->get_itemactivityURL($itemID));
 				}
 			}
 		} else {
