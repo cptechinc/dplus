@@ -1,6 +1,8 @@
 <?php namespace ProcessWire;
 	require_once(__DIR__ . '/DplusoPages.module');
 
+	use Purl\Url;
+
 	class DplusoPagesCustomer extends DplusoPages implements Module {
 
 		protected $fields = array();
@@ -179,6 +181,28 @@
 				'pw_template'    => 'ci-documents'
 			),
 		);
+
+		public function init_customer_hooks() {
+			/**
+			 * Adds hook for getting Sales Order List URL
+			 */
+			$this->addHook('Page::cust_salesordersURL', function($event) {
+				$custID = $event->arguments(0);
+				$url = new Url($this->wire('pages')->get('pw_template=sales-orders-customer')->url);
+				$url->query->set('custID', $custID);
+				$event->return = $url->getUrl();
+			});
+
+			/**
+			 * Adds hook for getting Sales History List URL
+			 */
+			$this->addHook('Page::cust_saleshistoryURL', function($event) {
+				$custID = $event->arguments(0);
+				$url = new Url($this->wire('pages')->get('pw_template=sales-history-orders-customer')->url);
+				$url->query->set('custID', $custID);
+				$event->return = $url->getUrl();
+			});
+		}
 
 		public static function getModuleInfo() {
 			return array(

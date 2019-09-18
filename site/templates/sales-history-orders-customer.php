@@ -70,8 +70,8 @@
 	}
 
 	$orders = $query->paginate($input->pageNum, 10);
-
+	$page->customerURL = $pages->get('pw_template=ci-customer')->url."?custID=$custID";
 	$page->body = $config->twig->render('customers/ci/customer/shipped-orders-search-form.twig', ['page' => $page, 'input' => $input, 'custid' => $custID]);
-	$page->body .= $config->twig->render('customers/ci/customer/cust-shipped-orders-list.twig', ['orders' => $orders, 'orderpage' => $pages->get('pw_template=sales-order-view')->url]);
+	$page->body .= $config->twig->render('customers/ci/customer/shipped-orders-list.twig', ['orders' => $orders, 'orderpage' => $pages->get('pw_template=sales-order-view')->url]);
 	$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'pagenbr' => $input->pageNum, 'resultscount'=> $orders->getNbResults()]);
 	include __DIR__ . "/basic-page.php";

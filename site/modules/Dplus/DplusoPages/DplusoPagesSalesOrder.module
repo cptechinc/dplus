@@ -19,6 +19,14 @@
 				'name'   => 'sales-history-orders',
 				'fields' => array()
 			),
+			'sales-orders-customer' => array(
+				'name'   => 'sales-orders-customer',
+				'fields' => array()
+			),
+			'sales-history-orders-customer' => array(
+				'name'   => 'sales-history-orders-customer',
+				'fields' => array()
+			),
 			'sales-order-view' => array(
 				'name'   => 'sales-order-view',
 				'fields' => array()
@@ -54,6 +62,15 @@
 				'parent'         => '/mso/',
 				'dplus_function' => 'mso',
 				'pw_template'    => 'sales-orders'
+			),
+			'sales-orders-customer' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'customer',
+				'title'          => 'Customer Sales Orders',
+				'summary'        => 'View / Search through Open Orders for a Customer',
+				'parent'         => '/mso/sales-orders/',
+				'dplus_function' => 'mso',
+				'pw_template'    => 'sales-orders-customer'
 			),
 			'sales-order' => array(
 				'template'       => 'dplus-function',
@@ -99,6 +116,15 @@
 				'parent'         => '/mso/',
 				'dplus_function' => '',
 				'pw_template'    => 'sales-history-orders'
+			),
+			'sales-history-customer' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'customer',
+				'title'          => 'Customer Sales History',
+				'summary'        => 'View Sales History Orders for a Customer',
+				'parent'         => '/mso/',
+				'dplus_function' => '',
+				'pw_template'    => 'sales-history-orders-customer'
 			),
 		);
 

@@ -2,8 +2,11 @@
 	use Map\CustomerTableMap;
 	use Propel\Runtime\ActiveQuery\Criteria;
 	$module_useractions      = $modules->get('FilterUserActions');
+	$html = $modules->get('HtmlWriter');
 
 	if ($input->get->custID) {
+		$modules->get('DplusoPagesCustomer')->init_customer_hooks();
+
 		$custID = $input->get->text('custID');
 
 		$query = CustomerQuery::create();
@@ -27,11 +30,19 @@
 		$shippedorders = $query->paginate($input->pageNum, 10);
 
 		$page->title = "CI: $customer->name";
-		$page->body =  $config->twig->render('customers/ci/customer/header.twig', ['page' => $page, 'customer' => $customer]);
+		$toolbar = $config->twig->render('customers/ci/customer/toolbar.twig', ['page' => $page, 'custID' => $custID]);
+
+		$header =  $config->twig->render('customers/ci/customer/header.twig', ['page' => $page, 'customer' => $customer]);
+
+		$page->body = "<div class='row'>";
+			$page->body .= $html->div('class=col-sm-2', $toolbar);
+			$page->body .= $html->div('class=col-sm-10', $header);
+		$page->body .= "</div>";
 		$page->body .= $config->twig->render('customers/ci/customer/actions-panel.twig', ['page' => $page, 'module_useractions' => $module_useractions, 'actions' => $actions, 'resultscount'=> $actions->getNbResults()]);
 		$page->body .= $config->twig->render('customers/ci/customer/contacts-panel.twig', ['page' => $page, 'customer' => $customer, 'contacts' => $contacts, 'resultscount'=> $contacts->getNbResults()]);
-		$page->body .= $config->twig->render('customers/ci/customer/sales-orders-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $orders, 'resultscount'=> $orders->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url, 'sales_orders_list' => $pages->get('pw_template=sales-orders')->url]);
-		$page->body .= $config->twig->render('customers/ci/customer/shipped-orders-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $shippedorders, 'resultscount'=> $shippedorders->getNbResults()]);
+		$page->body .= $config->twig->render('customers/ci/customer/sales-orders-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $orders, 'resultscount'=> $orders->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url, 'sales_orders_list' => $page->cust_salesordersURL($custID)]);
+		$page->body .= $config->twig->render('customers/ci/customer/shipped-orders-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $shippedorders, 'resultscount'=> $shippedorders->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url, 'shipped_orders_list' => $page->cust_saleshistoryURL($custID)]);
+
 	} else {
 		$query = CustomerQuery::create();
 
