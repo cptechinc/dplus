@@ -149,7 +149,7 @@
 				'jsoncode'       => 'ci-contacts'
 			),
 			'ci-pricing' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'ci-function',
 				'name'           => 'pricing',
 				'title'          => 'Pricing',
 				'summary'        => 'View Customer Pricing',
@@ -185,13 +185,14 @@
 				'pw_template'    => 'ci-customer-po'
 			),
 			'ci-quotes' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'ci-function',
 				'name'           => 'quotes',
 				'title'          => 'Quotes',
 				'summary'        => 'View Customer Quotes',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-quotes'
+				'pw_template'    => 'ci-quotes',
+				'jsoncode'		 => 'ci-quotes'
 			),
 			'ci-open-invoices' => array(
 				'template'       => 'dplus-function',
