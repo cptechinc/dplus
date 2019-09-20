@@ -7,6 +7,13 @@
 	$html = $modules->get('HtmlWriter');
 
 	$custID = $input->get->text('custID');
+	$page->custID = $custID;
+
+	if ($input->get->shiptoID) {
+		$shiptoID = $input->get->text('shiptoID');
+		$page->shiptoID = $shiptoID;
+	}
+	
 	$customerquery = CustomerQuery::create();
 	$customerquery->filterByCustid($custID);
 

@@ -1,6 +1,9 @@
 <div class="mb-4 row">
 	<div class="col-sm-6">
-		<a href="{{ page.customerURL }}" class="btn btn-info"><i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i>&ensp;Back to Customer Page</a>
+		<a href="{{ page.customer_or_shiptoURL() }}" class="btn btn-info">
+			<i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i>
+			Back to {{ page.has('shiptoID') ? 'Ship-to' : 'Customer' }} Page
+		</a>
 	</div>
 	<div class="col-sm-6">
 		<button class="btn btn-info toggle-order-search pull-right" type="button" data-toggle="collapse" data-target="#orders-search-div" aria-expanded="false" aria-controls="orders-search-div">Toggle Search&ensp;<i class="fa fa-search" aria-hidden="true"></i></button>
