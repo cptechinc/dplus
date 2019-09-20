@@ -122,7 +122,7 @@
 				'name'           => 'customer',
 				'title'          => 'Customer Sales History',
 				'summary'        => 'View Sales History Orders for a Customer',
-				'parent'         => '/mso/',
+				'parent'         => '/mso/sales-history/',
 				'dplus_function' => '',
 				'pw_template'    => 'sales-history-orders-customer'
 			),
