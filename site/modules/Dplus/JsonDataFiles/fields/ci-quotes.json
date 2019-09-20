@@ -221,7 +221,7 @@
             "datajustify": "l"
         }
     },
-    "detail": {
+    "details": {
         "Quote Line Number": {
             "type": "I",
             "headingjustify": "r",
