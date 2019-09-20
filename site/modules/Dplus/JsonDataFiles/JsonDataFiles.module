@@ -37,7 +37,7 @@
 				)
 			),
 			'ci' => array(
-				'pricing' 	  	  => 'ciprice',
+				'pricing' 	  	  => 'iiprice',
 				'ship-tos' 	  	  => 'cishiptoinfo',
 				'contacts' 	  	  => 'cicontact',
 				'sales' => array(
@@ -46,10 +46,10 @@
 				),
 				'purchase-orders' => 'cipurchordr',
 				'quotes' 		  => 'ciquote',
-				'open-invoices'   => 'ciopeninv',
+				'openinvoices'   => 'ciopeninv',
 				'payments' 		  => 'cipayment',
 				'credit' 		  => 'cicredit',
-				'standing-orders' => 'cistandingordr',
+				'standingorders' => 'cistandingordr',
 				'stock' 		  => 'cistkstat',
 				'notes' 		  => 'cinotes',
 				'documents' 	  => 'docview',
