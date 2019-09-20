@@ -1,0 +1,282 @@
+<?php namespace ProcessWire;
+
+	use Purl\Url;
+
+	use CustomerQuery, Customer;
+	use CustomerShiptoQuery, CustomerShipto;
+	use SalesOrderQuery, SalesOrder;
+	use SalesHistoryQuery, SalesHistory;
+	use ContactQuery, Contact;
+	use UseractionsQuery, Useractions;
+
+	class CiLoadCustomerShipto extends WireData implements Module {
+		/**
+		 * Customer ID
+		 * @var string
+		 */
+		protected $custID;
+
+		/**
+		 * Customer
+		 * @var Customer
+		 */
+		protected $customer;
+
+		/**
+		 * Shipto ID
+		 * @var string
+		 */
+		protected $shiptoID;
+
+		/**
+		 * Customer Shipto
+		 * @var CustomerShipto
+		 */
+		protected $shipto;
+
+		public function init() {
+			/**
+			 * Returns CI Customer Page URL
+			 */
+			$this->addHook('Page::customerURL', function($event) {
+				$event->return = $this->get_customerURL();
+			});
+
+			/**
+			 * Returns CI Customer Shipto Page URL
+			 */
+			$this->addHook('Page::customer_shiptoURL', function($event) {
+				$event->return = $this->get_customer_shiptoURL();
+			});
+
+			/**
+			 * Returns CI Customer Shipto Page URL
+			 */
+			$this->addHook('Page::customer_or_shiptoURL', function($event) {
+				$event->return = $this->get_customer_or_shiptoURL();
+			});
+		}
+
+		/**
+		 * Returns if Customer ID has been defined
+		 * @return bool
+		 */
+		public function has_custID() {
+			return boolval($this->custID);
+		}
+
+		/**
+		 * Returns Customer ID
+		 * @return string
+		 */
+		public function get_custID() {
+			return $this->custID;
+		}
+
+		/**
+		 * Sets Customer ID
+		 * @param  string $custID CustomerID
+		 * @return string
+		 */
+		public function set_custID($custID) {
+			$this->custID = $custID;
+			$this->wire('page')->custID = $custID;
+		}
+
+		/**
+		 * Validates if Customer exists
+		 * @return void
+		 */
+		public function customer_exists() {
+			return boolval(CustomerQuery::create()->filterByCustid($this->custID)->count());
+		}
+
+		/**
+		 * Returns Customer
+		 * NOTE: Sets the Customer Property if not loaded
+		 * @return Customer
+		 */
+		public function get_customer() {
+			if (!$this->customer) {
+				$this->customer = CustomerQuery::create()->findOneByCustid($this->custID);
+			}
+			return $this->customer;
+		}
+
+		/**
+		 * Returns if shiptoID is defined
+		 * @return bool
+		 */
+		public function has_shiptoID() {
+			return boolval($this->shiptoID);
+		}
+
+		/**
+		 * Returns Customer Shipto ID
+		 * @return string
+		 */
+		public function get_shiptoID() {
+			return $this->shiptoID;
+		}
+
+		/**
+		 * Sets ShiptoID ID
+		 * @return void
+		 */
+		public function set_shiptoID($shiptoID) {
+			$this->shiptoID = $shiptoID;
+			$this->wire('page')->shiptoID = $shiptoID;
+		}
+
+		/**
+		 * Validates if Shipto exists
+		 * @return void
+		 */
+		public function shipto_exists() {
+			return CustomershiptoQuery::create()->filterByCustid($this->custID)->filterByShiptoid($this->shiptoID)->count();
+		}
+
+		/**
+		 * Returns CustomerShipto
+		 * NOTE: Sets the shipto Property if not loaded
+		 * @return CustomerShipto
+		 */
+		public function get_shipto() {
+			if (!$this->shipto) {
+				$this->shipto = CustomershiptoQuery::create()->filterByCustid($this->custID)->findOneByShiptoid($this->shiptoID);
+			}
+			return $this->shipto;
+		}
+
+
+		/**
+		 * Returns URL to Customer Page
+		 * @return string
+		 */
+		public function get_customerURL() {
+			$url = new Url($this->wire('pages')->get('pw_template=ci-customer')->url);
+			$url->query->set('custID', $this->custID);
+			return $url->getUrl();
+		}
+
+		/**
+		 * Returns URL to Customer Shipto Page
+		 * @return string
+		 */
+		public function get_customer_shiptoURL() {
+			$p = $event->object;
+			$url = new Url($this->wire('pages')->get('pw_template=ci-shipto')->url);
+			$url->query->set('custID', $this->custID);
+			$url->query->set('shiptoID', $this->shiptoID);
+			return $url->getUrl();
+		}
+
+		/**
+		 * Returns URL to Customer / Customer Shipto Page
+		 * @return string
+		 */
+		public function get_customer_or_shiptoURL() {
+			return ($this->shiptoID) ? $this->get_customer_shiptoURL() : $this->get_customerURL();
+		}
+
+		/**
+		 * Returns SalesOrder Objects
+		 *
+		 * @param  int    $limit Number of Results to return
+		 * @param  int    $page  Page of Results
+		 * @return PropelModelPager        [description]
+		 */
+		public function get_salesorders($limit = 10, $page = 1) {
+			$query = SalesOrderQuery::create();
+			$query->filterByCustid($this->custID);
+
+			if ($this->shiptoID) {
+				$query->filterByShiptoid($this->shiptoID);
+			}
+			return $query->paginate($page, $limit);
+		}
+
+		/**
+		 * Returns SalesHistory Objects
+		 *
+		 * @param  int    $limit Number of Results to return
+		 * @param  int    $page  Page of Results
+		 * @return PropelModelPager        [description]
+		 */
+		public function get_saleshistory($limit = 10, $page = 1) {
+			$query = SalesHistoryQuery::create();
+			$query->filterByCustid($this->custID);
+			if ($this->shiptoID) {
+				$query->filterByShiptoid($this->shiptoID);
+			}
+			return $query->paginate($page, $limit);
+		}
+
+		/**
+		 * Return View Sales Orders URL
+		 * @return string
+		 */
+		public function get_salesordersURL() {
+			$url = new Url($this->wire('pages')->get('pw_template=sales-orders-customer')->url);
+			$url->query->set('custID', $this->custID);
+
+			if ($this->shiptoID) {
+				$url->query->set('shiptoID', $this->shiptoID);
+			}
+
+			return $url->getUrl();
+		}
+
+		/**
+		 * Return View Sales History URL
+		 * @return string
+		 */
+		public function get_saleshistoryURL() {
+			$url = new Url($this->wire('pages')->get('pw_template=sales-history-orders-customer')->url);
+			$url->query->set('custID', $this->custID);
+
+			if ($this->shiptoID) {
+				$url->query->set('shiptoID', $this->shiptoID);
+			}
+			return $url->getUrl();
+		}
+
+		public function get_contacts($limit = 10, $page = 1) {
+			$query = ContactQuery::create();
+			$query->filterByCustid($this->custID);
+			if ($this->shiptoID) {
+				$query->filterByShiptoid($this->shiptoID);
+			}
+			return $query->paginate($page , $limit);
+		}
+
+		public function get_useractions(WireInput $input, $limit = 10, $page = 1) {
+			$filter_useractions = $this->wire('modules')->get('FilterUserActions');
+			$query = $filter_useractions->get_actionsquery($input);
+			$query->filterByStatusIncomplete();
+			$query->filterByCustomerlink($this->custID);
+			if ($this->shiptoID) {
+				$query->filterByShiptolink($this->shiptoID);
+			}
+			return $query->paginate($page, $limit);
+		}
+
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dpluso CI Customer Shipto Module',
+				'version' => 101,
+				'summary' => 'Handles CI Customer / Customer Shipto Loading',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+	}
