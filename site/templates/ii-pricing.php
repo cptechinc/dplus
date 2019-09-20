@@ -11,7 +11,36 @@
 	if ($itemquery->count()) {
 		$page->title = "$itemID Pricing";
 
-		if (!$input->get->custID) {
+		if ($input->get->custID) {
+			$custID = $input->get->text('custID');
+			$customer = CustomerQuery::create()->findOneByCustid($custID);
+			$page->title .= " for $customer->name";
+			
+			$module_json = $modules->get('JsonDataFiles');
+			$json = $module_json->get_file(session_id(), $page->jsoncode);
+
+			if ($module_json->file_exists(session_id(), $page->jsoncode)) {
+				if ($json['itemid'] != $itemID) {
+					$module_json->remove_file(session_id(), $page->jsoncode);
+					$session->redirect($page->get_itempricingURL($itemID, $custID));
+				}
+				$session->pricingtry = 0;
+
+
+				$refreshurl = $page->get_itempricingURL($itemID, $custID);
+				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
+				$page->body .= $config->twig->render('items/ii/pricing/customer-item.twig', ['page' => $page, 'customer' => $customer, 'json' => $json]);
+				$page->body .= $config->twig->render('items/ii/pricing/screen.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json]);
+			} else {
+				if ($session->pricingtry > 3) {
+					$page->headline = $page->title = "Pricing File could not be loaded";
+					$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
+				} else {
+					$session->pricingtry++;
+					$session->redirect($page->get_itempricingURL($itemID, $custID));
+				}
+			}
+		} else {
 			$query = CustomerQuery::create();
 
 			if ($input->get->q) {
@@ -27,33 +56,6 @@
 			$page->searchURL = $page->url;
 			$page->body = $config->twig->render('items/ii/pricing/customer/customer-search.twig', ['page' => $page, 'customers' => $customers, 'itemID' => $itemID]);
 			$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $customers->getNbResults()]);
-		} else {
-			$custID = $input->get->text('custID');
-
-			$module_json = $modules->get('JsonDataFiles');
-			$json = $module_json->get_file(session_id(), $page->jsoncode);
-
-			if ($module_json->file_exists(session_id(), $page->jsoncode)) {
-				if ($json['itemid'] != $itemID) {
-					$module_json->remove_file(session_id(), $page->jsoncode);
-					$session->redirect($page->get_itempricingURL($itemID, $custID));
-				}
-				$session->pricingtry = 0;
-				$customer = CustomerQuery::create()->findOneByCustid($custID);
-
-				$refreshurl = $page->get_itempricingURL($itemID, $custID);
-				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
-				$page->body .= $config->twig->render('items/ii/pricing/customer-item.twig', ['page' => $page, 'customer' => $customer, 'json' => $json]);
-				$page->body .= $config->twig->render('items/ii/pricing/screen.twig', ['page' => $page, 'itemID' => $itemID, 'module_ii' => $module_ii, 'json' => $json]);
-			} else {
-				if ($session->pricingtry > 3) {
-					$page->headline = $page->title = "Pricing File could not be loaded";
-					$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
-				} else {
-					$session->pricingtry++;
-					$session->redirect($page->get_itempricingURL($itemID, $custID));
-				}
-			}
 		}
 	}
 
