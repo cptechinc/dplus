@@ -4,6 +4,17 @@
 	$query = SalesHistoryQuery::create();
 	$custID = $input->get->text('custID');
 	$query->filterByCustId("$custID");
+	$customer = CustomerQuery::create()->findOneByCustid($custID);
+	$page->title = "$customer->name Sales History";
+	$page->customerURL = $pages->get('pw_template=ci-customer')->url."?custID=$custID";
+
+	if ($input->get->shiptoID) {
+		$shiptoID = $input->get->text('shiptoID');
+		$shipto = CustomerShiptoQuery::create()->filterByCustid($custID)->findOneByShiptoid($shiptoID);
+		$query->filterByShiptoid($shiptoID );
+		$page->title = "$shipto->name Sales History";
+		$page->customerURL = $pages->get('pw_template=ci-shipto')->url."?custID=$custID&shiptoID=$shiptoID";
+	}
 
 	if ($user->is_salesrep()) {
 		$query->filterbySalesPerson($user->roleid);
@@ -70,7 +81,6 @@
 	}
 
 	$orders = $query->paginate($input->pageNum, 10);
-	$page->customerURL = $pages->get('pw_template=ci-customer')->url."?custID=$custID";
 	$page->body = $config->twig->render('customers/ci/customer/shipped-orders-search-form.twig', ['page' => $page, 'input' => $input, 'custid' => $custID]);
 	$page->body .= $config->twig->render('customers/ci/customer/shipped-orders-list.twig', ['orders' => $orders, 'orderpage' => $pages->get('pw_template=sales-order-view')->url]);
 	$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'pagenbr' => $input->pageNum, 'resultscount'=> $orders->getNbResults()]);
