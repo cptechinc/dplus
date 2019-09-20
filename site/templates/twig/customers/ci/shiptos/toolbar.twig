@@ -1,0 +1,11 @@
+<nav class="toolbar-sidebar">
+	<ul class="nav">
+		{% for page in pages %}
+			<li>
+				<a href="{{ page.url ~ '?custID=' ~ shipto.custid ~ '&shiptoID=' ~ shipto.shiptoid }}">
+					{{ page.title }}
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
+</nav>

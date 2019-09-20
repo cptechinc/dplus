@@ -1,0 +1,42 @@
+<table id="cust-index" class="table table-bordered">
+	<thead>
+		<tr>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('shiptoID') }}" class="link">ID</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('name') }}" class="link">Name</a>
+			</th>
+			<th scope="col">Address</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('city') }}" class="link">City</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('state') }}" class="link">State</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('zip') }}" class="link">Zip</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('lastsaledate') }}" class="link">Last Sales Date</a>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for shipto in shiptos %}
+			<tr>
+				<td scope="row">
+					<a href="{{ page.get_customershiptoURL(customer.id, shipto.id)}}" class="link">
+						<strong>{{ shipto.id }}</strong>
+					</a>
+				</td>
+				<td>{{ shipto.name }}</td>
+				<td>{{ shipto.address1 }}</td>
+				<td>{{ shipto.city }}</td>
+				<td>{{ shipto.state }}</td>
+				<td>{{ shipto.zip }}</td>
+				<td>{{ convertdate(shipto.lastsaledate) }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

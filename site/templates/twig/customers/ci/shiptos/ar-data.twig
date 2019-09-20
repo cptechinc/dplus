@@ -1,0 +1,77 @@
+<div class="card">
+	<div class="card-header">
+		<span class="h5">AR</span>
+	</div>
+	<ul class="list-group list-group-flush">
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-10">
+					Warehouse:
+				</div>
+				<div class="col-sm-2">
+					{{ shipto.warehouse }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-10">
+					Ship Via:
+				</div>
+				<div class="col-sm-2">
+					{{ shipto.shipvia }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-10">
+					Current Finance Charge:
+				</div>
+				<div class="col-sm-2">
+					{{ shipto.taxcode }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-10">
+					Type:
+				</div>
+				<div class="col-sm-2">
+					{{ shipto.type }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-10">
+					Price Code:
+				</div>
+				<div class="col-sm-2">
+					{{ shipto.pricecode }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-10">
+					Credit Hold:
+				</div>
+				<div class="col-sm-2">
+					{{ yesorno(shipto.credithold)|capitalize }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-10">
+					Tax Exempt:
+				</div>
+				<div class="col-sm-2">
+					{{ shipto.is_taxexempt() ? shipto.taxexemptcode : 'N/A' }}
+				</div>
+			</div>
+		</li>
+	</ul>
+</div>
