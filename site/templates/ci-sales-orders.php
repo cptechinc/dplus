@@ -26,7 +26,7 @@
 
 		if ($input->get->text('orderdate_from') || $input->get->text('orderdate_through')) {
 			$orderdate_from = date("Ymd", strtotime($input->get->text('orderdate_from')));
-			
+
 			if (empty($input->get->text('orderdate_through'))) {
 				$orderdate_through = date('Ymd');
 			} else {

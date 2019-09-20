@@ -15,6 +15,10 @@
 		$config->scripts->append(hash_templatefile('scripts/lib/moment.js'));
 
 		if ($module_json->file_exists(session_id(), $page->jsoncode)) {
+			if ($json['itemid'] != $itemID) {
+				$module_json->remove_file(session_id(), $page->jsoncode);
+				$session->redirect($page->get_itemusageURL($itemID));
+			}
 			$session->usagetry = 0;
 			$refreshurl = $page->get_itemusageURL($itemID);
 			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);

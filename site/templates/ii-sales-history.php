@@ -6,15 +6,20 @@
 
 		if ($input->get->date) {
 			$date = $input->get->text('date');
+			$page->title .= " starting from $date";
 
 			$module_json = $modules->get('JsonDataFiles');
 			$json = $module_json->get_file(session_id(), $page->jsoncode);
 
 			if ($module_json->file_exists(session_id(), $page->jsoncode)) {
+				if ($json['itemid'] != $itemID) {
+					$module_json->remove_file(session_id(), $page->jsoncode);
+					$session->redirect($page->get_itemsaleshistoryURL($itemID));
+				}
 				$session->saleshistorytry = 0;
 				$module_formatter = $modules->get('IiSalesHistory');
 				$module_formatter->init_formatter();
-        
+
 				$document_management = $modules->get('DocumentManagement');
 				$refreshurl = $page->get_itemsaleshistoryURL($itemID, $date);
 				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);

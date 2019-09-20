@@ -1,0 +1,11 @@
+<nav class="toolbar-sidebar">
+	<ul class="nav">
+		{% for child in page.children() %}
+			<li>
+				<a href="{{ child.url ~ '?custID=' ~ custID }}">
+					{{ child.title }}
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
+</nav>

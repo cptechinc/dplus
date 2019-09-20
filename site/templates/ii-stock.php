@@ -8,6 +8,10 @@
 		$json = $module_json->get_file(session_id(), $page->jsoncode);
 
 		if ($module_json->file_exists(session_id(), $page->jsoncode)) {
+			if ($json['itemid'] != $itemID) {
+				$module_json->remove_file(session_id(), $page->jsoncode);
+				$session->redirect($page->get_itemstockURL($itemID));
+			}
 			$session->stocktry = 0;
 			$refreshurl = $page->get_itemstockURL($itemID);
 			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);

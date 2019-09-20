@@ -19,7 +19,7 @@
 				'notes'       => ""
 			),
 		);
-		
+
 		protected $templates = array(
 			'dplus-menu' => array(
 				'name'   => 'dplus-menu',
@@ -44,8 +44,8 @@
 				'name'   => 'ci-pricing',
 				'fields' => array(),
 			),
-			'ci-shiptos' => array(
-				'name'   => 'ci-shiptos',
+			'ci-shipto' => array(
+				'name'   => 'ci-shipto',
 				'fields' => array(),
 			),
 			'ci-contacts' => array(
@@ -129,14 +129,14 @@
 				'dplus_function' => '',
 				'pw_template'    => 'ci-phonebook'
 			),
-			'ci-shiptos' => array(
+			'ci-shipto' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'shiptos',
 				'title'          => 'Ship-tos',
 				'summary'        => 'View Customer Ship-tos',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-shiptos'
+				'pw_template'    => 'ci-shipto'
 			),
 			'ci-contacts' => array(
 				'template'       => 'ci-function',
@@ -264,6 +264,20 @@
 				$event->return = $p->parent('template=dplus-menu')->child('template=redir')->url;
 			});
 
+			$this->addHook('Page::get_backURL', function($event) {
+				$p = $event->object;
+				$custID   = $p->fullURL->query->get('custID');
+				$url = new Url($this->wire('pages')->get('pw_template=ci-customer')->url);
+				$url->query->set('custID', $custID);
+
+				if ($p->fullURL->query->has('shiptoID') && $p->pw_template != 'ci-shipto') {
+					$url->path = $this->wire('pages')->get('pw_template=ci-shipto')->url;
+					$shiptoID = $p->fullURL->query->get('shiptoID');
+					$url->query->set('shiptoID', $shiptoID);
+				}
+				$event->return = $url->getUrl();
+			});
+
 			$this->addHook('Page::get_customerURL', function($event) {
 				$p = $event->object;
 				$custID = $event->arguments(0);
@@ -277,10 +291,20 @@
 			$this->addHook('Page::get_customerpricingURL', function($event) {
 				$p = $event->object;
 				$custID = $event->arguments(0);
-				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$itemID = $event->arguments(1);
+				$url = new Url($this->wire('pages')->get('template=redir, redir_file=ci')->url);
 				$url->query->set('action','ci-pricing');
 				$url->query->set('custID', $custID);
-				$url->query->set('page', $p->fullURL->getUrl());
+				$url->query->set('itemID', $itemID);
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_customershiptoURL', function($event) {
+				$custID = $event->arguments(0);
+				$shiptoID = $event->arguments(1);
+				$url = new Url($this->wire('pages')->get('pw_template=ci-shipto')->url);
+				$url->query->set('custID', $custID);
+				$url->query->set('shiptoID', $shiptoID);
 				$event->return = $url->getUrl();
 			});
 
@@ -297,9 +321,15 @@
 			$this->addHook('Page::get_customercontactsURL', function($event) {
 				$p = $event->object;
 				$custID = $event->arguments(0);
+				$shiptoID = $event->arguments(1);
+
 				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
 				$url->query->set('action','ci-contacts');
 				$url->query->set('custID', $custID);
+
+				if ($shiptoID) {
+					$url->query->set('shiptoID', $shiptoID);
+				}
 				$url->query->set('page', $p->fullURL->getUrl());
 				$event->return = $url->getUrl();
 			});
@@ -421,6 +451,28 @@
 				$url->query->set('action','ci-phonebook');
 				$url->query->set('custID', $custID);
 				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+		}
+
+		public function init_customer_hooks() {
+			/**
+			 * Adds hook for getting Sales Order List URL
+			 */
+			$this->addHook('Page::cust_salesordersURL', function($event) {
+				$custID = $event->arguments(0);
+				$url = new Url($this->wire('pages')->get('pw_template=sales-orders-customer')->url);
+				$url->query->set('custID', $custID);
+				$event->return = $url->getUrl();
+			});
+
+			/**
+			 * Adds hook for getting Sales History List URL
+			 */
+			$this->addHook('Page::cust_saleshistoryURL', function($event) {
+				$custID = $event->arguments(0);
+				$url = new Url($this->wire('pages')->get('pw_template=sales-history-orders-customer')->url);
+				$url->query->set('custID', $custID);
 				$event->return = $url->getUrl();
 			});
 		}

@@ -2,7 +2,7 @@
 	<thead>
 		<tr>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('custID') }}" class="link">ID</a>
+				<a href="{{ page.get_sortURL('shiptoID') }}" class="link">ID</a>
 			</th>
 			<th scope="col">
 				<a href="{{ page.get_sortURL('name') }}" class="link">Name</a>
@@ -23,28 +23,20 @@
 		</tr>
 	</thead>
 	<tbody>
-		{% if customers.count() %}
-			{% for customer in customers %}
-				<tr>
-					<td scope="row">
-						<a href="{{ page.url ~ '?custID=' ~ customer.id }}" class="link">
-							<strong>{{ customer.id }}</strong>
-						</a>
-					</td>
-					<td>{{ customer.name }}</td>
-					<td>{{ customer.address1 }}</td>
-					<td>{{ customer.city }}</td>
-					<td>{{ customer.state }}</td>
-					<td>{{ customer.zip }}</td>
-					<td>{{ convertdate(customer.lastsaledate) }}</td>
-				</tr>
-			{% endfor %}
-		{% else %}
+		{% for shipto in shiptos %}
 			<tr>
-				<td colspan="7" class="bg-secondary text-white text-center">
-					No Results found
+				<td scope="row">
+					<a href="{{ page.get_customershiptoURL(customer.id, shipto.id)}}" class="link">
+						<strong>{{ shipto.id }}</strong>
+					</a>
 				</td>
+				<td>{{ shipto.name }}</td>
+				<td>{{ shipto.address1 }}</td>
+				<td>{{ shipto.city }}</td>
+				<td>{{ shipto.state }}</td>
+				<td>{{ shipto.zip }}</td>
+				<td>{{ convertdate(shipto.lastsaledate) }}</td>
 			</tr>
-		{% endif %}
+		{% endfor %}
 	</tbody>
 </table>

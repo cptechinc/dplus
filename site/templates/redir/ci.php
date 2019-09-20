@@ -70,15 +70,31 @@
 	**/
 
 	switch ($action) {
-		case 'ci-contacts':
-			$shipID = $input->$requestmethod->text('shipID');
-			$data = array("DBNAME=$dplusdb", 'CICONTACT', "CUSTID=$custID", "SHIPID=$shipID");
+		case 'ci-pricing':
+			$itemID = $input->get->text('itemID');
+			$data = array("DBNAME=$dplusdb", 'CIPRICE', "ITEMID=$itemID", "CUSTID=$custID");
 
 			if ($input->$requestmethod->page) {
 				$session->loc = $input->$requestmethod->text('page');
 			} else {
-				$url = new Purl\Url($pages->get('pw_template=ci-contacts'));
+				$url = new Purl\Url($pages->get('pw_template=ci-pricing')->url);
 				$url->query->set('custID', $custID);
+				$url->query->set('itemID', $itemID);
+				$session->loc = $url->getUrl();
+			}
+			break;
+		case 'ci-contacts':
+			$shiptoID = $input->$requestmethod->text('shiptoID');
+			$data = array("DBNAME=$dplusdb", 'CICONTACT', "CUSTID=$custID", "SHIPID=$shiptoID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=ci-contacts')->url);
+				$url->query->set('custID', $custID);
+				if ($shiptoID) {
+					$url->query->set('shiptoID', $shiptoID);
+				}
 				$session->loc = $url->getUrl();
 			}
 			break;
@@ -89,7 +105,7 @@
 			if ($input->$requestmethod->page) {
 				$session->loc = $input->$requestmethod->text('page');
 			} else {
-				$url = new Purl\Url($pages->get('pw_template=ci-sales-orders'));
+				$url = new Purl\Url($pages->get('pw_template=ci-sales-orders')->url);
 				$url->query->set('custID', $custID);
 				$session->loc = $url->getUrl();
 			}
@@ -101,7 +117,7 @@
 			if ($input->$requestmethod->page) {
 				$session->loc = $input->$requestmethod->text('page');
 			} else {
-				$url = new Purl\Url($pages->get('pw_template=ci-sales-history'));
+				$url = new Purl\Url($pages->get('pw_template=ci-sales-history')->url);
 				$url->query->set('custID', $custID);
 				$session->loc = $url->getUrl();
 			}
@@ -113,7 +129,7 @@
 			if ($input->$requestmethod->page) {
 				$session->loc = $input->$requestmethod->text('page');
 			} else {
-				$url = new Purl\Url($pages->get('pw_template=ci-quotes'));
+				$url = new Purl\Url($pages->get('pw_template=ci-quotes')->url);
 				$url->query->set('custID', $custID);
 				$session->loc = $url->getUrl();
 			}
@@ -125,7 +141,7 @@
 			if ($input->$requestmethod->page) {
 				$session->loc = $input->$requestmethod->text('page');
 			} else {
-				$url = new Purl\Url($pages->get('pw_template=ci-open-invoices'));
+				$url = new Purl\Url($pages->get('pw_template=ci-open-invoices')->url);
 				$url->query->set('custID', $custID);
 				$session->loc = $url->getUrl();
 			}
@@ -137,7 +153,7 @@
 			if ($input->$requestmethod->page) {
 				$session->loc = $input->$requestmethod->text('page');
 			} else {
-				$url = new Purl\Url($pages->get('pw_template=ci-payments'));
+				$url = new Purl\Url($pages->get('pw_template=ci-payments')->url);
 				$url->query->set('custID', $custID);
 				$session->loc = $url->getUrl();
 			}

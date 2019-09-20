@@ -7,7 +7,6 @@
 		$module_json = $modules->get('JsonDataFiles');
 
 		$partial_exist = $module_json->file_exists(session_id(), 'ii-misc') || $module_json->file_exists(session_id(), 'ii-notes') || $module_json->file_exists(session_id(), 'ii-usage') ;
-
 		if ($partial_exist) {
 			$config->styles->append('//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css');
 			$config->scripts->append('//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js');
@@ -32,6 +31,11 @@
 				$module_usage = $modules->get('IiUsage');
 				$json_usage = $module_json->get_file(session_id(), 'ii-usage');
 
+				if ($json_usage['itemid'] != $itemID) {
+					$module_json->remove_file(session_id(), $page->jsoncode);
+					$session->redirect($page->get_itemgeneralURL($itemID));
+				}
+
 				$page->body .= $config->twig->render('items/ii/usage/sales-usage.twig', ['page' => $page, 'json' => $json_usage, 'module_json' => $module_json]);
 				$page->body .= $config->twig->render('items/ii/usage/warehouses.twig', ['page' => $page, 'json' => $json_usage, 'module_json' => $module_json, 'module_usage' => $module_usage]);
 				$page->js = $config->twig->render('items/ii/usage/warehouses.js.twig', ['page' => $page, 'json' => $json_usage, 'module_json' => $module_json, 'module_usage' => $module_usage]);
@@ -44,6 +48,11 @@
 				$page->body .= $html->h3('id=notes|class=info-heading', 'Notes');
 				$json_notes = $module_json->get_file(session_id(), 'ii-notes');
 
+				if ($json_notes['itemid'] != $itemID) {
+					$module_json->remove_file(session_id(), $page->jsoncode);
+					$session->redirect($page->get_itemgeneralURL($itemID));
+				}
+
 				$page->body .= $config->twig->render('items/ii/general/notes.twig', ['page' => $page, 'json' => $json_notes, 'module_json' => $module_json]);
 			} else {
 				$page->body .= $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => 'II Notes could not be loaded']);
@@ -54,6 +63,11 @@
 			if ($module_json->file_exists(session_id(), 'ii-misc')) {
 				$page->body .= $html->h3('id=misc|class=info-heading', 'Misc');
 				$json_misc = $module_json->get_file(session_id(), 'ii-misc');
+				
+				if ($json_misc['itemid'] != $itemID) {
+					$module_json->remove_file(session_id(), $page->jsoncode);
+					$session->redirect($page->get_itemgeneralURL($itemID));
+				}
 				$page->body .= $config->twig->render('items/ii/general/misc.twig', ['page' => $page, 'json' => $json_misc, 'module_json' => $module_json]);
 			} else {
 				$page->body .= $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => 'II Misc could not be loaded']);

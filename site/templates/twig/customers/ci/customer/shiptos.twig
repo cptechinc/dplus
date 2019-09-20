@@ -9,11 +9,15 @@
 					Shipto:
 				</div>
 				<div class="col-sm-7">
-					<select name="" class="form-control form-control-sm" id="">
-						{% for shipto in customer.get_shiptos() %}
-							<option value="{{ shipto.id }}">{{ shipto.name }}</option>
-						{% endfor %}
-					</select>
+					<form action="{{ page.child('pw_template=ci-shipto').url }}" method="get">
+						<input type="hidden" name="custID" value="{{ customer.id }}">
+						<select name="shiptoID" class="form-control form-control-sm" id="select_shipto">
+							{% for shipto in customer.get_shiptos() %}
+								<option value="{{ shipto.id }}">{{ shipto.name }}</option>
+							{% endfor %}
+						</select>
+					</form>
+
 				</div>
 			</div>
 		</li>

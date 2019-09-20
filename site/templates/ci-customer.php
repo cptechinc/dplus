@@ -2,46 +2,45 @@
 	use Map\CustomerTableMap;
 	use Propel\Runtime\ActiveQuery\Criteria;
 	$module_useractions      = $modules->get('FilterUserActions');
-
 	$html = $modules->get('HtmlWriter');
 
 	if ($input->get->custID) {
 		$custID = $input->get->text('custID');
 
-		$query = CustomerQuery::create();
-		$customer = $query->findOneByCustid($custID);
+		$modules->get('MciPages')->init_customer_hooks();
+		$load_customer = $modules->get('CiLoadCustomerShipto');
 
-		$query = $module_useractions->get_actionsquery($input);
-		$query->filterByStatusIncomplete();
-		$query->filterByCustomerlink($custID);
-		$actions = $query->paginate($input->pageNum, 10);
+		$load_customer->set_custID($custID);
 
-		$query = ContactQuery::create();
-		$query->filterByArcucustid($custID);
-		$contacts = $query->paginate($input->pageNum, 10);
+		// TODO VALIDATION
+		if ($load_customer->customer_exists()) {
+			$customer = $load_customer->get_customer();
+			$actions = $load_customer->get_useractions($input);
+			$contacts = $load_customer->get_contacts();
+			$sales_orders = $load_customer->get_salesorders();
+			$sales_history = $load_customer->get_saleshistory();
+			$page->title = "CI: $customer->name";
+			$toolbar = $config->twig->render('customers/ci/customer/toolbar.twig', ['page' => $page, 'custID' => $customer->id]);
 
-		$query = SalesOrderQuery::create();
-		$query->filterBycustid($custID);
-		$orders = $query->paginate($input->pageNum, 10);
+			$header =  $config->twig->render('customers/ci/customer/header.twig', ['page' => $page, 'customer' => $customer]);
 
-		$query = SalesHistoryQuery::create();
-		$query->filterByArcucustid($custID);
-		$shippedorders = $query->paginate($input->pageNum, 10);
+			$page->body = "<div class='row'>";
+				$page->body .= $html->div('class=col-sm-2', $toolbar);
+				$page->body .= $html->div('class=col-sm-10', $header);
+			$page->body .= "</div>";
+			$page->body .= $config->twig->render('customers/ci/customer/actions-panel.twig', ['page' => $page, 'module_useractions' => $module_useractions, 'actions' => $actions, 'resultscount'=> $actions->getNbResults()]);
+			$page->body .= $config->twig->render('customers/ci/customer/contacts-panel.twig', ['page' => $page, 'customer' => $customer, 'contacts' => $contacts, 'resultscount'=> $contacts->getNbResults()]);
+			$page->body .= $config->twig->render('customers/ci/customer/sales-orders-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $sales_orders, 'resultscount'=> $sales_orders->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url, 'sales_orders_list' => $page->cust_salesordersURL($customer->id)]);
+			$page->body .= $config->twig->render('customers/ci/customer/shipped-orders-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $sales_history, 'resultscount'=> $sales_history->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url, 'shipped_orders_list' => $page->cust_saleshistoryURL($customer->id)]);
+			$config->scripts->append(hash_templatefile('scripts/customer/ci-customer.js'));
+		} else {
+			$page->searchURL = $page->url;
+			$page->title = "Customer $custID Not Found";
+			$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Check the Customer ID is correct"]);
+			$page->body .= $html->div('class=mb-3');
+			$page->body .= $config->twig->render('customers/search-form.twig', ['page' => $page]);
+		}
 
-		$page->title = "CI: $customer->name";
-
-		$toolbar = $config->twig->render('customers/ci/toolbar.twig', ['page' => $page, 'customer' => $customer]);
-		$header =  $config->twig->render('customers/ci/customer/header.twig', ['page' => $page, 'customer' => $customer]);
-
-		$page->body = "<div class='row'>";
-			$page->body .= $html->div('class=col-sm-2', $toolbar);
-			$page->body .= $html->div('class=col-sm-10', $header);
-		$page->body .= "</div>";
-
-		$page->body .= $config->twig->render('shared/actions-panel.twig', ['page' => $page, 'actions' => $actions, 'resultscount'=> $actions->getNbResults()]);
-		$page->body .= $config->twig->render('customers/ci/customer/contacts-panel.twig', ['page' => $page, 'customer' => $customer, 'contacts' => $contacts, 'resultscount'=> $contacts->getNbResults()]);
-		$page->body .= $config->twig->render('customers/ci/customer/sales-orders-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $orders, 'resultscount'=> $orders->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url, 'sales_orders_list' => $pages->get('pw_template=sales-orders')->url]);
-		$page->body .= $config->twig->render('customers/ci/customer/shipped-orders-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $shippedorders, 'resultscount'=> $shippedorders->getNbResults()]);
 	} else {
 		$query = CustomerQuery::create();
 		$exact_query = CustomerQuery::create();
