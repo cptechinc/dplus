@@ -55,6 +55,21 @@
 			$this->addHook('Page::customer_or_shiptoURL', function($event) {
 				$event->return = $this->get_customer_or_shiptoURL();
 			});
+
+			/**
+			 * Returns CI Customer Page URL
+			 */
+			$this->addHookProperty('Page::customer', function($event) {
+				$event->return = $this->get_customer();
+			});
+
+			/**
+			 * Returns CI Customer Shipto Page URL
+			 */
+			$this->addHookProperty('Page::shipto', function($event) {
+				$event->return = $this->get_shipto();
+			});
+
 		}
 
 		/**
