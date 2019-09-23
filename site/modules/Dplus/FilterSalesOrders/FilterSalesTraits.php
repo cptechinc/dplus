@@ -1,26 +1,12 @@
 <?php namespace ProcessWire;
-	use SalesOrderQuery, SalesOrder;
 
-	class FilterSalesOrders extends WireData implements Module {
-		protected $query;
-
-
-		public function init() {
-
-		}
-
-		public function get_query() {
-			return $this->query;
-		}
-
-		public function init_query(User $user) {
-			$this->query = SalesOrderQuery::create();
-
-			if ($user->is_salesrep()) {
-				$this->query->filterbySalesPerson($user->roleid);
-			}
-		}
-
+	trait FilterSalesTraits {
+		/**
+		 * Filters Query by Order Number
+		 *
+		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+		 * @return void
+		 */
 		public function filter_ordernumber(WireInput $input) {
 			if ($input->get->text('ordernumber_from') && $input->get->text('ordernumber_through')) {
 				$this->query->filterByOrdernumber(array($input->get->text('ordernumber_from'), $input->get->text('ordernumber_through')));
@@ -31,6 +17,12 @@
 			}
 		}
 
+		/**
+		 * Filters Query by Customer PO
+		 *
+		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+		 * @return void
+		 */
 		public function filter_custpo(WireInput $input) {
 			if ($input->get->text('custpo')) {
 				$custpo = $input->get->text('custpo');
@@ -38,6 +30,12 @@
 			}
 		}
 
+		/**
+		 * Filters Query by Order Date
+		 *
+		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+		 * @return void
+		 */
 		public function filter_orderdate(WireInput $input) {
 			if ($input->get->text('orderdate_from') || $input->get->text('orderdate_through')) {
 				$orderdate_from = date("Ymd", strtotime($input->get->text('orderdate_from')));
@@ -57,6 +55,12 @@
 			}
 		}
 
+		/**
+		 * Filters Query by Order Date
+		 *
+		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+		 * @return void
+		 */
 		public function filter_ordertotal(WireInput $input) {
 			if ($input->get->text('order_total_from') && $input->get->text('order_total_through')) {
 				$this->query->filterByOrdertotal(array($input->get->text('order_total_from'), $input->get->text('order_total_through')));
@@ -67,23 +71,12 @@
 			}
 		}
 
-		public function filter_orderstatus(WireInput $input) {
-			if ($input->get->status) {
-				$statuses = array();
-
-				foreach ($input->get->status as $status) {
-					$sanitized = $sanitizer->text($status);
-
-					if (array_key_exists($sanitized, SalesOrder::$status_descriptions)) {
-						$statuses[] = $sanitized;
-					}
-				}
-				$this->query->filterByOrderstatus($statuses);
-			} else {
-				$input->get->status = array();
-			}
-		}
-
+		/**
+		 * Filters Query by Customer ID
+		 *
+		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+		 * @return void
+		 */
 		public function filter_custid($input) {
 			if ($input->get->custID) {
 				if (is_array($input->get->custID)) {
@@ -95,6 +88,12 @@
 			}
 		}
 
+		/**
+		 * Filters Query by Customer ShiptoID
+		 *
+		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+		 * @return void
+		 */
 		public function filter_shiptoid($input) {
 			if ($input->get->shiptoID && $input->get->custID) {
 				if (is_array($input->get->shiptoID)) {
@@ -104,40 +103,5 @@
 				}
 				$this->query->filterByShiptoid($filter);
 			}
-		}
-
-
-
-		public function filter_query(WireInput $input) {
-			$this->filter_custid($input);
-			$this->filter_shiptoid($input);
-
-			if ($input->get->filter) {
-				$this->filter_ordernumber($input);
-				$this->filter_custpo($input);
-				$this->filter_orderdate($input);
-				$this->filter_ordertotal($input);
-				$this->filter_status($input);
-			} else {
-				$input->get->status = array();
-			}
-		}
-
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
-		/**
-		 * ProcessWire Module Info
-		 *
-		 * @return voID
-		 */
-		public static function getModuleInfo() {
-			return array(
-				'title' => 'Dpluso filter Sales Orders Module',
-				'version' => 101,
-				'summary' => 'Handles Sales Orders Filtering',
-				'singular' => true,
-				'autoload' => true,
-			);
 		}
 	}
