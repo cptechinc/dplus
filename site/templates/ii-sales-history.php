@@ -3,6 +3,8 @@
 
 	if ($itemquery->count()) {
 		$page->title = "$itemID Sales History";
+		$page->show_breadcrumbs = false;
+		$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
 
 		if ($input->get->date) {
 			$date = $input->get->text('date');
@@ -27,7 +29,7 @@
 			} else {
 				if ($session->saleshistorytry > 3) {
 					$page->headline = $page->title = "Sales History File could not be loaded";
-					$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
+					$page->body .= $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
 				} else {
 					$session->saleshistorytry++;
 					$session->redirect($page->get_itemsaleshistoryURL($itemID, $date));

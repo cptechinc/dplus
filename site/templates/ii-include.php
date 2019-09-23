@@ -14,6 +14,10 @@
 	$itemquery->filterByOrigintype([Itemsearch::ORIGINTYPE_VENDOR, Itemsearch::ORIGINTYPE_ITEM]);
 	$itemquery->filterByItemid($itemID);
 
+	$load_item = $modules->get('IiLoadItem');
+	$load_item->set_itemID($itemID);
+	$item = $load_item->get_item();
+
 	if ($input->get->itemID) {
 		if ($itemquery->count()) {
 
