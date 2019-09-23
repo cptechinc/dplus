@@ -7,7 +7,7 @@
 		$qnbr = $input->get->text('qnbr');
 
 		if (QuoteQuery::create()->filterByQuoteid($qnbr)->count()) {
-			$page->title = "Viewing Quote #$qnbr";
+			$page->title = "Quote #$qnbr";
 			$document_management = $modules->get('DocumentManagement');
 			$quote = QuoteQuery::create()->filterByQuoteid($qnbr)->findOne();
 			$page->listpage = $pages->get('pw_template=quotes');
