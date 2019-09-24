@@ -1,0 +1,74 @@
+<div class="row">
+	<div class="col-6 pull-left">
+		<div class="row">
+			<div class="col pull-left">
+				<div class="mb-2">
+					<img src="{{ dpluscustomer.logo_large.height(40).url }}" alt="{{ dpluscustomer.company_name }}">
+				</div>
+			</div>
+			<div class="col pull-left">
+				<b>{{ dpluscustomer.company_name }}</b>
+				{{ dpluscustomer.address|raw }}
+			</div>
+		</div>
+	</div>
+	<div class="col-6 pull-left text-right">
+		<h1>Quote # {{ quote.quotenumber }}</h1>
+		<img src="data:image/png;base64, {{ barcoder.generate_barcode(quote.quotenumber)|base64_encode }}" alt="Barcode for Quote # {{ quote.quotenumber }}">
+
+		<div class="row">
+			<div class="col-7 pull-left">Quote Date:</div>
+			<div class="col-5 pull-left text-right">{{ quote.date_quoted|convertdate }}</div>
+		</div>
+	</div>
+</div>
+<div class="clearfix"></div>
+<div class="row mt-4">
+	<div class="col-4 pull-left">
+		<legend class="font-weight-bold text-secondary">Billing ({{ quote.custid }})</legend>
+		<address>
+			{{ quote.billto_name }} <br>
+			{{ quote.billto_address1 }} <br>
+			{% if quote.billto_address2 %}
+				{{ quote.billto_address2 }} <br>
+			{% endif %}
+			{{ quote.billto_city ~ ', ' ~ quote.billto_state ~ ' ' ~ quote.billto_zip}}
+		</address>
+	</div>
+	<div class="col-4 pull-left">
+		<legend class="font-weight-bold text-secondary">Shipping ({{ quote.shiptoid }})</legend>
+		<address>
+			{{ quote.shipto_name }} <br>
+			{{ quote.shipto_address1 }} <br>
+			{% if (quote.shipto_address2) %}
+				{{ quote.shipto_address2 }} <br>
+			{% endif %}
+			{{ quote.shipto_city ~ ', ' ~ quote.shipto_state ~ ' ' ~ quote.shipto_zip}}
+		</address>
+	</div>
+	<div class="col-4 pull-left">
+		<legend class="font-weight-bold text-secondary">Quoted To</legend>
+		<div class="row">
+			<div class="col-5 pull-left">Contact:</div>
+			<div class="col-7 pull-left text-right">{{ quote.contact }}</div>
+		</div>
+		<div class="row">
+			<div class="col-7 pull-left">Terms Code:</div>
+			<div class="col-5 pull-left text-right">{{ quote.termscode }}</div>
+		</div>
+		<div class="row">
+			<div class="col-7 pull-left">Shipvia:</div>
+			<div class="col-5 pull-left text-right">{{ quote.shipvia }}</div>
+		</div>
+		<div class="row">
+			<div class="col-5 pull-left">Email:</div>
+			<div class="col-7 pull-left">
+				{{ quote.email ? quote.email : '&nbsp;' }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-5 pull-left">Sales Rep:</div>
+			<div class="col-7 pull-left text-right">{{ quote.salesperson_1 }}</div>
+		</div>
+	</div>
+</div>
