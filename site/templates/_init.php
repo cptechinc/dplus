@@ -52,7 +52,9 @@ if ($page->id != $config->errorpage_dplusdb) {
 
 	$templates_nosignin = array('login', 'redir');
 
-	if (!in_array($page->template, $templates_nosignin) && LogpermQuery::create()->is_loggedin(session_id()) == false) {
+	if ($input->get->pdf) {
+
+	} elseif (!in_array($page->template, $templates_nosignin) && LogpermQuery::create()->is_loggedin(session_id()) == false) {
 		$session->redirect($pages->get('template=login')->url, $http301 = false);
 	}
 
@@ -101,8 +103,13 @@ if ($input->get->print) {
 	$page->print = true;
 }
 
+if ($input->get->pdf) {
+	$page->pdf = true;
+}
+
 $appconfig = $pages->get('/config/app/');
 $siteconfig = $pages->get('/config/');
+$config->customer = $pages->get('/config/customer/');
 
 $session->sessionid = session_id();
 
@@ -112,9 +119,10 @@ $config->twig = new Twig_Environment($loader, [
 	'auto_reload' => true,
 	'debug' => true
 ]);
+
 $config->twig->addExtension(new Twig\Extension\DebugExtension());
 include($config->paths->templates."/twig/util/functions.php");
 
-if ($page->fullURL->query) {
+if ($page->fullURL->query->__toString() != '') {
 	$page->title_previous = $page->title;
 }
