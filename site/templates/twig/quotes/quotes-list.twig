@@ -22,7 +22,7 @@
 					<div class="col text-right">{{ convertdate(quote.date_review) }}</div>
 					<div class="col text-right">{{ convertdate(quote.date_expires) }}</div>
 					<div class="col text-right">$ {{ quote.total_total|currency }}</div>
-					<div class="col">{{ quote.status}}</div>
+					<div class="col">{{ quote.status()|capitalize }}</div>
 				</div>
 			</a>
 		{% endfor %}

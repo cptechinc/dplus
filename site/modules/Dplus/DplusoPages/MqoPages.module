@@ -16,6 +16,10 @@
 				'name'   => 'quotes',
 				'fields' => array()
 			),
+			'quotes-customer' => array(
+				'name'   => 'quotes-customer',
+				'fields' => array()
+			),
 			'quote-view' => array(
 				'name'   => 'quote-view',
 				'fields' => array()
@@ -63,6 +67,15 @@
 				'parent'         => '/mqo/',
 				'dplus_function' => '',
 				'pw_template'    => 'quotes'
+			),
+			'quotes-customer' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'customer',
+				'title'          => 'Customer Quotes',
+				'summary'        => 'View / Search through Customer Quotes',
+				'parent'         => '/mqo/quotes/',
+				'dplus_function' => '',
+				'pw_template'    => 'quotes-customer'
 			),
 			'quote-view' => array(
 				'template'       => 'dplus-function',
