@@ -31,6 +31,10 @@
 				'name'   => 'sales-order-view',
 				'fields' => array()
 			),
+			'sales-order-print' => array(
+				'name'   => 'sales-order-print',
+				'fields' => array()
+			),
 			'sales-order-edit' => array(
 				'name'   => 'sales-order-edit',
 				'fields' => array()
@@ -80,6 +84,15 @@
 				'parent'         => '/mso/',
 				'dplus_function' => 'mso',
 				'pw_template'    => 'sales-order-view'
+			),
+			'sales-order-print' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'print',
+				'title'          => 'Print Sales Order',
+				'summary'        => 'Print Sales Order',
+				'parent'         => '/mso/',
+				'dplus_function' => 'mso',
+				'pw_template'    => 'sales-order-print'
 			),
 			'sales-order-edit' => array(
 				'template'       => 'dplus-function',

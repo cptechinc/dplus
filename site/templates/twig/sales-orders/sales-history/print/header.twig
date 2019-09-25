@@ -1,0 +1,74 @@
+<div class="row">
+	<div class="col-6 pull-left">
+		<div class="row">
+			<div class="col pull-left">
+				<div class="mb-2">
+					<img src="{{ dpluscustomer.logo_large.height(40).url }}" alt="{{ dpluscustomer.company_name }}">
+				</div>
+			</div>
+			<div class="col pull-left">
+				<b>{{ dpluscustomer.company_name }}</b>
+				{{ dpluscustomer.address|raw }}
+			</div>
+		</div>
+	</div>
+	<div class="col-6 pull-left text-right">
+		<h1>Invoice # {{ order.ordernumber }}</h1>
+		<img src="data:image/png;base64, {{ barcoder.generate_barcode(order.ordernumber)|base64_encode }}" alt="Barcode for Invoice # {{ order.ordernumber }}">
+
+		<div class="row">
+			<div class="col-7 pull-left">Order Date:</div>
+			<div class="col-5 pull-left text-right">{{ order.date_ordered|convertdate }}</div>
+		</div>
+	</div>
+</div>
+<div class="clearfix"></div>
+<div class="row mt-4">
+	<div class="col-4 pull-left">
+		<legend class="font-weight-bold text-secondary">Billing ({{ order.custid }})</legend>
+		<address>
+			{{ customer.name }} <br>
+			{{ customer.address1 }} <br>
+			{% if customer.address2 %}
+				{{ customer.address2 }} <br>
+			{% endif %}
+			{{ customer.city ~ ', ' ~ customer.state ~ ' ' ~ customer.zip}}
+		</address>
+	</div>
+	<div class="col-4 pull-left">
+		<legend class="font-weight-bold text-secondary">Shipping ({{ order.shiptoid }})</legend>
+		<address>
+			{{ order.shipto_name }} <br>
+			{{ order.shipto_address1 }} <br>
+			{% if (order.shipto_address2) %}
+				{{ order.shipto_address2 }} <br>
+			{% endif %}
+			{{ order.shipto_city ~ ', ' ~ order.shipto_state ~ ' ' ~ order.shipto_zip}}
+		</address>
+	</div>
+	<div class="col-4 pull-left">
+		<legend class="font-weight-bold text-secondary">Contact</legend>
+		<div class="row">
+			<div class="col-5 pull-left">Contact:</div>
+			<div class="col-7 pull-left text-right">{{ order.contact }}</div>
+		</div>
+		<div class="row">
+			<div class="col-7 pull-left">Terms Code:</div>
+			<div class="col-5 pull-left text-right">{{ order.termscode }}</div>
+		</div>
+		<div class="row">
+			<div class="col-7 pull-left">Shipvia:</div>
+			<div class="col-5 pull-left text-right">{{ order.shipvia }}</div>
+		</div>
+		<div class="row">
+			<div class="col-5 pull-left">Email:</div>
+			<div class="col-7 pull-left">
+				{{ order.email ? order.email : '&nbsp;' }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-5 pull-left">Sales Rep:</div>
+			<div class="col-7 pull-left text-right">{{ order.salesperson_1 }}</div>
+		</div>
+	</div>
+</div>
