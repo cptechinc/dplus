@@ -36,12 +36,29 @@ class PdfMaker extends WireData implements Module {
 	 */
 	protected $wkhtmltopdf;
 
+	/**
+	 * Has Error
+	 *
+	 * @var bool
+	 */
 	protected $error = false;
 
+	/**
+	 * Error Message
+	 *
+	 * @var string
+	 */
 	protected $message;
 
+	/**
+	 * File Name
+	 * @var string
+	 */
+	protected $filename;
 
-
+	/**
+	 * Array of Options to send to Wkhtmlpdf
+	 */
 	const DEFAULT_OPTIONS = array(
 		'binary' => '/usr/local/bin/wkhtmltopdf --viewport-size 1024x768',
 		// Explicitly tell wkhtmltopdf that we're using an X environment
@@ -57,6 +74,12 @@ class PdfMaker extends WireData implements Module {
 		),
 	);
 
+	/**
+	 * Initializes options and wkhtmlpdf properties
+	 * NOTE: Adds Page::get_pdfURL and Page::is_pdf hooks
+	 *
+	 * @return void
+	 */
 	public function init() {
 		$this->options = self::DEFAULT_OPTIONS;
 		$this->wkhtmlpdf = new Wkhtmlpdf($this->options);
@@ -99,6 +122,11 @@ class PdfMaker extends WireData implements Module {
 		$this->url = $url;
 	}
 
+	/**
+	 * Returns Wkhtmlpdf
+	 *
+	 * @return Wkhtmlpdf
+	 */
 	public function get_wkhtmltopdf() {
 		return $this->wkhtmltopdf;
 	}
@@ -117,6 +145,14 @@ class PdfMaker extends WireData implements Module {
 	 */
 	public function get_message() {
 		return $this->message;
+	}
+
+	/**
+	 * Returns File Name
+	 * @return string
+	 */
+	public function get_filename() {
+		return $this->filename;
 	}
 
 	/**
