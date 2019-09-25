@@ -13,6 +13,9 @@ class BarcodeMaker extends WireData implements Module {
 	 */
 	protected $image_type = 'PNG';
 
+	/**
+	 * Image Types
+	 */
 	const IMAGE_TYPES = array(
 		'SVG', 'PNG', 'JPG', 'HTML'
 	);
@@ -23,28 +26,54 @@ class BarcodeMaker extends WireData implements Module {
 	 */
 	protected $barcode_type = 'TYPE_CODE_128';
 
+	/**
+	 * Undocumented variable
+	 *
+	 * @var BarcodeGeneratorPNG|BarcodeGeneratorSVG|BarcodeGeneratorHTML|BarcodeGeneratorJPG
+	 */
 	protected $generator;
 
+	/**
+	 * Constructs Barcode Generator
+	 *
+	 * @return void
+	 */
 	public function init() {
 		$type = self::BASE_GENERATOR_CLASSNAME."$this->image_type";
 		$this->generator = new $type();
 	}
 
+	/**
+	 * Sets Image Type
+	 * 
+	 * @uses   self::init()
+	 * @param  string $type e.g. PNG
+	 * @return void
+	 */
 	public function set_imagetype($type) {
 		$this->image_type = $type;
 		$this->init();
 	}
 
+	/**
+	 * Sets Barcode Type
+	 * 
+	 * @param string $type
+	 */
 	public function set_barcodetype($type) {
 		$this->barcode_type = $type;
 	}
 
+	/**
+	 * Return image representation of barcode (requires GD or Imagick library).
+	 *
+	 * @param  string $code e.g. TYPE_CODE_128
+	 * @return string       image data or false in case of erro
+	 */
 	public function generate_barcode($code) {
 		$class = get_class($this->generator);
 		return $this->generator->getBarcode($code, constant("$class::$this->barcode_type"));
 	}
-
-
 
 	/* =============================================================
 		ProcessWire Module Functions
