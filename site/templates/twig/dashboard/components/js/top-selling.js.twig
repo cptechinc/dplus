@@ -1,0 +1,32 @@
+$(function() {
+	$('#top-customers').on('shown.bs.collapse', function () {
+		var pie = Morris.Donut({
+			element: 'top-selling-graph',
+			data: {{ piedata|json_encode()|raw }},
+			colors: {{ module_dashboard.get_randomallowedcolors(25)|json_encode()|raw }}
+		});
+
+		fill_pie_colors(pie, function() {
+			//$('#cust-sales').DataTable();
+		});
+	});
+
+	$('#top-customers').on('hidden.bs.collapse', function () {
+		$(this).find('#top-selling-graph').empty();
+	});
+
+	function fill_pie_colors(pie, callback) {
+		pie.options.data.forEach(function(label, i) {
+			var index = i;
+			if (pie.options.colors.length < 11) {
+				if (index >= 10) {
+					var multiply = parseInt(i / 10);
+					var subtract = 10 * multiply;
+					index = i - subtract;
+				}
+			}
+			$('#top-selling-list').find('#'+label['custid']+'-cust').css('backgroundColor', pie.options.colors[index]);
+		});
+		callback();
+	}
+});
