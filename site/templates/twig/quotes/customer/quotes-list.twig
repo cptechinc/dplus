@@ -2,7 +2,6 @@
 	<div class="list-group-item list-group-item-action bg-light">
 		<div class="row">
 			<div class="col">Quote Number</div>
-			<div class="col">Customer</div>
 			<div class="col">Ship-to</div>
 			<div class="col">Quote Date</div>
 			<div class="col">Review Date</div>
@@ -16,7 +15,6 @@
 			<a href="{{ quotepage ~ '?qnbr=' ~ quote.quotenumber }}" class="list-group-item list-group-item-action">
 				<div class="row">
 					<div class="col">{{ quote.quotenumber }}</div>
-					<div class="col">{{ quote.custid }}</div>
 					<div class="col">{{ quote.shiptoid }}</div>
 					<div class="col text-right">{{ convertdate(quote.date_quoted) }}</div>
 					<div class="col text-right">{{ convertdate(quote.date_review) }}</div>

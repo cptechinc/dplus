@@ -1,0 +1,15 @@
+<div class="card">
+	<div class="card-header d-flex justify-content-between bg-primary">
+		<a class="text-white" data-toggle="collapse" href="#quotes-list" role="button" aria-expanded="false" aria-controls="quotes-list">
+			Quotes <i class="fa fa-caret-down" aria-hidden="true"></i>
+		</a>
+		<span class="badge badge-pill badge-light">{{ count }}</span>
+	</div>
+	<div class="collapse" id="quotes-list">
+		{% include 'quotes/quotes-list.twig' with {'quotes': quotes} %}
+
+		<div class="card-footer bg-secondary">
+			<a href="{{ url_quote_list }}" class="text-white">View More Quotes <i class="fa fa-sign-in" aria-hidden="true"></i></a>
+		</div>
+	</div>
+</div>

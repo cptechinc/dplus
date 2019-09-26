@@ -4,6 +4,7 @@
 
 	class HtmlWriter extends WireData implements Module {
 		protected $name = 'HTMLWriter';
+		protected $className = 'HTMLWriter';
 
 		use AttributeParser;
 

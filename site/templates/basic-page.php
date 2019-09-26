@@ -12,7 +12,11 @@
 			<ol class="breadcrumb">
 				<?php foreach ($parents as $parent) : ?>
 					<li class="breadcrumb-item">
-						<i class="fa fa-list" aria-hidden="true"></i>
+						<?php if (preg_match('/\-(menu)/', $parent->template)) : ?>
+							<i class="fa fa-list" aria-hidden="true"></i>
+						<?php elseif ($parent->template == 'home') : ?>
+							<i class="fa fa-home" aria-hidden="true"></i>
+						<?php endif; ?>
 						<a href="<?= $parent->url; ?>"><?= $parent->title; ?></a>
 					</li>
 				<?php endforeach; ?>

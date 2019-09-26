@@ -1,0 +1,209 @@
+<?php namespace ProcessWire;
+
+use mikehaertl\wkhtmlto\Pdf as Wkhtmlpdf;
+use Purl\Url;
+
+class PdfMaker extends WireData implements Module {
+
+	/**
+	 * URL of Page to convert to PDF
+	 * @var string
+	 */
+	protected $url;
+
+	/**
+	 * File Identifier ex. Sales Order Number, Quote Number, RGA #
+	 * @var string
+	 */
+	protected $fileID = false;
+
+	/**
+	 * File Type is a descriptor to add to the end of the file
+	 * e.g. quote
+	 * @var string
+	 */
+	protected $filetype;
+
+	/**
+	 * Options for WKHTMLTOPDF
+	 * @var array
+	 */
+	protected $options;
+
+	/**
+	 * PDF Lib Class
+	 * @var Wkhtmlpdf
+	 */
+	protected $wkhtmltopdf;
+
+	/**
+	 * Has Error
+	 *
+	 * @var bool
+	 */
+	protected $error = false;
+
+	/**
+	 * Error Message
+	 *
+	 * @var string
+	 */
+	protected $message;
+
+	/**
+	 * File Name
+	 * @var string
+	 */
+	protected $filename;
+
+	/**
+	 * Array of Options to send to Wkhtmlpdf
+	 */
+	const DEFAULT_OPTIONS = array(
+		'binary' => '/usr/local/bin/wkhtmltopdf --viewport-size 1024x768',
+		// Explicitly tell wkhtmltopdf that we're using an X environment
+		'use-xserver',
+		//'footer-right "Page [page] of [toPage]"',
+		// Enable built in Xvfb support in the command
+		'commandOptions' => array(
+			'enableXvfb' => true,
+			// Optional: Set your path to xvfb-run. Default is just 'xvfb-run'.
+			// 'xvfbRunBinary' => '/usr/bin/xvfb-run',
+			// Optional: Set options for xfvb-run. The following defaults are used.
+			// 'xvfbRunOptions' =>  '--server-args="-screen 0, 1024x768x24"',
+		),
+	);
+
+	/**
+	 * Initializes options and wkhtmlpdf properties
+	 * NOTE: Adds Page::get_pdfURL and Page::is_pdf hooks
+	 *
+	 * @return void
+	 */
+	public function init() {
+		$this->options = self::DEFAULT_OPTIONS;
+		$this->wkhtmlpdf = new Wkhtmlpdf($this->options);
+
+		$this->addHook('Page::get_pdfURL', function($event) {
+			$page = $event->object;
+			$url = new Url($page->fullURL->getUrl());
+			$url->query->set('print', 'true');
+			$url->query->set('pdf', 'true');
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::is_pdf', function($event) {
+			$page = $event->object;
+			$event->return = $page->pdf == true;
+		});
+	}
+
+	/**
+	 * Sets File ID
+	 * @param string $fileID File ID
+	 */
+	public function set_fileID($fileID) {
+		$this->fileID = $fileID;
+	}
+
+	/**
+	 * Sets File Type
+	 * @param string $type e.g. quote
+	 */
+	public function set_filetype($type) {
+		$this->filetype = $type;
+	}
+
+	/**
+	 * Sets the URL
+	 * @param string $url Sets URL of Page to convert to PDF
+	 */
+	public function set_url($url) {
+		$this->url = $url;
+	}
+
+	/**
+	 * Returns Wkhtmlpdf
+	 *
+	 * @return Wkhtmlpdf
+	 */
+	public function get_wkhtmltopdf() {
+		return $this->wkhtmltopdf;
+	}
+
+	/**
+	 * Returns if PDF Maker has an error
+	 * @return bool
+	 */
+	public function has_error() {
+		return $this->error;
+	}
+
+	/**
+	 * Returns Error Message
+	 * @return string
+	 */
+	public function get_message() {
+		return $this->message;
+	}
+
+	/**
+	 * Returns File Name
+	 * @return string
+	 */
+	public function get_filename() {
+		return $this->filename;
+	}
+
+	/**
+	 * Adds Page Number to the PDF
+	 */
+	public function add_pagenumber() {
+		$this->options[] = 'footer-right "Page [page] of [toPage]"';
+		$this->wkhtmlpdf->setOptions($this->options);
+	}
+
+	/**
+	 * Generates PDF
+	 * @return string
+	 */
+	public function generate_pdf() {
+		$filename = str_replace("$this->filetype-", "$this->filetype-", $this->fileID);
+		$file = $this->wire('config')->directory_webdocs."$filename.pdf";
+		$this->filename = "$filename.pdf";
+
+		if (file_exists($file)) {
+			unlink($file);
+		}
+
+		$this->wkhtmlpdf->addPage($this->url);
+
+		if (!$this->wkhtmlpdf->saveAs($file)) {
+			$this->error = true;
+			$this->message = $this->wkhtmlpdf->getError();
+			return false;
+		}
+
+		return $file;
+	}
+
+
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dpluso PDF Maker',
+				'version' => 101,
+				'summary' => 'Handles PDF Maker',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+}

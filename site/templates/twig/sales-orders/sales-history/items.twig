@@ -1,0 +1,25 @@
+<table class="table table-striped table-borderless">
+	<thead class="bg-dark text-white font-weight-bold">
+		<tr>
+			<th>Item ID</th>
+			<th class="text-right">Qty Ordered</th>
+			<th class="text-right">Qty Shipped</th>
+			<th class="text-right">Price</th>
+			<th class="text-right">Total Price</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for detail in order_items %}
+			<tr>
+				<td>
+					{{ detail.itemid }}</br>
+					<small>{{ detail.desc1 }}</small>
+				</td>
+				<td class="text-right">{{ detail.qty_ordered|number_format() }}</td>
+				<td class="text-right">{{ detail.qty_shipped|number_format() }}</td>
+				<td class="text-right">$ {{ detail.price|currency }}</td>
+				<td class="text-right">$ {{ detail.total_price|currency }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
