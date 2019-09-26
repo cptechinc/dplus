@@ -1,0 +1,321 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use CustomerQuery, Customer;
+use CustomerShiptoQuery, CustomerShipto;
+
+use CustpermQuery, Custperm;
+
+class Dashboard extends WireData implements Module {
+	/**
+	 * Customer ID
+	 * @var User
+	 */
+	protected $user;
+
+
+	public function init() {
+		$this->user = $this->wire('user');
+
+		/**
+		 * Returns CI Customer Page URL
+		 */
+		$this->addHook('Page::customerURL', function($event) {
+			$p = $event->object;
+			$custID = $event->arguments(0);
+			$url = new Url($this->wire('pages')->get('pw_template=ci-customer')->url);
+			$url->query->set('custID', $custID);
+			$event->return = $url->getUrl();
+		});
+	}
+
+	/**
+	 * Returns the Top Selling Customers
+	 * @param  int    $limit Number of Customers to limit
+	 * @return Custperm[]|ObjectCollection
+	 */
+	public function get_top_x_customers($limit = 25) {
+		$loginID = $this->user->is_salesrep() ? $this->user->roleid : 'admin';
+		$q = CustpermQuery::create();
+		$q->filterByLoginid($loginID);
+		$q->filterByShiptoid('');
+		$q->orderByAmountsold(Criteria::DESC);
+		$q->limit($limit);
+		return $q->find();
+	}
+
+	public function get_allowedcolors() {
+		return $this->allowedcolors;
+	}
+
+	public function get_randomallowedcolors($limit = 25) {
+		return array_rand(array_flip($this->allowedcolors), $limit);
+	}
+
+
+
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Dasbhoard Module',
+			'version' => 101,
+			'summary' => 'Handles Dashboard',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+
+	protected $allowedcolors = array(
+		"#00405d",
+		"#062f3c",
+		"#2b82ad",
+		"#cc7a00",
+		"#ff0000",
+		"#fbb034",
+		"#ffdd00",
+		"#c1d82f",
+		"#d20962",
+		"#f47721",
+		"#7ac143",
+		"#00a78e",
+		"#0079c1",
+		"#49176d",
+		"#00a0af",
+		"#49a942",
+		"#020202",
+		"#2ad2c9",
+		"#d0e100",
+		"#00f0f0",
+		"#00f000",
+		"#f0e000",
+		"#00a0f0",
+		"#9000f0",
+		"#ed1b2e",
+		"#6d6e70",
+		"#d7d7d8",
+		"#b4a996",
+		"#ecb731",
+		"#8ec06c",
+		"#537b35",
+		"#c4dff6",
+		"#56a0d3",
+		"#0091cd",
+		"#004b79",
+		"#7f181b",
+		"#3be8b0",
+		"#1aafd0",
+		"#6a67ce",
+		"#ffb900",
+		"#ff7200",
+		"#fcb314",
+		"#067ab4",
+		"#3aa5dc",
+		"#16214d",
+		"#44c7f4",
+		"#eb5424",
+		"#d0d2d3",
+		"#005387",
+		"#8cb811",
+		"#fdb813",
+		"#88aca1",
+		"#000000",
+		"#788cb6",
+		"#a1a1a4",
+		"#8f8f8c",
+		"#ffcc2f",
+		"#ef5734",
+		"#00acee",
+		"#2baf2b",
+		"#075aaa",
+		"#eb2226",
+		"#01295c",
+		"#efe9e5",
+		"#d52685",
+		"#553a99",
+		"#6cbc35",
+		"#fd9f3e",
+		"#168eea",
+		"#ee4f4f",
+		"#fff9ea",
+		"#76b852",
+		"#323b43",
+		"#59626a",
+		"#ced7df",
+		"#eff3f6",
+		"#ec1c24",
+		"#fdbd10",
+		"#0066b2",
+		"#ed7902",
+		"#00387b",
+		"#bb1e10",
+		"#f67828",
+		"#237f52",
+		"#00aeef",
+		"#ed008c",
+		"#fff000",
+		"#000000",
+		"#84754e",
+		"#a6192e",
+		"#decba5",
+		"#000000",
+		"#689550",
+		"#85c446",
+		"#c0de9e",
+		"#b9dca4",
+		"#830051",
+		"#cf0072",
+		"#d9e506",
+		"#ff7900",
+		"#1d1d1b",
+		"#ae9a64",
+		"#e42313",
+		"#8b8c8d",
+		"#263f6a",
+		"#182b45",
+		"#6b0f24",
+		"#193725",
+		"#334858",
+		"#cd595a",
+		"#94938f",
+		"#a3a7a6",
+		"#0085c3",
+		"#7ab800",
+		"#f2af00",
+		"#dc5034",
+		"#ce1126",
+		"#b7295a",
+		"#6e2585",
+		"#71c6c1",
+		"#5482ab",
+		"#009bbb",
+		"#444444",
+		"#eeeeee",
+		"#007dc3",
+		"#003f69",
+		"#954010",
+		"#445c6e",
+		"#fdb94e",
+		"#f9a852",
+		"#f69653",
+		"#f38654",
+		"#f07654",
+		"#ed6856",
+		"#ef5956",
+		"#ee4c58",
+		"#f05d21",
+		"#2c5770",
+		"#0f723a",
+		"#c7c8ca",
+		"#7289da",
+		"#ffffff",
+		"#99aab5",
+		"#2c2f33",
+		"#e80033",
+		"#fdbb30",
+		"#ed8b00",
+		"#f15d22",
+		"#444444",
+		"#ea4c89",
+		"#8aba56",
+		"#ff8833",
+		"#007ee5",
+		"#7b8994",
+		"#47525d",
+		"#3d464d",
+		"#e53238",
+		"#0064d2",
+		"#f5af02",
+		"#86b817",
+		"#314855",
+		"#5cc3e8",
+		"#ffdb00",
+		"#79ceb8",
+		"#ff2052",
+		"#e6e6e6",
+		"#404040",
+		"#01b5dd",
+		"#0d9ddb",
+		"#48b8e7",
+		"#efecea",
+		"#2c2b2b",
+		"#33cc99",
+		"#4ba6f5",
+		"#fdca30",
+		"#f79400",
+		"#2dbe60",
+		"#7b868a",
+		"#2facb2",
+		"#166a8f",
+		"#3b4446",
+		"#525e61",
+		"#7b868a",
+		"#aeb6b8",
+		"#6caddf",
+		"#b06010",
+		"#004990",
+		"#b50938",
+		"#660099",
+		"#ff6600",
+		"#00cc00",
+		"#0099cc",
+		"#e66000",
+		"#ff9500",
+		"#ffcb00",
+		"#00539f",
+		"#ed174f",
+		"#fbb040",
+		"#efc402",
+		"#d4891c",
+		"#4dc9f6",
+		"#f67019",
+		"#f53794",
+		"#537bc4",
+		"#212425",
+		"#718087",
+		"#5ba4e5",
+		"#9fbb58",
+		"#000000",
+		"#436f8e",
+		"#887d59",
+		"#8f9696",
+		"#4183c4",
+		"#999999",
+		"#666666",
+		"#333333",
+		"#fca326",
+		"#fc6d26",
+		"#e24329",
+		"#554488",
+		"#46bc99",
+		"#f68d42",
+		"#ed1965",
+		"#f2f0ed",
+		"#4285f4",
+		"#34a853",
+		"#fbbc05",
+		"#ea4335",
+		"#0863b5",
+		"#fec600",
+		"#f39100",
+		"#e3001f",
+		"#e50064",
+		"#954a97",
+		"#009ee3",
+		"#13a538",
+		"#a26eea",
+		"#f7afff",
+		"#5d70ea",
+		"#46b7fd"
+	);
+}
