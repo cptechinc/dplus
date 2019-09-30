@@ -1,0 +1,98 @@
+<?php namespace ProcessWire;
+
+
+use Propel\Runtime\ActiveQuery\Criteria;
+use Propel\Runtime\Collection\ObjectCollection;
+
+class FilterBookings extends WireData implements Module {
+
+	protected $name = 'FilterBookings';
+
+	/**
+	 * User
+	 * @var string
+	 */
+	protected $user;
+
+	protected $bookings_customer;
+
+	protected $bookings_user;
+
+	public function init() {
+		$this->user = $this->wire('user');
+		$this->bookings_user = $this->wire('modules')->get('FilterBookingsUser');
+		$this->bookings_customer = $this->wire('modules')->get('FilterBookingsCustomer');
+	}
+
+	/**
+	 * Sets the User Property
+	 * @param User $user Used for Filtering Bookings
+	 */
+	public function set_user(User $user) {
+		$this->user = $user;
+		$this->bookings_user->set_user($user);
+		$this->bookings_customer->set_user($user);
+	}
+
+	/**
+	 * Creates an array for the bookings to be easily converted into JSON
+	 *
+	 * @param  ObjectCollection $bookings Bookings Data
+	 * @return array
+	 */
+	public function convert_bookings_for_js(ObjectCollection $bookings) {
+		$data = array();
+
+		foreach ($bookings as $booking) {
+			$bookdata = array(
+				'bookdate' => date('Y-m-d', strtotime($booking->bookdate)),
+				'amount' => floatval($booking->amount)
+			);
+
+			if ($this->bookings_user->interval == 'day') {
+				$bookdata['dayurl'] = $this->wire('modules')->get('BookingsPages')->get_bookings_dayURL($booking->bookdate);
+			}
+			$data[] = $bookdata;
+		}
+		return $data;
+	}
+
+	/**
+	 * Properties are protected from modification without function, but
+	 * We want to allow the property values to be accessed
+	 *
+	 * @param  string $property  The $property trying to be accessed
+	 * @return mixed		     property value or Error
+	 */
+	 public function __get($property) {
+		$method = "get_".ucfirst($property);
+
+		if (method_exists($this, $method)) {
+			return $this->$method();
+		} elseif (property_exists($this, $property)) {
+			return $this->$property;
+		}  else {
+			$this->error("This property ($property) does not exist");
+			return false;
+		}
+	}
+
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dpluso Bookings Filter',
+				'version' => 101,
+				'summary' => 'Handles Bookings by Rep Filter',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+}

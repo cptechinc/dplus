@@ -1,0 +1,178 @@
+<?php namespace ProcessWire;
+
+use BookingrQuery, Bookingr;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+class FilterBookingsUser extends WireData implements Module {
+	protected $name = 'FilterBookingsUser';
+
+	const INTERVALS_ALLOWED = array('day' => 'daily', 'week' => 'weekly', 'month' => 'monthly');
+
+	/**
+	 * What interval to Use
+	 * day | week | month
+	 * // NOTE if blank, the default is day unless there's more than 90 days then we switch to month
+	 * @var string
+	 */
+	protected $interval;
+
+	/**
+	 * Bookings Rep Query
+	 * @var BookingrQuery
+	 */
+	protected $query;
+
+	/**
+	 * User
+	 * @var string
+	 */
+	protected $user;
+
+	public function init() {
+		$this->query = BookingrQuery::create();
+		$this->user = $this->wire('user');
+	}
+
+	/**
+	 * Sets the User Property
+	 * @param User $user Used for Filtering Bookings
+	 */
+	public function set_user(User $user) {
+		$this->user = $user;
+	}
+
+	public function get_bookings(WireInput $input) {
+		$this->determine_interval($input);
+		$this->select_interval();
+		$this->filter_user();
+		$this->filter_bookdate($input) ;
+		return $this->query;
+	}
+
+
+	public function filter_user() {
+		if ($this->user->is_salesrep()) {
+			$this->query->filterBySalesrep($this->user->roleid);
+		}
+	}
+
+	public function select_interval() {
+		switch ($this->interval) {
+			case 'month':
+				$this->query->withColumn("CAST(CONCAT(YEAR(bookdate), LPAD(MONTH(bookdate), 2, '0'), '01') AS UNSIGNED)", 'bookdate');
+				$this->query->withColumn('SUM(amount)', 'amount');
+				$this->query->withColumn('MONTH(bookdate)', 'month');
+				$this->query->withColumn('YEAR(bookdate)', 'year');
+				$this->query->groupBy(['year', 'month']);
+				break;
+			case 'day':
+				$this->query->withColumn('SUM(amount)', 'amount');
+				$this->query->groupBy('bookdate');
+				break;
+		}
+	}
+	/**
+	 * TODO:: Handle if one BookDate
+	 * @param  WireInput $input [description]
+	 * @return [type]           [description]
+	 */
+	public function filter_bookdate(WireInput $input) {
+		$sanitizer = $this->wire('sanitizer');
+		$bookdates = $input->get->array('bookdate');
+		$date_from = $sanitizer->int(date('Ymd', strtotime($bookdates[0])));
+		$date_to   = $sanitizer->int(date('Ymd', strtotime($bookdates[1])));
+		$this->query->filterByBookdate($date_from, Criteria::GREATER_EQUAL);
+		$this->query->filterByBookdate($date_to, Criteria::LESS_EQUAL);
+	}
+
+
+	/**
+	 * Determines the interval needed if interval not defined
+	 * if there are more than 90 days between from and through dates then
+	 * the interval is set to month
+	 * @return void
+	 */
+	protected function determine_interval(WireInput $input) {
+		if (!$input->get->bookdate) {
+			$input->get->bookdate = array(date('m/d/Y', strtotime('-1 year')), date('m/d/Y'));
+		}
+
+		$bookdates = $input->get->array('bookdate');
+		$days = $this->subtract_days($bookdates[0], $bookdates[1]);
+
+		if ($days >= 90 && empty($this->interval)) {
+			$this->set_interval('month');
+		} elseif (empty($this->interval)) {
+			$this->set_interval('day');
+		}
+	}
+
+	/**
+	 * Defines the interval
+	 * @param string $interval Must be one of the predefined interval types
+	 * @uses
+	 */
+	public function set_interval($interval) {
+		if (in_array($interval, array_keys(self::INTERVALS_ALLOWED))) {
+			$this->interval = $interval;
+		} else {
+			$this->error("Interval $interval is not valid");
+		}
+	}
+
+	/**
+	 * Subtract two dates from each other
+	 * after converting them into timestring
+	 * then returing the number of days
+	 * @param  string $fromdate ex. 01/25/2018
+	 * @param  string $todate   ex. 01/30/2018
+	 * @return int           	Number of days ex. 5
+	 */
+	public function subtract_days($fromdate, $todate) {
+		$from = strtotime($fromdate);
+		$through = strtotime($todate);
+		return floor(($through - $from) / (60*60*24));
+	}
+
+	/**
+	 * Properties are protected from modification without function, but
+	 * We want to allow the property values to be accessed
+	 *
+	 * @param  string $property  The $property trying to be accessed
+	 * @return mixed		     property value or Error
+	 */
+	 public function __get($property) {
+		$method = "get_".ucfirst($property);
+
+		if (method_exists($this, $method)) {
+			return $this->$method();
+		} elseif (property_exists($this, $property)) {
+			return $this->$property;
+		}  else {
+			$this->error("This property ($property) does not exist");
+			return false;
+		}
+	}
+
+
+
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dpluso Bookings by User Filter',
+				'version' => 101,
+				'summary' => 'Handles Bookings by User Filter',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+}

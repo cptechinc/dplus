@@ -1,0 +1,92 @@
+<?php namespace ProcessWire;
+	require_once(__DIR__ . '/DplusoPages.module');
+
+	use Purl\Url;
+
+	class BookingsPages extends DplusoPages implements Module {
+		protected $fields = array();
+
+		protected $templates = array(
+			'dplus-menu' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('dplus_function', 'summary'),
+				'paginated' => false
+			),
+			'dplus-function' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('dplus_function', 'pw_template', 'summary'),
+				'paginated' => true
+			),
+			'bookings' => array(
+				'name'   => 'bookings',
+				'fields' => array(),
+			),
+			'bookings-day' => array(
+				'name'   => 'bookings-day',
+				'fields' => array(),
+			),
+		);
+
+		protected $pages = array(
+			'bookings-menu' => array(
+				'template'       => 'dplus-menu',
+				'name'           => 'sobook',
+				'title'          => 'Bookings',
+				'summary'        => 'Bookings Menu',
+				'parent'         => '/',
+				'dplus_function' => ''
+			),
+			'bookings' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'bookings',
+				'title'          => 'Bookings',
+				'summary'        => 'View Bookings',
+				'parent'         => '/sobook/',
+				'dplus_function' => '',
+				'pw_template'    => 'bookings'
+			),
+			'bookings-day' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'day',
+				'title'          => 'Bookings Day',
+				'summary'        => 'View Bookings for Day',
+				'parent'         => '/sobook/bookings/',
+				'dplus_function' => '',
+				'pw_template'    => 'bookings-day'
+			)
+		);
+
+
+		public function init_bookingspage() {
+			$this->addHook('Page::get_bookingsURL', function($event) {
+				$event->return = $this->get_bookingsURL();
+			});
+
+			$this->addHook('Page::get_bookings_dayURL', function($event) {
+				$date = $event->arguments(0);
+				$event->return = $this->get_bookings_dayURL($date);
+			});
+		}
+
+		public function get_bookingsURL() {
+			 return $this->wire('pages')->get('pw_template=bookings')->url;
+		}
+
+		public function get_bookings_dayURL($date) {
+			$url = new Url($this->wire('pages')->get('pw_template=bookings-day')->url);
+			$url->query->set('date', $date);
+			return $url->getUrl();
+		}
+
+
+
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dplus Online Bookings Pages',
+				'version' => 101,
+				'summary' => 'Installs and creates Dplus Online Bookings Pages',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+	}

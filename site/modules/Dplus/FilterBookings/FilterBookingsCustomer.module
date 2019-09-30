@@ -1,0 +1,59 @@
+<?php namespace ProcessWire;
+
+use BookingcQuery, Bookingc;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+require_once(__DIR__ . '/FilterBookingsUser.module');
+
+class FilterBookingsCustomer extends FilterBookingsUser implements Module {
+
+	public function init() {
+		$this->query = BookingcQuery::create();
+		$this->user = $this->wire('user');
+	}
+
+	public function get_bookings_by_customer(WireInput $input) {
+		$this->determine_interval($input);
+		$this->select_bookings_by_customer();
+		$this->filter_user();
+		$this->filter_bookdate($input);
+		return $this->query;
+	}
+
+	public function select_bookings_by_customer() {
+		switch ($this->interval) {
+			case 'month':
+				$this->query->withColumn('SUM(amount)', 'amount');
+				$this->query->groupBy('custid');
+				break;
+			case 'day':
+				$this->query->withColumn('SUM(amount)', 'amount');
+				$this->query->groupBy('bookdate');
+				break;
+		}
+	}
+
+
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dpluso Bookings By Customer Filter',
+				'version' => 101,
+				'summary' => 'Handles Bookings by Customer Filter',
+				'singular' => true,
+				'autoload' => true,
+				'requires' => array(
+					'FilterBookings',
+				),
+			);
+		}
+}
