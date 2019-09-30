@@ -76,6 +76,7 @@ $config->scripts->append(hash_templatefile('scripts/popper.js'));
 $config->scripts->append(hash_templatefile('scripts/bootstrap.min.js'));
 $config->scripts->append(hash_templatefile('scripts/lib/fuelux.js'));
 $config->scripts->append(hash_templatefile('scripts/lib/sweetalert.js'));
+$config->scripts->append(hash_templatefile('scripts/lib/moment.js'));
 $config->scripts->append(hash_templatefile('scripts/lib/bootstrap-notify.js'));
 $config->scripts->append(hash_templatefile('scripts/uri.js'));
 $config->scripts->append(hash_templatefile('scripts/lib/sweetalert.js'));
