@@ -1,0 +1,16 @@
+<table class="table table-sm">
+	<thead>
+		<tr>
+			<th>Date</th>
+			<th>Amount</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for booking in customers %}
+		<tr>
+			<td>{{ booking.customer_name() }}</td>
+			<td>$ {{ booking.amount|currency }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
