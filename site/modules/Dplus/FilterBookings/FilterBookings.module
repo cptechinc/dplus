@@ -1,5 +1,6 @@
 <?php namespace ProcessWire;
 
+use Purl\Url;
 
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\Collection\ObjectCollection;
@@ -42,6 +43,21 @@ class FilterBookings extends WireData implements Module {
 		$this->bookings_user = $this->wire('modules')->get('FilterBookingsUser');
 		$this->bookings_customer = $this->wire('modules')->get('FilterBookingsCustomer');
 		$this->bookings_day = $this->wire('modules')->get('FilterBookingsDay');
+
+		$this->addHook('Page::clear_filterURL', function($event) {
+			$page = $event->object;
+			$url = new Url($page->fullURL->getUrl());
+			$url->query = '';
+
+			if ($page->has('custID')) {
+				$url->query->set('custID', $page->custID);
+
+				if ($page->has('shiptoID')) {
+					$url->query->set('shiptoID', $page->shiptoID);
+				}
+			}
+			$event->return = $url->getUrl();
+		});
 	}
 
 	/**
@@ -71,7 +87,16 @@ class FilterBookings extends WireData implements Module {
 			);
 
 			if ($this->bookings_user->interval == 'day') {
-				$bookdata['dayurl'] = $this->wire('modules')->get('BookingsPages')->get_bookings_dayURL($booking->bookdate);
+				$page = $this->wire('page');
+				$url = new Url($this->wire('modules')->get('BookingsPages')->get_bookings_dayURL($booking->bookdate));
+
+				if ($page->pw_template == 'bookings-customer') {
+					$url->query->set('custID', $page->custID);
+					if ($page->shiptoID) {
+						$url->query->set('shiptoID', $page->shiptoID);
+					}
+				}
+				$bookdata['dayurl'] = $url->getUrl();
 			}
 			$data[] = $bookdata;
 		}
