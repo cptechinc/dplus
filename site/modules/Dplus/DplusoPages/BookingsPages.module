@@ -2,6 +2,7 @@
 	require_once(__DIR__ . '/DplusoPages.module');
 
 	use Purl\Url;
+	use DateTime;
 
 	class BookingsPages extends DplusoPages implements Module {
 		protected $fields = array();
@@ -74,24 +75,58 @@
 			$this->addHook('Page::get_bookingsURL', function($event) {
 				$page = $event->object;
 
-				if ($page->pw_template == 'bookings-customer') {
-					$event->return = $this->get_bookings_customerURL($page->custID, $page->shiptoID) ;
-				} else {
-					$event->return = $this->get_bookingsURL();
-				}
-
+				// if ($page->pw_template == 'bookings-customer') {
+				// 	$event->return = $this->get_bookings_customerURL($page->custID, $page->shiptoID) ;
+				// } else {
+				// 	$event->return = $this->get_bookingsURL();
+				// }
+				$event->return = $this->get_bookingsURL();
 			});
 
 			$this->addHook('Page::get_bookings_dayURL', function($event) {
+				$page = $event->object;
 				$date = $event->arguments(0);
-				$event->return = $this->get_bookings_dayURL($date);
+				$url = new Url($this->get_bookings_dayURL($date));
+
+				if ($page->pw_template == 'bookings-customer') {
+					$url->query->set('custID', $page->custID);
+
+					if ($page->has('shiptoID')) {
+						$url->query->set('shiptoID', $page->shiptoID);
+					}
+				}
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_bookings_monthURL', function($event) {
+				$page = $event->object;
+				$date = $event->arguments(0);
+
+				if ($page->pw_template == 'bookings-customer') {
+					$url = $this->get_bookings_monthURL($date, $page->custID, $page->shiptoID);
+				} else {
+					$url = $this->get_bookings_monthURL($date);
+				}
+				$event->return = $url;
 			});
 
 			$this->addHook('Page::get_bookings_day_orderURL', function($event) {
+				$page = $event->object;
 				$date = $event->arguments(0);
 				$ordn = $event->arguments(1);
-				$event->return = $this->get_bookings_day_orderURL($date, $ordn);
+
+				$url = new Url($this->get_bookings_day_orderURL($date, $ordn));
+
+				if ($page->has('custID')) {
+					$url->query->set('custID', $page->custID);
+
+					if ($page->has('shiptoID')) {
+						$url->query->set('shiptoID', $page->shiptoID);
+					}
+				}
+				$event->return = $url->getUrl();
 			});
+
 
 			$this->addHook('Page::get_bookings_customerURL', function($event) {
 				$custID   = $event->arguments(0);
@@ -118,6 +153,25 @@
 		public function get_bookings_dayURL($date) {
 			$url = new Url($this->wire('pages')->get('pw_template=bookings-day')->url);
 			$url->query->set('date', $date);
+			return $url->getUrl();
+		}
+
+		public function get_bookings_monthURL($date, $custID = '', $shiptoID = '') {
+			$date_from    = (new DateTime($date))->modify('first day of')->format('m/d/Y');
+			$date_through = (new DateTime($date))->modify('last day of')->format('m/d/Y');
+
+			if ($custID) {
+				$url = new Url($this->wire('pages')->get('pw_template=bookings-customer')->url);
+				$url->query->set('custID', $custID);
+
+				if ($shiptoID) {
+					$url->query->set('shiptoID', $shiptoID);
+				}
+			} else {
+				$url = new Url($this->wire('pages')->get('pw_template=bookings')->url);
+			}
+
+			$url->query->set('bookdate', "$date_from|$date_through");
 			return $url->getUrl();
 		}
 
