@@ -127,3 +127,5 @@ include($config->paths->templates."/twig/util/functions.php");
 if ($page->fullURL->query->__toString() != '') {
 	$page->title_previous = $page->title;
 }
+
+$page->show_breadcrumbs = true;
