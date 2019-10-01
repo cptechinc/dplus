@@ -12,8 +12,7 @@
 	$bookings = $filter_bookings->bookings_user->get_bookings($input)->find();
 	$bookings_customer = $filter_bookings->bookings_customer->get_bookings_by_customer($input)->find();
 
-
-	$page->body .= $config->twig->render("dashboard/components/bookings.twig", ['bookings' => $bookings, 'customers' => $bookings_customer, 'interval' => $filter_bookings->bookings_user->interval]);
+	$page->body .= $config->twig->render("dashboard/components/bookings.twig", ['page' => $page, 'bookings' => $bookings, 'customers' => $bookings_customer, 'interval' => $filter_bookings->bookings_user->interval]);
 	$page->js .= $config->twig->render("bookings/user/js/bookings.js.twig", ['page' => $page, 'bookingsdata' => $filter_bookings->convert_bookings_for_js($bookings), 'interval' => $filter_bookings->bookings_user->interval]);
 
 	$config->styles->append(hash_templatefile('styles/lib/morris.css'));
