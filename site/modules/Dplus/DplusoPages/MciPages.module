@@ -136,7 +136,8 @@
 				'summary'        => 'View Customer Ship-tos',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-shipto'
+				'pw_template'    => 'ci-shipto',
+				'jsoncode'		 => 'ci-shipto'
 			),
 			'ci-contacts' => array(
 				'template'       => 'ci-function',
@@ -149,112 +150,124 @@
 				'jsoncode'       => 'ci-contacts'
 			),
 			'ci-pricing' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'ci-function',
 				'name'           => 'pricing',
 				'title'          => 'Pricing',
 				'summary'        => 'View Customer Pricing',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-pricing'
+				'pw_template'    => 'ci-pricing',
+				'jsoncode'       => 'ci-pricing'
 			),
 			'ci-sales-orders' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'ci-function',
 				'name'           => 'sales-orders',
 				'title'          => 'Sales Orders',
 				'summary'        => 'View Customer Sales Orders',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-sales-orders'
+				'pw_template'    => 'ci-sales-orders',
+				'jsoncode'		 => 'ci-sales-orders'
 			),
 			'ci-sales-history' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'ci-function',
 				'name'           => 'sales-history',
 				'title'          => 'Sales History',
 				'summary'        => 'View Customer Sales History',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-sales-history'
+				'pw_template'    => 'ci-sales-history',
+				'jsoncode'		 => 'ci-sales-history'
 			),
 			'ci-customer-po' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'ci-function',
 				'name'           => 'customer-po',
 				'title'          => 'Purchase Orders',
 				'summary'        => 'View Customer PO',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-customer-po'
+				'pw_template'    => 'ci-customer-po',
+				'jsoncode'       => 'ci-purchaseorders'
 			),
 			'ci-quotes' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'ci-function',
 				'name'           => 'quotes',
 				'title'          => 'Quotes',
 				'summary'        => 'View Customer Quotes',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-quotes'
+				'pw_template'    => 'ci-quotes',
+				'jsoncode'		 => 'ci-quotes'
 			),
 			'ci-open-invoices' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'ci-function',
 				'name'           => 'open-invoices',
 				'title'          => 'Open Invoices',
 				'summary'        => 'View Customer Open Invoices',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-open-invoices'
+				'pw_template'    => 'ci-open-invoices',
+				'jsoncode'		 => 'ci-openinvoices'
 			),
 			'ci-payments' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'ci-function',
 				'name'           => 'payments',
 				'title'          => 'Payments',
 				'summary'        => 'View Customer Payments',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-payments'
+				'pw_template'    => 'ci-payments',
+				'jsoncode'		 => 'ci-payments'
 			),
 			'ci-credit' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'ci-function',
 				'name'           => 'credit',
 				'title'          => 'Credit',
 				'summary'        => 'View Customer Credit',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-credit'
+				'pw_template'    => 'ci-credit',
+				'jsoncode'       => 'ci-credit'
 			),
 			'ci-standing-orders' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'ci-function',
 				'name'           => 'standing-orders',
 				'title'          => 'Standing Orders',
 				'summary'        => 'View Customer Standing Orders',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-standing-orders'
+				'pw_template'    => 'ci-standing-orders',
+				'jsoncode'       => 'ci-standingorders'
 			),
 			'ci-stock' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'ci-function',
 				'name'           => 'stock',
 				'title'          => 'Stock',
 				'summary'        => 'View Customer Stock',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-stock'
+				'pw_template'    => 'ci-stock',
+				'jsoncode'       => 'ci-stock'
 			),
 			'ci-notes' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'ci-function',
 				'name'           => 'notes',
 				'title'          => 'Notes',
 				'summary'        => 'View Customer Notes',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-notes'
+				'pw_template'    => 'ci-notes',
+				'jsoncode'       => 'ci-notes'
 			),
 			'ci-documents' => array(
-				'template'       => 'dplus-function',
+				'template'       => 'ci-function',
 				'name'           => 'documents',
 				'title'          => 'Documents',
 				'summary'        => 'View Customer Documents',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-documents'
+				'pw_template'    => 'ci-documents',
+				'jsoncode'       => 'ci-documents'
 			),
 		);
 
@@ -472,16 +485,6 @@
 			$this->addHook('Page::cust_saleshistoryURL', function($event) {
 				$custID = $event->arguments(0);
 				$url = new Url($this->wire('pages')->get('pw_template=sales-history-orders-customer')->url);
-				$url->query->set('custID', $custID);
-				$event->return = $url->getUrl();
-			});
-
-			/**
-			 * Adds hook for getting Quotes List URL
-			 */
-			$this->addHook('Page::cust_quotesURL', function($event) {
-				$custID = $event->arguments(0);
-				$url = new Url($this->wire('pages')->get('pw_template=quotes-customer')->url);
 				$url->query->set('custID', $custID);
 				$event->return = $url->getUrl();
 			});
