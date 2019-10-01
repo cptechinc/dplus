@@ -46,6 +46,22 @@
 			/**
 			 * Returns CI Customer Page URL
 			 */
+			$this->addHook('Page::has_custID', function($event) {
+				$page = $event->object;
+				$event->return = $page->has('custID');
+			});
+
+			/**
+			 * Returns CI Customer Page URL
+			 */
+			$this->addHook('Page::has_shiptoID', function($event) {
+				$page = $event->object;
+				$event->return = $page->has('shiptoID');
+			});
+
+			/**
+			 * Returns CI Customer Page URL
+			 */
 			$this->addHook('Page::customerURL', function($event) {
 				$event->return = $this->get_customerURL();
 			});
