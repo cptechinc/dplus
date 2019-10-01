@@ -3,9 +3,15 @@
 		<i class="fa fa-arrow-left" aria-hidden="true"></i> Go back
 	</button>
 	&nbsp; &nbsp;
-	<a href="{{ page.get_bookings_dayURL(page.date) }}" class="btn btn-secondary">
-		Back to {{ page.date }} Bookings
-	</a>
+	{% if page.has('custID') %}
+		<a href="{{ page.get_bookings_dayURL(page.date) }}" class="btn btn-secondary">
+			<i class="fa fa-book" aria-hidden="true"></i> Back to {{ page.date }} {{ page.has('shiptoID') ? page.shipto.name : page.customer.name}} Bookings
+		</a>
+	{% else %}
+		<a href="{{ page.get_bookings_dayURL(page.date) }}" class="btn btn-secondary">
+			<i class="fa fa-book" aria-hidden="true"></i> Back to {{ page.date }} Bookings
+		</a>
+	{% endif %}
 </div>
 <table class="table table-striped">
 	<thead>
