@@ -6,10 +6,12 @@
 		</tr>
 	</thead>
 	<tbody>
-		{% for booking in customers %}
+		{% for customer in customers %}
 		<tr>
-			<td>{{ booking.customer_name() }}</td>
-			<td>$ {{ booking.amount|currency }}</td>
+			<td>
+				<a href="{{ page.get_bookings_customerURL(customer.custid) }}" class="link">{{ customer.customer_name() }}</a>
+			</td>
+			<td>$ {{ customer.amount|currency }}</td>
 		</tr>
 		{% endfor %}
 	</tbody>

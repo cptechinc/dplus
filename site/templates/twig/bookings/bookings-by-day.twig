@@ -8,7 +8,9 @@
 	<tbody>
 		{% for booking in bookings %}
 			<tr>
-				<td>{{ booking.bookdate|convertdate('m/d/Y') }}</td>
+				<td>
+					<a href="{{ page.get_bookings_dayURL(booking.bookdate|convertdate('m/d/Y')) }}" class="link">{{ booking.bookdate|convertdate('m/d/Y') }}</a>
+				</td>
 				<td>$ {{ booking.amount|currency }}</td>
 			</tr>
 		{% endfor %}

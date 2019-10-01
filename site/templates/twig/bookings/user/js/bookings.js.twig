@@ -39,10 +39,11 @@ $(function() {
 					var firstofmonth = moment(row.bookdate).startOf('month').format('MM/DD/YYYY');
 					var lastofmonth = moment(row.bookdate).endOf('month').format('MM/DD/YYYY');
 					href = URI(url.toString()).removeQuery('bookdate[]').addQuery('bookdate', firstofmonth+"|"+lastofmonth).normalizeQuery().toString();
-					link = "<a href='"+href+"'' class="link"> Click to view " + date + '</a>';
+					link = '<a href="'+href+'" class="link"> Click to view ' + date + '</a>';
 				{% else %}
-					link = "<a href='"+row.dayurl+"'' class='link'> Click to view " + date + '</a>';
+					link = '<a href="'+row.dayurl+'" class="link"> Click to view ' + date + '</a>';
 				{% endif %}
+
 				var hover = '<b>'+date+'</b><br>';
 				hover += '<b>Amt Sold: </b> $' + row.amount.formatMoney() +'<br>';
 				hover += link;

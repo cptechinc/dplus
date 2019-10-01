@@ -1,0 +1,41 @@
+<div class="form-group">
+	<button type="button" class="btn btn-primary" onclick="window.history.back()">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Go back
+	</button>
+	&nbsp; &nbsp;
+	<a href="{{ page.parent.url }}" class="btn btn-secondary">
+		Back to Bookings
+	</a>
+</div>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Date</th> <th>Order #</th> <th>Customer</th> <th>ShiptoID</th> <th>View</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for order in orders %}
+			<tr>
+				<td>{{ order.bookdate|convertdate }}</td>
+				<td>{{ order.salesordernbr }}</td>
+
+				{% if order.customer_exists() %}
+					<td>
+						<a href="{{ page.get_customerURL(order.custid) }}" class="link">
+							{{ order.customer_name() }} ({{ order.custid }})
+						</a>
+					</td>
+					<td>{{ order.shiptoid }}</td>
+				{% else %}
+					<td>{{ order.custid }}</td>
+					<td>{{ order.shiptoid }}</td>
+				{% endif %}
+				<td>
+					<a href="{{ page.get_bookings_day_orderURL(order.bookdate, order.salesordernbr) }}" class="btn btn-primary">
+						<i class="fa fa-book" aria-hidden="true"></i> View
+					</a>
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

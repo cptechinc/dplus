@@ -1,0 +1,45 @@
+<div class="form-group">
+	<button type="button" class="btn btn-primary" onclick="window.history.back()">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Go back
+	</button>
+	&nbsp; &nbsp;
+	<a href="{{ page.get_bookings_dayURL(page.date) }}" class="btn btn-secondary">
+		Back to {{ page.date }} Bookings
+	</a>
+</div>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Item ID</th> <th>Before Qty</th> <th>After Qty</th> <th>Before Price</th> <th>After Price</th> <th>Net Amount</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for line in lines %}
+			<tr>
+				<td>{{ line.itemid }}</td>
+				<td class="text-right">{{ line.b4qty }}</td>
+
+				{% if line.qty_increased() %}
+					{% set class_qty = 'text-white bg-success' %}
+				{% elseif line.qty_decreased() %}
+					{% set class_qty = 'text-white bg-danger' %}
+				{% else %}
+					{% set class_qty = '' %}
+				{% endif %}
+				<td class="text-right {{ class_qty }}">{{ line.afterqty }}</td>
+				<td class="text-right">{{ line.b4price|currency }}</td>
+
+				{% if line.price_increased() %}
+					{% set class_price = 'text-white bg-success' %}
+				{% elseif line.price_decreased() %}
+					{% set class_price = 'text-white bg-danger' %}
+				{% else %}
+					{% set class_price = '' %}
+				{% endif %}
+				<td class="text-right {{ class_price}}">{{ line.afterqty|currency }}</td>
+
+				<td class="text-right text-white {{ line.netamount_increased() ? 'bg-success' : 'bg-danger'}}">{{ line.netamount }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
