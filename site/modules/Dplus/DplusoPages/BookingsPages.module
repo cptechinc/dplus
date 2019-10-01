@@ -146,16 +146,33 @@
 			});
 		}
 
+		/**
+		 * Returns URL to Bookings Page
+		 * @return string
+		 */
 		public function get_bookingsURL() {
 			 return $this->wire('pages')->get('pw_template=bookings')->url;
 		}
 
+		/**
+		 * Returns URL to bookings Day Page
+		 * @param  string $date Booking Date
+		 * @return string
+		 */
 		public function get_bookings_dayURL($date) {
 			$url = new Url($this->wire('pages')->get('pw_template=bookings-day')->url);
 			$url->query->set('date', $date);
 			return $url->getUrl();
 		}
 
+		/**
+		 * Returns URL to Bookings Month
+		 * NOTE: If custID and/or shiptoID provided will go to the Customer page
+		 * @param  string $date     Booking Date
+		 * @param  string $custID   Customer ID
+		 * @param  string $shiptoID Customer Shipto ID
+		 * @return string
+		 */
 		public function get_bookings_monthURL($date, $custID = '', $shiptoID = '') {
 			$date_from    = (new DateTime($date))->modify('first day of')->format('m/d/Y');
 			$date_through = (new DateTime($date))->modify('last day of')->format('m/d/Y');
@@ -175,6 +192,12 @@
 			return $url->getUrl();
 		}
 
+		/**
+		 * Returns URL to Booking Day Sales Order
+		 * @param  string $date Booking Date
+		 * @param  string $ordn Sales Order #
+		 * @return string
+		 */
 		public function get_bookings_day_orderURL($date, $ordn) {
 			$url = new Url($this->wire('pages')->get('pw_template=bookings-day')->url);
 			$url->query->set('date', $date);
@@ -182,6 +205,12 @@
 			return $url->getUrl();
 		}
 
+		/**
+		 * Returns URL to Customer bookings Page
+		 * @param  string $custID   Customer ID
+		 * @param  string $shiptoID Customer Shipto ID
+		 * @return string
+		 */
 		public function get_bookings_customerURL($custID, $shiptoID = '') {
 			$url = new Url($this->wire('pages')->get('pw_template=bookings-customer')->url);
 			$url->query->set('custID', $custID);
