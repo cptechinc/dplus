@@ -2,10 +2,26 @@
 	<button type="button" class="btn btn-primary" onclick="window.history.back()">
 		<i class="fa fa-arrow-left" aria-hidden="true"></i> Go back
 	</button>
-	&nbsp; &nbsp;
-	<a href="{{ page.parent.url }}" class="btn btn-secondary">
-		Back to Bookings
-	</a>
+	&nbsp;
+	{% if page.has('custID') %}
+		{% if page.has('shiptoID') %}
+			<a href="{{ page.get_bookings_customerURL(page.custID, page.shiptoID) }}" class="btn btn-secondary">
+				<i class="fa fa-book" aria-hidden="true"></i> Back to {{ page.shiptoID }} Bookings
+			</a>
+		{% else %}
+			<a href="{{ page.get_bookings_customerURL(page.custID) }}" class="btn btn-secondary">
+				<i class="fa fa-book" aria-hidden="true"></i> Back to {{ page.custID }} Bookings
+			</a>
+		{% endif %}
+		&nbsp;
+		<a href="{{ page.get_bookings_dayURL(page.date) }}" class="btn btn-secondary">
+			<i class="fa fa-calendar-o" aria-hidden="true"></i> Back to {{ page.date }} Bookings
+		</a>
+	{% else %}
+		<a href="{{ page.parent.url }}" class="btn btn-secondary">
+			<i class="fa fa-book" aria-hidden="true"></i> Back to Bookings
+		</a>
+	{% endif %}
 </div>
 <table class="table table-striped">
 	<thead>
