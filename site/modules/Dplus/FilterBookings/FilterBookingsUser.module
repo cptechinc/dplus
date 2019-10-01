@@ -111,7 +111,7 @@ class FilterBookingsUser extends WireData implements Module {
 			$this->query->filterByBookdate($date_from, Criteria::GREATER_EQUAL);
 			$this->query->filterByBookdate($date_to, Criteria::LESS_EQUAL);
 		} else {
-			$bookdate = date('Ymd', strtotime($input->get->text('bookdate'));
+			$bookdate = date('Ymd', strtotime($input->get->text('bookdate')));
 			$this->query->filterByBookdate($bookdate);
 		}
 	}
