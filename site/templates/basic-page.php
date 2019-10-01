@@ -8,26 +8,24 @@
 		</div>
 	</div>
 	<div class="container">
-		<nav aria-label="breadcrumb rounded-0">
-			<ol class="breadcrumb">
-				<?php foreach ($parents as $parent) : ?>
-					<li class="breadcrumb-item">
-						<?php if (preg_match('/\-(menu)/', $parent->template)) : ?>
+		<?php if ($page->show_breadcrumbs) : ?>
+			<nav aria-label="breadcrumb rounded-0">
+				<ol class="breadcrumb">
+					<?php foreach ($parents as $parent) : ?>
+						<li class="breadcrumb-item">
 							<i class="fa fa-list" aria-hidden="true"></i>
-						<?php elseif ($parent->template == 'home') : ?>
-							<i class="fa fa-home" aria-hidden="true"></i>
-						<?php endif; ?>
-						<a href="<?= $parent->url; ?>"><?= $parent->title; ?></a>
-					</li>
-				<?php endforeach; ?>
-				<?php if ($page->has('title_previous')) : ?>
-					<li class="breadcrumb-item">
-						<a href="<?= $page->url; ?>"><?= $page->title_previous; ?></a>
-					</li>
-				<?php endif; ?>
-				<li class="breadcrumb-item active" aria-current="page"><?= $page->title; ?></li>
-			</ol>
-		</nav>
+							<a href="<?= $parent->url; ?>"><?= $parent->title; ?></a>
+						</li>
+					<?php endforeach; ?>
+					<?php if ($page->has('title_previous')) : ?>
+						<li class="breadcrumb-item">
+							<a href="<?= $page->url; ?>"><?= $page->title_previous; ?></a>
+						</li>
+					<?php endif; ?>
+					<li class="breadcrumb-item active" aria-current="page"><?= $page->title; ?></li>
+				</ol>
+			</nav>
+		<?php endif; ?>
 	</div>
 	<div class='container page pt-3'>
 		<?= $page->body; ?>
