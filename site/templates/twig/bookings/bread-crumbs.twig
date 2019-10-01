@@ -1,0 +1,27 @@
+<nav aria-label="breadcrumb rounded-0">
+	<ol class="breadcrumb">
+		{% for parent in page.parents() %}
+			<li class="breadcrumb-item">
+				<i class="fa fa-list" aria-hidden="true"></i>
+				<a href="{{ parent.url }}">{{ parent.title }}</a>
+			</li>
+		{% endfor %}
+		{% if (page.has('custID')) %}
+			{% if page.pw_template == 'bookings-customer' %}
+				<li class="breadcrumb-item">
+					<a href="{{ page.url }}">Customer</a>
+				</li>
+			{% else %}
+				<li class="breadcrumb-item">
+					<a href="{{ page.get_bookings_customerURL(page.custID) }}">{{ page.customer.name }}</a>
+				</li>
+			{% endif %}
+			{% if (page.has('shiptoID')) %}
+				<li class="breadcrumb-item">
+					<a href="{{ page.get_bookings_customerURL(page.custID, page.shiptoID) }}">{{ page.shipto.name }}</a>
+				</li>
+			{% endif %}
+		{% endif %}
+		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+	</ol>
+</nav>

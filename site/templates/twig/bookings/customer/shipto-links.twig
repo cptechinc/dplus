@@ -1,0 +1,12 @@
+{% extends "bookings/customer/links.twig" %}
+
+{% block extra_links %}
+	&nbsp;
+	<a href="{{ page.get_bookings_customerURL(customer.custid) }}" class="btn btn-primary">
+		<i class="fa fa-book" aria-hidden="true"></i> View {{ customer.name }} Bookings
+	</a>
+	&nbsp;
+	<a href="{{ page.get_customershiptoURL(shipto.custid, shipto.shiptoid) }}" class="btn btn-light">
+		<i class="fa fa-user" aria-hidden="true"></i> View {{ shipto.name }}
+	</a>
+{% endblock %}

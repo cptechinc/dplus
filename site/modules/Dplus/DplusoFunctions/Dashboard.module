@@ -2,6 +2,7 @@
 
 use Purl\Url;
 use Propel\Runtime\ActiveQuery\Criteria;
+use Propel\Runtime\Collection\ObjectCollection;
 
 use CustomerQuery, Customer;
 use CustomerShiptoQuery, CustomerShipto;
@@ -22,8 +23,7 @@ class Dashboard extends WireData implements Module {
 		/**
 		 * Returns CI Customer Page URL
 		 */
-		$this->addHook('Page::customerURL', function($event) {
-			$p = $event->object;
+		$this->addHook('Page::ci_customerURL', function($event) {
 			$custID = $event->arguments(0);
 			$url = new Url($this->wire('pages')->get('pw_template=ci-customer')->url);
 			$url->query->set('custID', $custID);
@@ -55,8 +55,6 @@ class Dashboard extends WireData implements Module {
 	}
 
 
-
-
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
@@ -67,7 +65,7 @@ class Dashboard extends WireData implements Module {
 	 */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dpluso Dasbhoard Module',
+			'title' => 'Dpluso Dashboard Module',
 			'version' => 101,
 			'summary' => 'Handles Dashboard',
 			'singular' => true,

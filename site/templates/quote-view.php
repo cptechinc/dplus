@@ -7,11 +7,13 @@
 		$qnbr = $input->get->text('qnbr');
 
 		if (QuoteQuery::create()->filterByQuoteid($qnbr)->count()) {
+			if ($page->print) {
+				$session->redirect($pages->get('pw_template=quote-print')->url."?qnbr=$qnbr");
+			}
 			$page->title = "Quote #$qnbr";
-			$document_management = $modules->get('DocumentManagement');
 			$quote = QuoteQuery::create()->filterByQuoteid($qnbr)->findOne();
+			$document_management = $modules->get('DocumentManagement');
 			$page->listpage = $pages->get('pw_template=quotes');
-
 			$query_useractions = $module_useractions->get_actionsquery($input);
 			$actions = $query_useractions->filterByQuotelink($qnbr)->find();
 
@@ -35,4 +37,5 @@
 	} else {
 		$page->body = $config->twig->render('quotes/quote/lookup-form.twig', ['page' => $page]);
 	}
+
 	include __DIR__ . "/basic-page.php";

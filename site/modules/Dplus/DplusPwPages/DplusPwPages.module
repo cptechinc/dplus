@@ -193,6 +193,11 @@
 				$page = $event->object;
 				$event->return = str_replace('.php', '', $page->pw_template) . '.php';
 			});
+
+			$this->addHook('Page::is_filtering', function($event) {
+				$page = $event->object;
+				$event->return = $page->fullURL->query->has('filter');
+			});
 		}
 
 		/**

@@ -39,7 +39,12 @@
 	$config->twig->addFilter($filter);
 
 	$filter = new Twig_Filter('phone_us', function ($phone) {
-		 $numbers_only = preg_replace("/[^\d]/", "", $phone);
-		 return preg_replace("/^1?(\d{3})(\d{3})(\d{4})$/", "$1-$2-$3", $numbers_only);
+		$numbers_only = preg_replace("/[^\d]/", "", $phone);
+		return preg_replace("/^1?(\d{3})(\d{3})(\d{4})$/", "$1-$2-$3", $numbers_only);
+	});
+	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('base64_encode', function ($str) {
+		return base64_encode($str);
 	});
 	$config->twig->addFilter($filter);

@@ -1,21 +1,18 @@
 <?php
-	use Propel\Runtime\ActiveQuery\Criteria;
-
 	$filter_salesorders = $modules->get('FilterSalesOrders');
 	$filter_salesorders->init_query($user);
 
 	$filter_salesorders->filter_query($input);
 	$query = $filter_salesorders->get_query();
 
-	$module_customer_salesorders = $modules->get('SalesOrdersCustomer');
-	$module_customer_salesorders->set_custID($input->get->text('custID'));
-
-	$customer = $module_customer_salesorders->get_customer();
+	$load_customer = $modules->get('CiLoadCustomerShipto');
+	$load_customer->set_custID($input->get->text('custID'));
+	$customer = $load_customer->get_customer();
 	$page->title = "$customer->name Sales Orders";
 
 	if ($input->get->shiptoID) {
-		$module_customer_salesorders->set_shiptoID($input->get->text('shiptoID'));
-		$shipto = $module_customer_salesorders->get_shipto();
+		$load_customer->set_shiptoID($input->get->text('shiptoID'));
+		$shipto = $load_customer->get_shipto();
 		$page->title = "$shipto->name Sales Orders";
 	}
 
