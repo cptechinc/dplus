@@ -1,8 +1,12 @@
 <?php namespace ProcessWire;
 
+
+
 use BookingdQuery, Bookingd;
 
 use Propel\Runtime\ActiveQuery\Criteria;
+
+require_once(__DIR__ . '/FilterBookingsUser.module');
 
 class FilterBookingsDay extends FilterBookingsUser implements Module {
 	protected $name = 'FilterBookingsDay';
@@ -38,6 +42,7 @@ class FilterBookingsDay extends FilterBookingsUser implements Module {
 		$this->select_distinct();
 		$this->filter_user();
 		$this->filter_bookdate($input);
+		$this->filter_customer($input);
 		return $this->query;
 	}
 
