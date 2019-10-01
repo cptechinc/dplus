@@ -29,6 +29,11 @@ class FilterBookingsUser extends WireData implements Module {
 	 */
 	protected $user;
 
+	/**
+	 * Module Initilization
+	 * Sets $this->query && $this->user
+	 * @return void
+	 */
 	public function init() {
 		$this->query = BookingrQuery::create();
 		$this->user = $this->wire('user');
@@ -42,21 +47,35 @@ class FilterBookingsUser extends WireData implements Module {
 		$this->user = $user;
 	}
 
+	/**
+	 * Returns Query with filters applied
+	 * @param  WireInput      $input Object with $_GET values and sanitizer functions
+	 * @return BookingrQuery         Query with Filters applied
+	 */
 	public function get_bookings(WireInput $input) {
 		$this->determine_interval($input);
 		$this->select_interval();
 		$this->filter_user();
-		$this->filter_bookdate($input) ;
+		$this->filter_bookdate($input);
+		$this->filter_customer($input);
+		$this->filter_shipto($input);
 		return $this->query;
 	}
 
-
+	/**
+	 * Adds a filter to the Query if the user is a Sales Rep
+	 * @return void
+	 */
 	public function filter_user() {
 		if ($this->user->is_salesrep()) {
 			$this->query->filterBySalesrep($this->user->roleid);
 		}
 	}
 
+	/**
+	 * Adds Columns, Grouping to the query depending on the Interval
+	 * @return void
+	 */
 	public function select_interval() {
 		switch ($this->interval) {
 			case 'month':
@@ -72,19 +91,65 @@ class FilterBookingsUser extends WireData implements Module {
 				break;
 		}
 	}
+
 	/**
-	 * TODO:: Handle if one BookDate
-	 * @param  WireInput $input [description]
-	 * @return [type]           [description]
+	 * Adds Filter to Query for bookdate
+	 * @param  WireInput      $input Object with $_GET values and sanitizer functions
+	 * @return BookingrQuery         Query with Filters applied
 	 */
 	public function filter_bookdate(WireInput $input) {
-		$sanitizer = $this->wire('sanitizer');
-		$bookdates = $input->get->array('bookdate');
-		$date_from = $sanitizer->int(date('Ymd', strtotime($bookdates[0])));
-		$date_to   = $sanitizer->int(date('Ymd', strtotime($bookdates[1])));
-		$this->query->filterByBookdate($date_from, Criteria::GREATER_EQUAL);
-		$this->query->filterByBookdate($date_to, Criteria::LESS_EQUAL);
+		if (!is_array($input->get->bookdate) && strpos($input->get->text('bookdate'), '|') !== false) {
+			$bookdates = explode('|', $input->get->text('bookdate'));
+			$input->get->bookdate = $bookdates;
+		}
+
+		if (is_array($input->get->bookdate)) {
+			$sanitizer = $this->wire('sanitizer');
+			$bookdates = $input->get->array('bookdate');
+			$date_from = $sanitizer->int(date('Ymd', strtotime($bookdates[0])));
+			$date_to   = $sanitizer->int(date('Ymd', strtotime($bookdates[1])));
+			$this->query->filterByBookdate($date_from, Criteria::GREATER_EQUAL);
+			$this->query->filterByBookdate($date_to, Criteria::LESS_EQUAL);
+		} else {
+			$bookdate = date('Ymd', strtotime($input->get->text('bookdate'));
+			$this->query->filterByBookdate($bookdate);
+		}
 	}
+
+	/**
+	 * Filters Query By Customer
+	 * @param  WireInput $input Object with $_GET
+	 * @return void
+	 */
+	public function filter_customer(WireInput $input) {
+		if ($input->get->custID) {
+			if (is_array($input->get->custID)) {
+				$custID = $input->get->array('custID');
+			} else {
+				$custID = $input->get->text('custID');
+			}
+			$this->query->filterByCustId($custID);
+		}
+	}
+
+	/**
+	 * Filters Query By Customer Shipto
+	 * @param  WireInput $input Object with $_GET
+	 * @return void
+	 */
+	public function filter_shipto(WireInput $input) {
+		if ($input->get->custID) {
+			if ($input->get->shiptoID) {
+				if (is_array($input->get->shiptoID)) {
+					$shiptoID = $input->get->array('shiptoID');
+				} else {
+					$shiptoID = $input->get->text('shiptoID');
+				}
+				$this->query->filterByShiptoId($shiptoID);
+			}
+		}
+	}
+
 
 
 	/**

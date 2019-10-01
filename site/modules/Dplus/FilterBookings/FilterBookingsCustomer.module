@@ -7,13 +7,30 @@ use Propel\Runtime\ActiveQuery\Criteria;
 require_once(__DIR__ . '/FilterBookingsUser.module');
 
 class FilterBookingsCustomer extends FilterBookingsUser implements Module {
+	/**
+	 * Query Class for the Bookings Customer table
+	 * @var BookingcQuery
+	 */
+	protected $query;
 
+	/**
+	 * Module Initilization
+	 * Sets $this->query && $this->user
+	 * @return void
+	 */
 	public function init() {
 		$this->query = BookingcQuery::create();
 		$this->user = $this->wire('user');
 	}
 
+	/**
+	 * Return query with filters applied
+	 * NOTE: Groups results by Custid
+	 * @param  WireInput $input Object contatining $_GET values
+	 * @return BookingcQuery    Query with filters applied
+	 */
 	public function get_bookings_by_customer(WireInput $input) {
+		$this->query = BookingcQuery::create();
 		$this->determine_interval($input);
 		$this->select_bookings_by_customer();
 		$this->filter_user();
@@ -21,6 +38,27 @@ class FilterBookingsCustomer extends FilterBookingsUser implements Module {
 		return $this->query;
 	}
 
+	/**
+	 * Return query with filters applied
+	 * NOTE: Groups results by Custid, Shiptoid
+	 * @param  WireInput $input Object contatining $_GET values
+	 * @return BookingcQuery    Query with filters applied
+	 */
+	public function get_bookings_by_shipto(WireInput $input) {
+		$this->query = BookingcQuery::create();
+		$this->determine_interval($input);
+		$this->select_bookings_by_shipto();
+		$this->filter_user();
+		$this->filter_bookdate($input);
+		$this->filter_customer($input);
+		$this->filter_shipto($input);
+		return $this->query;
+	}
+
+	/**
+	 * Adds Sum column, groups by custid
+	 * @return void
+	 */
 	public function select_bookings_by_customer() {
 		switch ($this->interval) {
 			case 'month':
@@ -29,12 +67,26 @@ class FilterBookingsCustomer extends FilterBookingsUser implements Module {
 				break;
 			case 'day':
 				$this->query->withColumn('SUM(amount)', 'amount');
-				$this->query->groupBy('bookdate');
+				$this->query->groupBy(['custid', 'bookdate']);
 				break;
 		}
 	}
-
-
+	/**
+	 * Adds Sum column, groups by custid, shiptoid
+	 * @return void
+	 */
+	public function select_bookings_by_shipto() {
+		switch ($this->interval) {
+			case 'month':
+				$this->query->withColumn('SUM(amount)', 'amount');
+				$this->query->groupBy(['custid', 'shiptoid']);
+				break;
+			case 'day':
+				$this->query->withColumn('SUM(amount)', 'amount');
+				$this->query->groupBy(['custid', 'shiptoid', 'bookdate']);
+				break;
+		}
+	}
 
 	/* =============================================================
 		ProcessWire Module Functions

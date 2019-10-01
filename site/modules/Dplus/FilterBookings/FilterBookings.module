@@ -14,14 +14,34 @@ class FilterBookings extends WireData implements Module {
 	 */
 	protected $user;
 
+	/**
+	 * Customer Bookings
+	 * @var FilterBookingsCustomer
+	 */
 	protected $bookings_customer;
 
+	/**
+	 * User Bookings
+	 * @var FilterBookingsUser
+	 */
 	protected $bookings_user;
 
+	/**
+	 * Day Bookings
+	 * @var FilterBookingsDay
+	 */
+	protected $bookings_day;
+
+	/**
+	 * Module Initilization
+	 * Sets the bookings_customer, bookings_user, bookings_day properties
+	 * @return void
+	 */
 	public function init() {
 		$this->user = $this->wire('user');
 		$this->bookings_user = $this->wire('modules')->get('FilterBookingsUser');
 		$this->bookings_customer = $this->wire('modules')->get('FilterBookingsCustomer');
+		$this->bookings_day = $this->wire('modules')->get('FilterBookingsDay');
 	}
 
 	/**
@@ -32,6 +52,7 @@ class FilterBookings extends WireData implements Module {
 		$this->user = $user;
 		$this->bookings_user->set_user($user);
 		$this->bookings_customer->set_user($user);
+		$this->bookings_day->set_user($user);
 	}
 
 	/**
@@ -88,9 +109,9 @@ class FilterBookings extends WireData implements Module {
 		 */
 		public static function getModuleInfo() {
 			return array(
-				'title' => 'Dpluso Bookings Filter',
+				'title' => 'Dpluso Bookings Module',
 				'version' => 101,
-				'summary' => 'Handles Bookings by Rep Filter',
+				'summary' => 'Handles Bookings Filtering',
 				'singular' => true,
 				'autoload' => true,
 			);
