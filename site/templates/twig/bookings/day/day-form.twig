@@ -1,0 +1,7 @@
+<form action="{{ page.url }}" method="get">
+	<div class="form-group">
+		<label for="bookingdate">Booking Date</label>
+		{% include 'util/date-picker.twig' with {'name': 'date', 'value': ''} %}
+	</div>
+	<button type="submit" class="btn btn-success">Submit</button>
+</form>

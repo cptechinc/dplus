@@ -1,0 +1,37 @@
+<div class="card mb-4">
+	<div class="card-header d-flex justify-content-between bg-primary">
+		<a class="text-white" data-toggle="collapse" href="#top-customers" role="button" aria-expanded="false" aria-controls="top-customers">
+			<i class="fa fa-pie-chart" aria-hidden="true"></i> Top {{ customers.count() }} customers <i class="fa fa-caret-down" aria-hidden="true"></i>
+		</a>
+	</div>
+	<div class="collapse" id="top-customers">
+		<div class="row">
+			<div class="col-sm-4">
+				<div id="top-selling-graph"></div>
+			</div>
+			<div class="col-sm-8">
+				<div id="top-selling-list">
+					<table class="table table-sm" >
+						<thead>
+							<tr> <th>Color</th> <th>Customer</th> <th>Amount Sold</th> <th>Times Sold</th> <th>Last Sale Date</th> </tr>
+						</thead>
+						<tbody>
+							{% for customer in customers %}
+								<tr>
+									<td id="{{ customer.custid }}-cust"></td>
+									<td>
+										<a href="{{ page.customerURL(customer.custid) }}" class="link">{{ customer.custid }}</a> <br>
+										{{ customer.get_name() }}
+									</td>
+									<td class="text-right">$ {{ customer.amountsold|currency }}</td>
+									<td class="text-right">{{ customer.timesold }}</td>
+									<td class="text-right">{{ customer.lastsaledate|convertdate }}</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

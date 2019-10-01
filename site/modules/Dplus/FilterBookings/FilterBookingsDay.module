@@ -1,0 +1,105 @@
+<?php namespace ProcessWire;
+
+
+
+use BookingdQuery, Bookingd;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+require_once(__DIR__ . '/FilterBookingsUser.module');
+
+class FilterBookingsDay extends FilterBookingsUser implements Module {
+	protected $name = 'FilterBookingsDay';
+
+	/**
+	 * Bookings Day Query
+	 * @var BookingdQuery
+	 */
+	protected $query;
+
+	/**
+	 * User
+	 * @var string
+	 */
+	protected $user;
+
+	/**
+	 * Module Initilization
+	 * Sets $this->query && $this->user
+	 * @return void
+	 */
+	public function init() {
+		$this->query = BookingdQuery::create();
+		$this->user = $this->wire('user');
+	}
+
+	/**
+	 * Returns Query after applying filters and selecting distinct Sales Order Numbers
+	 * @param  WireInput      $input Object with $_GET values and sanitizer functions
+	 * @return BookingdQuery         Query with Filters applied
+	 */
+	public function get_bookings(WireInput $input) {
+		$this->select_distinct();
+		$this->filter_user();
+		$this->filter_bookdate($input);
+		$this->filter_customer($input);
+		return $this->query;
+	}
+
+	/**
+	 * Returns Query after applying filters
+	 * NOTE: Query is for getting all the Booking changes to a sales order on X day
+	 * @param  WireInput      $input Object with $_GET values and sanitizer functions
+	 * @return BookingdQuery         Query with Filters applied
+	 */
+	public function get_day_salesorder_changes(WireInput $input) {
+		$this->filter_user();
+		$this->filter_bookdate($input);
+		$this->filter_salesorder($input);
+		return $this->query;
+	}
+
+	/**
+	 * Groups Query by Sales Order Number
+	 * @return void
+	 */
+	public function select_distinct() {
+		$this->query->groupBy('salesordernbr');
+	}
+
+	/**
+	 * @param  WireInput $input Object with $_GET values
+	 * @return void
+	 */
+	public function filter_bookdate(WireInput $input) {
+		$date = $input->get->text('date');
+		$this->query->filterByBookdate(date('Ymd', strtotime($date)));
+	}
+
+	/**
+	 * @param  WireInput $input Object with $_GET values
+	 * @return void
+	 */
+	public function filter_salesorder(WireInput $input) {
+		$ordn = $input->get->text('ordn');
+		$this->query->filterBySalesordernbr($ordn);
+	}
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dpluso Bookings by Day Filter',
+				'version' => 101,
+				'summary' => 'Handles Bookings by Day Filter',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+}
