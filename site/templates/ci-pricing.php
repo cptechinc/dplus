@@ -2,6 +2,8 @@
 	include_once('./ci-include.php');
 
 	if ($customerquery->count()) {
+		$page->show_breadcrumbs = false;
+		$page->body .= $config->twig->render('customers/ci/bread-crumbs.twig', ['page' => $page, 'customer' => $customer]);
 		$page->title = "$custID Pricing";
 
 		$module_json = $modules->get('JsonDataFiles');
@@ -10,7 +12,7 @@
 		if ($input->get->itemID) {
 			$itemID = $input->get->text('itemID');
 			$page->title .= " for $itemID";
-			
+
 			if ($module_json->file_exists(session_id(), $page->jsoncode)) {
 				if ($json['custid'] != $custID) {
 					$module_json->remove_file(session_id(), $page->jsoncode);
@@ -24,7 +26,7 @@
 				$page->body .= $config->twig->render('items/ii/pricing/screen.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json]);
 			} else {
 				if ($session->pricingtry > 3) {
-					$page->headline = $page->title = "Quotes File could not be loaded";
+					$page->headline = $page->title = "Pricing File could not be loaded";
 					$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
 				} else {
 					$session->pricingtry++;

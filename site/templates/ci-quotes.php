@@ -1,8 +1,6 @@
 <?php
 	include_once('./ci-include.php');
 
-
-
 	if ($customerquery->count()) {
 		$page->show_breadcrumbs = false;
 		$page->body .= $config->twig->render('customers/ci/bread-crumbs.twig', ['page' => $page, 'customer' => $customer]);

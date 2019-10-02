@@ -488,6 +488,16 @@
 				$url->query->set('custID', $custID);
 				$event->return = $url->getUrl();
 			});
+
+			/**
+			 * Adds hook for getting Sales History List URL
+			 */
+			$this->addHook('Page::cust_quotesURL', function($event) {
+				$custID = $event->arguments(0);
+				$url = new Url($this->wire('pages')->get('pw_template=quotes-customer')->url);
+				$url->query->set('custID', $custID);
+				$event->return = $url->getUrl();
+			});
 		}
 
 		public function get_ci_customerURL($custID) {

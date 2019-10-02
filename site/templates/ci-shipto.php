@@ -1,8 +1,8 @@
 <?php
 	include_once('./ci-include.php');
 
-
 	if ($customerquery->count()) {
+		$page->show_breadcrumbs = false;
 
 		if ($input->get->shiptoID) {
 			$shiptoID = $input->get->text('shiptoID');
@@ -11,9 +11,9 @@
 
 			if ($load_shipto->shipto_exists()) {
 				$shipto = $load_shipto->get_shipto();
-				$page->title = "$customer->name Ship-to: $shipto->id";
-				$page->show_breadcrumbs = false;
+				$page->title = "$shipto->id";
 				$page->body .= $config->twig->render('customers/ci/bread-crumbs.twig', ['page' => $page, 'customer' => $customer]);
+				$page->title = "$customer->name Ship-to: $shipto->id";
 
 				$function_pages = $pages->find('pw_template=ci-contacts');
 				$toolbar = $config->twig->render('customers/ci/shiptos/toolbar.twig', ['shipto' => $shipto, 'pages' => $function_pages]);
@@ -33,6 +33,7 @@
 				$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "$custID Ship-to $shiptoID does not exist", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Check if shiptoID is correct"]);
 			}
 		} else {
+			$page->body .= $config->twig->render('customers/ci/bread-crumbs.twig', ['page' => $page, 'customer' => $customer]);
 			$page->title = "Select a $customer->name Ship-to";
 			$shiptos = CustomerShiptoQuery::create()->filterByCustid($custID)->find();
 			$page->body .= $config->twig->render('customers/ci/shiptos/shipto-list.twig', ['page' => $page, 'customer' => $customer, 'shiptos' => $shiptos]);
