@@ -1,7 +1,7 @@
 {% set custcolumns = json['columns']['custinfo'] %}
 {% set itemcolumns = json['columns']['iteminfo'] %}
 {% for order in json['data'] %}
-    <table class="table table-striped table-bordered table-condensed table-excel">
+    <table class="table table-striped table-bordered table-sm table-excel">
         <tbody>
             {% for custinfo in order['custinfo'] %}
                 <tr>
