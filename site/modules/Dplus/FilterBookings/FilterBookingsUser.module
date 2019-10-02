@@ -61,6 +61,21 @@ class FilterBookingsUser extends WireData implements Module {
 		$this->filter_shipto($input);
 		return $this->query;
 	}
+	/**
+	 * Return Total Amount of bookings made today
+	 * @return float 
+	 */
+	public function get_todaysbookingstotal() {
+		$query = BookingrQuery::create();
+
+		if ($this->user->is_salesrep()) {
+			$query->filterBySalesrep($this->user->roleid);
+		}
+		$query->withColumn('SUM(amount)', 'amount');
+		$query->select('amount');
+		$query->filterByBookdate(date('Ymd'));
+		return $query->findOne();
+	}
 
 	/**
 	 * Adds a filter to the Query if the user is a Sales Rep
