@@ -2,61 +2,70 @@
 	$page->show_breadcrumbs = false;
 
 	if ($input->get->custID) {
-		$html = $modules->get('HtmlWriter');
-		$modules->get('BookingsPages')->init_bookingspage();
-		$filter_bookings = $modules->get('FilterBookings');
-		$filter_bookings->set_user($user);
-
 		$custID = $input->get->text('custID');
-		$load_customer = $modules->get('CiLoadCustomerShipto');
-		$load_customer->set_custID($custID);
-		$page->customer = $customer = $load_customer->get_customer();
-		$page->title = "$customer->name ($customer->custid) ";
+		
+		if ($user->has_customer($custID)) {
+			$html = $modules->get('HtmlWriter');
+			$modules->get('BookingsPages')->init_bookingspage();
+			$filter_bookings = $modules->get('FilterBookings');
+			$filter_bookings->set_user($user);
 
-		if ($input->get->shiptoID) {
-			$shiptoID = $input->get->text('shiptoID');
-			$load_customer->set_shiptoID($shiptoID);
-			$page->shipto = $shipto = $load_customer->get_shipto();
-			$page->title = "$shipto->name ($shipto->shiptoid) ";
-		}
+			$load_customer = $modules->get('CiLoadCustomerShipto');
+			$load_customer->set_custID($custID);
+			$page->customer = $customer = $load_customer->get_customer();
+			$page->title = "$customer->name ($customer->custid) ";
 
-		if ($input->get->bookdate) {
-			$bookdates = array($input->get->text('bookdate'));
-
-			if (strpos($input->get->text('bookdate'), '|') !== false) {
-				$bookdates = explode('|', $input->get->text('bookdate'));
+			if ($input->get->shiptoID) {
+				$shiptoID = $input->get->text('shiptoID');
+				$load_customer->set_shiptoID($shiptoID);
+				$page->shipto = $shipto = $load_customer->get_shipto();
+				$page->title = "$shipto->name ($shipto->shiptoid) ";
 			}
 
-			$input->get->bookdate = $bookdates;
+			if ($input->get->bookdate) {
+				$bookdates = array($input->get->text('bookdate'));
 
-			if (date('F Y', strtotime($bookdates[0])) == date('F Y', strtotime($bookdates[1]))) {
-				$page->title .= date('F Y', strtotime($bookdates[0])) . ' Bookings';
+				if (strpos($input->get->text('bookdate'), '|') !== false) {
+					$bookdates = explode('|', $input->get->text('bookdate'));
+				}
+
+				$input->get->bookdate = $bookdates;
+
+				if (date('F Y', strtotime($bookdates[0])) == date('F Y', strtotime($bookdates[1]))) {
+					$page->title .= date('F Y', strtotime($bookdates[0])) . ' Bookings';
+				} else {
+					$page->title .= "Bookings between " . $bookdates[0] . ' and ' . $bookdates[1];
+				}
 			} else {
-				$page->title .= "Bookings between " . $bookdates[0] . ' and ' . $bookdates[1];
+				$page->title .= date('Y'). " Bookings";
 			}
+
+			$bookings = $filter_bookings->bookings_user->get_bookings($input)->find();
+			$shiptos = $filter_bookings->bookings_customer->get_bookings_by_shipto($input)->find();
+
+			$page->body .= $config->twig->render("bookings/bread-crumbs.twig", ['page' => $page]);
+
+			if ($input->get->shiptoID) {
+				$page->body .= $html->h2('', $page->title);
+				$page->body .= $config->twig->render("bookings/customer/shipto-links.twig", ['page' => $page, 'customer' => $customer, 'shipto' => $shipto]);
+			} else {
+				$page->body .= $html->h2('', $page->title);
+				$page->body .= $config->twig->render("bookings/customer/links.twig", ['page' => $page, 'customer' => $customer]);
+			}
+
+			$page->body .= $config->twig->render("bookings/customer/bookings-page.twig", ['page' => $page, 'bookings' => $bookings, 'interval' => $filter_bookings->bookings_user->interval, 'shiptos' => $shiptos, 'dpluso' => $dpluso]);
+			$page->js .= $config->twig->render("bookings/user/js/bookings.js.twig", ['page' => $page, 'bookingsdata' => $filter_bookings->convert_bookings_for_js($bookings), 'interval' => $filter_bookings->bookings_user->interval]);
+
+			$config->styles->append(hash_templatefile('styles/lib/morris.css'));
+			$config->scripts->append(hash_templatefile('scripts/lib/raphael.js'));
+			$config->scripts->append(hash_templatefile('scripts/lib/morris.js'));
 		} else {
-			$page->title .= date('Y'). " Bookings";
+			$page->title = "Error! You don't have access to customer $custID";
+			$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Template can not be found"]);
+			$page->searchURL = $page->url;
+			$page->body = $config->twig->render('customers/customer-search.twig', ['page' => $page, 'customers' => []]);
+			$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> 0]);
 		}
-
-		$bookings = $filter_bookings->bookings_user->get_bookings($input)->find();
-		$shiptos = $filter_bookings->bookings_customer->get_bookings_by_shipto($input)->find();
-
-		$page->body .= $config->twig->render("bookings/bread-crumbs.twig", ['page' => $page]);
-
-		if ($input->get->shiptoID) {
-			$page->body .= $html->h2('', $page->title);
-			$page->body .= $config->twig->render("bookings/customer/shipto-links.twig", ['page' => $page, 'customer' => $customer, 'shipto' => $shipto]);
-		} else {
-			$page->body .= $html->h2('', $page->title);
-			$page->body .= $config->twig->render("bookings/customer/links.twig", ['page' => $page, 'customer' => $customer]);
-		}
-
-		$page->body .= $config->twig->render("bookings/customer/bookings-page.twig", ['page' => $page, 'bookings' => $bookings, 'interval' => $filter_bookings->bookings_user->interval, 'shiptos' => $shiptos, 'dpluso' => $dpluso]);
-		$page->js .= $config->twig->render("bookings/user/js/bookings.js.twig", ['page' => $page, 'bookingsdata' => $filter_bookings->convert_bookings_for_js($bookings), 'interval' => $filter_bookings->bookings_user->interval]);
-
-		$config->styles->append(hash_templatefile('styles/lib/morris.css'));
-		$config->scripts->append(hash_templatefile('scripts/lib/raphael.js'));
-		$config->scripts->append(hash_templatefile('scripts/lib/morris.js'));
 	} else {
 		$query = CustomerQuery::create();
 		$exact_query = CustomerQuery::create();
