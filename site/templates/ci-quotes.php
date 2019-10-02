@@ -17,7 +17,9 @@
 			$module_formatter->init_formatter();
 			$refreshurl = $page->get_customerquotesURL($custID);
 			$page->body .= $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
+			// $page->body = $config->twig->render('customers/ci/customer/orders-search-form.twig', ['page' => $page, 'input' => $input, 'custid' => $custID]);
 			$page->body .= $config->twig->render('customers/ci/quotes/quotes.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint()]);
+			// $page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'pagenbr' => $input->pageNum, 'resultscount'=> $orders->getNbResults()]);
 		} else {
 			if ($session->quotestry > 3) {
 				$page->headline = $page->title = "Quotes File could not be loaded";

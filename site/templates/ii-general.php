@@ -63,7 +63,7 @@
 			if ($module_json->file_exists(session_id(), 'ii-misc')) {
 				$page->body .= $html->h3('id=misc|class=info-heading', 'Misc');
 				$json_misc = $module_json->get_file(session_id(), 'ii-misc');
-				
+
 				if ($json_misc['itemid'] != $itemID) {
 					$module_json->remove_file(session_id(), $page->jsoncode);
 					$session->redirect($page->get_itemgeneralURL($itemID));

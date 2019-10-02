@@ -66,6 +66,39 @@
 	*		CIPAYMENT
 	*		CUSTID=$custID
 	*		break;
+	*	case 'ci-purchase-orders':
+	*		Request CI Purchase Orders JSON file
+	* 		Response: Creates CI Purchase Orders JSON file
+	* 		DBNAME=dplusdb
+	* 		CICUSTPO
+	* 		CUSTID=$custID
+	* 		"SHIPID=$shipID
+	* 		CUSTPO=$custpo
+	* 		break;
+	* 	case 'ci-credit':
+	* 		Request CI Credit JSON file
+	* 		Response: Creates CI Credit JSON file
+	* 		DBNAME=$dplusdb
+	* 		CICREDIT
+	* 		CUSTID=$custID
+	* 		break;
+	* 	case 'ci-standing-orders':
+	* 		Request CI Standing Orders JSON file
+	* 		Response: Creates CI Standing Orders JSON file
+	* 		DBNAME=$dplusdb
+	* 		CISTANDORDR
+	* 		CUSTID=$custID
+	* 		SHIPID=$shipID
+	* 		break;
+	* 	case 'ci-documents':
+	* 		Request CI Documents JSON file
+	* 		Response: Creates CI Documents JSON file
+	* 		DBNAME=$dplusdb
+	* 		DOCVIEW
+	* 		FLD1CD=CU
+	* 		FLD1DATA=$custID
+	* 		FLD1DESC=$custname
+	* 		break;
 	* }
 	**/
 
@@ -100,7 +133,7 @@
 			break;
 		case 'ci-sales-orders':
 			$shipID = $input->$requestmethod->text('shipID');
-			$data = array("DBNAME=$dplusdb", 'CISALESORDR', "CUSTID=$custID", "SHIPID=$shipID", "SALESORDRNBR= ", "ITEMID= ");
+			$data = array("DBNAME=$dplusdb", 'CISALESORDR', "CUSTID=$custID", "SHIPID=$shipID", "SALESORDRNBR= ","ITEMID=");
 
 			if ($input->$requestmethod->page) {
 				$session->loc = $input->$requestmethod->text('page');
@@ -112,13 +145,36 @@
 			break;
 		case 'ci-sales-history':
 			$shipID = $input->$requestmethod->text('shipID');
-			$data = array("DBNAME=$dplusdb", 'CISALESHIST', "CUSTID=$custID", "SHIPID=$shipID", "DATE=$startdate", "SALESORDRNBR= ", "ITEMID=$itemID");
+			$itemID = $input->$requestmethod->text('itemID');
+
+			$data = array("DBNAME=$dplusdb", 'CISALESHIST', "CUSTID=$custID", "SHIPID=$shipID", "SALESORDRNBR=", "ITEMID=$itemID");
+
+			$date = $input->$requestmethod->text('date');
+
+			if (!empty($date)) {
+				$date_ymd = date('Ymd', strtotime($date));
+				$data[] = "DATE=$date_ymd";
+			}
 
 			if ($input->$requestmethod->page) {
 				$session->loc = $input->$requestmethod->text('page');
 			} else {
 				$url = new Purl\Url($pages->get('pw_template=ci-sales-history')->url);
 				$url->query->set('custID', $custID);
+				$session->loc = $url->getUrl();
+			}
+			break;
+		case 'ci-purchase-orders':
+			$custpo = $input->$requestmethod->text('custpo');
+			$shipID = $input->$requestmethod->text('shipID');
+			$data = array("DBNAME=$dplusdb", 'CICUSTPO', "CUSTID=$custID", "SHIPID=$shipID", "CUSTPO=$custpo");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=ci-customer-po')->url);
+				$url->query->set('custID', $custID);
+				$url->query->set('custpo', $custpo);
 				$session->loc = $url->getUrl();
 			}
 			break;
@@ -154,6 +210,41 @@
 				$session->loc = $input->$requestmethod->text('page');
 			} else {
 				$url = new Purl\Url($pages->get('pw_template=ci-payments')->url);
+				$url->query->set('custID', $custID);
+				$session->loc = $url->getUrl();
+			}
+			break;
+		case 'ci-credit':
+			$data = array("DBNAME=$dplusdb", 'CICREDIT', "CUSTID=$custID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=ci-credit')->url);
+				$url->query->set('custID', $custID);
+				$session->loc = $url->getUrl();
+			}
+			break;
+		case 'ci-standing-orders':
+			$shipID = $input->$requestmethod->text('shipID');
+			$data = array("DBNAME=$dplusdb", 'CISTANDORDR', "CUSTID=$custID", "SHIPID=$shipID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=ci-standing-orders')->url);
+				$url->query->set('custID', $custID);
+				$session->loc = $url->getUrl();
+			}
+			break;
+		case 'ci-documents':
+			$custname = Customer::get_customernamefromid($custID);
+			$data = array("DBNAME=$dplusdb", 'DOCVIEW', "FLD1CD=CU", "FLD1DATA=$custID", "FLD1DESC=$custname");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=ci-documents')->url);
 				$url->query->set('custID', $custID);
 				$session->loc = $url->getUrl();
 			}

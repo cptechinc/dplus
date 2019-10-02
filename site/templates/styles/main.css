@@ -142,3 +142,7 @@ a.link:hover {
 	overflow-y: scroll;
 	max-height: 500px;
 }
+
+/************************************** Table Styles *******************************/
+
+.first-txn-row {border-top: 2px solid black;}

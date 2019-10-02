@@ -1,9 +1,8 @@
 <?php
-	use LogpermQuery;
-	use Logperm;
-	use LogmQuery;
-	use Logm;
-	use FuncpermQuery;
+	use LogpermQuery, Logperm;
+	use LogmQuery, Logm;
+	use FuncpermQuery, Funcperm;
+	use CustpermQuery, Custperm;
 
 	class DplusUser extends WireData implements Module {
 		private $className;
@@ -122,6 +121,54 @@
 				$q = LogpermQuery::create();
 				$logperm = $q->findOneBySessionid(session_id());
 				$event->return = $logperm->ordernbr;
+			});
+
+			$this->addHook('User::has_customer', function($event) {
+				$user = $event->object;
+				$custID = $event->arguments(0);
+				$shiptoID = $event->arguments(1);
+				$access = false;
+
+				if ($user->is_salesrep()) {
+					$q = CustpermQuery::create();
+					$q->filterByCustid($custID);
+					if ($shiptoID) {
+						$q->filterByShiptoid($shiptoID);
+					}
+					$q->filterByLoginid($user->loginid);
+					$access = boolval($q->count());
+				} else {
+					$access = true;
+				}
+				$event->return = $access;
+			});
+
+			$this->addHook('User::get_customers', function($event) {
+				$user = $event->object;
+				$q = CustpermQuery::create();
+				$q->withColumn('DISTINCT(custid)', 'custid');
+				$q->select('custid');
+
+				if ($user->is_salesrep()) {
+					$q->filterByLoginid($user->loginid);
+				}
+				$event->return = $q->find()->toArray();
+			});
+
+			$this->addHook('User::get_customer_shiptos', function($event) {
+				$user = $event->object;
+				$custID = $event->arguments(0);
+
+				$q = CustpermQuery::create();
+				$q->withColumn('DISTINCT(shiptoid)', 'shiptoid');
+				$q->select('shiptoid');
+				$q->filterByCustid($custID);
+
+				if ($user->is_salesrep()) {
+					$q->filterByLoginid($user->loginid);
+				}
+
+				$event->return = $q->find()->toArray();
 			});
 		}
 

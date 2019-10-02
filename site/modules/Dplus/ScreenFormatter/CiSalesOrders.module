@@ -10,7 +10,12 @@
 	 * @var string
 	 */
 	protected $datasections = array(
-		"detail" => "Detail"
+		"header" => "Header",
+		"detail" => "Detail",
+		"itemstatus" => "Item Status",
+		"purchaseorder" => "Purchase Order",
+		"total" => "Total",
+		"shipments" => "Shipments"
 	);
 
 	/* =============================================================
