@@ -5,10 +5,10 @@
 	use ItemsearchQuery, Itemsearch;
 
 	if ($itemquery->count()) {
-		$page->title = "$itemID Components";
 		$page->show_breadcrumbs = false;
 		$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
-
+		$page->title = "$itemID Components";
+		
 		if ($input->get->qty) {
 			$module_json = $modules->get('JsonDataFiles');
 

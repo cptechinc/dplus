@@ -2,9 +2,9 @@
 	include_once('./ii-include.php');
 
 	if ($itemquery->count()) {
-		$page->title = "$itemID Sales History";
 		$page->show_breadcrumbs = false;
 		$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
+		$page->title = "$itemID Sales History";
 
 		if ($input->get->date) {
 			$date = $input->get->text('date');
@@ -36,7 +36,7 @@
 				}
 			}
 		} else {
-			$page->body = $config->twig->render('items/ii/sales-history/date-form.twig', ['page' => $page, 'itemID' => $itemID]);
+			$page->body .= $config->twig->render('items/ii/sales-history/date-form.twig', ['page' => $page, 'itemID' => $itemID]);
 		}
 	}
 
