@@ -8,6 +8,8 @@
 
 	if ($itemquery->count()) {
 		$page->title = "$itemID Requirements";
+		$page->show_breadcrumbs = false;
+		$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
 
 		$module_json = $modules->get('JsonDataFiles');
 		$json = $module_json->get_file(session_id(), $page->jsoncode);
@@ -26,7 +28,7 @@
 		} else {
 			if ($session->requirementstry > 3) {
 				$page->headline = $page->title = "Requirements File could not be loaded";
-				$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
+				$page->body .= $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
 			} else {
 				$session->requirementstry++;
 				$session->redirect($page->get_itemrequirementsURL($itemID));

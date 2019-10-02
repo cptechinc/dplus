@@ -5,6 +5,8 @@
 
 	if ($itemquery->count()) {
 		$page->title = "$itemID Activity";
+		$page->show_breadcrumbs = false;
+		$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
 
 		if ($input->get->date) {
 			$date = $input->get->text('date');
@@ -23,7 +25,7 @@
 			} else {
 				if ($session->activitytry > 3) {
 					$page->headline = $page->title = "Activity File could not be loaded";
-					$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
+					$page->body .= $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
 				} else {
 					$session->activitytry++;
 					$session->redirect($page->get_itemactivityURL($itemID));

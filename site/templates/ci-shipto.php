@@ -1,6 +1,7 @@
 <?php
 	include_once('./ci-include.php');
 
+
 	if ($customerquery->count()) {
 
 		if ($input->get->shiptoID) {
@@ -15,6 +16,7 @@
 				if ($module_shipto->shipto_exists()) {
 					$shipto = $module_shipto->get_shipto();
 					$page->title = "CI: $customer->name Ship-to: $shipto->id";
+					$page->body .= $config->twig->render('customers/ci/bread-crumbs.twig', ['page' => $page, 'customer' => $customer]);
 					$function_pages = $pages->find('pw_template=ci-contacts');
 					$toolbar = $config->twig->render('customers/ci/shiptos/toolbar.twig', ['shipto' => $shipto, 'pages' => $function_pages]);
 					$header  = $config->twig->render('customers/ci/shiptos/header.twig', ['page' => $page, 'customer' => $customer, 'shipto' => $shipto, 'module_shipto' => $module_shipto]);

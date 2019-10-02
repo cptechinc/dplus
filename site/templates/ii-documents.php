@@ -4,6 +4,8 @@
 
 	if ($itemquery->count()) {
 		$page->title = "$itemID Documents";
+		$page->show_breadcrumbs = false;
+		$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
 		$document_management = $modules->get('DocumentManagement');
 		$html = $modules->get('HtmlWriter');
 

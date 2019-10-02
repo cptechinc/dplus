@@ -10,12 +10,14 @@
 
 	if ($itemquery->count()) {
 		$page->title = "$itemID Pricing";
+		$page->show_breadcrumbs = false;
+		$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
 
 		if ($input->get->custID) {
 			$custID = $input->get->text('custID');
 			$customer = CustomerQuery::create()->findOneByCustid($custID);
 			$page->title .= " for $customer->name";
-			
+
 			$module_json = $modules->get('JsonDataFiles');
 			$json = $module_json->get_file(session_id(), $page->jsoncode);
 
@@ -34,7 +36,7 @@
 			} else {
 				if ($session->pricingtry > 3) {
 					$page->headline = $page->title = "Pricing File could not be loaded";
-					$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
+					$page->body .= $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
 				} else {
 					$session->pricingtry++;
 					$session->redirect($page->get_itempricingURL($itemID, $custID));
@@ -54,7 +56,7 @@
 			$customers = $query->paginate($input->pageNum, 10);
 
 			$page->searchURL = $page->url;
-			$page->body = $config->twig->render('items/ii/pricing/customer/customer-search.twig', ['page' => $page, 'customers' => $customers, 'itemID' => $itemID]);
+			$page->body .= $config->twig->render('items/ii/pricing/customer/customer-search.twig', ['page' => $page, 'customers' => $customers, 'itemID' => $itemID]);
 			$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $customers->getNbResults()]);
 		}
 	}

@@ -2,7 +2,10 @@
 	include_once('./ci-include.php');
 
 	if ($customerquery->count()) {
-		$page->title = "$custID Contacts";
+		$page->title = ($page->shiptoID) ? $load_customer->get_shipto()->name . " Contacts" : "$customer->name Contacts";
+		$page->show_breadcrumbs = false;
+		$page->body .= $config->twig->render('customers/ci/bread-crumbs.twig', ['page' => $page, 'customer' => $customer]);
+
 
 		$module_json = $modules->get('JsonDataFiles');
 		$json = $module_json->get_file(session_id(), $page->jsoncode);

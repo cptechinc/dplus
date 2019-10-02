@@ -7,11 +7,12 @@
 	$html = $modules->get('HtmlWriter');
 
 	$custID = $input->get->text('custID');
-	$page->custID = $custID;
+	$load_customer = $modules->get('CiLoadCustomerShipto');
+	$load_customer->set_custID($custID);
 
 	if ($input->get->shiptoID) {
-		$shiptoID = $input->get->text('shiptoID');
-		$page->shiptoID = $shiptoID;
+		$shiptoID = $input->get->shiptoID;
+		$load_customer->set_shiptoID($shiptoID);
 	}
 
 	$customerquery = CustomerQuery::create();

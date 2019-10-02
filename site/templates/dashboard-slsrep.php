@@ -7,13 +7,30 @@
 	$page->body .= $config->twig->render("dashboard/components/user-actions.twig", $params_useractions);
 
 	$filter_bookings = $modules->get('FilterBookings');
-	$modules->get('BookingsPages')->init_bookingspage();
-	$filter_bookings->set_user($user);
-	$bookings = $filter_bookings->bookings_user->get_bookings($input)->find();
-	$bookings_customer = $filter_bookings->bookings_customer->get_bookings_by_customer($input)->find();
 
-	$page->body .= $config->twig->render("dashboard/components/bookings.twig", ['page' => $page, 'bookings' => $bookings, 'customers' => $bookings_customer, 'interval' => $filter_bookings->bookings_user->interval]);
-	$page->js .= $config->twig->render("bookings/user/js/bookings.js.twig", ['page' => $page, 'bookingsdata' => $filter_bookings->convert_bookings_for_js($bookings), 'interval' => $filter_bookings->bookings_user->interval]);
+	if ($filter_bookings->data['option_bookings_dashboard']) {
+		$modules->get('BookingsPages')->init_bookingspage();
+		$filter_bookings->set_user($user);
+		$bookings = $filter_bookings->bookings_user->get_bookings($input)->find();
+		$bookings_customer = $filter_bookings->bookings_customer->get_bookings_by_customer($input)->find();
+
+		$page->body .= $config->twig->render("dashboard/components/bookings.twig", ['page' => $page, 'bookings' => $bookings, 'customers' => $bookings_customer, 'interval' => $filter_bookings->bookings_user->interval, 'todaysbookings' => $filter_bookings->bookings_user->get_todaysbookingstotal()]);
+		$page->js .= $config->twig->render("bookings/user/js/bookings.js.twig", ['page' => $page, 'bookingsdata' => $filter_bookings->convert_bookings_for_js($bookings), 'interval' => $filter_bookings->bookings_user->interval]);
+	}
+
+	$customers_topselling = $module_dashboard->get_top_x_customers(25);
+	$piedata = array();
+
+	foreach ($customers_topselling as $cust) {
+		$piedata[] = array(
+			'label'  => $cust->get_name(),
+			'custid' => $cust->custid,
+			'value'  => $cust->amountsold
+		);
+	}
+
+	$page->body .= $config->twig->render("dashboard/components/top-selling-customers.twig", ['page' => $page, 'customers' => $customers_topselling]);
+	$page->js .= $config->twig->render("dashboard/components/js/top-selling.js.twig", ['piedata' => $piedata, 'module_dashboard' => $module_dashboard]);
 
 	$config->styles->append(hash_templatefile('styles/lib/morris.css'));
 	$config->scripts->append(hash_templatefile('scripts/lib/raphael.js'));

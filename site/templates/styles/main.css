@@ -146,6 +146,12 @@ a.link:hover {
 .first-txn-row {border-top: 2px solid black;}
 
 /************************************** Dashboard **************************************/
+#top-selling-list {
+	max-height: 500px;
+	overflow-y: scroll;
+}
+
+/************************************** Custom **************************************/
 .scroll-500 {
 	overflow-y: scroll;
 	max-height: 500px;
