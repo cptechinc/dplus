@@ -15,10 +15,12 @@
 			$session->salesorderstry = 0;
 			$module_formatter = $modules->get('CiSalesOrders');
 			$module_formatter->init_formatter();
+			$document_management = $modules->get('DocumentManagement');
+
 			$refreshurl = $page->get_customersalesordersURL($custID);
 			$page->body .= $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 			// $page->body = $config->twig->render('customers/ci/customer/orders-search-form.twig', ['page' => $page, 'input' => $input, 'custid' => $custID]);
-			$page->body .= $config->twig->render('customers/ci/customer/sales-orders-list.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint()]);
+			$page->body .= $config->twig->render('customers/ci/customer/sales-orders-list.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
 			// $page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'pagenbr' => $input->pageNum, 'resultscount'=> $orders->getNbResults()]);
 		} else {
 			if ($session->salesorderstry > 3) {
