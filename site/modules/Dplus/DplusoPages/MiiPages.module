@@ -319,6 +319,13 @@
 				$event->return = $p->parent('template=dplus-menu')->child('template=redir')->url;
 			});
 
+			$this->addHook('Page::get_itempageURL', function($event) {
+				$itemID = $event->arguments(0);
+				$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+				$url->query->set('itemID', $itemID);
+				$event->return = $url->getUrl();
+			});
+
 			$this->addHook('Page::get_itemURL', function($event) {
 				$p = $event->object;
 				$itemID = $event->arguments(0);
