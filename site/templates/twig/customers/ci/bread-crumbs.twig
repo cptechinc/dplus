@@ -17,12 +17,12 @@
 				</li>
 			{% endif %}
 		{% endfor %}
-		{% if (page.pw_template == 'ci-shipto' and page.shiptoID) %}
+		{% if (page.pw_template == 'ci-shipto' and page.has('shiptoID')) %}
 			<li class="breadcrumb-item">
 				<a href="{{ page.url }}">Ship-tos</a>
 			</li>
 		{% endif %}
-		{% if (page.parent.pw_template != 'ci-shipto' and page.pw_template != 'ci-shipto' and page.shiptoID) %}
+		{% if (page.parent.pw_template != 'ci-shipto' and page.pw_template != 'ci-shipto' and page.has('shiptoID')) %}
 			<li class="breadcrumb-item">
 				<a href="{{ page.customer_shiptoURL() }}">{{ page.shipto.name }}</a>
 			</li>
