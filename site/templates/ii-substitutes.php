@@ -3,6 +3,8 @@
 
 	if ($itemquery->count()) {
 		$page->title = "$itemID Substitutes";
+		$page->show_breadcrumbs = false;
+		$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
 
 		$module_json = $modules->get('JsonDataFiles');
 		$json = $module_json->get_file(session_id(), $page->jsoncode);
@@ -19,7 +21,7 @@
 		} else {
 			if ($session->substitutestry > 3) {
 				$page->headline = $page->title = "Substitutes File could not be loaded";
-				$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
+				$page->body .= $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
 			} else {
 				$session->substitutestry++;
 				$session->redirect($page->get_itemsubstitutesURL($itemID));

@@ -37,7 +37,7 @@ class Dashboard extends WireData implements Module {
 	 * @return Custperm[]|ObjectCollection
 	 */
 	public function get_top_x_customers($limit = 25) {
-		$loginID = $this->user->is_salesrep() ? $this->user->roleid : 'admin';
+		$loginID = $this->user->is_salesrep() ? $this->user->loginid : 'admin';
 		$q = CustpermQuery::create();
 		$q->filterByLoginid($loginID);
 		$q->filterByShiptoid('');
@@ -65,7 +65,7 @@ class Dashboard extends WireData implements Module {
 	 */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dpluso Dasbhoard Module',
+			'title' => 'Dpluso Dashboard Module',
 			'version' => 101,
 			'summary' => 'Handles Dashboard',
 			'singular' => true,

@@ -3,6 +3,8 @@
 
 	if ($itemquery->count()) {
 		$page->title = "$itemID General";
+		$page->show_breadcrumbs = false;
+		$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
 
 		$module_json = $modules->get('JsonDataFiles');
 
@@ -63,7 +65,7 @@
 			if ($module_json->file_exists(session_id(), 'ii-misc')) {
 				$page->body .= $html->h3('id=misc|class=info-heading', 'Misc');
 				$json_misc = $module_json->get_file(session_id(), 'ii-misc');
-				
+
 				if ($json_misc['itemid'] != $itemID) {
 					$module_json->remove_file(session_id(), $page->jsoncode);
 					$session->redirect($page->get_itemgeneralURL($itemID));
@@ -79,7 +81,7 @@
 				$page->headline = $page->title = "General File could not be loaded";
 				$refreshurl = $page->get_itemgeneralURL($itemID);
 				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), 'ii-misc'), 'refreshurl' => $refreshurl]);
-				$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => 'II Usage, Misc, Notes could not be loaded']);
+				$page->body .= $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => 'II Usage, Misc, Notes could not be loaded']);
 			} else {
 				$session->generaltry++;
 				$session->redirect($page->get_itemgeneralURL($itemID));

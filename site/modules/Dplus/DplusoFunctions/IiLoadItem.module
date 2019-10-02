@@ -1,0 +1,111 @@
+<?php namespace ProcessWire;
+
+	use Purl\Url;
+
+	use ItemMasterItemQuery, ItemMasterItem;
+
+	class IiLoadItem extends WireData implements Module {
+		/**
+		 * Item ID
+		 * @var string
+		 */
+		protected $itemID;
+
+		/**
+		 * Item
+		 * @var ItemMasterItem
+		 */
+		protected $item;
+
+
+		public function init() {
+			/**
+			 * Returns CI Customer Page URL
+			 */
+			$this->addHook('Page::itemURL', function($event) {
+				$event->return = $this->get_itemURL();
+			});
+
+			/**
+			 * Returns CI Customer Page URL
+			 */
+			$this->addHookProperty('Page::item', function($event) {
+				$event->return = $this->get_item();
+			});
+		}
+
+		/**
+		 * Returns if Customer ID has been defined
+		 * @return bool
+		 */
+		public function has_itemID() {
+			return boolval($this->itemID);
+		}
+
+		/**
+		 * Returns Customer ID
+		 * @return string
+		 */
+		public function get_itemID() {
+			return $this->itemID;
+		}
+
+		/**
+		 * Sets Customer ID
+		 * @param  string $itemID CustomerID
+		 * @return string
+		 */
+		public function set_itemID($itemID) {
+			$this->itemID = $itemID;
+			$this->wire('page')->itemID = $itemID;
+		}
+
+		/**
+		 * Validates if item exists
+		 * @return bool
+		 */
+		public function item_exists() {
+			return boolval(ItemMasterItemQuery::create()->filterByItemid($this->itemID)->count());
+		}
+
+		/**
+		 * Returns Item
+		 * NOTE: Sets the Item Property if not loaded
+		 * @return ItemMasterMaster
+		 */
+		public function get_item() {
+			if (!$this->item) {
+				$this->item = ItemMasterItemQuery::create()->findOneByItemid($this->itemID);
+			}
+			return $this->item;
+		}
+
+		/**
+		 * Returns URL to Customer Page
+		 * @return string
+		 */
+		public function get_itemURL() {
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->query->set('itemID', $this->itemID);
+			return $url->getUrl();
+		}
+
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dpluso II Item Module',
+				'version' => 101,
+				'summary' => 'Handles II Item Loading',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+	}

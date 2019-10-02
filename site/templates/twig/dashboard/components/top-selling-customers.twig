@@ -10,7 +10,7 @@
 				<div id="top-selling-graph"></div>
 			</div>
 			<div class="col-sm-8">
-				<div id="top-selling-list">
+				<div class="scroll-300" id="top-selling-list">
 					<table class="table table-sm" >
 						<thead>
 							<tr> <th>Color</th> <th>Customer</th> <th>Amount Sold</th> <th>Times Sold</th> <th>Last Sale Date</th> </tr>
@@ -20,7 +20,7 @@
 								<tr>
 									<td id="{{ customer.custid }}-cust"></td>
 									<td>
-										<a href="{{ page.customerURL(customer.custid) }}" class="link">{{ customer.custid }}</a> <br>
+										<a href="{{ page.ci_customerURL(customer.custid) }}" class="link">{{ customer.custid }}</a> <br>
 										{{ customer.get_name() }}
 									</td>
 									<td class="text-right">$ {{ customer.amountsold|currency }}</td>

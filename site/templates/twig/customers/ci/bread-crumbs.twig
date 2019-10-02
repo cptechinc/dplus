@@ -1,0 +1,32 @@
+<nav aria-label="breadcrumb rounded-0">
+	<ol class="breadcrumb">
+		{% for parent in page.parents() %}
+			{% if parent.pw_template == 'ci-customer' %}
+				<li class="breadcrumb-item">
+					<i class="fa fa-list" aria-hidden="true"></i>
+					<a href="{{ parent.url }}">{{ parent.title }}</a>
+				</li>
+				<li class="breadcrumb-item">
+					<i class="fa fa-user-circle" aria-hidden="true"></i>
+					<a href="{{ parent.url ~ '?custID=' ~ customer.id }}">{{ customer.name }}</a>
+				</li>
+			{% else %}
+				<li class="breadcrumb-item">
+					<i class="fa fa-list" aria-hidden="true"></i>
+					<a href="{{ parent.url }}">{{ parent.title }}</a>
+				</li>
+			{% endif %}
+		{% endfor %}
+		{% if (page.pw_template == 'ci-shipto' and page.has('shiptoID')) %}
+			<li class="breadcrumb-item">
+				<a href="{{ page.url }}">Ship-tos</a>
+			</li>
+		{% endif %}
+		{% if (page.parent.pw_template != 'ci-shipto' and page.pw_template != 'ci-shipto' and page.has('shiptoID')) %}
+			<li class="breadcrumb-item">
+				<a href="{{ page.customer_shiptoURL() }}">{{ page.shipto.name }}</a>
+			</li>
+		{% endif %}
+		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+	</ol>
+</nav>
