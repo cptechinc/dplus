@@ -3,7 +3,7 @@
 		<a class="text-white" data-toggle="collapse" href="#bookings" role="button" aria-expanded="false" aria-controls="bookings">
 			<i class="fa fa-book" aria-hidden="true"></i> Bookings <i class="fa fa-caret-down" aria-hidden="true"></i>
 		</a>
-		<span class="badge badge-pill badge-light"></span>
+		<span class="badge badge-pill badge-light">Today's bookings: $ {{ todaysbookings|currency }}</span>
 	</div>
 	<div class="collapse" id="bookings">
 		<div class="card-body">
