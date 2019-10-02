@@ -1,0 +1,34 @@
+<div class="list-group">
+	<div class="list-group-item list-group-item-action bg-light">
+		<div class="row">
+			<div class="col">Quote Number</div>
+			<div class="col">Ship-to</div>
+			<div class="col">Quote Date</div>
+			<div class="col">Review Date</div>
+			<div class="col">Expire Date</div>
+			<div class="col text-right">Quote Total</div>
+			<div class="col">Status</div>
+		</div>
+	</div>
+	{% if quotes.count > 0 %}
+		{% for quote in quotes %}
+			<a href="{{ quotepage ~ '?qnbr=' ~ quote.quotenumber }}" class="list-group-item list-group-item-action">
+				<div class="row">
+					<div class="col">{{ quote.quotenumber }}</div>
+					<div class="col">{{ quote.shiptoid }}</div>
+					<div class="col text-right">{{ convertdate(quote.date_quoted) }}</div>
+					<div class="col text-right">{{ convertdate(quote.date_review) }}</div>
+					<div class="col text-right">{{ convertdate(quote.date_expires) }}</div>
+					<div class="col text-right">$ {{ quote.total_total|currency }}</div>
+					<div class="col">{{ quote.status()|capitalize }}</div>
+				</div>
+			</a>
+		{% endfor %}
+	{% else %}
+		<div class="list-group-item">
+			<div class="row">
+				<div class="col text-center">There are no results to display.</div>
+			</div>
+		</div>
+	{% endif %}
+</div>

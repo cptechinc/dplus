@@ -6,6 +6,7 @@
 	use CustomerShiptoQuery, CustomerShipto;
 	use SalesOrderQuery, SalesOrder;
 	use SalesHistoryQuery, SalesHistory;
+	use QuotesQuery, QuoteHistory;
 	use ContactQuery, Contact;
 	use UseractionsQuery, Useractions;
 
@@ -34,7 +35,30 @@
 		 */
 		protected $shipto;
 
+		/**
+		 * User
+		 * @var User
+		 */
+		protected $user;
+
+
 		public function init() {
+			/**
+			 * Returns CI Customer Page URL
+			 */
+			$this->addHook('Page::has_custID', function($event) {
+				$page = $event->object;
+				$event->return = $page->has('custID');
+			});
+
+			/**
+			 * Returns CI Customer Page URL
+			 */
+			$this->addHook('Page::has_shiptoID', function($event) {
+				$page = $event->object;
+				$event->return = $page->has('shiptoID');
+			});
+
 			/**
 			 * Returns CI Customer Page URL
 			 */
@@ -81,6 +105,24 @@
 		public function set_custID($custID) {
 			$this->custID = $custID;
 			$this->wire('page')->custID = $custID;
+		}
+
+		/**
+		 * Sets User
+		 * @param User $user
+		 */
+		public function set_user(User $user) {
+			$this->user = $user;
+		}
+
+		/**
+		 * Return User
+		 */
+		public function get_user() {
+			if (!$this->user) {
+				$this->user = $this->wire('user');
+			}
+			return $this->user;
 		}
 
 		/**
@@ -154,9 +196,7 @@
 		 * @return string
 		 */
 		public function get_customerURL() {
-			$url = new Url($this->wire('pages')->get('pw_template=ci-customer')->url);
-			$url->query->set('custID', $this->custID);
-			return $url->getUrl();
+			return $this->wire('modules')->get('MciPages')->get_ci_customerURL($this->custID);
 		}
 
 		/**
@@ -164,11 +204,7 @@
 		 * @return string
 		 */
 		public function get_customer_shiptoURL() {
-			$p = $event->object;
-			$url = new Url($this->wire('pages')->get('pw_template=ci-shipto')->url);
-			$url->query->set('custID', $this->custID);
-			$url->query->set('shiptoID', $this->shiptoID);
-			return $url->getUrl();
+			return $this->wire('modules')->get('MciPages')->get_ci_customershiptoURL($this->custID, $this->shiptoID);
 		}
 
 		/**
@@ -182,12 +218,14 @@
 		/**
 		 * Returns SalesOrder Objects
 		 *
-		 * @param  int    $limit Number of Results to return
-		 * @param  int    $page  Page of Results
-		 * @return PropelModelPager        [description]
+		 * @param  int    $limit     Number of Results to return
+		 * @param  int    $page      Page of Results
+		 * @return PropelModelPager
 		 */
 		public function get_salesorders($limit = 10, $page = 1) {
-			$query = SalesOrderQuery::create();
+			$filter_orders = $this->wire('modules')->get('FilterSalesOrders');
+			$filter_orders->init_query($this->get_user());
+			$query = $filter_orders->get_query();
 			$query->filterByCustid($this->custID);
 
 			if ($this->shiptoID) {
@@ -199,13 +237,35 @@
 		/**
 		 * Returns SalesHistory Objects
 		 *
-		 * @param  int    $limit Number of Results to return
-		 * @param  int    $page  Page of Results
-		 * @return PropelModelPager        [description]
+		 * @param  int    $limit     Number of Results to return
+		 * @param  int    $page      Page of Results
+		 * @return PropelModelPager
 		 */
 		public function get_saleshistory($limit = 10, $page = 1) {
-			$query = SalesHistoryQuery::create();
+			$filter_history = $this->wire('modules')->get('FilterSalesHistory');
+			$filter_history->init_query($this->get_user());
+			$query = $filter_history->get_query();
 			$query->filterByCustid($this->custID);
+
+			if ($this->shiptoID) {
+				$query->filterByShiptoid($this->shiptoID);
+			}
+			return $query->paginate($page, $limit);
+		}
+
+		/**
+		 * Returns Quote Objects
+		 *
+		 * @param  int    $limit     Number of Results to return
+		 * @param  int    $page      Page of Results
+		 * @return PropelModelPager
+		 */
+		public function get_quotes($limit = 10, $page = 1) {
+			$filter_quotes = $this->wire('modules')->get('FilterQuotes');
+			$filter_quotes->init_query($this->get_user());
+			$query = $filter_quotes->get_query();
+			$query->filterByCustid($this->custID);
+
 			if ($this->shiptoID) {
 				$query->filterByShiptoid($this->shiptoID);
 			}
@@ -244,6 +304,7 @@
 		public function get_contacts($limit = 10, $page = 1) {
 			$query = ContactQuery::create();
 			$query->filterByCustid($this->custID);
+
 			if ($this->shiptoID) {
 				$query->filterByShiptoid($this->shiptoID);
 			}
@@ -255,6 +316,7 @@
 			$query = $filter_useractions->get_actionsquery($input);
 			$query->filterByStatusIncomplete();
 			$query->filterByCustomerlink($this->custID);
+
 			if ($this->shiptoID) {
 				$query->filterByShiptolink($this->shiptoID);
 			}

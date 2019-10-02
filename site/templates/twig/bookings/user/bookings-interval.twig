@@ -1,0 +1,7 @@
+<h3>{{ interval|capitalize }}</h3>
+
+{% if interval == 'month' %}
+	{% include 'bookings/bookings-by-month.twig' %}
+{% else %}
+	{% include 'bookings/bookings-by-day.twig' %}
+{% endif %}

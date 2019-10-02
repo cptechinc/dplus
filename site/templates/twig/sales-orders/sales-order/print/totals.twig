@@ -1,0 +1,25 @@
+<div class="row">
+	<div class="col-8 pull-left"></div>
+	<div class="col-4 pull-left">
+		<table class="table table-sm table-borderless">
+			<tbody>
+				<tr>
+					<td>Subtotal:</td>
+					<td class="text-right">$ {{ order.subtotal_tax|currency }}</td>
+				</tr>
+				<tr>
+					<td>Shipping:</td>
+					<td class="text-right">$ {{ order.total_freight|currency }}</td>
+				</tr>
+				<tr>
+					<td>Tax:</td>
+					<td class="text-right">$ {{ order.total_tax|currency }}</td>
+				</tr>
+				<tr>
+					<td>Total:</td>
+					<td class="text-right">$ {{ order.total_total|currency }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

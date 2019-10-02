@@ -1,0 +1,20 @@
+<table class="table table-sm">
+	<thead>
+		<tr>
+			<th>Date</th>
+			<th>Amount</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for booking in bookings %}
+			<tr>
+				<td>
+					<a href="{{ page.get_bookings_monthURL(booking.bookdate) }}" class="link">
+						{{ booking.bookdate|convertdate('F Y') }}
+					</a>
+				</td>
+				<td>$ {{ booking.amount|currency }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

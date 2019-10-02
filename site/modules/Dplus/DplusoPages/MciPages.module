@@ -492,6 +492,19 @@
 			});
 		}
 
+		public function get_ci_customerURL($custID) {
+			$url = new Url($this->wire('pages')->get('pw_template=ci-customer')->url);
+			$url->query->set('custID', $custID);
+			return $url->getUrl();
+		}
+
+		public function get_ci_customershiptoURL($custID, $shiptoID) {
+			$url = new Url($this->wire('pages')->get('pw_template=ci-shipto')->url);
+			$url->query->set('custID', $custID);
+			$url->query->set('shiptoID', $shiptoID);
+			return $url->getUrl();
+		}
+
 		public static function getModuleInfo() {
 			return array(
 				'title' => 'Dplus Online Customer Pages',

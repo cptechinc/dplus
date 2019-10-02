@@ -137,12 +137,21 @@ a.link:hover {
 }
 
 /************************************** Login **************************************/
-
 #user-actions-list {
 	overflow-y: scroll;
 	max-height: 500px;
 }
 
 /************************************** Table Styles *******************************/
-
 .first-txn-row {border-top: 2px solid black;}
+
+/************************************** Dashboard **************************************/
+.scroll-500 {
+	overflow-y: scroll;
+	max-height: 500px;
+}
+
+.scroll-300 {
+	overflow-y: scroll;
+	max-height: 300px;
+}

@@ -16,8 +16,16 @@
 				'name'   => 'quotes',
 				'fields' => array()
 			),
+			'quotes-customer' => array(
+				'name'   => 'quotes-customer',
+				'fields' => array()
+			),
 			'quote-view' => array(
 				'name'   => 'quote-view',
+				'fields' => array()
+			),
+			'quote-print' => array(
+				'name'   => 'quote-print',
 				'fields' => array()
 			),
 			'quote-notes' => array(
@@ -64,6 +72,15 @@
 				'dplus_function' => '',
 				'pw_template'    => 'quotes'
 			),
+			'quotes-customer' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'customer',
+				'title'          => 'Customer Quotes',
+				'summary'        => 'View / Search through Customer Quotes',
+				'parent'         => '/mqo/quotes/',
+				'dplus_function' => '',
+				'pw_template'    => 'quotes-customer'
+			),
 			'quote-view' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'quote',
@@ -72,6 +89,15 @@
 				'parent'         => '/mqo/',
 				'dplus_function' => '',
 				'pw_template'    => 'quote-view'
+			),
+			'quote-print' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'Print',
+				'title'          => 'Print Quote',
+				'summary'        => 'Print Quote',
+				'parent'         => '/mqo/quote/',
+				'dplus_function' => '',
+				'pw_template'    => 'quote-print'
 			),
 			'quote-notes' => array(
 				'template'       => 'dplus-function',

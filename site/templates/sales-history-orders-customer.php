@@ -1,83 +1,21 @@
 <?php
-	use Propel\Runtime\ActiveQuery\Criteria;
+	$filter_saleshistory = $modules->get('FilterSalesHistory');
+	$filter_saleshistory->init_query($user);
+	$filter_saleshistory->filter_query($input);
+	$query = $filter_saleshistory->get_query();
+	$query->orderByDate_ordered('DESC');
 
-	$query = SalesHistoryQuery::create();
 	$custID = $input->get->text('custID');
-	$query->filterByCustId("$custID");
-	$customer = CustomerQuery::create()->findOneByCustid($custID);
+	$load_customer = $modules->get('CiLoadCustomerShipto');
+	$load_customer->set_custID($custID);
+	$customer = $load_customer->get_customer();
 	$page->title = "$customer->name Sales History";
-	$page->customerURL = $pages->get('pw_template=ci-customer')->url."?custID=$custID";
 
 	if ($input->get->shiptoID) {
 		$shiptoID = $input->get->text('shiptoID');
-		$shipto = CustomerShiptoQuery::create()->filterByCustid($custID)->findOneByShiptoid($shiptoID);
-		$query->filterByShiptoid($shiptoID );
+		$load_customer->set_shiptoID($shiptoID);
+		$shipto = $load_customer->get_shipto();
 		$page->title = "$shipto->name Sales History";
-		$page->customerURL = $pages->get('pw_template=ci-shipto')->url."?custID=$custID&shiptoID=$shiptoID";
-	}
-
-	if ($user->is_salesrep()) {
-		$query->filterbySalesPerson($user->roleid);
-	}
-	$orders = $query->limit(10)->orderByDate_ordered('DESC')->find();
-
-	if ($input->get->filter) {
-		if ($input->get->text('ordernumber_from') && $input->get->text('ordernumber_through')) {
-			$query->filterByOrdernumber(array($input->get->text('ordernumber_from'), $input->get->text('ordernumber_through')));
-		} else if ($input->get->text('ordernumber_from')) {
-			$query->filterByOrdernumber($input->get->text('ordernumber_from'));
-		} else if ($input->get->text('ordernumber_through')) {
-			$query->filterByOrdernumber($input->get->text('ordernumber_through'));
-		}
-
-		if ($input->get->text('custpo')) {
-			$custpo = $input->get->text('custpo');
-			$query->filterByCustpo("%$custpo%", Criteria::LIKE);
-		}
-
-		if ($input->get->text('order_total_from') && $input->get->text('order_total_through')) {
-			$query->filterByOrdertotal(array($input->get->text('order_total_from'), $input->get->text('order_total_through')));
-		} else if ($input->get->text('order_total_from')) {
-			$query->filterByTotal_total($input->get->text('order_total_from'), Criteria::GREATER_EQUAL);
-		} else if ($input->get->text('order_total_through')) {
-			$query->filterByTotal_total($input->get->text('order_total_through'), Criteria::LESS_EQUAL);
-		}
-
-		if ($input->get->text('invoicedate_from') || $input->get->text('invoicedate_through')) {
-			$invoicedate_from = date("Ymd", strtotime($input->get->text('invoicedate_from')));
-
-			if (empty($input->get->text('invoicedate_through'))) {
-				$invoicedate_through = date('Ymd');
-			} else {
-				$invoicedate_through = date("Ymd", strtotime($input->get->text('invoicedate_through')));
-			}
-
-			if ($invoicedate_from && $invoicedate_through) {
-				$query->filterByInvoicedate(array($invoicedate_from, $invoicedate_through));
-			} else if ($invoicedate_from) {
-				$query->filterByInvoicedate($invoicedate_from);
-			} else if ($invoicedate_through) {
-				$query->filterByInvoicedate($invoicedate_through);
-			}
-		}
-
-		if ($input->get->text('orderdate_from') || $input->get->text('orderdate_through')) {
-			$orderdate_from = date("Ymd", strtotime($input->get->text('orderdate_from')));
-
-			if (empty($input->get->text('orderdate_through'))) {
-				$orderdate_through = date('Ymd');
-			} else {
-				$orderdate_through = date("Ymd", strtotime($input->get->text('orderdate_through')));
-			}
-
-			if ($orderdate_from && $orderdate_through) {
-				$query->filterByOrderdate(array($orderdate_from, $orderdate_through));
-			} else if ($orderdate_from) {
-				$query->filterByOrderdate($orderdate_from);
-			} else if ($orderdate_through) {
-				$query->filterByOrderdate($orderdate_through);
-			}
-		}
 	}
 
 	$orders = $query->paginate($input->pageNum, 10);

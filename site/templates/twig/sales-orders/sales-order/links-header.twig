@@ -4,8 +4,13 @@
 			<a href="{{ page.listpage.url }}" class="btn btn-light">
 				<i class="fa fa-list" aria-hidden="true"></i> Back to Sales {{ list|capitalize }} List
 			</a>
+			&nbsp;
 			<a href="#" class="btn btn-light" aria-label="Return to last page" onclick="window.history.back();">
 				<i class="fa fa-undo" aria-hidden="true"></i> Go back
+			</a>
+			&nbsp;
+			<a href="{{ page.get_printURL() }}" class="btn btn-primary" target="_blank" aria-label="View Printable" title="View Printable">
+				<i class="fa fa-print" aria-hidden="true"></i> View Print
 			</a>
 		</div>
 		<div class="col text-right">

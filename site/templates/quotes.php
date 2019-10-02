@@ -1,20 +1,10 @@
 <?php
-	use Propel\Runtime\ActiveQuery\Criteria;
-
-	$query = QuoteQuery::create();
-
-	if ($user->is_salesrep()) {
-		$query->filterbySalesPerson($user->roleid);
-	}
-
+	$filter_quotes = $modules->get('FilterQuotes');
+	$filter_quotes->init_query($user);
+	$filter_quotes->filter_query($input);
+	
+	$query = $filter_quotes->get_query();
 	$query->orderByDate_quoted('DESC');
-
-	if ($input->get->filter) {
-		// TODO: Filter
-	} else {
-		$input->get->status = array();
-	}
-
 	$quotes = $query->paginate($input->pageNum, 10);
 
 	// TODO: Filter Form
