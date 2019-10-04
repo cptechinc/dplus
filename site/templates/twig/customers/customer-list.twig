@@ -2,10 +2,13 @@
 	<thead>
 		<tr>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('custID') }}" class="link">ID</a>
+				<a href="{{ page.get_sortURL('custID') }}" class="link">CustID</a>
 			</th>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('name') }}" class="link">Name</a>
+				<a href="{{ page.get_sortURL('name') }}" class="link">Customer Name</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('contact') }}" class="link">Contact Name</a>
 			</th>
 			<th scope="col">Address</th>
 			<th scope="col">
@@ -17,26 +20,21 @@
 			<th scope="col">
 				<a href="{{ page.get_sortURL('zip') }}" class="link">Zip</a>
 			</th>
-			<th scope="col">
-				<a href="{{ page.get_sortURL('lastsaledate') }}" class="link">Last Sales Date</a>
-			</th>
 		</tr>
 	</thead>
 	<tbody>
-		{% if customers.count() %}
-			{% for customer in customers %}
+		{% if contacts.count() %}
+			{% for contact in contacts %}
 				<tr>
 					<td scope="row">
-						<a href="{{ page.url ~ '?custID=' ~ customer.id }}" class="link">
-							<strong>{{ customer.id }}</strong>
-						</a>
+						<strong>{{ custID }}</strong>
 					</td>
-					<td>{{ customer.name }}</td>
-					<td>{{ customer.address1 }}</td>
-					<td>{{ customer.city }}</td>
-					<td>{{ customer.state }}</td>
-					<td>{{ customer.zip }}</td>
-					<td>{{ convertdate(customer.lastsaledate) }}</td>
+					<td>{{ contact.name }}</td>
+					<td>{{ contact.contact }}</td>
+					<td>{{ contact.addr1 }}</td>
+					<td>{{ contact.city }}</td>
+					<td>{{ contact.state }}</td>
+					<td>{{ contact.zip }}</td>
 				</tr>
 			{% endfor %}
 		{% else %}
