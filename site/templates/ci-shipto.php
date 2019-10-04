@@ -43,6 +43,7 @@
 		} else {
 			$page->title = "Select a $customer->name Ship-to";
 			$shiptos = CustomerShiptoQuery::create()->filterByCustid($custID)->find();
+			$page->body .= $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID]);
 			$page->body .= $config->twig->render('customers/ci/shiptos/shipto-list.twig', ['page' => $page, 'customer' => $customer, 'shiptos' => $shiptos]);
 		}
 	}

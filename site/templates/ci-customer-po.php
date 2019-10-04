@@ -30,6 +30,7 @@
 			}
 		} else {
 			$page->formurl = $page->fullURL->getUrl();
+			$page->body .= $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID]);
 			$page->body .= $config->twig->render('customers/ci/customer/po-form.twig', ['page' => $page, 'custID' => $custID]);
 		}
 	}

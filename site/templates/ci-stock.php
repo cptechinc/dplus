@@ -9,7 +9,8 @@
 
 		if (1 == 1) {
 			$page->headline = $page->title = "Function Not Available";
-			$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "CI Stock is Not available"]);
+			$page->body = $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID]);
+			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "CI Stock is Not available"]);
 		} else {
 			if ($module_json->file_exists(session_id(), $page->jsoncode)) {
 				if ($json['custid'] != $custID) {
@@ -24,7 +25,8 @@
 			} else {
 				if ($session->stocktry > 3) {
 					$page->headline = $page->title = "Stock File could not be loaded";
-					$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
+					$page->body = $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID]);
+					$page->body .= $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
 				} else {
 					$session->stocktry++;
 					$session->redirect($page->get_customerstockURL($custID, $itemID));
