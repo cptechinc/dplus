@@ -1,0 +1,54 @@
+<table id="cust-index" class="table table-bordered">
+	<thead>
+		<tr>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('custID') }}" class="link">CustID</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('name') }}" class="link">Customer Name</a>
+			</th>
+            <th scope="col">
+				<a href="{{ page.get_sortURL('name') }}" class="link">Ship-to</a>
+			</th>
+			<th scope="col">Address</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('city') }}" class="link">City</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('state') }}" class="link">State</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('zip') }}" class="link">Zip</a>
+			</th>
+            <th scope="col">
+				<a href="{{ page.get_sortURL('phone') }}" class="link">Phone</a>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if customers.count() %}
+			{% for customer in customers %}
+				<tr>
+					<td scope="row">
+						<a href="{{ page.parent.child('template=dplus-function').url ~ '?custID=' ~ customer.custid }}" class="link">
+							<strong>{{ customer.custid }}</strong>
+						</a>
+					</td>
+					<td>{{ customer.name }}</td>
+                    <td>{{ customer.shiptoid }}</td>
+					<td>{{ customer.address1 }}</td>
+					<td>{{ customer.city }}</td>
+					<td>{{ customer.state }}</td>
+					<td>{{ customer.zip }}</td>
+                    <td>{{ customer.phone }}</td>
+				</tr>
+			{% endfor %}
+		{% else %}
+			<tr>
+				<td colspan="7" class="bg-secondary text-white text-center">
+					No Results found
+				</td>
+			</tr>
+		{% endif %}
+	</tbody>
+</table>

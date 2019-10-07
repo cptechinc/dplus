@@ -99,6 +99,10 @@
 			'ci-phonebook' => array(
 				'name'   => 'ci-phonebook',
 				'fields' => array(),
+			),
+			'ci-customer-phonebook' => array(
+				'name'   => 'ci-customer-phonebook',
+				'fields' => array(),
 			)
 		);
 
@@ -120,14 +124,23 @@
 				'dplus_function' => '',
 				'pw_template'    => 'ci-customer'
 			),
-			'ci-index' => array(
+			'ci-phonebook' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'phonebook',
+				'title'          => 'Phonebook',
+				'summary'        => 'Search through customers by Phonebook',
+				'parent'         => '/mci/',
+				'dplus_function' => '',
+				'pw_template'    => 'ci-phonebook'
+			),
+			'ci-customer-phonebook' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'phonebook',
 				'title'          => 'Phonebook',
 				'summary'        => 'View Customer Phonebook',
 				'parent'         => '/mci/ci/',
 				'dplus_function' => '',
-				'pw_template'    => 'ci-phonebook'
+				'pw_template'    => 'ci-customer-phonebook'
 			),
 			'ci-shipto' => array(
 				'template'       => 'dplus-function',
@@ -487,6 +500,16 @@
 			$this->addHook('Page::cust_saleshistoryURL', function($event) {
 				$custID = $event->arguments(0);
 				$url = new Url($this->wire('pages')->get('pw_template=sales-history-orders-customer')->url);
+				$url->query->set('custID', $custID);
+				$event->return = $url->getUrl();
+			});
+
+			/**
+			 * Adds hook for getting Sales History List URL
+			 */
+			$this->addHook('Page::cust_quotesURL', function($event) {
+				$custID = $event->arguments(0);
+				$url = new Url($this->wire('pages')->get('pw_template=quotes-customer')->url);
 				$url->query->set('custID', $custID);
 				$event->return = $url->getUrl();
 			});
