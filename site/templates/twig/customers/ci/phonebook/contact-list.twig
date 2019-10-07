@@ -2,10 +2,7 @@
 	<thead>
 		<tr>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('custID') }}" class="link">CustID</a>
-			</th>
-			<th scope="col">
-				<a href="{{ page.get_sortURL('name') }}" class="link">Customer Name</a>
+				<a href="{{ page.get_sortURL('shiptoid') }}" class="link">Ship-To</a>
 			</th>
 			<th scope="col">
 				<a href="{{ page.get_sortURL('contact') }}" class="link">Contact Name</a>
@@ -27,9 +24,8 @@
 			{% for contact in contacts %}
 				<tr>
 					<td scope="row">
-						<strong>{{ custID }}</strong>
+						<strong>{{ contact.shiptoid }}</strong>
 					</td>
-					<td>{{ contact.name }}</td>
 					<td>{{ contact.contact }}</td>
 					<td>{{ contact.addr1 }}</td>
 					<td>{{ contact.city }}</td>

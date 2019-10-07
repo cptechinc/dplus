@@ -5,6 +5,8 @@
 		$query = CustindexQuery::create();
 		$query->filterByCustid($custID);
 
+		$page->title = "Phonebook: $customer->name";
+
 		if ($input->get->q) {
 			$q = strtoupper($input->get->text('q'));
 
