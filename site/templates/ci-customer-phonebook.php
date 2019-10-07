@@ -6,6 +6,9 @@
 		$query = CustindexQuery::create();
 		$query->filterByCustid($custID);
 
+		$page->show_breadcrumbs = false;
+		$page->body .= $config->twig->render('customers/ci/bread-crumbs.twig', ['page' => $page, 'customer' => $customer]);
+
 		$page->title = "Phonebook: $customer->name";
 
 		if ($input->get->q) {
