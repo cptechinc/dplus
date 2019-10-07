@@ -3,8 +3,8 @@
 	$modules->get('DplusoPagesSalesOrder')->init_salesorder_hooks();
 	$html = $modules->get('HtmlWriter');
 
-	if ($input->get->ordn) {
-		$ordn = $input->get->text('ordn');
+	if ($input->get->ordn) {	
+		$ordn = SalesOrder::get_paddedordernumber($input->get->text('ordn'));
 
 		if (SalesOrderQuery::create()->filterByOrdernumber($ordn)->count() || SalesHistoryQuery::create()->filterByOrdernumber($ordn)->count()) {
 			if ($page->print) {
