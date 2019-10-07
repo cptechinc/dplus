@@ -284,6 +284,19 @@
 			),
 		);
 
+		public function init_phonebookpage() {
+			$this->addHook('Page::get_customerURL', function($event) {
+				$custID = $event->arguments(0);
+				$event->return = $this->get_ci_customerURL($custID);
+			});
+
+			$this->addHook('Page::get_customershiptoURL', function($event) {
+				$custID = $event->arguments(0);
+				$shiptoID = $event->arguments(1);
+				$event->return = $this->get_ci_customershiptoURL($custID, $shiptoID);
+			});
+		}
+
 		public function init_cipage() {
 			$this->addHook('Page::get_redirURL', function($event) {
 				$p = $event->object;
