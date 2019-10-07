@@ -53,7 +53,7 @@
 			'bookings-day' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'day',
-				'title'          => 'Bookings Day',
+				'title'          => 'Day',
 				'summary'        => 'View Bookings for Day',
 				'parent'         => '/sobook/bookings/',
 				'dplus_function' => '',
