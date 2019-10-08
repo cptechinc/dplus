@@ -48,3 +48,16 @@
 		return base64_encode($str);
 	});
 	$config->twig->addFilter($filter);
+
+	$matches_search = new Twig_Function('matches_search', function ($subject, $query) {
+		$regex = "/(".str_replace('-', '\-?', $query).")/i";
+		$contains = preg_match($regex, $subject, $matches);
+
+		if ($contains) {
+			$highlight = "<span class='highlight'>" . $matches[0] . "</span>";
+			return preg_replace($regex, $highlight, $subject);
+		}  else {
+			return $subject;
+		}
+	});
+	$config->twig->addFunction($matches_search);

@@ -31,21 +31,21 @@
 				<tr>
 					<td scope="row">
 						<a href="{{ page.get_customerURL(customer.custid) }}" class="link">
-							<strong>{{ customer.custid }}</strong>
+							<strong>{{ matches_search(customer.custid, q)|raw }}</strong>
 						</a>
 					</td>
-					<td>{{ customer.name }}</td>
-					<td>{{ customer.shiptoid }}</td>
-					<td>{{ customer.address1 }}</td>
-					<td>{{ customer.city }}</td>
-					<td>{{ customer.state }}</td>
-					<td>{{ customer.zip }}</td>
-					<td>{{ customer.phone }}</td>
+					<td>{{ matches_search(customer.name, q)|raw }}</td>
+					<td>{{ matches_search(customer.shiptoid, q)|raw }}</td>
+					<td>{{ matches_search(customer.address1, q)|raw }}</td>
+					<td>{{ matches_search(customer.city, q)|raw }}</td>
+					<td>{{ matches_search(customer.state, q)|raw }}</td>
+					<td>{{ matches_search(customer.zip, q)|raw }}</td>
+					<td>{{ matches_search(customer.phone, q)|raw }}</td>
 				</tr>
 			{% endfor %}
 		{% else %}
 			<tr>
-				<td colspan="7" class="bg-secondary text-white text-center">
+				<td colspan="8" class="bg-secondary text-white text-center">
 					No Results found
 				</td>
 			</tr>

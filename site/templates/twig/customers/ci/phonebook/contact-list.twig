@@ -17,6 +17,9 @@
 			<th scope="col">
 				<a href="{{ page.get_sortURL('zip') }}" class="link">Zip</a>
 			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('phone') }}" class="link">Phone</a>
+			</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -24,13 +27,14 @@
 			{% for contact in contacts %}
 				<tr>
 					<td scope="row">
-						<strong>{{ contact.shiptoid }}</strong>
+						<strong>{{ matches_search(contact.shiptoid, q)|raw }}</strong>
 					</td>
-					<td>{{ contact.contact }}</td>
-					<td>{{ contact.addr1 }}</td>
-					<td>{{ contact.city }}</td>
-					<td>{{ contact.state }}</td>
-					<td>{{ contact.zip }}</td>
+					<td>{{ matches_search(contact.contact, q)|raw }}</td>
+					<td>{{ matches_search(contact.addr1, q)|raw }}</td>
+					<td>{{ matches_search(contact.city, q)|raw }}</td>
+					<td>{{ matches_search(contact.state, q)|raw }}</td>
+					<td>{{ matches_search(contact.zip, q)|raw }}</td>
+					<td>{{ matches_search(contact.phone, q)|raw }}</td>
 				</tr>
 			{% endfor %}
 		{% else %}

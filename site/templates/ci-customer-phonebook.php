@@ -31,7 +31,7 @@
 		$contacts = $query->paginate($input->pageNum, 10);
 		$page->searchURL = $page->url;
 		$page->body .= $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID]);
-		$page->body .= $config->twig->render('customers/ci/phonebook/contact-search.twig', ['page' => $page, 'custID' => $custID, 'contacts' => $contacts]);
+		$page->body .= $config->twig->render('customers/ci/phonebook/contact-search.twig', ['page' => $page, 'custID' => $custID, 'q' => $q, 'contacts' => $contacts]);
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $query->count()]);
 	}
 

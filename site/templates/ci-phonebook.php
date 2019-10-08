@@ -23,10 +23,9 @@
 		$query->sortBy($orderbycolumn, $sort);
 	}
 
-	$customers = $query->paginate($input->pageNum, 10);
-
 	$page->searchURL = $page->url;
-	$page->body .= $config->twig->render('customers/phonebook/phonebook-search.twig', ['page' => $page, 'customers' => $customers]);
+	$customers = $query->paginate($input->pageNum, 10);
+	$page->body .= $config->twig->render('customers/phonebook/phonebook-search.twig', ['page' => $page, 'q' => $q, 'customers' => $customers]);
 	$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $query->count()]);
 
 	if ($page->print) {
