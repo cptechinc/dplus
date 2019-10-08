@@ -139,7 +139,7 @@
 				'title'          => 'Phonebook',
 				'summary'        => 'View Customer Phonebook',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-gen',
 				'pw_template'    => 'ci-customer-phonebook'
 			),
 			'ci-shipto' => array(
@@ -158,7 +158,7 @@
 				'title'          => 'Contacts',
 				'summary'        => 'View Customer Contacts',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-gen',
 				'pw_template'    => 'ci-contacts',
 				'jsoncode'       => 'ci-contacts'
 			),
@@ -168,7 +168,7 @@
 				'title'          => 'Pricing',
 				'summary'        => 'View Customer Pricing',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-prc',
 				'pw_template'    => 'ci-pricing',
 				'jsoncode'       => 'ci-pricing'
 			),
@@ -178,7 +178,7 @@
 				'title'          => 'Sales Orders',
 				'summary'        => 'View Customer Sales Orders',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-sor',
 				'pw_template'    => 'ci-sales-orders',
 				'jsoncode'		 => 'ci-sales-orders'
 			),
@@ -188,7 +188,7 @@
 				'title'          => 'Sales History',
 				'summary'        => 'View Customer Sales History',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-sht',
 				'pw_template'    => 'ci-sales-history',
 				'jsoncode'		 => 'ci-sales-history'
 			),
@@ -198,7 +198,7 @@
 				'title'          => 'Purchase Orders',
 				'summary'        => 'View Customer PO',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-cpo',
 				'pw_template'    => 'ci-customer-po',
 				'jsoncode'       => 'ci-purchaseorders'
 			),
@@ -208,7 +208,7 @@
 				'title'          => 'Quotes',
 				'summary'        => 'View Customer Quotes',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-qte',
 				'pw_template'    => 'ci-quotes',
 				'jsoncode'		 => 'ci-quotes'
 			),
@@ -218,7 +218,7 @@
 				'title'          => 'Open Invoices',
 				'summary'        => 'View Customer Open Invoices',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-inv',
 				'pw_template'    => 'ci-open-invoices',
 				'jsoncode'		 => 'ci-openinvoices'
 			),
@@ -228,7 +228,7 @@
 				'title'          => 'Payments',
 				'summary'        => 'View Customer Payments',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-pay',
 				'pw_template'    => 'ci-payments',
 				'jsoncode'		 => 'ci-payments'
 			),
@@ -238,7 +238,7 @@
 				'title'          => 'Credit',
 				'summary'        => 'View Customer Credit',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-crd',
 				'pw_template'    => 'ci-credit',
 				'jsoncode'       => 'ci-credit'
 			),
@@ -248,7 +248,7 @@
 				'title'          => 'Standing Orders',
 				'summary'        => 'View Customer Standing Orders',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-sto',
 				'pw_template'    => 'ci-standing-orders',
 				'jsoncode'       => 'ci-standingorders'
 			),
@@ -258,7 +258,7 @@
 				'title'          => 'Stock',
 				'summary'        => 'View Customer Stock',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-sst',
 				'pw_template'    => 'ci-stock',
 				'jsoncode'       => 'ci-stock'
 			),
@@ -268,7 +268,7 @@
 				'title'          => 'Notes',
 				'summary'        => 'View Customer Notes',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-nte',
 				'pw_template'    => 'ci-notes',
 				'jsoncode'       => 'ci-notes'
 			),

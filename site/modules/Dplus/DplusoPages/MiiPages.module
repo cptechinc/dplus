@@ -132,7 +132,7 @@
 				'title'          => 'Stock',
 				'summary'        => 'View Item Stock',
 				'parent'         => '/mii/ii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii-sst',
 				'pw_template'    => 'ii-stock',
 				'jsoncode'       => 'ii-stock_whse',
 				'has_print'      => true
@@ -143,7 +143,7 @@
 				'title'          => 'Requirements',
 				'summary'        => 'View Item Requirements',
 				'parent'         => '/mii/ii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii-req',
 				'pw_template'    => 'ii-requirements',
 				'jsoncode'       => 'ii-requirements',
 				'has_print'      => true
@@ -154,7 +154,7 @@
 				'title'          => 'Pricing',
 				'summary'        => 'View Item Pricing',
 				'parent'         => '/mii/ii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii-prc',
 				'pw_template'    => 'ii-pricing',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-pricing'
@@ -165,7 +165,7 @@
 				'title'          => 'Costing',
 				'summary'        => 'View Item Costing',
 				'parent'         => '/mii/ii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii-cst',
 				'pw_template'    => 'ii-costing',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-costing'
@@ -187,7 +187,7 @@
 				'title'          => 'Activity',
 				'summary'        => 'View Item Activity',
 				'parent'         => '/mii/ii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii-act',
 				'pw_template'    => 'ii-activity',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-activity'
@@ -198,7 +198,7 @@
 				'title'          => 'Components',
 				'summary'        => 'View Item Components',
 				'parent'         => '/mii/ii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii-bom',
 				'pw_template'    => 'ii-components',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-components'
@@ -220,7 +220,7 @@
 				'title'          => 'Lot Serial',
 				'summary'        => 'View Item Lot Serial',
 				'parent'         => '/mii/ii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii-lot',
 				'pw_template'    => 'ii-lotserial',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-lotserial'
@@ -231,7 +231,7 @@
 				'title'          => 'Substitutes',
 				'summary'        => 'View Item Substitutes',
 				'parent'         => '/mii/ii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii-sub',
 				'pw_template'    => 'ii-substitutes',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-substitutes'
@@ -253,7 +253,7 @@
 				'title'          => 'Sales Orders',
 				'summary'        => 'View Item Sales Orders',
 				'parent'         => '/mii/ii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii-sor',
 				'pw_template'    => 'ii-sales-orders',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-sales-orders'
@@ -264,7 +264,7 @@
 				'title'          => 'Sales History',
 				'summary'        => 'View Item Sales History',
 				'parent'         => '/mii/ii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii-sht',
 				'pw_template'    => 'ii-sales-history',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-sales-history'
@@ -275,7 +275,7 @@
 				'title'          => 'Quotes',
 				'summary'        => 'View Item Quotes',
 				'parent'         => '/mii/ii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii-qte',
 				'pw_template'    => 'ii-quotes',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-quotes'
@@ -286,7 +286,7 @@
 				'title'          => 'Purchase Orders',
 				'summary'        => 'View Item Purchase Orders',
 				'parent'         => '/mii/ii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii-pur',
 				'pw_template'    => 'ii-purchase-orders',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-purchase-orders'
@@ -297,7 +297,7 @@
 				'title'          => 'Purchase History',
 				'summary'        => 'View Item Purchase History',
 				'parent'         => '/mii/ii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii-pht',
 				'pw_template'    => 'ii-purchase-history',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-purchase-history'
