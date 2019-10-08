@@ -191,6 +191,15 @@
 				'dplus_function' => 'pilbl',
 				'pw_template'    => 'whse-print-item-label'
 			),
+			'whse-receiving' => array(
+				'template'       => 'warehouse-function',
+				'name'           => 'receiving',
+				'title'          => 'Receiving',
+				'summary'        => 'Receive Purchase Orders',
+				'parent'         => '/warehouse/inventory/',
+				'dplus_function' => '',
+				'pw_template'    => 'whse-receiving'
+			),
 			'menu-pick' => array(
 				'template'       => 'warehouse-menu',
 				'name'           => 'picking',

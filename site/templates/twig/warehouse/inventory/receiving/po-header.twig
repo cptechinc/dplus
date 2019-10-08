@@ -1,0 +1,37 @@
+<div class="row mt-4">
+	<div class="col-sm-4">
+		<table class="table table-sm">
+			<tr>
+				<td>PO Number</td>
+				<td>{{ purchaseorder.ponbr }}</td>
+			</tr>
+			<tr>
+				<td>Vendor</td>
+				<td>{{ purchaseorder.vendorid }}</td>
+			</tr>
+			<tr>
+				<td>Order Date</td>
+				<td>{{ purchaseorder.date_ordered|convertdate }}</td>
+			</tr>
+			<tr>
+				<td>GL Period</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Warehouse</td>
+				<td>{{ purchaseorder.whse }}</td>
+			</tr>
+		</table>
+	</div>
+	<div class="col-sm-4">
+		<table class="table table-sm">
+			<h5>Ship From:</h5>
+			<address>
+				{{ purchaseorder.shipfrom_name }} <br>
+				{{ purchaseorder.shipfrom_address }} <br>
+				{{ purchaseorder.shipfrom_city ~ ', ' ~ purchaseorder.shipfrom_state ~ ' ' ~ purchaseorder.shipfrom_zip }} <br>
+				{{ purchaseorder.shipfrom_country }}
+			</address>
+		</table>
+	</div>
+</div>
