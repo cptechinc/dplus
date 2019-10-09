@@ -176,7 +176,7 @@
 				'title'          => 'Usage',
 				'summary'        => 'View Item Usage',
 				'parent'         => '/mii/ii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii-usg',
 				'pw_template'    => 'ii-usage',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-usage'
@@ -209,7 +209,7 @@
 				'title'          => 'Where Used',
 				'summary'        => 'View Item Where Used',
 				'parent'         => '/mii/ii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii-use',
 				'pw_template'    => 'ii-where-used',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-where-used'
@@ -242,7 +242,7 @@
 				'title'          => 'Documents',
 				'summary'        => 'View Item Substitutes',
 				'parent'         => '/mii/ii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii-doc',
 				'pw_template'    => 'ii-documents',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-documents'
