@@ -113,7 +113,7 @@
 				'title'          => 'Customers',
 				'summary'        => 'Customer Menu',
 				'parent'         => '/',
-				'dplus_function' => ''
+				'dplus_function' => 'mci'
 			),
 			'ci' => array(
 				'template'       => 'dplus-function',
@@ -130,7 +130,7 @@
 				'title'          => 'Phonebook',
 				'summary'        => 'Search through customers by Phonebook',
 				'parent'         => '/mci/',
-				'dplus_function' => '',
+				'dplus_function' => 'mci',
 				'pw_template'    => 'ci-phonebook'
 			),
 			'ci-customer-phonebook' => array(

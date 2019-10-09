@@ -115,7 +115,7 @@
 				'title'          => 'Item Information',
 				'summary'        => 'Item Information Menu',
 				'parent'         => '/',
-				'dplus_function' => ''
+				'dplus_function' => 'mii'
 			),
 			'ii' => array(
 				'template'       => 'dplus-function',
@@ -123,7 +123,7 @@
 				'title'          => 'Item Information',
 				'summary'        => 'View Item Information',
 				'parent'         => '/mii/',
-				'dplus_function' => '',
+				'dplus_function' => 'ii',
 				'pw_template'    => 'ii-item'
 			),
 			'ii-stock' => array(
@@ -248,7 +248,7 @@
 				'jsoncode'       => 'ii-documents'
 			),
 			'ii-sales-orders' => array(
-				'template'       => 'ii-sales-orders',
+				'template'       => 'ii-function',
 				'name'           => 'sales-orders',
 				'title'          => 'Sales Orders',
 				'summary'        => 'View Item Sales Orders',
@@ -259,7 +259,7 @@
 				'jsoncode'       => 'ii-sales-orders'
 			),
 			'ii-sales-history' => array(
-				'template'       => 'ii-sales-history',
+				'template'       => 'ii-function',
 				'name'           => 'sales-history',
 				'title'          => 'Sales History',
 				'summary'        => 'View Item Sales History',
@@ -270,7 +270,7 @@
 				'jsoncode'       => 'ii-sales-history'
 			),
 			'ii-quotes' => array(
-				'template'       => 'ii-quotes',
+				'template'       => 'ii-function',
 				'name'           => 'quotes',
 				'title'          => 'Quotes',
 				'summary'        => 'View Item Quotes',
@@ -281,7 +281,7 @@
 				'jsoncode'       => 'ii-quotes'
 			),
 			'ii-purchase-orders' => array(
-				'template'       => 'ii-purchase-orders',
+				'template'       => 'ii-function',
 				'name'           => 'purchase-orders',
 				'title'          => 'Purchase Orders',
 				'summary'        => 'View Item Purchase Orders',
@@ -292,7 +292,7 @@
 				'jsoncode'       => 'ii-purchase-orders'
 			),
 			'ii-purchase-history' => array(
-				'template'       => 'ii-purchase-history',
+				'template'       => 'ii-function',
 				'name'           => 'purchase-history',
 				'title'          => 'Purchase History',
 				'summary'        => 'View Item Purchase History',
@@ -314,6 +314,19 @@
 		);
 
 		public function init_iipage() {
+			$this->addHook('Page(pw_template=ii-item)::children_user_allowed', function($event) {
+				$user = $this->wire('user');
+				$event->return = $this->get_ii_user_allowed_functions($user);
+			});
+
+			$this->addHook('Page::url_itemID', function($event) {
+				$p = $event->object;
+				$itemID   = $event->arguments(0);
+				$url = new Url($p->url);
+				$url->query->set('itemID', $itemID);
+				$event->return = $url->getUrl();
+			});
+
 			$this->addHook('Page::get_redirURL', function($event) {
 				$p = $event->object;
 				$event->return = $p->parent('template=dplus-menu')->child('template=redir')->url;
@@ -508,6 +521,13 @@
 				$url->query->set('page', $p->fullURL->getUrl());
 				$event->return = $url->getUrl();
 			});
+		}
+
+		public function get_ii_user_allowed_functions(User $user) {
+			$p = $this->wire('pages')->get('pw_template=ii-item');
+			$dplus_functions = array_unique($p->children()->explode('dplus_function'));
+			$filtered_functions = $user->filter_functions($dplus_functions);
+			return $p->children('dplus_function='.implode('|', $filtered_functions));
 		}
 
 		public static function getModuleInfo() {
