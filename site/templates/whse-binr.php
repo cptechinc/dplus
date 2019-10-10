@@ -91,15 +91,15 @@
 		if ($resultscount == 1) {
 			if (!empty($session->get('binr'))) { // Show result of BinR
 				$nexturl = new Purl\Url($page->fullURL->getUrl());
+				$nexturl->query->remove('itemID');
+				$nexturl->query->remove('lotnbr');
+				$nexturl->query->remove('serialnbr');
 
 				if ($input->get->tobin || $input->get->frombin) {
-					$nexturl->query->remove('itemID');
-					$nexturl->query->remove('lotnbr');
-					$nexturl->query->remove('serialnbr');
 					$nexturl->query->remove('binID');
 				}
 
-				$page->body = $config->twig->render('warehouse/binr/binr-result.twig', ['session' => $session, 'page' => $page, 'whsesession' => $whsesession, 'item' => $item, 'url' => $nexturl]);
+				$page->body = $config->twig->render('warehouse/binr/binr-result.twig', ['session' => $session, 'page' => $page, 'whsesession' => $whsesession, 'item' => $item, 'nexturl' => $nexturl]);
 				$session->remove('binr');
 			} else { // Prepare Binr Form
 				$inventory = InvsearchQuery::create();
