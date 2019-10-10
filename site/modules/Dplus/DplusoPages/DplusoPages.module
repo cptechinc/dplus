@@ -85,7 +85,13 @@
 
 		public function get_user_allowed_menus(User $user) {
 			$p = $this->wire('pages')->get('template=home');
-			$dplus_functions = array_unique($p->children('template=dplus-menu|menu')->explode('dplus_function'));
+
+			if ($user->hasRole('whse') || $user->hasRole('whsemgr')) {
+				$dplus_functions = array_unique($p->children('template=warehouse-menu|menu')->explode('dplus_function'));
+			} else {
+				$dplus_functions = array_unique($p->children('template=dplus-menu|menu')->explode('dplus_function'));
+			}
+
 			$filtered_functions = $user->filter_functions($dplus_functions);
 			return $p->children('template=dplus-menu|menu, dplus_function='.implode('|', $filtered_functions));
 		}

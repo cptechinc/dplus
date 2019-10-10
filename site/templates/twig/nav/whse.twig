@@ -1,7 +1,7 @@
 {% extends "nav/default.twig" %}
 
 {% block nav_links %}
-	{% for menu in pages.get('/').children('template=warehouse-menu|menu') %}
+	{% for menu in pages.user_allowed_menus() %}
 		<li class="nav-item">
 			<a class="nav-link" href="{{ menu.url }}">{{ menu.title }}</a>
 		</li>
