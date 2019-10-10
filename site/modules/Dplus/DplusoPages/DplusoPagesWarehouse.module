@@ -3,6 +3,10 @@
 
 	use Purl\Url;
 
+	/**
+	 * Module that Creates / Updates Pages Needed for Warehouse
+	 * Also Provides Page Hooks
+	 */
 	class DplusoPagesWarehouse extends DplusoPages implements Module {
 
 		protected $fields = array(

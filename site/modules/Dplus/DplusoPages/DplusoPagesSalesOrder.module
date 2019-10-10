@@ -6,6 +6,10 @@
 	use Purl\Url;
 	use SalesOrder, SalesOrderQuery;
 
+	/**
+	 * Module that Creates / Updates Pages Needed for Sales Orders
+	 * Also Provides Page Hooks
+	 */
 	class DplusoPagesSalesOrder extends DplusoPages implements Module {
 
 		protected $fields = array();

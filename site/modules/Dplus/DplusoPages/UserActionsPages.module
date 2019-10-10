@@ -4,6 +4,9 @@ require_once(__DIR__ . '/DplusoPages.module');
 
 use Purl\Url;
 
+/**
+ * Module That Creates the Necessary Pages for viewing User Actions
+ */
 class UserActionsPages extends DplusoPages implements Module {
 
 	protected $fields = array();

@@ -111,6 +111,13 @@
 				$event->return = $permissions_master->get_users_functions($user->loginid);
 			});
 
+			$this->addHook('User::filter_functions', function($event) {
+				$permissions_master = FuncpermQuery::create();
+				$user = $event->object;
+				$functions = $event->arguments(0); // array
+				$event->return = $permissions_master->filter_user_functions($user->loginid, $functions);
+			});
+
 			$this->addHook('User::is_salesrep', function($event) {
 				$user = $event->object;
 				$event->return = $user->hasRole('slsrep');
