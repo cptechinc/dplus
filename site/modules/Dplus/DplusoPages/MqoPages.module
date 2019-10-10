@@ -53,7 +53,7 @@
 				'title'          => 'Quotes',
 				'summary'        => 'Quotes Menu',
 				'parent'         => '/',
-				'dplus_function' => ''
+				'dplus_function' => 'mqo'
 			),
 			'quote-redir' => array(
 				'template'   => 'redir',

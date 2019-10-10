@@ -1,6 +1,11 @@
 <?php namespace ProcessWire;
+
 	require_once(__DIR__ . '/DplusoPages.module');
 
+	/**
+	 * Module that Creates / Updates Pages Needed for Cart
+	 * Also Provides Page Hooks
+	 */
 	class DplusoPagesCart extends DplusoPages implements Module {
 
 		protected $fields = array();

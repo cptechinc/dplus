@@ -32,7 +32,11 @@
 			'login' => array(
 				'name'   => 'login',
 				'fields' => array()
-			)
+			),
+			'menu' => array(
+				'name'   => 'menu',
+				'fields' => array('title', 'dplus_function', 'summary')
+			),
 		);
 
 		protected $pages = array(
@@ -56,8 +60,47 @@
 				'title'    => 'User Configs',
 				'summary'  => '',
 				'parent'   => '/user/'
+			),
+			'menu' => array(
+				'template' => 'menu',
+				'name'     => 'menu',
+				'title'    => 'Menu',
+				'summary'  => '',
+				'parent'   => '/'
 			)
 		);
+
+		public function init() {
+			$this->addHook('Pages::user_allowed_menus', function($event) {
+				$user = $this->wire('user');
+				$event->return = $this->get_user_allowed_menus($user);
+			});
+
+			$this->addHook('Page(template=dplus-menu)::user_allowed_subpages', function($event) {
+				$page = $event->object;
+				$user = $this->wire('user');
+				$event->return = $this->get_user_allowed_subpages($page, $user);
+			});
+		}
+
+		public function get_user_allowed_menus(User $user) {
+			$p = $this->wire('pages')->get('template=home');
+
+			if ($user->hasRole('whse') || $user->hasRole('whsemgr')) {
+				$dplus_functions = array_unique($p->children('template=warehouse-menu|menu')->explode('dplus_function'));
+			} else {
+				$dplus_functions = array_unique($p->children('template=dplus-menu|menu')->explode('dplus_function'));
+			}
+
+			$filtered_functions = $user->filter_functions($dplus_functions);
+			return $p->children('template=dplus-menu|menu, dplus_function='.implode('|', $filtered_functions));
+		}
+
+		public function get_user_allowed_subpages(Page $page, User $user) {
+			$dplus_functions = array_unique($page->children('template!=redir')->explode('dplus_function'));
+			$filtered_functions = $user->filter_functions($dplus_functions);
+			return $page->children('template!=redir, dplus_function='.implode('|', $filtered_functions));
+		}
 
 	/* =============================================================
 		ProcessWire Module Functions

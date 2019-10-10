@@ -4,6 +4,10 @@
 	use Purl\Url;
 	use DateTime;
 
+	/**
+	 * Module that Creates / Updates Pages Needed for Bookings
+	 * Also Provides Page Hooks
+	 */
 	class BookingsPages extends DplusoPages implements Module {
 		protected $fields = array();
 
@@ -39,7 +43,7 @@
 				'title'          => 'Bookings',
 				'summary'        => 'Bookings Menu',
 				'parent'         => '/',
-				'dplus_function' => ''
+				'dplus_function' => 'sobook'
 			),
 			'bookings' => array(
 				'template'       => 'dplus-function',
@@ -47,7 +51,7 @@
 				'title'          => 'Bookings',
 				'summary'        => 'View Bookings',
 				'parent'         => '/sobook/',
-				'dplus_function' => '',
+				'dplus_function' => 'lbkgr',
 				'pw_template'    => 'bookings'
 			),
 			'bookings-day' => array(
@@ -56,7 +60,7 @@
 				'title'          => 'Day',
 				'summary'        => 'View Bookings for Day',
 				'parent'         => '/sobook/bookings/',
-				'dplus_function' => '',
+				'dplus_function' => 'bkdy',
 				'pw_template'    => 'bookings-day'
 			),
 			'bookings-customer' => array(
@@ -65,7 +69,7 @@
 				'title'          => 'Customer Bookings',
 				'summary'        => 'View Customer Bookings',
 				'parent'         => '/sobook/bookings/',
-				'dplus_function' => '',
+				'dplus_function' => 'lbkgc',
 				'pw_template'    => 'bookings-customer'
 			),
 		);
