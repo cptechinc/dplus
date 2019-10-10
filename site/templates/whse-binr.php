@@ -1,6 +1,7 @@
 <?php
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
+	$config->binr = $modules->get('ConfigBinr');
 
 	$page->frombin = '';
 	$page->tobin = '';
@@ -107,7 +108,7 @@
 
 				// 1. Binr form
 				$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;
-				$page->body = $config->twig->render('warehouse/binr/binr-form.twig', ['session' => $session, 'page' => $page, 'whsesession' => $whsesession, 'item' => $item, 'inventory' => $inventory]);
+				$page->body = $config->twig->render('warehouse/binr/binr-form.twig', ['session' => $session, 'page' => $page, 'whsesession' => $whsesession, 'item' => $item, 'inventory' => $inventory, 'config' => $config->binr]);
 
 				// 2. Choose From Bin Modal
 				$page->body .= $config->twig->render('warehouse/binr/from-bins-modal.twig', ['item' => $item, 'bins' => $currentbins]);
