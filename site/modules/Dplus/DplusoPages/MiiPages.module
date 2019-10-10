@@ -66,6 +66,14 @@
 				'name'   => 'ii-activity',
 				'fields' => array(),
 			),
+			'ii-kit' => array(
+				'name'   => 'ii-kit',
+				'fields' => array(),
+			),
+			'ii-bom' => array(
+				'name'   => 'ii-bom',
+				'fields' => array(),
+			),
 			'ii-where-used' => array(
 				'name'   => 'ii-where-used',
 				'fields' => array(),
@@ -202,6 +210,28 @@
 				'pw_template'    => 'ii-components',
 				'has_print'      => true,
 				'jsoncode'       => 'ii-components'
+			),
+			'ii-kit' => array(
+				'template'       => 'ii-function',
+				'name'           => 'kit',
+				'title'          => 'Kit',
+				'summary'        => 'View Item Kit',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => 'ii-kit',
+				'pw_template'    => 'ii-kit',
+				'has_print'      => true,
+				'jsoncode'       => ''
+			),
+			'ii-bom' => array(
+				'template'       => 'ii-function',
+				'name'           => 'bom',
+				'title'          => 'BOM',
+				'summary'        => 'View Item BOM',
+				'parent'         => '/mii/ii/',
+				'dplus_function' => 'ii-bom',
+				'pw_template'    => 'ii-bom',
+				'has_print'      => true,
+				'jsoncode'       => 'ii-bom'
 			),
 			'ii-where-used' => array(
 				'template'       => 'ii-function',
@@ -409,6 +439,26 @@
 				$itemID = $event->arguments(0);
 				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
 				$url->query->set('action','ii-components');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itemkitURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-kit');
+				$url->query->set('itemID', $itemID);
+				$url->query->set('page', $p->fullURL->getUrl());
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::get_itembomURL', function($event) {
+				$p = $event->object;
+				$itemID = $event->arguments(0);
+				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
+				$url->query->set('action','ii-bom');
 				$url->query->set('itemID', $itemID);
 				$url->query->set('page', $p->fullURL->getUrl());
 				$event->return = $url->getUrl();
