@@ -118,7 +118,10 @@
 				'singular' => true,
 				'autoload' => true,
 				'requires' => array('DplusPwPages'),
-				//'installs' => array('DplusoSalesOrder'),
+				'installs' => array(
+					'DplusoPagesSalesOrder', 'BookingsPages', 'DplusoPagesCart', 'MciPages', 'MiiPages',
+					'MqoPages', 'ScreenFormatterPages', 'DplusoPagesWarehouse', 'UserActionsPages'
+				),
 			);
 		}
 	}

@@ -93,6 +93,14 @@
 				'formatter'      => 'IiPurchaseHistory',
 				'jsoncode'       => 'ii-purchase-history'
 			),
+			'ci-formatter-menu' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'ci',
+				'title'          => 'CI Screen Formatters',
+				'summary'        => 'CI Screen Formatters Menu',
+				'parent'         => '/user/screen-formatters/',
+				'pw_template'    => 'formatter-menu'
+			),
 			'ci-sales-orders' => array(
 				'template'       => 'formatter-screen',
 				'name'           => 'sales-orders',

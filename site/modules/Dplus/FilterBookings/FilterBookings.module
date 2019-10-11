@@ -170,6 +170,9 @@ class FilterBookings extends Process implements ConfigurableModule {
 				'summary' => 'Handles Bookings Filtering',
 				'singular' => true,
 				'autoload' => true,
+				'installs' => array(
+					'FilterBookingsUser', 'FilterBookingsCustomer', 'FilterBookingsDay'
+				),
 			);
 		}
 
