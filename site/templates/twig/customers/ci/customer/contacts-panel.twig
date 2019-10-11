@@ -20,7 +20,7 @@
 			{% for contact in contacts %}
 				<div class="list-group-item">
 					<div class="row">
-						<div class="col"><a href="" class="link">{{ contact.arcpcontid }}</a></div>
+						<div class="col"><a href="{{ page.url_custcontact(customer.id, contact.arstshipid, contact.arcpcontid) }}" class="link">{{ contact.arcpcontid }}</a></div>
 						<div class="col">{{ contact.arstshipid }}</div>
 						<div class="col">{{ contact.arcptitl }}</div>
 						<div class="col">Phone</div>

@@ -52,6 +52,10 @@
 				'name'   => 'ci-contacts',
 				'fields' => array(),
 			),
+			'ci-contact' => array(
+				'name'   => 'ci-contact',
+				'fields' => array(),
+			),
 			'ci-sales-orders' => array(
 				'name'   => 'ci-sales-orders',
 				'fields' => array(),
@@ -161,6 +165,26 @@
 				'dplus_function' => 'ci-gen',
 				'pw_template'    => 'ci-contacts',
 				'jsoncode'       => 'ci-contacts'
+			),
+			'ci-contact' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'contact',
+				'title'          => 'Contact',
+				'summary'        => 'View Customer Contact',
+				'parent'         => '/mci/ci/contacts/',
+				'dplus_function' => '',
+				'pw_template'    => 'ci-contact',
+				'jsoncode'       => ''
+			),
+			'ci-contact-edit' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'contact-edit',
+				'title'          => 'Edit Contact',
+				'summary'        => 'Edit Customer Contact',
+				'parent'         => '/mci/ci/contacts/',
+				'dplus_function' => '',
+				'pw_template'    => 'ci-contact-edit',
+				'jsoncode'       => ''
 			),
 			'ci-pricing' => array(
 				'template'       => 'ci-function',
@@ -308,6 +332,34 @@
 				$custID   = $event->arguments(0);
 				$url = new Url($p->url);
 				$url->query->set('custID', $custID);
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::url_custcontact', function($event) {
+				$p = $event->object;
+				$url = new Url($this->wire('pages')->get('pw_template=ci-contact')->url);
+				$custID = $event->arguments(0);
+				$url->query->set('custID', $custID);
+				$shiptoID = $event->arguments(1);
+				if ($shiptoID) {
+					$url->query->set('shipID', $shiptoID);
+				}
+				$contactID = $event->arguments(2);
+				$url->query->set('contactID', $contactID);
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::url_editcustcontact', function($event) {
+				$p = $event->object;
+				$url = new Url($this->wire('pages')->get('pw_template=ci-contact-edit')->url);
+				$custID = $event->arguments(0);
+				$url->query->set('custID', $custID);
+				$shiptoID = $event->arguments(1);
+				if ($shiptoID) {
+					$url->query->set('shipID', $shiptoID);
+				}
+				$contactID = $event->arguments(2);
+				$url->query->set('contactID', $contactID);
 				$event->return = $url->getUrl();
 			});
 
