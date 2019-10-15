@@ -2,7 +2,7 @@
 	$modules->get('DpagesMwm')->init_picking();
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
-	$config_inventory = $modules->get('WarehouseInventoryConfig');
+	$config_inventory = $modules->get('ConfigsWarehouseInventory');
 
 	// CHECK If Sales Order is Provided
 	if ($input->get->ordn) {
