@@ -1,6 +1,6 @@
 <?php
-	$modules->get('DplusoPagesWarehouse')->init_picking();
-	$modules->get('DplusoPagesWarehouse')->init_pickingpacking();
+	$modules->get('DpagesMwm')->init_picking();
+	$modules->get('DpagesMwm')->init_pickingpacking();
 
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);

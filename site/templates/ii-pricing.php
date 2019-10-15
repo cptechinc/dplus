@@ -5,7 +5,7 @@
 	use WarehouseQuery, Warehouse;
 	use CustomerQuery, Customer;
 
-	$module_ii = $modules->get('MiiPages');
+	$module_ii = $modules->get('DpagesMii');
 	$module_ii->init_iipage();
 
 	$page->show_breadcrumbs = false;
@@ -13,7 +13,7 @@
 
 	if ($itemquery->count()) {
 		$page->title = "$itemID Pricing";
-		
+
 		if ($input->get->custID) {
 			$custID = $input->get->text('custID');
 			$customer = CustomerQuery::create()->findOneByCustid($custID);

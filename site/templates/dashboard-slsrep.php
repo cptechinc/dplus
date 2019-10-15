@@ -9,7 +9,7 @@
 	$filter_bookings = $modules->get('FilterBookings');
 
 	if ($filter_bookings->data['option_bookings_dashboard']) {
-		$modules->get('BookingsPages')->init_bookingspage();
+		$modules->get('DpagesBookings')->init_bookingspage();
 		$filter_bookings->set_user($user);
 		$bookings = $filter_bookings->bookings_user->get_bookings($input)->find();
 		$bookings_customer = $filter_bookings->bookings_customer->get_bookings_by_customer($input)->find();

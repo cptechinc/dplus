@@ -1,9 +1,9 @@
 <?php
 	$config_salesorders = $modules->get('SalesOrdersConfig');
-	$modules->get('DplusoPagesSalesOrder')->init_salesorder_hooks();
+	$modules->get('DpagesMso')->init_salesorder_hooks();
 	$html = $modules->get('HtmlWriter');
 
-	if ($input->get->ordn) {	
+	if ($input->get->ordn) {
 		$ordn = SalesOrder::get_paddedordernumber($input->get->text('ordn'));
 
 		if (SalesOrderQuery::create()->filterByOrdernumber($ordn)->count() || SalesHistoryQuery::create()->filterByOrdernumber($ordn)->count()) {
