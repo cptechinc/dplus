@@ -1,5 +1,5 @@
 <?php
-	$modules->get('MqoPages')->init_mqopage();
+	$modules->get('DpagesMqo')->init_mqopage();
 	$module_useractions = $modules->get('FilterUserActions');
 	$html = $modules->get('HtmlWriter');
 

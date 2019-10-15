@@ -3,7 +3,7 @@
 
 	$html = $modules->get('HtmlWriter');
 
-	$modules->get('DplusoPagesWarehouse')->init_picking();
+	$modules->get('DpagesMwm')->init_picking();
 	$pickingsession = $modules->get('DplusoWarehousePicking');
 	$pickingsession->set_sessionID(session_id());
 	$pickingsession->set_ordn($ordn);
@@ -34,7 +34,7 @@
 					$pickitem = $pickingsession->get_picksalesorderdetail();
 					$page->title = "Picking Order # $ordn Line $linenbr";
 					$page->title .= $sublinenbr > 0 ? " Subline $sublinenbr" : '';
-					
+
 					// If item is stocked, get Inventory for that item
 					if (!$pickitem->is_item_nonstock()) {
 						$http->get("127.0.0.1".$pages->get('template=redir,redir_file=inventory')->url."?action=inventory-search&scan=$pickitem->itemid&sessionID=".session_id());

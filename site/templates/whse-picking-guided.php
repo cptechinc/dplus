@@ -1,5 +1,5 @@
 <?php
-	$modules->get('DplusoPagesWarehouse')->init_picking();
+	$modules->get('DpagesMwm')->init_picking();
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
 	$config_inventory = $modules->get('WarehouseInventoryConfig');

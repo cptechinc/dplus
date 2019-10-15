@@ -1,17 +1,17 @@
 <?php namespace ProcessWire;
 
-require_once(__DIR__ . '/DplusoPages.module');
 
 use Purl\Url;
 
 /**
- * Module That Creates the Necessary Pages for viewing User Actions
+ * class DpagesUserActions
+ *
+ * Installs fields, templates, pages, hooks necessary for User Actions Pages
  */
-class UserActionsPages extends DplusoPages implements Module {
+class UserActionsPages extends Dpages implements Module {
+	const FIELDS = array();
 
-	protected $fields = array();
-
-	protected $templates = array(
+	const TEMPLATES = array(
 		'user-actions' => array(
 			'name'   => 'user-actions',
 			'fields' => array()
@@ -26,7 +26,7 @@ class UserActionsPages extends DplusoPages implements Module {
 		)
 	);
 
-	protected $pages = array(
+	const PAGES = array(
 		'user-actions' => array(
 			'template'       => 'dplus-function',
 			'name'           => 'user-actions',
@@ -78,8 +78,8 @@ class UserActionsPages extends DplusoPages implements Module {
 
 		$this->addHook('Page::get_actionslistURL', function($event) {
 			$p = $event->object;
-
 			$url = new Url($this->wire('pages')->get('pw_template=user-actions')->url);
+
 			switch ($p->pw_template) {
 				case 'ci-customer':
 					$url->path = $this->wire('pages')->get('pw_template=user-actions-customer')->url;
@@ -87,7 +87,6 @@ class UserActionsPages extends DplusoPages implements Module {
 					$url->query->set('shiptoID', $p->fullURL->query->get('shiptoID'));
 					break;
 			}
-
 			$event->return = $url->getUrl();
 		});
 	}

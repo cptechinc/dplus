@@ -1,20 +1,21 @@
-<?php
-	namespace ProcessWire;
-
-	require_once(__DIR__ . '/DplusoPages.module');
+<?php namespace ProcessWire;
 
 	use Purl\Url;
 	use SalesOrder, SalesOrderQuery;
 
+	require_once(__DIR__ . '/Dpages.module');
+
 	/**
-	 * Module that Creates / Updates Pages Needed for Sales Orders
-	 * Also Provides Page Hooks
+	 * class DpagesMso
+	 *
+	 * Installs fields, templates, pages, hooks necessary for Mso Pages
+	 * Adds Hooks for getting URLs to Mso pages
+	 * Adds Hooks for Sales Order Editing Access
 	 */
-	class DplusoPagesSalesOrder extends DplusoPages implements Module {
+	class DpagesMso extends Dpages implements Module {
+		const FIELDS = array();
 
-		protected $fields = array();
-
-		protected $templates = array(
+		const TEMPLATES = array(
 			'sales-orders' => array(
 				'name'   => 'sales-orders',
 				'fields' => array()
@@ -53,7 +54,7 @@
 			),
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'mso' => array(
 				'template'       => 'dplus-menu',
 				'name'           => 'mso',

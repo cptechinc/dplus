@@ -1,21 +1,20 @@
 <?php namespace ProcessWire;
-	require_once(__DIR__ . '/DplusoPages.module');
 
 	use Purl\Url;
 
-	class MiiPages extends DplusoPages implements Module {
+	/**
+	 * class DpagesMii
+	 *
+	 * Installs fields, templates, pages, hooks necessary for Mii Pages
+	 * Adds Hooks for getting URLs to Mcii pages
+	 */
+	class DpagesMii extends Dpages implements Module {
 		const REQUIREMENTS_OPTIONS = array(
 			"REQ" => "requirements",
 			"AVL" => 'available'
 		);
 
-		const TEMPLATES_JSONFILES = array(
-			'ii-stock'        => 'ii-stock_whse',
-			'ii-requirements' => 'ii-requirements',
-			'ii-pricing'      => 'ii-pricing'
-		);
-
-		protected $fields = array(
+		const FIELDS = array(
 			'jsoncode' => array(
 				'name'  => 'jsoncode',
 				'type'  => 'text',
@@ -30,17 +29,7 @@
 			),
 		);
 
-		protected $templates = array(
-			'dplus-menu' => array(
-				'name'   => 'dplus-menu',
-				'fields' => array('dplus_function', 'summary'),
-				'paginated' => false
-			),
-			'dplus-function' => array(
-				'name'   => 'dplus-menu',
-				'fields' => array('dplus_function', 'pw_template', 'summary'),
-				'paginated' => true
-			),
+		const TEMPLATES = array(
 			'ii-function' => array(
 				'name'   => 'dplus-menu',
 				'fields' => array('title', 'dplus_function', 'pw_template', 'jsoncode', 'is_formattable', 'summary'),
@@ -108,7 +97,7 @@
 			)
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'ii-menu' => array(
 				'template'       => 'dplus-menu',
 				'name'           => 'mii',
@@ -529,9 +518,5 @@
 
 		public function get_requirementsoptions() {
 			return self::REQUIREMENTS_OPTIONS;
-		}
-
-		public function get_jsondatafilename($template) {
-			return self::TEMPLATES_JSONFILES[$template];
 		}
 	}

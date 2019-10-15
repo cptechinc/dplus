@@ -2,7 +2,7 @@
 	use Purl\Url;
 
 	class DplusPwPages extends WireData implements Module {
-		protected $fields = array(
+		const FIELDS = array(
 			'dplus_function' => array(
 				'name'  => 'dplus_function',
 				'type'  => 'text',
@@ -10,7 +10,7 @@
 			)
 		);
 
-		static $default_templates = array(
+		const TEMPLATES = array(
 			'dplus-menu' => array(
 				'name'   => 'dplus-menu',
 				'fields' => array('dplus_function', 'summary'),
@@ -38,25 +38,7 @@
 			)
 		);
 
-		protected $templates = array(
-			'dplus-menu' => array(
-				'name'   => 'dplus-menu',
-				'fields' => array('dplus_function', 'summary'),
-				'paginated' => false
-			),
-			'dplus-function' => array(
-				'name'   => 'dplus-function',
-				'fields' => array('dplus_function', 'pw_template', 'summary'),
-				'paginated' => true
-			),
-			'dplus-json' => array(
-				'name'   => 'dplus-json',
-				'fields' => array('dplus_function', 'pw_template', 'summary'),
-				'paginated' => true
-			)
-		);
-
-		protected $pages = array(
+		const PAGES = array(
 			/* Example
 			'user-page' => array(
 				'code'       => 'user-page',
@@ -71,7 +53,7 @@
 			*/
 		);
 
-		protected $pw_fields = array(
+		const PROCESSWIRE_FIELDS = array(
 			'summary',
 			'title'
 		);
@@ -235,7 +217,7 @@
 		 * @return void
 		 */
 		protected function install_fields() {
-			foreach ($this->fields as $fieldname => $field) {
+			foreach ($this::FIELDS as $fieldname => $field) {
 				if (boolval($this->wire('fields')->get($field['name']))) {
 					$this->update_field($field);
 				} else {
@@ -249,7 +231,7 @@
 		 * @return void
 		 */
 		protected function install_templates() {
-			foreach ($this->templates as $templatename => $template) {
+			foreach ($this::TEMPLATES as $templatename => $template) {
 				if ($this->wire('templates')->get($templatename)) {
 					$this->update_template($templatename);
 				} else {
@@ -263,7 +245,7 @@
 		 * @return void
 		 */
 		protected function install_pages() {
-			foreach ($this->pages as $pagename => $page) {
+			foreach ($this::PAGES as $pagename => $page) {
 				$pagepath = $page['parent'].$page['name']."/";
 
 				if (boolval($this->wire('pages')->find($pagepath)->count)) {
@@ -346,15 +328,15 @@
 				$pw_fields = $this->create_fieldgroup($template);
 			}
 
-			$templatefields = $this->templates[$template]['fields'];
+			$templatefields = $this::TEMPLATES[$template]['fields'];
 
 			foreach ($templatefields as $fieldname) {
-				$field = $this->fields[$fieldname];
+				$field = $this::FIELDS[$fieldname];
 
 				if (boolval(wire('fields')->get($fieldname)) == false) {
 					$this->create_field($field);
 				} else {
-					if (!in_array($fieldname, $this->pw_fields) && in_array($fieldname, $this->fields)) {
+					if (!in_array($fieldname, $this::PROCESSWIRE_FIELDS) && in_array($fieldname, $this::FIELDS)) {
 						$this->update_field($field);
 					}
 				}
@@ -376,7 +358,7 @@
 			$t->save();
 			$this->update_fieldgroup($template);
 			$t->fieldgroup = $this->wire('fieldgroups')->get($template);
-			$this->allowPageNum = $this->templates[$template]['paginated'] ? 1 : 0;
+			$this->allowPageNum = $this::TEMPLATES[$template]['paginated'] ? 1 : 0;
 			$this->slashPageNum = 1;
 			$t->save();
 		}
@@ -390,7 +372,7 @@
 			$t = wire('templates')->get($template);
 			$this->update_fieldgroup($template);
 			$t->fieldgroup = wire('templates')->get($template)->fieldgroup;
-			$t->allowPageNum = $this->templates[$template]['paginated'] ? 1 : 0;
+			$t->allowPageNum = $this::TEMPLATES[$template]['paginated'] ? 1 : 0;
 			$t->slashPageNum = 1;
 			$t->save();
 		}
@@ -411,13 +393,15 @@
 			$pw_page->name = $page['name'];
 			$pw_page->title = $page['title'];
 
-			if (in_array($page['template'], array_keys(self::$default_templates))) {
-				foreach (self::$default_templates[$page['template']]['fields'] as $fieldname) {
+			$default_templates = $this->wire('modules')->get('DplusPwPages')::TEMPLATES;
+
+			if (in_array($page['template'], array_keys($default_templates))) {
+				foreach ($default_templates[$page['template']]['fields'] as $fieldname) {
 					$pw_page->$fieldname = $page[$fieldname];
 				}
 			}
 
-			foreach ($this->templates[$page['template']]['fields'] as $fieldname) {
+			foreach ($this::TEMPLATES[$page['template']]['fields'] as $fieldname) {
 				$pw_page->$fieldname = $page[$fieldname];
 			}
 			return $pw_page->save();
@@ -436,13 +420,15 @@
 			$pw_page->title = $page['title'];
 			$pw_page->save();
 
-			if (in_array($page['template'], array_keys(self::$default_templates))) {
-				foreach (self::$default_templates[$page['template']]['fields'] as $fieldname) {
+			$default_templates = $this->wire('modules')->get('DplusPwPages')::TEMPLATES;
+
+			if (in_array($page['template'], array_keys($default_templates))) {
+				foreach ($default_templates[$page['template']]['fields'] as $fieldname) {
 					$pw_page->$fieldname = $page[$fieldname];
 				}
 			}
 
-			foreach ($this->templates[$page['name']]['fields'] as $fieldname) {
+			foreach ($this::TEMPLATES[$page['name']]['fields'] as $fieldname) {
 				$pw_page->$fieldname = $page[$fieldname];
 			}
 			return $pw_page->save();

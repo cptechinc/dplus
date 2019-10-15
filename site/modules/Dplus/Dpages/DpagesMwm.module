@@ -1,23 +1,17 @@
 <?php namespace ProcessWire;
-	require_once(__DIR__ . '/DplusoPages.module');
 
 	use Purl\Url;
 
 	/**
-	 * Module that Creates / Updates Pages Needed for Warehouse
-	 * Also Provides Page Hooks
+	 * class DpagesMwm
+	 *
+	 * Installs fields, templates, pages, hooks necessary for Mwm (Warehouse) Pages
+	 * Adds Hooks for getting URLs to Mwm pages for various subfunctions
 	 */
-	class DplusoPagesWarehouse extends DplusoPages implements Module {
+	class DpagesMwm extends Dpages implements Module {
+		const FIELDS = array();
 
-		protected $fields = array(
-			'dplus_function' => array(
-				'name'  => 'dplus_function',
-				'type'  => 'text',
-				'label' => 'Dplus Function'
-			)
-		);
-
-		protected $templates = array(
+		const TEMPLATES = array(
 			'warehouse-menu' => array(
 				'name'   => 'warehouse-menu',
 				'fields' => array('title', 'dplus_function', 'summary'),
@@ -80,7 +74,7 @@
 			)
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'warehouse-menu' => array(
 				'template'       => 'warehouse-menu',
 				'name'           => 'warehouse',

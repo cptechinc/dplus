@@ -3,10 +3,10 @@
 
 	if ($input->get->custID) {
 		$custID = $input->get->text('custID');
-		
+
 		if ($user->has_customer($custID)) {
 			$html = $modules->get('HtmlWriter');
-			$modules->get('BookingsPages')->init_bookingspage();
+			$modules->get('DpagesBookings')->init_bookingspage();
 			$filter_bookings = $modules->get('FilterBookings');
 			$filter_bookings->set_user($user);
 

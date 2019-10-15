@@ -1,27 +1,18 @@
 <?php namespace ProcessWire;
-	require_once(__DIR__ . '/DplusoPages.module');
 
 	use Purl\Url;
 	use DateTime;
 
 	/**
-	 * Module that Creates / Updates Pages Needed for Bookings
-	 * Also Provides Page Hooks
+	 * class DpagesBookings
+	 *
+	 * Installs fields, templates, pages, hooks necessary for Bookings Pages
+	 * Adds Hooks for getting URLs to booking pages
 	 */
-	class BookingsPages extends DplusoPages implements Module {
-		protected $fields = array();
+	class DpagesBookings extends Dpages implements Module {
+		const FIELDS = array();
 
-		protected $templates = array(
-			'dplus-menu' => array(
-				'name'   => 'dplus-menu',
-				'fields' => array('dplus_function', 'summary'),
-				'paginated' => false
-			),
-			'dplus-function' => array(
-				'name'   => 'dplus-menu',
-				'fields' => array('dplus_function', 'pw_template', 'summary'),
-				'paginated' => true
-			),
+		const TEMPLATES = array(
 			'bookings' => array(
 				'name'   => 'bookings',
 				'fields' => array(),
@@ -36,7 +27,7 @@
 			),
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'bookings-menu' => array(
 				'template'       => 'dplus-menu',
 				'name'           => 'sobook',
