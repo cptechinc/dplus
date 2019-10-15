@@ -9,8 +9,8 @@
 		$custID = $input->get->text('custID');
 
 		if ($user->has_customer($custID)) {
-			$modules->get('MciPages')->init_customer_hooks();
-			$modules->get('MciPages')->init_cipage();
+			$modules->get('DpagesMci')->init_customer_hooks();
+			$modules->get('DpagesMci')->init_cipage();
 			$load_customer = $modules->get('CiLoadCustomerShipto');
 
 			$load_customer->set_custID($custID);
