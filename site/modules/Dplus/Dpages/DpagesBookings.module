@@ -10,9 +10,9 @@
 	 * Adds Hooks for getting URLs to booking pages
 	 */
 	class DpagesBookings extends Dpages implements Module {
-		protected $fields = array();
+		const FIELDS = array();
 
-		protected $templates = array(
+		const TEMPLATES = array(
 			'bookings' => array(
 				'name'   => 'bookings',
 				'fields' => array(),
@@ -27,7 +27,7 @@
 			),
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'bookings-menu' => array(
 				'template'       => 'dplus-menu',
 				'name'           => 'sobook',

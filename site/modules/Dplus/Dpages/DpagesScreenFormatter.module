@@ -8,8 +8,7 @@
 	 * Installs fields, templates, pages, hooks necessary for Screen Formatter Edit Pages
 	 */
 	class DpagesScreenFormatter extends Dpages implements Module {
-
-		protected $fields = array(
+		const FIELDS = array(
 			'jsoncode' => array(
 				'name'  => 'jsoncode',
 				'type'  => 'text',
@@ -22,7 +21,7 @@
 			),
 		);
 
-		protected $templates = array(
+		const TEMPLATES = array(
 			'formatter-menu' => array(
 				'name'   => 'formatter-menu',
 				'fields' => array('title', 'summary'),
@@ -35,7 +34,7 @@
 			)
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'screen-formatter-menu' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'screen-formatters',

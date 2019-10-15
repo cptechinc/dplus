@@ -9,7 +9,7 @@
 	 * NOTE: Also installs the basic fields, templates, to build the rest of the Application
 	 */
 	class Dpages extends DplusPwPages implements Module {
-		protected $fields = array(
+		const FIELDS = array(
 			'dplus_function' => array(
 				'name'  => 'dplus_function',
 				'type'  => 'text',
@@ -22,7 +22,7 @@
 			)
 		);
 
-		protected $templates = array(
+		const TEMPLATES = array(
 			'dplus-menu' => array(
 				'name'   => 'dplus-menu',
 				'fields' => array('dplus_function', 'pw_template', 'summary')
@@ -45,7 +45,7 @@
 			),
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'user-page' => array(
 				'template' => 'user-page',
 				'name'     => 'user',

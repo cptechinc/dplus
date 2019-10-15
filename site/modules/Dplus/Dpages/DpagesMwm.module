@@ -9,10 +9,9 @@
 	 * Adds Hooks for getting URLs to Mwm pages for various subfunctions
 	 */
 	class DpagesMwm extends Dpages implements Module {
+		const FIELDS = array();
 
-		protected $fields = array();
-
-		protected $templates = array(
+		const TEMPLATES = array(
 			'warehouse-menu' => array(
 				'name'   => 'warehouse-menu',
 				'fields' => array('title', 'dplus_function', 'summary'),
@@ -75,7 +74,7 @@
 			)
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'warehouse-menu' => array(
 				'template'       => 'warehouse-menu',
 				'name'           => 'warehouse',

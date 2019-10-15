@@ -1,8 +1,6 @@
 <?php namespace ProcessWire;
-	require_once(__DIR__ . '/DplusoPages.module');
 
 	use Purl\Url;
-
 
 	/**
 	 * class DpagesMii
@@ -16,7 +14,7 @@
 			"AVL" => 'available'
 		);
 
-		protected $fields = array(
+		const FIELDS = array(
 			'jsoncode' => array(
 				'name'  => 'jsoncode',
 				'type'  => 'text',
@@ -31,7 +29,7 @@
 			),
 		);
 
-		protected $templates = array(
+		const TEMPLATES = array(
 			'ii-function' => array(
 				'name'   => 'dplus-menu',
 				'fields' => array('title', 'dplus_function', 'pw_template', 'jsoncode', 'is_formattable', 'summary'),
@@ -99,7 +97,7 @@
 			)
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'ii-menu' => array(
 				'template'       => 'dplus-menu',
 				'name'           => 'mii',

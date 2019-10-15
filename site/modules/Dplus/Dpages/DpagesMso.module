@@ -1,5 +1,4 @@
-<?php
-	namespace ProcessWire;
+<?php namespace ProcessWire;
 
 	use Purl\Url;
 	use SalesOrder, SalesOrderQuery;
@@ -12,10 +11,9 @@
 	 * Adds Hooks for Sales Order Editing Access
 	 */
 	class DpagesMso extends Dpages implements Module {
+		const FIELDS = array();
 
-		protected $fields = array();
-
-		protected $templates = array(
+		const TEMPLATES = array(
 			'sales-orders' => array(
 				'name'   => 'sales-orders',
 				'fields' => array()
@@ -54,7 +52,7 @@
 			),
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'mso' => array(
 				'template'       => 'dplus-menu',
 				'name'           => 'mso',

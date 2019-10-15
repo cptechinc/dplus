@@ -9,10 +9,9 @@ use Purl\Url;
  * Installs fields, templates, pages, hooks necessary for User Actions Pages
  */
 class UserActionsPages extends Dpages implements Module {
+	const FIELDS = array();
 
-	protected $fields = array();
-
-	protected $templates = array(
+	const TEMPLATES = array(
 		'user-actions' => array(
 			'name'   => 'user-actions',
 			'fields' => array()
@@ -27,7 +26,7 @@ class UserActionsPages extends Dpages implements Module {
 		)
 	);
 
-	protected $pages = array(
+	const PAGES = array(
 		'user-actions' => array(
 			'template'       => 'dplus-function',
 			'name'           => 'user-actions',
