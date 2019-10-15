@@ -131,6 +131,39 @@
 				$session->loc = $url->getUrl();
 			}
 			break;
+		case 'edit-contact':
+			$custID = $input->$requestmethod->text('custID');
+			$shiptoID = $input->$requestmethod->text('shiptoID');
+			$contactID = $input->$requestmethod->text('contactID');
+
+			$editcontact = CustindexQuery::create()->filterByCustid($custID);
+			if ($shipID) {
+				$editcontact->filterByShiptoid($shiptoID);
+			}
+			$editcontact->findOneByContact($contactID);
+
+			$editcontact->setContact($input->$requestmethod->text('contact-name'));
+			$editcontact->setTitle($input->$requestmethod->text('contact-title'));
+			$editcontact->setPhone($input->$requestmethod->text('contact-phone'));
+			$editcontact->setExtension($input->$requestmethod->text('contact-extension'));
+			$editcontact->setFaxnbr($input->$requestmethod->text('contact-fax'));
+			$editcontact->setCellphone($input->$requestmethod->text('contact-cellphone'));
+			$editcontact->setEmail($input->$requestmethod->text('contact-email'));
+			$editcontact->setArcontact($input->$requestmethod->text('arcontact') == 'Y' ? "Y" : "N");
+			$editcontact->setDunningcontact($input->$requestmethod->text('duncontact') == 'Y' ? "Y" : "N");
+			$editcontact->setBuyingcontact($input->$requestmethod->text('buycontact') == 'Y' ? "Y" : "N");
+			$editcontact->setCertcontact($input->$requestmethod->text('certcontact') == 'Y' ? "Y" : "N");
+			$editcontact->setAckcontact($input->$requestmethod->text('ackcontact') == 'Y' ? "Y" : "N");
+			$editcontact->save();
+
+			$data = array("DBNAME=$dplusdb", 'EDITCONTACT', "CUSTID=$custID", "SHIPID=$shiptoID", "CONTACT=$contactID");
+
+			if ($shiptoID) {
+				$session->loc = $pages->get('pw_template=ci-contact')->url."?custID=$custID&shipID=$shiptoID&contactID=$contactID";
+			} else {
+				$session->loc = $pages->get('pw_template=ci-contact')->url."?custID=$custID&contactID=$contactID";	
+			}
+			break;
 		case 'ci-sales-orders':
 			$shipID = $input->$requestmethod->text('shipID');
 			$data = array("DBNAME=$dplusdb", 'CISALESORDR', "CUSTID=$custID", "SHIPID=$shipID", "SALESORDRNBR= ","ITEMID=");
