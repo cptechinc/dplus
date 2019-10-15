@@ -3,6 +3,8 @@
 	use Purl\Url;
 	use SalesOrder, SalesOrderQuery;
 
+	require_once(__DIR__ . '/Dpages.module');
+
 	/**
 	 * class DpagesMso
 	 *
