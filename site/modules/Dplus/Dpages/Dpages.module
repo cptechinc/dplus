@@ -135,6 +135,14 @@
 				'autoload' => true,
 				'requires' => array('DplusPwPages'),
 				'installs' => array(
+					'DpagesBookings',
+					'DpagesCart',
+					'DpagesMci', 'DpagesMii', 'DpagesMvi',
+					'DpagesMqo', 'DpagesMso',
+					'DpagesMwm',
+					'DpagesRedir',
+					'DpagesScreenFormatter',
+					'DpagesUserActions'
 				),
 			);
 		}
