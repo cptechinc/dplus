@@ -1,0 +1,125 @@
+<?php namespace ProcessWire;
+
+	/**
+	 * class DpagesMwm
+	 *
+	 * Installs fields, templates, pages, hooks necessary for redir Pages
+	 */
+	class DplusRedirPages extends DplusPwPages implements Module {
+		protected $fields = array(
+			'redir_file' => array(
+				'name'  => 'redir_file',
+				'type'  => 'text',
+				'label' => 'Redirect File Name'
+			)
+		);
+
+		protected $templates = array(
+			'redir' => array(
+				'name'   => 'redir',
+				'fields' => array('redir_file', 'summary'),
+				'paginated' => false
+			)
+		);
+
+		protected $pages = array(
+			'user-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'User Dplus Redirects',
+				'parent'     => '/user/',
+				'redir_file' => 'user'
+			),
+			'page-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Page Redirects',
+				'parent'     => '/',
+				'redir_file' => 'redirect'
+			),
+			'warehouse-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Warehouse Redirects',
+				'parent'     => '/warehouse/',
+				'redir_file' => 'warehouse'
+			),
+			'binr-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Warehouse Redirects',
+				'parent'     => '/warehouse/binr/',
+				'redir_file' => 'binr'
+			),
+			'inventory-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Warehouse Inventory Redirects',
+				'parent'     => '/warehouse/inventory/',
+				'redir_file' => 'inventory'
+			),
+			'pick-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Sales Order Picking Redirects',
+				'parent'     => '/warehouse/picking/',
+				'redir_file' => 'picking'
+			),
+			'pack-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Sales Order Packing Redirects',
+				'parent'     => '/warehouse/packing/',
+				'redir_file' => 'packing'
+			),
+			'ii-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Item Information Redirects',
+				'parent'     => '/mii/',
+				'redir_file' => 'ii'
+			),
+			'ci-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Customer Information Redirects',
+				'parent'     => '/mci/',
+				'redir_file' => 'ci'
+			),
+			'cart-redir' => array(
+				'template'   => 'redir',
+				'name'       => 'redir',
+				'title'      => 'redir',
+				'summary'    => 'Cart Redirects',
+				'parent'     => '/cart/',
+				'redir_file' => 'cart'
+			),
+		);
+
+		/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dplus Create ProcesWire Redirect Pages',
+				'version' => 101,
+				'summary' => 'Dplus Create ProcesWire Redirect Pages',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+	}

@@ -1,0 +1,104 @@
+<?php namespace ProcessWire;
+
+
+use Purl\Url;
+
+/**
+ * class DpagesUserActions
+ *
+ * Installs fields, templates, pages, hooks necessary for User Actions Pages
+ */
+class UserActionsPages extends Dpages implements Module {
+
+	protected $fields = array();
+
+	protected $templates = array(
+		'user-actions' => array(
+			'name'   => 'user-actions',
+			'fields' => array()
+		),
+		'user-actions-create' => array(
+			'name'   => 'user-actions-create',
+			'fields' => array()
+		),
+		'user-actions-customer' => array(
+			'name'   => 'user-actions-customer',
+			'fields' => array()
+		)
+	);
+
+	protected $pages = array(
+		'user-actions' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'user-actions',
+			'title'          => 'User Actions',
+			'summary'        => 'View / Search through User Actions',
+			'parent'         => '/',
+			'dplus_function' => '',
+			'pw_template'    => 'user-actions'
+		),
+		'user-actions-create' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'create',
+			'title'          => 'Create User Action',
+			'summary'        => 'Create User Action',
+			'parent'         => '/user-actions/',
+			'dplus_function' => '',
+			'pw_template'    => 'user-actions-create'
+		),
+		'user-actions-customer' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'customer',
+			'title'          => 'Customer User Actions',
+			'summary'        => 'Customer User Action',
+			'parent'         => '/user-actions/',
+			'dplus_function' => '',
+			'pw_template'    => 'user-actions-customer'
+		),
+	);
+
+	public function init() {
+		$this->addHook('Page::get_createactionURL', function($event) {
+			$p = $event->object;
+			$url = new Url($this->wire('pages')->get('pw_template=user-actions-create')->url);
+
+			switch ($p->pw_template) {
+				case 'ci-customer':
+					$url->query->set('custID', $p->fullURL->query->get('custID'));
+					$url->query->set('shiptoID', $p->fullURL->query->get('shiptoID'));
+					break;
+				case 'sales-order-view':
+					$url->query->set('ordn', $p->fullURL->query->get('ordn'));
+					break;
+				case 'quote-view':
+					$url->query->set('qnbr', $p->fullURL->query->get('qnbr'));
+					break;
+			}
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_actionslistURL', function($event) {
+			$p = $event->object;
+			$url = new Url($this->wire('pages')->get('pw_template=user-actions')->url);
+
+			switch ($p->pw_template) {
+				case 'ci-customer':
+					$url->path = $this->wire('pages')->get('pw_template=user-actions-customer')->url;
+					$url->query->set('custID', $p->fullURL->query->get('custID'));
+					$url->query->set('shiptoID', $p->fullURL->query->get('shiptoID'));
+					break;
+			}
+			$event->return = $url->getUrl();
+		});
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso User Action Pages',
+			'version' => 101,
+			'summary' => 'Installs and creates Dpluso User Action Pages',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
