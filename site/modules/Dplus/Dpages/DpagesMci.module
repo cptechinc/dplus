@@ -9,8 +9,7 @@
 	 * Adds Hooks for getting URLs to Mci pages
 	 */
 	class DpagesMci extends Dpages implements Module {
-
-		protected $fields = array(
+		const FIELDS = array(
 			'jsoncode' => array(
 				'name'  => 'jsoncode',
 				'type'  => 'text',
@@ -25,7 +24,17 @@
 			),
 		);
 
-		protected $templates = array(
+		const TEMPLATES = array(
+			'dplus-menu' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('dplus_function', 'summary'),
+				'paginated' => false
+			),
+			'dplus-function' => array(
+				'name'   => 'dplus-menu',
+				'fields' => array('dplus_function', 'pw_template', 'summary'),
+				'paginated' => true
+			),
 			'ci-function' => array(
 				'name'   => 'dplus-menu',
 				'fields' => array('title', 'dplus_function', 'pw_template', 'jsoncode', 'is_formattable', 'summary'),
@@ -45,6 +54,10 @@
 			),
 			'ci-contacts' => array(
 				'name'   => 'ci-contacts',
+				'fields' => array(),
+			),
+			'ci-contact' => array(
+				'name'   => 'ci-contact',
 				'fields' => array(),
 			),
 			'ci-sales-orders' => array(
@@ -94,17 +107,21 @@
 			'ci-phonebook' => array(
 				'name'   => 'ci-phonebook',
 				'fields' => array(),
+			),
+			'ci-customer-phonebook' => array(
+				'name'   => 'ci-customer-phonebook',
+				'fields' => array(),
 			)
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'customer-menu' => array(
 				'template'       => 'dplus-menu',
 				'name'           => 'mci',
 				'title'          => 'Customers',
 				'summary'        => 'Customer Menu',
 				'parent'         => '/',
-				'dplus_function' => ''
+				'dplus_function' => 'mci'
 			),
 			'ci' => array(
 				'template'       => 'dplus-function',
@@ -112,17 +129,26 @@
 				'title'          => 'Customer Information',
 				'summary'        => 'View Customer Information',
 				'parent'         => '/mci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci',
 				'pw_template'    => 'ci-customer'
 			),
-			'ci-index' => array(
+			'ci-phonebook' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'phonebook',
+				'title'          => 'Phonebook',
+				'summary'        => 'Search through customers by Phonebook',
+				'parent'         => '/mci/',
+				'dplus_function' => 'mci',
+				'pw_template'    => 'ci-phonebook'
+			),
+			'ci-customer-phonebook' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'phonebook',
 				'title'          => 'Phonebook',
 				'summary'        => 'View Customer Phonebook',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
-				'pw_template'    => 'ci-phonebook'
+				'dplus_function' => 'ci-gen',
+				'pw_template'    => 'ci-customer-phonebook'
 			),
 			'ci-shipto' => array(
 				'template'       => 'dplus-function',
@@ -130,7 +156,7 @@
 				'title'          => 'Ship-tos',
 				'summary'        => 'View Customer Ship-tos',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-shp',
 				'pw_template'    => 'ci-shipto',
 				'jsoncode'		 => 'ci-shipto'
 			),
@@ -140,9 +166,29 @@
 				'title'          => 'Contacts',
 				'summary'        => 'View Customer Contacts',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-gen',
 				'pw_template'    => 'ci-contacts',
 				'jsoncode'       => 'ci-contacts'
+			),
+			'ci-contact' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'contact',
+				'title'          => 'Contact',
+				'summary'        => 'View Customer Contact',
+				'parent'         => '/mci/ci/contacts/',
+				'dplus_function' => '',
+				'pw_template'    => 'ci-contact',
+				'jsoncode'       => ''
+			),
+			'ci-contact-edit' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'contact-edit',
+				'title'          => 'Edit Contact',
+				'summary'        => 'Edit Customer Contact',
+				'parent'         => '/mci/ci/contacts/',
+				'dplus_function' => '',
+				'pw_template'    => 'ci-contact-edit',
+				'jsoncode'       => ''
 			),
 			'ci-pricing' => array(
 				'template'       => 'ci-function',
@@ -150,7 +196,7 @@
 				'title'          => 'Pricing',
 				'summary'        => 'View Customer Pricing',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-prc',
 				'pw_template'    => 'ci-pricing',
 				'jsoncode'       => 'ci-pricing'
 			),
@@ -160,7 +206,7 @@
 				'title'          => 'Sales Orders',
 				'summary'        => 'View Customer Sales Orders',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-sor',
 				'pw_template'    => 'ci-sales-orders',
 				'jsoncode'		 => 'ci-sales-orders'
 			),
@@ -170,7 +216,7 @@
 				'title'          => 'Sales History',
 				'summary'        => 'View Customer Sales History',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-sht',
 				'pw_template'    => 'ci-sales-history',
 				'jsoncode'		 => 'ci-sales-history'
 			),
@@ -180,7 +226,7 @@
 				'title'          => 'Purchase Orders',
 				'summary'        => 'View Customer PO',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-cpo',
 				'pw_template'    => 'ci-customer-po',
 				'jsoncode'       => 'ci-purchaseorders'
 			),
@@ -190,7 +236,7 @@
 				'title'          => 'Quotes',
 				'summary'        => 'View Customer Quotes',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-qte',
 				'pw_template'    => 'ci-quotes',
 				'jsoncode'		 => 'ci-quotes'
 			),
@@ -200,7 +246,7 @@
 				'title'          => 'Open Invoices',
 				'summary'        => 'View Customer Open Invoices',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-inv',
 				'pw_template'    => 'ci-open-invoices',
 				'jsoncode'		 => 'ci-openinvoices'
 			),
@@ -210,7 +256,7 @@
 				'title'          => 'Payments',
 				'summary'        => 'View Customer Payments',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-pay',
 				'pw_template'    => 'ci-payments',
 				'jsoncode'		 => 'ci-payments'
 			),
@@ -220,7 +266,7 @@
 				'title'          => 'Credit',
 				'summary'        => 'View Customer Credit',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-crd',
 				'pw_template'    => 'ci-credit',
 				'jsoncode'       => 'ci-credit'
 			),
@@ -230,7 +276,7 @@
 				'title'          => 'Standing Orders',
 				'summary'        => 'View Customer Standing Orders',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-sto',
 				'pw_template'    => 'ci-standing-orders',
 				'jsoncode'       => 'ci-standingorders'
 			),
@@ -240,7 +286,7 @@
 				'title'          => 'Stock',
 				'summary'        => 'View Customer Stock',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-sst',
 				'pw_template'    => 'ci-stock',
 				'jsoncode'       => 'ci-stock'
 			),
@@ -250,7 +296,7 @@
 				'title'          => 'Notes',
 				'summary'        => 'View Customer Notes',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-nte',
 				'pw_template'    => 'ci-notes',
 				'jsoncode'       => 'ci-notes'
 			),
@@ -260,13 +306,67 @@
 				'title'          => 'Documents',
 				'summary'        => 'View Customer Documents',
 				'parent'         => '/mci/ci/',
-				'dplus_function' => '',
+				'dplus_function' => 'ci-doc',
 				'pw_template'    => 'ci-documents',
 				'jsoncode'       => 'ci-documents'
 			),
 		);
 
+		public function init_phonebookpage() {
+			$this->addHook('Page::get_customerURL', function($event) {
+				$custID = $event->arguments(0);
+				$event->return = $this->get_ci_customerURL($custID);
+			});
+
+			$this->addHook('Page::get_customershiptoURL', function($event) {
+				$custID   = $event->arguments(0);
+				$shiptoID = $event->arguments(1);
+				$event->return = $this->get_ci_customershiptoURL($custID, $shiptoID);
+			});
+		}
+
 		public function init_cipage() {
+			$this->addHook('Page(pw_template=ci-customer)::children_user_allowed', function($event) {
+				$user = $this->wire('user');
+				$event->return = $this->get_ci_user_allowed_functions($user);
+			});
+
+			$this->addHook('Page::url_custID', function($event) {
+				$p = $event->object;
+				$custID   = $event->arguments(0);
+				$url = new Url($p->url);
+				$url->query->set('custID', $custID);
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::url_custcontact', function($event) {
+				$p = $event->object;
+				$url = new Url($this->wire('pages')->get('pw_template=ci-contact')->url);
+				$custID = $event->arguments(0);
+				$url->query->set('custID', $custID);
+				$shiptoID = $event->arguments(1);
+				if ($shiptoID) {
+					$url->query->set('shipID', $shiptoID);
+				}
+				$contactID = $event->arguments(2);
+				$url->query->set('contactID', $contactID);
+				$event->return = $url->getUrl();
+			});
+
+			$this->addHook('Page::url_editcustcontact', function($event) {
+				$p = $event->object;
+				$url = new Url($this->wire('pages')->get('pw_template=ci-contact-edit')->url);
+				$custID = $event->arguments(0);
+				$url->query->set('custID', $custID);
+				$shiptoID = $event->arguments(1);
+				if ($shiptoID) {
+					$url->query->set('shipID', $shiptoID);
+				}
+				$contactID = $event->arguments(2);
+				$url->query->set('contactID', $contactID);
+				$event->return = $url->getUrl();
+			});
+
 			$this->addHook('Page::get_redirURL', function($event) {
 				$p = $event->object;
 				$event->return = $p->parent('template=dplus-menu')->child('template=redir')->url;
@@ -365,9 +465,11 @@
 			$this->addHook('Page::get_customerpurchaseordersURL', function($event) {
 				$p = $event->object;
 				$custID = $event->arguments(0);
+				$custpo = $event->arguments(1);
 				$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
 				$url->query->set('action','ci-purchase-orders');
 				$url->query->set('custID', $custID);
+				$url->query->set('custpo', $custpo);
 				$url->query->set('page', $p->fullURL->getUrl());
 				$event->return = $url->getUrl();
 			});
@@ -495,28 +597,25 @@
 			});
 		}
 
-		/**
-		 * Returns CI Customer URL
-		 * @param  string $custID Customer ID
-		 * @return string
-		 */
 		public function get_ci_customerURL($custID) {
 			$url = new Url($this->wire('pages')->get('pw_template=ci-customer')->url);
 			$url->query->set('custID', $custID);
 			return $url->getUrl();
 		}
 
-		/**
-		 * Returns CI Customer Shipto URL
-		 * @param  string $custID    Customer ID
-		 * @param  string $shiptoID  Customer ShiptoID
-		 * @return string
-		 */
 		public function get_ci_customershiptoURL($custID, $shiptoID) {
 			$url = new Url($this->wire('pages')->get('pw_template=ci-shipto')->url);
 			$url->query->set('custID', $custID);
 			$url->query->set('shiptoID', $shiptoID);
 			return $url->getUrl();
+		}
+
+		public function get_ci_user_allowed_functions(User $user) {
+			$p = $this->wire('pages')->get('pw_template=ci-customer');
+			$dplus_functions = array_unique($p->children()->explode('dplus_function'));
+			$filtered_functions = $user->filter_functions($dplus_functions);
+			$this->session->funcs = $filtered_functions;
+			return $p->children('dplus_function='.implode('|', $filtered_functions));
 		}
 
 		public static function getModuleInfo() {
