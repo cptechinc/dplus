@@ -231,7 +231,7 @@
 		 * @return void
 		 */
 		protected function install_templates() {
-			foreach ($this->templates as $templatename => $template) {
+			foreach ($this::TEMPLATES as $templatename => $template) {
 				if ($this->wire('templates')->get($templatename)) {
 					$this->update_template($templatename);
 				} else {
@@ -328,7 +328,7 @@
 				$pw_fields = $this->create_fieldgroup($template);
 			}
 
-			$templatefields = $this->templates[$template]['fields'];
+			$templatefields = $this::TEMPLATES[$template]['fields'];
 
 			foreach ($templatefields as $fieldname) {
 				$field = $this::FIELDS[$fieldname];
@@ -358,7 +358,7 @@
 			$t->save();
 			$this->update_fieldgroup($template);
 			$t->fieldgroup = $this->wire('fieldgroups')->get($template);
-			$this->allowPageNum = $this->templates[$template]['paginated'] ? 1 : 0;
+			$this->allowPageNum = $this::TEMPLATES[$template]['paginated'] ? 1 : 0;
 			$this->slashPageNum = 1;
 			$t->save();
 		}
@@ -372,7 +372,7 @@
 			$t = wire('templates')->get($template);
 			$this->update_fieldgroup($template);
 			$t->fieldgroup = wire('templates')->get($template)->fieldgroup;
-			$t->allowPageNum = $this->templates[$template]['paginated'] ? 1 : 0;
+			$t->allowPageNum = $this::TEMPLATES[$template]['paginated'] ? 1 : 0;
 			$t->slashPageNum = 1;
 			$t->save();
 		}
@@ -401,7 +401,7 @@
 				}
 			}
 
-			foreach ($this->templates[$page['template']]['fields'] as $fieldname) {
+			foreach ($this::TEMPLATES[$page['template']]['fields'] as $fieldname) {
 				$pw_page->$fieldname = $page[$fieldname];
 			}
 			return $pw_page->save();
@@ -428,7 +428,7 @@
 				}
 			}
 
-			foreach ($this->templates[$page['name']]['fields'] as $fieldname) {
+			foreach ($this::TEMPLATES[$page['name']]['fields'] as $fieldname) {
 				$pw_page->$fieldname = $page[$fieldname];
 			}
 			return $pw_page->save();
