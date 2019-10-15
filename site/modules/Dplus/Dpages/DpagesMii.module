@@ -8,7 +8,7 @@
 	 * Installs fields, templates, pages, hooks necessary for Mii Pages
 	 * Adds Hooks for getting URLs to Mcii pages
 	 */
-	class DpagesMii extends DplusoPages implements Module {
+	class DpagesMii extends Dpages implements Module {
 		const REQUIREMENTS_OPTIONS = array(
 			"REQ" => "requirements",
 			"AVL" => 'available'
