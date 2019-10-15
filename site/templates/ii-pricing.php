@@ -5,13 +5,14 @@
 	use WarehouseQuery, Warehouse;
 	use CustomerQuery, Customer;
 
-	$module_ii = $modules->get('MiiPages');
+	$module_ii = $modules->get('DpagesMii');
 	$module_ii->init_iipage();
+
+	$page->show_breadcrumbs = false;
+	$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
 
 	if ($itemquery->count()) {
 		$page->title = "$itemID Pricing";
-		$page->show_breadcrumbs = false;
-		$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
 
 		if ($input->get->custID) {
 			$custID = $input->get->text('custID');

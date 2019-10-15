@@ -1,11 +1,15 @@
 <?php namespace ProcessWire;
-	require_once(__DIR__ . '/DplusoPages.module');
 
 	use Purl\Url;
 
-	class MciPages extends DplusoPages implements Module {
-
-		protected $fields = array(
+	/**
+	 * class DpagesMci
+	 *
+	 * Installs fields, templates, pages, hooks necessary for Mci Pages
+	 * Adds Hooks for getting URLs to Mci pages
+	 */
+	class DpagesMci extends Dpages implements Module {
+		const FIELDS = array(
 			'jsoncode' => array(
 				'name'  => 'jsoncode',
 				'type'  => 'text',
@@ -20,7 +24,7 @@
 			),
 		);
 
-		protected $templates = array(
+		const TEMPLATES = array(
 			'dplus-menu' => array(
 				'name'   => 'dplus-menu',
 				'fields' => array('dplus_function', 'summary'),
@@ -110,7 +114,7 @@
 			)
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'customer-menu' => array(
 				'template'       => 'dplus-menu',
 				'name'           => 'mci',

@@ -1,17 +1,19 @@
 <?php namespace ProcessWire;
-	require_once(__DIR__ . '/DplusoPages.module');
 
 	use Purl\Url;
 	use QuoteQuery, Quote;
 	use LogpermQuery, Logperm;
 
-	class MqoPages extends DplusoPages implements Module {
+	/**
+	 * class DpagesMqo
+	 *
+	 * Installs fields, templates, pages, hooks necessary for Mqo Pages
+	 * Adds Hooks for getting URLs to Mqo pages
+	 */
+	class DpagesMqo extends Dpages implements Module {
+		const FIELDS = array();
 
-		protected $fields = array(
-
-		);
-
-		protected $templates = array(
+		const TEMPLATES = array(
 			'quotes' => array(
 				'name'   => 'quotes',
 				'fields' => array()
@@ -46,14 +48,14 @@
 			),
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'mqo-menu' => array(
 				'template'       => 'dplus-menu',
 				'name'           => 'mqo',
 				'title'          => 'Quotes',
 				'summary'        => 'Quotes Menu',
 				'parent'         => '/',
-				'dplus_function' => ''
+				'dplus_function' => 'mqo'
 			),
 			'quote-redir' => array(
 				'template'   => 'redir',

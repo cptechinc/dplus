@@ -17,7 +17,11 @@
 				'singular' => true,
 				'autoload' => true,
 				'requires' => array('DplusPwPages'),
-				'installs' => array('WarehouseConfig'),
+				'installs' => array(
+					'ConfigCi', 'Iiconfig', 'SalesOrdersConfig',
+					'WarehouseConfig', 'WarehouseInventoryConfig', 'ConfigBinr',
+					'WarehouseLabelPrintingConfig', 'WarehousePickingConfig'
+				),
 			);
 		}
 	}

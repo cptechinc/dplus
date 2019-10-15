@@ -1,10 +1,15 @@
 <?php namespace ProcessWire;
-	require_once(__DIR__ . '/DplusoPages.module');
 
-	class DplusoPagesCart extends DplusoPages implements Module {
+	/**
+	 * class DpagesCart
+	 *
+	 * Installs fields, templates, pages, hooks necessary for Cart Pages
+	 * Adds Hooks for getting URLs to cart pages
+	 */
+	class DpagesCart extends Dpages implements Module {
+		const FIELDS = array();
 
-		protected $fields = array();
-		protected $templates = array(
+		const TEMPLATES = array(
 			'cart' => array(
 				'name'   => 'cart',
 				'fields' => array('dplus_function', 'summary'),
@@ -17,7 +22,7 @@
 			)
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'cart' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'cart',

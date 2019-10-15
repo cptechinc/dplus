@@ -31,6 +31,9 @@
 					<input type="text" class="form-control" id="lotserial" name="lotserial" value="{{ item.lotserial }}">
 				</div>
 			</div>
+			{% if (item.is_item_lotted()) %}
+				<small class="form-text text-muted">If blank, Lot Number will be created and assigned</small>
+			{% endif %}
 			<div class="form-group">
 				<label for="lotserialref">Lot/Serial Ref</label>
 				<div class="input-group">
@@ -48,7 +51,7 @@
 				<input type="text" class="form-control" id="bin" name="binID" value="{{ item.bin }}">
 			</div>
 		</div>
-		
+
 		<div class="form-group mb-5">
 			<label for="qty">Qty</label>
 			<div class="input-group">

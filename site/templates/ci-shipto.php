@@ -1,8 +1,8 @@
 <?php
 	include_once('./ci-include.php');
 
-
 	if ($customerquery->count()) {
+		$page->show_breadcrumbs = false;
 
 		if ($input->get->shiptoID) {
 			$shiptoID = $input->get->text('shiptoID');

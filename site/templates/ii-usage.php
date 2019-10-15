@@ -5,9 +5,9 @@
 	$module_usage = $modules->get('IiUsage');
 
 	if ($itemquery->count()) {
-		$page->title = "$itemID Usage";
 		$page->show_breadcrumbs = false;
 		$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
+		$page->title = "$itemID Usage";
 
 		$module_json = $modules->get('JsonDataFiles');
 		$json = $module_json->get_file(session_id(), $page->jsoncode);

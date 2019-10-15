@@ -22,6 +22,11 @@
 				</li>
 			{% endif %}
 		{% endif %}
+		{% if page.pw_template == 'bookings-day' %}
+			<li class="breadcrumb-item">
+				<a href="{{ page.url }}">Day</a>
+			</li>
+		{% endif %}
 		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
 	</ol>
 </nav>

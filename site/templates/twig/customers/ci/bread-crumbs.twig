@@ -19,7 +19,7 @@
 		{% endfor %}
 		{% if (page.pw_template == 'ci-shipto' and page.has('shiptoID')) %}
 			<li class="breadcrumb-item">
-				<a href="{{ page.url }}">Ship-tos</a>
+				<a href="{{ page.url ~ '?custID=' ~ customer.id }}">Ship-tos</a>
 			</li>
 		{% endif %}
 		{% if (page.parent.pw_template != 'ci-shipto' and page.pw_template != 'ci-shipto' and page.has('shiptoID')) %}

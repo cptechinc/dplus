@@ -2,9 +2,9 @@
 	include_once('./ii-include.php');
 
 	if ($itemquery->count()) {
-		$page->title = "$itemID Purchase History";
 		$page->show_breadcrumbs = false;
 		$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
+		$page->title = "$itemID Purchase History";
 
 		if ($input->get->date) {
 			$date = $input->get->text('date');

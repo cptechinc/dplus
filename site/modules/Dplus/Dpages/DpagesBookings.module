@@ -1,23 +1,18 @@
 <?php namespace ProcessWire;
-	require_once(__DIR__ . '/DplusoPages.module');
 
 	use Purl\Url;
 	use DateTime;
 
-	class BookingsPages extends DplusoPages implements Module {
-		protected $fields = array();
+	/**
+	 * class DpagesBookings
+	 *
+	 * Installs fields, templates, pages, hooks necessary for Bookings Pages
+	 * Adds Hooks for getting URLs to booking pages
+	 */
+	class DpagesBookings extends Dpages implements Module {
+		const FIELDS = array();
 
-		protected $templates = array(
-			'dplus-menu' => array(
-				'name'   => 'dplus-menu',
-				'fields' => array('dplus_function', 'summary'),
-				'paginated' => false
-			),
-			'dplus-function' => array(
-				'name'   => 'dplus-menu',
-				'fields' => array('dplus_function', 'pw_template', 'summary'),
-				'paginated' => true
-			),
+		const TEMPLATES = array(
 			'bookings' => array(
 				'name'   => 'bookings',
 				'fields' => array(),
@@ -32,14 +27,14 @@
 			),
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'bookings-menu' => array(
 				'template'       => 'dplus-menu',
 				'name'           => 'sobook',
 				'title'          => 'Bookings',
 				'summary'        => 'Bookings Menu',
 				'parent'         => '/',
-				'dplus_function' => ''
+				'dplus_function' => 'sobook'
 			),
 			'bookings' => array(
 				'template'       => 'dplus-function',
@@ -47,16 +42,16 @@
 				'title'          => 'Bookings',
 				'summary'        => 'View Bookings',
 				'parent'         => '/sobook/',
-				'dplus_function' => '',
+				'dplus_function' => 'lbkgr',
 				'pw_template'    => 'bookings'
 			),
 			'bookings-day' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'day',
-				'title'          => 'Bookings Day',
+				'title'          => 'Day',
 				'summary'        => 'View Bookings for Day',
 				'parent'         => '/sobook/bookings/',
-				'dplus_function' => '',
+				'dplus_function' => 'bkdy',
 				'pw_template'    => 'bookings-day'
 			),
 			'bookings-customer' => array(
@@ -65,7 +60,7 @@
 				'title'          => 'Customer Bookings',
 				'summary'        => 'View Customer Bookings',
 				'parent'         => '/sobook/bookings/',
-				'dplus_function' => '',
+				'dplus_function' => 'lbkgc',
 				'pw_template'    => 'bookings-customer'
 			),
 		);

@@ -1,7 +1,14 @@
 <?php namespace ProcessWire;
 
-	class DplusRedirPages extends DplusPwPages implements Module {
-		protected $fields = array(
+	require_once(__DIR__ . '/../DplusPwPages/DplusPwPages.module');
+	
+	/**
+	 * class DpagesMwm
+	 *
+	 * Installs fields, templates, pages, hooks necessary for redir Pages
+	 */
+	class DpagesRedir extends DplusPwPages implements Module {
+		const FIELDS = array(
 			'redir_file' => array(
 				'name'  => 'redir_file',
 				'type'  => 'text',
@@ -9,7 +16,7 @@
 			)
 		);
 
-		protected $templates = array(
+		const TEMPLATES = array(
 			'redir' => array(
 				'name'   => 'redir',
 				'fields' => array('redir_file', 'summary'),
@@ -17,7 +24,7 @@
 			)
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'user-redir' => array(
 				'template'   => 'redir',
 				'name'       => 'redir',

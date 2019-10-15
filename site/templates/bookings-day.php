@@ -1,7 +1,8 @@
 <?php
-	$modules->get('BookingsPages')->init_bookingspage();
+	$modules->get('DpagesBookings')->init_bookingspage();
 	$filter_bookings = $modules->get('FilterBookings');
 	$filter_bookings->set_user($user);
+	$page->show_breadcrumbs = false;
 
 	if ($input->get->date) {
 		$page->date = $date = date('m/d/Y', strtotime($input->get->text('date')));
@@ -21,12 +22,15 @@
 
 		if ($input->get->ordn) {
 			$ordn = $input->get->text('ordn');
-			$page->title = "$date Bookings for Order # $ordn";
+			$page->ordn = $ordn;
+			$page->title = "Bookings for Order # $ordn on $date";
 			$lines = $filter_bookings->bookings_day->get_day_salesorder_changes($input)->find();
+			$page->salesorderURL = $pages->get('pw_template=sales-order-view')->url."?ordn=$ordn";
+			$page->body .= $config->twig->render("bookings/bread-crumbs.twig", ['page' => $page]);
 			$page->body .= $config->twig->render("bookings/day/sales-order-changes.twig", ['page' => $page, 'lines' => $lines]);
 		} else {
 			$orders = $filter_bookings->bookings_day->get_bookings($input)->find();
-			$page->title = "$date Bookings";
+			$page->title = "Bookings on $date";
 
 			if ($input->get->custID) {
 				$page->title = "$customer->name ($customer->custid) $date Bookings";
@@ -35,6 +39,7 @@
 					$page->title = "$shipto->name ($shipto->shiptoid) $date Bookings";
 				}
 			}
+			$page->body .= $config->twig->render("bookings/bread-crumbs.twig", ['page' => $page]);
 			$page->body .= $config->twig->render("bookings/day/sales-order-list.twig", ['page' => $page, 'orders' => $orders]);
 		}
 	} else {

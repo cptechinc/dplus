@@ -1,11 +1,14 @@
 <?php namespace ProcessWire;
-	require_once(__DIR__ . '/DplusoPages.module');
 
 	use Purl\Url;
 
-	class ScreenFormatterPages extends DplusoPages implements Module {
-
-		protected $fields = array(
+	/**
+	 * class DpagesScreenFormatter
+	 *
+	 * Installs fields, templates, pages, hooks necessary for Screen Formatter Edit Pages
+	 */
+	class DpagesScreenFormatter extends Dpages implements Module {
+		const FIELDS = array(
 			'jsoncode' => array(
 				'name'  => 'jsoncode',
 				'type'  => 'text',
@@ -18,7 +21,7 @@
 			),
 		);
 
-		protected $templates = array(
+		const TEMPLATES = array(
 			'formatter-menu' => array(
 				'name'   => 'formatter-menu',
 				'fields' => array('title', 'summary'),
@@ -31,7 +34,7 @@
 			)
 		);
 
-		protected $pages = array(
+		const PAGES = array(
 			'screen-formatter-menu' => array(
 				'template'       => 'dplus-function',
 				'name'           => 'screen-formatters',
@@ -92,6 +95,14 @@
 				'parent'         => '/user/screen-formatters/ii/',
 				'formatter'      => 'IiPurchaseHistory',
 				'jsoncode'       => 'ii-purchase-history'
+			),
+			'ci-formatter-menu' => array(
+				'template'       => 'dplus-function',
+				'name'           => 'ci',
+				'title'          => 'CI Screen Formatters',
+				'summary'        => 'CI Screen Formatters Menu',
+				'parent'         => '/user/screen-formatters/',
+				'pw_template'    => 'formatter-menu'
 			),
 			'ci-sales-orders' => array(
 				'template'       => 'formatter-screen',
