@@ -1,5 +1,5 @@
 <?php
-	$config_salesorders = $modules->get('SalesOrdersConfig');
+	$config_salesorders = $modules->get('ConfigsSalesOrders');
 	$modules->get('DpagesMso')->init_salesorder_hooks();
 	$html = $modules->get('HtmlWriter');
 
