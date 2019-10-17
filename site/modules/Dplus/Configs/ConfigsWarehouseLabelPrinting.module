@@ -1,21 +1,24 @@
 <?php namespace ProcessWire;
 
-class ConfigBinr extends Process implements ConfigurableModule {
+/**
+ * Module for Label Printing configurations
+ */
+class ConfigsWarehouseLabelPrinting extends Process implements ConfigurableModule {
 /* =============================================================
 		ProcessWire Module Functions
 =============================================================== */
 
 	const CONFIG_FIELDS = array(
-		'default_qtyonhand' => array(
+		'show_masterpack' => array(
 			'type'        => 'checkbox',  // TRUE OR FALSE
-			'label'       => 'Use Qty on hand as default qty?',
-			'description' => 'Defaults Qty to the Qty On Hand',
-			'notes'       => "Defaults Qty to the Qty On Hand"
+			'label'       => 'Show Master Pack?',
+			'description' => 'Show Master Pack',
+			'notes'       => "Master Pack label inputs will be shown"
 		)
 	);
 
 	const DEFAULT_CONFIG = array(
-		'default_qtyonhand' => false
+		'show_masterpack' => false
 	);
 
 
@@ -38,13 +41,11 @@ class ConfigBinr extends Process implements ConfigurableModule {
 	 */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dpluso Binr Config Module',
+			'title' => 'Dpluso Warehouse Label Printing Config Module',
 			'version' => 101,
-			'summary' => 'Handles Dplus Warehouse Binr Configurations',
+			'summary' => 'Handles Dplus Warehouse Label Priting Configurations',
 			'singular' => true,
 			'autoload' => true,
-			'requires' => array('DplusPwPages'),
-			//'installs' => array('DplusoSalesOrder'),
 		);
 	}
 
@@ -53,14 +54,15 @@ class ConfigBinr extends Process implements ConfigurableModule {
 		$fields = new InputfieldWrapper();
 		$data = array_merge(self::DEFAULT_CONFIG, $data);
 
-		$traits = self::CONFIG_FIELDS['default_qtyonhand'];
+		$traits = self::CONFIG_FIELDS['show_masterpack'];
 		$f = $modules->get('InputfieldCheckbox');
-		$f->attr('name', 'default_qtyonhand');
-		$f->attr('checked', $data['default_qtyonhand'] ? 'checked' : '' );
+		$f->attr('name', 'show_masterpack');
+		$f->attr('checked', $data['show_masterpack'] ? 'checked' : '' );
 		$f->label = __($traits['label']);
 		$f->description = __($traits['description']);
 		$f->notes = _($traits['notes']);
 		$fields->add($f);
+
 		return $fields;
 	}
 }

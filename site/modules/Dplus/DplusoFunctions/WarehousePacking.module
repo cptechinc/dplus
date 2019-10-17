@@ -64,8 +64,8 @@ class WarehousePacking extends WireData implements Module {
 	public function init() {
 		$this->session = $this->wire('session');
 		$this->config = new WireData();
-		$this->config->inventory = $this->wire('modules')->get('WarehouseInventoryConfig');
-		//$this->config->picking   = $this->wire('modules')->get('WarehousePickingConfig');
+		$this->config->inventory = $this->wire('modules')->get('ConfigsWarehouseInventory');
+		//$this->config->picking   = $this->wire('modules')->get('ConfigsWarehousePicking');
 
 		$this->addHook('Page::get_addboxURL', function($event) {
 			$p = $event->object;

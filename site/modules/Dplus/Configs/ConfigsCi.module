@@ -1,0 +1,80 @@
+<?php namespace ProcessWire;
+
+/**
+ * Module for Ci configurations
+ */
+class ConfigsCi extends Process implements ConfigurableModule {
+	const CONFIG_FIELDS = array(
+		'option_ytdmonth' => array(
+			'type'        => 'select',
+			'label'       => 'Year-to-Date Month Start',
+			'description' => 'Month to start Year-to-Date',
+			'notes'       => "Month to start Year-to-Date",
+			'options' => array(
+				1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April',
+				5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September',
+				10 => 'October', 11 => 'November', 12 => 'December'
+			)
+		),
+		'option_history_daysback' => array(
+			'type'        => 'integer',
+			'label'       => 'Number Of Days Back',
+			'description' => 'Default Number of Days to go back in Sales History',
+			'notes'       => "Default Number of Days to go back in Sales History",
+			'min'         => 1
+		)
+	);
+
+	const DEFAULT_CONFIG = array(
+		'option_ytdmonth' => 1,
+		'option_history_daysback' => 365
+	);
+
+	/* =============================================================
+			ProcessWire Module Functions
+	=============================================================== */
+
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso CI Config Module',
+			'version' => 101,
+			'summary' => 'Handles Dplus CI Configurations',
+			'singular' => true,
+			'autoload' => true
+		);
+	}
+
+	static public function getModuleConfigInputfields(array $data) {
+		$modules = wire('modules');
+		$fields = new InputfieldWrapper();
+		$data = array_merge(self::DEFAULT_CONFIG, $data);
+
+		$traits = self::CONFIG_FIELDS['option_ytdmonth'];
+		$f = $modules->get("InputfieldSelect");
+		$f->attr('name', 'option_ytdmonth');
+		$f->label = __($traits['label']);
+		$f->description = __($traits['description']);
+		$f->notes = _($traits['notes']);
+		$f->addOptions($traits['options']);
+		$f->value = $data['option_ytdmonth'];
+		$fields->add($f);
+
+		$traits = self::CONFIG_FIELDS['option_history_daysback'];
+		$f = $modules->get('InputfieldInteger');
+		$f->attr('name', 'option_history_daysback');
+		$f->icon = 'fa-calendar';
+		$f->label = __($traits['label']);
+		$f->description = __($traits['description']);
+		$f->notes = _($traits['notes']);
+		$f->value = $data['option_history_daysback'];
+		$f->min = $traits['min'];
+		$fields->add($f);
+
+		return $fields;
+	}
+}

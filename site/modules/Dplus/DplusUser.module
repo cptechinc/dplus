@@ -6,7 +6,8 @@
 
 	class DplusUser extends WireData implements Module {
 		private $className;
-		public static $user_roles = array(
+
+		const USER_ROLES = array(
 			'default' => array(
 				'dplus-code' => 'defaul',
 				'label' => 'Default',
@@ -57,7 +58,7 @@
 		}
 
 		public function update_user_roles() {
-			foreach (self::$user_roles as $code => $user_role) {
+			foreach (self::USER_ROLES as $code => $user_role) {
 				if ($this->wire('roles')->find('name='.$user_role['dplus-code'])->count) {
 					$role = $this->wire('roles')->get('name='.$user_role['dplus-code']);
 					$role->of(false);
