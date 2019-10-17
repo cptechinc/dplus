@@ -119,7 +119,7 @@ class FilterBookings extends Process implements ConfigurableModule {
 
 			if ($this->bookings_user->interval == 'day') {
 				$page = $this->wire('page');
-				$url = new Url($this->wire('modules')->get('BookingsPages')->get_bookings_dayURL($booking->bookdate));
+				$url = new Url($this->wire('modules')->get('DpagesBookings')->get_bookings_dayURL($booking->bookdate));
 
 				if ($page->pw_template == 'bookings-customer') {
 					$url->query->set('custID', $page->custID);

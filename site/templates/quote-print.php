@@ -1,5 +1,5 @@
 <?php
-	$modules->get('MqoPages')->init_mqopage();
+	$modules->get('DpagesMqo')->init_mqopage();
 	$html = $modules->get('HtmlWriter');
 
 	if ($input->get->qnbr) {

@@ -1,7 +1,7 @@
 <?php
 	use ItemsearchQuery, Itemsearch;
 
-	$module_ii = $modules->get('MiiPages');
+	$module_ii = $modules->get('DpagesMii');
 	$module_ii->init_iipage();
 	$html = $modules->get('HtmlWriter');
 

@@ -74,8 +74,8 @@ class DplusoWarehousePicking extends WireData implements Module {
 	public function init() {
 		$this->session = $this->wire('session');
 		$this->config = new WireData();
-		$this->config->inventory = $this->wire('modules')->get('WarehouseInventoryConfig');
-		$this->config->picking   = $this->wire('modules')->get('WarehousePickingConfig');
+		$this->config->inventory = $this->wire('modules')->get('ConfigsWarehouseInventory');
+		$this->config->picking   = $this->wire('modules')->get('ConfigsWarehousePicking');
 	}
 
 	/**
@@ -556,7 +556,7 @@ class DplusoWarehousePicking extends WireData implements Module {
 		} elseif (!$pickitem->is_item_lotted()) {
 			return $this->get_warehouseitembin($pickitem->itemid);
 		} else {
-			$inventoryconfig = $this->wire('modules')->get('WarehouseInventoryConfig');
+			$inventoryconfig = $this->wire('modules')->get('ConfigsWarehouseInventory');
 			return $inventoryconfig->allow_negativeintentory() ? $this->get_warehouseitembin($pickitem->itemid) : '';
 		}
 	}

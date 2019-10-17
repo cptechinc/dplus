@@ -1,7 +1,7 @@
 <?php
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
-	$config->binr = $modules->get('ConfigBinr');
+	$config->binr = $modules->get('ConfigsBinr');
 
 	$page->frombin = '';
 	$page->tobin = '';

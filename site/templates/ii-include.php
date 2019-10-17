@@ -2,7 +2,7 @@
 	use ItemsearchQuery, Itemsearch;
 	use WarehouseQuery, Warehouse;
 
-	$module_ii = $modules->get('MiiPages');
+	$module_ii = $modules->get('DpagesMii');
 	$module_ii->init_iipage();
 
 	$html = $modules->get('HtmlWriter');

@@ -1,0 +1,278 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+use SalesOrder, SalesOrderQuery;
+
+require_once(__DIR__ . '/Dpages.module');
+
+/**
+ * class DpagesMso
+ *
+ * Installs fields, templates, pages, hooks necessary for Mso Pages
+ * Adds Hooks for getting URLs to Mso pages
+ * Adds Hooks for Sales Order Editing Access
+ */
+class DpagesMso extends Dpages implements Module {
+	const FIELDS = array();
+
+	const TEMPLATES = array(
+		'sales-orders' => array(
+			'name'   => 'sales-orders',
+			'fields' => array()
+		),
+		'sales-history-orders' => array(
+			'name'   => 'sales-history-orders',
+			'fields' => array()
+		),
+		'sales-orders-customer' => array(
+			'name'   => 'sales-orders-customer',
+			'fields' => array()
+		),
+		'sales-history-orders-customer' => array(
+			'name'   => 'sales-history-orders-customer',
+			'fields' => array()
+		),
+		'sales-order-view' => array(
+			'name'   => 'sales-order-view',
+			'fields' => array()
+		),
+		'sales-order-print' => array(
+			'name'   => 'sales-order-print',
+			'fields' => array()
+		),
+		'sales-order-edit' => array(
+			'name'   => 'sales-order-edit',
+			'fields' => array()
+		),
+		'sales-order-documents' => array(
+			'name'   => 'sales-order-documents',
+			'fields' => array()
+		),
+		'sales-order-notes' => array(
+			'name'   => 'sales-order-notes',
+			'fields' => array()
+		),
+	);
+
+	const PAGES = array(
+		'mso' => array(
+			'template'       => 'dplus-menu',
+			'name'           => 'mso',
+			'title'          => 'Sales Orders',
+			'summary'        => '',
+			'parent'         => '/',
+			'dplus_function' => 'mso'
+		),
+		'sales-orders' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'sales-orders',
+			'title'          => 'Sales Orders',
+			'summary'        => 'View / Search through Open Orders',
+			'parent'         => '/mso/',
+			'dplus_function' => 'mso',
+			'pw_template'    => 'sales-orders'
+		),
+		'sales-orders-customer' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'customer',
+			'title'          => 'Customer Sales Orders',
+			'summary'        => 'View / Search through Open Orders for a Customer',
+			'parent'         => '/mso/sales-orders/',
+			'dplus_function' => 'mso',
+			'pw_template'    => 'sales-orders-customer'
+		),
+		'sales-order' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'sales-order',
+			'title'          => 'Sales Order',
+			'summary'        => 'View Sales Order',
+			'parent'         => '/mso/',
+			'dplus_function' => 'mso',
+			'pw_template'    => 'sales-order-view'
+		),
+		'sales-order-print' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'print',
+			'title'          => 'Print Sales Order',
+			'summary'        => 'Print Sales Order',
+			'parent'         => '/mso/',
+			'dplus_function' => 'mso',
+			'pw_template'    => 'sales-order-print'
+		),
+		'sales-order-edit' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'edit',
+			'title'          => 'Edit Sales Order',
+			'summary'        => 'Edit Sales Order',
+			'parent'         => '/mso/sales-order/',
+			'dplus_function' => 'eso',
+			'pw_template'    => 'sales-order-edit'
+		),
+		'sales-order-documents' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'sales-order-documents',
+			'title'          => 'Sales Order Documents',
+			'summary'        => 'View Sales Order Documents',
+			'parent'         => '/mso/sales-order/',
+			'dplus_function' => 'mso',
+			'pw_template'    => 'sales-order-documents'
+		),
+		'sales-order-notes' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'sales-order-notes',
+			'title'          => 'Sales Order Notes',
+			'summary'        => 'View Sales Order Notes',
+			'parent'         => '/mso/sales-order/',
+			'dplus_function' => 'mso',
+			'pw_template'    => 'sales-order-notes'
+		),
+		'sales-history' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'sales-history',
+			'title'          => 'Sales History',
+			'summary'        => 'View Sales History Orders',
+			'parent'         => '/mso/',
+			'dplus_function' => '',
+			'pw_template'    => 'sales-history-orders'
+		),
+		'sales-history-customer' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'customer',
+			'title'          => 'Customer Sales History',
+			'summary'        => 'View Sales History Orders for a Customer',
+			'parent'         => '/mso/sales-history/',
+			'dplus_function' => '',
+			'pw_template'    => 'sales-history-orders-customer'
+		),
+	);
+
+	const USERPERM_SALESORDERS_EDIT = 'eso';
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Sales Order Pages',
+			'version' => 101,
+			'summary' => 'Installs and creates Dpluso Sales Order Pages',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+	public function init_salesorder_hooks() {
+		/**
+		 * Adds self::can_user_editorder() as User hook
+		 * @uses self::can_user_editorder()
+		 */
+		$this->addHook('User::can_editorder', function($event) {
+			$user = $event->object;
+			$order = $event->arguments(0);
+			$event->return = $this->can_user_editorder($user, $order);
+		});
+
+		/**
+		 * Adds self::is_user_editingorder() as User hook
+		 * @uses self::is_user_editingorder()
+		 */
+		$this->addHook('User::is_editingorder', function($event) {
+			$user = $event->object;
+			$order = $event->arguments(0);
+			$event->return = $this->is_user_editingorder($user, $order);
+		});
+
+		/**
+		 * Adds self::is_user_editingorder() as User hook
+		 * @uses self::is_user_editingorder()
+		 */
+		$this->addHook('Page::remove_itemURL', function($event) {
+			$p = $event->object;
+			$ordn = $event->arguments(0);
+			$linenbr = $event->arguments(1);
+			$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
+			$url->query->set('action', 'remove-line');
+			$url->query->set('ordn', $ordn);
+			$url->query->set('linenbr', $linenbr);
+			$event->return = $url->getUrl();
+		});
+
+		/**
+		 * Returns Edit Sales Order Page URL
+		 */
+		$this->addHook('Page::view_notesURL', function($event) {
+			$p = $event->object;
+			$ordn = $event->arguments(0);
+			$linenbr = $event->arguments(1);
+			$url = new Url($this->wire('pages')->get('pw_template=sales-order-notes')->url);
+			$url->query->set('ordn', $ordn);
+			$hash = $linenbr > 0 ? "#line-$linenbr" : '';
+			$event->return = $url->getUrl()."$hash";
+		});
+
+		/**
+		 * Returns Edit Sales Order Page URL
+		 */
+		$this->addHook('Page::edit_orderURL', function($event) {
+			$p = $event->object;
+			$ordn = $event->arguments(0);
+			$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
+			$url->query->set('action', 'get-order-edit');
+			$url->query->set('ordn', $ordn);
+			$event->return = $url->getUrl();
+		});
+
+		/**
+		 * Returns Sales Order Page URL
+		 */
+		$this->addHook('Page::view_orderURL', function($event) {
+			$ordn = $event->arguments(0);
+			$url = new Url($this->wire('pages')->get('pw_template=sales-order-view')->url);
+			$url->query->set('ordn', $ordn);
+			$event->return = $url->getUrl();
+		});
+
+		/**
+		 * Returns Sales Order Page URL
+		 */
+		$this->addHook('Page::unlock_orderURL', function($event) {
+			$ordn = $event->arguments(0);
+			$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
+			$url->query->set('action', 'unlock-order');
+			$url->query->set('ordn', $ordn);
+			$event->return = $url->getUrl();
+		});
+	}
+
+	/**
+	 * Return if User can edit Sales Order
+	 * @param  User              $user  User
+	 * @param  SalesOrder|string $order Sales Order
+	 * @return bool                     Can User Edit Sales Order?
+	 */
+	public function can_user_editorder(User $user, $order) {
+		if (get_class($order) != 'SalesOrder') {
+			$order = SalesOrderQuery::create()->findOneByOrdernumber($order);
+		}
+
+		$config_orders = $this->wire('modules')->get('SalesOrdersConfig');
+		$canedit = false;
+
+		if ($config_orders->allow_salesorderedit) {
+			if ($order->is_editable() && $user->has_function(self::USERPERM_SALESORDERS_EDIT)) {
+				$canedit = true;
+			}
+		}
+		return $canedit;
+	}
+
+	/**
+	 * Return if User is editing Sales Order
+	 * @param  User       $user  User
+	 * @param  SalesOrder|string $order Sales Order
+	 * @return bool              IS User is editing Sales Order?
+	 */
+	public function is_user_editingorder(User $user, $order) {
+		if (get_class($order) != 'SalesOrder') {
+			$order = SalesOrderQuery::create()->findOneByOrdernumber($order);
+		}
+		return $order->heldby == $user->loginid;
+	}
+}

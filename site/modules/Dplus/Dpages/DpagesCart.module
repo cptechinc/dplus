@@ -1,0 +1,55 @@
+<?php namespace ProcessWire;
+
+/**
+ * class DpagesCart
+ *
+ * Installs fields, templates, pages, hooks necessary for Cart Pages
+ * Adds Hooks for getting URLs to cart pages
+ */
+class DpagesCart extends Dpages implements Module {
+	const FIELDS = array();
+
+	const TEMPLATES = array(
+		'cart' => array(
+			'name'   => 'cart',
+			'fields' => array('dplus_function', 'summary'),
+			'paginated' => false
+		),
+		'cart-notes' => array(
+			'name'   => 'cart-notes',
+			'fields' => array(),
+			'paginated' => false
+		)
+	);
+
+	const PAGES = array(
+		'cart' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'cart',
+			'title'          => 'Cart',
+			'summary'        => 'Cart',
+			'parent'         => '/',
+			'dplus_function' => '',
+			'pw_template'    => 'cart'
+		),
+		'cart-notes' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'notes',
+			'title'          => 'Cart Notes',
+			'summary'        => 'Cart Notes',
+			'parent'         => '/cart/',
+			'dplus_function' => '',
+			'pw_template'    => 'cart-notes'
+		),
+	);
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Online Cart Pages',
+			'version' => 101,
+			'summary' => 'Installs and creates Dplus Online Cart Pages',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
