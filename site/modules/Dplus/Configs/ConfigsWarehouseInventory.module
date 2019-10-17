@@ -14,11 +14,22 @@ class ConfigsWarehouseInventory extends Process implements ConfigurableModule {
 			'label'       => 'Allow Negative Inventory?',
 			'description' => 'Allow Negative Inventory',
 			'notes'       => "Negative Inventory will be allowed on Serialized and Normal Items"
+		),
+		'show_inventoryresults' => array(
+			'type'        => 'select',
+			'label'       => 'Inventory Results Format',
+			'description' => 'Format to show Inventory Results',
+			'notes'       => "Format to show Inventory Results",
+			'options' => array(
+				'lotserial' => 'Lot / Serial Breakdown',
+				'bin'       => 'Bin Breakdown'
+			)
 		)
 	);
 
 	const DEFAULT_CONFIG = array(
-		'allow_negativeinventory' => false
+		'allow_negativeinventory' => false,
+		'show_inventoryresults'   => 'lotserial'
 	);
 
 
