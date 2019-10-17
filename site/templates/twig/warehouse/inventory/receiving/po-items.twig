@@ -10,7 +10,7 @@
 		</div>
 	</div>
 	{% for item in items %}
-		<a href="#" class="list-group-item list-group-item-action">
+		<a href="{{ page.linenbrURL(item.linenbr)}}" class="list-group-item list-group-item-action">
 			<div class="row">
 				<div class="col">{{ item.linenbr }}</div>
 				<div class="col-4">
