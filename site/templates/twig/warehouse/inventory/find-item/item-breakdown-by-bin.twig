@@ -1,0 +1,32 @@
+<p class="list-group-item-text bg-light"><strong>Bin:</strong> (MULTIPLE) <strong>Qty:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid) }}</p>
+{% if (not page.print) %}
+	<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ item.itemid|attrJS }}-bins" aria-expanded="false" aria-controls="{{ item.itemid }}-lotserial">
+		Show / Hide Bins
+	</button>
+{% endif %}
+<div class="{{ not page.print ? 'collapse' : '' }}" id="{{ item.itemid|attrJS  }}-bins">
+	<div class="card border border-dark">
+		<div class="card-header bg-dark text-white">
+			{{ item.itemid }} Bins
+		</div>
+		<div class="list-group list-group-flush">
+			{% for binitem in inventory.get_bins_itemid(item.sessionid, item.itemid) %}
+				<div class="list-group-item p-1">
+					<div class="row">
+						<div class="col">
+							<h4 class="list-group-item-heading">
+								Bin {{ binitem.bin }} <strong>Qty:</strong> {{ binitem.qty }}
+							</h4>
+						</div>
+						<div class="col">
+							{% if (not warehouse.validate_bin(binitem.bin)) %}
+								<span class="badge badge-danger pull-right">Invalid Bin</span>
+							{% endif %}
+						</div>
+					</div>
+					{% include 'warehouse/inventory/find-item/item-breakdown-by-bin-lotserial.twig' %}
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>

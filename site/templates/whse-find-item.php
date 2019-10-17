@@ -1,10 +1,9 @@
 <?php
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
+	$config_inventory = $modules->get('WarehouseInventoryConfig');
 
 	$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;
-
-	$page->print = ($page->template == 'print');
 
 	if (!$page->print && !$input->get->scan) {
 		$page->body = $config->twig->render('warehouse/item-form.twig', ['page' => $page]);
@@ -17,7 +16,12 @@
 		$inventory = InvsearchQuery::create();
 		$resultscount = InvsearchQuery::create()->countDistinctItemid(session_id());
 		$items = InvsearchQuery::create()->findDistinctItems(session_id());
-		$page->body .= $config->twig->render('warehouse/inventory/find-item/results.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'inventory' => $inventory, 'warehouse' => $warehouse]);
+
+		if (file_exists($config->paths->templates."twig/warehouse/inventory/find-item/$config->company/results.twig")) {
+			$page->body .= $config->twig->render("warehouse/inventory/find-item/$config->company/results.twig", ['page' => $page, 'config' => $config_inventory, 'resultscount' => $resultscount, 'items' => $items, 'inventory' => $inventory, 'warehouse' => $warehouse]);
+		} else {
+			$page->body .= $config->twig->render('warehouse/inventory/find-item/results.twig', ['page' => $page, 'config' => $config_inventory, 'resultscount' => $resultscount, 'items' => $items, 'inventory' => $inventory, 'warehouse' => $warehouse]);
+		}
 	}
 
 	if ($page->print) {
