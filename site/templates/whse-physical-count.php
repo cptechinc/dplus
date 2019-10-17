@@ -68,5 +68,4 @@
 	$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('warehouse' => $jsconfig)]);
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 
-
 	include __DIR__ . "/basic-page.php";
