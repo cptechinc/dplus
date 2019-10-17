@@ -20,6 +20,9 @@
 		if ($query_phys->count() == 1) {
 			$physicalitem = $query_phys->findOne();
 			$page->title = "Physical Count for $physicalitem->itemid";
+			if ($session->bin) {
+				$physicalitem->setBin($session->bin);
+			}
 			$page->body = $config->twig->render('warehouse/inventory/physical-count/physical-count-form.twig', ['page' => $page, 'item' => $physicalitem]);
 			$config->scripts->append(hash_templatefile('scripts/warehouse/physical-count.js'));
 		} elseif ($query_phys->count() > 1) {
