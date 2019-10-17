@@ -3,7 +3,7 @@
 
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
-	$modules->get('DpagesMwm')->init_physicalcount();
+	$modules->get('DplusoPagesWarehouse')->init_physicalcount();
 	$html = $modules->get('HtmlWriter');
 
 	$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;
@@ -19,6 +19,10 @@
 
 		if ($query_phys->count() == 1) {
 			$physicalitem = $query_phys->findOne();
+			$page->title = "Physical Count for $physicalitem->itemid";
+			if ($session->bin) {
+				$physicalitem->setBin($session->bin);
+			}
 			$page->body = $config->twig->render('warehouse/inventory/physical-count/physical-count-form.twig', ['page' => $page, 'item' => $physicalitem]);
 			$config->scripts->append(hash_templatefile('scripts/warehouse/physical-count.js'));
 		} elseif ($query_phys->count() > 1) {

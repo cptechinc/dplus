@@ -65,11 +65,43 @@
 	*		break;
 	*	case 'print-pick-item-thermal-label':
 	*		- Requests label to be printed
-	*		- Response: rTakes itemcartonlabel and print out
+	*		- Response: Takes itemcartonlabel and print out
 	*		DBNAME=$config->DBNAME
 	*		ORDERCARTONPRINT
 	*		ORDERNBR=$ordn
 	*		ITEMID=$itemID
+	*		break;
+	*	case 'physical-count-search':
+	*		- Requests Item / Lot/Serial Details for Physical count
+	*		- Response: Creates whseitemphysicalcount record(s)
+	*		DBNAME=$config->DBNAME
+	*		PHYSITEMSEARCH
+	*		QUERY=$q
+	*		break;
+	*	case 'physical-count-submit':
+	*		- Requests Physical Count Details to be saved from the whseitemphysicalcount record
+	*		- Response: Error or no record (completed)
+	*		DBNAME=$config->DBNAME
+	*		PHYSITEMSAVE
+	*		break;
+	*	case 'init-receive':
+	*		- Requests PO to receive
+	*		- Response: po_tran_det & po_tran_lot_det records are loaded with detail information
+	*		DBNAME=$config->DBNAME
+	*		STARTRECEIVE
+	*		break;
+	*	case 'receiving-search':
+	*		- Requests Item / Lot/Serial Details for Physical count
+	*		- Response: Creates whseitemphysicalcount record(s)
+	*		DBNAME=$config->DBNAME
+	*		RECEIVINGSEARCH
+	*		QUERY=$q
+	*		break;
+	*	case 'receiving-submit':
+	*		- Request: Save Received Item to PO DETAIL Line
+	*		- Response: Updates po_tran_lot_det & po_tran_det records
+	*		DBNAME=$config->DBNAME
+	*		STARTRECEIVE
 	*		break;
 	* }
 	**/
@@ -264,6 +296,7 @@
 			// $item->setLotserialref($input->$requestmethod->text('lotserialref'));
 			$item->setBin($input->$requestmethod->text('binID'));
 			$item->setQty($input->$requestmethod->text('qty'));
+			$item->setProductiondate($input->$requestmethod->text('productiondate'));
 			$item->save();
 			$session->bin = $input->$requestmethod->text('binID');
 
@@ -273,6 +306,57 @@
 				$url = new Purl\Url($input->$requestmethod->text('page'));
 			} else {
 				$url = new Purl\Url($pages->get('pw_template=whse-phsyical-count'));
+			}
+			$url->query->set('scan', $scan);
+			$session->loc = $url->getUrl();
+			break;
+		case 'init-receive':
+			$ponbr = $input->$requestmethod->text('ponbr');
+			$data = array("DBNAME=$dplusdb", 'STARTRECEIVE', "PONBR=$ponbr");
+
+			if ($input->$requestmethod->page) {
+				$url = new Purl\Url($input->$requestmethod->text('page'));
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=whse-receive'));
+			}
+			break;
+		case 'receiving-search':
+			$q = strtoupper($input->$requestmethod->text('scan'));
+			$data = array("DBNAME=$dplusdb", 'RECEIVINGSEARCH', "QUERY=$q");
+
+			if ($input->$requestmethod->page) {
+				$url = new Purl\Url($input->$requestmethod->text('page'));
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=whse-receiving'));
+			}
+
+			$url->query->set('scan', $q);
+			$session->loc = $url->getUrl();
+			break;
+		case 'receiving-submit':
+			$scan = $input->$requestmethod->text('scan');
+			$ponbr = $input->$requestmethod->text('ponbr');
+			$query_phys = WhseitemphysicalcountQuery::create();
+			$query_phys->filterBySessionid(session_id());
+			$query_phys->filterByScan($scan);
+
+			$item = $query_phys->findOne();
+			$item->setItemid($input->$requestmethod->text('itemID'));
+			$item->setLotserial($input->$requestmethod->text('lotserial'));
+			// Lot Serial Ref is Read-Only currently 8/23
+			// $item->setLotserialref($input->$requestmethod->text('lotserialref'));
+			$item->setBin($input->$requestmethod->text('binID'));
+			$item->setQty($input->$requestmethod->text('qty'));
+			$item->save();
+			$session->bin = $input->$requestmethod->text('binID');
+
+			$data = array("DBNAME=$dplusdb", 'ACCEPTRECEIVING', "PONBR=$ponbr");
+
+			if ($input->$requestmethod->page) {
+				$url = new Purl\Url($input->$requestmethod->text('page'));
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=whse-receiving'));
+				$url->query->set('ponbr', $ponbr);
 			}
 			$url->query->set('scan', $scan);
 			$session->loc = $url->getUrl();
