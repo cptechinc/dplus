@@ -4,9 +4,29 @@
 	<li class="nav-item">
 		<a class="nav-link" href="{{ pages.get('template=dashboard').url }}">{{ pages.get('template=dashboard').title }}</a>
 	</li>
-	{% for menu in pages.user_allowed_menus() %}
+	{% if user.has_function('ci') %}
 		<li class="nav-item">
-			<a class="nav-link" href="{{ menu.url }}">{{ menu.title }}</a>
+			<a class="nav-link" href="{{ pages.get('dplus_function=ci').url }}">{{ pages.get('dplus_function=ci').title }}</a>
 		</li>
-	{% endfor %}
+	{% endif %}
+	{% if user.has_function('ii') %}
+		<li class="nav-item">
+			<a class="nav-link" href="{{ pages.get('dplus_function=ii').url }}">{{ pages.get('dplus_function=ii').title }}</a>
+		</li>
+	{% endif %}
+	{% if user.has_function('mqo') %}
+		<li class="nav-item">
+			<a class="nav-link" href="{{ pages.get('dplus_function=mqo').url }}">{{ pages.get('dplus_function=mqo').title }}</a>
+		</li>
+	{% endif %}
+	{% if user.has_function('mso') %}
+		<li class="nav-item">
+			<a class="nav-link" href="{{ pages.get('dplus_function=mso').url }}">{{ pages.get('dplus_function=mso').title }}</a>
+		</li>
+	{% endif %}
+	{% if user.has_function('sobook') %}
+		<li class="nav-item">
+			<a class="nav-link" href="{{ pages.get('dplus_function=sobook').url }}">{{ pages.get('dplus_function=sobook').title }}</a>
+		</li>
+	{% endif %}
 {% endblock %}
