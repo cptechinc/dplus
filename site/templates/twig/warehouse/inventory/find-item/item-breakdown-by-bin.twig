@@ -14,9 +14,19 @@
 				<div class="list-group-item p-1">
 					<div class="row">
 						<div class="col">
-							<h4 class="list-group-item-heading">
-								Bin {{ binitem.bin }} <strong>Qty:</strong> {{ binitem.qty }}
-							</h4>
+							<h5 class="list-group-item-heading">
+								<strong>Bin:</strong> {{ binitem.bin }}
+							</h5>
+						</div>
+						<div class="col">
+							<strong>Qty:</strong> {{ binitem.qty }}
+						</div>
+						<div class="col">
+							{% if (not page.print) %}
+								<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ (binitem.itemid ~ '_' ~ binitem.bin)|attrJS }}-lotserial" aria-expanded="false" aria-controls="{{ (binitem.itemid ~ '_' ~ binitem.bin)|attrJS }}-lotserial">
+									Show / Hide {{ binitem.get_itemtypepropertydesc()|upper ~ "S" }}
+								</button>
+							{% endif %}
 						</div>
 						<div class="col">
 							{% if (not warehouse.validate_bin(binitem.bin)) %}
