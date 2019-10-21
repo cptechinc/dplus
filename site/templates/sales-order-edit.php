@@ -1,6 +1,6 @@
 <?php
-	$config_salesorders = $modules->get('SalesOrdersConfig');
-	$modules->get('DplusoPagesSalesOrder')->init_salesorder_hooks();
+	$config_salesorders = $modules->get('ConfigsSalesOrders');
+	$modules->get('DpagesMso')->init_salesorder_hooks();
 	$html = $modules->get('HtmlWriter');
 	$http = new ProcessWire\WireHttp();
 

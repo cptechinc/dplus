@@ -1,6 +1,7 @@
 <?php
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
+	$config->binr = $modules->get('ConfigsBinr');
 
 	$page->frombin = '';
 	$page->tobin = '';
@@ -91,15 +92,15 @@
 		if ($resultscount == 1) {
 			if (!empty($session->get('binr'))) { // Show result of BinR
 				$nexturl = new Purl\Url($page->fullURL->getUrl());
+				$nexturl->query->remove('itemID');
+				$nexturl->query->remove('lotnbr');
+				$nexturl->query->remove('serialnbr');
 
 				if ($input->get->tobin || $input->get->frombin) {
-					$nexturl->query->remove('itemID');
-					$nexturl->query->remove('lotnbr');
-					$nexturl->query->remove('serialnbr');
 					$nexturl->query->remove('binID');
 				}
 
-				$page->body = $config->twig->render('warehouse/binr/binr-result.twig', ['session' => $session, 'page' => $page, 'whsesession' => $whsesession, 'item' => $item, 'url' => $nexturl]);
+				$page->body = $config->twig->render('warehouse/binr/binr-result.twig', ['session' => $session, 'page' => $page, 'whsesession' => $whsesession, 'item' => $item, 'nexturl' => $nexturl]);
 				$session->remove('binr');
 			} else { // Prepare Binr Form
 				$inventory = InvsearchQuery::create();
@@ -107,7 +108,7 @@
 
 				// 1. Binr form
 				$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;
-				$page->body = $config->twig->render('warehouse/binr/binr-form.twig', ['session' => $session, 'page' => $page, 'whsesession' => $whsesession, 'item' => $item, 'inventory' => $inventory]);
+				$page->body = $config->twig->render('warehouse/binr/binr-form.twig', ['session' => $session, 'page' => $page, 'whsesession' => $whsesession, 'item' => $item, 'inventory' => $inventory, 'config' => $config->binr]);
 
 				// 2. Choose From Bin Modal
 				$page->body .= $config->twig->render('warehouse/binr/from-bins-modal.twig', ['item' => $item, 'bins' => $currentbins]);

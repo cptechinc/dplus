@@ -1,0 +1,68 @@
+<?php namespace ProcessWire;
+
+/**
+ * Module for Label Printing configurations
+ */
+class ConfigsWarehouseLabelPrinting extends Process implements ConfigurableModule {
+/* =============================================================
+		ProcessWire Module Functions
+=============================================================== */
+
+	const CONFIG_FIELDS = array(
+		'show_masterpack' => array(
+			'type'        => 'checkbox',  // TRUE OR FALSE
+			'label'       => 'Show Master Pack?',
+			'description' => 'Show Master Pack',
+			'notes'       => "Master Pack label inputs will be shown"
+		)
+	);
+
+	const DEFAULT_CONFIG = array(
+		'show_masterpack' => false
+	);
+
+
+	public function init() {
+		parent::init();
+
+		foreach(self::DEFAULT_CONFIG as $key => $value) {
+			if (isset($this->data[$key])) {
+				$this->data[$key] = $this->data[$key];
+			} else {
+				$this->data[$key] = $value;
+			}
+		}
+	}
+
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Warehouse Label Printing Config Module',
+			'version' => 101,
+			'summary' => 'Handles Dplus Warehouse Label Priting Configurations',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+	static public function getModuleConfigInputfields(array $data) {
+		$modules = wire('modules');
+		$fields = new InputfieldWrapper();
+		$data = array_merge(self::DEFAULT_CONFIG, $data);
+
+		$traits = self::CONFIG_FIELDS['show_masterpack'];
+		$f = $modules->get('InputfieldCheckbox');
+		$f->attr('name', 'show_masterpack');
+		$f->attr('checked', $data['show_masterpack'] ? 'checked' : '' );
+		$f->label = __($traits['label']);
+		$f->description = __($traits['description']);
+		$f->notes = _($traits['notes']);
+		$fields->add($f);
+
+		return $fields;
+	}
+}

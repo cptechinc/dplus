@@ -1,9 +1,14 @@
 {% extends "nav/default.twig" %}
 
 {% block nav_links %}
-	{% for menu in pages.user_allowed_menus() %}
+	{% if user.has_function('wm') %}
 		<li class="nav-item">
-			<a class="nav-link" href="{{ menu.url }}">{{ menu.title }}</a>
+			<a class="nav-link" href="{{ pages.get('dplus_function=wm').url }}">{{ pages.get('dplus_function=wm').title }}</a>
 		</li>
-	{% endfor %}
+	{% endif %}
+	{% if user.has_function('ii') %}
+		<li class="nav-item">
+			<a class="nav-link" href="{{ pages.get('dplus_function=ii').url }}">{{ pages.get('dplus_function=ii').title }}</a>
+		</li>
+	{% endif %}
 {% endblock %}

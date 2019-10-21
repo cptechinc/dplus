@@ -1,0 +1,82 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+/**
+ * class DpagesMvi
+ *
+ * Installs fields, templates, pages, hooks necessary for Mci Pages
+ * Adds Hooks for getting URLs to Mci pages
+ */
+class DpagesMvi extends Dpages implements Module {
+	const FIELDS = array(
+		'jsoncode' => array(
+			'name'  => 'jsoncode',
+			'type'  => 'text',
+			'label' => 'JSON Datafile Code'
+		),
+		'is_formattable' => array(
+			'name'        => 'is_formattable',
+			'type'        => 'checkbox',  // TRUE OR FALSE
+			'label'       => 'Is screen formattable?',
+			'description' => 'Allow Screen Formatter to be used',
+			'notes'       => ""
+		),
+	);
+
+	const TEMPLATES = array(
+		'dplus-menu' => array(
+			'name'   => 'dplus-menu',
+			'fields' => array('dplus_function', 'summary'),
+			'paginated' => false
+		),
+		'dplus-function' => array(
+			'name'   => 'dplus-menu',
+			'fields' => array('dplus_function', 'pw_template', 'summary'),
+			'paginated' => true
+		),
+		'vi-function' => array(
+			'name'   => 'dplus-menu',
+			'fields' => array('title', 'dplus_function', 'pw_template', 'jsoncode', 'is_formattable', 'summary'),
+			'paginated' => true
+		),
+		'ci-customer' => array(
+			'name'   => 'ci-customer',
+			'fields' => array(),
+		),
+	);
+
+	const PAGES = array(
+		'vendor-menu' => array(
+			'template'       => 'dplus-menu',
+			'name'           => 'mvi',
+			'title'          => 'Vendors',
+			'summary'        => 'Vendor Menu',
+			'parent'         => '/',
+			'dplus_function' => 'mvi'
+		),
+		'vi' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'vi',
+			'title'          => 'Vendor Information',
+			'summary'        => 'View Vendor Information',
+			'parent'         => '/mvi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-vendor'
+		)
+	);
+
+	public function init_vipage() {
+
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Online Vendor Pages',
+			'version' => 101,
+			'summary' => 'Installs and creates Dplus Online Vendor Pages',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

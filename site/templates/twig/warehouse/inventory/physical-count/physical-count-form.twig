@@ -24,6 +24,7 @@
 				<input type="text" class="form-control" id="itemID" name="itemID" value="{{ item.itemid }}" data-itemtype="{{ item.type }}">
 			</div>
 		</div>
+
 		{% if (item.is_item_serialized() or item.is_item_lotted()) %}
 			<div class="form-group">
 				<label for="lotserial">Lot / Serial</label>
@@ -31,6 +32,9 @@
 					<input type="text" class="form-control" id="lotserial" name="lotserial" value="{{ item.lotserial }}">
 				</div>
 			</div>
+			{% if (item.is_item_lotted()) %}
+				<small class="form-text text-muted">If blank, Lot Number will be created and assigned</small>
+			{% endif %}
 			<div class="form-group">
 				<label for="lotserialref">Lot/Serial Ref</label>
 				<div class="input-group">
@@ -48,12 +52,17 @@
 				<input type="text" class="form-control" id="bin" name="binID" value="{{ item.bin }}">
 			</div>
 		</div>
-		
+
 		<div class="form-group mb-5">
 			<label for="qty">Qty</label>
 			<div class="input-group">
 				<input type="text" class="form-control text-right qty-input" id="qty" name="qty" value="{{ item.qty }}">
 			</div>
+		</div>
+
+		<div class="form-group mb-5">
+			<label for="productiondate">Production Date</label>
+			{% include 'util/date-picker.twig' with {'name': 'productiondate', 'id': 'productiondate', 'value': item.productiondate|convertdate('m/d/Y')} %}
 		</div>
 
 		<div class="d-flex w-100 justify-content-between">

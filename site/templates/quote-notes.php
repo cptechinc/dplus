@@ -1,5 +1,5 @@
 <?php
-	$modules->get('MqoPages')->init_mqopage();
+	$modules->get('DpagesMqo')->init_mqopage();
 	$module_qnotes_crud = $modules->get('QnotesCrud');
 
 	if ($input->requestMethod('POST')) {

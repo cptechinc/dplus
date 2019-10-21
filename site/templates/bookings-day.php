@@ -1,5 +1,5 @@
 <?php
-	$modules->get('BookingsPages')->init_bookingspage();
+	$modules->get('DpagesBookings')->init_bookingspage();
 	$filter_bookings = $modules->get('FilterBookings');
 	$filter_bookings->set_user($user);
 	$page->show_breadcrumbs = false;

@@ -4,7 +4,8 @@
 			Welcome, <?= $user->fullname; ?>
 		</p>
 		<nav>
-			<?= $config->twig->render("nav/$user->dplusrole.twig", ['pages' => $pages, 'user' => $user]); ?>
+			<?php $nav = empty($user->dplusrole) ? 'default' : $user->dplusrole; ?>
+			<?= $config->twig->render("nav/$nav.twig", ['pages' => $pages, 'user' => $user]); ?>
 		</nav>
 	</div>
 </div>

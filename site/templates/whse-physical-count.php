@@ -19,7 +19,12 @@
 
 		if ($query_phys->count() == 1) {
 			$physicalitem = $query_phys->findOne();
+			$page->title = "Physical Count for $physicalitem->itemid";
+			if ($session->bin) {
+				$physicalitem->setBin($session->bin);
+			}
 			$page->body = $config->twig->render('warehouse/inventory/physical-count/physical-count-form.twig', ['page' => $page, 'item' => $physicalitem]);
+			$config->scripts->append(hash_templatefile('scripts/warehouse/physical-count.js'));
 		} elseif ($query_phys->count() > 1) {
 			if ($input->get->recno) {
 				$recno = $input->get->int('recno');
@@ -50,13 +55,11 @@
 					$session->redirect($page->url."?scan=$scan");
 				} else {
 					$page->title = "No results found for ''$q'";
-					$page->formurl = $page->url;
-					$page->body .= $config->twig->render('warehouse/inventory/physical-count/itemid-search-form.twig', ['page' => $page]);
+					$page->body = $config->twig->render('warehouse/inventory/physical-count/item-search-form.twig', ['page' => $page]);
 				}
 			} else {
 				$page->title = "No results found for ''$scan'";
-				$page->formurl = $page->url;
-				$page->body .= $config->twig->render('warehouse/inventory/physical-count/itemid-search-form.twig', ['page' => $page]);
+				$page->body = $config->twig->render('warehouse/inventory/physical-count/item-search-form.twig', ['page' => $page]);
 			}
 		}
 	} else {
@@ -67,6 +70,5 @@
 	$jsconfig = array('warehouse' => array('id' => $whsesession->whseid, 'binarrangement' => $warehouse->get_binarrangementdescription(), 'bins' => $bins));
 	$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('warehouse' => $jsconfig)]);
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
-	$config->scripts->append(hash_templatefile('scripts/warehouse/physical-count.js'));
 
 	include __DIR__ . "/basic-page.php";

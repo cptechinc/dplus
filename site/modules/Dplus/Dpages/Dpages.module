@@ -1,0 +1,149 @@
+<?php namespace ProcessWire;
+
+require_once(__DIR__ . '/../DplusPwPages/DplusPwPages.module');
+
+/**
+ * class Dpages
+ *
+ * Installs fields, templates, pages, hooks necessary for Top Menus
+ * NOTE: Also installs the basic fields, templates, to build the rest of the Application
+ */
+class Dpages extends DplusPwPages implements Module {
+	const FIELDS = array(
+		'dplus_function' => array(
+			'name'  => 'dplus_function',
+			'type'  => 'text',
+			'label' => 'Dplus Function'
+		),
+		'pw_template' => array(
+			'name'  => 'pw_template',
+			'type'  => 'text',
+			'label' => 'ProcessWire Template'
+		)
+	);
+
+	const TEMPLATES = array(
+		'dplus-menu' => array(
+			'name'   => 'dplus-menu',
+			'fields' => array('dplus_function', 'pw_template', 'summary')
+		),
+		'dplus-function' => array(
+			'name'   => 'dplus-function',
+			'fields' => array('dplus_function', 'pw_template', 'summary')
+		),
+		'user-page' => array(
+			'name'   => 'user-page',
+			'fields' => array()
+		),
+		'login' => array(
+			'name'   => 'login',
+			'fields' => array()
+		),
+		'menu' => array(
+			'name'   => 'menu',
+			'fields' => array('title', 'dplus_function', 'summary')
+		),
+	);
+
+	const PAGES = array(
+		'user-page' => array(
+			'template' => 'user-page',
+			'name'     => 'user',
+			'title'    => 'User',
+			'summary'  => '',
+			'parent'   => '/'
+		),
+		'login' => array(
+			'template' => 'login',
+			'name'     => 'login',
+			'title'    => 'Login',
+			'summary'  => '',
+			'parent'   => '/user/'
+		),
+		'configs' => array(
+			'template' => 'user-configs',
+			'name'     => 'configs',
+			'title'    => 'User Configs',
+			'summary'  => '',
+			'parent'   => '/user/'
+		),
+		'menu' => array(
+			'template' => 'menu',
+			'name'     => 'menu',
+			'title'    => 'Menu',
+			'summary'  => '',
+			'parent'   => '/'
+		)
+	);
+
+	/**
+	 * Returns a PageArray of Pages under index that the user has access to
+	 * @param  User   $user User
+	 * @return PageArray
+	 */
+	public function get_user_allowed_menus(User $user) {
+		$p = $this->wire('pages')->get('template=home');
+
+		if ($user->hasRole('whse') || $user->hasRole('whsemgr')) {
+			$dplus_functions = array_unique($p->children('template=dplus-menu|warehouse-menu|menu')->explode('dplus_function'));
+		} else {
+			$dplus_functions = array_unique($p->children('template=dplus-menu|menu')->explode('dplus_function'));
+		}
+
+		$filtered_functions = $user->filter_functions($dplus_functions);
+		return $p->children('template=dplus-menu|warehouse-menu|menu, dplus_function='.implode('|', $filtered_functions));
+	}
+
+	/**
+	 * Returns PageArray of children Pages under $page that the user has access to
+	 * @param  Page   $page Page to return children of
+	 * @param  User   $user User
+	 * @return PageArray
+	 */
+	public function get_user_allowed_subpages(Page $page, User $user) {
+		$dplus_functions = array_unique($page->children('template!=redir')->explode('dplus_function'));
+		$filtered_functions = $user->filter_functions($dplus_functions);
+		return $page->children('template!=redir, dplus_function='.implode('|', $filtered_functions));
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public function init() {
+		$this->addHook('Pages::user_allowed_menus', function($event) {
+			$user = $this->wire('user');
+			$event->return = $this->get_user_allowed_menus($user);
+		});
+
+		$this->addHook('Page(template=dplus-menu)::user_allowed_subpages', function($event) {
+			$page = $event->object;
+			$user = $this->wire('user');
+			$event->return = $this->get_user_allowed_subpages($page, $user);
+		});
+	}
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Pages Modules',
+			'version' => 101,
+			'summary' => 'Installs and creates Dpluso Pages',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('DplusPwPages'),
+			'installs' => array(
+				'DpagesBookings',
+				'DpagesCart',
+				'DpagesMci', 'DpagesMii', 'DpagesMvi',
+				'DpagesMqo', 'DpagesMso',
+				'DpagesMwm',
+				'DpagesRedir',
+				'DpagesScreenFormatter',
+				'DpagesUserActions'
+			),
+		);
+	}
+}
