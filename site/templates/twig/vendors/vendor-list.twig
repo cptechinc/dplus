@@ -18,7 +18,7 @@
 				<a href="{{ page.get_sortURL('zip') }}" class="link">Zip</a>
 			</th>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('phone') }}" class="link">Phone</a>
+				<a href="{{ page.get_sortURL('date_lastpurchased') }}" class="link">Last Purchase Date</a>
 			</th>
 		</tr>
 	</thead>
@@ -27,7 +27,7 @@
 			{% for vendor in vendors %}
 				<tr>
 					<td scope="row">
-						<a href="{{ page.url ~ '?vendorID=' ~ vendor.id }}" class="link">
+						<a href="{{ page.get_vi_vendorURL(vendor.id) }}" class="link">
 							<strong>{{ vendor.id }}</strong>
 						</a>
 					</td>
