@@ -1,5 +1,5 @@
 <?php // THIS TEMPLATE IS THE PHONEBOOK FOR ALL CUSTOMERS
-	$modules->get('MciPages')->init_phonebookpage();
+	$modules->get('DpagesMci')->init_phonebookpage();
 
 	$query = CustindexQuery::create();
 
