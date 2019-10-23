@@ -21,9 +21,7 @@
 
 			$refreshurl = $page->get_customersalesordersURL($custID);
 			$page->body .= $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
-			// $page->body = $config->twig->render('customers/ci/customer/orders-search-form.twig', ['page' => $page, 'input' => $input, 'custid' => $custID]);
-			$page->body .= $config->twig->render('customers/ci/customer/sales-orders-list.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
-			// $page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'pagenbr' => $input->pageNum, 'resultscount'=> $orders->getNbResults()]);
+			$page->body .= $config->twig->render('customers/ci/sales-orders/sales-orders.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
 		} else {
 			if ($session->salesorderstry > 3) {
 				$page->headline = $page->title = "Sales Orders File could not be loaded";
