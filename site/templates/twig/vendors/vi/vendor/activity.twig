@@ -1,0 +1,87 @@
+<div class="card">
+	<div class="card-header">
+		<span class="h5">Vendor Activity</span>
+	</div>
+	<ul class="list-group list-group-flush">
+		<li class="list-group-item">
+			<div class="row font-weight-bold">
+				<div class="col-sm-6">
+					Activity
+				</div>
+				<div class="col-sm-3 text-right">
+					Number
+				</div>
+				<div class="col-sm-3 text-right">
+					Amount
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-6">
+					Purchase Orders
+				</div>
+				<div class="col-sm-3 text-right">
+					{{ vendor.countPurchaseOrders() }}
+				</div>
+				<div class="col-sm-3 text-right">
+					Amount
+				</div>
+			</div>
+		</li>
+
+		<li class="list-group-item bg-light text-center"><span class="h5 font-weight-bold">Invoices</span></li>
+		<li class="list-group-item">
+			<div class="row font-weight-bold">
+				<div class="col-sm-6">
+					Period
+				</div>
+				<div class="col-sm-3 text-right">
+					Amount
+				</div>
+				<div class="col-sm-3 text-right">
+					Invoices
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-6">
+					<abbr title="{{ "now"|date("F Y") }}">Month-to-date</abbr>
+				</div>
+				<div class="col-sm-3 text-right">
+
+				</div>
+				<div class="col-sm-3 text-right">
+
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-6">
+					<abbr title="{{ "now"|date("Y") }}">Year-to-date</abbr>
+				</div>
+				<div class="col-sm-3 text-right">
+
+				</div>
+				<div class="col-sm-3 text-right">
+
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-6">
+					Last 12 Months
+				</div>
+				<div class="col-sm-3 text-right">
+
+				</div>
+				<div class="col-sm-3 text-right">
+
+				</div>
+			</div>
+		</li>
+	</ul>
+</div>
