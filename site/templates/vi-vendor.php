@@ -1,6 +1,8 @@
 <?php
+	$modules->get('DpagesMvi')->init_vipage();
+
 	$html = $modules->get('HtmlWriter');
-	
+
 	if ($input->get->vendorID) {
 		$vendorID = $input->get->text('vendorID');
 		$load_vendor = $modules->get('ViLoadVendorShipfrom');
@@ -34,7 +36,7 @@
 			$q = strtoupper($input->get->text('q'));
 
 			if ($exact_query->filterByVendorid($q)->count() == 1) {
-				$session->redirect($page->url."?vendorID=$q");
+				$session->redirect($page->get_vi_vendorURL($q));
 			}
 
 			$page->title = "VI: Searching for '$q'";
