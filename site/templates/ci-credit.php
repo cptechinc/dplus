@@ -18,7 +18,7 @@
 
 			$refreshurl = $page->get_customercreditURL($custID, $itemID);
 			$page->body .= $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
-			$page->body .= $config->twig->render('customers/ci/customer/credit.twig', ['page' => $page, 'customer' => $customer, 'json' => $json]);
+			$page->body .= $config->twig->render('customers/ci/credit/credit.twig', ['page' => $page, 'customer' => $customer, 'json' => $json]);
 		} else {
 			if ($session->credittry > 3) {
 				$page->headline = $page->title = "Credit File could not be loaded";
