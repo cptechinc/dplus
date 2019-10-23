@@ -7,6 +7,7 @@
 	</div>
 	<div class="collapse" id="customer-quotes">
 		{% include 'quotes/customer/quotes-list.twig' %}
+		
 		<div class="card-footer bg-secondary">
 			<a href="{{ quotes_list }}" class="text-white">
 				View More {{ page.has('shiptoID') ? 'Ship-to' : 'Customer' }} Quotes
