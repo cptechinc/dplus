@@ -67,7 +67,39 @@ class DpagesMvi extends Dpages implements Module {
 	);
 
 	public function init_vipage() {
+		$this->addHook('Page::get_vi_vendorURL', function($event) {
+			$vendorID = $event->arguments(0);
+			$event->return = $this->get_vi_vendorURL($vendorID);
+		});
 
+		$this->addHook('Page::get_vi_vendorshipfromURL', function($event) {
+			$vendorID   = $event->arguments(0);
+			$shipfromID = $event->arguments(1);
+			$event->return = $this->get_vi_vendorshipfromURL($vendorID, $shipfromID);
+		});
+	}
+
+	/**
+	 * Returns URL to Vendor Page
+	 * @param  string $vendorID Vendor ID
+	 * @return string           URL
+	 */
+	public function get_vi_vendorURL($vendorID) {
+		$url = new Url($this->wire('pages')->get('pw_template=vi-vendor')->url);
+		$url->query->set('vendorID', $vendorID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Returns URL to Vendor Shipfrom Page
+	 * @param  string $vendorID   Vendor ID
+	 * @param  string $shipfromID Vendor Shipfrom ID
+	 * @return string             URL
+	 */
+	public function get_vi_vendorshipfromURL($vendorID, $shipfromID) {
+		$url = new Url($this->get_vi_vendorURL($vendorID));
+		$url->query->set('shipfromID', $shipfromID);
+		return $url->getUrl();
 	}
 
 	public static function getModuleInfo() {
