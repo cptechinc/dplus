@@ -39,7 +39,7 @@
 
 		public function init() {
 			/**
-			 * Returns CI Customer Page URL
+			 * Returns VI Vendor Page URL
 			 */
 			$this->addHook('Page::has_vendorID', function($event) {
 				$page = $event->object;
@@ -47,7 +47,7 @@
 			});
 
 			/**
-			 * Returns CI Customer Page URL
+			 * Returns VI Vendor Page URL
 			 */
 			$this->addHook('Page::has_shipfromID', function($event) {
 				$page = $event->object;
@@ -55,35 +55,35 @@
 			});
 
 			/**
-			 * Returns CI Customer Page URL
+			 * Returns VI Vendor Page URL
 			 */
 			$this->addHook('Page::vendorURL', function($event) {
 				$event->return = $this->get_vendorURL();
 			});
 
 			/**
-			 * Returns CI Customer Shipto Page URL
+			 * Returns VI Vendor Shipto Page URL
 			 */
 			$this->addHook('Page::vendor_shipfromURL', function($event) {
 				$event->return = $this->get_vendor_shipfromURL();
 			});
 
 			/**
-			 * Returns CI Customer Shipto Page URL
+			 * Returns VI Vendor Shipto Page URL
 			 */
 			$this->addHook('Page::vendor_or_shipfromURL', function($event) {
 				$event->return = $this->get_vendor_or_shipfromURL();
 			});
 
 			/**
-			 * Returns CI Customer Page URL
+			 * Returns VI Vendor Page URL
 			 */
 			$this->addHookProperty('Page::vendor', function($event) {
 				$event->return = $this->get_vendor();
 			});
 
 			/**
-			 * Returns CI Customer Shipto Page URL
+			 * Returns VI Vendor Shipto Page URL
 			 */
 			$this->addHookProperty('Page::shipfrom', function($event) {
 				$event->return = $this->get_shipfrom();
@@ -92,7 +92,7 @@
 		}
 
 		/**
-		 * Returns if Customer ID has been defined
+		 * Returns if Vendor ID has been defined
 		 * @return bool
 		 */
 		public function has_vendorID() {
@@ -100,7 +100,7 @@
 		}
 
 		/**
-		 * Returns Customer ID
+		 * Returns Vendor ID
 		 * @return string
 		 */
 		public function get_vendorID() {
@@ -108,8 +108,8 @@
 		}
 
 		/**
-		 * Sets Customer ID
-		 * @param  string $vendorID CustomerID
+		 * Sets Vendor ID
+		 * @param  string $vendorID VendorID
 		 * @return string
 		 */
 		public function set_vendorID($vendorID) {
@@ -136,7 +136,7 @@
 		}
 
 		/**
-		 * Validates if Customer exists
+		 * Validates if Vendor exists
 		 * @return void
 		 */
 		public function vendor_exists() {
@@ -144,9 +144,9 @@
 		}
 
 		/**
-		 * Returns Customer
-		 * NOTE: Sets the Customer Property if not loaded
-		 * @return Customer
+		 * Returns Vendor
+		 * NOTE: Sets the Vendor Property if not loaded
+		 * @return Vendor
 		 */
 		public function get_vendor() {
 			if (!$this->vendor) {
@@ -164,7 +164,7 @@
 		}
 
 		/**
-		 * Returns Customer Shipto ID
+		 * Returns Vendor Shipto ID
 		 * @return string
 		 */
 		public function get_shipfromID() {
@@ -185,40 +185,40 @@
 		 * @return void
 		 */
 		public function shipfrom_exists() {
-			return CustomershipfromQuery::create()->filterByVendorid($this->vendorID)->filterByShipfromid($this->shipfromID)->count();
+			return VendorshipfromQuery::create()->filterByVendorid($this->vendorID)->filterByShipfromid($this->shipfromID)->count();
 		}
 
 		/**
-		 * Returns CustomerShipto
+		 * Returns VendorShipto
 		 * NOTE: Sets the shipfrom Property if not loaded
-		 * @return CustomerShipto
+		 * @return VendorShipto
 		 */
 		public function get_shipfrom() {
 			if (!$this->shipfrom) {
-				$this->shipfrom = CustomershipfromQuery::create()->filterByVendorid($this->vendorID)->findOneByShipfromid($this->shipfromID);
+				$this->shipfrom = VendorshipfromQuery::create()->filterByVendorid($this->vendorID)->findOneByShipfromid($this->shipfromID);
 			}
 			return $this->shipfrom;
 		}
 
 
 		/**
-		 * Returns URL to Customer Page
+		 * Returns URL to Vendor Page
 		 * @return string
 		 */
 		public function get_vendorURL() {
-			return $this->wire('modules')->get('MviPages')->get_vi_vendorURL($this->vendorID);
+			return $this->wire('modules')->get('DPagesMvi')->get_vi_vendorURL($this->vendorID);
 		}
 
 		/**
-		 * Returns URL to Customer Shipto Page
+		 * Returns URL to Vendor Shipto Page
 		 * @return string
 		 */
 		public function get_vendor_shipfromURL() {
-			return $this->wire('modules')->get('MviPages')->get_vi_vendorshipfromURL($this->vendorID, $this->shipfromID);
+			return $this->wire('modules')->get('DPagesMvi')->get_vi_vendorshipfromURL($this->vendorID, $this->shipfromID);
 		}
 
 		/**
-		 * Returns URL to Customer / Customer Shipto Page
+		 * Returns URL to Vendor / Vendor Shipto Page
 		 * @return string
 		 */
 		public function get_vendor_or_shipfromURL() {
