@@ -1,5 +1,5 @@
 {
-	"columns": {
+	"detail": {
 		"Item ID": {
 			"type": "C",
 			"headingjustify": "l",
