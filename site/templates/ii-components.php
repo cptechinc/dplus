@@ -1,6 +1,6 @@
 <?php // TODO DATATABLE
 	include_once('./ii-include.php');
-	$config_ii = $modules->get('IiConfig');
+	$config_ii = $modules->get('ConfigsIi');
 
 	use ItemsearchQuery, Itemsearch;
 
@@ -8,7 +8,7 @@
 		$page->show_breadcrumbs = false;
 		$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
 		$page->title = "$itemID Components";
-		
+
 		if ($input->get->qty) {
 			$module_json = $modules->get('JsonDataFiles');
 

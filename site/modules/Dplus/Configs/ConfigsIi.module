@@ -1,0 +1,69 @@
+<?php namespace ProcessWire;
+
+/**
+ * Module for II configurations
+ */
+class ConfigsIi extends Process implements ConfigurableModule {
+/* =============================================================
+		ProcessWire Module Functions
+=============================================================== */
+
+	const CONFIG_FIELDS = array(
+		'option_components' => array(
+			'type'        => 'select',
+			'label'       => 'Kit or BOM',
+			'description' => 'Break Down Compnenents as Kit or BOM',
+			'notes'       => "Break Down Compnenents as Kit or BOM",
+			'options' => array('kit' => 'Kit', 'bom' => 'BOM')
+		)
+	);
+
+	const DEFAULT_CONFIG = array(
+		'option_components' => 'kit',
+	);
+
+	public function init() {
+		parent::init();
+
+		foreach(self::DEFAULT_CONFIG as $key => $value) {
+			if (isset($this->data[$key])) {
+				$this->data[$key] = $this->data[$key];
+			} else {
+				$this->data[$key] = $value;
+			}
+		}
+	}
+
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso II Config Module',
+			'version' => 101,
+			'summary' => 'Handles Dplus II Configurations',
+			'singular' => true,
+			'autoload' => true
+		);
+	}
+
+	static public function getModuleConfigInputfields(array $data) {
+		$modules = wire('modules');
+		$fields = new InputfieldWrapper();
+		$data = array_merge(self::DEFAULT_CONFIG, $data);
+
+		$traits = self::CONFIG_FIELDS['option_components'];
+		$f = $modules->get("InputfieldSelect");
+		$f->attr('name', 'option_components');
+		$f->label = __($traits['label']);
+		$f->description = __($traits['description']);
+		$f->notes = _($traits['notes']);
+		$f->addOptions($traits['options']);
+		$f->value = $data['option_components'];
+		$fields->add($f);
+
+		return $fields;
+	}
+}

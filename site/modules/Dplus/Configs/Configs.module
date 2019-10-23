@@ -1,0 +1,28 @@
+<?php namespace ProcessWire;
+
+class Configs extends WireData implements Module {
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Config Module',
+			'version' => 101,
+			'summary' => 'Handles Dplus Customer Configurations',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array(),
+			'installs' => array(
+				'ConfigsCi', 'ConfigsIi',
+				'ConfigsSalesOrders',
+				'ConfigsWarehouseInventory', 'ConfigsBinr',
+				'ConfigsWarehouseLabelPrinting', 'ConfigsWarehousePicking'
+			),
+		);
+	}
+}

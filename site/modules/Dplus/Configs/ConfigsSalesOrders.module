@@ -1,0 +1,68 @@
+<?php namespace ProcessWire;
+
+/**
+ * Module for Sales Orders configurations
+ */
+class ConfigsSalesOrders extends Process implements ConfigurableModule {
+/* =============================================================
+		ProcessWire Module Functions
+=============================================================== */
+
+	const CONFIG_FIELDS = array(
+		'allow_salesorderedit' => array(
+			'type'        => 'checkbox',  // TRUE OR FALSE
+			'label'       => 'Allow Sales Order Edit?',
+			'description' => 'Allow Sales Order Edit?',
+			'notes'       => ""
+		)
+	);
+
+	const DEFAULT_CONFIG = array(
+		'allow_salesorderedit' => true
+	);
+
+
+	public function init() {
+		parent::init();
+
+		foreach(self::DEFAULT_CONFIG as $key => $value) {
+			if (isset($this->data[$key])) {
+				$this->data[$key] = $this->data[$key];
+			} else {
+				$this->data[$key] = $value;
+			}
+		}
+	}
+
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Sales Orders Config Module',
+			'version' => 101,
+			'summary' => 'Handles Dplus Sales Orders Configurations',
+			'singular' => true,
+			'autoload' => true
+		);
+	}
+
+	static public function getModuleConfigInputfields(array $data) {
+		$modules = wire('modules');
+		$fields = new InputfieldWrapper();
+		$data = array_merge(self::DEFAULT_CONFIG, $data);
+
+		$traits = self::CONFIG_FIELDS['allow_salesorderedit'];
+		$f = $modules->get('InputfieldCheckbox');
+		$f->attr('name', 'allow_salesorderedit');
+		$f->attr('checked', $data['allow_salesorderedit'] ? 'checked' : '' );
+		$f->label = __($traits['label']);
+		$f->description = __($traits['description']);
+		$f->notes = _($traits['notes']);
+		$fields->add($f);
+
+		return $fields;
+	}
+}
