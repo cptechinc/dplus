@@ -19,7 +19,7 @@
 			$module_formatter->init_formatter();
 			$refreshurl = $page->get_customeropeninvoicesURL($custID);
 			$page->body .= $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
-			$page->body .= $config->twig->render('customers/ci/customer/open-invoices.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint()]);
+			$page->body .= $config->twig->render('customers/ci/open-invoices/open-invoices.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint()]);
 		} else {
 			if ($session->openinvoicestry > 3) {
 				$page->headline = $page->title = "Open Invoices File could not be loaded";
