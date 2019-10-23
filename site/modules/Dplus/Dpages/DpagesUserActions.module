@@ -1,6 +1,5 @@
 <?php namespace ProcessWire;
 
-
 use Purl\Url;
 
 /**
@@ -8,7 +7,7 @@ use Purl\Url;
  *
  * Installs fields, templates, pages, hooks necessary for User Actions Pages
  */
-class UserActionsPages extends Dpages implements Module {
+class DpagesUserActions extends Dpages implements Module {
 	const FIELDS = array();
 
 	const TEMPLATES = array(

@@ -1,0 +1,44 @@
+{
+	"columns": {
+		"Item ID": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Warehouse ID": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Bin Number": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"On Hand": {
+			"type": "C",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"On Order": {
+			"type": "C",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Committed": {
+			"type": "C",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Available": {
+			"type": "C",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"On Hand-Boxes": {
+			"type": "C",
+			"headingjustify": "r",
+			"datajustify": "r"
+		}
+	}
+}

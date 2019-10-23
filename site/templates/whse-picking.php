@@ -1,8 +1,8 @@
 <?php
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
-	$config_inventory = $modules->get('WarehouseInventoryConfig');
-	$config_picking   = $modules->get('WarehousePickingConfig');
+	$config_inventory = $modules->get('ConfigsWarehouseInventory');
+	$config_picking   = $modules->get('ConfigsWarehousePicking');
 	$http = new ProcessWire\WireHttp();
 
 	$template = '';
