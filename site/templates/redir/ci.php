@@ -133,7 +133,7 @@
 			break;
 		case 'edit-contact':
 			$custID = $input->$requestmethod->text('custID');
-			$shiptoID = $input->$requestmethod->text('shiptoID');
+			$shiptoID = $input->$requestmethod->text('shipID');
 			$contactID = $input->$requestmethod->text('contactID');
 
 			$editcontact = CustindexQuery::create()->filterByCustid($custID);
@@ -161,7 +161,7 @@
 			if ($shiptoID) {
 				$session->loc = $pages->get('pw_template=ci-contact')->url."?custID=$custID&shipID=$shiptoID&contactID=$contactID";
 			} else {
-				$session->loc = $pages->get('pw_template=ci-contact')->url."?custID=$custID&contactID=$contactID";	
+				$session->loc = $pages->get('pw_template=ci-contact')->url."?custID=$custID&contactID=$contactID";
 			}
 			break;
 		case 'ci-sales-orders':
