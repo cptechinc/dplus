@@ -99,7 +99,7 @@ class DocumentManagement extends WireData implements Module {
 			$event->return = $url->getUrl();
 		});
 
-		$this->addHook('Page(pw_template=ci-sales-orders|ci-sales-history)::documentsview_salesorder', function($event) {
+		$this->addHook('Page(pw_template=ci-sales-orders|ci-sales-history|ci-customer-po)::documentsview_salesorder', function($event) {
 			$page = $event->object;
 			$custID    = $event->arguments(0);
 			$ordn      = $event->arguments(1);
