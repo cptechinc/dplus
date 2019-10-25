@@ -56,10 +56,10 @@
 		<li class="list-group-item bg-light text-center"><span class="h5 font-weight-bold">Invoices</span></li>
 		<li class="list-group-item">
 			<div class="row font-weight-bold">
-				<div class="col-sm-6">
+				<div class="col-sm-5">
 					Period
 				</div>
-				<div class="col-sm-3 text-right">
+				<div class="col-sm-4 text-right">
 					Amount
 				</div>
 				<div class="col-sm-3 text-right">
@@ -69,11 +69,11 @@
 		</li>
 		<li class="list-group-item">
 			<div class="row">
-				<div class="col-sm-6">
+				<div class="col-sm-5">
 					<abbr title="{{ "now"|date("F Y") }}">Month-to-date</abbr>
 				</div>
-				<div class="col-sm-3 text-right">
-					{{ shipto.mtd_sales|currency }}
+				<div class="col-sm-4 text-right">
+					$ {{ shipto.mtd_sales|currency }}
 				</div>
 				<div class="col-sm-3 text-right">
 					{{ shipto.mtd_invoices }}
@@ -82,11 +82,11 @@
 		</li>
 		<li class="list-group-item">
 			<div class="row">
-				<div class="col-sm-6">
+				<div class="col-sm-5">
 					<abbr title="{{ "now"|date("Y") }}">Year-to-date</abbr>
 				</div>
-				<div class="col-sm-3 text-right">
-					{{ shipto.ytd_sales|currency }}
+				<div class="col-sm-4 text-right">
+					$ {{ shipto.ytd_sales|currency }}
 				</div>
 				<div class="col-sm-3 text-right">
 					{{ shipto.ytd_invoices }}
@@ -95,11 +95,11 @@
 		</li>
 		<li class="list-group-item">
 			<div class="row">
-				<div class="col-sm-6">
+				<div class="col-sm-5">
 					Last 12 Months
 				</div>
-				<div class="col-sm-3 text-right">
-					{{ shipto.get_lastxmonthsamount(13)|currency }}
+				<div class="col-sm-4 text-right">
+					$ {{ shipto.get_lastxmonthsamount(13)|currency }}
 				</div>
 				<div class="col-sm-3 text-right">
 					{{ shipto.get_lastxmonthscount(13) }}
