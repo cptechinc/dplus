@@ -231,7 +231,7 @@ class DpagesMii extends Dpages implements Module {
 			'dplus_function' => 'ii-use',
 			'pw_template'    => 'ii-where-used',
 			'has_print'      => true,
-			'jsoncode'       => 'ii-where-used'
+			'jsoncode'       => 'ii-whereused'
 		),
 		'ii-lotserial' => array(
 			'template'       => 'ii-function',
