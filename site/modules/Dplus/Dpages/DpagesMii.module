@@ -209,7 +209,7 @@ class DpagesMii extends Dpages implements Module {
 			'dplus_function' => 'ii-kit',
 			'pw_template'    => 'ii-kit',
 			'has_print'      => true,
-			'jsoncode'       => ''
+			'jsoncode'       => 'ii-components'
 		),
 		'ii-bom' => array(
 			'template'       => 'ii-function',
@@ -220,7 +220,7 @@ class DpagesMii extends Dpages implements Module {
 			'dplus_function' => 'ii-bom',
 			'pw_template'    => 'ii-bom',
 			'has_print'      => true,
-			'jsoncode'       => 'ii-bom'
+			'jsoncode'       => 'ii-components'
 		),
 		'ii-where-used' => array(
 			'template'       => 'ii-function',
