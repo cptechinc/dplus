@@ -30,7 +30,7 @@
 					$orders = $module_shipto->get_salesorders();
 					$orders_history = $module_shipto->get_saleshistory();
 					$page->body .= $config->twig->render('customers/ci/customer/sales-orders-panel.twig', ['page' => $page, 'orders' => $orders, 'resultscount'=> $orders->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url, 'sales_orders_list' => $module_shipto->get_salesordersURL()]);
-					$page->body .= $config->twig->render('customers/ci/customer/shipped-orders-panel.twig', ['page' => $page, 'orders' => $orders_history, 'resultscount'=> $orders_history->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url, 'shipped_orders_list' => $module_shipto->get_saleshistoryURL()]);
+					$page->body .= $config->twig->render('customers/ci/customer/sales-history-panel.twig', ['page' => $page, 'orders' => $orders_history, 'resultscount'=> $orders_history->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url, 'shipped_orders_list' => $module_shipto->get_saleshistoryURL()]);
 				} else {
 					$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "$custID Ship-to $shiptoID does not exist", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Check if shiptoID is correct"]);
 				}
