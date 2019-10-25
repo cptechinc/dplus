@@ -277,7 +277,7 @@
 			}
 			break;
 		case 'ii-kit':
-			$config_ii = $modules->get('IiConfig');
+			$config_ii = $modules->get('ConfigsIi');
 			$data = array("DBNAME=$dplusdb");
 			$qty = $input->$requestmethod->int('qty');
 
@@ -295,7 +295,7 @@
 			}
 			break;
 		case 'ii-bom':
-			$config_ii = $modules->get('IiConfig');
+			$config_ii = $modules->get('ConfigsIi');
 			$data = array("DBNAME=$dplusdb");
 			$qty = $input->$requestmethod->int('qty');
 

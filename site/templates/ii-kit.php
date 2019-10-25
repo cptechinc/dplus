@@ -1,6 +1,6 @@
 <?php // TODO DATATABLE
 	include_once('./ii-include.php');
-	$config_ii = $modules->get('IiConfig');
+	$config_ii = $modules->get('ConfigsIi');
 
 	use ItemsearchQuery, Itemsearch;
 
