@@ -40,9 +40,10 @@ class DpagesMvi extends Dpages implements Module {
 			'fields' => array('title', 'dplus_function', 'pw_template', 'jsoncode', 'is_formattable', 'summary'),
 			'paginated' => true
 		),
-		'ci-customer' => array(
-			'name'   => 'ci-customer',
+		'vi-vendor' => array(
+			'name'   => 'vi-vendor',
 			'fields' => array(),
+			'paginated' => true
 		),
 	);
 
