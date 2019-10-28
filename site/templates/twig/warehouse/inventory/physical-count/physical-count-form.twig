@@ -38,7 +38,7 @@
 			<div class="form-group">
 				<label for="lotserialref">Lot/Serial Ref</label>
 				<div class="input-group">
-					<input type="text" class="form-control-plaintext" id="lotserialref" name="lotserialref" value="{{ item.lotserialref }}" readonly>
+					<input type="text" class="form-control" id="lotserialref" name="lotserialref" value="{{ item.lotserialref }}">
 				</div>
 			</div>
 		{% else %}
@@ -62,7 +62,7 @@
 
 		<div class="form-group mb-5">
 			<label for="productiondate">Production Date</label>
-			{% include 'util/date-picker.twig' with {'name': 'productiondate', 'id': 'productiondate', 'value': item.productiondate|convertdate('m/d/Y')} %}
+			{% include 'util/date-picker.twig' with {'name': 'productiondate', 'id': 'productiondate', 'value': item.productiondate ? item.productiondate|convertdate('m/d/Y') : "now"|date("m/d/Y") } %}
 		</div>
 
 		<div class="d-flex w-100 justify-content-between">

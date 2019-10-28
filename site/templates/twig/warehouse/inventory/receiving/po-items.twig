@@ -19,7 +19,7 @@
 				</div>
 				<div class="col">{{ item.vendoritemid }}</div>
 				<div class="col text-right">{{ item.qty_ordered|number_format() }}</div>
-				<div class="col text-right">{{ item.qty_received()|number_format() }}</div>
+				<div class="col text-right">{{ item.qty_received|number_format() }}</div>
 				<div class="col text-right">{{ item.qty_remaining()|number_format() }}</div>
 			</div>
 		</a>

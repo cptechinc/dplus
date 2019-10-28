@@ -7,14 +7,16 @@
 		<a href="{{ page.child.url ~ '?' ~ page.fullURL.query }}" class="btn btn-primary not-round">
 			<i class="fa fa-print" aria-hidden="true"></i> Print
 		</a>
+		&nbsp;
+		<button class="btn btn-secondary show-hide-all">Show / Hide All</button>
 	</div>
 {% endif %}
 <div class="row">
-	<div class="col-sm-10">
+	<div class="col-sm-12">
 		<div class="list-group">
 			{% if (resultscount) %}
 				{% for item in items %}
-					<div class="list-group-item">
+					<div class="list-group-item border border-dark border-bottom">
 						<h4 class="list-group-item-heading">ITEMID: {{ item.itemid }}</h4>
 						<p class="list-group-item-text">{{ item.desc1 }}</p>
 

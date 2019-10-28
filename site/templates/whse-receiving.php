@@ -13,18 +13,23 @@
 
 		if ($warehouse_receiving->purchaseorder_exists()) {
 			$purchaseorder = $warehouse_receiving->get_purchaseorder();
-			$warehouse_receiving->request_purchaseorder_init();
+
+			if (!$purchaseorder->count_receivingitems()) {
+				$warehouse_receiving->request_purchaseorder_init();
+			}
 
 			if ($input->get->linenbr){
 				$linenbr = $input->get->int('linenbr');
-				$lineitem = $purchaseorder->get_lineitem($linenbr);
+				$lineitem = $purchaseorder->get_receivingitem($linenbr);
+				$page->title = "PO # $ponbr Line #$linenbr breakdown";
+				$page->body .= $config->twig->render('warehouse/inventory/receiving/line/links-header.twig', ['page' => $page]);
 				$page->body .= $config->twig->render('warehouse/inventory/receiving/po-header.twig', ['page' => $page, 'purchaseorder' => $purchaseorder]);
-				$page->body .= $config->twig->render('warehouse/inventory/receiving/po-line-item.twig', ['page' => $page, 'item' => $lineitem]);
-
-				// TODO: SHOW BREAKDOWN OF ITEM RECEIVED
+				$page->body .= $config->twig->render('warehouse/inventory/receiving/line/item-details.twig', ['page' => $page, 'item' => $lineitem]);
+				$page->body .= $html->div('class=mb-3');
+				$page->body .= $config->twig->render('warehouse/inventory/receiving/line/received-lots.twig', ['page' => $page, 'item' => $lineitem]);
 			} else {
 				$page->body .= $config->twig->render('warehouse/inventory/receiving/po-header.twig', ['page' => $page, 'purchaseorder' => $purchaseorder]);
-				$page->body .= $config->twig->render('warehouse/inventory/receiving/po-items.twig', ['page' => $page, 'items' => $purchaseorder->get_items()]);
+				$page->body .= $config->twig->render('warehouse/inventory/receiving/po-items.twig', ['page' => $page, 'items' => $purchaseorder->get_receivingitems()]);
 
 				if ($input->get->scan) {
 					$scan = $input->get->text('scan');
