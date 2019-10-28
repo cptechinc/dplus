@@ -4,6 +4,7 @@
 
 	use VendorQuery, Vendor;
 	use VendorShipfromQuery, VendorShipfrom;
+	use PurchaseOrderQuery, PurchaseOrder;
 
 	class ViLoadVendorShipfrom extends WireData implements Module {
 		/**
@@ -200,6 +201,24 @@
 			return $this->shipfrom;
 		}
 
+		/**
+		 * Returns PurchaseOrder Objects
+		 *
+		 * @param  int    $limit     Number of Results to return
+		 * @param  int    $page      Page of Results
+		 * @return PropelModelPager
+		 */
+		public function get_purchaseorders($limit = 10, $page = 1) {
+			$filter_po = $this->wire('modules')->get('FilterPurchaseOrders');
+			$filter_po->init_query($this->get_user());
+			$query = $filter_po->get_query();
+			$query->filterByVendorid($this->vendorID);
+
+			if ($this->shipfromID) {
+				$query->filterByShipfromid($this->shipfromID);
+			}
+			return $query->paginate($page, $limit);
+		}
 
 		/**
 		 * Returns URL to Vendor Page
