@@ -14,7 +14,7 @@
 				</div>
 			</div>
 
-			{% if (item.is_item_serialized() or item.is_item_lotted()) %}
+			{% if (item.is_item_serialized() or item.is_item_lotted() or item.itemid == '') %}
 				<div class="form-group">
 					<label for="lotserial">Lot / Serial</label>
 					<div class="input-group">
