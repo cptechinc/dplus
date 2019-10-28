@@ -1,0 +1,32 @@
+<div class="list-group-item bg-light font-weight-bold">
+	<div class="row">
+		<div class="col">Order Number</div>
+		<div class="col">PO Ref</div>
+		<div class="col">ShipfromID</div>
+		<div class="col text-right">Order Total</div>
+		<div class="col">Order Date</div>
+		<div class="col">Expected Date</div>
+		<div class="col">Status</div>
+	</div>
+</div>
+{% if purchaseorders.count > 0 %}
+	{% for order in purchaseorders %}
+		<a href="{{ orderpage ~ '?ponbr=' ~ order.ordernumber }}" class="list-group-item list-group-item-action">
+			<div class="row">
+				<div class="col">{{ order.ponbr }}</div>
+				<div class="col">{{ order.poref }}</div>
+				<div class="col">{{ order.shipfromid }}</div>
+				<div class="col text-right">$ {{ order.get_total()|currency }}</div>
+				<div class="col text-right">{{ convertdate(order.date_ordered) }}</div>
+				<div class="col text-right">{{ convertdate(order.date_expected) }}</div>
+				<div class="col">{{ order.status()|capitalize }}</div>
+			</div>
+		</a>
+	{% endfor %}
+{% else %}
+	<div class="list-group-item">
+		<div class="row">
+			<div class="col text-center">There are no results to display.</div>
+		</div>
+	</div>
+{% endif %}
