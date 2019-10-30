@@ -136,11 +136,11 @@
 			$shiptoID = $input->$requestmethod->text('shipID');
 			$contactID = $input->$requestmethod->text('contactID');
 
-			$editcontact = CustindexQuery::create()->filterByCustid($custID);
+			$q = CustindexQuery::create()->filterByCustid($custID);
 			if ($shipID) {
-				$editcontact->filterByShiptoid($shiptoID);
+				$q->filterByShiptoid($shiptoID);
 			}
-			$editcontact->findOneByContact($contactID);
+			$editcontact = $q->findOneByContact($contactID);
 
 			$editcontact->setContact($input->$requestmethod->text('contact-name'));
 			$editcontact->setTitle($input->$requestmethod->text('contact-title'));

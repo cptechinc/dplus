@@ -587,7 +587,7 @@ class DpagesMci extends Dpages implements Module {
 		});
 
 		/**
-		 * Adds hook for getting Sales History List URL
+		 * Adds hook for getting Quotes List URL
 		 */
 		$this->addHook('Page::cust_quotesURL', function($event) {
 			$custID = $event->arguments(0);

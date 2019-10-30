@@ -13,19 +13,23 @@
 				<div class="col">Title</div>
 				<div class="col">Phone</div>
 				<div class="col">Email</div>
-				<div class="col">Edit</div>
+				<div class="col text-right">Edit</div>
 			</div>
 		</div>
 		{% if contacts.count > 0 %}
 			{% for contact in contacts %}
 				<div class="list-group-item">
 					<div class="row">
-						<div class="col"><a href="{{ page.url_custcontact(customer.id, contact.arstshipid, contact.arcpcontid) }}" class="link">{{ contact.arcpcontid }}</a></div>
-						<div class="col">{{ contact.arstshipid }}</div>
-						<div class="col">{{ contact.arcptitl }}</div>
-						<div class="col">Phone</div>
-						<div class="col">Email</div>
-						<div class="col">Edit</div>
+						<div class="col"><a href="{{ page.url_custcontact(contact.custid, contact.shiptoid, contact.contact) }}" class="link">{{ contact.contact }}</a></div>
+						<div class="col">{{ contact.shiptoid }}</div>
+						<div class="col">{{ contact.title }}</div>
+						<div class="col">{{ contact.phone }}</div>
+						<div class="col">{{ contact.email }}</div>
+						<div class="col text-right">
+							<a href="{{ page.url_editcustcontact(contact.custid, contact.shiptoid, contact.contact) }}" class="btn btn-warning btn-sm">
+								<i class="fa fa-pencil" aria-hidden="true"></i>
+							</a>
+						</div>
 					</div>
 				</div>
 			{% endfor %}
