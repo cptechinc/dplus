@@ -1,0 +1,65 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+/**
+ * class DpagesMpo
+ *
+ * Installs fields, templates, pages, hooks necessary for Mpo Pages
+ * Adds Hooks for getting URLs to Mpo pages
+ */
+class DpagesMpo extends Dpages implements Module {
+	const FIELDS = array();
+
+	const TEMPLATES = array();
+
+	const PAGES = array(
+		'po-menu' => array(
+			'template'       => 'dplus-menu',
+			'name'           => 'mpo',
+			'title'          => 'Purchase Orders',
+			'summary'        => 'Purchase Orders Menu',
+			'parent'         => '/',
+			'dplus_function' => '' // TODO: Change to mpo
+		),
+		'po-list' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'purchase-orders',
+			'title'          => 'Purchase Orders',
+			'summary'        => 'View Purchase Orders',
+			'parent'         => '/mpo/',
+			'dplus_function' => '',
+			'pw_template'    => 'purchase-orders'
+		),
+		'po-view' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'purchase-order',
+			'title'          => 'Purchase Order',
+			'summary'        => 'View Purchase Order',
+			'parent'         => '/mpo/',
+			'dplus_function' => '',
+			'pw_template'    => 'purchase-order-view'
+		),
+	);
+
+
+
+	/**
+	 * Returns URL to Vendor Page
+	 * @param  string $vendorID Vendor ID
+	 * @return string           URL
+	 */
+	public function get_purchaseordersURL() {
+		return $this->wire('pages')->get('pw_template=purchase-orders')->url;
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Online Purchase Order Pages',
+			'version' => 101,
+			'summary' => 'Installs and creates Dplus Online Purchase Order Pages',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

@@ -1,15 +1,34 @@
-<div class="card mb-4">
-	<div class="card-header d-flex justify-content-between bg-primary">
-		<a class="text-white" data-toggle="collapse" href="#customer-sales-orders" role="button" aria-expanded="false" aria-controls="customer-sales-orders">
-			Purchase Orders &ensp;<i class="fa fa-caret-down" aria-hidden="true"></i>
-		</a>
-		<span class="badge badge-pill badge-light">{# resultscount #}</span>
-	</div>
-	<div class="collapse" id="customer-sales-orders">
-		{% include 'purchase-orders/vendor/purchase-order-list.twig' %}
-
-		<div class="card-footer bg-secondary">
-			<a href="{# sales_orders_list #}" class="text-white">View More Purchase Orders <i class="fa fa-sign-in" aria-hidden="true"></i></a>
-		</div>
+<div class="list-group-item bg-light font-weight-bold">
+	<div class="form-row">
+		<div class="col">PO Number</div>
+		<div class="col-sm-2">PO Ref</div>
+		<div class="col">Vendor</div>
+		<div class="col">ShipfromID</div>
+		<div class="col text-right">Order Total</div>
+		<div class="col">Order Date</div>
+		<div class="col">Expected Date</div>
+		<div class="col">Status</div>
 	</div>
 </div>
+{% if purchaseorders.count > 0 %}
+	{% for order in purchaseorders %}
+		<a href="{{ orderpage ~ '?ponbr=' ~ order.ponbr }}" class="list-group-item list-group-item-action">
+			<div class="form-row">
+				<div class="col">{{ order.ponbr }}</div>
+				<div class="col-sm-2">{{ order.poref }}</div>
+				<div class="col">{{ order.vendorid }}</div>
+				<div class="col">{{ order.shipfromid }}</div>
+				<div class="col text-right">$ {{ order.get_total()|currency }}</div>
+				<div class="col text-right">{{ convertdate(order.date_ordered) }}</div>
+				<div class="col text-right">{{ convertdate(order.date_expected) }}</div>
+				<div class="col">{{ order.status()|capitalize }}</div>
+			</div>
+		</a>
+	{% endfor %}
+{% else %}
+	<div class="list-group-item">
+		<div class="row">
+			<div class="col text-center">There are no results to display.</div>
+		</div>
+	</div>
+{% endif %}
