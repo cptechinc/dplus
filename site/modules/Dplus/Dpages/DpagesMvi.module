@@ -78,6 +78,19 @@ class DpagesMvi extends Dpages implements Module {
 			$shipfromID = $event->arguments(1);
 			$event->return = $this->get_vi_vendorshipfromURL($vendorID, $shipfromID);
 		});
+
+		$this->addHook('Page(pw_template=vi-vendor)::children_user_allowed', function($event) {
+			$user = $this->wire('user');
+			$event->return = $this->get_vi_user_allowed_functions($user);
+		});
+
+		$this->addHook('Page::url_vendorID', function($event) {
+			$p = $event->object;
+			$vendorID   = $event->arguments(0);
+			$url = new Url($p->url);
+			$url->query->set('vendorID', $vendorID);
+			$event->return = $url->getUrl();
+		});
 	}
 
 	/**
@@ -98,9 +111,23 @@ class DpagesMvi extends Dpages implements Module {
 	 * @return string             URL
 	 */
 	public function get_vi_vendorshipfromURL($vendorID, $shipfromID) {
-		$url = new Url($this->get_vi_vendorURL($vendorID));
+		$url = new Url($this->wire('pages')->get('pw_template=vi-shipfrom')->url);
+		$url->query->set('vendorID', $vendorID);
 		$url->query->set('shipfromID', $shipfromID);
 		return $url->getUrl();
+	}
+
+	/**
+	 * Returns the VI pages the User has access to
+	 * @param  User   $user
+	 * @return PageArray
+	 */
+	public function get_vi_user_allowed_functions(User $user) {
+		$p = $this->wire('pages')->get('pw_template=vi-vendor');
+		$dplus_functions = array_unique($p->children()->explode('dplus_function'));
+		$filtered_functions = $user->filter_functions($dplus_functions);
+		$this->session->funcs = $filtered_functions;
+		return $p->children('dplus_function='.implode('|', $filtered_functions));
 	}
 
 	public static function getModuleInfo() {
