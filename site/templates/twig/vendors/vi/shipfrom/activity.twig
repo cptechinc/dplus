@@ -1,0 +1,126 @@
+<div class="card">
+	<div class="card-header">
+		<span class="h5">Vendor Activity</span>
+	</div>
+	<ul class="list-group list-group-flush">
+		<li class="list-group-item">
+			<div class="row font-weight-bold">
+				<div class="col-sm-6">
+					Activity
+				</div>
+				<div class="col-sm-3 text-right">
+					Number
+				</div>
+				<div class="col-sm-3 text-right">
+					Amount
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-6">
+					Purchase Orders
+				</div>
+				<div class="col-sm-3 text-right">
+					{{ vendor.countPurchaseOrders() }}
+				</div>
+				<div class="col-sm-3 text-right">
+					$ {{ vendor.get_purchaseorders_amt()|currency }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-6">
+					Open Invoices
+				</div>
+				<div class="col-sm-3 text-right">
+
+				</div>
+				<div class="col-sm-3 text-right">
+					$
+				</div>
+			</div>
+		</li>
+
+		<li class="list-group-item bg-light text-center"><span class="h5 font-weight-bold">Invoices</span></li>
+		<li class="list-group-item">
+			<div class="row font-weight-bold">
+				<div class="col-sm-6">
+					History
+				</div>
+				<div class="col-sm-3 text-right">
+					Number
+				</div>
+				<div class="col-sm-3 text-right">
+					Amount
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-6">
+					<abbr title="{{ "now"|date("F Y") }}">MTD</abbr> Receipts
+				</div>
+				<div class="col-sm-3 text-right">
+
+				</div>
+				<div class="col-sm-3 text-right">
+
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-6">
+					<abbr title="{{ "now"|date("F Y") }}">MTD</abbr> Invoices
+				</div>
+				<div class="col-sm-3 text-right">
+
+				</div>
+				<div class="col-sm-3 text-right">
+
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-6">
+					<abbr title="{{ "now"|date("Y") }}">YTD</abbr>  Receipts
+				</div>
+				<div class="col-sm-3 text-right">
+					{{ vendor.ytd_purchases_count }}
+				</div>
+				<div class="col-sm-3 text-right">
+					{{ vendor.ytd_purchases_amt }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-6">
+					<abbr title="{{ "now"|date("Y") }}">YTD</abbr>  Invoices
+				</div>
+				<div class="col-sm-3 text-right">
+					{{ vendor.ytd_invoices_count }}
+				</div>
+				<div class="col-sm-3 text-right">
+					{{ vendor.ytd_invoices_amt }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-6">
+					Last 12 Months
+				</div>
+				<div class="col-sm-3 text-right">
+
+				</div>
+				<div class="col-sm-3 text-right">
+
+				</div>
+			</div>
+		</li>
+	</ul>
+</div>
