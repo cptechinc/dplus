@@ -11,8 +11,8 @@
 			$vendor = $load_vendor->get_vendor();
 			$page->title = "VI: $vendor->name";
 
-			$toolbar = '';
-			$header =  $config->twig->render('vendors/vi/vendor/header.twig', ['page' => $page, 'vendor' => $vendor]);
+			$toolbar = $config->twig->render('vendors/vi/vendor/toolbar.twig', ['page' => $page, 'vendorID' => $vendor->vendorid]);
+			$header  = $config->twig->render('vendors/vi/vendor/header.twig', ['page' => $page, 'vendor' => $vendor]);
 
 			$page->body = "<div class='row'>";
 				$page->body .= $html->div('class=col-sm-2', $toolbar);
@@ -20,8 +20,7 @@
 			$page->body .= "</div>";
 
 			$page->body .= $config->twig->render('vendors/vi/vendor/purchase-orders-panel.twig', ['page' => $page, 'resultscount' => $vendor->countPurchaseOrders(), 'purchaseorders' => $load_vendor->get_purchaseorders()]);
-
-
+			$page->body .= $config->twig->render('vendors/vi/vendor/invoices-panel.twig', ['page' => $page, 'resultscount' => $vendor->countApInvoices(), 'invoices' => $load_vendor->get_invoices()]);
 		} else {
 			$page->searchURL = $page->url;
 			$page->title = "Vendor $vendorID Not Found";

@@ -1,0 +1,11 @@
+<nav class="toolbar-sidebar">
+	<ul class="nav">
+		{% for child in page.children_user_allowed() %}
+			<li>
+				<a href="{{ child.url_vendorID(vendorID) }}">
+					{{ child.title }}
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
+</nav>
