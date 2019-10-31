@@ -5,6 +5,7 @@
 	use VendorQuery, Vendor;
 	use VendorShipfromQuery, VendorShipfrom;
 	use PurchaseOrderQuery, PurchaseOrder;
+	use ApInvoiceQuery, ApInvoice;
 
 	class ViLoadVendorShipfrom extends WireData implements Module {
 		/**
@@ -217,6 +218,21 @@
 			if ($this->shipfromID) {
 				$query->filterByShipfromid($this->shipfromID);
 			}
+			return $query->paginate($page, $limit);
+		}
+
+		/**
+		 * Returns PurchaseOrder Objects
+		 *
+		 * @param  int    $limit     Number of Results to return
+		 * @param  int    $page      Page of Results
+		 * @return PropelModelPager
+		 */
+		public function get_invoices($limit = 10, $page = 1) {
+			$filter_po = $this->wire('modules')->get('FilterApInvoices');
+			$filter_po->init_query($this->get_user());
+			$query = $filter_po->get_query();
+			$query->filterByVendorid($this->vendorID);
 			return $query->paginate($page, $limit);
 		}
 
