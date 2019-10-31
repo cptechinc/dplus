@@ -1,20 +1,19 @@
 <?php namespace ProcessWire;
 
-	use PurchaseOrderQuery, PurchaseOrder;
+	use ApInvoiceQuery, ApInvoice;
 
 	use Propel\Runtime\ActiveQuery\Criteria;
 
-	class FilterPurchaseOrders extends WireData implements Module {
-
+	class FilterApInvoices extends WireData implements Module {
 		/**
 		 * Query
-		 * @var PurchaseOrderQuery
+		 * @var ApInvoiceQuery
 		 */
 		protected $query;
 
 		/**
 		 * Returns Query
-		 * @return PurchaseOrderQuery
+		 * @return ApInvoiceQuery
 		 */
 		public function get_query() {
 			return $this->query;
@@ -28,8 +27,7 @@
 		 * @return void
 		 */
 		public function init_query(User $user) {
-			$this->query = PurchaseOrderQuery::create();
-
+			$this->query = ApInvoiceQuery::create();
 		}
 
 		/**
@@ -41,7 +39,6 @@
 		 */
 		public function filter_query(WireInput $input) {
 			$this->filter_vendorid($input);
-			$this->filter_shiptofromid($input);
 
 			if ($input->get->filter) {
 
@@ -67,23 +64,6 @@
 			}
 		}
 
-		/**
-		 * Filters Query by Vendor ShipfromID
-		 *
-		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-		 * @return void
-		 */
-		public function filter_shiptofromid($input) {
-			if ($input->get->shipfromID && $input->get->vendorID) {
-				if (is_array($input->get->shipfromID)) {
-					$filter = $input->get->array('shipfromID');
-				} else {
-					$filter = $input->get->text('shipfromID');
-				}
-				$this->query->filterByShipfromid($filter);
-			}
-		}
-
 	/* =============================================================
 		ProcessWire Module Functions
 	============================================================= */
@@ -94,9 +74,9 @@
 		 */
 		public static function getModuleInfo() {
 			return array(
-				'title' => 'Dpluso filter Purchase Orders Module',
+				'title' => 'Dpluso filter AP Invoices Module',
 				'version' => 101,
-				'summary' => 'Handles Purchase Orders Filtering',
+				'summary' => 'Handles AP Invoices Filtering',
 				'singular' => true,
 				'autoload' => true,
 			);
