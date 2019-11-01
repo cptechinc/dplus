@@ -14,22 +14,19 @@
 				$page->title = "$shipfrom->shipfromid";
 				$page->body .= $config->twig->render('vendors/vi/bread-crumbs.twig', ['page' => $page, 'vendor' => $vendor]);
 				$page->title = "$vendor->name Ship-from: $shipfrom->id";
-				
-				//
-				// $function_pages = $pages->find('pw_template=ci-contacts');
-				// $toolbar = $config->twig->render('vendors/ci/shipfrom/toolbar.twig', ['shipfrom' => $shipfrom, 'pages' => $function_pages]);
-				// $header  = $config->twig->render('vendors/ci/shipfrom/header.twig', ['page' => $page, 'vendor' => $vendor, 'shipfrom' => $shipfrom, 'module_shipfrom' => $load_shipfrom]);
-				//
-				// $page->body .= $config->twig->render('vendors/ci/ci-links.twig', ['page' => $page]);
-				// $page->body .= "<div class='row'>";
-				// 	$page->body .= $html->div('class=col-sm-2', $toolbar);
-				// 	$page->body .= $html->div('class=col-sm-10', $header);
-				// $page->body .= "</div>";
-				//
-				// $orders = $load_shipfrom->get_salesorders();
-				// $orders_history = $load_shipfrom->get_saleshistory();
-				// $page->body .= $config->twig->render('vendors/ci/vendor/sales-orders-panel.twig', ['page' => $page, 'orders' => $orders, 'resultscount'=> $orders->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url, 'sales_orders_list' => $load_shipfrom->get_salesordersURL()]);
-				// $page->body .= $config->twig->render('vendors/ci/vendor/shipped-orders-panel.twig', ['page' => $page, 'orders' => $orders_history, 'resultscount'=> $orders_history->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url, 'shipped_orders_list' => $load_shipfrom->get_saleshistoryURL()]);
+
+
+				$function_pages = [];
+				$toolbar = '';
+				$header  = $config->twig->render('vendors/vi/shipfrom/header.twig', ['page' => $page, 'shipfrom' => $shipfrom, 'con' => $con]);
+
+				//$page->body .= $config->twig->render('vendors/ci/ci-links.twig', ['page' => $page]);
+				$page->body .= "<div class='row'>";
+					$page->body .= $html->div('class=col-sm-2', $toolbar);
+					$page->body .= $html->div('class=col-sm-10', $header);
+				$page->body .= "</div>";
+
+				$page->body .= $config->twig->render('vendors/vi/vendor/purchase-orders-panel.twig', ['page' => $page, 'resultscount' => $shipfrom->countPurchaseOrders(), 'purchaseorders' => $load_vendor->get_purchaseorders(), 'purchase_orders_list' => $load_vendor->get_purchaseordersURL()]);
 			} else {
 				$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "$vendorID Ship-to $shipfromID does not exist", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Check if shipfromID is correct"]);
 			}

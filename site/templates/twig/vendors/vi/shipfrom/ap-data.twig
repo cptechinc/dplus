@@ -6,20 +6,30 @@
 		<li class="list-group-item">
 			<div class="row">
 				<div class="col-sm-5">
-					Our account:
+					Phone #:
 				</div>
 				<div class="col-sm-7">
-					{{ vendor.vendor_account }}
+					<a href="tel:{{ shipfrom.phone }}" class="link">{{ shipfrom.phone|phone_us }}</a>
 				</div>
 			</div>
 		</li>
 		<li class="list-group-item">
 			<div class="row">
 				<div class="col-sm-5">
-					Buyer:
+					Fax #:
 				</div>
 				<div class="col-sm-7">
-					{{ vendor.buyer_1 }} - {{ vendor.get_buyer_x_name(1) }}
+					<a href="tel:{{ shipfrom.fax }}" class="link">{{ shipfrom.fax|phone_us }}</a>
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					Our account:
+				</div>
+				<div class="col-sm-7">
+					{{ shipfrom.vendor.vendor_account }}
 				</div>
 			</div>
 		</li>
@@ -29,27 +39,7 @@
 					Ship Via:
 				</div>
 				<div class="col-sm-7">
-					{{ vendor.shipvia.code }} - {{ vendor.shipvia.description }}
-				</div>
-			</div>
-		</li>
-		<li class="list-group-item">
-			<div class="row">
-				<div class="col-sm-5">
-					Terms:
-				</div>
-				<div class="col-sm-7">
-					{{ vendor.terms.code }} - {{ vendor.terms.description }}
-				</div>
-			</div>
-		</li>
-		<li class="list-group-item">
-			<div class="row">
-				<div class="col-sm-5">
-					Type Code:
-				</div>
-				<div class="col-sm-7">
-					{{ vendor.type.code }} - {{ vendor.type.description }}
+					{{ shipfrom.shipvia.code }} - {{ shipfrom.shipvia.description }}
 				</div>
 			</div>
 		</li>

@@ -1,6 +1,6 @@
 <div class="card">
 	<div class="card-header">
-		<span class="h5">Vendor Activity</span>
+		<span class="h5">Shipfrom Activity</span>
 	</div>
 	<ul class="list-group list-group-flush">
 		<li class="list-group-item">
@@ -22,28 +22,16 @@
 					Purchase Orders
 				</div>
 				<div class="col-sm-3 text-right">
-					{{ vendor.countPurchaseOrders() }}
+					{{ shipfrom.countPurchaseOrders() + 0 }}
 				</div>
 				<div class="col-sm-3 text-right">
-					$ {{ vendor.get_purchaseorders_amt()|currency }}
+					$ {{ shipfrom.get_purchaseorders_amt()|currency }}
 				</div>
 			</div>
 		</li>
-		<li class="list-group-item">
-			<div class="row">
-				<div class="col-sm-6">
-					Open Invoices
-				</div>
-				<div class="col-sm-3 text-right">
-
-				</div>
-				<div class="col-sm-3 text-right">
-					$
-				</div>
-			</div>
+		<li class="list-group-item bg-light text-center">
+			<span class="h5 font-weight-bold">History</span>
 		</li>
-
-		<li class="list-group-item bg-light text-center"><span class="h5 font-weight-bold">Invoices</span></li>
 		<li class="list-group-item">
 			<div class="row font-weight-bold">
 				<div class="col-sm-6">
@@ -63,23 +51,10 @@
 					<abbr title="{{ "now"|date("F Y") }}">MTD</abbr> Receipts
 				</div>
 				<div class="col-sm-3 text-right">
-
+					{{ shipfrom.mtd_purchases_count + 0 }}
 				</div>
 				<div class="col-sm-3 text-right">
-
-				</div>
-			</div>
-		</li>
-		<li class="list-group-item">
-			<div class="row">
-				<div class="col-sm-6">
-					<abbr title="{{ "now"|date("F Y") }}">MTD</abbr> Invoices
-				</div>
-				<div class="col-sm-3 text-right">
-
-				</div>
-				<div class="col-sm-3 text-right">
-
+					$ {{ shipfrom.mtd_purchases_amt|currency  }}
 				</div>
 			</div>
 		</li>
@@ -89,36 +64,33 @@
 					<abbr title="{{ "now"|date("Y") }}">YTD</abbr>  Receipts
 				</div>
 				<div class="col-sm-3 text-right">
-					{{ vendor.ytd_purchases_count }}
+					{{ shipfrom.ytd_purchases_count + 0 }}
 				</div>
 				<div class="col-sm-3 text-right">
-					{{ vendor.ytd_purchases_amt }}
+					$ {{ shipfrom.ytd_purchases_amt|currency }}
 				</div>
 			</div>
 		</li>
 		<li class="list-group-item">
 			<div class="row">
 				<div class="col-sm-6">
-					<abbr title="{{ "now"|date("Y") }}">YTD</abbr>  Invoices
+					Last 12 Months Receipts
 				</div>
 				<div class="col-sm-3 text-right">
-					{{ vendor.ytd_invoices_count }}
+					{{ shipfrom.count_last_x_months_purchases(12) + 0 }}
 				</div>
 				<div class="col-sm-3 text-right">
-					{{ vendor.ytd_invoices_amt }}
+					$ {{ shipfrom.get_last_x_months_purchases_amt(12)|currency }}
 				</div>
 			</div>
 		</li>
 		<li class="list-group-item">
 			<div class="row">
 				<div class="col-sm-6">
-					Last 12 Months
+					Date Entered
 				</div>
-				<div class="col-sm-3 text-right">
-
-				</div>
-				<div class="col-sm-3 text-right">
-
+				<div class="col-sm-6 text-right">
+					{{ shipfrom.date_opened|convertdate }}
 				</div>
 			</div>
 		</li>
