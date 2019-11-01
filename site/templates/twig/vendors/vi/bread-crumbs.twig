@@ -24,7 +24,7 @@
 		{% endif %}
 		{% if (page.parent.pw_template != 'vi-shipfrom' and page.pw_template != 'vi-shipfrom' and page.has('shipfromID')) %}
 			<li class="breadcrumb-item">
-				<a href="{{ page.vendor_shipfromURL() }}">{{ page.from.name }}</a>
+				<a href="{{ page.vendor_shipfromURL() }}">{{ page.shipfrom.name }}</a>
 			</li>
 		{% endif %}
 		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
