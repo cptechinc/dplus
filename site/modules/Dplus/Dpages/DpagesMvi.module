@@ -45,6 +45,11 @@ class DpagesMvi extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
+		'vi-contact' => array(
+			'name'   => 'vi-contact',
+			'fields' => array(),
+			'paginated' => true
+		),
 	);
 
 	const PAGES = array(
@@ -73,6 +78,15 @@ class DpagesMvi extends Dpages implements Module {
 			'parent'         => '/mvi/vi/',
 			'dplus_function' => '',
 			'pw_template'    => 'vi-shipfrom'
+		),
+		'vi-contact' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'contacts',
+			'title'          => 'Contacts',
+			'summary'        => 'View Vendor Contacts',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-contact'
 		)
 	);
 
