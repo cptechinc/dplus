@@ -7,20 +7,16 @@
             <tbody>
                 <tr>
                     <td>Customer: </td>
-                    <td>
-                        <a href="" target="_blank">
-                            {{ contact.custid }} - {{ contact.name }} <i class="fa fa-share-square"></i>
-                        </a>
-                    </td>
+                    <td><strong>{{ contact.custid }} - {{ contact.name }}</strong></td>
                 </tr>
-    			{# if contact.shipto #}
+    			{% if contact.shipto %}
                     <tr>
                         <td>Shipto ID:</td>
-                        <td><a href="" target="_blank">{{ contact.shiptoid }} <i class="fa fa-share-square"></i></a></td>
+                        <td>{{ contact.shiptoid }}</td>
                     </tr>
-                {# endif #}
+                {% endif %}
                 <tr>
-                    <td><strong>Address:</strong></td>
+                    <td>Address:</td>
                     <td>
                         {{ contact.addr1 }}<br>
                         {{ contact.addr2|length > 0 ? contact.addr2 ~ '<br>' : '' }}
