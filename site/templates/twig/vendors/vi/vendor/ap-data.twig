@@ -2,6 +2,26 @@
 	<div class="card-header">
 		<span class="h5">AP</span>
 	</div>
+	<li class="list-group-item">
+		<div class="row">
+			<div class="col-sm-5">
+				Phone #:
+			</div>
+			<div class="col-sm-7">
+				<a href="tel:{{ vendor.phone }}" class="link">{{ vendor.phone|phone_us }}</a>
+			</div>
+		</div>
+	</li>
+	<li class="list-group-item">
+		<div class="row">
+			<div class="col-sm-5">
+				Fax #:
+			</div>
+			<div class="col-sm-7">
+				<a href="tel:{{ vendor.fax }}" class="link">{{ vendor.fax|phone_us }}</a>
+			</div>
+		</div>
+	</li>
 	<ul class="list-group list-group-flush">
 		<li class="list-group-item">
 			<div class="row">
