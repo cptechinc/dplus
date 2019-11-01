@@ -31,6 +31,15 @@ class DpagesMpo extends Dpages implements Module {
 			'dplus_function' => '',
 			'pw_template'    => 'purchase-orders'
 		),
+		'po-list-vendor' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'vendor',
+			'title'          => 'Vendor Purchase Orders',
+			'summary'        => 'View Vendor Purchase Orders',
+			'parent'         => '/mpo/purchase-orders/',
+			'dplus_function' => '',
+			'pw_template'    => 'purchase-orders-vendor'
+		),
 		'po-view' => array(
 			'template'       => 'dplus-function',
 			'name'           => 'purchase-order',
@@ -45,12 +54,19 @@ class DpagesMpo extends Dpages implements Module {
 
 
 	/**
-	 * Returns URL to Vendor Page
-	 * @param  string $vendorID Vendor ID
+	 * Returns URL to Purchase Orders Page
 	 * @return string           URL
 	 */
 	public function get_purchaseordersURL() {
 		return $this->wire('pages')->get('pw_template=purchase-orders')->url;
+	}
+
+	/**
+	 * Returns URL to Purchase Orders Customer Page
+	 * @return string           URL
+	 */
+	public function get_purchaseorders_customerURL() {
+		return $this->wire('pages')->get('pw_template=purchase-orders-vendor')->url;
 	}
 
 	public static function getModuleInfo() {
