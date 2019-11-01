@@ -174,7 +174,7 @@
 		}
 
 		/**
-		 * Sets ShiptoID ID
+		 * Sets shipfromID ID
 		 * @return void
 		 */
 		public function set_shipfromID($shipfromID) {
@@ -249,7 +249,7 @@
 		 * @return string
 		 */
 		public function get_vendor_shipfromURL() {
-			return $this->wire('modules')->get('DPagesMvi')->get_vi_vendorshipfromURL($this->vendorID, $this->shipfromID);
+			return $this->wire('modules')->get('DpagesMvi')->get_vi_vendorshipfromURL($this->vendorID, $this->shipfromID);
 		}
 
 		/**
@@ -258,6 +258,35 @@
 		 */
 		public function get_vendor_or_shipfromURL() {
 			return ($this->shipfromID) ? $this->get_vendor_shipfromURL() : $this->get_vendorURL();
+		}
+
+		/**
+		 * Return View Sales Orders URL
+		 * @return string
+		 */
+		public function get_purchaseordersURL() {
+			$url = new Url($this->wire('pages')->get('pw_template=purchase-orders-vendor')->url);
+			$url->query->set('vendorID', $this->vendorID);
+
+			if ($this->shipfromID) {
+				$url->query->set('shipfromID', $this->shipfromID);
+			}
+
+			return $url->getUrl();
+		}
+
+		/**
+		 * Return View Sales History URL
+		 * @return string
+		 */
+		public function get_invoicesURL() {
+			$url = new Url($this->wire('pages')->get('pw_template=purchase-orders-vendor')->url);
+			$url->query->set('vendorID', $this->vendorID);
+
+			if ($this->shipfromID) {
+				$url->query->set('shipfromID', $this->shipfromID);
+			}
+			return $url->getUrl();
 		}
 
 
