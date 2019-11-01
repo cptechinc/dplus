@@ -1,5 +1,6 @@
 <?php
 	use Twig\TwigFilter;
+	use Purl\Url;
 
 	$convertdate = new Twig_Function('convertdate', function ($date, $format = 'm/d/Y') {
 		$date = date($format, strtotime($date));
@@ -46,5 +47,15 @@
 
 	$filter = new Twig_Filter('base64_encode', function ($str) {
 		return base64_encode($str);
+	});
+	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('purl', function ($url) {
+		if (strlen($url)) {
+			$url = new Url($url);
+			return $url->getUrl();
+		} else {
+			return false;
+		}
 	});
 	$config->twig->addFilter($filter);
