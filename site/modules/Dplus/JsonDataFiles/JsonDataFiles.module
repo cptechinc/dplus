@@ -55,6 +55,8 @@
 				'documents'      => 'docview',
 				'phonebook'      => 'cicontact'
 			),
+			'vi' => array(
+				'purchaseorders' => 'vipurchordr'
 			)
 		);
 

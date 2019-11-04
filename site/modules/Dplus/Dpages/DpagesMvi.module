@@ -31,12 +31,12 @@ class DpagesMvi extends Dpages implements Module {
 			'paginated' => false
 		),
 		'dplus-function' => array(
-			'name'   => 'dplus-menu',
+			'name'   => 'dplus-function',
 			'fields' => array('dplus_function', 'pw_template', 'summary'),
 			'paginated' => true
 		),
 		'vi-function' => array(
-			'name'   => 'dplus-menu',
+			'name'   => 'vi-function',
 			'fields' => array('title', 'dplus_function', 'pw_template', 'jsoncode', 'is_formattable', 'summary'),
 			'paginated' => true
 		),
@@ -47,6 +47,11 @@ class DpagesMvi extends Dpages implements Module {
 		),
 		'vi-contact' => array(
 			'name'   => 'vi-contact',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'vi-purchase-orders' => array(
+			'name'   => 'vi-purchase-orders',
 			'fields' => array(),
 			'paginated' => true
 		),
@@ -87,7 +92,17 @@ class DpagesMvi extends Dpages implements Module {
 			'parent'         => '/mvi/vi/',
 			'dplus_function' => '',
 			'pw_template'    => 'vi-contact'
-		)
+		),
+		'vi-purchase-orders' => array(
+			'template'       => 'vi-function',
+			'name'           => 'purchase-orders',
+			'title'          => 'Purchase Orders',
+			'summary'        => 'View Vendor Purchase Orders',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-purchase-orders',
+			'jsoncode'       => 'vi-purchaseorders'
+		),
 	);
 
 	public function init_vipage() {
@@ -112,6 +127,23 @@ class DpagesMvi extends Dpages implements Module {
 			$vendorID   = $event->arguments(0);
 			$url = new Url($p->url);
 			$url->query->set('vendorID', $vendorID);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_redirURL', function($event) {
+			$p = $event->object;
+			$event->return = $this->wire('pages')->get('template=redir, redir_file=vi')->url;
+		});
+
+		$this->addHook('Page::get_vipurchaseordersURL', function($event) {
+			$p = $event->object;
+			$vendorID   = $event->arguments(0);
+			$shipfromID = $event->arguments(1);
+			$url = new Url($p->get_redirURL());
+			$url->query->set('action','vi-purchase-orders');
+			$url->query->set('vendorID', $vendorID);
+			$url->query->set('shipfromID', $shipfromID);
+			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
 		});
 	}
