@@ -3,7 +3,7 @@
 
 	if ($vendorquery->count()) {
 		$page->show_breadcrumbs = false;
-			$page->body .= $config->twig->render('vendors/vi/bread-crumbs.twig', ['page' => $page, 'vendor' => $vendor]);
+		$page->body .= $config->twig->render('vendors/vi/bread-crumbs.twig', ['page' => $page, 'vendor' => $vendor]);
 
 		if ($input->get->shipfromID) {
 			$shipfromID = $input->get->text('shipfromID');
