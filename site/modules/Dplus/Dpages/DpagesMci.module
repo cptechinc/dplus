@@ -566,6 +566,8 @@ class DpagesMci extends Dpages implements Module {
 	}
 
 	public function init_customer_hooks() {
+		$this->init_cipage();
+		
 		/**
 		 * Adds hook for getting Sales Order List URL
 		 */
