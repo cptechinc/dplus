@@ -367,10 +367,12 @@
 								'label-justify'  => $this->formatter[$section]['columns'][$column]['label-justify'],
 							 );
 							$table[$section]['rows'][$i]['columns'][$this->formatter[$section]['columns'][$column]['column']] = $col;
-							$table[$section]['colcount'] = $col['column'] > $table[$section]['colcount'] ? $col['column'] : $table[$section]['colcount'];
+							$table[$section]['colcount'] += $col['col-length'] > 1 ? $col['col-length'] : 1;
+							$table['cols'] = $col['column'] > $table['cols']  ? $col['column'] : $table['cols'];
 						}
 					}
 				}
+				$table['cols'] = $table[$section]['colcount'] > $table['cols'] ? $table[$section]['colcount'] : $table['cols'];
 			}
 			$this->tableblueprint = $table;
 		}
