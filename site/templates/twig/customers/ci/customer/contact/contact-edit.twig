@@ -1,5 +1,5 @@
 <a href="{{ page.url_custcontact(contact.custid, contact.shiptoid, contact.contact) }}" class="btn btn-info mb-3">
-    <i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Contact
+	<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Contact
 </a>
 <div class="row">
 	<div class="col-sm-6">
@@ -57,31 +57,31 @@
 				<tr class="{{ contact.has_shipto() ? 'hidden' : '' }}">
 					<td class="control-label">AR Contact</td>
 					<td>
-                        {{ contact.arcontact }}
+						{{ contact.arcontact }}
 					</td>
 				</tr>
 				<tr class="{{ contact.has_shipto() ? 'hidden' : '' }}">
 					<td class="control-label">Dunning Contact</td>
 					<td>
-                        {{ contact.dunningcontact }}
+						{{ contact.dunningcontact }}
 					</td>
 				</tr>
 				<tr class="{{ contact.has_shipto() ? 'hidden' : '' }}">
 					<td class="control-label">Acknowledgement Contact</td>
 					<td>
-                        {{ contact.ackcontact }}
+						{{ contact.ackcontact }}
 					</td>
 				</tr>
 				<tr>
 					<td class="control-label">Buying Contact</td>
 					<td>
-                        {{ contact.buyingcontact }}
+						{{ contact.buyingcontact }}
 					</td>
 				</tr>
 				<tr>
 					<td class="control-label">Certificate Contact</td>
 					<td>
-                        {{ contact.certcontact }}
+						{{ contact.certcontact }}
 					</td>
 				</tr>
 			</table>
@@ -154,51 +154,51 @@
 					<tr class="{{ contact.has_shipto() ? 'hidden' : '' }}">
 						<td class="control-label">AR Contact</td>
 						<td>
-                            <select name="arcontact" class="form-control form-control-sm" id="">
-                                <option value="Y" {{ contact.arcontact == 'Y' ? 'selected' : '' }} >Yes</option>
-                                <option value="N" {{ contact.arcontact == 'N' ? 'selected' : '' }} >No</option>
-                            </select>
+							<select name="arcontact" class="form-control form-control-sm" id="">
+								<option value="Y" {{ contact.arcontact == 'Y' ? 'selected' : '' }} >Yes</option>
+								<option value="N" {{ contact.arcontact == 'N' ? 'selected' : '' }} >No</option>
+							</select>
 						</td>
 					</tr>
 					<tr class="{{ contact.has_shipto() ? 'hidden' : '' }}">
 						<td class="control-label">Dunning Contact</td>
 						<td>
-                            <select name="duncontact" class="form-control form-control-sm" id="">
-                                <option value="Y" {{ contact.duncontact == 'Y' ? 'selected' : '' }} >Yes</option>
-                                <option value="N" {{ contact.duncontact == 'N' ? 'selected' : '' }} >No</option>
-                            </select>
+							<select name="duncontact" class="form-control form-control-sm" id="">
+								<option value="Y" {{ contact.duncontact == 'Y' ? 'selected' : '' }} >Yes</option>
+								<option value="N" {{ contact.duncontact == 'N' ? 'selected' : '' }} >No</option>
+							</select>
 						</td>
 					</tr>
 					<tr class="{{ contact.has_shipto() ? 'hidden' : '' }}">
 						<td class="control-label">Acknowledgement Contact</td>
 						<td>
-                            <select name="ackcontact" class="form-control form-control-sm" id="">
-                                <option value="Y" {{ contact.ackcontact == 'Y' ? 'selected' : '' }} >Yes</option>
-                                <option value="N" {{ contact.ackcontact == 'N' ? 'selected' : '' }} >No</option>
-                            </select>
+							<select name="ackcontact" class="form-control form-control-sm" id="">
+								<option value="Y" {{ contact.ackcontact == 'Y' ? 'selected' : '' }} >Yes</option>
+								<option value="N" {{ contact.ackcontact == 'N' ? 'selected' : '' }} >No</option>
+							</select>
 						</td>
 					</tr>
 					<tr>
 						<td class="control-label">Buying Contact</td>
 						<td>
-                            <select name="buycontact" class="form-control form-control-sm" id="">
-                                <option value="Y" {{ contact.buycontact == 'Y' ? 'selected' : '' }} >Yes</option>
-                                <option value="N" {{ contact.buycontact == 'N' ? 'selected' : '' }} >No</option>
-                            </select>
+							<select name="buycontact" class="form-control form-control-sm" id="">
+								<option value="Y" {{ contact.buycontact == 'Y' ? 'selected' : '' }} >Yes</option>
+								<option value="N" {{ contact.buycontact == 'N' ? 'selected' : '' }} >No</option>
+							</select>
 						</td>
 					</tr>
 					<tr>
 						<td class="control-label">Certificate Contact</td>
 						<td>
-                            <select name="certcontact" class="form-control form-control-sm" id="">
-                                <option value="Y" {{ contact.certcontact == 'Y' ? 'selected' : '' }} >Yes</option>
-                                <option value="N" {{ contact.certcontact == 'N' ? 'selected' : '' }} >No</option>
-                            </select>
+							<select name="certcontact" class="form-control form-control-sm" id="">
+								<option value="Y" {{ contact.certcontact == 'Y' ? 'selected' : '' }} >Yes</option>
+								<option value="N" {{ contact.certcontact == 'N' ? 'selected' : '' }} >No</option>
+							</select>
 						</td>
 					</tr>
 				</table>
 				<div class="panel-footer">
-					<button type="submit" class="btn btn-success">
+					<button type="submit" class="btn btn-success pull-right">
 						<i class="fa fa-save"></i> Save Changes
 					</button>
 				</div> <!-- end panel footer -->

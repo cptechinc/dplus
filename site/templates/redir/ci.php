@@ -137,6 +137,7 @@
 			$contactID = $input->$requestmethod->text('contactID');
 
 			$q = CustindexQuery::create()->filterByCustid($custID);
+
 			if ($shipID) {
 				$q->filterByShiptoid($shiptoID);
 			}
@@ -158,11 +159,14 @@
 
 			$data = array("DBNAME=$dplusdb", 'EDITCONTACT', "CUSTID=$custID", "SHIPID=$shiptoID", "CONTACT=$contactID");
 
+			$url = new Purl\Url($pages->get('pw_template=ci-contact')->url);
+			$url->query->set('custID', $custID);
+
 			if ($shiptoID) {
-				$session->loc = $pages->get('pw_template=ci-contact')->url."?custID=$custID&shipID=$shiptoID&contactID=$contactID";
-			} else {
-				$session->loc = $pages->get('pw_template=ci-contact')->url."?custID=$custID&contactID=$contactID";
+				$url->query->set('shiptoID', $shiptoID);
 			}
+			$url->query->set('contactID', $editcontact->contact);
+			$session->loc = $url->getUrl();
 			break;
 		case 'ci-sales-orders':
 			$shipID = $input->$requestmethod->text('shipID');

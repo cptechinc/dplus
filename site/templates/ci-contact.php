@@ -5,16 +5,20 @@
 	$query->filterByCustid($custID);
 
 	$page->show_breadcrumbs = false;
-	$page->body .= $config->twig->render('customers/ci/bread-crumbs.twig', ['page' => $page, 'customer' => $customer]);
+
 
 	if ($input->get->text('shiptoID')) {
-        $shiptoID = $input->get->text('shiptoID');
+		$shiptoID = $input->get->text('shiptoID');
 		$query->filterByShiptoid($shiptoID);
 	}
 
-    $contactID = $input->get->text('contactID');
+	$contactID = $input->get->text('contactID');
 	$contact = $query->findOneByContact($contactID);
 
+	$page->title = "$contact->contact";
+	$page->body .= $config->twig->render('customers/ci/bread-crumbs.twig', ['page' => $page, 'customer' => $customer]);
+	$page->title .= ", ";
+	$page->title .= $input->get->shiptoID ? $shipto->name : $customer->name;
 	$page->body .= $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID]);
 	$page->body .= $config->twig->render('customers/ci/customer/contact/contact.twig', ['page' => $page, 'custID' => $custID, 'contact' => $contact]);
 
