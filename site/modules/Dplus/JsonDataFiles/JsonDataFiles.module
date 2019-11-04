@@ -37,23 +37,24 @@
 				)
 			),
 			'ci' => array(
-				'pricing' 	  	  => 'iiprice',
-				'ship-tos' 	  	  => 'cishiptoinfo',
-				'contacts' 	  	  => 'cicontact',
+				'pricing'  => 'iiprice',
+				'ship-tos' => 'cishiptoinfo',
+				'contacts' => 'cicontact',
 				'sales' => array(
-					'orders' => 'cisalesordr',
+					'orders'  => 'cisalesordr',
 					'history' => 'cisaleshist'
 				),
-				'purchase-orders' => 'cipurchordr',
-				'quotes' 		  => 'ciquote',
+				'purchaseorders' => 'cipurchordr',
+				'quotes'         => 'ciquote',
 				'openinvoices'   => 'ciopeninv',
-				'payments' 		  => 'cipayment',
-				'credit' 		  => 'cicredit',
-				'standingorders' => 'cistandingordr',
-				'stock' 		  => 'cistkstat',
-				'notes' 		  => 'cinotes',
-				'documents' 	  => 'docview',
-				'phonebook' 	  => 'cicontact'
+				'payments'       => 'cipayment',
+				'credit'         => 'cicredit',
+				'standingorders' => 'cistandordr',
+				'stock'          => 'cistkstat',
+				'notes'          => 'cinotes',
+				'documents'      => 'docview',
+				'phonebook'      => 'cicontact'
+			),
 			)
 		);
 
