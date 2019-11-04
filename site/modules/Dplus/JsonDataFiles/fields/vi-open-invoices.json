@@ -1,0 +1,64 @@
+{
+	"header": {
+		"Purchase Order Number": {
+			"type": "I",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Invoice Number": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Status": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Invoice Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Discount Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Due Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Amount - Total": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Amount - Discount": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Amount - Current": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Amount - Aging 1": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Amount - Aging 2": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Amount - Aging 3": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		}
+	}
+}

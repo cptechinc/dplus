@@ -56,7 +56,8 @@
 				'phonebook'      => 'cicontact'
 			),
 			'vi' => array(
-				'purchaseorders' => 'vipurchordr'
+				'purchaseorders' => 'vipurchordr',
+				'openinvoices'   => 'viopeninv'
 			)
 		);
 

@@ -55,6 +55,11 @@ class DpagesMvi extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
+		'vi-open-invoices' => array(
+			'name'   => 'vi-open-invoices',
+			'fields' => array(),
+			'paginated' => true
+		),
 	);
 
 	const PAGES = array(
@@ -103,6 +108,16 @@ class DpagesMvi extends Dpages implements Module {
 			'pw_template'    => 'vi-purchase-orders',
 			'jsoncode'       => 'vi-purchaseorders'
 		),
+		'vi-open-invoices' => array(
+			'template'       => 'vi-function',
+			'name'           => 'open-invoices',
+			'title'          => 'Open Invoices',
+			'summary'        => 'View Vendor Open Invoices',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-open-invoices',
+			'jsoncode'       => 'vi-openinvoices'
+		),
 	);
 
 	public function init_vipage() {
@@ -143,6 +158,16 @@ class DpagesMvi extends Dpages implements Module {
 			$url->query->set('action','vi-purchase-orders');
 			$url->query->set('vendorID', $vendorID);
 			$url->query->set('shipfromID', $shipfromID);
+			$url->query->set('page', $p->fullURL->getUrl());
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_viopeninvoicesURL', function($event) {
+			$p = $event->object;
+			$vendorID   = $event->arguments(0);
+			$url = new Url($p->get_redirURL());
+			$url->query->set('action','vi-open-invoices');
+			$url->query->set('vendorID', $vendorID);
 			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
 		});

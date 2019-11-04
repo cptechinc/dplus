@@ -19,9 +19,16 @@
 	* 		Request VI Purchase Orders JSON file
 	* 		Response: Creates VI Purchase Orders JSON file
 	*		DBNAME=$dplusdb
-	*		VIPURCHORDR
+	*		VIPURCHORDR => n2zz767p
 	*		VENDID=$vendorID
 	*		SHIPID=$shipfromID **NOTE: OPTIONAL
+	*		break;
+	*	case 'vi-open-invoices':
+	* 		Request VI OPEN INVOICES JSON file
+	* 		Response: Creates VI OPEN INVOICES JSON file
+	*		DBNAME=$dplusdb
+	*		VIOPENINV =>n2zz765p
+	*		VENDID=$vendorID
 	*		break;
 	* }
 	**/
@@ -42,9 +49,19 @@
 				$url->query->set('vendorID', $vendorID);
 
 				if ($input->$request->shipfromID) {
-
 					$url->query->set('shipfromID', $shipfromID);
 				}
+				$session->loc = $url->getUrl();
+			}
+			break;
+		case 'vi-open-invoices':
+			$data = array("DBNAME=$dplusdb", 'VIOPENINV', "VENDID=$vendorID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=vi-purchase-orders')->url);
+				$url->query->set('vendorID', $vendorID);
 				$session->loc = $url->getUrl();
 			}
 			break;
