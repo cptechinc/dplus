@@ -28,7 +28,7 @@
 				<td colspan="{{ blueprint['cols'] }}" class="text-center"> No Purchase Orders Available</td>
 			</tr>
 		{% endif %}
-		
+
 		{% for order in json['data']['purchaseorders'] %}
 			{% for x in 1..blueprint['header']['rowcount']  %}
 				<tr class="bg-dark text-white">
