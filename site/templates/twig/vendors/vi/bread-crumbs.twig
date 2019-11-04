@@ -17,9 +17,10 @@
 				</li>
 			{% endif %}
 		{% endfor %}
-		{% if (page.pw_template == 'vi-shipfrom' and page.has('shipfromID')) %}
+		{% if (page.has('shipfromID')) %}
 			<li class="breadcrumb-item">
-				<a href="{{ page.url ~ '?vendorID=' ~ vendor.id }}">Ship-froms</a>
+				<i class="fa fa-ship" aria-hidden="true"></i>
+				<a href="{{ page.get_vi_vendorshipfromURL(vendor.id) }}">Ship-froms</a>
 			</li>
 		{% endif %}
 		{% if (page.parent.pw_template != 'vi-shipfrom' and page.pw_template != 'vi-shipfrom' and page.has('shipfromID')) %}
