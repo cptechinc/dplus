@@ -13,6 +13,8 @@
 	if ($input->get->shipfromID) {
 		$shipfromID = $input->get->text('shipfromID');
 		$load_vendor->set_shipfromID($shipfromID);
+	} else {
+		$shipfromID = false;
 	}
 
 	$vendorquery = VendorQuery::create();
