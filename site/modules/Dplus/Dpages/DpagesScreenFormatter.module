@@ -19,6 +19,11 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'type'  => 'text',
 			'label' => 'Formatter Module Name'
 		),
+		'twig_include' => array(
+			'name'  => 'twig_include',
+			'type'  => 'text',
+			'label' => 'Twig File that generates formatted screen'
+		)
 	);
 
 	const TEMPLATES = array(
@@ -29,7 +34,7 @@ class DpagesScreenFormatter extends Dpages implements Module {
 		),
 		'formatter-screen' => array(
 			'name'   => 'formatter-screen',
-			'fields' => array('title', 'jsoncode', 'formatter', 'summary'),
+			'fields' => array('title', 'jsoncode', 'formatter', 'summary', 'twig_include'),
 			'paginated' => true
 		)
 	);
@@ -58,7 +63,8 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'summary'        => 'II Sales Orders Formatter',
 			'parent'         => '/user/screen-formatters/ii/',
 			'formatter'      => 'IiSalesOrder',
-			'jsoncode'       => 'ii-sales-orders'
+			'jsoncode'       => 'ii-sales-orders',
+			'twig_include'   => 'items/ii/sales-orders/sales-orders.twig'
 		),
 		'ii-sales-history' => array(
 			'template'       => 'formatter-screen',
@@ -67,7 +73,8 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'summary'        => 'II Sales History Formatter',
 			'parent'         => '/user/screen-formatters/ii/',
 			'formatter'      => 'IiSalesHistory',
-			'jsoncode'       => 'ii-sales-history'
+			'jsoncode'       => 'ii-sales-history',
+			'twig_include'   => 'items/ii/sales-history/sales-history.twig'
 		),
 		'ii-quotes' => array(
 			'template'       => 'formatter-screen',
@@ -76,7 +83,8 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'summary'        => 'II Quotes Formatter',
 			'parent'         => '/user/screen-formatters/ii/',
 			'formatter'      => 'IiQuotes',
-			'jsoncode'       => 'ii-quotes'
+			'jsoncode'       => 'ii-quotes',
+			'twig_include'   => 'items/ii/quotes/quotes.twig'
 		),
 		'ii-purchase-orders' => array(
 			'template'       => 'formatter-screen',
@@ -85,7 +93,8 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'summary'        => 'II Purchase Orders Formatter',
 			'parent'         => '/user/screen-formatters/ii/',
 			'formatter'      => 'IiPurchaseOrders',
-			'jsoncode'       => 'ii-purchase-orders'
+			'jsoncode'       => 'ii-purchase-orders',
+			'twig_include'   => 'items/ii/purchase-orders/purchase-orders.twig'
 		),
 		'ii-purchase-history' => array(
 			'template'       => 'formatter-screen',
@@ -94,7 +103,8 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'summary'        => 'II Purchase History Formatter',
 			'parent'         => '/user/screen-formatters/ii/',
 			'formatter'      => 'IiPurchaseHistory',
-			'jsoncode'       => 'ii-purchase-history'
+			'jsoncode'       => 'ii-purchase-history',
+			'twig_include'   => 'items/ii/purchase-history/purchase-history.twig'
 		),
 		'ci-formatter-menu' => array(
 			'template'       => 'dplus-function',
@@ -111,7 +121,8 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'summary'        => 'CI Sales Orders Formatter',
 			'parent'         => '/user/screen-formatters/ci/',
 			'formatter'      => 'CiSalesOrder',
-			'jsoncode'       => 'ci-sales-orders'
+			'jsoncode'       => 'ci-sales-orders',
+			'twig_include'   => 'customers/ci/sales-orders/sales-orders.twig'
 		),
 		'ci-sales-history' => array(
 			'template'       => 'formatter-screen',
@@ -120,7 +131,8 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'summary'        => 'CI Sales History Formatter',
 			'parent'         => '/user/screen-formatters/ci/',
 			'formatter'      => 'CiSalesHistory',
-			'jsoncode'       => 'ci-sales-history'
+			'jsoncode'       => 'ci-sales-history',
+			'twig_include'   => 'customers/ci/sales-history/sales-history.twig'
 		),
 		'ci-quotes' => array(
 			'template'       => 'formatter-screen',
@@ -129,7 +141,8 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'summary'        => 'CI Quotes Formatter',
 			'parent'         => '/user/screen-formatters/ci/',
 			'formatter'      => 'CiQuotes',
-			'jsoncode'       => 'ci-quotes'
+			'jsoncode'       => 'ci-quotes',
+			'twig_include'   => 'customers/ci/quotes/quotes.twig'
 		),
 		'ci-open-invoices' => array(
 			'template'       => 'formatter-screen',
@@ -138,7 +151,8 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'summary'        => 'CI Open Invoices Formatter',
 			'parent'         => '/user/screen-formatters/ci/',
 			'formatter'      => 'CiOpenInvoices',
-			'jsoncode'       => 'ci-open-invoices'
+			'jsoncode'       => 'ci-open-invoices',
+			'twig_include'   => 'customers/ci/open-invoices/open-invoices.twig'
 		),
 		'ci-payments' => array(
 			'template'       => 'formatter-screen',
@@ -147,8 +161,9 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'summary'        => 'CI Payments Formatter',
 			'parent'         => '/user/screen-formatters/ci/',
 			'formatter'      => 'CiPayments',
-			'jsoncode'       => 'ci-payments'
-		)
+			'jsoncode'       => 'ci-payments',
+			'twig_include'   => 'customers/ci/payments/payments.twig'
+		),
 		'vi-formatter-menu' => array(
 			'template'       => 'dplus-function',
 			'name'           => 'vi',
