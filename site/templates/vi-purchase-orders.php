@@ -23,7 +23,6 @@
 		$module_json = $modules->get('JsonDataFiles');
 		$json = $module_json->get_file(session_id(), $page->jsoncode);
 
-
 		if ($module_json->file_exists(session_id(), $page->jsoncode)) {
 			if ($json['vendid'] != $vendorID || $json['shipid'] != $shipfromID) {
 				$module_json->remove_file(session_id(), $page->jsoncode);
@@ -52,4 +51,4 @@
 		include __DIR__ . "/blank-page.php";
 	} else {
 		include __DIR__ . "/basic-page.php";
-}
+	}
