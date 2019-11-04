@@ -149,6 +149,24 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'formatter'      => 'CiPayments',
 			'jsoncode'       => 'ci-payments'
 		)
+		'vi-formatter-menu' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'vi',
+			'title'          => 'VI Screen Formatters',
+			'summary'        => 'VI Screen Formatters Menu',
+			'parent'         => '/user/screen-formatters/',
+			'pw_template'    => 'formatter-menu'
+		),
+		'vi-purchase-orders' => array(
+			'template'       => 'formatter-screen',
+			'name'           => 'purchase-orders',
+			'title'          => 'VI Purchase Orders',
+			'summary'        => 'VI Purchase Orders Formatter',
+			'parent'         => '/user/screen-formatters/vi/',
+			'formatter'      => 'ViPurchaseOrders',
+			'jsoncode'       => 'vi-purchaseorders',
+			'twig_include'   => 'vendors/vi/purchase-orders/purchase-orders.twig'
+		),
 	);
 
 	public static function getModuleInfo() {

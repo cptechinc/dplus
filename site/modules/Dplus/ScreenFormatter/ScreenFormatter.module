@@ -219,7 +219,7 @@
 		protected function load_dbformatter($userID, $formatter) {
 			$q = TableformatterQuery::create()->filterByUserFormattertype($userID, $formatter);
 			$q->select('data');
-			return $q->count()->findOne();
+			return $q->findOne();
 		}
 
 		/**
@@ -229,6 +229,24 @@
 		protected function does_formatterexist($userID, $formatter) {
 			$q = TableformatterQuery::create()->filterByUserFormattertype($userID, $formatter);
 			return boolval($q->count());
+		}
+
+		/**
+		 * Saves Formatter to Database
+		 * Creates / Updates Formatter
+		 * @return bool 
+		 */
+		public function save() {
+			if ($this->does_formatterexist($this->userID, $this->code)) {
+				$q = TableformatterQuery::create()->filterByUserFormattertype($this->userID, $this->code);
+				$formatter = $q->findOne();
+			} else {
+				$formatter = new Tableformatter();
+				$formatter->setUser($this->userID);
+				$formatter->setformatterType($this->code);
+			}
+			$formatter->setData(json_encode($this->formatter));
+			return $formatter->save();
 		}
 
 		/**
