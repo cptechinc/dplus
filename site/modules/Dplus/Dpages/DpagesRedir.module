@@ -105,6 +105,14 @@ class DpagesRedir extends DplusPwPages implements Module {
 			'parent'     => '/cart/',
 			'redir_file' => 'cart'
 		),
+		'vi-redir' => array(
+			'template'   => 'redir',
+			'name'       => 'redir',
+			'title'      => 'redir',
+			'summary'    => 'Vendor Information Redirects',
+			'parent'     => '/mvi/',
+			'redir_file' => 'vi'
+		),
 	);
 
 	/* =============================================================
