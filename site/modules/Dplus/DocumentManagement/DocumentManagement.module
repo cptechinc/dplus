@@ -11,9 +11,10 @@ class DocumentManagement extends WireData implements Module {
 
 	const TAG_ARINVOICES = 'AR';
 	const TAG_SALESORDER = 'SO';
-	const TAG_QUOTE = 'QT';
-	const TAG_ITEM  = 'IT';
-	const TAG_VENDORPO = 'PO';
+	const TAG_QUOTE      = 'QT';
+	const TAG_ITEM       = 'IT';
+	const TAG_VENDORPO   = 'PO';
+	const TAG_APINVOICE  = 'AP';
 
 	public static function getModuleInfo() {
 		return array(
@@ -71,6 +72,24 @@ class DocumentManagement extends WireData implements Module {
 			$event->return = $url."?itemID=$itemID&folder=$folder&document=$document";
 		});
 
+		$this->addHook('Page(pw_template=ci-documents)::documentload', function($event) {
+			$page = $event->object;
+			$folder   = $event->arguments(0);
+			$document = $event->arguments(1);
+			$custID   = $event->arguments(2);
+			$url = $this->wire('pages')->get('pw_template=ci-documents')->url;
+			$event->return = $url."?custID=$custID&folder=$folder&document=$document";
+		});
+
+		$this->addHook('Page(pw_template=vi-documents)::documentload', function($event) {
+			$page = $event->object;
+			$folder   = $event->arguments(0);
+			$document = $event->arguments(1);
+			$vendorID = $event->arguments(2);
+			$url = $this->wire('pages')->get('pw_template=vi-documents')->url;
+			$event->return = $url."?vendorID=$vendorID&folder=$folder&document=$document";
+		});
+
 		$this->addHook('Page(pw_template=ii-sales-orders|ii-sales-history)::documentsview_salesorder', function($event) {
 			$page = $event->object;
 			$itemID    = $event->arguments(0);
@@ -87,6 +106,57 @@ class DocumentManagement extends WireData implements Module {
 				$url->query->set('folder', self::TAG_ARINVOICES);
 			}
 
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=ci-sales-orders|ci-sales-history|ci-customer-po)::documentsview_salesorder', function($event) {
+			$page = $event->object;
+			$custID    = $event->arguments(0);
+			$ordn      = $event->arguments(1);
+			$url = new Url($this->wire('pages')->get('pw_template=ci-documents')->url);
+			$url->query->set('custID', $custID);
+			$url->query->set('folder', self::TAG_SALESORDER);
+			$url->query->set('ordn', $ordn);
+
+			if (SalesHistoryQuery::create()->filterByOrdernumber(SalesOrder::get_paddedordernumber($ordn))->count()) {
+				$date = $page->fullURL->query->get('date');
+				$url->query->set('date', $date);
+				$url->query->set('folder', self::TAG_ARINVOICES);
+			}
+
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=ci-quotes)::documentsview_quote', function($event) {
+			$page = $event->object;
+			$custID    = $event->arguments(0);
+			$qnbr      = $event->arguments(1);
+			$url = new Url($this->wire('pages')->get('pw_template=ci-documents')->url);
+			$url->query->set('custID', $custID);
+			$url->query->set('folder', self::TAG_QUOTE);
+			$url->query->set('qnbr', $qnbr);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=vi-purchase-orders|vi-purchase-history)::documentsview_po', function($event) {
+			$page = $event->object;
+			$vendorID   = $event->arguments(0);
+			$ponbr      = $event->arguments(1);
+			$url = new Url($this->wire('pages')->get('pw_template=vi-documents')->url);
+			$url->query->set('vendorID', $vendorID);
+			$url->query->set('folder', self::TAG_VENDORPO);
+			$url->query->set('ponbr', $ponbr);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=vi-purchase-orders|vi-purchase-history)::documentsview_apinvoice', function($event) {
+			$page = $event->object;
+			$vendorID   = $event->arguments(0);
+			$invnbr     = $event->arguments(1);
+			$url = new Url($this->wire('pages')->get('pw_template=vi-documents')->url);
+			$url->query->set('vendorID', $vendorID);
+			$url->query->set('folder', self::TAG_APINVOICE);
+			$url->query->set('ponbr', $invnbr);
 			$event->return = $url->getUrl();
 		});
 	}
@@ -223,6 +293,32 @@ class DocumentManagement extends WireData implements Module {
 		$documents_master = DocumentsQuery::create();
 		$documents_master->filterByTag(self::TAG_ITEM);
 		$documents_master->filterByReference1($itemID);
+		return $documents_master->count();
+	}
+
+	/**
+	 * Return Documents objects filtered by the tag1, reference1 fields for a Purchase Order
+	 * @param  string $ponbr                      Purchase Order Number
+	 * @return Documents[]|ObjectCollection
+	 */
+	public function get_purchaseorderdocuments($ponbr) {
+		$ponbr = PurchaseOrder::get_paddedponumber($ponbr);
+		$documents_master = DocumentsQuery::create();
+		$documents_master->filterByTag(self::TAG_VENDORPO);
+		$documents_master->filterByReference1($ponbr);
+		return $documents_master->find();
+	}
+
+	/**
+	 * Return the number of Documents found filtered by the tag1, reference1 fields for a Purchase Order
+	 * @param  string $ponbr Purchase Order Number
+	 * @return int          Number of Purchase Order Documents found
+	 */
+	public function count_purchaseorderdocuments($ponbr) {
+		$ponbr = PurchaseOrder::get_paddedponumber($ponbr);
+		$documents_master = DocumentsQuery::create();
+		$documents_master->filterByTag(self::TAG_VENDORPO);
+		$documents_master->filterByReference1($ponbr);
 		return $documents_master->count();
 	}
 
