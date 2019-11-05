@@ -1,0 +1,40 @@
+{% set custcolumns = json['columns']['custinfo'] %}
+{% set itemcolumns = json['columns']['iteminfo'] %}
+{% for order in json['data'] %}
+	<table class="table table-striped table-bordered table-sm table-excel">
+		<tbody>
+			{% for custinfo in order['custinfo'] %}
+				<tr>
+					{% for column in custinfo %}
+						<td>{{ column }}</td>
+					{% endfor %}
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+			{% endfor %}
+			<tr>
+				<td colspan="6" class="text-center">------ STANDING ORDER DETAILS ------</td>
+			</tr>
+			{% for iteminfo in order['iteminfo'] %}
+				{% for iteminfo in order['iteminfo'] %}
+					<tr>
+						<td>{{ iteminfo['itemidtext'] }}</td>
+						<td>{{ iteminfo['itemid'] }}</td>
+						<td>{{ iteminfo['itemdesc'] }}</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+				{% endfor %}
+				{% for itemline in iteminfo['itemlines'] %}
+					<tr>
+						{% for column in itemline %}
+							<td>{{ column }}</td>
+						{% endfor %}
+					</tr>
+				{% endfor %}
+			{% endfor %}
+		</tbody>
+	</table>
+	<hr class="dark">
+{% endfor %}

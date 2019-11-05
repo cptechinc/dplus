@@ -1,314 +1,312 @@
 {
-    "data": {
-        "header": {
-            "Invoice Number": {
-                "type": "I",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Order Number": {
-                "type": "I",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Customer PO Number": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Order Date": {
-                "type": "D",
-                "headingjustify": "c",
-                "datajustify": "l"
-            },
-            "Invoice Date": {
-                "type": "D",
-                "headingjustify": "c",
-                "datajustify": "l"
-            },
-            "Ship-To ID": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Ship-To Name": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Ship-To City/State/Zip": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Ship Via Code": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Ship Via Description": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Terms Code": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Terms Description": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Salesperson 1 ID": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Salesperson 1 Name": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Salesperson 2 ID": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Salesperson 2 Name": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Salesperson 3 ID": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Salesperson 3 Name": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Release Number": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Pick Date": {
-                "type": "D",
-                "headingjustify": "c",
-                "datajustify": "l"
-            },
-            "Verify Date": {
-                "type": "D",
-                "headingjustify": "c",
-                "datajustify": "l"
-            }
+    "header": {
+        "Invoice Number": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
         },
-        "detail": {
-            "Item ID": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Item Description 1": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Item Description 2": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Customer Item ID": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Warehouse ID": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Sales Unit of Measure": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Special Order": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "c"
-            },
-            "Item Reference": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Requested Date": {
-                "type": "D",
-                "headingjustify": "c",
-                "datajustify": "l"
-            },
-            "Ship Date": {
-                "type": "D",
-                "headingjustify": "c",
-                "datajustify": "l"
-            },
-            "Quantity Ordered": {
-                "type": "N",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Quantity Shipped": {
-                "type": "N",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Quantity Backordered": {
-                "type": "N",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Unit Price": {
-                "type": "N",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Total Amount": {
-                "type": "N",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Unit Cost": {
-                "type": "N",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Total Cost": {
-                "type": "N",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Picker Initials": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Non-Stock Vendor ID": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Non-Stock PO Number": {
-                "type": "I",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Non-Stock Vendor Item": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            }
+        "Order Number": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
         },
-        "lotserial": {
-            "Lot/Serial Number": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Lot/Serial Qty Shipped": {
-                "type": "N",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Batch": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Cure Date": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Lot Reference": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            }
+        "Customer PO Number": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
         },
-        "total": {
-            "Subtotal": {
-                "type": "N",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Tax": {
-                "type": "N",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Freight": {
-                "type": "N",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Miscellaneous": {
-                "type": "N",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Order Total": {
-                "type": "N",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Number of Boxes": {
-                "type": "I",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Total Weight": {
-                "type": "N",
-                "headingjustify": "r",
-                "datajustify": "r"
-            }
+        "Order Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
         },
-        "shipments": {
-            "Tracking Number": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Weight": {
-                "type": "N",
-                "headingjustify": "r",
-                "datajustify": "r"
-            },
-            "Service Type": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Shipment Date": {
-                "type": "D",
-                "headingjustify": "c",
-                "datajustify": "l"
-            },
-            "Bill-of-Lading Number": {
-                "type": "C",
-                "headingjustify": "l",
-                "datajustify": "l"
-            },
-            "Number of Boxes": {
-                "type": "I",
-                "headingjustify": "r",
-                "datajustify": "r"
-            }
+        "Invoice Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Ship-To ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Ship-To Name": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Ship-To City/State/Zip": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Ship Via Code": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Ship Via Description": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Terms Code": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Terms Description": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Salesperson 1 ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Salesperson 1 Name": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Salesperson 2 ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Salesperson 2 Name": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Salesperson 3 ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Salesperson 3 Name": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Release Number": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Pick Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Verify Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        }
+    },
+    "detail": {
+        "Item ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Item Description 1": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Item Description 2": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Customer Item ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Warehouse ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Sales Unit of Measure": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Special Order": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "c"
+        },
+        "Item Reference": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Requested Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Ship Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Quantity Ordered": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Quantity Shipped": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Quantity Backordered": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Unit Price": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Total Amount": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Unit Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Total Cost": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Picker Initials": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Non-Stock Vendor ID": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Non-Stock PO Number": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Non-Stock Vendor Item": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        }
+    },
+    "lotserial": {
+        "Lot/Serial Number": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Lot/Serial Qty Shipped": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Batch": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Cure Date": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Lot Reference": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        }
+    },
+    "total": {
+        "Subtotal": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Tax": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Freight": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Miscellaneous": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Order Total": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Number of Boxes": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Total Weight": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        }
+    },
+    "shipments": {
+        "Tracking Number": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Weight": {
+            "type": "N",
+            "headingjustify": "r",
+            "datajustify": "r"
+        },
+        "Service Type": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Shipment Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
+        },
+        "Bill-of-Lading Number": {
+            "type": "C",
+            "headingjustify": "l",
+            "datajustify": "l"
+        },
+        "Number of Boxes": {
+            "type": "I",
+            "headingjustify": "r",
+            "datajustify": "r"
         }
     }
 }

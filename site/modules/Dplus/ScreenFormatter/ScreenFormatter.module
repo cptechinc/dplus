@@ -234,7 +234,7 @@
 		/**
 		 * Saves Formatter to Database
 		 * Creates / Updates Formatter
-		 * @return bool 
+		 * @return bool
 		 */
 		public function save() {
 			if ($this->does_formatterexist($this->userID, $this->code)) {

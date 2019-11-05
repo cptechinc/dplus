@@ -165,3 +165,7 @@ a.link:hover {
 	overflow-y: scroll;
 	max-height: 300px;
 }
+
+.highlight {
+	background: #FADA5E;
+}

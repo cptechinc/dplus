@@ -1,0 +1,54 @@
+<table id="cust-index" class="table table-bordered">
+	<thead>
+		<tr>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('custID') }}" class="link">CustID</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('name') }}" class="link">Customer Name</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('name') }}" class="link">Ship-to</a>
+			</th>
+			<th scope="col">Address</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('city') }}" class="link">City</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('state') }}" class="link">State</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('zip') }}" class="link">Zip</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('phone') }}" class="link">Phone</a>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if customers.count() %}
+			{% for customer in customers %}
+				<tr>
+					<td scope="row">
+						<a href="{{ page.get_customerURL(customer.custid) }}" class="link">
+							<strong>{{ matches_search(customer.custid, q)|raw }}</strong>
+						</a>
+					</td>
+					<td>{{ matches_search(customer.name, q)|raw }}</td>
+					<td>{{ matches_search(customer.shiptoid, q)|raw }}</td>
+					<td>{{ matches_search(customer.address1, q)|raw }}</td>
+					<td>{{ matches_search(customer.city, q)|raw }}</td>
+					<td>{{ matches_search(customer.state, q)|raw }}</td>
+					<td>{{ matches_search(customer.zip, q)|raw }}</td>
+					<td>{{ matches_search(customer.phone, q)|raw }}</td>
+				</tr>
+			{% endfor %}
+		{% else %}
+			<tr>
+				<td colspan="8" class="bg-secondary text-white text-center">
+					No Results found
+				</td>
+			</tr>
+		{% endif %}
+	</tbody>
+</table>

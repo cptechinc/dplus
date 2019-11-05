@@ -1,0 +1,84 @@
+<table class="table table-striped table-bordered table-condensed table-excel" id="invoices">
+	<thead>
+		{% for x in 1..blueprint['detail']['rowcount'] %}
+			<tr>
+				{% set columncount = 0 %}
+				{% for i in 1..blueprint['cols'] + 1 %}
+					{% set colspan = 0 %}
+					{% if blueprint['detail']['rows'][x]['columns'][i] %}
+						{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
+						{% set colspan = column['col-length'] %}
+						<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(properties['headingjustify']) }}">
+							{{ column['label'] }}
+						</th>
+					{% else %}
+						{% if columncount < blueprint['cols'] %}
+							{% set colspan = 1 %}
+							<th></th>
+						{% endif %}
+					{% endif %}
+					{% set columncount = columncount + colspan %}
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</thead>
+	<tbody>
+		{% for id, invoice in json['data']['invoices'] %}
+			{% if invoice != json['data']['invoices']['TOTAL'] %}
+				{% for x in 1..blueprint['detail']['rowcount']  %}
+					<tr>
+						{% set columncount = 0 %}
+						{% for i in 1..blueprint['cols'] + 1 %}
+							{% set colspan = 0 %}
+							{% if blueprint['detail']['rows'][x]['columns'][i] %}
+								{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
+								{% set colspan = column['col-length'] %}
+								<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
+									{{ module_formatter.format_celldata(invoice, column) }}
+								</td>
+								{#
+									if ($i == 1 && !empty($invoice['Invoice Number'])) {
+										$ordn = $invoice['Ordn'];
+										$custID = $this->json['custid'];
+										$url->query->setData(array('custID' => $custID, 'ordn' => $ordn, 'returnpage' => urlencode(DplusWire::wire('page')->fullURL->getUrl())));
+										$href = $url->getUrl();
+										$celldata .= "&nbsp; " . $bootstrap->create_element('a', "href=$href|class=load-order-documents|title=Load Order Documents|aria-label=Load Order Documents|data-ordn=$ordn|data-custid=$custID|data-type=ci-sales-history", $bootstrap->icon('fa fa-file-text'));
+									}
+								#}
+							{% else %}
+								{% if columncount < blueprint['cols'] %}
+									{% set colspan = 1 %}
+									<td></td>
+								{% endif %}
+							{% endif %}
+							{% set columncount = columncount + colspan %}
+						{% endfor %}
+					</tr>
+				{% endfor %}
+			{% endif %}
+		{% endfor %}
+	</tbody>
+	<tfoot>
+		{% set invoice = json['data']['invoices']['TOTAL'] %}
+		{% set x = 1 %}
+		<tr class="bg-danger font-weight-bold">
+			{% set columncount = 0 %}
+			{% for i in 1..blueprint['cols'] + 1 %}
+				{% set colspan = 0 %}
+				{% if blueprint['detail']['rows'][x]['columns'][i] %}
+					{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
+					{% set colspan = column['col-length'] %}
+					<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
+						{{ module_formatter.format_celldata(invoice, column) }}
+					</td>
+				{% else %}
+					{% if columncount < blueprint['cols'] %}
+						{% set colspan = 1 %}
+						<td></td>
+					{% endif %}
+				{% endif %}
+				{% set columncount = columncount + colspan %}
+			{% endfor %}
+		</tr>
+	</tfoot>
+</table>

@@ -3,6 +3,7 @@
 	use Purl\Url;
 
 	use CustomerQuery, Customer;
+	use CustindexQuery;
 	use CustomerShiptoQuery, CustomerShipto;
 	use SalesOrderQuery, SalesOrder;
 	use SalesHistoryQuery, SalesHistory;
@@ -211,7 +212,7 @@
 		 * @return string
 		 */
 		public function get_customerURL() {
-			return $this->wire('modules')->get('MciPages')->get_ci_customerURL($this->custID);
+			return $this->wire('modules')->get('DpagesMci')->get_ci_customerURL($this->custID);
 		}
 
 		/**
@@ -219,7 +220,7 @@
 		 * @return string
 		 */
 		public function get_customer_shiptoURL() {
-			return $this->wire('modules')->get('MciPages')->get_ci_customershiptoURL($this->custID, $this->shiptoID);
+			return $this->wire('modules')->get('DpagesMci')->get_ci_customershiptoURL($this->custID, $this->shiptoID);
 		}
 
 		/**
@@ -317,7 +318,7 @@
 		}
 
 		public function get_contacts($limit = 10, $page = 1) {
-			$query = ContactQuery::create();
+			$query = CustindexQuery::create();
 			$query->filterByCustid($this->custID);
 
 			if ($this->shiptoID) {

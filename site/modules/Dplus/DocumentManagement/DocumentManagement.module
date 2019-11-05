@@ -135,8 +135,6 @@ class DocumentManagement extends WireData implements Module {
 			$url->query->set('qnbr', $qnbr);
 			$event->return = $url->getUrl();
 		});
-
-
 	}
 
 	/**

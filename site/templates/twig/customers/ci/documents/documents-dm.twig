@@ -1,0 +1,25 @@
+<div id="documents">
+	<h3 class="font-weight-bold text-secondary">Documents for {{ custID }}</h3>
+	<table class="table table-striped">
+		<tr class="bg-dark text-white">
+			<th>Title</th>
+			<th>Filename</th>
+			<th>Folder</th>
+			<th>Date</th>
+			<th>Time</th>
+		</tr>
+		{% for document in documents %}
+			<tr id="doc-{{ document.filename }}">
+				<td>{{ document.title }}</td>
+				<td>
+					<a href="{{ page.documentload(document.folder, document.filename, custID) }}" class="link" target="_blank">
+						{{ document.filename }}
+					</a>
+				</td>
+				<td>{{ document.get_folderdescription() }}</td>
+				<td>{{ convertdate(document.date, "m/d/Y") }}</td>
+				<td>{{ convertdate(document.date ~ document.time[:4], "h:i A") }}</td>
+			</tr>
+		{% endfor %}
+	</table>
+</div>
