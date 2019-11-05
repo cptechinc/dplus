@@ -150,6 +150,20 @@ class DpagesMvi extends Dpages implements Module {
 			$event->return = $this->wire('pages')->get('template=redir, redir_file=vi')->url;
 		});
 
+		$this->addHook('Page::get_backURL', function($event) {
+			$p = $event->object;
+			$vendorID   = $p->fullURL->query->get('vendorID');
+			$url = new Url($this->wire('pages')->get('pw_template=vi-vendor')->url);
+			$url->query->set('vendorID', $vendorID);
+
+			if ($p->fullURL->query->has('shipfromID') && $p->pw_template != 'vi-shipfrom') {
+				$url->path = $this->wire('pages')->get('pw_template=vi-shipfrom')->url;
+				$shipfromID = $p->fullURL->query->get('shipfromID');
+				$url->query->set('shipfromID', $shipfromID);
+			}
+			$event->return = $url->getUrl();
+		});
+
 		$this->addHook('Page::get_vipurchaseordersURL', function($event) {
 			$p = $event->object;
 			$vendorID   = $event->arguments(0);
