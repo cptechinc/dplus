@@ -179,7 +179,7 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'summary'        => 'VI Purchase Orders Formatter',
 			'parent'         => '/user/screen-formatters/vi/',
 			'formatter'      => 'ViPurchaseOrders',
-			'jsoncode'       => 'vi-purchaseorders',
+			'jsoncode'       => 'vi-purchase-orders',
 			'twig_include'   => 'vendors/vi/purchase-orders/purchase-orders.twig'
 		),
 	);
