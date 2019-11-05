@@ -182,6 +182,16 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'jsoncode'       => 'vi-purchase-orders',
 			'twig_include'   => 'vendors/vi/purchase-orders/purchase-orders.twig'
 		),
+		'vi-open-invoices' => array(
+			'template'       => 'formatter-screen',
+			'name'           => 'open-invoices',
+			'title'          => 'VI Open Invoices',
+			'summary'        => 'VI Open Invoices Formatter',
+			'parent'         => '/user/screen-formatters/vi/',
+			'formatter'      => 'ViOpenInvoices',
+			'jsoncode'       => 'vi=openinvoices',
+			'twig_include'   => 'vendors/vi/open-invoices/open-invoices.twig'
+		),
 	);
 
 	public static function getModuleInfo() {
