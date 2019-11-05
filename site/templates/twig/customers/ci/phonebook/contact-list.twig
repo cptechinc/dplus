@@ -1,0 +1,48 @@
+<table id="cust-index" class="table table-bordered">
+	<thead>
+		<tr>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('shiptoid') }}" class="link">Ship-To</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('contact') }}" class="link">Contact Name</a>
+			</th>
+			<th scope="col">Address</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('city') }}" class="link">City</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('state') }}" class="link">State</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('zip') }}" class="link">Zip</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('phone') }}" class="link">Phone</a>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if contacts.count() %}
+			{% for contact in contacts %}
+				<tr>
+					<td scope="row">
+						<strong>{{ matches_search(contact.shiptoid, q)|raw }}</strong>
+					</td>
+					<td>{{ matches_search(contact.contact, q)|raw }}</td>
+					<td>{{ matches_search(contact.addr1, q)|raw }}</td>
+					<td>{{ matches_search(contact.city, q)|raw }}</td>
+					<td>{{ matches_search(contact.state, q)|raw }}</td>
+					<td>{{ matches_search(contact.zip, q)|raw }}</td>
+					<td>{{ matches_search(contact.phone, q)|raw }}</td>
+				</tr>
+			{% endfor %}
+		{% else %}
+			<tr>
+				<td colspan="7" class="bg-secondary text-white text-center">
+					No Results found
+				</td>
+			</tr>
+		{% endif %}
+	</tbody>
+</table>

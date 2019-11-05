@@ -23,8 +23,10 @@
 			$description = $config->twig->render('items/ii/item/description.twig', ['item' => $item, 'page' => $page]);
 			$itemdata = $config->twig->render('items/ii/item/item-data.twig', ['item' => $item, 'itempricing' => $itempricing]);
 
-			if ($module_json->had_succeeded()) {
-				$stock = $config->twig->render('items/ii/item/stock.twig', ['module_json' => $module_json, 'json' => $json]);
+			if ($module_json->file_exists(session_id(), 'ii-stock')) {
+				$module_formatter = $modules->get('IiStockItem');
+				$module_formatter->init_formatter();
+				$stock = $config->twig->render('items/ii/item/stock.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint()]);
 			} else {
 				$stock = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "JSON Decode Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => $module_json->get_error()]);
 			}
