@@ -14,8 +14,7 @@
 				$page->title = "$shipfrom->shipfromid";
 				$page->body .= $config->twig->render('vendors/vi/bread-crumbs.twig', ['page' => $page, 'vendor' => $vendor]);
 				$page->title = "$vendor->name Ship-from: $shipfrom->id";
-
-
+				$page->body .= $config->twig->render('vendors/vi/vi-links.twig', ['page' => $page]);
 				$function_pages = [];
 				$toolbar = '';
 				$header  = $config->twig->render('vendors/vi/shipfrom/header.twig', ['page' => $page, 'shipfrom' => $shipfrom, 'con' => $con]);
