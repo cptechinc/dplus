@@ -60,6 +60,11 @@ class DpagesMvi extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
+		'vi-documents' => array(
+			'name'   => 'vi-documents',
+			'fields' => array(),
+			'paginated' => true
+		),
 	);
 
 	const PAGES = array(
@@ -127,6 +132,16 @@ class DpagesMvi extends Dpages implements Module {
 			'dplus_function' => '',
 			'pw_template'    => 'vi-purchase-history',
 			'jsoncode'       => 'vi-purchase-history'
+		),
+		'vi-documents' => array(
+			'template'       => 'vi-function',
+			'name'           => 'documents',
+			'title'          => 'Documents',
+			'summary'        => 'View Vendor Documents',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-documents',
+			'jsoncode'       => 'vi-documents'
 		),
 	);
 
