@@ -43,7 +43,7 @@
 					<td class="control-label">Office Phone</td>
 					<td>
 					<a href="tel:{{ contact.phone }}">{{ contact.phone }}</a><b> &nbsp;
-						{{ contact.has_extension() ? 'Ext. ' ~ contact.extension : '' }}</b>
+						{{ contact.extension ? 'Ext. ' ~ contact.extension : '' }}</b>
 					</td>
 				</tr>
 				<tr>

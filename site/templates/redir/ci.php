@@ -135,6 +135,7 @@
 			$custID = $input->$requestmethod->text('custID');
 			$shiptoID = $input->$requestmethod->text('shipID');
 			$contactID = $input->$requestmethod->text('contactID');
+			$newcontactID = $input->$requestmethod->text('contact-name');
 
 			$q = CustindexQuery::create()->filterByCustid($custID);
 
@@ -143,7 +144,6 @@
 			}
 			$editcontact = $q->findOneByContact($contactID);
 
-			$editcontact->setContact($input->$requestmethod->text('contact-name'));
 			$editcontact->setTitle($input->$requestmethod->text('contact-title'));
 			$editcontact->setPhone($input->$requestmethod->text('contact-phone'));
 			$editcontact->setExtension($input->$requestmethod->text('contact-extension'));
@@ -155,9 +155,15 @@
 			$editcontact->setBuyingcontact($input->$requestmethod->text('buycontact') == 'Y' ? "Y" : "N");
 			$editcontact->setCertcontact($input->$requestmethod->text('certcontact') == 'Y' ? "Y" : "N");
 			$editcontact->setAckcontact($input->$requestmethod->text('ackcontact') == 'Y' ? "Y" : "N");
-			$editcontact->save();
 
-			$data = array("DBNAME=$dplusdb", 'EDITCONTACT', "CUSTID=$custID", "SHIPID=$shiptoID", "CONTACT=$contactID");
+			if ($newcontactID != $contactID) {
+				$editcontact->setContact($newcontactID);
+				$editcontact->save();
+				$data = array("DBNAME=$dplusdb", 'EDITCONTACT', "CUSTID=$custID", "SHIPID=$shiptoID", "CONTACT=$contactID", "OLDCONTACT=$contactID", "NEWCONTACT=$newcontactID");
+			} else {
+				$editcontact->save();
+				$data = array("DBNAME=$dplusdb", 'EDITCONTACT', "CUSTID=$custID", "SHIPID=$shiptoID", "CONTACT=$contactID", "OLDCONTACT=", "NEWCONTACT=");
+			}
 
 			$url = new Purl\Url($pages->get('pw_template=ci-contact')->url);
 			$url->query->set('custID', $custID);
