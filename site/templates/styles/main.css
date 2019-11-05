@@ -146,6 +146,9 @@ a.link:hover {
 	max-height: 500px;
 }
 
+/************************************** Table Styles *******************************/
+.first-txn-row {border-top: 2px solid black;}
+
 /************************************** Dashboard **************************************/
 #top-selling-list {
 	max-height: 500px;
