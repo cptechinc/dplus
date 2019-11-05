@@ -39,6 +39,20 @@
 					$page->body .= $html->div('class=mb-3', $html->a("href=$href|class=btn btn-secondary", $html->icon('fa fa-arrow-left') . " Back to Vendor Purchase Orders"));
 					$page->body .= $config->twig->render('vendors/vi/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'vendorID' => $vendorID]);
 					break;
+				case 'AP':
+					$invnbr = $input->get->text('invnbr');
+					$page->title = "AP Invoice #$invnbr Documents";
+
+					if (ApInvoiceQuery::create()->filterByInvoicenumber($invnbr)->count()) {
+						$documents = $document_management->get_purchasehistorydocuments($invnbr);
+					} else {
+						$documents = array();
+					}
+
+					$href = $pages->get('pw_template=vi-purchase-history')->url."?vendorID=$vendorID";
+					$page->body .= $html->div('class=mb-3', $html->a("href=$href|class=btn btn-secondary", $html->icon('fa fa-arrow-left') . " Back to Vendor Purchase History"));
+					$page->body .= $config->twig->render('vendors/vi/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'vendorID' => $vendorID]);
+					break;
 			}
 		} else {
 			$documents = [];
