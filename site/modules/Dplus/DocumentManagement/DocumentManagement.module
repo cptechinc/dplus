@@ -7,7 +7,12 @@ use SalesHistoryQuery, SalesHistory;
 use SalesHistoryDetailQuery, SalesHistoryDetail;
 use SalesOrderQuery, SalesOrder;
 
+include(__DIR__.'/DocumentManagementVi.trait.php');
+include(__DIR__.'/DocumentManagementPurchaseOrders.trait.php');
+
 class DocumentManagement extends WireData implements Module {
+	use DocumentManagementVi;
+	use DocumentManagementPurchaseOrders;
 
 	const TAG_ARINVOICES = 'AR';
 	const TAG_SALESORDER = 'SO';
@@ -27,6 +32,8 @@ class DocumentManagement extends WireData implements Module {
 	}
 
 	public function init() {
+		$this->vi_init();
+
 		$this->addHook('Page(pw_template=sales-order-view)::documentload', function($event) {
 			$page = $event->object;
 			$folder   = $event->arguments(0);
@@ -81,15 +88,6 @@ class DocumentManagement extends WireData implements Module {
 			$event->return = $url."?custID=$custID&folder=$folder&document=$document";
 		});
 
-		$this->addHook('Page(pw_template=vi-documents)::documentload', function($event) {
-			$page = $event->object;
-			$folder   = $event->arguments(0);
-			$document = $event->arguments(1);
-			$vendorID = $event->arguments(2);
-			$url = $this->wire('pages')->get('pw_template=vi-documents')->url;
-			$event->return = $url."?vendorID=$vendorID&folder=$folder&document=$document";
-		});
-
 		$this->addHook('Page(pw_template=ii-sales-orders|ii-sales-history)::documentsview_salesorder', function($event) {
 			$page = $event->object;
 			$itemID    = $event->arguments(0);
@@ -138,27 +136,7 @@ class DocumentManagement extends WireData implements Module {
 			$event->return = $url->getUrl();
 		});
 
-		$this->addHook('Page(pw_template=vi-purchase-orders|vi-purchase-history)::documentsview_po', function($event) {
-			$page = $event->object;
-			$vendorID   = $event->arguments(0);
-			$ponbr      = $event->arguments(1);
-			$url = new Url($this->wire('pages')->get('pw_template=vi-documents')->url);
-			$url->query->set('vendorID', $vendorID);
-			$url->query->set('folder', self::TAG_VENDORPO);
-			$url->query->set('ponbr', $ponbr);
-			$event->return = $url->getUrl();
-		});
 
-		$this->addHook('Page(pw_template=vi-purchase-orders|vi-purchase-history)::documentsview_apinvoice', function($event) {
-			$page = $event->object;
-			$vendorID   = $event->arguments(0);
-			$invnbr     = $event->arguments(1);
-			$url = new Url($this->wire('pages')->get('pw_template=vi-documents')->url);
-			$url->query->set('vendorID', $vendorID);
-			$url->query->set('folder', self::TAG_APINVOICE);
-			$url->query->set('ponbr', $invnbr);
-			$event->return = $url->getUrl();
-		});
 	}
 
 	/**
@@ -296,31 +274,6 @@ class DocumentManagement extends WireData implements Module {
 		return $documents_master->count();
 	}
 
-	/**
-	 * Return Documents objects filtered by the tag1, reference1 fields for a Purchase Order
-	 * @param  string $ponbr                      Purchase Order Number
-	 * @return Documents[]|ObjectCollection
-	 */
-	public function get_purchaseorderdocuments($ponbr) {
-		$ponbr = PurchaseOrder::get_paddedponumber($ponbr);
-		$documents_master = DocumentsQuery::create();
-		$documents_master->filterByTag(self::TAG_VENDORPO);
-		$documents_master->filterByReference1($ponbr);
-		return $documents_master->find();
-	}
-
-	/**
-	 * Return the number of Documents found filtered by the tag1, reference1 fields for a Purchase Order
-	 * @param  string $ponbr Purchase Order Number
-	 * @return int          Number of Purchase Order Documents found
-	 */
-	public function count_purchaseorderdocuments($ponbr) {
-		$ponbr = PurchaseOrder::get_paddedponumber($ponbr);
-		$documents_master = DocumentsQuery::create();
-		$documents_master->filterByTag(self::TAG_VENDORPO);
-		$documents_master->filterByReference1($ponbr);
-		return $documents_master->count();
-	}
 
 	/**
 	 * Finds a Document from the Documents table and creates a copy
