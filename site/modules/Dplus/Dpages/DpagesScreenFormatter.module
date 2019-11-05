@@ -192,6 +192,16 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'jsoncode'       => 'vi=openinvoices',
 			'twig_include'   => 'vendors/vi/open-invoices/open-invoices.twig'
 		),
+		'vi-purchase-history' => array(
+			'template'       => 'formatter-screen',
+			'name'           => 'purchase-history',
+			'title'          => 'VI Purchase History',
+			'summary'        => 'VI Purchase History Formatter',
+			'parent'         => '/user/screen-formatters/vi/',
+			'formatter'      => 'ViPurchaseHistory',
+			'jsoncode'       => 'vi-purchase-history',
+			'twig_include'   => 'vendors/vi/purchase-history/purchase-history.twig'
+		),
 	);
 
 	public static function getModuleInfo() {
