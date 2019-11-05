@@ -139,7 +139,7 @@
 
 			$q = CustindexQuery::create()->filterByCustid($custID);
 
-			if ($shipID) {
+			if ($shiptoID) {
 				$q->filterByShiptoid($shiptoID);
 			}
 			$editcontact = $q->findOneByContact($contactID);
@@ -159,6 +159,20 @@
 			if ($newcontactID != $contactID) {
 				$editcontact->setContact($newcontactID);
 				$editcontact->save();
+
+				// UPDATE USER ACTIONS TO FOLLOW NEW CONTACT NAME.
+				$query = UseractionsQuery::create();
+				$query->filterByCustomerlink($custID);
+
+				if ($shiptoID) {
+					$query->filterByShiptolink($shiptoID);
+				}
+				$query->filterByContactlink($contactID);
+
+				if ($query->count()) {
+					$query->update(array('Contactlink' => $editcontact->contact));
+				}
+
 				$data = array("DBNAME=$dplusdb", 'EDITCONTACT', "CUSTID=$custID", "SHIPID=$shiptoID", "CONTACT=$contactID", "OLDCONTACT=$contactID", "NEWCONTACT=$newcontactID");
 			} else {
 				$editcontact->save();
