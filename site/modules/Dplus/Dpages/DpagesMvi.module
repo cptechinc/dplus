@@ -118,6 +118,16 @@ class DpagesMvi extends Dpages implements Module {
 			'pw_template'    => 'vi-open-invoices',
 			'jsoncode'       => 'vi-openinvoices'
 		),
+		'vi-purchase-history' => array(
+			'template'       => 'vi-function',
+			'name'           => 'purchase-history',
+			'title'          => 'Purchase History',
+			'summary'        => 'View Vendor Purchase History',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-purchase-history',
+			'jsoncode'       => 'vi-purchase-history'
+		),
 	);
 
 	public function init_vipage() {

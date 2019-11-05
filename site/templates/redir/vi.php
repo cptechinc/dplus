@@ -16,7 +16,7 @@
 	*
 	* switch ($action) {
 	* 	case 'vi-purchase-orders':
-	* 		Request VI Purchase Orders JSON file
+	* 		Request   VI Purchase Orders JSON file
 	* 		Response: Creates VI Purchase Orders JSON file
 	*		DBNAME=$dplusdb
 	*		VIPURCHORDR => n2zz767p
@@ -24,12 +24,21 @@
 	*		SHIPID=$shipfromID **NOTE: OPTIONAL
 	*		break;
 	*	case 'vi-open-invoices':
-	* 		Request VI OPEN INVOICES JSON file
+	* 		Request:   VI OPEN INVOICES JSON file
 	* 		Response: Creates VI OPEN INVOICES JSON file
 	*		DBNAME=$dplusdb
 	*		VIOPENINV =>n2zz765p
 	*		VENDID=$vendorID
 	*		break;
+	*	*case 'vi-purchase-history'
+	*		Request:   VI Purchase History JSON file
+	*		Response: Creates VI Purchase History JSON file
+	* 		DBNAME=$dplusdb
+	*		VIOPENINV n2zz765p
+	*		VENDID=$vendorID
+	*		SHIPID=$shipfromID
+	*		DATE=$data
+	* 		break;
 	* }
 	**/
 
@@ -62,6 +71,31 @@
 			} else {
 				$url = new Purl\Url($pages->get('pw_template=vi-purchase-orders')->url);
 				$url->query->set('vendorID', $vendorID);
+				$session->loc = $url->getUrl();
+			}
+			break;
+		case 'vi-purchase-history':
+			$data = array("DBNAME=$dplusdb", 'VIPURCHHIST', "VENDID=$vendorID");
+
+			if ($input->$request->shipfromID) {
+				$shipfromID = $input->$request->text('shipfromID');
+				$data[] = "SHIPID=$shipfromID";
+			}
+			$date = date('Ymd', strtotime($input->$requestmethod->text('date')));
+			$data[] = "DATE=$date";
+
+			if ($input->$requestmethod->page) {
+				$url = new Purl\Url($input->$requestmethod->text('page'));
+				$url->query->set('date', $date);
+				$session->loc = $url->getUrl();
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=vi-purchase-history')->url);
+				$url->query->set('vendorID', $vendorID);
+
+				if ($input->$request->shipfromID) {
+					$url->query->set('shipfromID', $shipfromID);
+				}
+				$url->query->set('date', $date);
 				$session->loc = $url->getUrl();
 			}
 			break;
