@@ -39,6 +39,13 @@
 	*		SHIPID=$shipfromID
 	*		DATE=$data
 	* 		break;
+	*	case 'vi-unreleased'
+	*		- Loads the Vendor Unreleased Purchase Orders
+	* 		DBNAME=$config->dplusdbname
+	*		VIUNRELEASED n2zz772p
+	*		VENDID=$vendorID
+	*		SHIPID=
+	* 		break;
 	* }
 	**/
 
@@ -96,6 +103,100 @@
 					$url->query->set('shipfromID', $shipfromID);
 				}
 				$url->query->set('date', $date);
+				$session->loc = $url->getUrl();
+			}
+			break;
+		case 'vi-unreleased-purchase-orders':
+			$data = array("DBNAME=$dplusdb", 'VIUNRELEASED', "VENDID=$vendorID");
+
+			if ($input->$request->shipfromID) {
+				$shipfromID = $input->$request->text('shipfromID');
+				$data[] = "SHIPID=$shipfromID";
+			}
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=vi-unreleased-purchase-orders')->url);
+				$url->query->set('vendorID', $vendorID);
+
+				if ($input->$request->shipfromID) {
+					$url->query->set('shipfromID', $shipfromID);
+				}
+				$session->loc = $url->getUrl();
+			}
+			break;
+		case 'vi-uninvoiced':
+			$data = array("DBNAME=$dplusdb", 'VIUNINVOICED', "VENDID=$vendorID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=vi-purchase-orders')->url);
+				$url->query->set('vendorID', $vendorID);
+				$session->loc = $url->getUrl();
+			}
+			break;
+		case 'vi-24monthsummary':
+			$data = array("DBNAME=$dplusdb", 'VIMONTHSUM', "VENDID=$vendorID");
+
+			if ($input->$request->shipfromID) {
+				$shipfromID = $input->$request->text('shipfromID');
+				$data[] = "SHIPID=$shipfromID";
+			}
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=vi-24monthsummary')->url);
+				$url->query->set('vendorID', $vendorID);
+
+				if ($input->$request->shipfromID) {
+					$url->query->set('shipfromID', $shipfromID);
+				}
+				$session->loc = $url->getUrl();
+			}
+			break;
+		case 'vi-costing':
+			$itemID = $input->get->text('itemID');
+			$data = array("DBNAME=$dplusdb", 'VICOST', "VENDID=$vendorID", "ITEMID=$itemID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=vi-costing')->url);
+				$url->query->set('vendorID', $vendorID);
+				$session->loc = $url->getUrl();
+			}
+			break;
+		case 'vi-payments':
+			$data = array("DBNAME=$dplusdb", 'VIPAYMENT', "VENDID=$vendorID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=vi-payments')->url);
+				$url->query->set('vendorID', $vendorID);
+				$session->loc = $url->getUrl();
+			}
+			break;
+		case 'vi-notes':
+			$data = array("DBNAME=$dplusdb", 'VINOTES', "VENDID=$vendorID");
+
+			if ($input->$request->shipfromID) {
+				$shipfromID = $input->$request->text('shipfromID');
+				$data[] = "SHIPID=$shipfromID";
+			}
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=vi-notes')->url);
+				$url->query->set('vendorID', $vendorID);
+
+				if ($input->$request->shipfromID) {
+					$url->query->set('shipfromID', $shipfromID);
+				}
 				$session->loc = $url->getUrl();
 			}
 			break;

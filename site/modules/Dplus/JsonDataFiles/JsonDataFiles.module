@@ -57,10 +57,16 @@
 			),
 			'vi' => array(
 				'purchase' => array(
-					'orders'  => 'vipurchordr',
-					'history' => 'vipurchhist',
+					'orders'    => 'vipurchordr',
+					'history'   => 'vipurchhist',
 				),
-				'openinvoices'   => 'viopeninv'
+				'openinvoices'  => 'viopeninv',
+				'unreleased'    => 'viunreleased',
+				'uninvoiced'    => 'viuninvoiced',
+				'24monthsummary'=> 'vi24month',
+				'costing'       => 'vicosting',
+				'payments'      => 'vipayments',
+				'notes'         => 'vinotes'
 			)
 		);
 

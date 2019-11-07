@@ -60,6 +60,36 @@ class DpagesMvi extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
+		'vi-unreleased' => array(
+			'name'   => 'vi-unreleased',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'vi-uninvoiced' => array(
+			'name'   => 'vi-uninvoiced',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'vi-24monthsummary' => array(
+			'name'   => 'vi-24monthsummary',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'vi-costing' => array(
+			'name'   => 'vi-costing',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'vi-payments' => array(
+			'name'   => 'vi-payments',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'vi-notes' => array(
+			'name'   => 'vi-notes',
+			'fields' => array(),
+			'paginated' => true
+		),
 		'vi-documents' => array(
 			'name'   => 'vi-documents',
 			'fields' => array(),
@@ -132,6 +162,66 @@ class DpagesMvi extends Dpages implements Module {
 			'dplus_function' => '',
 			'pw_template'    => 'vi-purchase-history',
 			'jsoncode'       => 'vi-purchase-history'
+		),
+		'vi-unreleased-purchase-orders' => array(
+			'template'       => 'vi-function',
+			'name'           => 'unreleased-purchase-orders',
+			'title'          => 'unreleased-purchase-orders',
+			'summary'        => 'View Vendor Unreleased',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-unreleased-purchase-orders',
+			'jsoncode'       => 'vi-unreleased-purchase-orders'
+		),
+		'vi-uninvoiced' => array(
+			'template'       => 'vi-function',
+			'name'           => 'uninvoiced',
+			'title'          => 'uninvoiced',
+			'summary'        => 'View Vendor Uninvoiced',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-uninvoiced',
+			'jsoncode'       => 'vi-uninvoiced'
+		),
+		'vi-24monthsummary' => array(
+			'template'       => 'vi-function',
+			'name'           => '24monthsummary',
+			'title'          => '24monthsummary',
+			'summary'        => 'View Vendor 24-month Sumaary',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-24monthsummary',
+			'jsoncode'       => 'vi-24monthsummary'
+		),
+		'vi-costing' => array(
+			'template'       => 'vi-function',
+			'name'           => 'costing',
+			'title'          => 'costing',
+			'summary'        => 'View Vendor Costing',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-costing',
+			'jsoncode'       => 'vi-costing'
+		),
+		'vi-payments' => array(
+			'template'       => 'vi-function',
+			'name'           => 'payments',
+			'title'          => 'payments',
+			'summary'        => 'View Vendor Payments',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-payments',
+			'jsoncode'       => 'vi-payments'
+		),
+		'vi-notes' => array(
+			'template'       => 'vi-function',
+			'name'           => 'notes',
+			'title'          => 'notes',
+			'summary'        => 'View Vendor Notes',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-notes',
+			'jsoncode'       => 'vi-notes'
 		),
 		'vi-documents' => array(
 			'template'       => 'vi-function',
@@ -221,6 +311,71 @@ class DpagesMvi extends Dpages implements Module {
 			$url = new Url($p->get_redirURL());
 			$url->query->set('action','vi-open-invoices');
 			$url->query->set('vendorID', $vendorID);
+			$url->query->set('page', $p->fullURL->getUrl());
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_viunreleasedpurchaseordersURL', function($event) {
+			$p = $event->object;
+			$vendorID   = $event->arguments(0);
+			$shipfromID = $event->arguments(1);
+			$url = new Url($p->get_redirURL());
+			$url->query->set('action','vi-unreleased');
+			$url->query->set('vendorID', $vendorID);
+			$url->query->set('shipfromID', $shipfromID);
+			$url->query->set('page', $p->fullURL->getUrl());
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_viuninvoicedURL', function($event) {
+			$p = $event->object;
+			$vendorID   = $event->arguments(0);
+			$url = new Url($p->get_redirURL());
+			$url->query->set('action','vi-uninvoiced');
+			$url->query->set('vendorID', $vendorID);
+			$url->query->set('page', $p->fullURL->getUrl());
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_vi24monthsummaryURL', function($event) {
+			$p = $event->object;
+			$vendorID   = $event->arguments(0);
+			$url = new Url($p->get_redirURL());
+			$url->query->set('action','vi-24-month');
+			$url->query->set('vendorID', $vendorID);
+			$url->query->set('date', $date);
+			$url->query->set('page', $p->fullURL->getUrl());
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_vicostingURL', function($event) {
+			$p = $event->object;
+			$vendorID   = $event->arguments(0);
+			$url = new Url($p->get_redirURL());
+			$url->query->set('action','vi-costing');
+			$url->query->set('vendorID', $vendorID);
+			$url->query->set('page', $p->fullURL->getUrl());
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_vipaymentsURL', function($event) {
+			$p = $event->object;
+			$vendorID   = $event->arguments(0);
+			$url = new Url($p->get_redirURL());
+			$url->query->set('action','vi-payments');
+			$url->query->set('vendorID', $vendorID);
+			$url->query->set('page', $p->fullURL->getUrl());
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_vinotesURL', function($event) {
+			$p = $event->object;
+			$vendorID   = $event->arguments(0);
+			$shipfromID = $event->arguments(1);
+			$url = new Url($p->get_redirURL());
+			$url->query->set('action','vi-notes');
+			$url->query->set('vendorID', $vendorID);
+			$url->query->set('shipfromID', $shipfromID);
 			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
 		});
