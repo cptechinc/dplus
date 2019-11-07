@@ -166,7 +166,7 @@ class DpagesMvi extends Dpages implements Module {
 		'vi-unreleased-purchase-orders' => array(
 			'template'       => 'vi-function',
 			'name'           => 'unreleased-purchase-orders',
-			'title'          => 'unreleased-purchase-orders',
+			'title'          => 'Unreleased Purchase Orders',
 			'summary'        => 'View Vendor Unreleased',
 			'parent'         => '/mvi/vi/',
 			'dplus_function' => '',
@@ -176,7 +176,7 @@ class DpagesMvi extends Dpages implements Module {
 		'vi-uninvoiced' => array(
 			'template'       => 'vi-function',
 			'name'           => 'uninvoiced',
-			'title'          => 'uninvoiced',
+			'title'          => 'Uninvoiced',
 			'summary'        => 'View Vendor Uninvoiced',
 			'parent'         => '/mvi/vi/',
 			'dplus_function' => '',
@@ -186,7 +186,7 @@ class DpagesMvi extends Dpages implements Module {
 		'vi-24monthsummary' => array(
 			'template'       => 'vi-function',
 			'name'           => '24monthsummary',
-			'title'          => '24monthsummary',
+			'title'          => '24-month Summary',
 			'summary'        => 'View Vendor 24-month Sumaary',
 			'parent'         => '/mvi/vi/',
 			'dplus_function' => '',
@@ -196,7 +196,7 @@ class DpagesMvi extends Dpages implements Module {
 		'vi-costing' => array(
 			'template'       => 'vi-function',
 			'name'           => 'costing',
-			'title'          => 'costing',
+			'title'          => 'Costing',
 			'summary'        => 'View Vendor Costing',
 			'parent'         => '/mvi/vi/',
 			'dplus_function' => '',
@@ -206,7 +206,7 @@ class DpagesMvi extends Dpages implements Module {
 		'vi-payments' => array(
 			'template'       => 'vi-function',
 			'name'           => 'payments',
-			'title'          => 'payments',
+			'title'          => 'Payments',
 			'summary'        => 'View Vendor Payments',
 			'parent'         => '/mvi/vi/',
 			'dplus_function' => '',
@@ -216,7 +216,7 @@ class DpagesMvi extends Dpages implements Module {
 		'vi-notes' => array(
 			'template'       => 'vi-function',
 			'name'           => 'notes',
-			'title'          => 'notes',
+			'title'          => 'Notes',
 			'summary'        => 'View Vendor Notes',
 			'parent'         => '/mvi/vi/',
 			'dplus_function' => '',

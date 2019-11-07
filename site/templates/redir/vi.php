@@ -140,20 +140,11 @@
 		case 'vi-24monthsummary':
 			$data = array("DBNAME=$dplusdb", 'VIMONTHSUM', "VENDID=$vendorID");
 
-			if ($input->$request->shipfromID) {
-				$shipfromID = $input->$request->text('shipfromID');
-				$data[] = "SHIPID=$shipfromID";
-			}
-
 			if ($input->$requestmethod->page) {
 				$session->loc = $input->$requestmethod->text('page');
 			} else {
 				$url = new Purl\Url($pages->get('pw_template=vi-24monthsummary')->url);
 				$url->query->set('vendorID', $vendorID);
-
-				if ($input->$request->shipfromID) {
-					$url->query->set('shipfromID', $shipfromID);
-				}
 				$session->loc = $url->getUrl();
 			}
 			break;
