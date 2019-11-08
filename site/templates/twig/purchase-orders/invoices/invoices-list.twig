@@ -2,6 +2,7 @@
 	<div class="row">
 		<div class="col">Invoice #</div>
 		<div class="col">PO #</div>
+		<div class="col">Vendor</div>
 		<div class="col text-right">Order Total</div>
 		<div class="col">Invoice Date</div>
 		<div class="col">Order Date</div>
@@ -13,6 +14,7 @@
 			<div class="row">
 				<div class="col">{{ invoice.invoicenumber }}</div>
 				<div class="col">{{ invoice.getpurchaseOrder() ? invoice.getpurchaseOrder().ponbr : 'N/A' }}</div>
+				<div class="col">{{ invoice.vendor.name }}</div>
 				<div class="col text-right">$ {{ invoice.total|currency }}</div>
 				<div class="col text-right">{{ invoice.date_invoiced|convertdate }}</div>
 				<div class="col text-right">{{ invoice.getpurchaseOrder() ? invoice.getpurchaseOrder().date_ordered|convertdate : 'N/A' }}</div>

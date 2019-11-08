@@ -1,12 +1,15 @@
 <?php
-
 	if ($input->get->ponbr) {
 		$ponbr = PurchaseOrder::get_paddedponumber($input->get->text('ponbr'));
+		$query = PurchaseOrderQuery::create()->filterByPonbr($ponbr);
 
-		if (ApInvoiceQuery::create()->filterByInvoicenumber($ponbr)->count()) {
+		if ($query->count()) {
+			$page->title = "Purchase Order #$ponbr";
+			$purchaseorder = $query->findOne();
+			$page->listpage = $pages->get('pw_template=purchase-orders');
 
-		} elseif (PurchaseOrderQuery::create()->filterByPonbr($ponbr)->count()) {
-
+			$page->body .= $config->twig->render('purchase-orders/purchase-order/links-header.twig', ['page' => $page]);
+			$page->body .= $config->twig->render('purchase-orders/purchase-order/purchase-order-header.twig', ['page' => $page, 'purchaseorder' => $purchaseorder]);
 		} else {
 			$page->headline = $page->title = "Purchase Order #$ponbr could not be found";
 			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Check if the Purchase Order Number is correct"]);
