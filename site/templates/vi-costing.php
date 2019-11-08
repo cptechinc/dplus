@@ -23,7 +23,8 @@
 		} else {
 			if ($session->costingtry > 3) {
 				$page->headline = $page->title = "Costing File could not be loaded";
-				$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
+				$page->body = $config->twig->render('vendors/vi/vi-links.twig', ['page' => $page, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
+				$page->body .= $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
 			} else {
 				$session->costingtry++;
 				$session->redirect($page->get_vicostingURL($vendorID));
