@@ -1,15 +1,5 @@
-<div class="list-group">
-	<div class="list-group-item bg-dark text-white">
-		<div class="row">
-			<div class="col">Line #</div>
-			<div class="col-4">Item ID / Description</div>
-			<div class="col">Vendor Item ID</div>
-			<div class="col">Qty Ordered</div>
-			<div class="col">Qty Received</div>
-			<div class="col">Qty Remaining</div>
-		</div>
-	</div>
-	<div class="list-group-item">
+{% for item in items %}
+	<a href="{{ page.linenbrURL(item.linenbr)}}" class="list-group-item list-group-item-action">
 		<div class="row">
 			<div class="col">{{ item.linenbr }}</div>
 			<div class="col-4">
@@ -21,5 +11,5 @@
 			<div class="col text-right">{{ item.qty_received|number_format() }}</div>
 			<div class="col text-right">{{ item.qty_remaining()|number_format() }}</div>
 		</div>
-	</div>
-</div>
+	</a>
+{% endfor %}

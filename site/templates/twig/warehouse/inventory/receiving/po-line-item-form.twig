@@ -1,5 +1,6 @@
 <form action="{{ page.formurl }}" method="post" class="allow-enterkey-submit">
 	<input type="hidden" name="action" value="receiving-search">
+	<input type="hidden" name="ponbr" value="{{ ponbr }}">
 	<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
 	<label>Scan Barcode, UPC, Item ID, or  Lot / Serial #</label>
 	<div class="form-group">

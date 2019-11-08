@@ -1,4 +1,5 @@
-<form action="{{ page.url }}" method="get">
+<form action="{{ page.formurl }}" method="post">
+	<input type="hidden" name="action" value="init-receive">
 	<div class="form-group">
 		<label for="ponbr">PO Number</label>
 		<input type="text" class="form-control" name="ponbr" id="ponbr">
