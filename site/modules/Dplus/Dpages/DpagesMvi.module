@@ -163,15 +163,15 @@ class DpagesMvi extends Dpages implements Module {
 			'pw_template'    => 'vi-purchase-history',
 			'jsoncode'       => 'vi-purchase-history'
 		),
-		'vi-unreleased-purchase-orders' => array(
+		'vi-unreleased' => array(
 			'template'       => 'vi-function',
-			'name'           => 'unreleased-purchase-orders',
+			'name'           => 'unreleased',
 			'title'          => 'Unreleased Purchase Orders',
 			'summary'        => 'View Vendor Unreleased',
 			'parent'         => '/mvi/vi/',
 			'dplus_function' => '',
-			'pw_template'    => 'vi-unreleased-purchase-orders',
-			'jsoncode'       => 'vi-unreleased-purchase-orders'
+			'pw_template'    => 'vi-unreleased',
+			'jsoncode'       => 'vi-unreleased'
 		),
 		'vi-uninvoiced' => array(
 			'template'       => 'vi-function',
@@ -187,7 +187,7 @@ class DpagesMvi extends Dpages implements Module {
 			'template'       => 'vi-function',
 			'name'           => '24monthsummary',
 			'title'          => '24-month Summary',
-			'summary'        => 'View Vendor 24-month Sumaary',
+			'summary'        => 'View Vendor 24-month Summary',
 			'parent'         => '/mvi/vi/',
 			'dplus_function' => '',
 			'pw_template'    => 'vi-24monthsummary',
@@ -315,7 +315,7 @@ class DpagesMvi extends Dpages implements Module {
 			$event->return = $url->getUrl();
 		});
 
-		$this->addHook('Page::get_viunreleasedpurchaseordersURL', function($event) {
+		$this->addHook('Page::get_viunreleasedURL', function($event) {
 			$p = $event->object;
 			$vendorID   = $event->arguments(0);
 			$shipfromID = $event->arguments(1);
@@ -341,7 +341,7 @@ class DpagesMvi extends Dpages implements Module {
 			$p = $event->object;
 			$vendorID   = $event->arguments(0);
 			$url = new Url($p->get_redirURL());
-			$url->query->set('action','vi-24-month');
+			$url->query->set('action','vi-24monthsummary');
 			$url->query->set('vendorID', $vendorID);
 			$url->query->set('date', $date);
 			$url->query->set('page', $p->fullURL->getUrl());

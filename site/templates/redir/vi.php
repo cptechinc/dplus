@@ -106,7 +106,7 @@
 				$session->loc = $url->getUrl();
 			}
 			break;
-		case 'vi-unreleased-purchase-orders':
+		case 'vi-unreleased':
 			$data = array("DBNAME=$dplusdb", 'VIUNRELEASED', "VENDID=$vendorID");
 
 			if ($input->$request->shipfromID) {
@@ -117,7 +117,7 @@
 			if ($input->$requestmethod->page) {
 				$session->loc = $input->$requestmethod->text('page');
 			} else {
-				$url = new Purl\Url($pages->get('pw_template=vi-unreleased-purchase-orders')->url);
+				$url = new Purl\Url($pages->get('pw_template=vi-unreleased')->url);
 				$url->query->set('vendorID', $vendorID);
 
 				if ($input->$request->shipfromID) {
