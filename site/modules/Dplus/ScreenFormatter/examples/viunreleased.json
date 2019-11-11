@@ -1,0 +1,233 @@
+{
+    "error": false,
+    "errormsg": "",
+    "sessionid": "93lvpaqems065vmj2e21fmnuu2",
+    "vendid": "RDB100",
+    "shipid": "",
+    "data": {
+        "purchaseorders": {
+            "1": {
+                "Purchase Order Number": "6965",
+                "Order Date": "12/13/12",
+                "Reference": "",
+                "Ship-From ID": "",
+                "Ship-To Name": "ELK WATER JOB",
+                "Ship-To City/State/Zip": "ELK WATER        MI 50909",
+                "Ship Via Code": "UPSG",
+                "Ship Via Description": "UPS Ground",
+                "Terms Code": "60",
+                "Terms Description": "Net 60 Days",
+                "FOB": "DESTINATION",
+                "Expected Date": "",
+                "PONbr": "00006965",
+                "details": {
+                    "1": {
+                        "Line Number": "1",
+                        "Item ID": "RDB100",
+                        "Item Description 1": "LCD MONITOR 19\"",
+                        "Item Description 2": "WIDESCREEN WITH SPEAKERS ATTACHED",
+                        "Vendor Item ID": "J40500",
+                        "Warehouse ID": "BU",
+                        "Purchase Unit of Measure": "EACH",
+                        "Special Order": "D",
+                        "Release (Yes/No)": "N",
+                        "Line Status": "Opn",
+                        "Ship Date": "12/13/12",
+                        "Expected Date": "12/13/12",
+                        "Acknowledgment Date": "",
+                        "Cancel Date": "",
+                        "Quantity Ordered": "10.00000",
+                        "Quantity Received": "0.00000",
+                        "Quantity On Order": "10.00000",
+                        "Unit Cost": "118.95000",
+                        "Total Amount": "1189.50000",
+                        "detailnotes": {
+                            "1": {
+                                "Detail Notes": "Very good looking detail line note"
+                            },
+                            "2": {
+                                "Detail Notes": "for PO 6965, line 1."
+                            }
+                        }
+                    }
+                },
+                "ordernotes": {
+                    "1": {
+                        "Order Notes": "This is a note for PO 6965."
+                    },
+                    "2": {
+                        "Order Notes": "Line two of the note."
+                    }
+                },
+                "pototals": {
+                    "Line Number": "PO Totals",
+                    "Item ID": "",
+                    "Item Description 1": "",
+                    "Item Description 2": "",
+                    "Vendor Item ID": "",
+                    "Warehouse ID": "",
+                    "Purchase Unit of Measure": "",
+                    "Special Order": "",
+                    "Release (Yes/No)": "",
+                    "Line Status": "",
+                    "Ship Date": "",
+                    "Expected Date": "",
+                    "Acknowledgment Date": "",
+                    "Cancel Date": "",
+                    "Quantity Ordered": "",
+                    "Quantity Received": "",
+                    "Quantity On Order": "",
+                    "Unit Cost": "",
+                    "Total Amount": "1189.50000"
+                }
+            },
+            "2": {
+                "Purchase Order Number": "6969",
+                "Order Date": "02/01/13",
+                "Reference": "",
+                "Ship-From ID": "",
+                "Ship-To Name": "BECKER WORLD GOLF",
+                "Ship-To City/State/Zip": "PRIOR LAKE       MN 55372",
+                "Ship Via Code": "UPSG",
+                "Ship Via Description": "UPS Ground",
+                "Terms Code": "60",
+                "Terms Description": "Net 60 Days",
+                "FOB": "DESTINATION",
+                "Expected Date": "",
+                "PONbr": "00006969",
+                "details": {
+                    "1": {
+                        "Line Number": "1",
+                        "Item ID": "N",
+                        "Item Description 1": "300W AMP",
+                        "Item Description 2": "",
+                        "Vendor Item ID": "300WAMPDT",
+                        "Warehouse ID": "BU",
+                        "Purchase Unit of Measure": "EACH",
+                        "Special Order": "D",
+                        "Release (Yes/No)": "N",
+                        "Line Status": "Opn",
+                        "Ship Date": "02/01/13",
+                        "Expected Date": "02/01/13",
+                        "Acknowledgment Date": "",
+                        "Cancel Date": "",
+                        "Quantity Ordered": "1.00000",
+                        "Quantity Received": "0.00000",
+                        "Quantity On Order": "1.00000",
+                        "Unit Cost": "199.00000",
+                        "Total Amount": "199.00000",
+                        "detailnotes": {
+                        }
+                    }
+                },
+                "ordernotes": {
+                },
+                "pototals": {
+                    "Line Number": "PO Totals",
+                    "Item ID": "",
+                    "Item Description 1": "",
+                    "Item Description 2": "",
+                    "Vendor Item ID": "",
+                    "Warehouse ID": "",
+                    "Purchase Unit of Measure": "",
+                    "Special Order": "",
+                    "Release (Yes/No)": "",
+                    "Line Status": "",
+                    "Ship Date": "",
+                    "Expected Date": "",
+                    "Acknowledgment Date": "",
+                    "Cancel Date": "",
+                    "Quantity Ordered": "",
+                    "Quantity Received": "",
+                    "Quantity On Order": "",
+                    "Unit Cost": "",
+                    "Total Amount": "199.00000"
+                }
+            },
+            "3": {
+                "Purchase Order Number": "6970",
+                "Order Date": "02/26/13",
+                "Reference": "",
+                "Ship-From ID": "",
+                "Ship-To Name": "MIAMI",
+                "Ship-To City/State/Zip": "EAGAN            MN 55122",
+                "Ship Via Code": "UPSG",
+                "Ship Via Description": "UPS Ground",
+                "Terms Code": "60",
+                "Terms Description": "Net 60 Days",
+                "FOB": "DESTINATION",
+                "Expected Date": "",
+                "PONbr": "00006970",
+                "details": {
+                    "1": {
+                        "Line Number": "1",
+                        "Item ID": "HAMMER",
+                        "Item Description 1": "16OZ HAMMER",
+                        "Item Description 2": "",
+                        "Vendor Item ID": "16OZHAMMER",
+                        "Warehouse ID": "BU",
+                        "Purchase Unit of Measure": "EACH",
+                        "Special Order": "S",
+                        "Release (Yes/No)": "N",
+                        "Line Status": "Opn",
+                        "Ship Date": "02/26/13",
+                        "Expected Date": "02/26/13",
+                        "Acknowledgment Date": "",
+                        "Cancel Date": "",
+                        "Quantity Ordered": "6.00000",
+                        "Quantity Received": "0.00000",
+                        "Quantity On Order": "6.00000",
+                        "Unit Cost": "4.50000",
+                        "Total Amount": "27.00000",
+                        "detailnotes": {
+                        }
+                    }
+                },
+                "ordernotes": {
+                },
+                "pototals": {
+                    "Line Number": "PO Totals",
+                    "Item ID": "",
+                    "Item Description 1": "",
+                    "Item Description 2": "",
+                    "Vendor Item ID": "",
+                    "Warehouse ID": "",
+                    "Purchase Unit of Measure": "",
+                    "Special Order": "",
+                    "Release (Yes/No)": "",
+                    "Line Status": "",
+                    "Ship Date": "",
+                    "Expected Date": "",
+                    "Acknowledgment Date": "",
+                    "Cancel Date": "",
+                    "Quantity Ordered": "",
+                    "Quantity Received": "",
+                    "Quantity On Order": "",
+                    "Unit Cost": "",
+                    "Total Amount": "27.00000"
+                }
+            }
+        },
+        "vendortotals": {
+            "Line Number": "",
+            "Item ID": "",
+            "Item Description 1": "Vendor Totals",
+            "Item Description 2": "",
+            "Vendor Item ID": "",
+            "Warehouse ID": "",
+            "Purchase Unit of Measure": "",
+            "Special Order": "",
+            "Release (Yes/No)": "",
+            "Line Status": "",
+            "Ship Date": "",
+            "Expected Date": "",
+            "Acknowledgment Date": "",
+            "Cancel Date": "",
+            "Quantity Ordered": "",
+            "Quantity Received": "",
+            "Quantity On Order": "",
+            "Unit Cost": "",
+            "Total Amount": "1415.50000"
+        }
+    }
+}
