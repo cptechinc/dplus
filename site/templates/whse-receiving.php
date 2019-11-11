@@ -41,6 +41,8 @@
 			} else {
 				$page->body .= $config->twig->render('warehouse/inventory/receiving/po-header.twig', ['page' => $page, 'purchaseorder' => $purchaseorder]);
 				$page->body .= $config->twig->render('warehouse/inventory/receiving/po-items.twig', ['page' => $page, 'items' => $purchaseorder->get_receivingitems()]);
+				
+				$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('items' => $warehouse_receiving->get_purchaseorder_recevingdetails_js())]);
 
 				if ($input->get->scan) {
 					$scan = $input->get->text('scan');
@@ -54,7 +56,7 @@
 						$page->body .= $html->div('class=mb-3');
 
 						if ($physicalitem->has_error()) {
-							
+
 							if (!$physicalitem->is_on_po()) {
 								$physicalitem->setItemid('');
 								$physicalitem->setLotserial('');
