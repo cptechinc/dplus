@@ -1,0 +1,112 @@
+<div class="row">
+	<div class="col-sm-6">
+		<div class="list-group list-group-flush">
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						VendorID:
+					</div>
+					<div class="col-sm-7">
+						{{ vendor.id }} <br>
+						{{ vendor.name }}
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Phone #:
+					</div>
+					<div class="col-sm-7">
+						<a href="tel:{{ vendor.vendorcontact.phone }}" class="link">
+							{{ vendor.vendorcontact.phone|phone_us }} {{ vendor.vendorcontact.extension ? 'Ext: ' ~ vendor.vendorcontact.extension : ''}}
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Fax #:
+					</div>
+					<div class="col-sm-7">
+						<a href="tel:{{ vendor.vendorcontact.fax }}" class="link">{{ vendor.vendorcontact.fax|phone_us }}</a>
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Home #:
+					</div>
+					<div class="col-sm-7">
+						<a href="tel:{{ vendor.vendorcontact.homephone }}" class="link">{{ vendor.vendorcontact.homephone|phone_us }}</a>
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Cell #:
+					</div>
+					<div class="col-sm-7">
+						<a href="tel:{{ vendor.vendorcontact.cellphone }}" class="link">{{ vendor.vendorcontact.cellphone|phone_us }}</a>
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Email:
+					</div>
+					<div class="col-sm-7">
+						<a href="mailto:{{ vendor.vendorcontact.fax }}" class="link">{{ vendor.vendorcontact.email }}</a>
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Website:
+					</div>
+					<div class="col-sm-7">
+						<a href="{{ vendor.vendorcontact.website|purl }}" class="link">{{ vendor.vendorcontact.website }}</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="list-group list-group-flush">
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Pay-To Name
+					</div>
+					<div class="col-sm-7">
+						{{ vendor.payto_name }}
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Address
+					</div>
+					<div class="col-sm-7">
+						{{ vendor.address }} <br>
+						{% if vendor.address2 %}
+							{{ vendor.address2 }} <br>
+						{% endif %}
+
+						{% if vendor.address3 %}
+							{{ vendor.address3 }} <br>
+						{% endif %}
+						{{ vendor.city ~ ', ' ~ vendor.state ~ ' ' ~ vendor.zip }} <br>
+						{{ vendor.payto_country }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

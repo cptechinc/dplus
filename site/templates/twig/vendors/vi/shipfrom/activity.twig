@@ -1,0 +1,98 @@
+<div class="card">
+	<div class="card-header">
+		<span class="h5">Shipfrom Activity</span>
+	</div>
+	<ul class="list-group list-group-flush">
+		<li class="list-group-item">
+			<div class="row font-weight-bold">
+				<div class="col-sm-6">
+					Activity
+				</div>
+				<div class="col-sm-3 text-right">
+					Number
+				</div>
+				<div class="col-sm-3 text-right">
+					Amount
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-6">
+					Purchase Orders
+				</div>
+				<div class="col-sm-3 text-right">
+					{{ shipfrom.countPurchaseOrders() + 0 }}
+				</div>
+				<div class="col-sm-3 text-right">
+					$ {{ shipfrom.get_purchaseorders_amt()|currency }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item bg-light text-center">
+			<span class="h5 font-weight-bold">History</span>
+		</li>
+		<li class="list-group-item">
+			<div class="row font-weight-bold">
+				<div class="col-sm-6">
+					History
+				</div>
+				<div class="col-sm-3 text-right">
+					Number
+				</div>
+				<div class="col-sm-3 text-right">
+					Amount
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-6">
+					<abbr title="{{ "now"|date("F Y") }}">MTD</abbr> Receipts
+				</div>
+				<div class="col-sm-3 text-right">
+					{{ shipfrom.mtd_purchases_count + 0 }}
+				</div>
+				<div class="col-sm-3 text-right">
+					$ {{ shipfrom.mtd_purchases_amt|currency  }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-6">
+					<abbr title="{{ "now"|date("Y") }}">YTD</abbr>  Receipts
+				</div>
+				<div class="col-sm-3 text-right">
+					{{ shipfrom.ytd_purchases_count + 0 }}
+				</div>
+				<div class="col-sm-3 text-right">
+					$ {{ shipfrom.ytd_purchases_amt|currency }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-6">
+					Last 12 Months Receipts
+				</div>
+				<div class="col-sm-3 text-right">
+					{{ shipfrom.count_last_x_months_purchases(12) + 0 }}
+				</div>
+				<div class="col-sm-3 text-right">
+					$ {{ shipfrom.get_last_x_months_purchases_amt(12)|currency }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-6">
+					Date Entered
+				</div>
+				<div class="col-sm-6 text-right">
+					{{ shipfrom.date_opened|convertdate }}
+				</div>
+			</div>
+		</li>
+	</ul>
+</div>

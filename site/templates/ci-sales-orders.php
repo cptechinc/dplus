@@ -1,76 +1,41 @@
 <?php
-	use Propel\Runtime\ActiveQuery\Criteria;
+	include_once('./ci-include.php');
 
-	$query = SalesOrderQuery::create();
+	if ($customerquery->count()) {
+		$page->show_breadcrumbs = false;
+		$page->body .= $config->twig->render('customers/ci/bread-crumbs.twig', ['page' => $page, 'customer' => $customer]);
+		$page->title = "$custID Sales Orders";
 
-	if ($user->is_salesrep()) {
-		$query->filterbySalesPerson($user->roleid);
-	}
-	$custID = $input->get->text('custID');
-	$query->filterByCustid("$custID");
-	$query->orderByDate_ordered('DESC');
+		$module_json = $modules->get('JsonDataFiles');
+		$json = $module_json->get_file(session_id(), $page->jsoncode);
 
-	if ($input->get->filter) {
-		if ($input->get->text('ordernumber_from') && $input->get->text('ordernumber_through')) {
-			$query->filterByOrdernumber(array($input->get->text('ordernumber_from'), $input->get->text('ordernumber_through')));
-		} else if ($input->get->text('ordernumber_from')) {
-			$query->filterByOrdernumber($input->get->text('ordernumber_from'));
-		} else if ($input->get->text('ordernumber_through')) {
-			$query->filterByOrdernumber($input->get->text('ordernumber_through'));
-		}
-
-		if ($input->get->text('custpo')) {
-			$custpo = $input->get->text('custpo');
-			$query->filterByCustpo("%$custpo%", Criteria::LIKE);
-		}
-
-		if ($input->get->text('orderdate_from') || $input->get->text('orderdate_through')) {
-			$orderdate_from = date("Ymd", strtotime($input->get->text('orderdate_from')));
-
-			if (empty($input->get->text('orderdate_through'))) {
-				$orderdate_through = date('Ymd');
-			} else {
-				$orderdate_through = date("Ymd", strtotime($input->get->text('orderdate_through')));
+		if ($module_json->file_exists(session_id(), $page->jsoncode)) {
+			if ($json['custid'] != $custID) {
+				$module_json->remove_file(session_id(), $page->jsoncode);
+				$session->redirect($page->get_customersalesordersURL($custID));
 			}
-			if ($orderdate_from && $orderdate_through) {
-				$query->filterByOrderdate(array($orderdate_from, $orderdate_through));
-			} else if ($orderdate_from) {
-				$query->filterByOrderdate($orderdate_from);
-			} else if ($orderdate_through) {
-				$query->filterByOrderdate($orderdate_through);
-			}
-		}
+			$session->salesorderstry = 0;
+			$module_formatter = $modules->get('CiSalesOrders');
+			$module_formatter->init_formatter();
+			$document_management = $modules->get('DocumentManagement');
 
-		if ($input->get->text('order_total_from') && $input->get->text('order_total_through')) {
-			$query->filterByOrdertotal(array($input->get->text('order_total_from'), $input->get->text('order_total_through')));
-		} else if ($input->get->text('order_total_from')) {
-			$query->filterByTotal_total($input->get->text('order_total_from'), Criteria::GREATER_EQUAL);
-		} else if ($input->get->text('order_total_through')) {
-			$query->filterByTotal_total($input->get->text('order_total_through'), Criteria::LESS_EQUAL);
-		}
-
-		if ($input->get->status) {
-			$statuses = array();
-
-			foreach ($input->get->status as $status) {
-				$sanitized = $sanitizer->text($status);
-
-				if (array_key_exists($sanitized, SalesOrder::$status_descriptions)) {
-					$statuses[] = $sanitized;
-				}
-			}
-			$query->filterByOrderstatus($statuses);
+			$refreshurl = $page->get_customersalesordersURL($custID);
+			$page->body .= $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
+			$page->body .= $config->twig->render('customers/ci/sales-orders/sales-orders.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
 		} else {
-			$input->get->status = array();
+			if ($session->salesorderstry > 3) {
+				$page->headline = $page->title = "Sales Orders File could not be loaded";
+				$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
+			} else {
+				$session->salesorderstry++;
+				$session->redirect($page->get_customersalesordersURL($custID));
+			}
 		}
-	} else {
-		$input->get->status = array();
 	}
 
-	$count = $query->count();
-	$orders = $query->paginate($input->pageNum, 10);
-
-	$page->body = $config->twig->render('customers/ci/customer/orders-search-form.twig', ['page' => $page, 'input' => $input, 'custid' => $custID]);
-	$page->body .= $config->twig->render('customers/ci/customer/sales-orders-list.twig', ['orders' => $orders, 'orderpage' => $pages->get('pw_template=sales-order-view')->url]);
-	$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'pagenbr' => $input->pageNum, 'resultscount'=> $orders->getNbResults()]);
-	include __DIR__ . "/basic-page.php";
+	if ($page->print) {
+		$page->show_title = true;
+		include __DIR__ . "/blank-page.php";
+	} else {
+		include __DIR__ . "/basic-page.php";
+	}

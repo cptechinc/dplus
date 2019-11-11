@@ -1,0 +1,207 @@
+{% if json['data'] is empty %}
+	{% include 'util/alert.twig' with {'type': 'danger','iconclass': 'fa fa-warning fa-2x', 'title': 'Attention!', 'message': 'No Sales Orders Found'} %}
+{% endif %}
+
+{% for whse in json['data'] %}
+	<h4>{{ whse['Whse Name'] }}</h4>
+
+	<table class="table table-striped table-bordered table-sm table-excel" id="{{ whse['Whse Name'] }}">
+		<thead></thead>
+		<tbody>
+			{% for order in whse['orders'] %}
+				{% for x in 1..blueprint['header']['rowcount'] %}
+					{% set attr = ((x == 1) ? 'class=first-txn-row' : '') %}
+					<tr {{ attr }}>
+						{% set columncount = 0 %}
+						{% for i in 1..blueprint['cols'] + 1 %}
+							{% set colspan = 0 %}
+							{% if blueprint['header']['rows'][x]['columns'][i] %}
+								{% set column = blueprint['header']['rows'][x]['columns'][i] %}
+								{% set colspan = column['col-length'] %}
+								<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
+									<span class="font-weight-bold">{{ column['label'] }}:</span> {{ module_formatter.format_celldata(order, column) }}
+									{% if column['id'] == 'Order Number' %}
+										{% set ordn = order['Ordn'] %}
+										{% set custID = json['custid'] %}
+										{% if document_management.count_salesorderdocuments(ordn) %}
+											<a href="{{ page.documentsview_salesorder(custID, ordn)}}" class="text-success" title="View Documents for Order # {{ order['Order Number'] }}">
+												<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Order # {{ order['Order Number'] }}</span>
+											</a>
+										{% endif %}
+									{% endif %}
+								</td>
+							{% else %}
+								{% if columncount < blueprint['cols'] %}
+									{% set colspan = 1 %}
+									<td></td>
+								{% endif %}
+							{% endif %}
+							{% set columncount = columncount + colspan %}
+						{% endfor %}
+					</tr>
+				{% endfor %}
+				{% if order['details']|length > 0 %}
+					{% for x in 1..blueprint['detail']['rowcount'] %}
+						<tr>
+							{% set columncount = 0 %}
+							{% for i in 1..blueprint['cols'] + 1 %}
+								{% set colspan = 0 %}
+								{% if blueprint['detail']['rows'][x]['columns'][i] %}
+									{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
+									{% set colspan = column['col-length'] %}
+									<td colspan="{{ colspan }}" class="font-weight-bold {{ module_formatter.get_justifyclass(column['data-justify']) }}">
+										{{ column['label'] }}
+									</td>
+								{% else %}
+									{% if columncount < blueprint['cols'] %}
+										{% set colspan = 1 %}
+										<td></td>
+									{% endif %}
+								{% endif %}
+								{% set columncount = columncount + colspan %}
+							{% endfor %}
+						</tr>
+					{% endfor %}
+				{% endif %}
+
+				{% for detail in order['details'] %}
+					{% for x in 1..blueprint['detail']['rowcount'] %}
+						<tr>
+							{% set columncount = 0 %}
+							{% for i in 1..blueprint['cols'] + 1 %}
+								{% set colspan = 0 %}
+								{% if blueprint['detail']['rows'][x]['columns'][i] %}
+									{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
+									{% set colspan = column['col-length'] %}
+									<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
+										{{ module_formatter.format_celldata(detail, column) }}
+									</td>
+								{% else %}
+									{% if columncount < blueprint['cols'] %}
+										{% set colspan = 1 %}
+										<td></td>
+									{% endif %}
+								{% endif %}
+								{% set columncount = columncount + colspan %}
+							{% endfor %}
+						</tr>
+					{% endfor %}
+					{% for x in 1..blueprint['itemstatus']['rowcount'] %}
+						<tr>
+							{% set columncount = 0 %}
+							{% for i in 1..blueprint['cols'] + 1 %}
+								{% set colspan = 0 %}
+								{% if blueprint['itemstatus']['rows'][x]['columns'][i] %}
+									{% set column = blueprint['itemstatus']['rows'][x]['columns'][i] %}
+									{% set colspan = column['col-length'] %}
+									<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
+										<span class="font-weight-bold">{{ column['label'] }}:</span> {{ module_formatter.format_celldata(detail['itemstatus'], column) }}
+									</td>
+								{% else %}
+									{% if columncount < blueprint['cols'] %}
+										{% set colspan = 1 %}
+										<td></td>
+									{% endif %}
+								{% endif %}
+								{% set columncount = columncount + colspan %}
+							{% endfor %}
+						</tr>
+					{% endfor %}
+					{% if blueprint['purchaseorder']['rows'] is not empty %}
+						{% for purchaseorder in detail['purchordrs'] %}
+							{% for x in 1..blueprint['purchaseorder']['rowcount'] %}
+								<tr>
+									{% set columncount = 0 %}
+									{% for i in 1..blueprint['cols'] + 1 %}
+										{% set colspan = 0 %}
+										{% if blueprint['purchaseorder']['rows'][x]['columns'][i] %}
+											{% set column = blueprint['purchaseorder']['rows'][x]['columns'][i] %}
+											{% set colspan = column['col-length'] %}
+											<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
+												<span class="font-weight-bold">{{ column['label'] }}:</span> {{ module_formatter.format_celldata(purchaseorder, column) }}
+											</td>
+										{% else %}
+											{% if columncount < blueprint['cols'] %}
+												{% set colspan = 1 %}
+												<td></td>
+											{% endif %}
+										{% endif %}
+										{% set columncount = columncount + colspan %}
+									{% endfor %}
+								</tr>
+							{% endfor %}
+						{% endfor %}
+					{% endif %}
+				{% endfor %}
+
+				{% for x in 1..blueprint['total']['rowcount'] %}
+					<tr>
+						{% set columncount = 0 %}
+						{% for i in 1..blueprint['cols'] + 1 %}
+							{% set colspan = 0 %}
+							{% if blueprint['total']['rows'][x]['columns'][i] %}
+								{% set column = blueprint['total']['rows'][x]['columns'][i] %}
+								{% set colspan = column['col-length'] %}
+								<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
+									<span class="font-weight-bold">{{ column['label'] }}:</span> {{ module_formatter.format_celldata(order['totals'], column) }}
+								</td>
+							{% else %}
+								{% if columncount < blueprint['cols'] %}
+									{% set colspan = 1 %}
+									<td></td>
+								{% endif %}
+							{% endif %}
+							{% set columncount = columncount + colspan %}
+						{% endfor %}
+					</tr>
+				{% endfor %}
+				{% if order['shipments']|length > 0 %}
+					{% for x in 1..blueprint['shipments']['rowcount'] %}
+						<tr>
+							{% set columncount = 0 %}
+							{% for i in 1..blueprint['cols'] + 1 %}
+								{% set colspan = 0 %}
+								{% if blueprint['shipments']['rows'][x]['columns'][i] %}
+									{% set column = blueprint['shipments']['rows'][x]['columns'][i] %}
+									{% set colspan = column['col-length'] %}
+									<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
+										{{ module_formatter.format_celldata(order, column['label']) }}
+									</th>
+								{% else %}
+									{% if columncount < blueprint['cols'] %}
+										{% set colspan = 1 %}
+										<th></th>
+									{% endif %}
+								{% endif %}
+								{% set columncount = columncount + colspan %}
+							{% endfor %}
+						</tr>
+					{% endfor %}
+				{% endif %}
+				{% for shipment in order['shipments'] %}
+					{% for x in 1..blueprint['shipments']['rowcount'] %}
+						<tr>
+							{% set columncount = 0 %}
+							{% for i in 1..blueprint['cols'] + 1 %}
+								{% set colspan = 0 %}
+								{% if blueprint['shipments']['rows'][x]['columns'][i] %}
+									{% set column = blueprint['shipments']['rows'][x]['columns'][i] %}
+									{% set colspan = column['col-length'] %}
+									<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
+										{{ module_formatter.format_celldata(shipment, column['label']) }}
+									</td>
+								{% else %}
+									{% if columncount < blueprint['cols'] %}
+										{% set colspan = 1 %}
+										<th></th>
+									{% endif %}
+								{% endif %}
+								{% set columncount = columncount + colspan %}
+							{% endfor %}
+						</tr>
+					{% endfor %}
+				{% endfor %}
+			{% endfor %}
+		</tbody>
+	</table>
+{% endfor %}

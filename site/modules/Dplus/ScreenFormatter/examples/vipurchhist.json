@@ -1,0 +1,83 @@
+{
+	"error": false,
+	"errormsg": "",
+	"sessionid": "e7t12u9jmd967cr7epp3pq6qm2",
+	"vendid": "BECKER",
+	"shipid": "",
+	"date": "20131203",
+	"data": {
+		"purchaseorders": {
+			"1": {
+				"details": {
+					"1": {
+						"Purchase Order Number": "7022",
+						"Invoice Number": "",
+						"Reference": "",
+						"Item ID": "14-20PVC-12",
+						"Item Description 1": "14\" X 20\" PVC SHEET 12 GAUGE",
+						"Item Description 2": "",
+						"Warehouse Code": "BU",
+						"Order Date": "05/20/15",
+						"Receipt Date": "05/20/15",
+						"Invoice Date": "",
+						"Purchase Unit of Measure": "EACH",
+						"Received Quantity": "52123.00000",
+						"Received Unit Cost": "0.31000",
+						"Received Amount": "16158.13000",
+						"Invoiced Quantity": "0.00000",
+						"Invoiced Unit Cost": "0.00000",
+						"Invoiced Amount": "0.00000",
+						"PONbr": "00007022",
+						"InvNbr": "",
+						"detailnotes": {
+						}
+					}
+				},
+				"ordernotes": {
+				},
+				"pototals": {
+					"Purchase Order Number": "PO Totals",
+					"Invoice Number": "",
+					"Reference": "",
+					"Item ID": "",
+					"Item Description 1": "",
+					"Item Description 2": "",
+					"Warehouse Code": "",
+					"Order Date": "",
+					"Receipt Date": "",
+					"Invoice Date": "",
+					"Purchase Unit of Measure": "",
+					"Received Quantity": "",
+					"Received Unit Cost": "",
+					"Received Amount": "16158.13000",
+					"Invoiced Quantity": "",
+					"Invoiced Unit Cost": "",
+					"Invoiced Amount": "0.00000",
+					"PONbr": "",
+					"InvNbr": ""
+				}
+			}
+		},
+		"vendortotals": {
+			"Purchase Order Number": "Vendor Totals",
+			"Invoice Number": "",
+			"Reference": "",
+			"Item ID": "",
+			"Item Description 1": "",
+			"Item Description 2": "",
+			"Warehouse Code": "",
+			"Order Date": "",
+			"Receipt Date": "",
+			"Invoice Date": "",
+			"Purchase Unit of Measure": "",
+			"Received Quantity": "",
+			"Received Unit Cost": "",
+			"Received Amount": "16158.13000",
+			"Invoiced Quantity": "",
+			"Invoiced Unit Cost": "",
+			"Invoiced Amount": "0.00000",
+			"PONbr": "",
+			"InvNbr": ""
+		}
+	}
+}

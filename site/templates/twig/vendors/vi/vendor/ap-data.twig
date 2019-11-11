@@ -1,0 +1,77 @@
+<div class="card">
+	<div class="card-header">
+		<span class="h5">AP</span>
+	</div>
+	<li class="list-group-item">
+		<div class="row">
+			<div class="col-sm-5">
+				Phone #:
+			</div>
+			<div class="col-sm-7">
+				<a href="tel:{{ vendor.phone }}" class="link">{{ vendor.phone|phone_us }}</a>
+			</div>
+		</div>
+	</li>
+	<li class="list-group-item">
+		<div class="row">
+			<div class="col-sm-5">
+				Fax #:
+			</div>
+			<div class="col-sm-7">
+				<a href="tel:{{ vendor.fax }}" class="link">{{ vendor.fax|phone_us }}</a>
+			</div>
+		</div>
+	</li>
+	<ul class="list-group list-group-flush">
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					Our account:
+				</div>
+				<div class="col-sm-7">
+					{{ vendor.vendor_account }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					Buyer:
+				</div>
+				<div class="col-sm-7">
+					{{ vendor.buyer_1 }} - {{ vendor.get_buyer_x_name(1) }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					Ship Via:
+				</div>
+				<div class="col-sm-7">
+					{{ vendor.shipvia.code }} - {{ vendor.shipvia.description }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					Terms:
+				</div>
+				<div class="col-sm-7">
+					{{ vendor.terms.code }} - {{ vendor.terms.description }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					Type Code:
+				</div>
+				<div class="col-sm-7">
+					{{ vendor.type.code }} - {{ vendor.type.description }}
+				</div>
+			</div>
+		</li>
+	</ul>
+</div>

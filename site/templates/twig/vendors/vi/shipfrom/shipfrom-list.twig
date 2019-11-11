@@ -1,0 +1,38 @@
+<table id="cust-index" class="table table-bordered">
+	<thead>
+		<tr>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('shipfromid') }}" class="link">ID</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('name') }}" class="link">Name</a>
+			</th>
+			<th scope="col">Address</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('city') }}" class="link">City</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('state') }}" class="link">State</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('zip') }}" class="link">Zip</a>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for shipfrom in shipfroms %}
+			<tr>
+				<td scope="row">
+					<a href="{{ page.get_vi_vendorshipfromURL(customer.id, shipfrom.id)}}" class="link">
+						<strong>{{ shipfrom.shipfromid }}</strong>
+					</a>
+				</td>
+				<td>{{ shipfrom.name }}</td>
+				<td>{{ shipfrom.address1 }}</td>
+				<td>{{ shipfrom.city }}</td>
+				<td>{{ shipfrom.state }}</td>
+				<td>{{ shipfrom.zip }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

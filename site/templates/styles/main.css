@@ -35,6 +35,10 @@ footer {
 	color: rgba(0,0,0,.65);
 }
 
+.bg-gray {
+	background-color: #c8bfc7 !important;
+}
+
 /*==============================================================
 	FUELUX Styles
 ==============================================================*/
@@ -142,6 +146,9 @@ a.link:hover {
 	max-height: 500px;
 }
 
+/************************************** Table Styles *******************************/
+.first-txn-row {border-top: 2px solid black;}
+
 /************************************** Dashboard **************************************/
 #top-selling-list {
 	max-height: 500px;
@@ -157,4 +164,8 @@ a.link:hover {
 .scroll-300 {
 	overflow-y: scroll;
 	max-height: 300px;
+}
+
+.highlight {
+	background: #FADA5E;
 }

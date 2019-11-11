@@ -1,0 +1,123 @@
+<div class="row">
+	<div class="col-sm-6">
+		<div class="list-group list-group-flush">
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Vendor:
+					</div>
+					<div class="col-sm-7">
+						{{ shipfrom.vendor.id }} <br>
+						{{ shipfrom.vendor.name }}
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Shipfrom:
+					</div>
+					<div class="col-sm-7">
+						{{ shipfrom.id }} <br>
+						{{ shipfrom.name }}
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Phone #:
+					</div>
+					<div class="col-sm-7">
+						<a href="tel:{{ shipfrom.shipfromcontact.phone }}" class="link">
+							{{ shipfrom.shipfromcontact.phone|phone_us }} {{ shipfrom.shipfromcontact.extension ? 'Ext: ' ~ shipfrom.shipfromcontact.extension : ''}}
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Fax #:
+					</div>
+					<div class="col-sm-7">
+						<a href="tel:{{ shipfrom.shipfromcontact.fax }}" class="link">{{ shipfrom.shipfromcontact.fax|phone_us }}</a>
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Home #:
+					</div>
+					<div class="col-sm-7">
+						<a href="tel:{{ shipfrom.shipfromcontact.homephone }}" class="link">{{ shipfrom.shipfromcontact.homephone|phone_us }}</a>
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Cell #:
+					</div>
+					<div class="col-sm-7">
+						<a href="tel:{{ shipfrom.shipfromcontact.cellphone }}" class="link">{{ shipfrom.shipfromcontact.cellphone|phone_us }}</a>
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Email:
+					</div>
+					<div class="col-sm-7">
+						<a href="mailto:{{ shipfrom.shipfromcontact.fax }}" class="link">{{ shipfrom.shipfromcontact.email }}</a>
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Website:
+					</div>
+					<div class="col-sm-7">
+						<a href="{{ shipfrom.shipfromcontact.website|purl }}" class="link">{{ shipfrom.shipfromcontact.website }}</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="list-group list-group-flush">
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Pay-To Name
+					</div>
+					<div class="col-sm-7">
+						{{ shipfrom.payto_name }}
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item p-2">
+				<div class="row">
+					<div class="col-sm-5">
+						Address
+					</div>
+					<div class="col-sm-7">
+						{{ shipfrom.address }} <br>
+						{% if shipfrom.address2 %}
+							{{ shipfrom.address2 }} <br>
+						{% endif %}
+
+						{% if shipfrom.address3 %}
+							{{ shipfrom.address3 }} <br>
+						{% endif %}
+						{{ shipfrom.city ~ ', ' ~ shipfrom.state ~ ' ' ~ shipfrom.zip }} <br>
+						{{ shipfrom.payto_country }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

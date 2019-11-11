@@ -1,0 +1,80 @@
+<h2 class="page-header">
+	Contact: {{ contact.contact }}
+</h2>
+<div class="row">
+	<div class="col-sm-6">
+		<table class="table table-striped table-user-information">
+			<tbody>
+				<tr>
+					<td>Customer: </td>
+					<td><strong>{{ contact.custid }} - {{ contact.name }}</strong></td>
+				</tr>
+				{% if contact.shipto %}
+					<tr>
+						<td>Shipto ID:</td>
+						<td>{{ contact.shiptoid }}</td>
+					</tr>
+				{% endif %}
+				<tr>
+					<td>Address:</td>
+					<td>
+						{{ contact.addr1 }}<br>
+						{{ contact.addr2|length > 0 ? contact.addr2 ~ '<br>' : '' }}
+						{{ contact.city ~ ', ' ~ contact.state ~ ' ' ~ contact.zip }}
+					</td>
+				</tr>
+				<tr> <td>Name:</td> <td>{{ contact.contact }}</td> </tr>
+				<tr> <td>Title:</td><td>{{ contact.title }}</td> </tr>
+				<tr> <td>Email:</td> <td><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></td></tr>
+				<tr>
+					<td>Office Phone:</td>
+					<td>
+						<a href="tel:{{ contact.phone }}">{{ contact.phone }}</a><b> &nbsp;
+						{{ contact.extension ? 'Ext. ' ~ contact.extension : '' }}</b>
+					</td>
+				</tr>
+				<tr>
+					<td>Cell Phone:</td> <td><a href="tel:{{ contact.cellphone }}"> {{ contact.cellphone }}</a></td>
+				</tr>
+				<tr> <td>Fax:</td> <td><a href="tel:{{ contact.cellphone }}"> {{ contact.faxnbr }}</a></td> </tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="col-sm-6">
+		<table class="table table-striped table-user-information">
+			<tbody>
+				<tr class="{{ contact.has_shipto() ? 'hidden' : '' }}">
+					<td class="control-label">AR Contact</td>
+					<td>
+						{{ contact.arcontact }}
+					</td>
+				</tr>
+				<tr class="{{ contact.has_shipto() ? 'hidden' : '' }}">
+					<td class="control-label">Dunning Contact</td>
+					<td>
+						{{ contact.dunningcontact }}
+					</td>
+				</tr>
+				<tr class="{{ contact.has_shipto() ? 'hidden' : '' }}">
+					<td class="control-label">Acknowledgement Contact</td>
+					<td>
+						{{ contact.ackcontact }}
+					</td>
+				</tr>
+				<tr>
+					<td class="control-label">Buying Contact</td>
+					<td>
+						{{ contact.buyingcontact }}
+					</td>
+				</tr>
+				<tr>
+					<td class="control-label">Certificate Contact</td>
+					<td>
+						{{ contact.certcontact }}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<a href="{{ page.url_editcustcontact(contact.custid, contact.shiptoid, contact.contact) }}" class="btn btn-warning btn-sm"> <i class="fa fa-pencil" aria-hidden="true"></i> Edit Contact</a>

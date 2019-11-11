@@ -187,7 +187,7 @@ class DpagesMvi extends Dpages implements Module {
 			'template'       => 'vi-function',
 			'name'           => '24monthsummary',
 			'title'          => '24-month Summary',
-			'summary'        => 'View Vendor 24-month Sumaary',
+			'summary'        => 'View Vendor 24-month Summary',
 			'parent'         => '/mvi/vi/',
 			'dplus_function' => '',
 			'pw_template'    => 'vi-24monthsummary',

@@ -1,5 +1,6 @@
 <?php
 	use Twig\TwigFilter;
+	use Purl\Url;
 
 	$convertdate = new Twig_Function('convertdate', function ($date, $format = 'm/d/Y') {
 		$date = date($format, strtotime($date));
@@ -48,3 +49,26 @@
 		return base64_encode($str);
 	});
 	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('purl', function ($url) {
+		if (strlen($url)) {
+			$url = new Url($url);
+			return $url->getUrl();
+		} else {
+			return false;
+		}
+	});
+	$config->twig->addFilter($filter);
+	
+	$matches_search = new Twig_Function('matches_search', function ($subject, $query) {
+		$regex = "/(".str_replace('-', '\-?', $query).")/i";
+		$contains = preg_match($regex, $subject, $matches);
+
+		if ($contains) {
+			$highlight = "<span class='highlight'>" . $matches[0] . "</span>";
+			return preg_replace($regex, $highlight, $subject);
+		}  else {
+			return $subject;
+		}
+	});
+	$config->twig->addFunction($matches_search);

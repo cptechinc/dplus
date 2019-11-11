@@ -8,8 +8,8 @@
 			<div>
 				<ul class="nav nav-tabs" role="tablist">
 					{% for section, label in module_formatter.get_datasections() %}
-						<li role="presentation" class="nav-link {{ module_formatter.get_datasections()|keys[0] ? 'active' : '' }}">
-							<a href="#{{ datasection }}" aria-controls="{{ datasection }}" role="tab" data-toggle="tab">
+						<li role="presentation" class="nav-link {{ module_formatter.get_datasections()|keys[0] == section ? 'active' : '' }}">
+							<a href="#{{ section }}" aria-controls="{{ section }}" role="tab" data-toggle="tab">
 								{{ label }}
 							</a>
 						</li>
@@ -17,7 +17,7 @@
 				</ul>
 				<div class="tab-content">
 					{% for section, label in module_formatter.get_datasections() %}
-						<div role="tabpanel" class="tab-pane fade {{ module_formatter.get_datasections()|keys[0] ? ' show active' : '' }}" id="{{ datasection }}">
+						<div role="tabpanel" class="tab-pane fade {{ module_formatter.get_datasections()|keys[0] == section ? ' show active' : '' }}" id="{{ section }}">
 							{% include 'screen-formatters/forms/section-table.twig' %}
 						</div>
 					{% endfor %}
@@ -27,12 +27,12 @@
 	</div>
 	<div class="row">
 		<div class="col-sm-2">
-			<button type="button" class="btn btn-info" name="action" value="preview">
+			<button type="submit" class="btn btn-info" name="action" value="preview">
 				<i class="fa fa-table" aria-hidden="true"></i> Preview Table
 			</button>
 		</div>
 		<div class="col-sm-2">
-			<button type="button" class="btn btn-success" name="action" value="save">
+			<button type="submit" class="btn btn-success" name="action" value="save">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 		</div>
