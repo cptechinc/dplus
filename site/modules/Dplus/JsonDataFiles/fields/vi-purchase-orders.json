@@ -1,0 +1,161 @@
+{
+	"header": {
+		"Purchase Order Number": {
+			"type": "I",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Order Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Reference": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Ship-From ID": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Ship-To Name": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Ship-To City/State/Zip": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Ship Via Code": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Ship Via Description": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Terms Code": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Terms Description": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"FOB": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Expected Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		}
+	},
+	"detail": {
+		"Line Number": {
+			"type": "I",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Item ID": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Item Description 1": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Item Description 2": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Vendor Item ID": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Warehouse ID": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Purchase Unit of Measure": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Special Order": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Release (Yes/No)": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Line Status": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Ship Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Expected Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Acknowledgment Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Cancel Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Quantity Ordered": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Quantity Received": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Quantity On Order": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Unit Cost": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Total Amount": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		}
+	}
+}

@@ -1,0 +1,33 @@
+<div class="card border-info">
+	<div class="card-header bg-info">
+		<span class="h3 text-white">{{ vendor.name }} Information</span>
+	</div>
+	<table class="table">
+		<tr>
+			<td class="font-weight-bold">Vendor:</td>
+			<td>
+				{{ vendor.id }} <br>
+				{{ vendor.name }}
+			</td>
+		</tr>
+		<tr>
+			<td class="font-weight-bold">Address:</td>
+			<td>
+				{{ vendor.address }} <br>
+				{% if (vendor.address2 is not empty) %}
+					{{ vendor.address2 }} <br>
+				{% endif %}
+
+				{% if (vendor.address3 is not empty) %}
+					{{ vendor.address3 }} <br>
+				{% endif %}
+
+				{{ vendor.city ~ ', ' ~ vendor.state ~ ' ' ~ vendor.zip }}
+			</td>
+		</tr>
+		<tr>
+			<td class="font-weight-bold">Number of Ship-froms:</td>
+			<td>{{ vendor.countVendorShipfroms() }}</td>
+		</tr>
+	</table>
+</div>

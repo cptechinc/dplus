@@ -1,0 +1,47 @@
+<div class="card">
+	<div class="card-header">
+		<span class="h5">AP</span>
+	</div>
+	<ul class="list-group list-group-flush">
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					Phone #:
+				</div>
+				<div class="col-sm-7">
+					<a href="tel:{{ shipfrom.phone }}" class="link">{{ shipfrom.phone|phone_us }}</a>
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					Fax #:
+				</div>
+				<div class="col-sm-7">
+					<a href="tel:{{ shipfrom.fax }}" class="link">{{ shipfrom.fax|phone_us }}</a>
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					Our account:
+				</div>
+				<div class="col-sm-7">
+					{{ shipfrom.vendor.vendor_account }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-5">
+					Ship Via:
+				</div>
+				<div class="col-sm-7">
+					{{ shipfrom.shipvia.code }} - {{ shipfrom.shipvia.description }}
+				</div>
+			</div>
+		</li>
+	</ul>
+</div>

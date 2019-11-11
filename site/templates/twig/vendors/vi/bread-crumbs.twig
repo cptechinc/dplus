@@ -1,0 +1,33 @@
+<nav aria-label="breadcrumb rounded-0">
+	<ol class="breadcrumb">
+		{% for parent in page.parents() %}
+			{% if parent.pw_template == 'vi-vendor' %}
+				<li class="breadcrumb-item">
+					<i class="fa fa-list" aria-hidden="true"></i>
+					<a href="{{ parent.url }}">{{ parent.title }}</a>
+				</li>
+				<li class="breadcrumb-item">
+					<i class="fa fa-user-circle" aria-hidden="true"></i>
+					<a href="{{ parent.url ~ '?vendorID=' ~ vendor.id }}">{{ vendor.name }}</a>
+				</li>
+			{% else %}
+				<li class="breadcrumb-item">
+					<i class="fa fa-list" aria-hidden="true"></i>
+					<a href="{{ parent.url }}">{{ parent.title }}</a>
+				</li>
+			{% endif %}
+		{% endfor %}
+		{% if (page.has('shipfromID')) %}
+			<li class="breadcrumb-item">
+				<i class="fa fa-ship" aria-hidden="true"></i>
+				<a href="{{ page.get_vi_vendorshipfromURL(vendor.id) }}">Ship-froms</a>
+			</li>
+		{% endif %}
+		{% if (page.parent.pw_template != 'vi-shipfrom' and page.pw_template != 'vi-shipfrom' and page.has('shipfromID')) %}
+			<li class="breadcrumb-item">
+				<a href="{{ page.vendor_shipfromURL() }}">{{ page.shipfrom.name }}</a>
+			</li>
+		{% endif %}
+		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+	</ol>
+</nav>

@@ -1,0 +1,15 @@
+<div class="card mb-4">
+	<div class="card-header d-flex justify-content-between bg-primary">
+		<a class="text-white" data-toggle="collapse" href="#customer-sales-orders" role="button" aria-expanded="false" aria-controls="customer-sales-orders">
+			Purchase Orders &ensp;<i class="fa fa-caret-down" aria-hidden="true"></i>
+		</a>
+		<span class="badge badge-pill badge-light">{{ resultscount }}</span>
+	</div>
+	<div class="collapse" id="customer-sales-orders">
+		{% include 'purchase-orders/vendor/purchase-orders-list.twig' %}
+
+		<div class="card-footer bg-secondary">
+			<a href="{{ purchase_orders_list }}" class="text-white">View More Purchase Orders <i class="fa fa-sign-in" aria-hidden="true"></i></a>
+		</div>
+	</div>
+</div>

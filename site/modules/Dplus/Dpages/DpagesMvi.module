@@ -31,18 +31,39 @@ class DpagesMvi extends Dpages implements Module {
 			'paginated' => false
 		),
 		'dplus-function' => array(
-			'name'   => 'dplus-menu',
+			'name'   => 'dplus-function',
 			'fields' => array('dplus_function', 'pw_template', 'summary'),
 			'paginated' => true
 		),
 		'vi-function' => array(
-			'name'   => 'dplus-menu',
+			'name'   => 'vi-function',
 			'fields' => array('title', 'dplus_function', 'pw_template', 'jsoncode', 'is_formattable', 'summary'),
 			'paginated' => true
 		),
-		'ci-customer' => array(
-			'name'   => 'ci-customer',
+		'vi-vendor' => array(
+			'name'   => 'vi-vendor',
 			'fields' => array(),
+			'paginated' => true
+		),
+		'vi-contact' => array(
+			'name'   => 'vi-contact',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'vi-purchase-orders' => array(
+			'name'   => 'vi-purchase-orders',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'vi-open-invoices' => array(
+			'name'   => 'vi-open-invoices',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'vi-documents' => array(
+			'name'   => 'vi-documents',
+			'fields' => array(),
+			'paginated' => true
 		),
 	);
 
@@ -63,11 +84,183 @@ class DpagesMvi extends Dpages implements Module {
 			'parent'         => '/mvi/',
 			'dplus_function' => '',
 			'pw_template'    => 'vi-vendor'
-		)
+		),
+		'vi-shipfrom' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'shipfrom',
+			'title'          => 'Shipfroms',
+			'summary'        => 'View Vendor Shipfrom Information',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-shipfrom'
+		),
+		'vi-contact' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'contacts',
+			'title'          => 'Contacts',
+			'summary'        => 'View Vendor Contacts',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-contact'
+		),
+		'vi-purchase-orders' => array(
+			'template'       => 'vi-function',
+			'name'           => 'purchase-orders',
+			'title'          => 'Purchase Orders',
+			'summary'        => 'View Vendor Purchase Orders',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-purchase-orders',
+			'jsoncode'       => 'vi-purchase-orders'
+		),
+		'vi-open-invoices' => array(
+			'template'       => 'vi-function',
+			'name'           => 'open-invoices',
+			'title'          => 'Open Invoices',
+			'summary'        => 'View Vendor Open Invoices',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-open-invoices',
+			'jsoncode'       => 'vi-openinvoices'
+		),
+		'vi-purchase-history' => array(
+			'template'       => 'vi-function',
+			'name'           => 'purchase-history',
+			'title'          => 'Purchase History',
+			'summary'        => 'View Vendor Purchase History',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-purchase-history',
+			'jsoncode'       => 'vi-purchase-history'
+		),
+		'vi-documents' => array(
+			'template'       => 'vi-function',
+			'name'           => 'documents',
+			'title'          => 'Documents',
+			'summary'        => 'View Vendor Documents',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-documents',
+			'jsoncode'       => 'vi-documents'
+		),
 	);
 
 	public function init_vipage() {
+		$this->addHook('Page::get_vi_vendorURL', function($event) {
+			$vendorID = $event->arguments(0);
+			$event->return = $this->get_vi_vendorURL($vendorID);
+		});
 
+		$this->addHook('Page::get_vi_vendorshipfromURL', function($event) {
+			$vendorID   = $event->arguments(0);
+			$shipfromID = $event->arguments(1);
+			$event->return = $this->get_vi_vendorshipfromURL($vendorID, $shipfromID);
+		});
+
+		$this->addHook('Page(pw_template=vi-vendor)::children_user_allowed', function($event) {
+			$user = $this->wire('user');
+			$event->return = $this->get_vi_user_allowed_functions($user);
+		});
+
+		$this->addHook('Page::url_vendorID', function($event) {
+			$p = $event->object;
+			$vendorID   = $event->arguments(0);
+			$url = new Url($p->url);
+			$url->query->set('vendorID', $vendorID);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_redirURL', function($event) {
+			$p = $event->object;
+			$event->return = $this->wire('pages')->get('template=redir, redir_file=vi')->url;
+		});
+
+		$this->addHook('Page::get_backURL', function($event) {
+			$p = $event->object;
+			$vendorID   = $p->fullURL->query->get('vendorID');
+			$url = new Url($this->wire('pages')->get('pw_template=vi-vendor')->url);
+			$url->query->set('vendorID', $vendorID);
+
+			if ($p->fullURL->query->has('shipfromID') && $p->pw_template != 'vi-shipfrom') {
+				$url->path = $this->wire('pages')->get('pw_template=vi-shipfrom')->url;
+				$shipfromID = $p->fullURL->query->get('shipfromID');
+				$url->query->set('shipfromID', $shipfromID);
+			}
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_vipurchaseordersURL', function($event) {
+			$p = $event->object;
+			$vendorID   = $event->arguments(0);
+			$shipfromID = $event->arguments(1);
+			$url = new Url($p->get_redirURL());
+			$url->query->set('action','vi-purchase-orders');
+			$url->query->set('vendorID', $vendorID);
+			$url->query->set('shipfromID', $shipfromID);
+			$url->query->set('page', $p->fullURL->getUrl());
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_vipurchasehistoryURL', function($event) {
+			$p = $event->object;
+			$vendorID   = $event->arguments(0);
+			$shipfromID = $event->arguments(1);
+			$date       = $event->arguments(2);
+			$url = new Url($p->get_redirURL());
+			$url->query->set('action','vi-purchase-history');
+			$url->query->set('vendorID', $vendorID);
+			$url->query->set('shipfromID', $shipfromID);
+			$url->query->set('date', $date);
+			$url->query->set('page', $p->fullURL->getUrl());
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_viopeninvoicesURL', function($event) {
+			$p = $event->object;
+			$vendorID   = $event->arguments(0);
+			$url = new Url($p->get_redirURL());
+			$url->query->set('action','vi-open-invoices');
+			$url->query->set('vendorID', $vendorID);
+			$url->query->set('page', $p->fullURL->getUrl());
+			$event->return = $url->getUrl();
+		});
+	}
+
+	/**
+	 * Returns URL to Vendor Page
+	 * @param  string $vendorID Vendor ID
+	 * @return string           URL
+	 */
+	public function get_vi_vendorURL($vendorID) {
+		$url = new Url($this->wire('pages')->get('pw_template=vi-vendor')->url);
+		$url->query->set('vendorID', $vendorID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Returns URL to Vendor Shipfrom Page
+	 * @param  string $vendorID   Vendor ID
+	 * @param  string $shipfromID Vendor Shipfrom ID
+	 * @return string             URL
+	 */
+	public function get_vi_vendorshipfromURL($vendorID, $shipfromID) {
+		$url = new Url($this->wire('pages')->get('pw_template=vi-shipfrom')->url);
+		$url->query->set('vendorID', $vendorID);
+		$url->query->set('shipfromID', $shipfromID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Returns the VI pages the User has access to
+	 * @param  User   $user
+	 * @return PageArray
+	 */
+	public function get_vi_user_allowed_functions(User $user) {
+		$p = $this->wire('pages')->get('pw_template=vi-vendor');
+		$dplus_functions = array_unique($p->children()->explode('dplus_function'));
+		$filtered_functions = $user->filter_functions($dplus_functions);
+		$this->session->funcs = $filtered_functions;
+		return $p->children('dplus_function='.implode('|', $filtered_functions));
 	}
 
 	public static function getModuleInfo() {

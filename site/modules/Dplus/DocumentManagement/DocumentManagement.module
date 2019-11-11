@@ -7,13 +7,19 @@ use SalesHistoryQuery, SalesHistory;
 use SalesHistoryDetailQuery, SalesHistoryDetail;
 use SalesOrderQuery, SalesOrder;
 
+include(__DIR__.'/DocumentManagementVi.trait.php');
+include(__DIR__.'/DocumentManagementPurchaseOrders.trait.php');
+
 class DocumentManagement extends WireData implements Module {
+	use DocumentManagementVi;
+	use DocumentManagementPurchaseOrders;
 
 	const TAG_ARINVOICES = 'AR';
 	const TAG_SALESORDER = 'SO';
-	const TAG_QUOTE = 'QT';
-	const TAG_ITEM  = 'IT';
-	const TAG_VENDORPO = 'PO';
+	const TAG_QUOTE      = 'QT';
+	const TAG_ITEM       = 'IT';
+	const TAG_VENDORPO   = 'PO';
+	const TAG_APINVOICE  = 'AP';
 
 	public static function getModuleInfo() {
 		return array(
@@ -26,6 +32,8 @@ class DocumentManagement extends WireData implements Module {
 	}
 
 	public function init() {
+		$this->vi_init();
+
 		$this->addHook('Page(pw_template=sales-order-view)::documentload', function($event) {
 			$page = $event->object;
 			$folder   = $event->arguments(0);
@@ -125,7 +133,6 @@ class DocumentManagement extends WireData implements Module {
 			$url->query->set('custID', $custID);
 			$url->query->set('folder', self::TAG_QUOTE);
 			$url->query->set('qnbr', $qnbr);
-
 			$event->return = $url->getUrl();
 		});
 	}
@@ -264,6 +271,7 @@ class DocumentManagement extends WireData implements Module {
 		$documents_master->filterByReference1($itemID);
 		return $documents_master->count();
 	}
+
 
 	/**
 	 * Finds a Document from the Documents table and creates a copy
