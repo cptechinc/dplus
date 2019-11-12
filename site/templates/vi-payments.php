@@ -16,14 +16,17 @@
 			}
 			$session->paymentstry = 0;
 
+			$module_formatter = $modules->get('ViPurchaseHistory');
+			$module_formatter->init_formatter();
 			$document_management = $modules->get('DocumentManagement');
 			$refreshurl = $page->get_vipaymentsURL($vendorID);
 			$page->body .= $config->twig->render('vendors/vi/vi-links.twig', ['page' => $page, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
-			$page->body .= $config->twig->render('vendors/vi/payments/payments.twig', ['page' => $page, 'vendorID' => $vendorID, 'json' => $json, 'document_management' => $document_management]);
+			$page->body .= $config->twig->render('vendors/vi/payments/payments.twig', ['page' => $page, 'vendorID' => $vendorID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
 		} else {
 			if ($session->paymentstry > 3) {
 				$page->headline = $page->title = "Payments File could not be loaded";
-				$page->body = $config->twig->render('vendors/vi/vi-links.twig', ['page' => $page, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
+				$refreshurl = $page->get_vipaymentsURL($vendorID);
+				$page->body = $config->twig->render('vendors/vi/vi-links.twig', ['page' => $page, 'refreshurl' => $refreshurl]);
 				$page->body .= $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
 			} else {
 				$session->paymentstry++;
