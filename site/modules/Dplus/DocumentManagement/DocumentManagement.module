@@ -7,11 +7,13 @@ use DocumentsQuery, Documents;
 include(__DIR__.'/DocumentManagementVi.trait.php');
 include(__DIR__.'/DocumentManagementPurchaseOrders.trait.php');
 include(__DIR__.'/DocumentManagementSalesOrders.trait.php');
+include(__DIR__.'/DocumentManagementQuotes.trait.php');
 
 class DocumentManagement extends WireData implements Module {
 	use DocumentManagementVi;
 	use DocumentManagementPurchaseOrders;
 	use DocumentManagementSalesOrders;
+	use DocumentManagementQuotes;
 
 	const TAG_ARINVOICES = 'AR';
 	const TAG_SALESORDER = 'SO';
@@ -33,24 +35,6 @@ class DocumentManagement extends WireData implements Module {
 	public function init() {
 		$this->vi_init();
 
-		$this->addHook('Page(pw_template=quote-view)::documentload', function($event) {
-			$page = $event->object;
-			$folder   = $event->arguments(0);
-			$document = $event->arguments(1);
-			$qnbr     = $event->arguments(2);
-			$url = $this->wire('pages')->get('pw_template=quote-documents')->url;
-			$event->return = $url."?qnbr=$qnbr&folder=$folder&document=$document";
-		});
-
-
-		$this->addHook('Page(pw_template=quote-documents)::documentload', function($event) {
-			$page = $event->object;
-			$folder   = $event->arguments(0);
-			$document = $event->arguments(1);
-			$qnbr     = $event->arguments(2);
-			$url = $this->wire('pages')->get('pw_template=quote-document')->url;
-			$event->return = $url."?ordn=$qnbr&folder=$folder&document=$document";
-		});
 
 		$this->addHook('Page(pw_template=ii-documents)::documentload', function($event) {
 			$page = $event->object;
@@ -118,6 +102,7 @@ class DocumentManagement extends WireData implements Module {
 			$event->return = $url->getUrl();
 		});
 		$this->mso_init();
+		$this->mqo_init();
 	}
 
 	/**
@@ -130,32 +115,6 @@ class DocumentManagement extends WireData implements Module {
 	public function get_tag($tagname) {
 		$tag = strtoupper($tagname);
 		return constant("self::TAG_$tag");
-	}
-
-
-
-	/**
-	 * Return Documents objects filtered by the tag1, reference1 fields for a Sales Order
-	 * @param  string $qnbr                      Quote Number
-	 * @return Documents[]|ObjectCollection
-	 */
-	public function get_quotedocuments($qnbr) {
-		$documents_master = DocumentsQuery::create();
-		$documents_master->filterByTag(self::TAG_QUOTE);
-		$documents_master->filterByReference1($qnbr);
-		return $documents_master->find();
-	}
-
-	/**
-	 * Return the number of Documents found filtered by the tag1, reference1 fields for a Sales Order
-	 * @param  string $qnbr Quote Number
-	 * @return int          Number of Sales Order Documents found
-	 */
-	public function count_quotedocuments($qnbr) {
-		$documents_master = DocumentsQuery::create();
-		$documents_master->filterByTag(self::TAG_QUOTE);
-		$documents_master->filterByReference1($qnbr);
-		return $documents_master->count();
 	}
 
 
