@@ -1,0 +1,23 @@
+<h3>Currently Received</h3>
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row">
+			<div class="col">Lot #</div>
+			<div class="col">Lot Ref</div>
+			<div class="col">Production Date</div>
+			<div class="col">Weight</div>
+			<div class="col">Bin</div>
+		</div>
+	</div>
+	{% for lot in item.get_receivedlots() %}
+		<div class="list-group-item">
+			<div class="row">
+				<div class="col">{{ lot.lotserial }}</div>
+				<div class="col">{{ lot.lotreference }}</div>
+				<div class="col">{{ lot.date_production|convertdate }}</div>
+				<div class="col"> {{ lot.qty_received }}</div>
+				<div class="col text-right">{{ lot.bin }}</div>
+			</div>
+		</div>
+	{% endfor %}
+</div>

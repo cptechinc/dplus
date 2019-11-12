@@ -11,7 +11,28 @@ use Purl\Url;
 class DpagesMpo extends Dpages implements Module {
 	const FIELDS = array();
 
-	const TEMPLATES = array();
+	const TEMPLATES = array(
+		'purchase-orders' => array(
+			'name'   => 'purchase-orders',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'purchase-orders-vendor' => array(
+			'name'   => 'purchase-orders-vendor',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'purchase-history-orders' => array(
+			'name'   => 'purchase-orders-history',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'purchase-history-orders-vendor' => array(
+			'name'   => 'purchase-orders-history-vendor',
+			'fields' => array(),
+			'paginated' => true
+		),
+	);
 
 	const PAGES = array(
 		'po-menu' => array(
@@ -49,9 +70,16 @@ class DpagesMpo extends Dpages implements Module {
 			'dplus_function' => '',
 			'pw_template'    => 'purchase-order-view'
 		),
+		'purchase-history-list' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'purchase-history',
+			'title'          => 'Purchase History',
+			'summary'        => 'View Purchase Order History',
+			'parent'         => '/mpo/',
+			'dplus_function' => '',
+			'pw_template'    => 'purchase-history-orders'
+		),
 	);
-
-
 
 	/**
 	 * Returns URL to Purchase Orders Page
@@ -62,11 +90,27 @@ class DpagesMpo extends Dpages implements Module {
 	}
 
 	/**
-	 * Returns URL to Purchase Orders Customer Page
+	 * Returns URL to Purchase Orders Vendor Page
 	 * @return string           URL
 	 */
-	public function get_purchaseorders_customerURL() {
+	public function get_purchaseorders_vendorURL() {
 		return $this->wire('pages')->get('pw_template=purchase-orders-vendor')->url;
+	}
+
+	/**
+	 * Returns URL to Purchase Orders Page
+	 * @return string           URL
+	 */
+	public function get_purchasehistoryURL() {
+		return $this->wire('pages')->get('pw_template=purchase-history-orders')->url;
+	}
+
+	/**
+	 * Returns URL to Purchase Orders Vendor Page
+	 * @return string           URL
+	 */
+	public function get_purchasehistory_vendorURL() {
+		return $this->wire('pages')->get('pw_template=purchase-history-orders-vendor')->url;
 	}
 
 	public static function getModuleInfo() {

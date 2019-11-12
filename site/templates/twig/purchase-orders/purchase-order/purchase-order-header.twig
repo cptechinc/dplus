@@ -1,0 +1,81 @@
+<div class="row mt-4">
+	<div class="col-sm-4">
+		<legend class="font-weight-bold text-secondary">Billed From ({{ purchaseorder.vendorid }})</legend>
+		<address>
+			{{ purchaseorder.vendor.name }} <br>
+			{{ purchaseorder.vendor.address }} <br>
+			{% if purchaseorder.vendor.address2 %}
+				{{ purchaseorder.vendor.address2 }} <br>
+			{% endif %}
+			{{ purchaseorder.vendor.city ~ ', ' ~ purchaseorder.vendor.state ~ ' ' ~ purchaseorder.vendor.zip}}
+		</address>
+
+		<legend class="font-weight-bold text-secondary">Shipping to</legend>
+		<address>
+			{{ purchaseorder.shipto_name }} <br>
+			{{ purchaseorder.shipto_address1 }} <br>
+			{% if (purchaseorder.shipto_address2) %}
+				{{ purchaseorder.shipto_address2 }} <br>
+			{% endif %}
+			{{ purchaseorder.shipto_city ~ ', ' ~ purchaseorder.shipto_state ~ ' ' ~ purchaseorder.shipto_zip}}
+		</address>
+
+		<legend class="font-weight-bold text-secondary">Contact</legend>
+		<div class="row">
+			<div class="col-sm-5">Contact:</div>
+			<div class="col-sm-7 text-right">{{ purchaseorder.contact }}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5">Phone:</div>
+			<div class="col-sm-7 text-right">
+				<a href="tel:{{ purchaseorder.phone }}" class="link">{{ purchaseorder.phone|phone_us }}</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5">Fax:</div>
+			<div class="col-sm-7 text-right">
+				<a href="tel:{{ purchaseorder.fax }}" class="link">{{ purchaseorder.fax|phone_us }}</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5">Email:</div>
+			<div class="col-sm-7">
+				<a href="mailto:{{ purchaseorder.email }}" class="link">{{ purchaseorder.email }}</a>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-8">
+		<legend class="font-weight-bold text-secondary text-center">Order Summary</legend>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="row">
+					<div class="col-sm-5">Status</div>
+					<div class="col-sm-7 text-right">{{ purchaseorder.status }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Items on Order</div>
+					<div class="col-sm-7 text-right">{{ purchaseorder.countPurchaseOrderDetails() }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Reference:</div>
+					<div class="col-sm-7 text-right">{{ purchaseorder.poref }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Buyer:</div>
+					<div class="col-sm-7 text-right">{{ purchaseorder.vendor.buyer_1 }} - {{ purchaseorder.vendor.get_buyer_x_name(1) }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Shipvia:</div>
+					<div class="col-sm-7 text-right">{{ purchaseorder.shipvia.code }} - {{ purchaseorder.shipvia.description }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Freight Paid By:</div>
+					<div class="col-sm-7 text-right">{{ purchaseorder.freight_paidby()|capitalize }}</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+
+			</div>
+		</div>
+	</div>
+</div>
