@@ -9,6 +9,7 @@ include(__DIR__.'/DocumentManagementPurchaseOrders.trait.php');
 include(__DIR__.'/DocumentManagementSalesOrders.trait.php');
 include(__DIR__.'/DocumentManagementQuotes.trait.php');
 include(__DIR__.'/DocumentManagementIi.trait.php');
+include(__DIR__.'/DocumentManagementCi.trait.php');
 
 class DocumentManagement extends WireData implements Module {
 	use DocumentManagementVi;
@@ -16,6 +17,7 @@ class DocumentManagement extends WireData implements Module {
 	use DocumentManagementSalesOrders;
 	use DocumentManagementQuotes;
 	use DocumentManagementIi;
+	use DocumentManagementCi;
 
 	const TAG_ARINVOICES = 'AR';
 	const TAG_SALESORDER = 'SO';
@@ -36,46 +38,7 @@ class DocumentManagement extends WireData implements Module {
 
 	public function init() {
 		$this->vi_init();
-
-
-		$this->addHook('Page(pw_template=ci-documents)::documentload', function($event) {
-			$page = $event->object;
-			$folder   = $event->arguments(0);
-			$document = $event->arguments(1);
-			$custID   = $event->arguments(2);
-			$url = $this->wire('pages')->get('pw_template=ci-documents')->url;
-			$event->return = $url."?custID=$custID&folder=$folder&document=$document";
-		});
-
-
-		$this->addHook('Page(pw_template=ci-sales-orders|ci-sales-history|ci-customer-po)::documentsview_salesorder', function($event) {
-			$page = $event->object;
-			$custID    = $event->arguments(0);
-			$ordn      = $event->arguments(1);
-			$url = new Url($this->wire('pages')->get('pw_template=ci-documents')->url);
-			$url->query->set('custID', $custID);
-			$url->query->set('folder', self::TAG_SALESORDER);
-			$url->query->set('ordn', $ordn);
-
-			if (SalesHistoryQuery::create()->filterByOrdernumber(SalesOrder::get_paddedordernumber($ordn))->count()) {
-				$date = $page->fullURL->query->get('date');
-				$url->query->set('date', $date);
-				$url->query->set('folder', self::TAG_ARINVOICES);
-			}
-
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page(pw_template=ci-quotes)::documentsview_quote', function($event) {
-			$page = $event->object;
-			$custID    = $event->arguments(0);
-			$qnbr      = $event->arguments(1);
-			$url = new Url($this->wire('pages')->get('pw_template=ci-documents')->url);
-			$url->query->set('custID', $custID);
-			$url->query->set('folder', self::TAG_QUOTE);
-			$url->query->set('qnbr', $qnbr);
-			$event->return = $url->getUrl();
-		});
+		$this->ci_init();
 		$this->ii_init();
 		$this->mso_init();
 		$this->mqo_init();
@@ -92,8 +55,6 @@ class DocumentManagement extends WireData implements Module {
 		$tag = strtoupper($tagname);
 		return constant("self::TAG_$tag");
 	}
-
-
 
 	/**
 	 * Finds a Document from the Documents table and creates a copy
