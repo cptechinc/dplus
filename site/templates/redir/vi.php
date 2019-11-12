@@ -157,6 +157,7 @@
 			} else {
 				$url = new Purl\Url($pages->get('pw_template=vi-costing')->url);
 				$url->query->set('vendorID', $vendorID);
+				$url->query->set('itemID', $itemID);
 				$session->loc = $url->getUrl();
 			}
 			break;
