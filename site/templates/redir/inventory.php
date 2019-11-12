@@ -296,7 +296,7 @@
 			// $item->setLotserialref($input->$requestmethod->text('lotserialref'));
 			$item->setBin($input->$requestmethod->text('binID'));
 			$item->setQty($input->$requestmethod->text('qty'));
-			$item->setProductiondate($input->$requestmethod->text('productiondate'));
+			$item->setProductiondate(date('Ymd', strtotime($input->$requestmethod->text('productiondate'))));
 			$item->save();
 			$session->bin = $input->$requestmethod->text('binID');
 
@@ -316,21 +316,26 @@
 
 			if ($input->$requestmethod->page) {
 				$url = new Purl\Url($input->$requestmethod->text('page'));
+				$url->query->set('ponbr', $ponbr);
 			} else {
-				$url = new Purl\Url($pages->get('pw_template=whse-receive'));
+				$url = new Purl\Url($pages->get('pw_template=whse-receiving')->url);
+				$url->query->set('ponbr', $ponbr);
 			}
+			$session->loc = $url->getUrl();
 			break;
 		case 'receiving-search':
+			$ponbr = $input->$requestmethod->text('ponbr');
 			$q = strtoupper($input->$requestmethod->text('scan'));
-			$data = array("DBNAME=$dplusdb", 'RECEIVINGSEARCH', "QUERY=$q");
+			$data = array("DBNAME=$dplusdb", 'RECEIVINGSEARCH', "QUERY=$q", "PONBR=$ponbr");
 
 			if ($input->$requestmethod->page) {
 				$url = new Purl\Url($input->$requestmethod->text('page'));
 			} else {
 				$url = new Purl\Url($pages->get('pw_template=whse-receiving'));
 			}
-
+			$url->query->set('ponbr', $ponbr);
 			$url->query->set('scan', $q);
+
 			$session->loc = $url->getUrl();
 			break;
 		case 'receiving-submit':
@@ -343,12 +348,14 @@
 			$item = $query_phys->findOne();
 			$item->setItemid($input->$requestmethod->text('itemID'));
 			$item->setLotserial($input->$requestmethod->text('lotserial'));
-			// Lot Serial Ref is Read-Only currently 8/23
-			// $item->setLotserialref($input->$requestmethod->text('lotserialref'));
+			$item->setLotserialref($input->$requestmethod->text('lotserialref'));
 			$item->setBin($input->$requestmethod->text('binID'));
 			$item->setQty($input->$requestmethod->text('qty'));
+			$item->setProductiondate(date('Ymd', strtotime($input->$requestmethod->text('productiondate'))));
 			$item->save();
-			$session->bin = $input->$requestmethod->text('binID');
+
+			$session->receiving_itemid = $item->itemid;
+			$session->receiving_bin = $item->bin;
 
 			$data = array("DBNAME=$dplusdb", 'ACCEPTRECEIVING', "PONBR=$ponbr");
 
@@ -358,7 +365,7 @@
 				$url = new Purl\Url($pages->get('pw_template=whse-receiving'));
 				$url->query->set('ponbr', $ponbr);
 			}
-			$url->query->set('scan', $scan);
+			$url->query->remove('scan');
 			$session->loc = $url->getUrl();
 			break;
 	}

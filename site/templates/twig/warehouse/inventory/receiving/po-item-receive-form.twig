@@ -1,0 +1,74 @@
+<form action="{{ page.formurl }}" method="get" class="form-reset allow-enterkey-submit mb-4" id="po-item-receive-form">
+	<input type="hidden" name="action" value="receiving-submit">
+	<input type="hidden" name="ponbr" value="{{ page.ponbr }}">
+	<input type="hidden" name="scan" value="{{ item.scan }}">
+	<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
+
+	<h3>Scanned Item Details</h3>
+
+	<div class="form-group">
+		<label for="itemID">Item ID</label>
+		<div class="input-group">
+			<input type="text" class="form-control" id="itemID" name="itemID" value="{{ item.itemid }}" data-itemtype="">
+		</div>
+	</div>
+
+	{% if (item.is_item_serialized() or item.is_item_lotted()) %}
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label for="lotserial">Lot / Serial</label>
+					<div class="input-group">
+						<input type="text" class="form-control" id="lotserial" name="lotserial" value="{{ item.lotserial }}">
+					</div>
+					{% if (item.is_item_lotted()) %}
+						<small class="form-text text-muted">If blank, Lot Number will be created and assigned</small>
+					{% endif %}
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label for="lotserialref">Lot/Serial Ref</label>
+					<div class="input-group">
+						<input type="text" class="form-control" id="lotserialref" name="lotserialref" value="{{ item.lotserialref }}">
+					</div>
+				</div>
+			</div>
+		</div>
+	{% else %}
+		<input type="hidden" name="lotserial" value="">
+		<input type="hidden" name="lotserialref" value="">
+	{% endif %}
+
+	<div class="form-group">
+		<label for="bin">Bin ID</label>
+		<div class="input-group">
+			<input type="text" class="form-control" id="bin" name="binID" value="{{ item.bin }}">
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label for="productiondate">Production Date</label>
+				{% include 'util/date-picker.twig' with {'name': 'productiondate', 'id': 'productiondate', 'value': item.productiondate ? item.productiondate|convertdate('m/d/Y') : "now"|date("m/d/Y")} %}
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label for="qty">Qty</label>
+				<div class="input-group">
+					<input type="text" class="form-control text-right qty-input" id="qty" name="qty" value="{{ item.qty }}" data-validated="false">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="d-flex w-100 justify-content-between">
+		<button type="submit" class="btn btn-success btn-lg">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Submit
+		</button>
+		<a href="{{ page.ponbrURL() }}" class="btn-clear btn btn-danger btn-lg">
+			<i class="fa fa-window-close" aria-hidden="true"></i> Cancel
+		</a>
+	</div>
+</form>
