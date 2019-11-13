@@ -32,6 +32,21 @@ class DpagesMpo extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
+		'purchase-order-view' => array(
+			'name'   => 'purchase-order-view',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'purchase-order-documents' => array(
+			'name'   => 'purchase-order-documents',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'purchase-order-notes' => array(
+			'name'   => 'purchase-order-notes',
+			'fields' => array(),
+			'paginated' => true
+		),
 	);
 
 	const PAGES = array(
@@ -70,6 +85,24 @@ class DpagesMpo extends Dpages implements Module {
 			'dplus_function' => '',
 			'pw_template'    => 'purchase-order-view'
 		),
+		'po-documents' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'documents',
+			'title'          => 'Purchase Order Documents',
+			'summary'        => 'View Purchase Order Documents',
+			'parent'         => '/mpo/purchase-order/',
+			'dplus_function' => '',
+			'pw_template'    => 'purchase-order-documents'
+		),
+		'po-notes' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'notes',
+			'title'          => 'Purchase Order Notes',
+			'summary'        => 'View Purchase Order Notes',
+			'parent'         => '/mpo/purchase-order/',
+			'dplus_function' => '',
+			'pw_template'    => 'purchase-order-notes'
+		),
 		'purchase-history-list' => array(
 			'template'       => 'dplus-function',
 			'name'           => 'purchase-history',
@@ -80,6 +113,30 @@ class DpagesMpo extends Dpages implements Module {
 			'pw_template'    => 'purchase-history-orders'
 		),
 	);
+
+	public function init_purchaseorder_hooks() {
+		/**
+		 * Returns Purchase Order Notes URL
+		 */
+		$this->addHook('Page::view_notesURL', function($event) {
+			$p = $event->object;
+			$ponbr = $event->arguments(0);
+			$linenbr = $event->arguments(1);
+			$url = new Url($this->wire('pages')->get('pw_template=purchase-order-notes')->url);
+			$url->query->set('ponbr', $ponbr);
+			$hash = $linenbr > 0 ? "#line-$linenbr" : '';
+			$event->return = $url->getUrl()."$hash";
+		});
+
+		$this->addHook('Page::view_purchaseorderURL', function($event) {
+			$p = $event->object;
+			$ponbr = $event->arguments(0);
+			$url = new Url($this->wire('pages')->get('pw_template=purchase-order-view')->url);
+			$url->query->set('ponbr', $ponbr);
+			$event->return = $url->getUrl();
+		});
+
+	}
 
 	/**
 	 * Returns URL to Purchase Orders Page

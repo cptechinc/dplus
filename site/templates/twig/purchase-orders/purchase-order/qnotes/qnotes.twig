@@ -1,0 +1,25 @@
+<div class="mb-3">
+	{% include 'purchase-orders/purchase-order/qnotes/header-notes.twig' with {'notes': purchaseorder.get_notes()} %}
+</div>
+
+<h3>Item Notes</h3>
+{% for item in purchaseorder.getPurchaseOrderDetails() %}
+	<div class="mb-3">
+		<div class="card" id="line-{{ item.linenbr }}">
+			<div class="card-header bg-primary text-white font-weight-bold">
+				Line # {{ item.linenbr ~ ': ' ~ item.itemid }}
+			</div>
+			<div class="card-body">
+				{% if item.count_notes() > 0 %}
+					{% for note in item.get_notes() %}
+						<p class="card-text">{{ note.note }}</p>
+					{% endfor %}
+				{% else %}
+					<p class="card-text">
+						No notes found
+					</p>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+{% endfor %}
