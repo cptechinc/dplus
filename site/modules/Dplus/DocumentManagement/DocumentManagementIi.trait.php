@@ -1,4 +1,4 @@
-<?php
+<?php namespace ProcessWire;
 
 use DocumentFoldersQuery, DocumentFolders;
 use DocumentsQuery, Documents;

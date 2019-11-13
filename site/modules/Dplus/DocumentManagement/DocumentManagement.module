@@ -1,4 +1,4 @@
-<?php
+<?php namespace ProcessWire;
 
 use Purl\Url;
 use DocumentFoldersQuery, DocumentFolders;
@@ -42,6 +42,7 @@ class DocumentManagement extends WireData implements Module {
 		$this->ii_init();
 		$this->mso_init();
 		$this->mqo_init();
+		$this->mpo_init();
 	}
 
 	/**

@@ -1,4 +1,4 @@
-<?php
+<?php namespace ProcessWire;
 
 use DocumentFoldersQuery, DocumentFolders;
 use DocumentsQuery, Documents;
@@ -23,7 +23,7 @@ trait DocumentManagementQuotes {
 	}
 
 	public function get_quote_docsURL($qnbr, $folder, $document) {
-		$url = new Purl\Url($this->wire('pages')->get('pw_template=quote-documents')->url);
+		$url = new Url($this->wire('pages')->get('pw_template=quote-documents')->url);
 		$url->query->set('qnbr', $qnbr);
 		$url->query->set('folder', $folder);
 		$url->query->set('document', $document);

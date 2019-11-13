@@ -1,10 +1,37 @@
-<?php
+<?php namespace ProcessWire;
 
+use Purl\Url;
 use DocumentFoldersQuery, DocumentFolders;
 use DocumentsQuery, Documents;
 use PurchaseOrderQuery, PurchaseOrder;
 
 trait DocumentManagementPurchaseOrders {
+	public function mpo_init() {
+		$this->addHook('Page(pw_template=purchase-order-view)::documentload', function($event) {
+			$page = $event->object;
+			$folder   = $event->arguments(0);
+			$document = $event->arguments(1);
+			$ponbr    = $event->arguments(2);
+			$event->return = $this->get_purchaseorder_docsURL($ponbr, $folder, $document);
+		});
+
+		$this->addHook('Page(pw_template=purchase-order-documents)::documentload', function($event) {
+			$page = $event->object;
+			$folder   = $event->arguments(0);
+			$document = $event->arguments(1);
+			$ponbr    = $event->arguments(2);
+			$event->return = $this->get_purchaseorder_docsURL($ponbr, $folder, $document);
+		});
+	}
+
+	public function get_purchaseorder_docsURL($ponbr, $folder, $document) {
+		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-documents')->url);
+		$url->query->set('ponbr', $ponbr);
+		$url->query->set('folder', $folder);
+		$url->query->set('document', $document);
+		return $url->getUrl();
+	}
+
 	/**
 	 * Return Documents objects filtered by the tag1, reference1 fields for a Purchase Order
 	 * @param  string $ponbr                      Purchase Order Number
