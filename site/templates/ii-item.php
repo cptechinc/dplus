@@ -30,7 +30,6 @@
 				$stock = $config->twig->render('items/ii/item/stock.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint()]);
 			} else {
 				if ($session->itemtry > 3) {
-					$page->headline = $page->title = "Kit File could not be loaded";
 					$stock = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "JSON Decode Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => $module_json->get_error()]);
 				} else {
 					$session->itemtry++;
