@@ -2,6 +2,9 @@
 
 {% block nav_links %}
 	<li class="nav-item">
+		<a class="nav-link" href="{{ pages.get('template=menu').url }}">{{ pages.get('template=menu').title }}</a>
+	</li>
+	<li class="nav-item">
 		<a class="nav-link" href="{{ pages.get('template=dashboard').url }}">{{ pages.get('template=dashboard').title }}</a>
 	</li>
 	{% if user.has_function('ci') %}
