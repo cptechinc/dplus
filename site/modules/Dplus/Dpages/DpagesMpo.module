@@ -136,6 +136,13 @@ class DpagesMpo extends Dpages implements Module {
 			$event->return = $url->getUrl();
 		});
 
+		$this->addHook('Page::view_apinvoiceURL', function($event) {
+			$p = $event->object;
+			$invnbr = $event->arguments(0);
+			$url = new Url($this->wire('pages')->get('pw_template=purchase-order-view')->url);
+			$url->query->set('invnbr', $invnbr);
+			$event->return = $url->getUrl();
+		});
 	}
 
 	/**

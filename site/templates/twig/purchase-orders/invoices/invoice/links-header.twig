@@ -1,8 +1,8 @@
 <div class="mb-3">
 	<div class="row">
-		<div class="col">
+		<div class="col col-sm-8">
 			<a href="{{ page.listpage.url }}" class="btn btn-light">
-				<i class="fa fa-list" aria-hidden="true"></i> Back to Purchase Orders List
+				<i class="fa fa-list" aria-hidden="true"></i> Back to AP Invoices List
 			</a>
 			&nbsp;
 			<a href="#" class="btn btn-light" aria-label="Return to last page" onclick="window.history.back();">
@@ -12,9 +12,14 @@
 			<a href="{{ page.get_printURL() }}" class="btn btn-primary" target="_blank" aria-label="View Printable" title="View Printable">
 				<i class="fa fa-print" aria-hidden="true"></i> View Print
 			</a>
+			&nbsp;
+			<a href="{{ page.view_purchaseorderURL(invoice.ponbr) }}" class="btn btn-secondary">
+				View Purchase Order
+			</a>
 		</div>
-		<div class="col text-right">
-			{% if document_management.count_purchaseorderdocuments(purchaseorder.ponbr) %}
+		<div class="col col-sm-4 text-right">
+			{#
+			{% if document_management.count_salesorderdocuments(order.ordernumber) %}
 				<a href="#documents" title="View Documents" aria-label="View Documents">
 					<i class="fa fa-file-text fa-2x" aria-hidden="true"></i>
 				</a>
@@ -23,14 +28,10 @@
 					<i class="fa fa-file-text fa-2x text-light" aria-hidden="true"></i>
 				</span>
 			{% endif %}
-			&nbsp;
-			<a href="#notes" class="{{ purchaseorder.count_notes() ? 'text-success' : 'text-muted'}}" title="View Notes" aria-label="View Notes">
+			<a href="#notes" class="{{ order.count_notes() ? 'text-success' : 'text-muted'}}" title="View Notes" aria-label="View Notes">
 				<i class="fa fa-sticky-note-o fa-2x" aria-hidden="true"></i>
 			</a>
-			&nbsp;
-			<a href="#invoices" class="{{ purchaseorder.countApInvoices() ? '' : 'text-light'}}" title="View Invoices" aria-label="View Invoices">
-				<i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i>
-			</a>
+			#}
 		</div>
 	</div>
 </div>
