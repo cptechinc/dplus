@@ -23,7 +23,7 @@
 			if ($json['error']) {
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 			} else {
-				$page->body .= $config->twig->render('vendors/vi/uninvoiced/uninvoiced.twig', ['page' => $page, 'vendorID' => $vendorID, 'json' => $json, 'document_management' => $document_management]);
+				$page->body .= $config->twig->render('vendors/vi/uninvoiced/uninvoiced.twig', ['page' => $page, 'vendorID' => $vendorID, 'json' => $json, 'module_json' => $module_json, 'document_management' => $document_management]);
 			}
 		} else {
 			if ($session->uninvoicedtry > 3) {
