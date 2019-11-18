@@ -1,6 +1,7 @@
 <?php
 	// TODO : INVOICED
 	$modules->get('DpagesMpo')->init_purchaseorder_hooks();
+	$document_management = $modules->get('DocumentManagement');
 
 	if ($input->get->ponbr) {
 		$ponbr = PurchaseOrder::get_paddedponumber($input->get->text('ponbr'));
@@ -9,9 +10,7 @@
 		if ($query->count()) {
 			$page->title = "Purchase Order #$ponbr";
 			$purchaseorder = $query->findOne();
-			$document_management = $modules->get('DocumentManagement');
 			$documents = $document_management->get_purchaseorderdocuments($ponbr);
-			$page->listpage = $pages->get('pw_template=purchase-orders');
 
 			$page->body .= $config->twig->render('purchase-orders/purchase-order/links-header.twig', ['page' => $page, 'purchaseorder' => $purchaseorder]);
 			$page->body .= $config->twig->render('purchase-orders/purchase-order/purchase-order.twig', ['page' => $page, 'purchaseorder' => $purchaseorder]);
@@ -29,15 +28,14 @@
 		if ($query->count()) {
 			$page->title = "AP Invoice #$invnbr";
 			$invoice = $query->findOne();
-			$page->listpage = $pages->get('pw_template=purchase-history-orders');
-			$page->body .= $config->twig->render('purchase-orders/invoices/invoice/links-header.twig', ['page' => $page, 'invoice' => $invoice]);
+			$documents = $document_management->get_purchasehistorydocuments($invnbr);
+			$page->body .= $config->twig->render('purchase-orders/invoices/invoice/links-header.twig', ['page' => $page, 'invoice' => $invoice, 'document_management' => $document_management]);
 			$page->body .= $config->twig->render('purchase-orders/invoices/invoice/invoice.twig', ['page' => $page, 'invoice' => $invoice]);
+			$page->body .= $config->twig->render('purchase-orders/invoices/invoice/documents.twig', ['page' => $page, 'invnbr' => $invnbr, 'documents' => $documents]);
 		} else {
 			$page->headline = $page->title = "AP Invoice #$invnbr could not be found";
 			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Check if the AP Invoice Number is correct"]);
 		}
-
-
 
 	} else {
 		$page->title = 'Enter a Purchase Order Number';
