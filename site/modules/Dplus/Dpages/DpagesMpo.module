@@ -112,6 +112,15 @@ class DpagesMpo extends Dpages implements Module {
 			'dplus_function' => '',
 			'pw_template'    => 'purchase-history-orders'
 		),
+		'purchase-history-list-vendor' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'vendor',
+			'title'          => 'Vendor Purchase History',
+			'summary'        => 'View Vendor Purchase Order History',
+			'parent'         => '/mpo/purchase-history/',
+			'dplus_function' => '',
+			'pw_template'    => 'purchase-history-orders-vendor'
+		),
 	);
 
 	public function init_purchaseorder_hooks() {
@@ -136,6 +145,17 @@ class DpagesMpo extends Dpages implements Module {
 			$event->return = $url->getUrl();
 		});
 
+		$this->addHook('Page::get_purchaseordersURL', function($event) {
+			$event->return = $this->wire('pages')->get('pw_template=purchase-orders')->url;
+		});
+
+		$this->addHook('Page::get_purchaseorders_vendorURL', function($event) {
+			$vendorID = $event->arguments(0);
+			$url = new Url($this->wire('pages')->get('pw_template=purchase-orders-vendor')->url);
+			$url->query->set('vendorID', $vendorID);
+			$event->return = $url->getUrl();
+		});
+
 		$this->addHook('Page::view_apinvoiceURL', function($event) {
 			$p = $event->object;
 			$invnbr = $event->arguments(0);
@@ -144,10 +164,21 @@ class DpagesMpo extends Dpages implements Module {
 			$event->return = $url->getUrl();
 		});
 
+		$this->addHook('Page::get_purchasehistoryURL', function($event) {
+			$event->return = $this->wire('pages')->get('pw_template=purchase-history-orders')->url;
+		});
+
+		$this->addHook('Page::get_purchasehistory_vendorURL', function($event) {
+			$vendorID = $event->arguments(0);
+			$url = new Url($this->wire('pages')->get('pw_template=purchase-history-orders-vendor')->url);
+			$url->query->set('vendorID', $vendorID);
+			$event->return = $url->getUrl();
+		});
+
 		$this->addHook('Page::ii_itemURL', function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
-			$event->return = $this->wire('modules')->get('DpagesMii')->get_ii_loaditemURL($itemID);
+			$event->return = $this->wire('modules')->get('DpagesMii')->get_ii_itemURL($itemID);
 		});
 	}
 
