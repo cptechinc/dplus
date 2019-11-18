@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+use Purl\Url;
+
 use DocumentFoldersQuery, DocumentFolders;
 use DocumentsQuery, Documents;
 
