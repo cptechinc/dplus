@@ -1,4 +1,4 @@
-<div class="list-group">
+<div class="list-group mb-3">
 	<div class="list-group-item bg-dark text-white">
 		<div class="row">
 			<div class="col">Line #</div>
@@ -41,6 +41,7 @@
 							<div class="col">Lot Ref</div>
 							<div class="col">Qty</div>
 							<div class="col">Bin</div>
+							<div class="col">Remove</div>
 						</div>
 					</div>
 					{% for lot in item.get_receivedlots() %}
@@ -50,12 +51,17 @@
 								<div class="col">{{ lot.lotreference }}</div>
 								<div class="col"> {{ lot.qty_received }}</div>
 								<div class="col text-right">{{ lot.bin }}</div>
+								<div class="col">
+									<a href="{{ page.delete_received_itemURL(lot.ponbr, lot.linenbr, lot.sequence) }}" class="btn btn-danger"> Remove</a>
+								</div>
 							</div>
 						</div>
 					{% endfor %}
 				</div>
 			</div>
 		{% endif %}
-
 	{% endfor %}
 </div>
+<a href="{{ page.submit_receiptURL(ponbr) }}" class="btn btn-success">
+	<i class="fa fa-floppy-o" aria-hidden="true"></i> Submit
+</a>
