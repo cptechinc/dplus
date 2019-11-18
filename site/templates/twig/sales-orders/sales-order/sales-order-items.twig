@@ -12,7 +12,9 @@
 		{% for detail in order.getSalesOrderDetails() %}
 			<tr>
 				<td>
-					{{ detail.itemid }}</br>
+					<a href="{{ page.ii_itemURL(detail.itemid)}}" class="link" target="_blank" aria-label="View item in II" title="View item in II">
+						{{ detail.itemid }}
+					</a></br>
 					<small>{{ detail.desc1 }}</small>
 				</td>
 				<td class="text-right">{{ detail.qty_ordered|number_format() }}</td>
