@@ -13,7 +13,7 @@
 		<legend class="font-weight-bold text-secondary">Shipping to</legend>
 		<address>
 			{{ invoice.purchaseorder.shipto_name }} <br>
-			{{ invoice.purchaseorder.shipto_address1 }} <br>
+			{{ invoice.purchaseorder.shipto_address }} <br>
 			{% if (invoice.purchaseorder.shipto_address2) %}
 				{{ invoice.purchaseorder.shipto_address2 }} <br>
 			{% endif %}
