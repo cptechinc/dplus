@@ -13,7 +13,7 @@
 		<legend class="font-weight-bold text-secondary">Shipping to</legend>
 		<address>
 			{{ purchaseorder.shipto_name }} <br>
-			{{ purchaseorder.shipto_address1 }} <br>
+			{{ purchaseorder.shipto_address }} <br>
 			{% if (purchaseorder.shipto_address2) %}
 				{{ purchaseorder.shipto_address2 }} <br>
 			{% endif %}
@@ -49,11 +49,11 @@
 		<div class="row">
 			<div class="col-sm-6">
 				<div class="row">
-					<div class="col-sm-5">Status</div>
+					<div class="col-sm-5">Status:</div>
 					<div class="col-sm-7 text-right">{{ purchaseorder.status }}</div>
 				</div>
 				<div class="row">
-					<div class="col-sm-5">Items on Order</div>
+					<div class="col-sm-5">Items on Order:</div>
 					<div class="col-sm-7 text-right">{{ purchaseorder.countPurchaseOrderDetails() }}</div>
 				</div>
 				<div class="row">
@@ -72,9 +72,32 @@
 					<div class="col-sm-5">Freight Paid By:</div>
 					<div class="col-sm-7 text-right">{{ purchaseorder.freight_paidby()|capitalize }}</div>
 				</div>
+				<div class="row">
+					<div class="col-sm-5">FOB:</div>
+					<div class="col-sm-7 text-right">{{ purchaseorder.fob }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Tax Exempt:</div>
+					<div class="col-sm-7 text-right">{{ purchaseorder.tax_exempt|yesorno|capitalize }}</div>
+				</div>
 			</div>
 			<div class="col-sm-6">
-
+				<div class="row">
+					<div class="col-sm-5">Order Date:</div>
+					<div class="col-sm-7 text-right">{{ purchaseorder.date_ordered|convertdate }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Ship Date:</div>
+					<div class="col-sm-7 text-right">{{ purchaseorder.date_shipped ? purchaseorder.date_shipped|convertdate : '' }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Expected Date:</div>
+					<div class="col-sm-7 text-right">{{ purchaseorder.date_expected ? purchaseorder.date_expected|convertdate : '' }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Cancel Date:</div>
+					<div class="col-sm-7 text-right">{{ purchaseorder.date_cancelled ? purchaseorder.date_cancelled|convertdate : '' }}</div>
+				</div>
 			</div>
 		</div>
 	</div>

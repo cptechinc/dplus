@@ -1,4 +1,4 @@
-<?php
+<?php namespace ProcessWire;
 
 use Purl\Url;
 use DocumentFoldersQuery, DocumentFolders;
@@ -27,7 +27,7 @@ trait DocumentManagementSalesOrders {
 	}
 
 	public function get_salesorder_docsURL($ordn, $folder, $document) {
-		$url = new Purl\Url($this->wire('pages')->get('pw_template=sales-order-documents')->url);
+		$url = new Url($this->wire('pages')->get('pw_template=sales-order-documents')->url);
 		$url->query->set('ordn', $ordn);
 		$url->query->set('folder', $folder);
 		$url->query->set('document', $document);

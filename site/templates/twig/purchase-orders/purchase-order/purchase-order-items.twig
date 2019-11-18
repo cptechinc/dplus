@@ -1,0 +1,27 @@
+<table class="table table-striped table-borderless">
+	<thead class="bg-dark text-white font-weight-bold">
+		<tr>
+			<th>Item ID</th>
+			<th>Whse</th>
+			<th>Special Order</th>
+			<th class="text-right">Qty</th>
+			<th class="text-right">Price</th>
+			<th class="text-right">Total Price</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for detail in purchaseorder.getPurchaseOrderDetails() %}
+			<tr>
+				<td>
+					{{ detail.itemid }}</br>
+					<small>{{ detail.description }}</small>
+				</td>
+				<td>{{ detail.whse }}</td>
+				<td>{{ detail.specialorder }}</td>
+				<td class="text-right">{{ detail.qty_ordered|number_format() }}</td>
+				<td class="text-right">$ {{ detail.cost|currency }}</td>
+				<td class="text-right">$ {{ detail.cost_total|currency }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

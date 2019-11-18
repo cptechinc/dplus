@@ -1,4 +1,4 @@
-<?php
+<?php namespace ProcessWire;
 
 use Purl\Url;
 
@@ -16,7 +16,7 @@ trait DocumentManagementVi {
 			$page = $event->object;
 			$vendorID   = $event->arguments(0);
 			$ponbr      = $event->arguments(1);
-			$url = new Url($this->get_vi_docs_folderURL($custID, self::TAG_VENDORPO));
+			$url = new Url($this->get_vi_docs_folderURL($vendorID, self::TAG_VENDORPO));
 			$url->query->set('ponbr', $ponbr);
 			$event->return = $url->getUrl();
 		});
@@ -37,8 +37,8 @@ trait DocumentManagementVi {
 	 * @param  string $folder   Document Management Folder Code
 	 * @return string
 	 */
-	public function get_vi_docs_folderURL($custID, $folder) {
-		$url = new Url($this->wire('pages')->get('pw_template=ci-documents')->url);
+	public function get_vi_docs_folderURL($vendorID, $folder) {
+		$url = new Url($this->wire('pages')->get('pw_template=vi-documents')->url);
 		$url->query->set('vendorID', $vendorID);
 		$url->query->set('folder', $folder);
 		return $url->getUrl();
