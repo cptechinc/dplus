@@ -90,6 +90,16 @@ class DocumentManagement extends WireData implements Module {
 		return copy($srcfile, $newfile);
 	}
 
+	public function whereis_document($folder, $filename) {
+		$documents_master = DocumentsQuery::create();
+		$documents_master->filterByFolder($folder);
+		$documents_master->filterByFilename($filename);
+		$document = $documents_master->findOne();
+
+		$folder = DocumentFoldersQuery::create()->findOneByFolder($folder);
+		return "$folder->directory/$filename";
+	}
+
 	/**
 	 * Returns if file is already in the web access directory
 	 * @param  string $filename File Name

@@ -4,6 +4,7 @@ use Purl\Url;
 use DocumentFoldersQuery, DocumentFolders;
 use DocumentsQuery, Documents;
 use PurchaseOrderQuery, PurchaseOrder;
+use ApInvoiceQuery, ApInvoice;
 
 trait DocumentManagementPurchaseOrders {
 	public function mpo_init() {
@@ -12,7 +13,12 @@ trait DocumentManagementPurchaseOrders {
 			$folder   = $event->arguments(0);
 			$document = $event->arguments(1);
 			$ponbr    = $event->arguments(2);
-			$event->return = $this->get_purchaseorder_docsURL($ponbr, $folder, $document);
+
+			if (PurchaseOrderQuery::create()->filterByPonbr($ponbr)->count()) {
+				$event->return = $this->get_purchaseorder_docsURL($ponbr, $folder, $document);
+			} elseif (ApInvoiceQuery::create()->filterByInvoicenumber($ponbr)->count()) {
+				$event->return = $this->get_apinvoice_docsURL($ponbr, $folder, $document);
+			}
 		});
 
 		$this->addHook('Page(pw_template=purchase-order-documents)::documentload', function($event) {
@@ -20,13 +26,26 @@ trait DocumentManagementPurchaseOrders {
 			$folder   = $event->arguments(0);
 			$document = $event->arguments(1);
 			$ponbr    = $event->arguments(2);
-			$event->return = $this->get_purchaseorder_docsURL($ponbr, $folder, $document);
+
+			if (PurchaseOrderQuery::create()->filterByPonbr($ponbr)->count()) {
+				$event->return = $this->get_purchaseorder_docsURL($ponbr, $folder, $document);
+			} elseif (ApInvoiceQuery::create()->filterByInvoicenumber($ponbr)->count()) {
+				$event->return = $this->get_apinvoice_docsURL($ponbr, $folder, $document);
+			}
 		});
 	}
 
 	public function get_purchaseorder_docsURL($ponbr, $folder, $document) {
 		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-documents')->url);
 		$url->query->set('ponbr', $ponbr);
+		$url->query->set('folder', $folder);
+		$url->query->set('document', $document);
+		return $url->getUrl();
+	}
+
+	public function get_apinvoice_docsURL($invnbr, $folder, $document) {
+		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-documents')->url);
+		$url->query->set('invnbr', $invnbr);
 		$url->query->set('folder', $folder);
 		$url->query->set('document', $document);
 		return $url->getUrl();
@@ -98,19 +117,33 @@ trait DocumentManagementPurchaseOrders {
 		if ($ponbr) {
 			$column_tag = Documents::get_aliasproperty('tag');
 			$column_reference1 = Documents::get_aliasproperty('reference1');
+			$column_reference2 = Documents::get_aliasproperty('reference2');
+
 			// Create Invoices Filter
 			$documents_master->condition('tag_invoices', "Documents.$column_tag = ?", self::TAG_APINVOICE);
 			$documents_master->condition('reference1_invoices', "Documents.$column_reference1 = ?", $invnbr);
 			$documents_master->combine(array('tag_invoices', 'reference1_invoices'), 'and', 'cond_invoices') ;
 
+			// Create Invoices Filter
+			$documents_master->condition('tag_invoices', "Documents.$column_tag = ?", self::TAG_APINVOICE);
+			$documents_master->condition('reference2_invoices', "Documents.$column_reference2 = ?", $invnbr);
+			$documents_master->combine(array('tag_invoices', 'reference2_invoices'), 'and', 'cond_invoices2') ;
+
 			// Create Vendor PO Filter
 			$documents_master->condition('tag_vendorpo', "Documents.$column_tag = ?", self::TAG_VENDORPO);
 			$documents_master->condition('reference1_vendorpo', "Documents.$column_reference1 = ?", $ponbr);
 			$documents_master->combine(array('tag_vendorpo', 'reference1_vendorpo'), 'and', 'cond_vendorpo');
-			$documents_master->where(array('cond_invoices', 'cond_vendorpo'), 'or');
+			$documents_master->where(array('cond_invoices', 'cond_invoices2', 'cond_vendorpo'), 'or');
 		} else {
-			$documents_master->filterByTag('AP');
-			$documents_master->filterByReference1($invnbr);
+			$documents_master->filterByTag(self::TAG_VENDORPO);
+			$column_reference1 = Documents::get_aliasproperty('reference1');
+			$column_reference2 = Documents::get_aliasproperty('reference2');
+
+			// Create Invoices Filter
+			$documents_master->condition('reference1_invoices', "Documents.$column_reference1 = ?", $invnbr);
+			$documents_master->condition('reference2_invoices', "Documents.$column_reference2 = ?", $invnbr);
+			$documents_master->combine(array('reference1_invoices', 'reference2_invoices'), 'or', 'cond_invoices');
+			$documents_master->where(array('cond_invoices'));
 		}
 	}
 }
