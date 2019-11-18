@@ -65,6 +65,7 @@
 				'uninvoiced'    => 'viuninvoiced',
 				'24monthsummary'=> 'vimonthsum',
 				'costing'       => 'vicost',
+				'sub'			=> 'visub',
 				'payments'      => 'vipayment',
 				'notes'         => 'vinotes'
 			)

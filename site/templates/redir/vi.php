@@ -161,6 +161,19 @@
 				$session->loc = $url->getUrl();
 			}
 			break;
+		case 'vi-sub':
+			$itemID = $input->get->text('itemID');
+			$data = array("DBNAME=$dplusdb", 'VISUB', "VENDID=$vendorID", "ITEMID=$itemID");
+
+			if ($input->$requestmethod->page) {
+				$session->loc = $input->$requestmethod->text('page');
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=vi-sub')->url);
+				$url->query->set('vendorID', $vendorID);
+				$url->query->set('itemID', $itemID);
+				$session->loc = $url->getUrl();
+			}
+			break;
 		case 'vi-payments':
 			$data = array("DBNAME=$dplusdb", 'VIPAYMENT', "VENDID=$vendorID");
 
