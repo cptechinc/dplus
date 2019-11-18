@@ -27,8 +27,7 @@
 				$notes = SalesHistoryNotesQuery::create()->filterByOrdernumber($ordn)->filterByLine(0)->find();
 				$documents = $document_management->get_saleshistorydocuments($ordn);
 			}
-
-			$shipments = SalesOrderShipmentQuery::create()->findByOrdernumber($ordn);
+			
 			$query_useractions = $module_useractions->get_actionsquery($input);
 			$actions = $query_useractions->filterBySalesorderlink($ordn)->find();
 			$page->body =  $config->twig->render("sales-orders/sales-$type/sales-$type-page.twig", ['page' => $page, 'order' => $order, 'user' => $user, 'document_management' => $document_management, 'notes' => $notes]);
