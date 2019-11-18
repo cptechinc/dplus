@@ -101,14 +101,20 @@
 			$page->body .= $html->h3('', 'PO Items');
 
 			if (file_exists($config->paths->templates."twig/warehouse/inventory/receiving/$config->company/po-items.twig")) {
-				$page->body .= $config->twig->render("warehouse/inventory/receiving/$config->company/po-items.twig", ['page' => $page, 'items' => $purchaseorder->get_receivingitems()]);
+				$page->body .= $config->twig->render("warehouse/inventory/receiving/$config->company/po-items.twig", ['page' => $page, 'ponbr' => $ponbr, 'items' => $purchaseorder->get_receivingitems()]);
 			} else {
-				$page->body .= $config->twig->render('warehouse/inventory/receiving/po-items.twig', ['page' => $page, 'items' => $purchaseorder->get_receivingitems()]);
+				$page->body .= $config->twig->render('warehouse/inventory/receiving/po-items.twig', ['page' => $page, 'ponbr' => $ponbr, 'items' => $purchaseorder->get_receivingitems()]);
 			}
-
-			$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('items' => $warehouse_receiving->get_purchaseorder_recevingdetails_js(), 'config_receive' => $warehouse_receiving->get_jsconfig())]);
+			$bins = WarehouseBinQuery::create()->get_warehousebins($whsesession->whseid)->toArray();
+			$jsconfig = array('warehouse' => array('id' => $whsesession->whseid, 'binarrangement' => $warehouse->get_binarrangementdescription(), 'bins' => $bins), 'items' => $warehouse_receiving->get_purchaseorder_recevingdetails_js(), 'config_receive' => $warehouse_receiving->get_jsconfig());
+			$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => $jsconfig]);
 			$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 			$config->scripts->append(hash_templatefile('scripts/warehouse/receiving.js'));
+
+			if ($session->removefromline) {
+				$page->js .= $config->twig->render('warehouse/inventory/receiving/remove-line.js.twig', ['ponbr' => $ponbr, 'linenbr' => $session->removefromline]);
+				$session->remove('removefromline');
+			}
 		} else {
 			$page->title = "PO # $ponbr Does Not Exist";
 			$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Check the Purchase Order Number and try again"]);
