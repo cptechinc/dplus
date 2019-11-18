@@ -1,17 +1,33 @@
 <div class="row mt-4">
 	<div class="col-sm-4">
-		<legend class="font-weight-bold text-secondary">Billing ({{ quote.custid }})</legend>
+		<legend class="font-weight-bold text-secondary">
+			Billing
+			<a href="{{ page.ci_customerURL(quote.custid) }}" class="text-secondary link" target="_blank" aria-label="View Customer in CI" title="View Customer in CI">
+				({{ quote.custid }})
+			</a>
+		</legend>
 		<address>
-			{{ quote.billto_name }} <br>
+			<a href="{{ page.ci_customerURL(quote.custid) }}" class="link" target="_blank" aria-label="View Customer in CI" title="View Customer in CI">
+				{{ quote.billto_name }}
+			</a>
+			<br>
 			{{ quote.billto_address1 }} <br>
 			{% if quote.billto_address2 %}
 				{{ quote.billto_address2 }} <br>
 			{% endif %}
 			{{ quote.billto_city ~ ', ' ~ quote.billto_state ~ ' ' ~ quote.billto_zip}}
 		</address>
-		<legend class="font-weight-bold text-secondary">Shipping ({{ quote.shiptoid }})</legend>
+		<legend class="font-weight-bold text-secondary">
+			Shipping
+			<a href="{{ page.ci_customershiptoURL(quote.custid, quote.shiptoid) }}" class="text-secondary link" target="_blank" aria-label="View Customer Shipto in CI" title="View Customer Shipto in CI">
+				({{ quote.shiptoid }})
+			</a>
+		</legend>
 		<address>
-			{{ quote.shipto_name }} <br>
+			<a href="{{ page.ci_customershiptoURL(quote.custid, quote.shiptoid) }}" class="link" target="_blank" aria-label="View Customer Shipto in CI" title="View Customer Shipto in CI">
+				{{ quote.shipto_name }}
+			</a>
+			<br>
 			{{ quote.shipto_address1 }} <br>
 			{% if (quote.shipto_address2) %}
 				{{ quote.shipto_address2 }} <br>

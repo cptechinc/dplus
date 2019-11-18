@@ -202,6 +202,19 @@ class DpagesMqo extends Dpages implements Module {
 			$quote = $event->arguments(0);
 			$event->return = $this->is_user_editingquote($user, $quote);
 		});
+
+		$this->addHook('Page::ci_customerURL', function($event) {
+			$p = $event->object;
+			$custID = $event->arguments(0);
+			$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customerURL($custID);
+		});
+
+		$this->addHook('Page::ci_customershiptoURL', function($event) {
+			$p = $event->object;
+			$custID = $event->arguments(0);
+			$shiptoID = $event->arguments(1);
+			$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customershiptoURL($custID, $shiptoID);
+		});
 	}
 
 	/**
