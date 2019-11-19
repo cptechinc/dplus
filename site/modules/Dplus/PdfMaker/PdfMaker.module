@@ -84,17 +84,34 @@ class PdfMaker extends WireData implements Module {
 		$this->options = self::DEFAULT_OPTIONS;
 		$this->wkhtmlpdf = new Wkhtmlpdf($this->options);
 
-		$this->addHook('Page::get_pdfURL', function($event) {
+		$this->addHook('Page::get_printpdfURL', function($event) {
 			$page = $event->object;
 			$url = new Url($page->fullURL->getUrl());
 			$url->query->set('print', 'true');
 			$url->query->set('pdf', 'true');
+			//$url->query->set('sessionID', session_id());
 			$event->return = $url->getUrl();
 		});
 
 		$this->addHook('Page::is_pdf', function($event) {
 			$page = $event->object;
 			$event->return = $page->pdf == true;
+		});
+
+		$this->addHook('Page(pw_template=sales-order-print)::get_downloadpdfURL', function($event) {
+			$page = $event->object;
+			$url = new Url($page->fullURL->path);
+			$url->query->set('ordn', $page->fullURL->query->get('ordn'));
+			$url->query->set('download', 'pdf');
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=quote-print)::get_downloadpdfURL', function($event) {
+			$page = $event->object;
+			$url = new Url($page->fullURL->path);
+			$url->query->set('qnbr', $page->fullURL->query->get('qnbr'));
+			$url->query->set('download', 'pdf');
+			$event->return = $url->getUrl();
 		});
 	}
 
@@ -152,6 +169,9 @@ class PdfMaker extends WireData implements Module {
 	 * @return string
 	 */
 	public function get_filename() {
+		if (!$this->filename) {
+			$this->filename = $this->generate_filename();
+		}
 		return $this->filename;
 	}
 
@@ -163,14 +183,19 @@ class PdfMaker extends WireData implements Module {
 		$this->wkhtmlpdf->setOptions($this->options);
 	}
 
+	public function generate_filename() {
+		$filename = str_replace("$this->filetype-", "$this->filetype-", $this->fileID);
+		return "$filename.pdf";
+	}
+
 	/**
 	 * Generates PDF
 	 * @return string
 	 */
 	public function generate_pdf() {
-		$filename = str_replace("$this->filetype-", "$this->filetype-", $this->fileID);
-		$file = $this->wire('config')->directory_webdocs."$filename.pdf";
-		$this->filename = "$filename.pdf";
+		$filename = $this->generate_filename();
+		$file = $this->wire('config')->directory_webdocs.$filename;
+		$this->filename = $filename;
 
 		if (file_exists($file)) {
 			unlink($file);
