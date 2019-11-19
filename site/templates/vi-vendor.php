@@ -40,8 +40,8 @@
 			}
 
 			$page->title = "VI: Searching for '$q'";
-			$col_vendorid = Customer::get_aliasproperty('vendorid');
-			$col_name = Customer::get_aliasproperty('name');
+			$col_vendorid = Vendor::get_aliasproperty('vendorid');
+			$col_name = Vendor::get_aliasproperty('name');
 			$columns = array($col_vendorid, $col_name);
 			$query->search_filter($columns, strtoupper($q));
 		}
@@ -49,7 +49,7 @@
 		if ($page->has_orderby()) {
 			$orderbycolumn = $page->orderby_column;
 			$sort = $page->orderby_sort;
-			$tablecolumn = Customer::get_aliasproperty($orderbycolumn);
+			$tablecolumn = Vendor::get_aliasproperty($orderbycolumn);
 			$query->sortBy($tablecolumn, $sort);
 		}
 
