@@ -163,7 +163,7 @@
 			break;
 		case 'vi-sub':
 			$itemID = $input->get->text('itemID');
-			$data = array("DBNAME=$dplusdb", 'VISUB', "VENDID=$vendorID", "ITEMID=$itemID");
+			$data = array("DBNAME=$dplusdb", 'VICOST', "VENDID=$vendorID", "ITEMID=$itemID");
 
 			if ($input->$requestmethod->page) {
 				$session->loc = $input->$requestmethod->text('page');
