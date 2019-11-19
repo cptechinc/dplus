@@ -13,7 +13,7 @@
 		$query->filterByItemid($itemID);
 
 		if ($query->count()) {
-			$page->title = "Item Information: $itemID";
+			$page->headline = "Item Information: $itemID";
 			$item = ItemMasterItemQuery::create()->findOneByItemid($itemID);
 			$itempricing = ItemPricingQuery::create()->findOneByItemid($itemID);
 			$module_json = $modules->get('JsonDataFiles');
