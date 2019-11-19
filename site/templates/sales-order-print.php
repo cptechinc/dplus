@@ -26,7 +26,6 @@
 			$dpluscustomer = $pages->get('/config/customer/');
 
 			if (!$page->is_pdf()) {
-				$page->pdfURL = "$page->url?ordn=$ordn&download=pdf";
 				$page->body .= $config->twig->render("sales-orders/sales-order/print/print-actions.twig", ['page' => $page]);
 				$page->body .= $html->div('class=clearfix mb-3');
 			}
@@ -42,18 +41,9 @@
 	} else {
 		$page->body = $config->twig->render('sales-orders/sales-order-lookup.twig', ['page' => $page]);
 	}
-
-
-	if ($page->print) {
-		if (!$page->is_pdf()) {
-			$page->show_title = false;
-			$pdfmaker = $modules->get('PdfMaker');
-			$pdfmaker->set_fileID("order-$order->ordernumber");
-			$pdfmaker->set_filetype('order');
-			$pdfmaker->set_url($page->get_pdfURL());
-			$pdfmaker->generate_pdf();
-		}
-	}
+	$pdfmaker = $modules->get('PdfMaker');
+	$pdfmaker->set_fileID("order-$order->ordernumber");
+	$pdfmaker->set_filetype('order');
 
 	if ($input->get->download) {
 		header("Content-type:application/pdf");
@@ -61,6 +51,10 @@
 		header("Content-Disposition:attachment;filename=".$pdfmaker->get_filename());
 		// The PDF source is in original.pdf
 		readfile($config->directory_webdocs.$pdfmaker->get_filename());
+	} elseif (!$page->is_pdf()) {
+		$page->show_title = false;
+		$pdfmaker->set_url($page->get_printpdfURL());
+		$pdfmaker->generate_pdf();
 	} else {
 		if ($page->print) {
 			$page->show_title = true;

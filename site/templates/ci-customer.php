@@ -23,10 +23,9 @@
 				$sales_orders = $load_customer->get_salesorders();
 				$sales_history = $load_customer->get_saleshistory();
 				$quotes = $load_customer->get_quotes();
-				$page->title = "CI: $customer->name";
+				$page->headline = "CI: $customer->name";
 				$toolbar = $config->twig->render('customers/ci/customer/toolbar.twig', ['page' => $page, 'custID' => $customer->id]);
-
-					$header =  $config->twig->render('customers/ci/customer/header.twig', ['page' => $page, 'customer' => $customer]);
+				$header =  $config->twig->render('customers/ci/customer/header.twig', ['page' => $page, 'customer' => $customer]);
 
 				$page->body = "<div class='row'>";
 					$page->body .= $html->div('class=col-sm-2', $toolbar);
@@ -43,8 +42,8 @@
 			}
 		} else {
 			$page->searchURL = $page->url;
-			$page->title = "User $user->name Does Not Have Access to $custID";
-			$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "User does not have permission to access this customer"]);
+			$page->headline = "User $user->name Does Not Have Access to $custID";
+			$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->headline, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "User does not have permission to access this customer"]);
 			$page->body .= $html->div('class=mb-3');
 			$page->body .= $config->twig->render('customers/search-form.twig', ['page' => $page]);
 		}
@@ -59,7 +58,7 @@
 				$session->redirect($page->url."?custID=$q");
 			}
 
-			$page->title = "CI: Searching for '$q'";
+			$page->headline = "CI: Searching for '$q'";
 			$col_custid = Customer::get_aliasproperty('custid');
 			$col_name = Customer::get_aliasproperty('name');
 			$columns = array($col_custid, $col_name);

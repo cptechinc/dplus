@@ -1,8 +1,16 @@
 <div class="row">
 	<div class="col-sm-4">
-		<legend class="font-weight-bold text-danger">Billing ({{ order.custid }})</legend>
+		<legend class="font-weight-bold text-danger">
+			Billing
+			<a href="{{ page.ci_customerURL(order.custid) }}" class="text-secondary link" target="_blank" aria-label="View Customer in CI" title="View Customer in CI">
+				({{ order.custid }})
+			</a>
+		</legend>
 		<address>
-			{{ customer.name }} <br>
+			<a href="{{ page.ci_customerURL(order.custid) }}" class="link" target="_blank" aria-label="View Customer in CI" title="View Customer in CI">
+				{{ order.customer.name }}
+			</a>
+			<br>
 			{{ customer.address1 }} <br>
 			{% if customer.address2 %}
 				{{ customer.address2 }} <br>
@@ -10,9 +18,17 @@
 			{{ customer.city ~ ', ' ~ customer.state ~ ' ' ~ customer.zip}}
 		</address>
 
-		<legend class="font-weight-bold text-danger">Shipping ({{ order.shiptoid }})</legend>
+		<legend class="font-weight-bold text-danger">
+			Shipping
+			<a href="{{ page.ci_customershiptoURL(order.custid, order.shiptoid) }}" class="text-secondary link" target="_blank" aria-label="View Customer Shipto in CI" title="View Customer Shipto in CI">
+				({{ order.shiptoid }})
+			</a>
+		</legend>
 		<address>
-			{{ order.shipto_name }} <br>
+			<a href="{{ page.ci_customershiptoURL(order.custid, order.shiptoid) }}" class="link" target="_blank" aria-label="View Customer Shipto in CI" title="View Customer Shipto in CI">
+				{{ order.shipto_name }}
+			</a>
+			<br>
 			{{ order.shipto_address1 }} <br>
 			{% if (order.shipaddress2) %}
 				{{ order.shipaddress2 }} <br>
