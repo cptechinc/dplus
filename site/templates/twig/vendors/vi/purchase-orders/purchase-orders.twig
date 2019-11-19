@@ -44,7 +44,7 @@
 									{% set ponbr = order['Purchase Order Number'] %}
 									{% set vendorID = json['vendid'] %}
 									{% if document_management.count_purchaseorderdocuments(ponbr) %}
-										<a href="{{ page.documentsview_po(vendorID, ponbr)}}" class="text-success" title="View Documents for PO # {{ ponbr }}">
+										<a href="{{ page.documentsview_po(vendorID, ponbr) }}" class="text-success" title="View Documents for PO # {{ ponbr }}">
 											<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for PO # {{ ponbr }}</span>
 										</a>
 									{% endif %}
@@ -69,13 +69,13 @@
 						{% if blueprint['detail']['rows'][x]['columns'][i] %}
 							{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 							{% set colspan = column['col-length'] %}
-							<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['headingjustify']) }}">
+							<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['headingjustify']) }}">
 								{{ column['label'] }}
-							</td>
+							</th>
 						{% else %}
 							{% if columncount < blueprint['cols'] %}
 								{% set colspan = 1 %}
-								<td></td>
+								<th></th>
 							{% endif %}
 						{% endif %}
 						{% set columncount = columncount + colspan %}
@@ -107,6 +107,23 @@
 				{% endfor %}
 			{% endfor %}
 
+			{% if order['ordernotes']|length > 0 %}
+				<tr>
+					<td></td>
+					<td colspan="{{ blueprint['cols'] - 1}}">
+						<strong>Order Notes:</strong>
+					</td>
+				</tr>
+				{% for x in 1..blueprint['detail']['rowcount'] + 1 %}
+					<tr>
+						<td></td>
+						<td colspan="{{ blueprint['cols'] - 1}}">
+							{{ order['ordernotes'][x]['Order Notes'] }}
+						</td>
+					</tr>
+				{% endfor %}
+			{% endif %}
+
 			{% for x in 1..blueprint['detail']['rowcount']  %}
 				<tr class="bg-gray font-weight-bold">
 					{% set columncount = 0 %}
@@ -134,6 +151,10 @@
 				</tr>
 			{% endfor %}
 		{% endfor %}
+		<tr>
+			{% set colspan = blueprint['cols'] %}
+			<td colspan="{{ colspan }}"></td>
+		</tr>
 	</tbody>
 	<tfoot>
 		{% for x in 1..blueprint['detail']['rowcount']  %}
