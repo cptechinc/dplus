@@ -95,8 +95,8 @@ class DpagesMso extends Dpages implements Module {
 			'name'           => 'print',
 			'title'          => 'Print Sales Order',
 			'summary'        => 'Print Sales Order',
-			'parent'         => '/mso/',
-			'dplus_function' => 'mso',
+			'parent'         => '/mso/sales-order/',
+			'dplus_function' => '',
 			'pw_template'    => 'sales-order-print'
 		),
 		'sales-order-edit' => array(
