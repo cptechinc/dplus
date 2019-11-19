@@ -14,7 +14,7 @@
 			$barcoder = $modules->get('BarcodeMaker');
 
 			if (!$page->is_pdf()) {
-				$page->pdfURL = "$page->url?qnbr=$qnbr&download=pdf";
+				$page->pdfURL = $page->get_downloadpdfURL();
 				$page->body .= $config->twig->render("quotes/quote/print/print-actions.twig", ['page' => $page]);
 				$page->body .= $html->div('class=clearfix mb-3');
 			}
@@ -32,16 +32,11 @@
 		$page->body = $config->twig->render('quotes/quote/lookup-form.twig', ['page' => $page]);
 	}
 
-	if ($page->print) {
-		if (!$page->is_pdf()) {
-			$page->show_title = false;
-			$pdfmaker = $modules->get('PdfMaker');
-			$pdfmaker->set_fileID("quote-$quote->quotenumber");
-			$pdfmaker->set_filetype('quote');
-			$pdfmaker->set_url($page->get_pdfURL());
-			$pdfmaker->generate_pdf();
-		}
-	}
+	$pdfmaker = $modules->get('PdfMaker');
+	$pdfmaker->set_fileID("quote-$quote->quotenumber");
+	$pdfmaker->set_filetype('quote');
+
+
 
 	if ($input->get->download) {
 		header("Content-type:application/pdf");
@@ -49,6 +44,10 @@
 		header("Content-Disposition:attachment;filename=".$pdfmaker->get_filename());
 		// The PDF source is in original.pdf
 		readfile($config->directory_webdocs.$pdfmaker->get_filename());
+	} elseif (!$page->is_pdf()) {
+		$page->show_title = false;
+		$pdfmaker->set_url($page->get_printpdfURL());
+		$pdfmaker->generate_pdf();
 	} else {
 		if ($page->print) {
 			$page->show_title = true;
