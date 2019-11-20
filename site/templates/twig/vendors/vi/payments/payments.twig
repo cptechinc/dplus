@@ -30,28 +30,26 @@
 		{% endif %}
 
 		{% for invoice in json['data']['payments'] %}
-			{% for detail in invoice['details'] %}
-				{% for x in 1..blueprint['detail']['rowcount']  %}
-					<tr class="first-txn-row">
-						{% set columncount = 0 %}
-						{% for i in 1..blueprint['cols'] + 1 %}
-							{% set colspan = 0 %}
-							{% if blueprint['detail']['rows'][x]['columns'][i] %}
-								{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
-								{% set colspan = column['col-length'] %}
-								<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-									{{ module_formatter.format_celldata(detail, column) }} &nbsp;
-								</td>
-							{% else %}
-								{% if columncount < blueprint['cols'] %}
-									{% set colspan = 1 %}
-									<td></td>
-								{% endif %}
+			{% for x in 1..blueprint['detail']['rowcount']  %}
+				<tr class="first-txn-row">
+					{% set columncount = 0 %}
+					{% for i in 1..blueprint['cols'] + 1 %}
+						{% set colspan = 0 %}
+						{% if blueprint['detail']['rows'][x]['columns'][i] %}
+							{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
+							{% set colspan = column['col-length'] %}
+							<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
+								{{ module_formatter.format_celldata(invoice, column) }} &nbsp;
+							</td>
+						{% else %}
+							{% if columncount < blueprint['cols'] %}
+								{% set colspan = 1 %}
+								<td></td>
 							{% endif %}
-							{% set columncount = columncount + colspan %}
-						{% endfor %}
-					</tr>
-				{% endfor %}
+						{% endif %}
+						{% set columncount = columncount + colspan %}
+					{% endfor %}
+				</tr>
 			{% endfor %}
 		{% endfor %}
 	</tbody>

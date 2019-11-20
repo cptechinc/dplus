@@ -10,7 +10,9 @@
     			"label": "PO #",
                 "before-decimal": false,
                 "after-decimal": false,
-                "date-format": false
+                "date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
             },
             "Invoice Number": {
                 "line": 1,
@@ -19,7 +21,9 @@
     			"label": "Invc #",
                 "before-decimal": false,
                 "after-decimal": false,
-                "date-format": false
+                "date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
             },
             "Check Number": {
                 "line": 1,
@@ -28,7 +32,9 @@
     			"label": "Check No",
                 "before-decimal": false,
                 "after-decimal": false,
-                "date-format": false
+                "date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
             },
             "Check Status": {
                 "line": 1,
@@ -37,7 +43,9 @@
     			"label": "Check Stat",
                 "before-decimal": false,
                 "after-decimal": false,
-                "date-format": false
+                "date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
             },
             "Check Date": {
                 "line": 1,
@@ -46,7 +54,9 @@
     			"label": "Pay Date",
                 "before-decimal": false,
                 "after-decimal": false,
-                "date-format": "m/d/Y"
+                "date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
             },
             "Invoice Date": {
                "line": 1,
@@ -55,7 +65,9 @@
     			"label": "Invc Date",
                 "before-decimal": false,
                 "after-decimal": false,
-                "date-format": "m/d/Y"
+                "date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
             },
             "Due Date": {
                "line": 1,
@@ -64,7 +76,9 @@
     			"label": "Due Date",
                 "before-decimal": false,
                 "after-decimal": false,
-                "date-format": "m/d/Y"
+                "date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
             },
             "Discount Date": {
                 "line": 0,
@@ -73,7 +87,9 @@
     			"label": "Disc Date",
                 "before-decimal": false,
                 "after-decimal": false,
-                "date-format": "m/d/Y"
+                "date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
             },
             "Void Date": {
                 "line": 0,
@@ -82,7 +98,9 @@
     			"label": "Void Date",
                 "before-decimal": false,
                 "after-decimal": false,
-                "date-format": "m/d/Y"
+                "date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
             },
             "Payment Days": {
                 "line": 1,
@@ -91,7 +109,9 @@
     			"label": "Days",
                 "before-decimal": false,
                 "after-decimal": false,
-                "date-format": false
+                "date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
             },
             "Overdue Days": {
                 "line": 1,
@@ -100,7 +120,9 @@
     			"label": "Past Due",
                 "before-decimal": false,
                 "after-decimal": false,
-                "date-format": false
+                "date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
             },
             "Paid + Discount Amount": {
                 "line": 1,
@@ -109,7 +131,9 @@
     			"label": "Paid/Disc",
                 "before-decimal": 6,
                 "after-decimal": 2,
-                "date-format": false
+                "date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
             },
             "Payment Amount": {
                 "line": 0,
@@ -118,7 +142,9 @@
     			"label": "Pymt Amt",
                 "before-decimal": 8,
                 "after-decimal": 0,
-                "date-format": false
+                "date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
             },
             "Discount Amount": {
                 "line": 0,
@@ -127,7 +153,9 @@
     			"label": "Disc Amt",
                 "before-decimal": 8,
                 "after-decimal": false,
-                "date-format": false
+                "date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
             }
         }
     }

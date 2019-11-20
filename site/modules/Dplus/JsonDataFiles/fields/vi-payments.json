@@ -1,5 +1,5 @@
 {
-	"header": {
+	"detail": {
 		"Purchase Order Number": {
 			"type": "I",
 			"headingjustify": "r",
