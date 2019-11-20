@@ -26,8 +26,8 @@
     </tbody>
 </table>
 
-<div class="card">
-    <h5 class="card-header">{{ json['columns']['internal notes']['internal note']['heading'] }}</h5>
+<div class="card bg-primary">
+    <h5 class="card-header text-white">{{ json['columns']['internal notes']['internal note']['heading'] }}</h5>
     <ul class="list-group list-group-flush">
         {% for i in 1..json['data']['internal notes']|length %}
             <li class="list-group-item">{{ json['data']['internal notes'][i]['internal note'] }}</li>

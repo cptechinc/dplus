@@ -9,7 +9,7 @@
 
 		if ($load_vendor->vendor_exists()) {
 			$vendor = $load_vendor->get_vendor();
-			$page->title = "VI: $vendor->name";
+			$page->headline = "VI: $vendor->name";
 
 			$toolbar = $config->twig->render('vendors/vi/vendor/toolbar.twig', ['page' => $page, 'vendorID' => $vendor->vendorid]);
 			$header  = $config->twig->render('vendors/vi/vendor/header.twig', ['page' => $page, 'vendor' => $vendor]);
@@ -23,8 +23,8 @@
 			$page->body .= $config->twig->render('vendors/vi/vendor/invoices-panel.twig', ['page' => $page, 'resultscount' => $vendor->countApInvoices(), 'invoices' => $load_vendor->get_invoices()]);
 		} else {
 			$page->searchURL = $page->url;
-			$page->title = "Vendor $vendorID Not Found";
-			$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Check the Vendor ID is correct"]);
+			$page->headline = "Vendor $vendorID Not Found";
+			$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->headline, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Check the Vendor ID is correct"]);
 			$page->body .= $html->div('class=mb-3');
 			$page->body = $config->twig->render('vendors/search-form.twig', ['page' => $page]);
 		}
@@ -39,7 +39,7 @@
 				$session->redirect($page->get_vi_vendorURL($q));
 			}
 
-			$page->title = "VI: Searching for '$q'";
+			$page->headline = "VI: Searching for '$q'";
 			$col_vendorid = Vendor::get_aliasproperty('vendorid');
 			$col_name = Vendor::get_aliasproperty('name');
 			$columns = array($col_vendorid, $col_name);
