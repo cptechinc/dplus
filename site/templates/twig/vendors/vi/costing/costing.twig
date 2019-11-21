@@ -27,4 +27,8 @@
     </tbody>
 </table>
 
-{{ json['data']['super/sub']['super/sub label'] }}
+{% if json['data']['super/sub']['super/sub label'] == 'Supercedes/Substitutes Exist' %}
+    <a href="{{ sublink }}" class="btn btn-info not-round">
+        {{ json['data']['super/sub']['super/sub label'] }}&ensp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
+    </a>
+{% endif %}

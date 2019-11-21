@@ -26,7 +26,8 @@
 				if ($json['error']) {
 					$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 				} else {
-					$page->body .= $config->twig->render('vendors/vi/costing/costing.twig', ['page' => $page, 'vendorID' => $vendorID, 'json' => $json, 'document_management' => $document_management]);
+					$sublink = $page->get_visubURL($vendorID, $itemID);
+					$page->body .= $config->twig->render('vendors/vi/costing/costing.twig', ['page' => $page, 'vendorID' => $vendorID, 'json' => $json, 'sublink' => $sublink, 'document_management' => $document_management]);
 				}
 			} else {
 				if ($session->costingtry > 3) {
