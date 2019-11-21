@@ -37,10 +37,14 @@
 			if ($query_shipfrom->count() == 1) {
 				$shipfrom = $query_shipfrom->findOne();
 				$session->redirect($page->get_vi_vendorshipfromURL($vendorID, $shipfrom->shipfromid));
-			} else {
+			} elseif ($query_shipfrom->count() != 0) {
 				$shipfroms = $query->shipfrom->find();
 				//$page->body .= $config->twig->render('vendors/ci/bread-crumbs.twig', ['page' => $page, 'vendor' => $vendor]);
 				$page->body .= $config->twig->render('vendors/vi/shipfrom/shipfrom-list.twig', ['page' => $page, 'vendor' => $vendor, 'shipfroms' => $shipfroms]);
+			} else {
+				$page->headline = $page->title = "Ship Froms could not be loaded";
+				$page->body = $config->twig->render('vendors/vi/vi-links.twig', ['page' => $page, 'refreshurl' => $refreshurl]);
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "No Ship Froms Available", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "No Ship Froms Available"]);
 			}
 		}
 	}
