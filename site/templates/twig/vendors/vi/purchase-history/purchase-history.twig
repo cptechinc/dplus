@@ -8,7 +8,7 @@
 					{% if blueprint['detail']['rows'][x]['columns'][i] %}
 						{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 						{% set colspan = column['col-length'] %}
-						<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['headingjustify']) }}">
+						<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['label-justify']) }}">
 							{{ column['label'] }}
 						</th>
 					{% else %}
@@ -41,7 +41,7 @@
 								{% set colspan = column['col-length'] %}
 								<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
 									{{ module_formatter.format_celldata(detail, column) }} &nbsp;
-									{% if column['id'] == 'Purchase Order Number' or column['id'] == 'Invoice Number' %}
+									{% if column['id'] == 'Invoice Number' %}
 										{% set invnbr = detail['Invoice Number'] %}
 										{% set vendorID = json['vendid'] %}
 										{% if document_management.count_purchasehistorydocuments(invnbr) %}

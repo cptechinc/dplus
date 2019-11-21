@@ -1,4 +1,3 @@
-{{ blueprint|json_encode() }}
 <table class="table table-striped table-sm">
 	<thead>
 		{% for x in 1..blueprint['header']['rowcount'] %}
@@ -9,7 +8,7 @@
 					{% if blueprint['header']['rows'][x]['columns'][i] %}
 						{% set column = blueprint['header']['rows'][x]['columns'][i] %}
 						{% set colspan = column['col-length'] %}
-						<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['headingjustify']) }}">
+						<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['label-justify']) }}">
 							{{ column['label'] }}
 						</th>
 					{% else %}
@@ -70,7 +69,7 @@
 						{% if blueprint['detail']['rows'][x]['columns'][i] %}
 							{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 							{% set colspan = column['col-length'] %}
-							<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['headingjustify']) }}">
+							<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['label-justify']) }}">
 								{{ column['label'] }}
 							</th>
 						{% else %}
