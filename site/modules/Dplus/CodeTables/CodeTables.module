@@ -1,0 +1,46 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+include_once(__DIR__.'/CodeTablesResponse.php');
+
+class CodeTables extends WireData implements Module {
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Codes Tables Management',
+			'version' => 101,
+			'summary' => 'Module for Codes Tables Managment',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+	public function update_dplus_cobol($table, $code) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$table = strtoupper($table);
+		$data = array("DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code");
+		$this->write_dplusfile($data, session_id());
+		$http = new WireHttp();
+		$http->get("127.0.0.1/cgi-bin/".$config->cgis['database']."?fname=".session_id());
+	}
+
+	/**
+	 * Writes an array one datem per line into the dplus directory
+	 * @param  array $data      Array of Lines for the request
+	 * @param  string $filename What to name File
+	 * @return void
+	 */
+	function write_dplusfile($data, $filename) {
+		$file = '';
+		foreach ($data as $line) {
+			$file .= $line . "\n";
+		}
+		$vard = "/usr/capsys/ecomm/" . $filename;
+		$handle = fopen($vard, "w") or die("cant open file");
+		fwrite($handle, $file);
+		fclose($handle);
+	}
+
+}
