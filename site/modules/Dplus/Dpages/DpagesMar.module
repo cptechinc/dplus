@@ -1,0 +1,110 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+/**
+ * class Dpages
+ *
+ * Installs fields, templates, pages, hooks necessary for Top Menus
+ * NOTE: Also installs the basic fields, templates, to build the rest of the Application
+ */
+class DpagesMar extends Dpages implements Module {
+	const FIELDS = array(
+		'codetable' => array(
+			'name'  => 'codetable',
+			'type'  => 'text',
+			'label' => 'Code Table'
+		)
+	);
+
+	const TEMPLATES = array(
+		'ar-code-table-menu' => array(
+			'name'   => 'ar-code-table-menu',
+			'fields' => array()
+		),
+		'ar-code-table' => array(
+			'name'   => 'ar-code-table',
+			'fields' => array()
+		),
+	);
+
+	const PAGES = array(
+		'mar' => array(
+			'template'       => 'dplus-menu',
+			'name'           => 'mar',
+			'title'          => 'Accounts Receivable Menu',
+			'summary'        => '',
+			'parent'         => '/',
+			'dplus_function' => 'mar'
+		),
+		'armain' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'ar-code-table-menu',
+			'name'           => 'armain',
+			'title'          => 'Maintenance',
+			'summary'        => 'Accounts Receivable Maintenance',
+			'parent'         => '/mar/',
+			'dplus_function' => 'armain'
+		),
+		'ar-code-table' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'ar-code-table',
+			'name'           => 'table',
+			'title'          => 'View Code Table',
+			'summary'        => 'View AR Code Table',
+			'parent'         => '/mar/armain/',
+			'dplus_function' => ''
+		),
+	);
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public function init() {
+		/**
+		 * Returns Sales Order Page URL
+		 */
+		$this->addHook('Page(pw_template=ar-code-table-menu|ar-code-table)::get_codetable_viewURL', function($event) {
+			$table = $event->arguments(0);
+			$event->return = $this->get_codetable_viewURL($table);
+		});
+
+		$this->addHook('Page(pw_template=ar-code-table)::get_codetable_code_deleteURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_code_deleteURL($table, $code);
+		});
+	}
+
+	public function get_codetable_viewURL($table) {
+		$url = new Url($this->wire('pages')->get('pw_template=ar-code-table')->url);
+		$url->query->set('table', $table);
+		return $url->getUrl();
+	}
+
+	public function get_codetable_code_deleteURL($table, $code) {
+		$url = new Url($this->wire('pages')->get('pw_template=ar-code-table')->url);
+		$url->query->set('action', 'remove-code');
+		$url->query->set('table', $table);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus AR Pages Modules',
+			'version' => 101,
+			'summary' => 'Installs and creates AR Pages',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('DplusPwPages'),
+			'installs' => array(),
+		);
+	}
+}
