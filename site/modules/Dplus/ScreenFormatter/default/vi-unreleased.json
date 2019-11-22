@@ -303,7 +303,7 @@
 				"after-decimal": 3,
 				"date-format": false,
 				"data-justify": "right",
-				"label-justify": "left"
+				"label-justify": "right"
 			},
 			"Quantity Received": {
 				"line": 0,
@@ -314,7 +314,7 @@
 				"after-decimal": 3,
 				"date-format": false,
 				"data-justify": "right",
-				"label-justify": "left"
+				"label-justify": "right"
 			},
 			"Quantity On Order": {
 				"line": 0,
@@ -325,7 +325,7 @@
 				"after-decimal": 3,
 				"date-format": false,
 				"data-justify": "right",
-				"label-justify": "left"
+				"label-justify": "right"
 			},
 			"Unit Cost": {
 				"line": 1,
@@ -336,7 +336,7 @@
 				"after-decimal": 3,
 				"date-format": false,
 				"data-justify": "right",
-				"label-justify": "left"
+				"label-justify": "right"
 			},
 			"Total Amount": {
 				"line": 1,
@@ -347,7 +347,7 @@
 				"after-decimal": 3,
 				"date-format": false,
 				"data-justify": "right",
-				"label-justify": "left"
+				"label-justify": "right"
 			}
 		}
 	}

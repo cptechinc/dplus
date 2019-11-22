@@ -44,8 +44,8 @@
 				"before-decimal": false,
 				"after-decimal": false,
 				"date-format": "m/d/Y",
-				"data-justify": "right",
-				"label-justify": "right"
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Discount Date": {
 				"line": 0,
@@ -55,8 +55,8 @@
 				"before-decimal": false,
 				"after-decimal": false,
 				"date-format": "m/d/Y",
-				"data-justify": "right",
-				"label-justify": "right"
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Due Date": {
 				"line": 1,
@@ -66,8 +66,8 @@
 				"before-decimal": false,
 				"after-decimal": false,
 				"date-format": "m/d/Y",
-				"data-justify": "right",
-				"label-justify": "right"
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Amount - Total": {
 				"line": 1,

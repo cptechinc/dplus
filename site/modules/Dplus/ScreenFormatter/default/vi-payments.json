@@ -110,8 +110,8 @@
                 "before-decimal": false,
                 "after-decimal": false,
                 "date-format": false,
-				"data-justify": "left",
-				"label-justify": "left"
+				"data-justify": "right",
+				"label-justify": "right"
             },
             "Overdue Days": {
                 "line": 1,
@@ -121,8 +121,8 @@
                 "before-decimal": false,
                 "after-decimal": false,
                 "date-format": false,
-				"data-justify": "left",
-				"label-justify": "left"
+				"data-justify": "right",
+				"label-justify": "right"
             },
             "Paid + Discount Amount": {
                 "line": 1,
