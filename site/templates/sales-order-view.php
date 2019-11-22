@@ -17,24 +17,20 @@
 
 			if (SalesOrderQuery::create()->filterByOrdernumber($ordn)->count()) {
 				$order = SalesOrderQuery::create()->findOneByOrdernumber($ordn);
-				$order_items = SalesOrderDetailQuery::create()->filterByOrdernumber($ordn)->find();
 				$page->listpage = $pages->get('pw_template=sales-orders');
 				$notes = SalesOrderNotesQuery::create()->filterByOrdernumber($ordn)->filterByLine(0)->find();
 				$documents = $document_management->get_salesorderdocuments($ordn);
 			} elseif (SalesHistoryQuery::create()->filterByOrdernumber($ordn)->count()) {
 				$type = 'history';
 				$order = SalesHistoryQuery::create()->findOneByOrdernumber($ordn);
-				$order_items = SalesHistoryDetailQuery::create()->filterByOrdernumber($ordn)->find();
 				$page->listpage = $pages->get('pw_template=sales-history-orders');
 				$notes = SalesHistoryNotesQuery::create()->filterByOrdernumber($ordn)->filterByLine(0)->find();
 				$documents = $document_management->get_saleshistorydocuments($ordn);
 			}
 
-			$customer = CustomerQuery::create()->findOneByCustid($order->custid);
-			$shipments = SalesOrderShipmentQuery::create()->findByOrdernumber($ordn);
 			$query_useractions = $module_useractions->get_actionsquery($input);
 			$actions = $query_useractions->filterBySalesorderlink($ordn)->find();
-			$page->body =  $config->twig->render("sales-orders/sales-$type/sales-$type-page.twig", ['page' => $page, 'customer' => $customer, 'order' => $order, 'order_items' => $order_items, 'user' => $user, 'document_management' => $document_management, 'notes' => $notes]);
+			$page->body =  $config->twig->render("sales-orders/sales-$type/sales-$type-page.twig", ['page' => $page, 'order' => $order, 'user' => $user, 'document_management' => $document_management, 'notes' => $notes]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-tracking.twig', ['page' => $page, 'order' => $order, 'shipments' => $shipments, 'urlmaker' => $modules->get('DplusURLs')]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/documents.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'ordn' => $ordn]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/qnotes.twig', ['page' => $page, 'notes' => $notes, 'ordn' => $ordn]);

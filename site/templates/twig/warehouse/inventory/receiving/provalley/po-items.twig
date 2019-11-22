@@ -1,4 +1,4 @@
-<div class="list-group">
+<div class="list-group mb-3">
 	<div class="list-group-item bg-dark text-white">
 		<div class="row">
 			<div class="col">Line #</div>
@@ -10,18 +10,53 @@
 		</div>
 	</div>
 	{% for item in items %}
-		<a href="{{ page.linenbrURL(item.linenbr)}}" class="list-group-item list-group-item-action">
+		<div class="list-group-item first-txn-row">
 			<div class="row">
-				<div class="col">{{ item.linenbr }}</div>
+				<div class="col">
+					<button type="button" class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#{{ (item.linenbr ~ '-lotserial')|attrJS }}" aria-expanded="false" aria-controls="{{ (item.linenbr ~ '-lotserial')|attrJS }}">
+						{{ item.linenbr }}
+					</button>
+				</div>
 				<div class="col-4">
 					<b>{{ item.itemid }}</b> <br>
 					<small>{{ item.description }}</small>
 				</div>
 				<div class="col">{{ item.vendoritemid }}</div>
 				<div class="col text-right">{{ item.qty_ordered|number_format() }}</div>
-				<div class="col text-right">{{ item.qty_received|number_format() }}</div>
-				<div class="col text-right">{{ item.qty_remaining()|number_format() }}</div>
+				<div class="col text-right">{{ item.count_receivedlots()|number_format() }}</div>
+				<div class="col text-right">{{ item.qty_ordered|number_format() - item.count_receivedlots()|number_format() }}</div>
 			</div>
-		</a>
+		</div>
+		<div class="collapse" id="{{ (item.linenbr ~ '-lotserial')|attrJS }}">
+			<div class="list-group">
+				<div class="list-group-item bg-dark text-white">
+					<div class="row">
+						<div class="col">Lot #</div>
+						<div class="col">Lot Ref</div>
+						<div class="col">Production Date</div>
+						<div class="col">Weight</div>
+						<div class="col">Bin</div>
+						<div class="col"></div>
+					</div>
+				</div>
+				{% for lot in item.get_receivedlots() %}
+					<div class="list-group-item">
+						<div class="row">
+							<div class="col">{{ lot.lotserial }}</div>
+							<div class="col">{{ lot.lotreference }}</div>
+							<div class="col">{{ lot.date_production|convertdate }}</div>
+							<div class="col">{{ lot.qty_received }}</div>
+							<div class="col text-right">{{ lot.bin }}</div>
+							<div class="col">
+								<a href="{{ page.delete_received_itemURL(lot.ponbr, lot.linenbr, lot.sequence) }}" class="btn btn-danger"> Remove</a>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
 	{% endfor %}
 </div>
+<a href="{{ page.submit_receiptURL(ponbr) }}" class="btn btn-success">
+	<i class="fa fa-floppy-o" aria-hidden="true"></i> Submit
+</a>

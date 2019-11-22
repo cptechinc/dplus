@@ -9,10 +9,13 @@
 		</tr>
 	</thead>
 	<tbody>
-		{% for detail in quote.get_items() %}
+		{% for detail in quote.getQuoteDetails() %}
 			<tr>
 				<td>
-					{{ detail.itemid }}</br>
+					<a href="{{ page.ii_itemURL(detail.itemid)}}" class="link" target="_blank" aria-label="View item in II" title="View item in II">
+						{{ detail.itemid }}
+					</a>
+					</br>
 					<small>{{ detail.description }}</small>
 				</td>
 				<td class="text-right">{{ detail.qty|number_format() }}</td>

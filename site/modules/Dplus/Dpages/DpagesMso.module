@@ -95,8 +95,8 @@ class DpagesMso extends Dpages implements Module {
 			'name'           => 'print',
 			'title'          => 'Print Sales Order',
 			'summary'        => 'Print Sales Order',
-			'parent'         => '/mso/',
-			'dplus_function' => 'mso',
+			'parent'         => '/mso/sales-order/',
+			'dplus_function' => '',
 			'pw_template'    => 'sales-order-print'
 		),
 		'sales-order-edit' => array(
@@ -224,9 +224,7 @@ class DpagesMso extends Dpages implements Module {
 		 */
 		$this->addHook('Page::view_orderURL', function($event) {
 			$ordn = $event->arguments(0);
-			$url = new Url($this->wire('pages')->get('pw_template=sales-order-view')->url);
-			$url->query->set('ordn', $ordn);
-			$event->return = $url->getUrl();
+			$event->return = $this->get_salesorder_viewURL($ordn);
 		});
 
 		/**
@@ -239,6 +237,36 @@ class DpagesMso extends Dpages implements Module {
 			$url->query->set('ordn', $ordn);
 			$event->return = $url->getUrl();
 		});
+
+		$this->addHook('Page::ii_itemURL', function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$event->return = $this->wire('modules')->get('DpagesMii')->get_ii_itemURL($itemID);
+		});
+
+		$this->addHook('Page::ci_customerURL', function($event) {
+			$p = $event->object;
+			$custID = $event->arguments(0);
+			$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customerURL($custID);
+		});
+
+		$this->addHook('Page::ci_customershiptoURL', function($event) {
+			$p = $event->object;
+			$custID = $event->arguments(0);
+			$shiptoID = $event->arguments(1);
+			$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customershiptoURL($custID, $shiptoID);
+		});
+	}
+
+	/**
+	 * Returns URL to view Sales Order
+	 * @param  string $ordn Sales Order Number
+	 * @return string
+	 */
+	public function get_salesorder_viewURL($ordn) {
+		$url = new Url($this->wire('pages')->get('pw_template=sales-order-view')->url);
+		$url->query->set('ordn', $ordn);
+		return $url->getUrl();
 	}
 
 	/**

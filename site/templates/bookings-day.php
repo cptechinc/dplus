@@ -25,7 +25,6 @@
 			$page->ordn = $ordn;
 			$page->title = "Bookings for Order # $ordn on $date";
 			$lines = $filter_bookings->bookings_day->get_day_salesorder_changes($input)->find();
-			$page->salesorderURL = $pages->get('pw_template=sales-order-view')->url."?ordn=$ordn";
 			$page->body .= $config->twig->render("bookings/bread-crumbs.twig", ['page' => $page]);
 			$page->body .= $config->twig->render("bookings/day/sales-order-changes.twig", ['page' => $page, 'lines' => $lines]);
 		} else {

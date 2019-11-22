@@ -20,7 +20,7 @@
 					$module_json->remove_file(session_id(), $page->jsoncode);
 					$session->redirect($page->get_itemkitURL($itemID));
 				}
-				$session->activitytry = 0;
+				$session->kittry = 0;
 				$refreshurl = $page->get_itemkitURL($itemID);
 				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 
@@ -35,11 +35,11 @@
 				$page->body .= $config->twig->render('items/ii/components/kit-screen.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'itemID' => $itemID]);
 
 			} else {
-				if ($session->activitytry > 3) {
+				if ($session->kittry > 3) {
 					$page->headline = $page->title = "Kit File could not be loaded";
 					$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
 				} else {
-					$session->activitytry++;
+					$session->kittry++;
 					$session->redirect($page->get_itemkitURL($itemID));
 				}
 			}

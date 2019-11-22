@@ -52,7 +52,7 @@ if ($page->id != $config->errorpage_dplusdb) {
 
 	$templates_nosignin = array('login', 'redir');
 
-	if ($input->get->pdf) {
+	if ($input->get->pdf || $input->get->print) {
 
 	} elseif (!in_array($page->template, $templates_nosignin) && LogpermQuery::create()->is_loggedin(session_id()) == false) {
 		$session->redirect($pages->get('template=login')->url, $http301 = false);

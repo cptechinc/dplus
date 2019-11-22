@@ -1,0 +1,112 @@
+<div class="row mt-4">
+	<div class="col-sm-4">
+		<legend class="font-weight-bold text-secondary">Billed From ({{ invoice.purchaseorder.vendorid }})</legend>
+		<address>
+			{{ invoice.vendor.name }} <br>
+			{{ invoice.vendor.address }} <br>
+			{% if invoice.vendor.address2 %}
+				{{ invoice.vendor.address2 }} <br>
+			{% endif %}
+			{{ invoice.vendor.city ~ ', ' ~ invoice.vendor.state ~ ' ' ~ invoice.vendor.zip}}
+		</address>
+
+		<legend class="font-weight-bold text-secondary">Shipping to</legend>
+		<address>
+			{{ invoice.purchaseorder.shipto_name }} <br>
+			{{ invoice.purchaseorder.shipto_address }} <br>
+			{% if (invoice.purchaseorder.shipto_address2) %}
+				{{ invoice.purchaseorder.shipto_address2 }} <br>
+			{% endif %}
+			{{ invoice.purchaseorder.shipto_city ~ ', ' ~ invoice.purchaseorder.shipto_state ~ ' ' ~ invoice.purchaseorder.shipto_zip}}
+		</address>
+
+		<legend class="font-weight-bold text-secondary">Contact</legend>
+		<div class="row">
+			<div class="col-sm-5">Contact:</div>
+			<div class="col-sm-7 text-right">{{ invoice.purchaseorder.contact }}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5">Phone:</div>
+			<div class="col-sm-7 text-right">
+				<a href="tel:{{ invoice.purchaseorder.phone }}" class="link">{{ invoice.purchaseorder.phone|phone_us }}</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5">Fax:</div>
+			<div class="col-sm-7 text-right">
+				<a href="tel:{{ invoice.purchaseorder.fax }}" class="link">{{ invoice.purchaseorder.fax|phone_us }}</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5">Email:</div>
+			<div class="col-sm-7">
+				<a href="mailto:{{ invoice.purchaseorder.email }}" class="link">{{ invoice.purchaseorder.email }}</a>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-8">
+		<legend class="font-weight-bold text-secondary text-center">Invoice Summary</legend>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="row">
+					<div class="col-sm-5">PO #:</div>
+					<div class="col-sm-7 text-right">
+						<a href="{{ page.view_purchaseorderURL(invoice.ponbr) }}" class="link" aria-label="View Purchase Order # {{ invoice.ponbr }}" title="View Purchase Order # {{ invoice.ponbr }}">
+							{{ invoice.ponbr }}
+						</a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Items on Invoice:</div>
+					<div class="col-sm-7 text-right">{{ invoice.count_details() }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Reference:</div>
+					<div class="col-sm-7 text-right">{{ invoice.purchaseorder.poref }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Buyer:</div>
+					<div class="col-sm-7 text-right">{{ invoice.purchaseorder.vendor.buyer_1 }} - {{ invoice.purchaseorder.vendor.get_buyer_x_name(1) }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Shipvia:</div>
+					<div class="col-sm-7 text-right">{{ invoice.purchaseorder.shipvia.code }} - {{ invoice.purchaseorder.shipvia.description }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Freight Paid By:</div>
+					<div class="col-sm-7 text-right">{{ invoice.purchaseorder.freight_paidby()|capitalize }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">FOB:</div>
+					<div class="col-sm-7 text-right">{{ invoice.purchaseorder.fob }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Tax Exempt:</div>
+					<div class="col-sm-7 text-right">{{ invoice.purchaseorder.tax_exempt|yesorno|capitalize }}</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="row">
+					<div class="col-sm-5">Invoice Date:</div>
+					<div class="col-sm-7 text-right">{{ invoice.date_invoiced|convertdate }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Order Date:</div>
+					<div class="col-sm-7 text-right">{{ invoice.purchaseorder.date_ordered|convertdate }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Ship Date:</div>
+					<div class="col-sm-7 text-right">{{ invoice.purchaseorder.date_shipped ? invoice.purchaseorder.date_shipped|convertdate : '' }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Expected Date:</div>
+					<div class="col-sm-7 text-right">{{ invoice.purchaseorder.date_expected ? invoice.purchaseorder.date_expected|convertdate : '' }}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-5">Cancel Date:</div>
+					<div class="col-sm-7 text-right">{{ invoice.purchaseorder.date_cancelled ? invoice.purchaseorder.date_cancelled|convertdate : '' }}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,6 +1,6 @@
 <div class="form-group">
 	<button type="button" class="btn btn-primary" onclick="window.history.back()">
-		<i class="fa fa-arrow-left" aria-hidden="true"></i> Go back
+		<i class="fa fa-undo" aria-hidden="true"></i> Go back
 	</button>
 	&nbsp; &nbsp;
 	{% if page.has('custID') %}
@@ -13,7 +13,7 @@
 		</a>
 	{% endif %}
 	&nbsp; &nbsp;
-	<a href="{{ page.salesorderURL }}" class="btn btn-info">
+	<a href="{{ page.get_viewsalesorderURL(page.ordn) }}" class="btn btn-info">
 		 View Order # {{ page.ordn }}
 	</a>
 </div>
@@ -26,7 +26,11 @@
 	<tbody>
 		{% for line in lines %}
 			<tr>
-				<td>{{ line.itemid }}</td>
+				<td>
+					<a href="{{page.ii_itemURL(line.itemid)}}" target="_blank" class="link" aria-label="View Item in II" title="View Item in II">
+						{{ line.itemid }}
+					</a>
+				</td>
 				<td class="text-right">{{ line.b4qty }}</td>
 
 				{% if line.qty_increased() %}

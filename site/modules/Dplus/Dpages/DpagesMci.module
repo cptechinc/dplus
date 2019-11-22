@@ -608,12 +608,23 @@ class DpagesMci extends Dpages implements Module {
 		});
 	}
 
+	/**
+	 * Returns URL to CI Customer Page
+	 * @param  string $custID Customer ID
+	 * @return string
+	 */
 	public function get_ci_customerURL($custID) {
 		$url = new Url($this->wire('pages')->get('pw_template=ci-customer')->url);
 		$url->query->set('custID', $custID);
 		return $url->getUrl();
 	}
 
+	/**
+	 * Returns URL to CI Customer Shipto Page
+	 * @param  string $custID   Customer ID
+	 * @param  string $shiptoID Customer Shipto ID
+	 * @return string
+	 */
 	public function get_ci_customershiptoURL($custID, $shiptoID) {
 		$url = new Url($this->wire('pages')->get('pw_template=ci-shipto')->url);
 		$url->query->set('custID', $custID);
@@ -621,6 +632,11 @@ class DpagesMci extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
+	/**
+	 * Return CI subfunctions that the User has permissions for
+	 * @param  User   $user User
+	 * @return PageArray
+	 */
 	public function get_ci_user_allowed_functions(User $user) {
 		$p = $this->wire('pages')->get('pw_template=ci-customer');
 		$dplus_functions = array_unique($p->children()->explode('dplus_function'));

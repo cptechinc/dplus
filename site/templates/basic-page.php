@@ -4,7 +4,7 @@
 <?php include('./_head.php'); ?>
 	<div class="jumbotron bg-dark page-banner rounded-0 mb-3">
 		<div class="container">
-			<h1 class="display-4 text-light"><?= $page->get('pagetitle|headline|title') ; ?></h1>
+			<h1 class="display-4 text-light"><?= $page->get('pagetitle|headline|title'); ?></h1>
 		</div>
 	</div>
 	<div class="container">
@@ -22,7 +22,7 @@
 							<a href="<?= $page->url; ?>"><?= $page->title_previous; ?></a>
 						</li>
 					<?php endif; ?>
-					<li class="breadcrumb-item active" aria-current="page"><?= $page->title; ?></li>
+					<li class="breadcrumb-item active" aria-current="page"><?= $page->get('pagetitle|headline|title'); ?></li>
 				</ol>
 			</nav>
 		<?php endif; ?>
