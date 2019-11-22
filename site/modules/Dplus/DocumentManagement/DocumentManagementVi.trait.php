@@ -25,7 +25,7 @@ trait DocumentManagementVi {
 			$page = $event->object;
 			$vendorID   = $event->arguments(0);
 			$invnbr     = $event->arguments(1);
-			$url = new Url($this->get_vi_docs_folderURL($custID, self::TAG_APINVOICE));
+			$url = new Url($this->get_vi_docs_folderURL($vendorID, self::TAG_APINVOICE));
 			$url->query->set('invnbr', $invnbr);
 			$event->return = $url->getUrl();
 		});
