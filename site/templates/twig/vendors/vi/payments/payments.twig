@@ -31,7 +31,7 @@
 
 		{% for invoice in json['data']['payments'] %}
 			{% for x in 1..blueprint['detail']['rowcount']  %}
-				<tr class="first-txn-row">
+				<tr>
 					{% set columncount = 0 %}
 					{% for i in 1..blueprint['cols'] + 1 %}
 						{% set colspan = 0 %}
