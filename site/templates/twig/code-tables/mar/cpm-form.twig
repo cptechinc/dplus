@@ -1,0 +1,27 @@
+<form action="{{ page.url }}" method="POST" id="code-edit-form">
+	<input type="hidden" name="table" value="cpm">
+
+	<div class="form-group">
+		<label for="code">Code</label>
+		<input type="text" name="code" class="form-control" value="" id="code">
+	</div>
+
+	<div class="form-group">
+		<label for="description">Description</label>
+		<input type="text" name="description" class="form-control" value="" id="description">
+	</div>
+
+	<div class="form-group">
+		<label for="description">Can Add Surcharge?</label>
+		<input type="text" name="yesno" class="form-control" value="" id="yesno">
+	</div>
+
+	<div class="form-group">
+		<label for="description">Surcharge Percentage</label>
+		<input type="text" name="surcharge" class="form-control" value="" id="surcharge">
+	</div>
+
+	<button type="submit" class="btn btn-success">
+		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+	</button>
+</form>
