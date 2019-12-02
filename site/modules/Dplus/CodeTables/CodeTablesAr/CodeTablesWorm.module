@@ -75,7 +75,9 @@ class CodeTablesWorm extends WireData implements Module {
 			$record->delete();
 		} else {
 			$description = $input->$rm->text('description');
+			$yesno = $input->$rm->text('yesno');
 			$record->setDescription($description);
+			$record->setYesno($yesno);
 			$record->setDate(date('Ymd'));
 			$record->setTime(0);
 		}
