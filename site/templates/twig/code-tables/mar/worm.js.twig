@@ -9,8 +9,10 @@ $(function() {
 
 		if (code.length) {
 			modal.find('.modal-title').text('Editing Code ' + code);
+			modal.find('input[name=code]').prop("disabled", true);
 		} else {
 			modal.find('.modal-title').text('Adding a new Code');
+			modal.find('input[name=code]').prop("disabled", false);
 		}
 
 		modal.find('input[name=code]').val(code);
