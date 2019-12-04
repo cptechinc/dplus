@@ -1,14 +1,30 @@
 <div class="list-group">
 	<div class="list-group-item list-group-item-action bg-light">
 		<div class="row">
-			<div class="col">Quote Number</div>
-			<div class="col">Customer</div>
-			<div class="col">Ship-to</div>
-			<div class="col">Quote Date</div>
-			<div class="col">Review Date</div>
-			<div class="col">Expire Date</div>
-			<div class="col text-right">Quote Total</div>
-			<div class="col">Status</div>
+			<div class="col">
+				<a href="{{ page.get_sortURL('quotenbr') }}" class="link">Quote Number</a>
+			</div>
+			<div class="col">
+				<a href="{{ page.get_sortURL('custid') }}" class="link">Customer</a>
+			</div>
+			<div class="col">
+				<a href="{{ page.get_sortURL('shiptoid') }}" class="link">Ship-to</a>
+			</div>
+			<div class="col text-right">
+				<a href="{{ page.get_sortURL('date_quoted') }}" class="link">Quote Date</a>
+			</div>
+			<div class="col text-right">
+				<a href="{{ page.get_sortURL('date_review') }}" class="link">Review Date</a>
+			</div>
+			<div class="col text-right">
+				<a href="{{ page.get_sortURL('date_expires') }}" class="link">Expire Date</a>
+			</div>
+			<div class="col text-right">
+				<a href="{{ page.get_sortURL('total_total') }}" class="link">Quote Total</a>
+			</div>
+			<div class="col">
+				<a href="{{ page.get_sortURL('status') }}" class="link">Status</a>
+			</div>
 		</div>
 	</div>
 	{% if quotes.count > 0 %}
