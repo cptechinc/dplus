@@ -75,7 +75,11 @@ class CodeTablesCpm extends WireData implements Module {
 			$record->delete();
 		} else {
 			$description = $input->$rm->text('description');
+			$surcharge = $input->$rm->text('surcharge');
+			$percentage = $input->$rm->text('percentage');
 			$record->setDescription($description);
+			$record->setSurcharge($surcharge);
+			$record->setPercentage($percentage);
 			$record->setDate(date('Ymd'));
 			$record->setTime(0);
 		}
