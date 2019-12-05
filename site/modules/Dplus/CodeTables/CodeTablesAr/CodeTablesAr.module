@@ -51,7 +51,15 @@ class CodeTablesAr extends WireData implements Module {
 			'description-record' => 'Customer Price Code',
 			'model'       		 => 'CustomerPriceCode',
 			'model-key'   		 => 'code'
-		)
+		),
+		'ctm' => array(
+			'code'        		 => 'ctm',
+			'module'   			 => 'CodeTablesCtm',
+			'description' 		 => 'Customer Type Code',
+			'description-record' => 'Customer Type Code',
+			'model'       		 => 'CustomerTypeCode',
+			'model-key'   		 => 'code'
+		),
 	);
 
 	public function get_codetables() {

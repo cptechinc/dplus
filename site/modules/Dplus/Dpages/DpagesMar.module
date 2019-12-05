@@ -26,6 +26,10 @@ class DpagesMar extends Dpages implements Module {
 			'name'   => 'ar-code-table',
 			'fields' => array()
 		),
+		'ar-code-table-code' => array(
+			'name'   => 'ar-code-table-code',
+			'fields' => array()
+		),
 	);
 
 	const PAGES = array(
@@ -53,6 +57,15 @@ class DpagesMar extends Dpages implements Module {
 			'title'          => 'View Code Table',
 			'summary'        => 'View AR Code Table',
 			'parent'         => '/mar/armain/',
+			'dplus_function' => ''
+		),
+		'ar-code-table-code' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'ar-code-table-code',
+			'name'           => 'code',
+			'title'          => 'View Code Table Code',
+			'summary'        => 'View AR Code Table Code',
+			'parent'         => '/mar/armain/table/',
 			'dplus_function' => ''
 		),
 	);
