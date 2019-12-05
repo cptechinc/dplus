@@ -1,0 +1,48 @@
+{% extends "sales-orders/sales-history/customer/sales-history-list.twig" %}
+
+{% block header %}
+	<div class="row">
+		<div class="col">
+			<a href="{{ page.get_sortURL('ordernumber') }}" class="link">Order Number
+				{% if page.orderby_column == 'ordernumber' %}
+					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+				{% endif %}
+			</a>
+		</div>
+		<div class="col">
+			<a href="{{ page.get_sortURL('custpo') }}" class="link">Customer PO
+				{% if page.orderby_column == 'custpo' %}
+					<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+				{% endif %}
+			</a>
+		</div>
+		<div class="col">
+			<a href="{{ page.get_sortURL('shiptoid') }}" class="link">Ship-to
+				{% if page.orderby_column == 'shiptoid' %}
+					<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+				{% endif %}
+			</a>
+		</div>
+		<div class="col text-right">
+			<a href="{{ page.get_sortURL('total_total') }}" class="link">Order Total
+				{% if page.orderby_column == 'total_total' %}
+					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+				{% endif %}
+			</a>
+		</div>
+		<div class="col">
+			<a href="{{ page.get_sortURL('date_invoiced') }}" class="link">Invoice Date
+				{% if page.orderby_column == 'date_invoiced' %}
+					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+				{% endif %}
+			</a>
+		</div>
+		<div class="col">
+			<a href="{{ page.get_sortURL('date_ordered') }}" class="link">Order Date
+				{% if page.orderby_column == 'date_ordered' %}
+					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+				{% endif %}
+			</a>
+		</div>
+	</div>
+{% endblock %}
