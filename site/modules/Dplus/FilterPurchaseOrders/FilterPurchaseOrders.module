@@ -84,6 +84,23 @@
 			}
 		}
 
+		/**
+		 * Adds the Sort By to the query
+		 *
+		 * @param  Page   $page
+		 * @return void
+		 */
+		public function apply_sortby(Page $page) {
+			if ($page->has_orderby()) {
+				$orderbycolumn = $page->orderby_column;
+				$sort = $page->orderby_sort;
+				$tablecolumn = PurchaseOrder::get_aliasproperty($orderbycolumn);
+				$this->query->sortBy($tablecolumn, $sort);
+			} else {
+				$this->query->orderByDate_ordered('DESC');
+			}
+		}
+
 	/* =============================================================
 		ProcessWire Module Functions
 	============================================================= */
