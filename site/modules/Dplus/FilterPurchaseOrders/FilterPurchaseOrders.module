@@ -1,6 +1,7 @@
 <?php namespace ProcessWire;
 
 	use PurchaseOrderQuery, PurchaseOrder;
+	use PurchaseOrderDetailQuery, PurchaseOrderDetail;
 
 	use Propel\Runtime\ActiveQuery\Criteria;
 
@@ -94,8 +95,18 @@
 			if ($page->has_orderby()) {
 				$orderbycolumn = $page->orderby_column;
 				$sort = $page->orderby_sort;
-				$tablecolumn = PurchaseOrder::get_aliasproperty($orderbycolumn);
-				$this->query->sortBy($tablecolumn, $sort);
+
+				if ($orderbycolumn == 'total_total') {
+					$this->query->join('PurchaseOrderDetail');
+					$tablecolumn = PurchaseOrderDetail::get_aliasproperty('cost_total');
+					$this->query->withColumn("SUM(PurchaseOrderDetail.$tablecolumn)", 'total_total');
+					$this->query->groupBy('PurchaseOrder.pohdnbr');
+					$this->query->orderBy("total_total", $sort);
+				} else {
+					$tablecolumn = PurchaseOrder::get_aliasproperty($orderbycolumn);
+					$this->query->sortBy($tablecolumn, $sort);
+				}
+
 			} else {
 				$this->query->orderByDate_ordered('DESC');
 			}

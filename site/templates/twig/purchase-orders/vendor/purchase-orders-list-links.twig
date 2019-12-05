@@ -23,8 +23,13 @@
 				{% endif %}
             </a>
         </div>
-        {# Needs order column sort - order.get_total() #}
-        <div class="col text-right">Order Total</div>
+        <div class="col">
+            <a href="{{ page.get_sortURL('total_total') }}" class="link">Order Total
+                {% if page.orderby_column == 'total_total' %}
+					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+				{% endif %}
+            </a>
+        </div>
         <div class="col">
             <a href="{{ page.get_sortURL('date_ordered') }}" class="link">Order Date
                 {% if page.orderby_column == 'date_ordered' %}
