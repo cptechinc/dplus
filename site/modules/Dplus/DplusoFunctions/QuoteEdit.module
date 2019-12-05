@@ -133,7 +133,8 @@ class QuoteEdit extends WireData implements Module {
 	 */
 	public function request_itemsearch($q) {
 		$http = new WireHttp();
-		$url = new Url($this->wire('pages')->get('template=redir,redir_file=ii')->httpUrl);
+		$url = new Url('127.0.0.1');
+		$url->path = $this->wire('pages')->get('template=redir,redir_file=ii')->url;
 		$url->query->set('action', 'item-search');
 		$url->query->set('q', $q);
 		$url->query->set('custID', $this->get_custid());
