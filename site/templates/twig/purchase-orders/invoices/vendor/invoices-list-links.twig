@@ -31,7 +31,12 @@
                 {% endif %}
             </a>
         </div>
-        {# Needs order date - invoice.getpurchaseOrder() #}
-		<div class="col">Order Date</div>
+        <div class="col">
+            <a href="{{ page.get_sortURL('date_ordered') }}" class="link">Order Date
+                {% if page.orderby_column == 'date_ordered' %}
+                    <i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+                {% endif %}
+            </a>
+        </div>
     </div>
 {% endblock %}

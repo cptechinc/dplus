@@ -1,6 +1,7 @@
 <?php namespace ProcessWire;
 
 	use ApInvoiceQuery, ApInvoice;
+	use PurchaseOrderQuery, PurchaseOrder;
 
 	use Propel\Runtime\ActiveQuery\Criteria;
 
@@ -10,6 +11,10 @@
 		 * @var ApInvoiceQuery
 		 */
 		protected $query;
+
+		const PURCHASE_ORDER_COLS = array(
+			'date_ordered'
+		);
 
 		/**
 		 * Returns Query
@@ -74,8 +79,15 @@
 			if ($page->has_orderby()) {
 				$orderbycolumn = $page->orderby_column;
 				$sort = $page->orderby_sort;
-				$tablecolumn = ApInvoice::get_aliasproperty($orderbycolumn);
-				$this->query->sortBy($tablecolumn, $sort);
+
+				if (in_array($orderbycolumn, self::PURCHASE_ORDER_COLS)) {
+					$tablecolumn = PurchaseOrder::get_aliasproperty($orderbycolumn);
+					$this->query->join('PurchaseOrder');
+					$this->query->orderBy("PurchaseOrder.$tablecolumn", $sort);
+				} else {
+					$tablecolumn = ApInvoice::get_aliasproperty($orderbycolumn);
+					$this->query->sortBy($tablecolumn, $sort);
+				}
 			} else {
 				$this->query->orderByDate_invoiced('DESC');
 			}
