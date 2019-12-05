@@ -16,13 +16,14 @@
 		$filter_quotes->filter_query($input);
 
 		$query = $filter_quotes->get_query();
-		$query->orderByDate_quoted('DESC');
 
 		if ($page->has_orderby()) {
 			$orderbycolumn = $page->orderby_column;
 			$sort = $page->orderby_sort;
 			$tablecolumn = Quote::get_aliasproperty($orderbycolumn);
 			$query->sortBy($tablecolumn, $sort);
+		} else {
+			$query->orderByDate_quoted('DESC');
 		}
 
 		$quotes = $query->paginate($input->pageNum, 10);
