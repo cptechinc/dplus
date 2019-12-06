@@ -72,8 +72,8 @@
 
 	$params_quote['quotes']         = $quotes;
 	$params_quote['count']          = $quotes->getNbResults();
-	$params_quote['url_quote']      = $pages->get('pw_template=sales-order-view')->url;
-	$params_quote['url_quote_list'] = $pages->get('pw_template=sales-history-orders')->url;
+	$params_quote['url_quote']      = $pages->get('pw_template=quote-view')->url;
+	$params_quote['url_quote_list'] = $pages->get('pw_template=quotes')->url;
 	$page->body .= $config->twig->render("dashboard/components/quotes.twig", $params_quote);
 
 	include __DIR__ . "/basic-page.php";
