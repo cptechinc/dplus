@@ -18,15 +18,19 @@
 		if ($ar_codetables->validate_codetable($table)) {
 			$module_codetable = $ar_codetables->get_codetable_module($table);
 			$page->headline = "$module_codetable->description Table";
-
-			$page->body .= $config->twig->render('code-tables/links-header.twig', ['page' => $page]);
+			$page->body .= $config->twig->render('code-tables/links-header.twig', ['page' => $page, 'input' => $input]);
 
 			if ($session->response_codetable) {
 				$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_codetable]);
 			}
-			$page->body .= $config->twig->render("code-tables/mar/$table-list.twig", ['page' => $page, 'table' => $table, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable]);
-			$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "mar/$table-form.twig"]);
-			$page->js .= $config->twig->render("code-tables/mar/$table.js.twig", ['page' => $page]);
+
+			if (file_exists(__DIR__."/ar-code-table-$table.php")) {
+				include(__DIR__."/ar-code-table-$table.php");
+			} else {
+				$page->body .= $config->twig->render("code-tables/mar/$table-list.twig", ['page' => $page, 'table' => $table, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable]);
+				$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "mar/$table-form.twig"]);
+				$page->js .= $config->twig->render("code-tables/mar/$table.js.twig", ['page' => $page]);
+			}
 		} else {
 			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Code Table Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "AR Code Table '$code' does not exist"]);
 		}

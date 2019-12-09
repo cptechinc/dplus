@@ -1,0 +1,69 @@
+{# codes is an array / ObjectCollection of CustomerTypeCode #}
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row align-items-center">
+			<div class="col-1">
+				Code
+			</div>
+			<div class="col-3">
+				Description
+			</div>
+			<div class="col-1">
+				Mail
+			</div>
+			<div class="col-1">
+				Statement
+			</div>
+			<div class="col-1">
+				Invoice
+			</div>
+			<div class="col-1">
+				Pick
+			</div>
+			<div class="col-1">
+				Pack
+			</div>
+			<div class="col-3">
+				<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="" data-yesno="N">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add Code
+				</button>
+			</div>
+		</div>
+	</div>
+	{% for code in codes %}
+		<div class="list-group-item pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
+			<div class="row align-items-center">
+				<div class="col-1">
+					{{ code.code }}
+				</div>
+				<div class="col-3">
+					{{ code.description }}
+				</div>
+				<div class="col-1">
+					{{ code.mail_list }}
+				</div>
+				<div class="col-1">
+					{{ code.count_notetypealias('statement') ? 'Y' : 'N' }}
+				</div>
+				<div class="col-1">
+					{{ code.count_notetypealias('invoice') ? 'Y' : 'N' }}
+				</div>
+				<div class="col-1">
+					{{ code.count_notetypealias('pick') ? 'Y' : 'N' }}
+				</div>
+				<div class="col-1">
+					{{ code.count_notetypealias('pack') ? 'Y' : 'N' }}
+				</div>
+				<div class="col-3 text-center">
+					<a href="{{ page.get_codetable_code_editURL(table, code.code) }}" class="btn btn-warning">
+						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+					</a>
+					&nbsp;
+					<a href="{{ page.get_codetable_code_deleteURL(table, code.code) }}" class="btn btn-danger">
+						<i class="fa fa-trash" aria-hidden="true"></i> Delete
+					</a>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+</div>

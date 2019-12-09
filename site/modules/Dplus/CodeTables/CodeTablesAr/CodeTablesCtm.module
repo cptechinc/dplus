@@ -32,12 +32,21 @@ class CodeTablesCtm extends WireData implements Module {
 
 	/**
 	 * Return the Code records from Database
-	 * @param  string $table Table Code
 	 * @return ObjectCollection
 	 */
 	public function get_codes() {
 		$q = $this->get_query();
 		return $q->find();
+	}
+
+	/**
+	 * Return the Code
+	 * @param  string $code Customer Type Code
+	 * @return ObjectCollection
+	 */
+	public function get_code($code) {
+		$q = $this->get_query();
+		return $q->findOneByCode($code);
 	}
 
 	/**
@@ -75,7 +84,9 @@ class CodeTablesCtm extends WireData implements Module {
 			$record->delete();
 		} else {
 			$description = $input->$rm->text('description');
+			$email = $input->$rm->text('order_approval_email');
 			$record->setDescription($description);
+			$record->setOrder_approval_email($email);
 			$record->setDate(date('Ymd'));
 			$record->setTime(0);
 		}
