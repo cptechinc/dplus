@@ -1,10 +1,12 @@
 <?php namespace ProcessWire;
 
-	use QuoteQuery, Quote;
+	include_once(__DIR__ . "/FilterQuotesTraits.php");
 
+	use QuoteQuery, Quote;
 	use Propel\Runtime\ActiveQuery\Criteria;
 
 	class FilterQuotes extends WireData implements Module {
+		use FilterQuotesTraits;
 
 		/**
 		 * Query
@@ -37,7 +39,7 @@
 
 		/**
 		 * Applies Filters to the Query
-		 * NOTE:: Filters include TODO::
+		 * NOTE:: Filters include Customer, Quote #, Quote Date, Review Date, Expire Date, Quote Total, Quote Status
 		 *
 		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
 		 * @return void
@@ -47,7 +49,35 @@
 			$this->filter_shiptoid($input);
 
 			if ($input->get->filter) {
+				$this->filter_quotenumber($input);
+				$this->filter_quotetotal($input);
+				$this->filter_quotedate($input);
+				$this->filter_reviewdate($input);
+				$this->filter_expiredate($input);
+				$this->filter_quotestatus($input);
+			} else {
+				$input->get->status = array();
+			}
+		}
 
+		/**
+		 * Filters Query by Order Status
+		 *
+		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+		 * @return void
+		 */
+		public function filter_quotestatus(WireInput $input) {
+			if ($input->get->status) {
+				$statuses = array();
+
+				foreach ($input->get->status as $status) {
+					$sanitized = $sanitizer->text($status);
+
+					if (array_key_exists($sanitized, Quote::$status_descriptions)) {
+						$statuses[] = $sanitized;
+					}
+				}
+				$this->query->filterByQuotestatus($statuses);
 			} else {
 				$input->get->status = array();
 			}
