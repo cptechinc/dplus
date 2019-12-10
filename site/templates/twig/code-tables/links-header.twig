@@ -4,8 +4,8 @@
 	</a>
 	&nbsp;
 	{% if input.get.text('code') %}
-		<a href="{{ page.get_codetable_viewURL(input.get.text('table')) }}" class="btn btn-primary">
-			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Table
+		<a href="{{ page.get_codetable_viewURL(page.codetable) }}" class="btn btn-primary">
+			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to {{ page.title }}
 		</a>
 	{% endif %}
 </div>
