@@ -5,80 +5,80 @@
 	<ul class="list-group list-group-flush">
 		<li class="list-group-item">
 			<div class="row">
-				<div class="col-sm-10">
+				<div class="col-sm-7">
 					Warehouse:
 				</div>
-				<div class="col-sm-2">
+				<div class="col-sm-5">
 					{{ customer.warehouse }}
 				</div>
 			</div>
 		</li>
 		<li class="list-group-item">
 			<div class="row">
-				<div class="col-sm-10">
+				<div class="col-sm-7">
 					Ship Via:
 				</div>
-				<div class="col-sm-2">
-					{{ customer.shipvia }}
+				<div class="col-sm-5">
+					{{ customer.shipvia.code }} - {{ customer.shipvia.description }}
 				</div>
 			</div>
 		</li>
 		<li class="list-group-item">
 			<div class="row">
-				<div class="col-sm-10">
+				<div class="col-sm-7">
 					Current Finance Charge:
 				</div>
-				<div class="col-sm-2">
+				<div class="col-sm-5">
 					{{ customer.taxcode }}
 				</div>
 			</div>
 		</li>
 		<li class="list-group-item">
 			<div class="row">
-				<div class="col-sm-10">
+				<div class="col-sm-7">
 					Type:
 				</div>
-				<div class="col-sm-2">
+				<div class="col-sm-5">
 					{{ customer.type }}
 				</div>
 			</div>
 		</li>
 		<li class="list-group-item">
 			<div class="row">
-				<div class="col-sm-10">
+				<div class="col-sm-7">
 					Terms Code:
 				</div>
-				<div class="col-sm-2">
+				<div class="col-sm-5">
 					{{ customer.termscode }}
 				</div>
 			</div>
 		</li>
 		<li class="list-group-item">
 			<div class="row">
-				<div class="col-sm-10">
+				<div class="col-sm-7">
 					Price Code:
 				</div>
-				<div class="col-sm-2">
+				<div class="col-sm-5">
 					{{ customer.pricecode }}
 				</div>
 			</div>
 		</li>
 		<li class="list-group-item">
 			<div class="row">
-				<div class="col-sm-10">
+				<div class="col-sm-7">
 					Credit Hold:
 				</div>
-				<div class="col-sm-2">
+				<div class="col-sm-5">
 					{{ yesorno(customer.credithold)|capitalize }}
 				</div>
 			</div>
 		</li>
 		<li class="list-group-item">
 			<div class="row">
-				<div class="col-sm-10">
+				<div class="col-sm-7">
 					Tax Exempt:
 				</div>
-				<div class="col-sm-2">
+				<div class="col-sm-5">
 					{{ customer.is_taxexempt() ? customer.taxexemptcode : 'N/A' }}
 				</div>
 			</div>
