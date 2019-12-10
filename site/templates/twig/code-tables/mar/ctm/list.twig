@@ -55,11 +55,11 @@
 					{{ code.count_notetypealias('pack') ? 'Y' : 'N' }}
 				</div>
 				<div class="col-3 text-center">
-					<a href="{{ page.get_codetable_code_editURL(table, code.code) }}" class="btn btn-warning">
+					<a href="{{ page.get_codetable_code_editURL(page.codetable, code.code) }}" class="btn btn-warning">
 						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 					</a>
 					&nbsp;
-					<a href="{{ page.get_codetable_code_deleteURL(table, code.code) }}" class="btn btn-danger">
+					<a href="{{ page.get_codetable_code_deleteURL(page.codetabl, code.code) }}" class="btn btn-danger">
 						<i class="fa fa-trash" aria-hidden="true"></i> Delete
 					</a>
 				</div>

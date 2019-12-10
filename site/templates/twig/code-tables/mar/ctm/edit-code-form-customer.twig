@@ -1,55 +1,21 @@
-<form action="{{ page.url }}" method="POST" id="code-edit-form">
-	<input type="hidden" name="table" value="ctm">
+{% extends 'code-tables/mar/ctm/edit-code-form.twig' %}
 
-	<div class="row">
-		<div class="col-sm-6">
-			<div class="row">
-				<div class="col-sm-3">
-					<div class="form-group">
-						<label for="code">Code</label>
-						<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code">
-					</div>
-				</div>
-				<div class="col-sm-9">
-					<div class="form-group">
-						<label for="description">Description</label>
-						<input type="text" name="description" class="form-control" value="{{ code.description }}" id="description">
-					</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="order_approval_email">Order Approval Email</label>
-				{% include 'util/select.twig' with {'name': 'mail_list', 'id': 'mail_list', 'selectedvalue': code.mail_list, 'options': {'Y': 'Yes', 'N': 'No'}}%}
-			</div>
-			<div class="form-group">
-				<label for="order_approval_email">Order Approval Email</label>
-				<input type="text" name="order_approval_email" class="form-control" value="{{ code.order_approval_email }}" id="order_approval_email">
-			</div>
-		</div>
-		<div class="col-sm-6">
-			<h4>Notes</h4>
-			<table class="table table-sm">
-				<tr>
-					<td>Statement</td>
-					<td>{{ code.count_notetypealias('statement')|bool|yesorno|capitalize }}</td>
-				</tr>
-				<tr>
-					<td>Invoice</td>
-					<td>{{ code.count_notetypealias('invoice')|bool|yesorno|capitalize }}</td>
-				</tr>
-				<tr>
-					<td>Pick</td>
-					<td>{{ code.count_notetypealias('pick')|bool|yesorno|capitalize }}</td>
-				</tr>
-				<tr>
-					<td>Pack</td>
-					<td>{{ code.count_notetypealias('pack')|bool|yesorno|capitalize }}</td>
-				</tr>
-			</table>
-		</div>
-	</div>
+{% block extra_fields %}
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_sales', 'label': 'Sales', 'value': code.account_sales, 'gl_codes': gl_codes} %}
 
-	<button type="submit" class="btn btn-success">
-		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-	</button>
-</form>
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_credits', 'label': 'Credits', 'value': code.account_credits, 'gl_codes': gl_codes} %}
+
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_cogs', 'label': 'Cost of Goods Sold', 'value': code.account_cogs, 'gl_codes': gl_codes} %}
+
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_freight', 'label': 'Freight (To Customer)', 'value': code.account_freight, 'gl_codes': gl_codes} %}
+
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_misc', 'label': 'Miscellaneous Amounts', 'value': code.account_misc, 'gl_codes': gl_codes} %}
+
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_ar', 'label': 'Accounts Receivable', 'value': code.account_ar, 'gl_codes': gl_codes} %}
+
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_cash', 'label': 'Accounts Receivable Cash', 'value': code.account_cash, 'gl_codes': gl_codes} %}
+
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_finance', 'label': 'Finance Charge', 'value': code.account_finance, 'gl_codes': gl_codes} %}
+
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_discounts', 'label': 'Discount Taken', 'value': code.account_discounts, 'gl_codes': gl_codes} %}
+{% endblock %}
