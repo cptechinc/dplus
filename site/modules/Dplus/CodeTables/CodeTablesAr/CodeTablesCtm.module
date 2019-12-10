@@ -5,6 +5,7 @@ include_once(__DIR__.'../CodeTablesResponse.php');
 use Purl\Url;
 
 use CustomerTypeCodeQuery, CustomerTypeCode;
+use ConfigArQuery, ConfigAr;
 
 /**
  * Module that handles the editing of the CCM codetable
@@ -66,6 +67,7 @@ class CodeTablesCtm extends WireData implements Module {
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
+		$configAR = ConfigArQuery::create()->findOne();
 		$rm = strtolower($input->requestMethod());
 		$table = $input->$rm->text('table');
 		$code  = $input->$rm->text('code');
@@ -89,6 +91,18 @@ class CodeTablesCtm extends WireData implements Module {
 			$record->setOrder_approval_email($email);
 			$record->setDate(date('Ymd'));
 			$record->setTime(0);
+
+			if ($configAR->gl_report_type() == 'customer') {
+				$record->setAccount_sales($input->$rm->text('gl_sales'));
+				$record->setAccount_credits($input->$rm->text('gl_credits'));
+				$record->setAccount_cogs($input->$rm->text('gl_cogs'));
+				$record->setAccount_freight($input->$rm->text('gl_freight'));
+				$record->setAccount_misc($input->$rm->text('gl_misc'));
+				$record->setAccount_cash($input->$rm->text('gl_cash'));
+				$record->setAccount_ar($input->$rm->text('gl_ar'));
+				$record->setAccount_finance($input->$rm->text('gl_finance'));
+				$record->setAccount_discounts($input->$rm->text('gl_discounts'));
+			}
 		}
 
 		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);
