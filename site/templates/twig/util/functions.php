@@ -29,6 +29,11 @@
 	});
 	$config->twig->addFilter($filter);
 
+	$filter = new TwigFilter('bool', function ($tf) {
+		return boolval($tf);
+	});
+	$config->twig->addFilter($filter);
+
 	$filter = new Twig_Filter('attrJS', function ($string) {
 		return "js-$string";
 	});
@@ -59,7 +64,7 @@
 		}
 	});
 	$config->twig->addFilter($filter);
-	
+
 	$matches_search = new Twig_Function('matches_search', function ($subject, $query) {
 		$regex = "/(".str_replace('-', '\-?', $query).")/i";
 		$contains = preg_match($regex, $subject, $matches);

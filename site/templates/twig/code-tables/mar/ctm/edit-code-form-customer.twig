@@ -1,0 +1,21 @@
+{% extends 'code-tables/mar/ctm/edit-code-form.twig' %}
+
+{% block extra_fields %}
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_sales', 'label': 'Sales', 'value': code.account_sales, 'gl_codes': gl_codes} %}
+
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_credits', 'label': 'Credits', 'value': code.account_credits, 'gl_codes': gl_codes} %}
+
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_cogs', 'label': 'Cost of Goods Sold', 'value': code.account_cogs, 'gl_codes': gl_codes} %}
+
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_freight', 'label': 'Freight (To Customer)', 'value': code.account_freight, 'gl_codes': gl_codes} %}
+
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_misc', 'label': 'Miscellaneous Amounts', 'value': code.account_misc, 'gl_codes': gl_codes} %}
+
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_ar', 'label': 'Accounts Receivable', 'value': code.account_ar, 'gl_codes': gl_codes} %}
+
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_cash', 'label': 'Accounts Receivable Cash', 'value': code.account_cash, 'gl_codes': gl_codes} %}
+
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_finance', 'label': 'Finance Charge', 'value': code.account_finance, 'gl_codes': gl_codes} %}
+
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_discounts', 'label': 'Discount Taken', 'value': code.account_discounts, 'gl_codes': gl_codes} %}
+{% endblock %}
