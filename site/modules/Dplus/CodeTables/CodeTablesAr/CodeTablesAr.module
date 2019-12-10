@@ -14,51 +14,27 @@ class CodeTablesAr extends WireData implements Module {
 	const CODE_TABLES = array(
 		'ccm' => array(
 			'code'        		 => 'ccm',
-			'module'   			 => 'CodeTablesCcm',
-			'description' 	     => 'Customer Commission Code',
-			'description-record' => 'Customer Commission Code',
-			'model'       		 => 'CustomerCommissionCode',
-			'model-key'   		 => 'code'
+			'module'   			 => 'CodeTablesCcm'
 		),
 		'crtm' => array(
 			'code'        		 => 'crtm',
-			'module'   			 => 'CodeTablesCrtm',
-			'description'  		 => 'Customer Route Code',
-			'description-record' => 'Customer Route Code',
-			'model'       		 => 'CustomerRouteCode',
-			'model-key'   		 => 'code'
+			'module'   			 => 'CodeTablesCrtm'
 		),
 		'spgpm' => array(
 			'code'        		 => 'spgpm',
-			'module'   			 => 'CodeTablesSpgpm',
-			'description' 		 => 'Salesperson Group Code',
-			'description-record' => 'Salesperson Group Code',
-			'model'       		 => 'SalespersonGroupCode',
-			'model-key'   		 => 'code'
+			'module'   			 => 'CodeTablesSpgpm'
 		),
 		'worm' => array(
 			'code'        		 => 'worm',
-			'module'   			 => 'CodeTablesWorm',
-			'description' 		 => 'Customer Write Off Code',
-			'description-record' => 'Customer Write Off Code',
-			'model'       		 => 'CustomerWriteOffCode',
-			'model-key'   		 => 'code'
+			'module'   			 => 'CodeTablesWorm'
 		),
 		'cpm' => array(
 			'code'        		 => 'cpm',
-			'module'   			 => 'CodeTablesCpm',
-			'description' 		 => 'Customer Price Code',
-			'description-record' => 'Customer Price Code',
-			'model'       		 => 'CustomerPriceCode',
-			'model-key'   		 => 'code'
+			'module'   			 => 'CodeTablesCpm'
 		),
 		'ctm' => array(
 			'code'        		 => 'ctm',
-			'module'   			 => 'CodeTablesCtm',
-			'description' 		 => 'Customer Type Code',
-			'description-record' => 'Customer Type Code',
-			'model'       		 => 'CustomerTypeCode',
-			'model-key'   		 => 'code'
+			'module'   			 => 'CodeTablesCtm'
 		),
 	);
 
