@@ -1,7 +1,5 @@
 <?php namespace ProcessWire;
 
-	include_once(__DIR__ . "/FilterQuotesTraits.php");
-
 	use QuoteQuery, Quote;
 	use Propel\Runtime\ActiveQuery\Criteria;
 
@@ -76,7 +74,7 @@
 						$statuses[] = $sanitized;
 					}
 				}
-				$this->query->filterByQuotestatus($statuses);
+				$this->query->filterByStatus($statuses);
 			} else {
 				$input->get->status = array();
 			}
