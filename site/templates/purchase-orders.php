@@ -7,7 +7,7 @@
 	$query = $filter_purchaseorders->get_query();
 	$orders = $query->paginate($input->pageNum, 10);
 
-	//$page->body = $config->twig->render('purchase-orders/search-form.twig', ['page' => $page, 'input' => $input]);
+	$page->body = $config->twig->render('purchase-orders/search-form.twig', ['page' => $page, 'input' => $input]);
 	$page->body .= $html->h3('', $orders->getNbResults() . " Purchase Orders");
 	$page->body .= $config->twig->render('purchase-orders/purchase-orders-list-links.twig', ['page' => $page, 'purchaseorders' => $orders, 'orderpage' => '']);
 	$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'pagenbr' => $input->pageNum, 'resultscount'=> $orders->getNbResults()]);

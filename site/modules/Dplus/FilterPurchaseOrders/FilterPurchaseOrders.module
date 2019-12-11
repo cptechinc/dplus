@@ -45,7 +45,11 @@
 			$this->filter_shiptofromid($input);
 
 			if ($input->get->filter) {
-
+				$this->filter_ponumber($input);
+				$this->filter_pototal($input);
+				$this->filter_orderdate($input);
+				$this->filter_expecteddate($input);
+				$this->filter_postatus($input);
 			} else {
 				$input->get->status = array();
 			}
@@ -109,6 +113,111 @@
 
 			} else {
 				$this->query->orderByDate_ordered('DESC');
+			}
+		}
+
+		/**
+		 * Filters Query by Quote Number
+		 *
+		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+		 * @return void
+		 */
+		public function filter_ponumber(WireInput $input) {
+			if ($input->get->text('ponbr_from') && $input->get->text('ponbr_through')) {
+				$this->query->filterByPonbr(array($input->get->text('ponbr_from'), $input->get->text('ponbr_through')));
+			} else if ($input->get->text('ponbr_from')) {
+				$this->query->filterByPonbr($input->get->text('ponbr_from'));
+			} else if ($input->get->text('ponbr_through')) {
+				$this->query->filterByPonbr($input->get->text('ponbr_through'));
+			}
+		}
+
+		/**
+		 * Filters Query by Quote Total
+		 *
+		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+		 * @return void
+		 */
+		public function filter_pototal(WireInput $input) {
+			if ($input->get->text('po_total_from') && $input->get->text('po_total_through')) {
+				$this->query->filterByTotal_total(array($input->get->text('po_total_from'), $input->get->text('po_total_through')));
+			} else if ($input->get->text('po_total_from')) {
+				$this->query->filterByTotal_total($input->get->text('po_total_from'), Criteria::GREATER_EQUAL);
+			} else if ($input->get->text('po_total_through')) {
+				$this->query->filterByTotal_total($input->get->text('po_total_through'), Criteria::LESS_EQUAL);
+			}
+		}
+
+		/**
+		 * Filters Query by Quote Date
+		 *
+		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+		 * @return void
+		 */
+		public function filter_orderdate(WireInput $input) {
+			if ($input->get->text('date_ordered_from') || $input->get->text('date_ordered_through')) {
+				$date_ordered_from = date("Ymd", strtotime($input->get->text('date_ordered_from')));
+
+				if (empty($input->get->text('date_ordered_through'))) {
+					$date_ordered_through = date('Ymd');
+				} else {
+					$date_ordered_through = date("Ymd", strtotime($input->get->text('date_ordered_through')));
+				}
+				if ($date_ordered_from && $date_ordered_through) {
+					$this->query->filterByDate_ordered(array($date_ordered_from, $date_ordered_through));
+				} else if ($date_ordered_from) {
+					$this->query->filterByDate_ordered($date_ordered_from);
+				} else if ($date_ordered_through) {
+					$this->query->filterByDate_ordered($date_ordered_through);
+				}
+			}
+		}
+
+		/**
+		 * Filters Query by Quote Date
+		 *
+		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+		 * @return void
+		 */
+		public function filter_expecteddate(WireInput $input) {
+			if ($input->get->text('date_expected_from') || $input->get->text('date_expected_through')) {
+				$date_expected_from = date("Ymd", strtotime($input->get->text('date_expected_from')));
+
+				if (empty($input->get->text('date_expected_through'))) {
+					$date_expected_through = date('Ymd');
+				} else {
+					$date_expected_through = date("Ymd", strtotime($input->get->text('date_expected_through')));
+				}
+				if ($date_expected_from && $date_expected_through) {
+					$this->query->filterByDate_expected(array($date_expected_from, $date_expected_through));
+				} else if ($date_expected_from) {
+					$this->query->filterByDate_expected($date_expected_from);
+				} else if ($date_expected_through) {
+					$this->query->filterByDate_expected($date_expected_through);
+				}
+			}
+		}
+
+		/**
+		 * Filters Query by Order Status
+		 *
+		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+		 * @return void
+		 */
+		public function filter_postatus(WireInput $input) {
+			if ($input->get->status) {
+				$statuses = array();
+
+				foreach ($input->get->status as $status) {
+					$sanitized = $sanitizer->text($status);
+
+					if (array_key_exists($sanitized, Quote::$status_descriptions)) {
+						$statuses[] = $sanitized;
+					}
+				}
+				$this->query->filterByStatus($statuses);
+			} else {
+				$input->get->status = array();
 			}
 		}
 
