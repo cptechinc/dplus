@@ -9,7 +9,7 @@
 
 	$invpage = $pages->get('pw_template=purchase-order-view')->url;
 
-	//$page->body = $config->twig->render('purchase-historys/search-form.twig', ['page' => $page, 'input' => $input]);
+	$page->body = $config->twig->render('purchase-orders/invoices/search-form.twig', ['page' => $page, 'input' => $input]);
 	$page->body .= $html->h3('', $invoices->getNbResults() . " Invoices");
 	$page->body .= $config->twig->render('purchase-orders/invoices/invoices-list-links.twig', ['page' => $page, 'invoices' => $invoices, 'invpage' => $invpage]);
 	$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'pagenbr' => $input->pageNum, 'resultscount'=> $invoices->getNbResults()]);
