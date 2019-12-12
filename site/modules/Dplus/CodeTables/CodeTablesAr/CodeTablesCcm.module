@@ -15,17 +15,6 @@ class CodeTablesCcm extends WireData implements Module {
 	const DESCRIPTION        = 'Customer Commission Code';
 	const DESCRIPTION_RECORD = 'Customer Commission Code';
 
-	const CODE_TABLES = array(
-		'ccm' => array(
-			'code'        => 'ccm',
-			'code-twig'   => 'customer-commission',
-			'description' => 'Customer Commission Code',
-			'description-record' => 'Customer Commission Code',
-			'model'       => 'CustomerCommissionCode',
-			'model-key'   => 'code'
-		)
-	);
-
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
 	}
@@ -38,6 +27,34 @@ class CodeTablesCcm extends WireData implements Module {
 	public function get_codes() {
 		$q = $this->get_query();
 		return $q->find();
+	}
+
+	/**
+	 * Return the Code
+	 * @param  string $code Customer Commission Code
+	 * @return CustomerCommissionCode
+	 */
+	public function get_code($code) {
+		$q = $this->get_query();
+		return $q->findOneByCode($code);
+	}
+
+	/**
+	 * Return if the Code Exists
+	 * @param  string $code Customer Commission Code
+	 * @return bool
+	 */
+	public function code_exists($code) {
+		$q = $this->get_query();
+		return boolval($q->filterByCode($code)->count());
+	}
+
+	/**
+	 * Returns a new CustomerCommissionCode
+	 * @return CustomerCommissionCode
+	 */
+	public function get_new_code() {
+		return new CustomerCommissionCode();
 	}
 
 	/**

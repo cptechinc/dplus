@@ -15,17 +15,6 @@ class CodeTablesCrtm extends WireData implements Module {
 	const DESCRIPTION        = 'Customer Route Code';
 	const DESCRIPTION_RECORD = 'Customer Route Code';
 
-	const CODE_TABLES = array(
-		'crtm' => array(
-			'code'        => 'crtm',
-			'code-twig'   => 'customer-route',
-			'description' => 'Customer Route Code',
-			'description-record' => 'Customer Route Code',
-			'model'       => 'CustomerRouteCode',
-			'model-key'   => 'code'
-		)
-	);
-
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
 	}
@@ -33,11 +22,39 @@ class CodeTablesCrtm extends WireData implements Module {
 	/**
 	 * Return the Code records from Database
 	 * @param  string $table Table Code
-	 * @return ObjectCollection
+	 * @return CustomerRouteCode[]|ObjectCollection
 	 */
 	public function get_codes() {
 		$q = $this->get_query();
 		return $q->find();
+	}
+
+	/**
+	 * Return the Code
+	 * @param  string $code Customer Route Code
+	 * @return CustomerRouteCode
+	 */
+	public function get_code($code) {
+		$q = $this->get_query();
+		return $q->findOneByCode($code);
+	}
+
+	/**
+	 * Return if the Code Exists
+	 * @param  string $code Customer Route Code
+	 * @return bool
+	 */
+	public function code_exists($code) {
+		$q = $this->get_query();
+		return boolval($q->filterByCode($code)->count());
+	}
+
+	/**
+	 * Returns a new CustomerRouteCode
+	 * @return CustomerRouteCode
+	 */
+	public function get_new_code() {
+		return new CustomerRouteCode();
 	}
 
 	/**
