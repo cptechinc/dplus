@@ -1,6 +1,9 @@
 <div class="mb-4 row">
 	<div class="col-sm-6">
-		<a href="{{ page.parent.url }}" class="btn btn-info"><i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i>&ensp;Back to Quotes Menu</a>
+		<a href="{{ page.customer_or_shiptoURL() }}" class="btn btn-info">
+			<i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i>
+			Back to {{ page.has('shiptoID') ? 'Ship-to' : 'Customer' }} Page
+		</a>
 	</div>
 	<div class="col-sm-6">
 		<button class="btn btn-info toggle-quote-search pull-right" type="button" data-toggle="collapse" data-target="#quotes-search-div" aria-expanded="false" aria-controls="quotes-search-div">Toggle Search&ensp;<i class="fa fa-search" aria-hidden="true"></i></button>
@@ -12,29 +15,16 @@
 		<div class="card-body">
 			<form action="" method="get" class="remove-empty-fields" submit-empty="false">
 				<input type="hidden" name="filter" value="filter">
+				<input type="hidden" name="custID" value="{{ custID }}">
+				<input type="hidden" name="shiptoID" value="{{ shiptoID }}">
 
 				<div class="row mt-3">
-					<div class="col-sm-3">
+					<div class="col-sm-4">
 						<h5>Quote #</h5>
 						<input class="form-control form-group inline" type="text" name="quotenbr_from" value="{{ input.get.text('quotenbr_from') }}" placeholder="From Quote #">
 						<input class="form-control form-group inline" type="text" name="quotenbr_through" value="{{ input.get.text('quotenbr_through') }}" placeholder="Through Quote #">
 					</div>
-					<div class="col-sm-3">
-						<h5>Cust ID</h5>
-						<div class="input-group form-group">
-							<input class="form-control form-group inline" type="text" name="custID" id="quote-cust-from" value="{{ input.get.text('custID') }}" placeholder="From CustID">
-							<!-- <span class="input-group-append">
-								<button type="button" class="btn btn-default not-round get-custid-search" data-field="#quote-cust-from"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
-							</span> -->
-						</div>
-						<!-- <div class="input-group form-group">
-							<input class="form-control form-group inline" type="text" name="custid_through" id="quote-cust-to" value="{{ input.get.text('custid_through') }}" placeholder="Through CustID">
-							<span class="input-group-append">
-								<button type="button" class="btn btn-default not-round get-custid-search" data-field="#quote-cust-to"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
-							</span>
-						</div> -->
-					</div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
 						<h5>Quote Total</h5>
 						<div class="input-group form-group">
 							<input class="form-control form-group inline" type="text" name="quote_total_from" id="quote-total-min" value="{{ input.get.text('quote_total_from') }}" placeholder="From Quote Total">
@@ -49,7 +39,7 @@
 							</span>
 						</div>
 					</div>
-					<div class="col-sm-3">
+					<div class="col-sm-4">
 						<h5>Status</h5>
 						<label>New</label>
 						<input class="pull-right" type="checkbox" name="status[]" value="N" {{ 'N' in input.get.status ? 'checked' : '' }} ></br>
@@ -60,7 +50,7 @@
 				</div>
 				<hr>
 				<div class="row mt-4">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
 						<h5>Quote Date</h5>
 						<label for="afterdate">From Date</label>
 						{% set name = 'date_quoted_from' %}
@@ -72,7 +62,7 @@
 						{% set value = input.get.text('date_quoted_through') %}
 						{% include 'util/date-picker.twig' %}
 					</div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
 						<h5>Review Date</h5>
 						<label for="afterdate">From Date</label>
 						{% set name = 'date_review_from' %}
@@ -84,7 +74,7 @@
 						{% set value = input.get.text('date_review_through') %}
 						{% include 'util/date-picker.twig' %}
 					</div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
 						<h5>Expire Date</h5>
 						<label for="afterdate">From Date</label>
 						{% set name = 'date_expires_from' %}
