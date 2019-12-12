@@ -66,13 +66,15 @@ class FilterSalesOrders extends WireData implements Module {
 	 * @return void
 	 */
 	public function filter_orderstatus(WireInput $input) {
+		$sanitizer = new Sanitizer();
+
 		if ($input->get->status) {
 			$statuses = array();
 
 			foreach ($input->get->status as $status) {
 				$sanitized = $sanitizer->text($status);
 
-				if (array_key_exists($sanitized, SalesOrder::$status_descriptions)) {
+				if (array_key_exists($sanitized, SalesOrder::STATUS_DESCRIPTIONS)) {
 					$statuses[] = $sanitized;
 				}
 			}

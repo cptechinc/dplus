@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+use Propel\Runtime\ActiveQuery\Criteria;
+
 trait FilterSalesTraits {
 	/**
 	 * Filters Query by Order Number
