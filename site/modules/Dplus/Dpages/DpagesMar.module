@@ -9,21 +9,11 @@ use Purl\Url;
  * NOTE: Also installs the basic fields, templates, to build the rest of the Application
  */
 class DpagesMar extends Dpages implements Module {
-	const FIELDS = array(
-		'codetable' => array(
-			'name'  => 'codetable',
-			'type'  => 'text',
-			'label' => 'Code Table'
-		),
-	);
+	const FIELDS = array();
 
 	const TEMPLATES = array(
 		'ar-code-table' => array(
 			'name'   => 'ar-code-table',
-			'fields' => array()
-		),
-		'ar-code-table-code' => array(
-			'name'   => 'ar-code-table-code',
 			'fields' => array()
 		),
 		'ar-code-table-ctm' => array(

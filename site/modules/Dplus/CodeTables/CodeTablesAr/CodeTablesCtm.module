@@ -33,7 +33,7 @@ class CodeTablesCtm extends WireData implements Module {
 
 	/**
 	 * Return the Code records from Database
-	 * @return ObjectCollection
+	 * @return CustomerTypeCode[]|ObjectCollection
 	 */
 	public function get_codes() {
 		$q = $this->get_query();
@@ -43,11 +43,29 @@ class CodeTablesCtm extends WireData implements Module {
 	/**
 	 * Return the Code
 	 * @param  string $code Customer Type Code
-	 * @return ObjectCollection
+	 * @return CustomerTypeCode
 	 */
 	public function get_code($code) {
 		$q = $this->get_query();
 		return $q->findOneByCode($code);
+	}
+
+	/**
+	 * Return if the Code Exists
+	 * @param  string $code Customer Type Code
+	 * @return bool
+	 */
+	public function code_exists($code) {
+		$q = $this->get_query();
+		return boolval($q->filterByCode($code)->count());
+	}
+
+	/**
+	 * Returns a new CustomerTypeCode
+	 * @return CustomerTypeCode
+	 */
+	public function get_new_code() {
+		return new CustomerTypeCode();
 	}
 
 	/**
