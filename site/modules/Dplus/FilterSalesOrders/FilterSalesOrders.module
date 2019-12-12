@@ -78,7 +78,7 @@ class FilterSalesOrders extends WireData implements Module {
 					$statuses[] = $sanitized;
 				}
 			}
-			$this->query->filterByOrderstatus($statuses);
+			$this->query->filterByStatus($statuses);
 		} else {
 			$input->get->status = array();
 		}
