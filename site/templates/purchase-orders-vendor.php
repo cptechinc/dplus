@@ -23,7 +23,7 @@
 	$page->title = $shipfromID ? $shipfrom->name : $vendor->name;
 	$page->title .= " Purchase Orders";
 
-	//$page->body = $config->twig->render('purchase-orders/search-form.twig', ['page' => $page, 'input' => $input]);
+	$page->body = $config->twig->render('purchase-orders/vendor/search-form.twig', ['page' => $page, 'input' => $input]);
 	$page->body .= $html->h3('', $orders->getNbResults() . " Purchase Orders");
 	$page->body .= $config->twig->render('purchase-orders/vendor/purchase-orders-list-links.twig', ['page' => $page, 'purchaseorders' => $orders, 'orderpage' => '']);
 	$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'pagenbr' => $input->pageNum, 'resultscount'=> $orders->getNbResults()]);
