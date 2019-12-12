@@ -64,13 +64,15 @@
 		 * @return void
 		 */
 		public function filter_quotestatus(WireInput $input) {
+			$sanitizer = new Sanitizer();
+
 			if ($input->get->status) {
 				$statuses = array();
 
 				foreach ($input->get->status as $status) {
 					$sanitized = $sanitizer->text($status);
 
-					if (array_key_exists($sanitized, Quote::$status_descriptions)) {
+					if (array_key_exists($sanitized, Quote::STATUS_DESCRIPTIONS)) {
 						$statuses[] = $sanitized;
 					}
 				}
@@ -139,11 +141,11 @@
 		 */
 		public function filter_quotenumber(WireInput $input) {
 			if ($input->get->text('quotenbr_from') && $input->get->text('quotenbr_through')) {
-				$this->query->filterByQuotenbr(array($input->get->text('quotenbr_from'), $input->get->text('quotenbr_through')));
+				$this->query->filterByQuotenumber(array($input->get->text('quotenbr_from'), $input->get->text('quotenbr_through')));
 			} else if ($input->get->text('quotenbr_from')) {
-				$this->query->filterByQuotenbr($input->get->text('quotenbr_from'));
+				$this->query->filterByQuotenumber($input->get->text('quotenbr_from'));
 			} else if ($input->get->text('quotenbr_through')) {
-				$this->query->filterByQuotenbr($input->get->text('quotenbr_through'));
+				$this->query->filterByQuotenumber($input->get->text('quotenbr_through'));
 			}
 		}
 
@@ -155,7 +157,7 @@
 		 */
 		public function filter_quotetotal(WireInput $input) {
 			if ($input->get->text('quote_total_from') && $input->get->text('quote_total_through')) {
-				$this->query->filterByTotal_total(array($input->get->text('quote_total_from'), $input->get->text('quote_total_through')));
+				$this->query->filterByQuotetotal(array($input->get->text('quote_total_from'), $input->get->text('quote_total_through')));
 			} else if ($input->get->text('quote_total_from')) {
 				$this->query->filterByTotal_total($input->get->text('quote_total_from'), Criteria::GREATER_EQUAL);
 			} else if ($input->get->text('quote_total_through')) {
