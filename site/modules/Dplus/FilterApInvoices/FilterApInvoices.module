@@ -49,7 +49,6 @@
 				$this->filter_invnumber($input);
 				$this->filter_ponumber($input);
 				$this->filter_invoicedate($input);
-				$this->filter_orderdate($input);
 			} else {
 				$input->get->status = array();
 			}
@@ -149,31 +148,6 @@
 					$this->query->filterByDate_invoiced($date_invoiced_from);
 				} else if ($date_invoiced_through) {
 					$this->query->filterByDate_invoiced($date_invoiced_through);
-				}
-			}
-		}
-
-		/**
-		 * Filters Query by Quote Date
-		 *
-		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-		 * @return void
-		 */
-		public function filter_orderdate(WireInput $input) {
-			if ($input->get->text('date_ordered_from') || $input->get->text('date_ordered_through')) {
-				$date_ordered_from = date("Ymd", strtotime($input->get->text('date_ordered_from')));
-
-				if (empty($input->get->text('date_ordered_through'))) {
-					$date_ordered_through = date('Ymd');
-				} else {
-					$date_ordered_through = date("Ymd", strtotime($input->get->text('date_ordered_through')));
-				}
-				if ($date_ordered_from && $date_ordered_through) {
-					$this->query->filterByDate_ordered(array($date_ordered_from, $date_ordered_through));
-				} else if ($date_ordered_from) {
-					$this->query->filterByDate_ordered($date_ordered_from);
-				} else if ($date_ordered_through) {
-					$this->query->filterByDate_ordered($date_ordered_through);
 				}
 			}
 		}
