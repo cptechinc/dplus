@@ -1,0 +1,12 @@
+<div class="form-row form-group">
+	<div class="col">
+		<label for="{{ name }}">{{ label }}</label>
+	</div>
+	<div class="col">
+		<select name="{{ name }}" class="form-control" id="{{ name }}">
+			{% for whse in warehouses %}
+				<option value="{{ whse.id }}" {{ whse.id == value ? 'selected' : ''}}>{{ whse.name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>

@@ -1,0 +1,120 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+/**
+ * class Dpages
+ *
+ * Installs fields, templates, pages, hooks necessary for Top Menus
+ * NOTE: Also installs the basic fields, templates, to build the rest of the Application
+ */
+class DpagesMin extends Dpages implements Module {
+	const FIELDS = array();
+
+	const TEMPLATES = array(
+		'min-code-table' => array(
+			'name'   => 'min-code-table',
+			'fields' => array()
+		),
+		'min-code-table-iwhm' => array(
+			'name'   => 'min-code-table-iwhm',
+			'fields' => array()
+		)
+	);
+
+	const PAGES = array(
+		'min' => array(
+			'template'       => 'dplus-menu',
+			'name'           => 'min',
+			'title'          => 'Inventory',
+			'summary'        => 'Inventory Menu',
+			'parent'         => '/',
+			'dplus_function' => 'min'
+		),
+		'inmain' => array(
+			'template'       => 'dplus-menu',
+			'name'           => 'inmain',
+			'title'          => 'Maintenance',
+			'summary'        => 'Inventory Maintenance',
+			'parent'         => '/min/',
+			'dplus_function' => 'inmain'
+		),
+		'min-iwhm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'min-code-table',
+			'name'           => 'iwhm',
+			'title'          => 'Warehouses',
+			'summary'        => 'View / Edit Warehouses',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => ''
+		),
+	);
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public function init() {
+		/**
+		 * Returns Sales Order Page URL
+		 */
+		$this->addHook('Page(pw_template=min-code-table-menu|min-code-table)::get_codetable_viewURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_viewURL($table, $code);
+		});
+
+		$this->addHook('Page(pw_template=min-code-table)::get_codetable_code_deleteURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_code_deleteURL($table, $code);
+		});
+
+		$this->addHook('Page(pw_template=min-code-table)::get_codetable_code_editURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_code_editURL($table, $code);
+		});
+
+		$this->addHookProperty('Page(pw_template=min-code-table)::codetable', function($event) {
+			$page = $event->object;
+			$event->return = $page->name;
+		});
+	}
+
+	public function get_codetable_viewURL($table, $code = false) {
+		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	public function get_codetable_code_deleteURL($table, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
+		$url->query->set('action', 'remove-code');
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	public function get_codetable_code_editURL($table, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus MIN Pages Modules',
+			'version' => 101,
+			'summary' => 'Installs and creates MIN Pages',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('DplusPwPages'),
+			'installs' => array(),
+		);
+	}
+}

@@ -1,0 +1,35 @@
+<form action="{{ page.url }}" method="POST" id="code-edit-form">
+	<input type="hidden" name="table" value="{{ page.codetable }}">
+	<input type="hidden" name="code" value="{{ warehouse.id }}">
+
+	<div class="form-row form-group">
+		<div class="col">
+			<label for="whseID">Code</label>
+		</div>
+		<div class="col">
+			<input type="text" name="whseID" class="form-control" value="{{ warehouse.id }}" id="whseID">
+		</div>
+	</div>
+	<div class="form-row form-group">
+		<div class="col">
+			<label for="name">Name</label>
+		</div>
+		<div class="col">
+			<input type="text" name="name" class="form-control" value="{{ warehouse.name }}" id="name">
+		</div>
+	</div>
+	<hr class="border-top border-primary">
+
+	<div class="row">
+		<div class="col-sm-8 border-right border-primary">
+			{% include 'code-tables/min/iwhm/form-address-fields.twig' %}
+		</div>
+		<div class="col-sm-4">
+			{% include 'code-tables/min/iwhm/form-warehouse-fields.twig' %}
+		</div>
+	</div>
+	<button type="submit" class="btn btn-success">
+		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+	</button>
+</form>
+<hr class="border-top border-primary">

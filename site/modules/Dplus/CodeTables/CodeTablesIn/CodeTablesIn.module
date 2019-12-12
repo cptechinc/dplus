@@ -1,0 +1,43 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'../CodeTablesResponse.php');
+
+use Purl\Url;
+
+use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
+
+/**
+ * Module that loads the Module needed for the AR code tables
+ */
+class CodeTablesIn extends WireData implements Module {
+
+	const CODE_TABLES = array(
+		'iwhm' => array(
+			'code'   => 'iwhm',
+			'module' => 'CodeTablesIwhm'
+		),
+	);
+
+	public function get_codetables() {
+		return self::CODE_TABLES;
+	}
+
+	public function validate_codetable($table) {
+		return array_key_exists($table, self::CODE_TABLES);
+	}
+
+	public function get_codetable_module($table) {
+		return $this->wire('modules')->get(self::CODE_TABLES[$table]['module']);
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Codes Tables Inventory Management',
+			'version' => 101,
+			'summary' => 'Module for Inventory Codes Tables',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => 'CodeTablesIwhm'  // added this line'
+		);
+	}
+}
