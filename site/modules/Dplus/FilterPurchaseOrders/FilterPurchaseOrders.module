@@ -205,13 +205,15 @@
 		 * @return void
 		 */
 		public function filter_postatus(WireInput $input) {
+			$sanitizer = new Sanitizer();
+
 			if ($input->get->status) {
 				$statuses = array();
 
 				foreach ($input->get->status as $status) {
 					$sanitized = $sanitizer->text($status);
 
-					if (array_key_exists($sanitized, Quote::$status_descriptions)) {
+					if (array_key_exists($sanitized, PurchaseOrder::STATUS_DESCRIPTIONS)) {
 						$statuses[] = $sanitized;
 					}
 				}
