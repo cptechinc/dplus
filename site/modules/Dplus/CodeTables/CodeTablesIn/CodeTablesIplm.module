@@ -1,0 +1,72 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'../CodeTablesResponse.php');
+
+use Purl\Url;
+
+use InvProductLineQuery, InvProductLine;
+use ConfigInQuery, ConfigIn;
+
+/**
+ * Module that handles the editing of the CCM codetable
+ */
+class CodeTablesIplm extends WireData implements Module {
+	const MODEL              = 'InvProductLine';
+	const MODEL_KEY          = 'id';
+	const DESCRIPTION        = 'Product Line';
+	const DESCRIPTION_RECORD = 'Product Line';
+	const MODEL_TABLE = 'inv_plne_code';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Return the Code records from Database
+	 * @param  string $table Table Code
+	 * @return ObjectCollection
+	 */
+	public function get_codes() {
+		$q = $this->get_query();
+		return $q->find();
+	}
+
+	/**
+	 * Return the Code records from Database filtered by ProductLne ID
+	 * @param  string $productlne ProductLneID
+	 * @return ObjectCollection
+	 */
+	public function get_code($productlne) {
+		$q = $this->get_query();
+		return $q->findOneById($productlne);
+	}
+
+	/**
+	 * Returns if Codes Exists
+	 * @param  string $productlne ProductLneID
+	 * @return bool
+	 */
+	public function code_exists($productlne) {
+		$q = $this->get_query();
+		return boolval($q->filterById($productlne)->count());
+	}
+
+	/**
+	 * Returns the associated ModelQuery class for table code
+	 * @param  string $table Table Code
+	 * @return mixed
+	 */
+	public function get_query() {
+		return InvProductLineQuery::create();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus IPLM Code Table CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for the IPLM code table',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
