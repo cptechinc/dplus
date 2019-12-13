@@ -24,7 +24,7 @@
 						<input class="form-control form-group inline" type="text" name="quotenbr_from" value="{{ input.get.text('quotenbr_from') }}" placeholder="From Quote #">
 						<input class="form-control form-group inline" type="text" name="quotenbr_through" value="{{ input.get.text('quotenbr_through') }}" placeholder="Through Quote #">
 					</div>
-                    <div class="col-sm-4">
+					<div class="col-sm-4">
 						<h5>Quote Total</h5>
 						<div class="input-group form-group">
 							<input class="form-control form-group inline" type="text" name="quote_total_from" id="quote-total-min" value="{{ input.get.text('quote_total_from') }}" placeholder="From Quote Total">
@@ -50,7 +50,7 @@
 				</div>
 				<hr>
 				<div class="row mt-4">
-                    <div class="col-sm-4">
+					<div class="col-sm-4">
 						<h5>Quote Date</h5>
 						<label for="afterdate">From Date</label>
 						{% set name = 'date_quoted_from' %}
@@ -62,7 +62,7 @@
 						{% set value = input.get.text('date_quoted_through') %}
 						{% include 'util/date-picker.twig' %}
 					</div>
-                    <div class="col-sm-4">
+					<div class="col-sm-4">
 						<h5>Review Date</h5>
 						<label for="afterdate">From Date</label>
 						{% set name = 'date_review_from' %}
@@ -74,7 +74,7 @@
 						{% set value = input.get.text('date_review_through') %}
 						{% include 'util/date-picker.twig' %}
 					</div>
-                    <div class="col-sm-4">
+					<div class="col-sm-4">
 						<h5>Expire Date</h5>
 						<label for="afterdate">From Date</label>
 						{% set name = 'date_expires_from' %}
