@@ -16,6 +16,26 @@ class CodeTablesIn extends WireData implements Module {
 			'code'   => 'iwhm',
 			'module' => 'CodeTablesIwhm'
 		),
+		'iplm' => array(
+			'code'   => 'iplm',
+			'module' => 'CodeTablesIplm'
+		),
+		'stcm' => array(
+			'code'   => 'stcm',
+			'module' => 'CodeTablesStcm'
+		),
+		'spit' => array(
+			'code'   => 'spit',
+			'module' => 'CodeTablesSpit'
+		),
+		'csccm' => array(
+			'code'   => 'csccm',
+			'module' => 'CodeTablesCsccm'
+		),
+		'iasm' => array(
+			'code'   => 'iasm',
+			'module' => 'CodeTablesIasm'
+		)
 	);
 
 	public function get_codetables() {
