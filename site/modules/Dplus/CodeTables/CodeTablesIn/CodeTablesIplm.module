@@ -4,14 +4,14 @@ include_once(__DIR__.'../CodeTablesResponse.php');
 
 use Purl\Url;
 
-use InvProductLineQuery, InvProductLine;
+use InvProductLineCodeQuery, InvProductLineCode;
 use ConfigInQuery, ConfigIn;
 
 /**
  * Module that handles the editing of the CCM codetable
  */
 class CodeTablesIplm extends WireData implements Module {
-	const MODEL              = 'InvProductLine';
+	const MODEL              = 'InvProductLineCodeCode';
 	const MODEL_KEY          = 'id';
 	const DESCRIPTION        = 'Product Line';
 	const DESCRIPTION_RECORD = 'Product Line';
@@ -57,7 +57,7 @@ class CodeTablesIplm extends WireData implements Module {
 	 * @return mixed
 	 */
 	public function get_query() {
-		return InvProductLineQuery::create();
+		return InvProductLineCodeQuery::create();
 	}
 
 	public static function getModuleInfo() {
