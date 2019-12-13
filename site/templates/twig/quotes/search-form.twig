@@ -21,8 +21,7 @@
 					</div>
 					<div class="col-sm-3">
 						<h5>Cust ID</h5>
-						{% set cust_array = input.get.custID %}
-						{{ cust_array|json_encode|raw }}
+						{% set cust_array = input.get.offsetExists('custID') ? input.get('custID', 'array') : {} %}
 						<div class="input-group form-group">
 							<input class="form-control form-group inline" type="text" name="custID[]" id="quote-cust-from" value="{{ cust_array[0] }}" placeholder="From CustID">
 							<span class="input-group-append">
