@@ -1,0 +1,37 @@
+$(function() {
+
+	$('#edit-code-modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var code = button.data('code'); // Extract info from data-* attributes
+		var description = button.data('description'); // Extract info from data-* attributes
+
+		var modal = $(this);
+
+		if (code.length) {
+			modal.find('.modal-title').text('Editing Code ' + code);
+			modal.find('input[name=code]').prop("readonly", true);
+		} else {
+			modal.find('.modal-title').text('Adding a new Code');
+			modal.find('input[name=code]').prop("readonly", false);
+		}
+
+		modal.find('input[name=code]').val(code);
+		modal.find('input[name=description]').val(description);
+	});
+
+	$("#code-edit-form").validate({
+		errorClass: "is-invalid",
+		rules: {
+			code: 'required',
+			description: 'required'
+		},
+		messages: {
+			code: "Please enter a code",
+			description: 'Please enter a description for the code'
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+
+})

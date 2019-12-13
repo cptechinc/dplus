@@ -1,0 +1,72 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'../CodeTablesResponse.php');
+
+use Purl\Url;
+
+use InvStockCodeQuery, InvStockCode;
+use ConfigInQuery, ConfigIn;
+
+/**
+ * Module that handles the editing of the CCM codetable
+ */
+class CodeTablesStcm extends WireData implements Module {
+	const MODEL              = 'InvStockCode';
+	const MODEL_KEY          = 'id';
+	const DESCRIPTION        = 'Stock';
+	const DESCRIPTION_RECORD = 'Stock';
+	const MODEL_TABLE = 'inv_stck_code';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Return the Code records from Database
+	 * @param  string $table Table Code
+	 * @return ObjectCollection
+	 */
+	public function get_codes() {
+		$q = $this->get_query();
+		return $q->find();
+	}
+
+	/**
+	 * Return the Code records from Database filtered by ProductLne ID
+	 * @param  string $productlne stockID
+	 * @return ObjectCollection
+	 */
+	public function get_code($stock) {
+		$q = $this->get_query();
+		return $q->findOneById($stock);
+	}
+
+	/**
+	 * Returns if Codes Exists
+	 * @param  string $stock ProductLneID
+	 * @return bool
+	 */
+	public function code_exists($stock) {
+		$q = $this->get_query();
+		return boolval($q->filterById($stock)->count());
+	}
+
+	/**
+	 * Returns the associated ModelQuery class for table code
+	 * @param  string $table Table Code
+	 * @return mixed
+	 */
+	public function get_query() {
+		return InvStockCodeQuery::create();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus STCM Code Table CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for the STCM code table',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
