@@ -1,0 +1,72 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'../CodeTablesResponse.php');
+
+use Purl\Url;
+
+use InvAssortmentCodeQuery, InvAssortmentCode;
+use ConfigInQuery, ConfigIn;
+
+/**
+ * Module that handles the editing of the CCM codetable
+ */
+class CodeTablesIasm extends WireData implements Module {
+	const MODEL              = 'InvAssortmentCode';
+	const MODEL_KEY          = 'id';
+	const DESCRIPTION        = 'Item Assortment';
+	const DESCRIPTION_RECORD = 'Item Assortment';
+	const MODEL_TABLE = 'inv_asst_code';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Return the Code records from Database
+	 * @param  string $table Table Code
+	 * @return ObjectCollection
+	 */
+	public function get_codes() {
+		$q = $this->get_query();
+		return $q->find();
+	}
+
+	/**
+	 * Return the Code records from Database filtered by ProductLne ID
+	 * @param  string $productlne ProductLneID
+	 * @return ObjectCollection
+	 */
+	public function get_code($asstcode) {
+		$q = $this->get_query();
+		return $q->findOneById($asstcode);
+	}
+
+	/**
+	 * Returns if Codes Exists
+	 * @param  string $productlne ProductLneID
+	 * @return bool
+	 */
+	public function code_exists($asstcode) {
+		$q = $this->get_query();
+		return boolval($q->filterById($asstcode)->count());
+	}
+
+	/**
+	 * Returns the associated ModelQuery class for table code
+	 * @param  string $table Table Code
+	 * @return mixed
+	 */
+	public function get_query() {
+		return InvAssortmentCodeQuery::create();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus IASM Code Table CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for the IASM code table',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
