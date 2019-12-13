@@ -73,12 +73,12 @@ class FilterSalesHistory extends WireData implements Module {
 				$invoicedate_through = date("Ymd", strtotime($input->get->text('invoicedate_through')));
 			}
 
-			if ($invoicedate_from && $invoicedate_through) {
-				$this->query->filterByInvoicedate(array($invoicedate_from, $invoicedate_through));
-			} elseif ($invoicedate_from) {
-				$this->query->filterByInvoicedate($invoicedate_from);
-			} elseif ($invoicedate_through) {
-				$this->query->filterByInvoicedate($invoicedate_through);
+			if ($invoicedate_from) {
+				$this->query->filterByInvoicedate($invoicedate_from, Criteria::GREATER_EQUAL);
+			}
+
+			if ($invoicedate_through) {
+				$this->query->filterByInvoicedate($invoicedate_through, Criteria::LESS_EQUAL);
 			}
 		}
 	}
