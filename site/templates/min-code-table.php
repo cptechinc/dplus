@@ -31,7 +31,7 @@
 			$page->js .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page]);
 		}
 	} else {
-		$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Code Table Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "AR Code Table '$page->codetable' does not exist"]);
+		$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Code Table Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "IN Code Table '$page->codetable' does not exist"]);
 	}
 
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
