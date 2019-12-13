@@ -127,23 +127,6 @@ class FilterQuotes extends WireData implements Module {
 	}
 
 	/**
-	 * Adds the Sort By to the query
-	 *
-	 * @param  Page   $page
-	 * @return void
-	 */
-	public function apply_sortby(Page $page) {
-		if ($page->has_orderby()) {
-			$orderbycolumn = $page->orderby_column;
-			$sort = $page->orderby_sort;
-			$tablecolumn = Quote::get_aliasproperty($orderbycolumn);
-			$this->query->sortBy($tablecolumn, $sort);
-		} else {
-			$this->query->orderByDate_quoted('DESC');
-		}
-	}
-
-	/**
 	 * Filters Query by Quote Number
 	 *
 	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
@@ -250,6 +233,23 @@ class FilterQuotes extends WireData implements Module {
 			if ($date_expires_through) {
 				$this->query->filterByDate_expires($date_expires_through, Criteria::LESS_EQUAL);
 			}
+		}
+	}
+
+	/**
+	 * Adds the Sort By to the query
+	 *
+	 * @param  Page   $page
+	 * @return void
+	 */
+	public function apply_sortby(Page $page) {
+		if ($page->has_orderby()) {
+			$orderbycolumn = $page->orderby_column;
+			$sort = $page->orderby_sort;
+			$tablecolumn = Quote::get_aliasproperty($orderbycolumn);
+			$this->query->sortBy($tablecolumn, $sort);
+		} else {
+			$this->query->orderByDate_quoted('DESC');
 		}
 	}
 
