@@ -1,0 +1,72 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'../CodeTablesResponse.php');
+
+use Purl\Url;
+
+use InvSpecialCodeQuery, InvSpecialCode;
+use ConfigInQuery, ConfigIn;
+
+/**
+ * Module that handles the editing of the CCM codetable
+ */
+class CodeTablesSpit extends WireData implements Module {
+	const MODEL              = 'InvSpecialCode';
+	const MODEL_KEY          = 'id';
+	const DESCRIPTION        = 'Special Item';
+	const DESCRIPTION_RECORD = 'Special Item';
+	const MODEL_TABLE = 'inv_spit_code';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Return the Code records from Database
+	 * @param  string $table Table Code
+	 * @return ObjectCollection
+	 */
+	public function get_codes() {
+		$q = $this->get_query();
+		return $q->find();
+	}
+
+	/**
+	 * Return the Code records from Database filtered by ProductLne ID
+	 * @param  string $productlne ProductLneID
+	 * @return ObjectCollection
+	 */
+	public function get_code($specialitem) {
+		$q = $this->get_query();
+		return $q->findOneById($specialitem);
+	}
+
+	/**
+	 * Returns if Codes Exists
+	 * @param  string $productlne ProductLneID
+	 * @return bool
+	 */
+	public function code_exists($specialitem) {
+		$q = $this->get_query();
+		return boolval($q->filterById($specialitem)->count());
+	}
+
+	/**
+	 * Returns the associated ModelQuery class for table code
+	 * @param  string $table Table Code
+	 * @return mixed
+	 */
+	public function get_query() {
+		return InvSpecialCodeQuery::create();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus SPIT Code Table CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for the SPIT code table',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
