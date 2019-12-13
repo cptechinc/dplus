@@ -22,16 +22,6 @@ class CodeTablesSpgpm extends WireData implements Module {
 	/**
 	 * Return the Code records from Database
 	 * @param  string $table Table Code
-	 * @return ObjectCollection
-	 */
-	public function get_codes() {
-		$q = $this->get_query();
-		return $q->find();
-	}
-
-	/**
-	 * Return the Code records from Database
-	 * @param  string $table Table Code
 	 * @return SalespersonGroupCode[]|ObjectCollection
 	 */
 	public function get_codes() {
