@@ -21,21 +21,23 @@
 					</div>
 					<div class="col-sm-4">
 						<h5>Vend ID</h5>
+
 						<div class="input-group form-group">
-							<input class="form-control form-group inline" type="text" name="vendID" id="po-vend-from" value="{{ input.get.text('vendID') }}" placeholder="From Vend ID">
-							<!-- <span class="input-group-append">
+							{% set vend_array = input.get('vendorID', 'array') %}
+							<input class="form-control form-group inline" type="text" name="vendorID[]" id="po-vend-from" value="{{ vend_array[0] }}" placeholder="From Vend ID">
+							<span class="input-group-append">
 								<button type="button" class="btn btn-default not-round get-vendid-search" data-field="#po-vend-from"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
-							</span> -->
+							</span>
 						</div>
-						<!-- <div class="input-group form-group">
-							<input class="form-control form-group inline" type="text" name="vendid_through" id="po-vend-to" value="{{ input.get.text('vendid_through') }}" placeholder="Through Vend ID">
+						<div class="input-group form-group">
+							<input class="form-control form-group inline" type="text" name="vendorID[]" id="po-vend-to" value="{{ vend_array[1] }}" placeholder="Through Vend ID">
 							<span class="input-group-append">
 								<button type="button" class="btn btn-default not-round get-vendid-search" data-field="#po-vend-to"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
 							</span>
-						</div> -->
+						</div>
 					</div>
-                    {# TODO: Order total is an added column to table #}
-                    <!-- <div class="col-sm-4">
+					{# TODO: Order total is an added column to table #}
+					<!-- <div class="col-sm-4">
 						<h5>Order Total</h5>
 						<div class="input-group form-group">
 							<input class="form-control form-group inline" type="text" name="po_total_from" id="po-total-min" value="{{ input.get.text('po_total_from') }}" placeholder="From PO Total">
@@ -50,7 +52,7 @@
 							</span>
 						</div>
 					</div> -->
-                    <div class="col-sm-4">
+					<div class="col-sm-4">
 						<h5>Status</h5>
 						<label>New</label>
 						<input class="pull-right" type="checkbox" name="status[]" value="N" {{ 'N' in input.get.status ? 'checked' : '' }} ></br>
@@ -61,7 +63,7 @@
 				</div>
 				<hr>
 				<div class="row mt-4">
-                    <div class="col-sm-4">
+					<div class="col-sm-4">
 						<h5>Order Date</h5>
 						<label for="afterdate">From Date</label>
 						{% set name = 'date_ordered_from' %}
@@ -73,7 +75,7 @@
 						{% set value = input.get.text('date_ordered_through') %}
 						{% include 'util/date-picker.twig' %}
 					</div>
-                    <div class="col-sm-4">
+					<div class="col-sm-4">
 						<h5>Expected Date</h5>
 						<label for="afterdate">From Date</label>
 						{% set name = 'date_expected_from' %}
