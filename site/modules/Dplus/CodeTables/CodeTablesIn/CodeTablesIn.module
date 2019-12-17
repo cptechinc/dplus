@@ -35,6 +35,22 @@ class CodeTablesIn extends WireData implements Module {
 		'iasm' => array(
 			'code'   => 'iasm',
 			'module' => 'CodeTablesIasm'
+		),
+		'igcm' => array(
+			'code'   => 'igcm',
+			'module' => 'CodeTablesIgcm'
+		),
+		'umm' => array(
+			'code'   => 'ummm',
+			'module' => 'CodeTablesUmm'
+		),
+		'msdsm' => array(
+			'code'   => 'msdsm',
+			'module' => 'CodeTablesMsdsm'
+		),
+		'igpm' => array(
+			'code'   => 'igpm',
+			'module' => 'CodeTablesIgpm'
 		)
 	);
 

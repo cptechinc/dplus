@@ -119,6 +119,15 @@ class DpagesMin extends Dpages implements Module {
 			'summary'        => 'View / Edit Item Price',
 			'parent'         => '/min/inmain/',
 			'dplus_function' => ''
+		),
+		'min-igcm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'min-code-table',
+			'name'           => 'igcm',
+			'title'          => 'Item Commission',
+			'summary'        => 'View / Edit Item Price',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => ''
 		)
 	);
 
