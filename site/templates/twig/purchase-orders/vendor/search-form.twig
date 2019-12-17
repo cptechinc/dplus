@@ -1,0 +1,92 @@
+<div class="mb-4 row">
+	<div class="col-sm-6">
+		<a href="{{ page.parent.url }}" class="btn btn-info"><i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i>&ensp;Back to Purchase Orders Menu</a>
+	</div>
+	<div class="col-sm-6">
+		<button class="btn btn-info toggle-po-search pull-right" type="button" data-toggle="collapse" data-target="#purchase-orders-search-div" aria-expanded="false" aria-controls="purchase-orders-search-div">Toggle Search&ensp;<i class="fa fa-search" aria-hidden="true"></i></button>
+	</div>
+</div>
+
+<div id="purchase-orders-search-div" class="{{ input.get.text('filter') is empty ? 'collapse' : ''}}">
+	<div class="card mb-3">
+		<div class="card-body">
+			<form action="" method="get" class="remove-empty-fields" submit-empty="false">
+				<input type="hidden" name="filter" value="filter">
+
+				<div class="row mt-3">
+					<div class="col-sm-3">
+						<h5>PO #</h5>
+						<input class="form-control form-group inline" type="text" name="ponbr_from" value="{{ input.get.text('ponbr_from') }}" placeholder="From PO #">
+						<input class="form-control form-group inline" type="text" name="ponbr_through" value="{{ input.get.text('ponbr_through') }}" placeholder="Through PO #">
+					</div>
+                    {# TODO: Order total is an added column to table #}
+                    <!-- <div class="col-sm-3">
+						<h5>Order Total</h5>
+						<div class="input-group form-group">
+							<input class="form-control form-group inline" type="text" name="po_total_from" id="po-total-min" value="{{ input.get.text('po_total_from') }}" placeholder="From PO Total">
+							<span class="input-group-append">
+								<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-down" aria-hidden="true"></span> <span class="sr-only">Min</span> </button>
+							</span>
+						</div>
+						<div class="input-group form-group">
+							<input class="form-control form-group inline" type="text" name="po_total_through" id="po-total-max" value="{{ input.get.text('po_total_through') }}" placeholder="Through PO Total">
+							<span class="input-group-append">
+								<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-up" aria-hidden="true"></span> <span class="sr-only">Max</span> </button>
+							</span>
+						</div>
+					</div> -->
+				</div>
+				<hr>
+				<div class="row mt-4">
+                    <div class="col-sm-3">
+						<h5>Order Date</h5>
+						<label for="afterdate">From Date</label>
+						{% set name = 'date_ordered_from' %}
+						{% set value = input.get.text('date_ordered_from') %}
+						{% include 'util/date-picker.twig' %}
+
+						<label for="beforedate">Through Date</label>
+						{% set name = 'date_ordered_through' %}
+						{% set value = input.get.text('date_ordered_through') %}
+						{% include 'util/date-picker.twig' %}
+					</div>
+                    <div class="col-sm-3">
+						<h5>Expected Date</h5>
+						<label for="afterdate">From Date</label>
+						{% set name = 'date_expected_from' %}
+						{% set value = input.get.text('date_expected_from') %}
+						{% include 'util/date-picker.twig' %}
+
+						<label for="beforedate">Through Date</label>
+						{% set name = 'date_expected_through' %}
+						{% set value = input.get.text('date_expected_through') %}
+						{% include 'util/date-picker.twig' %}
+					</div>
+					<div class="col-sm-3">
+						<h5>Status</h5>
+						<label>New</label>
+						<input class="pull-right" type="checkbox" name="status[]" value="N" {{ 'N' in input.get.status ? 'checked' : '' }} ></br>
+
+						<label>Closed</label>
+						<input class="pull-right" type="checkbox" name="status[]" value="C" {{ 'C' in input.get.status ? 'checked' : '' }} ></br>
+					</div>
+				</div>
+				<br>
+				<div class="row mt-3">
+					<div class="col-sm-12 form-group">
+						<button class="btn btn-success btn-block" type="submit">Search <i class="fa fa-search" aria-hidden="true"></i></button>
+					</div>
+					{% if input.get.text('filter') %}
+						<div class="col-sm-12 form-group">
+							<div>
+								<a href="{{ page.url }}" class="btn btn-warning btn-block">
+									Clear Search <i class="fa fa-search-minus" aria-hidden="true"></i>
+								</a>
+							</div>
+						</div>
+					{% endif %}
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

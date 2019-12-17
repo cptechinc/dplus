@@ -1,0 +1,55 @@
+{% extends "quotes/customer/quotes-list.twig" %}
+
+{% block header %}
+    <div class="row">
+        <div class="col">
+            <a href="{{ page.get_sortURL('quotenbr') }}" class="link">Quote Number
+                {% if page.orderby_column == 'quotenbr' %}
+					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+				{% endif %}
+            </a>
+        </div>
+        <div class="col">
+            <a href="{{ page.get_sortURL('shiptoid') }}" class="link">Ship-to
+                {% if page.orderby_column == 'shiptoid' %}
+					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+				{% endif %}
+            </a>
+        </div>
+        <div class="col text-right">
+            <a href="{{ page.get_sortURL('date_quoted') }}" class="link">Quote Date
+                {% if page.orderby_column == 'date_quoted' %}
+					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+				{% endif %}
+            </a>
+        </div>
+        <div class="col text-right">
+            <a href="{{ page.get_sortURL('date_review') }}" class="link">Review Date
+                {% if page.orderby_column == 'date_review' %}
+					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+				{% endif %}
+            </a>
+        </div>
+        <div class="col text-right">
+            <a href="{{ page.get_sortURL('date_expires') }}" class="link">Expire Date
+                {% if page.orderby_column == 'date_expires' %}
+					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+				{% endif %}
+            </a>
+        </div>
+        <div class="col text-right">
+            <a href="{{ page.get_sortURL('total_total') }}" class="link">Quote Total
+                {% if page.orderby_column == 'total_total' %}
+					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+				{% endif %}
+            </a>
+        </div>
+        <div class="col">
+            <a href="{{ page.get_sortURL('status') }}" class="link">Status
+                {% if page.orderby_column == 'status' %}
+					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+				{% endif %}
+            </a>
+        </div>
+    </div>
+{% endblock %}

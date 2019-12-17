@@ -21,14 +21,15 @@
 					</div>
 					<div class="col-sm-4">
 						<h5>Cust ID</h5>
+						{% set cust_array = input.get('custID', 'array') %}
 						<div class="input-group form-group">
-							<input class="form-control form-group inline" type="text" name="custid_from" id="sales-order-cust-from" value="{{ input.get.text('custid_from') }}" placeholder="From CustID">
+							<input class="form-control form-group inline" type="text" name="custID[]" id="sales-order-cust-from" value="{{ cust_array[0] }}" placeholder="From CustID">
 							<span class="input-group-append">
 								<button type="button" class="btn btn-default not-round get-custid-search" data-field="#sales-order-cust-from"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
 							</span>
 						</div>
 						<div class="input-group form-group">
-							<input class="form-control form-group inline" type="text" name="custid_through" id="sales-order-cust-to" value="{{ input.get.text('custid_through') }}" placeholder="Through CustID">
+							<input class="form-control form-group inline" type="text" name="custID[]" id="sales-order-cust-to" value="{{ cust_array[1] }}" placeholder="Through CustID">
 							<span class="input-group-append">
 								<button type="button" class="btn btn-default not-round get-custid-search" data-field="#sales-order-cust-to"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
 							</span>

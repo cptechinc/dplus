@@ -1,9 +1,6 @@
 <div class="mb-4 row">
 	<div class="col-sm-6">
-		<a href="{{ page.customer_or_shiptoURL() }}" class="btn btn-info">
-			<i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i>
-			Back to {{ page.has('shiptoID') ? 'Ship-to' : 'Customer' }} Page
-		</a>
+		<a href="{{ page.parent.url }}" class="btn btn-info"><i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i>&ensp;Back to Sales Orders Menu</a>
 	</div>
 	<div class="col-sm-6">
 		<button class="btn btn-info toggle-order-search pull-right" type="button" data-toggle="collapse" data-target="#orders-search-div" aria-expanded="false" aria-controls="orders-search-div">Toggle Search&ensp;<i class="fa fa-search" aria-hidden="true"></i></button>
@@ -13,7 +10,7 @@
 <div id="orders-search-div" class="{{ input.get.text('filter') is empty ? 'collapse' : ''}}">
 	<div class="card mb-3">
 		<div class="card-body">
-			<form action="" method="get" class="allow-enterkey-submit">
+			<form action="" method="get" class="allow-enterkey-submit" submit-empty="false">
 				<input type="hidden" name="custID" value="{{ custID }}">
 				<input type="hidden" name="shiptoID" value="{{ shiptoID }}">
 				<input type="hidden" name="filter" value="filter">
@@ -32,6 +29,33 @@
 				<hr>
 				<div class="row mt-4">
 					<div class="col-sm-4">
+						<h5>Order Total</h5>
+						<div class="input-group form-group">
+							<input class="form-control form-group inline" type="text" name="order_total_from" id="order-total-min" value="{{ input.get.text('order_total_from') }}" placeholder="From Order Total">
+							<span class="input-group-append">
+								<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-down" aria-hidden="true"></span> <span class="sr-only">Min</span> </button>
+							</span>
+						</div>
+						<div class="input-group form-group">
+							<input class="form-control form-group inline" type="text" name="order_total_through" id="order-total-max" value="{{ input.get.text('order_total_through') }}" placeholder="Through Order Total">
+							<span class="input-group-append">
+								<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-up" aria-hidden="true"></span> <span class="sr-only">Max</span> </button>
+							</span>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<h5>Date Invoiced</h5>
+						<label for="afterdate">From Date</label>
+						{% set name = 'invoicedate_from' %}
+						{% set value = input.get.text('invoicedate_from') %}
+						{% include 'util/date-picker.twig' %}
+
+						<label for="beforedate">Through Date</label>
+						{% set name = 'invoicedate_through' %}
+						{% set value = input.get.text('invoicedate_through') %}
+						{% include 'util/date-picker.twig' %}
+					</div>
+					<div class="col-sm-4">
 						<h5>Order Date</h5>
 						<label for="afterdate">From Date</label>
 						{% set name = 'orderdate_from' %}
@@ -42,35 +66,6 @@
 						{% set name = 'orderdate_through' %}
 						{% set value = input.get.text('orderdate_through') %}
 						{% include 'util/date-picker.twig' %}
-					</div>
-					<div class="col-sm-4">
-						<h5>Order Total</h5>
-						<div class="input-group form-group">
-							<input class="form-control form-group inline" type="text" name="order_total_from" id="order-total-min" value="{{ input.get.text('order_total_from') }}" placeholder="From Order Total">
-							<span class="input-group-btn">
-								<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-down" aria-hidden="true"></span> <span class="sr-only">Min</span> </button>
-							</span>
-						</div>
-						<div class="input-group form-group">
-							<input class="form-control form-group inline" type="text" name="order_total_through" id="order-total-max" value="{{ input.get.text('order_total_through') }}" placeholder="Through Order Total">
-							<span class="input-group-btn">
-								<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-up" aria-hidden="true"></span> <span class="sr-only">Max</span> </button>
-							</span>
-						</div>
-					</div>
-					<div class="col-sm-4">
-						<h5>Order Status</h5>
-						<label>New</label>
-						<input class="pull-right" type="checkbox" name="status[]" value="N" {{ 'N' in input.get.status ? 'checked' : '' }} ></br>
-
-						<label>Invoice</label>
-						<input class="pull-right" type="checkbox" name="status[]" value="I" {{ 'I' in input.get.status  ? 'checked' : '' }} ></br>
-
-						<label>Picked</label>
-						<input class="pull-right" type="checkbox" name="status[]" value="P" {{ 'P' in input.get.status ? 'checked' : '' }} ></br>
-
-						<label>Verified</label>
-						<input class="pull-right" type="checkbox" name="status[]" value="V" {{ 'V' in input.get.status  ? 'checked' : '' }} ></br>
 					</div>
 				</div>
 				<br>

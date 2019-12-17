@@ -1,0 +1,273 @@
+<?php namespace ProcessWire;
+
+use QuoteQuery, Quote;
+use Propel\Runtime\ActiveQuery\Criteria;
+
+class FilterQuotes extends WireData implements Module {
+	/**
+	 * Query
+	 * @var QuoteQuery
+	 */
+	protected $query;
+
+	/**
+	 * Returns Query
+	 * @return QuoteQuery
+	 */
+	public function get_query() {
+		return $this->query;
+	}
+
+	/**
+	 * Initializes Query
+	 * NOTE: Filters by Sales Rep if provided user is a Sales rep
+	 *
+	 * @param  User   $user User to Check if they are a Sales Person
+	 * @return void
+	 */
+	public function init_query(User $user) {
+		$this->query = QuoteQuery::create();
+
+		if ($user->is_salesrep()) {
+			$this->query->filterbySalesPerson($user->roleid);
+		}
+	}
+
+	/**
+	 * Applies Filters to the Query
+	 * NOTE:: Filters include Customer, Quote #, Quote Date, Review Date, Expire Date, Quote Total, Quote Status
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_query(WireInput $input) {
+		$this->filter_custid($input);
+		$this->filter_shiptoid($input);
+
+		if ($input->get->filter) {
+			$this->filter_quotenumber($input);
+			$this->filter_quotetotal($input);
+			$this->filter_quotedate($input);
+			$this->filter_reviewdate($input);
+			$this->filter_expiredate($input);
+			$this->filter_quotestatus($input);
+		} else {
+			$input->get->status = array();
+		}
+	}
+
+	/**
+	 * Filters Query by Order Status
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_quotestatus(WireInput $input) {
+		$sanitizer = new Sanitizer();
+
+		if ($input->get->status) {
+			$statuses = array();
+
+			foreach ($input->get->status as $status) {
+				$sanitized = $sanitizer->text($status);
+
+				if (array_key_exists($sanitized, Quote::STATUS_DESCRIPTIONS)) {
+					$statuses[] = $sanitized;
+				}
+			}
+			$this->query->filterByStatus($statuses);
+		} else {
+			$input->get->status = array();
+		}
+	}
+
+	/**
+	 * Filters Query by Customer ID
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_custid($input) {
+		if ($input->get->custID) {
+			if (is_array($input->get->custID)) {
+				$filter = $input->get->array('custID');
+			} else {
+				$filter = array($input->get->text('custID'));
+			}
+
+			if (sizeof($filter) == 2) {
+				if (!empty($filter[0])) {
+					$this->query->filterByCustid($filter[0], Criteria::GREATER_EQUAL);
+				}
+
+				if (!empty($filter[1])) {
+					$this->query->filterByCustid($filter[1], Criteria::LESS_EQUAL);
+				}
+			} else {
+				$this->query->filterByCustid($filter);
+			}
+		}
+	}
+
+	/**
+	 * Filters Query by Customer ShiptoID
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_shiptoid($input) {
+		if ($input->get->shiptoID && $input->get->custID) {
+			if (is_array($input->get->shiptoID)) {
+				$filter = $input->get->array('shiptoID');
+			} else {
+				$filter = $input->get->text('shiptoID');
+			}
+			$this->query->filterByShiptoid($filter);
+		}
+	}
+
+	/**
+	 * Filters Query by Quote Number
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_quotenumber(WireInput $input) {
+		if ($input->get->text('quotenbr_from')) {
+			$this->query->filterByQuotenumber($input->get->text('quotenbr_from'), Criteria::GREATER_EQUAL);
+		}
+
+		if ($input->get->text('quotenbr_through')) {
+			$this->query->filterByQuotenumber($input->get->text('quotenbr_through'), Criteria::LESS_EQUAL);
+		}
+	}
+
+	/**
+	 * Filters Query by Quote Total
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_quotetotal(WireInput $input) {
+		if ($input->get->text('quote_total_from')) {
+			$this->query->filterByTotal_total($input->get->text('quote_total_from'), Criteria::GREATER_EQUAL);
+		}
+
+		if ($input->get->text('quote_total_through')) {
+			$this->query->filterByTotal_total($input->get->text('quote_total_through'), Criteria::LESS_EQUAL);
+		}
+	}
+
+	/**
+	 * Filters Query by Quote Date
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_quotedate(WireInput $input) {
+		if ($input->get->text('date_quoted_from') || $input->get->text('date_quoted_through')) {
+			$date_quoted_from = date("Ymd", strtotime($input->get->text('date_quoted_from')));
+
+			if (empty($input->get->text('date_quoted_through'))) {
+				$date_quoted_through = date('Ymd');
+			} else {
+				$date_quoted_through = date("Ymd", strtotime($input->get->text('date_quoted_through')));
+			}
+
+			if ($date_quoted_from) {
+				$this->query->filterByDate_quoted($date_quoted_from, Criteria::GREATER_EQUAL);
+			}
+
+			if ($date_quoted_through) {
+				$this->query->filterByDate_quoted($date_quoted_through, Criteria::LESS_EQUAL);
+			}
+		}
+	}
+
+	/**
+	 * Filters Query by Review Date
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_reviewdate(WireInput $input) {
+		if ($input->get->text('date_review_from') || $input->get->text('date_review_through')) {
+			$date_review_from = date("Ymd", strtotime($input->get->text('date_review_from')));
+
+			if (empty($input->get->text('date_review_through'))) {
+				$date_review_through = date('Ymd');
+			} else {
+				$date_review_through = date("Ymd", strtotime($input->get->text('date_review_through')));
+			}
+
+			if ($date_review_from) {
+				$this->query->filterByDate_review($date_review_from, Criteria::GREATER_EQUAL);
+			}
+
+			if ($date_review_through) {
+				$this->query->filterByDate_review($date_review_through, Criteria::LESS_EQUAL);
+			}
+		}
+	}
+
+	/**
+	 * Filters Query by Expire Date
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_expiredate(WireInput $input) {
+		if ($input->get->text('date_expires_from') || $input->get->text('date_expires_through')) {
+			$date_expires_from = date("Ymd", strtotime($input->get->text('date_expires_from')));
+
+			if (empty($input->get->text('date_expires_through'))) {
+				$date_expires_through = date('Ymd');
+			} else {
+				$date_expires_through = date("Ymd", strtotime($input->get->text('date_expires_through')));
+			}
+
+			if ($date_expires_from) {
+				$this->query->filterByDate_expires($date_expires_from, Criteria::GREATER_EQUAL);
+			}
+
+			if ($date_expires_through) {
+				$this->query->filterByDate_expires($date_expires_through, Criteria::LESS_EQUAL);
+			}
+		}
+	}
+
+	/**
+	 * Adds the Sort By to the query
+	 *
+	 * @param  Page   $page
+	 * @return void
+	 */
+	public function apply_sortby(Page $page) {
+		if ($page->has_orderby()) {
+			$orderbycolumn = $page->orderby_column;
+			$sort = $page->orderby_sort;
+			$tablecolumn = Quote::get_aliasproperty($orderbycolumn);
+			$this->query->sortBy($tablecolumn, $sort);
+		} else {
+			$this->query->orderByDate_quoted('DESC');
+		}
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso filter Quotes Module',
+			'version' => 101,
+			'summary' => 'Handles Quotes Filtering',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

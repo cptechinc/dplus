@@ -1,14 +1,16 @@
 <div class="list-group-item bg-light font-weight-bold">
-	<div class="form-row">
-		<div class="col">PO Number</div>
-		<div class="col-sm-2">PO Ref</div>
-		<div class="col">Vendor</div>
-		<div class="col">ShipfromID</div>
-		<div class="col text-right">Order Total</div>
-		<div class="col">Order Date</div>
-		<div class="col">Expected Date</div>
-		<div class="col">Status</div>
-	</div>
+	{% block header %}
+		<div class="form-row">
+			<div class="col">PO Number</div>
+			<div class="col-sm-2">PO Ref</div>
+			<div class="col">Vendor</div>
+			<div class="col">ShipfromID</div>
+			<div class="col text-right">Order Total</div>
+			<div class="col text-right">Order Date</div>
+			<div class="col text-right">Expected Date</div>
+			<div class="col">Status</div>
+		</div>
+	{% endblock %}
 </div>
 {% if purchaseorders.count > 0 %}
 	{% for order in purchaseorders %}
