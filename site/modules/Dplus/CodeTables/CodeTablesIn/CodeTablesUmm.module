@@ -4,18 +4,19 @@ include_once(__DIR__.'../CodeTablesResponse.php');
 
 use Purl\Url;
 
-use InvPriceCodeQuery, InvPriceCode;
+use UnitofMeasureSaleQuery, UnitofMeasureSale;
+use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
 use ConfigInQuery, ConfigIn;
 
 /**
  * Module that handles the editing of the CCM codetable
  */
-class CodeTablesIgpm extends WireData implements Module {
-	const MODEL              = 'InvPriceCode';
+class CodeTablesUmm extends WireData implements Module {
+	const MODEL              = 'UnitofMeasureSale';
 	const MODEL_KEY          = 'id';
-	const DESCRIPTION        = 'Item Price';
-	const DESCRIPTION_RECORD = 'Item Price';
-	const MODEL_TABLE = 'inv_pric_code';
+	const DESCRIPTION        = 'Material Data Sheet';
+	const DESCRIPTION_RECORD = 'Material Data Sheet';
+	const MODEL_TABLE = 'inv_uom_sale';
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
@@ -57,7 +58,7 @@ class CodeTablesIgpm extends WireData implements Module {
 	 * @return mixed
 	 */
 	public function get_query() {
-		return InvPriceCodeQuery::create();
+		return UnitofMeasureSaleQuery::create();
 	}
 
 	/**
@@ -78,7 +79,7 @@ class CodeTablesIgpm extends WireData implements Module {
 		if ($q->count()) {
 			$record = $q->findOne();
 		} else {
-			$record = new InvPriceCode();
+			$record = new UnitofMeasureSale();
 			$record->setCode($code);
 		}
 
@@ -103,7 +104,7 @@ class CodeTablesIgpm extends WireData implements Module {
 	 * @param  bool   $saved  Was the Record Saved?
 	 * @return CodeTablesResponse
 	 */
-	protected function save_and_process_response($table, $code, InvPriceCode $record) {
+	protected function save_and_process_response($table, $code, UnitofMeasureSale $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
@@ -132,16 +133,41 @@ class CodeTablesIgpm extends WireData implements Module {
 		$response->set_message($message);
 
 		if ($response->has_success()) {
+			$this->save_uom_purchase($record);
 			$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
 		}
 		return $response;
 	}
 
+	/**
+	 * Takes the UnitofMeasureSale Sale Record and Duplicates Database action
+	 * in the UnitofMeasurePurchase Table
+	 * @param  UnitofMeasureSale $uom_sale
+	 * @return bool
+	 */
+	public function save_uom_purchase(UnitofMeasureSale $uom_sale) {
+		$q = UnitofMeasurePurchaseQuery::create();
+		$q->filterByCode($uom_sale->code);
+
+		if ($q->count()) {
+			$uom_purchase = $q->findOne();
+		} else }
+			$uom_purchase = new UnitofMeasurePurchase();
+			$uom_purchase->fromArray($uom_sale->toArray());
+		{
+
+		if ($uom_sale->isDeleted()) {
+			return $uom_purchase->delete();
+		} else {
+			return $uom_purchase->save();
+		}
+	}
+
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus IGPM Code Table CRUD Manager',
+			'title' => 'Dplus UMM Code Table CRUD Manager',
 			'version' => 101,
-			'summary' => 'Module for CRUD Methods for the IGPM code table',
+			'summary' => 'Module for CRUD Methods for the UMM code table',
 			'singular' => true,
 			'autoload' => true,
 		);

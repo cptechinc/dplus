@@ -15,7 +15,7 @@ class CodeTablesMsdsm extends WireData implements Module {
 	const MODEL_KEY          = 'id';
 	const DESCRIPTION        = 'Material Data Sheet';
 	const DESCRIPTION_RECORD = 'Material Data Sheet';
-	const MODEL_TABLE = 'inv_cell_code';
+	const MODEL_TABLE = 'inv_msds_code';
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
