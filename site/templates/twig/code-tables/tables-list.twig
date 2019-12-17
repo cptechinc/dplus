@@ -1,0 +1,14 @@
+<div class="list-group">
+	{% for table in tables %}
+		<a href="{{ page.get_codetable_viewURL(table['code']) }}" class="list-group-item list-group-item-action">
+			<div class="row align-items-center">
+				<div class="col-1">
+					<p class="h4">{{ table['code'] }}</p>
+				</div>
+				<div class="col-11">
+					<p class="h4">{{ table['description'] }}</p>
+				</div>
+			</div>
+		</a>
+	{% endfor %}
+</div>

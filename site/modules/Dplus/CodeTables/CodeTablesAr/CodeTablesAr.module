@@ -1,0 +1,64 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'../CodeTablesResponse.php');
+
+use Purl\Url;
+
+use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
+
+/**
+ * Module that loads the Module needed for the AR code tables
+ */
+class CodeTablesAr extends WireData implements Module {
+
+	const CODE_TABLES = array(
+		'ccm' => array(
+			'code'        		 => 'ccm',
+			'module'   			 => 'CodeTablesCcm'
+		),
+		'crtm' => array(
+			'code'        		 => 'crtm',
+			'module'   			 => 'CodeTablesCrtm'
+		),
+		'spgpm' => array(
+			'code'        		 => 'spgpm',
+			'module'   			 => 'CodeTablesSpgpm'
+		),
+		'worm' => array(
+			'code'        		 => 'worm',
+			'module'   			 => 'CodeTablesWorm'
+		),
+		'cpm' => array(
+			'code'        		 => 'cpm',
+			'module'   			 => 'CodeTablesCpm'
+		),
+		'ctm' => array(
+			'code'        		 => 'ctm',
+			'module'   			 => 'CodeTablesCtm'
+		),
+	);
+
+	public function get_codetables() {
+		return self::CODE_TABLES;
+	}
+
+	public function validate_codetable($table) {
+		return array_key_exists($table, self::CODE_TABLES);
+	}
+
+	public function get_codetable_module($table) {
+		return $this->wire('modules')->get(self::CODE_TABLES[$table]['module']);
+	}
+
+
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Codes Tables AR Management',
+			'version' => 101,
+			'summary' => 'Module for Codes Tables AR Managment',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

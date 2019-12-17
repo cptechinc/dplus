@@ -1,0 +1,44 @@
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row align-items-center">
+			<div class="col-3">
+				Code
+			</div>
+			<div class="col-4">
+				Description
+			</div>
+			<div class="col-2">
+				Write off ?
+			</div>
+			<div class="col-3">
+				<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="" data-yesno="N">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add Code
+				</button>
+			</div>
+		</div>
+	</div>
+	{% for code in codes %}
+		<div class="list-group-item pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
+			<div class="row align-items-center">
+				<div class="col-3">
+					{{ code.code }}
+				</div>
+				<div class="col-4">
+					{{ code.description }}
+				</div>
+				<div class="col-2">
+					{{ code.yesno|yesorno|capitalize }}
+				</div>
+				<div class="col-3 text-center">
+					<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-yesno="{{ code.yesno }}">
+						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+					</button>
+					&nbsp;
+					<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger">
+						<i class="fa fa-trash" aria-hidden="true"></i> Delete
+					</a>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+</div>
