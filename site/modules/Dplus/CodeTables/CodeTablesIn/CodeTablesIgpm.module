@@ -86,7 +86,9 @@ class CodeTablesIgpm extends WireData implements Module {
 			$record->delete();
 		} else {
 			$description = $input->$rm->text('description');
+			$sales_program = $input->$rm->text('sales_program');
 			$record->setDescription($description);
+			$record->setSales_program($sales_program);
 			$record->setDate(date('Ymd'));
 			$record->setTime(0);
 		}
