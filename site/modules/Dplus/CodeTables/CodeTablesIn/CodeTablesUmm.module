@@ -14,8 +14,8 @@ use ConfigInQuery, ConfigIn;
 class CodeTablesUmm extends WireData implements Module {
 	const MODEL              = 'UnitofMeasureSale';
 	const MODEL_KEY          = 'id';
-	const DESCRIPTION        = 'Material Data Sheet';
-	const DESCRIPTION_RECORD = 'Material Data Sheet';
+	const DESCRIPTION        = 'Unit of Measure';
+	const DESCRIPTION_RECORD = 'Unit of Measure';
 	const MODEL_TABLE = 'inv_uom_sale';
 
 	public function __construct() {
@@ -87,7 +87,11 @@ class CodeTablesUmm extends WireData implements Module {
 			$record->delete();
 		} else {
 			$description = $input->$rm->text('description');
+			$conversion = $input->$rm->text('conversion');
+			$pricebyweight = $input->$rm->text('pricebyweight');
 			$record->setDescription($description);
+			$record->setConversion($conversion);
+			$record->setPricebyweight($pricebyweight);
 			$record->setDate(date('Ymd'));
 			$record->setTime(0);
 		}
@@ -151,10 +155,10 @@ class CodeTablesUmm extends WireData implements Module {
 
 		if ($q->count()) {
 			$uom_purchase = $q->findOne();
-		} else }
+		} else {
 			$uom_purchase = new UnitofMeasurePurchase();
 			$uom_purchase->fromArray($uom_sale->toArray());
-		{
+		}
 
 		if ($uom_sale->isDeleted()) {
 			return $uom_purchase->delete();
