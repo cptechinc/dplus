@@ -82,11 +82,15 @@ class CodeTablesMsdsm extends WireData implements Module {
 			$record->setCode($code);
 		}
 
+
+
 		if ($input->$rm->text('action') == 'remove-code') {
 			$record->delete();
 		} else {
 			$description = $input->$rm->text('description');
+			$effective_date = date('Ymd', strtotime($input->$rm->text('effective_date')));
 			$record->setDescription($description);
+			$record->setEffective_date($effective_date);
 			$record->setDate(date('Ymd'));
 			$record->setTime(0);
 		}

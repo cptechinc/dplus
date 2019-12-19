@@ -4,6 +4,7 @@ $(function() {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var code = button.data('code'); // Extract info from data-* attributes
 		var description = button.data('description'); // Extract info from data-* attributes
+		var effective_date = button.data('effective_date'); // Extract info from data-* attributes
 
 		var modal = $(this);
 
@@ -17,17 +18,20 @@ $(function() {
 
 		modal.find('input[name=code]').val(code);
 		modal.find('input[name=description]').val(description);
+		modal.find('input[name=effective_date]').val(effective_date);
 	});
 
 	$("#code-edit-form").validate({
 		errorClass: "is-invalid",
 		rules: {
 			code: 'required',
-			description: 'required'
+			description: 'required',
+			effective_date: 'required'
 		},
 		messages: {
 			code: "Please enter a code",
-			description: 'Please enter a description for the code'
+			description: 'Please enter a description for the code',
+			effective_date: 'Please enter an effective date for the code'
 		},
 		submitHandler: function(form) {
 			form.submit();
