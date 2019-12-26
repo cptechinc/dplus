@@ -6,9 +6,15 @@ use Purl\Url;
 
 use InvPriceCodeQuery, InvPriceCode;
 use ConfigInQuery, ConfigIn;
+use ConfigSalesOrder;
 
 /**
  * Module that handles the editing of the CCM codetable
+ *
+ * In Dplus, options for configs, SOCF, screen 9
+ * 		P = program
+ * 		C = catalog
+ * 		N =
  */
 class CodeTablesIgpm extends WireData implements Module {
 	const MODEL              = 'InvPriceCode';

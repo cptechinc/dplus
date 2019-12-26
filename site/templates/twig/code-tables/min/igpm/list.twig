@@ -27,7 +27,8 @@
 					{{ code.description }}
 				</div>
 				<div class="col-3">
-					{{ code.sales_program|yesorno|capitalize }}
+					{# TODO: request_descriptions #}
+					{{ code.sales_program|capitalize }}
 				</div>
 				<div class="col-3 text-center">
 					<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-sales_program="{{ code.sales_program }}">
