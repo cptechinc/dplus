@@ -6,7 +6,7 @@ use Purl\Url;
 
 use InvPriceCodeQuery, InvPriceCode;
 use ConfigInQuery, ConfigIn;
-use ConfigSalesOrder;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
 
 /**
  * Module that handles the editing of the CCM codetable
@@ -74,6 +74,7 @@ class CodeTablesIgpm extends WireData implements Module {
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
+		$config_so = ConfigSalesOrderQuery::create()->findOne();
 		$rm = strtolower($input->requestMethod());
 		$table = $input->$rm->text('table');
 		$code  = $input->$rm->text('code');
@@ -92,11 +93,14 @@ class CodeTablesIgpm extends WireData implements Module {
 			$record->delete();
 		} else {
 			$description = $input->$rm->text('description');
-			$sales_program = $input->$rm->text('sales_program');
 			$record->setDescription($description);
-			$record->setSales_program($sales_program);
 			$record->setDate(date('Ymd'));
 			$record->setTime(0);
+
+			if ($config_so->is_request_program()) {
+				$sales_program = $input->$rm->text('sales_program');
+				$record->setSales_program($sales_program);
+			}
 		}
 
 		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);
