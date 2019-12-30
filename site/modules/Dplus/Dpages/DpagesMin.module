@@ -128,6 +128,24 @@ class DpagesMin extends Dpages implements Module {
 			'summary'        => 'View / Edit Item Price',
 			'parent'         => '/min/inmain/',
 			'dplus_function' => ''
+		),
+		'min-tarm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'min-code-table',
+			'name'           => 'tarm',
+			'title'          => 'Tariff Class',
+			'summary'        => 'View / Edit Tariff Class',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => ''
+		),
+		'min-igm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'min-code-table',
+			'name'           => 'igm',
+			'title'          => 'Item Group',
+			'summary'        => 'View / Edit Item Group',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => ''
 		)
 	);
 
