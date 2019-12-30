@@ -51,6 +51,14 @@ class CodeTablesIn extends WireData implements Module {
 		'igpm' => array(
 			'code'   => 'igpm',
 			'module' => 'CodeTablesIgpm'
+		),
+		'igm' => array(
+			'code'   => 'igm',
+			'module' => 'CodeTablesIgm'
+		),
+		'tarm' => array(
+			'code'   => 'tarm',
+			'module' => 'CodeTablesTarm'
 		)
 	);
 
@@ -112,7 +120,9 @@ class CodeTablesIn extends WireData implements Module {
 				'CodeTablesIgcm',
 				'CodeTablesUmm',
 				'CodeTablesMsdsm',
-				'CodeTablesIgpm'
+				'CodeTablesIgpm',
+				'CodeTablesIgm',
+				'CodeTablesTarm'
 			)
 		);
 	}
