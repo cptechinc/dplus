@@ -1,0 +1,32 @@
+<form action="{{ page.url }}" method="POST" id="code-edit-form">
+	<input type="hidden" name="table" value="tarm">
+
+	<div class="form-group">
+		<label for="code">Code</label>
+		<input type="text" name="code" class="form-control" value="" id="code">
+	</div>
+
+	<div class="form-group">
+		<label for="number">Tariff Number</label>
+		<input type="text" name="number" class="form-control" value="" id="number">
+	</div>
+
+	<div class="form-group">
+		<label for="description">Description</label>
+		<input type="text" name="description" class="form-control" value="" id="description">
+	</div>
+
+	<div class="form-group">
+		<label for="duty_rate">Tariff Percent</label>
+		<input type="text" name="duty_rate" class="form-control" value="" id="duty_rate">
+	</div>
+
+	<div class="form-group">
+		<label for="country">Countries</label>
+		<input type="text" name="country" class="form-control" value="" id="country">
+	</div>
+
+	<button type="submit" class="btn btn-success">
+		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+	</button>
+</form>
