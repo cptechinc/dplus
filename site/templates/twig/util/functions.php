@@ -29,6 +29,11 @@
 	});
 	$config->twig->addFilter($filter);
 
+	$filter = new TwigFilter('bool', function ($tf) {
+		return boolval($tf);
+	});
+	$config->twig->addFilter($filter);
+
 	$filter = new Twig_Filter('attrJS', function ($string) {
 		return "js-$string";
 	});

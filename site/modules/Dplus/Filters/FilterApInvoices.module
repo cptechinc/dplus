@@ -1,0 +1,186 @@
+<?php namespace ProcessWire;
+
+use ApInvoiceQuery, ApInvoice;
+use PurchaseOrderQuery, PurchaseOrder;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+class FilterApInvoices extends WireData implements Module {
+	/**
+	 * Query
+	 * @var ApInvoiceQuery
+	 */
+	protected $query;
+
+	const PURCHASE_ORDER_COLS = array(
+		'date_ordered'
+	);
+
+	/**
+	 * Returns Query
+	 * @return ApInvoiceQuery
+	 */
+	public function get_query() {
+		return $this->query;
+	}
+
+	/**
+	 * Initializes Query
+	 * NOTE: Filters by Sales Rep if provided user is a Sales rep
+	 *
+	 * @param  User   $user User to Check if they are a Sales Person
+	 * @return void
+	 */
+	public function init_query(User $user) {
+		$this->query = ApInvoiceQuery::create();
+	}
+
+	/**
+	 * Applies Filters to the Query
+	 * NOTE:: Filters include TODO::
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_query(WireInput $input) {
+		$this->filter_vendorid($input);
+
+		if ($input->get->filter) {
+			$this->filter_invnbr($input);
+			$this->filter_ponbr($input);
+			$this->filter_invoicedate($input);
+		} else {
+			$input->get->status = array();
+		}
+	}
+
+	/**
+	 * Filters Query by Vendor ID
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_vendorid($input) {
+		if ($input->get->vendorID) {
+			if (is_array($input->get->vendorID)) {
+				$filter = $input->get->array('vendorID');
+			} else {
+				$filter = array($input->get->text('vendorID'));
+			}
+
+			if (sizeof($filter) == 2) {
+				if (!empty($filter[0])) {
+					$this->query->filterByVendorid($filter[0], Criteria::GREATER_EQUAL);
+				}
+
+				if (!empty($filter[1])) {
+					$this->query->filterByVendorid($filter[1], Criteria::LESS_EQUAL);
+				}
+			} else {
+				$this->query->filterByVendorid($filter);
+			}
+		}
+	}
+
+	/**
+	 * Filters Query by AP Invoice Number
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_invnbr(WireInput $input) {
+		if ($input->get->invnbr_from) {
+			$this->query->filterByInvnbr($input->get->text('invnbr_from'), Criteria::GREATER_EQUAL);
+		}
+
+		if ($input->get->invnbr_through) {
+			$this->query->filterByInvnbr($input->get->text('invnbr_through'), Criteria::LESS_EQUAL);
+		}
+	}
+
+	/**
+	 * Filters Query by Purchase ORder Number
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_ponbr(WireInput $input) {
+		if ($input->get->ponbr_from) {
+			$from = PurchaseOrder::get_paddedponumber($input->get->text('ponbr_from'));
+			$this->query->filterByPonbr($from, Criteria::GREATER_EQUAL);
+		}
+
+		if ($input->get->ponbr_through) {
+			$through = PurchaseOrder::get_paddedponumber($input->get->text('ponbr_through'));
+			$this->query->filterByPonbr($through, Criteria::LESS_EQUAL);
+		}
+	}
+
+	/**
+	 * Filters Query by Quote Date
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_invoicedate(WireInput $input) {
+		if ($input->get->text('date_invoiced_from') || $input->get->text('date_invoiced_through')) {
+			$date_invoiced_from = date("Ymd", strtotime($input->get->text('date_invoiced_from')));
+
+			if (empty($input->get->text('date_invoiced_through'))) {
+				$date_invoiced_through = date('Ymd');
+			} else {
+				$date_invoiced_through = date("Ymd", strtotime($input->get->text('date_invoiced_through')));
+			}
+
+			if ($date_invoiced_from) {
+				$this->query->filterByDate_invoiced($date_invoiced_from, Criteria::GREATER_EQUAL);
+			}
+
+			if ($date_invoiced_through) {
+				$this->query->filterByDate_invoiced($date_invoiced_through, Criteria::LESS_EQUAL);
+			}
+		}
+	}
+
+	/**
+	 * Adds the Sort By to the query
+	 *
+	 * @param  Page   $page
+	 * @return void
+	 */
+	public function apply_sortby(Page $page) {
+		if ($page->has_orderby()) {
+			$orderbycolumn = $page->orderby_column;
+			$sort = $page->orderby_sort;
+
+			if (in_array($orderbycolumn, self::PURCHASE_ORDER_COLS)) {
+				$tablecolumn = PurchaseOrder::get_aliasproperty($orderbycolumn);
+				$this->query->join('PurchaseOrder');
+				$this->query->orderBy("PurchaseOrder.$tablecolumn", $sort);
+			} else {
+				$tablecolumn = ApInvoice::get_aliasproperty($orderbycolumn);
+				$this->query->sortBy($tablecolumn, $sort);
+			}
+		} else {
+			$this->query->orderByDate_invoiced('DESC');
+		}
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso filter AP Invoices Module',
+			'version' => 101,
+			'summary' => 'Handles AP Invoices Filtering',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

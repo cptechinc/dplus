@@ -1,0 +1,121 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__ . "/FilterSalesTraits.php");
+
+use SalesOrderQuery, SalesOrder;
+use Propel\Runtime\ActiveQuery\Criteria;
+
+class FilterSalesOrders extends WireData implements Module {
+	use FilterSalesTraits;
+
+	/**
+	 * Query
+	 * @var SalesOrderQuery
+	 */
+	protected $query;
+
+	/**
+	 * Returns Query
+	 * @return SalesOrderQuery
+	 */
+	public function get_query() {
+		return $this->query;
+	}
+
+	/**
+	 * Initializes Query
+	 * NOTE: Filters by Sales Rep if provided user is a Sales rep
+	 *
+	 * @param  User   $user User to Check if they are a Sales Person
+	 * @return void
+	 */
+	public function init_query(User $user) {
+		$this->query = SalesOrderQuery::create();
+
+		if ($user->is_salesrep()) {
+			$this->query->filterbySalesPerson($user->roleid);
+		}
+	}
+
+	/**
+	 * Applies Filters to the Query
+	 * NOTE:: Filters include Customer, Shipto, Order #, Customer PO, Order Date, Order Total, Order Status
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_query(WireInput $input) {
+		$this->filter_custid($input);
+		$this->filter_shiptoid($input);
+
+		if ($input->get->filter) {
+			$this->filter_ordernumber($input);
+			$this->filter_custpo($input);
+			$this->filter_orderdate($input);
+			$this->filter_ordertotal($input);
+			$this->filter_orderstatus($input);
+		} else {
+			$input->get->status = array();
+		}
+	}
+
+	/**
+	 * Filters Query by Order Status
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_orderstatus(WireInput $input) {
+		$sanitizer = new Sanitizer();
+
+		if ($input->get->status) {
+			$statuses = array();
+
+			foreach ($input->get->status as $status) {
+				$sanitized = $sanitizer->text($status);
+
+				if (array_key_exists($sanitized, SalesOrder::STATUS_DESCRIPTIONS)) {
+					$statuses[] = $sanitized;
+				}
+			}
+			$this->query->filterByStatus($statuses);
+		} else {
+			$input->get->status = array();
+		}
+	}
+
+	/**
+	 * Adds the Sort By to the query
+	 *
+	 * @param  Page   $page
+	 * @return void
+	 */
+	public function apply_sortby(Page $page) {
+		if ($page->has_orderby()) {
+			$orderbycolumn = $page->orderby_column;
+			$sort = $page->orderby_sort;
+			$tablecolumn = SalesOrder::get_aliasproperty($orderbycolumn);
+			$this->query->sortBy($tablecolumn, $sort);
+		} else {
+			$this->query->orderByDate_ordered('DESC');
+		}
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso filter Sales Orders Module',
+			'version' => 101,
+			'summary' => 'Handles Sales Orders Filtering',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

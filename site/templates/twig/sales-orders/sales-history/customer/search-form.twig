@@ -1,0 +1,89 @@
+<div class="mb-4 row">
+	<div class="col-sm-6">
+		<a href="{{ page.parent.url }}" class="btn btn-info"><i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i>&ensp;Back to Sales Orders Menu</a>
+	</div>
+	<div class="col-sm-6">
+		<button class="btn btn-info toggle-order-search pull-right" type="button" data-toggle="collapse" data-target="#orders-search-div" aria-expanded="false" aria-controls="orders-search-div">Toggle Search&ensp;<i class="fa fa-search" aria-hidden="true"></i></button>
+	</div>
+</div>
+
+<div id="orders-search-div" class="{{ input.get.text('filter') is empty ? 'collapse' : ''}}">
+	<div class="card mb-3">
+		<div class="card-body">
+			<form action="" method="get" class="allow-enterkey-submit" submit-empty="false">
+				<input type="hidden" name="custID" value="{{ custID }}">
+				<input type="hidden" name="shiptoID" value="{{ shiptoID }}">
+				<input type="hidden" name="filter" value="filter">
+
+				<div class="row mt-3">
+					<div class="col-sm-4">
+						<h5>Order #</h5>
+						<input class="form-control form-group inline" type="text" name="ordernumber_from" value="{{ input.get.text('ordernumber_from') }}" placeholder="From Order #">
+						<input class="form-control form-group inline" type="text" name="ordernumber_through" value="{{ input.get.text('ordernumber_through') }}" placeholder="Through Order #">
+					</div>
+					<div class="col-sm-4">
+						<h5>Cust PO</h5>
+						<input class="form-control inline" type="text" name="custpo" value="{{ input.get.text('custpo') }}" placeholder="Cust PO">
+					</div>
+				</div>
+				<hr>
+				<div class="row mt-4">
+					<div class="col-sm-4">
+						<h5>Order Total</h5>
+						<div class="input-group form-group">
+							<input class="form-control form-group inline" type="text" name="order_total_from" id="order-total-min" value="{{ input.get.text('order_total_from') }}" placeholder="From Order Total">
+							<span class="input-group-append">
+								<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-down" aria-hidden="true"></span> <span class="sr-only">Min</span> </button>
+							</span>
+						</div>
+						<div class="input-group form-group">
+							<input class="form-control form-group inline" type="text" name="order_total_through" id="order-total-max" value="{{ input.get.text('order_total_through') }}" placeholder="Through Order Total">
+							<span class="input-group-append">
+								<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-up" aria-hidden="true"></span> <span class="sr-only">Max</span> </button>
+							</span>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<h5>Date Invoiced</h5>
+						<label for="afterdate">From Date</label>
+						{% set name = 'invoicedate_from' %}
+						{% set value = input.get.text('invoicedate_from') %}
+						{% include 'util/date-picker.twig' %}
+
+						<label for="beforedate">Through Date</label>
+						{% set name = 'invoicedate_through' %}
+						{% set value = input.get.text('invoicedate_through') %}
+						{% include 'util/date-picker.twig' %}
+					</div>
+					<div class="col-sm-4">
+						<h5>Order Date</h5>
+						<label for="afterdate">From Date</label>
+						{% set name = 'orderdate_from' %}
+						{% set value = input.get.text('orderdate_from') %}
+						{% include 'util/date-picker.twig' %}
+
+						<label for="beforedate">Through Date</label>
+						{% set name = 'orderdate_through' %}
+						{% set value = input.get.text('orderdate_through') %}
+						{% include 'util/date-picker.twig' %}
+					</div>
+				</div>
+				<br>
+				<div class="row mt-3">
+					<div class="col-sm-12 form-group">
+						<button class="btn btn-success btn-block" type="submit">Search <i class="fa fa-search" aria-hidden="true"></i></button>
+					</div>
+					{% if input.get.text('filter') %}
+						<div class="col-sm-12 form-group">
+							<div>
+								<a href="{{ page.url }}" class="btn btn-warning btn-block">
+									Clear Search <i class="fa fa-search-minus" aria-hidden="true"></i>
+								</a>
+							</div>
+						</div>
+					{% endif %}
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

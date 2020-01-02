@@ -1,0 +1,108 @@
+<div class="mb-4 row">
+	<div class="col-sm-6">
+		<a href="{{ page.customer_or_shiptoURL() }}" class="btn btn-info">
+			<i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i>
+			Back to {{ page.has('shiptoID') ? 'Ship-to' : 'Customer' }} Page
+		</a>
+	</div>
+	<div class="col-sm-6">
+		<button class="btn btn-info toggle-quote-search pull-right" type="button" data-toggle="collapse" data-target="#quotes-search-div" aria-expanded="false" aria-controls="quotes-search-div">Toggle Search&ensp;<i class="fa fa-search" aria-hidden="true"></i></button>
+	</div>
+</div>
+
+<div id="quotes-search-div" class="{{ input.get.text('filter') is empty ? 'collapse' : ''}}">
+	<div class="card mb-3">
+		<div class="card-body">
+			<form action="" method="get" class="remove-empty-fields" submit-empty="false">
+				<input type="hidden" name="filter" value="filter">
+				<input type="hidden" name="custID" value="{{ custID }}">
+				<input type="hidden" name="shiptoID" value="{{ shiptoID }}">
+
+				<div class="row mt-3">
+					<div class="col-sm-4">
+						<h5>Quote #</h5>
+						<input class="form-control form-group inline" type="text" name="quotenbr_from" value="{{ input.get.text('quotenbr_from') }}" placeholder="From Quote #">
+						<input class="form-control form-group inline" type="text" name="quotenbr_through" value="{{ input.get.text('quotenbr_through') }}" placeholder="Through Quote #">
+					</div>
+					<div class="col-sm-4">
+						<h5>Quote Total</h5>
+						<div class="input-group form-group">
+							<input class="form-control form-group inline" type="text" name="quote_total_from" id="quote-total-min" value="{{ input.get.text('quote_total_from') }}" placeholder="From Quote Total">
+							<span class="input-group-append">
+								<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-down" aria-hidden="true"></span> <span class="sr-only">Min</span> </button>
+							</span>
+						</div>
+						<div class="input-group form-group">
+							<input class="form-control form-group inline" type="text" name="quote_total_through" id="quote-total-max" value="{{ input.get.text('quote_total_through') }}" placeholder="Through Quote Total">
+							<span class="input-group-append">
+								<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-up" aria-hidden="true"></span> <span class="sr-only">Max</span> </button>
+							</span>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<h5>Status</h5>
+						<label>New</label>
+						<input class="pull-right" type="checkbox" name="status[]" value="N" {{ 'N' in input.get.status ? 'checked' : '' }} ></br>
+
+						<label>Printed</label>
+						<input class="pull-right" type="checkbox" name="status[]" value="P" {{ 'N' in input.get.status ? 'checked' : '' }} ></br>
+					</div>
+				</div>
+				<hr>
+				<div class="row mt-4">
+					<div class="col-sm-4">
+						<h5>Quote Date</h5>
+						<label for="afterdate">From Date</label>
+						{% set name = 'date_quoted_from' %}
+						{% set value = input.get.text('date_quoted_from') %}
+						{% include 'util/date-picker.twig' %}
+
+						<label for="beforedate">Through Date</label>
+						{% set name = 'date_quoted_through' %}
+						{% set value = input.get.text('date_quoted_through') %}
+						{% include 'util/date-picker.twig' %}
+					</div>
+					<div class="col-sm-4">
+						<h5>Review Date</h5>
+						<label for="afterdate">From Date</label>
+						{% set name = 'date_review_from' %}
+						{% set value = input.get.text('date_review_from') %}
+						{% include 'util/date-picker.twig' %}
+
+						<label for="beforedate">Through Date</label>
+						{% set name = 'date_review_through' %}
+						{% set value = input.get.text('date_review_through') %}
+						{% include 'util/date-picker.twig' %}
+					</div>
+					<div class="col-sm-4">
+						<h5>Expire Date</h5>
+						<label for="afterdate">From Date</label>
+						{% set name = 'date_expires_from' %}
+						{% set value = input.get.text('date_expires_from') %}
+						{% include 'util/date-picker.twig' %}
+
+						<label for="beforedate">Through Date</label>
+						{% set name = 'date_expires_through' %}
+						{% set value = input.get.text('date_expires_through') %}
+						{% include 'util/date-picker.twig' %}
+					</div>
+				</div>
+				<br>
+				<div class="row mt-3">
+					<div class="col-sm-12 form-group">
+						<button class="btn btn-success btn-block" type="submit">Search <i class="fa fa-search" aria-hidden="true"></i></button>
+					</div>
+					{% if input.get.text('filter') %}
+						<div class="col-sm-12 form-group">
+							<div>
+								<a href="{{ page.url }}" class="btn btn-warning btn-block">
+									Clear Search <i class="fa fa-search-minus" aria-hidden="true"></i>
+								</a>
+							</div>
+						</div>
+					{% endif %}
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

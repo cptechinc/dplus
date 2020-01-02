@@ -1,0 +1,58 @@
+<form action="{{ page.url }}" method="POST" id="code-edit-form">
+	<input type="hidden" name="table" value="ctm">
+
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="row">
+				<div class="col-sm-3">
+					<div class="form-group">
+						<label for="code">Code</label>
+						<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code">
+					</div>
+				</div>
+				<div class="col-sm-9">
+					<div class="form-group">
+						<label for="description">Description</label>
+						<input type="text" name="description" class="form-control" value="{{ code.description }}" id="description">
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="order_approval_email">Order Approval Email</label>
+				{% include 'util/select.twig' with {'name': 'mail_list', 'id': 'mail_list', 'selectedvalue': code.mail_list, 'options': {'Y': 'Yes', 'N': 'No'}}%}
+			</div>
+			<div class="form-group">
+				<label for="order_approval_email">Order Approval Email</label>
+				<input type="text" name="order_approval_email" class="form-control" value="{{ code.order_approval_email }}" id="order_approval_email">
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<h4>Notes</h4>
+			<table class="table table-sm">
+				<tr>
+					<td>Statement</td>
+					<td>{{ code.count_notetypealias('statement')|bool|yesorno|capitalize }}</td>
+				</tr>
+				<tr>
+					<td>Invoice</td>
+					<td>{{ code.count_notetypealias('invoice')|bool|yesorno|capitalize }}</td>
+				</tr>
+				<tr>
+					<td>Pick</td>
+					<td>{{ code.count_notetypealias('pick')|bool|yesorno|capitalize }}</td>
+				</tr>
+				<tr>
+					<td>Pack</td>
+					<td>{{ code.count_notetypealias('pack')|bool|yesorno|capitalize }}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	{% block extra_fields %}
+
+	{% endblock %}
+
+	<button type="submit" class="btn btn-success">
+		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+	</button>
+</form>

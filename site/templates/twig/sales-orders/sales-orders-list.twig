@@ -1,14 +1,16 @@
 <div class="list-group">
 	<div class="list-group-item list-group-item-action bg-light">
-		<div class="row">
-			<div class="col">Order Number</div>
-			<div class="col">Customer</div>
-			<div class="col">Customer PO</div>
-			<div class="col">Ship-to</div>
-			<div class="col text-right">Order Total</div>
-			<div class="col">Order Date</div>
-			<div class="col">Status</div>
-		</div>
+		{% block header %}
+			<div class="row">
+				<div class="col">Order Number</div>
+				<div class="col">Customer</div>
+				<div class="col">Customer PO</div>
+				<div class="col">Ship-to</div>
+				<div class="col text-right">Order Total</div>
+				<div class="col">Order Date</div>
+				<div class="col">Status</div>
+			</div>
+		{% endblock %}
 	</div>
 	{% if orders.count > 0 %}
 		{% for order in orders %}
