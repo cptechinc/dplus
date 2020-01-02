@@ -63,9 +63,10 @@
 				'openinvoices'  => 'viopeninv',
 				'unreleased'    => 'viunreleased',
 				'uninvoiced'    => 'viuninvoiced',
-				'24monthsummary'=> 'vi24month',
-				'costing'       => 'vicosting',
-				'payments'      => 'vipayments',
+				'24monthsummary'=> 'vimonthsum',
+				'costing'       => 'vicost',
+				'sub'			=> 'visub',
+				'payments'      => 'vipayment',
 				'notes'         => 'vinotes'
 			)
 		);

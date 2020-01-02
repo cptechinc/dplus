@@ -1,0 +1,34 @@
+<table class="table table-borderless table-striped table-sm">
+    <tr>
+        <td>Vendor ID</td><td>{{ json['vendid'] }} - {{ json['vendname'] }}</td>
+    </tr>
+    <tr>
+        <td>Item</td><td>{{ json['itemid'] }} - {{ json['desc1'] }}</td>
+    </tr>
+    <tr>
+        <td>Purch UoM</td><td>{{ json['purchuom'] }}</td>
+    </tr>
+</table>
+
+<table class="table table-borderless table-striped table-sm">
+    <thead>
+        {% for column in json['columns']['vendor costing'] %}
+            <th>{{ column['heading'] }}</th>
+        {% endfor %}
+    </thead>
+    <tbody>
+        {% for i in 1..json['data']['vendor costing']|length %}
+            <tr>
+                {% for cost in json['data']['vendor costing'][i] %}
+                    <td>{{ cost }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if json['data']['super/sub']['super/sub label'] == 'Supercedes/Substitutes Exist' %}
+    <a href="{{ sublink }}" class="btn btn-info not-round">
+        {{ json['data']['super/sub']['super/sub label'] }}&ensp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
+    </a>
+{% endif %}

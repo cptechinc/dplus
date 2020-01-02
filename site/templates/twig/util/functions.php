@@ -77,3 +77,13 @@
 		}
 	});
 	$config->twig->addFunction($matches_search);
+
+	$filter = new Twig_Filter('array_values', function ($array) {
+		return array_values($array);
+	});
+	$config->twig->addFilter($filter);
+
+	$array_keys = new Twig_Function('array_keys', function ($array) {
+		return array_keys($array);
+	});
+	$config->twig->addFunction($array_keys);

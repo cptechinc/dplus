@@ -53,7 +53,7 @@
 				}
 			}
 		} else {
-			$page->body .= $config->twig->render('vendors/vi/vi-links.twig', ['page' => $page]);
+			$page->body .= $config->twig->render('vendors/vi/vi-links.twig', ['page' => $page, 'refreshurl' => $refreshurl]);
 			$page->body .= $config->twig->render('vendors/vi/purchase-history/date-form.twig', ['page' => $page, 'vendorID' => $vendorID, 'json' => $json]);
 		}
 	}

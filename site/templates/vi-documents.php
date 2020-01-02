@@ -55,8 +55,7 @@
 					break;
 			}
 		} else {
-			$documents = [];
-			$page->body .= $config->twig->render('vendors/vi/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'vendorID' => $vendorID]);
+			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'No documents available.']);
 		}
 	}
 

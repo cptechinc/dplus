@@ -1,0 +1,33 @@
+<h2>24-month Graph</h2>
+<div class="mb-3" id="24monthsummary-graph"></div>
+
+<h2>24-month Data</h2>
+<table class= 'table table-striped table-bordered table-sm table-excel' id='monthsum'>
+	<thead>
+		{% for column in json['columns']['monthsum'] %}
+			{% set class = column['headingjustify'] %}
+			<th class="{{ class }}">
+				{{ column['heading'] }}
+			</th>
+		{% endfor %}
+	</thead>
+	<tbody>
+		{% if json['data']['monthsum']|length == 0 %}
+			<tr>
+				<td colspan="{{ json['columns']|length }}" class="text-center"> No Open Invoices Available</td>
+			</tr>
+		{% endif %}
+
+		{% set maxrows = json['data']['monthsum']|length %}
+		{% for x in 1..maxrows %}
+			<tr>
+				{% for month in json['data']['monthsum'][x] %}
+					{% set class = json['columns']['monthsum'][x]['datajustify'] %}
+					<td class="{{ class }}">
+						{{ month }}
+					</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

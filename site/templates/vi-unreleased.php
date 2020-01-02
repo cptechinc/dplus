@@ -35,7 +35,12 @@
 			$document_management = $modules->get('DocumentManagement');
 			$refreshurl = $page->get_viunreleasedURL($vendorID, $shipfromID);
 			$page->body .= $config->twig->render('vendors/vi/vi-links.twig', ['page' => $page, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
-			$page->body .= $config->twig->render('vendors/vi/unreleased/unreleased-purchase-orders.twig', ['page' => $page, 'vendorID' => $vendorID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
+			
+			if ($json['error']) {
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
+			} else {
+				$page->body .= $config->twig->render('vendors/vi/unreleased/unreleased-purchase-orders.twig', ['page' => $page, 'vendorID' => $vendorID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
+			}
 		} else {
 			if ($session->unreleasedpurchaseorderstry > 3) {
 				$page->headline = $page->title = "Unreleased Purchase Orders File could not be loaded";
