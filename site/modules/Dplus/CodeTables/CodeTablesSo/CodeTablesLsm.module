@@ -1,0 +1,129 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'../CodeTablesResponse.php');
+
+use Purl\Url;
+
+use LostSalesCodeQuery, LostSalesCode;
+
+/**
+ * Module that handles the editing of the CCM codetable
+ */
+class CodeTablesLsm extends WireData implements Module {
+	const MODEL              = 'LostSalesCode';
+	const MODEL_KEY          = 'code';
+	const DESCRIPTION        = 'Lost Sales Reason Code';
+	const DESCRIPTION_RECORD = 'Lost Sales Reason Code';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Return the Code records from Database
+	 * @param  string $table Table Code
+	 * @return ObjectCollection
+	 */
+	public function get_codes() {
+		$q = $this->get_query();
+		return $q->find();
+	}
+
+	/**
+	 * Returns the associated ModelQuery class for table code
+	 * @param  string $table Table Code
+	 * @return mixed
+	 */
+	public function get_query() {
+		return LostSalesCodeQuery::create();
+	}
+
+	/**
+	 * Takes Input, validates it's for one of the code tables
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$table = $input->$rm->text('table');
+		$code  = $input->$rm->text('code');
+
+		$q = $this->get_query();
+		$q->filterByCode($code);
+
+		if ($q->count()) {
+			$record = $q->findOne();
+		} else {
+			$record = new LostSalesCode();
+			$record->setCode($code);
+		}
+
+		if ($input->$rm->text('action') == 'remove-code') {
+			$record->delete();
+		} else {
+			$description = $input->$rm->text('description');
+			$updateinventorywatch = $input->$rm->text('updateinventorywatch');
+			$record->setDescription($description);
+			$record->setUpdateinventorywatch($updateinventorywatch);
+			$record->setDate(date('Ymd'));
+			$record->setTime(0);
+		}
+
+		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);
+	}
+
+	/**
+	 * Returns CodeTablesResponse based on the outcome of the database save
+	 *
+	 * @param  string $table  Table Code
+	 * @param  string $code   Code being added
+	 * @param  bool   $is_new Was the Record in the database before Save?
+	 * @param  bool   $saved  Was the Record Saved?
+	 * @return CodeTablesResponse
+	 */
+	protected function save_and_process_response($table, $code, LostSalesCode $record) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new CodeTablesResponse();
+		$response->set_key($code);
+		$message = self::DESCRIPTION_RECORD . " ($code) was ";
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+			$message .= "not ";
+		}
+
+		if ($is_new) {
+			$message .= 'added';
+			$response->set_action(CodeTablesResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$message .= 'deleted';
+			$response->set_action(CodeTablesResponse::CRUD_DELETE);
+		} else {
+			$message .= 'updated';
+			$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+		}
+
+		$response->set_message($message);
+
+		if ($response->has_success()) {
+			$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
+		}
+		return $response;
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus LSM Code Table CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for the LSM code table',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
