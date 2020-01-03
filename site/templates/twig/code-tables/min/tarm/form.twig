@@ -23,7 +23,11 @@
 
 	<div class="form-group">
 		<label for="country">Countries</label>
-		<input type="text" name="country" class="form-control" value="" id="country">
+		<select name="country" class="form-control" id="country" >
+			{% for country in countries %}
+				<option value="{{ country.code }}">{{ country.description }}</option>
+			{% endfor %}
+		</select>
 	</div>
 
 	<button type="submit" class="btn btn-success">

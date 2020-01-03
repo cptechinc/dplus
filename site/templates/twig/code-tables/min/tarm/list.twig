@@ -1,23 +1,23 @@
 <div class="list-group">
 	<div class="list-group-item bg-dark text-white">
 		<div class="row align-items-center">
-			<div class="col-2">
+			<div class="col-1">
 				Code
 			</div>
             <div class="col-2">
 				Tariff Number
 			</div>
-			<div class="col-2">
+			<div class="col-3">
 				Description
 			</div>
-			<div class="col-2">
-				Tariff Percent
+			<div class="col-1">
+				Tariff %
 			</div>
-            <div class="col-1">
-				Countries
+            <div class="col-2">
+				Country
 			</div>
 			<div class="col-3 text-center">
-				<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="" data-sales_program="N">
+				<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-number="" data-description="" data-duty_rate="" >
 					<i class="fa fa-plus" aria-hidden="true"></i> Add Code
 				</button>
 			</div>
@@ -26,23 +26,23 @@
 	{% for code in codes %}
 		<div class="list-group-item pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
 			<div class="row align-items-center">
-				<div class="col-2">
+				<div class="col-1">
 					{{ code.code }}
 				</div>
                 <div class="col-2">
 					{{ code.number }}
 				</div>
-				<div class="col-2">
+				<div class="col-3">
 					{{ code.description }}
 				</div>
-                <div class="col-2">
+                <div class="col-1">
 					{{ code.duty_rate }}
 				</div>
-				<div class="col-1">
-					{{ code.country }}
+                <div class="col-2">
+					{{ code.get_country_code(code.code) }}
 				</div>
 				<div class="col-3 text-center">
-					<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-sales_program="{{ code.sales_program }}">
+					<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-number="{{ code.number }}" data-description="{{ code.description }}" data-duty_rate="{{ code.duty_rate }}" data-country="{{ code.get_country_code(code.code) }}">
 						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 					</button>
 					&nbsp;
