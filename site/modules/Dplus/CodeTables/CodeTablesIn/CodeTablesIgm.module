@@ -69,6 +69,7 @@ class CodeTablesIgm extends WireData implements Module {
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
+        $config_ar = ConfigAr::create()->findOne();
 		$rm = strtolower($input->requestMethod());
 		$table = $input->$rm->text('table');
 		$code  = $input->$rm->text('code');
@@ -90,6 +91,11 @@ class CodeTablesIgm extends WireData implements Module {
 			$record->setDescription($description);
 			$record->setDate(date('Ymd'));
 			$record->setTime(0);
+
+            if ($config_ar->is_web_group()) {
+				$web_group = $input->$rm->text('web_group');
+				$record->setWeb_group($web_group);
+			}
 		}
 
 		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);
