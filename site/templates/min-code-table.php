@@ -16,7 +16,11 @@
 
 	if ($in_codetables->validate_codetable($page->codetable)) {
 		$module_codetable = $in_codetables->get_codetable_module($page->codetable);
+
 		$config_so = ConfigSalesOrderQuery::create()->findOne();
+		$config_ar = ConfigArQuery::create()->findOne();
+
+		$countries = CountryCodesQuery::create()->find();
 
 		$page->headline = "$module_codetable->description Table";
 		$page->body .= $config->twig->render('code-tables/links-header.twig', ['page' => $page, 'input' => $input]);
@@ -28,8 +32,8 @@
 		if (file_exists(__DIR__."/min-code-table-$page->codetable.php")) {
 			include(__DIR__."/min-code-table-$page->codetable.php");
 		} else {
-			$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'table' => $table, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable, 'config_so' => $config_so]);
-			$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "min/$page->codetable/form.twig", 'config_so' => $config_so]);
+			$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'table' => $table, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable, 'config_so' => $config_so, 'config_ar' => $config_ar, 'countries' => $countries]);
+			$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "min/$page->codetable/form.twig", 'config_so' => $config_so, 'config_ar' => $config_ar, 'countries' => $countries]);
 			$page->js .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page]);
 		}
 	} else {
