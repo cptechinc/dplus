@@ -36,7 +36,11 @@
 					{{ code.surcharge|yesorno|capitalize }}
 				</div>
 				<div class="col-3 text-center">
-					<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-sales_program="{{ code.sales_program }}" data-surcharge="{{ code.surcharge }}">
+					<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}"
+                        data-coop="{{ code.coop }}" data-ritm="{{ code.ritm }}" data-web_group="{{ code.web_group }}" data-sales_program="{{ code.sales_program }}" data-sales="{{ code.sales }}"
+                        data-credit="{{ code.credit }}" data-cost_percent="{{ code.cost_percent }}" data-inventory="{{ code.inventory }}" data-drop_ship="{{ code.drop_ship }}" data-surcharge="{{ code.surcharge }}"
+                        data-surcharge_dollar_percent="{{ code.surcharge_dollar_percent }}" data-surcharge_dollar_amount="{{ code.surcharge_dollar_amount }}" data-surcharge_percent="{{ code.surcharge_percent }}"
+                        data-freight_group="{{ code.freight_group }}" data-product_line="{{ code.product_line }}" data-ecomm_desc="{{ code.ecomm_desc }}" >
 						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 					</button>
 					&nbsp;
