@@ -66,7 +66,7 @@ class CodeTablesMfcm extends WireData implements Module {
 			$description = $input->$rm->text('description');
 			$class = $input->$rm->text('class');
 			$record->setDescription($description);
-			$record->setClass($updateinventorywatch);
+			$record->setClass($class);
 			$record->setDate(date('Ymd'));
 			$record->setTime(0);
 		}
