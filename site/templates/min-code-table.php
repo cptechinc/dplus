@@ -23,7 +23,10 @@
 		$countries = CountryCodesQuery::create()->find();
 
 		$page->headline = "$module_codetable->description Table";
-		$page->body .= $config->twig->render('code-tables/links-header.twig', ['page' => $page, 'input' => $input]);
+
+		if (!$page->print) {
+			$page->body .= $config->twig->render('code-tables/links-header.twig', ['page' => $page, 'input' => $input]);
+		}
 
 		if ($session->response_codetable) {
 			$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_codetable]);
@@ -45,4 +48,10 @@
 	if ($session->response_codetable) {
 		$session->remove('response_codetable');
 	}
-	include __DIR__ . "/basic-page.php";
+
+	if ($page->print) {
+		$page->show_title = true;
+		include __DIR__ . "/blank-page.php";
+	} else {
+		include __DIR__ . "/basic-page.php";
+	}
