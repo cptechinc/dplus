@@ -1,7 +1,11 @@
 <?php namespace ProcessWire;
 
+use Purl\Url;
+
 use DocumentFoldersQuery, DocumentFolders;
 use DocumentsQuery, Documents;
+use SalesOrderQuery, SalesOrder;
+use SalesHistoryQuery, SalesHistory;
 
 trait DocumentManagementCi {
 	public function ci_init() {
@@ -20,7 +24,7 @@ trait DocumentManagementCi {
 			$url = new Url($this->wire('pages')->get('pw_template=ci-documents')->url);
 			$url->query->set('custID', $custID);
 			$url->query->set('folder', self::TAG_SALESORDER);
-			$url = new Url(get_ci_docs_folderURL($custID, self::TAG_SALESORDER));
+			$url = new Url($this->get_ci_docs_folderURL($custID, self::TAG_SALESORDER));
 			$url->query->set('ordn', $ordn);
 
 			if (SalesHistoryQuery::create()->filterByOrdernumber(SalesOrder::get_paddedordernumber($ordn))->count()) {
