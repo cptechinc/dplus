@@ -16,6 +16,10 @@ class CodeTablesSo extends WireData implements Module {
 			'code'   => 'lsm',
 			'module' => 'CodeTablesLsm'
 		),
+		'mfcm' => array(
+			'code'   => 'mfcm',
+			'module' => 'CodeTablesMfcm'
+		),
 	);
 
 	public function get_codetables() {
@@ -49,7 +53,6 @@ class CodeTablesSo extends WireData implements Module {
 	}
 
 	public function update() {
-		parent::update();
 		$info = self::getModuleInfo();
 		$modules = $this->wire('modules');
 
@@ -57,8 +60,6 @@ class CodeTablesSo extends WireData implements Module {
 			$modules->install($module_name);
 		}
 	}
-
-
 
 	public static function getModuleInfo() {
 		return array(
@@ -69,6 +70,7 @@ class CodeTablesSo extends WireData implements Module {
 			'autoload' => true,
 			'installs' => array(
 				'CodeTablesLsm',
+				'CodeTablesMfcm',
 			)
 		);
 	}
