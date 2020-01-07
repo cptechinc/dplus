@@ -8,9 +8,11 @@
 				Name
 			</div>
 			<div class="col-2">
-				<a href="{{ page.url ~ '?code=new' }}" class="btn btn-light">
-					<i class="fa fa-plus" aria-hidden="true"></i> Add Whse
-				</a>
+				{% if page.is_print() == false %}
+					<a href="{{ page.url ~ '?code=new' }}" class="btn btn-light">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add Whse
+					</a>
+				{% endif %}
 			</div>
 		</div>
 	</div>
@@ -24,13 +26,15 @@
 					{{ warehouse.name }}
 				</div>
 				<div class="col-3 text-center">
-					<a href="{{ page.get_codetable_code_editURL(page.codetable, warehouse.id) }}" class="btn btn-warning">
-						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-					</a>
-					&nbsp;
-					<a href="{{ page.get_codetable_code_deleteURL(page.codetable, warehouse.warehouse) }}" class="btn btn-danger">
-						<i class="fa fa-trash" aria-hidden="true"></i> Delete
-					</a>
+					{% if page.is_print() == false %}
+						<a href="{{ page.get_codetable_code_editURL(page.codetable, warehouse.id) }}" class="btn btn-warning">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</a>
+						&nbsp;
+						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, warehouse.warehouse) }}" class="btn btn-danger">
+							<i class="fa fa-trash" aria-hidden="true"></i> Delete
+						</a>
+					{% endif %}
 				</div>
 			</div>
 		</div>

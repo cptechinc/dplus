@@ -10,13 +10,15 @@
 			<div class="col-2">
 				Sales Program ?
 			</div>
-            <div class="col-2">
+			<div class="col-2">
 				Add Surcharge ?
 			</div>
 			<div class="col-3 text-center">
-				<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="" data-sales_program="N">
-					<i class="fa fa-plus" aria-hidden="true"></i> Add Code
-				</button>
+				{% if page.is_print() == false %}
+					<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="" data-sales_program="N">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
+					</button>
+				{% endif %}
 			</div>
 		</div>
 	</div>
@@ -32,21 +34,19 @@
 				<div class="col-2">
 					{{ code.sales_program|yesorno|capitalize }}
 				</div>
-                <div class="col-2">
+				<div class="col-2">
 					{{ code.surcharge|yesorno|capitalize }}
 				</div>
 				<div class="col-3 text-center">
-					<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}"
-                        data-coop="{{ code.coop }}" data-ritm="{{ code.ritm }}" data-web_group="{{ code.web_group }}" data-sales_program="{{ code.sales_program }}" data-sales="{{ code.sales }}"
-                        data-credit="{{ code.credit }}" data-cost_percent="{{ code.cost_percent }}" data-inventory="{{ code.inventory }}" data-drop_ship="{{ code.drop_ship }}" data-surcharge="{{ code.surcharge }}"
-                        data-surcharge_dollar_percent="{{ code.surcharge_dollar_percent }}" data-surcharge_dollar_amount="{{ code.surcharge_dollar_amount }}" data-surcharge_percent="{{ code.surcharge_percent }}"
-                        data-freight_group="{{ code.freight_group }}" data-product_line="{{ code.product_line }}" data-ecomm_desc="{{ code.ecomm_desc }}" >
-						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-					</button>
-					&nbsp;
-					<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger">
-						<i class="fa fa-trash" aria-hidden="true"></i> Delete
-					</a>
+					{% if page.is_print() == false %}
+						<a href="{{ page.get_codetable_code_editURL(page.codetable, code.code) }}" class="btn btn-warning">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</a>
+						&nbsp;
+						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger">
+							<i class="fa fa-trash" aria-hidden="true"></i> Delete
+						</a>
+					{% endif %}
 				</div>
 			</div>
 		</div>

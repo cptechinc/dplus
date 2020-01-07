@@ -17,9 +17,11 @@
 				Country
 			</div>
 			<div class="col-3 text-center">
-				<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-number="" data-description="" data-duty_rate="" >
-					<i class="fa fa-plus" aria-hidden="true"></i> Add Code
-				</button>
+				{% if page.is_print() == false %}
+					<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-number="" data-description="" data-duty_rate="" >
+						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
+					</button>
+				{% endif %}
 			</div>
 		</div>
 	</div>
@@ -42,13 +44,15 @@
 					{{ code.get_country_code(code.code) }}
 				</div>
 				<div class="col-3 text-center">
-					<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-number="{{ code.number }}" data-description="{{ code.description }}" data-duty_rate="{{ code.duty_rate }}" data-country="{{ code.get_country_code(code.code) }}">
-						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-					</button>
-					&nbsp;
-					<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger">
-						<i class="fa fa-trash" aria-hidden="true"></i> Delete
-					</a>
+					{% if page.is_print() == false %}
+						<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-number="{{ code.number }}" data-description="{{ code.description }}" data-duty_rate="{{ code.duty_rate }}" data-country="{{ code.get_country_code(code.code) }}">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</button>
+						&nbsp;
+						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger">
+							<i class="fa fa-trash" aria-hidden="true"></i> Delete
+						</a>
+					{% endif %}
 				</div>
 			</div>
 		</div>

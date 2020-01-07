@@ -11,9 +11,11 @@
 				Effective Date
 			</div>
 			<div class="col-3 text-center">
-				<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="" data-effective_date="{{ 'now'|date('m/d/Y') }}">
-					<i class="fa fa-plus" aria-hidden="true"></i> Add Code
-				</button>
+				{% if page.is_print() == false %}
+					<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="" data-effective_date="{{ 'now'|date('m/d/Y') }}">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
+					</button>
+				{% endif %}
 			</div>
 		</div>
 	</div>
@@ -30,13 +32,15 @@
 					{{ code.effective_date|convertdate }}
 				</div>
 				<div class="col-3 text-center">
-					<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-effective_date="{{ code.effective_date|convertdate }}">
-						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-					</button>
-					&nbsp;
-					<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger">
-						<i class="fa fa-trash" aria-hidden="true"></i> Delete
-					</a>
+					{% if page.is_print() == false %}
+						<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-effective_date="{{ code.effective_date|convertdate }}">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</button>
+						&nbsp;
+						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger">
+							<i class="fa fa-trash" aria-hidden="true"></i> Delete
+						</a>
+					{% endif %}
 				</div>
 			</div>
 		</div>
