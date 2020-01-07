@@ -136,6 +136,7 @@ class DpagesMar extends Dpages implements Module {
 	public function get_codetable_code_deleteURL($table, $code) {
 		$url = new Url($this->wire('pages')->get("pw_template=ar-code-table, name=$table")->url);
 		$url->query->set('action', 'remove-code');
+		$url->query->set('table', $table);
 		$url->query->set('code', $code);
 		return $url->getUrl();
 	}
