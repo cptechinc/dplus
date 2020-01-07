@@ -19,6 +19,10 @@ class DpagesMin extends Dpages implements Module {
 		'min-code-table-iwhm' => array(
 			'name'   => 'min-code-table-iwhm',
 			'fields' => array()
+		),
+		'min-code-table-igm' => array(
+			'name'   => 'min-code-table-igm',
+			'fields' => array()
 		)
 	);
 
