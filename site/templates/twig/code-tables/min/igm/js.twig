@@ -4,6 +4,24 @@ $(function() {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var code = button.data('code'); // Extract info from data-* attributes
 		var description = button.data('description'); // Extract info from data-* attributes
+		var coop = button.data('coop'); // Extract info from data-* attributes
+
+		var ritm = button.data('ritm'); // Extract info from data-* attributes
+
+		var web_group = button.data('web_group'); // Extract info from data-* attributes
+		var sales_program = button.data('sales_program'); // Extract info from data-* attributes
+		var sales = button.data('sales'); // Extract info from data-* attributes
+		var credit = button.data('credit'); // Extract info from data-* attributes
+		var cost_percent = button.data('cost_percent'); // Extract info from data-* attributes
+		var inventory = button.data('inventory'); // Extract info from data-* attributes
+		var drop_ship = button.data('drop_ship'); // Extract info from data-* attributes
+		var surcharge = button.data('surcharge'); // Extract info from data-* attributes
+		var surcharge_dollar_percent = button.data('surcharge_dollar_percent'); // Extract info from data-* attributes
+		var surcharge_dollar_amount = button.data('surcharge_dollar_amount'); // Extract info from data-* attributes
+		var surcharge_percent = button.data('surcharge_percent'); // Extract info from data-* attributes
+		var freight_group = button.data('freight_group'); // Extract info from data-* attributes
+		var product_line = button.data('product_line'); // Extract info from data-* attributes
+		var ecomm_desc = button.data('ecomm_desc'); // Extract info from data-* attributes
 
 		var modal = $(this);
 
@@ -17,17 +35,56 @@ $(function() {
 
 		modal.find('input[name=code]').val(code);
 		modal.find('input[name=description]').val(description);
+		modal.find('input[name=coop]').val(coop);
+		modal.find('input[name=web_group]').val(web_group);
+		modal.find('input[name=sales_program]').val(sales_program);
+		modal.find('input[name=sales]').val(sales);
+		modal.find('input[name=credit]').val(credit);
+		modal.find('input[name=cost_percent]').val(cost_percent);
+		modal.find('input[name=inventory]').val(inventory);
+		modal.find('input[name=drop_ship]').val(drop_ship);
+		modal.find('input[name=surcharge]').val(surcharge);
+		modal.find('input[name=surcharge_dollar_percent]').val(surcharge_dollar_percent);
+		modal.find('input[name=surcharge_dollar_amount]').val(surcharge_dollar_amount);
+		modal.find('input[name=surcharge_percent]').val(surcharge_percent);
+		modal.find('input[name=freight_group]').val(freight_group);
+		modal.find('input[name=product_line]').val(product_line);
+		modal.find('input[name=ecomm_desc]').val(ecomm_desc);
 	});
 
 	$("#code-edit-form").validate({
 		errorClass: "is-invalid",
 		rules: {
 			code: 'required',
-			description: 'required'
+			description: 'required',
+			coop: 'required',
+			web_group: 'required',
+			sales_program: 'required',
+			sales: 'required',
+			credit: 'required',
+			cost_percent: 'required',
+			inventory: 'required',
+			drop_ship: 'required',
+			surcharge: 'required',
+			freight_group: 'required',
+			product_line: 'required',
+			ecomm_desc: 'required'
 		},
 		messages: {
 			code: "Please enter a code",
-			description: 'Please enter a description for the code'
+			description: 'Please enter a description for the code',
+			coop: 'Please select if the code is for co-op',
+			web_group: 'Please enter the web group for the code',
+			sales_program: 'Please select if the code is for sales program',
+			sales: 'Please enter the sales for the code',
+			credit: 'Please enter the credit for the code',
+			cost_percent: 'Please enter a cost_percent for the code',
+			inventory: 'Please enter the inventory for the code',
+			drop_ship: 'Please enter the drop ship for the code',
+			surcharge: 'Please enter a description for the code',
+			freight_group: 'Please enter a description for the code',
+			product_line: 'Please enter a description for the code',
+			ecomm_desc: 'Please enter a description for the code'
 		},
 		submitHandler: function(form) {
 			form.submit();

@@ -4,15 +4,16 @@ include_once(__DIR__.'../CodeTablesResponse.php');
 
 use Purl\Url;
 
-use ItemGroupcodeQuery, ItemGroupcode;
+use ItemGroupCodeQuery, ItemGroupCode;
 use ConfigInQuery, ConfigIn;
 use ConfigSalesOrderQuery, ConfigSalesOrder;
+use ConfigArQuery, ConfigAr;
 
 /**
  * Module that handles the editing of the CCM codetable
  */
 class CodeTablesIgm extends WireData implements Module {
-	const MODEL              = 'ItemGroupcode';
+	const MODEL              = 'ItemGroupCode';
 	const MODEL_KEY          = 'id';
 	const DESCRIPTION        = 'Item Group';
 	const DESCRIPTION_RECORD = 'Item Group';
@@ -58,7 +59,7 @@ class CodeTablesIgm extends WireData implements Module {
 	 * @return mixed
 	 */
 	public function get_query() {
-		return ItemGroupcodeQuery::create();
+		return ItemGroupCodeQuery::create();
 	}
 
 	/**
@@ -69,7 +70,8 @@ class CodeTablesIgm extends WireData implements Module {
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
-        $config_ar = ConfigAr::create()->findOne();
+		$config_so = ConfigSalesOrderQuery::create()->findOne();
+        $config_ar = ConfigArQuery::create()->findOne();
 		$rm = strtolower($input->requestMethod());
 		$table = $input->$rm->text('table');
 		$code  = $input->$rm->text('code');
@@ -80,7 +82,7 @@ class CodeTablesIgm extends WireData implements Module {
 		if ($q->count()) {
 			$record = $q->findOne();
 		} else {
-			$record = new ItemGroupcode();
+			$record = new ItemGroupCode();
 			$record->setCode($code);
 		}
 
@@ -88,13 +90,47 @@ class CodeTablesIgm extends WireData implements Module {
 			$record->delete();
 		} else {
 			$description = $input->$rm->text('description');
+			$coop = $input->$rm->text('coop');
+			// $ritm = $input->$rm->text('ritm');
+			$sales = $input->$rm->text('sales');
+			$credit = $input->$rm->text('credit');
+			$cost_percent = $input->$rm->text('cost_percent');
+			$inventory = $input->$rm->text('inventory');
+			$drop_ship = $input->$rm->text('drop_ship');
+			$surcharge = $input->$rm->text('surcharge');
+			$surcharge_dollar_percent = $input->$rm->text('surcharge_dollar_percent');
+			$surcharge_dollar_amount = $input->$rm->text('surcharge_dollar_amount');
+			$surcharge_percent = $input->$rm->text('surcharge_percent');
+			$freight_group = $input->$rm->text('freight_group');
+			$product_line = $input->$rm->text('product_line');
+			$ecomm_desc = $input->$rm->text('ecomm_desc');
 			$record->setDescription($description);
+			$record->setCoop($coop);
+			// $record->setRitm($ritm);
+			$record->setSales($sales);
+			$record->setCredit($credit);
+			$record->setCost_percent($cost_percent);
+			$record->setInventory($inventory);
+			$record->setDrop_ship($drop_ship);
+			$record->setSurcharge($surcharge);
+			$record->setSurcharge_dollar_percent($surcharge_dollar_percent);
+			$record->setSurcharge_dollar_amount($surcharge_dollar_amount);
+			$record->setSurcharge_percent($surcharge_percent);
+			$record->setFreight_group($freight_group);
+			$record->setProduct_line($product_line);
+			$record->setEcomm_desc($ecomm_desc);
 			$record->setDate(date('Ymd'));
 			$record->setTime(0);
 
+			// TODO: show if company == Alumacraft as well
             if ($config_ar->is_web_group()) {
 				$web_group = $input->$rm->text('web_group');
 				$record->setWeb_group($web_group);
+			}
+
+			if ($config_so->is_request_program()) {
+				$sales_program = $input->$rm->text('sales_program');
+				$record->setSales_program($sales_program);
 			}
 		}
 
@@ -110,7 +146,7 @@ class CodeTablesIgm extends WireData implements Module {
 	 * @param  bool   $saved  Was the Record Saved?
 	 * @return CodeTablesResponse
 	 */
-	protected function save_and_process_response($table, $code, ItemGroupcode $record) {
+	protected function save_and_process_response($table, $code, ItemGroupCode $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
