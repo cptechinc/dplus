@@ -56,7 +56,7 @@ class CodeTablesAr extends WireData implements Module {
 		return array(
 			'title' => 'Dplus Codes Tables AR Management',
 			'version' => 101,
-			'summary' => 'Module for Codes Tables AR Managment',
+			'summary' => 'Module for Codes Tables AR Management',
 			'singular' => true,
 			'autoload' => true,
 		);
