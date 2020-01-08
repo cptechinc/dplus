@@ -1,130 +1,117 @@
 <form action="{{ page.url }}" method="POST" id="code-edit-form">
 	<input type="hidden" name="table" value="igm">
 
-	<div class="form-group">
-		<label for="code">Code</label>
-		<input type="text" name="code" class="form-control" value="" id="code">
-	</div>
+	<div class="row">
+		<div class="col-6">
+			<div class="form-group">
+				<label for="code">Code</label>
+				<input type="text" name="code" class="form-control" value="{{ itemgroup.code }}" id="code">
+			</div>
 
-	<div class="form-group">
-		<label for="description">Description</label>
-		<input type="text" name="description" class="form-control" value="" id="description">
-	</div>
+			<div class="form-group">
+				<label for="description">Description</label>
+				<input type="text" name="description" class="form-control" value="{{ itemgroup.description }}" id="description">
+			</div>
 
-	<div class="form-group">
-		<label for="coop">Co-op</label>
-		<select name="coop" class="form-control" id="coop">
-			<option value="Y">Yes</option>
-			<option value="N">No</option>
-		</select>
-	</div>
+			<div class="form-group">
+				<label for="coop">Co-op</label>
+				{% include 'util/select.twig' with {'name': 'coop', 'id': 'coop', 'selectedvalue': itemgroup.coop, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+			</div>
 
-	<!-- TODO: if statement - only for Alumacraft -->
-		<div class="form-group">
-			<label for="ritm">Allow RITM ?</label>
-			<select name="ritm" class="form-control" id="ritm">
-				<option value="Y">Yes</option>
-				<option value="N">No</option>
-			</select>
+			<!-- TODO: if statement - only for Alumacraft -->
+			<div class="form-group">
+				<label for="ritm">Allow RITM ?</label>
+				{% include 'util/select.twig' with {'name': 'ritm', 'id': 'ritm', 'selectedvalue': itemgroup.ritm, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+			</div>
+			<!-- end -->
+
+			<!-- TODO: available if ArtbConfUseWeb = Y or if Alumacraft -->
+			{% if config_ar.is_web_group() %}
+				<div class="form-group">
+					<label for="web_group">Web Group</label>
+					{% include 'util/select.twig' with {'name': 'web_group', 'id': 'web_group', 'selectedvalue': itemgroup.web_group, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				</div>
+			{% endif %}
+			<!-- end -->
+
+			{% if config_so.is_request_program() %}
+				<div class="form-group">
+					<label for="sales_program">Sales Program ?</label>
+					{% include 'util/select.twig' with {'name': 'sales_program', 'id': 'sales_program', 'selectedvalue': itemgroup.sales_program, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				</div>
+			{% endif %}
 		</div>
-	<!-- end -->
+		<div class="col-6">
+			<div class="form-group">
+				<label for="freight_group">Freight Group</label>
+				<input type="text" name="freight_group" class="form-control" value="{{ itemgroup.freight_group }}" id="freight_group">
+			</div>
 
-	<!-- TODO: available if ArtbConfUseWeb = Y or if Alumacraft -->
-	{% if config_ar.is_web_group() %}
-		<div class="form-group">
-			<label for="web_group">Web Group</label>
-			<select name="web_group" class="form-control" id="web_group">
-				<option value="Y">Yes</option>
-				<option value="N">No</option>
-			</select>
+			<div class="form-group">
+				<label for="product_line">Product Line</label>
+				<input type="text" name="product_line" class="form-control" value="{{ itemgroup.product_line }}" id="product_line">
+			</div>
+
+			<div class="form-group">
+				<label for="ecomm_desc">Ecomm Description</label>
+				<input type="text" name="ecomm_desc" class="form-control" value="{{ itemgroup.ecomm_desc }}" id="ecomm_desc">
+			</div>
 		</div>
-	{% endif %}
-	<!-- end -->
+		<div class="col-6">
+			<!-- GL Accounts Questions -->
+			<h4>GL Accounts</h4>
+			<div class="form-group">
+				<label for="sales">Sales</label>
+				<input type="text" name="sales" class="form-control" value="{{ itemgroup.sales }}" id="sales">
+			</div>
 
-	{% if config_so.is_request_program() %}
-		<div class="form-group">
-			<label for="sales_program">Sales Program ?</label>
-			<select name="sales_program" class="form-control" id="sales_program">
-				<option value="Y">Yes</option>
-				<option value="N">No</option>
-			</select>
+			<div class="form-group">
+				<label for="credit">Credit</label>
+				<input type="text" name="credit" class="form-control" value="{{ itemgroup.credit }}" id="credit">
+			</div>
+
+			<div class="form-group">
+				<label for="cost_percent">Cost Percent</label>
+				<input type="text" name="cost_percent" class="form-control" value="{{ itemgroup.cost_percent }}" id="cost_percent">
+			</div>
+
+			<div class="form-group">
+				<label for="inventory">Inventory</label>
+				<input type="text" name="inventory" class="form-control" value="{{ itemgroup.inventory }}" id="inventory">
+			</div>
+
+			<div class="form-group">
+				<label for="drop_ship">Drop Ship</label>
+				<input type="text" name="drop_ship" class="form-control" value="{{ itemgroup.drop_ship }}" id="drop_ship">
+			</div>
+			<!-- GL Accounts Questions -->
 		</div>
-	{% endif %}
-	<hr>
-	<!-- GL Accounts Questions -->
-	<h4>GL Accounts</h4>
-	<div class="form-group">
-		<label for="sales">Sales</label>
-		<input type="text" name="sales" class="form-control" value="" id="sales">
-	</div>
+		<div class="col-6">
+			<!-- Surcharge Questions -->
+			<h4>Surcharge</h4>
+			<div class="form-group">
+				<label for="surcharge">Can Add Surcharge ?</label>
+				{% include 'util/select.twig' with {'name': 'surcharge', 'id': 'surcharge', 'selectedvalue': itemgroup.surcharge, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+			</div>
 
-	<div class="form-group">
-		<label for="credit">Credit</label>
-		<input type="text" name="credit" class="form-control" value="" id="credit">
-	</div>
+			<div class="form-group">
+				<label for="surcharge_dollar_percent">Dollar or Percent ?</label>
+				{% include 'util/select.twig' with {'name': 'surcharge_dollar_percent', 'id': 'surcharge_dollar_percent', 'selectedvalue': itemgroup.surcharge_dollar_percent, 'options': {'D': 'Dollar', 'P': 'Percent'}} %}
+			</div>
 
-	<div class="form-group">
-		<label for="cost_percent">Cost Percent</label>
-		<input type="text" name="cost_percent" class="form-control" value="" id="cost_percent">
-	</div>
+			<div class="form-group">
+				<label for="surcharge_dollar_amount">Dollar Amount</label>
+				<input type="text" name="surcharge_dollar_amount" class="form-control" value="{{ itemgroup.surcharge_dollar_amount }}" id="surcharge_dollar_amount">
+				<!-- must be 0 if percent is chosen -->
+			</div>
 
-	<div class="form-group">
-		<label for="inventory">Inventory</label>
-		<input type="text" name="inventory" class="form-control" value="" id="inventory">
-	</div>
-
-	<div class="form-group">
-		<label for="drop_ship">Drop Ship</label>
-		<input type="text" name="drop_ship" class="form-control" value="" id="drop_ship">
-	</div>
-	<hr>
-	<!-- GL Accounts Questions -->
-
-	<!-- Surcharge Questions -->
-	<h4>Surcharge</h4>
-	<div class="form-group">
-		<label for="surcharge">Can Add Surcharge ?</label>
-		<select name="surcharge" class="form-control" id="surcharge">
-			<option value="Y">Yes</option>
-			<option value="N">No</option>
-		</select>
-	</div>
-
-	<div class="form-group">
-		<label for="surcharge_dollar_percent">Dollar or Percent ?</label>
-		<select name="surcharge_dollar_percent" class="form-control" id="surcharge_dollar_percent">
-			<option value="D">Dollar</option>
-			<option value="P">Percent</option>
-		</select>
-	</div>
-
-	<div class="form-group">
-		<label for="surcharge_dollar_amount">Dollar Amount</label>
-		<input type="text" name="surcharge_dollar_amount" class="form-control" value="" id="surcharge_dollar_amount">
-		<!-- must be 0 if percent is chosen -->
-	</div>
-
-	<div class="form-group">
-		<label for="surcharge_percent">Percent</label>
-		<input type="text" name="surcharge_percent" class="form-control" value="" id="surcharge_percent">
-		<!-- must be 0 if dollar is chosen -->
-	</div>
-	<hr>
-	<!-- Surcharge Questions -->
-
-	<div class="form-group">
-		<label for="freight_group">Freight Group</label>
-		<input type="text" name="freight_group" class="form-control" value="" id="freight_group">
-	</div>
-
-	<div class="form-group">
-		<label for="product_line">Product Line</label>
-		<input type="text" name="product_line" class="form-control" value="" id="product_line">
-	</div>
-
-	<div class="form-group">
-		<label for="ecomm_desc">Ecomm Description</label>
-		<input type="text" name="ecomm_desc" class="form-control" value="" id="ecomm_desc">
+			<div class="form-group">
+				<label for="surcharge_percent">Percent</label>
+				<input type="text" name="surcharge_percent" class="form-control" value="{{ itemgroup.surcharge_percent }}" id="surcharge_percent">
+				<!-- must be 0 if dollar is chosen -->
+			</div>
+			<!-- Surcharge Questions -->
+		</div>
 	</div>
 
 	<button type="submit" class="btn btn-success">
