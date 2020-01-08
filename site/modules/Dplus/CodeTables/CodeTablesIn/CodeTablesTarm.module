@@ -5,6 +5,7 @@ include_once(__DIR__.'../CodeTablesResponse.php');
 use Purl\Url;
 
 use TariffCodeQuery, TariffCode;
+use TariffCodeCountryQuery, TariffCodeCountry;
 use ConfigInQuery, ConfigIn;
 use ConfigSalesOrderQuery, ConfigSalesOrder;
 
@@ -86,8 +87,13 @@ class CodeTablesTarm extends WireData implements Module {
 		if ($input->$rm->text('action') == 'remove-code') {
 			$record->delete();
 		} else {
-			$description = $input->$rm->text('description');
-			$record->setDescription($description);
+			$number = $input->$rm->text('number');
+            $description = $input->$rm->text('description');
+            $duty_rate = $input->$rm->text('duty_rate');
+            $country = $input->$rm->text('country');
+			$record->setNumber($number);
+            $record->setDescription($description);
+            $record->setDuty_rate($duty_rate);
 			$record->setDate(date('Ymd'));
 			$record->setTime(0);
 		}
