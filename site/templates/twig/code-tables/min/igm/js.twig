@@ -3,25 +3,6 @@ $(function() {
 	$('#edit-code-modal').on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var code = button.data('code'); // Extract info from data-* attributes
-		var description = button.data('description'); // Extract info from data-* attributes
-		var coop = button.data('coop'); // Extract info from data-* attributes
-
-		var ritm = button.data('ritm'); // Extract info from data-* attributes
-
-		var web_group = button.data('web_group'); // Extract info from data-* attributes
-		var sales_program = button.data('sales_program'); // Extract info from data-* attributes
-		var sales = button.data('sales'); // Extract info from data-* attributes
-		var credit = button.data('credit'); // Extract info from data-* attributes
-		var cost_percent = button.data('cost_percent'); // Extract info from data-* attributes
-		var inventory = button.data('inventory'); // Extract info from data-* attributes
-		var drop_ship = button.data('drop_ship'); // Extract info from data-* attributes
-		var surcharge = button.data('surcharge'); // Extract info from data-* attributes
-		var surcharge_dollar_percent = button.data('surcharge_dollar_percent'); // Extract info from data-* attributes
-		var surcharge_dollar_amount = button.data('surcharge_dollar_amount'); // Extract info from data-* attributes
-		var surcharge_percent = button.data('surcharge_percent'); // Extract info from data-* attributes
-		var freight_group = button.data('freight_group'); // Extract info from data-* attributes
-		var product_line = button.data('product_line'); // Extract info from data-* attributes
-		var ecomm_desc = button.data('ecomm_desc'); // Extract info from data-* attributes
 
 		var modal = $(this);
 
@@ -91,4 +72,15 @@ $(function() {
 		}
 	});
 
+	$("#code-edit-form #surcharge_dollar_percent").change(function() {
+		if ($('#surcharge_dollar_percent').val() == 'D') {
+			$('#surcharge_percent').val('0.00');
+			$('#surcharge_percent').prop("readonly", true);
+			$('#surcharge_dollar_amount').prop("readonly", false);
+		} else if ($('#surcharge_dollar_percent').val() == 'P'){
+			$('#surcharge_dollar_amount').val('0.00');
+			$('#surcharge_dollar_amount').prop("readonly", true);
+			$('#surcharge_percent').prop("readonly", false);
+		}
+	});
 })
