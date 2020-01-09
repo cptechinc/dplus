@@ -1,0 +1,25 @@
+<div class="row">
+	<div class="col-4">
+		<b>Unit</b>
+	</div>
+	<div class="col-4">
+		<b>Unit Cost</b>
+	</div>
+	<div class="col-4">
+		<b>Margin</b>
+	</div>
+</div>
+{% for i in 1..item.get_unitsavailable() %}
+	<div class="row">
+		<div class="col-4">
+			<input type="text" class="form-control form-control-sm" name="unit_unit{{ i }}" value="{{ item.get_unit(i) }}">
+		</div>
+		<div class="col-4">
+			<input type="text" class="form-control form-control-sm" name="unit_cost{{ i }}" value="{{ item.get_unitcost(i) }}">
+		</div>
+		</div>
+		<div class="col-4">
+			<b>Margin</b>
+		</div>
+	</div>
+{% endfor %}

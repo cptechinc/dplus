@@ -12,6 +12,17 @@
 		}
 
 		if ($input->get->vendoritemID) {
+			$vendoritemID = $input->get->text('vendoritemID');
+
+			if ($vxm->vendors_item_exists($vendorID, $vendoritemID)) {
+				$item = $vxm->get_vendoritem($vendorID, $vendoritemID);
+				$unitsofm = UnitofMeasurePurchaseQuery::create()->find();
+				$page->title = $page->headline = "VXM: Item $vendoritemID for $vendorID";
+				$page->body .= $config->twig->render('items/vxm/vendor/item.twig', ['page' => $page, 'item' => $item, 'vendor' => $vendor, 'unitsofm' => $unitsofm]);
+			} else {
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'vendor Item Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "$vendoritemID was not found"]);
+				$page->body .= $config->twig->render('items/vxm/vendor/item-list.twig', ['page' => $page, 'items' => $items, 'vendorID' => $vendorID]);
+			}
 		} else {
 			$page->headline = "VXM: Vendor $vendor->name";
 			$items = $vxm->get_vendoritems($vendorID);

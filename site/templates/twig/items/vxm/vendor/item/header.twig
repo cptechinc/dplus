@@ -1,0 +1,56 @@
+<div class="col-sm-6">
+	<div class="row form-group">
+		<div class="col-sm-6">
+			<b>Vendor ID</b>
+		</div>
+		<div class="col-sm-6">
+			{{ vendor.id }} <br>
+			{{ vendor.name }}
+		</div>
+	</div>
+	<div class="row form-group">
+		<div class="col-sm-6">
+			<label for="vendoritemID"><b>Vendor Item ID</b></label>
+		</div>
+		<div class="col-sm-6">
+			<input type="text" name="vendoritemID" class="form-control form-control-sm" id="vendoritemID" value="{{ item.vendoritemID }}">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-6">
+			<label for="ouritemID"><b>Our Item ID</b></label>
+		</div>
+		<div class="col-sm-6">
+			<input type="text" name="ouritemID" class="form-control-plaintext form-control-sm" id="ouritemID" value="{{ item.ouritemID }}" readonly>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-6"></div>
+		<div class="col-sm-6">
+			<p>{{ item.description }}</p>
+		</div>
+	</div>
+</div>
+<div class="col-sm-6">
+	<div class="row form-group">
+		<div class="col-sm-6">
+			<label for="uom_purchase"><b>Purchase UoM</b></label>
+		</div>
+		<div class="col-sm-6">
+			<select name="uom_purchase" class="form-control" id="uom_purchase">
+				<option value="">-- Select One --</option>
+				{% for uom in unitsofm %}
+					<option value="{{ uom.code }}" {{ uom.code == item.uom_purchase ? 'selected' : ''}}>{{ uom.description }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="row form-group">
+		<div class="col-sm-6">
+			<label for="listprice"><b>List Price</b></label>
+		</div>
+		<div class="col-sm-6">
+			<input type="number" name="listprice" class="form-control form-control-sm" id="listprice" value="{{ item.listprice }}">
+		</div>
+	</div>
+</div>
