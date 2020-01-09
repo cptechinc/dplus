@@ -23,6 +23,10 @@ class DpagesMin extends Dpages implements Module {
 		'min-code-table-igm' => array(
 			'name'   => 'min-code-table-igm',
 			'fields' => array()
+		),
+		'min-code-table-tarm' => array(
+			'name'   => 'min-code-table-tarm',
+			'fields' => array()
 		)
 	);
 
