@@ -1,0 +1,74 @@
+<?php namespace ProcessWire;
+
+use VendorQuery, Vendor;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+class FilterVendors extends WireData implements Module {
+	/**
+	 * Returns Query
+	 * @return VendorQuery
+	 */
+	public function get_query() {
+		return $this->query;
+	}
+
+	/**
+	 * Initializes Query
+	 * NOTE: Filters by Sales Rep if provided user is a Sales rep
+	 *
+	 * @param  User   $user User to Check if they are a Sales Person
+	 * @return void
+	 */
+	public function init_query(User $user) {
+		$this->query = VendorQuery::create();
+	}
+
+	/**
+	 * Searches the Vendor Table to find vendors that match the query provided
+	 *
+	 * @param  string $q Search Query
+	 * @return void
+	 */
+	public function filter_search($q) {
+		$col_vendorid = Vendor::get_aliasproperty('vendorid');
+		$col_name = Vendor::get_aliasproperty('name');
+		$columns = array($col_vendorid, $col_name);
+		$this->query->search_filter($columns, strtoupper($q));
+	}
+
+
+	/**
+	 * Adds the Sort By to the query
+	 *
+	 * @param  Page   $page
+	 * @return void
+	 */
+	public function apply_sortby(Page $page) {
+		if ($page->has_orderby()) {
+			$orderbycolumn = $page->orderby_column;
+			$sort = $page->orderby_sort;
+
+			$tablecolumn = Vendor::get_aliasproperty($orderbycolumn);
+			$this->query->sortBy($tablecolumn, $sort);
+		}
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Filter Vendors Module',
+			'version' => 101,
+			'summary' => 'Handles Vendor Filtering',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
