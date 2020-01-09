@@ -1,0 +1,154 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'../XrefResponse.php');
+
+use Purl\Url;
+
+use ItemXrefVendorQuery, ItemXrefVendor;
+
+/**
+ * Module that handles the editing of the VXM item Xref
+ */
+class XrefVxm extends WireData implements Module {
+	const MODEL              = 'ItemXrefVendor';
+	const MODEL_KEY          = 'code';
+	const DESCRIPTION        = 'Item X-ref';
+	const DESCRIPTION_RECORD = 'Item X-ref';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Return ItemXrefVendor[] for vendor
+	 * @param  string $vendorID Vendor ID
+	 * @return ObjectCollection
+	 */
+	public function get_vendoritems($vendorID) {
+		$q = $this->get_query();
+		$q->filterByVendorid($vendorID);
+		return $q->find();
+	}
+
+	/**
+	 * Return ItemXrefVendor
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor's Item ID'
+	 * @return ItemXrefVendor
+	 */
+	public function get_vendoritem($vendorID, $vendoritemID) {
+		$q = $this->get_query();
+		$q->filterByVendorid($vendorID);
+		$q->filterByVendoritemid($vendoritemID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Returns if Vendor Item ID exists
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor's Item ID'
+	 * @return bool
+	 */
+	public function vendors_item_exists($vendorID, $vendoritemID) {
+		$q = $this->get_query();
+		$q->filterByVendorid($vendorID);
+		$q->filterByVendoritemid($vendoritemID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Returns ItemXrefVendorQuery
+	 * @return ItemXrefVendorQuery
+	 */
+	public function get_query() {
+		return ItemXrefVendorQuery::create();
+	}
+
+	/**
+	 * Takes Input, validates it's for one of the code tables
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$table = $input->$rm->text('table');
+		$code  = $input->$rm->text('code');
+
+		$q = $this->get_query();
+		$q->filterByCode($code);
+
+		if ($q->count()) {
+			$record = $q->findOne();
+		} else {
+			$record = new ItemXrefVendor();
+			$record->setCode($code);
+		}
+
+		if ($input->$rm->text('action') == 'remove-code') {
+			$record->delete();
+		} else {
+			$description = $input->$rm->text('description');
+			$record->setDescription($description);
+			$record->setDate(date('Ymd'));
+			$record->setTime(0);
+		}
+
+		$this->wire('session')->response_xref = $this->save_and_process_response($table, $code, $record);
+	}
+
+	/**
+	 * Returns XrefResponse based on the outcome of the database save
+	 *
+	 * @param  string $table  Table Code
+	 * @param  string $code   Code being added
+	 * @param  bool   $is_new Was the Record in the database before Save?
+	 * @param  bool   $saved  Was the Record Saved?
+	 * @return XrefResponse
+	 */
+	protected function save_and_process_response($table, $code, ItemXrefVendor $record) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new XrefResponse();
+		$response->set_key($code);
+		$message = self::DESCRIPTION_RECORD . " ($code) was ";
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+			$message .= "not ";
+		}
+
+		if ($is_new) {
+			$message .= 'added';
+			$response->set_action(XrefResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$message .= 'deleted';
+			$response->set_action(XrefResponse::CRUD_DELETE);
+		} else {
+			$message .= 'updated';
+			$response->set_action(XrefResponse::CRUD_UPDATE);
+		}
+
+		$response->set_message($message);
+
+		if ($response->has_success()) {
+			// TODO
+			//$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
+		}
+		return $response;
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus VXM CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for VXM',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
