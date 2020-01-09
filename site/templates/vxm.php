@@ -6,3 +6,5 @@
 	} elseif ($input->get->search) {
 	} else {
 	}
+
+	include __DIR__ . "/basic-page.php";
