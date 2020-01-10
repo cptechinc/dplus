@@ -7,7 +7,7 @@
 			<label for="whseID">Code</label>
 		</div>
 		<div class="col">
-			<input type="text" name="whseID" class="form-control" value="{{ warehouse.id }}" id="whseID">
+			<input type="text" name="whseID" class="form-control" value="{{ warehouse.id }}" id="whseID" {{ warehouse.id ? 'disabled' : 'autofocus' }}>
 		</div>
 	</div>
 	<div class="form-row form-group">
@@ -15,7 +15,7 @@
 			<label for="name">Name</label>
 		</div>
 		<div class="col">
-			<input type="text" name="name" class="form-control" value="{{ warehouse.name }}" id="name">
+			<input type="text" name="name" class="form-control" value="{{ warehouse.name }}" id="name" autofocus>
 		</div>
 	</div>
 	<hr class="border-top border-primary">

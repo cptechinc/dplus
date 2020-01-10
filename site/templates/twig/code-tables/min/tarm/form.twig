@@ -1,36 +1,49 @@
 <form action="{{ page.url }}" method="POST" id="code-edit-form">
 	<input type="hidden" name="table" value="tarm">
+	<div class="row">
+		<div class="col-6">
+			<div class="form-group">
+				<label for="code">Code</label>
+				<input type="text" name="code" class="form-control" value="{{ tariff.code }}" id="code" {{ tariff.code ? 'disabled' : 'autofocus' }}>
+			</div>
 
-	<div class="form-group">
-		<label for="code">Code</label>
-		<input type="text" name="code" class="form-control" value="" id="code">
+			<div class="form-group">
+				<label for="number">Tariff Number</label>
+				<input type="text" name="number" class="form-control" value="{{ tariff.number }}" id="number" autofocus>
+			</div>
+
+			<div class="form-group">
+				<label for="description">Description</label>
+				<input type="text" name="description" class="form-control" value="{{ tariff.description }}" id="description">
+			</div>
+
+			<div class="form-group">
+				<label for="duty_rate">Tariff Percent</label>
+				<input type="text" name="duty_rate" class="form-control" value="{{ tariff.duty_rate }}" id="duty_rate">
+			</div>
+
+			<button type="submit" class="btn btn-success">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+		</div>
+		<div class="col-6">
+			<div class="form-group">
+				<label>Number of Countries Tariff is Used</label>
+				<input type="text" name="country_count" class="form-control" value="{{ country_count }}" id="country_count" readonly>
+			</div>
+
+			<div class="form-group">
+				<label>Countries</label>
+				<div style="overflow-y:scroll; height: 195px">
+					{% for country in countries %}
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox" class="custom-control-input" name="country[]" value="{{ country.code }}" id="{{ country.code }}">
+							<label class="custom-control-label" for="{{ country.code }}">{{ country.description }}</label>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+
+		</div>
 	</div>
-
-	<div class="form-group">
-		<label for="number">Tariff Number</label>
-		<input type="text" name="number" class="form-control" value="" id="number">
-	</div>
-
-	<div class="form-group">
-		<label for="description">Description</label>
-		<input type="text" name="description" class="form-control" value="" id="description">
-	</div>
-
-	<div class="form-group">
-		<label for="duty_rate">Tariff Percent</label>
-		<input type="text" name="duty_rate" class="form-control" value="" id="duty_rate">
-	</div>
-
-	<div class="form-group">
-		<label for="country">Countries</label>
-		<select name="country" class="form-control" id="country" >
-			{% for country in countries %}
-				<option value="{{ country.code }}">{{ country.description }}</option>
-			{% endfor %}
-		</select>
-	</div>
-
-	<button type="submit" class="btn btn-success">
-		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-	</button>
 </form>

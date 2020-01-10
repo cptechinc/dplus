@@ -5,12 +5,12 @@
 		<div class="col-6">
 			<div class="form-group">
 				<label for="code">Code</label>
-				<input type="text" name="code" class="form-control" value="{{ itemgroup.code }}" id="code">
+				<input type="text" name="code" class="form-control" value="{{ itemgroup.code }}" id="code" {{ itemgroup.code ? 'disabled' : 'autofocus' }}>
 			</div>
 
 			<div class="form-group">
 				<label for="description">Description</label>
-				<input type="text" name="description" class="form-control" value="{{ itemgroup.description }}" id="description">
+				<input type="text" name="description" class="form-control" value="{{ itemgroup.description }}" id="description" autofocus>
 			</div>
 
 			<div class="form-group">
