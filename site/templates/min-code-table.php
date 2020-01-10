@@ -22,9 +22,8 @@
 
 		$page->headline = "$module_codetable->description Table";
 
-		if (!$page->print) {
-			$page->body .= $config->twig->render('code-tables/links-header.twig', ['page' => $page, 'input' => $input]);
-		}
+		$page->body .= $config->twig->render('code-tables/links-header.twig', ['page' => $page, 'input' => $input]);
+
 
 		if ($session->response_codetable) {
 			$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_codetable]);

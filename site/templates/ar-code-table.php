@@ -17,6 +17,7 @@
 	if ($ar_codetables->validate_codetable($page->codetable)) {
 		$module_codetable = $ar_codetables->get_codetable_module($page->codetable);
 		$page->headline = "$module_codetable->description Table";
+
 		$page->body .= $config->twig->render('code-tables/links-header.twig', ['page' => $page, 'input' => $input]);
 
 		if ($session->response_codetable) {
@@ -39,4 +40,10 @@
 	if ($session->response_codetable) {
 		$session->remove('response_codetable');
 	}
-	include __DIR__ . "/basic-page.php";
+
+	if ($page->print) {
+		$page->show_title = true;
+		include __DIR__ . "/blank-page.php";
+	} else {
+		include __DIR__ . "/basic-page.php";
+	}

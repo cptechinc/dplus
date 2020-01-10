@@ -1,11 +1,25 @@
 <div class="mb-3">
-	<a href="{{ page.parent.url }}" class="btn btn-primary">
-		<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to {{ page.parent.title }}
-	</a>
-	&nbsp;
-	{% if input.get.text('code') %}
-		<a href="{{ page.get_codetable_viewURL(page.codetable) }}" class="btn btn-primary">
-			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to {{ page.title }}
+	{% if page.is_print() %}
+		<button onclick="window.history.back();" class="btn btn-primary">
+			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back
+		</button>
+		&nbsp;
+		<button class="btn btn-primary d-print-none" onclick="window.print();return false;">
+			<i class="fa fa-print" aria-hidden="true"></i> Print
+		</button>
+	{% else %}
+		<a href="{{ page.parent.url }}" class="btn btn-primary">
+			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to {{ page.parent.title }}
+		</a>
+		&nbsp;
+		{% if input.get.text('code') %}
+			<a href="{{ page.get_codetable_viewURL(page.codetable) }}" class="btn btn-primary">
+				<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to {{ page.title }}
+			</a>
+		{% endif %}
+		&nbsp;
+		<a href="{{ page.get_printURL() }}" class="btn btn-primary">
+			<i class="fa fa-print" aria-hidden="true"></i> View Printable
 		</a>
 	{% endif %}
 </div>
