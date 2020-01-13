@@ -1,0 +1,136 @@
+$(function() {
+	var eachlistprice = {{ item.eachlistprice }};
+	var itemID = '{{ item.ouritemID }}';
+	var primarypoordercode = '{{ item.getOptionpoordercodePrimary() }}';
+
+	var primaryitem = {
+		same: {{ item.is_po_ordercode_primary() ? 'true' : 'false'}},
+		otherexists: {{ item.other_primary_poordercode_exists() ? 'true' : 'false'}},
+		vendoritemid: '{{ item.other_primary_poordercode_itemid() }}',
+		vendorid: '{{ item.other_primary_poordercode_vendorid() }}'
+	}
+
+	var form_vxm = $('#vxm-item-form');
+	var input_listprice = form_vxm.find('input[name=listprice]');
+	var input_uom       = form_vxm.find('select[name=uom_purchase]');
+	var input_eachlistprice = form_vxm.find('input[name=eachlistprice]');
+
+
+	$("body").on("change", ".unit-cost", function(e) {
+		var unitrow = $(this).closest('.unit-row');
+		update_unitrow_margin(unitrow);
+	});
+
+
+	/**
+	 * Change the Unit of Measure Description when the Unit of Measure is changed
+	 */
+	$("body").on("change", "#uom_purchase", function(e) {
+		var input_uompurchase = $(this);
+		var conversion = input_uompurchase.find('option:selected').data('conversion');
+		var ele_description = input_uompurchase.siblings('p').find('.conversion-description');
+		ele_description.text(conversion);
+		calculate_eachlistprice();
+	});
+
+	form_vxm.validate({
+		errorClass: "is-invalid",
+		rules: {
+			vendoritemID: 'required',
+			ouritemID: 'required',
+			uom_purchase: 'required',
+		},
+		messages: {
+			vendoritemID: "Please enter the Vendor's Item ID",
+			ouritemID: "Please enter the Your Item ID",
+			uom_purchase: "Please choose a Purchase Unit of Measure",
+		},
+		submitHandler: function(form) {
+			var select_poordercode = form_vxm.find('select[name=po_ordercode]');
+			var input_validatedpoordercode = select_poordercode.siblings('input[name=po_ordercode_validated]');
+
+			if (input_validatedpoordercode.val() == 'false') {
+				if (select_poordercode.val() == primarypoordercode) {
+					if (primaryitem.otherexists == true && primaryitem.same == false) {
+						var text = itemID + ' has a another Primary Vendor Item';
+
+						swal({
+							title: "Overwrite Primary PO Ordercode?",
+							text: text,
+							type: 'warning',
+							showCancelButton: true,
+							confirmButtonClass: 'btn btn-success',
+							cancelButtonClass: 'btn btn-danger',
+							buttonsStyling: false,
+							confirmButtonText: 'Yes!'
+						}).then(function (result) {
+							if (result) {
+								input_validatedpoordercode.val('true');
+								form_vxm.submit();
+							}
+						}).catch(swal.noop);
+					} else {
+						input_validatedpoordercode.val('true');
+						form_vxm.submit();
+					}
+				} else {
+					input_validatedpoordercode.val('true');
+					form_vxm.submit();
+				}
+			} else {
+				form.submit();
+			}
+		}
+	});
+
+	/**
+	 * Recalculates Each List Price based on the Unit of Measure Purchase Conversion
+	 */
+	function calculate_eachlistprice() {
+		var oldlistprice = eachlistprice;
+		var conversion = input_uom.find('option:selected').data('conversion');
+		eachlistprice = input_listprice.val() / parseFloat(conversion);
+		input_eachlistprice.val(eachlistprice);
+
+		if (eachlistprice != oldlistprice) {
+			calculate_margins();
+		}
+	}
+
+	/**
+	 * Calculates Margin for each Unit Cost
+	 */
+	function calculate_margins() {
+		$(".unit-row").each(function( index ) {
+			update_unitrow_margin($(this));
+		});
+	}
+
+	/**
+	 * Calculates Margin for one Unit Cost
+	 * @param  JqueryElement unitrow
+	 */
+	function update_unitrow_margin(unitrow) {
+		var input_unitqty = unitrow.find('.unit-qty');
+		var input_unitcost = unitrow.find('.unit-cost');
+		var ele_margin = unitrow.find('.unit-margin');
+		var margin = determine_unitmargin(input_unitcost.val());
+		ele_margin.text(margin);
+	}
+
+
+
+	/**
+	 * Returns Margin for cost
+	 * @param  float   cost Unit Cost
+	 * @return float
+	 */
+	function determine_unitmargin(cost) {
+		if (eachlistprice == 0 || cost == 0) {
+			return '';
+		} else {
+			var markup = eachlistprice - cost;
+			return markup / eachlistprice * 100;
+		}
+	}
+});

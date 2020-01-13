@@ -1,0 +1,28 @@
+<nav aria-label="breadcrumb rounded-0">
+	<ol class="breadcrumb">
+		{% for parent in page.parents() %}
+			<li class="breadcrumb-item">
+				<i class="fa fa-list" aria-hidden="true"></i>
+				<a href="{{ parent.url }}">{{ parent.title }}</a>
+			</li>
+		{% endfor %}
+		{% if page.has('vendorID') %}
+			<li class="breadcrumb-item">
+				<a href="{{ page.url }}">{{ page.title }}</a>
+			</li>
+			{% if (page.has('vendoritemID')) %}
+				<li class="breadcrumb-item">
+					<a href="{{ page.vxm_vendorURL(vendor.id) }}">Vendor: {{ vendor.name }}</a>
+				</li>
+				<li class="breadcrumb-item active" aria-current="page">Vend Item: {{ page.vendoritemID }}</li>
+			{% else %}
+				<li class="breadcrumb-item active" aria-current="page">Vendor: {{ vendor.name }}</li>
+			{% endif %}
+		{% elseif page.has('itemID') %}
+			<li class="breadcrumb-item">
+				<a href="{{ page.url }}">{{ page.title }}</a>
+			</li>
+			<li class="breadcrumb-item active" aria-current="page">Item: {{ page.itemID }}</li>
+		{% endif %}
+	</ol>
+</nav>

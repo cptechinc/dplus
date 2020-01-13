@@ -1,0 +1,40 @@
+<table class="table table-striped table-sm">
+	<thead>
+		<tr>
+			<th class="col-3"></th>
+			<th class="col-3">Unit</th>
+			<th class="col-3">Unit Cost</th>
+			<th class="col-3">Margin %</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="unit-row">
+			<td>Base</td>
+			<td>
+				<input type="hidden" class="form-control form-control-sm unit-qty" value="1">
+			</td>
+			<td>
+				<input type="text" class="form-control form-control-sm unit-cost" name="unitcost_base" value="{{ item.get_unitcost(0) }}">
+			</td>
+			<td class="text-right">
+				<span class="unit-margin">{{ item.get_unitmargin(0) }}</span> %
+			</td>
+		</tr>
+		{% for i in 1..item.get_unitsavailable() %}
+			<tr class="unit-row">
+				<td>
+					Qty {{ i }}
+				</td>
+				<td>
+					<input type="text" class="form-control form-control-sm unit-qty" name="unit_qty{{ i }}" value="{{ item.get_unitqty(i) }}">
+				</td>
+				<td>
+					<input type="text" class="form-control form-control-sm unit-cost" name="unit_cost{{ i }}" value="{{ item.get_unitcost(i) }}">
+				</td>
+				<td class="text-right">
+					<span class="unit-margin">{{ item.get_unitmargin(i) }}</span> %
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

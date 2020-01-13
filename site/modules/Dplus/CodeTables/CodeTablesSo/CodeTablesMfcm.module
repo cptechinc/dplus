@@ -7,7 +7,7 @@ use Purl\Url;
 use MotorFreightCodeQuery, MotorFreightCode;
 
 /**
- * Module that handles the editing of the CCM codetable
+ * Module that handles the editing of the MFCM codetable
  */
 class CodeTablesMfcm extends WireData implements Module {
 	const MODEL              = 'MotorFreightCode';

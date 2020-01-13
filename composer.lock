@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "0025c8cc5698ae6519cf2d380603f43d15ab9228"
+                "reference": "84eae8e0df5ea01cc6b92e9ea6187a47ab1b9d09"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/0025c8cc5698ae6519cf2d380603f43d15ab9228",
-                "reference": "0025c8cc5698ae6519cf2d380603f43d15ab9228",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/84eae8e0df5ea01cc6b92e9ea6187a47ab1b9d09",
+                "reference": "84eae8e0df5ea01cc6b92e9ea6187a47ab1b9d09",
                 "shasum": ""
             },
             "type": "library",
@@ -39,7 +39,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2020-01-07T15:04:49+00:00"
+            "time": "2020-01-08T21:16:24+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
@@ -1199,12 +1199,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "e770b802038266521075017f6e59b903dfe2b4e2"
+                "reference": "04174b5f62ea4cc63ad0fa1057afdda054f9ba11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/e770b802038266521075017f6e59b903dfe2b4e2",
-                "reference": "e770b802038266521075017f6e59b903dfe2b4e2",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/04174b5f62ea4cc63ad0fa1057afdda054f9ba11",
+                "reference": "04174b5f62ea4cc63ad0fa1057afdda054f9ba11",
                 "shasum": ""
             },
             "require": {
@@ -1256,7 +1256,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2020-01-03T19:00:30+00:00"
+            "time": "2020-01-08T08:32:31+00:00"
         }
     ],
     "packages-dev": [],

@@ -1,0 +1,216 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'/XrefResponse.php');
+
+use Purl\Url;
+
+use ItemXrefVendorQuery, ItemXrefVendor;
+
+/**
+ * Module that handles the editing of the VXM item Xref
+ */
+class XrefVxm extends WireData implements Module {
+	const MODEL              = 'ItemXrefVendor';
+	const MODEL_KEY          = 'code';
+	const DESCRIPTION        = 'Item X-ref';
+	const DESCRIPTION_RECORD = 'Item X-ref';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Return ItemXrefVendor[] for vendor
+	 * @param  string $vendorID Vendor ID
+	 * @return ObjectCollection
+	 */
+	public function get_vendoritems($vendorID) {
+		$q = $this->get_query();
+		$q->filterByVendorid($vendorID);
+		return $q->find();
+	}
+
+	/**
+	 * Return ItemXrefVendor[] for our Item ID
+	 * @param  string $itemID  Our Item ID
+	 * @return ObjectCollection
+	 */
+	public function get_ouritemitems($itemID) {
+		$q = $this->get_query();
+		$q->filterByOuritemid($itemID);
+		return $q->find();
+	}
+
+	/**
+	 * Return ItemXrefVendor
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor's Item ID'
+	 * @return ItemXrefVendor
+	 */
+	public function get_vendoritem($vendorID, $vendoritemID) {
+		$q = $this->get_query();
+		$q->filterByVendorid($vendorID);
+		$q->filterByVendoritemid($vendoritemID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Returns if Vendor Item ID exists
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor's Item ID'
+	 * @return bool
+	 */
+	public function vendors_item_exists($vendorID, $vendoritemID) {
+		$q = $this->get_query();
+		$q->filterByVendorid($vendorID);
+		$q->filterByVendoritemid($vendoritemID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Returns ItemXrefVendorQuery
+	 * @return ItemXrefVendorQuery
+	 */
+	public function get_query() {
+		return ItemXrefVendorQuery::create();
+	}
+
+	/**
+	 * Takes Input, validates it's for one of the code tables
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$vendorID = $input->$rm->text('vendorID');
+		$vendoritemID = $input->$rm->text('vendoritemID');
+
+		$q = $this->get_query();
+		$q->filterByVendorid($vendorID);
+		$q->filterByVendoritemid($vendoritemID);
+
+		if ($q->count()) {
+			$record = $q->findOne();
+		} else {
+			$record = new ItemXrefVendor();
+			$record->setVendorid($vendorID);
+			$record->setVendoritemid($vendoritemID);
+		}
+
+		if ($input->$rm->text('action') == 'remove-code') {
+			$record->delete();
+		} else {
+			$record->setVendoritemid($vendoritemID);
+			$record->setOuritemid($input->$rm->text('ouritemID'));
+			$record->setQty_percase($input->$rm->text('qty_percase'));
+			$record->setMinbuyqty($input->$rm->text('minbuyqty'));
+			$record->setApprovalcode($input->$rm->text('approvalcode'));
+			$record->setUom_purchase($input->$rm->text('uom_purchase'));
+			$record->setListprice($input->$rm->text('listprice'));
+
+			for ($i = 1; $i < ItemXrefVendor::UNITS_AVAILABLE; $i++) {
+				$col_qty = ucfirst(ItemXrefVendor::get_unitqty_column($i));
+				$col_cost = ucfirst(ItemXrefVendor::get_unitcost_column($i));
+				$function_unitqty = "set$col_qty";
+				$function_unitcost = "set$col_cost";
+				$record->$function_unitqty($input->$rm->text("unit_qty$i"));
+				$record->$function_unitcost($input->$rm->text("unit_cost$i"));
+			}
+
+			if ($input->$rm->text('po_ordercode') == ItemXrefVendor::POORDERCODE_PRIMARY) {
+				if ($input->$rm->text('po_ordercode_validated') == 'true') {
+					$record->setPo_ordercode($input->$rm->text('po_ordercode'));
+				} else {
+					$record->setPo_ordercode(ItemXrefVendor::POORDERCODE_SECONDARY);
+				}
+			} else {
+				$record->setPo_ordercode($input->$rm->text('po_ordercode'));
+			}
+			$record->setDate_changed(date('Ymd'));
+			$record->setDate(date('Ymd'));
+			$record->setTime(0);
+		}
+
+		$response = $this->save_and_process_response($record);
+
+		/**
+		 * IF we saved this Item as the Primary PO ORDER then we have to update
+		 * the other primary item to be a secondary
+		 */
+		if ($response->has_success() && !$record->isDeleted()) {
+			if ($record->is_po_ordercode_primary() && $record->other_primary_poordercode_exists()) {
+				$vxmitem = $record->get_other_primary_vxm_item();
+				$vxmitem->setPo_ordercode(ItemXrefVendor::POORDERCODE_SECONDARY);
+				$vxmitem->save();
+				$this->update_dplus_cobol($vxmitem);
+			}
+		}
+		$this->wire('session')->response_xref = $response;
+	}
+
+	/**
+	 * Returns XrefResponse based on the outcome of the database save
+	 * @param  ItemXrefVendor $record Record to record response of database save
+	 * @return XrefResponse
+	 */
+	protected function save_and_process_response(ItemXrefVendor $record) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+		$code = "$record->vendorID-$record->vendoritemID-$record->ouritemID";
+
+		$response = new XrefResponse();
+		$response->set_key($code);
+		$message = self::DESCRIPTION_RECORD . " ($code) was ";
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+			$message .= "not ";
+		}
+
+		if ($is_new) {
+			$message .= 'added';
+			$response->set_action(XrefResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$message .= 'deleted';
+			$response->set_action(XrefResponse::CRUD_DELETE);
+		} else {
+			$message .= 'updated';
+			$response->set_action(XrefResponse::CRUD_UPDATE);
+		}
+
+		$response->set_message($message);
+
+		if ($response->has_success()) {
+			$this->update_dplus_cobol($record);
+		}
+		return $response;
+	}
+
+	/**
+	 * Writes File for Dplus to update the VXM file for this ITEM
+	 * @param  ItemXrefVendor $item
+	 * @return void
+	 */
+	public function update_dplus_cobol(ItemXrefVendor $item) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'UPDATEVXM', "VENDORID=$item->vendorid", "VENDITEM=$item->vendoritemid", "OURITEM=$item->ouritemid");
+		$this->wire('modules')->get('Xrefs')->write_dplusfile($data, session_id());
+		$http = new WireHttp();
+		$http->get("127.0.0.1/cgi-bin/".$config->cgis['database']."?fname=".session_id());
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus VXM CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for VXM',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

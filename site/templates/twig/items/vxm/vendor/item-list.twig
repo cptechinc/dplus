@@ -1,0 +1,30 @@
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row">
+			<div class="col-4">
+				Vendor Item
+			</div>
+			<div class="col-4">
+				Our Item
+			</div>
+			<div class="col-4">
+				Description
+			</div>
+		</div>
+	</div>
+	{% for item in items %}
+		<a href="{{ page.vxm_vendors_itemURL(item.vendorID, item.vendoritemID) }}" class="list-group-item list-group-item-action">
+			<div class="row">
+				<div class="col-4">
+					{{ item.vendoritemID }}
+				</div>
+				<div class="col-4">
+					{{ item.ouritemID }}
+				</div>
+				<div class="col-4">
+					{{ item.description }}
+				</div>
+			</div>
+		</a>
+	{% endfor %}
+</div>
