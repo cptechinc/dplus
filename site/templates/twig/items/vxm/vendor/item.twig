@@ -1,4 +1,9 @@
-<form action="">
+<form action="{{ page.fullURL.getURL() }}" id="vxm-item-form">
+	<div class="mb-1">
+		<button type="button" class="btn btn-primary"  data-toggle="collapse" data-target="#form-actions" aria-expanded="false" aria-controls="form-actions">
+			<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+		</button>
+	</div>
 	<div class="row mb-3">
 		{% include 'items/vxm/vendor/item/header.twig' %}
 	</div>
@@ -7,7 +12,12 @@
 			{% include 'items/vxm/vendor/item/details.twig' %}
 		</div>
 		<div class="col-sm-6">
-			{% include 'items/vxm/vendor/item/unit-qtys.twig' %}
+			{% include 'items/vxm/vendor/item/unit-costs.twig' %}
 		</div>
+	</div>
+	<div class="mt-1 text-center">
+		<button type="submit" class="btn btn-success btn-block">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
 	</div>
 </form>
