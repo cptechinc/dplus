@@ -13,7 +13,7 @@
 		</div>
 	</div>
 	{% for item in items %}
-		<a href="{{ page.vxm_vendors_itemURL(vendorID, item.vendoritemID) }}" class="list-group-item list-group-item-action">
+		<a href="{{ page.vxm_vendors_itemURL(item.vendorID, item.vendoritemID) }}" class="list-group-item list-group-item-action">
 			<div class="row">
 				<div class="col-4">
 					{{ item.vendoritemID }}

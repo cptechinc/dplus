@@ -46,17 +46,6 @@ class Xrefs extends WireData implements Module {
 		);
 	}
 
-	//
-	public function update_dplus_cobol($table, $code) {
-		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
-		$table = strtoupper($table);
-		$data = array("DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code");
-		$this->write_dplusfile($data, session_id());
-		$http = new WireHttp();
-		$http->get("127.0.0.1/cgi-bin/".$config->cgis['database']."?fname=".session_id());
-	}
-
 	/**
 	 * Writes an array one datem per line into the dplus directory
 	 * @param  array $data      Array of Lines for the request

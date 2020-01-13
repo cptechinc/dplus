@@ -9,7 +9,7 @@
 				<option value="{{ value }}" {{ value == item.po_ordercode ? 'selected' : ''}}>{{ description }}</option>
 			{% endfor %}
 		</select>
-		<input type="text" name="qty_percase" class="form-control form-control-sm" id="qty_percase" value="{{ item.qty_percase }}">
+		<input type="hidden" name="po_ordercode_validated" id="po_ordercode_validated" value="false">
 	</div>
 </div>
 <div class="row form-group">
@@ -38,7 +38,7 @@
 </div>
 <div class="row form-group">
 	<div class="col-sm-6">
-		<label for="date_changed"><b>Our Item ID</b></label>
+		<label for="date_changed"><b>Last Change Date</b></label>
 	</div>
 	<div class="col-sm-6">
 		<input type="text" name="date_changed" class="form-control-plaintext form-control-sm" id="date_changed" value="{{ item.date_changed|convertdate }}" readonly>

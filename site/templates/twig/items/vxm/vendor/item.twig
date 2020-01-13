@@ -1,4 +1,6 @@
-<form action="{{ page.fullURL.getURL() }}" id="vxm-item-form">
+<form action="{{ page.fullURL.getURL() }}" method="POST" id="vxm-item-form">
+	<input type="hidden" name="vendorID" value="{{ item.vendorID }}">
+
 	<div class="mb-1">
 		<button type="button" class="btn btn-primary"  data-toggle="collapse" data-target="#form-actions" aria-expanded="false" aria-controls="form-actions">
 			<i class="fa fa-pencil" aria-hidden="true"></i> Edit

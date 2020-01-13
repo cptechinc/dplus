@@ -6,6 +6,7 @@
 		<div class="col-sm-6">
 			{{ vendor.id }} <br>
 			{{ vendor.name }}
+			<input type="hidden" name="vendorID" value="{{ item.vendorID }}">
 		</div>
 	</div>
 	<div class="row form-group">
@@ -21,7 +22,11 @@
 			<b>Our Item ID</b>
 		</div>
 		<div class="col-sm-6">
-			<input type="text" class="form-control-plaintext form-control-sm" value="{{ item.ouritemID }}" readonly>
+			{% if item.isNew() %}
+				<input type="text" class="form-control form-control-sm" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}">
+			{% else %}
+				<input type="text" class="form-control-plaintext form-control-sm" name="ouritemID" value="{{ item.ouritemid }}" readonly>
+			{% endif %}
 		</div>
 	</div>
 	<div class="row">
