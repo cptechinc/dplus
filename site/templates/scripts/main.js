@@ -201,6 +201,13 @@ function init_datepicker() {
 	});
 }
 
+$('.delete_button').click(function(e){
+	var result = confirm("Are you sure you want to delete?");
+	if(!result) {
+		e.preventDefault();
+	}
+});
+
 /*==============================================================
 	STRING FUNCTIONS
 =============================================================*/
