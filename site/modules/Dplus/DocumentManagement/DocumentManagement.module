@@ -10,6 +10,7 @@ include(__DIR__.'/DocumentManagementSalesOrders.trait.php');
 include(__DIR__.'/DocumentManagementQuotes.trait.php');
 include(__DIR__.'/DocumentManagementIi.trait.php');
 include(__DIR__.'/DocumentManagementCi.trait.php');
+include(__DIR__.'/DocumentManagementAR.trait.php');
 
 class DocumentManagement extends WireData implements Module {
 	use DocumentManagementVi;
@@ -18,13 +19,20 @@ class DocumentManagement extends WireData implements Module {
 	use DocumentManagementQuotes;
 	use DocumentManagementIi;
 	use DocumentManagementCi;
+	use DocumentManagementAR;
 
-	const TAG_ARINVOICES = 'AR';
+	const TAG_ARINVOICE = 'AR';
 	const TAG_SALESORDER = 'SO';
 	const TAG_QUOTE      = 'QT';
 	const TAG_ITEM       = 'IT';
 	const TAG_VENDORPO   = 'PO';
 	const TAG_APINVOICE  = 'AP';
+	const TAG_CUSTOMER   = 'CU';
+
+	const TAG_AR_CHECKS = 'RC';
+
+	const FOLDER_ARINVOICE = 'ARINVC';
+	const FOLDER_ARINVOICE_ALT = 'ARINV';
 
 	public static function getModuleInfo() {
 		return array(

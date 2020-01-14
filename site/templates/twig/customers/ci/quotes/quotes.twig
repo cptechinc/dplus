@@ -16,9 +16,8 @@
 									{% if i == 1 and quote['Quote ID'] %}
 										{% if document_management.count_quotedocuments(quote['Quote ID']) %}
 											<a href="{{ page.documentsview_quote(custID, quote['Quote ID'])}}" class="text-success" title="View Documents for Quote # {{ quote['Quote ID'] }}">
-												<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Order # {{ quote['Quote ID'] }}</span>
+												<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Quote # {{ quote['Quote ID'] }}</span>
 											</a>
-
 										{% endif %}
 									{% endif %}
 								</td>

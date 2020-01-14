@@ -35,16 +35,15 @@
 								{% set colspan = column['col-length'] %}
 								<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
 									{{ module_formatter.format_celldata(invoice, column) }}
+
+									{% if i == 1 and invoice['Invoice Number'] %}
+										{% if document_management.count_arinvoicedocuments(invoice['Invoice Number']) %}
+											<a href="{{ page.documentsview_arinvoice(custID, invoice['Invoice Number'])}}" class="text-success" title="View Documents for Quote # {{ invoice['Invoice Number'] }}">
+												<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Invoice # {{ invoice['Invoice Number'] }}</span>
+											</a>
+										{% endif %}
+									{% endif %}
 								</td>
-								{#
-									if ($i == 1 && !empty($invoice['Invoice Number'])) {
-										$ordn = $invoice['Ordn'];
-										$custID = $this->json['custid'];
-										$url->query->setData(array('custID' => $custID, 'ordn' => $ordn, 'returnpage' => urlencode(DplusWire::wire('page')->fullURL->getUrl())));
-										$href = $url->getUrl();
-										$celldata .= "&nbsp; " . $bootstrap->create_element('a', "href=$href|class=load-order-documents|title=Load Order Documents|aria-label=Load Order Documents|data-ordn=$ordn|data-custid=$custID|data-type=ci-sales-history", $bootstrap->icon('fa fa-file-text'));
-									}
-								#}
 							{% else %}
 								{% if columncount < blueprint['cols'] %}
 									{% set colspan = 1 %}

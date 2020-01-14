@@ -97,7 +97,7 @@ trait DocumentManagementSalesOrders {
 		$column_reference1 = Documents::get_aliasproperty('reference1');
 
 		// Create Invoices Filter
-		$documents_master->condition('tag_invoices', "Documents.$column_tag = ?", self::TAG_ARINVOICES);
+		$documents_master->condition('tag_invoices', "Documents.$column_tag = ?", self::TAG_ARINVOICE);
 		$documents_master->condition('reference1_invoices', "Documents.$column_reference1 = ?", $ordn);
 		$documents_master->combine(array('tag_invoices', 'reference1_invoices'), 'and', 'cond_invoices') ;
 
