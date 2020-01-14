@@ -6,8 +6,17 @@
 		$custID = $cart->get_custid();
 		$customer = CustomerQuery::create()->findOneByCustid($custID);
 		$page->title = "Cart for $customer->name";
+
+		if ($cart->has_shiptoid()) {
+			$shiptoID = $cart->get_shiptoID();
+			$shipto = CustomerShiptoQuery::create()->filterByCustid($custID)->findOneByShiptoid($shiptoID);
+			$page->title = "Cart for $shipto->name";
+		} else {
+			$shipto = false;
+		}
+
 		$page->formurl = $page->child('template=redir')->url;
-		$page->body .= $config->twig->render('cart/cart-links.twig', ['page' => $page, 'customer' => $customer]);
+		$page->body .= $config->twig->render('cart/cart-links.twig', ['page' => $page, 'customer' => $customer, 'cart' => $cart, 'shipto' => $shipto]);
 		$page->body .= $config->twig->render('cart/cart-items.twig', ['page' => $page, 'cart' => $cart]);
 		$page->body .= $config->twig->render('cart/add-item-form.twig', ['page' => $page, 'cart' => $cart]);
 
@@ -20,7 +29,7 @@
 			$results = PricingQuery::create()->findBySessionid(session_id());
 			$page->body .= $config->twig->render('cart/lookup-results.twig', ['page' => $page, 'cart' => $cart, 'q' => $q, 'results' => $results]);
 		}
-		
+
 		$page->body .= $html->div('class=mb-4', '');
 		$page->body .= $config->twig->render('cart/cart-actions.twig', ['page' => $page, 'cart' => $cart]);
 		$page->body .= $html->div('class=mb-4', '');
@@ -30,6 +39,10 @@
 	} elseif ($input->get->custID) {
 		$custID = $input->get->text('custID');
 		$cart->set_custid($custID);
+		if ($input->get->shiptoID) {
+			$shiptoID = $input->get->text('shiptoID');
+			$cart->set_shiptoID($shiptoID);
+		}
 		$session->redirect($page->url);
 	} else {
 		$query = CustomerQuery::create();

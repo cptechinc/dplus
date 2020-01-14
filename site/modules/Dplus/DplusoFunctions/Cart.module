@@ -41,6 +41,23 @@
 			});
 
 			/**
+			 * Adds Function ci_customerURL() to Page
+			 * @return string CI Customer Page URL
+			 */
+			$this->addHook('Page(pw_template=cart)::ci_customershiptoURL', function($event) {
+				$page = $event->object;
+				$custID   = $event->arguments(0);
+				$shiptoID = $event->arguments(1);
+
+				if ($shiptoID) {
+					$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customershiptoURL($custID, $shiptoID);
+				} else {
+					$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customerURL($custID);
+				}
+
+			});
+
+			/**
 			 * Adds Function view_notesURL to Page
 			 * @return string Cart Notes URL
 			 */
@@ -85,6 +102,22 @@
 		}
 
 		/**
+		 * Returns if Cart  Customer Shipto ID has been defined
+		 * @return bool
+		 */
+		public function has_shiptoid() {
+			return boolval(CarthedQuery::create()->select('shiptoid')->findOneBySessionid(session_id()));
+		}
+
+		/**
+		 * Returns  Customer Shipto ID
+		 * @return string
+		 */
+		public function get_shiptoid() {
+			return CarthedQuery::create()->select('shiptoid')->findOneBySessionid(session_id());
+		}
+
+		/**
 		 * Sets Cart Customer ID
 		 *
 		 * @return string
@@ -98,6 +131,23 @@
 			}
 
 			$cart->setCustid($custID);
+			$cart->save();
+		}
+
+		/**
+		 * Sets Cart Customer Shipto ID
+		 *
+		 * @return string
+		 */
+		public function set_shiptoid($shiptoID) {
+			if (CarthedQuery::create()->filterBySessionid(session_id())->count()) {
+				$cart = CarthedQuery::create()->findOneBySessionid(session_id());
+			} else {
+				$cart = new Carthed();
+				$cart->setSessionid(session_id());
+			}
+
+			$cart->setShiptoid($shiptoID);
 			$cart->save();
 		}
 
