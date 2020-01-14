@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+use Propel\Runtime\ActiveQuery\Criteria;
+
 use DocumentFoldersQuery, DocumentFolders;
 use DocumentsQuery, Documents;
 
@@ -28,6 +30,18 @@ trait DocumentManagementIi {
 			}
 
 			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=ii-item)::item_image_exists', function($event) {
+			$page     = $event->object;
+			$itemID   = $event->arguments(0);
+			$event->return = $this->item_image_exists($itemID);
+		});
+
+		$this->addHook('Page(pw_template=ii-item)::item_imageURL', function($event) {
+			$page     = $event->object;
+			$itemID   = $event->arguments(0);
+			$event->return = $this->item_imageURL($itemID);
 		});
 	}
 
@@ -81,5 +95,73 @@ trait DocumentManagementIi {
 		$documents_master->filterByTag(self::TAG_ITEM);
 		$documents_master->filterByReference1($itemID);
 		return $documents_master->count();
+	}
+
+	/**
+	 * Returns DocumentsQuery filtered for Item Images
+	 * @param  string $itemID Item ID
+	 * @return DocumentsQuery
+	 */
+	public function get_filter_query_itemimage($itemID) {
+		$wildcards = array();
+		$like = array();
+
+		foreach (self::EXTENSIONS_IMAGES as $ext) {
+			$like[] = 'Documents.Docifilename LIKE ?';
+			$wildcards[] = "%.$ext";
+
+		}
+		$documents_master = DocumentsQuery::create();
+		$documents_master->filterByTag(self::TAG_ITEM);
+		$documents_master->filterByReference1($itemID);
+		$documents_master->where(implode(' OR ', $like), $wildcards);
+		return $documents_master;
+	}
+
+	/**
+	 * Return if there is an image associated with an Item
+	 * @param  string $itemID  Item ID
+	 * @return bool
+	 */
+	public function item_hasimages($itemID) {
+		$documents_master = $this->get_filter_query_itemimage($itemID);
+		return $documents_master->count();
+	}
+
+	/**
+	 * Return Item Image Name
+	 * @param  string $itemID  Item ID
+	 * @return bool
+	 */
+	public function get_itemimage($itemID) {
+		$documents_master = $this->get_filter_query_itemimage($itemID);
+		$documents_master->select('Docifilename');
+		return $documents_master->findOne();
+	}
+
+	/**
+	 * Returns if Item Image Exists in the directory or if tehre's one listed
+	 * @param  string $itemID  Item ID
+	 * @return bool
+	 */
+	public function item_image_exists($itemID) {
+		if ($this->item_hasimages($itemID)) {
+			$img = $this->get_itemimage($itemID);
+			$file = $this->wire('config')->directory_images.$img;
+			return file_exists($file);
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Returns URL to Item Image
+	 * @param  string $itemID  Item ID
+	 * @return string
+	 */
+	public function item_imageURL($itemID) {
+		$img = $this->get_itemimage($itemID);
+		$url = $this->wire('config')->url_images.$img;
+		return $url;
 	}
 }

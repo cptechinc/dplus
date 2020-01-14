@@ -34,6 +34,12 @@ class DocumentManagement extends WireData implements Module {
 	const FOLDER_ARINVOICE = 'ARINVC';
 	const FOLDER_ARINVOICE_ALT = 'ARINV';
 
+	const EXTENSIONS_IMAGES = array(
+		'jpg',
+		'gif',
+		'png'
+	);
+
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus Document Management',
