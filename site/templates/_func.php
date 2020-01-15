@@ -1,4 +1,8 @@
 <?php
+	function format_currency($str) {
+		return number_format($str, 2, '.', ",");
+	}
+
 	/**
 	 * Returns URL with hash for JS / CSS Caches
 	 * @param  string $file     From templates\

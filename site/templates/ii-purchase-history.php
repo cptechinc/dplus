@@ -20,11 +20,10 @@
 				$session->purchasehistorytry = 0;
 				$module_formatter = $modules->get('IiPurchaseHistory');
 				$module_formatter->init_formatter();
-
 				$document_management = $modules->get('DocumentManagement');
 				$refreshurl = $page->get_itempurchasehistoryURL($itemID, $date);
 				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
-				$page->body .= $config->twig->render('items/ii/purchase-history/purchase-history.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
+				$page->body .= $config->twig->render('items/ii/purchase-history/purchase-history.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management, 'con' => $con]);
 			} else {
 				if ($session->purchasehistorytry > 3) {
 					$page->headline = $page->title = "Purchase History File could not be loaded";

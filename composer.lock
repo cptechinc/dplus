@@ -256,10 +256,13 @@
                 "mikehaertl/php-tmpfile": "^1.1.0",
                 "php": ">=5.0.0"
             },
+            "require-dev": {
+                "phpunit/phpunit": ">4.0 <8"
+            },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "mikehaertl\\wkhtmlto\\": "src/"
+                    "mikehaertl\\wkhtmlto\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",

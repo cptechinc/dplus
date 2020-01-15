@@ -18,8 +18,10 @@
 			$module_formatter = $modules->get('IiQuotes');
 			$module_formatter->init_formatter();
 			$refreshurl = $page->get_itemquotesURL($itemID);
+			$document_management = $modules->get('DocumentManagement');
+
 			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
-			$page->body .= $config->twig->render('items/ii/quotes/quotes.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint()]);
+			$page->body .= $config->twig->render('items/ii/quotes/quotes.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
 		} else {
 			if ($session->quotestry > 3) {
 				$page->headline = $page->title = "Quotes File could not be loaded";

@@ -1,0 +1,49 @@
+{% extends "purchase-orders/invoices/invoices-list.twig" %}
+
+{% block header %}
+    <div class="form-row">
+		<div class="col">
+            <a href="{{ page.get_sortURL('invoicenumber') }}" class="link">Invoice #
+                {% if page.orderby_column == 'invoicenumber' %}
+                    <i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+                {% endif %}
+            </a>
+        </div>
+		<div class="col">
+            <a href="{{ page.get_sortURL('ponbr') }}" class="link">PO #
+                {% if page.orderby_column == 'ponbr' %}
+                    <i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+                {% endif %}
+            </a>
+        </div>
+		<div class="col">
+            <a href="{{ page.get_sortURL('vendorID') }}" class="link">Vendor
+                {% if page.orderby_column == 'vendorID' %}
+                    <i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+                {% endif %}
+            </a>
+        </div>
+		<div class="col"># of Items</div>
+		<div class="col text-right">
+            <a href="{{ page.get_sortURL('total') }}" class="link">Order Total
+                {% if page.orderby_column == 'total' %}
+                    <i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+                {% endif %}
+            </a>
+        </div>
+		<div class="col">
+            <a href="{{ page.get_sortURL('date_invoiced') }}" class="link">Invoice Date
+                {% if page.orderby_column == 'date_invoiced' %}
+                    <i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+                {% endif %}
+            </a>
+        </div>
+        <div class="col">
+            <a href="{{ page.get_sortURL('date_ordered') }}" class="link">Order Date
+                {% if page.orderby_column == 'date_ordered' %}
+                    <i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+                {% endif %}
+            </a>
+        </div>
+    </div>
+{% endblock %}

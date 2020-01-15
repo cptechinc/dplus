@@ -1,0 +1,77 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'../CodeTablesResponse.php');
+
+use Purl\Url;
+
+use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
+
+/**
+ * Module that loads the Module needed for the SO code tables
+ */
+class CodeTablesSo extends WireData implements Module {
+
+	const CODE_TABLES = array(
+		'lsm' => array(
+			'code'   => 'lsm',
+			'module' => 'CodeTablesLsm'
+		),
+		'mfcm' => array(
+			'code'   => 'mfcm',
+			'module' => 'CodeTablesMfcm'
+		),
+	);
+
+	public function get_codetables() {
+		return self::CODE_TABLES;
+	}
+
+	public function validate_codetable($table) {
+		return array_key_exists($table, self::CODE_TABLES);
+	}
+
+	public function get_codetable_module($table) {
+		return $this->wire('modules')->get(self::CODE_TABLES[$table]['module']);
+	}
+
+	/**
+	 * ProcessWire Installer Function
+	 * NOTE: Runs when installed through ProcessWire
+	 * @return void
+	 */
+	public function ___install() {
+
+	}
+
+	/**
+	 * ProcessWire removal Function
+	 * NOTE: Runs when removed through ProcessWire
+	 * @return void
+	 */
+	public function ___uninstall() {
+
+	}
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Codes Tables SO Management',
+			'version' => 101,
+			'summary' => 'Module for Codes Tables SO Management',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(
+				'CodeTablesLsm',
+				'CodeTablesMfcm',
+			)
+		);
+	}
+}

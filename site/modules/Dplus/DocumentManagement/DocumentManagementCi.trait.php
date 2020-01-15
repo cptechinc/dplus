@@ -1,7 +1,11 @@
 <?php namespace ProcessWire;
 
+use Purl\Url;
+
 use DocumentFoldersQuery, DocumentFolders;
 use DocumentsQuery, Documents;
+use SalesOrderQuery, SalesOrder;
+use SalesHistoryQuery, SalesHistory;
 
 trait DocumentManagementCi {
 	public function ci_init() {
@@ -20,13 +24,13 @@ trait DocumentManagementCi {
 			$url = new Url($this->wire('pages')->get('pw_template=ci-documents')->url);
 			$url->query->set('custID', $custID);
 			$url->query->set('folder', self::TAG_SALESORDER);
-			$url = new Url(get_ci_docs_folderURL($custID, self::TAG_SALESORDER));
+			$url = new Url($this->get_ci_docs_folderURL($custID, self::TAG_SALESORDER));
 			$url->query->set('ordn', $ordn);
 
 			if (SalesHistoryQuery::create()->filterByOrdernumber(SalesOrder::get_paddedordernumber($ordn))->count()) {
 				$date = $page->fullURL->query->get('date');
 				$url->query->set('date', $date);
-				$url->query->set('folder', self::TAG_ARINVOICES);
+				$url->query->set('folder', self::TAG_ARINVOICE);
 			}
 
 			$event->return = $url->getUrl();
@@ -36,8 +40,28 @@ trait DocumentManagementCi {
 			$page    = $event->object;
 			$custID  = $event->arguments(0);
 			$qnbr    = $event->arguments(1);
-			$url = new Url(get_ci_docs_folderURL($custID, self::TAG_QUOTE));
+			$url = new Url($this->get_ci_docs_folderURL($custID, self::TAG_QUOTE));
 			$url->query->set('qnbr', $qnbr);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=ci-open-invoices)::documentsview_arinvoice', function($event) {
+			$page    = $event->object;
+			$custID  = $event->arguments(0);
+			$invnbr  = $event->arguments(1);
+			$url = new Url($this->get_ci_docs_folderURL($custID, self::FOLDER_ARINVOICE));
+			$url->query->set('invnbr', $invnbr);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=ci-payments)::documentsview_arpayment', function($event) {
+			$page     = $event->object;
+			$custID   = $event->arguments(0);
+			$invnbr   = $event->arguments(1);
+			$checknbr = $event->arguments(2);
+			$url = new Url($this->get_ci_docs_folderURL($custID, 'PAY'));
+			$url->query->set('invnbr', $invnbr);
+			$url->query->set('checknbr', $checknbr);
 			$event->return = $url->getUrl();
 		});
 	}

@@ -46,6 +46,15 @@
 									{% set colspan = column['col-length'] %}
 									<td colspan="{{ colspan }}" class="border-top border-primary {{ module_formatter.get_justifyclass(column['data-justify']) }}">
 										{{ module_formatter.format_celldata(quote, column) }}
+
+										{% if i == 1 and quote['Quote ID'] %}
+											&nbsp;
+											{% if document_management.count_quotedocuments(quote['Quote ID']) %}
+												<a href="{{ page.documentsview_quote(itemID, quote['Quote ID'])}}" class="text-success" title="View Documents for Quote # {{ quote['Quote ID'] }}">
+													<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Quote # {{ quote['Quote ID'] }}</span>
+												</a>
+											{% endif %}
+										{% endif %}
 									</td>
 								{% else %}
 									{% if columncount < blueprint['cols'] %}

@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+use Propel\Runtime\ActiveQuery\Criteria;
+
 trait FilterSalesTraits {
 	/**
 	 * Filters Query by Order Number
@@ -8,12 +10,11 @@ trait FilterSalesTraits {
 	 * @return void
 	 */
 	public function filter_ordernumber(WireInput $input) {
-		if ($input->get->text('ordernumber_from') && $input->get->text('ordernumber_through')) {
-			$this->query->filterByOrdernumber(array($input->get->text('ordernumber_from'), $input->get->text('ordernumber_through')));
-		} else if ($input->get->text('ordernumber_from')) {
-			$this->query->filterByOrdernumber($input->get->text('ordernumber_from'));
-		} else if ($input->get->text('ordernumber_through')) {
-			$this->query->filterByOrdernumber($input->get->text('ordernumber_through'));
+		if ($input->get->text('ordernumber_from')) {
+			$this->query->filterByOrdernumber($input->get->text('ordernumber_from'), Criteria::GREATER_EQUAL);
+		}
+		if ($input->get->text('ordernumber_through')) {
+			$this->query->filterByOrdernumber($input->get->text('ordernumber_through'), Criteria::LESS_EQUAL);
 		}
 	}
 
@@ -45,12 +46,13 @@ trait FilterSalesTraits {
 			} else {
 				$orderdate_through = date("Ymd", strtotime($input->get->text('orderdate_through')));
 			}
-			if ($orderdate_from && $orderdate_through) {
-				$this->query->filterByOrderdate(array($orderdate_from, $orderdate_through));
-			} else if ($orderdate_from) {
-				$this->query->filterByOrderdate($orderdate_from);
-			} else if ($orderdate_through) {
-				$this->query->filterByOrderdate($orderdate_through);
+
+			if ($orderdate_from) {
+				$this->query->filterByOrderdate($orderdate_from, Criteria::GREATER_EQUAL);
+			}
+
+			if ($orderdate_through) {
+				$this->query->filterByOrderdate($orderdate_through, Criteria::LESS_EQUAL);
 			}
 		}
 	}
@@ -62,12 +64,12 @@ trait FilterSalesTraits {
 	 * @return void
 	 */
 	public function filter_ordertotal(WireInput $input) {
-		if ($input->get->text('order_total_from') && $input->get->text('order_total_through')) {
-			$this->query->filterByOrdertotal(array($input->get->text('order_total_from'), $input->get->text('order_total_through')));
-		} else if ($input->get->text('order_total_from')) {
-			$this->query->filterByTotal_total($input->get->text('order_total_from'), Criteria::GREATER_EQUAL);
-		} else if ($input->get->text('order_total_through')) {
-			$this->query->filterByTotal_total($input->get->text('order_total_through'), Criteria::LESS_EQUAL);
+		if ($input->get->text('order_total_from')) {
+			$this->query->filterByOrdertotal($input->get->text('order_total_from'), Criteria::GREATER_EQUAL);
+		}
+
+		if ($input->get->text('order_total_through')) {
+			$this->query->filterByOrdertotal($input->get->text('order_total_through'), Criteria::LESS_EQUAL);
 		}
 	}
 
@@ -82,9 +84,20 @@ trait FilterSalesTraits {
 			if (is_array($input->get->custID)) {
 				$filter = $input->get->array('custID');
 			} else {
-				$filter = $input->get->text('custID');
+				$filter = array($input->get->text('custID'));
 			}
-			$this->query->filterByCustid($filter);
+			
+			if (sizeof($filter) == 2) {
+				if (!empty($filter[0])) {
+					$this->query->filterByCustid($filter[0], Criteria::GREATER_EQUAL);
+				}
+
+				if (!empty($filter[1])) {
+					$this->query->filterByCustid($filter[1], Criteria::LESS_EQUAL);
+				}
+			} else {
+				$this->query->filterByCustid($filter);
+			}
 		}
 	}
 

@@ -1,0 +1,89 @@
+{
+	"detail": {
+		"Purchase Order Number": {
+			"type": "I",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Invoice Number": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Check Number": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Check Status": {
+			"type": "C",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Check Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Invoice Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Due Date": {
+			"type": "D",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Discount Date": {
+			"type": "D",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Void Date": {
+			"type": "D",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Payment Days": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Overdue Days": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Paid + Discount Amount": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Payment Amount": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Discount Amount": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"ChkNbr": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"PONbr": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"InvNbr": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		}
+	}
+}

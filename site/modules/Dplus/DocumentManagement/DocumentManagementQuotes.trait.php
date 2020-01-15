@@ -24,6 +24,13 @@ trait DocumentManagementQuotes {
 		});
 	}
 
+	/**
+	 * Return URL to the Quote Documents Page
+	 * @param  string $qnbr     Quote Number
+	 * @param  string $folder   Folder Tag
+	 * @param  string $document File Name
+	 * @return string
+	 */
 	public function get_quote_docsURL($qnbr, $folder, $document) {
 		$url = new Url($this->wire('pages')->get('pw_template=quote-documents')->url);
 		$url->query->set('qnbr', $qnbr);
@@ -33,8 +40,9 @@ trait DocumentManagementQuotes {
 	}
 
 	/**
-	 * Return Documents objects filtered by the tag1, reference1 fields for a Sales Order
-	 * @param  string $qnbr                      Quote Number
+	 * Return Documents
+	 * filtered by the tag1, reference1 fields for a Quote
+	 * @param  string $qnbr                  Quote Number
 	 * @return Documents[]|ObjectCollection
 	 */
 	public function get_quotedocuments($qnbr) {
@@ -45,7 +53,8 @@ trait DocumentManagementQuotes {
 	}
 
 	/**
-	 * Return the number of Documents found filtered by the tag1, reference1 fields for a Sales Order
+	 * Return the number of Documents
+	 * filtered by the tag1, reference1 fields for a Quote
 	 * @param  string $qnbr Quote Number
 	 * @return int          Number of Sales Order Documents found
 	 */

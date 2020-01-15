@@ -80,6 +80,11 @@ class DpagesMvi extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
+		'vi-sub' => array(
+			'name'   => 'vi-sub',
+			'fields' => array(),
+			'paginated' => true
+		),
 		'vi-payments' => array(
 			'name'   => 'vi-payments',
 			'fields' => array(),
@@ -202,6 +207,16 @@ class DpagesMvi extends Dpages implements Module {
 			'dplus_function' => '',
 			'pw_template'    => 'vi-costing',
 			'jsoncode'       => 'vi-costing'
+		),
+		'vi-sub' => array(
+			'template'       => 'vi-function',
+			'name'           => 'sub',
+			'title'          => 'Substitutions',
+			'summary'        => 'View Vendor Substitutions',
+			'parent'         => '/mvi/vi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-sub',
+			'jsoncode'       => 'vi-sub'
 		),
 		'vi-payments' => array(
 			'template'       => 'vi-function',
@@ -351,10 +366,40 @@ class DpagesMvi extends Dpages implements Module {
 		$this->addHook('Page::get_vicostingURL', function($event) {
 			$p = $event->object;
 			$vendorID   = $event->arguments(0);
-			$url = new Url($p->get_redirURL());
+			$itemID = $event->arguments(1);
+			$url = new Url($this->wire('pages')->get('template=redir, redir_file=vi')->url);
 			$url->query->set('action','vi-costing');
 			$url->query->set('vendorID', $vendorID);
-			$url->query->set('page', $p->fullURL->getUrl());
+			$url->query->set('itemID', $itemID);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=vi-costing)::get_itemURL', function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$url = new Url($p->fullURL->getUrl());
+			$url->query->remove('q');
+			$url->query->set('itemID', $itemID);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_visubURL', function($event) {
+			$p = $event->object;
+			$vendorID   = $event->arguments(0);
+			$itemID = $event->arguments(1);
+			$url = new Url($this->wire('pages')->get('template=redir, redir_file=vi')->url);
+			$url->query->set('action','vi-sub');
+			$url->query->set('vendorID', $vendorID);
+			$url->query->set('itemID', $itemID);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=vi-sub)::get_itemURL', function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$url = new Url($p->fullURL->getUrl());
+			$url->query->remove('q');
+			$url->query->set('itemID', $itemID);
 			$event->return = $url->getUrl();
 		});
 

@@ -1,0 +1,155 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+/**
+ * class DpagesMap
+ *
+ * Installs fields, templates, pages, hooks necessary for the MAP pages
+ * NOTE: Also installs the basic fields, templates, to build the rest of the Application
+ */
+class DpagesMap extends Dpages implements Module {
+	const FIELDS = array();
+
+	const TEMPLATES = array(
+		'vxm' => array(
+			'name'   => 'vxm',
+			'fields' => array()
+		),
+	);
+
+	const PAGES = array(
+		'map' => array(
+			'template'       => 'dplus-menu',
+			'name'           => 'map',
+			'title'          => 'Accounts Payable Menu',
+			'summary'        => '',
+			'parent'         => '/',
+			'dplus_function' => 'map'
+		),
+		'apmain' => array(
+			'template'       => 'dplus-menu',
+			'name'           => 'apmain',
+			'title'          => 'Maintenance',
+			'summary'        => 'Accounts Payable Maintenance',
+			'parent'         => '/map/',
+			'dplus_function' => 'apmain'
+		),
+		'ap-vxm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'vxm',
+			'name'           => 'vxm',
+			'title'          => 'VXM',
+			'summary'        => 'View Vendor Item Xref',
+			'parent'         => '/map/apmain/',
+			'dplus_function' => ''
+		),
+	);
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public function init() {
+		/**
+		 * Returns Sales Order Page URL
+		 */
+		$this->addHook('Pages::vxm_vendorURL', function($event) {
+			$vendorID = $event->arguments(0);
+			$event->return = $this->get_vxm_vendorURL($vendorID);
+		});
+
+		/**
+		 * Returns Sales Order Page URL
+		 */
+		$this->addHook('Page(pw_template=vxm)::vxm_vendorURL', function($event) {
+			$vendorID = $event->arguments(0);
+			$event->return = $this->get_vxm_vendorURL($vendorID);
+		});
+
+		/**
+		 * Returns Sales Order Page URL
+		 */
+		$this->addHook('Pages::vxm_vendors_itemURL', function($event) {
+			$vendorID = $event->arguments(0);
+			$itemID = $event->arguments(1); // VENDOR ITEM ID
+			$event->return = $this->get_vxm_vendors_itemURL($vendorID, $itemID);
+		});
+
+		/**
+		 * Returns Sales Order Page URL
+		 */
+		$this->addHook('Page(pw_template=vxm)::vxm_vendors_itemURL', function($event) {
+			$vendorID = $event->arguments(0);
+			$itemID = $event->arguments(1); // VENDOR ITEM ID
+			$event->return = $this->get_vxm_vendors_itemURL($vendorID, $itemID);
+		});
+
+		/**
+		 * Returns Sales Order Page URL
+		 */
+		$this->addHook('Pages::vxm_itemURL', function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_vxm_itemURL($itemID);
+		});
+
+		/**
+		 * Returns Sales Order Page URL
+		 */
+		$this->addHook('Page(pw_template=vxm)::vxm_itemURL', function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_vxm_itemURL($itemID);
+		});
+
+
+		$this->addHookProperty('Page(pw_template=vxm)::vendorID', function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('vendorID');
+		});
+
+		$this->addHookProperty('Page(pw_template=vxm)::vendoritemID', function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('vendoritemID');
+		});
+
+		$this->addHookProperty('Page(pw_template=vxm)::itemID', function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('itemID');
+		});
+	}
+
+	public function get_vxm_vendorURL($vendorID) {
+		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
+		$url->query->set('vendorID', $vendorID);
+		return $url->getUrl();
+	}
+
+	public function get_vxm_vendors_itemURL($vendorID, $vendoritemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
+		$url->query->set('vendorID', $vendorID);
+		$url->query->set('vendoritemID', $vendoritemID);
+		return $url->getUrl();
+	}
+
+	public function get_vxm_itemURL($vendorID) {
+		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus AP Pages Modules',
+			'version' => 101,
+			'summary' => 'Installs and creates AP Pages',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('DplusPwPages'),
+			'installs' => array(),
+		);
+	}
+}

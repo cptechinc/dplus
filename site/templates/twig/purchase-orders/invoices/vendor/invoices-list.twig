@@ -1,12 +1,14 @@
 <div class="list-group-item bg-light font-weight-bold">
-	<div class="row">
-		<div class="col">Invoice #</div>
-		<div class="col">PO #</div>
-		<div class="col"># of Items</div>
-		<div class="col text-right">Order Total</div>
-		<div class="col">Invoice Date</div>
-		<div class="col">Order Date</div>
-	</div>
+	{% block header %}
+		<div class="row">
+			<div class="col">Invoice #</div>
+			<div class="col">PO #</div>
+			<div class="col"># of Items</div>
+			<div class="col text-right">Order Total</div>
+			<div class="col">Invoice Date</div>
+			<div class="col">Order Date</div>
+		</div>
+	{% endblock %}
 </div>
 {% if invoices.count > 0 %}
 	{% for invoice in invoices %}

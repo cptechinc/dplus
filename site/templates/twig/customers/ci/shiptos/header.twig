@@ -6,6 +6,11 @@
 		{% include 'customers/ci/shiptos/ar-data.twig' %}
 	</div>
 	<div class="col-sm-6">
+		<div class="text-center form-group">
+			<a href="{{ page.cart_customerURL() }}" class="btn btn-dark">
+				<i class="fa fa-shopping-cart" aria-hidden="true"></i> Set Cart Customer
+			</a>
+		</div>
 		{% include 'customers/ci/shiptos/activity.twig' %}
 	</div>
 </div>

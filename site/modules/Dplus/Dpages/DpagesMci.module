@@ -407,6 +407,15 @@ class DpagesMci extends Dpages implements Module {
 			$event->return = $url->getUrl();
 		});
 
+		$this->addHook('Page(pw_template=ci-pricing)::get_itemURL', function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$url = new Url($p->fullURL->getUrl());
+			$url->query->remove('q');
+			$url->query->set('itemID', $itemID);
+			$event->return = $url->getUrl();
+		});
+
 		$this->addHook('Page::get_customershiptoURL', function($event) {
 			$custID = $event->arguments(0);
 			$shiptoID = $event->arguments(1);

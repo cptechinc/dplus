@@ -2,21 +2,21 @@
 
 include_once(__DIR__ . "/FilterSalesTraits.php");
 
-use SalesHistoryQuery, SalesHistory;
+use SalesOrderQuery, SalesOrder;
 use Propel\Runtime\ActiveQuery\Criteria;
 
-class FilterSalesHistory extends WireData implements Module {
+class FilterSalesOrders extends WireData implements Module {
 	use FilterSalesTraits;
 
 	/**
 	 * Query
-	 * @var SalesHistoryQuery
+	 * @var SalesOrderQuery
 	 */
 	protected $query;
 
 	/**
 	 * Returns Query
-	 * @return SalesHistoryQuery
+	 * @return SalesOrderQuery
 	 */
 	public function get_query() {
 		return $this->query;
@@ -30,7 +30,7 @@ class FilterSalesHistory extends WireData implements Module {
 	 * @return void
 	 */
 	public function init_query(User $user) {
-		$this->query = SalesHistoryQuery::create();
+		$this->query = SalesOrderQuery::create();
 
 		if ($user->is_salesrep()) {
 			$this->query->filterbySalesPerson($user->roleid);
@@ -39,7 +39,7 @@ class FilterSalesHistory extends WireData implements Module {
 
 	/**
 	 * Applies Filters to the Query
-	 * NOTE:: Filters include Customer, Shipto, Order #, Customer PO, Order Date, Invoice Date, Order Total
+	 * NOTE:: Filters include Customer, Shipto, Order #, Customer PO, Order Date, Order Total, Order Status
 	 *
 	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
 	 * @return void
@@ -52,34 +52,35 @@ class FilterSalesHistory extends WireData implements Module {
 			$this->filter_ordernumber($input);
 			$this->filter_custpo($input);
 			$this->filter_orderdate($input);
-			$this->filter_invoicedate($input);
 			$this->filter_ordertotal($input);
+			$this->filter_orderstatus($input);
+		} else {
+			$input->get->status = array();
 		}
 	}
 
 	/**
-	 * Filters Query by Invoice Date
+	 * Filters Query by Order Status
 	 *
 	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
 	 * @return void
 	 */
-	public function filter_invoicedate(WireInput $input) {
-		if ($input->get->text('invoicedate_from') || $input->get->text('invoicedate_through')) {
-			$invoicedate_from = date("Ymd", strtotime($input->get->text('invoicedate_from')));
+	public function filter_orderstatus(WireInput $input) {
+		$sanitizer = new Sanitizer();
 
-			if (empty($input->get->text('invoicedate_through'))) {
-				$invoicedate_through = date('Ymd');
-			} else {
-				$invoicedate_through = date("Ymd", strtotime($input->get->text('invoicedate_through')));
-			}
+		if ($input->get->status) {
+			$statuses = array();
 
-			if ($invoicedate_from && $invoicedate_through) {
-				$this->query->filterByInvoicedate(array($invoicedate_from, $invoicedate_through));
-			} elseif ($invoicedate_from) {
-				$this->query->filterByInvoicedate($invoicedate_from);
-			} elseif ($invoicedate_through) {
-				$this->query->filterByInvoicedate($invoicedate_through);
+			foreach ($input->get->status as $status) {
+				$sanitized = $sanitizer->text($status);
+
+				if (array_key_exists($sanitized, SalesOrder::STATUS_DESCRIPTIONS)) {
+					$statuses[] = $sanitized;
+				}
 			}
+			$this->query->filterByStatus($statuses);
+		} else {
+			$input->get->status = array();
 		}
 	}
 
@@ -93,7 +94,7 @@ class FilterSalesHistory extends WireData implements Module {
 		if ($page->has_orderby()) {
 			$orderbycolumn = $page->orderby_column;
 			$sort = $page->orderby_sort;
-			$tablecolumn = SalesHistory::get_aliasproperty($orderbycolumn);
+			$tablecolumn = SalesOrder::get_aliasproperty($orderbycolumn);
 			$this->query->sortBy($tablecolumn, $sort);
 		} else {
 			$this->query->orderByDate_ordered('DESC');
@@ -110,9 +111,9 @@ class FilterSalesHistory extends WireData implements Module {
 	 */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dpluso filter Sales History Module',
+			'title' => 'Dpluso filter Sales Orders Module',
 			'version' => 101,
-			'summary' => 'Handles Sales History Filtering',
+			'summary' => 'Handles Sales Orders Filtering',
 			'singular' => true,
 			'autoload' => true,
 		);

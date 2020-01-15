@@ -1,7 +1,9 @@
 <?php namespace ProcessWire;
 
+/**
+ * Class for formatting the VI Open Invoices Screen
+ */
 class ViOpenInvoices extends ScreenFormatter implements Module {
-
 	protected $code = 'vi-open-invoices';
 
 	/**

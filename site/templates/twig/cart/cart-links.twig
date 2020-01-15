@@ -1,9 +1,15 @@
 <div class="form-group">
 	<div class="row">
 		<div class="col">
-			<a href="{{ page.ci_customerURL(customer.id) }}" class="btn btn-primary">
-				<i class="fa fa-user" aria-hidden="true"></i> View {{ customer.name }}
-			</a>
+			{% if cart.has_shiptoid() %}
+				<a href="{{ page.ci_customershiptoURL(shipto.custidid, shipto.shiptoid) }}" class="btn btn-primary">
+					<i class="fa fa-user" aria-hidden="true"></i> View Shipto {{ shipto.name }}
+				</a>
+			{% else %}
+				<a href="{{ page.ci_customerURL(customer.id) }}" class="btn btn-primary">
+					<i class="fa fa-user" aria-hidden="true"></i> View {{ customer.name }}
+				</a>
+			{% endif %}
 
 			&nbsp; &nbsp;
 			<a href="{{ page.empty_cartURL() }}" class="btn btn-danger">

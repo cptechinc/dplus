@@ -6,7 +6,7 @@
 		<span class="badge badge-pill badge-light">{{ count }}</span>
 	</div>
 	<div class="collapse" id="sales-history-list">
-		{% include 'sales-orders/sales-history/sales-history-list.twig' with {'orders': invoices} %}
+		{% include 'sales-orders/sales-history/sales-history-list.twig' with {'orders': invoices, 'orderpage': url_invoice} %}
 
 		<div class="card-footer bg-secondary">
 			<a href="{{ url_invoice_list }}" class="text-white">View More Sales History <i class="fa fa-sign-in" aria-hidden="true"></i></a>

@@ -18,10 +18,12 @@
 			$itempricing = ItemPricingQuery::create()->findOneByItemid($itemID);
 			$module_json = $modules->get('JsonDataFiles');
 			$json = $module_json->get_file(session_id(), 'ii-stock');
+			$documentmanagement = $modules->get('DocumentManagement');
 
 			$toolbar = $config->twig->render('items/ii/toolbar.twig', ['page' => $page, 'item' => $item]);
+			$links = $config->twig->render('items/ii/item/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $page->get_itemURL($itemID)]);
 			$description = $config->twig->render('items/ii/item/description.twig', ['item' => $item, 'page' => $page]);
-			$itemdata = $config->twig->render('items/ii/item/item-data.twig', ['item' => $item, 'itempricing' => $itempricing]);
+			$itemdata = $config->twig->render('items/ii/item/item-data.twig', ['page' => $page, 'item' => $item, 'itempricing' => $itempricing]);
 
 			if ($module_json->file_exists(session_id(), 'ii-stock')) {
 				$session->itemtry = 0;
@@ -39,7 +41,7 @@
 
 			$page->body = "<div class='row'>";
 				$page->body .= $html->div('class=col-sm-2', $toolbar);
-				$page->body .= $html->div('class=col-sm-10', $description.$itemdata.$stock);
+				$page->body .= $html->div('class=col-sm-10', $links.$description.$itemdata.$stock);
 			$page->body .= "</div>";
 
 		} else {

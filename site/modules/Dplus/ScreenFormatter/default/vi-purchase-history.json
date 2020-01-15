@@ -88,8 +88,8 @@
 				"before-decimal": false,
 				"after-decimal": false,
 				"date-format": "m/d/Y",
-				"data-justify": "right",
-				"label-justify": "right"
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Receipt Date": {
 				"line": 1,
@@ -99,8 +99,8 @@
 				"before-decimal": false,
 				"after-decimal": false,
 				"date-format": "m/d/Y",
-				"data-justify": "right",
-				"label-justify": "right"
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Invoice Date": {
 				"line": 0,
@@ -110,8 +110,8 @@
 				"before-decimal": false,
 				"after-decimal": false,
 				"date-format": "m/d/Y",
-				"data-justify": "right",
-				"label-justify": "right"
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Purchase Unit of Measure": {
 				"line": 0,
