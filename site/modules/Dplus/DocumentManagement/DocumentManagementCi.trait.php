@@ -30,7 +30,7 @@ trait DocumentManagementCi {
 			if (SalesHistoryQuery::create()->filterByOrdernumber(SalesOrder::get_paddedordernumber($ordn))->count()) {
 				$date = $page->fullURL->query->get('date');
 				$url->query->set('date', $date);
-				$url->query->set('folder', self::TAG_ARINVOICES);
+				$url->query->set('folder', self::TAG_ARINVOICE);
 			}
 
 			$event->return = $url->getUrl();
