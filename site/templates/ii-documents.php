@@ -54,6 +54,43 @@
 					$page->body .= $html->div('class=mb-3', $html->a("href=$href|class=btn btn-secondary", $html->icon('fa fa-arrow-left') . " Back to Item Sales History"));
 					$page->body .= $config->twig->render('items/ii/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'itemID' => $itemID]);
 					break;
+				case 'ACT': // Item Activity
+					$type = $input->get->text('type');
+					$reference = $input->get->text('reference');
+					$page->title = "$type $reference Documents";
+					$documents = $document_management->get_itemactivitydocuments($type, $reference);
+
+					$href = $pages->get('pw_template=ii-activity')->url."?itemID=$itemID";
+					$page->body .= $html->div('class=mb-3', $html->a("href=$href|class=btn btn-secondary", $html->icon('fa fa-arrow-left') . " Back to Item Activity"));
+					$page->body .= $config->twig->render('items/ii/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'itemID' => $itemID]);
+					break;
+				case 'QT':
+					$qnbr = $input->get->text('qnbr');
+					$page->title = "Quote #$qnbr Documents";
+					$documents = $document_management->get_quotedocuments($qnbr);
+
+					$href = $pages->get('pw_template=ii-quotes')->url."?itemID=$itemID";
+					$page->body .= $html->div('class=mb-3', $html->a("href=$href|class=btn btn-secondary", $html->icon('fa fa-arrow-left') . " Back to Item Quotes"));
+					$page->body .= $config->twig->render('items/ii/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'itemID' => $itemID]);
+					break;
+				case 'AP':
+					$invnbr = PurchaseOrder::get_paddedponumber($input->get->text('invnbr'));
+					$page->title = "AP Invoice #$invnbr Documents";
+					$documents = $document_management->get_purchasehistorydocuments($invnbr);
+
+					$href = $pages->get('pw_template=ii-purchase-history')->url."?itemID=$itemID";
+					$page->body .= $html->div('class=mb-3', $html->a("href=$href|class=btn btn-secondary", $html->icon('fa fa-arrow-left') . " Back to Item Purchase History"));
+					$page->body .= $config->twig->render('items/ii/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'itemID' => $itemID]);
+					break;
+				case 'PO':
+					$ponbr = PurchaseOrder::get_paddedponumber($input->get->text('ponbr'));
+					$page->title = "Purchase Order #$ponbr Documents";
+					$documents = $document_management->get_purchaseorderdocuments($ponbr);
+
+					$href = $pages->get('pw_template=ii-purchase-orders')->url."?itemID=$itemID";
+					$page->body .= $html->div('class=mb-3', $html->a("href=$href|class=btn btn-secondary", $html->icon('fa fa-arrow-left') . " Back to Item Purchase Orders"));
+					$page->body .= $config->twig->render('items/ii/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'itemID' => $itemID]);
+					break;
 			}
 		} else {
 			$documents = $document_management->get_itemdocuments($itemID);
