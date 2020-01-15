@@ -1,9 +1,10 @@
 <?php namespace ProcessWire;
 
-	class CiSalesOrders extends ScreenFormatter implements Module {
-
+/**
+ * Class for formatting the CI Sales Orders Screen
+ */
+class CiSalesOrders extends ScreenFormatter implements Module {
 	protected $code = 'ci-sales-orders';
-
 
 	/**
 	 * Key Value array of Sections that exist I.E. header => Header, detail => Detail
@@ -18,21 +19,21 @@
 		"shipments" => "Shipments"
 	);
 
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
-		/**
-		 * ProcessWire Module Info
-		 *
-		 * @return void
-		 */
-		public static function getModuleInfo() {
-			return array(
-				'title' => 'Dpluso CI Sales Orders Formatter Module',
-				'version' => 101,
-				'summary' => 'Handles CI Sales Orders Formatter',
-				'singular' => true,
-				'autoload' => true,
-			);
-		}
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso CI Sales Orders Formatter Module',
+			'version' => 101,
+			'summary' => 'Handles CI Sales Orders Formatter',
+			'singular' => true,
+			'autoload' => true,
+		);
 	}
+}

@@ -1,7 +1,9 @@
 <?php namespace ProcessWire;
 
-	class IiSalesOrders extends ScreenFormatter implements Module {
-
+/**
+ * Class for formatting the II Sales Orders Screen
+ */
+class IiSalesOrders extends ScreenFormatter implements Module {
 	protected $code = 'ii-sales-orders';
 
 
@@ -13,21 +15,21 @@
 		"detail" => "Detail"
 	);
 
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
-		/**
-		 * ProcessWire Module Info
-		 *
-		 * @return void
-		 */
-		public static function getModuleInfo() {
-			return array(
-				'title' => 'Dpluso II Sales Orders Formatter Module',
-				'version' => 101,
-				'summary' => 'Handles II Sales Orders Formatter',
-				'singular' => true,
-				'autoload' => true,
-			);
-		}
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso II Sales Orders Formatter Module',
+			'version' => 101,
+			'summary' => 'Handles II Sales Orders Formatter',
+			'singular' => true,
+			'autoload' => true,
+		);
 	}
+}

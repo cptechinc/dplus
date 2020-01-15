@@ -1,7 +1,9 @@
 <?php namespace ProcessWire;
 
+/**
+ * Class for formatting the VI Purchase History Screen
+ */
 class ViPurchaseHistory extends ScreenFormatter implements Module {
-
 	protected $code = 'vi-purchase-history';
 
 	/**

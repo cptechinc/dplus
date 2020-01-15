@@ -62,7 +62,7 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'title'          => 'II Sales Orders',
 			'summary'        => 'II Sales Orders Formatter',
 			'parent'         => '/user/screen-formatters/ii/',
-			'formatter'      => 'IiSalesOrder',
+			'formatter'      => 'IiSalesOrders',
 			'jsoncode'       => 'ii-sales-orders',
 			'twig_include'   => 'items/ii/sales-orders/sales-orders.twig'
 		),

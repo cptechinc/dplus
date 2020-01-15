@@ -1,7 +1,9 @@
 <?php namespace ProcessWire;
 
+/**
+ * Class for formatting the VI Unrelased Purchase Orders Screen
+ */
 class ViUnreleasedPO extends ScreenFormatter implements Module {
-
 	protected $code = 'vi-unreleased';
 
 	/**
