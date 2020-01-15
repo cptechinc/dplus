@@ -68,7 +68,7 @@
 					$page->body .= $html->div('class=mb-3', $html->a("href=$href|class=btn btn-secondary", $html->icon('fa fa-arrow-left') . " Back to Customer Quotes"));
 					$page->body .= $config->twig->render('customers/ci/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'custID' => $custID]);
 					break;
-				case 'ARINVC':
+				case 'ARINVC': // AR INVOICES
 					$invnbr = $input->get->text('invnbr');
 					$page->title = "Invoice #$invnbr Documents";
 					$documents = $document_management->get_arinvoicedocuments($invnbr);
@@ -77,7 +77,7 @@
 					$page->body .= $html->div('class=mb-3', $html->a("href=$href|class=btn btn-secondary", $html->icon('fa fa-arrow-left') . " Back to Customer Open Invoices"));
 					$page->body .= $config->twig->render('customers/ci/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'custID' => $custID]);
 					break;
-				case 'PAY':
+				case 'PAY': // CI PAYMENTS
 					$invnbr = $input->get->text('invnbr');
 					$checknbr = $input->get->text('checknbr');
 					$page->title = "Payments on Invoice #$invnbr Documents";
