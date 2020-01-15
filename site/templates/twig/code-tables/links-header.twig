@@ -1,5 +1,9 @@
 <div class="mb-3">
 	{% if page.is_print() %}
+		<button onclick="window.history.back();" class="btn btn-primary">
+			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back
+		</button>
+		&nbsp;
 		<button class="btn btn-primary d-print-none" onclick="window.print();return false;">
 			<i class="fa fa-print" aria-hidden="true"></i> Print
 		</button>

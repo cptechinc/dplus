@@ -7,13 +7,13 @@
 				<div class="col-sm-3">
 					<div class="form-group">
 						<label for="code">Code</label>
-						<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code">
+						<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code" {{ code.code ? 'disabled' : 'autofocus' }}>
 					</div>
 				</div>
 				<div class="col-sm-9">
 					<div class="form-group">
 						<label for="description">Description</label>
-						<input type="text" name="description" class="form-control" value="{{ code.description }}" id="description">
+						<input type="text" name="description" class="form-control" value="{{ code.description }}" id="description" autofocus>
 					</div>
 				</div>
 			</div>

@@ -14,9 +14,11 @@
 				Surcharge %
 			</div>
 			<div class="col-3 text-center">
-				<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="" data-surcharge="N" data-percentage="0.00">
-					<i class="fa fa-plus" aria-hidden="true"></i> Add Code
-				</button>
+				{% if page.is_print() == false %}
+					<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="" data-surcharge="N" data-percentage="0.00">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
+					</button>
+				{% endif %}
 			</div>
 		</div>
 	</div>
@@ -36,13 +38,15 @@
 					{{ code.percentage }}
 				</div>
 				<div class="col-3 text-center">
-					<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-surcharge="{{ code.surcharge }}" data-percentage="{{ code.percentage }}">
-						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-					</button>
-					&nbsp;
-					<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger">
-						<i class="fa fa-trash" aria-hidden="true"></i> Delete
-					</a>
+					{% if page.is_print() == false %}
+						<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-surcharge="{{ code.surcharge }}" data-percentage="{{ code.percentage }}">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</button>
+						&nbsp;
+						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger delete_button">
+							<i class="fa fa-trash" aria-hidden="true"></i> Delete
+						</a>
+					{% endif %}
 				</div>
 			</div>
 		</div>

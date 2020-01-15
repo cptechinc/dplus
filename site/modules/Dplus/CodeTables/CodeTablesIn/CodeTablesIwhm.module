@@ -1,0 +1,253 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'../CodeTablesResponse.php');
+
+use Purl\Url;
+
+use WarehouseQuery, Warehouse;
+use ConfigInQuery, ConfigIn;
+
+/**
+ * Module that handles the editing of the CCM codetable
+ */
+class CodeTablesIwhm extends WireData implements Module {
+	const MODEL              = 'Warehouse';
+	const MODEL_KEY          = 'id';
+	const DESCRIPTION        = 'Warehouse';
+	const DESCRIPTION_RECORD = 'Warehouse';
+	const MODEL_TABLE = 'inv_whse_code';
+	const COPY_TABLES = array(
+		'inv_whse_orig' => 'IntbWhseOrig',
+		'inv_whse_from' => 'IntbWhseFrom',
+		'inv_whse_to'   => 'IntbWhseTo'
+	);
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Return the Code records from Database
+	 * @param  string $table Table Code
+	 * @return ObjectCollection
+	 */
+	public function get_codes() {
+		$q = $this->get_query();
+		return $q->find();
+	}
+
+	/**
+	 * Return the Code records from Database filtered by Warehouse ID
+	 * @param  string $whseID WarehouseID
+	 * @return ObjectCollection
+	 */
+	public function get_code($whseID) {
+		$q = $this->get_query();
+		return $q->findOneById($whseID);
+	}
+
+	/**
+	 * Returns if Codes Exists
+	 * @param  string $whseID WarehouseID
+	 * @return bool
+	 */
+	public function code_exists($whseID) {
+		$q = $this->get_query();
+		return boolval($q->filterById($whseID)->count());
+	}
+
+	/**
+	 * Returns the associated ModelQuery class for table code
+	 * @param  string $table Table Code
+	 * @return mixed
+	 */
+	public function get_query() {
+		return WarehouseQuery::create();
+	}
+
+	/**
+	 * Takes Input, validates it's for one of the code tables
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$table = $input->$rm->text('table');
+		$whseID  = $input->$rm->text('whseID');
+
+		$q = $this->get_query();
+		$q->filterById($whseID);
+
+		if ($q->count()) {
+			$record = $q->findOne();
+		} else {
+			$record = new Warehouse();
+			$record->setId($whseID);
+		}
+
+		if ($input->$rm->text('action') == 'remove-code') {
+			$record->delete();
+		} else {
+			$record->setName($input->$rm->text('name'));
+			$this->process_warehouse_input($record, $input);
+			$record->setDate(date('Ymd'));
+			$record->setTime(0);
+		}
+		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $whseID, $record);
+	}
+
+	public function process_warehouse_input($warehouse, WireInput $input) {
+		$config_in = ConfigInQuery::create()->findOne();
+		$rm = strtolower($input->requestMethod());
+		$warehouse->setAddress($input->$rm->text('address'));
+		$warehouse->setAddress2($input->$rm->text('address2'));
+		$warehouse->setCity($input->$rm->text('city'));
+		$warehouse->setState($input->$rm->text('state'));
+		$warehouse->setZip($input->$rm->text('zip'));
+		$warehouse->setCountry($input->$rm->text('country'));
+		$warehouse->setEmail($input->$rm->text('email'));
+		$warehouse->setCash_customer($input->$rm->text('cash_customer'));
+		$warehouse->setPickdetail($input->$rm->text('pickdetail'));
+		$warehouse->setBin_qcrga($input->$rm->text('bin_qcrga'));
+		$warehouse->setConsignment($input->$rm->text('consignment'));
+
+		$warehouse->setWhse_profit($input->$rm->text('whse_profit'));
+		$warehouse->setWhse_asset($input->$rm->text('whse_asset'));
+		$warehouse->setWhse_supply($input->$rm->text('whse_supply'));
+		$warehouse->setArranged($input->$rm->text('arranged'));
+		$warehouse->setPhone_ext($input->$rm->text('phone_ext'));
+
+		$phone_arr = explode('-', $input->$rm->text('phone'));
+		$warehouse->setPhone_area($phone_arr[0]);
+		$warehouse->setPhone_prefix($phone_arr[1]);
+		$warehouse->setPhone_line($phone_arr[2]);
+
+		$fax_arr = explode('-', $input->$rm->text('fax'));
+		$warehouse->setFax_area($fax_arr[0]);
+		$warehouse->setFax_prefix($fax_arr[1]);
+		$warehouse->setFax_line($fax_arr[2]);
+
+		if ($config_in->use_controlbin()) {
+			$warehouse->setBin_production($input->$rm->text('bin_production'));
+		}
+	}
+
+	/**
+	 * Returns CodeTablesResponse based on the outcome of the database save
+	 *
+	 * @param  string $table  Table Code
+	 * @param  string $code   Code being added
+	 * @param  bool   $is_new Was the Record in the database before Save?
+	 * @param  bool   $saved  Was the Record Saved?
+	 * @return CodeTablesResponse
+	 */
+	protected function save_and_process_response($table, $code, Warehouse $record) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new CodeTablesResponse();
+		$response->set_key($code);
+		$message = self::DESCRIPTION_RECORD . " ($code) was ";
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+			$message .= "not ";
+		}
+
+		if ($is_new) {
+			$message .= 'added';
+			$response->set_action(CodeTablesResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$message .= 'deleted';
+			$response->set_action(CodeTablesResponse::CRUD_DELETE);
+		} else {
+			$message .= 'updated';
+			$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+		}
+
+		$response->set_message($message);
+
+		if ($response->has_success()) {
+			$this->duplicate_copytables($record, $saved);
+			$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
+		}
+		return $response;
+	}
+
+	public function duplicate_copytables(Warehouse $warehouse, bool $saved) {
+		if ($saved) {
+			if ($warehouse->isDeleted()) {
+				foreach (array_keys(self::COPY_TABLES) as $table) {
+					if ($this->does_copytable_whse_exist($table, $warehouse->id)) {
+						$this->remove_copytable_whse($table, $warehouse->id);
+					}
+				}
+			} else {
+				foreach (array_keys(self::COPY_TABLES) as $table) {
+					if ($this->does_copytable_whse_exist($table, $warehouse->id)) {
+						$this->remove_copytable_whse($table, $warehouse->id);
+					}
+					$this->insertinto_copytable_whse($table, $warehouse->id);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Checks if Warehouse Record exists in Copy Table
+	 * @param  string $table  Copy Table
+	 * @param  string $whseID Warehouse ID
+	 * @return bool
+	 */
+	private function does_copytable_whse_exist($table, $whseID) {
+		$q = WarehouseQuery::create();
+		$col_whseid = self::COPY_TABLES[$table];
+		$sql = "SELECT COUNT(*) FROM $table WHERE $col_whseid = :id";
+		$params = array(':id' => $whseID);
+		$result = $q->execute_query($sql, $params);
+		return boolval($result->fetchColumn());
+	}
+
+	/**
+	 * Removes Warehouse Record exists in Copy Table
+	 * @param  string $table  Copy Table
+	 * @param  string $whseID Warehouse ID
+	 * @return bool
+	 */
+	private function remove_copytable_whse($table, $whseID) {
+		$q = WarehouseQuery::create();
+		$col_whseid = self::COPY_TABLES[$table];
+		$sql = "DELETE FROM $table WHERE $col_whseid = :id";
+		$params = array(':id' => $whseID);
+		return $q->execute_query($sql, $params);
+	}
+
+	/**
+	 * Inserts Warehouse Record exists in Copy Table
+	 * @param  string $table  Copy Table
+	 * @param  string $whseID Warehouse ID
+	 * @return bool
+	 */
+	private function insertinto_copytable_whse($table, $whseID) {
+		$q = WarehouseQuery::create();
+		$model_table = self::MODEL_TABLE;
+		$col_whseid = Warehouse::get_aliasproperty('id');
+		$sql = "INSERT INTO $table (SELECT * FROM inv_whse_code WHERE $col_whseid = :id)";
+		$params = array(':id' => $whseID);
+		return $q->execute_query($sql, $params);
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus IWHM Code Table CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for the IWHM code table',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

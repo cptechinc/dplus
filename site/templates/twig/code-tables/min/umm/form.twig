@@ -1,0 +1,33 @@
+<form action="{{ page.url }}" method="POST" id="code-edit-form">
+	<input type="hidden" name="table" value="umm">
+
+	<div class="form-group">
+		<label for="code">Code</label>
+		<input type="text" name="code" class="form-control" value="" id="code">
+	</div>
+
+	<div class="form-group">
+		<label for="description">Description</label>
+		<input type="text" name="description" class="form-control" value="" id="description">
+	</div>
+
+	<div class="form-group">
+		<label for="conversion">Conversion</label>
+		<input type="text" name="conversion" class="form-control" value="" id="conversion">
+	</div>
+
+	<div class="form-group">
+	    <label for="pricebyweight">Price by Weight?</label>
+	    <select name="pricebyweight" class="form-control" id="pricebyweight">
+	        <option value="Y">Yes</option>
+	        <option value="N">No</option>
+	    </select>
+    </div>
+
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	</div>
+</form>

@@ -1,0 +1,161 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'../CodeTablesResponse.php');
+
+use Purl\Url;
+
+use InvPriceCodeQuery, InvPriceCode;
+use ConfigInQuery, ConfigIn;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
+
+/**
+ * Module that handles the editing of the CCM codetable
+ *
+ * In Dplus, options for configs, SOCF, screen 9
+ * 		P = program
+ * 		C = catalog
+ * 		N =
+ */
+class CodeTablesIgpm extends WireData implements Module {
+	const MODEL              = 'InvPriceCode';
+	const MODEL_KEY          = 'id';
+	const DESCRIPTION        = 'Item Price';
+	const DESCRIPTION_RECORD = 'Item Price';
+	const MODEL_TABLE = 'inv_pric_code';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Return the Code records from Database
+	 * @param  string $table Table Code
+	 * @return ObjectCollection
+	 */
+	public function get_codes() {
+		$q = $this->get_query();
+		return $q->find();
+	}
+
+	/**
+	 * Return the Code records from Database filtered by ProductLne ID
+	 * @param  string $productlne ProductLneID
+	 * @return ObjectCollection
+	 */
+	public function get_code($stock) {
+		$q = $this->get_query();
+		return $q->findOneById($stock);
+	}
+
+	/**
+	 * Returns if Codes Exists
+	 * @param  string $productlne ProductLneID
+	 * @return bool
+	 */
+	public function code_exists($stock) {
+		$q = $this->get_query();
+		return boolval($q->filterById($stock)->count());
+	}
+
+	/**
+	 * Returns the associated ModelQuery class for table code
+	 * @param  string $table Table Code
+	 * @return mixed
+	 */
+	public function get_query() {
+		return InvPriceCodeQuery::create();
+	}
+
+	/**
+	 * Takes Input, validates it's for one of the code tables
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$config_so = ConfigSalesOrderQuery::create()->findOne();
+		$rm = strtolower($input->requestMethod());
+		$table = $input->$rm->text('table');
+		$code  = $input->$rm->text('code');
+
+		$q = $this->get_query();
+		$q->filterByCode($code);
+
+		if ($q->count()) {
+			$record = $q->findOne();
+		} else {
+			$record = new InvPriceCode();
+			$record->setCode($code);
+		}
+
+		if ($input->$rm->text('action') == 'remove-code') {
+			$record->delete();
+		} else {
+			$description = $input->$rm->text('description');
+			$record->setDescription($description);
+			$record->setDate(date('Ymd'));
+			$record->setTime(0);
+
+			if ($config_so->is_request_program()) {
+				$sales_program = $input->$rm->text('sales_program');
+				$record->setSales_program($sales_program);
+			}
+		}
+
+		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);
+	}
+
+	/**
+	 * Returns CodeTablesResponse based on the outcome of the database save
+	 *
+	 * @param  string $table  Table Code
+	 * @param  string $code   Code being added
+	 * @param  bool   $is_new Was the Record in the database before Save?
+	 * @param  bool   $saved  Was the Record Saved?
+	 * @return CodeTablesResponse
+	 */
+	protected function save_and_process_response($table, $code, InvPriceCode $record) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new CodeTablesResponse();
+		$response->set_key($code);
+		$message = self::DESCRIPTION_RECORD . " ($code) was ";
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+			$message .= "not ";
+		}
+
+		if ($is_new) {
+			$message .= 'added';
+			$response->set_action(CodeTablesResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$message .= 'deleted';
+			$response->set_action(CodeTablesResponse::CRUD_DELETE);
+		} else {
+			$message .= 'updated';
+			$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+		}
+
+		$response->set_message($message);
+
+		if ($response->has_success()) {
+			$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
+		}
+		return $response;
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus IGPM Code Table CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for the IGPM code table',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

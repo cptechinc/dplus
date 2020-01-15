@@ -1,0 +1,90 @@
+$(function() {
+
+	$('#edit-code-modal').on('shown.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var code = button.data('code').toString(); // Extract info from data-* attributes
+		var description = button.data('description').toString(); // Extract info from data-* attributes
+
+		var modal = $(this);
+
+		modal.find('input[name=code]').val(code);
+		modal.find('input[name=description]').val(description);
+		modal.find('input[name=coop]').val(coop);
+		modal.find('input[name=web_group]').val(web_group);
+		modal.find('input[name=sales_program]').val(sales_program);
+		modal.find('input[name=sales]').val(sales);
+		modal.find('input[name=credit]').val(credit);
+		modal.find('input[name=cost_percent]').val(cost_percent);
+		modal.find('input[name=inventory]').val(inventory);
+		modal.find('input[name=drop_ship]').val(drop_ship);
+		modal.find('input[name=surcharge]').val(surcharge);
+		modal.find('input[name=surcharge_dollar_percent]').val(surcharge_dollar_percent);
+		modal.find('input[name=surcharge_dollar_amount]').val(surcharge_dollar_amount);
+		modal.find('input[name=surcharge_percent]').val(surcharge_percent);
+		modal.find('input[name=freight_group]').val(freight_group);
+		modal.find('input[name=product_line]').val(product_line);
+		modal.find('input[name=ecomm_desc]').val(ecomm_desc);
+
+		if (code.length) {
+			modal.find('.modal-title').text('Editing Code ' + code);
+			modal.find('input[name=code]').prop("readonly", true);
+			modal.find('input[name=description]').focus();
+		} else {
+			modal.find('.modal-title').text('Adding a new Code');
+			modal.find('input[name=code]').prop("readonly", false);
+			modal.find('input[name=code]').focus();
+		}
+
+	});
+
+	$("#code-edit-form").validate({
+		errorClass: "is-invalid",
+		rules: {
+			code: 'required',
+			description: 'required',
+			coop: 'required',
+			web_group: 'required',
+			sales_program: 'required',
+			sales: 'required',
+			credit: 'required',
+			cost_percent: 'required',
+			inventory: 'required',
+			drop_ship: 'required',
+			surcharge: 'required',
+			freight_group: 'required',
+			product_line: 'required',
+			ecomm_desc: 'required'
+		},
+		messages: {
+			code: "Please enter a code",
+			description: 'Please enter a description for the code',
+			coop: 'Please select if the code is for co-op',
+			web_group: 'Please enter the web group for the code',
+			sales_program: 'Please select if the code is for sales program',
+			sales: 'Please enter the sales for the code',
+			credit: 'Please enter the credit for the code',
+			cost_percent: 'Please enter a cost_percent for the code',
+			inventory: 'Please enter the inventory for the code',
+			drop_ship: 'Please enter the drop ship for the code',
+			surcharge: 'Please enter a description for the code',
+			freight_group: 'Please enter a description for the code',
+			product_line: 'Please enter a description for the code',
+			ecomm_desc: 'Please enter a description for the code'
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+
+	$("#code-edit-form #surcharge_dollar_percent").change(function() {
+		if ($('#surcharge_dollar_percent').val() == 'D') {
+			$('#surcharge_percent').val('0.00');
+			$('#surcharge_percent').prop("readonly", true);
+			$('#surcharge_dollar_amount').prop("readonly", false);
+		} else if ($('#surcharge_dollar_percent').val() == 'P'){
+			$('#surcharge_dollar_amount').val('0.00');
+			$('#surcharge_dollar_amount').prop("readonly", true);
+			$('#surcharge_percent').prop("readonly", false);
+		}
+	});
+})

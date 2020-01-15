@@ -15,17 +15,6 @@ class CodeTablesWorm extends WireData implements Module {
 	const DESCRIPTION        = 'Customer Write Off Code';
 	const DESCRIPTION_RECORD = 'Customer Write Off Code';
 
-	const CODE_TABLES = array(
-		'worm' => array(
-			'code'        => 'worm',
-			'code-twig'   => 'customer-writeoff',
-			'description' => 'Customer Write Off Code',
-			'description-record' => 'Customer Write Off Code',
-			'model'       => 'CustomerWriteOffCode',
-			'model-key'   => 'code'
-		)
-	);
-
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
 	}
@@ -33,11 +22,39 @@ class CodeTablesWorm extends WireData implements Module {
 	/**
 	 * Return the Code records from Database
 	 * @param  string $table Table Code
-	 * @return ObjectCollection
+	 * @return CustomerWriteOffCode[]|ObjectCollection
 	 */
 	public function get_codes() {
 		$q = $this->get_query();
 		return $q->find();
+	}
+
+	/**
+	 * Return the Code
+	 * @param  string $code Customer WriteOff Code
+	 * @return CustomerWriteOffCode
+	 */
+	public function get_code($code) {
+		$q = $this->get_query();
+		return $q->findOneByCode($code);
+	}
+
+	/**
+	 * Return if the Code Exists
+	 * @param  string $code Customer Write Off Code
+	 * @return bool
+	 */
+	public function code_exists($code) {
+		$q = $this->get_query();
+		return boolval($q->filterByCode($code)->count());
+	}
+
+	/**
+	 * Returns a new Customer WriteOff Code
+	 * @return CustomerWriteOffCode
+	 */
+	public function get_new_code() {
+		return new CustomerWriteOffCode();
 	}
 
 	/**

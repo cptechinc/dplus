@@ -1,0 +1,27 @@
+<form action="{{ page.url }}" method="POST" id="code-edit-form">
+	<input type="hidden" name="table" value="msdsm">
+
+	<div class="form-group">
+		<label for="code">Code</label>
+		<input type="text" name="code" class="form-control" value="" id="code">
+	</div>
+
+	<div class="form-group">
+		<label for="description">Description</label>
+		<input type="text" name="description" class="form-control" value="" id="description">
+	</div>
+
+	<div class="form-group">
+		<label for="effective_date">Effective Date</label>
+		{% set name = 'effective_date' %}
+		{% set value = input.get.text('effective_date') %}
+		{% include 'util/date-picker.twig' %}
+	</div>
+
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	</div>
+</form>

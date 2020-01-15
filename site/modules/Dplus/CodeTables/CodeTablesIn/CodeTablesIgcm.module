@@ -1,0 +1,149 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'../CodeTablesResponse.php');
+
+use Purl\Url;
+
+use InvCommissionCodeQuery, InvCommissionCode;
+use ConfigInQuery, ConfigIn;
+
+/**
+ * Module that handles the editing of the CCM codetable
+ */
+class CodeTablesIgcm extends WireData implements Module {
+	const MODEL              = 'InvCommissionCode';
+	const MODEL_KEY          = 'id';
+	const DESCRIPTION        = 'Item Commission';
+	const DESCRIPTION_RECORD = 'Item Commission';
+	const MODEL_TABLE = 'inv_comm_code';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Return the Code records from Database
+	 * @param  string $table Table Code
+	 * @return ObjectCollection
+	 */
+	public function get_codes() {
+		$q = $this->get_query();
+		return $q->find();
+	}
+
+	/**
+	 * Return the Code records from Database filtered by ProductLne ID
+	 * @param  string $productlne ProductLneID
+	 * @return ObjectCollection
+	 */
+	public function get_code($commcode) {
+		$q = $this->get_query();
+		return $q->findOneById($commcode);
+	}
+
+	/**
+	 * Returns if Codes Exists
+	 * @param  string $productlne ProductLneID
+	 * @return bool
+	 */
+	public function code_exists($commcode) {
+		$q = $this->get_query();
+		return boolval($q->filterById($commcode)->count());
+	}
+
+	/**
+	 * Returns the associated ModelQuery class for table code
+	 * @param  string $table Table Code
+	 * @return mixed
+	 */
+	public function get_query() {
+		return InvCommissionCodeQuery::create();
+	}
+
+	/**
+	 * Takes Input, validates it's for one of the code tables
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$table = $input->$rm->text('table');
+		$code  = $input->$rm->text('code');
+
+		$q = $this->get_query();
+		$q->filterByCode($code);
+
+		if ($q->count()) {
+			$record = $q->findOne();
+		} else {
+			$record = new InvCommissionCode();
+			$record->setCode($code);
+		}
+
+		if ($input->$rm->text('action') == 'remove-code') {
+			$record->delete();
+		} else {
+			$description = $input->$rm->text('description');
+			$record->setDescription($description);
+			$record->setDate(date('Ymd'));
+			$record->setTime(0);
+		}
+
+		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);
+	}
+
+	/**
+	 * Returns CodeTablesResponse based on the outcome of the database save
+	 *
+	 * @param  string $table  Table Code
+	 * @param  string $code   Code being added
+	 * @param  bool   $is_new Was the Record in the database before Save?
+	 * @param  bool   $saved  Was the Record Saved?
+	 * @return CodeTablesResponse
+	 */
+	protected function save_and_process_response($table, $code, InvCommissionCode $record) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new CodeTablesResponse();
+		$response->set_key($code);
+		$message = self::DESCRIPTION_RECORD . " ($code) was ";
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+			$message .= "not ";
+		}
+
+		if ($is_new) {
+			$message .= 'added';
+			$response->set_action(CodeTablesResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$message .= 'deleted';
+			$response->set_action(CodeTablesResponse::CRUD_DELETE);
+		} else {
+			$message .= 'updated';
+			$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+		}
+
+		$response->set_message($message);
+
+		if ($response->has_success()) {
+			$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
+		}
+		return $response;
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus IGCM Code Table CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for the IGCM code table',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

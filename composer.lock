@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "content-hash": "fbedee35cb7546ae09bbc4a2715eae68",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "84eae8e0df5ea01cc6b92e9ea6187a47ab1b9d09"
+                "reference": "87cf69edc12419bf781197b8e7b9038010e58835"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/84eae8e0df5ea01cc6b92e9ea6187a47ab1b9d09",
-                "reference": "84eae8e0df5ea01cc6b92e9ea6187a47ab1b9d09",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/87cf69edc12419bf781197b8e7b9038010e58835",
+                "reference": "87cf69edc12419bf781197b8e7b9038010e58835",
                 "shasum": ""
             },
             "type": "library",
@@ -39,7 +39,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2020-01-08T21:16:24+00:00"
+            "time": "2020-01-06T17:06:44+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
@@ -47,12 +47,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dpluso-model.git",
-                "reference": "8ed149870094baade4b45d96b79e1cf8fe3499f4"
+                "reference": "4454672e9b87eb031ef0088ebe7dd52c95979393"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/8ed149870094baade4b45d96b79e1cf8fe3499f4",
-                "reference": "8ed149870094baade4b45d96b79e1cf8fe3499f4",
+                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/4454672e9b87eb031ef0088ebe7dd52c95979393",
+                "reference": "4454672e9b87eb031ef0088ebe7dd52c95979393",
                 "shasum": ""
             },
             "type": "library",
@@ -74,7 +74,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2020-01-07T14:52:10+00:00"
+            "time": "2020-01-02T15:44:00+00:00"
         },
         {
             "name": "jeremykendall/php-domain-parser",
@@ -115,8 +115,8 @@
             "authors": [
                 {
                     "name": "Jeremy Kendall",
-                    "homepage": "http://about.me/jeremykendall",
-                    "role": "Developer"
+                    "role": "Developer",
+                    "homepage": "http://about.me/jeremykendall"
                 }
             ],
             "description": "Public Suffix List based URL parsing implemented in PHP.",
@@ -243,12 +243,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mikehaertl/phpwkhtmltopdf.git",
-                "reference": "0e97c2e1eec918fbcd13f5b4b6c9fa476f99e9db"
+                "reference": "97ccf5d755065202b0bb9df4fe7b980890bc87a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikehaertl/phpwkhtmltopdf/zipball/0e97c2e1eec918fbcd13f5b4b6c9fa476f99e9db",
-                "reference": "0e97c2e1eec918fbcd13f5b4b6c9fa476f99e9db",
+                "url": "https://api.github.com/repos/mikehaertl/phpwkhtmltopdf/zipball/97ccf5d755065202b0bb9df4fe7b980890bc87a6",
+                "reference": "97ccf5d755065202b0bb9df4fe7b980890bc87a6",
                 "shasum": ""
             },
             "require": {
@@ -282,7 +282,7 @@
                 "wkhtmltoimage",
                 "wkhtmltopdf"
             ],
-            "time": "2020-01-07T07:47:15+00:00"
+            "time": "2020-01-03T07:04:27+00:00"
         },
         {
             "name": "picqer/php-barcode-generator",
@@ -929,20 +929,20 @@
         },
         {
             "name": "symfony/service-contracts",
-            "version": "dev-master",
+            "version": "v1.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "ac2466b187c8836b559155d5a041050303f309c6"
+                "reference": "ffc7f5692092df31515df2a5ecf3b7302b3ddacf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/ac2466b187c8836b559155d5a041050303f309c6",
-                "reference": "ac2466b187c8836b559155d5a041050303f309c6",
+                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/ffc7f5692092df31515df2a5ecf3b7302b3ddacf",
+                "reference": "ffc7f5692092df31515df2a5ecf3b7302b3ddacf",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2.5",
+                "php": "^7.1.3",
                 "psr/container": "^1.0"
             },
             "suggest": {
@@ -951,7 +951,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0-dev"
+                    "dev-master": "1.1-dev"
                 }
             },
             "autoload": {
@@ -983,24 +983,24 @@
                 "interoperability",
                 "standards"
             ],
-            "time": "2020-01-04T14:08:26+00:00"
+            "time": "2019-10-14T12:27:06+00:00"
         },
         {
             "name": "symfony/translation-contracts",
-            "version": "dev-master",
+            "version": "v1.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation-contracts.git",
-                "reference": "50c101c6e7147d3284a945f71eb0959bd5736f1b"
+                "reference": "364518c132c95642e530d9b2d217acbc2ccac3e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/50c101c6e7147d3284a945f71eb0959bd5736f1b",
-                "reference": "50c101c6e7147d3284a945f71eb0959bd5736f1b",
+                "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/364518c132c95642e530d9b2d217acbc2ccac3e6",
+                "reference": "364518c132c95642e530d9b2d217acbc2ccac3e6",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2.5"
+                "php": "^7.1.3"
             },
             "suggest": {
                 "symfony/translation-implementation": ""
@@ -1008,7 +1008,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0-dev"
+                    "dev-master": "1.1-dev"
                 }
             },
             "autoload": {
@@ -1040,7 +1040,7 @@
                 "interoperability",
                 "standards"
             ],
-            "time": "2020-01-04T14:08:26+00:00"
+            "time": "2019-09-17T11:12:18+00:00"
         },
         {
             "name": "symfony/validator",
@@ -1199,12 +1199,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "04174b5f62ea4cc63ad0fa1057afdda054f9ba11"
+                "reference": "e770b802038266521075017f6e59b903dfe2b4e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/04174b5f62ea4cc63ad0fa1057afdda054f9ba11",
-                "reference": "04174b5f62ea4cc63ad0fa1057afdda054f9ba11",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/e770b802038266521075017f6e59b903dfe2b4e2",
+                "reference": "e770b802038266521075017f6e59b903dfe2b4e2",
                 "shasum": ""
             },
             "require": {
@@ -1256,7 +1256,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2020-01-08T08:32:31+00:00"
+            "time": "2020-01-03T19:00:30+00:00"
         }
     ],
     "packages-dev": [],

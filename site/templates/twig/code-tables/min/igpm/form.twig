@@ -1,0 +1,30 @@
+<form action="{{ page.url }}" method="POST" id="code-edit-form">
+	<input type="hidden" name="table" value="igpm">
+
+	<div class="form-group">
+		<label for="code">Code</label>
+		<input type="text" name="code" class="form-control" value="" id="code">
+	</div>
+
+	<div class="form-group">
+		<label for="description">Description</label>
+		<input type="text" name="description" class="form-control" value="" id="description">
+	</div>
+
+	{% if config_so.is_request_program() %}
+		<div class="form-group">
+			<label for="sales_program">Sales Program ?</label>
+			<select name="sales_program" class="form-control" id="sales_program">
+				<option value="Y">Yes</option>
+				<option value="N">No</option>
+			</select>
+		</div>
+	{% endif %}
+
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	</div>
+</form>

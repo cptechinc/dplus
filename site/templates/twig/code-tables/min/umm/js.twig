@@ -1,0 +1,48 @@
+$(function() {
+
+	$('#edit-code-modal').on('shown.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var code = button.data('code').toString(); // Extract info from data-* attributes
+		var description = button.data('description').toString(); // Extract info from data-* attributes
+		var conversion = button.data('conversion'); // Extract info from data-* attributes
+		var pricebyweight = button.data('pricebyweight'); // Extract info from data-* attributes
+
+		var modal = $(this);
+
+		modal.find('input[name=code]').val(code);
+		modal.find('input[name=description]').val(description);
+		modal.find('input[name=conversion]').val(conversion);
+		modal.find('input[name=pricebyweight]').val(pricebyweight);
+
+		if (code.length) {
+			modal.find('.modal-title').text('Editing Code ' + code);
+			modal.find('input[name=code]').prop("readonly", true);
+			modal.find('input[name=description]').focus();
+		} else {
+			modal.find('.modal-title').text('Adding a new Code');
+			modal.find('input[name=code]').prop("readonly", false);
+			modal.find('input[name=code]').focus();
+		}
+
+	});
+
+	$("#code-edit-form").validate({
+		errorClass: "is-invalid",
+		rules: {
+			code: 'required',
+			description: 'required',
+			conversion: 'required',
+			pricebyweight: 'required'
+		},
+		messages: {
+			code: "Please enter a code",
+			description: 'Please enter a description for the code',
+			conversion: 'Please enter a conversion for the code',
+			pricebyweight: 'Please choose an option for price by weight for the code'
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+
+})
