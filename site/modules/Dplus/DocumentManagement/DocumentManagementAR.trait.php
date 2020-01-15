@@ -69,6 +69,13 @@ trait DocumentManagementAR {
 		return $documents_master->count();
 	}
 
+	/**
+	 * Adds Filters to the Query for AR Payment
+	 * @param  DocumentsQuery $documents_master Query to apply filters to
+	 * @param  string         $invnbr           AP Invoice Number
+	 * @param  string         $checknbr         Check Number if provided
+	 * @return string
+	 */
 	public function filter_arpayment_conditions(DocumentsQuery $documents_master, $invnbr, $checknbr = '') {
 		$column_tag = Documents::get_aliasproperty('tag');
 		$column_reference1 = Documents::get_aliasproperty('reference1');
@@ -99,13 +106,13 @@ trait DocumentManagementAR {
 			$documents_master->combine(array('tag_customer', 'reference1_customer'), 'and', 'cond_customer');
 
 			// Create Customer Checks Filter
-			//
 			$documents_master->condition('tag_customer_check', "Documents.$column_tag = ?", self::TAG_CUSTOMER);
 			$documents_master->condition('reference1_customer_check', "Documents.$column_reference1 = ?", $custID);
 			$documents_master->condition('tag_checks', "Documents.$column_tag = ?", self::TAG_AR_CHECKS);
 			$documents_master->condition('reference2_checks', "Documents.$column_reference2 = ?", $checknbr);
 			$documents_master->combine(array('tag_customer_check', 'reference1_customer_check', 'tag_checks', 'reference2_checks'), 'and', 'cond_checks');
 
+			// Combine and Apply Filters
 			$documents_master->where(array('cond_invoices', 'cond_vendorpo', 'cond_customer', 'cond_checks'), 'or');
 		} else {
 			$documents_master->filterByTag(self::TAG_ARINVOICE);
