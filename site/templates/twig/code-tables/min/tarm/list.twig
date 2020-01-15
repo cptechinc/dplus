@@ -1,7 +1,7 @@
 <div class="list-group">
 	<div class="list-group-item bg-dark text-white">
 		<div class="row align-items-center">
-			<div class="col-1">
+			<div class="col-2">
 				Code
 			</div>
             <div class="col-2">
@@ -10,11 +10,8 @@
 			<div class="col-3">
 				Description
 			</div>
-			<div class="col-1">
+			<div class="col-2">
 				Tariff %
-			</div>
-            <div class="col-2">
-				Country
 			</div>
 			<div class="col-3 text-center">
 				{% if page.is_print() == false %}
@@ -28,7 +25,7 @@
 	{% for code in codes %}
 		<div class="list-group-item pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
 			<div class="row align-items-center">
-				<div class="col-1">
+				<div class="col-2">
 					{{ code.code }}
 				</div>
                 <div class="col-2">
@@ -37,11 +34,8 @@
 				<div class="col-3">
 					{{ code.description }}
 				</div>
-                <div class="col-1">
-					{{ code.duty_rate }}
-				</div>
                 <div class="col-2">
-					{{ code.get_country_code(code.code) }}
+					{{ code.duty_rate }}
 				</div>
 				<div class="col-3 text-center">
 					{% if page.is_print() == false %}
@@ -49,7 +43,7 @@
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</a>
 						&nbsp;
-						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger">
+						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger delete_button">
 							<i class="fa fa-trash" aria-hidden="true"></i> Delete
 						</a>
 					{% endif %}

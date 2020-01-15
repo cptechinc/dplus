@@ -88,14 +88,16 @@ class CodeTablesTarm extends WireData implements Module {
 			$record->delete();
 		} else {
 			$number = $input->$rm->text('number');
-            $description = $input->$rm->text('description');
-            $duty_rate = $input->$rm->text('duty_rate');
-            $country = $input->$rm->text('country');
+			$description = $input->$rm->text('description');
+			$duty_rate = $input->$rm->text('duty_rate');
+			$countries = $input->$rm->array('country');
 			$record->setNumber($number);
-            $record->setDescription($description);
-            $record->setDuty_rate($duty_rate);
+			$record->setDescription($description);
+			$record->setDuty_rate($duty_rate);
 			$record->setDate(date('Ymd'));
 			$record->setTime(0);
+			$this->update_tariff_countries($code, $countries);
+
 		}
 
 		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);
@@ -142,6 +144,13 @@ class CodeTablesTarm extends WireData implements Module {
 			$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
 		}
 		return $response;
+	}
+
+	public function update_tariff_countries($code, array $countries) {
+		$q = TariffCodeCountryQuery::create();
+		$q->filterByCode($code);
+
+		// Figure out a way to delete the country records that don't match the countries for that tariff gcode
 	}
 
 	public static function getModuleInfo() {
