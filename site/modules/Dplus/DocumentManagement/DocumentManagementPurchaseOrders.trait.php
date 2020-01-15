@@ -7,7 +7,6 @@ use PurchaseOrderQuery, PurchaseOrder;
 use ApInvoiceQuery, ApInvoice;
 
 trait DocumentManagementPurchaseOrders {
-
 	public function mpo_init() {
 		$this->addHook('Page(pw_template=purchase-order-view)::documentload', function($event) {
 			$page = $event->object;
