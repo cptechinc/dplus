@@ -20,7 +20,7 @@
 		}
 
 		if ($configAR->gl_report_type() == 'inventory') {
-			$page->body .= $config->twig->render("code-tables/mar/$page->codetable/edit-code-form-inventory.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $typecode]);
+			$page->body .= $config->twig->render("code-tables/mar/$page->codetable/edit-code-form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $typecode]);
 		} else {
 			$gl_codes = GlCodeQuery::create()->find();
 			$page->body .= $config->twig->render("code-tables/mar/$page->codetable/edit-code-form-customer.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $typecode, 'gl_codes' => $gl_codes]);
