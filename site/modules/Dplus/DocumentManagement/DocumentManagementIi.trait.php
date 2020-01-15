@@ -1,11 +1,39 @@
 <?php namespace ProcessWire;
 
 use Propel\Runtime\ActiveQuery\Criteria;
+use Purl\Url;
 
 use DocumentFoldersQuery, DocumentFolders;
 use DocumentsQuery, Documents;
+use SalesHistoryQuery, SalesHistory;
+use SalesOrderQuery, SalesOrder;
+use PurchaseOrderQuery, PurchaseOrder;
 
 trait DocumentManagementIi {
+	private $PREFIX_REF_SO = 'so no.';
+	private $ACTIVITY_TYPES_SO = array(
+		'sale',
+		'ds sale',
+		'k use',
+		'rga'
+	);
+
+	private $PREFIX_REF_PO = 'po no.';
+	private $ACTIVITY_TYPES_PO = array(
+		'receipt',
+		'ds rcpt',
+		'fabrcpt',
+		'fab use',
+		'fabship'
+	);
+
+	private $ACTIVITY_TYPES_WIP = array(
+		'fin item',
+		'prd fin',
+		'fabrcpt',
+		'prd use'
+	);
+
 	public function ii_init() {
 		$this->addHook('Page(pw_template=ii-documents)::documentload', function($event) {
 			$page     = $event->object;
@@ -29,6 +57,45 @@ trait DocumentManagementIi {
 				$url->query->set('folder', self::TAG_ARINVOICES);
 			}
 
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=ii-quotes)::documentsview_quote', function($event) {
+			$page      = $event->object;
+			$itemID    = $event->arguments(0);
+			$qnbr      = $event->arguments(1);
+			$url = new Url($this->get_ii_docs_folderURL($itemID, self::TAG_QUOTE));
+			$url->query->set('qnbr', $qnbr);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=ii-purchase-history)::documentsview_apinvoice', function($event) {
+			$page      = $event->object;
+			$itemID    = $event->arguments(0);
+			$invnbr    = $event->arguments(1);
+			$url = new Url($this->get_ii_docs_folderURL($itemID, self::TAG_APINVOICE));
+			$url->query->set('invnbr', $invnbr);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=ii-purchase-orders)::documentsview_purchaseorder', function($event) {
+			$page      = $event->object;
+			$itemID    = $event->arguments(0);
+			$ponbr     = $event->arguments(1);
+			$url = new Url($this->get_ii_docs_folderURL($itemID, self::TAG_VENDORPO));
+			$url->query->set('ponbr', $ponbr);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=ii-activity)::documentsview_activity', function($event) {
+			$page      = $event->object;
+			$itemID    = $event->arguments(0);
+			$type      = $event->arguments(1);
+			$reference = $event->arguments(2);
+
+			$url = new Url($this->get_ii_docs_folderURL($itemID, 'ACT'));
+			$url->query->set('type', $type);
+			$url->query->set('reference', $reference);
 			$event->return = $url->getUrl();
 		});
 
@@ -74,7 +141,8 @@ trait DocumentManagementIi {
 	}
 
 	/**
-	 * Return Documents objects filtered by the tag1, reference1 fields for an Item ID
+	 * Return Documents
+	 * filtered by the tag1, reference1 fields for an Item ID
 	 * @param  string $itemID                      Item ID
 	 * @return Documents[]|ObjectCollection
 	 */
@@ -86,9 +154,10 @@ trait DocumentManagementIi {
 	}
 
 	/**
-	 * Return Dthe number of ocuments found filtered by the tag1, reference1 fields for an Item ID
+	 * Return the number of Documents
+	 * filtered by the tag1, reference1 fields for an Item ID
 	 * @param  string $itemID                      Item ID
-	 * @return Documents[]|ObjectCollection
+	 * @return int
 	 */
 	public function count_itemdocuments($itemID) {
 		$documents_master = DocumentsQuery::create();
@@ -98,7 +167,74 @@ trait DocumentManagementIi {
 	}
 
 	/**
-	 * Returns DocumentsQuery filtered for Item Images
+	 * Return Documents
+	 * filtered by the tag1, reference1 fields for an Item Activity
+	 * @param  string $type                  Activity Type
+	 * @param  string $reference             Activity Reference (e.g. Po No. 1072)
+	 * @return Documents[]|ObjectCollection
+	 */
+	public function get_itemactivitydocuments($type, $reference) {
+		$documents_master = DocumentsQuery::create();
+		$this->filter_itemactivitydocuments($documents_master, $type, $reference);
+		return $documents_master->find();
+	}
+
+	/**
+	 * Return the number of Documents
+	 * filtered by the tag1, reference1 fields for an Item Activity
+	 * @param  string $type                  Activity Type (e.g. receipt)
+	 * @param  string $reference             Activity Reference (e.g. Po No. 1072)
+	 * @return string
+	 */
+	public function count_itemactivitydocuments($type, $reference) {
+		$documents_master = DocumentsQuery::create();
+		$this->filter_itemactivitydocuments($documents_master, $type, $reference);
+		return $documents_master->count();
+	}
+
+	/**
+	 * Add Filter Conditions for Item Activity
+	 * @param  DocumentsQuery $documents_master Query to apply filters to
+	 * @param  string         $type             Activity Type (e.g. receipt)
+	 * @param  string         $reference        Activity Reference (e.g. Po No. 1072)
+	 * @return void
+	 */
+	protected function filter_itemactivitydocuments(DocumentsQuery $documents_master, $type, $reference) {
+		$type = strtolower($type);
+
+		if (in_array($type, $this->ACTIVITY_TYPES_SO)) {
+			$ref = $this->determine_reference($reference, $this->PREFIX_REF_SO);
+			$documents_master->filterByTag(self::TAG_SALESORDER);
+			$ref = SalesOrder::get_paddedordernumber($ref);
+			$documents_master->filterByReference1($ref);
+		} elseif (in_array($type, $this->ACTIVITY_TYPES_PO)) {
+			$ref = $this->determine_reference($reference, $this->PREFIX_REF_PO);
+			$documents_master->filterByTag(self::TAG_VENDORPO);
+			$ref = PurchaseOrder::get_paddedponumber($ref);
+			$documents_master->filterByReference1($ref);
+		} elseif (in_array($type, $this->ACTIVITY_TYPES_WIP)) {
+			$ref = $reference;
+			$documents_master->filterByTag(self::TAG_WIP);
+			$documents_master->filterByReference1($ref);
+		} else {
+			$documents_master->filterByTag($type);
+		}
+	}
+
+	/**
+	 * Returns Reference with Prefix Removed
+	 * @param  string $reference Activity Reference (e.g. Po No. 1072)
+	 * @param  string $strip     Prefix to Remove (e.g. Po No.)
+	 * @return string
+	 */
+	protected function determine_reference($reference, $strip) {
+		$ref = str_replace($strip, '', strtolower($reference));
+		return trim($ref);
+	}
+
+	/**
+	 * Returns Documents Query
+	 * filtered for Item Images
 	 * @param  string $itemID Item ID
 	 * @return DocumentsQuery
 	 */
