@@ -29,7 +29,7 @@
 		<div class="col-6">
 			<div class="form-group">
 				<label>Number of Countries Tariff is Used</label>
-				<input type="text" name="country_count" class="form-control" value="{{ country_count }}" id="country_count" readonly>
+				<input type="text" name="tariff_country_count" class="form-control" value="{{ tariff_country_count }}" id="tariff_country_count" readonly>
 			</div>
 
 			<div class="form-group">
@@ -37,7 +37,7 @@
 				<div style="overflow-y:scroll; height: 195px">
 					{% for country in countries %}
 						<div class="custom-control custom-checkbox">
-							<input type="checkbox" class="custom-control-input" name="country[]" value="{{ country.code }}" id="{{ country.code }}">
+							<input type="checkbox" class="custom-control-input" name="country[]" value="{{ country.code }}" id="{{ country.code }}" {{ country.code in existing_countries ? 'checked' : '' }} >
 							<label class="custom-control-label" for="{{ country.code }}">{{ country.description }}</label>
 						</div>
 					{% endfor %}
