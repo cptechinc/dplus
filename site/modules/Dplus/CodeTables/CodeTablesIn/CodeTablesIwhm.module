@@ -74,8 +74,8 @@ class CodeTablesIwhm extends WireData implements Module {
 	 */
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$table = $input->$rm->text('table');
-		$whseID  = $input->$rm->text('whseID');
+		$table  = $input->$rm->text('table');
+		$whseID = $input->$rm->code ? $input->$rm->text('code') : $input->$rm->text('whseID');
 
 		$q = $this->get_query();
 		$q->filterById($whseID);
