@@ -73,6 +73,18 @@ class XrefUpc extends WireData implements Module {
 	}
 
 	/**
+	 * Return Primary ItemXrefUpc
+	 * @param  string $itemID Item ID
+	 * @return ItemXrefUpc
+	 */
+	public function get_primary_upc_itemid($itemID) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->filterByPrimary(ItemXrefUpc::PRIMARY_TRUE);
+		return $q->findOne();
+	}
+
+	/**
 	 * Return if UPC exists
 	 * @param  string $upc UPC Code
 	 * @return bool
@@ -80,6 +92,18 @@ class XrefUpc extends WireData implements Module {
 	public function upc_exists($upc) {
 		$q = $this->get_query();
 		$q->filterByUpc($upc);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return if Primary UPC for itemID exists
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function upc_primary_exists($itemID) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->filterByPrimary(ItemXrefUpc::PRIMARY_TRUE);
 		return boolval($q->count());
 	}
 
