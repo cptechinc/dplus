@@ -5,7 +5,6 @@ $(function() {
 	var input_primary = form_upc.find('input[name=primary]');
 	var input_validatedprimary = form_upc.find('input[name=valid_primary]');
 
-
 	var upc = {
 		is_primary: {{ upc.is_primary() ? 'true' : 'false' }},
 		primary_upc: '{{ upc.get_primary_upc_code() }}'
@@ -19,6 +18,23 @@ $(function() {
 
 	$("body").on("change", "input[name=primary]", function(e) {
 		input_validatedprimary.val('false');
+	});
+
+	$("body").on("click", "button[value=remove-upc-item]", function(e) {
+		e.preventDefault();
+
+		swal({
+			title: "Remove UPC?",
+			text: "Are you sure you want to remove this UPC?",
+			type: 'warning',
+			showCancelButton: true,
+			confirmButtonClass: 'btn btn-success',
+			cancelButtonClass: 'btn btn-danger',
+			buttonsStyling: false,
+			confirmButtonText: 'Yes!'
+		}).then(function (result) {
+			form_vxm.submit();
+		}).catch(swal.noop);
 	});
 
 
@@ -61,10 +77,18 @@ $(function() {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		submitHandler: function(form) {
-			var valid_form = new SwalError(false, '', '', false);
 
-			if (input_validatedprimary.val() != 'true' && input_primary.prop("checked") == true) {
-				validate_primary();
+			var formdata = form_vxm.serializeArray().reduce(function(obj, item) {
+				obj[item.name] = item.value;
+				return obj;
+			}, {});
+
+			if (formdata['action'] == 'update-upcx') {
+				if (input_validatedprimary.val() != 'true' && input_primary.prop("checked") == true) {
+					validate_primary();
+				} else {
+					form.submit();
+				}
 			} else {
 				form.submit();
 			}
@@ -73,11 +97,6 @@ $(function() {
 
 
 	function validate_primary() {
-		var error = false;
-		var title = '';
-		var msg = '';
-		var html = false;
-		var itemID = input_itemid.val();
 
 		// Check that validation hasn't happened before
 		if (input_validatedprimary.val() != 'true') {
@@ -116,6 +135,5 @@ $(function() {
 				});
 			}
 		}
-		return new SwalError(error, title, msg, html);
 	}
 });
