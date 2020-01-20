@@ -1,6 +1,6 @@
 <form action="{{ page.fullURL.getURL() }}" method="POST" id="upc-item-form">
 	<div class="row">
-		<div class="col-sm-6">
+		<div class="col-sm-8">
 			<div class="form-group row">
 				<div class="col-sm-6">
 					<label for="upc">UPC Code</label>
@@ -78,12 +78,20 @@
 					</div>
 				</div>
 			</div>
-
-			<div class="mt-1 text-center">
-				<button type="submit" class="btn btn-success btn-block">
-					<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-				</button>
+			<div class="row text-center">
+				<div class="col-sm-6">
+					<button type="submit" class="btn btn-danger btn-block" name="action" value="remove-upc-item">
+						<i class="fa fa-trash" aria-hidden="true"></i> Remove
+					</button>
+				</div>
+				<div class="col-sm-6">
+					<button type="submit" class="btn btn-success btn-block" name="action" value="update-upcx">
+						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+					</button>
+				</div>
 			</div>
+
+
 		</div>
 	</div>
 </form>
