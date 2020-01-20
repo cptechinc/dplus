@@ -161,9 +161,9 @@ class XrefUpc extends WireData implements Module {
 
 		$record = $this->get_create_upc($input);
 
-		if ($input->$rm->text('action') == 'remove-code') {
+		if ($input->$rm->text('action') == 'remove-upc-item') {
 			$record->delete();
-		} else {
+		} elseif ($input->$rm->text('action') == 'update-upcx') {
 			$record->setQty($input->$rm->int('qty'));
 			$record->setUom($input->$rm->text('uom'));
 			$record->setMastercase($input->$rm->text('mastercase'));
@@ -180,21 +180,23 @@ class XrefUpc extends WireData implements Module {
 			}
 		}
 
-		$response = $this->save_and_process_response($record);
+		if ($input->$rm->action) {
+			$response = $this->save_and_process_response($record);
 
-		/**
-		 * IF we saved this Item as the Primary PO ORDER then we have to update
-		 * the other primary item to be a secondary
-		 */
-		if ($response->has_success() && !$record->isDeleted()) {
-			if ($record->is_primary() && $record->get_primary_upc_code()) {
-				$primary_upc = $record->get_primary_upc();
-				$primary_upc->setPrimary(ItemXrefUpc::PRIMARY_FALSE);
-				$primary_upc->save();
-				$this->update_dplus_cobol($primary_upc);
+			/**
+			 * IF we saved this Item as the Primary PO ORDER then we have to update
+			 * the other primary item to be a secondary
+			 */
+			if ($response->has_success() && !$record->isDeleted()) {
+				if ($record->is_primary() && $record->get_primary_upc_code()) {
+					$primary_upc = $record->get_primary_upc();
+					$primary_upc->setPrimary(ItemXrefUpc::PRIMARY_FALSE);
+					$primary_upc->save();
+					$this->update_dplus_cobol($primary_upc);
+				}
 			}
+			$this->wire('session')->response_xref = $response;
 		}
-		$this->wire('session')->response_xref = $response;
 	}
 
 	/**
