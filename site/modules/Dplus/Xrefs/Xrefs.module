@@ -41,7 +41,8 @@ class Xrefs extends WireData implements Module {
 			'singular' => true,
 			'autoload' => true,
 			'installs' => array(
-				'XrefVxm'
+				'XrefVxm',
+				'XrefUpc'
 			)
 		);
 	}

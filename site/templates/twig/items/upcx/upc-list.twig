@@ -1,0 +1,78 @@
+<div class="mb-3">
+	{% if itemID %}
+		<a href="{{ page.upc_create_itemidURL(itemID) }}" class="btn btn-primary">
+			<i class="fa fa-plus" aria-hidden="true"></i> Create UPC for {{ itemID }}
+		</a>
+	{% else %}
+		<a href="{{ page.upc_createURL() }}" class="btn btn-primary">
+			<i class="fa fa-plus" aria-hidden="true"></i> Create UPC
+		</a>
+	{% endif %}
+</div>
+<table class="table table-sm">
+	<thead>
+		<tr class="bg-dark text-white p-3">
+			<th class="pt-3 pb-3">
+				<a href="{{ page.get_sortURL('upc') }}" class="link">UPC
+					{% if page.orderby_column == 'upc' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
+			</th>
+			<th class="pt-3 pb-3">Eaches</th>
+			<th class="pt-3 pb-3">
+				<a href="{{ page.get_sortURL('itemid') }}" class="link">Item ID / Desription
+					{% if page.orderby_column == 'itemid' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
+			</th>
+			<th class="pt-3 pb-3">UoM</th>
+			<th class="pt-3 pb-3">
+				<a href="{{ page.get_sortURL('primary') }}" class="link">Primary
+					{% if page.orderby_column == 'primary' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
+			</th>
+			<th class="pt-3 pb-3">
+				<a href="{{ page.get_sortURL('mastercase') }}" class="link">Master Carton
+					{% if page.orderby_column == 'mastercase' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
+			</th>
+			<th class="pt-3 pb-3">Label</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for upc in upcs %}
+			<tr class="{{ upc.is_primary() and upc.itemid == itemID ? 'highlight'  : '' }}">
+				<td>
+					<a href="{{ page.upcURL(upc.upc) }}" class="link">
+						{{ upc.upc }}
+					</a>
+				</td>
+				<td>
+					{{ upc.qty }}
+				</td>
+				<td>
+					{{ upc.itemid }} <br>
+					<small>{{ upc.ItemMasterItem.desc }}</small>
+				</td>
+				<td>
+					{{ upc.uom }}
+				</td>
+				<td>
+					{{ upc.primary|yesorno|capitalize }}
+				</td>
+				<td>
+					{{ upc.mastercarton|yesorno|capitalize }}
+				</td>
+				<td>
+					{{ upc.needslabel|yesorno|capitalize }}
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

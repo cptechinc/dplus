@@ -12,19 +12,27 @@
 			</div>
 		</div>
 	</div>
-	{% for item in items %}
-		<a href="{{ page.vxm_vendors_itemURL(item.vendorID, item.vendoritemID) }}" class="list-group-item list-group-item-action">
-			<div class="row">
-				<div class="col-4">
-					{{ item.vendoritemID }}
-				</div>
-				<div class="col-4">
-					{{ item.ouritemID }}
-				</div>
-				<div class="col-4">
-					{{ item.description }}
+	{% if items.count() %}
+		{% for item in items %}
+			<div class="list-group-item">
+				<div class="row">
+					<div class="col-4">
+						<a href="{{ page.vxm_vendors_itemURL(item.vendorID, item.vendoritemID) }}" class="link">
+							{{ item.vendoritemID }}
+						</a>
+					</div>
+					<div class="col-4">
+						{{ item.ouritemID }}
+					</div>
+					<div class="col-4">
+						{{ item.description }}
+					</div>
 				</div>
 			</div>
-		</a>
-	{% endfor %}
+		{% endfor %}
+	{% else %}
+		<div class="list-group-item text-center">
+			<h5 >No VXM Items Found</h5>
+		</div>
+	{% endif %}
 </div>

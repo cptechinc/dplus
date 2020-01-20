@@ -1,0 +1,22 @@
+<?php namespace ProcessWire;
+
+
+class FilterXref extends WireData implements Module {
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'Dpluso filter X-ref Module',
+				'version' => 101,
+				'summary' => 'Handles X-ref Filtering',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+}

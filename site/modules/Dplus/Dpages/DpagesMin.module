@@ -27,7 +27,11 @@ class DpagesMin extends Dpages implements Module {
 		'min-code-table-tarm' => array(
 			'name'   => 'min-code-table-tarm',
 			'fields' => array()
-		)
+		),
+		'upc-xref' => array(
+			'name'   => 'upcx',
+			'fields' => array()
+		),
 	);
 
 	const PAGES = array(
@@ -152,6 +156,15 @@ class DpagesMin extends Dpages implements Module {
 			'name'           => 'igm',
 			'title'          => 'Item Group',
 			'summary'        => 'View / Edit Item Group',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => ''
+		),
+		'min-upcx' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'upcx',
+			'name'           => 'upcx',
+			'title'          => 'UPC X-ref',
+			'summary'        => 'View / Edit UPCs',
 			'parent'         => '/min/inmain/',
 			'dplus_function' => ''
 		)
