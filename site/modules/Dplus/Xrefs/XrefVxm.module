@@ -4,6 +4,7 @@ include_once(__DIR__.'/XrefResponse.php');
 
 use Purl\Url;
 
+use ItemMasterItemQuery, ItemMasterItem;
 use ItemXrefVendorQuery, ItemXrefVendor;
 
 /**
@@ -68,6 +69,31 @@ class XrefVxm extends WireData implements Module {
 	}
 
 	/**
+	 * Return Primary ItemXrefVendor
+	 * @param  string $itemID Our Item ID
+	 * @return ItemXrefVendor
+	 */
+	public function get_primary_poordercode_itemid($itemID) {
+		$q = $this->get_query();
+		$q->filterByOuritemid($itemID);
+		$q->filterByPo_ordercode(ItemXrefVendor::POORDERCODE_PRIMARY);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return if Primary ItemXrefVendor for itemID exists
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function poordercode_primary_exists($itemID) {
+		$q = $this->get_query();
+		$q->filterByOuritemid($itemID);
+		$q->filterByPo_ordercode(ItemXrefVendor::POORDERCODE_PRIMARY);
+		return $q->findOne();
+	}
+
+
+	/**
 	 * Returns ItemXrefVendorQuery
 	 * @return ItemXrefVendorQuery
 	 */
@@ -99,9 +125,9 @@ class XrefVxm extends WireData implements Module {
 			$record->setVendoritemid($vendoritemID);
 		}
 
-		if ($input->$rm->text('action') == 'remove-code') {
+		if ($input->$rm->text('action') == 'remove-vxm-item') {
 			$record->delete();
-		} else {
+		} elseif ($input->$rm->text('action') == 'update-vxm') {
 			$record->setVendoritemid($vendoritemID);
 			$record->setOuritemid($input->$rm->text('ouritemID'));
 			$record->setQty_percase($input->$rm->text('qty_percase'));
@@ -133,21 +159,23 @@ class XrefVxm extends WireData implements Module {
 			$record->setTime(0);
 		}
 
-		$response = $this->save_and_process_response($record);
+		if ($input->$rm->action) {
+			$response = $this->save_and_process_response($record);
 
-		/**
-		 * IF we saved this Item as the Primary PO ORDER then we have to update
-		 * the other primary item to be a secondary
-		 */
-		if ($response->has_success() && !$record->isDeleted()) {
-			if ($record->is_po_ordercode_primary() && $record->other_primary_poordercode_exists()) {
-				$vxmitem = $record->get_other_primary_vxm_item();
-				$vxmitem->setPo_ordercode(ItemXrefVendor::POORDERCODE_SECONDARY);
-				$vxmitem->save();
-				$this->update_dplus_cobol($vxmitem);
+			/**
+			 * IF we saved this Item as the Primary PO ORDER then we have to update
+			 * the other primary item to be a secondary
+			 */
+			if ($response->has_success() && !$record->isDeleted()) {
+				if ($record->is_po_ordercode_primary() && $record->other_primary_poordercode_exists()) {
+					$vxmitem = $record->get_other_primary_vxm_item();
+					$vxmitem->setPo_ordercode(ItemXrefVendor::POORDERCODE_SECONDARY);
+					$vxmitem->save();
+					$this->update_dplus_cobol($vxmitem);
+				}
 			}
+			$this->wire('session')->response_xref = $response;
 		}
-		$this->wire('session')->response_xref = $response;
 	}
 
 	/**
@@ -202,6 +230,17 @@ class XrefVxm extends WireData implements Module {
 		$this->wire('modules')->get('Xrefs')->write_dplusfile($data, session_id());
 		$http = new WireHttp();
 		$http->get("127.0.0.1/cgi-bin/".$config->cgis['database']."?fname=".session_id());
+	}
+
+	/**
+	 * Returns if Item ID is valid
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function validate_itemID($itemID) {
+		$q = ItemMasterItemQuery::create();
+		$q->filterByItemid($itemID);
+		return boolval($q->count());
 	}
 
 	public static function getModuleInfo() {
