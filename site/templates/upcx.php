@@ -59,6 +59,7 @@
 		$filter_upcs->apply_sortby($page);
 		$upcs = $filter_upcs->query->find();
 
+		$page->body .= $config->twig->render('items/upcx/upc-filters.twig', ['page' => $page, 'input' => $input]);
 		$page->body .= $config->twig->render('items/upcx/upc-list.twig', ['page' => $page, 'upcs' => $upcs, 'itemID' => $itemID]);
 	}
 
