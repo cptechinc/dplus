@@ -1,11 +1,7 @@
 <form action="{{ page.fullURL.getURL() }}" method="POST" id="vxm-item-form">
-	<input type="hidden" name="vendorID" value="{{ item.vendorID }}">
+	<input type="hidden" name="action" value="update-vxm">
+	<input type="hidden" name="vendorID" id="vendorID" value="{{ item.vendorID }}">
 
-	<div class="mb-1">
-		<button type="button" class="btn btn-primary"  data-toggle="collapse" data-target="#form-actions" aria-expanded="false" aria-controls="form-actions">
-			<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-		</button>
-	</div>
 	<div class="row mb-3">
 		{% include 'items/vxm/vendor/item/header.twig' %}
 	</div>
@@ -18,8 +14,18 @@
 		</div>
 	</div>
 	<div class="mt-1 text-center">
-		<button type="submit" class="btn btn-success btn-block">
-			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-		</button>
+		<div class="row">
+			<div class="col-sm-6">
+				<button type="submit" class="btn btn-danger btn-block" name="action" value="remove-vxm-item">
+					<i class="fa fa-trash" aria-hidden="true"></i> Remove
+				</button>
+			</div>
+			<div class="col-sm-6">
+				<button type="submit" class="btn btn-success btn-block" name="action" value="update-vxm">
+					<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+				</button>
+			</div>
+		</div>
+
 	</div>
 </form>
