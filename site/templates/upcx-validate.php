@@ -1,6 +1,10 @@
 <?php
+	/**
+	 * UPCX Validate
+	 * This template is made for Validating Data Inputs for the UPC form
+	 * NOTE: the response values are formatted to be used by Jquery Validate's remote validation method
+	 */
 	$upcx = $modules->get('XrefUpc');
-
 	$response = '';
 
 	if ($input->get->action) {
@@ -36,20 +40,19 @@
 			case 'validate-primary-upc':
 				$code = $input->get->text('upc');
 				$itemID = $input->get->text('itemID');
-				$upc = $upcx->get_upc($code);
 
-				if ($upc->is_primary()) {
-					return true;
-				} else {
-					$primaryupc = $upc->get_primary_upc_code();
+				// Validate that there is a primary UPC
+				if ($upcx->upc_primary_exists($itemID)) {
+					$upc = $upcx->get_primary_upc_itemid($itemID);
 
-					if ($primaryupc) {
-						$response = "$primaryupc";
-					} else {
+					if ($upc->upc == $code) {
 						$response = true;
+					} else {
+						$response = "$upc->upc";
 					}
+				} else {
+					$response = true;
 				}
-
 				break;
 		}
 	}
