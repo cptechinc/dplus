@@ -27,6 +27,33 @@ class Filters extends WireData implements Module {
 		return $modules->get($filter);
 	}
 
+	/**
+	 * ProcessWire Installer Function
+	 * NOTE: Runs when installed through ProcessWire
+	 * @return void
+	 */
+	public function ___install() {
+
+	}
+
+	/**
+	 * ProcessWire removal Function
+	 * NOTE: Runs when removed through ProcessWire
+	 * @return void
+	 */
+	public function ___uninstall() {
+
+	}
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
+	}
+
 
 	/* =============================================================
 		ProcessWire Module Functions
@@ -50,7 +77,8 @@ class Filters extends WireData implements Module {
 				'FilterPurchaseOrder',
 				'FilterApInvoices',
 				'FilterBookings',
-				'FilterVendors'
+				'FilterVendors',
+				'FilterItemXrefUpc'
 			)
 		);
 	}

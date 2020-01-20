@@ -117,6 +117,10 @@ a.link:hover {
 	background-color: #bcdcef;
 }
 
+.text-white a.link {
+	color: white;
+}
+
 a.image-link {
 	text-decoration: none;
 	background-color: transparent;
