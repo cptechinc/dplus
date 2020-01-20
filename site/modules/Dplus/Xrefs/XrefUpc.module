@@ -39,6 +39,17 @@ class XrefUpc extends WireData implements Module {
 			$itemID = $event->arguments(0);
 			$event->return = $this->get_upcURL('new', $itemID);
 		});
+
+		$this->addHookProperty('Page(pw_template=upcx)::upc', function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('upc');
+		});
+
+		$this->addHookProperty('Page(pw_template=upcx)::itemID', function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('itemID');
+		});
+
 	}
 
 	/**
