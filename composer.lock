@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "9cd73ce090aba91eea427fbb58a0f473c0cf5f7d"
+                "reference": "97f98bf93f18973904a6e10cf49c8536a3d606d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/9cd73ce090aba91eea427fbb58a0f473c0cf5f7d",
-                "reference": "9cd73ce090aba91eea427fbb58a0f473c0cf5f7d",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/97f98bf93f18973904a6e10cf49c8536a3d606d8",
+                "reference": "97f98bf93f18973904a6e10cf49c8536a3d606d8",
                 "shasum": ""
             },
             "type": "library",
@@ -39,7 +39,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2020-01-15T21:33:19+00:00"
+            "time": "2020-01-20T22:35:29+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
@@ -666,12 +666,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "27c2e315b6315ccb2023f9ef6f554197e08257ef"
+                "reference": "266c9540b475f26122b61ef8b23dd9198f5d1cfd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/27c2e315b6315ccb2023f9ef6f554197e08257ef",
-                "reference": "27c2e315b6315ccb2023f9ef6f554197e08257ef",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/266c9540b475f26122b61ef8b23dd9198f5d1cfd",
+                "reference": "266c9540b475f26122b61ef8b23dd9198f5d1cfd",
                 "shasum": ""
             },
             "require": {
@@ -708,7 +708,7 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2020-01-04T13:00:46+00:00"
+            "time": "2020-01-21T08:20:44+00:00"
         },
         {
             "name": "symfony/finder",
@@ -1055,12 +1055,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "5ab895389cc0cb0fd900f82d12496a925b11727a"
+                "reference": "2f3ec17a371cc56b3a2855b5eae0702f70611e81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/5ab895389cc0cb0fd900f82d12496a925b11727a",
-                "reference": "5ab895389cc0cb0fd900f82d12496a925b11727a",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/2f3ec17a371cc56b3a2855b5eae0702f70611e81",
+                "reference": "2f3ec17a371cc56b3a2855b5eae0702f70611e81",
                 "shasum": ""
             },
             "require": {
@@ -1139,7 +1139,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2020-01-04T13:00:46+00:00"
+            "time": "2020-01-21T08:20:44+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -1147,12 +1147,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "b7883aa4dd46f16033839af3557e968984db7f74"
+                "reference": "cd014e425b3668220adb865f53bff64b3ad21767"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/b7883aa4dd46f16033839af3557e968984db7f74",
-                "reference": "b7883aa4dd46f16033839af3557e968984db7f74",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/cd014e425b3668220adb865f53bff64b3ad21767",
+                "reference": "cd014e425b3668220adb865f53bff64b3ad21767",
                 "shasum": ""
             },
             "require": {
@@ -1198,7 +1198,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2020-01-04T13:00:46+00:00"
+            "time": "2020-01-21T11:12:16+00:00"
         },
         {
             "name": "twig/twig",
