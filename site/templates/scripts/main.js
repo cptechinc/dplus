@@ -175,18 +175,6 @@ $.fn.extend({
 	}
 });
 
-Number.prototype.formatMoney = function(c, d, t) {
-	var n = this,
-		c = isNaN(c = Math.abs(c)) ? 2 : c,
-		d = d == undefined ? "." : d,
-		t = t == undefined ? "," : t,
-		s = n < 0 ? "-" : "",
-		i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
-		j = (j = i.length) > 3 ? j % 3 : 0;
-		return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
- };
-
-
 function toggle_nav() {
 	$(nav).toggle();
 	$(nav).find('input[name=q]').focus();
@@ -235,4 +223,29 @@ function format_phone(input) {
 		input = input.substring(0,3)+'-'+input.substring(3,6)+'-'+input.substring(6,10);
 	}
 	return input;
+}
+
+/*==============================================================
+	JS Prototype FUNCTIONS
+=============================================================*/
+Number.prototype.formatMoney = function(c, d, t) {
+	var n = this,
+		c = isNaN(c = Math.abs(c)) ? 2 : c,
+		d = d == undefined ? "." : d,
+		t = t == undefined ? "," : t,
+		s = n < 0 ? "-" : "",
+		i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+		j = (j = i.length) > 3 ? j % 3 : 0;
+		return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+ };
+
+String.prototype.capitalize = function() {
+	return this.charAt(0).toUpperCase() + this.slice(1)
+}
+
+Array.prototype.contains = function ( needle ) {
+	for (i in this) {
+		if (this[i] == needle) return true;
+	}
+	return false;
 }
