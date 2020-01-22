@@ -15,17 +15,7 @@ class CodeTablesCtm extends WireData implements Module {
 	const MODEL_KEY          = 'code';
 	const DESCRIPTION        = 'Customer Type Code';
 	const DESCRIPTION_RECORD = 'Customer Type Code';
-
-	const CODE_TABLES = array(
-		'ccm' => array(
-			'code'        => 'ccm',
-			'code-twig'   => 'customer-type',
-			'description' => 'Customer Type Code',
-			'description-record' => 'Customer Type Code',
-			'model'       => 'CustomerTypeCode',
-			'model-key'   => 'code'
-		)
-	);
+	const TABLE              = 'ctm';
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
@@ -85,10 +75,23 @@ class CodeTablesCtm extends WireData implements Module {
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
-		$configAR = ConfigArQuery::create()->findOne();
 		$rm = strtolower($input->requestMethod());
 		$table = $input->$rm->text('table');
 		$code  = $input->$rm->text('code');
+
+		if ($input->$rm->text('action') == 'update-notes') {
+			$this->wire('modules')->get('CodeTablesCtmNotes')->process_input($input);
+		} else {
+			$this->process_input_ctm($input);
+		}
+	}
+
+
+	public function process_input_ctm(WireInput $input) {
+		$configAR = ConfigArQuery::create()->findOne();
+		$rm = strtolower($input->requestMethod());
+		$table = self::TABLE;
+		$code = $input->$rm->text('code');
 
 		$q = $this->get_query();
 		$q->filterByCode($code);
