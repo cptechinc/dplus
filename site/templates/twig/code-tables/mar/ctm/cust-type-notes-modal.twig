@@ -1,0 +1,25 @@
+<div class="modal fade" id="notes-modal" tabindex="-1" role="dialog" aria-labelledby="notes-modal-label" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="notes-modal-label">Editing <span class="desc"></span> Notes for {{ code.code }}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form action="{{ page.url }}" method="post">
+					<input type="hidden" name="code" value="{{ code.code }}">
+					<input type="hidden" name="action" value="update-notes">
+					<input type="hidden" name="notes-type" value="">
+					<div class="form-group">
+						<textarea name="note" id="note" class="form-control w-auto" rows="10" cols=""></textarea>
+					</div>
+					<button type="submit" class="btn btn-success">
+						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+					</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
