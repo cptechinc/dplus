@@ -10,20 +10,69 @@ class CodeTables extends WireData implements Module {
 		return array(
 			'title' => 'Dplus Codes Tables Management',
 			'version' => 101,
-			'summary' => 'Module for Codes Tables Managment',
+			'summary' => 'Module for Codes Tables Management',
 			'singular' => true,
 			'autoload' => true,
+			'installs' => array(
+				'CodeTablesAr',
+				'CodeTablesIn',
+				'CodeTablesSo',
+			)
 		);
 	}
+	
+	/**
+	 * ProcessWire Installer Function
+	 * NOTE: Runs when installed through ProcessWire
+	 * @return void
+	 */
+	public function ___install() {
 
+	}
+
+	/**
+	 * ProcessWire removal Function
+	 * NOTE: Runs when removed through ProcessWire
+	 * @return void
+	 */
+	public function ___uninstall() {
+
+	}
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
+	}
+
+	/**
+	 * Sends Dplus Cobol that Code Table has been Update
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return void
+	 */
 	public function update_dplus_cobol($table, $code) {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
 		$table = strtoupper($table);
 		$data = array("DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code");
 		$this->write_dplusfile($data, session_id());
+		$this->http_get_dplus();
+	}
+
+	/**
+	 * Sends GET Request to kick off Dplus Cobol
+	 * @param  string $sessionID Session ID
+	 * @return bool              If GET was successfull
+	 */
+	public function http_get_dplus($sessionID = '') {
+		$config = $this->wire('config');
+		$sessionID = $sessionID ? $sessionID : session_id();
 		$http = new WireHttp();
-		$http->get("127.0.0.1/cgi-bin/".$config->cgis['database']."?fname=".session_id());
+		return $http->get("127.0.0.1/cgi-bin/".$config->cgis['database']."?fname=$sessionID");
 	}
 
 	/**
