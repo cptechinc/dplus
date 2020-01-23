@@ -93,7 +93,8 @@ class CodeTablesUmm extends WireData implements Module {
 			$record->setConversion($conversion);
 			$record->setPricebyweight($pricebyweight);
 			$record->setDate(date('Ymd'));
-			$record->setTime(0);
+			$record->setTime(date('His'));
+			$record->setDummy('P');
 		}
 
 		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);

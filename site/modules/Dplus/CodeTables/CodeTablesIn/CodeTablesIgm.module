@@ -120,7 +120,8 @@ class CodeTablesIgm extends WireData implements Module {
 			$record->setProduct_line($product_line);
 			$record->setEcomm_desc($ecomm_desc);
 			$record->setDate(date('Ymd'));
-			$record->setTime(0);
+			$record->setTime(date('His'));
+			$record->setDummy('P');
 
 			// TODO: show if company == Alumacraft as well
             if ($config_ar->is_web_group()) {

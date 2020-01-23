@@ -94,7 +94,8 @@ class CodeTablesSpgpm extends WireData implements Module {
 			$description = $input->$rm->text('description');
 			$record->setDescription($description);
 			$record->setDate(date('Ymd'));
-			$record->setTime(0);
+			$record->setTime(date('His'));
+			$record->setDummy('P');
 		}
 
 		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);

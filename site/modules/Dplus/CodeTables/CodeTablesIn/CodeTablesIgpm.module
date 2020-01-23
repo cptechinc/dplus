@@ -95,7 +95,8 @@ class CodeTablesIgpm extends WireData implements Module {
 			$description = $input->$rm->text('description');
 			$record->setDescription($description);
 			$record->setDate(date('Ymd'));
-			$record->setTime(0);
+			$record->setTime(date('His'));
+			$record->setDummy('P');
 
 			if ($config_so->is_request_program()) {
 				$sales_program = $input->$rm->text('sales_program');

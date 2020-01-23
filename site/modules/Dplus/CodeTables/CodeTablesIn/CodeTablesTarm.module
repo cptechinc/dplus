@@ -98,7 +98,8 @@ class CodeTablesTarm extends WireData implements Module {
 			$record->setDescription($description);
 			$record->setDuty_rate($duty_rate);
 			$record->setDate(date('Ymd'));
-			$record->setTime(0);
+			$record->setTime(date('His'));
+			$record->setDummy('P');
 
 			$countries_updated = $this->update_tariff_countries($code, $countries);
 		}
@@ -185,7 +186,8 @@ class CodeTablesTarm extends WireData implements Module {
 				$record->setCode($code);
 				$record->setCountry($country);
 				$record->setDate(date('Ymd'));
-				$record->setTime(0);
+				$record->setTime(date('His'));
+				$record->setDummy('P');
 				$response = $record->save();
 			}
 			$q = $this->get_tariffcodecountry_query($code);

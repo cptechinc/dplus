@@ -108,7 +108,8 @@ class CodeTablesCtm extends WireData implements Module {
 			$record->setDescription($description);
 			$record->setOrder_approval_email($email);
 			$record->setDate(date('Ymd'));
-			$record->setTime(0);
+			$record->setTime(date('His'));
+			$record->setDummy('P');
 
 			if ($configAR->gl_report_type() == 'customer') {
 				$record->setAccount_sales($input->$rm->text('gl_sales'));
