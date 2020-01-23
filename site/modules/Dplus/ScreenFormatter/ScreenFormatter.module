@@ -5,7 +5,7 @@ use TableformatterQuery, Tableformatter;
 /**
  * Class for Formatting Screens
  */
-class ScreenFormatter extends Process implements ConfigurableModule {
+class ScreenFormatter extends WireData implements Module {
 
 	/**
 	 * Array of Fields by section, and their properties
@@ -40,27 +40,23 @@ class ScreenFormatter extends Process implements ConfigurableModule {
 	 */
 	protected $userID;
 
+	/**
+	 * Screen Formatter Code
+	 * @var string
+	 */
 	protected $code = '';
 
 	/**
 	 * Key Value array of Sections that exist I.E. header => Header, detail => Detail
 	 * @var string
 	 */
-	protected $datasections = array(
-	);
+	protected $datasections = array();
 
-	const CONFIG_FIELDS = array(
-		'directory_fields' => array(
-			'type'        => 'text',  // TRUE OR FALSE
-			'label'       => 'Fields Definition Directory?',
-			'description' => 'Fields Definition Directory',
-			'notes'       => ""
-		)
-	);
-
-	const DEFAULT_CONFIG = array(
-		'directory_fields' => '/var/www/html/dplus-new/site/modules/Dplus/JsonDataFiles/fields/'
-	);
+	/**
+	 * Directory of Field Definitions
+	 * @var string
+	 */
+	protected $this->directory_fields;
 
 	const COLUMNS_TRACKING = array('Tracking Number');
 
@@ -84,14 +80,7 @@ class ScreenFormatter extends Process implements ConfigurableModule {
 	 */
 	public function init() {
 		parent::init();
-
-		foreach(self::DEFAULT_CONFIG as $key => $value) {
-			if (isset($this->data[$key])) {
-				$this->data[$key] = $this->data[$key];
-			} else {
-				$this->data[$key] = $value;
-			}
-		}
+		$this->directory_fields = $this->wire('config')->paths->siteModules.'Dplus/JsonDataFiles/fields/';
 	}
 
 	/**
@@ -168,6 +157,14 @@ class ScreenFormatter extends Process implements ConfigurableModule {
 	 */
 	public function get_datasections() {
 		return $this->datasections;
+	}
+
+	/**
+	 * Returns Source of Formatter
+	 * @return string
+	 */
+	public function get_source() {
+		return $this->source;
 	}
 
 	/**
