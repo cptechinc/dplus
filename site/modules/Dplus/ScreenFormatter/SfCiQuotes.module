@@ -1,0 +1,37 @@
+<?php namespace ProcessWire;
+
+/**
+ * Class for formatting the CI Quotes Screen
+ */
+class SfCiQuotes extends ScreenFormatter implements Module {
+	protected $code = 'ci-quotes';
+
+	/**
+	 * Key Value array of Sections that exist I.E. header => Header, detail => Detail
+	 * @var string
+	 */
+	protected $datasections = array(
+		'header'  => 'Header',
+		"details" => "Details",
+		"totals"  => "Totals"
+	);
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso CI Quotes Formatter Module',
+			'version' => 101,
+			'summary' => 'Handles CI Quotes Formatter',
+			'singular' => true,
+			'autoload' => false,
+			'requires' => 'ScreenFormatter'
+		);
+	}
+}

@@ -15,7 +15,7 @@
 				$session->redirect($page->get_itemsalesordersURL($itemID));
 			}
 			$session->salesorderstry = 0;
-			$module_formatter = $modules->get('IiSalesOrders');
+			$module_formatter = $modules->get('SfIiSalesOrders');
 			$module_formatter->init_formatter();
 			$document_management = $modules->get('DocumentManagement');
 

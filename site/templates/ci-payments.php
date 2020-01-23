@@ -15,7 +15,7 @@
 				$session->redirect($page->get_customerpaymentsURL($custID));
 			}
 			$session->paymentstry = 0;
-			$module_formatter = $modules->get('CiPayments');
+			$module_formatter = $modules->get('SfCiPayments');
 			$module_formatter->init_formatter();
 			$document_management = $modules->get('DocumentManagement');
 			$refreshurl = $page->get_customerpaymentsURL($custID);

@@ -19,7 +19,7 @@
 					$session->redirect($page->get_itemsaleshistoryURL($itemID));
 				}
 				$session->saleshistorytry = 0;
-				$module_formatter = $modules->get('IiSalesHistory');
+				$module_formatter = $modules->get('SfIiSalesHistory');
 				$module_formatter->init_formatter();
 
 				$document_management = $modules->get('DocumentManagement');

@@ -15,7 +15,7 @@
 				$session->redirect($page->get_customersalesordersURL($custID));
 			}
 			$session->salesorderstry = 0;
-			$module_formatter = $modules->get('CiSalesOrders');
+			$module_formatter = $modules->get('SfCiSalesOrders');
 			$module_formatter->init_formatter();
 			$document_management = $modules->get('DocumentManagement');
 

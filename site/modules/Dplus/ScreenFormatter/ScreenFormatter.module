@@ -79,8 +79,7 @@ class ScreenFormatter extends WireData implements Module {
 	 * @return void
 	 */
 	public function init() {
-		parent::init();
-		$this->directory_fields = $this->wire('config')->paths->siteModules.'Dplus/JsonDataFiles/fields/';
+		$this->data['directory_fields'] = $this->wire('config')->paths->siteModules.'Dplus/JsonDataFiles/fields/';
 	}
 
 	/**
@@ -106,8 +105,51 @@ class ScreenFormatter extends WireData implements Module {
 			'singular' => true,
 			'autoload' => true,
 			'requires' => array('DplusPwPages'),
-			//'installs' => array('DplusoSalesOrder'),
+			'installs' => array(
+				'SfCiOpenInvoices',
+				'SfCiPayments',
+				'SfCiQuotes',
+				'SfCiPurchaseHistory',
+				'SfCiPurchaseOrders',
+				'SfCiSalesHistory',
+				'SfCiSalesOrders',
+				'SfIiPurchaseHistory',
+				'SfIiPurchaseOrders',
+				'SfIiQuotes',
+				'SfIiSalesHistory',
+				'SfIiSalesOrders',
+				'SfIiStockItem',
+				'SfViOpenInvoices',
+				'SfViPaymentHistory',
+				'SfViPurchaseHistory',
+				'SfViPurchaseOrders',
+				'SfViUnreleasedPO'
+			),
 		);
+	}
+
+	/**
+	 * ProcessWire removal Function
+	 * NOTE: Runs when removed through ProcessWire
+	 * @return void
+	 */
+	public function __uninstall() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->uninstall($module_name);
+		}
+		parent::__uninstall();
+	}
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
 	}
 
 	static public function getModuleConfigInputfields(array $data) {
@@ -157,6 +199,10 @@ class ScreenFormatter extends WireData implements Module {
 	 */
 	public function get_datasections() {
 		return $this->datasections;
+	}
+
+	public function get_source() {
+		return $this->source;
 	}
 
 	/**

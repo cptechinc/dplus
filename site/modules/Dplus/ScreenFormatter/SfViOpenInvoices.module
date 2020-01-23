@@ -3,7 +3,7 @@
 /**
  * Class for formatting the VI Open Invoices Screen
  */
-class ViOpenInvoices extends ScreenFormatter implements Module {
+class SfViOpenInvoices extends ScreenFormatter implements Module {
 	protected $code = 'vi-open-invoices';
 
 	/**
@@ -28,7 +28,8 @@ class ViOpenInvoices extends ScreenFormatter implements Module {
 				'version' => 101,
 				'summary' => 'Handles VI Open Invoices Formatter',
 				'singular' => true,
-				'autoload' => true,
+				'autoload' => false,
+				'requires' => 'ScreenFormatter'
 			);
 		}
 }
