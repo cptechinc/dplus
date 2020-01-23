@@ -52,12 +52,6 @@ class ScreenFormatter extends WireData implements Module {
 	 */
 	protected $datasections = array();
 
-	/**
-	 * Directory of Field Definitions
-	 * @var string
-	 */
-	protected $this->directory_fields;
-
 	const COLUMNS_TRACKING = array('Tracking Number');
 
 	const COLUMNS_PHONE = array('phone', 'fax');
@@ -199,10 +193,6 @@ class ScreenFormatter extends WireData implements Module {
 	 */
 	public function get_datasections() {
 		return $this->datasections;
-	}
-
-	public function get_source() {
-		return $this->source;
 	}
 
 	/**
