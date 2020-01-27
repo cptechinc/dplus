@@ -29,7 +29,6 @@
 				}
 				$session->pricingtry = 0;
 
-
 				$refreshurl = $page->get_itempricingURL($itemID, $custID);
 				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 
