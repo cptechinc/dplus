@@ -15,6 +15,7 @@
 				$session->redirect($page->get_itemwhereusedURL($itemID));
 			}
 			$session->whereusedtry = 0;
+			
 			$refreshurl = $page->get_itemwhereusedURL($itemID);
 			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 
