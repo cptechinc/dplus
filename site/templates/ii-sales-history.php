@@ -31,7 +31,6 @@
 				} else {
 					$page->body .= $config->twig->render('items/ii/sales-history/sales-history.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
 				}
-
 			} else {
 				if ($session->saleshistorytry > 3) {
 					$page->headline = $page->title = "Sales History File could not be loaded";
