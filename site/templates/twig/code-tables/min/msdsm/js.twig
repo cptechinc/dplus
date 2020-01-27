@@ -26,13 +26,20 @@ $(function() {
 
 	$("#code-edit-form").validate({
 		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
 		rules: {
-			code: 'required',
+			code: {
+				required: true,
+				maxlength: {{ max_length_code }}
+			},
 			description: 'required',
 			effective_date: 'required'
 		},
 		messages: {
-			code: "Please enter a code",
+			code: "Please check the Code value (Max Length: {{ max_length_code }})",
 			description: 'Please enter a description for the code',
 			effective_date: 'Please enter an effective date for the code'
 		},
