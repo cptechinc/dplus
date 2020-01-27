@@ -38,12 +38,12 @@
 				$page->body .= $config->twig->render('customers/ci/customer/quotes-panel.twig', ['page' => $page, 'customer' => $customer, 'quotes' => $quotes, 'resultscount'=> $quotes->getNbResults(), 'quotepage' => $pages->get('pw_template=quote-view')->url, 'quotes_list' => $page->cust_quotesURL($customer->id)]);
 				$config->scripts->append(hash_templatefile('scripts/customer/ci-customer.js'));
 			} else {
-				// TODO ALERT for customer does not exist
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $custID not found"]);
 			}
 		} else {
 			$page->searchURL = $page->url;
 			$page->headline = "User $user->name Does Not Have Access to $custID";
-			$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->headline, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "User does not have permission to access this customer"]);
+			$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->headline, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You doe not have permission to access this customer"]);
 			$page->body .= $html->div('class=mb-3');
 			$page->body .= $config->twig->render('customers/search-form.twig', ['page' => $page]);
 		}
