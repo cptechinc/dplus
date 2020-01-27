@@ -36,14 +36,14 @@
 
 					if ($query_kit->count()) {
 						$kit_items = KitItemsQuery::create()->filterByKititemid($itemID)->find();
-
-						if ($json['error']) {
-							$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
-						} else {
 						$page->body .= $config->twig->render('items/ii/components/kit-breakdown.twig', ['page' => $page, 'itemID' => $itemID,  'items' => $kit_items]);
-						}
 					}
-					$page->body .= $config->twig->render('items/ii/components/kit-screen.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'itemID' => $itemID]);
+
+					if ($json['error']) {
+						$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
+					} else {
+						$page->body .= $config->twig->render('items/ii/components/kit-screen.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'itemID' => $itemID]);
+					}
 				} elseif ($config_ii->option_components == 'bom') {
 					$bomtype = $input->get->text('bomtype');
 					$page->jsoncode = "$page->jsoncode-$config_ii->option_components-$bomtype";
