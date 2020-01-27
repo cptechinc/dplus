@@ -9,13 +9,7 @@
 		$page->title = "$itemID Usage";
 
 		$module_json = $modules->get('JsonDataFiles');
-		$module_usage = $modules->get('IiUsage'); // USED fOR JS FILE
-
 		$json = $module_json->get_file(session_id(), $page->jsoncode);
-		$config->styles->append('//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css');
-		$config->scripts->append('//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js');
-		$config->scripts->append('//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js');
-		$config->scripts->append(hash_templatefile('scripts/lib/moment.js'));
 
 		if ($module_json->file_exists(session_id(), $page->jsoncode)) {
 			if ($json['itemid'] != $itemID) {
@@ -29,10 +23,16 @@
 			if ($json['error']) {
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 			} else {
+				$module_usage = $modules->get('IiUsage'); // USED fOR JS FILE
 				$page->body .= $config->twig->render('items/ii/usage/sales-usage.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json]);
 				$page->body .= $config->twig->render('items/ii/usage/warehouses.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json]);
 				$page->js    = $config->twig->render('items/ii/usage/warehouses.js.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'module_usage' => $module_usage]);
 			}
+
+			$config->styles->append('//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css');
+			$config->scripts->append('//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js');
+			$config->scripts->append('//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js');
+			$config->scripts->append(hash_templatefile('scripts/lib/moment.js'));
 		} else {
 			if ($session->usagetry > 3) {
 				$page->headline = $page->title = "Costing File could not be loaded";
