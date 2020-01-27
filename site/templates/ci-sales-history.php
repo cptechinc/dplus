@@ -15,9 +15,6 @@
 				$session->redirect($page->get_customersaleshistoryURL($custID));
 			}
 			$session->saleshistorytry = 0;
-			$module_formatter = $modules->get('CiSalesHistory');
-			$module_formatter->init_formatter();
-			$document_management = $modules->get('DocumentManagement');
 
 			$refreshurl = $page->get_customersaleshistoryURL($custID);
 			$page->body .= $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
@@ -25,6 +22,9 @@
 			if ($json['error']) {
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 			} else {
+				$module_formatter = $modules->get('CiSalesHistory');
+				$module_formatter->init_formatter();
+				$document_management = $modules->get('DocumentManagement');
 				$page->body .= $config->twig->render('customers/ci/sales-history/sales-history.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
 			}
 		} else {
