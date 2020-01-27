@@ -15,7 +15,7 @@
 				$session->redirect($page->get_itemquotesURL($itemID));
 			}
 			$session->purchaseorderstry = 0;
-			$module_formatter = $modules->get('IiPurchaseOrders');
+			$module_formatter = $modules->get('SfIiPurchaseOrders');
 			$module_formatter->init_formatter();
 			$document_management = $modules->get('DocumentManagement');
 			$refreshurl = $page->get_itempurchaseordersURL($itemID);

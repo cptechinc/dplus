@@ -15,7 +15,7 @@
 				$session->redirect($page->get_itemquotesURL($itemID));
 			}
 			$session->quotestry = 0;
-			$module_formatter = $modules->get('IiQuotes');
+			$module_formatter = $modules->get('SfIiQuotes');
 			$module_formatter->init_formatter();
 			$refreshurl = $page->get_itemquotesURL($itemID);
 			$document_management = $modules->get('DocumentManagement');

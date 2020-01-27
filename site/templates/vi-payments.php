@@ -16,7 +16,7 @@
 			}
 			$session->paymentstry = 0;
 
-			$module_formatter = $modules->get('ViPaymentHistory');
+			$module_formatter = $modules->get('SfViPaymentHistory');
 			$module_formatter->init_formatter();
 			$document_management = $modules->get('DocumentManagement');
 			$refreshurl = $page->get_vipaymentsURL($vendorID);

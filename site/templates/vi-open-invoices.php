@@ -16,7 +16,7 @@
 			}
 			$session->openinvoicestry = 0;
 
-			$module_formatter = $modules->get('ViOpenInvoices');
+			$module_formatter = $modules->get('SfViOpenInvoices');
 			$module_formatter->init_formatter();
 			$document_management = $modules->get('DocumentManagement');
 			$refreshurl = $page->get_viopeninvoicesURL($vendorID);

@@ -15,7 +15,7 @@
 				$session->redirect($page->get_customersaleshistoryURL($custID));
 			}
 			$session->saleshistorytry = 0;
-			$module_formatter = $modules->get('CiSalesHistory');
+			$module_formatter = $modules->get('SfCiSalesHistory');
 			$module_formatter->init_formatter();
 			$document_management = $modules->get('DocumentManagement');
 

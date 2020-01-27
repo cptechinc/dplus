@@ -15,7 +15,7 @@
 				$session->redirect($page->get_customerquotesURL($custID));
 			}
 			$session->quotestry = 0;
-			$module_formatter = $modules->get('CiQuotes');
+			$module_formatter = $modules->get('SfCiQuotes');
 			$module_formatter->init_formatter();
 			$document_management = $modules->get('DocumentManagement');
 			$refreshurl = $page->get_customerquotesURL($custID);

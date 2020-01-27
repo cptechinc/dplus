@@ -24,7 +24,7 @@
 					$session->redirect($page->get_customerpurchaseordersURL($custID, $custpo));
 				}
 				$session->salesorderstry = 0;
-				$module_formatter = $modules->get('CiSalesOrders');
+				$module_formatter = $modules->get('SfCiSalesOrders');
 				$module_formatter->init_formatter();
 
 				$page->body .= $config->twig->render('customers/ci/sales-orders/sales-orders.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
@@ -48,7 +48,7 @@
 					$session->redirect($page->get_customerpurchaseordersURL($custID, $custpo));
 				}
 				$session->saleshistorytry = 0;
-				$module_formatter = $modules->get('CiSalesHistory');
+				$module_formatter = $modules->get('SfCiSalesHistory');
 				$module_formatter->init_formatter();
 				$page->body .= $config->twig->render('customers/ci/sales-history/sales-history.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
 			} else {

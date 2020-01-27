@@ -18,7 +18,7 @@
 					$session->redirect($page->get_itemquotesURL($itemID));
 				}
 				$session->purchasehistorytry = 0;
-				$module_formatter = $modules->get('IiPurchaseHistory');
+				$module_formatter = $modules->get('SfIiPurchaseHistory');
 				$module_formatter->init_formatter();
 				$document_management = $modules->get('DocumentManagement');
 				$refreshurl = $page->get_itempurchasehistoryURL($itemID, $date);

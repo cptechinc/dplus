@@ -15,7 +15,7 @@
 				$session->redirect($page->get_customeropeninvoicesURL($custID));
 			}
 			$session->openinvoicestry = 0;
-			$module_formatter = $modules->get('CiOpenInvoices');
+			$module_formatter = $modules->get('SfCiOpenInvoices');
 			$module_formatter->init_formatter();
 			$document_management = $modules->get('DocumentManagement');
 			$refreshurl = $page->get_customeropeninvoicesURL($custID);
