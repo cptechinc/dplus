@@ -15,7 +15,7 @@
 				$session->redirect($page->get_itemsalesordersURL($itemID));
 			}
 			$session->salesorderstry = 0;
-			
+
 			$refreshurl = $page->get_itemsalesordersURL($itemID);
 			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 

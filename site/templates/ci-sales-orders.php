@@ -15,7 +15,7 @@
 				$session->redirect($page->get_customersalesordersURL($custID));
 			}
 			$session->salesorderstry = 0;
-			
+
 			$refreshurl = $page->get_customersalesordersURL($custID);
 			$page->body .= $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 
