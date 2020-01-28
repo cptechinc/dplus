@@ -19,7 +19,12 @@
 			$session->cicontacttry = 0;
 			$refreshurl = $page->get_customercontactsURL($custID, $shiptoID);
 			$page->body .= $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
-			$page->body .= $config->twig->render('customers/ci/contacts/contacts-screen.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'date' => $date, 'itemID' => $itemID]);
+
+			if ($json['error']) {
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
+			} else {
+				$page->body .= $config->twig->render('customers/ci/contacts/contacts-screen.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'date' => $date, 'itemID' => $itemID]);
+			}
 		} else {
 			if ($session->cicontacttry > 3) {
 				$page->headline = $page->title = "CI Contact File could not be loaded";

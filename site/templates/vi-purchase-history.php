@@ -32,6 +32,7 @@
 					$session->redirect($page->get_vipurchasehistoryURL($vendorID, $shipfromID, $date));
 				}
 				$session->purchasehistorytry = 0;
+				
 				$refreshurl = $page->get_vipurchasehistoryURL($vendorID, $shipfromID, $date);
 				$page->body .= $config->twig->render('vendors/vi/vi-links.twig', ['page' => $page, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 

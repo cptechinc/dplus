@@ -19,13 +19,13 @@
 				}
 				$session->costingtry = 0;
 
-				$document_management = $modules->get('DocumentManagement');
 				$refreshurl = $page->get_vicostingURL($vendorID);
 				$page->body .= $config->twig->render('vendors/vi/vi-links.twig', ['page' => $page, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 
 				if ($json['error']) {
 					$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 				} else {
+					$document_management = $modules->get('DocumentManagement');
 					$sublink = $page->get_visubURL($vendorID, $itemID);
 					$page->body .= $config->twig->render('vendors/vi/costing/costing.twig', ['page' => $page, 'vendorID' => $vendorID, 'json' => $json, 'sublink' => $sublink, 'document_management' => $document_management]);
 				}
