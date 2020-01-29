@@ -3,7 +3,7 @@
 
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
-	$modules->get('DPagesMwm')->init_physicalcount();
+	$modules->get('DpagesMwm')->init_physicalcount();
 	$html = $modules->get('HtmlWriter');
 
 	$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;
