@@ -69,6 +69,9 @@ class CodeTablesIwhm extends WireData implements Module {
 	 * Takes Input, validates it's for one of the code tables
 	 * Processes it, and if updated sends request to dplus
 	 *
+	 * NOTE: If an existing code is more than TariffCode::MAX_LENGTH_CODE, we will allow editing
+	 * but we won't allow creation of a code with more than allowed characters we will trim it.
+	 *
 	 * @param  WireInput $input Input
 	 * @return void
 	 */
@@ -83,6 +86,7 @@ class CodeTablesIwhm extends WireData implements Module {
 		if ($q->count()) {
 			$record = $q->findOne();
 		} else {
+			$whseID  = $input->$rm->text('code', array('maxLength' => Warehouse::MAX_LENGTH_CODE));
 			$record = new Warehouse();
 			$record->setId($whseID);
 		}

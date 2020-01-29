@@ -23,6 +23,7 @@
 		}
 
 		$page->body .= $config->twig->render("code-tables/min/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'warehouse' => $warehouse, 'config_in' => $config_in, 'states' => $states, 'countries' => $countries, 'warehouses' => $warehouses]);
+		$page->js   .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'warehouse' => $warehouse]);
 
 		// SHOW NOTES IF TABLE ALREADY EXISTS
 		if ($module_codetable->code_exists($code)) {
