@@ -28,7 +28,7 @@
 			include(__DIR__."/ar-code-table-$page->codetable.php");
 		} else {
 			$page->body .= $config->twig->render("code-tables/mar/$page->codetable/list.twig", ['page' => $page, 'table' => $table, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable]);
-			$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "mar/$page->codetable/form.twig"]);
+			$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "mar/$page->codetable/form.twig", 'max_length_code' => $module_codetable->get_max_length_code()]);
 			$page->js .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'max_length_code' => $module_codetable->get_max_length_code()]);
 		}
 	} else {
