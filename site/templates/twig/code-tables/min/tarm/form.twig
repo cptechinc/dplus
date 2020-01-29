@@ -4,7 +4,7 @@
 		<div class="col-sm-6">
 			<div class="form-group">
 				<label for="code">Code</label>
-				<input type="text" name="code" class="form-control" value="{{ tariff.code }}" id="code" {{ tariff.code ? 'readonly' : 'autofocus' }}>
+				<input type="text" name="code" class="form-control" maxlength="{{ tariff.get_max_code_length() }}" value="{{ tariff.code }}" id="code" {{ tariff.code ? 'readonly' : 'autofocus' }}>
 			</div>
 
 			<div class="form-group">

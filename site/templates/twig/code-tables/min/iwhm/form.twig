@@ -7,7 +7,7 @@
 			<label for="whseID">Code</label>
 		</div>
 		<div class="col">
-			<input type="text" name="whseID" class="form-control" value="{{ warehouse.id }}" id="whseID" {{ warehouse.id ? 'readonly' : 'autofocus' }}>
+			<input type="text" name="whseID" class="form-control" maxlength="{{ warehouse.get_max_code_length() }}" value="{{ warehouse.id }}" id="whseID" {{ warehouse.id ? 'readonly' : 'autofocus' }}>
 		</div>
 	</div>
 	<div class="form-row form-group">

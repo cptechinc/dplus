@@ -5,7 +5,7 @@
 		<div class="col-6">
 			<div class="form-group">
 				<label for="code">Code</label>
-				<input type="text" name="code" class="form-control" value="{{ itemgroup.code }}" id="code" {{ itemgroup.code ? 'readonly' : 'autofocus' }}>
+				<input type="text" name="code" class="form-control" maxlength="{{ itemgroup.get_max_code_length() }}" value="{{ itemgroup.code }}" id="code" {{ itemgroup.code ? 'readonly' : 'autofocus' }}>
 			</div>
 
 			<div class="form-group">
