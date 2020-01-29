@@ -66,16 +66,34 @@ class CodeTablesIwhm extends WireData implements Module {
 	}
 
 	/**
-	 * Takes Input, validates it's for one of the code tables
-	 * Processes it, and if updated sends request to dplus
-	 *
-	 * NOTE: If an existing code is more than TariffCode::MAX_LENGTH_CODE, we will allow editing
-	 * but we won't allow creation of a code with more than allowed characters we will trim it.
+	 * Takes Input Calls handles input according to Action required
 	 *
 	 * @param  WireInput $input Input
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$table  = $input->$rm->text('table');
+		$whseID = $input->$rm->code ? $input->$rm->text('code') : $input->$rm->text('whseID');
+
+		if ($input->$rm->text('action') == 'update-notes') {
+			$this->wire('modules')->get('CodeTablesIwhmNotes')->process_input($input);
+		} else {
+			$this->process_input_iwhm($input);
+		}
+	}
+
+	/**
+	 * Takes Input, validates it's for one of the code tables
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * NOTE: If an existing code is more than Warehouse::MAX_LENGTH_CODE, we will allow editing
+	 * but we won't allow creation of a code with more than allowed characters we will trim it.
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input_iwhm(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$table  = $input->$rm->text('table');
 		$whseID = $input->$rm->code ? $input->$rm->text('code') : $input->$rm->text('whseID');
@@ -102,6 +120,8 @@ class CodeTablesIwhm extends WireData implements Module {
 		}
 		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $whseID, $record);
 	}
+
+
 
 	public function process_warehouse_input($warehouse, WireInput $input) {
 		$config_in = ConfigInQuery::create()->findOne();
