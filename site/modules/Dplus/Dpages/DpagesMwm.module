@@ -129,12 +129,21 @@ class DpagesMwm extends Dpages implements Module {
 		),
 		'whse-binr-contents' => array(
 			'template'       => 'warehouse-function',
-			'name'           => 'sales-history',
+			'name'           => 'binr-contents',
 			'title'          => 'Move Bin Contents',
 			'summary'        => 'Move all Bin Items',
 			'parent'         => '/warehouse/binr/',
 			'dplus_function' => 'pmvbn',
 			'pw_template'    => 'whse-binr-contents'
+		),
+		'whse-binr-inquiry' => array(
+			'template'       => 'dplus-function-link',
+			'name'           => 'bin-inquiry',
+			'title'          => 'Bin Inquiry',
+			'summary'        => 'Show Items in a bin',
+			'parent'         => '/warehouse/binr/',
+			'dplus_function' => 'pbini',
+			'pw_template'    => 'whse-bin-inquiry'
 		),
 		'menu-inventory' => array(
 			'template'       => 'warehouse-menu',
@@ -161,24 +170,6 @@ class DpagesMwm extends Dpages implements Module {
 			'parent'         => '/warehouse/inventory/',
 			'dplus_function' => 'pbini',
 			'pw_template'    => 'whse-bin-inquiry'
-		),
-		'whse-binr-contents' => array(
-			'template'       => 'warehouse-function',
-			'name'           => 'move-contents',
-			'title'          => 'Bin Inquiry',
-			'summary'        => 'Show Items in a bin',
-			'parent'         => '/warehouse/binr/',
-			'dplus_function' => 'pmvbn',
-			'pw_template'    => 'whse-binr-contents'
-		),
-		'whse-binr-contents' => array(
-			'template'       => 'warehouse-function',
-			'name'           => 'move-contents',
-			'title'          => 'Bin Inquiry',
-			'summary'        => 'Show Items in a bin',
-			'parent'         => '/warehouse/binr/',
-			'dplus_function' => 'pmvbn',
-			'pw_template'    => 'whse-binr-contents'
 		),
 		'whse-print-item-label' => array(
 			'template'       => 'warehouse-function',

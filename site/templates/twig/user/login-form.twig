@@ -5,12 +5,15 @@
 				<img class="mb-4" src="{{ appconfig.logo_large.url }}" alt="{{ appconfig.title }} logo">
 			</p>
 			<h2 class="text-center mb-3">{{ appconfig.title }}</h2>
+			<p class="text-center h2 text-secondary">
+				<i class="fa fa-at" aria-hidden="true"></i>
+			</p>
+			<h2 class="text-center mb-3">{{ config_customer.company_name }}</h2>
 
 			{% if login_error %}
 				<div class="form-group">
 					{% include 'util/alert.twig' with {'type': 'danger','iconclass': 'fa fa-warning fa-2x', 'title': 'Error!', 'message': 'Wrong Username / Password'} %}
 				</div>
-
 			{% endif %}
 
 			<form action="{{ page.formurl }}" method="post" class="allow-enterkey-submit">

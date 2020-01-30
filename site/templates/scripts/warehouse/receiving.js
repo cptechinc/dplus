@@ -1,8 +1,9 @@
 $(function() {
 	var form_receive = $('#po-item-receive-form');
 	var input_qty    = form_receive.find('input[name=qty]');
-	var input_bin    = form_receive.find('input[name=binID]');
 	var input_lotref = form_receive.find('input[name=lotserialref]');
+
+	var form_itemsearch = $('#item-search-form');
 
 	form_receive.validate({
 		submitHandler : function(form) {
@@ -10,7 +11,7 @@ $(function() {
 			var valid_itemid       = validate_itemid();
 			var valid_qty          = validate_qty();
 			var valid_lotserialref = validate_lotserialref();
-			var valid_bin          = validate_bin();
+			var valid_bin          = validate_bin(form_receive);
 			var valid_qty_exceeds  = validate_qty_exceeds();
 
 			if (valid_itemid.error) {
@@ -36,6 +37,35 @@ $(function() {
 					title: valid_qty_exceeds.title,
 					text: valid_qty_exceeds.msg,
 					html: valid_qty_exceeds.html
+				}).catch(swal.noop);
+			} else {
+				form.submit();
+			}
+		}
+	});
+
+	form_itemsearch.validate({
+		errorClass: "is-invalid",
+		rules: {
+			scan: 'required'
+		},
+		messages: {
+			scan: "Please scan an itemID, Lot/Serial #, etc.",
+		},
+		submitHandler : function(form) {
+			var valid_form = new SwalError(false, '', '', false);
+			var valid_bin  = validate_bin(form_itemsearch);
+
+			if (valid_bin.error) {
+				valid_form = valid_bin;
+			}
+
+			if (valid_form.error) {
+				swal({
+					type: 'error',
+					title: valid_form.title,
+					text: valid_form.msg,
+					html: valid_form.html
 				}).catch(swal.noop);
 			} else {
 				form.submit();
@@ -116,16 +146,14 @@ $(function() {
 		return new SwalError(error, title, msg, html);
 	}
 
-
-	function validate_bin() {
+	function validate_bin(form) {
 		var error = false;
 		var title = '';
 		var msg = '';
 		var html = false;
+		var input_bin    = form.find('input[name=binID]');
 		var lowercase_bin = input_bin.val();
 		input_bin.val(lowercase_bin.toUpperCase());
-
-		console.log(warehouse.bins.contains(input_bin.val()));
 
 		if (input_bin.val() == '') {
 			error = true;

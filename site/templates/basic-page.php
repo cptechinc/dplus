@@ -27,7 +27,7 @@
 			</nav>
 		<?php endif; ?>
 	</div>
-	<div class='container page pt-3'>
+	<div class='container page <?= ($page->show_breadcrumbs) ? 'pt-3' : ''; ?>'>
 		<?= $page->body; ?>
 	</div>
 <?php include('./_foot.php'); ?>
