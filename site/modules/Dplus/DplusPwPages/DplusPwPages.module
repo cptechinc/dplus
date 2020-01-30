@@ -7,6 +7,11 @@
 				'name'  => 'dplus_function',
 				'type'  => 'text',
 				'label' => 'Dplus Function'
+			),
+			'function_url' => array(
+				'name'  => 'function_url',
+				'type'  => 'text',
+				'label' => 'URL to function'
 			)
 		);
 
@@ -20,6 +25,11 @@
 				'name'   => 'dplus-function',
 				'fields' => array('dplus_function', 'pw_template', 'summary'),
 				'paginated' => true
+			),
+			'dplus-function-link' => array(
+				'name'   => 'dplus-function-link',
+				'fields' => array('function_url', 'dplus_function', 'pw_template', 'summary'),
+				'paginated' => false
 			),
 			'dplus-json' => array(
 				'name'   => 'dplus-json',
@@ -279,7 +289,7 @@
 		}
 
 		public function set_fieldproperties(Field $f, array $field) {
-			$f->type = ucfirst($field['type']); // get a field type
+			$f->type = ctype_upper($field['type']) ? $field['type'] : ucfirst($field['type']); // get a field type
 			$f->name = $field['name'];
 			$f->label = $field['label'];
 
@@ -322,7 +332,7 @@
 		 * @return bool Was Field Group Saved?
 		 */
 		protected function update_fieldgroup($template) {
-			$pw_fields = wire('templates')->get($template)->fieldgroup;
+			$pw_fields = $this->wire('templates')->get($template)->fieldgroup;
 
 			if (get_class($pw_fields) != 'ProcessWire\Fieldgroup') {
 				$pw_fields = $this->create_fieldgroup($template);
@@ -333,16 +343,24 @@
 			foreach ($templatefields as $fieldname) {
 				$field = $this::FIELDS[$fieldname];
 
-				if (boolval(wire('fields')->get($fieldname)) == false) {
+				if (boolval($this->wire('fields')->get($fieldname)) == false) {
 					$this->create_field($field);
 				} else {
 					if (!in_array($fieldname, $this::PROCESSWIRE_FIELDS) && in_array($fieldname, $this::FIELDS)) {
 						$this->update_field($field);
 					}
 				}
-				$pw_field = wire('fields')->get($fieldname);
+				$pw_field = $this->wire('fields')->get($fieldname);
 				$pw_fields->add($pw_field);
 			}
+
+			foreach ($this::PROCESSWIRE_FIELDS as $fieldname) {
+				if ($pw_fields->hasField($key) == false) {
+					$pw_field = $this->wire('fields')->get($fieldname);
+					$pw_fields->add($pw_field);
+				}
+			}
+
 			return $pw_fields->save();
 		}
 
