@@ -1,10 +1,14 @@
 <form action="{{ page.url }}">
 	<label for="ponbr"><strong>Enter Purchase Order Number</strong></label> &nbsp; &nbsp;
+
 	<div class="form-inline">
-		<div class="form-group">
-			<input type="text" class="form-control" name="ponbr" id="ponbr"><br>
+		<div class="input-group">
+			<input type="text" class="form-control" name="ponbr" id="ponbr">
+			<span class="input-group-append">
+				<button type="submit" class="btn btn-success">
+					<i class="fa fa-search" aria-hidden="true"></i> Find
+				</button>
+			</span>
 		</div>
-		&nbsp; &nbsp;
-		<button type="submit" class="btn btn-success"><i class="fa fa-search" aria-hidden="true"></i> Find</button>
 	</div>
 </form>

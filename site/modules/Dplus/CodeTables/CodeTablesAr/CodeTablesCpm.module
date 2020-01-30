@@ -70,6 +70,9 @@ class CodeTablesCpm extends WireData implements Module {
 	 * Takes Input, validates it's for one of the code tables
 	 * Processes it, and if updated sends request to dplus
 	 *
+	 * NOTE: If an existing code is more than CustomerPriceCode::MAX_LENGTH_CODE, we will allow editing
+	 * but we won't allow creation of a code with more than allowed characters we will trim it.
+	 *
 	 * @param  WireInput $input Input
 	 * @return void
 	 */
@@ -84,6 +87,7 @@ class CodeTablesCpm extends WireData implements Module {
 		if ($q->count()) {
 			$record = $q->findOne();
 		} else {
+			$code  = $input->$rm->text('code', array('maxLength' => CustomerPriceCode::MAX_LENGTH_CODE));
 			$record = new CustomerPriceCode();
 			$record->setCode($code);
 		}
@@ -98,7 +102,8 @@ class CodeTablesCpm extends WireData implements Module {
 			$record->setSurcharge($surcharge);
 			$record->setPercentage($percentage);
 			$record->setDate(date('Ymd'));
-			$record->setTime(0);
+			$record->setTime(date('His'));
+			$record->setDummy('P');
 		}
 
 		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);
@@ -145,6 +150,15 @@ class CodeTablesCpm extends WireData implements Module {
 			$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
 		}
 		return $response;
+	}
+
+	/**
+	 * Return the Max Length of characters for the code
+	 * NOTE: Used for the JS
+	 * @return int
+	 */
+	public function get_max_length_code() {
+		return CustomerPriceCode::MAX_LENGTH_CODE;
 	}
 
 	public static function getModuleInfo() {

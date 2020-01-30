@@ -20,7 +20,7 @@
 		} elseif ($action == 'save') {
 			$module_formatter->generate_formatterfrominput($input);
 			$result = $module_formatter->save();
-			echo $con->getLastExecutedQuery();
+			
 			if ($result) {
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'success', 'title' => 'Success!', 'iconclass' => 'fa fa-floppy-o fa-2x', 'message' => "$page->title formatter was able to be saved"]);
 			} else {

@@ -209,11 +209,24 @@ function init_datepicker() {
 	});
 }
 
-$('.delete_button').click(function(e){
-	var result = confirm("Are you sure you want to delete?");
-	if(!result) {
-		e.preventDefault();
-	}
+$('a.delete_button').click(function(e){
+	e.preventDefault();
+	var link = $(this);
+
+	swal({
+		title: "Confirm Deletion",
+		text: "Are you sure you want to delete?",
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonClass: 'btn btn-success',
+		cancelButtonClass: 'btn btn-danger',
+		buttonsStyling: false,
+		confirmButtonText: 'Yes'
+	}).then(function (result) {
+		if (result) {
+			window.location.href = link.attr('href');
+		}
+	}).catch(swal.noop);
 });
 
 /*==============================================================

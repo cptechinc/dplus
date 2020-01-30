@@ -347,7 +347,8 @@
 		case 'receiving-search':
 			$ponbr = $input->$requestmethod->text('ponbr');
 			$q = strtoupper($input->$requestmethod->text('scan'));
-			$data = array("DBNAME=$dplusdb", 'RECEIVINGSEARCH', "QUERY=$q", "PONBR=$ponbr");
+			$binID = $input->$requestmethod->text('binID');
+			$data = array("DBNAME=$dplusdb", 'RECEIVINGSEARCH', "PONBR=$ponbr", "QUERY=$q", "BIN=$binID" );
 
 			if ($input->$requestmethod->page) {
 				$url = new Purl\Url($input->$requestmethod->text('page'));

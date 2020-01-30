@@ -15,12 +15,18 @@
 				$session->redirect($page->get_customerpaymentsURL($custID));
 			}
 			$session->paymentstry = 0;
-			$module_formatter = $modules->get('CiPayments');
-			$module_formatter->init_formatter();
-			$document_management = $modules->get('DocumentManagement');
+
 			$refreshurl = $page->get_customerpaymentsURL($custID);
 			$page->body .= $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
-			$page->body .= $config->twig->render('customers/ci/payments/payments.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management, 'con' => $con]);
+
+			if ($json['error']) {
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
+			} else {
+				$module_formatter = $modules->get('CiPayments');
+				$module_formatter->init_formatter();
+				$document_management = $modules->get('DocumentManagement');
+				$page->body .= $config->twig->render('customers/ci/payments/payments.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
+			}
 		} else {
 			if ($session->paymentstry > 3) {
 				$page->headline = $page->title = "Payments File could not be loaded";

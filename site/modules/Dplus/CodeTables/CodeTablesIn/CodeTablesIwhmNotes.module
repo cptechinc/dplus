@@ -1,0 +1,235 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'../CodeTablesResponse.php');
+
+use Purl\Url;
+
+use WarehouseQuery, Warehouse;
+use ConfigArQuery, ConfigAr;
+use WarehouseNoteQuery, WarehouseNote;
+
+/**
+ * Module that handles the editing of the CCM codetable
+ */
+class CodeTablesIwhmNotes extends WireData implements Module {
+	const MODEL              = 'WarehouseNote';
+	const MODEL_KEY          = 'id';
+	const DESCRIPTION        = 'Warehouse Note';
+	const DESCRIPTION_RECORD = 'Warehouse Note';
+	const DESCRIPTION_RESPONSE = 'Warehouse ';
+	const MODEL_TABLE = 'notes_whse_invc_stmt';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Return the Max Number of columns for Note Type
+	 * @param  string $notetype Note Type @see WarehouseNote::TYPES
+	 * @return int
+	 */
+	public function get_notetype_column_count($notetype) {
+		$configAR = ConfigArQuery::create()->findOne();
+
+		switch ($notetype) {
+			case 'ICTP':
+			case 'KCTP':
+			case 'IWHS':
+				return $configAR->columns_notes_invoice;
+				break;
+			case 'SWHS':
+				return $configAR->columns_notes_statement;
+				break;
+			default:
+				return 35;
+				break;
+		}
+	}
+
+	/**
+	 * Return Warehouse ID Note Types
+	 * @return array
+	 */
+	public function get_notetypes() {
+		return WarehouseNote::TYPES;
+	}
+
+	/**
+	 * Return Description of Warehouse ID Note Type
+	 * @param  string $notetype Note Type @see WarehouseNote::TYPES
+	 * @return string
+	 */
+	public function get_notetype_description($notetype) {
+		return WarehouseNote::get_type_description($notetype);
+	}
+
+	/**
+	 * Return Database Description of Warehouse ID Note Type
+	 * @param  string $notetype Note Type @see WarehouseNote::TYPES
+	 * @return string
+	 */
+	public function get_notetype_db_description($notetype) {
+		$notetype_description = ucwords($this->get_notetype_description($notetype));
+		return "Warehouse $notetype_description Notes";
+	}
+
+	/**
+	 * Returns the associated ModelQuery class for table code
+	 * @param  string $table Table Code
+	 * @return mixed
+	 */
+	public function get_query() {
+		return WarehouseNoteQuery::create();
+	}
+
+	/**
+	 * Return if the Notes of Type Exists
+	 * @param  string $type   Note Type @see WarehouseNote::TYPES
+	 * @param  string $whseID Warehouse ID
+	 * @return bool
+	 */
+	public function notes_exist($type, $whseID) {
+		$q = $this->get_query();
+		return boolval($q->filterByType($type)->filterByWhseid($whseID)->count());
+	}
+
+	/**
+	 * Return the Notes records from Database
+	 * @param  string $type   Note Type @see WarehouseNote::TYPES
+	 * @param  string $whseID Warehouse ID
+	 * @return WarehouseNote[]|ObjectCollection
+	 */
+	public function get_notes($type, $whseID) {
+		$q = $this->get_query();
+		$q->filterByType($type);
+		$q->filterByWhseid($whseID);
+		return $q->find();
+	}
+
+	/**
+	 * Return the Notes from the database as array
+	 * @param  string $type   Note Type @see WarehouseNote::TYPES
+	 * @param  string $whseID Warehouse ID
+	 * @return array
+	 */
+	public function get_notes_array($type, $whseID) {
+		$q = $this->get_query();
+		$q->select(WarehouseNote::get_aliasproperty('note'));
+		$q->filterByType($type);
+		$q->filterByWhseid($whseID);
+		return $q->find();
+	}
+
+	/**
+	 * Delete Existing Notes from the database
+	 * @param  string $type   Note Type @see WarehouseNote::TYPES
+	 * @param  string $whseID Warehouse ID
+	 * @return bool
+	 */
+	public function delete_notes($type, $whseID) {
+		$q = $this->get_query();
+		$q->filterByType($type);
+		$q->filterByWhseid($whseID);
+
+		if ($q->count()) {
+			return $q->delete();
+		}
+		return true;
+	}
+
+	/**
+	 * Takes Input, Processes it, updates Customer Type Notes in the Database
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$whseID  = $input->$rm->text('code');
+		$notetype = $input->$rm->text('notes-type');
+		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
+		$lines_saved = array();
+
+		$this->delete_notes($notetype, $whseID);
+
+		foreach ($note_lines as $key => $line) {
+			$sequence = $key + 1;
+			$record = new WarehouseNote();
+			$record->setType($notetype); // PK
+			$record->setSequence($sequence); // PK
+			$record->setKey2($whseID); // PK
+			$record->setWhseid($whseID);
+			$record->setDescription($this->get_notetype_db_description($notetype));
+			$record->setNote($line);
+			$record->setDate(date('Ymd'));
+			$record->setTime(date('His'));
+			$record->setDummy('P');
+			$lines_saved[$sequence] = $record->save();
+		}
+		$this->wire('session')->response_codetable = $this->process_responses($notetype, $whseID, $lines_saved);
+	}
+
+	/**
+	 * Return Code Table Response based on the number of lines that were written to the database
+	 * @param  string $notetype     Note Type @see WarehouseNote::TYPES
+	 * @param  string $whseID Warehouse ID
+	 * @param  array  $lines_saved  array of line numbers and if they got saved e.g. (1 => true, 2 => false)
+	 * @return CodeTableResponse
+	 */
+	protected function process_responses($notetype, $whseID, array $lines_saved) {
+		$message = self::DESCRIPTION_RESPONSE . " ($whseID) ";
+		$message .= ucwords($this->get_notetype_description($notetype)) . " Note Lines" ;
+
+		$response = new CodeTablesResponse();
+		$response->set_key("$notetype-$whseID");
+
+		if (in_array(false, $lines_saved)) {
+			$lines_error =
+			array_filter($lines_saved, function($value, $key) {
+				return  $value == false;
+			}, ARRAY_FILTER_USE_BOTH);
+			$message .= implode(", ", array_keys($lines_error));
+			$message .= " were not able to be saved";
+
+			if (sizeof($lines_error)) {
+				$response->set_error(true);
+			}
+		} else {
+			$response->set_success(true);
+			$message .= " were able to be saved";
+		}
+
+		$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if (sizeof($lines_saved)) {
+			$data = $this->write_dplus_data($notetype, $whseID);
+			$this->wire('modules')->get('CodeTables')->write_dplusfile($data, session_id());
+			$this->wire('modules')->get('CodeTables')->http_get_dplus();
+		}
+		return $response;
+	}
+
+	/**
+	 * Return Data needed for Dplus to UPDATE the Customer Type Notes
+	 * @param  string $notetype     Note Type @see WarehouseNote::TYPES
+	 * @param  string $whseID Warehouse ID
+	 * @return array
+	 */
+	public function write_dplus_data($notetype, $whseID) {
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$table = strtoupper($table);
+		return array("DBNAME=$dplusdb", 'UPDATEQNOTE', "TYPE=$notetype", "KEY2=$whseID", 'FORM=');
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus IWHM Code Notes CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for the IWHM Code Notes table',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

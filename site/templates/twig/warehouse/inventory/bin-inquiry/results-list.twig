@@ -3,7 +3,9 @@
 		{% for item in items %}
 			<div class="list-group-item">
 				<h4 class="list-group-item-heading">ITEMID: {{ item.itemid }}</h4>
-				<p class="list-group-item-text">{{ item.desc1 }}</p>
+				<p class="list-group-item-text">
+					{{ item.desc1 }} {{ item.desc2 ? ('<br>' ~ item.desc2)|raw : '' }}
+				</p>
 
 				{% if (item.is_serialized() or item.is_lotted()) %}
 					<div class="d-flex justify-content-between p-2 mb-1">

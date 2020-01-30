@@ -13,7 +13,6 @@
 
 		if ($input->get->q) {
 			$q = strtoupper($input->get->text('q'));
-
 			$page->title = "Phonebook: $customer->name Searching for '$q'";
 			$query->filterByMatchExpression($q);
 		}

@@ -3,6 +3,9 @@
 use mikehaertl\wkhtmlto\Pdf as Wkhtmlpdf;
 use Purl\Url;
 
+/**
+ * Wrapper for mikehaertl/phpwkhtmltopdf to create PDFs
+ */
 class PdfMaker extends WireData implements Module {
 
 	/**
@@ -211,24 +214,4 @@ class PdfMaker extends WireData implements Module {
 
 		return $file;
 	}
-
-
-
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
-		/**
-		 * ProcessWire Module Info
-		 *
-		 * @return void
-		 */
-		public static function getModuleInfo() {
-			return array(
-				'title' => 'Dpluso PDF Maker',
-				'version' => 101,
-				'summary' => 'Handles PDF Maker',
-				'singular' => true,
-				'autoload' => true,
-			);
-		}
 }

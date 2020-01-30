@@ -14,19 +14,19 @@
 			} else {
 				$resultscount = 0;
 				$page->pagetitle = "Searching for functions that match '$code'";
-				$page->body = $config->twig->render('dplus-menu/menu-search-page.twig', ['items' => new ProcessWire\PageArray()]);
+				$page->body = $config->twig->render('dplus-menu/menu-search-page.twig', ['page' => $page, 'items' => new ProcessWire\PageArray()]);
 			}
 		} else {
 			$mainmenu = $pages->get('/');
 			$page->pagetitle = "Searching for functions that match '$code'";
 			$functions = $mainmenu->children("dplus_function~=$code");
 			$functions->filter("dplus_function=$permission_list");
-			$page->body = $config->twig->render('dplus-menu/menu-search-page.twig', ['items' => $functions]);
+			$page->body = $config->twig->render('dplus-menu/menu-search-page.twig', ['page' => $page, 'items' => $functions]);
 		}
 	} else {
 		$mainmenu = $pages->get('/');
 		$page->pagetitle = "Menu";
 		$menus = $mainmenu->children("template=dplus-menu|warehouse-menu, dplus_function=$permission_list");
-		$page->body = $config->twig->render('dplus-menu/menu-search-page.twig', ['items' => $menus]);
+		$page->body = $config->twig->render('dplus-menu/menu-search-page.twig', ['page' => $page, 'items' => $menus]);
 	}
 	include __DIR__ . "/basic-page.php";

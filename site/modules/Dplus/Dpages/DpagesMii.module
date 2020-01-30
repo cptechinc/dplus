@@ -563,6 +563,14 @@ class DpagesMii extends Dpages implements Module {
 			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
 		});
+
+		$this->addHook('Page::get_backURL', function($event) {
+			$p = $event->object;
+			$itemID = $p->fullURL->query->get('itemID');
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->query->set('itemID', $itemID);
+			$event->return = $url->getUrl();
+		});
 	}
 
 	public function get_ii_user_allowed_functions(User $user) {
@@ -582,7 +590,7 @@ class DpagesMii extends Dpages implements Module {
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
-	
+
 	/**
 	 * Returns URL to II item page
 	 * @param  string $itemID Item ID

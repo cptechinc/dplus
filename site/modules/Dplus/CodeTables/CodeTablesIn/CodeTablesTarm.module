@@ -3,6 +3,7 @@
 include_once(__DIR__.'../CodeTablesResponse.php');
 
 use Purl\Url;
+use Propel\Runtime\ActiveQuery\Criteria;
 
 use TariffCodeQuery, TariffCode;
 use TariffCodeCountryQuery, TariffCodeCountry;
@@ -38,9 +39,9 @@ class CodeTablesTarm extends WireData implements Module {
 	 * @param  string $productlne ProductLneID
 	 * @return ObjectCollection
 	 */
-	public function get_code($stock) {
+	public function get_code($code) {
 		$q = $this->get_query();
-		return $q->findOneById($stock);
+		return $q->findOneById($code);
 	}
 
 	/**
@@ -48,9 +49,9 @@ class CodeTablesTarm extends WireData implements Module {
 	 * @param  string $productlne ProductLneID
 	 * @return bool
 	 */
-	public function code_exists($stock) {
+	public function code_exists($code) {
 		$q = $this->get_query();
-		return boolval($q->filterById($stock)->count());
+		return boolval($q->filterById($code)->count());
 	}
 
 	/**
@@ -66,10 +67,14 @@ class CodeTablesTarm extends WireData implements Module {
 	 * Takes Input, validates it's for one of the code tables
 	 * Processes it, and if updated sends request to dplus
 	 *
+	 * NOTE: If an existing code is more than TariffCode::MAX_LENGTH_CODE, we will allow editing
+	 * but we won't allow creation of a code with more than allowed characters we will trim it.
+	 *
 	 * @param  WireInput $input Input
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
+		$countries_updated = false;
 		$rm = strtolower($input->requestMethod());
 		$table = $input->$rm->text('table');
 		$code  = $input->$rm->text('code');
@@ -80,6 +85,7 @@ class CodeTablesTarm extends WireData implements Module {
 		if ($q->count()) {
 			$record = $q->findOne();
 		} else {
+			$code  = $input->$rm->text('code', array('maxLength' => TariffCode::MAX_LENGTH_CODE));
 			$record = new TariffCode();
 			$record->setCode($code);
 		}
@@ -91,16 +97,28 @@ class CodeTablesTarm extends WireData implements Module {
 			$description = $input->$rm->text('description');
 			$duty_rate = $input->$rm->text('duty_rate');
 			$countries = $input->$rm->array('country');
+
 			$record->setNumber($number);
 			$record->setDescription($description);
 			$record->setDuty_rate($duty_rate);
 			$record->setDate(date('Ymd'));
-			$record->setTime(0);
-			$this->update_tariff_countries($code, $countries);
+			$record->setTime(date('His'));
+			$record->setDummy('P');
 
+			$countries_updated = $this->update_tariff_countries($code, $countries);
 		}
 
-		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);
+		$response = $this->save_and_process_response($table, $code, $record);
+
+		if ($response->has_error() && $countries_updated) {
+			$response->set_success(true);
+		}
+
+		if ($response->has_success()) {
+			$this->update_dplus_cobol($table, $code, $countries_updated);
+		}
+
+		$this->wire('session')->response_codetable = $response;
 	}
 
 	/**
@@ -112,6 +130,7 @@ class CodeTablesTarm extends WireData implements Module {
 	 * @param  bool   $saved  Was the Record Saved?
 	 * @return CodeTablesResponse
 	 */
+
 	protected function save_and_process_response($table, $code, TariffCode $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
@@ -139,18 +158,64 @@ class CodeTablesTarm extends WireData implements Module {
 		}
 
 		$response->set_message($message);
-
-		if ($response->has_success()) {
-			$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
-		}
 		return $response;
 	}
 
-	public function update_tariff_countries($code, array $countries) {
+	/**
+	 * [update_tariff_countries description]
+	 * @param  [type] $code            [description]
+	 * @param  array  $input_countries [description]
+	 * @return [type]                  [description]
+	 */
+	public function update_tariff_countries($code, array $input_countries) {
+		$updated = false;
+
+		$q_delete = $this->get_tariffcodecountry_query($code);
+		$q_delete->filterByCountry($input_countries, Criteria::NOT_IN);
+
+		if ($q_delete->count()) {
+			$updated = $q_delete->delete();
+		}
+
+		$q_exists = $this->get_tariffcodecountry_query($code);
+		$q_exists->select(TariffCodeCountry::get_aliasproperty('country'));
+		$q_exists->filterByCountry($input_countries);
+		$existing_countries = $q_exists->find()->toArray();
+
+		$create_countries = array_diff($input_countries, $existing_countries);
+
+		if (sizeof($create_countries)) {
+			foreach ($input_countries as $country) {
+				$record = new TariffCodeCountry();
+				$record->setCode($code);
+				$record->setCountry($country);
+				$record->setDate(date('Ymd'));
+				$record->setTime(date('His'));
+				$record->setDummy('P');
+				$response = $record->save();
+			}
+			$q = $this->get_tariffcodecountry_query($code);
+			$updated = $q->count() == sizeof($input_countries);
+		}
+		return $updated;
+	}
+
+	public function get_tariffcodecountry_query($code) {
 		$q = TariffCodeCountryQuery::create();
 		$q->filterByCode($code);
+		return $q;
+	}
 
-		// Figure out a way to delete the country records that don't match the countries for that tariff gcode
+	public function update_dplus_cobol($table, $code, $countries_updated = false) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$table = strtoupper($table);
+		$data = array("DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code");
+		if ($countries_updated) {
+			$data[] = 'CTRY=UPDATED';
+		}
+		$this->wire('modules')->get('CodeTables')->write_dplusfile($data, session_id());
+		$this->wire('modules')->get('CodeTables')->http_get_dplus();
 	}
 
 	public static function getModuleInfo() {

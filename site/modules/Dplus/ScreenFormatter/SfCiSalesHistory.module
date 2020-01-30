@@ -3,7 +3,7 @@
 /**
  * Class for formatting the CI Sales History Screen
  */
-class CiSalesHistory extends ScreenFormatter implements Module {
+class SfCiSalesHistory extends ScreenFormatter implements Module {
 	protected $code = 'ci-sales-history';
 
 	/**
@@ -32,7 +32,8 @@ class CiSalesHistory extends ScreenFormatter implements Module {
 			'version' => 101,
 			'summary' => 'Handles CI Sales History Formatter',
 			'singular' => true,
-			'autoload' => true,
+			'autoload' => false,
+			'requires' => 'ScreenFormatter'
 		);
 	}
 }
