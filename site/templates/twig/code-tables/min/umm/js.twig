@@ -28,14 +28,21 @@ $(function() {
 
 	$("#code-edit-form").validate({
 		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
 		rules: {
-			code: 'required',
+			code: {
+				required: true,
+				maxlength: {{ max_length_code }}
+			},
 			description: 'required',
 			conversion: 'required',
 			pricebyweight: 'required'
 		},
 		messages: {
-			code: "Please enter a code",
+			code: "Please check the Code value (Max Length: {{ max_length_code }})",
 			description: 'Please enter a description for the code',
 			conversion: 'Please enter a conversion for the code',
 			pricebyweight: 'Please choose an option for price by weight for the code'

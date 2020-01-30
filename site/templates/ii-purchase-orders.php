@@ -15,12 +15,18 @@
 				$session->redirect($page->get_itemquotesURL($itemID));
 			}
 			$session->purchaseorderstry = 0;
-			$module_formatter = $modules->get('IiPurchaseOrders');
-			$module_formatter->init_formatter();
-			$document_management = $modules->get('DocumentManagement');
+
 			$refreshurl = $page->get_itempurchaseordersURL($itemID);
 			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
-			$page->body .= $config->twig->render('items/ii/purchase-orders/purchase-orders.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
+
+			if ($json['error']) {
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
+			} else {
+				$module_formatter = $modules->get('IiPurchaseOrders');
+				$module_formatter->init_formatter();
+				$document_management = $modules->get('DocumentManagement');
+				$page->body .= $config->twig->render('items/ii/purchase-orders/purchase-orders.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
+			}
 		} else {
 			if ($session->purchaseorderstry > 3) {
 				$page->headline = $page->title = "Purchase Orders File could not be loaded";

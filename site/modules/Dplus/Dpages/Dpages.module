@@ -121,6 +121,7 @@ class Dpages extends DplusPwPages implements Module {
 			$event->return = $this->get_user_allowed_subpages($page, $user);
 		});
 	}
+
 	/**
 	 * ProcessWire Module Info
 	 *
@@ -146,5 +147,34 @@ class Dpages extends DplusPwPages implements Module {
 				'DpagesMap',
 			),
 		);
+	}
+
+	/**
+	 * ProcessWire Installer Function
+	 * NOTE: Runs when installed through ProcessWire
+	 * @return void
+	 */
+	public function ___install() {
+
+	}
+
+	/**
+	 * ProcessWire removal Function
+	 * NOTE: Runs when removed through ProcessWire
+	 * @return void
+	 */
+	public function ___uninstall() {
+
+	}
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
+
+		parent::update();
 	}
 }

@@ -15,17 +15,7 @@ class CodeTablesCtm extends WireData implements Module {
 	const MODEL_KEY          = 'code';
 	const DESCRIPTION        = 'Customer Type Code';
 	const DESCRIPTION_RECORD = 'Customer Type Code';
-
-	const CODE_TABLES = array(
-		'ccm' => array(
-			'code'        => 'ccm',
-			'code-twig'   => 'customer-type',
-			'description' => 'Customer Type Code',
-			'description-record' => 'Customer Type Code',
-			'model'       => 'CustomerTypeCode',
-			'model-key'   => 'code'
-		)
-	);
+	const TABLE              = 'ctm';
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
@@ -85,10 +75,32 @@ class CodeTablesCtm extends WireData implements Module {
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
-		$configAR = ConfigArQuery::create()->findOne();
 		$rm = strtolower($input->requestMethod());
 		$table = $input->$rm->text('table');
 		$code  = $input->$rm->text('code');
+
+		if ($input->$rm->text('action') == 'update-notes') {
+			$this->wire('modules')->get('CodeTablesCtmNotes')->process_input($input);
+		} else {
+			$this->process_input_ctm($input);
+		}
+	}
+
+	/**
+	 * Takes Input Processes it, updates the ctm table,
+	 * and if updated sends request to dplus
+	 *
+	 * NOTE: If an existing code is more than TariffCode::MAX_LENGTH_CODE, we will allow editing
+	 * but we won't allow creation of a code with more than allowed characters we will trim it.
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input_ctm(WireInput $input) {
+		$configAR = ConfigArQuery::create()->findOne();
+		$rm = strtolower($input->requestMethod());
+		$table = self::TABLE;
+		$code = $input->$rm->text('code');
 
 		$q = $this->get_query();
 		$q->filterByCode($code);
@@ -96,6 +108,7 @@ class CodeTablesCtm extends WireData implements Module {
 		if ($q->count()) {
 			$record = $q->findOne();
 		} else {
+			$code  = $input->$rm->text('code', array('maxLength' => CustomerTypeCode::MAX_LENGTH_CODE));
 			$record = new CustomerTypeCode();
 			$record->setCode($code);
 		}
@@ -107,8 +120,10 @@ class CodeTablesCtm extends WireData implements Module {
 			$email = $input->$rm->text('order_approval_email');
 			$record->setDescription($description);
 			$record->setOrder_approval_email($email);
+			$record->setMail_list($input->$rm->text('mail_list'));
 			$record->setDate(date('Ymd'));
-			$record->setTime(0);
+			$record->setTime(date('His'));
+			$record->setDummy('P');
 
 			if ($configAR->gl_report_type() == 'customer') {
 				$record->setAccount_sales($input->$rm->text('gl_sales'));

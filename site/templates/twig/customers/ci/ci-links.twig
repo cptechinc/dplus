@@ -1,19 +1,23 @@
-{% if page.is_print() == false %}
-	<div class="form-group">
-		<a href="{{ page.get_backURL() }}" class="btn btn-primary not-round">
+<div class="form-group">
+	{% if page.is_print() %}
+		<a href="{{ page.get_backURL() }}" class="btn btn-primary d-print-none">
+			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to {{ page.has('shiptoID') and page.pw_template != 'ci-shipto' ? 'Shipto' : 'Customer' }}
+		</a>
+	{% else %}
+		<a href="{{ page.get_backURL() }}" class="btn btn-primary">
 			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to {{ page.has('shiptoID') and page.pw_template != 'ci-shipto' ? 'Shipto' : 'Customer' }}
 		</a>
 		&nbsp;
-		<a href="{{ page.get_printURL() }}" class="btn btn-primary not-round">
+		<a href="{{ page.get_printURL() }}" class="btn btn-primary">
 			<i class="fa fa-print" aria-hidden="true"></i> Print
 		</a>
 		&nbsp;
 		{% if refreshurl %}
-			<a href="{{ refreshurl }}" class="btn btn-primary not-round">
+			<a href="{{ refreshurl }}" class="btn btn-primary">
 				<i class="fa fa-refresh" aria-hidden="true"></i> Refresh Data
 			</a>
 			&nbsp;
 			Data Current as of {{ lastmodified|date('m/d/Y h:i A') }}
 		{% endif %}
-	</div>
-{% endif %}
+	{% endif %}
+</div>

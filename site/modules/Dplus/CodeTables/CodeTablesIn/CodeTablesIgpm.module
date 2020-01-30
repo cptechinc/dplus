@@ -70,6 +70,9 @@ class CodeTablesIgpm extends WireData implements Module {
 	 * Takes Input, validates it's for one of the code tables
 	 * Processes it, and if updated sends request to dplus
 	 *
+	 * NOTE: If an existing code is more than InvPriceCode::MAX_LENGTH_CODE, we will allow editing
+	 * but we won't allow creation of a code with more than allowed characters we will trim it.
+	 *
 	 * @param  WireInput $input Input
 	 * @return void
 	 */
@@ -85,6 +88,7 @@ class CodeTablesIgpm extends WireData implements Module {
 		if ($q->count()) {
 			$record = $q->findOne();
 		} else {
+			$code  = $input->$rm->text('code', array('maxLength' => InvPriceCode::MAX_LENGTH_CODE));
 			$record = new InvPriceCode();
 			$record->setCode($code);
 		}
@@ -95,7 +99,8 @@ class CodeTablesIgpm extends WireData implements Module {
 			$description = $input->$rm->text('description');
 			$record->setDescription($description);
 			$record->setDate(date('Ymd'));
-			$record->setTime(0);
+			$record->setTime(date('His'));
+			$record->setDummy('P');
 
 			if ($config_so->is_request_program()) {
 				$sales_program = $input->$rm->text('sales_program');
@@ -147,6 +152,15 @@ class CodeTablesIgpm extends WireData implements Module {
 			$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
 		}
 		return $response;
+	}
+
+	/**
+	 * Return the Max Length of characters for the code
+	 * NOTE: Used for the JS
+	 * @return int
+	 */
+	public function get_max_length_code() {
+		return InvPriceCode::MAX_LENGTH_CODE;
 	}
 
 	public static function getModuleInfo() {

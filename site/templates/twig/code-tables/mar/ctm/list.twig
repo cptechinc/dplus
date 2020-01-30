@@ -12,6 +12,9 @@
 				Mail
 			</div>
 			<div class="col-1">
+				Notes
+			</div>
+			<div class="col-1">
 				Statement
 			</div>
 			<div class="col-1">
@@ -23,7 +26,7 @@
 			<div class="col-1">
 				Pack
 			</div>
-			<div class="col-3">
+			<div class="col-2">
 				{% if page.is_print() == false %}
 					<a href="{{ page.url ~ '?code=new' }}" class="btn btn-light">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
@@ -45,6 +48,9 @@
 					{{ code.mail_list }}
 				</div>
 				<div class="col-1">
+
+				</div>
+				<div class="col-1">
 					{{ code.count_notetypealias('statement') ? 'Y' : 'N' }}
 				</div>
 				<div class="col-1">
@@ -56,14 +62,14 @@
 				<div class="col-1">
 					{{ code.count_notetypealias('pack') ? 'Y' : 'N' }}
 				</div>
-				<div class="col-3 text-center">
+				<div class="col-2 text-center">
 					{% if page.is_print() == false %}
-						<a href="{{ page.get_codetable_code_editURL(page.codetable, code.code) }}" class="btn btn-warning">
-							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						<a href="{{ page.get_codetable_code_editURL(page.codetable, code.code) }}" class="btn btn-warning" title="Edit" aria-label="Edit">
+							<i class="fa fa-pencil" aria-hidden="true"></i> <span class="sr-only">Edit</span>
 						</a>
 						&nbsp;
-						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger delete_button">
-							<i class="fa fa-trash" aria-hidden="true"></i> Delete
+						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger delete_button" title="Delete" aria-label="Delete">
+							<i class="fa fa-trash" aria-hidden="true"></i><span class="sr-only">Delete</span>
 						</a>
 					{% endif %}
 				</div>

@@ -1,11 +1,10 @@
 <?php namespace ProcessWire;
 
 /**
- * Class for formatting the II Sales Orders Screen
+ * Class for formatting the II stock Screen
  */
-class IiSalesOrders extends ScreenFormatter implements Module {
-	protected $code = 'ii-sales-orders';
-
+class SfIiStockItem extends ScreenFormatter implements Module {
+	protected $code = 'ii-stock';
 
 	/**
 	 * Key Value array of Sections that exist I.E. header => Header, detail => Detail
@@ -25,11 +24,12 @@ class IiSalesOrders extends ScreenFormatter implements Module {
 	 */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dpluso II Sales Orders Formatter Module',
+			'title' => 'Dpluso II Stock Item Formatter Module',
 			'version' => 101,
-			'summary' => 'Handles II Sales Orders Formatter',
+			'summary' => 'Handles II Stock Item Formatter',
 			'singular' => true,
-			'autoload' => true,
+			'autoload' => false,
+			'requires' => 'ScreenFormatter'
 		);
 	}
 }

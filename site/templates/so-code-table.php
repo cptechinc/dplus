@@ -29,8 +29,8 @@
 			include(__DIR__."/ar-code-table-$page->codetable.php");
 		} else {
 			$page->body .= $config->twig->render("code-tables/mso/$page->codetable/list.twig", ['page' => $page, 'table' => $table, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable]);
-			$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "mso/$page->codetable/form.twig"]);
-			$page->js .= $config->twig->render("code-tables/mso/$page->codetable/js.twig", ['page' => $page]);
+			$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "mso/$page->codetable/form.twig", 'max_length_code' => $module_codetable->get_max_length_code()]);
+			$page->js .= $config->twig->render("code-tables/mso/$page->codetable/js.twig", ['page' => $page, 'max_length_code' => $module_codetable->get_max_length_code()]);
 		}
 	} else {
 		$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Code Table Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "AR Code Table '$page->codetable' does not exist"]);

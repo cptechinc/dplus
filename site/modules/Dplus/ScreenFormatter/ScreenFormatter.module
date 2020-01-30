@@ -5,7 +5,7 @@ use TableformatterQuery, Tableformatter;
 /**
  * Class for Formatting Screens
  */
-class ScreenFormatter extends Process implements ConfigurableModule {
+class ScreenFormatter extends WireData implements Module {
 
 	/**
 	 * Array of Fields by section, and their properties
@@ -40,27 +40,17 @@ class ScreenFormatter extends Process implements ConfigurableModule {
 	 */
 	protected $userID;
 
+	/**
+	 * Screen Formatter Code
+	 * @var string
+	 */
 	protected $code = '';
 
 	/**
 	 * Key Value array of Sections that exist I.E. header => Header, detail => Detail
 	 * @var string
 	 */
-	protected $datasections = array(
-	);
-
-	const CONFIG_FIELDS = array(
-		'directory_fields' => array(
-			'type'        => 'text',  // TRUE OR FALSE
-			'label'       => 'Fields Definition Directory?',
-			'description' => 'Fields Definition Directory',
-			'notes'       => ""
-		)
-	);
-
-	const DEFAULT_CONFIG = array(
-		'directory_fields' => '/var/www/html/dplus-new/site/modules/Dplus/JsonDataFiles/fields/'
-	);
+	protected $datasections = array();
 
 	const COLUMNS_TRACKING = array('Tracking Number');
 
@@ -83,15 +73,7 @@ class ScreenFormatter extends Process implements ConfigurableModule {
 	 * @return void
 	 */
 	public function init() {
-		parent::init();
-
-		foreach(self::DEFAULT_CONFIG as $key => $value) {
-			if (isset($this->data[$key])) {
-				$this->data[$key] = $this->data[$key];
-			} else {
-				$this->data[$key] = $value;
-			}
-		}
+		$this->data['directory_fields'] = $this->wire('config')->paths->siteModules.'Dplus/JsonDataFiles/fields/';
 	}
 
 	/**
@@ -117,8 +99,51 @@ class ScreenFormatter extends Process implements ConfigurableModule {
 			'singular' => true,
 			'autoload' => true,
 			'requires' => array('DplusPwPages'),
-			//'installs' => array('DplusoSalesOrder'),
+			'installs' => array(
+				'SfCiOpenInvoices',
+				'SfCiPayments',
+				'SfCiQuotes',
+				'SfCiPurchaseHistory',
+				'SfCiPurchaseOrders',
+				'SfCiSalesHistory',
+				'SfCiSalesOrders',
+				'SfIiPurchaseHistory',
+				'SfIiPurchaseOrders',
+				'SfIiQuotes',
+				'SfIiSalesHistory',
+				'SfIiSalesOrders',
+				'SfIiStockItem',
+				'SfViOpenInvoices',
+				'SfViPaymentHistory',
+				'SfViPurchaseHistory',
+				'SfViPurchaseOrders',
+				'SfViUnreleasedPO'
+			),
 		);
+	}
+
+	/**
+	 * ProcessWire removal Function
+	 * NOTE: Runs when removed through ProcessWire
+	 * @return void
+	 */
+	public function __uninstall() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->uninstall($module_name);
+		}
+		parent::__uninstall();
+	}
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
 	}
 
 	static public function getModuleConfigInputfields(array $data) {
@@ -168,6 +193,14 @@ class ScreenFormatter extends Process implements ConfigurableModule {
 	 */
 	public function get_datasections() {
 		return $this->datasections;
+	}
+
+	/**
+	 * Returns Source of Formatter
+	 * @return string
+	 */
+	public function get_source() {
+		return $this->source;
 	}
 
 	/**

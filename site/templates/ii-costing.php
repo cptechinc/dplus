@@ -19,8 +19,14 @@
 			}
 			$session->costingtry = 0;
 			$refreshurl = $page->get_itemcostingURL($itemID);
-			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);$page->body .= $config->twig->render('items/ii/costing/item-info.twig', ['page' => $page, 'json' => $json]);
-			$page->body .= $config->twig->render('items/ii/costing/costing-screen.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json]);
+			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
+
+			if ($json['error']) {
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
+			} else {
+				$page->body .= $config->twig->render('items/ii/costing/item-info.twig', ['page' => $page, 'json' => $json]);
+				$page->body .= $config->twig->render('items/ii/costing/costing-screen.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json]);
+			}
 		} else {
 			if ($session->costingtry > 3) {
 				$page->headline = $page->title = "Costing File could not be loaded";

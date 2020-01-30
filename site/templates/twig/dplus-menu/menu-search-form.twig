@@ -1,10 +1,13 @@
-<form action="" class="mb-3 allow-enterkey-submit">
+<form action="{{ page.url }}" class="mb-3 allow-enterkey-submit">
 	<label for="ordn"><strong>Enter Dplus Menu / Function code</strong></label> &nbsp; &nbsp;
 	<div class="form-inline">
-		<div class="form-group">
+		<div class="input-group">
 			<input type="text" class="form-control" name="q">
+			<div class="input-group-append">
+				<button type="submit" class="btn btn-success">
+					<i class="fa fa-search" aria-hidden="true"></i> Find
+				</button>
+			</div>
 		</div>
-		&nbsp; &nbsp;
-		<button type="submit" class="btn btn-success"><i class="fa fa-search" aria-hidden="true"></i> Find</button>
 	</div>
 </form>

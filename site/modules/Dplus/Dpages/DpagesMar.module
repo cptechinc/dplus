@@ -92,7 +92,7 @@ class DpagesMar extends Dpages implements Module {
 			'title'          => 'Customer Type Code',
 			'summary'        => 'View Customer Type Code',
 			'parent'         => '/mar/armain/',
-			'dplus_function' => ''
+			'dplus_function' => 'ctm'
 		),
 	);
 
