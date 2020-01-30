@@ -1,0 +1,231 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'../CodeTablesResponse.php');
+
+use Purl\Url;
+
+use CustomerTypeNotesQuery, CustomerTypeNotes;
+use ConfigArQuery, ConfigAr;
+
+/**
+ * Module that handles the editing of the CCM codetable
+ */
+class CodeTablesCtmNotes extends WireData implements Module {
+	const MODEL                = 'CustomerTypeNotes';
+	const MODEL_KEY            = 'code';
+	const DESCRIPTION          = 'Customer Type Code Notes';
+	const DESCRIPTION_RECORD   = 'Customer Type Code Notes';
+	const DESCRIPTION_RESPONSE = 'Customer Type Code';
+	const TABLE                = 'ctm';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Return the Max Number of columns for Note Type
+	 * @param  string $notetype Note Type @see CustomerTypeNotes::TYPES
+	 * @return int
+	 */
+	public function get_notetype_column_count($notetype) {
+		$configAR = ConfigArQuery::create()->findOne();
+
+		switch ($notetype) {
+			case 'ICTP':
+			case 'KCTP':
+			case 'PCTP':
+				return $configAR->columns_notes_invoice;
+				break;
+			case 'SCTP':
+				return $configAR->columns_notes_statement;
+				break;
+		}
+	}
+
+	/**
+	 * Return Customer Type Code Note Types
+	 * @return array
+	 */
+	public function get_notetypes() {
+		return CustomerTypeNotes::TYPES;
+	}
+
+	/**
+	 * Return Description of Customer Type Code Note Type
+	 * @param  string $notetype Note Type @see CustomerTypeNotes::TYPES
+	 * @return string
+	 */
+	public function get_notetype_description($notetype) {
+		return CustomerTypeNotes::get_type_description($notetype);
+	}
+
+	/**
+	 * Return Database Description of Customer Type Code Note Type
+	 * @param  string $notetype Note Type @see CustomerTypeNotes::TYPES
+	 * @return string
+	 */
+	public function get_notetype_db_description($notetype) {
+		$notetype_description = ucwords($this->get_notetype_description($notetype));
+		return "Cust Type $notetype_description Notes";
+	}
+
+	/**
+	 * Returns the associated ModelQuery class for table code
+	 * @param  string $table Table Code
+	 * @return mixed
+	 */
+	public function get_query() {
+		return CustomerTypeNotesQuery::create();
+	}
+
+	/**
+	 * Return if the Notes of Type Exists
+	 * @param  string $type Note Type @see CustomerTypeNotes::TYPES
+	 * @param  string $code Customer Type Code
+	 * @return bool
+	 */
+	public function notes_exist($type, $code) {
+		$q = $this->get_query();
+		return boolval($q->filterByType($type)->filterByCode($code)->count());
+	}
+
+	/**
+	 * Return the Notes records from Database
+	 * @param  string $type Note Type @see CustomerTypeNotes::TYPES
+	 * @param  string $code Customer Type Code
+	 * @return CustomerTypeNotes[]|ObjectCollection
+	 */
+	public function get_notes($type, $code) {
+		$q = $this->get_query();
+		$q->filterByType($type);
+		$q->filterByCustomertype($code);
+		return $q->find();
+	}
+
+	/**
+	 * Return the Notes from the database as array
+	 * @param  string $type Note Type @see CustomerTypeNotes::TYPES
+	 * @param  string $code Customer Type Code
+	 * @return array
+	 */
+	public function get_notes_array($type, $code) {
+		$q = $this->get_query();
+		$q->select(CustomerTypeNotes::get_aliasproperty('note'));
+		$q->filterByType($type);
+		$q->filterByCustomertype($code);
+		return $q->find();
+	}
+
+	/**
+	 * Delete Existing Notes from the database
+	 * @param  string $type Note Type @see CustomerTypeNotes::TYPES
+	 * @param  string $code Customer Type Code
+	 * @return bool
+	 */
+	public function delete_notes($type, $code) {
+		$q = $this->get_query();
+		$q->filterByType($type);
+		$q->filterByCustomertype($code);
+
+		if ($q->count()) {
+			return $q->delete();
+		}
+		return true;
+	}
+
+	/**
+	 * Takes Input, Processes it, updates Customer Type Notes in the Database
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$customertype  = $input->$rm->text('code'); // CUSTOMER TYPE CODE
+		$notetype = $input->$rm->text('notes-type');
+		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
+		$lines_saved = array();
+
+		$this->delete_notes($notetype, $customertype);
+
+		foreach ($note_lines as $key => $line) {
+			$sequence = $key + 1;
+			$record = new CustomerTypeNotes();
+			$record->setType($notetype); // PK
+			$record->setSequence($sequence); // PK
+			$record->setKey2($customertype); // PK
+			$record->setCustomertype($customertype);
+			$record->setDescription($this->get_notetype_db_description($notetype));
+			$record->setNote($line);
+			$record->setDate(date('Ymd'));
+			$record->setTime(date('His'));
+			$record->setDummy('P');
+			$lines_saved[$sequence] = $record->save();
+		}
+		$this->wire('session')->response_codetable = $this->process_responses($notetype, $customertype, $lines_saved);
+	}
+
+	/**
+	 * Return Code Table Response based on the number of lines that were written to the database
+	 * @param  string $notetype     Note Type @see CustomerTypeNotes::TYPES
+	 * @param  string $customertype Customer Type Code
+	 * @param  array  $lines_saved  array of line numbers and if they got saved e.g. (1 => true, 2 => false)
+	 * @return CodeTableResponse
+	 */
+	protected function process_responses($notetype, $customertype, array $lines_saved) {
+		$message = self::DESCRIPTION_RESPONSE . " ($customertype) ";
+		$message .= ucwords($this->get_notetype_description($notetype)) . " Note Lines" ;
+
+		$response = new CodeTablesResponse();
+		$response->set_key("$notetype-$customertype");
+
+		if (in_array(false, $lines_saved)) {
+			$lines_error =
+			array_filter($lines_saved, function($value, $key) {
+				return  $value == false;
+			}, ARRAY_FILTER_USE_BOTH);
+			$message .= implode(", ", array_keys($lines_error));
+			$message .= " were not able to be saved";
+
+			if (sizeof($lines_error)) {
+				$response->set_error(true);
+			}
+		} else {
+			$response->set_success(true);
+			$message .= " were able to be saved";
+		}
+
+		$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if (sizeof($lines_saved)) {
+			$data = $this->write_dplus_data($notetype, $customertype);
+			$this->wire('modules')->get('CodeTables')->write_dplusfile($data, session_id());
+			$this->wire('modules')->get('CodeTables')->http_get_dplus();
+		}
+		return $response;
+	}
+
+	/**
+	 * Return Data needed for Dplus to UPDATE the Customer Type Notes
+	 * @param  string $notetype     Note Type @see CustomerTypeNotes::TYPES
+	 * @param  string $customertype Customer Type Code
+	 * @return array
+	 */
+	public function write_dplus_data($notetype, $customertype) {
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$table = strtoupper($table);
+		return array("DBNAME=$dplusdb", 'UPDATEQNOTE', "TYPE=$notetype", "KEY2=$customertype", 'FORM=');
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus CTM Code Notes Table CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for the CTM Code Notes table',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
