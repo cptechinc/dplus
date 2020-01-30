@@ -28,8 +28,12 @@ class DpagesMin extends Dpages implements Module {
 			'name'   => 'min-code-table-tarm',
 			'fields' => array()
 		),
-		'upc-xref' => array(
+		'upcx' => array(
 			'name'   => 'upcx',
+			'fields' => array()
+		),
+		'itm' => array(
+			'name'   => 'itm',
 			'fields' => array()
 		),
 	);
@@ -50,6 +54,15 @@ class DpagesMin extends Dpages implements Module {
 			'summary'        => 'Inventory Maintenance',
 			'parent'         => '/min/',
 			'dplus_function' => 'inmain'
+		),
+		'min-itm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'itm',
+			'name'           => 'itm',
+			'title'          => 'Item Master',
+			'summary'        => 'View / Edit Item',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => ''
 		),
 		'min-iwhm' => array(
 			'template'       => 'dplus-function',
