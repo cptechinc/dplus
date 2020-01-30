@@ -40,9 +40,18 @@
 			$response = array(
 				'error' => false,
 				'exists' => false,
+				'itemID' => false,
 				'message' => $msg
 			);
 		}
 
+		$page->body = json_encode($response);
+	} else {
+		$response = array(
+			'error' => true,
+			'exists' => false,
+			'itemID' => false,
+			'message' => "No Item ID was sent with request"
+		);
 		$page->body = json_encode($response);
 	}

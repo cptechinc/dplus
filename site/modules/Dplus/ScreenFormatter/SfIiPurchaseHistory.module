@@ -3,7 +3,7 @@
 /**
  * Class for formatting the II Purchase History Screen
  */
-class IiPurchaseHistory extends ScreenFormatter implements Module {
+class SfIiPurchaseHistory extends ScreenFormatter implements Module {
 	protected $code = 'ii-purchase-history';
 
 	/**
@@ -29,7 +29,8 @@ class IiPurchaseHistory extends ScreenFormatter implements Module {
 			'version' => 101,
 			'summary' => 'Handles II Purchase History Formatter',
 			'singular' => true,
-			'autoload' => true,
+			'autoload' => false,
+			'requires' => 'ScreenFormatter'
 		);
 	}
 }

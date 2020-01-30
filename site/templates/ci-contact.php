@@ -6,7 +6,6 @@
 
 	$page->show_breadcrumbs = false;
 
-
 	if ($input->get->text('shiptoID')) {
 		$shiptoID = $input->get->text('shiptoID');
 		$query->filterByShiptoid($shiptoID);

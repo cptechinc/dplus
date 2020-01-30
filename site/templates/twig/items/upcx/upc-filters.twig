@@ -1,0 +1,34 @@
+<div class="mb-4">
+	<button class="btn btn-info toggle-order-search" type="button" data-toggle="collapse" data-target="#upcs-filter-div" aria-expanded="false" aria-controls="upcs-filter-div">
+		Toggle Search&ensp;<i class="fa fa-search" aria-hidden="true"></i>
+	</button>
+</div>
+
+<div id="upcs-filter-div" class="mb-3 {{ input.get.text('filter') is empty and input.get.text('itemID') is empty ? 'collapse' : ''}}">
+	<div class="card">
+		<div class="card-body">
+			<form action="" method="get" class="remove-empty-fields" submit-empty="false">
+				<div class="row">
+					<div class="col-sm-4">
+						<h5>Item ID</h5>
+						<input class="form-control inline" type="text" name="itemID" value="{{ input.get.text('itemID') }}" placeholder="Item ID">
+					</div>
+				</div>
+				<div class="row mt-3">
+					<div class="col-sm-12 form-group">
+						<button class="btn btn-success btn-block" type="submit">Search <i class="fa fa-search" aria-hidden="true"></i></button>
+					</div>
+					{% if input.get.text('filter') or input.get.text('itemID') %}
+						<div class="col-sm-12 form-group">
+							<div>
+								<a href="{{ page.url }}" class="btn btn-warning btn-block">
+									Clear Search <i class="fa fa-search-minus" aria-hidden="true"></i>
+								</a>
+							</div>
+						</div>
+					{% endif %}
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

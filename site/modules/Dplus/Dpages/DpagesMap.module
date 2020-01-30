@@ -14,7 +14,8 @@ class DpagesMap extends Dpages implements Module {
 	const TEMPLATES = array(
 		'vxm' => array(
 			'name'   => 'vxm',
-			'fields' => array()
+			'fields' => array(),
+			'paginated' => true
 		),
 	);
 
@@ -42,6 +43,15 @@ class DpagesMap extends Dpages implements Module {
 			'title'          => 'VXM',
 			'summary'        => 'View Vendor Item Xref',
 			'parent'         => '/map/apmain/',
+			'dplus_function' => ''
+		),
+		'ap-vxm-validate' => array(
+			'template'       => 'dplus-json',
+			'pw_template'    => 'vxm-validate',
+			'name'           => 'validate',
+			'title'          => 'VXM Validate',
+			'summary'        => 'Validate VXM',
+			'parent'         => '/map/apmain/vxm/',
 			'dplus_function' => ''
 		),
 	);
@@ -100,6 +110,14 @@ class DpagesMap extends Dpages implements Module {
 			$event->return = $this->get_vxm_itemURL($itemID);
 		});
 
+		/**
+		 * Returns Sales Order Page URL
+		 */
+		$this->addHook('Page(pw_template=vxm)::get_itemURL', function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_vxm_itemURL($itemID);
+		});
+
 
 		$this->addHookProperty('Page(pw_template=vxm)::vendorID', function($event) {
 			$p = $event->object;
@@ -130,7 +148,7 @@ class DpagesMap extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
-	public function get_vxm_itemURL($vendorID) {
+	public function get_vxm_itemURL($itemID) {
 		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();

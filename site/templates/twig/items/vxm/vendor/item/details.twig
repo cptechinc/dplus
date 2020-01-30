@@ -41,6 +41,6 @@
 		<label for="date_changed"><b>Last Change Date</b></label>
 	</div>
 	<div class="col-sm-6">
-		<input type="text" name="date_changed" class="form-control-plaintext form-control-sm" id="date_changed" value="{{ item.date_changed|convertdate }}" readonly>
+		<input type="text" name="date_changed" class="form-control-plaintext form-control-sm" id="date_changed" value="{{ item.date_changed ? item.date_changed|convertdate : '' }}" readonly>
 	</div>
 </div>

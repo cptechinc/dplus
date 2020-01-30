@@ -5,8 +5,12 @@ use Picqer\Barcode\BarcodeGeneratorSVG;
 use Picqer\Barcode\BarcodeGeneratorHTML;
 use Picqer\Barcode\BarcodeGeneratorJPG;
 
+/**
+ * Wrapper for Generating Barcodes
+ */
 class BarcodeMaker extends WireData implements Module {
 	const BASE_GENERATOR_CLASSNAME = 'Picqer\Barcode\BarcodeGenerator';
+
 	/**
 	 * Image Type
 	 * @var string
@@ -27,15 +31,13 @@ class BarcodeMaker extends WireData implements Module {
 	protected $barcode_type = 'TYPE_CODE_128';
 
 	/**
-	 * Undocumented variable
-	 *
+	 * Barcode Generator
 	 * @var BarcodeGeneratorPNG|BarcodeGeneratorSVG|BarcodeGeneratorHTML|BarcodeGeneratorJPG
 	 */
 	protected $generator;
 
 	/**
 	 * Constructs Barcode Generator
-	 *
 	 * @return void
 	 */
 	public function init() {
@@ -45,7 +47,6 @@ class BarcodeMaker extends WireData implements Module {
 
 	/**
 	 * Sets Image Type
-	 * 
 	 * @uses   self::init()
 	 * @param  string $type e.g. PNG
 	 * @return void
@@ -57,7 +58,6 @@ class BarcodeMaker extends WireData implements Module {
 
 	/**
 	 * Sets Barcode Type
-	 * 
 	 * @param string $type
 	 */
 	public function set_barcodetype($type) {
@@ -66,30 +66,11 @@ class BarcodeMaker extends WireData implements Module {
 
 	/**
 	 * Return image representation of barcode (requires GD or Imagick library).
-	 *
 	 * @param  string $code e.g. TYPE_CODE_128
-	 * @return string       image data or false in case of erro
+	 * @return string            image data or false in case of error
 	 */
 	public function generate_barcode($code) {
 		$class = get_class($this->generator);
 		return $this->generator->getBarcode($code, constant("$class::$this->barcode_type"));
 	}
-
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
-		/**
-		 * ProcessWire Module Info
-		 *
-		 * @return void
-		 */
-		public static function getModuleInfo() {
-			return array(
-				'title' => 'Dpluso Barcode Maker',
-				'version' => 101,
-				'summary' => 'Handles Barcode Creation',
-				'singular' => true,
-				'autoload' => true,
-			);
-		}
 }

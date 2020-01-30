@@ -13,7 +13,7 @@
 		$query->filterByItemid($itemID);
 
 		if ($query->count()) {
-			$page->headline = "Item Information: $itemID";
+			$page->headline = "II: $itemID";
 			$item = ItemMasterItemQuery::create()->findOneByItemid($itemID);
 			$itempricing = ItemPricingQuery::create()->findOneByItemid($itemID);
 			$module_json = $modules->get('JsonDataFiles');
@@ -27,9 +27,14 @@
 
 			if ($module_json->file_exists(session_id(), 'ii-stock')) {
 				$session->itemtry = 0;
-				$module_formatter = $modules->get('IiStockItem');
-				$module_formatter->init_formatter();
-				$stock = $config->twig->render('items/ii/item/stock.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint()]);
+
+				if ($json['error']) {
+					$stock .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
+				} else {
+					$module_formatter = $modules->get('IiStockItem');
+					$module_formatter->init_formatter();
+					$stock = $config->twig->render('items/ii/item/stock.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint()]);
+				}
 			} else {
 				if ($session->itemtry > 3) {
 					$stock = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "JSON Decode Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => $module_json->get_error()]);

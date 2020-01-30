@@ -1,0 +1,97 @@
+<form action="{{ page.fullURL.getURL() }}" method="POST" id="upc-item-form">
+	<div class="row">
+		<div class="col-sm-8">
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="upc">UPC Code</label>
+				</div>
+				<div class="col-sm-6">
+					<input type="text" class="{{ upc.isNew() ? 'form-control' : 'form-control-plaintext' }}" name="upc" id="upc" value="{{ upc.upc }}" {{ upc.isNew() ? '' : 'readonly' }}>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="itemID">Item ID</label>
+				</div>
+				<div class="col-sm-6">
+					<input type="text" class="{{ upc.isNew() ? 'form-control' : 'form-control-plaintext' }}" name="itemID" id="itemID" value="{{ upc.itemID }}" {{ upc.isNew() ? '' : 'readonly' }}>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="primary">Primary?</label>
+				</div>
+				<div class="col-sm-6">
+					<div class="custom-control custom-checkbox">
+						<input type="checkbox" class="custom-control-input" name="primary" id="primary" value="Y" {{ upc.is_primary() ? 'checked' : ''}}>
+						<label class="custom-control-label" for="primary">&nbsp;</label>
+					</div>
+					{% if upc.get_primary_upc_code() != '' %}
+						<a href="{{ page.upcURL(upc.get_primary_upc_code()) }}" class="link">
+							View Primary ({{ upc.get_primary_upc_code() }})
+						</a>
+					{% endif %}
+					<input type="hidden" name="valid_primary" id="valid_primary" value="false">
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="qty">Eaches per UPC</label>
+				</div>
+				<div class="col-sm-6">
+					<input type="number" class="form-control" name="qty" id="qty" value="{{ upc.qty }}">
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="uom">Unit of Measure</label>
+				</div>
+				<div class="col-sm-6">
+					<select name="uom" class="form-control" id="uom">
+						<option value="">-- Choose --</option>
+						{% for uom in unitsofm %}
+							<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == upc.uom ? 'selected' : ''}}>{{ uom.description }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="mastercase">Master Carton?</label>
+				</div>
+				<div class="col-sm-6">
+					<div class="custom-control custom-checkbox">
+						<input type="checkbox" class="custom-control-input" name="mastercase" id="mastercase" value="Y" {{ upc.is_mastercase() ? 'checked' : ''}}>
+						<label class="custom-control-label" for="mastercase">&nbsp;</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="needslabel">Need Label?</label>
+				</div>
+				<div class="col-sm-6">
+					<div class="custom-control custom-checkbox">
+						<input type="checkbox" class="custom-control-input" name="needslabel" id="needslabel" value="Y" {{ upc.is_needslabel() ? 'checked' : ''}}>
+						<label class="custom-control-label" for="needslabel">&nbsp;</label>
+					</div>
+				</div>
+			</div>
+			<div class="row text-center">
+				<div class="col-sm-6">
+					<button type="submit" class="btn btn-danger btn-block" name="action" value="remove-upc-item">
+						<i class="fa fa-trash" aria-hidden="true"></i> Remove
+					</button>
+				</div>
+				<div class="col-sm-6">
+					<button type="submit" class="btn btn-success btn-block" name="action" value="update-upcx">
+						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+					</button>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+</form>
