@@ -1,23 +1,28 @@
 <h3>Notes</h3>
-<div class="list-group">
-	<div class="list-group-item list-group-item-action bg-dark text-white">
-		<div class="row">
-			<div class="col-sm-2">Type</div>
-			<div class="col-sm-10">Note</div>
-		</div>
-	</div>
-	{% for note in notes %}
-		<div class="list-group-item">
-			<div class="row">
-				<div class="col-sm-2">{{ note.type }}</div>
-				<div class="col-sm-10">
-					{{ note.note }} <br>
-
-					{% for subnote in note.get_othernotelines() %}
-						{{ subnote.note }} <br>
-					{% endfor %}
-				</div>
-			</div>
-		</div>
+<table class="table table-sm">
+	<thead>
+		<tr>
+			<th>Type</th>
+			<th>Has Notes</th>
+			<th>Action</th>
+		</tr>
+	</thead>
+	{% for notetype in module_notes.get_notetypes() %}
+		<tr>
+			<td>{{ module_notes.get_notetype_description(notetype)|capitalize }}</td>
+			<td>{{ module_notes.notes_exist(notetype, warehouse.whseid)|bool|yesorno|capitalize }}</td>
+			<td class="text-right">
+				<textarea class="collapse" id="notes-{{ notetype }}" cols="{{ module_notes.get_notetype_column_count(notetype) }}">{{ module_notes.get_notes_array(notetype, warehouse.whseid)|join('\r') }}</textarea>
+				{% if module_notes.notes_exist(notetype, warehouse.whseid)|bool %}
+					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-modal" data-type="{{ notetype }}" data-description="{{ module_notes.get_notetype_description(notetype)|capitalize }}">
+						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+					</button>
+				{% else %}
+					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-modal" data-type="{{ notetype }}" data-description="{{ module_notes.get_notetype_description(notetype)|capitalize }}">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add
+					</button>
+				{% endif %}
+			</td>
+		</tr>
 	{% endfor %}
-</div>
+</table>

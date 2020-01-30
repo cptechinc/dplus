@@ -22,8 +22,19 @@ class CodeTables extends WireData implements Module {
 		$table = strtoupper($table);
 		$data = array("DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code");
 		$this->write_dplusfile($data, session_id());
+		$this->http_get_dplus();
+	}
+
+	/**
+	 * Sends GET Request to kick off Dplus Cobol
+	 * @param  string $sessionID Session ID
+	 * @return bool              If GET was successfull
+	 */
+	public function http_get_dplus($sessionID = '') {
+		$config = $this->wire('config');
+		$sessionID = $sessionID ? $sessionID : session_id();
 		$http = new WireHttp();
-		$http->get("127.0.0.1/cgi-bin/".$config->cgis['database']."?fname=".session_id());
+		return $http->get("127.0.0.1/cgi-bin/".$config->cgis['database']."?fname=$sessionID");
 	}
 
 	/**

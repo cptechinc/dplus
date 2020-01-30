@@ -5,12 +5,14 @@
 
 	if ($input->requestMethod('POST') || $input->get->action) {
 		$rm = strtolower($input->requestMethod());
-		$code  = $input->$rm->text('code');
+
+		// TODO: LOGIC to see if code was removed
+		$code = $input->$rm->text('code');
 
 		if ($in_codetables->validate_codetable($page->codetable)) {
 			$module_codetable = $in_codetables->get_codetable_module($page->codetable);
 			$module_codetable->process_input($input);
-			$session->redirect($page->get_codetable_viewURL($page->codetable, $code), $http301 = false);
+			$session->redirect($page->get_codetable_viewURL($page->codetable, $code = ''), $http301 = false);
 		}
 	}
 
@@ -21,9 +23,7 @@
 		$config_ar = ConfigArQuery::create()->findOne();
 
 		$page->headline = "$module_codetable->description Table";
-
 		$page->body .= $config->twig->render('code-tables/links-header.twig', ['page' => $page, 'input' => $input]);
-
 
 		if ($session->response_codetable) {
 			$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_codetable]);
@@ -33,8 +33,8 @@
 			include(__DIR__."/min-code-table-$page->codetable.php");
 		} else {
 			$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'table' => $table, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable, 'config_so' => $config_so, 'config_ar' => $config_ar]);
-			$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "min/$page->codetable/form.twig", 'config_so' => $config_so, 'config_ar' => $config_ar, 'countries' => $countries]);
-			$page->js .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page]);
+			$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "min/$page->codetable/form.twig", 'max_length_code' => $module_codetable->get_max_length_code(), 'config_so' => $config_so, 'config_ar' => $config_ar, 'countries' => $countries]);
+			$page->js   .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'max_length_code' => $module_codetable->get_max_length_code()]);
 		}
 	} else {
 		$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Code Table Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "IN Code Table '$page->codetable' does not exist"]);

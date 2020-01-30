@@ -34,8 +34,7 @@
         "propel/propel": "~2.0@dev",
         "cptechinc/dplus-model": "dev-master",
         "cptechinc/dpluso-model": "dev-master",
-        "mikehaertl/phpwkhtmltopdf": "dev-master",
-        "picqer/php-barcode-generator": "dev-master"
+        "mikehaertl/phpwkhtmltopdf": "dev-master"
     },
     "autoload": {
         "files": [
