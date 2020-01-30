@@ -5,7 +5,7 @@ include_once(__DIR__.'../CodeTablesResponse.php');
 use Purl\Url;
 
 use WarehouseQuery, Warehouse;
-use ConfigInQuery, ConfigIn;
+use ConfigArQuery, ConfigAr;
 use WarehouseNoteQuery, WarehouseNote;
 
 /**
@@ -29,19 +29,18 @@ class CodeTablesIwhmNotes extends WireData implements Module {
 	 * @return int
 	 */
 	public function get_notetype_column_count($notetype) {
-		$configAR = ConfigInQuery::create()->findOne();
+		$configAR = ConfigArQuery::create()->findOne();
 
 		switch ($notetype) {
 			case 'ICTP':
 			case 'KCTP':
-			case 'PCTP':
+			case 'IWHS':
 				return $configAR->columns_notes_invoice;
 				break;
-			case 'SCTP':
+			case 'SWHS':
 				return $configAR->columns_notes_statement;
 				break;
 			default:
-				// TODO: ASK BEV WHICH config has this value
 				return 35;
 				break;
 		}
@@ -206,8 +205,8 @@ class CodeTablesIwhmNotes extends WireData implements Module {
 		// IF there are lines saved
 		if (sizeof($lines_saved)) {
 			$data = $this->write_dplus_data($notetype, $whseID);
-			//$this->wire('modules')->get('CodeTables')->write_dplusfile($data, session_id());
-			//$this->wire('modules')->get('CodeTables')->http_get_dplus();
+			$this->wire('modules')->get('CodeTables')->write_dplusfile($data, session_id());
+			$this->wire('modules')->get('CodeTables')->http_get_dplus();
 		}
 		return $response;
 	}
