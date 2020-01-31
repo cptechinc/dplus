@@ -86,7 +86,7 @@ class DpagesMso extends Dpages implements Module {
 			'title'          => 'Lost Sales Reason Code',
 			'summary'        => 'View SO Lost Sales Reason Code',
 			'parent'         => '/mso/somain/',
-			'dplus_function' => '' // TODO funcperm
+			'dplus_function' => 'lsm'
 		),
 		'so-mfcm' => array(
 			'template'       => 'dplus-function',
@@ -95,7 +95,7 @@ class DpagesMso extends Dpages implements Module {
 			'title'          => 'Motor Freight Code',
 			'summary'        => 'View SO Motor Freight Code',
 			'parent'         => '/mso/somain/',
-			'dplus_function' => '' // TODO funcperm
+			'dplus_function' => 'mfcm'
 		),
 		'sales-orders' => array(
 			'template'       => 'dplus-function',
