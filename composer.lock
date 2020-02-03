@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "fcfadf507055b1181118b473e395164397df5af4"
+                "reference": "de45481e0e4d4e1e0411304f9ca13ce7656ab4c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/fcfadf507055b1181118b473e395164397df5af4",
-                "reference": "fcfadf507055b1181118b473e395164397df5af4",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/de45481e0e4d4e1e0411304f9ca13ce7656ab4c1",
+                "reference": "de45481e0e4d4e1e0411304f9ca13ce7656ab4c1",
                 "shasum": ""
             },
             "type": "library",
@@ -39,7 +39,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2020-02-03T16:46:22+00:00"
+            "time": "2020-02-03T19:34:10+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
@@ -453,12 +453,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "d3ffacb0a12e1e581d110e66e971760f127bfb97"
+                "reference": "e6bc429dd40078dc4832488977ccc9d27a19c600"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/d3ffacb0a12e1e581d110e66e971760f127bfb97",
-                "reference": "d3ffacb0a12e1e581d110e66e971760f127bfb97",
+                "url": "https://api.github.com/repos/symfony/config/zipball/e6bc429dd40078dc4832488977ccc9d27a19c600",
+                "reference": "e6bc429dd40078dc4832488977ccc9d27a19c600",
                 "shasum": ""
             },
             "require": {
@@ -509,7 +509,7 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2020-02-03T08:22:04+00:00"
+            "time": "2020-02-03T17:10:04+00:00"
         },
         {
             "name": "symfony/console",
