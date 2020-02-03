@@ -221,6 +221,7 @@ class DpagesMpo extends Dpages implements Module {
 			'summary' => 'Installs and creates Dplus Online Purchase Order Pages',
 			'singular' => true,
 			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
 		);
 	}
 }

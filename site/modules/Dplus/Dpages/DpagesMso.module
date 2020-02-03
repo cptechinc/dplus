@@ -189,6 +189,7 @@ class DpagesMso extends Dpages implements Module {
 			'summary' => 'Installs and creates Dpluso Sales Order Pages',
 			'singular' => true,
 			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
 		);
 	}
 

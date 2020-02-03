@@ -160,7 +160,7 @@ class DpagesMar extends Dpages implements Module {
 			'summary' => 'Installs and creates AR Pages',
 			'singular' => true,
 			'autoload' => true,
-			'requires' => array('DplusPwPages'),
+			'requires' => array('DplusPwPages', 'Dpages'),
 			'installs' => array(),
 		);
 	}
