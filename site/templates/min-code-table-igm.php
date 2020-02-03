@@ -7,7 +7,7 @@
 		if ($module_codetable->code_exists($code)) {
 			$itemgroup = $module_codetable->get_code($code);
 		} else {
-			$itemgroup = new ItemGroupCode();
+			$itemgroup = new InvGroupCode();
 		}
 
 		$page->body .= $config->twig->render("code-tables/min/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'itemgroup' => $itemgroup]);

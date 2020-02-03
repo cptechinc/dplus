@@ -104,7 +104,7 @@ class CodeTablesIwhm extends WireData implements Module {
 		if ($q->count()) {
 			$record = $q->findOne();
 		} else {
-			$whseID  = $input->$rm->text('code', array('maxLength' => Warehouse::MAX_LENGTH_CODE));
+			$whseID  = $input->$rm->text('whseID', array('maxLength' => Warehouse::MAX_LENGTH_CODE));
 			$record = new Warehouse();
 			$record->setId($whseID);
 		}
