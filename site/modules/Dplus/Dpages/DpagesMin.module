@@ -58,7 +58,7 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'Warehouses',
 			'summary'        => 'View / Edit Warehouses',
 			'parent'         => '/min/inmain/',
-			'dplus_function' => ''
+			'dplus_function' => 'iwhm'
 		),
 		'min-iplm' => array(
 			'template'       => 'dplus-function',
@@ -67,7 +67,7 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'Product Line',
 			'summary'        => 'View / Edit Product Line',
 			'parent'         => '/min/inmain/',
-			'dplus_function' => ''
+			'dplus_function' => 'iplm'
 		),
 		'min-stcm' => array(
 			'template'       => 'dplus-function',
@@ -76,7 +76,7 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'Stock',
 			'summary'        => 'View / Edit Stock',
 			'parent'         => '/min/inmain/',
-			'dplus_function' => ''
+			'dplus_function' => 'stcm'
 		),
 		'min-spit' => array(
 			'template'       => 'dplus-function',
@@ -85,7 +85,7 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'Special Item',
 			'summary'        => 'View / Edit Special Item',
 			'parent'         => '/min/inmain/',
-			'dplus_function' => ''
+			'dplus_function' => 'spit'
 		),
 		'min-csccm' => array(
 			'template'       => 'dplus-function',
@@ -94,7 +94,7 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'Customer Stocking Cell',
 			'summary'        => 'View / Edit Customer Stocking Cell',
 			'parent'         => '/min/inmain/',
-			'dplus_function' => ''
+			'dplus_function' => 'csccm'
 		),
 		'min-iasm' => array(
 			'template'       => 'dplus-function',
@@ -103,7 +103,7 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'Item Assortment',
 			'summary'        => 'View / Edit Item Assortment',
 			'parent'         => '/min/inmain/',
-			'dplus_function' => ''
+			'dplus_function' => 'iasm'
 		),
 		'min-umm' => array(
 			'template'       => 'dplus-function',
@@ -112,7 +112,7 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'Unit of Measure',
 			'summary'        => 'View / Edit Unit of Measure',
 			'parent'         => '/min/inmain/',
-			'dplus_function' => ''
+			'dplus_function' => 'umm'
 		),
 		'min-msdsm' => array(
 			'template'       => 'dplus-function',
@@ -121,7 +121,7 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'Material Safety Data Sheet',
 			'summary'        => 'View / Edit Material Safety Data Sheet',
 			'parent'         => '/min/inmain/',
-			'dplus_function' => ''
+			'dplus_function' => 'msdsm'
 		),
 		'min-igpm' => array(
 			'template'       => 'dplus-function',
@@ -130,7 +130,7 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'Item Price',
 			'summary'        => 'View / Edit Item Price',
 			'parent'         => '/min/inmain/',
-			'dplus_function' => ''
+			'dplus_function' => 'igpm'
 		),
 		'min-igcm' => array(
 			'template'       => 'dplus-function',
@@ -139,7 +139,7 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'Item Commission',
 			'summary'        => 'View / Edit Item Price',
 			'parent'         => '/min/inmain/',
-			'dplus_function' => ''
+			'dplus_function' => 'igcm'
 		),
 		'min-tarm' => array(
 			'template'       => 'dplus-function',
@@ -148,7 +148,7 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'Tariff Class',
 			'summary'        => 'View / Edit Tariff Class',
 			'parent'         => '/min/inmain/',
-			'dplus_function' => ''
+			'dplus_function' => 'tarm'
 		),
 		'min-igm' => array(
 			'template'       => 'dplus-function',
@@ -157,7 +157,7 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'Item Group',
 			'summary'        => 'View / Edit Item Group',
 			'parent'         => '/min/inmain/',
-			'dplus_function' => ''
+			'dplus_function' => 'igm'
 		),
 		'min-upcx' => array(
 			'template'       => 'dplus-function',
@@ -166,7 +166,7 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'UPC X-ref',
 			'summary'        => 'View / Edit UPCs',
 			'parent'         => '/min/inmain/',
-			'dplus_function' => ''
+			'dplus_function' => 'upcx'
 		)
 	);
 

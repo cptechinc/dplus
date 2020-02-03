@@ -47,7 +47,7 @@ class DpagesMar extends Dpages implements Module {
 			'title'          => 'Customer Commission Code',
 			'summary'        => 'View AR Customer Commission Code',
 			'parent'         => '/mar/armain/',
-			'dplus_function' => ''
+			'dplus_function' => 'ccm'
 		),
 		'ar-crtm' => array(
 			'template'       => 'dplus-function',
@@ -56,7 +56,7 @@ class DpagesMar extends Dpages implements Module {
 			'title'          => 'Customer Route Code',
 			'summary'        => 'View AR Customer Route Code',
 			'parent'         => '/mar/armain/',
-			'dplus_function' => ''
+			'dplus_function' => 'crtm'
 		),
 		'ar-spgpm' => array(
 			'template'       => 'dplus-function',
@@ -65,7 +65,7 @@ class DpagesMar extends Dpages implements Module {
 			'title'          => 'Salesperson Group Code',
 			'summary'        => 'View Salesperson Group Code',
 			'parent'         => '/mar/armain/',
-			'dplus_function' => ''
+			'dplus_function' => 'spgpm'
 		),
 		'ar-worm' => array(
 			'template'       => 'dplus-function',
@@ -74,7 +74,7 @@ class DpagesMar extends Dpages implements Module {
 			'title'          => 'Customer Write Off Code',
 			'summary'        => 'Customer Write Off Code',
 			'parent'         => '/mar/armain/',
-			'dplus_function' => ''
+			'dplus_function' => 'worm'
 		),
 		'ar-cpm' => array(
 			'template'       => 'dplus-function',
@@ -83,7 +83,7 @@ class DpagesMar extends Dpages implements Module {
 			'title'          => 'Customer Price Code',
 			'summary'        => 'Customer Price Code',
 			'parent'         => '/mar/armain/',
-			'dplus_function' => ''
+			'dplus_function' => 'cpm'
 		),
 		'ar-ctm' => array(
 			'template'       => 'dplus-function',
