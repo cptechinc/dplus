@@ -1,4 +1,4 @@
-{% if not page.print %}
+{% if not page.is_print() %}
 	<div class="form-group">
 		<a href="{{ page.url }}" class="btn btn-primary not-round">
 			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Search

@@ -2,14 +2,14 @@
 	<strong>Bins:</strong> {{ inventory.count_itembins_itemid(item.sessionid, item.itemid) }}
 	<strong>Boxes:</strong> {{ inventory.count_lotserials_itemid(item.sessionid, item.itemid) }}
 	<strong>Total Weight:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid) }}
-	{% if (not page.print) %}
+	{% if (not page.is_print()) %}
 		<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ item.itemid|attrJS }}-lotserial" aria-expanded="false" aria-controls="{{ item.itemid }}-lotserial">
 			Show / Hide {{ item.get_itemtypepropertydesc()|upper ~ "S" }}
 		</button>
 	{% endif %}
 </div>
 
-<div class="collapse-lotserial {{ not page.print ? 'collapse' : '' }}" id="{{ item.itemid|attrJS  }}-lotserial">
+<div class="collapse-lotserial {{ not page.is_print() ? 'collapse' : '' }}" id="{{ item.itemid|attrJS  }}-lotserial">
 	<div class="list-group list-group-flush">
 		{% for lotserial in inventory.get_lotserials_itemid(item.sessionid, item.itemid) %}
 			<div class="list-group-item p-1">
