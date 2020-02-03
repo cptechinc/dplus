@@ -162,6 +162,7 @@ class CodeTablesUmm extends WireData implements Module {
 			$uom_purchase = $q->findOne();
 		} else {
 			$uom_purchase = new UnitofMeasurePurchase();
+			$uom_purchase->setCode($uom_sale->code);
 			$uom_purchase->fromArray($uom_sale->toArray());
 		}
 
