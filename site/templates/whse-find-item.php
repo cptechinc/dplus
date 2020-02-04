@@ -1,7 +1,7 @@
 <?php
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
-	$config_inventory = $modules->get('WarehouseInventoryConfig');
+	$config_inventory = $modules->get('ConfigsWarehouseInventory');
 
 	$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;
 

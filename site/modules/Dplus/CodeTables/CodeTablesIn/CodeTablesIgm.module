@@ -4,7 +4,7 @@ include_once(__DIR__.'../CodeTablesResponse.php');
 
 use Purl\Url;
 
-use ItemGroupCodeQuery, ItemGroupCode;
+use InvGroupCodeQuery, InvGroupCode;
 use ConfigInQuery, ConfigIn;
 use ConfigSalesOrderQuery, ConfigSalesOrder;
 use ConfigArQuery, ConfigAr;
@@ -13,7 +13,7 @@ use ConfigArQuery, ConfigAr;
  * Module that handles the editing of the CCM codetable
  */
 class CodeTablesIgm extends WireData implements Module {
-	const MODEL              = 'ItemGroupCode';
+	const MODEL              = 'InvGroupCode';
 	const MODEL_KEY          = 'id';
 	const DESCRIPTION        = 'Item Group';
 	const DESCRIPTION_RECORD = 'Item Group';
@@ -59,14 +59,14 @@ class CodeTablesIgm extends WireData implements Module {
 	 * @return mixed
 	 */
 	public function get_query() {
-		return ItemGroupCodeQuery::create();
+		return InvGroupCodeQuery::create();
 	}
 
 	/**
 	 * Takes Input, validates it's for one of the code tables
 	 * Processes it, and if updated sends request to dplus
 	 *
-	 * NOTE: If an existing code is more than ItemGroupCode::MAX_LENGTH_CODE, we will allow editing
+	 * NOTE: If an existing code is more than InvGroupCode::MAX_LENGTH_CODE, we will allow editing
 	 * but we won't allow creation of a code with more than allowed characters we will trim it.
 	 *
 	 * @param  WireInput $input Input
@@ -85,8 +85,8 @@ class CodeTablesIgm extends WireData implements Module {
 		if ($q->count()) {
 			$record = $q->findOne();
 		} else {
-			$code  = $input->$rm->text('code', array('maxLength' => ItemGroupCode::MAX_LENGTH_CODE));
-			$record = new ItemGroupCode();
+			$code  = $input->$rm->text('code', array('maxLength' => InvGroupCode::MAX_LENGTH_CODE));
+			$record = new InvGroupCode();
 			$record->setCode($code);
 		}
 
@@ -151,7 +151,7 @@ class CodeTablesIgm extends WireData implements Module {
 	 * @param  bool   $saved  Was the Record Saved?
 	 * @return CodeTablesResponse
 	 */
-	protected function save_and_process_response($table, $code, ItemGroupCode $record) {
+	protected function save_and_process_response($table, $code, InvGroupCode $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 

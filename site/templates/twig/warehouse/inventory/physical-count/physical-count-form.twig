@@ -13,16 +13,17 @@
 </div>
 <h3 class="my-4 font-weight-bold text-secondary">Scanned: {{ item.scan }}</h3>
 <div class="row">
-	<form action="{{ page.formurl }}" method="get" class="col-sm-6 form-reset allow-enterkey-submit" id="physical-count-form">
+	<form action="{{ page.formurl }}" method="get" class="col-sm-6 form-reset" id="physical-count-form">
 		<input type="hidden" name="action" value="physical-count-submit">
 		<input type="hidden" name="scan" value="{{ item.scan }}">
 		<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
 
 		<div class="form-group">
 			<label for="itemID">Item ID</label>
-			<div class="input-group">
-				<input type="text" class="form-control" id="itemID" name="itemID" value="{{ item.itemid }}" data-itemtype="{{ item.type }}">
-			</div>
+			<input type="text" class="form-control" id="itemID" name="itemID" value="{{ item.itemid }}" data-itemtype="{{ item.type }}">
+			<p>
+				{{ item.description() }}
+			</p>
 		</div>
 
 		{% if (item.is_item_serialized() or item.is_item_lotted() or item.itemid == '') %}
