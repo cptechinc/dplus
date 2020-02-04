@@ -86,8 +86,17 @@
 					</button>
 				</div>
 			</div>
+		</div>
 
-
+		<div class="col-sm-4">
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="itemtype">Item Type</label>
+				</div>
+				<div class="col-sm-6">
+					{% include 'util/select.twig' with {'name': 'itemtype', 'id': 'itemtype', 'selectedvalue': item.itemtype, 'options': item.get_itemtypedescriptions(), 'capitalize_labels': true } %}
+				</div>
+			</div>
 		</div>
 	</div>
 </form>
