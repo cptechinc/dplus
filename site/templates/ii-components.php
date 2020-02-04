@@ -31,7 +31,7 @@
 				$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 
 				if ($config_ii->option_components == 'kit') {
-					$query_kit = KitsQuery::create();
+					$query_kit = KitQuery::create();
 					$query_kit->filterByItemid($itemID);
 
 					if ($query_kit->count()) {

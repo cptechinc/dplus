@@ -1,5 +1,5 @@
 <form action="{{ page.url }}" method="POST" id="code-edit-form">
-	<input type="hidden" name="table" value="ctm">
+	<input type="hidden" name="action" value="update-ctm">
 
 	<div class="row">
 		<div class="col-sm-6">
@@ -7,7 +7,7 @@
 				<div class="col-sm-3">
 					<div class="form-group">
 						<label for="code">Code</label>
-						<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code" {{ code.code ? 'disabled' : 'autofocus' }}>
+						<input type="text" name="code" class="{{ code.code ? 'form-control-plaintext' : 'form-control' }}" value="{{ code.code }}" id="code" maxlength="{{ code.get_max_length_code() }}" {{ code.code ? 'readonly' : 'autofocus' }}>
 					</div>
 				</div>
 				<div class="col-sm-9">
@@ -18,7 +18,7 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="order_approval_email">Mail List ?</label>
+				<label for="order_approval_email">Mail List?</label>
 				{% include 'util/select.twig' with {'name': 'mail_list', 'id': 'mail_list', 'selectedvalue': code.mail_list, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 			<div class="form-group">
@@ -29,22 +29,31 @@
 		<div class="col-sm-6">
 			<h4>Notes</h4>
 			<table class="table table-sm">
-				<tr>
-					<td>Statement</td>
-					<td>{{ code.count_notetypealias('statement')|bool|yesorno|capitalize }}</td>
-				</tr>
-				<tr>
-					<td>Invoice</td>
-					<td>{{ code.count_notetypealias('invoice')|bool|yesorno|capitalize }}</td>
-				</tr>
-				<tr>
-					<td>Pick</td>
-					<td>{{ code.count_notetypealias('pick')|bool|yesorno|capitalize }}</td>
-				</tr>
-				<tr>
-					<td>Pack</td>
-					<td>{{ code.count_notetypealias('pack')|bool|yesorno|capitalize }}</td>
-				</tr>
+				<thead>
+					<tr>
+						<th>Type</th>
+						<th>Has Notes</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				{% for notetype in module_custnotes.get_notetypes() %}
+					<tr>
+						<td>{{ module_custnotes.get_notetype_description(notetype)|capitalize }}</td>
+						<td>{{ code.count_notetype(notetype)|bool|yesorno|capitalize }}</td>
+						<td class="text-right">
+							<textarea class="collapse" id="notes-{{ notetype }}" cols="{{ module_custnotes.get_notetype_column_count(notetype) }}">{{ module_custnotes.get_notes_array(notetype, code.code)|join('\r') }}</textarea>
+							{% if code.count_notetype(notetype)|bool %}
+								<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-modal" data-type="{{ notetype }}" data-description="{{ module_custnotes.get_notetype_description(notetype)|capitalize }}">
+									<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+								</button>
+							{% else %}
+								<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-modal" data-type="{{ notetype }}" data-description="{{ module_custnotes.get_notetype_description(notetype)|capitalize }}">
+									<i class="fa fa-plus" aria-hidden="true"></i> Add
+								</button>
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
 			</table>
 		</div>
 	</div>

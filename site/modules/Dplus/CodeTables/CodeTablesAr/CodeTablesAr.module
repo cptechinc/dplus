@@ -36,6 +36,10 @@ class CodeTablesAr extends WireData implements Module {
 			'code'        		 => 'ctm',
 			'module'   			 => 'CodeTablesCtm'
 		),
+		'ctm-notes' => array(
+			'code'        		 => 'ctm-notes',
+			'module'   			 => 'CodeTablesCtmNotes'
+		),
 	);
 
 	public function get_codetables() {
@@ -50,8 +54,6 @@ class CodeTablesAr extends WireData implements Module {
 		return $this->wire('modules')->get(self::CODE_TABLES[$table]['module']);
 	}
 
-
-
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus Codes Tables AR Management',
@@ -59,6 +61,42 @@ class CodeTablesAr extends WireData implements Module {
 			'summary' => 'Module for Codes Tables AR Management',
 			'singular' => true,
 			'autoload' => true,
+			'installs' => array(
+				'CodeTablesCcm',
+				'CodeTablesCpm',
+				'CodeTablesCrtm',
+				'CodeTablesCtm',
+				'CodeTablesCtmNotes',
+				'CodeTablesSpgpm',
+				'CodeTablesWorm',
+			)
 		);
+	}
+
+	/**
+	 * ProcessWire Installer Function
+	 * NOTE: Runs when installed through ProcessWire
+	 * @return void
+	 */
+	public function ___install() {
+
+	}
+
+	/**
+	 * ProcessWire removal Function
+	 * NOTE: Runs when removed through ProcessWire
+	 * @return void
+	 */
+	public function ___uninstall() {
+
+	}
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
 	}
 }

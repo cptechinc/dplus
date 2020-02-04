@@ -1,4 +1,4 @@
-<div class="collapse-lotserial {{ not page.print ? 'collapse' : '' }}" id="{{ (binitem.itemid ~ '_' ~ binitem.bin)|attrJS }}-lotserial">
+<div class="collapse-lotserial {{ not page.is_print() ? 'collapse' : '' }}" id="{{ (binitem.itemid ~ '_' ~ binitem.bin)|attrJS }}-lotserial">
 	<div class="">
 		<div class="list-group">
 			{% for lotserial in inventory.get_lotserials_itemid(binitem.sessionid, binitem.itemid, binitem.bin) %}

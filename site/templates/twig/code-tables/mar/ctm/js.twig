@@ -1,0 +1,45 @@
+$(function () {
+	$('#notes-modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget) // Button that triggered the modal
+		var notetype = button.data('type'); // Extract info from data-* attributes
+		var description = button.data('description');
+		var ele_notes = $('#notes-' + notetype);
+		// If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+		// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+		var modal = $(this);
+		modal.find('.desc').text(description.capitalize());
+		modal.find('textarea[name=note]').text(ele_notes.text()).attr('cols', ele_notes.attr('cols') - 1);
+		modal.find('input[name=notes-type]').val(notetype);
+	});
+
+	$('#notes-modal').on('shown.bs.modal', function (event) {
+		var button = $(event.relatedTarget) // Button that triggered the modal
+		var modal = $(this);
+		modal.find('textarea[name=note]').focus()
+	});
+
+
+	$("#code-edit-form").validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			code: {
+				required: true,
+				maxlength: {{ typecode.get_max_length_code() }}
+			},
+			description: 'required',
+			mail_list: 'required'
+		},
+		messages: {
+			code: "Please review your code (Max Length: {{ typecode.get_max_length_code() }})",
+			description: 'Please enter a description for the code',
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+
+});
