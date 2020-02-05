@@ -1,0 +1,38 @@
+<div class="form-group row">
+	<div class="col-sm-4">
+		<label>Item ID</label>
+	</div>
+	<div class="col-sm-8">
+		<p class="form-control-plaintext">{{ item_pricing.item.itemid }}</p>
+		<p class="form-control-plaintext"><small>{{ item_pricing.item.description }}</small></p>
+		<p class="form-control-plaintext"><small>{{ item_pricing.item.description2 }}</small></p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		{% include 'items/itm/pricing/sales.twig' %}
+	</div>
+	<div class="col-sm-6">
+		<div class="form-group row">
+			<div class="col-sm-4">
+				<label>Purchase UoM</label>
+			</div>
+			<div class="col-sm-8">
+				<p class="form-control-plaintext">{{ item_pricing.item.unitofmpurchase.code }} - {{ item_pricing.item.unitofmpurchase.description }}</p>
+			</div>
+		</div>
+		<div class="form-group row">
+			<div class="col-sm-4">
+				<label>Standard Cost</label>
+			</div>
+			<div class="col-sm-8">
+				<div class="input-group">
+					<input type="text" class="form-control" id="inlineFormInputGroupUsername" placeholder="Username">
+					<div class="input-group-append">
+						<div class="input-group-text">{{ item_pricing.item.unitofmpurchase.code }}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

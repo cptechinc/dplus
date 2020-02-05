@@ -4,59 +4,23 @@ include_once(__DIR__.'/XrefResponse.php');
 
 use Purl\Url;
 
-use ItemMasterItemQuery, ItemMasterItem;
+use ItemPricingQuery, ItemPricing;
 
 /**
  * Module that handles the editing of the UPC item Xref
  */
-class Itm extends WireData implements Module {
-	const MODEL              = 'ItemMasterItem';
+class ItmPricing extends WireData implements Module {
+	const MODEL              = 'ItemPricing';
 	const MODEL_KEY          = 'code';
-	const DESCRIPTION        = 'Item Master Item';
-	const DESCRIPTION_RECORD = 'Item Master Item';
+	const DESCRIPTION        = 'Item Master Item Pricing';
+	const DESCRIPTION_RECORD = 'Item Master Item Pricing';
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
 	}
 
 	public function init() {
-		$this->addHook('Page(pw_template=itm|itm-pricing)::itmURL', function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_itmURL($itemID);
-		});
 
-		$this->addHook('Page(pw_template=itm|itm-pricing)::get_itemURL', function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_itmURL($itemID);
-		});
-
-		$this->addHookProperty('Page(pw_template=itm|itm-pricing)::itemID', function($event) {
-			$p = $event->object;
-			$event->return = $p->fullURL->query->get('itemID');
-		});
-
-		$this->addHook('Page(pw_template=itm|itm-pricing)::itm_pricingURL', function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_itm_pricingURL($itemID);
-		});
-
-		$this->addHook('Page(pw_template=itm|itm-pricing)::itemIDURL', function($event) {
-			$p = $event->object;
-			$itemID = $event->arguments(0);
-			$url = new Url($p->url);
-			$url->query->set('itemID', $itemID);
-
-			$event->return = $url->getUrl();
-		});
-	}
-
-	/**
-	 * Return ItemMasterItem[]
-	 * @return ItemMasterItem[]|ObjectCollection
-	 */
-	public function get_items() {
-		$q = $this->get_query();
-		return $q->find();
 	}
 
 	/**
@@ -64,44 +28,45 @@ class Itm extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return bool
 	 */
-	public function item_exists($itemID) {
+	public function pricing_exists($itemID) {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
 		return boolval($q->count());
 	}
 
+
 	/**
-	 * Return ItemMasterItem
+	 * Return ItemPricing
 	 * @param  string $itemID Item ID
-	 * @return ItemMasterItem
+	 * @return ItemPricing
 	 */
-	public function get_item($itemID) {
+	public function get_pricing($itemID) {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
 		return $q->findOne();
 	}
 
 	/**
-	 * Returns ItemMasterItemQuery
-	 * @return ItemMasterItemQuery
+	 * Returns ItemPricingQuery
+	 * @return ItemPricingQuery
 	 */
 	public function get_query() {
-		return ItemMasterItemQuery::create();
+		return ItemPricingQuery::create();
 	}
 
 	/**
-	 * Returns ItemMasterItem after retreiving or creating it
+	 * Returns ItemPricing after retreiving or creating it
 	 * @param  WireInput $input Input Data
-	 * @return ItemMasterItem
+	 * @return ItemPricing
 	 */
-	public function get_create_item(WireInput $input) {
+	public function get_create_itempricing(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$itemID = $input->$rm->text('itemID');
 
-		if ($this->item_exists($upc)) {
+		if ($this->item_exists($itemID)) {
 			$record = $this->get_item($itemID);
 		} else {
-			$record = new ItemMasterItem();
+			$record = new ItemPricing();
 			$record->setItemid($itemID);
 		}
 
@@ -134,12 +99,12 @@ class Itm extends WireData implements Module {
 			$record->setDate(date('Ymd'));
 			$record->setTime(0);
 
-			if ($input->$rm->text('primary') == ItemMasterItem::PRIMARY_TRUE) {
+			if ($input->$rm->text('primary') == ItemPricing::PRIMARY_TRUE) {
 				if ($input->$rm->text('valid_primary') == 'true') {
-					$record->setPrimary(ItemMasterItem::PRIMARY_TRUE);
+					$record->setPrimary(ItemPricing::PRIMARY_TRUE);
 				}
 			} else {
-				$record->setPrimary(ItemMasterItem::PRIMARY_FALSE);
+				$record->setPrimary(ItemPricing::PRIMARY_FALSE);
 			}
 		}
 
@@ -153,7 +118,7 @@ class Itm extends WireData implements Module {
 			if ($response->has_success() && !$record->isDeleted()) {
 				if ($record->is_primary() && $record->get_primary_upc_code()) {
 					$primary_upc = $record->get_primary_upc();
-					$primary_upc->setPrimary(ItemMasterItem::PRIMARY_FALSE);
+					$primary_upc->setPrimary(ItemPricing::PRIMARY_FALSE);
 					$primary_upc->save();
 					$this->update_dplus_cobol($primary_upc);
 				}
@@ -164,10 +129,10 @@ class Itm extends WireData implements Module {
 
 	/**
 	 * Returns XrefResponse based on the outcome of the database save
-	 * @param  ItemMasterItem $record Record to record response of database save
+	 * @param  ItemPricing $record Record to record response of database save
 	 * @return XrefResponse
 	 */
-	protected function save_and_process_response(ItemMasterItem $record) {
+	protected function save_and_process_response(ItemPricing $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 		$code = "$record->upc";
@@ -202,47 +167,11 @@ class Itm extends WireData implements Module {
 		return $response;
 	}
 
-	/**
-	 * Return URL to view / edit Item
-	 * @param  string $itemID
-	 * @return string
-	 */
-	public function get_itmURL($itemID ) {
-		$url = new Url($this->wire('pages')->get("pw_template=itm")->url);
-		$url->query->set('itemID', $itemID);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to view / edit Item Pricing
-	 * @param  string $itemID
-	 * @return string
-	 */
-	public function get_itm_pricingURL($itemID ) {
-		$url = new Url($this->wire('pages')->get("pw_template=itm-pricing")->url);
-		$url->query->set('itemID', $itemID);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Writes File for Dplus to update the ITM file for this ITEM
-	 * @param  ItemMasterItem $item
-	 * @return void
-	 */
-	public function update_dplus_cobol(ItemMasterItem $item) {
-		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
-		$data = array("DBNAME=$dplusdb", 'UPDATEUPC', "UPCCODE=$item->upc", "OURITEM=$item->itemid");
-		$this->wire('modules')->get('Xrefs')->write_dplusfile($data, session_id());
-		$http = new WireHttp();
-		$http->get("127.0.0.1/cgi-bin/".$config->cgis['database']."?fname=".session_id());
-	}
-
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus ITM CRUD Manager',
+			'title' => 'Dplus ITM Pricing CRUD Manager',
 			'version' => 101,
-			'summary' => 'Module for CRUD Methods for ITM',
+			'summary' => 'Module for CRUD Methods for ITM Pricing',
 			'singular' => true,
 			'autoload' => true,
 		);

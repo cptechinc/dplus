@@ -14,6 +14,8 @@
 			$item = $q->findOne();
 			$itemgroups = InvGroupCodeQuery::create()->find();
 			$pricecodes = ItemPricingQuery::create()->find();
+
+			$page->body .= $config->twig->render('items/itm/itm-links.twig', ['page' => $page, 'page_itm' => $page]);
 			$page->body .= $config->twig->render('items/itm/itm-form.twig', ['page' => $page, 'item' => $item, 'itemgroups' => $itemgroups, 'pricecodes' => $pricecodes]);
 		} else {
 			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID $itemID not found in the Item Master"]);
@@ -25,7 +27,7 @@
 		if ($exact_query->filterByItemid($q)->count() == 1) {
 			$session->redirect($page->itmURL($q));
 		} else {
-			$page->headline = "VXM: Searching Items for '$q'";
+			$page->headline = "ITM: Searching Items for '$q'";
 			$search_items = $modules->get('FilterItemMaster');
 			$search_items->init_query($user);
 			$search_items->filter_search($q);
