@@ -13,7 +13,7 @@
 </div>
 <h3 class="my-4 font-weight-bold text-secondary">Scanned: {{ item.scan }}</h3>
 <div class="row">
-	<form action="{{ page.formurl }}" method="get" class="col-sm-6 form-reset" id="physical-count-form">
+	<form action="{{ page.formurl }}" method="post" class="col-sm-6 form-reset" id="physical-count-form">
 		<input type="hidden" name="action" value="physical-count-submit">
 		<input type="hidden" name="scan" value="{{ item.scan }}">
 		<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">

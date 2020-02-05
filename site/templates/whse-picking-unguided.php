@@ -4,7 +4,7 @@
 	$html = $modules->get('HtmlWriter');
 
 	$modules->get('DpagesMwm')->init_picking();
-	$pickingsession = $modules->get('DplusoWarehousePicking');
+	$pickingsession = $modules->get('WarehousePicking');
 	$pickingsession->set_sessionID(session_id());
 	$pickingsession->set_ordn($ordn);
 

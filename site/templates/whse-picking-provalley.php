@@ -5,19 +5,15 @@
 	$config_picking   = $modules->get('ConfigsWarehousePicking');
 	$http = new ProcessWire\WireHttp();
 
-	$template = '';
-
-	if (file_exists(__DIR__."/whse-picking-$config->company.php")) {
-		$template = "whse-picking-$config->company";
-	} else {
-		$template = 'whse-picking-unguided';
-	}
+	$template = file_exists(__DIR__."/whse-picking-$config->company.php") ? "whse-picking-$config->company" : 'whse-picking-unguided';
 
 	$action = 'start-pick-unguided';
 
 	// CHECK If Sales Order is Provided
 	if ($input->get->ordn) {
+
 		$ordn = SalesOrder::get_paddedordernumber($input->get->text('ordn'));
+		$page->title = "Picking Order # $ordn";
 		$pickorder = PickSalesOrderQuery::create()->findOneByOrdernbr($ordn);
 
 		if ($config_picking->picking_method == 'unguided') {
