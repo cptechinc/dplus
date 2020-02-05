@@ -21,7 +21,7 @@
 			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID $itemID not found in the Item Master"]);
 		}
 	} elseif ($input->get->q) {
-		$q = $input->get->text('q');
+		$q = strtoupper($input->get->text('q'));
 		$exact_query = ItemMasterItemQuery::create();
 
 		if ($exact_query->filterByItemid($q)->count() == 1) {
