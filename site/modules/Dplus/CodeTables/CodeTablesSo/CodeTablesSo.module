@@ -20,6 +20,14 @@ class CodeTablesSo extends WireData implements Module {
 			'code'   => 'mfcm',
 			'module' => 'CodeTablesMfcm'
 		),
+		'rgasc' => array(
+			'code'   => 'rgasc',
+			'module' => 'CodeTablesRgasc'
+		),
+		'rgarc' => array(
+			'code'   => 'rgarc',
+			'module' => 'CodeTablesRgarc'
+		),
 	);
 
 	public function get_codetables() {
