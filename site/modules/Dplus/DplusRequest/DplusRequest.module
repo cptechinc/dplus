@@ -26,10 +26,11 @@ class DplusRequest extends WireData implements Module {
 	 * @return bool
 	 */
 	public function self_request($path) {
-		$basepath = $this->wire('config')->rootURL;
 		$http = new WireHttp();
-		$path = ltrim(preg_replace($basepath, '', $path), '/');
-		return $http->get("127.0.0.1/" .$basepath . $path);
+		$basepath = end(explode('/', trim($this->wire('config')->paths->root, '/')));
+		$path = ltrim(str_replace($basepath, '', $path), '/');
+		$fullpath = "/$basepath/$path";
+		return $http->get("127.0.0.1".$fullpath);
 	}
 
 	/**
