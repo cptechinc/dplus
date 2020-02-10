@@ -254,6 +254,15 @@ class DpagesMwm extends Dpages implements Module {
 		);
 	}
 
+	public function init() {
+		$this->addHook('Page(template=warehouse-menu)::get_loginURL', function($event) {
+			$url = new Url($this->wire('pages')->get('template=warehouse-menu, dplus_function=wm')->child('template=redir')->url);
+			$url->query->set('action', 'login');
+			$url->query->set('sessionID', session_id());
+			$event->return = $url->getUrl();
+		});
+	}
+
 	public function init_picking() {
 		$this->addHook('Page::get_finishitemURL', function($event) {
 			$p = $event->object;
