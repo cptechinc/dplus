@@ -13,6 +13,7 @@
 
 			$page->body .= $config->twig->render('items/itm/itm-links.twig', ['page' => $page, 'page_itm' => $page->parent]);
 			$page->body .= $config->twig->render('items/itm/pricing/form.twig', ['page' => $page, 'item' => $item, 'item_pricing' => $itempricing, 'unitsofm' => $unitsofm]);
+			$page->js   .= $config->twig->render('items/itm/pricing/form.twig', ['page' => $page, 'item_pricing' => $itempricing]);
 		} else {
 			$session->redirect($page->itmURL($itemID));
 		}
