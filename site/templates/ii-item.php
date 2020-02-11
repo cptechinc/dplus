@@ -31,7 +31,7 @@
 				if ($json['error']) {
 					$stock .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 				} else {
-					$module_formatter = $modules->get('IiStockItem');
+					$module_formatter = $modules->get('SfIiStockItem');
 					$module_formatter->init_formatter();
 					$stock = $config->twig->render('items/ii/item/stock.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint()]);
 				}
