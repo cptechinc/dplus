@@ -4,6 +4,8 @@ include_once(__DIR__.'../CodeTablesResponse.php');
 
 use Purl\Url;
 
+use SoReasonCodeQuery, SoReasonCode;
+
 /**
  * Module that handles the editing of the CCM codetable
  */
@@ -91,17 +93,6 @@ class CodeTablesRgarc extends WireData implements Module {
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
 			$record->setDummy('P');
-
-			// TODO: show if company == Alumacraft as well
-            if ($config_ar->is_web_group()) {
-				$web_group = $input->$rm->text('web_group');
-				$record->setWeb_group($web_group);
-			}
-
-			if ($config_so->is_request_program()) {
-				$sales_program = $input->$rm->text('sales_program');
-				$record->setSales_program($sales_program);
-			}
 		}
 
 		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);
@@ -148,6 +139,15 @@ class CodeTablesRgarc extends WireData implements Module {
 			$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
 		}
 		return $response;
+	}
+
+    /**
+	 * Return the Max Length of characters for the code
+	 * NOTE: Used for the JS
+	 * @return int
+	 */
+	public function get_max_length_code() {
+		return SoReasonCode::MAX_LENGTH_CODE;
 	}
 
 	public static function getModuleInfo() {
