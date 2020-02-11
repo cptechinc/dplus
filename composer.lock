@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f49d1de4c1706749af3f36e00c327c63",
+    "content-hash": "38ab326b6a512b3f842c80483794a767",
     "packages": [
         {
             "name": "cptechinc/dplus-model",
@@ -47,12 +47,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dpluso-model.git",
-                "reference": "a12f2d952d11860b6d03019b072359e009932cd9"
+                "reference": "c5a049a24258882b026f015bad422ea3784047fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/a12f2d952d11860b6d03019b072359e009932cd9",
-                "reference": "a12f2d952d11860b6d03019b072359e009932cd9",
+                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/c5a049a24258882b026f015bad422ea3784047fe",
+                "reference": "c5a049a24258882b026f015bad422ea3784047fe",
                 "shasum": ""
             },
             "type": "library",
@@ -74,7 +74,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2020-01-30T21:59:44+00:00"
+            "time": "2020-02-11T16:25:53+00:00"
         },
         {
             "name": "jeremykendall/php-domain-parser",
@@ -286,6 +286,82 @@
                 "wkhtmltopdf"
             ],
             "time": "2020-01-07T07:47:15+00:00"
+        },
+        {
+            "name": "picqer/php-barcode-generator",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/picqer/php-barcode-generator.git",
+                "reference": "16c51a795454198500cdfb4f82de288945af3960"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/picqer/php-barcode-generator/zipball/16c51a795454198500cdfb4f82de288945af3960",
+                "reference": "16c51a795454198500cdfb4f82de288945af3960",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=7.2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.5"
+            },
+            "suggest": {
+                "ext-bcmath": "Barcode IMB (Intelligent Mail Barcode) needs bcmath extension",
+                "ext-gd": "For JPG and PNG generators, GD or Imagick is required",
+                "ext-imagick": "For JPG and PNG generators, GD or Imagick is required"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Picqer\\Barcode\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Nicola Asuni",
+                    "email": "info@tecnick.com",
+                    "homepage": "http://nicolaasuni.tecnick.com"
+                },
+                {
+                    "name": "Casper Bakker",
+                    "email": "info@picqer.com",
+                    "homepage": "https://picqer.com"
+                }
+            ],
+            "description": "An easy to use, non-bloated, barcode generator in PHP. Creates SVG, PNG, JPG and HTML images from the most used 1D barcode standards.",
+            "homepage": "https://github.com/picqer/php-barcode-generator",
+            "keywords": [
+                "CODABAR",
+                "Code11",
+                "Code93",
+                "EAN13",
+                "KIX",
+                "KIXCODE",
+                "MSI",
+                "POSTNET",
+                "Pharma",
+                "Standard 2 of 5",
+                "barcode",
+                "barcode generator",
+                "code128",
+                "code39",
+                "ean",
+                "html",
+                "jpeg",
+                "jpg",
+                "php",
+                "png",
+                "svg",
+                "upc"
+            ],
+            "time": "2020-01-28T13:00:23+00:00"
         },
         {
             "name": "propel/propel",
@@ -1134,12 +1210,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "67dda2119ff11473ba3d346041a23ad134cc9373"
+                "reference": "f417a406594dc5e4e90b6c75a8e6ed2b8cc0251d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/67dda2119ff11473ba3d346041a23ad134cc9373",
-                "reference": "67dda2119ff11473ba3d346041a23ad134cc9373",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/f417a406594dc5e4e90b6c75a8e6ed2b8cc0251d",
+                "reference": "f417a406594dc5e4e90b6c75a8e6ed2b8cc0251d",
                 "shasum": ""
             },
             "require": {
@@ -1191,7 +1267,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2020-02-05T18:10:03+00:00"
+            "time": "2020-02-11T15:32:19+00:00"
         }
     ],
     "packages-dev": [],
@@ -1202,7 +1278,8 @@
         "propel/propel": 20,
         "cptechinc/dplus-model": 20,
         "cptechinc/dpluso-model": 20,
-        "mikehaertl/phpwkhtmltopdf": 20
+        "mikehaertl/phpwkhtmltopdf": 20,
+        "picqer/php-barcode-generator": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
