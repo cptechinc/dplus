@@ -12,7 +12,7 @@ use SoReasonCodeQuery, SoReasonCode;
 class CodeTablesRgarc extends WireData implements Module {
 	const MODEL              = 'SoReasonCode';
 	const MODEL_KEY          = 'id';
-	const DESCRIPTION        = 'SO Reason';
+	const DESCRIPTION        = 'RGA/Return Reason Code';
 	const DESCRIPTION_RECORD = 'SO Reason';
 	const MODEL_TABLE = 'so_reas_code';
 
