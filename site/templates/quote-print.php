@@ -48,16 +48,16 @@
 		$page->show_title = false;
 		$pdfmaker->set_url($page->get_printpdfURL());
 		$pdfmaker->generate_pdf();
-	} else {
-		if ($page->print) {
-			$page->show_title = true;
+	}
 
-			if ($page->is_pdf()) {
-				$page->show_title = false;
-			}
+	if ($page->print) {
+		$page->show_title = true;
 
-			include __DIR__ . "/blank-page.php";
-		} else {
-			include __DIR__ . "/basic-page.php";
+		if ($page->is_pdf()) {
+			$page->show_title = false;
 		}
+
+		include __DIR__ . "/blank-page.php";
+	} else {
+		include __DIR__ . "/basic-page.php";
 	}
