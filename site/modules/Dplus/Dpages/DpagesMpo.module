@@ -56,7 +56,7 @@ class DpagesMpo extends Dpages implements Module {
 			'title'          => 'Purchase Orders',
 			'summary'        => 'Purchase Orders Menu',
 			'parent'         => '/',
-			'dplus_function' => '' // TODO: Change to mpo
+			'dplus_function' => 'mpo' // TODO: Change to mpo
 		),
 		'po-list' => array(
 			'template'       => 'dplus-function',

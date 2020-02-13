@@ -15,8 +15,8 @@
 				$session->redirect($page->get_itemquotesURL($itemID));
 			}
 			$session->quotestry = 0;
-			$module_formatter = $modules->get('IiQuotes');
-			
+			$module_formatter = $modules->get('SfIiQuotes');
+
 			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 
 			if ($json['error']) {
