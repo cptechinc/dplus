@@ -19,10 +19,6 @@ class ItmPricing extends WireData implements Module {
 		$this->description = self::DESCRIPTION;
 	}
 
-	public function init() {
-
-	}
-
 	/**
 	 * Return if Item Exists
 	 * @param  string $itemID Item ID
@@ -74,12 +70,8 @@ class ItmPricing extends WireData implements Module {
 	}
 
 	/**
-	 * Takes Input, validates it's for one of the code tables
-	 * Processes it, and if updated sends request to dplus
-	 *
-	 * uom_sale, allowdiscount, assortmentcode, assortmentqty
-	 *
-	 * TODO:
+	 * Takes Input, validates Item Updates the pricing record for it, sends update to DPlus
+	 * NOTE: Updates ITM record with changes to the uom_sale, allowdiscount, assortmentcode, assortmentqty fields
 	 *
 	 * @param  WireInput $input Input
 	 * @return void
