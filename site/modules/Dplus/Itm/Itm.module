@@ -98,7 +98,7 @@ class Itm extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$itemID = $input->$rm->text('itemID');
 
-		if ($this->item_exists($upc)) {
+		if ($this->item_exists($itemID)) {
 			$record = $this->get_item($itemID);
 		} else {
 			$record = new ItemMasterItem();
@@ -207,7 +207,7 @@ class Itm extends WireData implements Module {
 	 * @param  string $itemID
 	 * @return string
 	 */
-	public function get_itmURL($itemID ) {
+	public function get_itmURL($itemID) {
 		$url = new Url($this->wire('pages')->get("pw_template=itm")->url);
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
@@ -218,7 +218,7 @@ class Itm extends WireData implements Module {
 	 * @param  string $itemID
 	 * @return string
 	 */
-	public function get_itm_pricingURL($itemID ) {
+	public function get_itm_pricingURL($itemID) {
 		$url = new Url($this->wire('pages')->get("pw_template=itm-pricing")->url);
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
@@ -226,13 +226,13 @@ class Itm extends WireData implements Module {
 
 	/**
 	 * Writes File for Dplus to update the ITM file for this ITEM
-	 * @param  ItemMasterItem $item
+	 * @param  string $itemID Item ID
 	 * @return void
 	 */
-	public function update_dplus_cobol(ItemMasterItem $item) {
+	public function update_dplus_cobol($itemID) {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
-		$data = array("DBNAME=$dplusdb", 'UPDATEUPC', "UPCCODE=$item->upc", "OURITEM=$item->itemid");
+		$data = array("DBNAME=$dplusdb", 'UPDATEITM', "ITEMID=$itemID");
 		$this->wire('modules')->get('Xrefs')->write_dplusfile($data, session_id());
 		$http = new WireHttp();
 		$http->get("127.0.0.1/cgi-bin/".$config->cgis['database']."?fname=".session_id());
