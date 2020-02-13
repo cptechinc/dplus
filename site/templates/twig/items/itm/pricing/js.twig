@@ -1,6 +1,7 @@
 $(function() {
 	// item_pricing is an instance of ItemPricing
 	var eachlistprice = {{ item_pricing.baseprice }};
+	var standardcost = {{ item_pricing.item.standardcost }};
 	var itemID = '{{ item_pricing.itemid }}';
 
 	var form_vxm = $('#itm-pricing-form');
@@ -10,8 +11,8 @@ $(function() {
 	var input_ouritemID = form_vxm.find('input[name=ouritemID]');
 	var input_vendoritemID = form_vxm.find('input[name=vendoritemID]');
 
-	$("body").on("change", ".unit-cost", function(e) {
-		var unitrow = $(this).closest('.unit-row');
+	$("body").on("change", ".pricebreak-price, .pricebreak-qty", function(e) {
+		var unitrow = $(this).closest('.pricebreak-row');
 		update_unitrow_margin(unitrow);
 	});
 
@@ -44,7 +45,7 @@ $(function() {
 	 * Calculates Margin for each Unit Cost
 	 */
 	function calculate_margins() {
-		$(".unit-row").each(function(index) {
+		$(".pricebreak-row").each(function(index) {
 			update_unitrow_margin($(this));
 		});
 	}
@@ -55,7 +56,7 @@ $(function() {
 	 */
 	function update_unitrow_margin(unitrow) {
 		var input_unitqty = unitrow.find('.unit-qty');
-		var input_unitcost = unitrow.find('.unit-cost');
+		var input_unitcost = unitrow.find('.pricebreak-price');
 		var ele_margin = unitrow.find('.unit-margin');
 		var margin = determine_unitmargin(input_unitcost.val());
 		ele_margin.text(margin);
@@ -67,10 +68,10 @@ $(function() {
 	 * @return float
 	 */
 	function determine_unitmargin(cost) {
-		if (eachlistprice == 0 || cost == 0) {
-			return '';
+		if (eachlistprice == 0 || standardcost == 0) {
+			return 100;
 		} else {
-			var markup = eachlistprice - cost;
+			var markup = eachlistprice - standardcost;
 			return markup / eachlistprice * 100;
 		}
 	}
