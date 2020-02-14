@@ -3,7 +3,7 @@
 		<label for="address">Address 1</label>
 	</div>
 	<div class="col">
-		<input type="text" name="address" class="form-control" value="{{ warehouse.address }}" id="address">
+		<input type="text" name="address" class="form-control" maxlength="30" value="{{ warehouse.address }}" id="address">
 	</div>
 </div>
 <div class="form-row form-group">
@@ -11,7 +11,7 @@
 		<label for="address2">Address 2</label>
 	</div>
 	<div class="col">
-		<input type="text" name="address2" class="form-control" value="{{ warehouse.address2 }}" id="address2">
+		<input type="text" name="address2" class="form-control" maxlength="30" value="{{ warehouse.address2 }}" id="address2">
 	</div>
 </div>
 <div class="form-row form-group">
@@ -21,7 +21,7 @@
 	<div class="col">
 		<div class="form-row">
 			<div class="col">
-				<input type="text" name="city" class="form-control" value="{{ warehouse.city }}" id="city">
+				<input type="text" name="city" class="form-control" maxlength="16" value="{{ warehouse.city }}" id="city">
 			</div>
 			<div class="col">
 				<select name="state" class="form-control" id="state">
@@ -31,7 +31,7 @@
 				</select>
 			</div>
 			<div class="col">
-				<input type="text" name="zip" class="form-control" value="{{ warehouse.zip }}" id="zip">
+				<input type="text" name="zip" class="form-control" maxlength="10" value="{{ warehouse.zip }}" id="zip">
 			</div>
 		</div>
 	</div>
@@ -41,9 +41,9 @@
 		<label for="country">Country</label>
 	</div>
 	<div class="col">
-		<select name="country" class="form-control" id="country">
+		<select name="country" class="form-control" id="country" >
 			{% for country in countries %}
-				<option value="{{ country.iso }}" {{ country.iso == warehouse.country ? 'selected' : ''}}>{{ country.name }}</option>
+				<option value="{{ country.iso }}" {{ country.iso == 'USA' ? 'selected' : ''}}>{{ country.name }}</option>
 			{% endfor %}
 		</select>
 	</div>

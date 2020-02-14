@@ -3,7 +3,7 @@
 		<label for="cash_customer">Cash Customer</label>
 	</div>
 	<div class="col">
-		<input type="text" name="cash_customer" class="form-control" value="{{ warehouse.cash_customer }}" id="cash_customer">
+		<input type="text" name="cash_customer" class="form-control" maxlength="6" value="{{ warehouse.cash_customer }}" id="cash_customer">
 	</div>
 </div>
 <div class="form-row form-group">
@@ -11,7 +11,7 @@
 		<label for="pickdetail">Pick Detail</label>
 	</div>
 	<div class="col">
-		{% include 'util/select.twig' with {'name': 'pickdetail', 'id': 'pickdetail', 'options': {'N': 'No', 'Y': 'Yes'}, 'selectedvalue': warehouse.pickdetail} %}
+		{% include 'util/select.twig' with {'name': 'pickdetail', 'id': 'pickdetail', 'options': {'N': 'No', 'Y': 'Yes'}, 'selectedvalue': (warehouse.pickdetail ? warehouse.pickdetail : 'N')} %}
 	</div>
 </div>
 
@@ -31,7 +31,7 @@
 		<label for="bin_qcrga">QC / RGA Bin</label>
 	</div>
 	<div class="col">
-		<input type="text" name="bin_qcrga" class="form-control" value="{{ warehouse.bin_qcrga }}" id="bin_qcrga">
+		<input type="text" name="bin_qcrga" class="form-control" maxlength="8" value="{{ warehouse.bin_qcrga }}" id="bin_qcrga">
 	</div>
 </div>
 <div class="form-row form-group">
@@ -39,19 +39,19 @@
 		<label for="consignment">Consignment</label>
 	</div>
 	<div class="col">
-		{% include 'util/select.twig' with {'name': 'consignment', 'id': 'consignment', 'options': {'N': 'No', 'Y': 'Yes'}, 'selectedvalue': warehouse.consignment} %}
+		{% include 'util/select.twig' with {'name': 'consignment', 'id': 'consignment', 'options': {'N': 'No', 'Y': 'Yes'}, 'selectedvalue': (warehouse.consignment ? warehouse.consignment : 'N')} %}
 	</div>
 </div>
 
-{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_profit', 'label': 'Profit Whse', 'value': warehouse.profit_whse, 'warehouses': warehouses} %}
-{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_asset', 'label': 'Asset Whse', 'value': warehouse.asset_whse, 'warehouses': warehouses} %}
-{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_supply', 'label': 'Supply Whse', 'value': warehouse.supply_whse, 'warehouses': warehouses} %}
+{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_profit', 'label': 'Profit Whse', 'value': warehouse.whse_profit, 'warehouses': warehouses} %}
+{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_asset', 'label': 'Asset Whse', 'value': warehouse.whse_asset, 'warehouses': warehouses} %}
+{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_supply', 'label': 'Supply Whse', 'value': warehouse.whse_supply, 'warehouses': warehouses} %}
 
 <div class="form-row form-group">
 	<div class="col">
 		<label for="arrangement">Bin Arrangement</label>
 	</div>
 	<div class="col">
-		{% include 'util/select.twig' with {'name': 'arranged', 'id': 'arranged', 'selectedvalue': warehouse.arranged, 'options': warehouse.get_arrangement_options()} %}
+		{% include 'util/select.twig' with {'name': 'arranged', 'id': 'arranged', 'selectedvalue': (warehouse.arranged ? warehouse.arranged : 'R'), 'options': warehouse.get_arrangement_options()} %}
 	</div>
 </div>
