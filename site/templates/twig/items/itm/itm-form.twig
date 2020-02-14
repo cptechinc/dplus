@@ -40,12 +40,12 @@
 			</div>
 			<div class="form-group row">
 				<div class="col-sm-6">
-					<label for="pricecode">Item Group</label>
+					<label for="pricecode">Price Group</label>
 				</div>
 				<div class="col-sm-6">
 					<select name="pricecode" class="form-control" id="pricecode">
 						<option value="">-- Choose --</option>
-						{% for pricecode in itemgroups %}
+						{% for pricecode in pricecodes %}
 							<option value="{{ pricecode.code }}" {{ pricecode.code == item.pricecode ? 'selected' : ''}}>{{ pricecode.description }}</option>
 						{% endfor %}
 					</select>
@@ -72,6 +72,14 @@
 						<input type="checkbox" class="custom-control-input" name="needslabel" id="needslabel" value="Y" {{ item.is_needslabel() ? 'checked' : ''}}>
 						<label class="custom-control-label" for="needslabel">&nbsp;</label>
 					</div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-4">
+					<label for="revision">Revision</label>
+				</div>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" name="revision" id="revision" value="{{ item.revision }}">
 				</div>
 			</div>
 			<div class="row text-center">
