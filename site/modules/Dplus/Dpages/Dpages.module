@@ -145,6 +145,7 @@ class Dpages extends DplusPwPages implements Module {
 				'DpagesScreenFormatter',
 				'DpagesUserActions',
 				'DpagesMap',
+				'DpagesMsa',
 			),
 		);
 	}

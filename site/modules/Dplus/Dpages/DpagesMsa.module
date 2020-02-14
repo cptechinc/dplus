@@ -1,0 +1,110 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+/**
+ * class DpagesMap
+ *
+ * Installs fields, templates, pages, hooks necessary for the MAP pages
+ * NOTE: Also installs the basic fields, templates, to build the rest of the Application
+ */
+class DpagesMsa extends Dpages implements Module {
+	const FIELDS = array();
+
+	const TEMPLATES = array(
+		'msa-sysop' => array(
+			'name'   => 'msa-sysop',
+			'fields' => array(),
+			'paginated' => true
+		),
+	);
+
+	const PAGES = array(
+		'msa' => array(
+			'template'       => 'dplus-menu',
+			'name'           => 'msa',
+			'title'          => 'System Administration',
+			'summary'        => '',
+			'parent'         => '/',
+			'dplus_function' => ''
+		),
+		'msa-sysop' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'msa-sysop',
+			'name'           => 'sysop',
+			'title'          => 'System Optional Codes',
+			'summary'        => 'View System Optional Codes',
+			'parent'         => '/msa/',
+			'dplus_function' => 'sysop'
+		),
+	);
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+    public function init() {
+        /**
+         * Returns Sales Order Page URL
+         */
+        $this->addHook('Page(pw_template=msa-code-table-menu|msa-sysop)::get_codetable_viewURL', function($event) {
+            $table = $event->arguments(0);
+            $code = $event->arguments(1);
+            $event->return = $this->get_codetable_viewURL($table, $code);
+        });
+
+        $this->addHook('Page(pw_template=msa-sysop)::get_codetable_code_deleteURL', function($event) {
+            $table = $event->arguments(0);
+            $code = $event->arguments(1);
+            $event->return = $this->get_codetable_code_deleteURL($table, $code);
+        });
+
+        $this->addHook('Page(pw_template=msa-sysop)::get_codetable_code_editURL', function($event) {
+            $table = $event->arguments(0);
+            $code = $event->arguments(1);
+            $event->return = $this->get_codetable_code_editURL($table, $code);
+        });
+
+        $this->addHookProperty('Page(pw_template=msa-sysop)::codetable', function($event) {
+            $page = $event->object;
+            $event->return = $page->name;
+        });
+    }
+
+    public function get_codetable_viewURL($table, $code = false) {
+        $url = new Url($this->wire('pages')->get("pw_template=msa-sysop, name=$table")->url);
+        $url->query->set('code', $code);
+        return $url->getUrl();
+    }
+
+    public function get_codetable_code_deleteURL($table, $code) {
+        $url = new Url($this->wire('pages')->get("pw_template=msa-sysop, name=$table")->url);
+        $url->query->set('action', 'remove-code');
+        $url->query->set('table', $table);
+        $url->query->set('code', $code);
+        return $url->getUrl();
+    }
+
+    public function get_codetable_code_editURL($table, $code) {
+        $url = new Url($this->wire('pages')->get("pw_template=msa-sysop, name=$table")->url);
+        $url->query->set('code', $code);
+        return $url->getUrl();
+    }
+
+
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus MSA Pages Modules',
+			'version' => 101,
+			'summary' => 'Installs and creates MSA Pages',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('DplusPwPages'),
+			'installs' => array(),
+		);
+	}
+}
