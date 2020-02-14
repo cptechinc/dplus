@@ -14,7 +14,7 @@
 	{% if config_so.is_request_program() %}
 		<div class="form-group">
 		    <label for="sales_program">Sales Program ?</label>
-		    {% include 'util/select.twig' with {'name': 'sales_program', 'id': 'sales_program', 'selectedvalue': sales_program, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+		    {% include 'util/select.twig' with {'name': 'sales_program', 'id': 'sales_program', 'options': {'Y': 'Yes', 'N': 'No'}} %}
 	    </div>
 	{% endif %}
 

@@ -12,7 +12,7 @@ $(function() {
 		modal.find('input[name=code]').val(code);
 		modal.find('input[name=description]').val(description);
 		modal.find('input[name=conversion]').val(conversion);
-		modal.find('input[name=pricebyweight]').val(pricebyweight);
+		modal.find('select[name=pricebyweight]').val(pricebyweight);
 
 		if (code.length) {
 			modal.find('.modal-title').text('Editing Code ' + code);
