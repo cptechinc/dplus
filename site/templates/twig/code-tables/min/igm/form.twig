@@ -18,17 +18,10 @@
 				{% include 'util/select.twig' with {'name': 'coop', 'id': 'coop', 'selectedvalue': itemgroup.coop, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 
-			<!-- TODO: if statement - only for Alumacraft -->
-			<div class="form-group">
-				<label for="ritm">Allow RITM ?</label>
-				{% include 'util/select.twig' with {'name': 'ritm', 'id': 'ritm', 'selectedvalue': itemgroup.ritm, 'options': {'Y': 'Yes', 'N': 'No'}} %}
-			</div>
-			<!-- end -->
-
 			<!-- TODO: available if ArtbConfUseWeb = Y or if Alumacraft -->
 			{% if config_ar.is_web_group() %}
 				<div class="form-group">
-					<label for="web_group">Web Group</label>
+					<label for="web_group">Web Group ?</label>
 					{% include 'util/select.twig' with {'name': 'web_group', 'id': 'web_group', 'selectedvalue': itemgroup.web_group, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 				</div>
 			{% endif %}
@@ -66,13 +59,13 @@
 			</div>
 
 			<div class="form-group">
-				<label for="credit">Credit</label>
+				<label for="credit">Credits</label>
 				<input type="text" name="credit" class="form-control" value="{{ itemgroup.credit }}" id="credit">
 			</div>
 
 			<div class="form-group">
-				<label for="cost_percent">Cost Percent</label>
-				<input type="text" name="cost_percent" class="form-control" value="{{ itemgroup.cost_percent }}" id="cost_percent">
+				<label for="cogs">Cost of Goods Sold</label>
+				<input type="text" name="cogs" class="form-control" value="{{ itemgroup.cogs }}" id="cogs">
 			</div>
 
 			<div class="form-group">
