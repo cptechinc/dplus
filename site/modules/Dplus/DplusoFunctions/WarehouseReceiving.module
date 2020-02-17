@@ -91,10 +91,10 @@ class WarehouseReceiving extends WireData implements Module {
 	 * @return array
 	 */
 	public function get_jsconfig() {
-		$config = $this->wire('modules')->get('WarehouseInventoryConfig');
+		$config = $this->wire('modules')->get('ConfigsWarehouseInventory');
 		$js = array(
 			'receive_lotserial_as_single' => $config->receive_lotserial_as_single,
-			'receive_qty_label'           => $config->receive_qty_label
+			//'receive_qty_label'           => $config->receive_qty_label
 		);
 		return $js;
 	}
