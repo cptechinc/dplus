@@ -42,7 +42,11 @@
 
 			<div class="form-group">
 				<label for="product_line">Product Line</label>
-				<input type="text" name="product_line" class="form-control" value="{{ itemgroup.product_line }}" id="product_line">
+				<select class="form-control" name="product_line" id="product_line">
+					{% for line_code in product_line_codes %}
+						<option value="{{ line_code.code }}" {{ line_code.code == itemgroup.product_line ? 'selected' : ''}}>{{ line_code.code }} - {{ line_code.description }}</option>
+					{% endfor %}
+				</select>
 			</div>
 
 			<div class="form-group">
@@ -55,27 +59,47 @@
 			<h4>GL Accounts</h4>
 			<div class="form-group">
 				<label for="sales">Sales</label>
-				<input type="text" name="sales" class="form-control" value="{{ itemgroup.sales }}" id="sales">
+				<select class="form-control" name="sales" id="sales">
+					{% for account in gl_accounts %}
+						<option value="{{ account.code }}" {{ account.code == itemgroup.sales ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
+					{% endfor %}
+				</select>
 			</div>
 
 			<div class="form-group">
 				<label for="credit">Credits</label>
-				<input type="text" name="credit" class="form-control" value="{{ itemgroup.credit }}" id="credit">
+				<select class="form-control" name="credit" id="credit">
+					{% for account in gl_accounts %}
+						<option value="{{ account.code }}" {{ account.code == itemgroup.credit ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
+					{% endfor %}
+				</select>
 			</div>
 
 			<div class="form-group">
 				<label for="cogs">Cost of Goods Sold</label>
-				<input type="text" name="cogs" class="form-control" value="{{ itemgroup.cogs }}" id="cogs">
+				<select class="form-control" name="cogs" id="cogs">
+					{% for account in gl_accounts %}
+						<option value="{{ account.code }}" {{ account.code == itemgroup.cogs ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
+					{% endfor %}
+				</select>
 			</div>
 
 			<div class="form-group">
 				<label for="inventory">Inventory</label>
-				<input type="text" name="inventory" class="form-control" value="{{ itemgroup.inventory }}" id="inventory">
+				<select class="form-control" name="inventory" id="inventory">
+					{% for account in gl_accounts %}
+						<option value="{{ account.code }}" {{ account.code == itemgroup.inventory ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
+					{% endfor %}
+				</select>
 			</div>
 
 			<div class="form-group">
 				<label for="drop_ship">Drop Ship</label>
-				<input type="text" name="drop_ship" class="form-control" value="{{ itemgroup.drop_ship }}" id="drop_ship">
+				<select class="form-control" name="drop_ship" id="drop_ship">
+					{% for account in gl_accounts %}
+						<option value="{{ account.code }}" {{ account.code == itemgroup.drop_ship ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
+					{% endfor %}
+				</select>
 			</div>
 			<!-- GL Accounts Questions -->
 		</div>
