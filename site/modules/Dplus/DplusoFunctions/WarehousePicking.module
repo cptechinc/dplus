@@ -228,7 +228,6 @@ class WarehousePicking extends WireData implements Module {
 				$item->save();
 				$recordnumbers[] = $item->recordnumber;
 			}
-
 		}
 		$this->session->verify_whseitempick_itemID  = $itemID;
 		$this->session->verify_whseitempick_linenbr = $pickline->linenbr;
