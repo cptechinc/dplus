@@ -1,0 +1,95 @@
+<?php namespace ProcessWire;
+
+use CustomerShiptoQuery, CustomerShipto;
+use CustomerQuery, Customer;
+use WarehouseInventoryQuery, WarehouseInventory;
+
+class ItemEntryLookup extends ItemLookup implements Module {
+
+	public function __construct() {
+		parent::__construct();
+		$this->message = '';
+	}
+
+	const LOOKUPS = array('cxm');
+
+	public function lookup_input(WireInput $input) {
+		$itemID = $input->get->itemID ? $input->get->text('itemID') : $input->get->text('q');
+
+		$custID = $input->get->text('custID');
+		$shiptoID = $input->get->text('shiptoID');
+
+		$this->lookup_itm($itemID);
+
+		if (!$this->exists) {
+			$this->lookup_itm_short($itemID);
+		}
+
+		if (!$this->exists) {
+			foreach (self::LOOKUPS as $lookup) {
+				$function = "lookup_input_$lookup";
+				$this->$function($itemID, $input);
+
+				if ($this->exists) {
+					break;
+				}
+			}
+		}
+
+		if ($this->exists) {
+			$this->validate_active($custID, $shiptoID);
+		}
+
+		return $this->data;
+	}
+
+	public function lookup_input_cxm($itemID, WireInput $input) {
+		$custID = $input->get->text('custID');
+		$shiptoID = $input->get->text('shiptoID');
+		$this->lookup_cxm($itemID, $custID);
+	}
+
+	private function validate_active($custID, $shiptoID = '') {
+		if ($shiptoID) {
+			$q = CustomerShiptoQuery::create();
+			$shipto = $q->filterByCustid($custID)->filterByShiptoid($shiptoID)->findOne();
+			$warehouse = $shipto->warehouse;
+		} else {
+			$q = CustomerQuery::create();
+			$customer = $q->filterByCustid($custID)->findOne();
+			$warehouse = $customer->warehouse;
+		}
+
+		$q = WarehouseInventoryQuery::create();
+		$q->select(WarehouseInventory::get_aliasproperty('status'));
+		$q->filterByWarehouseid($warehouse);
+		$q->filterByItemid($this->itemID);
+		$status = $q->findOne();
+
+		if (!$status == WarehouseInventory::STATUS_ACTIVE) {
+			$this->exists = false;
+			$this->message = 'Item is not active';
+		}
+	}
+
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Item Entry Lookup Module',
+			'version' => 101,
+			'summary' => 'Handles Item Lookup for Item Entry',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(),
+			'requires' => array('ItemLookup')
+		);
+	}
+}
