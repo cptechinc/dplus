@@ -13,6 +13,7 @@
 		$template = 'whse-picking-unguided';
 	}
 
+
 	$action = 'start-pick-unguided';
 
 	// CHECK If Sales Order is Provided
@@ -51,8 +52,7 @@
 			include __DIR__ . "/$template.php";
 		}
 	} else {
-		// TODO::
-		// $http->get("127.0.0.1".$page->parent->child('template=redir')->url."?action=$action&sessionID=".session_id());
+		$http->get("127.0.0.1".$page->parent->child('template=redir')->url."?action=$action&sessionID=".session_id());
 		$page->formurl = $page->parent->child('template=redir')->url;
 		$page->body = $config->twig->render('warehouse/picking/sales-order-form.twig', ['page' => $page]);
 	}
