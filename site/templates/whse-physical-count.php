@@ -4,6 +4,8 @@
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
 	$modules->get('DpagesMwm')->init_physicalcount();
+	$config->inventory = $modules->get('ConfigsWarehouseInventory');
+
 	$html = $modules->get('HtmlWriter');
 
 	$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;
@@ -21,15 +23,21 @@
 			$physicalitem = $query_phys->findOne();
 			$page->title = "Physical Count for $physicalitem->itemid";
 
+			if ($physicalitem->is_complete()) {
+				$page->fullURL->query->remove('scan');
+				$session->redirect($page->fullURL->getUrl());
+			}
+
 			if ($physicalitem->has_error()) {
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $physicalitem->get_error()]);
 				$page->body .= $html->div('class=mb-3');
 				$page->body .= $config->twig->render('warehouse/inventory/physical-count/item-search-form.twig', ['page' => $page]);
 			} else {
-				if ($session->bin) {
+				if ($session->bin && $config->inventory->physicalcount_savebin) {
 					$physicalitem->setBin($session->bin);
 				}
 				$page->body = $config->twig->render('warehouse/inventory/physical-count/physical-count-form.twig', ['page' => $page, 'item' => $physicalitem]);
+				$page->body .= $config->twig->render('warehouse/inventory/bins-modal.twig', ['warehouse' => $warehouse]);
 				$config->scripts->append(hash_templatefile('scripts/warehouse/physical-count.js'));
 			}
 		} elseif ($query_phys->count() > 1) {
@@ -61,12 +69,14 @@
 					$physicalitem->save();
 					$session->redirect($page->url."?scan=$scan");
 				} else {
-					$page->title = "No results found for ''$q'";
-					$page->body = $config->twig->render('warehouse/inventory/physical-count/item-search-form.twig', ['page' => $page]);
+					$page->title = "No results found for '$q'";
+					$page->body .= $html->h3('class=secondary-text', $page->title);
+					$page->body .= $config->twig->render('warehouse/inventory/physical-count/item-search-form.twig', ['page' => $page]);
 				}
 			} else {
-				$page->title = "No results found for ''$scan'";
-				$page->body = $config->twig->render('warehouse/inventory/physical-count/item-search-form.twig', ['page' => $page]);
+				$page->title = "No results found for '$scan'";
+				$page->body .= $html->h3('class=secondary-text', $page->title);
+				$page->body .= $config->twig->render('warehouse/inventory/physical-count/item-search-form.twig', ['page' => $page]);
 			}
 		}
 	} else {
