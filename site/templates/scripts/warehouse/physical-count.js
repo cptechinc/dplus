@@ -22,6 +22,14 @@ $(function() {
 		input_item.focus();
 	}
 
+	$("body").on("click", "#bins-modal .choose-bin", function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var binID = button.data('bin');
+		input_bin.val(binID);
+		button.closest('.modal').modal('hide');
+	});
+
 	form_physcount.validate({
 		submitHandler : function(form) {
 			var valid_qty     = validate_qty();
