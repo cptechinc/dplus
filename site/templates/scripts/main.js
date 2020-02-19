@@ -171,7 +171,6 @@ $.fn.extend({
 		console.log('loading ' + href + " into " +  parent.returnelementdescription());
 		element.load(href, function() {
 			init_datepicker();
-			// init_timepicker();
 			callback();
 		});
 	},
