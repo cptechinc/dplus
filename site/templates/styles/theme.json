@@ -1,0 +1,22 @@
+{
+  "name": "Custom",
+  "fonts": {
+    "headings": "Comfortaa",
+    "base": "Nunito"
+  },
+  "desc": "A DIY theme cloned from Signal.",
+  "vars": {
+    "gray-300": "#e0e0e0"
+  },
+  "colors": {
+    "primary": "#1F2C31",
+    "secondary": "#FF304F",
+    "success": "#0bc449",
+    "danger": "#E74C3C",
+    "info": "#0F81C7",
+    "warning": "#D88613",
+    "light": "#ececec",
+    "dark": "#222222"
+  },
+  "cloned": "Signal"
+}
