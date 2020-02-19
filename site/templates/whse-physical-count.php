@@ -21,6 +21,10 @@
 
 		if ($query_phys->count() == 1) {
 			$physicalitem = $query_phys->findOne();
+			if ($physicalitem->is_complete()) {
+				$page->fullURL->query->remove('scan');
+				$session->redirect($page->fullURL->getUrl());
+			}
 			$page->title = "Physical Count for $physicalitem->itemid";
 
 			if ($physicalitem->is_complete()) {
