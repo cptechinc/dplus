@@ -56,7 +56,7 @@
 					<div class="col-sm-6 form-group">
 						<label for="bin-qty">Qty </label> (On Hand: <span class="qty-available">{{ inventory.get_binqty(session.get('sessionid'), item, item.bin) }}</span>)
 						<div class="input-group">
-							<input type="text" class="form-control input-sm text-right" name="qty" value="{{ config.default_qtyonhand ? item.qty : ''}}">
+							<input type="text" class="form-control input-sm text-right" name="qty" value="{{ config.default_qtyonhand or config.use_qtyonly ? item.qty : ''}}" {{ config.use_qtyonly ? 'readonly' : ''}}>
 							<span class="input-group-append">
 								<button type="submit" class="btn btn-primary not-round use-bin-qty" data-direction="from">Use Bin Qty</button>
 							</span>
