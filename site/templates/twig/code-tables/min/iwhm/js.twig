@@ -1,6 +1,57 @@
 $(function() {
 	var max_code_length = {{ warehouse.get_max_code_length() }};
 
+	var form = $('#code-edit-form');
+	var input_customer = form.find('input[name=cash_customer]');
+
+	var modal_ajax = $('#ajax-modal');
+
+/**
+ *
+ * Customer Lookup Modal
+ *
+ */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = '{{ page.customerlookupURL }}';
+		modal.find('.modal-title').text('Search for a Customer');
+		modal.find('.modal-body').loadin(url, function() {
+
+		});
+	});
+
+	$("body").on('click', '.ci-customer', function(e) {
+		e.preventDefault();
+		var custid = $(this).data('custid');
+		input_customer.val(custid);
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('submit', '#lookup form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {
+
+		});
+	});
+
+	$("body").on('click', '.page-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+/**
+ *
+ *
+ *
+ */
 	$('#notes-modal').on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget) // Button that triggered the modal
 		var notetype = button.data('type'); // Extract info from data-* attributes
@@ -20,7 +71,7 @@ $(function() {
 		modal.find('textarea[name=note]').focus()
 	});
 
-	$("#code-edit-form").validate({
+	form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {

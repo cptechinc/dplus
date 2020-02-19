@@ -111,6 +111,10 @@ class DpagesMci extends Dpages implements Module {
 		'ci-customer-phonebook' => array(
 			'name'   => 'ci-customer-phonebook',
 			'fields' => array(),
+		),
+		'mci-lookup' => array(
+			'name'   => 'mci-lookup',
+			'fields' => array(),
 		)
 	);
 
@@ -122,6 +126,15 @@ class DpagesMci extends Dpages implements Module {
 			'summary'        => 'Customer Menu',
 			'parent'         => '/',
 			'dplus_function' => 'mci'
+		),
+		'mci-lookup' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'lookup',
+			'title'          => 'Customer Lookup',
+			'summary'        => 'Lookup Customers',
+			'parent'         => '/mci/',
+			'dplus_function' => '',
+			'pw_template'    => 'mci-lookup'
 		),
 		'ci' => array(
 			'template'       => 'dplus-function',
