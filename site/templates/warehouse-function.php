@@ -12,8 +12,7 @@
 			include('./basic-page.php');
 		}
 	} else {
-		$http = new WireHttp();
-		$url = $pages->get('template=warehouse-menu, dplus_function=wm')->child('template=redir')->url."?action=login&sessionID=".session_id();
-		$http->get("127.0.0.1$url");
+		$url = $page->get_loginURL();
+		$modules->get('DplusRequest')->self_request($url);
 		$session->redirect($page->url);
 	}

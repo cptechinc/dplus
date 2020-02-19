@@ -9,7 +9,7 @@
 
 		if (SalesOrderQuery::create()->filterByOrdernumber($ordn)->count()) {
 			if (!OrdrhedQuery::create()->filterBySessionidOrder(session_id(), $qnbr)->count()) {
-				$http->get($page->edit_orderURL($ordn));
+				$modules->get('DplusRequest')->self_request($page->edit_orderURL($ordn));
 			}
 			$module_edit = $modules->get('SalesOrderEdit');
 			$module_edit->set_ordn($ordn);
