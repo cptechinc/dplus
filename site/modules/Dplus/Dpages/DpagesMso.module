@@ -343,7 +343,7 @@ class DpagesMso extends Dpages implements Module {
 			$order = SalesOrderQuery::create()->findOneByOrdernumber($order);
 		}
 
-		$config_orders = $this->wire('modules')->get('SalesOrdersConfig');
+		$config_orders = $this->wire('modules')->get('ConfigsSalesOrders');
 		$canedit = false;
 
 		if ($config_orders->allow_salesorderedit) {
