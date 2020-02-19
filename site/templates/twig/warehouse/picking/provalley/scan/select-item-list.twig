@@ -1,0 +1,78 @@
+{# TODO: HANDLE IF NORMAL ITEM IS IN MULTIPLE BINS #}
+<h4>Select your items</h4>
+<div class="form-group">
+	<a href="{{ page.get_removescanURL() }}" class="btn btn-warning">Retry Search</a>
+</div>
+<div class="list-group">
+	<div class="list-group-item">
+		<div class="row">
+			<div class="col-sm-2">Expand</div>
+			<div class="col-sm-6">Item ID</div>
+			<div class="col-sm-2">Total Weight</div>
+			<div class="col-sm-2"></div>
+		</div>
+	</div>
+	{% for item in items %}
+		<div class="list-group-item">
+			<div class="row">
+				<div class="col-sm-2">
+					{% if (item.is_item_serialized() or item.is_item_lotted())  %}
+						<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#{{ item.itemid|attrJS }}" aria-expanded="false" aria-controls="{{ item.linenbr|attrJS }}">
+							<i class="fa fa-plus-circle" aria-hidden="true"></i>
+						</button>
+					{% endif %}
+				</div>
+				<div class="col-sm-6">{{ item.itemid }}</div>
+				<div class="col-sm-2">{{ item.get_total_qty() }}</div>
+				<div class="col-sm-2"></div>
+			</div>
+		</div>
+		{% if (item.is_item_serialized() or item.is_item_lotted()) %}
+			<div class="collapse" id="{{ item.itemid|attrJS }}">
+				<div class="list-group-item bg-dark text-white">
+					<div class="row">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-2">Lot/Serial #</div>
+						<div class="col-sm-2">Lot Reference</div>
+						<div class="col-sm-2">Weight</div>
+						<div class="col-sm-2">Bin</div>
+					</div>
+				</div>
+				<form action="{{ page.fullURL.getUrl() }}" method="post">
+					<input type="hidden" name="action" value="add-lotserials">
+					<input type="hidden" name="scan" value="{{ item.scan }}">
+					<input type="hidden" name="itemID" value="{{ item.itemid }}">
+
+					<div class="scroll-300 form-group">
+						{% for lotserial in item.get_lotserials() %}
+							<input type="hidden" name="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin) }}-qty" value="{{ lotserial.qty }}">
+							<input type="hidden" name="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin) }}-bin" value="{{ lotserial.bin }}">
+							<input type="hidden" name="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin) }}-lotserialref" value="{{ lotserial.lotserialref }}">
+							<input type="hidden" name="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin) }}-lotserial" value="{{ lotserial.lotserial }}">
+
+							<div class="list-group-item">
+								<div class="row">
+									<div class="col-sm-2">
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" name="lotserialbins[]" value="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin) }}" id="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin)|attrJS }}">
+										</div>
+									</div>
+									<div class="col-sm-2" for="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin)|attrJS }}">{{ lotserial.lotserial }}</div>
+									<div class="col-sm-2">{{ lotserial.lotserialref }}</div>
+									<div class="col-sm-2">{{ lotserial.qty }}</div>
+									<div class="col-sm-2">{{ lotserial.bin }}</div>
+									<div class="col-sm-2"></div>
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+					<div class="form-group">
+						<button type="submit" class="btn btn-success">
+							<i class="fa fa-plus" aria-hidden="true"></i> Add Lotserials
+						</button>
+					</div>
+				</form>
+			</div>
+		{% endif %}
+	{% endfor %}
+</div>
