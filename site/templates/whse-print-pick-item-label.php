@@ -48,7 +48,7 @@
 					$thermal_labels = ThermalLabelFormatQuery::create();
 					$whse_printers = WhsePrinterQuery::create();
 
-					$http->get('127.0.0.1'.$page->print_labelredirURL($ordn, $itemID));
+					$modules->get('DplusRequest')->self_request($page->print_labelredirURL($ordn, $itemID));
 
 					if (LabelPrintSessionQuery::create()->filterBySessionid(session_id())->count()) {
 						$labelsession = LabelPrintSessionQuery::create()->findOneBySessionid(session_id());
