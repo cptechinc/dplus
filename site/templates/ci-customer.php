@@ -12,10 +12,8 @@
 			$modules->get('DpagesMci')->init_customer_hooks();
 			$modules->get('DpagesMci')->init_cipage();
 			$load_customer = $modules->get('CiLoadCustomerShipto');
-
 			$load_customer->set_custID($custID);
 
-			// TODO VALIDATION
 			if ($load_customer->customer_exists()) {
 				$customer = $load_customer->get_customer();
 				$actions = $load_customer->get_useractions($input);
