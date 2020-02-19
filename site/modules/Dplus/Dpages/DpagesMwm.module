@@ -251,17 +251,19 @@ class DpagesMwm extends Dpages implements Module {
 			'summary' => 'Installs and creates Dplus Online Warehouse Pages',
 			'singular' => true,
 			'autoload' => true,
-			'requires' => array('DplusPwPages', 'Dpages'),
 		);
 	}
 
-	public function init_picking() {
-		$this->addHook('Page::get_redirURL', function($event) {
-			$p = $event->object;
-			$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
+	public function init() {
+		$this->addHook('Page(template=warehouse-menu|warehouse-function)::get_loginURL', function($event) {
+			$url = new Url($this->wire('pages')->get('template=warehouse-menu, dplus_function=wm')->child('template=redir')->url);
+			$url->query->set('action', 'login');
+			$url->query->set('sessionID', session_id());
 			$event->return = $url->getUrl();
 		});
+	}
 
+	public function init_picking() {
 		$this->addHook('Page::get_finishitemURL', function($event) {
 			$p = $event->object;
 			$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
@@ -270,16 +272,6 @@ class DpagesMwm extends Dpages implements Module {
 			if ($p->fullURL->query->has('linenbr')) {
 				$url->query->set('linenbr', $p->fullURL->query->get('linenbr'));
 			}
-			$url->query->set('page', $p->fullURL->getUrl());
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page::get_removepickitemURL', function($event) {
-			$p = $event->object;
-			$recordnumber = $event->arguments(0);
-			$url = new Url($p->get_redirURL());
-			$url->query->set('action','remove-picked-item');
-			$url->query->set('recordnumber', $recordnumber);
 			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
 		});
@@ -320,17 +312,10 @@ class DpagesMwm extends Dpages implements Module {
 			$p = $event->object;
 			$ordn    = $event->arguments(0);
 			$linenbr = $event->arguments(1);
-			$url = new Url($this->wire('pages')->get('pw_template=whse-print-order-item-label')->url);
+			$url = new Url($this->wire('pages')->get('pw_template=whse-print-pick-item-label')->url);
 			$url->query->set('ordn', $ordn);
 			$url->query->set('linenbr', $linenbr);
 			$url->query->set('returnpage', $p->fullURL->getUrl());
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page::get_removescanURL', function($event) {
-			$p = $event->object;
-			$url = new Url($p->fullURL->getUrl());
-			$url->query->remove('scan');
 			$event->return = $url->getUrl();
 		});
 
