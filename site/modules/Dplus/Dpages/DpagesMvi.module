@@ -470,6 +470,7 @@ class DpagesMvi extends Dpages implements Module {
 			'summary' => 'Installs and creates Dplus Online Vendor Pages',
 			'singular' => true,
 			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
 		);
 	}
 }

@@ -231,6 +231,7 @@ class DpagesBookings extends Dpages implements Module {
 			'summary' => 'Installs and creates Dplus Online Bookings Pages',
 			'singular' => true,
 			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
 		);
 	}
 }

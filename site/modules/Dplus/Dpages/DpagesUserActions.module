@@ -97,6 +97,7 @@ class DpagesUserActions extends Dpages implements Module {
 			'summary' => 'Installs and creates Dpluso User Action Pages',
 			'singular' => true,
 			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
 		);
 	}
 }
