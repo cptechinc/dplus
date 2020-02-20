@@ -63,5 +63,4 @@ class CodeTables extends WireData implements Module {
 		$requestor->write_dplusfile($data, session_id());
 		$requestor->cgi_request($config->cgis['database'], session_id());
 	}
-
 }

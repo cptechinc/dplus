@@ -205,8 +205,9 @@ class CodeTablesIwhmNotes extends WireData implements Module {
 		// IF there are lines saved
 		if (sizeof($lines_saved)) {
 			$data = $this->write_dplus_data($notetype, $whseID);
-			$this->wire('modules')->get('CodeTables')->write_dplusfile($data, session_id());
-			$this->wire('modules')->get('CodeTables')->http_get_dplus();
+			$requestor = $this->wire('modules')->get('DplusRequest');
+			$requestor->write_dplusfile($data, session_id());
+			$requestor->cgi_request($config->cgis['database'], session_id());
 		}
 		return $response;
 	}

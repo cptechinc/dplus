@@ -5,14 +5,16 @@
 
 	if ($input->requestMethod('POST') || $input->get->action) {
 		$rm = strtolower($input->requestMethod());
+		$action = $input->$rm->text('action');
 
 		// TODO: LOGIC to see if code was removed
 		$code = $input->$rm->text('code');
+		$code = $action == 'update-notes' ? $code : '';
 
 		if ($in_codetables->validate_codetable($page->codetable)) {
 			$module_codetable = $in_codetables->get_codetable_module($page->codetable);
 			$module_codetable->process_input($input);
-			$session->redirect($page->get_codetable_viewURL($page->codetable, $code = ''), $http301 = false);
+			$session->redirect($page->get_codetable_viewURL($page->codetable,  $code), $http301 = false);
 		}
 	}
 
