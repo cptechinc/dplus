@@ -1,8 +1,11 @@
 <?php namespace ProcessWire;
 
+use Propel\Runtime\ActiveQuery\Criteria;
+
 use ItemMasterItemQuery, ItemMasterItem;
 use ConfigSysQuery, ConfigSys;
 use ItemXrefCustomerQuery, ItemXrefCustomer;
+use ItemXrefUpcQuery, ItemXrefUpc;
 
 /**
  * ItemLookup
@@ -72,6 +75,24 @@ class ItemLookup extends WireData implements Module {
 		}
 	}
 
+	/**
+	 * Looks up if UPC exists in the UPCX Database
+	 * @param  string $upc
+	 * @return void
+	 */
+	public function lookup_upcx($upc) {
+		$this->source = empty($this->source) || $this->source == 'itm' ? 'upcx' : $this->source;
+		$this->request = empty($this->request) ? $upc : $this->request;
+
+		$q = ItemXrefUpcQuery::create();
+		$q->filterByUpc($upc);
+		$q->select(ItemXrefUpc::get_aliasproperty('itemid'));
+
+		if ($q->count()) {
+			$this->lookup_itm($q->findOne());
+		}
+	}
+
 	/* =============================================================
 		ProcessWire Module Functions
 	============================================================= */
@@ -87,7 +108,7 @@ class ItemLookup extends WireData implements Module {
 			'summary' => 'Handles Item Lookup',
 			'singular' => true,
 			'autoload' => true,
-			'installs' => array('ItemEntryLookup')
+			'installs' => array('ItemEntryLookup', 'ItemIiLookup')
 		);
 	}
 }
