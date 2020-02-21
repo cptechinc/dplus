@@ -4,7 +4,7 @@
 
 	$module_useractions = $modules->get('FilterUserActions');
 	$html = $modules->get('HtmlWriter');
-	$lookup_customer = $modules->get('CustomerLookup');
+	$lookup_customer = $modules->get('LookupCustomer');
 
 	if ($input->get->custID) {
 		$custID = $input->get->text('custID');
