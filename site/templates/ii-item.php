@@ -1,18 +1,14 @@
 <?php
-	use ItemsearchQuery, Itemsearch;
-
 	$module_ii = $modules->get('DpagesMii');
 	$module_ii->init_iipage();
 	$html = $modules->get('HtmlWriter');
+	$lookup_ii = $modules->get('ItemIiLookup');
 
 	if ($input->get->itemID) {
 		$itemID = $input->get->text('itemID');
-		$query = ItemsearchQuery::create();
-		$query->filterActive();
-		$query->filterByOrigintype([Itemsearch::ORIGINTYPE_VENDOR, Itemsearch::ORIGINTYPE_ITEM]);
-		$query->filterByItemid($itemID);
+		$lookup_ii->lookup_itm($itemID);
 
-		if ($query->count()) {
+		if ($lookup_ii->exists) {
 			$page->headline = "II: $itemID";
 			$item = ItemMasterItemQuery::create()->findOneByItemid($itemID);
 			$itempricing = ItemPricingQuery::create()->findOneByItemid($itemID);
@@ -21,7 +17,7 @@
 			$documentmanagement = $modules->get('DocumentManagement');
 
 			$toolbar = $config->twig->render('items/ii/toolbar.twig', ['page' => $page, 'item' => $item]);
-			$links = $config->twig->render('items/ii/item/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $page->get_itemURL($itemID)]);
+			$links = $config->twig->render('items/ii/item/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), 'ii-stock'), 'refreshurl' => $page->get_itemURL($itemID)]);
 			$description = $config->twig->render('items/ii/item/description.twig', ['item' => $item, 'page' => $page]);
 			$itemdata = $config->twig->render('items/ii/item/item-data.twig', ['page' => $page, 'item' => $item, 'itempricing' => $itempricing]);
 
@@ -43,36 +39,26 @@
 					$session->redirect($page->get_itemURL($itemID));
 				}
 			}
-
 			$page->body = "<div class='row'>";
 				$page->body .= $html->div('class=col-sm-2', $toolbar);
 				$page->body .= $html->div('class=col-sm-10', $links.$description.$itemdata.$stock);
 			$page->body .= "</div>";
-
 		} else {
 			$page->headline = $page->title = "Item $itemID could not be found";
 			$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => "Check if the item ID is correct"]);
 		}
 	} else {
 		$q = $input->get->q ? $input->get->text('q') : '';
-		$query = ItemsearchQuery::create();
-		$query->filterActive();
-		$query->filterByOrigintype([Itemsearch::ORIGINTYPE_VENDOR, Itemsearch::ORIGINTYPE_ITEM]);
+		$page->title = $q ? "II: results for '$q'" : $page->title;
+		$lookup_ii->lookup($q);
 
-		if ($query->filterByItemid($q)->count()) {
-			$query->groupby('itemid');
+		if ($lookup_ii->exists) {
+			$session->redirect($page->get_itemURL($lookup_ii->itemID));
 		} else {
-			$query->clear();
-			$query->filterActive();
-			$query->filterByOrigintype([Itemsearch::ORIGINTYPE_VENDOR, Itemsearch::ORIGINTYPE_ITEM]);
-			$query->where("MATCH(Itemsearch.itemid, Itemsearch.refitemid, Itemsearch.desc1, Itemsearch.desc2) AGAINST (? IN BOOLEAN MODE)", "*$q*");
-			$query->groupby('itemid');
-		}
-
-		if ($query->count() == 1) {
-			$item = $query->findOne();
-			$session->redirect($page->get_itemURL($item->itemid));
-		} else {
+			$filter_itm = $modules->get('FilterItemMaster');
+			$filter_itm->init_query($user);
+			$filter_itm->filter_search($q);
+			$query = $filter_itm->get_query();
 			$items = $query->paginate($input->pageNum, 10);
 		}
 
