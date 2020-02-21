@@ -2,13 +2,12 @@
 	$module_ii = $modules->get('DpagesMii');
 	$module_ii->init_iipage();
 	$html = $modules->get('HtmlWriter');
-	$lookup_ii = $modules->get('ItemIiLookup');
+	$lookup_ii = $modules->get('LookupItemIi');
 
 	if ($input->get->itemID) {
 		$itemID = $input->get->text('itemID');
-		$lookup_ii->lookup_itm($itemID);
 
-		if ($lookup_ii->exists) {
+		if ($lookup_ii->lookup_itm($itemID)) {
 			$page->headline = "II: $itemID";
 			$item = ItemMasterItemQuery::create()->findOneByItemid($itemID);
 			$itempricing = ItemPricingQuery::create()->findOneByItemid($itemID);
@@ -50,9 +49,8 @@
 	} else {
 		$q = $input->get->q ? $input->get->text('q') : '';
 		$page->title = $q ? "II: results for '$q'" : $page->title;
-		$lookup_ii->lookup($q);
 
-		if ($lookup_ii->exists) {
+		if ($lookup_ii->lookup($q)) {
 			$session->redirect($page->get_itemURL($lookup_ii->itemID));
 		} else {
 			$filter_itm = $modules->get('FilterItemMaster');
