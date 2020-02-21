@@ -1,0 +1,58 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use CustomerQuery, Customer;
+
+/**
+ * ItemLookup
+ *
+ * Class for Looking up / Validating Items through ITM and different X-refs
+ *
+ * @property string $exists  Item Exists
+ * @property string $custID  Customer ID
+ * @property string $request What was sent to find Customer
+ * @property string $source  customer|customershipto
+ */
+class CustomerLookup extends WireData implements Module {
+	public function __construct() {
+		$this->exists  = false;
+		$this->custID  = '';
+	}
+
+	/**
+	 * Looks up if Customer ID exists in the Customer Master
+	 * @param  string $custID Customer ID
+	 * @return void
+	 */
+	public function lookup_customer($custID) {
+		$q = CustomerQuery::create();
+		$q->filterByCustid($custID);
+
+		if ($q->count()) {
+			$this->exists = true;
+			$this->itemID = $custID;
+		}
+	}
+
+
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Customer Lookup Module',
+			'version' => 101,
+			'summary' => 'Handles Customer Lookup',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+}
