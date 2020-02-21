@@ -20,7 +20,7 @@
 		<label for="pickdetail">Pick Detail</label>
 	</div>
 	<div class="col">
-		{% include 'util/select.twig' with {'name': 'pickdetail', 'id': 'pickdetail', 'options': {'N': 'No', 'Y': 'Yes'}, 'selectedvalue': (warehouse.pickdetail ? warehouse.pickdetail : 'N')} %}
+		{% include 'util/select.twig' with {'name': 'pickdetail', 'id': 'pickdetail', 'options': {'A': 'Available', 'S': 'Selected', 'N': 'No'}, 'selectedvalue': (warehouse.pickdetail ? warehouse.pickdetail : '')} %}
 	</div>
 </div>
 
@@ -48,7 +48,7 @@
 		<label for="consignment">Consignment</label>
 	</div>
 	<div class="col">
-		{% include 'util/select.twig' with {'name': 'consignment', 'id': 'consignment', 'options': {'N': 'No', 'Y': 'Yes'}, 'selectedvalue': (warehouse.consignment ? warehouse.consignment : 'N')} %}
+		{% include 'util/select.twig' with {'name': 'consignment', 'id': 'consignment', 'options': {'N': 'No', 'Y': 'Yes'}, 'selectedvalue': (warehouse.consignment ? warehouse.consignment : '')} %}
 	</div>
 </div>
 

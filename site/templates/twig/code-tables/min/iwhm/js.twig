@@ -4,6 +4,8 @@ $(function() {
 	var form = $('#code-edit-form');
 	var input_whseID   = form.find('input[name=whseID]');
 	var input_name     = form.find('input[name=name]');
+	var select_pick	   = form.find('select[name=pickdetail']);
+	var select_consign = form.find('select[name=consignment']);
 	var input_customer = form.find('input[name=cash_customer]');
 	var select_wh_profit = form.find('select[name=whse_profit]');
 	var select_wh_supply = form.find('select[name=whse_supply]');
@@ -111,11 +113,17 @@ $(function() {
 				required: true,
 				maxlength: {{ warehouse.get_max_code_length() }},
 			},
-			name: 'required',
+			select_pick: {
+				required: true,
+			},
+			select_consign; {
+				required: true,
+			},
 		},
 		messages: {
 			whseID: "Please review the Warehouse Code value, (Max Characters {{ warehouse.get_max_code_length() }})",
-			name: 'Please enter a description for the code',
+			select_pick: "Please choose an option",
+			select_consign: "Please choose an option",
 		},
 		submitHandler: function(form) {
 			form.submit();

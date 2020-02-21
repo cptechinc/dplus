@@ -20,13 +20,13 @@
 	</div>
 	<div class="col-9">
 		<div class="form-row">
-			<div class="col-4">
+			<div class="col-6">
 				<input type="text" name="city" class="form-control" maxlength="16" value="{{ warehouse.city }}" id="city">
 			</div>
-			<div class="col-4">
+			<div class="col-2">
 				<select name="state" class="form-control" id="state">
 					{% for state in states %}
-						<option value="{{ state.abbreviation }}" {{ state.abbreviation == warehouse.state ? 'selected' : ''}}>{{ state.abbreviation }} - {{ state.name }}</option>
+						<option value="{{ state.abbreviation }}" {{ state.abbreviation == warehouse.state ? 'selected' : ''}}>{{ state.abbreviation }}</option>
 					{% endfor %}
 				</select>
 			</div>
@@ -53,17 +53,9 @@
 		<label for="phone">Phone</label>
 	</div>
 	<div class="col-9">
-		<input type="text" name="phone" class="form-control phone-input" value="{{ warehouse.phone|phone_us }}" id="phone">
-	</div>
-</div>
-<div class="form-row form-group">
-	<div class="col-3">
-		<label for="fax">Fax</label>
-	</div>
-	<div class="col-9">
 		<div class="form-row">
 			<div class="col-sm-7">
-				<input type="text" name="fax" class="form-control phone-input" value="{{ warehouse.fax|phone_us }}" id="fax">
+				<input type="text" name="phone" class="form-control phone-input" value="{{ warehouse.phone|phone_us }}" id="phone">
 			</div>
 			<div class="col-sm-5">
 				<div class="row">
@@ -76,6 +68,14 @@
 				</div>
 			</div>
 		</div>
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-3">
+		<label for="fax">Fax</label>
+	</div>
+	<div class="col-9">
+		<input type="text" name="fax" class="form-control phone-input" value="{{ warehouse.fax|phone_us }}" id="fax">
 	</div>
 </div>
 <div class="form-row form-group">
