@@ -4,7 +4,18 @@ use CustomerShiptoQuery, CustomerShipto;
 use CustomerQuery, Customer;
 use WarehouseInventoryQuery, WarehouseInventory;
 
-class ItemEntryLookup extends ItemLookup implements Module {
+/**
+ * LookupItemEntry
+ *
+ * Class for Looking up / Validating Items through ITM and different X-refs
+ * for the purposes of Item Entry
+ *
+ * @property string $exists  Item Exists
+ * @property string $itemID  Item ID associated with Item
+ * @property string $request What was sent to find Item
+ * @property string $source  itm|cxm
+ */
+class LookupItemEntry extends LookupItem implements Module {
 
 	public function __construct() {
 		parent::__construct();
@@ -13,6 +24,12 @@ class ItemEntryLookup extends ItemLookup implements Module {
 
 	const LOOKUPS = array('cxm');
 
+	/**
+	 * Validates if string corresponds to an Item
+	 * NOTE: Validates if Item is Active
+	 * @param  WireInput $input
+	 * @return void
+	 */
 	public function lookup_input(WireInput $input) {
 		$itemID = $input->get->itemID ? $input->get->text('itemID') : $input->get->text('q');
 
@@ -43,12 +60,24 @@ class ItemEntryLookup extends ItemLookup implements Module {
 		return $this->data;
 	}
 
+	/**
+	 * Validates Item through CXM using provided Input Data
+	 * @param  string    $itemID Item ID
+	 * @param  WireInput $input  Input Data
+	 * @return string
+	 */
 	public function lookup_input_cxm($itemID, WireInput $input) {
 		$custID = $input->get->text('custID');
 		$shiptoID = $input->get->text('shiptoID');
 		$this->lookup_cxm($itemID, $custID);
 	}
 
+	/**
+	 * Validates if Item Is active by checking the provided Customer / Shipto's Warehouse
+	 * @param  string $custID   Customer ID
+	 * @param  string $shiptoID Shipto ID
+	 * @return void
+	 */
 	private function validate_active($custID, $shiptoID = '') {
 		if ($shiptoID) {
 			$q = CustomerShiptoQuery::create();
@@ -89,7 +118,7 @@ class ItemEntryLookup extends ItemLookup implements Module {
 			'singular' => true,
 			'autoload' => true,
 			'installs' => array(),
-			'requires' => array('ItemLookup')
+			'requires' => array('LookupItem')
 		);
 	}
 }

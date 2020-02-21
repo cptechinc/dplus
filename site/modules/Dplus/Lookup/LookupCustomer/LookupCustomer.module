@@ -7,23 +7,23 @@ use CustomerQuery, Customer;
 /**
  * ItemLookup
  *
- * Class for Looking up / Validating Items through ITM and different X-refs
+ * Class for Looking up / Validating Customers
  *
- * @property string $exists  Item Exists
+ * @property string $exists  Customer Exists
  * @property string $custID  Customer ID
  * @property string $request What was sent to find Customer
  * @property string $source  customer|customershipto
  */
-class CustomerLookup extends WireData implements Module {
+class LookupCustomer extends WireData implements Module {
 	public function __construct() {
 		$this->exists  = false;
 		$this->custID  = '';
 	}
 
 	/**
-	 * Looks up if Customer ID exists in the Customer Master
+	 * Returns if Customer ID exists in the Customer Master
 	 * @param  string $custID Customer ID
-	 * @return void
+	 * @return bool
 	 */
 	public function lookup_customer($custID) {
 		$q = CustomerQuery::create();
@@ -33,9 +33,8 @@ class CustomerLookup extends WireData implements Module {
 			$this->exists = true;
 			$this->itemID = $custID;
 		}
+		return $this->exists;
 	}
-
-
 
 	/* =============================================================
 		ProcessWire Module Functions

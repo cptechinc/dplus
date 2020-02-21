@@ -7,6 +7,17 @@
  */
 class Lookup extends WireData implements Module {
 
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+
+		foreach ($info['installs'] as $module_name) {
+			if (!$modules->isInstalled($module_name)) {
+				$result = $modules->install($module_name);
+			}
+		}
+	}
+
 	/* =============================================================
 		ProcessWire Module Functions
 	============================================================= */
@@ -22,7 +33,10 @@ class Lookup extends WireData implements Module {
 			'summary' => 'Handles Lookup Modules Installation & Updates',
 			'singular' => true,
 			'autoload' => true,
-			'installs' => array('LookupVendor')
+			'installs' => array(
+				'LookupCustomer',
+				'LookupVendor'
+			)
 		);
 	}
 }
