@@ -1,0 +1,28 @@
+<?php namespace ProcessWire;
+
+/**
+ * Lookup
+ *
+ * Parent Module to Install Sub Lookup Modules
+ */
+class Lookup extends WireData implements Module {
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Lookup Module',
+			'version' => 101,
+			'summary' => 'Handles Lookup Modules Installation & Updates',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array('LookupVendor')
+		);
+	}
+}
