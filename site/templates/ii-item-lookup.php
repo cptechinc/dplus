@@ -1,7 +1,6 @@
 <?php
-	$lookup = $modules->get('ItemEntryLookup');
+	$lookup = $modules->get('LookupItemEntry');
 	$response = $lookup->lookup_input($input);
 
-	$response['sql'] = $con->getLastExecutedQuery();
 
 	$page->body = json_encode($response);
