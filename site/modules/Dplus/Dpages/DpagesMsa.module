@@ -42,53 +42,53 @@ class DpagesMsa extends Dpages implements Module {
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
-    public function init() {
-        /**
-         * Returns Sales Order Page URL
-         */
-        $this->addHook('Page(pw_template=msa-code-table-menu|msa-sysop)::get_codetable_viewURL', function($event) {
-            $table = $event->arguments(0);
-            $code = $event->arguments(1);
-            $event->return = $this->get_codetable_viewURL($table, $code);
-        });
+	public function init() {
+		/**
+		 * Returns Sales Order Page URL
+		 */
+		$this->addHook('Page(pw_template=msa-code-table-menu|msa-sysop)::get_codetable_viewURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_viewURL($table, $code);
+		});
 
-        $this->addHook('Page(pw_template=msa-sysop)::get_codetable_code_deleteURL', function($event) {
-            $table = $event->arguments(0);
-            $code = $event->arguments(1);
-            $event->return = $this->get_codetable_code_deleteURL($table, $code);
-        });
+		$this->addHook('Page(pw_template=msa-sysop)::get_codetable_code_deleteURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_code_deleteURL($table, $code);
+		});
 
-        $this->addHook('Page(pw_template=msa-sysop)::get_codetable_code_editURL', function($event) {
-            $table = $event->arguments(0);
-            $code = $event->arguments(1);
-            $event->return = $this->get_codetable_code_editURL($table, $code);
-        });
+		$this->addHook('Page(pw_template=msa-sysop)::get_codetable_code_editURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_code_editURL($table, $code);
+		});
 
-        $this->addHookProperty('Page(pw_template=msa-sysop)::codetable', function($event) {
-            $page = $event->object;
-            $event->return = $page->name;
-        });
-    }
+		$this->addHookProperty('Page(pw_template=msa-sysop)::codetable', function($event) {
+			$page = $event->object;
+			$event->return = $page->name;
+		});
+	}
 
-    public function get_codetable_viewURL($table, $code = false) {
-        $url = new Url($this->wire('pages')->get("pw_template=msa-sysop, name=$table")->url);
-        $url->query->set('code', $code);
-        return $url->getUrl();
-    }
+	public function get_codetable_viewURL($table, $code = false) {
+		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop, name=$table")->url);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
 
-    public function get_codetable_code_deleteURL($table, $code) {
-        $url = new Url($this->wire('pages')->get("pw_template=msa-sysop, name=$table")->url);
-        $url->query->set('action', 'remove-code');
-        $url->query->set('table', $table);
-        $url->query->set('code', $code);
-        return $url->getUrl();
-    }
+	public function get_codetable_code_deleteURL($table, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop, name=$table")->url);
+		$url->query->set('action', 'remove-code');
+		$url->query->set('table', $table);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
 
-    public function get_codetable_code_editURL($table, $code) {
-        $url = new Url($this->wire('pages')->get("pw_template=msa-sysop, name=$table")->url);
-        $url->query->set('code', $code);
-        return $url->getUrl();
-    }
+	public function get_codetable_code_editURL($table, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop, name=$table")->url);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
 
 
 	/**
