@@ -259,6 +259,7 @@ class DpagesMqo extends Dpages implements Module {
 			'summary' => 'Installs and creates Dplus Online Quote Pages',
 			'singular' => true,
 			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
 		);
 	}
 }

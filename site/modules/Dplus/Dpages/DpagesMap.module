@@ -166,7 +166,7 @@ class DpagesMap extends Dpages implements Module {
 			'summary' => 'Installs and creates AP Pages',
 			'singular' => true,
 			'autoload' => true,
-			'requires' => array('DplusPwPages'),
+			'requires' => array('DplusPwPages', 'Dpages'),
 			'installs' => array(),
 		);
 	}

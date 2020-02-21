@@ -3,8 +3,6 @@
 use Purl\Url;
 use SalesOrder, SalesOrderQuery;
 
-require_once(__DIR__ . '/Dpages.module');
-
 /**
  * class DpagesMso
  *
@@ -182,16 +180,6 @@ class DpagesMso extends Dpages implements Module {
 
 	const USERPERM_SALESORDERS_EDIT = 'eso';
 
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'Dpluso Sales Order Pages',
-			'version' => 101,
-			'summary' => 'Installs and creates Dpluso Sales Order Pages',
-			'singular' => true,
-			'autoload' => true,
-		);
-	}
-
 	public function init() {
 		/**
 		 * Returns Sales Order Page URL
@@ -342,7 +330,7 @@ class DpagesMso extends Dpages implements Module {
 			$order = SalesOrderQuery::create()->findOneByOrdernumber($order);
 		}
 
-		$config_orders = $this->wire('modules')->get('SalesOrdersConfig');
+		$config_orders = $this->wire('modules')->get('ConfigsSalesOrders');
 		$canedit = false;
 
 		if ($config_orders->allow_salesorderedit) {
@@ -384,5 +372,16 @@ class DpagesMso extends Dpages implements Module {
 		$url = new Url($this->wire('pages')->get("pw_template=so-code-table, name=$table")->url);
 		$url->query->set('code', $code);
 		return $url->getUrl();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Sales Order Pages',
+			'version' => 101,
+			'summary' => 'Installs and creates Dpluso Sales Order Pages',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
+		);
 	}
 }

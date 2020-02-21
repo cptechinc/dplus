@@ -244,18 +244,8 @@ class DpagesMwm extends Dpages implements Module {
 		),
 	);
 
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'Dplus Online Warehouse Pages',
-			'version' => 101,
-			'summary' => 'Installs and creates Dplus Online Warehouse Pages',
-			'singular' => true,
-			'autoload' => true,
-		);
-	}
-
 	public function init() {
-		$this->addHook('Page(template=warehouse-menu)::get_loginURL', function($event) {
+		$this->addHook('Page(template=warehouse-menu|warehouse-function)::get_loginURL', function($event) {
 			$url = new Url($this->wire('pages')->get('template=warehouse-menu, dplus_function=wm')->child('template=redir')->url);
 			$url->query->set('action', 'login');
 			$url->query->set('sessionID', session_id());
@@ -340,5 +330,16 @@ class DpagesMwm extends Dpages implements Module {
 			$url->query->set('recno', $item->recno);
 			$event->return = $url->getUrl();
 		});
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Online Warehouse Pages',
+			'version' => 101,
+			'summary' => 'Installs and creates Dplus Online Warehouse Pages',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
+		);
 	}
 }

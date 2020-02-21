@@ -259,7 +259,7 @@ class DpagesMin extends Dpages implements Module {
 			'summary' => 'Installs and creates MIN Pages',
 			'singular' => true,
 			'autoload' => true,
-			'requires' => array('DplusPwPages'),
+			'requires' => array('DplusPwPages', 'Dpages'),
 			'installs' => array(),
 		);
 	}
