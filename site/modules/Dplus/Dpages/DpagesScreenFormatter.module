@@ -211,6 +211,7 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'summary' => 'Installs and creates Screen Formatter Pages',
 			'singular' => true,
 			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
 		);
 	}
 }

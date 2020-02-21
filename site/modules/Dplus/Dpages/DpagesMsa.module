@@ -103,7 +103,7 @@ class DpagesMsa extends Dpages implements Module {
 			'summary' => 'Installs and creates MSA Pages',
 			'singular' => true,
 			'autoload' => true,
-			'requires' => array('DplusPwPages'),
+			'requires' => array('DplusPwPages', 'Dpages'),
 			'installs' => array(),
 		);
 	}
