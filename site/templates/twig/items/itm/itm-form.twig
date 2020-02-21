@@ -1,0 +1,110 @@
+<form action="{{ page.fullURL.getURL() }}" method="POST" id="itm-pricing-form">
+	<div class="row">
+		<div class="col-sm-8">
+			<div class="form-group row">
+				<div class="col-sm-4">
+					<label for="itemID">Item ID</label>
+				</div>
+				<div class="col-sm-8">
+					<input type="text" class="{{ item.isNew() ? 'form-control' : 'form-control-plaintext' }}" name="itemID" id="itemID" value="{{ item.itemid }}" {{ item.isNew() ? '' : 'readonly' }}>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-4">
+					<label for="description1">Description 1</label>
+				</div>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" name="description1" id="description1" value="{{ item.description }}">
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-4">
+					<label for="description2">Description 2</label>
+				</div>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" name="description2" id="description2" value="{{ item.description2 }}">
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="itemgroup">Item Group</label>
+				</div>
+				<div class="col-sm-6">
+					<select name="itemgroup" class="form-control" id="itemgroup">
+						<option value="">-- Choose --</option>
+						{% for itemgroup in itemgroups %}
+							<option value="{{ itemgroup.code }}" {{ itemgroup.code == item.itemgroup ? 'selected' : ''}}>{{ itemgroup.description }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="pricecode">Price Group</label>
+				</div>
+				<div class="col-sm-6">
+					<select name="pricecode" class="form-control" id="pricecode">
+						<option value="">-- Choose --</option>
+						{% for pricecode in pricecodes %}
+							<option value="{{ pricecode.code }}" {{ pricecode.code == item.pricecode ? 'selected' : ''}}>{{ pricecode.description }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="mastercase">Master Carton?</label>
+				</div>
+				<div class="col-sm-6">
+					<div class="custom-control custom-checkbox">
+						<input type="checkbox" class="custom-control-input" name="mastercase" id="mastercase" value="Y" {{ item.is_mastercase() ? 'checked' : ''}}>
+						<label class="custom-control-label" for="mastercase">&nbsp;</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="needslabel">Need Label?</label>
+				</div>
+				<div class="col-sm-6">
+					<div class="custom-control custom-checkbox">
+						<input type="checkbox" class="custom-control-input" name="needslabel" id="needslabel" value="Y" {{ item.is_needslabel() ? 'checked' : ''}}>
+						<label class="custom-control-label" for="needslabel">&nbsp;</label>
+					</div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-4">
+					<label for="revision">Revision</label>
+				</div>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" name="revision" id="revision" value="{{ item.revision }}">
+				</div>
+			</div>
+			<div class="row text-center">
+				<div class="col-sm-6">
+					<button type="submit" class="btn btn-danger btn-block" name="action" value="remove-upc-item">
+						<i class="fa fa-trash" aria-hidden="true"></i> Remove
+					</button>
+				</div>
+				<div class="col-sm-6">
+					<button type="submit" class="btn btn-success btn-block" name="action" value="update-upcx">
+						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-sm-4">
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="itemtype">Item Type</label>
+				</div>
+				<div class="col-sm-6">
+					{% include 'util/select.twig' with {'name': 'itemtype', 'id': 'itemtype', 'selectedvalue': item.itemtype, 'options': item.get_itemtypedescriptions(), 'capitalize_labels': true } %}
+				</div>
+			</div>
+		</div>
+	</div>
+</form>

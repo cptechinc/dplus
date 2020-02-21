@@ -46,21 +46,4 @@ class Xrefs extends WireData implements Module {
 			)
 		);
 	}
-
-	/**
-	 * Writes an array one datem per line into the dplus directory
-	 * @param  array $data      Array of Lines for the request
-	 * @param  string $filename What to name File
-	 * @return void
-	 */
-	function write_dplusfile($data, $filename) {
-		$file = '';
-		foreach ($data as $line) {
-			$file .= $line . "\n";
-		}
-		$vard = "/usr/capsys/ecomm/" . $filename;
-		$handle = fopen($vard, "w") or die("cant open file");
-		fwrite($handle, $file);
-		fclose($handle);
-	}
 }

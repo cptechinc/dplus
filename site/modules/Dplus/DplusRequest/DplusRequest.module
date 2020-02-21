@@ -34,6 +34,17 @@ class DplusRequest extends WireData implements Module {
 	}
 
 	/**
+	 * Sends HTTP GET Request to CGI BIN file
+	 * @param  string $cgi       CGI BIN filename
+	 * @param  string $sessionID SessionID for CGI Request
+	 * @return bool
+	 */
+	public function cgi_request($cgi, $sessionID) {
+		$http = new WireHttp();
+		return $http->get("127.0.0.1/cgi-bin/$cgi?fname=$sessionID");
+	}
+
+	/**
 	 * Writes an array one datem per line into the dplus directory
 	 * @param  array  $data      Array of Lines for the request
 	 * @param  string $filename What to name File

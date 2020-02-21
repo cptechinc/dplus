@@ -227,9 +227,10 @@ class XrefVxm extends WireData implements Module {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
 		$data = array("DBNAME=$dplusdb", 'UPDATEVXM', "VENDORID=$item->vendorid", "VENDITEM=$item->vendoritemid", "OURITEM=$item->ouritemid");
-		$this->wire('modules')->get('Xrefs')->write_dplusfile($data, session_id());
-		$http = new WireHttp();
-		$http->get("127.0.0.1/cgi-bin/".$config->cgis['database']."?fname=".session_id());
+
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
 	}
 
 	/**

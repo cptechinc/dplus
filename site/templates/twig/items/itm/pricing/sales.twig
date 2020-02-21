@@ -1,0 +1,24 @@
+<div class="form-group row">
+	<div class="col-sm-6">
+		<label for="uom_sale">Sales Unit of Measure</label>
+	</div>
+	<div class="col-sm-6">
+		<select name="uom_sale" class="form-control" id="uom_sale">
+			<option value="">-- Choose --</option>
+			{% for uom in unitsofm %}
+				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_sale ? 'selected' : ''}}>{{ uom.description }}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+
+{% include 'items/itm/pricing/qty-breaks.twig' %}
+
+<div class="form-group row">
+	<div class="col-sm-6">
+		<label>Last Change Date</label>
+	</div>
+	<div class="col-sm-6">
+		<p class="form-control-plaintext text-right">{{ item_pricing.updated|convertdate }}</p>
+	</div>
+</div>

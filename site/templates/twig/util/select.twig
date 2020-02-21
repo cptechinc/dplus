@@ -1,6 +1,6 @@
 <select name="{{ name }}" id="{{ id }}" class="form-control">
 	<option value="">-- Choose --</option>
 	{% for value, description in options %}
-		<option value="{{ value }}" {{ value == selectedvalue ? 'selected' : ''}}>{{ description }}</option>
+		<option value="{{ value }}" {{ value == selectedvalue ? 'selected' : ''}}>{{ capitalize_labels ? description|capitalize : description }}</option>
 	{% endfor %}
 </select>

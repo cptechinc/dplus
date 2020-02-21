@@ -1,0 +1,18 @@
+<ul class="nav nav-pills nav-justified mb-3">
+	<li class="nav-item">
+		{% if page_itm.id == page.id %}
+			<a class="nav-link active" href="#">ITM</a>
+		{% else %}
+			<a class="nav-link" href="{{ page.itmURL(page.itemID) }}">ITM</a>
+		{% endif %}
+	</li>
+	{% for function in page_itm.children() %}
+		<li class="nav-item">
+			{% if function.id == page.id %}
+				<a class="nav-link active" href="#">{{ function.title }}</a>
+			{% else %}
+				<a class="nav-link" href="{{ function.itemIDURL(page.itemID) }}">{{ function.title }}</a>
+			{% endif %}
+		</li>
+	{% endfor %}
+</ul>
