@@ -1,0 +1,56 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use VendorQuery, Vendor;
+
+/**
+ * ItemLookup
+ *
+ * Class for Looking up / Validating Items through ITM and different X-refs
+ *
+ * @property string $exists  Item Exists
+ * @property string $vendorID  Item ID associated with Item
+ */
+class LookupVendor extends WireData implements Module {
+	public function __construct() {
+		$this->exists   = false;
+		$this->vendorID = '';
+	}
+
+	/**
+	 * Returns if Vendor ID Exists
+	 * @param  string $vendorID Item ID
+	 * @return bool
+	 */
+	public function lookup_vendor($vendorID) {
+		$q = VendorQuery::create();
+		$q->filterByVendorid($vendorID);
+
+		if ($q->count()) {
+			$this->exists = true;
+			$this->vendorID = $vendorID;
+		}
+		return $this->exists;
+	}
+
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Vendor Lookup Module',
+			'version' => 101,
+			'summary' => 'Handles Vendor Lookup',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(),
+		);
+	}
+}

@@ -1,13 +1,13 @@
 <?php namespace ProcessWire;
 
-use VendorQuery, Vendor;
+use CustomerQuery, Customer;
 
 use Propel\Runtime\ActiveQuery\Criteria;
 
-class FilterVendors extends WireData implements Module {
+class FilterCustomers extends WireData implements Module {
 	/**
 	 * Returns Query
-	 * @return VendorQuery
+	 * @return CustomerQuery
 	 */
 	public function get_query() {
 		return $this->query;
@@ -21,27 +21,30 @@ class FilterVendors extends WireData implements Module {
 	 * @return void
 	 */
 	public function init_query(User $user) {
-		$this->query = VendorQuery::create();
+		$this->query = CustomerQuery::create();
+
+		if ($user->is_salesrep()) {
+			$this->query->filterByCustid($user->get_customers(), Criteria::IN);
+		}
 	}
 
 	/**
-	 * Searches the Vendor Table to find vendors that match the query provided
+	 * Searches the Customer Table to find vendors that match the query provided
 	 *
 	 * @param  string $q Search Query
 	 * @return void
 	 */
 	public function filter_search($q) {
 		$columns = array();
-		$columns[] = Vendor::get_aliasproperty('vendorid');
-		$columns[] = Vendor::get_aliasproperty('name');
-		$columns[] = Vendor::get_aliasproperty('address');
-		$columns[] = Vendor::get_aliasproperty('address2');
-		$columns[] = Vendor::get_aliasproperty('city');
-		$columns[] = Vendor::get_aliasproperty('state');
-		$columns[] = Vendor::get_aliasproperty('zip');
+		$columns[] = Customer::get_aliasproperty('custid');
+		$columns[] = Customer::get_aliasproperty('name');
+		$columns[] = Customer::get_aliasproperty('address1');
+		$columns[] = Customer::get_aliasproperty('address2');
+		$columns[] = Customer::get_aliasproperty('city');
+		$columns[] = Customer::get_aliasproperty('state');
+		$columns[] = Customer::get_aliasproperty('zip');
 		$this->query->search_filter($columns, strtoupper($q));
 	}
-
 
 	/**
 	 * Adds the Sort By to the query
@@ -54,7 +57,7 @@ class FilterVendors extends WireData implements Module {
 			$orderbycolumn = $page->orderby_column;
 			$sort = $page->orderby_sort;
 
-			$tablecolumn = Vendor::get_aliasproperty($orderbycolumn);
+			$tablecolumn = Customer::get_aliasproperty($orderbycolumn);
 			$this->query->sortBy($tablecolumn, $sort);
 		}
 	}
@@ -69,9 +72,9 @@ class FilterVendors extends WireData implements Module {
 	 */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dpluso Filter Vendors Module',
+			'title' => 'Dplus Filter Customer Module',
 			'version' => 101,
-			'summary' => 'Handles Vendor Filtering',
+			'summary' => 'Handles Customer Filtering',
 			'singular' => true,
 			'autoload' => true,
 		);

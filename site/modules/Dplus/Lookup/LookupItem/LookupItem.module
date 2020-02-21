@@ -8,7 +8,7 @@ use ItemXrefCustomerQuery, ItemXrefCustomer;
 use ItemXrefUpcQuery, ItemXrefUpc;
 
 /**
- * ItemLookup
+ * LookupItem
  *
  * Class for Looking up / Validating Items through ITM and different X-refs
  *
@@ -17,7 +17,7 @@ use ItemXrefUpcQuery, ItemXrefUpc;
  * @property string $request What was sent to find Item
  * @property string $source  itm|cxm
  */
-class ItemLookup extends WireData implements Module {
+class LookupItem extends WireData implements Module {
 	public function __construct() {
 		$this->exists  = false;
 		$this->itemID  = '';
@@ -26,7 +26,7 @@ class ItemLookup extends WireData implements Module {
 	}
 
 	/**
-	 * Looks up if Item ID exists in the Item Master
+	 * Returns if Item ID exists in the Item Master
 	 * @param  string $itemID Item ID
 	 * @return void
 	 */
@@ -41,10 +41,11 @@ class ItemLookup extends WireData implements Module {
 			$this->itemID = $itemID;
 			$this->source = empty($this->source) ? 'itm' : $this->source;
 		}
+		return $this->exists;
 	}
 
 	/**
-	 * Looks up if Short Item ID exists in the Item Master as
+	 * Returns if Short Item ID exists in the Item Master as
 	 * NOTE: Uses ConfigSys to find customer ID to use CXM
 	 * @param  string $itemID Short Item ID
 	 * @return void
@@ -53,7 +54,7 @@ class ItemLookup extends WireData implements Module {
 		$this->source = 'itm';
 		$this->request = $itemID;
 		$custID = ConfigSysQuery::create()->findOne()->custid;
-		$this->lookup_cxm($itemID, $custID);
+		return $this->lookup_cxm($itemID, $custID);
 	}
 
 	/**
@@ -73,6 +74,7 @@ class ItemLookup extends WireData implements Module {
 		if ($q->count()) {
 			$this->lookup_itm($q->findOne());
 		}
+		return $this->exists;
 	}
 
 	/**
@@ -91,6 +93,7 @@ class ItemLookup extends WireData implements Module {
 		if ($q->count()) {
 			$this->lookup_itm($q->findOne());
 		}
+		return $this->exists;
 	}
 
 	/* =============================================================
@@ -108,7 +111,7 @@ class ItemLookup extends WireData implements Module {
 			'summary' => 'Handles Item Lookup',
 			'singular' => true,
 			'autoload' => true,
-			'installs' => array('ItemEntryLookup', 'ItemIiLookup')
+			'installs' => array('LookupItemEntry', 'LookupItemIi')
 		);
 	}
 }

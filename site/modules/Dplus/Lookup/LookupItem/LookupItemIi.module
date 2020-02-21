@@ -1,7 +1,17 @@
 <?php namespace ProcessWire;
 
-
-class ItemIiLookup extends ItemLookup implements Module {
+/**
+ * LookupItemIi
+ *
+ * Class for Looking up / Validating Items through ITM and different X-refs
+ * for the purposes of II
+ *
+ * @property string $exists  Item Exists
+ * @property string $itemID  Item ID associated with Item
+ * @property string $request What was sent to find Item
+ * @property string $source  itm|cxm
+ */
+class LookupItemIi extends LookupItem implements Module {
 
 	/**
 	 * Looks Up Item
@@ -18,6 +28,7 @@ class ItemIiLookup extends ItemLookup implements Module {
 		if (!$this->exists) {
 			$this->lookup_upcx($q);
 		}
+		return $this->exists;
 	}
 
 	/* =============================================================
@@ -36,7 +47,7 @@ class ItemIiLookup extends ItemLookup implements Module {
 			'singular' => true,
 			'autoload' => true,
 			'installs' => array(),
-			'requires' => array('ItemLookup')
+			'requires' => array('LookupItem')
 		);
 	}
 }

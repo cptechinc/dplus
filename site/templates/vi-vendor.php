@@ -1,13 +1,15 @@
 <?php
 	$modules->get('DpagesMvi')->init_vipage();
 	$html = $modules->get('HtmlWriter');
+	$lookup_vendor = $modules->get('LookupVendor');
 
 	if ($input->get->vendorID) {
 		$vendorID = $input->get->text('vendorID');
-		$load_vendor = $modules->get('ViLoadVendorShipfrom');
-		$load_vendor->set_vendorID($vendorID);
 
-		if ($load_vendor->vendor_exists()) {
+		if ($lookup_vendor->lookup_vendor($vendorID)) {
+			$load_vendor = $modules->get('ViLoadVendorShipfrom');
+			$load_vendor->set_vendorID($vendorID);
+
 			$vendor = $load_vendor->get_vendor();
 			$page->headline = "VI: $vendor->name";
 
@@ -29,30 +31,24 @@
 			$page->body = $config->twig->render('vendors/search-form.twig', ['page' => $page]);
 		}
 	} else {
+		$filter_vendors = $modules->get('FilterVendors');
+		$filter_vendors->init_query($user);
+
 		$query = VendorQuery::create();
-		$exact_query = VendorQuery::create();
 
 		if ($input->get->q) {
 			$q = strtoupper($input->get->text('q'));
 
-			if ($exact_query->filterByVendorid($q)->count() == 1) {
+			if ($lookup_vendor->lookup_vendor($q)) {
 				$session->redirect($page->get_vi_vendorURL($q));
 			}
 
 			$page->headline = "VI: Searching for '$q'";
-			$col_vendorid = Vendor::get_aliasproperty('vendorid');
-			$col_name = Vendor::get_aliasproperty('name');
-			$columns = array($col_vendorid, $col_name);
-			$query->search_filter($columns, strtoupper($q));
+			$filter_vendors->filter_search($q);
 		}
 
-		if ($page->has_orderby()) {
-			$orderbycolumn = $page->orderby_column;
-			$sort = $page->orderby_sort;
-			$tablecolumn = Vendor::get_aliasproperty($orderbycolumn);
-			$query->sortBy($tablecolumn, $sort);
-		}
-
+		$filter_vendors->apply_sortby($page);
+		$query = $filter_vendors->get_query();
 		$vendors = $query->paginate($input->pageNum, 10);
 
 		$page->searchURL = $page->url;

@@ -4,19 +4,19 @@
 
 	$module_useractions = $modules->get('FilterUserActions');
 	$html = $modules->get('HtmlWriter');
+	$lookup_customer = $modules->get('LookupCustomer');
 
 	if ($input->get->custID) {
 		$custID = $input->get->text('custID');
+		$lookup_customer->lookup_customer($custID);
 
-		if ($user->has_customer($custID)) {
-			$modules->get('DpagesMci')->init_customer_hooks();
-			$modules->get('DpagesMci')->init_cipage();
-			$load_customer = $modules->get('CiLoadCustomerShipto');
-
-			$load_customer->set_custID($custID);
-
-			// TODO VALIDATION
-			if ($load_customer->customer_exists()) {
+		// TODO VALIDATION
+		if ($lookup_customer->exists) {
+			if ($user->has_customer($custID)) {
+				$modules->get('DpagesMci')->init_customer_hooks();
+				$modules->get('DpagesMci')->init_cipage();
+				$load_customer = $modules->get('CiLoadCustomerShipto');
+				$load_customer->set_custID($custID);
 				$customer = $load_customer->get_customer();
 				$actions = $load_customer->get_useractions($input);
 				$contacts = $load_customer->get_contacts();
@@ -38,43 +38,34 @@
 				$page->body .= $config->twig->render('customers/ci/customer/quotes-panel.twig', ['page' => $page, 'customer' => $customer, 'quotes' => $quotes, 'resultscount'=> $quotes->getNbResults(), 'quotepage' => $pages->get('pw_template=quote-view')->url, 'quotes_list' => $page->cust_quotesURL($customer->id)]);
 				$config->scripts->append(hash_templatefile('scripts/customer/ci-customer.js'));
 			} else {
-				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $custID not found"]);
+				$page->searchURL = $page->url;
+				$page->headline = "User $user->name Does Not Have Access to $custID";
+				$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->headline, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You doe not have permission to access this customer"]);
+				$page->body .= $html->div('class=mb-3');
+				$page->body .= $config->twig->render('customers/search-form.twig', ['page' => $page]);
 			}
 		} else {
-			$page->searchURL = $page->url;
-			$page->headline = "User $user->name Does Not Have Access to $custID";
-			$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->headline, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You doe not have permission to access this customer"]);
-			$page->body .= $html->div('class=mb-3');
-			$page->body .= $config->twig->render('customers/search-form.twig', ['page' => $page]);
+			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $custID not found"]);
 		}
 	} else {
 		$query = CustomerQuery::create();
-		$exact_query = CustomerQuery::create();
+		$filter_customers = $modules->get('FilterCustomers');
+		$filter_customers->init_query($user);
+		$filter_customers->filter_search($input->get->text('q'));
 
 		if ($input->get->q) {
 			$q = strtoupper($input->get->text('q'));
+			$lookup_customer->lookup_customer($q);
 
-			if ($exact_query->filterByCustid($q)->count() == 1) {
+			if ($lookup_customer->exists) {
 				$session->redirect($page->url."?custID=$q");
 			}
-
+			$filter_customers->filter_search($q);
 			$page->headline = "CI: Searching for '$q'";
-			$col_custid = Customer::get_aliasproperty('custid');
-			$col_name = Customer::get_aliasproperty('name');
-			$columns = array($col_custid, $col_name);
-			$query->search_filter($columns, strtoupper($q));
 		}
 
-		if ($page->has_orderby()) {
-			$orderbycolumn = $page->orderby_column;
-			$sort = $page->orderby_sort;
-			$tablecolumn = Customer::get_aliasproperty($orderbycolumn);
-			$query->sortBy($tablecolumn, $sort);
-		}
-
-		if ($user->is_salesrep()) {
-			$query->filterByCustid($user->get_customers(), Criteria::IN);
-		}
+		$filter_customers->apply_sortby($page);
+		$query = $filter_customers->get_query();
 
 		$customers = $query->paginate($input->pageNum, 10);
 
