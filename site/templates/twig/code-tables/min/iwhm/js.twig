@@ -2,7 +2,12 @@ $(function() {
 	var max_code_length = {{ warehouse.get_max_code_length() }};
 
 	var form = $('#code-edit-form');
+	var input_whseID   = form.find('input[name=whseID]');
+	var input_name     = form.find('input[name=name]');
 	var input_customer = form.find('input[name=cash_customer]');
+	var select_wh_profit = form.find('select[name=whse_profit]');
+	var select_wh_supply = form.find('select[name=whse_supply]');
+	var select_wh_asset  = form.find('select[name=whse_asset]');
 
 	var modal_ajax = $('#ajax-modal');
 
@@ -50,6 +55,29 @@ $(function() {
 
 /**
  *
+ * Warehouse Create Assign Warehouses
+ *
+ */
+{% if warehouse.isNew() %}
+	$("body").on('change', 'input[name=whseID], input[name=name]', function(e) {
+
+		var option_whse_profit = $('#whse_profit_self');
+		var option_whse_supply = $('#whse_supply_self');
+		var option_whse_asset = $('#whse_asset_self');
+
+		option_whse_profit.attr('value', input_whseID.val());
+		option_whse_profit.text(input_whseID.val() + ' - ' + input_name.val());
+
+		option_whse_supply.attr('value', input_whseID.val());
+		option_whse_supply.text(input_whseID.val() + ' - ' + input_name.val());
+
+		option_whse_asset.attr('value', input_whseID.val());
+		option_whse_asset.text(input_whseID.val() + ' - ' + input_name.val());
+	});
+{% endif %}
+
+/**
+ *
  *
  *
  */
@@ -93,5 +121,4 @@ $(function() {
 			form.submit();
 		}
 	});
-
 })
