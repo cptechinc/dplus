@@ -17,7 +17,7 @@ $(function() {
 	$('#notes-modal').on('shown.bs.modal', function (event) {
 		var button = $(event.relatedTarget) // Button that triggered the modal
 		var modal = $(this);
-		modal.find('textarea[name=note]').focus()
+		modal.find('textarea[name=note]').focus();
 	});
 
 	$("#code-edit-form").validate({
