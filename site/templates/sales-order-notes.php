@@ -1,6 +1,7 @@
 <?php
 	$modules->get('DpagesMso')->init_salesorder_hooks();
 	$module_qnotes = $modules->get('QnotesSalesOrder');
+	$lookup_orders = $modules->get('LookupSalesOrder');
 
 	if ($input->requestMethod('POST')) {
 		$response = $module_qnotes->process_input($input);
@@ -10,13 +11,11 @@
 		if ($input->get->ordn) {
 			$ordn = $input->get->text('ordn');
 
-			if (SalesOrderQuery::create()->filterByOrdernumber($ordn)->count() || SalesHistoryQuery::create()->filterByOrdernumber($ordn)->count()) {
-				if (SalesOrderQuery::create()->filterByOrdernumber($ordn)->count()) {
+			if ($lookup_orders->lookup_salesorder($ordn) || $lookup_orders->lookup_saleshistory($ordn)) {
+				if ($lookup_orders->lookup_salesorder($ordn)) {
 					$order = SalesOrderQuery::create()->findOneByOrdernumber($ordn);
-					$order_items = SalesOrderDetailQuery::create()->findByOrdernumber($ordn);
-				} elseif (SalesHistoryQuery::create()->filterByOrdernumber($ordn)->count()) {
+				} elseif ($lookup_orders->lookup_saleshistory($ordn)) {
 					$order = SalesHistoryQuery::create()->findOneByOrdernumber($ordn);
-					$order_items = SalesHistoryDetailQuery::create()->filterByOrdernumber($ordn)->find();
 				}
 				$page->title = "Sales Order #$ordn Notes";
 				$page->body = $config->twig->render('sales-orders/sales-order/qnotes-page.twig', ['page' => $page, 'user' => $user, 'ordn' => $ordn, 'order' => $order, 'items' => $order_items, 'qnotes_so' => $module_qnotes]);
