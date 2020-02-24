@@ -45,7 +45,7 @@ class QnotesSalesOrder extends WireData implements Module {
 		$q = $this->get_query();
 		$q->filterByOrdernumber($ordn);
 		$q->filterByLine($linenbr);
-		return boolval($q->count);
+		return boolval($q->count());
 	}
 
 	/**
