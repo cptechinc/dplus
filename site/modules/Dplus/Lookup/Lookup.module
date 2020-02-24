@@ -35,6 +35,8 @@ class Lookup extends WireData implements Module {
 			'autoload' => true,
 			'installs' => array(
 				'LookupCustomer',
+				'LookupItem',
+				'LookupSalesOrder',
 				'LookupVendor'
 			)
 		);
