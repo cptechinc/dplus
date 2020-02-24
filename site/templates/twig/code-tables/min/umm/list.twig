@@ -1,7 +1,7 @@
 <div class="list-group">
 	<div class="list-group-item bg-dark text-white">
 		<div class="row align-items-center">
-			<div class="col-1">
+			<div class="col-3">
 				Code
 			</div>
 			<div class="col-4">
@@ -9,9 +9,6 @@
 			</div>
             <div class="col-2">
 				Conversion
-			</div>
-            <div class="col-2">
-				Price by Weight ?
 			</div>
 			<div class="col-3 text-center">
 				{% if page.is_print() == false %}
@@ -25,7 +22,7 @@
 	{% for code in codes %}
 		<div class="list-group-item pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
 			<div class="row align-items-center">
-				<div class="col-1">
+				<div class="col-3">
 					{{ code.code }}
 				</div>
 				<div class="col-4">
@@ -33,9 +30,6 @@
 				</div>
                 <div class="col-2">
 					{{ code.conversion|round }}
-				</div>
-                <div class="col-2">
-					{{ code.pricebyweight|yesorno|capitalize }}
 				</div>
 				<div class="col-3 text-center">
 					{% if page.is_print() == false %}
