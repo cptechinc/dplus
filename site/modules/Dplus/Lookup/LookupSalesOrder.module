@@ -1,0 +1,78 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use SalesOrderQuery, SalesOrder;
+use SalesHistoryQuery, SalesHistory;
+
+/**
+ * Lookup Sales Orders
+ *
+ * Class for Looking up / Validating Sales Orders
+ *
+ * @property string $exists  Sales Order / Invoice Exists
+ * @property string $ordn    Sales Order / Invoice Number
+ * @property string $request What was sent to find Sales Order / Invoice Number
+ * @property string $source  so_head | so_head_hist
+ */
+class LookupSalesOrder extends WireData implements Module {
+	public function __construct() {
+		$this->exists  = false;
+		$this->ordn  = '';
+	}
+
+	/**
+	 * Returns if Sales Order Number exists in the Sales Order table
+	 * @param  string $ordn Sales Order Number
+	 * @return bool
+	 */
+	public function lookup_salesorder($ordn) {
+		$q = SalesOrderQuery::create();
+		$q->filterByOrdernumber($ordn);
+
+		if ($q->count()) {
+			$this->exists = true;
+			$this->ordn = $ordn;
+		} else {
+			$this->exists = false;
+		}
+		return $this->exists;
+	}
+
+	/**
+	 * Returns if Sales Order Number exists in the Sales History table
+	 * @param  string $ordn Sales Order Number
+	 * @return bool
+	 */
+	public function lookup_saleshistory($ordn) {
+		$q = SalesHistoryQuery::create();
+		$q->filterByOrdernumber($ordn);
+
+		if ($q->count()) {
+			$this->exists = true;
+			$this->ordn = $ordn;
+		} else {
+			$this->exists = false;
+		}
+		return $this->exists;
+	}
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Sales Order Lookup Module',
+			'version' => 101,
+			'summary' => 'Handles Sales Order Lookup',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+}
