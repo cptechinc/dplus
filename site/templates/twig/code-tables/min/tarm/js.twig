@@ -41,14 +41,12 @@ $(function() {
 				maxlength: {{ tariffcode.get_max_code_length() }},
 			},
 			number: 'required',
-			description: 'required',
 			duty_rate: 'required',
 			country: 'required',
 		},
 		messages: {
 			code: "Please review the Tariff Code value, (Max Characters {{ tariffcode.get_max_code_length() }})",
 			number: 'Please enter a tariff number for the code',
-			description: 'Please enter a description for the code',
 			duty_rate: 'Please enter a duty rate percentage',
 			country: 'Please enter the country for the code'
 		},

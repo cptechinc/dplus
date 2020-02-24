@@ -49,7 +49,6 @@ $(function() {
 				required: true,
 				maxlength: {{ itemgroup.get_max_code_length() }},
 			},
-			description: 'required',
 			coop: 'required',
 			web_group: 'required',
 			sales_program: 'required',
@@ -65,7 +64,6 @@ $(function() {
 		},
 		messages: {
 			code: "Please review the Tariff Code value, (Max Characters {{ itemgroup.get_max_code_length() }})",
-			description: 'Please enter a description for the code',
 			coop: 'Please select if the code is for co-op',
 			web_group: 'Please enter the web group for the code',
 			sales_program: 'Please select if the code is for sales program',

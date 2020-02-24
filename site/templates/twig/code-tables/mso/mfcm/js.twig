@@ -34,7 +34,6 @@ $(function() {
 				required: true,
 				maxlength: {{ max_length_code }}
 			},
-			description: 'required',
 			class: {
 				required: true,
 				maxlength: 4
@@ -43,7 +42,6 @@ $(function() {
 		},
 		messages: {
 			code: "Please check the Code value (Max Length: {{ max_length_code }})",
-			description: 'Please check the four character class code'
 		},
 		submitHandler: function(form) {
 			form.submit();
