@@ -10,7 +10,7 @@
 			$tariff = new TariffCode();
 		}
 
-		$page->body .= $config->twig->render("code-tables/min/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'tariff_country_count' => $tariff_country_count, 'existing_countries' => $existing_countries, 'countries' => $countries, 'tariff' => $tariff]);
+		$page->body .= $config->twig->render("code-tables/min/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'countries' => $countries, 'tariff' => $tariff]);
 		$page->js .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'tariffcode' => $tariff]);
 	} else {
 		$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'table' => $page->codetable, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable]);
