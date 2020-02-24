@@ -3,11 +3,12 @@
 	$modules->get('DpagesMso')->init_salesorder_hooks();
 	$html = $modules->get('HtmlWriter');
 	$http = new ProcessWire\WireHttp();
+	$lookup_orders = $modules->get('LookupSalesOrder');
 
 	if ($input->get->ordn) {
 		$ordn = $input->get->text('ordn');
 
-		if (SalesOrderQuery::create()->filterByOrdernumber($ordn)->count()) {
+		if ($lookup_orders->lookup_salesorder($ordn)) {
 			if (!OrdrhedQuery::create()->filterBySessionidOrder(session_id(), $qnbr)->count()) {
 				$http->get($page->edit_orderURL($ordn));
 			}
@@ -50,7 +51,7 @@
 			$page->body .= $config->twig->render('sales-orders/sales-order/qnotes.twig', ['page' => $page, 'notes' => $notes, 'ordn' => $ordn]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/notes/add-note-modal.twig', ['page' => $page, 'ordn' => $onrd]);
 			$config->scripts->append(hash_templatefile('scripts/quotes/quote-notes.js'));
-		} elseif (SalesHistoryQuery::create()->filterByOrdernumber($ordn)->count()) {
+		} elseif ($lookup_orders->lookup_saleshistory($ordn)) {
 			$page->headline = $page->title = "Sales Order #$ordn is not editable";
 			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Sales Order #$ordn is in Sales History"]);
 		} else {
