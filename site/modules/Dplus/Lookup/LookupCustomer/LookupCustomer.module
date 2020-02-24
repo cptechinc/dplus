@@ -5,7 +5,7 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use CustomerQuery, Customer;
 
 /**
- * ItemLookup
+ * LookupCustomer
  *
  * Class for Looking up / Validating Customers
  *
