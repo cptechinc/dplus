@@ -34,8 +34,8 @@
 		if (file_exists(__DIR__."/min-code-table-$page->codetable.php")) {
 			include(__DIR__."/min-code-table-$page->codetable.php");
 		} else {
-			$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'table' => $table, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable, 'config_so' => $config_so, 'config_ar' => $config_ar]);
-			$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "min/$page->codetable/form.twig", 'max_length_code' => $module_codetable->get_max_length_code(), 'config_so' => $config_so, 'config_ar' => $config_ar, 'countries' => $countries]);
+			$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable, 'config_so' => $config_so, 'config_ar' => $config_ar]);
+			$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "min/$page->codetable/form.twig", 'max_length_code' => $module_codetable->get_max_length_code(), 'config_so' => $config_so, 'config_ar' => $config_ar]);
 			$page->js   .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'max_length_code' => $module_codetable->get_max_length_code()]);
 		}
 	} else {
