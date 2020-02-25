@@ -185,7 +185,7 @@ class CodeTablesTarm extends WireData implements Module {
 		$create_countries = array_diff($input_countries, $existing_countries);
 
 		if (sizeof($create_countries)) {
-			foreach ($input_countries as $country) {
+			foreach ($create_countries as $country) {
 				$record = new TariffCodeCountry();
 				$record->setCode($code);
 				$record->setCountry($country);
