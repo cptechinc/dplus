@@ -1,5 +1,6 @@
 <?php
 	$html = $modules->get('HtmlWriter');
+	$page->focus = $input->get->focus ? $input->get->text('focus') : '';
 
 	if ($input->get->code) {
 		$code = $whseID = $input->get->text('code');

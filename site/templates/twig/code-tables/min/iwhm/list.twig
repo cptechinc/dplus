@@ -17,7 +17,7 @@
 		</div>
 	</div>
 	{% for warehouse in warehouses %}
-		<div class="list-group-item pb-1 pt-1 {{ (response.key == warehouse.id and response.has_success() ) ? 'bg-success text-white' : ''}}">
+		<div id="{{ warehouse.id }}" class="list-group-item pb-1 pt-1 {{ (response.key == warehouse.id and response.has_success() ) ? 'bg-success text-white' : ''}}">
 			<div class="row align-items-center">
 				<div class="col-3">
 					{{ warehouse.id }}
