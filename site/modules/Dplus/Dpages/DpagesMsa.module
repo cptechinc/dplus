@@ -64,6 +64,12 @@ class DpagesMsa extends Dpages implements Module {
 			$event->return = $this->get_codetable_code_editURL($table, $code);
 		});
 
+		$this->addHook('Page(pw_template=msa-sysop)::get_codetable_listURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_listURL($table, $code);
+		});
+
 		$this->addHookProperty('Page(pw_template=msa-sysop)::codetable', function($event) {
 			$page = $event->object;
 			$event->return = $page->name;
@@ -81,6 +87,12 @@ class DpagesMsa extends Dpages implements Module {
 		$url->query->set('action', 'remove-code');
 		$url->query->set('table', $table);
 		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	public function get_codetable_listURL($table, $code = false) {
+		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop, name=$table")->url);
+		$url->query->set('focus', $code);
 		return $url->getUrl();
 	}
 
