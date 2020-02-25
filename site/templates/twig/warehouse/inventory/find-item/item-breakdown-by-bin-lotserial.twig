@@ -2,7 +2,7 @@
 	<div class="">
 		<div class="list-group">
 			{% for lotserial in inventory.get_lotserials_itemid(binitem.sessionid, binitem.itemid, binitem.bin) %}
-				<div class="list-group-item p-1">
+				<div class="list-group-item bg-light p-1">
 					<div class="row">
 						<div class="col">
 							<strong>{{ item.get_itemtypepropertydesc()|upper }}:</strong> {{ lotserial.get_itemidentifier() }}

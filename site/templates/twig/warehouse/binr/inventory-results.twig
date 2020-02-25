@@ -1,9 +1,13 @@
+<div class="form-group">
+	<a href="{{ page.url }}" class="btn btn-primary">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Back
+	</a>
+</div>
 <div class="row">
 	<div class="col-sm-8">
 		<div class="list-group">
 			{% if (resultscount) %}
 				{% for item in items %}
-
 					<div class="list-group-item">
 						<h4 class="list-group-item-heading">ITEMID: {{ item.itemid }}</h4>
 						<p class="list-group-item-text">{{ item.desc1 }}</p>

@@ -7,22 +7,14 @@
 
 	$template = '';
 
-	switch ($config_picking->picking_method) {
-		case 'guided':
-			$template = 'whse-picking-guided';
-			break;
-		case 'unguided';
-			$template = 'whse-picking-unguided';
-			break;
+	if (file_exists(__DIR__."/whse-picking-$config->company.php")) {
+		$template = "whse-picking-$config->company";
+	} else {
+		$template = 'whse-picking-unguided';
 	}
-	switch ($config_picking->picking_method) {
-		case 'guided':
-			$action = 'start-pick';
-			break;
-		case 'unguided';
-			$action = 'start-pick-unguided';
-			break;
-	}
+
+
+	$action = 'start-pick-unguided';
 
 	// CHECK If Sales Order is Provided
 	if ($input->get->ordn) {
@@ -60,7 +52,7 @@
 			include __DIR__ . "/$template.php";
 		}
 	} else {
-		$http->get("127.0.0.1".$page->parent->child('template=redir')->url."?action=$action&sessionID=".session_id());
+		$modules->get('DplusRequest')->self_request($page->parent->child('template=redir')->url."?action=$action&sessionID=".session_id());
 		$page->formurl = $page->parent->child('template=redir')->url;
 		$page->body = $config->twig->render('warehouse/picking/sales-order-form.twig', ['page' => $page]);
 	}

@@ -29,6 +29,28 @@ $(function() {
 		form.submit();
 	});
 
+	$("body").on('keypress', 'form.allow-enterkey-submit input', function(e) {
+		if ($(this).closest('form').hasClass('allow-enterkey-submit')) {
+			return true;
+		} else {
+			return e.which !== 13;
+		}
+	});
+
+	$("body").on('keypress', 'form:not(.allow-enterkey-submit) input', function(e) {
+		if (e.which === 13) {
+			e.preventDefault();
+			var input = $(this);
+
+			if (input.closest('form').attr('tab-inputs') == "true") {
+				var $canfocus = $('input:not([type=hidden])');
+				var index = $canfocus.index(this) + 1;
+				if (index >= $canfocus.length) index = 0;
+				$canfocus.eq(index).focus();
+			}
+		}
+	});
+
 	$('form[submit-empty="false"]').submit(function () {
 		var empty_fields = $(this).find(':input:not(button)').filter(function () {
 			return $(this).val() === '';
@@ -149,7 +171,6 @@ $.fn.extend({
 		console.log('loading ' + href + " into " +  parent.returnelementdescription());
 		element.load(href, function() {
 			init_datepicker();
-			// init_timepicker();
 			callback();
 		});
 	},

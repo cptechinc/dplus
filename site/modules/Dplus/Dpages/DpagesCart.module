@@ -71,3 +71,14 @@ class DpagesCart extends Dpages implements Module {
 		);
 	}
 }
+
+public static function getModuleInfo() {
+	return array(
+		'title' => 'Dplus Online Cart Pages',
+		'version' => 101,
+		'summary' => 'Installs and creates Dplus Online Cart Pages',
+		'singular' => true,
+		'autoload' => true,
+		'requires' => array('DplusPwPages', 'Dpages'),
+	);
+}

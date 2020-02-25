@@ -94,8 +94,7 @@
 				if ($whsesession->is_orderfinished() || $whsesession->is_orderexited()) {
 					WhseItempickQuery::create()->filterByOrdn($ordn)->filterBySessionid(session_id())->delete();
 				}
-				$http = new ProcessWire\WireHttp();
-				$http->get("127.0.0.1".$page->parent->child('template=redir')->url."?action=start-pick-pack&sessionID=".session_id());
+				$modules->get('DplusRequest')->self_request($page->parent->child('template=redir')->url."?action=start-pick&sessionID=".session_id());
 				$page->formurl = $page->parent->child('template=redir')->url;
 				$page->body = $config->twig->render('warehouse/picking/status.twig', ['page' => $page, 'whsesession' => $whsesession]);
 				$page->body .= '<div class="form-group"></div>';
@@ -103,8 +102,7 @@
 			}
 		}
 	} else {
-		$http = new ProcessWire\WireHttp();
-		$http->get($page->parent->child('template=redir')->url."?action=start-pick-pack&sessionID=".session_id());
+		$modules->get('DplusRequest')->self_request($page->parent->child('template=redir')->url."?action=start-pick-pack&sessionID=".session_id());
 		$page->formurl = $page->parent->child('template=redir')->url;
 		$page->body = $config->twig->render('warehouse/picking/sales-order-form.twig', ['page' => $page]);
 	}

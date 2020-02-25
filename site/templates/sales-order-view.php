@@ -11,6 +11,7 @@
 			if ($page->print) {
 				$session->redirect($pages->get('pw_template=sales-order-print')->url."?ordn=$ordn");
 			}
+
 			$page->title = "Sales Order #$ordn";
 
 			$document_management = $modules->get('DocumentManagement');

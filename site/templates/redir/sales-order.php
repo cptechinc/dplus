@@ -160,9 +160,9 @@
 	}
 
 	if (!empty($data)) {
-		write_dplusfile($data, $filename);
-		$http = new WireHttp();
-		$http->get("127.0.0.1/cgi-bin/".$config->cgis['default']."?fname=$filename");
+		$requestor = $modules->get('DplusRequest');
+		$requestor->write_dplusfile($data, $filename);
+		$requestor->cgi_request($config->cgis['default'], $filename);
 	}
 
 	if (!empty($session->get('loc')) && !$config->ajax) {

@@ -173,16 +173,24 @@
 			$data = array("DBNAME=$dplusdb", "GOTOPALLET=$palletnbr");
 			$session->loc = $input->$requestmethod->text('page');
 			break;
+		case 'remove-picked-item':
+			$whsesession = WhsesessionQuery::create()->findOneBySessionid($sessionID);
+			$recordnumber = $input->get->int('recordnumber');
+			$whseitempick = WhseitempickQuery::create()->filterBySessionid($sessionID)->filterByOrdn($whsesession->ordernbr)->filterByRecordnumber($recordnumber)->findOne();
+			$data = array("DBNAME=$dplusdb", 'PICKITEMREMOVE', "ORDERNBR=$whsesession->ordernbr", "LINENBR=$whseitempick->linenbr", "ITEMID=$whseitempick->itemid");
+			$data[] = "BIN=$whseitempick->bin|LOTSERIAL=$whseitempick->lotserial|QTY=$whseitempick->qty";
+			$session->loc = $input->$requestmethod->text('page');
+			break;
 		case 'finish-item':
-			$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
+			$whsesession = WhsesessionQuery::create()->findOneBySessionid($sessionID);
 			$data = array("DBNAME=$dplusdb", 'ACCEPTITEM', "ORDERNBR=$whsesession->ordernbr", "LINENBR=$item->linenbr", "ITEMID=$item->itemnbr");
 
 			if ($whsesession->is_picking()) {
-				$item = PickSalesOrderDetailQuery::create()->findOneBySessionid(session_id());
+				$item = PickSalesOrderDetailQuery::create()->findOneBySessionid($sessionID);
 				$totalpicked = $item->get_userpickedtotal();
 				$data[] = "ITEMQTY=$totalpicked";
 			} elseif ($whsesession->is_pickingpacking()) {
-				$item = PickSalesOrderDetailQuery::create()->findOneBySessionid(session_id());
+				$item = PickSalesOrderDetailQuery::create()->findOneBySessionid($sessionID);
 				$pallet_totals = $item->get_userpickedtotalsbypallet();
 
 				foreach ($pallet_totals as $pallet) {
@@ -192,15 +200,15 @@
 				}
 			} elseif ($whsesession->is_pickingunguided()) {
 				$linenbr = $input->get->int('linenbr');
-				$pickitem = PickSalesOrderDetailQuery::create()->findOneBySessionidOrderLinenbr(session_id(), $whsesession->ordernbr, $linenbr);
+				$pickitem = PickSalesOrderDetailQuery::create()->filterBySessionidOrder($sessionID, $whsesession->ordernbr)->findOneByLinenbr($linenbr);
+
 				$data = array("DBNAME=$dplusdb", 'ACCEPTITEM', "ORDERNBR=$whsesession->ordernbr", "LINENBR=$pickitem->linenbr", "ITEMID=$pickitem->itemnbr");
 
-
 				if ($pickitem->is_item_serialized() || $pickitem->is_item_lotted()) {
-					$barcodes = $pickitem->get_userpickedtotalsbybarcode();
+					$barcodes = $pickitem->get_userpickedtotalsbylotserial();
 
 					foreach ($barcodes as $barcode) {
-						$data[] = "BIN=$barcode->bin|LOTSERIAL=$barcode->barcode|QTY=$barcode->qty";
+						$data[] = "BIN=$barcode->bin|LOTSERIAL=$barcode->lotserial|QTY=$barcode->qty";
 					}
 				} else {
 					$barcodes = $pickitem->get_userpickedtotalsbybin();
@@ -211,12 +219,16 @@
 						$data[]    = "BIN=$binID|LOTSERIAL=$lotserial|QTY=$qty";
 					}
 				}
-				$url = new Purl\Url($input->$requestmethod->text('page'));
-				$url->query->remove('linenbr');
-				$input->$requestmethod->page = $url->getUrl();
+
+				if ($input->$requestmethod->page) {
+					$url = new Purl\Url($input->$requestmethod->text('page'));
+					$url->query->remove('linenbr');
+					$input->$requestmethod->page = $url->getUrl();
+				}
+
 			}
 			$session->loc = $input->$requestmethod->text('page');
-			WhseitempickQuery::create()->filterBySessionidOrderLinenbr(session_id(), $whsesession->ordn, $linenbr)->delete();
+			//WhseitempickQuery::create()->filterBySessionidOrderLinenbr(session_id(), $whsesession->ordn, $linenbr)->delete();
 			break;
 		case 'skip-item':
 			$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
@@ -258,12 +270,28 @@
 				$session->loc = $config->pages->salesorderpicking;
 			}
 			break;
+		case 'scan-pick-item':
+			$q = strtoupper($input->$requestmethod->text('scan'));
+			$data = array("DBNAME=$dplusdb", 'PICKSEARCH', "QUERY=$q");
+
+			if ($input->$requestmethod->page) {
+				$url = new Purl\Url($input->$requestmethod->text('page'));
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=whse-picking'));
+			}
+
+			$url->query->set('scan', $q);
+			$session->loc = $url->getUrl();
+			break;
 	}
 
 	if (!empty($data)) {
 		write_dplusfile($data, $filename);
-		$http = new WireHttp();
-		$http->get("127.0.0.1/cgi-bin/".$config->cgis['warehouse']."?fname=$filename");
+
+		if (!$input->$requestmethod->debug) {
+			$http = new WireHttp();
+			$http->get("127.0.0.1/cgi-bin/".$config->cgis['warehouse']."?fname=$filename");
+		}
 	}
 
 	if (!empty($session->get('loc')) && !$config->ajax) {

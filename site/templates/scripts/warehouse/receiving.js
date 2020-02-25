@@ -5,6 +5,15 @@ $(function() {
 
 	var form_itemsearch = $('#item-search-form');
 
+	$("body").on("click", "#bins-modal .choose-bin", function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var binID = button.data('bin');
+		var input_bin = $('input[name=binID]');
+		input_bin.val(binID);
+		button.closest('.modal').modal('hide');
+	});
+
 	form_receive.validate({
 		submitHandler : function(form) {
 			var valid_form = new SwalError(false, '', '', false);
@@ -151,7 +160,7 @@ $(function() {
 		var title = '';
 		var msg = '';
 		var html = false;
-		var input_bin    = form.find('input[name=binID]');
+		var input_bin     = form.find('input[name=binID]');
 		var lowercase_bin = input_bin.val();
 		input_bin.val(lowercase_bin.toUpperCase());
 

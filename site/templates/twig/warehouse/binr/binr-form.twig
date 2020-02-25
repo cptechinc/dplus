@@ -25,10 +25,12 @@
 					<div class="col-sm-6 form-group">
 						<label for="from-bin">Bin</label>
 						<div class="input-group">
-							<input type="text" class="form-control input-sm" name="from-bin" value="{{ item.bin }}" data-bin="{{ item.bin }}">
-							<span class="input-group-append">
-								<button type="button" class="btn btn-default show-select-bins" data-toggle="modal" data-target="#choose-from-bins-modal" data-input="from-bin"> <span class="fa fa-search"></span> </button>
+							<span class="input-group-prepend">
+								<button type="button" class="btn btn-secondary show-select-bins" data-toggle="modal" data-target="#choose-from-bins-modal" data-input="from-bin" title="Show Warehouse Bins" aria-label="Show Warehouse Bins">
+									<span class="fa fa-list" aria-hidden="true"></span> <span class="sr-only">Show Warehouse Bins</span>
+								</button>
 							</span>
+							<input type="text" class="form-control input-sm" name="from-bin" value="{{ item.bin }}" data-bin="{{ item.bin }}">
 						</div>
 					</div>
 				</div>
@@ -39,10 +41,12 @@
 					<div class="col-sm-6 form-group">
 						<label for="to-bin">Bin</label>
 						<div class="input-group">
-							<input type="text" class="form-control input-sm" name="to-bin" value="{{ page.tobin }}">
-							<span class="input-group-append">
-								<button type="button" class="btn btn-default" data-toggle="modal" data-target="#choose-to-bins-modal" data-input="to-bin"> <span class="fa fa-search"></span> </button>
+							<span class="input-group-prepend">
+								<button type="button" class="btn btn-secondary show-select-bins" data-toggle="modal" data-target="#choose-to-bins-modal" data-input="to-bin" title="Show Warehouse Bins" aria-label="Show Warehouse Bins">
+									<span class="fa fa-list" aria-hidden="true"></span> <span class="sr-only">Show Warehouse Bins</span>
+								</button>
 							</span>
+							<input type="text" class="form-control input-sm" name="to-bin" value="{{ page.tobin }}">
 						</div>
 					</div>
 				</div>
@@ -52,7 +56,7 @@
 					<div class="col-sm-6 form-group">
 						<label for="bin-qty">Qty </label> (On Hand: <span class="qty-available">{{ inventory.get_binqty(session.get('sessionid'), item, item.bin) }}</span>)
 						<div class="input-group">
-							<input type="text" class="form-control input-sm text-right" name="qty" value="{{ config.default_qtyonhand ? item.qty : ''}}">
+							<input type="text" class="form-control input-sm text-right" name="qty" value="{{ config.default_qtyonhand or config.use_qtyonly ? item.qty : ''}}" {{ config.use_qtyonly ? 'readonly' : ''}}>
 							<span class="input-group-append">
 								<button type="submit" class="btn btn-primary not-round use-bin-qty" data-direction="from">Use Bin Qty</button>
 							</span>

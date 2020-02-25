@@ -22,6 +22,14 @@ $(function() {
 		input_item.focus();
 	}
 
+	$("body").on("click", "#bins-modal .choose-bin", function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var binID = button.data('bin');
+		input_bin.val(binID);
+		button.closest('.modal').modal('hide');
+	});
+
 	form_physcount.validate({
 		submitHandler : function(form) {
 			var valid_qty     = validate_qty();
@@ -42,11 +50,31 @@ $(function() {
 					html: valid_form.html
 				});
 			} else {
-				form.submit();
+				if (input_item.data('itemtype') == 'S' || input_item.data('itemtype') == 'L') {
+					if (input_lotserial.val() == '') {
+						swal({
+							title: 'Leave lotserial blank?',
+							text: "Lot/Serial will be generated if left blank",
+							type: 'warning',
+							showCancelButton: true,
+							confirmButtonClass: 'btn btn-success',
+							cancelButtonClass: 'btn btn-danger',
+							buttonsStyling: false,
+							confirmButtonText: 'Continue'
+						}).then(function (result) {
+							if (result) {
+								form.submit();
+							}
+						}).catch(swal.noop);
+					} else {
+						form.submit();
+					}
+				} else {
+					form.submit();
+				}
 			}
 		}
 	});
-
 
 	function validate_qty() {
 		var error = false;

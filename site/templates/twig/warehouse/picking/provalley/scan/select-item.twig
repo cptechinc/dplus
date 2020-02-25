@@ -1,0 +1,12 @@
+<div class="list-group">
+	{% for item in items %}
+		<a href="{{ page.get_chooseitemURL(item) }}" class="list-group-item list-group-item-action">
+			<h5>Item ID: {{ item.itemid }}</h5>
+			{% if (item.is_item_serialized()) %}
+				Serial #: {{ item.lotserial }}
+			{% elseif (item.is_item_lotted()) %}
+				Lot #: {{ item.lotserial }}
+			{% endif %}
+		</a>
+	{% endfor %}
+</div>

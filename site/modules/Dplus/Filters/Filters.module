@@ -33,7 +33,12 @@ class Filters extends WireData implements Module {
 	 * @return void
 	 */
 	public function ___install() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
 
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
 	}
 
 	/**
@@ -78,9 +83,10 @@ class Filters extends WireData implements Module {
 				'FilterApInvoices',
 				'FilterBookings',
 				'FilterVendors',
-				'FilterItemXrefUpc',
 				'FilterItemMaster',
+				'FilterItemXref',
 				'FilterItemXrefVxm',
+				'FilterItemXrefUpc',
 			)
 		);
 	}

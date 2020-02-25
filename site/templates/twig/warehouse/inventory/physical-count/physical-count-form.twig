@@ -13,7 +13,7 @@
 </div>
 <h3 class="my-4 font-weight-bold text-secondary">Scanned: {{ item.scan }}</h3>
 <div class="row">
-	<form action="{{ page.formurl }}" method="get" class="col-sm-6 form-reset" id="physical-count-form">
+	<form action="{{ page.formurl }}" method="post" class="col-sm-6 form-reset" id="physical-count-form">
 		<input type="hidden" name="action" value="physical-count-submit">
 		<input type="hidden" name="scan" value="{{ item.scan }}">
 		<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
@@ -49,9 +49,14 @@
 		{% endif %}
 
 		<div class="form-group">
-			<label for="bin">Bin ID</label>
+			<label for="binID">Bin ID</label>
 			<div class="input-group">
-				<input type="text" class="form-control" id="bin" name="binID" value="{{ item.bin }}">
+				<span class="input-group-prepend">
+					<button type="button" class="btn btn-secondary show-possible-bins" data-toggle="modal" data-target="#bins-modal" data-input="binID" title="Show Warehouse Bins" aria-label="Show Warehouse Bins">
+						<span class="fa fa-list" aria-hidden="true"></span> <span class="sr-only">Show Warehouse Bins</span>
+					</button>
+				</span>
+				<input type="text" class="form-control" id="binID" name="binID" value="{{ item.bin }}">
 			</div>
 		</div>
 
