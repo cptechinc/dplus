@@ -31,9 +31,14 @@ class FilterVendors extends WireData implements Module {
 	 * @return void
 	 */
 	public function filter_search($q) {
-		$col_vendorid = Vendor::get_aliasproperty('vendorid');
-		$col_name = Vendor::get_aliasproperty('name');
-		$columns = array($col_vendorid, $col_name);
+		$columns = array();
+		$columns[] = Vendor::get_aliasproperty('vendorid');
+		$columns[] = Vendor::get_aliasproperty('name');
+		$columns[] = Vendor::get_aliasproperty('address');
+		$columns[] = Vendor::get_aliasproperty('address2');
+		$columns[] = Vendor::get_aliasproperty('city');
+		$columns[] = Vendor::get_aliasproperty('state');
+		$columns[] = Vendor::get_aliasproperty('zip');
 		$this->query->search_filter($columns, strtoupper($q));
 	}
 

@@ -314,7 +314,7 @@ class DpagesMci extends Dpages implements Module {
 			'pw_template'    => 'ci-documents',
 			'jsoncode'       => 'ci-documents'
 		),
-		'ci-documents' => array(
+		'ci-activity' => array(
 			'template'       => 'ci-function',
 			'name'           => 'activity',
 			'title'          => 'Activity',

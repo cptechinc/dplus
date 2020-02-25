@@ -39,6 +39,10 @@ footer {
 	background-color: #c8bfc7 !important;
 }
 
+.form-group label {
+	font-weight: bold;
+}
+
 /*==============================================================
 	FUELUX Styles
 ==============================================================*/

@@ -10,21 +10,21 @@
 			<h4>Header Notes</h4>
 		</div>
 		<div class="col">
-			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-note-modal" data-linenbr="0" data-sequence="0">
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#note-modal" data-linenbr="0">
 				<i class="fa fa-plus" aria-hidden="true"></i> Add Note
 			</button>
 		</div>
 	</div>
-	{% include 'sales-orders/sales-order/notes/qnotes-list.twig' with {'notes': order.get_notes()} %}
+	{% include 'sales-orders/sales-order/notes/qnotes-list.twig' with {'notes': qnotes_so.get_notes_summarized(ordn, 0) } %}
 </div>
 
-{% for item in items %}
+{% for item in order.items %}
 	<div class="row mb-1" id="line-{{ item.linenbr }}">
 		<div class="col">
 			<h4>Line Number {{ item.linenbr ~ ': ' ~ item.itemid }}</h4>
 		</div>
 		<div class="col">
-			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-note-modal" data-linenbr="{{ item.linenbr }}" data-sequence="0">
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#note-modal" data-linenbr="{{ item.linenbr }}">
 				<i class="fa fa-plus" aria-hidden="true"></i> Add Note
 			</button>
 		</div>

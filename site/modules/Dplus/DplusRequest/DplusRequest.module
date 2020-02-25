@@ -1,0 +1,64 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+/**
+ * DplusRequest
+ *
+ * Class for Sending HTTP Requests to COBOL or to SELF
+ */
+class DplusRequest extends WireData implements Module {
+	const DEFAULT_BASEPATH = 'dplus';
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Requests',
+			'version' => 101,
+			'summary' => 'Module for Sending Requests to Cobol, and to self',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+	/**
+	 * Sends HTTP GET Request to a specified URL path
+	 * @param  string $path URL path with URL parameters
+	 * @return bool
+	 */
+	public function self_request($path) {
+		$http = new WireHttp();
+		$rootpath = $this->wire('config')->paths->root;
+		$basepath = end(explode('/', trim($rootpath, '/')));
+		$path = ltrim(str_replace($basepath, '', $path), '/');
+		$fullpath = "/$basepath/$path";
+		return $http->get("127.0.0.1".$fullpath);
+	}
+
+	/**
+	 * Sends HTTP GET Request to CGI BIN file
+	 * @param  string $cgi       CGI BIN filename
+	 * @param  string $sessionID SessionID for CGI Request
+	 * @return bool
+	 */
+	public function cgi_request($cgi, $sessionID) {
+		$http = new WireHttp();
+		return $http->get("127.0.0.1/cgi-bin/$cgi?fname=$sessionID");
+	}
+
+	/**
+	 * Writes an array one datem per line into the dplus directory
+	 * @param  array  $data      Array of Lines for the request
+	 * @param  string $filename What to name File
+	 * @return void
+	 */
+	function write_dplusfile($data, $filename) {
+		$file = '';
+		foreach ($data as $line) {
+			$file .= $line . "\n";
+		}
+		$vard = "/usr/capsys/ecomm/" . $filename;
+		$handle = fopen($vard, "w") or die("cant open file");
+		fwrite($handle, $file);
+		fclose($handle);
+	}
+}

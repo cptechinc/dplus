@@ -346,7 +346,7 @@
 
 		/**
 		 * Returns URL to set Cart Customer
-		 * @return string 
+		 * @return string
 		 */
 		public function get_cart_customerURL() {
 			return $this->wire('modules')->get('DpagesCart')->get_cart_customerURL($this->custID, $this->shiptoID);

@@ -19,16 +19,21 @@
 				<div class="col">Acknowledgment</div>
 			</div>
 		</div>
-		{% if notes.count > 0 %}
-			{% for note in notes %}
-				<div class="list-group-item">
+		{% if qnotes_so.notes_exist(ordn, 0) %}
+			{% for note in qnotes_so.get_notes_summarized(ordn, 0) %}
+				<div class="list-group-item qnote-row" data-linenbr="{{ note.line }}" data-form="{{ note.form }}">
 					<div class="row mb-1">
-						<div class="col">{{ note.pickticket }}</div>
-						<div class="col">{{ note.packticket }}</div>
-						<div class="col">{{ note.invoice }}</div>
-						<div class="col">{{ note.acknowledgement }}</div>
+						<div class="col check-pick">{{ note.pickticket }}</div>
+						<div class="col check-pack">{{ note.packticket }}</div>
+						<div class="col check-invoice">{{ note.invoice }}</div>
+						<div class="col check-acknowledgement">{{ note.acknowledgement }}</div>
+						<div class="col">
+							<button type="button" class="btn btn-light" data-toggle="collapse" data-target="#notes-{{ note.line }}-{{ note.form }}" aria-controls="collapseExample">
+								<i class="fa fa-eye" aria-hidden="true"></i> Show
+							</button>
+						</div>
 					</div>
-					<p class="mb-0 notes">{{ note.note }}</p>
+					<textarea class="collapse form-control-plaintext" id="notes-{{ note.line }}-{{ note.form }}" cols="{{ qnotes_so.get_column_count() }}">{{ qnotes_so.get_notes_form_array(ordn, 0, note.form)|join('\r') }}</textarea>
 				</div>
 			{% endfor %}
 		{% else %}

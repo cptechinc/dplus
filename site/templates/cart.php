@@ -70,6 +70,4 @@
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $customers->getNbResults()]);
 	}
 
-
-
 include __DIR__ . "/basic-page.php";

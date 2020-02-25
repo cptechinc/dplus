@@ -1,6 +1,6 @@
 <?php namespace ProcessWire;
 
-	use Purl\Url;
+use Purl\Url;
 
 /**
  * class DpagesMii
@@ -606,7 +606,6 @@ class DpagesMii extends Dpages implements Module {
 	public function get_requirementsoptions() {
 		return self::REQUIREMENTS_OPTIONS;
 	}
-
 
 	public static function getModuleInfo() {
 		return array(

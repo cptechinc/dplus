@@ -18,7 +18,7 @@ $(function() {
 	var input_vendoritemID = form_vxm.find('input[name=vendoritemID]');
 
 
-	$("body").on("change", ".unit-cost", function(e) {
+	$("body").on("change", ".unit-cost, .unit-qty", function(e) {
 		var unitrow = $(this).closest('.unit-row');
 		update_unitrow_margin(unitrow);
 	});

@@ -1,0 +1,251 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'/ItmResponse.php');
+
+use Purl\Url;
+
+use ItemMasterItemQuery, ItemMasterItem;
+
+/**
+ * Module that handles the editing of the UPC item Xref
+ */
+class Itm extends WireData implements Module {
+	const MODEL              = 'ItemMasterItem';
+	const MODEL_KEY          = 'code';
+	const DESCRIPTION        = 'Item Master Item';
+	const DESCRIPTION_RECORD = 'Item Master Item';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	public function init() {
+		$this->addHook('Page(pw_template=itm|itm-pricing)::itmURL', function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_itmURL($itemID);
+		});
+
+		$this->addHook('Page(pw_template=itm|itm-pricing)::get_itemURL', function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_itmURL($itemID);
+		});
+
+		$this->addHookProperty('Page(pw_template=itm|itm-pricing)::itemID', function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('itemID');
+		});
+
+		$this->addHook('Page(pw_template=itm|itm-pricing)::itm_pricingURL', function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_itm_pricingURL($itemID);
+		});
+
+		$this->addHook('Page(pw_template=itm|itm-pricing)::itemIDURL', function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$url = new Url($p->url);
+			$url->query->set('itemID', $itemID);
+
+			$event->return = $url->getUrl();
+		});
+	}
+
+	/**
+	 * Return ItemMasterItem[]
+	 * @return ItemMasterItem[]|ObjectCollection
+	 */
+	public function get_items() {
+		$q = $this->get_query();
+		return $q->find();
+	}
+
+	/**
+	 * Return if Item Exists
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function item_exists($itemID) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return ItemMasterItem
+	 * @param  string $itemID Item ID
+	 * @return ItemMasterItem
+	 */
+	public function get_item($itemID) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Returns ItemMasterItemQuery
+	 * @return ItemMasterItemQuery
+	 */
+	public function get_query() {
+		return ItemMasterItemQuery::create();
+	}
+
+	/**
+	 * Returns ItemMasterItem after retreiving or creating it
+	 * @param  WireInput $input Input Data
+	 * @return ItemMasterItem
+	 */
+	public function get_create_item(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$itemID = $input->$rm->text('itemID');
+
+		if ($this->item_exists($itemID)) {
+			$record = $this->get_item($itemID);
+		} else {
+			$record = new ItemMasterItem();
+			$record->setItemid($itemID);
+		}
+
+		return $record;
+	}
+
+	/**
+	 * Takes Input, validates it's for one of the code tables
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * TODO:
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$upc = $input->$rm->text('upc');
+		$itemID = $input->$rm->text('itemID');
+
+		$record = $this->get_create_upc($input);
+
+		if ($input->$rm->text('action') == 'remove-upc-item') {
+			$record->delete();
+		} elseif ($input->$rm->text('action') == 'update-itm') {
+			$record->setQty($input->$rm->int('qty'));
+			$record->setUom($input->$rm->text('uom'));
+			$record->setMastercase($input->$rm->text('mastercase'));
+			$record->setNeedslabel($input->$rm->text('needslabel'));
+			$record->setDate(date('Ymd'));
+			$record->setTime(0);
+
+			if ($input->$rm->text('primary') == ItemMasterItem::PRIMARY_TRUE) {
+				if ($input->$rm->text('valid_primary') == 'true') {
+					$record->setPrimary(ItemMasterItem::PRIMARY_TRUE);
+				}
+			} else {
+				$record->setPrimary(ItemMasterItem::PRIMARY_FALSE);
+			}
+		}
+
+		if ($input->$rm->action) {
+			$response = $this->save_and_process_response($record);
+
+			/**
+			 * IF we saved this Item as the Primary PO ORDER then we have to update
+			 * the other primary item to be a secondary
+			 */
+			if ($response->has_success() && !$record->isDeleted()) {
+				if ($record->is_primary() && $record->get_primary_upc_code()) {
+					$primary_upc = $record->get_primary_upc();
+					$primary_upc->setPrimary(ItemMasterItem::PRIMARY_FALSE);
+					$primary_upc->save();
+					$this->update_dplus_cobol($primary_upc);
+				}
+			}
+			$this->wire('session')->response_xref = $response;
+		}
+	}
+
+	/**
+	 * Returns XrefResponse based on the outcome of the database save
+	 * @param  ItemMasterItem $record Record to record response of database save
+	 * @return XrefResponse
+	 */
+	protected function save_and_process_response(ItemMasterItem $record) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+		$code = "$record->upc";
+
+		$response = new XrefResponse();
+		$response->set_key($code);
+		$message = self::DESCRIPTION_RECORD . " ($code) was ";
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+			$message .= "not ";
+		}
+
+		if ($is_new) {
+			$message .= 'added';
+			$response->set_action(XrefResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$message .= 'deleted';
+			$response->set_action(XrefResponse::CRUD_DELETE);
+		} else {
+			$message .= 'updated';
+			$response->set_action(XrefResponse::CRUD_UPDATE);
+		}
+
+		$response->set_message($message);
+
+		if ($response->has_success()) {
+			$this->update_dplus_cobol($record);
+		}
+		return $response;
+	}
+
+	/**
+	 * Return URL to view / edit Item
+	 * @param  string $itemID
+	 * @return string
+	 */
+	public function get_itmURL($itemID) {
+		$url = new Url($this->wire('pages')->get("pw_template=itm")->url);
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to view / edit Item Pricing
+	 * @param  string $itemID
+	 * @return string
+	 */
+	public function get_itm_pricingURL($itemID) {
+		$url = new Url($this->wire('pages')->get("pw_template=itm-pricing")->url);
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Writes File for Dplus to update the ITM file for this ITEM
+	 * @param  string $itemID Item ID
+	 * @return void
+	 */
+	public function update_dplus_cobol($itemID) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'UPDATEITM', "ITEMID=$itemID");
+
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus ITM CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for ITM',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

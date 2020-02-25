@@ -352,6 +352,7 @@ class ScreenFormatter extends WireData implements Module {
 				$justify_data = $input->post->text($postcolumn.'-justify-data');
 				$justify_label = $input->post->text($postcolumn.'-justify-label');
 				$is_input = $input->post->text($postcolumn.'-is-input');
+				$is_percent = $input->post->text($postcolumn.'-is-percent');
 
 				if ($this->fields[$tablesection][$column]['type'] == 'D') {
 					$dateformat = $input->post->text($postcolumn.'-date-format');
@@ -368,7 +369,8 @@ class ScreenFormatter extends WireData implements Module {
 					'before-decimal' => $beforedecimal,
 					'after-decimal' => $afterdecimal,
 					'date-format' => $dateformat,
-					'input' => $is_input,
+					'percent' => boolval($is_percent),
+					'input' => boolval($is_input),
 					'data-justify' => $justify_data,
 					'label-justify' => $justify_label
 				);
@@ -430,6 +432,15 @@ class ScreenFormatter extends WireData implements Module {
 
 				foreach ($columns as $column) {
 					if ($this->formatter[$section]['columns'][$column]['line'] == $i) {
+						if (!array_key_exists('percent', $this->formatter[$section]['columns'][$column])) {
+							$this->formatter[$section]['columns'][$column]['percent'] = false;
+						}
+
+						if (!array_key_exists('input', $this->formatter[$section]['columns'][$column])) {
+							$this->formatter[$section]['columns'][$column]['input'] = false;
+						}
+
+
 						$col = array(
 							'id'             => $column,
 							'label'          => $this->formatter[$section]['columns'][$column]['label'],
@@ -443,7 +454,7 @@ class ScreenFormatter extends WireData implements Module {
 							'input'          => $this->formatter[$section]['columns'][$column]['input'],
 							'data-justify'   => $this->formatter[$section]['columns'][$column]['data-justify'],
 							'label-justify'  => $this->formatter[$section]['columns'][$column]['label-justify'],
-						 );
+						);
 						$table[$section]['rows'][$i]['columns'][$this->formatter[$section]['columns'][$column]['column']] = $col;
 						$table[$section]['colcount'] += $col['col-length'] > 1 ? $col['col-length'] : 1;
 						$table['cols'] = $col['column'] > $table['cols']  ? $col['column'] : $table['cols'];

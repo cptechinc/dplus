@@ -10,6 +10,8 @@
 		$ponbr = PurchaseOrder::get_paddedponumber($input->get->text('ponbr'));
 		$page->title = "Receiving PO # $ponbr";
 		$warehouse_receiving->set_ponbr($ponbr);
+		$config->inventory = $modules->get('ConfigsWarehouseInventory');
+		$page->bin = $config->inventory->physicalcount_savebin ? $session->receiving_bin : '';
 
 		if ($warehouse_receiving->purchaseorder_exists()) {
 			$purchaseorder = $warehouse_receiving->get_purchaseorder();

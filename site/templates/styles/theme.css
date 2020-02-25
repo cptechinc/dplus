@@ -990,6 +990,7 @@ select.form-control:focus::-ms-value {
 
 .form-control-sm,
 .input-group-sm>.form-control,
+.input-group-sm>.form-control-plaintext,
 .input-group-sm>.input-group-prepend>.input-group-text,
 .input-group-sm>.input-group-append>.input-group-text,
 .input-group-sm>.input-group-prepend>.btn,
@@ -2480,6 +2481,7 @@ input[type="button"].btn-block {
 }
 
 .input-group>.form-control,
+.input-group>.form-control-plaintext,
 .input-group>.custom-select,
 .input-group>.custom-file {
     position: relative;

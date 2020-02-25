@@ -138,13 +138,13 @@ class Dpages extends DplusPwPages implements Module {
 			'installs' => array(
 				'DpagesBookings',
 				'DpagesCart',
-				'DpagesMci', 'DpagesMii', 'DpagesMvi',
-				'DpagesMqo', 'DpagesMso',
+				'DpagesMar', 'DpagesMap',
+				'DpagesMci', 'DpagesMii', 'DpagesMin',
+				'DpagesMpo', 'DpagesMqo', 'DpagesMsa', 'DpagesMso', 'DpagesMvi',
 				'DpagesMwm',
 				'DpagesRedir',
 				'DpagesScreenFormatter',
 				'DpagesUserActions',
-				'DpagesMap',
 			),
 		);
 	}

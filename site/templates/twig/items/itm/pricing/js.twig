@@ -1,0 +1,78 @@
+$(function() {
+	// item_pricing is an instance of ItemPricing
+	var eachlistprice = {{ item_pricing.baseprice }};
+	var standardcost = {{ item_pricing.item.standardcost }};
+	var itemID = '{{ item_pricing.itemid }}';
+
+	var form_vxm = $('#itm-pricing-form');
+	var input_listprice = form_vxm.find('input[name=listprice]');
+	var input_uom       = form_vxm.find('select[name=uom_sale]');
+	var input_eachlistprice = form_vxm.find('input[name=eachlistprice]');
+	var input_ouritemID = form_vxm.find('input[name=ouritemID]');
+	var input_vendoritemID = form_vxm.find('input[name=vendoritemID]');
+
+	$("body").on("change", ".pricebreak-price, .pricebreak-qty", function(e) {
+		var unitrow = $(this).closest('.pricebreak-row');
+		update_unitrow_margin(unitrow);
+	});
+
+	/**
+	 * Change the Unit of Measure Description when the Unit of Measure is changed
+	 */
+	$("body").on("change", "#uom_sale", function(e) {
+		var input_uomsale = $(this);
+		var conversion = input_uomsale.find('option:selected').data('conversion');
+		var ele_description = input_uomsale.siblings('p').find('.conversion-description');
+		ele_description.text(conversion);
+		calculate_eachlistprice();
+	});
+
+	/**
+	 * Recalculates Each List Price based on the Unit of Measure Purchase Conversion
+	 */
+	function calculate_eachlistprice() {
+		var oldlistprice = eachlistprice;
+		var conversion = input_uom.find('option:selected').data('conversion');
+		eachlistprice = input_listprice.val() / parseFloat(conversion);
+		input_eachlistprice.val(eachlistprice);
+
+		if (eachlistprice != oldlistprice) {
+			calculate_margins();
+		}
+	}
+
+	/**
+	 * Calculates Margin for each Unit Cost
+	 */
+	function calculate_margins() {
+		$(".pricebreak-row").each(function(index) {
+			update_unitrow_margin($(this));
+		});
+	}
+
+	/**
+	 * Calculates Margin for one Unit Cost
+	 * @param  JqueryElement unitrow
+	 */
+	function update_unitrow_margin(unitrow) {
+		var input_unitqty = unitrow.find('.unit-qty');
+		var input_unitcost = unitrow.find('.pricebreak-price');
+		var ele_margin = unitrow.find('.unit-margin');
+		var margin = determine_unitmargin(input_unitcost.val());
+		ele_margin.text(margin);
+	}
+
+	/**
+	 * Returns Margin for cost
+	 * @param  float   cost Unit Cost
+	 * @return float
+	 */
+	function determine_unitmargin(cost) {
+		if (eachlistprice == 0 || standardcost == 0) {
+			return 100;
+		} else {
+			var markup = eachlistprice - standardcost;
+			return markup / eachlistprice * 100;
+		}
+	}
+});
