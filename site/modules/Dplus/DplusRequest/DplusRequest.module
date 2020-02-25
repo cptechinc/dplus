@@ -27,7 +27,8 @@ class DplusRequest extends WireData implements Module {
 	 */
 	public function self_request($path) {
 		$http = new WireHttp();
-		$basepath = end(explode('/', trim($this->wire('config')->paths->root, '/')));
+		$rootpath = $this->wire('config')->paths->root;
+		$basepath = end(explode('/', trim($rootpath, '/')));
 		$path = ltrim(str_replace($basepath, '', $path), '/');
 		$fullpath = "/$basepath/$path";
 		return $http->get("127.0.0.1".$fullpath);
