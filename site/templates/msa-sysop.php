@@ -17,6 +17,8 @@
 	}
 
 	if ($msa_codetables->validate_codetable($page->codetable)) {
+		$page->focus = $input->get->focus ? $input->get->text('focus') : '';
+
 		$module_codetable = $msa_codetables->get_codetable_module($page->codetable);
 
 		$page->headline = "$module_codetable->description Table";
@@ -26,7 +28,7 @@
 			$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_codetable]);
 		}
 
-        if ($module_codetable->code_exists($code)) {
+		if ($module_codetable->code_exists($code)) {
 			$sysop = $module_codetable->get_code($code);
 		} else {
 			$sysop = new MsaSysopCode();
@@ -44,6 +46,7 @@
 	}
 
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+	$page->js .= $config->twig->render("code-tables/js.twig", ['page' => $page]);
 
 	if ($session->response_codetable) {
 		$session->remove('response_codetable');

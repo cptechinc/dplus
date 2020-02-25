@@ -19,10 +19,13 @@
 	}
 
 	if ($in_codetables->validate_codetable($page->codetable)) {
+		$page->focus = $input->get->focus ? $input->get->text('focus') : '';
+
 		$module_codetable = $in_codetables->get_codetable_module($page->codetable);
 
 		$config_so = ConfigSalesOrderQuery::create()->findOne();
 		$config_ar = ConfigArQuery::create()->findOne();
+		$dpluscustomer = $pages->get('/config/customer/');
 
 		$page->headline = "$module_codetable->description Table";
 		$page->body .= $config->twig->render('code-tables/links-header.twig', ['page' => $page, 'input' => $input]);
@@ -35,7 +38,7 @@
 			include(__DIR__."/min-code-table-$page->codetable.php");
 		} else {
 			$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable, 'config_so' => $config_so, 'config_ar' => $config_ar]);
-			$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "min/$page->codetable/form.twig", 'max_length_code' => $module_codetable->get_max_length_code(), 'config_so' => $config_so, 'config_ar' => $config_ar]);
+			$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "min/$page->codetable/form.twig", 'max_length_code' => $module_codetable->get_max_length_code(), 'config_so' => $config_so, 'config_ar' => $config_ar, $dpluscustomer => 'dpluscustomer']);
 			$page->js   .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'max_length_code' => $module_codetable->get_max_length_code()]);
 		}
 	} else {
@@ -43,6 +46,7 @@
 	}
 
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+	$page->js .= $config->twig->render("code-tables/js.twig", ['page' => $page]);
 
 	if ($session->response_codetable) {
 		$session->remove('response_codetable');
