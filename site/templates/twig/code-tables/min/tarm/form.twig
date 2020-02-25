@@ -44,5 +44,5 @@
 	<button type="submit" class="btn btn-success">
 		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 	</button>
-	<a href="{{ page.url }}" class="btn btn-secondary">Close</a>
+	<a href="{{ page.get_codetable_listURL(page.codetable, tariff.code) }}" class="btn btn-warning pull-right">Close</a>
 </form>
