@@ -1,7 +1,6 @@
+
 <div class="form-row form-group">
-	<div class="col">
-		<label for="cash_customer">Cash Customer</label>
-	</div>
+	<div class="col"><label for="cash_customer">Cash Customer</label></div>
 	<div class="col">
 		<div class="input-group">
 			<span class="input-group-prepend">
@@ -10,9 +9,8 @@
 				</button>
 			</span>
 			<input type="text" name="cash_customer" class="form-control" maxlength="6" value="{{ warehouse.cash_customer }}" id="cash_customer">
-
 		</div>
-
+		<input type="text" name="cash_name" class="form-control-plaintext" value="{{ warehouse.cashCustomer.name }}" id="cash_name" readonly>
 	</div>
 </div>
 <div class="form-row form-group">
