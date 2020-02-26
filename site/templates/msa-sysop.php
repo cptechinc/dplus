@@ -21,26 +21,28 @@
 
 		$module_codetable = $msa_codetables->get_codetable_module($page->codetable);
 
-		$page->headline = "$module_codetable->description Table";
 		$page->body .= $config->twig->render('code-tables/links-header.twig', ['page' => $page, 'input' => $input]);
 
 		if ($session->response_codetable) {
 			$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_codetable]);
 		}
 
-		if ($module_codetable->code_exists($code)) {
-			$sysop = $module_codetable->get_code($code);
-		} else {
-			$sysop = new MsaSysopCode();
-		}
+		if ($input->get->code) {
+			$code = $input->get->text('code');
 
-		if (file_exists(__DIR__."/msa-code-table-$page->codetable.php")) {
-			include(__DIR__."/msa-code-table-$page->codetable.php");
+			if ($module_codetable->code_exists($code)) {
+				$sysop = $module_codetable->get_code($code);
+			} else {
+				$sysop = new MsaSysopCode();
+			}
+
+			$page->body .= $config->twig->render("code-tables/msa/$page->codetable/form.twig", ['page' => $page, 'sysop' => $sysop]);
 		} else {
-			$page->body .= $config->twig->render("code-tables/msa/$page->codetable/list.twig", ['page' => $page, 'table' => $table, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable]);
-			$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "msa/$page->codetable/form.twig", 'sysop' => $sysop, 'max_length_code' => $module_codetable->get_max_length_code()]);
-			$page->js   .= $config->twig->render("code-tables/msa/$page->codetable/js.twig", ['page' => $page, 'max_length_code' => $module_codetable->get_max_length_code()]);
+			$page->headline = "$module_codetable->description Table";
+			$page->body .= $config->twig->render("code-tables/msa/$page->codetable/list.twig", ['page' => $page, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable]);
 		}
+		
+		$page->js   .= $config->twig->render("code-tables/msa/$page->codetable/js.twig", ['page' => $page, 'max_length_code' => $module_codetable->get_max_length_code()]);
 	} else {
 		$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Code Table Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "MSA Code Table '$page->codetable' does not exist"]);
 	}

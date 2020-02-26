@@ -86,7 +86,32 @@ class MsaSysop extends WireData implements Module {
 			$record->delete();
 		} else {
 			$description = $input->$rm->text('description');
+			$system = $input->$rm->text('system');
+			$note_code = $input->$rm->text('note_code');
+			$web_validate = $input->$rm->text('web_validate');
+			$doc_store_folder = $input->$rm->text('doc_store_folder');
+			$web_force = $input->$rm->text('web_force');
+			$file_name = $input->$rm->text('file_name');
+			$force = $input->$rm->text('force');
+			$adv_search = $input->$rm->text('adv_search');
+			$list_seq = $input->$rm->text('list_seq');
+			$field_type = $input->$rm->text('field_type');
+			$before_dec = $input->$rm->text('before_dec');
+			$after_dec = $input->$rm->text('after_dec');
+
 			$record->setDescription($description);
+			$record->setSystem($system);
+			$record->setNote_code($note_code);
+			$record->setWeb_validate($web_validate);
+			$record->setDoc_store_folder($doc_store_folder);
+			$record->setWeb_force($web_force);
+			$record->setFile_name($file_name);
+			$record->setForce($force);
+			$record->setAdv_search($adv_search);
+			$record->setList_seq($list_seq);
+			$record->setField_type($field_type);
+			$record->setBefore_dec($before_dec);
+			$record->setAfter_dec($after_dec);
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
 			$record->setDummy('P');
@@ -100,7 +125,7 @@ class MsaSysop extends WireData implements Module {
 	 * @param  MsaSysopCode $record Record to record response of database save
 	 * @return MsaResponse
 	 */
-	protected function save_and_process_response(MsaSysopCode $record) {
+	protected function save_and_process_response($table, $code, MsaSysopCode $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
