@@ -5,7 +5,7 @@
 		<div class="col-sm-6">
 			<div class="form-group">
 				<label for="code">Code</label>
-				<input type="text" name="code" class="form-control" value="{{ sysop.code }}" maxlength="{{ sysop.get_max_length_code() }}" id="code">
+				<input type="text" name="code" class="form-control" value="{{ sysop.code }}" maxlength="{{ sysop.get_max_length_code() }}" id="code" {{ sysop.id ? 'readonly' : 'autofocus' }}>
 			</div>
 
 			<div class="form-group">
@@ -15,7 +15,7 @@
 
 			<div class="form-group">
 				<label for="description">Description</label>
-				<input type="text" name="description" class="form-control" value="{{ sysop.description }}" id="description">
+				<input type="text" name="description" class="form-control" maxlength="20" value="{{ sysop.description }}" id="description" autofocus>
 			</div>
 
 			<div class="form-group">
