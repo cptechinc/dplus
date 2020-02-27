@@ -18,7 +18,12 @@
 		<label for="pickdetail">Pick Detail</label>
 	</div>
 	<div class="col">
-		{% include 'util/select.twig' with {'name': 'pickdetail', 'id': 'pickdetail', 'options': {'A': 'Available', 'S': 'Selected', 'N': 'No'}, 'selectedvalue': (warehouse.pickdetail ? warehouse.pickdetail : '')} %}
+		<select name="pickdetail" class="form-control" id="pickdetail" required>
+			<option value="">-- Choose --</option>
+			<option value="A" {{ (warehouse.pickdetail == 'A') ? 'selected' : '' }}>Available</option>
+			<option value="S" {{ (warehouse.pickdetail == 'S') ? 'selected' : '' }}>Selected</option>
+			<option value="N" {{ (warehouse.pickdetail == 'N') ? 'selected' : '' }}>No</option>
+		</select>
 	</div>
 </div>
 
@@ -46,7 +51,11 @@
 		<label for="consignment">Consignment</label>
 	</div>
 	<div class="col">
-		{% include 'util/select.twig' with {'name': 'consignment', 'id': 'consignment', 'options': {'N': 'No', 'Y': 'Yes'}, 'selectedvalue': (warehouse.consignment ? warehouse.consignment : '')} %}
+		<select name="consignment" class="form-control" id="C" required>
+			<option value="">-- Choose --</option>
+			<option value="Y" {{ (warehouse.consignment == 'Y') ? 'selected' : '' }}>Yes</option>
+			<option value="N" {{ (warehouse.consignment == 'N') ? 'selected' : '' }}>No</option>
+		</select>
 	</div>
 </div>
 
