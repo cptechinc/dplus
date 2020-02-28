@@ -59,6 +59,10 @@ class CodeTablesIn extends WireData implements Module {
 		'tarm' => array(
 			'code'   => 'tarm',
 			'module' => 'CodeTablesTarm'
+		),
+		'iarn' => array(
+			'code'   => 'iarn',
+			'module' => 'CodeTablesIarn'
 		)
 	);
 

@@ -167,6 +167,15 @@ class DpagesMin extends Dpages implements Module {
 			'summary'        => 'View / Edit UPCs',
 			'parent'         => '/min/inmain/',
 			'dplus_function' => 'upcx'
+		),
+		'min-iarn' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'min-code-table',
+			'name'           => 'iarn',
+			'title'          => 'Inventory Adjustment Reason Class',
+			'summary'        => 'View / Edit Inventory Adjustment Reason',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => 'iarn'
 		)
 	);
 
