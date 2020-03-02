@@ -14,7 +14,10 @@
 
 	<div class="form-group">
 		<label for="sys_defined">System Defined ?</label>
-		{% include 'util/select.twig' with {'name': 'sys_defined', 'id': 'sys_defined', 'selectedvalue': code.sys_defined, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+		<select name="sys_defined" class="form-control" id="sys_defined">
+			<option value="N">No</option>
+			<option value="Y">Yes</option>
+		</select>
 	</div>
 
 	<div class="modal-footer">

@@ -6,11 +6,17 @@ $(function() {
 		var description = button.data('description').toString(); // Extract info from data-* attributes
 		var sys_defined = button.data('sys_defined').toString(); // Extract info from data-* attributes
 
+		console.log(code);
+
 		var modal = $(this);
+
+		if (sys_defined == 'Y') {
+			modal.find('select[name=sys_defined]').prop("disabled", true);
+		}
 
 		modal.find('input[name=code]').val(code);
 		modal.find('input[name=description]').val(description);
-		modal.find('input[name=sys_defined]').val(sys_defined);
+		modal.find('select[name=sys_defined]').val(sys_defined);
 
 		if (code.length) {
 			modal.find('.modal-title').text('Editing Code ' + code);
@@ -21,6 +27,8 @@ $(function() {
 			modal.find('input[name=code]').prop("readonly", false);
 			modal.find('input[name=code]').focus();
 		}
+
+
 	});
 
 	$("#code-edit-form").validate({
