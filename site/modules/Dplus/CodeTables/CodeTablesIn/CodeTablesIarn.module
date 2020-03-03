@@ -4,13 +4,13 @@ include_once(__DIR__.'/../CodeTablesResponse.php');
 
 use Purl\Url;
 
-use InventoryAdjustmentReasonQuery, InventoryAdjustmentReason;
+use InvAdjustmentReasonQuery, InvAdjustmentReason;
 
 /**
  * Module that handles the editing of the CCM codetable
  */
 class CodeTablesIarn extends WireData implements Module {
-	const MODEL              = 'InventoryAdjustmentReason';
+	const MODEL              = 'InvAdjustmentReason';
 	const MODEL_KEY          = 'id';
 	const DESCRIPTION        = 'Inventory Adjustment Reason';
 	const DESCRIPTION_RECORD = 'Inventory Adjustment Reason';
@@ -56,14 +56,14 @@ class CodeTablesIarn extends WireData implements Module {
 	 * @return mixed
 	 */
 	public function get_query() {
-		return InventoryAdjustmentReasonQuery::create();
+		return InvAdjustmentReasonQuery::create();
 	}
 
 	/**
 	 * Takes Input, validates it's for one of the code tables
 	 * Processes it, and if updated sends request to dplus
 	 *
-	 * NOTE: If an existing code is more than InventoryAdjustmentReason::MAX_LENGTH_CODE, we will allow editing
+	 * NOTE: If an existing code is more than InvAdjustmentReason::MAX_LENGTH_CODE, we will allow editing
 	 * but we won't allow creation of a code with more than allowed characters we will trim it.
 	 *
 	 * @param  WireInput $input Input
@@ -80,8 +80,8 @@ class CodeTablesIarn extends WireData implements Module {
 		if ($q->count()) {
 			$record = $q->findOne();
 		} else {
-			$code  = $input->$rm->text('code', array('maxLength' => InventoryAdjustmentReason::MAX_LENGTH_CODE));
-			$record = new InventoryAdjustmentReason();
+			$code  = $input->$rm->text('code', array('maxLength' => InvAdjustmentReason::MAX_LENGTH_CODE));
+			$record = new InvAdjustmentReason();
 			$record->setCode($code);
 		}
 
@@ -109,7 +109,7 @@ class CodeTablesIarn extends WireData implements Module {
 	 * @param  bool   $saved  Was the Record Saved?
 	 * @return CodeTablesResponse
 	 */
-	protected function save_and_process_response($table, $code, InventoryAdjustmentReason $record) {
+	protected function save_and_process_response($table, $code, InvAdjustmentReason $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
@@ -149,7 +149,7 @@ class CodeTablesIarn extends WireData implements Module {
 	 * @return int
 	 */
 	public function get_max_length_code() {
-		return InventoryAdjustmentReason::MAX_LENGTH_CODE;
+		return InvAdjustmentReason::MAX_LENGTH_CODE;
 	}
 
 	public static function getModuleInfo() {
