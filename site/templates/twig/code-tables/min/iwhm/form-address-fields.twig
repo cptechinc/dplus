@@ -24,7 +24,7 @@
 				<input type="text" name="city" class="form-control" maxlength="16" value="{{ warehouse.city }}" id="city">
 			</div>
 			<div class="col-2">
-				<select name="state" class="form-control" id="state">
+				<select name="state" class="form-control validate-ignore" id="state">
 						<option value=""></option>
 					{% for state in states %}
 						<option value="{{ state.abbreviation }}" {{ state.abbreviation == warehouse.state ? 'selected' : ''}}>{{ state.abbreviation }}&emsp;-&ensp;{{ state.name }}</option>
