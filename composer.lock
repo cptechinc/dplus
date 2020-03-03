@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "0e78d90072c7f036d3eeab1806961ceb2cb2130c"
+                "reference": "40bffb1d73daedfbcc1795da57036478e49c3e4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/0e78d90072c7f036d3eeab1806961ceb2cb2130c",
-                "reference": "0e78d90072c7f036d3eeab1806961ceb2cb2130c",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/40bffb1d73daedfbcc1795da57036478e49c3e4c",
+                "reference": "40bffb1d73daedfbcc1795da57036478e49c3e4c",
                 "shasum": ""
             },
             "type": "library",
@@ -39,7 +39,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2020-02-28T16:36:47+00:00"
+            "time": "2020-03-03T15:28:57+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
@@ -47,12 +47,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dpluso-model.git",
-                "reference": "17a29437389085b4b0b1c663299cb7277901dd48"
+                "reference": "0e96d3c34370d489ff147ed6aedb95382c9b0611"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/17a29437389085b4b0b1c663299cb7277901dd48",
-                "reference": "17a29437389085b4b0b1c663299cb7277901dd48",
+                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/0e96d3c34370d489ff147ed6aedb95382c9b0611",
+                "reference": "0e96d3c34370d489ff147ed6aedb95382c9b0611",
                 "shasum": ""
             },
             "type": "library",
@@ -74,7 +74,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2020-02-26T15:11:24+00:00"
+            "time": "2020-03-02T22:02:36+00:00"
         },
         {
             "name": "jeremykendall/php-domain-parser",
@@ -1058,12 +1058,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "19e09ad6a692f8fb1e3c3115f8fc693cac0702d5"
+                "reference": "3a3a07fe2f42492eccca6771f1a460c9900cd851"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/19e09ad6a692f8fb1e3c3115f8fc693cac0702d5",
-                "reference": "19e09ad6a692f8fb1e3c3115f8fc693cac0702d5",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/3a3a07fe2f42492eccca6771f1a460c9900cd851",
+                "reference": "3a3a07fe2f42492eccca6771f1a460c9900cd851",
                 "shasum": ""
             },
             "require": {
@@ -1143,7 +1143,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2020-02-25T14:19:32+00:00"
+            "time": "2020-02-29T10:05:28+00:00"
         },
         {
             "name": "symfony/yaml",
