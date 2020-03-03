@@ -117,7 +117,7 @@ $(function() {
 
 	$('.phone-input').keyup(function() {
 		$(this).val(format_phone($(this).val()));
-		$(this).attr('minlength', '10');
+		$(this).attr('minlength', '12');
 	});
 
 	$('a.delete_button').click(function(e){
