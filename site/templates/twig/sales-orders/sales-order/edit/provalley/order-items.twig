@@ -12,7 +12,8 @@
 <div class="bg-dark text-white font-weight-bold p-3">
 	<div class="row">
 		<div class="col-sm-3">Item ID</div>
-		<div class="col-sm-2 text-right">Qty</div>
+		<div class="col-sm-1 text-right">Cases</div>
+		<div class="col-sm-1 text-right">Weight</div>
 		<div class="col-sm-2 text-right">Price</div>
 		<div class="col-sm-2 text-right">Amount</div>
 		<div class="col-sm-3 "></div>
@@ -20,17 +21,25 @@
 </div>
 
 {% for detail in module_edit.get_order_edit_items() %}
+	{% set item = module_edit.get_im_item(detail.itemid) %}
+
 	{% if user.is_editingorder(order.ordernumber) %}
 		<form action="{{ page.formurl }}" class="row pt-3 px-3 allow-enterkey-submit">
 			<input type="hidden" name="action" value="quick-update-line">
 			<input type="hidden" name="ordn" value="{{ order.ordernumber }}">
 			<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
-			<div class="col-sm-4">
-				{{ detail.itemid }}</br>
+			<div class="col-sm-3">
+				{{ detail.itemid }}
+				<br>
 				<small>{{ detail.desc1 }}</small>
+				<br>
+				<small>Avg Wgt: {{ item.weight|number_format(3, '.', ',') }}</small>
 			</div>
 			<div class="col-sm-1 text-right">
 				<input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}"></input>
+			</div>
+			<div class="col-sm-1 text-right">
+				{{ (item.weight * detail.qty)|number_format(3, '.', ',') }}
 			</div>
 			<div class="col-sm-2 text-right">
 				<div class="input-group">
