@@ -28,6 +28,10 @@ class DpagesMin extends Dpages implements Module {
 			'name'   => 'min-code-table-tarm',
 			'fields' => array()
 		),
+		'min-code-table-ioptm' => array(
+			'name'   => 'min-code-table-ioptm',
+			'fields' => array()
+		),
 		'upc-xref' => array(
 			'name'   => 'upcx',
 			'fields' => array()
@@ -172,10 +176,19 @@ class DpagesMin extends Dpages implements Module {
 			'template'       => 'dplus-function',
 			'pw_template'    => 'min-code-table',
 			'name'           => 'iarn',
-			'title'          => 'Inventory Adjustment Reason Class',
+			'title'          => 'Inventory Adjustment Reason',
 			'summary'        => 'View / Edit Inventory Adjustment Reason',
 			'parent'         => '/min/inmain/',
 			'dplus_function' => 'iarn'
+		),
+		'min-ioptm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'min-code-table',
+			'name'           => 'ioptm',
+			'title'          => 'Inventory Optional Codes',
+			'summary'        => 'View / Edit Inventory Optional Codes',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => 'ioptm'
 		)
 	);
 
@@ -202,6 +215,13 @@ class DpagesMin extends Dpages implements Module {
 			$table = $event->arguments(0);
 			$code = $event->arguments(1);
 			$event->return = $this->get_codetable_code_editURL($table, $code);
+		});
+
+		$this->addHook('Page(pw_template=min-code-table)::get_codetable_optcode_editURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$optcode = $event->arguments(2);
+			$event->return = $this->get_codetable_optcode_editURL($table, $code, $optcode);
 		});
 
 		$this->addHook('Page(pw_template=min-code-table)::get_codetable_listURL', function($event) {
@@ -239,6 +259,13 @@ class DpagesMin extends Dpages implements Module {
 	public function get_codetable_code_editURL($table, $code) {
 		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
 		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	public function get_codetable_optcode_editURL($table, $code, $optcode) {
+		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
+		$url->query->set('code', $code);
+		$url->query->set('optcode', $optcode);
 		return $url->getUrl();
 	}
 
