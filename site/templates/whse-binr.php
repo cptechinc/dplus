@@ -117,8 +117,8 @@
 				$page->body .= $config->twig->render('warehouse/binr/to-bins-modal.twig', ['currentbins' => $currentbins, 'warehouse' => $warehouse, 'session' => $session, 'item' => $item, 'inventory' => $inventory]);
 
 				// 4. Warehouse Config JS
-				$bins = BincntlQuery::create()->get_warehousebins($whsesession->whseid)->toArray();
-				$validbins = BininfoQuery::create()->filterByItemid(session_id(), $item->itemid)->find()->toArray('Bin');
+				$bins = $warehouse->get_bins();
+				$validbins = BininfoQuery::create()->filterBySessionItemid(session_id(), $item->itemid)->find()->toArray('Bin');
 				$jsconfig = array('warehouse' => array('id' => $whsesession->whseid, 'binarrangement' => $warehouse->get_binarrangementdescription(), 'bins' => $bins));
 				$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('warehouse' => $jsconfig, 'validfrombins' => $validbins)]);
 			}

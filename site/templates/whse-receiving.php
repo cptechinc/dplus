@@ -5,6 +5,7 @@
 	$warehouse_receiving->set_sessionID(session_id());
 
 	$html = $modules->get('HtmlWriter');
+	$page->bin = '';
 
 	if ($input->get->ponbr) {
 		$ponbr = PurchaseOrder::get_paddedponumber($input->get->text('ponbr'));
