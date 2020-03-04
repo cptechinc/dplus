@@ -402,13 +402,14 @@
 		 * @return bool Was Template able to be saved?
 		 */
 		protected function create_template($template) {
+			$allow_pagination = array_key_exists('paginated', $this::TEMPLATES[$template]) ? $this::TEMPLATES[$template]['paginated'] : 0;
 			$t = new Template();
 			$t->name = $template;
 			$t->fieldgroup = $this->create_fieldgroup($template);
 			$t->save();
 			$this->update_fieldgroup($template);
 			$t->fieldgroup = $this->wire('fieldgroups')->get($template);
-			$this->allowPageNum = $this::TEMPLATES[$template]['paginated'] ? 1 : 0;
+			$this->allowPageNum = $allow_pagination ? 1 : 0;
 			$this->slashPageNum = 1;
 			$t->save();
 		}
@@ -455,13 +456,14 @@
 				foreach ($default_templates[$page['template']]['fields'] as $fieldname) {
 					$pw_page->$fieldname = $page[$fieldname];
 				}
-			}
-
-			foreach ($this::TEMPLATES[$page['template']]['fields'] as $fieldname) {
-				if (array_key_exists($fieldname, $page)) {
-					$pw_page->$fieldname = $page[$fieldname];
+			} else {
+				foreach ($this::TEMPLATES[$page['template']]['fields'] as $fieldname) {
+					if (array_key_exists($fieldname, $page)) {
+						$pw_page->$fieldname = $page[$fieldname];
+					}
 				}
 			}
+
 			return $pw_page->save();
 		}
 
@@ -484,10 +486,12 @@
 				foreach ($default_templates[$page['template']]['fields'] as $fieldname) {
 					$pw_page->$fieldname = $page[$fieldname];
 				}
-			}
-
-			foreach ($this::TEMPLATES[$page['name']]['fields'] as $fieldname) {
-				$pw_page->$fieldname = $page[$fieldname];
+			} else {
+				foreach ($this::TEMPLATES[$page['template']]['fields'] as $fieldname) {
+					if (array_key_exists($fieldname, $page)) {
+						$pw_page->$fieldname = $page[$fieldname];
+					}
+				}
 			}
 			return $pw_page->save();
 		}
