@@ -40,6 +40,10 @@ class DpagesMin extends Dpages implements Module {
 			'name'   => 'itm-pricing',
 			'fields' => array()
 		),
+		'itm-json' => array(
+			'name'   => 'itm-json',
+			'fields' => array()
+		),
 	);
 
 	const PAGES = array(
@@ -58,24 +62,6 @@ class DpagesMin extends Dpages implements Module {
 			'summary'        => 'Inventory Maintenance',
 			'parent'         => '/min/',
 			'dplus_function' => 'inmain'
-		),
-		'min-itm' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'itm',
-			'name'           => 'itm',
-			'title'          => 'Item Master',
-			'summary'        => 'View / Edit Item',
-			'parent'         => '/min/inmain/',
-			'dplus_function' => 'itm'
-		),
-		'min-itm-pricing' => array(
-			'template'       => 'dplus-function',
-			'pw_template'    => 'itm-pricing',
-			'name'           => 'pricing',
-			'title'          => 'ITM Pricing',
-			'summary'        => 'View / Edit Item Pricing',
-			'parent'         => '/min/inmain/itm/',
-			'dplus_function' => ''
 		),
 		'min-iwhm' => array(
 			'template'       => 'dplus-function',
@@ -193,7 +179,34 @@ class DpagesMin extends Dpages implements Module {
 			'summary'        => 'View / Edit UPCs',
 			'parent'         => '/min/inmain/',
 			'dplus_function' => 'upcx'
-		)
+		),
+		'itm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'itm',
+			'name'           => 'itm',
+			'title'          => 'ITM',
+			'summary'        => 'View / Edit Item',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => 'itm'
+		),
+		'itm-pricing' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'itm-pricing',
+			'name'           => 'pricing',
+			'title'          => 'ITM Pricing',
+			'summary'        => 'View / Edit Item Pricing',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => ''
+		),
+		'itm-json' => array(
+			'template'       => 'dplus-json',
+			'pw_template'    => 'itm-json',
+			'name'           => 'itm',
+			'title'          => 'ITM',
+			'summary'        => 'View / Edit Item',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => 'itm'
+		),
 	);
 
 /* =============================================================
@@ -221,6 +234,12 @@ class DpagesMin extends Dpages implements Module {
 			$event->return = $this->get_codetable_code_editURL($table, $code);
 		});
 
+		$this->addHook('Page(pw_template=min-code-table)::get_codetable_listURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_listURL($table, $code);
+		});
+
 		$this->addHookProperty('Page(pw_template=min-code-table)::codetable', function($event) {
 			$page = $event->object;
 			$event->return = $page->name;
@@ -230,6 +249,12 @@ class DpagesMin extends Dpages implements Module {
 	public function get_codetable_viewURL($table, $code = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
 		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	public function get_codetable_listURL($table, $code = false) {
+		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
+		$url->query->set('focus', $code);
 		return $url->getUrl();
 	}
 
