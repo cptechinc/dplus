@@ -6,7 +6,10 @@
 	use CartdetQuery, Cartdet;
 	use QnoteQuery, Qnote;
 
+	use ItemMasterItemQuery, ItemMasterItem;
+
 	class Cart extends WireData implements Module {
+
 
 		public function init() {
 
@@ -54,7 +57,6 @@
 				} else {
 					$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customerURL($custID);
 				}
-
 			});
 
 			/**
@@ -161,11 +163,20 @@
 		}
 
 		/**
-		 * Returns Items that are in the cart
+		 * Return Items that are in the cart
 		 * @return Cartdet[]|ObjectCollection
 		 */
 		public function get_items() {
 			return CartdetQuery::create()->filterBySessionid(session_id())->find();
+		}
+
+		/**
+		 * Return OItemMasterItem
+		 * @param  string $itemID Item ID
+		 * @return ItemMasterItem
+		 */
+		public function get_im_item($itemID) {
+			return ItemMasterItemQuery::create()->findOneByItemid($itemID);
 		}
 
 		/**
@@ -174,14 +185,13 @@
 		 * @return void
 		 */
 		public function request_itemsearch($q) {
-			$http = new WireHttp();
-			$url = new Url('127.0.0.1');
-			$url->path = $this->wire('pages')->get('template=redir,redir_file=ii')->url;
+			$requestor = $this->wire('modules')->get('DplusRequest');
+			$url = new Url($this->wire('pages')->get('template=redir,redir_file=ii')->url);
 			$url->query->set('action', 'item-search');
 			$url->query->set('q', $q);
 			$url->query->set('custID', $this->get_custid());
 			$url->query->set('sessionID', session_id());
-			$http->get($url->getUrl());
+			$requestor->self_request($url->getUrl());
 		}
 
 		/**
