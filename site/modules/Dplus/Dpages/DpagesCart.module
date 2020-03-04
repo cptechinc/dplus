@@ -47,6 +47,19 @@ class DpagesCart extends Dpages implements Module {
 		),
 	);
 
+	public function init() {
+		$this->addHook('Page(pw_template=cart)::get_itm_lookupURL', function($event) {
+			$url = new Url($this->wire('pages')->get('pw_template=itm-json')->httpUrl);
+			$url->query->set('json', 'true');
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=cart)::get_ii_lookupURL', function($event) {
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item-lookup')->httpUrl);
+			$event->return = $url->getUrl();
+		});
+	}
+
 	/**
 	 * Returns URL to set Customer Cart
 	 * @param  string $custID   Customer ID
