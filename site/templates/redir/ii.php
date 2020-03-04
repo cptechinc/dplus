@@ -475,6 +475,16 @@
 			$custID = !empty($input->$requestmethod->custID) ? $input->$requestmethod->text('custID') : $config->defaultweb;
 			$data = array("DBNAME=$dplusdb", "ITNOSRCH=$q", "CUSTID=$custID");
 			break;
+		case 'item-pricing-multiple':
+			$itemIDs = $input->$requestmethod->array('itemID');
+			$custID = !empty($input->$requestmethod->custID) ? $input->$requestmethod->text('custID') : $config->defaultweb;
+			$data = array("DBNAME=$dplusdb", "ITMPRIMULT", "CUSTID=$custID");
+			$itemIDs = $input->$requestmethod->array('itemID');
+
+			foreach ($itemIDs as $itemID) {
+				$data[] = "ITEMID=$itemID";
+			}
+			break;
 	}
 
 	if (!empty($data)) {
