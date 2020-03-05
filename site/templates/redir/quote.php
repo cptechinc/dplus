@@ -154,6 +154,27 @@
 				$session->loc = $pages->get('pw_template=quote-edit')->url."?qnbr=$qnbr";
 			}
 			break;
+		case 'add-popular-items':
+			$qnbr = $input->$requestmethod->text('qnbr');
+			$data = array("DBNAME=$dplusdb", 'QUOTEADDMULTIPLE', "QUOTENO=$qnbr");
+			$qtys = $input->$requestmethod->array('qty');
+			$itemIDs = $input->$requestmethod->array('itemID');
+
+			for ($i = 0; $i < sizeof($qtys); $i++) {
+				if (!empty($qtys[$i])) {
+					$itemID = str_pad($itemIDs[$i], 30, ' ');
+					$qty = $qtys[$i];
+					$data[] = "ITEMID={$itemID}QTY=$qty";
+				}
+			}
+
+			if ($input->$requestmethod->page) {
+				$url = new Purl\Url($input->$requestmethod->text('page'));
+				$session->loc = $url->getUrl();
+			} else {
+				$session->loc = $pages->get('pw_template=quote-edit')->url."?ordn=$ordn";
+			}
+			break;
 		case 'remove-line':
 			$qnbr = $input->$requestmethod->text('qnbr');
 			$linenbr = $input->$requestmethod->int('linenbr');
