@@ -119,7 +119,9 @@ trait ScreenFormatterTraits {
 	 * @var string JSON Encoded Formatter
 	 */
 	protected load_dbformatter($userID, $formatter) {
-		$q = TableformatterQuery::create()->filterByUserFormattertype($userID, $formatter);
+		$q = TableformatterQuery::create()
+		$q->filterByUser($userID);
+		$q->filterByFormattertype($formatter);
 		$q->select('data');
 		return $q->count()->findOne();
 	}
@@ -129,7 +131,9 @@ trait ScreenFormatterTraits {
 	 * @return bool             Does User have a formatter
 	 */
 	protected function does_formatterexist($userID, $formatter) {
-		$q = TableformatterQuery::create()->filterByUserFormattertype($userID, $formatter);
+		$q = TableformatterQuery::create();
+		$q->filterByUser($userID);
+		$q->filterByFormattertype($formatter);
 		return boolval($q->count());
 	}
 
