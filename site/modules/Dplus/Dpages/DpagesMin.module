@@ -232,7 +232,7 @@ class DpagesMin extends Dpages implements Module {
 	public function get_codetable_viewURL($table, $code = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
 
-		if ($table = 'ioptm') {
+		if ($table == 'ioptm') {
 			$url->query->set('sysop', $code);
 		} else {
 			$url->query->set('code', $code);
