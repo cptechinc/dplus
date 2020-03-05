@@ -1,38 +1,14 @@
 <?php
-	if ($input->get->optcode) {
-        $code = $input->get->text('code');
-		$optcode = $input->get->text('optcode');
-		$page->headline = "Editing $page->title $optcode";
-		$sysop = $module_codetable->get_code($optcode);
+	if ($input->get->sysop) {
+		$sysopcode = $input->get->text('sysop');
+		$page->headline = $page->title = "Listing $page->title for $sysopcode";
+		$sysop = $module_codetable->get_sysop($sysopcode);
 
-		if ($module_codetable->code_exists($optcode)) {
-			$sysop = $module_codetable->get_code($optcode);
-		} else {
-			$sysop = new MsaSysopCode();
-		}
+		$optcodes = $module_codetable->get_codes($sysopcode);
 
-        $optcode = $module_codetable->get_sysops($code);
-
-		$page->body .= $config->twig->render("code-tables/min/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $code, 'optcode' => $optcode]);
-        $page->js .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'sysop' => $sysop]);
-	}
-
-    elseif ($input->get->code) {
-		$code = $input->get->text('code');
-		$page->headline = "Editing $page->title $code";
-		$sysop = $module_codetable->get_code($code);
-
-		if ($module_codetable->code_exists($code)) {
-			$sysop = $module_codetable->get_code($code);
-		} else {
-			$sysop = new MsaSysopCode();
-		}
-
-        $optcodes = $module_codetable->get_sysops($code);
-
-        $page->body .= $config->twig->render("code-tables/min/$page->codetable/optcode-list.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $code, 'sysop' => $sysop, 'optcodes' => $optcodes]);
-		//$page->body .= $config->twig->render("code-tables/min/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'sysop' => $sysop]);
-        $page->js .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'sysop' => $sysop]);
+		$page->body .= $config->twig->render("code-tables/min/$page->codetable/list-codes.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $sysop, 'sysop' => $sysop, 'optcodes' => $optcodes, 'response' => $session->response_codetable]);
+		$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "min/$page->codetable/form.twig", 'max_length_code' => SysopOptionalCode::MAX_LENGTH_CODE]);
+		$page->js   .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'sysop' => $sysopcode, 'max_length_code' => SysopOptionalCode::MAX_LENGTH_CODE]);
 	} else {
-		$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'table' => $page->codetable, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable]);
+		$page->body .= $config->twig->render("code-tables/min/$page->codetable/list-sysop.twig", ['page' => $page, 'table' => $page->codetable, 'codes' => $module_codetable->get_sysops()]);
 	}

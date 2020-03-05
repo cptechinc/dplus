@@ -217,13 +217,6 @@ class DpagesMin extends Dpages implements Module {
 			$event->return = $this->get_codetable_code_editURL($table, $code);
 		});
 
-		$this->addHook('Page(pw_template=min-code-table)::get_codetable_optcode_editURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$optcode = $event->arguments(2);
-			$event->return = $this->get_codetable_optcode_editURL($table, $code, $optcode);
-		});
-
 		$this->addHook('Page(pw_template=min-code-table)::get_codetable_listURL', function($event) {
 			$table = $event->arguments(0);
 			$code = $event->arguments(1);
@@ -238,7 +231,12 @@ class DpagesMin extends Dpages implements Module {
 
 	public function get_codetable_viewURL($table, $code = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
-		$url->query->set('code', $code);
+
+		if ($table = 'ioptm') {
+			$url->query->set('sysop', $code);
+		} else {
+			$url->query->set('code', $code);
+		}
 		return $url->getUrl();
 	}
 
@@ -259,13 +257,6 @@ class DpagesMin extends Dpages implements Module {
 	public function get_codetable_code_editURL($table, $code) {
 		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
 		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	public function get_codetable_optcode_editURL($table, $code, $optcode) {
-		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
-		$url->query->set('code', $code);
-		$url->query->set('optcode', $optcode);
 		return $url->getUrl();
 	}
 

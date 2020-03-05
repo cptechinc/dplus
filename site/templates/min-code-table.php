@@ -10,17 +10,17 @@
 		// TODO: LOGIC to see if code was removed
 		$code = $input->$rm->text('code');
 		$code = $action == 'update-notes' ? $code : '';
+		$code = $page->codetable == 'ioptm' ? $input->$rm->text('sysop') : $code;
 
 		if ($in_codetables->validate_codetable($page->codetable)) {
 			$module_codetable = $in_codetables->get_codetable_module($page->codetable);
 			$module_codetable->process_input($input);
-			$session->redirect($page->get_codetable_viewURL($page->codetable,  $code), $http301 = false);
+			$session->redirect($page->get_codetable_viewURL($page->codetable, $code), $http301 = false);
 		}
 	}
 
 	if ($in_codetables->validate_codetable($page->codetable)) {
 		$page->focus = $input->get->focus ? $input->get->text('focus') : '';
-
 		$module_codetable = $in_codetables->get_codetable_module($page->codetable);
 
 		$config_so = ConfigSalesOrderQuery::create()->findOne();

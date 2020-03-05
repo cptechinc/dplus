@@ -21,55 +21,64 @@ class CodeTablesIoptm extends WireData implements Module {
 		$this->description = self::DESCRIPTION;
 	}
 
+	public function init() {
+        $this->addHook('Page(pw_template=min-code-table)::get_sysopURL', function($event) {
+			$sysop = $event->arguments(0);
+			$event->return = $this->get_sysopURL($sysop);
+		});
+
+        $this->addHook('Page(pw_template=min-code-table)::get_codetable_optcode_deleteURL', function($event) {
+			$table = $event->arguments(0);
+            $system = $event->arguments(1);
+            $sysop = $event->arguments(2);
+			$code = $event->arguments(3);
+			$event->return = $this->get_codetable_optcode_deleteURL($table, $system, $sysop, $code);
+		});
+	}
+
 	/**
-	 * Return the Code records from Database
-	 * @param  string $table Table Code
-	 * @return ObjectCollection
+	 * Return the Code records from Database filtered By System Optional Code
+	 * @param  string $sysop System Optional Code this code is Under
+	 * @return SysopOptionalCode[]|ObjectCollection
 	 */
-	public function get_codes() {
-		$q = $this->get_query();
+	public function get_codes($sysop) {
+		$q = $this->get_query($sysop);
 		return $q->find();
 	}
 
 	/**
-	 * Return the Code records from Database filtered by ProductLne ID
-	 * @param  string $productlne ProductLneID
-	 * @return ObjectCollection
+	 * Return SysopOptionalCode
+	 * @param  string $sysop System Optional Code this code is Under
+	 * @param  string $code  Optional Code
+	 * @return SysopOptionalCode
 	 */
-	public function get_code($opt_code) {
-		$q = $this->get_query();
-		return $q->findOneById($opt_code);
+	public function get_code($sysop, $code) {
+		$q = $this->get_query($sysop);
+		return $q->findOneById($code);
 	}
 
 	/**
 	 * Returns if Codes Exists
-	 * @param  string $productlne ProductLneID
+	 * @param  string $sysop System Optional Code this code is Under
+	 * @param  string $code  Optional Code
 	 * @return bool
 	 */
-	public function code_exists($opt_code) {
-		$q = $this->get_query();
-		return boolval($q->filterById($opt_code)->count());
+	public function code_exists($sysop, $code) {
+		$q = $this->get_query($sysop);
+		return boolval($q->filterById($code)->count());
 	}
 
 	/**
-	 * Returns the associated ModelQuery class for table code
-	 * @param  string $table Table Code
-	 * @return mixed
+	 * Returns the SysopOptionalCodeQuery filtered by IN system AND System Optional Code
+	 * @param  string $sysop System Optional Code to filter By
+	 * @return SysopOptionalCodeQuery
 	 */
-	public function get_query() {
-		$q = MsaSysopCodeQuery::create();
-		return $q->filterBySystem(MsaSysopCode::SYSTEM_IN);
-	}
+	public function get_query($sysop) {
+		$q = SysopOptionalCodeQuery::create();
+		$q->filterByOpt_code($sysop);
 
-
-	/**
-	 * Return System Options
-	 * @param  string $sysopcode
-	 * @return MsaSysopCode[]
-	 */
-	public function get_sysops($opt_code) {
-        $q = SysopOptionalCodeQuery::create();
-		return $q->filterBySystem(MsaSysopCode::SYSTEM_IN)->filterByOpt_code($opt_code);
+		$q->filterBySystem(MsaSysopCode::SYSTEM_IN);
+		return $q;
 	}
 
 	/**
@@ -81,6 +90,24 @@ class CodeTablesIoptm extends WireData implements Module {
 		return $q->filterBySystem(MsaSysopCode::SYSTEM_IN);
 	}
 
+	/**
+	 * Return System Options
+	 * @return MsaSysopCode[]
+	 */
+	public function get_sysops() {
+		$q = $this->get_query_sysop();
+		return $q->find();
+	}
+
+	/**
+	 * Return System Options
+	 * @param  string $sysop System Optional Code
+	 * @return MsaSysopCode
+	 */
+	public function get_sysop($sysop) {
+		$q = $this->get_query_sysop();
+		return $q->findOneById($sysop);
+	}
 
 	/**
 	 * Takes Input, validates it's for one of the code tables
@@ -96,15 +123,16 @@ class CodeTablesIoptm extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$table = $input->$rm->text('table');
 		$code  = $input->$rm->text('code');
+        $sysop = $input->$rm->text('sysop');
 
-		$q = $this->get_query();
+		$q = $this->get_query($sysop);
 		$q->filterByCode($code);
 
 		if ($q->count()) {
 			$record = $q->findOne();
 		} else {
-			$code  = $input->$rm->text('code', array('maxLength' => MsaSysopCode::MAX_LENGTH_CODE));
-			$record = new MsaSysopCode();
+			$code  = $input->$rm->text('code', array('maxLength' => SysopOptionalCode::MAX_LENGTH_CODE));
+			$record = new SysopOptionalCode();
 			$record->setCode($code);
 		}
 
@@ -112,13 +140,17 @@ class CodeTablesIoptm extends WireData implements Module {
 			$record->delete();
 		} else {
 			$description = $input->$rm->text('description');
+            $sysop = $input->$rm->text('sysop');
+            $system = MsaSysopCode::SYSTEM_IN;
 			$record->setDescription($description);
+            $record->setOpt_code($sysop);
+            $record->setSystem($system);
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
 			$record->setDummy('P');
 		}
 
-		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);
+		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $sysop, $code, $record);
 	}
 
 	/**
@@ -130,7 +162,7 @@ class CodeTablesIoptm extends WireData implements Module {
 	 * @param  bool   $saved  Was the Record Saved?
 	 * @return CodeTablesResponse
 	 */
-	protected function save_and_process_response($table, $code, MsaSysopCode $record) {
+	protected function save_and_process_response($table, $sysop, $code, SysopOptionalCode $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
@@ -159,9 +191,26 @@ class CodeTablesIoptm extends WireData implements Module {
 		$response->set_message($message);
 
 		if ($response->has_success()) {
-			$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
+			$this->update_dplus_cobol($table, $sysop, $code);
 		}
 		return $response;
+	}
+
+    /**
+	 * Sends Dplus Cobol that Code Table has been Update
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return void
+	 */
+	public function update_dplus_cobol($table, $sysop, $code) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$table = strtoupper($table);
+        $system = MsaSysopCode::SYSTEM_IN;
+		$data = array("DBNAME=$dplusdb", 'UPDATEOPTCODE', "SYS=$system", "CODE=$sysop", "ID=$code");
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
 	}
 
 	/**
@@ -171,6 +220,22 @@ class CodeTablesIoptm extends WireData implements Module {
 	 */
 	public function get_max_length_code() {
 		return MsaSysopCode::MAX_LENGTH_CODE;
+	}
+
+	public function get_sysopURL($sysop) {
+		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=ioptm")->url);
+		$url->query->set('sysop', $sysop);
+		return $url->getUrl();
+	}
+
+    public function get_codetable_optcode_deleteURL($table, $system, $sysop, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
+		$url->query->set('action', 'remove-code');
+		$url->query->set('table', $table);
+        $url->query->set('system', $system);
+        $url->query->set('sysop', $sysop);
+		$url->query->set('code', $code);
+		return $url->getUrl();
 	}
 
 	public static function getModuleInfo() {

@@ -9,6 +9,7 @@ $(function() {
 
 		modal.find('input[name=code]').val(code);
 		modal.find('input[name=description]').val(description);
+		modal.find('input[name=sysop]').val('{{ sysop }}');
 
 		if (code.length) {
 			modal.find('.modal-title').text('Editing Code ' + code);
@@ -18,6 +19,7 @@ $(function() {
 			modal.find('.modal-title').text('Adding a new Code');
 			modal.find('input[name=code]').prop("readonly", false);
 			modal.find('input[name=code]').focus();
+			modal.find('input[name=sysop]').val('{{ sysop }}');
 		}
 	});
 
@@ -30,7 +32,7 @@ $(function() {
 		rules: {
 			code: {
 				required: true,
-				maxlength: {{ max_length_code }}
+				maxlength: {{ max_length_code }},
 			},
 		},
 		messages: {
