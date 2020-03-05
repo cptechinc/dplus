@@ -36,7 +36,7 @@
 				$lastsold->function = 'eso';
 				$lastsold->request_pricing();
 			} else {
-				// TODO $lastsold =
+				$lastsold = false;
 			}
 
 			if ($config->twigloader->exists("sales-orders/sales-order/edit/$config->company/order-items.twig")) {

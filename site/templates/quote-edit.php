@@ -30,6 +30,17 @@
 
 				$page->body .= $config->twig->render('quotes/quote/edit/edit-form.twig', ['page' => $page, 'quote' => $quote_edit, 'states' => $module_edit->get_states(), 'shipvias' => $module_edit->get_shipvias(), 'warehouses' => $module_edit->get_warehouses(), 'shiptos' => $customer->get_shiptos()]);
 				$page->body .= $html->div('class=mb-3');
+
+				if ($modules->get('ConfigsCi')->option_lastsold  == 'cstk') {
+					$lastsold = $modules->get('LastSoldItemsCustomerCstk');
+					$lastsold->custID = $quote_readonly->custid;
+					$lastsold->shiptoID = $quote_readonly->shiptoid;
+					$lastsold->function = 'eqo';
+					$lastsold->request_pricing();
+				} else {
+					$lastsold = false;
+				}
+
 				$page->body .= $config->twig->render('quotes/quote/edit/quote-items.twig', ['page' => $page, 'user' => $user, 'quote' => $quote_edit]);
 				$page->body .= $html->h3('class=text-secondary', 'Add Item');
 				$page->body .= $config->twig->render('quotes/quote/edit/add-item-form.twig', ['page' => $page, 'quote' => $quote_readonly]);
@@ -48,6 +59,7 @@
 
 			$page->body .= $config->twig->render("quotes/quote/quote-notes.twig", ['page' => $page, 'quote' => $quote_readonly, 'notes' => $quote_readonly->get_notes()]);
 			$page->body .= $config->twig->render('quotes/quote/notes/add-note-modal.twig', ['page' => $page, 'qnbr' => $qnbr]);
+			$page->body .= $config->twig->render('quotes/quote/edit/last-sales/modal.twig', ['page' => $page, 'qnbr' => $qnbr, 'lastsold' => $lastsold, 'loader' => $config->twigloader, 'company' => $config->company]);
 			$config->scripts->append(hash_templatefile('scripts/quotes/quote-notes.js'));
 			$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 		} else {

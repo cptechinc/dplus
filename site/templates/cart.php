@@ -27,7 +27,7 @@
 			$lastsold->function = 'cart';
 			$lastsold->request_pricing();
 		} else {
-			// TODO $lastsold =
+			$lastsold = false;
 		}
 
 		if ($config->twigloader->exists("cart/$config->company/cart-items.twig")) {
