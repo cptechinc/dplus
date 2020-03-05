@@ -414,7 +414,6 @@
 			break;
 		case 'ii-sales-history':
 			$data = array("DBNAME=$dplusdb", 'IISALESHIST', "ITEMID=$itemID");
-
 			$date = $input->$requestmethod->text('date');
 
 			if (!empty($date)) {
