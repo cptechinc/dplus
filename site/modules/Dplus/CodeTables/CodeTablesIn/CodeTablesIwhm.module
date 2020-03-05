@@ -111,6 +111,15 @@ class CodeTablesIwhm extends WireData implements Module {
 
 		if ($input->$rm->text('action') == 'remove-code') {
 			$record->delete();
+
+			if ($record->isDeleted()) {
+				$notes_m = $this->wire('modules')->get('CodeTablesIwhmNotes');
+				$notetypes = $notes_m->get_notetypes();
+
+				foreach ($notetypes as $notetype) {
+					$notes_m->delete_notes($notetype, $whseID);
+				}
+			}
 		} else {
 			$record->setName($input->$rm->text('name'));
 			$this->process_warehouse_input($record, $input);
@@ -120,8 +129,6 @@ class CodeTablesIwhm extends WireData implements Module {
 		}
 		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $whseID, $record);
 	}
-
-
 
 	public function process_warehouse_input($warehouse, WireInput $input) {
 		$config_in = ConfigInQuery::create()->findOne();
