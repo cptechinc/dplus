@@ -29,9 +29,16 @@
 			{% include 'code-tables/min/iwhm/form-warehouse-fields.twig' %}
 		</div>
 	</div>
-	<button type="submit" class="btn btn-success">
-		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-	</button>
-	<a href="{{ page.get_codetable_listURL(page.codetable, warehouse.id) }}" class="btn btn-warning pull-right">Close</a>
+	<div class="d-flex justify-content-between align-items-center">
+		<button type="submit" class="btn btn-success">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<a href="{{ page.get_codetable_code_deleteURL(page.codetable, warehouse.id) }}" class="btn btn-danger delete_button">
+			<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+		</a>
+		<a href="{{ page.get_codetable_listURL(page.codetable, warehouse.id) }}" class="btn btn-warning">
+			Close
+		</a>
+	</div>
 </form>
 <hr class="border-top border-primary">
