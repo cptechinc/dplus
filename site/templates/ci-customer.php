@@ -48,7 +48,6 @@
 			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $custID not found"]);
 		}
 	} else {
-		$query = CustomerQuery::create();
 		$filter_customers = $modules->get('FilterCustomers');
 		$filter_customers->init_query($user);
 		$filter_customers->filter_search($input->get->text('q'));
@@ -66,7 +65,6 @@
 
 		$filter_customers->apply_sortby($page);
 		$query = $filter_customers->get_query();
-
 		$customers = $query->paginate($input->pageNum, 10);
 
 		$page->searchURL = $page->url;
