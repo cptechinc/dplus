@@ -77,6 +77,6 @@
 			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Check if the Order Number is correct or if it is in Sales History"]);
 		}
 	} else {
-		$page->body = $config->twig->render('sales-orders/sales-order-lookup.twig', ['page' => $page]);
+		$page->body = $config->twig->render('sales-orders/sales-order/lookup-form.twig', ['page' => $page]);
 	}
 	include __DIR__ . "/basic-page.php";
