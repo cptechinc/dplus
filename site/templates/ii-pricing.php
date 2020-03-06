@@ -1,17 +1,13 @@
 <?php
 	include_once('./ii-include.php');
 
-	use ItemsearchQuery, Itemsearch;
-	use WarehouseQuery, Warehouse;
-	use CustomerQuery, Customer;
-
 	$module_ii = $modules->get('DpagesMii');
 	$module_ii->init_iipage();
 
 	$page->show_breadcrumbs = false;
 	$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
 
-	if ($itemquery->count()) {
+	if ($lookup_ii->lookup_itm($itemID)) {
 		$page->title = "$itemID Pricing";
 
 		if ($input->get->custID) {

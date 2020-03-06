@@ -1,22 +1,17 @@
 <?php
-	use ItemsearchQuery, Itemsearch;
-	use WarehouseQuery, Warehouse;
-
 	$module_ii = $modules->get('DpagesMii');
 	$module_ii->init_iipage();
 
 	$html = $modules->get('HtmlWriter');
+	$lookup_ii = $modules->get('LookupItemIi');
 
 	$itemID = $input->get->text('itemID');
 
-	$itemquery = ItemsearchQuery::create();
-	$itemquery->filterActive();
-	$itemquery->filterByOrigintype([Itemsearch::ORIGINTYPE_VENDOR, Itemsearch::ORIGINTYPE_ITEM]);
-	$itemquery->filterByItemid($itemID);
+
 
 	if ($input->get->itemID) {
-		if ($itemquery->count()) {
-			$item = $itemquery->findOne();
+		if ($lookup_ii->lookup_itm($itemID)) {
+			$item = ItemMasterItemQuery::create()->findOneByItemid($itemID);
 		} else {
 			$page->headline = $page->title = "Item $itemID could not be found";
 			$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => "Check if the item ID is correct"]);
