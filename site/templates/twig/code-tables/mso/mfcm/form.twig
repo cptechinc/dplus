@@ -1,3 +1,4 @@
+{# mfcm is an instance of MotorFreightCode #}
 <form action="{{ page.url }}" method="POST" id="code-edit-form">
 	<input type="hidden" name="table" value="mfcm">
 
@@ -7,16 +8,32 @@
 	</div>
 
 	<div class="form-group">
-		<label for="description">Description</label>
-		<input type="text" name="description" class="form-control" value="" id="description">
+		<label for="description">Description 1</label>
+		<input type="text" name="description" class="form-control" maxlength="50" value="" id="description">
+	</div>
+
+	<div class="form-group">
+		<label for="description2">Description 2</label>
+		<input type="text" name="description2" class="form-control" maxlength="50" value="" id="description2">
+	</div>
+
+	<div class="form-group">
+		<label for="description3">Description 3</label>
+		<input type="text" name="description3" class="form-control" maxlength="50" value="" id="description3">
+	</div>
+
+	<div class="form-group">
+		<label for="description4">Description 4</label>
+		<input type="text" name="description4" class="form-control" maxlength="50" value="" id="description4">
 	</div>
 
 	<div class="form-group">
 		<label for="class">Class</label>
-		<input type="text" name="class" class="form-control" value="" id="class">
+		<input type="text" name="class" class="form-control" maxlength="4" value="" id="class">
 	</div>
 
 	<button type="submit" class="btn btn-success">
 		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 	</button>
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 </form>

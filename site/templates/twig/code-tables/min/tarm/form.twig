@@ -1,3 +1,4 @@
+{# tarm is an instance of TariffCode #}
 <form action="{{ page.url }}" method="POST" id="code-edit-form">
 	<input type="hidden" name="table" value="tarm">
 	<div class="row">
@@ -9,12 +10,12 @@
 
 			<div class="form-group">
 				<label for="number">Tariff Number</label>
-				<input type="text" name="number" class="form-control" value="{{ tariff.number }}" id="number" autofocus>
+				<input type="text" name="number" class="form-control" maxlength="12" value="{{ tariff.number }}" id="number" autofocus>
 			</div>
 
 			<div class="form-group">
 				<label for="description">Description</label>
-				<input type="text" name="description" class="form-control" value="{{ tariff.description }}" id="description">
+				<input type="text" name="description" class="form-control" maxlength="30" value="{{ tariff.description }}" id="description">
 			</div>
 
 			<div class="form-group">
@@ -44,4 +45,5 @@
 	<button type="submit" class="btn btn-success">
 		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 	</button>
+	<a href="{{ page.get_codetable_listURL(page.codetable, tariff.code) }}" class="btn btn-warning pull-right">Close</a>
 </form>

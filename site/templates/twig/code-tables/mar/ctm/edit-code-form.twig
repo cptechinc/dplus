@@ -1,3 +1,4 @@
+{# ctm is an instance of CustomerTypeCode #}
 <form action="{{ page.url }}" method="POST" id="code-edit-form">
 	<input type="hidden" name="action" value="update-ctm">
 
@@ -64,4 +65,5 @@
 	<button type="submit" class="btn btn-success">
 		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 	</button>
+	<a href="{{ page.get_codetable_listURL(page.codetable, code.code) }}" class="btn btn-warning pull-right">Close</a>
 </form>

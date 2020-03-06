@@ -1,0 +1,54 @@
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row align-items-center">
+			<div class="col-2">
+				Code
+			</div>
+			<div class="col-3">
+				Description
+			</div>
+			<div class="col-2">
+				Warehouse
+			</div>
+			<div class="col-3">
+				Ship Account #
+			</div>
+			<div class="col-2">
+				{% if page.is_print() == false %}
+					<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="" data-warehouse="" data-account_number="">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
+					</button>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	{% for code in codes %}
+		<div id="code-{{ code.code }}" class="list-group-item pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
+			<div class="row align-items-center">
+				<div class="col-2">
+					{{ code.code }}
+				</div>
+				<div class="col-3">
+					{{ code.description }}
+				</div>
+				<div class="col-2">
+					{{ code.warehouse }}
+				</div>
+				<div class="col-2">
+					{{ code.account_number }}
+				</div>
+				<div class="col-3 text-center">
+					{% if page.is_print() == false %}
+						<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-warehouse="{{ code.warehouse }}" data-account_number="{{ code.account_number }}">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</button>
+						&nbsp;
+						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger delete_button">
+							<i class="fa fa-trash" aria-hidden="true"></i> Delete
+						</a>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+</div>

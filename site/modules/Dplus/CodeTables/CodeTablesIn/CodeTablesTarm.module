@@ -1,6 +1,6 @@
 <?php namespace ProcessWire;
 
-include_once(__DIR__.'../CodeTablesResponse.php');
+include_once(__DIR__.'/../CodeTablesResponse.php');
 
 use Purl\Url;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -185,7 +185,7 @@ class CodeTablesTarm extends WireData implements Module {
 		$create_countries = array_diff($input_countries, $existing_countries);
 
 		if (sizeof($create_countries)) {
-			foreach ($input_countries as $country) {
+			foreach ($create_countries as $country) {
 				$record = new TariffCodeCountry();
 				$record->setCode($code);
 				$record->setCountry($country);
@@ -214,8 +214,9 @@ class CodeTablesTarm extends WireData implements Module {
 		if ($countries_updated) {
 			$data[] = 'CTRY=UPDATED';
 		}
-		$this->wire('modules')->get('CodeTables')->write_dplusfile($data, session_id());
-		$this->wire('modules')->get('CodeTables')->http_get_dplus();
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
 	}
 
 	public static function getModuleInfo() {

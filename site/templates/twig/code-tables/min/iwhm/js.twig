@@ -1,6 +1,122 @@
 $(function() {
 	var max_code_length = {{ warehouse.get_max_code_length() }};
 
+	var form = $('#code-edit-form');
+	var input_whseID   = form.find('input[name=whseID]');
+	var input_name     = form.find('input[name=name]');
+	var select_pick	   = form.find('input[name=pickdetail]');
+	var select_consign = form.find('input[name=consignment]');
+	var input_customer = form.find('input[name=cash_customer]');
+	var cash_name 	   = form.find('input[name=cash_name]');
+	var select_wh_profit = form.find('select[name=whse_profit]');
+	var select_wh_supply = form.find('select[name=whse_supply]');
+	var select_wh_asset  = form.find('select[name=whse_asset]');
+
+	var modal_ajax = $('#ajax-modal');
+
+	$('#notes-modal').on('shown.bs.modal', function (event) {
+		var button = $(event.relatedTarget) // Button that triggered the modal
+		var modal = $(this);
+		modal.find('textarea[name=note]').focus();
+	});
+
+	form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		ignore: ".validate-ignore",
+		rules: {
+			whseID: {
+				required: true,
+				maxlength: {{ warehouse.get_max_code_length() }},
+			},
+			select_pick: 'required',
+			select_consign: 'required',
+		},
+		messages: {
+			whseID: "Please review the Warehouse Code value, (Max Characters {{ warehouse.get_max_code_length() }})",
+			select_pick: "Please choose an option",
+			select_consign: "Please choose an option",
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+
+/**
+ *
+ * Customer Lookup Modal
+ *
+ */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = '{{ page.customerlookupURL }}';
+		modal.find('.modal-title').text('Search for a Customer');
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {
+
+		});
+	});
+
+	$("body").on('click', '.ci-customer', function(e) {
+		e.preventDefault();
+		var custid = $(this).data('custid');
+		var cust_name = $(this).data('cust_name');
+		input_customer.val(custid);
+		cash_name.val(cust_name);
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('submit', '#lookup form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {
+
+		});
+	});
+
+	$("body").on('click', '.page-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+/**
+ *
+ * Warehouse Create Assign Warehouses
+ *
+ */
+{% if warehouse.isNew() %}
+	$("body").on('change', 'input[name=whseID], input[name=name]', function(e) {
+
+		var option_whse_profit = $('#whse_profit_self');
+		var option_whse_supply = $('#whse_supply_self');
+		var option_whse_asset = $('#whse_asset_self');
+
+		option_whse_profit.attr('value', input_whseID.val());
+		option_whse_profit.text(input_whseID.val() + ' - ' + input_name.val());
+
+		option_whse_supply.attr('value', input_whseID.val());
+		option_whse_supply.text(input_whseID.val() + ' - ' + input_name.val());
+
+		option_whse_asset.attr('value', input_whseID.val());
+		option_whse_asset.text(input_whseID.val() + ' - ' + input_name.val());
+	});
+{% endif %}
+
+/**
+ *
+ *
+ *
+ */
 	$('#notes-modal').on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget) // Button that triggered the modal
 		var notetype = button.data('type'); // Extract info from data-* attributes
@@ -17,29 +133,7 @@ $(function() {
 	$('#notes-modal').on('shown.bs.modal', function (event) {
 		var button = $(event.relatedTarget) // Button that triggered the modal
 		var modal = $(this);
-		modal.find('textarea[name=note]').focus();
-	});
-
-	$("#code-edit-form").validate({
-		errorClass: "is-invalid",
-		validClass: "is-valid",
-		errorPlacement: function(error, element) {
-			error.insertAfter(element).addClass('invalid-feedback');
-		},
-		rules: {
-			whseID: {
-				required: true,
-				maxlength: {{ warehouse.get_max_code_length() }},
-			},
-			name: 'required',
-		},
-		messages: {
-			whseID: "Please review the Warehouse Code value, (Max Characters {{ warehouse.get_max_code_length() }})",
-			name: 'Please enter a description for the code',
-		},
-		submitHandler: function(form) {
-			form.submit();
-		}
+		modal.find('textarea[name=note]').focus()
 	});
 
 })

@@ -1,69 +1,63 @@
 <div class="form-row form-group">
-	<div class="col">
+	<div class="col-3">
 		<label for="address">Address 1</label>
 	</div>
-	<div class="col">
-		<input type="text" name="address" class="form-control" value="{{ warehouse.address }}" id="address">
+	<div class="col-9">
+		<input type="text" name="address" class="form-control" maxlength="30" value="{{ warehouse.address }}" id="address">
 	</div>
 </div>
 <div class="form-row form-group">
-	<div class="col">
+	<div class="col-3">
 		<label for="address2">Address 2</label>
 	</div>
-	<div class="col">
-		<input type="text" name="address2" class="form-control" value="{{ warehouse.address2 }}" id="address2">
+	<div class="col-9">
+		<input type="text" name="address2" class="form-control" maxlength="30" value="{{ warehouse.address2 }}" id="address2">
 	</div>
 </div>
 <div class="form-row form-group">
-	<div class="col">
+	<div class="col-3">
 		<label>City, State, Zip</label>
 	</div>
-	<div class="col">
+	<div class="col-9">
 		<div class="form-row">
-			<div class="col">
-				<input type="text" name="city" class="form-control" value="{{ warehouse.city }}" id="city">
+			<div class="col-6">
+				<input type="text" name="city" class="form-control" maxlength="16" value="{{ warehouse.city }}" id="city">
 			</div>
-			<div class="col">
-				<select name="state" class="form-control" id="state">
+			<div class="col-2">
+				<select name="state" class="form-control validate-ignore" id="state">
+						<option value=""></option>
 					{% for state in states %}
-						<option value="{{ state.abbreviation }}" {{ state.abbreviation == warehouse.state ? 'selected' : ''}}>{{ state.name }}</option>
+						<option value="{{ state.abbreviation }}" {{ state.abbreviation == warehouse.state ? 'selected' : ''}}>{{ state.abbreviation }}&emsp;-&ensp;{{ state.name }}</option>
 					{% endfor %}
 				</select>
 			</div>
-			<div class="col">
-				<input type="text" name="zip" class="form-control" value="{{ warehouse.zip }}" id="zip">
+			<div class="col-4">
+				<input type="text" name="zip" class="form-control" maxlength="10" value="{{ warehouse.zip }}" id="zip">
 			</div>
 		</div>
 	</div>
 </div>
 <div class="form-row form-group">
-	<div class="col">
+	<div class="col-3">
 		<label for="country">Country</label>
 	</div>
-	<div class="col">
-		<select name="country" class="form-control" id="country">
+	<div class="col-9">
+		<select name="country" class="form-control" id="country" >
+			<option value=""></option>
 			{% for country in countries %}
-				<option value="{{ country.iso }}" {{ country.iso == warehouse.country ? 'selected' : ''}}>{{ country.name }}</option>
+				<option value="{{ country.iso }}">{{ country.iso }} - {{ country.name }}</option>
 			{% endfor %}
 		</select>
 	</div>
 </div>
 <div class="form-row form-group">
-	<div class="col">
+	<div class="col-3">
 		<label for="phone">Phone</label>
 	</div>
-	<div class="col">
-		<input type="text" name="phone" class="form-control phone-input" value="{{ warehouse.phone|phone_us }}" id="phone">
-	</div>
-</div>
-<div class="form-row form-group">
-	<div class="col">
-		<label for="fax">Fax</label>
-	</div>
-	<div class="col">
+	<div class="col-9">
 		<div class="form-row">
 			<div class="col-sm-7">
-				<input type="text" name="fax" class="form-control phone-input" value="{{ warehouse.fax|phone_us }}" id="fax">
+				<input type="text" name="phone" class="form-control phone-input" value="{{ warehouse.phone|phone_us }}" id="phone">
 			</div>
 			<div class="col-sm-5">
 				<div class="row">
@@ -79,10 +73,18 @@
 	</div>
 </div>
 <div class="form-row form-group">
-	<div class="col">
+	<div class="col-3">
+		<label for="fax">Fax</label>
+	</div>
+	<div class="col-9">
+		<input type="text" name="fax" class="form-control phone-input" value="{{ warehouse.fax|phone_us }}" id="fax">
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-3">
 		<label for="email">Email</label>
 	</div>
-	<div class="col">
+	<div class="col-9">
 		<input type="email" name="email" class="form-control" value="{{ warehouse.email }}" id="email">
 	</div>
 </div>

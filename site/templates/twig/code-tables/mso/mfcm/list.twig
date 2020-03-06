@@ -20,7 +20,7 @@
 		</div>
 	</div>
 	{% for code in codes %}
-		<div class="list-group-item pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
+		<div id="code-{{ code.code }}" class="list-group-item pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
 			<div class="row align-items-center">
 				<div class="col-2">
 					{{ code.code }}
@@ -33,7 +33,7 @@
 				</div>
 				<div class="col-3 text-center">
 					{% if page.is_print() == false %}
-						<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-class="{{ code.class }}">
+						<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-description2="{{ code.description2 }}" data-description3="{{ code.description3 }}" data-description4="{{ code.description4 }}" data-class="{{ code.class }}">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</button>
 						&nbsp;

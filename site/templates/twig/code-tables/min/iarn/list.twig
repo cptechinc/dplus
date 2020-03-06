@@ -1,0 +1,48 @@
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row align-items-center">
+			<div class="col-2">
+				Code
+			</div>
+            <div class="col-4">
+				Description
+			</div>
+            <div class="col-3">
+				System Defined ?
+			</div>
+			<div class="col-3 text-center">
+                {% if page.is_print() == false %}
+					<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="" data-sys_defined="">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
+					</button>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	{% for code in codes %}
+		<div id="code-{{ code.code }}" class="list-group-item pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
+			<div class="row align-items-center">
+				<div class="col-2">
+					{{ code.code }}
+				</div>
+                <div class="col-4">
+					{{ code.description }}
+				</div>
+                <div class="col-3">
+					{{ code.sys_defined|yesorno|capitalize }}
+				</div>
+				<div class="col-3 text-center">
+					{% if page.is_print() == false %}
+						<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-sys_defined="{{ code.sys_defined }}">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</button>
+						&nbsp;
+						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger delete_button">
+							<i class="fa fa-trash" aria-hidden="true"></i> Delete
+						</a>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+</div>

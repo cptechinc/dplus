@@ -1,6 +1,6 @@
 <?php namespace ProcessWire;
 
-include_once(__DIR__.'../CodeTablesResponse.php');
+include_once(__DIR__.'/../CodeTablesResponse.php');
 
 use Purl\Url;
 
@@ -98,7 +98,7 @@ class CodeTablesIgm extends WireData implements Module {
 			// $ritm = $input->$rm->text('ritm');
 			$sales = $input->$rm->text('sales');
 			$credit = $input->$rm->text('credit');
-			$cost_percent = $input->$rm->text('cost_percent');
+			$cogs = $input->$rm->text('cogs');
 			$inventory = $input->$rm->text('inventory');
 			$drop_ship = $input->$rm->text('drop_ship');
 			$surcharge = $input->$rm->text('surcharge');
@@ -113,7 +113,7 @@ class CodeTablesIgm extends WireData implements Module {
 			// $record->setRitm($ritm);
 			$record->setSales($sales);
 			$record->setCredit($credit);
-			$record->setCost_percent($cost_percent);
+			$record->setCogs($cogs);
 			$record->setInventory($inventory);
 			$record->setDrop_ship($drop_ship);
 			$record->setSurcharge($surcharge);

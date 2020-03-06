@@ -1,35 +1,44 @@
+{# iwhm is an instance of Warehouse #}
 <form action="{{ page.url }}" method="POST" id="code-edit-form">
 	<input type="hidden" name="table" value="{{ page.codetable }}">
 	<input type="hidden" name="code" value="{{ warehouse.id }}">
 
 	<div class="form-row form-group">
-		<div class="col">
+		<div class="col-2">
 			<label for="whseID">Code</label>
 		</div>
-		<div class="col">
+		<div class="col-10">
 			<input type="text" name="whseID" class="form-control" maxlength="{{ warehouse.get_max_code_length() }}" value="{{ warehouse.id }}" id="whseID" {{ warehouse.id ? 'readonly' : 'autofocus' }}>
 		</div>
 	</div>
 	<div class="form-row form-group">
-		<div class="col">
+		<div class="col-2">
 			<label for="name">Name</label>
 		</div>
-		<div class="col">
-			<input type="text" name="name" class="form-control" value="{{ warehouse.name }}" id="name" autofocus>
+		<div class="col-10">
+			<input type="text" name="name" class="form-control" maxlength="30" value="{{ warehouse.name }}" id="name" autofocus>
 		</div>
 	</div>
 	<hr class="border-top border-primary">
 
 	<div class="row">
-		<div class="col-sm-8 border-right border-primary">
+		<div class="col-sm-7 border-right border-primary">
 			{% include 'code-tables/min/iwhm/form-address-fields.twig' %}
 		</div>
-		<div class="col-sm-4">
+		<div class="col-sm-5">
 			{% include 'code-tables/min/iwhm/form-warehouse-fields.twig' %}
 		</div>
 	</div>
-	<button type="submit" class="btn btn-success">
-		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-	</button>
+	<div class="d-flex justify-content-between align-items-center">
+		<button type="submit" class="btn btn-success">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<a href="{{ page.get_codetable_code_deleteURL(page.codetable, warehouse.id) }}" class="btn btn-danger delete_button">
+			<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+		</a>
+		<a href="{{ page.get_codetable_listURL(page.codetable, warehouse.id) }}" class="btn btn-warning">
+			Close
+		</a>
+	</div>
 </form>
 <hr class="border-top border-primary">

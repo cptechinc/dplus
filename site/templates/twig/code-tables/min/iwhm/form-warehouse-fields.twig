@@ -1,9 +1,16 @@
+
 <div class="form-row form-group">
+	<div class="col"><label for="cash_customer">Cash Customer</label></div>
 	<div class="col">
-		<label for="cash_customer">Cash Customer</label>
-	</div>
-	<div class="col">
-		<input type="text" name="cash_customer" class="form-control" value="{{ warehouse.cash_customer }}" id="cash_customer">
+		<div class="input-group">
+			<span class="input-group-prepend">
+				<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal">
+					<i class="fa fa-search" aria-hidden="true"></i> <span class="sr-only">Search Customers</span>
+				</button>
+			</span>
+			<input type="text" name="cash_customer" class="form-control" maxlength="6" value="{{ warehouse.cash_customer }}" id="cash_customer">
+		</div>
+		<input type="text" name="cash_name" class="form-control-plaintext" value="{{ warehouse.cashCustomer.name }}" id="cash_name" readonly>
 	</div>
 </div>
 <div class="form-row form-group">
@@ -11,11 +18,16 @@
 		<label for="pickdetail">Pick Detail</label>
 	</div>
 	<div class="col">
-		{% include 'util/select.twig' with {'name': 'pickdetail', 'id': 'pickdetail', 'options': {'N': 'No', 'Y': 'Yes'}, 'selectedvalue': warehouse.pickdetail} %}
+		<select name="pickdetail" class="form-control" id="pickdetail" required>
+			<option value="">-- Choose --</option>
+			<option value="A" {{ (warehouse.pickdetail == 'A') ? 'selected' : '' }}>Available</option>
+			<option value="S" {{ (warehouse.pickdetail == 'S') ? 'selected' : '' }}>Selected</option>
+			<option value="N" {{ (warehouse.pickdetail == 'N') ? 'selected' : '' }}>No</option>
+		</select>
 	</div>
 </div>
 
-{% if config_in.use_controlbin %}
+{% if config_in.use_controlbin() %}
 	<div class="form-row form-group">
 		<div class="col">
 			<label for="bin_production">Production Bin</label>
@@ -31,7 +43,7 @@
 		<label for="bin_qcrga">QC / RGA Bin</label>
 	</div>
 	<div class="col">
-		<input type="text" name="bin_qcrga" class="form-control" value="{{ warehouse.bin_qcrga }}" id="bin_qcrga">
+		<input type="text" name="bin_qcrga" class="form-control" maxlength="8" value="{{ warehouse.bin_qcrga }}" id="bin_qcrga">
 	</div>
 </div>
 <div class="form-row form-group">
@@ -39,19 +51,23 @@
 		<label for="consignment">Consignment</label>
 	</div>
 	<div class="col">
-		{% include 'util/select.twig' with {'name': 'consignment', 'id': 'consignment', 'options': {'N': 'No', 'Y': 'Yes'}, 'selectedvalue': warehouse.consignment} %}
+		<select name="consignment" class="form-control" id="C" required>
+			<option value="">-- Choose --</option>
+			<option value="Y" {{ (warehouse.consignment == 'Y') ? 'selected' : '' }}>Yes</option>
+			<option value="N" {{ (warehouse.consignment == 'N') ? 'selected' : '' }}>No</option>
+		</select>
 	</div>
 </div>
 
-{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_profit', 'label': 'Profit Whse', 'value': warehouse.profit_whse, 'warehouses': warehouses} %}
-{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_asset', 'label': 'Asset Whse', 'value': warehouse.asset_whse, 'warehouses': warehouses} %}
-{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_supply', 'label': 'Supply Whse', 'value': warehouse.supply_whse, 'warehouses': warehouses} %}
+{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_profit', 'label': 'Profit Whse', 'value': warehouse.whse_profit, 'warehouses': warehouses} %}
+{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_asset', 'label': 'Asset Whse', 'value': warehouse.whse_asset, 'warehouses': warehouses} %}
+{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_supply', 'label': 'Supply Whse', 'value': warehouse.whse_supply, 'warehouses': warehouses} %}
 
 <div class="form-row form-group">
 	<div class="col">
 		<label for="arrangement">Bin Arrangement</label>
 	</div>
 	<div class="col">
-		{% include 'util/select.twig' with {'name': 'arranged', 'id': 'arranged', 'selectedvalue': warehouse.arranged, 'options': warehouse.get_arrangement_options()} %}
+		{% include 'util/select.twig' with {'name': 'arranged', 'id': 'arranged', 'selectedvalue': (warehouse.arranged ? warehouse.arranged : 'R'), 'options': warehouse.get_arrangement_options()} %}
 	</div>
 </div>

@@ -1,0 +1,14 @@
+$(function() {
+	$('#edit-code-modal').on('hidden.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var code = modal.find('input[name=code]').val();
+		$('.highlight').removeClass('highlight');
+		$('#code-'+code).addClass('highlight');
+	});
+
+	{% if page.focus %}
+		$('#{{ page.focus }}').addClass('highlight');
+		$('html, body').animate({scrollTop: $('#{{ page.focus }}').offset().top,},700,'linear');
+	{% endif %}
+});

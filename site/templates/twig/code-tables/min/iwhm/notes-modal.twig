@@ -10,14 +10,21 @@
 			<div class="modal-body">
 				<form action="{{ page.url }}" method="post">
 					<input type="hidden" name="code" value="{{ warehouse.whseid }}">
-					<input type="hidden" name="action" value="update-notes">
 					<input type="hidden" name="notes-type" value="">
-					<div class="form-group">
+					<div class="form-group d-flex justify-content-between align-items-center">
 						<textarea name="note" id="note" class="form-control w-auto" rows="10" cols=""></textarea>
 					</div>
-					<button type="submit" class="btn btn-success">
-						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-					</button>
+					<div class="d-flex justify-content-between align-items-center">
+						<button type="submit" name="action" value="update-notes" class="btn btn-success">
+							<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+						</button>
+						<button type="submit" name="action" value="delete-notes" class="btn btn-danger">
+							<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+						</button>
+						<button type="button" class="btn btn-warning pull-right" data-dismiss="modal">
+							Close
+						</button>
+					</div>
 				</form>
 			</div>
 		</div>

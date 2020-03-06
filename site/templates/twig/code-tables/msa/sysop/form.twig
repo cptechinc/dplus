@@ -1,0 +1,90 @@
+{# sysop is an instance of MsaSysopCode #}
+<form action="{{ page.url }}" method="POST" id="code-edit-form">
+	<input type="hidden" name="table" value="sysop">
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label for="code">Code</label>
+				<input type="text" name="code" class="form-control" value="{{ sysop.code }}" maxlength="{{ sysop.get_max_length_code() }}" id="code" {{ sysop.id ? 'readonly' : 'autofocus' }}>
+			</div>
+
+			<div class="form-group">
+				<label for="system">System</label>
+				{% include 'util/select.twig' with {'name': 'system', 'id': 'system', 'selectedvalue': sysop.system, 'options': {'AP': 'AP - Accounts Payable/Vendor', 'AR': 'AR - Accounts Receivable/Customer', 'IN': 'IN - Inventory/Item', 'MS': 'MS - Miscellaneous', 'PO': 'PO - Purchase Order', 'SO': 'SO - Sales Order'}} %}
+			</div>
+
+			<div class="form-group">
+				<label for="description">Description</label>
+				<input type="text" name="description" class="form-control" maxlength="20" value="{{ sysop.description }}" id="description" autofocus>
+			</div>
+
+			<div class="form-group">
+				<label for="note_code">Note Code</label>
+				<input type="text" name="note_code" class="form-control" value="{{ sysop.note_code }}" maxlength="4" id="note_code">
+			</div>
+
+			<!-- Web -->
+			<div class="form-group">
+				<label for="web_validate">Web Validate ?</label>
+				{% include 'util/select.twig' with {'name': 'web_validate', 'id': 'web_validate', 'selectedvalue': sysop.web_validate, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+			</div>
+
+			<div class="form-group">
+				<label for="doc_store_folder">Web Document Storage Folder</label>
+				<input type="text" name="doc_store_folder" class="form-control" value="{{ sysop.doc_store_folder }}" maxlength="8" id="doc_store_folder">
+			</div>
+
+			<div class="form-group">
+				<label for="web_force">Web Force Entry ?</label>
+				{% include 'util/select.twig' with {'name': 'web_force', 'id': 'web_force', 'selectedvalue': sysop.web_force, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+			</div>
+			<!-- end web -->
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label for="file_name">File Name ?</label>
+				{% include 'util/select.twig' with {'name': 'file_name', 'id': 'file_name', 'selectedvalue': sysop.file_name, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+			</div>
+
+			<div class="form-group">
+				<label for="force">Force Entry ?</label>
+				{% include 'util/select.twig' with {'name': 'force', 'id': 'force', 'selectedvalue': sysop.force, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+			</div>
+
+			<div class="form-group">
+				<label for="adv_search">Advanced Search ?</label>
+				{% include 'util/select.twig' with {'name': 'adv_search', 'id': 'adv_search', 'selectedvalue': sysop.adv_search, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+			</div>
+
+			<div class="form-group">
+				<label for="list_seq">List Sequence</label>
+				<input type="text" name="list_seq" class="form-control" value="{{ sysop.list_seq }}" maxlength="3" id="list_seq">
+			</div>
+
+			<div class="form-group">
+				<label for="field_type">Field Type ?</label>
+				{% include 'util/select.twig' with {'name': 'field_type', 'id': 'field_type', 'selectedvalue': sysop.field_type, 'options': {'C': 'Character', 'N': 'Numeric'}} %}
+			</div>
+
+			<!-- if field type = 'N' -->
+			<div class="form-group">
+				<label for="before_dec">Digits Before Decimal</label>
+				<input type="text" name="before_dec" class="form-control" value="{{ sysop.before_dec }}" maxlength="1" id="before_dec">
+			</div>
+
+			<div class="form-group">
+				<label for="after_dec">Digits After Decimal</label>
+				<input type="text" name="after_dec" class="form-control" value="{{ sysop.after_dec }}" maxlength="1" id="after_dec">
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+	<button type="submit" class="btn btn-success">
+		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+	</button>
+	<a href="{{ page.get_codetable_listURL(page.codetable, sysop.code) }}" class="btn btn-warning pull-right">Close</a>
+</form>

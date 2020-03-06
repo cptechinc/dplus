@@ -1,6 +1,6 @@
 <?php namespace ProcessWire;
 
-include_once(__DIR__.'../CodeTablesResponse.php');
+include_once(__DIR__.'/../CodeTablesResponse.php');
 
 use Purl\Url;
 
@@ -68,8 +68,14 @@ class CodeTablesMfcm extends WireData implements Module {
 			$record->delete();
 		} else {
 			$description = $input->$rm->text('description');
+			$description2 = $input->$rm->text('description2');
+			$description3 = $input->$rm->text('description3');
+			$description4 = $input->$rm->text('description4');
 			$class = $input->$rm->text('class');
 			$record->setDescription($description);
+			$record->setDescription2($description2);
+			$record->setDescription3($description3);
+			$record->setDescription4($description4);
 			$record->setClass($class);
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
