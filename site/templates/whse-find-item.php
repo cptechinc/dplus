@@ -24,6 +24,8 @@
 		}
 	}
 
+	$config->scripts->append(hash_templatefile('scripts/warehouse/find-item.js'));
+
 	if ($page->print) {
 		$page->show_title = true;
 		include __DIR__ . "/blank-page.php";

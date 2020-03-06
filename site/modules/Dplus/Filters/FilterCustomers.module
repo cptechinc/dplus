@@ -1,0 +1,82 @@
+<?php namespace ProcessWire;
+
+use CustomerQuery, Customer;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+class FilterCustomers extends WireData implements Module {
+	/**
+	 * Returns Query
+	 * @return CustomerQuery
+	 */
+	public function get_query() {
+		return $this->query;
+	}
+
+	/**
+	 * Initializes Query
+	 * NOTE: Filters by Sales Rep if provided user is a Sales rep
+	 *
+	 * @param  User   $user User to Check if they are a Sales Person
+	 * @return void
+	 */
+	public function init_query(User $user) {
+		$this->query = CustomerQuery::create();
+
+		if ($user->is_salesrep()) {
+			$this->query->filterByCustid($user->get_customers(), Criteria::IN);
+		}
+	}
+
+	/**
+	 * Searches the Customer Table to find vendors that match the query provided
+	 *
+	 * @param  string $q Search Query
+	 * @return void
+	 */
+	public function filter_search($q) {
+		$columns = array();
+		$columns[] = Customer::get_aliasproperty('custid');
+		$columns[] = Customer::get_aliasproperty('name');
+		$columns[] = Customer::get_aliasproperty('address1');
+		$columns[] = Customer::get_aliasproperty('address2');
+		$columns[] = Customer::get_aliasproperty('city');
+		$columns[] = Customer::get_aliasproperty('state');
+		$columns[] = Customer::get_aliasproperty('zip');
+		$this->query->search_filter($columns, strtoupper($q));
+	}
+
+	/**
+	 * Adds the Sort By to the query
+	 *
+	 * @param  Page   $page
+	 * @return void
+	 */
+	public function apply_sortby(Page $page) {
+		if ($page->has_orderby()) {
+			$orderbycolumn = $page->orderby_column;
+			$sort = $page->orderby_sort;
+
+			$tablecolumn = Customer::get_aliasproperty($orderbycolumn);
+			$this->query->sortBy($tablecolumn, $sort);
+		}
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Filter Customer Module',
+			'version' => 101,
+			'summary' => 'Handles Customer Filtering',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

@@ -49,7 +49,7 @@
 					Current Finance Charge
 				</div>
 				<div class="col-sm-6 text-right">
-					$ {{ customer.financecharge|currency }}
+					{{ customer.financecharge }}
 				</div>
 			</div>
 		</li>
@@ -73,7 +73,7 @@
 					<abbr title="{{ "now"|date("F Y") }}">Month-to-date</abbr>
 				</div>
 				<div class="col-sm-3 text-right">
-					{{ customer.mtd_sales|currency }}
+					$ {{ customer.mtd_sales|currency }}
 				</div>
 				<div class="col-sm-3 text-right">
 					{{ customer.mtd_invoices }}
@@ -86,7 +86,7 @@
 					<abbr title="{{ "now"|date("Y") }}">Year-to-date</abbr>
 				</div>
 				<div class="col-sm-3 text-right">
-					{{ customer.ytd_sales|currency }}
+					$ {{ customer.ytd_sales|currency }}
 				</div>
 				<div class="col-sm-3 text-right">
 					{{ customer.ytd_invoices }}
@@ -95,11 +95,11 @@
 		</li>
 		<li class="list-group-item">
 			<div class="row">
-				<div class="col-sm-6">
+				<div class="col-sm-5">
 					Last 12 Months
 				</div>
-				<div class="col-sm-3 text-right">
-					{{ customer.get_lastxmonthsamount(12)|currency }}
+				<div class="col-sm-4 text-right">
+					$ {{ customer.get_lastxmonthsamount(12)|currency }}
 				</div>
 				<div class="col-sm-3 text-right">
 					{{ customer.get_lastxmonthscount(12) }}

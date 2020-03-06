@@ -32,8 +32,20 @@ class DpagesMin extends Dpages implements Module {
 			'name'   => 'min-code-table-ioptm',
 			'fields' => array()
 		),
-		'upc-xref' => array(
+		'upcx' => array(
 			'name'   => 'upcx',
+			'fields' => array()
+		),
+		'itm' => array(
+			'name'   => 'itm',
+			'fields' => array()
+		),
+		'itm-pricing' => array(
+			'name'   => 'itm-pricing',
+			'fields' => array()
+		),
+		'itm-json' => array(
+			'name'   => 'itm-json',
 			'fields' => array()
 		),
 	);
@@ -189,7 +201,34 @@ class DpagesMin extends Dpages implements Module {
 			'summary'        => 'View / Edit Inventory Optional Codes',
 			'parent'         => '/min/inmain/',
 			'dplus_function' => 'ioptm'
-		)
+		),
+		'itm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'itm',
+			'name'           => 'itm',
+			'title'          => 'ITM',
+			'summary'        => 'View / Edit Item',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => 'itm'
+		),
+		'itm-pricing' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'itm-pricing',
+			'name'           => 'pricing',
+			'title'          => 'ITM Pricing',
+			'summary'        => 'View / Edit Item Pricing',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => ''
+		),
+		'itm-json' => array(
+			'template'       => 'dplus-json',
+			'pw_template'    => 'itm-json',
+			'name'           => 'itm',
+			'title'          => 'ITM',
+			'summary'        => 'View / Edit Item',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => 'itm'
+		),
 	);
 
 /* =============================================================
@@ -246,6 +285,12 @@ class DpagesMin extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
+	public function get_codetable_listURL($table, $code = false) {
+		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
+		$url->query->set('focus', $code);
+		return $url->getUrl();
+	}
+
 	public function get_codetable_code_deleteURL($table, $code) {
 		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
 		$url->query->set('action', 'remove-code');
@@ -259,7 +304,6 @@ class DpagesMin extends Dpages implements Module {
 		$url->query->set('code', $code);
 		return $url->getUrl();
 	}
-
 
 	/**
 	 * ProcessWire Module Info

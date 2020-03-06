@@ -10,6 +10,8 @@
 		$ponbr = PurchaseOrder::get_paddedponumber($input->get->text('ponbr'));
 		$page->title = "Receiving PO # $ponbr";
 		$warehouse_receiving->set_ponbr($ponbr);
+		$config->inventory = $modules->get('ConfigsWarehouseInventory');
+		$page->bin = $config->inventory->physicalcount_savebin ? $session->receiving_bin : '';
 
 		if ($warehouse_receiving->purchaseorder_exists()) {
 			$purchaseorder = $warehouse_receiving->get_purchaseorder();
@@ -44,6 +46,9 @@
 							if ($session->receiving_itemid == $physicalitem->itemid) {
 								$physicalitem->setBin($session->receiving_bin);
 							}
+						}
+						if ($input->get->binID) {
+							$physicalitem->setBin($input->get->text('binID'));
 						}
 						$bins = WarehouseBinQuery::create()->get_warehousebins($whsesession->whseid)->toArray();
 						$jsconfig = array('warehouse' => array('id' => $whsesession->whseid, 'binarrangement' => $warehouse->get_binarrangementdescription(), 'bins' => $bins));
@@ -85,7 +90,7 @@
 							$page->body .= $config->twig->render('warehouse/inventory/receiving/po-item-form.twig', ['page' => $page, 'ponbr' => $ponbr]);
 						}
 					} else {
-						$page->title = "No results found for ''$scan'";
+						$page->title = "No results found for '$scan'";
 						$page->formurl = $page->url;
 						$page->body .= $html->div('class=mb-3');
 						$page->body .= $config->twig->render('warehouse/inventory/receiving/po-item-form.twig', ['page' => $page, 'ponbr' => $ponbr]);
@@ -105,6 +110,8 @@
 			} else {
 				$page->body .= $config->twig->render('warehouse/inventory/receiving/po-items.twig', ['page' => $page, 'ponbr' => $ponbr, 'items' => $purchaseorder->get_receivingitems()]);
 			}
+
+			$page->body .= $config->twig->render('warehouse/inventory/bins-modal.twig', ['warehouse' => $warehouse]);
 			$bins = WarehouseBinQuery::create()->get_warehousebins($whsesession->whseid)->toArray();
 			$jsconfig = array('warehouse' => array('id' => $whsesession->whseid, 'binarrangement' => $warehouse->get_binarrangementdescription(), 'bins' => $bins), 'items' => $warehouse_receiving->get_purchaseorder_recevingdetails_js(), 'config_receive' => $warehouse_receiving->get_jsconfig());
 			$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => $jsconfig]);

@@ -6,8 +6,6 @@
 	$filter_purchasehistory->apply_sortby($page);
 	$query = $filter_purchasehistory->get_query();
 	$invoices = $query->paginate($input->pageNum, 10);
-	$query->find();
-	echo $con->getLastExecutedQuery();
 
 	$invpage = $pages->get('pw_template=purchase-order-view')->url;
 

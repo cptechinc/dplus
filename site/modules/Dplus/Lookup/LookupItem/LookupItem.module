@@ -1,0 +1,117 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use ItemMasterItemQuery, ItemMasterItem;
+use ConfigSysQuery, ConfigSys;
+use ItemXrefCustomerQuery, ItemXrefCustomer;
+use ItemXrefUpcQuery, ItemXrefUpc;
+
+/**
+ * LookupItem
+ *
+ * Class for Looking up / Validating Items through ITM and different X-refs
+ *
+ * @property string $exists  Item Exists
+ * @property string $itemID  Item ID associated with Item
+ * @property string $request What was sent to find Item
+ * @property string $source  itm|cxm
+ */
+class LookupItem extends WireData implements Module {
+	public function __construct() {
+		$this->exists  = false;
+		$this->itemID  = '';
+		$this->request = '';
+		$this->source  = '';
+	}
+
+	/**
+	 * Returns if Item ID exists in the Item Master
+	 * @param  string $itemID Item ID
+	 * @return void
+	 */
+	public function lookup_itm($itemID) {
+		$this->request = empty($this->request) ? $itemID : $this->request;
+
+		$q = ItemMasterItemQuery::create();
+		$q->filterByItemid($itemID);
+
+		if ($q->count()) {
+			$this->exists = true;
+			$this->itemID = $itemID;
+			$this->source = empty($this->source) ? 'itm' : $this->source;
+		}
+		return $this->exists;
+	}
+
+	/**
+	 * Returns if Short Item ID exists in the Item Master as
+	 * NOTE: Uses ConfigSys to find customer ID to use CXM
+	 * @param  string $itemID Short Item ID
+	 * @return void
+	 */
+	public function lookup_itm_short($itemID) {
+		$this->source = 'itm';
+		$this->request = $itemID;
+		$custID = ConfigSysQuery::create()->findOne()->custid;
+		return $this->lookup_cxm($itemID, $custID);
+	}
+
+	/**
+	 * Looks up if Item ID exists in the ItemXrefCustomer table
+	 * @param  string $itemID Customer Item ID
+	 * @return void
+	 */
+	public function lookup_cxm($itemID, $custID) {
+		$this->source = empty($this->source) || $this->source == 'itm' ? 'cxm' : $this->source;
+		$this->request = empty($this->request) ? $itemID : $this->request;
+
+		$q = ItemXrefCustomerQuery::create();
+		$q->select(ItemXrefCustomer::get_aliasproperty('itemid'));
+		$q->filterByCustid($custID);
+		$q->filterByCustitemid($itemID);
+
+		if ($q->count()) {
+			$this->lookup_itm($q->findOne());
+		}
+		return $this->exists;
+	}
+
+	/**
+	 * Looks up if UPC exists in the UPCX Database
+	 * @param  string $upc
+	 * @return void
+	 */
+	public function lookup_upcx($upc) {
+		$this->source = empty($this->source) || $this->source == 'itm' ? 'upcx' : $this->source;
+		$this->request = empty($this->request) ? $upc : $this->request;
+
+		$q = ItemXrefUpcQuery::create();
+		$q->filterByUpc($upc);
+		$q->select(ItemXrefUpc::get_aliasproperty('itemid'));
+
+		if ($q->count()) {
+			$this->lookup_itm($q->findOne());
+		}
+		return $this->exists;
+	}
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Item Lookup Module',
+			'version' => 101,
+			'summary' => 'Handles Item Lookup',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array('LookupItemEntry', 'LookupItemIi')
+		);
+	}
+}

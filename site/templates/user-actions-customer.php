@@ -1,6 +1,4 @@
 <?php
-	use CustomerQuery, Customer;
-
 	$module_useractions      = $modules->get('FilterUserActions');
 	$module_useractions_crud = $modules->get('UserActionsCrud');
 	$html = $modules->get('HtmlWriter');

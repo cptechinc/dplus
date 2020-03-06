@@ -84,7 +84,7 @@
 		$page->headline = "VXM: Item $itemID";
 		$page->body .= $html->h3('', $items->getNbResults() ." VXM Items for $itemID");
 		$page->body .= $config->twig->render('items/vxm/vxm-links.twig', ['page' => $page]);
-		$page->body .= $config->twig->render('items/vxm/vendor/item-list.twig', ['page' => $page, 'items' => $items]);
+		$page->body .= $config->twig->render('items/vxm/item/item-list.twig', ['page' => $page, 'items' => $items]);
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
 	} elseif ($input->get->search) {
 		$q = $input->get->text('q');

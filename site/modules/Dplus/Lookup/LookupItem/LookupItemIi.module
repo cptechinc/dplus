@@ -1,0 +1,53 @@
+<?php namespace ProcessWire;
+
+/**
+ * LookupItemIi
+ *
+ * Class for Looking up / Validating Items through ITM and different X-refs
+ * for the purposes of II
+ *
+ * @property string $exists  Item Exists
+ * @property string $itemID  Item ID associated with Item
+ * @property string $request What was sent to find Item
+ * @property string $source  itm|cxm
+ */
+class LookupItemIi extends LookupItem implements Module {
+
+	/**
+	 * Looks Up Item
+	 * @param  string $q Item ID | UPC | Short Item ID
+	 * @return void
+	 */
+	public function lookup($q) {
+		$this->lookup_itm($q);
+
+		if (!$this->exists) {
+			$this->lookup_itm_short($q);
+		}
+
+		if (!$this->exists) {
+			$this->lookup_upcx($q);
+		}
+		return $this->exists;
+	}
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Item II Lookup Module',
+			'version' => 101,
+			'summary' => 'Handles Item Lookup for II',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(),
+			'requires' => array('LookupItem')
+		);
+	}
+}

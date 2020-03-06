@@ -4,7 +4,7 @@
 	$html = $modules->get('HtmlWriter');
 
 	$modules->get('DpagesMwm')->init_picking();
-	$pickingsession = $modules->get('DplusoWarehousePicking');
+	$pickingsession = $modules->get('WarehousePicking');
 	$pickingsession->set_sessionID(session_id());
 	$pickingsession->set_ordn($ordn);
 
@@ -37,7 +37,7 @@
 
 					// If item is stocked, get Inventory for that item
 					if (!$pickitem->is_item_nonstock()) {
-						$http->get("127.0.0.1".$pages->get('template=redir,redir_file=inventory')->url."?action=inventory-search&scan=$pickitem->itemid&sessionID=".session_id());
+						$modules->get('DplusRequest')->self_request($pages->get('template=redir,redir_file=inventory')->url."?action=inventory-search&scan=$pickitem->itemid&sessionID=".session_id());
 					}
 
 					$picked_barcodes = WhseitempickQuery::create()->filterByBin('PACK', Criteria::ALT_NOT_EQUAL)->filterBySessionidOrder(session_id(), $ordn)->filterByLinenbrSublinenbr($pickitem->linenbr, $pickitem->sublinenbr)->find();
@@ -164,7 +164,7 @@
 		if ($whsesession->is_orderfinished() || $whsesession->is_orderexited()) {
 			WhseItempickQuery::create()->filterByOrdn($ordn)->filterBySessionid(session_id())->delete();
 		}
-		//==$http->get("127.0.0.1".$page->parent->child('template=redir')->url."?action=start-pick-unguided&sessionID=".session_id());
+
 		$page->formurl = $page->parent->child('template=redir')->url;
 		$page->body = $config->twig->render('warehouse/picking/status.twig', ['page' => $page, 'whsesession' => $whsesession]);
 		$page->body .= '<div class="form-group"></div>';

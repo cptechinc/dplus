@@ -1,0 +1,47 @@
+<form action="{{ page.fullURL.getUrl() }}" method="post">
+	<input type="hidden" name="action" value="add-lotserial">
+	<input type="hidden" name="scan" value="{{ scan }}">
+
+	<div class="form-group">
+		<label for="itemID">Item ID</label>
+		<input type="text" class="form-control" name="itemID" id="itemID" value="{{ item.itemid }}">
+	</div>
+
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label for="lotserial">Lot / Serial #</label>
+				<input type="text" class="form-control" name="lotserial" id="lotserial" value="{{ item.lotserial }}">
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label for="lotserialref">Lot / Serial Ref</label>
+				<input type="text" class="form-control" name="lotserialref" id="lotserialref" value="{{ item.lotserialref }}">
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label for="binID">Bin ID</label>
+				<input type="text" class="form-control" name="binID" id="binID" value="{{ item.bin }}">
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label for="qty">Weight</label>
+				<input type="text" class="form-control-plaintext" name="qty" id="qty" value="{{ item.qty }}" readonly>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<button type="submit" class="btn btn-success">
+			<i class="fa fa-plus" aria-hidden="true"></i> Add
+		</button>
+		&nbsp; &nbsp;
+		<a href="{{ page.get_removescanURL() }}" class="btn btn-warning">Retry Search</a>
+	</div>
+</form>

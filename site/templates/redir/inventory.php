@@ -348,7 +348,7 @@
 			$ponbr = $input->$requestmethod->text('ponbr');
 			$q = strtoupper($input->$requestmethod->text('scan'));
 			$binID = $input->$requestmethod->text('binID');
-			$data = array("DBNAME=$dplusdb", 'RECEIVINGSEARCH', "PONBR=$ponbr", "QUERY=$q", "BIN=$binID" );
+			$data = array("DBNAME=$dplusdb", 'RECEIVINGSEARCH', "PONBR=$ponbr", "QUERY=$q", "BIN=$binID");
 
 			if ($input->$requestmethod->page) {
 				$url = new Purl\Url($input->$requestmethod->text('page'));
@@ -357,6 +357,7 @@
 			}
 			$url->query->set('ponbr', $ponbr);
 			$url->query->set('scan', $q);
+			$url->query->set('binID', $binID);
 
 			$session->loc = $url->getUrl();
 			break;
@@ -391,6 +392,7 @@
 		case 'verify-receiving-submit':
 			$scan = $input->$requestmethod->text('scan');
 			$ponbr = $input->$requestmethod->text('ponbr');
+
 			$query_phys = WhseitemphysicalcountQuery::create();
 			$query_phys->filterBySessionid(session_id());
 			$query_phys->filterByScan($scan);
@@ -436,7 +438,6 @@
 			$url->query->set('ponbr', $ponbr);
 			$session->loc = $url->getUrl();
 			break;
-
 	}
 
 	if (!empty($data)) {

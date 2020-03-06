@@ -4,24 +4,29 @@
  * Module for configuring the BINR process
  */
 class ConfigsBinr extends Process implements ConfigurableModule {
-/* =============================================================
-		ProcessWire Module Functions
-=============================================================== */
-
 	const CONFIG_FIELDS = array(
 		'default_qtyonhand' => array(
 			'type'        => 'checkbox',  // TRUE OR FALSE
 			'label'       => 'Use Qty on hand as default qty?',
 			'description' => 'Defaults Qty to the Qty On Hand',
 			'notes'       => "Defaults Qty to the Qty On Hand"
-		)
+		),
+		'use_qtyonly' => array(
+			'type'        => 'checkbox',  // TRUE OR FALSE
+			'label'       => 'Force Qty to be Qty?',
+			'description' => 'Forces Qty to be Qty, makes input readonly',
+			'notes'       => "Forces Qty to be Qty, makes input readonly"
+		),
 	);
 
 	const DEFAULT_CONFIG = array(
-		'default_qtyonhand' => false
+		'default_qtyonhand' => false,
+		'use_qtyonly' => false,
 	);
 
-
+	/* =============================================================
+			ProcessWire Module Functions
+	=============================================================== */
 	public function init() {
 		parent::init();
 
@@ -59,6 +64,15 @@ class ConfigsBinr extends Process implements ConfigurableModule {
 		$f = $modules->get('InputfieldCheckbox');
 		$f->attr('name', 'default_qtyonhand');
 		$f->attr('checked', $data['default_qtyonhand'] ? 'checked' : '' );
+		$f->label = __($traits['label']);
+		$f->description = __($traits['description']);
+		$f->notes = _($traits['notes']);
+		$fields->add($f);
+
+		$traits = self::CONFIG_FIELDS['use_qtyonly'];
+		$f = $modules->get('InputfieldCheckbox');
+		$f->attr('name', 'use_qtyonly');
+		$f->attr('checked', $data['use_qtyonly'] ? 'checked' : '' );
 		$f->label = __($traits['label']);
 		$f->description = __($traits['description']);
 		$f->notes = _($traits['notes']);

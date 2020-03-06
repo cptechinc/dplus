@@ -1,0 +1,29 @@
+<div class="form-group row">
+	<div class="col-sm-4">
+		<label for="allowdiscount">Allow Discount</label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/select.twig' with {'name': 'allowdiscount', 'id': 'allowdiscount', 'selectedvalue': item_pricing.item.allowdiscount, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+	</div>
+</div>
+<div class="form-group row">
+	<div class="col-sm-4">
+		<label for="assortmentcode">Assortment Code</label>
+	</div>
+	<div class="col-sm-8">
+		<select name="assortmentcode" class="form-control" id="assortmentcode">
+			<option value="">-- None --</option>
+			{% for assortment in assortmentcodes %}
+				<option value="{{ assortment.code }}" {{ assortment.code == item_pricing.item.assortmentcode ? 'selected' : ''}}>{{ assortment.description }}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+<div class="form-group row">
+	<div class="col-sm-4">
+		<label for="assortmentqty">Assortment Qty</label>
+	</div>
+	<div class="col-sm-8">
+		<input type="text" class="form-control text-right" name="assortmentqty" id="assortmentqty" value="{{ item_pricing.item.assortmentqty}}">
+	</div>
+</div>

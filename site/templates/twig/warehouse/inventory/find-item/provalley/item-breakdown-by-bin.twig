@@ -14,35 +14,31 @@
 		<div class="list-group list-group-flush">
 			{% for binitem in inventory.get_bins_itemid(item.sessionid, item.itemid) %}
 				<div class="list-group-item bg-light p-1">
-					<div class="bg-light">
-						<div class="row">
-							<div class="col">
-								<h5>
-									<strong>Bin:</strong> {{ binitem.bin }}
-								</h5>
-							</div>
-							<div class="col">
-								<strong>Boxes:</strong> {{ inventory.count_lotserials_itemid(item.sessionid, item.itemid, binitem.bin) }}
-							</div>
-							<div class="col">
-								<strong>Total Weight:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid, binitem.bin) }}
-							</div>
-							<div class="col">
-								{% if (not page.is_print()) %}
-									<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ (binitem.itemid ~ '_' ~ binitem.bin)|attrJS }}-lotserial" aria-expanded="false" aria-controls="{{ (binitem.itemid ~ '_' ~ binitem.bin)|attrJS }}-lotserial">
-										Show / Hide {{ binitem.get_itemtypepropertydesc()|upper ~ "S" }}
-									</button>
-								{% endif %}
-							</div>
-							<div class="col">
-								{% if (not warehouse.validate_bin(binitem.bin)) %}
-									<span class="badge badge-danger pull-right">Invalid Bin</span>
-								{% endif %}
-							</div>
+					<div class="row">
+						<div class="col">
+							<h5>
+								<strong>Bin:</strong> {{ binitem.bin }}
+							</h5>
 						</div>
-
+						<div class="col">
+							<strong>Boxes:</strong> {{ inventory.count_lotserials_itemid(item.sessionid, item.itemid, binitem.bin) }}
+						</div>
+						<div class="col">
+							<strong>Total Weight:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid, binitem.bin) }}
+						</div>
+						<div class="col">
+							{% if (not page.is_print()) %}
+								<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ (binitem.itemid ~ '_' ~ binitem.bin)|attrJS }}-lotserial" aria-expanded="false" aria-controls="{{ (binitem.itemid ~ '_' ~ binitem.bin)|attrJS }}-lotserial">
+									Show / Hide {{ binitem.get_itemtypepropertydesc()|upper ~ "S" }}
+								</button>
+							{% endif %}
+						</div>
+						<div class="col">
+							{% if (not warehouse.validate_bin(binitem.bin)) %}
+								<span class="badge badge-danger pull-right">Invalid Bin</span>
+							{% endif %}
+						</div>
 					</div>
-
 					{% include 'warehouse/inventory/find-item/provalley/item-breakdown-by-bin-lotserial.twig' %}
 				</div>
 			{% endfor %}

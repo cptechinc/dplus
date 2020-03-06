@@ -27,10 +27,22 @@ class DplusRequest extends WireData implements Module {
 	 */
 	public function self_request($path) {
 		$http = new WireHttp();
-		$basepath = end(explode('/', trim($this->wire('config')->paths->root, '/')));
+		$rootpath = $this->wire('config')->paths->root;
+		$basepath = end(explode('/', trim($rootpath, '/')));
 		$path = ltrim(str_replace($basepath, '', $path), '/');
 		$fullpath = "/$basepath/$path";
 		return $http->get("127.0.0.1".$fullpath);
+	}
+
+	/**
+	 * Sends HTTP GET Request to CGI BIN file
+	 * @param  string $cgi       CGI BIN filename
+	 * @param  string $sessionID SessionID for CGI Request
+	 * @return bool
+	 */
+	public function cgi_request($cgi, $sessionID) {
+		$http = new WireHttp();
+		return $http->get("127.0.0.1/cgi-bin/$cgi?fname=$sessionID");
 	}
 
 	/**

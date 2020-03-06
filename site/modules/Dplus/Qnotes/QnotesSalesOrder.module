@@ -1,0 +1,198 @@
+<?php namespace ProcessWire;
+
+use SalesOrderNotesQuery, SalesOrderNotes;
+use ConfigArQuery, ConfigAr;
+
+include_once(__DIR__.'/QnotesResponse.php');
+
+/**
+ * QnotesSalesOrder
+ *
+ * Class for Writing and Reading Qnotes for Sales Orders
+ */
+class QnotesSalesOrder extends WireData implements Module {
+	const MODEL              = 'SalesOrderNotes';
+	const MODEL_KEY          = 'OehdNbr, OedtLine';
+	const DESCRIPTION        = 'Sales Order Note';
+	const DESCRIPTION_RECORD = 'Sales Order Note';
+	const DESCRIPTION_RESPONSE = 'Sales Order ';
+	const MODEL_TABLE = 'notes_so_head_det';
+
+	/**
+	 * Return the Max Number of columns for Note Type
+	 * @return int
+	 */
+	public function get_column_count() {
+		$configAR = ConfigArQuery::create()->findOne();
+		return $configAR->columns_notes_invoice;
+	}
+
+	/**
+	 * Returns Sales Order Notes Query
+	 * @return SalesOrderNotesQuery
+	 */
+	public function get_query() {
+		return SalesOrderNotesQuery::create();
+	}
+
+	/**
+	 * Returns if Notes Exist
+	 * @param  string $ordn    Order Number
+	 * @param  int    $linenbr Line Number
+	 * @return bool
+	 */
+	public function notes_exist($ordn, $linenbr) {
+		$q = $this->get_query();
+		$q->filterByOrdernumber($ordn);
+		$q->filterByLine($linenbr);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Returns Line 1 of Every Note
+	 * @param  string $ordn    Order Number
+	 * @param  int    $linenbr Line Number
+	 * @return SalesOrderNotes[]|ObjectCollection
+	 */
+	public function get_notes_summarized($ordn, $linenbr) {
+		$q = $this->get_query();
+		$q->filterByOrdernumber($ordn);
+		$q->filterByLine($linenbr);
+		$q->filterBySequence(1);
+		return $q->find();
+	}
+
+	/**
+	 * Return Notes for Form
+	 * @param  string $ordn    Order Number
+	 * @param  int    $linenbr Line Number
+	 * @param  string $form    Form to Match to e.g YYYN
+	 * @return array
+	 */
+	public function get_notes_form_array($ordn, $linenbr, $form) {
+		$q = $this->get_query();
+		$q->select(SalesOrderNotes::get_aliasproperty('note'));
+		$q->filterByOrdernumber($ordn);
+		$q->filterByLine($linenbr);
+		$q->filterByForm($form);
+		return $q->find();
+	}
+
+	/**
+	 * Delete Notes for Form
+	 * @param  string $ordn    Order Number
+	 * @param  int    $linenbr Line Number
+	 * @param  string $form    Form to Match to e.g YYYN
+	 * @return array
+	 */
+	public function delete_notes($ordn, $linenbr, $form) {
+		$q = $this->get_query();
+		$q->filterByOrdernumber($ordn);
+		$q->filterByLine($linenbr);
+		$q->filterByForm($form);
+
+		if ($q->count()) {
+			return $q->delete();
+		}
+		return true;
+	}
+
+	/**
+	 * Takes Input, Processes it, updates Sales Order Notes
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$ordn  = $input->$rm->text('ordn');
+		$linenbr = $input->$rm->text('linenbr');
+		$form    = $input->$rm->text('form');
+		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
+		$lines_saved = array();
+
+		if (empty($form)) {
+			$form = '';
+			$form .= $input->$rm->text('check_pick') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N';
+			$form .= $input->$rm->text('check_pack') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N';
+			$form .= $input->$rm->text('check_invoice') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N';
+			$form .= $input->$rm->text('check_acknowledgement') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N';
+		}
+
+		$this->delete_notes($ordn, $linenbr, $form);
+
+		foreach ($note_lines as $key => $line) {
+			$sequence = $key + 1;
+			$record = new SalesOrderNotes();
+			$record->setType(SalesOrderNotes::TYPE); // PK
+			$record->setDescription(SalesOrderNotes::DESCRIPTION);
+			$record->setOrdernumber($ordn);
+			$record->setLine($linenbr);
+			$record->generateKey2(); // PK
+			$record->setSequence($sequence); // PK
+			$record->setForm($form);
+			$record->setNote($line);
+
+			$record->setPickticket($input->$rm->text('check_pick') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N');
+			$record->setPackticket($input->$rm->text('check_pack') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N');
+			$record->setInvoice($input->$rm->text('check_invoice') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N');
+			$record->setAcknowledgement($input->$rm->text('check_acknowledgement') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N');
+
+			$record->setDate(date('Ymd'));
+			$record->setTime(date('His'));
+			$record->setDummy('P');
+			$lines_saved[$sequence] = $record->save();
+		}
+		$this->wire('session')->response_codetable = $this->process_responses($record, $ordn, $lines_saved);
+	}
+
+	/**
+	 * Return Code Table Response based on the number of lines that were written to the database
+	 * @param  string $ordn         Sales Order Number
+	 * @param  array  $lines_saved  array of line numbers and if they got saved e.g. (1 => true, 2 => false)
+	 * @return CodeTableResponse
+	 */
+	protected function process_responses(SalesOrderNotes $note, $ordn, array $lines_saved) {
+		$message = self::DESCRIPTION_RESPONSE . " ($ordn) Note Lines";
+
+		$response = new QnotesResponse();
+		$response->set_key("$ordn-{$note->line}-{$note->form}");
+
+		if (in_array(false, $lines_saved)) {
+			$lines_error =
+			array_filter($lines_saved, function($value, $key) {
+				return  $value == false;
+			}, ARRAY_FILTER_USE_BOTH);
+			$message .= implode(", ", array_keys($lines_error));
+			$message .= " were not able to be saved";
+
+			if (sizeof($lines_error)) {
+				$response->set_error(true);
+			}
+		} else {
+			$response->set_success(true);
+			$message .= " were able to be saved";
+		}
+
+		$response->set_action(QnotesResponse::CRUD_UPDATE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if (sizeof($lines_saved)) {
+			$this->wire('modules')->get('Qnotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+		}
+		return $response;
+	}
+
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Qnotes Sales Order',
+			'version' => 101,
+			'summary' => 'Dplus Qnotes Sales Order methods',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('Qnotes')
+		);
+	}
+}

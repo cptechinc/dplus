@@ -1,0 +1,124 @@
+<?php namespace ProcessWire;
+
+use CustomerShiptoQuery, CustomerShipto;
+use CustomerQuery, Customer;
+use WarehouseInventoryQuery, WarehouseInventory;
+
+/**
+ * LookupItemEntry
+ *
+ * Class for Looking up / Validating Items through ITM and different X-refs
+ * for the purposes of Item Entry
+ *
+ * @property string $exists  Item Exists
+ * @property string $itemID  Item ID associated with Item
+ * @property string $request What was sent to find Item
+ * @property string $source  itm|cxm
+ */
+class LookupItemEntry extends LookupItem implements Module {
+
+	public function __construct() {
+		parent::__construct();
+		$this->message = '';
+	}
+
+	const LOOKUPS = array('cxm');
+
+	/**
+	 * Validates if string corresponds to an Item
+	 * NOTE: Validates if Item is Active
+	 * @param  WireInput $input
+	 * @return void
+	 */
+	public function lookup_input(WireInput $input) {
+		$itemID = $input->get->itemID ? $input->get->text('itemID') : $input->get->text('q');
+
+		$custID = $input->get->text('custID');
+		$shiptoID = $input->get->text('shiptoID');
+
+		$this->lookup_itm($itemID);
+
+		if (!$this->exists) {
+			$this->lookup_itm_short($itemID);
+		}
+
+		if (!$this->exists) {
+			foreach (self::LOOKUPS as $lookup) {
+				$function = "lookup_input_$lookup";
+				$this->$function($itemID, $input);
+
+				if ($this->exists) {
+					break;
+				}
+			}
+		}
+
+		if ($this->exists) {
+			$this->validate_active($custID, $shiptoID);
+		}
+
+		return $this->data;
+	}
+
+	/**
+	 * Validates Item through CXM using provided Input Data
+	 * @param  string    $itemID Item ID
+	 * @param  WireInput $input  Input Data
+	 * @return string
+	 */
+	public function lookup_input_cxm($itemID, WireInput $input) {
+		$custID = $input->get->text('custID');
+		$shiptoID = $input->get->text('shiptoID');
+		$this->lookup_cxm($itemID, $custID);
+	}
+
+	/**
+	 * Validates if Item Is active by checking the provided Customer / Shipto's Warehouse
+	 * @param  string $custID   Customer ID
+	 * @param  string $shiptoID Shipto ID
+	 * @return void
+	 */
+	private function validate_active($custID, $shiptoID = '') {
+		if ($shiptoID) {
+			$q = CustomerShiptoQuery::create();
+			$shipto = $q->filterByCustid($custID)->filterByShiptoid($shiptoID)->findOne();
+			$warehouse = $shipto->warehouse;
+		} else {
+			$q = CustomerQuery::create();
+			$customer = $q->filterByCustid($custID)->findOne();
+			$warehouse = $customer->warehouse;
+		}
+
+		$q = WarehouseInventoryQuery::create();
+		$q->select(WarehouseInventory::get_aliasproperty('status'));
+		$q->filterByWarehouseid($warehouse);
+		$q->filterByItemid($this->itemID);
+		$status = $q->findOne();
+
+		if (!$status == WarehouseInventory::STATUS_ACTIVE) {
+			$this->exists = false;
+			$this->message = 'Item is not active';
+		}
+	}
+
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Item Entry Lookup Module',
+			'version' => 101,
+			'summary' => 'Handles Item Lookup for Item Entry',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(),
+			'requires' => array('LookupItem')
+		);
+	}
+}

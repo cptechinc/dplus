@@ -69,8 +69,8 @@ $(function() {
 			});
 
 			if (error) {
-				title = 'Invalid To Bin ID';
-				msg = 'Your To Bin ID must between these ranges';
+				title = 'Invalid From Bin ID';
+				msg = 'Your From Bin ID must between these ranges';
 				html = "<h4>Valid Bin Ranges<h4>" + create_binrangetable();
 			}
 		}

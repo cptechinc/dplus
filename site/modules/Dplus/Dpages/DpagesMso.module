@@ -2,6 +2,7 @@
 
 use Purl\Url;
 use SalesOrder, SalesOrderQuery;
+use SalesHistory, SalesHistoryQuery;
 
 /**
  * class DpagesMso
@@ -173,7 +174,7 @@ class DpagesMso extends Dpages implements Module {
 		),
 		'sales-order-documents' => array(
 			'template'       => 'dplus-function',
-			'name'           => 'sales-order-documents',
+			'name'           => 'documents',
 			'title'          => 'Sales Order Documents',
 			'summary'        => 'View Sales Order Documents',
 			'parent'         => '/mso/sales-order/',
@@ -182,7 +183,7 @@ class DpagesMso extends Dpages implements Module {
 		),
 		'sales-order-notes' => array(
 			'template'       => 'dplus-function',
-			'name'           => 'sales-order-notes',
+			'name'           => 'notes',
 			'title'          => 'Sales Order Notes',
 			'summary'        => 'View Sales Order Notes',
 			'parent'         => '/mso/sales-order/',
@@ -363,8 +364,14 @@ class DpagesMso extends Dpages implements Module {
 	 * @return bool                     Can User Edit Sales Order?
 	 */
 	public function can_user_editorder(User $user, $order) {
-		if (get_class($order) != 'SalesOrder') {
-			$order = SalesOrderQuery::create()->findOneByOrdernumber($order);
+		if (gettype($order) != 'object') {
+			$lookup_order = $this->wire('modules')->get('LookupSalesOrder');
+
+			if ($lookup_order->lookup_salesorder($order)) {
+				$order = SalesOrderQuery::create()->findOneByOrdernumber($order);
+			} else {
+				$order = SalesHistoryQuery::create()->findOneByOrdernumber($order);
+			}
 		}
 
 		$config_orders = $this->wire('modules')->get('ConfigsSalesOrders');
@@ -385,7 +392,7 @@ class DpagesMso extends Dpages implements Module {
 	 * @return bool              IS User is editing Sales Order?
 	 */
 	public function is_user_editingorder(User $user, $order) {
-		if (get_class($order) != 'SalesOrder') {
+		if (gettype($order) != 'object') {
 			$order = SalesOrderQuery::create()->findOneByOrdernumber($order);
 		}
 		return $order->heldby == $user->loginid;

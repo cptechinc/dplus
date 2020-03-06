@@ -1,5 +1,4 @@
 <?php
-	use Useractions;
 	$module_useractions      = $modules->get('FilterUserActions');
 	$module_useractions_crud = $modules->get('UserActionsCrud');
 	$html = $modules->get('HtmlWriter');

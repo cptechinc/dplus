@@ -39,7 +39,6 @@
 					$session->redirect($page->fullURL->getUrl(), $http301 = false);
 				}
 
-				//$http->get("127.0.0.1".$pages->get('template=redir, redir_file=sales-order')->url."?action=get-order-notes&ordn=$ordn&sessionID=".session_id());
 				$page->body = $config->twig->render('warehouse/packing/order-notes.twig', ['page' => $page, 'notes' => $warehousepacking->get_packingnotes()]);
 				$page->body .= $html->div('class=mb-3');
 				if ($session->packerror) {

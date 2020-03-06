@@ -1,0 +1,24 @@
+<form action="{{ page.fullURL.getUrl() }}" method="POST">
+	<input type="hidden" name="action" value="update-itm-pricing">
+	<input type="hidden" name="itemID" value="{{ item_pricing.itemid }}">
+
+	{% include 'items/itm/pricing/description.twig' %}
+
+	<div class="row mb-3">
+		<div class="col-sm-6">
+			{% include 'items/itm/pricing/sales.twig' %}
+		</div>
+		<div class="col-sm-6">
+			{% include 'items/itm/pricing/purchasing.twig' %}
+		</div>
+	</div>
+
+	<div class="row mb-3">
+		<div class="col-sm-6">
+			{% include 'items/itm/pricing/discount-assortment.twig' %}
+		</div>
+	</div>
+	<button type="submit" class="btn btn-block btn-success">
+		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+	</button>
+</form>

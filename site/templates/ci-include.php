@@ -1,6 +1,4 @@
 <?php
-	use CustomerQuery, Customer;
-
 	$module_ci = $modules->get('DpagesMci');
 	$module_ci->init_cipage();
 

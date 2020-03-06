@@ -4,6 +4,7 @@
 	$frombin = $warehouse->validate_bin($input->get->text('frombin')) ? $input->get->text('frombin') : '';
 
 	if (!empty($frombin)) {
+		$page->title .= " Bin $frombin";
 		include('./whse-binr.php');
 	} else {
 		$page->body =  $config->twig->render('warehouse/binr/direction/bin-form.twig', ['page' => $page, 'inputname' => 'frombin']);
