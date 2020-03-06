@@ -8,10 +8,9 @@
 
 	if ($input->get->custID) {
 		$custID = $input->get->text('custID');
-		$lookup_customer->lookup_customer($custID);
 
 		// TODO VALIDATION
-		if ($lookup_customer->exists) {
+		if ($lookup_customer->lookup_customer($custID)) {
 			if ($user->has_customer($custID)) {
 				$modules->get('DpagesMci')->init_customer_hooks();
 				$modules->get('DpagesMci')->init_cipage();
