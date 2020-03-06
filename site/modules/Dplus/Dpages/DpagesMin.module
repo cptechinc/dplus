@@ -285,12 +285,6 @@ class DpagesMin extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
-	public function get_codetable_listURL($table, $code = false) {
-		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
-		$url->query->set('focus', $code);
-		return $url->getUrl();
-	}
-
 	public function get_codetable_code_deleteURL($table, $code) {
 		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
 		$url->query->set('action', 'remove-code');
