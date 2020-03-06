@@ -63,9 +63,10 @@
 				$config->scripts->append(hash_templatefile('scripts/orders/edit-order.js'));
 				$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 			}
+			$module_qnotes = $modules->get('QnotesSalesOrder');
 			$page->body .= $html->div('class=mb-3');
 			$notes = SalesOrderNotesQuery::create()->filterByOrdernumber($ordn)->filterByLine(0)->find();
-			$page->body .= $config->twig->render('sales-orders/sales-order/qnotes.twig', ['page' => $page, 'notes' => $notes, 'ordn' => $ordn]);
+			$page->body .= $config->twig->render('sales-orders/sales-order/qnotes.twig', ['page' => $page, 'qnotes_so' => $module_qnotes, 'ordn' => $ordn]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/notes/add-note-modal.twig', ['page' => $page, 'ordn' => $ordn]);
 			$config->scripts->append(hash_templatefile('scripts/quotes/quote-notes.js'));
 		} elseif ($lookup_orders->lookup_saleshistory($ordn)) {

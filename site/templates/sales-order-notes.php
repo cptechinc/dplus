@@ -18,7 +18,7 @@
 					$order = SalesHistoryQuery::create()->findOneByOrdernumber($ordn);
 				}
 				$page->title = "Sales Order #$ordn Notes";
-				$page->body = $config->twig->render('sales-orders/sales-order/qnotes-page.twig', ['page' => $page, 'user' => $user, 'ordn' => $ordn, 'order' => $order, 'items' => $order_items, 'qnotes_so' => $module_qnotes]);
+				$page->body = $config->twig->render('sales-orders/sales-order/qnotes-page.twig', ['page' => $page, 'user' => $user, 'ordn' => $ordn, 'order' => $order, 'qnotes_so' => $module_qnotes]);
 				$page->body .= $config->twig->render('sales-orders/sales-order/notes/add-note-modal.twig', ['page' => $page, 'ordn' => $ordn, 'qnotes_so' => $module_qnotes]);
 				$config->scripts->append(hash_templatefile('scripts/orders/order-notes.js'));
 			} else {
