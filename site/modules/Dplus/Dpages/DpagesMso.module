@@ -54,6 +54,10 @@ class DpagesMso extends Dpages implements Module {
 			'name'   => 'so-code-table',
 			'fields' => array()
 		),
+		'so-code-table-soptm' => array(
+			'name'   => 'so-code-table-soptm',
+			'fields' => array()
+		),
 		'so-code-table-code' => array(
 			'name'   => 'so-code-table-code',
 			'fields' => array()
@@ -112,6 +116,15 @@ class DpagesMso extends Dpages implements Module {
 			'summary'        => 'View RGA/Return Ship via Code',
 			'parent'         => '/mso/somain/',
 			'dplus_function' => 'rgasc'
+		),
+		'so-soptm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'so-code-table',
+			'name'           => 'soptm',
+			'title'          => 'Sales Order Optional Code',
+			'summary'        => 'View Sales Order Optional Code',
+			'parent'         => '/mso/somain/',
+			'dplus_function' => 'soptm'
 		),
 		'sales-orders' => array(
 			'template'       => 'dplus-function',
@@ -380,7 +393,12 @@ class DpagesMso extends Dpages implements Module {
 
 	public function get_codetable_viewURL($table, $code = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=so-code-table, name=$table")->url);
-		$url->query->set('code', $code);
+
+		if ($table == 'soptm') {
+			$url->query->set('sysop', $code);
+		} else {
+			$url->query->set('code', $code);
+		}
 		return $url->getUrl();
 	}
 
