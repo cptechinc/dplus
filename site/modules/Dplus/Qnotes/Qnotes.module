@@ -10,7 +10,6 @@ class Qnotes extends WireData implements Module {
 	 */
 	public function write_dplus_data($notetype, $key2, $form) {
 		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
-		$table = strtoupper($table);
 		return array("DBNAME=$dplusdb", 'UPDATEQNOTE', "TYPE=$notetype", "KEY2=$key2", "FORM=$form");
 	}
 
