@@ -16,6 +16,10 @@ class CodeTablesMsa extends WireData implements Module {
 			'code'        		 => 'sysop',
 			'module'   			 => 'MsaSysop'
 		),
+		'lgrp' => array(
+			'code'        		 => 'lgrp',
+			'module'   			 => 'MsaLgrp'
+		),
 	);
 
 	public function get_codetables() {
