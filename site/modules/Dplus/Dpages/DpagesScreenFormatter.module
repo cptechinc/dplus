@@ -36,59 +36,69 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'name'   => 'formatter-screen',
 			'fields' => array('title', 'jsoncode', 'formatter', 'summary', 'twig_include', 'dplus_function'),
 			'paginated' => true
+		),
+		'dplus-screen-formatter' => array(
+			'name'   => 'formatter-screen',
+			'fields' => array('title', 'jsoncode', 'formatter', 'summary', 'twig_include', 'dplus_function'),
+			'paginated' => true
 		)
 	);
 
 	const PAGES = array(
 		'ii-sales-orders' => array(
-			'template'       => 'formatter-screen',
+			'template'       => 'dplus-screen-formatter',
 			'name'           => 'sales-orders',
 			'title'          => 'II Sales Orders',
 			'summary'        => 'II Sales Orders Formatter',
 			'parent'         => '/mii/admin/',
 			'formatter'      => 'SfIiSalesOrders',
 			'jsoncode'       => 'ii-sales-orders',
-			'twig_include'   => 'items/ii/sales-orders/sales-orders.twig'
+			'twig_include'   => 'items/ii/sales-orders/sales-orders.twig',
+			'dplus_function' => 'iisof'
 		),
 		'ii-sales-history' => array(
-			'template'       => 'formatter-screen',
+			'template'       => 'dplus-screen-formatter',
 			'name'           => 'sales-history',
 			'title'          => 'II Sales History',
 			'summary'        => 'II Sales History Formatter',
 			'parent'         => '/mii/admin/',
 			'formatter'      => 'SfIiSalesHistory',
 			'jsoncode'       => 'ii-sales-history',
-			'twig_include'   => 'items/ii/sales-history/sales-history.twig'
+			'twig_include'   => 'items/ii/sales-history/sales-history.twig',
+			'dplus_function' => 'iishf'
 		),
 		'ii-quotes' => array(
-			'template'       => 'formatter-screen',
+			'template'       => 'dplus-screen-formatter',
 			'name'           => 'quotes',
 			'title'          => 'II Quotes',
 			'summary'        => 'II Quotes Formatter',
 			'parent'         => '/mii/admin/',
 			'formatter'      => 'SfIiQuotes',
 			'jsoncode'       => 'ii-quotes',
-			'twig_include'   => 'items/ii/quotes/quotes.twig'
+			'twig_include'   => 'items/ii/quotes/quotes.twig',
+			'dplus_function' => 'iiqtf'
 		),
 		'ii-purchase-orders' => array(
-			'template'       => 'formatter-screen',
+			'template'       => 'dplus-screen-formatter',
 			'name'           => 'purchase-orders',
 			'title'          => 'II Purchase Orders',
 			'summary'        => 'II Purchase Orders Formatter',
 			'parent'         => '/mii/admin/',
 			'formatter'      => 'SfIiPurchaseOrders',
 			'jsoncode'       => 'ii-purchase-orders',
-			'twig_include'   => 'items/ii/purchase-orders/purchase-orders.twig'
+			'twig_include'   => 'items/ii/purchase-orders/purchase-orders.twig',
+			'dplus_function' => 'iipof'
 		),
 		'ii-purchase-history' => array(
-			'template'       => 'formatter-screen',
+			'template'       => 'dplus-screen-formatter',
 			'name'           => 'purchase-history',
 			'title'          => 'II Purchase History',
 			'summary'        => 'II Purchase History Formatter',
 			'parent'         => '/mii/admin/',
 			'formatter'      => 'SfIiPurchaseHistory',
 			'jsoncode'       => 'ii-purchase-history',
-			'twig_include'   => 'items/ii/purchase-history/purchase-history.twig'
+			'twig_include'   => 'items/ii/purchase-history/purchase-history.twig',
+			'dplus_function' => 'iiphf'
 		),
 		'ci-sales-orders' => array(
 			'template'       => 'formatter-screen',

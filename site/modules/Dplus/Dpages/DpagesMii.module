@@ -120,7 +120,7 @@ class DpagesMii extends Dpages implements Module {
 			'title'          => 'II Administration',
 			'summary'        => 'Item Information Administration',
 			'parent'         => '/mii/',
-			'dplus_function' => '' // TODO
+			'dplus_function' => 'iiadmn'
 		),
 		'ii' => array(
 			'template'       => 'dplus-function',
