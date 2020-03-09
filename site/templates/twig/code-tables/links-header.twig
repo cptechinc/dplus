@@ -16,8 +16,16 @@
 			<a href="{{ page.get_codetable_viewURL(page.codetable) }}" class="btn btn-primary">
 				<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to {{ page.title }}
 			</a>
+			&nbsp;
 		{% endif %}
-		&nbsp;
+
+		{% if input.get.text('sysop') %}
+			<a href="{{ page.get_codetable_viewURL(page.codetable) }}" class="btn btn-primary">
+				<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to {{ page.title }}
+			</a>
+			&nbsp;
+		{% endif %}
+
 		<a href="{{ page.get_printURL() }}" class="btn btn-primary">
 			<i class="fa fa-print" aria-hidden="true"></i> View Printable
 		</a>

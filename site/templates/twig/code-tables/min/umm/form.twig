@@ -1,3 +1,4 @@
+{# umm is an instance of UnitofMeasureSale #}
 <form action="{{ page.url }}" method="POST" id="code-edit-form">
 	<input type="hidden" name="table" value="umm">
 
@@ -8,7 +9,7 @@
 
 	<div class="form-group">
 		<label for="description">Description</label>
-		<input type="text" name="description" class="form-control" value="" id="description">
+		<input type="text" name="description" class="form-control" maxlength="20" value="" id="description">
 	</div>
 
 	<div class="form-group">
@@ -18,10 +19,7 @@
 
 	<div class="form-group">
 	    <label for="pricebyweight">Price by Weight?</label>
-	    <select name="pricebyweight" class="form-control" id="pricebyweight">
-	        <option value="Y">Yes</option>
-	        <option value="N">No</option>
-	    </select>
+	    {% include 'util/select.twig' with {'name': 'pricebyweight', 'id': 'pricebyweight', 'options': {'S': 'Standard Weight', 'C': 'Catch Weight', 'N': 'Neither'}} %}
     </div>
 
 	<div class="modal-footer">

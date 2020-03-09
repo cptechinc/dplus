@@ -30,12 +30,10 @@ $(function () {
 				required: true,
 				maxlength: {{ typecode.get_max_length_code() }}
 			},
-			description: 'required',
 			mail_list: 'required'
 		},
 		messages: {
 			code: "Please review your code (Max Length: {{ typecode.get_max_length_code() }})",
-			description: 'Please enter a description for the code',
 		},
 		submitHandler: function(form) {
 			form.submit();

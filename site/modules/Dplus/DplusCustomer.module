@@ -1,0 +1,36 @@
+<?php namespace ProcessWire;
+
+use ConfigSysQuery, ConfigSys;
+
+/**
+ * DplusCustomer
+ *
+ * Module for Getting Application Customer Data
+ */
+class DplusCustomer extends WireData implements Module {
+	const CUSTOMERS = array(
+		'ALUMAC' => 'alumacraft',
+		'LINDST' => 'lindstrom',
+	);
+
+	/**
+	 * Return the CustID from SysConfig
+	 * NOTE: Defined in syscm
+	 * @return string
+	 */
+	public function get_custID() {
+		$q = ConfigSysQuery::create();
+		$q->select(ConfigSys::get_aliasproperty('custid'));
+		return $q->findOne();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Customers Module',
+			'version' => 101,
+			'summary' => 'Gets Dplus Install Customer from SysConfig',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

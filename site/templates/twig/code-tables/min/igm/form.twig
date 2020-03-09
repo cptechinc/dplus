@@ -1,3 +1,4 @@
+{# igm is an instance of InvGroupCode #}
 <form action="{{ page.url }}" method="POST" id="code-edit-form">
 	<input type="hidden" name="table" value="igm">
 
@@ -10,7 +11,7 @@
 
 			<div class="form-group">
 				<label for="description">Description</label>
-				<input type="text" name="description" class="form-control" value="{{ itemgroup.description }}" id="description" autofocus>
+				<input type="text" name="description" class="form-control" maxlength="20" value="{{ itemgroup.description }}" id="description" autofocus>
 			</div>
 
 			<div class="form-group">
@@ -18,21 +19,12 @@
 				{% include 'util/select.twig' with {'name': 'coop', 'id': 'coop', 'selectedvalue': itemgroup.coop, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 
-			<!-- TODO: if statement - only for Alumacraft -->
-			<div class="form-group">
-				<label for="ritm">Allow RITM ?</label>
-				{% include 'util/select.twig' with {'name': 'ritm', 'id': 'ritm', 'selectedvalue': itemgroup.ritm, 'options': {'Y': 'Yes', 'N': 'No'}} %}
-			</div>
-			<!-- end -->
-
-			<!-- TODO: available if ArtbConfUseWeb = Y or if Alumacraft -->
-			{% if config_ar.is_web_group() %}
+			{% if config_ar.is_web_group() or (dpluscustomer.company_name == 'Alumacraft') %}
 				<div class="form-group">
-					<label for="web_group">Web Group</label>
+					<label for="web_group">Web Group ?</label>
 					{% include 'util/select.twig' with {'name': 'web_group', 'id': 'web_group', 'selectedvalue': itemgroup.web_group, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 				</div>
 			{% endif %}
-			<!-- end -->
 
 			{% if config_so.is_request_program() %}
 				<div class="form-group">
@@ -44,45 +36,71 @@
 		<div class="col-6">
 			<div class="form-group">
 				<label for="freight_group">Freight Group</label>
-				<input type="text" name="freight_group" class="form-control" value="{{ itemgroup.freight_group }}" id="freight_group">
+				<input type="text" name="freight_group" class="form-control" maxlength="2" value="{{ itemgroup.freight_group }}" id="freight_group">
 			</div>
 
 			<div class="form-group">
 				<label for="product_line">Product Line</label>
-				<input type="text" name="product_line" class="form-control" value="{{ itemgroup.product_line }}" id="product_line">
+				<select class="form-control" name="product_line" id="product_line">
+					<option value=""></option>
+					{% for line_code in product_line_codes %}
+						<option value="{{ line_code.code }}" {{ line_code.code == itemgroup.product_line ? 'selected' : ''}}>{{ line_code.code }} - {{ line_code.description }}</option>
+					{% endfor %}
+				</select>
 			</div>
-
-			<div class="form-group">
-				<label for="ecomm_desc">Ecomm Description</label>
-				<input type="text" name="ecomm_desc" class="form-control" value="{{ itemgroup.ecomm_desc }}" id="ecomm_desc">
-			</div>
+			{% if (dpluscustomer.company_name == 'Lindstrom') %}
+				<div class="form-group">
+					<label for="ecomm_desc">Ecomm Description</label>
+					<input type="text" name="ecomm_desc" class="form-control" value="{{ itemgroup.ecomm_desc }}" id="ecomm_desc">
+				</div>
+			{% endif %}
 		</div>
 		<div class="col-6">
 			<!-- GL Accounts Questions -->
 			<h4>GL Accounts</h4>
 			<div class="form-group">
 				<label for="sales">Sales</label>
-				<input type="text" name="sales" class="form-control" value="{{ itemgroup.sales }}" id="sales">
+				<select class="form-control" name="sales" id="sales">
+					{% for account in gl_accounts %}
+						<option value="{{ account.code }}" {{ account.code == itemgroup.sales ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
+					{% endfor %}
+				</select>
 			</div>
 
 			<div class="form-group">
-				<label for="credit">Credit</label>
-				<input type="text" name="credit" class="form-control" value="{{ itemgroup.credit }}" id="credit">
+				<label for="credit">Credits</label>
+				<select class="form-control" name="credit" id="credit">
+					{% for account in gl_accounts %}
+						<option value="{{ account.code }}" {{ account.code == itemgroup.credit ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
+					{% endfor %}
+				</select>
 			</div>
 
 			<div class="form-group">
-				<label for="cost_percent">Cost Percent</label>
-				<input type="text" name="cost_percent" class="form-control" value="{{ itemgroup.cost_percent }}" id="cost_percent">
+				<label for="cogs">Cost of Goods Sold</label>
+				<select class="form-control" name="cogs" id="cogs">
+					{% for account in gl_accounts %}
+						<option value="{{ account.code }}" {{ account.code == itemgroup.cogs ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
+					{% endfor %}
+				</select>
 			</div>
 
 			<div class="form-group">
 				<label for="inventory">Inventory</label>
-				<input type="text" name="inventory" class="form-control" value="{{ itemgroup.inventory }}" id="inventory">
+				<select class="form-control" name="inventory" id="inventory">
+					{% for account in gl_accounts %}
+						<option value="{{ account.code }}" {{ account.code == itemgroup.inventory ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
+					{% endfor %}
+				</select>
 			</div>
 
 			<div class="form-group">
 				<label for="drop_ship">Drop Ship</label>
-				<input type="text" name="drop_ship" class="form-control" value="{{ itemgroup.drop_ship }}" id="drop_ship">
+				<select class="form-control" name="drop_ship" id="drop_ship">
+					{% for account in gl_accounts %}
+						<option value="{{ account.code }}" {{ account.code == itemgroup.drop_ship ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
+					{% endfor %}
+				</select>
 			</div>
 			<!-- GL Accounts Questions -->
 		</div>
@@ -117,4 +135,5 @@
 	<button type="submit" class="btn btn-success">
 		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 	</button>
+	<a href="{{ page.get_codetable_listURL(page.codetable, itemgroup.code) }}" class="btn btn-warning pull-right">Close</a>
 </form>

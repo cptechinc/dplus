@@ -1,17 +1,26 @@
 <div class="list-group">
 	<div class="list-group-item bg-dark text-white">
 		<div class="row align-items-center">
-			<div class="col-2">
+			<div class="col-1">
 				Code
 			</div>
 			<div class="col-3">
 				Description
 			</div>
-			<div class="col-2">
-				Sales Program ?
+			<div class="col-1">
+				Sale
 			</div>
-			<div class="col-2">
-				Add Surcharge ?
+			<div class="col-1">
+				Credit
+			</div>
+			<div class="col-1">
+				COGS
+			</div>
+			<div class="col-1">
+				Inventory
+			</div>
+			<div class="col-1">
+				Drop
 			</div>
 			<div class="col-3 text-center">
 				{% if page.is_print() == false %}
@@ -23,19 +32,28 @@
 		</div>
 	</div>
 	{% for code in codes %}
-		<div class="list-group-item pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
+		<div id="{{ code.code }}" class="list-group-item pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
 			<div class="row align-items-center">
-				<div class="col-2">
+				<div class="col-1">
 					{{ code.code }}
 				</div>
 				<div class="col-3">
 					{{ code.description }}
 				</div>
-				<div class="col-2">
-					{{ code.sales_program|yesorno|capitalize }}
+				<div class="col-1">
+					{{ code.sales }}
 				</div>
-				<div class="col-2">
-					{{ code.surcharge|yesorno|capitalize }}
+				<div class="col-1">
+					{{ code.credit }}
+				</div>
+				<div class="col-1">
+					{{ code.cogs }}
+				</div>
+				<div class="col-1">
+					{{ code.inventory }}
+				</div>
+				<div class="col-1">
+					{{ code.drop_ship }}
 				</div>
 				<div class="col-3 text-center">
 					{% if page.is_print() == false %}

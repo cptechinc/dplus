@@ -4,12 +4,18 @@ $(function() {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var code = button.data('code').toString(); // Extract info from data-* attributes
 		var description = button.data('description').toString(); // Extract info from data-* attributes
+		var description2 = button.data('description2').toString(); // Extract info from data-* attributes
+		var description3 = button.data('description3').toString(); // Extract info from data-* attributes
+		var description4 = button.data('description4').toString(); // Extract info from data-* attributes
 		var motorclass = button.data('class'); // Extract info from data-* attributes
 
 		var modal = $(this);
 
 		modal.find('input[name=code]').val(code);
 		modal.find('input[name=description]').val(description);
+		modal.find('input[name=description2]').val(description2);
+		modal.find('input[name=description3]').val(description3);
+		modal.find('input[name=description4]').val(description4);
 		modal.find('input[name=class]').val(motorclass);
 
 		if (code.length) {
@@ -34,7 +40,6 @@ $(function() {
 				required: true,
 				maxlength: {{ max_length_code }}
 			},
-			description: 'required',
 			class: {
 				required: true,
 				maxlength: 4
@@ -43,7 +48,6 @@ $(function() {
 		},
 		messages: {
 			code: "Please check the Code value (Max Length: {{ max_length_code }})",
-			description: 'Please check the four character class code'
 		},
 		submitHandler: function(form) {
 			form.submit();

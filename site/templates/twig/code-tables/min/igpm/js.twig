@@ -10,7 +10,7 @@ $(function() {
 
 		modal.find('input[name=code]').val(code);
 		modal.find('input[name=description]').val(description);
-		modal.find('input[name=sales_program]').val(sales_program);
+		modal.find('select[name=sales_program]').val(sales_program);
 
 		if (code.length) {
 			modal.find('.modal-title').text('Editing Code ' + code);
@@ -35,12 +35,10 @@ $(function() {
 				required: true,
 				maxlength: {{ max_length_code }}
 			},
-			description: 'required',
 			sales_program: 'required'
 		},
 		messages: {
 			code: "Please check the Code value (Max Length: {{ max_length_code }})",
-			description: 'Please enter a description for the code',
 			sales_program: 'Please choose an option for sales program for the code'
 		},
 		submitHandler: function(form) {

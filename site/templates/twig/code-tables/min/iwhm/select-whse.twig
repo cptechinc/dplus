@@ -4,8 +4,13 @@
 	</div>
 	<div class="col">
 		<select name="{{ name }}" class="form-control" id="{{ name }}">
+			{% if (warehouse.isNew()) %}
+				<option value="self" id="{{ name ~ '_self'}}" selected>Self</option>
+			{% endif %}
 			{% for whse in warehouses %}
-				<option value="{{ whse.id }}" {{ whse.id == value ? 'selected' : ''}}>{{ whse.name }}</option>
+				<option value="{{ whse.id }}" {{ whse.id == value ? 'selected' : ''}}>
+					{{ whse.id }} - {{ whse.name }}
+				</option>
 			{% endfor %}
 		</select>
 	</div>

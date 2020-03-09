@@ -1,0 +1,250 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'/../CodeTablesResponse.php');
+
+use Purl\Url;
+
+use MsaSysopCodeQuery, MsaSysopCode;
+use SysopOptionalCodeQuery, SysopOptionalCode;
+
+/**
+ * Module that handles the editing of the SOPTM codetable
+ */
+class CodeTablesSoptm extends WireData implements Module {
+	const MODEL              = 'MsaSysopCode';
+	const MODEL_KEY          = 'id';
+	const DESCRIPTION        = 'Sales Order Optional Codes';
+	const DESCRIPTION_RECORD = 'Sales Order Optional Codes';
+	const MODEL_TABLE = 'sys_opt_options';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	public function init() {
+        $this->addHook('Page(pw_template=so-code-table)::get_sysopURL', function($event) {
+			$sysop = $event->arguments(0);
+			$event->return = $this->get_sysopURL($sysop);
+		});
+
+        $this->addHook('Page(pw_template=so-code-table)::get_codetable_optcode_deleteURL', function($event) {
+			$table = $event->arguments(0);
+            $system = $event->arguments(1);
+            $sysop = $event->arguments(2);
+			$code = $event->arguments(3);
+			$event->return = $this->get_codetable_optcode_deleteURL($table, $system, $sysop, $code);
+		});
+	}
+
+	/**
+	 * Return the Code records from Database filtered By System Optional Code
+	 * @param  string $sysop System Optional Code this code is Under
+	 * @return SysopOptionalCode[]|ObjectCollection
+	 */
+	public function get_codes($sysop) {
+		$q = $this->get_query($sysop);
+		return $q->find();
+	}
+
+	/**
+	 * Return SysopOptionalCode
+	 * @param  string $sysop System Optional Code this code is Under
+	 * @param  string $code  Optional Code
+	 * @return SysopOptionalCode
+	 */
+	public function get_code($sysop, $code) {
+		$q = $this->get_query($sysop);
+		return $q->findOneById($code);
+	}
+
+	/**
+	 * Returns if Codes Exists
+	 * @param  string $sysop System Optional Code this code is Under
+	 * @param  string $code  Optional Code
+	 * @return bool
+	 */
+	public function code_exists($sysop, $code) {
+		$q = $this->get_query($sysop);
+		return boolval($q->filterById($code)->count());
+	}
+
+	/**
+	 * Returns the SysopOptionalCodeQuery filtered by IN system AND System Optional Code
+	 * @param  string $sysop System Optional Code to filter By
+	 * @return SysopOptionalCodeQuery
+	 */
+	public function get_query($sysop) {
+		$q = SysopOptionalCodeQuery::create();
+		$q->filterByOpt_code($sysop);
+
+		$q->filterBySystem(MsaSysopCode::SYSTEM_SO);
+		return $q;
+	}
+
+	/**
+	 * Return MsaSysopCodeQuery filtered for IN
+	 * @return MsaSysopCodeQuery
+	 */
+	public function get_query_sysop() {
+		$q = MsaSysopCodeQuery::create();
+		return $q->filterBySystem(MsaSysopCode::SYSTEM_SO);
+	}
+
+	/**
+	 * Return System Options
+	 * @return MsaSysopCode[]
+	 */
+	public function get_sysops() {
+		$q = $this->get_query_sysop();
+		return $q->find();
+	}
+
+	/**
+	 * Return System Options
+	 * @param  string $sysop System Optional Code
+	 * @return MsaSysopCode
+	 */
+	public function get_sysop($sysop) {
+		$q = $this->get_query_sysop();
+		return $q->findOneById($sysop);
+	}
+
+	/**
+	 * Takes Input, validates it's for one of the code tables
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * NOTE: If an existing code is more than MsaSysopCode::MAX_LENGTH_CODE, we will allow editing
+	 * but we won't allow creation of a code with more than allowed characters we will trim it.
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$table = $input->$rm->text('table');
+		$code  = $input->$rm->text('code');
+        $sysop = $input->$rm->text('sysop');
+
+		$q = $this->get_query($sysop);
+		$q->filterByCode($code);
+
+		if ($q->count()) {
+			$record = $q->findOne();
+		} else {
+			$code  = $input->$rm->text('code', array('maxLength' => SysopOptionalCode::MAX_LENGTH_CODE));
+			$record = new SysopOptionalCode();
+			$record->setCode($code);
+		}
+
+		if ($input->$rm->text('action') == 'remove-code') {
+			$record->delete();
+		} else {
+			$description = $input->$rm->text('description');
+            $sysop = $input->$rm->text('sysop');
+            $system = MsaSysopCode::SYSTEM_SO;
+			$record->setDescription($description);
+            $record->setOpt_code($sysop);
+            $record->setSystem($system);
+			$record->setDate(date('Ymd'));
+			$record->setTime(date('His'));
+			$record->setDummy('P');
+		}
+
+		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $sysop, $code, $record);
+	}
+
+	/**
+	 * Returns CodeTablesResponse based on the outcome of the database save
+	 *
+	 * @param  string $table  Table Code
+	 * @param  string $code   Code being added
+	 * @param  bool   $is_new Was the Record in the database before Save?
+	 * @param  bool   $saved  Was the Record Saved?
+	 * @return CodeTablesResponse
+	 */
+	protected function save_and_process_response($table, $sysop, $code, SysopOptionalCode $record) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new CodeTablesResponse();
+		$response->set_key($code);
+		$message = self::DESCRIPTION_RECORD . " ($code) was ";
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+			$message .= "not ";
+		}
+
+		if ($is_new) {
+			$message .= 'added';
+			$response->set_action(CodeTablesResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$message .= 'deleted';
+			$response->set_action(CodeTablesResponse::CRUD_DELETE);
+		} else {
+			$message .= 'updated';
+			$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+		}
+
+		$response->set_message($message);
+
+		if ($response->has_success()) {
+			$this->update_dplus_cobol($table, $sysop, $code);
+		}
+		return $response;
+	}
+
+    /**
+	 * Sends Dplus Cobol that Code Table has been Update
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return void
+	 */
+	public function update_dplus_cobol($table, $sysop, $code) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$table = strtoupper($table);
+        $system = MsaSysopCode::SYSTEM_SO;
+		$data = array("DBNAME=$dplusdb", 'UPDATEOPTCODE', "SYS=$system", "CODE=$sysop", "ID=$code");
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+	/**
+	 * Return the Max Length of characters for the code
+	 * NOTE: Used for the JS
+	 * @return int
+	 */
+	public function get_max_length_code() {
+		return MsaSysopCode::MAX_LENGTH_CODE;
+	}
+
+	public function get_sysopURL($sysop) {
+		$url = new Url($this->wire('pages')->get("pw_template=so-code-table, name=soptm")->url);
+		$url->query->set('sysop', $sysop);
+		return $url->getUrl();
+	}
+
+    public function get_codetable_optcode_deleteURL($table, $system, $sysop, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=so-code-table, name=$table")->url);
+		$url->query->set('action', 'remove-code');
+		$url->query->set('table', $table);
+        $url->query->set('system', $system);
+        $url->query->set('sysop', $sysop);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus SOPTM Code Table CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for the SOPTM code table',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

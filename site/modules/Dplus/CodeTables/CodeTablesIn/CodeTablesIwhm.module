@@ -1,6 +1,6 @@
 <?php namespace ProcessWire;
 
-include_once(__DIR__.'../CodeTablesResponse.php');
+include_once(__DIR__.'/../CodeTablesResponse.php');
 
 use Purl\Url;
 
@@ -111,6 +111,15 @@ class CodeTablesIwhm extends WireData implements Module {
 
 		if ($input->$rm->text('action') == 'remove-code') {
 			$record->delete();
+
+			if ($record->isDeleted()) {
+				$notes_m = $this->wire('modules')->get('CodeTablesIwhmNotes');
+				$notetypes = $notes_m->get_notetypes();
+
+				foreach ($notetypes as $notetype) {
+					$notes_m->delete_notes($notetype, $whseID);
+				}
+			}
 		} else {
 			$record->setName($input->$rm->text('name'));
 			$this->process_warehouse_input($record, $input);
@@ -120,8 +129,6 @@ class CodeTablesIwhm extends WireData implements Module {
 		}
 		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $whseID, $record);
 	}
-
-
 
 	public function process_warehouse_input($warehouse, WireInput $input) {
 		$config_in = ConfigInQuery::create()->findOne();
@@ -138,9 +145,8 @@ class CodeTablesIwhm extends WireData implements Module {
 		$warehouse->setBin_qcrga($input->$rm->text('bin_qcrga'));
 		$warehouse->setConsignment($input->$rm->text('consignment'));
 
-		$warehouse->setWhse_profit($input->$rm->text('whse_profit'));
-		$warehouse->setWhse_asset($input->$rm->text('whse_asset'));
-		$warehouse->setWhse_supply($input->$rm->text('whse_supply'));
+		$this->process_sub_warehouses($warehouse, $input);
+
 		$warehouse->setArranged($input->$rm->text('arranged'));
 		$warehouse->setPhone_ext($input->$rm->text('phone_ext'));
 
@@ -157,6 +163,24 @@ class CodeTablesIwhm extends WireData implements Module {
 		if ($config_in->use_controlbin()) {
 			$warehouse->setBin_production($input->$rm->text('bin_production'));
 		}
+	}
+
+	/**
+	 * Sets the Profit, Asset, Supply Warehouses
+	 * NOTE: if the value is "self", we will assign the current warehouse ID, as those values
+	 * @param  Warehouse $warehouse Warehouse
+	 * @param  WireInput $input     Input Data
+	 * @return void
+	 */
+	public function process_sub_warehouses(Warehouse $warehouse, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$input->$rm->whse_profit = $input->$rm->text('whse_profit') == 'self' ? $warehouse->id : $input->$rm->text('whse_profit');
+		$input->$rm->whse_supply = $input->$rm->text('whse_supply') == 'self' ? $warehouse->id : $input->$rm->text('whse_supply');
+		$input->$rm->whse_asset  = $input->$rm->text('whse_asset') == 'self' ? $warehouse->id : $input->$rm->text('whse_asset');
+
+		$warehouse->setWhse_profit($input->$rm->text('whse_profit'));
+		$warehouse->setWhse_asset($input->$rm->text('whse_asset'));
+		$warehouse->setWhse_supply($input->$rm->text('whse_supply'));
 	}
 
 	/**

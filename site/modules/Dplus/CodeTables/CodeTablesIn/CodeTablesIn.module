@@ -1,6 +1,6 @@
 <?php namespace ProcessWire;
 
-include_once(__DIR__.'../CodeTablesResponse.php');
+include_once(__DIR__.'/../CodeTablesResponse.php');
 
 use Purl\Url;
 
@@ -59,6 +59,14 @@ class CodeTablesIn extends WireData implements Module {
 		'tarm' => array(
 			'code'   => 'tarm',
 			'module' => 'CodeTablesTarm'
+		),
+		'iarn' => array(
+			'code'   => 'iarn',
+			'module' => 'CodeTablesIarn'
+		),
+		'ioptm' => array(
+			'code'   => 'ioptm',
+			'module' => 'CodeTablesIoptm'
 		)
 	);
 
