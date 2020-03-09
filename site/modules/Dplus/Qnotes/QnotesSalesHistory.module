@@ -1,6 +1,7 @@
 <?php namespace ProcessWire;
 
 use SalesHistoryNotesQuery, SalesHistoryNotes;
+use SalesHistoryQuery, SalesHistory;
 use ConfigArQuery, ConfigAr;
 
 include_once(__DIR__.'/QnotesResponse.php');
@@ -106,13 +107,21 @@ class QnotesSalesHistory extends WireData implements Module {
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 
-		switch ($input->$rm->text('action')) {
-			case 'update-notes':
-				$this->update_notes_input($input);
-				break;
-			case 'delete-notes':
-				$this->delete_notes_input($input);
-				break;
+		$lookup_orders = $this->wire('modules')->get('LookupSalesOrder');
+		$ordn = $input->$rm->text('ordn');
+
+		if ($lookup_orders->lookup_salesorder($ordn)) {
+			$this->wire('modules')->get('QnotesSalesOrder')->process_input($input);
+
+		} else {
+			switch ($input->$rm->text('action')) {
+				case 'update-notes':
+					$this->update_notes_input($input);
+					break;
+				case 'delete-notes':
+					$this->delete_notes_input($input);
+					break;
+			}
 		}
 	}
 

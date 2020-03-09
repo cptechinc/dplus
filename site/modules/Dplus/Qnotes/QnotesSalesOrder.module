@@ -105,14 +105,20 @@ class QnotesSalesOrder extends WireData implements Module {
 	 */
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
+		$lookup_orders = $this->wire('modules')->get('LookupSalesOrder');
+		$ordn = $input->$rm->text('ordn');
 
-		switch ($input->$rm->text('action')) {
-			case 'update-notes':
-				$this->update_notes_input($input);
-				break;
-			case 'delete-notes':
-				$this->delete_notes_input($input);
-				break;
+		if ($lookup_orders->lookup_saleshistory($ordn)) {
+			$this->wire('modules')->get('QnotesSalesHistory')->process_input($input);
+		} else {
+			switch ($input->$rm->text('action')) {
+				case 'update-notes':
+					$this->update_notes_input($input);
+					break;
+				case 'delete-notes':
+					$this->delete_notes_input($input);
+					break;
+			}
 		}
 	}
 
