@@ -226,8 +226,8 @@ class DpagesMin extends Dpages implements Module {
 			'name'           => 'itm',
 			'title'          => 'ITM',
 			'summary'        => 'View / Edit Item',
-			'parent'         => '/min/inmain/',
-			'dplus_function' => 'itm'
+			'parent'         => '/min/inmain/itm/',
+			'dplus_function' => ''
 		),
 	);
 

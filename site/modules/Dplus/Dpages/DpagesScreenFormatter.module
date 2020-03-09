@@ -34,34 +34,18 @@ class DpagesScreenFormatter extends Dpages implements Module {
 		),
 		'formatter-screen' => array(
 			'name'   => 'formatter-screen',
-			'fields' => array('title', 'jsoncode', 'formatter', 'summary', 'twig_include'),
+			'fields' => array('title', 'jsoncode', 'formatter', 'summary', 'twig_include', 'dplus_function'),
 			'paginated' => true
 		)
 	);
 
 	const PAGES = array(
-		'screen-formatter-menu' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'screen-formatters',
-			'title'          => 'Screen Formatters',
-			'summary'        => 'Screen Formatters Menu',
-			'parent'         => '/user/',
-			'pw_template'    => 'formatter-menu'
-		),
-		'ii-formatter-menu' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'ii',
-			'title'          => 'II Screen Formatters',
-			'summary'        => 'II Screen Formatters Menu',
-			'parent'         => '/user/screen-formatters/',
-			'pw_template'    => 'formatter-menu'
-		),
 		'ii-sales-orders' => array(
 			'template'       => 'formatter-screen',
 			'name'           => 'sales-orders',
 			'title'          => 'II Sales Orders',
 			'summary'        => 'II Sales Orders Formatter',
-			'parent'         => '/user/screen-formatters/ii/',
+			'parent'         => '/mii/admin/',
 			'formatter'      => 'SfIiSalesOrders',
 			'jsoncode'       => 'ii-sales-orders',
 			'twig_include'   => 'items/ii/sales-orders/sales-orders.twig'
@@ -71,7 +55,7 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'name'           => 'sales-history',
 			'title'          => 'II Sales History',
 			'summary'        => 'II Sales History Formatter',
-			'parent'         => '/user/screen-formatters/ii/',
+			'parent'         => '/mii/admin/',
 			'formatter'      => 'SfIiSalesHistory',
 			'jsoncode'       => 'ii-sales-history',
 			'twig_include'   => 'items/ii/sales-history/sales-history.twig'
@@ -81,7 +65,7 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'name'           => 'quotes',
 			'title'          => 'II Quotes',
 			'summary'        => 'II Quotes Formatter',
-			'parent'         => '/user/screen-formatters/ii/',
+			'parent'         => '/mii/admin/',
 			'formatter'      => 'SfIiQuotes',
 			'jsoncode'       => 'ii-quotes',
 			'twig_include'   => 'items/ii/quotes/quotes.twig'
@@ -91,7 +75,7 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'name'           => 'purchase-orders',
 			'title'          => 'II Purchase Orders',
 			'summary'        => 'II Purchase Orders Formatter',
-			'parent'         => '/user/screen-formatters/ii/',
+			'parent'         => '/mii/admin/',
 			'formatter'      => 'SfIiPurchaseOrders',
 			'jsoncode'       => 'ii-purchase-orders',
 			'twig_include'   => 'items/ii/purchase-orders/purchase-orders.twig'
@@ -101,18 +85,10 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'name'           => 'purchase-history',
 			'title'          => 'II Purchase History',
 			'summary'        => 'II Purchase History Formatter',
-			'parent'         => '/user/screen-formatters/ii/',
+			'parent'         => '/mii/admin/',
 			'formatter'      => 'SfIiPurchaseHistory',
 			'jsoncode'       => 'ii-purchase-history',
 			'twig_include'   => 'items/ii/purchase-history/purchase-history.twig'
-		),
-		'ci-formatter-menu' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'ci',
-			'title'          => 'CI Screen Formatters',
-			'summary'        => 'CI Screen Formatters Menu',
-			'parent'         => '/user/screen-formatters/',
-			'pw_template'    => 'formatter-menu'
 		),
 		'ci-sales-orders' => array(
 			'template'       => 'formatter-screen',
@@ -163,14 +139,6 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'formatter'      => 'SfCiPayments',
 			'jsoncode'       => 'ci-payments',
 			'twig_include'   => 'customers/ci/payments/payments.twig'
-		),
-		'vi-formatter-menu' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'vi',
-			'title'          => 'VI Screen Formatters',
-			'summary'        => 'VI Screen Formatters Menu',
-			'parent'         => '/user/screen-formatters/',
-			'pw_template'    => 'formatter-menu'
 		),
 		'vi-purchase-orders' => array(
 			'template'       => 'formatter-screen',

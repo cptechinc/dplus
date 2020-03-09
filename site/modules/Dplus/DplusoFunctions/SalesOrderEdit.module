@@ -1,12 +1,19 @@
 <?php namespace ProcessWire;
 
 use Purl\Url;
+
+// Dplus Data Database
 use SalesOrderQuery, SalesOrder;
-use OrdrhedQuery, Ordrhed;
-use StatesQuery, States;
-use ShipviaQuery, Shipvia;
 use CustomerShiptoQuery, CustomerShipto;
 use WarehouseQuery, Warehouse;
+use ItemMasterItemQuery, ItemMasterItem;
+
+// Session Based Database
+use OrdrhedQuery, Ordrhed;
+use OrdrdetQuery, Ordrdet;
+use StatesQuery, States;
+use ShipviaQuery, Shipvia;
+
 
 class SalesOrderEdit extends WireData implements Module {
 
@@ -38,6 +45,17 @@ class SalesOrderEdit extends WireData implements Module {
 			$url->query->set('linenbr', $linenbr);
 			$event->return = $url->getUrl();
 		});
+
+		$this->addHook('Page(pw_template=sales-order-edit)::get_itm_lookupURL', function($event) {
+			$url = new Url($this->wire('pages')->get('pw_template=itm-json')->httpUrl);
+			$url->query->set('json', 'true');
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=sales-order-edit)::get_ii_lookupURL', function($event) {
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item-lookup')->httpUrl);
+			$event->return = $url->getUrl();
+		});
 	}
 
 	/**
@@ -47,6 +65,23 @@ class SalesOrderEdit extends WireData implements Module {
 	 */
 	public function has_ordn() {
 		return boolval($this->ordn);
+	}
+
+	/**
+	 * Sets Order Number
+	 *
+	 * @return string
+	 */
+	public function set_ordn($ordn) {
+		$this->ordn = $ordn;
+	}
+
+	/**
+	 * Return Sales Order Number
+	 * @return string
+	 */
+	public function get_ordn() {
+		return $this->ordn;
 	}
 
 	/**
@@ -60,7 +95,6 @@ class SalesOrderEdit extends WireData implements Module {
 
 	/**
 	 * Returns Editable Sales Order
-	 *
 	 * @return Ordrhed
 	 */
 	public function get_order_edit() {
@@ -68,12 +102,11 @@ class SalesOrderEdit extends WireData implements Module {
 	}
 
 	/**
-	 * Sets Order Number
-	 *
-	 * @return string
+	 * Return Order Items
+	 * @return Ordrdet[]
 	 */
-	public function set_ordn($ordn) {
-		$this->ordn = $ordn;
+	public function get_order_edit_items() {
+		return OrdrdetQuery::create()->filterBySessionidOrder(session_id(), $this->ordn)->find();
 	}
 
 	/**
@@ -125,7 +158,16 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @return string Customer ID
 	 */
 	public function get_custid() {
-		return  SalesOrderQuery::create()->select(SalesOrder::get_aliasproperty('custid'))->findOneByOrdernumber($this->ordn);
+		return SalesOrderQuery::create()->select(SalesOrder::get_aliasproperty('custid'))->findOneByOrdernumber($this->ordn);
+	}
+
+	/**
+	 * Return temMasterItem
+	 * @param  string $itemID Item ID
+	 * @return ItemMasterItem
+	 */
+	public function get_im_item($itemID) {
+		return ItemMasterItemQuery::create()->findOneByItemid($itemID);
 	}
 
 	/**
@@ -134,14 +176,14 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @return void
 	 */
 	public function request_itemsearch($q) {
-		$http = new WireHttp();
-		$url = new Url('127.0.0.1');
-		$url->path = $this->wire('pages')->get('template=redir,redir_file=ii')->url;
+		$order = $this->get_order_static();
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$url = new Url($this->wire('pages')->get('template=redir,redir_file=ii')->url);
 		$url->query->set('action', 'item-search');
 		$url->query->set('q', $q);
-		$url->query->set('custID', $this->get_custid());
+		$url->query->set('custID', $order->custid);
 		$url->query->set('sessionID', session_id());
-		$http->get($url->getUrl());
+		$requestor->self_request($url->getUrl());
 	}
 
 

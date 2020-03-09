@@ -101,9 +101,9 @@
 			$editorder->setShipstate($input->$requestmethod->text('shipto_state'));
 			$editorder->setShipzip($input->$requestmethod->text('shipto_zip'));
 			$editorder->setContact($input->$requestmethod->text('contact'));
-			$editorder->setPhone(str_replace('-', '', $input->$requestmethod->text('phone')));
+			$editorder->setPhone($input->$requestmethod->text('phone'));
 			$editorder->setExtension($input->$requestmethod->text('phone_ext'));
-			$editorder->setFax(str_replace('-', '', $input->$requestmethod->text('fax')));
+			$editorder->setFax($input->$requestmethod->text('fax'));
 			$editorder->setEmail($input->$requestmethod->text('email'));
 			$editorder->setCustpo($input->$requestmethod->text('custpo'));
 			$editorder->setReleasenbr($input->$requestmethod->text('releasenumber'));
@@ -141,6 +141,27 @@
 			$custID = SalesOrderQuery::create()->get_custid($ordn);
 			$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "ITEMID=$itemID", "QTY=$qty", "CUSTID=$custID");
 			$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
+			break;
+		case 'add-popular-items':
+			$ordn = $input->$requestmethod->text('ordn');
+			$data = array("DBNAME=$dplusdb", 'ORDERADDMULTIPLE', "ORDERNO=$ordn");
+			$qtys = $input->$requestmethod->array('qty');
+			$itemIDs = $input->$requestmethod->array('itemID');
+
+			for ($i = 0; $i < sizeof($qtys); $i++) {
+				if (!empty($qtys[$i])) {
+					$itemID = str_pad($itemIDs[$i], 30, ' ');
+					$qty = $qtys[$i];
+					$data[] = "ITEMID={$itemID}QTY=$qty";
+				}
+			}
+
+			if ($input->$requestmethod->page) {
+				$url = new Purl\Url($input->$requestmethod->text('page'));
+				$session->loc = $url->getUrl();
+			} else {
+				$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
+			}
 			break;
 		case 'remove-line':
 			$ordn = $input->$requestmethod->text('ordn');

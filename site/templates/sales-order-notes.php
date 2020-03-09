@@ -18,7 +18,7 @@
 					$order = SalesHistoryQuery::create()->findOneByOrdernumber($ordn);
 				}
 				$page->title = "Sales Order #$ordn Notes";
-				$page->body = $config->twig->render('sales-orders/sales-order/qnotes-page.twig', ['page' => $page, 'user' => $user, 'ordn' => $ordn, 'order' => $order, 'items' => $order_items, 'qnotes_so' => $module_qnotes]);
+				$page->body = $config->twig->render('sales-orders/sales-order/qnotes-page.twig', ['page' => $page, 'user' => $user, 'ordn' => $ordn, 'order' => $order, 'qnotes_so' => $module_qnotes]);
 				$page->body .= $config->twig->render('sales-orders/sales-order/notes/add-note-modal.twig', ['page' => $page, 'ordn' => $ordn, 'qnotes_so' => $module_qnotes]);
 				$config->scripts->append(hash_templatefile('scripts/orders/order-notes.js'));
 			} else {
@@ -26,7 +26,7 @@
 				$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->headline, 'msg' => "Check if the Order Number is correct or if it is in Sales History"]);
 			}
 		} else {
-			$page->body = $config->twig->render('sales-orders/sales-order-lookup.twig', ['page' => $page]);
+			$page->body = $config->twig->render('sales-orders/sales-order/lookup-form.twig', ['page' => $page]);
 		}
 	}
 

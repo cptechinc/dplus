@@ -34,7 +34,7 @@
 
 			$query_useractions = $module_useractions->get_actionsquery($input);
 			$actions = $query_useractions->filterBySalesorderlink($ordn)->find();
-			$page->body =  $config->twig->render("sales-orders/sales-$type/sales-$type-page.twig", ['page' => $page, 'order' => $order, 'user' => $user, 'document_management' => $document_management]);
+			$page->body =  $config->twig->render("sales-orders/sales-$type/sales-$type-page.twig", ['page' => $page, 'order' => $order, 'user' => $user, 'document_management' => $document_management, 'company' => $config->company, 'loader' => $config->twig->getLoader()]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-tracking.twig', ['page' => $page, 'order' => $order, 'urlmaker' => $modules->get('DplusURLs')]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/documents.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'ordn' => $ordn]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/qnotes.twig', ['page' => $page, 'qnotes_so' => $module_qnotes, 'ordn' => $ordn]);
@@ -48,7 +48,7 @@
 			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Check if the Order Number is correct or if it is in Sales History"]);
 		}
 	} else {
-		$page->body = $config->twig->render('sales-orders/sales-order-lookup.twig', ['page' => $page]);
+		$page->body = $config->twig->render('sales-orders/sales-order/lookup-form.twig', ['page' => $page]);
 	}
 
 	if ($page->print) {

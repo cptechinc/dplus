@@ -1,24 +1,37 @@
-<h3 class="font-weight-bold text-secondary mt-4">Cart Items</h3>
+<div class="row">
+	<div class="col-6">
+		<h3 class="font-weight-bold text-secondary mt-4">Cart Items</h3>
+	</div>
+	<div class="col-6">
+		<button type="button" class="btn btn-primary collapse" data-toggle="modal" data-target="#last-sales-modal">
+			View Customer's Popular Items
+		</button>
+	</div>
+</div>
 <div class="bg-dark text-white font-weight-bold pt-3 px-3 pb-1">
 	<div class="row">
 		<div class="col-sm-3">Item ID</div>
 		<div class="col-sm-2 text-right">Qty</div>
 		<div class="col-sm-2 text-right">Price</div>
-		<div class="col-sm-2 text-right">Total Price</div>
+		<div class="col-sm-2 text-right">Amount</div>
 		<div class="col-sm-3 "></div>
 	</div>
 </div>
-
+<div class="pb-3"></div>
 {% for detail in cart.get_items() %}
-	<form action="{{ page.formurl }}" class="row pt-3 px-3 allow-enterkey-submit">
+	{% set item = cart.get_im_item(detail.itemid) %}
+	<form action="{{ page.formurl }}" class="form-row px-3 allow-enterkey-submit">
 		<input type="hidden" name="action" value="quick-update-line">
 		<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
 		<div class="col-sm-4">
-			{{ detail.itemid }}</br>
+			{{ detail.itemid }}
+			<br>
 			<small>{{ detail.desc1 }}</small>
+			<br>
+			<small>Avg Wgt: {{ item.weight }}</small>
 		</div>
 		<div class="col-sm-1 text-right">
-			<input type="text" class="form-control text-right qty-input" size="4" name="qty" value="{{ detail.qty|number_format() }}"></input>
+			<input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}"></input>
 		</div>
 		<div class="col-sm-2 text-right">
 			<div class="input-group">

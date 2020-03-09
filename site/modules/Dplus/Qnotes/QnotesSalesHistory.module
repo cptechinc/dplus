@@ -98,15 +98,62 @@ class QnotesSalesHistory extends WireData implements Module {
 	}
 
 	/**
-	 * Takes Input, Processes it, updates Sales History Notes
+	 * Takes Input, Processes it, updates Sales Order Notes in the Database
 	 *
 	 * @param  WireInput $input Input
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$ordn  = $input->$rm->text('ordn');
 
+		switch ($input->$rm->text('action')) {
+			case 'update-notes':
+				$this->update_notes_input($input);
+				break;
+			case 'delete-notes':
+				$this->delete_notes_input($input);
+				break;
+		}
+	}
+
+	/**
+	 * Takes Input, Processes it, deletes Sales History Notes
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function delete_notes_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$ordn  = $input->$rm->text('ordn');
+		$linenbr = $input->$rm->text('linenbr');
+		$form    = $input->$rm->text('form');
+		$q = $this->get_query();
+		$q->filterByOrdernumber($ordn);
+		$q->filterByLine($linenbr);
+		$q->filterByForm($form);
+
+		if ($q->count()) {
+			$note = $q->findOne();
+		} else {
+			$note = new SalesHistoryNotes();
+			$note->setOrdernumber($ordn);
+			$note->setLine($linenbr);
+			$note->setForm($form);
+		}
+		$success = $this->delete_notes($ordn, $linenbr, $form);
+
+		$this->wire('session')->response_qnote = $this->process_response_delete($note, $ordn, $success);
+	}
+
+	/**
+	 * Takes Input, Processes it, updates Sales History Notes
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function update_notes_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$ordn  = $input->$rm->text('ordn');
 
 		$linenbr = $input->$rm->text('linenbr');
 		$form    = $input->$rm->text('form');
@@ -148,7 +195,7 @@ class QnotesSalesHistory extends WireData implements Module {
 			$record->setDummy('P');
 			$lines_saved[$sequence] = $record->save();
 		}
-		$this->wire('session')->response_codetable = $this->process_responses($record, $ordn, $lines_saved);
+		$this->wire('session')->response_qnote = $this->process_responses($record, $ordn, $lines_saved);
 	}
 
 	/**
@@ -158,7 +205,7 @@ class QnotesSalesHistory extends WireData implements Module {
 	 * @return CodeTableResponse
 	 */
 	protected function process_responses(SalesHistoryNotes $note, $ordn, array $lines_saved) {
-		$message = self::DESCRIPTION_RESPONSE . " ($ordn) Note Lines";
+		$message = self::DESCRIPTION_RESPONSE . " ($ordn) Notes";
 
 		$response = new QnotesResponse();
 		$response->set_key("$ordn-{$note->line}-{$note->form}");
@@ -184,6 +231,37 @@ class QnotesSalesHistory extends WireData implements Module {
 
 		// IF there are lines saved
 		if (sizeof($lines_saved)) {
+			$this->wire('modules')->get('Qnotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+		}
+		return $response;
+	}
+
+	/**
+	 * Return QnoteResponse based if Notes were able to be Deleted
+	 * @param  SalesHistoryNotes $note         Attributes are needed to generate key
+	 * @param  string            $ordn         Sales History Number
+	 * @param  array             $success      Were Notes able to be deleted?
+	 * @return QnoteResponse
+	 */
+	public function process_response_delete(SalesHistoryNotes $note, $ordn, bool $success) {
+		$message = self::DESCRIPTION_RESPONSE . " ($ordn) Notes ";
+
+		$response = new QnotesResponse();
+		$response->set_key("$ordn-{$note->line}-{$note->form}");
+
+		if ($success) {
+			$response->set_success(true);
+			$message .= " were able to be deleted";
+		} else {
+			$response->set_success(true);
+			$message .= " were not able to be deleted";
+		}
+
+		$response->set_action(QnotesResponse::CRUD_DELETE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if ($success) {
 			$this->wire('modules')->get('Qnotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
 		}
 		return $response;

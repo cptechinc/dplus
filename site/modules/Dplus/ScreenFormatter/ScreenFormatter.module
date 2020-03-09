@@ -38,7 +38,7 @@ class ScreenFormatter extends WireData implements Module {
 	 * User ID
 	 * @var string
 	 */
-	protected $userID;
+	protected $userID = 'default';
 
 	/**
 	 * Screen Formatter Code
@@ -265,6 +265,9 @@ class ScreenFormatter extends WireData implements Module {
 		if ($this->does_formatterexist($this->userID, $this->code)) {
 			$this->formatter = $this->load_dbformatter($this->userID, $this->code);
 			$this->source = 'database';
+		} if ($this->does_formatterexist('default', $this->code)) {
+			$this->formatter = $this->load_dbformatter('default', $this->code);
+			$this->source = 'database-default';
 		} else {
 			$this->formatter = file_get_contents(__DIR__."/default/$this->code.json");
 			$this->source = 'default';
@@ -286,8 +289,10 @@ class ScreenFormatter extends WireData implements Module {
 	 * Returns if user has a formatter for this type saved
 	 * @return bool             Does User have a formatter
 	 */
-	protected function does_formatterexist($userID, $formatter) {
-		$q = TableformatterQuery::create()->filterByUserFormattertype($userID, $formatter);
+	public function does_formatterexist($userID, $formatter) {
+		$q = TableformatterQuery::create();
+		$q->filterByUser($userID);
+		$q->filterByFormattertype($formatter);
 		return boolval($q->count());
 	}
 
@@ -298,7 +303,9 @@ class ScreenFormatter extends WireData implements Module {
 	 */
 	public function save() {
 		if ($this->does_formatterexist($this->userID, $this->code)) {
-			$q = TableformatterQuery::create()->filterByUserFormattertype($this->userID, $this->code);
+			$q = TableformatterQuery::create();
+			$q->filterByUser($this->userID);
+			$q->filterByFormattertype($this->code);
 			$formatter = $q->findOne();
 		} else {
 			$formatter = new Tableformatter();
@@ -416,6 +423,7 @@ class ScreenFormatter extends WireData implements Module {
 	 */
 	protected function generate_tableblueprint() {
 		$tablesections = array_keys($this->fields);
+		$this->formatter['cols'] = isset($this->formatter['cols']) ? $this->formatter['cols'] : 0;
 		$table = array('cols' => $this->formatter['cols']);
 
 		foreach ($tablesections as $section) {

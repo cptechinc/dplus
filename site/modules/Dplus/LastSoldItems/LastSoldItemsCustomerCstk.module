@@ -1,0 +1,128 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+use CarthedQuery, Carthed;
+use CartdetQuery, Cartdet;
+use QnoteQuery, Qnote;
+use PricingQuery, Pricing;
+
+
+use ItemMasterItemQuery, ItemMasterItem;
+use CstkItemQuery, CstkItem;
+use CstkHeadQuery, CstkHead;
+
+class LastSoldItemsCustomerCstk extends WireData implements Module {
+
+	public function __construct() {
+		$this->custID = '';
+		$this->shiptoID = '';
+		$this->function = 'cstk';
+	}
+
+	/**
+	 * Return if there are CstKItems for Customer, Shipto
+	 * @return bool
+	 */
+	public function has_cstk_items() {
+		$q = CstkHeadQuery::create();
+		$q->filterByCustidShiptoid($this->custID, $this->shiptoID);
+		$q->filterByType(CstkHead::TYPE_ORDER);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return CstKItems for Customer, Shipto
+	 * @return CstkItem[]|ObjectCollection
+	 */
+	public function get_cstk_items() {
+		$cstk = $this->get_cstk_head();
+		$q = $this->get_cstk_item_query($cstk);
+		return $q->find();
+	}
+
+	/**
+	 * Return CstKItems for Customer, Shipto
+	 * @return array
+	 */
+	public function get_cstk_itemids() {
+		$cstk = $this->get_cstk_head();
+		$q = $this->get_cstk_item_query($cstk);
+		$q->select(CstkItem::get_aliasproperty('itemid'));
+		return $q->find()->toArray();
+	}
+
+	/**
+	 * Sends HTTP POST Request to get Item Pricing for the ItemIDs in the CSTK
+	 * @return void
+	 */
+	public function request_pricing() {
+		if ($this->has_cstk_items() && $this->wire('session')->getFor($this->function, 'cstk-pricing-lastrequested') < strtotime('-10 minutes')) {
+			$requestor = $this->wire('modules')->get('DplusRequest');
+			$path = $this->wire('pages')->get('template=redir,redir_file=ii')->url;
+			$data = array(
+				'sessionID' => session_id(),
+				'action' => 'item-pricing-multiple',
+				'custID' => $this->custID,
+				'itemID' => $this->get_cstk_itemids(),
+			);
+			$requestor->self_request_post($path, $data);
+			$this->wire('session')->setFor($this->function, 'cstk-pricing-lastrequested', strtotime('now'));
+		}
+	}
+
+	/**
+	 * Returns Price for Item
+	 * NOTE: Record must be loaded
+	 * @param  string $itemID Item ID
+	 * @return float
+	 */
+	public function get_item_pricing($itemID) {
+		$q = PricingQuery::create();
+		$q->select('price');
+		$q->filterBySessionid(session_id());
+		$q->filterByItemid($itemID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Returns CstkHead for Customer, ShiptoID
+	 * @return CstkHead
+	 */
+	protected function get_cstk_head() {
+		$q = CstkHeadQuery::create();
+		$q->filterByCustidShiptoid($this->custID, $this->shiptoID);
+		$q->filterByType(CstkHead::TYPE_ORDER);
+		return $q->findOne();
+	}
+
+	/**
+	 * Returns Query for CSTK Items
+	 * @param  CstkHead $cstk
+	 * @return CstkItemQuery
+	 */
+	protected function get_cstk_item_query(CstkHead $cstk) {
+		$q = CstkItemQuery::create();
+		$q->filterByCustidShiptoid($cstk->custid, $cstk->shiptoid);
+		$q->filterByCell($cstk->cell);
+		return $q;
+	}
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'LastSoldItems Customer CSTK Module',
+				'version' => 101,
+				'summary' => 'Retreives and Requests the last sold Items for customer using CSTK',
+				'singular' => true,
+				'autoload' => true,
+			);
+		}
+}

@@ -1,0 +1,36 @@
+<table class="table table-striped table-borderless">
+	<thead class="bg-dark text-white font-weight-bold">
+		<tr>
+			<th>Item ID</th>
+			<th>Cases</th>
+			<th class="text-right">Weight</th>
+			<th class="text-right">Price</th>
+			<th class="text-right">Amount</th>
+			<th class="text-right">Notes</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for detail in order.getSalesOrderDetails() %}
+			<tr>
+				<td>
+					<a href="{{ page.ii_itemURL(detail.itemid)}}" class="link" target="_blank" aria-label="View item in II" title="View item in II">
+						{{ detail.itemid }}
+					</a>
+					<br>
+					<small>{{ detail.desc1 }}</small>
+					<br>
+					<small>Avg Weight: {{ detail.item.weight }} lbs</small>
+				</td>
+				<td class="text-right">{{ detail.qty_cases }}</td>
+				<td class="text-right">{{ detail.qty_ordered|number_format(3, '.', ',') }}</td>
+				<td class="text-right">$ {{ detail.price|currency }}</td>
+				<td class="text-right">$ {{ detail.total_price|currency }}</td>
+				<td class="text-right">
+					<a href="{{ page.view_notesURL(order.ordernumber, detail.linenbr) }}" class="h4 {{ detail.has_notes() ? 'text-success' : 'text-muted'}}">
+						<i class="fa fa-sticky-note" aria-hidden="true"></i>
+					</a>
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

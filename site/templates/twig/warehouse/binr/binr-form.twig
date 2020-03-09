@@ -58,15 +58,17 @@
 						<div class="input-group">
 							<input type="text" class="form-control input-sm text-right" name="qty" value="{{ config.default_qtyonhand or config.use_qtyonly ? item.qty : ''}}" {{ config.use_qtyonly ? 'readonly' : ''}}>
 							<span class="input-group-append">
-								<button type="submit" class="btn btn-primary not-round use-bin-qty" data-direction="from">Use Bin Qty</button>
+								<button type="submit" class="btn btn-primary use-bin-qty" data-direction="from">Use Bin Qty</button>
 							</span>
 						</div>
 					</div>
 				</div>
 			</div>
-			<button type="submit" class="btn btn-success not-round">Submit</button>
+			<button type="submit" class="btn btn-success">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Submit
+			</button>
 			&nbsp; &nbsp;
-			<a href="{{ page.url }}" class="btn btn-warning not-round">Cancel</a>
+			<a href="{{ page.url }}" class="btn btn-warning">Cancel</a>
 		</form>
 	</div>
 </div>

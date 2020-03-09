@@ -114,8 +114,8 @@ $config->customer = $pages->get('/config/customer/');
 
 $session->sessionid = session_id();
 
-$loader = new Twig_Loader_Filesystem($config->paths->templates.'twig/');
-$config->twig = new Twig_Environment($loader, [
+$config->twigloader = new Twig_Loader_Filesystem($config->paths->templates.'twig/');
+$config->twig = new Twig_Environment($config->twigloader, [
 	'cache' => $config->paths->templates.'twig/cache/',
 	'auto_reload' => true,
 	'debug' => true
