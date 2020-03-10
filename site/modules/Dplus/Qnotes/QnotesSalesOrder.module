@@ -18,6 +18,10 @@ class QnotesSalesOrder extends WireData implements Module {
 	const DESCRIPTION_RESPONSE = 'Sales Order ';
 	const MODEL_TABLE = 'notes_so_head_det';
 
+	public function allow_add(User $user, $ordn) {
+		return true;
+	}
+
 	/**
 	 * Return the Max Number of columns for Note Type
 	 * @return int

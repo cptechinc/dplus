@@ -19,6 +19,10 @@ class QnotesSalesHistory extends WireData implements Module {
 	const DESCRIPTION_RESPONSE = 'Sales History ';
 	const MODEL_TABLE = 'notes_sh_head_det';
 
+	public function allow_add(User $user, $ordn) {
+		return false;
+	}
+
 	/**
 	 * Return the Max Number of columns for Note Type
 	 * @return int
