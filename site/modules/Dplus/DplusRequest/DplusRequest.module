@@ -31,6 +31,12 @@ class DplusRequest extends WireData implements Module {
 		return $http->get("127.0.0.1".$fullpath);
 	}
 
+	/**
+	 * Send HTTP POST Request to URL
+	 * @param  string $path URL path with URL parameters
+	 * @param  array  $data Values to Send
+	 * @return bool
+	 */
 	public function self_request_post($path, $data) {
 		$http = new WireHttp();
 		$http->setData($data);
@@ -38,7 +44,12 @@ class DplusRequest extends WireData implements Module {
 		return $http->post("127.0.0.1".$fullpath);
 	}
 
-	private function get_self_path($path) {
+	/**
+	 * Returns path to send localhost requests
+	 * @param  string $path URL path with URL parameters
+	 * @return string
+	 */
+	public function get_self_path($path) {
 		$rootpath = $this->wire('config')->paths->root;
 		$patharray = explode('/', trim($rootpath, '/'));
 		$basepath = end($patharray);
