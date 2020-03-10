@@ -153,6 +153,16 @@ class Configs extends WireData implements Module {
 	}
 
 	/**
+	 * Returns if configs.json file exists
+	 * @return bool
+	 */
+	public function export_datafile_exists() {
+		$dir = $this->get_export_directory();
+		$configfile = $dir . self::CONFIG_FILE;
+		return file_exists($configfile);
+	}
+
+	/**
 	 * Returns Exported configs.json file
 	 * @return array
 	 */
@@ -229,7 +239,6 @@ class Configs extends WireData implements Module {
 		$results = array();
 		$modules = $this->wire('modules');
 
-
 		if (array_key_exists('configs', $data)) {
 			foreach ($data['configs'] as $class => $configdata) {
 				if ($modules->isInstalled($class)) {
@@ -281,8 +290,6 @@ class Configs extends WireData implements Module {
 			unlink($directory);
 		}
 	}
-
-
 
 /* =============================================================
 	ProcessWire Module Functions
