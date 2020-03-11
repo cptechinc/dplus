@@ -1,0 +1,44 @@
+$(function() {
+
+	$('#edit-code-modal').on('shown.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var code = button.data('code').toString(); // Extract info from data-* attributes
+		var description = button.data('description').toString(); // Extract info from data-* attributes
+
+		var modal = $(this);
+
+		modal.find('input[name=code]').val(code);
+		modal.find('input[name=description]').val(description);
+
+		if (code.length) {
+			modal.find('.modal-title').text('Editing Code ' + code);
+			modal.find('input[name=code]').prop("readonly", true);
+			modal.find('input[name=description]').focus();
+		} else {
+			modal.find('.modal-title').text('Adding a new Code');
+			modal.find('input[name=code]').prop("readonly", false);
+			modal.find('input[name=code]').focus();
+		}
+	});
+
+	$("#code-edit-form").validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			code: {
+				required: true,
+				maxlength: {{ max_length_code }}
+			},
+		},
+		messages: {
+			code: "Please check the Code value (Max Length: {{ max_length_code }})",
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+
+})
