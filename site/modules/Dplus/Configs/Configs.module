@@ -153,8 +153,8 @@ class Configs extends WireData implements Module {
 	}
 
 	/**
-	 * Returns if configs.json file exists
-	 * @return bool
+	 * Returns Exported configs.json file
+	 * @return array
 	 */
 	public function export_datafile_exists() {
 		$dir = $this->get_export_directory();
@@ -238,6 +238,7 @@ class Configs extends WireData implements Module {
 	public function import_configs(array $data) {
 		$results = array();
 		$modules = $this->wire('modules');
+
 
 		if (array_key_exists('configs', $data)) {
 			foreach ($data['configs'] as $class => $configdata) {
