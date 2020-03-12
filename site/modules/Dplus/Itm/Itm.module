@@ -5,6 +5,11 @@ include_once(__DIR__.'/ItmResponse.php');
 use Purl\Url;
 
 use ItemMasterItemQuery, ItemMasterItem;
+use ConfigInQuery, ConfigIn;
+use InvGroupCodeQuery, InvGroupCode;
+use InvPriceCodeQuery, InvPriceCode;
+use InvCommissionCodeQuery, InvCommissionCode;
+use InvStockCodeQuery, InvStockCode;
 
 /**
  * Module that handles the editing of the UPC item Xref
@@ -17,6 +22,7 @@ class Itm extends WireData implements Module {
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
+		$this->config = $this->get_config_in();
 	}
 
 	public function init() {
@@ -200,6 +206,52 @@ class Itm extends WireData implements Module {
 			$this->update_dplus_cobol($record);
 		}
 		return $response;
+	}
+
+	/**
+	 * Accessory Functions
+	 */
+
+	/**
+	  * Returns IN config
+	  * @return ConfigIn
+	  */
+	public function get_config_in() {
+		return ConfigInQuery::create()->findOne();
+	}
+
+
+
+	/**
+	 * Return Item Groups
+	 * @return InvGroupCode[]|ObjectCollection
+	 */
+	public function get_itemgroups() {
+		return InvGroupCodeQuery::create()->find();
+	}
+
+	/**
+	 * Return Price Codes
+	 * @return InvPriceCode[]|ObjectCollection
+	 */
+	public function get_pricecodes() {
+		return InvPriceCodeQuery::create()->find();
+	}
+
+	/**
+	 * Return Commission Codes
+	 * @return InvCommissionCode[]|ObjectCollection
+	 */
+	public function get_commissoncodes() {
+		return InvCommissionCodeQuery::create()->find();
+	}
+
+	/**
+	 * Return Stock Codes
+	 * @return InvStockCode[]|ObjectCollection
+	 */
+	public function get_stockcodes() {
+		return InvStockCodeQuery::create()->find();
 	}
 
 	/**

@@ -1,6 +1,5 @@
 <?php
 	$page->title = "ITM";
-
 	$itm = $modules->get('Itm');
 
 	if ($input->get->itemID) {
@@ -12,12 +11,9 @@
 		if ($q->count()) {
 			$page->title .= " $itemID";
 			$item = $q->findOne();
-			$itemgroups = InvGroupCodeQuery::create()->find();
-			$pricecodes = InvPriceCodeQuery::create()->find();
-			$commissioncodes = InvCommissionCodeQuery::create()->find();
 
 			$page->body .= $config->twig->render('items/itm/itm-links.twig', ['page' => $page, 'page_itm' => $page]);
-			$page->body .= $config->twig->render('items/itm/itm-form.twig', ['page' => $page, 'item' => $item, 'itemgroups' => $itemgroups, 'pricecodes' => $pricecodes, 'commissioncodes' => $commissioncodes]);
+			$page->body .= $config->twig->render('items/itm/itm-form.twig', ['page' => $page, 'item' => $item, 'm_itm' => $itm, 'itemgroups' => $itemgroups, 'pricecodes' => $pricecodes, 'commissioncodes' => $commissioncodes]);
 		} else {
 			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID $itemID not found in the Item Master"]);
 		}
