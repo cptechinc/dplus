@@ -80,7 +80,7 @@ class QnotesSalesHistory extends WireData implements Module {
 		$q->filterByOrdernumber($ordn);
 		$q->filterByLine($linenbr);
 		$q->filterByForm($form);
-		return $q->find();
+		return $q->find()->toArray();
 	}
 
 	/**
@@ -154,7 +154,6 @@ class QnotesSalesHistory extends WireData implements Module {
 			$note->setForm($form);
 		}
 		$success = $this->delete_notes($ordn, $linenbr, $form);
-
 		$this->wire('session')->response_qnote = $this->process_response_delete($note, $ordn, $success);
 	}
 

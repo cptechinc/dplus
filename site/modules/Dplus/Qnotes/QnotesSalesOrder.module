@@ -79,7 +79,7 @@ class QnotesSalesOrder extends WireData implements Module {
 		$q->filterByOrdernumber($ordn);
 		$q->filterByLine($linenbr);
 		$q->filterByForm($form);
-		return $q->find();
+		return $q->find()->toArray();
 	}
 
 	/**
