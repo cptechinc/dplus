@@ -19,12 +19,14 @@
 					$module_qnotes = $modules->get('QnotesSalesHistory');
 				}
 				$page->title = "Sales Order #$ordn Notes";
+
 				if ($session->response_qnote) {
-					$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->qnote]);
+					$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
 				}
-				$page->body = $config->twig->render('sales-orders/sales-order/qnotes-page.twig', ['page' => $page, 'user' => $user, 'ordn' => $ordn, 'order' => $order, 'qnotes_so' => $module_qnotes]);
-				$page->body .= $config->twig->render('sales-orders/sales-order/notes/add-note-modal.twig', ['page' => $page, 'ordn' => $ordn, 'qnotes_so' => $module_qnotes]);
+				$page->body .= $config->twig->render('sales-orders/sales-order/notes/qnotes-page.twig', ['page' => $page, 'user' => $user, 'ordn' => $ordn, 'order' => $order, 'qnotes_so' => $module_qnotes]);
+				$page->body .= $config->twig->render('sales-orders/sales-order/notes/note-modal.twig', ['page' => $page, 'ordn' => $ordn, 'qnotes_so' => $module_qnotes]);
 				$config->scripts->append(hash_templatefile('scripts/orders/order-notes.js'));
+				$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 			} else {
 				$page->headline = "Sales Order #$ordn could not be found";
 				$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->headline, 'msg' => "Check if the Order Number is correct or if it is in Sales History"]);

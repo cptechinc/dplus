@@ -33,7 +33,7 @@
 							</button>
 						</div>
 					</div>
-					<textarea class="collapse form-control-plaintext" id="notes-{{ note.line }}-{{ note.form }}" cols="{{ qnotes_so.get_column_count() }}">{{ qnotes_so.get_notes_form_array(ordn, 0, note.form)|join('\r') }}</textarea>
+					<textarea class="collapse form-control-plaintext" id="notes-{{ note.line }}-{{ note.form }}" cols="{{ qnotes_so.get_column_count() }}" readonly>{{ qnotes_so.get_notes_form_array(ordn, 0, note.form)|join('\r') }}</textarea>
 				</div>
 			{% endfor %}
 		{% else %}
