@@ -36,7 +36,11 @@ class Qnotes extends WireData implements Module {
 			'summary' => 'Dplus Qnotes',
 			'singular' => true,
 			'autoload' => true,
-			'installs' => array('QnotesSalesOrder')
+			'installs' => array(
+				'QnotesSalesOrder',
+				'QnotesSalesHistory',
+				'QnotesQuote'
+			)
 		);
 	}
 }

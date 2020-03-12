@@ -8,6 +8,8 @@ $(function() {
 	var input_invoice          = form.find("input[name=check_invoice]");
 	var input_acknwoledgement  = form.find("input[name=check_acknowledgement]");
 
+	var ele_feedback = form.find('.feedback');
+
 	$('#note-modal').on('shown.bs.modal', function (event) {
 		var button = $(event.relatedTarget) // Button that triggered the modal
 		var modal = $(this);
@@ -50,4 +52,42 @@ $(function() {
 			modal.find('.modal-title').text('Adding '+edit_desc+' Note');
 		}
 	});
+
+	$("#qnote-form").validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			note: {
+				required: true,
+			},
+		},
+		messages: {
+			note: "Please Enter a Note",
+		},
+		submitHandler: function(form) {
+			var action = $(this.submitButton).attr("value");
+
+			if (action == 'delete-notes') {
+				form.submit();
+			} else {
+				if (has_document_selected()) {
+					form.submit();
+				} else {
+					ele_feedback.addClass('is-invalid');
+					ele_feedback.html($('<label>Please check a document to add a note to</label>').addClass('invalid-feedback').show());
+				}
+			}
+		}
+	});
+
+	function has_document_selected() {
+		var selected = false;
+		selected = input_pick.prop('checked') ? true : selected;
+		selected = input_pack.prop('checked') ? true : selected;
+		selected = input_invoice.prop('checked') ? true : selected;
+		return selected;
+	}
 });

@@ -1,6 +1,6 @@
 <?php namespace ProcessWire;
 
-use SalesOrderNotesQuery, SalesOrderNotes;
+use QuoteNotesQuery, QuoteNotes;
 use ConfigArQuery, ConfigAr;
 
 include_once(__DIR__.'/QnotesResponse.php');
@@ -10,15 +10,16 @@ include_once(__DIR__.'/QnotesResponse.php');
  *
  * Class for Writing and Reading Qnotes for Sales Orders
  */
-class QnotesSalesOrder extends WireData implements Module {
-	const MODEL              = 'SalesOrderNotes';
-	const MODEL_KEY          = 'OehdNbr, OedtLine';
-	const DESCRIPTION        = 'Sales Order Note';
-	const DESCRIPTION_RECORD = 'Sales Order Note';
+class QnotesQuote extends WireData implements Module {
+	const MODEL              = 'QuoteNotes';
+	const MODEL_KEY          = 'qthdid, qtdtline';
+	const DESCRIPTION        = 'Quote Note';
+	const DESCRIPTION_RECORD = 'Quote Note';
 	const DESCRIPTION_RESPONSE = 'Sales Order ';
-	const MODEL_TABLE = 'notes_so_head_det';
+	const MODEL_TABLE = 'notes_qt_head_det';
 
-	public function allow_add(User $user, $ordn) {
+
+	public function allow_add(User $user, $qnbr) {
 		return true;
 	}
 
@@ -32,35 +33,35 @@ class QnotesSalesOrder extends WireData implements Module {
 	}
 
 	/**
-	 * Returns Sales Order Notes Query
-	 * @return SalesOrderNotesQuery
+	 * Returns Quote Notes Query
+	 * @return QuoteNotesQuery
 	 */
 	public function get_query() {
-		return SalesOrderNotesQuery::create();
+		return QuoteNotesQuery::create();
 	}
 
 	/**
 	 * Returns if Notes Exist
-	 * @param  string $ordn    Order Number
+	 * @param  string $qnbr    Quote Number
 	 * @param  int    $linenbr Line Number
 	 * @return bool
 	 */
-	public function notes_exist($ordn, $linenbr) {
+	public function notes_exist($qnbr, $linenbr) {
 		$q = $this->get_query();
-		$q->filterByOrdernumber($ordn);
+		$q->filterByQuoteid($qnbr);
 		$q->filterByLine($linenbr);
 		return boolval($q->count());
 	}
 
 	/**
 	 * Returns Line 1 of Every Note
-	 * @param  string $ordn    Order Number
+	 * @param  string $qnbr    Quote Number
 	 * @param  int    $linenbr Line Number
-	 * @return SalesOrderNotes[]|ObjectCollection
+	 * @return QuoteNotes[]|ObjectCollection
 	 */
-	public function get_notes_summarized($ordn, $linenbr) {
+	public function get_notes_summarized($qnbr, $linenbr) {
 		$q = $this->get_query();
-		$q->filterByOrdernumber($ordn);
+		$q->filterByQuoteid($qnbr);
 		$q->filterByLine($linenbr);
 		$q->filterBySequence(1);
 		return $q->find();
@@ -68,15 +69,15 @@ class QnotesSalesOrder extends WireData implements Module {
 
 	/**
 	 * Return Notes for Form
-	 * @param  string $ordn    Order Number
+	 * @param  string $qnbr    Quote Number
 	 * @param  int    $linenbr Line Number
 	 * @param  string $form    Form to Match to e.g YYYN
 	 * @return array
 	 */
-	public function get_notes_form_array($ordn, $linenbr, $form) {
+	public function get_notes_form_array($qnbr, $linenbr, $form) {
 		$q = $this->get_query();
-		$q->select(SalesOrderNotes::get_aliasproperty('note'));
-		$q->filterByOrdernumber($ordn);
+		$q->select(QuoteNotes::get_aliasproperty('note'));
+		$q->filterByQuoteid($qnbr);
 		$q->filterByLine($linenbr);
 		$q->filterByForm($form);
 		return $q->find()->toArray();
@@ -84,14 +85,14 @@ class QnotesSalesOrder extends WireData implements Module {
 
 	/**
 	 * Delete Notes for Form
-	 * @param  string $ordn    Order Number
+	 * @param  string $qnbr    Quote Number
 	 * @param  int    $linenbr Line Number
 	 * @param  string $form    Form to Match to e.g YYYN
 	 * @return array
 	 */
-	public function delete_notes($ordn, $linenbr, $form) {
+	public function delete_notes($qnbr, $linenbr, $form) {
 		$q = $this->get_query();
-		$q->filterByOrdernumber($ordn);
+		$q->filterByQuoteid($qnbr);
 		$q->filterByLine($linenbr);
 		$q->filterByForm($form);
 
@@ -102,7 +103,7 @@ class QnotesSalesOrder extends WireData implements Module {
 	}
 
 	/**
-	 * Takes Input, Processes it, updates Sales Order Notes in the Database
+	 * Takes Input, Processes it, updates Quote Notes in the Database
 	 *
 	 * @param  WireInput $input Input
 	 * @return void
@@ -110,9 +111,9 @@ class QnotesSalesOrder extends WireData implements Module {
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$lookup_orders = $this->wire('modules')->get('LookupSalesOrder');
-		$ordn = $input->$rm->text('ordn');
+		$qnbr = $input->$rm->text('qnbr');
 
-		if ($lookup_orders->lookup_saleshistory($ordn)) {
+		if ($lookup_orders->lookup_saleshistory($qnbr)) {
 			$this->wire('modules')->get('QnotesSalesHistory')->process_input($input);
 		} else {
 			switch ($input->$rm->text('action')) {
@@ -127,43 +128,43 @@ class QnotesSalesOrder extends WireData implements Module {
 	}
 
 	/**
-	 * Takes Input, Processes it, deletes Sales Order Notes
+	 * Takes Input, Processes it, deletes Quote Notes
 	 *
 	 * @param  WireInput $input Input
 	 * @return void
 	 */
 	public function delete_notes_input($input) {
 		$rm = strtolower($input->requestMethod());
-		$ordn  = $input->$rm->text('ordn');
+		$qnbr  = $input->$rm->text('qnbr');
 		$linenbr = $input->$rm->text('linenbr');
 		$form    = $input->$rm->text('form');
 		$q = $this->get_query();
-		$q->filterByOrdernumber($ordn);
+		$q->filterByQuoteid($qnbr);
 		$q->filterByLine($linenbr);
 		$q->filterByForm($form);
 
 		if ($q->count()) {
 			$note = $q->findOne();
 		} else {
-			$note = new SalesOrderNotes();
-			$note->setOrdernumber($ordn);
+			$note = new QuoteNotes();
+			$note->setQuoteid($qnbr);
 			$note->setLine($linenbr);
 			$note->setForm($form);
 		}
-		$success = $this->delete_notes($ordn, $linenbr, $form);
+		$success = $this->delete_notes($qnbr, $linenbr, $form);
 
-		$this->wire('session')->response_qnote = $this->process_response_delete($note, $ordn, $success);
+		$this->wire('session')->response_qnote = $this->process_response_delete($note, $qnbr, $success);
 	}
 
 	/**
-	 * Takes Input, Processes it, updates Sales Order Notes
+	 * Takes Input, Processes it, updates Quote Notes
 	 *
 	 * @param  WireInput $input Input
 	 * @return void
 	 */
 	public function update_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$ordn  = $input->$rm->text('ordn');
+		$qnbr  = $input->$rm->text('qnbr');
 		$linenbr = $input->$rm->text('linenbr');
 		$form    = $input->$rm->text('form');
 		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
@@ -171,50 +172,52 @@ class QnotesSalesOrder extends WireData implements Module {
 
 		if (empty($form)) {
 			$form = '';
-			$form .= $input->$rm->text('check_pick') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N';
-			$form .= $input->$rm->text('check_pack') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N';
-			$form .= $input->$rm->text('check_invoice') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N';
-			$form .= $input->$rm->text('check_acknowledgement') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N';
+			$form .= $input->$rm->text('check_quote') == QuoteNotes::FORM_TRUE ? 'Y' : 'N';
+			$form .= $input->$rm->text('check_pick') == QuoteNotes::FORM_TRUE ? 'Y' : 'N';
+			$form .= $input->$rm->text('check_pack') == QuoteNotes::FORM_TRUE ? 'Y' : 'N';
+			$form .= $input->$rm->text('check_invoice') == QuoteNotes::FORM_TRUE ? 'Y' : 'N';
+			$form .= $input->$rm->text('check_acknowledgement') == QuoteNotes::FORM_TRUE ? 'Y' : 'N';
 		}
 
-		$this->delete_notes($ordn, $linenbr, $form);
+		$this->delete_notes($qnbr, $linenbr, $form);
 
 		foreach ($note_lines as $key => $line) {
 			$sequence = $key + 1;
-			$record = new SalesOrderNotes();
-			$record->setType(SalesOrderNotes::TYPE); // PK
-			$record->setDescription(SalesOrderNotes::DESCRIPTION);
-			$record->setOrdernumber($ordn);
+			$record = new QuoteNotes();
+			$record->setType(QuoteNotes::TYPE); // PK
+			$record->setDescription(QuoteNotes::DESCRIPTION);
+			$record->setQuoteid($qnbr);
 			$record->setLine($linenbr);
 			$record->generateKey2(); // PK
 			$record->setSequence($sequence); // PK
 			$record->setForm($form);
 			$record->setNote($line);
 
-			$record->setPickticket($input->$rm->text('check_pick') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N');
-			$record->setPackticket($input->$rm->text('check_pack') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N');
-			$record->setInvoice($input->$rm->text('check_invoice') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N');
-			$record->setAcknowledgement($input->$rm->text('check_acknowledgement') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N');
+			$record->setQuote($input->$rm->text('check_quote')     == QuoteNotes::FORM_TRUE ? 'Y' : 'N');
+			$record->setPickticket($input->$rm->text('check_pick') == QuoteNotes::FORM_TRUE ? 'Y' : 'N');
+			$record->setPackticket($input->$rm->text('check_pack') == QuoteNotes::FORM_TRUE ? 'Y' : 'N');
+			$record->setInvoice($input->$rm->text('check_invoice') == QuoteNotes::FORM_TRUE ? 'Y' : 'N');
+			$record->setAcknowledgement($input->$rm->text('check_acknowledgement') == QuoteNotes::FORM_TRUE ? 'Y' : 'N');
 
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
 			$record->setDummy('P');
 			$lines_saved[$sequence] = $record->save();
 		}
-		$this->wire('session')->response_qnote = $this->process_responses($record, $ordn, $lines_saved);
+		$this->wire('session')->response_qnote = $this->process_responses($record, $qnbr, $lines_saved);
 	}
 
 	/**
 	 * Return Code Table Response based on the number of lines that were written to the database
-	 * @param  string $ordn         Sales Order Number
+	 * @param  string $qnbr         Quote Number
 	 * @param  array  $lines_saved  array of line numbers and if they got saved e.g. (1 => true, 2 => false)
 	 * @return CodeTableResponse
 	 */
-	protected function process_responses(SalesOrderNotes $note, $ordn, array $lines_saved) {
-		$message = self::DESCRIPTION_RESPONSE . " ($ordn) Note Lines";
+	protected function process_responses(QuoteNotes $note, $qnbr, array $lines_saved) {
+		$message = self::DESCRIPTION_RESPONSE . " ($qnbr) Note Lines";
 
 		$response = new QnotesResponse();
-		$response->set_key("$ordn-{$note->line}-{$note->form}");
+		$response->set_key("$qnbr-{$note->line}-{$note->form}");
 
 		if (in_array(false, $lines_saved)) {
 			$lines_error =
@@ -244,16 +247,16 @@ class QnotesSalesOrder extends WireData implements Module {
 
 	/**
 	 * Return QnoteResponse based if Notes were able to be Deleted
-	 * @param  SalesOrderNotes   $note         Attributes are needed to generate key
-	 * @param  string            $ordn         Sales Order Number
+	 * @param  QuoteNotes   $note         Attributes are needed to generate key
+	 * @param  string            $qnbr         Quote Number
 	 * @param  array             $success      Were Notes able to be deleted?
 	 * @return QnoteResponse
 	 */
-	public function process_response_delete(SalesOrderNotes $note, $ordn, bool $success) {
-		$message = self::DESCRIPTION_RESPONSE . " ($ordn) Notes ";
+	public function process_response_delete(QuoteNotes $note, $qnbr, bool $success) {
+		$message = self::DESCRIPTION_RESPONSE . " ($qnbr) Notes ";
 
 		$response = new QnotesResponse();
-		$response->set_key("$ordn-{$note->line}-{$note->form}");
+		$response->set_key("$qnbr-{$note->line}-{$note->form}");
 
 		if ($success) {
 			$response->set_success(true);
@@ -273,12 +276,11 @@ class QnotesSalesOrder extends WireData implements Module {
 		return $response;
 	}
 
-
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus Qnotes Sales Order',
+			'title' => 'Dplus Qnotes Quotes',
 			'version' => 101,
-			'summary' => 'Dplus Qnotes Sales Order methods',
+			'summary' => 'Dplus Qnotes Quotes CRUD methods',
 			'singular' => true,
 			'autoload' => true,
 			'requires' => array('Qnotes')

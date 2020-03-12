@@ -4,7 +4,7 @@
 			<h3 class="font-weight-bold text-secondary">Notes <i class="fa fa-sticky-note-o" aria-hidden="true"></i></h3>
 		</div>
 		<div class="col">
-			<a href="{{ page.view_notesURL(quote.quotenumber) }}" class="btn btn-primary">
+			<a href="{{ page.view_notesURL(qnbr) }}" class="btn btn-primary">
 				<i class="fa fa-sticky-note" aria-hidden="true"></i> View All Notes
 			</a>
 		</div>
@@ -18,26 +18,26 @@
 				<div class="col">Pack Ticket</div>
 				<div class="col">Invoice</div>
 				<div class="col">Acknowledgment</div>
-				<div class="col">Edit</div>
+				<div class="col"></div>
 			</div>
 		</div>
-		{% if notes.count > 0 %}
-			{% for note in notes %}
-				<div class="list-group-item qnote" data-linenbr="{{ note.linenbr }}" data-sequence="{{ note.sequence }}">
-					<div class="row mb-1">
-						<div class="col check-quote">{{ note.quote }}</div>
-						<div class="col check-pick">{{ note.pickticket }}</div>
-						<div class="col check-pack">{{ note.packticket }}</div>
-						<div class="col check-invoice">{{ note.invoice }}</div>
-						<div class="col check-acknowledgement">{{ note.acknowledgement }}</div>
-						<div class="col">
-							<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#add-note-modal" data-linenbr="{{ note.linenbr }}" data-sequence="{{ note.sequence }}">
-								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
-							</button>
-						</div>
+		{% if qnotes_qt.notes_exist(qnbr, 0) > 0 %}
+			{% for note in qnotes_qt.get_notes_summarized(qnbr, 0) %}
+			<div class="list-group-item">
+				<div class="row mb-1">
+					<div class="col">{{ note.quote }}</div>
+					<div class="col">{{ note.pickticket }}</div>
+					<div class="col">{{ note.packticket }}</div>
+					<div class="col">{{ note.invoice }}</div>
+					<div class="col">{{ note.acknowledgement }}</div>
+					<div class="col">
+						<button type="button" class="btn btn-light" data-toggle="collapse" data-target="#notes-{{ note.line }}-{{ note.form }}" aria-controls="collapseExample">
+							<i class="fa fa-eye" aria-hidden="true"></i> Show
+						</button>
 					</div>
-					<p class="mb-0 notes">{{ note.note }}</p>
 				</div>
+				<textarea class="collapse form-control-plaintext" id="notes-{{ note.line }}-{{ note.form }}" cols="{{ qnotes_qt.get_column_count() }}" readonly>{{ qnotes_qt.get_notes_form_array(qnbr, note.line, note.form)|join('\r') }}</textarea>
+			</div>
 			{% endfor %}
 		{% else %}
 			<div class="list-group-item text-center font-weight-bold">
