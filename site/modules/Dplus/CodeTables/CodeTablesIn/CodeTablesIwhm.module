@@ -113,7 +113,6 @@ class CodeTablesIwhm extends WireData implements Module {
 			if ($input->$rm->text('action') == 'remove-code') {
 				$record->delete();
 
-				$notetypes = $notes_m->get_notetypes();
 				if ($record->isDeleted()) {
 					$notes_m = $this->wire('modules')->get('CodeTablesIwhmNotes');
 					$notetypes = $notes_m->get_notetypes();
