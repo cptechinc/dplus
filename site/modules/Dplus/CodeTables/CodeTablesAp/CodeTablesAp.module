@@ -12,10 +12,14 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 class CodeTablesAp extends WireData implements Module {
 
 	const CODE_TABLES = array(
-		'bum' => array(
+        'bum' => array(
 			'code'   => 'bum',
 			'module' => 'CodeTablesBum'
-		)
+		),
+        'vtm' => array(
+			'code'   => 'vtm',
+			'module' => 'CodeTablesVtm'
+		),
 	);
 
 	public function get_codetables() {
@@ -67,7 +71,8 @@ class CodeTablesAp extends WireData implements Module {
 			'singular' => true,
 			'autoload' => true,
 			'installs' => array(
-				'CodeTablesBum'
+				'CodeTablesBum',
+				'CodeTablesVtm'
 			)
 		);
 	}
