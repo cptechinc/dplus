@@ -1,0 +1,45 @@
+{# vtm is an instance of ApTypeCode #}
+<form action="{{ page.url }}" method="POST" id="code-edit-form">
+	<input type="hidden" name="table" value="vtm">
+
+	<div class="form-group">
+		<label for="code">Code</label>
+		<input type="text" name="code" class="form-control" maxlength="{{ max_length_code }}" value="" id="code">
+	</div>
+
+	<div class="form-group">
+		<label for="description">Description</label>
+		<input type="text" name="description" class="form-control" maxlength="20" value="" id="description">
+	</div>
+
+	<div class="form-group">
+		<label for="fabricator">Fabricator</label>
+		<select name="fabricator" class="form-control" id="fabricator">
+			<option value="N">No</option>
+			<option value="Y">Yes</option>
+		</select>
+	</div>
+
+	<div class="form-group">
+		<label for="production">Production</label>
+		<select name="production" class="form-control" id="production">
+			<option value="N">No</option>
+			<option value="Y">Yes</option>
+		</select>
+	</div>
+
+	<div class="form-group">
+		<label for="competitor">Competitor</label>
+		<select name="competitor" class="form-control" id="competitor">
+			<option value="N">No</option>
+			<option value="Y">Yes</option>
+		</select>
+	</div>
+
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+	</div>
+</form>
