@@ -1,198 +1,222 @@
 <?php
-	class DplusConnectDatabase extends Process implements ConfigurableModule {
-		protected $connection_name = 'dplusdata';
+class DplusConnectDatabase extends Process implements ConfigurableModule {
+	protected $connection_name = 'dplusdata';
 
-		public static function getModuleInfo() {
-			$infoArray = array(
-				'title' => __('Dplus Database Connection'),
-				'version' => 115,
-				'summary' => __("Creates Connection to Dplus Database"),
-				'autoload' => true,
-				'singular' => true,
-				'author' => 'pauldro',
-				'icon' => 'database'
-			);
-			return $infoArray;
-		}
-
-		static public function getDefaultConfig() {
-			return array(
-				'db_name' => '',
-				'db_host' => '',
-				'db_user' => '',
-				'db_pass' => '',
-				'db_port' => '',
-			);
-		}
-
-		public function __construct() {
-			foreach(self::getDefaultConfig() as $key => $value) {
-				$this->$key = $value;
-			}
-		}
-
-
-		public function init() {
-			parent::init();
-			$this->connect_database();
-		}
-
-		public function get_dbtablestructure() {
-			$content = '';
-			$tables = $this->wire($this->connection_name)->getTables();
-
-			foreach ($tables as $table) {
-				$sql = wire($this->connection_name)->prepare("SHOW CREATE TABLE $table");
-				$sql->execute();
-				$tabledata = $sql->fetch(PDO::FETCH_ASSOC);
-				$content .= $tabledata['Create Table'] . ";<br><br>";
-			}
-			return $content;
-		}
-
-		/**
-		 * Creates a PDO object and attaches it to wire to connect
-		 * @return void
-		 */
-		public function connect_database() {
-			$dbconfig = $this->get_dbconfig();
-			$session = $this->wire('session');
-
-			try {
-				$pdo = WireDatabasePDO::getInstance($dbconfig);
-				$this->wire($this->connection_name, $pdo, true);
-				$session->set($this->connection_name, true);
-			} catch (PDOException $e) {
-				if (!empty($session->get($this->connection_name))) {
-					$this->log_error($e->getMessage());
-
-				}
-				$session->remove($this->connection_name);
-			}
-		}
-
-		public function log_error($message) {
-			$date = date("Y-m-d h:m:s");
-			$class = get_class($this);
-			$message = "[{$date}] [{$class}] $message";
-			$this->wire('log')->save('db-errors', $message);
-		}
-
-		/**
-		 * Returns Config to connect to Dplus Data Database
-		 * @return Config
-		 */
-		public function get_dbconfig() {
-			$config = $this->wire('config');
-			$dbname = '';
-
-			if (!empty($this->db_name)){
-				$this->db_name = $this->db_name;
-			} else {
-				$this->db_name = !empty($config->dplusdbname) ? $config->dplusdbname : "dpluso$config->COMPANYNBR";
-			}
-
-			$dbconfig = new Config();
-			$dbconfig->dbHost = !empty($this->db_host) ? $this->db_host : $config->dbHost;;
-			$dbconfig->dbName = $this->db_name;
-			$dbconfig->dbUser = !empty($this->db_user) ? $this->db_user : $config->dbUser;
-			$dbconfig->dbPass = !empty($this->db_pass) ? $this->db_pass : $config->dbPass;
-			$dbconfig->dbPort = !empty($this->db_port) ? $this->db_port : $config->dbport;
-
-			return $dbconfig;
-		}
-
-		public function get_propelconfiguration() {
-			return array(
-				'classname' => 'Propel\\Runtime\\Connection\\ConnectionWrapper',
-				'dsn' => "mysql:host=$this->db_host;dbname=$this->db_name",
-				'user' => $this->db_user,
-				'password' => $this->db_pass,
-				'attributes' =>
-				array(
-					'ATTR_EMULATE_PREPARES' => false,
-					'ATTR_TIMEOUT' => 30,
-				),
-				'model_paths' =>
-				array (
-					0 => 'src',
-					1 => 'vendor',
-				),
-			);
-		}
-
-		public function get_propel_connection() {
-			$manager = new \Propel\Runtime\Connection\ConnectionManagerSingle();
-			$manager->setConfiguration($this->get_propelconfiguration());
-			return $manager;
-		}
 
 	/**
-	 * module settings
-	 *
+	 * Returns Default Configuration Values
+	 * @var array
 	 */
-		static public function getModuleConfigInputfields(array $data) {
-			$modules = wire('modules');
-			$config = wire('config');
+	static public function getDefaultConfig() {
+		return array(
+			'db_name' => '',
+			'db_host' => '',
+			'db_user' => '',
+			'db_pass' => '',
+			'db_port' => '',
+		);
+	}
 
-			$fields = new InputfieldWrapper();
-			$defaults = self::getDefaultConfig();
-			$data = array_merge($defaults, $data);
+	/**
+	 * Return SQL for creating tables
+	 * @return string
+	 */
+	public function get_dbtablestructure() {
+		$content = '';
+		$tables = $this->wire($this->connection_name)->getTables();
 
-			$f = $modules->get('InputfieldText');
-			$f->attr('name', 'db_name');
-			$f->attr('pattern', '[A-Za-z0-9%#_-]*');
-			$f->set('required', 'true');
-			$f->icon = 'fa-database';
-			$f->label = __('Dplus Database Name');
-			$f->description = __('This is the name of the Dplus Database to connect to read Dplus Data');
-			$f->notes = __('If omitted the name of the database derived from the company number');
-			$f->value = $data['db_name'];
-			$fields->add($f);
+		foreach ($tables as $table) {
+			$sql = wire($this->connection_name)->prepare("SHOW CREATE TABLE $table");
+			$sql->execute();
+			$tabledata = $sql->fetch(PDO::FETCH_ASSOC);
+			$content .= $tabledata['Create Table'] . ";<br><br>";
+		}
+		return $content;
+	}
 
-			$f = $modules->get('InputfieldText');
-			$f->attr('name', 'db_host');
-			$f->set('collapsed',$data['db_host'] ? false:true);
-			$f->icon = 'fa-database';
-			$f->label = __('Dplus Database host');
-			$f->description = __('This is the database Host to use to connect to the Dplus database');
-			$f->notes = __('If omitted, will default to the same user as the processwire Database Host');
-			$f->value = $data['db_host'];
-			$fields->add($f);
+	/**
+	 * Creates a PDO object and attaches it to wire to connect
+	 * @return void
+	 */
+	public function connect_database() {
+		$dbconfig = $this->get_dbconfig();
+		$session = $this->wire('session');
 
-			$f = $modules->get('InputfieldText');
-			$f->attr('name', 'db_user');
-			$f->attr('pattern', '[A-Za-z0-9%#_-]*');
-			$f->set('collapsed',$data['db_user'] ? false:true);
-			$f->icon = 'fa-database';
-			$f->label = __('Dplus Database User');
-			$f->description = __('This is the database User to use to connect to the Dplus database');
-			$f->notes = __('If omitted, will default to the same user as the processwire Database User');
-			$f->value = $data['db_user'];
-			$fields->add($f);
+		try {
+			$pdo = WireDatabasePDO::getInstance($dbconfig);
+			$this->wire($this->connection_name, $pdo, true);
+			$session->set($this->connection_name, true);
+		} catch (PDOException $e) {
+			if (!empty($session->get($this->connection_name))) {
+				$this->log_error($e->getMessage());
 
-			$f = $modules->get('InputfieldText');
-			$f->attr('name', 'db_pass');
-			//$f->attr('pattern', '[0-9]*');
-			$f->set('collapsed',$data['db_pass'] ? false:true);
-			$f->icon = 'fa-database';
-			$f->label = __('Dplus Database Password');
-			$f->description = __('This is the database Password to use to connect to the Dplus database');
-			$f->notes = __('If omitted, will default to the same password as the processwire Database Password');
-			$f->value = $data['db_pass'];
-			$fields->add($f);
-
-			$f = $modules->get('InputfieldText');
-			$f->attr('name', 'db_port');
-			//$f->attr('pattern', '[A-Za-z0-9%#_-]*');
-			$f->set('collapsed',$data['db_port'] ? false:true);
-			$f->icon = 'fa-database';
-			$f->label = __('Dplus Database Port');
-			$f->description = __('This is the database Port to use to connect to the Dplus database');
-			$f->notes = __('If omitted, will default to the same port as the processwire Database port');
-			$f->value = $data['db_port'];
-			$fields->add($f);
-
-			return $fields;
+			}
+			$session->remove($this->connection_name);
 		}
 	}
+
+	/**
+	 * Writes Error Message to Database Error Log
+	 * @param  string $message Error Message
+	 * @return void
+	 */
+	public function log_error($message) {
+		$date = date("Y-m-d h:m:s");
+		$class = get_class($this);
+		$message = "[{$date}] [{$class}] $message";
+		$this->wire('log')->save('db-errors', $message);
+	}
+
+	/**
+	 * Returns Config to connect to Database
+	 * @return Config
+	 */
+	public function get_dbconfig() {
+		$config = $this->wire('config');
+		$dbname = '';
+
+		if (!empty($this->db_name)){
+			$this->db_name = $this->db_name;
+		} else {
+			$this->db_name = !empty($config->dplusdbname) ? $config->dplusdbname : "data$config->COMPANYNBR";
+		}
+
+		$dbconfig = new Config();
+		$dbconfig->dbHost = !empty($this->db_host) ? $this->db_host : $config->dbHost;;
+		$dbconfig->dbName = $this->db_name;
+		$dbconfig->dbUser = !empty($this->db_user) ? $this->db_user : $config->dbUser;
+		$dbconfig->dbPass = !empty($this->db_pass) ? $this->db_pass : $config->dbPass;
+		$dbconfig->dbPort = !empty($this->db_port) ? $this->db_port : $config->dbport;
+
+		return $dbconfig;
+	}
+
+	/**
+	 * Returns Propel connection Configuration
+	 * @return array
+	 */
+	public function get_propelconfiguration() {
+		return array(
+			'classname' => 'Propel\\Runtime\\Connection\\ConnectionWrapper',
+			'dsn' => "mysql:host=$this->db_host;dbname=$this->db_name",
+			'user' => $this->db_user,
+			'password' => $this->db_pass,
+			'attributes' =>
+			array(
+				'ATTR_EMULATE_PREPARES' => false,
+				'ATTR_TIMEOUT' => 30,
+			),
+			'model_paths' =>
+			array (
+				0 => 'src',
+				1 => 'vendor',
+			),
+		);
+	}
+
+	/**
+	 * Return ConnectionManager
+	 * @return ConnectionManagerSingle
+	 */
+	public function get_propel_connection() {
+		$manager = new \Propel\Runtime\Connection\ConnectionManagerSingle();
+		$manager->setConfiguration($this->get_propelconfiguration());
+		return $manager;
+	}
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+	public function __construct() {
+		foreach(self::getDefaultConfig() as $key => $value) {
+			$this->$key = $value;
+		}
+	}
+
+	public function init() {
+		parent::init();
+		$this->connect_database();
+	}
+
+	public static function getModuleInfo() {
+		$infoArray = array(
+			'title' => __('Dplus Database Connection'),
+			'version' => 115,
+			'summary' => __("Creates Connection to Dplus Database"),
+			'autoload' => true,
+			'singular' => true,
+			'author' => 'pauldro',
+			'icon' => 'database'
+		);
+		return $infoArray;
+	}
+
+	/**
+	 * Return Input Fields for Database Connectiion Configuration
+	 * @var InputfieldWrapper
+	 */
+	static public function getModuleConfigInputfields(array $data) {
+		$modules = wire('modules');
+		$config = wire('config');
+
+		$fields = new InputfieldWrapper();
+		$defaults = self::getDefaultConfig();
+		$data = array_merge($defaults, $data);
+
+		$f = $modules->get('InputfieldText');
+		$f->attr('name', 'db_name');
+		$f->attr('pattern', '[A-Za-z0-9%#_-]*');
+		$f->set('required', 'true');
+		$f->icon = 'fa-database';
+		$f->label = __('Dplus Database Name');
+		$f->description = __('This is the name of the Dplus Database to connect to read Dplus Data');
+		$f->notes = __('If omitted the name of the database derived from the company number');
+		$f->value = $data['db_name'];
+		$fields->add($f);
+
+		$f = $modules->get('InputfieldText');
+		$f->attr('name', 'db_host');
+		$f->set('collapsed',$data['db_host'] ? false:true);
+		$f->icon = 'fa-database';
+		$f->label = __('Dplus Database host');
+		$f->description = __('This is the database Host to use to connect to the Dplus database');
+		$f->notes = __('If omitted, will default to the same user as the processwire Database Host');
+		$f->value = $data['db_host'];
+		$fields->add($f);
+
+		$f = $modules->get('InputfieldText');
+		$f->attr('name', 'db_user');
+		$f->attr('pattern', '[A-Za-z0-9%#_-]*');
+		$f->set('collapsed',$data['db_user'] ? false:true);
+		$f->icon = 'fa-database';
+		$f->label = __('Dplus Database User');
+		$f->description = __('This is the database User to use to connect to the Dplus database');
+		$f->notes = __('If omitted, will default to the same user as the processwire Database User');
+		$f->value = $data['db_user'];
+		$fields->add($f);
+
+		$f = $modules->get('InputfieldText');
+		$f->attr('name', 'db_pass');
+		//$f->attr('pattern', '[0-9]*');
+		$f->set('collapsed',$data['db_pass'] ? false:true);
+		$f->icon = 'fa-database';
+		$f->label = __('Dplus Database Password');
+		$f->description = __('This is the database Password to use to connect to the Dplus database');
+		$f->notes = __('If omitted, will default to the same password as the processwire Database Password');
+		$f->value = $data['db_pass'];
+		$fields->add($f);
+
+		$f = $modules->get('InputfieldText');
+		$f->attr('name', 'db_port');
+		//$f->attr('pattern', '[A-Za-z0-9%#_-]*');
+		$f->set('collapsed',$data['db_port'] ? false:true);
+		$f->icon = 'fa-database';
+		$f->label = __('Dplus Database Port');
+		$f->description = __('This is the database Port to use to connect to the Dplus database');
+		$f->notes = __('If omitted, will default to the same port as the processwire Database port');
+		$f->value = $data['db_port'];
+		$fields->add($f);
+
+		return $fields;
+	}
+}
