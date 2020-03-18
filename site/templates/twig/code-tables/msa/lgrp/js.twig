@@ -11,11 +11,11 @@ $(function() {
 		modal.find('input[name=description]').val(description);
 
 		if (code.length) {
-			modal.find('.modal-title').text('Editing Code ' + code);
+			modal.find('.modal-title').text('Editing Group ' + code);
 			modal.find('input[name=code]').prop("readonly", true);
 			modal.find('input[name=description]').focus();
 		} else {
-			modal.find('.modal-title').text('Adding a new Code');
+			modal.find('.modal-title').text('Adding a new Group');
 			modal.find('input[name=code]').prop("readonly", false);
 			modal.find('input[name=code]').focus();
 		}
