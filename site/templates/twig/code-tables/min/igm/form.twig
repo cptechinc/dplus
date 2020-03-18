@@ -1,6 +1,11 @@
 {# igm is an instance of InvGroupCode #}
 <form action="{{ page.url }}" method="POST" id="code-edit-form">
 	<input type="hidden" name="table" value="igm">
+	<input type="hidden" name="sales_program" value="N">
+	<input type="hidden" name="cost_percent" value="0">
+	<input type="hidden" name="max_qty_large" value="0">
+	<input type="hidden" name="max_qty_medium" value="0">
+	<input type="hidden" name="max_qty_small" value="0">
 
 	<div class="row">
 		<div class="col-6">
@@ -26,12 +31,12 @@
 				</div>
 			{% endif %}
 
-			{% if config_so.is_request_program() %}
-				<div class="form-group">
+			{# if config_so.is_request_program() #}
+				<!-- <div class="form-group">
 					<label for="sales_program">Sales Program ?</label>
-					{% include 'util/select.twig' with {'name': 'sales_program', 'id': 'sales_program', 'selectedvalue': itemgroup.sales_program, 'options': {'Y': 'Yes', 'N': 'No'}} %}
-				</div>
-			{% endif %}
+					{# include 'util/select.twig' with {'name': 'sales_program', 'id': 'sales_program', 'selectedvalue': itemgroup.sales_program, 'options': {'Y': 'Yes', 'N': 'No'}} #}
+				</div> -->
+			{# endif #}
 		</div>
 		<div class="col-6">
 			<div class="form-group">
@@ -114,7 +119,10 @@
 
 			<div class="form-group">
 				<label for="surcharge_dollar_percent">Dollar or Percent ?</label>
-				{% include 'util/select.twig' with {'name': 'surcharge_dollar_percent', 'id': 'surcharge_dollar_percent', 'selectedvalue': itemgroup.surcharge_dollar_percent, 'options': {'D': 'Dollar', 'P': 'Percent'}} %}
+				<select name="surcharge_dollar_percent" id="surcharge_dollar_percent" class="form-control">
+					<option value="D" {{ itemgroup.surcharge_dollar_percent == 'D' ? 'selected' : '' }}>Dollar</option>
+					<option value="P" {{ itemgroup.surcharge_dollar_percent == 'P' ? 'selected' : '' }}>Percent</option>
+				</select>
 			</div>
 
 			<div class="form-group">

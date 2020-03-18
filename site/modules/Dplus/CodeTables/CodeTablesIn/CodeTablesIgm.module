@@ -95,7 +95,6 @@ class CodeTablesIgm extends WireData implements Module {
 		} else {
 			$description = $input->$rm->text('description');
 			$coop = $input->$rm->text('coop');
-			// $ritm = $input->$rm->text('ritm');
 			$sales = $input->$rm->text('sales');
 			$credit = $input->$rm->text('credit');
 			$cogs = $input->$rm->text('cogs');
@@ -108,9 +107,13 @@ class CodeTablesIgm extends WireData implements Module {
 			$freight_group = $input->$rm->text('freight_group');
 			$product_line = $input->$rm->text('product_line');
 			$ecomm_desc = $input->$rm->text('ecomm_desc');
+			$sales_program = $input->$rm->text('sales_program');
+			$cost_percent = $input->$rm->text('cost_percent');
+			$max_qty_large = $input->$rm->text('max_qty_large');
+			$max_qty_medium = $input->$rm->text('max_qty_medium');
+			$max_qty_small = $input->$rm->text('max_qty_small');
 			$record->setDescription($description);
 			$record->setCoop($coop);
-			// $record->setRitm($ritm);
 			$record->setSales($sales);
 			$record->setCredit($credit);
 			$record->setCogs($cogs);
@@ -123,6 +126,11 @@ class CodeTablesIgm extends WireData implements Module {
 			$record->setFreight_group($freight_group);
 			$record->setProduct_line($product_line);
 			$record->setEcomm_desc($ecomm_desc);
+			$record->setSales_program($sales_program);
+			$record->setCost_percent($cost_percent);
+			$record->setMax_qty_large($max_qty_large);
+			$record->setMax_qty_medium($max_qty_medium);
+			$record->setMax_qty_small($max_qty_small);
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
 			$record->setDummy('P');
