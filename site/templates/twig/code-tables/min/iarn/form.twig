@@ -14,7 +14,10 @@
 
 	<div class="form-group">
 		<label for="sys_defined">System Defined ?</label>
-		<input type="text" name="sys_defined" class="form-control" value="No" id="sys_defined" readonly>
+		<select name="sys_defined" class="form-control" id="sys_defined" disabled>
+			<option value="N" {{ code.sys_defined == 'N' ? 'selected' : '' }}>No</option>
+			<option value="Y" {{ code.sys_defined == 'Y' ? 'selected' : '' }}>Yes</option>
+		</select>
 	</div>
 
 	<div class="modal-footer">
