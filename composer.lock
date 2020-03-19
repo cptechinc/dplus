@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "deb2d5fca7496caa9ded131ef606261eb8d36065"
+                "reference": "cd04acdc142fa1e24accf50c8c052afb02cd335d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/deb2d5fca7496caa9ded131ef606261eb8d36065",
-                "reference": "deb2d5fca7496caa9ded131ef606261eb8d36065",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/cd04acdc142fa1e24accf50c8c052afb02cd335d",
+                "reference": "cd04acdc142fa1e24accf50c8c052afb02cd335d",
                 "shasum": ""
             },
             "type": "library",
@@ -39,7 +39,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2020-03-14T23:38:52+00:00"
+            "time": "2020-03-18T20:11:37+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
@@ -1058,12 +1058,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "ec1add50feb88880ed9b5ddd34f0a70445cc5ea0"
+                "reference": "1ef9ab5497958d824476492b25797de652475471"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/ec1add50feb88880ed9b5ddd34f0a70445cc5ea0",
-                "reference": "ec1add50feb88880ed9b5ddd34f0a70445cc5ea0",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/1ef9ab5497958d824476492b25797de652475471",
+                "reference": "1ef9ab5497958d824476492b25797de652475471",
                 "shasum": ""
             },
             "require": {
@@ -1143,7 +1143,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2020-03-16T11:24:17+00:00"
+            "time": "2020-03-17T19:51:46+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -1210,12 +1210,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "0da153eb3b843d1117e52c882df6f40aefb954ab"
+                "reference": "bf64959fb8d7076c0a80f52a5a69d63e89a2645b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/0da153eb3b843d1117e52c882df6f40aefb954ab",
-                "reference": "0da153eb3b843d1117e52c882df6f40aefb954ab",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/bf64959fb8d7076c0a80f52a5a69d63e89a2645b",
+                "reference": "bf64959fb8d7076c0a80f52a5a69d63e89a2645b",
                 "shasum": ""
             },
             "require": {
@@ -1267,7 +1267,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2020-02-23T08:42:25+00:00"
+            "time": "2020-03-17T14:09:30+00:00"
         }
     ],
     "packages-dev": [],
