@@ -10,7 +10,17 @@
 
 			<div class="form-group">
 				<label for="system">System</label>
-				{% include 'util/select.twig' with {'name': 'system', 'id': 'system', 'selectedvalue': sysop.system, 'options': {'AP': 'AP - Accounts Payable/Vendor', 'AR': 'AR - Accounts Receivable/Customer', 'IN': 'IN - Inventory/Item', 'MS': 'MS - Miscellaneous', 'PO': 'PO - Purchase Order', 'SO': 'SO - Sales Order'}} %}
+				<select name="system" class="form-control" id="system" {{ sysop.system ? 'disabled' : '' }}>
+					<option value="AP" {{ sysop.system == 'AP' ? 'selected' : '' }}>AP - Accounts Payable/Vendor</option>
+					<option value="AR" {{ sysop.system == 'AR' ? 'selected' : '' }}>AR - Accounts Receivable/Customer</option>
+					<option value="IN" {{ sysop.system == 'IN' ? 'selected' : '' }}>IN - Inventory/Item</option>
+					<option value="MS" {{ sysop.system == 'MS' ? 'selected' : '' }}>MS - Miscellaneous</option>
+					<option value="PO" {{ sysop.system == 'PO' ? 'selected' : '' }}>PO - Purchase Order</option>
+					<option value="SO" {{ sysop.system == 'SO' ? 'selected' : '' }}>SO - Sales Order</option>
+				</select>
+				{% if sysop.system %}
+					<input type="hidden" name="system" value="{{ sysop.system }}" />
+				{% endif %}
 			</div>
 
 			<div class="form-group">

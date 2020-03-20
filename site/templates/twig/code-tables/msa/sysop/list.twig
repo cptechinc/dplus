@@ -1,14 +1,26 @@
 <div class="list-group">
 	<div class="list-group-item bg-dark text-white">
 		<div class="row align-items-center">
+			<div class="col-1">
+				System
+			</div>
 			<div class="col-2">
 				Code
 			</div>
 			<div class="col-2">
-				System Code
-			</div>
-			<div class="col-5">
 				Description
+			</div>
+			<div class="col-1">
+				Note Code
+			</div>
+			<div class="col-1">
+				Sequence
+			</div>
+			<div class="col-1">
+				Valid ?
+			</div>
+			<div class="col-1">
+				Force ?
 			</div>
 			<div class="col-3 text-center">
 				{% if page.is_print() == false %}
@@ -22,14 +34,26 @@
 	{% for code in codes %}
 		<div id="{{ code.code }}" class="list-group-item pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
 			<div class="row align-items-center">
+				<div class="col-1">
+					{{ code.system }}
+				</div>
 				<div class="col-2">
 					{{ code.code }}
 				</div>
 				<div class="col-2">
-					{{ code.system }}
-				</div>
-				<div class="col-5">
 					{{ code.description }}
+				</div>
+				<div class="col-1">
+					{{ code.note_code }}
+				</div>
+				<div class="col-1">
+					{{ code.list_seq == 0 ? '' : code.list_seq }}
+				</div>
+				<div class="col-1">
+					{{ code.validate|yesorno|capitalize }}
+				</div>
+				<div class="col-1">
+					{{ code.force|yesorno|capitalize }}
 				</div>
 				<div class="col-3 text-center">
 					{% if page.is_print() == false %}
