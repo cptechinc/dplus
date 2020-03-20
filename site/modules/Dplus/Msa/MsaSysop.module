@@ -33,21 +33,25 @@ class MsaSysop extends WireData implements Module {
 
 	/**
 	 * Return the Code records from Database filtered by ProductLne ID
-	 * @param  string $productlne ProductLneID
+	 * @param  string $system    System
+	 * @param  string $code     System Option Code
 	 * @return ObjectCollection
 	 */
-	public function get_code($code) {
+	public function get_code($system, $code) {
 		$q = $this->get_query();
+		$q->filterBySystem($system);
 		return $q->findOneById($code);
 	}
 
 	/**
 	 * Returns if Codes Exists
-	 * @param  string $productlne ProductLneID
+	 * @param  string $system    System
+	 * @param  string $code     System Option Code
 	 * @return bool
 	 */
-	public function code_exists($code) {
+	public function code_exists($system, $code) {
 		$q = $this->get_query();
+		$q->filterBySystem($system);
 		return boolval($q->filterById($code)->count());
 	}
 
