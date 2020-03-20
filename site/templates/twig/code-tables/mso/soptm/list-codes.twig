@@ -1,10 +1,10 @@
 <div class="list-group">
 	<div class="list-group-item bg-dark text-white">
 		<div class="row align-items-center">
-			<div class="col-3">
+			<div class="col-4">
 				Code
 			</div>
-			<div class="col-6">
+			<div class="col-5">
 				Description
 			</div>
 			<div class="col-3 text-center">
@@ -19,10 +19,10 @@
 	{% for optcode in optcodes %}
 		<div id="code-{{ optcode.code }}" class="list-group-item pb-1 pt-1 {{ (response.key == optcode.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
 			<div class="row align-items-center">
-				<div class="col-3">
+				<div class="col-4">
 					{{ optcode.code }}
 				</div>
-				<div class="col-6">
+				<div class="col-5">
 					{{ optcode.description }}
 				</div>
 				<div class="col-3 text-center">
