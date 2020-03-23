@@ -1,5 +1,5 @@
 {# m_itm is an instance of module Itm #}
-<form action="{{ page.fullURL.getURL() }}" method="POST" id="itm-pricing-form">
+<form action="{{ page.fullURL.getURL() }}" method="POST" id="itm-form">
 	<div class="row">
 		<div class="col-sm-8">
 			<div class="form-group row">
@@ -10,6 +10,7 @@
 					<input type="text" class="{{ item.isNew() ? 'form-control' : 'form-control-plaintext' }}" name="itemID" id="itemID" value="{{ item.itemid }}" {{ item.isNew() ? '' : 'readonly' }}>
 				</div>
 			</div>
+
 			{% include 'items/itm/form/description.twig' %}
 			{% include 'items/itm/form/groups.twig' %}
 
@@ -37,7 +38,7 @@
 					<label for="stockcode">Stock Code</label>
 				</div>
 				<div class="col-sm-6">
-					<select name="stockcode" class="form-control" id="stockcode" {{ m_itm.config.use_pricegroup() ? '' : 'disabled' }}>
+					<select name="stockcode" class="form-control" id="stockcode">
 						<option value="">-- Choose --</option>
 						{% for stockcode in m_itm.get_stockcodes() %}
 							<option value="{{ stockcode.code }}" {{ stockcode.code == item.stockcode ? 'selected' : ''}}>{{ stockcode.code }} - {{ stockcode.description }}</option>
@@ -51,9 +52,25 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="custom-control custom-checkbox">
-						<input type="checkbox" class="custom-control-input" name="inspection" id="inspection" value="Y" {{ item.is_inspection() ? 'checked' : ''}}>
-						<label class="custom-control-label" for="inspection">&nbsp;</label>
+						<input type="checkbox" class="custom-control-input" name="splitorder" id="splitorder" value="Y" {{ item.is_splitorder() ? 'checked' : ''}}>
+						<label class="custom-control-label" for="splitorder">&nbsp;</label>
 					</div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-4">
+					<label for="custid">For Customer</label>
+				</div>
+				<div class="col-sm-8">
+					<div class="input-group">
+						<span class="input-group-prepend">
+							<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal">
+								<i class="fa fa-search" aria-hidden="true"></i> <span class="sr-only">Search Customers</span>
+							</button>
+						</span>
+						<input type="text" name="custid" class="form-control" maxlength="6" value="{{ item.custid }}" id="custid">
+					</div>
+					<input type="text" class="form-control-plaintext" value="" id="cust_name" readonly>
 				</div>
 			</div>
 			<div class="row text-center">
@@ -68,7 +85,9 @@
 					</button>
 				</div>
 			</div>
+
 		</div>
+
 		<div class="col-sm-4">
 			<div class="form-group row">
 				<div class="col-sm-6">
@@ -76,6 +95,14 @@
 				</div>
 				<div class="col-sm-6">
 					{% include 'util/select.twig' with {'name': 'itemtype', 'id': 'itemtype', 'selectedvalue': item.itemtype, 'options': item.get_itemtypedescriptions(), 'capitalize_labels': true } %}
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="timefence">Time Fence <abbr title="Days">?</abbr></label>
+				</div>
+				<div class="col-sm-6">
+					<input type="numberic" name="timefence" class="form-control text-right" value="{{ item.timefence }}" id="timefence">
 				</div>
 			</div>
 		</div>
