@@ -1,5 +1,6 @@
 <?php
 	$html = $modules->get('HtmlWriter');
+	$recordlocker = $modules->get('RecordLockerUser');
 
 	if ($input->get->code) {
 		$code = $whseID = $input->get->text('code');
@@ -39,7 +40,7 @@
 			$page->body .= $config->twig->render("code-tables/min/$page->codetable/notes-modal.twig", ['page' => $page, 'warehouse' => $warehouse]);
 		}
 	} else {
-		$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'table' => $page->codetable, 'warehouses' => $module_codetable->get_codes(), 'response' => $session->response_codetable]);
+		$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'table' => $page->codetable, 'warehouses' => $module_codetable->get_codes(), 'response' => $session->response_codetable, 'recordlocker' => $recordlocker]);
 	}
 
 //$page->js .= $config->twig->render("code-tables/mar/$page->codetable.js.twig", ['page' => $page]);

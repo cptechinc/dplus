@@ -16,6 +16,7 @@ class CodeTablesIwhm extends WireData implements Module {
 	const DESCRIPTION        = 'Warehouse';
 	const DESCRIPTION_RECORD = 'Warehouse';
 	const MODEL_TABLE = 'inv_whse_code';
+
 	const COPY_TABLES = array(
 		'inv_whse_orig' => 'IntbWhseOrig',
 		'inv_whse_from' => 'IntbWhseFrom',
