@@ -29,7 +29,7 @@
 					{{ code.code }}
 				</div>
 				<div class="col-3">
-					{{ code.description }}
+					{{ code.description|length > 20 ? code.description|slice(0,20) ~ '...' : code.description }}
 				</div>
 				<div class="col-2">
 					{{ code.warehouse }}
