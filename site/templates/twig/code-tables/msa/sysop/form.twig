@@ -5,7 +5,7 @@
 		<div class="col-sm-6">
 			<div class="form-group">
 				<label for="system">System</label>
-				<select name="system" class="form-control" id="system" {{ sysop.system ? 'disabled' : '' }}>
+				<select name="system" class="form-control" id="system" {{ sysop.system ? 'disabled' : 'autofocus' }}>
 					<option value="">-- Choose --</option>
 					<option value="AP" {{ sysop.system == 'AP' ? 'selected' : '' }}>AP - Accounts Payable/Vendor</option>
 					<option value="AR" {{ sysop.system == 'AR' ? 'selected' : '' }}>AR - Accounts Receivable/Customer</option>
@@ -53,13 +53,13 @@
 		</div>
 		<div class="col-sm-6">
 			<div class="form-group">
-				<label for="validate">Validate ?</label>
-				{% include 'util/select.twig' with {'name': 'validate', 'id': 'validate', 'selectedvalue': sysop.validate, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				<label for="file_name">File Name ?</label>
+				{% include 'util/select.twig' with {'name': 'file_name', 'id': 'file_name', 'selectedvalue': sysop.file_name, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 
 			<div class="form-group">
-				<label for="file_name">File Name ?</label>
-				{% include 'util/select.twig' with {'name': 'file_name', 'id': 'file_name', 'selectedvalue': sysop.file_name, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				<label for="validate">Validate ?</label>
+				{% include 'util/select.twig' with {'name': 'validate', 'id': 'validate', 'selectedvalue': sysop.validate, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 
 			<div class="form-group">
