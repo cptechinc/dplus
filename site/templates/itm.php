@@ -12,8 +12,11 @@
 			$page->title .= " $itemID";
 			$item = $q->findOne();
 
+			$page->customerlookupURL = $pages->get('pw_template=mci-lookup')->url;
 			$page->body .= $config->twig->render('items/itm/itm-links.twig', ['page' => $page, 'page_itm' => $page]);
-			$page->body .= $config->twig->render('items/itm/itm-form.twig', ['page' => $page, 'item' => $item, 'm_itm' => $itm, 'itemgroups' => $itemgroups, 'pricecodes' => $pricecodes, 'commissioncodes' => $commissioncodes]);
+			$page->body .= $config->twig->render('items/itm/itm-form.twig', ['page' => $page, 'item' => $item, 'm_itm' => $itm]);
+			$page->body .= $config->twig->render("util/ajax-modal.twig");
+			$page->js   .= $config->twig->render("items/itm/js.twig", ['page' => $page]);
 		} else {
 			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID $itemID not found in the Item Master"]);
 		}
