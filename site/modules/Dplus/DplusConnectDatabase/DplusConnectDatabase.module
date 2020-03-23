@@ -1,6 +1,22 @@
-<?php
+<?php namespace ProcessWire;
+
+use Propel\Runtime\Connection\ConnectionManagerSingle;
+use Propel\Runtime\Propel;
+use Propel\Runtime\ServiceContainer\ServiceContainerInterface;
+
+/**
+ * DplusConnectDatabase
+ *
+ * Class for Creating Connection to the data(x) databases for Dplus
+ * NOTE these are the DPLUS main files, not pertaining to a session
+ */
 class DplusConnectDatabase extends Process implements ConfigurableModule {
-	protected $connection_name = 'dplusdata';
+	const CONNECTION_NAME_PROPEL = 'default';
+	const CONNECTION_NAME_PW = 'dplusdata';
+
+	public function get_connection_name_propel() {
+		return $this::CONNECTION_NAME_PROPEL;
+	}
 
 
 	/**
@@ -23,10 +39,10 @@ class DplusConnectDatabase extends Process implements ConfigurableModule {
 	 */
 	public function get_dbtablestructure() {
 		$content = '';
-		$tables = $this->wire($this->connection_name)->getTables();
+		$tables = $this->wire($this::CONNECTION_NAME_PW)->getTables();
 
 		foreach ($tables as $table) {
-			$sql = wire($this->connection_name)->prepare("SHOW CREATE TABLE $table");
+			$sql = wire($this::CONNECTION_NAME_PW)->prepare("SHOW CREATE TABLE $table");
 			$sql->execute();
 			$tabledata = $sql->fetch(PDO::FETCH_ASSOC);
 			$content .= $tabledata['Create Table'] . ";<br><br>";
@@ -44,14 +60,14 @@ class DplusConnectDatabase extends Process implements ConfigurableModule {
 
 		try {
 			$pdo = WireDatabasePDO::getInstance($dbconfig);
-			$this->wire($this->connection_name, $pdo, true);
-			$session->set($this->connection_name, true);
+			$this->wire($this::CONNECTION_NAME_PW, $pdo, true);
+			$session->set($this::CONNECTION_NAME_PW, true);
 		} catch (PDOException $e) {
-			if (!empty($session->get($this->connection_name))) {
+			if (!empty($session->get($this::CONNECTION_NAME_PW))) {
 				$this->log_error($e->getMessage());
 
 			}
-			$session->remove($this->connection_name);
+			$session->remove($this::CONNECTION_NAME_PW);
 		}
 	}
 
@@ -91,6 +107,41 @@ class DplusConnectDatabase extends Process implements ConfigurableModule {
 		return $dbconfig;
 	}
 
+
+	/* =============================================================
+		Propel Functions
+	============================================================= */
+	/**
+	 * Makes Propel Connection to database
+	 * @return void
+	 */
+	public function connect_propel() {
+		$manager = $this->get_propel_connection_manager();
+		$serviceContainer = Propel::getServiceContainer();
+		$serviceContainer->checkVersion('2.0.0-dev');
+		$serviceContainer->setAdapterClass($this::CONNECTION_NAME_PROPEL, 'mysql');
+		$serviceContainer->setConnectionManager($this::CONNECTION_NAME_PROPEL, $manager);
+		$this->set_propel_service_default($serviceContainer);
+	}
+
+	/**
+	 * Sets the Default datasource
+	 * @param ServiceContainerInterface $serviceContainer
+	 */
+	protected function set_propel_service_default(ServiceContainerInterface $serviceContainer) {
+		$serviceContainer->setDefaultDatasource($this::CONNECTION_NAME_PROPEL);
+	}
+
+	/**
+	 * Return ConnectionManager
+	 * @return ConnectionManagerSingle
+	 */
+	public function get_propel_connection_manager() {
+		$manager = new ConnectionManagerSingle();
+		$manager->setConfiguration($this->get_propelconfiguration());
+		return $manager;
+	}
+
 	/**
 	 * Returns Propel connection Configuration
 	 * @return array
@@ -115,13 +166,11 @@ class DplusConnectDatabase extends Process implements ConfigurableModule {
 	}
 
 	/**
-	 * Return ConnectionManager
-	 * @return ConnectionManagerSingle
+	 * Return Connection Interface for this Connection Name
+	 * @return ConnectionInterface
 	 */
-	public function get_propel_connection() {
-		$manager = new \Propel\Runtime\Connection\ConnectionManagerSingle();
-		$manager->setConfiguration($this->get_propelconfiguration());
-		return $manager;
+	public function get_propel_write_connection() {
+		return Propel::getWriteConnection($this::CONNECTION_NAME_PROPEL);
 	}
 
 	/* =============================================================

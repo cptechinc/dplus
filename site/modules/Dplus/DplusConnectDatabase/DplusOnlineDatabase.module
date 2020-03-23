@@ -1,8 +1,17 @@
-<?php
-	require_once('./DplusConnectDatabase.module');
+<?php namespace ProcessWire;
 
+require_once('./DplusConnectDatabase.module');
+use Propel\Runtime\ServiceContainer\ServiceContainerInterface;
+
+/**
+ * DplusOnlineDatabase
+ *
+ * Class for Creating Connection to the dpluso(x) databases for Dplus
+ * NOTE these are the Session based database so the data is only live for the session and last refresh
+ */
 class DplusOnlineDatabase extends DplusConnectDatabase implements ConfigurableModule {
-	protected $connection_name = 'dplusodb';
+	const CONNECTION_NAME_PROPEL = 'dplusodb';
+	const CONNECTION_NAME_PW = 'dpluso';
 
 	/**
 	 * Returns Config to connect to Database
@@ -18,6 +27,18 @@ class DplusOnlineDatabase extends DplusConnectDatabase implements ConfigurableMo
 			$this->db_name = !empty($config->dplusdbname) ? $config->dplusdbname : "dpluso$config->COMPANYNBR";
 		}
 		return $dbconfig;
+	}
+
+	/* =============================================================
+		Propel Functions
+	============================================================= */
+	/**
+	 * Sets the Default datasource
+	 * NOTE we don't want it to do anything when connecting
+	 * @param ServiceContainerInterface $serviceContainer
+	 */
+	protected function set_propel_service_default(ServiceContainerInterface $serviceContainer) {
+
 	}
 
 	/* =============================================================
