@@ -23,7 +23,7 @@
 		<div id="code-{{ code.code }}" class="list-group-item pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
 			<div class="row align-items-center">
 				<div class="col-3">
-					{{ code.code }}
+					{{ code.code|length > 14 ? code.code|slice(0,14) ~ '...' : code.code }}
 				</div>
 				<div class="col-5">
 					{{ code.description|length > 40 ? code.description|slice(0,40) ~ '...' : code.description }}
