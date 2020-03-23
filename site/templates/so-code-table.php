@@ -27,9 +27,7 @@
 			$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_codetable]);
 		}
 
-		if ($module_codetable == 'CodeTablesRgasc') {
-			$warehouses = WarehouseQuery::create()->find();
-		}
+		$warehouses = WarehouseQuery::create()->find();
 
 		if (file_exists(__DIR__."/so-code-table-$page->codetable.php")) {
 			include(__DIR__."/so-code-table-$page->codetable.php");
