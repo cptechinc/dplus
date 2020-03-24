@@ -73,7 +73,7 @@
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 			{% if code.isNew() == false %}
-				<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.id) }}" class="btn btn-danger delete_button">
+				<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger delete_button">
 					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}
