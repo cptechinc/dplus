@@ -63,7 +63,6 @@ class RecordLocker extends WireData implements Module {
 		$lock = new LockRecord();
 		$lock->setFunction($function);
 		$lock->setKey($key);
-		$lock->setSessionid($sessionID);
 		$lock->setUserid($userID);
 		return $lock->save();
 	}

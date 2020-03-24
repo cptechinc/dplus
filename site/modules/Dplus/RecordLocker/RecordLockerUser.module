@@ -19,7 +19,7 @@ class RecordLockerUser extends WireData implements Module {
 		$this->user = $user;
 		return $this;
 	}
-	
+
 	/**
 	 * Returns if Function is being locked by User ID
 	 * @param  string $function  Function e.g IWHM
@@ -46,6 +46,26 @@ class RecordLockerUser extends WireData implements Module {
 	 */
 	public function get_locked_user($function, $key) {
 		return $this->get_recordlocker()->get_locked_user($function, $key);
+	}
+
+	/**
+	 * Creates Lock for User
+	 * @param  string $function  Function e.g IWHM
+	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @return bool
+	 */
+	public function create_lock($function, $key) {
+		return $this->get_recordlocker()->create_lock($function, $key, $this->user->loginid);
+	}
+
+	/**
+	 * Removes Lock(s) for User
+	 * @param  string $function  Function e.g IWHM
+	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @return bool
+	 */
+	public function remove_lock($function, $key = '') {
+		return $this->get_recordlocker()->remove_lock($this->user->loginid, $function, $key);
 	}
 
 	public function get_recordlocker() {
