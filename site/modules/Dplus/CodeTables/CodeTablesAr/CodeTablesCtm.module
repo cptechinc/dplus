@@ -119,7 +119,7 @@ class CodeTablesCtm extends WireData implements Module {
 			if ($record->isNew() || $recordlocker->function_locked_by_user('ctm', $code)) {
 				if ($input->$rm->text('action') == 'remove-code') {
 					$record->delete();
-				} else if ($input->$rm->text('action') == 'update-code') {
+				} elseif ($input->$rm->text('action') == 'update-ctm') {
 					$description = $input->$rm->text('description');
 					$email = $input->$rm->text('order_approval_email');
 					$record->setDescription($description);
@@ -155,10 +155,10 @@ class CodeTablesCtm extends WireData implements Module {
 			$response->set_key($code);
 			$response->set_error(true);
 			$response->set_action(CodeTablesResponse::CRUD_UPDATE);
-			$message = self::DESCRIPTION_RECORD . " ($code) was not updated";
+			$message = self::DESCRIPTION_RECORD . " ($code) was not updated ";
 			$response->set_message($message);
 		}
-		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);
+		$this->wire('session')->response_codetable = $response;
 	}
 
 	/**
@@ -201,6 +201,7 @@ class CodeTablesCtm extends WireData implements Module {
 		if ($response->has_success()) {
 			$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
 		}
+
 		return $response;
 	}
 
