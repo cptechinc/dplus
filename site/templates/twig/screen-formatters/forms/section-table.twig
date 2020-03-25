@@ -3,10 +3,18 @@
 
 <table class="table table-striped table-sm">
 	<thead>
-		<tr> <th>Field / Label</th> <th>Type</th> <th>Line</th> <th>Column</th> <th>Column Length</th> </tr>
+		<tr>
+			<th>Field / Label</th>
+			<th>Type</th>
+			<th>Line</th>
+			<th>Column</th>
+			<th>Column Length</th>
+			<th>Label Justify</th>
+			<th>Data Justify</th>
+		</tr>
 	</thead>
 	<tbody>
-		{% for column,properties in formatter[section]['columns'] %}
+		{% for column, definition in fields[section] %}
 			{% set name = column|replace({' ': ''}) %}
 			{% set columndefinition = formatter[section]['columns']|array_key_exists(column) ? formatter[section]['columns'][column] : module_formatter.get_defaultformattercolumn() %}
 
@@ -42,13 +50,12 @@
 									Decimal:
 								</div>
 								<div class="col">
-									Before Decimal &nbsp;
-									<input type="text" class="form-control form-control-sm text-right before-decimal" name="{{ name ~ '-before-decimal' }}" value="{{ formatter[section]['columns'][column]['before-decimal'] }}"> &nbsp; &nbsp;
+									Before &nbsp;
+									<input type="text" class="form-control form-control-sm text-right before-decimal" name="{{ name ~ '-before-decimal' }}" value="{{ columndefinition['before-decimal'] }}">
 								</div>
 								<div class="col">
-									After Decimal &nbsp;
-									<input type="text" class="form-control form-control-sm text-right after-decimal" name="{{ name ~ '-after-decimal' }}" value="{{ formatter[section]['columns'][column]['after-decimal'] }}">
-									<span class="display"></span>
+									After &nbsp;
+									<input type="text" class="form-control form-control-sm text-right after-decimal" name="{{ name ~ '-after-decimal' }}" value="{{ columndefinition['after-decimal'] }}">
 								</div>
 							</div>
 						{% endif %}
@@ -62,6 +69,12 @@
 				</td>
 				<td>
 					<input type="text" class="form-control form-control-sm text-right column-length" name="{{ name ~ '-length' }}" value="{{ columndefinition['col-length'] }}">
+				</td>
+				<td>
+					{% include 'util/select.twig' with {'name': name ~ '-label-justify', 'id': name ~ '-label-justify', 'selectedvalue': columndefinition['label-justify'] ? columndefinition['label-justify'] : 'l', 'options': module_formatter.get_justifyclasses() } %}
+				</td>
+				<td>
+					{% include 'util/select.twig' with {'name': name ~ '-data-justify', 'id': name ~ '-data-justify', 'selectedvalue': columndefinition['data-justify'] ? columndefinition['data-justify'] : 'l', 'options': module_formatter.get_justifyclasses() } %}
 				</td>
 			</tr>
 		{% endfor %}

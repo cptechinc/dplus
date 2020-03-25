@@ -111,6 +111,10 @@
 			return self::JUSTIFY_CLASSES[$justifycode];
 		}
 
+		public function get_justifyclasses() {
+			return self::JUSTIFY_CLASSES;
+		}
+
 		/**
 		 * Return JSON FILE
 		 * @param  string $sessionID Session ID
