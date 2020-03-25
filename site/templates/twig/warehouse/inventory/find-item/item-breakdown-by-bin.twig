@@ -18,6 +18,9 @@
 							<h5>
 								<strong>Bin:</strong> {{ binitem.bin }}
 							</h5>
+							{% if (not warehouse.validate_bin(binitem.bin)) %}
+								<span class="badge badge-danger">Invalid Bin</span>
+							{% endif %}
 						</div>
 						<div class="col">
 							<strong>Qty:</strong> {{ inventory.count_lotserials_itemid(item.sessionid, item.itemid, binitem.bin) }}
@@ -27,11 +30,6 @@
 								<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ (binitem.itemid ~ '_' ~ binitem.bin)|attrJS }}-lotserial" aria-expanded="false" aria-controls="{{ (binitem.itemid ~ '_' ~ binitem.bin)|attrJS }}-lotserial">
 									Show / Hide {{ binitem.get_itemtypepropertydesc()|upper ~ "S" }}
 								</button>
-							{% endif %}
-						</div>
-						<div class="col">
-							{% if (not warehouse.validate_bin(binitem.bin)) %}
-								<span class="badge badge-danger pull-right">Invalid Bin</span>
 							{% endif %}
 						</div>
 					</div>
