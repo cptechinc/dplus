@@ -2,7 +2,6 @@
 	$config_salesorders = $modules->get('ConfigsSalesOrders');
 	$modules->get('DpagesMso')->init_salesorder_hooks();
 	$html = $modules->get('HtmlWriter');
-	$http = new ProcessWire\WireHttp();
 	$lookup_orders = $modules->get('LookupSalesOrder');
 
 	if ($input->get->ordn) {
@@ -26,7 +25,7 @@
 			$page->body .= $config->twig->render('sales-orders/sales-order/edit/sales-order-header.twig', ['page' => $page, 'customer' => $customer, 'order' => $module_edit->get_order_static()]);
 
 			if ($user->is_editingorder($order->ordernumber)) {
-				$page->body .= $config->twig->render('sales-orders/sales-order/edit/edit-form.twig', ['page' => $page, 'order' => $order, 'states' => $module_edit->get_states(), 'shipvias' => $module_edit->get_shipvias(), 'warehouses' => $module_edit->get_warehouses(), 'shiptos' => $customer->get_shiptos()]);
+				$page->body .= $config->twig->render('sales-orders/sales-order/edit/edit-form.twig', ['page' => $page, 'order' => $order, 'states' => $module_edit->get_states(), 'shipvias' => $module_edit->get_shipvias(), 'warehouses' => $module_edit->get_warehouses(), 'termscodes' => $module_edit->get_termscodes(), 'shiptos' => $customer->get_shiptos()]);
 			}
 
 			if ($modules->get('ConfigsCi')->option_lastsold  == 'cstk') {
@@ -34,7 +33,10 @@
 				$lastsold->custID = $order->custid;
 				$lastsold->shiptoID = $order->shiptoid;
 				$lastsold->function = 'eso';
-				$lastsold->request_pricing();
+
+				if ($lastsold->has_pricing()) {
+					$lastsold->request_pricing();
+				}
 			} else {
 				$lastsold = false;
 			}
@@ -64,8 +66,7 @@
 				$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 			}
 			$module_qnotes = $modules->get('QnotesSalesOrder');
-			$page->body .= $html->div('class=mb-3');
-			$notes = SalesOrderNotesQuery::create()->filterByOrdernumber($ordn)->filterByLine(0)->find();
+			$page->body .= $html->div('class=mb-4');
 			$page->body .= $config->twig->render('sales-orders/sales-order/qnotes.twig', ['page' => $page, 'qnotes_so' => $module_qnotes, 'ordn' => $ordn]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/notes/add-note-modal.twig', ['page' => $page, 'ordn' => $ordn]);
 			$config->scripts->append(hash_templatefile('scripts/quotes/quote-notes.js'));

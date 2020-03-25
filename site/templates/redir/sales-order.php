@@ -110,7 +110,7 @@
 			$editorder->setShipviacd($input->$requestmethod->text('shipvia'));
 			$editorder->setRqstDate($input->$requestmethod->text('date_requested'));
 			$editorder->setShipcom($input->$requestmethod->text('shipcomplete'));
-			$editorder->setPaymenttype($input->$requestmethod->text('paytype'));
+			$editorder->setTermcode($input->$requestmethod->text('termscode'));
 			$editorder->save();
 			$data = array("DBNAME=$dplusdb", 'SALESHEAD', "ORDERNO=$ordn", "CUSTID=$editorder->custid");
 
