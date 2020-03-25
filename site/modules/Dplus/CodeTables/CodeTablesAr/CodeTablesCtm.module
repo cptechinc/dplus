@@ -116,6 +116,13 @@ class CodeTablesCtm extends WireData implements Module {
 		if ($input->$rm->action) {
 			$recordlocker = $this->wire('modules')->get('RecordLockerUser');
 
+			/**
+			 * Create lock for CTM code if not already locked.
+			 */
+			if (!$recordlocker->function_locked('ctm', $code)) {
+				$recordlocker->create_lock('ctm', $code);
+			}
+
 			if ($record->isNew() || $recordlocker->function_locked_by_user('ctm', $code)) {
 				if ($input->$rm->text('action') == 'remove-code') {
 					$record->delete();
