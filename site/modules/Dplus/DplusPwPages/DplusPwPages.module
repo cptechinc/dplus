@@ -209,7 +209,8 @@
 			$this->addHookProperty('Page::redirect_from_page', function($event) {
 				$page = $event->object;
 				$redirect_from = $page->fullURL->query->get('redirect_from');
-				$basepath = end(explode('/', trim($this->wire('config')->paths->root, '/')));
+				$patharray = explode('/', trim($this->wire('config')->paths->root, '/'));
+				$basepath = end($patharray);
 
 				$redirect_from = ltrim(str_replace("$basepath", '', $redirect_from), '/');
 				$event->return = $this->wire('pages')->get("/$redirect_from");
@@ -454,7 +455,9 @@
 
 			if (in_array($page['template'], array_keys($default_templates))) {
 				foreach ($default_templates[$page['template']]['fields'] as $fieldname) {
-					$pw_page->$fieldname = $page[$fieldname];
+					if (array_key_exists($fieldname, $page)) {
+						$pw_page->$fieldname = $page[$fieldname];
+					}
 				}
 			} else {
 				foreach ($this::TEMPLATES[$page['template']]['fields'] as $fieldname) {
