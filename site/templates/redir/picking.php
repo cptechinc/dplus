@@ -251,6 +251,7 @@
 			$url = new Purl\Url($input->$requestmethod->text('page'));
 			$url->query->remove('ordn');
 			$url->query->remove('linenbr');
+			$url->query->remove('scan');
 			$session->loc = $url->getUrl();
 			WhseitempickQuery::create()->filterBySessionidOrder(session_id(), $whsesession->ordn)->delete();
 			break;
