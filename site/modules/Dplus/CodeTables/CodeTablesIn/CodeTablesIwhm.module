@@ -113,6 +113,13 @@ class CodeTablesIwhm extends WireData implements Module {
 		if ($input->$rm->action) {
 			$recordlocker = $this->wire('modules')->get('RecordLockerUser');
 
+			/**
+			 * Create lock for IWHM code if not already locked.
+			 */
+			if (!$recordlocker->function_locked('iwhm', $whseID)) {
+				$recordlocker->create_lock('iwhm', $whseID);
+			}
+
 			if ($record->isNew() || $recordlocker->function_locked_by_user('iwhm', $whseID)) {
 				if ($input->$rm->text('action') == 'remove-code') {
 					$record->delete();
