@@ -1,6 +1,7 @@
 {# igm is an instance of InvGroupCode #}
 <form action="{{ page.url }}" method="POST" id="code-edit-form">
-	<input type="hidden" name="table" value="igm">
+	<input type="hidden" name="action" value="update-code">
+	<input type="hidden" name="table" value="{{ page.codetable }}">
 	<input type="hidden" name="sales_program" value="N">
 	<input type="hidden" name="cost_percent" value="0">
 	<input type="hidden" name="max_qty_large" value="0">
@@ -140,8 +141,23 @@
 		</div>
 	</div>
 
-	<button type="submit" class="btn btn-success">
-		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-	</button>
-	<a href="{{ page.get_codetable_listURL(page.codetable, itemgroup.code) }}" class="btn btn-warning pull-right">Close</a>
+	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the code is
+			1. Locked for editing by the User
+			2. Is a new code
+			NOTE: Only show delete if code already exists.
+		#}
+		{% if recordlocker.function_locked_by_user(page.codetable, itemgroup.code) or itemgroup.isNew() %}
+			<button type="submit" class="btn btn-success">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			{% if code.isNew() == false %}
+				<a href="{{ page.get_codetable_code_deleteURL(page.codetable, itemgroup.code) }}" class="btn btn-danger delete_button">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+		<a href="{{ page.get_codetable_listURL(page.codetable, itemgroup.code) }}" class="btn btn-warning pull-right">Close</a>
+	</div>
 </form>
