@@ -435,7 +435,6 @@
 			$ponbr    = $input->$requestmethod->text('ponbr');
 			$data = array("DBNAME=$dplusdb", 'FINISHRECEIPT', "PONBR=$ponbr");
 			$url = new Purl\Url($pages->get('pw_template=whse-receiving')->url);
-			$url->query->set('ponbr', $ponbr);
 			$session->loc = $url->getUrl();
 			break;
 	}
