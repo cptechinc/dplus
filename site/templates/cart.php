@@ -48,9 +48,7 @@
 		}
 
 		$page->body .= $html->div('class=mb-4', '');
-		$page->body .= $config->twig->render('cart/cart-actions.twig', ['page' => $page, 'cart' => $cart]);
-		$page->body .= $html->div('class=mb-4', '');
-		$page->body .= $config->twig->render('cart/cart-notes.twig', ['page' => $page, 'cart' => $cart]);
+		$page->body .= $config->twig->render('cart/cart-actions.twig', ['page' => $page, 'cart' => $cart, 'user' => $user]);
 
 		$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 	} elseif ($input->get->custID) {
