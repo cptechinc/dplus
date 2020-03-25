@@ -5,7 +5,6 @@
 
 	if ($input->requestMethod('POST')) {
 		$response = $module_qnotes->process_input($input);
-		$page->fullURL->query->remove('linenbr');
 		$session->redirect($page->fullURL->getURL());
 	} else {
 		if ($input->get->ordn) {
