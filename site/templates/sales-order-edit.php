@@ -50,7 +50,13 @@
 			if ($user->is_editingorder($order->ordernumber)) {
 				$page->body .= $html->div('class=mt-3');
 				$page->body .= $html->h3('class=text-secondary', 'Add Item');
-				$page->body .= $config->twig->render('sales-orders/sales-order/edit/add-item-form.twig', ['page' => $page, 'order' => $order]);
+
+				if ($config->twigloader->exists("sales-orders/sales-order/edit/$config->company/add-item-form.twig")) {
+					$page->body .= $config->twig->render("sales-orders/sales-order/edit/$config->company/add-item-form.twig", ['page' => $page, 'order' => $order]);
+				} else {
+					$page->body .= $config->twig->render('sales-orders/sales-order/edit/add-item-form.twig', ['page' => $page, 'order' => $order]);
+				}
+
 				$page->js .= $config->twig->render('sales-orders/sales-order/edit/item-lookup.js.twig', ['page' => $page, 'order' => $order]);
 
 				if ($input->get->q) {
