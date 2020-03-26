@@ -1,54 +1,60 @@
-<?php
-	require_once('./DplusConnectDatabase.module');
-	
-	class DplusOnlineDatabase extends DplusConnectDatabase implements ConfigurableModule {
-		protected $connection_name = 'dplusodb';
+<?php namespace ProcessWire;
 
-		public static function getModuleInfo() {
-			$infoArray = array(
-				'title' => __('Dplus Online Database Connection'),
-				'version' => 115,
-				'summary' => __("Creates Connection to Dplus Online Database"),
-				'autoload' => true,
-				'singular' => true,
-				'author' => 'pauldro',
-				'icon' => 'database'
-			);
-			return $infoArray;
+require_once('./DplusConnectDatabase.module');
+use Propel\Runtime\ServiceContainer\ServiceContainerInterface;
+
+/**
+ * DplusOnlineDatabase
+ *
+ * Class for Creating Connection to the dpluso(x) databases for Dplus
+ * NOTE these are the Session based database so the data is only live for the session and last refresh
+ */
+class DplusOnlineDatabase extends DplusConnectDatabase implements ConfigurableModule {
+	const CONNECTION_NAME_PROPEL = 'dplusodb';
+	const CONNECTION_NAME_PW = 'dpluso';
+
+	/**
+	 * Returns Config to connect to Database
+	 * @return Config
+	 */
+	public function get_dbconfig() {
+		$config = $this->wire('config');
+		$dbconfig = parent::get_dbconfig();
+
+		if (!empty($this->db_name)){
+			$this->db_name = $this->db_name;
+		} else {
+			$this->db_name = !empty($config->dplusdbname) ? $config->dplusdbname : "dpluso$config->COMPANYNBR";
 		}
-
-		static public function getDefaultConfig() {
-			return array(
-				'db_name' => 'dpluso',
-				'db_host' => '192.168.1.2',
-				'db_user' => 'cptecomm',
-				'db_pass' => 'rghopeless',
-				'db_port' => '3306',
-			);
-		}
-
-
-		/**
-		 * Returns Config to connect to Dplus Data Database
-		 * @return Config
-		 */
-		public function get_dbconfig() {
-			$config = $this->wire('config');
-			$dbname = '';
-
-			if (!empty($this->db_name)){
-				$this->db_name = $this->db_name;
-			} else {
-				$this->db_name = !empty($config->dplusdbname) ? $config->dplusdbname : "dpluso$config->COMPANYNBR";
-			}
-
-			$dbconfig = new Config();
-			$dbconfig->dbHost = !empty($this->db_host) ? $this->db_host : $config->dbHost;;
-			$dbconfig->dbName = $this->db_name;
-			$dbconfig->dbUser = !empty($this->db_user) ? $this->db_user : $config->dbUser;
-			$dbconfig->dbPass = !empty($this->db_pass) ? $this->db_pass : $config->dbPass;
-			$dbconfig->dbPort = !empty($this->db_port) ? $this->db_port : $config->dbport;
-
-			return $dbconfig;
-		}
+		return $dbconfig;
 	}
+
+	/* =============================================================
+		Propel Functions
+	============================================================= */
+	/**
+	 * Sets the Default datasource
+	 * NOTE we don't want it to do anything when connecting
+	 * @param ServiceContainerInterface $serviceContainer
+	 */
+	protected function set_propel_service_default(ServiceContainerInterface $serviceContainer) {
+
+	}
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+
+	public static function getModuleInfo() {
+		$infoArray = array(
+			'title' => __('Dplus Online Database Connection'),
+			'version' => 115,
+			'summary' => __("Creates Connection to Dplus Online Database"),
+			'autoload' => true,
+			'singular' => true,
+			'author' => 'pauldro',
+			'icon' => 'database'
+		);
+		return $infoArray;
+	}
+}

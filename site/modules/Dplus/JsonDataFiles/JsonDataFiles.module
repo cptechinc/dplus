@@ -68,6 +68,9 @@
 				'sub'			=> 'visub',
 				'payments'      => 'vipayment',
 				'notes'         => 'vinotes'
+			),
+			'itm' => array(
+				'delete' => 'deleteitm'
 			)
 		);
 

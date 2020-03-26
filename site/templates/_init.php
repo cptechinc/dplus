@@ -1,7 +1,4 @@
 <?php
-	use Map\SalesOrderTableMap;
-	use Map\QnoteTableMap;
-
 /**
  * Initialization file for template files
  *
@@ -24,41 +21,35 @@ if (!empty($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != '/') {
 
 // CHECK DATABASE CONNECTIONS
 if ($page->id != $config->errorpage_dplusdb) {
-	if (empty(wire('dplusdata')) || empty(wire('dplusodb'))) {
+	if (empty(wire('dplusdata')) || empty(wire('dpluso'))) {
+		$modules->get('DplusConnectDatabase')->log_error('At least One database is not connected');
 		$session->redirect($pages->get($config->errorpage_dplusdb)->url, $http301 = false);
 	}
 
-	$serviceContainer = \Propel\Runtime\Propel::getServiceContainer();
-	$serviceContainer->checkVersion('2.0.0-dev');
-
 	$db_modules = array(
 		'dplusdata' => array(
-			'module'          => 'DplusConnectDatabase',
-			'connection-name' => 'default',
-			'database'        => SalesOrderTableMap::DATABASE_NAME
+			'module'   => 'DplusConnectDatabase',
+			'default'  => true
 		),
 		'dpluso' => array(
 			'module'          => 'DplusOnlineDatabase',
-			'connection-name' => 'dplusodb',
-			'database'        => QnoteTableMap::DATABASE_NAME
+			'default'  => false
 		)
 	);
 
 	foreach ($db_modules as $key => $connection) {
 		$module = $modules->get($connection['module']);
-		$manager = $module->get_propel_connection();
-		$serviceContainer->setAdapterClass($connection['connection-name'], 'mysql');
-		$serviceContainer->setConnectionManager($connection['connection-name'], $manager);
+		$module->connect_propel();
 
 		try {
-			$$key = Propel\Runtime\Propel::getWriteConnection($connection['database']);
-			$$key->useDebug(true);
+			$propel_name = $module->get_connection_name_propel();
+			$$propel_name = $module->get_propel_write_connection();
+			$$propel_name->useDebug(true);
 		} catch (Exception $e) {
+			$module->log_error($e->getMessage());
 			$session->redirect($pages->get($config->errorpage_dplusdb)->url, $http301 = false);
 		}
 	}
-
-	$serviceContainer->setDefaultDatasource('default');
 
 	$templates_nosignin = array('login', 'redir');
 
@@ -79,8 +70,8 @@ if ($page->id != $config->errorpage_dplusdb) {
 		}
 	} else {
 		try {
-			$con = Propel\Runtime\Propel::getWriteConnection(SalesOrderTableMap::DATABASE_NAME);
-			$dpluso = Propel\Runtime\Propel::getWriteConnection(QnoteTableMap::DATABASE_NAME);
+			$con    = $modules->get('DplusConnectDatabase')->get_propel_write_connection();
+			$dpluso = $modules->get('DplusOnlineDatabase')->get_propel_write_connection();
 		} catch (Exception $e) {
 			$page->show_title = true;
 		}

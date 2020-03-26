@@ -6,7 +6,7 @@
 			<a class="nav-link" href="{{ page.itmURL(page.itemID) }}">ITM</a>
 		{% endif %}
 	</li>
-	{% for function in page_itm.children('template!=dplus-json') %}
+	{% for function in page_itm.children('template!=dplus-json|itm-json') %}
 		<li class="nav-item">
 			{% if function.id == page.id %}
 				<a class="nav-link active" href="#">{{ function.title }}</a>
