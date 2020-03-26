@@ -74,7 +74,7 @@
 			$module_qnotes = $modules->get('QnotesSalesOrder');
 			$page->body .= $html->div('class=mb-4');
 			$page->body .= $config->twig->render('sales-orders/sales-order/qnotes.twig', ['page' => $page, 'qnotes_so' => $module_qnotes, 'ordn' => $ordn]);
-			$page->body .= $config->twig->render('sales-orders/sales-order/notes/add-note-modal.twig', ['page' => $page, 'ordn' => $ordn]);
+			$page->body .= $config->twig->render('sales-orders/sales-order/notes/note-modal.twig', ['page' => $page, 'ordn' => $ordn]);
 			$config->scripts->append(hash_templatefile('scripts/quotes/quote-notes.js'));
 		} elseif ($lookup_orders->lookup_saleshistory($ordn)) {
 			$page->headline = $page->title = "Sales Order #$ordn is not editable";
