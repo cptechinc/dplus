@@ -4,15 +4,15 @@
 			<div class="col-2">
 				Code
 			</div>
-			<div class="col-6">
+			<div class="col-5">
 				Description
 			</div>
-			<div class="col-1">
-				IW
+			<div class="col-2">
+				Update IW ?
 			</div>
-			<div class="col-3">
+			<div class="col-3 text-center">
 				{% if page.is_print() == false %}
-					<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="">
+					<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="" data-updateinventorywatch="">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
 					</button>
 				{% endif %}
@@ -25,10 +25,10 @@
 				<div class="col-2">
 					{{ code.code }}
 				</div>
-				<div class="col-6">
+				<div class="col-5">
 					{{ code.description }}
 				</div>
-				<div class="col-1">
+				<div class="col-2">
 					{{ code.updateinventorywatch|yesorno|capitalize }}
 				</div>
 				<div class="col-3 text-center">
@@ -37,7 +37,7 @@
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</button>
 						&nbsp;
-						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger">
+						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger delete_button">
 							<i class="fa fa-trash" aria-hidden="true"></i> Delete
 						</a>
 					{% endif %}

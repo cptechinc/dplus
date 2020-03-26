@@ -1,0 +1,85 @@
+<?php namespace ProcessWire;
+
+use LockRecordQuery, LockRecord;
+
+/**
+ * RecordLockerUser
+ *
+ * Class for Creating, Reading LockRecord for the purposes of Dplus User
+ *
+ * NOTE: Examples provided will be for IWHM
+ */
+class RecordLockerUser extends WireData implements Module {
+
+	public function init() {
+		$this->user = $this->wire('user');
+	}
+
+	public function set_user(User $user) {
+		$this->user = $user;
+		return $this;
+	}
+
+	/**
+	 * Returns if Function is being locked by User ID
+	 * @param  string $function  Function e.g IWHM
+	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @return bool
+	 */
+	public function function_locked_by_user($function, $key) {
+		return $this->get_recordlocker()->function_locked_by_user($function, $key, $this->user->loginid);
+	}
+
+	/**
+	 * Returns if Function is being locked
+	 * @param  string $function  Function e.g IWHM
+	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @return bool
+	 */
+	public function function_locked($function, $key) {
+		return $this->get_recordlocker()->function_locked($function, $key);
+	}
+
+	/**
+	 * Return LoginID of User who has locked function record
+	 * @return string
+	 */
+	public function get_locked_user($function, $key) {
+		return $this->get_recordlocker()->get_locked_user($function, $key);
+	}
+
+	/**
+	 * Creates Lock for User
+	 * @param  string $function  Function e.g IWHM
+	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @return bool
+	 */
+	public function create_lock($function, $key) {
+		return $this->get_recordlocker()->create_lock($function, $key, $this->user->loginid);
+	}
+
+	/**
+	 * Removes Lock(s) for User
+	 * @param  string $function  Function e.g IWHM
+	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @return bool
+	 */
+	public function remove_lock($function, $key = '') {
+		return $this->get_recordlocker()->remove_lock($this->user->loginid, $function, $key);
+	}
+
+	public function get_recordlocker() {
+		return $this->wire('modules')->get('RecordLocker');
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus RecordLockerUser ',
+			'version' => 101,
+			'summary' => 'Dplus RecordLockerUser',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+}

@@ -14,7 +14,14 @@
 
 	<div class="form-group">
 		<label for="warehouse">Warehouse</label>
-		<input type="text" name="warehouse" class="form-control" maxlength="2" value="" id="warehouse">
+		<select name="warehouse" class="form-control" id="warehouse">
+			<option value="">-- Choose --</option>
+			{% for whse in warehouses %}
+				<option value="{{ whse.id }}" {{ whse.id == value ? 'selected' : ''}}>
+					{{ whse.id }} - {{ whse.name }}
+				</option>
+			{% endfor %}
+		</select>
 	</div>
 
 	<div class="form-group">
@@ -22,8 +29,10 @@
 		<input type="text" name="account_number" class="form-control" maxlength="10" value="" id="account_number">
 	</div>
 
-	<button type="submit" class="btn btn-success">
-		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-	</button>
-	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+	</div>
 </form>

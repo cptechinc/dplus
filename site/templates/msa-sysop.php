@@ -29,10 +29,13 @@
 
 		if ($input->get->code) {
 			$code = $input->get->text('code');
+			$system = $input->get->text('system');
 
-			if ($module_codetable->code_exists($code)) {
-				$sysop = $module_codetable->get_code($code);
+			if ($module_codetable->code_exists($system, $code)) {
+				$page->title = "Editing $system $code";
+				$sysop = $module_codetable->get_code($system, $code);
 			} else {
+				$page->title = "Creating Optional Code";
 				$sysop = new MsaSysopCode();
 			}
 
@@ -41,7 +44,7 @@
 			$page->headline = "$module_codetable->description Table";
 			$page->body .= $config->twig->render("code-tables/msa/$page->codetable/list.twig", ['page' => $page, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable]);
 		}
-		
+
 		$page->js   .= $config->twig->render("code-tables/msa/$page->codetable/js.twig", ['page' => $page, 'max_length_code' => $module_codetable->get_max_length_code()]);
 	} else {
 		$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Code Table Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "MSA Code Table '$page->codetable' does not exist"]);

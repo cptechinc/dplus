@@ -74,7 +74,7 @@ class CodeTablesIgm extends WireData implements Module {
 	 */
 	public function process_input(WireInput $input) {
 		$config_so = ConfigSalesOrderQuery::create()->findOne();
-        $config_ar = ConfigArQuery::create()->findOne();
+		$config_ar = ConfigArQuery::create()->findOne();
 		$rm = strtolower($input->requestMethod());
 		$table = $input->$rm->text('table');
 		$code  = $input->$rm->text('code');
@@ -90,56 +90,92 @@ class CodeTablesIgm extends WireData implements Module {
 			$record->setCode($code);
 		}
 
-		if ($input->$rm->text('action') == 'remove-code') {
-			$record->delete();
+		if ($input->$rm->action) {
+			$recordlocker = $this->wire('modules')->get('RecordLockerUser');
+
+			/**
+			 * Create lock for IGM code if not already locked.
+			 */
+			if (!$recordlocker->function_locked('igm', $code)) {
+				$recordlocker->create_lock('igm', $code);
+			}
+
+			if ($record->isNew() || $recordlocker->function_locked_by_user('igm', $code)) {
+				if ($input->$rm->text('action') == 'remove-code') {
+					$record->delete();
+				} elseif ($input->$rm->text('action') == 'update-code') {
+					$description = $input->$rm->text('description');
+					$coop = $input->$rm->text('coop');
+					$sales = $input->$rm->text('sales');
+					$credit = $input->$rm->text('credit');
+					$cogs = $input->$rm->text('cogs');
+					$inventory = $input->$rm->text('inventory');
+					$drop_ship = $input->$rm->text('drop_ship');
+					$surcharge = $input->$rm->text('surcharge');
+					$surcharge_dollar_percent = $input->$rm->text('surcharge_dollar_percent');
+					$surcharge_dollar_amount = $input->$rm->text('surcharge_dollar_amount');
+					$surcharge_percent = $input->$rm->text('surcharge_percent');
+					$freight_group = $input->$rm->text('freight_group');
+					$product_line = $input->$rm->text('product_line');
+					$ecomm_desc = $input->$rm->text('ecomm_desc');
+					$sales_program = $input->$rm->text('sales_program');
+					$cost_percent = $input->$rm->text('cost_percent');
+					$max_qty_large = $input->$rm->text('max_qty_large');
+					$max_qty_medium = $input->$rm->text('max_qty_medium');
+					$max_qty_small = $input->$rm->text('max_qty_small');
+					$record->setDescription($description);
+					$record->setCoop($coop);
+					$record->setSales($sales);
+					$record->setCredit($credit);
+					$record->setCogs($cogs);
+					$record->setInventory($inventory);
+					$record->setDrop_ship($drop_ship);
+					$record->setSurcharge($surcharge);
+					$record->setSurcharge_dollar_percent($surcharge_dollar_percent);
+					$record->setSurcharge_dollar_amount($surcharge_dollar_amount);
+					$record->setSurcharge_percent($surcharge_percent);
+					$record->setFreight_group($freight_group);
+					$record->setProduct_line($product_line);
+					$record->setEcomm_desc($ecomm_desc);
+					$record->setSales_program($sales_program);
+					$record->setCost_percent($cost_percent);
+					$record->setMax_qty_large($max_qty_large);
+					$record->setMax_qty_medium($max_qty_medium);
+					$record->setMax_qty_small($max_qty_small);
+					$record->setDate(date('Ymd'));
+					$record->setTime(date('His'));
+					$record->setDummy('P');
+
+					// TODO: show if company == Alumacraft as well
+					if ($config_ar->is_web_group()) {
+						$web_group = $input->$rm->text('web_group');
+						$record->setWeb_group($web_group);
+					}
+
+					if ($config_so->is_request_program()) {
+						$sales_program = $input->$rm->text('sales_program');
+						$record->setSales_program($sales_program);
+					}
+				}
+				$response = $this->save_and_process_response($table, $code, $record);
+			} else {
+				$response = new CodeTablesResponse();
+				$response->set_key($code);
+				$response->set_error(true);
+				$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+				$message = self::DESCRIPTION_RECORD . " ($code) was not updated because it is locked by " . $recordlocker->get_locked_user('igm', $code);
+				$response->set_message($message);
+			}
 		} else {
-			$description = $input->$rm->text('description');
-			$coop = $input->$rm->text('coop');
-			// $ritm = $input->$rm->text('ritm');
-			$sales = $input->$rm->text('sales');
-			$credit = $input->$rm->text('credit');
-			$cogs = $input->$rm->text('cogs');
-			$inventory = $input->$rm->text('inventory');
-			$drop_ship = $input->$rm->text('drop_ship');
-			$surcharge = $input->$rm->text('surcharge');
-			$surcharge_dollar_percent = $input->$rm->text('surcharge_dollar_percent');
-			$surcharge_dollar_amount = $input->$rm->text('surcharge_dollar_amount');
-			$surcharge_percent = $input->$rm->text('surcharge_percent');
-			$freight_group = $input->$rm->text('freight_group');
-			$product_line = $input->$rm->text('product_line');
-			$ecomm_desc = $input->$rm->text('ecomm_desc');
-			$record->setDescription($description);
-			$record->setCoop($coop);
-			// $record->setRitm($ritm);
-			$record->setSales($sales);
-			$record->setCredit($credit);
-			$record->setCogs($cogs);
-			$record->setInventory($inventory);
-			$record->setDrop_ship($drop_ship);
-			$record->setSurcharge($surcharge);
-			$record->setSurcharge_dollar_percent($surcharge_dollar_percent);
-			$record->setSurcharge_dollar_amount($surcharge_dollar_amount);
-			$record->setSurcharge_percent($surcharge_percent);
-			$record->setFreight_group($freight_group);
-			$record->setProduct_line($product_line);
-			$record->setEcomm_desc($ecomm_desc);
-			$record->setDate(date('Ymd'));
-			$record->setTime(date('His'));
-			$record->setDummy('P');
-
-			// TODO: show if company == Alumacraft as well
-            if ($config_ar->is_web_group()) {
-				$web_group = $input->$rm->text('web_group');
-				$record->setWeb_group($web_group);
-			}
-
-			if ($config_so->is_request_program()) {
-				$sales_program = $input->$rm->text('sales_program');
-				$record->setSales_program($sales_program);
-			}
+			$response = new CodeTablesResponse();
+			$response->set_key($code);
+			$response->set_error(true);
+			$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+			$message = self::DESCRIPTION_RECORD . " ($code) was not updated";
+			$response->set_message($message);
 		}
 
-		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);
+		$this->wire('session')->response_codetable = $response;
 	}
 
 	/**

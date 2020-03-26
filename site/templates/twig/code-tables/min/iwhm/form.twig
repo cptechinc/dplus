@@ -30,12 +30,22 @@
 		</div>
 	</div>
 	<div class="d-flex justify-content-between align-items-center">
-		<button type="submit" class="btn btn-success">
-			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-		</button>
-		<a href="{{ page.get_codetable_code_deleteURL(page.codetable, warehouse.id) }}" class="btn btn-danger delete_button">
-			<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
-		</a>
+		{#
+			Only show Edit Actions if the Warehouse is
+			1. Locked for editing by the User
+			2. Is a new Warehouse
+			NOTE: Only show delete if warehouse already exists.
+		#}
+		{% if recordlocker.function_locked_by_user(page.codetable, warehouse.id) or warehouse.isNew() %}
+			<button type="submit" class="btn btn-success" name="action" value="update-code">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			{% if warehouse.isNew() == false %}
+				<a href="{{ page.get_codetable_code_deleteURL(page.codetable, warehouse.id) }}" class="btn btn-danger delete_button">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
 		<a href="{{ page.get_codetable_listURL(page.codetable, warehouse.id) }}" class="btn btn-warning">
 			Close
 		</a>

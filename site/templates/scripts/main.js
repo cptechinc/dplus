@@ -161,6 +161,29 @@ $(function() {
 			}
 		}).catch(swal.noop);
 	});
+
+	$('button.delete_button').click(function(e){
+		e.preventDefault();
+		var button = $(this);
+		var action = $('.modal-form').attr("action");
+		console.log(action);
+
+		swal({
+			title: "Confirm Deletion",
+			text: "Are you sure you want to delete?",
+			type: 'warning',
+			showCancelButton: true,
+			confirmButtonClass: 'btn btn-success',
+			cancelButtonClass: 'btn btn-danger',
+			buttonsStyling: false,
+			confirmButtonText: 'Yes'
+		}).then(function (confirm) {
+			if (confirm) {
+				button.closest('form').submit();
+				window.location.href = action;
+			}
+		}).catch(swal.noop);
+	});
 });
 
 $.fn.extend({

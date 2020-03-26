@@ -1,6 +1,10 @@
 {# igpm is an instance of InvPriceCode #}
 <form action="{{ page.url }}" method="POST" id="code-edit-form">
 	<input type="hidden" name="table" value="igpm">
+	{# fields not displaying now, but could in the future #}
+	<input type="hidden" name="sales_program" value="N">
+	<input type="hidden" name="cost_percent" value="0">
+
 
 	<div class="form-group">
 		<label for="code">Code</label>
@@ -9,20 +13,20 @@
 
 	<div class="form-group">
 		<label for="description">Description</label>
-		<input type="text" name="description" class="form-control" value="" id="description">
+		<input type="text" name="description" class="form-control" maxlength="20" value="" id="description">
 	</div>
 
-	{% if config_so.is_request_program() %}
-		<div class="form-group">
+	{# if config_so.is_request_program() #}
+		<!-- <div class="form-group">
 		    <label for="sales_program">Sales Program ?</label>
-		    {% include 'util/select.twig' with {'name': 'sales_program', 'id': 'sales_program', 'options': {'Y': 'Yes', 'N': 'No'}} %}
-	    </div>
-	{% endif %}
+		    {# include 'util/select.twig' with {'name': 'sales_program', 'id': 'sales_program', 'options': {'Y': 'Yes', 'N': 'No'}} #}
+	    </div> -->
+	{# endif #}
 
 	<div class="modal-footer">
 		<button type="submit" class="btn btn-success">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 		</button>
-		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
 	</div>
 </form>

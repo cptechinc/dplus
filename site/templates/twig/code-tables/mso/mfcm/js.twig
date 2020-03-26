@@ -7,7 +7,7 @@ $(function() {
 		var description2 = button.data('description2').toString(); // Extract info from data-* attributes
 		var description3 = button.data('description3').toString(); // Extract info from data-* attributes
 		var description4 = button.data('description4').toString(); // Extract info from data-* attributes
-		var motorclass = button.data('class'); // Extract info from data-* attributes
+		var motorclass = button.data('motorclass'); // Extract info from data-* attributes
 
 		var modal = $(this);
 
@@ -16,7 +16,7 @@ $(function() {
 		modal.find('input[name=description2]').val(description2);
 		modal.find('input[name=description3]').val(description3);
 		modal.find('input[name=description4]').val(description4);
-		modal.find('input[name=class]').val(motorclass);
+		modal.find('input[name=motorclass]').val(motorclass);
 
 		if (code.length) {
 			modal.find('.modal-title').text('Editing Code ' + code);
@@ -40,7 +40,7 @@ $(function() {
 				required: true,
 				maxlength: {{ max_length_code }}
 			},
-			class: {
+			motorclass: {
 				required: true,
 				maxlength: 4
 			}

@@ -16,6 +16,7 @@ class CodeTablesIwhm extends WireData implements Module {
 	const DESCRIPTION        = 'Warehouse';
 	const DESCRIPTION_RECORD = 'Warehouse';
 	const MODEL_TABLE = 'inv_whse_code';
+
 	const COPY_TABLES = array(
 		'inv_whse_orig' => 'IntbWhseOrig',
 		'inv_whse_from' => 'IntbWhseFrom',
@@ -76,7 +77,7 @@ class CodeTablesIwhm extends WireData implements Module {
 		$table  = $input->$rm->text('table');
 		$whseID = $input->$rm->code ? $input->$rm->text('code') : $input->$rm->text('whseID');
 
-		if ($input->$rm->text('action') == 'update-notes') {
+		if ($input->$rm->text('action') == 'update-notes' || $input->$rm->text('action') == 'delete-notes') {
 			$this->wire('modules')->get('CodeTablesIwhmNotes')->process_input($input);
 		} else {
 			$this->process_input_iwhm($input);
@@ -109,25 +110,53 @@ class CodeTablesIwhm extends WireData implements Module {
 			$record->setId($whseID);
 		}
 
-		if ($input->$rm->text('action') == 'remove-code') {
-			$record->delete();
+		if ($input->$rm->action) {
+			$recordlocker = $this->wire('modules')->get('RecordLockerUser');
 
-			if ($record->isDeleted()) {
-				$notes_m = $this->wire('modules')->get('CodeTablesIwhmNotes');
-				$notetypes = $notes_m->get_notetypes();
+			/**
+			 * Create lock for IWHM code if not already locked.
+			 */
+			if (!$recordlocker->function_locked('iwhm', $whseID)) {
+				$recordlocker->create_lock('iwhm', $whseID);
+			}
 
-				foreach ($notetypes as $notetype) {
-					$notes_m->delete_notes($notetype, $whseID);
+			if ($record->isNew() || $recordlocker->function_locked_by_user('iwhm', $whseID)) {
+				if ($input->$rm->text('action') == 'remove-code') {
+					$record->delete();
+
+					if ($record->isDeleted()) {
+						$notes_m = $this->wire('modules')->get('CodeTablesIwhmNotes');
+						$notetypes = $notes_m->get_notetypes();
+
+						foreach ($notetypes as $notetype) {
+							$notes_m->delete_notes($notetype, $whseID);
+						}
+					}
+				} else if ($input->$rm->text('action') == 'update-code') {
+					$record->setName($input->$rm->text('name'));
+					$this->process_warehouse_input($record, $input);
+					$record->setDate(date('Ymd'));
+					$record->setTime(date('His'));
+					$record->setDummy('P');
 				}
+				$response = $this->save_and_process_response($table, $whseID, $record);
+			} else {
+				$response = new CodeTablesResponse();
+				$response->set_key($whseID);
+				$response->set_error(true);
+				$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+				$message = self::DESCRIPTION_RECORD . " ($whseID) was not updated because it is locked by " . $recordlocker->get_locked_user('iwhm', $whseID);
+				$response->set_message($message);
 			}
 		} else {
-			$record->setName($input->$rm->text('name'));
-			$this->process_warehouse_input($record, $input);
-			$record->setDate(date('Ymd'));
-			$record->setTime(date('His'));
-			$record->setDummy('P');
+			$response = new CodeTablesResponse();
+			$response->set_key($whseID);
+			$response->set_error(true);
+			$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+			$message = self::DESCRIPTION_RECORD . " ($whseID) was not updated";
+			$response->set_message($message);
 		}
-		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $whseID, $record);
+		$this->wire('session')->response_codetable = $response;
 	}
 
 	public function process_warehouse_input($warehouse, WireInput $input) {

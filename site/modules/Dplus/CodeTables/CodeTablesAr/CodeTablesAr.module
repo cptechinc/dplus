@@ -40,6 +40,18 @@ class CodeTablesAr extends WireData implements Module {
 			'code'        		 => 'ctm-notes',
 			'module'   			 => 'CodeTablesCtmNotes'
 		),
+		'cuc' => array(
+			'code'        		 => 'cuc',
+			'module'   			 => 'CodeTablesCuc'
+		),
+		'sic' => array(
+			'code'        		 => 'sic',
+			'module'   			 => 'CodeTablesSic'
+		),
+		'suc' => array(
+			'code'        		 => 'suc',
+			'module'   			 => 'CodeTablesSuc'
+		),
 	);
 
 	public function get_codetables() {

@@ -17,8 +17,10 @@
 		{% include 'util/select.twig' with {'name': 'updateinventorywatch', 'id': 'updateinventorywatch', 'selectedvalue': 'N', 'options': {'Y': 'Yes', 'N': 'No'}} %}
 	</div>
 
-	<button type="submit" class="btn btn-success">
-		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-	</button>
-	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+	</div>
 </form>

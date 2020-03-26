@@ -14,9 +14,9 @@
 
 	<div class="form-group">
 		<label for="sys_defined">System Defined ?</label>
-		<select name="sys_defined" class="form-control" id="sys_defined">
-			<option value="N">No</option>
-			<option value="Y">Yes</option>
+		<select name="sys_defined" class="form-control" id="sys_defined" disabled>
+			<option value="N" {{ code.sys_defined == 'N' ? 'selected' : '' }}>No</option>
+			<option value="Y" {{ code.sys_defined == 'Y' ? 'selected' : '' }}>Yes</option>
 		</select>
 	</div>
 
@@ -24,6 +24,6 @@
 		<button type="submit" class="btn btn-success">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 		</button>
-		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
 	</div>
 </form>

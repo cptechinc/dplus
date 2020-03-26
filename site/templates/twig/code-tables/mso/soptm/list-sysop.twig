@@ -8,10 +8,10 @@
 				Description
 			</div>
 			<div class="col-1">
-				Validate?
+				Validate
 			</div>
 			<div class="col-1">
-				Force?
+				Force
 			</div>
 			<div class="col-2">
 				Note Code
@@ -51,7 +51,7 @@
 				</div>
 				<div class="col-2 text-center">
 					{% if page.is_print() == false %}
-						<a href="{{ page.get_sysopURL(code.code) }}" class="btn btn-warning">
+						<a href="{{ page.get_sysopURL(code.code) }}" class="btn btn-warning {{ code.note_code ? 'disabled' : ''}}">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</a>
 					{% endif %}

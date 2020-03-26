@@ -89,9 +89,9 @@ class CodeTablesIarn extends WireData implements Module {
 			$record->delete();
 		} else {
 			$description = $input->$rm->text('description');
-            $sys_defined = $input->$rm->text('sys_defined');
+            // $sys_defined = $input->$rm->text('sys_defined');
 			$record->setDescription($description);
-            $record->setSys_defined($sys_defined);
+            $record->setSys_defined('N');
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
 			$record->setDummy('P');

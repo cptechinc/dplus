@@ -14,7 +14,7 @@
 				<div class="col-sm-9">
 					<div class="form-group">
 						<label for="description">Description</label>
-						<input type="text" name="description" class="form-control" value="{{ code.description }}" id="description" autofocus>
+						<input type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" autofocus>
 					</div>
 				</div>
 			</div>
@@ -24,7 +24,7 @@
 			</div>
 			<div class="form-group">
 				<label for="order_approval_email">Order Approval Email</label>
-				<input type="text" name="order_approval_email" class="form-control" value="{{ code.order_approval_email }}" id="order_approval_email">
+				<input type="text" name="order_approval_email" class="form-control" maxlength="50" value="{{ code.order_approval_email }}" id="order_approval_email">
 			</div>
 		</div>
 		<div class="col-sm-6">
@@ -61,9 +61,23 @@
 	{% block extra_fields %}
 
 	{% endblock %}
-
-	<button type="submit" class="btn btn-success">
-		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-	</button>
-	<a href="{{ page.get_codetable_listURL(page.codetable, code.code) }}" class="btn btn-warning pull-right">Close</a>
+	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the code is
+			1. Locked for editing by the User
+			2. Is a new code
+			NOTE: Only show delete if code already exists.
+		#}
+		{% if recordlocker.function_locked_by_user(page.codetable, code.code) or code.isNew() %}
+			<button type="submit" class="btn btn-success">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			{% if code.isNew() == false %}
+				<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger delete_button">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+		<a href="{{ page.get_codetable_listURL(page.codetable, code.code) }}" class="btn btn-warning pull-right">Close</a>
+	</div>
 </form>

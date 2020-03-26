@@ -1,18 +1,20 @@
 {# lgrp is an instance of SysLoginGroup #}
 <form action="{{ page.url }}" method="POST" id="code-edit-form">
-	<input type="hidden" name="table" value="login_group">
+	<input type="hidden" name="table" value="lgrp">
 	<div class="form-group">
-		<label for="code">Code</label>
-		<input type="text" name="code" class="form-control" value="{{ login_group.code }}" maxlength="{{ login_group.get_max_length_code() }}" id="code" {{ login_group.id ? 'readonly' : 'autofocus' }}>
+		<label for="code">Group</label>
+		<input type="text" name="code" class="form-control" value="{{ login_group.code }}" maxlength="{{ max_length_code }}" id="code" {{ login_group.id ? 'readonly' : 'autofocus' }}>
 	</div>
 
 	<div class="form-group">
 		<label for="description">Description</label>
-		<input type="text" name="description" class="form-control" maxlength="20" value="{{ login_group.description }}" id="description" autofocus>
+		<input type="text" name="description" class="form-control" maxlength="40" value="{{ login_group.description }}" id="description" autofocus>
 	</div>
 
-	<button type="submit" class="btn btn-success">
-		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-	</button>
-	<a href="{{ page.get_codetable_listURL(page.codetable, login_group.code) }}" class="btn btn-warning pull-right">Close</a>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+	</div>
 </form>

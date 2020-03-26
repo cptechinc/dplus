@@ -9,7 +9,7 @@
 
 		// TODO: LOGIC to see if code was removed
 		$code = $input->$rm->text('code');
-		$code = $action == 'update-notes' ? $code : '';
+		$code = $action == 'update-notes' || $action == 'delete-notes' ? $code : '';
 		$code = $page->codetable == 'ioptm' ? $input->$rm->text('sysop') : $code;
 
 		if ($in_codetables->validate_codetable($page->codetable)) {

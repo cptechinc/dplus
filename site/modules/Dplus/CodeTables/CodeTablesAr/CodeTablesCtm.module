@@ -113,32 +113,59 @@ class CodeTablesCtm extends WireData implements Module {
 			$record->setCode($code);
 		}
 
-		if ($input->$rm->text('action') == 'remove-code') {
-			$record->delete();
-		} else {
-			$description = $input->$rm->text('description');
-			$email = $input->$rm->text('order_approval_email');
-			$record->setDescription($description);
-			$record->setOrder_approval_email($email);
-			$record->setMail_list($input->$rm->text('mail_list'));
-			$record->setDate(date('Ymd'));
-			$record->setTime(date('His'));
-			$record->setDummy('P');
+		if ($input->$rm->action) {
+			$recordlocker = $this->wire('modules')->get('RecordLockerUser');
 
-			if ($configAR->gl_report_type() == 'customer') {
-				$record->setAccount_sales($input->$rm->text('gl_sales'));
-				$record->setAccount_credits($input->$rm->text('gl_credits'));
-				$record->setAccount_cogs($input->$rm->text('gl_cogs'));
-				$record->setAccount_freight($input->$rm->text('gl_freight'));
-				$record->setAccount_misc($input->$rm->text('gl_misc'));
-				$record->setAccount_cash($input->$rm->text('gl_cash'));
-				$record->setAccount_ar($input->$rm->text('gl_ar'));
-				$record->setAccount_finance($input->$rm->text('gl_finance'));
-				$record->setAccount_discounts($input->$rm->text('gl_discounts'));
+			/**
+			 * Create lock for CTM code if not already locked.
+			 */
+			if (!$recordlocker->function_locked('ctm', $code)) {
+				$recordlocker->create_lock('ctm', $code);
 			}
-		}
 
-		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);
+			if ($record->isNew() || $recordlocker->function_locked_by_user('ctm', $code)) {
+				if ($input->$rm->text('action') == 'remove-code') {
+					$record->delete();
+				} elseif ($input->$rm->text('action') == 'update-ctm') {
+					$description = $input->$rm->text('description');
+					$email = $input->$rm->text('order_approval_email');
+					$record->setDescription($description);
+					$record->setOrder_approval_email($email);
+					$record->setMail_list($input->$rm->text('mail_list'));
+					$record->setDate(date('Ymd'));
+					$record->setTime(date('His'));
+					$record->setDummy('P');
+
+					if ($configAR->gl_report_type() == 'customer') {
+						$record->setAccount_sales($input->$rm->text('gl_sales'));
+						$record->setAccount_credits($input->$rm->text('gl_credits'));
+						$record->setAccount_cogs($input->$rm->text('gl_cogs'));
+						$record->setAccount_freight($input->$rm->text('gl_freight'));
+						$record->setAccount_misc($input->$rm->text('gl_misc'));
+						$record->setAccount_cash($input->$rm->text('gl_cash'));
+						$record->setAccount_ar($input->$rm->text('gl_ar'));
+						$record->setAccount_finance($input->$rm->text('gl_finance'));
+						$record->setAccount_discounts($input->$rm->text('gl_discounts'));
+					}
+				}
+				$response = $this->save_and_process_response($table, $code, $record);
+			} else {
+				$response = new CodeTablesResponse();
+				$response->set_key($code);
+				$response->set_error(true);
+				$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+				$message = self::DESCRIPTION_RECORD . " ($code) was not updated because it is locked by " . $recordlocker->get_locked_user('ctm', $code);
+				$response->set_message($message);
+			}
+		} else {
+			$response = new CodeTablesResponse();
+			$response->set_key($code);
+			$response->set_error(true);
+			$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+			$message = self::DESCRIPTION_RECORD . " ($code) was not updated ";
+			$response->set_message($message);
+		}
+		$this->wire('session')->response_codetable = $response;
 	}
 
 	/**
@@ -181,6 +208,7 @@ class CodeTablesCtm extends WireData implements Module {
 		if ($response->has_success()) {
 			$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
 		}
+
 		return $response;
 	}
 

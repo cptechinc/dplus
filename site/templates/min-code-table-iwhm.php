@@ -1,5 +1,6 @@
 <?php
 	$html = $modules->get('HtmlWriter');
+	$recordlocker = $modules->get('RecordLockerUser');
 
 	if ($input->get->code) {
 		$code = $whseID = $input->get->text('code');
@@ -21,8 +22,27 @@
 				$page->body .= $html->div('class=mb-3');
 			}
 		}
+
+
+		if (!$warehouse->isNew()) {
+			/**
+			 * Show alert that warehouse is locked if
+			 *  1. Warehouse Isn't new
+			 *  2. The warehouse has a record lock
+			 *  3. Userid does not match the lock
+			 * Otherwise if not locked, create lock
+			 */
+			if ($recordlocker->function_locked($page->codetable, $warehouse->id) && !$recordlocker->function_locked_by_user($page->codetable, $warehouse->id)) {
+				$msg = "$warehouse->id is being locked by " . $recordlocker->get_locked_user($page->codetable, $warehouse->id);
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Warehouse $warehouse->id is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+				$page->body .= $html->div('class=mb-3');
+			} elseif (!$recordlocker->function_locked($page->codetable, $warehouse->id)) {
+				$recordlocker->create_lock($page->codetable, $warehouse->id);
+			}
+		}
+
 		$page->customerlookupURL = $pages->get('pw_template=mci-lookup')->url;
-		$page->body .= $config->twig->render("code-tables/min/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'warehouse' => $warehouse, 'config_in' => $config_in, 'states' => $states, 'countries' => $countries, 'warehouses' => $warehouses]);
+		$page->body .= $config->twig->render("code-tables/min/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'warehouse' => $warehouse, 'config_in' => $config_in, 'states' => $states, 'countries' => $countries, 'warehouses' => $warehouses, 'recordlocker' => $recordlocker]);
 		$page->body .= $config->twig->render("util/ajax-modal.twig", []);
 		$page->js   .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'warehouse' => $warehouse]);
 
@@ -39,7 +59,8 @@
 			$page->body .= $config->twig->render("code-tables/min/$page->codetable/notes-modal.twig", ['page' => $page, 'warehouse' => $warehouse]);
 		}
 	} else {
-		$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'table' => $page->codetable, 'warehouses' => $module_codetable->get_codes(), 'response' => $session->response_codetable]);
+		$recordlocker->remove_lock($page->codetable);
+		$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'table' => $page->codetable, 'warehouses' => $module_codetable->get_codes(), 'response' => $session->response_codetable, 'recordlocker' => $recordlocker]);
 	}
 
 //$page->js .= $config->twig->render("code-tables/mar/$page->codetable.js.twig", ['page' => $page]);

@@ -26,6 +26,8 @@ $(function() {
 			modal.find('.modal-title').text('Adding a new Code');
 			modal.find('input[name=code]').prop("readonly", false);
 			modal.find('input[name=code]').focus();
+			$('#sys_defined').val('N');
+			modal.find('input[name=sys_defined]').prop("disabled", true);
 		}
 
 

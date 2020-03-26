@@ -33,21 +33,25 @@ class MsaSysop extends WireData implements Module {
 
 	/**
 	 * Return the Code records from Database filtered by ProductLne ID
-	 * @param  string $productlne ProductLneID
+	 * @param  string $system    System
+	 * @param  string $code     System Option Code
 	 * @return ObjectCollection
 	 */
-	public function get_code($code) {
+	public function get_code($system, $code) {
 		$q = $this->get_query();
+		$q->filterBySystem($system);
 		return $q->findOneById($code);
 	}
 
 	/**
 	 * Returns if Codes Exists
-	 * @param  string $productlne ProductLneID
+	 * @param  string $system    System
+	 * @param  string $code     System Option Code
 	 * @return bool
 	 */
-	public function code_exists($code) {
+	public function code_exists($system, $code) {
 		$q = $this->get_query();
+		$q->filterBySystem($system);
 		return boolval($q->filterById($code)->count());
 	}
 
@@ -68,8 +72,8 @@ class MsaSysop extends WireData implements Module {
 	 */
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$table = $input->$rm->text('table');
 		$code  = $input->$rm->text('code');
+		$system = $input->$rm->text('system');
 
 		$q = $this->get_query();
 		$q->filterByCode($code);
@@ -86,12 +90,13 @@ class MsaSysop extends WireData implements Module {
 			$record->delete();
 		} else {
 			$description = $input->$rm->text('description');
-			$system = $input->$rm->text('system');
+
 			$note_code = $input->$rm->text('note_code');
 			$web_validate = $input->$rm->text('web_validate');
 			$doc_store_folder = $input->$rm->text('doc_store_folder');
 			$web_force = $input->$rm->text('web_force');
 			$file_name = $input->$rm->text('file_name');
+			$validate = $input->$rm->text('validate');
 			$force = $input->$rm->text('force');
 			$adv_search = $input->$rm->text('adv_search');
 			$list_seq = $input->$rm->text('list_seq');
@@ -106,6 +111,7 @@ class MsaSysop extends WireData implements Module {
 			$record->setDoc_store_folder($doc_store_folder);
 			$record->setWeb_force($web_force);
 			$record->setFile_name($file_name);
+			$record->setValidate($validate);
 			$record->setForce($force);
 			$record->setAdv_search($adv_search);
 			$record->setList_seq($list_seq);
@@ -117,7 +123,7 @@ class MsaSysop extends WireData implements Module {
 			$record->setDummy('P');
 		}
 
-		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);
+		$this->wire('session')->response_codetable = $this->save_and_process_response($system, $code, $record);
 	}
 
 	/**
@@ -125,7 +131,7 @@ class MsaSysop extends WireData implements Module {
 	 * @param  MsaSysopCode $record Record to record response of database save
 	 * @return MsaResponse
 	 */
-	protected function save_and_process_response($table, $code, MsaSysopCode $record) {
+	protected function save_and_process_response($system, $code, MsaSysopCode $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
@@ -154,9 +160,24 @@ class MsaSysop extends WireData implements Module {
 		$response->set_message($message);
 
 		if ($response->has_success()) {
-			$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
+			$this->update_sysop_dplus_cobol($system, $code);
 		}
 		return $response;
+	}
+
+	/**
+	 * Sends Dplus Cobol that Code Table has been Update
+	 * @param  string $system System
+	 * @param  string $code   Code
+	 * @return void
+	 */
+	public function update_sysop_dplus_cobol($system, $code) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'UPDATESYSOP', "SYS=$system", "CODE=$code");
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
 	}
 
 	/**

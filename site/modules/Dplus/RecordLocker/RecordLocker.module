@@ -1,0 +1,101 @@
+<?php namespace ProcessWire;
+
+use LockRecordQuery, LockRecord;
+
+/**
+ * RecordLocker
+ *
+ * Class for Creating, Reading LockRecord for the purposes of Dplus
+ *
+ * NOTE: Examples provided will be for IWHM
+ */
+class RecordLocker extends WireData implements Module {
+
+	/**
+	 * Returns if Function is being locked by User ID
+	 * @param  string $function  Function e.g IWHM
+	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @param  string $userID    User Login ID
+	 * @return bool
+	 */
+	public function function_locked_by_user($function, $key, $userID) {
+		$q = $this->get_query();
+		$q->filterByUserid($userID);
+		$q->filterByFunction($function);
+		$q->filterByKey($key);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Returns if Function is being locked
+	 * @param  string $function  Function e.g IWHM
+	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @return bool
+	 */
+	public function function_locked($function, $key) {
+		$q = $this->get_query();
+		$q->filterByFunction($function);
+		$q->filterByKey($key);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return LoginID of User who has locked function record
+	 * @return string
+	 */
+	public function get_locked_user($function, $key) {
+		$q = $this->get_query();
+		$q->select('userid');
+		$q->filterByFunction($function);
+		$q->filterByKey($key);
+		return $q->findOne();
+	}
+
+	/**
+	 * Creates Function Lock
+	 * @param  string $function   Function e.g IWHM
+	 * @param  string $key        ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @param  string $function   Function e.g IWHM
+	 * @param  string $userID     User Login ID
+	 * @return bool
+	 */
+	public function create_lock($function, $key, $userID) {
+		$lock = new LockRecord();
+		$lock->setFunction($function);
+		$lock->setKey($key);
+		$lock->setUserid($userID);
+		return $lock->save();
+	}
+
+	/**
+	 * Removes Lock(s)
+	 * @param  string $userID    User Login ID
+	 * @param  string $function  Function e.g IWHM
+	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @return bool
+	 */
+	public function remove_lock($userID, $function, $key = '') {
+		$q = LockRecordQuery::create();
+		$q->filterByFunction($function);
+
+		if ($key) {
+			$q->filterByKey($key);
+		}
+		return $q->delete();
+	}
+
+	protected function get_query() {
+		return LockRecordQuery::create();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus RecordLocker',
+			'version' => 101,
+			'summary' => 'Dplus RecordLocker',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array('RecordLockerUser')
+		);
+	}
+}
