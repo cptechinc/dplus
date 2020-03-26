@@ -1,0 +1,67 @@
+$(function() {
+	var labelform = $('#print-label-form');
+	var input_weight     = labelform.find('input[name=weight]');
+	var input_labelcount = labelform.find('input[name=labelcount]');
+
+/////////////////////////////////////
+// 3. Validate form
+////////////////////////////////////
+	labelform.validate({
+		errorClass: "is-invalid",
+		highlight: function(element, errorClass, validClass) {
+			$(element).addClass(errorClass).removeClass(validClass);
+		},
+		submitHandler : function(form) {
+			var valid_form = new SwalError(false, '', '', false);
+			var valid_weight = validate_weight();
+			var valid_labelcount = validate_labelcount();
+
+			if (valid_weight.error) {
+				valid_form = valid_weight;
+			} else if (valid_labelcount.error) {
+				valid_form = valid_labelcount;
+			}
+
+			if (valid_form.error) {
+				swal({
+					type: 'error',
+					title: valid_form.title,
+					text: valid_form.msg,
+					html: valid_form.html
+				});
+			} else {
+				form.submit();
+			}
+		}
+	});
+
+	function validate_weight() {
+		var error = false;
+		var title = '';
+		var msg = '';
+		var html = false;
+		var weight = parseFloat(input_weight.val());
+
+		if (weight == 0) {
+			error = true;
+			title = 'Invalid Weight';
+			msg   = "Weight must be more than 0";
+		}
+		return new SwalError(error, title, msg, html);
+	}
+
+	function validate_labelcount() {
+		var error = false;
+		var title = '';
+		var msg = '';
+		var html = false;
+		var count = parseInt(input_labelcount.val());
+
+		if (count == 0) {
+			error = true;
+			title = 'Invalid Label Qty';
+			msg   = "Must Print off at least 1 label";
+		}
+		return new SwalError(error, title, msg, html);
+	}
+});

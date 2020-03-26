@@ -15,7 +15,7 @@
 			if ($module_json->file_exists(session_id(), $page->jsoncode)) {
 				if ($json['itemid'] != $itemID) {
 					$module_json->remove_file(session_id(), $page->jsoncode);
-					$session->redirect($page->get_itemquotesURL($itemID));
+					$session->redirect($page->url_itemID($itemID));
 				}
 				$session->purchasehistorytry = 0;
 

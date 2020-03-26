@@ -1,0 +1,33 @@
+{% for id, invoice in warehouse['orders'] if id != 'TOTAL' %}
+	{% for x in 1..blueprint['detail']['rowcount']  %}
+		<tr>
+			{% set columncount = 0 %}
+			{% for i in 1..blueprint['cols'] + 1 %}
+				{% set colspan = 0 %}
+				{% if blueprint['detail']['rows'][x]['columns'][i] %}
+					{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
+					{% set colspan = column['col-length'] %}
+					<td colspan="{{ colspan }}" class="border-top border-primary {{ module_formatter.get_justifyclass(column['data-justify']) }}">
+						{{ module_formatter.format_celldata(invoice, column) }} &nbsp;
+
+						{% if i == 1 and invoice['Purchase Order Number'] %}
+							{% if document_management.count_purchasehistorydocuments(invoice['Purchase Order Number']) %}
+								<a href="{{ page.documentsview_apinvoice(itemID, invoice['Purchase Order Number'])}}" class="text-success" title="View Documents for PO # {{ invoice['Purchase Order Number'] }}">
+									<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for PO # {{ invoice['Purchase Order Number'] }}</span>
+								</a>
+							{% endif %}
+						{% endif %}
+					</td>
+				{% else %}
+					{% if columncount < blueprint['cols'] %}
+						{% set colspan = 1 %}
+						<td class="border-top border-primary"></td>
+					{% endif %}
+				{% endif %}
+				{% set columncount = columncount + colspan %}
+			{% endfor %}
+		</tr>
+	{% endfor %}
+	
+	{% include 'items/ii/purchase-history/table/tr-lots.twig' %}
+{% endfor %}

@@ -11,123 +11,12 @@
 	/**
 	* Inventory Redirect
 	* NOTE Uses whseman.log
-	*
-	* @param string $action
-	*
-	*
-	* switch ($action) {
-	*	case 'inventory-search':
-	*		- Requests Inventory records for Query (itemid, lotnbr, lotserial)
-	*		- Response: fills Invsearch table with records
-	*		DBNAME=$config->DBNAME
-	*		QUERY=$q
-	*		break;
-	*	case 'physical-count':
-	*		- Requests Item inventory to be updated at bin
-	*		NOTE Uses InventorySearchItem
-	*		DBNAME=$config->DBNAME
-	*		ITEMTAG
-	*		ITEMID=$item->itemid
-	*		BIN=$binID
-	*		** LOTSERIAL=$item->lotserial
-	*		QTY=$qty_total
-	*		break;
-	*	case 'bin-inquiry':
-	*		- Requests Contents of bin
-	*		- Response: fills Invsearch table with records
-	*		DBNAME=$config->DBNAME
-	*		BININQUIRY
-	*		BINID=$binID
-	*		break;
-	*	case 'init-label-print':
-	*		- Requests label printing for Item
-	*		- Response: return itemcartonlabel record to fill out
-	*		DBNAME=$config->DBNAME
-	*		ITEMCARTONINIT
-	*		ITEMID=$itemID
-	*		** LOTSER=$item->lotserial
-	*		WHSE=$whsesession->whseid
-	*		BIN=$binID
-	*		break;
-	*	case 'init-pick-item-label-print':
-	*		- Requests label printing for Item based off an Order
-	*		- Response: return itemcartonlabel record to fill out
-	*		DBNAME=$config->DBNAME
-	*		ORDERCARTONINIT
-	*		ORDERNBR=$ordn
-	*		ITEMID=$itemID
-	*		break;
-	*	case 'print-thermal-label':
-	*		- Requests label to be printed
-	*		- Response: rTakes itemcartonlabel and print out
-	*		DBNAME=$config->DBNAME
-	*		ITEMCARTONPRINT
-	*		break;
-	*	case 'print-pick-item-thermal-label':
-	*		- Requests label to be printed
-	*		- Response: Takes itemcartonlabel and print out
-	*		DBNAME=$config->DBNAME
-	*		ORDERCARTONPRINT
-	*		ORDERNBR=$ordn
-	*		ITEMID=$itemID
-	*		break;
-	*	case 'physical-count-search':
-	*		- Requests Item / Lot/Serial Details for Physical count
-	*		- Response: Creates whseitemphysicalcount record(s)
-	*		DBNAME=$config->DBNAME
-	*		PHYSITEMSEARCH
-	*		QUERY=$q
-	*		break;
-	*	case 'physical-count-submit':
-	*		- Requests Physical Count Details to be saved from the whseitemphysicalcount record
-	*		- Response: Error or no record (completed)
-	*		DBNAME=$config->DBNAME
-	*		PHYSITEMSAVE
-	*		break;
-	*	case 'init-receive':
-	*		- Requests PO to receive
-	*		- Response: po_tran_det & po_tran_lot_det records are loaded with detail information
-	*		DBNAME=$config->DBNAME
-	*		STARTRECEIVE
-	*		break;
-	*	case 'receiving-search':
-	*		- Requests Item / Lot/Serial Details for Physical count
-	*		- Response: Creates whseitemphysicalcount record(s)
-	*		DBNAME=$config->DBNAME
-	*		RECEIVINGSEARCH
-	*		QUERY=$q
-	*		break;
-	*	case 'receiving-submit':
-	*		- Request:  Save Received Item to PO DETAIL Line
-	*		- Response: Updates po_tran_lot_det & po_tran_det records
-	*		DBNAME=$config->DBNAME
-	*		STARTRECEIVE
-	*		break;
-	*	case 'verify-receiving-submit':
-	*		- Request: NONE
-	*		Verifies if whseitemphysical count record has an error if it does, returns
-	*		to receiving page for that scanned item for the user
-	*		break;
-	*	case 'remove-received-item':
-	*		- Request:  Remove one of the received lots / items
-	*		- Response: Removes the requested records
-	* 		DBNAME=$dplusdb
-	* 		RECEIVEREMOVELOT
-	* 		PONBR=$ponbr
-	* 		LINENBR=$linenbr
-	* 		LOTSERIAL=$lotserial
-	* 		BIN=$bin
-	*	case 'submit-receipt':
-	*		- Request:  Sends Receipt to be posted
-	*		- Response: POSTS receipt
-	* 		DBNAME=$dplusdb
-	* 		FINISHRECEIPT
-	* 		PONBR=$ponbr
-	* }
 	**/
 
 	switch ($action) {
 		case 'inventory-search':
+			// Requests Inventory records for Query (itemid, lotnbr, lotserial)
+			// Response: fills Invsearch table with records
 			$q = strtoupper($input->$requestmethod->text('scan'));
 			$binID = $input->$requestmethod->text('binID');
 			$data = array("DBNAME=$dplusdb", 'INVSEARCH', "QUERY=$q");
@@ -139,57 +28,9 @@
 				$session->loc = $url->getUrl();
 			}
 			break;
-		case 'physical-count': // TODO
-			$binID = $input->$requestmethod->text('binID');
-			$itemID = $input->$requestmethod->text('itemID');
-			$imitem = ItemMasterItem::load($itemID);
-			$returnurl = new Purl\Url($input->$requestmethod->text('page'));
-			$returnurl->query->remove('scan');
-			$qty_total = 0;
-
-			if (!empty($input->$requestmethod->serialnbr) | !empty($input->$requestmethod->lotnbr)) {
-				if ($input->$requestmethod->serialnbr) {
-					$lotserial = $input->$requestmethod->text('serialnbr');
-				} elseif ($input->$requestmethod->lotnbr) {
-					$lotserial = $input->$requestmethod->text('lotnbr');
-				}
-				$item = InventorySearchItem::load_from_lotserial(session_id(), $lotserial);
-			} else {
-				$item = InventorySearchItem::load_from_itemid(session_id(), $itemID);
-			}
-			$outerpacks = $input->$requestmethod->int('outer-pack-qty');
-			$innerpacks = $input->$requestmethod->int('inner-pack-qty');
-
-			$qty_outerpack = $outerpacks * $imitem->outerpackqty;
-			$qty_innerpack = $innerpacks * $imitem->innerpackqty;
-			$qty_each = $input->$requestmethod->int('each-qty');
-
-			$qty_total = $qty_outerpack + $qty_innerpack + $qty_each;
-
-			$data = array("DBNAME=$dplusdb", "ITEMTAG", "ITEMID=$item->itemid", "BIN=$binID");
-
-			if ($item->is_lotted() || $item->is_serialized()) {
-				$data[] = "LOTSERIAL=$item->lotserial";
-			}
-
-			$data[] = "QTY=$qty_total";
-			$returnurl->query->remove('lotnbr');
-			$returnurl->query->remove('serialnbr');
-			$returnurl->query->remove('itemID');
-			$returnurl->query->remove('itemid');
-			$session->loc = $returnurl->getUrl();
-
-			$itemhistory = array('binID' => $binID, 'itemID' => $item->itemid, 'qty' => $qty_total);
-
-			if ($session->physicalcounthistory) {
-				$history = json_decode($session->physicalcounthistory, true);
-			} else {
-				$history = array();
-			}
-			$history[$binID][$item->itemid] = $itemhistory;
-			$session->physicalcounthistory = json_encode($history);
-			break;
 		case 'bin-inquiry':
+			// Requests Contents of bin
+			// Response: fills Invsearch table with records
 			$binID = $input->$requestmethod->text('binID');
 			$data = array("DBNAME=$dplusdb", 'BININQUIRY', "BINID=$binID");
 
@@ -203,7 +44,41 @@
 			$url->query->set('binID', $binID);
 			$session->loc = $url->getUrl();
 			break;
+		case 'print-label-search':
+			$scan = $input->$requestmethod->text('scan');
+			$data = array("DBNAME=$dplusdb", 'PRINTLABELSEARCH', "QUERY=$scan");
+
+			if ($input->get->page) {
+				$url = new Purl\Url($input->$requestmethod->text('page'));
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=whse-print-item-label')->url);
+			}
+			$url->query->set('scan', $scan);
+			$session->loc = $url->getUrl();
+			break;
+		case 'print-labels-simple':
+			$scan = $input->$requestmethod->text('scan');
+			$query_phys = WhseitemphysicalcountQuery::create();
+			$query_phys->filterBySessionid(session_id());
+			$query_phys->filterByScan($scan);
+			$item = $query_phys->findOne();
+			$item->setProductionDate(date('Ymd', strtotime($input->$requestmethod->text('productiondate'))));
+			$item->setQty($input->$requestmethod->text('weight'));
+			$item->save();
+			$labelcount = $input->$requestmethod->int('labelcount');
+			$data = array("DBNAME=$dplusdb", 'PRINTLABELS', "NBRLABELS=$labelcount");
+
+			if ($input->get->page) {
+				$url = new Purl\Url($input->$requestmethod->text('page'));
+			} else {
+				$url = new Purl\Url($pages->get('pw_template=whse-print-item-label')->url);
+			}
+			$url->query->remove('scan');
+			$session->loc = $url->getUrl();
+			break;
 		case 'init-label-print':
+			// Requests label print defaults for Item
+			// Response: return itemcartonlabel record to fill out
 			$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 			$binID = $input->$requestmethod->text('binID');
 			$itemID = $input->$requestmethod->text('itemID');
@@ -232,6 +107,8 @@
 			$session->loc  = $url->getUrl();
 			break;
 		case 'init-pick-item-label-print':
+			// Requests label printing for Item based off an Order
+			// Response: return itemcartonlabel record to fill out
 			$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 			$ordn   = $input->$requestmethod->text('ordn');
 			$itemID = $input->$requestmethod->text('itemID');
@@ -239,6 +116,8 @@
 			$session->loc = $input->$requestmethod->text('page');
 			break;
 		case 'print-thermal-label':
+			// Requests label to be printed
+			// Response: Takes itemcartonlabel and prints label
 			$binID     = $input->$requestmethod->text('binID');
 			$itemID    = $input->$requestmethod->text('itemID');
 			$lotserial = $input->$requestmethod->text('lotserial');
@@ -269,6 +148,8 @@
 			$session->loc = $input->$requestmethod->text('page');
 			break;
 		case 'print-pick-item-thermal-label':
+			// Requests label to be printed
+			// Response: Takes itemcartonlabel and print out
 			$ordn      = $input->$requestmethod->text('ordn');
 			$itemID    = $input->$requestmethod->text('itemID');
 
@@ -290,6 +171,8 @@
 			$session->printpicklabels = true;
 			break;
 		case 'physical-count-search':
+			// Requests Item / Lot/Serial Details for Physical count
+			// Response: Creates whseitemphysicalcount record(s)
 			$q = strtoupper($input->$requestmethod->text('scan'));
 			$binID = $input->$requestmethod->text('binID');
 			$data = array("DBNAME=$dplusdb", 'PHYSITEMSEARCH', "QUERY=$q");
@@ -304,6 +187,8 @@
 			$session->loc = $url->getUrl();
 			break;
 		case 'physical-count-submit':
+			// Requests Physical Count Details to be saved from the whseitemphysicalcount record
+			// Response: Error or no record (completed)
 			$scan = $input->$requestmethod->text('scan');
 			$query_phys = WhseitemphysicalcountQuery::create();
 			$query_phys->filterBySessionid(session_id());
@@ -332,6 +217,8 @@
 			$session->loc = $url->getUrl();
 			break;
 		case 'init-receive':
+			// Requests PO to receive
+			// Response: po_tran_det & po_tran_lot_det records are loaded with detail information
 			$ponbr = $input->$requestmethod->text('ponbr');
 			$data = array("DBNAME=$dplusdb", 'STARTRECEIVE', "PONBR=$ponbr");
 
@@ -345,6 +232,8 @@
 			$session->loc = $url->getUrl();
 			break;
 		case 'receiving-search':
+			// Requests Item / Lot/Serial Details for Receiving
+			// Response: Creates whseitemphysicalcount record(s)
 			$ponbr = $input->$requestmethod->text('ponbr');
 			$q = strtoupper($input->$requestmethod->text('scan'));
 			$binID = $input->$requestmethod->text('binID');
@@ -362,6 +251,8 @@
 			$session->loc = $url->getUrl();
 			break;
 		case 'receiving-submit':
+			// Request:  Save Received Item to PO DETAIL Line
+			// Response: Updates po_tran_lot_det & po_tran_det records
 			$scan = $input->$requestmethod->text('scan');
 			$ponbr = $input->$requestmethod->text('ponbr');
 			$query_phys = WhseitemphysicalcountQuery::create();
@@ -390,6 +281,8 @@
 			$session->loc = $url->getUrl();
 			break;
 		case 'verify-receiving-submit':
+			// Verifies if whseitemphysical count record has an error if it does, returns
+			// to receiving page for that scanned item for the user
 			$scan = $input->$requestmethod->text('scan');
 			$ponbr = $input->$requestmethod->text('ponbr');
 
@@ -414,6 +307,8 @@
 			$session->loc = $url->getUrl();
 			break;
 		case 'remove-received-item':
+			// Request:  Remove one of the received lots / items
+			// Response: Removes the requested records
 			$ponbr    = $input->$requestmethod->text('ponbr');
 			$linenbr  = $input->$requestmethod->int('linenbr');
 			$sequence = $input->$requestmethod->int('sequence');
@@ -432,10 +327,11 @@
 			$session->removefromline = $linenbr;
 			break;
 		case 'submit-receipt':
+			// Request:  Sends Receipt to be posted
+			// Response: POSTS receipt
 			$ponbr    = $input->$requestmethod->text('ponbr');
 			$data = array("DBNAME=$dplusdb", 'FINISHRECEIPT', "PONBR=$ponbr");
 			$url = new Purl\Url($pages->get('pw_template=whse-receiving')->url);
-			$url->query->set('ponbr', $ponbr);
 			$session->loc = $url->getUrl();
 			break;
 	}

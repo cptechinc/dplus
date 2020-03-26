@@ -4,6 +4,14 @@
 			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Search
 		</a>
 		&nbsp;
+		{% if page.has_redirect_from() %}
+			{% set redirect_from = page.redirect_from_page %}
+
+			<a href="{{ redirect_from.url }}" class="btn btn-primary">
+				<i class="fa fa-arrow-left" aria-hidden="true"></i> Return to {{ redirect_from.title }}
+			</a>
+		{% endif %}
+		&nbsp;
 		<a href="{{ page.child.url ~ '?' ~ page.fullURL.query }}" class="btn btn-primary not-round">
 			<i class="fa fa-print" aria-hidden="true"></i> Print
 		</a>
