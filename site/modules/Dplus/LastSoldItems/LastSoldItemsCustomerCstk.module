@@ -53,6 +53,20 @@ class LastSoldItemsCustomerCstk extends WireData implements Module {
 	}
 
 	/**
+	 * Returns if Pricing is available for all CSTK items
+	 * @return bool
+	 */
+	public function has_pricing() {
+		$itemids = $this->get_cstk_itemids();
+
+		$q = PricingQuery::create();
+		$q->select('price');
+		$q->filterBySessionid(session_id());
+		$q->filterByItemid($itemids);
+		return $q->count() == sizeof($itemids);
+	}
+
+	/**
 	 * Sends HTTP POST Request to get Item Pricing for the ItemIDs in the CSTK
 	 * @return void
 	 */

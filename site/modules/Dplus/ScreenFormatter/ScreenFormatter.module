@@ -146,23 +146,6 @@ class ScreenFormatter extends WireData implements Module {
 		}
 	}
 
-	static public function getModuleConfigInputfields(array $data) {
-		$modules = wire('modules');
-		$fields = new InputfieldWrapper();
-		$data = array_merge(self::DEFAULT_CONFIG, $data);
-
-		$f = $modules->get('InputfieldText');
-		$f->attr('name', 'directory_fields');
-		$f->set('required', 'true');
-		$f->icon = 'fa-database';
-		$f->label = __('Fields Definition Directory');
-		$f->description = __('This is the Directory of the json files with field definitions');
-		$f->notes = __('');
-		$f->value = $data['directory_fields'];
-		$fields->add($f);
-		return $fields;
-	}
-
 	/**
 	 * Sets User ID
 	 * @param string $userID Dplus User ID
@@ -356,8 +339,8 @@ class ScreenFormatter extends WireData implements Module {
 				$colnumber = $input->post->int($postcolumn.'-column');
 				$label = $input->post->text($postcolumn.'-label');
 				$dateformat = $beforedecimal = $afterdecimal = false;
-				$justify_data = $input->post->text($postcolumn.'-justify-data');
-				$justify_label = $input->post->text($postcolumn.'-justify-label');
+				$justify_data = $input->post->text($postcolumn.'-data-justify');
+				$justify_label = $input->post->text($postcolumn.'-label-justify');
 				$is_input = $input->post->text($postcolumn.'-is-input');
 				$is_percent = $input->post->text($postcolumn.'-is-percent');
 
@@ -411,7 +394,6 @@ class ScreenFormatter extends WireData implements Module {
 				$postarray['colcount'] = ($columncount > $postarray['colcount']) ? $columncount : $postarray['colcount'];
 			}
 		}
-
 		$this->formatter = $postarray;
 		$this->source = 'input';
 		$this->generate_tableblueprint();
@@ -439,33 +421,34 @@ class ScreenFormatter extends WireData implements Module {
 				$table[$section]['rows'][$i] = array('columns' => array());
 
 				foreach ($columns as $column) {
-					if ($this->formatter[$section]['columns'][$column]['line'] == $i) {
-						if (!array_key_exists('percent', $this->formatter[$section]['columns'][$column])) {
-							$this->formatter[$section]['columns'][$column]['percent'] = false;
+					if (array_key_exists($column, $this->fields[$section])) {
+						if ($this->formatter[$section]['columns'][$column]['line'] == $i) {
+							if (!array_key_exists('percent', $this->formatter[$section]['columns'][$column])) {
+								$this->formatter[$section]['columns'][$column]['percent'] = false;
+							}
+
+							if (!array_key_exists('input', $this->formatter[$section]['columns'][$column])) {
+								$this->formatter[$section]['columns'][$column]['input'] = false;
+							}
+
+							$col = array(
+								'id'             => $column,
+								'label'          => $this->formatter[$section]['columns'][$column]['label'],
+								'column'         => $this->formatter[$section]['columns'][$column]['column'],
+								'type'           => $this->fields[$section][$column]['type'],
+								'col-length'     => $this->formatter[$section]['columns'][$column]['col-length'],
+								'before-decimal' => $this->formatter[$section]['columns'][$column]['before-decimal'],
+								'after-decimal'  => $this->formatter[$section]['columns'][$column]['after-decimal'],
+								'date-format'    => $this->formatter[$section]['columns'][$column]['date-format'],
+								'percent'        => $this->formatter[$section]['columns'][$column]['percent'],
+								'input'          => $this->formatter[$section]['columns'][$column]['input'],
+								'data-justify'   => $this->formatter[$section]['columns'][$column]['data-justify'],
+								'label-justify'  => $this->formatter[$section]['columns'][$column]['label-justify'],
+							);
+							$table[$section]['rows'][$i]['columns'][$this->formatter[$section]['columns'][$column]['column']] = $col;
+							$table[$section]['colcount'] += $col['col-length'] > 1 ? $col['col-length'] : 1;
+							$table['cols'] = $col['column'] > $table['cols']  ? $col['column'] : $table['cols'];
 						}
-
-						if (!array_key_exists('input', $this->formatter[$section]['columns'][$column])) {
-							$this->formatter[$section]['columns'][$column]['input'] = false;
-						}
-
-
-						$col = array(
-							'id'             => $column,
-							'label'          => $this->formatter[$section]['columns'][$column]['label'],
-							'column'         => $this->formatter[$section]['columns'][$column]['column'],
-							'type'           => $this->fields[$section][$column]['type'],
-							'col-length'     => $this->formatter[$section]['columns'][$column]['col-length'],
-							'before-decimal' => $this->formatter[$section]['columns'][$column]['before-decimal'],
-							'after-decimal'  => $this->formatter[$section]['columns'][$column]['after-decimal'],
-							'date-format'    => $this->formatter[$section]['columns'][$column]['date-format'],
-							'percent'        => $this->formatter[$section]['columns'][$column]['percent'],
-							'input'          => $this->formatter[$section]['columns'][$column]['input'],
-							'data-justify'   => $this->formatter[$section]['columns'][$column]['data-justify'],
-							'label-justify'  => $this->formatter[$section]['columns'][$column]['label-justify'],
-						);
-						$table[$section]['rows'][$i]['columns'][$this->formatter[$section]['columns'][$column]['column']] = $col;
-						$table[$section]['colcount'] += $col['col-length'] > 1 ? $col['col-length'] : 1;
-						$table['cols'] = $col['column'] > $table['cols']  ? $col['column'] : $table['cols'];
 					}
 				}
 			}
@@ -480,7 +463,8 @@ class ScreenFormatter extends WireData implements Module {
 	 * @param string $column the key in which we use to look up the value, may contain the type
 	 */
 	public function format_celldata($parent, $column, $type = '') {
-		$bootstrap = $this->wire('modules')->get('HtmlWriter');
+		$modules = $this->wire('modules');
+		$bootstrap = $modules->get('HtmlWriter');
 		$celldata = '';
 		$qtyregex = "/(quantity)/i";
 		$type = !empty($type) ? $type : $column['type'];
@@ -498,18 +482,22 @@ class ScreenFormatter extends WireData implements Module {
 				$celldata .= "%";
 			}
 		} else {
-			$celldata = $parent[$column['id']];
+			if (array_key_exists($column['id'], $parent)) {
+				$celldata = $parent[$column['id']];
+			} else {
+				$celldata = '';
+			}
 		}
 
 		// Format data HTML formatting
 		if (in_array($column['id'], self::COLUMNS_TRACKING)) {
 			$modules_url = $modules->get('DplusURLs');
 			$href = $modules_url->get_trackingURL($parent['Service Type'], $parent[$column['id']]);
-			return $href ? $bootstrap->a("href=$href|target=_blank", $celldata) : $celldata;
+			return $href ? $bootstrap->a("class=link|href=$href|target=_blank", $celldata) : $celldata;
 		} elseif (in_array($column['id'], self::COLUMNS_PHONE)) {
 			$modules_url = $modules->get('DplusURLs');
 			$href = $modules_url->generate_phoneurl($parent[$column['id']]);
-			return $bootstrap->a("href=tel:$href", $celldata);
+			return $bootstrap->a("class=link|href=tel:$href", $celldata);
 		} elseif (preg_match($qtyregex , $column['id'])) {
 			return $celldata;
 
@@ -536,5 +524,12 @@ class ScreenFormatter extends WireData implements Module {
 	 */
 	public function get_justifyclass($justifycode) {
 		return $this->wire('modules')->get('JsonDataFiles')->get_justifyclass($justifycode);
+	}
+
+	/**
+	 * Return the bootstrap Justify classes with codes
+	 */
+	public function get_justifyclasses() {
+		return $this->wire('modules')->get('JsonDataFiles')->get_justifyclasses();
 	}
 }

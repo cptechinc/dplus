@@ -32,7 +32,7 @@
 											<strong>Qty:</strong> {{ lotserial.qty }}
 										</div>
 										<div class="col">
-											<strong>Expires:</strong> {{ lotserial.expirationdate }}
+											<strong>Prod Date:</strong> {{ lotserial.expirationdate ? lotserial.expirationdate|convertdate : '' }}
 										</div>
 										<div class="col">
 											{% if (not warehouse.validate_bin(lotserial.bin)) %}

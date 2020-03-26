@@ -1,9 +1,14 @@
 <?php namespace ProcessWire;
 
+
+include_once(__DIR__.'/Configs.trait.php');
+
 /**
  * Module for configuring the BINR process
  */
 class ConfigsBinr extends Process implements ConfigurableModule {
+	use ConfigTraits;
+
 	const CONFIG_FIELDS = array(
 		'default_qtyonhand' => array(
 			'type'        => 'checkbox',  // TRUE OR FALSE
@@ -24,19 +29,13 @@ class ConfigsBinr extends Process implements ConfigurableModule {
 		'use_qtyonly' => false,
 	);
 
-	/* =============================================================
-			ProcessWire Module Functions
-	=============================================================== */
+/* =============================================================
+		ProcessWire Module Functions
+=============================================================== */
 	public function init() {
 		parent::init();
 
-		foreach(self::DEFAULT_CONFIG as $key => $value) {
-			if (isset($this->data[$key])) {
-				$this->data[$key] = $this->data[$key];
-			} else {
-				$this->data[$key] = $value;
-			}
-		}
+		$this->init_configdata();
 	}
 
 	/**

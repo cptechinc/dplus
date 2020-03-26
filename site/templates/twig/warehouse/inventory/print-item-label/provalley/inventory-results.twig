@@ -1,0 +1,35 @@
+{% if not page.is_print() %}
+	<div class="form-group">
+		<a href="{{ page.url }}" class="btn btn-primary not-round">
+			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Search
+		</a>
+	</div>
+{% endif %}
+<div class="list-group">
+	{% for lotserial in inventory.get_lotserials_itemid(binitem.sessionid, binitem.itemid, binitem.bin, 'expirationdate') %}
+		<div class="list-group-item p-1">
+			<div class="row">
+				<div class="col">
+					<strong>Item ID:</strong> Item ID
+				</div>
+				<div class="col">
+					<strong>Lot Ref:</strong> {{ lotserial.lotreference }}
+				</div>
+				<div class="col">
+					<strong>Lot #:</strong> {{ lotserial.get_itemidentifier() }}
+				</div>
+				<div class="col">
+					<strong>Weight:</strong> {{ lotserial.qty }}
+				</div>
+				<div class="col">
+					<strong>Prod Date:</strong> {{ lotserial.expirationdate|convertdate }}
+				</div>
+				<div class="col">
+					{% if (not warehouse.validate_bin(lotserial.bin)) %}
+						<span class="badge badge-danger pull-right">Invalid Bin</span>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+</div>

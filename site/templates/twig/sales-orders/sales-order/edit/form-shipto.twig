@@ -1,7 +1,7 @@
 <div class="form-group">
 	<label for="shiptoid">ShiptoID</label>
 	<select name="shiptoid" id="shiptoid" class="form-control">
-		<option value="n/a">Drop Ship</option>
+		<option value="n/a">None</option>
 		{% for shipto in shiptos %}
 			<option value="{{ shipto.id }}" {{ shipto.id == order.shiptoid ? 'selected' : ''}}>{{ shipto.id ~ ' - ' ~ shipto.name }}</option>
 		{% endfor %}

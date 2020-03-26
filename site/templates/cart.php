@@ -36,7 +36,12 @@
 			$page->body .= $config->twig->render('cart/cart-items.twig', ['page' => $page, 'cart' => $cart]);
 		}
 
-		$page->body .= $config->twig->render('cart/add-item-form.twig', ['page' => $page, 'cart' => $cart]);
+		if ($config->twigloader->exists("cart/$config->company/add-item-form.twig")) {
+			$page->body .= $config->twig->render("cart/$config->company/add-item-form.twig", ['page' => $page, 'cart' => $cart]);
+		} else {
+			$page->body .= $config->twig->render('cart/add-item-form.twig', ['page' => $page, 'cart' => $cart]);
+		}
+
 		$page->js .= $config->twig->render('cart/item-lookup.js.twig', ['page' => $page, 'cart' => $cart]);
 		$page->body .= $config->twig->render('cart/last-sales/modal.twig', ['page' => $page, 'cart' => $cart, 'lastsold' => $lastsold, 'company' => $config->company, 'loader' => $config->twig->getLoader()]);
 
@@ -48,9 +53,7 @@
 		}
 
 		$page->body .= $html->div('class=mb-4', '');
-		$page->body .= $config->twig->render('cart/cart-actions.twig', ['page' => $page, 'cart' => $cart]);
-		$page->body .= $html->div('class=mb-4', '');
-		$page->body .= $config->twig->render('cart/cart-notes.twig', ['page' => $page, 'cart' => $cart]);
+		$page->body .= $config->twig->render('cart/cart-actions.twig', ['page' => $page, 'cart' => $cart, 'user' => $user]);
 
 		$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 	} elseif ($input->get->custID) {

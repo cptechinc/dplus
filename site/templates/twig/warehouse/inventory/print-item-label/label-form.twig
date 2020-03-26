@@ -6,7 +6,9 @@
 <div class="row">
 	<div class="col-sm-6">
 		<form action="{{ page.formurl }}" id="print-label-form" method="post">
-			<input type="hidden" name="action" value="print-thermal-label">
+			{% block action %}
+				<input type="hidden" name="action" value="print-thermal-label">
+			{% endblock %}
 			<input type="hidden" name="labelID" value="{{ label.labelid }}">
 			<input type="hidden" name="bin" value="{{ label.bin }}">
 			<input type="hidden" name="lotserial" value="{{ label.lotserial }}">
@@ -14,6 +16,21 @@
 			<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
 
 			<table class="table table-striped">
+				<tr>
+					<td>Item ID</td>
+					<td>
+						{{ label.itemid }} <br>
+						<small>{{ item.desc1 }}</small>
+					</td>
+				</tr>
+				<tr>
+					<td>Lotserial</td>
+					<td>{{ label.lotserial }}</td>
+				</tr>
+				<tr>
+					<td>Lot Reference</td>
+					<td>{{ label.lotserial }}</td>
+				</tr>
 				<tr>
 					<td colspan="2" class="bg-info text-white text-center"><b>Product Label</b></td>
 				</tr>

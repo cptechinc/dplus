@@ -1,0 +1,7 @@
+{% if invoice['shipments']|length > 0 %}
+	{% include 'util/screen-formatter/tr-labels.twig' with {'section': 'shipments'} %}
+
+	{% for shipment in invoice['shipments'] %}
+		{% include 'util/screen-formatter/tr-section-rows.twig' with {'section': 'shipments', 'record': shipment} %}
+	{% endfor %}
+{% endif %}

@@ -7,8 +7,8 @@ use SalesOrderQuery, SalesOrder;
 use CustomerShiptoQuery, CustomerShipto;
 use WarehouseQuery, Warehouse;
 use ItemMasterItemQuery, ItemMasterItem;
+use ArTermsCodeQuery, ArTermsCode;
 
-// Session Based Database
 use OrdrhedQuery, Ordrhed;
 use OrdrdetQuery, Ordrdet;
 use StatesQuery, States;
@@ -131,6 +131,14 @@ class SalesOrderEdit extends WireData implements Module {
 	 */
 	public function get_warehouses() {
 		return WarehouseQuery::create()->find();
+	}
+
+	/**
+	 * Return ArTermsCodes
+	 * @return ArTermsCode[]|ObjectCollection
+	 */
+	public function get_termscodes() {
+		return ArTermsCodeQuery::create()->find();
 	}
 
 	/**

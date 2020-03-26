@@ -100,6 +100,17 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'twig_include'   => 'items/ii/purchase-history/purchase-history.twig',
 			'dplus_function' => 'iiphf'
 		),
+		'ii-stock-item' => array(
+			'template'       => 'dplus-screen-formatter',
+			'name'           => 'item-stock',
+			'title'          => 'II Item Stock',
+			'summary'        => 'II Item Stock Formatter',
+			'parent'         => '/mii/admin/',
+			'formatter'      => 'SfIiStockItem',
+			'jsoncode'       => 'ii-stock',
+			'twig_include'   => 'items/ii/item/stock.twig',
+			'dplus_function' => ''
+		),
 		'ci-sales-orders' => array(
 			'template'       => 'dplus-screen-formatter',
 			'name'           => 'sales-orders',

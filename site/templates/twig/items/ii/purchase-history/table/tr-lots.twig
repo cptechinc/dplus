@@ -1,0 +1,12 @@
+{% if invoice['lots']|length > 0 %}
+	{% if blueprint['lotserial']['rowcount'] > 0 %}
+		{% include 'util/screen-formatter/tr-labels.twig' with {'section': 'lotserial', 'trclass': 'lotserial collapse show'} %}
+
+		{% for key, lot in invoice['lots'] %}
+			{% for x in 0..blueprint['lotserial']['rowcount'] %}
+				{% set trclass = id == 'TOTAL' ? 'bg-secondary text-white' : '' %}
+				{% include 'util/screen-formatter/tr-section-rows.twig' with {'section': 'lotserial', 'record': lot, 'trclass': trclass} %}
+			{% endfor %}
+		{% endfor %}
+	{% endif %}
+{% endif %}
