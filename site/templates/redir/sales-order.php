@@ -88,6 +88,9 @@
 		case 'edit-new-order':
 			$ordn = $user->get_lockedID();
 			$custID = SalesOrderQuery::create()->get_custid($ordn);
+			$editorder = OrdrhedQuery::create()->findOneBySessionidOrder(session_id(), $ordn);
+			$editorder->setShipdate(date('Ymd', strtotime('+1 day')));
+			$editorder->save();
 			$data = array("DBNAME=$dplusdb", "ORDRDET=$ordn", "CUSTID=$custID", "LOCK");
 			$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
 			break;
