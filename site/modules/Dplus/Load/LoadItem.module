@@ -1,0 +1,89 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use ItemMasterItemQuery, ItemMasterItem;
+
+/**
+ * Load
+ *
+ * Class for Looking up / Validating Items through ITM and different X-refs
+ *
+ * @property string $exists  Item Exists
+ * @property string $itemID  Item ID associated with Item
+ * @property string $request What was sent to find Item
+ * @property string $source  itm|cxm
+ * @property array  $item
+ */
+class LoadItem extends WireData implements Module {
+	public function __construct() {
+		$this->exists  = false;
+		$this->itemID  = '';
+		$this->item = false;
+	}
+
+	/**
+	 * Return Item
+	 * @param  string $itemID Item ID
+	 * @return ItemMasterItem
+	 */
+	public function get_item($itemID) {
+		$this->itemID = $itemID;
+		$validator = $this->wire('modules')->get('LookupItem');
+
+		if ($validator->lookup_itm($itemID)) {
+			return ItemMasterItemQuery::create()->findOneByItemid($itemID);
+		}
+	}
+
+	/**
+	 * Return Item Array
+	 *
+	 * @param  string $itemID Item ID
+	 * @return array
+	 */
+	public function get_item_array($itemID, array $fields) {
+		$this->itemID = $itemID;
+		$validator = $this->wire('modules')->get('LookupItem');
+
+		if ($validator->lookup_itm($itemID)) {
+			$item = $this->get_item($itemID);
+			$this->generate_item_array($item, $fields);
+		}
+		return $this->item;
+	}
+
+	public function generate_item_array(ItemMasterItem $item, array $fields) {
+		$item_array = array('itemid' => $item->itemid, 'description' => $item->description, 'description2' => $item->description2);
+
+		foreach ($fields as $field) {
+			if (ItemMasterItem::aliasproperty_exists($field)) {
+				$item_array[$field] = $item->$field;
+			}
+		}
+
+		$this->item = $item_array;
+	}
+
+
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Item Load Module',
+			'version' => 101,
+			'summary' => 'Handles Item Load',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(),
+			'requires' => array('LookupItem')
+		);
+	}
+}

@@ -10,6 +10,7 @@ class Lookup extends WireData implements Module {
 	public function update() {
 		$info = self::getModuleInfo();
 		$modules = $this->wire('modules');
+		$modules->refresh();
 
 		foreach ($info['installs'] as $module_name) {
 			if (!$modules->isInstalled($module_name)) {
@@ -37,7 +38,8 @@ class Lookup extends WireData implements Module {
 				'LookupCustomer',
 				'LookupItem',
 				'LookupSalesOrder',
-				'LookupVendor'
+				'LookupVendor',
+				'LookupQuote'
 			)
 		);
 	}

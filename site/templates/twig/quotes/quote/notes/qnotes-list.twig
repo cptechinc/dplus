@@ -1,30 +1,41 @@
 <div class="list-group">
 	<div class="list-group-item list-group-item-action bg-dark text-white">
 		<div class="row">
-			<div class="col">Quote</div>
-			<div class="col">Pick Ticket</div>
-			<div class="col">Pack Ticket</div>
-			<div class="col">Invoice</div>
-			<div class="col">Acknowledgment</div>
-			<div class="col">Edit</div>
+			<div class="col-9">
+				<div class="row">
+					<div class="col">Quote</div>
+					<div class="col">Pick Ticket</div>
+					<div class="col">Pack Ticket</div>
+					<div class="col">Invoice</div>
+					<div class="col">Acknowledgment</div>
+				</div>
+			</div>
+			<div class="col-3">Edit</div>
 		</div>
 	</div>
 	{% if notes.count > 0 %}
 		{% for note in notes %}
-		<div class="list-group-item qnote" data-linenbr="{{ note.linenbr }}" data-sequence="{{ note.sequence }}">
+		<div class="list-group-item qnote-row" data-linenbr="{{ note.linenbr }}" data-form="{{ note.form }}">
 			<div class="row mb-1">
-				<div class="col check-quote">{{ note.quote }}</div>
-				<div class="col check-pick">{{ note.pickticket }}</div>
-				<div class="col check-pack">{{ note.packticket }}</div>
-				<div class="col check-invoice">{{ note.invoice }}</div>
-				<div class="col check-acknowledgement">{{ note.acknowledgement }}</div>
-				<div class="col">
-					<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#add-note-modal" data-linenbr="{{ note.linenbr }}" data-sequence="{{ note.sequence }}">
+				<div class="col-9">
+					<div class="row">
+						<div class="col check-quote">{{ note.quote }}</div>
+						<div class="col check-pick">{{ note.pickticket }}</div>
+						<div class="col check-pack">{{ note.packticket }}</div>
+						<div class="col check-invoice">{{ note.invoice }}</div>
+						<div class="col check-acknowledgement">{{ note.acknowledgement }}</div>
+					</div>
+				</div>
+				<div class="col-3">
+					<button type="button" class="btn btn-light" data-toggle="collapse" data-target="#notes-{{ note.line }}-{{ note.form }}" aria-controls="collapseExample">
+						<i class="fa fa-eye" aria-hidden="true"></i> Show
+					</button>
+					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#note-modal" data-linenbr="{{ note.line }}" data-form="{{ note.form }}">
 						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 					</button>
 				</div>
 			</div>
-			<p class="mb-0 notes">{{ note.note }}</p>
+			<textarea class="collapse form-control-plaintext" id="notes-{{ note.line }}-{{ note.form }}" cols="{{ qnotes_qt.get_column_count() }}" readonly>{{ qnotes_qt.get_notes_form_array(qnbr, note.line, note.form)|join('\r') }}</textarea>
 		</div>
 		{% endfor %}
 	{% else %}

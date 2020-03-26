@@ -10,6 +10,7 @@ require_once(__DIR__ . '/FilterBookingsUser.module');
 
 class FilterBookingsDay extends FilterBookingsUser implements Module {
 	protected $name = 'FilterBookingsDay';
+	protected $className ='FilterBookingsDay';
 
 	/**
 	 * Bookings Day Query

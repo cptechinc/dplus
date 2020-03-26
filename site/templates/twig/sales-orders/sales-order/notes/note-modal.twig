@@ -1,26 +1,19 @@
-<div class="modal fade" id="add-note-modal" tabindex="-1" role="dialog" aria-labelledby="add-note-modal-label" aria-hidden="true">
+<div class="modal fade" id="note-modal" tabindex="-1" role="dialog" aria-labelledby="note-modal-label" aria-hidden="true">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="add-note-modal-label">Add Quote Note to </h5>
+				<h5 class="modal-title" id="note-modal-label">Add Sales Order Note to </h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body">
-				<form action="" method="post" id="add-qnote-form">
-					<input type="hidden" name="action" value="add-note">
-					<input type="hidden" name="qnbr" value="{{ qnbr }}">
+				<form action="" method="post" id="qnote-form">
+					<input type="hidden" name="ordn" value="{{ ordn }}">
 					<input type="hidden" name="linenbr" value="">
-					<input type="hidden" name="sequence" value="">
+					<input type="hidden" name="form" value="">
 
 					<div class="row mb-3">
-						<div class="col">
-							<div class="custom-control custom-checkbox">
-								<input type="checkbox" name="check_quote" class="custom-control-input" id="check-quote" value="Y">
-								<label class="custom-control-label" for="check-quote">Quote</label>
-							</div>
-						</div>
 						<div class="col">
 							<div class="custom-control custom-checkbox">
 								<input type="checkbox" name="check_pick" class="custom-control-input" id="check-pick-ticket" value="Y">
@@ -46,13 +39,22 @@
 							</div>
 						</div>
 					</div>
+					<div class="feedback">
+
+					</div>
 					<div class="form-group">
 						<label for="q-notes-text">Notes</label>
-						<textarea name="notes" class="form-control" id="q-notes-text"></textarea>
+						<textarea name="note" class="form-control w-auto" id="q-notes-text" cols="{{ qnotes_so.get_column_count() }}"></textarea>
 					</div>
-					<button type="submit" class="btn btn-success">
-						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-					</button>
+
+					<div class="d-flex justify-content-between align-items-center">
+						<button type="submit" name="action" value="update-notes" class="btn btn-success">
+							<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+						</button>
+						<button type="submit" name="action" novalidate value="delete-notes" class="btn btn-danger">
+							<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+						</button>
+					</div>
 				</form>
 			</div>
 		</div>

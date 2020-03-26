@@ -60,7 +60,13 @@
 					$resultscount = InvsearchQuery::create()->countByItemid(session_id(), $item->itemid, $binID);
 					$items = InvsearchQuery::create()->findDistinctItems(session_id(), $binID);
 					$inventory = InvsearchQuery::create();
-					$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
+
+					if ($config->twigloader->exists("warehouse/binr/$config->company/inventory-results.twig")) {
+						$page->body = $config->twig->render("warehouse/binr/$config->company/inventory-results.twig", ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
+					} else {
+						$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
+					}
+
 				} else { // Make Inventory Request for item
 					$pageurl = $page->fullURL->getUrl();
 					$url = $page->parent('template=warehouse-menu,name=binr')->child('template=redir')->url."?action=search-item-bins&itemID=$item->itemid&page=$pageurl";
@@ -117,8 +123,8 @@
 				$page->body .= $config->twig->render('warehouse/binr/to-bins-modal.twig', ['currentbins' => $currentbins, 'warehouse' => $warehouse, 'session' => $session, 'item' => $item, 'inventory' => $inventory]);
 
 				// 4. Warehouse Config JS
-				$bins = BincntlQuery::create()->get_warehousebins($whsesession->whseid)->toArray();
-				$validbins = BininfoQuery::create()->filterByItemid(session_id(), $item->itemid)->find()->toArray('Bin');
+				$bins = $warehouse->get_bins();
+				$validbins = BininfoQuery::create()->filterBySessionItemid(session_id(), $item->itemID)->find()->toArray('Bin');
 				$jsconfig = array('warehouse' => array('id' => $whsesession->whseid, 'binarrangement' => $warehouse->get_binarrangementdescription(), 'bins' => $bins));
 				$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('warehouse' => $jsconfig, 'validfrombins' => $validbins)]);
 			}

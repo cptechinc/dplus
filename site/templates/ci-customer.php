@@ -8,10 +8,9 @@
 
 	if ($input->get->custID) {
 		$custID = $input->get->text('custID');
-		$lookup_customer->lookup_customer($custID);
 
 		// TODO VALIDATION
-		if ($lookup_customer->exists) {
+		if ($lookup_customer->lookup_customer($custID)) {
 			if ($user->has_customer($custID)) {
 				$modules->get('DpagesMci')->init_customer_hooks();
 				$modules->get('DpagesMci')->init_cipage();
@@ -35,7 +34,10 @@
 				$page->body .= $config->twig->render('customers/ci/customer/contacts-panel.twig', ['page' => $page, 'customer' => $customer, 'contacts' => $contacts, 'resultscount'=> $contacts->getNbResults()]);
 				$page->body .= $config->twig->render('customers/ci/customer/sales-orders-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $sales_orders, 'resultscount'=> $sales_orders->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url, 'sales_orders_list' => $page->cust_salesordersURL($customer->id)]);
 				$page->body .= $config->twig->render('customers/ci/customer/sales-history-panel.twig', ['page' => $page, 'customer' => $customer, 'orders' => $sales_history, 'resultscount'=> $sales_history->getNbResults(), 'orderpage' => $pages->get('pw_template=sales-order-view')->url, 'shipped_orders_list' => $page->cust_saleshistoryURL($customer->id)]);
-				$page->body .= $config->twig->render('customers/ci/customer/quotes-panel.twig', ['page' => $page, 'customer' => $customer, 'quotes' => $quotes, 'resultscount'=> $quotes->getNbResults(), 'quotepage' => $pages->get('pw_template=quote-view')->url, 'quotes_list' => $page->cust_quotesURL($customer->id)]);
+
+				if ($user->has_function('mqo')) {
+					$page->body .= $config->twig->render('customers/ci/customer/quotes-panel.twig', ['page' => $page, 'customer' => $customer, 'quotes' => $quotes, 'resultscount'=> $quotes->getNbResults(), 'quotepage' => $pages->get('pw_template=quote-view')->url, 'quotes_list' => $page->cust_quotesURL($customer->id)]);
+				}
 				$config->scripts->append(hash_templatefile('scripts/customer/ci-customer.js'));
 			} else {
 				$page->searchURL = $page->url;
@@ -48,7 +50,6 @@
 			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $custID not found"]);
 		}
 	} else {
-		$query = CustomerQuery::create();
 		$filter_customers = $modules->get('FilterCustomers');
 		$filter_customers->init_query($user);
 		$filter_customers->filter_search($input->get->text('q'));
@@ -66,7 +67,6 @@
 
 		$filter_customers->apply_sortby($page);
 		$query = $filter_customers->get_query();
-
 		$customers = $query->paginate($input->pageNum, 10);
 
 		$page->searchURL = $page->url;

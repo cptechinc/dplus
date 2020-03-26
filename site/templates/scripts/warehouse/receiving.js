@@ -118,7 +118,7 @@ $(function() {
 		var msg = '';
 		var html = false;
 
-		if (input_qty.val() == '0.00') {
+		if (input_qty.val() == '0.00' || input_qty.val() == 0.00) {
 			error = true;
 			title = 'Error';
 			msg   = 'Please enter a Quantity greater than 0';

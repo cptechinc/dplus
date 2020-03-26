@@ -7,4 +7,9 @@
 {% include 'sales-orders/sales-history/sales-history-header.twig' %}
 
 <h3 class="font-weight-bold text-danger mt-4">Order Items</h3>
-{% include 'sales-orders/sales-history/items.twig' %}
+
+{% if loader.exists('sales-orders/sales-history/' ~ company ~ '/items.twig') %}
+	{% include 'sales-orders/sales-history/' ~ company ~ '/items.twig' %}
+{% else %}
+	{% include 'sales-orders/sales-history/items.twig' %}
+{% endif %}

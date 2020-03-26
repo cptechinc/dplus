@@ -1,0 +1,66 @@
+<div class="form-group">
+	<a href="{{ page.url }}" class="btn btn-primary not-round">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> New Label
+	</a>
+</div>
+<div class="row">
+	<div class="col-sm-8">
+		<form action="{{ page.formurl }}" id="print-label-form" method="post">
+			<input type="hidden" name="action" value="print-labels-simple">
+			<input type="hidden" name="scan" value="{{ item.scan }}">
+
+			<div class="form-row form-group">
+				<div class="col-sm-6">
+					Item ID
+				</div>
+				<div class="col-sm-6">
+					{{ item.itemid }} <br>
+					<small>{{ item.desc1 }}</small>
+				</div>
+			</div>
+			<div class="form-row form-group">
+				<div class="col-sm-6">
+					Lot
+				</div>
+				<div class="col-sm-6">
+					{{ item.lotserial }}
+				</div>
+			</div>
+			<div class="form-row form-group">
+				<div class="col-sm-6">
+					Lot Reference
+				</div>
+				<div class="col-sm-6">
+					{{ item.lotreference }}
+				</div>
+			</div>
+			<div class="form-row form-group">
+				<div class="col-sm-6">
+					<label for="productiondate">Production Date</label>
+				</div>
+				<div class="col-sm-6">
+					{% include 'util/date-picker.twig' with {'name': 'productiondate', 'id': 'productiondate', 'value': item.productiondate ? item.productiondate|convertdate('m/d/Y') : "now"|date("m/d/Y") } %}
+				</div>
+			</div>
+			<div class="form-row form-group">
+				<div class="col-sm-6">
+					<label class="control-label" for="weight">Weight</label>
+				</div>
+				<div class="col-sm-6">
+					<input class="form-control input-sm qty required" type="number" name="weight" id="weight" value="{{ item.qty }}">
+				</div>
+			</div>
+			<div class="form-row form-group mb-3">
+				<div class="col-sm-6">
+					<label class="control-label" for="labelcount">Nbr of Labels</label>
+				</div>
+				<div class="col-sm-6">
+					<input class="form-control input-sm qty required" type="number" name="labelcount" id="labelcount" value="1">
+				</div>
+			</div>
+			<button type="submit" class="btn btn-lg btn-success">
+				<i class="fa fa-print" aria-hidden="true"></i> Print Labels
+			</button>
+		</form>
+	</div>
+</div>

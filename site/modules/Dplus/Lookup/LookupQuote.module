@@ -1,0 +1,59 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use QuoteQuery, Quote;
+
+/**
+ * LookupQuote
+ *
+ * Class for Looking up / Validating Quote
+ *
+ * @property string $exists  Quote Exists
+ * @property string $qnbr    Quote Number
+ * @property string $request What was sent to find Quote Number
+ * @property string $source  so_head | so_head_hist
+ */
+class LookupQuote extends WireData implements Module {
+	public function __construct() {
+		$this->exists  = false;
+		$this->qnbr  = '';
+	}
+
+	/**
+	 * Returns if Sales Order Number exists in the Sales Order table
+	 * @param  string $qnbr Sales Order Number
+	 * @return bool
+	 */
+	public function lookup($qnbr) {
+		$q = QuoteQuery::create();
+		$q->filterByQuoteid($qnbr);
+
+		if ($q->count()) {
+			$this->exists = true;
+			$this->qnbr = $qnbr;
+		} else {
+			$this->exists = false;
+		}
+		return $this->exists;
+	}
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Quote Lookup Module',
+			'version' => 101,
+			'summary' => 'Handles Quote Lookup',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+}

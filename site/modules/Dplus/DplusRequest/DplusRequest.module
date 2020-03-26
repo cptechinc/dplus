@@ -27,11 +27,34 @@ class DplusRequest extends WireData implements Module {
 	 */
 	public function self_request($path) {
 		$http = new WireHttp();
-		$rootpath = $this->wire('config')->paths->root;
-		$basepath = end(explode('/', trim($rootpath, '/')));
-		$path = ltrim(str_replace($basepath, '', $path), '/');
-		$fullpath = "/$basepath/$path";
+		$fullpath = $this->get_self_path($path);
 		return $http->get("127.0.0.1".$fullpath);
+	}
+
+	/**
+	 * Send HTTP POST Request to URL
+	 * @param  string $path URL path with URL parameters
+	 * @param  array  $data Values to Send
+	 * @return bool
+	 */
+	public function self_request_post($path, $data) {
+		$http = new WireHttp();
+		$http->setData($data);
+		$fullpath = $this->get_self_path($path);
+		return $http->post("127.0.0.1".$fullpath);
+	}
+
+	/**
+	 * Returns path to send localhost requests
+	 * @param  string $path URL path with URL parameters
+	 * @return string
+	 */
+	public function get_self_path($path) {
+		$rootpath = $this->wire('config')->paths->root;
+		$patharray = explode('/', trim($rootpath, '/'));
+		$basepath = end($patharray);
+		$path = ltrim(str_replace($basepath, '', $path), '/');
+		return "/$basepath/$path";
 	}
 
 	/**

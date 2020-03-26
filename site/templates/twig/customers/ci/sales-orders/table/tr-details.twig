@@ -1,0 +1,19 @@
+{#
+	ci-sales-orders detail rows
+	Structure:
+		<details>
+			<detail>
+				<itemstatus></itemstatus>
+				<purchaseorder></purchaseorder>
+			</detail>
+		</details>
+#}
+{% if order['details']|length > 0 %}
+	{% include 'util/screen-formatter/tr-labels.twig' with {'section': 'detail'} %}
+	{% for detail in order['details'] %}
+		{% include 'util/screen-formatter/tr-section-rows.twig' with {'section': 'detail', 'record': detail} %}
+
+		{% include 'customers/ci/sales-orders/table/tr-detail-itemstatus.twig' %}
+		{% include 'customers/ci/sales-orders/table/tr-detail-purchase-orders.twig' %}
+	{% endfor %}
+{% endif %}

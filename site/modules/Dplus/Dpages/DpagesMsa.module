@@ -31,7 +31,7 @@ class DpagesMsa extends Dpages implements Module {
 			'title'          => 'System Administration',
 			'summary'        => '',
 			'parent'         => '/',
-			'dplus_function' => ''
+			'dplus_function' => 'msa'
 		),
 		'msa-sysop' => array(
 			'template'       => 'dplus-function',

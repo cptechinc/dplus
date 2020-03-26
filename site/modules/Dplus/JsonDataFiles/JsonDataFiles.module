@@ -68,6 +68,9 @@
 				'sub'			=> 'visub',
 				'payments'      => 'vipayment',
 				'notes'         => 'vinotes'
+			),
+			'itm' => array(
+				'delete' => 'deleteitm'
 			)
 		);
 
@@ -109,6 +112,10 @@
 		public function get_justifyclass($justifycode) {
 			$justifycode = substr($justifycode, 0, 1);
 			return self::JUSTIFY_CLASSES[$justifycode];
+		}
+
+		public function get_justifyclasses() {
+			return self::JUSTIFY_CLASSES;
 		}
 
 		/**

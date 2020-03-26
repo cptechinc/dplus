@@ -1,0 +1,30 @@
+<div class="collapse-lotserial {{ not page.is_print() ? 'collapse' : '' }}" id="{{ (binitem.itemid ~ '_' ~ binitem.bin)|attrJS  }}-lotserial">
+	<div class="list-group">
+		{% for lotserial in inventory.get_lotserials_itemid(binitem.sessionid, binitem.itemid, binitem.bin, 'expirationdate') %}
+			<div class="list-group-item p-1">
+				<div class="row">
+					<div class="col">
+						<a href="{{ page.binr_itemURL(lotserial) }}" class="btn btn-primary">Select</a>
+					</div>
+					<div class="col">
+						<strong>Lot Ref:</strong> {{ lotserial.lotreference }}
+					</div>
+					<div class="col">
+						<strong>Lot #:</strong> {{ lotserial.get_itemidentifier() }}
+					</div>
+					<div class="col">
+						<strong>Weight:</strong> {{ lotserial.qty }}
+					</div>
+					<div class="col">
+						<strong>Prod Date:</strong> {{ lotserial.expirationdate|convertdate }}
+					</div>
+					<div class="col">
+						{% if (not warehouse.validate_bin(lotserial.bin)) %}
+							<span class="badge badge-danger pull-right">Invalid Bin</span>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+</div>

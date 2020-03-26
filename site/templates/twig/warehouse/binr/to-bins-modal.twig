@@ -49,7 +49,7 @@
 												<h6 class="list-group-item-heading">{{ bin.from }}</h6>
 											</div>
 											<div class="col-6">
-												{% if (bin.from in currentbins.toArray('binfrom')|keys)	%}
+												{% if (bin.from in currentbins.toArray('bin')|keys)	%}
 													<h5 class="list-group-item-heading">Qty {{ inventory.get_binqty(session.get('sessionid'), item, bin.from) }}</h5>
 												{% endif %}
 											</div>

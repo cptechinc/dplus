@@ -1,15 +1,25 @@
-<h3 class="font-weight-bold text-secondary mt-4">Order Items</h3>
+<div class="row mt-4">
+	<div class="col-6">
+		<h3 class="font-weight-bold text-secondary">Order Items</h3>
+	</div>
+	<div class="col-6">
+		<button type="button" class="btn btn-primary collapse" data-toggle="modal" data-target="#last-sales-modal">
+			View {{ order.custid }}'s Popular Items
+		</button>
+	</div>
+</div>
+
 <div class="bg-dark text-white font-weight-bold p-3">
 	<div class="row">
 		<div class="col-sm-3">Item ID</div>
 		<div class="col-sm-2 text-right">Qty</div>
 		<div class="col-sm-2 text-right">Price</div>
-		<div class="col-sm-2 text-right">Total Price</div>
+		<div class="col-sm-2 text-right">Amount</div>
 		<div class="col-sm-3 "></div>
 	</div>
 </div>
 
-{% for detail in order_items %}
+{% for detail in module_edit.get_order_edit_items() %}
 	{% if user.is_editingorder(order.ordernumber) %}
 		<form action="{{ page.formurl }}" class="row pt-3 px-3 allow-enterkey-submit">
 			<input type="hidden" name="action" value="quick-update-line">

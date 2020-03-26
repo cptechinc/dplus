@@ -8,6 +8,8 @@ use Propel\Runtime\Collection\ObjectCollection;
 class FilterBookings extends Process implements ConfigurableModule {
 
 	protected $name = 'FilterBookings';
+	protected $className ='FilterBookings';
+
 
 	const CONFIG_FIELDS = array(
 		'option_bookings_dashboard' => array(

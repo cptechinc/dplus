@@ -12,16 +12,38 @@
 			$shipto = CustomerShiptoQuery::create()->filterByCustid($custID)->findOneByShiptoid($shiptoID);
 			$page->title = "Cart for $shipto->name";
 		} else {
+			$shiptoID = '';
 			$shipto = false;
 		}
 
 		$page->formurl = $page->child('template=redir')->url;
 		$page->body .= $config->twig->render('cart/cart-links.twig', ['page' => $page, 'customer' => $customer, 'cart' => $cart, 'shipto' => $shipto]);
-		$page->body .= $config->twig->render('cart/cart-items.twig', ['page' => $page, 'cart' => $cart]);
-		$page->body .= $config->twig->render('cart/add-item-form.twig', ['page' => $page, 'cart' => $cart]);
 
-		$page->lookupURL = $pages->get('pw_template=ii-item-lookup')->httpUrl;
+
+		if ($modules->get('ConfigsCi')->option_lastsold  == 'cstk') {
+			$lastsold = $modules->get('LastSoldItemsCustomerCstk');
+			$lastsold->custID = $custID;
+			$lastsold->shiptoID = $shiptoID;
+			$lastsold->function = 'cart';
+			$lastsold->request_pricing();
+		} else {
+			$lastsold = false;
+		}
+
+		if ($config->twigloader->exists("cart/$config->company/cart-items.twig")) {
+			$page->body .= $config->twig->render("cart/$config->company/cart-items.twig", ['page' => $page, 'cart' => $cart]);
+		} else {
+			$page->body .= $config->twig->render('cart/cart-items.twig', ['page' => $page, 'cart' => $cart]);
+		}
+
+		if ($config->twigloader->exists("cart/$config->company/add-item-form.twig")) {
+			$page->body .= $config->twig->render("cart/$config->company/add-item-form.twig", ['page' => $page, 'cart' => $cart]);
+		} else {
+			$page->body .= $config->twig->render('cart/add-item-form.twig', ['page' => $page, 'cart' => $cart]);
+		}
+
 		$page->js .= $config->twig->render('cart/item-lookup.js.twig', ['page' => $page, 'cart' => $cart]);
+		$page->body .= $config->twig->render('cart/last-sales/modal.twig', ['page' => $page, 'cart' => $cart, 'lastsold' => $lastsold, 'company' => $config->company, 'loader' => $config->twig->getLoader()]);
 
 		if ($input->get->q) {
 			$q = $input->get->text('q');
@@ -31,9 +53,7 @@
 		}
 
 		$page->body .= $html->div('class=mb-4', '');
-		$page->body .= $config->twig->render('cart/cart-actions.twig', ['page' => $page, 'cart' => $cart]);
-		$page->body .= $html->div('class=mb-4', '');
-		$page->body .= $config->twig->render('cart/cart-notes.twig', ['page' => $page, 'cart' => $cart]);
+		$page->body .= $config->twig->render('cart/cart-actions.twig', ['page' => $page, 'cart' => $cart, 'user' => $user]);
 
 		$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 	} elseif ($input->get->custID) {

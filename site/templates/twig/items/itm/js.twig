@@ -1,0 +1,47 @@
+$(function() {
+	var modal_ajax = $('#ajax-modal');
+
+	var form = $('#itm-form');
+	var input_customer  = form.find('input[name=custid]');
+	var input_custname  = form.find('input[name=cust_name]');
+
+
+	/**
+	 *
+	 * Customer Lookup Modal
+	 *
+	 */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = '{{ page.customerlookupURL }}';
+		modal.find('.modal-title').text('Search for a Customer');
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {
+
+		});
+	});
+
+	$("body").on('click', '.ci-customer', function(e) {
+		e.preventDefault();
+		var custid = $(this).data('custid');
+		var cust_name = $(this).data('cust_name');
+		input_customer.val(custid);
+		input_custname.val(cust_name);
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('submit', '#lookup form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {
+
+		});
+
+	});
+});

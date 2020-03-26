@@ -11,6 +11,76 @@
 	$itemID = strtoupper($input->$requestmethod->text('itemID'));
 	$cart = $modules->get('Cart');
 
+
+	/**
+	* CART REDIRECT
+	*
+	*
+	* switch ($action) {
+	*	case 'add-item':
+	*		Request: Add Item to Cart
+	* 		Response: Adds Item to the Cart Details table
+	*		DBNAME=$dplusdb
+	*		CARTDET
+	*		ITEMID=$itemID
+	*		QTY=$qty
+	*		CUSTID=$custID
+	*		LOCK
+	*		break;
+	*	case 'quick-update-line':
+	*		Request: Update Cart Detail Line
+	* 		Response: Updates Cart Detail Line
+	*		DBNAME=$dplusdb
+	*		CARTDET
+	*		LINENO=$linenbr
+	*		CUSTID=$custID
+	*		break;
+	*	case 'edit-new-order':
+	* 		Request: Sales Order Details for Edit for brand new order
+	* 		Response: Updates Ordrdet, so_detail records
+	*		DBNAME=$dplusdb
+	*		ORDRDET=$ordn
+	*		CUSTID=$custID
+	*		LOCK
+	* 		break;
+	*	case 'quick-update-line':
+	*		Request Sales Order Detail Line to be updated
+	* 		Response: Updates Ordrdet, so_detail records
+	*		DBNAME=$dplusdb
+	*		SALEDE
+	*		ORDERNO=$ordn
+	*		LINENO=$linenbr
+	*		CUSTID=$custID
+	*		break;
+	*	case 'remove-line':
+	*		Request Sales Order Detail Line to be updated
+	* 		Response: Updates Ordrdet, so_detail records
+	*		DBNAME=$dplusdb
+	*		SALEDE
+	*		ORDERNO=$ordn
+	*		LINENO=$linenbr
+	*		QTY=0
+	*		CUSTID=$custID
+	*		break;
+	*	case 'add-item':
+	* 		Request: Add Item to Order
+	* 		Response: Updates Ordrdet, so_detail records
+	* 		DBNAME=$dplusdb
+	* 		SALEDET
+	*		ORDERNO=$ordn
+	*		ITEMID=$itemID
+	*		QTY=$qty
+	* 		break;
+	*	case 'unlock-order':
+	* 		Request Sales Order Unlock
+	* 		Response: updates dplus locks, logperm
+	*		DBNAME=$dplusdb
+	*		UNLOCK
+	*		ORDERNO=$ordn
+	*		break;
+	* }
+	**/
+
 	switch ($action) {
 		case 'add-item':
 			$itemID = $input->$requestmethod->text('itemID');
@@ -66,6 +136,27 @@
 			break;
 		case 'empty-cart':
 			$data = array("DBNAME=$dplusdb", 'EMPTYCART');
+
+			if ($input->$requestmethod->page) {
+				$url = new Purl\Url($input->$requestmethod->text('page'));
+				$session->loc = $url->getUrl();
+			} else {
+				$session->loc = $pages->get('pw_template=cart')->url;
+			}
+			break;
+		case 'add-popular-items':
+			$custID = $cart->get_custid();
+			$data = array("DBNAME=$dplusdb", 'CARTADDMULTIPLE', "CUSTID=$custID");
+			$qtys = $input->$requestmethod->array('qty');
+			$itemIDs = $input->$requestmethod->array('itemID');
+
+			for ($i = 0; $i < sizeof($qtys); $i++) {
+				if (!empty($qtys[$i])) {
+					$itemID = str_pad($itemIDs[$i], 30, ' ');
+					$qty = $qtys[$i];
+					$data[] = "ITEMID={$itemID}QTY=$qty";
+				}
+			}
 
 			if ($input->$requestmethod->page) {
 				$url = new Purl\Url($input->$requestmethod->text('page'));

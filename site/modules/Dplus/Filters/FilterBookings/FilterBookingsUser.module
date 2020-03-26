@@ -6,6 +6,7 @@ use Propel\Runtime\ActiveQuery\Criteria;
 
 class FilterBookingsUser extends WireData implements Module {
 	protected $name = 'FilterBookingsUser';
+	protected $className ='FilterBookingsUser';
 
 	const INTERVALS_ALLOWED = array('day' => 'daily', 'week' => 'weekly', 'month' => 'monthly');
 
@@ -63,7 +64,7 @@ class FilterBookingsUser extends WireData implements Module {
 	}
 	/**
 	 * Return Total Amount of bookings made today
-	 * @return float 
+	 * @return float
 	 */
 	public function get_todaysbookingstotal() {
 		$query = BookingrQuery::create();

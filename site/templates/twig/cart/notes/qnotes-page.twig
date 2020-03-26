@@ -9,7 +9,7 @@
 		<div class="col">
 			<h4>Header Notes</h4>
 		</div>
-		<div class="col">
+		<div class="col text-right">
 			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-note-modal" data-linenbr="0" data-sequence="0">
 				<i class="fa fa-plus" aria-hidden="true"></i> Add Note
 			</button>
@@ -19,11 +19,15 @@
 </div>
 
 {% for item in items %}
+	{% set itmitem = cart.get_im_item(item.itemid) %}
 	<div class="row mb-1">
 		<div class="col">
-			<h4>Line Number {{ item.linenbr ~ ': ' ~ item.itemid }}</h4>
+			<h4>Line {{ item.linenbr ~ ': ' ~ item.itemid }}</h4>
 		</div>
 		<div class="col">
+			{{ itmitem.description }}
+		</div>
+		<div class="col text-right">
 			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-note-modal" data-linenbr="{{ item.linenbr }}" data-sequence="0">
 				<i class="fa fa-plus" aria-hidden="true"></i> Add Note
 			</button>

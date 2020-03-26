@@ -1,0 +1,103 @@
+{# lastsold is an instance of modules LastSoldItemsCustomerCstk #}
+<form action="{{ page.formurl }}" method="post">
+	<input type="hidden" name="ordn" value="{{ module_edit.get_ordn() }}">
+	<input type="hidden" name="action" value="add-popular-items">
+
+	<div class="list-group mb-3">
+		<div class="list-group-item p-0 border-0">
+			<div class="form-row">
+				<div class="col-sm-4"></div>
+				<div class="col-sm-5">
+					<div class="alert bg-dark text-white p-1 mb-0 text-center">
+						<small>Last Sale</small>
+					</div>
+				</div>
+				<div class="col-sm-2">
+					<div class="alert bg-dark text-white p-1 mb-0 text-center">
+						<small>Total Sale</small>
+					</div>
+				</div>
+				<div class="col-sm-1"></div>
+			</div>
+		</div>
+
+		<div class="list-group-item bg-dark text-white">
+			<div class="row">
+				<div class="col-sm-3 text-bottom">Item ID</div>
+				<div class="col-sm-1">Price</div>
+				<div class="col-sm-5">
+					<div class="row">
+						<div class="col-sm-3 text-right">Date</div>
+						<div class="col-sm-3 text-right">Price</div>
+						<div class="col-sm-3 text-right">Boxes</div>
+						<div class="col-sm-3 text-right">Weight</div>
+					</div>
+				</div>
+				<div class="col-sm-2">
+					<div class="row">
+						<div class="col-sm-6 text-right">Boxes</div>
+						<div class="col-sm-6 text-right">Weight</div>
+					</div>
+				</div>
+				<div class="col-sm-1">Add</div>
+			</div>
+		</div>
+
+		{% if lastsold.has_cstk_items() %}
+			{# cstkitem is an instance of CstKItem #}
+			{% for cstkitem in lastsold.get_cstk_items() %}
+				<div class="list-group-item">
+					<div class="row">
+						<div class="col-sm-3">
+							{{ cstkitem.itemid }} <br>
+							<small>{{ cstkitem.item.description }}</small>
+							<br>
+							<small>Avg Wgt: {{ cstkitem.item.weight }}</small>
+						</div>
+						<div class="col-sm-1 text-right">
+							{{ lastsold.get_item_pricing(cstkitem.itemid) }}
+						</div>
+						<div class="col-sm-5">
+							<div class="row">
+								<div class="col-sm-3 text-right">
+									{{ cstkitem.proval_lastsale_date|convertdate }}
+								</div>
+								<div class="col-sm-3 text-right">
+									$ {{ cstkitem.proval_lastsale_price }}
+								</div>
+								<div class="col-sm-3 text-right">
+									{{ cstkitem.proval_lastsale_qty_cases }}
+								</div>
+								<div class="col-sm-3 text-right">
+									{{ cstkitem.proval_lastsale_qty_lbs }}
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-2">
+							<div class="row">
+								<div class="col-sm-6 text-right">
+									{{ cstkitem.proval_totalsale_qty_cases }}
+								</div>
+								<div class="col-sm-6 text-right">
+									{{ cstkitem.proval_totalsale_qty_lbs }}
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-1">
+							<input type="text" name="qty[]" class="form-control qty text-right pull-right">
+							<input type="hidden" name="itemID[]" value="{{ cstkitem.itemid }}">
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		{% else %}
+			<div class="list-group-item">
+				<h3>No Items from CSTK</h3>
+			</div>
+		{% endif %}
+	</div>
+
+	<button type="submit" class="btn btn-primary">
+		<i class="fa fa-plus" aria-hidden="true"></i> Add Items
+	</button>
+</form>

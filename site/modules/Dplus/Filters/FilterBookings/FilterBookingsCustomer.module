@@ -7,6 +7,8 @@ use Propel\Runtime\ActiveQuery\Criteria;
 require_once(__DIR__ . '/FilterBookingsUser.module');
 
 class FilterBookingsCustomer extends FilterBookingsUser implements Module {
+	protected $className ='FilterBookingsCustomer';
+	
 	/**
 	 * Query Class for the Bookings Customer table
 	 * @var BookingcQuery
