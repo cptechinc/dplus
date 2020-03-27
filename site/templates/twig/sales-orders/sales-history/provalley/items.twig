@@ -33,6 +33,32 @@
 					</a>
 				</td>
 			</tr>
+			{% if detail.countSalesHistoryLotserials() %}
+				<tr class="collapse lotserial {{ detail.linenumber|attrJS }}-lotserial bg-gray">
+					<th></th>
+					<th>Lot/Serial #</th>
+					<th>Lot/Serial Ref</th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+				</tr>
+				{% for lotserial in detail.getSalesHistoryLotserials() %}
+					<tr class="collapse lotserial {{ detail.linenumber|attrJS }}-lotserial">
+						<td></td>
+						<td>
+							<small>{{ lotserial.lotserial }}</small>
+						</td>
+						<td>
+							<small>{{ lotserial.lotreference }}</small>
+						</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				{% endfor %}
+			{% endif %}
 		{% endfor %}
 	</tbody>
 </table>
