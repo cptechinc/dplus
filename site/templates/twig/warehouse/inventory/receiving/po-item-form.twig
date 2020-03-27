@@ -11,7 +11,7 @@
 					<span class="fa fa-list" aria-hidden="true"></span> <span class="sr-only">Show Warehouse Bins</span>
 				</button>
 			</span>
-			<input type="text" class="form-control" id="binID" name="binID" placeholder="Bin ID" value="{{ page.bin }}">
+			<input type="text" class="form-control" id="binID" name="binID" placeholder="Bin ID" value="{{ page.has('bin') ? page.bin : '' }}">
 		</div>
 	</div>
 	<div class="form-group">

@@ -1,7 +1,7 @@
 <?php
 	include_once('./ii-include.php');
 
-	if ($itemquery->count()) {
+	if ($lookup_ii->lookup_itm($itemID)) {
 		$page->show_breadcrumbs = false;
 		$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
 		$page->title = "$itemID Purchase History";
@@ -15,7 +15,7 @@
 			if ($module_json->file_exists(session_id(), $page->jsoncode)) {
 				if ($json['itemid'] != $itemID) {
 					$module_json->remove_file(session_id(), $page->jsoncode);
-					$session->redirect($page->get_itemquotesURL($itemID));
+					$session->redirect($page->url_itemID($itemID));
 				}
 				$session->purchasehistorytry = 0;
 

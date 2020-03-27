@@ -16,6 +16,7 @@
 			$page->listpage = $pages->get('pw_template=quotes');
 			$query_useractions = $module_useractions->get_actionsquery($input);
 			$actions = $query_useractions->filterByQuotelink($qnbr)->find();
+			$module_qnotes = $modules->get('QnotesQuote');
 
 			$page->body .= $config->twig->render("quotes/quote/quote-page.twig", ['page' => $page, 'quote' => $quote, 'document_management' => $document_management]);
 			$page->body .= $html->div('class=mb-3');
@@ -23,9 +24,7 @@
 			$page->body .= $html->div('class=mb-3');
 			$page->body .= $config->twig->render('quotes/quote/quote-actions.twig', ['page' => $page, 'user' => $user, 'quote' => $quote]);
 			$page->body .= $html->div('class=mb-3');
-			$page->body .= $config->twig->render("quotes/quote/quote-notes.twig", ['page' => $page, 'quote' => $quote, 'notes' => $quote->get_notes()]);
-			$page->body .= $config->twig->render('quotes/quote/notes/add-note-modal.twig', ['page' => $page, 'qnbr' => $qnbr]);
-			$config->scripts->append(hash_templatefile('scripts/quotes/quote-notes.js'));
+			$page->body .= $config->twig->render("quotes/quote/quote-notes.twig", ['page' => $page, 'qnbr' => $qnbr, 'qnotes_qt' => $module_qnotes]);
 			$page->body .= $html->div('class=mb-3');
 			$page->body .= $config->twig->render('quotes/quote/quote-documents.twig', ['page' => $page, 'documents' => $document_management->get_quotedocuments($qnbr), 'document_management' => $document_management, 'qnbr' => $qnbr]);
 			$page->body .= $html->div('class=mb-3');

@@ -2,11 +2,13 @@
 	{% for id, warehouse in json['data'] %}
 		<div class="row">
 			<div class="col-sm-6 form-group">
-				<h4>{{ warehouse['Whse Name'] }}</h4>
+				<h4>
+					<a data-toggle="collapse" href="#{{ id|attrJS }}" class="link" role="button" aria-expanded="false" aria-controls="{{ id|attrJS }}">{{ warehouse['Whse Name'] }}</a>
+				</h4>
 			</div>
 			<div class="col-sm-6 form-group">
-				<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#{{ id|attrJS }}" aria-expanded="false" aria-controls="{{ id|attrJS }}">
-					Show / Hide
+				<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#{{ id|attrJS }} .lotserial" aria-expanded="false" aria-controls=".lotserial">
+					Show / Hide Lot/Serials
 				</button>
 			</div>
 		</div>
@@ -21,7 +23,7 @@
 								{% if blueprint['detail']['rows'][x]['columns'][i] %}
 									{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 									{% set colspan = column['col-length'] %}
-									<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(properties['headingjustify']) }}">
+									<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['label-justify']) }}">
 										{{ column['label'] }}
 									</th>
 								{% else %}
@@ -68,14 +70,14 @@
 
 						{% if invoice['lots']|length > 0 %}
 							{% for x in 1..blueprint['lotserial']['rowcount']  %}
-								<tr>
+								<tr class="lotserial lotserial-{{ invoice['Invoice Number'] }} collapse show">
 									{% set columncount = 0 %}
 									{% for i in 1..blueprint['cols'] + 1 %}
 										{% set colspan = 0 %}
 										{% if blueprint['lotserial']['rows'][x]['columns'][i] %}
 											{% set column = blueprint['lotserial']['rows'][x]['columns'][i] %}
 											{% set colspan = column['col-length'] %}
-											<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(properties['headingjustify']) }}">
+											<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['label-justify']) }}">
 												{{ column['label'] }}
 											</th>
 										{% else %}
@@ -88,10 +90,10 @@
 									{% endfor %}
 								</tr>
 							{% endfor %}
-							<tr>
+
 							{% for key, lot in invoice['lots'] %}
 								{% for x in 1..blueprint['lotserial']['rowcount']  %}
-									<tr class="{{ id == 'TOTAL' ? 'bg-secondary text-white' : '' }}">
+									<tr class="lotserial lotserial-{{ invoice['Invoice Number'] }} {{ id == 'TOTAL' ? 'bg-secondary text-white' : '' }} collapse show">
 										{% set columncount = 0 %}
 										{% for i in 1..blueprint['cols'] + 1 %}
 											{% set colspan = 0 %}

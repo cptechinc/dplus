@@ -20,7 +20,7 @@
 							{% if blueprint['header']['rows'][x]['columns'][i] %}
 								{% set column = blueprint['header']['rows'][x]['columns'][i] %}
 								{% set colspan = column['col-length'] %}
-								<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(properties['headingjustify']) }}">
+								<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['headingjustify']) }}">
 									{{ column['label'] }}
 								</th>
 							{% else %}

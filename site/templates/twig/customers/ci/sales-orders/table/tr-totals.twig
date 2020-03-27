@@ -1,0 +1,21 @@
+{% for x in 1..blueprint['total']['rowcount'] %}
+	<tr>
+		{% set columncount = 0 %}
+		{% for i in 1..blueprint['cols'] + 1 %}
+			{% set colspan = 0 %}
+			{% if blueprint['total']['rows'][x]['columns'][i] %}
+				{% set column = blueprint['total']['rows'][x]['columns'][i] %}
+				{% set colspan = column['col-length'] %}
+				<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
+					<span class="font-weight-bold">{{ column['label'] }}:</span> {{ module_formatter.format_celldata(order['totals'], column) }}
+				</td>
+			{% else %}
+				{% if columncount < blueprint['cols'] %}
+					{% set colspan = 1 %}
+					<td></td>
+				{% endif %}
+			{% endif %}
+			{% set columncount = columncount + colspan %}
+		{% endfor %}
+	</tr>
+{% endfor %}

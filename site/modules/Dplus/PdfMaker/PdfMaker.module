@@ -89,10 +89,15 @@ class PdfMaker extends WireData implements Module {
 
 		$this->addHook('Page::get_printpdfURL', function($event) {
 			$page = $event->object;
-			$url = new Url($page->fullURL->getUrl());
-			$url->query->set('print', 'true');
-			$url->query->set('pdf', 'true');
-			//$url->query->set('sessionID', session_id());
+			$requestor = $this->wire('modules')->get('DplusRequest');
+			$query = $page->fullURL->query->getData();
+			$query['print'] = 'true';
+			$query['pdf'] = 'true';
+
+			$url = new Url($requestor->get_self_path($page->path));
+			$url->query->setData($query);
+			$url->set('host', '127.0.0.1');
+			$url->set('scheme', 'http');
 			$event->return = $url->getUrl();
 		});
 

@@ -22,7 +22,11 @@
 	<label for="shipcomplete">Ship complete</label>
 	{% include 'util/select.twig' with {'name': 'shipcomplete', 'id': 'shipcomplete', 'selectedvalue': order.shipcomplete, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 </div>
-<div class="form-group">
-	<label for="paytype">Payment Type</label>
-	{% include 'util/select.twig' with {'name': 'paytype', 'id': 'paytype', 'selectedvalue': order.paymenttype, 'options': {'bill': 'Bill to Account', 'cc': 'Credit Card'}} %}
-</div>
+<label for="termscode">Terms</label>
+<select name="termscode" class="form-control" id="termscode">
+	{% for termscode in termscodes %}
+		<option value="{{ termscode.code }}" {{ termscode.code == order.termcode ? 'selected' : '' }}>
+			{{ termscode.code }} - {{ termscode.description }}
+		</option>
+	{% endfor %}
+</select>

@@ -111,6 +111,14 @@ class DpagesMvi extends Dpages implements Module {
 			'parent'         => '/',
 			'dplus_function' => 'mvi'
 		),
+		'vi-admin' => array(
+			'template'       => 'dplus-menu',
+			'name'           => 'admin',
+			'title'          => 'VI Administration',
+			'summary'        => 'Vendor Information Administration',
+			'parent'         => '/mvi/',
+			'dplus_function' => 'viadmn'
+		),
 		'vi' => array(
 			'template'       => 'dplus-function',
 			'name'           => 'vi',

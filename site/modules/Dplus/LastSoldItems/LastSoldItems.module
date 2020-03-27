@@ -1,0 +1,27 @@
+<?php namespace ProcessWire;
+
+/**
+ * LastSoldItems
+ *
+ * Class for Retreival of the Last Sold Items
+ */
+class LastSoldItems extends WireData implements Module {
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+		/**
+		 * ProcessWire Module Info
+		 *
+		 * @return void
+		 */
+		public static function getModuleInfo() {
+			return array(
+				'title' => 'LastSoldItems Module',
+				'version' => 101,
+				'summary' => 'Retreives the Last Sold Items',
+				'singular' => true,
+				'autoload' => true,
+				'installs' => array('LastSoldItemsCustomerCstk')
+			);
+		}
+}

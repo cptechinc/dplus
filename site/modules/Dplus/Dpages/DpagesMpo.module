@@ -73,8 +73,8 @@ class DpagesMpo extends Dpages implements Module {
 		'po-list' => array(
 			'template'       => 'dplus-function',
 			'name'           => 'purchase-orders',
-			'title'          => 'Purchase Orders',
-			'summary'        => 'View Purchase Orders',
+			'title'          => 'Purchase Order List',
+			'summary'        => 'View Purchase Order List',
 			'parent'         => '/mpo/',
 			'dplus_function' => '',
 			'pw_template'    => 'purchase-orders'
@@ -92,7 +92,7 @@ class DpagesMpo extends Dpages implements Module {
 			'template'       => 'dplus-function',
 			'name'           => 'purchase-order',
 			'title'          => 'Purchase Order',
-			'summary'        => 'View Purchase Order',
+			'summary'        => 'View a Purchase Order',
 			'parent'         => '/mpo/',
 			'dplus_function' => '',
 			'pw_template'    => 'purchase-order-view'

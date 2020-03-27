@@ -10,7 +10,9 @@
 				"label": "PO Nbr",
 				"before-decimal": false,
 				"after-decimal": false,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Vendor ID": {
 				"line": 0,
@@ -19,7 +21,9 @@
 				"label": "Vendor ID",
 				"before-decimal": false,
 				"after-decimal": false,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Vendor Name": {
 				"line": 1,
@@ -28,7 +32,9 @@
 				"label": "---- Vendor ----",
 				"before-decimal": false,
 				"after-decimal": false,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Order Date": {
 				"line": 0,
@@ -37,7 +43,9 @@
 				"label": "Order Date",
 				"before-decimal": false,
 				"after-decimal": false,
-				"date-format": "m/d/Y"
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Ship Date": {
 				"line": 0,
@@ -46,7 +54,9 @@
 				"label": "Ship Date",
 				"before-decimal": false,
 				"after-decimal": false,
-				"date-format": "m/d/Y"
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Expected Date": {
 				"line": 0,
@@ -55,7 +65,9 @@
 				"label": "Expected Date",
 				"before-decimal": false,
 				"after-decimal": false,
-				"date-format": "m/d/Y"
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Receipt Date": {
 				"line": 1,
@@ -64,7 +76,9 @@
 				"label": "Rcpt Dte",
 				"before-decimal": false,
 				"after-decimal": false,
-				"date-format": "m/d/Y"
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Purchase Unit of Measure": {
 				"line": 1,
@@ -73,7 +87,9 @@
 				"label": "UOM",
 				"before-decimal": 4,
 				"after-decimal": 0,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Quantity Received": {
 				"line": 1,
@@ -82,7 +98,9 @@
 				"label": "Rcvd Qty",
 				"before-decimal": 7,
 				"after-decimal": 0,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Received Unit Cost": {
 				"line": 1,
@@ -91,7 +109,9 @@
 				"label": "Unit Cost",
 				"before-decimal": 7,
 				"after-decimal": 2,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Received Amount": {
 				"line": 1,
@@ -100,7 +120,9 @@
 				"label": "Total Cost",
 				"before-decimal": 8,
 				"after-decimal": 2,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Special Order": {
 				"line": 0,
@@ -109,7 +131,9 @@
 				"label": "Special Order",
 				"before-decimal": false,
 				"after-decimal": false,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Non-Stock Vendor Item ID": {
 				"line": 0,
@@ -118,7 +142,9 @@
 				"label": "Non-Stock Vendor Item ID",
 				"before-decimal": false,
 				"after-decimal": false,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Non-Stock Vend Item Desc1": {
 				"line": 0,
@@ -127,7 +153,9 @@
 				"label": "Non-Stock Vend Item Desc1",
 				"before-decimal": false,
 				"after-decimal": false,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Non-Stock Vend Item Desc2": {
 				"line": 0,
@@ -136,7 +164,9 @@
 				"label": "Non-Stock Vend Item Desc2",
 				"before-decimal": false,
 				"after-decimal": false,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Invoice Number": {
 				"line": 0,
@@ -145,7 +175,9 @@
 				"label": "Invoice Number",
 				"before-decimal": false,
 				"after-decimal": false,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Invoice Date": {
 				"line": 0,
@@ -154,7 +186,9 @@
 				"label": "Invoice Date",
 				"before-decimal": false,
 				"after-decimal": false,
-				"date-format": "m/d/Y"
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Quantity Invoiced": {
 				"line": 1,
@@ -163,7 +197,9 @@
 				"label": "Invc Qty",
 				"before-decimal": 7,
 				"after-decimal": 0,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Invoiced Unit Cost": {
 				"line": 0,
@@ -172,7 +208,9 @@
 				"label": "Invoiced Unit Cost",
 				"before-decimal": 7,
 				"after-decimal": 2,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Invoiced Amount": {
 				"line": 0,
@@ -181,7 +219,9 @@
 				"label": "Invoiced Amount",
 				"before-decimal": 8,
 				"after-decimal": 2,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Landed Unit Cost": {
 				"line": 1,
@@ -190,7 +230,9 @@
 				"label": "Landed Cost",
 				"before-decimal": 5,
 				"after-decimal": 2,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Landed Total Cost": {
 				"line": 1,
@@ -199,10 +241,22 @@
 				"label": "Landed Total Cost",
 				"before-decimal": 6,
 				"after-decimal": 2,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Boxes Received": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Boxes Received",
+				"before-decimal": 6,
+				"after-decimal": 2,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			}
 		}
-
 	},
 	"lotserial": {
 		"rows": 1,
@@ -214,7 +268,9 @@
 				"label": "Lot Number",
 				"before-decimal": false,
 				"after-decimal": false,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Bin Number": {
 				"line": 0,
@@ -223,7 +279,9 @@
 				"label": "Bin Number",
 				"before-decimal": false,
 				"after-decimal": false,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			},
 			"Lot/Serial Qty Received": {
 				"line": 1,
@@ -232,7 +290,9 @@
 				"label": "Lot/Serial Qty Received",
 				"before-decimal": 7,
 				"after-decimal": 0,
-				"date-format": false
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
 			}
 		}
 	}

@@ -3,15 +3,15 @@
 		<tr>
 			<th>Item ID</th>
 			<th>Sales UoM</th>
-			<th>Stan Cost</th>
-			<th>Avg Cost</th>
-			<th>Last Cost</th>
+			<th class="text-right">Stan Cost</th>
+			<th class="text-right">Avg Cost</th>
+			<th class="text-right">Last Cost</th>
 		</tr>
 		<tr>
 			<td>
 				{{ json['itemid'] }} <br>
-				{{ json['desc1'] }} <br>
-				{{ json['desc2'] }}
+				<small>{{ json['desc1'] }}</small> <br>
+				<small>{{ json['desc2'] }}</small>
 			</td>
 			<td>{{ json['sale uom'] }}</td>
 			<td class="text-right">{{ json['stan cost'] }}</td>

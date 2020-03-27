@@ -378,7 +378,7 @@ class DpagesMso extends Dpages implements Module {
 		$canedit = false;
 
 		if ($config_orders->allow_salesorderedit) {
-			if ($order->is_editable() && $user->has_function(self::USERPERM_SALESORDERS_EDIT)) {
+			if ($order->is_editable() && $order->status == SalesOrder::STATUS_NEW && $user->has_function(self::USERPERM_SALESORDERS_EDIT)) {
 				$canedit = true;
 			}
 		}

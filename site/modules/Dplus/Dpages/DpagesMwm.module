@@ -186,7 +186,7 @@ class DpagesMwm extends Dpages implements Module {
 			'title'          => 'Receiving',
 			'summary'        => 'Receive Purchase Orders',
 			'parent'         => '/warehouse/inventory/',
-			'dplus_function' => '',
+			'dplus_function' => 'er',
 			'pw_template'    => 'whse-receiving'
 		),
 		'menu-pick' => array(
@@ -309,6 +309,18 @@ class DpagesMwm extends Dpages implements Module {
 			$event->return = $url->getUrl();
 		});
 
+		$this->addHook('Page::get_redirURL', function($event) {
+			$p = $event->object;
+			$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_removescanURL', function($event) {
+			$p = $event->object;
+			$url = new Url($p->fullURL->getUrl());
+			$url->query->remove('scan');
+			$event->return = $url->getUrl();
+		});
 	}
 
 	public function init_pickingpacking() {

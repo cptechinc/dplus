@@ -114,6 +114,14 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/',
 			'dplus_function' => 'mii'
 		),
+		'ii-admin' => array(
+			'template'       => 'dplus-menu',
+			'name'           => 'admin',
+			'title'          => 'II Administration',
+			'summary'        => 'Item Information Administration',
+			'parent'         => '/mii/',
+			'dplus_function' => 'iiadmn'
+		),
 		'ii' => array(
 			'template'       => 'dplus-function',
 			'name'           => 'ii',

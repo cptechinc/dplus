@@ -174,6 +174,12 @@
 		case 'ii-requirements':
 			$whse = $input->$requestmethod->text('whseID');
 			$view = $input->$requestmethod->text('view');
+			if ($view == '') {
+				$q = ConfigIiQuery::create();
+				$q->filterByUser(ConfigIi::USER_SYSTEM);
+				$config_ii = $q->findOne();
+				$view = ConfigIi::VIEW_REQUIREMENTS_OPTIONS_JSON[$config_ii->view_requirements];
+			}
 			//screen type would be REQ or AVL
 			$data = array("DBNAME=$dplusdb", 'IIREQUIRE', "ITEMID=$itemID", "WHSE=$whse", "REQAVL=$view");
 
@@ -414,7 +420,6 @@
 			break;
 		case 'ii-sales-history':
 			$data = array("DBNAME=$dplusdb", 'IISALESHIST', "ITEMID=$itemID");
-
 			$date = $input->$requestmethod->text('date');
 
 			if (!empty($date)) {
@@ -474,6 +479,16 @@
 			$q = strtoupper($input->$requestmethod->text('q'));
 			$custID = !empty($input->$requestmethod->custID) ? $input->$requestmethod->text('custID') : $config->defaultweb;
 			$data = array("DBNAME=$dplusdb", "ITNOSRCH=$q", "CUSTID=$custID");
+			break;
+		case 'item-pricing-multiple':
+			$itemIDs = $input->$requestmethod->array('itemID');
+			$custID = !empty($input->$requestmethod->custID) ? $input->$requestmethod->text('custID') : $config->defaultweb;
+			$data = array("DBNAME=$dplusdb", "ITMPRIMULT", "CUSTID=$custID");
+			$itemIDs = $input->$requestmethod->array('itemID');
+
+			foreach ($itemIDs as $itemID) {
+				$data[] = "ITEMID=$itemID";
+			}
 			break;
 	}
 

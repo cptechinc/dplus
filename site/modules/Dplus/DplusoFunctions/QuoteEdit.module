@@ -38,6 +38,17 @@ class QuoteEdit extends WireData implements Module {
 			$url->query->set('linenbr', $linenbr);
 			$event->return = $url->getUrl();
 		});
+
+		$this->addHook('Page(pw_template=sales-order-edit)::get_itm_lookupURL', function($event) {
+			$url = new Url($this->wire('pages')->get('pw_template=itm-json')->httpUrl);
+			$url->query->set('json', 'true');
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=sales-order-edit)::get_ii_lookupURL', function($event) {
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item-lookup')->httpUrl);
+			$event->return = $url->getUrl();
+		});
 	}
 
 	/**

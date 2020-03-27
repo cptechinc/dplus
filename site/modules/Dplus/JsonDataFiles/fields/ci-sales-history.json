@@ -238,6 +238,11 @@
             "type": "C",
             "headingjustify": "l",
             "datajustify": "l"
+        },
+        "Lot Expiration Date": {
+            "type": "D",
+            "headingjustify": "c",
+            "datajustify": "l"
         }
     },
     "total": {

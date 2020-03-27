@@ -1,0 +1,37 @@
+{#
+	ci-sales-history detail rows
+	Structure:
+		<details>
+			<detail>
+				<lotserials></lotserials>
+				<ordernotes></ordernotes>
+			</detail>
+		</details>
+#}
+
+{% include 'util/screen-formatter/tr-labels.twig' with {'section': 'detail'} %}
+
+{% for detail in invoice['details'] %}
+
+	{% include 'util/screen-formatter/tr-section-rows.twig' with {'section': 'detail', 'record': detail} %}
+
+	{% if detail['lotserial']|length > 0 %}
+		{% include 'util/screen-formatter/tr-labels.twig' with {'section': 'lotserial', 'trclass': 'lotserial collapse show'} %}
+
+		{% for lot in detail['lotserial'] %}
+			{% include 'util/screen-formatter/tr-section-rows.twig' with {'section': 'lotserial', 'record': lot, 'trclass': 'lotserial collapse show'} %}
+		{% endfor %}
+	{% endif %}
+
+	{% for ordernote in detail['detailnotes'] %}
+		<tr class="show-notes">
+			{% for i in 1..blueprint['cols'] - 1 %}
+				{% if i == 2 %}
+					<td colspan='2'>{{ ordernote['Detail Notes'] }}</td>
+				{% else %}
+					<td></td>
+				{% endif %}
+			{% endfor %}
+		</tr>
+	{% endfor %}
+{% endfor %}

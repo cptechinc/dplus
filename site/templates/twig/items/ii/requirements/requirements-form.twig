@@ -1,7 +1,7 @@
 <form action="{{ page.get_itemrequirementsURL(itemID) }}" method="get">
 	<input type="hidden" name="action" value="ii-requirements">
 	<input type="hidden" name="itemID" value="{{ itemID }}">
-	
+
 	<div class="row">
 		<div class="col-sm-4">
 			<table class="table table-striped table-sm">
@@ -23,7 +23,7 @@
 					<td><b>View:</b></td>
 					<td>
 						<select class="form-control" name="view">
-							{% for option,description in module_ii.get_requirementsoptions() %}
+							{% for option, description in module_ii.get_requirementsoptions() %}
 								<option value="{{ option }}" {{ option == view ? 'selected'}}>{{ description|capitalize }}</option>
 							{% endfor %}
 						</select>

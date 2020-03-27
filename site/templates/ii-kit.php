@@ -2,9 +2,7 @@
 	include_once('./ii-include.php');
 	$config_ii = $modules->get('ConfigsIi');
 
-	use ItemsearchQuery, Itemsearch;
-
-	if ($itemquery->count()) {
+	if ($lookup_ii->lookup_itm($itemID)) {
 		$page->title = "$itemID Kit";
 		$page->show_breadcrumbs = false;
 		$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);

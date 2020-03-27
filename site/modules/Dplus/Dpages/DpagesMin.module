@@ -217,7 +217,7 @@ class DpagesMin extends Dpages implements Module {
 			'name'           => 'pricing',
 			'title'          => 'ITM Pricing',
 			'summary'        => 'View / Edit Item Pricing',
-			'parent'         => '/min/inmain/',
+			'parent'         => '/min/inmain/itm/',
 			'dplus_function' => ''
 		),
 		'itm-json' => array(
@@ -226,7 +226,7 @@ class DpagesMin extends Dpages implements Module {
 			'name'           => 'itm',
 			'title'          => 'ITM',
 			'summary'        => 'View / Edit Item',
-			'parent'         => '/min/inmain/',
+			'parent'         => '/min/inmain/itm/',
 			'dplus_function' => 'itm'
 		),
 	);

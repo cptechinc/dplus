@@ -119,7 +119,7 @@ class DpagesMci extends Dpages implements Module {
 		'mci-lookup' => array(
 			'name'   => 'mci-lookup',
 			'fields' => array(),
-		)
+		),
 	);
 
 	const PAGES = array(
@@ -130,6 +130,14 @@ class DpagesMci extends Dpages implements Module {
 			'summary'        => 'Customer Menu',
 			'parent'         => '/',
 			'dplus_function' => 'mci'
+		),
+		'ci-admin' => array(
+			'template'       => 'dplus-menu',
+			'name'           => 'admin',
+			'title'          => 'CI Administration',
+			'summary'        => 'Customer Information Administration',
+			'parent'         => '/mci/',
+			'dplus_function' => 'ciadmn'
 		),
 		'mci-lookup' => array(
 			'template'       => 'dplus-function',

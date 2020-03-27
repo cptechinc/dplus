@@ -22,13 +22,36 @@ class ConfigsCi extends Process implements ConfigurableModule {
 			'description' => 'Default Number of Days to go back in Sales History',
 			'notes'       => "Default Number of Days to go back in Sales History",
 			'min'         => 1
-		)
+		),
+		'option_lastsold' => array(
+			'type'        => 'select',
+			'label'       => 'Retrieval for Last Sold Items',
+			'description' => 'Type of Retrieval for the Last Sold Items',
+			'notes'       => "Use CSTK or by Sales Orders",
+			'options' => array(
+				'cstk'   => 'CSTK',
+				'orders' => 'default'
+			)
+		),
 	);
 
 	const DEFAULT_CONFIG = array(
 		'option_ytdmonth' => 1,
-		'option_history_daysback' => 365
+		'option_history_daysback' => 365,
+		'option_lastsold' => 'default',
 	);
+
+	public function init() {
+		parent::init();
+
+		foreach(self::DEFAULT_CONFIG as $key => $value) {
+			if (isset($this->data[$key])) {
+				$this->data[$key] = $this->data[$key];
+			} else {
+				$this->data[$key] = $value;
+			}
+		}
+	}
 
 	/* =============================================================
 			ProcessWire Module Functions
@@ -73,6 +96,16 @@ class ConfigsCi extends Process implements ConfigurableModule {
 		$f->notes = _($traits['notes']);
 		$f->value = $data['option_history_daysback'];
 		$f->min = $traits['min'];
+		$fields->add($f);
+
+		$traits = self::CONFIG_FIELDS['option_lastsold'];
+		$f = $modules->get("InputfieldSelect");
+		$f->attr('name', 'option_lastsold');
+		$f->label = __($traits['label']);
+		$f->description = __($traits['description']);
+		$f->notes = _($traits['notes']);
+		$f->addOptions($traits['options']);
+		$f->value = $data['option_lastsold'];
 		$fields->add($f);
 
 		return $fields;

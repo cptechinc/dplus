@@ -1,5 +1,5 @@
 <div class="form-group">
-	{% if page.is_print() == false %}
+	{% if page.is_print() %}
 		<a href="{{ page.get_backURL() }}" class="btn btn-primary d-print-none">
 			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Item
 		</a>
