@@ -79,7 +79,8 @@ class RecordLockerUser extends WireData implements Module {
 			'summary' => 'Dplus RecordLockerUser',
 			'singular' => true,
 			'autoload' => true,
-			'installs' => array()
+			'installs' => array(),
+			'requires' => array('RecordLocker'),
 		);
 	}
 }

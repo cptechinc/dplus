@@ -76,6 +76,7 @@ class RecordLocker extends WireData implements Module {
 	 */
 	public function remove_lock($userID, $function, $key = '') {
 		$q = LockRecordQuery::create();
+		$q->filterByUserid($userID);
 		$q->filterByFunction($function);
 
 		if ($key) {
