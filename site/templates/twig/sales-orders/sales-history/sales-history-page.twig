@@ -6,7 +6,16 @@
 
 {% include 'sales-orders/sales-history/sales-history-header.twig' %}
 
-<h3 class="font-weight-bold text-danger mt-4">Order Items</h3>
+<div class="row mt-3">
+	<div class="col-sm-6">
+		<h3 class="font-weight-bold text-danger">Order Items</h3>
+	</div>
+	<div class="col-sm-6 text-right">
+		<button class="btn btn-info" type="button" data-toggle="collapse" data-target=".lotserial" aria-expanded="false" aria-controls="lotserial">
+			Show Lot/Serials
+		</button>
+	</div>
+</div>
 
 {% if loader.exists('sales-orders/sales-history/' ~ company ~ '/items.twig') %}
 	{% include 'sales-orders/sales-history/' ~ company ~ '/items.twig' %}
