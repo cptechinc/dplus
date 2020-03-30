@@ -12,8 +12,8 @@ use ShiptoUserCodeQuery, ShiptoUserCode;
 class CodeTablesSuc extends WireData implements Module {
 	const MODEL              = 'ShiptoUserCode';
 	const MODEL_KEY          = 'code';
-	const DESCRIPTION        = 'Ship-to User Code';
-	const DESCRIPTION_RECORD = 'Ship-to User Code';
+	const DESCRIPTION        = 'Ship-To User Code';
+	const DESCRIPTION_RECORD = 'Ship-To User Code';
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
