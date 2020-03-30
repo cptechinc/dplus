@@ -79,7 +79,7 @@ class CodeTablesCtm extends WireData implements Module {
 		$table = $input->$rm->text('table');
 		$code  = $input->$rm->text('code');
 
-		if ($input->$rm->text('action') == 'update-notes') {
+		if ($input->$rm->text('action') == 'update-notes' || $input->$rm->text('action') == 'delete-notes') {
 			$this->wire('modules')->get('CodeTablesCtmNotes')->process_input($input);
 		} else {
 			$this->process_input_ctm($input);
