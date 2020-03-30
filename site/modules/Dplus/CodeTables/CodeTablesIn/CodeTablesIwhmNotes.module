@@ -32,8 +32,6 @@ class CodeTablesIwhmNotes extends WireData implements Module {
 		$configAR = ConfigArQuery::create()->findOne();
 
 		switch ($notetype) {
-			case 'ICTP':
-			case 'KCTP':
 			case 'IWHS':
 				return $configAR->columns_notes_invoice;
 				break;
@@ -216,7 +214,7 @@ class CodeTablesIwhmNotes extends WireData implements Module {
 			$data = $this->write_dplus_data($notetype, $whseID);
 			$requestor = $this->wire('modules')->get('DplusRequest');
 			$requestor->write_dplusfile($data, session_id());
-			$requestor->cgi_request($config->cgis['database'], session_id());
+			$requestor->cgi_request($this->wire('config')->cgis['database'], session_id());
 		}
 		return $response;
 	}
@@ -241,7 +239,7 @@ class CodeTablesIwhmNotes extends WireData implements Module {
 			$data = $this->write_dplus_data($notetype, $whseID);
 			$requestor = $this->wire('modules')->get('DplusRequest');
 			$requestor->write_dplusfile($data, session_id());
-			$requestor->cgi_request($config->cgis['database'], session_id());
+			$requestor->cgi_request($this->wire('config')->cgis['database'], session_id());
 		}
 		return $response;
 	}
@@ -254,7 +252,6 @@ class CodeTablesIwhmNotes extends WireData implements Module {
 	 */
 	public function write_dplus_data($notetype, $whseID) {
 		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
-		$table = strtoupper($table);
 		return array("DBNAME=$dplusdb", 'UPDATEQNOTE', "TYPE=$notetype", "KEY2=$whseID", 'FORM=');
 	}
 
