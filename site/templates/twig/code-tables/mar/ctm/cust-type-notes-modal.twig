@@ -13,11 +13,16 @@
 					<input type="hidden" name="action" value="update-notes">
 					<input type="hidden" name="notes-type" value="">
 					<div class="form-group">
-						<textarea name="note" id="note" class="form-control w-auto" rows="10" cols=""></textarea>
+						<textarea name="note" id="note" class="form-control w-auto" rows="10" cols="" {{ recordlocker.function_locked_by_user(page.codetable, code.code) ? '' : 'readonly' }}></textarea>
 					</div>
-					<button type="submit" class="btn btn-success">
-						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-					</button>
+					<div class="modal-footer">
+						{% if recordlocker.function_locked_by_user(page.codetable, code.code) %}
+							<button type="submit" class="btn btn-success">
+								<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+							</button>
+						{% endif %}
+						<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+					</div>
 				</form>
 			</div>
 		</div>

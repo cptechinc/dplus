@@ -44,7 +44,7 @@
 			$page->body .= $config->twig->render("code-tables/mar/$page->codetable/edit-code-form-customer.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $typecode, 'gl_codes' => $gl_codes, 'module_custnotes' => $modules->get('CodeTablesCtmNotes')]);
 		}
 
-		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/cust-type-notes-modal.twig", ['page' => $page, 'code' => $typecode]);
+		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/cust-type-notes-modal.twig", ['page' => $page, 'code' => $typecode, 'recordlocker' => $recordlocker]);
 		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'typecode' => $typecode]);
 	} else {
 		$page->title = $page->headline = "CTM";

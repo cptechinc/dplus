@@ -12,7 +12,7 @@
 				Mail
 			</div>
 			<div class="col-1">
-				Notes
+				Notes :
 			</div>
 			<div class="col-1">
 				Statement
@@ -51,16 +51,16 @@
 
 				</div>
 				<div class="col-1">
-					{{ code.count_notetypealias('statement') ? 'Y' : 'N' }}
+					{{ code.count_notetype('SCTP') ? 'Y' : 'N' }}
 				</div>
 				<div class="col-1">
-					{{ code.count_notetypealias('invoice') ? 'Y' : 'N' }}
+					{{ code.count_notetype('ICTP') ? 'Y' : 'N' }}
 				</div>
 				<div class="col-1">
-					{{ code.count_notetypealias('pick') ? 'Y' : 'N' }}
+					{{ code.count_notetype('PCTP') ? 'Y' : 'N' }}
 				</div>
 				<div class="col-1">
-					{{ code.count_notetypealias('pack') ? 'Y' : 'N' }}
+					{{ code.count_notetype('KCTP') ? 'Y' : 'N' }}
 				</div>
 				<div class="col-2 text-center">
 					{% if page.is_print() == false %}

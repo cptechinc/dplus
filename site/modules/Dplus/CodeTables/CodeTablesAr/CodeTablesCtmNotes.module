@@ -201,7 +201,7 @@ class CodeTablesCtmNotes extends WireData implements Module {
 		// IF there are lines saved
 		if (sizeof($lines_saved)) {
 			$data = $this->write_dplus_data($notetype, $customertype);
-			$this->wire('modules')->get('CodeTables')->write_dplusfile($data, session_id());
+			$this->wire('modules')->get('DplusRequest')->write_dplusfile($data, session_id());
 			$this->wire('modules')->get('CodeTables')->http_get_dplus();
 		}
 		return $response;
@@ -215,7 +215,6 @@ class CodeTablesCtmNotes extends WireData implements Module {
 	 */
 	public function write_dplus_data($notetype, $customertype) {
 		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
-		$table = strtoupper($table);
 		return array("DBNAME=$dplusdb", 'UPDATEQNOTE', "TYPE=$notetype", "KEY2=$customertype", 'FORM=');
 	}
 
