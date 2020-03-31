@@ -1,4 +1,5 @@
 <?php
+	$html = $modules->get('HtmlWriter');
 	$recordlocker = $modules->get('RecordLockerUser');
 
 	if ($input->get->code) {
@@ -42,5 +43,5 @@
         $page->js .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'itemgroup' => $itemgroup]);
 	} else {
 		$recordlocker->remove_lock($page->codetable);
-		$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'table' => $page->codetable, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable]);
+		$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'table' => $page->codetable, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable, 'recordlocker' => $recordlocker]);
 	}
