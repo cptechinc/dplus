@@ -63,14 +63,20 @@
 					{{ code.count_notetype('KCTP') ? 'Y' : 'N' }}
 				</div>
 				<div class="col-2 text-center">
-					{% if page.is_print() == false %}
-						<a href="{{ page.get_codetable_code_editURL(page.codetable, code.code) }}" class="btn btn-warning" title="Edit" aria-label="Edit">
-							<i class="fa fa-pencil" aria-hidden="true"></i> <span class="sr-only">Edit</span>
-						</a>
-						&nbsp;
-						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger delete_button" title="Delete" aria-label="Delete">
-							<i class="fa fa-trash" aria-hidden="true"></i><span class="sr-only">Delete</span>
-						</a>
+					{% if recordlocker.function_locked(page.name, code.code) == false or recordlocker.function_locked_by_user(page.name, code.code) %}
+						{% if page.is_print() == false %}
+							<a href="{{ page.get_codetable_code_editURL(page.codetable, code.code) }}" class="btn btn-warning" title="Edit" aria-label="Edit">
+								<i class="fa fa-pencil" aria-hidden="true"></i> <span class="sr-only"></span>
+							</a>
+							&nbsp;
+							<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger delete_button" title="Delete" aria-label="Delete">
+								<i class="fa fa-trash" aria-hidden="true"></i><span class="sr-only">Delete</span>
+							</a>
+						{% endif %}
+					{% else %}
+						<span class="badge badge-secondary">
+							<i class="fa fa-lock" aria-hidden="true"></i> Code Locked By {{ recordlocker.get_locked_user(page.name, code.code) }}
+						</span>
 					{% endif %}
 				</div>
 			</div>
