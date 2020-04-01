@@ -83,6 +83,6 @@ class Msa extends WireData implements Module {
 		$data = array("DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code");
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['database'], session_id());
+		$requestor->cgi_request($this->wire('config')->cgis['database'], session_id());
 	}
 }
