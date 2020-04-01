@@ -13,7 +13,7 @@
 		if ($po_codetables->validate_codetable($page->codetable)) {
 			$module_codetable = $po_codetables->get_codetable_module($page->codetable);
 			$module_codetable->process_input($input);
-			$session->redirect($page->get_codetable_viewURL($page->codetable, $code), $http301 = false);
+			$session->redirect($page->get_codetable_viewURL($page->codetable, ''), $http301 = false);
 		}
 	}
 
