@@ -90,26 +90,51 @@ class CodeTablesTarm extends WireData implements Module {
 			$record->setCode($code);
 		}
 
-		if ($input->$rm->text('action') == 'remove-code') {
-			$record->delete();
+		if ($input->$rm->action) {
+			$recordlocker = $this->wire('modules')->get('RecordLockerUser');
+
+			/**
+			 * Create lock for CTM code if not already locked.
+			 */
+			if (!$recordlocker->function_locked('tarm', $code)) {
+				$recordlocker->create_lock('tarm', $code);
+			}
+
+			if ($record->isNew() || $recordlocker->function_locked_by_user('tarm', $code)) {
+				if ($input->$rm->text('action') == 'remove-code') {
+					$record->delete();
+				} else {
+					$number = $input->$rm->text('number');
+					$description = $input->$rm->text('description');
+					$duty_rate = $input->$rm->text('duty_rate');
+					$countries = $input->$rm->array('country');
+
+					$record->setNumber($number);
+					$record->setDescription($description);
+					$record->setDuty_rate($duty_rate);
+					$record->setDate(date('Ymd'));
+					$record->setTime(date('His'));
+					$record->setDummy('P');
+
+					$countries_updated = $this->update_tariff_countries($code, $countries);
+				}
+				$response = $this->save_and_process_response($table, $code, $record);
+			} else {
+				$response = new CodeTablesResponse();
+				$response->set_key($code);
+				$response->set_error(true);
+				$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+				$message = self::DESCRIPTION_RECORD . " ($code) was not updated because it is locked by " . $recordlocker->get_locked_user('tarm', $code);
+				$response->set_message($message);
+			}
 		} else {
-			$number = $input->$rm->text('number');
-			$description = $input->$rm->text('description');
-			$duty_rate = $input->$rm->text('duty_rate');
-			$countries = $input->$rm->array('country');
-
-			$record->setNumber($number);
-			$record->setDescription($description);
-			$record->setDuty_rate($duty_rate);
-			$record->setDate(date('Ymd'));
-			$record->setTime(date('His'));
-			$record->setDummy('P');
-
-			$countries_updated = $this->update_tariff_countries($code, $countries);
+			$response = new CodeTablesResponse();
+			$response->set_key($code);
+			$response->set_error(true);
+			$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+			$message = self::DESCRIPTION_RECORD . " ($code) was not updated ";
+			$response->set_message($message);
 		}
-
-		$response = $this->save_and_process_response($table, $code, $record);
-
 		if ($response->has_error() && $countries_updated) {
 			$response->set_success(true);
 		}
@@ -117,7 +142,6 @@ class CodeTablesTarm extends WireData implements Module {
 		if ($response->has_success()) {
 			$this->update_dplus_cobol($table, $code, $countries_updated);
 		}
-
 		$this->wire('session')->response_codetable = $response;
 	}
 
@@ -216,7 +240,7 @@ class CodeTablesTarm extends WireData implements Module {
 		}
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['database'], session_id());
+		$requestor->cgi_request($this->wire('config')->cgis['database'], session_id());
 	}
 
 	public static function getModuleInfo() {
