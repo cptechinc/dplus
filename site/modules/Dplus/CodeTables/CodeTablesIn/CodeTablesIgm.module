@@ -103,7 +103,7 @@ class CodeTablesIgm extends WireData implements Module {
 			if ($record->isNew() || $recordlocker->function_locked_by_user('igm', $code)) {
 				if ($input->$rm->text('action') == 'remove-code') {
 					$record->delete();
-				} elseif ($input->$rm->text('action') == 'update-code') {
+				} elseif ($input->$rm->text('action') == 'update-igm') {
 					$description = $input->$rm->text('description');
 					$coop = $input->$rm->text('coop');
 					$sales = $input->$rm->text('sales');
