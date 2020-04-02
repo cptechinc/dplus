@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+use Propel\Runtime\ActiveQuery\Criteria;
+
 use LockRecordQuery, LockRecord;
 
 /**
@@ -64,6 +66,7 @@ class RecordLocker extends WireData implements Module {
 		$lock->setFunction($function);
 		$lock->setKey($key);
 		$lock->setUserid($userID);
+		$lock->setDate(date(LockRecord::DATE_FORMAT));
 		return $lock->save();
 	}
 
@@ -85,6 +88,24 @@ class RecordLocker extends WireData implements Module {
 		return $q->delete();
 	}
 
+	/**
+	 * Deletes Locks for User older than $hours hours
+	 * @param  string $userID User ID
+	 * @param  int    $hours  Number of Hours to go back
+	 * @return bool
+	 */
+	public function remove_locks_olderthan($userID, int $hours) {
+		$datetime = date(LockRecord::DATE_FORMAT, strtotime("-$hours hours"));
+		$q = LockRecordQuery::create();
+		$q->filterByUserid($userID);
+		$q->filterByDate($datetime, Criteria::LESS_THAN);
+		return $q->delete();
+	}
+
+	/**
+	 * Return LockRecordQuery
+	 * @return LockRecordQuery
+	 */
 	protected function get_query() {
 		return LockRecordQuery::create();
 	}
