@@ -20,6 +20,10 @@ class DpagesMar extends Dpages implements Module {
 			'name'   => 'ar-code-table-ctm',
 			'fields' => array()
 		),
+		'ar-code-table-cmm' => array(
+			'name'   => 'ar-code-table-cmm',
+			'fields' => array()
+		),
 	);
 
 	const PAGES = array(
@@ -120,6 +124,15 @@ class DpagesMar extends Dpages implements Module {
 			'summary'        => 'View Customer User Code',
 			'parent'         => '/mar/armain/',
 			'dplus_function' => 'cuc'
+		),
+		'ar-cmm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'ar-code-table',
+			'name'           => 'cmm',
+			'title'          => 'Customer Maintenance',
+			'summary'        => 'View Customer Maintenance',
+			'parent'         => '/mar/armain/',
+			'dplus_function' => 'cmm'
 		),
 	);
 
