@@ -143,7 +143,7 @@ class MsaSysop extends WireData implements Module {
 			}
 		} else {
 			$response = new CodeTablesResponse();
-			$response->set_key($code);
+			$response->set_key($system . '-' . $code);
 			$response->set_error(true);
 			$response->set_action(CodeTablesResponse::CRUD_UPDATE);
 			$message = self::DESCRIPTION_RECORD . " ($code) was not updated ";
@@ -162,7 +162,7 @@ class MsaSysop extends WireData implements Module {
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
 		$response = new MsaResponse();
-		$response->set_key($code);
+		$response->set_key($system . '-' . $code);
 		$message = self::DESCRIPTION_RECORD . " ($code) was ";
 
 		if ($saved) {
