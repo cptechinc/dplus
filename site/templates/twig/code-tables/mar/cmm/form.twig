@@ -1,18 +1,94 @@
-{# cmm is an instance of InvGroupCode #}
+{# cmm is an instance of Customer #}
 <form action="{{ page.url }}" method="POST" id="code-edit-form">
 	<input type="hidden" name="action" value="update-cmm">
 	<input type="hidden" name="table" value="{{ page.codetable }}">
+	<input type="hidden" name="code" value="{{ code.custid }}">
 
-	<div class="form-group">
-		<label for="code">Code</label>
-		<input type="text" name="code" class="form-control" maxlength="{{ customer.get_max_code_length() }}" value="{{ customer.code }}" id="code" {{ customer.code ? 'readonly' : 'autofocus' }}>
+	<div class="form-row form-group">
+		<div class="col-2">
+			<label for="code">Code</label>
+		</div>
+		<div class="col-10">
+			<input type="text" name="whseID" class="form-control" maxlength="{{ code.get_max_code_length() }}" value="{{ code.custid }}" id="code" {{ code.custid ? 'readonly' : 'autofocus' }}>
+		</div>
 	</div>
-
-	<div class="form-group">
-		<label for="description">Description</label>
-		<input type="text" name="description" class="form-control" maxlength="20" value="{{ customer.description }}" id="description" autofocus>
+	<div class="form-row form-group">
+		<div class="col-2">
+			<label for="name">Name</label>
+		</div>
+		<div class="col-10">
+			<input type="text" name="name" class="form-control" maxlength="30" value="{{ code.name }}" id="name" autofocus>
+		</div>
 	</div>
+	<hr class="border-top border-primary">
 
+	<div class="row">
+		<div class="col-sm-7 border-right border-primary">
+			{% include 'code-tables/mar/cmm/form-address-fields.twig' %}
+		</div>
+
+		<div class="col-sm-5">
+			{# include 'code-tables/min/iwhm/form-code-fields.twig' #}
+			<div class="form-row form-group">
+				<div class="col">
+					<label for="bin_qcrga">Salesperson</label>
+				</div>
+				<div class="col">
+					<input type="text" name="bin_qcrga" class="form-control" maxlength="8" value="{{ code.salesperson1 }}" id="bin_qcrga">
+				</div>
+			</div>
+			<div class="form-row form-group">
+				<div class="col">
+					<label for="bin_qcrga">Tax Code</label>
+				</div>
+				<div class="col">
+					<input type="text" name="bin_qcrga" class="form-control" maxlength="8" value="{{ code.taxcode }}" id="bin_qcrga">
+				</div>
+			</div>
+			<div class="form-row form-group">
+				<div class="col">
+					<label for="bin_qcrga">Tax Exemption #</label>
+				</div>
+				<div class="col">
+					<input type="text" name="bin_qcrga" class="form-control" maxlength="8" value="{{ code.taxexemptcode }}" id="bin_qcrga">
+				</div>
+			</div>
+			<div class="form-row form-group">
+				<div class="col">
+					<label for="bin_qcrga">Terms Code</label>
+				</div>
+				<div class="col">
+					<input type="text" name="bin_qcrga" class="form-control" maxlength="8" value="{{ code.termscode }}" id="bin_qcrga">
+				</div>
+			</div>
+			<div class="form-row form-group">
+				<div class="col">
+					<label for="bin_qcrga">Ship Via</label>
+				</div>
+				<div class="col">
+					<input type="text" name="bin_qcrga" class="form-control" maxlength="8" value="{{ code.shipvia }}" id="bin_qcrga">
+				</div>
+			</div>
+			<div class="form-row form-group">
+				<div class="col">
+					<label for="bin_qcrga">Type Code</label>
+				</div>
+				<div class="col">
+					<input type="text" name="bin_qcrga" class="form-control" maxlength="8" value="{{ code.type }}" id="bin_qcrga">
+				</div>
+			</div>
+			<div class="form-row form-group">
+				<div class="col">
+					<label for="bin_qcrga">Price Code</label>
+				</div>
+				<div class="col">
+					<input type="text" name="bin_qcrga" class="form-control" maxlength="8" value="{{ code.pricecode }}" id="bin_qcrga">
+				</div>
+			</div>
+
+
+		</div>
+	</div>
 	<div class="d-flex justify-content-between align-items-center">
 		{#
 			Only show Edit Actions if the code is
@@ -20,16 +96,16 @@
 			2. Is a new code
 			NOTE: Only show delete if code already exists.
 		#}
-		{% if recordlocker.function_locked_by_user(page.codetable, customer.code) or customer.isNew() %}
+		{% if recordlocker.function_locked_by_user(page.codetable, code.custid) or code.isNew() %}
 			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
-			{% if customer.isNew() == false %}
-				<a href="{{ page.get_codetable_code_deleteURL(page.codetable, customer.code) }}" class="btn btn-danger delete_button">
+			{% if code.isNew() == false %}
+				<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.custid) }}" class="btn btn-danger delete_button">
 					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}
 		{% endif %}
-		<a href="{{ page.get_codetable_listURL(page.codetable, customer.code) }}" class="btn btn-warning pull-right">Close</a>
+		<a href="{{ page.get_codetable_listURL(page.codetable, code.custid) }}" class="btn btn-warning pull-right">Close</a>
 	</div>
 </form>

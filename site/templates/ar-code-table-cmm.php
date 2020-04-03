@@ -10,10 +10,10 @@
 			$customer = $module_codetable->get_code($code);
 		} else {
 			$page->title = $page->headline = "Create $page->title";
-			$customer = new CustomerTypeCode();
+			$customer = new Customer();
 
 			if ($code != 'new') {
-				$customer->setCode($code);
+				$customer->setCustid($code);
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer '$code' could not be found, use the form to create it"]);
 				$page->body .= $html->div('class=mb-3');
 			}
@@ -36,7 +36,7 @@
 			}
 		}
 
-		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/edit-code-form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $customer,'recordlocker' => $recordlocker]);
+		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $customer,'recordlocker' => $recordlocker]);
 		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'customer' => $customer]);
 	} else {
 		$page->title = $page->headline = "CMM";

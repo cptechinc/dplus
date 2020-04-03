@@ -31,22 +31,22 @@ class CodeTablesCmm extends WireData implements Module {
 
 	/**
 	 * Return the Code
-	 * @param  string $code Customer Type Code
+	 * @param  string $code Customer Code
 	 * @return Customer
 	 */
 	public function get_code($code) {
 		$q = $this->get_query();
-		return $q->findOneByCode($code);
+		return $q->findOneByCustid($code);
 	}
 
 	/**
 	 * Return if the Code Exists
-	 * @param  string $code Customer Type Code
+	 * @param  string $code Customer Code
 	 * @return bool
 	 */
 	public function code_exists($code) {
 		$q = $this->get_query();
-		return boolval($q->filterByCode($code)->count());
+		return boolval($q->filterByCustid($code)->count());
 	}
 
 	/**
@@ -79,14 +79,14 @@ class CodeTablesCmm extends WireData implements Module {
 		$code  = $input->$rm->text('code');
 
 		$q = $this->get_query();
-		$q->filterByCode($code);
+		$q->filterByCustid($code);
 
 		if ($q->count()) {
 			$record = $q->findOne();
 		} else {
 			$code  = $input->$rm->text('code', array('maxLength' => Customer::MAX_LENGTH_CODE));
 			$record = new Customer();
-			$record->setCode($code);
+			$record->setCustid($code);
 		}
 
 		if ($input->$rm->action) {
@@ -103,8 +103,8 @@ class CodeTablesCmm extends WireData implements Module {
 				if ($input->$rm->text('action') == 'remove-code') {
 					$record->delete();
 				} elseif ($input->$rm->text('action') == 'update-cmm') {
-					$description = $input->$rm->text('description');
-					$record->setDescription($description);
+					$name = $input->$rm->text('name');
+					$record->setName($name);
 					$record->setDate(date('Ymd'));
 					$record->setTime(date('His'));
 					$record->setDummy('P');
