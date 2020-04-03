@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "49fc92d177add04b3930cace0b3ce86f7730f16e"
+                "reference": "171e5e6cde4febe784ce151b53ae94b40c42330e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/49fc92d177add04b3930cace0b3ce86f7730f16e",
-                "reference": "49fc92d177add04b3930cace0b3ce86f7730f16e",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/171e5e6cde4febe784ce151b53ae94b40c42330e",
+                "reference": "171e5e6cde4febe784ce151b53ae94b40c42330e",
                 "shasum": ""
             },
             "type": "library",
@@ -39,7 +39,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2020-03-30T19:04:53+00:00"
+            "time": "2020-03-30T20:25:17+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
@@ -47,12 +47,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dpluso-model.git",
-                "reference": "81811f26b71802769d2915bd279c78ddc9818fd1"
+                "reference": "c5045470248a089d8e69fa0d8be55823816118a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/81811f26b71802769d2915bd279c78ddc9818fd1",
-                "reference": "81811f26b71802769d2915bd279c78ddc9818fd1",
+                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/c5045470248a089d8e69fa0d8be55823816118a3",
+                "reference": "c5045470248a089d8e69fa0d8be55823816118a3",
                 "shasum": ""
             },
             "type": "library",
@@ -74,7 +74,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2020-03-24T16:01:55+00:00"
+            "time": "2020-04-02T15:52:33+00:00"
         },
         {
             "name": "jeremykendall/php-domain-parser",
@@ -1058,12 +1058,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "2bf1de9d5cac5e5ebc159203c53dcf5b2058d340"
+                "reference": "adffe0c6fd7dda268a84abdd52b9ec707e7de566"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/2bf1de9d5cac5e5ebc159203c53dcf5b2058d340",
-                "reference": "2bf1de9d5cac5e5ebc159203c53dcf5b2058d340",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/adffe0c6fd7dda268a84abdd52b9ec707e7de566",
+                "reference": "adffe0c6fd7dda268a84abdd52b9ec707e7de566",
                 "shasum": ""
             },
             "require": {
@@ -1143,7 +1143,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2020-03-30T11:41:10+00:00"
+            "time": "2020-04-01T06:18:20+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -1210,12 +1210,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "f88d55308f74d45a03edded027dd28fbbf79be96"
+                "reference": "e3ff236877694af42d51506dd7476a224fb829fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/f88d55308f74d45a03edded027dd28fbbf79be96",
-                "reference": "f88d55308f74d45a03edded027dd28fbbf79be96",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/e3ff236877694af42d51506dd7476a224fb829fb",
+                "reference": "e3ff236877694af42d51506dd7476a224fb829fb",
                 "shasum": ""
             },
             "require": {
@@ -1267,7 +1267,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2020-03-30T13:08:57+00:00"
+            "time": "2020-03-31T06:42:10+00:00"
         }
     ],
     "packages-dev": [],
