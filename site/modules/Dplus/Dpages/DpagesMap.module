@@ -21,6 +21,10 @@ class DpagesMap extends Dpages implements Module {
 			'name'   => 'ap-code-table',
 			'fields' => array()
 		),
+		'ap-code-table-aoptm' => array(
+			'name'   => 'ap-code-table-aoptm',
+			'fields' => array()
+		),
 	);
 
 	const PAGES = array(
@@ -75,6 +79,15 @@ class DpagesMap extends Dpages implements Module {
 			'summary'        => 'View / Edit Vendor Type Code',
 			'parent'         => '/map/apmain/',
 			'dplus_function' => 'vtm'
+		),
+		'ap-aoptm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'ap-code-table',
+			'name'           => 'aoptm',
+			'title'          => 'Accounts Payable Optional Code',
+			'summary'        => 'View / Edit Accounts Payable Optional Code',
+			'parent'         => '/map/apmain/',
+			'dplus_function' => 'aoptm'
 		),
 	);
 
@@ -208,7 +221,14 @@ class DpagesMap extends Dpages implements Module {
 
 	public function get_codetable_viewURL($table, $code = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
-		$url->query->set('code', $code);
+		echo $table;
+		exit;
+
+		if ($table == 'aoptm') {
+			$url->query->set('sysop', $code);
+		} else {
+			$url->query->set('code', $code);
+		}
 		return $url->getUrl();
 	}
 

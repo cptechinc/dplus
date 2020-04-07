@@ -16,9 +16,13 @@ class CodeTablesAp extends WireData implements Module {
 			'code'   => 'bum',
 			'module' => 'CodeTablesBum'
 		),
-        'vtm' => array(
+		'vtm' => array(
 			'code'   => 'vtm',
 			'module' => 'CodeTablesVtm'
+		),
+		'aoptm' => array(
+			'code'   => 'aoptm',
+			'module' => 'CodeTablesAoptm'
 		),
 	);
 

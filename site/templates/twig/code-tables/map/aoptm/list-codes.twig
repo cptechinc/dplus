@@ -1,0 +1,42 @@
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row align-items-center">
+			<div class="col-3">
+				Code
+			</div>
+			<div class="col-6">
+				Description
+			</div>
+			<div class="col-3 text-center">
+				{% if page.is_print() == false %}
+                    <button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="">
+                        <i class="fa fa-plus" aria-hidden="true"></i> Add Code
+                    </button>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	{% for optcode in optcodes %}
+		<div id="code-{{ optcode.code }}" class="list-group-item pb-1 pt-1 {{ (response.key == optcode.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
+			<div class="row align-items-center">
+				<div class="col-3">
+					{{ optcode.code }}
+				</div>
+				<div class="col-6">
+					{{ optcode.description }}
+				</div>
+				<div class="col-3 text-center">
+					{% if page.is_print() == false %}
+                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ optcode.code }}" data-description="{{ optcode.description }}" data-opt_code="{{ optcode.opt_code }}">
+                            <i class="fa fa-pencil" aria-hidden="true"></i> Edit
+                        </button>
+                        &nbsp;
+						<a href="{{ page.get_codetable_optcode_deleteURL(page.codetable, optcode.system, optcode.opt_code, optcode.code) }}" class="btn btn-danger delete_button">
+							<i class="fa fa-trash" aria-hidden="true"></i> Delete
+						</a>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+</div>
