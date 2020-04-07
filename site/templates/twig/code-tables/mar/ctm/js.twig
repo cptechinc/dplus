@@ -40,7 +40,7 @@ $(function () {
 		}
 	});
 
-	$("body").on("click", "a:not(.form_button)", function(e) {
+	$("body").on("click", "a:not(.form_button, .back-to-list)", function(e) {
 		e.preventDefault();
 		var a = $(this);
 
