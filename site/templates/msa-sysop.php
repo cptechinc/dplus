@@ -50,17 +50,20 @@
 			if (!$sysop->isNew()) {
 				/**
 				 * Show alert that sysop is locked if
+				 * NOTE: KEY is a compound key its going to be system-code e.g. (AP-BUYER)
 				 *  1. sysop Isn't new
 				 *  2. The sysop has a record lock
 				 *  3. Userid does not match the lock
 				 * Otherwise if not locked, create lock
 				 */
-				if ($recordlocker->function_locked($page->codetable, $sysop->code) && !$recordlocker->function_locked_by_user($page->codetable, $sysop->code)) {
-					$msg = "$sysop->code is being locked by " . $recordlocker->get_locked_user($page->codetable, $sysop->code);
+				$page->lockerkey = "$sysop->system-$sysop->code";
+
+				if ($recordlocker->function_locked($page->codetable, $page->lockerkey) && !$recordlocker->function_locked_by_user($page->codetable, $page->lockerkey)) {
+					$msg = "$sysop->code is being locked by " . $recordlocker->get_locked_user($page->codetable, $page->lockerkey);
 					$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Sysop code $sysop->code is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 					$page->body .= $html->div('class=mb-3');
-				} elseif (!$recordlocker->function_locked($page->codetable, $sysop->code)) {
-					$recordlocker->create_lock($page->codetable, $sysop->code);
+				} elseif (!$recordlocker->function_locked($page->codetable, $page->lockerkey)) {
+					$recordlocker->create_lock($page->codetable, $page->lockerkey);
 				}
 			}
 
