@@ -221,8 +221,6 @@ class DpagesMap extends Dpages implements Module {
 
 	public function get_codetable_viewURL($table, $code = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
-		echo $table;
-		exit;
 
 		if ($table == 'aoptm') {
 			$url->query->set('sysop', $code);
