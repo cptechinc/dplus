@@ -52,4 +52,20 @@ $(function() {
 		}
 	});
 
+	$("body").on("click", "a:not(.form_button, .back-to-list)", function(e) {
+		e.preventDefault();
+		var a = $(this);
+
+		swal({
+			title: 'Code not saved!',
+			text: "Please close this Customer Type before leaving.",
+			type: 'warning',
+			showCancelButton: true,
+			showConfirmButton: false,
+			cancelButtonClass: 'btn btn-info',
+			buttonsStyling: false,
+			cancelButtonText: 'OK'
+		});
+	});
+
 })
