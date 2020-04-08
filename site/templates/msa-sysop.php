@@ -68,13 +68,12 @@
 			}
 
 			$page->body .= $config->twig->render("code-tables/msa/$page->codetable/form.twig", ['page' => $page, 'sysop' => $sysop, 'recordlocker' => $recordlocker]);
+			$page->js   .= $config->twig->render("code-tables/msa/$page->codetable/js.twig", ['page' => $page, 'max_length_code' => $module_codetable->get_max_length_code()]);
 		} else {
 			$page->headline = "$module_codetable->description Table";
 			$recordlocker->remove_lock($page->codetable);
 			$page->body .= $config->twig->render("code-tables/msa/$page->codetable/list.twig", ['page' => $page, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable, 'recordlocker' => $recordlocker]);
 		}
-
-		$page->js   .= $config->twig->render("code-tables/msa/$page->codetable/js.twig", ['page' => $page, 'max_length_code' => $module_codetable->get_max_length_code()]);
 	} else {
 		$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Code Table Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "MSA Code Table '$page->codetable' does not exist"]);
 	}
