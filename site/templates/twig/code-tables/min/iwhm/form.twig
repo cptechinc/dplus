@@ -37,16 +37,16 @@
 			NOTE: Only show delete if warehouse already exists.
 		#}
 		{% if recordlocker.function_locked_by_user(page.codetable, warehouse.id) or warehouse.isNew() %}
-			<button type="submit" class="btn btn-success" name="action" value="update-code">
+			<button type="submit" class="btn btn-success form_button" name="action" value="update-code">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 			{% if warehouse.isNew() == false %}
-				<a href="{{ page.get_codetable_code_deleteURL(page.codetable, warehouse.id) }}" class="btn btn-danger delete_button">
+				<a href="{{ page.get_codetable_code_deleteURL(page.codetable, warehouse.id) }}" class="btn btn-danger form_button delete_button">
 					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}
 		{% endif %}
-		<a href="{{ page.get_codetable_listURL(page.codetable, warehouse.id) }}" class="btn btn-warning">
+		<a href="{{ page.get_codetable_listURL(page.codetable, warehouse.id) }}" class="btn btn-warning form_button">
 			Close
 		</a>
 	</div>
