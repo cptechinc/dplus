@@ -107,7 +107,7 @@
 			2. Is a new code
 			NOTE: Only show delete if code already exists.
 		#}
-		{% if recordlocker.function_locked_by_user(page.codetable, sysop.code) or sysop.isNew() %}
+		{% if recordlocker.function_locked_by_user(page.codetable, [sysop.system, sysop.code]) or sysop.isNew() %}
 			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
