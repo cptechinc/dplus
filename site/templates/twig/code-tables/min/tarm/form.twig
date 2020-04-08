@@ -51,15 +51,15 @@
 			NOTE: Only show delete if code already exists.
 		#}
 		{% if recordlocker.function_locked_by_user(page.codetable, tariff.code) or tariff.isNew() %}
-			<button type="submit" class="btn btn-success">
+			<button type="submit" class="btn btn-success form_button">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 			{% if tariff.isNew() == false %}
-				<a href="{{ page.get_codetable_code_deleteURL(page.codetable, tariff.code) }}" class="btn btn-danger delete_button">
+				<a href="{{ page.get_codetable_code_deleteURL(page.codetable, tariff.code) }}" class="btn btn-danger form_button delete_button">
 					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}
 		{% endif %}
-		<a href="{{ page.get_codetable_listURL(page.codetable, tariff.code) }}" class="btn btn-warning pull-right">Close</a>
+		<a href="{{ page.get_codetable_listURL(page.codetable, tariff.code) }}" class="btn btn-warning form_button pull-right">Close</a>
 	</div>
 </form>
