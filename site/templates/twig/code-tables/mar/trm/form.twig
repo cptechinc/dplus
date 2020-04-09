@@ -1,0 +1,39 @@
+{# ctm is an instance of CustomerTypeCode #}
+<form action="{{ page.url }}" method="POST" id="code-edit-form">
+	<input type="hidden" name="action" value="update-ctm">
+
+	<div class="row">
+		<div class="col-6">
+			<div class="form-group">
+				<label for="code">Code</label>
+				<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code" maxlength="{{ code.get_max_length_code() }}" {{ code.code ? 'readonly' : 'autofocus' }}>
+			</div>
+		</div>
+		<div class="col-6">
+			<div class="form-group">
+				<label for="description">Description</label>
+				<input type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" autofocus>
+			</div>
+		</div>
+	</div>
+
+	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the code is
+			1. Locked for editing by the User
+			2. Is a new code
+			NOTE: Only show delete if code already exists.
+		#}
+		{% if recordlocker.function_locked_by_user(page.codetable, code.code) or code.isNew() %}
+			<button type="submit" class="btn btn-success form_button">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			{% if code.isNew() == false %}
+				<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger form_button delete_button">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+		<a href="{{ page.get_codetable_listURL(page.codetable, code.code) }}" class="btn btn-warning pull-right form_button">Close</a>
+	</div>
+</form>

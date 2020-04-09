@@ -56,6 +56,10 @@ class CodeTablesAr extends WireData implements Module {
 			'code'        		 => 'cmm',
 			'module'   			 => 'CodeTablesCmm'
 		),
+		'trm' => array(
+			'code'        		 => 'trm',
+			'module'   			 => 'CodeTablesTrm'
+		),
 	);
 
 	public function get_codetables() {
