@@ -39,7 +39,7 @@
 		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $termscode]);
 		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'termscode' => $termscode]);
 	} else {
-		$page->title = $page->headline = "TRM";
+		$page->title = $page->headline = "Customer Terms Code";
 		$recordlocker->remove_lock($page->codetable);
 		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/list.twig", ['page' => $page, 'table' => $page->codetable, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable, 'recordlocker' => $recordlocker]);
 	}

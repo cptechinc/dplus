@@ -2,13 +2,28 @@
 <div class="list-group">
 	<div class="list-group-item bg-dark text-white">
 		<div class="row align-items-center">
-			<div class="col-3">
+			<div class="col-1">
 				Code
 			</div>
-			<div class="col-6">
+			<div class="col-3">
 				Description
 			</div>
-			<div class="col-3">
+			<div class="col-1">
+				Method
+			</div>
+			<div class="col-1">
+				Type
+			</div>
+			<div class="col-1">
+				Hold
+			</div>
+			<div class="col-1">
+				Country
+			</div>
+			<div class="col-2">
+				Exp Date
+			</div>
+			<div class="col-2">
 				{% if page.is_print() == false %}
 					<a href="{{ page.url ~ '?code=new' }}" class="btn btn-light">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
@@ -20,11 +35,26 @@
 	{% for code in codes %}
 		<div id="{{ code.code }}" class="list-group-item pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
 			<div class="row align-items-center">
-				<div class="col-3">
+				<div class="col-1">
 					{{ code.code }}
 				</div>
-				<div class="col-6">
+				<div class="col-3">
 					{{ code.description }}
+				</div>
+				<div class="col-1">
+					{{ code.method }}
+				</div>
+				<div class="col-1">
+					{{ code.type }}
+				</div>
+				<div class="col-1">
+					{{ code.hold }}
+				</div>
+				<div class="col-1">
+					{{ code.country }}
+				</div>
+				<div class="col-1">
+					{{ code.exp_date }}
 				</div>
 				<div class="col-3 text-center">
 					{% if recordlocker.function_locked(page.name, code.code) == false or recordlocker.function_locked_by_user(page.name, code.code) %}
