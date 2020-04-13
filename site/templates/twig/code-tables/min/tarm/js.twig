@@ -64,15 +64,20 @@ $(function() {
 			var a = $(this);
 
 			swal({
-				title: 'Code not saved!',
-				text: "Please save the System Optional Code before leaving.",
+				title: 'Changes have occurred to this record.',
+				text: "Do you want to save?",
 				type: 'warning',
 				showCancelButton: true,
-				showConfirmButton: false,
-				cancelButtonClass: 'btn btn-info',
+				confirmButtonClass: 'btn btn-success',
+				cancelButtonClass: 'btn btn-danger',
 				buttonsStyling: false,
-				cancelButtonText: 'OK'
-			});
+				cancelButtonText: 'No',
+				confirmButtonText: 'Yes'
+			}).then(function (confirm) {
+				if (confirm) {
+					form.submit();
+				}
+			}).catch(swal.noop);
 		}
 	});
 
