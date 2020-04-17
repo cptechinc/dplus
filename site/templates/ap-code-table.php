@@ -21,7 +21,6 @@
 
 	if ($ap_codetables->validate_codetable($page->codetable)) {
 		$page->focus = $input->get->focus ? $input->get->text('focus') : '';
-		$page->focus = str_replace(' ', '', $page->focus);
 
 		$module_codetable = $ap_codetables->get_codetable_module($page->codetable);
 

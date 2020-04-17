@@ -4,7 +4,6 @@
 		$page->headline = $page->title = "Listing $page->title for $sysopcode";
 
 		$page->focus = $input->get->focus ? $input->get->text('focus') : '';
-		$page->focus = str_replace(' ', '', $page->focus);
 
 		$sysop = $module_codetable->get_sysop($sysopcode);
 
