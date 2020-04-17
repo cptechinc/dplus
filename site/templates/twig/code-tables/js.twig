@@ -3,10 +3,12 @@ $(function() {
 		var modal = $(this);
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var code = modal.find('input[name=code]').val();
+		code = code.replace(' ', '-');
 		$('#code-table-alert').hide();
 		$('.bg-success').removeClass('bg-success text-white');
 		$('.highlight').removeClass('highlight');
 		$('#code-'+code).addClass('highlight');
+		console.log(code);
 	});
 
 	{% if page.focus %}
