@@ -111,13 +111,14 @@ class DpagesMsa extends Dpages implements Module {
 
 	public function get_codetable_listURL($table, $code = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop|msa-lgrp, name=$table")->url);
+		$code = str_replace(' ', '-', $code);
 		$url->query->set('focus', $code);
 		return $url->getUrl();
 	}
 
 	public function get_codetable_list_sysopURL($table, $system, $code = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop, name=$table")->url);
-		$code = str_replace(' ', '', $code);
+		$code = str_replace(' ', '-', $code);
 		$url->query->set('focus', $system.'-'.$code);
 		return $url->getUrl();
 	}
