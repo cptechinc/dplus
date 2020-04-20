@@ -1,0 +1,14 @@
+<form action="{{ page.get_redirURL() }}" method="POST" class="allow-enterkey-submit" id="barcode-form">
+	<input type="hidden" name="action" value="scan-pick-item">
+	<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
+
+	<div class="form-group">
+		<label for="scan">Add Item</label>
+		<div class="input-group">
+			<input type="text" name="scan" class="form-control" id="scan" placeholder="Barcode, ItemID, Lot/Serial #">
+			<span class="input-group-btn">
+				<button type="submit" class="btn btn-default"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
+			</span>
+		</div>
+	</div>
+</form>

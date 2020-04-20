@@ -15,6 +15,20 @@
 			</tr>
 		</table>
 	</div>
+	<div class="col-sm-4">
+		<h4>Item Warehouses</h4>
+		<table class="table table-striped table-sm">
+			{#
+			{% for warehouse in item.warehouses %}
+				<tr>
+					<td>{{ warehouse.warehouseid }}</td>
+					<td></td>
+				</tr>
+			{% endfor %}
+			#}
+
+		</table>
+	</div>
 </div>
 
 <div class="row">

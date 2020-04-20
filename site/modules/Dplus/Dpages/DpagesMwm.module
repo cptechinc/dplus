@@ -224,14 +224,14 @@ class DpagesMwm extends Dpages implements Module {
 			'dplus_function' => 'porpp',
 			'pw_template'    => 'whse-packing',
 		),
-		'whse-print-order-item-label' => array(
+		'whse-print-pick-item-label' => array(
 			'template'       => 'warehouse-function',
 			'name'           => 'order-item',
 			'title'          => 'Print Item Label',
 			'summary'        => 'Print a Label for an Order Item',
 			'parent'         => '/warehouse/inventory/print-item-label/',
 			'dplus_function' => 'pilbl',
-			'pw_template'    => 'whse-print-order-item-label'
+			'pw_template'    => 'whse-print-pick-item-label'
 		),
 		'whse-physical-count' => array(
 			'template'       => 'warehouse-function',
@@ -294,7 +294,8 @@ class DpagesMwm extends Dpages implements Module {
 			$p = $event->object;
 			$item = $event->arguments(0); // Instance of PickSalesOrderDetail
 			$url = new Url($p->fullURL->getUrl());
-			$url->query->set('linenbr',$item->recno);
+			$url->query->set('linenbr', $item->linenbr);
+			$url->query->set('sublinenbr', $item->sublinenbr);
 			$event->return = $url->getUrl();
 		});
 

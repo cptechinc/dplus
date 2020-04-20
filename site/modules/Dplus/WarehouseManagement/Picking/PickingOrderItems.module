@@ -1,0 +1,91 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use WhseitempickQuery, Whseitempick;
+use PickSalesOrderDetailQuery, PickSalesOrderDetail;
+use WhsesessionQuery, Whsesession;
+
+/**
+ * PickingOrderItems
+ *
+ * Handles the Link Between Picking and the Order Items that are available to pick
+ */
+class PickingOrderItems extends WireData implements Module {
+
+	public function init() {
+		$this->ordn = '';
+		$this->sessionID = '';
+	}
+
+	/**
+	 * Return Pick Order Items
+	 * @param  bool   $picked Return Picked ITems? (false = return only unpicked)
+	 * @return PickSalesOrderDetail[]|ObjectCollection
+	 */
+	public function get_lines($picked = false) {
+		$q = PickSalesOrderDetailQuery::create();
+
+		if ($picked) {
+			return $q->get_order_lines_picked($this->sessionID, $this->ordn);
+		} else {
+			return $q->get_order_lines_unpicked($this->sessionID, $this->ordn);
+		}
+	}
+
+	/**
+	 * Return PickSalesOrderDetail that matches ItemID
+	 * // HANDLE CHOOSING CORRECT LINE
+	 *
+	 * @param  string $itemID Item ID
+	 * @return PickSalesOrderDetail
+	 */
+	public function get_picksalesorderdetail_itemid($itemID) {
+		$picking_master = PickSalesOrderDetailQuery::create();
+		$picking_master->filterBySessionidOrder($this->sessionID, $this->ordn);
+		$picking_master->filterByitemid($itemID);
+		return $picking_master->findOne();
+	}
+
+	/**
+	 * Returns if this Picking Order has any Sublines
+	 * @return bool
+	 */
+	public function has_sublines() {
+		$q = PickSalesOrderDetailQuery::create();
+		$q->filterBySessionidOrder($this->sessionID, $this->ordn);
+		$q->filterBySublinenbr(0, Criteria::GREATER_THAN);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Validates if Item ID is on the Picking Sales Order
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_itemid_onorder($itemID) {
+		$q = PickSalesOrderDetailQuery::create();
+		$q->filterBySessionidOrder($this->sessionID, $this->ordn);
+		$q->filterByItemid($itemID);
+		return boolval($q->count());
+	}
+
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Picking Items Module',
+			'version' => 101,
+			'summary' => 'Handles Dplus Picking Items Functions',
+			'singular' => true,
+			'autoload' => false,
+		);
+	}
+}

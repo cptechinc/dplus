@@ -1,0 +1,70 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use InvsearchQuery, Invsearch;
+use WhseitempickQuery, Whseitempick;
+use PickSalesOrderDetailQuery, PickSalesOrderDetail;
+use BarcodesQuery, Barcodes;
+use WhsesessionQuery, Whsesession;
+use WarehouseQuery, Warehouse;
+use WarehouseInventoryQuery, WarehouseInventory;
+
+use WhseitemphysicalcountQuery, Whseitemphysicalcount;
+
+/**
+ * PickingInventoryManager
+ *
+ * Class that Handles the link to the Inventory for Picking
+ */
+class PickingInventoryManager extends WireData implements Module {
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Warehouse Picking Inventory Functions Module',
+			'version' => 101,
+			'summary' => 'Handles Dplus Inventory for Picking',
+			'singular' => true,
+			'autoload' => false,
+		);
+	}
+	public function init() {
+		$this->session = $this->wire('session');
+		$this->sessionID = '';
+	}
+
+	/**
+	 * Return Inventory Items
+	 * @param  string $scan        Scan
+	 * @param  bool   $includepack Include Pack Bin?
+	 * @return Whseitemphysicalcount[]|ObjectCollection
+	 */
+	public function get_inventory_results($scan, $includepack = false) {
+		$q = $this->get_inventory_scan_query($scan, $includepack);
+		return $q->find();
+	}
+
+	/**
+	 * Return Query for Inventory Items
+	 * @param  string $scan        Scan
+	 * @param  bool   $includepack Include PACK bin?
+	 * @return WhseitemphysicalcountQuery
+	 */
+	public function get_inventory_scan_query($scan, $includepack = false) {
+		$q = WhseitemphysicalcountQuery::create();
+		$q->filterBySessionid($this->sessionID);
+		$q->filterByScan($scan);
+
+		if (!$includepack) {
+			$q->filterByBin('PACK', Criteria::ALT_NOT_EQUAL);
+		}
+		return $q;
+	}
+}

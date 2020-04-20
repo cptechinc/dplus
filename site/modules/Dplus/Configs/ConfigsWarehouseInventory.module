@@ -40,6 +40,12 @@ class ConfigsWarehouseInventory extends Process implements ConfigurableModule {
 			'description' => 'Receive Lots as Single Items',
 			'notes'       => "Receive Lots as Single Items"
 		),
+		'receive_force_bin_itemlookup' => array(
+			'type'        => 'checkbox',  // TRUE OR FALSE
+			'label'       => 'Require Bin when looking up Item in Receving?',
+			'description' => 'Choose to Require the bin ID at Item Search',
+			'notes'       => ""
+		),
 	);
 
 	const DEFAULT_CONFIG = array(
@@ -47,6 +53,7 @@ class ConfigsWarehouseInventory extends Process implements ConfigurableModule {
 		'show_inventoryresults'   => 'lotserial',
 		'physicalcount_savebin'   => true,
 		'receive_lotserial_as_single' => false,
+		'receive_force_bin_itemlookup' => false,
 	);
 
 	/* =============================================================
@@ -55,17 +62,7 @@ class ConfigsWarehouseInventory extends Process implements ConfigurableModule {
 	public function init() {
 		parent::init();
 
-		foreach(self::DEFAULT_CONFIG as $key => $value) {
-			if (isset($this->data[$key])) {
-				if (empty($this->data[$key])) {
-					$this->data[$key] = $value;
-				} else {
-					$this->data[$key] = $this->data[$key];
-				}
-			} else {
-				$this->data[$key] = $value;
-			}
-		}
+		$this->init_configdata();
 	}
 
 	/**
@@ -110,6 +107,15 @@ class ConfigsWarehouseInventory extends Process implements ConfigurableModule {
 		$f = $modules->get('InputfieldCheckbox');
 		$f->attr('name', 'receive_lotserial_as_single');
 		$f->attr('checked', $data['receive_lotserial_as_single'] ? 'checked' : '' );
+		$f->label = __($traits['label']);
+		$f->description = __($traits['description']);
+		$f->notes = _($traits['notes']);
+		$fields->add($f);
+
+		$traits = self::CONFIG_FIELDS['receive_force_bin_itemlookup'];
+		$f = $modules->get('InputfieldCheckbox');
+		$f->attr('name', 'receive_force_bin_itemlookup');
+		$f->attr('checked', $data['receive_force_bin_itemlookup'] ? 'checked' : '' );
 		$f->label = __($traits['label']);
 		$f->description = __($traits['description']);
 		$f->notes = _($traits['notes']);
