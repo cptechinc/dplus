@@ -14,7 +14,17 @@ use WhseitemphysicalcountQuery, Whseitemphysicalcount;
 use Map\QnoteTableMap;
 use Propel\Runtime\Propel;
 
-class WarehousePicking extends WireData implements Module {
+/**
+ * Picking
+ *
+ * Provalley Picking Variant
+ *
+ * Handles the picking functionality
+ * 1. Retrieves Order Items
+ * 2. Adds items to be picked for order in a working file
+ * 3. Validates Items against inventory
+ */
+class PickingProvalley extends WireData implements Module {
 	/**
 	 * Processwire Session
 	 * @var Session
@@ -49,9 +59,9 @@ class WarehousePicking extends WireData implements Module {
 	 */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dpluso Warehouse Picking Functions Module',
+			'title' => 'Dpluso Warehouse Picking Functions Module for Provalley',
 			'version' => 101,
-			'summary' => 'Handles Dplus Functions',
+			'summary' => 'Handles Dplus Picking Functions',
 			'singular' => true,
 			'autoload' => false,
 		);
@@ -228,6 +238,7 @@ class WarehousePicking extends WireData implements Module {
 				$item->save();
 				$recordnumbers[] = $item->recordnumber;
 			}
+
 		}
 		$this->session->verify_whseitempick_itemID  = $itemID;
 		$this->session->verify_whseitempick_linenbr = $pickline->linenbr;
@@ -345,8 +356,6 @@ class WarehousePicking extends WireData implements Module {
 			}
 		}
 		$item->save();
-
-
 		return $item;
 	}
 
