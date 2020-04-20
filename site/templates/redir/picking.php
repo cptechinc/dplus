@@ -201,6 +201,7 @@
 					}
 				} else {
 					$barcodes = $pickitem->get_userpickedtotalsbybin();
+
 					foreach ($barcodes as $barcodse) {
 						$binID     = str_pad($barcode['bin'], 8, ' ');
 						$lotserial = str_pad('', 20, ' ');
@@ -214,7 +215,6 @@
 					$url->query->remove('linenbr');
 					$input->$requestmethod->page = $url->getUrl();
 				}
-
 			}
 			$session->loc = $input->$requestmethod->text('page');
 			//WhseitempickQuery::create()->filterBySessionidOrderLinenbr(session_id(), $whsesession->ordn, $linenbr)->delete();
