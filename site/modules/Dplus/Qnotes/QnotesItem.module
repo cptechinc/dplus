@@ -1,0 +1,33 @@
+<?php namespace ProcessWire;
+
+use QuoteNotesQuery, QuoteNotes;
+use ConfigArQuery, ConfigAr;
+
+include_once(__DIR__.'/QnotesResponse.php');
+
+/**
+ * QnotesItem
+ *
+ * Container class to call classes to handle Item Notes
+ */
+class QnotesItem extends WireData implements Module {
+
+	public function init() {
+		$this->types = new WireData();
+		$this->types->internal;
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Qnotes Item',
+			'version' => 101,
+			'summary' => 'Dplus Qnotes Item Factory',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('Qnotes'),
+			'installs' => array(
+				'QnotesItemInternal'
+			)
+		);
+	}
+}

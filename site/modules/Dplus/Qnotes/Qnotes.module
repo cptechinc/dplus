@@ -39,7 +39,8 @@ class Qnotes extends WireData implements Module {
 			'installs' => array(
 				'QnotesSalesOrder',
 				'QnotesSalesHistory',
-				'QnotesQuote'
+				'QnotesQuote',
+				'QnotesItm'
 			)
 		);
 	}

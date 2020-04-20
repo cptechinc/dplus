@@ -1,6 +1,6 @@
 <?php namespace ProcessWire;
 
-use QuoteNotesQuery, QuoteNotes;
+use ItemInternalNoteQuery, ItemInternalNote;
 use ConfigArQuery, ConfigAr;
 
 include_once(__DIR__.'/QnotesResponse.php');
@@ -10,18 +10,13 @@ include_once(__DIR__.'/QnotesResponse.php');
  *
  * Class for Writing and Reading Qnotes for Sales Orders
  */
-class QnotesQuote extends WireData implements Module {
-	const MODEL              = 'QuoteNotes';
-	const MODEL_KEY          = 'qthdid, qtdtline';
-	const DESCRIPTION        = 'Quote Note';
-	const DESCRIPTION_RECORD = 'Quote Note';
-	const DESCRIPTION_RESPONSE = 'Sales Order ';
-	const MODEL_TABLE = 'notes_qt_head_det';
+class QnotesItemInternal extends WireData implements Module {
+	const MODEL              = 'ItemInternalNote';
+	const MODEL_KEY          = 'itemid sequence';
+	const DESCRIPTION        = 'Item Internal Notes';
+	const DESCRIPTION_RECORD = 'Item Internal Notes';
+	const DESCRIPTION_RESPONSE = 'Item ';
 
-
-	public function allow_add(User $user, $qnbr) {
-		return true;
-	}
 
 	/**
 	 * Return the Max Number of columns for Note Type
@@ -34,67 +29,55 @@ class QnotesQuote extends WireData implements Module {
 
 	/**
 	 * Returns Quote Notes Query
-	 * @return QuoteNotesQuery
+	 * @return ItemInternalNoteQuery
 	 */
 	public function get_query() {
-		return QuoteNotesQuery::create();
+		return ItemInternalNoteQuery::create();
 	}
 
 	/**
 	 * Returns if Notes Exist
-	 * @param  string $qnbr    Quote Number
-	 * @param  int    $linenbr Line Number
+	 * @param  string $itemID  Item ID
 	 * @return bool
 	 */
-	public function notes_exist($qnbr, $linenbr) {
+	public function notes_exist($itemID) {
 		$q = $this->get_query();
-		$q->filterByQuoteid($qnbr);
-		$q->filterByLine($linenbr);
+		$q->filterByItemid($itemID);
 		return boolval($q->count());
 	}
 
 	/**
 	 * Returns Line 1 of Every Note
-	 * @param  string $qnbr    Quote Number
-	 * @param  int    $linenbr Line Number
-	 * @return QuoteNotes[]|ObjectCollection
+	 * @param  string $itemID  Item ID
+	 * @return ItemInternalNote[]|ObjectCollection
 	 */
-	public function get_notes_summarized($qnbr, $linenbr) {
+	public function get_notes_summarized($itemID) {
 		$q = $this->get_query();
-		$q->filterByQuoteid($qnbr);
-		$q->filterByLine($linenbr);
+		$q->filterByItemid($itemID);
 		$q->filterBySequence(1);
 		return $q->find();
 	}
 
 	/**
 	 * Return Notes for Form
-	 * @param  string $qnbr    Quote Number
-	 * @param  int    $linenbr Line Number
-	 * @param  string $form    Form to Match to e.g YYYN
+	 * @param  string $itemID  Item ID
 	 * @return array
 	 */
-	public function get_notes_form_array($qnbr, $linenbr, $form) {
+	public function get_notes_form_array($itemID) {
 		$q = $this->get_query();
-		$q->select(QuoteNotes::get_aliasproperty('note'));
-		$q->filterByQuoteid($qnbr);
-		$q->filterByLine($linenbr);
-		$q->filterByForm($form);
+		$q->select(ItemInternalNote::get_aliasproperty('note'));
+		$q->filterByItemid($itemID);
 		return $q->find()->toArray();
 	}
 
 	/**
-	 * Delete Notes for Form
-	 * @param  string $qnbr    Quote Number
-	 * @param  int    $linenbr Line Number
-	 * @param  string $form    Form to Match to e.g YYYN
+	 * Delete Notes for Item
+	 * @param  string $itemID  Item ID
 	 * @return array
 	 */
-	public function delete_notes($qnbr, $linenbr, $form) {
+	public function delete_notes($itemID) {
 		$q = $this->get_query();
-		$q->filterByQuoteid($qnbr);
-		$q->filterByLine($linenbr);
-		$q->filterByForm($form);
+		$q->filterByItemid($itemID);
 
 		if ($q->count()) {
 			return $q->delete();
@@ -110,7 +93,6 @@ class QnotesQuote extends WireData implements Module {
 	 */
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$qnbr = $input->$rm->text('qnbr');
 
 		switch ($input->$rm->text('action')) {
 			case 'update-notes':
@@ -130,23 +112,18 @@ class QnotesQuote extends WireData implements Module {
 	 */
 	public function delete_notes_input($input) {
 		$rm = strtolower($input->requestMethod());
-		$qnbr  = $input->$rm->text('qnbr');
-		$linenbr = $input->$rm->text('linenbr');
-		$form    = $input->$rm->text('form');
+		$itemID  = $input->$rm->text('itemID');
+
 		$q = $this->get_query();
-		$q->filterByQuoteid($qnbr);
-		$q->filterByLine($linenbr);
-		$q->filterByForm($form);
+		$q->filterByItemid($itemID);
 
 		if ($q->count()) {
 			$note = $q->findOne();
 		} else {
-			$note = new QuoteNotes();
-			$note->setQuoteid($qnbr);
-			$note->setLine($linenbr);
-			$note->setForm($form);
+			$note = new ItemInternalNote();
+			$note->generateKey2();
 		}
-		$success = $this->delete_notes($qnbr, $linenbr, $form);
+		$success = $this->delete_notes($itemID);
 
 		$this->wire('session')->response_qnote = $this->process_response_delete($note, $qnbr, $success);
 	}
@@ -159,40 +136,19 @@ class QnotesQuote extends WireData implements Module {
 	 */
 	public function update_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$qnbr  = $input->$rm->text('qnbr');
-		$linenbr = $input->$rm->text('linenbr');
-		$form    = $input->$rm->text('form');
+		$itemID  = $input->$rm->text('itemID');
 		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
 		$lines_saved = array();
 
-		if (empty($form)) {
-			$form = '';
-			$form .= $input->$rm->text('check_quote') == QuoteNotes::FORM_TRUE ? 'Y' : 'N';
-			$form .= $input->$rm->text('check_pick') == QuoteNotes::FORM_TRUE ? 'Y' : 'N';
-			$form .= $input->$rm->text('check_pack') == QuoteNotes::FORM_TRUE ? 'Y' : 'N';
-			$form .= $input->$rm->text('check_invoice') == QuoteNotes::FORM_TRUE ? 'Y' : 'N';
-			$form .= $input->$rm->text('check_acknowledgement') == QuoteNotes::FORM_TRUE ? 'Y' : 'N';
-		}
-
-		$this->delete_notes($qnbr, $linenbr, $form);
+		$this->delete_notes($itemID);
 
 		foreach ($note_lines as $key => $line) {
 			$sequence = $key + 1;
-			$record = new QuoteNotes();
-			$record->setType(QuoteNotes::TYPE); // PK
-			$record->setDescription(QuoteNotes::DESCRIPTION);
-			$record->setQuoteid($qnbr);
-			$record->setLine($linenbr);
+			$record = ItemInternalNote::new();
+			$record->setItemid($itemID);
 			$record->generateKey2(); // PK
 			$record->setSequence($sequence); // PK
-			$record->setForm($form);
 			$record->setNote($line);
-
-			$record->setQuote($input->$rm->text('check_quote')     == QuoteNotes::FORM_TRUE ? 'Y' : 'N');
-			$record->setPickticket($input->$rm->text('check_pick') == QuoteNotes::FORM_TRUE ? 'Y' : 'N');
-			$record->setPackticket($input->$rm->text('check_pack') == QuoteNotes::FORM_TRUE ? 'Y' : 'N');
-			$record->setInvoice($input->$rm->text('check_invoice') == QuoteNotes::FORM_TRUE ? 'Y' : 'N');
-			$record->setAcknowledgement($input->$rm->text('check_acknowledgement') == QuoteNotes::FORM_TRUE ? 'Y' : 'N');
 
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
@@ -208,7 +164,7 @@ class QnotesQuote extends WireData implements Module {
 	 * @param  array  $lines_saved  array of line numbers and if they got saved e.g. (1 => true, 2 => false)
 	 * @return CodeTableResponse
 	 */
-	protected function process_responses(QuoteNotes $note, $qnbr, array $lines_saved) {
+	protected function process_responses(ItemInternalNote $note, $qnbr, array $lines_saved) {
 		$message = self::DESCRIPTION_RESPONSE . " ($qnbr) Note Lines";
 
 		$response = new QnotesResponse();
@@ -242,12 +198,12 @@ class QnotesQuote extends WireData implements Module {
 
 	/**
 	 * Return QnoteResponse based if Notes were able to be Deleted
-	 * @param  QuoteNotes   $note         Attributes are needed to generate key
+	 * @param  ItemInternalNote   $note         Attributes are needed to generate key
 	 * @param  string            $qnbr         Quote Number
 	 * @param  array             $success      Were Notes able to be deleted?
 	 * @return QnoteResponse
 	 */
-	public function process_response_delete(QuoteNotes $note, $qnbr, bool $success) {
+	public function process_response_delete(ItemInternalNote $note, $qnbr, bool $success) {
 		$message = self::DESCRIPTION_RESPONSE . " ($qnbr) Notes ";
 
 		$response = new QnotesResponse();
@@ -273,9 +229,9 @@ class QnotesQuote extends WireData implements Module {
 
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus Qnotes Quotes',
+			'title' => 'Dplus Qnotes Item Internal',
 			'version' => 101,
-			'summary' => 'Dplus Qnotes Quotes CRUD methods',
+			'summary' => 'Dplus Qnotes Item Internal CRUD methods',
 			'singular' => true,
 			'autoload' => true,
 			'requires' => array('Qnotes')

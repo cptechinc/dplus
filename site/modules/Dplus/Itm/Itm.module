@@ -13,7 +13,7 @@ use InvStockCodeQuery, InvStockCode;
 use InvSpecialCodeQuery, InvSpecialCode;
 
 /**
- * Module that handles the editing of the UPC item Xref
+ * Module that handles the editing of the UPC item Itm
  */
 class Itm extends WireData implements Module {
 	const MODEL              = 'ItemMasterItem';
@@ -23,7 +23,8 @@ class Itm extends WireData implements Module {
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
-		$this->config = $this->get_config_in();
+		$this->configs = new WireData();
+		$this->configs->inventory = false;
 	}
 
 	public function init() {
@@ -52,9 +53,10 @@ class Itm extends WireData implements Module {
 			$itemID = $event->arguments(0);
 			$url = new Url($p->url);
 			$url->query->set('itemID', $itemID);
-
 			$event->return = $url->getUrl();
 		});
+
+		$this->configs->inventory = $this->get_config_in();
 	}
 
 	/**
@@ -98,21 +100,57 @@ class Itm extends WireData implements Module {
 
 	/**
 	 * Returns ItemMasterItem after retreiving or creating it
-	 * @param  WireInput $input Input Data
+	 * @param  string $itemID Item ID
 	 * @return ItemMasterItem
 	 */
-	public function get_create_item(WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$itemID = $input->$rm->text('itemID');
-
+	public function get_create_item($itemID) {
 		if ($this->item_exists($itemID)) {
 			$record = $this->get_item($itemID);
 		} else {
-			$record = new ItemMasterItem();
+			$record = $this->get_new_item();
 			$record->setItemid($itemID);
 		}
-
 		return $record;
+	}
+
+	/**
+	 * Returns Item with Defaults Set
+	 * @return ItemMasterItem
+	 */
+	public function get_new_item() {
+		$item = new ItemMasterItem();
+
+		$this->configs->inventory = $this->get_config_in();
+
+		if ($this->configs->inventory->use_pricegroup()) {
+			$item->setPricecode($this->configs->inventory->default_pricegroup);
+		}
+
+		if ($this->configs->inventory->use_commgroup()) {
+			$item->setCommissiongroup($this->configs->inventory->default_commgroup);
+		}
+
+		$item->setItemtype($this->configs->inventory->default_itemtype);
+
+		$record->setTaxable('Y');
+		$item->setAllow_backorder('Y');
+		$item->setAllow_discount('Y');
+		$item->setRequire_freight('N');
+		$item->setCore('N');
+		$item->setSplitorder('Y');
+
+		$item->setUom_sale($this->configs->inventory->default_uom_sale);
+		$item->setUom_purchase($this->configs->inventory->default_uom_purchase);
+		$item->setPreference($this->configs->inventory->default_nafta_pref_code);
+		$item->setProducer($this->configs->inventory->default_nafta_producer);
+		$item->setDocumentation($this->configs->inventory->default_documentation);
+		$item->setBasestandardcost($this->configs->inventory->default_base_standard_cost);
+
+
+		if ($this->wire('modules')->get('DplusCustomer')->get_custID() == 'LINDST') {
+			$item->setStockcode('MM');
+		}
+
 	}
 
 	/**
@@ -125,63 +163,100 @@ class Itm extends WireData implements Module {
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
+		$this->configs->inventory = $this->get_config_in();
 		$rm = strtolower($input->requestMethod());
-		$upc = $input->$rm->text('upc');
 		$itemID = $input->$rm->text('itemID');
 
-		$record = $this->get_create_upc($input);
+		$record = $this->get_create_item($itemID);
 
-		if ($input->$rm->text('action') == 'remove-upc-item') {
+		if ($input->$rm->text('action') == 'remove-itm-item') {
 			$record->delete();
 		} elseif ($input->$rm->text('action') == 'update-itm') {
-			$record->setQty($input->$rm->int('qty'));
-			$record->setUom($input->$rm->text('uom'));
-			$record->setMastercase($input->$rm->text('mastercase'));
-			$record->setNeedslabel($input->$rm->text('needslabel'));
-			$record->setDate(date('Ymd'));
-			$record->setTime(0);
+			$record->setDescription($input->$rm->text('description'));
+			$record->setDescription2($input->$rm->text('description2'));
+			$record->setRevision($input->$rm->text('revision'));
+			$record->setTimefence($input->$rm->text('itemfence'));
+			$record->setQtypercase($input->$rm->int('qtypercase'));
 
-			if ($input->$rm->text('primary') == ItemMasterItem::PRIMARY_TRUE) {
-				if ($input->$rm->text('valid_primary') == 'true') {
-					$record->setPrimary(ItemMasterItem::PRIMARY_TRUE);
-				}
-			} else {
-				$record->setPrimary(ItemMasterItem::PRIMARY_FALSE);
-			}
+			$record->setAllow_backorder($input->$rm->yn('allow_backorder'));
+			$record->setSplitorder($input->$rm->yn('splitorder'));
+			$record->setInspection($input->$rm->yn('inspection'));
+			$record->setTaxable($input->$rm->yn('taxable'));
+			$this->set_validated_fields($record, $input);
 		}
 
 		if ($input->$rm->action) {
 			$response = $this->save_and_process_response($record);
-
-			/**
-			 * IF we saved this Item as the Primary PO ORDER then we have to update
-			 * the other primary item to be a secondary
-			 */
-			if ($response->has_success() && !$record->isDeleted()) {
-				if ($record->is_primary() && $record->get_primary_upc_code()) {
-					$primary_upc = $record->get_primary_upc();
-					$primary_upc->setPrimary(ItemMasterItem::PRIMARY_FALSE);
-					$primary_upc->save();
-					$this->update_dplus_cobol($primary_upc);
-				}
-			}
-			$this->wire('session')->response_xref = $response;
+			$response->set_saved_itm($response->success);
+			$this->wire('session')->response_itm = $response;
 		}
 	}
 
 	/**
-	 * Returns XrefResponse based on the outcome of the database save
+	 * Updates the fields that need to be validated against a table
+	 * @param ItemMasterItem $record Item
+	 * @param WireInput      $input  Input Values
+	 */
+	protected function set_validated_fields(ItemMasterItem $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$modules = $this->wire('modules');
+
+		// VALIDATE with Respective tables
+		$validate_custid = $modules->get('LookupCustomer');
+		$custID = $input->$rm->text('custid');
+		if ($validate_custid->lookup_customer($custID)) {
+			$record->setCustid($custID);
+		}
+
+		if (in_array($input->$rm->text('itemtype'), array_keys(ItemMasterItem::ITEMTYPE_DESCRIPTIONS))) {
+			$record->setItemtype($input->$rm->text('itemtype'));
+		}
+
+		$validate_stockcode = $modules->get('CodeTablesStcm');
+		$stockcode = $input->$rm->text('stockcode');
+
+		if ($validate_stockcode->code_exists($stockcode)) {
+			$record->setStockcode($stockcode);
+		}
+
+		$validate_itemgroup = $modules->get('CodeTablesIgm');
+		$itemgroup = $input->$rm->text('itemgroup');
+
+		if ($validate_itemgroup->code_exists($itemgroup)) {
+			$record->setItemgroup($itemgroup);
+		}
+
+		if ($this->configs->inventory->use_pricegroup()) {
+			$validate_pricecode = $modules->get('CodeTablesIgpm');
+			$pricecode = $input->$rm->text('pricecode');
+
+			if ($validate_pricecode->code_exists($pricecode)) {
+				$record->setPricecode($pricecode);
+			}
+		}
+
+		if ($this->configs->inventory->use_commgroup()) {
+			$validate_commissiongroup = $modules->get('CodeTablesIgcm');
+			$commissiongroup = $input->$rm->text('commissiongroup');
+
+			if ($validate_commissiongroup->code_exists($commissiongroup)) {
+				$record->setCommissiongroup($commissiongroup);
+			}
+		}
+	}
+
+	/**
+	 * Returns ItmResponse based on the outcome of the database save
 	 * @param  ItemMasterItem $record Record to record response of database save
-	 * @return XrefResponse
+	 * @return ItmResponse
 	 */
 	protected function save_and_process_response(ItemMasterItem $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
-		$code = "$record->upc";
 
-		$response = new XrefResponse();
-		$response->set_key($code);
-		$message = self::DESCRIPTION_RECORD . " ($code) was ";
+		$response = new ItmResponse();
+		$response->set_itemID($record->itemid);
+		$message = self::DESCRIPTION_RECORD . " ($record->itemid) was ";
 
 		if ($saved) {
 			$response->set_success(true);
@@ -192,19 +267,19 @@ class Itm extends WireData implements Module {
 
 		if ($is_new) {
 			$message .= 'added';
-			$response->set_action(XrefResponse::CRUD_CREATE);
+			$response->set_action(ItmResponse::CRUD_CREATE);
 		} elseif ($record->isDeleted()) {
 			$message .= 'deleted';
-			$response->set_action(XrefResponse::CRUD_DELETE);
+			$response->set_action(ItmResponse::CRUD_DELETE);
 		} else {
 			$message .= 'updated';
-			$response->set_action(XrefResponse::CRUD_UPDATE);
+			$response->set_action(ItmResponse::CRUD_UPDATE);
 		}
 
 		$response->set_message($message);
 
 		if ($response->has_success()) {
-			$this->update_dplus_cobol($record);
+			$this->update_dplus_cobol($record->itemid);
 		}
 		return $response;
 	}
@@ -220,8 +295,6 @@ class Itm extends WireData implements Module {
 	public function get_config_in() {
 		return ConfigInQuery::create()->findOne();
 	}
-
-
 
 	/**
 	 * Return Item Groups

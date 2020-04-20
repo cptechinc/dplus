@@ -9,9 +9,12 @@
 		$q->filterByItemid($itemID);
 
 		if ($q->count()) {
+			if ($input->requestMethod('POST')) {
+				$itm->process_input($input)	;
+			}
+
 			$page->title .= " $itemID";
 			$item = $q->findOne();
-
 			$page->customerlookupURL = $pages->get('pw_template=mci-lookup')->url;
 			$page->body .= $config->twig->render('items/itm/itm-links.twig', ['page' => $page, 'page_itm' => $page]);
 			$page->body .= $config->twig->render('items/itm/itm-form.twig', ['page' => $page, 'item' => $item, 'm_itm' => $itm]);

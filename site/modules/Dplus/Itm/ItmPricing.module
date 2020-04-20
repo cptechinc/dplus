@@ -70,7 +70,7 @@ class ItmPricing extends WireData implements Module {
 
 	/**
 	 * Takes Input, validates Item Updates the pricing record for it, sends update to DPlus
-	 * NOTE: Updates ITM record with changes to the uom_sale, allowdiscount, assortmentcode, assortmentqty fields
+	 * NOTE: Updates ITM record with changes to the uom_sale, allow_discount, assortmentcode, assortmentqty fields
 	 *
 	 * @param  WireInput $input Input
 	 * @return void
@@ -100,7 +100,7 @@ class ItmPricing extends WireData implements Module {
 	}
 	/**
 	 * Updates ITM Item Record and updates DPLUS
-	 * Records values for uom_sale, allowdiscount, assortmentcode, assortmentqty
+	 * Records values for uom_sale, allow_discount, assortmentcode, assortmentqty
 	 * @param  WireInput $input
 	 * @return bool was it able to be saved?
 	 */
@@ -111,7 +111,7 @@ class ItmPricing extends WireData implements Module {
 		$module_itm = $this->wire('modules')->get('Itm');
 		$item = $module_itm->get_item($itemID);
 		$item->setUom_sale($input->$rm->text('uom_sale'));
-		$item->setAllowdiscount($input->$rm->text('allowdiscount'));
+		$item->setAllow_discount($input->$rm->text('allow_discount'));
 		$item->setAssortmentcode($input->$rm->text('assortmentcode'));
 		$item->setAssortmentqty($input->$rm->text('assortmentqty'));
 		$saved = $item->save();
