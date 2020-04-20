@@ -38,12 +38,12 @@
 
 				if ($query_pickeditems->count()) {
 					$page->body .= $config->twig->render('warehouse/picking/provalley/scan/verify-whseitempick-lotserials.twig', ['page' => $page, 'scan' => $scan, 'items' => $query_pickeditems->find()]);
+					$page->body .= $html->div('class=mb-3');
 				} else {
 					$session->remove('verify_whseitempick_items');
 					$page->body .= $config->twig->render('warehouse/picking/provalley/scan/scan-form.twig', ['page' => $page]);
 				}
 			} else {
-
 				$query_phys = WhseitemphysicalcountQuery::create();
 				$query_phys->filterBySessionid(session_id());
 				$query_phys->filterByScan($scan);
@@ -65,12 +65,16 @@
 				} else {
 					$physicalitems = $query_phys->groupBy('itemid')->find();
 					$page->body .= $config->twig->render('warehouse/picking/provalley/scan/select-item-list.twig', ['page' => $page, 'items' => $physicalitems]);
+					$page->body .= $html->div('class=mb-3');
 				}
 			}
 		} else {
 			$page->body .= $config->twig->render('warehouse/picking/provalley/scan/scan-form.twig', ['page' => $page]);
 		}
-
+		
+		if (!$input->get->scan) {
+			$page->body .= $config->twig->render('warehouse/picking/provalley/picking-actions.twig', ['page' => $page]);
+		}
 		$page->body .= $config->twig->render('warehouse/picking/provalley/line-items.twig', ['page' => $page, 'lineitems' => $lines_query->find()]);
 
 		if ($session->removefromline) {
