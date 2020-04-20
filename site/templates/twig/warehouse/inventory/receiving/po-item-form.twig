@@ -1,4 +1,4 @@
-<form action="{{ page.formurl }}" method="post" class="allow-enterkey-submit" id="item-search-form">
+<form action="{{ page.formurl }}" method="post" class="allow-enterkey-submit" id="item-search-form" data-forcebin="{{ page.force_bin_itemlookup ? 'true' : 'false'}}">
 	<input type="hidden" name="action" value="receiving-search">
 	<input type="hidden" name="ponbr" value="{{ ponbr }}">
 	<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
@@ -11,13 +11,13 @@
 					<span class="fa fa-list" aria-hidden="true"></span> <span class="sr-only">Show Warehouse Bins</span>
 				</button>
 			</span>
-			<input type="text" class="form-control" id="binID" name="binID" placeholder="Bin ID" value="{{ page.has('bin') ? page.bin : '' }}">
+			<input type="text" class="form-control" id="binID" name="binID" placeholder="Bin ID" value="{{ page.has('bin') ? page.bin : '' }}" {{ page.force_bin_itemlookup ? 'autofocus' : ''}}>
 		</div>
 	</div>
 	<div class="form-group">
 		<label for="scan">Scan Barcode, UPC, Item ID, or  Lot / Serial #</label>
 		<div class="input-group">
-			<input type="text" class="form-control" name="scan" id="scan" placeholder="Barcode, UPC, Item ID, Lot / Serial #">
+			<input type="text" class="form-control" name="scan" id="scan" placeholder="Barcode, UPC, Item ID, Lot / Serial #" {{ page.force_bin_itemlookup == false ? 'autofocus' : ''}}>
 			<span class="input-group-append">
 				<button type="submit" class="btn btn-primary">
 					<i class="fa fa-search" aria-hidden="true"></i> Submit
