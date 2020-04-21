@@ -5,19 +5,29 @@
 
 	if ($input->requestMethod('POST') || $input->get->action) {
 		$rm = strtolower($input->requestMethod());
-		$code  = $input->$rm->text('code');
+		$code = $input->$rm->text('code');
 
 		if ($ar_codetables->validate_codetable($page->codetable)) {
 			$module_codetable = $ar_codetables->get_codetable_module($page->codetable);
 			$module_codetable->process_input($input);
 			$code = $module_codetable->code_exists($code) ? $code : false;
-			$session->redirect($page->get_codetable_viewURL($page->codetable, $code), $http301 = false);
+
+			if ($page->codetable == 'ctm') {
+				$action = $input->$rm->text('action');
+				if ($action == 'update-notes' || $action == 'update-notes') {
+					$url = $page->get_codetable_viewURL($page->codetable, $code);
+				} else {
+					$url = $page->get_codetable_focusURL($page->codetable, $code);
+				}
+			} else {
+				$url = $page->get_codetable_viewURL($page->codetable, $code);;
+			}
+			$session->redirect($url, $http301 = false);
 		}
 	}
 
 	if ($ar_codetables->validate_codetable($page->codetable)) {
 		$page->focus = $input->get->focus ? $input->get->text('focus') : '';
-
 		$module_codetable = $ar_codetables->get_codetable_module($page->codetable);
 		$page->headline = "$module_codetable->description Table";
 
@@ -26,8 +36,6 @@
 		if ($session->response_codetable) {
 			$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_codetable]);
 		}
-
-
 
 		if (file_exists(__DIR__."/ar-code-table-$page->codetable.php")) {
 			include(__DIR__."/ar-code-table-$page->codetable.php");
