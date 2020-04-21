@@ -55,7 +55,6 @@ class Itm extends WireData implements Module {
 			$url->query->set('itemID', $itemID);
 			$event->return = $url->getUrl();
 		});
-
 		$this->configs->inventory = $this->get_config_in();
 	}
 
@@ -119,7 +118,6 @@ class Itm extends WireData implements Module {
 	 */
 	public function get_new_item() {
 		$item = new ItemMasterItem();
-
 		$this->configs->inventory = $this->get_config_in();
 
 		if ($this->configs->inventory->use_pricegroup()) {
@@ -132,7 +130,7 @@ class Itm extends WireData implements Module {
 
 		$item->setItemtype($this->configs->inventory->default_itemtype);
 
-		$record->setTaxable('Y');
+		$item->setTaxable('Y');
 		$item->setAllow_backorder('Y');
 		$item->setAllow_discount('Y');
 		$item->setRequire_freight('N');
@@ -143,14 +141,14 @@ class Itm extends WireData implements Module {
 		$item->setUom_purchase($this->configs->inventory->default_uom_purchase);
 		$item->setPreference($this->configs->inventory->default_nafta_pref_code);
 		$item->setProducer($this->configs->inventory->default_nafta_producer);
-		$item->setDocumentation($this->configs->inventory->default_documentation);
+		$item->setDocumentation($this->configs->inventory->default_nafta_documentation);
 		$item->setBasestandardcost($this->configs->inventory->default_base_standard_cost);
 
 
 		if ($this->wire('modules')->get('DplusCustomer')->get_custID() == 'LINDST') {
 			$item->setStockcode('MM');
 		}
-
+		return $item;
 	}
 
 	/**

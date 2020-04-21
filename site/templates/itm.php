@@ -1,6 +1,13 @@
 <?php
 	$page->title = "ITM";
 	$itm = $modules->get('Itm');
+	$itm->init();
+	$html = $modules->get('HtmlWriter');
+	$exists = false;
+
+	if ($input->requestMethod('POST')) {
+		$itm->process_input($input)	;
+	}
 
 	if ($input->get->itemID) {
 		$itemID = $input->get->text('itemID');
@@ -9,19 +16,24 @@
 		$q->filterByItemid($itemID);
 
 		if ($q->count()) {
-			if ($input->requestMethod('POST')) {
-				$itm->process_input($input)	;
-			}
-
-			$page->title .= " $itemID";
+			$exists = true;
 			$item = $q->findOne();
+			$page->title .= " $itemID";
+		} elseif ($itemID == 'new') {
+			$exists = true;
+			$item = $itm->get_new_item();
+			$page->title .= " Creating New Item";
+		}
+
+		if ($exists) {
 			$page->customerlookupURL = $pages->get('pw_template=mci-lookup')->url;
 			$page->body .= $config->twig->render('items/itm/itm-links.twig', ['page' => $page, 'page_itm' => $page]);
 			$page->body .= $config->twig->render('items/itm/itm-form.twig', ['page' => $page, 'item' => $item, 'm_itm' => $itm]);
 			$page->body .= $config->twig->render("util/ajax-modal.twig");
-			$page->js   .= $config->twig->render("items/itm/js.twig", ['page' => $page]);
+			$page->js   .= $config->twig->render("items/itm/js.twig", ['page' => $page, 'validateurl' => $pages->get('pw_template=itm-json')->url, 'item' => $item]);
+			$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 		} else {
-			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID $itemID not found in the Item Master"]);
+			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID '$itemID' not found in the Item Master"]);
 		}
 	} elseif ($input->get->q) {
 		$q = strtoupper($input->get->text('q'));
@@ -38,11 +50,14 @@
 			$query = $search_items->get_query();
 			$items = $query->paginate($input->pageNum, 10);
 			$page->searchURL = $page->url;
+
+			$page->body .= $html->a("href=$page->url?itemID=new|class=btn btn-secondary mb-2", $html->icon('fa fa-plus') . " Create Item");
 			$page->body .= $config->twig->render('items/vxm/search/item/item-search.twig', ['page' => $page, 'items' => $items]);
 			$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
 		}
 	} else {
 		$page->searchURL = $page->url;
+		$page->body .= $html->a("href=$page->url?itemID=new|class=btn btn-secondary mb-2", $html->icon('fa fa-plus') . " Create Item");
 		$page->body .= $config->twig->render('items/item-search.twig', ['page' => $page, 'items' => array()]);
 	}
 	include __DIR__ . "/basic-page.php";

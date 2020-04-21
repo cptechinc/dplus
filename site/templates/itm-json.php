@@ -7,6 +7,7 @@
 	if ($input->get->itemID) {
 		if ($lookup_item->lookup_itm($itemID)) {
 			$response['exists'] = true;
+			
 			if ($input->get->json) {
 				$fields = $input->get->array('fields', null, ['delimiter' => ","]);
 				$loader = $modules->get('LoadItem');
