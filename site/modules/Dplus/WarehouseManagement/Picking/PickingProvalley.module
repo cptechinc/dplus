@@ -2,7 +2,7 @@
 
 use Purl\Url;
 
-use InvsearchQuery, Invsearch;;
+use InvsearchQuery, Invsearch;
 use WhseitempickQuery, Whseitempick;
 use PickSalesOrderDetailQuery, PickSalesOrderDetail;
 use BarcodesQuery, Barcodes;
@@ -59,9 +59,9 @@ class PickingProvalley extends WireData implements Module {
 	 */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dpluso Warehouse Picking Functions Module for Provalley',
+			'title' => 'Dpluso Warehouse Picking Functions Module',
 			'version' => 101,
-			'summary' => 'Handles Dplus Picking Functions',
+			'summary' => 'Handles Dplus Functions',
 			'singular' => true,
 			'autoload' => false,
 		);
@@ -72,6 +72,8 @@ class PickingProvalley extends WireData implements Module {
 		$this->config = new WireData();
 		$this->config->inventory = $this->wire('modules')->get('ConfigsWarehouseInventory');
 		$this->config->picking   = $this->wire('modules')->get('ConfigsWarehousePicking');
+		$this->inventory = $this->wire('modules')->get('PickingInventoryManager');
+		$this->items = $this->wire('modules')->get('PickingOrderItems');
 	}
 
 	/**
@@ -80,6 +82,8 @@ class PickingProvalley extends WireData implements Module {
 	 */
 	public function set_sessionID($sessionID) {
 		$this->sessionID = $sessionID;
+		$this->inventory->sessionID = $sessionID;
+		$this->items->sessionID = $sessionID;
 	}
 
 	/**
@@ -88,6 +92,7 @@ class PickingProvalley extends WireData implements Module {
 	 */
 	public function set_ordn($ordn) {
 		$this->ordn = $ordn;
+		$this->items->ordn = $ordn;
 	}
 
 	/**
@@ -110,15 +115,6 @@ class PickingProvalley extends WireData implements Module {
 			$action = $values->text('action');
 
 			switch ($action) {
-				case 'add-barcode':
-					$this->add_barcode($input);
-					break;
-				case 'edit-barcode':
-					$this->edit_barcode_qty($input);
-					break;
-				case 'delete-barcode':
-					$this->delete_barcode_qty($input);
-					break;
 				case 'add-lotserials':
 					$this->add_lotserials($input);
 					break;
@@ -136,64 +132,40 @@ class PickingProvalley extends WireData implements Module {
 	}
 
 	/**
-	 * Adds Whseitempick records for each lotserial bin that is provided
+	 * Adds Whseitempick records for one lotserial
 	 *
 	 * @param WireInput $input
 	 */
 	public function add_lotserial(WireInput $input) {
-		$values = $input->post;
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
 		$itemID = $values->text('itemID');
-		$scan = $values->text('scan');
+		$lotserial = $values->text('lotserial');
+		$binID     = $values->text('binID');
+		$orderitem = $this->items->get_picksalesorderdetail_itemid($itemID);
+		$exists_onorder = $this->does_whseitempick_exist($orderitem, $lotserial, $binID);
 
-		$pickingline = $this->get_picksalesorderdetail_itemid($itemID);
+		if ($exists_onorder) {
+			$filters = ['linenbr' => $orderitem->linenbr, 'sublinenbr' => $orderitem->sublinenbr, 'lotserial' => $lotserial, 'bin' => $binID];
+			$q = $this->get_whseitempick_query($filters);
 
-		$query_exists = WhseitempickQuery::create();
-		$query_exists->filterBySessionid($pickingline->sessionid);
-		$query_exists->filterByOrdn($pickingline->ordernbr);
-		$query_exists->filterByItemid($pickingline->itemnbr);
+			$exists_fororderitem = boolval($q->count());
 
-		$qty       = $values->text("qty");
-		$binID     = $values->text("binID");
-		$lotref    = $values->text("lotserialref");
-		$lotserial = $values->text("lotserial");
-
-		$query_exists->filterByLotserial($lotserial);
-		$exists = $query_exists->count();
-
-		if ($pickingline->is_item_serialized()) {
-
-		} elseif ($pickingline->is_item_lotted() && $dplus_customer == 'provalley') {
-
-		} else {
-			$exists = false;
+			if ($exists_fororderitem) {
+				$qty = $values->text('qty');
+				$pickingitem = $q->findOne();
+				$pickingitem->setQty($pickingitem->qty + $qty);
+				$pickingitem->save();
+				$recordnumbers[] = $pickingitem->recordnumber;
+			} else {
+				$this->session->pickingerror = "$scan has been added to another line already";
+			}
+		}  else {
+			$pickingitem = $this->create_whseitempick_input($orderitem, $input);
+			$pickingitem->save();
 		}
-
-		if (!$exists) {
-			$item = $this->add_whseitempick($pickingline, $scan, $palletnbr = 1, $qty, $binID);
-			$item->setLotserialref($lotref);
-			$item->setLotserial($lotserial);
-			$item->save();
-		}
-		$this->send_finishline_request($pickingline->linenbr);
+		$this->send_finishline_request($orderitem->linenbr);
 		$this->wire('page')->fullURL->query->remove('scan');
-	}
-
-	public function remove_lotserial(WireInput $input) {
-		$values = $input->post;
-		$recordnumber = $values->int('recordnumber');
-		$linenbr      = $values->int('linenbr');
-		$sublinenbr   = $values->int('sublinenbr');
-		$this->send_removepickeditem_request($recordnumber);
-
-		$picking_master = WhseitempickQuery::create();
-		$picking_master->filterBySessionid($this->sessionID);
-		$picking_master->filterByOrdn($this->ordn);
-		$picking_master->filterByLinenbr($linenbr);
-		$picking_master->filterBySublinenbr($sublinenbr);
-		$picking_master->filterByRecordnumber($recordnumber);
-		$item = $picking_master->findOne();
-		//$item->delete();
-		$this->session->removefromline = $linenbr;
 	}
 
 	/**
@@ -202,17 +174,14 @@ class PickingProvalley extends WireData implements Module {
 	 * @param WireInput $input
 	 */
 	public function add_lotserials(WireInput $input) {
-		$values = $input->post;
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
 		$itemID = $values->text('itemID');
 		$scan = $values->text('scan');
-		$lotserialbins = $input->post->array('lotserialbins');
-		$pickingline = $this->get_picksalesorderdetail_itemid($itemID);
-		$recordnumbers = array();
 
-		$query_exists = WhseitempickQuery::create();
-		$query_exists->filterBySessionid($pickingline->sessionid);
-		$query_exists->filterByOrdn($pickingline->ordernbr);
-		$query_exists->filterByItemid($pickingline->itemnbr);
+		$lotserialbins = $input->post->array('lotserialbins');
+		$orderitem = $this->items->get_picksalesorderdetail_itemid($itemID);
+		$recordnumbers = array();
 
 		foreach ($lotserialbins as $lotserialbin) {
 			$qty       = $values->text("$lotserialbin-qty");
@@ -220,29 +189,67 @@ class PickingProvalley extends WireData implements Module {
 			$lotref    = $values->text("$lotserialbin-lotserialref");
 			$lotserial = $values->text("$lotserialbin-lotserial");
 
-			$query_exists->filterByLotserial($lotserial);
-			$exists = $query_exists->count();
+			// CHECKS if ITEM EXISTS ON ORDER
+			$exists_onorder = $this->does_whseitempick_exist($orderitem, $lotserial, $binID);
 
-			if ($pickingline->is_item_serialized()) {
+			if ($exists_onorder) {
+				$filters = ['linenbr' => $orderitem->linenbr, 'sublinenbr' => $orderitem->sublinenbr, 'lotserial' => $lotserial, 'bin' => $binID];
+				$q = $this->get_whseitempick_query($filters);
 
-			} elseif ($pickingline->is_item_lotted() && $dplus_customer == 'provalley') {
+				$exists_fororderitem = boolval($q->count());
 
+				if ($exists_fororderitem) {
+					$pickingitem = $q->findOne();
+					$pickingitem->setQty($pickingitem->qty + $qty);
+					$pickingitem->save();
+					$recordnumbers[] = $pickingitem->recordnumber;
+				} else {
+					$this->session->pickingerror = "$lotserial has been added to another line already";
+				}
 			} else {
-				$exists = false;
-			}
+				$values->lotserial = $lotserial;
+				$values->binID = $binID;
+				$values->lotserialref = $lotref;
+				$values->qty = $qty;
 
-			if (!$exists) {
-				$item = $this->add_whseitempick($pickingline, $scan, $palletnbr = 1, $qty, $binID);
-				$item->setLotserialref($lotref);
-				$item->setLotserial($lotserial);
-				$item->save();
-				$recordnumbers[] = $item->recordnumber;
+				if ($qty + 0 > 0) {
+					$pickingitem = $this->create_whseitempick_input($orderitem, $input);
+					$pickingitem->save();
+					$recordnumbers[] = $pickingitem->recordnumber;
+				}
 			}
-
 		}
-		$this->session->verify_whseitempick_itemID  = $itemID;
-		$this->session->verify_whseitempick_linenbr = $pickline->linenbr;
-		$this->session->verify_whseitempick_items   = $recordnumbers;
+
+		if ($this->config->picking->verify_whseitempicks) {
+			$this->session->verify_whseitempick_itemID  = $itemID;
+			$this->session->verify_whseitempick_linenbr = $orderitem->linenbr;
+			$this->session->verify_whseitempick_items   = $recordnumbers;
+		} else {
+			$this->wire('page')->fullURL->query->remove('scan');
+			$this->send_finishline_request($orderitem->linenbr);
+		}
+	}
+
+	/**
+	 * Removes Picked Lotserial for this Order
+	 * @param  WireInput $input [description]
+	 * @return void
+	 */
+	public function remove_lotserial(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$recordnumber = $values->int('recordnumber');
+		$linenbr      = $values->int('linenbr');
+		$sublinenbr   = $values->int('sublinenbr');
+		$this->send_removepickeditem_request($recordnumber);
+
+		$picking_master = $this->get_whseitempick_query();
+		$picking_master->filterByLinenbr($linenbr);
+		$picking_master->filterBySublinenbr($sublinenbr);
+		$picking_master->filterByRecordnumber($recordnumber);
+		$item = $picking_master->findOne();
+		//$item->delete();
+		$this->session->removefromline = $linenbr;
 	}
 
 	/**
@@ -257,11 +264,8 @@ class PickingProvalley extends WireData implements Module {
 		$linenbr = 0;
 
 		foreach ($recordnumbers as $recordnumber) {
-			$query_picked = WhseitempickQuery::create();
-			$query_picked->filterBySessionid(session_id());
-			$query_picked->filterByOrdn($this->ordn);
-			$query_picked->filterByBarcode($scan);
-			$whseitempick = $query_picked->findOneByRecordnumber($recordnumber);
+			$query_picked = $this->get_whseitempick_query(array('barcode' => $scan, 'recordnumber' => $recordnumber));
+			$whseitempick = $query_picked->findOne();
 
 			$qty       = $values->text("qty-$recordnumber");
 			$binID     = $values->text("binID-$recordnumber");
@@ -284,6 +288,91 @@ class PickingProvalley extends WireData implements Module {
 		$this->send_finishline_request($linenbr, $debug);
 	}
 
+	/**
+	 * Returns if we have picked this item already for this order
+	 * @param  PickSalesOrderDetail $orderitem Order Item to pick
+	 * @param  string               $lotserial Lot / Serial Number
+	 * @return bool
+	 */
+	public function does_whseitempick_exist(PickSalesOrderDetail $orderitem, $lotserial, $binID = '') {
+		$q = $this->get_whseitempick_query();
+		$q->filterByItemid($orderitem->itemnbr);
+		$q->filterByLotserial($lotserial);
+
+		if ($binID) {
+			$q->filterByBin($binID);
+		}
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return WhseitempickQuery
+	 * @param  array  $filters Column or aliases to filter on ex. array('linenbr' => 2)
+	 * @return WhseitempickQuery
+	 */
+	public function get_whseitempick_query($filters = null) {
+		$q = WhseitempickQuery::create();
+		$q->filterBySessionid($this->sessionID);
+		$q->filterByOrdn($this->ordn);
+
+		if (is_array($filters)) {
+			foreach ($filters as $filter => $value) {
+				$function = 'filterBy' . ucfirst($filter);
+				$q->$function($value);
+			}
+		}
+		return $q;
+	}
+
+	/**
+	 * Return Whseitempick with values set from the Sales Order Item and Input
+	 * @param  PickSalesOrderDetail $orderitem Order Item to pick
+	 * @param  WireInput            $input
+	 * @return Whseitempick
+	 */
+	public function create_whseitempick_input(PickSalesOrderDetail $orderitem, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$dplus_customer = $this->wire('config')->company;
+		$picking_master = WhseitempickQuery::create();
+
+		$item = new Whseitempick();
+		$item->setSessionid($orderitem->sessionid);
+		$item->setOrdn($orderitem->ordernbr);
+		$item->setItemid($orderitem->itemnbr);
+		$item->setRecordnumber($picking_master->get_max_order_subline_recordnumber($orderitem->sessionid, $orderitem->ordernbr, $orderitem->linenbr, $orderitem->sublinenbr) + 1);
+		$item->setPalletnbr($values->palletnbr ? $values->text('palletnbr') : 1);
+		$item->setLinenbr($orderitem->linenbr);
+		$item->setSublinenbr($orderitem->sublinenbr);
+		$item->setBarcode($values->text('scan'));
+		$item->setBin($values->text('binID'));
+		$item->setLotserialref($values->text('lotserialref'));
+		$item->setLotserial($values->text('lotserial'));
+
+		if ($orderitem->is_item_serialized()) {
+			$item->setQty(1);
+		} else {
+			// QTY could be float
+			$item->setQty($values->text('qty'));
+		}
+		return $item;
+	}
+
+	/**
+	 * Returns the Whsesession for this Session ID
+	 * @return Whsesession
+	 */
+	public function get_whsesession() {
+		return WhsesessionQuery::create()->findOneBySessionid($this->sessionID);
+	}
+
+	/**
+	 * Sends HTTP GET request to Save the Line
+	 * @param  int    $linenbr    Line Number to save
+	 * @param  bool   $debug      Send Debug Flag?
+	 * @return void
+	 */
 	public function send_finishline_request($linenbr, $debug = false) {
 		$http = new WireHttp();
 		$url = new Url('127.0.0.1');
@@ -295,6 +384,12 @@ class PickingProvalley extends WireData implements Module {
 		$http->get($url->getUrl());
 	}
 
+	/**
+	 * Sends HTTP GET request to remove picked item
+	 * @param  int    $linenbr    Line Number to save
+	 * @param  bool   $debug      Send Debug Flag?
+	 * @return void
+	 */
 	public function send_removepickeditem_request($recordnumber, $debug = false) {
 		$http = new WireHttp();
 		$url = new Url('127.0.0.1');
@@ -304,106 +399,5 @@ class PickingProvalley extends WireData implements Module {
 		$url->query->set('sessionID', session_id());
 		$url->query->set('debug', $debug);
 		$http->get($url->getUrl());
-	}
-
-	/**
-	 * Return PickSalesOrderDetail that matches ItemID
-	 * // HANDLE CHOOSING CORRECT LINE
-	 *
-	 * @param  string $itemID Item ID
-	 * @return PickSalesOrderDetail
-	 */
-	public function get_picksalesorderdetail_itemid($itemID) {
-		$picking_master = PickSalesOrderDetailQuery::create();
-		$picking_master->filterBySessionidOrder($this->sessionID, $this->ordn);
-		$picking_master->filterByitemid($itemID);
-		return $picking_master->findOne();
-	}
-
-	/**
-	 * Inserts record into Whseitempick for this PickSalesOrderDetail
-	 *
-	 * @param PickSalesOrderDetail $pickitem  Item to add
-	 * @param string               $barcode   Barcode Scanned
-	 * @param int                  $palletnbr Pallet
-	 * @param int                  $qty       Qty to add
-	 * @param string               $binID     Bin Picked from
-	 */
-	public function add_whseitempick(PickSalesOrderDetail $pickitem, $barcode, $palletnbr = 1, $qty = 1, $binID = '') {
-		$dplus_customer = $this->wire('config')->company;
-		$picking_master = WhseitempickQuery::create();
-		$item = new Whseitempick();
-		$item->setSessionid($pickitem->sessionid);
-		$item->setOrdn($pickitem->ordernbr);
-		$item->setItemid($pickitem->itemnbr);
-		$item->setRecordnumber($picking_master->get_max_order_subline_recordnumber($pickitem->sessionid, $pickitem->ordernbr, $pickitem->linenbr, $pickitem->sublinenbr) + 1);
-		$item->setPalletnbr($palletnbr);
-		$item->setLinenbr($pickitem->linenbr);
-		$item->setSublinenbr($pickitem->sublinenbr);
-		$item->setBarcode($barcode);
-		$item->setBin($binID);
-
-		if ($pickitem->is_item_serialized()) {
-			$item->setQty(1);
-		} else {
-			if ($barcode == $pickitem->itemid || $pickitem->is_item_lotted()) {
-				$item->setQty($qty);
-			} elseif (BarcodesQuery::create()->get_barcode_itemid($barcode) == $pickitem->itemid) {
-				$barcode_info = BarcodesQuery::create()->findOneByBarcode($barcode);
-				$item->setQty($barcode_info->qty);
-			} else {
-				$item->setQty($qty);
-			}
-		}
-		$item->save();
-		return $item;
-	}
-
-	/**
-	 * Updates the Whseitempick record
-	 *
-	 * @param  WireInput $input Values for barcode, record, qty
-	 * @return void
-	 */
-	public function edit_barcode_qty(WireInput $input) {
-		$values = $input->post;
-		$barcode   = $values->text('barcode');
-		$palletnbr = $values->int('palletnbr');
-		$recordnbr = $values->int('recordnbr');
-		$qty       = $values->int('qty');
-
-		$picking_master = WhseitempickQuery::create();
-		$picking_master->filterBySessionidOrder($this->sessionID, $this->ordn);
-		$picking_master->filterByLinenbrSublinenbr($this->linenbr, $this->sublinenbr);
-		$picking_master->filterByRecordnumber($recordnbr);
-
-		$item = $picking_master->findOne();
-		$item->setQty($qty);
-		$item->save();
-	}
-
-	/**
-	 * Deletes an Whseitempick record
-	 *
-	 * @param  WireInput $input Values for barcode, record, qty
-	 * @return void
-	 */
-	public function delete_barcode_qty(WireInput $input) {
-		$values = $input->post;
-		$barcode    = $values->text('barcode');
-		$palletnbr  = $values->int('palletnbr');
-		$recordnbr  = $values->int('recordnbr');
-		$linenbr    = $values->int('linenbr');
-		$sublinenbr = $values->int('sublinenbr');
-
-		$picking_master = WhseitempickQuery::create();
-		$picking_master->filterBySessionidOrder($this->sessionID, $this->ordn);
-		$picking_master->filterByLinenbrSublinenbr($linenbr, $sublinenbr);
-		$picking_master->filterByRecordnumber($recordnbr);
-
-		$item = $picking_master->findOne();
-		$item->delete();
-		$this->session->removefromline = $linenbr;
-		$this->send_finishline_request($linenbr);
 	}
 }
