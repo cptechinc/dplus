@@ -39,24 +39,29 @@ $(function() {
 		}
 	});
 
-	var form = $('form'),
+	$('#code-edit-form'),
     origForm = form.serialize();
 
-	$("body").on("click", "a:not(.form_button)", function(e) {
+	$("body").on("click", "a:not(.form_button, .page-link, .link)", function(e) {
 		if (form.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);
 
 			swal({
-				title: 'Code not saved!',
-				text: "Please save the System Optional Code before leaving.",
+				title: 'Changes have occurred to this record.',
+				text: "Do you want to save?",
 				type: 'warning',
 				showCancelButton: true,
-				showConfirmButton: false,
-				cancelButtonClass: 'btn btn-info',
+				confirmButtonClass: 'btn btn-success',
+				cancelButtonClass: 'btn btn-danger',
 				buttonsStyling: false,
-				cancelButtonText: 'OK'
-			});
+				cancelButtonText: 'No',
+				confirmButtonText: 'Yes'
+			}).then(function (confirm) {
+				if (confirm) {
+					form.submit();
+				}
+			}).catch(swal.noop);
 		}
 	});
 
