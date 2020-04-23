@@ -234,6 +234,12 @@ class DpagesMso extends Dpages implements Module {
 			$event->return = $this->get_codetable_code_editURL($table, $code);
 		});
 
+		$this->addHook('Page(pw_template=so-code-table)::get_codetable_focusURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_focusURL($table, $code);
+		});
+
 		$this->addHook('Page(pw_template=so-code-table)::get_codetable_listURL', function($event) {
 			$table = $event->arguments(0);
 			$code = $event->arguments(1);
@@ -405,6 +411,17 @@ class DpagesMso extends Dpages implements Module {
 			$url->query->set('sysop', $code);
 		} else {
 			$url->query->set('code', $code);
+		}
+		return $url->getUrl();
+	}
+
+	public function get_codetable_focusURL($table, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=so-code-table, name=$table")->url);
+
+		if ($table == 'soptm') {
+			$url->query->set('sysop', $code);
+		} else {
+			$url->query->set('socus', $code);
 		}
 		return $url->getUrl();
 	}
