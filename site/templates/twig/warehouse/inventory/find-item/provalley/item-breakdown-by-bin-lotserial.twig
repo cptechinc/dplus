@@ -10,7 +10,7 @@
 						<strong>Lot Ref:</strong> {{ lotserial.lotreference }}
 					</div>
 					<div class="col">
-						<strong>Weight:</strong> {{ lotserial.qty }}
+						<strong>Weight:</strong> {{ lotserial.qty|number_format(2, '.', ',') }}
 					</div>
 					<div class="col">
 						<strong>Production Date:</strong> {{ lotserial.expirationdate }}

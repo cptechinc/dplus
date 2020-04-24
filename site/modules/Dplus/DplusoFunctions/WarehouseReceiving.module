@@ -2,6 +2,7 @@
 
 use Purl\Url;
 use PurchaseOrderQuery, PurchaseOrder;
+use ItemMasterItemQuery, ItemMasterItem;
 
 class WarehouseReceiving extends WireData implements Module {
 	/**
@@ -79,7 +80,8 @@ class WarehouseReceiving extends WireData implements Module {
 				'itemid'         => $item->itemid,
 				'qty_ordered'    => intval($item->qty_ordered),
 				'qty_received'   => $config->company == 'provalley' ? $item->count_receivedlots() : $item->qty_received,
-				'lotserialcount' => $item->count_receivedlots()
+				'lotserialcount' => $item->count_receivedlots(),
+				'type'           => ItemMasterItemQuery::create()->get_itemtype($item->itemid)
 			);
 		}
 		return $js;
@@ -93,7 +95,7 @@ class WarehouseReceiving extends WireData implements Module {
 	public function get_jsconfig() {
 		$config = $this->wire('modules')->get('ConfigsWarehouseInventory');
 		$js = array(
-			'receive_lotserial_as_single' => boolval($config->receive_lotserial_as_single),
+			'receive_lotserial_as_single' => $config->receive_lotserial_as_single,
 			//'receive_qty_label'           => $config->receive_qty_label
 		);
 		return $js;

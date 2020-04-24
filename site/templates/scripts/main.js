@@ -356,3 +356,12 @@ Array.prototype.contains = function ( needle ) {
 	}
 	return false;
 }
+
+// CREATE DEFAULT SWEET ALERT
+const swal2 = Swal.mixin({
+	customClass: {
+		confirmButton: 'btn btn-success mr-3',
+		cancelButton: 'btn btn-danger'
+	},
+	buttonsStyling: false
+})

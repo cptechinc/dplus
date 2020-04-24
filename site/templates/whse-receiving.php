@@ -13,6 +13,7 @@
 		$warehouse_receiving->set_ponbr($ponbr);
 		$config->inventory = $modules->get('ConfigsWarehouseInventory');
 		$page->bin = $config->inventory->physicalcount_savebin ? $session->receiving_bin : '';
+		$page->force_bin_itemlookup = $config->inventory->receive_force_bin_itemlookup;
 
 		if ($warehouse_receiving->purchaseorder_exists()) {
 			$purchaseorder = $warehouse_receiving->get_purchaseorder();
@@ -116,7 +117,7 @@
 				$href = $page->submit_receiptURL($ponbr);
 				$page->body .= $html->a("href=$href|class=btn btn-success", $html->icon('fa fa-floppy-o') . " Post");
 			}
-			
+
 			$page->body .= $config->twig->render('warehouse/inventory/bins-modal.twig', ['warehouse' => $warehouse]);
 			$bins = WarehouseBinQuery::create()->get_warehousebins($whsesession->whseid)->toArray();
 			$jsconfig = array('warehouse' => array('id' => $whsesession->whseid, 'binarrangement' => $warehouse->get_binarrangementdescription(), 'bins' => $bins), 'items' => $warehouse_receiving->get_purchaseorder_recevingdetails_js(), 'config_receive' => $warehouse_receiving->get_jsconfig());

@@ -1,7 +1,7 @@
 <div class="d-flex justify-content-between p-2 mb-3">
 	<strong>Bins:</strong> {{ inventory.count_itembins_itemid(item.sessionid, item.itemid) }}
 	<strong>Boxes:</strong> {{ inventory.count_lotserials_itemid(item.sessionid, item.itemid) }}
-	<strong>Total Weight:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid) }}
+	<strong>Total Weight:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid)|number_format(2, '.', ',') }}
 	{% if (not page.is_print()) %}
 		<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ item.itemid|attrJS }}-bins" aria-expanded="false" aria-controls="{{ item.itemid }}-bins">
 			Show / Hide Bins
@@ -27,7 +27,7 @@
 							<strong>Boxes:</strong> {{ inventory.count_lotserials_itemid(item.sessionid, item.itemid, binitem.bin) }}
 						</div>
 						<div class="col">
-							<strong>Total Weight:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid, binitem.bin) }}
+							<strong>Total Weight:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid, binitem.bin)|number_format(2, '.', ',') }}
 						</div>
 						<div class="col">
 							{% if (not page.is_print()) %}

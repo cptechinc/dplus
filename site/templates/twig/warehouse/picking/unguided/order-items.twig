@@ -1,10 +1,3 @@
-<div class="form-group">
-	<a href="{{ page.get_finishorderURL() }}" class="btn btn-success">
-		<i class="fa fa-floppy-o" aria-hidden="true"></i> Finish Picking
-	</a>
-	&nbsp;
-	<a href="{{ page.get_exitorderURL() }}" class="btn btn-danger exit-order">Exit Order</a>
-</div>
 <div class="list-group">
 	<div class="list-group-item">
 		<div class="row">
@@ -37,7 +30,7 @@
 
 					{% if item.count_pickeditems() > item.qtyordered %}
 						<br>
-						<small> You are Picking more boxes than what was ordered </small>
+						<small> You are Picking more qty than what was ordered </small>
 					{% endif %}
 				</div>
 				<div class="col-sm-1">{{ item.qtyordered }}</div>
@@ -62,7 +55,7 @@
 					<div class="col-sm-1">Bin</div>
 					<div class="col-sm-2">Lotserial</div>
 					<div class="col-sm-2">Lot Reference</div>
-					<div class="col-sm-2">Weight</div>
+					<div class="col-sm-2">Qty</div>
 					<div class="col-sm-2">Actions</div>
 				</div>
 			</div>
@@ -74,7 +67,7 @@
 						<div class="col-sm-1">{{ lotserial.bin }}</div>
 						<div class="col-sm-2">{{ lotserial.lotserial }}</div>
 						<div class="col-sm-2">{{ lotserial.lotserialref }}</div>
-						<div class="col-sm-2">{{ lotserial.qty|number_format(2, '.', ',') }}</div>
+						<div class="col-sm-2">{{ lotserial.qty }}</div>
 						<div class="col-sm-2">
 							<form action="{{ page.fullURL.getUrl() }}" method="post">
 								<input type="hidden" name="action" value="remove-lotserial">

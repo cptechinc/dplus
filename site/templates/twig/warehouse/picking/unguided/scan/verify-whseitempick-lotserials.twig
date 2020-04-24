@@ -35,8 +35,8 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label for="qty-{{ item.recordnumber }}">Weight</label>
-						<input type="text" class="form-control-plaintext" name="qty-{{ item.recordnumber }}" id="qty-{{ item.recordnumber }}" value="{{ item.qty|number_format(2, '.', ',')  }}" readonly>
+						<label for="qty-{{ item.recordnumber }}">Qty</label>
+						<input type="text" class="form-control" name="qty-{{ item.recordnumber }}" id="qty-{{ item.recordnumber }}" value="{{ item.qty }}">
 					</div>
 				</div>
 			</div>

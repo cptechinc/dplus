@@ -39,7 +39,7 @@
 				}
 			}
 			$page->body = "<div class='row'>";
-				$page->body .= $html->div('class=col-sm-2', $toolbar);
+				$page->body .= $html->div('class=col-sm-2 pl-0', $toolbar);
 				$page->body .= $html->div('class=col-sm-10', $links.$description.$itemdata.$stock);
 			$page->body .= "</div>";
 		} else {
@@ -50,7 +50,7 @@
 		$q = $input->get->q ? $input->get->text('q') : '';
 		$page->title = $q ? "II: results for '$q'" : $page->title;
 
-		if ($lookup_ii->lookup($q)) {
+		if ($lookup_ii->lookup(strtoupper($q))) {
 			$session->redirect($page->get_itemURL($lookup_ii->itemID));
 		} else {
 			$filter_itm = $modules->get('FilterItemMaster');

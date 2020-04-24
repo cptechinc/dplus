@@ -183,28 +183,17 @@
 			break;
 		case 'finish-item':
 			$whsesession = WhsesessionQuery::create()->findOneBySessionid($sessionID);
-			$data = array("DBNAME=$dplusdb", 'ACCEPTITEM', "ORDERNBR=$whsesession->ordernbr", "LINENBR=$item->linenbr", "ITEMID=$item->itemnbr");
+			$linenbr = $input->get->int('linenbr');
+			$pickitem = PickSalesOrderDetailQuery::create()->filterBySessionidOrder($sessionID, $whsesession->ordernbr)->findOneByLinenbr($linenbr);
+			$data = array("DBNAME=$dplusdb", 'ACCEPTITEM', "ORDERNBR=$whsesession->ordernbr");
 
-			if ($whsesession->is_picking()) {
-				$item = PickSalesOrderDetailQuery::create()->findOneBySessionid($sessionID);
-				$totalpicked = $item->get_userpickedtotal();
-				$data[] = "ITEMQTY=$totalpicked";
-			} elseif ($whsesession->is_pickingpacking()) {
-				$item = PickSalesOrderDetailQuery::create()->findOneBySessionid($sessionID);
-				$pallet_totals = $item->get_userpickedtotalsbypallet();
-
-				foreach ($pallet_totals as $pallet) {
-					$palletnbr = str_pad($pallet['palletnbr'], 4, ' ');
-					$qty = str_pad($pallet['qty'], 10, ' ');
-					$data[] = "PALLETNBR=$palletnbr|QTY=$qty";
-				}
-			} elseif ($whsesession->is_pickingunguided()) {
+			if ($whsesession->is_pickingunguided()) {
 				$linenbr = $input->get->int('linenbr');
 				$pickitem = PickSalesOrderDetailQuery::create()->filterBySessionidOrder($sessionID, $whsesession->ordernbr)->findOneByLinenbr($linenbr);
-
 				$data = array("DBNAME=$dplusdb", 'ACCEPTITEM', "ORDERNBR=$whsesession->ordernbr", "LINENBR=$pickitem->linenbr", "ITEMID=$pickitem->itemnbr");
+				$itemmaster_query = ItemMasterItemQuery::create();
 
-				if ($pickitem->is_item_serialized() || $pickitem->is_item_lotted()) {
+				if ($itemmaster_query->is_item_serialized($pickitem->itemnbr) || $itemmaster_query->is_item_lotted($pickitem->itemnbr)) {
 					$barcodes = $pickitem->get_userpickedtotalsbylotserial();
 
 					foreach ($barcodes as $barcode) {
@@ -212,7 +201,8 @@
 					}
 				} else {
 					$barcodes = $pickitem->get_userpickedtotalsbybin();
-					foreach ($barcodes as $barcode) {
+
+					foreach ($barcodes as $barcodse) {
 						$binID     = str_pad($barcode['bin'], 8, ' ');
 						$lotserial = str_pad('', 20, ' ');
 						$qty       = $barcode['qty'];
@@ -225,7 +215,6 @@
 					$url->query->remove('linenbr');
 					$input->$requestmethod->page = $url->getUrl();
 				}
-
 			}
 			$session->loc = $input->$requestmethod->text('page');
 			//WhseitempickQuery::create()->filterBySessionidOrderLinenbr(session_id(), $whsesession->ordn, $linenbr)->delete();
