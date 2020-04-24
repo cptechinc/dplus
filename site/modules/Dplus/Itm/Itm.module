@@ -155,16 +155,32 @@ class Itm extends WireData implements Module {
 	 * Takes Input, validates it's for one of the code tables
 	 * Processes it, and if updated sends request to dplus
 	 *
-	 * TODO:
-	 *
 	 * @param  WireInput $input Input
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+
+		if ($input->$rm->text('action') == 'update-notes' || $input->$rm->text('action') == 'delete-notes') {
+			$module_notes = $this->wire('modules')->get('QnotesItem');
+			$module_notes->process_input($input);
+		} else {
+			$this->process_input_itm($input);
+		}
+	}
+
+	/**
+	 * Takes Input, validates it's for an Item
+	 * Updates Item
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input_itm(WireInput $input) {
 		$this->configs->inventory = $this->get_config_in();
 		$rm = strtolower($input->requestMethod());
 		$itemID = $input->$rm->text('itemID');
-
 		$record = $this->get_create_item($itemID);
 
 		if ($input->$rm->text('action') == 'remove-itm-item') {
@@ -186,6 +202,7 @@ class Itm extends WireData implements Module {
 		if ($input->$rm->action) {
 			$response = $this->save_and_process_response($record);
 			$response->set_saved_itm($response->success);
+			$this->wire('page')->fullURL->query->set('itemID', $record->itemid);
 			$this->wire('session')->response_itm = $response;
 		}
 	}
