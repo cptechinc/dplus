@@ -17,7 +17,7 @@
 				if ($action == 'update-notes' || $action == 'update-notes') {
 					$url = $page->get_codetable_viewURL($page->codetable, $code);
 				} else {
-					$url = $page->get_codetable_focusURL($page->codetable, $code);
+					$url = $page->get_codetable_listURL($page->codetable, $code);
 				}
 			} else {
 				$url = $page->get_codetable_viewURL($page->codetable, $code);;
