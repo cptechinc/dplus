@@ -37,18 +37,17 @@ $(function() {
 	$("body").on("click", "button[value=remove-vxm-item]", function(e) {
 		e.preventDefault();
 
-		swal({
+		swal2.fire({
 			title: "Remove VXM Item?",
 			text: "Are you sure you want to remove this VXM Item?",
 			type: 'warning',
 			showCancelButton: true,
-			confirmButtonClass: 'btn btn-success',
-			cancelButtonClass: 'btn btn-danger',
-			buttonsStyling: false,
 			confirmButtonText: 'Yes!'
 		}).then(function (result) {
-			form_vxm.submit();
-		}).catch(swal.noop);
+			if (result.value) {
+				form_vxm.submit();
+			}
+		});
 	});
 
 
@@ -112,17 +111,17 @@ $(function() {
 			if (typeof valid  === 'string' || valid  instanceof String) {
 				var msg = valid;
 
-				swal({
+				swal2.fire({
 					title: "Overwrite Primary PO Ordercode?",
 					text: msg,
-					type: 'warning',
+					icon: 'warning',
 					showCancelButton: true,
 					confirmButtonClass: 'btn btn-success',
 					cancelButtonClass: 'btn btn-danger',
 					buttonsStyling: false,
 					confirmButtonText: 'Yes!'
 				}).then(function (result) {
-					if (result) {
+					if (result.value) {
 						input_validatedpoordercode.val('true');
 						form_vxm.submit();
 					}
