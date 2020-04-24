@@ -13,7 +13,12 @@
 		</a>
 		&nbsp;
 
-		{% if input.get.text('code') or input.get.text('sysop') %}
+		{% if input.get.text('system') and input.get.text('code') %}
+			<a href="{{ page.get_codetable_list_sysopURL(page.codetable, input.get.text('system'), input.get.text('code')) }}" class="btn btn-primary back-to-list">
+				<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to {{ page.title }}
+			</a>
+			&nbsp;
+		{% elseif input.get.text('code') or input.get.text('sysop') %}
 			<a href="{{ page.get_codetable_listURL(page.codetable, input.get.text('code')) }}" class="btn btn-primary back-to-list">
 				<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to {{ page.title }}
 			</a>
