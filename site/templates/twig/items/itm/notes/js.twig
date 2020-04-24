@@ -1,0 +1,6 @@
+$(function() {
+	$('#notes-internal-modal').on('shown.bs.modal', function (e) {
+		var modal = $(this);
+		modal.find('textarea[name=note]').focus();
+	});
+});
