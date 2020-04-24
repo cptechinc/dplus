@@ -6,18 +6,27 @@
 	$exists = false;
 
 	if ($input->requestMethod('POST')) {
-		$itm->process_input($input)	;
+		$itm->process_input($input);
+		$session->redirect($page->fullURL->getUrl());
 	}
+
+	if ($session->response_itm) {
+		$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_itm]);
+		$session->remove('response_itm');
+	}
+
+	if ($session->response_qnote) {
+		$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
+		$session->remove('response_qnote');
+	}
+
 
 	if ($input->get->itemID) {
 		$itemID = $input->get->text('itemID');
 
-		$q = ItemMasterItemQuery::create();
-		$q->filterByItemid($itemID);
-
-		if ($q->count()) {
+		if ($itm->item_exists($itemID)) {
 			$exists = true;
-			$item = $q->findOne();
+			$item = $itm->get_item($itemID);
 			$page->title .= ": $itemID";
 		} elseif ($itemID == 'new') {
 			$exists = true;
@@ -29,8 +38,17 @@
 			$page->customerlookupURL = $pages->get('pw_template=mci-lookup')->url;
 			$page->body .= $config->twig->render('items/itm/itm-links.twig', ['page' => $page, 'page_itm' => $page]);
 			$page->body .= $config->twig->render('items/itm/itm-form.twig', ['page' => $page, 'item' => $item, 'm_itm' => $itm]);
-			$page->body .= $config->twig->render("util/ajax-modal.twig");
 			$page->js   .= $config->twig->render("items/itm/js.twig", ['page' => $page, 'validateurl' => $pages->get('pw_template=itm-json')->url, 'item' => $item]);
+
+			if ($itm->item_exists($itemID)) {
+				$page->body .= $html->div('class=mb-3');
+				$module_notes = $modules->get('QnotesItem');
+				$page->body .= $config->twig->render('items/itm/notes/notes.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes]);
+				$page->body .= $config->twig->render('items/itm/notes/notes-internal-modal.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes]);
+				$page->js   .= $config->twig->render("items/itm/notes/js.twig", ['page' => $page, 'validateurl' => $pages->get('pw_template=itm-json')->url, 'item' => $item]);
+			}
+			$page->body .= $config->twig->render("util/ajax-modal.twig");
+
 			$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 		} else {
 			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID '$itemID' not found in the Item Master"]);
