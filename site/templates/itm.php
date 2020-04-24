@@ -18,11 +18,11 @@
 		if ($q->count()) {
 			$exists = true;
 			$item = $q->findOne();
-			$page->title .= " $itemID";
+			$page->title .= ": $itemID";
 		} elseif ($itemID == 'new') {
 			$exists = true;
 			$item = $itm->get_new_item();
-			$page->title .= " Creating New Item";
+			$page->title .= ": New Item";
 		}
 
 		if ($exists) {

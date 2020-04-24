@@ -1,5 +1,6 @@
 {# m_itm is an instance of module Itm #}
 <form action="{{ page.fullURL.getURL() }}" method="POST" id="itm-form" data-itemID="{{ item.itemid }}">
+	<input type="hidden" name="action" value="update-itm">
 	<div class="row">
 		<div class="col-sm-8">
 			{% include 'items/itm/form/form-left.twig' %}
