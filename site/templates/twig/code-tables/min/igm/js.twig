@@ -51,29 +51,32 @@ $(function() {
 		}
 	});
 
-	var form = $('form'),
-    origForm = form.serialize();
+	var form = $('#code-edit-form'),
+	origForm = form.serialize();
 
-	$("body").on("click", "a:not(.form_button)", function(e) {
+	$("body").on("click", "a:not(#code-edit-form .form_button, #ajax-modal a)", function(e) {
 		if (form.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);
+			var href = a.attr('href');
 
-			swal({
-				title: 'Changes have occurred to this record.',
-				text: "Do you want to save?",
-				type: 'warning',
+			swal2.fire({
+				title: 'Changes have occurred!',
+				text: 'Do you want to save?',
+				icon: 'warning',
 				showCancelButton: true,
-				confirmButtonClass: 'btn btn-success',
-				cancelButtonClass: 'btn btn-danger',
-				buttonsStyling: false,
+				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
 				cancelButtonText: 'No',
-				confirmButtonText: 'Yes'
-			}).then(function (confirm) {
-				if (confirm) {
-					form.submit();
+			}).then((result) => {
+				if (result.value) {
+					form.find('button[type=submit]').click();
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					// Send HTTP GET Request to remove Record Lock
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
 				}
-			}).catch(swal.noop);
+			});
 		}
 	});
 
