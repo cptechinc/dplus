@@ -96,19 +96,6 @@ class DpagesMsa extends Dpages implements Module {
 			$event->return = $this->get_codetable_listURL($table, $code);
 		});
 
-		$this->addHook('Page(pw_template=msa-sysop|msa-lgrp)::get_codetable_focusURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_focusURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=msa-sysop|msa-lgrp)::get_codetable_focus_sysopURL', function($event) {
-			$table = $event->arguments(0);
-			$system = $event->arguments(1);
-			$code = $event->arguments(2);
-			$event->return = $this->get_codetable_focusURL($table, $system, $code);
-		});
-
 		$this->addHook('Page(pw_template=msa-sysop)::get_codetable_list_sysopURL', function($event) {
 			$table = $event->arguments(0);
 			$system = $event->arguments(1);
@@ -126,19 +113,6 @@ class DpagesMsa extends Dpages implements Module {
 		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop|msa-lgrp, name=$table")->url);
 		$code = str_replace(' ', '-', $code);
 		$url->query->set('focus', $code);
-		return $url->getUrl();
-	}
-
-	public function get_codetable_focusURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop|msa-lgrp, name=$table")->url);
-		$url->query->set('focus', $code);
-		return $url->getUrl();
-	}
-
-	public function get_codetable_focus_sysopURL($table, $system, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop|msa-lgrp, name=$table")->url);
-		$code = str_replace(' ', '-', $code);
-		$url->query->set('focus', $system.'-'.$code);
 		return $url->getUrl();
 	}
 
