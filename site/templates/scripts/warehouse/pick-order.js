@@ -31,20 +31,17 @@ $(function() {
 		var button = $(this);
 
 		if (pickitem.item.qty.remaining > 0 && pickitem.item.qty.total_picked > 0) {
-			swal({
+			swal2.fire({
 				title: 'Are you sure?',
 				text: "You are trying to leave this bin without fulfilling bin item",
-				type: 'warning',
+				icon: 'warning',
 				showCancelButton: true,
-				confirmButtonClass: 'btn btn-success',
-				cancelButtonClass: 'btn btn-danger',
-				buttonsStyling: false,
 				confirmButtonText: 'Yes!'
 			}).then(function (result) {
-				if (result) {
+				if (result.value) {
 					swal_changebin();
 				}
-			}).catch(swal.noop);
+			});
 		} else {
 			swal_changebin();
 		}
@@ -106,29 +103,24 @@ $(function() {
 		var button = $(this);
 
 		if (pickitem.item.qty.remaining < 0) {
-			swal({
+			swal2.fire({
 				title: 'Are you sure?',
 				text: "You have picked too much",
-				type: 'warning',
-				confirmButtonClass: 'btn btn-success',
-				buttonsStyling: false,
+				icon: 'warning',
 				confirmButtonText: 'Continue'
 			});
 		} else if (pickitem.item.qty.remaining > 0) {
-			swal({
+			icon({
 				title: 'Are you sure?',
 				text: "You have not met the Quantity Requirements",
-				type: 'warning',
+				icon: 'warning',
 				showCancelButton: true,
-				confirmButtonClass: 'btn btn-success',
-				cancelButtonClass: 'btn btn-danger',
-				buttonsStyling: false,
 				confirmButtonText: 'Yes!'
 			}).then(function (result) {
-				if (result) {
+				if (result.value) {
 					window.location.href = button.attr('href');
 				}
-			}).catch(swal.noop);
+			});
 		} else {
 			window.location.href = button.attr('href');
 		}
@@ -138,20 +130,17 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 
-		swal({
+		swal2.fire({
 			title: 'Are you sure?',
 			text: "You are trying to leave this order",
-			type: 'warning',
+			icon: 'warning',
 			showCancelButton: true,
-			confirmButtonClass: 'btn btn-success',
-			cancelButtonClass: 'btn btn-danger',
-			buttonsStyling: false,
 			confirmButtonText: 'Yes!'
 		}).then(function (result) {
 			if (result) {
 				window.location.href = button.attr('href');
 			}
-		}).catch(swal.noop);
+		});
 	});
 
 	/////////////////////////////////////
@@ -165,7 +154,7 @@ $(function() {
 });
 
 function swal_changebin() {
-	swal({
+	swal2.fire({
 		title: "Enter the Bin you'd like to change to",
 		text: "Bin ID",
 		input: 'text',
@@ -175,16 +164,16 @@ function swal_changebin() {
 				if (value) {
 					resolve();
 				} else {
-					reject('You need to write something!');
+					resolve('You need to write something!');
 				}
 			})
 		}
 	}).then(function (input) {
-		if (input) {
-			var binID = input;
+		if (input.value) {
+			var binID = input.value;
 			var pageurl = URI();
 			var uri = URI(pickitem.url_changebin).addQuery('binID', binID);
 			window.location.href = uri.toString();
 		}
-	}).catch(swal.noop);
+	});
 }

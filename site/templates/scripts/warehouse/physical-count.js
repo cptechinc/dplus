@@ -43,8 +43,8 @@ $(function() {
 			}
 
 			if (valid_form.error) {
-				swal({
-					type: 'error',
+				swal2.fire({
+					icon: 'error',
 					title: valid_form.title,
 					text: valid_form.msg,
 					html: valid_form.html
@@ -52,20 +52,17 @@ $(function() {
 			} else {
 				if (input_item.data('itemtype') == 'S' || input_item.data('itemtype') == 'L') {
 					if (input_lotserial.val() == '') {
-						swal({
+						swal2.fire({
 							title: 'Leave lotserial blank?',
 							text: "Lot/Serial will be generated if left blank",
-							type: 'warning',
+							icon: 'warning',
 							showCancelButton: true,
-							confirmButtonClass: 'btn btn-success',
-							cancelButtonClass: 'btn btn-danger',
-							buttonsStyling: false,
 							confirmButtonText: 'Continue'
 						}).then(function (result) {
-							if (result) {
+							if (result.value) {
 								form.submit();
 							}
-						}).catch(swal.noop);
+						});
 					} else {
 						form.submit();
 					}

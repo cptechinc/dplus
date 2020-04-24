@@ -23,19 +23,19 @@ $(function() {
 
 			if (valid_bin.error) {
 				if (input_bin.val() != '') {
-					swal({
+					swal2.fire({
 						type: 'error',
 						title: valid_bin.title,
 						text: "Continue bin Inquiry with bin " + input_bin.val() + "?",
 						showCancelButton: true,
 					}).then(function (input) {
-						if (input) {
+						if (input.value) {
 							form.submit();
 						}
-					}).catch(swal.noop);;
+					});
 				} else {
-					swal({
-						type: 'error',
+					swal2.fire({
+						icon: 'error',
 						title: valid_bin.title,
 						text: valid_bin.msg
 					});
@@ -103,6 +103,5 @@ $(function() {
 			$('.collapse-lotserial').addClass('show');
 			button.attr('showing', 'true');
 		}
-
 	});
 });

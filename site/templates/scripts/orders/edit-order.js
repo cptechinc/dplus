@@ -32,17 +32,15 @@ $(function() {
 		e.preventDefault();
 		var a = $(this);
 
-		swal({
+		swal2.fire({
 			title: 'Order not saved!',
 			text: "Are you sure you want to leave this page?",
-			type: 'warning',
+			icon: 'warning',
 			showCancelButton: true,
-			confirmButtonClass: 'btn btn-success',
-			cancelButtonClass: 'btn btn-danger',
-			buttonsStyling: false,
-			confirmButtonText: 'Yes!'
+			confirmButtonText: 'Leave',
+			cancelButtonText: 'Stay'
 		}).then(function (result) {
-			if (result) {
+			if (result.value) {
 				var form = $('#edit-sales-order-form');
 				var url = URI(form.attr('action'));
 				url.addQuery('action', 'unlock-order');
