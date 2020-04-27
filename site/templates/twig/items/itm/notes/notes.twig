@@ -1,23 +1,26 @@
 {#
-	m_notes                is a instance of module QnotesItem
-	m_notes.notes.internal is a instance of module QnotesItemInternal
+	var                    Description / Instance of
+	-------------------------------------------------
+	item                   ItemMasterItem
+	m_notes                module QnotesItem
+	m_notes.notes.internal module QnotesItemInternal
 #}
 <h3>Notes</h3>
 <ul class="nav nav-tabs" id="notes-tab" role="tablist">
 	<li class="nav-item">
-		<a class="nav-link active" id="internal-tab" data-toggle="tab" href="#internal" role="tab" aria-controls="internal" aria-selected="true">
+		<a class="nav-link active" id="internal-tab" data-toggle="tab" href="#internal-content" role="tab" aria-controls="internal-content" aria-selected="true">
 			Internal
 		</a>
 	</li>
 	<li class="nav-item">
-		<a class="nav-link" id="inspection-tab" data-toggle="tab" href="#inspection" role="tab" aria-controls="inspection" aria-selected="false">
-			Inspection
+		<a class="nav-link" id="revision-tab" data-toggle="tab" href="#revision-content" role="tab" aria-controls="revision-content" aria-selected="false">
+			Revision
 		</a>
 	</li>
 </ul>
 <div class="tab-content" id="notes-tab-content">
 	<br>
-	<div class="tab-pane fade show active" id="internal" role="tabpanel" aria-labelledby="internal-tab">
+	<div class="tab-pane fade show active" id="internal-content" role="tabpanel" aria-labelledby="internal-tab">
 		<div class="mb-3">
 			<textarea class="form-control-plaintext" cols="{{ m_notes.notes.internal.get_column_count() }}" readonly>{{ m_notes.notes.internal.get_notes_form_array(item.itemid)|join('\r') }}</textarea>
 		</div>
@@ -25,7 +28,7 @@
 			<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 		</button>
 	</div>
-	<div class="tab-pane fade" id="inspection" role="tabpanel" aria-labelledby="inspection-tab">
-
+	<div class="tab-pane fade" id="revision-content" role="tabpanel" aria-labelledby="revision-tab">
+		{% include 'items/itm/notes/revision/list.twig' %}
 	</div>
 </div>

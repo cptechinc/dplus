@@ -20,7 +20,6 @@
 		$session->remove('response_qnote');
 	}
 
-
 	if ($input->get->itemID) {
 		$itemID = $input->get->text('itemID');
 
@@ -43,8 +42,9 @@
 			if ($itm->item_exists($itemID)) {
 				$page->body .= $html->div('class=mb-3');
 				$module_notes = $modules->get('QnotesItem');
-				$page->body .= $config->twig->render('items/itm/notes/notes.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes]);
+				$page->body .= $config->twig->render('items/itm/notes/notes.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes, 'user' => $user]);
 				$page->body .= $config->twig->render('items/itm/notes/notes-internal-modal.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes]);
+				$page->body .= $config->twig->render('items/itm/notes/revision/modal.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes]);
 				$page->js   .= $config->twig->render("items/itm/notes/js.twig", ['page' => $page, 'validateurl' => $pages->get('pw_template=itm-json')->url, 'item' => $item]);
 			}
 			$page->body .= $config->twig->render("util/ajax-modal.twig");

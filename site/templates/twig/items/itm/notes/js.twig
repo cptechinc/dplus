@@ -3,4 +3,13 @@ $(function() {
 		var modal = $(this);
 		modal.find('textarea[name=note]').focus();
 	});
+
+	$('#notes-revision-modal').on('shown.bs.modal', function (e) {
+		var modal = $(this);
+		var button = $(e.relatedTarget);
+		var note_row = button.closest('.qnote-row');
+		modal.find('input[name=notedate]').val(button.data('date'));
+		modal.find('input[name=notetime]').val(button.data('time'));
+		modal.find('textarea[name=note]').text(note_row.find('textarea').text()).focus();
+	});
 });
