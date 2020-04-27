@@ -12,7 +12,7 @@ use SoRgaCodeQuery, SoRgaCode;
 class CodeTablesRgasc extends WireData implements Module {
 	const MODEL              = 'SoRgaCode';
 	const MODEL_KEY          = 'id';
-	const DESCRIPTION        = 'RGA/Return Ship via Code';
+	const DESCRIPTION        = 'RGA/Return Ship Via Code';
 	const DESCRIPTION_RECORD = 'SO RGA';
 	const MODEL_TABLE = 'so_rgas_code';
 

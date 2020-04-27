@@ -29,7 +29,7 @@ class DpagesMsa extends Dpages implements Module {
 			'template'       => 'dplus-menu',
 			'name'           => 'msa',
 			'title'          => 'System Administration',
-			'summary'        => '',
+			'summary'        => 'System Administration Menu',
 			'parent'         => '/',
 			'dplus_function' => 'msa'
 		),
@@ -38,7 +38,7 @@ class DpagesMsa extends Dpages implements Module {
 			'pw_template'    => 'msa-sysop',
 			'name'           => 'sysop',
 			'title'          => 'System Optional Codes',
-			'summary'        => 'View System Optional Codes',
+			'summary'        => 'View / Edit System Optional Codes',
 			'parent'         => '/msa/',
 			'dplus_function' => 'sysop'
 		),
@@ -47,7 +47,7 @@ class DpagesMsa extends Dpages implements Module {
 			'pw_template'    => 'msa-lgrp',
 			'name'           => 'lgrp',
 			'title'          => 'Login Group Entry',
-			'summary'        => 'View Login Group Entry',
+			'summary'        => 'View / Edit Login Group Entry',
 			'parent'         => '/msa/',
 			'dplus_function' => 'lgrp'
 		),
