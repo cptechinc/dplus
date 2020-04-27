@@ -5,8 +5,26 @@
 	<div class="row">
 		<div class="col-6">
 			<div class="form-group">
-				<label for="code">Code</label>
+				<label for="code">Terms Code</label>
 				<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code" maxlength="{{ code.get_max_length_code() }}" {{ code.code ? 'readonly' : 'autofocus' }}>
+			</div>
+			<div class="form-group">
+				<label for="code">Method</label>
+				{% include 'util/select.twig' with {'name': 'method', 'id': 'method', 'selectedvalue': code.method, 'options': {'S': 'Standard Terms', 'E': 'End of Month Terms'}} %}
+			</div>
+			<div class="form-group">
+				<label for="type">Type</label>
+				{% include 'util/select.twig' with {'name': 'type', 'id': 'type', 'selectedvalue': code.type, 'options': {'STD': 'Standard', 'CC': 'Credit Card', 'CA': 'Cash', 'COD': 'COD', 'CDC': 'COD Cash'}} %}
+			</div>
+			<div class="form-group">
+				<label for="hold">Hold</label>
+				<input type="text" name="hold" class="form-control" value="{{ code.hold }}" id="hold">
+			</div>
+			<div class="form-group">
+				<label for="exp_date">Expire Date</label>
+				{% set name = 'exp_date' %}
+				{% set value = input.get.text('exp_date') %}
+				{% include 'util/date-picker.twig' %}
 			</div>
 		</div>
 		<div class="col-6">
@@ -14,6 +32,29 @@
 				<label for="description">Description</label>
 				<input type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" autofocus>
 			</div>
+			<div class="form-group">
+				<label for="type">CC Prefix</label>
+				<input type="text" name="type" class="form-control" value="{{ code.type }}" id="type">
+			</div>
+			<div class="form-group">
+				<label for="type">Freight Allowed?</label>
+				<input type="text" name="type" class="form-control" value="{{ code.type }}" id="type">
+			</div>
+			<div class="form-group">
+				<label for="country">Country</label>
+				<select name="country" class="form-control" id="country" >
+					<option value=""></option>
+					{% for country in countries %}
+						<option value="{{ country.iso }}">{{ country.iso }} - {{ country.name }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			{% if (dpluscustomer.company_name == 'Alumacraft') %}
+				<div class="form-group">
+					<label for="type">N/A</label>
+					<input type="text" name="type" class="form-control" value="{{ code.type }}" id="type">
+				</div>
+			{% endif %}
 		</div>
 	</div>
 
