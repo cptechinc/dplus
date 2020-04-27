@@ -13,13 +13,15 @@ include_once(__DIR__.'/QnotesResponse.php');
 class QnotesItem extends WireData implements Module {
 
 	const TYPES = array(
-		'internal'
+		'internal',
+		'revision'
 	);
 
 	public function init() {
 		$modules = $this->wire('modules');
 		$this->notes = new WireData();
 		$this->notes->internal = $modules->get('QnotesItemInternal');
+		$this->notes->revision = $modules->get('QnotesItemRevision');
 	}
 
 	/**
