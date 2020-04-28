@@ -1,7 +1,7 @@
 <?php namespace ProcessWire;
 
 use ItemRevisionNoteQuery, ItemRevisionNote;
-use ConfigArQuery, ConfigAr;
+use ConfigInQuery, ConfigIn;
 
 include_once(__DIR__.'/QnotesResponse.php');
 
@@ -23,8 +23,8 @@ class QnotesItemRevision extends WireData implements Module {
 	 * @return int
 	 */
 	public function get_column_count() {
-		$configAR = ConfigArQuery::create()->findOne();
-		return $configAR->columns_notes_invoice;
+		$configIN = ConfigInQuery::create()->findOne();
+		return $configIN->columns_notes_internal;
 	}
 
 	/**
@@ -51,10 +51,14 @@ class QnotesItemRevision extends WireData implements Module {
 	 * @param  string $itemID  Item ID
 	 * @return ItemRevisionNote[]|ObjectCollection
 	 */
-	public function get_notes_summarized($itemID) {
+	public function get_notes_summarized($itemID, $orderby = '') {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
 		$q->filterBySequence(1);
+		if (!$orderby) {
+			$q->orderByNotedate('DESC');
+			$q->orderByNotetime('DESC');
+		}
 		return $q->find();
 	}
 
@@ -123,6 +127,7 @@ class QnotesItemRevision extends WireData implements Module {
 		$itemID  = $input->$rm->text('itemID');
 		$notedate = $input->$rm->text('notedate');
 		$notetime = $input->$rm->text('notetime');
+		$userID   = $input->$rm->text('user');
 
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
@@ -132,10 +137,11 @@ class QnotesItemRevision extends WireData implements Module {
 		if ($q->count()) {
 			$note = $q->findOne();
 		} else {
-			$note = new ItemRevisionNote();
+			$note = ItemRevisionNote::new();
 			$note->setItemid($itemID);
-			$q->setNotedate(date(ItemRevisionNote::FORMAT_NOTEDATE, strtotime($notedate)));
-			$q->setNotetime(date(ItemRevisionNote::FORMAT_NOTETIME, strtotime($notedate.$notetime)));
+			$note->setNotedate(date(ItemRevisionNote::FORMAT_NOTEDATE, strtotime($notedate)));
+			$note->setNotetime(date(ItemRevisionNote::FORMAT_NOTETIME, strtotime($notedate.$notetime)));
+			$note->setUser($userID);
 			$note->generateKey2();
 		}
 		$success = $this->delete_notes($itemID, $notedate, $notetime);
@@ -174,8 +180,8 @@ class QnotesItemRevision extends WireData implements Module {
 			$record = ItemRevisionNote::new();
 			$record->setItemid($itemID);
 			$record->setRevision($revision);
-			$record->setNotedate($notedate);
-			$record->setNotetime($notetime);
+			$record->setNotedate(date(ItemRevisionNote::FORMAT_NOTEDATE, strtotime($notedate)));
+			$record->setNotetime(date(ItemRevisionNote::FORMAT_NOTETIME, strtotime($notedate.$notetime)));
 			$record->generateKey2(); // PK
 			$record->setUser($user);
 			$record->setSequence($sequence); // PK
@@ -221,8 +227,7 @@ class QnotesItemRevision extends WireData implements Module {
 
 		// IF there are lines saved
 		if (sizeof($lines_saved)) {
-			// TODO custom update dplus
-			$this->wire('modules')->get('Qnotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+			$this->update_dplus_cobol($note->type, $note->key2, $note->user);
 		}
 		return $response;
 	}
@@ -253,9 +258,39 @@ class QnotesItemRevision extends WireData implements Module {
 
 		// IF there are lines saved
 		if ($success) {
-			$this->wire('modules')->get('Qnotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+			$this->update_dplus_cobol($note->type, $note->key2, $note->user);
 		}
 		return $response;
+	}
+
+	/**
+	 * Return Data needed for Dplus to UPDATE the Customer Type Notes
+	 * @param  string $notetype Note Type @see WarehouseNote::TYPES
+	 * @param  string $userID   Note User ID
+	 * @param  string $key2     Key 2
+	 * @param  string $form     Form e.g YNNN
+	 * @return array
+	 */
+	public function write_dplus_data($notetype, $key2, $userID) {
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		return array("DBNAME=$dplusdb", 'UPDATEITEMNOTE', "TYPE=$notetype", "USER=$userID", "KEY2=$key2");
+	}
+
+	/**
+	 * Sends Update Request for Qnote Type
+	 * @param  string $notetype Note Type
+	 * @param  string $userID   Note User ID
+	 * @param  string $key2     Key 2
+	 * @param  string $form     Form e.g YNNN
+	 * @return void
+	 */
+	public function update_dplus_cobol($notetype, $key2, $userID) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$data = $this->write_dplus_data($notetype, $key2, $userID);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
 	}
 
 	public static function getModuleInfo() {
