@@ -1,7 +1,7 @@
 <?php namespace ProcessWire;
 
 use ItemInternalNoteQuery, ItemInternalNote;
-use ConfigArQuery, ConfigAr;
+use ConfigInQuery, ConfigIn;
 
 include_once(__DIR__.'/QnotesResponse.php');
 
@@ -23,8 +23,8 @@ class QnotesItemInternal extends WireData implements Module {
 	 * @return int
 	 */
 	public function get_column_count() {
-		$configAR = ConfigArQuery::create()->findOne();
-		return $configAR->columns_notes_invoice;
+		$configIN = ConfigInQuery::create()->findOne();
+		return $configIN->columns_notes_internal;
 	}
 
 	/**
