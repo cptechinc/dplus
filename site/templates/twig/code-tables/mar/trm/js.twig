@@ -19,6 +19,19 @@ $(function () {
 		}
 	});
 
+	$("#code-edit-form #method").change(function() {
+		if ($('#method').val() == '') {
+			$('#eom-terms-form').prop("hidden", true);
+			$('#standard-terms-form').prop("hidden", true);
+		} else if ($('#method').val() == 'S'){
+			$('#standard-terms-form').prop("hidden", false);
+			$('#eom-terms-form').prop("hidden", true);
+		} else if ($('#method').val() == 'E'){
+			$('#standard-terms-form').prop("hidden", true);
+			$('#eom-terms-form').prop("hidden", false);
+		}
+	});
+
 	var form = $('#code-edit-form'),
 	origForm = form.serialize();
 
