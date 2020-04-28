@@ -19,17 +19,22 @@ class Dpages extends DplusPwPages implements Module {
 			'name'  => 'pw_template',
 			'type'  => 'text',
 			'label' => 'ProcessWire Template'
-		)
+		),
+		'dplus_permission' => array(
+			'name'  => 'dplus_permission',
+			'type'  => 'text',
+			'label' => 'Dplus Permission'
+		),
 	);
 
 	const TEMPLATES = array(
 		'dplus-menu' => array(
 			'name'   => 'dplus-menu',
-			'fields' => array('dplus_function', 'pw_template', 'summary')
+			'fields' => array('dplus_function', 'pw_template', 'summary', 'dplus_permission')
 		),
 		'dplus-function' => array(
 			'name'   => 'dplus-function',
-			'fields' => array('dplus_function', 'pw_template', 'summary')
+			'fields' => array('dplus_function', 'pw_template', 'summary', 'dplus_permission')
 		),
 		'user-page' => array(
 			'name'   => 'user-page',
@@ -41,7 +46,7 @@ class Dpages extends DplusPwPages implements Module {
 		),
 		'menu' => array(
 			'name'   => 'menu',
-			'fields' => array('title', 'dplus_function', 'summary')
+			'fields' => array('title', 'dplus_function', 'dplus_permission', 'summary')
 		),
 	);
 
