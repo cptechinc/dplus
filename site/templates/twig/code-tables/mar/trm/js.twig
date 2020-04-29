@@ -19,6 +19,23 @@ $(function () {
 		}
 	});
 
+// start type
+	if ($('#type').val() == 'CC') {
+		$('#credit_card').prop("readonly", false);
+	} else {
+		$('#credit_card').prop("readonly", true);
+	}
+
+	$("#code-edit-form #type").change(function() {
+		if ($('#type').val() == 'CC') {
+			$('#credit_card').prop("readonly", false);
+		} else {
+			$('#credit_card').prop("readonly", true);
+		}
+	});
+// end type
+
+// start method
 	if ($('#method').val() == '') {
 		$('#eom-terms-form').hide();
 		$('#standard-terms-form').hide();
@@ -42,6 +59,7 @@ $(function () {
 			$('#eom-terms-form').fadeIn();
 		}
 	});
+// end method
 
 	var form = $('#code-edit-form'),
 	origForm = form.serialize();
