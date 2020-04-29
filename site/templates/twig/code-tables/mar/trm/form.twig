@@ -9,7 +9,7 @@
 				<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code" maxlength="{{ code.get_max_length_code() }}" {{ code.code ? 'readonly' : 'autofocus' }}>
 			</div>
 			<div class="form-group">
-				<label for="code">Method</label>
+				<label for="method">Method</label>
 				{% include 'util/select.twig' with {'name': 'method', 'id': 'method', 'selectedvalue': code.method, 'options': {'S': 'Standard Terms', 'E': 'End of Month Terms'}} %}
 			</div>
 			<div class="form-group">

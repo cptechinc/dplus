@@ -19,16 +19,27 @@ $(function () {
 		}
 	});
 
+	if ($('#method').val() == '') {
+		$('#eom-terms-form').hide();
+		$('#standard-terms-form').hide();
+	} else if ($('#method').val() == 'S') {
+		$('#standard-terms-form').show();
+		$('#eom-terms-form').hide();
+	} else if ($('#method').val() == 'E') {
+		$('#standard-terms-form').hide();
+		$('#eom-terms-form').show();
+	}
+
 	$("#code-edit-form #method").change(function() {
 		if ($('#method').val() == '') {
-			$('#eom-terms-form').prop("hidden", true);
-			$('#standard-terms-form').prop("hidden", true);
-		} else if ($('#method').val() == 'S'){
-			$('#standard-terms-form').prop("hidden", false);
-			$('#eom-terms-form').prop("hidden", true);
-		} else if ($('#method').val() == 'E'){
-			$('#standard-terms-form').prop("hidden", true);
-			$('#eom-terms-form').prop("hidden", false);
+			$('#eom-terms-form').fadeOut();
+			$('#standard-terms-form').fadeOut();
+		} else if ($('#method').val() == 'S') {
+			$('#standard-terms-form').fadeIn();
+			$('#eom-terms-form').hide();
+		} else if ($('#method').val() == 'E') {
+			$('#standard-terms-form').hide();
+			$('#eom-terms-form').fadeIn();
 		}
 	});
 

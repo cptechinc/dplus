@@ -4,13 +4,13 @@ include_once(__DIR__.'/../CodeTablesResponse.php');
 
 use Purl\Url;
 
-use ArTermsCodeQuery, ArTermsCode;
+use CustomerTermsCodeQuery, CustomerTermsCode;
 
 /**
  * Module that handles the editing of the CCM codetable
  */
 class CodeTablesTrm extends WireData implements Module {
-	const MODEL              = 'ArTermsCode';
+	const MODEL              = 'CustomerTermsCode';
 	const MODEL_KEY          = 'code';
 	const DESCRIPTION        = 'Customer Terms Code';
 	const DESCRIPTION_RECORD = 'Customer Terms Code';
@@ -22,7 +22,7 @@ class CodeTablesTrm extends WireData implements Module {
 
 	/**
 	 * Return the Code records from Database
-	 * @return ArTermsCode[]|ObjectCollection
+	 * @return CustomerTermsCode[]|ObjectCollection
 	 */
 	public function get_codes() {
 		$q = $this->get_query();
@@ -32,7 +32,7 @@ class CodeTablesTrm extends WireData implements Module {
 	/**
 	 * Return the Code
 	 * @param  string $code Customer Terms Code
-	 * @return ArTermsCode
+	 * @return CustomerTermsCode
 	 */
 	public function get_code($code) {
 		$q = $this->get_query();
@@ -50,11 +50,11 @@ class CodeTablesTrm extends WireData implements Module {
 	}
 
 	/**
-	 * Returns a new ArTermsCode
-	 * @return ArTermsCode
+	 * Returns a new CustomerTermsCode
+	 * @return CustomerTermsCode
 	 */
 	public function get_new_code() {
-		return new ArTermsCode();
+		return new CustomerTermsCode();
 	}
 
 	/**
@@ -63,7 +63,7 @@ class CodeTablesTrm extends WireData implements Module {
 	 * @return mixed
 	 */
 	public function get_query() {
-		return ArTermsCodeQuery::create();
+		return CustomerTermsCodeQuery::create();
 	}
 
 	/**
@@ -84,8 +84,8 @@ class CodeTablesTrm extends WireData implements Module {
 		if ($q->count()) {
 			$record = $q->findOne();
 		} else {
-			$code  = $input->$rm->text('code', array('maxLength' => ArTermsCode::MAX_LENGTH_CODE));
-			$record = new ArTermsCode();
+			$code  = $input->$rm->text('code', array('maxLength' => CustomerTermsCode::MAX_LENGTH_CODE));
+			$record = new CustomerTermsCode();
 			$record->setCode($code);
 		}
 
@@ -138,7 +138,7 @@ class CodeTablesTrm extends WireData implements Module {
 	 * @param  bool   $saved  Was the Record Saved?
 	 * @return CodeTablesResponse
 	 */
-	protected function save_and_process_response($table, $code, ArTermsCode $record) {
+	protected function save_and_process_response($table, $code, CustomerTermsCode $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 

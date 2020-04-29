@@ -48,13 +48,13 @@
 					{{ code.type }}
 				</div>
 				<div class="col-1">
-					{{ code.hold }}
+					{{ code.hold|yesorno|capitalize }}
 				</div>
 				<div class="col-1">
 					{{ code.country }}
 				</div>
 				<div class="col-1">
-					{{ code.exp_date }}
+					{{ code.exp_date|convertdate('m/d/Y') }}
 				</div>
 				<div class="col-3 text-center">
 					{% if recordlocker.function_locked(page.name, code.code) == false or recordlocker.function_locked_by_user(page.name, code.code) %}
