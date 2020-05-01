@@ -1,8 +1,8 @@
-<div class="modal fade" id="notes-revision-modal" tabindex="-1" role="dialog" aria-labelledby="notes-revision-modal-label" aria-hidden="true">
+<div class="modal fade" id="notes-inspection-modal" tabindex="-1" role="dialog" aria-labelledby="notes-inspection-modal-label" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="notes-revision-modal-label"><span class="action-desc">Adding</span> {{ item.itemid }} Revision Notes</h5>
+				<h5 class="modal-title" id="notes-inspection-modal-label"><span class="action-desc">Adding</span> {{ item.itemid }} Inspection Notes</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -10,33 +10,29 @@
 			<div class="modal-body">
 				<form action="{{ page.fullURL.getURL() }}" method="post">
 					<input type="hidden" name="itemID" value="{{ item.itemid }}">
-					<input type="hidden" name="type" value="revision">
+					<input type="hidden" name="type" value="inspection">
 					<input type="hidden" name="user" value="{{ user.loginid }}">
+					<input type="hidden" name="rawnotetime" value="">
 
 					<div class="row">
 						<div class="col-6">
 							<div class="form-group">
-								<label for="revision_note_date">Date</label>
-								{% include 'util/date-picker.twig' with {'name': 'notedate', 'id': 'revision_note_date', 'value': "now"|date("m/d/Y")} %}
+								<label for="inspection_note_date">Date</label>
+								{% include 'util/date-picker.twig' with {'name': 'notedate', 'id': 'inspection_note_date', 'value': "now"|date("m/d/Y")} %}
 							</div>
 						</div>
 						<div class="col-6">
 							<div class="form-group">
-								<label for="revision_notetime">Time</label>
-								<input type="text" class="form-control" name="notetime" id="revision_notetime" value="{{ "now"|date("H:i") }}">
+								<label for="inspection_notetime">Time</label>
+								<input type="text" class="form-control" name="notetime" id="inspection_notetime" value="{{ "now"|date("H:i") }}">
 							</div>
 						</div>
 					</div>
 
 					<div class="form-group">
-						<label for="revision">Revision</label>
-						<input type="text" name="revision" class="form-control">
-					</div>
-
-					<div class="form-group">
-						<label for="revision-notes">Notes</label>
+						<label for="inspection-notes">Notes</label>
 						<div class="d-flex justify-content-between align-items-center">
-							<textarea class="form-control w-auto qnotes" name="note" id="revision-notes" rows="10" cols="{{ m_notes.notes.revision.get_column_count() }}"></textarea>
+							<textarea class="form-control w-auto qnotes" name="note" id="inspection-notes" rows="10" cols="{{ m_notes.notes.inspection.get_column_count() }}"></textarea>
 						</div>
 					</div>
 

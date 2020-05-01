@@ -8,8 +8,37 @@ $(function() {
 		var modal = $(this);
 		var button = $(e.relatedTarget);
 		var note_row = button.closest('.qnote-row');
-		modal.find('input[name=notedate]').val(button.data('date'));
-		modal.find('input[name=notetime]').val(button.data('time'));
-		modal.find('textarea[name=note]').text(note_row.find('textarea').text()).focus();
+
+		if (note_row.length) {
+			modal.find('.action-desc').text('Editing');
+			modal.find('input[name=notedate]').val(button.data('date')).attr('readonly', '');
+			modal.find('input[name=notetime]').val(button.data('time')).attr('readonly', '');
+			modal.find('textarea[name=note]').text(note_row.find('textarea').text());
+		} else {
+			modal.find('.action-desc').text('Adding');
+			modal.find('input[name=notedate]').removeAttr('readonly');
+			modal.find('input[name=notetime]').removeAttr('readonly');
+		}
+	});
+
+	$('#notes-inspection-modal').on('shown.bs.modal', function (e) {
+		var modal = $(this);
+		var button = $(e.relatedTarget);
+		var note_row = button.closest('.qnote-row');
+
+		if (note_row.length) {
+			modal.find('.action-desc').text('Editing');
+			modal.find('input[name=notedate]').val(button.data('date')).attr('readonly', '');
+			modal.find('input[name=notetime]').val(button.data('time')).attr('readonly', '');
+			modal.find('input[name=rawnotetime]').val(button.data('rawnotetime'));
+			modal.find('textarea[name=note]').text(note_row.find('textarea').text());
+		} else {
+			modal.find('.action-desc').text('Adding');
+			modal.find('input[name=notedate]').removeAttr('readonly');
+			modal.find('input[name=notetime]').removeAttr('readonly');
+			modal.find('input[name=rawnotetime]').val(button.data('rawnotetime'));
+		}
+
+		modal.find('textarea[name=note]').focus()
 	});
 });

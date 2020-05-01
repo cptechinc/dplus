@@ -17,6 +17,11 @@
 			Revision
 		</a>
 	</li>
+	<li class="nav-item">
+		<a class="nav-link" id="inspection-tab" data-toggle="tab" href="#inspection-content" role="tab" aria-controls="inspection-content" aria-selected="false">
+			Inspection
+		</a>
+	</li>
 </ul>
 <div class="tab-content" id="notes-tab-content">
 	<br>
@@ -25,10 +30,17 @@
 			<textarea class="form-control-plaintext" cols="{{ m_notes.notes.internal.get_column_count() }}" readonly>{{ m_notes.notes.internal.get_notes_form_array(item.itemid)|join('\r') }}</textarea>
 		</div>
 		<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-internal-modal">
-			<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+			{% if m_notes.notes.internal.notes_exist(item.itemid) %}
+				<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+			{% else %}
+				<i class="fa fa-plus" aria-hidden="true"></i> Add
+			{% endif %}
 		</button>
 	</div>
 	<div class="tab-pane fade" id="revision-content" role="tabpanel" aria-labelledby="revision-tab">
 		{% include 'items/itm/notes/revision/list.twig' %}
+	</div>
+	<div class="tab-pane fade" id="inspection-content" role="tabpanel" aria-labelledby="inspection-tab">
+		{% include 'items/itm/notes/inspection/list.twig' %}
 	</div>
 </div>

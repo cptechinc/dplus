@@ -14,14 +14,16 @@ class QnotesItem extends WireData implements Module {
 
 	const TYPES = array(
 		'internal',
-		'revision'
+		'revision',
+		'inspection'
 	);
 
 	public function init() {
 		$modules = $this->wire('modules');
 		$this->notes = new WireData();
-		$this->notes->internal = $modules->get('QnotesItemInternal');
-		$this->notes->revision = $modules->get('QnotesItemRevision');
+		$this->notes->internal   = $modules->get('QnotesItemInternal');
+		$this->notes->revision   = $modules->get('QnotesItemRevision');
+		$this->notes->inspection = $modules->get('QnotesItemInspection');
 	}
 
 	/**
@@ -60,6 +62,17 @@ class QnotesItem extends WireData implements Module {
 		}
 	}
 
+	public function update() {
+		$modules = $this->wire('modules');
+		$modules->refresh();
+
+		$info = self::getModuleInfo();
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
+	}
+
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus Qnotes Item',
@@ -69,7 +82,9 @@ class QnotesItem extends WireData implements Module {
 			'autoload' => true,
 			'requires' => array('Qnotes'),
 			'installs' => array(
-				'QnotesItemInternal'
+				'QnotesItemInternal',
+				'QnotesItemRevision',
+				'QnotesItemInspection'
 			)
 		);
 	}

@@ -39,7 +39,7 @@
 					{% endif %}
 				</div>
 			</div>
-			<textarea class="collapse form-control-plaintext" id="notes-revision-{{ note.notedate|convertdate('Ymd') }}-{{ note.notetime|convertdate('Hi') }}" cols="{{ qnotes_so.get_column_count() }}" readonly>{{ m_notes.notes.revision.get_notes_form_array(item.itemid, note.notedate, note.notetime)|join('\r') }}</textarea>
+			<textarea class="collapse form-control-plaintext" id="notes-revision-{{ note.notedate|convertdate('Ymd') }}-{{ note.notetime|convertdate('Hi') }}" cols="{{ qnotes_so.get_column_count() }}" readonly>{{ m_notes.notes.revision.get_notes_form_array(item.itemid, note.user, note.notedate, note.notetime)|join('\r') }}</textarea>
 		</div>
 	{% endfor %}
 </div>
