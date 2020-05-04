@@ -1,21 +1,29 @@
 <?php namespace ProcessWire;
 
-use ItemInspectNoteQuery, ItemInspectNote;
-use ConfigInQuery, ConfigIn;
+use ItemOrderNoteQuery, ItemOrderNote;
+use ConfigArQuery, ConfigAr;
 
 include_once(__DIR__.'/QnotesResponse.php');
 
 /**
- * QnotesItemInspection
+ * QnotesSalesOrder
  *
- * Class for Writing and Reading Qnotes for Item Inspection
+ * Class for Writing and Reading Qnotes for Sales Orders
  */
-class QnotesItemInspection extends WireData implements Module {
-	const MODEL              = 'ItemInspectNote';
+class QnotesItemOrder extends WireData implements Module {
+	const MODEL              = 'ItemOrderNote';
 	const MODEL_KEY          = 'itemid sequence';
-	const DESCRIPTION        = 'Item Inspection Notes';
-	const DESCRIPTION_RECORD = 'Item Inspection Notes';
+	const DESCRIPTION        = 'Item Revision Notes';
+	const DESCRIPTION_RECORD = 'Item Revision Notes';
 	const DESCRIPTION_RESPONSE = 'Item ';
+
+	public function get_forms() {
+		return ItemOrderNote::FORMS_LABELS;
+	}
+
+	public function get_forms_shortlabels() {
+		return ItemOrderNote::FORMS_LABELS_SHORT;
+	}
 
 
 	/**
@@ -23,75 +31,67 @@ class QnotesItemInspection extends WireData implements Module {
 	 * @return int
 	 */
 	public function get_column_count() {
-		return 63;
+		$configAR = ConfigArQuery::create()->findOne();
+		return $configAR->columns_notes_invoice;
 	}
 
 	/**
 	 * Returns Quote Notes Query
-	 * @return ItemInspectNoteQuery
+	 * @return ItemOrderNoteQuery
 	 */
 	public function get_query() {
-		return ItemInspectNoteQuery::create();
+		return ItemOrderNoteQuery::create();
 	}
 
 	/**
 	 * Returns if Notes Exist
 	 * @param  string $itemID  Item ID
+	 * @param  string $form    Forms Code
 	 * @return bool
 	 */
-	public function notes_exist($itemID) {
+	public function notes_exist($itemID, $form) {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
+		$q->filterByForm($form);
 		return boolval($q->count());
 	}
 
 	/**
 	 * Returns Line 1 of Every Note
 	 * @param  string $itemID  Item ID
-	 * @return ItemInspectNote[]|ObjectCollection
+	 * @return ItemOrderNote[]|ObjectCollection
 	 */
-	public function get_notes_summarized($itemID, $orderby = '') {
+	public function get_notes_summarized($itemID) {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
 		$q->filterBySequence(1);
-		if (!$orderby) {
-			$q->orderByNotedate('DESC');
-			$q->orderByNotetime('DESC');
-		}
 		return $q->find();
 	}
 
 	/**
 	 * Return Notes for Form
 	 * @param  string $itemID  Item ID
-	 * @param  string $string  Note Author
-	 * @param  string $date    Note Date (raw)
-	 * @param  string $time    Note Time (raw)
+	 * @param  string $form    Forms Code
 	 * @return array
 	 */
-	public function get_notes_form_array($itemID, $userID, $date, $time) {
+	public function get_notes_form_array($itemID, $form) {
 		$q = $this->get_query();
-		$q->select(ItemInspectNote::get_aliasproperty('note'));
+		$q->select(ItemOrderNote::get_aliasproperty('note'));
 		$q->filterByItemid($itemID);
-		$q->filterByNotedate($date);
-		$q->filterByNotetime($time);
+		$q->filterByForm($form);
 		return $q->find()->toArray();
 	}
 
 	/**
 	 * Delete Notes for Item
 	 * @param  string $itemID   Item ID
-	 * @param  string $userID   note Author
-	 * @param  string $notedate Note Date
-	 * @param  string $notetime Note Time (Raw format HHMMSSHS)
+	 * @param  string $form     Forms Code
 	 * @return array
 	 */
-	public function delete_notes($itemID, $userID, $notedate, $notetime) {
+	public function delete_notes($itemID, $form) {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
-		$q->filterByUser($userID);
-		$q->filterByNotedate(date(ItemInspectNote::FORMAT_NOTEDATE, strtotime($notedate)));
-		$q->filterByNotetime($notetime);
+		$q->filterByForm($form);
 
 		if ($q->count()) {
 			return $q->delete();
@@ -127,31 +127,21 @@ class QnotesItemInspection extends WireData implements Module {
 	public function delete_notes_input($input) {
 		$rm = strtolower($input->requestMethod());
 		$itemID  = $input->$rm->text('itemID');
-		$notedate = $input->$rm->text('notedate');
-		$notetime = $input->$rm->text('notetime');
-		$userID   = $input->$rm->text('user');
+		$form    = $input->$rm->text('form');
 
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
-		$q->filterByNotedate(date(ItemInspectNote::FORMAT_NOTEDATE, strtotime($notedate)));
-
-		if ($input->$rm->rawnotetime) {
-			$q->filterByNotetime($input->$rm->text('rawnotetime'));
-		} else {
-			$q->filterByNotetime(date(ItemInspectNote::FORMAT_NOTETIME, strtotime($notedate.$notetime)));
-		}
+		$q->filterByForm($form);
 
 		if ($q->count()) {
 			$note = $q->findOne();
 		} else {
-			$note = ItemInspectNote::new();
+			$note = ItemOrderNote::new();
 			$note->setItemid($itemID);
-			$note->setNotedate(date(ItemInspectNote::FORMAT_NOTEDATE, strtotime($notedate)));
-			$note->set_time($notetime, $notedate);
-			$note->setUser($userID);
+			$note->setForm($form);
 			$note->generateKey2();
 		}
-		$success = $this->delete_notes($itemID, $userID, $notedate, $note->notetime);
+		$success = $this->delete_notes($itemID, $form);
 
 		$this->wire('session')->response_qnote = $this->process_response_delete($note, $itemID, $success);
 	}
@@ -164,44 +154,46 @@ class QnotesItemInspection extends WireData implements Module {
 	 */
 	public function update_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$itemID  = $input->$rm->text('itemID');
-		$notedate = $input->$rm->text('notedate');
-		$notetime = $input->$rm->text('notetime');
-		$user     = $input->$rm->text('user');
+		$values = $input->$rm;
+		$itemID  = $values->text('itemID');
+		$form = $this->get_form_input($input);
 		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
 		$lines_saved = array();
-
-		if (empty($notedate)) {
-			$notedate = date(ItemInspectNote::FORMAT_NOTEDATE);
-		}
-
-		if (empty($notetime)) {
-			$notetime = date(ItemInspectNote::FORMAT_NOTETIME);
-		}
-
-		if ($input->$rm->rawnotetime) {
-			$this->delete_notes($itemID, $user, $notedate, $input->$rm->text('rawnotetime'));
-		} else {
-			$rawnotetime = ItemInspectNote::generate_notetime($notetime, $notedate);
-			$this->delete_notes($itemID, $user, $notedate, $notetime);
-		}
+		$this->delete_notes($itemID, $form);
 
 		foreach ($note_lines as $key => $line) {
 			$sequence = $key + 1;
-			$record = ItemInspectNote::new();
+			$record = ItemOrderNote::new();
 			$record->setItemid($itemID);
-			$record->setNotedate(date(ItemInspectNote::FORMAT_NOTEDATE, strtotime($notedate)));
-			$record->set_time($notetime, $notedate);
 			$record->generateKey2(); // PK
-			$record->setUser($user);
+			foreach (array_keys(ItemOrderNote::FORMS_LABELS) as $formfield) {
+				$func = 'set'.ucfirst($formfield);
+				$record->$func($values->yn($formfield));
+			}
+			$record->generateForm();
 			$record->setSequence($sequence); // PK
 			$record->setNote($line);
 			$record->setDate(date('Ymd'));
-			$record->setTime(date('His').'00');
+			$record->setTime(date('His'));
 			$record->setDummy('P');
 			$lines_saved[$sequence] = $record->save();
 		}
 		$this->wire('session')->response_qnote = $this->process_responses($record, $itemID, $lines_saved);
+	}
+
+	public function get_form_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$note = ItemOrderNote::new();
+		$note->setItemid($values->text('itemID'));
+
+		foreach (array_keys(ItemOrderNote::FORMS_LABELS) as $formfield) {
+			$func = 'set'.ucfirst($formfield);
+			$note->$func($values->yn($formfield));
+		}
+		$note->generateForm();
+		echo $note->form;
+		return $note->form;
 	}
 
 	/**
@@ -210,8 +202,8 @@ class QnotesItemInspection extends WireData implements Module {
 	 * @param  array  $lines_saved  array of line numbers and if they got saved e.g. (1 => true, 2 => false)
 	 * @return CodeTableResponse
 	 */
-	protected function process_responses(ItemInspectNote $note, $itemID, array $lines_saved) {
-		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Inspection Note Lines";
+	protected function process_responses(ItemOrderNote $note, $itemID, array $lines_saved) {
+		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Order Note Lines";
 
 		$response = new QnotesResponse();
 		$response->set_key("$itemID-{$note->key2}");
@@ -237,20 +229,20 @@ class QnotesItemInspection extends WireData implements Module {
 
 		// IF there are lines saved
 		if (sizeof($lines_saved)) {
-			$this->update_dplus_cobol($note);
+			$this->wire('modules')->get('Qnotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
 		}
 		return $response;
 	}
 
 	/**
 	 * Return QnoteResponse based if Notes were able to be Deleted
-	 * @param  ItemInspectNote  $note         Attributes are needed to generate key
+	 * @param  ItemOrderNote  $note         Attributes are needed to generate key
 	 * @param  string            $itemID       Item ID
 	 * @param  array             $success      Were Notes able to be deleted?
 	 * @return QnoteResponse
 	 */
-	public function process_response_delete(ItemInspectNote $note, $itemID, bool $success) {
-		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Notes ";
+	public function process_response_delete(ItemOrderNote $note, $itemID, bool $success) {
+		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Order Notes ";
 
 		$response = new QnotesResponse();
 		$response->set_key("$itemID-{$note->key2}");
@@ -268,48 +260,16 @@ class QnotesItemInspection extends WireData implements Module {
 
 		// IF there are lines saved
 		if ($success) {
-			$this->update_dplus_cobol($note);
+			$this->wire('modules')->get('Qnotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
 		}
 		return $response;
 	}
 
-	/**
-	 * Return Data needed for Dplus to UPDATE the Customer Type Notes
-	 * @param  ItemInspectNote $note
-	 * @return array
-	 */
-	public function write_dplus_data(ItemInspectNote $note) {
-		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
-		return array(
-			"DBNAME=$dplusdb",
-			'UPDATEQCNOTE',
-			"TYPE=$note->type",
-			"KEY2=$note->key2",
-			"DATE=$note->notedate",
-			"TIME=$note->notetime",
-			"USER=$note->user",
-		);
-	}
-
-	/**
-	 * Sends Update Request for Qnote Type
-	 * @param  ItemInspectNote $note
-	 * @return void
-	 */
-	public function update_dplus_cobol(ItemInspectNote $note) {
-		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
-		$data = $this->write_dplus_data($note);
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['database'], session_id());
-	}
-
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus Qnotes Item Inspection',
+			'title' => 'Dplus Qnotes Item Order',
 			'version' => 101,
-			'summary' => 'Dplus Qnotes Item Inspection CRUD methods',
+			'summary' => 'Dplus Qnotes Item Order CRUD methods',
 			'singular' => true,
 			'autoload' => true,
 			'requires' => array('Qnotes')

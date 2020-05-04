@@ -15,7 +15,8 @@ class QnotesItem extends WireData implements Module {
 	const TYPES = array(
 		'internal',
 		'revision',
-		'inspection'
+		'inspection',
+		'order'
 	);
 
 	public function init() {
@@ -24,6 +25,7 @@ class QnotesItem extends WireData implements Module {
 		$this->notes->internal   = $modules->get('QnotesItemInternal');
 		$this->notes->revision   = $modules->get('QnotesItemRevision');
 		$this->notes->inspection = $modules->get('QnotesItemInspection');
+		$this->notes->order      = $modules->get('QnotesItemOrder');
 	}
 
 	/**
@@ -84,7 +86,8 @@ class QnotesItem extends WireData implements Module {
 			'installs' => array(
 				'QnotesItemInternal',
 				'QnotesItemRevision',
-				'QnotesItemInspection'
+				'QnotesItemInspection',
+				'QnotesItemOrder'
 			)
 		);
 	}

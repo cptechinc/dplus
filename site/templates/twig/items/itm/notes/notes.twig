@@ -22,6 +22,11 @@
 			Inspection
 		</a>
 	</li>
+	<li class="nav-item">
+		<a class="nav-link" id="order-tab" data-toggle="tab" href="#order-content" role="tab" aria-controls="order-content" aria-selected="false">
+			Order
+		</a>
+	</li>
 </ul>
 <div class="tab-content" id="notes-tab-content">
 	<br>
@@ -42,5 +47,8 @@
 	</div>
 	<div class="tab-pane fade" id="inspection-content" role="tabpanel" aria-labelledby="inspection-tab">
 		{% include 'items/itm/notes/inspection/list.twig' %}
+	</div>
+	<div class="tab-pane fade" id="order-content" role="tabpanel" aria-labelledby="order-tab">
+		{% include 'items/itm/notes/order/list.twig' %}
 	</div>
 </div>
