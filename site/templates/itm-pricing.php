@@ -6,7 +6,6 @@
 		$itemID = $input->get->text('itemID');
 
 		if ($itm->item_exists($itemID)) {
-
 			if ($input->requestMethod('POST') || $input->get->action) {
 				$rm = strtolower($input->requestMethod());
 				$itm_pricing->process_input($input);
