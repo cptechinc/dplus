@@ -1,0 +1,42 @@
+<table class="table table-sm">
+	<tr>
+		<th>Whse</th>
+		<th>Bin</th>
+		<th>
+			<abbr title="Status">St</abbr>
+		</th>
+		<th>
+			<abbr title="Special Order">SO</abbr>
+		</th>
+		<th>
+			<abbr title="Supply Warehouse">S-Wh</abbr>
+		</th>
+		<th class="text-right">Order Point</th>
+		<th class="text-right">Order Quantity</th>
+		<th class="text-right">Max Qty</th>
+		<th class="text-right">Count Date</th>
+		<th>Note</th>
+		<th>Edit</th>
+	</tr>
+	<tbody>
+		{% for warehouse in warehouses %}
+			<tr>
+				<td>{{ warehouse.warehouseid }}</td>
+				<td>{{ warehouse.bin_default }}</td>
+				<td>{{ warehouse.status }}</td>
+				<td>{{ warehouse.specialorder }}</td>
+				<td>{{ warehouse.whsesupply }}</td>
+				<td class="text-right">{{ warehouse.orderpoint + 0 }}</td>
+				<td class="text-right">{{ warehouse.orderqty + 0 }}</td>
+				<td class="text-right">{{ warehouse.maxqty + 0 }}</td>
+				<td class="text-right">{{ warehouse.countdate ? warehouse.countdate|convertdate : '' }}</td>
+				<td></td>
+				<td>
+					<a href="{{ page.itm_warehouseURL(warehouse.item, warehouse.warehouseid) }}" class="btn btn-warning">
+						<i aria-hidden="true" class="fa fa-pencil"></i> Edit
+					</a>
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
