@@ -1,0 +1,175 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'/ItmResponse.php');
+
+use Purl\Url;
+
+use WarehouseInventoryQuery, WarehouseInventory;
+
+/**
+ * Module that handles the editing of the Itm Warehouse Items
+ */
+class ItmWarehouse extends WireData implements Module {
+	const MODEL              = 'WarehouseInventory';
+	const MODEL_KEY          = 'code';
+	const DESCRIPTION        = 'Item Master Item Warehouse';
+	const DESCRIPTION_RECORD = 'Item Master Item Warehouse';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Return if Item Exists
+	 * @param  string $whseID Warehouse ID
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function itemwarehouse_exists($whseID, $itemID) {
+		$q = $this->get_query();
+		$q->filterByWhseid($whseID);
+		$q->filterByItemid($itemID);
+		return boolval($q->count());
+	}
+
+
+	/**
+	 * Return WarehouseInventory
+	 * @param  string $whseID Warehouse ID
+	 * @param  string $itemID Item ID
+	 * @return WarehouseInventory
+	 */
+	public function get_itemwarehouse($whseID, $itemID) {
+		$q = $this->get_query();
+		$q->filterByWhseid($whseID);
+		$q->filterByItemid($itemID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return WarehouseInventory[]
+	 * @param  string $itemID Item ID
+	 * @return WarehouseInventory[]|ObjectCollection
+	 */
+	public function get_warehouses($itemID) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		return $q->find();
+	}
+
+	/**
+	 * Returns WarehouseInventoryQuery
+	 * @return WarehouseInventoryQuery
+	 */
+	public function get_query() {
+		return WarehouseInventoryQuery::create();
+	}
+
+	/**
+	 * Returns WarehouseInventory after retreiving or creating it
+	 * @param  WireInput $input Input Data
+	 * @return WarehouseInventory
+	 */
+	public function get_create_itemwarehouse(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$itemID = $input->$rm->text('itemID');
+		$whseID = $input->$rm->text('whseID');
+
+		if ($this->itemwarehouse_exists($whseID, $itemID)) {
+			$record = $this->get_whse_item($whseID, $itemID);
+		} else {
+			$record = new WarehouseInventory();
+			$record->setWhseid($whseID);
+			$record->setItemid($itemID);
+		}
+		return $record;
+	}
+
+	/**
+	 * Takes Input, validates Item Updates the pricing record for it, sends update to DPlus
+	 * NOTE: Updates ITM record with changes to the uom_sale, allow_discount, assortmentcode, assortmentqty fields
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$itemID = $input->$rm->text('itemID');
+		$whseID = $input->$rm->text('whseID');
+
+		$record = $this->get_create_itempricing($input);
+
+		if ($input->$rm->text('action') == 'update-itm-whse') {
+
+			// TODO
+			$response = $this->save_and_process_response($record);
+			$response->set_saved_itm($saved_itm);
+			$this->wire('session')->response_itm = $response;
+		}
+	}
+
+	/**
+	 * Returns XrefResponse based on the outcome of the database save
+	 * @param  WarehouseInventory $record Record to record response of database save
+	 * @return ItmResponse
+	 */
+	protected function save_and_process_response(WarehouseInventory $record) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new ItmResponse();
+		$response->set_itemID($record->itemid);
+		$message = self::DESCRIPTION_RECORD . " ($record->itemid) was ";
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+			$message .= "not ";
+		}
+
+		if ($is_new) {
+			$message .= 'added';
+			$response->set_action(ItmResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$message .= 'deleted';
+			$response->set_action(ItmResponse::CRUD_DELETE);
+		} else {
+			$message .= 'updated';
+			$response->set_action(ItmResponse::CRUD_UPDATE);
+		}
+
+		$response->set_message($message);
+		$response->set_saved_itm_pricing($response->has_success());
+
+		if ($response->has_success()) {
+			$this->update_dplus_cobol($record->itemid);
+		}
+		return $response;
+	}
+
+	/**
+	 * Writes File for Dplus to update the ITM file for this ITEM
+	 * @param  string $itemID Item ID
+	 * @return void
+	 */
+	public function update_dplus_cobol($itemID) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'UPDATEITMPRICE', "ITEMID=$itemID");
+
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus ITM Warehouse CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for ITM Warehouse',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
