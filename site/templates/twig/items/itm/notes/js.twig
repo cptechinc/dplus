@@ -30,7 +30,7 @@ $(function() {
 		}
 	});
 
-	$('#notes-inspection-modal').on('shown.bs.modal', function (e) {
+	$('#notes-inspection-modal').on('show.bs.modal', function (e) {
 		var modal = $(this);
 		var button = $(e.relatedTarget);
 		var note_row = button.closest('.qnote-row');
@@ -54,27 +54,14 @@ $(function() {
 /* =============================================================
 	Order Notes Functions
 ============================================================= */
-	$('#notes-order-modal').on('shown.bs.modal', function (e) {
+	$('#notes-order-modal').on('show.bs.modal', function (e) {
 		var modal = $(this);
 		var button = $(e.relatedTarget);
-		var note_row = button.closest('.qnote-order-row');
+		populate_notes_form(button, modal);
+	});
 
-		if (note_row.length) {
-			modal.find('.action-desc').text('Editing');
-
-			{% for form, label in m_notes.notes.order.get_forms_shortlabels() %}
-				modal.find('input[name={{ form }}]').prop('checked', button.data('{{ form }}') == 'Y');
-			{% endfor %}
-			modal.find('textarea[name=note]').text(note_row.find('textarea').text());
-		} else {
-			modal.find('.action-desc').text('Adding');
-
-			{% for form, label in m_notes.notes.order.get_forms_shortlabels() %}
-				modal.find('input[name={{ form }}]').prop('checked', false);
-			{% endfor %}
-			modal.find('textarea[name=note]').text('');
-		}
-		modal.find('input[name=form]').val(button.data('form'));
+	$('#notes-order-modal').on('shown.bs.modal', function (e) {
+		var modal = $(this);
 		modal.find('textarea[name=note]').focus();
 	});
 
@@ -111,12 +98,9 @@ $(function() {
 							cancelButtonText: 'No',
 						}).then((result) => {
 							if (result.value) {
-							//	$('#notes-order-modal').modal('hide');
-								console.log($('.qnote-order-row[data-form='+get_notes_formscode()+']').find('button.edit'));
-								//$('.qnote-order-row[data-form='+get_notes_formscode()+']').find('button.edit').click();
-
-							} else if (result.dismiss === Swal.DismissReason.cancel) {
-
+								var button = $('.qnote-order-row[data-form='+get_notes_formscode()+']').find('button.edit');
+								var modal = $('#notes-order-modal');
+								populate_notes_form(button, modal);
 							}
 						});
 					}
@@ -129,8 +113,6 @@ $(function() {
 			}
 		}
 	});
-
-
 
 	function has_document_selected() {
 		{% for form, label in m_notes.notes.order.get_forms_shortlabels() %}
@@ -149,11 +131,34 @@ $(function() {
 		{% endfor %}
 		return formcode;
 	}
+
 	function note_forms_exists() {
 		var formcode = get_notes_formscode();
+
 		if ($('.qnote-order-row[data-form='+formcode+']').length) {
 			return true;
 		}
 		return false;
+	}
+
+	function populate_notes_form(button, modal) {
+		var note_row = button.closest('.qnote-order-row');
+
+		if (note_row.length) {
+			modal.find('.action-desc').text('Editing');
+			{% for form, label in m_notes.notes.order.get_forms_shortlabels() %}
+				modal.find('input[name={{ form }}]').prop('checked', button.data('{{ form }}') == 'Y');
+			{% endfor %}
+			modal.addClass('is-invalid');
+			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
+		} else {
+			modal.find('.action-desc').text('Adding');
+			{% for form, label in m_notes.notes.order.get_forms_shortlabels() %}
+				modal.find('input[name={{ form }}]').prop('checked', false);
+			{% endfor %}
+			modal.find('textarea[name=note]').val('');
+		}
+		modal.find('input[name=form]').val(button.data('form'));
+
 	}
 });
