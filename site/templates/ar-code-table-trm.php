@@ -37,7 +37,7 @@
 			}
 		}
 
-		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $termscode, 'countries' => $countries]);
+		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $termscode, 'countries' => $countries, 'recordlocker' => $recordlocker]);
 		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'termscode' => $termscode]);
 	} else {
 		$page->title = $page->headline = "Customer Terms Code";
