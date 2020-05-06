@@ -72,12 +72,10 @@ $(function() {
 					form_additem.submit();
 				}
 			} else {
-				swal ({
+				swal2.fire({
 					title: 'Item not found.',
 					text: input_itemid.val() + ' cannot be found.',
-					type: 'warning',
-					confirmButtonClass: 'btn btn-sm btn-success',
-					cancelButtonClass: 'btn btn-sm btn-danger',
+					icon: 'warning',
 					showCancelButton: true,
 					confirmButtonText: 'Make advanced search?'
 				}).then(function (result) {
