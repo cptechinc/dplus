@@ -5,6 +5,7 @@
 	if ($input->get->code) {
 		$code = $input->get->text('code');
 		$countries = CountryQuery::create()->find();
+	 	// $creditcards = CreditCardDigitGetQuery::create()->find();
 
 		if ($module_codetable->code_exists($code)) {
 			$page->title = $page->headline = "TRM: $code";

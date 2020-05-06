@@ -61,6 +61,43 @@ $(function () {
 	});
 // end method
 
+// ------------------ Method S Discount -----------------
+
+	var row = 1;
+
+	if (parseFloat($('#order_percent' + row.toString()).val()) == 100) {
+		$('.row2, .row3, .row4, .row5, .row6').hide();
+	} else if (parseFloat($('#order_percent' + row.toString()).val()) != 100 && parseFloat($('#order_percent' + row.toString()).val()) > 0) {
+		$('#order_percent' + (row + 1).toString()).val(100 - parseFloat($('#order_percent' + row.toString()).val()));
+
+		if ($('#percent' + row.toString()).val() == 0) {
+			$('#days' + row.toString()).prop("readonly", true);
+			$('#day' + row.toString()).prop("readonly", true);
+			$('#date' + row.toString()).prop("readonly", true);
+		}
+
+		$("#code-edit-form #percent" + row.toString()).change(function() {
+			if ($('#percent' + row.toString()).val() == 0) {
+				$('#days' + row.toString()).val(0);
+				$('#day' + row.toString()).val(0);
+				$('#date' + row.toString()).val(0);
+				$('#days' + row.toString()).prop("readonly", true);
+				$('#day' + row.toString()).prop("readonly", true);
+				$('#date' + row.toString()).prop("readonly", true);
+			} else if ($('#percent' + row.toString()).val() != 0) {
+				$('#days' + row.toString()).prop("readonly", false);
+				$('#day' + row.toString()).prop("readonly", false);
+				$('#date' + row.toString()).prop("readonly", false);
+			}
+		});
+
+		var row = row + 1;
+		$('.row' + row.toString()).show();
+		$('.row3, .row4, .row5, .row6').hide();
+	}
+
+// ------------------ End Method S Discount -----------------
+//
 	var form = $('#code-edit-form'),
 	origForm = form.serialize();
 
