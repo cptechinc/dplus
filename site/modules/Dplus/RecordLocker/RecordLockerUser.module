@@ -12,7 +12,6 @@ use LockRecordQuery, LockRecord;
 class RecordLockerUser extends WireData implements Module {
 	public function init() {
 		$this->user = $this->wire('user');
-		$this->user->remove_locks_olderthan(3);
 	}
 
 	public function set_user(User $user) {

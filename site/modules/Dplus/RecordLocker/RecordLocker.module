@@ -16,7 +16,7 @@ class RecordLocker extends WireData implements Module {
 	/**
 	 * Returns if Function is being locked by User ID
 	 * @param  string $function  Function e.g IWHM
-	 * @param 	mixed $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @param  mixed $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
 	 * @param  string $userID    User Login ID
 	 * @return bool
 	 */
@@ -99,10 +99,13 @@ class RecordLocker extends WireData implements Module {
 	 * @param  int    $hours  Number of Hours to go back
 	 * @return bool
 	 */
-	public function remove_locks_olderthan($userID, int $hours) {
+	public function remove_locks_olderthan($userID = 'all', int $hours) {
 		$datetime = date(LockRecord::DATE_FORMAT, strtotime("-$hours hours"));
 		$q = LockRecordQuery::create();
-		$q->filterByUserid($userID);
+
+		if ($userID != 'all') {
+			$q->filterByUserid($userID);
+		}
 		$q->filterByDate($datetime, Criteria::LESS_THAN);
 		return $q->delete();
 	}
