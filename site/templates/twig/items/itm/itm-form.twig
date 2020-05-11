@@ -10,16 +10,15 @@
 			{% include 'items/itm/form/form-right.twig' %}
 		</div>
 	</div>
-	<div class="row text-center">
-		<div class="col-sm-6">
-			<button type="submit" class="btn btn-danger btn-block" name="action" value="remove-itm-item">
-				<i class="fa fa-trash" aria-hidden="true"></i> Remove
-			</button>
-		</div>
-		<div class="col-sm-6">
-			<button type="submit" class="btn btn-success btn-block" name="action" value="update-itm">
-				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-			</button>
-		</div>
+	<div class="d-flex justify-content-between align-items-center">
+		<button type="submit" class="btn btn-success" name="action" value="update-itm">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+
+		<button type="submit" class="btn btn-danger" name="action" value="remove-itm-item">
+			<i class="fa fa-trash" aria-hidden="true"></i> Remove
+		</button>
+
+		<a href="{{ page.itmURL() }}" class="btn btn-warning">Close</a>
 	</div>
 </form>
