@@ -60,6 +60,7 @@ if ($page->id != $config->errorpage_dplusdb) {
 	}
 
 	$user->setup(session_id());
+	$modules->get('RecordLocker')->remove_locks_olderthan('all', 3);
 } else {
 	if (!$input->get->retry) {
 		$configimporter = $modules->get('Configs');
