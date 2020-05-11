@@ -1,6 +1,8 @@
 <?php
 	$itm = $modules->get('Itm');
-	$itm_warehouse = $modules->get('ItmWarehouse')->init();
+	$itm_warehouse = $modules->get('ItmWarehouse');
+	$itm_warehouse->init2();
+	$qnotes = $modules->get('QnotesItemWhseOrder');
 	$html = $modules->get('HtmlWriter');
 	$recordlocker = $modules->get('RecordLockerUser');
 
@@ -20,6 +22,10 @@
 		$session->remove('response_itm');
 	}
 
+	if ($session->response_qnote) {
+		$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
+		$session->remove('response_qnote');
+	}
 
 	if ($input->get->itemID) {
 		$itemID = $input->get->text('itemID');
@@ -33,7 +39,6 @@
 
 				if ($itm_warehouse->itemwarehouse_exists($whseID, $itemID) || $whseID == 'new') {
 					$warehouse_lookup = $modules->get('LookupWarehouse');
-
 
 					if ($whseID == 'new') {
 						$item_warehouse = $itm_warehouse->get_new_itemwarehouse();
@@ -63,6 +68,12 @@
 
 					$page->body .= $config->twig->render('items/itm/warehouse/form.twig', ['page' => $page, 'warehouse' => $item_warehouse, 'm_whse' => $itm_warehouse]);
 					$page->body .= $config->twig->render('items/itm/warehouse/bins-modal.twig', ['page' => $page, 'itemID' => $itemID, 'm_whse' => $itm_warehouse]);
+					$page->body .= $html->h3('class=mt-3', 'Notes');
+					$page->body .= $config->twig->render('items/itm/warehouse/notes/order/list.twig', ['page' => $page, 'item' => $item_warehouse, 'm_notes' => $qnotes]);
+					$page->body .= $config->twig->render('items/itm/warehouse/notes/order/modal.twig', ['page' => $page, 'item' => $item_warehouse, 'm_notes' => $qnotes]);
+					$page->js   .= $config->twig->render('items/itm/warehouse/notes/order/js.twig', ['page' => $page, 'm_notes' => $qnotes]);
+
+					// Warehouse Item JS
 					$jsconfig = array('warehouses' => $itm_warehouse->get_itemwarehouses_js($itemID), 'in_defaultbin' => $itm_warehouse->configs->inventory->default_bin);
 					$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => $jsconfig]);
 					$page->js   .= $config->twig->render('items/itm/warehouse/js.twig', ['page' => $page, 'warehouse' => $item_warehouse, 'm_whse' => $itm_warehouse]);

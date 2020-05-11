@@ -121,15 +121,17 @@ $(function() {
 			whseID = form_whse.find('input[name=whseID]').val();
 		}
 
+		console.log(warehouses[whseID].bins);
+		console.log(warehouses[whseID].bins[input_bin.val()] === undefined);
 
 		if (input_bin.val() == '') {
 			error = true;
 			title = 'Error';
-			msg = 'Please Fill in the Bin';
-		} else if (warehouses[whseID].binarrangement == 'list' && input_bin.val() != in_defaultbin && warehouses[whseID].bins[input_bin.val()] === undefined) {
+			msg   = 'Please Fill in the Bin';
+		} else if (warehouses[whseID].binarrangement == 'list' && (input_bin.val() != in_defaultbin && !warehouses[whseID].bins.contains(input_bin.val()))) {
 			error = true;
 			title = 'Invalid Bin ID';
-			msg = 'Please use a valid bin';
+			msg   = 'Please use a valid bin';
 		} else if (warehouse.binarrangement == 'range') {
 			error = true;
 

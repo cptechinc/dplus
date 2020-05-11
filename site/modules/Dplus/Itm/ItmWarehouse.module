@@ -5,6 +5,10 @@ include_once(__DIR__.'/ItmResponse.php');
 use Purl\Url;
 
 use WarehouseInventoryQuery, WarehouseInventory;
+use WarehouseQuery, Warehouse;
+use WarehouseBinQuery, WarehouseBin;
+use ConfigInQuery, ConfigIn;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
 
 /**
  * Module that handles the editing of the Itm Warehouse Items
@@ -12,13 +16,30 @@ use WarehouseInventoryQuery, WarehouseInventory;
 class ItmWarehouse extends WireData implements Module {
 	const MODEL              = 'WarehouseInventory';
 	const MODEL_KEY          = 'code';
-	const DESCRIPTION        = 'Item Master Item Warehouse';
-	const DESCRIPTION_RECORD = 'Item Master Item Warehouse';
+	const DESCRIPTION        = 'ITM Item Warehouse';
+	const DESCRIPTION_RECORD = 'ITM Item {0} Warehouse {1}';
+
+	const REGEX_CODEABC = '/^[A-J]+$/i';
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
+		$this->configs = new WireData();
+		$this->configs->inventory  = false;
+		$this->configs->salesorder = false;
 	}
 
+	/**
+	 * Initializes the configs needed for this Module
+	 * @return void
+	 */
+	public function init2() {
+		$this->configs->inventory = $this->get_config_in();
+		$this->configs->salesorder = $this->get_config_so();
+	}
+
+/* =============================================================
+	CRUD Functions Read, Validation
+============================================================= */
 	/**
 	 * Return if Item Exists
 	 * @param  string $whseID Warehouse ID
@@ -31,7 +52,6 @@ class ItmWarehouse extends WireData implements Module {
 		$q->filterByItemid($itemID);
 		return boolval($q->count());
 	}
-
 
 	/**
 	 * Return WarehouseInventory
@@ -51,7 +71,7 @@ class ItmWarehouse extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return WarehouseInventory[]|ObjectCollection
 	 */
-	public function get_warehouses($itemID) {
+	public function get_itemwarehouses($itemID) {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
 		return $q->find();
@@ -65,6 +85,9 @@ class ItmWarehouse extends WireData implements Module {
 		return WarehouseInventoryQuery::create();
 	}
 
+/* =============================================================
+	CRUD Functions
+============================================================= */
 	/**
 	 * Returns WarehouseInventory after retreiving or creating it
 	 * @param  WireInput $input Input Data
@@ -76,36 +99,135 @@ class ItmWarehouse extends WireData implements Module {
 		$whseID = $input->$rm->text('whseID');
 
 		if ($this->itemwarehouse_exists($whseID, $itemID)) {
-			$record = $this->get_whse_item($whseID, $itemID);
+			$record = $this->get_itemwarehouse($whseID, $itemID);
 		} else {
-			$record = new WarehouseInventory();
+			$record = $this->get_new_itemwarehouse();
 			$record->setWhseid($whseID);
 			$record->setItemid($itemID);
 		}
 		return $record;
 	}
 
+	public function get_new_itemwarehouse() {
+		$record = new WarehouseInventory();
+		$record->setBin_default($this->configs->inventory->default_bin);
+		$record->setStatus(WarehouseInventory::STATUS_ACTIVE);
+		$record->setSpecialorder(WarehouseInventory::SPECIALORDER_NORMAL);
+		return $record;
+	}
+
 	/**
-	 * Takes Input, validates Item Updates the pricing record for it, sends update to DPlus
-	 * NOTE: Updates ITM record with changes to the uom_sale, allow_discount, assortmentcode, assortmentqty fields
+	 * Takes Input, calls the function / module that will handle the action
 	 *
 	 * @param  WireInput $input Input
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$itemID = $input->$rm->text('itemID');
-		$whseID = $input->$rm->text('whseID');
+		$values = $input->$rm;
 
-		$record = $this->get_create_itempricing($input);
-
-		if ($input->$rm->text('action') == 'update-itm-whse') {
-
-			// TODO
-			$response = $this->save_and_process_response($record);
-			$response->set_saved_itm($saved_itm);
-			$this->wire('session')->response_itm = $response;
+		switch ($values->text('action')) {
+			case 'delete-notes':
+			case 'update-notes':
+				$this->wire('modules')->get('QnotesItemWhseOrder')->process_input($input);
+				break;
+			default:
+				$this->process_input_itemwarehouse($input);
+				break;
 		}
+	}
+
+	/**
+	 * Takes Input, validates Item Updates the ITM warehouse record, sends update to DPlus
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input_itemwarehouse(WireInput $input) {
+		$validator_warehouses = $this->wire('modules')->get('LookupWarehouse');
+		$validator_item = $this->wire('modules')->get('LookupItem');
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID = $values->text('itemID');
+		$whseID = $values->text('whseID');
+
+		if ($values->text('action') == 'update-itm-whse') {
+			$record = $this->get_create_itemwarehouse($input);
+
+			if ($validator_item->lookup_itm($itemID) && $validator_warehouses->lookup_warehouse($whseID)) {
+				$warehouse = $this->get_warehouse($record->warehouseid);
+
+				if ($warehouse->validate_bin($values->text('bin_default'))) {
+					$record->setBin_default($values->text('bin_default'));
+					$record->setCyclecode($values->text('cyclecode'));
+					$record->setOrderpoint($values->text('orderpoint'));
+					$record->setOrderqty($values->text('orderqty'));
+					$record->setMaxqty($values->text('maxqty'));
+					$record->setMaxorderqty($values->text('maxorderqty'));
+					$record->setFreightin($values->text('freightin'));
+					$this->set_validated_fields($record, $input);
+					$response = $this->save_and_process_response($record);
+				} else {
+					$message = $values->text('bin_default') . " is not a valid bin, can't save Warehouse Item";
+					$response = $this->create_error_response($record->warehouseid, $itemID, $message);
+				}
+			} elseif (!$validator_item->lookup_itm($itemID)) {
+				$message = "Item $itemID does not exist";
+				$response = $this->create_error_response($record->warehouseid, $warehouse->itemid, $message);
+			}  elseif (!$validator_warehouses->lookup_warehouse($whseID)) {
+				$message = "Warehouse $whseID does not exist";
+				$response = $this->create_error_response($record->warehouseid, $warehouse->itemid, $message);
+			}
+		} else {
+
+		}
+		$this->wire('session')->response_itm = $response;
+	}
+
+	/**
+	 * Validate Inputs for ABC Code, Status, Special Order, Supply Warehouse then set them as needed
+	 * @param WarehouseInventory $record Item Warehouse Record
+	 * @param WireInput          $input  Input from Form
+	 */
+	protected function set_validated_fields(WarehouseInventory $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$validator_warehouses = $this->wire('modules')->get('LookupWarehouse');
+
+		if (preg_match(self::REGEX_CODEABC, $values->text('codeabc'))) {
+			$record->setCodeabc(strtoupper($values->text('codeabc')));
+		}
+
+		if (array_key_exists($values->text('status'), WarehouseInventory::STATUS_DESCRIPTIONS)) {
+			$record->setStatus($values->text('status'));
+		}
+
+		if (array_key_exists($values->text('specialorder'), WarehouseInventory::SPECIALORDER_DESCRIPTIONS)) {
+			$record->setSpecialorder($values->text('specialorder'));
+		}
+
+		if ($validator_warehouses->lookup_warehouse($values->text('whsesupply'))) {
+			$record->setWhsesupply($values->text('whsesupply'));
+		} else {
+			$record->setWhsesupply($record->warehouseid);
+		}
+	}
+
+	/**
+	 * Return Error Response for Whse Item
+	 * @param  string $whseID  Warehouse ID
+	 * @param  string $itemID  Item ID
+	 * @param  string $message Error Message
+	 * @return ItmResponse
+	 */
+	protected function create_error_response($whseID, $itemID, $message) {
+		$response = new ItmResponse();
+		$response->set_itemID($itemID);
+		$response->set_whseID($whseID);
+		$response->set_error(true);
+		$response->set_message($message);
+		$response->set_action(ItmResponse::CRUD_UPDATE);
+		return $response;
 	}
 
 	/**
@@ -119,7 +241,10 @@ class ItmWarehouse extends WireData implements Module {
 
 		$response = new ItmResponse();
 		$response->set_itemID($record->itemid);
-		$message = self::DESCRIPTION_RECORD . " ($record->itemid) was ";
+		$response->set_whseID($record->warehouseid);
+		$message = str_replace('{0}', $record->itemid, self::DESCRIPTION_RECORD);
+		$message = str_replace('{1}', $record->whseid, $message);
+		$message .= " was ";
 
 		if ($saved) {
 			$response->set_success(true);
@@ -140,29 +265,129 @@ class ItmWarehouse extends WireData implements Module {
 		}
 
 		$response->set_message($message);
-		$response->set_saved_itm_pricing($response->has_success());
+		$response->set_saved_itm_whse($response->has_success());
 
 		if ($response->has_success()) {
-			$this->update_dplus_cobol($record->itemid);
+			$this->update_dplus_cobol($record->itemid, $record->whseid);
 		}
 		return $response;
 	}
 
 	/**
-	 * Writes File for Dplus to update the ITM file for this ITEM
+	 * Writes File for Dplus to update the ITM Warehouse file for this Warehouse Item
 	 * @param  string $itemID Item ID
+	 * @param  string $whseID Warehouse ID
 	 * @return void
 	 */
-	public function update_dplus_cobol($itemID) {
+	public function update_dplus_cobol($itemID, $whseID) {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
-		$data = array("DBNAME=$dplusdb", 'UPDATEITMPRICE', "ITEMID=$itemID");
+		$data = array("DBNAME=$dplusdb", 'UPDATEITMWHSE', "ITEMID=$itemID", "WHSEID=$whseID");
 
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());
 		$requestor->cgi_request($config->cgis['database'], session_id());
 	}
 
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return WarehouseInventory Item Status Options
+	 * @return array
+	 */
+	public function get_itemstatus_options() {
+		return WarehouseInventory::STATUS_DESCRIPTIONS;
+	}
+
+	/**
+	 * Return WarehouseInventory Special Order Options
+	 * @return array
+	 */
+	public function get_specialorder_options() {
+		return WarehouseInventory::SPECIALORDER_DESCRIPTIONS;
+	}
+
+	/**
+	 * Returns IN config
+	 * @return ConfigIn
+	 */
+	public function get_config_in() {
+		return ConfigInQuery::create()->findOne();
+	}
+
+	/**
+	 * Returns IN config
+	 * @return ConfigSalesOrder
+	 */
+	public function get_config_so() {
+		return ConfigSalesOrderQuery::create()->findOne();
+	}
+	/**
+	 * Return Warehouses
+	 * NOTE: Returns all warehouses, not item ones
+	 * @return Warehouses[]|ObjectCollection
+	 */
+	public function get_warehouses() {
+		$q = WarehouseQuery::create();
+		return $q->find();
+	}
+
+	/**
+	 * Return Warehouse IDs
+	 * NOTE: Returns all warehouses for this company
+	 * @return array
+	 */
+	public function get_warehouses_ids() {
+		$q = WarehouseQuery::create();
+		$q->select(Warehouse::get_aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
+	/**
+	 * Return Warehouse by ID
+	 * @return Warehouse
+	 */
+	public function get_warehouse($id) {
+		$q = WarehouseQuery::create();
+		return $q->findOneById($id);
+	}
+
+	/**
+	 * Return array of whseIDs for Item ID
+	 * @param  string $itemID Item ID
+	 * @return array
+	 */
+	public function get_itemwarehouseIDs($itemID) {
+		$q = $this->get_query();
+		$q->select(WarehouseInventory::get_aliasproperty('warehouseid'));
+		$q->filterByItemid($itemID);
+		return $q->find()->toArray();
+	}
+
+	/**
+	 * Return array of Warehouses with Warehouse ID as a Key for validation of bins
+	 * @param  string $itemID Item ID
+	 * @return array
+	 */
+	public function get_itemwarehouses_js($itemID) {
+		$js = array();
+		$whseIDs = $this->get_itemwarehouseIDs($itemID);
+		$warehouses = WarehouseQuery::create()->findById($whseIDs);
+
+		foreach ($warehouses as $warehouse) {
+			$js[$warehouse->id] = array(
+				'id'             => $warehouse->id,
+				'binarrangement' => $warehouse->get_binarrangementdescription(),
+				'bins'           => WarehouseBinQuery::create()->get_warehousebins($warehouse->id)->toArray()
+			);
+		}
+		return $js;
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus ITM Warehouse CRUD Manager',

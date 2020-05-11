@@ -40,7 +40,7 @@ class Qnotes extends WireData implements Module {
 				'QnotesSalesOrder',
 				'QnotesSalesHistory',
 				'QnotesQuote',
-				'QnotesItm'
+				'QnotesItem'
 			)
 		);
 	}

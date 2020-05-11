@@ -69,6 +69,9 @@ class Itm extends WireData implements Module {
 			$url->query->set('itemID', $itemID);
 			$event->return = $url->getUrl();
 		});
+	}
+
+	public function init2() {
 		$this->configs->inventory = $this->get_config_in();
 	}
 

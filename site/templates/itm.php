@@ -1,7 +1,7 @@
 <?php
 	$page->title = "ITM";
 	$itm = $modules->get('Itm');
-	$itm->init();
+	$itm->init2();
 	$html = $modules->get('HtmlWriter');
 	$exists = false;
 
