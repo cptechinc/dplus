@@ -1,10 +1,10 @@
 <div class="form-group row">
 	<div class="col-sm-4">
-		<label>Item ID</label>
+		<strong>Item ID: </strong> &nbsp;
+		{{ item.itemid }}
 	</div>
 	<div class="col-sm-8">
-		<p class="form-control-plaintext">{{ item.itemid }}</p>
-		<p class="form-control-plaintext"><small>{{ item.description }}</small></p>
-		<p class="form-control-plaintext"><small>{{ item.description2 }}</small></p>
+		<small>{{ item.description }}</small><br>
+		<small>{{ item.description2 }}</small>
 	</div>
 </div>

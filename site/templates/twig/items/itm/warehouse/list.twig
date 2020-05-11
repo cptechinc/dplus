@@ -1,3 +1,8 @@
+<div class="mb-3">
+	<a href="{{ page.itm_warehouseURL(itemID, 'new') }}" class="btn btn-secondary">
+		<i class="fa fa-plus" aria-hidden="true"></i> Add
+	</a>
+</div>
 <table class="table table-sm">
 	<tr>
 		<th>Whse</th>
@@ -32,7 +37,7 @@
 				<td class="text-right">{{ warehouse.countdate ? warehouse.countdate|convertdate : '' }}</td>
 				<td></td>
 				<td>
-					<a href="{{ page.itm_warehouseURL(warehouse.item, warehouse.warehouseid) }}" class="btn btn-warning">
+					<a href="{{ page.itm_warehouseURL(warehouse.itemid, warehouse.warehouseid) }}" class="btn btn-warning">
 						<i aria-hidden="true" class="fa fa-pencil"></i> Edit
 					</a>
 				</td>
