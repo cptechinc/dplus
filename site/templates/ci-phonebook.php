@@ -11,6 +11,8 @@
 
 		$page->title = "Phonebook: $customer->name Searching for '$q'";
 		$query->filterByMatchExpression($q);
+	} else {
+		$q = '';
 	}
 
 	if ($user->is_salesrep()) {
