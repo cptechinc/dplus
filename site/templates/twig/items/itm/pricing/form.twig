@@ -2,7 +2,7 @@
 	<input type="hidden" name="action" value="update-itm-pricing">
 	<input type="hidden" name="itemID" value="{{ item_pricing.itemid }}">
 
-	{% include 'items/itm/pricing/description.twig' %}
+	{% include 'items/itm/description.twig' with {'item': item_pricing.item } %}
 
 	<div class="row mb-3">
 		<div class="col-sm-6">
