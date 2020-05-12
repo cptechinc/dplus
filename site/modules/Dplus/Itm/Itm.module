@@ -24,7 +24,8 @@ class Itm extends WireData implements Module {
 	const TEMPLATES_ITM = array(
 		'itm',
 		'itm-pricing',
-		'itm-whse'
+		'itm-whse',
+		'itm-costing'
 	);
 
 	public function __construct() {
@@ -39,6 +40,11 @@ class Itm extends WireData implements Module {
 		$this->addHook("Page(pw_template=$templates)::itmURL", function($event) {
 			$itemID = $event->arguments(0);
 			$event->return = $this->get_itmURL($itemID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::itm_deleteURL", function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_itm_deleteURL($itemID);
 		});
 
 		$this->addHook("Page(pw_template=$templates)::get_itemURL", function($event) {
@@ -62,12 +68,31 @@ class Itm extends WireData implements Module {
 			$event->return = $this->get_itm_warehouseURL($itemID, $whseID);
 		});
 
+		$this->addHook("Page(pw_template=$templates)::itm_costingURL", function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_itm_costingURL($itemID);
+		});
+
 		$this->addHook("Page(pw_template=$templates)::itemIDURL", function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
 			$url = new Url($p->url);
 			$url->query->set('itemID', $itemID);
 			$event->return = $url->getUrl();
+		});
+
+		$this->addHookProperty("Page(pw_template=$templates)::lockcode", function($event) {
+			$p = $event->object;
+			$lockcode = $p->pw_template;
+
+			switch ($p->pw_template) {
+				case 'itm-costing':
+					$lockcode = 'itm';
+					break;
+				default:
+					$lockcode = $p->pw_template;
+			}
+			$event->return = $lockcode;
 		});
 	}
 
@@ -379,6 +404,18 @@ class Itm extends WireData implements Module {
 	}
 
 	/**
+	 * Return URL to view / edit Item
+	 * @param  string $itemID
+	 * @return string
+	 */
+	public function get_itm_deleteURL($itemID) {
+		$url = new Url($this->wire('pages')->get("pw_template=itm")->url);
+		$url->query->set('action', 'remove-itm-item');
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	/**
 	 * Return URL to view / edit Item Pricing
 	 * @param  string $itemID
 	 * @return string
@@ -399,6 +436,17 @@ class Itm extends WireData implements Module {
 		$url = new Url($this->wire('pages')->get("pw_template=itm-whse")->url);
 		$url->query->set('itemID', $itemID);
 		$url->query->set('whseID', $whseID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to view / edit Item Costing
+	 * @param  string $itemID
+	 * @return string
+	 */
+	public function get_itm_costingURL($itemID) {
+		$url = new Url($this->wire('pages')->get("pw_template=itm-costing")->url);
+		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
 
