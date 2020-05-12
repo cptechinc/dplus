@@ -62,39 +62,84 @@ $(function () {
 // end method
 
 // ------------------ Method S Discount -----------------
+	var rows = 0;
 
-	var row = 1;
+	for ( var start = 1, l = 7; start < l; start++) {
+		if (parseFloat($('#order_percent' + start.toString()).val()) != 0) {
+			rows = rows + 1;
+		}
+		if (parseFloat($('#order_percent' + start.toString()).val()) == 0) {
+			$('.row' + start.toString()).hide();
+		}
+	}
 
-	if (parseFloat($('#order_percent' + row.toString()).val()) == 100) {
-		$('.row2, .row3, .row4, .row5, .row6').hide();
-	} else if (parseFloat($('#order_percent' + row.toString()).val()) != 100 && parseFloat($('#order_percent' + row.toString()).val()) > 0) {
-		$('#order_percent' + (row + 1).toString()).val(100 - parseFloat($('#order_percent' + row.toString()).val()));
-
-		if ($('#percent' + row.toString()).val() == 0) {
+	for ( var row = 1, l = rows; row < l; row++ ) {
+		if (parseFloat($('#percent' + row.toString()).val()) == 0) {
+			$('#days' + row.toString()).val(0);
+			$('#day' + row.toString()).val(0);
+			$('#date' + row.toString()).val(0);
 			$('#days' + row.toString()).prop("readonly", true);
 			$('#day' + row.toString()).prop("readonly", true);
 			$('#date' + row.toString()).prop("readonly", true);
+		} else if (parseFloat($('#percent' + row.toString()).val()) != 0) {
+			$('#days' + row.toString()).prop("readonly", false);
+			$('#day' + row.toString()).prop("readonly", false);
+			$('#date' + row.toString()).prop("readonly", false);
+		}
+	}
+
+	$("#code-edit-form").change(function() {
+		var order_percent_array = [];
+		for ( var row = 1, l = 7; row < l; row++ ) {
+			if (parseFloat($('#order_percent' + row.toString()).val()) != 0) {
+				order_percent_array.push(parseFloat($('#order_percent' + row.toString()).val()));
+			} else {
+				$('.row' + row.toString()).hide();
+			}
 		}
 
-		$("#code-edit-form #percent" + row.toString()).change(function() {
-			if ($('#percent' + row.toString()).val() == 0) {
+		var total = 0;
+		for (var i = 0; i < order_percent_array.length; i++) {
+		    total += order_percent_array[i];
+		}
+
+		if (total < 100) {
+			var new_row = order_percent_array.length + 1;
+			console.log(new_row);
+			$('.row' + new_row.toString()).show();
+			$('#order_percent' + new_row.toString()).val(100 - total);
+		}
+	});
+
+	$("#code-edit-form").change(function() {
+		for ( var row = 1, l = 7; row < l; row++ ) {
+			if (parseFloat($('#percent' + row.toString()).val()) == 0) {
 				$('#days' + row.toString()).val(0);
 				$('#day' + row.toString()).val(0);
 				$('#date' + row.toString()).val(0);
 				$('#days' + row.toString()).prop("readonly", true);
 				$('#day' + row.toString()).prop("readonly", true);
 				$('#date' + row.toString()).prop("readonly", true);
-			} else if ($('#percent' + row.toString()).val() != 0) {
+			} else if (parseFloat($('#percent' + row.toString()).val()) != 0) {
 				$('#days' + row.toString()).prop("readonly", false);
 				$('#day' + row.toString()).prop("readonly", false);
 				$('#date' + row.toString()).prop("readonly", false);
 			}
-		});
 
-		var row = row + 1;
-		$('.row' + row.toString()).show();
-		$('.row3, .row4, .row5, .row6').hide();
-	}
+			if (parseFloat($('#days' + row.toString()).val()) != 0 || parseFloat($('#day' + row.toString()).val()) != 0 || parseFloat($('#date' + row.toString()).val()) != 0) {
+				if (parseFloat($('#days' + row.toString()).val()) != 0) {
+					$('#day' + row.toString()).val(0);
+					$('#date' + row.toString()).val(0);
+				} else if (parseFloat($('#day' + row.toString()).val()) != 0) {
+					$('#days' + row.toString()).val(0);
+					$('#date' + row.toString()).val(0);
+				} else if (parseFloat($('#date' + row.toString()).val()) != 0) {
+					$('#days' + row.toString()).val(0);
+					$('#day' + row.toString()).val(0);
+				}
+			}
+		}
+	});
 
 // ------------------ End Method S Discount -----------------
 //
