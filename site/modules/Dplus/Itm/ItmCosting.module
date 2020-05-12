@@ -1,0 +1,128 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'/ItmResponse.php');
+
+use Purl\Url;
+
+use ItemMasterItemQuery, ItemMasterItem;
+use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
+
+/**
+ * Module that handles the editing of the ITM record for costing
+ */
+class ItmCosting extends WireData implements Module {
+	const MODEL              = 'ItemMasterItem';
+	const MODEL_KEY          = 'code';
+	const DESCRIPTION        = 'ITM Costing';
+	const DESCRIPTION_RECORD = 'ITM Costing';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+		$this->configs = new WireData();
+		$this->configs->po = false;
+	}
+
+	public function init2() {
+		//TODO GET PO Config
+	}
+
+	/**
+	 * Takes Input, validates Item Updates the pricing record for it, sends update to DPlus
+	 * NOTE: Updates ITM record with changes to the uom_sale, allow_discount, assortmentcode, assortmentqty fields
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$itm = $this->wire('modules')->get('Itm');
+		$rm = strtolower($input->requestMethod());
+		$itemID = $input->$rm->text('itemID');
+
+		if ($itm->item_exists($itemID)) {
+			if ($input->$rm->text('action') == 'update-itm-costing') {
+				$this->wire('session')->response_itm = $this->update_itm($input);
+			}
+		} else {
+			// TODO: Error Response
+		}
+	}
+	/**
+	 * Updates ITM Item Record and updates DPLUS
+	 * Records values for uom_sale, allow_discount, assortmentcode, assortmentqty
+	 * @param  WireInput $input
+	 * @return ItmResponse
+	 */
+	public function update_itm(WireInput $input) {
+		$itm = $this->wire('modules')->get('Itm');
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID = $values->text('itemID');
+
+		$item = $itm->get_item($itemID);
+		$item->setUom_sale($values->text('uom_sale'));
+		$item->setAllow_discount($values->text('allow_discount'));
+		$item->setAssortmentcode($values->text('assortmentcode'));
+		$item->setAssortmentqty($values->text('assortmentqty'));
+
+		return $this->save_and_process_response($item);
+	}
+
+	/**
+	 * Returns XrefResponse based on the outcome of the database save
+	 * @param  ItemMasterItem $record Record to record response of database save
+	 * @return ItmResponse
+	 */
+	protected function save_and_process_response(ItemMasterItem $record) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new ItmResponse();
+		$response->set_itemID($record->itemid);
+		$message = self::DESCRIPTION_RECORD . " ($record->itemid) was ";
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+			$message .= "not ";
+		}
+
+		if ($is_new) {
+			$message .= 'added';
+			$response->set_action(ItmResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$message .= 'deleted';
+			$response->set_action(ItmResponse::CRUD_DELETE);
+		} else {
+			$message .= 'updated';
+			$response->set_action(ItmResponse::CRUD_UPDATE);
+		}
+
+		$response->set_message($message);
+		$response->set_saved_itm_costing($response->has_success());
+
+		if ($response->has_success()) {
+			$module_itm = $this->wire('modules')->get('Itm');
+			$module_itm->update_dplus_cobol($itemID);
+		}
+		return $response;
+	}
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	public function get_uom_purchases() {
+		return UnitofMeasurePurchaseQuery::create()->find();
+	}
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus ITM Costing CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for ITM Costing',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

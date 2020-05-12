@@ -1,0 +1,87 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemMasterItem
+	m_costing              module ItmCosting
+#}
+<form action="{{ page.itm_costingURL(item.itemid) }}" class="mb-3" id="item-costing-form" method="post">
+	<input type="hidden" name="itemID" value="{{ item.itemid }}">
+	<div class="form-group row">
+		<div class="col-sm-4">
+			<label for="uom_purchase">Purchase UoM</label>
+		</div>
+		<div class="col-sm-8">
+			<select name="uom_purchase" class="form-control" id="uom_purchase">
+				{% for uom in m_costing.get_uom_purchases() %}
+					<option value="{{ uom.code }}" {{ uom.code == item.unitofmpurchase.code ? 'selected' : '' }}>{{ uom.description }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-sm-4">
+			<label for="standardcost">Standard Cost</label>
+		</div>
+		<div class="col-sm-8">
+			<div class="row">
+				<div class="col-sm-8">
+					<div class="input-group">
+						<input type="text" class="form-control text-right" name="standardcost" id="standardcost" value="{{ item.standardcost|number_format(4) }}">
+						<div class="input-group-append">
+							<span class="input-group-text uom-purchase-display">{{ item.unitofmpurchase.code }}</span>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<p class="form-control-plaintext">{{ item.date_laststandardcost ? item.date_laststandardcost|convertdate : '' }}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-sm-4">
+			<label for="lastcost">Last Cost</label>
+		</div>
+		<div class="col-sm-8">
+			<div class="row">
+				<div class="col-sm-8">
+					<div class="input-group">
+						<input type="text" class="form-control text-right" name="lastcost" id="lastcost" value="{{ item.lastcost|number_format(4) }}">
+						<div class="input-group-append">
+							<span class="input-group-text uom-purchase-display">{{ item.unitofmpurchase.code }}</span>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<p class="form-control-plaintext">{{ item.date_lastcost ? item.date_lastcost|convertdate : '' }}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-sm-4">
+			<label for="minmargin">Min Margin</label>
+		</div>
+		<div class="col-sm-8">
+			<div class="input-group">
+				<input type="text" class="form-control text-right" name="minmargin" id="minmargin" value="{{ item.minmargin|number_format(4) }}">
+				<div class="input-group-append">
+					<span class="input-group-text uom-purchase-display">%</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the Item is
+			1. Locked for editing by the User
+		#}
+		{% if recordlocker.function_locked_by_user(page.lockcode, item.itemid) %}
+			<button type="submit" class="btn btn-success" name="action" value="update-itm-costing">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+		{% endif %}
+		<a href="{{ page.itmURL(item.itemid) }}" class="btn btn-warning">Close</a>
+	</div>
+</form>
