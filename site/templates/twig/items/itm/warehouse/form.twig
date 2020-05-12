@@ -155,6 +155,22 @@
 	</div>
 
 	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the Warehouse is
+			1. Locked for editing by the User
+			2. Is a new Warehouse
+			NOTE: Only show delete if warehouse already exists.
+		#}
+		{% if recordlocker.function_locked_by_user(page.lockcode, item.itemid) or item.isNew() %}
+			<button type="submit" class="btn btn-success form_button" name="action" value="update-code">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			{% if item.isNew() == false %}
+				<a href="{{ page.get_codetable_code_deleteURL(page.lockcode, item.itemid) }}" class="btn btn-danger form_button delete_button">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
 		<button type="submit" class="btn btn-success" name="action" value="update-itm-whse">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 		</button>

@@ -3,6 +3,33 @@ $(function() {
 	var input_bin      = form_whse.find('input[name=bin_default]');
 	var input_codeabc  = form_whse.find('input[name=codeabc]');
 
+	origForm = form_whse.serialize();
+
+	$("body").on("click", "a:not(#item-whse-form .form_button)", function(e) {
+		if (form_whse.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			swal2.fire({
+				title: 'Changes have occurred!',
+				text: 'Do you want to save?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+				cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value) {
+					form.find('button[type=submit][name=update-itm-whse]').click();
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					// Send HTTP GET Request to remove Record Lock
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
 
 	$("body").on('change', 'select[name=whseID]', function(e) {
 		var select = $(this);
@@ -60,7 +87,7 @@ $(function() {
 					html: valid_form.html
 				});
 			} else {
-				// form.submit();
+				form.submit();
 			}
 		}
 	});
