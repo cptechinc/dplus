@@ -151,15 +151,18 @@ class ItmWarehouse extends WireData implements Module {
 		$itemID = $values->text('itemID');
 		$whseID = $values->text('whseID');
 
-		if ($values->text('action') == 'update-itm-whse') {
+
+
+		if ($validator_item->lookup_itm($itemID) && $validator_warehouses->lookup_warehouse($whseID)) {
 			$record = $this->get_create_itemwarehouse($input);
 
-			if ($validator_item->lookup_itm($itemID) && $validator_warehouses->lookup_warehouse($whseID)) {
+			if ($values->text('action') == 'update-itm-whse') {
+
 				$warehouse = $this->get_warehouse($record->warehouseid);
 
-				if ($warehouse->validate_bin($values->text('bin_default'))) {
+				if ($warehouse->validate_bin($values->text('bin_default')) || $values->text('bin_default') == $this->configs->inventory->default_bin) {
 					$record->setBin_default($values->text('bin_default'));
-					$record->setCyclecode($values->text('cyclecode'));
+					$record->setCyclecode(strtoupper($values->text('cyclecode')));
 					$record->setOrderpoint($values->text('orderpoint'));
 					$record->setOrderqty($values->text('orderqty'));
 					$record->setMaxqty($values->text('maxqty'));
@@ -169,18 +172,20 @@ class ItmWarehouse extends WireData implements Module {
 					$response = $this->save_and_process_response($record);
 				} else {
 					$message = $values->text('bin_default') . " is not a valid bin, can't save Warehouse Item";
-					$response = $this->create_error_response($record->warehouseid, $itemID, $message);
+					$response = $this->create_error_response($whseID, $itemID, $message);
 				}
-			} elseif (!$validator_item->lookup_itm($itemID)) {
-				$message = "Item $itemID does not exist";
-				$response = $this->create_error_response($record->warehouseid, $warehouse->itemid, $message);
-			}  elseif (!$validator_warehouses->lookup_warehouse($whseID)) {
-				$message = "Warehouse $whseID does not exist";
-				$response = $this->create_error_response($record->warehouseid, $warehouse->itemid, $message);
+			} elseif ($values->text('action') == 'remove-itm-whse') {
+				$record->delete();
+				$response = $this->save_and_process_response($record);
 			}
-		} else {
-
+		} elseif (!$validator_item->lookup_itm($itemID)) {
+			$message = "Item $itemID does not exist";
+			$response = $this->create_error_response($record->warehouseid, $warehouse->itemid, $message);
+		}  elseif (!$validator_warehouses->lookup_warehouse($whseID)) {
+			$message = "Warehouse $whseID does not exist";
+			$response = $this->create_error_response($record->warehouseid, $warehouse->itemid, $message);
 		}
+
 		$this->wire('session')->response_itm = $response;
 	}
 
@@ -383,6 +388,10 @@ class ItmWarehouse extends WireData implements Module {
 			);
 		}
 		return $js;
+	}
+
+	public function get_warehouseitem_lockkey(WarehouseInventory $warehouse) {
+		return "$warehouse->itemid-$warehouse->warehouseid";
 	}
 
 /* =============================================================

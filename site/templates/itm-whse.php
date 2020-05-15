@@ -8,9 +8,10 @@
 
 	if ($input->requestMethod('POST') || $input->get->action) {
 		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
 		$itm_warehouse->process_input($input);
-		$itemID = $input->$rm->text('itemID');
-		$whseID = $input->$rm->text('whseID');
+		$itemID = $values->text('itemID');
+		$whseID = $values->text('action') == 'remove-itm-whse' ? '' : $values->text('whseID');
 		$session->redirect($page->itm_warehouseURL($itemID, $whseID));
 	}
 
@@ -66,7 +67,7 @@
 						}
 					}
 
-					$page->body .= $config->twig->render('items/itm/warehouse/form.twig', ['page' => $page, 'warehouse' => $item_warehouse, 'm_whse' => $itm_warehouse]);
+					$page->body .= $config->twig->render('items/itm/warehouse/form.twig', ['page' => $page, 'warehouse' => $item_warehouse, 'm_whse' => $itm_warehouse, 'recordlocker' => $recordlocker]);
 					$page->body .= $config->twig->render('items/itm/warehouse/bins-modal.twig', ['page' => $page, 'itemID' => $itemID, 'm_whse' => $itm_warehouse]);
 					$page->body .= $html->h3('class=mt-3', 'Notes');
 					$page->body .= $config->twig->render('items/itm/warehouse/notes/order/list.twig', ['page' => $page, 'item' => $item_warehouse, 'm_notes' => $qnotes]);
@@ -90,7 +91,7 @@
 			}
 		}
 	} else {
-		$session->redirect($page->itmURL());
+		$session->redirect($page->itmURL(), $http301 = false);
 	}
 
 	include __DIR__ . "/basic-page.php";
