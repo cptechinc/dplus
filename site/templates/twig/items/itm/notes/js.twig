@@ -7,6 +7,11 @@
 #}
 
 $(function() {
+	{% if session.get('qnotes_itm') %}
+		$('html, body').animate({scrollTop: $('#notes-tab').offset().top,},700,'linear');
+		$('#{{ session.get('qnotes_itm') }}-tab').click();
+	{% endif %}
+
 	$('#notes-internal-modal').on('shown.bs.modal', function (e) {
 		var modal = $(this);
 		modal.find('textarea[name=note]').focus();
@@ -22,11 +27,13 @@ $(function() {
 			modal.find('input[name=notedate]').val(button.data('date')).attr('readonly', '');
 			modal.find('input[name=notetime]').val(button.data('time')).attr('readonly', '');
 			modal.find('textarea[name=note]').text(note_row.find('textarea').text());
+			modal.find('input[name=revision]').val(note_row.data('revision'));
 		} else {
 			modal.find('.action-desc').text('Adding');
-			modal.find('input[name=notedate]').removeAttr('readonly');
-			modal.find('input[name=notetime]').removeAttr('readonly');
+			modal.find('input[name=notedate]').val(button.data('date')).removeAttr('readonly');
+			modal.find('input[name=notetime]').val(button.data('time')).removeAttr('readonly');
 			modal.find('textarea[name=note]').text('');
+			modal.find('input[name=revision]').val('');
 		}
 	});
 
@@ -81,14 +88,12 @@ $(function() {
 		},
 		submitHandler: function(form) {
 			var action = $(this.submitButton).attr("value");
-
+			var jform = $(form);
 			if (action == 'delete-notes') {
 				form.submit();
 			} else {
 				if (has_document_selected()) {
-					if (!note_forms_exists())  {
-						form.submit();
-					} else {
+					if (note_forms_exists() && jform.find('input[name=form]').val() != get_notes_formscode()) {
 						swal2.fire({
 							title: 'This note type ('+ get_notes_formscode() +') exists!',
 							text: 'Do you want View / Edit that note?',
@@ -103,6 +108,8 @@ $(function() {
 								populate_notes_form(button, modal);
 							}
 						});
+					} else {
+						form.submit();
 					}
 				} else {
 					var notesform = $(form);

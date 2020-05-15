@@ -61,6 +61,9 @@ class QnotesItem extends WireData implements Module {
 				$this->wire('session')->response_qnote = $response;
 			}
 
+			if ($this->wire('session')->response_qnote->has_success()) {
+				$this->wire('session')->qnotes_itm = $input->$rm->text('type');
+			}
 		}
 	}
 
