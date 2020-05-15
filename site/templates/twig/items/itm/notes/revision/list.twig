@@ -22,7 +22,7 @@
 		</div>
 	</div>
 	{% for note in m_notes.notes.revision.get_notes_summarized(item.itemid) %}
-		<div class="list-group-item qnote-row" data-date="{{ note.notedate|convertdate("m/d/Y") }}" data-time="{{ (note.notedate ~ note.notetime)|convertdate("H:i") }}">
+		<div class="list-group-item qnote-row" data-date="{{ note.notedate|convertdate("m/d/Y") }}" data-time="{{ (note.notedate ~ note.notetime)|convertdate("H:i") }}" data-revision="{{ note.revision }}">
 			<div class="row mb-1">
 				<div class="col">{{ note.notedate|convertdate }}</div>
 				<div class="col">{{ (note.notedate ~ note.notetime)|convertdate("H:i") }}</div>
