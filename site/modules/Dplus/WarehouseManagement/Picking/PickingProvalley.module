@@ -121,6 +121,9 @@ class PickingProvalley extends WireData implements Module {
 				case 'add-lotserial':
 					$this->add_lotserial($input);
 					break;
+				case 'auto-add-lotserial':
+					$this->add_lotserial_auto($input);
+					break;
 				case 'remove-lotserial':
 					$this->remove_lotserial($input);
 					break;
@@ -179,15 +182,17 @@ class PickingProvalley extends WireData implements Module {
 		$itemID = $values->text('itemID');
 		$scan = $values->text('scan');
 
-		$lotserialbins = $input->post->array('lotserialbins');
+		$lotserialbins = $values->array('lotserialbins');
 		$orderitem = $this->items->get_picksalesorderdetail_itemid($itemID);
 		$recordnumbers = array();
 
 		foreach ($lotserialbins as $lotserialbin) {
-			$qty       = $values->text("$lotserialbin-qty");
-			$binID     = $values->text("$lotserialbin-bin");
-			$lotref    = $values->text("$lotserialbin-lotserialref");
-			$lotserial = $values->text("$lotserialbin-lotserial");
+			$array = explode('-', $lotserialbin);
+			$lotserial = $array[0];
+			$binID = $array[1];
+			$invitem = $this->inventory->get_inventory_scan_item($scan, $lotserial, $binID);
+			$qty = $invitem->qty;
+			$lotref = $invitem->lotserialref;
 
 			// CHECKS if ITEM EXISTS ON ORDER
 			$exists_onorder = $this->does_whseitempick_exist($orderitem, $lotserial, $binID);
@@ -365,6 +370,47 @@ class PickingProvalley extends WireData implements Module {
 	 */
 	public function get_whsesession() {
 		return WhsesessionQuery::create()->findOneBySessionid($this->sessionID);
+	}
+
+	/**
+	 * Validates Autosubmit of picked item
+	 * @param  Whseitemphysicalcount $item
+	 * @return bool
+	 */
+	public function validate_autosubmit(Whseitemphysicalcount $item) {
+		$validate_item = $this->wire('modules')->get('LookupItem');
+
+		if (!$validate_item->lookup_itm($item->itemid)) {
+			return false;
+		}
+
+		if (empty($item->bin)) {
+			return false;
+		}
+
+		if (empty($item->lotserial) || empty($item->lotserialref) || empty($item->qty)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public function auto_add_lotserial(Whseitemphysicalcount $item) {
+		$orderitem = $this->items->get_picksalesorderdetail_itemid($item->itemid);
+		$values = array(
+			'ordn'   => $this->ordn,
+			'action' => 'add-lotserial',
+			'scan'   => $item->scan,
+			'itemID' => $item->itemID,
+			'binID'  => $item->bin,
+			'lotserial' => $item->lotserial,
+			'lotserialref' => $item->lotserialref,
+			'qty'          => $item->qty
+		);
+
+		$input = new WireInput();
+		$input->get->setArray($values);
+		$this->add_lotserial($input);
 	}
 
 	/**
