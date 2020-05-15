@@ -49,6 +49,8 @@ $(function() {
 					window.location.href = uri.toString();
 				}
 			});
+		} else {
+			form_whse.find('select[name=whsesupply]').val(select.val());
 		}
 	});
 
@@ -147,9 +149,6 @@ $(function() {
 		} else {
 			whseID = form_whse.find('input[name=whseID]').val();
 		}
-
-		console.log(warehouses[whseID].bins);
-		console.log(warehouses[whseID].bins[input_bin.val()] === undefined);
 
 		if (input_bin.val() == '') {
 			error = true;

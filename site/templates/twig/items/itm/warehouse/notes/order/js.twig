@@ -36,6 +36,7 @@ $(function() {
 		},
 		submitHandler: function(form) {
 			var action = $(this.submitButton).attr("value");
+			var jform = $(form);
 
 			if (action == 'delete-notes') {
 				swal2.fire({
@@ -46,15 +47,12 @@ $(function() {
 					confirmButtonText: 'Yes',
 					cancelButtonText: 'No',
 				}).then((result) => {
-					var jform = $(form);
 					$('<input type="hidden" name="action" value="delete-notes">').appendTo(jform);
 					form.submit();
 				});
 			} else {
 				if (has_document_selected()) {
-					if (!note_forms_exists())  {
-						form.submit();
-					} else {
+					if (note_forms_exists() && jform.find('input[name=form]').val() != get_notes_formscode() )  {
 						swal2.fire({
 							title: 'This note type ('+ get_notes_formscode() +') exists!',
 							text: 'Do you want View / Edit that note?',
@@ -69,6 +67,8 @@ $(function() {
 								populate_notes_form(button, modal);
 							}
 						});
+					} else {
+						form.submit();
 					}
 				} else {
 					var notesform = $(form);
