@@ -61,7 +61,6 @@ class ConfigsWarehouseInventory extends Process implements ConfigurableModule {
 	=============================================================== */
 	public function init() {
 		parent::init();
-
 		$this->init_configdata();
 	}
 
