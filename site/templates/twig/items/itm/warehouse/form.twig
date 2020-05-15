@@ -161,23 +161,16 @@
 			2. Is a new Warehouse
 			NOTE: Only show delete if warehouse already exists.
 		#}
-		{% if recordlocker.function_locked_by_user(page.lockcode, item.itemid) or item.isNew() %}
-			<button type="submit" class="btn btn-success form_button" name="action" value="update-code">
+		{% if recordlocker.function_locked_by_user(page.lockcode, m_whse.get_warehouseitem_lockkey(warehouse)) or warehouse.isNew() %}
+			<button type="submit" class="btn btn-success form_button" name="action" value="update-itm-whse">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
-			{% if item.isNew() == false %}
-				<a href="{{ page.get_codetable_code_deleteURL(page.lockcode, item.itemid) }}" class="btn btn-danger form_button delete_button">
+			{% if warehouse.isNew() == false %}
+				<a href="{{ page.itm_warehouse_deleteURL(warehouse.itemid, warehouse.warehouseid) }}" class="btn btn-danger form_button delete_button">
 					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}
 		{% endif %}
-		<button type="submit" class="btn btn-success" name="action" value="update-itm-whse">
-			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-		</button>
-
-		<button type="submit" class="btn btn-danger" name="action" value="remove-itm-whse">
-			<i class="fa fa-trash" aria-hidden="true"></i> Remove
-		</button>
 
 		<a href="{{ page.itm_warehouseURL(warehouse.itemid) }}" class="btn btn-warning">Close</a>
 	</div>
