@@ -52,6 +52,18 @@ class DpagesMin extends Dpages implements Module {
 			'name'   => 'itm-costing',
 			'fields' => array()
 		),
+		'itm-xref' => array(
+			'name'   => 'itm-xref',
+			'fields' => array()
+		),
+		'itm-upcx' => array(
+			'name'   => 'itm-upcx',
+			'fields' => array()
+		),
+		'itm-vxm' => array(
+			'name'   => 'itm-vxm',
+			'fields' => array()
+		),
 		'itm-json' => array(
 			'name'   => 'itm-json',
 			'fields' => array()
@@ -243,6 +255,15 @@ class DpagesMin extends Dpages implements Module {
 			'name'           => 'costing',
 			'title'          => 'Costing',
 			'summary'        => 'View / Edit Item Costing',
+			'parent'         => '/min/inmain/itm/',
+			'dplus_function' => ''
+		),
+		'itm-xref' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'itm-xref',
+			'name'           => 'xrefs',
+			'title'          => 'XRefs',
+			'summary'        => 'View / Edit Item Cross References',
 			'parent'         => '/min/inmain/itm/',
 			'dplus_function' => ''
 		),
