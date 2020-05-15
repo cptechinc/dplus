@@ -40,10 +40,10 @@
 			$page->body .= $config->twig->render('items/itm/description.twig', ['page' => $page, 'item' => $item]);
 			$page->body .= $config->twig->render('items/itm/costing/page.twig', ['page' => $page, 'item' => $item, 'm_costing' => $itm_costing, 'recordlocker' => $recordlocker]);
 		} else {
-			$session->redirect($page->itmURL($itemID));
+			$session->redirect($page->itmURL($itemID), $http301 = false);
 		}
 	} else {
-		$session->redirect($page->itmURL());
+		$session->redirect($page->itmURL(), $http301 = false);
 	}
 
 	include __DIR__ . "/basic-page.php";

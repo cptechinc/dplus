@@ -51,6 +51,7 @@ class ItmCosting extends WireData implements Module {
 			$this->wire('session')->response_itm = $response;
 		}
 	}
+
 	/**
 	 * Updates ITM Item Record and updates DPLUS
 	 * Records values for uom_sale, allow_discount, assortmentcode, assortmentqty
@@ -68,6 +69,8 @@ class ItmCosting extends WireData implements Module {
 		$item->setStandardcost($values->text('standardcost'));
 		$item->setLastcost($values->text('lastcost'));
 		$item->setMinmargin($values->text('minmargin'));
+		$item->setStandardcostbasedon($values->text('standardcostbasedon'));
+
 
 		return $this->save_and_process_response($item);
 	}
@@ -117,6 +120,10 @@ class ItmCosting extends WireData implements Module {
 ============================================================= */
 	public function get_uom_purchases() {
 		return UnitofMeasurePurchaseQuery::create()->find();
+	}
+
+	public function get_standardcost_basedon_options() {
+		return ItemMasterItem::STANDARDCOST_BASE_OPTIONS;
 	}
 /* =============================================================
 	ProcessWire Module Functions
