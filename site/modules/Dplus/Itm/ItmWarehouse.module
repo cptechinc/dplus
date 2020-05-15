@@ -282,7 +282,7 @@ class ItmWarehouse extends WireData implements Module {
 	public function update_dplus_cobol($itemID, $whseID) {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
-		$data = array("DBNAME=$dplusdb", 'UPDATEITMWHSE', "ITEMID=$itemID", "WHSEID=$whseID");
+		$data = array("DBNAME=$dplusdb", 'UPDATEITMWHSE', "ITEMID=$itemID", "WHSE=$whseID");
 
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());
