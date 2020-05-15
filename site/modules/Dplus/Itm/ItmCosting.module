@@ -40,10 +40,15 @@ class ItmCosting extends WireData implements Module {
 
 		if ($itm->item_exists($itemID)) {
 			if ($input->$rm->text('action') == 'update-itm-costing') {
-				$this->wire('session')->response_itm = $this->update_itm($input);
+				$this->wire('session')->response_itm = $this->update_itm_input($input);
 			}
 		} else {
-			// TODO: Error Response
+			$response = new ItmResponse();
+			$response->set_itemID($itemID);
+			$response->set_error(true);
+			$response->set_message("Item $itemID does not exist");
+			$response->set_action(ItmResponse::CRUD_UPDATE);
+			$this->wire('session')->response_itm = $response;
 		}
 	}
 	/**
@@ -52,17 +57,17 @@ class ItmCosting extends WireData implements Module {
 	 * @param  WireInput $input
 	 * @return ItmResponse
 	 */
-	public function update_itm(WireInput $input) {
+	public function update_itm_input(WireInput $input) {
 		$itm = $this->wire('modules')->get('Itm');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itemID = $values->text('itemID');
 
 		$item = $itm->get_item($itemID);
-		$item->setUom_sale($values->text('uom_sale'));
-		$item->setAllow_discount($values->text('allow_discount'));
-		$item->setAssortmentcode($values->text('assortmentcode'));
-		$item->setAssortmentqty($values->text('assortmentqty'));
+		$item->setUom_purchase($values->text('uom_purchase'));
+		$item->setStandardcost($values->text('standardcost'));
+		$item->setLastcost($values->text('lastcost'));
+		$item->setMinmargin($values->text('minmargin'));
 
 		return $this->save_and_process_response($item);
 	}

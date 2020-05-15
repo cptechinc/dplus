@@ -29,7 +29,7 @@
 				{{ pricing.baseprice|currency }}
 			</td>
 			<td class="text-right">
-				<span class="unit-margin">{{ pricing.get_pricebreak_margin(0) }}</span> %
+				<span class="unit-margin">{{ pricing.get_pricebreak_margin(0)|number_format(4) }}</span> %
 			</td>
 		</tr>
 		{% for i in 1..pricing.count_qtybreaks() if pricing.get_pricebreak_qty(i) != 0 %}
@@ -41,7 +41,7 @@
 					{{ pricing.get_pricebreak_price(i)|currency }}
 				</td>
 				<td class="text-right">
-					<span class="unit-margin">{{ pricing.get_pricebreak_margin(i) }}</span> %
+					<span class="unit-margin">{{ pricing.get_pricebreak_margin(i)|number_format(4) }}</span> %
 				</td>
 			</tr>
 		{% endfor %}

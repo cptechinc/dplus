@@ -151,8 +151,6 @@ class ItmWarehouse extends WireData implements Module {
 		$itemID = $values->text('itemID');
 		$whseID = $values->text('whseID');
 
-
-
 		if ($validator_item->lookup_itm($itemID) && $validator_warehouses->lookup_warehouse($whseID)) {
 			$record = $this->get_create_itemwarehouse($input);
 

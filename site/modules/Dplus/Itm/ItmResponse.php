@@ -16,6 +16,7 @@ class ItmResponse extends WireData {
 		$this->saved_itm = false;
 		$this->saved_itm_pricing = false;
 		$this->saved_itm_whse = false;
+		$this->saved_itm_costing = false;
 	}
 
 	public function set_action(int $action = 0) {
@@ -60,5 +61,9 @@ class ItmResponse extends WireData {
 
 	public function set_saved_itm_whse(bool $saved) {
 		$this->saved_itm_whse = $saved;
+	}
+
+	public function set_saved_itm_costing(bool $saved) {
+		$this->saved_itm_costing = $saved;
 	}
 }
