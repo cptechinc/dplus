@@ -1,3 +1,4 @@
+
 $(function() {
 	var modal_ajax = $('#ajax-modal');
 
@@ -75,8 +76,15 @@ $(function() {
 		},
 		ignore: ".validate-ignore",
 		rules: {
+			{% if m_itm.configs.inventory.use_pricegroup() %}
+				pricecode: { required: true },
+			{% endif %}
+			{% if m_itm.configs.inventory.use_commgroup() %}
+				commissiongroup: { required: true },
+			{% endif %}
 			itemID: {
 				required: true,
+				minlength: 3,
 				maxlength: {{ item.get_length_itemid() }},
 			},
 		},
@@ -88,6 +96,7 @@ $(function() {
 			var itemID_form = $(form).data('itemid');
 			var url = URI('{{ validateurl }}');
 			url.addQuery('itemID', itemID_input);
+			 console.log($(form).serialize());
 
 			$.getJSON(url.toString(), function( json ) {
 				if (json.exists) { // Item Exists
@@ -96,7 +105,6 @@ $(function() {
 					} else {
 						var itemurl = new URI('{{ page.url }}');
 						itemurl.addQuery('itemID', itemID_input);
-						console.log(itemurl.toString());
 						var bootstrap = new JsContento();
 						var content = bootstrap.open('div', 'class=swal2-content|id=swal2-content');
 						content += bootstrap.openandclose('a', 'class=btn btn-secondary mb-2|href='+itemurl.toString(), 'View Item');
@@ -126,6 +134,4 @@ $(function() {
 			});
 		}
 	});
-
-
 });
