@@ -59,6 +59,8 @@ $(function() {
 		var input_unitcost = unitrow.find('.pricebreak-price');
 		var ele_margin = unitrow.find('.unit-margin');
 		var margin = determine_unitmargin(input_unitcost.val());
+		console.log(input_unitcost.val());
+		console.log(margin);
 		ele_margin.text(margin);
 	}
 
@@ -67,12 +69,12 @@ $(function() {
 	 * @param  float   cost Unit Cost
 	 * @return float
 	 */
-	function determine_unitmargin(cost) {
+	function determine_unitmargin(eachlistprice) {
 		if (eachlistprice == 0 || standardcost == 0) {
 			return 100;
 		} else {
 			var markup = eachlistprice - standardcost;
-			return markup / eachlistprice * 100;
+			return (markup / eachlistprice * 100).toFixed(4);
 		}
 	}
 });
