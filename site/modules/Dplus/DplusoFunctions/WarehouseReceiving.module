@@ -2,7 +2,10 @@
 
 use Purl\Url;
 use PurchaseOrderQuery, PurchaseOrder;
-use ItemMasterItemQuery, ItemMasterItem;
+use WarehouseQuery, Warehouse;
+
+use WhsesessionQuery, Whsesession;
+use WhseitemphysicalcountQuery, Whseitemphysicalcount;
 
 class WarehouseReceiving extends WireData implements Module {
 	/**
@@ -32,6 +35,50 @@ class WarehouseReceiving extends WireData implements Module {
 	public function set_ponbr($ponbr) {
 		$this->wire('page')->ponbr = $ponbr;
 		$this->ponbr = $ponbr;
+	}
+
+	/**
+	 * Return Whsesession
+	 * @return Whsesession
+	 */
+	public function get_whsesession() {
+		return WhsesessionQuery::create()->findOneBySessionid($this->sessionID);
+	}
+
+	/**
+	 * Return Warehouse
+	 * @return Warehouse
+	 */
+	public function get_warehouse() {
+		$whsesession = $this->get_whsesession();
+		return WarehouseQuery::create()->findOneById($whsesession->whseid);
+	}
+
+	public function validate_autosubmit(Whseitemphysicalcount $item) {
+		$validate_item = $this->wire('modules')->get('LookupItem');
+		$warehouse = $this->get_warehouse();
+
+		if (!$validate_item->lookup_itm($item->itemid)) {
+			return false;
+		}
+
+		if (!$warehouse->validate_bin($item->bin)) {
+			return false;
+		}
+
+		if (empty($item->productiondate) || empty($item->lotserialref) || empty($item->qty)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public function get_autosumbitURL($scan) {
+		$url = new Url($this->wire('pages')->get('template=redir, redir_file=inventory')->httpUrl);
+		$url->query->set('action', 'receiving-autosubmit');
+		$url->query->set('ponbr', $this->ponbr);
+		$url->query->set('scan', $scan);
+		return $url->getUrl();
 	}
 
 	/**
@@ -80,8 +127,7 @@ class WarehouseReceiving extends WireData implements Module {
 				'itemid'         => $item->itemid,
 				'qty_ordered'    => intval($item->qty_ordered),
 				'qty_received'   => $config->company == 'provalley' ? $item->count_receivedlots() : $item->qty_received,
-				'lotserialcount' => $item->count_receivedlots(),
-				'type'           => ItemMasterItemQuery::create()->get_itemtype($item->itemid)
+				'lotserialcount' => $item->count_receivedlots()
 			);
 		}
 		return $js;
