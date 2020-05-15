@@ -10,7 +10,6 @@
 		<div class="list-group">
 			{% if (resultscount) %}
 				{% for item in items %}
-
 					<div class="list-group-item">
 						<h4 class="list-group-item-heading">ITEMID: {{ item.itemid }}</h4>
 						<p class="list-group-item-text">{{ item.desc1 }}</p>
@@ -24,7 +23,7 @@
 							<div class="collapse" id="{{ item.itemid|attrJS }}-lotserial">
 								<div class="list-group">
 									{% for lotserial in inventory.get_lotserials_itemid(item.sessionid, item.itemid) %}
-										<a href="{{ page.is_print()_itemlabelURL(item) }}" class="list-group-item p-1">
+										<a href="{{ page.print_itemlabelURL(item) }}" class="list-group-item p-1">
 											<div class="row">
 												<div class="col">
 													<h4 class="list-group-item-heading">
@@ -51,7 +50,7 @@
 							{% if (not warehouse.validate_bin(item.bin)) %}
 								<span class="badge badge-danger pull-right">Invalid Bin</span>
 							{% endif %}
-							<a href="{{ page.is_print()_itemlabelURL(item) }}" class="btn btn-primary">Choose {{ item.itemid }}</a>
+							<a href="{{ page.print_itemlabelURL(item) }}" class="btn btn-primary">Choose {{ item.itemid }}</a>
 						{% endif %}
 					</div>
 				{% endfor %}
