@@ -1,4 +1,8 @@
 $(function () {
+	jQuery.validator.addMethod("order_percent1", function(value, element) {
+		return this.optional(element) || parseFloat(value) > 0;
+	}, "Order Percent 1 must be greater than 0");
+
 	$("#code-edit-form").validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
@@ -9,6 +13,10 @@ $(function () {
 			code: {
 				required: true,
 				maxlength: {{ termscode.get_max_length_code() }}
+			},
+			order_percent1: {
+				required: true,
+				order_percent1: true,
 			},
 		},
 		messages: {
@@ -36,6 +44,7 @@ $(function () {
 // end type
 
 // start method
+	// displays standard and eom tables on load
 	if ($('#method').val() == '') {
 		$('#eom-terms-form').hide();
 		$('#standard-terms-form').hide();
@@ -47,6 +56,7 @@ $(function () {
 		$('#eom-terms-form').show();
 	}
 
+	// displays standard and eom tables when method is changed
 	$("#code-edit-form #method").change(function() {
 		if ($('#method').val() == '') {
 			$('#eom-terms-form').fadeOut();
@@ -62,87 +72,166 @@ $(function () {
 // end method
 
 // ------------------ Method S Discount -----------------
-	var rows = 0;
+	$("body").on('change', '.order_percent', function(e) {
+		var input = $(this);
+		var row = input.closest('.percent');
+		var index = row.data('index');
 
-	for ( var start = 1, l = 7; start < l; start++) {
-		if (parseFloat($('#order_percent' + start.toString()).val()) != 0) {
-			rows = rows + 1;
-		}
-		if (parseFloat($('#order_percent' + start.toString()).val()) == 0) {
-			$('.row' + start.toString()).hide();
-		}
-	}
+		var sumpercent = get_sum_orderpercent();
 
-	for ( var row = 1, l = rows; row < l; row++ ) {
-		if (parseFloat($('#percent' + row.toString()).val()) == 0) {
-			$('#days' + row.toString()).val(0);
-			$('#day' + row.toString()).val(0);
-			$('#date' + row.toString()).val(0);
-			$('#days' + row.toString()).prop("readonly", true);
-			$('#day' + row.toString()).prop("readonly", true);
-			$('#date' + row.toString()).prop("readonly", true);
-		} else if (parseFloat($('#percent' + row.toString()).val()) != 0) {
-			$('#days' + row.toString()).prop("readonly", false);
-			$('#day' + row.toString()).prop("readonly", false);
-			$('#date' + row.toString()).prop("readonly", false);
+		if (input.val() == 0) {
+			$('.row'+index).find('input:not(.order_percent)').val('');
 		}
-	}
+		if (sumpercent > 100) {
+			$('.order_percent').addClass('is-invalid');
+			swal2.fire({
+				title: 'Invalid Order Percent!',
+				text: 'Cannot be more than 100%',
+				icon: 'warning',
+			});
+		} else {
+			$('.order_percent').removeClass('is-invalid');
 
-	$("#code-edit-form").change(function() {
-		var order_percent_array = [];
-		for ( var row = 1, l = 7; row < l; row++ ) {
-			if (parseFloat($('#order_percent' + row.toString()).val()) != 0) {
-				order_percent_array.push(parseFloat($('#order_percent' + row.toString()).val()));
+			if (index == 1) {
+				if (input.val() < 100 && input.val() > 0) {
+					var next = index + 1;
+					var nextpercent = 100 - sumpercent;
+					$('.row'+next).find('.order_percent').val(nextpercent);
+					$('.row'+next).removeClass('collapse');
+				}
 			} else {
-				$('.row' + row.toString()).hide();
-			}
-		}
+				if (input.val() == 0 && sumpercent < 100) {
+					var next = index + 1;
+					if ($('.row'+next).find('.order_percent').val() == 0) {
+						var nextpercent = 100 - sumpercent;
+						input.val(nextpercent);
+					} else {
+						var nextpercent = 100 - sumpercent;
+						input.val($('.row'+next).find('.order_percent').val());
+						$('.row'+next).find('.order_percent').val(nextpercent);
+						$('.row'+next).removeClass('collapse');
+					}
+				} else if (input.val() < 100 && input.val() > 0 && sumpercent < 100) {
+					var next = index + 1;
+					if ($('.row'+next).find('.order_percent').val() == 0) {
+						var nextpercent = 100 - sumpercent;
+						$('.row'+next).find('.order_percent').val(nextpercent);
+						$('.row'+next).removeClass('collapse');
+					} else{
 
-		var total = 0;
-		for (var i = 0; i < order_percent_array.length; i++) {
-		    total += order_percent_array[i];
-		}
-
-		if (total < 100) {
-			var new_row = order_percent_array.length + 1;
-			console.log(new_row);
-			$('.row' + new_row.toString()).show();
-			$('#order_percent' + new_row.toString()).val(100 - total);
-		}
-	});
-
-	$("#code-edit-form").change(function() {
-		for ( var row = 1, l = 7; row < l; row++ ) {
-			if (parseFloat($('#percent' + row.toString()).val()) == 0) {
-				$('#days' + row.toString()).val(0);
-				$('#day' + row.toString()).val(0);
-				$('#date' + row.toString()).val(0);
-				$('#days' + row.toString()).prop("readonly", true);
-				$('#day' + row.toString()).prop("readonly", true);
-				$('#date' + row.toString()).prop("readonly", true);
-			} else if (parseFloat($('#percent' + row.toString()).val()) != 0) {
-				$('#days' + row.toString()).prop("readonly", false);
-				$('#day' + row.toString()).prop("readonly", false);
-				$('#date' + row.toString()).prop("readonly", false);
-			}
-
-			if (parseFloat($('#days' + row.toString()).val()) != 0 || parseFloat($('#day' + row.toString()).val()) != 0 || parseFloat($('#date' + row.toString()).val()) != 0) {
-				if (parseFloat($('#days' + row.toString()).val()) != 0) {
-					$('#day' + row.toString()).val(0);
-					$('#date' + row.toString()).val(0);
-				} else if (parseFloat($('#day' + row.toString()).val()) != 0) {
-					$('#days' + row.toString()).val(0);
-					$('#date' + row.toString()).val(0);
-				} else if (parseFloat($('#date' + row.toString()).val()) != 0) {
-					$('#days' + row.toString()).val(0);
-					$('#day' + row.toString()).val(0);
+						var nextpercent = 100 - sumpercent;
+						$('.row6').find('.order_percent').val(nextpercent);
+						$('.row6').removeClass('collapse');
+					}
 				}
 			}
 		}
 	});
 
+	function get_sum_orderpercent() {
+		var sum = 0;
+		$('.order_percent').each(function( index ) {
+			var input = $(this);
+			sum += parseFloat(input.val());
+		});
+		return sum;
+	}
+
+	// // checks to see if order_percent is 0 and hides that row, shows rows with value more than 0
+	// var rows = 0;
+	//
+	// for ( var start = 1, l = 7; start < l; start++) {
+	// 	if (parseFloat($('#order_percent' + start.toString()).val()) != 0) {
+	// 		rows = rows + 1;
+	// 	}
+	// 	if (parseFloat($('#order_percent' + start.toString()).val()) == 0) {
+	// 		$('.row' + start.toString()).hide();
+	// 	}
+	// }
+	//
+	// // checks to see if percent is 0 and greys out day, days, and date
+	// for ( var row = 1, l = rows; row < l; row++ ) {
+	// 	if (parseFloat($('#percent' + row.toString()).val()) == 0) {
+	// 		$('#days' + row.toString()).val(0);
+	// 		$('#day' + row.toString()).val(0);
+	// 		$('#date' + row.toString()).val(0);
+	// 		$('#days' + row.toString()).prop("readonly", true);
+	// 		$('#day' + row.toString()).prop("readonly", true);
+	// 		$('#date' + row.toString()).prop("readonly", true);
+	// 	} else if (parseFloat($('#percent' + row.toString()).val()) != 0) {
+	// 		$('#days' + row.toString()).prop("readonly", false);
+	// 		$('#day' + row.toString()).prop("readonly", false);
+	// 		$('#date' + row.toString()).prop("readonly", false);
+	// 	}
+	// }
+	//
+	// // when form is changed, checks to see if order_percent has been changed to 0 and hides row
+	// $("#code-edit-form").change(function() {
+	// 	for ( var row = 1, l = 7; row < l; row++ ) {
+	// 		if (parseFloat($('#order_percent' + row.toString()).val()) == 0) {
+	// 			$('.row' + row.toString()).hide();
+	// 		}
+	// 	}
+	// });
+	//
+	// // when form is changed, if order_percent total is less than 100, adds another row with the difference in order_percent
+	// $("#code-edit-form").change(function() {
+	// 	var order_percent_array = [];
+	// 	for ( var row = 1, l = 7; row < l; row++ ) {
+	// 		// goes through all rows and checks if not 0 and adds to array
+	// 		if (parseFloat($('#order_percent' + row.toString()).val()) != 0) {
+	// 			order_percent_array.push(parseFloat($('#order_percent' + row.toString()).val()));
+	// 		}
+	// 	}
+	//
+	// 	// goes through order_percent array and adds total
+	// 	var total = 0;
+	// 	for (var i = 0; i < order_percent_array.length; i++) {
+	// 	    total += order_percent_array[i];
+	// 	}
+	//
+	// 	// 	if total of order_percents is less than 100, a new row is shown with the difference as order_percent
+	// 	if (total < 100) {
+	// 		var new_row = order_percent_array.length + 1;
+	// 		$('.row' + new_row.toString()).show();
+	// 		$('#order_percent' + new_row.toString()).val(100 - total);
+	// 	}
+	// });
+	//
+	// $("#code-edit-form").change(function() {
+	// 	for ( var row = 1, l = 7; row < l; row++ ) {
+	// 		// if form is changed and percent is changed to 0, days, day, and date are changed to 0 and greyed out
+	// 		if (parseFloat($('#percent' + row.toString()).val()) == 0) {
+	// 			$('#days' + row.toString()).val(0);
+	// 			$('#day' + row.toString()).val(0);
+	// 			$('#date' + row.toString()).val(0);
+	// 			$('#days' + row.toString()).prop("readonly", true);
+	// 			$('#day' + row.toString()).prop("readonly", true);
+	// 			$('#date' + row.toString()).prop("readonly", true);
+	// 		} else if (parseFloat($('#percent' + row.toString()).val()) != 0) {
+	// 			$('#days' + row.toString()).prop("readonly", false);
+	// 			$('#day' + row.toString()).prop("readonly", false);
+	// 			$('#date' + row.toString()).prop("readonly", false);
+	// 		}
+	//
+	// 		if (parseFloat($('#days' + row.toString()).val()) != 0 || parseFloat($('#day' + row.toString()).val()) != 0 || parseFloat($('#date' + row.toString()).val()) != 0) {
+	// 			if (parseFloat($('#days' + row.toString()).val()) != 0) {
+	// 				$('#day' + row.toString()).val(0);
+	// 				$('#date' + row.toString()).val(0);
+	// 			} else if (parseFloat($('#day' + row.toString()).val()) != 0) {
+	// 				$('#days' + row.toString()).val(0);
+	// 				$('#date' + row.toString()).val(0);
+	// 			} else if (parseFloat($('#date' + row.toString()).val()) != 0) {
+	// 				$('#days' + row.toString()).val(0);
+	// 				$('#day' + row.toString()).val(0);
+	// 			}
+	// 		}
+	// 	}
+	// });
+
 // ------------------ End Method S Discount -----------------
-//
+
+
 	var form = $('#code-edit-form'),
 	origForm = form.serialize();
 
