@@ -1,5 +1,23 @@
 <?php namespace ProcessWire;
 
+/**
+ * Volume
+ * Handles Response Data for Itm functions
+ *
+ * @author Paul Gomez
+ *
+ * @property bool    $success            Did the function Succeed?
+ * @property bool    $error              Was there an error?
+ * @property bool    $message            Error Message / Success Message
+ * @property string  $itemID             Item ID
+ * @property string  $whseID             Warehouse ID  ** Only for itm-whse
+ * @property int     $action             1 = CREATE | 2 = UPDATE | 3 = DELETE
+ * @property bool    $saved_itm          Was ITM record Updated?
+ * @property bool    $saved_itm_whse     Was ITM Warehouse record Updated?
+ * @property bool    $saved_itm_pricing  Was ITM Pricing record Updated?
+ * @property bool    $saved_itm_costing  Was ITM Pricing record Updated?
+ *
+ */
 class ItmResponse extends WireData {
 
 	const CRUD_CREATE = 1;
