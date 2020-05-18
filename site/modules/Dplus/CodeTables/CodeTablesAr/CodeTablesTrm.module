@@ -352,6 +352,14 @@ class CodeTablesTrm extends WireData implements Module {
 		return $response;
 	}
 
+	/**
+	 * Return the number of splits allowed for Standard Terms Dsicount
+	 * @return int
+	 */
+	public function count_standardterms_split() {
+		return CustomerTermsCode::STANDARD_TERMS_SPLIT;
+	}
+
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus TRM Code Table CRUD Manager',
