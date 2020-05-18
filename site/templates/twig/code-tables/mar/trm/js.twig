@@ -137,17 +137,6 @@ $(function () {
 		return sum;
 	}
 
-	// // checks to see if order_percent is 0 and hides that row, shows rows with value more than 0
-	// var rows = 0;
-	//
-	// for ( var start = 1, l = 7; start < l; start++) {
-	// 	if (parseFloat($('#order_percent' + start.toString()).val()) != 0) {
-	// 		rows = rows + 1;
-	// 	}
-	// 	if (parseFloat($('#order_percent' + start.toString()).val()) == 0) {
-	// 		$('.row' + start.toString()).hide();
-	// 	}
-	// }
 	//
 	// // checks to see if percent is 0 and greys out day, days, and date
 	// for ( var row = 1, l = rows; row < l; row++ ) {
@@ -165,38 +154,6 @@ $(function () {
 	// 	}
 	// }
 	//
-	// // when form is changed, checks to see if order_percent has been changed to 0 and hides row
-	// $("#code-edit-form").change(function() {
-	// 	for ( var row = 1, l = 7; row < l; row++ ) {
-	// 		if (parseFloat($('#order_percent' + row.toString()).val()) == 0) {
-	// 			$('.row' + row.toString()).hide();
-	// 		}
-	// 	}
-	// });
-	//
-	// // when form is changed, if order_percent total is less than 100, adds another row with the difference in order_percent
-	// $("#code-edit-form").change(function() {
-	// 	var order_percent_array = [];
-	// 	for ( var row = 1, l = 7; row < l; row++ ) {
-	// 		// goes through all rows and checks if not 0 and adds to array
-	// 		if (parseFloat($('#order_percent' + row.toString()).val()) != 0) {
-	// 			order_percent_array.push(parseFloat($('#order_percent' + row.toString()).val()));
-	// 		}
-	// 	}
-	//
-	// 	// goes through order_percent array and adds total
-	// 	var total = 0;
-	// 	for (var i = 0; i < order_percent_array.length; i++) {
-	// 	    total += order_percent_array[i];
-	// 	}
-	//
-	// 	// 	if total of order_percents is less than 100, a new row is shown with the difference as order_percent
-	// 	if (total < 100) {
-	// 		var new_row = order_percent_array.length + 1;
-	// 		$('.row' + new_row.toString()).show();
-	// 		$('#order_percent' + new_row.toString()).val(100 - total);
-	// 	}
-	// });
 	//
 	// $("#code-edit-form").change(function() {
 	// 	for ( var row = 1, l = 7; row < l; row++ ) {
