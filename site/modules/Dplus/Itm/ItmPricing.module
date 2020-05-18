@@ -76,29 +76,63 @@ class ItmPricing extends WireData implements Module {
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
+		$itm = $this->wire('modules')->get('Itm');
 		$rm = strtolower($input->requestMethod());
-		$itemID = $input->$rm->text('itemID');
+		$values = $input->$rm;
+		$itemID = $values->text('itemID');
+		$recordlocker = $this('modules')->get('RecordLockerUser');
 
-		$record = $this->get_create_itempricing($input);
+		if ($values->action) {
+			if ($itm->item_exists($itemID)) {
+				$record = $this->get_create_itempricing($input);
+				/**
+				 * Create lock for ITM code if not already locked.
+				 */
+				if (!$recordlocker->function_locked('itm', $itemID)) {
+					$recordlocker->create_lock('itm', $itemID);
+				}
 
-		if ($input->$rm->text('action') == 'update-itm-pricing') {
-			$record->setBaseprice($input->$rm->text('baseprice'));
-			$record->setUpdated(date('Ymd'));
-
-			for ($i = 1; $i < ItemPricing::QTY_BREAKS; $i++) {
-				$col_qty = ucfirst(ItemPricing::get_pricebreak_qty_column($i));
-				$col_price = ucfirst(ItemPricing::get_pricebreak_price_column($i));
-				$function_unitqty = "set$col_qty";
-				$function_unitprice = "set$col_price";
-				$record->$function_unitqty($input->$rm->text("pricebreak_qty$i"));
-				$record->$function_unitprice($input->$rm->text("pricebreak_price$i"));
+				if ($recordlocker->function_locked_by_user('itm', $itemID)) {
+					if ($input->$rm->text('action') == 'update-itm-pricing') {
+						$response = $this->update_itm_pricing($input, $record);
+						$saved_itm = $response->has_success() ? $this->update_itm($input) : false;
+						$response->set_saved_itm($saved_itm);
+					}
+				} else {
+					$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $recordlocker->get_locked_user('itm', $itemID);
+					$response = $this->create_error_response($record->itemid, $message, ItmResponse::CRUD_UPDATE);
+				}
+			} else {
+				$response = $this->create_error_response($record->itemid, "No Item with ItemID $itemID exists", ItmResponse::CRUD_UPDATE);
 			}
-			$saved_itm = $this->update_itm($input);
-			$response = $this->save_and_process_response($record);
-			$response->set_saved_itm($saved_itm);
-			$this->wire('session')->response_itm = $response;
+		} else {
+			$response = $this->create_error_response($record->itemid, "($record->itemid) was not saved, no action was specified", ItmResponse::CRUD_UPDATE);
 		}
+		$this->wire('session')->response_itm = $response;
 	}
+
+	/**
+	 * Updates ITM Pricing Record and updates DPLUS
+	 * Records values for uom_sale, allow_discount, assortmentcode, assortmentqty
+	 * @param  WireInput $input
+	 * @return ItmResponse
+	 */
+	public function update_itm_pricing(WireInput $input, ItemPricing $record) {
+		$rm = strtolower($input->requestMethod());
+		$record->setBaseprice($input->$rm->text('baseprice'));
+		$record->setUpdated(date('Ymd'));
+
+		for ($i = 1; $i < ItemPricing::QTY_BREAKS; $i++) {
+			$col_qty = ucfirst(ItemPricing::get_pricebreak_qty_column($i));
+			$col_price = ucfirst(ItemPricing::get_pricebreak_price_column($i));
+			$function_unitqty = "set$col_qty";
+			$function_unitprice = "set$col_price";
+			$record->$function_unitqty($input->$rm->text("pricebreak_qty$i"));
+			$record->$function_unitprice($input->$rm->text("pricebreak_price$i"));
+		}
+		return $this->save_and_process_response($record);
+	}
+
 	/**
 	 * Updates ITM Item Record and updates DPLUS
 	 * Records values for uom_sale, allow_discount, assortmentcode, assortmentqty
@@ -176,6 +210,17 @@ class ItmPricing extends WireData implements Module {
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());
 		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+	protected function create_error_response($itemID, $message, $actiontype = 0) {
+		$response = new ItmResponse();
+		$response->set_itemID($record->itemid);
+		$response->set_error(true);
+		$response->set_saved_itm_pricing(false);
+		$response->set_saved_itm(false);
+		$response->set_action($actiontype != 0 ? $actiontype : ItmResponse::CRUD_UPDATE);
+		$response->set_message($message);
+		return $response;
 	}
 
 	public static function getModuleInfo() {

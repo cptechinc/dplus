@@ -94,6 +94,7 @@ class Itm extends WireData implements Module {
 
 			switch ($p->pw_template) {
 				case 'itm-costing':
+				case 'itm-pricing':
 					$lockcode = 'itm';
 					break;
 				default:

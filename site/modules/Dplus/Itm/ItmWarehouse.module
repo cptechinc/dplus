@@ -155,7 +155,6 @@ class ItmWarehouse extends WireData implements Module {
 			$record = $this->get_create_itemwarehouse($input);
 
 			if ($values->text('action') == 'update-itm-whse') {
-
 				$warehouse = $this->get_warehouse($record->warehouseid);
 
 				if ($warehouse->validate_bin($values->text('bin_default')) || $values->text('bin_default') == $this->configs->inventory->default_bin) {
