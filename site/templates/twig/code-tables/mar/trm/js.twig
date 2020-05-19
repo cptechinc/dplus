@@ -72,6 +72,23 @@ $(function () {
 // end method
 
 // ------------------ Method S Discount -----------------
+
+	// checks to see if percent is 0 and greys out day, days, and date
+	for ( var row = 1, l = 7; row < l; row++ ) {
+		if (parseFloat($('#percent' + row.toString()).val()) == 0) {
+			$('#days' + row.toString()).val(0);
+			$('#day' + row.toString()).val(0);
+			$('#date' + row.toString()).val(0);
+			$('#days' + row.toString()).prop("readonly", true);
+			$('#day' + row.toString()).prop("readonly", true);
+			$('#date' + row.toString()).prop("readonly", true);
+		} else if (parseFloat($('#percent' + row.toString()).val()) != 0) {
+			$('#days' + row.toString()).prop("readonly", false);
+			$('#day' + row.toString()).prop("readonly", false);
+			$('#date' + row.toString()).prop("readonly", false);
+		}
+	}
+
 	$("body").on('change', '.order_percent', function(e) {
 		var input = $(this);
 		var row = input.closest('.percent');
@@ -118,7 +135,6 @@ $(function () {
 						$('.row'+next).find('.order_percent').val(nextpercent);
 						$('.row'+next).removeClass('collapse');
 					} else{
-
 						var nextpercent = 100 - sumpercent;
 						$('.row6').find('.order_percent').val(nextpercent);
 						$('.row6').removeClass('collapse');
@@ -126,6 +142,30 @@ $(function () {
 				}
 			}
 		}
+	});
+
+	$("body").on('change', '.discount_percent', function(e) {
+		var input = $(this);
+		var row = input.closest('.discount');
+		var index = row.data('index');
+
+		if (input.val() == 0) {
+			$('.row'+index).find('.discount_percent, .day, .days, .date').val(0);
+			$('.row'+index).find('.day, .days, .date').prop('readonly', true);
+		}
+
+		// if (input.val() > 100) {
+		// 	$('.percent').addClass('is-invalid');
+		// 	swal2.fire({
+		// 		title: 'Invalid Discount Percent!',
+		// 		text: 'Cannot be more than 100%',
+		// 		icon: 'warning',
+		// 	});
+		// } else {
+		// 	$('.percent').removeClass('is-invalid');
+		// 	$('.row'+index).find('input:discount').prop('readonly', false);
+		// 	$('.row'+index).find('input:discount').val('');
+		// }
 	});
 
 	function get_sum_orderpercent() {
@@ -137,22 +177,8 @@ $(function () {
 		return sum;
 	}
 
-	//
-	// // checks to see if percent is 0 and greys out day, days, and date
-	// for ( var row = 1, l = rows; row < l; row++ ) {
-	// 	if (parseFloat($('#percent' + row.toString()).val()) == 0) {
-	// 		$('#days' + row.toString()).val(0);
-	// 		$('#day' + row.toString()).val(0);
-	// 		$('#date' + row.toString()).val(0);
-	// 		$('#days' + row.toString()).prop("readonly", true);
-	// 		$('#day' + row.toString()).prop("readonly", true);
-	// 		$('#date' + row.toString()).prop("readonly", true);
-	// 	} else if (parseFloat($('#percent' + row.toString()).val()) != 0) {
-	// 		$('#days' + row.toString()).prop("readonly", false);
-	// 		$('#day' + row.toString()).prop("readonly", false);
-	// 		$('#date' + row.toString()).prop("readonly", false);
-	// 	}
-	// }
+
+
 	//
 	//
 	// $("#code-edit-form").change(function() {

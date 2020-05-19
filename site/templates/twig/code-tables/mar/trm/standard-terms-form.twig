@@ -57,16 +57,16 @@
 				<div class="list-group-item row{{ x }} discount {{ code.order_percent(x) > 0 ? '' : 'collapse' }}" data-index="{{ x }}">
 					<div class="row align-items-center">
 						<div class="col">
-							<input type="text" name="percent{{ x }}" id="percent{{ x }}" maxlength="5" class="form-control" value="{{ code.percent(x) }}">
+							<input type="text" name="percent{{ x }}" id="percent{{ x }}" maxlength="5" class="form-control discount_percent" value="{{ code.percent(x) }}">
 						</div>
 						<div class="col">
-							<input type="text" name="days{{ x }}" id="days{{ x }}" maxlength="3" class="form-control" value="{{ code.days(x) }}">
+							<input type="text" name="days{{ x }}" id="days{{ x }}" maxlength="3" class="form-control days" value="{{ code.days(x) }}">
 						</div>
 						<div class="col">
-							<input type="text" name="day{{ x }}" id="day{{ x }}" maxlength="2" class="form-control" value="{{ code.day(x) }}">
+							<input type="text" name="day{{ x }}" id="day{{ x }}" maxlength="2" class="form-control day" value="{{ code.day(x) }}">
 						</div>
 						<div class="col">
-							<input type="text" name="date{{ x }}" id="date{{ x }}" maxlength="5" class="form-control" value="{{ code.date(x) }}">
+							<input type="text" name="date{{ x }}" id="date{{ x }}" maxlength="5" class="form-control date" value="{{ code.date(x) }}">
 						</div>
 					</div>
 				</div>
