@@ -360,6 +360,14 @@ class CodeTablesTrm extends WireData implements Module {
 		return CustomerTermsCode::STANDARD_TERMS_SPLIT;
 	}
 
+	/**
+	 * Return the number of splits allowed for EOM Terms Dsicount
+	 * @return int
+	 */
+	public function count_eomterms_split() {
+		return CustomerTermsCode::EOM_TERMS_SPLIT;
+	}
+
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus TRM Code Table CRUD Manager',
