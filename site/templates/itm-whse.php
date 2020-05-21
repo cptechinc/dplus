@@ -67,6 +67,7 @@
 						}
 					}
 
+					$page->body .= $config->twig->render('items/itm/warehouse/description.twig', ['page' => $page, 'item' => $item]);
 					$page->body .= $config->twig->render('items/itm/warehouse/form.twig', ['page' => $page, 'warehouse' => $item_warehouse, 'm_whse' => $itm_warehouse, 'recordlocker' => $recordlocker]);
 					$page->body .= $config->twig->render('items/itm/warehouse/bins-modal.twig', ['page' => $page, 'itemID' => $itemID, 'm_whse' => $itm_warehouse]);
 					$page->body .= $html->h3('class=mt-3', 'Notes');
