@@ -61,7 +61,7 @@
 				$page->body .= $html->div('class=mb-3');
 				$module_notes = $modules->get('QnotesItem');
 
-				$page->body .= $config->twig->render('items/itm/notes/notes.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes, 'user' => $user, 'db' => $db_dplusdata]);
+				$page->body .= $config->twig->render('items/itm/notes/notes.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes, 'user' => $user]);
 				$page->body .= $config->twig->render('items/itm/notes/internal/modal.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes, 'user' => $user]);
 				$page->body .= $config->twig->render('items/itm/notes/revision/modal.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes, 'user' => $user]);
 				$page->body .= $config->twig->render('items/itm/notes/inspection/modal.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes, 'user' => $user]);
