@@ -1,0 +1,206 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'/XrefResponse.php');
+
+use Purl\Url;
+
+use ItemMasterItemQuery, ItemMasterItem;
+use ItemXrefCustomerQuery, ItemXrefCustomer;
+use ConfigSysQuery, ConfigSys;
+
+/**
+ * Module that handles the editing of the VXM item Xref
+ */
+class XrefCxm extends WireData implements Module {
+	const MODEL              = 'ItemXrefCustomer';
+	const MODEL_KEY          = 'code';
+	const DESCRIPTION        = 'Item CXM';
+	const DESCRIPTION_RECORD = 'Item CXM';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Return the CXM Item that has the short itemid
+	 * @param  string $itemID Item ID / Our Item ID
+	 * @return ItemXrefCustomer
+	 */
+	public function get_cxm_shortitem($itemID) {
+		$q = $this->get_query();
+		$custID = ConfigSysQuery::create()->findOne()->custid;
+		$q->filterByCustid($custID);
+		$q->filterByItemid($itemID);
+		return $q->findOne();
+	}
+
+	public function get_create_cxm_shortitem($itemID) {
+		if ($this->cxm_shortitem_exists($itemID)) {
+			return $this->get_cxm_shortitem($itemID);
+		} else {
+			$custID = ConfigSysQuery::create()->findOne()->custid;
+			$item = new ItemXrefCustomer();
+			$item->setItemid($itemID);
+			$item->setCustid($custID);
+			return $item;
+		}
+	}
+
+	/**
+	 * Return If there IS a CXM record with the short item ID
+	 * @param  string $itemID Item ID / Our Item ID
+	 * @return bool
+	 */
+	public function cxm_shortitem_exists($itemID) {
+		$q = $this->get_query();
+		$custID = ConfigSysQuery::create()->findOne()->custid;
+		$q->filterByCustid($custID);
+		$q->filterByItemid($itemID);
+		return boolval($q->count());
+	}
+
+
+	/**
+	 * Return ItemXrefCustomer
+	 * @param  string $custID     Cust ID
+	 * @param  string $custitemID Cust's Item ID'
+	 * @return ItemXrefCustomer
+	 */
+	public function get_cxm_item($custID, $custitemID) {
+		$q = $this->get_query();
+		$q->filterByCustid($custID);
+		$q->filterByCustitemid($custitemID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Returns if Cust Item ID exists
+	 * @param  string $custID     Customer ID
+	 * @param  string $custitemID Customer's Item ID'
+	 * @return bool
+	 */
+	public function cxm_item_exists($custID, $custitemID) {
+		$q = $this->get_query();
+		$q->filterByCustid($custID);
+		$q->filterByCustitemid($custitemID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Takes Input, validates it's for one of the code tables
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if ($values->text('action') == 'update-cxm-shortitem') {
+			$itemID = $values->text('itemID');
+			$record = $this->get_create_cxm_shortitem($itemID);
+			$array = $record->toArray();
+			$record->delete();
+			$record = new ItemXrefCustomer();
+			$record->fromArray($array);
+			$record->setCustitemid($values->text('custitemid'));
+			$record->save();
+			$record->setDate(date('Ymd'));
+			$record->setTime(date('His'));
+		}
+
+		if ($values->action) {
+			$response = $this->save_and_process_response($record);
+			$this->wire('session')->response_xref = $response;
+		}
+	}
+
+	/**
+	 * Returns XrefResponse based on the outcome of the database save
+	 * @param  ItemXrefCustomer $record Record to record response of database save
+	 * @return XrefResponse
+	 */
+	protected function save_and_process_response(ItemXrefCustomer $record) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+		$code = "$record->custid-$record->custitemid-$record->itemid";
+
+		$response = new XrefResponse();
+		$response->set_key($code);
+		$message = self::DESCRIPTION_RECORD . " ($code) was ";
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+			$message .= "not ";
+		}
+
+		if ($is_new) {
+			$message .= 'added';
+			$response->set_action(XrefResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$message .= 'deleted';
+			$response->set_action(XrefResponse::CRUD_DELETE);
+		} else {
+			$message .= 'updated';
+			$response->set_action(XrefResponse::CRUD_UPDATE);
+		}
+
+		$response->set_message($message);
+
+		if ($response->has_success()) {
+			$this->update_dplus_cobol($record);
+		}
+		return $response;
+	}
+
+	protected function is_modifying_cxm_key(ItemXrefCustomer $record) {
+		$q = $this->get_query();
+		$tablemap = $q->getTableMap();
+		$primarykeys = array_keys($tablemap->getPrimaryKeys());
+		$modified = $record->getModifiedColumns();
+
+		foreach ($modified as $column) {
+			$col = str_replace($tablemap::TABLE_NAME.'.', '', $column);
+			if (in_array($col, $primarykeys)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Writes File for Dplus to update the VXM file for this ITEM
+	 * @param  ItemXrefCustomer $item
+	 * @return void
+	 */
+	public function update_dplus_cobol(ItemXrefCustomer $item) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'UPDATECXM', "CUSTID=$item->custid", "CUSTITEM=$item->custitemid", "OURITEM=$item->itemid");
+
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+	/**
+	 * Return Query
+	 * @return ItemXrefCustomerQuery
+	 */
+	public function get_query() {
+		return ItemXrefCustomerQuery::create();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus VXM CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for VXM',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
