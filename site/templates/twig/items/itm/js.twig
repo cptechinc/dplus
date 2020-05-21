@@ -6,6 +6,9 @@ $(function() {
 	var input_customer  = form.find('input[name=custid]');
 	var input_custname  = form.find('input[name=cust_name]');
 
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
 	origForm = form.serialize();
 
 	$("body").on("click", "a:not(#itm-form a, #ajax-modal a)", function(e) {
@@ -34,11 +37,9 @@ $(function() {
 		}
 	});
 
-	/**
-	 *
-	 * Customer Lookup Modal
-	 *
-	 */
+/* =============================================================
+	Customer Lookup Modal Functions
+============================================================= */
 	modal_ajax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
@@ -68,6 +69,9 @@ $(function() {
 		form.closest('.modal').find('.modal-body').loadin(url, function() {});
 	});
 
+/* =============================================================
+	Validation Functions
+============================================================= */
 	form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
@@ -96,7 +100,6 @@ $(function() {
 			var itemID_form = $(form).data('itemid');
 			var url = URI('{{ validateurl }}');
 			url.addQuery('itemID', itemID_input);
-			 console.log($(form).serialize());
 
 			$.getJSON(url.toString(), function( json ) {
 				if (json.exists) { // Item Exists

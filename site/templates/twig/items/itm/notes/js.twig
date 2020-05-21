@@ -17,6 +17,9 @@ $(function() {
 		modal.find('textarea[name=note]').focus();
 	});
 
+/* =============================================================
+	Revision Notes Methods
+============================================================= */
 	$('#notes-revision-modal').on('shown.bs.modal', function (e) {
 		var modal = $(this);
 		var button = $(e.relatedTarget);
@@ -37,6 +40,9 @@ $(function() {
 		}
 	});
 
+/* =============================================================
+	Inspection Notes Methods
+============================================================= */
 	$('#notes-inspection-modal').on('show.bs.modal', function (e) {
 		var modal = $(this);
 		var button = $(e.relatedTarget);
@@ -59,7 +65,7 @@ $(function() {
 	});
 
 /* =============================================================
-	Order Notes Functions
+	Order Notes Methods
 ============================================================= */
 	$('#notes-order-modal').on('show.bs.modal', function (e) {
 		var modal = $(this);
@@ -166,6 +172,5 @@ $(function() {
 			modal.find('textarea[name=note]').val('');
 		}
 		modal.find('input[name=form]').val(button.data('form'));
-
 	}
 });

@@ -1,6 +1,9 @@
 $(function() {
 	var form  = $('#item-whse-form');
 
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
 	origForm = form.serialize();
 
 	$("body").on("click", "a:not(#item-costing-form .form_button)", function(e) {
@@ -29,6 +32,9 @@ $(function() {
 		}
 	});
 
+/* =============================================================
+	Validation Methods
+============================================================= */
 	form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",

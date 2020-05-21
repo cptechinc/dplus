@@ -3,6 +3,9 @@ $(function() {
 	var input_bin      = form_whse.find('input[name=bin_default]');
 	var input_codeabc  = form_whse.find('input[name=codeabc]');
 
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
 	origForm = form_whse.serialize();
 
 	$("body").on("click", "a:not(#item-whse-form .form_button)", function(e) {
@@ -31,6 +34,9 @@ $(function() {
 		}
 	});
 
+/* =============================================================
+	Changing WarehouseID for new Warehouses
+============================================================= */
 	$("body").on('change', 'select[name=whseID]', function(e) {
 		var select = $(this);
 
@@ -54,6 +60,9 @@ $(function() {
 		}
 	});
 
+/* =============================================================
+	Valdation Methods
+============================================================= */
 	jQuery.validator.addMethod("codeabc", function(value, element) {
 		return this.optional(element) || /^[A-J]+$/i.test(value);
 	}, "Valid Entries for ABC Class are A through J");
@@ -92,28 +101,6 @@ $(function() {
 				form.submit();
 			}
 		}
-	});
-
-	$('#bins-modal').on('shown.bs.modal', function (event) {
-		var modal = $(this);
-		var button = $(event.relatedTarget); // Button that triggered the modal
-		modal.attr('data-input', button.data('input'));
-
-		if (form_whse.find('select[name=whseID]').length) {
-			whseID = form_whse.find('select[name=whseID]').val();
-		} else {
-			whseID = form_whse.find('input[name=whseID]').val();
-		}
-		modal.find('.modal-title').find('.whse-title').text(whseID);
-		modal.find('#whse-'+ whseID +'-tab').click();
-	});
-
-	$("body").on("click", "#bins-modal .choose-bin", function(e) {
-		e.preventDefault();
-		var button = $(this);
-		var binID = button.data('bin');
-		input_bin.val(binID);
-		button.closest('.modal').modal('hide');
 	});
 
 	function validate_codeabc() {
@@ -188,4 +175,29 @@ $(function() {
 		table += bootstrap.close('table');
 		return table;
 	}
+
+/* =============================================================
+	Bins Modal Methods
+============================================================= */
+	$('#bins-modal').on('shown.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		modal.attr('data-input', button.data('input'));
+
+		if (form_whse.find('select[name=whseID]').length) {
+			whseID = form_whse.find('select[name=whseID]').val();
+		} else {
+			whseID = form_whse.find('input[name=whseID]').val();
+		}
+		modal.find('.modal-title').find('.whse-title').text(whseID);
+		modal.find('#whse-'+ whseID +'-tab').click();
+	});
+
+	$("body").on("click", "#bins-modal .choose-bin", function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var binID = button.data('bin');
+		input_bin.val(binID);
+		button.closest('.modal').modal('hide');
+	});
 });
