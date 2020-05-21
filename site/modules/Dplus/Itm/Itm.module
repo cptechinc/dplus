@@ -550,7 +550,23 @@ class Itm extends WireData implements Module {
 			'summary' => 'Module for CRUD Methods for ITM',
 			'singular' => true,
 			'autoload' => true,
+			'installs' => array(
+				'ItmCosting',
+				'ItmPricing',
+				'ItmWarehouse',
+				'ItmXrefs',
+			)
 		);
+	}
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+		$modules->refresh();
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
 	}
 
 	/**
