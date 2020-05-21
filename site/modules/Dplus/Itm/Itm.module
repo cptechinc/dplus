@@ -26,7 +26,7 @@ class Itm extends WireData implements Module {
 		'itm-pricing',
 		'itm-whse',
 		'itm-costing',
-		'itm-xref'
+		'itm-xrefs'
 	);
 
 	public function __construct() {
@@ -35,79 +35,21 @@ class Itm extends WireData implements Module {
 		$this->configs->inventory = false;
 	}
 
-	public function init() {
-		$templates = implode('|', self::TEMPLATES_ITM);
-
-		$this->addHook("Page(pw_template=$templates)::itmURL", function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_itmURL($itemID);
-		});
-
-		$this->addHook("Page(pw_template=$templates)::itm_deleteURL", function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_itm_deleteURL($itemID);
-		});
-
-		$this->addHook("Page(pw_template=$templates)::get_itemURL", function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_itmURL($itemID);
-		});
-
-		$this->addHookProperty("Page(pw_template=$templates)::itemID", function($event) {
-			$p = $event->object;
-			$event->return = $p->fullURL->query->get('itemID');
-		});
-
-		$this->addHook("Page(pw_template=$templates)::itm_pricingURL", function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_itm_pricingURL($itemID);
-		});
-
-		$this->addHook("Page(pw_template=$templates)::itm_warehouseURL", function($event) {
-			$itemID = $event->arguments(0);
-			$whseID = $event->arguments(1);
-			$event->return = $this->get_itm_warehouseURL($itemID, $whseID);
-		});
-
-		$this->addHook("Page(pw_template=$templates)::itm_warehouse_deleteURL", function($event) {
-			$itemID = $event->arguments(0);
-			$whseID = $event->arguments(1);
-			$event->return = $this->get_itm_warehouse_deleteURL($itemID, $whseID);
-		});
-
-		$this->addHook("Page(pw_template=$templates)::itm_costingURL", function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_itm_costingURL($itemID);
-		});
-
-		$this->addHook("Page(pw_template=$templates)::itemIDURL", function($event) {
-			$p = $event->object;
-			$itemID = $event->arguments(0);
-			$url = new Url($p->url);
-			$url->query->set('itemID', $itemID);
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHookProperty("Page(pw_template=$templates)::lockcode", function($event) {
-			$p = $event->object;
-			$lockcode = $p->pw_template;
-
-			switch ($p->pw_template) {
-				case 'itm-costing':
-				case 'itm-pricing':
-					$lockcode = 'itm';
-					break;
-				default:
-					$lockcode = $p->pw_template;
-			}
-			$event->return = $lockcode;
-		});
-	}
-
 	public function init2() {
 		$this->configs->inventory = $this->get_config_in();
 	}
 
+	/**
+	 * Returns ItemMasterItemQuery
+	 * @return ItemMasterItemQuery
+	 */
+	public function get_query() {
+		return ItemMasterItemQuery::create();
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
 	/**
 	 * Return ItemMasterItem[]
 	 * @return ItemMasterItem[]|ObjectCollection
@@ -137,14 +79,6 @@ class Itm extends WireData implements Module {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
 		return $q->findOne();
-	}
-
-	/**
-	 * Returns ItemMasterItemQuery
-	 * @return ItemMasterItemQuery
-	 */
-	public function get_query() {
-		return ItemMasterItemQuery::create();
 	}
 
 	/**
@@ -202,9 +136,11 @@ class Itm extends WireData implements Module {
 		return $item;
 	}
 
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
 	/**
-	 * Takes Input, validates it's for one of the code tables
-	 * Processes it, and if updated sends request to dplus
+	 * Takes Input, processses the action, calls the process_input
 	 *
 	 * @param  WireInput $input Input
 	 * @return void
@@ -247,7 +183,6 @@ class Itm extends WireData implements Module {
 			if ($values->text('action') == 'remove-itm-item') {
 				$record->delete();
 			} elseif ($values->text('action') == 'update-itm') {
-
 				$record->setDescription($values->text('description'));
 				$record->setDescription2($values->text('description2'));
 				$record->setRevision($values->text('revision'));
@@ -272,20 +207,12 @@ class Itm extends WireData implements Module {
 					$this->wire('page')->fullURL->query->set('itemID', $record->itemid);
 				}
 			} else {
-				$response = new ItmResponse();
-				$response->set_itemID($record->itemid);
-				$response->set_error(true);
-				$response->set_action(ItmResponse::CRUD_UPDATE);
 				$message = self::DESCRIPTION_RECORD . " ($record->itemid) was not saved, no action was specified";
-				$response->set_message($message);
+				$response = $this->create_error_response($record->itemid, $message);
 			}
 		} else {
-			$response = new ItmResponse();
-			$response->set_itemID($record->itemid);
-			$response->set_error(true);
-			$response->set_action(ItmResponse::CRUD_UPDATE);
 			$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $recordlocker->get_locked_user('itm', $itemID);
-			$response->set_message($message);
+			$response = $this->create_error_response($record->itemid, $message);
 		}
 		$this->wire('session')->response_itm = $response;
 	}
@@ -344,12 +271,15 @@ class Itm extends WireData implements Module {
 		}
 	}
 
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
 	/**
 	 * Returns ItmResponse based on the outcome of the database save
 	 * @param  ItemMasterItem $record Record to record response of database save
 	 * @return ItmResponse
 	 */
-	protected function save_and_process_response(ItemMasterItem $record) {
+	public function save_and_process_response(ItemMasterItem $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
@@ -388,13 +318,98 @@ class Itm extends WireData implements Module {
 	}
 
 	/**
-	 * Accessory Functions
+	 * Return Error Response with Provided Message
+	 * @param  string $itemID     Item ID
+	 * @param  string $message    Error Message
+	 * @param  int    $actiontype ItmResponse CRUD value
+	 * @return ItmResponse
 	 */
+	public function create_error_response($itemID, $message, $actiontype = 0) {
+		$response = new ItmResponse();
+		$response->set_itemID($itemID);
+		$response->set_error(true);
+		$response->set_saved_itm(false);
+		$response->set_action($actiontype != 0 ? $actiontype : ItmResponse::CRUD_UPDATE);
+		$response->set_message($message);
+		return $response;
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	/**
+	 * Writes File for Dplus to update the ITM file for this ITEM
+	 * @param  string $itemID Item ID
+	 * @return void
+	 */
+	public function update_dplus_cobol($itemID) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'UPDATEITM', "ITEMID=$itemID");
+
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
 
 	/**
-	  * Returns IN config
-	  * @return ConfigIn
-	  */
+	 * Writes File for Dplus to delete the ITM file for this ITEM
+	 * @param  string $itemID Item ID
+	 * @return void
+	 */
+	public function delete_dplus_cobol($itemID, $debug = false) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'DELETEITM', "ITEMID=$itemID");
+
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+	/**
+	 * Return if Item was able to be deleted
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function verify_delete($itemID) {
+		$m_json = $this->wire('modules')->get('JsonDataFiles');
+		$json = $m_json->get_file(session_id(), 'itm-delete');
+		$response = new ItmResponse();
+		$response->set_itemID($itemID);
+		$response->set_action(ItmResponse::CRUD_DELETE);
+		$message = self::DESCRIPTION_RECORD . " ($itemID) was ";
+
+		if ($m_json->had_succeeded()) {
+			if ($json['itemid'] != $itemID) {
+				$response->set_error(true);
+				$message .= "not deleted";
+			} elseif ($json['error'] === true) {
+				$response->set_error(true);
+				$message .= "not deleted";
+			} else {
+				$response->set_success(true);
+				$message .= "deleted";
+			}
+		} else {
+			$response->set_error(true);
+			$message .= "not deleted";
+		}
+
+		if ($json['error']) {
+			$message .= " Error: " . $json['errormsg'];
+		}
+		$response->set_message($message);
+		return $response;
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Returns IN config
+	 * @return ConfigIn
+	 */
 	public function get_config_in() {
 		return ConfigInQuery::create()->findOne();
 	}
@@ -439,6 +454,9 @@ class Itm extends WireData implements Module {
 		return InvSpecialCodeQuery::create()->find();
 	}
 
+/* =============================================================
+	URL Functions
+============================================================= */
 	/**
 	 * Return URL to view / edit Item
 	 * @param  string $itemID
@@ -512,71 +530,19 @@ class Itm extends WireData implements Module {
 	}
 
 	/**
-	 * Writes File for Dplus to update the ITM file for this ITEM
-	 * @param  string $itemID Item ID
-	 * @return void
+	 * Return URL to view / edit Item Xrefs
+	 * @param  string $itemID
+	 * @return string
 	 */
-	public function update_dplus_cobol($itemID) {
-		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
-		$data = array("DBNAME=$dplusdb", 'UPDATEITM', "ITEMID=$itemID");
-
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['database'], session_id());
+	public function get_itm_xrefsURL($itemID) {
+		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs")->url);
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
 	}
 
-	/**
-	 * Writes File for Dplus to delete the ITM file for this ITEM
-	 * @param  string $itemID Item ID
-	 * @return void
-	 */
-	public function delete_dplus_cobol($itemID, $debug = false) {
-		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
-		$data = array("DBNAME=$dplusdb", 'DELETEITM', "ITEMID=$itemID");
-
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['database'], session_id());
-	}
-
-	/**
-	 * Return if Item was able to be deleted
-	 * @param  string $itemID Item ID
-	 * @return bool
-	 */
-	public function verify_delete($itemID) {
-		$m_json = $this->wire('modules')->get('JsonDataFiles');
-		$json = $m_json->get_file(session_id(), 'itm-delete');
-		$response = new ItmResponse();
-		$response->set_itemID($itemID);
-		$response->set_action(ItmResponse::CRUD_DELETE);
-		$message = self::DESCRIPTION_RECORD . " ($itemID) was ";
-
-		if ($m_json->had_succeeded()) {
-			if ($json['itemid'] != $itemID) {
-				$response->set_error(true);
-				$message .= "not deleted";
-			} elseif ($json['error'] === true) {
-				$response->set_error(true);
-				$message .= "not deleted";
-			} else {
-				$response->set_success(true);
-				$message .= "deleted";
-			}
-		} else {
-			$response->set_error(true);
-			$message .= "not deleted";
-		}
-
-		if ($json['error']) {
-			$message .= " Error: " . $json['errormsg'];
-		}
-		$response->set_message($message);
-		return $response;
-	}
-
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus ITM CRUD Manager',
@@ -585,5 +551,96 @@ class Itm extends WireData implements Module {
 			'singular' => true,
 			'autoload' => true,
 		);
+	}
+
+	/**
+	 * Set up Functions / Properties for pw_templated pages
+	 * @return void
+	 */
+	public function init() {
+		$templates = implode('|', self::TEMPLATES_ITM);
+
+		$this->addHook("Page(pw_template=$templates)::itmURL", function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_itmURL($itemID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::itm_deleteURL", function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_itm_deleteURL($itemID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::get_itemURL", function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_itmURL($itemID);
+		});
+
+		$this->addHookProperty("Page(pw_template=$templates)::itemID", function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('itemID');
+		});
+
+		$this->addHook("Page(pw_template=$templates)::itm_pricingURL", function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_itm_pricingURL($itemID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::itm_warehouseURL", function($event) {
+			$itemID = $event->arguments(0);
+			$whseID = $event->arguments(1);
+			$event->return = $this->get_itm_warehouseURL($itemID, $whseID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::itm_warehouse_deleteURL", function($event) {
+			$itemID = $event->arguments(0);
+			$whseID = $event->arguments(1);
+			$event->return = $this->get_itm_warehouse_deleteURL($itemID, $whseID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::itm_costingURL", function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_itm_costingURL($itemID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::itm_xrefsURL", function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_itm_xrefsURL($itemID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::itemIDURL", function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$url = new Url($p->url);
+			$url->query->set('itemID', $itemID);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHookProperty("Page(pw_template=$templates)::lockcode", function($event) {
+			$p = $event->object;
+			$lockcode = $p->pw_template;
+
+			switch ($p->pw_template) {
+				case 'itm-xrefs':
+				case 'itm-costing':
+				case 'itm-pricing':
+					$lockcode = 'itm';
+					break;
+				default:
+					$lockcode = $p->pw_template;
+			}
+			$event->return = $lockcode;
+		});
+
+		$this->addHookProperty("Page(pw_template=$templates)::itemlookupURL", function($event) {
+			$event->return = $this->wire('pages')->get('pw_template=itm-search')->url;
+		});
+
+		$this->addHook('Page(pw_template=itm-search)::get_itemURL', function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$url = new Url($this->wire('pages')->get('pw_template=itm')->url);
+			$url->query->set('itemID', $itemID);
+			$event->return = $url->getUrl();
+		});
 	}
 }
