@@ -12,7 +12,7 @@
 			$termscode = $module_codetable->get_code($code);
 		} else {
 			$page->title = $page->headline = "Create $page->title";
-			$termscode = new ArTermsCode();
+			$termscode = new CustomerTermsCode();
 
 			if ($code != 'new') {
 				$termscode->setCode($code);
