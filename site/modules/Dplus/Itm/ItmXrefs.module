@@ -1,0 +1,163 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+/**
+ * Module that handles the editing of the ITM item X-refs
+ */
+class ItmXrefs extends WireData implements Module {
+	const MODEL              = 'ItemMasterItem';
+	const MODEL_KEY          = 'code';
+	const DESCRIPTION        = 'ITM Item';
+	const DESCRIPTION_RECORD = 'ITM Item';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+		$this->xrefs = new WireData();
+		$this->xrefs->upcx = false;
+		$this->xrefs->cxm = false;
+	}
+
+	public function init2() {
+		$this->xrefs->cxm = $modules->get('XrefCxm');
+	}
+
+/* =============================================================
+	CRUD Proccessing Functions
+============================================================= */
+	/**
+	 * Takes Input, validates it's for one of the code tables
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$itm = $this->wire('modules')->get('Itm');
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID = $values->text('itemID');
+
+		if ($values->action) {
+			if ($itm->item_exists($itemID)) {
+				if ($values->text('action') == 'update-itm-xrefs') {
+					$response = $this->process_input_xref($input);
+				}
+			} else {
+				$response = $itm->create_error_response($itemID, "Item $itemID does not exist");
+			}
+		} else {
+			$response = $itm->create_error_response($itemID, "No Action was specified");
+		}
+		$this->wire('session')->response_itm = $response;
+	}
+
+
+	/**
+	 * Takes Input, validates it's for an Item
+	 * Updates Item
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input_xref(WireInput $input) {
+		$itm = $this('modules')->get('Itm');
+		$recordlocker = $this('modules')->get('RecordLockerUser');
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID = strtoupper($values->text('itemID'));
+		$record = $itm->get_item($itemID);
+
+		/**
+		 * Create lock for ITM code if not already locked.
+		 */
+		if (!$recordlocker->function_locked('itm', $itemID)) {
+			$recordlocker->create_lock('itm', $itemID);
+		}
+
+		if ($record->isNew() || $recordlocker->function_locked_by_user('itm', $itemID)) {
+			if ($values->text('action') == 'update-itm-xrefs') {
+				$record->setSupercededby(strtoupper($values->text('supercededby')));
+
+				if ($itm->item_exists($values->text('supercededby'))) {
+					$response_itm = $itm->save_and_process_response($record);
+				} else {
+					$response_itm = $itm->create_error_response($record->itemid, "Supercede Item $record->supercededby does not exist");
+				}
+
+				$this->send_cxm_update($input);
+			} else {
+				$message = self::DESCRIPTION_RECORD . " ($record->itemid) was not saved, no action was specified";
+				$response_itm = $itm->create_error_response($record->itemid, $message);
+			}
+		} else {
+			$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $recordlocker->get_locked_user('itm', $itemID);
+			$response_itm = $itm->create_error_response($record->itemid, $message);
+		}
+		return $response_itm;
+	}
+
+/* =============================================================
+	Request Functions
+============================================================= */
+	/**
+	 * Send Request to Update the Short Item ID using the XrefCxm module
+	 * @param  WireInput $input
+	 * @return void
+	 */
+	protected function send_cxm_update(WireInput $input)  {
+		$cxm = $this('modules')->get('XrefCxm');
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID = strtoupper($values->text('itemID'));
+
+		if ($cxm->get_cxm_shortitem($itemID)->custitemid != $values->text('cxm_custitemid')) {
+			$data_cxm = array('action' => 'update-cxm-shortitem', 'itemID' => $itemID, 'custitemid' => $values->text('cxm_custitemid'));
+			$input_cxm = new WireInput();
+			$input_cxm->$rm->setArray($data_cxm);
+			$cxm->process_input($input_cxm);
+		}
+	}
+
+/* =============================================================
+	URL Functions
+============================================================= */
+	/**
+	 * Return URL to view / edit Item Xrefs
+	 * @param  string $itemID
+	 * @return string
+	 */
+	public function get_itm_xrefs_upcxURL($itemID) {
+		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-upcx")->url);
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus ITM XRefs CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for ITM Xrefs',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+	/**
+	 * Sets up Hook Functions for pages that have itm-xrefs as a parent
+	 * @return void
+	 */
+	public function init() {
+		$itm = $this->wire('modules')->get('Itm');
+		$templates = implode('|', $itm::TEMPLATES_ITM);
+
+		$this->addHook("Page(pw_template=$templates)::itm_xrefs_upcxURL", function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_itm_xrefs_upcxURL($itemID);
+		});
+	}
+}
