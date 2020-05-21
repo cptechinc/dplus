@@ -1,0 +1,47 @@
+$(function() {
+	var modal_ajax = $('#ajax-modal');
+	var form = $('#itm-xrefs-form');
+	var input_supercededby = form.find('input[name=supercededby]');
+
+	/**
+	 *
+	 * Item Lookup Modal
+	 *
+	 */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = '{{ page.itemlookupURL }}';
+		modal.find('.modal-title').text('Search for an Item');
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {
+
+		});
+	});
+
+	$("body").on("submit", "#ajax-modal .item-search", function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {
+
+		});
+	});
+
+	$("body").on("click", "#ajax-modal .item-link", function(e) {
+		e.preventDefault();
+		var button = $(this);
+		input_supercededby.val(button.data('itemid'));
+		$('#ajax-modal').modal('hide');
+	});
+
+	$("body").on('click', '.page-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+});
