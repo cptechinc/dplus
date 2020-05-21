@@ -27,7 +27,7 @@ $(function () {
 		}
 	});
 
-// start type
+	// start type
 	if ($('#type').val() == 'CC') {
 		$('#credit_card').prop("readonly", false);
 	} else {
@@ -41,9 +41,11 @@ $(function () {
 			$('#credit_card').prop("readonly", true);
 		}
 	});
-// end type
+	// end type
 
-// start method
+
+	// start method
+
 	// displays standard and eom tables on load
 	if ($('#method').val() == '') {
 		$('#eom-terms-form').hide();
@@ -69,25 +71,10 @@ $(function () {
 			$('#eom-terms-form').fadeIn();
 		}
 	});
-// end method
+	// end method
 
-// ------------------ Method S Discount -----------------
 
-	// checks to see if percent is 0 and greys out day, days, and date
-	for ( var row = 1, l = 7; row < l; row++ ) {
-		if (parseFloat($('#percent' + row.toString()).val()) == 0) {
-			$('#days' + row.toString()).val(0);
-			$('#day' + row.toString()).val(0);
-			$('#date' + row.toString()).val(0);
-			$('#days' + row.toString()).prop("readonly", true);
-			$('#day' + row.toString()).prop("readonly", true);
-			$('#date' + row.toString()).prop("readonly", true);
-		} else if (parseFloat($('#percent' + row.toString()).val()) != 0) {
-			$('#days' + row.toString()).prop("readonly", false);
-			$('#day' + row.toString()).prop("readonly", false);
-			$('#date' + row.toString()).prop("readonly", false);
-		}
-	}
+// ------------------ Standard Method -----------------
 
 	$("body").on('change', '.order_percent', function(e) {
 		var input = $(this);
@@ -149,23 +136,45 @@ $(function () {
 		var row = input.closest('.discount');
 		var index = row.data('index');
 
-		if (input.val() == 0) {
-			$('.row'+index).find('.discount_percent, .day, .days, .date').val(0);
-			$('.row'+index).find('.day, .days, .date').prop('readonly', true);
-		}
+		if (input.val() > 100) {
+			$('.discount_percent'+index).addClass('is-invalid');
+			swal2.fire({
+				title: 'Invalid Discount Percent!',
+				text: 'Cannot be more than 100%',
+				icon: 'warning',
+			});
+		} else {
+			$('.discount_percent'+index).removeClass('is-invalid');
 
-		// if (input.val() > 100) {
-		// 	$('.percent').addClass('is-invalid');
-		// 	swal2.fire({
-		// 		title: 'Invalid Discount Percent!',
-		// 		text: 'Cannot be more than 100%',
-		// 		icon: 'warning',
-		// 	});
-		// } else {
-		// 	$('.percent').removeClass('is-invalid');
-		// 	$('.row'+index).find('input:discount').prop('readonly', false);
-		// 	$('.row'+index).find('input:discount').val('');
-		// }
+			if (input.val() == 0) {
+				$('.row'+index).find('.discount_percent, .day, .days, .date').val(0);
+				$('.row'+index).find('.day, .days, .disc_date').prop('readonly', true);
+			} else {
+				$('.discount_percent').removeClass('is-invalid');
+				// $('.row'+index).find('.day, .days, .date').val('');
+				$('.row'+index).find('.day, .days, .disc_date').prop('readonly', false);
+			}
+		}
+	});
+
+	$("body").on('change', '.days, .day, .disc_date', function(e) {
+		var input = $(this);
+		var row = input.closest('.discount');
+		var index = row.data('index');
+
+		if (input.val() != 0) {
+			$('input.disc_group').not(this).val(0);
+		}
+	});
+
+	$("body").on('change', '.due_days, .due_day, .due_date', function(e) {
+		var input = $(this);
+		var row = input.closest('.due');
+		var index = row.data('index');
+
+		if (input.val() != 0) {
+			$('input.due_group').not(this).val(0);
+		}
 	});
 
 	function get_sum_orderpercent() {
@@ -178,41 +187,28 @@ $(function () {
 	}
 
 
+// ------------------ End Standard Method -----------------
 
-	//
-	//
-	// $("#code-edit-form").change(function() {
-	// 	for ( var row = 1, l = 7; row < l; row++ ) {
-	// 		// if form is changed and percent is changed to 0, days, day, and date are changed to 0 and greyed out
-	// 		if (parseFloat($('#percent' + row.toString()).val()) == 0) {
-	// 			$('#days' + row.toString()).val(0);
-	// 			$('#day' + row.toString()).val(0);
-	// 			$('#date' + row.toString()).val(0);
-	// 			$('#days' + row.toString()).prop("readonly", true);
-	// 			$('#day' + row.toString()).prop("readonly", true);
-	// 			$('#date' + row.toString()).prop("readonly", true);
-	// 		} else if (parseFloat($('#percent' + row.toString()).val()) != 0) {
-	// 			$('#days' + row.toString()).prop("readonly", false);
-	// 			$('#day' + row.toString()).prop("readonly", false);
-	// 			$('#date' + row.toString()).prop("readonly", false);
-	// 		}
-	//
-	// 		if (parseFloat($('#days' + row.toString()).val()) != 0 || parseFloat($('#day' + row.toString()).val()) != 0 || parseFloat($('#date' + row.toString()).val()) != 0) {
-	// 			if (parseFloat($('#days' + row.toString()).val()) != 0) {
-	// 				$('#day' + row.toString()).val(0);
-	// 				$('#date' + row.toString()).val(0);
-	// 			} else if (parseFloat($('#day' + row.toString()).val()) != 0) {
-	// 				$('#days' + row.toString()).val(0);
-	// 				$('#date' + row.toString()).val(0);
-	// 			} else if (parseFloat($('#date' + row.toString()).val()) != 0) {
-	// 				$('#days' + row.toString()).val(0);
-	// 				$('#day' + row.toString()).val(0);
-	// 			}
-	// 		}
-	// 	}
-	// });
 
-// ------------------ End Method S Discount -----------------
+
+// ------------------ Start EOM Method -----------------
+	for ( var index = 1, l = {{ termscode.get_eom_terms_split() }} + 1; index < l; index++ ) {
+		if (index == 1)  {
+			if ($('.thru_day1').val() == 99) {
+				$('.row'+index).addClass('collapse');
+				$('.row1').removeClass('collapse');
+			}
+		} else {
+			if ($('.thru_day'+index).val() == 99) {
+				$('.row'+(index+1)).addClass('collapse');
+			} else if ( ($('.thru_day'+index).val() != 99) && ($('.thru_day'+index).val() < 30) ) {
+				$('.row'+index).find('.thru_day'+index).val( $('.thru_day'+(index-1)).val() + 1);
+			}
+		}
+	}
+
+
+// ------------------ End EOM Method -----------------
 
 
 	var form = $('#code-edit-form'),
