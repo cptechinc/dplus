@@ -16,7 +16,9 @@
 		</td>
 	</tr>
 	<tr>
-		<td>Vendor X-refs</td>
+		<td>
+			<a href="{{ page.itm_xrefs_vxmURL(item.itemid) }}" class="link">Vendor X-refs</a>
+		</td>
 		<td>
 			<div class="custom-control custom-checkbox">
 				<input type="checkbox" class="custom-control-input" id="xref-vendor-count" {{ item.countItemXrefVendors() ? 'checked' : '' }}>
