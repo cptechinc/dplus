@@ -6,6 +6,7 @@ use Purl\Url;
 
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemXrefVendorQuery, ItemXrefVendor;
+use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
 
 /**
  * Module that handles the editing of the VXM item Xref
@@ -48,7 +49,7 @@ class XrefVxm extends WireData implements Module {
 	 * @param  string $vendoritemID Vendor's Item ID'
 	 * @return ItemXrefVendor
 	 */
-	public function get_vendoritem($vendorID, $vendoritemID) {
+	public function get_vxm_item($vendorID, $vendoritemID) {
 		$q = $this->get_query();
 		$q->filterByVendorid($vendorID);
 		$q->filterByVendoritemid($vendoritemID);
@@ -242,6 +243,14 @@ class XrefVxm extends WireData implements Module {
 		$q = ItemMasterItemQuery::create();
 		$q->filterByItemid($itemID);
 		return boolval($q->count());
+	}
+
+	public function get_recordlocker_key(ItemXrefVendor $item) {
+		return "$item->vendorID-$item->vendoritemID-$item->ouritemID";
+	}
+
+	public function get_unitsofm_purchases() {
+		return UnitofMeasurePurchaseQuery::create()->find();
 	}
 
 	public static function getModuleInfo() {
