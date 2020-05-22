@@ -174,7 +174,7 @@ class Itm extends WireData implements Module {
 		$record = $this->get_create_item($itemID);
 
 		/**
-		 * Create lock for ITM code if not already locked.
+		 * Create lock for ITM item ID if not already locked.
 		 */
 		if (!$recordlocker->function_locked('itm', $itemID)) {
 			$recordlocker->create_lock('itm', $itemID);
