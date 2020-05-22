@@ -10,7 +10,7 @@
 			</div>
 			<div class="form-group">
 				<label for="method">Method</label>
-				{% include 'util/select.twig' with {'name': 'method', 'id': 'method', 'selectedvalue': code.method, 'options': {'S': 'Standard Terms', 'E': 'End of Month Terms'}} %}
+				{% include 'util/select.twig' with {'name': 'method', 'id': 'method', 'selectedvalue': (code.method ? code.method : 'S'), 'options': {'S': 'Standard Terms', 'E': 'End of Month Terms'}} %}
 			</div>
 			<div class="form-group">
 				<label for="type">Type</label>
@@ -32,7 +32,7 @@
 				<label for="description">Description</label>
 				<input type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" autofocus>
 			</div>
-			<div class="form-group">
+			<div class="form-group" >
 				<label for="credit_card">CC Prefix</label>
 				<!-- TODO: need to verify from ar_cust_cred -->
 				<select name="credit_card" class="form-control" id="credit_card" >

@@ -29,8 +29,10 @@ $(function () {
 
 	// start type
 	if ($('#type').val() == 'CC') {
+		$('#cc').removeClass('collapse');
 		$('#credit_card').prop("readonly", false);
 	} else {
+		$('#cc').addClass('collapse');
 		$('#credit_card').prop("readonly", true);
 	}
 
@@ -47,15 +49,17 @@ $(function () {
 	// start method
 
 	// displays standard and eom tables on load
-	if ($('#method').val() == '') {
-		$('#eom-terms-form').hide();
-		$('#standard-terms-form').hide();
-	} else if ($('#method').val() == 'S') {
+	if ($('#method').val() == 'S') {
 		$('#standard-terms-form').show();
 		$('#eom-terms-form').hide();
 	} else if ($('#method').val() == 'E') {
 		$('#standard-terms-form').hide();
 		$('#eom-terms-form').show();
+	}
+
+	if ($('#code').val() == '') {
+		$('.row1').find('#order_percent1').val(100);
+		$('.row1').removeClass('collapse');
 	}
 
 	// displays standard and eom tables when method is changed
