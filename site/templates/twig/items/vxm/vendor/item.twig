@@ -1,5 +1,11 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	vxm                    module XrefVxm
+	recordlocker           module RecordLockerUser
+	item                   ItemXrefVxm
+#}
 <form action="{{ page.fullURL.getURL() }}" method="POST" id="vxm-item-form">
-	<input type="hidden" name="action" value="update-vxm">
 	<input type="hidden" name="vendorID" id="vendorID" value="{{ item.vendorID }}">
 
 	<div class="row mb-3">
@@ -13,19 +19,24 @@
 			{% include 'items/vxm/vendor/item/unit-costs.twig' %}
 		</div>
 	</div>
-	<div class="mt-1 text-center">
-		<div class="row">
-			<div class="col-sm-6">
-				<button type="submit" class="btn btn-danger btn-block" name="action" value="remove-vxm-item">
+	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the Item is
+			1. Locked for editing by the User
+			2. Is a new Item
+			NOTE: Only show delete if item already exists.
+		#}
+		{% if recordlocker.function_locked_by_user('vxm', vxm.get_recordlocker_key(item)) or item.isNew() %}
+			<button type="submit" class="btn btn-success" name="action" value="update-vxm">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+
+			{% if item.isNew() == false %}
+				<button type="submit" class="btn btn-danger" name="action" value="remove-vxm-item">
 					<i class="fa fa-trash" aria-hidden="true"></i> Remove
 				</button>
-			</div>
-			<div class="col-sm-6">
-				<button type="submit" class="btn btn-success btn-block" name="action" value="update-vxm">
-					<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-				</button>
-			</div>
-		</div>
-
+			{% endif %}
+		{% endif %}
+		<a href="" class="btn btn-warning">Close</a>
 	</div>
 </form>
