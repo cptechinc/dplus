@@ -86,6 +86,7 @@
 					$page->body .= $html->a('class=btn btn-primary|href='.$page->itm_warehouseURL($itemID), $html->icon('fa fa-undo')." Back to $itemID Warehouses");
 				}
 			} else {
+				$recordlocker->remove_lock($page->lockcode);
 				$page->headline = "Warehouses for $itemID";
 				$page->body .= $config->twig->render('items/itm/warehouse/description.twig', ['page' => $page, 'item' => $item]);
 				$page->body .= $config->twig->render('items/itm/warehouse/list.twig', ['page' => $page, 'itemID' => $itemID, 'warehouses' => $itm_warehouse->get_itemwarehouses($itemID)]);
