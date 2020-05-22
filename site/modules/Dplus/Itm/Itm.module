@@ -26,7 +26,8 @@ class Itm extends WireData implements Module {
 		'itm-pricing',
 		'itm-whse',
 		'itm-costing',
-		'itm-xrefs'
+		'itm-xrefs',
+		'itm-xrefs-upcx',
 	);
 
 	public function __construct() {
@@ -640,6 +641,9 @@ class Itm extends WireData implements Module {
 				case 'itm-costing':
 				case 'itm-pricing':
 					$lockcode = 'itm';
+					break;
+				case 'itm-xrefs-upcx':
+					$lockcode = 'upcx';
 					break;
 				default:
 					$lockcode = $p->pw_template;
