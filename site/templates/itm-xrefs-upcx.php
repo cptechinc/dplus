@@ -19,11 +19,6 @@
 	$page->body .= $config->twig->render('items/itm/bread-crumbs.twig', ['page' => $page, 'page_itm' => $page->parent, 'input' => $input]);
 
 	if ($session->response_xref) {
-		$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_xref]);
-		$session->remove('response_xref');
-	}
-
-	if ($session->response_xref) {
 		$page->body .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->response_xref]);
 		$session->remove('response_xref');
 	}
