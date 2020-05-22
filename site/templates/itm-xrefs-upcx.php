@@ -4,17 +4,15 @@
 	$recordlocker = $modules->get('RecordLockerUser');
 	$upcx = $modules->get('XrefUpc');
 	$filter_upcs = $modules->get('FilterXrefItemUpc');
+	$html = $modules->get('HtmlWriter');
 
 	if ($input->requestMethod('POST') || $input->get->action) {
-		$rm = strtolower($input->requestMethod());
 		$upcx->process_input($input);
-		$code = $input->$rm->text('upc');
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$code = $values->text('action') == 'remove-upcx-upc' ? '' : $values->text('upc');
 
-		if ($code) {
-			$session->redirect($page->upcURL($code));
-		} else {
-			$session->redirect($page->upcURL($code));
-		}
+		$session->redirect($page->upcURL($code));
 	}
 
 	$page->show_breadcrumbs = false;
@@ -78,14 +76,13 @@
 				$url_validate = $pages->get('pw_template=upcx-validate')->httpUrl;
 				$page->js .= $config->twig->render('items/upcx/js.twig', ['upc' => $upc, 'url_validate' => $url_validate]);
 				$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
-
 			} else {
+				$recordlocker->remove_lock($page->lockcode);
 				$filter_upcs->filter_query($input);
 				$filter_upcs->apply_sortby($page);
 				$upcs = $filter_upcs->query->find();
 				$page->title = "UPCs for $itemID";
-
-				$page->body .= $config->twig->render('items/upcx/upc-list.twig', ['page' => $page, 'upcs' => $upcs, 'itemID' => $itemID]);
+				$page->body .= $config->twig->render('items/upcx/upc-list.twig', ['page' => $page, 'upcs' => $upcs, 'itemID' => $itemID, 'recordlocker' => $recordlocker]);
 			}
 		} else {
 			$session->redirect($page->itmURL($itemID), $http301 = false);
