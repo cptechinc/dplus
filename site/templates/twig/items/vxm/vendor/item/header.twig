@@ -44,8 +44,10 @@
 		<div class="col-sm-6">
 			<select name="uom_purchase" class="form-control mb-1" id="uom_purchase">
 				<option value="">-- Choose --</option>
-				{% for uom in unitsofm %}
-					<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_purchase ? 'selected' : ''}}>{{ uom.description }}</option>
+				{% for uom in vxm.get_unitsofm_purchases() %}
+					<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_purchase ? 'selected' : ''}}>
+						{{ uom.code }} - {{ uom.description }}
+					</option>
 				{% endfor %}
 			</select>
 			<p>
