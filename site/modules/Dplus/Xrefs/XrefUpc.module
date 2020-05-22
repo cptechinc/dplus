@@ -20,42 +20,17 @@ class XrefUpc extends WireData implements Module {
 		$this->description = self::DESCRIPTION;
 	}
 
-	public function init() {
-		$this->addHook('Page(pw_template=upcx)::upcURL', function($event) {
-			$upc = $event->arguments(0);
-			$event->return = $this->get_upcURL($upc);
-		});
-
-		$this->addHook('Page(pw_template=upcx)::upc_listURL', function($event) {
-			$p = $event->object;
-			$event->return = $p->itemID ? $this->get_item_upcsURL($p->itemID) : $p->url;
-		});
-
-		$this->addHook('Page(pw_template=upcx)::item_upcsURL', function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_item_upcsURL($itemID);
-		});
-
-		$this->addHook('Page(pw_template=upcx)::upc_createURL', function($event) {
-			$event->return = $this->get_upcURL('new');
-		});
-
-		$this->addHook('Page(pw_template=upcx)::upc_create_itemidURL', function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_upcURL('new', $itemID);
-		});
-
-		$this->addHookProperty('Page(pw_template=upcx)::upc', function($event) {
-			$p = $event->object;
-			$event->return = $p->fullURL->query->get('upc');
-		});
-
-		$this->addHookProperty('Page(pw_template=upcx)::itemID', function($event) {
-			$p = $event->object;
-			$event->return = $p->fullURL->query->get('itemID');
-		});
+	/**
+	 * Returns ItemXrefUpcQuery
+	 * @return ItemXrefUpcQuery
+	 */
+	public function get_query() {
+		return ItemXrefUpcQuery::create();
 	}
 
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
 	/**
 	 * Return ItemXrefUpc[]
 	 * @return ItemXrefUpc[]|ObjectCollection
@@ -148,14 +123,6 @@ class XrefUpc extends WireData implements Module {
 	}
 
 	/**
-	 * Returns ItemXrefUpcQuery
-	 * @return ItemXrefUpcQuery
-	 */
-	public function get_query() {
-		return ItemXrefUpcQuery::create();
-	}
-
-	/**
 	 * Returns ItemXrefUpc after retreiving or creating it
 	 * @param  WireInput $input Input Data
 	 * @return ItemXrefUpc
@@ -173,10 +140,12 @@ class XrefUpc extends WireData implements Module {
 			$record->setItemid($itemID);
 			$record->setQty(1);
 		}
-
 		return $record;
 	}
 
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
 	/**
 	 * Takes Input, validates it's for one of the code tables
 	 * Processes it, and if updated sends request to dplus
@@ -185,50 +154,95 @@ class XrefUpc extends WireData implements Module {
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
+		$recordlocker = $this('modules')->get('RecordLockerUser');
 		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
 		$upc = $input->$rm->text('upc');
 		$itemID = $input->$rm->text('itemID');
 
 		$record = $this->get_create_upc($input);
 
-		if ($input->$rm->text('action') == 'remove-upc-item') {
-			$record->delete();
-		} elseif ($input->$rm->text('action') == 'update-upcx') {
-			$record->setQty($input->$rm->int('qty'));
-			$record->setUom($input->$rm->text('uom'));
-			$record->setMastercase($input->$rm->text('mastercase'));
-			$record->setNeedslabel($input->$rm->text('needslabel'));
-			$record->setDate(date('Ymd'));
-			$record->setTime(0);
-
-			if ($input->$rm->text('primary') == ItemXrefUpc::PRIMARY_TRUE) {
-				if ($input->$rm->text('valid_primary') == 'true') {
-					$record->setPrimary(ItemXrefUpc::PRIMARY_TRUE);
-				}
-			} else {
-				$record->setPrimary(ItemXrefUpc::PRIMARY_FALSE);
-			}
+		if (!$values->action) {
+			$message = self::DESCRIPTION_RECORD . " ($upc) was not saved, no action was specified";
+			$response = $this->create_error_response($upc, $message);
 		}
 
-		if ($input->$rm->action) {
-			$response = $this->save_and_process_response($record);
+		if (!$record->isNew() && !$recordlocker->function_locked_by_user('upcx', $upc)) {
+			$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $recordlocker->get_locked_user('upcx', $upc);
+			$response = $this->create_error_response($upc, $message);
+		}
 
-			/**
-			 * IF we saved this Item as the Primary PO ORDER then we have to update
-			 * the other primary item to be a secondary
-			 */
-			if ($response->has_success() && !$record->isDeleted()) {
-				if ($record->is_primary() && $record->get_primary_upc_code()) {
-					$primary_upc = $record->get_primary_upc();
-					$primary_upc->setPrimary(ItemXrefUpc::PRIMARY_FALSE);
-					$primary_upc->save();
-					$this->update_dplus_cobol($primary_upc);
+		/**
+		 * Create lock for UPC code if not already locked.
+		 */
+		if (!$recordlocker->function_locked('upcx', $upc)) {
+			$recordlocker->create_lock('upcx', $upc);
+		}
+
+		if ($record->isNew() || $recordlocker->function_locked_by_user('upcx', $upc)) {
+			if ($input->$rm->text('action') == 'remove-upcx-upc') {
+				$record->delete();
+			} elseif ($input->$rm->text('action') == 'update-upcx') {
+				$this->update_record_input($record, $input);
+			}
+
+			if ($input->$rm->action) {
+				$response = $this->save_and_process_response($record);
+
+				/**
+				 * IF we saved this Item as the Primary PO ORDER then we have to update
+				 * the other primary item to be a secondary
+				 */
+				if ($response->has_success() && !$record->isDeleted()) {
+					$this->update_primary_record($record);
 				}
 			}
-			$this->wire('session')->response_xref = $response;
+		}
+		$this->wire('session')->response_xref = $response;
+	}
+
+	/**
+	 * Updates Record
+	 * @param  ItemXrefUpc $record UPC Record to update
+	 * @param  WireInput   $input  Input Data
+	 * @return void
+	 */
+	public function update_record_input(ItemXrefUpc $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$record->setQty($values->int('qty'));
+		$record->setUom($values->text('uom'));
+		$record->setMastercase($values->text('mastercase'));
+		$record->setNeedslabel($values->text('needslabel'));
+		$record->setDate(date('Ymd'));
+		$record->setTime(0);
+
+		if ($values->text('primary') == ItemXrefUpc::PRIMARY_TRUE) {
+			if ($values->text('valid_primary') == 'true') {
+				$record->setPrimary(ItemXrefUpc::PRIMARY_TRUE);
+			}
+		} else {
+			$record->setPrimary(ItemXrefUpc::PRIMARY_FALSE);
 		}
 	}
 
+	/**
+	 * Updates Old Primary UPC to be non primary
+	 * @param  ItemXrefUpc $record UPC record
+	 * @return void
+	 */
+	public function update_primary_record(ItemXrefUpc $record) {
+		if ($record->is_primary() && $record->get_primary_upc_code()) {
+			$primary_old = $record->get_primary_upc();
+			$primary_old->setPrimary(ItemXrefUpc::PRIMARY_FALSE);
+			$primary_old->save();
+			$this->update_dplus_cobol($primary_old);
+		}
+	}
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
 	/**
 	 * Returns XrefResponse based on the outcome of the database save
 	 * @param  ItemXrefUpc $record Record to record response of database save
@@ -269,12 +283,52 @@ class XrefUpc extends WireData implements Module {
 		return $response;
 	}
 
+	/**
+	 * Return Error Response with Provided Message
+	 * @param  string $upc        UPC Code
+	 * @param  string $message    Error Message
+	 * @param  int    $actiontype XrefResponse CRUD value
+	 * @return XrefResponse
+	 */
+	public function create_error_response($upc, $message, $actiontype = 0) {
+		$response = new XrefResponse();
+		$response->set_key($upc);
+		$response->set_error(true);
+		$response->set_action($actiontype != 0 ? $actiontype : XrefResponse::CRUD_UPDATE);
+		$response->set_message($message);
+		return $response;
+	}
+
+/* =============================================================
+	Dplus Request Functions
+============================================================= */
+	/**
+	 * Writes File for Dplus to update the VXM file for this ITEM
+	 * @param  ItemXrefUpc $item
+	 * @return void
+	 */
+	public function update_dplus_cobol(ItemXrefUpc $item) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'UPDATEUPC', "UPCCODE=$item->upc", "OURITEM=$item->itemid");
+
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
 	public function validate_itemID($itemID) {
 		$q = ItemMasterItemQuery::create();
 		$q->filterByItemid($itemID);
 		return boolval($q->count());
 	}
 
+/* =============================================================
+	URL Functions
+============================================================= */
 	/**
 	 * Return URL to view / edit UPC
 	 * @param  string $upc    UPC Code
@@ -302,21 +356,9 @@ class XrefUpc extends WireData implements Module {
 		return $url->getUrl();
 	}
 
-	/**
-	 * Writes File for Dplus to update the VXM file for this ITEM
-	 * @param  ItemXrefUpc $item
-	 * @return void
-	 */
-	public function update_dplus_cobol(ItemXrefUpc $item) {
-		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
-		$data = array("DBNAME=$dplusdb", 'UPDATEUPC', "UPCCODE=$item->upc", "OURITEM=$item->itemid");
-
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['database'], session_id());
-	}
-
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus VXM CRUD Manager',
@@ -325,5 +367,41 @@ class XrefUpc extends WireData implements Module {
 			'singular' => true,
 			'autoload' => true,
 		);
+	}
+
+	public function init() {
+		$this->addHook('Page(pw_template=upcx)::upcURL', function($event) {
+			$upc = $event->arguments(0);
+			$event->return = $this->get_upcURL($upc);
+		});
+
+		$this->addHook('Page(pw_template=upcx)::upc_listURL', function($event) {
+			$p = $event->object;
+			$event->return = $p->itemID ? $this->get_item_upcsURL($p->itemID) : $p->url;
+		});
+
+		$this->addHook('Page(pw_template=upcx)::item_upcsURL', function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_item_upcsURL($itemID);
+		});
+
+		$this->addHook('Page(pw_template=upcx)::upc_createURL', function($event) {
+			$event->return = $this->get_upcURL('new');
+		});
+
+		$this->addHook('Page(pw_template=upcx)::upc_create_itemidURL', function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_upcURL('new', $itemID);
+		});
+
+		$this->addHookProperty('Page(pw_template=upcx)::upc', function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('upc');
+		});
+
+		$this->addHookProperty('Page(pw_template=upcx)::itemID', function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('itemID');
+		});
 	}
 }
