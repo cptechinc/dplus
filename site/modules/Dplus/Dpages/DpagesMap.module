@@ -27,7 +27,7 @@ class DpagesMap extends Dpages implements Module {
 		'map' => array(
 			'template'       => 'dplus-menu',
 			'name'           => 'map',
-			'title'          => 'Accounts Payable Menu',
+			'title'          => 'Accounts Payable',
 			'summary'        => '',
 			'parent'         => '/',
 			'dplus_function' => 'map'
