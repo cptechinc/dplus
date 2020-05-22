@@ -2,6 +2,8 @@
 	$html = $modules->get('HtmlWriter');
 	$upcx = $modules->get('XrefUpc');
 	$filter_upcs = $modules->get('FilterXrefItemUpc');
+	$recordlocker = $modules->get('RecordLockerUser');
+
 
 	if ($input->requestMethod('POST') || $input->get->action) {
 		$rm = strtolower($input->requestMethod());
@@ -24,7 +26,7 @@
 	if ($input->get->upc) {
 		$code = $input->get->text('upc');
 		$unitsofm = UnitofMeasurePurchaseQuery::create()->find();
-		
+
 		if ($upcx->upc_exists($code)) {
 			$upc = $upcx->get_upc($code);
 			$page->title = "UPCX: UPC $code";
@@ -53,7 +55,7 @@
 
 		$page->show_breadcrumbs = false;
 		$page->body .= $config->twig->render('items/upcx/bread-crumbs.twig', ['page' => $page, 'upc' => $upc]);
-		$page->body .= $config->twig->render('items/upcx/upc-form.twig', ['page' => $page, 'upc' => $upc, 'unitsofm' => $unitsofm]);
+		$page->body .= $config->twig->render('items/upcx/upc-form.twig', ['page' => $page, 'upc' => $upc, 'unitsofm' => $unitsofm, 'recordlocker' => $recordlocker]);
 		$url_validate = $pages->get('pw_template=upcx-validate')->httpUrl;
 		$page->js .= $config->twig->render('items/upcx/js.twig', ['upc' => $upc, 'url_validate' => $url_validate]);
 	} else {
@@ -69,7 +71,7 @@
 		}
 
 		$page->body .= $config->twig->render('items/upcx/upc-filters.twig', ['page' => $page, 'input' => $input]);
-		$page->body .= $config->twig->render('items/upcx/upc-list.twig', ['page' => $page, 'upcs' => $upcs, 'itemID' => $itemID]);
+		$page->body .= $config->twig->render('items/upcx/upc-list.twig', ['page' => $page, 'upcs' => $upcs, 'itemID' => $itemID, 'recordlocker' => $recordlocker]);
 	}
 
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
