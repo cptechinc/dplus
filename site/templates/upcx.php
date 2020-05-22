@@ -24,7 +24,7 @@
 	if ($input->get->upc) {
 		$code = $input->get->text('upc');
 		$unitsofm = UnitofMeasurePurchaseQuery::create()->find();
-
+		
 		if ($upcx->upc_exists($code)) {
 			$upc = $upcx->get_upc($code);
 			$page->title = "UPCX: UPC $code";
@@ -57,7 +57,7 @@
 		$url_validate = $pages->get('pw_template=upcx-validate')->httpUrl;
 		$page->js .= $config->twig->render('items/upcx/js.twig', ['upc' => $upc, 'url_validate' => $url_validate]);
 	} else {
-		$itemID = $input->get->text('itemID');
+		$itemID = strtoupper($input->get->text('itemID'));
 		$filter_upcs->filter_query($input);
 		$filter_upcs->apply_sortby($page);
 		$upcs = $filter_upcs->query->find();

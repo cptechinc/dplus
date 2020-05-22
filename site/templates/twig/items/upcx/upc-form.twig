@@ -1,9 +1,16 @@
+{% block return_links %}
 <div class="mb-3">
+	<a href="{{ page.upc_listURL() }}" class="btn btn-primary">
+		<i class="fa fa-undo" aria-hidden="true"></i> &nbsp;
+		Back to List
+	</a>
+	&nbsp; &nbsp;
 	<a href="{{ page.parent.url }}" class="btn btn-primary">
 		<i class="fa fa-undo" aria-hidden="true"></i> &nbsp;
 		Back to {{ page.parent.title }}
 	</a>
 </div>
+{% endblock %}
 <form action="{{ page.fullURL.getURL() }}" method="POST" id="upc-item-form">
 	<div class="row">
 		<div class="col-sm-8">
@@ -15,14 +22,17 @@
 					<input type="text" class="{{ upc.isNew() ? 'form-control' : 'form-control-plaintext' }}" name="upc" id="upc" value="{{ upc.upc }}" {{ upc.isNew() ? '' : 'readonly' }}>
 				</div>
 			</div>
-			<div class="form-group row">
-				<div class="col-sm-6">
-					<label for="itemID">Item ID</label>
+			{% block form_input_itemid %}
+				<div class="form-group row">
+					<div class="col-sm-6">
+						<label for="itemID">Item ID</label>
+					</div>
+					<div class="col-sm-6">
+						<input type="text" class="{{ upc.isNew() ? 'form-control' : 'form-control-plaintext' }}" name="itemID" id="itemID" value="{{ upc.itemID }}" {{ upc.isNew() ? '' : 'readonly' }}>
+					</div>
 				</div>
-				<div class="col-sm-6">
-					<input type="text" class="{{ upc.isNew() ? 'form-control' : 'form-control-plaintext' }}" name="itemID" id="itemID" value="{{ upc.itemID }}" {{ upc.isNew() ? '' : 'readonly' }}>
-				</div>
-			</div>
+			{% endblock %}
+
 			<div class="form-group row">
 				<div class="col-sm-6">
 					<label for="primary">Primary?</label>
@@ -84,17 +94,24 @@
 					</div>
 				</div>
 			</div>
-			<div class="row text-center">
-				<div class="col-sm-6">
-					<button type="submit" class="btn btn-danger btn-block" name="action" value="remove-upc-item">
-						<i class="fa fa-trash" aria-hidden="true"></i> Remove
-					</button>
-				</div>
-				<div class="col-sm-6">
-					<button type="submit" class="btn btn-success btn-block" name="action" value="update-upcx">
+			<div class="d-flex justify-content-between align-items-center">
+				{#
+					Only show Edit Actions if the Item is
+					1. Locked for editing by the User
+					2. Is a new Item
+					NOTE: Only show delete if item already exists.
+				#}
+				{% if recordlocker.function_locked_by_user('upcx', upc.upc) or upc.isNew() %}
+					<button type="submit" class="btn btn-success" name="action" value="update-upcx">
 						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 					</button>
-				</div>
+					{% if upc.isNew() == false %}
+						<button type="submit" class="btn btn-danger" name="action" value="remove-upc-item">
+							<i class="fa fa-trash" aria-hidden="true"></i> Remove
+						</button>
+					{% endif %}
+				{% endif %}
+				<a href="{{ page.upc_listURL() }}" class="btn btn-warning">Close</a>
 			</div>
 		</div>
 	</div>
