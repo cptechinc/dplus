@@ -40,8 +40,22 @@
 
 				if ($upcx->upc_exists($code)) {
 					$upc = $upcx->get_upc($code);
-					$page->title = "UPCX: UPC $code";
+					$page->title = "ITM: $itemID UPC $code";
+				} else {
+					$upc = new ItemXrefUpc();
 
+					if ($input->get->itemID) {
+						if ($upcx->validate_itemID($itemID)) {
+							$page->title = "Adding UPC X-ref for $itemID";
+							$upc->setItemid($itemID);
+						} else {
+							$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID $itemID not found in the Item Master"]);
+							$page->body .= $html->div('class=mb-3');
+						}
+					}
+				}
+
+				if (!$upc->isNew()) {
 					/**
 					 * Show alert that UPC is locked if
 					 * NOTE $page->lockcode is defined in Itm.module
@@ -57,18 +71,6 @@
 					} elseif (!$recordlocker->function_locked($page->lockcode, $code)) {
 						$recordlocker->create_lock($page->lockcode, $code);
 					}
-				} else {
-					$upc = new ItemXrefUpc();
-
-					if ($input->get->itemID) {
-						if ($upcx->validate_itemID($itemID)) {
-							$page->title = "Adding UPC X-ref for $itemID";
-							$upc->setItemid($itemID);
-						} else {
-							$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID $itemID not found in the Item Master"]);
-							$page->body .= $html->div('class=mb-3');
-						}
-					}
 				}
 
 				$page->body .= $config->twig->render('items/itm/warehouse/description.twig', ['page' => $page, 'item' => $item]);
@@ -80,9 +82,11 @@
 				$recordlocker->remove_lock($page->lockcode);
 				$filter_upcs->filter_query($input);
 				$filter_upcs->apply_sortby($page);
-				$upcs = $filter_upcs->query->find();
-				$page->title = "UPCs for $itemID";
+				$upcs = $filter_upcs->query->paginate($input->pageNum, 10);
+
+				$page->title = "ITM: UPCs for $itemID";
 				$page->body .= $config->twig->render('items/upcx/upc-list.twig', ['page' => $page, 'upcs' => $upcs, 'itemID' => $itemID, 'recordlocker' => $recordlocker]);
+				$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $upcs->getNbResults()]);
 			}
 		} else {
 			$session->redirect($page->itmURL($itemID), $http301 = false);
