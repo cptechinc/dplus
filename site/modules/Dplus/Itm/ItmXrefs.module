@@ -112,7 +112,7 @@ class ItmXrefs extends WireData implements Module {
 		$values = $input->$rm;
 		$itemID = strtoupper($values->text('itemID'));
 
-		if ($cxm->get_cxm_shortitem($itemID)->custitemid != $values->text('cxm_custitemid')) {
+		if (!$cxm->cxm_shortitem_exists($itemID) ||$cxm->get_cxm_shortitem($itemID)->custitemid != $values->text('cxm_custitemid')) {
 			$data_cxm = array('action' => 'update-cxm-shortitem', 'itemID' => $itemID, 'custitemid' => $values->text('cxm_custitemid'));
 			$input_cxm = new WireInput();
 			$input_cxm->$rm->setArray($data_cxm);
@@ -131,6 +131,22 @@ class ItmXrefs extends WireData implements Module {
 	public function get_itm_xrefs_upcxURL($itemID) {
 		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-upcx")->url);
 		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to view / edit UPC for Item
+	 * @param  string $itemID Item ID
+	 * @param  string $upc    UPC Code
+	 * @return string
+	 */
+	public function get_upcURL($itemID, $upc = '') {
+		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-upcx")->url);
+		$url->query->set('itemID', $itemID);
+
+		if ($upc) {
+			$url->query->set('upc', $upc);
+		}
 		return $url->getUrl();
 	}
 
@@ -159,5 +175,32 @@ class ItmXrefs extends WireData implements Module {
 			$itemID = $event->arguments(0);
 			$event->return = $this->get_itm_xrefs_upcxURL($itemID);
 		});
+
+		$this->addHook("Page(pw_template=$templates)::upc_create_itemidURL", function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_upcURL($itemID, 'new');
+		});
+
+		$this->addHook("Page(pw_template=$templates)::upcURL", function($event) {
+			$p = $event->object;
+			$upc    = $event->arguments(0);
+			$event->return = $this->get_upcURL($p->itemID, $upc);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::upc_listURL", function($event) {
+			$p = $event->object;
+			$event->return = $this->get_upcURL($p->itemID);
+		});
+
+		$this->addHookProperty('Page(pw_template=itm-xrefs-upcx)::upc', function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('upc');
+		});
+
+		$this->addHookProperty('Page(pw_template=itm-xrefs-upcx)::itemID', function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('itemID');
+		});
+
 	}
 }
