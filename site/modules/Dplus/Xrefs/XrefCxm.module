@@ -165,6 +165,26 @@ class XrefCxm extends WireData implements Module {
 		}
 	}
 
+	/**
+	 * Returns if Record is Modifying one of the Keys of the Record
+	 * @param  ItemXrefCustomer $record
+	 * @return bool
+	 */
+	protected function is_modifying_cxm_key(ItemXrefCustomer $record) {
+		$q = $this->get_query();
+		$tablemap = $q->getTableMap();
+		$primarykeys = array_keys($tablemap->getPrimaryKeys());
+		$modified = $record->getModifiedColumns();
+
+		foreach ($modified as $column) {
+			$col = str_replace($tablemap::TABLE_NAME.'.', '', $column);
+			if (in_array($col, $primarykeys)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 /* =============================================================
 	CRUD Response Functions
 ============================================================= */
@@ -222,21 +242,6 @@ class XrefCxm extends WireData implements Module {
 		$response->set_action($actiontype != 0 ? $actiontype : XrefResponse::CRUD_UPDATE);
 		$response->set_message($message);
 		return $response;
-	}
-
-	protected function is_modifying_cxm_key(ItemXrefCustomer $record) {
-		$q = $this->get_query();
-		$tablemap = $q->getTableMap();
-		$primarykeys = array_keys($tablemap->getPrimaryKeys());
-		$modified = $record->getModifiedColumns();
-
-		foreach ($modified as $column) {
-			$col = str_replace($tablemap::TABLE_NAME.'.', '', $column);
-			if (in_array($col, $primarykeys)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 /* =============================================================
