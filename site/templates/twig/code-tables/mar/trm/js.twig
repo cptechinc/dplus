@@ -27,42 +27,12 @@ $(function () {
 		}
 	});
 
-	// start type
-	if ($('#type').val() == 'CC') {
-		$('#cc').removeClass('collapse');
-		$('#credit_card').prop("readonly", false);
-	} else {
-		$('#cc').addClass('collapse');
-		$('#credit_card').prop("readonly", true);
-	}
-
-	$("#code-edit-form #type").change(function() {
-		if ($('#type').val() == 'CC') {
-			$('#credit_card').prop("readonly", false);
-		} else {
-			$('#credit_card').prop("readonly", true);
-		}
-	});
-	// end type
-
-
-	// start method
-
-	// displays standard and eom tables on load
-	if ($('#method').val() == 'S') {
-		$('#standard-terms-form').show();
-		$('#eom-terms-form').hide();
-	} else if ($('#method').val() == 'E') {
-		$('#standard-terms-form').hide();
-		$('#eom-terms-form').show();
-	}
 
 	if ($('#code').val() == '') {
 		$('.row1').find('#order_percent1').val(100);
 		$('.row1').removeClass('collapse');
 	}
 
-	// displays standard and eom tables when method is changed
 	$("#code-edit-form #method").change(function() {
 		if ($('#method').val() == '') {
 			$('#eom-terms-form').fadeOut();
@@ -75,7 +45,14 @@ $(function () {
 			$('#eom-terms-form').fadeIn();
 		}
 	});
-	// end method
+
+	$("#code-edit-form #type").change(function() {
+		if ($('#type').val() == 'CC') {
+			$('#credit_card').prop("disabled", false);
+		} else {
+			$('#credit_card').prop("disabled", true);
+		}
+	});
 
 
 // ------------------ Standard Method -----------------
