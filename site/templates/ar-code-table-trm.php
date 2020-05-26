@@ -5,7 +5,7 @@
 	if ($input->get->code) {
 		$code = $input->get->text('code');
 		$countries = CountryQuery::create()->find();
-	 	// $creditcards = CreditCardDigitGetQuery::create()->find();
+	 	$creditcards = CreditCardDigitGetQuery::create()->find();
 
 		if ($module_codetable->code_exists($code)) {
 			$page->title = $page->headline = "TRM: $code";
@@ -38,7 +38,7 @@
 			}
 		}
 
-		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $termscode, 'countries' => $countries, 'recordlocker' => $recordlocker, 'm_trm' => $module_codetable]);
+		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $termscode, 'countries' => $countries, 'creditcards' => $creditcards, 'recordlocker' => $recordlocker, 'm_trm' => $module_codetable]);
 		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'termscode' => $termscode]);
 	} else {
 		$page->title = $page->headline = "Customer Terms Code";
