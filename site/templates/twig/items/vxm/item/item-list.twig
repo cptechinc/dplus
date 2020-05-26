@@ -27,11 +27,7 @@
 			{% for item in items %}
 				<tr>
 					<td>{{ item.vendorID }}</td>
-					<td>
-						<a href="{{ page.vxm_itemURL(item.ouritemid, item.vendorID, item.vendoritemID) }}" class="link">
-							{{ item.vendoritemID }}
-						</a>
-					</td>
+					<td>{{ item.vendoritemID }}</td>
 					{% if page.has('itemID') == false %}
 						<td>{{ item.ouritemID }}</td>
 					{% endif %}
