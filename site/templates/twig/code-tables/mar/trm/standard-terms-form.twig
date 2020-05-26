@@ -5,17 +5,9 @@
 	m_trm                  module CodeTablesTrm
 #}
 
-<div class="row">
-	<div class="col-2"></div>
-	<div class="col-8">
-		<ul class="nav nav-tabs">
-		    <li role="presentation" class="nav-item active"><a href="#discount" class="nav-link active form_button" aria-controls="discount" role="tab" data-toggle="tab">Discount</a></li>
-		    <li role="presentation" class="nav-item"><a href="#due" class="nav-link form_button" aria-controls="due" role="tab" data-toggle="tab">Due</a></li>
-		</ul>
-	</div>
-</div>
 <div class="form-row text-sm">
 	<div class="col-2">
+		<h5>&nbsp;</h5>
 		<div class="list-group">
 			<div class="list-group-item">
 				<div class="row align-items-center text-center">
@@ -42,92 +34,89 @@
 		</div>
 	</div>
 
-	<div class="col-8">
-		<div class="tab-content">
-		    <div role="tabpanel" class="tab-pane active" id="discount">
-		       <div class="list-group">
-			       <div class="list-group-item bg-dark text-white">
-				       <div class="row align-items-center text-center">
-						   <div class="col">
-							   Percent
-						   </div>
-						   <div class="col">
-							   Days
-						   </div>
-						   <div class="col">
-							   Day
-						   </div>
-						   <div class="col">
-							   Date
-						   </div>
-				  	   </div>
-			       </div>
-			   	   {% for x in 1..m_trm.count_standardterms_split() %}
-					   <div class="list-group-item row{{ x }} discount {{ code.order_percent(x) > 0 ? '' : 'collapse' }}" data-index="{{ x }}">
-						   <div class="row align-items-center">
-							   <div class="col">
-								   <input type="text" name="percent{{ x }}" id="percent{{ x }}" maxlength="5" class="form-control discount_percent" value="{{ code.percent(x) == '' ? 0 : code.precent(x) }}">
-							   </div>
-							   <div class="col">
-								   <input type="text" name="days{{ x }}" id="days{{ x }}" maxlength="3" class="form-control days disc_group" value="{{ code.percent(x) == 0 ? 0 : code.days(x) }}" {{ code.percent(x) == 0 ? 'readonly' : '' }}>
-							   </div>
-							   <div class="col">
-								   <input type="text" name="day{{ x }}" id="day{{ x }}" maxlength="2" class="form-control day disc_group" value="{{ code.percent(x) == 0 ? 0 : code.day(x) }}" {{ code.percent(x) == 0 ? 'readonly' : '' }}>
-							   </div>
-							   <div class="col">
-								   <input type="text" name="date{{ x }}" id="date{{ x }}" maxlength="5" class="form-control disc_date disc_group" value="{{ code.percent(x) == 0 ? 0 : code.date(x) }}" {{ code.percent(x) == 0 ? 'readonly' : '' }}>
-							   </div>
-						   </div>
-					   </div>
-			      {% endfor %}
-		   	  </div>
-	      </div>
-
-		  <div role="tabpanel" class="tab-pane" id="due">
-		      <div class="list-group">
-			      <div class="list-group-item bg-dark text-white">
-				      <div class="row align-items-center text-center">
-					      <div class="col">
-						      Days
-					      </div>
-					      <div class="col">
-						      Day
-					      </div>
-						  <div class="col">
-						      Date (MM/DD)
-					      </div>
-					      <div class="col">
-						      Plus Mnths
-					      </div>
-					      <div class="col">
-						      Plus Yr
-					      </div>
-				      </div>
-			      </div>
-			      {% for x in 1..m_trm.count_standardterms_split() %}
-				      <div class="list-group-item row{{ x }} due {{ code.order_percent(x) > 0 ? '' : 'collapse' }}" data-index="{{ x }}">
-					      <div class="row align-items-center">
-						      <div class="col">
-							      <input type="text" name="due_days{{ x }}" id="due_days{{ x }}" maxlength="3" class="form-control due_days due_group" value="{{ code.due_days(x) }}">
-						      </div>
-						      <div class="col">
-							      <input type="text" name="due_day{{ x }}" id="due_day{{ x }}" maxlength="2" class="form-control due_day due_group" value="{{ code.due_day(x) }}">
-						      </div>
-							  <div class="col">
-							      <input type="text" name="due_date{{ x }}" id="due_date{{ x }}" maxlength="5" class="form-control due_date due_group" value="{{ code.due_date(x) }}">
-						      </div>
-						      <div class="col">
-							      <input type="text" name="due_months{{ x }}" id="due_months{{ x }}" maxlength="2" class="form-control due_months" value="{{ code.due_months(x) }}">
-						      </div>
-						      <div class="col">
-							      <input type="text" name="due_year{{ x }}" id="due_year{{ x }}" maxlength="1" class="form-control due_year" value="{{ code.due_year(x) }}">
-						      </div>
-					      </div>
-				      </div>
-			      {% endfor %}
-		   	  </div>
-	      </div>
+	<div class="col">
+		<h5 class="text-center">Discount</h5>
+		<div class="list-group">
+			<div class="list-group-item bg-dark text-white">
+				<div class="row align-items-center text-center">
+					<div class="col">
+						Percent
+					</div>
+					<div class="col">
+						Days
+					</div>
+					<div class="col">
+						Day
+					</div>
+					<div class="col">
+						Date
+					</div>
+				</div>
+			</div>
+			{% for x in 1..m_trm.count_standardterms_split() %}
+				<div class="list-group-item row{{ x }} discount {{ code.order_percent(x) > 0 ? '' : 'collapse' }}" data-index="{{ x }}">
+					<div class="row align-items-center">
+						<div class="col">
+							<input type="text" name="percent{{ x }}" id="percent{{ x }}" maxlength="5" class="form-control discount_percent" value="{{ code.percent(x) == '' ? 0 : code.precent(x) }}">
+						</div>
+						<div class="col">
+							<input type="text" name="days{{ x }}" id="days{{ x }}" maxlength="3" class="form-control days disc_group" value="{{ code.percent(x) == 0 ? 0 : code.days(x) }}" {{ code.percent(x) == 0 ? 'readonly' : '' }}>
+						</div>
+						<div class="col">
+							<input type="text" name="day{{ x }}" id="day{{ x }}" maxlength="2" class="form-control day disc_group" value="{{ code.percent(x) == 0 ? 0 : code.day(x) }}" {{ code.percent(x) == 0 ? 'readonly' : '' }}>
+						</div>
+						<div class="col">
+							<input type="text" name="date{{ x }}" id="date{{ x }}" maxlength="5" class="form-control disc_date disc_group" value="{{ code.percent(x) == 0 ? 0 : code.date(x) }}" {{ code.percent(x) == 0 ? 'readonly' : '' }}>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
 		</div>
 	</div>
 
+	<div class="col">
+		<h5 class="text-center">Due</h5>
+		<div class="list-group">
+			<div class="list-group-item bg-dark text-white">
+				<div class="row align-items-center text-center">
+					<div class="col">
+						Days
+					</div>
+					<div class="col">
+						Day
+					</div>
+					<div class="col-3">
+						Plus Mnths
+					</div>
+					<div class="col">
+						Date
+					</div>
+					<div class="col">
+						Plus Yr
+					</div>
+				</div>
+			</div>
+			{% for x in 1..m_trm.count_standardterms_split() %}
+				<div class="list-group-item row{{ x }} due {{ code.order_percent(x) > 0 ? '' : 'collapse' }}" data-index="{{ x }}">
+					<div class="row align-items-center">
+						<div class="col">
+							<input type="text" name="due_days{{ x }}" id="due_days{{ x }}" maxlength="3" class="form-control due_days due_group" value="{{ code.due_days(x) }}">
+						</div>
+						<div class="col">
+							<input type="text" name="due_day{{ x }}" id="due_day{{ x }}" maxlength="2" class="form-control due_day due_group" value="{{ code.due_day(x) }}">
+						</div>
+						<div class="col-3">
+							<input type="text" name="due_months{{ x }}" id="due_months{{ x }}" maxlength="2" class="form-control due_months" value="{{ code.due_months(x) }}">
+						</div>
+						<div class="col">
+							<input type="text" name="due_date{{ x }}" id="due_date{{ x }}" maxlength="5" class="form-control due_date due_group" value="{{ code.due_date(x) }}">
+						</div>
+						<div class="col">
+							<input type="text" name="due_year{{ x }}" id="due_year{{ x }}" maxlength="1" class="form-control due_year" value="{{ code.due_year(x) }}">
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
 </div>

@@ -23,7 +23,7 @@
 			<div class="form-group">
 				<label for="exp_date">Expire Date</label>
 				{% set name = 'exp_date' %}
-				{% set value = code.exp_date|convertdate %}
+				{% set value = input.get.text('exp_date') %}
 				{% include 'util/date-picker.twig' %}
 			</div>
 		</div>

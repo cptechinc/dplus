@@ -15,7 +15,7 @@
                         </div>
                     </div>
                     {% for x in 1..m_trm.count_eomterms_split() %}
-                        <div class="list-group-item row{{ x }} day {{ (x != 1 and code.thru_day1 == 99) ? 'collapse' : '' }}" data-index="{{ x }}">
+                        <div class="list-group-item row{{ x }} day {{ x != 1 and code.thru_day(x) == 0 ? 'collapse' : '' }}" data-index="{{ x }}">
                             <div class="row align-items-center">
                                 <div class="col">
                                     <input type="text" name="from_day{{ x }}" id="from_day{{ x }}" maxlength="2" class="form-control from_day" value="{{ (x == 1) ? 1 : code.from_day(x) }}" {{ (x == 1) ? 'readonly' : '' }}>
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     {% for x in 1..m_trm.count_eomterms_split() %}
-                        <div class="list-group-item row{{ x }} eom_discount {{ (x != 1 and code.thru_day1 == 99) ? 'collapse' : '' }}" data-index"{{ x }}">
+                        <div class="list-group-item row{{ x }} eom_discount {{ x != 1 and code.thru_day(x) == 0 ? 'collapse' : '' }}" data-index"{{ x }}">
                             <div class="row align-items-center">
                                 <div class="col">
                                     <input type="text" name="eom_percent{{ x }}" id="eom_percent{{ x }}" maxlength="6" class="form-control eom_percent" value="{{ code.eom_percent(x) }}">
@@ -77,7 +77,7 @@
                         </div>
                     </div>
                     {% for x in 1..m_trm.count_eomterms_split() %}
-                        <div class="list-group-item row{{ x }} due {{ (x != 1 and code.thru_day1 == 99) ? 'collapse' : '' }}" data-index="{{ x }}">
+                        <div class="list-group-item row{{ x }} due {{ x != 1 and code.thru_day(x) == 0 ? 'collapse' : '' }}" data-index="{{ x }}">
                             <div class="row align-items-center">
                                 <div class="col">
                                     <input type="text" name="eom_dueday{{ x }}" id="eom_dueday{{ x }}" maxlength="2" class="form-control eom_dueday" value="{{ code.eom_dueday1 }}">

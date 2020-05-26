@@ -173,20 +173,25 @@ $(function () {
 
 
 // ------------------ Start EOM Method -----------------
-	for ( var index = 1, l = {{ termscode.get_eom_terms_split() }} + 1; index < l; index++ ) {
+
+	$("body").on('change', '.thru_day', function(e) {
+		var input = $(this);
+		var row = input.closest('.day');
+		var index = row.data('index');
+
+		console.log(index);
 		if (index == 1)  {
-			if ($('.thru_day1').val() == 99) {
-				$('.row'+index).addClass('collapse');
+			if ($('#thru_day1').val() == 99) {
 				$('.row1').removeClass('collapse');
 			}
 		} else {
-			if ($('.thru_day'+index).val() == 99) {
+			if (input.val() == 99) {
 				$('.row'+(index+1)).addClass('collapse');
-			} else if ( ($('.thru_day'+index).val() != 99) && ($('.thru_day'+index).val() < 30) ) {
+			} else if ( (input.val() != 99) && (input.val() < 30) ) {
 				$('.row'+index).find('.thru_day'+index).val( $('.thru_day'+(index-1)).val() + 1);
 			}
 		}
-	}
+	});
 
 
 // ------------------ End EOM Method -----------------
