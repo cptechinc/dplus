@@ -6,7 +6,7 @@
 	item                   ItemXrefVxm
 #}
 <form action="{{ page.fullURL.getURL() }}" method="POST" id="vxm-item-form">
-	<input type="hidden" name="vendorID" id="vendorID" value="{{ item.vendorID }}">
+	<input type="hidden" name="original_vendoritemID" value="{{ item.vendoritemID }}">
 
 	<div class="row mb-3">
 		{% include 'items/vxm/vendor/item/header.twig' %}
