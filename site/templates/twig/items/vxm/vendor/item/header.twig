@@ -1,12 +1,27 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	vxm                    module XrefVxm
+	recordlocker           module RecordLockerUser
+	item                   ItemXrefVxm
+#}
+{%
+	set vendor = vxm.get_vendor(item.vendorID)
+%}
 <div class="col-sm-6">
 	<div class="row form-group">
 		<div class="col-sm-6">
-			<b>Vendor ID</b>
+			<label for="Vendor ID">Vendor ID</label>
 		</div>
 		<div class="col-sm-6">
-			{{ vendor.id }} <br>
-			{{ vendor.name }}
-			<input type="hidden" name="vendorID" value="{{ item.vendorID }}">
+			<div class="input-group">
+				<span class="input-group-prepend">
+					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Search for / Choose Vendor" aria-label="Search for / Choose Vendor">
+						<span class="fa fa-search" aria-hidden="true"></span> <span class="sr-only">Search for / Choose Vendor</span>
+					</button>
+				</span>
+				<input type="text" name="vendorID" id="vendorID" class="form-control" value="{{ item.vendorID }}">
+			</div>
 		</div>
 	</div>
 	<div class="row form-group">
@@ -60,8 +75,8 @@
 			<label for="listprice"><b>List Price</b></label>
 		</div>
 		<div class="col-sm-6">
-			<div class="input-group mb-2">
-				<input type="number" name="listprice" class="form-control form-control-sm" id="listprice" value="{{ item.listprice }}">
+			<div class="input-group input-group-sm mb-2">
+				<input type="number" name="listprice" class="form-control" id="listprice" value="{{ item.listprice }}">
 				<div class="input-group-append">
 					<div class="input-group-text">{{ item.uom_purchase }}</div>
 				</div>
@@ -73,8 +88,8 @@
 
 		</div>
 		<div class="col-sm-6">
-			<div class="input-group mb-2">
-				<input type="number" name="eachlistprice" class="form-control form-control-sm" id="eachlistprice" value="{{ item.get_listprice_uom_sale() }}" step="any">
+			<div class="input-group input-group-sm mb-2">
+				<input type="number" name="eachlistprice" class="form-control" id="eachlistprice" value="{{ item.get_listprice_uom_sale() }}" step="any">
 				<div class="input-group-append">
 					<div class="input-group-text">{{ item.imitem.uom_sale }}</div>
 				</div>
