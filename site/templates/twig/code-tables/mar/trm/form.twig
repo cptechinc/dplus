@@ -23,7 +23,7 @@
 			<div class="form-group">
 				<label for="exp_date">Expire Date</label>
 				{% set name = 'exp_date' %}
-				{% set value = input.get.text('exp_date') %}
+				{% set value = code.exp_date|convertdate %}
 				{% include 'util/date-picker.twig' %}
 			</div>
 		</div>
@@ -35,9 +35,9 @@
 			<div class="form-group" >
 				<label for="credit_card">CC Prefix</label>
 				<!-- TODO: need to verify from ar_cust_cred -->
-				<select name="credit_card" class="form-control" id="credit_card" >
+				<select name="credit_card" class="form-control" id="credit_card" {{ code.type == 'CC' ? '' : 'disabled' }}>
 					<option value="{{ code.credit_card }}"></option>
-					{% for credit_card in credit_cards %}
+					{% for credit_card in creditcards %}
 						<option value="{{ credit_card.id }}" {{ code.credit_card == credit_card.id ? 'selected' : '' }}>{{ credit_card.id }} - {{ credit_card.name }}</option>
 					{% endfor %}
 				</select>
@@ -65,11 +65,11 @@
 		</div>
 	</div>
 
-	<div id="standard-terms-form" class="my-4">
+	<div id="standard-terms-form" class="my-4 {{ (code.method == 'S' or code.code == '') ? '' : 'collapse' }}">
 		{% include 'code-tables/mar/trm/standard-terms-form.twig' %}
 	</div>
 
-	<div id="eom-terms-form" class="my-4">
+	<div id="eom-terms-form" class="my-4 {{ code.method == 'E' ? '' : 'collapse' }}">
 		{% include 'code-tables/mar/trm/eom-terms-form.twig' %}
 	</div>
 
