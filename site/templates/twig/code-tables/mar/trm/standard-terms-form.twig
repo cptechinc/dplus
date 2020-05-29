@@ -57,7 +57,7 @@
 				<div class="list-group-item row{{ x }} discount {{ code.order_percent(x) > 0 ? '' : 'collapse' }}" data-index="{{ x }}">
 					<div class="row align-items-center">
 						<div class="col">
-							<input type="text" name="percent{{ x }}" id="percent{{ x }}" maxlength="5" class="form-control discount_percent" value="{{ code.percent(x) == '' ? 0 : code.precent(x) }}">
+							<input type="text" name="percent{{ x }}" id="percent{{ x }}" maxlength="5" class="form-control discount_percent" value="{{ code.percent(x) == 0 ? 0 : code.percent(x) }}">
 						</div>
 						<div class="col">
 							<input type="text" name="days{{ x }}" id="days{{ x }}" maxlength="3" class="form-control days disc_group" value="{{ code.percent(x) == 0 ? 0 : code.days(x) }}" {{ code.percent(x) == 0 ? 'readonly' : '' }}>
@@ -106,13 +106,13 @@
 							<input type="text" name="due_day{{ x }}" id="due_day{{ x }}" maxlength="2" class="form-control due_day due_group" value="{{ code.due_day(x) }}">
 						</div>
 						<div class="col-3">
-							<input type="text" name="due_months{{ x }}" id="due_months{{ x }}" maxlength="2" class="form-control due_months" value="{{ code.due_months(x) }}">
+							<input type="text" name="due_months{{ x }}" id="due_months{{ x }}" maxlength="2" class="form-control due_months" value="{{ code.due_months(x) }}" {{ code.due_day(x) == 0 ? 'readonly' : '' }}>
 						</div>
 						<div class="col">
 							<input type="text" name="due_date{{ x }}" id="due_date{{ x }}" maxlength="5" class="form-control due_date due_group" value="{{ code.due_date(x) }}">
 						</div>
 						<div class="col">
-							<input type="text" name="due_year{{ x }}" id="due_year{{ x }}" maxlength="1" class="form-control due_year" value="{{ code.due_year(x) }}">
+							<input type="text" name="due_year{{ x }}" id="due_year{{ x }}" maxlength="1" class="form-control due_year" value="{{ code.due_year(x) }}" {{ code.due_date(x) == 0 ? 'readonly' : '' }}>
 						</div>
 					</div>
 				</div>
