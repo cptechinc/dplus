@@ -1,3 +1,10 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemXrefVendor
+	url_validate           URL to validate form inputs
+#}
 $(function() {
 	var eachlistprice = {{ item.eachlistprice }};
 	var itemID = '{{ item.ouritemID }}';
@@ -16,8 +23,13 @@ $(function() {
 	var input_eachlistprice = form_vxm.find('input[name=eachlistprice]');
 	var input_ouritemID = form_vxm.find('input[name=ouritemID]');
 	var input_vendoritemID = form_vxm.find('input[name=vendoritemID]');
+	var input_vendorID = form_vxm.find('input[name=vendorID]');
 
+	var modal_ajax = $('#ajax-modal');
 
+/* =============================================================
+	Event Functions
+============================================================= */
 	$("body").on("change", ".unit-cost, .unit-qty", function(e) {
 		var unitrow = $(this).closest('.unit-row');
 		update_unitrow_margin(unitrow);
@@ -34,22 +46,50 @@ $(function() {
 		calculate_eachlistprice();
 	});
 
-	$("body").on("click", "button[value=remove-vxm-item]", function(e) {
-		e.preventDefault();
-
-		swal2.fire({
-			title: "Remove VXM Item?",
-			text: "Are you sure you want to remove this VXM Item?",
-			type: 'warning',
-			showCancelButton: true,
-			confirmButtonText: 'Yes!'
-		}).then(function (result) {
-			if (result.value) {
-				form_vxm.submit();
-			}
-		});
+/* =============================================================
+	Vendor Lookup Modal Functions
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = '{{ page.searchvendorsURL }}';
+		modal.find('.modal-title').text('Search for a Vendor');
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
 	});
 
+	$("body").on('click', '.vendor-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var vendorID = button.data('vendorid');
+		var name = button.data('name');
+		input_vendorID.val(vendorID);
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('submit', 'form#vendor-search-form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	jQuery.validator.addMethod("vendoritemID", function(value, element) {
+		return this.optional(element) || validate_vendoritemID();
+	}, "Vendor ItemID already exists");
 
 	form_vxm.validate({
 		errorClass: "is-invalid",
@@ -58,7 +98,9 @@ $(function() {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		rules: {
-			vendoritemID: 'required',
+			vendoritemID: {
+				required: true,
+			},
 			ouritemID: {
 				required: true,
 				remote: {
@@ -73,7 +115,6 @@ $(function() {
 			qty_percase: 'required',
 		},
 		messages: {
-			vendoritemID: "Please enter the Vendor's Item ID",
 			ouritemID: "Please enter the Your Item ID",
 			uom_purchase: "Please choose a Purchase Unit of Measure",
 		},
@@ -85,7 +126,7 @@ $(function() {
 				return obj;
 			}, {});
 
-			if (formdata['action'] == 'update-vxm') {
+			if (validate_vendoritemID()) {
 				if (input_validatedpoordercode.val() == 'false') {
 					if (select_poordercode.val() == primarypoordercode) {
 						validate_poordercode();
@@ -97,7 +138,7 @@ $(function() {
 					form.submit();
 				}
 			} else {
-				form.submit();
+				alert_vendoritemID();
 			}
 		}
 	});
@@ -135,6 +176,78 @@ $(function() {
 			}
 		});
 	}
+
+	function request_validate_vendoritemID(callback) {
+		var url = new URI('{{ url_validate }}');
+		url.addQuery('action', 'validate-vendor-itemid-new').addQuery('vendorID', input_vendorID.val())
+		url.addQuery('vendoritemID', input_vendoritemID.val());
+
+		$.getJSON(url.toString(), function( valid ) {
+			callback(valid);
+		});
+	}
+
+	function validate_vendoritemID() {
+		if (input_vendoritemID.val() != input_vendoritemID.data('vendoritemid') && input_vendoritemID.data('vendoritemid').length) {
+			request_validate_vendoritemID(function(valid) {
+				if (typeof valid  === 'string' || valid  instanceof String) {
+					return false;
+				} else {
+					return true;
+				}
+			});
+		} else {
+			return true;
+		}
+	}
+
+	function alert_vendoritemID() {
+		if (input_vendoritemID.val() != input_vendoritemID.data('vendoritemid')) {
+			request_validate_vendoritemID(function(valid) {
+				if (typeof valid  === 'string' || valid  instanceof String) {
+					swal2.fire({
+						title: valid,
+						text: 'Would you like to go edit this item?',
+						icon: 'error',
+						showCancelButton: true,
+						confirmButtonText: 'Yes',
+						cancelButtonText: 'No',
+					}).then((result) => {
+						if (result.value) {
+							var uri = new URI();
+							uri.removeQuery('vendoritemID');
+							uri.setQuery('vendorID', input_vendorID.val());
+							uri.setQuery('vendoritemID', input_vendoritemID.val());
+							window.location.href = uri.toString();
+						}
+					});
+				} else {
+					return true
+				}
+			});
+		}
+	}
+
+	$("body").on("click", "button[value=remove-vxm-item]", function(e) {
+		e.preventDefault();
+
+		swal2.fire({
+			title: "Remove VXM Item?",
+			text: "Are you sure you want to remove this VXM Item?",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Yes!'
+		}).then(function (result) {
+			if (result.value) {
+				form_vxm.submit();
+			}
+		});
+	});
+
+
+/* =============================================================
+	Margin Calculation Functions
+============================================================= */
 
 	/**
 	 * Recalculates Each List Price based on the Unit of Measure Purchase Conversion

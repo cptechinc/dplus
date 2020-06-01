@@ -1,13 +1,11 @@
 {#
 	var                    Description / Instance of
 	-------------------------------------------------
+	page                   ProcessWire\Page
 	vxm                    module XrefVxm
 	recordlocker           module RecordLockerUser
 	item                   ItemXrefVxm
 #}
-{%
-	set vendor = vxm.get_vendor(item.vendorID)
-%}
 <div class="col-sm-6">
 	<div class="row form-group">
 		<div class="col-sm-6">
@@ -29,7 +27,7 @@
 			<label for="vendoritemID"><b>Vendor Item ID</b></label>
 		</div>
 		<div class="col-sm-6">
-			<input type="text" name="vendoritemID" class="form-control form-control-sm" id="vendoritemID" value="{{ item.vendoritemID }}">
+			<input type="text" name="vendoritemID" class="form-control form-control-sm" id="vendoritemID" value="{{ item.vendoritemID }}" data-vendoritemid="{{ item.vendoritemID }}">
 		</div>
 	</div>
 	<div class="row">
@@ -37,10 +35,14 @@
 			<b>Our Item ID</b>
 		</div>
 		<div class="col-sm-6">
-			{% if item.isNew() %}
+			{% if page.has('itemID') %}
+				<input type="text" class="form-control-plaintext form-control-sm" value="{{ item.ouritemid }}" readonly>
+				<input type="hidden" name="ouritemID" value="{{ item.ouritemid }}" readonly>
+			{% elseif item.isNew() %}
 				<input type="text" class="form-control form-control-sm" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}">
 			{% else %}
-				<input type="text" class="form-control-plaintext form-control-sm" name="ouritemID" value="{{ item.ouritemid }}" readonly>
+				<input type="text" class="form-control-plaintext form-control-sm" value="{{ item.ouritemid }}" readonly>
+				<input type="hidden" name="ouritemID" value="{{ item.ouritemid }}" readonly>
 			{% endif %}
 		</div>
 	</div>
@@ -84,9 +86,7 @@
 		</div>
 	</div>
 	<div class="row form-group">
-		<div class="col-sm-6">
-
-		</div>
+		<div class="col-sm-6"></div>
 		<div class="col-sm-6">
 			<div class="input-group input-group-sm mb-2">
 				<input type="number" name="eachlistprice" class="form-control" id="eachlistprice" value="{{ item.get_listprice_uom_sale() }}" step="any">

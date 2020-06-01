@@ -1,22 +1,24 @@
 {#
 	var                    Description / Instance of
 	-------------------------------------------------
+	page                   ProcessWire\Page
 	vxm                    module XrefVxm
 	recordlocker           module RecordLockerUser
 	item                   ItemXrefVxm
 #}
 <form action="{{ page.fullURL.getURL() }}" method="POST" id="vxm-item-form">
+	<input type="hidden" name="action" value="update-vxm">
 	<input type="hidden" name="original_vendoritemID" value="{{ item.vendoritemID }}">
 
 	<div class="row mb-3">
-		{% include 'items/vxm/vendor/item/header.twig' %}
+		{% include 'items/vxm/item/form/header.twig' %}
 	</div>
 	<div class="row">
 		<div class="col-sm-6">
-			{% include 'items/vxm/vendor/item/details.twig' %}
+			{% include 'items/vxm/item/form/details.twig' %}
 		</div>
 		<div class="col-sm-6">
-			{% include 'items/vxm/vendor/item/unit-costs.twig' %}
+			{% include 'items/vxm/item/form/unit-costs.twig' %}
 		</div>
 	</div>
 	<div class="d-flex justify-content-between align-items-center">
@@ -27,7 +29,7 @@
 			NOTE: Only show delete if item already exists.
 		#}
 		{% if recordlocker.function_locked_by_user('vxm', vxm.get_recordlocker_key(item)) or item.isNew() %}
-			<button type="submit" class="btn btn-success" name="action" value="update-vxm">
+			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 
