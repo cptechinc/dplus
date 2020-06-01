@@ -34,11 +34,11 @@
 			</button>
 
 			{% if item.isNew() == false %}
-				<button type="submit" class="btn btn-danger" name="action" value="remove-vxm-item">
+				<a href="{{ page.vxm_item_deleteURL(item.ouritemid, item.vendorid, item.vendoritemid) }}" class="btn btn-danger remove-vxm-item">
 					<i class="fa fa-trash" aria-hidden="true"></i> Remove
-				</button>
+				</a>
 			{% endif %}
 		{% endif %}
-		<a href="" class="btn btn-warning">Close</a>
+		<a href="{{ page.itm_xrefs_vxmURL(item.ouritemid) }}" class="btn btn-warning">Close</a>
 	</div>
 </form>

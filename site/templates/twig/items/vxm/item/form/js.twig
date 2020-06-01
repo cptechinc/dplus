@@ -10,13 +10,6 @@ $(function() {
 	var itemID = '{{ item.ouritemID }}';
 	var primarypoordercode = '{{ item.getOptionpoordercodePrimary() }}';
 
-	var primaryitem = {
-		same: {{ item.is_po_ordercode_primary() ? 'true' : 'false'}},
-		otherexists: {{ item.other_primary_poordercode_exists() ? 'true' : 'false'}},
-		vendoritemid: '{{ item.other_primary_poordercode_itemid() }}',
-		vendorid: '{{ item.other_primary_poordercode_vendorid() }}'
-	}
-
 	var form_vxm = $('#vxm-item-form');
 	var input_listprice = form_vxm.find('input[name=listprice]');
 	var input_uom       = form_vxm.find('select[name=uom_purchase]');
@@ -44,6 +37,54 @@ $(function() {
 		var ele_description = input_uompurchase.siblings('p').find('.conversion-description');
 		ele_description.text(conversion);
 		calculate_eachlistprice();
+	});
+
+	$("body").on("click", "a.remove-vxm-item", function(e) {
+		e.preventDefault();
+		var button = $(this);
+
+		swal2.fire({
+			title: "Remove VXM Item?",
+			text: "Are you sure you want to remove this VXM Item?",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Yes!'
+		}).then(function (result) {
+			if (result.value) {
+				window.location.href = button.attr('href');
+			}
+		});
+	});
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = form_vxm.serialize();
+
+	$("body").on("click", "a:not(#itm-xrefs-form.form_button, #ajax-modal a)", function(e) {
+		if (form_vxm.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			swal2.fire({
+				title: 'Changes have occurred!',
+				text: 'Do you want to save?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+				cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value) {
+					form_vxm.find('button[type=submit]').click();
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					// Send HTTP GET Request to remove Record Lock
+					$.get('{{ page.itm_xrefs_vxmURL(item.ouritemid) }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
 	});
 
 /* =============================================================
@@ -87,10 +128,6 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	jQuery.validator.addMethod("vendoritemID", function(value, element) {
-		return this.optional(element) || validate_vendoritemID();
-	}, "Vendor ItemID already exists");
-
 	form_vxm.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
@@ -98,9 +135,8 @@ $(function() {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		rules: {
-			vendoritemID: {
-				required: true,
-			},
+			vendorID: {required: true},
+			vendoritemID: {required: true},
 			ouritemID: {
 				required: true,
 				remote: {
@@ -126,87 +162,26 @@ $(function() {
 				return obj;
 			}, {});
 
-			if (validate_vendoritemID()) {
-				if (input_validatedpoordercode.val() == 'false') {
-					if (select_poordercode.val() == primarypoordercode) {
-						validate_poordercode();
-					} else {
-						input_validatedpoordercode.val('true');
-						form_vxm.submit();
-					}
-				} else {
-					form.submit();
-				}
-			} else {
-				alert_vendoritemID();
-			}
+			update_vxm(form);
 		}
 	});
 
-	function validate_poordercode() {
-		var url = new URI('{{ url_validate }}');
-		url.addQuery('action', 'validate-primary-poordercode').addQuery('ouritemID', input_ouritemID.val())
-		url.addQuery('vendoritemID', input_vendoritemID.val());
-
-		// URL RETURNS boolean true or string UPC code for false
-		$.getJSON( url.toString(), function( valid ) {
-			if (typeof valid  === 'string' || valid  instanceof String) {
-				var msg = valid;
-
-				swal2.fire({
-					title: "Overwrite Primary PO Ordercode?",
-					text: msg,
-					icon: 'warning',
-					showCancelButton: true,
-					confirmButtonClass: 'btn btn-success',
-					cancelButtonClass: 'btn btn-danger',
-					buttonsStyling: false,
-					confirmButtonText: 'Yes!'
-				}).then(function (result) {
-					if (result.value) {
-						input_validatedpoordercode.val('true');
-						form_vxm.submit();
-					}
-				}).catch(swal.noop);
-			} else {
-				if (valid) {
-					input_validatedpoordercode.val('true');
-					form_vxm.submit();
-				}
+	function remove_vxm_item(form) {
+		request_validate_vendoritemID(function(exists) {
+			if (exists === true) {
+				form.submit();
 			}
 		});
 	}
 
-	function request_validate_vendoritemID(callback) {
-		var url = new URI('{{ url_validate }}');
-		url.addQuery('action', 'validate-vendor-itemid-new').addQuery('vendorID', input_vendorID.val())
-		url.addQuery('vendoritemID', input_vendoritemID.val());
-
-		$.getJSON(url.toString(), function( valid ) {
-			callback(valid);
-		});
-	}
-
-	function validate_vendoritemID() {
-		if (input_vendoritemID.val() != input_vendoritemID.data('vendoritemid') && input_vendoritemID.data('vendoritemid').length) {
-			request_validate_vendoritemID(function(valid) {
-				if (typeof valid  === 'string' || valid  instanceof String) {
-					return false;
-				} else {
-					return true;
-				}
-			});
-		} else {
-			return true;
-		}
-	}
-
-	function alert_vendoritemID() {
-		if (input_vendoritemID.val() != input_vendoritemID.data('vendoritemid')) {
-			request_validate_vendoritemID(function(valid) {
-				if (typeof valid  === 'string' || valid  instanceof String) {
+	function update_vxm(form) {
+		console.log('update vxm');
+		request_validate_vendoritemID(function(exists) {
+			console.log(exists);
+			if (exists === true) {
+				if (input_vendoritemID.val() != input_vendoritemID.data('vendoritemid')) {
 					swal2.fire({
-						title: valid,
+						title: "Vendor Item " + input_vendoritemID.val() + " exists",
 						text: 'Would you like to go edit this item?',
 						icon: 'error',
 						showCancelButton: true,
@@ -222,29 +197,87 @@ $(function() {
 						}
 					});
 				} else {
-					return true
+					validate_form_poordercode(form);
 				}
-			});
+			} else {
+				validate_form_poordercode(form);
+			}
+		});
+	}
+
+	function validate_form_poordercode(form) {
+		console.log('validating PO Order Code');
+		var select_poordercode = form_vxm.find('select[name=po_ordercode]');
+		var input_validatedpoordercode = select_poordercode.siblings('input[name=po_ordercode_validated]');
+
+		if (input_validatedpoordercode.val() == 'false') {
+			if (select_poordercode.val() == primarypoordercode) {
+				validate_poordercode(function(valid) {
+					if (valid) {
+						input_validatedpoordercode.val('true');
+						form_vxm.submit();
+					} else {
+						swal2.fire({
+							title: "Overwrite Primary PO Ordercode?",
+							text: msg,
+							icon: 'warning',
+							showCancelButton: true,
+							confirmButtonClass: 'btn btn-success',
+							cancelButtonClass: 'btn btn-danger',
+							buttonsStyling: false,
+							confirmButtonText: 'Yes!'
+						}).then(function (result) {
+							if (result.value) {
+								input_validatedpoordercode.val('true');
+								form_vxm.submit();
+							}
+						});
+					}
+				});
+			} else {
+				input_validatedpoordercode.val('true');
+				form_vxm.submit();
+			}
+		} else {
+			form.submit();
 		}
 	}
 
-	$("body").on("click", "button[value=remove-vxm-item]", function(e) {
-		e.preventDefault();
+/* =============================================================
+	AJAX Request Functions
+============================================================= */
+	/**
+	 * Gets boolean value if VXM item can be Primary PO Ordercode then calls callback function
+	 * @param  {Function} callback
+	 * @return bool       Can VXM item be used as Primary PO Order Code?
+	 */
+	function validate_poordercode(callback) {
+		var url = new URI('{{ url_validate }}');
+		url.addQuery('action', 'validate-primary-poordercode').addQuery('ouritemID', input_ouritemID.val());
+		url.addQuery('vendoritemID', input_vendoritemID.val());
+		url.addQuery('return', 'bool');
 
-		swal2.fire({
-			title: "Remove VXM Item?",
-			text: "Are you sure you want to remove this VXM Item?",
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonText: 'Yes!'
-		}).then(function (result) {
-			if (result.value) {
-				form_vxm.submit();
-			}
+		// URL RETURNS boolean true or string UPC code for false
+		$.getJSON(url.toString(), function( valid ) {
+			callback();
 		});
-	});
+	}
 
-
+	/**
+	 * Gets boolean value if VXM item exists then calls callback function
+	 * @param  {Function} callback
+	 * @return bool       Does VXM item exist?
+	 */
+	function request_validate_vendoritemID(callback) {
+		var url = new URI('{{ url_validate }}');
+		url.addQuery('action', 'validate-vendor-itemid').addQuery('vendorID', input_vendorID.val());
+		url.addQuery('vendoritemID', input_vendoritemID.val());
+		url.addQuery('return', 'bool');
+		console.log(url.toString());
+		$.getJSON(url.toString(), function( valid ) {
+			callback(valid);
+		});
+	}
 /* =============================================================
 	Margin Calculation Functions
 ============================================================= */

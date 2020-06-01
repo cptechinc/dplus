@@ -68,7 +68,7 @@ $(function() {
 		$('#ajax-modal').modal('hide');
 	});
 
-	$("body").on('click', '.page-link', function(e) {
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
 		e.preventDefault();
 		var href = $(this).attr('href');
 		modal_ajax.find('.modal-body').load(href);
