@@ -4,6 +4,7 @@
 
 	if ($input->get->code) {
 		$code = $input->get->text('code');
+		$configSO = ConfigSalesOrderQuery::create()->findOne();
 		$countries = CountryQuery::create()->find();
 	 	$creditcards = CreditCardDigitGetQuery::create()->find();
 
@@ -38,8 +39,8 @@
 			}
 		}
 
-		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $termscode, 'countries' => $countries, 'creditcards' => $creditcards, 'recordlocker' => $recordlocker, 'm_trm' => $module_codetable]);
-		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'termscode' => $termscode]);
+		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $termscode, 'countries' => $countries, 'creditcards' => $creditcards, 'configso' => $configSO, 'recordlocker' => $recordlocker, 'm_trm' => $module_codetable]);
+		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'configso' => $configSO, 'termscode' => $termscode]);
 	} else {
 		$page->title = $page->headline = "Customer Terms Code";
 		$recordlocker->remove_lock($page->codetable);

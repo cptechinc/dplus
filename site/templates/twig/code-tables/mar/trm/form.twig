@@ -14,16 +14,17 @@
 			</div>
 			<div class="form-group">
 				<label for="type">Type</label>
-				{% include 'util/select.twig' with {'name': 'type', 'id': 'type', 'selectedvalue': code.type, 'options': {'STD': 'Standard', 'CC': 'Credit Card', 'CA': 'Cash', 'COD': 'COD', 'CDC': 'COD Cash'}} %}
+				{% include 'util/select.twig' with {'name': 'type', 'id': 'type', 'selectedvalue': (code.type ? code.type : 'STD'), 'options': {'STD': 'Standard', 'CC': 'Credit Card', 'CA': 'Cash', 'COD': 'COD', 'CDC': 'COD Cash'}} %}
 			</div>
 			<div class="form-group">
 				<label for="hold">Hold</label>
-				{% include 'util/select.twig' with {'name': 'hold', 'id': 'hold', 'selectedvalue': code.hold, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				{% include 'util/select.twig' with {'name': 'hold', 'id': 'hold', 'selectedvalue': (code.hold ? code.hold : 'N'), 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 			<div class="form-group">
 				<label for="exp_date">Expire Date</label>
+				{% set id = 'exp_date' %}
 				{% set name = 'exp_date' %}
-				{% set value = input.get.text('exp_date') %}
+				{% set value = code.exp_date|convertdate %}
 				{% include 'util/date-picker.twig' %}
 			</div>
 		</div>
@@ -36,16 +37,15 @@
 				<label for="credit_card">CC Prefix</label>
 				<!-- TODO: need to verify from ar_cust_cred -->
 				<select name="credit_card" class="form-control" id="credit_card" {{ code.type == 'CC' ? '' : 'disabled' }}>
-					<option value="{{ code.credit_card }}"></option>
+					<option value=""> --Choose-- </option>
 					{% for credit_card in creditcards %}
-						<option value="{{ credit_card.id }}" {{ code.credit_card == credit_card.id ? 'selected' : '' }}>{{ credit_card.id }} - {{ credit_card.name }}</option>
+						<option value="{{ credit_card.id }}" {{ code.cc_prefix == credit_card.id ? 'selected' : '' }}>{{ credit_card.name }}</option>
 					{% endfor %}
 				</select>
 			</div>
 			<div class="form-group">
 				<label for="freight">Freight Allowed?</label>
-				<!-- TODO: need correct code.freight -->
-				{% include 'util/select.twig' with {'name': 'freight', 'id': 'freight', 'selectedvalue': code.hold, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				{% include 'util/select.twig' with {'name': 'freight', 'id': 'freight', 'selectedvalue': (code.freight_allow), 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 			<div class="form-group">
 				<label for="country">Country</label>

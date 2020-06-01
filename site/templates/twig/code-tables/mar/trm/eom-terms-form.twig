@@ -49,13 +49,13 @@
                         <div class="list-group-item row{{ x }} eom_discount {{ x != 1 and code.thru_day(x) == 0 ? 'collapse' : '' }}" data-index"{{ x }}" row="{{ x }}">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <input type="text" name="eom_percent{{ x }}" id="eom_percent{{ x }}" maxlength="6" class="form-control eom_percent" value="{{ code.eom_percent(x) }}">
+                                    <input type="text" name="eom_percent{{ x }}" id="eom_percent{{ x }}" maxlength="6" class="form-control eom_percent" value="{{ code.eom_percent(x) ? code.eom_percent(x) : 0 }}">
                                 </div>
                                 <div class="col">
-                                    <input type="text" name="eom_day{{ x }}" id="eom_day{{ x }}" maxlength="2" class="form-control eom_day" value="{{ code.eom_day(x) }}" {{ code.eom_percent(x) == 0 ? 'readonly' : '' }}>
+                                    <input type="text" name="eom_day{{ x }}" id="eom_day{{ x }}" maxlength="2" class="form-control eom_day" value="{{ code.eom_day(x) ? code.eom_day(x) : 0 }}" {{ code.eom_percent(x) == 0 ? 'readonly' : '' }}>
                                 </div>
                                 <div class="col">
-                                    <input type="text" name="eom_disc_months{{ x }}" id="eom_disc_months{{ x }}" maxlength="2" class="form-control eom_disc_months" value="{{ code.eom_months(x) }}" {{ code.eom_percent(x) == 0 ? 'readonly' : '' }}>
+                                    <input type="text" name="eom_disc_months{{ x }}" id="eom_disc_months{{ x }}" maxlength="2" class="form-control eom_disc_months" value="{{ code.eom_disc_months(x) ? code.eom_disc_months(x) : 0 }}" {{ code.eom_percent(x) == 0 ? 'readonly' : '' }}>
                                 </div>
                             </div>
                         </div>
@@ -80,10 +80,10 @@
                         <div class="list-group-item row{{ x }} due {{ x != 1 and code.thru_day(x) == 0 ? 'collapse' : '' }}" data-index="{{ x }}">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <input type="text" name="eom_dueday{{ x }}" id="eom_dueday{{ x }}" maxlength="2" class="form-control eom_dueday" value="{{ code.eom_dueday(x) }}">
+                                    <input type="text" name="eom_dueday{{ x }}" id="eom_dueday{{ x }}" maxlength="2" class="form-control eom_dueday" value="{{ code.eom_dueday(x) ? code.eom_dueday(x) : 0 }}">
                                 </div>
                                 <div class="col">
-                                    <input type="text" name="eom_months{{ x }}" id="eom_months{{ x }}" maxlength="2" class="form-control eom_months" value="{{ code.eom_months(x) }}">
+                                    <input type="text" name="eom_months{{ x }}" id="eom_months{{ x }}" maxlength="2" class="form-control eom_months" value="{{ code.eom_months(x) ? code.eom_months(x) : 0 }}">
                                 </div>
                             </div>
                         </div>
