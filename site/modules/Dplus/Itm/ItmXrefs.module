@@ -168,10 +168,33 @@ class ItmXrefs extends WireData implements Module {
 	 * @param  string  $vendoritemID Vendor's Item ID
 	 * @return string
 	 */
-	public function get_vxm_itemURL($itemID, $vendorID, $vendoritemID) {
+	public function get_vxm_itemURL($itemID, $vendorID = '', $vendoritemID) {
 		$url = new Url($this->wire('pages')->get('pw_template=itm-xrefs-vxm')->url);
 		$url->query->set('itemID', $itemID);
-		$url->query->set('vendorID', $vendorID);
+
+		if ($vendorID) {
+			$url->query->set('vendorID', $vendorID);
+		}
+
+		$url->query->set('vendoritemID', $vendoritemID);
+		return $url->getUrl();
+	}
+	/**
+	 * Return URL to Delete VXM Item
+	 * @param  string  $itemID       Item ID
+	 * @param  string  $vendorID     Vendor ID
+	 * @param  string  $vendoritemID Vendor's Item ID
+	 * @return string
+	 */
+	public function get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=itm-xrefs-vxm')->url);
+		$url->query->set('action', 'remove-vxm-item');
+		$url->query->set('itemID', $itemID);
+
+		if ($vendorID) {
+			$url->query->set('vendorID', $vendorID);
+		}
+
 		$url->query->set('vendoritemID', $vendoritemID);
 		return $url->getUrl();
 	}
@@ -254,9 +277,18 @@ class ItmXrefs extends WireData implements Module {
 			$event->return = $this->get_vxm_itemURL($itemID, $vendorID, $vendoritemID);
 		});
 
-		$this->addHookProperty('Page(pw_template=itm-xrefs-vxm)::itemID', function($event) {
+		$this->addHook("Page(pw_template=$templates)::vxm_item_newURL", function($event) {
 			$p = $event->object;
-			$event->return = $p->fullURL->query->get('itemID');
+			$itemID = $p->itemID;
+			$event->return = $this->get_vxm_itemURL($itemID, '','new');
+		});
+
+		$this->addHook("Page(pw_template=$templates)::vxm_item_deleteURL", function($event) {
+			$p = $event->object;
+			$vendorID = $event->arguments(0);
+			$vendoritemID = $event->arguments(1);
+			$itemID = $p->itemID;
+			$event->return = $this->get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID);
 		});
 	}
 }
