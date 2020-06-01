@@ -12,7 +12,7 @@
 			</li>
 			{% if (page.has('vendoritemID')) %}
 				<li class="breadcrumb-item">
-					<a href="{{ page.vxm_vendorURL(vendor.id) }}">Vendor: {{ vendor.name }}</a>
+					<a href="{{ page.vxm_vendorURL(page.vendorID) }}">Vendor: {{ vendor.name }}</a>
 				</li>
 				<li class="breadcrumb-item active" aria-current="page">Vend Item: {{ page.vendoritemID }}</li>
 			{% else %}

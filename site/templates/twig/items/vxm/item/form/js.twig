@@ -79,7 +79,7 @@ $(function() {
 					form_vxm.find('button[type=submit]').click();
 				} else if (result.dismiss === Swal.DismissReason.cancel) {
 					// Send HTTP GET Request to remove Record Lock
-					$.get('{{ page.itm_xrefs_vxmURL(item.ouritemid) }}', function() {
+					$.get('{{ page.vxm_itemURL(item.ouritemid) }}', function() {
 						window.location.href = href;
 					});
 				}

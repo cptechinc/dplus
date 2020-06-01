@@ -53,7 +53,7 @@
 					$item = $vxm->get_vxm_item_new();
 					$item->setVendorid($vendorID);
 					$item->setOuritemid($itemID);
-					$page->headline = "ITEM: VXM Creating Item";
+					$page->headline = "ITM: VXM Creating Item";
 
 					if ($vendoritemID != 'new') {
 						$item->setVendoritemid($vendoritemID);
@@ -71,7 +71,7 @@
 				$filter_vxm->apply_sortby($page);
 				$page->headline = "ITEM: VXM Item $itemID";
 				$items = $filter_vxm->query->paginate($input->pageNum, 10);
-				
+
 				$page->body .= $config->twig->render('items/vxm/item-list-header.twig', ['page' => $page, 'heading' => $items->getNbResults() ." VXM Items for $itemID"]);
 				$page->body .= $config->twig->render('items/vxm/item-list.twig', ['page' => $page, 'items' => $items, 'vxm' => $vxm, 'recordlocker' => $recordlocker]);
 				$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
