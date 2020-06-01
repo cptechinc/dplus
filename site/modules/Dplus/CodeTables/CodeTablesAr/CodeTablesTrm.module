@@ -107,9 +107,9 @@ class CodeTablesTrm extends WireData implements Module {
 					$method = $input->$rm->text('method');
 					$type = $input->$rm->text('type');
 					$hold = $input->$rm->text('hold');
-					$exp_date = $input->$rm->text('exp_date');
-					// $credit_card = $input->$rm->text('credit_card'); TODO: need correct code.credit_card
-					// $freight = $input->$rm->text('freight'); TODO: need correct code.freight
+					$exp_date = date('Ymd', strtotime($input->$rm->text('exp_date')));
+					$credit_card = $input->$rm->text('credit_card');
+					$freight = $input->$rm->text('freight');
 					$country = $input->$rm->text('country');
 					// $na = $input->$rm->text('na'); TODO: Alumacraft has N/A field
 					$order_percent1 = $input->$rm->text('order_percent1');
@@ -176,21 +176,21 @@ class CodeTablesTrm extends WireData implements Module {
 					$thru_day1 = $input->$rm->text('thru_day1');
 					$eom_percent1 = $input->$rm->text('eom_percent1');
 					$eom_day1 = $input->$rm->text('eom_day1');
-					$eom_months1 = $input->$rm->text('eom_disc_months');
+					$eom_disc_months1 = $input->$rm->text('eom_disc_months');
 					$eom_dueday1 = $input->$rm->text('eom_dueday1');
 					$eom_months1 = $input->$rm->text('eom_months1');
 					$from_day2 = $input->$rm->text('from_day2');
 					$thru_day2 = $input->$rm->text('thru_day2');
 					$eom_percent2 = $input->$rm->text('eom_percent2');
 					$eom_day2 = $input->$rm->text('eom_day2');
-					$eom_months2 = $input->$rm->text('eom_disc_months2');
+					$eom_disc_months2 = $input->$rm->text('eom_disc_months2');
 					$eom_dueday2 = $input->$rm->text('eom_dueday2');
 					$eom_months2 = $input->$rm->text('eom_months2');
 					$from_day3 = $input->$rm->text('from_day3');
 					$thru_day3 = $input->$rm->text('thru_day3');
 					$eom_percent3 = $input->$rm->text('eom_percent3');
 					$eom_day3 = $input->$rm->text('eom_day3');
-					$eom_months3 = $input->$rm->text('eom_disc_months3');
+					$eom_disc_months3 = $input->$rm->text('eom_disc_months3');
 					$eom_dueday3 = $input->$rm->text('eom_dueday3');
 					$eom_months3 = $input->$rm->text('eom_months3');
 
@@ -199,8 +199,8 @@ class CodeTablesTrm extends WireData implements Module {
 					$record->setType($type);
 					$record->setHold($hold);
 					$record->setExp_date($exp_date);
-					// $record->setCredit_card($credit_card);
-					// $record->setFreight($freight);
+					$record->setCc_prefix($credit_card);
+					$record->setFreight_allow($freight);
 					$record->setCountry($country);
 					// $record->setNa($na);
 					$record->setOrder_percent1($order_percent1);
