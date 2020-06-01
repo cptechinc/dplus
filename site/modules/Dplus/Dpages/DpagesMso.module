@@ -70,7 +70,7 @@ class DpagesMso extends Dpages implements Module {
 			'template'       => 'dplus-menu',
 			'name'           => 'mso',
 			'title'          => 'Sales Orders',
-			'summary'        => '',
+			'summary'        => 'Sales Order Menu',
 			'parent'         => '/',
 			'dplus_function' => 'mso'
 		),
@@ -87,7 +87,7 @@ class DpagesMso extends Dpages implements Module {
 			'pw_template'    => 'so-code-table',
 			'name'           => 'lsm',
 			'title'          => 'Lost Sales Reason Code',
-			'summary'        => 'View SO Lost Sales Reason Code',
+			'summary'        => 'View / Edit Lost Sales Reason Code',
 			'parent'         => '/mso/somain/',
 			'dplus_function' => 'lsm'
 		),
@@ -96,7 +96,7 @@ class DpagesMso extends Dpages implements Module {
 			'pw_template'    => 'so-code-table',
 			'name'           => 'mfcm',
 			'title'          => 'Motor Freight Code',
-			'summary'        => 'View SO Motor Freight Code',
+			'summary'        => 'View / Edit Motor Freight Code',
 			'parent'         => '/mso/somain/',
 			'dplus_function' => 'mfcm'
 		),
@@ -105,7 +105,7 @@ class DpagesMso extends Dpages implements Module {
 			'pw_template'    => 'so-code-table',
 			'name'           => 'rgarc',
 			'title'          => 'RGA/Return Reason Code',
-			'summary'        => 'View RGA/Return Reason Code',
+			'summary'        => 'View / Edit RGA/Return Reason Code',
 			'parent'         => '/mso/somain/',
 			'dplus_function' => 'rgarc'
 		),
@@ -113,8 +113,8 @@ class DpagesMso extends Dpages implements Module {
 			'template'       => 'dplus-function',
 			'pw_template'    => 'so-code-table',
 			'name'           => 'rgasc',
-			'title'          => 'RGA/Return Ship via Code',
-			'summary'        => 'View RGA/Return Ship via Code',
+			'title'          => 'RGA/Return Ship Via Code',
+			'summary'        => 'View / Edit RGA/Return Ship Via Code',
 			'parent'         => '/mso/somain/',
 			'dplus_function' => 'rgasc'
 		),
@@ -123,7 +123,7 @@ class DpagesMso extends Dpages implements Module {
 			'pw_template'    => 'so-code-table',
 			'name'           => 'soptm',
 			'title'          => 'Sales Order Optional Code',
-			'summary'        => 'View Sales Order Optional Code',
+			'summary'        => 'View / Edit Sales Order Optional Code',
 			'parent'         => '/mso/somain/',
 			'dplus_function' => 'soptm'
 		),
@@ -393,13 +393,7 @@ class DpagesMso extends Dpages implements Module {
 	 */
 	public function is_user_editingorder(User $user, $order) {
 		if (gettype($order) != 'object') {
-			$lookup_order = $this->wire('modules')->get('LookupSalesOrder');
-
-			if ($lookup_order->lookup_salesorder($order)) {
-				$order = SalesOrderQuery::create()->findOneByOrdernumber($order);
-			} else {
-				$order = SalesHistoryQuery::create()->findOneByOrdernumber($order);
-			}
+			$order = SalesOrderQuery::create()->findOneByOrdernumber($order);
 		}
 		return $order->heldby == $user->loginid;
 	}
@@ -417,7 +411,12 @@ class DpagesMso extends Dpages implements Module {
 
 	public function get_codetable_listURL($table, $code = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=so-code-table, name=$table")->url);
-		$url->query->set('focus', $code);
+		$code = str_replace(' ', '-', $code);
+		if ($table == 'soptm') {
+			$url->query->set('sysop', $code);
+		} else {
+			$url->query->set('socus', $code);
+		}
 		return $url->getUrl();
 	}
 
