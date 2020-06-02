@@ -47,15 +47,18 @@ $(function () {
 
 	var freight_amt = {{ configso.get_freight_allowed_amt() }};
 
-	if (freight_amt == 0) {
+	if (freight_amt == 0 && $('#method').val() == 'E') {
 		$('#freight').prop("disabled", true);
 		$('#freight').val('');
+	} else if (freight_amt == 0 && $('#method').val() == 'S') {
+		$('#freight').prop("disabled", true);
+		$('#freight').val('N');
 	} else if ($('#method').val() == 'S' && $('#order_percent1').val() == 100) {
 		$('#freight').prop("disabled", false);
 		$('#freight').val('N');
 	}
 
-
+	// TODO finish Exp Date
 
 	$("#code-edit-form #exp_date").change(function() {
 		console.log(Date.parse($('#exp_date').val()));
@@ -70,7 +73,7 @@ $(function () {
 			$('#eom-terms-form').hide();
 			if ($('#order_percent1').val() == 100 && {{ configso.get_freight_allowed_amt() }} == 0) {
 				$('#freight').prop("disabled", true);
-				$('#freight').val('');
+				$('#freight').val('N');
 			} else {
 				$('#freight').prop("disabled", false);
 				$('#freight').val('N');
@@ -315,6 +318,10 @@ $(function () {
 
 
 // ------------------ Start EOM Method -----------------
+
+	if ($('#thru_day1').val() == 0) {
+		$('#thru_day1').val(99);
+	}
 
 	$("body").on('change', '.thru_day', function(e) {
 		var input = $(this);
