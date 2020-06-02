@@ -21,7 +21,7 @@
                                     <input type="text" name="from_day{{ x }}" id="from_day{{ x }}" maxlength="2" class="form-control from_day" value="{{ (x == 1) ? 1 : code.from_day(x) }}" readonly>
                                 </div>
                                 <div class="col">
-                                    <input type="text" name="thru_day{{ x }}" id="thru_day{{ x }}" maxlength="2" class="form-control thru_day" value="{{ code.thru_day(x) }}">
+                                    <input tabindex="{{x}}0" type="text" name="thru_day{{ x }}" id="thru_day{{ x }}" maxlength="2" class="form-control thru_day" value="{{ code.thru_day(x) }}">
                                 </div>
                             </div>
                         </div>
@@ -49,13 +49,13 @@
                         <div class="list-group-item row{{ x }} eom_discount {{ x != 1 and code.thru_day(x) == 0 ? 'collapse' : '' }}" data-index"{{ x }}" row="{{ x }}">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <input type="text" name="eom_percent{{ x }}" id="eom_percent{{ x }}" maxlength="6" class="form-control eom_percent" value="{{ code.eom_percent(x) ? code.eom_percent(x) : 0 }}">
+                                    <input tabindex="{{x}}1" type="text" name="eom_percent{{ x }}" id="eom_percent{{ x }}" maxlength="6" class="form-control eom_percent" value="{{ code.eom_percent(x) ? code.eom_percent(x) : 0 }}">
                                 </div>
                                 <div class="col">
-                                    <input type="text" name="eom_day{{ x }}" id="eom_day{{ x }}" maxlength="2" class="form-control eom_day" value="{{ code.eom_day(x) ? code.eom_day(x) : 0 }}" {{ code.eom_percent(x) == 0 ? 'readonly' : '' }}>
+                                    <input tabindex="{{x}}2" type="text" name="eom_day{{ x }}" id="eom_day{{ x }}" maxlength="2" class="form-control eom_day" value="{{ code.eom_day(x) ? code.eom_day(x) : 0 }}" {{ code.eom_percent(x) == 0 ? 'readonly' : '' }}>
                                 </div>
                                 <div class="col">
-                                    <input type="text" name="eom_disc_months{{ x }}" id="eom_disc_months{{ x }}" maxlength="2" class="form-control eom_disc_months" value="{{ code.eom_disc_months(x) ? code.eom_disc_months(x) : 0 }}" {{ code.eom_percent(x) == 0 ? 'readonly' : '' }}>
+                                    <input tabindex="{{x}}3" type="text" name="eom_disc_months{{ x }}" id="eom_disc_months{{ x }}" maxlength="2" class="form-control eom_disc_months" value="{{ code.eom_disc_months(x) ? code.eom_disc_months(x) : 0 }}" {{ code.eom_percent(x) == 0 ? 'readonly' : '' }}>
                                 </div>
                             </div>
                         </div>
@@ -80,10 +80,10 @@
                         <div class="list-group-item row{{ x }} due {{ x != 1 and code.thru_day(x) == 0 ? 'collapse' : '' }}" data-index="{{ x }}">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <input type="text" name="eom_dueday{{ x }}" id="eom_dueday{{ x }}" maxlength="2" class="form-control eom_dueday" value="{{ code.eom_dueday(x) ? code.eom_dueday(x) : 0 }}">
+                                    <input tabindex="{{x}}4" type="text" name="eom_dueday{{ x }}" id="eom_dueday{{ x }}" maxlength="2" class="form-control eom_dueday" value="{{ code.eom_dueday(x) ? code.eom_dueday(x) : 0 }}">
                                 </div>
                                 <div class="col">
-                                    <input type="text" name="eom_months{{ x }}" id="eom_months{{ x }}" maxlength="2" class="form-control eom_months" value="{{ code.eom_months(x) ? code.eom_months(x) : 0 }}">
+                                    <input tabindex="{{x}}5" type="text" name="eom_months{{ x }}" id="eom_months{{ x }}" maxlength="2" class="form-control eom_months" value="{{ code.eom_months(x) ? code.eom_months(x) : 0 }}">
                                 </div>
                             </div>
                         </div>
