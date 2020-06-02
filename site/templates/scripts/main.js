@@ -81,10 +81,10 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var uri = new URI(button.attr('href'));
-		swal({
+		swal2.fire({
 			title: 'Select Action Type',
 			input: 'select',
-			type: 'question',
+			icon: 'question',
 			confirmButtonClass: 'btn btn-sm btn-success',
 			cancelButtonClass: 'btn btn-sm btn-danger',
 			inputClass: 'form-control',
@@ -105,10 +105,10 @@ $(function() {
 				});
 
 			}
-		}).then(function (result) {
-			uri.addQuery('type', result);
+		}).then((result) => {
+			uri.addQuery('type', result.value);
 			window.location.href = uri.toString();
-		}).catch(swal.noop);
+		});
 	});
 
 	$.notifyDefaults({
@@ -146,20 +146,20 @@ $(function() {
 		e.preventDefault();
 		var link = $(this);
 
-		swal({
+		swal2.fire({
 			title: "Confirm Deletion",
 			text: "Are you sure you want to delete?",
-			type: 'warning',
+			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonClass: 'btn btn-success',
 			cancelButtonClass: 'btn btn-danger',
 			buttonsStyling: false,
 			confirmButtonText: 'Yes'
-		}).then(function (result) {
-			if (result) {
+		}).then((result) => {
+			if (result.value) {
 				window.location.href = link.attr('href');
 			}
-		}).catch(swal.noop);
+		});
 	});
 
 	$('button.delete_button').click(function(e){
@@ -168,21 +168,21 @@ $(function() {
 		var action = $('.modal-form').attr("action");
 		console.log(action);
 
-		swal({
+		swal2.fire({
 			title: "Confirm Deletion",
 			text: "Are you sure you want to delete?",
-			type: 'warning',
+			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonClass: 'btn btn-success',
 			cancelButtonClass: 'btn btn-danger',
 			buttonsStyling: false,
 			confirmButtonText: 'Yes'
-		}).then(function (confirm) {
-			if (confirm) {
+		}).then((confirm) => {
+			if (confirm.value) {
 				button.closest('form').submit();
 				window.location.href = action;
 			}
-		}).catch(swal.noop);
+		});
 	});
 });
 
@@ -287,20 +287,20 @@ $('a.delete_button').click(function(e){
 	e.preventDefault();
 	var link = $(this);
 
-	swal({
+	swal2.fire({
 		title: "Confirm Deletion",
 		text: "Are you sure you want to delete?",
-		type: 'warning',
+		icon: 'warning',
 		showCancelButton: true,
 		confirmButtonClass: 'btn btn-success',
 		cancelButtonClass: 'btn btn-danger',
 		buttonsStyling: false,
 		confirmButtonText: 'Yes'
-	}).then(function (result) {
-		if (result) {
+	}).then((result) => {
+		if (result.value) {
 			window.location.href = link.attr('href');
 		}
-	}).catch(swal.noop);
+	});
 });
 
 /*==============================================================
