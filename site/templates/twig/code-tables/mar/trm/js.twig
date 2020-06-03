@@ -58,12 +58,6 @@ $(function () {
 		$('#freight').val('N');
 	}
 
-	// TODO finish Exp Date
-
-	$("#code-edit-form #exp_date").change(function() {
-		console.log(Date.parse($('#exp_date').val()));
-	});
-
 	$("#code-edit-form #method").change(function() {
 		if ($('#method').val() == '') {
 			$('#eom-terms-form').fadeOut();
@@ -88,15 +82,66 @@ $(function () {
 
 	$("#code-edit-form #type").change(function() {
 		if ($('#type').val() == 'CC') {
+			if ($('#method').val() == 'E') {
+				$('#type').val('STD');
+				swal2.fire({
+					title: 'Invalid Type!',
+					text: 'Credit Card not allowed with EOM Method',
+					icon: 'warning',
+				});
+			}
 			$('#credit_card').prop("disabled", false);
 		} else {
 			$('#credit_card').prop("disabled", true);
 		}
 	});
 
-	$("#code-edit-form #exp_date").change(function() {
-		console.log('test');
+	$("#code-edit-form #exp_date").focusout(function() {
+		var today = new Date();
+		var tomorrow = new Date(today);
+		tomorrow.setDate(tomorrow.getDate() + 1);
+
+		// Today's Date
+		var	todaymonth = '' + (today.getMonth() + 1);
+		var	todayday = '' + today.getDate();
+		var	todayyear = today.getFullYear();
+
+		if (todaymonth.length < 2) {
+			todaymonth = '0' + todaymonth;
+		}
+
+		if (todayday.length < 2) {
+			todayday = '0' + todayday;
+		}
+
+		today = Date.parse([todayyear, todaymonth, todayday].join('-'));
+
+		// Input date
+		var expdate = new Date($('#code-edit-form #exp_date').val()),
+			month = '' + (expdate.getMonth() + 1),
+			day = '' + expdate.getDate(),
+			year = expdate.getFullYear();
+
+		if (month.length < 2) {
+			month = '0' + month;
+		}
+		if (day.length < 2) {
+			day = '0' + day;
+		}
+
+		expdate = Date.parse([year, month, day].join('-'));
+
+		if ((expdate < today) || (expdate == today) && $('#code-edit-form #exp_date').val() != '') {
+			$('#code-edit-form #exp_date').val('');
+			swal2.fire({
+				title: 'Invalid Expiration Date!',
+				text: 'Must be empty or after today\'s date',
+				icon: 'warning',
+			});
+		}
+
 	});
+
 
 
 // ------------------ Standard Method -----------------
@@ -176,10 +221,10 @@ $(function () {
 
 			if (input.val() == 0) {
 				$('.row'+index).find('.day, .days, .date').val('');
-				$('.row'+index).find('.day, .days, .disc_date').prop('readonly', true);
+				$('.row'+index).find('.day, .days, .disc_date').prop('disabled', true);
 			} else {
 				$('.discount_percent').removeClass('is-invalid');
-				$('.row'+index).find('.day, .days, .disc_date').prop('readonly', false);
+				$('.row'+index).find('.day, .days, .disc_date').prop('disabled', false);
 			}
 		}
 	});
@@ -213,9 +258,9 @@ $(function () {
 			});
 		} else if (input.val() == 0) {
 			$('.row'+index).find($('.due_months')).val(0);
-			$('.row'+index).find($('.due_months')).prop('readonly', true);
+			$('.row'+index).find($('.due_months')).prop('disabled', true);
 		} else {
-			$('.row'+index).find($('.due_months')).prop('readonly', false);
+			$('.row'+index).find($('.due_months')).prop('disabled', false);
 		}
 	});
 
@@ -226,9 +271,9 @@ $(function () {
 
 		if (input.val() == 0) {
 			$('.row'+index).find($('.due_year')).val(0);
-			$('.row'+index).find($('.due_year')).prop('readonly', true);
+			$('.row'+index).find($('.due_year')).prop('disabled', true);
 		} else {
-			$('.row'+index).find($('.due_year')).prop('readonly', false);
+			$('.row'+index).find($('.due_year')).prop('disabled', false);
 		}
 	});
 
@@ -369,12 +414,12 @@ $(function () {
 
 			if (input.val() == 0) {
 				$('.row'+index).find('.eom_day, .eom_disc_months').val(0);
-				$('.row'+index).find('.eom_day, .eom_disc_months').prop('readonly', true);
+				$('.row'+index).find('.eom_day, .eom_disc_months').prop('disabled', true);
 			} else {
 				if ($('.row'+index).find('.eom_day').val() == 0 && $('.row'+index).find('.eom_disc_months').val() == 0) {
 					$('.row'+index).find('.eom_day').val(1);
 					$('.row'+index).find('.eom_disc_months').val(0);
-					$('.row'+index).find('.eom_day, .eom_disc_months').prop('readonly', false);
+					$('.row'+index).find('.eom_day, .eom_disc_months').prop('disabled', false);
 				}
 			}
 		}
