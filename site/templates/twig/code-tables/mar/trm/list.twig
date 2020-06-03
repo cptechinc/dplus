@@ -54,7 +54,7 @@
 					{{ code.country }}
 				</div>
 				<div class="col-1">
-					{{ code.exp_date|convertdate }}
+					{{ code.exp_date ? code.exp_date|convertdate : '' }}
 				</div>
 				<div class="col-3 text-center">
 					{% if recordlocker.function_locked(page.name, code.code) == false or recordlocker.function_locked_by_user(page.name, code.code) %}

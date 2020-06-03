@@ -107,7 +107,7 @@ class CodeTablesTrm extends WireData implements Module {
 					$method = $input->$rm->text('method');
 					$type = $input->$rm->text('type');
 					$hold = $input->$rm->text('hold');
-					$exp_date = date('Ymd', strtotime($input->$rm->text('exp_date')));
+					$exp_date = $input->$rm->text('exp_date') ? date('Ymd', strtotime($input->$rm->text('exp_date'))) : $exp_date = '';
 					$credit_card = $input->$rm->text('credit_card');
 					$freight = $input->$rm->text('freight');
 					$country = $input->$rm->text('country');
