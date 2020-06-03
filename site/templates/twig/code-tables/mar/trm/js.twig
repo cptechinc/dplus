@@ -220,7 +220,7 @@ $(function () {
 			$('.discount_percent'+index).removeClass('is-invalid');
 
 			if (input.val() == 0) {
-				$('.row'+index).find('.day, .days, .date').val('');
+				$('.row'+index).find('.day, .days, .disc_date').val(0);
 				$('.row'+index).find('.day, .days, .disc_date').prop('disabled', true);
 			} else {
 				$('.discount_percent').removeClass('is-invalid');
@@ -282,14 +282,12 @@ $(function () {
 		var row = input.closest('.discount');
 		var index = row.attr("data-index");
 
-		console.log(index);
-
 		if (input.val() != 0) {
 			$('.row'+index).find('.disc_group').removeClass('is-invalid');
-			$('input.disc_group').not(this).val(0);
+			$('.row'+(index)).find($('input.disc_group')).not(this).val(0);
 		}
 
-		if (input.val() == 0 && $('input.disc_group').not(this).val() == 0) {
+		if (input.val() == 0 && $('.row'+(index)).find($('input.disc_group')).not(this).val() == 0) {
 			input.val(1);
 			swal2.fire({
 				title: 'Warning!',
@@ -305,10 +303,10 @@ $(function () {
 		var index = row.attr("data-index");
 
 		if (input.val() != 0) {
-			$('input.due_group').not(this).val(0);
+			$('.row'+(index)).find($('input.due_group')).not(this).val(0);
 		}
 
-		if (input.val() == 0 && $('input.due_group').not(this).val() == 0) {
+		if (input.val() == 0 && $('.row'+(index)).find($('input.due_group')).not(this).val() == 0) {
 			input.val(1);
 			swal2.fire({
 				title: 'Warning!',
@@ -335,8 +333,6 @@ $(function () {
 
 	$("body").on('change', '.due_year', function(e) {
 		var input = $(this);
-		var row = input.closest('.due');
-		var index = row.attr("data-index");
 
 		if (input.val() < 0 || input.val() > 9) {
 			input.val(0);
