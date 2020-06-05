@@ -1,0 +1,84 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	cxm                    module XrefCxm
+	recordlocker           module RecordLockerUser
+	item                   ItemXrefCustomer
+	item.item              ItemMasterItem
+#}
+<div class="col-sm-6">
+	<div class="row form-group">
+		<div class="col-sm-6">
+			<label for="custID">Customer ID</label>
+		</div>
+		<div class="col-sm-6">
+			<div class="input-group input-group-sm">
+				<span class="input-group-prepend">
+					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Search for / Choose Customer" aria-label="Search for / Choose Customer" data-search="customer">
+						<span class="fa fa-search" aria-hidden="true"></span> <span class="sr-only">Search for / Choose Customer</span>
+					</button>
+				</span>
+				<input type="text" name="custID" id="custID" class="form-control" value="{{ item.custID }}">
+			</div>
+		</div>
+	</div>
+	<div class="row form-group">
+		<div class="col-sm-6">
+			<label for="custitemID">Customer Item ID</label>
+		</div>
+		<div class="col-sm-6">
+			<input type="text" name="custitemID" class="form-control form-control-sm" id="custitemID" value="{{ item.custitemID }}" data-custitemid="{{ item.custitemID }}">
+		</div>
+	</div>
+	<div class="row form-group">
+		<div class="col-sm-6">
+			<label for="description">Description</label>
+		</div>
+		<div class="col-sm-6">
+			<input type="text" name="description" class="form-control form-control-sm" id="description" value="{{ item.description }}">
+		</div>
+	</div>
+	<div class="row form-group">
+		<div class="col-sm-6">
+
+		</div>
+		<div class="col-sm-6">
+			<input type="text" name="description2" class="form-control form-control-sm" id="description2" value="{{ item.description2 }}">
+		</div>
+	</div>
+	<div class="row form-group">
+		<div class="col-sm-6">
+			<label for="itemID">Our Item ID</label>
+		</div>
+		<div class="col-sm-6 item-col">
+			<div class="input-group input-group-sm">
+				<span class="input-group-prepend">
+					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Search for / Choose Item" aria-label="Search for / Choose Item" data-search="item">
+						<span class="fa fa-search" aria-hidden="true"></span> <span class="sr-only">Search for / Choose Customer</span>
+					</button>
+				</span>
+				<input type="text" class="form-control" name="itemID" id="itemID" value="{{ item.itemid }}">
+			</div>
+			<small class="form-text text-muted description">{{ item.item.description }}</small>
+		</div>
+	</div>
+</div>
+<div class="col-sm-6">
+	<div class="row form-group">
+		<div class="col-sm-6">
+			<label>Notes</label>
+		</div>
+		<div class="col-sm-6">
+			No {# TODO: notes #}
+		</div>
+	</div>
+	<div class="row form-group">
+		<div class="col-sm-6">
+			<label for="revision">Revision</label>
+		</div>
+		<div class="col-sm-6">
+			<input type="text" class="form-control form-control-sm" name="revision" id="revision" value="{{ item.revision }}">
+		</div>
+	</div>
+</div>
