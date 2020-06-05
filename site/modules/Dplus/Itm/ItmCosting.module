@@ -38,11 +38,24 @@ class ItmCosting extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itemID = $values->text('itemID');
+		$recordlocker = $this('modules')->get('RecordLockerUser');
 
 		if ($values->action) {
 			if ($itm->item_exists($itemID)) {
-				if ($values->text('action') == 'update-itm-costing') {
-					$response = $this->update_itm_input($input);
+				/**
+				 * Create lock for ITM code if not already locked.
+				 */
+				if (!$recordlocker->function_locked('itm', $itemID)) {
+					$recordlocker->create_lock('itm', $itemID);
+				}
+				
+				if ($recordlocker->function_locked_by_user('itm', $itemID)) {
+					if ($values->text('action') == 'update-itm-costing') {
+						$response = $this->update_itm_input($input);
+					}
+				} else {
+					$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $recordlocker->get_locked_user('itm', $itemID);
+					$response = $this->create_error_response($itemID, $message, ItmResponse::CRUD_UPDATE);
 				}
 			} else {
 				$response = $this->create_error_response($itemID, "Item $itemID does not exist");

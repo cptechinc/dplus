@@ -14,10 +14,11 @@ use ConfigSalesOrderQuery, ConfigSalesOrder;
  * Module that handles the editing of the Itm Warehouse Items
  */
 class ItmWarehouse extends WireData implements Module {
-	const MODEL              = 'WarehouseInventory';
-	const MODEL_KEY          = 'code';
-	const DESCRIPTION        = 'ITM Item Warehouse';
-	const DESCRIPTION_RECORD = 'ITM Item {0} Warehouse {1}';
+	const MODEL                 = 'WarehouseInventory';
+	const MODEL_KEY             = 'code';
+	const DESCRIPTION           = 'ITM Item Warehouse';
+	const DESCRIPTION_RECORD    = 'ITM Item {0} Warehouse {1}';
+	const LOCKRECORD_FUNCTIONID = 'itm-whse';
 
 	const REGEX_CODEABC = '/^[A-J]+$/i';
 
@@ -154,27 +155,41 @@ class ItmWarehouse extends WireData implements Module {
 		if ($validator_item->lookup_itm($itemID) && $validator_warehouses->lookup_warehouse($whseID)) {
 			$record = $this->get_create_itemwarehouse($input);
 
-			if ($values->text('action') == 'update-itm-whse') {
-				$warehouse = $this->get_warehouse($record->warehouseid);
-
-				if ($warehouse->validate_bin($values->text('bin_default')) || $values->text('bin_default') == $this->configs->inventory->default_bin) {
-					$record->setBin_default($values->text('bin_default'));
-					$record->setCyclecode(strtoupper($values->text('cyclecode')));
-					$record->setOrderpoint($values->text('orderpoint'));
-					$record->setOrderqty($values->text('orderqty'));
-					$record->setMaxqty($values->text('maxqty'));
-					$record->setMaxorderqty($values->text('maxorderqty'));
-					$record->setFreightin($values->text('freightin'));
-					$this->set_validated_fields($record, $input);
-					$response = $this->save_and_process_response($record);
-				} else {
-					$message = $values->text('bin_default') . " is not a valid bin, can't save Warehouse Item";
-					$response = $this->create_error_response($whseID, $itemID, $message);
-				}
-			} elseif ($values->text('action') == 'remove-itm-whse') {
-				$record->delete();
-				$response = $this->save_and_process_response($record);
+			/**
+			 * Create lock for ITM code if not already locked.
+			 */
+			if (!$recordlocker->function_locked('itm-whse', $this->get_warehouseitem_lockkey($record))) {
+				$recordlocker->create_lock('itm-whse', $this->get_warehouseitem_lockkey($record));
 			}
+
+			if ($recordlocker->function_locked_by_user('itm-whse', $this->get_warehouseitem_lockkey($record))) {
+				if ($values->text('action') == 'update-itm-whse') {
+					$warehouse = $this->get_warehouse($record->warehouseid);
+
+					if ($warehouse->validate_bin($values->text('bin_default')) || $values->text('bin_default') == $this->configs->inventory->default_bin) {
+						$record->setBin_default($values->text('bin_default'));
+						$record->setCyclecode(strtoupper($values->text('cyclecode')));
+						$record->setOrderpoint($values->text('orderpoint'));
+						$record->setOrderqty($values->text('orderqty'));
+						$record->setMaxqty($values->text('maxqty'));
+						$record->setMaxorderqty($values->text('maxorderqty'));
+						$record->setFreightin($values->text('freightin'));
+						$this->set_validated_fields($record, $input);
+						$response = $this->save_and_process_response($record);
+					} else {
+						$message = $values->text('bin_default') . " is not a valid bin, can't save Warehouse Item";
+						$response = $this->create_error_response($whseID, $itemID, $message);
+					}
+				} elseif ($values->text('action') == 'remove-itm-whse') {
+					$record->delete();
+					$response = $this->save_and_process_response($record);
+				}
+			} else {
+				$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $recordlocker->get_locked_user('itm', $itemID);
+				$response = $this->create_error_response($itemID, $message, ItmResponse::CRUD_UPDATE);
+			}
+
+
 		} elseif (!$validator_item->lookup_itm($itemID)) {
 			$message = "Item $itemID does not exist";
 			$response = $this->create_error_response($record->warehouseid, $warehouse->itemid, $message);
