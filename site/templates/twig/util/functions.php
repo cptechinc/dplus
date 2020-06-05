@@ -41,6 +41,7 @@
 
 	$filter = new Twig_Filter('attrJS', function ($string, $jsprepend = true) {
 		$string = str_replace(' ', '-', $string);
+		$string = str_replace('%', 'percent', $string);
 		return $jsprepend ? "js-$string" : $string;
 	});
 	$config->twig->addFilter($filter);
