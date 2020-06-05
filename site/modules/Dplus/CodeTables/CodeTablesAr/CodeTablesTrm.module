@@ -21,6 +21,18 @@ class CodeTablesTrm extends WireData implements Module {
 	}
 
 	/**
+	 * Returns the associated ModelQuery class for table code
+	 * @param  string $table Table Code
+	 * @return mixed
+	 */
+	public function get_query() {
+		return CustomerTermsCodeQuery::create();
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
 	 * Return the Code records from Database
 	 * @return CustomerTermsCode[]|ObjectCollection
 	 */
@@ -40,6 +52,21 @@ class CodeTablesTrm extends WireData implements Module {
 	}
 
 	/**
+	 * Gets / Creates Code
+	 * @param  string $code Customer Terms Code Code
+	 * @return CustomerTermsCode
+	 */
+	public function get_create_code($code) {
+		if ($this->code_exists($code)) {
+			$record = $this->get_code($code);
+		} else {
+			$record = CustomerTermsCode::new();
+			$record->setCode($code);
+		}
+		return $record;
+	}
+
+	/**
 	 * Return if the Code Exists
 	 * @param  string $code Customer Terms Code
 	 * @return bool
@@ -54,18 +81,12 @@ class CodeTablesTrm extends WireData implements Module {
 	 * @return CustomerTermsCode
 	 */
 	public function get_new_code() {
-		return new CustomerTermsCode();
+		return CustomerTermsCode::new();
 	}
 
-	/**
-	 * Returns the associated ModelQuery class for table code
-	 * @param  string $table Table Code
-	 * @return mixed
-	 */
-	public function get_query() {
-		return CustomerTermsCodeQuery::create();
-	}
-
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
 	/**
 	 * Takes Input, validates it's for one of the code tables
 	 * Processes it, and if updated sends request to dplus
@@ -75,17 +96,15 @@ class CodeTablesTrm extends WireData implements Module {
 	 */
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
 		$table = $input->$rm->text('table');
 		$code  = $input->$rm->text('code');
 
-		$q = $this->get_query();
-		$q->filterByCode($code);
-
-		if ($q->count()) {
-			$record = $q->findOne();
+		if ($this->code_exists($code)) {
+			$record = $this->get_code($code);
 		} else {
-			$code  = $input->$rm->text('code', array('maxLength' => CustomerTermsCode::MAX_LENGTH_CODE));
-			$record = new CustomerTermsCode();
+			$code  = $values->text('code', array('maxLength' => CustomerTermsCode::MAX_LENGTH_CODE));
+			$record = CustomerTermsCode::new();
 			$record->setCode($code);
 		}
 
@@ -103,225 +122,215 @@ class CodeTablesTrm extends WireData implements Module {
 				if ($input->$rm->text('action') == 'remove-code') {
 					$record->delete();
 				} elseif ($input->$rm->text('action') == 'update-trm') {
-					$description = $input->$rm->text('description');
-					$method = $input->$rm->text('method');
-					$type = $input->$rm->text('type');
-					$hold = $input->$rm->text('hold');
-					$exp_date = $input->$rm->text('exp_date') ? date('Ymd', strtotime($input->$rm->text('exp_date'))) : $exp_date = '';
-					$credit_card = $input->$rm->text('credit_card');
-					$freight = $input->$rm->text('freight');
-					$country = $input->$rm->text('country');
-					// $na = $input->$rm->text('na'); TODO: Alumacraft has N/A field
-					$split1 = 1;
-
-
-					$order_percent1 = $input->$rm->text('order_percent1');
-					$percent1 = $input->$rm->text('percent1');
-					$days1 = $input->$rm->text('days1');
-					$day1 = $input->$rm->text('day1');
-					$date1 = $input->$rm->text('disc_date1');
-					$due_days1 = $input->$rm->text('due_days1');
-					$due_day1 = $input->$rm->text('due_day1');
-					$due_months1 = $input->$rm->text('due_months1');
-					$due_date1 = $input->$rm->text('due_date1');
-					$due_year1 = $input->$rm->text('due_year1');
-					$order_percent2 = $input->$rm->text('order_percent2');
-					$split2 = $order_percent2 ? 2 : 0;
-					$percent2 = $input->$rm->text('percent2');
-					$days2 = $input->$rm->text('days2');
-					$day2 = $input->$rm->text('day2');
-					$date2 = $input->$rm->text('disc_date2');
-					$due_days2 = $input->$rm->text('due_days2');
-					$due_day2 = $input->$rm->text('due_day2');
-					$due_months2 = $input->$rm->text('due_months2');
-					$due_date2 = $input->$rm->text('due_date2');
-					$due_year2 = $input->$rm->text('due_year2');
-					$order_percent3 = $input->$rm->text('order_percent3');
-					$split3 = $order_percent3 ? 3 : 0;
-					$percent3 = $input->$rm->text('percent3');
-					$days3 = $input->$rm->text('days3');
-					$day3 = $input->$rm->text('day3');
-					$date3 = $input->$rm->text('disc_date3');
-					$due_days3 = $input->$rm->text('due_days3');
-					$due_day3 = $input->$rm->text('due_day3');
-					$due_months3 = $input->$rm->text('due_months3');
-					$due_date3 = $input->$rm->text('due_date3');
-					$due_year3 = $input->$rm->text('due_year3');
-					$order_percent4 = $input->$rm->text('order_percent4');
-					$split4 = $order_percent4 ? 4 : 0;
-					$percent4 = $input->$rm->text('percent4');
-					$days4 = $input->$rm->text('days4');
-					$day4 = $input->$rm->text('day4');
-					$date4 = $input->$rm->text('disc_date4');
-					$due_days4 = $input->$rm->text('due_days4');
-					$due_day4 = $input->$rm->text('due_day4');
-					$due_months4 = $input->$rm->text('due_months4');
-					$due_date4 = $input->$rm->text('due_date4');
-					$due_year4 = $input->$rm->text('due_year4');
-					$order_percent5 = $input->$rm->text('order_percent5');
-					$split5 = $order_percent5 ? 5 : 0;
-					$percent5 = $input->$rm->text('percent5');
-					$days5 = $input->$rm->text('days5');
-					$day5 = $input->$rm->text('day5');
-					$date5 = $input->$rm->text('disc_date5');
-					$due_days5 = $input->$rm->text('due_days5');
-					$due_day5 = $input->$rm->text('due_day5');
-					$due_months5 = $input->$rm->text('due_months5');
-					$due_date5 = $input->$rm->text('due_date5');
-					$due_year5 = $input->$rm->text('due_year5');
-					$order_percent6 = $input->$rm->text('order_percent6');
-					$split6 = $order_percent6 ? 6 : 0;
-					$percent6 = $input->$rm->text('percent6');
-					$days6 = $input->$rm->text('days6');
-					$day6 = $input->$rm->text('day6');
-					$date6 = $input->$rm->text('disc_date6');
-					$due_days6 = $input->$rm->text('due_days6');
-					$due_day6 = $input->$rm->text('due_day6');
-					$due_months6 = $input->$rm->text('due_months6');
-					$due_date6 = $input->$rm->text('due_date6');
-					$due_year6 = $input->$rm->text('due_year6');
-					$from_day1 = $input->$rm->text('from_day1');
-					$thru_day1 = $input->$rm->text('thru_day1');
-					$eom_percent1 = $input->$rm->text('eom_percent1');
-					$eom_day1 = $input->$rm->text('eom_day1');
-					$eom_disc_months1 = $input->$rm->text('eom_disc_months');
-					$eom_dueday1 = $input->$rm->text('eom_dueday1');
-					$eom_months1 = $input->$rm->text('eom_months1');
-					$from_day2 = $input->$rm->text('from_day2');
-					$thru_day2 = $input->$rm->text('thru_day2');
-					$eom_percent2 = $input->$rm->text('eom_percent2');
-					$eom_day2 = $input->$rm->text('eom_day2');
-					$eom_disc_months2 = $input->$rm->text('eom_disc_months2');
-					$eom_dueday2 = $input->$rm->text('eom_dueday2');
-					$eom_months2 = $input->$rm->text('eom_months2');
-					$from_day3 = $input->$rm->text('from_day3');
-					$thru_day3 = $input->$rm->text('thru_day3');
-					$eom_percent3 = $input->$rm->text('eom_percent3');
-					$eom_day3 = $input->$rm->text('eom_day3');
-					$eom_disc_months3 = $input->$rm->text('eom_disc_months3');
-					$eom_dueday3 = $input->$rm->text('eom_dueday3');
-					$eom_months3 = $input->$rm->text('eom_months3');
-
-					$record->setDescription($description);
-					$record->setMethod($method);
-					$record->setType($type);
-					$record->setHold($hold);
-					$record->setExp_date($exp_date);
-					$record->setCc_prefix($credit_card);
-					$record->setFreight_allow($freight);
-					$record->setCountry($country);
-					// $record->setNa($na);
-					$record->setSplit1($split1);
-					$record->setOrder_percent1($order_percent1);
-					$record->setPercent1($percent1);
-					$record->setDays1($days1);
-					$record->setDay1($day1);
-					$record->setDate1($date1);
-					$record->setDue_days1($due_days1);
-					$record->setDue_day1($due_day1);
-					$record->setDue_months1($due_months1);
-					$record->setDue_date1($due_date1);
-					$record->setDue_year1($due_year1);
-					$record->setSplit2($split2);
-					$record->setOrder_percent2($order_percent2);
-					$record->setPercent2($percent2);
-					$record->setDays2($days2);
-					$record->setDay2($day2);
-					$record->setDate2($date2);
-					$record->setDue_days2($due_days2);
-					$record->setDue_day2($due_day2);
-					$record->setDue_months2($due_months2);
-					$record->setDue_date2($due_date2);
-					$record->setDue_year2($due_year2);
-					$record->setSplit3($split3);
-					$record->setOrder_percent3($order_percent3);
-					$record->setPercent3($percent3);
-					$record->setDays3($days3);
-					$record->setDay3($day3);
-					$record->setDate3($date3);
-					$record->setDue_days3($due_days3);
-					$record->setDue_day3($due_day3);
-					$record->setDue_months3($due_months3);
-					$record->setDue_date3($due_date3);
-					$record->setDue_year3($due_year3);
-					$record->setSplit4($split4);
-					$record->setOrder_percent4($order_percent4);
-					$record->setPercent4($percent4);
-					$record->setDays4($days4);
-					$record->setDay4($day4);
-					$record->setDate4($date4);
-					$record->setDue_days4($due_days4);
-					$record->setDue_day4($due_day4);
-					$record->setDue_months4($due_months4);
-					$record->setDue_date4($due_date4);
-					$record->setDue_year4($due_year4);
-					$record->setSplit5($split5);
-					$record->setOrder_percent5($order_percent5);
-					$record->setPercent5($percent5);
-					$record->setDays5($days5);
-					$record->setDay5($day5);
-					$record->setDate5($date5);
-					$record->setDue_days5($due_days5);
-					$record->setDue_day5($due_day5);
-					$record->setDue_months5($due_months5);
-					$record->setDue_date5($due_date5);
-					$record->setDue_year5($due_year5);
-					$record->setSplit6($split6);
-					$record->setOrder_percent6($order_percent6);
-					$record->setPercent6($percent6);
-					$record->setDays6($days6);
-					$record->setDay6($day6);
-					$record->setDate6($date6);
-					$record->setDue_days6($due_days6);
-					$record->setDue_day6($due_day6);
-					$record->setDue_months6($due_months6);
-					$record->setDue_date6($due_date6);
-					$record->setDue_year6($due_year6);
-					$record->setFrom_day1($from_day1);
-					$record->setThru_day1($thru_day1);
-					$record->setEom_percent1($eom_percent1);
-					$record->setEom_day1($eom_day1);
-					$record->setEom_disc_months1($eom_disc_months1);
-					$record->setEom_dueday1($eom_dueday1);
-					$record->setEom_months1($eom_months1);
-					$record->setFrom_day2($from_day2);
-					$record->setThru_day2($thru_day2);
-					$record->setEom_percent2($eom_percent2);
-					$record->setEom_day2($eom_day2);
-					$record->setEom_disc_months2($eom_disc_months2);
-					$record->setEom_dueday2($eom_dueday2);
-					$record->setEom_months2($eom_months2);
-					$record->setFrom_day3($from_day3);
-					$record->setThru_day3($thru_day3);
-					$record->setEom_percent3($eom_percent3);
-					$record->setEom_day3($eom_day3);
-					$record->setEom_disc_months3($eom_disc_months3);
-					$record->setEom_dueday3($eom_dueday3);
-					$record->setEom_months3($eom_months3);
-					$record->setDate(date('Ymd'));
-					$record->setTime(date('His'));
-					$record->setDummy('P');
+					$this->update_record_input($record, $input);
 				}
 				$response = $this->save_and_process_response($table, $code, $record);
 			} else {
-				$response = new CodeTablesResponse();
-				$response->set_key($code);
-				$response->set_error(true);
-				$response->set_action(CodeTablesResponse::CRUD_UPDATE);
 				$message = self::DESCRIPTION_RECORD . " ($code) was not updated because it is locked by " . $recordlocker->get_locked_user('trm', $code);
-				$response->set_message($message);
+				$response = $this->create_error_response($code, $message);
 			}
 		} else {
-			$response = new CodeTablesResponse();
-			$response->set_key($code);
-			$response->set_error(true);
-			$response->set_action(CodeTablesResponse::CRUD_UPDATE);
 			$message = self::DESCRIPTION_RECORD . " ($code) was not updated ";
-			$response->set_message($message);
+			$response = $this->create_error_response($code, $message);
 		}
 		$this->wire('session')->response_codetable = $response;
 	}
 
+	/**
+	 * Updates Record with Input Values
+	 * @param  CustomerTermsCode $record Customer Terms Code
+	 * @param  WireInput $input  Input Data
+	 * @return void
+	 */
+	protected function update_record_input(CustomerTermsCode $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		// $na = $input->$rm->text('na'); TODO: Alumacraft has N/A field
+		//$record->setNa($na);
+
+		$record->setDescription($values->text('description'));
+		$record->setMethod($values->text('method'));
+		$record->setType($values->text('type'));
+		$record->setHold($values->text('hold'));
+		$record->setCc_prefix($values->text('credit_card'));
+		$record->setFreight_allow($values->text('freight_allow'));
+		$record->setCountry($values->text('country'));
+		$this->update_record_split_columns_standard($record, $input);
+		$this->update_record_split_columns_eom($record, $input);
+
+		$exp_date = $values->text('exp_date') ? date('Ymd', strtotime($values->text('exp_date'))) :  '00000000';
+		$record->setExp_date($exp_date);
+		$record->setDate(date('Ymd'));
+		$record->setTime(date('His'));
+		$record->setDummy('P');
+	}
+
+	/**
+	 * Updates the Splits
+	 * @param  CustomerTermsCode  $record Customer Terms Code
+	 * @param  WireInput $input   Input Data
+	 * @return void
+	 */
+	protected function update_record_split($record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$split = 1;
+
+		for ($i = 1; $i < CustomerTermsCode::STANDARD_TERMS_SPLIT; $i++) {
+			$function = "setSplit$i";
+
+			$record->$function($i);
+		}
+	}
+
+	/**
+	 * Updates all the Standard Split Columns
+	 * @param  CustomerTermsCode  $record Customer Terms Code
+	 * @param  WireInput $input   Input Data
+	 * @return void
+	 */
+	protected function update_record_split_columns_standard(CustomerTermsCode $record, WireInput $input) {
+		$cols = array(
+			'day', 'days',
+			'date',
+			'percent',
+			'due_days', 'due_day',
+			'due_months',
+			'due_year',
+		);
+
+		foreach ($cols as $col) {
+			$this->update_record_split_column_standard($record, $input, $col);
+		}
+		$this->update_record_split($record, $input);
+		$this->update_record_orderpercent($record, $input);
+		$this->update_record_due_date($record, $input);
+	}
+
+	/**
+	 * Updates the Record Column at each standard terms index e.g split1
+	 * @param  CustomerTermsCode  $record Customer Terms Code
+	 * @param  WireInput $input   Input Data
+	 * @return void
+	 */
+	protected function update_record_split_column_standard(CustomerTermsCode $record, WireInput $input, $column) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		for ($i = 1; $i < CustomerTermsCode::STANDARD_TERMS_SPLIT; $i++) {
+			$function = 'set'.ucfirst($column).$i;
+			$value = $values->text("$column$i");
+			$record->$function($value);
+		}
+	}
+
+	/**
+	 * Updates all the Record's Order Percent Columns
+	 * @param  CustomerTermsCode  $record Customer Terms Code
+	 * @param  WireInput $input   Input Data
+	 * @return void
+	 */
+	public function update_record_orderpercent(CustomerTermsCode $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		for ($i = 1; $i < CustomerTermsCode::STANDARD_TERMS_SPLIT; $i++) {
+			$function = "setOrder_percent$i";
+
+			if ($i == 1) {
+				$percent = $values->text('method') == 'S' ? $values->text("order_percent$i") : 0;
+			} else {
+				$percent = $values->text("order_percent$i");
+			}
+			$record->$function($percent);
+		}
+	}
+
+	/**
+	 * Updates all the Record's Due Date Columns
+	 * @param  CustomerTermsCode  $record Customer Terms Code
+	 * @param  WireInput $input   Input Data
+	 * @return void
+	 */
+	public function update_record_due_date(CustomerTermsCode $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		for ($i = 1; $i < CustomerTermsCode::STANDARD_TERMS_SPLIT; $i++) {
+			$function = "setDue_date$i";
+			$day = $values->text("due_date$i") ? $values->text("due_date$i") : 0;
+			$record->$function($day);
+		}
+	}
+
+	/**
+	 * Updates all the EOM Split Columns
+	 * @param  CustomerTermsCode  $record Customer Terms Code
+	 * @param  WireInput $input   Input Data
+	 * @return void
+	 */
+	protected function update_record_split_columns_eom($record, WireInput $input) {
+		$cols = array(
+			'from_day', 'thru_day',
+			'eom_percent',
+			'eom_day',
+			'eom_disc_months',
+			'eom_dueday',
+			'eom_months'
+		);
+
+		foreach ($cols as $col) {
+			$this->update_record_split_column_eom($record, $input, $col);
+		}
+		$this->update_record_percent_eom($record, $input);
+		$this->update_record_orderpercent($record, $input);
+		$this->update_record_due_date($record, $input);
+	}
+
+
+	/**
+	 * Updates all the column indexes for this column
+	 * @param  CustomerTermsCode  $record Customer Terms Code
+	 * @param  WireInput $input   Input Data
+	 * @return void
+	 */
+	protected function update_record_split_column_eom($record, WireInput $input, $column) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		for ($i = 1; $i < CustomerTermsCode::EOM_TERMS_SPLIT; $i++) {
+			$function = 'set'.ucfirst($column).$i;
+			$value = $values->text("$column$i");
+			$record->$function($value);
+		}
+	}
+
+	/**
+	 * updates all the EOM percent Columns
+	 * @param  CustomerTermsCode  $record Customer Terms Code
+	 * @param  WireInput $input   Input Data
+	 * @return void
+	 */
+	public function update_record_percent_eom($record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		for ($i = 1; $i < CustomerTermsCode::EOM_TERMS_SPLIT; $i++) {
+			$function = "setOrder_percent$i";
+
+			if ($i == 1) {
+				$percent = $values->text('method') == 'e' ? $values->text("eom_percent$i") : 0;
+			} else {
+				$percent = $values->text("eom_percent$i");
+			}
+			$record->$function($percent);
+		}
+	}
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
 	/**
 	 * Returns CodeTablesResponse based on the outcome of the database save
 	 *
@@ -362,10 +371,28 @@ class CodeTablesTrm extends WireData implements Module {
 		if ($response->has_success()) {
 			$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
 		}
-
 		return $response;
 	}
 
+	/**
+	 * Return Error Response with Provided Message
+	 * @param  string $code     Code ID
+	 * @param  string $message    Error Message
+	 * @param  int    $actiontype CodeTablesResponse CRUD value
+	 * @return CodeTablesResponse
+	 */
+	public function create_error_response($code, $message, $actiontype = 0) {
+		$response = new CodeTablesResponse();
+		$response->set_key($code);
+		$response->set_error(true);
+		$response->set_action($actiontype != 0 ? $actiontype : CodeTablesResponse::CRUD_UPDATE);
+		$response->set_message($message);
+		return $response;
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
 	/**
 	 * Return the number of splits allowed for Standard Terms Dsicount
 	 * @return int
@@ -382,6 +409,9 @@ class CodeTablesTrm extends WireData implements Module {
 		return CustomerTermsCode::EOM_TERMS_SPLIT;
 	}
 
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus TRM Code Table CRUD Manager',
