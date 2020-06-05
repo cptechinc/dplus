@@ -67,6 +67,7 @@
 				$page->body .= $config->twig->render('items/vxm/item/form.twig', ['page' => $page, 'item' => $item, 'vxm' => $vxm, 'recordlocker' => $recordlocker]);
 				$page->js .= $config->twig->render('items/vxm/item/form/js.twig', ['page' => $page, 'item' => $item, 'url_validate' => $pages->get('pw_template=vxm-validate')->httpUrl]);
 			} else {
+				$recordlocker->remove_lock($page->name);
 				$filter_vxm->filter_query($input);
 				$filter_vxm->apply_sortby($page);
 				$page->headline = "ITEM: VXM Item $itemID";
