@@ -7,9 +7,11 @@ use Purl\Url;
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemXrefCustomerQuery, ItemXrefCustomer;
 use ConfigSysQuery, ConfigSys;
+use UnitofMeasureSaleQuery, UnitofMeasureSale;
+use CustomerQuery, Customer;
 
 /**
- * Module that handles the editing of the VXM item Xref
+ * Module that handles the editing of the CXM item Xref
  */
 class XrefCxm extends WireData implements Module {
 	const MODEL              = 'ItemXrefCustomer';
@@ -46,6 +48,41 @@ class XrefCxm extends WireData implements Module {
 	}
 
 	/**
+	 * Return ItemXrefCustomer
+	 * @param  string $custID     Cust ID
+	 * @param  string $custitemID Cust's Item ID'
+	 * @return ItemXrefCustomer
+	 */
+	public function get_create_cxm_item(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$custID = $values->text('custID');
+		$custitemID = $values->original_custitemID ? $values->text('original_custitemID') : $values->text('custitemID');
+
+		$q = $this->get_query();
+		$q->filterByCustid($custID);
+		$q->filterByCustitemid($custitemID);
+
+		if ($q->count()) {
+			$record = $q->findOne();
+		} else {
+			$record = $this->get_cxm_item_new();
+			$record->setCustid($custID);
+			$record->setCustitemid($custitemID);
+		}
+		return $record;
+	}
+
+	/**
+	 * Return ItemXrefCustomer and set Defaults
+	 * @return ItemXrefCustomer
+	 */
+	public function get_cxm_item_new() {
+		$record = ItemXrefCustomer::new();
+		return $record;
+	}
+
+	/**
 	 * Returns if Cust Item ID exists
 	 * @param  string $custID     Customer ID
 	 * @param  string $custitemID Customer's Item ID'
@@ -57,6 +94,7 @@ class XrefCxm extends WireData implements Module {
 		$q->filterByCustitemid($custitemID);
 		return boolval($q->count());
 	}
+
 	/**
 	 * Return the CXM Item that has the short itemid
 	 * @param  string $itemID Item ID / Our Item ID
@@ -130,39 +168,200 @@ class XrefCxm extends WireData implements Module {
 	CRUD Processing Functions
 ============================================================= */
 	/**
-	 * Takes Input, validates it's for one of the code tables
-	 * Processes it, and if updated sends request to dplus
+	 * Takes Input, calls the function to process input
 	 *
-	 * @param  WireInput $input Input
+	 * @param  WireInput $input Input Data
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		if ($values->text('action') == 'update-cxm-shortitem') {
-			$itemID = $values->text('itemID');
-			$custitemID = $values->text('custitemid');
+		if ($values->action) {
+			switch ($values->text('action')) {
+				case 'update-cxm-shortitem':
+					$this->process_input_cxm_shortitem($input);
+					break;
+				default:
+					$this->process_input_cxm($input);
+					break;
+			}
+		}
+	}
 
-			if ($this->cxm_shortitem_exists_custitemid($custitemID)) {
-				$cxmitem = $this->get_cxm_shortitem_custitemid($custitemID);
-				$message = "Short ItemID '$custitemID' already exists for $cxmitem->itemid";
-				$response = $this->create_error_response($itemID, $message);
-			} else {
-				$record = $this->get_create_cxm_shortitem($itemID);
-				$array = $record->toArray();
-				$record->delete();
-				$record = ItemXrefCustomer::new();
-				$record->fromArray($array);
-				$record->setCustitemid($custitemID);
-				$record->save();
-				$record->setDate(date('Ymd'));
-				$record->setTime(date('His'));
+	/**
+	 * Takes Input, validate (action, cxm record, lock on record)
+	 * Updates CXM Table
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input_cxm(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$response = new XrefResponse();
+		$record = $this->get_create_cxm_item($input);
+		$recordlocker = $this('modules')->get('RecordLockerUser');
 
+		/**
+		 * Create lock for ITM code if not already locked.
+		 */
+		if (!$recordlocker->function_locked('cxm', $this->get_recordlocker_key($record))) {
+			$recordlocker->create_lock('cxm', $this->get_recordlocker_key($record));
+		}
+
+		if ($recordlocker->function_locked_by_user('cxm', $this->get_recordlocker_key($record))) {
+			switch ($values->text('action')) {
+				case 'remove-cxm-item':
+					$record->delete();
+					break;
+				case 'update-cxm':
+					$response = $this->update_record_input($record, $input);
+					break;
+				default:
+					$message = self::DESCRIPTION_RECORD . " (".$this->get_recordlocker_key($record).")  was not saved, no action was specified";
+					$response = $this->create_error_response($record->itemid, $message, ItmResponse::CRUD_UPDATE);
+					break;
+			}
+
+			if (!$response->has_error()) {
 				$response = $this->save_and_process_response($record);
 			}
-			$this->wire('session')->response_xref = $response;
+		} else {
+			$message = self::DESCRIPTION_RECORD . " (".$this->get_recordlocker_key($record).")  was not saved, it is locked by " . $recordlocker->get_locked_user('cxm', $this->get_recordlocker_key($record));
+			$response = $this->create_error_response($record->itemid, $message, ItmResponse::CRUD_UPDATE);
 		}
+		$this->wire('session')->response_xref = $response;
+	}
+
+	/**
+	 * Return XrefResponse for Updating the CXM record for Short Item ID
+	 * @param  WireInput $input Input Data
+	 * @return XrefResponse
+	 */
+	public function process_input_cxm_shortitem(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$itemID = $values->text('itemID');
+		$custitemID = $values->text('custitemid');
+
+		if ($this->cxm_shortitem_exists_custitemid($custitemID)) {
+			$cxmitem = $this->get_cxm_shortitem_custitemid($custitemID);
+			$message = "Short ItemID '$custitemID' already exists for $cxmitem->itemid";
+			$response = $this->create_error_response($itemID, $message);
+		} else {
+			$record = $this->get_create_cxm_shortitem($itemID);
+			$array = $record->toArray();
+			$record->delete();
+			$record = ItemXrefCustomer::new();
+			$record->fromArray($array);
+			$record->setCustitemid($custitemID);
+			$record->save();
+			$record->setDate(date('Ymd'));
+			$record->setTime(date('His'));
+
+			$response = $this->save_and_process_response($record);
+		}
+		$this->wire('session')->response_xref = $response;
+	}
+
+	/**
+	 * Updates CXM Item Record
+	 * @param  ItemXrefCustomer $record CXM Item Record
+	 * @param  WireInput        $input  Input Data
+	 * @return XrefResponse
+	 */
+	public function update_record_input(ItemXrefCustomer $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$response = new XrefResponse();
+		$response->set_action(XrefResponse::CRUD_UPDATE);
+
+		$record->setCustitemid($values->text('custitemID'));
+
+		if ($this->is_modifying_cxm_key($record) && !$record->isNew()) {
+			$record_delete = $record;
+			$array = $record_delete->toArray();
+
+			$record_delete->setCustitemid($values->text('original_custitemID'));
+			$this->update_dplus_cobol($record_delete);
+			$record_delete->delete();
+			$record = ItemXrefCustomer::new();
+			$record->fromArray($array);
+			$record->setCustitemid($values->text('custitemID'));
+			$record->save();
+		}
+
+		$record->setItemid($values->text('itemID'));
+		$record->setDescription($values->text('description'));
+		$record->setDescription2($values->text('description2'));
+		$record->setRevision($values->text('revision'));
+		$record->setConvert($values->text('convert'));
+		$record->setQty_percase($values->text('qty_percase'));
+		$record->setQty_purchase($values->text('qty_purchase'));
+		$record->setPrice_retail($values->text('price_retail'));
+		$record->setPrice_customer($values->text('price_customer'));
+		$this->update_record_input_validated($record, $input, $response);
+		$record->setDate(date('Ymd'));
+		$record->setTime(date('His'));
+		return $response;
+	}
+
+	/**
+	 * Updates CXM Item Record's UoM Pricing, UoM Customer, Item ID, CustID
+	 * Validates Each property is valid
+	 * @param  ItemXrefCustomer $record   CXM Item
+	 * @param  WireInput        $input    Input Data
+	 * @param  XrefResponse     $response Response to Fix
+	 * @return XrefResponse
+	 */
+	protected function update_record_input_validated(ItemXrefCustomer $record, WireInput $input, XrefResponse $response) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$modules = $this->wire('modules');
+		$validate_uom = $modules->get('ValidateUom');
+		$validate_item = $modules->get('LookupItem');
+		$validate_customer = $modules->get('LookupCustomer');
+
+		$response = new XrefResponse();
+		$response->set_action(XrefResponse::CRUD_UPDATE);
+
+
+		$uom_pricing = $values->text('uom_pricing');
+		if ($uom_pricing == '' || $validate_uom->validate_sale($uom_pricing)) {
+			$record->setUom_pricing($uom_pricing);
+		}
+
+		$uom_customer = $values->text('uom_customer');
+		if ($uom_customer == '' || $validate_uom->validate_sale($uom_customer)) {
+			$record->setUom_customer($uom_customer);
+		}
+
+		if ($validate_item->lookup_itm($values->text('itemID'))) {
+			$record->setItemid($values->text('itemID'));
+		} else {
+			$response->set_error(true);
+			$response->set_message($values->text('itemID') . " does not exist in the Item Master");
+		}
+
+		if ($validate_customer->lookup_customer($values->text('custID'))) {
+			$record->setCustid($values->text('custID'));
+		} else {
+			$response->set_error(true);
+			$response->set_message($values->text('custID') . " does not exist in the Customer Master");
+		}
+
+		$rounding = $values->text('rounding');
+
+		if (in_array($rounding, $this->get_rounding_options())) {
+
+		} else {
+			$rounding = ItemXrefCustomer::ROUNDING_DEFAULT;
+		}
+		$record->setRounding($rounding);
+
+		return $response;
 	}
 
 	/**
@@ -248,7 +447,7 @@ class XrefCxm extends WireData implements Module {
 	Dplus Cobol Request Functions
 ============================================================= */
 	/**
-	 * Writes File for Dplus to update the VXM file for this ITEM
+	 * Writes File for Dplus to update the CXM file for this ITEM
 	 * @param  ItemXrefCustomer $item
 	 * @return void
 	 */
@@ -263,13 +462,62 @@ class XrefCxm extends WireData implements Module {
 	}
 
 /* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return Key for CXM Item
+	 * @param  ItemXrefCustomer $item CXM Item
+	 * @return string
+	 */
+	public function get_recordlocker_key(ItemXrefCustomer $item) {
+		return "$item->custid-$item->custitemid-$item->itemid";
+	}
+
+	/**
+	 * Return Unit of Measure Sales
+	 * @return UnitofMeasureSale[]|ObjectCollection
+	 */
+	public function get_unitsofm_sales() {
+		return UnitofMeasureSaleQuery::create()->find();
+	}
+
+	/**
+	 * Returns if Item ID is valid
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function validate_itemID($itemID) {
+		$q = ItemMasterItemQuery::create();
+		$q->filterByItemid($itemID);
+		return boolval($q->count());
+	}
+
+	public function get_rounding_options() {
+		return ItemXrefCustomer::ROUNDING_OPTIONS;
+	}
+
+	/**
+	 * Return Customers that are in the CXM
+	 * @return Customer[]|ObjectCollection
+	 */
+	public function get_cxm_customers() {
+		$q_cxm = $this->get_query();
+		$q->select('DISTINCT('.ItemXrefCustomer::get_aliasproperty('custid').')') ;
+		$custIDs = $q->find()->toArray();
+
+		$q_cust = CustomerQuery::create();
+		$q_cust->filterByCustid($custIDs);
+		return $q_cust->findAll();
+	}
+
+/* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus VXM CRUD Manager',
+			'title' => 'Dplus CXM CRUD Manager',
 			'version' => 101,
-			'summary' => 'Module for CRUD Methods for VXM',
+			'summary' => 'Module for CRUD Methods for CXM',
 			'singular' => true,
 			'autoload' => true,
 		);
