@@ -1,6 +1,7 @@
 {# trm is an instance of CustomerTermsCode #}
 <form action="{{ page.url }}" method="POST" id="code-edit-form">
 	<input type="hidden" name="action" value="update-trm">
+	<input type="hidden" name="table" value="trm">
 
 	<div class="row">
 		<div class="col-6">
@@ -45,8 +46,8 @@
 				</select>
 			</div>
 			<div class="form-group">
-				<label for="freight">Freight Allowed?</label>
-				{% include 'util/select.twig' with {'name': 'freight', 'id': 'freight', 'selectedvalue': (code.freight_allow), 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				<label for="freight_allow">Freight Allowed?</label>
+				{% include 'util/select.twig' with {'name': 'freight_allow', 'id': 'freight_allow', 'selectedvalue': (code.freight_allow), 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 			<div class="form-group">
 				<label for="country">Country</label>

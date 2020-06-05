@@ -23,7 +23,7 @@ $(function () {
 			hold: {
 				required: true
 			},
-			freight: {
+			freight_allow: {
 				required: true
 			},
 			order_percent1: {
@@ -40,22 +40,22 @@ $(function () {
 	});
 
 
-	if ($('#code').val() == '') {
-		$('.row1').find('#order_percent1').val(100);
+	if ($('#code').val() == '' || $('#order_percent1').val() == 0) {
+		$('#order_percent1').val(100);
 		$('.row1').removeClass('collapse');
 	}
 
 	var freight_amt = {{ configso.get_freight_allowed_amt() }};
 
 	if (freight_amt == 0 && $('#method').val() == 'E') {
-		$('#freight').prop("disabled", true);
-		$('#freight').val('');
+		$('#freight_allow').prop("disabled", true);
+		$('#freight_allow').val('');
 	} else if (freight_amt == 0 && $('#method').val() == 'S') {
-		$('#freight').prop("disabled", true);
-		$('#freight').val('N');
+		$('#freight_allow').prop("disabled", true);
+		$('#freight_allow').val('N');
 	} else if ($('#method').val() == 'S' && $('#order_percent1').val() == 100) {
-		$('#freight').prop("disabled", false);
-		$('#freight').val('N');
+		$('#freight_allow').prop("disabled", false);
+		$('#freight_allow').val('N');
 	}
 
 	$("#code-edit-form #method").change(function() {
@@ -66,17 +66,17 @@ $(function () {
 			$('#standard-terms-form').fadeIn();
 			$('#eom-terms-form').hide();
 			if ($('#order_percent1').val() == 100 && {{ configso.get_freight_allowed_amt() }} == 0) {
-				$('#freight').prop("disabled", true);
-				$('#freight').val('N');
+				$('#freight_allow').prop("disabled", true);
+				$('#freight_allow').val('N');
 			} else {
-				$('#freight').prop("disabled", false);
-				$('#freight').val('N');
+				$('#freight_allow').prop("disabled", false);
+				$('#freight_allow').val('N');
 			}
 		} else if ($('#method').val() == 'E') {
 			$('#standard-terms-form').hide();
 			$('#eom-terms-form').fadeIn();
-			$('#freight').prop("disabled", true);
-			$('#freight').val('');
+			$('#freight_allow').prop("disabled", true);
+			$('#freight_allow').val('');
 		}
 	});
 
@@ -220,11 +220,12 @@ $(function () {
 			$('.discount_percent'+index).removeClass('is-invalid');
 
 			if (input.val() == 0) {
-				$('.row'+index).find('.day, .days, .disc_date').val(0);
-				$('.row'+index).find('.day, .days, .disc_date').prop('disabled', true);
+				$('.row'+index).find('.day, .days').val(0);
+				$('.row'+index).find('.date').val('');
+				$('.row'+index).find('.day, .days, .date').prop('disabled', true);
 			} else {
 				$('.discount_percent').removeClass('is-invalid');
-				$('.row'+index).find('.day, .days, .disc_date').prop('disabled', false);
+				$('.row'+index).find('.day, .days, .date').prop('disabled', false);
 			}
 		}
 	});
@@ -264,6 +265,14 @@ $(function () {
 		}
 	});
 
+	$("body").on('change', '.date', function(e) {
+		var input = $(this);
+
+		if (input.val() == '0') {
+			input.val('');
+		}
+	});
+
 	$("body").on('change', '.due_date', function(e) {
 		var input = $(this);
 		var row = input.closest('.due');
@@ -284,7 +293,7 @@ $(function () {
 
 		if (input.val() != 0) {
 			$('.row'+index).find('.disc_group').removeClass('is-invalid');
-			$('.row'+(index)).find($('input.disc_group')).not(this).val(0);
+			$('.row'+index).find($('input.disc_group')).not(this).val(0);
 		}
 
 		if (input.val() == 0 && $('.row'+(index)).find($('input.disc_group')).not(this).val() == 0) {
@@ -359,10 +368,6 @@ $(function () {
 
 
 // ------------------ Start EOM Method -----------------
-
-	if ($('#thru_day1').val() == 0) {
-		$('#thru_day1').val(99);
-	}
 
 	$("body").on('change', '.thru_day', function(e) {
 		var input = $(this);

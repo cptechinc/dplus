@@ -21,7 +21,7 @@
                                     <input type="text" name="from_day{{ x }}" id="from_day{{ x }}" maxlength="2" class="form-control from_day" value="{{ (x == 1) ? 1 : code.from_day(x) }}" readonly>
                                 </div>
                                 <div class="col">
-                                    <input tabindex="{{x}}0" type="text" name="thru_day{{ x }}" id="thru_day{{ x }}" maxlength="2" class="form-control thru_day" value="{{ code.thru_day(x) }}">
+                                    <input tabindex="{{x}}0" type="text" name="thru_day{{ x }}" id="thru_day{{ x }}" maxlength="2" class="form-control thru_day" value="{{ code.thru_day(x) == 0 and x == 1 ? 99 : code.thru_day(x) }}">
                                 </div>
                             </div>
                         </div>
