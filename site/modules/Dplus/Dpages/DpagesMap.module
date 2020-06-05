@@ -17,6 +17,11 @@ class DpagesMap extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
+		'vxm-validate' => array(
+			'name'   => 'vxm',
+			'fields' => array(),
+			'paginated' => true
+		),
 		'ap-code-table' => array(
 			'name'   => 'ap-code-table',
 			'fields' => array()
@@ -87,6 +92,12 @@ class DpagesMap extends Dpages implements Module {
 			$vendorID = $event->arguments(0);
 			$vendoritemID = $event->arguments(1);
 			$event->return = $this->get_vxm_itemURL($vendorID, $vendoritemID);
+		});
+
+		$this->addHook("Page(pw_template=vxm)::vxm_itemidURL", function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_vxm_itemidURL($itemID);
 		});
 
 		$this->addHook('Page(pw_template=vxm)::vxm_vendorURL', function($event) {
@@ -173,6 +184,18 @@ class DpagesMap extends Dpages implements Module {
 		}
 
 		$url->query->set('vendoritemID', $vendoritemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL for VXM ItemID
+	 * @param  string $itemID Item ID
+	 * @return string
+	 */
+	public function get_vxm_itemidURL($itemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
+
+		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
 
