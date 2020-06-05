@@ -2,14 +2,15 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	vxm                    module XrefVxm
-	m_itm                  module Itm
 	recordlocker           module RecordLockerUser
 	items                  ItemXrefVxm[]|ObjectCollection
 #}
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
-			<th class="pt-3 pb-3">Vendor ID</th>
+			{% if page.has('vendorID') == false %}
+				<th class="pt-3 pb-3">Vendor ID</th>
+			{% endif %}
 			<th class="pt-3 pb-3">Vendor ItemID</th>
 
 			{% if page.has('itemID') == false %}
@@ -26,8 +27,11 @@
 		{% if items.count() %}
 			{% for item in items %}
 				<tr>
-					<td>{{ item.vendorID }}</td>
+					{% if page.has('vendorID') == false %}
+						<td>{{ item.vendorID }}</td>
+					{% endif %}
 					<td>{{ item.vendoritemID }}</td>
+
 					{% if page.has('itemID') == false %}
 						<td>{{ item.ouritemID }}</td>
 					{% endif %}
