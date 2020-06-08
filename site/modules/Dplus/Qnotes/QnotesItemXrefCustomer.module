@@ -178,7 +178,7 @@ class QnotesItemXrefCustomer extends WireData implements Module {
 
 	/**
 	 * Return Form Code based on Input
-	 * @param  WireInput $input [description]
+	 * @param  WireInput $input Input Data
 	 * @return string
 	 */
 	public function get_form_input(WireInput $input) {

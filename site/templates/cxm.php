@@ -27,6 +27,11 @@
 		$session->remove('response_xref');
 	}
 
+	if ($session->response_qnote) {
+		$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
+		$session->remove('response_qnote');
+	}
+
 	if ($input->get->custID) {
 		$custID = $input->get->text('custID');
 		$validate_customer = $modules->get('LookupCustomer');
@@ -77,7 +82,8 @@
 			$page->body .= $html->div('class=mt-3', $html->h3('', 'Notes'));
 			$page->body .= $config->twig->render('items/cxm/item/notes/list.twig', ['page' => $page, 'item' => $item, 'qnotes' => $qnotes_cxm]);
 			$page->body .= $config->twig->render('items/cxm/item/notes/modal.twig', ['page' => $page, 'item' => $item, 'qnotes' => $qnotes_cxm]);
-			$page->js .= $config->twig->render('items/cxm/item/form/js.twig', ['page' => $page, 'item' => $item, 'url_validate' => $pages->get('pw_template=cxm-validate')->httpUrl]);
+			$page->js   .= $config->twig->render('items/cxm/item/notes/js.twig', ['page' => $page, 'qnotes' => $qnotes_cxm]);
+			$page->js   .= $config->twig->render('items/cxm/item/form/js.twig', ['page' => $page, 'item' => $item, 'url_validate' => $pages->get('pw_template=cxm-validate')->httpUrl]);
 		} else {
 			$page->headline = "CXM: Customer $customer->name";
 			$filter_cxm->filter_query($input);
