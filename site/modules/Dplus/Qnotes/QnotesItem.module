@@ -92,6 +92,7 @@ class QnotesItem extends WireData implements Module {
 				'QnotesItemInspection',
 				'QnotesItemOrder',
 				'QnotesItemWhseOrder',
+				'QnotesItemXrefCustomer'
 			)
 		);
 	}

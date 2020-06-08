@@ -42,6 +42,7 @@
 			if ($cxm->cxm_item_exists($custID, $custitemID)) {
 				$item = $cxm->get_cxm_item($custID, $custitemID);
 				$page->title = "CXM: $custID Item $custitemID";
+				$qnotes_cxm = $modules->get('QnotesItemXrefCustomer');
 
 				/**
 				 * Show alert that CXM is locked if
@@ -72,7 +73,10 @@
 			}
 			$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;
 			$page->searchitemsURL     = $pages->get('pw_template=itm-search')->url;
-			$page->body .= $config->twig->render('items/cxm/item/form.twig', ['page' => $page, 'item' => $item, 'cxm' => $cxm, 'recordlocker' => $recordlocker]);
+			$page->body .= $config->twig->render('items/cxm/item/form.twig', ['page' => $page, 'item' => $item, 'cxm' => $cxm, 'recordlocker' => $recordlocker, 'qnotes' => $qnotes_cxm]);
+			$page->body .= $html->div('class=mt-3', $html->h3('', 'Notes'));
+			$page->body .= $config->twig->render('items/cxm/item/notes/list.twig', ['page' => $page, 'item' => $item, 'qnotes' => $qnotes_cxm]);
+			$page->body .= $config->twig->render('items/cxm/item/notes/modal.twig', ['page' => $page, 'item' => $item, 'qnotes' => $qnotes_cxm]);
 			$page->js .= $config->twig->render('items/cxm/item/form/js.twig', ['page' => $page, 'item' => $item, 'url_validate' => $pages->get('pw_template=cxm-validate')->httpUrl]);
 		} else {
 			$page->headline = "CXM: Customer $customer->name";
@@ -123,7 +127,7 @@
 			$exact_query = ItemMasterItemQuery::create();
 
 			if ($exact_query->filterByItemid($q)->count() == 1) {
-				$session->redirect($pages->cxm_itemURL($q));
+				$session->redirect($page->cxm_itemIDURL($q));
 			}  else {
 				$page->headline = "CXM: Searching Items for '$q'";
 				$search_items = $modules->get('FilterItemMaster');
