@@ -142,7 +142,7 @@ class DpagesMso extends Dpages implements Module {
 			'title'          => 'CXM Validate',
 			'summary'        => 'Validate CXM',
 			'parent'         => '/mso/somain/cxm/',
-			'dplus_function' => ''
+			'dplus_function' => 'cxm'
 		),
 		'cxm-validate' => array(
 			'template'       => 'dplus-function',
@@ -380,6 +380,12 @@ class DpagesMso extends Dpages implements Module {
 			$event->return = $this->get_cxm_itemURL($custID, $custitemID);
 		});
 
+		$this->addHook("Page(pw_template=cxm)::cxm_itemIDURL", function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_cxm_itemIDURL($itemID);
+		});
+
 		$this->addHook("Page(pw_template=cxm)::cxm_item_newURL", function($event) {
 			$p = $event->object;
 			$custID = $event->arguments(0);
@@ -416,13 +422,24 @@ class DpagesMso extends Dpages implements Module {
 	}
 
 	/**
-	 * Return URL for CXM items filtered by Vendor ID
-	 * @param  string $custID Vendor ID
+	 * Return URL for CXM items filtered by Customer ID
+	 * @param  string $custID Customer ID
 	 * @return string
 	 */
 	public function get_cxm_customerURL($custID) {
 		$url = new Url($this->wire('pages')->get('pw_template=cxm')->url);
 		$url->query->set('custID', $custID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL for CXM items filtered by Item ID
+	 * @param  string $itemID Item ID
+	 * @return string
+	 */
+	public function get_cxm_itemIDURL($itemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=cxm')->url);
+		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
 
