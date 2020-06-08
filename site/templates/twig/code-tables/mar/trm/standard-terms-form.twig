@@ -66,7 +66,7 @@
 							<input tabindex="{{x}}3" type="text" name="day{{ x }}" id="day{{ x }}" maxlength="2" class="form-control day disc_group" value="{{ code.percent(x) == 0 ? 0 : code.day(x) }}" {{ code.percent(x) == 0 ? 'disabled' : '' }}>
 						</div>
 						<div class="col">
-							<input tabindex="{{x}}4" type="text" name="date{{ x }}" id="date{{ x }}" maxlength="4" class="form-control date disc_group" value="{{ code.date(x) == 0 ? '' : code.date(x) }}" placeholder="MMDD" {{ code.percent(x) == 0 ? 'disabled' : '' }}>
+							<input tabindex="{{x}}4" type="text" name="date{{ x }}" id="date{{ x }}" maxlength="4" class="form-control disc_date disc_group" value="{{ code.date(x) == 0 ? '' : code.date(x) }}" placeholder="MMDD" {{ code.percent(x) == 0 ? 'disabled' : '' }}>
 						</div>
 					</div>
 				</div>
