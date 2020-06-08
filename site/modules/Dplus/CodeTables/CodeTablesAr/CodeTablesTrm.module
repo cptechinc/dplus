@@ -154,7 +154,7 @@ class CodeTablesTrm extends WireData implements Module {
 		$record->setType($values->text('type'));
 		$record->setHold($values->text('hold'));
 		$record->setCc_prefix($values->text('credit_card'));
-		$record->setFreight_allow($values->text('freight_allow'));
+		$record->setFreight_allow($values->text('freight_hidden'));
 		$record->setCountry($values->text('country'));
 		$this->update_record_split_columns_standard($record, $input);
 		$this->update_record_split_columns_eom($record, $input);
@@ -177,7 +177,7 @@ class CodeTablesTrm extends WireData implements Module {
 		$values = $input->$rm;
 		$split = 1;
 
-		for ($i = 1; $i < CustomerTermsCode::STANDARD_TERMS_SPLIT; $i++) {
+		for ($i = 1; $i < CustomerTermsCode::STANDARD_TERMS_SPLIT + 1; $i++) {
 			$function = "setSplit$i";
 
 			$record->$function($i);
@@ -218,7 +218,7 @@ class CodeTablesTrm extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		for ($i = 1; $i < CustomerTermsCode::STANDARD_TERMS_SPLIT; $i++) {
+		for ($i = 1; $i < CustomerTermsCode::STANDARD_TERMS_SPLIT + 1; $i++) {
 			$function = 'set'.ucfirst($column).$i;
 			$value = $values->text("$column$i");
 			$record->$function($value);
@@ -235,7 +235,7 @@ class CodeTablesTrm extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		for ($i = 1; $i < CustomerTermsCode::STANDARD_TERMS_SPLIT; $i++) {
+		for ($i = 1; $i < CustomerTermsCode::STANDARD_TERMS_SPLIT + 1; $i++) {
 			$function = "setOrder_percent$i";
 
 			if ($i == 1) {
@@ -257,7 +257,7 @@ class CodeTablesTrm extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		for ($i = 1; $i < CustomerTermsCode::STANDARD_TERMS_SPLIT; $i++) {
+		for ($i = 1; $i < CustomerTermsCode::STANDARD_TERMS_SPLIT + 1; $i++) {
 			$function = "setDue_date$i";
 			$day = $values->text("due_date$i") ? $values->text("due_date$i") : 0;
 			$record->$function($day);
@@ -299,7 +299,7 @@ class CodeTablesTrm extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		for ($i = 1; $i < CustomerTermsCode::EOM_TERMS_SPLIT; $i++) {
+		for ($i = 1; $i < CustomerTermsCode::EOM_TERMS_SPLIT + 1; $i++) {
 			$function = 'set'.ucfirst($column).$i;
 			$value = $values->text("$column$i");
 			$record->$function($value);
@@ -316,7 +316,7 @@ class CodeTablesTrm extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		for ($i = 1; $i < CustomerTermsCode::EOM_TERMS_SPLIT; $i++) {
+		for ($i = 1; $i < CustomerTermsCode::EOM_TERMS_SPLIT + 1; $i++) {
 			$function = "setOrder_percent$i";
 
 			if ($i == 1) {
