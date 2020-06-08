@@ -53,9 +53,9 @@ class FilterXrefItemCxm extends WireData implements Module {
 	 */
 	public function filter_itemid($input) {
 		if ($input->get->itemID) {
-			$this->query->filterByOuritemid($input->get->text('itemID'));
+			$this->query->filterByItemid($input->get->text('itemID'));
 		} elseif ($input->get->ouritemID) {
-			$this->query->filterByOuritemid($input->get->text('ouritemID'));
+			$this->query->filterByItemid($input->get->text('ouritemID'));
 		}
 	}
 
