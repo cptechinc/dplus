@@ -166,23 +166,12 @@ $(function() {
 				obj[item.name] = item.value;
 				return obj;
 			}, {});
-			console.log('submit');
 			update_cxm(form);
 		}
 	});
 
-	function remove_cxm_item(form) {
-		request_validate_custitemID(function(exists) {
-			if (exists === true) {
-				form.submit();
-			}
-		});
-	}
-
 	function update_cxm(form) {
-		console.log('update cxm');
 		request_validate_custitemID(function(exists) {
-
 			if (exists === true) {
 				if (input_custitemID.val() != input_custitemID.data('custitemid')) {
 					swal2.fire({
