@@ -4,6 +4,7 @@
 	page                   ProcessWire\Page
 	cxm                    module XrefCxm
 	recordlocker           module RecordLockerUser
+	qnotes                 module QnotesItemXrefCustomer
 	item                   ItemXrefCustomer
 	item.item              ItemMasterItem
 #}
@@ -70,7 +71,7 @@
 			<label>Notes</label>
 		</div>
 		<div class="col-sm-6">
-			No {# TODO: notes #}
+			{{ qnotes.notes_exist_item(item.itemid, item.custid)|yesorno|capitalize }}
 		</div>
 	</div>
 	<div class="row form-group">
