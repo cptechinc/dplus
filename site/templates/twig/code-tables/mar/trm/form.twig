@@ -7,23 +7,23 @@
 		<div class="col-6">
 			<div class="form-group">
 				<label for="code">Terms Code</label>
-				<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code" maxlength="{{ code.get_max_length_code() }}" {{ code.code ? 'readonly' : 'autofocus' }}>
+				<input tabindex="1" type="text" name="code" class="form-control" value="{{ code.code }}" id="code" maxlength="{{ code.get_max_length_code() }}" {{ code.code ? 'readonly' : 'autofocus' }}>
 			</div>
 			<div class="form-group">
 				<label for="method">Method</label>
-				{% include 'util/select.twig' with {'name': 'method', 'id': 'method', 'selectedvalue': (code.method ? code.method : 'S'), 'options': {'S': 'Standard Terms', 'E': 'End of Month Terms'}} %}
+				{% include 'util/select.twig' with {'name': 'method', 'id': 'method', 'tabindex': '3', 'selectedvalue': (code.method ? code.method : 'S'), 'options': {'S': 'Standard Terms', 'E': 'End of Month Terms'}} %}
 			</div>
 			<div class="form-group">
 				<label for="type">Type</label>
-				{% include 'util/select.twig' with {'name': 'type', 'id': 'type', 'selectedvalue': (code.type ? code.type : 'STD'), 'options': {'STD': 'Standard', 'CC': 'Credit Card', 'CA': 'Cash', 'COD': 'COD', 'CDC': 'COD Cash'}} %}
+				{% include 'util/select.twig' with {'name': 'type', 'id': 'type', 'tabindex': '5', 'selectedvalue': (code.type ? code.type : 'STD'), 'options': {'STD': 'Standard', 'CC': 'Credit Card', 'CA': 'Cash', 'COD': 'COD', 'CDC': 'COD Cash'}} %}
 			</div>
 			<div class="form-group">
 				<label for="hold">Hold</label>
-				{% include 'util/select.twig' with {'name': 'hold', 'id': 'hold', 'selectedvalue': (code.hold ? code.hold : 'N'), 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				{% include 'util/select.twig' with {'name': 'hold', 'id': 'hold', 'tabindex': '7', 'selectedvalue': (code.hold ? code.hold : 'N'), 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 			<div class="form-group">
 				<label for="exp_date">Expire Date</label>
-				<input type="hidden" name="orig_date" id="orig_date" value="{{ code.exp_date|convertdate }}">
+				<input tabindex="9" type="hidden" name="orig_date" id="orig_date" value="{{ code.exp_date|convertdate }}">
 				{% set id = 'exp_date' %}
 				{% set name = 'exp_date' %}
 				{% set value = code.exp_date ? code.exp_date|convertdate : '' %}
@@ -33,12 +33,17 @@
 		<div class="col-6">
 			<div class="form-group">
 				<label for="description">Description</label>
-				<input type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" autofocus>
+				<input tabindex="2" type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" autofocus>
+			</div>
+			<div class="form-group">
+				<label for="freight_allow">Freight Allowed?</label>
+				<input type="hidden" name="freight_hidden" id="freight_hidden">
+				{% include 'util/select.twig' with {'name': 'freight_allow', 'id': 'freight_allow', 'tabindex': '4', 'selectedvalue': (code.freight_allow), 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 			<div class="form-group" >
 				<label for="credit_card">CC Prefix</label>
 				<!-- TODO: need to verify from ar_cust_cred -->
-				<select name="credit_card" class="form-control" id="credit_card" {{ code.type == 'CC' ? '' : 'disabled' }}>
+				<select name="credit_card" class="form-control" id="credit_card" tabindex="6" {{ code.type == 'CC' ? '' : 'disabled' }}>
 					<option value=""></option>
 					{% for credit_card in creditcards %}
 						<option value="{{ credit_card.id }}" {{ code.cc_prefix == credit_card.id ? 'selected' : '' }}>{{ credit_card.name }}</option>
@@ -46,12 +51,8 @@
 				</select>
 			</div>
 			<div class="form-group">
-				<label for="freight_allow">Freight Allowed?</label>
-				{% include 'util/select.twig' with {'name': 'freight_allow', 'id': 'freight_allow', 'selectedvalue': (code.freight_allow), 'options': {'Y': 'Yes', 'N': 'No'}} %}
-			</div>
-			<div class="form-group">
 				<label for="country">Country</label>
-				<select name="country" class="form-control" id="country" >
+				<select name="country" class="form-control" id="country" tabindex="8">
 					<option value="{{ code.country }}"></option>
 					{% for country in countries %}
 						<option value="{{ country.iso }}" {{ code.country == country.iso ? 'selected' : '' }}>{{ country.iso }} - {{ country.name }}</option>
