@@ -40,7 +40,7 @@
 		}
 
 		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $termscode, 'countries' => $countries, 'creditcards' => $creditcards, 'configso' => $configSO, 'recordlocker' => $recordlocker, 'm_trm' => $module_codetable]);
-		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'configso' => $configSO, 'termscode' => $termscode]);
+		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'configso' => $configSO, 'termscode' => $termscode, 'm_trm' => $module_codetable]);
 	} else {
 		$page->title = $page->headline = "Customer Terms Code";
 		$recordlocker->remove_lock($page->codetable);
