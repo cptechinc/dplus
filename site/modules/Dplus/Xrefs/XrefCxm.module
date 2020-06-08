@@ -12,6 +12,8 @@ use CustomerQuery, Customer;
 
 /**
  * Module that handles the editing of the CXM item Xref
+ * NOTE: Users will not be able to edit the itemID field for CXM item
+ * because there are notes and other linked items, so users must delete, recreate.
  */
 class XrefCxm extends WireData implements Module {
 	const MODEL              = 'ItemXrefCustomer';

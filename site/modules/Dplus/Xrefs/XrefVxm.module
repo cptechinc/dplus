@@ -12,6 +12,8 @@ use ConfigInQuery, ConfigIn;
 
 /**
  * Module that handles the editing of the VXM item Xref
+ * NOTE: Users will not be able to edit the itemID field for VXM item
+ * because there are notes and other linked items, so users must delete, recreate.
  */
 class XrefVxm extends WireData implements Module {
 	const MODEL              = 'ItemXrefVendor';
