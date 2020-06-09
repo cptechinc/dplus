@@ -323,7 +323,8 @@ class QnotesItemXrefCustomer extends WireData implements Module {
 	 * @return int
 	 */
 	public function get_column_count() {
-		return 35;
+		$config_ar = ConfigArQuery::create()->findOne();
+		return $config_ar->columns_notes_invoice;
 	}
 
 /* =============================================================
