@@ -266,6 +266,25 @@ $(function () {
 		}
 	});
 
+	$("body").on('change', '.disc_date', function(e) {
+		var input = $(this);
+		var row = input.closest('.discount');
+		var index = row.attr('data-index');
+
+		var str = input.val();
+		var month = parseInt(str.substring(0, 2));
+		var day = parseInt(str.substring(2, 4));
+		if (month < 1 || month > 12 || day < 1 || day > 31) {
+			input.val('0101');
+			swal2.fire({
+				title: 'Invalid Discount Date!',
+				text: 'Must be in MMDD format!',
+				icon: 'warning',
+			});
+		}
+
+	});
+
 	$("body").on('change', '.due_day', function(e) {
 		var input = $(this);
 		var row = input.closest('.due');
@@ -305,6 +324,25 @@ $(function () {
 		} else {
 			$('.row'+index).find($('.due_year')).prop('disabled', false);
 		}
+	});
+
+	$("body").on('change', '.due_date', function(e) {
+		var input = $(this);
+		var row = input.closest('.due');
+		var index = row.attr('data-index');
+
+		var str = input.val();
+		var month = parseInt(str.substring(0, 2));
+		var day = parseInt(str.substring(2, 4));
+		if (month < 1 || month > 12 || day < 1 || day > 31) {
+			input.val('0101');
+			swal2.fire({
+				title: 'Invalid Due Date!',
+				text: 'Must be in MMDD format!',
+				icon: 'warning',
+			});
+		}
+
 	});
 
 	$("body").on('change', '.disc_group', function(e) {
