@@ -28,6 +28,10 @@ class DpagesMar extends Dpages implements Module {
 			'name'   => 'ar-code-table-trm',
 			'fields' => array()
 		),
+		'ar-code-table-crcd' => array(
+			'name'   => 'ar-code-table-crcd',
+			'fields' => array()
+		),
 	);
 
 	const PAGES = array(
@@ -146,6 +150,15 @@ class DpagesMar extends Dpages implements Module {
 			'summary'        => 'View / Edit Customer Terms Code',
 			'parent'         => '/mar/armain/',
 			'dplus_function' => 'trm'
+		),
+		'ar-crcd' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'ar-code-table',
+			'name'           => 'crcd',
+			'title'          => 'Customer Credit Card',
+			'summary'        => 'View / Edit Customer Credit Card',
+			'parent'         => '/mar/armain/',
+			'dplus_function' => 'crcd'
 		),
 	);
 
