@@ -29,7 +29,7 @@
 			 */
 			if ($recordlocker->function_locked($page->codetable, $creditcode->code) && !$recordlocker->function_locked_by_user($page->codetable, $creditcode->code)) {
 				$msg = "$creditcode->code is being locked by " . $recordlocker->get_locked_user($page->codetable, $creditcode->code);
-				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Terms Code $creditcode->code is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Credit Card Code $creditcode->code is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 				$page->body .= $html->div('class=mb-3');
 			} elseif (!$recordlocker->function_locked($page->codetable, $creditcode->code)) {
 				$recordlocker->create_lock($page->codetable, $creditcode->code);
@@ -41,7 +41,7 @@
 		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $creditcode, 'gl_accounts' => $gl_accounts, 'recordlocker' => $recordlocker]);
 		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'creditcode' => $creditcode]);
 	} else {
-		$page->title = $page->headline = "Customer Terms Code";
+		$page->title = $page->headline = "Customer Credit Card Code";
 		$recordlocker->remove_lock($page->codetable);
 		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/list.twig", ['page' => $page, 'table' => $page->codetable, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable, 'recordlocker' => $recordlocker]);
 	}

@@ -1,5 +1,12 @@
 {# codes is an array / ObjectCollection of CreditCardDigitGet #}
 <div class="list-group">
+		<div class="row align-items-center">
+			<div class="col-5"></div>
+			<div class="list-group-item text-center col-4">
+				<strong>Service Charge Information</strong>
+			</div>
+			<div class="col-3"></div>
+		</div>
 	<div class="list-group-item bg-dark text-white">
 		<div class="row align-items-center">
 			<div class="col-1">
@@ -60,7 +67,7 @@
 					{{ code.trans_cost }}
 				</div>
 				<div class="col-1">
-					{{ code.lmcc_surcharge_percent }}
+					{{ code.cc_surcharge_percent }}
 				</div>
 				<div class="col-3 text-center">
 					{% if recordlocker.function_locked(page.name, code.code) == false or recordlocker.function_locked_by_user(page.name, code.code) %}

@@ -16,6 +16,7 @@
 			<div class="form-group">
 				<label for="gl_account">General Ledger Account</label>
 				<select class="form-control" name="gl_account" id="gl_account">
+					<option value=""></option>
 					{% for account in gl_accounts %}
 						<option value="{{ account.code }}" {{ account.code == code.gl_account ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
 					{% endfor %}
@@ -24,7 +25,8 @@
             <div class="form-group">
 				<label for="custid">Cust ID</label>
                 <div class="input-group form-group">
-                    <input class="form-control form-group inline" type="text" name="custid" id="custid" value="{{ code.custid }}" placeholder="Cust ID">
+					{# TODO has to be a valid Customer ID #}
+                    <input class="form-control form-group inline" type="text" name="custid" id="custid" value="{{ code.custid }}" placeholder="Cust ID" required>
                     <span class="input-group-append">
                         {# TODO create custID search to validate custid field #}
                         <button type="button" class="btn btn-default not-round" data-field="#custid"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
@@ -34,8 +36,9 @@
 		</div>
 		<div class="col-6">
             <div class="form-group">
-				<label for="charge_gl_account">General Ledger Account</label>
+				<label for="charge_gl_account">Service Charge General Ledger Account</label>
                 <select class="form-control" name="charge_gl_account" id="charge_gl_account">
+					<option value=""></option>
 					{% for account in gl_accounts %}
 						<option value="{{ account.code }}" {{ account.code == code.charge_gl_account ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
 					{% endfor %}
@@ -43,15 +46,15 @@
 			</div>
             <div class="form-group">
 				<label for="charge_rate">Service Rate</label>
-				<input type="text" name="charge_rate" class="form-control" maxlength="5" value="{{ code.charge_rate }}" id="charge_rate" >
+				<input type="text" name="charge_rate" class="form-control" maxlength="5" value="{{ code.charge_rate ? code.charge_rate : 0 }}" id="charge_rate" >
 			</div>
             <div class="form-group">
 				<label for="trans_cost">Transaction Cost</label>
-				<input type="text" name="trans_cost" class="form-control" maxlength="5" value="{{ code.trans_cost }}" id="trans_cost" >
+				<input type="text" name="trans_cost" class="form-control" maxlength="5" value="{{ code.trans_cost ? code.trans_cost : 0 }}" id="trans_cost" >
 			</div>
             <div class="form-group">
 				<label for="cc_surcharge_percent">Credit Card Surcharge Percent</label>
-				<input type="text" name="cc_surcharge_percent" class="form-control" maxlength="5" value="{{ code.cc_surcharge_percent }}" id="cc_surcharge_percent" >
+				<input type="text" name="cc_surcharge_percent" class="form-control" maxlength="5" value="{{ code.cc_surcharge_percent ? code.cc_surcharge_percent : 0 }}" id="cc_surcharge_percent" >
 			</div>
 		</div>
 	</div>
