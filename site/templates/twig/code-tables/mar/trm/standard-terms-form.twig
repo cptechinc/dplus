@@ -20,7 +20,7 @@
 				</div>
 			</div>
 			{% for x in 1..m_trm.count_standardterms_split() %}
-				<div class="list-group-item row{{ x }} percent {{ code.order_percent(x) > 0 or x == 1 ? '' : 'collapse' }}" data-index="{{ x }}">
+				<div class="list-group-item row{{ x }} percent" data-index="{{ x }}">
 					<div class="row align-items-center">
 						<div class="col-3">
 							{{ x }}
@@ -54,19 +54,19 @@
 				</div>
 			</div>
 			{% for x in 1..m_trm.count_standardterms_split() %}
-				<div class="list-group-item row{{ x }} discount {{ code.order_percent(x) > 0 or x == 1 ? '' : 'collapse' }}" data-index="{{ x }}">
+				<div class="list-group-item row{{ x }} discount" data-index="{{ x }}">
 					<div class="row align-items-center">
 						<div class="col">
 							<input tabindex="{{x}}1" type="text" name="percent{{ x }}" id="percent{{ x }}" maxlength="5" class="form-control discount_percent" value="{{ code.percent(x) == 0 ? 0 : code.percent(x) }}">
 						</div>
 						<div class="col">
-							<input tabindex="{{x}}2" type="text" name="days{{ x }}" id="days{{ x }}" maxlength="3" class="form-control days disc_group" value="{{ code.percent(x) == 0 ? 0 : code.days(x) }}" {{ code.percent(x) == 0 ? 'disabled' : '' }}>
+							<input tabindex="{{x}}2" type="text" name="days{{ x }}" id="days{{ x }}" maxlength="3" class="form-control days disc_group" value="{{ code.percent(x) == 0 ? 0 : code.days(x) }}" {{ code.percent(x) == 0 or code.day(x) > 0 or code.date(x) > 0 ? 'disabled' : '' }}>
 						</div>
 						<div class="col">
-							<input tabindex="{{x}}3" type="text" name="day{{ x }}" id="day{{ x }}" maxlength="2" class="form-control day disc_group" value="{{ code.percent(x) == 0 ? 0 : code.day(x) }}" {{ code.percent(x) == 0 ? 'disabled' : '' }}>
+							<input tabindex="{{x}}3" type="text" name="day{{ x }}" id="day{{ x }}" maxlength="2" class="form-control day disc_group" value="{{ code.percent(x) == 0 ? 0 : code.day(x) }}" {{ code.percent(x) == 0 or code.days(x) > 0 or code.date(x) > 0 ? 'disabled' : '' }}>
 						</div>
 						<div class="col">
-							<input tabindex="{{x}}4" type="text" name="date{{ x }}" id="date{{ x }}" maxlength="4" class="form-control disc_date disc_group" value="{{ code.date(x) == 0 ? '' : code.date(x) }}" placeholder="MMDD" {{ code.percent(x) == 0 ? 'disabled' : '' }}>
+							<input tabindex="{{x}}4" type="text" name="date{{ x }}" id="date{{ x }}" maxlength="4" class="form-control disc_date disc_group" value="{{ code.date(x) == 0 ? '' : code.date(x) }}" placeholder="MMDD" {{ code.percent(x) == 0 or code.days(x) > 0 or code.day(x) > 0 ? 'disabled' : '' }}>
 						</div>
 					</div>
 				</div>
@@ -97,19 +97,19 @@
 				</div>
 			</div>
 			{% for x in 1..m_trm.count_standardterms_split() %}
-				<div class="list-group-item row{{ x }} due {{ code.order_percent(x) > 0 or x == 1 ? '' : 'collapse' }}" data-index="{{ x }}">
+				<div class="list-group-item row{{ x }} due" data-index="{{ x }}">
 					<div class="row align-items-center">
 						<div class="col">
-							<input tabindex="{{x}}5" type="text" name="due_days{{ x }}" id="due_days{{ x }}" maxlength="3" class="form-control due_days due_group" value="{{ code.due_days(x) ? code.due_days(x) : 0 }}">
+							<input tabindex="{{x}}5" type="text" name="due_days{{ x }}" id="due_days{{ x }}" maxlength="3" class="form-control due_days due_group" value="{{ code.due_days(x) ? code.due_days(x) : 0 }}" {{ code.order_percent(x) == 0 or code.due_day(x) > 0 or code.due_date(x) > 0 ? 'disabled' : '' }}>
 						</div>
 						<div class="col">
-							<input tabindex="{{x}}6" type="text" name="due_day{{ x }}" id="due_day{{ x }}" maxlength="2" class="form-control due_day due_group" value="{{ code.due_day(x) ? code.due_day(x) : 0 }}">
+							<input tabindex="{{x}}6" type="text" name="due_day{{ x }}" id="due_day{{ x }}" maxlength="2" class="form-control due_day due_group" value="{{ code.due_day(x) ? code.due_day(x) : 0 }}" {{ code.order_percent(x) == 0 or code.due_days(x) > 0 or code.due_date(x) > 0 ? 'disabled' : '' }}>
 						</div>
 						<div class="col-2">
 							<input tabindex="{{x}}7" type="text" name="due_months{{ x }}" id="due_months{{ x }}" maxlength="2" class="form-control due_months" value="{{ code.due_months(x) ? code.due_months(x) : 0 }}" {{ code.due_day(x) == 0 ? 'disabled' : '' }}>
 						</div>
 						<div class="col-3">
-							<input tabindex="{{x}}8" type="text" name="due_date{{ x }}" id="due_date{{ x }}" maxlength="5" class="form-control due_date due_group" value="{{ code.due_date(x) == 0 ? '' : code.due_date(x) }}" placeholder="MMDD">
+							<input tabindex="{{x}}8" type="text" name="due_date{{ x }}" id="due_date{{ x }}" maxlength="5" class="form-control due_date due_group" value="{{ code.due_date(x) == 0 ? '' : code.due_date(x) }}" placeholder="MMDD" {{ code.order_percent(x) == 0 or code.due_days(x) > 0 or code.due_day(x) > 0 ? 'disabled' : '' }}>
 						</div>
 						<div class="col">
 							<input tabindex="{{x}}9" type="text" name="due_year{{ x }}" id="due_year{{ x }}" maxlength="1" class="form-control due_year" value="{{ code.due_year(x) ? code.due_year(x) : 0 }}" {{ code.due_date(x) == 0 ? 'disabled' : '' }}>

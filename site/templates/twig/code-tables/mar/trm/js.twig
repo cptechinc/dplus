@@ -42,7 +42,6 @@ $(function () {
 
 	if ($('#code').val() == '' || $('#order_percent1').val() == 0) {
 		$('#order_percent1').val(100);
-		$('.row1').removeClass('collapse');
 	}
 
 	var freight_amt = {{ configso.get_freight_allowed_amt() }};
@@ -61,6 +60,17 @@ $(function () {
 		$('#freight_allow').val('N');
 		$('#freight_hidden').val('N');
 	}
+
+	$("body").on('change', '.disc_group', function(e) {
+		var input = $(this);
+		var row = input.closest('.discount');
+		var index = row.attr("data-index");
+
+		if (input.val() != 0) {
+			$('.row'+index).find($('input.disc_group')).not(this).val(0);
+			$('.row'+index).find($('input.disc_group')).not(this).prop('disabled', true);
+		}
+	});
 
 	$("#code-edit-form #method").change(function() {
 		if ($('#method').val() == '') {
@@ -180,11 +190,9 @@ $(function () {
 					var next = index + 1;
 					var nextpercent = 100 - sumpercent;
 					$('.row'+next).find('.order_percent').val(nextpercent);
-					$('.row'+next).removeClass('collapse');
 				}
 			} else {
 				if (input.val() == 0 && sumpercent == 100 && index != 1) {
-					$('.row'+index).addClass('collapse');
 					$('.row'+index).find('.order_percent, .discount_percent, .disc_group, .due_group, .due_months, .due_year').val(0)
 				} else if (input.val() == 0 && sumpercent < 100) {
 					var next = index + 1;
@@ -195,7 +203,6 @@ $(function () {
 						var nextpercent = 100 - sumpercent;
 						input.val($('.row'+next).find('.order_percent').val());
 						$('.row'+next).find('.order_percent').val(nextpercent);
-						$('.row'+next).removeClass('collapse');
 					}
 				} else if (input.val() < 100 && input.val() > 0 && sumpercent < 100) {
 					var i;
@@ -205,6 +212,7 @@ $(function () {
 							var newsumpercent = sumpercent - inputval;
 							var nextpercent = 100 - newsumpercent;
 							$('.row'+index).find('.order_percent').val(nextpercent);
+							$('.row'+index).find('.due_group').prop('disabled', false);
 							swal2.fire({
 								title: 'Invalid Order Percent!',
 								text: 'Cannot have more than {{ m_trm.count_standardterms_split() }} splits',
@@ -215,7 +223,7 @@ $(function () {
 							if ($('.row'+i).find('.order_percent').val() == 0) {
 								var nextpercent = 100 - sumpercent;
 								$('.row'+i).find('.order_percent').val(nextpercent);
-								$('.row'+i).removeClass('collapse');
+								$('.row'+i).find('.due_group').prop('disabled', false);
 								break;
 							}
 						}
@@ -446,12 +454,9 @@ $(function () {
 			});
 		} else {
 			if (input.val() == 99) {
-				$('.row'+(index+1)).addClass('collapse');
 				$('.row'+(index+1)).find($('.from_day, .thru_day, .eom_percent, .eom_day, .eom_disc_months, .eom_dueday, .eom_months')).val(0);
-				$('.row'+(index+2)).addClass('collapse');
 				$('.row'+(index+2)).find($('.from_day, .thru_day, .eom_percent, .eom_day, .eom_disc_months, .eom_dueday, .eom_months')).val(0);
 			} else if ( (input.val() != 99) && (input.val() < 30) && ( input.val() > $('.row'+(index)).find($('.from_day')).val() ) ) {
-				$('.row'+(index+1)).removeClass('collapse');
 				$('.row'+(index+1)).find($('.from_day')).val(newfieldvalue);
 				$('.row'+(index+1)).find($('.thru_day')).val(99);
 				$('.row'+(index+1)).find($('.eom_dueday')).val(1);
