@@ -38,7 +38,9 @@
 
         $gl_accounts = GlCodeQuery::create()->find();
 
+		$page->customerlookupURL = $pages->get('pw_template=mci-lookup')->url;
 		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $creditcode, 'gl_accounts' => $gl_accounts, 'recordlocker' => $recordlocker]);
+		$page->body .= $config->twig->render("util/ajax-modal.twig", []);
 		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'creditcode' => $creditcode]);
 	} else {
 		$page->title = $page->headline = "Customer Credit Card Code";

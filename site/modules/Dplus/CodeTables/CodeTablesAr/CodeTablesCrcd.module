@@ -106,7 +106,7 @@ class CodeTablesCrcd extends WireData implements Module {
 				} elseif ($input->$rm->text('action') == 'update-crcd') {
 					$description = $input->$rm->text('description');
                     $gl_account = $input->$rm->text('gl_account');
-                    $custid = $input->$rm->text('custid');
+                    $custid = $input->$rm->text('customer');
                     $charge_gl_account = $input->$rm->text('charge_gl_account');
                     $charge_rate = $input->$rm->text('charge_rate');
                     $trans_cost = $input->$rm->text('trans_cost');

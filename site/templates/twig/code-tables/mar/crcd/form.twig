@@ -24,14 +24,15 @@
 			</div>
             <div class="form-group">
 				<label for="custid">Cust ID</label>
-                <div class="input-group form-group">
-					{# TODO has to be a valid Customer ID #}
-                    <input class="form-control form-group inline" type="text" name="custid" id="custid" value="{{ code.custid }}" placeholder="Cust ID" required>
-                    <span class="input-group-append">
-                        {# TODO create custID search to validate custid field #}
-                        <button type="button" class="btn btn-default not-round" data-field="#custid"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
-                    </span>
-                </div>
+				<div class="input-group">
+					<span class="input-group-prepend">
+						<button type="button" class="btn btn-secondary form_button" data-toggle="modal" data-target="#ajax-modal">
+							<i class="fa fa-search" aria-hidden="true"></i> <span class="sr-only">Search Customers</span>
+						</button>
+					</span>
+					<input type="text" name="customer" class="form-control" maxlength="6" value="{{ code.custid }}" id="customer" placeholder="Search for Customer" data-toggle="modal" data-target="#ajax-modal">
+				</div>
+				<input type="text" name="credit_cust_name" class="form-control-plaintext" value="" id="credit_cust_name" readonly>
 			</div>
 		</div>
 		<div class="col-6">
@@ -46,15 +47,15 @@
 			</div>
             <div class="form-group">
 				<label for="charge_rate">Service Rate</label>
-				<input type="text" name="charge_rate" class="form-control" maxlength="5" value="{{ code.charge_rate ? code.charge_rate : 0 }}" id="charge_rate" >
+				<input type="text" name="charge_rate" class="form-control" maxlength="5" value="{{ code.charge_rate ? code.charge_rate : '0.00' }}" id="charge_rate" >
 			</div>
             <div class="form-group">
 				<label for="trans_cost">Transaction Cost</label>
-				<input type="text" name="trans_cost" class="form-control" maxlength="5" value="{{ code.trans_cost ? code.trans_cost : 0 }}" id="trans_cost" >
+				<input type="text" name="trans_cost" class="form-control" maxlength="5" value="{{ code.trans_cost ? code.trans_cost : '0.00' }}" id="trans_cost" >
 			</div>
             <div class="form-group">
 				<label for="cc_surcharge_percent">Credit Card Surcharge Percent</label>
-				<input type="text" name="cc_surcharge_percent" class="form-control" maxlength="5" value="{{ code.cc_surcharge_percent ? code.cc_surcharge_percent : 0 }}" id="cc_surcharge_percent" >
+				<input type="text" name="cc_surcharge_percent" class="form-control" maxlength="5" value="{{ code.cc_surcharge_percent ? code.cc_surcharge_percent : '0.00' }}" id="cc_surcharge_percent" >
 			</div>
 		</div>
 	</div>
