@@ -186,6 +186,14 @@ class CodeTablesCrcd extends WireData implements Module {
 		return $response;
 	}
 
+	/**
+	 * Validates if Customer exists
+	 * @return void
+	 */
+	public function customer_exists() {
+		return boolval(CustomerQuery::create()->filterByCustid()->count());
+	}
+
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus CRCD Code Table CRUD Manager',
