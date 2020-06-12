@@ -190,10 +190,12 @@ $(function () {
 					var next = index + 1;
 					var nextpercent = 100 - sumpercent;
 					$('.row'+next).find('.order_percent').val(nextpercent);
+					$('.row'+next).find('.due_group').prop('disabled', false);
 				}
 			} else {
 				if (input.val() == 0 && sumpercent == 100 && index != 1) {
-					$('.row'+index).find('.order_percent, .discount_percent, .disc_group, .due_group, .due_months, .due_year').val(0)
+					$('.row'+index).find('.order_percent, .discount_percent, .disc_group, .due_group, .due_months, .due_year').val(0);
+					$('.row'+index).find('.disc_group, .due_group, .due_months, .due_year').prop('disabled', true);
 				} else if (input.val() == 0 && sumpercent < 100) {
 					var next = index + 1;
 					if ($('.row'+next).find('.order_percent').val() == 0) {
@@ -212,7 +214,6 @@ $(function () {
 							var newsumpercent = sumpercent - inputval;
 							var nextpercent = 100 - newsumpercent;
 							$('.row'+index).find('.order_percent').val(nextpercent);
-							$('.row'+index).find('.due_group').prop('disabled', false);
 							swal2.fire({
 								title: 'Invalid Order Percent!',
 								text: 'Cannot have more than {{ m_trm.count_standardterms_split() }} splits',
@@ -222,6 +223,7 @@ $(function () {
 						} else {
 							if ($('.row'+i).find('.order_percent').val() == 0) {
 								var nextpercent = 100 - sumpercent;
+								console.log(i);
 								$('.row'+i).find('.order_percent').val(nextpercent);
 								$('.row'+i).find('.due_group').prop('disabled', false);
 								break;

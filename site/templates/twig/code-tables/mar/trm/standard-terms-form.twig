@@ -100,16 +100,16 @@
 				<div class="list-group-item row{{ x }} due" data-index="{{ x }}">
 					<div class="row align-items-center">
 						<div class="col">
-							<input tabindex="{{x}}5" type="text" name="due_days{{ x }}" id="due_days{{ x }}" maxlength="3" class="form-control due_days due_group" value="{{ code.due_days(x) ? code.due_days(x) : 0 }}" {{ code.order_percent(x) == 0 or code.due_day(x) > 0 or code.due_date(x) > 0 ? 'disabled' : '' }}>
+							<input tabindex="{{x}}5" type="text" name="due_days{{ x }}" id="due_days{{ x }}" maxlength="3" class="form-control due_days due_group" value="{{ code.due_days(x) ? code.due_days(x) : 0 }}" {{ x == 1 or code.order_percent(x) != 0 or code.due_day(x) < 0 or code.due_date(x) < 0 ? '' : 'disabled' }}>
 						</div>
 						<div class="col">
-							<input tabindex="{{x}}6" type="text" name="due_day{{ x }}" id="due_day{{ x }}" maxlength="2" class="form-control due_day due_group" value="{{ code.due_day(x) ? code.due_day(x) : 0 }}" {{ code.order_percent(x) == 0 or code.due_days(x) > 0 or code.due_date(x) > 0 ? 'disabled' : '' }}>
+							<input tabindex="{{x}}6" type="text" name="due_day{{ x }}" id="due_day{{ x }}" maxlength="2" class="form-control due_day due_group" value="{{ code.due_day(x) ? code.due_day(x) : 0 }}" {{ x == 1 or code.order_percent(x) != 0 or code.due_day(x) < 0 or code.due_date(x) < 0 ? '' : 'disabled' }}>
 						</div>
 						<div class="col-2">
 							<input tabindex="{{x}}7" type="text" name="due_months{{ x }}" id="due_months{{ x }}" maxlength="2" class="form-control due_months" value="{{ code.due_months(x) ? code.due_months(x) : 0 }}" {{ code.due_day(x) == 0 ? 'disabled' : '' }}>
 						</div>
 						<div class="col-3">
-							<input tabindex="{{x}}8" type="text" name="due_date{{ x }}" id="due_date{{ x }}" maxlength="5" class="form-control due_date due_group" value="{{ code.due_date(x) == 0 ? '' : code.due_date(x) }}" placeholder="MMDD" {{ code.order_percent(x) == 0 or code.due_days(x) > 0 or code.due_day(x) > 0 ? 'disabled' : '' }}>
+							<input tabindex="{{x}}8" type="text" name="due_date{{ x }}" id="due_date{{ x }}" maxlength="5" class="form-control due_date due_group" value="{{ code.due_date(x) == 0 ? '' : code.due_date(x) }}" placeholder="MMDD" {{ x == 1 or code.order_percent(x) != 0 or code.due_days(x) < 0 or code.due_day(x) < 0 ? '' : 'disabled' }}>
 						</div>
 						<div class="col">
 							<input tabindex="{{x}}9" type="text" name="due_year{{ x }}" id="due_year{{ x }}" maxlength="1" class="form-control due_year" value="{{ code.due_year(x) ? code.due_year(x) : 0 }}" {{ code.due_date(x) == 0 ? 'disabled' : '' }}>
