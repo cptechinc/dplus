@@ -10,7 +10,6 @@
             <img src="<?= $appconfig->logo_small->url; ?>" width="30" height="30" alt="">
             DistributionPlus
         </a>
-
     </div>
 </nav>
 <?php include('./_nav-yt.php'); ?>
