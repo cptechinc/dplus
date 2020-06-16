@@ -9,7 +9,7 @@
 				<label for="code">First Digit of Credit Card</label>
 				<input type="text" name="code" class="form-control" value="{{ code.code }}" id="code" maxlength="{{ code.get_max_length_code() }}" {{ code.code ? 'readonly' : 'autofocus' }}>
 			</div>
-            <div class="form-group">
+			<div class="form-group">
 				<label for="description">Name of Credit Card</label>
 				<input type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" autofocus>
 			</div>
@@ -22,38 +22,38 @@
 					{% endfor %}
 				</select>
 			</div>
-            <div class="form-group">
-				<label for="custid">Customer ID</label>
+			<div class="form-group">
+				<label for="custID">Customer ID</label>
 				<div class="input-group">
 					<span class="input-group-prepend">
 						<button type="button" class="btn btn-secondary form_button" data-toggle="modal" data-target="#ajax-modal">
 							<i class="fa fa-search" aria-hidden="true"></i> <span class="sr-only">Search Customers</span>
 						</button>
 					</span>
-					<input type="text" name="customer" class="form-control" maxlength="6" value="{{ code.custid }}" id="customer" placeholder="Search for Customer" required>
+					<input type="text" name="custID" class="form-control" maxlength="6" value="{{ code.custid }}" id="custID" placeholder="Search for Customer" required>
 				</div>
 				<input type="text" name="credit_cust_name" class="form-control-plaintext" value="{{ code.customer_name.name }}" id="credit_cust_name" disabled>
 			</div>
 		</div>
 		<div class="col-6">
-            <div class="form-group">
+			<div class="form-group">
 				<label for="charge_gl_account">Service Charge General Ledger Account</label>
-                <select class="form-control" name="charge_gl_account" id="charge_gl_account">
+				<select class="form-control" name="charge_gl_account" id="charge_gl_account">
 					<option value=""></option>
 					{% for account in gl_accounts %}
 						<option value="{{ account.code }}" {{ account.code == code.charge_gl_account ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
 					{% endfor %}
 				</select>
 			</div>
-            <div class="form-group">
+			<div class="form-group">
 				<label for="charge_rate">Service Rate</label>
 				<input type="text" name="charge_rate" class="form-control" maxlength="5" value="{{ code.charge_rate ? code.charge_rate : '0.00' }}" id="charge_rate" >
 			</div>
-            <div class="form-group">
+			<div class="form-group">
 				<label for="trans_cost">Transaction Cost</label>
 				<input type="text" name="trans_cost" class="form-control" maxlength="5" value="{{ code.trans_cost ? code.trans_cost : '0.00' }}" id="trans_cost" >
 			</div>
-            <div class="form-group">
+			<div class="form-group">
 				<label for="cc_surcharge_percent">Credit Card Surcharge Percent</label>
 				<input type="text" name="cc_surcharge_percent" class="form-control" maxlength="5" value="{{ code.cc_surcharge_percent ? code.cc_surcharge_percent : '0.00' }}" id="cc_surcharge_percent" >
 			</div>

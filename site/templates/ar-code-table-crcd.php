@@ -41,7 +41,7 @@
 		$page->customerlookupURL = $pages->get('pw_template=mci-lookup')->url;
 		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $creditcode, 'gl_accounts' => $gl_accounts, 'recordlocker' => $recordlocker]);
 		$page->body .= $config->twig->render("util/ajax-modal.twig", []);
-		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'creditcode' => $creditcode]);
+		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'creditcode' => $creditcode, 'url_validate' => $page->child('pw_template=ar-code-table-crcd-validate')->url ]);
 	} else {
 		$page->title = $page->headline = "Customer Credit Card Code";
 		$recordlocker->remove_lock($page->codetable);

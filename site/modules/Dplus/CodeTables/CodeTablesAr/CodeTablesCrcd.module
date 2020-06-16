@@ -6,6 +6,7 @@ use Purl\Url;
 
 use CreditCardDigitGetQuery, CreditCardDigitGet;
 use ConfigArQuery, ConfigAr;
+use CustomerQuery, Customer;
 
 /**
  * Module that handles the editing of the CCM codetable
@@ -104,23 +105,33 @@ class CodeTablesCrcd extends WireData implements Module {
 				if ($input->$rm->text('action') == 'remove-code') {
 					$record->delete();
 				} elseif ($input->$rm->text('action') == 'update-crcd') {
-					$description = $input->$rm->text('description');
-                    $gl_account = $input->$rm->text('gl_account');
-                    $custid = $input->$rm->text('customer');
-                    $charge_gl_account = $input->$rm->text('charge_gl_account');
-                    $charge_rate = $input->$rm->text('charge_rate');
-                    $trans_cost = $input->$rm->text('trans_cost');
-                    $cc_surcharge_percent = $input->$rm->text('cc_surcharge_percent');
-					$record->setDescription($description);
-                    $record->setGl_account($gl_account);
-                    $record->setCustid($custid);
-                    $record->setCharge_gl_account($charge_gl_account);
-                    $record->setCharge_rate($charge_rate);
-                    $record->setTrans_cost($trans_cost);
-                    $record->setCc_surcharge_percent($cc_surcharge_percent);
-					$record->setDate(date('Ymd'));
-					$record->setTime(date('His'));
-					$record->setDummy('P');
+					$custID = $input->$rm->text('custID');
+
+					if ($this->customer_exists($custID)) {
+						$description = $input->$rm->text('description');
+						$gl_account = $input->$rm->text('gl_account');
+						$charge_gl_account = $input->$rm->text('charge_gl_account');
+						$charge_rate = $input->$rm->text('charge_rate');
+						$trans_cost = $input->$rm->text('trans_cost');
+						$cc_surcharge_percent = $input->$rm->text('cc_surcharge_percent');
+						$record->setDescription($description);
+						$record->setGl_account($gl_account);
+						$record->setCustid($custID);
+						$record->setCharge_gl_account($charge_gl_account);
+						$record->setCharge_rate($charge_rate);
+						$record->setTrans_cost($trans_cost);
+						$record->setCc_surcharge_percent($cc_surcharge_percent);
+						$record->setDate(date('Ymd'));
+						$record->setTime(date('His'));
+						$record->setDummy('P');
+					} else {
+						$response = new CodeTablesResponse();
+						$response->set_key($code);
+						$response->set_error(true);
+						$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+						$message = self::DESCRIPTION_RECORD . " ($code) was not updated because customer '" . $custid . "' does not exist";
+						$response->set_message($message);
+					}
 				}
 				$response = $this->save_and_process_response($table, $code, $record);
 			} else {
@@ -187,11 +198,13 @@ class CodeTablesCrcd extends WireData implements Module {
 	}
 
 	/**
-	 * Validates if Customer exists
+	 * Returns if Customer exists
+	 * @param string $custID Customer ID
 	 * @return void
 	 */
-	public function customer_exists() {
-		return boolval(CustomerQuery::create()->filterByCustid()->count());
+	public function customer_exists($custID) {
+		$validate_custid = $this->wire('LookupCustomer');
+		return $validate_custid->lookup_customer($custID);
 	}
 
 	public static function getModuleInfo() {
