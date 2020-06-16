@@ -112,6 +112,8 @@ $(function () {
 		// end customer lookup modal
 
 		$('#custID').change( function() {
+			var string = $('#custID').val();
+			$('#custID').val(string.toUpperCase());
 			$('#credit_cust_name').val('');
 		});
 

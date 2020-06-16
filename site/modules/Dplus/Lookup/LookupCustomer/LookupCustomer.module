@@ -26,6 +26,7 @@ class LookupCustomer extends WireData implements Module {
 	 * @return bool
 	 */
 	public function lookup_customer($custID) {
+		$custID = strtoupper($custID);
 		$q = CustomerQuery::create();
 		$q->filterByCustid($custID);
 
