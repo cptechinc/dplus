@@ -6,6 +6,98 @@ $(function () {
 
 	var modal_ajax = $('#ajax-modal');
 
+	$("body").on("change", "input[name=custID]", function(e) {
+		var custID = $(this).val();
+		var apiurl = new URI("{{ url_json_ci }}");
+		apiurl.addQuery('action', 'get-customer-name');
+		apiurl.addQuery('custID', custID);
+		console.log(apiurl.toString());
+
+		$.getJSON(apiurl.toString(), function( name ) {
+			if (name.length) {
+				credit_cust_name.val(name);
+			} else {
+				credit_cust_name.val('');
+			}
+		});
+	});
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = form.serialize();
+
+	$("body").on("click", "a:not(.form_button, #ajax-modal a)", function(e) {
+		if (form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			swal2.fire({
+				title: 'Changes have occurred!',
+				text: 'Do you want to save?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+				cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value) {
+					form.find('button[type=submit]').click();
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					// Send HTTP GET Request to remove Record Lock
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
+/* =============================================================
+	Customer Lookup Modal Functions
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = '{{ page.customerlookupURL }}';
+		modal.find('.modal-title').text('Search for a Customer');
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {
+
+		});
+	});
+
+	$("body").on('click', '.ci-customer', function(e) {
+		e.preventDefault();
+		var custID = $(this).data('custid');
+		var cust_name = $(this).data('cust_name');
+		input_custID.val(custID);
+		credit_cust_name.val(cust_name);
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('submit', '#lookup form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {
+
+		});
+	});
+
+	$("body").on('click', '.page-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
 	form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
@@ -35,86 +127,4 @@ $(function () {
 			form.submit();
 		}
 	});
-
-	var form = $('#code-edit-form');
-	origForm = form.serialize();
-
-	$("body").on("click", "a:not(.form_button, #ajax-modal a)", function(e) {
-		if (form.serialize() !== origForm) {
-			e.preventDefault();
-			var a = $(this);
-			var href = a.attr('href');
-
-			swal2.fire({
-				title: 'Changes have occurred!',
-				text: 'Do you want to save?',
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
-				cancelButtonText: 'No',
-			}).then((result) => {
-				if (result.value) {
-					form.find('button[type=submit]').click();
-				} else if (result.dismiss === Swal.DismissReason.cancel) {
-					// Send HTTP GET Request to remove Record Lock
-					$.get('{{ page.url }}', function() {
-						window.location.href = href;
-					});
-				}
-			});
-		}
-	});
-
-	/**
-	 *
-	 * Customer Lookup Modal
-	 *
-	 */
-		modal_ajax.on('show.bs.modal', function (event) {
-			var button = $(event.relatedTarget); // Button that triggered the modal
-			var modal = $(this);
-			var url = '{{ page.customerlookupURL }}';
-			modal.find('.modal-title').text('Search for a Customer');
-			modal.resizeModal('xl');
-			modal.find('.modal-body').loadin(url, function() {
-
-			});
-		});
-
-		$("body").on('click', '.ci-customer', function(e) {
-			e.preventDefault();
-			var custID = $(this).data('custid');
-			var cust_name = $(this).data('cust_name');
-			input_custID.val(custID);
-			credit_cust_name.val(cust_name);
-			modal_ajax.modal('hide');
-		});
-
-		$("body").on('submit', '#lookup form', function(e) {
-			e.preventDefault();
-			var form = $(this);
-			var query = form.serialize();
-			var action = form.attr('action');
-			var search = form.find('input[name=q]').val();
-			var url = action + '?' + query;
-			form.closest('.modal').find('.modal-title').text('Searching for ' + search);
-			form.closest('.modal').find('.modal-body').loadin(url, function() {
-
-			});
-		});
-
-		$("body").on('click', '.page-link', function(e) {
-			e.preventDefault();
-			var href = $(this).attr('href');
-			modal_ajax.find('.modal-body').load(href);
-		});
-
-		// end customer lookup modal
-
-		$('#custID').change( function() {
-			var string = $('#custID').val();
-			$('#custID').val(string.toUpperCase());
-			$('#credit_cust_name').val('');
-		});
-
 });
