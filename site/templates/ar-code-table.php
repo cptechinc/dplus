@@ -6,6 +6,7 @@
 	if ($input->requestMethod('POST') || $input->get->action) {
 		$rm = strtolower($input->requestMethod());
 		$code = $input->$rm->text('code');
+		$code = $action == 'update-notes' || $action == 'delete-notes' ? $code : '';
 
 		if ($ar_codetables->validate_codetable($page->codetable)) {
 			$module_codetable = $ar_codetables->get_codetable_module($page->codetable);
