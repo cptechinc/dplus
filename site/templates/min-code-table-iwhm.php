@@ -4,10 +4,6 @@
 
 	if ($input->get->code) {
 		$code = $whseID = $input->get->text('code');
-		$states = StatesQuery::create()->find();
-		$countries = CountryQuery::create()->find();
-		$warehouses = WarehouseQuery::create()->find();
-		$config_in = ConfigInQuery::create()->findOne();
 
 		if ($module_codetable->code_exists($code)) {
 			$page->title = $page->headline = "IWHM: $code";
@@ -42,11 +38,12 @@
 		}
 
 		$page->customerlookupURL = $pages->get('pw_template=mci-lookup')->url;
-		$page->body .= $config->twig->render("code-tables/min/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'warehouse' => $warehouse, 'config_in' => $config_in, 'states' => $states, 'countries' => $countries, 'warehouses' => $warehouses, 'recordlocker' => $recordlocker]);
+		$page->body .= $config->twig->render("code-tables/min/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'warehouse' => $warehouse, 'm_iwhm' => $module_codetable, 'recordlocker' => $recordlocker]);
 		$page->body .= $config->twig->render("util/ajax-modal.twig", []);
+
 		$urls = new ProcessWire\WireData();
 		$urls->json_ci  = $pages->get('pw_template=ci-json')->url;
-		$page->js   .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'warehouse' => $warehouse, 'url_json_ci' => $urls->json_ci]);
+		$page->js   .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'warehouse' => $warehouse, 'url_json_ci' => $urls->json_ci, 'm_iwhm' => $module_codetable]);
 
 		// SHOW NOTES IF TABLE ALREADY EXISTS
 		if ($module_codetable->code_exists($code)) {

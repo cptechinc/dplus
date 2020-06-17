@@ -1,4 +1,12 @@
-
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	warehouse              Warehouse
+	recordlocker           module RecordLockerUser
+	m_iwhm                 module CodeTablesIwhm
+#}
+{% set config_in = m_iwhm.get_config_in() %}
 <div class="form-row form-group">
 	<div class="col"><label for="custID">Cash Customer</label></div>
 	<div class="col">
@@ -59,9 +67,9 @@
 	</div>
 </div>
 
-{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_profit', 'label': 'Profit Whse', 'value': warehouse.whse_profit, 'warehouses': warehouses} %}
-{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_asset', 'label': 'Asset Whse', 'value': warehouse.whse_asset, 'warehouses': warehouses} %}
-{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_supply', 'label': 'Supply Whse', 'value': warehouse.whse_supply, 'warehouses': warehouses} %}
+{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_profit', 'label': 'Profit Whse', 'value': warehouse.whse_profit, 'warehouses': m_iwhm.get_codes()} %}
+{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_asset', 'label': 'Asset Whse', 'value': warehouse.whse_asset, 'warehouses': m_iwhm.get_codes()} %}
+{% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_supply', 'label': 'Supply Whse', 'value': warehouse.whse_supply, 'warehouses': m_iwhm.get_codes()} %}
 
 <div class="form-row form-group">
 	<div class="col">
