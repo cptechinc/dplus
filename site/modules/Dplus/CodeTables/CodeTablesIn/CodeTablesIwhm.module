@@ -169,7 +169,7 @@ class CodeTablesIwhm extends WireData implements Module {
 		$warehouse->setZip($input->$rm->text('zip'));
 		$warehouse->setCountry($input->$rm->text('country'));
 		$warehouse->setEmail($input->$rm->text('email'));
-		$warehouse->setCash_customer($input->$rm->text('cash_customer'));
+		$warehouse->setCash_customer($input->$rm->text('custID'));
 		$warehouse->setPickdetail($input->$rm->text('pickdetail'));
 		$warehouse->setBin_qcrga($input->$rm->text('bin_qcrga'));
 		$warehouse->setConsignment($input->$rm->text('consignment'));

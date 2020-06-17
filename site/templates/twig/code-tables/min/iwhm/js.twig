@@ -6,13 +6,32 @@ $(function() {
 	var input_name     = form.find('input[name=name]');
 	var select_pick	   = form.find('input[name=pickdetail]');
 	var select_consign = form.find('input[name=consignment]');
-	var input_customer = form.find('input[name=cash_customer]');
+	var input_customer = form.find('input[name=custID]');
 	var cash_name 	   = form.find('input[name=cash_name]');
 	var select_wh_profit = form.find('select[name=whse_profit]');
 	var select_wh_supply = form.find('select[name=whse_supply]');
 	var select_wh_asset  = form.find('select[name=whse_asset]');
+	var cash_name = form.find('input[name=cash_name]');
 
 	var modal_ajax = $('#ajax-modal');
+
+	$("body").on("change", "input[name=custID]", function(e) {
+		cash_name.val('');
+		var custID = $(this).val();
+		custID = custID.toUpperCase();
+		var apiurl = new URI("{{ url_json_ci }}");
+		apiurl.addQuery('action', 'get-customer-name');
+		apiurl.addQuery('custID', custID);
+		console.log(apiurl.toString());
+
+		$.getJSON(apiurl.toString(), function( name ) {
+			if (name.length) {
+				cash_name.val(name);
+			} else {
+				cash_name.val('');
+			}
+		});
+	});
 
 	form.validate({
 		errorClass: "is-invalid",
@@ -28,6 +47,16 @@ $(function() {
 			},
 			select_pick: 'required',
 			select_consign: 'required',
+			custID: {
+				required: true,
+				remote: {
+					url: '{{ url_json_ci }}',
+					type: "get",
+					data: {
+						action: 'validate-custid'
+					}
+				}
+			},
 		},
 		messages: {
 			whseID: "Please review the Warehouse Code value, (Max Characters {{ warehouse.get_max_code_length() }})",
