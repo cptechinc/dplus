@@ -22,6 +22,11 @@ class DpagesMsa extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
+		'msa-noce' => array(
+			'name'   => 'msa-noce',
+			'fields' => array(),
+			'paginated' => true
+		),
 	);
 
 	const PAGES = array(
@@ -50,6 +55,15 @@ class DpagesMsa extends Dpages implements Module {
 			'summary'        => 'View / Edit Login Group Entry',
 			'parent'         => '/msa/',
 			'dplus_function' => 'lgrp'
+		),
+		'msa-noce' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'msa-noce',
+			'name'           => 'noce',
+			'title'          => 'Pre-defined Notes Entry',
+			'summary'        => 'View / Edit Pre-defined Notes',
+			'parent'         => '/msa/',
+			'dplus_function' => 'noce'
 		),
 	);
 
