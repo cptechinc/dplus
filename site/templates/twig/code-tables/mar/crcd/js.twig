@@ -7,7 +7,9 @@ $(function () {
 	var modal_ajax = $('#ajax-modal');
 
 	$("body").on("change", "input[name=custID]", function(e) {
+		credit_cust_name.val('');
 		var custID = $(this).val();
+		custID = custID.toUpperCase();
 		var apiurl = new URI("{{ url_json_ci }}");
 		apiurl.addQuery('action', 'get-customer-name');
 		apiurl.addQuery('custID', custID);
