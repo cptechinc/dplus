@@ -172,8 +172,6 @@ class DpagesMsa extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
-
-
 	/**
 	 * ProcessWire Module Info
 	 *
