@@ -1,0 +1,15 @@
+$(function() {
+	$('.hidden-note').on('hidden.bs.collapse', function () {
+		var textarea = $(this);
+		var id = textarea.data('id');
+		$('span.summary[data-id="'+id+'"]').removeClass('collapse');
+	});
+
+	$('.hidden-note').on('show.bs.collapse', function () {
+		var textarea = $(this);
+		var id = textarea.data('id');
+		$('span.summary[data-id="'+id+'"]').addClass('collapse');
+	});
+
+	
+});
