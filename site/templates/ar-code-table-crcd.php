@@ -44,7 +44,7 @@
 		$urls = new ProcessWire\WireData();
 		$urls->validate = $page->child('pw_template=ar-code-table-crcd-validate')->url;
 		$urls->json_ci  = $pages->get('pw_template=ci-json')->url;
-		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'creditcode' => $creditcode, 'url_validate' => $urls->validate, 'url_json_ci' => $urls->json_ci ]);
+		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'creditcode' => $creditcode, 'url_validate' => $urls->validate, 'url_json_ci' => $urls->json_ci, 'm_crcd' => $module_codetable ]);
 	} else {
 		$page->title = $page->headline = "Customer Credit Card Code";
 		$recordlocker->remove_lock($page->codetable);
