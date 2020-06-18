@@ -13,6 +13,11 @@ $(function() {
 /* =============================================================
 	Event Functions
 ============================================================= */
+	{% if page.focus %}
+		$('#code-{{ page.focus }}').addClass('highlight');
+		$('html, body').animate({scrollTop: $('#code-{{ page.focus }}').offset().top,},700,'linear');
+	{% endif %}
+
 	$('.hidden-note').on('hidden.bs.collapse', function () {
 		var textarea = $(this);
 		var id = textarea.data('id');
@@ -119,7 +124,7 @@ $(function() {
 
 	function alert_id(callback) {
 		var id = input_id.val();
-		
+
 		swal2.fire({
 			title: 'This note ('+ id +') exists!',
 			text: 'Do you want View / Edit that note?',
