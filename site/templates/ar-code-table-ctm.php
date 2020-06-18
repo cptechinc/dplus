@@ -45,7 +45,7 @@
 		}
 
 		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/cust-type-notes-modal.twig", ['page' => $page, 'code' => $typecode, 'recordlocker' => $recordlocker]);
-		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'typecode' => $typecode]);
+		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'typecode' => $typecode, 'm_ctm' => $module_codetable]);
 	} else {
 		$page->title = $page->headline = "CTM";
 		$recordlocker->remove_lock($page->codetable);
