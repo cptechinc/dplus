@@ -43,8 +43,13 @@
 
 					</div>
 					<div class="form-group">
+						<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-notes-modal" data-input="#q-notes-text">
+							<i class="fa fa-list-alt" aria-hidden="true"></i> Predefined Notes
+						</button>
+					</div>
+					<div class="form-group">
 						<label for="q-notes-text">Notes</label>
-						<textarea name="note" class="form-control w-auto" id="q-notes-text" cols="{{ qnotes_so.get_column_count() }}"></textarea>
+						<textarea name="note" class="form-control w-auto" id="q-notes-text" cols="{{ qnotes_so.get_column_count() }}" rows="15"></textarea>
 					</div>
 
 					<div class="d-flex justify-content-between align-items-center">
@@ -54,6 +59,7 @@
 						<button type="submit" name="action" novalidate value="delete-notes" class="btn btn-danger">
 							<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 						</button>
+						<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
 					</div>
 				</form>
 			</div>
