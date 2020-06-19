@@ -3,7 +3,7 @@
 use Purl\Url;
 
 /**
- * class DpagesMap
+ * class DpagesMsa
  *
  * Installs fields, templates, pages, hooks necessary for the MAP pages
  * NOTE: Also installs the basic fields, templates, to build the rest of the Application
@@ -65,8 +65,8 @@ class DpagesMsa extends Dpages implements Module {
 			'template'       => 'dplus-function',
 			'pw_template'    => 'msa-noce',
 			'name'           => 'noce',
-			'title'          => 'Pre-defined Notes Entry',
-			'summary'        => 'View / Edit Pre-defined Notes',
+			'title'          => 'Pre-Defined Notes Entry',
+			'summary'        => 'View / Edit Pre-Defined Notes',
 			'parent'         => '/msa/',
 			'dplus_function' => 'noce'
 		),
@@ -74,8 +74,8 @@ class DpagesMsa extends Dpages implements Module {
 			'template'       => 'dplus-function',
 			'pw_template'    => 'msa-noce-ajax',
 			'name'           => 'ajax',
-			'title'          => 'Pre-defined Notes AJAX',
-			'summary'        => 'View / Edit Pre-defined Notes through AJAX',
+			'title'          => 'Pre-Defined Notes AJAX',
+			'summary'        => 'View / Edit Pre-Defined Notes through AJAX',
 			'parent'         => '/msa/noce/',
 			'dplus_function' => ''
 		),
