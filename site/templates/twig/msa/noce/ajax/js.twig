@@ -1,4 +1,6 @@
 $(function() {
+	var modal_notes_ajax = $('#ajax-notes-modal');
+
 	$('.hidden-note').on('hidden.bs.collapse', function () {
 		var textarea = $(this);
 		var id = textarea.data('id');
@@ -11,5 +13,52 @@ $(function() {
 		$('span.summary[data-id="'+id+'"]').addClass('collapse');
 	});
 
-	
+/* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	modal_notes_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var input = button.data('input');
+		var url = '{{ page.searchURL }}';
+		modal.attr('data-input', input);
+		modal.find('.modal-title').text('Search / Choose Predefined Note');
+		modal.find('.modal-body').loadin(url, function() {
+
+		});
+	});
+
+	$("body").on('click', '.use-note', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var id = button.data('id');
+		var modal = button.closest('.modal');
+		var note = modal.find('textarea[data-id="'+id+'"]').text();
+		var target = modal_notes_ajax.attr('data-input');
+		var newnote = $(target).text() + "\r" + note;
+
+		$(target).val(newnote);
+		modal_notes_ajax.modal('hide');
+	});
+
+	$("body").on('submit', '#predefined-notes-form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {
+
+		});
+	});
+
+	$("body").on('click', '.page-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_notes_ajax.find('.modal-body').load(href);
+	});
+
+
 });
