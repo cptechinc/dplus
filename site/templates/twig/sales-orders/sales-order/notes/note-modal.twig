@@ -12,6 +12,7 @@
 					<input type="hidden" name="ordn" value="{{ ordn }}">
 					<input type="hidden" name="linenbr" value="">
 					<input type="hidden" name="form" value="">
+					<input type="hidden" name="action" value="update-notes">
 
 					<div class="row mb-3">
 						<div class="col">
@@ -43,9 +44,7 @@
 
 					</div>
 					<div class="form-group">
-						<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-notes-modal" data-input="#q-notes-text">
-							<i class="fa fa-list-alt" aria-hidden="true"></i> Predefined Notes
-						</button>
+						{% include 'msa/noce/ajax/button.twig' with {'input': '#q-notes-text'} %}
 					</div>
 					<div class="form-group">
 						<label for="q-notes-text">Notes</label>
