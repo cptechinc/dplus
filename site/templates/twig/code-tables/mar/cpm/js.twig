@@ -47,6 +47,35 @@ $(function() {
 	});
 
 /* =============================================================
+	Unsaved Fields Alert
+	NOTE: for Code tables edited in modals, the serialzed form values must
+	be put into a hidden input field for verification
+============================================================= */
+
+	$("body").on("click", "#code-edit-form button:not(.form_button)", function(e) {
+		var origForm = form.find('input[name=serialized]').val();
+
+		if (form.serialize() !== origForm) {
+
+			swal2.fire({
+				title: 'Changes have occurred!',
+				text: 'Do you want to save?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+				cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value) {
+					form.find('button[type=submit]').click();
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					var modal = $('#edit-code-modal');
+					modal.modal('hide');
+				}
+			});
+		}
+	});
+
+/* =============================================================
 	Validation Functions
 ============================================================= */
 	form.validate({
@@ -108,7 +137,6 @@ $(function() {
 
 		if (codeIDs.contains(input_codeID.val())) {
 			console.log('Customer Price Code Exists');
-			console.log(jform.data('code'));
 
 			if (input_codeID.val() != jform.attr('data-code')) {
 				return false;
@@ -122,6 +150,7 @@ $(function() {
 ============================================================= */
 	/**
 	 * Populate Modal Form with button data-* attributes
+	 * NOTE: Populates the disabled hidded input to verify if changes were made
 	 * @param  $('button') button
 	 * @param  $('.modal') modal
 	 * @return void
@@ -129,12 +158,13 @@ $(function() {
 	function populate_edit_from_button(button, modal) {
 		var code = button.data('code').toString();
 		var description = button.data('description').toString();
+		var form = modal.find('form');
 
-		modal.find('form').attr('data-code', code);
-		modal.find('input[name=code]').val(code);
-		modal.find('input[name=description]').val(description);
-		modal.find('select[name=surcharge]').val(button.data('surcharge'));
-		modal.find('input[name=percentage]').val(button.data('percentage'));
+		form.attr('data-code', code);
+		form.find('input[name=code]').val(code);
+		form.find('input[name=description]').val(description);
+		form.find('select[name=surcharge]').val(button.data('surcharge'));
+		form.find('input[name=percentage]').val(button.data('percentage'));
 
 		if (code.length) {
 			modal.find('.modal-title').text('Editing Code ' + code);
@@ -145,5 +175,6 @@ $(function() {
 			modal.find('input[name=code]').prop("readonly", false);
 			modal.find('input[name=code]').focus();
 		}
+		form.find('input[name=serialized]').val(form.serialize());
 	}
 });
