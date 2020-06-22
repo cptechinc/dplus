@@ -4,7 +4,7 @@
 
 	<div class="form-group">
 		<label for="itemID">Item ID</label>
-		<input type="text" class="form-control-plaintext" name="itemID" id="itemID" value="{{ item.itemid }}" readonly>
+		<input type="text" class="form-control" name="itemID" id="itemID" value="{{ item.itemid }}" readonly>
 	</div>
 
 	<div class="row {{ item.is_item_normal ? 'collapse' : '' }}">
@@ -26,23 +26,25 @@
 		<div class="col-sm-6">
 			<div class="form-group">
 				<label for="binID">Bin ID</label>
-				<input type="text" class="form-control-plaintext" name="binID" id="binID" value="{{ item.bin }}" readonly>
+				<input type="text" class="form-control" name="binID" id="binID" value="{{ item.bin }}" readonly>
 			</div>
 		</div>
 		<div class="col-sm-6">
 			<div class="form-group">
-				<label for="qty">Qty</label>
+				<div class="d-flex justify-content-between align-items-center">
+					<label for="qty">Qty </label>
+					<span class="pull-right">Ordered: {{ orderitem.qtyordered|number_format(2) }}</span>
+				</div>
 				<input type="number" class="form-control" name="qty" id="qty" max="{{ item.qty }}" value="">
 				<small class="form-text text-muted">Bin Qty: {{ item.qty }}</small>
 			</div>
 		</div>
 	</div>
 
-	<div class="form-group">
+	<div class="form-group d-flex justify-content-between align-items-center">
 		<button type="submit" class="btn btn-success">
 			<i class="fa fa-plus" aria-hidden="true"></i> Add
 		</button>
-		&nbsp; &nbsp;
 		<a href="{{ page.get_removescanURL() }}" class="btn btn-warning">Retry Search</a>
 	</div>
 </form>

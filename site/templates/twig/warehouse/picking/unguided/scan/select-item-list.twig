@@ -1,5 +1,11 @@
-
-{# var items is an instance Whseitemphysicalcount[] #}
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	items                  Whseitemphysicalcount[]
+	m_picking              module Picking
+	m_picking.items        module PickingOrderItems
+#}
 <div class="row">
 	<div class="col">
 		<h4>Select your items</h4>
@@ -11,12 +17,12 @@
 	</div>
 </div>
 <div class="list-group">
-	<div class="list-group-item">
+	<div class="list-group-item bg-dark text-white">
 		<div class="row">
 			<div class="col-sm-2">Expand</div>
 			<div class="col-sm-6">Item ID</div>
-			<div class="col-sm-2">Available Qty</div>
-			<div class="col-sm-2"></div>
+			<div class="col-sm-2 text-right">Available Qty</div>
+			<div class="col-sm-2 text-right">Ordered Qty</div>
 		</div>
 	</div>
 	{% for item in items %}
@@ -28,13 +34,15 @@
 					</button>
 				</div>
 				<div class="col-sm-6">{{ item.itemid }}</div>
-				<div class="col-sm-2">{{ item.get_total_qty() }}</div>
-				<div class="col-sm-2"></div>
+				<div class="col-sm-2 text-right">{{ item.get_total_qty()|number_format(2) }}</div>
+				<div class="col-sm-2 text-right">
+					{{ m_picking.items.is_itemid_onorder(item.itemid) ? m_picking.items.get_picksalesorderdetail_itemid(item.itemid).qtyordered|number_format(2) : '' }}
+				</div>
 			</div>
 		</div>
 
-		<div class="collapse" id="{{ item.itemid|attrJS }}">
-			<div class="list-group-item bg-dark text-white">
+		<div class="{{ item.itemid != page.scan ? 'collapse' : '' }}" id="{{ item.itemid|attrJS }}">
+			<div class="list-group-item bg-gray">
 				<div class="row">
 					<div class="col-sm-2"></div>
 					<div class="col-sm-2">Bin</div>
@@ -49,12 +57,11 @@
 				<input type="hidden" name="itemID" value="{{ item.itemid }}">
 				<div class="scroll-300 form-group">
 					{% for lotserial in item.get_lotserials() %}
-
 						<input type="hidden" name="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin) }}-bin" value="{{ lotserial.bin }}">
 						<input type="hidden" name="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin) }}-lotserialref" value="{{ lotserial.lotserialref }}">
 						<input type="hidden" name="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin) }}-lotserial" value="{{ lotserial.lotserial }}">
 
-						<div class="list-group-item">
+						<div class="list-group-item lotserial-bin-record">
 							<div class="row">
 								<div class="col-sm-2">
 									<div class="form-check">
@@ -65,10 +72,10 @@
 								<div class="col-sm-2" for="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin)|attrJS }}">{{ lotserial.lotserial }}</div>
 								<div class="col-sm-2">{{ lotserial.lotserialref }}</div>
 								<div class="col-sm-2">
-									<input type="number" class="form-control" max="{{ lotserial.qty }}" name="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin) }}-qty" value="">
+									<input type="number" class="form-control lotserial-qty" max="{{ lotserial.qty }}" name="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin) }}-qty" value="">
 								</div>
 								<div class="col-sm-2">
-									<small class="form-text text-muted">Bin Qty: {{ lotserial.qty }}</small>
+									<small class="form-text text-muted">Bin Qty: {{ lotserial.qty|number_format(2) }}</small>
 								</div>
 							</div>
 						</div>
