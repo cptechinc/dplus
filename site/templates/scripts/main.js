@@ -350,6 +350,13 @@ String.prototype.capitalize = function() {
 	return this.charAt(0).toUpperCase() + this.slice(1)
 }
 
+String.prototype.urlencode = function() {
+	var string = this;
+	string = string.replace('!', '%21')
+	return encodeURIComponent(string);
+}
+
+
 Array.prototype.contains = function ( needle ) {
 	for (i in this) {
 		if (this[i] == needle) return true;

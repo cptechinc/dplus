@@ -40,7 +40,8 @@
 	$config->twig->addFilter($filter);
 
 	$filter = new Twig_Filter('attrJS', function ($string, $jsprepend = true) {
-		$string = preg_replace("/[^A-Za-z0-9 ]/", 'symbol', $string);
+		$string = str_replace(' ', '-', $string);
+		$string = preg_replace("/[^A-Za-z0-9- ]/", 'sym', $string);
 		return $jsprepend ? "js-$string" : $string;
 	});
 	$config->twig->addFilter($filter);
@@ -98,5 +99,10 @@
 		$newstring = substr($string, 0, $length);
 		$newstring .= strlen($string) > $length ? $append : '';
 		return $newstring;
+	});
+	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('urlencode', function ($string) {
+		return urlencode($string);
 	});
 	$config->twig->addFilter($filter);
