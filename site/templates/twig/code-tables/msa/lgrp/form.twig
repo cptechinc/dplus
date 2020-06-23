@@ -1,5 +1,6 @@
 {# lgrp is an instance of SysLoginGroup #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form">
+{# data-code is for verifying edit vs new #}
+<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="">
 	<input type="hidden" name="table" value="lgrp">
 	<div class="form-group">
 		<label for="code">Group</label>
