@@ -46,7 +46,6 @@ $(function() {
 		 * }
 		 */
 		$.getJSON(ii_url.toString(), function( response ) {
-
 			if (response.exists) {
 				form_additem.attr('data-validated', response.itemID);
 				input_itemid.addClass('is-valid');
@@ -79,9 +78,12 @@ $(function() {
 					showCancelButton: true,
 					confirmButtonText: 'Make advanced search?'
 				}).then(function (result) {
-					var url = URI("{{ page.url }}");
-					url.addQuery('q', input_itemid.val());
-					window.location.replace(url.toString());
+					if (result.value) {
+						var url = URI("{{ page.url }}");
+						url.addQuery('ordn', '{{ order.ordernumber }}');
+						url.addQuery('q', input_itemid.val());
+						window.location.replace(url.toString());
+					}
 				});
 			}
 		});
