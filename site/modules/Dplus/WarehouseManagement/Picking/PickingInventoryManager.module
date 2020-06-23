@@ -9,8 +9,9 @@ use BarcodesQuery, Barcodes;
 use WhsesessionQuery, Whsesession;
 use WarehouseQuery, Warehouse;
 use WarehouseInventoryQuery, WarehouseInventory;
-
 use WhseitemphysicalcountQuery, Whseitemphysicalcount;
+
+use ItemMasterItemQuery, ItemMasterItem;
 
 /**
  * PickingInventoryManager
@@ -66,5 +67,10 @@ class PickingInventoryManager extends WireData implements Module {
 			$q->filterByBin('PACK', Criteria::ALT_NOT_EQUAL);
 		}
 		return $q;
+	}
+
+	public function is_item_lotserialized($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return ($q->is_item_serialized($itemID) || $q->is_item_lotted($itemID));
 	}
 }
