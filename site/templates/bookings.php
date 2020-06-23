@@ -21,9 +21,6 @@
 		$page->title = date('Y'). " Bookings";
 	}
 
-
-
-
 	$bookings = $filter_bookings->bookings_user->get_bookings($input)->find();
 	$customers = $filter_bookings->bookings_customer->get_bookings_by_customer($input)->find();
 
