@@ -53,7 +53,6 @@ $(function() {
 ============================================================= */
 	$("body").on("click", "#code-edit-form button:not(.form_button)", function(e) {
 		var origForm = form.find('input[name=serialized]').val();
-		console.log(origForm);
 
 		if (form.serialize() !== origForm) {
 
