@@ -1,4 +1,7 @@
 $(function() {
+	var codeIDs = {{ m_so.get_codes_ids()|json_encode()|raw }};
+
+	var input_codeID = $('#code');
 
 	$('#edit-code-modal').on('shown.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
@@ -39,8 +42,54 @@ $(function() {
 			code: "Please check the Code value (Max Length: {{ max_length_code }})",
 		},
 		submitHandler: function(form) {
-			form.submit();
+			var jform = $(form);
+			var codeID = input_codeID.val();
+
+			if (validate_codeID(form)) {
+				form.submit();
+			} else {
+				var url = URI('{{ page.url }}');
+				url.addQuery('code', codeID);
+				var bootstrap = new JsContento();
+				var content = bootstrap.open('div', 'class=swal2-content|id=swal2-content');
+				content += '<a class="btn btn-secondary mb-2" href="'+url.toString()+'">View Lost Sales Code</a>';
+				content += '<br>';
+				content += "Do you want to overwrite?";
+				content += bootstrap.close('div');
+
+				swal2.fire({
+					title: 'Lost Sales Code ' +input_codeID.val() + ' Exists' ,
+					text: 'Do you want to overwrite?',
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+					cancelButtonText: 'No',
+					html: content,
+				}).then((result) => {
+					if (result.value) {
+						form.submit();
+					}
+				});
+			}
 		}
 	});
 
+	/**
+	 * Return if Lost Sales Code ID can be used to save, based upon if
+	 * it exists, and if is the one being edited.
+	 * @param  {[type]} form [description]
+	 * @return {[type]}      [description]
+	 */
+	function validate_codeID(form) {
+		var jform = $(form);
+
+		if (codeIDs.contains(input_codeID.val())) {
+			console.log('Lost Sales Code Exists');
+
+			if (input_codeID.val() != jform.data('codeid')) {
+				return false;
+			}
+		}
+		return true;
+	}
 })
