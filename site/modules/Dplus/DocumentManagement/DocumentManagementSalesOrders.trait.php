@@ -130,28 +130,34 @@ trait DocumentManagementSalesOrders {
 	 */
 	protected function filter_salesorderconditions(DocumentsQuery $documents_master, $ordn) {
 		$ordn = SalesOrder::get_paddedordernumber($ordn);
+		$column_tag = Documents::get_aliasproperty('tag');
+		$column_reference1 = Documents::get_aliasproperty('reference1');
+		$conditions = array();
+
 		$q = SalesOrderDetailQuery::create();
 		$q->filterByOrdernumber($ordn);
-		$ponbrs = $q->select(SalesOrderDetail::get_aliasproperty('vendorpo'))->find()->toArray();
+		$q->select(SalesOrderDetail::get_aliasproperty('vendorpo'));
 
-		if (!empty($ponbrs)) {
-			$column_tag = Documents::get_aliasproperty('tag');
-			$column_reference1 = Documents::get_aliasproperty('reference1');
+		// Create Sales Orders Filter
+		$documents_master->condition('tag_so', "Documents.$column_tag = ?", self::TAG_SALESORDER);
+		$documents_master->condition('reference1_so', "Documents.$column_reference1 = ?", $ordn);
+		$documents_master->combine(array('tag_so', 'reference1_so'), 'and', 'cond_so') ;
+		$conditions[] = 'cond_so';
 
-			// Create Sales Orders Filter
-			$documents_master->condition('tag_so', "Documents.$column_tag = ?", self::TAG_SALESORDER);
-			$documents_master->condition('reference1_so', "Documents.$column_reference1 = ?", $ordn);
-			$documents_master->combine(array('tag_so', 'reference1_so'), 'and', 'cond_so') ;
+		// Create Invoices Filter
+		$documents_master->condition('tag_invoices', "Documents.$column_tag = ?", self::TAG_ARINVOICE);
+		$documents_master->condition('reference1_invoices', "Documents.$column_reference1 = ?", $ordn);
+		$documents_master->combine(array('tag_invoices', 'reference1_invoices'), 'and', 'cond_invoices');
+		$conditions[] = 'cond_invoices';
 
-			// Create Vendor PO Filter
+		if ($q->count()) {// Create Vendor PO Filter
+			$ponbrs = $q->find()->toArray();
 			$documents_master->condition('tag_vendorpo', "Documents.$column_tag = ?", self::TAG_VENDORPO);
 			$documents_master->condition('reference1_vendorpo', "Documents.$column_reference1 IN ?", $ponbrs);
 			$documents_master->combine(array('tag_vendorpo', 'reference1_vendorpo'), 'and', 'cond_vendorpo');
-
-			$documents_master->where(array('cond_so', 'cond_vendorpo'), 'or');
-		} else {
-			$documents_master->filterByTag(self::TAG_SALESORDER);
-			$documents_master->filterByReference1($ordn);
+			$conditions[] = 'cond_vendorpo';
 		}
+
+		$documents_master->where($conditions, 'or');
 	}
 }

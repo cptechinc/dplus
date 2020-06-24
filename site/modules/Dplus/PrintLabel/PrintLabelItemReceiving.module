@@ -1,0 +1,161 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+use PurchaseOrderDetailLotReceivingQuery, PurchaseOrderDetailLotReceiving;
+
+use LabelPrintSessionQuery, LabelPrintSession;
+use WhsesessionQuery, Whsesession;
+
+include(__DIR__.'/PrintLabelResponse.php');
+
+class PrintLabelItemReceiving extends PrintLabelItem implements Module {
+
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$session = $this->wire('session');
+
+		if ($values->action) {
+			if ($values->text('action') == 'print-receive-item-label') {
+				$this->process_input_print($input);
+			} else {
+				$session->response_print = $this->create_error_response('Invalid Print Action');
+			}
+		} else {
+			$session->response_print = $this->create_error_response('No Print Action was provided');
+		}
+	}
+
+	public function process_input_print(WireInput $input) {
+		$session = $this->wire('session');
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$labelsession = $this->get_session();
+
+		$response = new PrintLabelResponse();
+		$response->set_key(session_id());
+
+		if ($labelsession->isNew()) {
+			$labelsession->setSessionid(session_id());
+		}
+
+		$labelsession->setItemid($values->text('itemID'));
+		$labelsession->setLotserial($values->text('lotserial'));
+		$labelsession->setBin($values->text('binID'));
+		$labelsession->setWhse($values->text('whseID'));
+
+		$labelsession->setLabelBox($values->text('box-label'));
+		$labelsession->setPrinterBox($values->text('box-printer'));
+		$labelsession->setQtyBox($values->int('box-qty'));
+		$labelsession->setNbrBoxLabels($values->int('box-label-count'));
+
+		$labelsession->save();
+
+		$success = $this->request_label_print($labelsession, $values->text('ponbr'), $values->int('linenbr'));
+
+		if ($success) {
+			$response->set_success($success);
+			$msg = "Label is printing";
+		} else {
+			$response->set_error(true);
+			$msg = "Error, cannot print label";
+		}
+		$response->set_message($msg);
+		$session->response_print = $response;
+	}
+
+	/**
+	 * Return Error Response with Provided Message
+	 * @param  string $message    Error Message
+	 * @return ItmResponse
+	 */
+	public function create_error_response($message) {
+		$response = new PrintLabelResponse();
+		$response->set_key(session_id());
+		$response->set_error(true);
+		$response->set_message($message);
+		return $response;
+	}
+
+	/**
+	 * Sends Dplus Cobol that Code Table has been Update
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return void
+	 */
+	public function request_label_init(PurchaseOrderDetailLotReceiving $item) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
+
+		$data = array("DBNAME=$dplusdb", "RECEIVELABELINIT", "PONBR=$item->ponbr", "ITEMID=$item->itemid", "WHSE=$whsesession->whseid", "BIN=$item->bin");
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		return $requestor->cgi_request($config->cgis['warehouse'], session_id());
+	}
+
+	/**
+	 * Request Label to be printed
+	 * @param  LabelPrintSession $labelsession [description]
+	 * @param  string            $ponbr        PO Number
+	 * @param  int               $linenbr      Line Number
+	 * @return bool
+	 */
+	public function request_label_print(LabelPrintSession $labelsession, $ponbr, int $linenbr) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+
+		$data = array("DBNAME=$dplusdb", "RECEIVELABELPRINT", "PONBR=$ponbr", "LINENBR=$linenbr");
+		if ($labelsession->lotserial != 'all') {
+			$data[] = "LOTSERIAL=$labelsession->lotserial";
+			$data[] = "BIN=$labelsession->bin";
+		} else {
+			$data[] = "LOTSERIAL=ALL";
+		}
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$success = $requestor->cgi_request($config->cgis['warehouse'], session_id());
+		return $success === '';
+	}
+
+	public function init() {
+		$this->addHook('Page(pw_template=whse-print-received-item-label)::receive_poURL', function($event) {
+			$url = new Url($this->wire('pages')->get('pw_template=whse-receiving')->url);
+			$ponbr    = $event->arguments(0);
+			$url->query->set('ponbr', $ponbr);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=whse-print-received-item-label)::print_receiveditemURL', function($event) {
+			$p = $event->object;
+			$url = new Url($p->url);
+			$item     = $event->arguments(0); // Instance of PurchaseOrderDetailLotReceiving
+			$url->query->set('ponbr', $item->ponbr);
+			$url->query->set('linenbr', $item->linenbr);
+			$url->query->set('lotserial', $item->lotserial);
+			$url->query->set('binID', $item->bin);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=whse-print-received-item-label)::print_receivedlineURL', function($event) {
+			$p = $event->object;
+			$url = new Url($p->url);
+			$item     = $event->arguments(0); // Instance of PurchaseOrderDetailReceiving
+			$url->query->set('ponbr', $item->ponbr);
+			$url->query->set('linenbr', $item->linenbr);
+			$event->return = $url->getUrl();
+		});
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Print Item Label Receiving',
+			'version' => 101,
+			'summary' => 'Receiving Item Label Printing',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('PrintLabelItem')
+		);
+	}
+}

@@ -1,0 +1,35 @@
+<?php namespace ProcessWire;
+
+use ConfigSysQuery, ConfigSys;
+
+/**
+ * RegexData
+ *
+ * Module for Matching Data to types using regex
+ */
+class RegexData extends WireData implements Module {
+
+	/**
+	 * Returns if string is found in another string
+	 * @param  string $haystack Text Body
+	 * @param  string $needle   Text to search for
+	 * @return bool
+	 */
+	public function string($haystack, $needle) {
+		if ($needle == '') {
+			return false;
+		}
+		$regex = "/(".str_replace('-', '\-?', $needle).")/i";
+		return preg_match($regex, $haystack, $matches);
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Regex Data Matcher',
+			'version' => 101,
+			'summary' => 'Module for Matching Data to types using regex',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

@@ -7,7 +7,10 @@
 				{% set column = blueprint['total']['rows'][x]['columns'][i] %}
 				{% set colspan = column['col-length'] %}
 				<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-					<span class="font-weight-bold">{{ column['label'] }}</span> {{ module_formatter.format_celldata(invoice['totals'], column) }}
+					<span class="font-weight-bold">
+						{{ column['label'] }}{{ column['label']|length ? ':' : '' }}
+					</span>
+					{{ module_formatter.format_celldata(invoice['totals'], column) }}
 				</td>
 			{% else %}
 				{% if columncount < blueprint['cols'] %}

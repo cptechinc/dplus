@@ -6,7 +6,9 @@ use Purl\Url;
 use WhseitempickQuery, Whseitempick;
 use PickSalesOrderDetailQuery, PickSalesOrderDetail;
 use WhsesessionQuery, Whsesession;
+
 use WarehouseQuery, Warehouse;
+use ItemXrefUpcQuery, ItemXrefUpc;
 
 /**
  * Picking
@@ -174,6 +176,8 @@ class Picking extends WireData implements Module {
 		$lotserialbins = $input->post->array('lotserialbins');
 		$orderitem = $this->items->get_picksalesorderdetail_itemid($itemID);
 		$recordnumbers = array();
+
+
 
 		foreach ($lotserialbins as $lotserialbin) {
 			$qty       = $values->text("$lotserialbin-qty");
@@ -366,14 +370,40 @@ class Picking extends WireData implements Module {
 	 * @return bool
 	 */
 	public function send_finishline_request($linenbr, $debug = false) {
-		$url = new Url($this->wire('pages')->get('template=redir, redir_file=picking')->url);
-		$url->query->set('action', 'finish-item');
-		$url->query->set('linenbr', $linenbr);
-		$url->query->set('sessionID', session_id());
-		$url->query->set('debug', $debug);
+		$orderitem = $this->items->get_picksalesorderdetail_linenbr($linenbr);
+
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+
+		$data = array("DBNAME=$dplusdb", 'ACCEPTITEM', "ORDERNBR=$this->ordn", "LINENBR=$linenbr", "ITEMID=$orderitem->itemnbr");
+		$data = $this->write_acceptitem_data($data, $orderitem);
 
 		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->self_request($url->getUrl());
+		$requestor->write_dplusfile($data, session_id());
+		
+		if ($debug == false) {
+			$requestor->cgi_request($this->wire('config')->cgis['warehouse'], session_id());
+		}
+	}
+
+	public function write_acceptitem_data(array $data, PickSalesOrderDetail $orderitem) {
+		if ($this->inventory->is_item_lotserialized($orderitem->itemnbr)) {
+			$barcodes = $orderitem->get_userpickedtotalsbylotserial();
+
+			foreach ($barcodes as $barcode) {
+				$data[] = "BIN=$barcode->bin|LOTSERIAL=$barcode->lotserial|QTY=$barcode->qty";
+			}
+		} else {
+
+			$barcodes = $orderitem->get_userpickedtotalsbybin();
+
+			foreach ($barcodes as $barcode) {
+				$binID     = str_pad($barcode['bin'], 8, ' ');
+				$lotserial = str_pad('', 20, ' ');
+				$qty       = $barcode['qty'];
+				$data[]    = "BIN=$binID|LOTSERIAL=$lotserial|QTY=$qty";
+			}
+		}
+		return $data;
 	}
 
 	/**

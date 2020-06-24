@@ -1,0 +1,90 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	items                  PurchaseOrderDetailReceiving[]|ObjectCollection
+#}
+<div class="form-group">
+	<a href="{{ page.receive_poURL(ponbr) }}" class="btn btn-primary">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Receiving PO # {{ ponbr }}
+	</a>
+</div>
+<div class="list-group mb-3">
+	<div class="list-group-item bg-dark text-white">
+		<div class="form-row">
+			<div class="col">Line #</div>
+			<div class="col">Item</div>
+			<div class="col">UoM</div>
+			<div class="col text-right">Qty Ordered</div>
+			<div class="col text-right">Qty Received</div>
+			<div class="col text-right">Cost</div>
+			<div class="col text-right">Total Cost</div>
+			<div class="col"></div>
+		</div>
+	</div>
+
+	{% for item in items %}
+		<div class="list-group-item first-txn-row">
+			<div class="form-row">
+				<div class="col">
+					{% if item.qty_received > 0 %}
+						<button type="button" class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#{{ (item.linenbr ~ '-lotserial')|attrJS }}" aria-expanded="false" aria-controls="{{ (item.linenbr ~ '-lotserial')|attrJS }}">
+							{{ item.linenbr }}
+						</button>
+					{% endif %}
+				</div>
+				<div class="col">
+					<b>{{ item.itemid }}</b> <br>
+					<small>{{ item.description }}</small>
+				</div>
+				<div class="col">{{ item.uom }}</div>
+				<div class="col text-right">{{ item.qty_ordered|number_format(2) }}</div>
+				<div class="col text-right">{{ item.qty_received|number_format(2) }}</div>
+				<div class="col text-right">{{ item.cost|number_format(4) }}</div>
+				<div class="col text-right">{{ item.cost_total|number_format(2) }}</div>
+				<div class="col text-center">
+					{% if item.qty_received > 0 %}
+						<a href="{{ page.print_receivedlineURL(item) }}" class="btn btn-info btn-sm">
+							<i class="fa fa-print" aria-hidden="true"></i> Print
+						</a>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+
+		<div class="collapse" id="{{ (item.linenbr ~ '-lotserial')|attrJS }}">
+			<div class="list-group">
+				<div class="list-group-item bg-light">
+					<div class="form-row">
+						<div class="col">Lot #</div>
+						<div class="col">Lot Ref</div>
+						<div class="col">Expire Date</div>
+						<div class="col text-right">Qty</div>
+						<div class="col">Bin</div>
+
+						<div class="col-3"></div>
+					</div>
+				</div>
+				{# item.get_receivedlots() returns PurchaseOrderDetailLotReceiving[]|ObjectCollection #}
+				{% for lot in item.get_receivedlots() %}
+					<div class="list-group-item">
+						<div class="form-row lotserial-record">
+							<div class="col item" data-linenbr="{{ item.linenbr }}" data-itemid="{{ item.itemid }}" data-lotserial="{{ lot.lotserial }}">
+								{{ lot.lotserial }}
+							</div>
+							<div class="col" data-lotserialref="{{ lot.lotreference }}">{{ lot.lotreference }}</div>
+							<div class="col date" data-date="{{ lot.date_production ? lot.date_production|convertdate : '' }}">{{ lot.date_production ? lot.date_production|convertdate : '' }}</div>
+							<div class="col text-right qty" data-uom="{{ item.uom }}" data-qty="{{ lot.qty_received|number_format(4) }}">{{ lot.qty_received|number_format(2) }}</div>
+							<div class="col" data-bin="{{ lot.bin }}">{{ lot.bin }}</div>
+							<div class="col-3">
+								<a href="{{ page.print_receiveditemURL(lot) }}" class="btn btn-info btn-sm">
+									<i class="fa fa-print" aria-hidden="true"></i> Print
+								</a>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	{% endfor %}
+</div>

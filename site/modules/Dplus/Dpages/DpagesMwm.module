@@ -71,6 +71,11 @@ class DpagesMwm extends Dpages implements Module {
 			'name'   => 'whse-print-order-item-label',
 			'fields' => array('title'),
 			'paginated' => false
+		),
+		'whse-print-received-item-label' => array(
+			'name'   => 'whse-print-received-item-label',
+			'fields' => array('title'),
+			'paginated' => false
 		)
 	);
 
@@ -227,11 +232,20 @@ class DpagesMwm extends Dpages implements Module {
 		'whse-print-pick-item-label' => array(
 			'template'       => 'warehouse-function',
 			'name'           => 'order-item',
-			'title'          => 'Print Item Label',
+			'title'          => 'Print Order Item Label',
 			'summary'        => 'Print a Label for an Order Item',
 			'parent'         => '/warehouse/inventory/print-item-label/',
 			'dplus_function' => 'pilbl',
 			'pw_template'    => 'whse-print-pick-item-label'
+		),
+		'whse-print-received-item-label' => array(
+			'template'       => 'warehouse-function',
+			'name'           => 'po-item',
+			'title'          => 'Print Received Item Label',
+			'summary'        => 'Print a Label for a Received Item',
+			'parent'         => '/warehouse/inventory/print-item-label/',
+			'dplus_function' => '',
+			'pw_template'    => 'whse-print-received-item-label'
 		),
 		'whse-physical-count' => array(
 			'template'       => 'warehouse-function',

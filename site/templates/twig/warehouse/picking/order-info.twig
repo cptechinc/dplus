@@ -1,0 +1,37 @@
+<div class="row mt-4">
+	<div class="col-sm-4">
+		<table class="table table-sm">
+			<tr>
+				<td>Order Number</td>
+				<td>{{ order.ordernumber }}</td>
+			</tr>
+			<tr>
+				<td>Cust PO</td>
+				<td>{{ order.custpo }}</td>
+			</tr>
+			<tr>
+				<td>Customer</td>
+				<td>{{ order.custid }}</td>
+			</tr>
+			<tr>
+				<td>Order Date</td>
+				<td>{{ order.date_ordered|convertdate }}</td>
+			</tr>
+			<tr>
+				<td>Warehouse</td>
+				<td>{{ whsesession.whseid }}</td>
+			</tr>
+		</table>
+	</div>
+	<div class="col-sm-4">
+		<table class="table table-sm">
+			<h5>Ship-To: ({{ order.shiptoid }})</h5>
+			<address>
+				{{ order.shipto_name }} <br>
+				{{ order.shipto_address1 }} <br>
+				{{ order.shipto_city ~ ', ' ~ order.shipto_state ~ ' ' ~ order.shipto_zip }} <br>
+				{{ order.shipto_country }}
+			</address>
+		</table>
+	</div>
+</div>

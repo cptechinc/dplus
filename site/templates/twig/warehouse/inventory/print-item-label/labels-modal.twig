@@ -2,7 +2,7 @@
 	<div class="modal-dialog modal-md" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title" id="labelformats-modal-label">Choose Label for {{ item.get_itemtypepropertydesc()|upper ~ ': ' ~ item.get_itemidentifier() }}</h4>
+				<h4 class="modal-title" id="labelformats-modal-label">Choose Label</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -12,11 +12,11 @@
 					{% for format in formats %}
 						<a href="#" class="list-group-item select-labelformat" data-label="{{ format.id }}">
 							<div class="row">
-								<div class="col-xs-6">
+								<div class="col-6">
 									<h5 class="list-group-item-heading format-id">{{ format.id }}</h5>
-									<p class="list-group-item-heading mb-0 format-desc">{{ format.desc }}</p>
+									<p class="list-group-item-heading mb-0 format-desc">{{ format.description }}</p>
 								</div>
-								<div class="col-xs-6">
+								<div class="col-6">
 									L {{ format.length }} x W {{ format.width }}
 								</div>
 							</div>

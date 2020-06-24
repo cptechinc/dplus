@@ -79,10 +79,12 @@ $(function() {
 					showCancelButton: true,
 					confirmButtonText: 'Make advanced search?'
 				}).then(function (result) {
-					var url = URI("{{ page.url }}");
-					url.addQuery('q', input_itemid.val());
-					window.location.replace(url.toString());
-				}).catch(swal.noop);
+					if (result.value) {
+						var url = URI("{{ page.url }}");
+						url.addQuery('q', input_itemid.val());
+						window.location.replace(url.toString());
+					}
+				});
 			}
 		});
 	}
