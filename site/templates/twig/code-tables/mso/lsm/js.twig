@@ -158,6 +158,7 @@ $(function() {
 	function populate_edit_from_button(button, modal) {
 		var code = button.data('code').toString();
 		var description = button.data('description').toString();
+		var updateinventorywatch = button.data('updateinventorywatch').toString();
 		var form = modal.find('form');
 
 		form.attr('data-code', code);
