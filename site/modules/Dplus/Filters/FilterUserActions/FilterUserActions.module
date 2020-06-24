@@ -7,6 +7,12 @@
 	class FilterUserActions extends Process implements ConfigurableModule {
 
 		const CONFIG_FIELDS = array(
+			'use_useractions' => array(
+				'type'        => 'checkbox',  // TRUE OR FALSE
+				'label'       => 'Turn on User Actions?',
+				'description' => 'Show User Actions',
+				'notes'       => ""
+			),
 			'allow_viewotheractions' => array(
 				'type'        => 'checkbox',  // TRUE OR FALSE
 				'label'       => 'Allow Users to view other\'s Actions?',
@@ -16,7 +22,8 @@
 		);
 
 		const DEFAULT_CONFIG = array(
-			'allow_viewotheractions' => false
+			'allow_viewotheractions' => false,
+			'use_useractions' => true
 		);
 
 		const SUBTYPE_FONTAWESOME = array(
@@ -308,6 +315,15 @@
 			$f->notes = _($traits['notes']);
 			$fields->add($f);
 
+			$traits = self::CONFIG_FIELDS['use_useractions'];
+			$f = $modules->get('InputfieldCheckbox');
+			$f->attr('name', 'use_useractions');
+			$f->attr('checked', $data['use_useractions'] ? 'checked' : '' );
+			$f->label = __($traits['label']);
+			$f->description = __($traits['description']);
+			$f->notes = _($traits['notes']);
+			$fields->add($f);
+			
 			return $fields;
 		}
 	}

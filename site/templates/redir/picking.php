@@ -202,7 +202,7 @@
 				} else {
 					$barcodes = $pickitem->get_userpickedtotalsbybin();
 
-					foreach ($barcodes as $barcodse) {
+					foreach ($barcodes as $barcode) {
 						$binID     = str_pad($barcode['bin'], 8, ' ');
 						$lotserial = str_pad('', 20, ' ');
 						$qty       = $barcode['qty'];

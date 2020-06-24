@@ -9,7 +9,7 @@
 		{% for shipto in shiptos %}
 		<tr>
 			<td>
-				<a href="{{ page.get_bookings_customerURL(shipto.custid, shipto.shiptoid) }}" class="link">
+				<a href="{{ page.get_ci_customerURL(shipto.custid, shipto.shiptoid) }}" class="link">
 					{{ shipto.shipto_name() }} ({{ shipto.shiptoid }})
 				</a>
 			</td>

@@ -45,7 +45,7 @@
 			}
 		} else {
 			$page->headline = $page->title = "Sales Order #$ordn could not be found";
-			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Check if the Order Number is correct or if it is in Sales History"]);
+			$page->body = $config->twig->render('util/error-page.twig', ['title' => "Order # $ordn not found", 'msg' => "Check if the Order Number is correct or if it is in Sales History"]);
 		}
 	} else {
 		$page->body = $config->twig->render('sales-orders/sales-order/lookup-form.twig', ['page' => $page]);

@@ -31,7 +31,8 @@ class WarehouseManagement extends WireData implements Module {
 				'Picking',
 				'PickingInventoryManager',
 				'PickingOrderItems',
-				'PickingProvalley'
+				'PickingProvalley',
+				'Receiving'
 			)
 		);
 	}

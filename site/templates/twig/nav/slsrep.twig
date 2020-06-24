@@ -14,12 +14,16 @@
 	</li>
 	{% if user.has_function('ci') %}
 		<li class="nav-item">
-			<a class="nav-link" href="{{ pages.get('dplus_function=ci').url }}">{{ pages.get('dplus_function=ci').title }}</a>
+			<a class="nav-link" href="{{ pages.get('dplus_function=ci').url }}">
+			{{ pages.get('dplus_function=ci').title|raw }}
+			</a>
 		</li>
 	{% endif %}
 	{% if user.has_function('ii') %}
 		<li class="nav-item">
-			<a class="nav-link" href="{{ pages.get('dplus_function=ii').url }}">{{ pages.get('dplus_function=ii').title }}</a>
+			<a class="nav-link" href="{{ pages.get('dplus_function=ii').url }}">
+			{{ pages.get('dplus_function=ii').title|raw }}
+			</a>
 		</li>
 	{% endif %}
 	{% if user.has_function('mqo') %}

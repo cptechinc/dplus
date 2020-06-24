@@ -1,0 +1,109 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+#}
+<div class="modal fade" id="item-edit-modal" tabindex="-1" role="dialog" aria-labelledby="item-edit-modal-label" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="item-edit-modal-label">
+					Edit Line # <span class="linenbr"></span> Qty
+				</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form action="{{ page.formurl }}" method="post" class="allow-enterkey-submit">
+					<input type="hidden" name="action" value="receiving-edit-line-item">
+					<input type="hidden" name="ponbr" value="{{ page.ponbr }}">
+					<input type="hidden" name="linenbr" value="0">
+					<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="edit-itemID">ItemID</label>
+								<input type="text" class="form-control" name="itemID" id="edit-itemID" readonly>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="uom">UoM</label>
+								<input type="text" class="form-control" name="uom" id="uom" readonly>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="lotserial">Lot / Serial</label>
+								<div class="input-group">
+									<input type="text" class="form-control" id="lotserial" name="lotserial" readonly>
+									<input type="hidden" class="form-control" id="lotserial" name="lotserial">
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="lotserialref">Lot/Serial Ref</label>
+								<div class="input-group">
+									<input type="text" class="form-control" id="lotserialref" name="lotserialref" readonly>
+									<input type="hidden" class="form-control" id="lotserialref" name="lotserialref">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">
+							{% if config.inventory.receive_disregard_bin == true %}
+								<div class="form-group">
+									<label>Bin ID</label>
+									<div class="input-group">
+										<input type="text" class="form-control" name="binID" placeholder="Bin ID" readonly>
+									</div>
+								</div>
+								<input type="hidden" class="form-control" id="binID" name="binID" value="{{ item.bin }}">
+							{% else %}
+								<div class="form-group">
+									<label for="binID">Bin ID</label>
+									<div class="input-group">
+										<span class="input-group-prepend">
+											<button type="button" class="btn btn-secondary show-possible-bins" data-toggle="modal" data-target="#bins-modal" data-input="binID" title="Show Warehouse Bins" aria-label="Show Warehouse Bins">
+												<span class="fa fa-list" aria-hidden="true"></span> <span class="sr-only">Show Warehouse Bins</span>
+											</button>
+										</span>
+										<input type="text" class="form-control" id="binID" name="binID" placeholder="Bin ID" value="{{ item.bin }}">
+									</div>
+								</div>
+							{% endif %}
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="edit-qty">Qty</label>
+								<input type="text" class="form-control" name="qty" id="edit-qty">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="productiondate">Expire Date</label>
+								{% include 'util/date-picker.twig' with {'name': 'productiondate', 'id': 'productiondate', 'value': ''} %}
+							</div>
+						</div>
+					</div>
+					<div class="d-flex justify-content-between align-items-center">
+						<button type="submit" class="btn btn-success">
+							<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+						</button>
+						 <button type="button" class="btn btn-warning" data-dismiss="modal">
+							 Cancel
+						 </button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,14 +1,14 @@
 <div class="form-group">
 	<button type="button" class="btn btn-primary" onclick="window.history.back()">
-		<i class="fa fa-arrow-left" aria-hidden="true"></i> Go back
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Back
 	</button>
 	&nbsp;
 	<a href="{{ page.get_bookingsURL() }}" class="btn btn-secondary">
-		<i class="fa fa-book" aria-hidden="true"></i> Back to Bookings
+		<i class="fa fa-book" aria-hidden="true"></i> Bookings
 	</a>
 	{% block extra_links %}
 		&nbsp;
-		<a href="{{ page.customerURL(customer.custid) }}" class="btn btn-light">
+		<a href="{{ page.get_ci_customerURL(customer.custid) }}" class="btn btn-light">
 			<i class="fa fa-user" aria-hidden="true"></i> View {{ customer.name }}
 		</a>
 	{% endblock %}

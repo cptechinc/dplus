@@ -49,6 +49,7 @@
 				$page->body = $config->twig->render('warehouse/picking/function-prompt.twig', ['page' => $page, 'whsesession' => $whsesession]);
 			}
 		} else { // PICKING FUNCTION
+			$page->title = "Picking Order #$ordn";
 			include __DIR__ . "/$template.php";
 		}
 	} else {

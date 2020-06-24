@@ -39,8 +39,9 @@
 	});
 	$config->twig->addFilter($filter);
 
-	$filter = new Twig_Filter('attrJS', function ($string) {
-		return "js-$string";
+	$filter = new Twig_Filter('attrJS', function ($string, $jsprepend = true) {
+		$string = str_replace(' ', '-', $string);
+		return $jsprepend ? "js-$string" : $string;
 	});
 	$config->twig->addFilter($filter);
 
@@ -92,3 +93,20 @@
 		return array_keys($array);
 	});
 	$config->twig->addFunction($array_keys);
+
+	$filter = new Twig_Filter('shorten', function ($string, $length = 0, $append = '') {
+		$newstring = substr($string, 0, $length);
+		$newstring .= strlen($string) > $length ? $append : '';
+		return $newstring;
+	});
+	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('urlencode', function ($string) {
+		return urlencode($string);
+	});
+	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('stripslashes', function ($str) {
+		return stripslashes($str);
+	});
+	$config->twig->addFilter($filter);

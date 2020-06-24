@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-sm-6 form-group">
-		<h4>{{ shipto['shiptoleft']['shiptoid'] ~ ' ' ~  shipto['shiptoleft']['shiptoname']}}</h4>
+		<h4>{{ shipto['shiptoleft']['shiptoid'] ~ ' ' ~  shipto['shiptoleft']['shiptoname']|stripslashes }}</h4>
 	</div>
 	<div class="col-sm-6 form-group">
 		<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#{{ shipto['shiptoleft']['shiptoid']|attrJS }}" aria-expanded="false" aria-controls="{{ id|attrJS }}">
@@ -15,10 +15,10 @@
 				{% for key, column in json['columns']['shipto']['shiptoleft'] %}
 					<tr>
 						<td class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
-							{{ column['heading']}}
+							<strong>{{ column['heading']}}</strong>
 						</td>
 						<td class="{{ module_json.get_justifyclass(column['datajustify']) }}">
-							{{ shipto['shiptoleft'][key] }}
+							{{ shipto['shiptoleft'][key]|stripslashes }}
 						</td>
 					</tr>
 				{% endfor %}
@@ -29,10 +29,10 @@
 				{% for key, column in json['columns']['shipto']['shiptoright'] %}
 					<tr>
 						<td class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
-							{{ column['heading']}}
+							<strong>{{ column['heading']}}</strong>
 						</td>
 						<td class="{{ module_json.get_justifyclass(column['datajustify']) }}">
-							{{ shipto['shiptoright'][key] }}
+							{{ shipto['shiptoright'][key]|stripslashes }}
 						</td>
 					</tr>
 				{% endfor %}

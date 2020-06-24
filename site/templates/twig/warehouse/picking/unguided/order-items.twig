@@ -1,5 +1,5 @@
 <div class="list-group">
-	<div class="list-group-item">
+	<div class="list-group-item bg-dark text-white">
 		<div class="row">
 			<div class="col-sm-1">Line</div>
 			<div class="col-sm-4">Item ID / Description</div>
@@ -18,7 +18,7 @@
 							{{ item.linenbr }}
 						</button>
 					{% else %}
-						{{ item.linenbr }}
+						<span class="btn">{{ item.linenbr }}</span>
 					{% endif %}
 				</div>
 				<div class="col-sm-4">
@@ -48,7 +48,7 @@
 			</div>
 		</div>
 		<div class="collapse" id="{{ item.linenbr|attrJS }}">
-			<div class="list-group-item bg-secondary text-white">
+			<div class="list-group-item bg-light">
 				<div class="row">
 					<div class="col-sm-1"></div>
 					<div class="col-sm-1">Carton</div>
@@ -76,7 +76,7 @@
 								<input type="hidden" name="recordnumber" value="{{ lotserial.recordnumber }}">
 								<input type="hidden" name="barcode" value="{{ lotserial.barcode }}">
 								<button type="submit" class="btn btn-danger btn-sm" type="button">
-									<i class="fa fa-trash" aria-hidden="true"></i> Remove
+									<i class="fa fa-trash" aria-hidden="true"></i> Delete
 								</button>
 							</form>
 						</div>

@@ -13,10 +13,12 @@
 	<div class="tab-content mt-2" id="ii-contacts-content">
 		<div class="tab-pane fade show active" id="main" role="tabpanel" aria-labelledby="main-tab">
 			{% include 'customers/ci/contacts/customer-contact.twig' %}
+			<hr>
 
 			{% if json['data']['shipto'] %}
 				{% for shipto in json['data']['shipto'] %}
 					{% include 'customers/ci/contacts/shipto-contact.twig' %}
+					<hr>
 				{% endfor %}
 			{% endif %}
 		</div>
@@ -28,5 +30,5 @@
 		</div>
 	</div>
 {% else %}
-
+	{% include 'util/alert.twig' with {'type': 'warning','iconclass': 'fa fa-exclamation-triangle fa-2x', 'title': 'No Contacts', 'message': 'No Contacts were found for ' ~ json['custid'] } %}
 {% endif %}
