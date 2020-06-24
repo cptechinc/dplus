@@ -27,7 +27,7 @@ $(function() {
 
 		if (validate_codeID(form) === false) {
 			swal2.fire({
-				title: 'Customer Price Code ' + codeID + ' Exists',
+				title: 'Unit of Measure Code ' + codeID + ' Exists',
 				text: 'Edit that code?',
 				icon: 'warning',
 				showCancelButton: true,
@@ -105,13 +105,13 @@ $(function() {
 			} else {
 				var bootstrap = new JsContento();
 				var content = bootstrap.open('div', 'class=swal2-content|id=swal2-content');
-				content += '<button type="button" class="btn btn-secondary swal-edit-code" data-code="'+codeID+'">Edit Customer Price Code '+ codeID +'</button>';
+				content += '<button type="button" class="btn btn-secondary swal-edit-code" data-code="'+codeID+'">Edit Unit of Measure Code '+ codeID +'</button>';
 				content += '<br>';
 				content += "Do you want to overwrite?";
 				content += bootstrap.close('div');
 
 				swal2.fire({
-					title: 'Customer Price Code ' +input_codeID.val() + ' Exists' ,
+					title: 'Unit of Measure Code ' +input_codeID.val() + ' Exists' ,
 					text: 'Do you want to overwrite?',
 					icon: 'warning',
 					showCancelButton: true,
@@ -128,7 +128,7 @@ $(function() {
 	});
 
 	/**
-	 * Return if Customer Price Code ID can be used to save, based upon if
+	 * Return if Unit of Measure Code ID can be used to save, based upon if
 	 * it exists, and if is the one being edited.
 	 * @param  {[type]} form [description]
 	 * @return {[type]}      [description]
@@ -137,7 +137,7 @@ $(function() {
 		var jform = $(form);
 
 		if (codeIDs.contains(input_codeID.val())) {
-			console.log('Customer Price Code Exists');
+			console.log('Unit of Measure Code Exists');
 
 			if (input_codeID.val() != jform.attr('data-code')) {
 				return false;
