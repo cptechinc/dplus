@@ -4,9 +4,7 @@
 	</a>
 </div>
 <form action="{{ page.formurl }}" method="post" class="allow-enterkey-submit">
-	{% block action %}
-		<input type="hidden" name="action" value="inventory-search">
-	{% endblock %}
+	<input type="hidden" name="action" value="inventory-search">
 	<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
 
 	<label>Scan Barcode, UPC, Item ID, or  Lot / Serial #</label>

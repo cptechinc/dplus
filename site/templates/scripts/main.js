@@ -81,13 +81,11 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var uri = new URI(button.attr('href'));
-		swal({
+
+		swal2.fire({
+			icon: 'question',
 			title: 'Select Action Type',
 			input: 'select',
-			type: 'question',
-			confirmButtonClass: 'btn btn-sm btn-success',
-			cancelButtonClass: 'btn btn-sm btn-danger',
-			inputClass: 'form-control',
 			inputOptions: {
 				task: 'Task',
 				note: 'Note',
@@ -96,19 +94,18 @@ $(function() {
 			inputPlaceholder: 'Select an Action Type',
 			showCancelButton: true,
 			inputValidator: (value) => {
-				return new Promise(function (resolve, reject) {
+				return new Promise((resolve) => {
 					if (value.length) {
 						resolve();
 					} else {
-						reject('You need to select an Action Type')
+						resolve('You need to select an Action Type')
 					}
-				});
-
+				})
 			}
 		}).then(function (result) {
-			uri.addQuery('type', result);
+			uri.addQuery('type', result.value);
 			window.location.href = uri.toString();
-		}).catch(swal.noop);
+		});
 	});
 
 	$.notifyDefaults({
@@ -146,43 +143,36 @@ $(function() {
 		e.preventDefault();
 		var link = $(this);
 
-		swal({
+		swal2.fire({
 			title: "Confirm Deletion",
 			text: "Are you sure you want to delete?",
-			type: 'warning',
+			icon: 'warning',
 			showCancelButton: true,
-			confirmButtonClass: 'btn btn-success',
-			cancelButtonClass: 'btn btn-danger',
-			buttonsStyling: false,
 			confirmButtonText: 'Yes'
-		}).then(function (result) {
-			if (result) {
+		}).then((result) => {
+			if (result.value) {
 				window.location.href = link.attr('href');
 			}
-		}).catch(swal.noop);
+		});
 	});
 
 	$('button.delete_button').click(function(e){
 		e.preventDefault();
 		var button = $(this);
 		var action = $('.modal-form').attr("action");
-		console.log(action);
 
-		swal({
+		swal2.fire({
 			title: "Confirm Deletion",
 			text: "Are you sure you want to delete?",
-			type: 'warning',
+			icon: 'warning',
 			showCancelButton: true,
-			confirmButtonClass: 'btn btn-success',
-			cancelButtonClass: 'btn btn-danger',
-			buttonsStyling: false,
 			confirmButtonText: 'Yes'
-		}).then(function (confirm) {
-			if (confirm) {
+		}).then((result) => {
+			if (result.value) {
 				button.closest('form').submit();
 				window.location.href = action;
 			}
-		}).catch(swal.noop);
+		});
 	});
 });
 
@@ -283,26 +273,6 @@ function init_datepicker() {
 	});
 }
 
-$('a.delete_button').click(function(e){
-	e.preventDefault();
-	var link = $(this);
-
-	swal({
-		title: "Confirm Deletion",
-		text: "Are you sure you want to delete?",
-		type: 'warning',
-		showCancelButton: true,
-		confirmButtonClass: 'btn btn-success',
-		cancelButtonClass: 'btn btn-danger',
-		buttonsStyling: false,
-		confirmButtonText: 'Yes'
-	}).then(function (result) {
-		if (result) {
-			window.location.href = link.attr('href');
-		}
-	}).catch(swal.noop);
-});
-
 /*==============================================================
 	STRING FUNCTIONS
 =============================================================*/
@@ -361,7 +331,9 @@ Array.prototype.contains = function ( needle ) {
 const swal2 = Swal.mixin({
 	customClass: {
 		confirmButton: 'btn btn-success mr-3',
-		cancelButton: 'btn btn-danger'
+		cancelButton: 'btn btn-danger',
+		inputClass: 'form-control',
+		selectClass: 'form-control',
 	},
 	buttonsStyling: false
 })

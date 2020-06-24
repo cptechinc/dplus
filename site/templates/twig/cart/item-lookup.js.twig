@@ -72,19 +72,19 @@ $(function() {
 					form_additem.submit();
 				}
 			} else {
-				swal ({
+				swal2.fire({
 					title: 'Item not found.',
 					text: input_itemid.val() + ' cannot be found.',
-					type: 'warning',
-					confirmButtonClass: 'btn btn-sm btn-success',
-					cancelButtonClass: 'btn btn-sm btn-danger',
+					icon: 'warning',
 					showCancelButton: true,
 					confirmButtonText: 'Make advanced search?'
 				}).then(function (result) {
-					var url = URI("{{ page.url }}");
-					url.addQuery('q', input_itemid.val());
-					window.location.replace(url.toString());
-				}).catch(swal.noop);
+					if (result.value) {
+						var url = URI("{{ page.url }}");
+						url.addQuery('q', input_itemid.val());
+						window.location.replace(url.toString());
+					}
+				});
 			}
 		});
 	}

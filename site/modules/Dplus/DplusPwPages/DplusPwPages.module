@@ -92,25 +92,25 @@
 		}
 
 		public function init() {
-			$this->addHookProperty('Page(template=dplus-function|ii-function)::pagenbr', function($event) {
+			$this->addHookProperty('Page::pagenbr', function($event) {
 				$page = $event->object;
 				$event->return = $this->wire('input')->pageNum;
 			});
 
-			$this->addHook('Page(template=dplus-function|ii-function)::paginate', function($event) {
+			$this->addHook('Page::paginate', function($event) {
 				$page = $event->object;
 				$pagenbr = $event->arguments(0);
 				$event->return = $this->paginate_page($page, $pagenbr);
 			});
 
-			$this->addHook('Page(template=dplus-function|ii-function)::get_pagecount', function($event) {
+			$this->addHook('Page::get_pagecount', function($event) {
 				$page = $event->object;
 				$count = $event->arguments(0);
 				$totalpages = ceil($count / $this->wire('session')->display);
 				$event->return = $totalpages == 0 ? 1 : $totalpages;
 			});
 
-			$this->addHookBefore('Page(template=dplus-function|ii-function)::render', function($event) {
+			$this->addHookBefore('Page::render', function($event) {
 				if ($this->wire('input')->get->display) {
 					$this->wire('session')->display = $this->wire('input')->get->text('display');
 				} else {
@@ -120,24 +120,24 @@
 				}
 			});
 
-			$this->addHook('Page(template=dplus-function|ii-function)::has_orderby', function($event) {
+			$this->addHook('Page::has_orderby', function($event) {
 				$page = $event->object;
 				$event->return = boolval($this->wire('input')->get->orderby);
 			});
 
-			$this->addHook('Page(template=dplus-function|ii-function)::orderby', function($event) {
+			$this->addHook('Page::orderby', function($event) {
 				$page = $event->object;
 				$event->return = $this->wire('input')->get->text('orderby');
 			});
 
-			$this->addHookProperty('Page(template=dplus-function|ii-function)::orderby_column', function($event) {
+			$this->addHookProperty('Page::orderby_column', function($event) {
 				$page = $event->object;
 				$sortby = $this->wire('input')->get->text('orderby');
 				$sortby_array = explode('-', $sortby);
 				$event->return = $sortby_array[0];
 			});
 
-			$this->addHookProperty('Page(template=dplus-function|ii-function)::orderby_sort', function($event) {
+			$this->addHookProperty('Page::orderby_sort', function($event) {
 				$page = $event->object;
 				$sortby = $this->wire('input')->get->text('orderby');
 				$order = 'ASC';
@@ -150,7 +150,7 @@
 				$event->return = $order;
 			});
 
-			$this->addHook('Page(template=dplus-function|ii-function)::get_sort', function($event) {
+			$this->addHook('Page::get_sort', function($event) {
 				$sort = 'ASC';
 
 				$page = $event->object;
@@ -164,7 +164,7 @@
 				$event->return = $sort;
 			});
 
-			$this->addHook('Page(template=dplus-function|ii-function)::get_sortURL', function($event) {
+			$this->addHook('Page::get_sortURL', function($event) {
 				$page = $event->object;
 				$column = $event->arguments(0);
 				$sort = $page->get_sort($column);

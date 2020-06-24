@@ -1,5 +1,10 @@
 <select name="{{ name }}" id="{{ id }}" class="form-control">
-	<option value="">-- Choose --</option>
+	{% if hideblankoption == false %}
+		<option value="">
+			{{ blankoption ? blankoption : '-- Choose --'}}
+		</option>
+	{% endif %}
+
 	{% for value, description in options %}
 		<option value="{{ value }}" {{ value == selectedvalue ? 'selected' : ''}}>{{ capitalize_labels ? description|capitalize : description }}</option>
 	{% endfor %}

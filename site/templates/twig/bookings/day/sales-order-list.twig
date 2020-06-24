@@ -32,30 +32,24 @@
 	<tbody>
 		{% for order in orders %}
 			<tr>
-				<td>{{ order.bookdate|convertdate }}</td>
+				<td>{{ order.bookingdate|convertdate }}</td>
 				<td>
-					<a href="{{ page.get_viewsalesorderURL(order.salesordernbr) }}" class="link" target="_blank" aria-label="View Sales Order" title="View Sales Order">
-						{{ order.salesordernbr }}
+					<a href="{{ page.get_viewsalesorderURL(order.ordernumber) }}" class="link" target="_blank" aria-label="View Sales Order" title="View Sales Order">
+						{{ order.ordernumber }}
 					</a>
 				</td>
-
-				{% if order.customer_exists() %}
-					<td>
-						<a href="{{ page.get_ci_customerURL(order.custid) }}" class="link" target="_blank" aria-label="View Customer in CI" title="View Customer in CI">
-							{{ order.customer_name() }} ({{ order.custid }})
-						</a>
-					</td>
-					<td>
-						<a href="{{ page.get_ci_customershiptoURL(order.custid, order.shiptoid) }}" class="link" target="_blank" aria-label="View Shipto in CI" title="View Shipto in CI">
-							{{ order.shiptoid }}
-						</a>
-					</td>
-				{% else %}
-					<td>{{ order.custid }}</td>
-					<td>{{ order.shiptoid }}</td>
-				{% endif %}
 				<td>
-					<a href="{{ page.get_bookings_day_orderURL(order.bookdate, order.salesordernbr) }}" class="btn btn-primary">
+					<a href="{{ page.get_ci_customerURL(order.custid) }}" class="link" target="_blank" aria-label="View Customer in CI" title="View Customer in CI">
+						{{ order.customer.name }} ({{ order.custid }})
+					</a>
+				</td>
+				<td>
+					<a href="{{ page.get_ci_customershiptoURL(order.custid, order.shiptoid) }}" class="link" target="_blank" aria-label="View Shipto in CI" title="View Shipto in CI">
+						{{ order.shiptoid }}
+					</a>
+				</td>
+				<td>
+					<a href="{{ page.get_bookings_day_orderURL(order.bookingdate, order.ordernumber) }}" class="btn btn-primary">
 						<i class="fa fa-book" aria-hidden="true"></i> View
 					</a>
 				</td>

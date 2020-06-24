@@ -1,3 +1,10 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	labelsession           LabelPrintSession
+	m_print                module PrintLabelItemReceiving
+#}
 <div class="form-group">
 	<a href="{{ page.url }}" class="btn btn-primary not-round">
 		<i class="fa fa-arrow-left" aria-hidden="true"></i> Return to Item Form
@@ -6,31 +13,14 @@
 <div class="row">
 	<div class="col-sm-6">
 		<form action="{{ page.formurl }}" id="print-label-form" method="post">
-			{% block action %}
-				<input type="hidden" name="action" value="print-thermal-label">
-			{% endblock %}
-			<input type="hidden" name="labelID" value="{{ label.labelid }}">
-			<input type="hidden" name="bin" value="{{ label.bin }}">
-			<input type="hidden" name="lotserial" value="{{ label.lotserial }}">
-			<input type="hidden" name="whseID" value="{{ whsesession.whseid }}">
+			<input type="hidden" name="action" value="print-thermal-label">
+			<input type="hidden" name="labelID" value="{{ labelsession.labelid }}">
+			<input type="hidden" name="bin" value="{{ labelsession.bin }}">
+			<input type="hidden" name="lotserial" value="{{ labelsession.lotserial }}">
+			<input type="hidden" name="whseID" value="{{ labelsession.whse }}">
 			<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
 
 			<table class="table table-striped">
-				<tr>
-					<td>Item ID</td>
-					<td>
-						{{ label.itemid }} <br>
-						<small>{{ item.desc1 }}</small>
-					</td>
-				</tr>
-				<tr>
-					<td>Lotserial</td>
-					<td>{{ label.lotserial }}</td>
-				</tr>
-				<tr>
-					<td>Lot Reference</td>
-					<td>{{ label.lotserial }}</td>
-				</tr>
 				<tr>
 					<td colspan="2" class="bg-info text-white text-center"><b>Product Label</b></td>
 				</tr>
@@ -39,7 +29,7 @@
 					<td>
 						<div class="label-input">
 							<div class="input-group">
-								<input type="text" class="form-control input-sm required" name="box-label" id="box-label" value="{{ label.label_box }}">
+								<input type="text" class="form-control input-sm required" name="box-label" id="box-label" value="{{ labelsession.label_box }}">
 								<div class="input-group-append">
 									<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#labelformats-modal" data-input="box-label">
 										<span class="fa fa-search"></span>
@@ -48,7 +38,7 @@
 							</div>
 							<br>
 							<p class="label-desc">
-								{{ labelsession.label_box is not empty ? thermal_labels.get_description(labelsession.label_box) : '' }}
+								{{ labelsession.label_box is not empty ? m_print.get_labelformat(labelsession.label_box).description : '' }}
 							</p>
 						</div>
 					</td>
@@ -66,7 +56,7 @@
 								</div>
 							</div><br>
 							<p class="printer-desc">
-								{{ labelsession.printer_box is not empty ? printers.get_description(whsesession.whseid, labelsession.printer_box) : '' }}
+								{{ labelsession.printer_box is not empty ? m_print.get_printer(labelsession.printer_box).description : '' }}
 							</p>
 						</div>
 					</td>
@@ -100,7 +90,7 @@
 									</div>
 								</div><br>
 								<p class="label-desc">
-									{{ labelsession.label_master is not empty ? thermal_labels.get_description(labelsession.label_master) : '' }}
+									{{ labelsession.label_master is not empty ? m_print.get_labelformat(labelsession.label_master).description : '' }}
 								</p>
 							</div>
 						</td>
@@ -118,7 +108,7 @@
 									</div>
 								</div><br>
 								<p class="printer-desc">
-									{{ labelsession.printer_master is not empty ? printers.load_desc(whsesession.whseid, labelsession.printer_master) : '' }}
+									{{ labelsession.printer_master is not empty ?m_print.get_printer(labelsession.printer_master).description : '' }}
 								</p>
 							</div>
 						</td>

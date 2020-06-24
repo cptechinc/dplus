@@ -35,19 +35,19 @@ $(function() {
 			}
 
 			if (valid_form.error) {
-				swal({
-					type: 'error',
+				swal2.fire({
+					icon: 'error',
 					title: valid_form.title,
 					text: valid_form.msg,
 					html: valid_form.html
-				}).catch(swal.noop);
+				});
 			} else if (valid_qty_exceeds.error) {
-				swal({
-					type: 'warning',
+				swal2.fire({
+					icon: 'warning',
 					title: valid_qty_exceeds.title,
 					text: valid_qty_exceeds.msg,
 					html: valid_qty_exceeds.html
-				}).catch(swal.noop);
+				});
 			} else {
 				form.submit();
 			}
@@ -81,7 +81,7 @@ $(function() {
 					title: valid_form.title,
 					text: valid_form.msg,
 					html: valid_form.html
-				}).catch(swal.noop);
+				});
 			} else {
 				form.submit();
 			}
@@ -110,7 +110,7 @@ $(function() {
 		var html = false;
 		var itemID = input_itemID.val();
 
-		if (input_lotref.val() == '' && items[itemID]['type'] != 'N') {
+		if (input_lotref.val() == '' && items[itemID]['type'] != 'N' && items.length) {
 			error = true;
 			title = 'Error';
 			msg   = 'Please enter a Lot Serial Reference';

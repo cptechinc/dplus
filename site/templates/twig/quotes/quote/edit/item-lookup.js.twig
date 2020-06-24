@@ -34,8 +34,8 @@ $(function() {
 	function lookup_item() {
 		var ii_url = URI("{{ page.get_ii_lookupURL() }}");
 		ii_url.addQuery('itemID', input_itemid.val());
-		ii_url.addQuery('custID', '{{ order.custid }}');
-		ii_url.addQuery('shiptoID', '{{ order.shiptoid }}');
+		ii_url.addQuery('custID', '{{ quote.custid }}');
+		ii_url.addQuery('shiptoID', '{{ quote.shiptoid }}');
 
 		/**
 		 * Example Response
@@ -46,7 +46,6 @@ $(function() {
 		 * }
 		 */
 		$.getJSON(ii_url.toString(), function( response ) {
-
 			if (response.exists) {
 				form_additem.attr('data-validated', response.itemID);
 				input_itemid.addClass('is-valid');
@@ -72,19 +71,20 @@ $(function() {
 					form_additem.submit();
 				}
 			} else {
-				swal ({
+				swal2.fire({
 					title: 'Item not found.',
 					text: input_itemid.val() + ' cannot be found.',
-					type: 'warning',
-					confirmButtonClass: 'btn btn-sm btn-success',
-					cancelButtonClass: 'btn btn-sm btn-danger',
+					icon: 'warning',
 					showCancelButton: true,
 					confirmButtonText: 'Make advanced search?'
 				}).then(function (result) {
-					var url = URI("{{ page.url }}");
-					url.addQuery('q', input_itemid.val());
-					window.location.replace(url.toString());
-				}).catch(swal.noop);
+					if (result.value) {
+						var url = URI("{{ page.url }}");
+						url.addQuery('qnbr', '{{ quote.quotenbr }}');
+						url.addQuery('q', input_itemid.val());
+						window.location.replace(url.toString());
+					}
+				});
 			}
 		});
 	}

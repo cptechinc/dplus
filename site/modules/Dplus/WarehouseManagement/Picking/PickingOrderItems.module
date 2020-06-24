@@ -48,6 +48,18 @@ class PickingOrderItems extends WireData implements Module {
 	}
 
 	/**
+	 * Return PickSalesOrderDetail for Linenbr
+	 * @param  int    $linenbr Line
+	 * @return PickSalesOrderDetail
+	 */
+	public function get_picksalesorderdetail_linenbr(int $linenbr) {
+		$picking_master = PickSalesOrderDetailQuery::create();
+		$picking_master->filterBySessionidOrder($this->sessionID, $this->ordn);
+		$picking_master->filterByLinenbr($linenbr);
+		return $picking_master->findOne();
+	}
+	
+	/**
 	 * Returns if this Picking Order has any Sublines
 	 * @return bool
 	 */

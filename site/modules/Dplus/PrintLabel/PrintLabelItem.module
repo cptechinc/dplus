@@ -1,0 +1,97 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+// dplus-model
+use PrinterQuery, Printer;
+use ThermalLabelFormatQuery, ThermalLabelFormat;
+
+// dpluso-model
+use LabelPrintSessionQuery, LabelPrintSession;
+
+/**
+ * PrintLabelItem
+ *
+ * Module for Printing off Labels for Items
+ */
+class PrintLabelItem extends WireData implements Module {
+
+	/**
+	 * Returns if LabelPrintSession record exists
+	 * @return bool
+	 */
+	public function session_exists() {
+		$q = $this->get_query_session();
+		return boolval($q->filterBySessionid(session_id())->count());
+	}
+
+	/**
+	 * Return LabelPrintSession
+	 * @return LabelPrintSession
+	 */
+	public function get_session() {
+		$q = $this->get_query_session();
+		return $q->filterBySessionid(session_id())->findOneOrCreate();
+	}
+
+	/**
+	 * Return LabelPrintSessionQuery
+	 * @return LabelPrintSessionQuery
+	 */
+	public function get_query_session() {
+		return LabelPrintSessionQuery::create();
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return Printers
+	 * @return Printer[]|ObjectCollection
+	 */
+	public function get_printers() {
+		return PrinterQuery::create()->find();
+	}
+
+	/**
+	 * Return Printer
+	 * @return Printer
+	 */
+	public function get_printer($id) {
+		return PrinterQuery::create()->findOneById($id);
+	}
+
+	/**
+	 * Return Thermal Label Formats
+	 * @return ThermalLabelFormat[]|ObjectCollection
+	 */
+	public function get_labelformats() {
+		return ThermalLabelFormatQuery::create()->find();
+	}
+
+	/**
+	 * Return Thermal Label Format
+	 * @return ThermalLabelFormat
+	 */
+	public function get_labelformat($id) {
+		return ThermalLabelFormatQuery::create()->findOneById($id);
+	}
+
+
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Print Item Label',
+			'version' => 101,
+			'summary' => 'Item Label Printing',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(
+				'PrintLabelItemReceving'
+			)
+		);
+	}
+}
