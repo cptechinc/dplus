@@ -141,6 +141,9 @@ a.image-link:hover {
 	border-color: #8ba2b0;
 }
 
+.toolbar-sidebar .nav li {
+	width: 100%;
+}
 
 /************************************** Navbar **************************************/
 #yt-menu {
@@ -193,4 +196,8 @@ a.image-link:hover {
 
 .highlight {
 	background: #FADA5E;
+}
+
+textarea.qnotes {
+	font-family: monospace;
 }
