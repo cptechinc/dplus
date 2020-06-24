@@ -5,12 +5,13 @@
 
 	if ($input->get->q) {
 		$q = strtoupper($input->get->text('q'));
-
 		$page->show_breadcrumbs = false;
-		$page->body .= $config->twig->render('customers/ci/bread-crumbs.twig', ['page' => $page, 'customer' => $customer]);
+		$page->body .= $config->twig->render('customers/ci/bread-crumbs.twig', ['page' => $page]);
 
-		$page->title = "Phonebook: $customer->name Searching for '$q'";
+		$page->title = "Phonebook: Searching for '$q'";
 		$query->filterByMatchExpression($q);
+	} else {
+		$q = '';
 	}
 
 	if ($user->is_salesrep()) {
