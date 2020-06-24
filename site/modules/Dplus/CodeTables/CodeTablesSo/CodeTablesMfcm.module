@@ -30,6 +30,16 @@ class CodeTablesMfcm extends WireData implements Module {
 	}
 
 	/**
+	 * Return the IDs for the Motor Freight Codes
+	 * @return array
+	 */
+	public function get_codes_ids() {
+		$q = $this->get_query();
+		$q->select(MotorFreightCode::get_aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
+	/**
 	 * Returns the associated ModelQuery class for table code
 	 * @param  string $table Table Code
 	 * @return mixed
