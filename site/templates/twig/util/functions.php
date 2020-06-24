@@ -101,7 +101,12 @@
 	});
 	$config->twig->addFilter($filter);
 
-	$filter = new Twig_Filter('dynamicproperty', function ($object, $property) {
-		return $object->$property;
+	$filter = new Twig_Filter('urlencode', function ($string) {
+		return urlencode($string);
+	});
+	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('stripslashes', function ($str) {
+		return stripslashes($str);
 	});
 	$config->twig->addFilter($filter);
