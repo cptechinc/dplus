@@ -42,6 +42,16 @@ class CodeTablesTrm extends WireData implements Module {
 	}
 
 	/**
+	 * Return the IDs for the Customer Terms Codes
+	 * @return array
+	 */
+	public function get_codes_ids() {
+		$q = $this->get_query();
+		$q->select(CustomerTermsCode::get_aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
+	/**
 	 * Return the Code
 	 * @param  string $code Customer Terms Code
 	 * @return CustomerTermsCode
@@ -105,6 +115,10 @@ class CodeTablesTrm extends WireData implements Module {
 		} else {
 			$code  = $values->text('code', array('maxLength' => CustomerTermsCode::MAX_LENGTH_CODE));
 			$record = CustomerTermsCode::new();
+
+			// TODO: setCode() on NULL, but echos out input code
+			// echo $code;
+			// exit;
 			$record->setCode($code);
 		}
 
