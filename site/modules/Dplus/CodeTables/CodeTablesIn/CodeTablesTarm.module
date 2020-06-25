@@ -35,6 +35,16 @@ class CodeTablesTarm extends WireData implements Module {
 	}
 
 	/**
+	 * Return the IDs for the Warehouses
+	 * @return array
+	 */
+	public function get_codes_ids() {
+		$q = $this->get_query();
+		$q->select(TariffCode::get_aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
+	/**
 	 * Return the Code records from Database filtered by ProductLne ID
 	 * @param  string $productlne ProductLneID
 	 * @return ObjectCollection

@@ -37,7 +37,7 @@
 		}
 
 		$page->body .= $config->twig->render("code-tables/min/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'countries' => $countries, 'tariff' => $tariff, 'recordlocker' => $recordlocker]);
-		$page->js .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'tariffcode' => $tariff]);
+		$page->js .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'tariffcode' => $tariff, 'm_tarm' => $module_codetable]);
 	} else {
 		$recordlocker->remove_lock($page->codetable);
 		$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'table' => $page->codetable, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable, 'recordlocker' => $recordlocker]);
