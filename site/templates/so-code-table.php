@@ -8,7 +8,8 @@
 
 		$code  = $input->requestMethod('GET') ? $input->$rm->text('code') : false;
 		$code = $page->codetable == 'soptm' ? $input->$rm->text('sysop') : $code;
-		// $code = $input->$rm->text('code') ? $input->$rm->text('code') : '';
+		$action = $input->$rm->text('action');
+		$code = $action == 'remove-code' ? '' : $code;
 
 		if ($so_codetables->validate_codetable($page->codetable)) {
 			$module_codetable = $so_codetables->get_codetable_module($page->codetable);
