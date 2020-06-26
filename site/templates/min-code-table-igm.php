@@ -40,7 +40,7 @@
 		$gl_accounts = GlCodeQuery::create()->find();
 
 		$page->body .= $config->twig->render("code-tables/min/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'itemgroup' => $itemgroup, 'product_line_codes' => $product_line_codes, 'gl_accounts' => $gl_accounts, 'recordlocker' => $recordlocker]);
-        $page->js .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'itemgroup' => $itemgroup]);
+        $page->js .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'itemgroup' => $itemgroup, 'm_igm' => $module_codetable]);
 	} else {
 		$recordlocker->remove_lock($page->codetable);
 		$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'table' => $page->codetable, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable, 'recordlocker' => $recordlocker]);
