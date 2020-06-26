@@ -176,6 +176,15 @@ $(function() {
 				modal.find('.modal-title').text('Editing Code ' + code);
 				modal.find('input[name=code]').prop("readonly", true);
 				modal.find('input[name=description]').focus();
+				if (button.data('fabricator') == '') {
+					form.find('select[name=fabricator]').val('N');
+				}
+				if (button.data('production') == '') {
+					form.find('select[name=production]').val('N');
+				}
+				if (button.data('competitor') == '') {
+					form.find('select[name=competitor]').val('N');
+				}
 			} else {
 				modal.find('.modal-title').text('Adding a new Code');
 				modal.find('input[name=code]').prop("readonly", false);
