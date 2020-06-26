@@ -1,5 +1,5 @@
 {# sysop is an instance of MsaSysopCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form">
+<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="{{ sysop.system }}-{{ sysop.code }}">
 	<input type="hidden" name="action" value="update-sysop">
 	<input type="hidden" name="table" value="sysop">
 	<div class="row">

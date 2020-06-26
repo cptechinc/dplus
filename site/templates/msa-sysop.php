@@ -20,8 +20,7 @@
 
 	if ($msa_codetables->validate_codetable($page->codetable)) {
 		$page->focus = $input->get->focus ? $input->get->text('focus') : '';
-		echo $page->focus;
-		
+
 
 		$module_codetable = $msa_codetables->get_codetable_module($page->codetable);
 
@@ -70,7 +69,7 @@
 			}
 
 			$page->body .= $config->twig->render("code-tables/msa/$page->codetable/form.twig", ['page' => $page, 'sysop' => $sysop, 'recordlocker' => $recordlocker]);
-			$page->js   .= $config->twig->render("code-tables/msa/$page->codetable/js.twig", ['page' => $page, 'max_length_code' => $module_codetable->get_max_length_code()]);
+			$page->js   .= $config->twig->render("code-tables/msa/$page->codetable/js.twig", ['page' => $page, 'max_length_code' => $module_codetable->get_max_length_code(), 'm_sysop' => $module_codetable]);
 		} else {
 			$page->headline = "$module_codetable->description Table";
 			$recordlocker->remove_lock($page->codetable);

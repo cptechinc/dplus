@@ -32,6 +32,26 @@ class MsaSysop extends WireData implements Module {
 	}
 
 	/**
+	 * Return the IDs for the Warehouses
+	 * @return array
+	 */
+	public function get_codes_ids() {
+		$q = $this->get_query();
+		$q->select(MsaSysopCode::get_aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
+	/**
+	 * Return the IDs for the Warehouses
+	 * @return array
+	 */
+	public function get_codes_systems() {
+		$q = $this->get_query();
+		$q->select(MsaSysopCode::get_aliasproperty('system'));
+		return $q->find()->toArray();
+	}
+
+	/**
 	 * Return the Code records from Database filtered by ProductLne ID
 	 * @param  string $system    System
 	 * @param  string $code     System Option Code
