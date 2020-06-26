@@ -3,35 +3,9 @@ $(function() {
 	var form = $('#code-edit-form');
 	var input_codeID   = form.find('input[name=code]');
 
-	var codeIDs = {{ m_tarm.get_codes_ids()|json_encode()|raw }};
+	var modal_ajax = $('#ajax-modal');
 
-	// $('#edit-code-modal').on('shown.bs.modal', function (event) {
-	// 	var button = $(event.relatedTarget); // Button that triggered the modal
-	// 	var code = button.data('code').toString(); // Extract info from data-* attributes
-	// 	var number = button.data('number'); // Extract info from data-* attributes
-	// 	var description = button.data('description').toString(); // Extract info from data-* attributes
-	// 	var duty_rate = button.data('duty_rate'); // Extract info from data-* attributes
-	// 	var country = button.data('country'); // Extract info from data-* attributes
-	//
-	// 	var modal = $(this);
-	//
-	// 	modal.find('input[name=code]').val(code);
-	// 	modal.find('input[name=number]').val(number);
-	// 	modal.find('input[name=description]').val(description);
-	// 	modal.find('input[name=duty_rate]').val(duty_rate);
-	// 	modal.find('input[name=country]').val(country);
-	//
-	// 	if (code.length) {
-	// 		modal.find('.modal-title').text('Editing Code ' + code);
-	// 		modal.find('input[name=code]').prop("readonly", true);
-	// 		modal.find('input[name=description]').focus();
-	// 	} else {
-	// 		modal.find('.modal-title').text('Adding a new Code');
-	// 		modal.find('input[name=code]').prop("readonly", false);
-	// 		modal.find('input[name=code]').focus();
-	// 	}
-	//
-	// });
+	var codeIDs = {{ m_tarm.get_codes_ids()|json_encode()|raw }};
 
 /* =============================================================
 	Event Functions
@@ -67,7 +41,7 @@ $(function() {
 ============================================================= */
 	origForm = form.serialize();
 
-	$("body").on("click", "a:not(#code-edit-form .form_button)", function(e) {
+	$("body").on("click", "a:not(#code-edit-form .form_button, #ajax-modal a, .swal2-modal a)", function(e) {
 		if (form.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);
@@ -162,10 +136,10 @@ $(function() {
 		if (codeIDs.contains(input_codeID.val())) {
 			console.log('Tariff Class Exists');
 
-			if (input_codeID.val() != jform.data('codeid')) {
+			if (input_codeID.val() != jform.data('code')) {
 				return false;
 			}
 		}
 		return true;
 	}
-});
+})
