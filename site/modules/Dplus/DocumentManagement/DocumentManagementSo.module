@@ -1,0 +1,200 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+use DocumentFoldersQuery, DocumentFolders;
+use DocumentsQuery, Documents;
+use SalesOrderQuery, SalesOrder;
+use SalesOrderDetailQuery, SalesOrderDetail;
+use SalesHistoryQuery, SalesHistory;
+use SalesHistoryDetailQuery, SalesHistoryDetail;
+
+/**
+ * Document Management SO
+ *
+ * Handles Sales Document Retrieval for Dplus
+ */
+class DocumentManagementSo extends DocumentManagement implements Module {
+	/**
+	 * Return Documents objects
+	 * filtered by the tag1, reference1 fields for a Sales Order
+	 * @param  string $ordn                      Sales Order Number
+	 * @return Documents[]|ObjectCollection
+	 */
+	public function get_documents($ordn) {
+		$docs_query = DocumentsQuery::create();
+		$this->filter_sales($docs_query, $ordn);
+		return $docs_query->find();
+	}
+
+	/**
+	 * Return the number of Documents
+	 * filtered by the tag1, reference1 fields for a Sales Order
+	 * @param  string $ordn Sales Order Number
+	 * @return int          Number of Sales Order Documents found
+	 */
+	public function count_documents($ordn) {
+		$docs_query = DocumentsQuery::create();
+		$this->filter_sales($docs_query, $ordn);
+		return $docs_query->count();
+	}
+
+	/**
+	 * Adds Filter Conditions to the Documents Query
+	 * to find Documents associated with a Sales Order
+	 * @param  DocumentsQuery $docs_query Query to add filters to
+	 * @param  string         $ordn             Sales Order #
+	 * @return void
+	 */
+	protected function filter_sales(DocumentsQuery $docs_query, $ordn) {
+		$ordn = SalesOrder::get_paddedordernumber($ordn);
+		$this->columns = new WireData();
+		$this->columns->tag = Documents::get_aliasproperty('tag');
+		$this->columns->reference1 = Documents::get_aliasproperty('reference1');
+
+		$conditions = array();
+
+		// Create Sales Orders Filter
+		$conditions[] = $this->filter_sales_orders($docs_query, $ordn);
+
+		// Invoices Filter
+		$conditions[] = $this->filter_sales_invoices($docs_query, $ordn);
+
+		if ($this->order_has_ponbrs($ordn)) {
+			$cond = $this->filter_sales_vendorpo($docs_query, $ordn);
+			
+			if ($cond) {
+				$conditions[] = $cond;
+			}
+		}
+		$docs_query->where($conditions, 'or');
+	}
+
+	/**
+	 * Filter the Query for Sales Order Documents
+	 * @param  DocumentsQuery $docs_query Query
+	 * @param  string         $ordn             Sales Order #
+	 * @return string
+	 */
+	protected function filter_sales_orders(DocumentsQuery $docs_query, $ordn) {
+		$name = 'cond_so';
+		$docs_query->condition('tag_so', "Documents.{$this->columns->tag} = ?", self::TAG_SALESORDER);
+		$docs_query->condition('reference1_so', "Documents.{$this->columns->reference1} = ?", $ordn);
+		$docs_query->combine(array('tag_so', 'reference1_so'), 'and', $name) ;
+		return $name;
+	}
+
+	/**
+	 * Filter the Query for Invoice Documents
+	 * @param  DocumentsQuery $docs_query Query
+	 * @param  string         $ordn             Sales Order #
+	 * @return string
+	 */
+	protected function filter_sales_invoices(DocumentsQuery $docs_query, $ordn) {
+		$name = 'cond_invoices';
+		$docs_query->condition('tag_invoices', "Documents.{$this->columns->tag} = ?", self::TAG_ARINVOICE);
+		$docs_query->condition('reference1_invoices', "Documents.{$this->columns->reference1} = ?", $ordn);
+		$docs_query->combine(array('tag_invoices', 'reference1_invoices'), 'and', $name);
+		return $name;
+	}
+
+	/**
+	 * Filter the Query for Vendor Purchase Order Documents
+	 * @param  DocumentsQuery $docs_query Query
+	 * @param  string         $ordn             Sales Order #
+	 * @return mixed
+	 */
+	protected function filter_sales_vendorpo(DocumentsQuery $docs_query, $ordn) {
+		$name = 'cond_vendorpo';
+		$validate_order = $this->wire('modules')->get('ValidateSalesOrder');
+
+		if ($validate_order->invoice($ordn) || $validate_order->order($ordn)) {
+			if ($this->order_has_ponbrs($ordn)) {
+				$q = $this->get_detail_query($ordn);
+				$ponbrs = $q->find()->toArray();
+				$docs_query->condition('tag_vendorpo', "Documents.{$this->columns->tag} = ?", self::TAG_VENDORPO);
+				$docs_query->condition('reference1_vendorpo', "Documents.{$this->columns->reference1} IN ?", $ponbrs);
+				$docs_query->combine(array('tag_vendorpo', 'reference1_vendorpo'), 'and', $name);
+				return $name;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns if Sales Order has Purchase Orders related to it
+	 * @param  string $ordn Sales Order #
+	 * @return bool
+	 */
+	protected function order_has_ponbrs($ordn) {
+		$q = $this->get_detail_query($ordn);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return Detail Query
+	 * @param  string $ordn Sales Order #
+	 * @return SalesOrderDetailQuery|SalesHistoryDetailQuery
+	 */
+	protected function get_detail_query($ordn) {
+		$validate_order = $this->wire('modules')->get('ValidateSalesOrder');
+		$q = SalesOrderDetailQuery::create();
+		$q->select(SalesOrderDetail::get_aliasproperty('vendorpo'));
+
+		if ($validate_order->invoice($ordn)) {
+			$q = SalesHistoryDetailQuery::create();
+			$q->select(SalesHistoryDetail::get_aliasproperty('vendorpo'));
+		}
+		$q->filterByOrdernumber($ordn);
+		return $q;
+	}
+
+/* =============================================================
+	URL Functions
+============================================================= */
+	/**
+	 * Returns URL to Sales Order Documents Page
+	 * @param  string $ordn     Sales Order Number
+	 * @param  string $folder   Folder
+	 * @param  string $document File Name
+	 * @return string
+	 */
+	public function get_docsURL($ordn, $folder, $document) {
+		$url = new Url($this->wire('pages')->get('pw_template=sales-order-documents')->url);
+		$url->query->set('ordn', $ordn);
+		$url->query->set('folder', $folder);
+		$url->query->set('document', $document);
+		return $url->getUrl();
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Document Management Sales ',
+			'version' => 101,
+			'summary' => 'Module for getting Sales Documents / Document Info out of Dplus',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => 'DocumentManagement'
+		);
+	}
+
+	public function init() {
+		$this->addHook('Page(pw_template=sales-order-view)::documentload', function($event) {
+			$page = $event->object;
+			$folder   = $event->arguments(0);
+			$document = $event->arguments(1);
+			$ordn     = $event->arguments(2);
+			$event->return = $this->get_docsURL($ordn, $folder, $document);
+		});
+
+		$this->addHook('Page(pw_template=sales-order-documents)::documentload', function($event) {
+			$page = $event->object;
+			$folder   = $event->arguments(0);
+			$document = $event->arguments(1);
+			$ordn     = $event->arguments(2);
+			$event->return = $this->get_docsURL($ordn, $folder, $document);
+		});
+	}
+}

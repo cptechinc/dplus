@@ -20,11 +20,11 @@ include(__DIR__.'/DocumentManagementAR.trait.php');
 class DocumentManagement extends WireData implements Module {
 	use DocumentManagementVi;
 	use DocumentManagementPurchaseOrders;
-	use DocumentManagementSalesOrders;
-	use DocumentManagementQuotes;
 	use DocumentManagementIi;
 	use DocumentManagementCi;
 	use DocumentManagementAR;
+	use DocumentManagementSalesOrders;
+	use DocumentManagementQuotes;
 
 	const TAG_ARINVOICE = 'AR';
 	const TAG_SALESORDER = 'SO';
@@ -48,11 +48,15 @@ class DocumentManagement extends WireData implements Module {
 
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus Document Management',
+			'title' => 'Document Management',
 			'version' => 101,
 			'summary' => 'Module for getting Documents / Document Info out of Dplus',
 			'singular' => true,
 			'autoload' => true,
+			'installs' => array(
+				'DocumentManagementSo',
+				'DocumentManagementQt',
+			)
 		);
 	}
 
@@ -60,8 +64,6 @@ class DocumentManagement extends WireData implements Module {
 		$this->vi_init();
 		$this->ci_init();
 		$this->ii_init();
-		$this->mso_init();
-		$this->mqo_init();
 		$this->mpo_init();
 	}
 
