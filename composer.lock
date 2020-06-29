@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "9a5f816748d3a7d4facbf10200802109a8cf240d"
+                "reference": "29edcf51a1f6d1643114cddb5db9e5de1fb4df5a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/9a5f816748d3a7d4facbf10200802109a8cf240d",
-                "reference": "9a5f816748d3a7d4facbf10200802109a8cf240d",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/29edcf51a1f6d1643114cddb5db9e5de1fb4df5a",
+                "reference": "29edcf51a1f6d1643114cddb5db9e5de1fb4df5a",
                 "shasum": ""
             },
             "type": "library",
@@ -39,7 +39,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2020-06-29T16:14:58+00:00"
+            "time": "2020-06-29T17:17:48+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
