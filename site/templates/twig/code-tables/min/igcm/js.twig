@@ -24,7 +24,6 @@ $(function() {
 	$("body").on("change", "input[name=code]", function(e) {
 		var input = $(this);
 		var codeID = input.val();
-		 console.log(codeID);
 
 		if (validate_codeID(form) === false) {
 			swal2.fire({
