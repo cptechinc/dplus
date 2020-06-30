@@ -127,10 +127,12 @@ $(function() {
 	function populate_edit_from_button(button, modal) {
 		var code = button.data('code').toString();
 		var description = button.data('description').toString();
+		var sales_program = button.data('sales_program').toString();
 
 		modal.find('form').attr('data-code', code);
 		modal.find('input[name=code]').val(code);
 		modal.find('input[name=description]').val(description);
+		modal.find('select[name=sales_program]').val(sales_program);
 
 		if (code.length) {
 			modal.find('.modal-title').text('Editing Code ' + code);
@@ -140,6 +142,9 @@ $(function() {
 			modal.find('.modal-title').text('Adding a new Code');
 			modal.find('input[name=code]').prop("readonly", false);
 			modal.find('input[name=code]').focus();
+			if (sales_program) {
+				modal.find('select[name=sales_program]').val('N');
+			}
 		}
 	}
 })

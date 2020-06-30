@@ -17,12 +17,12 @@
 		<input type="text" name="description" class="form-control" maxlength="20" value="" id="description">
 	</div>
 
-	{# if config_so.is_request_program() #}
-		<!-- <div class="form-group">
+	{% if config_so.is_request_program() %}
+		<div class="form-group">
 		    <label for="sales_program">Sales Program ?</label>
-		    {# include 'util/select.twig' with {'name': 'sales_program', 'id': 'sales_program', 'options': {'Y': 'Yes', 'N': 'No'}} #}
-	    </div> -->
-	{# endif #}
+		    {% include 'util/select.twig' with {'name': 'sales_program', 'hideblankoption' : 'true', 'id': 'sales_program', 'options': {'Y': 'Yes', 'N': 'No'}} %}
+	    </div>
+	{% endif %}
 
 	<div class="modal-footer">
 		<button type="submit" class="btn btn-success">
