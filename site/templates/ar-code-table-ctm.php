@@ -7,7 +7,7 @@
 		$configAR = ConfigArQuery::create()->findOne();
 
 		if ($module_codetable->code_exists($code)) {
-			$page->title = $page->headline = "CTM: $code";
+			$page->title = $page->headline = "Customer Type Code: $code";
 			$typecode = $module_codetable->get_code($code);
 		} else {
 			$page->title = $page->headline = "Create $page->title";
@@ -47,7 +47,8 @@
 		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/cust-type-notes-modal.twig", ['page' => $page, 'code' => $typecode, 'recordlocker' => $recordlocker]);
 		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'typecode' => $typecode, 'm_ctm' => $module_codetable]);
 	} else {
-		$page->title = $page->headline = "CTM";
+		$page->title = "Customer Type Code";
+		$page->headline = "Customer Type Code Table";
 		$recordlocker->remove_lock($page->codetable);
 		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/list.twig", ['page' => $page, 'table' => $page->codetable, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable, 'recordlocker' => $recordlocker]);
 	}
