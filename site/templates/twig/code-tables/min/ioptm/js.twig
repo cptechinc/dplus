@@ -1,4 +1,5 @@
 $(function() {
+	var form = $("#code-edit-form");
 
 	$('#edit-code-modal').on('shown.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
@@ -23,7 +24,7 @@ $(function() {
 		}
 	});
 
-	$("#code-edit-form").validate({
+	form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -41,6 +42,14 @@ $(function() {
 		submitHandler: function(form) {
 			form.submit();
 		}
+	});
+
+	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
+		form.validate().resetForm();
+	    form.find('.is-invalid').removeClass("is-invalid");
+	    form.find('.is-valid').removeClass("is-valid");
+	    form.find('.invalid-feedback').remove();
+	    form.find('.valid-feedback').remove();
 	});
 
 })
