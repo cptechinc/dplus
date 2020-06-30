@@ -1,6 +1,6 @@
 $(function() {
 	var codeIDs = {{ m_soptm.get_codes_ids(sysop)|json_encode()|raw }};
-	console.log(codeIDs);
+	var form = $("#code-edit-form");
 
 	var input_codeID = $('#code');
 	var sysop = $('#sysop');
@@ -28,7 +28,7 @@ $(function() {
 		}
 	});
 
-	$("#code-edit-form").validate({
+	form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -96,5 +96,13 @@ $(function() {
 		}
 		return true;
 	}
+
+	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
+		form.validate().resetForm();
+	    form.find('.is-invalid').removeClass("is-invalid");
+	    form.find('.is-valid').removeClass("is-valid");
+	    form.find('.invalid-feedback').remove();
+	    form.find('.valid-feedback').remove();
+	});
 
 })

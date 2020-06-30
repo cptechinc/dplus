@@ -184,4 +184,12 @@ $(function() {
 		}
 		form.find('input[name=serialized]').val(form.serialize());
 	}
+
+	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
+		form.validate().resetForm();
+	    form.find('.is-invalid').removeClass("is-invalid");
+	    form.find('.is-valid').removeClass("is-valid");
+	    form.find('.invalid-feedback').remove();
+	    form.find('.valid-feedback').remove();
+	});
 });
