@@ -179,7 +179,7 @@ $(function() {
 		form.find('input[name=serialized]').val(form.serialize());
 	}
 
-	$("body").on('hidden.bs.modal', function (e) {
+	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
 		form.validate().resetForm();
 	    form.find('.is-invalid').removeClass("is-invalid");
 	    form.find('.is-valid').removeClass("is-valid");
