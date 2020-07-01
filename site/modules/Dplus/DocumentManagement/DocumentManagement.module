@@ -108,6 +108,7 @@ class DocumentManagement extends WireData implements Module {
 		$newfile = "$destination/$filename";
 		return copy($srcfile, $newfile);
 	}
+	
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
