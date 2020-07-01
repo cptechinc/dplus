@@ -3,6 +3,7 @@
 use SalesHistoryNotesQuery, SalesHistoryNotes;
 use SalesHistoryQuery, SalesHistory;
 use ConfigArQuery, ConfigAr;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
 
 include_once(__DIR__.'/QnotesResponse.php');
 
@@ -32,6 +33,9 @@ class QnotesSalesHistory extends WireData implements Module {
 		return $configAR->columns_notes_invoice;
 	}
 
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
 	/**
 	 * Returns Sales History Notes Query
 	 * @return SalesHistoryNotesQuery
@@ -83,6 +87,9 @@ class QnotesSalesHistory extends WireData implements Module {
 		return $q->find()->toArray();
 	}
 
+/* =============================================================
+	CRUD Delete
+============================================================= */
 	/**
 	 * Delete Notes for Form
 	 * @param  string $ordn    Order Number
@@ -102,6 +109,9 @@ class QnotesSalesHistory extends WireData implements Module {
 		return true;
 	}
 
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
 	/**
 	 * Takes Input, Processes it, updates Sales Order Notes in the Database
 	 *
@@ -210,6 +220,9 @@ class QnotesSalesHistory extends WireData implements Module {
 		$this->wire('session')->response_qnote = $this->process_responses($record, $ordn, $lines_saved);
 	}
 
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
 	/**
 	 * Return Code Table Response based on the number of lines that were written to the database
 	 * @param  string $ordn         Sales History Number
@@ -279,7 +292,27 @@ class QnotesSalesHistory extends WireData implements Module {
 		return $response;
 	}
 
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return Default forms
+	 * @return array
+	 */
+	public function get_default_forms() {
+		$config_so = ConfigSalesOrderQuery::create()->findOne();
+		$defaults = array(
+			'pick' => $config_so->note_default_pick,
+			'pack' => $config_so->note_default_pack,
+			'invoice' => $config_so->note_default_invoice,
+			'acknowledgement' => $config_so->note_default_acknowledgement,
+		);
+		return $defaults;
+	}
 
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus Qnotes Sales History',

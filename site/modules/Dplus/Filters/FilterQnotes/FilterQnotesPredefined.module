@@ -1,0 +1,105 @@
+<?php namespace ProcessWire;
+
+use NotePredefinedQuery, NotePredefined;
+
+class FilterQnotesPredefined extends WireData implements Module {
+
+	/**
+	 * Returns Query
+	 * @return NotePredefinedQuery
+	 */
+	public function get_query() {
+		return $this->query;
+	}
+
+	/**
+	 * Initializes Query
+	 *
+	 * @param  User   $user User
+	 * @return void
+	 */
+	public function init_query(User $user) {
+		$this->query = NotePredefinedQuery::create();
+	}
+
+	/**
+	 * Applies Filters to the Query
+	 * NOTE:: Filters include ID
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_query(WireInput $input) {
+		$this->filter_id($input);
+	}
+
+	/**
+	 * Filters Query by ID
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_id($input) {
+		if ($input->get->id) {
+			$this->query->filterById($input->get->text('id'));
+		}
+	}
+
+	public function filter_sequence(int $sequence = 1) {
+		$this->query->filterBySequence($sequence);
+	}
+
+	/**
+	 * Searches the NotePredefined Table to find vendors that match the query provided
+	 *
+	 * @param  string $q Search Query
+	 * @return void
+	 */
+	public function filter_search($q) {
+		$columns = array();
+		$columns[] = NotePredefined::get_aliasproperty('id');
+		$columns[] = NotePredefined::get_aliasproperty('description');
+		$this->query->search_filter($columns, strtoupper($q));
+	}
+
+	/**
+	 * Adds the Sort By to the query
+	 *
+	 * @param  Page   $page
+	 * @return void
+	 */
+	public function apply_sortby(Page $page) {
+		if ($page->has_orderby()) {
+			$orderbycolumn = $page->orderby_column;
+			$sort = $page->orderby_sort;
+			$tablecolumn = NotePredefined::get_aliasproperty($orderbycolumn);
+			$this->query->sortBy($tablecolumn, $sort);
+		} else {
+			$this->query->orderById('ASC');
+		}
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+		$modules->refresh();
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Filter Predefined Qnotes Module',
+			'version' => 101,
+			'summary' => 'Handles filtering of Predefined Qnotes',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(),
+		);
+	}
+}

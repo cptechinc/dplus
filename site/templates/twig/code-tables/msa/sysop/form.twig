@@ -1,5 +1,6 @@
 {# sysop is an instance of MsaSysopCode #}
 <form action="{{ page.url }}" method="POST" id="code-edit-form">
+	<input type="hidden" name="action" value="update-sysop">
 	<input type="hidden" name="table" value="sysop">
 	<div class="row">
 		<div class="col-sm-6">
@@ -97,15 +98,25 @@
 					</div>
 				</div>
 			</div>
-
-
-
-
 		</div>
 	</div>
-
-	<button type="submit" class="btn btn-success">
-		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-	</button>
-	<a href="{{ page.get_codetable_listURL(page.codetable, sysop.code) }}" class="btn btn-warning pull-right">Close</a>
+	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the code is
+			1. Locked for editing by the User
+			2. Is a new code
+			NOTE: Only show delete if code already exists.
+		#}
+		{% if recordlocker.function_locked_by_user(page.codetable, [sysop.system, sysop.code]) or sysop.isNew() %}
+			<button type="submit" class="btn btn-success form_button">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			{% if sysop.isNew() == false %}
+				<a href="{{ page.get_sysop_code_deleteURL(sysop.system, sysop.code) }}" class="btn btn-danger form_button delete_button">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+		<a href="{{ page.get_codetable_list_sysopURL(page.codetable, sysop.system, sysop.code) }}" class="btn btn-warning pull-right">Close</a>
+	</div>
 </form>
