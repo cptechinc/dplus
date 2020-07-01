@@ -9,18 +9,12 @@ use SalesHistoryQuery, SalesHistory;
 use SalesOrderQuery, SalesOrder;
 use PurchaseOrderQuery, PurchaseOrder;
 
-include(__DIR__.'/DocumentManagementVi.trait.php');
-include(__DIR__.'/DocumentManagementPurchaseOrders.trait.php');
-
 /**
  * Document Management
  *
  * Handles Document Retrieval for Dplus
  */
 class DocumentManagement extends WireData implements Module {
-	use DocumentManagementVi;
-	use DocumentManagementPurchaseOrders;
-
 	const TAG_ARINVOICE = 'AR';
 	const TAG_SALESORDER = 'SO';
 	const TAG_QUOTE      = 'QT';
@@ -36,31 +30,8 @@ class DocumentManagement extends WireData implements Module {
 	const FOLDER_ARINVOICE_ALT = 'ARINV';
 
 	const EXTENSIONS_IMAGES = array(
-		'jpg',
-		'gif',
-		'png'
+		'jpg', 'gif', 'png'
 	);
-
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'Document Management',
-			'version' => 101,
-			'summary' => 'Module for getting Documents / Document Info out of Dplus',
-			'singular' => true,
-			'autoload' => true,
-			'installs' => array(
-				'DocumentManagementSo',
-				'DocumentManagementQt',
-				'DocumentManagementCi',
-				'DocumentManagementIi',
-			)
-		);
-	}
-
-	public function init() {
-		$this->vi_init();
-		$this->mpo_init();
-	}
 
 	/**
 	 * Return Tag Code for tag name
@@ -74,6 +45,37 @@ class DocumentManagement extends WireData implements Module {
 		return constant("self::TAG_$tag");
 	}
 
+/* =============================================================
+	Get Functions
+============================================================= */
+	/**
+	 * Return filepath for Document
+	 * @param  string $folder   Document Folder
+	 * @param  string $filename File Name
+	 * @return string
+	 */
+	public function whereis_document($folder, $filename) {
+		$docs_query = DocumentsQuery::create();
+		$docs_query->filterByFolder($folder);
+		$docs_query->filterByFilename($filename);
+		$document = $docs_query->findOne();
+
+		$folder = DocumentFoldersQuery::create()->findOneByFolder($folder);
+		return "$folder->directory/$filename";
+	}
+
+	/**
+	 * Returns if file is already in the web access directory
+	 * @param  string $filename File Name
+	 * @return bool             Is the file in the web access directory?
+	 */
+	public function is_filewebaccessible($filename) {
+		return file_exists($this->wire('config')->directory_webdocs.$filename);
+	}
+
+/* =============================================================
+	File Retrieval Functions
+============================================================= */
 	/**
 	 * Finds a Document from the Documents table and creates a copy
 	 * @uses self::move_file()
@@ -84,10 +86,10 @@ class DocumentManagement extends WireData implements Module {
 	 * @return void
 	 */
 	public function move_document($folder, $filename, $destination = '') {
-		$documents_master = DocumentsQuery::create();
-		$documents_master->filterByFolder($folder);
-		$documents_master->filterByFilename($filename);
-		$document = $documents_master->findOne();
+		$docs_query = DocumentsQuery::create();
+		$docs_query->filterByFolder($folder);
+		$docs_query->filterByFilename($filename);
+		$document = $docs_query->findOne();
 
 		$folder = DocumentFoldersQuery::create()->findOneByFolder($folder);
 		$this->move_file($folder->directory, $document->filename, $destination);
@@ -106,29 +108,28 @@ class DocumentManagement extends WireData implements Module {
 		$newfile = "$destination/$filename";
 		return copy($srcfile, $newfile);
 	}
-
-	/**
-	 * Return filepath for Document
-	 * @param  string $folder   Document Folder
-	 * @param  string $filename File Name
-	 * @return string
-	 */
-	public function whereis_document($folder, $filename) {
-		$documents_master = DocumentsQuery::create();
-		$documents_master->filterByFolder($folder);
-		$documents_master->filterByFilename($filename);
-		$document = $documents_master->findOne();
-
-		$folder = DocumentFoldersQuery::create()->findOneByFolder($folder);
-		return "$folder->directory/$filename";
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Document Management',
+			'version' => 101,
+			'summary' => 'Module for getting Documents / Document Info out of Dplus',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(
+				'DocumentManagementSo',
+				'DocumentManagementQt',
+				'DocumentManagementPo',
+				'DocumentManagementCi',
+				'DocumentManagementIi',
+				'DocumentManagementVi',
+			)
+		);
 	}
 
-	/**
-	 * Returns if file is already in the web access directory
-	 * @param  string $filename File Name
-	 * @return bool             Is the file in the web access directory?
-	 */
-	public function is_filewebaccessible($filename) {
-		return file_exists($this->wire('config')->directory_webdocs.$filename);
+	public function init() {
+
 	}
 }
