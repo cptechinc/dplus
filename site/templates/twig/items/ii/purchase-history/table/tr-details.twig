@@ -11,7 +11,7 @@
 						{{ module_formatter.format_celldata(invoice, column) }} &nbsp;
 
 						{% if i == 1 and invoice['Purchase Order Number'] %}
-							{% if document_management.count_purchasehistorydocuments(invoice['Purchase Order Number']) %}
+							{% if docm.count_documents_invoice(invoice['Purchase Order Number']) %}
 								<a href="{{ page.documentsview_apinvoice(itemID, invoice['Purchase Order Number'])}}" class="text-success" title="View Documents for PO # {{ invoice['Purchase Order Number'] }}">
 									<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for PO # {{ invoice['Purchase Order Number'] }}</span>
 								</a>
@@ -28,6 +28,6 @@
 			{% endfor %}
 		</tr>
 	{% endfor %}
-	
+
 	{% include 'items/ii/purchase-history/table/tr-lots.twig' %}
 {% endfor %}

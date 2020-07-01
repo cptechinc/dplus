@@ -40,7 +40,6 @@
 					$ordn = SalesOrder::get_paddedordernumber($input->get->text('ordn'));
 					$date = $input->get->text('date');
 					$page->title = "Sales Order #$ordn Documents";
-
 					$documents = $docm->count_documents($ordn) ? $docm->get_documents($ordn) : array();	$documents = array();
 
 					$href = $pages->get('pw_template=ii-sales-history')->url."?itemID=$itemID&date=$date";
@@ -68,18 +67,20 @@
 					$page->body .= $config->twig->render('items/ii/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'docm' => $docm, 'itemID' => $itemID]);
 					break;
 				case 'AP':
+					$docm = $modules->get('DocumentManagementPo');
 					$invnbr = PurchaseOrder::get_paddedponumber($input->get->text('invnbr'));
 					$page->title = "AP Invoice #$invnbr Documents";
-					$documents = $docm->get_purchasehistorydocuments($invnbr);
+					$documents = $docm->get_documents_invoice($invnbr);
 
 					$href = $pages->get('pw_template=ii-purchase-history')->url."?itemID=$itemID";
 					$page->body .= $html->div('class=mb-3', $html->a("href=$href|class=btn btn-secondary", $html->icon('fa fa-arrow-left') . " Back to Item Purchase History"));
 					$page->body .= $config->twig->render('items/ii/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'docm' => $docm, 'itemID' => $itemID]);
 					break;
 				case 'PO':
+					$docm = $modules->get('DocumentManagementPo');
 					$ponbr = PurchaseOrder::get_paddedponumber($input->get->text('ponbr'));
 					$page->title = "Purchase Order #$ponbr Documents";
-					$documents = $docm->get_purchaseorderdocuments($ponbr);
+					$documents = $docm->get_documents_po($ponbr);
 
 					$href = $pages->get('pw_template=ii-purchase-orders')->url."?itemID=$itemID";
 					$page->body .= $html->div('class=mb-3', $html->a("href=$href|class=btn btn-secondary", $html->icon('fa fa-arrow-left') . " Back to Item Purchase Orders"));
