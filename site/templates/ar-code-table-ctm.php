@@ -41,7 +41,7 @@
 			$page->body .= $config->twig->render("code-tables/mar/$page->codetable/edit-code-form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $typecode, 'module_custnotes' => $modules->get('CodeTablesCtmNotes'), 'recordlocker' => $recordlocker]);
 		} else {
 			$gl_codes = GlCodeQuery::create()->find();
-			$page->body .= $config->twig->render("code-tables/mar/$page->codetable/edit-code-form-customer.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $typecode, 'gl_codes' => $gl_codes, 'module_custnotes' => $modules->get('CodeTablesCtmNotes')]);
+			$page->body .= $config->twig->render("code-tables/mar/$page->codetable/edit-code-form-customer.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $typecode, 'gl_codes' => $gl_codes, 'module_custnotes' => $modules->get('CodeTablesCtmNotes'), 'recordlocker' => $recordlocker]);
 		}
 
 		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/cust-type-notes-modal.twig", ['page' => $page, 'code' => $typecode, 'recordlocker' => $recordlocker]);
