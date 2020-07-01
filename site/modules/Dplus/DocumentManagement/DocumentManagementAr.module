@@ -192,7 +192,7 @@ class DocumentManagementAr extends DocumentManagement implements Module {
 	 * Return Cust ID for Invoice #
 	 * @var string
 	 */
-	protected get_invoice_custid($ordn) {
+	protected function get_invoice_custid($ordn) {
 		$q = SalesHistoryQuery::create();
 		$q->select(SalesHistory::get_aliasproperty('custid'));
 		$q->filterByOrdernumber($ordn);
