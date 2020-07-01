@@ -1,9 +1,13 @@
 <?php namespace ProcessWire;
+
 use LogpermQuery, Logperm;
 use LogmQuery, Logm;
 use FuncpermQuery, Funcperm;
 use CustpermQuery, Custperm;
 
+/**
+ * Module that Handles Tying User to their Dplus data through roles && permissions
+ */
 class DplusUser extends WireData implements Module {
 	const USER_ROLES = array(
 		'default' => array(
@@ -30,7 +34,17 @@ class DplusUser extends WireData implements Module {
 			'dplus-code' => 'whsmgr',
 			'label' => 'Warehouse Manager',
 			'homepage' => '/warehouse/'
-		)
+		),
+		'admin' => array(
+			'dplus-code' => 'admin',
+			'label' => 'Admin',
+			'homepage' => '/'
+		),
+		'accounting' => array(
+			'dplus-code' => 'acctg',
+			'label' => 'Accounting',
+			'homepage' => '/'
+		),
 	);
 
 /* =============================================================
