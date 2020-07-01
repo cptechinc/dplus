@@ -18,7 +18,7 @@
 			</a>
 		</div>
 		<div class="col text-right">
-			{% if document_management.count_purchaseorderdocuments(purchaseorder.ponbr) %}
+			{% if document_management.count_documents_po(purchaseorder.ponbr) %}
 				<a href="#documents" title="View Documents" aria-label="View Documents">
 					<i class="fa fa-file-text fa-2x" aria-hidden="true"></i>
 				</a>

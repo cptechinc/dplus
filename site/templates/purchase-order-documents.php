@@ -1,6 +1,6 @@
 <?php
 	$html = $modules->get('HtmlWriter');
-	$document_management = $modules->get('DocumentManagement');
+	$docm = $modules->get('DocumentManagementPo');
 
 	if ($input->get->ponbr) {
 		$ponbr = PurchaseOrder::get_paddedponumber($input->get->text('ponbr'));
@@ -9,15 +9,15 @@
 		if ($query->count()) {
 			$page->title = "Purchase Order #$ponbr Documents";
 
-			$documents = $document_management->get_purchaseorderdocuments($ponbr);
+			$documents = $docm->get_documents_po($ponbr);
 			$page->listpage = $pages->get('pw_template=purchase-orders');
 
 			if ($input->get->document && $input->get->folder) {
 				$folder = $input->get->text('folder');
 				$filename = $input->get->text('document');
-				$document_management->move_document($folder, $filename);
+				$docm->move_document($folder, $filename);
 
-				if ($document_management->is_filewebaccessible($filename)) {
+				if ($docm->is_filewebaccessible($filename)) {
 					$session->redirect($config->url_webdocs.$filename);
 				}
 			}
@@ -32,14 +32,14 @@
 
 		if ($query->count()) {
 			$page->title = "AP Invoice #$invnbr Documents";
-			$documents = $document_management->get_purchasehistorydocuments($invnbr);
+			$documents = $docm->get_documents_invoice($invnbr);
 
 			if ($input->get->document && $input->get->folder) {
 				$folder = $input->get->text('folder');
 				$filename = $input->get->text('document');
-				$document_management->move_document($folder, $filename);
+				$docm->move_document($folder, $filename);
 
-				if ($document_management->is_filewebaccessible($filename)) {
+				if ($docm->is_filewebaccessible($filename)) {
 					$session->redirect($config->url_webdocs.$filename);
 				} else {
 					$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Document Storage Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "$filename could not be found"]);

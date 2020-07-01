@@ -9,7 +9,7 @@
 		if ($input->get->custpo) {
 			$custpo = $input->get->text('custpo');
 			$module_json = $modules->get('JsonDataFiles');
-			$document_management = $modules->get('DocumentManagement');
+			$docm = $modules->get('DocumentManagementSo');
 			$page->title = "$customer->name Purchase Orders that match '$custpo'";
 
 			$refreshurl = $page->get_customerpurchaseordersURL($custID, $custpo);
@@ -30,7 +30,7 @@
 				} else {
 					$module_formatter = $modules->get('SfCiSalesOrders');
 					$module_formatter->init_formatter();
-					$page->body .= $config->twig->render('customers/ci/sales-orders/sales-orders.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
+					$page->body .= $config->twig->render('customers/ci/sales-orders/sales-orders.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'docm' => $docm]);
 				}
 			} else {
 				if ($session->salesorderstry > 3) {
@@ -54,7 +54,7 @@
 				$session->saleshistorytry = 0;
 				$module_formatter = $modules->get('SfCiSalesHistory');
 				$module_formatter->init_formatter();
-				$page->body .= $config->twig->render('customers/ci/sales-history/sales-history.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
+				$page->body .= $config->twig->render('customers/ci/sales-history/sales-history.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'docm' => $docm]);
 			} else {
 				if ($session->saleshistorytry > 3) {
 					$page->headline = $page->title = "Sales History File could not be loaded";

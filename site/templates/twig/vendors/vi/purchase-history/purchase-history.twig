@@ -45,7 +45,7 @@
 									{% if column['id'] == 'Invoice Number' %}
 										{% set invnbr = detail['Invoice Number'] %}
 										{% if invnbr != '' %}
-											{% if document_management.count_purchasehistorydocuments(invnbr) %}
+											{% if docm.count_count_documents_invoice(invnbr) %}
 												<a href="{{ page.documentsview_apinvoice(json['vendid'], invnbr)}}" class="text-success" title="View Documents for Invoice # {{ invnbr }}">
 													<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Invoice # {{ invnbr }}</span>
 												</a>

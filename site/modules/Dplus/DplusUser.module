@@ -1,265 +1,266 @@
 <?php namespace ProcessWire;
-	use LogpermQuery, Logperm;
-	use LogmQuery, Logm;
-	use FuncpermQuery, Funcperm;
-	use CustpermQuery, Custperm;
 
-	class DplusUser extends WireData implements Module {
-		private $className;
+use LogpermQuery, Logperm;
+use LogmQuery, Logm;
+use FuncpermQuery, Funcperm;
+use CustpermQuery, Custperm;
 
-		const USER_ROLES = array(
-			'default' => array(
-				'dplus-code' => 'defaul',
-				'label' => 'Default',
-				'homepage' => '/'
-			),
-			'sales-manager' => array(
-				'dplus-code' => 'slsmgr',
-				'label' => 'Sales Manager',
-				'homepage' => '/dashboard/'
-			),
-			'sales-rep' => array(
-				'dplus-code' => 'slsrep',
-				'label' => 'Sales Rep',
-				'homepage' => '/dashboard/'
-			),
-			'warehouse' => array(
-				'dplus-code' => 'whse',
-				'label' => 'Warehouse',
-				'homepage' => '/warehouse/'
-			),
-			'warehouse-manager' => array(
-				'dplus-code' => 'whsmgr',
-				'label' => 'Warehouse Manager',
-				'homepage' => '/warehouse/'
-			)
-		);
+/**
+ * Module that Handles Tying User to their Dplus data through roles && permissions
+ */
+class DplusUser extends WireData implements Module {
+	const USER_ROLES = array(
+		'default' => array(
+			'dplus-code' => 'defaul',
+			'label' => 'Default',
+			'homepage' => '/'
+		),
+		'sales-manager' => array(
+			'dplus-code' => 'slsmgr',
+			'label' => 'Sales Manager',
+			'homepage' => '/dashboard/'
+		),
+		'sales-rep' => array(
+			'dplus-code' => 'slsrep',
+			'label' => 'Sales Rep',
+			'homepage' => '/dashboard/'
+		),
+		'warehouse' => array(
+			'dplus-code' => 'whse',
+			'label' => 'Warehouse',
+			'homepage' => '/warehouse/'
+		),
+		'warehouse-manager' => array(
+			'dplus-code' => 'whsmgr',
+			'label' => 'Warehouse Manager',
+			'homepage' => '/warehouse/'
+		),
+		'admin' => array(
+			'dplus-code' => 'admin',
+			'label' => 'Admin',
+			'homepage' => '/'
+		),
+		'accounting' => array(
+			'dplus-code' => 'acctg',
+			'label' => 'Accounting',
+			'homepage' => '/'
+		),
+	);
 
-		public static function getModuleInfo() {
-			return array(
-				'title' => 'Dplus User Extension',
-				'version' => 101,
-				'summary' => 'Extends User for Dplus',
-				'singular' => true,
-				'autoload' => true,
-			);
-		}
-
-		public function init() {
-			$this->add_hooks();
-		}
-
-		public function install() {
-			$this->update_user_roles();
-		}
-
-		public function update() {
-			$this->update_user_roles();
-		}
-
-		public function update_user_roles() {
-			foreach (self::USER_ROLES as $code => $user_role) {
-				if ($this->wire('roles')->find('name='.$user_role['dplus-code'])->count) {
-					$role = $this->wire('roles')->get('name='.$user_role['dplus-code']);
-					$role->of(false);
-				} else {
-					$role = new Role();
-					$role->of(false);
-					$role->name = $user_role['dplus-code'];
-				}
-
-				$role->code = $code;
-				$role->title = $role->headline = $user_role['label'];
-				$role->homepage = $user_role['homepage'];
-				$role->save();
-			}
-		}
-
-		/**
-		 * Properties are protected from modification without function, but
-		 * We want to allow the property values to be accessed
-		 * @param  string $property The property trying to be accessed
-		 * @return mixed		   Property value or Error
-		 */
-		public function __get($property) {
-			if (property_exists($this, $property)) {
-				return $this->$property;
+/* =============================================================
+	Module Update Functions
+============================================================= */
+	public function update_user_roles() {
+		foreach (self::USER_ROLES as $code => $user_role) {
+			if ($this->wire('roles')->find('name='.$user_role['dplus-code'])->count) {
+				$role = $this->wire('roles')->get('name='.$user_role['dplus-code']);
+				$role->of(false);
 			} else {
-				if ($property != 'name') {
-					$this->error("This property ($property) does not exist");
-					return false;
-				}
+				$role = new Role();
+				$role->of(false);
+				$role->name = $user_role['dplus-code'];
 			}
-		}
 
-		public function add_hooks() {
-			$this->addHook('User::setup', function($event) {
-				$user = $event->object;
-				$sessionID = $event->arguments(0);
-				$event->return = $this->setup_user($user, $sessionID);
-			});
-
-			$this->addHook('User::has_function', function($event) {
-				$permissions_master = FuncpermQuery::create();
-				$user = $event->object;
-				$function = $event->arguments(0);
-				$event->return = $permissions_master->does_user_have_permission($user->loginid, $function);
-			});
-
-			$this->addHook('User::get_functions', function($event) {
-				$permissions_master = FuncpermQuery::create();
-				$user = $event->object;
-				$event->return = $permissions_master->get_users_functions($user->loginid);
-			});
-
-			$this->addHook('User::filter_functions', function($event) {
-				$permissions_master = FuncpermQuery::create();
-				$user = $event->object;
-				$functions = $event->arguments(0); // array
-				$event->return = $permissions_master->filter_user_functions($user->loginid, $functions);
-			});
-
-			$this->addHook('User::is_salesrep', function($event) {
-				$user = $event->object;
-				$event->return = $user->hasRole('slsrep');
-			});
-
-			$this->addHook('User::get_lockedID', function($event) {
-				$user = $event->object;
-				$q = LogpermQuery::create();
-				$logperm = $q->findOneBySessionid(session_id());
-				$event->return = $logperm->ordernbr;
-			});
-
-			$this->addHook('User::has_customer', function($event) {
-				$user = $event->object;
-				$custID = $event->arguments(0);
-				$shiptoID = $event->arguments(1);
-				$access = false;
-
-				if ($user->is_salesrep()) {
-					$q = CustpermQuery::create();
-					$q->filterByCustid($custID);
-					if ($shiptoID) {
-						$q->filterByShiptoid($shiptoID);
-					}
-					$q->filterByLoginid($user->loginid);
-					$access = boolval($q->count());
-				} else {
-					$access = true;
-				}
-				$event->return = $access;
-			});
-
-			$this->addHook('User::get_customers', function($event) {
-				$user = $event->object;
-				$q = CustpermQuery::create();
-				$q->withColumn('DISTINCT(custid)', 'custid');
-				$q->select('custid');
-
-				if ($user->is_salesrep()) {
-					$q->filterByLoginid($user->loginid);
-				}
-				$event->return = $q->find()->toArray();
-			});
-
-			$this->addHook('User::get_customer_shiptos', function($event) {
-				$user = $event->object;
-				$custID = $event->arguments(0);
-
-				$q = CustpermQuery::create();
-				$q->withColumn('DISTINCT(shiptoid)', 'shiptoid');
-				$q->select('shiptoid');
-				$q->filterByCustid($custID);
-
-				if ($user->is_salesrep()) {
-					$q->filterByLoginid($user->loginid);
-				}
-
-				$event->return = $q->find()->toArray();
-			});
-		}
-
-		/**
-		 * Sets User Properties needed for Dplus Online and functons
-		 * @param  User   $user
-		 * @param  string $sessionID User SessionID
-		 * @return string
-		 */
-		public function setup_user(User $user, $sessionID) {
-			$q = LogpermQuery::create();
-
-			if ($q->is_loggedin($sessionID)) {
-				$user->loggedin = true;
-				$this->setup_user_logperm($user, $sessionID);
-				$this->setup_user_logm($user);
-			} else {
-				$user->loggedin = false;
-			}
-		}
-
-		/**
-		 * Sets User Properties for Login Id, and Login Name
-		 * @uses  LogPermQuery
-		 *
-		 * @param  User   $user
-		 * @param  string $sessionID User SessionID
-		 * @return void
-
-		 */
-		public function setup_user_logperm(User $user, $sessionID) {
-			$q = LogpermQuery::create();
-			$logperm = $q->findOneBySessionid($sessionID);
-			$user->loginid = $logperm->loginid;
-			$user->fullname = $logperm->loginname;
-		}
-
-		/**
-		 * Sets User Properties and role(s) based out of Logm
-		 * Then calls a function based on the Logm User role to add additional Properties
-		 * @param  User $user
-		 * @return void
-		 */
-		private function setup_user_logm(User $user) {
-			$q = LogmQuery::create()->filterByLoginid($user->loginid);
-
-			if ($q->count()) {
-				$logmuser = $q->findOne();
-				$role = strtolower($logmuser->role);
-				$user->addRole($role);
-				$user->dplusrole = $role;
-				$user->roleid    = $logmuser->roleid;
-				$user->company   = $logmuser->company;
-				$user->email     = $logmuser->email;
-
-				$function = "setup_user_$role";
-
-				if (method_exists($this, $function)) {
-					$this->$function($user);
-				}
-			} else {
-				$user->addRole('default');
-			}
-		}
-
-		/**
-		 * Sets User Properties needed for a Sales Rep User
-		 * @param  User $user
-		 * @return void
-		 */
-		private function setup_user_slsrep(User $user) {
-			$logmuser = LogmQuery::create()->findOneByLoginid($user->loginid);
-			$user->repid = $logmuser->roleid;
-		}
-
-		/**
-		 * Sets User Properties needed for a Sales Manager User
-		 * @uses self::setup_user_slsrep()
-		 *
-		 * @param  User $user
-		 * @return void
-		 */
-		private function setup_user_slsmgr(User $user) {
-			$this->setup_user_slsrep($user);
+			$role->code = $code;
+			$role->title = $role->headline = $user_role['label'];
+			$role->homepage = $user_role['homepage'];
+			$role->save();
 		}
 	}
+
+/* =============================================================
+	Hook Functions
+============================================================= */
+	public function add_hooks() {
+		$this->addHook('User::setup', function($event) {
+			$user = $event->object;
+			$sessionID = $event->arguments(0);
+			$event->return = $this->setup_user($user, $sessionID);
+		});
+
+		$this->addHook('User::has_function', function($event) {
+			$permissions_master = FuncpermQuery::create();
+			$user = $event->object;
+			$function = $event->arguments(0);
+			$event->return = $permissions_master->does_user_have_permission($user->loginid, $function);
+		});
+
+		$this->addHook('User::get_functions', function($event) {
+			$permissions_master = FuncpermQuery::create();
+			$user = $event->object;
+			$event->return = $permissions_master->get_users_functions($user->loginid);
+		});
+
+		$this->addHook('User::filter_functions', function($event) {
+			$permissions_master = FuncpermQuery::create();
+			$user = $event->object;
+			$functions = $event->arguments(0); // array
+			$event->return = $permissions_master->filter_user_functions($user->loginid, $functions);
+		});
+
+		$this->addHook('User::is_salesrep', function($event) {
+			$user = $event->object;
+			$event->return = $user->hasRole('slsrep');
+		});
+
+		$this->addHook('User::get_lockedID', function($event) {
+			$user = $event->object;
+			$q = LogpermQuery::create();
+			$logperm = $q->findOneBySessionid(session_id());
+			$event->return = $logperm->ordernbr;
+		});
+
+		$this->addHook('User::has_customer', function($event) {
+			$user = $event->object;
+			$custID = $event->arguments(0);
+			$shiptoID = $event->arguments(1);
+			$access = false;
+
+			if ($user->is_salesrep()) {
+				$q = CustpermQuery::create();
+				$q->filterByCustid($custID);
+				if ($shiptoID) {
+					$q->filterByShiptoid($shiptoID);
+				}
+				$q->filterByLoginid($user->loginid);
+				$access = boolval($q->count());
+			} else {
+				$access = true;
+			}
+			$event->return = $access;
+		});
+
+		$this->addHook('User::get_customers', function($event) {
+			$user = $event->object;
+			$q = CustpermQuery::create();
+			$q->withColumn('DISTINCT(custid)', 'custid');
+			$q->select('custid');
+
+			if ($user->is_salesrep()) {
+				$q->filterByLoginid($user->loginid);
+			}
+			$event->return = $q->find()->toArray();
+		});
+
+		$this->addHook('User::get_customer_shiptos', function($event) {
+			$user = $event->object;
+			$custID = $event->arguments(0);
+
+			$q = CustpermQuery::create();
+			$q->withColumn('DISTINCT(shiptoid)', 'shiptoid');
+			$q->select('shiptoid');
+			$q->filterByCustid($custID);
+
+			if ($user->is_salesrep()) {
+				$q->filterByLoginid($user->loginid);
+			}
+
+			$event->return = $q->find()->toArray();
+		});
+	}
+
+/* =============================================================
+	User Setup Functions
+============================================================= */
+	/**
+	 * Sets User Properties needed for Dplus Online and functons
+	 * @param  User   $user
+	 * @param  string $sessionID User SessionID
+	 * @return string
+	 */
+	public function setup_user(User $user, $sessionID) {
+		$q = LogpermQuery::create();
+
+		if ($q->is_loggedin($sessionID)) {
+			$user->loggedin = true;
+			$this->setup_user_logperm($user, $sessionID);
+			$this->setup_user_logm($user);
+		} else {
+			$user->loggedin = false;
+		}
+	}
+
+	/**
+	 * Sets User Properties for Login Id, and Login Name
+	 * @uses  LogPermQuery
+	 *
+	 * @param  User   $user
+	 * @param  string $sessionID User SessionID
+	 * @return void
+
+	 */
+	public function setup_user_logperm(User $user, $sessionID) {
+		$q = LogpermQuery::create();
+		$logperm = $q->findOneBySessionid($sessionID);
+		$user->loginid = $logperm->loginid;
+		$user->fullname = $logperm->loginname;
+	}
+
+	/**
+	 * Sets User Properties and role(s) based out of Logm
+	 * Then calls a function based on the Logm User role to add additional Properties
+	 * @param  User $user
+	 * @return void
+	 */
+	private function setup_user_logm(User $user) {
+		$logmuser = LogmQuery::create()->findOneByLoginid($user->loginid);
+		$role = strtolower($logmuser->role);
+		$user->addRole($role);
+		$user->dplusrole = $role;
+		$user->roleid    = $logmuser->roleid;
+		$user->company   = $logmuser->company;
+		$user->email     = $logmuser->email;
+
+		$function = "setup_user_$role";
+
+		if (method_exists($this, $function)) {
+			$this->$function($user);
+		}
+	}
+
+	/**
+	 * Sets User Properties needed for a Sales Rep User
+	 * @param  User $user
+	 * @return void
+	 */
+	private function setup_user_slsrep(User $user) {
+		$logmuser = LogmQuery::create()->findOneByLoginid($user->loginid);
+		$user->repid = $logmuser->roleid;
+	}
+
+	/**
+	 * Sets User Properties needed for a Sales Manager User
+	 * @uses self::setup_user_slsrep()
+	 *
+	 * @param  User $user
+	 * @return void
+	 */
+	private function setup_user_slsmgr(User $user) {
+		$this->setup_user_slsrep($user);
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus User Extension',
+			'version' => 101,
+			'summary' => 'Extends User for Dplus',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+	public function init() {
+		$this->add_hooks();
+	}
+
+	public function install() {
+		$this->update_user_roles();
+	}
+
+	public function update() {
+		$this->update_user_roles();
+	}
+}

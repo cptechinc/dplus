@@ -24,8 +24,8 @@
 			} else {
 				$module_formatter->init_formatter();
 				$refreshurl = $page->get_itemquotesURL($itemID);
-				$document_management = $modules->get('DocumentManagement');
-				$page->body .= $config->twig->render('items/ii/quotes/quotes.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
+				$docm = $modules->get('DocumentManagement');
+				$page->body .= $config->twig->render('items/ii/quotes/quotes.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'docm' => $docm]);
 			}
 		} else {
 			if ($session->quotestry > 3) {

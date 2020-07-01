@@ -22,8 +22,7 @@
 			</a>
 		</div>
 		<div class="col col-sm-3 text-right">
-			{{document_management.count_purchasehistorydocuments(invoice.invoicenumber)}}
-			{% if document_management.count_purchasehistorydocuments(invoice.invoicenumber) %}
+			{% if docm.count_documents_invoice(invoice.invoicenumber) %}
 				<a href="#documents" title="View Documents" aria-label="View Documents">
 					<i class="fa fa-file-text fa-2x" aria-hidden="true"></i>
 				</a>

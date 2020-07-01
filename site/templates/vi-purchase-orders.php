@@ -38,8 +38,8 @@
 			} else {
 				$module_formatter = $modules->get('SfViPurchaseOrders');
 				$module_formatter->init_formatter();
-				$document_management = $modules->get('DocumentManagement');
-				$page->body .= $config->twig->render('vendors/vi/purchase-orders/purchase-orders.twig', ['page' => $page, 'vendorID' => $vendorID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
+				$docm = $modules->get('DocumentManagementPo');
+				$page->body .= $config->twig->render('vendors/vi/purchase-orders/purchase-orders.twig', ['page' => $page, 'vendorID' => $vendorID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'docm' => $docm]);
 			}
 		} else {
 			if ($session->purchaseorderstry > 3) {
