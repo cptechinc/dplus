@@ -31,10 +31,7 @@
 				$documents = $docm->get_documents($ordn);
 				$module_qnotes = $modules->get('QnotesSalesHistory');
 			}
-
-			$docm->count_documents($ordn);
-			echo $db_dplusdata->getLastExecutedQuery();
-
+			
 			$query_useractions = $module_useractions->get_actionsquery($input);
 			$actions = $query_useractions->filterBySalesorderlink($ordn)->find();
 			$page->body =  $config->twig->render("sales-orders/sales-$type/sales-$type-page.twig", ['page' => $page, 'order' => $order, 'user' => $user, 'docm' => $docm, 'company' => $config->company, 'loader' => $config->twig->getLoader()]);
