@@ -24,7 +24,7 @@
 									{% if column['id'] == 'Order Number' %}
 										{% set ordn = order['Ordn'] %}
 										{% set custID = json['custid'] %}
-										{% if document_management.count_salesorderdocuments(ordn) %}
+										{% if docm.count_documents(ordn) %}
 											<a href="{{ page.documentsview_salesorder(custID, ordn)}}" class="text-success" title="View Documents for Order # {{ order['Order Number'] }}">
 												<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Order # {{ order['Order Number'] }}</span>
 											</a>
@@ -44,7 +44,7 @@
 
 				{% include 'customers/ci/sales-orders/table/tr-details.twig' %}
 				{% include 'customers/ci/sales-orders/table/tr-totals.twig' %}
-				
+
 				{% if order['shipments']|length > 0 %}
 					{% include 'util/screen-formatter/tr-labels.twig' with {'section': 'shipments'} %}
 

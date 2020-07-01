@@ -19,7 +19,7 @@
 				{% set column = blueprint[section]['rows'][x]['columns'][i] %}
 				{% set colspan = column['col-length'] %}
 				<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-					{{ module_formatter.format_celldata(record, column) }}
+					{{ module_formatter.format_celldata(record, column)|raw }}
 				</td>
 			{% else %}
 				{% if columncount < blueprint['cols'] %}
