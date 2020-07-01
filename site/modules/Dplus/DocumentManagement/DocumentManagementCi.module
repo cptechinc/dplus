@@ -7,8 +7,59 @@ use DocumentsQuery, Documents;
 use SalesOrderQuery, SalesOrder;
 use SalesHistoryQuery, SalesHistory;
 
-trait DocumentManagementCi {
-	public function ci_init() {
+/**
+ * Document Management CI
+ *
+ * Handles CI Documents Hook Functions
+ */
+class DocumentManagementCi extends DocumentManagement implements Module {
+
+/* =============================================================
+	URL Functions
+============================================================= */
+	/**
+	 * Returns URL to the CI documents Page
+	 * @param  string $custID Customer ID
+	 * @param  string $folder Document Management Folder Code
+	 * @return string
+	 */
+	public function get_ci_docs_folderURL($custID, $folder) {
+		$url = new Url($this->wire('pages')->get('pw_template=ci-documents')->url);
+		$url->query->set('custID', $custID);
+		$url->query->set('folder', $folder);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Returns URL to the CI documents Page
+	 * @param  string $custID   Customer ID
+	 * @param  string $folder   Document Management Folder Code
+	 * @param  string $document Document Name
+	 * @return string
+	 */
+	public function get_ci_documentURL($custID, $folder, $document) {
+		$url = new Url($this->wire('pages')->get('pw_template=ci-documents')->url);
+		$url->query->set('custID', $custID);
+		$url->query->set('folder', $folder);
+		$url->query->set('document', $document);
+		return $url->getUrl();
+	}
+	
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Document Management CI',
+			'version' => 101,
+			'summary' => 'Module for getting CI Documents / Document Info out of Dplus',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => 'DocumentManagement'
+		);
+	}
+
+	public function init() {
 		$this->addHook('Page(pw_template=ci-documents)::documentload', function($event) {
 			$page = $event->object;
 			$folder   = $event->arguments(0);
@@ -64,33 +115,5 @@ trait DocumentManagementCi {
 			$url->query->set('checknbr', $checknbr);
 			$event->return = $url->getUrl();
 		});
-	}
-
-	/**
-	 * Returns URL to the CI documents Page
-	 * @param  string $custID Customer ID
-	 * @param  string $folder Document Management Folder Code
-	 * @return string
-	 */
-	public function get_ci_docs_folderURL($custID, $folder) {
-		$url = new Url($this->wire('pages')->get('pw_template=ci-documents')->url);
-		$url->query->set('custID', $custID);
-		$url->query->set('folder', $folder);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Returns URL to the CI documents Page
-	 * @param  string $custID   Customer ID
-	 * @param  string $folder   Document Management Folder Code
-	 * @param  string $document Document Name
-	 * @return string
-	 */
-	public function get_ci_documentURL($custID, $folder, $document) {
-		$url = new Url($this->wire('pages')->get('pw_template=ci-documents')->url);
-		$url->query->set('custID', $custID);
-		$url->query->set('folder', $folder);
-		$url->query->set('document', $document);
-		return $url->getUrl();
 	}
 }

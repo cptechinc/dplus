@@ -14,7 +14,7 @@
 								<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }} text-white">
 									<span class="font-weight-bold">{{ column['label'] }}</span>: {{ module_formatter.format_celldata(quote, column) }} &nbsp;
 									{% if i == 1 and quote['Quote ID'] %}
-										{% if document_management.count_quotedocuments(quote['Quote ID']) %}
+										{% if docm.count_documents(quote['Quote ID']) %}
 											<a href="{{ page.documentsview_quote(custID, quote['Quote ID'])}}" class="text-success" title="View Documents for Quote # {{ quote['Quote ID'] }}">
 												<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Quote # {{ quote['Quote ID'] }}</span>
 											</a>

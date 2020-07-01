@@ -47,7 +47,7 @@
 									<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
 										{{ module_formatter.format_celldata(order, column) }} &nbsp;
 										{% if i == 1 and order['Sales Order Number'] %}
-											{% if document_management.count_salesorderdocuments(order['Sales Order Number']) %}
+											{% if docm.count_documents(order['Sales Order Number']) %}
 												<a href="{{ page.documentsview_salesorder(itemID, order['Sales Order Number'])}}" class="text-success" title="View Documents for Order # {{ order['Sales Order Number'] }}">
 													<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Order # {{ order['Sales Order Number'] }}</span>
 												</a>
