@@ -6,7 +6,7 @@
 		$page->show_breadcrumbs = false;
 		$page->body .= $config->twig->render('items/ii/bread-crumbs.twig', ['page' => $page, 'item' => $item]);
 		$page->title = "$itemID Documents";
-		$docm = $modules->get('DocumentManagement');
+		$docm = $modules->get('DocumentManagementIi');
 		$html = $modules->get('HtmlWriter');
 
 		if ($input->get->document && $input->get->folder) {
@@ -51,7 +51,7 @@
 					$type = $input->get->text('type');
 					$reference = $input->get->text('reference');
 					$page->title = "$type $reference Documents";
-					$documents = $docm->get_itemactivitydocuments($type, $reference);
+					$documents = $docm->get_documents_activity($type, $reference);
 
 					$href = $pages->get('pw_template=ii-activity')->url."?itemID=$itemID";
 					$page->body .= $html->div('class=mb-3', $html->a("href=$href|class=btn btn-secondary", $html->icon('fa fa-arrow-left') . " Back to Item Activity"));
@@ -87,7 +87,7 @@
 					break;
 			}
 		} else {
-			$documents = $docm->get_itemdocuments($itemID);
+			$documents = $docm->get_documents_item($itemID);
 			$page->body .= $config->twig->render('items/ii/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'docm' => $docm, 'itemID' => $itemID]);
 		}
 	}
