@@ -1,0 +1,222 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	ordn                   Sales Order Number
+	qnotes                 module QnotesSalesOrder | QnotesSalesHistory
+#}
+$(function() {
+	var form = $('#qnote-form');
+	var input_linenbr          = form.find("input[name=linenbr]");
+	var input_form             = form.find("input[name=form]");
+	var input_notes            = form.find("textarea[name=note]");
+	var input_pick             = form.find("input[name=check_pick]");
+	var input_pack             = form.find("input[name=check_pack]");
+	var input_invoice          = form.find("input[name=check_invoice]");
+	var input_acknwoledgement  = form.find("input[name=check_acknowledgement]");
+
+	var ele_feedback = form.find('.feedback');
+
+	var defaults = {{ qnotes.get_default_forms()|json_encode()| raw }};
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$('#note-modal').on('shown.bs.modal', function (event) {
+		var button = $(event.relatedTarget) // Button that triggered the modal
+		var modal = $(this);
+		modal.find('textarea[name=note]').focus();
+	});
+
+	$('#note-modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget);
+		var modal = $(this);
+		populate_form_fields(button, modal);
+	});
+
+	$("body").on('change', '#qnote-form input[type=checkbox]', function(e) {
+		var formkey = get_formkey();
+
+		if (input_form.val() != formkey) {
+			var linenbr = input_linenbr.val();
+
+			if (does_note_exist(linenbr, formkey)) {
+				swal2.fire({
+					title: 'Note '+ formkey +' Exists' ,
+					text: 'Edit the note?',
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: 'Yes',
+					cancelButtonText: 'No',
+				}).then((result) => {
+					if (result.value) {
+						var qnote_row = get_qnote_row(linenbr, formkey);
+						var button = qnote_row.find('button[data-target=#note-modal]');
+						var modal = $('#note-modal');
+						populate_form_fields(button, modal);
+					}
+				});
+			}
+		}
+	});
+
+	$("body").on('click', '.swal-edit-note', function(e) {
+		var button = $(this);
+		var modal = $('#note-modal');
+		var qnote_row = get_qnote_row(button.data('linenbr'), button.data('form'));
+		var button = qnote_row.find('button[data-target=#note-modal]');
+		populate_form_fields(button, modal);
+		swal2.close();
+	});
+
+	function get_formkey() {
+		var form = '';
+		form += input_pick.prop('checked') ? 'Y' : 'N';
+		form += input_pack.prop('checked') ? 'Y' : 'N';
+		form += input_invoice.prop('checked') ? 'Y' : 'N';
+		form += input_acknwoledgement.prop('checked') ? 'Y' : 'N';
+		return form;
+	}
+
+	function get_qnote_row(linenbr, formkey) {
+		return $('.qnote-row[data-linenbr="'+linenbr+'"][data-form="'+formkey+'"]');
+	}
+
+	function populate_form_fields(button, modal) {
+		var linenbr = button.data('linenbr');
+		var qnote_form = button.data('form');
+		input_linenbr.val(linenbr);
+		input_form.val(qnote_form);
+
+		var edit_desc = (parseInt(linenbr) > 0) ? 'Line #'+linenbr : 'header';
+		var title = '';
+
+		var values = {
+			'notes': '',
+			'pick': false,
+			'pack': false,
+			'invoice':  false,
+			'acknowledgement': false
+		};
+
+		if (qnote_form != '') {
+			// Note exists, must find values and set them accordingly
+			title = 'Editing '+edit_desc+' Note';
+
+			var row_qnote = get_qnote_row(linenbr, qnote_form);
+			values['notes']            = row_qnote.find("textarea").text();
+			values['pick']             = row_qnote.find(".check-pick").text() == 'Y';
+			values['pack']             = row_qnote.find(".check-pack").text() == 'Y';
+			values['invoice']          = row_qnote.find(".check-invoice").text() == 'Y';
+			values['acknwoledgement']  = row_qnote.find(".check-acknowledgement").text() == 'Y';
+		} else {
+			title = 'Adding '+edit_desc+' Note';
+			values['notes']            = '';
+			values['pick']             = defaults['pick'] == 'Y';
+			values['pack']             = defaults['pack'] == 'Y';
+			values['invoice']          = defaults['invoice'] == 'Y';
+			values['acknwoledgement']  = defaults['acknwoledgement'] == 'Y';
+		}
+		input_notes.val(values['notes']);
+		input_pick.prop('checked', values['pick']);
+		input_pack.prop('checked', values['pack']);
+		input_invoice.prop('checked', values['invoice']);
+		input_acknwoledgement.prop('checked', values['acknwoledgement']);
+		modal.find('.modal-title').text(title);
+	}
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			note: { required: true },
+		},
+		messages: { note: "Please Enter a Note" },
+		submitHandler: function(form) {
+			var action = $(this.submitButton).attr("value");
+
+			if (action == 'delete-notes') {
+				alert_delete(form);
+			} else {
+				if (has_document_selected()) {
+					var formkey = get_formkey();
+
+					if (input_form.val() != formkey) {
+						var linenbr = input_linenbr.val();
+
+						if (does_note_exist(linenbr, formkey)) {
+							alert_note_form_exists(form);
+						} else {
+							form.submit();
+						}
+					} else {
+						form.submit();
+					}
+				} else {
+					ele_feedback.addClass('is-invalid');
+					ele_feedback.html($('<label>Please check a document to add a note to</label>').addClass('invalid-feedback').show());
+				}
+			}
+		}
+	});
+
+	function alert_delete(form) {
+		swal2.fire({
+			title: 'Are you sure?' ,
+			text: 'Delete note?',
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: '<i class="fa fa-trash-o" aria-hidden="true"></i> Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			if (result.value) {
+				var jform = $(form);
+				jform.find('input[name=action]').val('delete-notes');
+				form.submit();
+			}
+		});
+	}
+
+	function alert_note_form_exists(form) {
+		var formkey = get_formkey();
+		var linenbr = input_linenbr.val();
+		var bootstrap = new JsContento();
+		var content = bootstrap.open('div', 'class=swal2-content|id=swal2-content');
+		content += '<button type="button" class="btn btn-secondary swal-edit-note" data-linenbr="'+linenbr+'" data-form="'+formkey+'">Edit Note</button>';
+		content += '<br>';
+		content += "Do you want to overwrite?";
+		content += bootstrap.close('div');
+
+		swal2.fire({
+			title: 'Note '+ formkey +' Exists' ,
+			text: 'Do you want to overwrite?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+			cancelButtonText: 'No',
+			html: content,
+		}).then((result) => {
+			if (result.value) {
+				form.submit();
+			}
+		});
+	}
+
+	function has_document_selected() {
+		var selected = false;
+		selected = input_pick.prop('checked') ? true : selected;
+		selected = input_pack.prop('checked') ? true : selected;
+		selected = input_invoice.prop('checked') ? true : selected;
+		return selected;
+	}
+
+	function does_note_exist(linenbr, formkey) {
+		return $('.qnote-row[data-linenbr="'+linenbr+'"][data-form="'+formkey+'"]').length;
+	}
+});

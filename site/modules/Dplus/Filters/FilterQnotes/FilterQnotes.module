@@ -1,0 +1,31 @@
+<?php namespace ProcessWire;
+
+class FilterQnotes extends WireData implements Module {
+
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+		$modules->refresh();
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Filters Qnotes Module',
+			'version' => 101,
+			'summary' => 'Handles install of Qnotes Filters modules',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(
+				'FilterQnotesPredefined',
+			)
+		);
+	}
+}
