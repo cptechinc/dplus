@@ -11,6 +11,7 @@
 			$tariff = $module_codetable->get_code($code);
 		} else {
 			$tariff = new TariffCode();
+			$page->headline = "Create New Tariff Class";
 
 			if ($code != 'new') {
 				$tariff->setCode($code);
