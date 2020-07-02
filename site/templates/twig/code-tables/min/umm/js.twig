@@ -77,6 +77,10 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
+	$.validator.addMethod('minValue', function (value, el, param) {
+		return value > param;
+	});
+
 	form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
@@ -88,12 +92,16 @@ $(function() {
 				required: true,
 				maxlength: {{ max_length_code }}
 			},
-			conversion: 'required',
+			conversion: {
+				required: true,
+			    minValue: 0,
+			    number: true
+			},
 			pricebyweight: 'required'
 		},
 		messages: {
 			code: "Please check the Code value (Max Length: {{ max_length_code }})",
-			conversion: 'Please enter a conversion for the code',
+			conversion: 'Please enter a conversion factor great than 0',
 			pricebyweight: 'Please choose an option for price by weight for the code'
 		},
 		submitHandler: function(form) {
@@ -177,6 +185,8 @@ $(function() {
 			modal.find('.modal-title').text('Adding a new Code');
 			modal.find('input[name=code]').prop("readonly", false);
 			modal.find('input[name=code]').focus();
+			modal.find('input[name=conversion]').val(1);
+			modal.find('select[name=pricebyweight]').val('N');
 		}
 		form.find('input[name=serialized]').val(form.serialize());
 	}
