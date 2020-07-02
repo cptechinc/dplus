@@ -16,7 +16,7 @@
 	<div class="form-group">
 		<label for="warehouse">Warehouse</label>
 		<select name="warehouse" class="form-control" id="warehouse">
-			<option value="">-- Choose --</option>
+			<option value=""></option>
 			{% for whse in warehouses %}
 				<option value="{{ whse.id }}" {{ whse.id == value ? 'selected' : ''}}>
 					{{ whse.id }} - {{ whse.name }}
