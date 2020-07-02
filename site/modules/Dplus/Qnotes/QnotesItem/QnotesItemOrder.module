@@ -1,44 +1,57 @@
 <?php namespace ProcessWire;
 
-use ItemWhseOrderNoteQuery, ItemWhseOrderNote;
+use ItemOrderNoteQuery, ItemOrderNote;
 use ConfigArQuery, ConfigAr;
 
-include_once(__DIR__.'/QnotesResponse.php');
+include_once(__DIR__.'/../QnotesResponse.php');
 
 /**
  * QnotesSalesOrder
  *
  * Class for Writing and Reading Qnotes for Sales Orders
  */
-class QnotesItemWhseOrder extends WireData implements Module {
-	const MODEL                = 'ItemWhseOrderNote';
-	const MODEL_KEY            = 'key2, sequence, form';
-	const DESCRIPTION          = 'Item Revision Notes';
-	const DESCRIPTION_RECORD   = 'Item Revision Notes';
-	const DESCRIPTION_RESPONSE = 'Item {itemID} Warehouse {whseID} Order Notes';
+class QnotesItemOrder extends WireData implements Module {
+	const MODEL              = 'ItemOrderNote';
+	const MODEL_KEY          = 'itemid sequence';
+	const DESCRIPTION        = 'Item Order Notes';
+	const DESCRIPTION_RECORD = 'Item Order Notes';
+	const DESCRIPTION_RESPONSE = 'Item ';
 
-	/* =============================================================
-		CRUD Read / Validation Functions
-	============================================================= */
+	public function get_forms() {
+		return ItemOrderNote::FORMS_LABELS;
+	}
+
+	public function get_forms_shortlabels() {
+		return ItemOrderNote::FORMS_LABELS_SHORT;
+	}
+
+
+	/**
+	 * Return the Max Number of columns for Note Type
+	 * @return int
+	 */
+	public function get_column_count() {
+		$configAR = ConfigArQuery::create()->findOne();
+		return $configAR->columns_notes_invoice;
+	}
+
 	/**
 	 * Returns Quote Notes Query
-	 * @return ItemWhseOrderNoteQuery
+	 * @return ItemOrderNoteQuery
 	 */
 	public function get_query() {
-		return ItemWhseOrderNoteQuery::create();
+		return ItemOrderNoteQuery::create();
 	}
 
 	/**
 	 * Returns if Notes Exist
 	 * @param  string $itemID  Item ID
-	 * @param  string $whseID  Warehouse ID
 	 * @param  string $form    Forms Code
 	 * @return bool
 	 */
-	public function notes_exist($itemID, $whseID, $form) {
+	public function notes_exist($itemID, $form) {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
-		$q->filterByWarehouseid($whseID);
 		$q->filterByForm($form);
 		return boolval($q->count());
 	}
@@ -46,13 +59,11 @@ class QnotesItemWhseOrder extends WireData implements Module {
 	/**
 	 * Returns Line 1 of Every Note
 	 * @param  string $itemID  Item ID
-	 * @param  string $whseID  Warehouse ID
-	 * @return ItemWhseOrderNote[]|ObjectCollection
+	 * @return ItemOrderNote[]|ObjectCollection
 	 */
-	public function get_notes_summarized($itemID, $whseID) {
+	public function get_notes_summarized($itemID) {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
-		$q->filterByWarehouseid($whseID);
 		$q->filterBySequence(1);
 		return $q->find();
 	}
@@ -60,22 +71,34 @@ class QnotesItemWhseOrder extends WireData implements Module {
 	/**
 	 * Return Notes for Form
 	 * @param  string $itemID  Item ID
-	 * @param  string $whseID  Warehouse I
 	 * @param  string $form    Forms Code
 	 * @return array
 	 */
-	public function get_notes_form_array($itemID, $whseID, $form) {
+	public function get_notes_form_array($itemID, $form) {
 		$q = $this->get_query();
-		$q->select(ItemWhseOrderNote::get_aliasproperty('note'));
+		$q->select(ItemOrderNote::get_aliasproperty('note'));
 		$q->filterByItemid($itemID);
-		$q->filterByWarehouseid($whseID);
 		$q->filterByForm($form);
 		return $q->find()->toArray();
 	}
 
-/* =============================================================
-	CRUD Functions
-============================================================= */
+	/**
+	 * Delete Notes for Item
+	 * @param  string $itemID   Item ID
+	 * @param  string $form     Forms Code
+	 * @return array
+	 */
+	public function delete_notes($itemID, $form) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->filterByForm($form);
+
+		if ($q->count()) {
+			return $q->delete();
+		}
+		return true;
+	}
+
 	/**
 	 * Takes Input, Processes it, updates Quote Notes in the Database
 	 *
@@ -104,26 +127,23 @@ class QnotesItemWhseOrder extends WireData implements Module {
 	public function delete_notes_input($input) {
 		$rm = strtolower($input->requestMethod());
 		$itemID  = $input->$rm->text('itemID');
-		$whseID  = $input->$rm->text('whseID');
 		$form    = $input->$rm->text('form');
 
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
-		$q->filterByWarehouseid($whseID);
 		$q->filterByForm($form);
 
 		if ($q->count()) {
 			$note = $q->findOne();
 		} else {
-			$note = ItemWhseOrderNote::new();
+			$note = ItemOrderNote::new();
 			$note->setItemid($itemID);
-			$note->setWarehouseid($whseID);
 			$note->setForm($form);
 			$note->generateKey2();
 		}
-		$success = $this->delete_notes($itemID, $whseID, $form);
+		$success = $this->delete_notes($itemID, $form);
 
-		$this->wire('session')->response_qnote = $this->process_response_delete($note, $itemID, $whseID, $success);
+		$this->wire('session')->response_qnote = $this->process_response_delete($note, $itemID, $success);
 	}
 
 	/**
@@ -136,19 +156,17 @@ class QnotesItemWhseOrder extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itemID  = $values->text('itemID');
-		$whseID  = $input->$rm->text('whseID');
 		$form = $this->get_form_input($input);
 		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
 		$lines_saved = array();
-		$this->delete_notes($itemID, $whseID, $form);
+		$this->delete_notes($itemID, $form);
 
 		foreach ($note_lines as $key => $line) {
 			$sequence = $key + 1;
-			$record = ItemWhseOrderNote::new();
+			$record = ItemOrderNote::new();
 			$record->setItemid($itemID);
-			$record->setWarehouseid($whseID);
 			$record->generateKey2(); // PK
-			foreach (array_keys(ItemWhseOrderNote::FORMS_LABELS) as $formfield) {
+			foreach (array_keys(ItemOrderNote::FORMS_LABELS) as $formfield) {
 				$func = 'set'.ucfirst($formfield);
 				$record->$func($values->yn($formfield));
 			}
@@ -160,60 +178,35 @@ class QnotesItemWhseOrder extends WireData implements Module {
 			$record->setDummy('P');
 			$lines_saved[$sequence] = $record->save();
 		}
-		$this->wire('session')->response_qnote = $this->process_responses($record, $itemID, $whseID, $lines_saved);
+		$this->wire('session')->response_qnote = $this->process_responses($record, $itemID, $lines_saved);
 	}
 
-	/**
-	 * Return Form Code based on Input
-	 * @param  WireInput $input [description]
-	 * @return string
-	 */
 	public function get_form_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$note = ItemWhseOrderNote::new();
+		$note = ItemOrderNote::new();
 		$note->setItemid($values->text('itemID'));
-		$note->setWarehouseid($values->text('whseID'));
 
-		foreach (array_keys(ItemWhseOrderNote::FORMS_LABELS) as $formfield) {
+		foreach (array_keys(ItemOrderNote::FORMS_LABELS) as $formfield) {
 			$func = 'set'.ucfirst($formfield);
 			$note->$func($values->yn($formfield));
 		}
 		$note->generateForm();
+		echo $note->form;
 		return $note->form;
-	}
-
-	/**
-	 * Delete Notes for Item
-	 * @param  string $itemID  Item ID
-	 * @param  string $whseID  Warehouse ID
-	 * @param  string $form    Forms Code
-	 * @return array
-	 */
-	public function delete_notes($itemID, $whseID, $form) {
-		$q = $this->get_query();
-		$q->filterByItemid($itemID);
-		$q->filterByWarehouseid($whseID);
-		$q->filterByForm($form);
-
-		if ($q->count()) {
-			return $q->delete();
-		}
-		return true;
 	}
 
 	/**
 	 * Return Code Table Response based on the number of lines that were written to the database
 	 * @param  string $itemID       Item ID
-	 * @param  string $whseID       Warehouse ID
 	 * @param  array  $lines_saved  array of line numbers and if they got saved e.g. (1 => true, 2 => false)
 	 * @return CodeTableResponse
 	 */
-	protected function process_responses(ItemWhseOrderNote $note, $itemID, $whseID, array $lines_saved) {
-		$message = $this->get_response_message_base($itemID, $whseID);
+	protected function process_responses(ItemOrderNote $note, $itemID, array $lines_saved) {
+		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Order Note Lines";
 
 		$response = new QnotesResponse();
-		$response->set_key("$itemID-$whseID-{$note->key2}");
+		$response->set_key("$itemID-{$note->key2}");
 
 		if (in_array(false, $lines_saved)) {
 			$lines_error =
@@ -243,17 +236,16 @@ class QnotesItemWhseOrder extends WireData implements Module {
 
 	/**
 	 * Return QnoteResponse based if Notes were able to be Deleted
-	 * @param  ItemWhseOrderNote  $note         Attributes are needed to generate key
-	 * @param  string             $itemID       Item ID
-	 * @param  string             $whseID       Whse ID
-	 * @param  array              $success      Were Notes able to be deleted?
+	 * @param  ItemOrderNote  $note         Attributes are needed to generate key
+	 * @param  string            $itemID       Item ID
+	 * @param  array             $success      Were Notes able to be deleted?
 	 * @return QnoteResponse
 	 */
-	public function process_response_delete(ItemWhseOrderNote $note, $itemID, $whseID, bool $success) {
-		$message = $this->get_response_message_base($itemID, $whseID);
+	public function process_response_delete(ItemOrderNote $note, $itemID, bool $success) {
+		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Order Notes ";
 
 		$response = new QnotesResponse();
-		$response->set_key("$itemID-$whseID-{$note->key2}");
+		$response->set_key("$itemID-{$note->key2}");
 
 		if ($success) {
 			$response->set_success(true);
@@ -273,54 +265,11 @@ class QnotesItemWhseOrder extends WireData implements Module {
 		return $response;
 	}
 
-/* =============================================================
-	Supplemental Functions
-============================================================= */
-	/**
-	 * Return Message with provided Item ID and Warehouse ID
-	 * @param  string $itemID Item ID
-	 * @param  string $whseID Warehouse ID
-	 * @return string
-	 */
-	public function get_response_message_base($itemID, $whseID) {
-		$message = self::DESCRIPTION_RESPONSE;
-		$replace = array('{itemID}', '{whseID}');
-		$values  = array($itemID, $whseID);
-		return str_replace($replace, $values, $message);
-	}
-
-	/**
-	 * Return Key Value array for forms
-	 * @return array
-	 */
-	public function get_forms() {
-		return ItemWhseOrderNote::FORMS_LABELS;
-	}
-
-	/**
-	 * Return Key Value array for forms, with shortened labels
-	 * @return array
-	 */
-	public function get_forms_shortlabels() {
-		return ItemWhseOrderNote::FORMS_LABELS_SHORT;
-	}
-
-	/**
-	 * Return the Max Number of columns for Note Type
-	 * @return int
-	 */
-	public function get_column_count() {
-		return 35;
-	}
-
-/* =============================================================
-	ProcessWire Module Functions
-============================================================= */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus Qnotes Item Whse Order',
+			'title' => 'Dplus Qnotes Item Order',
 			'version' => 101,
-			'summary' => 'Dplus Qnotes Item Order Whse CRUD methods',
+			'summary' => 'Dplus Qnotes Item Order CRUD methods',
 			'singular' => true,
 			'autoload' => true,
 			'requires' => array('Qnotes')

@@ -3,7 +3,7 @@
 use ItemInspectNoteQuery, ItemInspectNote;
 use ConfigInQuery, ConfigIn;
 
-include_once(__DIR__.'/QnotesResponse.php');
+include_once(__DIR__.'/../QnotesResponse.php');
 
 /**
  * QnotesItemInspection

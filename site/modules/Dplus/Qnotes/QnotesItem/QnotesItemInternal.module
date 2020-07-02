@@ -1,29 +1,21 @@
 <?php namespace ProcessWire;
 
-use ItemOrderNoteQuery, ItemOrderNote;
-use ConfigArQuery, ConfigAr;
+use ItemInternalNoteQuery, ItemInternalNote;
+use ConfigInQuery, ConfigIn;
 
-include_once(__DIR__.'/QnotesResponse.php');
+include_once(__DIR__.'/../QnotesResponse.php');
 
 /**
  * QnotesSalesOrder
  *
  * Class for Writing and Reading Qnotes for Sales Orders
  */
-class QnotesItemOrder extends WireData implements Module {
-	const MODEL              = 'ItemOrderNote';
+class QnotesItemInternal extends WireData implements Module {
+	const MODEL              = 'ItemInternalNote';
 	const MODEL_KEY          = 'itemid sequence';
-	const DESCRIPTION        = 'Item Order Notes';
-	const DESCRIPTION_RECORD = 'Item Order Notes';
+	const DESCRIPTION        = 'Item Internal Notes';
+	const DESCRIPTION_RECORD = 'Item Internal Notes';
 	const DESCRIPTION_RESPONSE = 'Item ';
-
-	public function get_forms() {
-		return ItemOrderNote::FORMS_LABELS;
-	}
-
-	public function get_forms_shortlabels() {
-		return ItemOrderNote::FORMS_LABELS_SHORT;
-	}
 
 
 	/**
@@ -31,35 +23,33 @@ class QnotesItemOrder extends WireData implements Module {
 	 * @return int
 	 */
 	public function get_column_count() {
-		$configAR = ConfigArQuery::create()->findOne();
-		return $configAR->columns_notes_invoice;
+		$configIN = ConfigInQuery::create()->findOne();
+		return $configIN->columns_notes_internal;
 	}
 
 	/**
 	 * Returns Quote Notes Query
-	 * @return ItemOrderNoteQuery
+	 * @return ItemInternalNoteQuery
 	 */
 	public function get_query() {
-		return ItemOrderNoteQuery::create();
+		return ItemInternalNoteQuery::create();
 	}
 
 	/**
 	 * Returns if Notes Exist
 	 * @param  string $itemID  Item ID
-	 * @param  string $form    Forms Code
 	 * @return bool
 	 */
-	public function notes_exist($itemID, $form) {
+	public function notes_exist($itemID) {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
-		$q->filterByForm($form);
 		return boolval($q->count());
 	}
 
 	/**
 	 * Returns Line 1 of Every Note
 	 * @param  string $itemID  Item ID
-	 * @return ItemOrderNote[]|ObjectCollection
+	 * @return ItemInternalNote[]|ObjectCollection
 	 */
 	public function get_notes_summarized($itemID) {
 		$q = $this->get_query();
@@ -71,27 +61,23 @@ class QnotesItemOrder extends WireData implements Module {
 	/**
 	 * Return Notes for Form
 	 * @param  string $itemID  Item ID
-	 * @param  string $form    Forms Code
 	 * @return array
 	 */
-	public function get_notes_form_array($itemID, $form) {
+	public function get_notes_form_array($itemID) {
 		$q = $this->get_query();
-		$q->select(ItemOrderNote::get_aliasproperty('note'));
+		$q->select(ItemInternalNote::get_aliasproperty('note'));
 		$q->filterByItemid($itemID);
-		$q->filterByForm($form);
 		return $q->find()->toArray();
 	}
 
 	/**
 	 * Delete Notes for Item
-	 * @param  string $itemID   Item ID
-	 * @param  string $form     Forms Code
+	 * @param  string $itemID  Item ID
 	 * @return array
 	 */
-	public function delete_notes($itemID, $form) {
+	public function delete_notes($itemID) {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
-		$q->filterByForm($form);
 
 		if ($q->count()) {
 			return $q->delete();
@@ -127,21 +113,18 @@ class QnotesItemOrder extends WireData implements Module {
 	public function delete_notes_input($input) {
 		$rm = strtolower($input->requestMethod());
 		$itemID  = $input->$rm->text('itemID');
-		$form    = $input->$rm->text('form');
 
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
-		$q->filterByForm($form);
 
 		if ($q->count()) {
 			$note = $q->findOne();
 		} else {
-			$note = ItemOrderNote::new();
+			$note = new ItemInternalNote();
 			$note->setItemid($itemID);
-			$note->setForm($form);
 			$note->generateKey2();
 		}
-		$success = $this->delete_notes($itemID, $form);
+		$success = $this->delete_notes($itemID);
 
 		$this->wire('session')->response_qnote = $this->process_response_delete($note, $itemID, $success);
 	}
@@ -154,25 +137,20 @@ class QnotesItemOrder extends WireData implements Module {
 	 */
 	public function update_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-		$itemID  = $values->text('itemID');
-		$form = $this->get_form_input($input);
+		$itemID  = $input->$rm->text('itemID');
 		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
 		$lines_saved = array();
-		$this->delete_notes($itemID, $form);
+
+		$this->delete_notes($itemID);
 
 		foreach ($note_lines as $key => $line) {
 			$sequence = $key + 1;
-			$record = ItemOrderNote::new();
+			$record = ItemInternalNote::new();
 			$record->setItemid($itemID);
 			$record->generateKey2(); // PK
-			foreach (array_keys(ItemOrderNote::FORMS_LABELS) as $formfield) {
-				$func = 'set'.ucfirst($formfield);
-				$record->$func($values->yn($formfield));
-			}
-			$record->generateForm();
 			$record->setSequence($sequence); // PK
 			$record->setNote($line);
+
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
 			$record->setDummy('P');
@@ -181,29 +159,14 @@ class QnotesItemOrder extends WireData implements Module {
 		$this->wire('session')->response_qnote = $this->process_responses($record, $itemID, $lines_saved);
 	}
 
-	public function get_form_input(WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-		$note = ItemOrderNote::new();
-		$note->setItemid($values->text('itemID'));
-
-		foreach (array_keys(ItemOrderNote::FORMS_LABELS) as $formfield) {
-			$func = 'set'.ucfirst($formfield);
-			$note->$func($values->yn($formfield));
-		}
-		$note->generateForm();
-		echo $note->form;
-		return $note->form;
-	}
-
 	/**
 	 * Return Code Table Response based on the number of lines that were written to the database
-	 * @param  string $itemID       Item ID
+	 * @param  string $itemID         item ID
 	 * @param  array  $lines_saved  array of line numbers and if they got saved e.g. (1 => true, 2 => false)
 	 * @return CodeTableResponse
 	 */
-	protected function process_responses(ItemOrderNote $note, $itemID, array $lines_saved) {
-		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Order Note Lines";
+	protected function process_responses(ItemInternalNote $note, $itemID, array $lines_saved) {
+		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Note Lines";
 
 		$response = new QnotesResponse();
 		$response->set_key("$itemID-{$note->key2}");
@@ -236,13 +199,13 @@ class QnotesItemOrder extends WireData implements Module {
 
 	/**
 	 * Return QnoteResponse based if Notes were able to be Deleted
-	 * @param  ItemOrderNote  $note         Attributes are needed to generate key
-	 * @param  string            $itemID       Item ID
+	 * @param  ItemInternalNote  $note         Attributes are needed to generate key
+	 * @param  string            $itemID         item ID
 	 * @param  array             $success      Were Notes able to be deleted?
 	 * @return QnoteResponse
 	 */
-	public function process_response_delete(ItemOrderNote $note, $itemID, bool $success) {
-		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Order Notes ";
+	public function process_response_delete(ItemInternalNote $note, $itemID, bool $success) {
+		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Notes ";
 
 		$response = new QnotesResponse();
 		$response->set_key("$itemID-{$note->key2}");
@@ -267,9 +230,9 @@ class QnotesItemOrder extends WireData implements Module {
 
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus Qnotes Item Order',
+			'title' => 'Dplus Qnotes Item Internal',
 			'version' => 101,
-			'summary' => 'Dplus Qnotes Item Order CRUD methods',
+			'summary' => 'Dplus Qnotes Item Internal CRUD methods',
 			'singular' => true,
 			'autoload' => true,
 			'requires' => array('Qnotes')

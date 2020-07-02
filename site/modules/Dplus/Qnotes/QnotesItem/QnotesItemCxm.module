@@ -3,23 +3,23 @@
 use ItemXrefCustomerNoteQuery, ItemXrefCustomerNote;
 use ConfigArQuery, ConfigAr;
 
-include_once(__DIR__.'/QnotesResponse.php');
+include_once(__DIR__.'/../QnotesResponse.php');
 
 /**
  * QnotesItemXrefCustomer
  *
  * Class for Writing and Reading Qnotes for CXM Items
  */
-class QnotesItemXrefCustomer extends WireData implements Module {
+class QnotesItemCxm extends WireData implements Module {
 	const MODEL                = 'ItemXrefCustomerNote';
 	const MODEL_KEY            = 'key2, sequence, form';
 	const DESCRIPTION          = 'CXM Item Notes';
 	const DESCRIPTION_RECORD   = 'CXM Item Notes';
 	const DESCRIPTION_RESPONSE = 'Item {itemID} Customer {custID} Order Notes';
 
-	/* =============================================================
-		CRUD Read / Validation Functions
-	============================================================= */
+/* =============================================================
+	CRUD Read / Validation Functions
+============================================================= */
 	/**
 	 * Returns Quote Notes Query
 	 * @return ItemXrefCustomerNoteQuery
@@ -332,9 +332,9 @@ class QnotesItemXrefCustomer extends WireData implements Module {
 ============================================================= */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus Qnotes Item Whse Order',
+			'title' => 'Dplus Qnotes CXM',
 			'version' => 101,
-			'summary' => 'Dplus Qnotes Item Order Whse CRUD methods',
+			'summary' => 'Dplus Qnotes CXM',
 			'singular' => true,
 			'autoload' => true,
 			'requires' => array('Qnotes')

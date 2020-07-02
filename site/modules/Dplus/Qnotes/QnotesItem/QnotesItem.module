@@ -3,7 +3,7 @@
 use QuoteNotesQuery, QuoteNotes;
 use ConfigArQuery, ConfigAr;
 
-include_once(__DIR__.'/QnotesResponse.php');
+include_once(__DIR__.'/../QnotesResponse.php');
 
 /**
  * QnotesItem
@@ -92,7 +92,7 @@ class QnotesItem extends WireData implements Module {
 				'QnotesItemInspection',
 				'QnotesItemOrder',
 				'QnotesItemWhseOrder',
-				'QnotesItemXrefCustomer'
+				'QnotesItemCxm'
 			)
 		);
 	}
