@@ -2,6 +2,11 @@ $(function() {
 	var codeIDs = {{ m_in.get_codes_ids()|json_encode()|raw }};
 	var input_codeID = $('#code');
 	var form = $("#code-edit-form");
+	{% if config_so.is_request_program() %}
+		var sales_program = true;
+	{% else %}
+		var sales_program = false;
+	{% endif %}
 
 /* =============================================================
 	Event Functions
@@ -41,6 +46,37 @@ $(function() {
 					var button = $('button[data-code="'+codeID+'"]');
 					populate_edit_from_button(button, modal);
 				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					modal.modal('hide');
+				}
+			});
+		}
+	});
+
+/* =============================================================
+	Unsaved Fields Alert
+	NOTE: for Code tables edited in modals, the serialzed form values must
+	be put into a hidden input field for verification
+============================================================= */
+
+	$("body").on("click", "#code-edit-form button:not(.form_button)", function(e) {
+		var origForm = form.find('input[name=serialized]').val();
+		console.log(origForm);
+		console.log(form.serialize())
+
+		if (form.serialize() !== origForm && input_codeID.val() != '' && sales_program ==  true) {
+
+			swal2.fire({
+				title: 'Changes have occurred!',
+				text: 'Do you want to save?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+				cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value) {
+					form.find('button[type=submit]').click();
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					var modal = $('#edit-code-modal');
 					modal.modal('hide');
 				}
 			});
@@ -146,6 +182,7 @@ $(function() {
 				modal.find('select[name=sales_program]').val('N');
 			}
 		}
+		form.find('input[name=serialized]').val(form.serialize());
 	}
 
 	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
