@@ -23,6 +23,16 @@ $(function() {
 		}
 	});
 
+	if (input_codeID.val() == '') {
+		form.find('select[name=web_validate]').val('N');
+		form.find('select[name=web_force]').val('N');
+		form.find('select[name=file_name]').val('N');
+		form.find('select[name=validate]').val('Y');
+		form.find('select[name=force]').val('Y');
+		form.find('select[name=adv_search]').val('N');
+		form.find('select[name=field_type]').val('C');
+	}
+
 /* =============================================================
 	Event Functions
 ============================================================= */
