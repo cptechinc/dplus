@@ -35,7 +35,7 @@ $(function() {
 		var modal = button.closest('.modal');
 		var note = modal.find('textarea[data-id="'+id+'"]').text();
 		var target = modal_notes_ajax.attr('data-input');
-		var newnote = $(target).text() + "\r" + note;
+		var newnote = $(target).val() + "\r" + note;
 
 		$(target).val(newnote);
 		modal_notes_ajax.modal('hide');

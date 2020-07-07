@@ -158,15 +158,37 @@ class XrefVxm extends WireData implements Module {
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$record = $this->get_create_vxm_item($input);
-
-		if ($values->text('action') == 'remove-vxm-item') {
-			$record->delete();
-		} elseif ($values->text('action') == 'update-vxm') {
-			$this->update_record_input($record, $input);
-		}
 
 		if ($values->action) {
+			switch ($values->text('action')) {
+				case 'remove-vxm-item':
+				case 'update-vxm':
+					$this->process_input_vxm($input);
+					break;
+				case 'delete-notes':
+				case 'update-notes';
+					$qnotes = $this->wire('modules')->get('QnotesItemVxm');
+					$qnotes->process_input($input);
+					break;
+			}
+		} else {
+			$this->wire('session')->response_xref = $this->create_error_response('vxm', "No VXM Action specified");
+		}
+	}
+
+	protected function process_input_vxm(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if ($values->action) {
+			$record = $this->get_create_vxm_item($input);
+
+			if ($values->text('action') == 'remove-vxm-item') {
+				$record->delete();
+			} elseif ($values->text('action') == 'update-vxm') {
+				$this->update_record_input($record, $input);
+			}
+
 			$response = $this->save_and_process_response($record);
 
 			/**

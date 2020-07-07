@@ -36,11 +36,11 @@
 		</div>
 		<div class="col-sm-6">
 			{% if page.has('itemID') %}
-				<input type="text" class="form-control-plaintext" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}" disabled>
+				<input type="text" class="form-control-plaintext" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}" readonly>
 			{% elseif item.isNew() %}
 				<input type="text" class="form-control form-control-sm" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}">
 			{% else %}
-				<input type="text" class="form-control-plaintext" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}" disabled>
+				<input type="text" class="form-control-plaintext" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}" readonly>
 			{% endif %}
 		</div>
 	</div>

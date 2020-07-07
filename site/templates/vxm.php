@@ -11,10 +11,10 @@
 		$vxm->process_input($input);
 
 		if ($vxm->vxm_item_exists($vendorID, $vendoritemID)) {
-			$session->redirect($pages->vxm_itemURL($vendorID, $vendoritemID));
+			$session->redirect($page->vxm_itemURL($vendorID, $vendoritemID));
 
 		} else {
-			$session->redirect($pages->vxm_vendorURL($vendorID));
+			$session->redirect($page->vxm_vendorURL($vendorID));
 		}
 	}
 
@@ -58,8 +58,7 @@
 			} else {
 				$item = $vxm->get_vxm_item_new();
 				$item->setVendorid($vendorID);
-				$item->setOuritemid($itemID);
-				$page->headline = "ITM: VXM Creating Item";
+				$page->headline = "VXM: Creating Item";
 
 				if ($vendoritemID != 'new') {
 					$item->setVendoritemid($vendoritemID);
@@ -71,15 +70,34 @@
 			$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 			$page->body .= $config->twig->render('items/vxm/item/form.twig', ['page' => $page, 'item' => $item, 'vxm' => $vxm, 'recordlocker' => $recordlocker]);
 			$page->js .= $config->twig->render('items/vxm/item/form/js.twig', ['page' => $page, 'item' => $item, 'url_validate' => $pages->get('pw_template=vxm-validate')->httpUrl]);
+
+			if (!$item->isNew()) {
+				$qnotes = $modules->get('QnotesItemVxm');
+				$page->body .= $html->hr();
+				if ($session->response_qnote) {
+					$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
+				}
+				$page->searchURL = $pages->get('pw_template=msa-noce-ajax')->url;
+				$page->body .= $config->twig->render('items/vxm/notes/notes.twig', ['page' => $page, 'qnotes' => $qnotes, 'user' => $user, 'item' => $item]);
+				$page->js   .= $config->twig->render('items/vxm/notes/js.twig', ['page' => $page, 'session' => $session]);
+				$session->remove('response_qnote');
+			}
 		} else {
 			$recordlocker->remove_lock($page->name);
 			$page->headline = "VXM: Vendor $vendor->name";
 			$filter_vxm->filter_query($input);
+
+			if ($input->get->q) {
+				$q = $input->get->text('q');
+				$page->headline = "VXM: Searching '$q' for Vendor $vendor->name";
+				$filter_vxm->filter_search($input->get->text('q'));
+			}
 			$filter_vxm->apply_sortby($page);
 			$items = $filter_vxm->query->paginate($input->pageNum, 10);
 
 			$page->body .= $config->twig->render('items/vxm/vxm-links.twig', ['page' => $page]);
 			$page->body .= $html->h3('', $items->getNbResults() . " VXM Items for $vendor->name");
+			$page->body .= $config->twig->render('items/vxm/vendor/items-form.twig', ['page' => $page, 'vendorID' => $vendorID]);
 			$page->body .= $config->twig->render('items/vxm/item-list.twig', ['page' => $page, 'items' => $items, 'vendorID' => $vendorID, 'recordlocker' => $recordlocker]);
 			$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
 		}
