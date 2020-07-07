@@ -15,7 +15,7 @@ use PurchaseOrderQuery, PurchaseOrder;
  * Handles Document Retrieval for Dplus
  */
 class DocumentManagement extends WireData implements Module {
-	const TAG_ARINVOICE = 'AR';
+	const TAG_ARINVOICE  = 'AR';
 	const TAG_SALESORDER = 'SO';
 	const TAG_QUOTE      = 'QT';
 	const TAG_ITEM       = 'IT';
@@ -108,7 +108,7 @@ class DocumentManagement extends WireData implements Module {
 		$newfile = "$destination/$filename";
 		return copy($srcfile, $newfile);
 	}
-	
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */

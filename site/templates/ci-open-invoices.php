@@ -24,8 +24,8 @@
 			} else {
 				$module_formatter = $modules->get('SfCiOpenInvoices');
 				$module_formatter->init_formatter();
-				$document_management = $modules->get('DocumentManagement');
-				$page->body .= $config->twig->render('customers/ci/open-invoices/open-invoices.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'document_management' => $document_management]);
+				$docm = $modules->get('DocumentManagementAr');
+				$page->body .= $config->twig->render('customers/ci/open-invoices/open-invoices.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'docm' => $docm]);
 			}
 		} else {
 			if ($session->openinvoicestry > 3) {

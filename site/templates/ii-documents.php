@@ -40,8 +40,7 @@
 					$ordn = SalesOrder::get_paddedordernumber($input->get->text('ordn'));
 					$date = $input->get->text('date');
 					$page->title = "Sales Order #$ordn Documents";
-					$documents = $docm->count_documents($ordn) ? $docm->get_documents($ordn) : array();	$documents = array();
-
+					$documents = $docm->count_documents($ordn) ? $docm->get_documents($ordn) : array();
 					$href = $pages->get('pw_template=ii-sales-history')->url."?itemID=$itemID&date=$date";
 					$page->body .= $html->div('class=mb-3', $html->a("href=$href|class=btn btn-secondary", $html->icon('fa fa-arrow-left') . " Back to Item Sales History"));
 					$page->body .= $config->twig->render('items/ii/documents/documents-dm.twig', ['page' => $page, 'documents' => $documents, 'docm' => $docm, 'itemID' => $itemID]);
