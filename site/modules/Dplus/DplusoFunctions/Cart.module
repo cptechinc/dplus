@@ -9,8 +9,6 @@
 	use ItemMasterItemQuery, ItemMasterItem;
 
 	class Cart extends WireData implements Module {
-
-
 		public function init() {
 
 			/**
@@ -192,30 +190,6 @@
 			$url->query->set('custID', $this->get_custid());
 			$url->query->set('sessionID', session_id());
 			$requestor->self_request($url->getUrl());
-		}
-
-		/**
-		 * Returns Notes for the Cart Line Number
-		 *
-		 * @param  int    $linenbr  0 = Header
-		 * @return SalesOrderNotes[]|ObjectCollection
-		 */
-		public function get_notes($linenbr = 0) {
-			$query = QnoteQuery::create()->filterByRectype(Qnote::TYPE_CART);
-			$query->filterBykey1(session_id())->filterBykey2($linenbr);
-			return $query->find();
-		}
-
-		/**
-		 * Returns the number of Notes for the Cart Line Number
-		 *
-		 * @param  int    $linenbr  0 = Header
-		 * @return int
-		 */
-		public function count_notes($linenbr = 0) {
-			$query = QnoteQuery::create()->filterByRectype(Qnote::TYPE_CART);
-			$query->filterBykey1(session_id())->filterBykey2($linenbr);
-			return $query->count();
 		}
 	/* =============================================================
 		ProcessWire Module Functions
