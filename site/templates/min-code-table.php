@@ -8,9 +8,12 @@
 		$action = $input->$rm->text('action');
 
 		// TODO: LOGIC to see if code was removed
-		$code = $input->$rm->text('code');
+		$code  = $input->requestMethod('GET') ? $input->$rm->text('code') : false;
 		$code = $action == 'update-notes' || $action == 'delete-notes' ? $code : '';
 		$code = $page->codetable == 'ioptm' ? $input->$rm->text('sysop') : $code;
+		if ( $page->codetable != 'ioptm') {
+			$code = $action == 'remove-code' ? '' : $code;
+		}
 
 		if ($in_codetables->validate_codetable($page->codetable)) {
 			$module_codetable = $in_codetables->get_codetable_module($page->codetable);
