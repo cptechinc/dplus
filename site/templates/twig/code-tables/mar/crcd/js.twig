@@ -43,6 +43,7 @@ $(function () {
 		credit_cust_name.val('');
 		var custID = $(this).val();
 		custID = custID.toUpperCase();
+		$(this).val(custID);
 		var apiurl = new URI("{{ url_json_ci }}");
 		apiurl.addQuery('action', 'get-customer-name');
 		apiurl.addQuery('custID', custID);
