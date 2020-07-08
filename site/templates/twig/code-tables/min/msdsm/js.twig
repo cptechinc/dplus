@@ -10,6 +10,8 @@ $(function() {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
 		populate_edit_from_button(button, modal);
+
+		$('.datepicker-calendar-days button').addClass('form_button');
 	});
 
 	$("body").on("click", ".swal-edit-code", function(e) {
@@ -52,7 +54,7 @@ $(function() {
 	be put into a hidden input field for verification
 ============================================================= */
 
-	$("body").on("click", "#code-edit-form button:not(.form_button)", function(e) {
+	$("body").on("click", "#code-edit-form button:not(.form_button), .datepicker button:not(.form_button), .dropdown-menu button:not(.form_button), .datepicker-calendar-days button:not(.form_button)", function(e) {
 		var origForm = form.find('input[name=serialized]').val();
 
 		if (form.serialize() !== origForm && input_codeID.val() != '') {
