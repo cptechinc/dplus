@@ -25,7 +25,7 @@
 			{% endif %}
 			<div class="form-group">
 				<label for="web_group">Web Group</label>
-				{% include 'util/select.twig' with {'name': 'web_group', 'id': 'web_group', 'disabled': disabled, 'selectedvalue': itemgroup.web_group ? itemgroup.web_group : 'N', 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				{% include 'util/select.twig' with {'name': 'web_group', 'id': 'web_group', 'hideblankoption': true, 'disabled': disabled, 'selectedvalue': itemgroup.web_group ? itemgroup.web_group : 'N', 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 		</div>
 		<div class="col-6">
@@ -36,7 +36,7 @@
 			{% endif %}
 			<div class="form-group">
 				<label for="sales_program">Sales Program</label>
-				{% include 'util/select.twig' with {'name': 'sales_program', 'id': 'sales_program', 'disabled': disabled, 'selectedvalue': itemgroup.sales_program ? itemgroup.sales_program : 'N', 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				{% include 'util/select.twig' with {'name': 'sales_program', 'id': 'sales_program', 'hideblankoption': true, 'disabled': disabled, 'selectedvalue': itemgroup.sales_program ? itemgroup.sales_program : 'N', 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 
 			<div class="form-group">
