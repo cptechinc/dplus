@@ -41,7 +41,7 @@
 
 			<div class="form-group">
 				<label for="coop">Co-op</label>
-				{% include 'util/select.twig' with {'name': 'coop', 'id': 'coop', 'hideblankoption': true, 'selectedvalue': itemgroup.coop ? itemgroup.coop : 'N', 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				{% include 'util/select.twig' with {'name': 'coop', 'id': 'coop', 'hideblankoption': true, 'disabled': false, 'selectedvalue': (itemgroup.coop ? itemgroup.coop : 'N'), 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 
 			<div class="form-group">
@@ -119,7 +119,7 @@
 			<h4>Surcharge</h4>
 			<div class="form-group">
 				<label for="surcharge">Can Add Surcharge</label>
-				{% include 'util/select.twig' with {'name': 'surcharge', 'id': 'surcharge', 'hideblankoption': true, 'selectedvalue': itemgroup.surcharge ? itemgroup.surcharge : 'N', 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				{% include 'util/select.twig' with {'name': 'surcharge', 'id': 'surcharge', 'hideblankoption': true, 'disabled': false, 'selectedvalue': (itemgroup.surcharge ? itemgroup.surcharge : 'N'), 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 
 			<div class="form-group">
