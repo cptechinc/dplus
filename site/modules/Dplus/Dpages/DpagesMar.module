@@ -171,7 +171,7 @@ class DpagesMar extends Dpages implements Module {
 			'title'          => 'Validate CRCD',
 			'summary'        => 'JSON validation for CRCD',
 			'parent'         => '/mar/armain/crcd/',
-			'dplus_function' => 'crcd'
+			'dplus_function' => ''
 		),
 	);
 
