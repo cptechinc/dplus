@@ -2,8 +2,6 @@
 <form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="{{ itemgroup.code }}">
 	<input type="hidden" name="action" value="update-igm">
 	<input type="hidden" name="table" value="{{ page.codetable }}">
-	<input type="hidden" name="sales_program" value="N">
-	<input type="hidden" name="cost_percent" value="0">
 	<input type="hidden" name="max_qty_large" value="0">
 	<input type="hidden" name="max_qty_medium" value="0">
 	<input type="hidden" name="max_qty_small" value="0">
@@ -20,29 +18,30 @@
 				<input type="text" name="description" class="form-control" maxlength="20" value="{{ itemgroup.description }}" id="description" autofocus>
 			</div>
 
-			<div class="form-group">
-				<label for="coop">Co-op</label>
-				{% include 'util/select.twig' with {'name': 'coop', 'id': 'coop', 'selectedvalue': itemgroup.coop, 'options': {'Y': 'Yes', 'N': 'No'}} %}
-			</div>
-
 			{% if config_ar.is_web_group() or (dpluscustomer.company_name == 'Alumacraft') %}
-				<div class="form-group">
-					<label for="web_group">Web Group ?</label>
-					{% include 'util/select.twig' with {'name': 'web_group', 'id': 'web_group', 'selectedvalue': itemgroup.web_group, 'options': {'Y': 'Yes', 'N': 'No'}} %}
-				</div>
+				{% set disabled = false %}
+			{% else %}
+				{% set disabled = true %}
 			{% endif %}
-
-			{# if config_so.is_request_program() #}
-				<!-- <div class="form-group">
-					<label for="sales_program">Sales Program ?</label>
-					{# include 'util/select.twig' with {'name': 'sales_program', 'id': 'sales_program', 'selectedvalue': itemgroup.sales_program, 'options': {'Y': 'Yes', 'N': 'No'}} #}
-				</div> -->
-			{# endif #}
+			<div class="form-group">
+				<label for="web_group">Web Group</label>
+				{% include 'util/select.twig' with {'name': 'web_group', 'id': 'web_group', 'disabled': disabled, 'selectedvalue': itemgroup.web_group ? itemgroup.web_group : 'N', 'options': {'Y': 'Yes', 'N': 'No'}} %}
+			</div>
 		</div>
 		<div class="col-6">
+			{% if config_so.is_request_program() %}
+				{% set disabled = false %}
+			{% else %}
+				{% set disabled = true %}
+			{% endif %}
 			<div class="form-group">
-				<label for="freight_group">Freight Group</label>
-				<input type="text" name="freight_group" class="form-control" maxlength="2" value="{{ itemgroup.freight_group }}" id="freight_group">
+				<label for="sales_program">Sales Program</label>
+				{% include 'util/select.twig' with {'name': 'sales_program', 'id': 'sales_program', 'disabled': disabled, 'selectedvalue': itemgroup.sales_program ? itemgroup.sales_program : 'N', 'options': {'Y': 'Yes', 'N': 'No'}} %}
+			</div>
+
+			<div class="form-group">
+				<label for="coop">Co-op</label>
+				{% include 'util/select.twig' with {'name': 'coop', 'id': 'coop', 'hideblankoption': true, 'selectedvalue': itemgroup.coop ? itemgroup.coop : 'N', 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 
 			<div class="form-group">
@@ -67,6 +66,7 @@
 			<div class="form-group">
 				<label for="sales">Sales</label>
 				<select class="form-control" name="sales" id="sales">
+					<option value="">-- Choose --</option>
 					{% for account in gl_accounts %}
 						<option value="{{ account.code }}" {{ account.code == itemgroup.sales ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
 					{% endfor %}
@@ -76,6 +76,7 @@
 			<div class="form-group">
 				<label for="credit">Credits</label>
 				<select class="form-control" name="credit" id="credit">
+					<option value="">-- Choose --</option>
 					{% for account in gl_accounts %}
 						<option value="{{ account.code }}" {{ account.code == itemgroup.credit ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
 					{% endfor %}
@@ -85,6 +86,7 @@
 			<div class="form-group">
 				<label for="cogs">Cost of Goods Sold</label>
 				<select class="form-control" name="cogs" id="cogs">
+					<option value="">-- Choose --</option>
 					{% for account in gl_accounts %}
 						<option value="{{ account.code }}" {{ account.code == itemgroup.cogs ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
 					{% endfor %}
@@ -94,6 +96,7 @@
 			<div class="form-group">
 				<label for="inventory">Inventory</label>
 				<select class="form-control" name="inventory" id="inventory">
+					<option value="">-- Choose --</option>
 					{% for account in gl_accounts %}
 						<option value="{{ account.code }}" {{ account.code == itemgroup.inventory ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
 					{% endfor %}
@@ -103,6 +106,7 @@
 			<div class="form-group">
 				<label for="drop_ship">Drop Ship</label>
 				<select class="form-control" name="drop_ship" id="drop_ship">
+					<option value="">-- Choose --</option>
 					{% for account in gl_accounts %}
 						<option value="{{ account.code }}" {{ account.code == itemgroup.drop_ship ? 'selected' : ''}}>{{ account.code }} - {{ account.description }}</option>
 					{% endfor %}
@@ -114,12 +118,12 @@
 			<!-- Surcharge Questions -->
 			<h4>Surcharge</h4>
 			<div class="form-group">
-				<label for="surcharge">Can Add Surcharge ?</label>
-				{% include 'util/select.twig' with {'name': 'surcharge', 'id': 'surcharge', 'selectedvalue': itemgroup.surcharge, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				<label for="surcharge">Can Add Surcharge</label>
+				{% include 'util/select.twig' with {'name': 'surcharge', 'id': 'surcharge', 'hideblankoption': true, 'selectedvalue': itemgroup.surcharge ? itemgroup.surcharge : 'N', 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 
 			<div class="form-group">
-				<label for="surcharge_dollar_percent">Dollar or Percent ?</label>
+				<label for="surcharge_dollar_percent">Dollar or Percent</label>
 				<select name="surcharge_dollar_percent" id="surcharge_dollar_percent" class="form-control">
 					<option value="D" {{ itemgroup.surcharge_dollar_percent == 'D' ? 'selected' : '' }}>Dollar</option>
 					<option value="P" {{ itemgroup.surcharge_dollar_percent == 'P' ? 'selected' : '' }}>Percent</option>
@@ -128,13 +132,13 @@
 
 			<div class="form-group">
 				<label for="surcharge_dollar_amount">Dollar Amount</label>
-				<input type="text" name="surcharge_dollar_amount" class="form-control" value="{{ itemgroup.surcharge_dollar_amount }}" id="surcharge_dollar_amount">
+				<input type="text" name="surcharge_dollar_amount" class="form-control" value="{{ itemgroup.surcharge_dollar_amount ? itemgroup.surcharge_dollar_amount : 0|number_format(2, '.', ',') }}" id="surcharge_dollar_amount">
 				<!-- must be 0 if percent is chosen -->
 			</div>
 
 			<div class="form-group">
 				<label for="surcharge_percent">Percent</label>
-				<input type="text" name="surcharge_percent" class="form-control" value="{{ itemgroup.surcharge_percent }}" id="surcharge_percent">
+				<input type="text" name="surcharge_percent" class="form-control" value="{{ itemgroup.surcharge_percent ? itemgroup.surcharge_percent : 0|number_format(3, '.', ',') }}" id="surcharge_percent">
 				<!-- must be 0 if dollar is chosen -->
 			</div>
 			<!-- Surcharge Questions -->

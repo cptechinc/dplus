@@ -39,7 +39,7 @@
 		$product_line_codes = InvProductLineCodeQuery::create()->find();
 		$gl_accounts = GlCodeQuery::create()->find();
 
-		$page->body .= $config->twig->render("code-tables/min/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'itemgroup' => $itemgroup, 'product_line_codes' => $product_line_codes, 'gl_accounts' => $gl_accounts, 'recordlocker' => $recordlocker]);
+		$page->body .= $config->twig->render("code-tables/min/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'config_so' => $config_so, 'config_ar' => $config_ar, 'itemgroup' => $itemgroup, 'product_line_codes' => $product_line_codes, 'gl_accounts' => $gl_accounts, 'recordlocker' => $recordlocker]);
         $page->js .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'itemgroup' => $itemgroup, 'm_igm' => $module_codetable]);
 	} else {
 		$recordlocker->remove_lock($page->codetable);
