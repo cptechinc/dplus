@@ -11,7 +11,7 @@ $(function() {
 		var modal = $(this);
 		populate_edit_from_button(button, modal);
 
-		$('.datepicker-calendar-days button').addClass('form_button');
+		$('.datepicker-calendar-days .datepicker-date').addClass('form_button');
 	});
 
 	$("body").on("click", ".swal-edit-code", function(e) {
@@ -46,6 +46,10 @@ $(function() {
 				}
 			});
 		}
+	});
+
+	$("body").on("click", ".dropdown-menu button", function(e) {
+		$('.datepicker-calendar-days .datepicker-date').addClass('form_button');
 	});
 
 /* =============================================================
