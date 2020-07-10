@@ -6,7 +6,7 @@
 		$code = $input->get->text('code');
 
 		if ($module_codetable->code_exists($code)) {
-			$page->title = $page->headline = "CRCD: $code";
+			$page->title = $page->headline = "Customer Credit Card Code: $code";
 			$creditcode = $module_codetable->get_code($code);
 		} else {
 			$page->title = $page->headline = "Create $page->title";
