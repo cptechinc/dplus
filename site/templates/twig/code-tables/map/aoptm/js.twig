@@ -50,7 +50,7 @@ $("body").on("change", "input[name=code]", function(e) {
 /* =============================================================
 Validation Functions
 ============================================================= */
-	form.validate({
+	var validator = form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -97,6 +97,13 @@ Validation Functions
 					}
 				});
 			}
+		}
+	});
+
+	$("body").on("focusin", "#code-edit-form input:not(#code)", function(e) {
+		if (input_codeID.val() == '') {
+			validator.element( "#code" );
+			input_codeID.focus();
 		}
 	});
 
