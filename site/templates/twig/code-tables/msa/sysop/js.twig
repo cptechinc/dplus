@@ -110,7 +110,7 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	form.validate({
+	var validator = form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -131,6 +131,7 @@ $(function() {
 			field_type: 'required'
 		},
 		messages: {
+			system: "Please choose the System value",
 			code: "Please check the Code value (Max Length: {{ max_length_code }})",
 		},
 		submitHandler: function(form) {
@@ -163,6 +164,20 @@ $(function() {
 					}
 				});
 			}
+		}
+	});
+
+	$("body").on("focusin", "#code-edit-form input:not(#system),#code-edit-form select", function(e) {
+		if (select_systemID.val() == '') {
+			validator.element( "#system" );
+			select_systemID.focus();
+		}
+	});
+
+	$("body").on("focusin", "#code-edit-form input:not(#code),#code-edit-form select", function(e) {
+		if (input_codeID.val() == '') {
+			validator.element( "#code" );
+			input_codeID.focus();
 		}
 	});
 
