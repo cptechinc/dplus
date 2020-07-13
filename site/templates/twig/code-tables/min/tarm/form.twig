@@ -30,12 +30,12 @@
 				<input type="text" class="form-control-plaintext" value="{{ tariff.count_countries() }}" readonly>
 			</div>
 
-			<div class="form-group">
+			<div class="form-group country">
 				<label>Countries</label>
 				<div style="overflow-y:scroll; height: 195px">
 					{% for country in countries %}
 						<div class="custom-control custom-checkbox">
-							<input type="checkbox" class="custom-control-input" name="country[]" value="{{ country.code }}" id="{{ country.code }}" {{ tariff.applies_to_country(country.code) ? 'checked' : '' }} >
+							<input type="checkbox" class="custom-control-input country-checkbox" name="country[]" value="{{ country.code }}" id="{{ country.code }}" {{ tariff.applies_to_country(country.code) ? 'checked' : '' }} {{ tariff.code ? '' : 'disabled' }}>
 							<label class="custom-control-label" for="{{ country.code }}">{{ country.description }}</label>
 						</div>
 					{% endfor %}
