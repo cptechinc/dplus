@@ -82,7 +82,7 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	form.validate({
+	var validator = form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -104,7 +104,7 @@ $(function() {
 			surcharge: 'required',
 		},
 		messages: {
-			code: "Please review the Tariff Code value, (Max Characters {{ itemgroup.get_max_code_length() }})",
+			code: "Please review the Item Group Code value, (Max Characters {{ itemgroup.get_max_code_length() }})",
 			coop: 'Please select if the code is for co-op',
 			web_group: 'Please enter the web group for the code',
 			sales_program: 'Please select if the code is for sales program',
@@ -145,6 +145,13 @@ $(function() {
 					}
 				});
 			}
+		}
+	});
+
+	$("body").on("focusin", "#code-edit-form input:not(#code),#code-edit-form select", function(e) {
+		if (input_codeID.val() == '') {
+			validator.element( "#code" );
+			input_codeID.focus();
 		}
 	});
 
