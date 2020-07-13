@@ -159,7 +159,7 @@ class DpagesMar extends Dpages implements Module {
 			'template'       => 'dplus-function',
 			'pw_template'    => 'ar-code-table',
 			'name'           => 'crcd',
-			'title'          => 'Customer Credit Card',
+			'title'          => 'Customer Credit Card Code',
 			'summary'        => 'View / Edit Customer Credit Card',
 			'parent'         => '/mar/armain/',
 			'dplus_function' => 'crcd'
