@@ -103,6 +103,12 @@
 	$config->twig->addFilter($filter);
 
 	$filter = new Twig_Filter('urlencode', function ($string) {
-		return urlencode($string);
+		$newstring = str_replace(' ', '-', $string);
+		return urlencode($newstring);
+	});
+	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('replace_space', function ($string) {
+		return str_replace(' ', '-', $string);
 	});
 	$config->twig->addFilter($filter);
