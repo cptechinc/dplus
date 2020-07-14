@@ -12,7 +12,7 @@
 	<div class="col">
 		<div class="input-group">
 			<span class="input-group-prepend">
-				<button type="button" class="btn btn-secondary form_button" data-toggle="modal" data-target="#ajax-modal">
+				<button type="button" class="btn btn-secondary form_button customer_button" data-toggle="modal" data-target="#ajax-modal" disabled>
 					<i class="fa fa-search" aria-hidden="true"></i> <span class="sr-only">Search Customers</span>
 				</button>
 			</span>
@@ -27,7 +27,6 @@
 	</div>
 	<div class="col">
 		<select name="pickdetail" class="form-control" id="pickdetail" required>
-			<option value="">-- Choose --</option>
 			<option value="A" {{ (warehouse.pickdetail == 'A') ? 'selected' : '' }}>Available</option>
 			<option value="S" {{ (warehouse.pickdetail == 'S') ? 'selected' : '' }}>Selected</option>
 			<option value="N" {{ (warehouse.pickdetail == 'N') ? 'selected' : '' }}>No</option>
@@ -60,7 +59,6 @@
 	</div>
 	<div class="col">
 		<select name="consignment" class="form-control" id="C" required>
-			<option value="">-- Choose --</option>
 			<option value="Y" {{ (warehouse.consignment == 'Y') ? 'selected' : '' }}>Yes</option>
 			<option value="N" {{ (warehouse.consignment == 'N') ? 'selected' : '' }}>No</option>
 		</select>
@@ -76,6 +74,6 @@
 		<label for="arrangement">Bin Arrangement</label>
 	</div>
 	<div class="col">
-		{% include 'util/select.twig' with {'name': 'arranged', 'id': 'arranged', 'selectedvalue': (warehouse.arranged ? warehouse.arranged : 'R'), 'options': warehouse.get_arrangement_options()} %}
+		{% include 'util/select.twig' with {'name': 'arranged', 'id': 'arranged', 'hideblankoption' : 'true', 'selectedvalue': (warehouse.arranged ? warehouse.arranged : 'R'), 'options': warehouse.get_arrangement_options()} %}
 	</div>
 </div>

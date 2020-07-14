@@ -6,7 +6,7 @@
 		$code = $whseID = $input->get->text('code');
 
 		if ($module_codetable->code_exists($code)) {
-			$page->title = $page->headline = "IWHM: $code";
+			$page->title = $page->headline = "Warehouse: $code";
 			$warehouse = $module_codetable->get_code($code);
 		} else {
 			$page->title = $page->headline = "Create new Warehouse";

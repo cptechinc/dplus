@@ -24,6 +24,11 @@ $(function() {
 
 	var whseIDs = {{ m_iwhm.get_codes_ids()|json_encode()|raw }};
 
+	if ($('#whseID').val() == '') {
+		$('#pickdetail').val('N');
+		$('#C').val('N');
+	}
+
 /* =============================================================
 	Event Functions
 ============================================================= */
@@ -48,25 +53,29 @@ $(function() {
 		var input = $(this);
 		var whseID = input.val();
 
-		if (validate_whseID(form)) {
-
+		if (whseID == '') {
+			$('#code-edit-form .customer_button').prop('disabled', true);
 		} else {
-			swal2.fire({
-				title: 'Warehouse ' + whseID + ' Exists',
-				text: 'Edit that warehouse?',
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonText: 'Yes',
-				cancelButtonText: 'No',
-			}).then((result) => {
-				if (result.value) {
-					var url = URI('{{ page.url }}');
-					url.addQuery('code', whseID);
-					window.location.href = url.toString();
-				} else if (result.dismiss === Swal.DismissReason.cancel) {
-					window.location.href = '{{ page.url }}';
-				}
-			});
+			if (validate_whseID(form)) {
+
+			} else {
+				swal2.fire({
+					title: 'Warehouse ' + whseID + ' Exists',
+					text: 'Edit that warehouse?',
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: 'Yes',
+					cancelButtonText: 'No',
+				}).then((result) => {
+					if (result.value) {
+						var url = URI('{{ page.url }}');
+						url.addQuery('code', whseID);
+						window.location.href = url.toString();
+					} else if (result.dismiss === Swal.DismissReason.cancel) {
+						window.location.href = '{{ page.url }}';
+					}
+				});
+			}
 		}
 	});
 
@@ -227,7 +236,7 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	form.validate({
+	var validator = form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -286,6 +295,15 @@ $(function() {
 					}
 				});
 			}
+		}
+	});
+
+	$("body").on("focusin", "#code-edit-form input:not(#whseID),#code-edit-form select", function(e) {
+		if (input_whseID.val() == '') {
+			validator.element( "#whseID" );
+			input_whseID.focus();
+		} else {
+			$('#code-edit-form .customer_button').prop('disabled', false);
 		}
 	});
 
