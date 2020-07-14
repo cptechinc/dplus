@@ -11,6 +11,10 @@ $(function() {
 		var modal = $(this);
 		populate_edit_from_button(button, modal);
 
+		if (input_codeID.val() == '') {
+			$('#code-edit-form .datepicker .form_button').prop('disabled', true);
+		}
+
 		$('.datepicker-calendar-days .datepicker-date').addClass('form_button');
 	});
 
@@ -136,13 +140,13 @@ $(function() {
 		if (input_codeID.val() == '') {
 			validator.element( "#code" );
 			input_codeID.focus();
-			$('#code-edit-form .datepicker .form_button').addClass('disabled');
+			$('#code-edit-form .datepicker .form_button').prop('disabled', true);
 		}
 	});
 
 	$("body").on("focusout", "#code-edit-form #code", function(e) {
 		if (input_codeID.val() != '') {
-			$('#code-edit-form .datepicker .form_button').removeClass('disabled');
+			$('#code-edit-form .datepicker .form_button').prop('disabled', false);
 		}
 	});
 
