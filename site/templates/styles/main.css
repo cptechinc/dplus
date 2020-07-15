@@ -145,6 +145,10 @@ a.image-link:hover {
 	width: 100%;
 }
 
+.list-group.dplus-menu .list-group-item {
+	padding: .5rem 1.25rem;
+}
+
 /************************************** Navbar **************************************/
 #yt-menu {
 	width: 300px;
