@@ -18,8 +18,8 @@
 			</div>
 
 			<div class="form-group">
-				<label for="mail_list">Mail List?</label>
-				{% include 'util/select.twig' with {'name': 'mail_list', 'id': 'mail_list', 'selectedvalue': code.mail_list, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				<label for="mail_list">Mail List</label>
+				{% include 'util/select.twig' with {'name': 'mail_list', 'id': 'mail_list', 'hideblankoption' : 'true', 'selectedvalue': code.mail_list, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 			<div class="form-group">
 				<label for="order_approval_email">Order Approval Email</label>
@@ -51,13 +51,14 @@
 					<td>{{ code.count_notetype(notetype)|bool|yesorno|capitalize }}</td>
 					<td class="text-right">
 						<textarea class="collapse" id="notes-{{ notetype }}" cols="{{ module_custnotes.get_notetype_column_count(notetype) }}">{{ module_custnotes.get_notes_array(notetype, code.code)|join('\r') }}</textarea>
-						{% if recordlocker.function_locked_by_user(page.codetable, code.code) %}
+
+						{% if recordlocker.function_locked_by_user(page.codetable, code.code) or code.code == '' %}
 							{% if code.count_notetype(notetype)|bool %}
 								<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-modal" data-type="{{ notetype }}" data-description="{{ module_custnotes.get_notetype_description(notetype)|capitalize }}">
 									<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 								</button>
 							{% else %}
-								<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-modal" data-type="{{ notetype }}" data-description="{{ module_custnotes.get_notetype_description(notetype)|capitalize }}">
+								<button type="button" class="btn btn-secondary note-button" data-toggle="modal" data-target="#notes-modal" data-type="{{ notetype }}" data-description="{{ module_custnotes.get_notetype_description(notetype)|capitalize }}">
 									<i class="fa fa-plus" aria-hidden="true"></i> Add
 								</button>
 							{% endif %}

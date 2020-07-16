@@ -6,6 +6,17 @@ $(function () {
 /* =============================================================
 	Event Functions
 ============================================================= */
+if (input_codeID.val() == '' ) {
+	$('#mail_list').val('N');
+	$('#gl_freight').val('7810');
+	$('#gl_misc').val('9830');
+	$('#gl_ar').val('1000');
+	$('#gl_cash').val('1102');
+	$('#gl_finance').val('9810');
+	$('#gl_discounts').val('7100');
+	$('.note-button').prop('disabled', true);
+}
+
 $("body").on("change", "input[name=code]", function(e) {
 	var input = $(this);
 	var code = input.val();
@@ -35,8 +46,7 @@ $("body").on("change", "input[name=code]", function(e) {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-
-	form.validate({
+	var validator = form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -47,10 +57,29 @@ $("body").on("change", "input[name=code]", function(e) {
 				required: true,
 				maxlength: {{ typecode.get_max_length_code() }}
 			},
-			mail_list: 'required'
+			mail_list: 'required',
+			gl_sales: 'required',
+			gl_credits: 'required',
+			gl_cogs: 'required',
+			gl_freight: 'required',
+			gl_misc: 'required',
+			gl_ar: 'required',
+			gl_cash: 'required',
+			gl_finance: 'required',
+			gl_discounts: 'required'
 		},
 		messages: {
 			code: "Please review your code (Max Length: {{ typecode.get_max_length_code() }})",
+			mail_list: "Please select an option",
+			gl_sales: "Please select an account",
+			gl_credits: "Please select an account",
+			gl_cogs: "Please select an account",
+			gl_freight: "Please select an account",
+			gl_misc: "Please select an account",
+			gl_ar: "Please select an account",
+			gl_cash: "Please select an account",
+			gl_finance: "Please select an account",
+			gl_discounts: "Please select an account"
 		},
 		submitHandler: function(form) {
 			var jform = $(form);
@@ -85,6 +114,16 @@ $("body").on("change", "input[name=code]", function(e) {
 		}
 	});
 
+	$("body").on("focusin", "#code-edit-form input:not(#code),#code-edit-form select", function(e) {
+		if (input_codeID.val() == '') {
+			validator.element( "#code" );
+			input_codeID.focus();
+			$('.note-button').prop('disabled', true);
+		} else {
+			$('.note-button').prop('disabled', false);
+		}
+	});
+
 	/**
 	 * Return if Customer Type Code ID can be used to save, based upon if
 	 * it exists, and if is the one being edited.
@@ -107,8 +146,6 @@ $("body").on("change", "input[name=code]", function(e) {
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
-
-	var form = $('#code-edit-form'),
 	origForm = form.serialize();
 
 	$("body").on("click", "a:not(.form_button, #ajax-modal a)", function(e) {
@@ -196,7 +233,10 @@ $("body").on("change", "input[name=code]", function(e) {
 					}
 				});
 			} else {
-				form.submit();
+				var url = URI(submittedform.attr('action'));
+				url.setQuery(values);
+				window.location.href = url.toString();
+				// form.submit();
 			}
 		}
 	});
