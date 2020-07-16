@@ -1,5 +1,5 @@
 {# trm is an instance of CustomerTermsCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form">
+<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="{{ code.code }}">
 	<input type="hidden" name="action" value="update-trm">
 	<input type="hidden" name="table" value="trm">
 
@@ -11,21 +11,28 @@
 			</div>
 			<div class="form-group">
 				<label for="method">Method</label>
-				{% include 'util/select.twig' with {'name': 'method', 'id': 'method', 'tabindex': '3', 'selectedvalue': (code.method ? code.method : 'S'), 'options': {'S': 'Standard Terms', 'E': 'End of Month Terms'}} %}
+				{% include 'util/select.twig' with {'name': 'method', 'id': 'method', 'hideblankoption': 'true', 'tabindex': '3', 'selectedvalue': code.method, 'options': {'S': 'S - Standard Terms', 'E': 'E - End of Month Terms'}} %}
 			</div>
-			<div class="form-group">
+
+			<div class="form-group" id="type_s" {{ code.method == 'S' ? '' : 'hidden' }}>
 				<label for="type">Type</label>
-				{% include 'util/select.twig' with {'name': 'type', 'id': 'type', 'tabindex': '5', 'selectedvalue': (code.type ? code.type : 'STD'), 'options': {'STD': 'Standard', 'CC': 'Credit Card', 'CA': 'Cash', 'COD': 'COD', 'CDC': 'COD Cash'}} %}
+				{% include 'util/select.twig' with {'name': 'type', 'id': 'type_s_select', 'hideblankoption': 'true', 'tabindex': '5', 'selectedvalue': code.type, 'options': {'STD': 'STD - Standard', 'CC': 'CC - Credit Card', 'CA': 'CA - Cash', 'COD': 'COD - Cash on Delivery', 'CDC': 'CDC - Cash on Delivery (Cash)'}} %}
 			</div>
+			<div class="form-group" id="type_e" {{ code.method == 'E' ? '' : 'hidden' }}>
+				<label for="type">Type</label>
+				{% include 'util/select.twig' with {'name': 'type', 'id': 'type_e_select', 'hideblankoption': 'true', 'tabindex': '5', 'selectedvalue': code.type, 'options': {'STD': 'STD - Standard', 'CA': 'CA - Cash', 'COD': 'COD - Cash on Delivery', 'CDC': 'CDC - Cash on Delivery (Cash)'}} %}
+			</div>
+
 			<div class="form-group">
 				<label for="hold">Hold</label>
-				{% include 'util/select.twig' with {'name': 'hold', 'id': 'hold', 'tabindex': '7', 'selectedvalue': (code.hold ? code.hold : 'N'), 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				{% include 'util/select.twig' with {'name': 'hold', 'id': 'hold', 'hideblankoption': 'true', 'tabindex': '7', 'selectedvalue': code.hold, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 			<div class="form-group">
 				<label for="exp_date">Expire Date</label>
-				<input tabindex="9" type="hidden" name="orig_date" id="orig_date" value="{{ code.exp_date|convertdate }}">
+				<input type="hidden" name="orig_date" id="orig_date" value="{{ code.exp_date|convertdate }}">
 				{% set id = 'exp_date' %}
 				{% set name = 'exp_date' %}
+				{% set tab = '9' %}
 				{% set value = code.exp_date ? code.exp_date|convertdate : '' %}
 				{% include 'util/date-picker.twig' %}
 			</div>
@@ -36,9 +43,9 @@
 				<input tabindex="2" type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" autofocus>
 			</div>
 			<div class="form-group">
-				<label for="freight_allow">Freight Allowed?</label>
+				<label for="freight_allow">Freight Allowed</label>
 				<input type="hidden" name="freight_hidden" id="freight_hidden">
-				{% include 'util/select.twig' with {'name': 'freight_allow', 'id': 'freight_allow', 'tabindex': '4', 'selectedvalue': (code.freight_allow), 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				{% include 'util/select.twig' with {'name': 'freight_allow', 'id': 'freight_allow', 'hideblankoption': 'true', 'tabindex': '4', 'selectedvalue': (code.freight_allow), 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 			<div class="form-group" >
 				<label for="credit_card">CC Prefix</label>
@@ -46,7 +53,7 @@
 				<select name="credit_card" class="form-control" id="credit_card" tabindex="6" {{ code.type == 'CC' ? '' : 'disabled' }}>
 					<option value=""></option>
 					{% for credit_card in creditcards %}
-						<option value="{{ credit_card.id }}" {{ code.cc_prefix == credit_card.id ? 'selected' : '' }}>{{ credit_card.name }}</option>
+						<option value="{{ credit_card.id }}" {{ code.cc_prefix == credit_card.id ? 'selected' : '' }}>{{ credit_card.id }} - {{ credit_card.name }}</option>
 					{% endfor %}
 				</select>
 			</div>

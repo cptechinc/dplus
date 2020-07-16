@@ -9,7 +9,7 @@
 	 	$creditcards = CreditCardDigitGetQuery::create()->find();
 
 		if ($module_codetable->code_exists($code)) {
-			$page->title = $page->headline = "TRM: $code";
+			$page->title = $page->headline = "Customer Terms Code: $code";
 			$termscode = $module_codetable->get_code($code);
 		} else {
 			$page->title = $page->headline = "Create $page->title";
