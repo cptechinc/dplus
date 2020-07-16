@@ -46,7 +46,7 @@
 		$page->js   .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'warehouse' => $warehouse, 'url_json_ci' => $urls->json_ci, 'm_iwhm' => $module_codetable]);
 
 		// SHOW NOTES IF TABLE ALREADY EXISTS
-		if ($module_codetable->code_exists($code)) {
+		if ($module_codetable->code_exists($code) || $warehouse->isNew()) {
 			$module_notes = $modules->get('CodeTablesIwhmNotes');
 
 			// TODO:: Notes Editing

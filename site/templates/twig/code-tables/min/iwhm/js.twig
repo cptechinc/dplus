@@ -55,6 +55,7 @@ $(function() {
 
 		if (whseID == '') {
 			$('#code-edit-form .customer_button').prop('disabled', true);
+			$('.notes_button').prop('disabled', true);
 		} else {
 			if (validate_whseID(form)) {
 
@@ -229,7 +230,10 @@ $(function() {
 					}
 				});
 			} else {
-				form.submit();
+				var url = URI(submittedform.attr('action'));
+				url.setQuery(values);
+				window.location.href = url.toString();
+				// form.submit();
 			}
 		}
 	});
@@ -304,6 +308,7 @@ $(function() {
 			input_whseID.focus();
 		} else {
 			$('#code-edit-form .customer_button').prop('disabled', false);
+			$('.notes_button').prop('disabled', false);
 		}
 	});
 
@@ -325,4 +330,5 @@ $(function() {
 		}
 		return true;
 	}
-})
+
+});
