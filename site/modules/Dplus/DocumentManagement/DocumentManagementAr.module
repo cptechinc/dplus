@@ -89,11 +89,12 @@ class DocumentManagementAr extends DocumentManagement implements Module {
 				$conditions[] = $this->conditions_payment_vendorpo($docs_query, $invnbr);
 			}
 
-			// Create Customer Filter
-			$conditions[] = $this->conditions_payment_customer($docs_query, $invnbr);
-
-			// Create Customer Checks Filter
-			$conditions[] = $this->conditions_payment_check($docs_query, $invnbr, $checknbr);
+			if ($this->invoice_has_custid($invnbr)) {
+				// Create Customer Filter
+				$conditions[] = $this->conditions_payment_customer($docs_query, $invnbr);
+				// Create Customer Checks Filter
+				$conditions[] = $this->conditions_payment_check($docs_query, $invnbr, $checknbr);
+			}
 
 			// Combine and Apply Filters
 			$docs_query->where($conditions, 'or');
@@ -125,7 +126,7 @@ class DocumentManagementAr extends DocumentManagement implements Module {
 	 */
 	protected function conditions_payment_vendorpo(DocumentsQuery $docs_query, $invnbr) {
 		$name = 'cond_vendorpo';
-		$q = $this->get_details_po_query($ordn);
+		$q = $this->get_details_po_query($invnbr);
 		$ponbrs = $q->find()->toArray();
 		$docs_query->condition('tag_vendorpo', "Documents.{$this->columns->tag} = ?", self::TAG_VENDORPO);
 		$docs_query->condition('reference1_vendorpo', "Documents.{$this->columns->reference1} IN ?", $ponbrs);
@@ -141,7 +142,7 @@ class DocumentManagementAr extends DocumentManagement implements Module {
 	 */
 	protected function conditions_payment_customer(DocumentsQuery $docs_query, $invnbr) {
 		$name = 'cond_customer';
-		$custID = $this->get_invoice_custid($ordn);
+		$custID = $this->get_invoice_custid($invnbr);
 		$docs_query->condition('tag_customer', "Documents.{$this->columns->tag} = ?", self::TAG_CUSTOMER);
 		$docs_query->condition('reference1_customer', "Documents.{$this->columns->reference1} = ?", $custID);
 		$docs_query->combine(array('tag_customer', 'reference1_customer'), 'and', $name);
@@ -157,7 +158,7 @@ class DocumentManagementAr extends DocumentManagement implements Module {
 	 */
 	protected function conditions_payment_check(DocumentsQuery $docs_query, $invnbr, $checknbr) {
 		$name = 'cond_checks';
-		$custID = $this->get_invoice_custid($ordn);
+		$custID = $this->get_invoice_custid($invnbr);
 		$docs_query->condition('tag_customer_check', "Documents.{$this->columns->tag} = ?", self::TAG_CUSTOMER);
 		$docs_query->condition('reference1_customer_check', "Documents.{$this->columns->reference1} = ?", $custID);
 		$docs_query->condition('tag_checks', "Documents.{$this->columns->tag} = ?", self::TAG_AR_CHECKS);
@@ -193,10 +194,19 @@ class DocumentManagementAr extends DocumentManagement implements Module {
 	 * @var string
 	 */
 	protected function get_invoice_custid($ordn) {
+		$ordn = SalesOrder::get_paddedordernumber($ordn);
 		$q = SalesHistoryQuery::create();
 		$q->select(SalesHistory::get_aliasproperty('custid'));
 		$q->filterByOrdernumber($ordn);
 		return $q->findOne();
+	}
+
+	public function invoice_has_custid($ordn) {
+		$ordn = SalesOrder::get_paddedordernumber($ordn);
+		$q = SalesHistoryQuery::create();
+		$q->select(SalesHistory::get_aliasproperty('custid'));
+		$q->filterByOrdernumber($ordn);
+		return boolval($q->findOne());
 	}
 
 /* =============================================================

@@ -16,7 +16,7 @@
 			}
 			$session->quotestry = 0;
 			$module_formatter = $modules->get('SfIiQuotes');
-
+			$refreshurl = $page->get_itemquotesURL($itemID);
 			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 
 			if ($json['error']) {
@@ -24,7 +24,7 @@
 			} else {
 				$module_formatter->init_formatter();
 				$refreshurl = $page->get_itemquotesURL($itemID);
-				$docm = $modules->get('DocumentManagement');
+				$docm = $modules->get('DocumentManagementQt');
 				$page->body .= $config->twig->render('items/ii/quotes/quotes.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'docm' => $docm]);
 			}
 		} else {

@@ -25,8 +25,6 @@
 				$module_formatter = $modules->get('SfCiSalesOrders');
 				$module_formatter->init_formatter();
 				$docm = $modules->get('DocumentManagementSo');
-				$docm->count_documents('0004129600');
-				echo $db_dplusdata->getLastExecutedQuery();
 				$page->body .= $config->twig->render('customers/ci/sales-orders/sales-orders.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'docm' => $docm]);
 			}
 		} else {

@@ -16,7 +16,7 @@
 			}
 			$session->credittry = 0;
 
-			$refreshurl = $page->get_customercreditURL($custID, $itemID);
+			$refreshurl = $page->get_customercreditURL($custID);
 			$page->body .= $config->twig->render('customers/ci/ci-links.twig', ['page' => $page, 'custID' => $custID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 
 			if ($json['error']) {
