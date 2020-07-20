@@ -185,8 +185,8 @@ class QnotesItemRevision extends WireData implements Module {
 			$record->setRevision($revision);
 			$record->setNotedate(date(ItemRevisionNote::FORMAT_NOTEDATE, strtotime($notedate)));
 			$record->setNotetime(date(ItemRevisionNote::FORMAT_NOTETIME, strtotime($notedate.$notetime)));
-			$record->generateKey2(); // PK
 			$record->setUser($user);
+			$record->generateKey2(); // PK
 			$record->setSequence($sequence); // PK
 			$record->setNote($line);
 			$record->setDate(date('Ymd'));

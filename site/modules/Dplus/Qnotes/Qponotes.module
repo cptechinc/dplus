@@ -1,8 +1,8 @@
 <?php namespace ProcessWire;
 
-class Qnotes extends WireData implements Module {
+class Qponotes extends WireData implements Module {
 	/**
-	 * Return Data needed for Dplus to UPDATE the Customer Type Notes
+	 * Return Data needed for Dplus to UPDATE the Q PO NOTES
 	 * @param  string $notetype Note Type @see WarehouseNote::TYPES
 	 * @param  string $key2     Key 2
 	 * @param  string $form     Form e.g YNNN
@@ -10,7 +10,7 @@ class Qnotes extends WireData implements Module {
 	 */
 	public function write_dplus_data($notetype, $key2, $form) {
 		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
-		return array("DBNAME=$dplusdb", 'UPDATEQNOTE', "TYPE=$notetype", "KEY2=$key2", "FORM=$form");
+		return array("DBNAME=$dplusdb", 'UPDATEPONOTE', "TYPE=$notetype", "KEY2=$key2", "FORM=$form");
 	}
 
 	/**
@@ -31,18 +31,12 @@ class Qnotes extends WireData implements Module {
 
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus Qnotes',
+			'title' => 'Dplus Qnotes PO',
 			'version' => 101,
-			'summary' => 'Dplus Qnotes',
+			'summary' => 'Dplus Qnotes PO',
 			'singular' => true,
 			'autoload' => true,
 			'installs' => array(
-				'QnotesSalesOrder',
-				'QnotesSalesHistory',
-				'QnotesQuote',
-				'QnotesItem',
-				'QnotesPredefined',
-				'Qponotes'
 			)
 		);
 	}
