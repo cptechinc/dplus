@@ -21,7 +21,7 @@ class QnotesItemVxm extends WireData implements Module {
 		$modules = $this->wire('modules');
 		$this->notes = new WireData();
 		$this->notes->internal   = $modules->get('QnotesItemVxmInternal');
-		//$this->notes->detail   = $modules->get('QnotesItemVxmDetail');
+		$this->notes->detail   = $modules->get('QnotesItemVxmDetail');
 	}
 
 	/**
@@ -84,6 +84,7 @@ class QnotesItemVxm extends WireData implements Module {
 			'requires' => array('Qnotes'),
 			'installs' => array(
 				'QnotesItemVxmInternal',
+				'QnotesItemVxmDetail',
 			)
 		);
 	}
