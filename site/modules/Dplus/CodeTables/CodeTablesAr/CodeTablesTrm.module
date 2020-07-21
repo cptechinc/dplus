@@ -91,7 +91,7 @@ class CodeTablesTrm extends WireData implements Module {
 	 * @return CustomerTermsCode
 	 */
 	public function get_new_code() {
-		return CustomerTermsCode::new();
+		return new CustomerTermsCode();
 	}
 
 /* =============================================================
@@ -110,15 +110,14 @@ class CodeTablesTrm extends WireData implements Module {
 		$table = $input->$rm->text('table');
 		$code  = $input->$rm->text('code');
 
-		if ($this->code_exists($code)) {
-			$record = $this->get_code($code);
-		} else {
-			$code  = $values->text('code', array('maxLength' => CustomerTermsCode::MAX_LENGTH_CODE));
-			$record = CustomerTermsCode::new();
+		$q = $this->get_query();
+		$q->filterByCode($code);
 
-			// TODO: setCode() on NULL, but echos out input code
-			// echo $code;
-			// exit;
+		if ($q->count()) {
+			$record = $q->findOne();
+		} else {
+			$code  = $input->$rm->text('code', array('maxLength' => CustomerTermsCode::MAX_LENGTH_CODE));
+			$record = new CustomerTermsCode;
 			$record->setCode($code);
 		}
 
@@ -168,7 +167,16 @@ class CodeTablesTrm extends WireData implements Module {
 		$record->setType($values->text('type'));
 		$record->setHold($values->text('hold'));
 		$record->setCc_prefix($values->text('credit_card'));
-		$record->setFreight_allow($values->text('freight_hidden'));
+		if ($values->text('method') == 'E') {
+			$record->setFreight_allow('');
+		} else if ($values->text('method') == 'S') {
+			if ($values->text('freight_allow')) {
+				$record->setFreight_allow($values->text('freight_allow'));
+			} else {
+				$record->setFreight_allow('N');
+			}
+		}
+		// $record->setFreight_allow($values->text('freight_allow'));
 		$record->setCountry($values->text('country'));
 		$this->update_record_split_columns_standard($record, $input);
 		$this->update_record_split_columns_eom($record, $input);
