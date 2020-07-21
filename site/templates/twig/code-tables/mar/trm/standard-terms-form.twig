@@ -57,7 +57,7 @@
 				<div class="list-group-item row{{ x }} discount" data-index="{{ x }}">
 					<div class="row align-items-center">
 						<div class="col">
-							<input tabindex="{{x}}1" type="text" name="percent{{ x }}" id="percent{{ x }}" maxlength="5" class="form-control discount_percent" value="{{ code.percent(x) == 0 ? 0 : code.percent(x) }}">
+							<input tabindex="{{x}}1" type="text" name="percent{{ x }}" id="percent{{ x }}" maxlength="5" class="form-control discount_percent" value="{{ code.percent(x) == 0 ? 0 : code.percent(x) }}" {{ code.order_percent(x) > 0 ? '' : 'disabled' }}>
 						</div>
 						<div class="col">
 							<input tabindex="{{x}}2" type="text" name="days{{ x }}" id="days{{ x }}" maxlength="3" class="form-control days disc_group" value="{{ code.percent(x) == 0 ? 0 : code.days(x) }}" {{ code.percent(x) == 0 or code.day(x) > 0 or code.date(x) > 0 ? 'disabled' : '' }}>
