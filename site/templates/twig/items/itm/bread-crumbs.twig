@@ -20,7 +20,7 @@
 				{% if parent.pw_template == 'itm-xrefs' %}
 					<li class="breadcrumb-item">
 						<i class="fa fa-arrows" aria-hidden="true"></i>
-						<a href="{{ parent.get_itemURL(input.get.text('itemID')) }}">{{ parent.title }}</a>
+						<a href="{{ page.itm_xrefsURL(input.get.text('itemID')) }}">{{ parent.title }}</a>
 					</li>
 				{% else %}
 					<li class="breadcrumb-item">
