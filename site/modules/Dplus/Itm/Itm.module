@@ -29,6 +29,7 @@ class Itm extends WireData implements Module {
 		'itm-xrefs',
 		'itm-xrefs-upcx',
 		'itm-xrefs-vxm',
+		'itm-xrefs-cxm',
 	);
 
 	public function __construct() {
