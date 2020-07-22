@@ -300,7 +300,6 @@ class XrefCxm extends WireData implements Module {
 			$record->setCustitemid($values->text('custitemID'));
 			$record->save();
 		}
-
 		$record->setItemid($values->text('itemID'));
 		$record->setDescription($values->text('description'));
 		$record->setDescription2($values->text('description2'));
