@@ -46,6 +46,10 @@
 
 		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/cust-type-notes-modal.twig", ['page' => $page, 'code' => $typecode, 'recordlocker' => $recordlocker]);
 		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'typecode' => $typecode, 'm_ctm' => $module_codetable]);
+
+		$page->search_notesURL = $pages->get('pw_template=msa-noce-ajax')->url;
+		$page->body .= $config->twig->render('msa/noce/ajax/notes-modal.twig');
+		$page->js   .= $config->twig->render('msa/noce/ajax/js.twig', ['page' => $page]);
 	} else {
 		$page->title = "Customer Type Code";
 		$page->headline = "Customer Type Code Table";
