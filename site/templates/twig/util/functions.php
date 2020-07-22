@@ -105,7 +105,7 @@
 		return $object->$property;
 	});
 	$config->twig->addFilter($filter);
-	
+
 	$filter = new Twig_Filter('urlencode', function ($string) {
 		return urlencode($string);
 	});
