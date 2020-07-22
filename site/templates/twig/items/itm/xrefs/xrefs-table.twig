@@ -27,7 +27,9 @@
 		</td>
 	</tr>
 	<tr>
-		<td>Customer X-refs</td>
+		<td>
+			<a href="{{ page.itm_xrefs_cxmURL(item.itemid) }}" class="link">Customer X-refs</a>
+		</td>
 		<td>
 			<div class="custom-control custom-checkbox">
 				<input type="checkbox" class="custom-control-input" id="xref-customer-count" {{ item.countItemXrefCustomers() ? 'checked' : '' }}>
