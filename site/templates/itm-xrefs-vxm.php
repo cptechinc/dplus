@@ -66,6 +66,18 @@
 				$page->body .= $config->twig->render('items/itm/description.twig', ['page' => $page, 'item' => $itm->get_item($itemID)]);
 				$page->body .= $config->twig->render('items/vxm/item/form.twig', ['page' => $page, 'item' => $item, 'vxm' => $vxm, 'recordlocker' => $recordlocker]);
 				$page->js .= $config->twig->render('items/vxm/item/form/js.twig', ['page' => $page, 'item' => $item, 'url_validate' => $pages->get('pw_template=vxm-validate')->httpUrl]);
+
+				if (!$item->isNew()) {
+					$qnotes = $modules->get('QnotesItemVxm');
+					$page->body .= $html->hr();
+					if ($session->response_qnote) {
+						$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
+					}
+					$page->searchURL = $pages->get('pw_template=msa-noce-ajax')->url;
+					$page->body .= $config->twig->render('items/vxm/notes/notes.twig', ['page' => $page, 'qnotes' => $qnotes, 'user' => $user, 'item' => $item]);
+					$page->js   .= $config->twig->render('items/vxm/notes/js.twig', ['page' => $page, 'session' => $session]);
+					$session->remove('response_qnote');
+				}
 			} else {
 				$recordlocker->remove_lock($page->name);
 				$filter_vxm->filter_query($input);
