@@ -63,7 +63,7 @@
 					<input type="text" class="form-control" name="itemID" id="itemID" value="{{ item.itemid }}">
 				</div>
 			{% else %}
-				<input type="text" class="form-control-plaintext" name="itemID" id="itemID" value="{{ item.itemid }}" disabled>
+				<input type="text" class="form-control-plaintext" name="itemID" id="itemID" value="{{ item.itemid }}" readonly>
 			{% endif %}
 
 			<small class="form-text text-muted description">{{ item.item.description }}</small>

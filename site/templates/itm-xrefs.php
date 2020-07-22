@@ -32,6 +32,7 @@
 
 		if ($itm->item_exists($itemID)) {
 			$item = $itm->get_item($itemID);
+			$page->headline = "ITM: $itemID X-refs";
 
 			/**
 			 * Show alert that Item is locked if

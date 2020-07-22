@@ -47,7 +47,7 @@
 			if ($cxm->cxm_item_exists($custID, $custitemID)) {
 				$item = $cxm->get_cxm_item($custID, $custitemID);
 				$page->title = "CXM: $custID Item $custitemID";
-				$qnotes_cxm = $modules->get('QnotesItemXrefCustomer');
+				$qnotes_cxm = $modules->get('QnotesItemCxm');
 
 				/**
 				 * Show alert that CXM is locked if

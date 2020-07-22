@@ -35,7 +35,7 @@
 						<td>{{ item.itemID }}</td>
 					{% endif %}
 					<td>{{ item.description }}</td>
-					<td>{{ item.uompurchase.code }}</td>
+					<td>{{ item.uom_customer }}</td>
 					<td class="text-center">
 						{% if recordlocker.function_locked('cxm', cxm.get_recordlocker_key(item)) == false or recordlocker.function_locked_by_user('cxm', cxm.get_recordlocker_key(item)) %}
 							<a href="{{ page.cxm_itemURL(item.custID, item.custitemID) }}" class="btn btn-warning">
