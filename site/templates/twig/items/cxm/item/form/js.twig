@@ -223,7 +223,7 @@ $(function() {
 ============================================================= */
 	function calculate_peruom() {
 		var custprice = input_price_customer.val();
-		var qty_percase = {{ item.item.qty_percase }};
+		var qty_percase = {{ item.item.qty_percase ? item.item.qty_percase : 0 }};
 		var conversion = select_uom_pricing.find('option:selected').data('conversion');
 		var peruom = 0;
 		if (conversion) {
@@ -234,7 +234,7 @@ $(function() {
 
 	function calculate_custprice() {
 		var peruom = input_price_uom.val();
-		var qty_percase = {{ item.item.qty_percase }};
+		var qty_percase = {{ item.item.qty_percase ? item.item.qty_percase : 0 }};
 		var conversion = select_uom_pricing.find('option:selected').data('conversion');
 		var custprice = peruom * qty_percase * conversion;
 		input_price_customer.val(custprice.toFixed(2));
