@@ -142,7 +142,7 @@ class QnotesSalesOrder extends WireData implements Module {
 	 * @param  WireInput $input Input
 	 * @return void
 	 */
-	public function delete_notes_input($input) {
+	public function delete_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$ordn  = $input->$rm->text('ordn');
 		$linenbr = $input->$rm->text('linenbr');
@@ -173,27 +173,27 @@ class QnotesSalesOrder extends WireData implements Module {
 	 */
 	public function update_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$ordn  = $input->$rm->text('ordn');
-		$linenbr = $input->$rm->text('linenbr');
-		$form    = $input->$rm->text('form');
-		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
+		$values = $input->$rm;
+		$ordn  = $values->text('ordn');
+		$linenbr = $values->text('linenbr');
+		$form    = $values->text('form');
+		$note    = $values->textarea('note');
+		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
 		$lines_saved = array();
 
 		if (empty($form)) {
 			$form = '';
-			$form .= $input->$rm->text('check_pick') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N';
-			$form .= $input->$rm->text('check_pack') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N';
-			$form .= $input->$rm->text('check_invoice') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N';
-			$form .= $input->$rm->text('check_acknowledgement') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N';
+			$form .= $values->text('check_pick') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N';
+			$form .= $values->text('check_pack') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N';
+			$form .= $values->text('check_invoice') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N';
+			$form .= $values->text('check_acknowledgement') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N';
 		}
 
 		$this->delete_notes($ordn, $linenbr, $form);
 
 		foreach ($note_lines as $key => $line) {
 			$sequence = $key + 1;
-			$record = new SalesOrderNotes();
-			$record->setType(SalesOrderNotes::TYPE); // PK
-			$record->setDescription(SalesOrderNotes::DESCRIPTION);
+			$record = SalesOrderNotes::new();
 			$record->setOrdernumber($ordn);
 			$record->setLine($linenbr);
 			$record->generateKey2(); // PK
@@ -201,10 +201,10 @@ class QnotesSalesOrder extends WireData implements Module {
 			$record->setForm($form);
 			$record->setNote($line);
 
-			$record->setPickticket($input->$rm->text('check_pick') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N');
-			$record->setPackticket($input->$rm->text('check_pack') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N');
-			$record->setInvoice($input->$rm->text('check_invoice') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N');
-			$record->setAcknowledgement($input->$rm->text('check_acknowledgement') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N');
+			$record->setPickticket($values->text('check_pick') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N');
+			$record->setPackticket($values->text('check_pack') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N');
+			$record->setInvoice($values->text('check_invoice') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N');
+			$record->setAcknowledgement($values->text('check_acknowledgement') == SalesOrderNotes::FORM_TRUE ? 'Y' : 'N');
 
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
