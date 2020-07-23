@@ -8,19 +8,24 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form action="{{ page.url }}" method="post">
+				<form action="{{ page.url }}" method="post" id="notes-form">
 					<input type="hidden" name="code" value="{{ warehouse.whseid }}">
-					<input type="hidden" name="notes-type" value="">
-					<div class="form-group d-flex justify-content-between align-items-center">
-						<textarea name="note" id="note" class="form-control w-auto qnotes" rows="10" cols=""></textarea>
+					<input type="hidden" name="notes-type" id="notes-type" value="">
+					<div class="form-group">
+						{% include 'msa/noce/ajax/button.twig' with {'input': '#note'} %}
+					</div>
+					<div class="form-group">
+						{% include 'util/qnotes-textarea.twig' with {'readonly': recordlocker.function_locked_by_user(page.codetable, warehouse.whseid) == false or warehouse.whseid == '' } %}
 					</div>
 					<div class="d-flex justify-content-between align-items-center">
-						<button type="submit" name="action" value="update-notes" class="btn btn-success">
-							<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-						</button>
-						<button type="submit" name="action" value="delete-notes" class="btn btn-danger">
-							<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
-						</button>
+						{% if recordlocker.function_locked_by_user(page.codetable, warehouse.whseid) or warehouse.whseid == '' %}
+							<button type="submit" name="action" value="update-notes" class="btn btn-success">
+								<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+							</button>
+							<button type="submit" name="action" value="delete-notes" class="btn btn-danger">
+								<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+							</button>
+						{% endif %}
 						<button type="button" class="btn btn-warning pull-right" data-dismiss="modal">
 							Close
 						</button>

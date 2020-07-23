@@ -151,7 +151,8 @@ class CodeTablesIwhmNotes extends WireData implements Module {
 				$success = $this->delete_notes($notetype, $whseID);
 				$response = $this->process_response_delete($notetype, $whseID, $success);
 			} elseif ($input->$rm->action == 'update-notes') {
-				$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
+				$note = $input->$rm->textarea('note');
+				$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_notetype_column_count($notetype));
 				$lines_saved = array();
 
 				$this->delete_notes($notetype, $whseID);

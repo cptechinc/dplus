@@ -55,7 +55,11 @@
 			$query_notes->filterBySequence(1);
 			$notes = $query_notes->find();
 			$page->body .= $config->twig->render("code-tables/min/$page->codetable/notes.twig", ['page' => $page, 'warehouse' => $warehouse, 'notes' => $notes, 'module_notes' => $module_notes]);
-			$page->body .= $config->twig->render("code-tables/min/$page->codetable/notes-modal.twig", ['page' => $page, 'warehouse' => $warehouse]);
+			$page->body .= $config->twig->render("code-tables/min/$page->codetable/notes-modal.twig", ['page' => $page, 'warehouse' => $warehouse, 'recordlocker' => $recordlocker]);
+
+			$page->search_notesURL = $pages->get('pw_template=msa-noce-ajax')->url;
+			$page->body .= $config->twig->render('msa/noce/ajax/notes-modal.twig');
+			$page->js   .= $config->twig->render('msa/noce/ajax/js.twig', ['page' => $page]);
 		}
 	} else {
 		$recordlocker->remove_lock($page->codetable);
