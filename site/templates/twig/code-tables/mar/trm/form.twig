@@ -44,8 +44,7 @@
 			</div>
 			<div class="form-group">
 				<label for="freight_allow">Freight Allowed</label>
-				<input type="hidden" name="freight_hidden" id="freight_hidden">
-				{% include 'util/select.twig' with {'name': 'freight_allow', 'id': 'freight_allow', 'hideblankoption': 'true', 'tabindex': '4', 'selectedvalue': (code.freight_allow), 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				{% include 'util/select.twig' with {'name': 'freight_allow', 'id': 'freight_allow', 'hideblankoption': 'true', 'tabindex': '4', 'selectedvalue': code.freight_allow, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 			<div class="form-group" >
 				<label for="credit_card">CC Prefix</label>

@@ -1,0 +1,85 @@
+$(function() {
+	$("body").on('change', '.due_day', function(e) {
+		var input = $(this);
+		var row = input.closest('.due');
+		var index = row.data('index');
+
+		if (input.val() < 0 || input.val() > 31) {
+			input.val(0);
+			$(this).alert_focus('Invalid Number of Days!', 'Must be bewteen 0 and 31', 'warning');
+		} else if (input.val() == 0) {
+			$('.row'+index).find($('.due_months')).val(0);
+			$('.row'+index).find($('.due_months')).prop('disabled', true);
+		} else {
+			$('.row'+index).find($('.due_months')).prop('disabled', false).focus();
+		}
+	});
+
+	$("body").on('change', '.due_date', function(e) {
+		var input = $(this);
+		var row = input.closest('.due');
+		var index = row.attr('data-index');
+
+		if (input.val() == 0) {
+			$('.row'+index).find($('.due_year')).val(0);
+			$('.row'+index).find($('.due_year')).prop('disabled', true);
+		} else {
+			$('.row'+index).find($('.due_year')).prop('disabled', false).focus();
+		}
+	});
+
+	$("body").on('change', '.due_date', function(e) {
+		var input = $(this);
+		var row = input.closest('.due');
+		var index = row.attr('data-index');
+
+		var str = input.val();
+		var length = str.length;
+		var month = parseInt(str.substring(0, 2));
+		var day = parseInt(str.substring(2, 4));
+
+		if (month < 1 || month > 12 || day < 1 || day > 31 || length != 4) {
+			input.val('');
+			$(this).alert_focus('Invalid Due Date!!', 'Must be in MMDD format', 'warning');
+		}
+
+	});
+
+	$("body").on('change', '.due_group', function(e) {
+		var input = $(this);
+		var row = input.closest('.due');
+		var index = row.attr("data-index");
+
+		if (input.val() != 0) {
+			$('.row'+(index)).find($('.due_day, .due_days')).not(this).val(0);
+			if (input.val().length < 3) {
+				$('.row'+(index)).find($('input.due_date')).val('');
+			}
+			$('.row'+(index)).find($('input.due_group')).not(this).prop('disabled', true);
+		}
+
+		if (input.val() == 0 && $('.row'+(index)).find($('input.due_group')).not(this).val() == 0) {
+			$('#due_days'+index).alert_focus('Warning!', 'Days, Day or Date must be entered!', 'warning');
+		}
+	});
+
+	$("body").on('change', '.due_months', function(e) {
+		var input = $(this);
+		var row = input.closest('.due');
+		var index = row.attr("data-index");
+
+		if (input.val() < 0 || input.val() > 99) {
+			input.val(0);
+			$(this).alert_focus('Warning!', 'Plus Months needs to be between 0 and 99!', 'warning');
+		}
+	});
+
+	$("body").on('change', '.due_year', function(e) {
+		var input = $(this);
+
+		if (input.val() < 0 || input.val() > 9) {
+			input.val(0);
+			$(this).alert_focus('Warning!', 'Plus Years needs to be between 0 and 9!', 'warning');
+		}
+	});
+});

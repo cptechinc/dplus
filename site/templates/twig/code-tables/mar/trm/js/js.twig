@@ -6,11 +6,6 @@ $(function () {
 /* =============================================================
 	Event Functions
 ============================================================= */
-if (input_codeID.val() == '' ) {
-	$('#method').val('S');
-	$('#type_s_select').val('STD');
-	$('#hold').val('N');
-}
 
 $("body").on("change", "input[name=code]", function(e) {
 	var input = $(this);
@@ -38,13 +33,27 @@ $("body").on("change", "input[name=code]", function(e) {
 	}
 });
 
+$("body").on("focusin", "#code-edit-form input:not(#code),#code-edit-form select", function(e) {
+	if (input_codeID.val() == '') {
+		validator.element( "#code" );
+		input_codeID.focus();
+		$('#code-edit-form .datepicker .form_button').prop('disabled', true);
+	}
+});
+
+$("body").on("focusout", "#code-edit-form #code", function(e) {
+	if (input_codeID.val() != '') {
+		$('#code-edit-form .datepicker .form_button').prop('disabled', false);
+	}
+});
+
 $("body").on("click", ".dropdown-menu button", function(e) {
 	$('.datepicker-calendar-days .datepicker-date').addClass('form_button');
 });
 
-
 if ($('#code').val() == '' || $('#order_percent1').val() == 0) {
 	$('#order_percent1').val(100);
+	$('#percent1').prop('disabled', false);
 }
 
 var freight_amt = {{ configso.get_freight_allowed_amt() }};
@@ -55,7 +64,6 @@ if ($('#method').val() == 'E') {
 	$('#type_s').prop("hidden", true);
 	$('#type_s_select').prop("disabled", true);
 	$('#freight_allow').prop("disabled", true);
-	$('#freight_hidden').val('');
 	$('#freight_allow').val('');
 } else if ($('#method').val() == 'S' && $('#order_percent1').val() < 100 || freight_amt == 0) {
 	$('#type_e').prop("hidden", true);
@@ -64,7 +72,6 @@ if ($('#method').val() == 'E') {
 	$('#type_s_select').prop("disabled", false);
 	$('#freight_allow').prop("disabled", true);
 	$('#freight_allow').val('N');
-	$('#freight_hidden').val('N');
 } else if ($('#method').val() == 'S' && $('#order_percent1').val() == 100) {
 	$('#type_e').prop("hidden", true);
 	$('#type_e_select').prop("disabled", true);
@@ -72,20 +79,8 @@ if ($('#method').val() == 'E') {
 	$('#type_s_select').prop("disabled", false);
 	$('#freight_allow').prop("disabled", false);
 	$('#freight_allow').prop("required", true);
-	$('#freight_allow').val('N');
-	$('#freight_hidden').val('N');
+
 }
-
-$("body").on('change', '.disc_group', function(e) {
-	var input = $(this);
-	var row = input.closest('.discount');
-	var index = row.attr("data-index");
-
-	if (input.val() != 0) {
-		$('.row'+index).find($('input.disc_group')).not(this).val(0);
-		$('.row'+index).find($('input.disc_group')).not(this).prop('disabled', true);
-	}
-});
 
 $("#code-edit-form #method").change(function() {
 	if ($('#method').val() == '') {
@@ -99,15 +94,13 @@ $("#code-edit-form #method").change(function() {
 		$('#credit_card').prop("disabled", false);
 		$('#standard-terms-form').fadeIn();
 		$('#eom-terms-form').hide();
-		if ($('#order_percent1').val() == 100 || {{ configso.get_freight_allowed_amt() }} == 0) {
+		if ($('#order_percent1').val() != 100 || {{ configso.get_freight_allowed_amt() }} == 0) {
 			$('#freight_allow').prop("disabled", true);
 			$('#freight_allow').val('N');
-			$('#freight_hidden').val('N');
 		} else {
 			$('#freight_allow').prop("disabled", false);
 			$('#freight_allow').prop("required", true);
 			$('#freight_allow').val('N');
-			$('#freight_hidden').val('N');
 		}
 	} else if ($('#method').val() == 'E') {
 		$('#type_e').prop("hidden", false);
@@ -121,7 +114,6 @@ $("#code-edit-form #method").change(function() {
 		$('#freight_allow').prop("disabled", true);
 		$('#freight_allow').prop("required", false);
 		$('#freight_allow').val('');
-		$('#freight_hidden').val('');
 	}
 });
 
@@ -154,7 +146,7 @@ $("#code-edit-form #exp_date").focusout(function() {
 	today = Date.parse([todayyear, todaymonth, todayday].join('-'));
 
 	// Input date
-	var expdate = new Date($('#code-edit-form #exp_date').val()),
+	var expdate = new Date($(this).val()),
 		month = '' + (expdate.getMonth() + 1),
 		day = '' + expdate.getDate(),
 		year = expdate.getFullYear();
@@ -174,272 +166,28 @@ $("#code-edit-form #exp_date").focusout(function() {
 			title: 'Invalid Expiration Date!',
 			text: 'Must be empty or after today\'s date',
 			icon: 'warning',
+			onClose: () => {
+				$(this).focus();
+			}
 		});
 	}
 
 });
-
 
 
 // ------------------ Standard Method -----------------
 
-$("body").on('change', '.order_percent', function(e) {
-	var input = $(this);
-	var row = input.closest('.percent');
-	var index = row.data('index');
 
-	var sumpercent = get_sum_orderpercent();
 
-	if (input.val() == 0) {
-		$('.row'+index).find('input:not(.order_percent)').val('');
-	}
-	if (sumpercent > 100) {
-		$('.order_percent').addClass('is-invalid');
-		swal2.fire({
-			title: 'Invalid Order Percent!',
-			text: 'Cannot be more than 100%',
-			icon: 'warning',
-		});
-	} else {
-		$('.order_percent').removeClass('is-invalid');
 
-		if (index == 1) {
-			if (input.val() < 100 && input.val() > 0) {
-				var next = index + 1;
-				var nextpercent = 100 - sumpercent;
-				$('.row'+next).find('.order_percent').val(nextpercent);
-				$('.row'+next).find('.due_group').prop('disabled', false);
-			}
-		} else {
-			if (input.val() == 0 && sumpercent == 100 && index != 1) {
-				$('.row'+index).find('.order_percent, .discount_percent, .disc_group, .due_group, .due_months, .due_year').val(0);
-				$('.row'+index).find('.disc_group, .due_group, .due_months, .due_year').prop('disabled', true);
-			} else if (input.val() == 0 && sumpercent < 100) {
-				var next = index + 1;
-				if ($('.row'+next).find('.order_percent').val() == 0) {
-					var nextpercent = 100 - sumpercent;
-					input.val(nextpercent);
-				} else {
-					var nextpercent = 100 - sumpercent;
-					input.val($('.row'+next).find('.order_percent').val());
-					$('.row'+next).find('.order_percent').val(nextpercent);
-				}
-			} else if (input.val() < 100 && input.val() > 0 && sumpercent < 100) {
-				var i;
-				for (i = 0; i < {{ m_trm.count_standardterms_split() + 1}}; i++) {
-					if (index == {{ m_trm.count_standardterms_split() }}) {
-						var inputval = parseFloat(input.val());
-						var newsumpercent = sumpercent - inputval;
-						var nextpercent = 100 - newsumpercent;
-						$('.row'+index).find('.order_percent').val(nextpercent);
-						swal2.fire({
-							title: 'Invalid Order Percent!',
-							text: 'Cannot have more than {{ m_trm.count_standardterms_split() }} splits',
-							icon: 'warning',
-						});
-						break;
-					} else {
-						if ($('.row'+i).find('.order_percent').val() == 0) {
-							var nextpercent = 100 - sumpercent;
-							console.log(i);
-							$('.row'+i).find('.order_percent').val(nextpercent);
-							$('.row'+i).find('.due_group').prop('disabled', false);
-							break;
-						}
-					}
-				}
-			}
-		}
-	}
-});
 
-$("body").on('change', '.discount_percent', function(e) {
-	var input = $(this);
-	var row = input.closest('.discount');
-	var index = row.data('index');
 
-	if (input.val() > 100) {
-		input.val(100);
-		swal2.fire({
-			title: 'Invalid Discount Percent!',
-			text: 'Cannot be more than 100%',
-			icon: 'warning',
-		});
-	} else {
-		$('.discount_percent'+index).removeClass('is-invalid');
 
-		if (input.val() == 0) {
-			$('.row'+index).find('.day, .days').val(0);
-			$('.row'+index).find('.disc_date').val('');
-			$('.row'+index).find('.day, .days, .disc_date').prop('disabled', true);
-		} else {
-			$('.discount_percent').removeClass('is-invalid');
-			$('.row'+index).find('.day, .days, .disc_date').prop('disabled', false);
-		}
-	}
-});
 
-$("body").on('change', '.day', function(e) {
-	var input = $(this);
-	var row = input.closest('.discount');
-	var index = row.attr('data-index');
 
-	if (input.val() < 0 || input.val() > 31) {
-		input.val(0);
-		swal2.fire({
-			title: 'Invalid Number of Days!',
-			text: 'Must be bewteen 0 and 31',
-			icon: 'warning',
-		});
-	}
-});
 
-$("body").on('change', '.disc_date', function(e) {
-	var input = $(this);
-	var row = input.closest('.discount');
-	var index = row.attr('data-index');
 
-	var str = input.val();
-	var month = parseInt(str.substring(0, 2));
-	var day = parseInt(str.substring(2, 4));
-	if (month < 1 || month > 12 || day < 1 || day > 31) {
-		input.val('0101');
-		swal2.fire({
-			title: 'Invalid Discount Date!',
-			text: 'Must be in MMDD format!',
-			icon: 'warning',
-		});
-	}
 
-});
-
-$("body").on('change', '.due_day', function(e) {
-	var input = $(this);
-	var row = input.closest('.due');
-	var index = row.data('index');
-
-	if (input.val() < 0 || input.val() > 31) {
-		input.val(0);
-		swal2.fire({
-			title: 'Invalid Number of Days!',
-			text: 'Must be bewteen 0 and 31',
-			icon: 'warning',
-		});
-	} else if (input.val() == 0) {
-		$('.row'+index).find($('.due_months')).val(0);
-		$('.row'+index).find($('.due_months')).prop('disabled', true);
-	} else {
-		$('.row'+index).find($('.due_months')).prop('disabled', false);
-	}
-});
-
-$("body").on('change', '.disc_day', function(e) {
-	var input = $(this);
-
-	if (input.val() == '0') {
-		input.val('');
-	}
-});
-
-$("body").on('change', '.due_date', function(e) {
-	var input = $(this);
-	var row = input.closest('.due');
-	var index = row.data('index');
-
-	if (input.val() == 0) {
-		$('.row'+index).find($('.due_year')).val(0);
-		$('.row'+index).find($('.due_year')).prop('disabled', true);
-	} else {
-		$('.row'+index).find($('.due_year')).prop('disabled', false);
-	}
-});
-
-$("body").on('change', '.due_date', function(e) {
-	var input = $(this);
-	var row = input.closest('.due');
-	var index = row.attr('data-index');
-
-	var str = input.val();
-	var month = parseInt(str.substring(0, 2));
-	var day = parseInt(str.substring(2, 4));
-	if (month < 1 || month > 12 || day < 1 || day > 31) {
-		input.val('0101');
-		swal2.fire({
-			title: 'Invalid Due Date!',
-			text: 'Must be in MMDD format!',
-			icon: 'warning',
-		});
-	}
-
-});
-
-$("body").on('change', '.disc_group', function(e) {
-	var input = $(this);
-	var row = input.closest('.discount');
-	var index = row.attr("data-index");
-
-	if (input.val() != 0) {
-		$('.row'+index).find($('input.disc_group')).not(this).val(0);
-		$('.row'+index).find($('input.disc_group')).not(this).prop('disabled', true);
-	}
-
-	if (input.val() == 0 && $('.row'+(index)).find($('input.disc_group')).not(this).val() == 0) {
-		input.val(1);
-		swal2.fire({
-			title: 'Warning!',
-			text: 'Days, Day or Date must be greater than 0!',
-			icon: 'warning',
-		});
-	}
-});
-
-$("body").on('change', '.due_group', function(e) {
-	var input = $(this);
-	var row = input.closest('.due');
-	var index = row.attr("data-index");
-
-	if (input.val() != 0) {
-		$('.row'+(index)).find($('input.due_group')).not(this).val(0);
-		$('.row'+(index)).find($('input.due_group')).not(this).prop('disabled', true);
-	}
-
-	if (input.val() == 0 && $('.row'+(index)).find($('input.due_group')).not(this).val() == 0) {
-		input.val(1);
-		swal2.fire({
-			title: 'Warning!',
-			text: 'Days, Day or Date must be greater than 0!',
-			icon: 'warning',
-		});
-	}
-});
-
-$("body").on('change', '.due_months', function(e) {
-	var input = $(this);
-	var row = input.closest('.due');
-	var index = row.attr("data-index");
-
-	if (input.val() < 0 || input.val() > 99) {
-		input.val(0);
-		swal2.fire({
-			title: 'Warning!',
-			text: 'Plus Months needs to be between 0 and 99!',
-			icon: 'warning',
-		});
-	}
-});
-
-$("body").on('change', '.due_year', function(e) {
-	var input = $(this);
-
-	if (input.val() < 0 || input.val() > 9) {
-		input.val(0);
-		swal2.fire({
-			title: 'Warning!',
-			text: 'Plus Years needs to be between 0 and 9!',
-			icon: 'warning',
-		});
-	}
-});
 
 function get_sum_orderpercent() {
 	var sum = 0;
@@ -453,7 +201,6 @@ function get_sum_orderpercent() {
 }
 
 // ------------------ Start EOM Method -----------------
-
 $("body").on('change', '.thru_day', function(e) {
 	var input = $(this);
 	var row = input.closest('.day');
@@ -461,20 +208,35 @@ $("body").on('change', '.thru_day', function(e) {
 	var newfieldvalue = parseFloat(input.val()) + 1;
 
 	if ((input.val() > 29 && input.val() != 99) || input.val() == $('.row'+(index)).find('.from_day').val() || input.val() < $('.row'+(index)).find('.from_day').val() ) {
-		input.val(29);
+		input.val('');
 		swal2.fire({
 			title: 'Invalid Thru Day!',
 			text: 'Must be equal to 99 or less than 30. Cannot be less than or equal to From Day',
 			icon: 'warning',
+			onClose: () => {
+			   $(this).focus();
+			}
+		});
+	} else if (index == 3 && input.val() != 99) {
+		input.val(99);
+		swal2.fire({
+			title: 'Invalid Thru Day!',
+			text: 'Thru Day 3 cannot be less than 99 if entered',
+			icon: 'warning',
+			onClose: () => {
+			   $(this).focus();
+			}
 		});
 	} else {
 		if (input.val() == 99) {
 			$('.row'+(index+1)).find($('.from_day, .thru_day, .eom_percent, .eom_day, .eom_disc_months, .eom_dueday, .eom_months')).val(0);
+			$('.row'+(index+1)).find($('.thru_day, .eom_percent, .eom_day, .eom_disc_months, .eom_dueday, .eom_months')).prop('disabled', true);
 			$('.row'+(index+2)).find($('.from_day, .thru_day, .eom_percent, .eom_day, .eom_disc_months, .eom_dueday, .eom_months')).val(0);
+			$('.row'+(index+2)).find($('.thru_day, .eom_percent, .eom_day, .eom_disc_months, .eom_dueday, .eom_months')).prop('disabled', true);
 		} else if ( (input.val() != 99) && (input.val() < 30) && ( input.val() > $('.row'+(index)).find($('.from_day')).val() ) ) {
 			$('.row'+(index+1)).find($('.from_day')).val(newfieldvalue);
 			$('.row'+(index+1)).find($('.thru_day')).val(99);
-			$('.row'+(index+1)).find($('.eom_dueday')).val(1);
+			$('.row'+(index+1)).find($('.thru_day, .eom_percent, .eom_dueday, .eom_months')).prop('disabled', false);
 		}
 	}
 
@@ -485,12 +247,15 @@ $("body").on('change', '.eom_percent', function(e) {
 	var row = input.closest('.eom_discount');
 	var index = row.attr('row');
 
-	if (input.val() > 100) {
+	if (input.val() > 100 || input.val() < 0) {
 		input.val(100);
 		swal2.fire({
 			title: 'Invalid Discount Percent!',
-			text: 'Cannot be more than 100%',
+			text: 'Must be between 0 and 100%',
 			icon: 'warning',
+			onClose: () => {
+			   $(this).focus();
+			}
 		});
 	} else {
 		$('.eom_percent'+index).removeClass('is-invalid');
@@ -499,11 +264,8 @@ $("body").on('change', '.eom_percent', function(e) {
 			$('.row'+index).find('.eom_day, .eom_disc_months').val(0);
 			$('.row'+index).find('.eom_day, .eom_disc_months').prop('disabled', true);
 		} else {
-			if ($('.row'+index).find('.eom_day').val() == 0 && $('.row'+index).find('.eom_disc_months').val() == 0) {
-				$('.row'+index).find('.eom_day').val(1);
-				$('.row'+index).find('.eom_disc_months').val(0);
-				$('.row'+index).find('.eom_day, .eom_disc_months').prop('disabled', false);
-			}
+			$('.row'+index).find('.eom_day, .eom_disc_months').prop('disabled', false);
+			$('.row'+index).find('.eom_day').focus();
 		}
 	}
 });
@@ -519,6 +281,9 @@ $("body").on('change', '.eom_day', function(e) {
 			title: 'Warning!',
 			text: 'Due Day is required if Due Percent is greater than 0!',
 			icon: 'warning',
+			onClose: () => {
+			   $(this).focus();
+			}
 		});
 	}
 
@@ -528,6 +293,9 @@ $("body").on('change', '.eom_day', function(e) {
 			title: 'Invalid Number of Days!',
 			text: 'Must be bewteen 1 and 31',
 			icon: 'warning',
+			onClose: () => {
+			   $(this).focus();
+			}
 		});
 	}
 });
@@ -543,6 +311,9 @@ $("body").on('change', '.eom_disc_months', function(e) {
 			title: 'Invalid Number of Months!',
 			text: 'Must be bewteen 0 and 99',
 			icon: 'warning',
+			onClose: () => {
+			   $(this).focus();
+			}
 		});
 	}
 });
@@ -558,6 +329,9 @@ $("body").on('change', '.eom_months', function(e) {
 			title: 'Invalid Number of Months!',
 			text: 'Must be bewteen 0 and 99',
 			icon: 'warning',
+			onClose: () => {
+			   $(this).focus();
+			}
 		});
 	}
 });
@@ -573,6 +347,9 @@ $("body").on('change', '.eom_dueday', function(e) {
 			title: 'Invalid Number of Days!',
 			text: 'Due Day is required if Thru Day is not 0!',
 			icon: 'warning',
+			onClose: () => {
+				$(this).focus();
+			}
 		});
 	}
 });
@@ -587,7 +364,7 @@ $("body").on('change', '.eom_dueday', function(e) {
 
 	var validator = form.validate({
 		errorClass: "is-invalid",
-		validClass: "is-valid",
+		// validClass: "is-valid",
 		errorPlacement: function(error, element) {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
@@ -604,6 +381,7 @@ $("body").on('change', '.eom_dueday', function(e) {
 				required: true,
 				order_percent1: true,
 			},
+			disc_group: 'required',
 		},
 		messages: {
 			code: "Please review your code (Max Length: {{ termscode.get_max_length_code() }})",
@@ -612,48 +390,46 @@ $("body").on('change', '.eom_dueday', function(e) {
 			var jform = $(form);
 			var codeID = input_codeID.val();
 
-			if (validate_codeID(form)) {
-				form.submit();
-			} else {
-				var url = URI('{{ page.url }}');
-				url.addQuery('code', codeID);
-				var bootstrap = new JsContento();
-				var content = bootstrap.open('div', 'class=swal2-content|id=swal2-content');
-				content += '<a class="btn btn-secondary mb-2" href="'+url.toString()+'">View Customer Terms Code</a>';
-				content += '<br>';
-				content += "Do you want to overwrite?";
-				content += bootstrap.close('div');
+			var sumpercent = get_sum_orderpercent();
 
+			if (sumpercent != 100) {
 				swal2.fire({
-					title: 'Customer Terms Code ' +input_codeID.val() + ' Exists' ,
-					text: 'Do you want to overwrite?',
+					title: 'Invalid Order Percent Total!',
+					text: 'Must equal 100!',
 					icon: 'warning',
-					showCancelButton: true,
-					confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
-					cancelButtonText: 'No',
-					html: content,
-				}).then((result) => {
-					if (result.value) {
-						form.submit();
-					}
 				});
+			} else {
+				if (validate_codeID(form)) {
+					form.submit();
+				} else {
+					var url = URI('{{ page.url }}');
+					url.addQuery('code', codeID);
+					var bootstrap = new JsContento();
+					var content = bootstrap.open('div', 'class=swal2-content|id=swal2-content');
+					content += '<a class="btn btn-secondary mb-2" href="'+url.toString()+'">View Customer Terms Code</a>';
+					content += '<br>';
+					content += "Do you want to overwrite?";
+					content += bootstrap.close('div');
+
+					swal2.fire({
+						title: 'Customer Terms Code ' +input_codeID.val() + ' Exists' ,
+						text: 'Do you want to overwrite?',
+						icon: 'warning',
+						showCancelButton: true,
+						confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+						cancelButtonText: 'No',
+						html: content,
+					}).then((result) => {
+						if (result.value) {
+							form.submit();
+						}
+					});
+				}
 			}
 		}
 	});
 
-	$("body").on("focusin", "#code-edit-form input:not(#code),#code-edit-form select", function(e) {
-		if (input_codeID.val() == '') {
-			validator.element( "#code" );
-			input_codeID.focus();
-			$('#code-edit-form .datepicker .form_button').prop('disabled', true);
-		}
-	});
 
-	$("body").on("focusout", "#code-edit-form #code", function(e) {
-		if (input_codeID.val() != '') {
-			$('#code-edit-form .datepicker .form_button').prop('disabled', false);
-		}
-	});
 
 	/**
 	 * Return if Customer Terms Code ID can be used to save, based upon if
@@ -673,6 +449,7 @@ $("body").on('change', '.eom_dueday', function(e) {
 		}
 		return true;
 	}
+
 
 /* =============================================================
 	Unsaved Fields Alert
@@ -704,5 +481,18 @@ $("body").on('change', '.eom_dueday', function(e) {
 			});
 		}
 	});
+});
 
+
+$.fn.extend({
+	alert_focus: function(title, text, icon) {
+		swal2.fire({
+			title: title,
+			text: text,
+			icon: icon,
+			onClose: () => {
+				$(this).focus()
+			}
+		});
+	},
 });
