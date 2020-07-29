@@ -16,6 +16,9 @@ footer {
 /**************************************
 	Bootstrap Styles
 **************************************/
+.invalid-feedback.show {
+    display: block;
+}
 .breadcrumb .breadcrumb-item::before {color: white;}
 .breadcrumb-item+.breadcrumb-item::before {
 	display: inline-block;
