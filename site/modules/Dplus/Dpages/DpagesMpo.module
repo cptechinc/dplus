@@ -64,7 +64,7 @@ class DpagesMpo extends Dpages implements Module {
 		),
 		'poadmn' => array(
 			'template'       => 'dplus-menu',
-			'name'           => 'poadmin',
+			'name'           => 'admin',
 			'title'          => 'Administration',
 			'summary'        => 'Purchase Order Administration',
 			'parent'         => '/mpo/',
@@ -139,7 +139,7 @@ class DpagesMpo extends Dpages implements Module {
 			'name'           => 'cnfm',
 			'title'          => 'Confirmation Code',
 			'summary'        => 'View / Edit Confirmation Code',
-			'parent'         => '/mpo/poadmn/',
+			'parent'         => '/mpo/admin/',
 			'dplus_function' => 'cnfm'
 		),
 	);
@@ -274,6 +274,7 @@ class DpagesMpo extends Dpages implements Module {
 
 	public function get_codetable_listURL($table, $code = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=po-code-table, name=$table")->url);
+		$code = str_replace(' ', '-', $code);
 		$url->query->set('focus', $code);
 		return $url->getUrl();
 	}
