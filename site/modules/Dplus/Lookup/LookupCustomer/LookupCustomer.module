@@ -31,7 +31,7 @@ class LookupCustomer extends WireData implements Module {
 
 		if ($q->count()) {
 			$this->exists = true;
-			$this->itemID = $custID;
+			$this->custID = $custID;
 		}
 		return $this->exists;
 	}
