@@ -67,6 +67,10 @@
 				$page->body .= $config->twig->render('items/itm/notes/inspection/modal.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes, 'user' => $user]);
 				$page->body .= $config->twig->render('items/itm/notes/order/modal.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes]);
 				$page->js   .= $config->twig->render("items/itm/notes/js.twig", ['page' => $page, 'validateurl' => $pages->get('pw_template=itm-json')->url, 'item' => $item, 'm_notes' => $module_notes, 'session' => $session]);
+
+				$page->search_notesURL = $pages->get('pw_template=msa-noce-ajax')->url;
+				$page->body .= $config->twig->render('msa/noce/ajax/notes-modal.twig', []);
+				$page->js   .= $config->twig->render('msa/noce/ajax/js.twig', ['page' => $page]);
 				$session->remove('qnotes_itm');
 			}
 			$page->body .= $config->twig->render("util/ajax-modal.twig");
