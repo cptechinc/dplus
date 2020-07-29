@@ -137,8 +137,10 @@ class QnotesItemInternal extends WireData implements Module {
 	 */
 	public function update_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$itemID  = $input->$rm->text('itemID');
-		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
+		$values = $input->$rm;
+		$itemID  = $values->text('itemID');
+		$note = $values->textarea('note');
+		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
 		$lines_saved = array();
 
 		$this->delete_notes($itemID);
