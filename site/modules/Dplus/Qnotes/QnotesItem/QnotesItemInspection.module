@@ -164,11 +164,13 @@ class QnotesItemInspection extends WireData implements Module {
 	 */
 	public function update_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$itemID  = $input->$rm->text('itemID');
-		$notedate = $input->$rm->text('notedate');
-		$notetime = $input->$rm->text('notetime');
-		$user     = $input->$rm->text('user');
-		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
+		$values = $input->$rm;
+		$itemID  = $values->text('itemID');
+		$notedate = $values->text('notedate');
+		$notetime = $values->text('notetime');
+		$user     = $values->text('user');
+		$note = $values->textarea('note');
+		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
 		$lines_saved = array();
 
 		if (empty($notedate)) {
