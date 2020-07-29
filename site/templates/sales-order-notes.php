@@ -27,7 +27,7 @@
 				$page->body .= $config->twig->render('sales-orders/sales-order/notes/note-modal.twig', ['page' => $page, 'ordn' => $ordn, 'qnotes_so' => $qnotes]);
 				$page->js   .= $config->twig->render('sales-orders/sales-order/notes/js.twig', ['page' => $page, 'ordn' => $ordn, 'qnotes' => $qnotes]);
 
-				$page->searchURL = $pages->get('pw_template=msa-noce-ajax')->url;
+				$page->search_notesURL = $pages->get('pw_template=msa-noce-ajax')->url;
 				$page->body .= $config->twig->render('msa/noce/ajax/notes-modal.twig', []);
 				$page->js   .= $config->twig->render('msa/noce/ajax/js.twig', ['page' => $page]);
 
