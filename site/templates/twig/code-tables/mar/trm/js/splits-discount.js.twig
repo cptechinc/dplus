@@ -6,25 +6,19 @@ $(function() {
 		$(this).data('val', $(this).val());
 	});
 
+	$("body").on('change', '.discount .days, .discount .day, .discount .discount_date', function(e) {
+		var input = $(this);
+		var parent = input.closest('.discount');
+		discount_feedback(parent, function() {
+
+		});
+	});
+
 
 /* =============================================================
 	Event Functions -- Discount
 ============================================================= */
-	$("body").on('focusout', '.discount_percent', function(){
-		var input = $(this);
-		var perecent = input.val();
 
-		if (parseFloat(input.val()) > 0) {
-			var parent = $(this).closest('.discount');
-			discount_feedback(parent);
-		}
-	});
-
-	$("body").on('change', '.discount .days, .discount .day, .discount .discount_date', function(e) {
-		var input = $(this);
-		var parent = input.closest('.discount');
-		discount_feedback(parent);
-	});
 
 	$("body").on('change', '.discount_percent', function(e) {
 		var input = $(this);
@@ -38,18 +32,32 @@ $(function() {
 			$('.discount_percent'+index).removeClass('is-invalid');
 
 			if (input.val() == 0) {
-				$('.row'+index).find('.day, .days').val(0);
-				$('.row'+index).find('.disc_date').val('');
-				$('.row'+index).find('.day, .days, .disc_date').prop('disabled', true);
+				$('.split'+index).find('.invalid-feedback').remove();
+				$('.split'+index).find('.day, .days').val(0);
+				$('.split'+index).find('.disc_date').val('');
+				$('.split'+index).find('.day, .days, .disc_date').prop('disabled', true);
 			} else {
 				$('.discount_percent').removeClass('is-invalid');
-				$('.row'+index).find('.day, .disc_date').prop('disabled', false);
-				$('.row'+index).find('.days').removeAttr('disabled').focus();
+				$('.split'+index).find('.day, .disc_date').prop('disabled', false);
+				$('.split'+index).find('.days').removeAttr('disabled');
+				$('.split'+index).find('.days').focus();
 			}
 		}
 	});
 
 	$("body").on('change', '.day', function(e) {
+		var input = $(this);
+		var row = input.closest('.discount');
+		var index = row.attr('data-index');
+		var value = parseInt(input.val());
+
+		if (value < 0 || value > 31) {
+			input.val(0);
+			$(this).alert_focus('Invalid Number for Day!', 'Must be between 0 and 31', 'warning');
+		}
+	});
+
+	$("body").on('change', '.days', function(e) {
 		var input = $(this);
 		var row = input.closest('.discount');
 		var index = row.attr('data-index');
@@ -83,14 +91,15 @@ $(function() {
 		var index = row.attr("data-index");
 
 		if (input.val() != 0) {
-			$('.row'+index).find($('.disc_day, .disc_days')).not(this).val(0);
+			$('.split'+index).find($('.disc_day, .disc_days')).not(this).val(0);
 			if (input.val().length < 3) {
-				$('.row'+(index)).find($('input.disc_date')).val('');
+				$('.split'+index).find($('input.disc_date')).val('');
 			}
-			$('.row'+index).find($('input.disc_group')).not(this).prop('disabled', true);
+			$('.split'+index).find($('input.disc_group')).not(this).prop('disabled', true);
 		}
 
-		if (input.val() == 0 && $('.row'+(index)).find($('input.disc_group')).not(this).val() == 0) {
+		if (input.val() == 0 && $('.split'+index).find($('input.disc_group')).not(this).val() == 0) {
+			$('.split'+index).find($('input.disc_group')).not(this).prop('disabled', false);
 			$('#percent'+index).alert_focus('Warning!', 'Change Discount Percent to zero OR Days, Day or Date must be entered!', 'warning');
 		}
 	});
@@ -100,21 +109,27 @@ $(function() {
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
-function discount_feedback(discountrow) {
+function discount_feedback(discountrow, callback) {
 	var input_days = discountrow.find('.days');
 	var input_day = discountrow.find('.day');
 	var input_date = discountrow.find('.disc_date');
 	var input_percent = discountrow.find('.discount_percent');
+	var valid = false;
 
 	if (input_days.val() == '0' && input_day.val() == '0' && input_date.val() == '') {
-		input_percent.removeClass('valid').addClass('is-invalid');
+		valid = false;
+		input_days.removeClass('valid').addClass('is-invalid');
+		input_day.removeClass('valid').addClass('is-invalid');
+		input_date.removeClass('valid').addClass('is-invalid');
 		discountrow.find('.invalid-feedback').remove();
 		$('<div class="invalid-feedback show">You must enter days, day, or date for this discount percent</div>').appendTo(discountrow);
-		setTimeout(function() {
-			discountrow.focus();
-		});
 	} else {
+		valid = true;
 		discountrow.find('.invalid-feedback').remove();
 		input_percent.removeClass('is-invalid').addClass('valid');
+		input_day.removeClass('is-invalid').addClass('valid');
+		input_days.removeClass('is-invalid').addClass('valid');
+		input_date.removeClass('is-invalid').addClass('valid');
 	}
+	callback(valid);
 }

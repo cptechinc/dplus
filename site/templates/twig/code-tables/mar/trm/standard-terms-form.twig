@@ -66,7 +66,7 @@
 		</div>
 	</div>
 	{% for x in 1..m_trm.count_standardterms_split() %}
-		<div class="list-group-item split" data-index="{{ x }}">
+		<div class="list-group-item split split{{ x }}" data-index="{{ x }}">
 			<div class="row align-items-center text-center">
 				<div class="col-2 border-right border-dark">
 					<div class="row align-items-center">
@@ -79,22 +79,20 @@
 					</div>
 				</div>
 				<div class="col border-right border-dark">
-					<h5 class="text-center">
-						<div class="row align-items-center discount" data-index="{{ x }}">
-							<div class="col">
-								<input tabindex="{{x}}1" type="text" name="percent{{ x }}" id="percent{{ x }}" maxlength="5" class="form-control form-control-sm discount_percent" value="{{ code.percent(x) == 0 ? 0 : code.percent(x) }}" {{ code.order_percent(x) > 0 ? '' : 'disabled' }}>
-							</div>
-							<div class="col">
-								<input tabindex="{{x}}2" type="text" name="days{{ x }}" id="days{{ x }}" maxlength="3" class="form-control form-control-sm days disc_group" value="{{ code.percent(x) == 0 ? 0 : code.days(x) }}" {{ code.percent(x) == 0 or code.day(x) > 0 or code.date(x) > 0 ? 'disabled' : '' }}>
-							</div>
-							<div class="col">
-								<input tabindex="{{x}}3" type="text" name="day{{ x }}" id="day{{ x }}" maxlength="2" class="form-control form-control-sm day disc_group" value="{{ code.percent(x) == 0 ? 0 : code.day(x) }}" {{ code.percent(x) == 0 or code.days(x) > 0 or code.date(x) > 0 ? 'disabled' : '' }}>
-							</div>
-							<div class="col">
-								<input tabindex="{{x}}4" type="text" name="date{{ x }}" id="date{{ x }}" maxlength="4" class="form-control form-control-sm disc_date disc_group" value="{{ code.date(x) == 0 ? '' : code.date(x) }}" placeholder="MMDD" {{ code.percent(x) == 0 or code.days(x) > 0 or code.day(x) > 0 ? 'disabled' : '' }}>
-							</div>
+					<div class="row align-items-center discount" data-index="{{ x }}">
+						<div class="col">
+							<input tabindex="{{x}}1" type="text" name="percent{{ x }}" id="percent{{ x }}" maxlength="5" class="form-control form-control-sm discount_percent" value="{{ code.percent(x) == 0 ? 0 : code.percent(x) }}" {{ code.order_percent(x) > 0 ? '' : 'disabled' }}>
 						</div>
-					</h5>
+						<div class="col">
+							<input tabindex="{{x}}2" type="text" name="days{{ x }}" id="days{{ x }}" maxlength="3" class="form-control form-control-sm days disc_group" value="{{ code.percent(x) == 0 ? 0 : code.days(x) }}" {{ code.percent(x) == 0 or code.day(x) > 0 or code.date(x) > 0 ? 'disabled' : '' }}>
+						</div>
+						<div class="col">
+							<input tabindex="{{x}}3" type="text" name="day{{ x }}" id="day{{ x }}" maxlength="2" class="form-control form-control-sm day disc_group" value="{{ code.percent(x) == 0 ? 0 : code.day(x) }}" {{ code.percent(x) == 0 or code.days(x) > 0 or code.date(x) > 0 ? 'disabled' : '' }}>
+						</div>
+						<div class="col">
+							<input tabindex="{{x}}4" type="text" name="date{{ x }}" id="date{{ x }}" maxlength="4" class="form-control form-control-sm disc_date disc_group" value="{{ code.date(x) == 0 ? '' : code.date(x) }}" placeholder="MMDD" {{ code.percent(x) == 0 or code.days(x) > 0 or code.day(x) > 0 ? 'disabled' : '' }}>
+						</div>
+					</div>
 				</div>
 				<div class="col">
 					<div class="row align-items-center due" data-index="{{ x }}">

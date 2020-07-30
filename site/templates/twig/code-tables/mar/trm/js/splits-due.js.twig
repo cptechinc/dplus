@@ -1,4 +1,6 @@
 $(function() {
+
+
 	$("body").on('change', '.due_day', function(e) {
 		var input = $(this);
 		var row = input.closest('.due');
@@ -8,10 +10,21 @@ $(function() {
 			input.val(0);
 			$(this).alert_focus('Invalid Number of Days!', 'Must be bewteen 0 and 31', 'warning');
 		} else if (input.val() == 0) {
-			$('.row'+index).find($('.due_months')).val(0);
-			$('.row'+index).find($('.due_months')).prop('disabled', true);
+			$('.split'+index).find($('.due_months')).val(0);
+			$('.split'+index).find($('.due_months')).prop('disabled', true);
 		} else {
-			$('.row'+index).find($('.due_months')).prop('disabled', false).focus();
+			$('.split'+index).find($('.due_months')).prop('disabled', false).focus();
+		}
+	});
+
+    $("body").on('change', '.due_days', function(e) {
+		var input = $(this);
+		var row = input.closest('.due');
+		var index = row.data('index');
+
+		if (input.val() < 0 || input.val() > 31) {
+			input.val(0);
+			$(this).alert_focus('Invalid Number of Days!', 'Must be bewteen 0 and 31', 'warning');
 		}
 	});
 
@@ -21,28 +34,21 @@ $(function() {
 		var index = row.attr('data-index');
 
 		if (input.val() == 0) {
-			$('.row'+index).find($('.due_year')).val(0);
-			$('.row'+index).find($('.due_year')).prop('disabled', true);
+			$('.split'+index).find($('.due_year')).val(0);
+			$('.split'+index).find($('.due_year')).prop('disabled', true);
 		} else {
-			$('.row'+index).find($('.due_year')).prop('disabled', false).focus();
+            var str = input.val();
+    		var length = str.length;
+    		var month = parseInt(str.substring(0, 2));
+    		var day = parseInt(str.substring(2, 4));
+
+    		if (month < 1 || month > 12 || day < 1 || day > 31 || length != 4) {
+    			input.val('');
+    			$(this).alert_focus('Invalid Due Date!!', 'Must be in MMDD format', 'warning');
+    		}
+
+			$('.split'+index).find($('.due_year')).prop('disabled', false).focus();
 		}
-	});
-
-	$("body").on('change', '.due_date', function(e) {
-		var input = $(this);
-		var row = input.closest('.due');
-		var index = row.attr('data-index');
-
-		var str = input.val();
-		var length = str.length;
-		var month = parseInt(str.substring(0, 2));
-		var day = parseInt(str.substring(2, 4));
-
-		if (month < 1 || month > 12 || day < 1 || day > 31 || length != 4) {
-			input.val('');
-			$(this).alert_focus('Invalid Due Date!!', 'Must be in MMDD format', 'warning');
-		}
-
 	});
 
 	$("body").on('change', '.due_group', function(e) {
@@ -51,15 +57,16 @@ $(function() {
 		var index = row.attr("data-index");
 
 		if (input.val() != 0) {
-			$('.row'+(index)).find($('.due_day, .due_days')).not(this).val(0);
+			$('.split'+(index)).find($('.due_day, .due_days')).not(this).val(0);
 			if (input.val().length < 3) {
-				$('.row'+(index)).find($('input.due_date')).val('');
+				$('.split'+(index)).find($('input.due_date')).val('');
 			}
-			$('.row'+(index)).find($('input.due_group')).not(this).prop('disabled', true);
+			$('.split'+(index)).find($('input.due_group')).not(this).prop('disabled', true);
 		}
 
-		if (input.val() == 0 && $('.row'+(index)).find($('input.due_group')).not(this).val() == 0) {
+		if (input.val() == 0 && $('.split'+(index)).find($('input.due_group')).not(this).val() == 0) {
 			$('#due_days'+index).alert_focus('Warning!', 'Days, Day or Date must be entered!', 'warning');
+			$('.split'+(index)).find($('input.due_group')).not(this).prop('disabled', false);
 		}
 	});
 
@@ -83,3 +90,32 @@ $(function() {
 		}
 	});
 });
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+function due_feedback(duerow, order_percent, callback) {
+	var input_days = duerow.find('.due_days');
+	var input_day = duerow.find('.due_day');
+	var input_date = duerow.find('.due_date');
+	var order_percent = order_percent;
+	var valid = false;
+
+	console.log(order_percent);
+	if (input_days.val() == '0' && input_day.val() == '0' && input_date.val() == '' && order_percent != '') {
+		valid = false;
+		input_days.removeClass('valid').addClass('is-invalid');
+		input_day.removeClass('valid').addClass('is-invalid');
+		input_date.removeClass('valid').addClass('is-invalid');
+		duerow.find('.invalid-feedback').remove();
+		$('<div class="invalid-feedback show">You must enter days, day, or date for this split</div>').appendTo(duerow);
+	} else {
+		valid = true;
+        input_days.removeClass('is-invalid');
+		input_day.removeClass('is-invalid');
+		input_date.removeClass('is-invalid');
+		duerow.find('.invalid-feedback').remove();
+	}
+
+	callback(valid);
+}
