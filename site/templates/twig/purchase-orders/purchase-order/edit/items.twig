@@ -1,0 +1,47 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	po                     EditPoHead
+#}
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white font-weight-bold">
+		<div class="form-row">
+			<div class="col-sm-3">Item ID</div>
+			<div class="col-sm-1">UoM</div>
+			<div class="col-sm-1">Whse</div>
+			<div class="col-sm-1 text-right">Ordered</div>
+			<div class="col-sm-2 text-right">Price</div>
+			<div class="col-sm-2 text-right">Amount</div>
+			<div class="col-sm-2"></div>
+		</div>
+	</div>
+	{% for item in po.get_items() %}
+		<div class="list-group-item">
+			<div class="form-row">
+				<div class="col-sm-3">
+					{{ item.itemid }} <br>
+					<small>{{ item.description }}</small>
+				</div>
+				<div class="col-sm-1">{{ item.uom }}</div>
+				<div class="col-sm-1">
+					{{ item.whse }}
+				</div>
+				<div class="col-sm-1 text-right">
+					{{ item.qty_ordered|number_format() }}
+				</div>
+				<div class="col-sm-2 text-right">
+					$ {{ item.cost|currency }}
+				</div>
+				<div class="col-sm-2 text-right">
+					$ {{ item.cost_total|currency }}
+				</div>
+				<div class="col-sm-2 text-center">
+					<button type="button" name="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit-item-modal" data-linenbr="{{ item.linenbr }}">
+						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+					</button>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+</div>

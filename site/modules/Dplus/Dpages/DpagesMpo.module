@@ -37,6 +37,11 @@ class DpagesMpo extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
+		'purchase-order-edit' => array(
+			'name'   => 'purchase-order-edit',
+			'fields' => array(),
+			'paginated' => true
+		),
 		'purchase-order-documents' => array(
 			'name'   => 'purchase-order-documents',
 			'fields' => array(),
@@ -96,6 +101,15 @@ class DpagesMpo extends Dpages implements Module {
 			'parent'         => '/mpo/',
 			'dplus_function' => '',
 			'pw_template'    => 'purchase-order-view'
+		),
+		'po-edit' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'edit',
+			'title'          => 'Edit Purchase Order',
+			'summary'        => 'View a Purchase Order',
+			'parent'         => '/mpo/purchase-order/',
+			'dplus_function' => 'epo',
+			'pw_template'    => 'purchase-order-edit'
 		),
 		'po-documents' => array(
 			'template'       => 'dplus-function',
@@ -232,6 +246,22 @@ class DpagesMpo extends Dpages implements Module {
 			$page = $event->object;
 			$event->return = $page->name;
 		});
+
+		$this->addHook('User::permitted_edit_po', function($event) {
+			$user = $event->object;
+			$event->return = $this->wire('modules')->get('PurchaseOrderEdit')->user_has_permission($user);
+		});
+
+		$this->addHook('User::can_edit_po', function($event) {
+			$user  = $event->object;
+			$ponbr = $event->arguments(0);
+			$event->return = $this->wire('modules')->get('PurchaseOrderEdit')->is_po_editable($ponbr);
+		});
+
+		$this->addHook('Page(pw_template=purchase-order-view)::po_editURL', function($event) {
+			$ponbr = $event->arguments(0);
+			$event->return = $this->get_po_editURL($ponbr);
+		});
 	}
 
 	/**
@@ -240,6 +270,15 @@ class DpagesMpo extends Dpages implements Module {
 	 */
 	public function get_purchaseordersURL() {
 		return $this->wire('pages')->get('pw_template=purchase-orders')->url;
+	}
+
+	/**
+	 * Returns URL to Purchase Order Edit Page
+	 * @param  string $ponbr  Purchase Order Number
+	 * @return string           URL
+	 */
+	public function get_po_editURL($ponbr) {
+		return $this->wire('modules')->get('PurchaseOrderEdit')->get_po_editURL($ponbr);
 	}
 
 	/**

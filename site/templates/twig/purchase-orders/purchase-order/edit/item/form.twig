@@ -1,0 +1,14 @@
+<form action="{{ page.url }}" method="post" id="edit-item-form">
+	<input type="hidden" name="action" value="update-item">
+	<input type="hidden" name="ponbr" value="{{ po.ponbr }}">
+	<input type="hidden" name="linenbr" value="">
+
+	<div class="row">
+		<div class="col-sm-6">
+			{% include 'purchase-orders/purchase-order/edit/item/form-left.twig' %}
+		</div>
+		<div class="col-sm-6">
+			{% include 'purchase-orders/purchase-order/edit/item/form-right.twig' %}
+		</div>
+	</div>
+</form>

@@ -1,0 +1,20 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	po                     EditPoHead
+#}
+<form action="{{ page.url }}" method="POST">
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label for="vendorID">Vendor ID</label>
+				<input type="text" class="form-control" name="vendorID" id="vendorID" value="{{ po.vendorid }}">
+			</div>
+			<div class="form-group">
+				<label for="releasenumber">Release Number</label>
+				<input type="text" class="form-control" name="releasenbr" id="releasenbr" value="{{ po.releasenbr }}">
+			</div>
+		</div>
+	</div>
+</form>

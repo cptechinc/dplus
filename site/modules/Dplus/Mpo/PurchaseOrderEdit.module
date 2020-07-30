@@ -1,0 +1,182 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+use Purl\Url;
+
+use PurchaseOrderQuery, PurchaseOrder;
+use PurchaseOrderDetailReceivingQuery, PurchaseOrderDetailReceiving;
+use ApInvoiceDetailQuery, ApInvoiceDetail;
+use WarehouseQuery, Warehouse;
+
+use EditPoHeadQuery, EditPoHead;
+use EditPoDetailQuery, EditPoDetail;
+
+
+/**
+ * PurchaseOrderEdit
+ *
+ * Handles Editing of PO
+ * @property string sessionID Session ID
+ */
+class PurchaseOrderEdit extends WireData implements Module {
+	const PERMISSION_DPLUS = 'epo';
+
+	public function get_query_header($ponbr) {
+		$q = EditPoHeadQuery::create();
+		$q->filterBySessionid($this->sessionID);
+		$q->filterByPonbr($ponbr);
+		return $q;
+	}
+
+	public function get_query_details($ponbr) {
+		$q = EditPoDetailQuery::create();
+		$q->filterBySessionid($this->sessionID);
+		$q->filterByPonbr($ponbr);
+		return $q;
+	}
+
+	public function exists_editable($ponbr) {
+		return $this->exists_editable_header($ponbr) && $this->exists_editable_details($ponbr);
+	}
+
+	public function exists_editable_header($ponbr) {
+		$q = $this->get_query_header($ponbr);
+		return boolval($q->count());
+	}
+
+	public function exists_editable_details($ponbr) {
+		$q = $this->get_query_details($ponbr);
+		return boolval($q->count());
+	}
+
+	public function get_editable_header($ponbr) {
+		$q = $this->get_query_header($ponbr);
+		return $q->findOne();
+	}
+
+/* =============================================================
+	Dplus Request Functions
+============================================================= */
+	public function request_po_edit($ponbr) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'EDITPURCHASEORDER', "PONBR=$ponbr");
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
+	}
+
+/* =============================================================
+	URL Functions
+============================================================= */
+	public function get_po_editURL($ponbr) {
+		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-edit')->url);
+		$url->query->set('ponbr', $ponbr);
+		return $url->getUrl();
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return if User has Purchase Order Editing Permission
+	 * @param  User $user User
+	 * @return bool
+	 */
+	public function user_has_permission(User $user) {
+		return $user->has_function(self::PERMISSION_DPLUS);
+	}
+
+	/**
+	 * Returns if Purchase Order can be Edited
+	 * @param  string $ponbr Purchase Order Number
+	 * @return bool
+	 */
+	public function is_po_editable($ponbr) {
+		$q = PurchaseOrderQuery::create();
+		$q->filterByPonbr($ponbr);
+		$q->filterByStatus(PurchaseOrder::STATUS_CLOSED, Criteria::ALT_NOT_EQUAL);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Returns if Purchase Order Exists
+	 * @param  string $ponbr Purchase Order Number
+	 * @return bool
+	 */
+	public function exists($ponbr) {
+		$validator = $this->wire('modules')->get('ValidatePurchaseOrderNbr');
+		return $validator->validate($ponbr);
+	}
+
+	public function get_details_array($ponbr) {
+		$array = array();
+		$items = $this->get_query_details($ponbr);
+
+		foreach ($items as $item) {
+			$array[$item->linenbr] = array(
+				'linenbr' => $item->linenbr,
+				'itemid'  => $item->itemid,
+				'description'  => $item->description,
+				'vendoritemid'  => $item->vendoritemid,
+				'whseid'  => $item->whse,
+				'specialorder'  => $item->specialorder,
+				'uom'  => $item->uom,
+				'qty' => array(
+					'ordered' => $item->qty_ordered,
+					'received' => $this->get_qty_received($ponbr, $item->linenbr),
+					'invoiced' => $this->get_qty_invoiced($ponbr, $item->linenbr),
+				),
+				'cost' => $item->cost,
+				'cost_total' => $item->cost_total
+			);
+		}
+		return $array;
+	}
+
+	public function get_qty_received($ponbr, $linenbr) {
+		$q = PurchaseOrderDetailReceivingQuery::create();
+		$col = PurchaseOrderDetailReceiving::get_aliasproperty('qty_received');
+		$q->withColumn("SUM($col)", 'qty');
+		$q->select('qty');
+		$q->filterByPonbr($ponbr);
+		$q->filterByLinenbr($linenbr);
+		return intval($q->findOne());
+	}
+
+	public function get_qty_invoiced($ponbr, $linenbr) {
+		$q = ApInvoiceDetailQuery::create();
+		$col = ApInvoiceDetail::get_aliasproperty('qty_received');
+		$q->withColumn("SUM($col)", 'qty');
+		$q->select('qty');
+		$q->filterByPonbr($ponbr);
+		$q->filterByLinenbr($linenbr);
+		return intval($q->findOne());
+	}
+
+	public function get_warehouses() {
+		return WarehouseQuery::create()->find();
+	}
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public function init() {
+		$this->sessionID = session_id();
+	}
+
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'PurchaseOrderEdit',
+			'version' => 101,
+			'summary' => 'Handles Purchase Order Editing',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+}
