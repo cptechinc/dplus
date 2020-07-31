@@ -81,17 +81,18 @@
 				<div class="col border-right border-dark">
 					<div class="row align-items-center discount" data-index="{{ x }}">
 						<div class="col">
-							{%
+							{#
 								include 'util/form/input.twig' with {
 									name: 'percent' ~ x,
 									id: 'percent' ~ x,
 									maxlength: 5,
 									class_add: 'discount_percent',
-									value: code.percent(x) == 0 ? 0 : code.percent(x),
+									value: code.percent(x) == 0 or code.percent(x) == '' ? 0 : code.percent(x),
 									disabled: code.order_percent(x) > 0 == false,
 									attributes: {'data-error': '.error'}
 								}
-							%}
+							#}
+							<input tabindex="{{x}}1" type="text" name="percent{{ x }}" id="percent{{ x }}" maxlength="5" class="form-control form-control-sm discount_percent" data-error=".error" value="{{ code.percent(x) == 0 ? 0 : code.percent(x) }}" {{ code.order_percent(x) > 0 ? '' : 'disabled' }}>
 						</div>
 						<div class="col">
 							<input tabindex="{{x}}2" type="text" name="days{{ x }}" id="days{{ x }}" maxlength="3" class="form-control form-control-sm days disc_group" data-error=".error" value="{{ code.percent(x) == 0 ? 0 : code.days(x) }}" {{ code.percent(x) == 0 or code.day(x) > 0 or code.date(x) > 0 ? 'disabled' : '' }}>

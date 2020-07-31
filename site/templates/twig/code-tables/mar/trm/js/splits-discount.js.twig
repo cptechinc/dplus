@@ -31,13 +31,12 @@ $(function() {
 			$('.split'+index).find('.day, .days, .disc_date').prop('disabled', true);
 		} else {
 			$('.discount_percent').removeClass('is-invalid');
-			$('.split'+index).find('.day, .disc_date').prop('disabled', false);
-			$('.split'+index).find('.days').removeAttr('disabled');
+			$('.split'+index).find('.day, .days, .disc_date').prop('disabled', false);
 			$('.split'+index).find('.days').focus();
 		}
 	});
 
-	$("body").on('change', '.discount input', function(e) {
+	$("body").on('change', '.disc_group', function(e) {
 		var input = $(this);
 		var row = input.closest('.discount');
 		var index = row.attr("data-index");

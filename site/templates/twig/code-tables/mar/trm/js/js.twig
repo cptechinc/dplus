@@ -389,6 +389,62 @@ $("body").on('change', '.eom_dueday', function(e) {
 		return true;
 	}
 
+	function validate_due_row(element, value) {
+		var input = $(element);
+		var splitrow = input.closest('.split');
+		var duerow = splitrow.find('.due');
+
+		var order_percent = splitrow.find('.order_percent');
+		console.log(order_percent);
+		var input_day = duerow.find('.due_day');
+		var input_days = duerow.find('.due_days');
+		var input_date = duerow.find('.due_date');
+
+		if (parseInt(order_percent.val()) > 0) {
+			if (input_day.val() == '' && input_days.val() == '' && input_date.val() == '') {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	function validate_due_day(value) {
+		var days = parseInt(value);
+
+		if (days < 0 || days > 31) {
+			return false;
+		}
+		return true;
+	}
+
+	function validate_due_months(value) {
+		var months = parseInt(value);
+
+		if (months < 0 || months > 99) {
+			return false;
+		}
+		return true;
+	}
+
+	function validate_due_date(value) {
+		var month = parseInt(value.substring(0, 2));
+		var day = parseInt(value.substring(2, 4));
+
+		if (value.length != 4 || month < 1 || month > 12 || day < 1 || day > 31) {
+			return false;
+		}
+		return true;
+	}
+
+	function validate_due_year(value) {
+		var year = parseInt(value);
+
+		if (year < 0 || year > 31) {
+			return false;
+		}
+		return true;
+	}
+
 	jQuery.validator.addMethod("order_percent1", function(value, element) {
 		return this.optional(element) || parseFloat(value) > 0;
 	}, "Order Percent 1 must be greater than 0");
@@ -413,10 +469,39 @@ $("body").on('change', '.eom_dueday', function(e) {
 		return this.optional(element) || validate_discount_date(value);
 	}, "Must be in MMDD format!");
 
+	jQuery.validator.addMethod("due_row", function(value, element) {
+		return this.optional(element) || validate_due_row(element, value);
+	}, "Due Days, Day or Date must be entered with Order Percent!");
+
+	jQuery.validator.addMethod("due_day", function(value, element) {
+		return this.optional(element) || validate_due_day(value);
+	}, "Invalid Day, Must be between 0 and 31. ");
+
+	jQuery.validator.addMethod("due_months", function(value, element) {
+		return this.optional(element) || validate_due_months(value);
+	}, "Invalid Months, Must be between 0 and 9. ");
+
+	jQuery.validator.addMethod("due_days", function(value, element) {
+		return this.optional(element) || validate_due_day(value);
+	}, "Invalid Days, Must be between 0 and 31. ");
+
+	jQuery.validator.addMethod("due_date", function(value, element) {
+		return this.optional(element) || validate_due_date(value);
+	}, "Must be in MMDD format!");
+
+	jQuery.validator.addMethod("due_year", function(value, element) {
+		return this.optional(element) || validate_due_year(value);
+	}, "Invalid Year, Must be between 0 and 9. ");
+
 	jQuery.validator.addClassRules('day', { discount_day: true });
 	jQuery.validator.addClassRules('days', { discount_days: true });
-	jQuery.validator.addClassRules('date', { discount_date: true });
-	jQuery.validator.addClassRules('order_percent', { discount_percent: true, discount_row: true });
+	jQuery.validator.addClassRules('disc_date', { discount_date: true });
+	jQuery.validator.addClassRules('due_day', { due_day: true });
+	jQuery.validator.addClassRules('due_months', { due_months: true });
+	jQuery.validator.addClassRules('due_days', { due_days: true });
+	jQuery.validator.addClassRules('due_date', { due_date: true });
+	jQuery.validator.addClassRules('due_year', { due_year: true });
+	jQuery.validator.addClassRules('order_percent', { discount_percent: true, discount_row: true, due_row: true });
 	jQuery.validator.addClassRules('discount_percent', { discount_percent: true, discount_row: true });
 
 	var validator = form.validate({
