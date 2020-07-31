@@ -11,6 +11,8 @@ use WarehouseQuery, Warehouse;
 use EditPoHeadQuery, EditPoHead;
 use EditPoDetailQuery, EditPoDetail;
 
+include(__DIR__.'/MpoResponse.php');
+
 
 /**
  * PurchaseOrderEdit
@@ -55,6 +57,36 @@ class PurchaseOrderEdit extends WireData implements Module {
 	}
 
 /* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'add-item':
+				$this->process_input_add_item($input);
+				break;
+		}
+	}
+
+	public function process_input_add_item($input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$q = $this->get_query_details($values->text('ponbr'));
+		$count_before = $q->count();
+		$this->request_add_item($values->text('ponbr'), $values->text('itemID'), $values->int('qty'));
+		$count_after = $q->count();
+
+		if ($count_after > $count_before) {
+			$response = MpoResponse::response_success($values->text('ponbr'), $values->text('itemID') . ' was added to PO');
+		} else {
+			$response = MpoResponse::response_error($values->text('ponbr'), $values->text('itemID') . ' was not added to PO');
+		}
+		$this->wire('session')->response_epo = $response;
+	}
+
+/* =============================================================
 	Dplus Request Functions
 ============================================================= */
 	public function request_po_edit($ponbr) {
@@ -64,6 +96,30 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());
 		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
+	}
+
+	public function request_add_item($ponbr, $itemID, $qty) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'ADDPURCHASEORDERLINE', "PONBR=$ponbr", "ITEMID=$itemID", "QTY=$qty");
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
+	}
+
+	/**
+	 * Sends HTTP GET request to send Dplus Item Search Request
+	 * @param  string $q Query or Item ID
+	 * @return void
+	 */
+	public function request_itemsearch($q) {
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$url = new Url($this->wire('pages')->get('template=redir,redir_file=ii')->url);
+		$url->query->set('action', 'item-search');
+		$url->query->set('q', $q);
+		$url->query->set('custID', '');
+		$url->query->set('sessionID', $this->sessionID);
+		$requestor->self_request($url->getUrl());
 	}
 
 /* =============================================================
@@ -162,6 +218,22 @@ class PurchaseOrderEdit extends WireData implements Module {
 ============================================================= */
 	public function init() {
 		$this->sessionID = session_id();
+
+		$this->addHook('Page(pw_template=purchase-order-edit)::ii_lookupURL', function($event) {
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item-lookup')->httpUrl);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=purchase-order-edit)::itm_jsonURL', function($event) {
+			$url = new Url($this->wire('pages')->get('pw_template=itm-json')->httpUrl);
+			$url->query->set('json', 'true');
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=purchase-order-edit)::po_editURL', function($event) {
+			$ponbr = $event->arguments(0);
+			$event->return = $this->get_po_editURL($ponbr);
+		});
 	}
 
 	/**

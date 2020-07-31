@@ -1,5 +1,12 @@
 <?php
 	$epo = $modules->get('PurchaseOrderEdit');
+	$rm = strtolower($input->requestMethod());
+	$values = $input->$rm;
+
+	if ($values->action) {
+		$epo->process_input($input);
+		$session->redirect($page->po_editURL($values->text('ponbr')), $http301 = false);
+	}
 
 	if ($input->get->ponbr) {
 		$ponbr = PurchaseOrder::get_paddedponumber($input->get->text('ponbr'));
@@ -12,8 +19,17 @@
 
 			if ($epo->exists_editable($ponbr)) {
 				$po_edit = $epo->get_editable_header($ponbr);
+				$page->searchitemsURL = $pages->get('pw_template=itm-search')->url;
 				$page->body .= $config->twig->render('purchase-orders/purchase-order/edit/edit.twig', ['page' => $page, 'epo' => $epo, 'po' => $po_edit]);
 				$page->js   .= $config->twig->render('purchase-orders/purchase-order/edit/js.twig', ['page' => $page, 'epo' => $epo]);
+				$page->js   .= $config->twig->render('purchase-orders/purchase-order/edit/lookup/js.twig', ['page' => $page]);
+
+				if ($values->q) {
+					$q = $values->text('q');
+					$epo->request_itemsearch($q);
+					$results = PricingQuery::create()->findBySessionid(session_id());
+					$page->body .= $config->twig->render('purchase-orders/purchase-order/edit/lookup/results.twig', ['page' => $page, 'results' => $results, 'q' => $q]);
+				}
 			} else {
 				if ($input->get->load) {
 					$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "PO # $ponbr can not be loaded for editing"]);
@@ -31,5 +47,5 @@
 		$page->title = 'Enter a Purchase Order Number';
 		$page->body .= $config->twig->render('purchase-orders/purchase-order/lookup-form.twig', ['page' => $page]);
 	}
-
+	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 	include __DIR__ . "/basic-page.php";

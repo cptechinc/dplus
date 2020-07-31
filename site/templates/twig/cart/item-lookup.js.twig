@@ -81,7 +81,7 @@ $(function() {
 				}).then(function (result) {
 					if (result.value) {
 						var url = URI("{{ page.url }}");
-						url.addQuery('q', input_itemid.val());
+						url.setQuery('q', input_itemid.val());
 						window.location.replace(url.toString());
 					}
 				});

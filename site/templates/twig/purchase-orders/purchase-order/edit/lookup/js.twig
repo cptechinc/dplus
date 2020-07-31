@@ -1,0 +1,88 @@
+$(function() {
+	var form_additem = $('#add-item-form');
+	var input_itemid = form_additem.find('input[name=itemID]');
+	var input_qty = form_additem.find('input[name=qty]');
+
+	form_additem.validate({
+		submitHandler: function(form) {
+			if (form_additem[0].hasAttribute("data-validated")) {
+				if (form_additem.attr('data-validated') == input_itemid.val()) {
+					validate_qtysubmit(form);
+				} else {
+					lookup_item(function(exists) {
+						if (exists) {
+							validate_qtysubmit(form);
+						}
+					});
+				}
+			} else {
+				lookup_item(function(exists) {
+					if (exists) {
+						validate_qtysubmit(form);
+					}
+				});
+			}
+		}
+	});
+
+	$('.item-lookup-result').on('click', function (e) {
+		e.preventDefault();
+
+		var button = $(this);
+		var itemID = button.data('itemid');
+		form_additem.attr('data-validated', itemID);
+		input_itemid.val(itemID);
+		input_qty.focus();
+
+		$('body,html').animate({ scrollTop: input_qty.offset().top - 100 }, 800);
+	});
+
+	function lookup_item(callback) {
+		var itm_url = URI("{{ page.itm_jsonURL() }}");
+		itm_url.addQuery('itemID', input_itemid.val());
+		itm_url.addQuery('fields', 'uom_purchase');
+
+		$.getJSON(itm_url.toString(), function( response ) {
+			if (response.exists) {
+				input_itemid.val(response.item.itemid);
+				input_itemid.addClass('is-valid');
+				form_additem.attr('data-validated', response.item.itemid);
+				$('.descriptions .desc1').text(response.item.description);
+				$('.descriptions .desc2').text(response.item.description2);
+				$('.descriptions').addClass('show');
+				form_additem.find('.uom').text(response.item.uom_purchase);
+				callback(response.exists);
+			} else {
+				input_itemid.addClass('is-invalid');
+				form_additem.attr('data-validated', '');
+
+				alert_itemnotfound();
+			}
+		});
+	}
+
+	function alert_itemnotfound() {
+		swal2.fire({
+			title: 'Item not found.',
+			text: input_itemid.val() + ' cannot be found.',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Make Advanced Search?'
+		}).then(function (result) {
+			if (result.value) {
+				var url = URI("{{ page.fullURL.getUrl() }}");
+				url.addQuery('q', input_itemid.val());
+				url.hash('#results');
+				window.location.replace(url.toString());
+			}
+		});
+	}
+
+	function validate_qtysubmit(form) {
+		if (input_qty.val() == '') {
+			input_qty.addClass('is-invalid').focus();
+		} else {
+			form.submit()
+		}
+	}
+});
