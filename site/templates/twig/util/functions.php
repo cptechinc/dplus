@@ -110,3 +110,12 @@
 		return stripslashes($str);
 	});
 	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('htmlattributes', function ($array) {
+		$attr = '';
+		foreach ($array as $key => $value) {
+			$attr .= " $key=$value";
+		}
+		return $attr;
+	});
+	$config->twig->addFilter($filter);
