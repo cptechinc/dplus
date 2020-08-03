@@ -1,12 +1,11 @@
 $(function () {
-	$("body").on('blur', 'input', function(e) {
+	$("body").on('blur', '#standard-terms-form input', function(e) {
 		if (e.relatedTarget) {
 			var target = $(e.relatedTarget);
 
 			valid_discounts(target);
 
 			if ($('.discount input.is-invalid').length == 0) {
-				console.log('true');
 				valid_due(target);
 			}
 		}
@@ -125,10 +124,10 @@ function valid_due(target) {
 	$(".due").each(function(index) {
 		index = index+1;
 		var duerow = $(this);
-		var order_percent = $('.split'+index).find('.order_percent').val();
+		var order_percent = $('.split'+index).find('.order_percent');
 		var duedays = duerow.find('.due_days');
 
-		if (parseFloat(order_percent) != 0) {
+		if (parseFloat(order_percent.val()) != 0) {
 			due_feedback(duerow, order_percent, function(valid) {
 				if (!valid) {
 					if (!target.hasParent('.due') && duerow.closest('.due').data('index') != target.closest('.due').data('index')) {

@@ -1,0 +1,146 @@
+$("body").on('change', '.thru_day', function(e) {
+	var input = $(this);
+	var row = input.closest('.day');
+	var index = row.data('index');
+	var newfieldvalue = parseFloat(input.val()) + 1;
+
+	if ((input.val() > 29 && input.val() != 99) || input.val() == $('.row'+(index)).find('.from_day').val() || input.val() < $('.row'+(index)).find('.from_day').val() ) {
+		input.val('');
+		swal2.fire({
+			title: 'Invalid Thru Day!',
+			text: 'Must be equal to 99 or less than 30. Cannot be less than or equal to From Day',
+			icon: 'warning',
+			onClose: () => {
+			   $(this).focus();
+			}
+		});
+	} else if (index == 3 && input.val() != 99) {
+		input.val(99);
+		swal2.fire({
+			title: 'Invalid Thru Day!',
+			text: 'Thru Day 3 cannot be less than 99 if entered',
+			icon: 'warning',
+			onClose: () => {
+			   $(this).focus();
+			}
+		});
+	} else {
+		if (input.val() == 99) {
+			$('.row'+(index+1)).find($('.from_day, .thru_day, .eom_percent, .eom_day, .eom_disc_months, .eom_dueday, .eom_months')).val(0);
+			$('.row'+(index+1)).find($('.thru_day, .eom_percent, .eom_day, .eom_disc_months, .eom_dueday, .eom_months')).prop('disabled', true);
+			$('.row'+(index+2)).find($('.from_day, .thru_day, .eom_percent, .eom_day, .eom_disc_months, .eom_dueday, .eom_months')).val(0);
+			$('.row'+(index+2)).find($('.thru_day, .eom_percent, .eom_day, .eom_disc_months, .eom_dueday, .eom_months')).prop('disabled', true);
+		} else if ( (input.val() != 99) && (input.val() < 30) && ( input.val() > $('.row'+(index)).find($('.from_day')).val() ) ) {
+			$('.row'+(index+1)).find($('.from_day')).val(newfieldvalue);
+			$('.row'+(index+1)).find($('.thru_day')).val(99);
+			$('.row'+(index+1)).find($('.thru_day, .eom_percent, .eom_dueday, .eom_months')).prop('disabled', false);
+		}
+	}
+
+});
+
+$("body").on('change', '.eom_percent', function(e) {
+	var input = $(this);
+	var row = input.closest('.eom_discount');
+	var index = row.attr('row');
+
+	if (input.val() > 100 || input.val() < 0) {
+		swal2.fire({
+			title: 'Invalid Discount Percent!',
+			text: 'Must be between 0 and 100%',
+			icon: 'warning',
+			onClose: () => {
+			   $(this).focus();
+			}
+		});
+	} else {
+		$('.eom_percent'+index).removeClass('is-invalid');
+
+		if (input.val() == 0) {
+			$('.row'+index).find('.eom_day, .eom_disc_months').val(0);
+			$('.row'+index).find('.eom_day, .eom_disc_months').prop('disabled', true);
+		} else {
+			$('.row'+index).find('.eom_day, .eom_disc_months').prop('disabled', false);
+			$('.row'+index).find('.eom_day').focus();
+		}
+	}
+});
+
+$("body").on('change', '.eom_day', function(e) {
+	var input = $(this);
+	var row = input.closest('.eom_discount');
+	var index = row.attr('row');
+
+	if ($('.row'+index).find('.eom_percent').val() > 0 && $('.row'+index).find('.eom_day').val() == 0) {
+		swal2.fire({
+			title: 'Warning!',
+			text: 'Due Day is required if Due Percent is greater than 0!',
+			icon: 'warning',
+			onClose: () => {
+			   $(this).focus();
+			}
+		});
+	}
+
+	if (input.val() < 1 || input.val() > 31) {
+		swal2.fire({
+			title: 'Invalid Number of Days!',
+			text: 'Must be bewteen 1 and 31',
+			icon: 'warning',
+			onClose: () => {
+			   $(this).focus();
+			}
+		});
+	}
+});
+
+$("body").on('change', '.eom_disc_months', function(e) {
+	var input = $(this);
+	var row = input.closest('.eom_discount');
+	var index = row.data('index');
+
+	if (input.val() < 0 || input.val() > 31) {
+		swal2.fire({
+			title: 'Invalid Number of Months!',
+			text: 'Must be bewteen 0 and 99',
+			icon: 'warning',
+			onClose: () => {
+			   $(this).focus();
+			}
+		});
+	}
+});
+
+$("body").on('change', '.eom_months', function(e) {
+	var input = $(this);
+	var row = input.closest('.due');
+	var index = row.data('index');
+
+	if (input.val() < 1 || input.val() > 31) {
+		swal2.fire({
+			title: 'Invalid Number of Months!',
+			text: 'Must be bewteen 0 and 99',
+			icon: 'warning',
+			onClose: () => {
+			   $(this).focus();
+			}
+		});
+	}
+});
+
+$("body").on('change', '.eom_dueday', function(e) {
+	var input = $(this);
+	var row = input.closest('.due');
+	var index = row.data('index');
+
+	if (input.val() < 1 || input.val() > 31) {
+		swal2.fire({
+			title: 'Invalid Number of Days!',
+			text: 'Due Day is required if Thru Day is not 0!',
+			icon: 'warning',
+			onClose: () => {
+				$(this).focus();
+			}
+		});
+	}
+});

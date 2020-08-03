@@ -1,4 +1,101 @@
-<div class="row">
+<div class="row align-items-center text-center">
+	<div class="col-3">
+		<h5 class="text-center">Day</h5>
+	</div>
+	<div class="col-6">
+		<h5 class="text-center">Discount</h5>
+	</div>
+	<div class="col-3">
+		<h5 class="text-center">Due</h5>
+	</div>
+</div>
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row align-items-center text-center text-sm">
+			<div class="col-3 border-right border-light">
+				<div class="row align-items-center text-center">
+					<div class="col">
+						From
+					</div>
+					<div class="col">
+						Thru
+					</div>
+				</div>
+			</div>
+			<div class="col-6 border-right border-light">
+				<div class="row align-items-center text-center">
+					<div class="col">
+						Percent
+					</div>
+					<div class="col">
+						Day
+					</div>
+					<div class="col">
+						Plus Months
+					</div>
+				</div>
+			</div>
+			<div class="col-3">
+				<div class="row align-items-center text-center">
+					<div class="col">
+						Day
+					</div>
+					<div class="col">
+						Plus Months
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% for x in 1..m_trm.count_eomterms_split() %}
+		<div class="list-group-item row{{ x }} day" data-index="{{ x }}">
+			<div class="row align-items-center text-center">
+				<div class="col-3 border-right border-dark">
+					<div class="row align-items-center">
+						<div class="col">
+							<input type="text" name="from_day{{ x }}" id="from_day{{ x }}" maxlength="2" class="form-control form-control-sm from_day" value="{{ (x == 1) ? 1 : code.from_day(x) }}" readonly>
+						</div>
+						<div class="col">
+							<input tabindex="{{x}}0" type="text" name="thru_day{{ x }}" id="thru_day{{ x }}" maxlength="2" class="form-control form-control-sm thru_day" value="{{ code.thru_day(x) == 0 and x == 1 ? 99 : code.thru_day(x) }}" {{ code.thru_day(x) == 0 and x != 1 ? 'disabled' : '' }}>
+						</div>
+					</div>
+				</div>
+				<div class="col-6 border-right border-dark">
+					<div class="row align-items-center row{{ x }} eom_discount" data-index="{{ x }}" row="{{ x }}">
+						<div class="col">
+							<input tabindex="{{x}}1" type="text" name="eom_percent{{ x }}" id="eom_percent{{ x }}" maxlength="6" class="form-control form-control-sm eom_percent" value="{{ code.eom_percent(x) ? code.eom_percent(x) : 0 }}" {{ code.thru_day(x) == 0 and x != 1 ? 'disabled' : '' }}>
+						</div>
+						<div class="col">
+							<input tabindex="{{x}}2" type="text" name="eom_day{{ x }}" id="eom_day{{ x }}" maxlength="2" class="form-control form-control-sm eom_day" value="{{ code.eom_day(x) ? code.eom_day(x) : 0 }}" {{ code.eom_percent(x) == 0 ? 'disabled' : '' }}>
+						</div>
+						<div class="col">
+							<input tabindex="{{x}}3" type="text" name="eom_disc_months{{ x }}" id="eom_disc_months{{ x }}" maxlength="2" class="form-control form-control-sm eom_disc_months" value="{{ code.eom_disc_months(x) ? code.eom_disc_months(x) : 0 }}" {{ code.eom_percent(x) == 0 ? 'disabled' : '' }}>
+						</div>
+					</div>
+				</div>
+				<div class="col-3">
+					<div class="row align-items-center row{{ x }} due" data-index="{{ x }}">
+						<div class="col">
+							<input tabindex="{{x}}4" type="text" name="eom_dueday{{ x }}" id="eom_dueday{{ x }}" maxlength="2" class="form-control form-control-sm eom_dueday" value="{{ code.eom_dueday(x) ? code.eom_dueday(x) : 0 }}" {{ code.thru_day(x) == 0 and x != 1 ? 'disabled' : '' }}>
+						</div>
+						<div class="col">
+							<input tabindex="{{x}}5" type="text" name="eom_months{{ x }}" id="eom_months{{ x }}" maxlength="2" class="form-control form-control-sm eom_months" value="{{ code.eom_months(x) ? code.eom_months(x) : 0 }}" {{ code.thru_day(x) == 0 and x != 1 ? 'disabled' : '' }}>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="error text-center">
+
+			</div>
+		</div>
+	{% endfor %}
+</div>
+
+
+
+
+
+<!-- <div class="row">
     <div class="col-10">
         <div class="row text-sm">
             <div class="col">
@@ -92,4 +189,4 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->

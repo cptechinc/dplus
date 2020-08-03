@@ -101,7 +101,7 @@ function due_feedback(duerow, order_percent, callback) {
 	var order_percent = order_percent;
 	var valid = false;
 
-	if (input_days.val() == '0' && input_day.val() == '0' && input_date.val() == '' && order_percent != '') {
+	if (input_days.val() == '0' && input_day.val() == '0' && input_date.val() == '' && order_percent.val() != '') {
 		valid = false;
 		input_days.removeClass('valid').addClass('is-invalid');
 		input_day.removeClass('valid').addClass('is-invalid');
