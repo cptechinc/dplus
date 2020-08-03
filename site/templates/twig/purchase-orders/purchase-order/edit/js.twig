@@ -24,6 +24,7 @@ $(function () {
 	function populate_item_inputs(linenbr) {
 		var item = items[linenbr];
 		var form = new EditItemForm(form_edit);
+		form.inputs.linenbr.val(linenbr);
 		form.inputs.itemID.val(item.itemid);
 		form.inputs.description.val(item.description);
 		form.inputs.vendoritemID.val(item.vendoritemid);
@@ -41,6 +42,7 @@ $(function () {
 		this.form = form;
 		this.id = form.attr('id');
 		this.inputs = {
+			linenbr: form.find('input[name=linenbr]'),
 			itemID: form.find('input[name=itemID]'),
 			description: form.find('input[name=description]'),
 			vendoritemID: form.find('input[name=vendoritemID]'),

@@ -67,6 +67,9 @@ class PurchaseOrderEdit extends WireData implements Module {
 			case 'add-item':
 				$this->process_input_add_item($input);
 				break;
+			case 'update-item':
+				$this->process_input_update_item($input);
+				break;
 		}
 	}
 
@@ -86,6 +89,36 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$this->wire('session')->response_epo = $response;
 	}
 
+	public function process_input_update_item($input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$ponbr = $values->text('ponbr');
+		$linenbr = $values->int('linenbr');
+		$q = $this->get_query_details($ponbr);
+		$item = $q->findOneByLinenbr($linenbr);
+		$this->update_item($item, $input);
+
+		if ($item->save()) {
+			$this->request_update_item($ponbr, $linenbr);
+			$response = MpoResponse::response_success($values->text('ponbr'), "Line #$linenbr was updated");
+		} else {
+			$response = MpoResponse::response_error($values->text('ponbr'), "Line #$linenbr was not updated");
+		}
+		$this->wire('session')->response_epo = $response;
+	}
+
+	protected function update_item(EditPoDetail $item, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$item->setItemid($values->text('itemID'));
+		$item->setDescription($values->text('description'));
+		$item->setVendoritemid($values->text('vendoritemID'));
+		$item->setWhse($values->text('whse'));
+		$item->setQty_ordered($values->text('qty_ordered'));
+		$item->setCost($values->text('cost'));
+		$item->setCost_total($values->text('cost_total'));
+	}
+
 /* =============================================================
 	Dplus Request Functions
 ============================================================= */
@@ -102,6 +135,15 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
 		$data = array("DBNAME=$dplusdb", 'ADDPURCHASEORDERLINE', "PONBR=$ponbr", "ITEMID=$itemID", "QTY=$qty");
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
+	}
+
+	public function request_update_item($ponbr, int $linenbr = 0) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'SAVEPURCHASEORDERLINE', "PONBR=$ponbr", "LINE=$linenbr");
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());
 		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
