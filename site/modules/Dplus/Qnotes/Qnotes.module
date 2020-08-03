@@ -9,18 +9,16 @@ class Qnotes extends WireData implements Module {
 	 */
 	public function note_lines($note, int $length = 0) {
 		$lines = array();
-		$lines_input = explode(PHP_EOL, $note);
 
-		foreach ($lines_input as $line_input) {
-			if ($length && strlen($line_input) > $length) {
-				$cluster = str_split($line_input, $length);
-
-				foreach ($cluster as $banana) {
-					$lines[] = $banana;
-				}
-			} else {
-				$lines[] = $line_input;
-			}
+		if ($length) {
+			$wrapped = wordwrap($note, $length, PHP_EOL);
+			$note_lines = explode(PHP_EOL, $wrapped);
+		} else {
+			$note_lines = explode(PHP_EOL, $note);
+		}
+		
+		foreach ($note_lines as $line) {
+			$lines[] = $line;
 		}
 		return $lines;
 	}
