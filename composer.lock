@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "cfa9d9f757cae8208471dee999966640b38549d6"
+                "reference": "28fef8b3b46ca67a7bf64752dfb0426ba0e52c97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/cfa9d9f757cae8208471dee999966640b38549d6",
-                "reference": "cfa9d9f757cae8208471dee999966640b38549d6",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/28fef8b3b46ca67a7bf64752dfb0426ba0e52c97",
+                "reference": "28fef8b3b46ca67a7bf64752dfb0426ba0e52c97",
                 "shasum": ""
             },
             "type": "library",
@@ -39,7 +39,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2020-07-29T19:23:52+00:00"
+            "time": "2020-08-03T20:58:20+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
@@ -47,12 +47,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dpluso-model.git",
-                "reference": "17f9c727f2c68a339e1e94c462eb0e41285fe2d9"
+                "reference": "1c3a5dc9da56a3c63480fb82eee58f254d25613c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/17f9c727f2c68a339e1e94c462eb0e41285fe2d9",
-                "reference": "17f9c727f2c68a339e1e94c462eb0e41285fe2d9",
+                "url": "https://api.github.com/repos/cptechinc/dpluso-model/zipball/1c3a5dc9da56a3c63480fb82eee58f254d25613c",
+                "reference": "1c3a5dc9da56a3c63480fb82eee58f254d25613c",
                 "shasum": ""
             },
             "type": "library",
@@ -74,7 +74,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2020-07-29T19:20:43+00:00"
+            "time": "2020-08-03T18:31:46+00:00"
         },
         {
             "name": "jeremykendall/php-domain-parser",
@@ -600,12 +600,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "e4a70bd8c5a4382630197b7b87910b3fc0e6b526"
+                "reference": "a0ff40f1c02a79acdd0a71f85543eebb9df1cdc2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/e4a70bd8c5a4382630197b7b87910b3fc0e6b526",
-                "reference": "e4a70bd8c5a4382630197b7b87910b3fc0e6b526",
+                "url": "https://api.github.com/repos/symfony/console/zipball/a0ff40f1c02a79acdd0a71f85543eebb9df1cdc2",
+                "reference": "a0ff40f1c02a79acdd0a71f85543eebb9df1cdc2",
                 "shasum": ""
             },
             "require": {
@@ -677,7 +677,7 @@
                 "console",
                 "terminal"
             ],
-            "time": "2020-07-06T13:25:45+00:00"
+            "time": "2020-07-31T07:51:09+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -1280,12 +1280,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "b7914561c03f8d78f83eec3ec4502adbdc343c48"
+                "reference": "b43ba9986688d950e4f4c35e8fce5faa57c8ced0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/b7914561c03f8d78f83eec3ec4502adbdc343c48",
-                "reference": "b7914561c03f8d78f83eec3ec4502adbdc343c48",
+                "url": "https://api.github.com/repos/symfony/string/zipball/b43ba9986688d950e4f4c35e8fce5faa57c8ced0",
+                "reference": "b43ba9986688d950e4f4c35e8fce5faa57c8ced0",
                 "shasum": ""
             },
             "require": {
@@ -1343,7 +1343,7 @@
                 "utf-8",
                 "utf8"
             ],
-            "time": "2020-07-08T08:28:10+00:00"
+            "time": "2020-07-31T07:11:18+00:00"
         },
         {
             "name": "symfony/translation",
@@ -1490,12 +1490,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "7937aad92aebd10e3b304beeb9e235a372bbb0da"
+                "reference": "327baf60febad6ae792a98c55bfa540a9276b440"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/7937aad92aebd10e3b304beeb9e235a372bbb0da",
-                "reference": "7937aad92aebd10e3b304beeb9e235a372bbb0da",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/327baf60febad6ae792a98c55bfa540a9276b440",
+                "reference": "327baf60febad6ae792a98c55bfa540a9276b440",
                 "shasum": ""
             },
             "require": {
@@ -1579,7 +1579,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2020-07-23T08:36:44+00:00"
+            "time": "2020-08-02T08:06:13+00:00"
         },
         {
             "name": "symfony/yaml",
