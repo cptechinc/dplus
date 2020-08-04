@@ -11,11 +11,12 @@
 			$page->title = "Purchase Order #$ponbr";
 			$purchaseorder = $query->findOne();
 			$documents = $docm->get_documents_po($ponbr);
+			$qnotes = $modules->get('QnotesPo');
 
 			$page->body .= $config->twig->render('purchase-orders/purchase-order/links-header.twig', ['page' => $page, 'purchaseorder' => $purchaseorder]);
 			$page->body .= $config->twig->render('purchase-orders/purchase-order/purchase-order.twig', ['page' => $page, 'user' => $user, 'purchaseorder' => $purchaseorder]);
 			$page->body .= $config->twig->render('purchase-orders/purchase-order/documents.twig', ['page' => $page, 'ponbr' => $ponbr, 'documents' => $documents]);
-			$page->body .= $config->twig->render('purchase-orders/purchase-order/qnotes.twig', ['page' => $page, 'ponbr' => $ponbr, 'notes' => $purchaseorder->get_notes()]);
+			$page->body .= $config->twig->render('purchase-orders/purchase-order/qnotes.twig', ['page' => $page, 'ponbr' => $ponbr, 'qnotes' => $qnotes]);
 			$page->body .= $config->twig->render('purchase-orders/purchase-order/invoices.twig', ['page' => $page, 'purchaseorder' => $purchaseorder]);
 		} else {
 			$page->headline = $page->title = "Purchase Order #$ponbr could not be found";

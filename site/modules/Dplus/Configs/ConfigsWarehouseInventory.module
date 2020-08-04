@@ -7,6 +7,7 @@ include_once(__DIR__.'/Configs.trait.php');
  */
 class ConfigsWarehouseInventory extends Process implements ConfigurableModule {
 	use ConfigTraits;
+	
 /* =============================================================
 		ProcessWire Module Functions
 =============================================================== */

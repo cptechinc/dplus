@@ -3,18 +3,21 @@
 	-------------------------------------------------
 	page                   ProcessWire\Page
 	po                     EditPoHead
+	epo                    PurchaseOrderEdit
 #}
-<form action="{{ page.url }}" method="POST">
+<form action="{{ page.url }}" method="POST" class="mb-3">
 	<div class="row">
 		<div class="col-sm-6">
-			<div class="form-group">
-				<label for="vendorID">Vendor ID</label>
-				<input type="text" class="form-control" name="vendorID" id="vendorID" value="{{ po.vendorid }}">
-			</div>
-			<div class="form-group">
-				<label for="releasenumber">Release Number</label>
-				<input type="text" class="form-control" name="releasenbr" id="releasenbr" value="{{ po.releasenbr }}">
-			</div>
+			{% include 'purchase-orders/purchase-order/edit/header/form-left.twig' %}
 		</div>
 	</div>
+	<div class="d-flex w-100 justify-content-between">
+		<button class="btn btn-success">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<a href="{{ page.po_exitURL(po.ponbr) }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
+	</div>
 </form>
+<hr>

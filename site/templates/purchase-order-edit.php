@@ -5,7 +5,12 @@
 
 	if ($values->action) {
 		$epo->process_input($input);
-		$session->redirect($page->po_editURL($values->text('ponbr')), $http301 = false);
+		if ($values->text('action') == 'exit') {
+			$url = $page->po_viewURL($values->text('ponbr'));
+		} else {
+			$url = $page->po_editURL($values->text('ponbr'));
+		}
+		$session->redirect($url, $http301 = false);
 	}
 
 	if ($input->get->ponbr) {

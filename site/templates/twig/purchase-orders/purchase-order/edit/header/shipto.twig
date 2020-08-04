@@ -1,0 +1,28 @@
+<h3 class="font-weight-bold text-secondary">Ship-To Name / Address</h3>
+{% set fields = ['shipto_name', 'shipto_address', 'shipto_address2', 'shipto_address3'] %}
+
+{% for field in fields %}
+	<div class="form-group">
+		<label for="{{ field }}">{{ field|replace({'shipto_': ''})|capitalize }}</label>
+		<input type="text" class="form-control form-control-sm" name="{{ field }}" id="{{ field }}" value="{{ po|objproperty(field) }}">
+	</div>
+{% endfor %}
+
+<div class="row">
+	<div class="col-sm-4 form-group">
+		<label for="shipto_city">City</label>
+		<input type="text" class="form-control form-control-sm" name="shipto_city" id="shipto_city" value="{{ po.shipto_city }}">
+	</div>
+	<div class="col-sm-4 form-group">
+		<label for="shipto_state">State</label>
+		<select name="shipto_state" id="shipto_state" class="form-control form-control-sm">
+			{% for state in epo.get_states() %}
+				<option value="{{ state.abbreviation }}" {{ state.abbreviation == po.shipto_state ? 'selected' : ''}}>{{ state.name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+	<div class="col-sm-4 form-group">
+		<label for="shipto_zip">Zip</label>
+		<input type="text" class="form-control form-control-sm" name="shipto_zip" value="{{ order.shipto_zip }}">
+	</div>
+</div>
