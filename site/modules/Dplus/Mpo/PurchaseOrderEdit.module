@@ -7,9 +7,11 @@ use PurchaseOrderQuery, PurchaseOrder;
 use PurchaseOrderDetailReceivingQuery, PurchaseOrderDetailReceiving;
 use ApInvoiceDetailQuery, ApInvoiceDetail;
 use WarehouseQuery, Warehouse;
+use VendorQuery, Vendor;
 
 use EditPoHeadQuery, EditPoHead;
 use EditPoDetailQuery, EditPoDetail;
+use StatesQuery, States;
 
 include(__DIR__.'/MpoResponse.php');
 
@@ -69,6 +71,8 @@ class PurchaseOrderEdit extends WireData implements Module {
 				break;
 			case 'update-item':
 				$this->process_input_update_item($input);
+				break;
+			case 'exit':
 				break;
 		}
 	}
@@ -173,6 +177,19 @@ class PurchaseOrderEdit extends WireData implements Module {
 		return $url->getUrl();
 	}
 
+	public function get_po_exitURL($ponbr) {
+		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-edit')->url);
+		$url->query->set('action', 'exit');
+		$url->query->set('ponbr', $ponbr);
+		return $url->getUrl();
+	}
+
+	public function get_po_viewURL($ponbr) {
+		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-view')->url);
+		$url->query->set('ponbr', $ponbr);
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
@@ -255,6 +272,18 @@ class PurchaseOrderEdit extends WireData implements Module {
 	public function get_warehouses() {
 		return WarehouseQuery::create()->find();
 	}
+
+	public function get_vendor($vendorID) {
+		return VendorQuery::create()->findOneByVendorid($vendorID);
+	}
+
+	/**
+	 * Return US States
+	 * @return States[]|ObjectCollection
+	 */
+	public function get_states() {
+		return StatesQuery::create()->select(['name', 'abbreviation'])->find();
+	}
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
@@ -275,6 +304,16 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$this->addHook('Page(pw_template=purchase-order-edit)::po_editURL', function($event) {
 			$ponbr = $event->arguments(0);
 			$event->return = $this->get_po_editURL($ponbr);
+		});
+
+		$this->addHook('Page(pw_template=purchase-order-edit)::po_exitURL', function($event) {
+			$ponbr = $event->arguments(0);
+			$event->return = $this->get_po_exitURL($ponbr);
+		});
+
+		$this->addHook('Page(pw_template=purchase-order-edit)::po_viewURL', function($event) {
+			$ponbr = $event->arguments(0);
+			$event->return = $this->get_po_viewURL($ponbr);
 		});
 	}
 
