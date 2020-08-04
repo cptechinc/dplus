@@ -1,13 +1,10 @@
 <?php namespace ProcessWire;
 
-include_once(__DIR__.'/Configs.trait.php');
-
 /**
  * Module for Warehouse Inventory configurations
  */
 class ConfigsWarehouseInventory extends Process implements ConfigurableModule {
-	use ConfigTraits;
-	
+
 /* =============================================================
 		ProcessWire Module Functions
 =============================================================== */
@@ -69,7 +66,7 @@ class ConfigsWarehouseInventory extends Process implements ConfigurableModule {
 	=============================================================== */
 	public function init() {
 		parent::init();
-		$this->init_configdata();
+		$this->wire('modules')->get('ConfigsFields')->init_config($this);
 	}
 
 	/**
@@ -89,54 +86,14 @@ class ConfigsWarehouseInventory extends Process implements ConfigurableModule {
 
 	static public function getModuleConfigInputfields(array $data) {
 		$modules = wire('modules');
+		$fieldmaker = $modules->get('ConfigsFields');
 		$fields = new InputfieldWrapper();
 		$data = array_merge(self::DEFAULT_CONFIG, $data);
 
-		$traits = self::CONFIG_FIELDS['allow_negativeinventory'];
-		$f = $modules->get('InputfieldCheckbox');
-		$f->attr('name', 'allow_negativeinventory');
-		$f->attr('checked', $data['allow_negativeinventory'] ? 'checked' : '' );
-		$f->label = __($traits['label']);
-		$f->description = __($traits['description']);
-		$f->notes = _($traits['notes']);
-		$fields->add($f);
-
-		$traits = self::CONFIG_FIELDS['physicalcount_savebin'];
-		$f = $modules->get('InputfieldCheckbox');
-		$f->attr('name', 'physicalcount_savebin');
-		$f->attr('checked', $data['physicalcount_savebin'] ? 'checked' : '' );
-		$f->label = __($traits['label']);
-		$f->description = __($traits['description']);
-		$f->notes = _($traits['notes']);
-		$fields->add($f);
-
-		$traits = self::CONFIG_FIELDS['receive_lotserial_as_single'];
-		$f = $modules->get('InputfieldCheckbox');
-		$f->attr('name', 'receive_lotserial_as_single');
-		$f->attr('checked', $data['receive_lotserial_as_single'] ? 'checked' : '' );
-		$f->label = __($traits['label']);
-		$f->description = __($traits['description']);
-		$f->notes = _($traits['notes']);
-		$fields->add($f);
-
-		$traits = self::CONFIG_FIELDS['receive_force_bin_itemlookup'];
-		$f = $modules->get('InputfieldCheckbox');
-		$f->attr('name', 'receive_force_bin_itemlookup');
-		$f->attr('checked', $data['receive_force_bin_itemlookup'] ? 'checked' : '' );
-		$f->label = __($traits['label']);
-		$f->description = __($traits['description']);
-		$f->notes = _($traits['notes']);
-		$fields->add($f);
-
-		$traits = self::CONFIG_FIELDS['receive_disregard_bin'];
-		$f = $modules->get('InputfieldCheckbox');
-		$f->attr('name', 'receive_disregard_bin');
-		$f->attr('checked', $data['receive_disregard_bin'] ? 'checked' : '' );
-		$f->label = __($traits['label']);
-		$f->description = __($traits['description']);
-		$f->notes = _($traits['notes']);
-		$fields->add($f);
-
+		foreach (self::CONFIG_FIELDS as $name => $traits) {
+			$f = $fieldmaker->get_module_config_inputfield($traits, $name, $data[$name]);
+			$fields->add($f);
+		}
 		return $fields;
 	}
 }
