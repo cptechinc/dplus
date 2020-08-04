@@ -2,6 +2,28 @@
 
 class Qnotes extends WireData implements Module {
 	/**
+	 * Returns Lines Broken down by line limits
+	 * @param  string $note   Text Area Note
+	 * @param  int    $length Line Length Limit
+	 * @return array
+	 */
+	public function note_lines($note, int $length = 0) {
+		$lines = array();
+
+		if ($length) {
+			$wrapped = wordwrap($note, $length, PHP_EOL);
+			$note_lines = explode(PHP_EOL, $wrapped);
+		} else {
+			$note_lines = explode(PHP_EOL, $note);
+		}
+
+		foreach ($note_lines as $line) {
+			$lines[] = $line;
+		}
+		return $lines;
+	}
+
+	/**
 	 * Return Data needed for Dplus to UPDATE the Customer Type Notes
 	 * @param  string $notetype Note Type @see WarehouseNote::TYPES
 	 * @param  string $key2     Key 2
@@ -41,7 +63,9 @@ class Qnotes extends WireData implements Module {
 				'QnotesSalesHistory',
 				'QnotesQuote',
 				'QnotesItem',
-				'QnotesPredefined'
+				'QnotesPredefined',
+				'Qponotes',
+				'QnotesPo'
 			)
 		);
 	}
