@@ -106,6 +106,16 @@
 	});
 	$config->twig->addFilter($filter);
 
+	$filter = new Twig_Filter('dynamicproperty', function ($object, $property) {
+		return $object->$property;
+	});
+	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('objproperty', function ($object, $property) {
+		return $object->$property;
+	});
+	$config->twig->addFilter($filter);
+
 	$filter = new Twig_Filter('stripslashes', function ($str) {
 		return stripslashes($str);
 	});
