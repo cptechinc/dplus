@@ -13,6 +13,14 @@ footer {
 	padding-top: 15px;
 }
 
+.smaller {
+	font-size: 70%;
+}
+
+table.table-md td, table.table-md th {
+	padding: .5rem;
+}
+
 /**************************************
 	Bootstrap Styles
 **************************************/
