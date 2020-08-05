@@ -25,7 +25,7 @@
 
 			<div class="form-group">
 				<label for="hold">Hold</label>
-				{% include 'util/select.twig' with {'name': 'hold', 'id': 'hold', 'hideblankoption': 'true', 'tabindex': '7', 'selectedvalue': code.hold, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				{% include 'util/select.twig' with {'name': 'hold', 'id': 'hold', 'hideblankoption': 'true', 'tabindex': '7', 'selectedvalue': (code.hold ? code.hold : 'N'), 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 			<div class="form-group">
 				<label for="exp_date">Expire Date</label>

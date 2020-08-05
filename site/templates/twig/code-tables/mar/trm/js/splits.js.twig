@@ -1,15 +1,15 @@
 $(function () {
-	$("body").on('blur', '#standard-terms-form input', function(e) {
-		if (e.relatedTarget) {
-			var target = $(e.relatedTarget);
-
-			valid_discounts(target);
-
-			if ($('.discount input.is-invalid').length == 0) {
-				valid_due(target);
-			}
-		}
-	});
+	// $("body").on('blur', '#standard-terms-form input', function(e) {
+	// 	if (e.relatedTarget) {
+	// 		var target = $(e.relatedTarget);
+	//
+	// 		valid_discounts(target);
+	//
+	// 		if ($('.discount input.is-invalid').length == 0) {
+	// 			valid_due(target);
+	// 		}
+	// 	}
+	// });
 
 	$("body").on('change', '.order_percent', function(e) {
 		var input = $(this);
@@ -76,7 +76,7 @@ $(function () {
 								$('.split'+i).find('.order_percent').val(nextpercent);
 								$('.split'+i).find('.order_percent').prop('disabled', false);
 								$('.split'+i).find('.due_group').prop('disabled', false);
-								$('.split'+i).find('.discount_percent').prop('disabled', false);
+								$('.split'+i).find('.discount_percent').prop('disabled', false).focus();
 								break;
 							}
 						}
@@ -141,6 +141,3 @@ function valid_due(target) {
 		}
 	});
 }
-
-{% include 'code-tables/mar/trm/js/splits-discount.js.twig'%}
-{% include 'code-tables/mar/trm/js/splits-due.js.twig'%}
