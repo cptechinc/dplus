@@ -15,6 +15,7 @@
 		$config->inventory = $modules->get('ConfigsWarehouseInventory');
 		$page->bin = $config->inventory->physicalcount_savebin ? $session->receiving_bin : '';
 		$page->force_bin_itemlookup = $config->inventory->receive_force_bin_itemlookup;
+		$page->searchitemsURL = $pages->get('pw_template=itm-search')->httpUrl;
 
 		if ($config->inventory->physicalcount_savebin) {
 			$page->bin = $session->receiving_bin ? $session->receiving_bin : '';
@@ -58,7 +59,6 @@
 					}
 
 					if (trim($physicalitem->get_error()) == 'invalid item id') {
-						$page->searchitemsURL = $pages->get('pw_template=itm-search')->httpUrl;
 						$page->body .= $config->twig->render('warehouse/inventory/receiving/ugm/create-ilookup-item-form.twig', ['page' => $page, 'item' => $physicalitem, 'm_receiving' => $warehouse_receiving]);
 						$page->js   .= $config->twig->render('warehouse/inventory/receiving/ugm/ilookup.js.twig', ['page' => $page]);
 					} else {

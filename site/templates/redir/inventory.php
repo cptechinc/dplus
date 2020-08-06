@@ -297,7 +297,7 @@
 			$item->setLotserialref($input->$rm->text('lotserialref'));
 			$item->setBin($input->$rm->text('binID'));
 			$item->setQty($input->$rm->text('qty'));
-			$item->setProductiondate();
+			$item->setProductiondate($date);
 			$item->save();
 
 			$session->receiving_itemid = $item->itemid;

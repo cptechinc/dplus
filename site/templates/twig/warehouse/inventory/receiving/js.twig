@@ -13,6 +13,14 @@ $(function() {
 	var input_lotref = form_receive.find('input[name=lotserialref]');
 
 	var form_itemsearch = $('#item-search-form');
+	var modal_ajax = $('#ajax-modal');
+
+/* =============================================================
+	Event Methods
+============================================================= */
+	if (form_receive.length) {
+		input_qty.focus();
+	}
 
 	$("body").on("click", "#bins-modal .choose-bin", function(e) {
 		e.preventDefault();
@@ -22,6 +30,51 @@ $(function() {
 		input_bin.val(binID);
 		button.closest('.modal').modal('hide');
 	});
+
+/* =============================================================
+	AJAX Modal
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = '{{ page.searchitemsURL }}';
+		modal.attr('data-input', button.data('input'));
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal = button.closest('.modal');
+		var itemID = button.data('itemid');
+		var description = button.find('.description').text();
+		var input_field = $(modal.attr('data-input'));
+		input_field.val(itemID);
+		input_field.closest('.item-col').find('.description').text(description);
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+/* =============================================================
+	Edit Item Modal Methods
+============================================================= */
 
 	modal_itemedit.on('show.bs.modal', function (event) {
 		var modal = $(this);

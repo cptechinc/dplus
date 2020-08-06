@@ -15,12 +15,12 @@ class DpagesMwm extends Dpages implements Module {
 		'warehouse-menu' => array(
 			'name'   => 'warehouse-menu',
 			'fields' => array('title', 'dplus_function', 'summary'),
-			'paginated' => false
+			'paginated' => true
 		),
 		'warehouse-function' => array(
 			'name'   => 'warehouse-function',
 			'fields' => array('title', 'dplus_function', 'pw_template', 'summary'),
-			'paginated' => false
+			'paginated' => true
 		),
 		'whse-binr' => array(
 			'name'   => 'whse-binr',
@@ -76,7 +76,12 @@ class DpagesMwm extends Dpages implements Module {
 			'name'   => 'whse-print-received-item-label',
 			'fields' => array('title'),
 			'paginated' => false
-		)
+		),
+		'whse-receiving' => array(
+			'name'   => 'whse-receiving',
+			'fields' => array('title'),
+			'paginated' => false
+		),
 	);
 
 	const PAGES = array(

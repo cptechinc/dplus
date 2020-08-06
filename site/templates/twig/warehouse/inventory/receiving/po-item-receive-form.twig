@@ -75,7 +75,7 @@
 		<div class="col-sm-6">
 			<div class="form-group">
 				<label for="productiondate">Expire Date</label>
-				{% include 'util/date-picker.twig' with {'name': 'productiondate', 'id': 'productiondate', 'value': item.productiondate ? item.productiondate|convertdate('m/d/Y') : ''} %}
+				{% include 'util/date-picker.twig' with {'name': 'productiondate', 'id': 'productiondate', 'value': item.productiondate ? item.productiondate|convertdate('m/d/Y') : '', 'disabled': item.is_item_normal()} %}
 			</div>
 		</div>
 		<div class="col-sm-6">
