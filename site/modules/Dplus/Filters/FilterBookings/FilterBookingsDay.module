@@ -1,8 +1,6 @@
 <?php namespace ProcessWire;
 
-
-
-use BookingdQuery, Bookingd;
+use BookingDayDetailQuery, BookingDayDetail;
 
 use Propel\Runtime\ActiveQuery\Criteria;
 
@@ -14,7 +12,7 @@ class FilterBookingsDay extends FilterBookingsUser implements Module {
 
 	/**
 	 * Bookings Day Query
-	 * @var BookingdQuery
+	 * @var BookingDayDetailQuery
 	 */
 	protected $query;
 
@@ -30,14 +28,14 @@ class FilterBookingsDay extends FilterBookingsUser implements Module {
 	 * @return void
 	 */
 	public function init() {
-		$this->query = BookingdQuery::create();
+		$this->query = BookingDayDetailQuery::create();
 		$this->user = $this->wire('user');
 	}
 
 	/**
 	 * Returns Query after applying filters and selecting distinct Sales Order Numbers
 	 * @param  WireInput      $input Object with $_GET values and sanitizer functions
-	 * @return BookingdQuery         Query with Filters applied
+	 * @return BookingDayDetailQuery         Query with Filters applied
 	 */
 	public function get_bookings(WireInput $input) {
 		$this->select_distinct();
@@ -51,7 +49,7 @@ class FilterBookingsDay extends FilterBookingsUser implements Module {
 	 * Returns Query after applying filters
 	 * NOTE: Query is for getting all the Booking changes to a sales order on X day
 	 * @param  WireInput      $input Object with $_GET values and sanitizer functions
-	 * @return BookingdQuery         Query with Filters applied
+	 * @return BookingDayDetailQuery         Query with Filters applied
 	 */
 	public function get_day_salesorder_changes(WireInput $input) {
 		$this->filter_user();
@@ -65,7 +63,8 @@ class FilterBookingsDay extends FilterBookingsUser implements Module {
 	 * @return void
 	 */
 	public function select_distinct() {
-		$this->query->groupBy('salesordernbr');
+		$col_ordn = BookingDayDetail::get_aliasproperty('ordernumber');
+		$this->query->groupBy($col_ordn);
 	}
 
 	/**
@@ -74,7 +73,7 @@ class FilterBookingsDay extends FilterBookingsUser implements Module {
 	 */
 	public function filter_bookdate(WireInput $input) {
 		$date = $input->get->text('date');
-		$this->query->filterByBookdate(date('Ymd', strtotime($date)));
+		$this->query->filterByBookingdate(date('Ymd', strtotime($date)));
 	}
 
 	/**
@@ -83,7 +82,7 @@ class FilterBookingsDay extends FilterBookingsUser implements Module {
 	 */
 	public function filter_salesorder(WireInput $input) {
 		$ordn = $input->get->text('ordn');
-		$this->query->filterBySalesordernbr($ordn);
+		$this->query->filterByOrdernumber($ordn);
 	}
 
 	/* =============================================================

@@ -1,6 +1,6 @@
 <?php namespace ProcessWire;
 
-use BookingcQuery, Bookingc;
+use BookingDayCustomerQuery, BookingDayCustomer;
 
 use Propel\Runtime\ActiveQuery\Criteria;
 
@@ -8,10 +8,10 @@ require_once(__DIR__ . '/FilterBookingsUser.module');
 
 class FilterBookingsCustomer extends FilterBookingsUser implements Module {
 	protected $className ='FilterBookingsCustomer';
-	
+
 	/**
 	 * Query Class for the Bookings Customer table
-	 * @var BookingcQuery
+	 * @var BookingDayCustomerQuery
 	 */
 	protected $query;
 
@@ -21,7 +21,7 @@ class FilterBookingsCustomer extends FilterBookingsUser implements Module {
 	 * @return void
 	 */
 	public function init() {
-		$this->query = BookingcQuery::create();
+		$this->query = BookingDayCustomerQuery::create();
 		$this->user = $this->wire('user');
 	}
 
@@ -29,10 +29,10 @@ class FilterBookingsCustomer extends FilterBookingsUser implements Module {
 	 * Return query with filters applied
 	 * NOTE: Groups results by Custid
 	 * @param  WireInput $input Object contatining $_GET values
-	 * @return BookingcQuery    Query with filters applied
+	 * @return BookingDayCustomerQuery    Query with filters applied
 	 */
 	public function get_bookings_by_customer(WireInput $input) {
-		$this->query = BookingcQuery::create();
+		$this->query = BookingDayCustomerQuery::create();
 		$this->determine_interval($input);
 		$this->select_bookings_by_customer();
 		$this->filter_user();
@@ -44,10 +44,10 @@ class FilterBookingsCustomer extends FilterBookingsUser implements Module {
 	 * Return query with filters applied
 	 * NOTE: Groups results by Custid, Shiptoid
 	 * @param  WireInput $input Object contatining $_GET values
-	 * @return BookingcQuery    Query with filters applied
+	 * @return BookingDayCustomerQuery    Query with filters applied
 	 */
 	public function get_bookings_by_shipto(WireInput $input) {
-		$this->query = BookingcQuery::create();
+		$this->query = BookingDayCustomerQuery::create();
 		$this->determine_interval($input);
 		$this->select_bookings_by_shipto();
 		$this->filter_user();
@@ -58,18 +58,47 @@ class FilterBookingsCustomer extends FilterBookingsUser implements Module {
 	}
 
 	/**
+	 * Adds Columns, Grouping to the query depending on the Interval
+	 * @return void
+	 */
+	public function select_interval() {
+		switch ($this->interval) {
+			case 'month':
+				$column_date = BookingDayCustomer::get_aliasproperty('bookingdate');
+				$column_amt = BookingDayCustomer::get_aliasproperty('amount');
+				$this->query->withColumn("CAST(CONCAT(YEAR($column_date), LPAD(MONTH($column_date), 2, '0'), '01') AS UNSIGNED)", 'bookingdate');
+				$this->query->withColumn("SUM($column_amt)", 'amount');
+				$this->query->withColumn("MONTH($column_date)", 'month');
+				$this->query->withColumn("YEAR($column_date)", 'year');
+				$this->query->groupBy(['year', 'month']);
+				break;
+			case 'day':
+				$column_date = BookingDayCustomer::get_aliasproperty('bookingdate');
+				$column_amt = BookingDayCustomer::get_aliasproperty('amount');
+				$this->query->withColumn("SUM($column_amt)", 'amount');
+				$this->query->groupBy($column_date);
+				break;
+		}
+	}
+
+	/**
 	 * Adds Sum column, groups by custid
 	 * @return void
 	 */
 	public function select_bookings_by_customer() {
+		$column_amt = BookingDayCustomer::get_aliasproperty('amount');
+		$column_custid   = BookingDayCustomer::get_aliasproperty('custid');
+
 		switch ($this->interval) {
 			case 'month':
-				$this->query->withColumn('SUM(amount)', 'amount');
-				$this->query->groupBy('custid');
+				$column_custid   = BookingDayCustomer::get_aliasproperty('custid');
+				$this->query->withColumn("SUM($column_amt)", 'amount');
+				$this->query->groupBy([$column_custid]);
 				break;
 			case 'day':
-				$this->query->withColumn('SUM(amount)', 'amount');
-				$this->query->groupBy(['custid', 'bookdate']);
+				$column_date = BookingDayCustomer::get_aliasproperty('bookingdate');
+				$this->query->withColumn("SUM($column_amt)", 'amount');
+				$this->query->groupBy([$column_custid, $column_date]);
 				break;
 		}
 	}
@@ -78,14 +107,19 @@ class FilterBookingsCustomer extends FilterBookingsUser implements Module {
 	 * @return void
 	 */
 	public function select_bookings_by_shipto() {
+		$column_amt = BookingDayCustomer::get_aliasproperty('amount');
+		$column_custid   = BookingDayCustomer::get_aliasproperty('custid');
+		$column_shiptoid = BookingDayCustomer::get_aliasproperty('shiptoid');
+
 		switch ($this->interval) {
 			case 'month':
-				$this->query->withColumn('SUM(amount)', 'amount');
-				$this->query->groupBy(['custid', 'shiptoid']);
+				$this->query->withColumn("SUM($column_amt)", 'amount');
+				$this->query->groupBy([$column_custid, $column_shiptoid]);
 				break;
 			case 'day':
-				$this->query->withColumn('SUM(amount)', 'amount');
-				$this->query->groupBy(['custid', 'shiptoid', 'bookdate']);
+				$column_date = BookingDayCustomer::get_aliasproperty('bookingdate');
+				$this->query->withColumn("SUM($column_amt)", 'amount');
+				$this->query->groupBy([$column_custid, $column_shiptoid, $column_date]);
 				break;
 		}
 	}
