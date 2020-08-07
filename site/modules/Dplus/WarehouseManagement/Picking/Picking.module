@@ -177,8 +177,6 @@ class Picking extends WireData implements Module {
 		$orderitem = $this->items->get_picksalesorderdetail_itemid($itemID);
 		$recordnumbers = array();
 
-
-
 		foreach ($lotserialbins as $lotserialbin) {
 			$qty       = $values->text("$lotserialbin-qty");
 			$binID     = $values->text("$lotserialbin-bin");
@@ -346,7 +344,7 @@ class Picking extends WireData implements Module {
 		$item->setLotserialref($values->text('lotserialref'));
 		$item->setLotserial($values->text('lotserial'));
 
-		if ($orderitem->is_item_serialized()) {
+		if ($this->inventory->is_item_serialized($orderitem->itemnbr)) {
 			$item->setQty(1);
 		} else {
 			// QTY could be float
@@ -371,20 +369,23 @@ class Picking extends WireData implements Module {
 	 */
 	public function send_finishline_request($linenbr, $debug = false) {
 		$orderitem = $this->items->get_picksalesorderdetail_linenbr($linenbr);
-
 		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
-
 		$data = array("DBNAME=$dplusdb", 'ACCEPTITEM', "ORDERNBR=$this->ordn", "LINENBR=$linenbr", "ITEMID=$orderitem->itemnbr");
 		$data = $this->write_acceptitem_data($data, $orderitem);
 
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());
-		
 		if ($debug == false) {
 			$requestor->cgi_request($this->wire('config')->cgis['warehouse'], session_id());
 		}
 	}
 
+	/**
+	 * Appends Picked Line Item data to array
+	 * @param  array                $data      Dplus Request array
+	 * @param  PickSalesOrderDetail $orderitem Sales Order Item
+	 * @return array
+	 */
 	public function write_acceptitem_data(array $data, PickSalesOrderDetail $orderitem) {
 		if ($this->inventory->is_item_lotserialized($orderitem->itemnbr)) {
 			$barcodes = $orderitem->get_userpickedtotalsbylotserial();
@@ -393,17 +394,44 @@ class Picking extends WireData implements Module {
 				$data[] = "BIN=$barcode->bin|LOTSERIAL=$barcode->lotserial|QTY=$barcode->qty";
 			}
 		} else {
-
-			$barcodes = $orderitem->get_userpickedtotalsbybin();
+			$barcodes = $this->get_picked_sum_by_bin($orderitem);
 
 			foreach ($barcodes as $barcode) {
+				$qty = $barcode['qty'];
 				$binID     = str_pad($barcode['bin'], 8, ' ');
 				$lotserial = str_pad('', 20, ' ');
-				$qty       = $barcode['qty'];
 				$data[]    = "BIN=$binID|LOTSERIAL=$lotserial|QTY=$qty";
 			}
 		}
 		return $data;
+	}
+
+	/**
+	 * Get picked sum for Line, Subline
+	 * @param  PickSalesOrderDetail $orderitem Sales Order Item
+	 * @return float
+	 */
+	protected function get_picked_sum(PickSalesOrderDetail $orderitem) {
+		$q = WhseitempickQuery::create();
+		$q->withColumn('SUM(qty)', 'qty');
+		$q->select('qty');
+		$q->filterBySessionid($orderitem->sessionID);
+		$q->filterByOrdn($orderitem->ordernbr);
+		$q->filterByLinenbr($orderitem->linenbr);
+		$q->filterBySublinenbr($orderitem->sublinenbr);
+		return $q->findOne();
+	}
+
+	protected function get_picked_sum_by_bin(PickSalesOrderDetail $orderitem) {
+		$q = WhseitempickQuery::create();
+		$q->withColumn('SUM(qty)', 'qty');
+		$q->select(array('qty', 'bin'));
+		$q->filterBySessionid($orderitem->sessionID);
+		$q->filterByOrdn($orderitem->ordernbr);
+		$q->filterByLinenbr($orderitem->linenbr);
+		$q->filterBySublinenbr($orderitem->sublinenbr);
+		$q->groupBy('bin');
+		return $q->find();
 	}
 
 	/**
