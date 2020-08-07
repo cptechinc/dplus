@@ -94,7 +94,11 @@
 		if ($pickingsession->items->has_sublines()) {
 			$page->body .= $config->twig->render('warehouse/picking/unguided/order-items-sublined.twig', ['page' => $page, 'lineitems' => $lines_query->find()]);
 		} else {
-			$page->body .= $config->twig->render('warehouse/picking/unguided/order-items.twig', ['page' => $page, 'lineitems' => $lines_query->find()]);
+			if ($config->twigloader->exists("warehouse/picking/unguided/$config->company/order-items.twig")) {
+				$page->body .= $config->twig->render("warehouse/picking/unguided/$config->company/order-items.twig", ['page' => $page, 'lineitems' => $lines_query->find(), 'm_picking' => $pickingsession]);
+			} else {
+				$page->body .= $config->twig->render('warehouse/picking/unguided/order-items.twig', ['page' => $page, 'lineitems' => $lines_query->find(), 'm_picking' => $pickingsession]);
+			}
 		}
 
 		$page->body .= $html->div('class=mb-3');
