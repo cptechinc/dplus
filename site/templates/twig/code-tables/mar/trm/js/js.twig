@@ -226,7 +226,8 @@ function get_sum_orderpercent() {
 		return true;
 	}
 
-	function validate_discount_day(value) {
+	function validate_discount_day(element, value) {
+		var input = $(element);
 		var days = parseInt(value);
 
 		if (days < 0 || days > 31) {
@@ -449,7 +450,6 @@ function get_sum_orderpercent() {
 				order_percent1: true,
 				discount_percent: true,
 				discount_row: true,
-				due_row: true,
 			},
 			disc_group: 'required',
 		},

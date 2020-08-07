@@ -37,8 +37,9 @@ $(function () {
 			if (index == 1) {
 				if (input.val() < 100 && input.val() > 0) {
 					var next = index + 1;
+					var origpercent = $('.split'+(index+1)).find('.order_percent').val();
 					var nextpercent = 100 - sumpercent;
-					$('.split'+next).find('.order_percent').val(nextpercent);
+					$('.split'+next).find('.order_percent').val(parseFloat(origpercent) + parseFloat(nextpercent));
 					$('.split'+next).find('.order_percent, .due_group, .discount_percent').prop('disabled', false);
 					$('#freight_allow').val("N");
 					$('#freight_allow').prop("disabled", true);
