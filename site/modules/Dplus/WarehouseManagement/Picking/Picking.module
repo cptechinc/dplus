@@ -406,22 +406,6 @@ class Picking extends WireData implements Module {
 		return $data;
 	}
 
-	/**
-	 * Get picked sum for Line, Subline
-	 * @param  PickSalesOrderDetail $orderitem Sales Order Item
-	 * @return float
-	 */
-	protected function get_picked_sum(PickSalesOrderDetail $orderitem) {
-		$q = WhseitempickQuery::create();
-		$q->withColumn('SUM(qty)', 'qty');
-		$q->select('qty');
-		$q->filterBySessionid($orderitem->sessionID);
-		$q->filterByOrdn($orderitem->ordernbr);
-		$q->filterByLinenbr($orderitem->linenbr);
-		$q->filterBySublinenbr($orderitem->sublinenbr);
-		return $q->findOne();
-	}
-
 	protected function get_picked_sum_by_bin(PickSalesOrderDetail $orderitem) {
 		$q = WhseitempickQuery::create();
 		$q->withColumn('SUM(qty)', 'qty');

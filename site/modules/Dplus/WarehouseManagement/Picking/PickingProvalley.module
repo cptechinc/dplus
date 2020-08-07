@@ -355,7 +355,7 @@ class PickingProvalley extends WireData implements Module {
 		$item->setLotserialref($values->text('lotserialref'));
 		$item->setLotserial($values->text('lotserial'));
 
-		if ($orderitem->is_item_serialized()) {
+		if ($this->inventory->is_item_serialized($orderitem->itemnbr)) {
 			$item->setQty(1);
 		} else {
 			// QTY could be float
