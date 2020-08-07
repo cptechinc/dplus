@@ -17,23 +17,25 @@
 		$page->tobin = $input->get->text('tobin');
 	}
 
+	$page->addHook('Page::binr_itemURL', function($event) {
+		$p = $event->object;
+		$item = $event->arguments(0);
+		$url = new Purl\Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
+		$url->query->set('action','search-item-bins');
+		$url->query->set('itemID', $item->itemid);
+		$url->query->set($item->get_itemtypeproperty(), $item->get_itemidentifier());
+		$url->query->set('binID', $item->bin);
+		$url->query->set('page', $p->fullURL->getUrl());
+		$event->return = $url->getUrl();
+	});
+
 	if ($input->get->scan) {
 		$scan = $input->get->text('scan');
 		$page->scan = $scan;
 		$page->fullURL->query->remove('scan');
 		$resultscount = InvsearchQuery::create()->filterBy('Sessionid', session_id())->count();
 
-		$page->addHook('Page::binr_itemURL', function($event) {
-			$p = $event->object;
-			$item = $event->arguments(0);
-			$url = new Purl\Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
-			$url->query->set('action','search-item-bins');
-			$url->query->set('itemID', $item->itemid);
-			$url->query->set($item->get_itemtypeproperty(), $item->get_itemidentifier());
-			$url->query->set('binID', $item->bin);
-			$url->query->set('page', $p->fullURL->getUrl());
-			$event->return = $url->getUrl();
-		});
+
 
 		$page->addHookProperty('Page::scan', function($event) {
 			$p = $event->object;
