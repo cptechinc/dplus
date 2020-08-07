@@ -57,15 +57,6 @@ class Cart extends WireData implements Module {
 		});
 
 		/**
-		 * Adds Function view_notesURL to Page
-		 * @return string Cart Notes URL
-		 */
-		$this->addHook('Page(pw_template=cart)::view_notesURL', function($event) {
-			$page = $event->object;
-			$event->return = $page->child('pw_template=cart-notes')->url;
-		});
-
-		/**
 		 * Adds Function create_quoteURL() to Page
 		 * @return string URL to redirect to Create Quote
 		 */
