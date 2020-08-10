@@ -18,7 +18,7 @@
 	{% endif %}
 </div>
 
-<div class="collapse-bin {{ not page.is_print() ? 'collapse' : '' }}" id="{{ item.itemid|attrJS }}-bins">
+<div class="collapse-bin {{ not page.is_print() ? 'collapse' : '' }}" id="{{ item.itemid|attrJS  }}-bins">
 	<div class="">
 		<div class="list-group list-group-flush">
 			{% for binitem in inventory.get_bins_itemid(item.itemid) %}
@@ -28,22 +28,16 @@
 							<h5>
 								<strong>Bin:</strong> {{ binitem.bin }}
 							</h5>
+						</div>
+						<div class="col">
+							<strong>Weight:</strong> {{ inventory.get_qty_itemid(item.itemid, binitem.bin)|number_format(config.decimal_places()) }}
+						</div>
+						<div class="col">
 							{% if (not warehouse.validate_bin(binitem.bin)) %}
 								<span class="badge badge-danger">Invalid Bin</span>
 							{% endif %}
 						</div>
-						<div class="col">
-							<strong>Qty:</strong> {{ binitem.qty|number_format(config.decimal_places()) }}
-						</div>
-						<div class="col">
-							{% if (not page.is_print()) %}
-								<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ (binitem.itemid ~ '_' ~ binitem.bin)|attrJS }}-lotserial" aria-expanded="false" aria-controls="{{ (binitem.itemid ~ '_' ~ binitem.bin)|attrJS }}-lotserial">
-									Show / Hide {{ binitem.get_itemtypepropertydesc()|upper ~ "S" }}
-								</button>
-							{% endif %}
-						</div>
 					</div>
-					{% include 'warehouse/inventory/find-item/item-breakdown-by-bin-lotserial.twig' %}
 				</div>
 			{% endfor %}
 		</div>
