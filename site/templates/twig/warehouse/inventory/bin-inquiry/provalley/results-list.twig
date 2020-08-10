@@ -9,7 +9,7 @@
 	inventory              module SearchInventory
 #}
 <div class="list-group">
-	{% if (inventory.count_itemids_distinct()) %}
+	{% if (inventory.count_itemids_distinct(page.binID)) %}
 		{% for item in inventory.get_items_distinct(page.binID) %}
 			<div class="list-group-item">
 				<h4 class="list-group-item-heading">ITEMID: {{ item.itemid }}</h4>
