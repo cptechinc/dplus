@@ -92,6 +92,16 @@ class PickingInventoryManager extends WireData implements Module {
 	}
 
 	/**
+	 * Returns if Item is Lot Serial
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_normal($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return $q->is_item_normal($itemID);
+	}
+
+	/**
 	 * Return Item Master Item
 	 * @param  string $itemID Item ID
 	 * @return ItemMasterItem

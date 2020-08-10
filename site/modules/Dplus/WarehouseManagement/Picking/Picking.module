@@ -9,6 +9,7 @@ use WhsesessionQuery, Whsesession;
 
 use WarehouseQuery, Warehouse;
 use ItemXrefUpcQuery, ItemXrefUpc;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
 
 /**
  * Picking
@@ -43,33 +44,6 @@ class Picking extends WireData implements Module {
 	 */
 	protected $config;
 
-/* =============================================================
-	ProcessWire Module Functions
-============================================================= */
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'Dpluso Warehouse Picking Functions Module',
-			'version' => 101,
-			'summary' => 'Handles Dplus Functions',
-			'singular' => true,
-			'autoload' => false,
-		);
-	}
-
-	public function init() {
-		$this->session = $this->wire('session');
-		$this->config = new WireData();
-		$this->config->inventory = $this->wire('modules')->get('ConfigsWarehouseInventory');
-		$this->config->picking   = $this->wire('modules')->get('ConfigsWarehousePicking');
-		$this->inventory = $this->wire('modules')->get('PickingInventoryManager');
-		$this->items = $this->wire('modules')->get('PickingOrderItems');
-	}
-
 	/**
 	 * Sets Session ID
 	 * @param string $sessionID Session ID
@@ -97,6 +71,9 @@ class Picking extends WireData implements Module {
 		return $this->ordn;
 	}
 
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
 	/**
 	 * Takes the Wire Input and decides which action to take based on the
 	 * action given
@@ -247,42 +224,6 @@ class Picking extends WireData implements Module {
 	}
 
 	/**
-	 * Returns if we have picked this item already for this order
-	 * @param  PickSalesOrderDetail $orderitem Order Item to pick
-	 * @param  string               $lotserial Lot / Serial Number
-	 * @return bool
-	 */
-	public function does_whseitempick_exist(PickSalesOrderDetail $orderitem, $lotserial, $binID = '') {
-		$q = $this->get_whseitempick_query();
-		$q->filterByItemid($orderitem->itemnbr);
-		$q->filterByLotserial($lotserial);
-
-		if ($binID) {
-			$q->filterByBin($binID);
-		}
-		return boolval($q->count());
-	}
-
-	/**
-	 * Return WhseitempickQuery
-	 * @param  array  $filters Column or aliases to filter on ex. array('linenbr' => 2)
-	 * @return WhseitempickQuery
-	 */
-	public function get_whseitempick_query($filters = null) {
-		$q = WhseitempickQuery::create();
-		$q->filterBySessionid($this->sessionID);
-		$q->filterByOrdn($this->ordn);
-
-		if (is_array($filters)) {
-			foreach ($filters as $filter => $value) {
-				$function = 'filterBy' . ucfirst($filter);
-				$q->$function($value);
-			}
-		}
-		return $q;
-	}
-
-	/**
 	 * Adds Whseitempick records for each lotserial bin that is provided
 	 *
 	 * @param WireInput $input
@@ -353,12 +294,96 @@ class Picking extends WireData implements Module {
 		return $item;
 	}
 
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return the number of decimal places for qty values
+	 * @return int
+	 */
+	public function decimal_places() {
+		return ConfigSalesOrderQuery::create()->findOne()->decimal_places;
+	}
+
 	/**
 	 * Returns the Whsesession for this Session ID
 	 * @return Whsesession
 	 */
 	public function get_whsesession() {
 		return WhsesessionQuery::create()->findOneBySessionid($this->sessionID);
+	}
+
+	/**
+	 * Return Pick Item Sum
+	 * @param  PickSalesOrderDetail $orderitem
+	 * @return float
+	 */
+	protected function get_picked_sum_by_bin(PickSalesOrderDetail $orderitem) {
+		$q = WhseitempickQuery::create();
+		$q->withColumn('SUM(qty)', 'qty');
+		$q->select(array('qty', 'bin'));
+		$q->filterBySessionid($orderitem->sessionID);
+		$q->filterByOrdn($orderitem->ordernbr);
+		$q->filterByLinenbr($orderitem->linenbr);
+		$q->filterBySublinenbr($orderitem->sublinenbr);
+		$q->groupBy('bin');
+		return $q->find();
+	}
+
+	/**
+	 * Returns if we have picked this item already for this order
+	 * @param  PickSalesOrderDetail $orderitem Order Item to pick
+	 * @param  string               $lotserial Lot / Serial Number
+	 * @return bool
+	 */
+	public function does_whseitempick_exist(PickSalesOrderDetail $orderitem, $lotserial, $binID = '') {
+		$q = $this->get_whseitempick_query();
+		$q->filterByItemid($orderitem->itemnbr);
+		$q->filterByLotserial($lotserial);
+
+		if ($binID) {
+			$q->filterByBin($binID);
+		}
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return WhseitempickQuery
+	 * @param  array  $filters Column or aliases to filter on ex. array('linenbr' => 2)
+	 * @return WhseitempickQuery
+	 */
+	public function get_whseitempick_query($filters = null) {
+		$q = WhseitempickQuery::create();
+		$q->filterBySessionid($this->sessionID);
+		$q->filterByOrdn($this->ordn);
+
+		if (is_array($filters)) {
+			foreach ($filters as $filter => $value) {
+				$function = 'filterBy' . ucfirst($filter);
+				$q->$function($value);
+			}
+		}
+		return $q;
+	}
+
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	/**
+	 * Sends Dplus Request to Remove Picked Line Items
+	 * @param  int    $linenbr Line Number
+	 * @param  bool   $debug   Is this for Debug
+	 * @return bool
+	 */
+	public function send_removepickeditem_request($recordnumber, $debug = false) {
+		$url = new Url($this->wire('pages')->get('template=redir, redir_file=picking')->url);
+		$url->query->set('action', 'remove-picked-item');
+		$url->query->set('recordnumber', $recordnumber);
+		$url->query->set('sessionID', session_id());
+		$url->query->set('debug', $debug);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->self_request($url->getUrl());
 	}
 
 	/**
@@ -406,31 +431,30 @@ class Picking extends WireData implements Module {
 		return $data;
 	}
 
-	protected function get_picked_sum_by_bin(PickSalesOrderDetail $orderitem) {
-		$q = WhseitempickQuery::create();
-		$q->withColumn('SUM(qty)', 'qty');
-		$q->select(array('qty', 'bin'));
-		$q->filterBySessionid($orderitem->sessionID);
-		$q->filterByOrdn($orderitem->ordernbr);
-		$q->filterByLinenbr($orderitem->linenbr);
-		$q->filterBySublinenbr($orderitem->sublinenbr);
-		$q->groupBy('bin');
-		return $q->find();
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Warehouse Picking Functions Module',
+			'version' => 101,
+			'summary' => 'Handles Dplus Functions',
+			'singular' => true,
+			'autoload' => false,
+		);
 	}
 
-	/**
-	 * Sends Dplus Request to Remove Picked Line Items
-	 * @param  int    $linenbr Line Number
-	 * @param  bool   $debug   Is this for Debug
-	 * @return bool
-	 */
-	public function send_removepickeditem_request($recordnumber, $debug = false) {
-		$url = new Url($this->wire('pages')->get('template=redir, redir_file=picking')->url);
-		$url->query->set('action', 'remove-picked-item');
-		$url->query->set('recordnumber', $recordnumber);
-		$url->query->set('sessionID', session_id());
-		$url->query->set('debug', $debug);
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->self_request($url->getUrl());
+	public function init() {
+		$this->session = $this->wire('session');
+		$this->config = new WireData();
+		$this->config->inventory = $this->wire('modules')->get('ConfigsWarehouseInventory');
+		$this->config->picking   = $this->wire('modules')->get('ConfigsWarehousePicking');
+		$this->inventory = $this->wire('modules')->get('PickingInventoryManager');
+		$this->items = $this->wire('modules')->get('PickingOrderItems');
 	}
 }

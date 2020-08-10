@@ -1,3 +1,10 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	m_picking              module Picking
+	lineitems              PickSalesOrderDetail[]|ObjectCollection
+#}
 <div class="list-group">
 	<div class="list-group-item bg-dark text-white">
 		<div class="row">
@@ -34,9 +41,9 @@
 						<small> You are Picking more qty than what was ordered </small>
 					{% endif %}
 				</div>
-				<div class="col-sm-1 text-right">{{ item.qtyordered }}</div>
-				<div class="col-sm-1 text-right">{{ item.qtypulled }}</div>
-				<div class="col-sm-1 text-right">{{ item.qtyremaining }}</div>
+				<div class="col-sm-1 text-right">{{ item.qtyordered|number_format(m_picking.decimal_places())}}</div>
+				<div class="col-sm-1 text-right">{{ item.qtypulled|number_format(m_picking.decimal_places()) }}</div>
+				<div class="col-sm-1 text-right">{{ item.qtyremaining|number_format(m_picking.decimal_places()) }}</div>
 				<div class="col-sm-3 text-right">
 					{% if pickingsession.is_subline_being_picked(item) %}
 						{% if pickingsession.is_currentuser_picking(item) %}
@@ -70,7 +77,7 @@
 						<div class="col-sm-1">{{ lotserial.bin }}</div>
 						<div class="col-sm-2">{{ lotserial.lotserial }}</div>
 						<div class="col-sm-2">{{ lotserial.lotserialref }}</div>
-						<div class="col-sm-1 text-right">{{ lotserial.qty }}</div>
+						<div class="col-sm-1 text-right">{{ lotserial.qty|number_format(m_picking.decimal_places()) }}</div>
 						<div class="col-sm-1 text-right">{{ invlot.date_expire ? invlot.date_expire|convertdate : 'N/A' }}</div>
 						<div class="col-sm-2">
 							<form action="{{ page.fullURL.getUrl() }}" method="post">
