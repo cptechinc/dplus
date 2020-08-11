@@ -71,6 +71,14 @@
 			),
 			'itm' => array(
 				'delete' => 'deleteitm'
+			),
+			'whse' => array(
+				'stock' => array(
+					'status' => 'stockstat'
+				),
+				'sales' => array(
+					'orders' => 'soopenorder'
+				)
 			)
 		);
 
