@@ -84,14 +84,11 @@ class SearchInventory extends WireData implements Module {
 		return $q->findOne();
 	}
 
-	public function get_bins_itemid($itemID) {
-		$q = $this->get_query();
-		$q->filterByItemid($itemID);
-		$q->withColumn('SUM(qty)', 'qty');
-		$q->groupBy('Bin');
-		return $q->find();
-	}
-
+	/**
+	 * Return Invsearch Records for Item ID grouped by Bin ID
+	 * @param  string $itemID Item ID
+	 * @return Invsearch[]|ObjectCollection
+	 */
 	public function get_bins_itemid($itemID) {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
@@ -121,6 +118,12 @@ class SearchInventory extends WireData implements Module {
 		return $q->find();
 	}
 
+	/**
+	 * Return the Number of Lotserials for Item ID
+	 * @param  [type] $itemID Item ID
+	 * @param  string $binID  ** Optional ***, Bin ID to narrow down
+	 * @return int
+	 */
 	public function count_lotserials_itemid($itemID, $binID = '') {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
