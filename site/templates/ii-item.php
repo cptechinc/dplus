@@ -62,6 +62,7 @@
 
 		$page->searchURL = $page->url;
 		$page->body = $config->twig->render('items/item-search.twig', ['page' => $page, 'items' => $items]);
+		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
 	}
 
 	include __DIR__ . "/basic-page.php";

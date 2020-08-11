@@ -1,4 +1,5 @@
 <?php
+	$config->so = ConfigSalesOrderQuery::create()->findOne();
 	$modules->get('DpagesMqo')->init_mqopage();
 	$html = $modules->get('HtmlWriter');
 

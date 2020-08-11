@@ -57,6 +57,7 @@ $(function() {
 
 				var itm_url = URI("{{ page.get_itm_lookupURL() }}");
 				itm_url.addQuery('itemID', input_itemid.val());
+
 				$.getJSON(itm_url.toString(), function( item ) {
 					console.log(item);
 					console.log(itm_url.toString());

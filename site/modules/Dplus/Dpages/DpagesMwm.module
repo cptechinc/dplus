@@ -15,12 +15,12 @@ class DpagesMwm extends Dpages implements Module {
 		'warehouse-menu' => array(
 			'name'   => 'warehouse-menu',
 			'fields' => array('title', 'dplus_function', 'summary'),
-			'paginated' => false
+			'paginated' => true
 		),
 		'warehouse-function' => array(
 			'name'   => 'warehouse-function',
 			'fields' => array('title', 'dplus_function', 'pw_template', 'summary'),
-			'paginated' => false
+			'paginated' => true
 		),
 		'whse-binr' => array(
 			'name'   => 'whse-binr',
@@ -74,6 +74,21 @@ class DpagesMwm extends Dpages implements Module {
 		),
 		'whse-print-received-item-label' => array(
 			'name'   => 'whse-print-received-item-label',
+			'fields' => array('title'),
+			'paginated' => false
+		),
+		'whse-receiving' => array(
+			'name'   => 'whse-receiving',
+			'fields' => array('title'),
+			'paginated' => false
+		),
+		'whse-stock-status' => array(
+			'name'   => 'whse-stock-status',
+			'fields' => array('title'),
+			'paginated' => false
+		),
+		'whse-sales-orders' => array(
+			'name'   => 'whse-sales-orders',
 			'fields' => array('title'),
 			'paginated' => false
 		)
@@ -157,6 +172,24 @@ class DpagesMwm extends Dpages implements Module {
 			'summary'        => 'Inventory Menu',
 			'parent'         => '/warehouse/',
 			'dplus_function' => 'mivty'
+		),
+		'whse-stock-status' => array(
+			'template'       => 'warehouse-function',
+			'name'           => 'stock-status',
+			'title'          => 'Stock Status',
+			'summary'        => 'Stock Status Report',
+			'parent'         => '/warehouse/inventory/',
+			'dplus_function' => '',
+			'pw_template'    => 'whse-stock-status'
+		),
+		'whse-sales-orders' => array(
+			'template'       => 'warehouse-function',
+			'name'           => 'sales-orders',
+			'title'          => 'Sales Orders',
+			'summary'        => 'Open Sales Orders Report',
+			'parent'         => '/warehouse/inventory/',
+			'dplus_function' => '',
+			'pw_template'    => 'whse-sales-orders'
 		),
 		'whse-find-item' => array(
 			'template'       => 'warehouse-function',

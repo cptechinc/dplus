@@ -36,8 +36,8 @@
 					<small>{{ item.description }}</small>
 				</div>
 				<div class="col">{{ item.uom }}</div>
-				<div class="col text-right">{{ item.qty_ordered|number_format(2) }}</div>
-				<div class="col text-right">{{ item.qty_received|number_format(2) }}</div>
+				<div class="col text-right">{{ item.qty_ordered|number_format(m_receiving.decimal_places()) }}</div>
+				<div class="col text-right">{{ item.qty_received|number_format(m_receiving.decimal_places()) }}</div>
 				<div class="col text-right">{{ item.cost|number_format(4) }}</div>
 				<div class="col text-right">{{ item.cost_total|number_format(2) }}</div>
 				<div class="col text-center">
@@ -72,7 +72,7 @@
 							</div>
 							<div class="col" data-lotserialref="{{ lot.lotreference }}">{{ lot.lotreference }}</div>
 							<div class="col date" data-date="{{ lot.date_production ? lot.date_production|convertdate : '' }}">{{ lot.date_production ? lot.date_production|convertdate : '' }}</div>
-							<div class="col text-right qty" data-uom="{{ item.uom }}" data-qty="{{ lot.qty_received|number_format(4) }}">{{ lot.qty_received|number_format(2) }}</div>
+							<div class="col text-right qty" data-uom="{{ item.uom }}" data-qty="{{ lot.qty_received|number_format(m_receiving.decimal_places()) }}">{{ lot.qty_received|number_format(m_receiving.decimal_places()) }}</div>
 							<div class="col" data-bin="{{ lot.bin }}">{{ lot.bin }}</div>
 							<div class="col-3">
 								<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#item-edit-modal">
