@@ -1,5 +1,5 @@
 <?php
-	$config_salesorders = $modules->get('ConfigsSalesOrders');
+	$config->so = ConfigSalesOrderQuery::create()->findOne();
 	$modules->get('DpagesMso')->init_salesorder_hooks();
 	$html = $modules->get('HtmlWriter');
 	$lookup_orders = $modules->get('LookupSalesOrder');
@@ -31,10 +31,10 @@
 				$documents = $docm->get_documents($ordn);
 				$module_qnotes = $modules->get('QnotesSalesHistory');
 			}
-			
+
 			$query_useractions = $module_useractions->get_actionsquery($input);
 			$actions = $query_useractions->filterBySalesorderlink($ordn)->find();
-			$page->body =  $config->twig->render("sales-orders/sales-$type/sales-$type-page.twig", ['page' => $page, 'order' => $order, 'user' => $user, 'docm' => $docm, 'company' => $config->company, 'loader' => $config->twig->getLoader()]);
+			$page->body =  $config->twig->render("sales-orders/sales-$type/sales-$type-page.twig", ['page' => $page, 'config' => $config->so, 'order' => $order, 'user' => $user, 'docm' => $docm, 'company' => $config->company, 'loader' => $config->twig->getLoader()]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-tracking.twig', ['page' => $page, 'order' => $order, 'urlmaker' => $modules->get('DplusURLs')]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/documents.twig', ['page' => $page, 'documents' => $documents, 'docm' => $docm, 'ordn' => $ordn]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/qnotes.twig', ['page' => $page, 'qnotes_so' => $module_qnotes, 'ordn' => $ordn]);
