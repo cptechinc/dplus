@@ -1,3 +1,12 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	config                 ProcessWire\Config
+	config.so              ConfigSalesOrder
+	user                   ProcessWire\User
+	purchaseorder          PurchaseOrder
+#}
 <table class="table table-striped table-borderless">
 	<thead class="bg-dark text-white font-weight-bold">
 		<tr>
@@ -18,7 +27,7 @@
 				</td>
 				<td>{{ detail.whse }}</td>
 				<td>{{ detail.specialorder }}</td>
-				<td class="text-right">{{ detail.qty_ordered|number_format() }}</td>
+				<td class="text-right">{{ detail.qty_ordered|number_format(config.so.decimal_places) }}</td>
 				<td class="text-right">$ {{ detail.cost|currency }}</td>
 				<td class="text-right">$ {{ detail.cost_total|currency }}</td>
 			</tr>
