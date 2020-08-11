@@ -18,7 +18,7 @@
 		} else {
 
 			$xls->write($json);
-			$page->body .= $config->twig->render('warehouse/inventory/stock-status/table.twig', ['page' => $page, 'json' => $json, 'jsondatafiles' => $m_json]);
+			$page->body .= $config->twig->render('util/jdf/table.twig', ['page' => $page, 'json' => $json, 'jsondatafiles' => $m_json]);
 		}
 	} else {
 		if ($session->stockstatus > 3) {
