@@ -6,75 +6,9 @@ use CarthedQuery, Carthed;
 use CartdetQuery, Cartdet;
 
 use ItemMasterItemQuery, ItemMasterItem;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
 
 class Cart extends WireData implements Module {
-	public function init() {
-
-		/**
-		 * Adds Function remove_itemURL() to Page
-		 * @param  int    $linenbr Line Number to remove
-		 * @return string          URL to redirect to Remove Line Item
-		 */
-		$this->addHook('Page(pw_template=cart)::remove_itemURL', function($event) {
-			$page = $event->object;
-			$linenbr = $event->arguments(0);
-			$event->return = $page->child('template=redir')->url."?action=remove-line&linenbr=$linenbr";
-		});
-
-		/**
-		 * Adds Function empty_cartURL() to Page
-		 * @return string URL to redirect to Empty Cart
-		 */
-		$this->addHook('Page(pw_template=cart)::empty_cartURL', function($event) {
-			$page = $event->object;
-			$event->return = $page->child('template=redir')->url."?action=empty-cart";
-		});
-
-		/**
-		 * Adds Function ci_customerURL() to Page
-		 * @return string CI Customer Page URL
-		 */
-		$this->addHook('Page(pw_template=cart)::ci_customerURL', function($event) {
-			$page = $event->object;
-			$custID = $event->arguments(0);
-			$event->return = $this->wire('pages')->get('pw_template=ci-customer')->url.'?custID='.urlencode($custID);
-		});
-
-		/**
-		 * Adds Function ci_customerURL() to Page
-		 * @return string CI Customer Page URL
-		 */
-		$this->addHook('Page(pw_template=cart)::ci_customershiptoURL', function($event) {
-			$page = $event->object;
-			$custID   = $event->arguments(0);
-			$shiptoID = $event->arguments(1);
-
-			if ($shiptoID) {
-				$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customershiptoURL($custID, $shiptoID);
-			} else {
-				$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customerURL($custID);
-			}
-		});
-
-		/**
-		 * Adds Function create_quoteURL() to Page
-		 * @return string URL to redirect to Create Quote
-		 */
-		$this->addHook('Page(pw_template=cart)::create_quoteURL', function($event) {
-			$page = $event->object;
-			$event->return = $page->child('template=redir')->url."?action=create-quote";
-		});
-
-		/**
-		 * Adds Function create_orderURL() to Page
-		 * @return string URL to redirect to Create Sales Order
-		 */
-		$this->addHook('Page(pw_template=cart)::create_orderURL', function($event) {
-			$page = $event->object;
-			$event->return = $page->child('template=redir')->url."?action=create-order";
-		});
-	}
-
 	/**
 	 * Returns if Cart Customer has been defined
 	 * @return bool
@@ -158,6 +92,9 @@ class Cart extends WireData implements Module {
 		return CartdetQuery::create()->filterBySessionid(session_id())->find();
 	}
 
+/* =============================================================
+	Supplemental Functions
+============================================================= */
 	/**
 	 * Return OItemMasterItem
 	 * @param  string $itemID Item ID
@@ -167,6 +104,17 @@ class Cart extends WireData implements Module {
 		return ItemMasterItemQuery::create()->findOneByItemid($itemID);
 	}
 
+	/**
+	 * Return the number of decimal places for qty values
+	 * @return int
+	 */
+	public function decimal_places() {
+		return ConfigSalesOrderQuery::create()->findOne()->decimal_places;
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
 	/**
 	 * Sends HTTP GET request to send Dplus Item Search Request
 	 * @param  string $q Query or Item ID
@@ -181,6 +129,7 @@ class Cart extends WireData implements Module {
 		$url->query->set('sessionID', session_id());
 		$requestor->self_request($url->getUrl());
 	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
@@ -197,5 +146,81 @@ class Cart extends WireData implements Module {
 			'singular' => true,
 			'autoload' => true,
 		);
+	}
+
+	public function init() {
+
+		/**
+		 * Adds Function remove_itemURL() to Page
+		 * @param  int    $linenbr Line Number to remove
+		 * @return string          URL to redirect to Remove Line Item
+		 */
+		$this->addHook('Page(pw_template=cart)::remove_itemURL', function($event) {
+			$page = $event->object;
+			$linenbr = $event->arguments(0);
+			$event->return = $page->child('template=redir')->url."?action=remove-line&linenbr=$linenbr";
+		});
+
+		/**
+		 * Adds Function empty_cartURL() to Page
+		 * @return string URL to redirect to Empty Cart
+		 */
+		$this->addHook('Page(pw_template=cart)::empty_cartURL', function($event) {
+			$page = $event->object;
+			$event->return = $page->child('template=redir')->url."?action=empty-cart";
+		});
+
+		/**
+		 * Adds Function ci_customerURL() to Page
+		 * @return string CI Customer Page URL
+		 */
+		$this->addHook('Page(pw_template=cart)::ci_customerURL', function($event) {
+			$page = $event->object;
+			$custID = $event->arguments(0);
+			$event->return = $this->wire('pages')->get('pw_template=ci-customer')->url.'?custID='.urlencode($custID);
+		});
+
+		/**
+		 * Adds Function ci_customerURL() to Page
+		 * @return string CI Customer Page URL
+		 */
+		$this->addHook('Page(pw_template=cart)::ci_customershiptoURL', function($event) {
+			$page = $event->object;
+			$custID   = $event->arguments(0);
+			$shiptoID = $event->arguments(1);
+
+			if ($shiptoID) {
+				$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customershiptoURL($custID, $shiptoID);
+			} else {
+				$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customerURL($custID);
+			}
+		});
+
+		/**
+		 * Adds Function view_notesURL to Page
+		 * @return string Cart Notes URL
+		 */
+		$this->addHook('Page(pw_template=cart)::view_notesURL', function($event) {
+			$page = $event->object;
+			$event->return = $page->child('pw_template=cart-notes')->url;
+		});
+
+		/**
+		 * Adds Function create_quoteURL() to Page
+		 * @return string URL to redirect to Create Quote
+		 */
+		$this->addHook('Page(pw_template=cart)::create_quoteURL', function($event) {
+			$page = $event->object;
+			$event->return = $page->child('template=redir')->url."?action=create-quote";
+		});
+
+		/**
+		 * Adds Function create_orderURL() to Page
+		 * @return string URL to redirect to Create Sales Order
+		 */
+		$this->addHook('Page(pw_template=cart)::create_orderURL', function($event) {
+			$page = $event->object;
+			$event->return = $page->child('template=redir')->url."?action=create-order";
+		});
 	}
 }
