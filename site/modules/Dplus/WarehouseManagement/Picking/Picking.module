@@ -377,13 +377,16 @@ class Picking extends WireData implements Module {
 	 * @return bool
 	 */
 	public function send_removepickeditem_request($recordnumber, $debug = false) {
-		$url = new Url($this->wire('pages')->get('template=redir, redir_file=picking')->url);
-		$url->query->set('action', 'remove-picked-item');
-		$url->query->set('recordnumber', $recordnumber);
-		$url->query->set('sessionID', session_id());
-		$url->query->set('debug', $debug);
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$whseitempick = WhseitempickQuery::create()->filterBySessionid($sessionID)->filterByOrdn($whsesession->ordernbr)->filterByRecordnumber($recordnumber)->findOne();
+		$data = array("DBNAME=$dplusdb", 'PICKITEMREMOVE', "ORDERNBR=$this->ordn", "LINENBR=$whseitempick->linenbr", "ITEMID=$whseitempick->itemid");
+		$data[] = "BIN=$whseitempick->bin|LOTSERIAL=$whseitempick->lotserial|QTY=$whseitempick->qty";
+
 		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->self_request($url->getUrl());
+		$requestor->write_dplusfile($data, session_id());
+		if ($debug == false) {
+			$requestor->cgi_request($this->wire('config')->cgis['warehouse'], session_id());
+		}
 	}
 
 	/**
