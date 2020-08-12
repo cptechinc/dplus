@@ -10,7 +10,7 @@ $(function () {
 	var form_edit = $('#edit-item-form');
 	var form_add  = $('#add-item-form');
 	var items = {{ epo.get_details_array(page.ponbr)|json_encode()|raw }};
-
+	var decimal_places_qty = {{ epo.decimal_places_qty() }};
 
 	modal_edit.on('show.bs.modal', function (event) {
 		var modal = $(this);
@@ -31,9 +31,9 @@ $(function () {
 		form.inputs.whse.val(item.whseid);
 		form.inputs.specialorder.val(item.specialorder);
 		form.inputs.uom.val(item.uom);
-		form.inputs.qty.ordered.val(item.qty.ordered);
-		form.inputs.qty.received.val(item.qty.received);
-		form.inputs.qty.invoiced.val(item.qty.invoiced);
+		form.inputs.qty.ordered.val(parseFloat(item.qty.ordered).toFixed(decimal_places_qty));
+		form.inputs.qty.received.val(parseFloat(item.qty.received).toFixed(decimal_places_qty));
+		form.inputs.qty.invoiced.val(parseFloat(item.qty.invoiced).toFixed(decimal_places_qty));
 		form.inputs.cost.val(item.cost);
 		form.inputs.cost_total.val(item.cost_total);
 	}
@@ -50,7 +50,7 @@ $(function () {
 			specialorder: form.find('input[name=specialorder]'),
 			uom: form.find('input#uom'),
 			qty: {
-				ordered: form.find('input[name=qty_ordered]'),
+				ordered:  form.find('input[name=qty_ordered]'),
 				received: form.find('input#qty_received'),
 				invoiced: form.find('input#qty_invoiced'),
 			},
