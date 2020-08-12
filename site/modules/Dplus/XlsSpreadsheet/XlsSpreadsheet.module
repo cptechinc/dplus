@@ -1,0 +1,132 @@
+<?php namespace ProcessWire;
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+
+/**
+ * XlsSpreadsheet
+ *
+ * Module for writing JSON data into Spreadsheets
+ *
+ * @property XlsWriter $writer FileWriter
+ */
+class XlsSpreadsheet extends WireData implements Module {
+
+	protected $filename = 'spreadsheet';
+
+/* =============================================================
+	Spreadsheet Writing Functions
+============================================================= */
+	/**
+	 * Write File
+	 * @param  array  $data JSON Data
+	 * @return bool
+	 */
+	public function write(array $data) {
+		$spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$columncount = sizeof($data['columns']);
+		$columns = array_values($data['columns']);
+		$this->set_columns_autowidth($sheet, $columncount);
+		$this->write_header($sheet, $columns);
+		$this->write_body($sheet, $data);
+
+		return $this->writer->write($spreadsheet);
+	}
+
+	/**
+	 * Write Header row for Spreadsheet
+	 * @param  Worksheet $sheet   Sheet
+	 * @param  array     $columns array of Column Definition Data
+	 * @return void
+	 */
+	protected function write_header(Worksheet $sheet, array $columns) {
+		$columncount = sizeof($columns);
+		$row = 1;
+
+		for ($i = 0; $i < ($columncount); $i++) {
+			$cell = $sheet->getCellByColumnAndRow($i + 1, $row);
+			$cell->getStyle()->getAlignment()->setHorizontal($this->get_alignment($columns[$i]['headingjustify']));
+			$cell->setValue($columns[$i]['heading']);
+		}
+	}
+
+	/**
+	 * Write Body rows for Spreadsheet
+	 * @param  Worksheet $sheet Sheet
+	 * @param  array     $data  JSON Data
+	 * @return void
+	 */
+	protected function write_body(Worksheet $sheet, array $data) {
+		$columncount = sizeof($data['columns']);
+		$columns = array_values($data['columns']);
+		$columnindexes = array_keys($data['columns']);
+		$row = $sheet->getHighestRow() + 1;
+
+		foreach ($data['data'] as $record) {
+			for ($i = 0; $i < ($columncount); $i++) {
+				$cell = $sheet->getCellByColumnAndRow($i + 1, $row);
+				$cell->getStyle()->getAlignment()->setHorizontal($this->get_alignment($columns[$i]['datajustify']));
+				$cell->setValue($record[$columnindexes[$i]]);
+			}
+			$row++;
+		}
+	}
+
+	/**
+	 * Set Columns to be autowidth
+	 * @param Worksheet $sheet       Sheet
+	 * @param int       $columncount Number of Columns to iterate
+	 */
+	public function set_columns_autowidth(Worksheet $sheet, int $columncount) {
+		for ($i = 0; $i < ($columncount); $i++) {
+			$index = Coordinate::stringFromColumnIndex($i);
+			$sheet->getColumnDimension($index)->setAutoSize(true);
+		}
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Returns Bootstrap Text Justify class from code
+	 * @param  string $justifycode Code given e.g. r, right
+	 * @return string              Bootstrap Text justify code e.g. text-right
+	 */
+	public function get_alignment($justifycode) {
+		$alignments = array(
+			'r' => Alignment::HORIZONTAL_RIGHT,
+			'l' => Alignment::HORIZONTAL_LEFT,
+			'c' => Alignment::HORIZONTAL_CENTER
+		);
+		$justifycode = substr($justifycode, 0, 1);
+		return $alignments[$justifycode];
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public function init() {
+		$this->writer = $this->wire('modules')->get('XlsWriter');
+		$this->writer->file->name = $this->filename;
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus XlsSpreadSheet',
+			'version' => 101,
+			'summary' => 'Prepares Spreadsheets for XlsWriter',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(
+				'XlsWriter',
+				'XlsStockStatus',
+				'XlsSalesOrderOpen'
+			),
+			'requires' => array('XlsWriter')
+		);
+	}
+}

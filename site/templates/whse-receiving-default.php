@@ -1,7 +1,7 @@
 <?php
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
-	$warehouse_receiving = $modules->get('WarehouseReceiving');
+	$warehouse_receiving = $modules->get('Receiving');
 	$warehouse_receiving->set_sessionID(session_id());
 
 	$html = $modules->get('HtmlWriter');
@@ -125,9 +125,9 @@
 				$page->body .= $html->h3('', 'PO Items');
 
 				if (file_exists($config->paths->templates."twig/warehouse/inventory/receiving/$config->company/po-items.twig")) {
-					$page->body .= $config->twig->render("warehouse/inventory/receiving/$config->company/po-items.twig", ['page' => $page, 'ponbr' => $ponbr, 'items' => $purchaseorder->get_receivingitems()]);
+					$page->body .= $config->twig->render("warehouse/inventory/receiving/$config->company/po-items.twig", ['page' => $page, 'm_receiving' => $warehouse_receiving, 'ponbr' => $ponbr, 'items' => $purchaseorder->get_receivingitems()]);
 				} else {
-					$page->body .= $config->twig->render('warehouse/inventory/receiving/po-items.twig', ['page' => $page, 'ponbr' => $ponbr, 'items' => $purchaseorder->get_receivingitems()]);
+					$page->body .= $config->twig->render('warehouse/inventory/receiving/po-items.twig', ['page' => $page, 'm_receiving' => $warehouse_receiving,  'ponbr' => $ponbr, 'items' => $purchaseorder->get_receivingitems()]);
 				}
 
 				if (!$input->get->scan) {

@@ -16,11 +16,7 @@ class Qnotes extends WireData implements Module {
 		} else {
 			$note_lines = explode(PHP_EOL, $note);
 		}
-
-		foreach ($note_lines as $line) {
-			$lines[] = $line;
-		}
-		return $lines;
+		return $note_lines;
 	}
 
 	/**

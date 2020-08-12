@@ -115,13 +115,13 @@ class FilterBookings extends Process implements ConfigurableModule {
 
 		foreach ($bookings as $booking) {
 			$bookdata = array(
-				'bookdate' => date('Y-m-d', strtotime($booking->bookdate)),
+				'bookdate' => date('Y-m-d', strtotime($booking->bookingdate)),
 				'amount' => floatval($booking->amount)
 			);
 
 			if ($this->bookings_user->interval == 'day') {
 				$page = $this->wire('page');
-				$url = new Url($this->wire('modules')->get('DpagesBookings')->get_bookings_dayURL($booking->bookdate));
+				$url = new Url($this->wire('modules')->get('DpagesBookings')->get_bookings_dayURL($booking->bookingdate));
 
 				if ($page->pw_template == 'bookings-customer') {
 					$url->query->set('custID', $page->custID);

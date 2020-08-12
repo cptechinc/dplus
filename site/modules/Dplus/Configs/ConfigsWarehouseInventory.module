@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+use ConfigSalesOrderQuery, ConfigSalesOrder;
+
 /**
  * Module for Warehouse Inventory configurations
  */
@@ -60,6 +62,14 @@ class ConfigsWarehouseInventory extends Process implements ConfigurableModule {
 		'receive_force_bin_itemlookup' => false,
 		'receive_disregard_bin'   => false
 	);
+
+	/**
+	 * Return number of decimals used for item quantities
+	 * @return int
+	 */
+	public function decimal_places() {
+		return ConfigSalesOrderQuery::create()->findOne()->decimal_places;
+	}
 
 	/* =============================================================
 			ProcessWire Module Functions

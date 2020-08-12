@@ -22,7 +22,7 @@
 		</div>
 	</div>
 
-	{% if (item.is_item_serialized() or item.is_item_lotted()) %}
+	{% if (m_receiving.is_item_lotserialized(item.itemid)) %}
 		<div class="row">
 			<div class="col-sm-6">
 				<div class="form-group">
@@ -30,7 +30,7 @@
 					<div class="input-group">
 						<input type="text" class="form-control" id="lotserial" name="lotserial" value="{{ item.lotserial }}">
 					</div>
-					{% if (item.is_item_lotted()) %}
+					{% if (m_receiving.is_item_lotted(item.itemid)) %}
 						<small class="form-text text-muted">If blank, Lot Number will be created and assigned</small>
 					{% endif %}
 				</div>
@@ -75,16 +75,16 @@
 		<div class="col-sm-6">
 			<div class="form-group">
 				<label for="productiondate">Expire Date</label>
-				{% include 'util/date-picker.twig' with {'name': 'productiondate', 'id': 'productiondate', 'value': item.productiondate ? item.productiondate|convertdate('m/d/Y') : ''} %}
+				{% include 'util/date-picker.twig' with {'name': 'productiondate', 'id': 'productiondate', 'value': item.productiondate ? item.productiondate|convertdate('m/d/Y') : '', 'disabled': item.is_item_normal()} %}
 			</div>
 		</div>
 		<div class="col-sm-6">
 			<div class="form-group">
 				<label for="qty">Qty</label>
 				<span class="text-secondary pull-right">
-					<b>Previous Receipt: {{ m_receiving.get_received_total(item.itemid)|number_format(3) }}</b>
+					<b>Previous Receipt: {{ m_receiving.get_received_total(item.itemid)|number_format(m_receiving.decimal_places()) }}</b>
 				</span>
-				<input type="text" class="form-control text-right qty-input" id="qty" name="qty" value="{{ item.qty|number_format(3) }}" data-validated="false">
+				<input type="text" class="form-control text-right qty-input" id="qty" name="qty" value="{{ item.qty|number_format(m_receiving.decimal_places()) }}" data-validated="false">
 			</div>
 		</div>
 	</div>

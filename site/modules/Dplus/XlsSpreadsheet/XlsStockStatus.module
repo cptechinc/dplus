@@ -1,0 +1,47 @@
+<?php namespace ProcessWire;
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+
+/**
+ * XlsStockStatus
+ *
+ * Module for writing JSON Stock Status data into Spreadsheets
+ *
+ * @property XlsWriter $writer FileWriter
+ */
+class XlsStockStatus extends XlsSpreadsheet implements Module {
+	protected $filename = 'stockstatus';
+
+	/**
+	 * Request JSON file from Dplus
+	 * @return void
+	 */
+	public function request_json() {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'STOCKSTATUS');
+
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['warehouse'], session_id());
+	}
+
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Xls Stock Status',
+			'version' => 101,
+			'summary' => 'Writes Stock Status Spreadsheets',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array(
+				'XlsWriter',
+				'XlsSpreadsheet'
+			)
+		);
+	}
+}
