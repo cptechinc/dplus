@@ -1,3 +1,12 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	warehouse              Warehouse
+	inventory              InvsearchQuery
+	session                ProcessWire\Session
+	config                 module ConfigsBinr
+	item                   Invsearch
+#}
 <div class="modal fade" id="choose-from-bins-modal" tabindex="-1" role="dialog" aria-labelledby="choose-from-bins-modal-label"aria-hidden="true">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
@@ -32,7 +41,7 @@
 									<p class="list-group-item-text">{{ (item.is_lotted() or item.is_serialized()) ? bin.lotserial : '' }}</p>
 								</div>
 								<div class="col-4">
-									<p class="list-group-item-text text-right">{{ bin.qty }}</p>
+									<p class="list-group-item-text text-right">{{ bin.qty|number_format(config.decimal_places()) }}</p>
 								</div>
 							</div>
 						</a>

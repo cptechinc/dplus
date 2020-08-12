@@ -1,0 +1,30 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	json                   array of JSON data
+	jsondatafiles          module JsonDataFiles
+#}
+<div>
+	<a href="{{ page.url }}?download=xlsx" class="btn btn-primary" target="_blank">
+		<i class="fa fa-file-excel-o" aria-hidden="true"></i> Download
+	</a>
+	<table class="table">
+		<thead>
+			{% for column in json['columns'] %}
+				<th class="{{ jsondatafiles.get_justifyclass(column['headingjustify']) }}"> {{ column['heading'] }} </th>
+			{% endfor %}
+		</thead>
+		<tbody>
+			{% for item in json['data'] %}
+				<tr>
+					{% for column, coldata in json['columns'] %}
+						<td class="{{ jsondatafiles.get_justifyclass(coldata['datajustify']) }}">
+							{{ item[column] }}
+						</td>
+					{% endfor %}
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

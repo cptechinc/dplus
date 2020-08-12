@@ -5,9 +5,12 @@ use PurchaseOrderQuery, PurchaseOrder;
 use PurchaseOrderDetailReceivingQuery, PurchaseOrderDetailReceiving;
 use PurchaseOrderDetailLotReceivingQuery, PurchaseOrderDetailLotReceiving;
 use WarehouseQuery, Warehouse;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
+use ItemMasterItemQuery, ItemMasterItem;
 
 use WhsesessionQuery, Whsesession;
 use WhseitemphysicalcountQuery, Whseitemphysicalcount;
+
 
 class Receiving extends WireData implements Module {
 	/**
@@ -66,6 +69,7 @@ class Receiving extends WireData implements Module {
 	 * @return void
 	 */
 	public function request_purchaseorder_init() {
+		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
 		$data = array("DBNAME=$dplusdb", 'STARTRECEIVE', "PONBR=$this->ponbr");
 		$requestor = $this->wire('modules')->get('DplusRequest');
@@ -107,6 +111,14 @@ class Receiving extends WireData implements Module {
 	public function get_warehouse() {
 		$whsesession = $this->get_whsesession();
 		return WarehouseQuery::create()->findOneById($whsesession->whseid);
+	}
+
+	/**
+	 * Return the number of decimal places for qty values
+	 * @return int
+	 */
+	public function decimal_places() {
+		return ConfigSalesOrderQuery::create()->findOne()->decimal_places;
 	}
 
 	/**
@@ -184,6 +196,46 @@ class Receiving extends WireData implements Module {
 			//'receive_qty_label'           => $config->receive_qty_label
 		);
 		return $js;
+	}
+
+	/**
+	 * Returns if Item is Lot Serial
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_lotserialized($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return ($q->is_item_serialized($itemID) || $q->is_item_lotted($itemID));
+	}
+
+	/**
+	 * Returns if Item is Lot Serial
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_serialized($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return $q->is_item_serialized($itemID);
+	}
+
+	/**
+	 * Returns if Item is Lot Serial
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_lotted($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return $q->is_item_lotted($itemID);
+	}
+
+	/**
+	 * Returns if Item is Lot Serial
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_normal($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return $q->is_item_normal($itemID);
 	}
 /* =============================================================
 	URL Functions

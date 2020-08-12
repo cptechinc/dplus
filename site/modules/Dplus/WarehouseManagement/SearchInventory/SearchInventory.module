@@ -1,0 +1,162 @@
+<?php namespace ProcessWire;
+
+use InvsearchQuery, Invsearch;
+
+class SearchInventory extends WireData implements Module {
+	public function get_query() {
+		$q = InvsearchQuery::create();
+		$q->filterBySessionid($this->sessionID);
+		return $q;
+	}
+
+	/**
+	 * Return the Number of Distinct Item IDs
+	 * @param  string $binID ** Optional, Bin ID to narrow down
+	 * @return int
+	 */
+	public function count_itemids_distinct($binID = '') {
+		$q = $this->get_query();
+		$q->addAsColumn('count', 'COUNT(DISTINCT(itemid))');
+		$q->select('count');
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+		return intval($q->findOne());
+	}
+
+	/**
+	 * Return the number of Bins this item is found at
+	 * @param  InvSearch $item Item to find
+	 * @return int
+	 */
+	public function count_item_bins(InvSearch $item) {
+		$q = $this->get_query();
+		$q->addAsColumn('count', 'COUNT(DISTINCT(bin))');
+		$q->select('count');
+		$q->filterByQty(array('min' => 0));
+		$q->filterByItemid($item->itemid);
+
+		if ($item->is_lotted() || $item->is_serialized()) {
+			$q->filterByLotserial($item->lotserial);
+		}
+
+		return intval($q->findOne());
+	}
+
+	/**
+	 * Return the number of Bins this itemID is found at
+	 * @param  string $itemID
+	 * @return int
+	 */
+	public function count_itemid_bins($itemID) {
+		$q = $this->get_query();
+		$q->addAsColumn('count', 'COUNT(DISTINCT(bin))');
+		$q->select('count');
+		$q->filterByQty(array('min' => 0));
+		$q->filterByItemid($itemID);
+		return intval($q->findOne());
+	}
+
+	/**
+	 * Return Inventory Items that are distinct itemids
+	 * @param  string $binID *** Optional ***l, Bin ID to narrow down
+	 * @return Invsearch[]|ObjectCollection
+	 */
+	public function get_items_distinct($binID = '') {
+		$q = $this->get_query();
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+		$q->groupBy('Itemid');
+		return $q->find();
+	}
+
+	public function get_qty_itemid($itemID, $binID = '') {
+		$q = $this->get_query();
+		$q->addAsColumn('qty', 'SUM(qty)');
+		$q->select('qty');
+		$q->filterBySessionid($this->sessionID);
+		$q->filterByItemid($itemID);
+
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+		return $q->findOne();
+	}
+
+	/**
+	 * Return Invsearch Records for Item ID grouped by Bin ID
+	 * @param  string $itemID Item ID
+	 * @return Invsearch[]|ObjectCollection
+	 */
+	public function get_bins_itemid($itemID) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->withColumn('SUM(qty)', 'qty');
+		$q->groupBy('Bin');
+		return $q->find();
+	}
+
+	/**
+	 * Return Inventory LotSerial Records for Item ID
+	 * @param  string $itemID  Item ID
+	 * @param  string $binID   *** Optional ***, Bin ID to narrow down
+	 * @param  string $orderby Property to Order By
+	 * @return Invsearch[]|ObjectCollection
+	 */
+	public function get_lotserials_itemid($itemID, $binID = '', $orderby = '') {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+
+		if (!empty($orderby)) {
+			$q->orderBy($orderby);
+		}
+		return $q->find();
+	}
+
+	/**
+	 * Return the Number of Lotserials for Item ID
+	 * @param  [type] $itemID Item ID
+	 * @param  string $binID  ** Optional ***, Bin ID to narrow down
+	 * @return int
+	 */
+	public function count_lotserials_itemid($itemID, $binID = '') {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->addAsColumn('count', 'COUNT(DISTINCT(lotserial))');
+		$q->select('count');
+
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+		return intval($this->findOne());
+	}
+
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Search Warehouse Inventory',
+			'version' => 101,
+			'summary' => 'Handles Inventory Search Queries',
+			'singular' => true,
+			'autoload' => false,
+		);
+	}
+
+	public function init() {
+		$this->sessionID = session_id();
+		$this->itm  = $this->wire('modules')->get('Itm');
+	}
+}

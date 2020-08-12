@@ -61,14 +61,14 @@
 						$page->fullURL->query->remove('scan');
 						$session->redirect($page->fullURL->getUrl());
 					} else {
-						$page->body .= $config->twig->render('warehouse/picking/provalley/scan/add-scanned-item-form.twig', ['page' => $page, 'item' => $item, 'scan' => $scan]);
+						$page->body .= $config->twig->render('warehouse/picking/provalley/scan/add-scanned-item-form.twig', ['page' => $page, 'm_picking' => $pickingsession, 'item' => $item, 'scan' => $scan]);
 					}
 				} elseif ($query_phys->count() == 0) {
 					$page->body .= $html->div('class=mb-3', $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => '0 items found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "No items found for '$scan'"]));
 					$page->body .= $config->twig->render('warehouse/picking/provalley/scan/scan-form.twig', ['page' => $page]);
 				} else {
 					$physicalitems = $query_phys->groupBy('itemid')->find();
-					$page->body .= $config->twig->render('warehouse/picking/provalley/scan/select-item-list.twig', ['page' => $page, 'items' => $physicalitems]);
+					$page->body .= $config->twig->render('warehouse/picking/provalley/scan/select-item-list.twig', ['page' => $page, 'm_picking' => $pickingsession, 'items' => $physicalitems]);
 					$page->body .= $html->div('class=mb-3');
 				}
 			}
@@ -76,7 +76,7 @@
 			$page->body .= $config->twig->render('warehouse/picking/provalley/scan/scan-form.twig', ['page' => $page]);
 		}
 
-		$page->body .= $config->twig->render('warehouse/picking/provalley/line-items.twig', ['page' => $page, 'lineitems' => $lines_query->find()]);
+		$page->body .= $config->twig->render('warehouse/picking/provalley/line-items.twig', ['page' => $page, 'm_picking' => $pickingsession, 'lineitems' => $lines_query->find()]);
 
 		if (!$input->get->scan) {
 			$page->body .= $html->div('class=mb-3');

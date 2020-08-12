@@ -1,3 +1,11 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	m_picking              module Picking
+	item                   Whseitemphysicalcount
+	orderitem              PickSalesOrderDetail
+#}
 <form action="{{ page.fullURL.getUrl() }}" method="post" id="scanned-item-form">
 	<input type="hidden" name="action" value="add-lotserial">
 	<input type="hidden" name="scan" value="{{ scan }}">
@@ -7,7 +15,7 @@
 		<input type="text" class="form-control" name="itemID" id="itemID" value="{{ item.itemid }}" readonly>
 	</div>
 
-	<div class="row {{ item.is_item_normal ? 'collapse' : '' }}">
+	<div class="row {{ m_picking.is_item_normal(item.itemid)? 'collapse' : '' }}">
 		<div class="col-sm-6">
 			<div class="form-group">
 				<label for="lotserial">Lot / Serial #</label>
@@ -33,10 +41,10 @@
 			<div class="form-group">
 				<div class="d-flex justify-content-between align-items-center">
 					<label for="qty">Qty </label>
-					<span class="pull-right">Ordered: {{ orderitem.qtyordered|number_format(2) }}</span>
+					<span class="pull-right">Ordered: {{ orderitem.qtyordered|number_format(m_picking.decimal_places()) }}</span>
 				</div>
-				<input type="number" class="form-control" name="qty" id="qty" max="{{ item.qty }}" value="">
-				<small class="form-text text-muted">Bin Qty: {{ item.qty }}</small>
+				<input type="number" class="form-control" name="qty" id="qty" max="{{ item.qty|number_format(m_picking.decimal_places())  }}" value="">
+				<small class="form-text text-muted">Bin Qty: {{ item.qty|number_format(m_picking.decimal_places()) }}</small>
 			</div>
 		</div>
 	</div>

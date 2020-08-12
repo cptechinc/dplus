@@ -8,14 +8,14 @@ include_once(__DIR__.'/QnotesResponse.php');
 /**
  * QnotesSalesOrder
  *
- * Class for Writing and Reading Qnotes for Sales Orders
+ * Class for Writing and Reading Qnotes for Quotes (QUOT)
  */
 class QnotesQuote extends WireData implements Module {
 	const MODEL              = 'QuoteNotes';
 	const MODEL_KEY          = 'qthdid, qtdtline';
 	const DESCRIPTION        = 'Quote Note';
 	const DESCRIPTION_RECORD = 'Quote Note';
-	const DESCRIPTION_RESPONSE = 'Sales Order ';
+	const DESCRIPTION_RESPONSE = 'Quote ';
 	const MODEL_TABLE = 'notes_qt_head_det';
 
 
@@ -159,10 +159,13 @@ class QnotesQuote extends WireData implements Module {
 	 */
 	public function update_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
 		$qnbr  = $input->$rm->text('qnbr');
 		$linenbr = $input->$rm->text('linenbr');
 		$form    = $input->$rm->text('form');
-		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
+
+		$note = $values->textarea('note');
+		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
 		$lines_saved = array();
 
 		if (empty($form)) {

@@ -4,6 +4,8 @@ use Purl\Url;
 use PurchaseOrderQuery, PurchaseOrder;
 use PurchaseOrderDetailReceivingQuery, PurchaseOrderDetailReceiving;
 use WarehouseQuery, Warehouse;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
+use ItemMasterItemQuery, ItemMasterItem;
 
 use WhsesessionQuery, Whsesession;
 use WhseitemphysicalcountQuery, Whseitemphysicalcount;
@@ -75,6 +77,14 @@ class ReceivingUgm extends WireData implements Module {
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
+	/**
+	 * Return the number of decimal places for qty values
+	 * @return int
+	 */
+	public function decimal_places() {
+		return ConfigSalesOrderQuery::create()->findOne()->decimal_places;
+	}
+
 	/**
 	 * Return Whsesession
 	 * @return Whsesession
@@ -156,6 +166,46 @@ class ReceivingUgm extends WireData implements Module {
 			//'receive_qty_label'           => $config->receive_qty_label
 		);
 		return $js;
+	}
+
+	/**
+	 * Returns if Item is Lot Serial
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_lotserialized($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return ($q->is_item_serialized($itemID) || $q->is_item_lotted($itemID));
+	}
+
+	/**
+	 * Returns if Item is Lot Serial
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_serialized($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return $q->is_item_serialized($itemID);
+	}
+
+	/**
+	 * Returns if Item is Lot Serial
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_lotted($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return $q->is_item_lotted($itemID);
+	}
+
+	/**
+	 * Returns if Item is Lot Serial
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_normal($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return $q->is_item_normal($itemID);
 	}
 /* =============================================================
 	URL Functions

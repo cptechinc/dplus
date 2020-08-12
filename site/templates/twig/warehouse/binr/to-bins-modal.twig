@@ -1,3 +1,12 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	warehouse              Warehouse
+	inventory              InvsearchQuery
+	session                ProcessWire\Session
+	config                 module ConfigsBinr
+	item                   Invsearch
+#}
 <div class="modal fade" id="choose-to-bins-modal" tabindex="-1" role="dialog" aria-labelledby="choose-to-bins-modal-label" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -27,7 +36,7 @@
 											<h6 class="list-group-item-heading">{{ bin.bin }}</h6>
 										</div>
 										<div class="col-6">
-											<h6 class="list-group-item-heading">Qty {{ bin.qty }}</h6>
+											<h6 class="list-group-item-heading">Qty {{ bin.qty|number_format(config.decimal_places()) }}</h6>
 										</div>
 									</div>
 									{% if (warehouse.validate_bin(bin.bin) == false)	%}

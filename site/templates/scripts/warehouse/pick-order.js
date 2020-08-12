@@ -93,8 +93,6 @@ $(function() {
 		button.closest('.modal').modal('hide');
 	});
 
-
-
 /////////////////////////////////////
 // 3. Finish Item / Exit Order
 ////////////////////////////////////

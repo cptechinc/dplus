@@ -1,3 +1,14 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	config                 module ConfigsBinr
+	page                   ProcessWire\Page
+	resultscount           number of results
+	items                  Invsearch[]|Objectcollection
+	resultscount           number of results
+	inventory              InvsearchQuery
+	warehouse              Warehouse
+#}
 <div class="form-group">
 	<a href="{{ page.url }}" class="btn btn-primary">
 		<i class="fa fa-arrow-left" aria-hidden="true"></i> Back
@@ -11,7 +22,7 @@
 				<p class="list-group-item-text">{{ item.desc1 }}</p>
 
 				{% if (item.is_serialized() or item.is_lotted()) %}
-					<p class="list-group-item-text bg-light"><strong>Bin:</strong> (MULTIPLE) <strong>Qty:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid, page.frombin) }}</p>
+					<p class="list-group-item-text bg-light"><strong>Bin:</strong> (MULTIPLE) <strong>Weight:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid, page.frombin)|number_format(config.decimal_places()) }}</p>
 
 					<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ item.itemid|attrJS }}-bins" aria-expanded="false" aria-controls="{{ item.itemid }}-lotserial">
 						Show / Hide Bins
@@ -33,7 +44,7 @@
 											<strong>Boxes:</strong> {{ inventory.count_lotserials_itemid(item.sessionid, item.itemid, binitem.bin) }}
 										</div>
 										<div class="col">
-											<strong>Total Weight:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid, binitem.bin) }}
+											<strong>Total Weight:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid, binitem.bin)|number_format(config.decimal_places()) }}
 										</div>
 										<div class="col">
 											{% if (not page.is_print()) %}

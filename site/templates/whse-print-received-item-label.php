@@ -16,20 +16,24 @@
 			}
 
 			if ($session->response_print) {
-				$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_print]);
-				$session->remove('response_print');
+				if ($session->response_print->has_error()) {
+					$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_print]);
+					$session->remove('response_print');
+				} else {
+					$session->remove('response_print');
+					$session->redirect($page->receive_poURL($ponbr));
+				}
 			}
 
 			$receiving->set_ponbr($ponbr);
 			$po = $receiving->get_purchaseorder();
 			$thermal_labels = ThermalLabelFormatQuery::create();
-			$whse_printers = WhsePrinterQuery::create();
 
 			if ($values->linenbr) {
 				$linenbr = $values->int('linenbr');
 				$po_line = $po->get_receivingitem($linenbr);
 				$lotreceived = $receiving->get_receiving_item($linenbr, $values->text('lotserial'), $values->text('binID'));
-				echo $db_dplusdata->getLastExecutedQuery();
+
 				if (!$values->lotserial || $values->text('lotserial') == 'all') {
 					$lotreceived->setLotserial('all');
 				}

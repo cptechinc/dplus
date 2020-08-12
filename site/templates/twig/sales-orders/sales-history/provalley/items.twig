@@ -23,8 +23,8 @@
 					<small>Avg Weight: {{ detail.item.weight }}</small>
 				</td>
 				<td class="text-right">{{ detail.qty_cases|number_format() }}</td>
-				<td class="text-right">{{ detail.qty_ordered|number_format(3, '.', ',') }}</td>
-				<td class="text-right">{{ detail.qty_shipped|number_format(3, '.', ',') }}</td>
+				<td class="text-right">{{ detail.qty_ordered|number_format(config.decimal_places) }}</td>
+				<td class="text-right">{{ detail.qty_shipped|number_format(config.decimal_places) }}</td>
 				<td class="text-right">$ {{ detail.price|currency }}</td>
 				<td class="text-right">$ {{ detail.total_price|currency }}</td>
 				<td class="text-right">

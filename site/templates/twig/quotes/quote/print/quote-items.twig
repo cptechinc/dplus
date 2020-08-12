@@ -1,3 +1,12 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	config                 ProcessWire\Config
+	config.so              ConfigSalesOrder
+	quote                  Quote
+	order.items            QuoteDetail[]|ObjectCollection
+#}
 <table class="table table-striped table-borderless">
 	<thead class="bg-dark text-white font-weight-bold">
 		<tr>
@@ -9,14 +18,14 @@
 		</tr>
 	</thead>
 	<tbody>
-		{% for detail in quote.get_items() %}
+		{% for detail in quote.items) %}
 			<tr>
 				<td>{{ detail.linenumber }}</td>
 				<td>
 					{{ detail.itemid }}</br>
 					<small>{{ detail.description }}</small>
 				</td>
-				<td class="text-right">{{ detail.qty|number_format() }}</td>
+				<td class="text-right">{{ detail.qty|number_format(config.so.decimal_places) }}</td>
 				<td class="text-right">$ {{ detail.price|currency }}</td>
 				<td class="text-right">$ {{ detail.price_total|currency }}</td>
 			</tr>

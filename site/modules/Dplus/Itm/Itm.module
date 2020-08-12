@@ -461,6 +461,59 @@ class Itm extends WireData implements Module {
 	URL Functions
 ============================================================= */
 	/**
+	 * Return if Item Type for Item ID is normal (N)
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_normal($itemID) {
+		$q = $this->get_query();
+		return $q->is_item_normal($itemID);
+	}
+
+	/**
+	 * Return if Item Type for Item ID is lotted (L)
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_lotted($itemID) {
+		$q = $this->get_query();
+		return $q->is_item_lotted($itemID);
+	}
+
+	/**
+	 * Return if Item Type for Item ID is serialized (S)
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_serialized($itemID) {
+		$q = $this->get_query();
+		return $q->is_item_serialized($itemID);
+	}
+
+	/**
+	 * Return if Item Type for Item ID is lotted (S) or lotted (L)
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_lotserialized($itemID) {
+		$q = $this->get_query();
+		return ($q->is_item_serialized($itemID) || $this->is_item_lotted($itemID));
+	}
+
+	/**
+	 * Return if Item Type for Item ID is Price Only(P)
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_priceonly($itemID) {
+		$q = $this->get_query();
+		return $q->is_item_priceonly($itemID);
+	}
+
+/* =============================================================
+	URL Functions
+============================================================= */
+	/**
 	 * Return URL to view / edit Item
 	 * @param  string $itemID
 	 * @return string
