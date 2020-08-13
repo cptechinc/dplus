@@ -1,0 +1,42 @@
+<?php namespace ProcessWire;
+
+/**
+ * Mpo
+ *
+ * Parent Module to Install Sub Mpo Modules
+ */
+class Mpo extends WireData implements Module {
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+		$modules->refresh();
+
+		foreach ($info['installs'] as $module_name) {
+			if (!$modules->isInstalled($module_name)) {
+				$result = $modules->install($module_name);
+			}
+		}
+	}
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'MPO',
+			'version' => 101,
+			'summary' => 'Handles Mpo Modules Installation & Updates',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(
+				'PurchaseOrderEdit',
+			)
+		);
+	}
+}

@@ -1,55 +1,63 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	config                 ProcessWire\Config
+	config.po              ConfigPo
+	orderpage              URL to View PurchaseOrder
+#}
 {% extends "purchase-orders/vendor/purchase-orders-list.twig" %}
 
 {% block header %}
-    <div class="form-row">
-        <div class="col">
-                <a href="{{ page.get_sortURL('ponbr') }}" class="link">PO Number
-                    {% if page.orderby_column == 'ponbr' %}
-    					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
-    				{% endif %}
-                </a>
-        </div>
-        <div class="col-sm-2">
-            <a href="{{ page.get_sortURL('poref') }}" class="link">PO Ref
-                {% if page.orderby_column == 'poref' %}
+	<div class="form-row">
+		<div class="col">
+			<a href="{{ page.get_sortURL('ponbr') }}" class="link">PO Number
+				{% if page.orderby_column == 'ponbr' %}
 					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
 				{% endif %}
-            </a>
-        </div>
-        <div class="col">
-            <a href="{{ page.get_sortURL('shipfromid') }}" class="link">ShipfromID
-                {% if page.orderby_column == 'shipfromid' %}
+			</a>
+		</div>
+		<div class="col-sm-2">
+			<a href="{{ page.get_sortURL('poref') }}" class="link">PO Ref
+				{% if page.orderby_column == 'poref' %}
 					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
 				{% endif %}
-            </a>
-        </div>
-        <div class="col">
-            <a href="{{ page.get_sortURL('total_total') }}" class="link">Order Total
-                {% if page.orderby_column == 'total_total' %}
+			</a>
+		</div>
+		<div class="col">
+			<a href="{{ page.get_sortURL('shipfromid') }}" class="link">ShipfromID
+				{% if page.orderby_column == 'shipfromid' %}
 					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
 				{% endif %}
-            </a>
-        </div>
-        <div class="col">
-            <a href="{{ page.get_sortURL('date_ordered') }}" class="link">Order Date
-                {% if page.orderby_column == 'date_ordered' %}
+			</a>
+		</div>
+		<div class="col">
+			<a href="{{ page.get_sortURL('total_total') }}" class="link">Order Total
+				{% if page.orderby_column == 'total_total' %}
 					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
 				{% endif %}
-            </a>
-        </div>
-        <div class="col">
-            <a href="{{ page.get_sortURL('date_expected') }}" class="link">Expected Date
-                {% if page.orderby_column == 'date_expected' %}
+			</a>
+		</div>
+		<div class="col">
+			<a href="{{ page.get_sortURL('date_ordered') }}" class="link">Order Date
+				{% if page.orderby_column == 'date_ordered' %}
 					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
 				{% endif %}
-            </a>
-        </div>
-        <div class="col">
-            <a href="{{ page.get_sortURL('status') }}" class="link">Status
-                {% if page.orderby_column == 'status' %}
+			</a>
+		</div>
+		<div class="col">
+			<a href="{{ page.get_sortURL('date_expected') }}" class="link">Expected Date
+				{% if page.orderby_column == 'date_expected' %}
 					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
 				{% endif %}
-            </a>
-        </div>
-    </div>
+			</a>
+		</div>
+		<div class="col">
+			<a href="{{ page.get_sortURL('status') }}" class="link">Status
+				{% if page.orderby_column == 'status' %}
+					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+				{% endif %}
+			</a>
+		</div>
+	</div>
 {% endblock %}

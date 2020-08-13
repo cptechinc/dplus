@@ -39,7 +39,7 @@
 		if ($config->twigloader->exists("cart/$config->company/add-item-form.twig")) {
 			$page->body .= $config->twig->render("cart/$config->company/add-item-form.twig", ['page' => $page, 'cart' => $cart]);
 		} else {
-			$page->body .= $config->twig->render('cart/add-item-form.twig', ['page' => $page, 'cart' => $cart]);
+			$page->body .= $config->twig->render('cart/add-item-form.twig', ['page' => $page, 'cart' => $cart, 'soconfig' => $cart->config('so')]);
 		}
 
 		$page->js .= $config->twig->render('cart/item-lookup.js.twig', ['page' => $page, 'cart' => $cart]);

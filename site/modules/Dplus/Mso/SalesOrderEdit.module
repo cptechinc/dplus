@@ -1,0 +1,445 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+// Dplus Data Database
+use SalesOrderQuery, SalesOrder;
+use CustomerShiptoQuery, CustomerShipto;
+use WarehouseQuery, Warehouse;
+use ItemMasterItemQuery, ItemMasterItem;
+use ArTermsCodeQuery, ArTermsCode;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
+
+use OrdrhedQuery, Ordrhed;
+use OrdrdetQuery, Ordrdet;
+use StatesQuery, States;
+use ShipviaQuery, Shipvia;
+
+class SalesOrderEdit extends WireData implements Module {
+
+	protected $ordn;
+
+	/**
+	 * Returns if Sales Order Customer has been defined
+	 * @return bool
+	 */
+	public function has_ordn() {
+		return boolval($this->ordn);
+	}
+
+	/**
+	 * Sets Order Number
+	 * @return string
+	 */
+	public function set_ordn($ordn) {
+		$this->ordn = $ordn;
+	}
+
+	/**
+	 * Returns Query for Sales Order Header Edit
+	 * @param  string $ordn Sales Order Number
+	 * @return OrdrhedQuery
+	 */
+	public function get_query_header($ordn) {
+		$q = OrdrhedQuery::create();
+		$q->filterBySessionid($this->sessionID);
+		$q->filterByOrderno($ordn);
+		return $q;
+	}
+
+	/**
+	 * Returns Query for Sales Order Details Edit
+	 * @param  string $ordn Sales Order Number
+	 * @return OrdrdetQuery
+	 */
+	public function get_query_details($ordn) {
+		$q = OrdrdetQuery::create();
+		$q->filterBySessionid($this->sessionID);
+		$q->filterByOrderno($ordn);
+		return $q;
+	}
+
+	/**
+	 * Return if Header and Details are available to Edit
+	 * @param  string $ordn Sales Order Number
+	 * @return bool
+	 */
+	public function exists_editable($ordn) {
+		return $this->exists_editable_header($ordn) && $this->exists_editable_details($ordn);
+	}
+
+	/**
+	 * Return if PO header is available for editing
+	 * @param  string $ordn Sales Order Number
+	 * @return bool
+	 */
+	public function exists_editable_header($ordn) {
+		$q = $this->get_query_header($ordn);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return if PO items are available for editing
+	 * @param  string $ordn Sales Order Number
+	 * @return bool
+	 */
+	public function exists_editable_details($ordn) {
+		$q = $this->get_query_details($ordn);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Returns Editable Sales Order
+	 * @return Ordrhed
+	 */
+	public function get_editable_header($ordn) {
+		return OrdrhedQuery::create()->findOneBySessionidOrder(session_id(), $ordn);
+	}
+
+	/**
+	 * Return Order Items
+	 * @return Ordrdet[]
+	 */
+	public function get_editable_details($ordn) {
+		return OrdrdetQuery::create()->filterBySessionidOrder(session_id(), $ordn)->find();
+	}
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Process Input Data and act on upon action
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'update-header':
+				$this->process_input_update_header($input);
+				break;
+			case 'update-item-quick':
+				$this->process_input_update_item_quick($input);
+				break;
+			case 'exit':
+				break;
+		}
+	}
+
+	/**
+	 * Update Sales Order Header
+	 * @param WireInput $input Input data
+	 * @return void
+	 */
+	public function process_input_update_header(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$ordn = SalesOrder::get_paddedordernumber($values->text('ordn'));
+		$editorder = $this->get_editable_header($ordn);
+		$editorder->setShipname($values->text('shipto_name'));
+		$editorder->setShipaddress($values->text('shipto_address'));
+		$editorder->setShipaddress2($values->text('shipto_address2'));
+		$editorder->setShipcity($values->text('shipto_city'));
+		$editorder->setShipstate($values->text('shipto_state'));
+		$editorder->setShipzip($values->text('shipto_zip'));
+		$editorder->setContact($values->text('contact'));
+		$editorder->setPhone($values->text('phone'));
+		$editorder->setExtension($values->text('phone_ext'));
+		$editorder->setFax($values->text('fax'));
+		$editorder->setEmail($values->text('email'));
+		$editorder->setCustpo($values->text('custpo'));
+		$editorder->setReleasenbr($values->text('releasenumber'));
+		$editorder->setShipviacd($values->text('shipvia'));
+		$editorder->setRqstDate($values->text('date_requested'));
+		$editorder->setShipcom($values->text('shipcomplete'));
+		$editorder->setTermcode($values->text('termscode'));
+		$saved = $editorder->save();
+		$unlock = $values->exit ? true : false;
+		$this->request_so_update_header($ordn, $unlock);
+	}
+
+	/**
+	 * Update Sales Order Item
+	 * @param WireInput $input Input data
+	 * @return void
+	 */
+	public function process_input_update_item_quick(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$ordn = SalesOrder::get_paddedordernumber($values->text('ordn'));
+		$linenbr = $values->int('linenbr');
+		$qty     = $values->text('qty');
+		$price   = $values->float('price');
+
+		$custID = SalesOrderQuery::create()->get_custid($ordn);
+		$editline = OrdrdetQuery::create()->findOneBySessionidOrder(session_id(), $ordn, $linenbr);
+		$editline->setQty($qty);
+		$editline->setPrice($price);
+		$editline->save();
+		$this->request_so_update_detail($ordn, $linenbr);
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Returns Static Sales Order
+	 * @return SalesOrder
+	 */
+	public function get_order_static($ordn) {
+		return SalesOrderQuery::create()->filterByOrdernumber($ordn)->findOne();
+	}
+
+	/**
+	 * Return US States
+	 * @return States[]|ObjectCollection
+	 */
+	public function get_states() {
+		return StatesQuery::create()->select(['name', 'abbreviation'])->find();
+	}
+
+	/**
+	 * Return Shipvias
+	 * @return Shipvia[]|ObjectCollection
+	 */
+	public function get_shipvias() {
+		return ShipviaQuery::create()->find();
+	}
+
+	/**
+	 * Return Warehouses
+	 * @return Warehouse[]|ObjectCollection
+	 */
+	public function get_warehouses() {
+		return WarehouseQuery::create()->find();
+	}
+
+	/**
+	 * Return ArTermsCodes
+	 * @return ArTermsCode[]|ObjectCollection
+	 */
+	public function get_termscodes() {
+		return ArTermsCodeQuery::create()->find();
+	}
+
+	/**
+	 * Return the number of decimal places for qty values
+	 * @return int
+	 */
+	public function decimal_places_qty() {
+		$config = $this->config('so');
+		return $config->decimal_places_qty;
+	}
+
+	/**
+	 * Return the number of decimal places for cost values
+	 * @return int
+	 */
+	public function decimal_places_price() {
+		$config = $this->config('so');
+		return $config->decimal_places_price;
+	}
+
+	/**
+	 * Return a Config Class
+	 * @param  string $code Config Code
+	 * @return Config(x)
+	 */
+	public function config($code) {
+		switch ($code) {
+			default:
+				return ConfigSalesOrderQuery::create()->findOne();
+				break;
+		}
+	}
+
+	/**
+	 * Return Customer ID from Sales Order
+	 * @return string Customer ID
+	 */
+	public function get_custid() {
+		return SalesOrderQuery::create()->select(SalesOrder::get_aliasproperty('custid'))->findOneByOrdernumber($this->ordn);
+	}
+
+	/**
+	 * Return temMasterItem
+	 * @param  string $itemID Item ID
+	 * @return ItemMasterItem
+	 */
+	public function get_im_item($itemID) {
+		return ItemMasterItemQuery::create()->findOneByItemid($itemID);
+	}
+
+	/**
+	 * Gets the Shipto address in an array format to be easily converted to JSON
+	 * NOTE: used for JS
+	 * @return array
+	 */
+	public function get_shiptos_json_array() {
+		$custID = $this->get_custid();
+		$columns = array('id', 'name', 'address', 'address2', 'city', 'state', 'zip');
+
+		$query = CustomerShiptoQuery::create();
+
+		foreach ($columns as $column) {
+			$query->addAsColumn($column, CustomerShipto::get_aliasproperty($column));
+		}
+		$query->select($columns);
+		$query->filterByCustid($custID);
+		$shiptos = $query->find();
+		return $shiptos->toArray('id');
+	}
+
+/* =============================================================
+	Dplus Request Functions
+============================================================= */
+	/**
+	 * Send PO Header Update Request
+	 * @param  string $ordn Purchase Order Number
+	 * @return void
+	 */
+	public function request_so_edit($ordn) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$custID = SalesOrderQuery::create()->get_custid($ordn);
+		$data = array("DBNAME=$dplusdb", "ORDRDET=$ordn", "CUSTID=$custID", "LOCK");
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
+	}
+
+	/**
+	 * Send PO Header Update Request
+	 * @param  string $ordn Purchase Order Number
+	 * @return void
+	 */
+	public function request_so_update_header($ordn, bool $unlock = false) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$custID = SalesOrderQuery::create()->get_custid($ordn);
+		$data = array("DBNAME=$dplusdb", 'SALESHEAD', "ORDERNO=$ordn", "CUSTID=$custID");
+		if ($unlock) {
+			$data[] = "UNLOCK";
+		}
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
+	}
+
+	/**
+	 * Send PO Header Update Request
+	 * @param  string $ordn Purchase Order Number
+	 * @return void
+	 */
+	public function request_so_update_detail($ordn, int $linenbr) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$custID = SalesOrderQuery::create()->get_custid($ordn);
+		$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "CUSTID=$custID");
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
+	}
+
+
+	/**
+	 * Sends HTTP GET request to send Dplus Item Search Request
+	 * @param  string $q Query or Item ID
+	 * @return void
+	 */
+	public function request_itemsearch($q) {
+		$ordn = $this->ordn;
+		$order = $this->get_order_static($ordn);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$url = new Url($this->wire('pages')->get('template=redir,redir_file=ii')->url);
+		$url->query->set('action', 'item-search');
+		$url->query->set('q', $q);
+		$url->query->set('custID', $order->custid);
+		$url->query->set('sessionID', session_id());
+		$requestor->self_request($url->getUrl());
+	}
+
+
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Sales Order Edit Module',
+			'version' => 101,
+			'summary' => 'Handles Sales Order Editing',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+	public function init() {
+		$this->ordn = '';
+		$this->sessionID = session_id();
+
+		/**
+		 * Returns Sales Order Page URL
+		 */
+		$this->addHook('Page::so_editURL', function($event) {
+			$ordn = $event->arguments(0);
+			$url = new Url($this->wire('pages')->get('pw_template=sales-order-edit')->url);
+			$url->query->set('ordn', $ordn);
+			$event->return = $url->getUrl();
+		});
+
+		/**
+		 * Returns Sales Order Page URL
+		 */
+		$this->addHook('Page::so_viewURL', function($event) {
+			$ordn = $event->arguments(0);
+			$url = new Url($this->wire('pages')->get('pw_template=sales-order-view')->url);
+			$url->query->set('ordn', $ordn);
+			$event->return = $url->getUrl();
+		});
+
+		/**
+		 * Returns Sales Order Page URL
+		 */
+		$this->addHook('Page::unlock_orderURL', function($event) {
+			$ordn = $event->arguments(0);
+			$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
+			$url->query->set('action', 'unlock-order');
+			$url->query->set('ordn', $ordn);
+			$event->return = $url->getUrl();
+		});
+
+		/**
+		 * Adds self::is_user_editingorder() as User hook
+		 * @uses self::is_user_editingorder()
+		 */
+		$this->addHook('Page::remove_itemURL', function($event) {
+			$p = $event->object;
+			$ordn = $event->arguments(0);
+			$linenbr = $event->arguments(1);
+			$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
+			$url->query->set('action', 'remove-line');
+			$url->query->set('ordn', $ordn);
+			$url->query->set('linenbr', $linenbr);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=sales-order-edit)::get_itm_lookupURL', function($event) {
+			$url = new Url($this->wire('pages')->get('pw_template=itm-json')->httpUrl);
+			$url->query->set('json', 'true');
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=sales-order-edit)::get_ii_lookupURL', function($event) {
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item-lookup')->httpUrl);
+			$event->return = $url->getUrl();
+		});
+	}
+}

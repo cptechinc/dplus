@@ -92,6 +92,7 @@ class Cart extends WireData implements Module {
 		return CartdetQuery::create()->filterBySessionid(session_id())->find();
 	}
 
+
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
@@ -108,8 +109,32 @@ class Cart extends WireData implements Module {
 	 * Return the number of decimal places for qty values
 	 * @return int
 	 */
-	public function decimal_places() {
-		return ConfigSalesOrderQuery::create()->findOne()->decimal_places;
+	public function decimal_places_qty() {
+		$config = $this->config('so');
+		return $config->decimal_places_qty;
+	}
+
+	/**
+	 * Return the number of decimal places for price values
+	 * @return int
+	 */
+	public function decimal_places_price() {
+		$config = $this->config('so');
+		return $config->decimal_places_price;
+	}
+
+	/**
+	 * Return a Config Class
+	 * @param  string $code Config Code
+	 * @return Config(x)
+	 */
+	public function config($code) {
+		switch ($code) {
+			case 'so':
+			default:
+				return ConfigSalesOrderQuery::create()->findOne();
+				break;
+		}
 	}
 
 /* =============================================================

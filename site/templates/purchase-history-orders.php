@@ -1,4 +1,5 @@
 <?php
+	$config->po = ConfigPoQuery::create()->findOne();
 	$html = $modules->get('HtmlWriter');
 	$filter_purchasehistory = $modules->get('FilterApInvoices');
 	$filter_purchasehistory->init_query($user);
@@ -11,6 +12,6 @@
 
 	$page->body = $config->twig->render('purchase-orders/invoices/search-form.twig', ['page' => $page, 'input' => $input]);
 	$page->body .= $html->h3('', $invoices->getNbResults() . " Invoices");
-	$page->body .= $config->twig->render('purchase-orders/invoices/invoices-list-links.twig', ['page' => $page, 'invoices' => $invoices, 'invpage' => $invpage]);
+	$page->body .= $config->twig->render('purchase-orders/invoices/invoices-list-links.twig', ['page' => $page, 'config' => $config, 'invoices' => $invoices, 'invpage' => $invpage]);
 	$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'pagenbr' => $input->pageNum, 'resultscount'=> $invoices->getNbResults()]);
 	include __DIR__ . "/basic-page.php";

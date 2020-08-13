@@ -1,3 +1,11 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	config                 ProcessWire\Config
+	config.po              ConfigPo
+	orderpage              URL to View PurchaseOrder
+#}
 <div class="list-group-item bg-light font-weight-bold">
 	{% block header %}
 		<div class="form-row">
@@ -20,7 +28,7 @@
 				<div class="col-sm-2">{{ order.poref }}</div>
 				<div class="col">{{ order.vendorid }}</div>
 				<div class="col">{{ order.shipfromid }}</div>
-				<div class="col text-right">$ {{ order.get_total()|currency }}</div>
+				<div class="col text-right">$ {{ order.get_total()|number_format(config.po.decimal_places_cost) }}</div>
 				<div class="col text-right">{{ convertdate(order.date_ordered) }}</div>
 				<div class="col text-right">{{ convertdate(order.date_expected) }}</div>
 				<div class="col">{{ order.status()|capitalize }}</div>
