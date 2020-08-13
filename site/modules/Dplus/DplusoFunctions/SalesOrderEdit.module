@@ -8,6 +8,7 @@ use CustomerShiptoQuery, CustomerShipto;
 use WarehouseQuery, Warehouse;
 use ItemMasterItemQuery, ItemMasterItem;
 use ArTermsCodeQuery, ArTermsCode;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
 
 use OrdrhedQuery, Ordrhed;
 use OrdrdetQuery, Ordrdet;
@@ -139,6 +140,32 @@ class SalesOrderEdit extends WireData implements Module {
 	 */
 	public function get_termscodes() {
 		return ArTermsCodeQuery::create()->find();
+	}
+
+	/**
+	 * Return the number of decimal places for qty values
+	 * @return int
+	 */
+	public function decimal_places_qty() {
+		$config = $this->config('so');
+		return $config->decimal_places_qty;
+	}
+
+	/**
+	 * Return the number of decimal places for cost values
+	 * @return int
+	 */
+	public function decimal_places_price() {
+		$config = $this->config('so');
+		return $config->decimal_places_price;
+	}
+
+	public function config($code) {
+		switch ($code) {
+			default:
+				return ConfigSalesOrderQuery::create()->findOne();
+				break;
+		}
 	}
 
 	/**

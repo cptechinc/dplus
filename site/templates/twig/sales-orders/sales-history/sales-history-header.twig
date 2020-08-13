@@ -79,7 +79,7 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-7">Subtotal:</div>
-					<div class="col-sm-5 text-right">$ {{ order.subtotal_tax|currency }}</div>
+					<div class="col-sm-5 text-right">$ {{ order.subtotal_tax|number_format(config.decimal_places_price) }}</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-7">Shipping:</div>
@@ -87,11 +87,11 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-7">Tax:</div>
-					<div class="col-sm-5 text-right">$ {{ order.total_tax|currency }}</div>
+					<div class="col-sm-5 text-right">$ {{ order.total_tax|number_format(config.decimal_places_price) }}</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-7">Total:</div>
-					<div class="col-sm-5 text-right">$ {{ order.total_total|currency }}</div>
+					<div class="col-sm-5 text-right">$ {{ order.total_total|number_format(config.decimal_places_price) }}</div>
 				</div>
 			</div>
 			<div class="col-sm-6">

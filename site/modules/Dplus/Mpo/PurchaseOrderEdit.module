@@ -401,7 +401,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 	 * @return int
 	 */
 	public function decimal_places_qty() {
-		return ConfigSalesOrderQuery::create()->findOne()->decimal_places;
+		return ConfigSalesOrderQuery::create()->findOne()->decimal_places_qty;
 	}
 
 	/**

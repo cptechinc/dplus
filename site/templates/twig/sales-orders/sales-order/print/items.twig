@@ -22,9 +22,9 @@
 					{{ detail.itemid }}</br>
 					<small>{{ detail.desc1 }}</small>
 				</td>
-				<td class="text-right">{{ detail.qty_ordered|number_format(config.decimal_places) }}</td>
-				<td class="text-right">$ {{ detail.price|currency }}</td>
-				<td class="text-right">$ {{ detail.total_price|currency }}</td>
+				<td class="text-right">{{ detail.qty_ordered|number_format(config.decimal_places_qty) }}</td>
+				<td class="text-right">$ {{ detail.price|number_format(config.decimal_places_price) }}</td>
+				<td class="text-right">$ {{ detail.total_price|number_format(config.decimal_places_price) }}</td>
 			</tr>
 		{% endfor %}
 	</tbody>

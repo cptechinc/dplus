@@ -11,9 +11,11 @@
 			if (!OrdrhedQuery::create()->filterBySessionidOrder(session_id(), $ordn)->count()) {
 				$modules->get('DplusRequest')->self_request($page->edit_orderURL($ordn));
 			}
-			$module_edit = $modules->get('SalesOrderEdit');
-			$module_edit->set_ordn($ordn);
-			$order = $module_edit->get_order_edit();
+			$eso = $modules->get('SalesOrderEdit');
+			$eso->set_ordn($ordn);
+			$order = $eso->get_order_edit();
+			$eso->get_order_edit_items();
+			echo $db_dpluso->getLastExecutedQuery();
 
 			$customer = CustomerQuery::create()->findOneByCustid($order->custid);
 			$page->title = "Editing Sales Order #$ordn";
@@ -22,10 +24,10 @@
 			$page->lookupURL = $pages->get('pw_template=ii-item-lookup')->httpUrl;
 
 			$page->body .= $config->twig->render('sales-orders/sales-order/edit/links-header.twig', ['page' => $page, 'user' => $user, 'order' => $order]);
-			$page->body .= $config->twig->render('sales-orders/sales-order/edit/sales-order-header.twig', ['page' => $page, 'customer' => $customer, 'order' => $module_edit->get_order_static()]);
+			$page->body .= $config->twig->render('sales-orders/sales-order/edit/sales-order-header.twig', ['page' => $page, 'customer' => $customer, 'order' => $eso->get_order_static()]);
 
 			if ($user->is_editingorder($order->ordernumber)) {
-				$page->body .= $config->twig->render('sales-orders/sales-order/edit/edit-form.twig', ['page' => $page, 'order' => $order, 'states' => $module_edit->get_states(), 'shipvias' => $module_edit->get_shipvias(), 'warehouses' => $module_edit->get_warehouses(), 'termscodes' => $module_edit->get_termscodes(), 'shiptos' => $customer->get_shiptos()]);
+				$page->body .= $config->twig->render('sales-orders/sales-order/edit/edit-form.twig', ['page' => $page, 'order' => $order, 'states' => $eso->get_states(), 'shipvias' => $eso->get_shipvias(), 'warehouses' => $eso->get_warehouses(), 'termscodes' => $eso->get_termscodes(), 'shiptos' => $customer->get_shiptos()]);
 			}
 
 			if ($modules->get('ConfigsCi')->option_lastsold  == 'cstk') {
@@ -42,9 +44,9 @@
 			}
 
 			if ($config->twigloader->exists("sales-orders/sales-order/edit/$config->company/order-items.twig")) {
-				$page->body .= $config->twig->render("sales-orders/sales-order/edit/$config->company/order-items.twig", ['page' => $page, 'order' => $order, 'module_edit' => $module_edit, 'user' => $user]);
+				$page->body .= $config->twig->render("sales-orders/sales-order/edit/$config->company/order-items.twig", ['page' => $page, 'order' => $order, 'eso' => $eso, 'user' => $user]);
 			} else {
-				$page->body .= $config->twig->render('sales-orders/sales-order/edit/order-items.twig', ['page' => $page, 'order' => $order, 'module_edit' => $module_edit, 'user' => $user]);
+				$page->body .= $config->twig->render('sales-orders/sales-order/edit/order-items.twig', ['page' => $page, 'order' => $order, 'eso' => $eso, 'user' => $user]);
 			}
 
 			if ($user->is_editingorder($order->ordernumber)) {
@@ -61,13 +63,13 @@
 
 				if ($input->get->q) {
 					$q = $input->get->text('q');
-					$module_edit->request_itemsearch($q);
+					$eso->request_itemsearch($q);
 					$results = PricingQuery::create()->findBySessionid(session_id());
-					$page->body .= $config->twig->render('cart/lookup-results.twig', ['q' => $q, 'results' => $results]);
+					$page->body .= $config->twig->render('sales-orders/sales-order/edit/item-lookup-results.twig', ['q' => $q, 'results' => $results, 'soconfig' => $eso->config('so') ]);
 				}
 
-				$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('shiptos' => $module_edit->get_shiptos_json_array())]);
-				$page->body .= $config->twig->render('sales-orders/sales-order/edit/last-sales/modal.twig', ['page' => $page, 'module_edit' => $module_edit, 'lastsold' => $lastsold, 'loader' => $config->twigloader, 'company' => $config->company]);
+				$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('shiptos' => $eso->get_shiptos_json_array())]);
+				$page->body .= $config->twig->render('sales-orders/sales-order/edit/last-sales/modal.twig', ['page' => $page, 'eso' => $eso, 'lastsold' => $lastsold, 'loader' => $config->twigloader, 'company' => $config->company]);
 				$config->scripts->append(hash_templatefile('scripts/orders/edit-order.js'));
 				$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 			}
