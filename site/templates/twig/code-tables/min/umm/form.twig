@@ -1,6 +1,7 @@
 {# umm is an instance of UnitofMeasureSale #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form">
+<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="">
 	<input type="hidden" name="table" value="umm">
+	<input type="hidden" name="serialized" value="" disabled>
 
 	<div class="form-group">
 		<label for="code">Code</label>
@@ -13,17 +14,17 @@
 	</div>
 
 	<div class="form-group">
-		<label for="conversion">Conversion</label>
+		<label for="conversion">Conversion Factor</label>
 		<input type="text" name="conversion" class="form-control" value="" id="conversion">
 	</div>
 
 	<div class="form-group">
-	    <label for="pricebyweight">Price by Weight?</label>
-	    {% include 'util/select.twig' with {'name': 'pricebyweight', 'id': 'pricebyweight', 'options': {'S': 'Standard Weight', 'C': 'Catch Weight', 'N': 'Neither'}} %}
+	    <label for="pricebyweight">Price by Weight</label>
+	    {% include 'util/select.twig' with {'name': 'pricebyweight', 'id': 'pricebyweight', 'hideblankoption' : 'true', 'options': {'S': 'Standard Weight', 'C': 'Catch Weight', 'N': 'Neither'}} %}
     </div>
 
 	<div class="modal-footer">
-		<button type="submit" class="btn btn-success">
+		<button type="submit" class="btn btn-success form_button">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 		</button>
 		<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>

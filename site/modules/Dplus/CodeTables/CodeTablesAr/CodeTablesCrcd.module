@@ -1,0 +1,229 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'/../CodeTablesResponse.php');
+
+use Purl\Url;
+
+use CreditCardDigitGetQuery, CreditCardDigitGet;
+use ConfigArQuery, ConfigAr;
+use CustomerQuery, Customer;
+
+/**
+ * Module that handles the editing of the CCM codetable
+ */
+class CodeTablesCrcd extends WireData implements Module {
+	const MODEL              = 'CreditCardDigitGet';
+	const MODEL_KEY          = 'code';
+	const DESCRIPTION        = 'Customer Credit Card';
+	const DESCRIPTION_RECORD = 'Customer Credit Card';
+	const TABLE              = 'crcd';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Return the Code records from Database
+	 * @return CreditCardDigitGet[]|ObjectCollection
+	 */
+	public function get_codes() {
+		$q = $this->get_query();
+		return $q->find();
+	}
+
+	/**
+	 * Return the IDs for the Credit Card Digit Get
+	 * @return array
+	 */
+	public function get_codes_ids() {
+		$q = $this->get_query();
+		$q->select(CreditCardDigitGet::get_aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
+	/**
+	 * Return the Code
+	 * @param  string $code Customer Credit Card
+	 * @return CreditCardDigitGet
+	 */
+	public function get_code($code) {
+		$q = $this->get_query();
+		return $q->findOneByCode($code);
+	}
+
+	/**
+	 * Return if the Code Exists
+	 * @param  string $code Customer Credit Card
+	 * @return bool
+	 */
+	public function code_exists($code) {
+		$q = $this->get_query();
+		return boolval($q->filterByCode($code)->count());
+	}
+
+	/**
+	 * Returns a new CreditCardDigitGet
+	 * @return CreditCardDigitGet
+	 */
+	public function get_new_code() {
+		return new CreditCardDigitGet();
+	}
+
+	/**
+	 * Returns the associated ModelQuery class for table code
+	 * @param  string $table Table Code
+	 * @return mixed
+	 */
+	public function get_query() {
+		return CreditCardDigitGetQuery::create();
+	}
+
+	/**
+	 * Takes Input, validates it's for one of the code tables
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$table = $input->$rm->text('table');
+		$code  = $input->$rm->text('code');
+
+		$q = $this->get_query();
+		$q->filterByCode($code);
+
+		if ($q->count()) {
+			$record = $q->findOne();
+		} else {
+			$code  = $input->$rm->text('code', array('maxLength' => CreditCardDigitGet::MAX_LENGTH_CODE));
+			$record = new CreditCardDigitGet();
+			$record->setCode($code);
+		}
+
+		if ($input->$rm->action) {
+			$recordlocker = $this->wire('modules')->get('RecordLockerUser');
+
+			/**
+			 * Create lock for CRCD code if not already locked.
+			 */
+			if (!$recordlocker->function_locked('crcd', $code)) {
+				$recordlocker->create_lock('crcd', $code);
+			}
+
+			if ($record->isNew() || $recordlocker->function_locked_by_user('crcd', $code)) {
+				if ($input->$rm->text('action') == 'remove-code') {
+					$record->delete();
+				} elseif ($input->$rm->text('action') == 'update-crcd') {
+					$custID = $input->$rm->text('custID');
+
+					if ($this->customer_exists($custID)) {
+						$description = $input->$rm->text('description');
+						$gl_account = $input->$rm->text('gl_account');
+						$charge_gl_account = $input->$rm->text('charge_gl_account');
+						$charge_rate = $input->$rm->text('charge_rate');
+						$trans_cost = $input->$rm->text('trans_cost');
+						$cc_surcharge_percent = $input->$rm->text('cc_surcharge_percent');
+						$record->setDescription($description);
+						$record->setGl_account($gl_account);
+						$record->setCustid($custID);
+						$record->setCharge_gl_account($charge_gl_account);
+						$record->setCharge_rate($charge_rate);
+						$record->setTrans_cost($trans_cost);
+						$record->setCc_surcharge_percent($cc_surcharge_percent);
+						$record->setDate(date('Ymd'));
+						$record->setTime(date('His'));
+						$record->setDummy('P');
+					} else {
+						$response = new CodeTablesResponse();
+						$response->set_key($code);
+						$response->set_error(true);
+						$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+						$message = self::DESCRIPTION_RECORD . " ($code) was not updated because customer '" . $custid . "' does not exist";
+						$response->set_message($message);
+					}
+				}
+				$response = $this->save_and_process_response($table, $code, $record);
+			} else {
+				$response = new CodeTablesResponse();
+				$response->set_key($code);
+				$response->set_error(true);
+				$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+				$message = self::DESCRIPTION_RECORD . " ($code) was not updated because it is locked by " . $recordlocker->get_locked_user('crcd', $code);
+				$response->set_message($message);
+			}
+		} else {
+			$response = new CodeTablesResponse();
+			$response->set_key($code);
+			$response->set_error(true);
+			$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+			$message = self::DESCRIPTION_RECORD . " ($code) was not updated ";
+			$response->set_message($message);
+		}
+		$this->wire('session')->response_codetable = $response;
+	}
+
+	/**
+	 * Returns CodeTablesResponse based on the outcome of the database save
+	 *
+	 * @param  string $table  Table Code
+	 * @param  string $code   Code being added
+	 * @param  bool   $is_new Was the Record in the database before Save?
+	 * @param  bool   $saved  Was the Record Saved?
+	 * @return CodeTablesResponse
+	 */
+	protected function save_and_process_response($table, $code, CreditCardDigitGet $record) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new CodeTablesResponse();
+		$response->set_key($code);
+		$message = self::DESCRIPTION_RECORD . " ($code) was ";
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+			$message .= "not ";
+		}
+
+		if ($is_new) {
+			$message .= 'added';
+			$response->set_action(CodeTablesResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$message .= 'deleted';
+			$response->set_action(CodeTablesResponse::CRUD_DELETE);
+		} else {
+			$message .= 'updated';
+			$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+		}
+
+		$response->set_message($message);
+
+		if ($response->has_success()) {
+			$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Returns if Customer exists
+	 * @param string $custID Customer ID
+	 * @return void
+	 */
+	public function customer_exists($custID) {
+		$validate_custid = $this->wire('modules')->get('LookupCustomer');
+		return $validate_custid->lookup_customer($custID);
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus CRCD Code Table CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for the CRCD code table',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

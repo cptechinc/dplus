@@ -1,9 +1,8 @@
 {# igpm is an instance of InvPriceCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form">
+{# data-code is for verifying edit vs new #}
+<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="">
 	<input type="hidden" name="table" value="igpm">
-	{# fields not displaying now, but could in the future #}
-	<input type="hidden" name="sales_program" value="N">
-	<input type="hidden" name="cost_percent" value="0">
+	<input type="hidden" name="serialized" value="" disabled>
 
 
 	<div class="form-group">
@@ -16,15 +15,15 @@
 		<input type="text" name="description" class="form-control" maxlength="20" value="" id="description">
 	</div>
 
-	{# if config_so.is_request_program() #}
-		<!-- <div class="form-group">
-		    <label for="sales_program">Sales Program ?</label>
-		    {# include 'util/select.twig' with {'name': 'sales_program', 'id': 'sales_program', 'options': {'Y': 'Yes', 'N': 'No'}} #}
-	    </div> -->
-	{# endif #}
+	{% if config_so.is_request_program() %}
+		<div class="form-group">
+		    <label for="sales_program">Sales Program</label>
+		    {% include 'util/select.twig' with {'name': 'sales_program', 'hideblankoption' : 'true', 'id': 'sales_program', 'options': {'Y': 'Yes', 'N': 'No'}} %}
+	    </div>
+	{% endif %}
 
 	<div class="modal-footer">
-		<button type="submit" class="btn btn-success">
+		<button type="submit" class="btn btn-success form_button">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 		</button>
 		<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>

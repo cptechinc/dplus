@@ -8,9 +8,12 @@
 		$action = $input->$rm->text('action');
 
 		// TODO: LOGIC to see if code was removed
-		$code = $input->$rm->text('code');
+		$code  = $input->requestMethod('GET') ? $input->$rm->text('code') : false;
 		$code = $action == 'update-notes' || $action == 'delete-notes' ? $code : '';
 		$code = $page->codetable == 'ioptm' ? $input->$rm->text('sysop') : $code;
+		if ( $page->codetable != 'ioptm') {
+			$code = $action == 'remove-code' ? '' : $code;
+		}
 
 		if ($in_codetables->validate_codetable($page->codetable)) {
 			$module_codetable = $in_codetables->get_codetable_module($page->codetable);
@@ -39,7 +42,7 @@
 		} else {
 			$page->body .= $config->twig->render("code-tables/min/$page->codetable/list.twig", ['page' => $page, 'codes' => $module_codetable->get_codes(), 'response' => $session->response_codetable, 'config_so' => $config_so, 'config_ar' => $config_ar]);
 			$page->body .= $config->twig->render('code-tables/edit-code-modal.twig', ['page' => $page, 'file' => "min/$page->codetable/form.twig", 'max_length_code' => $module_codetable->get_max_length_code(), 'config_so' => $config_so, 'config_ar' => $config_ar, 'dpluscustomer' => $dpluscustomer]);
-			$page->js   .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'max_length_code' => $module_codetable->get_max_length_code()]);
+			$page->js   .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'max_length_code' => $module_codetable->get_max_length_code(), 'm_in' => $module_codetable, 'config_so' => $config_so]);
 		}
 	} else {
 		$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Code Table Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "IN Code Table '$page->codetable' does not exist"]);

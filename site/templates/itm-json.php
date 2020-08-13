@@ -1,13 +1,13 @@
 <?php
 	$lookup_item = $modules->get('LookupItem');
-	$itemID = $input->get->text('itemID');
+	$itemID = strtoupper($input->get->text('itemID'));
 
 	$response = array('error' => false);
 
 	if ($input->get->itemID) {
 		if ($lookup_item->lookup_itm($itemID)) {
 			$response['exists'] = true;
-			
+
 			if ($input->get->json) {
 				$fields = $input->get->array('fields', null, ['delimiter' => ","]);
 				$loader = $modules->get('LoadItem');

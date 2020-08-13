@@ -1,6 +1,7 @@
 {# vtm is an instance of ApTypeCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form">
+<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="">
 	<input type="hidden" name="table" value="vtm">
+	<input type="hidden" name="serialized" value="" disabled>
 
 	<div class="form-group">
 		<label for="code">Code</label>
@@ -14,7 +15,7 @@
 
 	<div class="form-group">
 		<label for="fabricator">Fabricator</label>
-		<select name="fabricator" class="form-control" id="fabricator">
+		<select name="fabricator" class="form-control select-group" id="fabricator">
 			<option value="N">No</option>
 			<option value="Y">Yes</option>
 		</select>
@@ -22,7 +23,7 @@
 
 	<div class="form-group">
 		<label for="production">Production</label>
-		<select name="production" class="form-control" id="production">
+		<select name="production" class="form-control select-group" id="production">
 			<option value="N">No</option>
 			<option value="Y">Yes</option>
 		</select>
@@ -30,14 +31,14 @@
 
 	<div class="form-group">
 		<label for="competitor">Competitor</label>
-		<select name="competitor" class="form-control" id="competitor">
+		<select name="competitor" class="form-control select-group" id="competitor">
 			<option value="N">No</option>
 			<option value="Y">Yes</option>
 		</select>
 	</div>
 
 	<div class="modal-footer">
-		<button type="submit" class="btn btn-success">
+		<button type="submit" class="btn btn-success form_button">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 		</button>
 		<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>

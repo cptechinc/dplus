@@ -31,6 +31,16 @@ class CodeTablesVtm extends WireData implements Module {
 	}
 
 	/**
+	 * Return the IDs for the Customer Price Code
+	 * @return array
+	 */
+	public function get_codes_ids() {
+		$q = $this->get_query();
+		$q->select(ApTypeCode::get_aliasproperty('code'));
+		return $q->find()->toArray();
+	}
+
+	/**
 	 * Return the Code records from Database filtered by ProductLne ID
 	 * @param  string $productlne ProductLneID
 	 * @return ObjectCollection

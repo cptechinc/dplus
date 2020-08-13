@@ -34,6 +34,16 @@ class CodeTablesIgm extends WireData implements Module {
 	}
 
 	/**
+	 * Return the IDs for the Warehouses
+	 * @return array
+	 */
+	public function get_codes_ids() {
+		$q = $this->get_query();
+		$q->select(InvGroupCode::get_aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
+	/**
 	 * Return the Code records from Database filtered by ProductLne ID
 	 * @param  string $productlne ProductLneID
 	 * @return ObjectCollection
@@ -88,6 +98,7 @@ class CodeTablesIgm extends WireData implements Module {
 			$code  = $input->$rm->text('code', array('maxLength' => InvGroupCode::MAX_LENGTH_CODE));
 			$record = new InvGroupCode();
 			$record->setCode($code);
+			$record->setCost_percent(0);
 		}
 
 		if ($input->$rm->action) {
@@ -103,7 +114,7 @@ class CodeTablesIgm extends WireData implements Module {
 			if ($record->isNew() || $recordlocker->function_locked_by_user('igm', $code)) {
 				if ($input->$rm->text('action') == 'remove-code') {
 					$record->delete();
-				} elseif ($input->$rm->text('action') == 'update-code') {
+				} elseif ($input->$rm->text('action') == 'update-igm') {
 					$description = $input->$rm->text('description');
 					$coop = $input->$rm->text('coop');
 					$sales = $input->$rm->text('sales');
@@ -115,11 +126,8 @@ class CodeTablesIgm extends WireData implements Module {
 					$surcharge_dollar_percent = $input->$rm->text('surcharge_dollar_percent');
 					$surcharge_dollar_amount = $input->$rm->text('surcharge_dollar_amount');
 					$surcharge_percent = $input->$rm->text('surcharge_percent');
-					$freight_group = $input->$rm->text('freight_group');
 					$product_line = $input->$rm->text('product_line');
 					$ecomm_desc = $input->$rm->text('ecomm_desc');
-					$sales_program = $input->$rm->text('sales_program');
-					$cost_percent = $input->$rm->text('cost_percent');
 					$max_qty_large = $input->$rm->text('max_qty_large');
 					$max_qty_medium = $input->$rm->text('max_qty_medium');
 					$max_qty_small = $input->$rm->text('max_qty_small');
@@ -134,11 +142,8 @@ class CodeTablesIgm extends WireData implements Module {
 					$record->setSurcharge_dollar_percent($surcharge_dollar_percent);
 					$record->setSurcharge_dollar_amount($surcharge_dollar_amount);
 					$record->setSurcharge_percent($surcharge_percent);
-					$record->setFreight_group($freight_group);
 					$record->setProduct_line($product_line);
 					$record->setEcomm_desc($ecomm_desc);
-					$record->setSales_program($sales_program);
-					$record->setCost_percent($cost_percent);
 					$record->setMax_qty_large($max_qty_large);
 					$record->setMax_qty_medium($max_qty_medium);
 					$record->setMax_qty_small($max_qty_small);
@@ -150,11 +155,15 @@ class CodeTablesIgm extends WireData implements Module {
 					if ($config_ar->is_web_group()) {
 						$web_group = $input->$rm->text('web_group');
 						$record->setWeb_group($web_group);
+					} else {
+						$record->setWeb_group('N');
 					}
 
 					if ($config_so->is_request_program()) {
 						$sales_program = $input->$rm->text('sales_program');
 						$record->setSales_program($sales_program);
+					} else {
+						$record->setSales_program('N');
 					}
 				}
 				$response = $this->save_and_process_response($table, $code, $record);

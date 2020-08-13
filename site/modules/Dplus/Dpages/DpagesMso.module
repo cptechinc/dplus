@@ -327,8 +327,7 @@ class DpagesMso extends Dpages implements Module {
 		$this->addHook('Page::edit_orderURL', function($event) {
 			$p = $event->object;
 			$ordn = $event->arguments(0);
-			$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
-			$url->query->set('action', 'get-order-edit');
+			$url = new Url($this->wire('pages')->get('pw_template=sales-order-edit')->url);
 			$url->query->set('ordn', $ordn);
 			$event->return = $url->getUrl();
 		});

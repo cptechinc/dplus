@@ -17,7 +17,7 @@
 							<a href="<?= $parent->url; ?>"><?= $parent->title; ?></a>
 						</li>
 					<?php endforeach; ?>
-					<?php if ($page->has('title_previous')) : ?>
+					<?php if ($page->has('title_previous') && $page->title_previous != $page->title) : ?>
 						<li class="breadcrumb-item">
 							<a href="<?= $page->url; ?>"><?= $page->title_previous; ?></a>
 						</li>

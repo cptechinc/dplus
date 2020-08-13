@@ -1,4 +1,4 @@
-<select name="{{ name }}" id="{{ id }}" class="form-control">
+<select name="{{ name }}" id="{{ id }}" tabindex="{{ tabindex ? tabindex : '' }}" class="form-control" {{ disabled == true ? 'disabled' : '' }}>
 	{% if hideblankoption == false %}
 		<option value="">
 			{{ blankoption ? blankoption : '-- Choose --'}}

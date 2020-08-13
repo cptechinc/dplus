@@ -1,0 +1,93 @@
+{# codes is an array / ObjectCollection of CreditCardDigitGet #}
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row align-items-center">
+			<div class="col-5"></div>
+			<div class="bg-dark text-white text-center col-4">
+				Service Charge Information
+			</div>
+			<div class="col-3"></div>
+		</div>
+		<div class="row align-items-center">
+			<div class="col-1">
+				Digit
+			</div>
+			<div class="col-2">
+				Name
+			</div>
+			<div class="col-1">
+				GL Acct
+			</div>
+			<div class="col-1">
+				Cust ID
+			</div>
+			<div class="col-1">
+				GL Acct
+			</div>
+			<div class="col-1">
+				Rate
+			</div>
+			<div class="col-1">
+				Tran
+			</div>
+			<div class="col-1">
+				Srcg
+			</div>
+			<div class="col-3">
+				{% if page.is_print() == false %}
+					<a href="{{ page.url ~ '?code=new' }}" class="btn btn-light">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
+					</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	{% for code in codes %}
+		{# data-code attribute and class code is for the highlight on close #}
+		<div id="{{ code.code|urlencode }}" data-code="{{ code.code }}" class="list-group-item code pb-1 pt-1 {{ (response.key == code.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
+			<div class="row align-items-center">
+				<div class="col-1">
+					{{ code.code }}
+				</div>
+				<div class="col-2">
+					{{ code.description }}
+				</div>
+				<div class="col-1">
+					{{ code.gl_account }}
+				</div>
+				<div class="col-1">
+					{{ code.custid }}
+				</div>
+				<div class="col-1">
+					{{ code.charge_gl_account }}
+				</div>
+				<div class="col-1">
+					{{ code.charge_rate }}
+				</div>
+				<div class="col-1">
+					{{ code.trans_cost }}
+				</div>
+				<div class="col-1">
+					{{ code.cc_surcharge_percent }}
+				</div>
+				<div class="col-3 text-center">
+					{% if recordlocker.function_locked(page.name, code.code) == false or recordlocker.function_locked_by_user(page.name, code.code) %}
+						{% if page.is_print() == false %}
+							<a href="{{ page.get_codetable_code_editURL(page.codetable, code.code) }}" class="btn btn-warning">
+								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+							</a>
+							&nbsp;
+							<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger delete_button">
+								<i class="fa fa-trash" aria-hidden="true"></i> Delete
+							</a>
+						{% endif %}
+					{% else %}
+						<span class="badge badge-secondary">
+							<i class="fa fa-lock" aria-hidden="true"></i> Code Locked By {{ recordlocker.get_locked_user(page.name, code.code) }}
+						</span>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+</div>

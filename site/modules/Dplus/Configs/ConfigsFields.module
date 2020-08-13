@@ -1,0 +1,79 @@
+<?php namespace ProcessWire;
+
+class ConfigsFields extends WireData implements Module {
+	/**
+	 * Initializes Config Data array
+	 * NOTE: Will set with default value if not set correctly
+	 * @return void
+	 */
+	public function init_config(Process $config) {
+		foreach($config::DEFAULT_CONFIG as $key => $value) {
+			if (isset($config->data[$key])) {
+				if (empty($config->data[$key])) {
+					$config->data[$key] = $value;
+				} else {
+					$config->data[$key] = $config->data[$key];
+				}
+			} else {
+				$config->data[$key] = $value;
+			}
+		}
+	}
+
+	/**
+	 * Return InputField
+	 * @param  array  $traits Array containing the fields
+	 *  $params = [
+	 *      'type'         => (string) InputfieldType. Required (checkbox|text|select)
+	 *      'label'        => (string) Input Label. Required.
+	 *      'description'  => (string) Input Description. Required.
+	 *      'notes'        => (string) Input Notes
+	 *      *** 'options'     => [ ** ONLY FOR $traits['type'] == select        ***
+	 *          '{{ value }}' => {{ description }}
+	 *      ]
+	 *    ]
+	 * @param  string $name   Input Name
+	 * @param  mixed  $value  Config Value for input
+	 * @return Inputfield '
+	 */
+	public function get_module_config_inputfield(array $traits, $name, $value) {
+		$inputfield = 'Inputfield'.ucfirst($traits['type']);
+		$f = $this->wire('modules')->get($inputfield);
+		$f->attr('name', $name);
+		$f->label = __($traits['label']);
+		$f->description = __($traits['description']);
+		$f->notes = _($traits['notes']);
+
+		if ($traits['type'] == 'checkbox') {
+			$f->attr('checked', $value ? 'checked' : '' );
+		} elseif ($traits['type'] == 'select') {
+			$f->addOptions($traits['options']);
+			$f->value = $value;
+		} else {
+			$f->value = $value;
+		}
+
+		return $f;
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Config Fields Module',
+			'version' => 101,
+			'summary' => 'Handles Configs Fields for *Config modules',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array(),
+			'installs' => array(),
+		);
+	}
+}

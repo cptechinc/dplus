@@ -26,6 +26,10 @@ class DpagesMap extends Dpages implements Module {
 			'name'   => 'ap-code-table',
 			'fields' => array()
 		),
+		'ap-code-table-aoptm' => array(
+			'name'   => 'ap-code-table-aoptm',
+			'fields' => array()
+		),
 	);
 
 	const PAGES = array(
@@ -33,7 +37,7 @@ class DpagesMap extends Dpages implements Module {
 			'template'       => 'dplus-menu',
 			'name'           => 'map',
 			'title'          => 'Accounts Payable',
-			'summary'        => '',
+			'summary'        => 'Accounts Payable Menu',
 			'parent'         => '/',
 			'dplus_function' => 'map'
 		),
@@ -80,6 +84,15 @@ class DpagesMap extends Dpages implements Module {
 			'summary'        => 'View / Edit Vendor Type Code',
 			'parent'         => '/map/apmain/',
 			'dplus_function' => 'vtm'
+		),
+		'ap-aoptm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'ap-code-table',
+			'name'           => 'aoptm',
+			'title'          => 'Accounts Payable Optional Code',
+			'summary'        => 'View / Edit Accounts Payable Optional Code',
+			'parent'         => '/map/apmain/',
+			'dplus_function' => 'aoptm'
 		),
 	);
 
@@ -134,6 +147,7 @@ class DpagesMap extends Dpages implements Module {
 			$code = $event->arguments(1);
 			$event->return = $this->get_codetable_viewURL($table, $code);
 		});
+
 
 		$this->addHook('Page(pw_template=ap-code-table)::get_codetable_code_deleteURL', function($event) {
 			$table = $event->arguments(0);
@@ -221,13 +235,23 @@ class DpagesMap extends Dpages implements Module {
 
 	public function get_codetable_viewURL($table, $code = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
-		$url->query->set('code', $code);
+
+		if ($table == 'aoptm') {
+			$url->query->set('sysop', $code);
+		} else {
+			$url->query->set('code', $code);
+		}
 		return $url->getUrl();
 	}
 
 	public function get_codetable_listURL($table, $code = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
-		$url->query->set('focus', $code);
+		$code = str_replace(' ', '-', $code);
+		if ($table == 'aoptm') {
+			$url->query->set('sysop', $code);
+		} else {
+			$url->query->set('focus', $code);
+		}
 		return $url->getUrl();
 	}
 

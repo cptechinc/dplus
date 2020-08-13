@@ -1,22 +1,181 @@
 $(function() {
+	var codeIDs = {{ m_in.get_codes_ids()|json_encode()|raw }};
+	var input_codeID = $('#code');
+	var form = $("#code-edit-form");
 
+/* =============================================================
+	Event Functions
+============================================================= */
 	$('#edit-code-modal').on('shown.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		populate_edit_from_button(button, modal);
+	});
+
+	$("body").on("click", ".swal-edit-code", function(e) {
+		var button = $(this);
+		var code = button.data('code');
+		var edit_button = $('button[data-code='+code+']');
+		var modal = $('#edit-code-modal');
+		populate_edit_from_button(edit_button, modal);
+		swal2.close();
+	});
+
+	$("body").on("change", "input[name=code]", function(e) {
+		var input = $(this);
+		var codeID = input.val();
+
+		if (validate_codeID(form) === false) {
+			swal2.fire({
+				title: 'Inventory Adjustment Reason Code ' + codeID + ' Exists',
+				text: 'Edit that code?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Yes',
+				cancelButtonText: 'No',
+			}).then((result) => {
+				var modal = $('#edit-code-modal');
+
+				if (result.value) {
+					var button = $('button[data-code="'+codeID+'"]');
+					populate_edit_from_button(button, modal);
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					modal.modal('hide');
+				}
+			});
+		}
+	});
+
+/* =============================================================
+	Unsaved Fields Alert
+	NOTE: for Code tables edited in modals, the serialzed form values must
+	be put into a hidden input field for verification
+============================================================= */
+
+	$("body").on("click", "#code-edit-form button:not(.form_button)", function(e) {
+		var origForm = form.find('input[name=serialized]').val();
+
+		if (form.serialize() !== origForm && input_codeID.val() != '') {
+
+			swal2.fire({
+				title: 'Changes have occurred!',
+				text: 'Do you want to save?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+				cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value) {
+					form.find('button[type=submit]').click();
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					var modal = $('#edit-code-modal');
+					modal.modal('hide');
+				}
+			});
+		}
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			code: {
+				required: true,
+				maxlength: {{ max_length_code }}
+			},
+			percentage: 'required'
+		},
+		messages: {
+			code: "Please check the Code value (Max Length: {{ max_length_code }})",
+			percentage: 'Please enter a surcharge percentage for the code'
+		},
+		submitHandler: function(form) {
+			var jform = $(form);
+			var codeID = input_codeID.val();
+
+			if (validate_codeID(form)) {
+				form.submit();
+			} else {
+				var bootstrap = new JsContento();
+				var content = bootstrap.open('div', 'class=swal2-content|id=swal2-content');
+				content += '<button type="button" class="btn btn-secondary swal-edit-code" data-code="'+codeID+'">Edit Inventory Adjustment Reason Code '+ codeID +'</button>';
+				content += '<br>';
+				content += "Do you want to overwrite?";
+				content += bootstrap.close('div');
+
+				swal2.fire({
+					title: 'Inventory Adjustment Reason Code ' +input_codeID.val() + ' Exists' ,
+					text: 'Do you want to overwrite?',
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+					cancelButtonText: 'No',
+					html: content,
+				}).then((result) => {
+					if (result.value) {
+						form.submit();
+					}
+				});
+			}
+		}
+	});
+
+	$("body").on("focusin", "#code-edit-form input:not(#code),#code-edit-form select", function(e) {
+		if (input_codeID.val() == '') {
+			validator.element( "#code" );
+			input_codeID.focus();
+		}
+	});
+
+	/**
+	 * Return if Inventory Adjustment Reason Code ID can be used to save, based upon if
+	 * it exists, and if is the one being edited.
+	 * @param  {[type]} form [description]
+	 * @return {[type]}      [description]
+	 */
+	function validate_codeID(form) {
+		var jform = $(form);
+
+		if (codeIDs.contains(input_codeID.val())) {
+			console.log('Inventory Adjustment Reason Code Exists');
+
+			if (input_codeID.val() != jform.attr('data-code')) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+/* =============================================================
+	Form Functions
+============================================================= */
+	/**
+	 * Populate Modal Form with button data-* attributes
+	 * NOTE: Populates the disabled hidded input to verify if changes were made
+	 * @param  $('button') button
+	 * @param  $('.modal') modal
+	 * @return void
+	 */
+	function populate_edit_from_button(button, modal) {
 		var code = button.data('code').toString(); // Extract info from data-* attributes
 		var description = button.data('description').toString(); // Extract info from data-* attributes
 		var sys_defined = button.data('sys_defined').toString(); // Extract info from data-* attributes
-
-		console.log(code);
-
-		var modal = $(this);
+		var form = modal.find('form');
 
 		if (sys_defined == 'Y') {
 			modal.find('select[name=sys_defined]').prop("disabled", true);
 		}
 
-		modal.find('input[name=code]').val(code);
-		modal.find('input[name=description]').val(description);
-		modal.find('select[name=sys_defined]').val(sys_defined);
+		form.attr('data-code', code);
+		form.find('input[name=code]').val(code);
+		form.find('input[name=description]').val(description);
+		form.find('select[name=sys_defined]').val(button.data('sys_defined'));
 
 		if (code.length) {
 			modal.find('.modal-title').text('Editing Code ' + code);
@@ -29,32 +188,14 @@ $(function() {
 			$('#sys_defined').val('N');
 			modal.find('input[name=sys_defined]').prop("disabled", true);
 		}
+		form.find('input[name=serialized]').val(form.serialize());
+	}
 
-
+	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
+		form.validate().resetForm();
+	    form.find('.is-invalid').removeClass("is-invalid");
+	    form.find('.is-valid').removeClass("is-valid");
+	    form.find('.invalid-feedback').remove();
+	    form.find('.valid-feedback').remove();
 	});
-
-	$("#code-edit-form").validate({
-		errorClass: "is-invalid",
-		validClass: "is-valid",
-		errorPlacement: function(error, element) {
-			error.insertAfter(element).addClass('invalid-feedback');
-		},
-		rules: {
-			code: {
-				required: true,
-				maxlength: {{ max_length_code }}
-			},
-			sys_defined: {
-				required: true,
-			},
-		},
-		messages: {
-			code: "Please check the Code value (Max Length: {{ max_length_code }})",
-			sys_defined: "Please choose an option",
-		},
-		submitHandler: function(form) {
-			form.submit();
-		}
-	});
-
-})
+});

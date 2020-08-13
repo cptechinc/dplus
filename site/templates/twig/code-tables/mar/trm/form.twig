@@ -1,0 +1,104 @@
+{# trm is an instance of CustomerTermsCode #}
+<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="{{ code.code }}">
+	<input type="hidden" name="action" value="update-trm">
+	<input type="hidden" name="table" value="trm">
+
+	<div class="row">
+		<div class="col-6">
+			<div class="form-group">
+				<label for="code">Terms Code</label>
+				<input tabindex="1" type="text" name="code" class="form-control" value="{{ code.code }}" id="code" maxlength="{{ code.get_max_length_code() }}" {{ code.code ? 'readonly' : 'autofocus' }}>
+			</div>
+			<div class="form-group">
+				<label for="method">Method</label>
+				{% include 'util/select.twig' with {'name': 'method', 'id': 'method', 'hideblankoption': 'true', 'tabindex': '3', 'selectedvalue': code.method, 'options': {'S': 'S - Standard Terms', 'E': 'E - End of Month Terms'}} %}
+			</div>
+
+			<div class="form-group" id="type_s" {{ code.method == 'S' ? '' : 'hidden' }}>
+				<label for="type">Type</label>
+				{% include 'util/select.twig' with {'name': 'type', 'id': 'type_s_select', 'hideblankoption': 'true', 'tabindex': '5', 'selectedvalue': code.type, 'options': {'STD': 'STD - Standard', 'CC': 'CC - Credit Card', 'CA': 'CA - Cash', 'COD': 'COD - Cash on Delivery', 'CDC': 'CDC - Cash on Delivery (Cash)'}} %}
+			</div>
+			<div class="form-group" id="type_e" {{ code.method == 'E' ? '' : 'hidden' }}>
+				<label for="type">Type</label>
+				{% include 'util/select.twig' with {'name': 'type', 'id': 'type_e_select', 'hideblankoption': 'true', 'tabindex': '5', 'selectedvalue': code.type, 'options': {'STD': 'STD - Standard', 'CA': 'CA - Cash', 'COD': 'COD - Cash on Delivery', 'CDC': 'CDC - Cash on Delivery (Cash)'}} %}
+			</div>
+
+			<div class="form-group">
+				<label for="hold">Hold</label>
+				{% include 'util/select.twig' with {'name': 'hold', 'id': 'hold', 'hideblankoption': 'true', 'tabindex': '7', 'selectedvalue': (code.hold ? code.hold : 'N'), 'options': {'Y': 'Yes', 'N': 'No'}} %}
+			</div>
+			<div class="form-group">
+				<label for="exp_date">Expire Date</label>
+				<input type="hidden" name="orig_date" id="orig_date" value="{{ code.exp_date|convertdate }}">
+				{% set id = 'exp_date' %}
+				{% set name = 'exp_date' %}
+				{% set tab = '9' %}
+				{% set value = code.exp_date ? code.exp_date|convertdate : '' %}
+				{% include 'util/date-picker.twig' %}
+			</div>
+		</div>
+		<div class="col-6">
+			<div class="form-group">
+				<label for="description">Description</label>
+				<input tabindex="2" type="text" name="description" class="form-control" maxlength="20" value="{{ code.description }}" id="description" autofocus>
+			</div>
+			<div class="form-group">
+				<label for="freight_allow">Freight Allowed</label>
+				{% include 'util/select.twig' with {'name': 'freight_allow', 'id': 'freight_allow', 'hideblankoption': 'true', 'tabindex': '4', 'selectedvalue': code.freight_allow, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+			</div>
+			<div class="form-group" >
+				<label for="credit_card">CC Prefix</label>
+				<!-- TODO: need to verify from ar_cust_cred -->
+				<select name="credit_card" class="form-control" id="credit_card" tabindex="6" {{ code.type == 'CC' ? '' : 'disabled' }}>
+					<option value=""></option>
+					{% for credit_card in creditcards %}
+						<option value="{{ credit_card.id }}" {{ code.cc_prefix == credit_card.id ? 'selected' : '' }}>{{ credit_card.id }} - {{ credit_card.name }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="country">Country</label>
+				<select name="country" class="form-control" id="country" tabindex="8">
+					<option value="{{ code.country }}"></option>
+					{% for country in countries %}
+						<option value="{{ country.iso }}" {{ code.country == country.iso ? 'selected' : '' }}>{{ country.iso }} - {{ country.name }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			{% if (dpluscustomer.company_name == 'Alumacraft') %}
+				<div class="form-group">
+					<label for="type">N/A</label>
+					<input type="text" name="type" class="form-control" value="{{ code.type }}" id="type">
+				</div>
+			{% endif %}
+		</div>
+	</div>
+
+	<div id="standard-terms-form" class="my-4 {{ (code.method == 'S' or code.code == '') ? '' : 'collapse' }}">
+		{% include 'code-tables/mar/trm/standard-terms-form.twig' %}
+	</div>
+
+	<div id="eom-terms-form" class="my-4 {{ code.method == 'E' ? '' : 'collapse' }}">
+		{% include 'code-tables/mar/trm/eom-terms-form.twig' %}
+	</div>
+
+	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the code is
+			1. Locked for editing by the User
+			2. Is a new code
+			NOTE: Only show delete if code already exists.
+		#}
+		{% if recordlocker.function_locked_by_user(page.codetable, code.code) or code.isNew() %}
+			<button type="submit" tabindex="70" class="btn btn-success form_button">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			{% if code.isNew() == false %}
+				<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" tabindex="71" class="btn btn-danger form_button delete_button">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+		<a href="{{ page.get_codetable_listURL(page.codetable, code.code) }}" tabindex="72" class="btn btn-warning pull-right">Close</a>
+	</div>
+</form>

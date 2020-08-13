@@ -1,0 +1,98 @@
+<div class="form-row form-group">
+	<div class="col-3">
+		<label for="address">Address 1</label>
+	</div>
+	<div class="col-9">
+		<input type="text" name="address" class="form-control" maxlength="30" value="{{ code.address }}" id="address">
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-3">
+		<label for="address2">Address 2</label>
+	</div>
+	<div class="col-9">
+		<input type="text" name="address2" class="form-control" maxlength="30" value="{{ code.address2 }}" id="address2">
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-3">
+		<label>City, State, Zip</label>
+	</div>
+	<div class="col-9">
+		<div class="form-row">
+			<div class="col-6">
+				<input type="text" name="city" class="form-control" maxlength="16" value="{{ code.city }}" id="city">
+			</div>
+			<div class="col-2">
+				<select name="state" class="form-control validate-ignore" id="state">
+						<option value=""></option>
+					{% for state in states %}
+						<option value="{{ state.abbreviation }}" {{ state.abbreviation == code.state ? 'selected' : ''}}>{{ state.abbreviation }}&emsp;-&ensp;{{ state.name }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="col-4">
+				<input type="text" name="zip" class="form-control" maxlength="10" value="{{ code.zip }}" id="zip">
+			</div>
+		</div>
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-3">
+		<label for="country">Country</label>
+	</div>
+	<div class="col-9">
+		<select name="country" class="form-control" id="country" >
+			<option value=""></option>
+			{% for country in countries %}
+				<option value="{{ country.iso }}">{{ country.iso }} - {{ country.name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-3">
+		<label for="phone">Phone</label>
+	</div>
+	<div class="col-9">
+		<div class="form-row">
+			<div class="col-sm-7">
+				<input type="text" name="phone" class="form-control phone-input" value="{{ code.phone|phone_us }}" id="phone">
+			</div>
+			<div class="col-sm-5">
+				<div class="row">
+					<div class="col-sm-4">
+						<label for="phone_ext">Ext</label>
+					</div>
+					<div class="col-sm-8">
+						<input type="text" name="phone_ext" class="form-control" value="{{ code.phone_ext }}" id="phone_ext">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-3">
+		<label for="fax">Fax</label>
+	</div>
+	<div class="col-9">
+		<input type="text" name="fax" class="form-control phone-input" value="{{ code.fax|phone_us }}" id="fax">
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-3">
+		<label for="bin_qcrga">Warehouse</label>
+	</div>
+	<div class="col-9">
+		<input type="text" name="bin_qcrga" class="form-control" maxlength="8" value="{{ code.warehouse }}" id="bin_qcrga">
+	</div>
+</div>
+<div class="form-row form-group">
+	<div class="col-3">
+		<label for="bin_qcrga">Remit WH</label>
+	</div>
+	<div class="col-9">
+		<input type="text" name="bin_qcrga" class="form-control" maxlength="8" value="" id="bin_qcrga">
+	</div>
+</div>

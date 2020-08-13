@@ -47,6 +47,16 @@ class CodeTablesSoptm extends WireData implements Module {
 	}
 
 	/**
+	 * Return the IDs for the Sales Order Optonal Codes
+	 * @return array
+	 */
+	public function get_codes_ids($sysop) {
+		$q = $this->get_query($sysop);
+		$q->select(SysopOptionalCode::get_aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
+	/**
 	 * Return SysopOptionalCode
 	 * @param  string $sysop System Optional Code this code is Under
 	 * @param  string $code  Optional Code

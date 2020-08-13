@@ -1,7 +1,8 @@
 {# ioptm is an instance of SysOptionalCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form">
+<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="">
 	<input type="hidden" name="table" value="ioptm">
-	<input type="hidden" name="sysop" value="">
+	<input type="hidden" name="sysop" value="{{ sysop }}" id="sysop">
+	<input type="hidden" name="serialized" value="" disabled>
 
 	<div class="form-group">
 		<label for="code">Code</label>

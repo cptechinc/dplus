@@ -1,0 +1,49 @@
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row align-items-center">
+			<div class="col-3">
+				Code
+			</div>
+			<div class="col-6">
+				Description
+			</div>
+			<div class="col-3 text-center">
+				{% if page.is_print() == false %}
+					<a href="{{ page.url ~ '?code=new' }}" class="btn btn-light">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
+					</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	{% for code in codes %}
+		{# data-code attribute and class code is for the highlight on close #}
+		<div id="code-{{ code.custid|urlencode }}" data-code="{{ code.code }}" class="list-group-item code pb-1 pt-1 {{ (response.key == code.custid and response.has_success() ) ? 'bg-success text-white' : ''}}">
+			<div class="row align-items-center">
+				<div class="col-3">
+					{{ code.custid }}
+				</div>
+				<div class="col-6">
+					{{ code.name }}
+				</div>
+				<div class="col-3 text-center">
+					{% if recordlocker.function_locked(page.name, code.custid) == false or recordlocker.function_locked_by_user(page.name, code.custid) %}
+						{% if page.is_print() == false %}
+							<a href="{{ page.get_codetable_code_editURL(page.codetable, code.custid) }}" class="btn btn-warning">
+								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+							</a>
+							&nbsp;
+							<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.custid) }}" class="btn btn-danger delete_button">
+								<i class="fa fa-trash" aria-hidden="true"></i> Delete
+							</a>
+						{% endif %}
+					{% else %}
+						<span class="badge badge-secondary">
+							<i class="fa fa-lock" aria-hidden="true"></i> Code Locked By {{ recordlocker.get_locked_user(page.name, code.custid) }}
+						</span>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+</div>

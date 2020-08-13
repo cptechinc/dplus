@@ -1,6 +1,7 @@
 {# lsm is an instance of LostSalesCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form">
+<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="">
 	<input type="hidden" name="table" value="lsm">
+	<input type="hidden" name="serialized" value="" disabled>
 
 	<div class="form-group">
 		<label for="code">Code</label>
@@ -14,11 +15,11 @@
 
 	<div class="form-group">
 		<label for="updateinventorywatch">Update Inventory Watch?</label>
-		{% include 'util/select.twig' with {'name': 'updateinventorywatch', 'id': 'updateinventorywatch', 'selectedvalue': 'N', 'options': {'Y': 'Yes', 'N': 'No'}} %}
+		{% include 'util/select.twig' with {'name': 'updateinventorywatch', 'id': 'updateinventorywatch', 'hideblankoption' : 'true', 'options': {'Y': 'Yes', 'N': 'No'}} %}
 	</div>
 
 	<div class="modal-footer">
-		<button type="submit" class="btn btn-success">
+		<button type="submit" class="btn btn-success form_button">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 		</button>
 		<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>

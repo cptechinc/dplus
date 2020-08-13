@@ -20,14 +20,30 @@ class DpagesMar extends Dpages implements Module {
 			'name'   => 'ar-code-table-ctm',
 			'fields' => array()
 		),
+		'ar-code-table-cmm' => array(
+			'name'   => 'ar-code-table-cmm',
+			'fields' => array()
+		),
+		'ar-code-table-trm' => array(
+			'name'   => 'ar-code-table-trm',
+			'fields' => array()
+		),
+		'ar-code-table-crcd' => array(
+			'name'   => 'ar-code-table-crcd',
+			'fields' => array()
+		),
+		'ar-code-table-crcd-validate' => array(
+			'name'   => 'ar-code-table-crcd-validate',
+			'fields' => array()
+		),
 	);
 
 	const PAGES = array(
 		'mar' => array(
 			'template'       => 'dplus-menu',
 			'name'           => 'mar',
-			'title'          => 'Accounts Receivable Menu',
-			'summary'        => '',
+			'title'          => 'Accounts Receivable',
+			'summary'        => 'Accounts Receivable Menu',
 			'parent'         => '/',
 			'dplus_function' => 'mar'
 		),
@@ -45,7 +61,7 @@ class DpagesMar extends Dpages implements Module {
 			'pw_template'    => 'ar-code-table',
 			'name'           => 'ccm',
 			'title'          => 'Customer Commission Code',
-			'summary'        => 'View AR Customer Commission Code',
+			'summary'        => 'View / Edit Customer Commission Code',
 			'parent'         => '/mar/armain/',
 			'dplus_function' => 'ccm'
 		),
@@ -54,7 +70,7 @@ class DpagesMar extends Dpages implements Module {
 			'pw_template'    => 'ar-code-table',
 			'name'           => 'crtm',
 			'title'          => 'Customer Route Code',
-			'summary'        => 'View AR Customer Route Code',
+			'summary'        => 'View / Edit Customer Route Code',
 			'parent'         => '/mar/armain/',
 			'dplus_function' => 'crtm'
 		),
@@ -63,7 +79,7 @@ class DpagesMar extends Dpages implements Module {
 			'pw_template'    => 'ar-code-table',
 			'name'           => 'spgpm',
 			'title'          => 'Salesperson Group Code',
-			'summary'        => 'View Salesperson Group Code',
+			'summary'        => 'View / Edit Salesperson Group Code',
 			'parent'         => '/mar/armain/',
 			'dplus_function' => 'spgpm'
 		),
@@ -71,8 +87,8 @@ class DpagesMar extends Dpages implements Module {
 			'template'       => 'dplus-function',
 			'pw_template'    => 'ar-code-table',
 			'name'           => 'worm',
-			'title'          => 'Customer Write Off Code',
-			'summary'        => 'Customer Write Off Code',
+			'title'          => 'Customer Write-Off Code',
+			'summary'        => 'View / Edit Customer Write-Off Code',
 			'parent'         => '/mar/armain/',
 			'dplus_function' => 'worm'
 		),
@@ -81,7 +97,7 @@ class DpagesMar extends Dpages implements Module {
 			'pw_template'    => 'ar-code-table',
 			'name'           => 'cpm',
 			'title'          => 'Customer Price Code',
-			'summary'        => 'Customer Price Code',
+			'summary'        => 'View / Edit Customer Price Code',
 			'parent'         => '/mar/armain/',
 			'dplus_function' => 'cpm'
 		),
@@ -90,7 +106,7 @@ class DpagesMar extends Dpages implements Module {
 			'pw_template'    => 'ar-code-table',
 			'name'           => 'ctm',
 			'title'          => 'Customer Type Code',
-			'summary'        => 'View Customer Type Code',
+			'summary'        => 'View / Edit Customer Type Code',
 			'parent'         => '/mar/armain/',
 			'dplus_function' => 'ctm'
 		),
@@ -98,8 +114,8 @@ class DpagesMar extends Dpages implements Module {
 			'template'       => 'dplus-function',
 			'pw_template'    => 'ar-code-table',
 			'name'           => 'suc',
-			'title'          => 'Ship-to User Code',
-			'summary'        => 'View Ship-to User Code',
+			'title'          => 'Ship-To User Code',
+			'summary'        => 'View / Edit Ship-To User Code',
 			'parent'         => '/mar/armain/',
 			'dplus_function' => 'suc'
 		),
@@ -108,7 +124,7 @@ class DpagesMar extends Dpages implements Module {
 			'pw_template'    => 'ar-code-table',
 			'name'           => 'sic',
 			'title'          => 'Standard Industrial Class',
-			'summary'        => 'Standard Industrial Class',
+			'summary'        => 'View / Edit Standard Industrial Class',
 			'parent'         => '/mar/armain/',
 			'dplus_function' => 'sic'
 		),
@@ -117,9 +133,45 @@ class DpagesMar extends Dpages implements Module {
 			'pw_template'    => 'ar-code-table',
 			'name'           => 'cuc',
 			'title'          => 'Customer User Code',
-			'summary'        => 'View Customer User Code',
+			'summary'        => 'View / Edit Customer User Code',
 			'parent'         => '/mar/armain/',
 			'dplus_function' => 'cuc'
+		),
+		'ar-cmm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'ar-code-table',
+			'name'           => 'cmm',
+			'title'          => 'Customer Maintenance',
+			'summary'        => 'View / Edit Customer Maintenance',
+			'parent'         => '/mar/armain/',
+			'dplus_function' => 'cmm'
+		),
+		'ar-trm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'ar-code-table',
+			'name'           => 'trm',
+			'title'          => 'Customer Terms Code',
+			'summary'        => 'View / Edit Customer Terms Code',
+			'parent'         => '/mar/armain/',
+			'dplus_function' => 'trm'
+		),
+		'ar-crcd' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'ar-code-table',
+			'name'           => 'crcd',
+			'title'          => 'Customer Credit Card Code',
+			'summary'        => 'View / Edit Customer Credit Card',
+			'parent'         => '/mar/armain/',
+			'dplus_function' => 'crcd'
+		),
+		'ar-crcd-validate' => array(
+			'template'       => 'dplus-json',
+			'pw_template'    => 'ar-code-table-crcd-validate',
+			'name'           => 'validate',
+			'title'          => 'Validate CRCD',
+			'summary'        => 'JSON validation for CRCD',
+			'parent'         => '/mar/armain/crcd/',
+			'dplus_function' => ''
 		),
 	);
 
@@ -127,9 +179,6 @@ class DpagesMar extends Dpages implements Module {
 	ProcessWire Module Functions
 ============================================================= */
 	public function init() {
-		/**
-		 * Returns Sales Order Page URL
-		 */
 		$this->addHook('Page(pw_template=ar-code-table-menu|ar-code-table)::get_codetable_viewURL', function($event) {
 			$table = $event->arguments(0);
 			$code = $event->arguments(1);
@@ -166,8 +215,10 @@ class DpagesMar extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
+
 	public function get_codetable_listURL($table, $code = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=ar-code-table, name=$table")->url);
+		$code = str_replace(' ', '-', $code);
 		$url->query->set('focus', $code);
 		return $url->getUrl();
 	}

@@ -7,15 +7,15 @@
 
 	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_cogs', 'label': 'Cost of Goods Sold', 'value': code.account_cogs, 'gl_codes': gl_codes} %}
 
-	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_freight', 'label': 'Freight (To Customer)', 'value': code.account_freight, 'gl_codes': gl_codes} %}
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_freight', 'label': 'Freight (To Customer)', 'hideblankoption' : 'true', 'value': (code.account_freight ? code.account_freight : '7810') , 'gl_codes': gl_codes} %}
 
-	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_misc', 'label': 'Miscellaneous Amounts', 'value': code.account_misc, 'gl_codes': gl_codes} %}
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_misc', 'label': 'Miscellaneous Amounts', 'hideblankoption' : 'true', 'value': (code.account_misc ? code.account_misc : '9830'), 'gl_codes': gl_codes} %}
 
-	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_ar', 'label': 'Accounts Receivable', 'value': code.account_ar, 'gl_codes': gl_codes} %}
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_ar', 'label': 'Accounts Receivable', 'hideblankoption' : 'true', 'value': (code.account_ar ? code.account_ar : '1000'), 'gl_codes': gl_codes} %}
 
-	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_cash', 'label': 'Accounts Receivable Cash', 'value': code.account_cash, 'gl_codes': gl_codes} %}
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_cash', 'label': 'Accounts Receivable Cash', 'hideblankoption' : 'true', 'value': (code.account_cash ? code.account_cash : '1102'), 'gl_codes': gl_codes} %}
 
-	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_finance', 'label': 'Finance Charge', 'value': code.account_finance, 'gl_codes': gl_codes} %}
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_finance', 'label': 'Finance Charge', 'hideblankoption' : 'true', 'value': (code.account_finance ? code.account_finance : '9810'), 'gl_codes': gl_codes} %}
 
-	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_discounts', 'label': 'Discount Taken', 'value': code.account_discounts, 'gl_codes': gl_codes} %}
+	{% include 'code-tables/mar/ctm/ledger-code-select.twig' with {'field' : 'gl_discounts', 'label': 'Discount Taken', 'hideblankoption' : 'true', 'value': (code.account_discounts ? code.account_discounts : '7100'), 'gl_codes': gl_codes} %}
 {% endblock %}

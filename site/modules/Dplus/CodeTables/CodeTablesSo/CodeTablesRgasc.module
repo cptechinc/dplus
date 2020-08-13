@@ -12,7 +12,7 @@ use SoRgaCodeQuery, SoRgaCode;
 class CodeTablesRgasc extends WireData implements Module {
 	const MODEL              = 'SoRgaCode';
 	const MODEL_KEY          = 'id';
-	const DESCRIPTION        = 'RGA/Return Ship via Code';
+	const DESCRIPTION        = 'RGA/Return Ship Via Code';
 	const DESCRIPTION_RECORD = 'SO RGA';
 	const MODEL_TABLE = 'so_rgas_code';
 
@@ -28,6 +28,16 @@ class CodeTablesRgasc extends WireData implements Module {
 	public function get_codes() {
 		$q = $this->get_query();
 		return $q->find();
+	}
+
+	/**
+	 * Return the IDs for the RGA/Return Ship Via Codes
+	 * @return array
+	 */
+	public function get_codes_ids() {
+		$q = $this->get_query();
+		$q->select(SoRgaCode::get_aliasproperty('id'));
+		return $q->find()->toArray();
 	}
 
 	/**

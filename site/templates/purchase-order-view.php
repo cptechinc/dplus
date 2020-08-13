@@ -1,5 +1,6 @@
 <?php
 	$config->so = ConfigSalesOrderQuery::create()->findOne();
+	$config->po = ConfigPoQuery::create()->findOne();
 	$modules->get('DpagesMpo')->init_purchaseorder_hooks();
 	$docm = $modules->get('DocumentManagementPo');
 

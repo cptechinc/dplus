@@ -1,6 +1,7 @@
 {# rgasc is an instance of SoRgaCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form">
+<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="">
 	<input type="hidden" name="table" value="rgasc">
+	<input type="hidden" name="serialized" value="" disabled>
 
 	<div class="form-group">
 		<label for="code">Code</label>
@@ -15,7 +16,7 @@
 	<div class="form-group">
 		<label for="warehouse">Warehouse</label>
 		<select name="warehouse" class="form-control" id="warehouse">
-			<option value="">-- Choose --</option>
+			<option value=""></option>
 			{% for whse in warehouses %}
 				<option value="{{ whse.id }}" {{ whse.id == value ? 'selected' : ''}}>
 					{{ whse.id }} - {{ whse.name }}
@@ -30,7 +31,7 @@
 	</div>
 
 	<div class="modal-footer">
-		<button type="submit" class="btn btn-success">
+		<button type="submit" class="btn btn-success form_button">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 		</button>
 		<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>

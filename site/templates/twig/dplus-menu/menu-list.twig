@@ -12,16 +12,17 @@
 	{% for item in items %}
 		<a href="{{ item.url }}" class="list-group-item list-group-item-action">
 			<div class="row align-items-center">
-				<div class="col-1">
+				<div class="col-4">
 					{% if item.template == 'dplus-menu' or item.template == 'warehouse-menu' %}
-						<i class="fa fa-list fa-2x" aria-hidden="true"></i>
+						<i class="fa fa-list" aria-hidden="true"></i>
 					{% else %}
-						<i class="fa fa-microchip fa-2x" aria-hidden="true"></i>
-					{% endif %}
+						<i class="fa fa-microchip" aria-hidden="true"></i>
+					{% endif %} &nbsp; &nbsp;
+					<strong>{{ item.title|raw }} ({{item.dplus_function}})</strong>
+					<br>
 				</div>
-				<div class="col-11">
-					<p class="h5 mb-0">{{ item.title|raw }} ({{item.dplus_function}})</p>
-					<small class="text-muted">
+				<div class="col-8">
+					<small>
 						{{ item.summary|raw }}
 					</small>
 				</div>
