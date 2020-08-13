@@ -1,5 +1,5 @@
 {# sysop is an instance of MsaSysopCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form">
+<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="{{ sysop.system }}-{{ sysop.code }}">
 	<input type="hidden" name="action" value="update-sysop">
 	<input type="hidden" name="table" value="sysop">
 	<div class="row">
@@ -37,8 +37,8 @@
 
 			<!-- Web -->
 			<div class="form-group">
-				<label for="web_validate">Web Validate ?</label>
-				{% include 'util/select.twig' with {'name': 'web_validate', 'id': 'web_validate', 'selectedvalue': sysop.web_validate, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				<label for="web_validate">Web Validate</label>
+				{% include 'util/select.twig' with {'name': 'web_validate', 'id': 'web_validate', 'hideblankoption' : 'true', 'selectedvalue': sysop.web_validate, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 
 			<div class="form-group">
@@ -47,30 +47,30 @@
 			</div>
 
 			<div class="form-group">
-				<label for="web_force">Web Force Entry ?</label>
-				{% include 'util/select.twig' with {'name': 'web_force', 'id': 'web_force', 'selectedvalue': sysop.web_force, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				<label for="web_force">Web Force Entry</label>
+				{% include 'util/select.twig' with {'name': 'web_force', 'id': 'web_force', 'hideblankoption' : 'true', 'selectedvalue': sysop.web_force, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 			<!-- end web -->
 		</div>
 		<div class="col-sm-6">
 			<div class="form-group">
-				<label for="file_name">File Name ?</label>
-				{% include 'util/select.twig' with {'name': 'file_name', 'id': 'file_name', 'selectedvalue': sysop.file_name, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				<label for="file_name">File Name</label>
+				{% include 'util/select.twig' with {'name': 'file_name', 'id': 'file_name', 'hideblankoption' : 'true', 'selectedvalue': sysop.file_name, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 
 			<div class="form-group">
-				<label for="validate">Validate ?</label>
-				{% include 'util/select.twig' with {'name': 'validate', 'id': 'validate', 'selectedvalue': sysop.validate, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				<label for="validate">Validate</label>
+				{% include 'util/select.twig' with {'name': 'validate', 'id': 'validate', 'hideblankoption' : 'true', 'selectedvalue': sysop.validate, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 
 			<div class="form-group">
-				<label for="force">Force Entry ?</label>
-				{% include 'util/select.twig' with {'name': 'force', 'id': 'force', 'selectedvalue': sysop.force, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				<label for="force">Force Entry</label>
+				{% include 'util/select.twig' with {'name': 'force', 'id': 'force', 'hideblankoption' : 'true', 'selectedvalue': sysop.force, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 
 			<div class="form-group">
-				<label for="adv_search">Advanced Search ?</label>
-				{% include 'util/select.twig' with {'name': 'adv_search', 'id': 'adv_search', 'selectedvalue': sysop.adv_search, 'options': {'Y': 'Yes', 'N': 'No'}} %}
+				<label for="adv_search">Advanced Search</label>
+				{% include 'util/select.twig' with {'name': 'adv_search', 'id': 'adv_search', 'hideblankoption' : 'true', 'selectedvalue': sysop.adv_search, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 			</div>
 
 			<div class="form-group">
@@ -79,8 +79,8 @@
 			</div>
 
 			<div class="form-group">
-				<label for="field_type">Field Type ?</label>
-				{% include 'util/select.twig' with {'name': 'field_type', 'id': 'field_type', 'selectedvalue': sysop.field_type, 'options': {'C': 'Character', 'N': 'Numeric'}} %}
+				<label for="field_type">Field Type</label>
+				{% include 'util/select.twig' with {'name': 'field_type', 'id': 'field_type', 'hideblankoption' : 'true', 'selectedvalue': sysop.field_type, 'options': {'C': 'Character', 'N': 'Numeric'}} %}
 			</div>
 
 			<!-- if field type = 'N' -->

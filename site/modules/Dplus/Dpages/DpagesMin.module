@@ -153,7 +153,7 @@ class DpagesMin extends Dpages implements Module {
 			'pw_template'    => 'min-code-table',
 			'name'           => 'igcm',
 			'title'          => 'Item Commission',
-			'summary'        => 'View / Edit Item Price',
+			'summary'        => 'View / Edit Item Commission',
 			'parent'         => '/min/inmain/',
 			'dplus_function' => 'igcm'
 		),
@@ -281,7 +281,12 @@ class DpagesMin extends Dpages implements Module {
 
 	public function get_codetable_listURL($table, $code = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
-		$url->query->set('focus', $code);
+		$code = str_replace(' ', '-', $code);
+		if ($table == 'ioptm') {
+			$url->query->set('sysop', $code);
+		} else {
+			$url->query->set('focus', $code);
+		}
 		return $url->getUrl();
 	}
 

@@ -143,26 +143,36 @@ class CodeTablesCtmNotes extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$customertype  = $input->$rm->text('code'); // CUSTOMER TYPE CODE
 		$notetype = $input->$rm->text('notes-type');
-		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
-		$lines_saved = array();
 
-		$this->delete_notes($notetype, $customertype);
+		if ($input->$rm->action) {
+			if ($input->$rm->action == 'delete-notes') {
+				$success = $this->delete_notes($notetype, $customertype);
+				$response = $this->process_response_delete($notetype, $customertype, $success);
+			} elseif ($input->$rm->action == 'update-notes') {
+				$note = $input->$rm->textarea('note');
+				$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_notetype_column_count($notetype));
+				$lines_saved = array();
 
-		foreach ($note_lines as $key => $line) {
-			$sequence = $key + 1;
-			$record = new CustomerTypeNotes();
-			$record->setType($notetype); // PK
-			$record->setSequence($sequence); // PK
-			$record->setKey2($customertype); // PK
-			$record->setCustomertype($customertype);
-			$record->setDescription($this->get_notetype_db_description($notetype));
-			$record->setNote($line);
-			$record->setDate(date('Ymd'));
-			$record->setTime(date('His'));
-			$record->setDummy('P');
-			$lines_saved[$sequence] = $record->save();
+				$this->delete_notes($notetype, $customertype);
+
+				foreach ($note_lines as $key => $line) {
+					$sequence = $key + 1;
+					$record = new CustomerTypeNotes();
+					$record->setType($notetype); // PK
+					$record->setSequence($sequence); // PK
+					$record->setKey2($customertype); // PK
+					$record->setCustomertype($customertype);
+					$record->setDescription($this->get_notetype_db_description($notetype));
+					$record->setNote($line);
+					$record->setDate(date('Ymd'));
+					$record->setTime(date('His'));
+					$record->setDummy('P');
+					$lines_saved[$sequence] = $record->save();
+				}
+				$response = $this->process_responses($notetype, $customertype, $lines_saved);
+			}
+			$this->wire('session')->response_codetable = $response;
 		}
-		$this->wire('session')->response_codetable = $this->process_responses($notetype, $customertype, $lines_saved);
 	}
 
 	/**
@@ -201,8 +211,34 @@ class CodeTablesCtmNotes extends WireData implements Module {
 		// IF there are lines saved
 		if (sizeof($lines_saved)) {
 			$data = $this->write_dplus_data($notetype, $customertype);
-			$this->wire('modules')->get('CodeTables')->write_dplusfile($data, session_id());
-			$this->wire('modules')->get('CodeTables')->http_get_dplus();
+			$requestor = $this->wire('modules')->get('DplusRequest');
+			$requestor->write_dplusfile($data, session_id());
+			$requestor->cgi_request($this->wire('config')->cgis['database'], session_id());
+		}
+		return $response;
+	}
+
+	protected function process_response_delete($notetype, $customertype, $success) {
+		$message = self::DESCRIPTION_RESPONSE . " ($customertype) ";
+		$message .= ucwords($this->get_notetype_description($notetype)) . " Note Lines" ;
+		$response = new CodeTablesResponse();
+		$response->set_key("$notetype-$customertype");
+
+		if ($success) {
+			$message .= " were able";
+		} else {
+			$message .= " were not able";
+		}
+		$message .= " to be deleted";
+		$response->set_action(QnotesResponse::CRUD_DELETE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if (sizeof($success)) {
+			$data = $this->write_dplus_data($notetype, $customertype);
+			$requestor = $this->wire('modules')->get('DplusRequest');
+			$requestor->write_dplusfile($data, session_id());
+			$requestor->cgi_request($this->wire('config')->cgis['database'], session_id());
 		}
 		return $response;
 	}
@@ -215,7 +251,6 @@ class CodeTablesCtmNotes extends WireData implements Module {
 	 */
 	public function write_dplus_data($notetype, $customertype) {
 		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
-		$table = strtoupper($table);
 		return array("DBNAME=$dplusdb", 'UPDATEQNOTE', "TYPE=$notetype", "KEY2=$customertype", 'FORM=');
 	}
 

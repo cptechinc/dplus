@@ -1,32 +1,15 @@
 $(function() {
 
-	$("#code-edit-form").validate({
-		errorClass: "is-invalid",
-		validClass: "is-valid",
-		errorPlacement: function(error, element) {
-			error.insertAfter(element).addClass('invalid-feedback');
-		},
-		rules: {
-			code: {
-				required: true,
-				maxlength: {{ max_length_code }}
-			},
-			system:	'required',
-			web_validate: 'required',
-			web_force: 'required',
-			validate: 'required',
-			file_name: 'required',
-			force: 'required',
-			adv_search: 'required',
-			field_type: 'required'
-		},
-		messages: {
-			code: "Please check the Code value (Max Length: {{ max_length_code }})",
-		},
-		submitHandler: function(form) {
-			form.submit();
-		}
-	});
+	var form = $('#code-edit-form');
+	var input_codeID   = form.find('input[name=code]');
+	var select_systemID = form.find('select[name=system]');
+
+	var modal_ajax = $('#ajax-modal');
+
+	var codeIDs = {{ m_sysop.get_codes_ids()|json_encode()|raw }};
+	var systemIDs = {{ m_sysop.get_codes_systems()|json_encode()|raw }};
+
+	var systemcodeIDs = systemIDs.map((e, i) => e +'-'+codeIDs[i]);
 
 	$("#code-edit-form #field_type").show(function() {
 		if ($('#field_type').val() == 'C') {
@@ -37,6 +20,47 @@ $(function() {
 		} else if ($('#field_type').val() == 'N'){
 			$('#before_dec').prop("readonly", false);
 			$('#after_dec').prop("readonly", false);
+		}
+	});
+
+	if (input_codeID.val() == '') {
+		form.find('select[name=web_validate]').val('N');
+		form.find('select[name=web_force]').val('N');
+		form.find('select[name=file_name]').val('N');
+		form.find('select[name=validate]').val('Y');
+		form.find('select[name=force]').val('Y');
+		form.find('select[name=adv_search]').val('N');
+		form.find('select[name=field_type]').val('C');
+	}
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on("change", "input[name=code]", function(e) {
+		var input = $(this);
+		var codeID = input.val();
+		var systemID = form.find("select[name=system]").val();
+
+		if (validate_codeID(form)) {
+
+		} else {
+			swal2.fire({
+				title: 'System Optional Code ' + codeID + ' Exists',
+				text: 'Edit that System Optional Code?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Yes',
+				cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value) {
+					var url = URI('{{ page.url }}');
+					url.addQuery('system', systemID);
+					url.addQuery('code', codeID);
+					window.location.href = url.toString();
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					window.location.href = '{{ page.url }}';
+				}
+			});
 		}
 	});
 
@@ -52,10 +76,12 @@ $(function() {
 		}
 	});
 
-	var form = $('#code-edit-form'),
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
 	origForm = form.serialize();
 
-	$("body").on("click", "a:not(#code-edit-form .form_button, #ajax-modal a)", function(e) {
+	$("body").on("click", "a:not(#code-edit-form .form_button, #ajax-modal a, .swal2-modal a)", function(e) {
 		if (form.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);
@@ -81,4 +107,96 @@ $(function() {
 		}
 	});
 
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			code: {
+				required: true,
+				maxlength: {{ max_length_code }}
+			},
+			system:	'required',
+			web_validate: 'required',
+			web_force: 'required',
+			validate: 'required',
+			file_name: 'required',
+			force: 'required',
+			adv_search: 'required',
+			field_type: 'required'
+		},
+		messages: {
+			system: "Please choose the System value",
+			code: "Please check the Code value (Max Length: {{ max_length_code }})",
+		},
+		submitHandler: function(form) {
+			var jform = $(form);
+			var codeID = input_codeID.val();
+
+			if (validate_codeID(form)) {
+				form.submit();
+			} else {
+				var url = URI('{{ page.url }}');
+				url.addQuery('code', codeID);
+				var bootstrap = new JsContento();
+				var content = bootstrap.open('div', 'class=swal2-content|id=swal2-content');
+				content += '<a class="btn btn-secondary mb-2" href="'+url.toString()+'">View System Optional Code</a>';
+				content += '<br>';
+				content += "Do you want to overwrite?";
+				content += bootstrap.close('div');
+
+				swal2.fire({
+					title: 'System Optional Code ' +input_codeID.val() + ' Exists' ,
+					text: 'Do you want to overwrite?',
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+					cancelButtonText: 'No',
+					html: content,
+				}).then((result) => {
+					if (result.value) {
+						form.submit();
+					}
+				});
+			}
+		}
+	});
+
+	$("body").on("focusin", "#code-edit-form input:not(#system),#code-edit-form select", function(e) {
+		if (select_systemID.val() == '') {
+			validator.element( "#system" );
+			select_systemID.focus();
+		}
+	});
+
+	$("body").on("focusin", "#code-edit-form input:not(#code),#code-edit-form select", function(e) {
+		if (input_codeID.val() == '') {
+			validator.element( "#code" );
+			input_codeID.focus();
+		}
+	});
+
+	/**
+	 * Return if System Optional Code ID can be used to save, based upon if
+	 * it exists, and if is the one being edited.
+	 * @param  {[type]} form [description]
+	 * @return {[type]}      [description]
+	 */
+	function validate_codeID(form) {
+		var jform = $(form);
+
+		if (systemcodeIDs.contains(select_systemID.val()+'-'+input_codeID.val())) {
+			console.log('System Optional Code Exists');
+
+			if ((select_systemID.val()+'-'+input_codeID.val()) != jform.data('code')) {
+				return false;
+			}
+		}
+		return true;
+	}
 })

@@ -32,7 +32,8 @@
 		</div>
 	</div>
 	{% for code in codes %}
-		<div id="{{ code.system }}-{{ code.code|attrJS(jsprepend = false) }}" class="list-group-item pb-1 pt-1 {{ (response.key == (code.system ~ '-' ~ code.code) and response.has_success() ) ? 'bg-success text-white' : ''}}">
+		{# data-code attribute and class code is for the highlight on close #}
+		<div id="{{ code.system }}-{{ code.code|urlencode }}" data-code="{{ code.system }}-{{ code.code|urlencode }}" class="list-group-item code pb-1 pt-1 {{ (response.key == (code.system ~ '-' ~ code.code) and response.has_success() ) ? 'bg-success text-white' : ''}}">
 			<div class="row align-items-center">
 				<div class="col-1">
 					{{ code.system }}

@@ -1,0 +1,25 @@
+$(function() {
+	// TODO: code prevent focusout
+
+	var max_code_length = {{ customer.get_max_code_length() }};
+
+	$("#code-edit-form").validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			code: {
+				required: true,
+				maxlength: {{ customer.get_max_code_length() }},
+			},
+		},
+		messages: {
+			code: "Please review the Customer Code value, (Max Characters {{ customer.get_max_code_length() }})",
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+})

@@ -1,28 +1,56 @@
 $(function() {
+	var codeIDs = {{ m_in.get_codes_ids()|json_encode()|raw }};
+	var input_codeID = $('#code');
+	var form = $("#code-edit-form");
 
+/* =============================================================
+	Event Functions
+============================================================= */
 	$('#edit-code-modal').on('shown.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
-		var code = button.data('code').toString(); // Extract info from data-* attributes
-		var description = button.data('description').toString(); // Extract info from data-* attributes
-
 		var modal = $(this);
+		populate_edit_from_button(button, modal);
+	});
 
-		modal.find('input[name=code]').val(code);
-		modal.find('input[name=description]').val(description);
+	$("body").on("click", ".swal-edit-code", function(e) {
+		var button = $(this);
+		var code = button.data('code');
+		var edit_button = $('button[data-code='+code+']');
+		var modal = $('#edit-code-modal');
+		populate_edit_from_button(edit_button, modal);
+		swal2.close();
+	});
 
-		if (code.length) {
-			modal.find('.modal-title').text('Editing Code ' + code);
-			modal.find('input[name=code]').prop("readonly", true);
-			modal.find('input[name=description]').focus();
-		} else {
-			modal.find('.modal-title').text('Adding a new Code');
-			modal.find('input[name=code]').prop("readonly", false);
-			modal.find('input[name=code]').focus();
+	$("body").on("change", "input[name=code]", function(e) {
+		var input = $(this);
+		var codeID = input.val();
+		 console.log(codeID);
+
+		if (validate_codeID(form) === false) {
+			swal2.fire({
+				title: 'Item Assortment Code ' + codeID + ' Exists',
+				text: 'Edit that code?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Yes',
+				cancelButtonText: 'No',
+			}).then((result) => {
+				var modal = $('#edit-code-modal');
+
+				if (result.value) {
+					var button = $('button[data-code="'+codeID+'"]');
+					populate_edit_from_button(button, modal);
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					modal.modal('hide');
+				}
+			});
 		}
 	});
 
-
-	$("#code-edit-form").validate({
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -38,8 +66,95 @@ $(function() {
 			code: "Please check the Code value (Max Length: {{ max_length_code }})",
 		},
 		submitHandler: function(form) {
-			form.submit();
+			var jform = $(form);
+			var codeID = input_codeID.val();
+
+			if (validate_codeID(form)) {
+				form.submit();
+			} else {
+				var bootstrap = new JsContento();
+				var content = bootstrap.open('div', 'class=swal2-content|id=swal2-content');
+				content += '<button type="button" class="btn btn-secondary swal-edit-code" data-code="'+codeID+'">Edit Customer Price Code '+ codeID +'</button>';
+				content += '<br>';
+				content += "Do you want to overwrite?";
+				content += bootstrap.close('div');
+
+				swal2.fire({
+					title: 'Item Assortment Code ' +input_codeID.val() + ' Exists' ,
+					text: 'Do you want to overwrite?',
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+					cancelButtonText: 'No',
+					html: content,
+				}).then((result) => {
+					if (result.value) {
+						form.submit();
+					}
+				});
+			}
 		}
 	});
 
+	$("body").on("focusin", "#code-edit-form input:not(#code)", function(e) {
+		if (input_codeID.val() == '') {
+			validator.element( "#code" );
+			input_codeID.focus();
+		}
+	});
+
+	/**
+	 * Return if Item Assortment Code ID can be used to save, based upon if
+	 * it exists, and if is the one being edited.
+	 * @param  {[type]} form [description]
+	 * @return {[type]}      [description]
+	 */
+	function validate_codeID(form) {
+		var jform = $(form);
+
+		if (codeIDs.contains(input_codeID.val())) {
+			console.log('Item Assortment Code Exists');
+
+			if (input_codeID.val() != jform.attr('data-code')) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+/* =============================================================
+	Form Functions
+============================================================= */
+	/**
+	 * Populate Modal Form with button data-* attributes
+	 * @param  $('button') button
+	 * @param  $('.modal') modal
+	 * @return void
+	 */
+	function populate_edit_from_button(button, modal) {
+		var code = button.data('code').toString();
+		var description = button.data('description').toString();
+
+		modal.find('form').attr('data-code', code);
+		modal.find('input[name=code]').val(code);
+		modal.find('input[name=description]').val(description);
+
+		if (code.length) {
+			modal.find('.modal-title').text('Editing Code ' + code);
+			modal.find('input[name=code]').prop("readonly", true);
+			modal.find('input[name=description]').focus();
+		} else {
+			modal.find('.modal-title').text('Adding a new Code');
+			modal.find('input[name=code]').prop("readonly", false);
+			modal.find('input[name=code]').focus();
+		}
+	}
+
+	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
+		form.validate().resetForm();
+	    form.find('.is-invalid').removeClass("is-invalid");
+	    form.find('.is-valid').removeClass("is-valid");
+	    form.find('.invalid-feedback').remove();
+	    form.find('.valid-feedback').remove();
+	});
 })

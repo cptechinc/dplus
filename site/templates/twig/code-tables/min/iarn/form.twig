@@ -1,6 +1,7 @@
 {# iarn is an instance of InventoryAdjustmentReason #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form">
+<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="">
 	<input type="hidden" name="table" value="iarn">
+	<input type="hidden" name="serialized" value="" disabled>
 
 	<div class="form-group">
 		<label for="code">Code</label>
@@ -21,7 +22,7 @@
 	</div>
 
 	<div class="modal-footer">
-		<button type="submit" class="btn btn-success">
+		<button type="submit" class="btn btn-success form_button">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 		</button>
 		<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>

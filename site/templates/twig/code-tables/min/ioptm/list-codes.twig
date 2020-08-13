@@ -17,7 +17,8 @@
 		</div>
 	</div>
 	{% for optcode in optcodes %}
-		<div id="code-{{ optcode.code }}" class="list-group-item pb-1 pt-1 {{ (response.key == optcode.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
+		{# data-code attribute and class code is for the highlight on close #}
+		<div id="code-{{ optcode.code|urlencode }}" data-code="{{ optcode.code }}" class="list-group-item code pb-1 pt-1 {{ (response.key == optcode.code and response.has_success() ) ? 'bg-success text-white' : ''}}">
 			<div class="row align-items-center">
 				<div class="col-3">
 					{{ optcode.code }}

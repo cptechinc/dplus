@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+use Propel\Runtime\ActiveQuery\Criteria;
+
 use LockRecordQuery, LockRecord;
 
 /**
@@ -14,11 +16,12 @@ class RecordLocker extends WireData implements Module {
 	/**
 	 * Returns if Function is being locked by User ID
 	 * @param  string $function  Function e.g IWHM
-	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @param  mixed $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
 	 * @param  string $userID    User Login ID
 	 * @return bool
 	 */
 	public function function_locked_by_user($function, $key, $userID) {
+		$key = is_array($key) ? implode('-', $key) : $key;
 		$q = $this->get_query();
 		$q->filterByUserid($userID);
 		$q->filterByFunction($function);
@@ -33,6 +36,7 @@ class RecordLocker extends WireData implements Module {
 	 * @return bool
 	 */
 	public function function_locked($function, $key) {
+		$key = is_array($key) ? implode('-', $key) : $key;
 		$q = $this->get_query();
 		$q->filterByFunction($function);
 		$q->filterByKey($key);
@@ -44,6 +48,7 @@ class RecordLocker extends WireData implements Module {
 	 * @return string
 	 */
 	public function get_locked_user($function, $key) {
+		$key = is_array($key) ? implode('-', $key) : $key;
 		$q = $this->get_query();
 		$q->select('userid');
 		$q->filterByFunction($function);
@@ -60,10 +65,12 @@ class RecordLocker extends WireData implements Module {
 	 * @return bool
 	 */
 	public function create_lock($function, $key, $userID) {
+		$key = is_array($key) ? implode('-', $key) : $key;
 		$lock = new LockRecord();
 		$lock->setFunction($function);
 		$lock->setKey($key);
 		$lock->setUserid($userID);
+		$lock->setDate(date(LockRecord::DATE_FORMAT));
 		return $lock->save();
 	}
 
@@ -74,8 +81,10 @@ class RecordLocker extends WireData implements Module {
 	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
 	 * @return bool
 	 */
-	public function remove_lock($userID, $function, $key = '') {
+	public function remove_lock($userID, $function, $key = false) {
+		$key = is_array($key) ? implode('-', $key) : $key;
 		$q = LockRecordQuery::create();
+		$q->filterByUserid($userID);
 		$q->filterByFunction($function);
 
 		if ($key) {
@@ -84,6 +93,27 @@ class RecordLocker extends WireData implements Module {
 		return $q->delete();
 	}
 
+	/**
+	 * Deletes Locks for User older than $hours hours
+	 * @param  string $userID User ID
+	 * @param  int    $hours  Number of Hours to go back
+	 * @return bool
+	 */
+	public function remove_locks_olderthan($userID = 'all', int $hours) {
+		$datetime = date(LockRecord::DATE_FORMAT, strtotime("-$hours hours"));
+		$q = LockRecordQuery::create();
+
+		if ($userID != 'all') {
+			$q->filterByUserid($userID);
+		}
+		$q->filterByDate($datetime, Criteria::LESS_THAN);
+		return $q->delete();
+	}
+
+	/**
+	 * Return LockRecordQuery
+	 * @return LockRecordQuery
+	 */
 	protected function get_query() {
 		return LockRecordQuery::create();
 	}

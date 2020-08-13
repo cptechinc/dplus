@@ -1,35 +1,80 @@
 $(function() {
-	var max_code_length = {{ tariffcode.get_max_code_length() }};
 
-	$('#edit-code-modal').on('shown.bs.modal', function (event) {
-		var button = $(event.relatedTarget); // Button that triggered the modal
-		var code = button.data('code').toString(); // Extract info from data-* attributes
-		var number = button.data('number'); // Extract info from data-* attributes
-		var description = button.data('description').toString(); // Extract info from data-* attributes
-		var duty_rate = button.data('duty_rate'); // Extract info from data-* attributes
-		var country = button.data('country'); // Extract info from data-* attributes
+	var form = $('#code-edit-form');
+	var input_codeID   = form.find('input[name=code]');
 
-		var modal = $(this);
+	var modal_ajax = $('#ajax-modal');
 
-		modal.find('input[name=code]').val(code);
-		modal.find('input[name=number]').val(number);
-		modal.find('input[name=description]').val(description);
-		modal.find('input[name=duty_rate]').val(duty_rate);
-		modal.find('input[name=country]').val(country);
+	var codeIDs = {{ m_tarm.get_codes_ids()|json_encode()|raw }};
 
-		if (code.length) {
-			modal.find('.modal-title').text('Editing Code ' + code);
-			modal.find('input[name=code]').prop("readonly", true);
-			modal.find('input[name=description]').focus();
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on("change", "input[name=code]", function(e) {
+		var input = $(this);
+		var codeID = input.val();
+
+		if (codeID == '') {
+			$('#code-edit-form .country-checkbox').prop('disabled', true);
 		} else {
-			modal.find('.modal-title').text('Adding a new Code');
-			modal.find('input[name=code]').prop("readonly", false);
-			modal.find('input[name=code]').focus();
-		}
+			if (validate_codeID(form)) {
 
+			} else {
+				swal2.fire({
+					title: 'Tariff Class ' + codeID + ' Exists',
+					text: 'Edit that Tariff Class?',
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: 'Yes',
+					cancelButtonText: 'No',
+				}).then((result) => {
+					if (result.value) {
+						var url = URI('{{ page.url }}');
+						url.addQuery('code', codeID);
+						window.location.href = url.toString();
+					} else if (result.dismiss === Swal.DismissReason.cancel) {
+						window.location.href = '{{ page.url }}';
+					}
+				});
+			}
+		}
 	});
 
-	$("#code-edit-form").validate({
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = form.serialize();
+
+	$("body").on("click", "a:not(#code-edit-form .form_button, #ajax-modal a, .swal2-modal a)", function(e) {
+		if (form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			swal2.fire({
+				title: 'Changes have occurred!',
+				text: 'Do you want to save?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+				cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value) {
+					form.find('button[type=submit]').click();
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					// Send HTTP GET Request to remove Record Lock
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -51,8 +96,63 @@ $(function() {
 			country: 'Please enter the country for the code'
 		},
 		submitHandler: function(form) {
-			form.submit();
+			var jform = $(form);
+			var codeID = input_codeID.val();
+
+			if (validate_codeID(form)) {
+				form.submit();
+			} else {
+				var url = URI('{{ page.url }}');
+				url.addQuery('code', codeID);
+				var bootstrap = new JsContento();
+				var content = bootstrap.open('div', 'class=swal2-content|id=swal2-content');
+				content += '<a class="btn btn-secondary mb-2" href="'+url.toString()+'">View Tariff Class</a>';
+				content += '<br>';
+				content += "Do you want to overwrite?";
+				content += bootstrap.close('div');
+
+				swal2.fire({
+					title: 'Tariff Class ' +input_codeID.val() + ' Exists' ,
+					text: 'Do you want to overwrite?',
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+					cancelButtonText: 'No',
+					html: content,
+				}).then((result) => {
+					if (result.value) {
+						form.submit();
+					}
+				});
+			}
 		}
 	});
 
+	$("body").on("focusin", "#code-edit-form input:not(#code)", function(e) {
+		if (input_codeID.val() == '') {
+			validator.element( "#code" );
+			input_codeID.focus();
+		} else {
+			$('#code-edit-form .country-checkbox').prop('disabled', false);
+		}
+	});
+
+	/**
+	 * Return if Tariff Class ID can be used to save, based upon if
+	 * it exists, and if is the one being edited.
+	 * @param  {[type]} form [description]
+	 * @return {[type]}      [description]
+	 */
+	function validate_codeID(form) {
+		var jform = $(form);
+
+		if (codeIDs.contains(input_codeID.val())) {
+			console.log('Tariff Class Exists');
+
+			if (input_codeID.val() != jform.data('code')) {
+				return false;
+			}
+		}
+		return true;
+	}
 })

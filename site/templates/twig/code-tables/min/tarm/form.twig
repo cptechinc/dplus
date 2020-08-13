@@ -1,5 +1,6 @@
 {# tarm is an instance of TariffCode #}
-<form action="{{ page.url }}" method="POST" id="code-edit-form">
+<form action="{{ page.url }}" method="POST" id="code-edit-form" data-code="{{ tariff.code }}">
+	<input type="hidden" name="action" value="update-tarm">
 	<input type="hidden" name="table" value="tarm">
 	<div class="row">
 		<div class="col-sm-6">
@@ -29,12 +30,12 @@
 				<input type="text" class="form-control-plaintext" value="{{ tariff.count_countries() }}" readonly>
 			</div>
 
-			<div class="form-group">
+			<div class="form-group country">
 				<label>Countries</label>
 				<div style="overflow-y:scroll; height: 195px">
 					{% for country in countries %}
 						<div class="custom-control custom-checkbox">
-							<input type="checkbox" class="custom-control-input" name="country[]" value="{{ country.code }}" id="{{ country.code }}" {{ tariff.applies_to_country(country.code) ? 'checked' : '' }} >
+							<input type="checkbox" class="custom-control-input country-checkbox" name="country[]" value="{{ country.code }}" id="{{ country.code }}" {{ tariff.applies_to_country(country.code) ? 'checked' : '' }} {{ tariff.code ? '' : 'disabled' }}>
 							<label class="custom-control-label" for="{{ country.code }}">{{ country.description }}</label>
 						</div>
 					{% endfor %}
@@ -42,8 +43,23 @@
 			</div>
 		</div>
 	</div>
-	<button type="submit" class="btn btn-success">
-		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-	</button>
-	<a href="{{ page.get_codetable_listURL(page.codetable, tariff.code) }}" class="btn btn-warning pull-right">Close</a>
+	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the code is
+			1. Locked for editing by the User
+			2. Is a new code
+			NOTE: Only show delete if code already exists.
+		#}
+		{% if recordlocker.function_locked_by_user(page.codetable, tariff.code) or tariff.isNew() %}
+			<button type="submit" class="btn btn-success form_button">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			{% if tariff.isNew() == false %}
+				<a href="{{ page.get_codetable_code_deleteURL(page.codetable, tariff.code) }}" class="btn btn-danger form_button delete_button">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+		<a href="{{ page.get_codetable_listURL(page.codetable, tariff.code) }}" class="btn btn-warning pull-right">Close</a>
+	</div>
 </form>

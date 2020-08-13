@@ -5,10 +5,14 @@
 		</div>
 		<div class="col-sm-6">
 			<select class="form-control" id="{{ field }}" name="{{ field }}">
-				<option value="">-- Choose --</option>
+				{% if hideblankoption == false %}
+					<option value="">
+						{{ blankoption ? blankoption : '-- Choose --'}}
+					</option>
+				{% endif %}
 
 				{% for gl_code in gl_codes %}
-					<option value="{{ gl_code.code }}" {{ gl_code.code == value ? 'selected' : '' }}>{{ gl_code.description }}</option>
+					<option value="{{ gl_code.code }}" {{ gl_code.code == value ? 'selected' : '' }}>{{ gl_code.code }} - {{ gl_code.description }}</option>
 				{% endfor %}
 			</select>
 		</div>

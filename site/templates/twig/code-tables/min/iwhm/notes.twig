@@ -18,7 +18,7 @@
 						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 					</button>
 				{% else %}
-					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-modal" data-type="{{ notetype }}" data-description="{{ module_notes.get_notetype_description(notetype)|capitalize }}">
+					<button type="button" class="btn btn-secondary notes_button" data-toggle="modal" data-target="#notes-modal" data-type="{{ notetype }}" data-description="{{ module_notes.get_notetype_description(notetype)|capitalize }}" {{ warehouse.whseid ? '' : 'disabled' }}>
 						<i class="fa fa-plus" aria-hidden="true"></i> Add
 					</button>
 				{% endif %}

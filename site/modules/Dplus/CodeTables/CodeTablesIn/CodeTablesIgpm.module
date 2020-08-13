@@ -38,6 +38,16 @@ class CodeTablesIgpm extends WireData implements Module {
 	}
 
 	/**
+	 * Return the IDs for the Stock Codes
+	 * @return array
+	 */
+	public function get_codes_ids() {
+		$q = $this->get_query();
+		$q->select(InvPriceCode::get_aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
+	/**
 	 * Return the Code records from Database filtered by ProductLne ID
 	 * @param  string $productlne ProductLneID
 	 * @return ObjectCollection
@@ -91,6 +101,7 @@ class CodeTablesIgpm extends WireData implements Module {
 			$code  = $input->$rm->text('code', array('maxLength' => InvPriceCode::MAX_LENGTH_CODE));
 			$record = new InvPriceCode();
 			$record->setCode($code);
+			$record->setCost_percent(0);
 		}
 
 		if ($input->$rm->text('action') == 'remove-code') {
@@ -98,18 +109,11 @@ class CodeTablesIgpm extends WireData implements Module {
 		} else {
 			$description = $input->$rm->text('description');
 			$sales_program = $input->$rm->text('sales_program');
-			$cost_percent = $input->$rm->text('cost_percent');
 			$record->setDescription($description);
 			$record->setSales_program($sales_program);
-			$record->setCost_percent($cost_percent);
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
 			$record->setDummy('P');
-
-			// if ($config_so->is_request_program()) {
-			// 	$sales_program = $input->$rm->text('sales_program');
-			// 	$record->setSales_program($sales_program);
-			// }
 		}
 
 		$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);

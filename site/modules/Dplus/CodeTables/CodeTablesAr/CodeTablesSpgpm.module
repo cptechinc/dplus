@@ -30,6 +30,16 @@ class CodeTablesSpgpm extends WireData implements Module {
 	}
 
 	/**
+	 * Return the IDs for the Salesperson Group Code
+	 * @return array
+	 */
+	public function get_codes_ids() {
+		$q = $this->get_query();
+		$q->select(SalespersonGroupCode::get_aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
+	/**
 	 * Return the Code
 	 * @param  string $code Salesperson Group Code
 	 * @return SalespersonGroupCode

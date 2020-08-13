@@ -6,9 +6,11 @@ use Purl\Url;
 
 use WarehouseQuery, Warehouse;
 use ConfigInQuery, ConfigIn;
+use StatesQuery, States;
+use CountryQuery, Country;
 
 /**
- * Module that handles the editing of the CCM codetable
+ * Module that handles the editing of the IWHM codetable
  */
 class CodeTablesIwhm extends WireData implements Module {
 	const MODEL              = 'Warehouse';
@@ -28,6 +30,18 @@ class CodeTablesIwhm extends WireData implements Module {
 	}
 
 	/**
+	 * Returns the associated ModelQuery class for table code
+	 * @param  string $table Table Code
+	 * @return mixed
+	 */
+	public function get_query() {
+		return WarehouseQuery::create();
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
 	 * Return the Code records from Database
 	 * @param  string $table Table Code
 	 * @return ObjectCollection
@@ -35,6 +49,16 @@ class CodeTablesIwhm extends WireData implements Module {
 	public function get_codes() {
 		$q = $this->get_query();
 		return $q->find();
+	}
+
+	/**
+	 * Return the IDs for the Warehouses
+	 * @return array
+	 */
+	public function get_codes_ids() {
+		$q = $this->get_query();
+		$q->select(Warehouse::get_aliasproperty('id'));
+		return $q->find()->toArray();
 	}
 
 	/**
@@ -57,15 +81,9 @@ class CodeTablesIwhm extends WireData implements Module {
 		return boolval($q->filterById($whseID)->count());
 	}
 
-	/**
-	 * Returns the associated ModelQuery class for table code
-	 * @param  string $table Table Code
-	 * @return mixed
-	 */
-	public function get_query() {
-		return WarehouseQuery::create();
-	}
-
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
 	/**
 	 * Takes Input Calls handles input according to Action required
 	 *
@@ -134,7 +152,7 @@ class CodeTablesIwhm extends WireData implements Module {
 					}
 				} else if ($input->$rm->text('action') == 'update-code') {
 					$record->setName($input->$rm->text('name'));
-					$this->process_warehouse_input($record, $input);
+					$this->update_warehouse_input($record, $input);
 					$record->setDate(date('Ymd'));
 					$record->setTime(date('His'));
 					$record->setDummy('P');
@@ -159,8 +177,14 @@ class CodeTablesIwhm extends WireData implements Module {
 		$this->wire('session')->response_codetable = $response;
 	}
 
-	public function process_warehouse_input($warehouse, WireInput $input) {
-		$config_in = ConfigInQuery::create()->findOne();
+	/**
+	 * Update Warehouse Record with Input Data
+	 * @param  Warehouse  $warehouse
+	 * @param  WireInput  $input     Input Data
+	 * @return void
+	 */
+	public function update_warehouse_input(Warehouse $warehouse, WireInput $input) {
+		$config_in = $this->get_config_in();
 		$rm = strtolower($input->requestMethod());
 		$warehouse->setAddress($input->$rm->text('address'));
 		$warehouse->setAddress2($input->$rm->text('address2'));
@@ -169,7 +193,7 @@ class CodeTablesIwhm extends WireData implements Module {
 		$warehouse->setZip($input->$rm->text('zip'));
 		$warehouse->setCountry($input->$rm->text('country'));
 		$warehouse->setEmail($input->$rm->text('email'));
-		$warehouse->setCash_customer($input->$rm->text('cash_customer'));
+		$warehouse->setCash_customer($input->$rm->text('custID'));
 		$warehouse->setPickdetail($input->$rm->text('pickdetail'));
 		$warehouse->setBin_qcrga($input->$rm->text('bin_qcrga'));
 		$warehouse->setConsignment($input->$rm->text('consignment'));
@@ -205,13 +229,16 @@ class CodeTablesIwhm extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$input->$rm->whse_profit = $input->$rm->text('whse_profit') == 'self' ? $warehouse->id : $input->$rm->text('whse_profit');
 		$input->$rm->whse_supply = $input->$rm->text('whse_supply') == 'self' ? $warehouse->id : $input->$rm->text('whse_supply');
-		$input->$rm->whse_asset  = $input->$rm->text('whse_asset') == 'self' ? $warehouse->id : $input->$rm->text('whse_asset');
+		$input->$rm->whse_asset  = $input->$rm->text('whse_asset')  == 'self' ? $warehouse->id : $input->$rm->text('whse_asset');
 
 		$warehouse->setWhse_profit($input->$rm->text('whse_profit'));
 		$warehouse->setWhse_asset($input->$rm->text('whse_asset'));
 		$warehouse->setWhse_supply($input->$rm->text('whse_supply'));
 	}
 
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
 	/**
 	 * Returns CodeTablesResponse based on the outcome of the database save
 	 *
@@ -256,6 +283,15 @@ class CodeTablesIwhm extends WireData implements Module {
 		return $response;
 	}
 
+/* =============================================================
+	Copy Table Functions
+============================================================= */
+	/**
+	 * Duplicate Action of Warehouse into each copy table
+	 * @param  Warehouse $warehouse
+	 * @param  bool      $saved     Was Saved
+	 * @return void
+	 */
 	public function duplicate_copytables(Warehouse $warehouse, bool $saved) {
 		if ($saved) {
 			if ($warehouse->isDeleted()) {
@@ -319,6 +355,36 @@ class CodeTablesIwhm extends WireData implements Module {
 		return $q->execute_query($sql, $params);
 	}
 
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return States
+	 * @return States[]|ObjectCollection
+	 */
+	public function get_states() {
+		return StatesQuery::create()->find();
+	}
+
+	/**
+	 * Return Countries
+	 * @return Country[]|ObjectCollection
+	 */
+	public function get_countries() {
+		return CountryQuery::create()->find();
+	}
+
+	/**
+	 * Return ConfigIn
+	 * @return ConfigIn
+	 */
+	public function get_config_in() {
+		return ConfigInQuery::create()->findOne();
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus IWHM Code Table CRUD Manager',

@@ -32,6 +32,26 @@ class MsaSysop extends WireData implements Module {
 	}
 
 	/**
+	 * Return the IDs for the Warehouses
+	 * @return array
+	 */
+	public function get_codes_ids() {
+		$q = $this->get_query();
+		$q->select(MsaSysopCode::get_aliasproperty('id'));
+		return $q->find()->toArray();
+	}
+
+	/**
+	 * Return the IDs for the Warehouses
+	 * @return array
+	 */
+	public function get_codes_systems() {
+		$q = $this->get_query();
+		$q->select(MsaSysopCode::get_aliasproperty('system'));
+		return $q->find()->toArray();
+	}
+
+	/**
 	 * Return the Code records from Database filtered by ProductLne ID
 	 * @param  string $system    System
 	 * @param  string $code     System Option Code
@@ -76,6 +96,7 @@ class MsaSysop extends WireData implements Module {
 		$system = $input->$rm->text('system');
 
 		$q = $this->get_query();
+		$q->filterBySystem($system);
 		$q->filterByCode($code);
 
 		if ($q->count()) {
@@ -86,44 +107,70 @@ class MsaSysop extends WireData implements Module {
 			$record->setCode($code);
 		}
 
-		if ($input->$rm->text('action') == 'remove-code') {
-			$record->delete();
+		if ($input->$rm->action) {
+			$recordlocker = $this->wire('modules')->get('RecordLockerUser');
+
+			/**
+			 * Create lock for CTM code if not already locked.
+			 */
+			if (!$recordlocker->function_locked('sysop', $code)) {
+				$recordlocker->create_lock('sysop', $code);
+			}
+
+			if ($record->isNew() || $recordlocker->function_locked_by_user('sysop', $code)) {
+				if ($input->$rm->text('action') == 'remove-code') {
+					$record->delete();
+				} elseif ($input->$rm->text('action') == 'update-sysop'){
+					$description = $input->$rm->text('description');
+					$note_code = $input->$rm->text('note_code');
+					$web_validate = $input->$rm->text('web_validate');
+					$doc_store_folder = $input->$rm->text('doc_store_folder');
+					$web_force = $input->$rm->text('web_force');
+					$file_name = $input->$rm->text('file_name');
+					$validate = $input->$rm->text('validate');
+					$force = $input->$rm->text('force');
+					$adv_search = $input->$rm->text('adv_search');
+					$list_seq = $input->$rm->text('list_seq');
+					$field_type = $input->$rm->text('field_type');
+					$before_dec = $input->$rm->text('before_dec');
+					$after_dec = $input->$rm->text('after_dec');
+
+					$record->setDescription($description);
+					$record->setSystem($system);
+					$record->setNote_code($note_code);
+					$record->setWeb_validate($web_validate);
+					$record->setDoc_store_folder($doc_store_folder);
+					$record->setWeb_force($web_force);
+					$record->setFile_name($file_name);
+					$record->setValidate($validate);
+					$record->setForce($force);
+					$record->setAdv_search($adv_search);
+					$record->setList_seq($list_seq);
+					$record->setField_type($field_type);
+					$record->setBefore_dec($before_dec);
+					$record->setAfter_dec($after_dec);
+					$record->setDate(date('Ymd'));
+					$record->setTime(date('His'));
+					$record->setDummy('P');
+				}
+				$response = $this->save_and_process_response($system, $code, $record);
+			} else {
+				$response = new CodeTablesResponse();
+				$response->set_key($code);
+				$response->set_error(true);
+				$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+				$message = self::DESCRIPTION_RECORD . " ($code) was not updated because it is locked by " . $recordlocker->get_locked_user('sysop', $code);
+				$response->set_message($message);
+			}
 		} else {
-			$description = $input->$rm->text('description');
-
-			$note_code = $input->$rm->text('note_code');
-			$web_validate = $input->$rm->text('web_validate');
-			$doc_store_folder = $input->$rm->text('doc_store_folder');
-			$web_force = $input->$rm->text('web_force');
-			$file_name = $input->$rm->text('file_name');
-			$validate = $input->$rm->text('validate');
-			$force = $input->$rm->text('force');
-			$adv_search = $input->$rm->text('adv_search');
-			$list_seq = $input->$rm->text('list_seq');
-			$field_type = $input->$rm->text('field_type');
-			$before_dec = $input->$rm->text('before_dec');
-			$after_dec = $input->$rm->text('after_dec');
-
-			$record->setDescription($description);
-			$record->setSystem($system);
-			$record->setNote_code($note_code);
-			$record->setWeb_validate($web_validate);
-			$record->setDoc_store_folder($doc_store_folder);
-			$record->setWeb_force($web_force);
-			$record->setFile_name($file_name);
-			$record->setValidate($validate);
-			$record->setForce($force);
-			$record->setAdv_search($adv_search);
-			$record->setList_seq($list_seq);
-			$record->setField_type($field_type);
-			$record->setBefore_dec($before_dec);
-			$record->setAfter_dec($after_dec);
-			$record->setDate(date('Ymd'));
-			$record->setTime(date('His'));
-			$record->setDummy('P');
+			$response = new CodeTablesResponse();
+			$response->set_key($code);
+			$response->set_error(true);
+			$response->set_action(CodeTablesResponse::CRUD_UPDATE);
+			$message = self::DESCRIPTION_RECORD . " ($code) was not updated ";
+			$response->set_message($message);
 		}
-
-		$this->wire('session')->response_codetable = $this->save_and_process_response($system, $code, $record);
+		$this->wire('session')->response_codetable = $response;
 	}
 
 	/**
@@ -162,6 +209,8 @@ class MsaSysop extends WireData implements Module {
 		if ($response->has_success()) {
 			$this->update_sysop_dplus_cobol($system, $code);
 		}
+
+		$response->set_key($system . '-' . $code);
 		return $response;
 	}
 
@@ -177,7 +226,7 @@ class MsaSysop extends WireData implements Module {
 		$data = array("DBNAME=$dplusdb", 'UPDATESYSOP', "SYS=$system", "CODE=$code");
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['database'], session_id());
+		$requestor->cgi_request($this->wire('config')->cgis['database'], session_id());
 	}
 
 	/**

@@ -1,0 +1,218 @@
+$(function () {
+	// $("body").on('blur', '#standard-terms-form input', function(e) {
+	// 	if (e.relatedTarget) {
+	// 		var target = $(e.relatedTarget);
+	//
+	// 		valid_discounts(target);
+	//
+	// 		if ($('.discount input.is-invalid').length == 0) {
+	// 			valid_due(target);
+	// 		}
+	// 	}
+	// });
+
+	$("body").on('change', '.order_percent', function(e) {
+		var input = $(this);
+		var index = input.closest('.split').data('index');
+		var sumpercent = get_sum_orderpercent();
+
+		// if (input.val() == 0) {
+		// 	$('.split'+index).find('input:not(.due_date, .disc_date)').val('0').prop('disabled', true);
+		// 	$('.split'+index).find('.due_date, .disc_date').val('').prop('disabled', true);
+		// }
+
+		if (index == 1 && input.val() == 100) {
+			$('#freight_allow').val("N");
+			var freight_amt = {{ configso.get_freight_allowed_amt() }};
+			if (freight_amt > 0) {
+				$('#freight_allow').prop("disabled", false);
+			}
+			$('#code-edit-form').find('#standard-terms-form input:not(#order_percent1, #percent1, #days1, #day, #date1, #due_days1, #due_day1, #due_months1, #due_date1, #due_year1)').val('0').prop('disabled', true);
+			$('#code-edit-form').find('#due_date2, #date2, #due_date3, #date3, #due_date4, #date4, #due_date5, #date5, #due_date6, #date6').val('').prop('disabled', true);
+		} else if (sumpercent > 100) {
+			$(this).alert_focus('Invalid Order Percent!', 'Cannot be more than 100%', 'warning');
+		} else {
+			$('.order_percent').removeClass('is-invalid');
+
+			if (index == 1) {
+				if (input.val() < 100 && input.val() > 0) {
+					var next = index + 1;
+					var origpercent = $('.split'+(index+1)).find('.order_percent').val();
+					var nextpercent = 100 - sumpercent;
+					$('.split'+next).find('.order_percent').val(parseFloat(origpercent) + parseFloat(nextpercent));
+					$('.split'+next).find('.order_percent, .due_group, .discount_percent').prop('disabled', false);
+					$('#freight_allow').val("N");
+					$('#freight_allow').prop("disabled", true);
+				}
+			} else {
+				// if (input.val() == 0 && sumpercent == 100 && index != 1) {
+				// 	$('.split'+index).find('.order_percent, .discount_percent, .disc_group, .due_days, .due_day, .due_months, .due_year').val(0);
+				// 	$('.split'+index).find('.due_date').val('');
+				// 	$('.split'+index).find('.order_percent, .discount_percent, .disc_group, .due_group, .due_months, .due_year').prop('disabled', true);
+				// } else
+				if (input.val() == 0 && sumpercent < 100) {
+					var new_percent = 100 - get_sum_orderpercent();
+					var prev = index - 1;
+					var prev_percent = $('.split'+prev).find('.order_percent').val();
+					$('.split'+(index - 1)).find('.order_percent').val(parseFloat(prev_percent) + parseFloat(new_percent));
+
+					var total_splits = {{ m_trm.count_standardterms_split() }};
+
+					for (var i = index; i <= total_splits ; i++) {
+						if (i < total_splits) {
+							var splitrow = $('.split[data-index='+i+']');
+							var splitrow_next = $('.split[data-index='+(i+1)+']');
+
+							if (splitrow_next.find('.order_percent').val() == '0') {
+								splitrow.find('.order_percent').val('0').prop('disabled', true);
+							} else{
+								splitrow.find('.order_percent').val(splitrow_next.find('.order_percent').val()).prop('disabled', false);
+							}
+
+							if (splitrow_next.find('.discount_percent').val() == '0' && splitrow_next.find('.order_percent').val() == '0') {
+								splitrow.find('.discount_percent').val('0').prop('disabled', true);
+							} else{
+								splitrow.find('.discount_percent').val(splitrow_next.find('.discount_percent').val()).prop('disabled', false);
+							}
+
+							if (splitrow_next.find('.days').val() == '0') {
+								splitrow.find('.days').val('0').prop('disabled', true);
+							} else{
+								splitrow.find('.days').val(splitrow_next.find('.days').val()).prop('disabled', false);
+							}
+
+							if (splitrow_next.find('.day').val() == '0') {
+								splitrow.find('.day').val('0').prop('disabled', true);
+							} else{
+								splitrow.find('.day').val(splitrow_next.find('.day').val()).prop('disabled', false);
+							}
+
+							if (splitrow_next.find('.disc_date').val() == '') {
+								splitrow.find('.disc_date').val('').prop('disabled', true);
+							} else{
+								splitrow.find('.disc_date').val(splitrow_next.find('.disc_date').val()).prop('disabled', false);
+							}
+
+							if (splitrow_next.find('.due_days').val() == '0') {
+								splitrow.find('.due_days').val('0').prop('disabled', true);
+							} else{
+								splitrow.find('.due_days').val(splitrow_next.find('.due_days').val()).prop('disabled', false);
+							}
+
+							if (splitrow_next.find('.due_day').val() == '0') {
+								splitrow.find('.due_day').val('0').prop('disabled', true);
+							} else{
+								splitrow.find('.due_day').val(splitrow_next.find('.due_day').val()).prop('disabled', false);
+							}
+
+							if (splitrow_next.find('.due_months').val() == '0') {
+								splitrow.find('.due_months').val('0').prop('disabled', true);
+							} else{
+								splitrow.find('.due_months').val(splitrow_next.find('.due_months').val()).prop('disabled', false);
+							}
+
+							if (splitrow_next.find('.due_date').val() == '') {
+								splitrow.find('.due_date').val('').prop('disabled', true);
+							} else{
+								splitrow.find('.due_date').val(splitrow_next.find('.due_date').val()).prop('disabled', false);
+							}
+
+							if (splitrow_next.find('.due_year').val() == '0') {
+								splitrow.find('.due_year').val('0').prop('disabled', true);
+							} else{
+								splitrow.find('.due_year').val(splitrow_next.find('.due_year').val()).prop('disabled', false);
+							}
+						}
+					}
+					var splitrow = $('.split[data-index='+total_splits+']');
+					splitrow.find('.order_percent, .discount_percent, .disc_group, .due_days, .due_day, .due_months, .due_year').val(0);
+					splitrow.find('.due_date').val('');
+					splitrow.find('.order_percent, .discount_percent, .disc_group, .due_group, .due_months, .due_year').prop('disabled', true);
+
+				} else if (input.val() == 0 && sumpercent > 100) {
+					$('.split'+index).find('.discount_percent, .disc_group, .due_days, .due_day, .due_months, .due_year').val(0);
+					$('.split'+index).find('.due_date').val('');
+					$('.split'+index).find('.discount_percent, .disc_group, .due_group, .due_months, .due_year').prop('disabled', true);
+				} else if (input.val() < 100 && input.val() > 0 && sumpercent < 100) {
+					$('#freight_allow').prop('disabled', true);
+					var i;
+					for (i = 0; i < {{ m_trm.count_standardterms_split() + 1}}; i++) {
+						if (index == {{ m_trm.count_standardterms_split() }}) {
+							var inputval = parseFloat(input.val());
+							var newsumpercent = sumpercent - inputval;
+							var nextpercent = 100 - newsumpercent;
+							$('.split'+index).find('.order_percent').val(nextpercent);
+							$('.split'+index).find('.order_percent').prop('disabled', false);
+							$(this).alert_focus('Invalid Order Percent!', 'Cannot have more than {{ m_trm.count_standardterms_split() }} splits', 'warning');
+							break;
+						} else {
+							if ($('.split'+i).find('.order_percent').val() == 0) {
+								var nextpercent = 100 - sumpercent;
+								$('.split'+i).find('.order_percent').val(nextpercent);
+								$('.split'+i).find('.order_percent').prop('disabled', false);
+								$('.split'+i).find('.due_group').prop('disabled', false);
+								$('.split'+i).find('.discount_percent').prop('disabled', false).focus();
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+	});
+});
+
+
+
+function get_sum_orderpercent() {
+	var sum = 0;
+	$('.order_percent').each(function( index ) {
+		var input = $(this);
+		if (input.val() != '') {
+			sum += parseFloat(input.val());
+		}
+	});
+	return sum;
+}
+
+function valid_discounts(target) {
+	$(".discount").each(function(index) {
+		var discountrow = $(this);
+		var input_percent = discountrow.find('.discount_percent');
+
+		if (parseFloat(input_percent.val()) > 0) {
+			discount_feedback(discountrow, function(valid) {
+				if (!valid) {
+					if (!target.hasParent('.discount') && discountrow.closest('.discount').data('index') != target.closest('.discount').data('index')) {
+						setTimeout(function() {
+							input_percent.focus();
+						});
+						return false;
+					}
+				}
+			});
+		}
+	});
+}
+
+function valid_due(target) {
+	$(".due").each(function(index) {
+		index = index+1;
+		var duerow = $(this);
+		var order_percent = $('.split'+index).find('.order_percent');
+		var duedays = duerow.find('.due_days');
+
+		if (parseFloat(order_percent.val()) != 0) {
+			due_feedback(duerow, order_percent, function(valid) {
+				if (!valid) {
+					if (!target.hasParent('.due') && duerow.closest('.due').data('index') != target.closest('.due').data('index')) {
+						setTimeout(function() {
+							duedays.focus();
+						});
+						return false;
+					}
+				}
+			});
+		}
+	});
+}

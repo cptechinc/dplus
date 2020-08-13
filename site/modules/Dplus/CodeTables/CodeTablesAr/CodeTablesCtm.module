@@ -31,6 +31,16 @@ class CodeTablesCtm extends WireData implements Module {
 	}
 
 	/**
+	 * Return the IDs for the Customer Type Codes
+	 * @return array
+	 */
+	public function get_codes_ids() {
+		$q = $this->get_query();
+		$q->select(CustomerTypeCode::get_aliasproperty('code'));
+		return $q->find()->toArray();
+	}
+
+	/**
 	 * Return the Code
 	 * @param  string $code Customer Type Code
 	 * @return CustomerTypeCode
@@ -79,7 +89,7 @@ class CodeTablesCtm extends WireData implements Module {
 		$table = $input->$rm->text('table');
 		$code  = $input->$rm->text('code');
 
-		if ($input->$rm->text('action') == 'update-notes') {
+		if ($input->$rm->text('action') == 'update-notes' || $input->$rm->text('action') == 'delete-notes') {
 			$this->wire('modules')->get('CodeTablesCtmNotes')->process_input($input);
 		} else {
 			$this->process_input_ctm($input);
