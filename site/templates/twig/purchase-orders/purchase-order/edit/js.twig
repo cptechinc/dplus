@@ -11,6 +11,7 @@ $(function () {
 	var form_add  = $('#add-item-form');
 	var items = {{ epo.get_details_array(page.ponbr)|json_encode()|raw }};
 	var decimal_places_qty = {{ epo.decimal_places_qty() }};
+	var decimal_places_cost = {{ epo.decimal_places_cost() }};
 
 	modal_edit.on('show.bs.modal', function (event) {
 		var modal = $(this);
@@ -34,8 +35,8 @@ $(function () {
 		form.inputs.qty.ordered.val(parseFloat(item.qty.ordered).toFixed(decimal_places_qty));
 		form.inputs.qty.received.val(parseFloat(item.qty.received).toFixed(decimal_places_qty));
 		form.inputs.qty.invoiced.val(parseFloat(item.qty.invoiced).toFixed(decimal_places_qty));
-		form.inputs.cost.val(item.cost);
-		form.inputs.cost_total.val(item.cost_total);
+		form.inputs.cost.val(parseFloat(item.cost).toFixed(decimal_places_cost));
+		form.inputs.cost_total.val(parseFloat(item.cost_total).toFixed(decimal_places_cost));
 	}
 
 	function EditItemForm(form) {

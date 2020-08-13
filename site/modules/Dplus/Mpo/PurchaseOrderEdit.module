@@ -9,6 +9,7 @@ use ApInvoiceDetailQuery, ApInvoiceDetail;
 use WarehouseQuery, Warehouse;
 use VendorQuery, Vendor;
 use ConfigSalesOrderQuery, ConfigSalesOrder;
+use ConfigPoQuery, ConfigPo;
 
 use EditPoHeadQuery, EditPoHead;
 use EditPoDetailQuery, EditPoDetail;
@@ -319,20 +320,20 @@ class PurchaseOrderEdit extends WireData implements Module {
 
 		foreach ($items as $item) {
 			$array[$item->linenbr] = array(
-				'linenbr' => $item->linenbr,
-				'itemid'  => $item->itemid,
+				'linenbr'      => $item->linenbr,
+				'itemid'       => $item->itemid,
 				'description'  => $item->description,
-				'vendoritemid'  => $item->vendoritemid,
-				'whseid'  => $item->whse,
-				'specialorder'  => $item->specialorder,
-				'uom'  => $item->uom,
+				'vendoritemid' => $item->vendoritemid,
+				'whseid'       => $item->whse,
+				'specialorder' => $item->specialorder,
+				'uom'          => $item->uom,
 				'qty' => array(
-					'ordered'  => number_format($item->qty_ordered, $this->decimal_places_qty());,
+					'ordered'  => number_format($item->qty_ordered, $this->decimal_places_qty()),
 					'received' => $this->get_qty_received($ponbr, $item->linenbr),
 					'invoiced' => $this->get_qty_invoiced($ponbr, $item->linenbr),
 				),
-				'cost' => $item->cost,
-				'cost_total' => $item->cost_total
+				'cost'         => number_format($item->cost, $this->decimal_places_cost()),
+				'cost_total'   => number_format($item->cost_total, $this->decimal_places_cost())
 			);
 		}
 		return $array;
@@ -401,6 +402,14 @@ class PurchaseOrderEdit extends WireData implements Module {
 	 */
 	public function decimal_places_qty() {
 		return ConfigSalesOrderQuery::create()->findOne()->decimal_places;
+	}
+
+	/**
+	 * Return the number of decimal places for cost values
+	 * @return int
+	 */
+	public function decimal_places_cost() {
+		return ConfigPoQuery::create()->findOne()->decimal_places_cost;
 	}
 /* =============================================================
 	ProcessWire Module Functions

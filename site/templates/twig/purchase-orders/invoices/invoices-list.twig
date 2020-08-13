@@ -1,9 +1,18 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	config                 ProcessWire\Config
+	config.po              ConfigPo
+	orderpage              URL to View ApInvoice
+#}
+
 <div class="list-group-item bg-light font-weight-bold">
 	{% block header %}
-		<div class="row">
+		<div class="form-row">
 			<div class="col">Invoice #</div>
 			<div class="col">PO #</div>
-			<div class="col">Vendor</div>
+			<div class="col-3">Vendor</div>
 			<div class="col"># of Items</div>
 			<div class="col text-right">Order Total</div>
 			<div class="col">Invoice Date</div>
@@ -14,12 +23,12 @@
 {% if invoices.count > 0 %}
 	{% for invoice in invoices %}
 		<a href="{{ invpage ~ '?invnbr=' ~ invoice.invoicenumber }}" class="list-group-item list-group-item-action">
-			<div class="row">
+			<div class="form-row">
 				<div class="col">{{ invoice.invoicenumber }}</div>
 				<div class="col">{{ invoice.getpurchaseOrder() ? invoice.getpurchaseOrder().ponbr : 'N/A' }}</div>
-				<div class="col">{{ invoice.vendor.name }}</div>
-				<div class="col">{{ invoice.count_details() }}</div>
-				<div class="col text-right">$ {{ invoice.total|currency }}</div>
+				<div class="col-3">{{ invoice.vendor.name }}</div>
+				<div class="col text-center">{{ invoice.count_details() }}</div>
+				<div class="col text-right">$ {{ invoice.total|number_format(config.po.decimal_places_cost) }}</div>
 				<div class="col text-right">{{ invoice.date_invoiced|convertdate }}</div>
 				<div class="col text-right">{{ invoice.getpurchaseOrder() ? invoice.getpurchaseOrder().date_ordered|convertdate : 'N/A' }}</div>
 			</div>
