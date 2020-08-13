@@ -411,6 +411,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 	public function decimal_places_cost() {
 		return ConfigPoQuery::create()->findOne()->decimal_places_cost;
 	}
+	
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */

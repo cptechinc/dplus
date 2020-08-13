@@ -28,10 +28,10 @@
 	</div>
 </div>
 
-{% for detail in eso.get_order_edit_items() %}
+{% for detail in eso.get_editable_details(order.ordernumber) %}
 	{% if user.is_editingorder(order.ordernumber) %}
-		<form action="{{ page.formurl }}" class="row pt-3 px-3 allow-enterkey-submit">
-			<input type="hidden" name="action" value="quick-update-line">
+		<form action="{{ page.url }}" class="row pt-3 px-3 allow-enterkey-submit">
+			<input type="hidden" name="action" value="update-item-quick">
 			<input type="hidden" name="ordn" value="{{ order.ordernumber }}">
 			<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
 			<div class="col-sm-4">

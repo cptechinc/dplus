@@ -1,7 +1,7 @@
 <hr>
 
-<form id="edit-sales-order-form" action="{{ page.formurl }}">
-	<input type="hidden" name="action" value="edit-order">
+<form id="edit-sales-order-form" action="{{ page.url }}" method="post">
+	<input type="hidden" name="action" value="update-header">
 	<input type="hidden" name="ordn" value="{{ order.ordernumber }}">
 
 	<div class="row">
