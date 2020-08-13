@@ -1,3 +1,11 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	labelsession           LabelPrintSession
+	m_print                module PrintLabelItemReceiving
+	ordn                   Sales Order Number
+#}
 <div class="form-group">
 	<a href="{{ page.returnpage }}" class="btn btn-primary">
 		<i class="fa fa-arrow-left" aria-hidden="true"></i> Go back
@@ -29,7 +37,7 @@
 							</div>
 							<br>
 							<p class="label-desc">
-								{{ labelsession.label_box is not empty ? thermal_labels.get_description(labelsession.label_box) : '' }}
+								{{ labelsession.label_box is not empty ? m_print.get_labelformat(labelsession.label_box).description : '' }}
 							</p>
 						</div>
 					</td>
@@ -47,7 +55,7 @@
 								</div>
 							</div><br>
 							<p class="printer-desc">
-								{{ labelsession.printer_box is not empty ? printers.get_description(whsesession.whseid, labelsession.printer_box) : '' }}
+								{{ labelsession.printer_box is not empty ? m_print.get_printer(labelsession.printer_box).description : '' }}
 							</p>
 						</div>
 					</td>

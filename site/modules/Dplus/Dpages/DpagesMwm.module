@@ -15,12 +15,12 @@ class DpagesMwm extends Dpages implements Module {
 		'warehouse-menu' => array(
 			'name'   => 'warehouse-menu',
 			'fields' => array('title', 'dplus_function', 'summary'),
-			'paginated' => false
+			'paginated' => true
 		),
 		'warehouse-function' => array(
 			'name'   => 'warehouse-function',
 			'fields' => array('title', 'dplus_function', 'pw_template', 'summary'),
-			'paginated' => false
+			'paginated' => true
 		),
 		'whse-binr' => array(
 			'name'   => 'whse-binr',
@@ -69,6 +69,26 @@ class DpagesMwm extends Dpages implements Module {
 		),
 		'whse-print-order-item-label' => array(
 			'name'   => 'whse-print-order-item-label',
+			'fields' => array('title'),
+			'paginated' => false
+		),
+		'whse-print-received-item-label' => array(
+			'name'   => 'whse-print-received-item-label',
+			'fields' => array('title'),
+			'paginated' => false
+		),
+		'whse-receiving' => array(
+			'name'   => 'whse-receiving',
+			'fields' => array('title'),
+			'paginated' => false
+		),
+		'whse-stock-status' => array(
+			'name'   => 'whse-stock-status',
+			'fields' => array('title'),
+			'paginated' => false
+		),
+		'whse-sales-orders' => array(
+			'name'   => 'whse-sales-orders',
 			'fields' => array('title'),
 			'paginated' => false
 		)
@@ -153,6 +173,24 @@ class DpagesMwm extends Dpages implements Module {
 			'parent'         => '/warehouse/',
 			'dplus_function' => 'mivty'
 		),
+		'whse-stock-status' => array(
+			'template'       => 'warehouse-function',
+			'name'           => 'stock-status',
+			'title'          => 'Stock Status',
+			'summary'        => 'Stock Status Report',
+			'parent'         => '/warehouse/inventory/',
+			'dplus_function' => '',
+			'pw_template'    => 'whse-stock-status'
+		),
+		'whse-sales-orders' => array(
+			'template'       => 'warehouse-function',
+			'name'           => 'sales-orders',
+			'title'          => 'Sales Orders',
+			'summary'        => 'Open Sales Orders Report',
+			'parent'         => '/warehouse/inventory/',
+			'dplus_function' => '',
+			'pw_template'    => 'whse-sales-orders'
+		),
 		'whse-find-item' => array(
 			'template'       => 'warehouse-function',
 			'name'           => 'find-item',
@@ -224,14 +262,23 @@ class DpagesMwm extends Dpages implements Module {
 			'dplus_function' => 'porpp',
 			'pw_template'    => 'whse-packing',
 		),
-		'whse-print-order-item-label' => array(
+		'whse-print-pick-item-label' => array(
 			'template'       => 'warehouse-function',
 			'name'           => 'order-item',
-			'title'          => 'Print Item Label',
+			'title'          => 'Print Order Item Label',
 			'summary'        => 'Print a Label for an Order Item',
 			'parent'         => '/warehouse/inventory/print-item-label/',
 			'dplus_function' => 'pilbl',
-			'pw_template'    => 'whse-print-order-item-label'
+			'pw_template'    => 'whse-print-pick-item-label'
+		),
+		'whse-print-received-item-label' => array(
+			'template'       => 'warehouse-function',
+			'name'           => 'po-item',
+			'title'          => 'Print Received Item Label',
+			'summary'        => 'Print a Label for a Received Item',
+			'parent'         => '/warehouse/inventory/print-item-label/',
+			'dplus_function' => '',
+			'pw_template'    => 'whse-print-received-item-label'
 		),
 		'whse-physical-count' => array(
 			'template'       => 'warehouse-function',
@@ -294,7 +341,8 @@ class DpagesMwm extends Dpages implements Module {
 			$p = $event->object;
 			$item = $event->arguments(0); // Instance of PickSalesOrderDetail
 			$url = new Url($p->fullURL->getUrl());
-			$url->query->set('linenbr',$item->recno);
+			$url->query->set('linenbr', $item->linenbr);
+			$url->query->set('sublinenbr', $item->sublinenbr);
 			$event->return = $url->getUrl();
 		});
 

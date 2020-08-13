@@ -30,8 +30,12 @@
 					<a href="{{page.ii_itemURL(line.itemid)}}" target="_blank" class="link" aria-label="View Item in II" title="View Item in II">
 						{{ line.itemid }}
 					</a>
+					<br>
+					<small>
+						{{ line.item.description }}
+					</small>
 				</td>
-				<td class="text-right">{{ line.b4qty }}</td>
+				<td class="text-right">{{ line.before_qty }}</td>
 
 				{% if line.qty_increased() %}
 					{% set class_qty = 'text-white bg-success' %}
@@ -40,8 +44,8 @@
 				{% else %}
 					{% set class_qty = '' %}
 				{% endif %}
-				<td class="text-right {{ class_qty }}">{{ line.afterqty }}</td>
-				<td class="text-right">{{ line.b4price|currency }}</td>
+				<td class="text-right {{ class_qty }}">{{ line.after_qty }}</td>
+				<td class="text-right">{{ line.before_price|currency }}</td>
 
 				{% if line.price_increased() %}
 					{% set class_price = 'text-white bg-success' %}
@@ -50,7 +54,7 @@
 				{% else %}
 					{% set class_price = '' %}
 				{% endif %}
-				<td class="text-right {{ class_price}}">{{ line.afterqty|currency }}</td>
+				<td class="text-right {{ class_price }}">{{ line.after_qty|currency }}</td>
 
 				<td class="text-right text-white {{ line.netamount_increased() ? 'bg-success' : 'bg-danger'}}">{{ line.netamount }}</td>
 			</tr>

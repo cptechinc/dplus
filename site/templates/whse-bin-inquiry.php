@@ -3,23 +3,21 @@
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
 	$config->inventory = $modules->get('WarehouseInventoryConfig');
+	$searchinventory = $modules->get('SearchInventory');
 
 	if ($input->get->binID) {
 		$binID = $input->get->text('binID');
 		$page->binID = $binID;
 		$page->title = "Bin Inquiry for $binID";
-		$items = InvsearchQuery::create()->findDistinctItems(session_id(), $binID);
-		$resultscount = InvsearchQuery::create()->countDistinctItemid(session_id(), $binID);
-		$inventory = InvsearchQuery::create();
 
 		if (!$config->ajax) {
 			$page->body = $config->twig->render('warehouse/inventory/bin-inquiry/results-links-header.twig', ['page' => $page]);
 		}
 
 		if (file_exists($config->paths->templates."twig/warehouse/inventory/bin-inquiry/$config->company/results-list.twig")) {
-			$page->body .= $config->twig->render("warehouse/inventory/bin-inquiry/$config->company/results-list.twig", ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
+			$page->body .= $config->twig->render("warehouse/inventory/bin-inquiry/$config->company/results-list.twig", ['page' => $page, 'config' => $config->inventory, 'warehouse' => $warehouse, 'inventory' => $searchinventory]);
 		} else {
-			$page->body .= $config->twig->render('warehouse/inventory/bin-inquiry/results-list.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
+			$page->body .= $config->twig->render('warehouse/inventory/bin-inquiry/results-list.twig', ['page' => $page, 'config' => $config->inventory, 'warehouse' => $warehouse, 'inventory' => $searchinventory]);
 		}
 	} else {
 		$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;

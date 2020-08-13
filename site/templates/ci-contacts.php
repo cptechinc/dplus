@@ -23,7 +23,7 @@
 			if ($json['error']) {
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 			} else {
-				$page->body .= $config->twig->render('customers/ci/contacts/contacts-screen.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'date' => $date, 'itemID' => $itemID]);
+				$page->body .= $config->twig->render('customers/ci/contacts/contacts-screen.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json]);
 			}
 		} else {
 			if ($session->cicontacttry > 3) {

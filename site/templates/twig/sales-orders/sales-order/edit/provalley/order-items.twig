@@ -1,3 +1,12 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	config                 ConfigSalesOrder
+	order                  Ordrhed
+	eso                    module SalesOrderEdit
+	user                   ProcessWire\User
+#}
 <div class="row mt-4">
 	<div class="col-6">
 		<h3 class="font-weight-bold text-secondary">Order Items</h3>
@@ -20,12 +29,12 @@
 	</div>
 </div>
 
-{% for detail in module_edit.get_order_edit_items() %}
-	{% set item = module_edit.get_im_item(detail.itemid) %}
+{% for detail in eso.get_editable_details(order.ordernumber) %}
+	{% set item = eso.get_im_item(detail.itemid) %}
 
 	{% if user.is_editingorder(order.ordernumber) %}
-		<form action="{{ page.formurl }}" class="row pt-3 px-3 allow-enterkey-submit">
-			<input type="hidden" name="action" value="quick-update-line">
+		<form action="{{ page.url }}" class="row pt-3 px-3 allow-enterkey-submit">
+			<input type="hidden" name="action" value="update-item-quick">
 			<input type="hidden" name="ordn" value="{{ order.ordernumber }}">
 			<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
 			<div class="col-sm-3">
@@ -33,48 +42,53 @@
 				<br>
 				<small>{{ detail.desc1 }}</small>
 				<br>
-				<small>Avg Wgt: {{ item.weight|number_format(3, '.', ',') }}</small>
+				<small>Avg Wgt: {{ item.weight|number_format(eso.decimal_places_qty()) }}</small>
 			</div>
 			<div class="col-sm-1 text-right">
 				<input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}"></input>
 			</div>
 			<div class="col-sm-1 text-right">
-				{{ (item.weight * detail.qty)|number_format(3, '.', ',') }}
+				{{ (item.weight * detail.qty)|number_format(eso.decimal_places_qty()) }}
 			</div>
 			<div class="col-sm-2 text-right">
 				<div class="input-group">
 					<div class="input-group-prepend">
 						<span class="input-group-text">$</span>
 					</div>
-					<input type="text" class="form-control text-right" name="price" value="{{ detail.price|currency }}"></input>
+					<input type="text" class="form-control text-right" name="price" value="{{ detail.price|number_format(eso.decimal_places_price()) }}"></input>
 				</div>
 			</div>
 			<div class="col-sm-2 text-right">
-				$ {{ detail.totalprice|currency }}
+				$ {{ detail.totalprice|number_format(eso.decimal_places_price()) }}
 			</div>
 			<div class="col-sm-3 text-right">
-				<button type="submit" class="btn btn-warning">Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+				<button type="submit" class="btn btn-success">Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
 				<a href="{{ page.remove_itemURL(order.ordernumber, detail.linenbr) }}" class="btn btn-danger exclude">Remove&ensp;<i class="fa fa-times" aria-hidden="true"></i></a>
 			</div>
 		</form>
 		<hr>
 	{% else %}
 		<div class="row pt-3 px-3">
-			<div class="col-sm-4">
+			<div class="col-sm-3">
 				{{ detail.itemid }}</br>
 				<small>{{ detail.desc1 }}</small>
+				<br>
+				<small>Avg Wgt: {{ item.weight|number_format(eso.decimal_places_qty()) }}</small>
+			</div>
+			<div class="col-sm-1 text-right">
+				{{ (item.weight * detail.qty)|number_format(eso.decimal_places_qty()) }}
 			</div>
 			<div class="col-sm-1 text-right">
 				<input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}" disabled></input>
 			</div>
 			<div class="col-sm-2 text-right">
-				<input type="text" class="form-control text-right" size="8" name="price" value="$ {{ detail.price|currency }}" disabled></input>
+				<input type="text" class="form-control text-right" size="8" name="price" value="$ {{ detail.price|number_format(eso.decimal_places_price()) }}" disabled></input>
 			</div>
 			<div class="col-sm-2 text-right">
-				$ {{ detail.totalprice|currency }}
+				$ {{ detail.totalprice|number_format(eso.decimal_places_price()) }}
 			</div>
 			<div class="col-sm-3 text-right">
-				<button class="btn btn-warning" disabled >Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+				<button class="btn btn-success" disabled >Save&ensp;<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
 				<button class="btn btn-danger" disabled >Remove&ensp;<i class="fa fa-times" aria-hidden="true"></i></a>
 			</div>
 		</div>

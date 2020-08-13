@@ -1,0 +1,21 @@
+$(function () {
+	var form = $('#ilookup-create-form');
+	var input_itemID = form.find('input[name=itemID]');
+	var modal_ajax = $('#ajax-modal');
+
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		var description = button.find('.description').text();
+		input_itemID.val(itemID);
+		input_itemID.closest('.item-col').find('.description').text(description);
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+});

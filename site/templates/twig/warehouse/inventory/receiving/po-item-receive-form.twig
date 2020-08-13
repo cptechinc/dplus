@@ -1,3 +1,12 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   Whseitemphysicalcount
+	m_receiving            module Receiving or Custom module Receiving
+	config                 ProcessWire\Config
+	config.inventory       module ConfigsWarehouseInventory
+#}
 <form action="{{ page.formurl }}" method="get" class="form-reset allow-enterkey-submit mb-4" id="po-item-receive-form">
 	<input type="hidden" name="action" value="receiving-submit">
 	<input type="hidden" name="ponbr" value="{{ page.ponbr }}">
@@ -13,7 +22,7 @@
 		</div>
 	</div>
 
-	{% if (item.is_item_serialized() or item.is_item_lotted()) %}
+	{% if (m_receiving.is_item_lotserialized(item.itemid)) %}
 		<div class="row">
 			<div class="col-sm-6">
 				<div class="form-group">
@@ -21,7 +30,7 @@
 					<div class="input-group">
 						<input type="text" class="form-control" id="lotserial" name="lotserial" value="{{ item.lotserial }}">
 					</div>
-					{% if (item.is_item_lotted()) %}
+					{% if (m_receiving.is_item_lotted(item.itemid)) %}
 						<small class="form-text text-muted">If blank, Lot Number will be created and assigned</small>
 					{% endif %}
 				</div>
@@ -40,31 +49,42 @@
 		<input type="hidden" name="lotserialref" value="">
 	{% endif %}
 
-	<div class="form-group">
-		<label for="binID">Bin ID</label>
-		<div class="input-group">
-			<span class="input-group-prepend">
-				<button type="button" class="btn btn-secondary show-possible-bins" data-toggle="modal" data-target="#bins-modal" data-input="binID" title="Show Warehouse Bins" aria-label="Show Warehouse Bins">
-					<span class="fa fa-list" aria-hidden="true"></span> <span class="sr-only">Show Warehouse Bins</span>
-				</button>
-			</span>
-			<input type="text" class="form-control" id="binID" name="binID" placeholder="Bin ID" value="{{ item.bin }}">
+	{% if config.inventory.receive_disregard_bin == true %}
+		<div class="form-group">
+			<label>Bin ID</label>
+			<div class="input-group">
+				<input type="text" class="form-control" placeholder="Bin ID" value="{{ item.bin }}" readonly>
+			</div>
 		</div>
-	</div>
+		<input type="hidden" class="form-control" id="binID" name="binID" value="{{ item.bin }}">
+	{% else %}
+		<div class="form-group">
+			<label for="binID">Bin ID</label>
+			<div class="input-group">
+				<span class="input-group-prepend">
+					<button type="button" class="btn btn-secondary show-possible-bins" data-toggle="modal" data-target="#bins-modal" data-input="binID" title="Show Warehouse Bins" aria-label="Show Warehouse Bins">
+						<span class="fa fa-list" aria-hidden="true"></span> <span class="sr-only">Show Warehouse Bins</span>
+					</button>
+				</span>
+				<input type="text" class="form-control" id="binID" name="binID" placeholder="Bin ID" value="{{ item.bin }}">
+			</div>
+		</div>
+	{% endif %}
 
 	<div class="row">
 		<div class="col-sm-6">
 			<div class="form-group">
-				<label for="productiondate">Production Date</label>
-				{% include 'util/date-picker.twig' with {'name': 'productiondate', 'id': 'productiondate', 'value': item.productiondate ? item.productiondate|convertdate('m/d/Y') : "now"|date("m/d/Y")} %}
+				<label for="productiondate">Expire Date</label>
+				{% include 'util/date-picker.twig' with {'name': 'productiondate', 'id': 'productiondate', 'value': item.productiondate ? item.productiondate|convertdate('m/d/Y') : '', 'disabled': item.is_item_normal()} %}
 			</div>
 		</div>
 		<div class="col-sm-6">
 			<div class="form-group">
 				<label for="qty">Qty</label>
-				<div class="input-group">
-					<input type="text" class="form-control text-right qty-input" id="qty" name="qty" value="{{ item.qty }}" data-validated="false">
-				</div>
+				<span class="text-secondary pull-right">
+					<b>Previous Receipt: {{ m_receiving.get_received_total(item.itemid)|number_format(m_receiving.decimal_places()) }}</b>
+				</span>
+				<input type="text" class="form-control text-right qty-input" id="qty" name="qty" value="{{ item.qty|number_format(m_receiving.decimal_places()) }}" data-validated="false">
 			</div>
 		</div>
 	</div>
@@ -72,7 +92,7 @@
 		<button type="submit" class="btn btn-success btn-lg">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Submit
 		</button>
-		<a href="{{ page.ponbrURL() }}" class="btn-clear btn btn-danger btn-lg">
+		<a href="{{ page.ponbrURL(page.ponbr) }}" class="btn-clear btn btn-danger btn-lg">
 			<i class="fa fa-window-close" aria-hidden="true"></i> Cancel
 		</a>
 	</div>

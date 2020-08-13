@@ -1,0 +1,307 @@
+<?php namespace ProcessWire;
+
+use PurchaseOrderNoteQuery, PurchaseOrderNote;
+use ConfigArQuery, ConfigAr;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
+
+include_once(__DIR__.'/QnotesResponse.php');
+
+/**
+ * QnotesSalesOrder
+ *
+ * Class for Writing and Reading Qnotes for Purchase Orders
+ */
+class QnotesPo extends WireData implements Module {
+	const MODEL              = 'PurchaseOrderNote';
+	const MODEL_KEY          = '';
+	const DESCRIPTION        = 'Purchase Order Note';
+	const DESCRIPTION_RECORD = 'Purchase Order Note';
+	const DESCRIPTION_RESPONSE = 'Purchase Order ';
+	const MODEL_TABLE = 'notes_po_head_det';
+
+	public function allow_add(User $user, $ponbr) {
+		return true;
+	}
+
+	/**
+	 * Return the Max Number of columns for Note Type
+	 * @return int
+	 */
+	public function get_column_count() {
+		$configAR = ConfigArQuery::create()->findOne();
+		return $configAR->columns_notes_invoice;
+	}
+
+	/**
+	 * Returns Purchase Order Notes Query
+	 * @return PurchaseOrderNoteQuery
+	 */
+	public function get_query() {
+		return PurchaseOrderNoteQuery::create();
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Returns if Notes Exist
+	 * @param  string $ponbr    Order Number
+	 * @param  int    $linenbr Line Number
+	 * @return bool
+	 */
+	public function notes_exist($ponbr, $linenbr) {
+		$q = $this->get_query();
+		$q->filterByPonbr($ponbr);
+		$q->filterByLine($linenbr);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Returns Line 1 of Every Note
+	 * @param  string $ponbr    Order Number
+	 * @param  int    $linenbr Line Number
+	 * @return PurchaseOrderNote[]|ObjectCollection
+	 */
+	public function get_notes_summarized($ponbr, $linenbr) {
+		$q = $this->get_query();
+		$q->filterByPonbr($ponbr);
+		$q->filterByLine($linenbr);
+		$q->filterBySequence(1);
+		return $q->find();
+	}
+
+	/**
+	 * Return Notes for Form
+	 * @param  string $ponbr    Order Number
+	 * @param  int    $linenbr Line Number
+	 * @return array
+	 */
+	public function get_notes_form_array($ponbr, $linenbr) {
+		$q = $this->get_query();
+		$q->select(PurchaseOrderNote::get_aliasproperty('note'));
+		$q->filterByPonbr($ponbr);
+		$q->filterByLine($linenbr);
+		return $q->find()->toArray();
+	}
+
+/* =============================================================
+	CRUD Delete
+============================================================= */
+	/**
+	 * Delete Notes for Form
+	 * @param  string $ponbr    Order Number
+	 * @param  int    $linenbr Line Number
+	 * @return array
+	 */
+	public function delete_notes($ponbr, $linenbr) {
+		$q = $this->get_query();
+		$q->filterByPonbr($ponbr);
+		$q->filterByLine($linenbr);
+
+		if ($q->count()) {
+			return $q->delete();
+		}
+		return true;
+	}
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Takes Input, Processes it, updates Purchase Order Notes in the Database
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$lookup_orders = $this->wire('modules')->get('LookupSalesOrder');
+		$ponbr = $input->$rm->text('ponbr');
+
+		if ($lookup_orders->lookup_saleshistory($ponbr)) {
+			$this->wire('modules')->get('QnotesSalesHistory')->process_input($input);
+		} else {
+			switch ($input->$rm->text('action')) {
+				case 'update-notes':
+					$this->update_notes_input($input);
+					break;
+				case 'delete-notes':
+					$this->delete_notes_input($input);
+					break;
+			}
+		}
+	}
+
+	/**
+	 * Takes Input, Processes it, deletes Purchase Order Notes
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function delete_notes_input($input) {
+		$rm = strtolower($input->requestMethod());
+		$ponbr  = $input->$rm->text('ponbr');
+		$linenbr = $input->$rm->text('linenbr');
+		$q = $this->get_query();
+		$q->filterByPonbr($ponbr);
+		$q->filterByLine($linenbr);
+
+		if ($q->count()) {
+			$note = $q->findOne();
+		} else {
+			$note = new PurchaseOrderNote();
+			$note->setPonbr($ponbr);
+			$note->setLine($linenbr);
+			$note->setForm($form);
+		}
+		$success = $this->delete_notes($ponbr, $linenbr);
+
+		$this->wire('session')->response_qnote = $this->process_response_delete($note, $ponbr, $success);
+	}
+
+	/**
+	 * Takes Input, Processes it, updates Purchase Order Notes
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function update_notes_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$ponbr   = $values->text('ponbr');
+		$linenbr = $values->text('linenbr');
+		$form    = $values->text('form');
+		$note_lines = $this->wire('modules')->get('Qnote')->note_lines($values->textarea('note'), $this->get_column_count());
+		$lines_saved = array();
+
+		$this->delete_notes($ponbr, $linenbr);
+
+		foreach ($note_lines as $key => $line) {
+			$sequence = $key + 1;
+			$record = new PurchaseOrderNote();
+			$record->setType(PurchaseOrderNote::TYPE); // PK
+			$record->setDescription(PurchaseOrderNote::DESCRIPTION);
+			$record->setPonbr($ponbr);
+			$record->setLine($linenbr);
+			$record->generateKey2(); // PK
+			$record->setSequence($sequence); // PK
+			$record->setForm($form);
+			$record->setNote($line);
+
+			$record->setPickticket($input->$rm->text('check_pick') == PurchaseOrderNote::FORM_TRUE ? 'Y' : 'N');
+			$record->setPackticket($input->$rm->text('check_pack') == PurchaseOrderNote::FORM_TRUE ? 'Y' : 'N');
+			$record->setInvoice($input->$rm->text('check_invoice') == PurchaseOrderNote::FORM_TRUE ? 'Y' : 'N');
+			$record->setAcknowledgement($input->$rm->text('check_acknowledgement') == PurchaseOrderNote::FORM_TRUE ? 'Y' : 'N');
+
+			$record->setDate(date('Ymd'));
+			$record->setTime(date('His'));
+			$record->setDummy('P');
+			$lines_saved[$sequence] = $record->save();
+		}
+		$this->wire('session')->response_qnote = $this->process_responses($record, $ponbr, $lines_saved);
+	}
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
+	/**
+	 * Return Code Table Response based on the number of lines that were written to the database
+	 * @param  string $ponbr         Purchase Order Number
+	 * @param  array  $lines_saved  array of line numbers and if they got saved e.g. (1 => true, 2 => false)
+	 * @return CodeTableResponse
+	 */
+	protected function process_responses(PurchaseOrderNote $note, $ponbr, array $lines_saved) {
+		$message = self::DESCRIPTION_RESPONSE . " ($ponbr) Note Lines";
+
+		$response = new QnotesResponse();
+		$response->set_key("$ponbr-{$note->line}-{$note->form}");
+
+		if (in_array(false, $lines_saved)) {
+			$lines_error =
+			array_filter($lines_saved, function($value, $key) {
+				return  $value == false;
+			}, ARRAY_FILTER_USE_BOTH);
+			$message .= implode(", ", array_keys($lines_error));
+			$message .= " were not able to be saved";
+
+			if (sizeof($lines_error)) {
+				$response->set_error(true);
+			}
+		} else {
+			$response->set_success(true);
+			$message .= " were able to be saved";
+		}
+
+		$response->set_action(QnotesResponse::CRUD_UPDATE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if (sizeof($lines_saved)) {
+			$this->wire('modules')->get('Qnotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+		}
+		return $response;
+	}
+
+	/**
+	 * Return QnoteResponse based if Notes were able to be Deleted
+	 * @param  PurchaseOrderNote   $note         Attributes are needed to generate key
+	 * @param  string            $ponbr         Purchase Order Number
+	 * @param  array             $success      Were Notes able to be deleted?
+	 * @return QnoteResponse
+	 */
+	public function process_response_delete(PurchaseOrderNote $note, $ponbr, bool $success) {
+		$message = self::DESCRIPTION_RESPONSE . " ($ponbr) Notes ";
+
+		$response = new QnotesResponse();
+		$response->set_key("$ponbr-{$note->line}-{$note->form}");
+
+		if ($success) {
+			$response->set_success(true);
+			$message .= " were able to be deleted";
+		} else {
+			$response->set_success(true);
+			$message .= " were not able to be deleted";
+		}
+
+		$response->set_action(QnotesResponse::CRUD_DELETE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if ($success) {
+			$this->wire('modules')->get('Qnotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+		}
+		return $response;
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return Default forms
+	 * @return array
+	 */
+	public function get_default_forms() {
+		$config_so = ConfigSalesOrderQuery::create()->findOne();
+		$defaults = array(
+			'pick' => $config_so->note_default_pick,
+			'pack' => $config_so->note_default_pack,
+			'invoice' => $config_so->note_default_invoice,
+			'acknowledgement' => $config_so->note_default_acknowledgement,
+		);
+		return $defaults;
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Qnotes Purchase Order',
+			'version' => 101,
+			'summary' => 'Qnotes Purchase Order methods',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('Qnotes')
+		);
+	}
+}

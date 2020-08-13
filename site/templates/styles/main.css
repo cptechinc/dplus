@@ -13,6 +13,14 @@ footer {
 	padding-top: 15px;
 }
 
+.smaller {
+	font-size: 70%;
+}
+
+table.table-md td, table.table-md th {
+	padding: .5rem;
+}
+
 /**************************************
 	Bootstrap Styles
 **************************************/
@@ -141,6 +149,9 @@ a.image-link:hover {
 	border-color: #8ba2b0;
 }
 
+.toolbar-sidebar .nav li {
+	width: 100%;
+}
 
 /************************************** Navbar **************************************/
 #yt-menu {

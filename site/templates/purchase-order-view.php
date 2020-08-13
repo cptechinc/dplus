@@ -1,7 +1,8 @@
 <?php
-	// TODO : INVOICED
+	$config->so = ConfigSalesOrderQuery::create()->findOne();
+	$config->po = ConfigPoQuery::create()->findOne();
 	$modules->get('DpagesMpo')->init_purchaseorder_hooks();
-	$document_management = $modules->get('DocumentManagement');
+	$docm = $modules->get('DocumentManagementPo');
 
 	if ($input->get->ponbr) {
 		$ponbr = PurchaseOrder::get_paddedponumber($input->get->text('ponbr'));
@@ -10,12 +11,13 @@
 		if ($query->count()) {
 			$page->title = "Purchase Order #$ponbr";
 			$purchaseorder = $query->findOne();
-			$documents = $document_management->get_purchaseorderdocuments($ponbr);
+			$documents = $docm->get_documents_po($ponbr);
+			$qnotes = $modules->get('QnotesPo');
 
 			$page->body .= $config->twig->render('purchase-orders/purchase-order/links-header.twig', ['page' => $page, 'purchaseorder' => $purchaseorder]);
-			$page->body .= $config->twig->render('purchase-orders/purchase-order/purchase-order.twig', ['page' => $page, 'purchaseorder' => $purchaseorder]);
+			$page->body .= $config->twig->render('purchase-orders/purchase-order/purchase-order.twig', ['page' => $page, 'config' => $config, 'user' => $user, 'purchaseorder' => $purchaseorder]);
 			$page->body .= $config->twig->render('purchase-orders/purchase-order/documents.twig', ['page' => $page, 'ponbr' => $ponbr, 'documents' => $documents]);
-			$page->body .= $config->twig->render('purchase-orders/purchase-order/qnotes.twig', ['page' => $page, 'ponbr' => $ponbr, 'notes' => $purchaseorder->get_notes()]);
+			$page->body .= $config->twig->render('purchase-orders/purchase-order/qnotes.twig', ['page' => $page, 'ponbr' => $ponbr, 'qnotes' => $qnotes]);
 			$page->body .= $config->twig->render('purchase-orders/purchase-order/invoices.twig', ['page' => $page, 'purchaseorder' => $purchaseorder]);
 		} else {
 			$page->headline = $page->title = "Purchase Order #$ponbr could not be found";
@@ -28,15 +30,14 @@
 		if ($query->count()) {
 			$page->title = "AP Invoice #$invnbr";
 			$invoice = $query->findOne();
-			$documents = $document_management->get_purchasehistorydocuments($invnbr);
-			$page->body .= $config->twig->render('purchase-orders/invoices/invoice/links-header.twig', ['page' => $page, 'invoice' => $invoice, 'document_management' => $document_management]);
-			$page->body .= $config->twig->render('purchase-orders/invoices/invoice/invoice.twig', ['page' => $page, 'invoice' => $invoice]);
+			$documents = $docm->get_documents_invoice($invnbr);
+			$page->body .= $config->twig->render('purchase-orders/invoices/invoice/links-header.twig', ['page' => $page, 'invoice' => $invoice, 'docm' => $docm]);
+			$page->body .= $config->twig->render('purchase-orders/invoices/invoice/invoice.twig', ['page' => $page, 'config' => $config, 'invoice' => $invoice]);
 			$page->body .= $config->twig->render('purchase-orders/invoices/invoice/documents.twig', ['page' => $page, 'invnbr' => $invnbr, 'documents' => $documents]);
 		} else {
 			$page->headline = $page->title = "AP Invoice #$invnbr could not be found";
 			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Check if the AP Invoice Number is correct"]);
 		}
-
 	} else {
 		$page->title = 'Enter a Purchase Order Number';
 		$page->body = $config->twig->render('purchase-orders/purchase-order/lookup-form.twig', ['page' => $page]);

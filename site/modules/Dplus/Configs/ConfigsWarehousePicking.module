@@ -22,12 +22,19 @@ class ConfigsWarehousePicking extends Process implements ConfigurableModule {
 			'label'       => 'Use Qty unit of 1',
 			'description' => 'Use Qty unit of 1',
 			'notes'       => 'Disables use of scanning barcodes with different unit quantities'
-		)
+		),
+		'verify_whseitempicks' => array(
+			'type'        => 'checkbox',  // TRUE OR FALSE
+			'label'       => 'Verify Picked Items?',
+			'description' => 'Verify Picked Items',
+			'notes'       => 'Enables Lot Reference / Expire / Production date changes'
+		),
 	);
 
 	const DEFAULT_CONFIG = array(
 		'picking_method'    => 'unguided',
-		'use_singleunitqty' => true
+		'use_singleunitqty' => true,
+		'verify_whseitempicks' => false,
 	);
 
 	/**
@@ -64,6 +71,15 @@ class ConfigsWarehousePicking extends Process implements ConfigurableModule {
 		$f = $modules->get('InputfieldCheckbox');
 		$f->attr('name', 'use_singleunitqty');
 		$f->attr('checked', $data['use_singleunitqty'] ? 'checked' : '' );
+		$f->label = __($traits['label']);
+		$f->description = __($traits['description']);
+		$f->notes = _($traits['notes']);
+		$fields->add($f);
+
+		$traits = self::CONFIG_FIELDS['verify_whseitempicks'];
+		$f = $modules->get('InputfieldCheckbox');
+		$f->attr('name', 'verify_whseitempicks');
+		$f->attr('checked', $data['verify_whseitempicks'] ? 'checked' : '' );
 		$f->label = __($traits['label']);
 		$f->description = __($traits['description']);
 		$f->notes = _($traits['notes']);

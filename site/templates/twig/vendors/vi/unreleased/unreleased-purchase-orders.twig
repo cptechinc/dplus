@@ -43,7 +43,7 @@
 								{% if column['id'] == 'Purchase Order Number' %}
 									{% set ponbr = order['Purchase Order Number'] %}
 									{% set vendorID = json['vendid'] %}
-									{% if document_management.count_purchaseorderdocuments(ponbr) %}
+									{% if docm.count_documents_po(ponbr) %}
 										<a href="{{ page.documentsview_po(vendorID, ponbr) }}" class="text-success" title="View Documents for PO # {{ ponbr }}">
 											<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for PO # {{ ponbr }}</span>
 										</a>

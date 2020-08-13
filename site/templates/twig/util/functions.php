@@ -41,7 +41,6 @@
 
 	$filter = new Twig_Filter('attrJS', function ($string, $jsprepend = true) {
 		$string = str_replace(' ', '-', $string);
-		$string = preg_replace("/[^A-Za-z0-9- ]/", 'sym', $string);
 		return $jsprepend ? "js-$string" : $string;
 	});
 	$config->twig->addFilter($filter);
@@ -103,12 +102,30 @@
 	$config->twig->addFilter($filter);
 
 	$filter = new Twig_Filter('urlencode', function ($string) {
-		$newstring = str_replace(' ', '-', $string);
-		return urlencode($newstring);
+		return urlencode($string);
 	});
 	$config->twig->addFilter($filter);
 
 	$filter = new Twig_Filter('dynamicproperty', function ($object, $property) {
 		return $object->$property;
+	});
+	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('objproperty', function ($object, $property) {
+		return $object->$property;
+	});
+	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('stripslashes', function ($str) {
+		return stripslashes($str);
+	});
+	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('htmlattributes', function ($array) {
+		$attr = '';
+		foreach ($array as $key => $value) {
+			$attr .= " $key=$value";
+		}
+		return $attr;
 	});
 	$config->twig->addFilter($filter);

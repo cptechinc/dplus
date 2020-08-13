@@ -22,9 +22,9 @@
 					<small>{{ item.description }}</small>
 				</div>
 				<div class="col">{{ item.vendoritemid }}</div>
-				<div class="col text-right">{{ item.qty_ordered|number_format() }}</div>
-				<div class="col text-right">{{ item.count_receivedlots()|number_format() }}</div>
-				<div class="col text-right">{{ item.qty_ordered|number_format() - item.count_receivedlots()|number_format() }}</div>
+				<div class="col text-right">{{ item.qty_ordered|number_format(m_receiving.decimal_places()) }}</div>
+				<div class="col text-right">{{ item.count_receivedlots()|number_format(m_receiving.decimal_places()) }}</div>
+				<div class="col text-right">{{ item.qty_ordered|number_format(m_receiving.decimal_places()) - item.count_receivedlots()|number_format(m_receiving.decimal_places()) }}</div>
 			</div>
 		</div>
 		<div class="collapse" id="{{ (item.linenbr ~ '-lotserial')|attrJS }}">
@@ -45,7 +45,7 @@
 							<div class="col">{{ lot.lotserial }}</div>
 							<div class="col">{{ lot.lotreference }}</div>
 							<div class="col">{{ lot.date_production|convertdate }}</div>
-							<div class="col">{{ lot.qty_received }}</div>
+							<div class="col">{{ lot.qty_received|number_format(m_receiving.decimal_places()) }}</div>
 							<div class="col text-right">{{ lot.bin }}</div>
 							<div class="col">
 								<a href="{{ page.delete_received_itemURL(lot.ponbr, lot.linenbr, lot.sequence) }}" class="btn btn-danger"> Remove</a>

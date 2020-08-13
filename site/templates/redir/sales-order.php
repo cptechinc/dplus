@@ -79,12 +79,6 @@
 	**/
 
 	switch ($action) {
-		case 'get-order-edit':
-			$ordn = $input->get->text('ordn');
-			$custID = SalesOrderQuery::create()->get_custid($ordn);
-			$data = array("DBNAME=$dplusdb", "ORDRDET=$ordn", "CUSTID=$custID", "LOCK");
-			$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
-			break;
 		case 'edit-new-order':
 			$ordn = $user->get_lockedID();
 			$custID = SalesOrderQuery::create()->get_custid($ordn);
@@ -123,19 +117,6 @@
 			} else {
 				$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
 			}
-			break;
-		case 'quick-update-line':
-			$ordn = $input->$requestmethod->text('ordn');
-			$linenbr = $input->$requestmethod->int('linenbr');
-			$qty = $input->$requestmethod->int('qty');
-			$price = $input->$requestmethod->float('price');
-			$custID = SalesOrderQuery::create()->get_custid($ordn);
-			$editline = OrdrdetQuery::create()->findOneBySessionidOrder(session_id(), $ordn, $linenbr);
-			$editline->setQty($qty);
-			$editline->setPrice($price);
-			$editline->save();
-			$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "CUSTID=$custID");
-			$session->loc = $pages->get('pw_template=sales-order-edit')->url."?ordn=$ordn";
 			break;
 		case 'add-item':
 			$ordn   = $input->$requestmethod->text('ordn');

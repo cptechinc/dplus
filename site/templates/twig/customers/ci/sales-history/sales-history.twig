@@ -35,7 +35,7 @@
 										{% if column['id'] == 'Invoice Number' %}
 											{% set ordn = invoice['Ordn'] %}
 											{% set custID = json['custid'] %}
-											{% if document_management.count_saleshistorydocuments(ordn) %}
+											{% if docm.count_documents(ordn) %}
 												<a href="{{ page.documentsview_salesorder(custID, ordn)}}" class="text-success" title="View Documents for Invoice # {{ invoice['Invoice Number'] }}">
 													<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Invoice # {{ invoice['Invoice Number'] }}</span>
 												</a>

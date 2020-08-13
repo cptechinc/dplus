@@ -27,7 +27,7 @@ $(function() {
 
 		if (qty < 1) {
 			e.preventDefault();
-			swal({
+			swal2.fire({
 				type: 'error',
 				title: title,
 				text: 'The system does not see any quantity at this location'
@@ -105,8 +105,8 @@ $(function() {
 			}
 
 			if (valid_form.error) {
-				swal({
-					type: 'error',
+				swal2.fire({
+					icon: 'error',
 					title: valid_form.title,
 					text: valid_form.msg,
 					html: valid_form.html
@@ -128,7 +128,7 @@ $(function() {
 		var lowercase_frombin = input_frombin.val();
 		input_frombin.val(lowercase_frombin.toUpperCase());
 
-		if (input_frombin.val() == '') {
+		if (input_frombin.val() == '' && validfrombins[input_frombin.val()] === undefined) {
 			error = true;
 			title = 'Error';
 			msg = 'Please Fill in the From Bin';

@@ -1,6 +1,7 @@
 <?php namespace ProcessWire;
 
 use CustomerQuery, Customer;
+use ConfigCiQuery, ConfigCi;
 
 use Propel\Runtime\ActiveQuery\Criteria;
 
@@ -25,6 +26,16 @@ class FilterCustomers extends WireData implements Module {
 
 		if ($user->is_salesrep()) {
 			$this->query->filterByCustid($user->get_customers(), Criteria::IN);
+		}
+
+		$this->filter_active();
+	}
+
+	public function filter_active() {
+		$config = ConfigCiQuery::create()->findOne();
+
+		if ($config->show_inactive != ConfigCi::BOOL_TRUE) {
+			$this->query->filterByActive(Customer::STATUS_ACTIVE);
 		}
 	}
 

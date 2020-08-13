@@ -1,3 +1,10 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	warehouse              Warehouse
+	config                 ConfigsBinr / ConfigsWarehouseInventory
+	currentbins            Bininfo
+#}
 <div class="modal fade" id="bins-modal" tabindex="-1" role="dialog" aria-labelledby="bins-modal-label" aria-hidden="true" data-input="">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -20,7 +27,7 @@
 									</div>
 									<div class="col-6">
 										{% if (bin.from in currentbins.toArray('binfrom')|keys)	%}
-											<h5 class="list-group-item-heading">Qty {{ inventory.get_binqty(session.get('sessionid'), item, bin.from) }}</h5>
+											<h5 class="list-group-item-heading">Qty {{ inventory.get_binqty(session.get('sessionid'), item, bin.from)|number_format(config.decimal_places()) }}</h5>
 										{% endif %}
 									</div>
 								</div>

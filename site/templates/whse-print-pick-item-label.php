@@ -1,7 +1,7 @@
 <?php
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
-	$http = new ProcessWire\WireHttp();
+	$m_print = $modules->get('PrintLabelItem');
 
 	$pickingsession = $modules->get('DplusoWarehousePicking');
 	$pickingsession->set_sessionID(session_id());
@@ -45,9 +45,6 @@
 
 				if ($exists) {
 					$nbr_labels = $input->get->labels ? $input->get->int('labels') : 1;
-					$thermal_labels = ThermalLabelFormatQuery::create();
-					$whse_printers = WhsePrinterQuery::create();
-
 					$modules->get('DplusRequest')->self_request($page->print_labelredirURL($ordn, $itemID));
 
 					if (LabelPrintSessionQuery::create()->filterBySessionid(session_id())->count()) {
@@ -61,9 +58,9 @@
 
 					$qty = $itemID == 'ALL' ? 0 : $pickingsession->get_userpickedtotal();
 					$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;
-					$page->body = $config->twig->render('warehouse/inventory/print-pick-item-label/label-form.twig', ['page' => $page, 'labelsession' => $labelsession, 'thermal_labels' => $thermal_labels, 'printers' => $whse_printers, 'ordn' => $ordn, 'qty' => $qty]);
-					$page->body .= $config->twig->render('warehouse/inventory/print-item-label/labels-modal.twig', ['formats' => $thermal_labels->get_formats(), 'item' => $item]);
-					$page->body .= $config->twig->render('warehouse/inventory/print-item-label/printers-modal.twig', ['printers' => $whse_printers->find()]);
+					$page->body = $config->twig->render('warehouse/inventory/print-pick-item-label/label-form.twig', ['page' => $page, 'labelsession' => $labelsession, 'm_print' => $m_print, = 'ordn' => $ordn, 'qty' => $qty]);
+					$page->body .= $config->twig->render('warehouse/inventory/print-item-label/labels-modal.twig', ['formats' => $m_print->get_labelformats()]);
+					$page->body .= $config->twig->render('warehouse/inventory/print-item-label/printers-modal.twig', ['printers' => $m_print->get_printers()]);
 				} else {
 					$page->headline = "Sales Order #$ordn Line $linenbr could not be found";
 					$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Check if the Order Number / Line Number is correct"]);

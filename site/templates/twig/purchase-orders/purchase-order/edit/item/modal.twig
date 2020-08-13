@@ -1,0 +1,15 @@
+<div class="modal fade show" id="edit-item-modal" tabindex="-1" role="dialog" aria-labelledby="edit-item-modal-label" aria-hidden="true" data-input="">
+	<div class="modal-dialog modal-xl" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="edit-item-modal-label">Editing Line #<span class="linenbr"></span></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				{% include 'purchase-orders/purchase-order/edit/item/form.twig' %}
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,3 +1,13 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	config                 module ConfigsWarehouseInventory
+	resultscount           number of items returned
+	items                  Invsearch[]|ObjectCollection
+	warehouse              Warehouse
+	inventory              InvsearchQuery
+#}
 {% if not page.is_print() %}
 	<div class="form-group">
 		<a href="{{ page.url }}" class="btn btn-primary not-round">
@@ -14,8 +24,8 @@
 <div class="row">
 	<div class="col-sm-10">
 		<div class="list-group">
-			{% if (resultscount) %}
-				{% for item in items %}
+			{% if (inventory.count_itemids_distinct()) %}
+				{% for item in inventory.get_items_distinct() %}
 					<div class="list-group-item border border-dark border-bottom">
 						<h4 class="list-group-item-heading">ITEMID: {{ item.itemid }}</h4>
 						<p class="list-group-item-text">
@@ -25,11 +35,15 @@
 						{% if (item.is_serialized() or item.is_lotted()) %}
 							{% include 'warehouse/inventory/find-item/item-breakdown-by-' ~ config.show_inventoryresults ~ '.twig' %}
 						{% else %}
-							<p class="list-group-item-text bg-light">
-								<strong>Bin:</strong> {{ item.bin }} <strong>Qty:</strong> {{ item.qty }}
-							</p>
-							{% if (not warehouse.validate_bin(item.bin)) %}
-								<span class="badge badge-danger pull-right">Invalid Bin</span>
+							{% if inventory.count_item_bins(item) > 1 %}
+								{% include 'warehouse/inventory/find-item/item-breakdown-by-item-bin.twig' %}
+							{% else %}
+								<p class="list-group-item-text bg-light">
+									<strong>Bin:</strong> {{ item.bin }} <strong>Qty:</strong> {{ item.qty|number_format(config.decimal_places()) }}
+								</p>
+								{% if (not warehouse.validate_bin(item.bin)) %}
+									<span class="badge badge-danger pull-right">Invalid Bin</span>
+								{% endif %}
 							{% endif %}
 						{% endif %}
 					</div>

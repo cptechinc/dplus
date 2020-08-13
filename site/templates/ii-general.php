@@ -19,7 +19,7 @@
 
 			$session->generaltry = 0;
 			$refreshurl = $page->get_itemgeneralURL($itemID);
-			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), 'ii-misc'), 'refreshurl' => $refreshurl]);
+			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), 'ii-usage'), 'refreshurl' => $refreshurl]);
 			$page->body .= $html->div('class=row mb-3|id=general-nav',
 				$html->div('class=col',
 					$html->a('href=#usage|class=btn btn-secondary', 'Usage') . '&nbsp' .
@@ -65,7 +65,7 @@
 					$page->body .= $config->twig->render('items/ii/general/notes.twig', ['page' => $page, 'json' => $json_notes, 'module_json' => $module_json]);
 				}
 			} else {
-				$page->body .= $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => 'II Notes could not be loaded']);
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'II Notes could not be loaded']);
 			}
 
 			$page->body .= $returntop;
@@ -85,7 +85,7 @@
 					$page->body .= $config->twig->render('items/ii/general/misc.twig', ['page' => $page, 'json' => $json_misc, 'module_json' => $module_json]);
 				}
 			} else {
-				$page->body .= $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => 'II Misc could not be loaded']);
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'II Misc could not be loaded']);
 			}
 			$page->body .= $returntop;
 

@@ -2,9 +2,12 @@
 	$module_dashboard = $modules->get('Dashboard');
 
 	$params_useractions['module_useractions'] = $modules->get('FilterUserActions');
-	$params_useractions['user']  = $user;
-	$params_useractions['input'] = $input;
-	$page->body .= $config->twig->render("dashboard/components/user-actions.twig", $params_useractions);
+
+	if ($params_useractions['module_useractions']->data['use_useractions']) {
+		$params_useractions['user']  = $user;
+		$params_useractions['input'] = $input;
+		$page->body .= $config->twig->render("dashboard/components/user-actions.twig", $params_useractions);
+	}
 
 	$filter_bookings = $modules->get('FilterBookings');
 

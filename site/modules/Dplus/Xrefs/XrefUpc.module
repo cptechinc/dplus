@@ -107,6 +107,19 @@ class XrefUpc extends WireData implements Module {
 	}
 
 	/**
+	 * Returns if UPC Code Matches ItemID
+	 * @param  string $upc    UPC Code
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function upc_isfor_itemID($upc, $itemID) {
+		$q = $this->get_query();
+		$q->filterByUpc($upc);
+		$q->filterByItemid($itemID);
+		return boolval($q->count());
+	}
+
+	/**
 	 * Return if Primary UPC for itemID exists
 	 * @param  string $itemID Item ID
 	 * @return bool

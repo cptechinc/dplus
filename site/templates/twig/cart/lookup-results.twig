@@ -1,16 +1,26 @@
-<div class="pt-3">
-	<h4>Showing Results for <mark>{{ q }}</mark></h4>
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	q                      Search Query String
+	results                Pricing[]|ObjectCollection
+	soconfig               ConfigSalesOrder
+#}
+<div class="pt-3 mb-4">
+	<h4>Showing Results for <span class="highlight">{{ q }}</span></h4>
 	<div class="list-group">
 		<div class="list-group-item bg-dark text-white font-weight-bold">
 			<div class="row">
 				<div class="col-sm-6">
 					Item ID / Description
 				</div>
-				<div class="col-sm-3">
+				<div class="col-sm-2">
 					Unit of Measure
 				</div>
-				<div class="col-sm-3">
+				<div class="col-sm-2">
 					Price
+				</div>
+				<div class="col-sm-2">
+					Qty
 				</div>
 			</div>
 		</div>
@@ -19,13 +29,16 @@
 				<div class="row">
 					<div class="col-sm-6">
 						{{ item.itemid }} <br>
-						<small>{{ item.name1 }}</small>
+						<small>{{ item.name1|raw }}</small>
 					</div>
-					<div class="col-sm-3">
+					<div class="col-sm-2">
 						{{ item.unitofmeasure }}
 					</div>
-					<div class="col-sm-3">
-						{{ item.price|currency }}
+					<div class="col-sm-2">
+						$ {{ item.price|number_format(soconfig.decimal_places_price) }}
+					</div>
+					<div class="col-sm-2">
+						{{ item.qty|number_format(soconfig.decimal_places_qty) }}
 					</div>
 				</div>
 			</a>

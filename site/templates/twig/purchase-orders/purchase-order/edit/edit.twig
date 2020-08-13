@@ -1,0 +1,12 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	po                     EditPoHead
+	epo                    PurchaseOrderEdit
+#}
+{% include 'purchase-orders/purchase-order/edit/header.twig' %}
+
+<h3 class="font-weight-bold text-secondary">Items</h3>
+{% include 'purchase-orders/purchase-order/edit/items.twig' %}
+{% include 'purchase-orders/purchase-order/edit/item/modal.twig' %}

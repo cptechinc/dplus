@@ -1,7 +1,16 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	config                 module ConfigsWarehouseInventory
+	item                   Invsearch
+	warehouse              Warehouse
+	inventory              module SearchInventory
+#}
 <div class="d-flex justify-content-between p-2 mb-1">
 	<strong>Bin:</strong> (MULTIPLE)
-	<strong>Boxes:</strong> {{ inventory.count_lotserials_itemid(item.sessionid, item.itemid) }}
-	<strong>Qty:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid) }}
+	<strong>Boxes:</strong> {{ inventory.count_lotserials_itemid(item.itemid) }}
+	<strong>Qty:</strong> {{ inventory.get_qty_itemid(item.itemid)|number_format(config.decimal_places()) }}
 	{% if (not page.is_print()) %}
 	<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ item.itemid|attrJS }}-lotserial" aria-expanded="false" aria-controls="{{ item.itemid }}-lotserial">
 		Show / Hide {{ item.get_itemtypepropertydesc()|upper ~ "S" }}
@@ -11,7 +20,7 @@
 
 <div class="collapse-lotserial {{ not page.is_print() ? 'collapse' : '' }}" id="{{ item.itemid|attrJS  }}-lotserial">
 	<div class="list-group list-group-flush">
-		{% for lotserial in inventory.get_lotserials_itemid(item.sessionid, item.itemid) %}
+		{% for lotserial in inventory.get_lotserials_itemid(item.itemid) %}
 			<div class="list-group-item bg-light p-1">
 				<div class="row">
 					<div class="col">
@@ -24,7 +33,7 @@
 						<strong>Lot Ref:</strong> {{ lotserial.lotreference }}
 					</div>
 					<div class="col">
-						<strong>Qty:</strong> {{ lotserial.qty }}
+						<strong>Qty:</strong> {{ lotserial.qty|number_format(config.decimal_places()) }}
 					</div>
 					<div class="col">
 						{% if (not warehouse.validate_bin(lotserial.bin)) %}

@@ -252,6 +252,17 @@ class DpagesMii extends Dpages implements Module {
 			'has_print'      => true,
 			'jsoncode'       => 'ii-lotserial'
 		),
+		'ii-general' => array(
+			'template'       => 'ii-function',
+			'name'           => 'general',
+			'title'          => 'General',
+			'summary'        => 'View Item General Info',
+			'parent'         => '/mii/ii/',
+			'dplus_function' => 'ii-gen',
+			'pw_template'    => 'ii-general',
+			'has_print'      => true,
+			'jsoncode'       => ''
+		),
 		'ii-substitutes' => array(
 			'template'       => 'ii-function',
 			'name'           => 'substitutes',

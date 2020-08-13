@@ -1,5 +1,5 @@
 <?php
-	$config_salesorders = $modules->get('ConfigsSalesOrders');
+	$config->so = ConfigSalesOrderQuery::create()->findOne();
 	$modules->get('DpagesMso')->init_salesorder_hooks();
 	$html = $modules->get('HtmlWriter');
 	$lookup_orders = $modules->get('LookupSalesOrder');
@@ -14,7 +14,7 @@
 
 			$page->title = "Sales Order #$ordn";
 
-			$document_management = $modules->get('DocumentManagement');
+			$docm = $modules->get('DocumentManagementSo');
 			$module_useractions = $modules->get('FilterUserActions');
 			$lookup_orders = $modules->get('LookupSalesOrder');
 
@@ -22,21 +22,21 @@
 				$type = 'order';
 				$order = SalesOrderQuery::create()->findOneByOrdernumber($ordn);
 				$page->listpage = $pages->get('pw_template=sales-orders');
-				$documents = $document_management->get_salesorderdocuments($ordn);
+				$documents = $docm->get_documents($ordn);
 				$module_qnotes = $modules->get('QnotesSalesOrder');
 			} elseif ($lookup_orders->lookup_saleshistory($ordn)) {
 				$type = 'history';
 				$order = SalesHistoryQuery::create()->findOneByOrdernumber($ordn);
 				$page->listpage = $pages->get('pw_template=sales-history-orders');
-				$documents = $document_management->get_saleshistorydocuments($ordn);
+				$documents = $docm->get_documents($ordn);
 				$module_qnotes = $modules->get('QnotesSalesHistory');
 			}
 
 			$query_useractions = $module_useractions->get_actionsquery($input);
 			$actions = $query_useractions->filterBySalesorderlink($ordn)->find();
-			$page->body =  $config->twig->render("sales-orders/sales-$type/sales-$type-page.twig", ['page' => $page, 'order' => $order, 'user' => $user, 'document_management' => $document_management, 'company' => $config->company, 'loader' => $config->twig->getLoader()]);
+			$page->body =  $config->twig->render("sales-orders/sales-$type/sales-$type-page.twig", ['page' => $page, 'config' => $config->so, 'order' => $order, 'user' => $user, 'docm' => $docm, 'company' => $config->company, 'loader' => $config->twig->getLoader()]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-tracking.twig', ['page' => $page, 'order' => $order, 'urlmaker' => $modules->get('DplusURLs')]);
-			$page->body .= $config->twig->render('sales-orders/sales-order/documents.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management, 'ordn' => $ordn]);
+			$page->body .= $config->twig->render('sales-orders/sales-order/documents.twig', ['page' => $page, 'documents' => $documents, 'docm' => $docm, 'ordn' => $ordn]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/qnotes.twig', ['page' => $page, 'qnotes_so' => $module_qnotes, 'ordn' => $ordn]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/user-actions.twig', ['page' => $page, 'module_useractions' => $module_useractions, 'actions' => $actions, 'ordn' => $ordn]);
 
@@ -45,7 +45,7 @@
 			}
 		} else {
 			$page->headline = $page->title = "Sales Order #$ordn could not be found";
-			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Check if the Order Number is correct or if it is in Sales History"]);
+			$page->body = $config->twig->render('util/error-page.twig', ['title' => "Order # $ordn not found", 'msg' => "Check if the Order Number is correct or if it is in Sales History"]);
 		}
 	} else {
 		$page->body = $config->twig->render('sales-orders/sales-order/lookup-form.twig', ['page' => $page]);

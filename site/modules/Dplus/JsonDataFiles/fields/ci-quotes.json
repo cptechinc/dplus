@@ -273,7 +273,7 @@
             "datajustify": "l"
         },
         "1 - Quantity": {
-            "type": "I",
+            "type": "N",
             "headingjustify": "r",
             "datajustify": "r"
         },
@@ -308,7 +308,7 @@
             "datajustify": "l"
         },
         "2 - Quantity": {
-            "type": "I",
+            "type": "N",
             "headingjustify": "r",
             "datajustify": "r"
         },
@@ -343,7 +343,7 @@
             "datajustify": "l"
         },
         "3 - Quantity": {
-            "type": "I",
+            "type": "N",
             "headingjustify": "r",
             "datajustify": "r"
         },
@@ -378,7 +378,7 @@
             "datajustify": "l"
         },
         "4 - Quantity": {
-            "type": "I",
+            "type": "N",
             "headingjustify": "r",
             "datajustify": "r"
         },
@@ -413,7 +413,7 @@
             "datajustify": "l"
         },
         "5 - Quantity": {
-            "type": "I",
+            "type": "N",
             "headingjustify": "r",
             "datajustify": "r"
         },
@@ -448,7 +448,7 @@
             "datajustify": "l"
         },
         "6 - Quantity": {
-            "type": "I",
+            "type": "N",
             "headingjustify": "r",
             "datajustify": "r"
         },
@@ -483,7 +483,7 @@
             "datajustify": "l"
         },
         "Order Quantity": {
-            "type": "I",
+            "type": "N",
             "headingjustify": "r",
             "datajustify": "r"
         },

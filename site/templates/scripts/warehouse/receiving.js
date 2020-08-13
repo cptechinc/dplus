@@ -1,6 +1,7 @@
 $(function() {
 	var form_receive = $('#po-item-receive-form');
 	var input_qty    = form_receive.find('input[name=qty]');
+	var input_itemID    = form_receive.find('input[name=itemID]');
 	var input_lotref = form_receive.find('input[name=lotserialref]');
 
 	var form_itemsearch = $('#item-search-form');
@@ -34,19 +35,19 @@ $(function() {
 			}
 
 			if (valid_form.error) {
-				swal({
-					type: 'error',
+				swal2.fire({
+					icon: 'error',
 					title: valid_form.title,
 					text: valid_form.msg,
 					html: valid_form.html
-				}).catch(swal.noop);
+				});
 			} else if (valid_qty_exceeds.error) {
-				swal({
-					type: 'warning',
+				swal2.fire({
+					icon: 'warning',
 					title: valid_qty_exceeds.title,
 					text: valid_qty_exceeds.msg,
 					html: valid_qty_exceeds.html
-				}).catch(swal.noop);
+				});
 			} else {
 				form.submit();
 			}
@@ -63,7 +64,12 @@ $(function() {
 		},
 		submitHandler : function(form) {
 			var valid_form = new SwalError(false, '', '', false);
-			var valid_bin  = validate_bin(form_itemsearch);
+
+			if (form_itemsearch.data('forcebin') == true) {
+				var valid_bin  = validate_bin(form_itemsearch);
+			} else {
+				var valid_bin = valid_form;
+			}
 
 			if (valid_bin.error) {
 				valid_form = valid_bin;
@@ -75,7 +81,7 @@ $(function() {
 					title: valid_form.title,
 					text: valid_form.msg,
 					html: valid_form.html
-				}).catch(swal.noop);
+				});
 			} else {
 				form.submit();
 			}
@@ -102,8 +108,9 @@ $(function() {
 		var title = '';
 		var msg = '';
 		var html = false;
+		var itemID = input_itemID.val();
 
-		if (input_lotref.val() == '') {
+		if (input_lotref.val() == '' && items[itemID]['type'] != 'N' && items.length) {
 			error = true;
 			title = 'Error';
 			msg   = 'Please enter a Lot Serial Reference';

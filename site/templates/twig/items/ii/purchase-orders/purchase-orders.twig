@@ -48,7 +48,7 @@
 										{{ module_formatter.format_celldata(order, column) }} &nbsp;
 
 										{% if order['Order Number'] and column['id'] == 'Order Number' %}
-											{% if document_management.count_purchaseorderdocuments(order['Order Number']) %}
+											{% if docm.count_documents_po(order['Order Number']) %}
 												<a href="{{ page.documentsview_purchaseorder(itemID, order['Order Number'])}}" class="text-success" title="View Documents for PO # {{ order['Order Number'] }}">
 													<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for PO # {{ order['Order Number'] }}</span>
 												</a>

@@ -63,6 +63,14 @@ class DpagesMso extends Dpages implements Module {
 			'name'   => 'so-code-table-code',
 			'fields' => array()
 		),
+		'cxm' => array(
+			'name'   => 'cxm',
+			'fields' => array()
+		),
+		'cxm-validate' => array(
+			'name'   => 'cxm-validate',
+			'fields' => array()
+		),
 	);
 
 	const PAGES = array(
@@ -126,6 +134,24 @@ class DpagesMso extends Dpages implements Module {
 			'summary'        => 'View / Edit Sales Order Optional Code',
 			'parent'         => '/mso/somain/',
 			'dplus_function' => 'soptm'
+		),
+		'cxm' => array(
+			'template'       => 'dplus-json',
+			'pw_template'    => 'cxm-validate',
+			'name'           => 'validate',
+			'title'          => 'CXM Validate',
+			'summary'        => 'Validate CXM',
+			'parent'         => '/mso/somain/cxm/',
+			'dplus_function' => 'cxm'
+		),
+		'cxm-validate' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'cxm',
+			'name'           => 'cxm',
+			'title'          => 'CXM',
+			'summary'        => 'View / Edit Customer Item X-ref',
+			'parent'         => '/mso/somain/',
+			'dplus_function' => ''
 		),
 		'sales-orders' => array(
 			'template'       => 'dplus-function',
@@ -301,8 +327,7 @@ class DpagesMso extends Dpages implements Module {
 		$this->addHook('Page::edit_orderURL', function($event) {
 			$p = $event->object;
 			$ordn = $event->arguments(0);
-			$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
-			$url->query->set('action', 'get-order-edit');
+			$url = new Url($this->wire('pages')->get('pw_template=sales-order-edit')->url);
 			$url->query->set('ordn', $ordn);
 			$event->return = $url->getUrl();
 		});
@@ -344,6 +369,114 @@ class DpagesMso extends Dpages implements Module {
 			$shiptoID = $event->arguments(1);
 			$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customershiptoURL($custID, $shiptoID);
 		});
+	}
+
+	public function init_cxm_hooks() {
+		$this->addHook("Page(pw_template=cxm)::cxm_itemURL", function($event) {
+			$p = $event->object;
+			$custID = $event->arguments(0);
+			$custitemID = $event->arguments(1);
+			$event->return = $this->get_cxm_itemURL($custID, $custitemID);
+		});
+
+		$this->addHook("Page(pw_template=cxm)::cxm_itemIDURL", function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_cxm_itemIDURL($itemID);
+		});
+
+		$this->addHook("Page(pw_template=cxm)::cxm_item_newURL", function($event) {
+			$p = $event->object;
+			$custID = $event->arguments(0);
+			$event->return = $this->get_cxm_itemURL($custID,'new');
+		});
+
+		$this->addHook('Page(pw_template=cxm)::cxm_customerURL', function($event) {
+			$custID = $event->arguments(0);
+			$event->return = $this->get_cxm_customerURL($custID);
+		});
+
+		$this->addHookProperty('Page(pw_template=cxm)::custID', function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('custID');
+		});
+
+		$this->addHookProperty('Page(pw_template=cxm)::custitemID', function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('custitemID');
+		});
+
+		$this->addHookProperty('Page(pw_template=cxm)::itemID', function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('itemID');
+		});
+
+		$this->addHook('Page(pw_template=cxm)::cxm_item_deleteURL', function($event) {
+			$p = $event->object;
+			$custID = $event->arguments(0);
+			$custitemID = $event->arguments(1);
+			$itemID = $p->itemID;
+			$event->return = $this->get_cxm_item_deleteURL($itemID, $custID, $custitemID);
+		});
+	}
+
+	/**
+	 * Return URL for CXM items filtered by Customer ID
+	 * @param  string $custID Customer ID
+	 * @return string
+	 */
+	public function get_cxm_customerURL($custID) {
+		$url = new Url($this->wire('pages')->get('pw_template=cxm')->url);
+		$url->query->set('custID', $custID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL for CXM items filtered by Item ID
+	 * @param  string $itemID Item ID
+	 * @return string
+	 */
+	public function get_cxm_itemIDURL($itemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=cxm')->url);
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL for CXM Item
+	 * @param  string $custID     Vendor ID
+	 * @param  string $custitemID Vendor Item ID
+	 * @return string
+	 */
+	public function get_cxm_itemURL($custID, $custitemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=cxm')->url);
+
+		if ($custID) {
+			$url->query->set('custID', $custID);
+		}
+
+		$url->query->set('custitemID', $custitemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to Delete CXM Item
+	 * @param  string  $itemID     Item ID
+	 * @param  string  $custID     Vendor ID
+	 * @param  string  $custitemID Vendor's Item ID
+	 * @return string
+	 */
+	public function get_cxm_item_deleteURL($itemID, $custID, $custitemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=cxm')->url);
+		$url->query->set('action', 'remove-cxm-item');
+		$url->query->set('itemID', $itemID);
+
+		if ($custID) {
+			$url->query->set('custID', $custID);
+		}
+
+		$url->query->set('custitemID', $custitemID);
+		return $url->getUrl();
 	}
 
 	/**

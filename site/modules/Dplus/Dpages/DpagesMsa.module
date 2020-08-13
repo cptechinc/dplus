@@ -3,7 +3,7 @@
 use Purl\Url;
 
 /**
- * class DpagesMap
+ * class DpagesMsa
  *
  * Installs fields, templates, pages, hooks necessary for the MAP pages
  * NOTE: Also installs the basic fields, templates, to build the rest of the Application
@@ -19,6 +19,16 @@ class DpagesMsa extends Dpages implements Module {
 		),
 		'msa-lgrp' => array(
 			'name'   => 'msa-lgrp',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'msa-noce' => array(
+			'name'   => 'msa-noce',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'msa-noce-ajax' => array(
+			'name'   => 'msa-noce-ajax',
 			'fields' => array(),
 			'paginated' => true
 		),
@@ -50,6 +60,24 @@ class DpagesMsa extends Dpages implements Module {
 			'summary'        => 'View / Edit Login Group Entry',
 			'parent'         => '/msa/',
 			'dplus_function' => 'lgrp'
+		),
+		'msa-noce' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'msa-noce',
+			'name'           => 'noce',
+			'title'          => 'Pre-Defined Notes Entry',
+			'summary'        => 'View / Edit Pre-Defined Notes',
+			'parent'         => '/msa/',
+			'dplus_function' => 'noce'
+		),
+		'msa-noce-ajax' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'msa-noce-ajax',
+			'name'           => 'ajax',
+			'title'          => 'Pre-Defined Notes AJAX',
+			'summary'        => 'View / Edit Pre-Defined Notes through AJAX',
+			'parent'         => '/msa/noce/',
+			'dplus_function' => ''
 		),
 	);
 
@@ -107,6 +135,11 @@ class DpagesMsa extends Dpages implements Module {
 			$page = $event->object;
 			$event->return = $page->name;
 		});
+
+		$this->addHook('Page(pw_template=msa-noce)::get_list_focusURL', function($event) {
+			$focus = $event->arguments(0);
+			$event->return = $this->get_noce_listURL($focus);
+		});
 	}
 
 	public function get_codetable_listURL($table, $code = false) {
@@ -162,7 +195,11 @@ class DpagesMsa extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
-
+	public function get_noce_listURL($focus = false) {
+		$url = new Url($this->wire('pages')->get("pw_template=msa-noce")->url);
+		$url->query->set('focus', $focus);
+		return $url->getUrl();
+	}
 
 	/**
 	 * ProcessWire Module Info
