@@ -41,7 +41,7 @@
 
 	$filter = new Twig_Filter('attrJS', function ($string, $jsprepend = true) {
 		$replace = array(
-			' ' => '-',
+			' ' => '+',
 			'=' => 'eq',
 			'%' => 'per',
 		);
