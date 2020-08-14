@@ -281,7 +281,6 @@ class DpagesMin extends Dpages implements Module {
 
 	public function get_codetable_listURL($table, $code = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
-		$code = str_replace(' ', '-', $code);
 		if ($table == 'ioptm') {
 			$url->query->set('sysop', $code);
 		} else {
