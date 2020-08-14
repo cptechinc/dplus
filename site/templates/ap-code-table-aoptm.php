@@ -6,7 +6,6 @@
 		// $page->focus = $input->get->focus ? $input->get->text('focus') : '';
 
 		$sysop = $module_codetable->get_sysop($sysopcode);
-
 		$optcodes = $module_codetable->get_codes($sysopcode);
 
 		$page->body .= $config->twig->render("code-tables/map/$page->codetable/list-codes.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $sysop, 'sysop' => $sysop, 'optcodes' => $optcodes, 'response' => $session->response_codetable]);
