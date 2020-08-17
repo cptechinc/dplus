@@ -40,7 +40,12 @@
 	$config->twig->addFilter($filter);
 
 	$filter = new Twig_Filter('attrJS', function ($string, $jsprepend = true) {
-		$string = preg_replace("/[^A-Za-z0-9 ]/", '-', $string);
+		$replace = array(
+			' ' => '+',
+			'=' => 'eq',
+			'%' => 'per',
+		);
+		$string = str_replace(array_keys($replace), array_values($replace), $string);
 		return $jsprepend ? "js-$string" : $string;
 	});
 	$config->twig->addFilter($filter);

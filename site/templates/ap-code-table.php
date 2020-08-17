@@ -11,7 +11,8 @@
 		$code  = $input->requestMethod('GET') ? $input->$rm->text('code') : false;
 		$code = $action == 'update-notes' || $action == 'delete-notes' ? $code : '';
 		$code = $page->codetable == 'aoptm' ? $input->$rm->text('sysop') : $code;
-		if ( $page->codetable != 'aoptm') {
+
+		if ($page->codetable != 'aoptm') {
 			$code = $action == 'remove-code' ? '' : $code;
 		}
 
@@ -24,7 +25,6 @@
 
 	if ($ap_codetables->validate_codetable($page->codetable)) {
 		$page->focus = $input->get->focus ? $input->get->text('focus') : '';
-
 		$module_codetable = $ap_codetables->get_codetable_module($page->codetable);
 
 		$page->headline = "$module_codetable->description Table";
