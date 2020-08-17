@@ -45,7 +45,7 @@ class QnotesPo extends WireData implements Module {
 ============================================================= */
 	/**
 	 * Returns if Notes Exist
-	 * @param  string $ponbr    Order Number
+	 * @param  string $ponbr   Order Number
 	 * @param  int    $linenbr Line Number
 	 * @return bool
 	 */
@@ -54,6 +54,20 @@ class QnotesPo extends WireData implements Module {
 		$q->filterByPonbr($ponbr);
 		$q->filterByLine($linenbr);
 		return boolval($q->count());
+	}
+
+	/**
+	 * Returns if Notes Exist
+	 * @param  string $ponbr   Order Number
+	 * @param  int    $linenbr Line Number
+	 * @return bool
+	 */
+	public function get_note($ponbr, $linenbr) {
+		$q = $this->get_query();
+		$q->filterByPonbr($ponbr);
+		$q->filterByLine($linenbr);
+		$q->filterBySequence(1);
+		return $q->findOne();
 	}
 
 	/**
@@ -277,19 +291,28 @@ class QnotesPo extends WireData implements Module {
 	Supplemental Functions
 ============================================================= */
 	/**
-	 * Return Default forms
-	 * @return array
+	 * Return if Notes are editable
+	 * NOTE: Header notes are always editable
+	 * Item Notes must be checked if they exist and are editable,
+	 * or if the po config allows it
+	 * @param  string $ponbr   Purchase Order Number
+	 * @param  int    $linenbr Line Number [0 = header]
+	 * @return bool
 	 */
-	public function get_default_forms() {
-		$config_so = ConfigSalesOrderQuery::create()->findOne();
-		$defaults = array(
-			'pick' => $config_so->note_default_pick,
-			'pack' => $config_so->note_default_pack,
-			'invoice' => $config_so->note_default_invoice,
-			'acknowledgement' => $config_so->note_default_acknowledgement,
-		);
-		return $defaults;
+	public function allow_edit($ponbr, $linenbr = 0) {
+		if ($linenbr = 0) {
+			return true;
+		}
+
+		if ($this->notes_exist($ponbr, $linenbr)) {
+			$note = $this->get_note();
+			return $note->editable();
+		} else {
+			$config = ConfigPoQuery::create()->findOne();
+			return $config->allow_po_item_notes();
+		}
 	}
+
 
 /* =============================================================
 	ProcessWire Module Functions
