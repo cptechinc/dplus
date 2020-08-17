@@ -171,7 +171,7 @@ class QnotesPo extends WireData implements Module {
 		$ponbr   = $values->text('ponbr');
 		$linenbr = $values->text('linenbr');
 		$form    = $values->text('form');
-		$note_lines = $this->wire('modules')->get('Qnote')->note_lines($values->textarea('note'), $this->get_column_count());
+		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($values->textarea('note'), $this->get_column_count());
 		$lines_saved = array();
 
 		$this->delete_notes($ponbr, $linenbr);

@@ -12,9 +12,9 @@ include_once(__DIR__.'/QnotesResponse.php');
 class QnotesPredefined extends WireData implements Module {
 	const MODEL              = 'NotePredefined';
 	const MODEL_KEY          = 'id';
-	const DESCRIPTION        = 'Predefined Notes';
-	const DESCRIPTION_RECORD = 'Predefined Notes';
-	const DESCRIPTION_RESPONSE = 'Predefined Note ';
+	const DESCRIPTION        = 'Pre-Defined Notes';
+	const DESCRIPTION_RECORD = 'Pre-Defined Notes';
+	const DESCRIPTION_RESPONSE = 'Pre-Defined Note ';
 
 	/**
 	 * Return the Max Number of columns for Note Type
@@ -109,7 +109,7 @@ class QnotesPredefined extends WireData implements Module {
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		
+
 		switch ($values->text('action')) {
 			case 'update-notes':
 				$this->update_notes_input($input);
@@ -156,7 +156,7 @@ class QnotesPredefined extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$id  = $values->text('id');
-		$note_lines = explode(PHP_EOL, $values->textarea('note'));
+		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($values->textarea('note'), $this->get_column_count());
 		$lines_saved = array();
 		$this->delete_notes($id);
 
@@ -265,9 +265,9 @@ class QnotesPredefined extends WireData implements Module {
 ============================================================= */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus Qnotes Predefined',
+			'title' => 'Dplus Qnotes Pre-Defined',
 			'version' => 101,
-			'summary' => 'Dplus Qnotes Predefined CRUD methods',
+			'summary' => 'Dplus Qnotes Pre-Defined CRUD methods',
 			'singular' => true,
 			'autoload' => true,
 			'requires' => array('Qnotes')

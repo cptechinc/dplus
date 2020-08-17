@@ -44,6 +44,7 @@
 			' ' => '+',
 			'=' => 'eq',
 			'%' => 'per',
+			'+' => 'plus'
 		);
 		$string = str_replace(array_keys($replace), array_values($replace), $string);
 		return $jsprepend ? "js-$string" : $string;
