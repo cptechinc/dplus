@@ -1,5 +1,6 @@
 <?php namespace ProcessWire;
 
+use ConfigSalesOrderQuery, ConfigSalesOrder;
 
 include_once(__DIR__.'/Configs.trait.php');
 
@@ -28,6 +29,14 @@ class ConfigsBinr extends Process implements ConfigurableModule {
 		'default_qtyonhand' => false,
 		'use_qtyonly' => false,
 	);
+
+	/**
+	 * Return the Number of Decimal Places to use when showing Quantities
+	 * @return int
+	 */
+	public function decimal_places() {
+		return ConfigSalesOrderQuery::create()->findOne()->decimal_places;
+	}
 
 /* =============================================================
 		ProcessWire Module Functions

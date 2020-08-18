@@ -1,0 +1,79 @@
+<?php namespace ProcessWire;
+
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WriterXlsx;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
+/**
+ * XlsWriter
+ *
+ * Module for Writing Spreadsheet files
+ * @property string   $directory Directory to write files
+ * @property WireData $file File Data
+ *                         ->name      Filename to use
+ *                         ->prefix    Prefix to use
+ *                         ->extension File Extension
+ */
+class XlsWriter extends WireData implements Module {
+
+	const DEFAULT_WRITER = 'Xlsx';
+
+	const WRITER_EXTENSIONS = array(
+		'Xlsx' => 'xlsx'
+	);
+
+	public function __construct() {
+		$this->directory = '';
+		$this->file = new WireData();
+		$this->file->name = 'spreadsheet';
+		$this->file->prefix = '';
+		$this->file->extension = '';
+	}
+
+	/**
+	 * Writes Spreadsheet to File
+	 * @param  Spreadsheet $spreadsheet Spreadsheet
+	 * @param  string      $type        File Type to write
+	 * @return bool
+	 */
+	public function write(Spreadsheet $spreadsheet, $type = '') {
+		$writer = $this->get_writer($spreadsheet);
+		return $writer->save($this->get_filepath());
+	}
+
+	/**
+	 * Return Filepath for file
+	 * @return string
+	 */
+	public function get_filepath() {
+		return $this->directory.$this->file->prefix.'-'.$this->file->name.'.'.$this->file->extension;
+	}
+
+	/**
+	 * Return Spreadsheet File Writer
+	 * @return BaseWriter
+	 */
+	protected function get_writer(Spreadsheet $spreadsheet) {
+		$writer = new WriterXlsx($spreadsheet);
+		$this->file->extension = 'xlsx';
+		return $writer;
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public function init() {
+		$this->directory = $this->wire('config')->directory_webdocs;
+		$this->file->prefix = session_id();
+		$this->file->extension = 'xlsx';
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus XlsWriter',
+			'version' => 101,
+			'summary' => 'Writes Spreadsheets',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

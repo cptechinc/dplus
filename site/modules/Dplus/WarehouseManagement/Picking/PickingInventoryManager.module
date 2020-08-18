@@ -1,0 +1,131 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use InvsearchQuery, Invsearch;
+use WhseitempickQuery, Whseitempick;
+use PickSalesOrderDetailQuery, PickSalesOrderDetail;
+use BarcodesQuery, Barcodes;
+use WhsesessionQuery, Whsesession;
+use WarehouseQuery, Warehouse;
+use WarehouseInventoryQuery, WarehouseInventory;
+use WhseitemphysicalcountQuery, Whseitemphysicalcount;
+
+use ItemMasterItemQuery, ItemMasterItem;
+use InvLotQuery, InvLot;
+
+/**
+ * PickingInventoryManager
+ *
+ * Class that Handles the link to the Inventory for Picking
+ */
+class PickingInventoryManager extends WireData implements Module {
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Warehouse Picking Inventory Functions Module',
+			'version' => 101,
+			'summary' => 'Handles Dplus Inventory for Picking',
+			'singular' => true,
+			'autoload' => false,
+		);
+	}
+
+	public function init() {
+		$this->session = $this->wire('session');
+		$this->sessionID = '';
+	}
+
+	/**
+	 * Return Inventory Items
+	 * @param  string $scan        Scan
+	 * @param  bool   $includepack Include Pack Bin?
+	 * @return Whseitemphysicalcount[]|ObjectCollection
+	 */
+	public function get_inventory_results($scan, $includepack = false) {
+		$q = $this->get_inventory_scan_query($scan, $includepack);
+		return $q->find();
+	}
+
+	/**
+	 * Return Query for Inventory Items
+	 * @param  string $scan        Scan
+	 * @param  bool   $includepack Include PACK bin?
+	 * @return WhseitemphysicalcountQuery
+	 */
+	public function get_inventory_scan_query($scan, $includepack = false) {
+		$q = WhseitemphysicalcountQuery::create();
+		$q->filterBySessionid($this->sessionID);
+		$q->filterByScan($scan);
+
+		if (!$includepack) {
+			$q->filterByBin('PACK', Criteria::ALT_NOT_EQUAL);
+		}
+		return $q;
+	}
+
+	/**
+	 * Returns if Item is Lot Serial
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_lotserialized($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return ($q->is_item_serialized($itemID) || $q->is_item_lotted($itemID));
+	}
+
+	/**
+	 * Returns if Item is Lot Serial
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_serialized($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return $q->is_item_serialized($itemID);
+	}
+
+	/**
+	 * Returns if Item is Lot Serial
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_normal($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return $q->is_item_normal($itemID);
+	}
+
+	/**
+	 * Return Item Master Item
+	 * @param  string $itemID Item ID
+	 * @return ItemMasterItem
+	 */
+	public function get_master_item($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return $q->findOneByItemid($itemID);
+	}
+
+	public function get_invlot($itemID, $lotserial, $bin) {
+		$whsesession = $this->get_whsesession();
+		$q = InvLotQuery::create();
+		$q->filterByWhse($whsesession->whseid);
+		$q->filterByItemid($itemID);
+		$q->filterByLotserial($lotserial);
+		$q->filterByBin($bin);
+		return $q->findOne();
+	}
+
+	/**
+	 * Returns the Whsesession for this Session ID
+	 * @return Whsesession
+	 */
+	public function get_whsesession() {
+		return WhsesessionQuery::create()->findOneBySessionid($this->sessionID);
+	}
+}

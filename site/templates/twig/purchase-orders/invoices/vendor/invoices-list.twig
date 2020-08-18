@@ -1,3 +1,12 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	config                 ProcessWire\Config
+	config.po              ConfigPo
+	orderpage              URL to View ApInvoice
+#}
+
 <div class="list-group-item bg-light font-weight-bold">
 	{% block header %}
 		<div class="row">
@@ -18,7 +27,7 @@
 				<div class="col">{{ invoice.getpurchaseOrder() ? invoice.getpurchaseOrder().ponbr : 'N/A' }}</div>
 				<div class="col">{{ invoice.count_details() }}</div>
 				<div class="col text-right">$ {{ invoice.total|currency }}</div>
-				<div class="col text-right">{{ invoice.date_invoiced|convertdate }}</div>
+				<div class="col text-right">{{ invoice.date_invoiced|number_format(config.po.decimal_places_cost)  }}</div>
 				<div class="col text-right">{{ invoice.getpurchaseOrder() ? invoice.getpurchaseOrder().date_ordered|convertdate : 'N/A' }}</div>
 			</div>
 		</a>

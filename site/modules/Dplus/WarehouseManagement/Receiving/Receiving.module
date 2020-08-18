@@ -1,0 +1,305 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+use PurchaseOrderQuery, PurchaseOrder;
+use PurchaseOrderDetailReceivingQuery, PurchaseOrderDetailReceiving;
+use PurchaseOrderDetailLotReceivingQuery, PurchaseOrderDetailLotReceiving;
+use WarehouseQuery, Warehouse;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
+use ItemMasterItemQuery, ItemMasterItem;
+
+use WhsesessionQuery, Whsesession;
+use WhseitemphysicalcountQuery, Whseitemphysicalcount;
+
+
+class Receiving extends WireData implements Module {
+	/**
+	 * Session ID
+	 * @var string
+	 */
+	protected $sessionID;
+
+	/**
+	 * Purchase Order Number
+	 * @var string
+	 */
+	protected $ponbr;
+
+	/**
+	 * Sets Session ID
+	 * @param string $sessionID
+	 */
+	public function set_sessionID($sessionID) {
+		$this->sessionID = $sessionID;
+	}
+
+	/**
+	 * Sets Purchase Order Number
+	 * @param string $sessionID
+	 */
+	public function set_ponbr($ponbr) {
+		$this->wire('page')->ponbr = $ponbr;
+		$this->ponbr = $ponbr;
+	}
+
+	public function validate_autosubmit(Whseitemphysicalcount $item) {
+		$validate_item = $this->wire('modules')->get('LookupItem');
+		$warehouse = $this->get_warehouse();
+
+		if (!$validate_item->lookup_itm($item->itemid)) {
+			return false;
+		}
+
+		if (!$warehouse->validate_bin($item->bin)) {
+			return false;
+		}
+
+		if (empty($item->productiondate) || empty($item->lotserialref) || empty($item->qty)) {
+			return false;
+		}
+
+		return true;
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	/**
+	 * Sends HTTP GET request to Redir to make Dplus Request to load Purchase Order Working files
+	 * @return void
+	 */
+	public function request_purchaseorder_init() {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'STARTRECEIVE', "PONBR=$this->ponbr");
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['warehouse'], $this->sessionID);
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Returns if Purchase Order exists in the Database
+	 * @return PurchaseOrder
+	 */
+	public function purchaseorder_exists() {
+		return PurchaseOrderQuery::create()->filterByPonbr($this->ponbr)->count();
+	}
+
+	/**
+	 * Returns Purchase Order from Database
+	 * @return PurchaseOrder
+	 */
+	public function get_purchaseorder() {
+		return PurchaseOrderQuery::create()->findOneByPonbr($this->ponbr);
+	}
+
+	/**
+	 * Return Whsesession
+	 * @return Whsesession
+	 */
+	public function get_whsesession() {
+		return WhsesessionQuery::create()->findOneBySessionid($this->sessionID);
+	}
+
+	/**
+	 * Return Warehouse
+	 * @return Warehouse
+	 */
+	public function get_warehouse() {
+		$whsesession = $this->get_whsesession();
+		return WarehouseQuery::create()->findOneById($whsesession->whseid);
+	}
+
+	/**
+	 * Return the number of decimal places for qty values
+	 * @return int
+	 */
+	public function decimal_places() {
+		return ConfigSalesOrderQuery::create()->findOne()->decimal_places;
+	}
+
+	/**
+	 * Return the Sum of Qty Received for Item ID
+	 * @param  string $itemID Item ID
+	 * @return float
+	 */
+	public function get_received_total($itemID) {
+		$col_received = PurchaseOrderDetailReceiving::get_aliasproperty('qty_received');
+		$q = PurchaseOrderDetailReceivingQuery::create();
+		$q->withColumn("SUM($col_received)", 'total');
+		$q->select("total");
+		$q->filterByPonbr($this->ponbr);
+		$q->filterByItemid($itemID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return Receiving Item
+	 * @param  int    $linenbr      Line Number
+	 * @param  string $lotserial Lot / Serial Number
+	 * @param  string $binID     Bin ID
+	 * @return PurchaseOrderDetailLotReceiving
+	 */
+	public function get_receiving_item($linenbr, $lotserial = '', $binID = null) {
+		$q = PurchaseOrderDetailLotReceivingQuery::create();
+		$q->filterByPonbr($this->ponbr);
+		$q->filterByLinenbr($linenbr);
+
+		if ($lotserial)  {
+			if ($lotserial != 'all') {
+				$q->filterByLotserial($lotserial);
+			}
+		}
+
+		if ($binID) {
+			if ($lotserial != 'all') {
+				$q->filterByBin($binID);
+			}
+		}
+		return $q->findOne();
+	}
+
+	/**
+	 * Returns an Array that contains each Purchase Order Detail and the properties needed
+	 * for JavaScript Validation
+	 * @return array
+	 */
+	public function get_purchaseorder_recevingdetails_js() {
+		$config = $this->wire('config');
+		$po = $this->get_purchaseorder();
+		$items = $po->get_receivingitems();
+		$js = array();
+
+		foreach ($items as $item) {
+			$js[$item->itemid] = array(
+				'itemid'         => $item->itemid,
+				'qty_ordered'    => intval($item->qty_ordered),
+				'qty_received'   => $config->company == 'provalley' ? $item->count_receivedlots() : $item->qty_received,
+				'lotserialcount' => $item->count_receivedlots()
+			);
+		}
+		return $js;
+	}
+
+	/**
+	 * Returns array that contains configuration values
+	 * NOTE: used for JavaScript
+	 * @return array
+	 */
+	public function get_jsconfig() {
+		$config = $this->wire('modules')->get('ConfigsWarehouseInventory');
+		$js = array(
+			'receive_lotserial_as_single' => $config->receive_lotserial_as_single,
+			//'receive_qty_label'           => $config->receive_qty_label
+		);
+		return $js;
+	}
+
+	/**
+	 * Returns if Item is Lot Serial
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_lotserialized($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return ($q->is_item_serialized($itemID) || $q->is_item_lotted($itemID));
+	}
+
+	/**
+	 * Returns if Item is Lot Serial
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_serialized($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return $q->is_item_serialized($itemID);
+	}
+
+	/**
+	 * Returns if Item is Lot Serial
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_lotted($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return $q->is_item_lotted($itemID);
+	}
+
+	/**
+	 * Returns if Item is Lot Serial
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function is_item_normal($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return $q->is_item_normal($itemID);
+	}
+/* =============================================================
+	URL Functions
+============================================================= */
+	public function get_autosumbitURL($scan) {
+		$url = new Url($this->wire('pages')->get('template=redir, redir_file=inventory')->httpUrl);
+		$url->query->set('action', 'receiving-autosubmit');
+		$url->query->set('ponbr', $this->ponbr);
+		$url->query->set('scan', $scan);
+		return $url->getUrl();
+	}
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Warehouse Receiving Module',
+			'version' => 101,
+			'summary' => 'Handles Warehouse Receiving',
+			'singular' => true,
+			'autoload' => false,
+			'installs' => array('ReceivingUgm')
+		);
+	}
+
+	public function init() {
+		$this->addHook('Page(pw_template=whse-receiving)::linenbrURL', function($event) {
+			$p = $event->object;
+			$linenbr = $event->arguments(0);
+			$url = new Url($p->fullURL->getUrl());
+			$url->query->set('linenbr', $linenbr);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=whse-receiving)::ponbrURL', function($event) {
+			$p = $event->object;
+			$url = new Url($p->fullURL->getUrl());
+			$url->query = '';
+			$url->query->set('ponbr', $this->ponbr);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=whse-receiving)::delete_received_itemURL', function($event) {
+			$url = new Url($this->wire('pages')->get('template=redir, redir_file=inventory')->url);
+			$item     = $event->arguments(0); // Instance of PurchaseOrderDetailLotReceiving
+			$url->query->set('action', 'remove-received-item');
+			$url->query->set('ponbr', $item->ponbr);
+			$url->query->set('linenbr', $item->linenbr);
+			$url->query->set('lotserial', $item->lotserial);
+			$url->query->set('binID', $item->bin);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=whse-receiving)::submit_receiptURL', function($event) {
+			$url = new Url($this->wire('pages')->get('template=redir, redir_file=inventory')->url);
+			$ponbr    = $event->arguments(0);
+			$url->query->set('action', 'submit-receipt');
+			$url->query->set('ponbr', $ponbr);
+			$event->return = $url->getUrl();
+		});
+	}
+}

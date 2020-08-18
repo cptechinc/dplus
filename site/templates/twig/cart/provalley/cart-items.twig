@@ -29,24 +29,24 @@
 			<br>
 			<small>{{ detail.desc1 }}</small>
 			<br>
-			<small>Avg Wgt: {{ item.weight|number_format(3, '.', ',') }}</small>
+			<small>Avg Wgt: {{ item.weight|number_format(cart.decimal_places_qty) }}</small>
 		</div>
 		<div class="col-sm-1 text-right">
-			<input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}"></input>
+			<input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}">
 		</div>
 		<div class="col-sm-1 text-right">
-			{{ (item.weight * detail.qty)|number_format(3, '.', ',') }}
+			{{ (item.weight * detail.qty)|number_format(cart.decimal_places_qty) }}
 		</div>
 		<div class="col-sm-2 text-right">
 			<div class="input-group">
 				<div class="input-group-prepend">
 					<span class="input-group-text">$</span>
 				</div>
-				<input type="text" class="form-control text-right qty-input" name="price" value="{{ detail.price|currency }}"></input>
+				<input type="text" class="form-control text-right qty-input" name="price" value="{{ detail.price|number_format(cart.decimal_places_price) }}">
 			</div>
 		</div>
 		<div class="col-sm-2 text-right">
-			$ {{ detail.totalprice|currency }}
+			$ {{ detail.totalprice|number_format(cart.decimal_places_price) }}
 		</div>
 		<div class="col-sm-3 text-right">
 			<button type="submit" class="btn btn-success">

@@ -23,7 +23,7 @@
 					{% endif %}
 				</div>
 				<div class="col-sm-6">{{ item.itemid }}</div>
-				<div class="col-sm-2">{{ item.get_total_qty() }}</div>
+				<div class="col-sm-2">{{ item.get_total_qty()|number_format(2, '.', ',')  }}</div>
 				<div class="col-sm-2"></div>
 			</div>
 		</div>
@@ -59,7 +59,7 @@
 									</div>
 									<div class="col-sm-2" for="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin)|attrJS }}">{{ lotserial.lotserial }}</div>
 									<div class="col-sm-2">{{ lotserial.lotserialref }}</div>
-									<div class="col-sm-2">{{ lotserial.qty }}</div>
+									<div class="col-sm-2">{{ lotserial.qty|number_format(2, '.', ',')  }}</div>
 									<div class="col-sm-2">{{ lotserial.bin }}</div>
 									<div class="col-sm-2"></div>
 								</div>

@@ -261,7 +261,7 @@ class DpagesMci extends Dpages implements Module {
 		'ci-customer-po' => array(
 			'template'       => 'ci-function',
 			'name'           => 'customer-po',
-			'title'          => 'Purchase Orders',
+			'title'          => 'Cust POs',
 			'summary'        => 'View Customer PO',
 			'parent'         => '/mci/ci/',
 			'dplus_function' => 'ci-cpo',

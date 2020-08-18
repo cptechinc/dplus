@@ -23,11 +23,17 @@
 				$sales_history = $load_customer->get_saleshistory();
 				$quotes = $load_customer->get_quotes();
 				$page->headline = "CI: $customer->name";
+
+				if (!$customer->is_active()) {
+					$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => 'Inactive Customer', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $custID is not active"]);
+					$page->body .= $html->div('class=mb-3');
+				}
+
 				$toolbar = $config->twig->render('customers/ci/customer/toolbar.twig', ['page' => $page, 'custID' => $customer->id]);
 				$header =  $config->twig->render('customers/ci/customer/header.twig', ['page' => $page, 'customer' => $customer]);
 
-				$page->body = "<div class='row'>";
-					$page->body .= $html->div('class=col-sm-2', $toolbar);
+				$page->body .= "<div class='row'>";
+					$page->body .= $html->div('class=col-sm-2 pl-0', $toolbar);
 					$page->body .= $html->div('class=col-sm-10', $header);
 				$page->body .= "</div>";
 				$page->body .= $config->twig->render('customers/ci/customer/actions-panel.twig', ['page' => $page, 'module_useractions' => $module_useractions, 'actions' => $actions, 'resultscount'=> $actions->getNbResults()]);
@@ -70,7 +76,7 @@
 		$customers = $query->paginate($input->pageNum, 10);
 
 		$page->searchURL = $page->url;
-		$page->body = $config->twig->render('customers/customer-search.twig', ['page' => $page, 'customers' => $customers]);
+		$page->body = $config->twig->render('customers/customer-search.twig', ['page' => $page, 'customers' => $customers, 'datamatcher' => $modules->get('RegexData'), 'q' => $input->get->text('q')]);
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $customers->getNbResults()]);
 	}
 

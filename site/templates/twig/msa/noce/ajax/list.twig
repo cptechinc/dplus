@@ -1,0 +1,49 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	qnotes                 module QnotesPredefined
+	notes                  NotesPredefined[]
+#}
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row align-items-center">
+			<div class="col-2">
+				Code
+			</div>
+			<div class="col-6">
+				Description
+			</div>
+			<div class="col-4"></div>
+		</div>
+	</div>
+
+	{% for note in notes %}
+		<div class="list-group-item pb-1 pt-1" id="code-{{ note.id }}">
+			<div class="row align-items-center">
+				<div class="col-2">
+					{{ note.id }}
+				</div>
+				<div class="col-6">
+					<span class="summary" data-id="{{ note.id }}">{{ note.note }}</span>
+				</div>
+				<div class="col-4 text-center">
+					<button type="button" class="btn btn-light" data-toggle="collapse" data-target="#notes-{{ note.id|urlencode|attrJS }}" aria-controls="#notes-{{ note.id|urlencode|attrJS }}">
+						<i class="fa fa-eye" aria-hidden="true"></i> Show
+					</button>
+					&nbsp;
+					<button type="button" class="btn btn-secondary use-note" data-id="{{ note.id }}">
+						<i class="fa fa-pencil" aria-hidden="true"></i> Use
+					</button>
+				</div>
+			</div>
+			<div class="row align-items-center">
+				<div class="col-2"></div>
+				<div class="col-6">
+					<textarea class="collapse form-control-plaintext hidden-note" data-id="{{ note.id }}" id="notes-{{ note.id|urlencode|attrJS }}" cols="{{ qnotes.get_column_count() }}" rows="10" readonly>{{ qnotes.get_notes_form_array(note.id)|join('\r') }}</textarea>
+				</div>
+				<div class="col-4"></div>
+			</div>
+		</div>
+	{% endfor %}
+</div>

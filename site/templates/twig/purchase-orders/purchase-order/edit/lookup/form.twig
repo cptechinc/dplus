@@ -1,0 +1,43 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	po                     EditPoHead
+#}
+<form action="{{ page.url }}" class="allow-enterkey-submit" id="add-item-form">
+	<input type="hidden" name="action" value="add-item">
+	<input type="hidden" name="ponbr" value="{{ po.ponbr }}">
+
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="input-group input-group-sm">
+				<span class="input-group-prepend">
+					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Search for / Choose Item" aria-label="Search for / Choose Item" data-search="item">
+						<span class="fa fa-search" aria-hidden="true"></span> <span class="sr-only">Search for / Choose Item</span>
+					</button>
+				</span>
+				<input type="text" name="itemID" class="form-control">
+			</div>
+			<div class="descriptions collapse">
+				<div class="mt-1">
+					<small class="desc1"></small> <br>
+					<small class="desc2"></small>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-1 text-center">
+			<span class="uom"></span>
+		</div>
+		<div class="col-sm-1 text-right">
+			<input type="text" class="form-control form-control-sm text-right qty-input" name="qty">
+		</div>
+		<div class="col-sm-2 text-right">
+			<div class="input-group">
+				<button type="submit" class="btn btn-sm btn-primary">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add
+				</button>
+			</div>
+		</div>
+		<div class="col-sm-5"></div>
+	</div>
+</form>

@@ -71,8 +71,8 @@ $(function() {
 			}
 
 			if (valid_form.error) {
-				swal({
-					type: 'error',
+				swal2.fire({
+					icon: 'error',
 					title: valid_form.title,
 					text: valid_form.msg,
 					html: valid_form.html

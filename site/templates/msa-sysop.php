@@ -20,8 +20,6 @@
 
 	if ($msa_codetables->validate_codetable($page->codetable)) {
 		$page->focus = $input->get->focus ? $input->get->text('focus') : '';
-
-
 		$module_codetable = $msa_codetables->get_codetable_module($page->codetable);
 
 		$page->body .= $config->twig->render('code-tables/links-header.twig', ['page' => $page, 'input' => $input]);

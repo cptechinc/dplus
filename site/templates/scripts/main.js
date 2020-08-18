@@ -96,16 +96,15 @@ $(function() {
 			inputPlaceholder: 'Select an Action Type',
 			showCancelButton: true,
 			inputValidator: (value) => {
-				return new Promise(function (resolve, reject) {
+				return new Promise((resolve) => {
 					if (value.length) {
 						resolve();
 					} else {
-						reject('You need to select an Action Type')
+						resolve('You need to select an Action Type')
 					}
-				});
-
+				})
 			}
-		}).then((result) => {
+		}).then(function (result) {
 			uri.addQuery('type', result.value);
 			window.location.href = uri.toString();
 		});
@@ -151,9 +150,6 @@ $(function() {
 			text: "Are you sure you want to delete?",
 			icon: 'warning',
 			showCancelButton: true,
-			confirmButtonClass: 'btn btn-success',
-			cancelButtonClass: 'btn btn-danger',
-			buttonsStyling: false,
 			confirmButtonText: 'Yes'
 		}).then((result) => {
 			if (result.value) {
@@ -166,16 +162,12 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var action = $('.modal-form').attr("action");
-		console.log(action);
 
 		swal2.fire({
 			title: "Confirm Deletion",
 			text: "Are you sure you want to delete?",
 			icon: 'warning',
 			showCancelButton: true,
-			confirmButtonClass: 'btn btn-success',
-			cancelButtonClass: 'btn btn-danger',
-			buttonsStyling: false,
 			confirmButtonText: 'Yes'
 		}).then((confirm) => {
 			if (confirm.value) {
@@ -368,7 +360,9 @@ Array.prototype.contains = function ( needle ) {
 const swal2 = Swal.mixin({
 	customClass: {
 		confirmButton: 'btn btn-success mr-3',
-		cancelButton: 'btn btn-danger'
+		cancelButton: 'btn btn-danger',
+		inputClass: 'form-control',
+		selectClass: 'form-control',
 	},
 	buttonsStyling: false
 })

@@ -1,64 +1,81 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	m_receiving            module Receiving
+	items                  PurchaseOrderDetailReceiving[]|ObjectCollection
+#}
 <div class="list-group mb-3">
 	<div class="list-group-item bg-dark text-white">
 		<div class="row">
 			<div class="col">Line #</div>
-			<div class="col-4">Item ID / Description</div>
-			<div class="col">Vendor Item ID</div>
-			<div class="col">Qty Ordered</div>
-			<div class="col">Qty Received</div>
-			<div class="col">Qty Remaining</div>
+			<div class="col-3">Item ID / Description</div>
+			<div class="col-2">Vendor Item ID</div>
+			<div class="col text-right">Ordered</div>
+			<div class="col text-right">Received</div>
+			<div class="col text-right">Remaining</div>
+			<div class="col">Edit</div>
 		</div>
 	</div>
 	{% for item in items %}
 		<div class="list-group-item first-txn-row">
 			<div class="row">
 				<div class="col">
-					{% if item.is_item_lotted() or item.is_item_serialized() %}
-						<button type="button" class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#{{ (item.linenbr ~ '-lotserial')|attrJS }}" aria-expanded="false" aria-controls="{{ (item.linenbr ~ '-lotserial')|attrJS }}">
-							{{ item.linenbr }}
-						</button>
-					{% else %}
+					<button type="button" class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#{{ (item.linenbr ~ '-lotserial')|attrJS }}" aria-expanded="false" aria-controls="{{ (item.linenbr ~ '-lotserial')|attrJS }}">
 						{{ item.linenbr }}
-					{% endif %}
+					</button>
 				</div>
-				<div class="col-4">
+				<div class="col-3">
 					<b>{{ item.itemid }}</b> <br>
 					<small>{{ item.description }}</small>
 				</div>
-				<div class="col">{{ item.vendoritemid }}</div>
-				<div class="col text-right">{{ item.qty_ordered|number_format() }}</div>
-				<div class="col text-right">{{ item.qty_received|number_format() }}</div>
-				<div class="col text-right">{{ item.qty_remaining()|number_format() }}</div>
+				<div class="col-2">{{ item.vendoritemid }}</div>
+				<div class="col text-right">{{ item.qty_ordered|number_format(m_receiving.decimal_places()) }}</div>
+				<div class="col text-right">{{ item.qty_received|number_format(m_receiving.decimal_places()) }}</div>
+				<div class="col text-right">{{ item.qty_remaining()|number_format(m_receiving.decimal_places()) }}</div>
+				<div class="col">
+					{% if m_receiving.is_item_normal(item.itemid) %}
+						{% set receiveditem = item.get_receivedlot() %}
+						<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#item-edit-modal" data-linenbr="{{ item.linenbr }}" data-itemid="{{ item.itemid }}" data-qty="{{ item.qty_received|number_format() }}" data-bin="{{ receiveditem.bin }}">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</button>
+					{% endif %}
+				</div>
 			</div>
 		</div>
 
-		{% if item.is_item_lotted() or item.is_item_serialized() %}
-			<div class="collapse" id="{{ (item.linenbr ~ '-lotserial')|attrJS }}">
-				<div class="list-group">
-					<div class="list-group-item bg-light">
-						<div class="row">
-							<div class="col">Lot #</div>
-							<div class="col">Lot Ref</div>
-							<div class="col">Qty</div>
-							<div class="col">Bin</div>
-							<div class="col">Remove</div>
-						</div>
+		<div class="collapse" id="{{ (item.linenbr ~ '-lotserial')|attrJS }}">
+			<div class="list-group">
+				<div class="list-group-item bg-light">
+					<div class="row">
+						<div class="col">Lot #</div>
+						<div class="col">Lot Ref</div>
+						<div class="col">Qty</div>
+						<div class="col">Bin</div>
+						<div class="col"></div>
 					</div>
-					{% for lot in item.get_receivedlots() %}
-						<div class="list-group-item">
-							<div class="row">
-								<div class="col">{{ lot.lotserial }}</div>
-								<div class="col">{{ lot.lotreference }}</div>
-								<div class="col"> {{ lot.qty_received }}</div>
-								<div class="col text-right">{{ lot.bin }}</div>
-								<div class="col">
-									<a href="{{ page.delete_received_itemURL(lot.ponbr, lot.linenbr, lot.sequence) }}" class="btn btn-danger"> Remove</a>
-								</div>
+				</div>
+				{# item.get_receivedlots() returns PurchaseOrderDetailLotReceiving[]|ObjectCollection #}
+				{% for lot in item.get_receivedlots() %}
+					<div class="list-group-item">
+						<div class="row">
+							<div class="col">{{ lot.lotserial }}</div>
+							<div class="col">{{ lot.lotreference }}</div>
+							<div class="col"> {{ lot.qty_received|number_format(m_receiving.decimal_places()) }}</div>
+							<div class="col text-right">{{ lot.bin }}</div>
+							<div class="col">
+								<a href="{{ page.delete_received_itemURL(lot) }}" class="btn btn-danger btn-sm">
+									<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+								</a>
+								&nbsp; &nbsp;
+								<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#item-edit-modal" data-linenbr="{{ item.linenbr }}" data-itemid="{{ item.itemid }}" data-lotserial="{{ lot.lotserial }}" data-lotserialref="{{ lot.lotreference }}" data-qty="{{ lot.qty_received|number_format(4) }}" data-bin="{{ lot.bin }}">
+									<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+								</button>
 							</div>
 						</div>
-					{% endfor %}
-				</div>
+					</div>
+				{% endfor %}
 			</div>
-		{% endif %}
+		</div>
 	{% endfor %}
 </div>

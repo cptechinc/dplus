@@ -16,7 +16,7 @@
 								{{ module_formatter.format_celldata(payment, column) }}
 
 								{% if i == 1 and payment['Invoice Number'] %}
-									{% if document_management.count_arpaymentdocuments(payment['Invoice Number'], payment['Check Number']) %}
+									{% if docm.count_documents_payment(payment['Invoice Number'], payment['Check Number']) %}
 										<a href="{{ page.documentsview_arpayment(custID, payment['Invoice Number'], payment['Check Number'])}}" class="text-success" title="View Documents for Payments on Invoice # {{ payment['Invoice Number'] }}">
 											<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Payments on Invoice # {{ payment['Invoice Number'] }}</span>
 										</a>

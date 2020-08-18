@@ -1,0 +1,61 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	session                ProcessWire\Session
+	m_picking              module Picking
+	scan                   string $_GET{'scan']
+	items                  whseitempick[]|ObjectCollection
+#}
+'page' => $page, 'm_picking' => $pickingsession, 'scan' => $scan, 'items' => $query_pickeditems->find()
+<form action="{{ page.fullURL.getUrl() }}" method="post">
+	<input type="hidden" name="action" value="verify-whseitempicks">
+	<input type="hidden" name="scan" value="{{ scan }}">
+
+	{% for item in items %}
+		<div>
+			<input type="hidden" name="recordnumbers[]" value="{{ item.recordnumber }}">
+			<h4>Lot / Serial #: {{ item.lotserial }}</h4>
+
+			<div class="form-group">
+				<label for="itemID">Item ID</label>
+				<input type="text" class="form-control" name="itemID-{{ item.recordnumber }}" id="itemID" value="{{ item.itemid }}">
+			</div>
+
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label for="lotserial-{{ item.recordnumber }}">Lot / Serial #</label>
+						<input type="text" class="form-control" name="lotserial-{{ item.recordnumber }}" id="lotserial-{{ item.recordnumber }}" value="{{ item.lotserial }}">
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label for="lotserialref-{{ item.recordnumber }}">Lot / Serial Ref</label>
+						<input type="text" class="form-control" name="lotserialref-{{ item.recordnumber }}" id="lotserialref-{{ item.recordnumber }}" value="{{ item.lotserialref }}">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label for="binID-{{ item.recordnumber }}">Bin ID</label>
+						<input type="text" class="form-control" name="binID-{{ item.recordnumber }}" id="binID-{{ item.recordnumber }}" value="{{ item.bin }}">
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label for="qty-{{ item.recordnumber }}">Qty</label>
+						<input type="text" class="form-control" name="qty-{{ item.recordnumber }}" id="qty-{{ item.recordnumber }}" value="{{ item.qty|number_format(m_picking.decimal_places()) }}">
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+
+	<div class="form-group">
+		<button type="submit" class="btn btn-success">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+	</div>
+</form>

@@ -1,3 +1,12 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	config                 module ConfigsBinr
+	page                   ProcessWire\Page
+	resultscount           number of results
+	inventory              InvsearchQuery
+	warehouse              Warehouse
+#}
 <div class="collapse-lotserial {{ not page.is_print() ? 'collapse' : '' }}" id="{{ (binitem.itemid ~ '_' ~ binitem.bin)|attrJS  }}-lotserial">
 	<div class="list-group">
 		{% for lotserial in inventory.get_lotserials_itemid(binitem.sessionid, binitem.itemid, binitem.bin, 'expirationdate') %}
@@ -13,7 +22,7 @@
 						<strong>Lot #:</strong> {{ lotserial.get_itemidentifier() }}
 					</div>
 					<div class="col">
-						<strong>Weight:</strong> {{ lotserial.qty }}
+						<strong>Weight:</strong> {{ lotserial.qty|number_format(config.decimal_places()) }}
 					</div>
 					<div class="col">
 						<strong>Prod Date:</strong> {{ lotserial.expirationdate|convertdate }}

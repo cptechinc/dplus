@@ -9,4 +9,4 @@
 {% set placeholder = placeholder ? placeholder : '' %}
 {% set disabled = disabled ? disabled : false %}
 {% set attributes_extra = attributes ? attributes|htmlattributes : '' %}
-<input tabindex="{{tabindex}}" type="{{type}}" name="{{ name }}" id="{{ id ? id : name  }}" maxlength="{{maxlength}}" class="{{ class }}" value="{{ value }}" placeholder="{{ placeholder }}" {{ attributes_extra }} {{ disabled ? 'disabled' : '' }}>
+<input tabindex="{{tabindex}}" type="{{type}}" name="{{ name }}" id="{{ id ? id : name }}" maxlength="{{ maxlength }}" class="{{ class }}" value="{{ value }}" placeholder="{{ placeholder }}" {{ attributes_extra }} {{ disabled ? 'disabled' : '' }}>

@@ -1,0 +1,34 @@
+<div class="row">
+	<div class="col-sm-6 form-group">
+		<label>PO Nbr</label>
+		<input type="text" class="form-control-plaintext form-control-sm" value="{{ po.ponbr }}" readonly>
+	</div>
+	<div class="col-sm-6 form-group">
+		<label for="releasenbr">Release Number</label>
+		<input type="text" class="form-control form-control-sm" name="releasenbr" id="releasenbr" value="{{ po.releasenbr }}">
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-6">
+		<div class="form-group">
+			<label for="vendorID">Vendor ID</label>
+			<input type="text" class="form-control form-control-sm" name="vendorID" id="vendorID" value="{{ po.vendorid }}">
+			<address class="small mt-1">
+				{% set vendor = epo.get_vendor(po.vendorid) %}
+				{{ vendor.name }} <br>
+				{{ vendor.address }} <br>
+				{{ vendor.address2 ? vendor.address2 ~ '<br>' : '' }}
+				{{ vendor.city ~ ', ' ~ vendor.state ~ ' ' ~ vendor.zip }}
+			</address>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="form-group">
+			<label for="vendorshipfromID">Ship-From</label>
+			<input type="text" class="form-control form-control-sm" name="vendorshipfromID" id="vendorshipfromID" value="{{ po.shipfromid }}">
+		</div>
+	</div>
+</div>
+{% include 'purchase-orders/purchase-order/edit/header/shipto.twig' %}
+{% include 'purchase-orders/purchase-order/edit/header/contact.twig' %}

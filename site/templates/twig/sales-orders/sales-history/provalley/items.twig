@@ -23,16 +23,42 @@
 					<small>Avg Weight: {{ detail.item.weight }}</small>
 				</td>
 				<td class="text-right">{{ detail.qty_cases|number_format() }}</td>
-				<td class="text-right">{{ detail.qty_ordered|number_format(3, '.', ',') }}</td>
-				<td class="text-right">{{ detail.qty_shipped|number_format(3, '.', ',') }}</td>
-				<td class="text-right">$ {{ detail.price|currency }}</td>
-				<td class="text-right">$ {{ detail.total_price|currency }}</td>
+				<td class="text-right">{{ detail.qty_ordered|number_format(config.decimal_places_qty) }}</td>
+				<td class="text-right">{{ detail.qty_shipped|number_format(config.decimal_places_qty) }}</td>
+				<td class="text-right">$ {{ detail.price|number_format(config.decimal_places_price) }}</td>
+				<td class="text-right">$ {{ detail.total_price|number_format(config.decimal_places_price) }}</td>
 				<td class="text-right">
 					<a href="{{ page.view_notesURL(order.ordernumber, detail.linenbr) }}" class="h4 {{ detail.has_notes() ? 'text-success' : 'text-muted'}}">
 						<i class="fa fa-sticky-note" aria-hidden="true"></i>
 					</a>
 				</td>
 			</tr>
+			{% if detail.countSalesHistoryLotserials() %}
+				<tr class="collapse lotserial {{ detail.linenumber|attrJS }}-lotserial bg-gray">
+					<th></th>
+					<th>Lot/Serial #</th>
+					<th>Lot/Serial Ref</th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+				</tr>
+				{% for lotserial in detail.getSalesHistoryLotserials() %}
+					<tr class="collapse lotserial {{ detail.linenumber|attrJS }}-lotserial">
+						<td></td>
+						<td>
+							<small>{{ lotserial.lotserial }}</small>
+						</td>
+						<td>
+							<small>{{ lotserial.lotreference }}</small>
+						</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				{% endfor %}
+			{% endif %}
 		{% endfor %}
 	</tbody>
 </table>

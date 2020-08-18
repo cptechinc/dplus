@@ -1,5 +1,5 @@
 <?php
-	$config_salesorders = $modules->get('ConfigsSalesOrders');
+	$config->so = ConfigSalesOrderQuery::create()->findOne();
 	$modules->get('DpagesMso')->init_salesorder_hooks();
 	$html = $modules->get('HtmlWriter');
 	$lookup_orders = $modules->get('LookupSalesOrder');
@@ -31,7 +31,13 @@
 
 			$page->body .= $config->twig->render("sales-orders/sales-$type/print/header.twig", ['page' => $page, 'customer' => $customer, 'order' => $order, 'dpluscustomer' => $dpluscustomer, 'barcoder' => $barcoder]);
 			$page->body .= $html->div('class=clearfix mb-3');
-			$page->body .= $config->twig->render("sales-orders/sales-$type/print/items.twig", ['page' => $page, 'order' => $order]);
+
+			if ($config->twigloader->exists("sales-orders/sales-$type/print/$config->company/items.twig")) {
+				$page->body .= $config->twig->render("sales-orders/sales-$type/print/$config->company/items.twig", ['page' => $page, 'config' => $config->so, 'order' => $order]);
+			} else {
+				$page->body .= $config->twig->render("sales-orders/sales-$type/print/items.twig", ['page' => $page, 'config' => $config->so, 'order' => $order]);
+			}
+
 			$page->body .= $config->twig->render("sales-orders/sales-$type/print/totals.twig", ['page' => $page, 'order' => $order]);
 		} else {
 			$page->headline = $page->title = "Sales Order #$ordn could not be found";

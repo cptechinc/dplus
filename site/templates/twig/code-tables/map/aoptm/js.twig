@@ -28,8 +28,8 @@ $("body").on("change", "input[name=code]", function(e) {
 
 	if (validate_codeID(form) === false) {
 		swal2.fire({
-			title: 'Accounts Payable Optional Code ' + codeID + ' Exists',
-			text: 'Edit that code?',
+			title: 'Optional Code Exists',
+			html: 'Edit <b>' + codeID + '</b> ?',
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonText: 'Yes',

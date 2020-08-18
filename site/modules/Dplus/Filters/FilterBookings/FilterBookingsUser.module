@@ -1,6 +1,6 @@
 <?php namespace ProcessWire;
 
-use BookingrQuery, Bookingr;
+use BookingDayRepQuery, BookingDayRep;
 
 use Propel\Runtime\ActiveQuery\Criteria;
 
@@ -20,7 +20,7 @@ class FilterBookingsUser extends WireData implements Module {
 
 	/**
 	 * Bookings Rep Query
-	 * @var BookingrQuery
+	 * @var BookingDayRepQuery
 	 */
 	protected $query;
 
@@ -36,7 +36,7 @@ class FilterBookingsUser extends WireData implements Module {
 	 * @return void
 	 */
 	public function init() {
-		$this->query = BookingrQuery::create();
+		$this->query = BookingDayRepQuery::create();
 		$this->user = $this->wire('user');
 	}
 
@@ -51,7 +51,7 @@ class FilterBookingsUser extends WireData implements Module {
 	/**
 	 * Returns Query with filters applied
 	 * @param  WireInput      $input Object with $_GET values and sanitizer functions
-	 * @return BookingrQuery         Query with Filters applied
+	 * @return BookingDayRepQuery         Query with Filters applied
 	 */
 	public function get_bookings(WireInput $input) {
 		$this->determine_interval($input);
@@ -67,14 +67,15 @@ class FilterBookingsUser extends WireData implements Module {
 	 * @return float
 	 */
 	public function get_todaysbookingstotal() {
-		$query = BookingrQuery::create();
+		$query = BookingDayRepQuery::create();
 
 		if ($this->user->is_salesrep()) {
-			$query->filterBySalesrep($this->user->roleid);
+			$query->filterBySalesrep1($this->user->roleid);
 		}
-		$query->withColumn('SUM(amount)', 'amount');
+		$column_amt = BookingDayRep::get_aliasproperty('amount');
+		$query->withColumn("SUM($column_amt)", 'amount');
 		$query->select('amount');
-		$query->filterByBookdate(date('Ymd'));
+		$query->filterByBookingdate(date('Ymd'));
 		return $query->findOne();
 	}
 
@@ -84,7 +85,7 @@ class FilterBookingsUser extends WireData implements Module {
 	 */
 	public function filter_user() {
 		if ($this->user->is_salesrep()) {
-			$this->query->filterBySalesrep($this->user->roleid);
+			$this->query->filterBySalesrep1($this->user->roleid);
 		}
 	}
 
@@ -95,14 +96,17 @@ class FilterBookingsUser extends WireData implements Module {
 	public function select_interval() {
 		switch ($this->interval) {
 			case 'month':
-				$this->query->withColumn("CAST(CONCAT(YEAR(bookdate), LPAD(MONTH(bookdate), 2, '0'), '01') AS UNSIGNED)", 'bookdate');
-				$this->query->withColumn('SUM(amount)', 'amount');
-				$this->query->withColumn('MONTH(bookdate)', 'month');
-				$this->query->withColumn('YEAR(bookdate)', 'year');
+				$column_date = BookingDayRep::get_aliasproperty('bookingdate');
+				$column_amt = BookingDayRep::get_aliasproperty('amount');
+				$this->query->withColumn("CAST(CONCAT(YEAR($column_date), LPAD(MONTH($column_date), 2, '0'), '01') AS UNSIGNED)", 'bookingdate');
+				$this->query->withColumn("SUM($column_amt)", 'amount');
+				$this->query->withColumn("MONTH($column_date)", 'month');
+				$this->query->withColumn("YEAR($column_date)", 'year');
 				$this->query->groupBy(['year', 'month']);
 				break;
 			case 'day':
-				$this->query->withColumn('SUM(amount)', 'amount');
+				$column_amt = BookingDayRep::get_aliasproperty('amount');
+				$this->query->withColumn("SUM($column_amt)", 'amount');
 				$this->query->groupBy('bookdate');
 				break;
 		}
@@ -111,7 +115,7 @@ class FilterBookingsUser extends WireData implements Module {
 	/**
 	 * Adds Filter to Query for bookdate
 	 * @param  WireInput      $input Object with $_GET values and sanitizer functions
-	 * @return BookingrQuery         Query with Filters applied
+	 * @return BookingDayRepQuery         Query with Filters applied
 	 */
 	public function filter_bookdate(WireInput $input) {
 		if (!is_array($input->get->bookdate) && strpos($input->get->text('bookdate'), '|') !== false) {
@@ -124,11 +128,11 @@ class FilterBookingsUser extends WireData implements Module {
 			$bookdates = $input->get->array('bookdate');
 			$date_from = $sanitizer->int(date('Ymd', strtotime($bookdates[0])));
 			$date_to   = $sanitizer->int(date('Ymd', strtotime($bookdates[1])));
-			$this->query->filterByBookdate($date_from, Criteria::GREATER_EQUAL);
-			$this->query->filterByBookdate($date_to, Criteria::LESS_EQUAL);
+			$this->query->filterByBookingdate($date_from, Criteria::GREATER_EQUAL);
+			$this->query->filterByBookingdate($date_to, Criteria::LESS_EQUAL);
 		} else {
 			$bookdate = date('Ymd', strtotime($input->get->text('bookdate')));
-			$this->query->filterByBookdate($bookdate);
+			$this->query->filterByBookingdate($bookdate);
 		}
 	}
 
@@ -144,7 +148,7 @@ class FilterBookingsUser extends WireData implements Module {
 			} else {
 				$custID = $input->get->text('custID');
 			}
-			$this->query->filterByCustId($custID);
+			$this->query->filterByCustid($custID);
 		}
 	}
 
@@ -161,7 +165,7 @@ class FilterBookingsUser extends WireData implements Module {
 				} else {
 					$shiptoID = $input->get->text('shiptoID');
 				}
-				$this->query->filterByShiptoId($shiptoID);
+				$this->query->filterByShiptoid($shiptoID);
 			}
 		}
 	}

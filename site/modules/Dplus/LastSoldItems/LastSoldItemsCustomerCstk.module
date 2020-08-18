@@ -7,7 +7,6 @@ use CartdetQuery, Cartdet;
 use QnoteQuery, Qnote;
 use PricingQuery, Pricing;
 
-
 use ItemMasterItemQuery, ItemMasterItem;
 use CstkItemQuery, CstkItem;
 use CstkHeadQuery, CstkHead;
@@ -36,9 +35,14 @@ class LastSoldItemsCustomerCstk extends WireData implements Module {
 	 * @return CstkItem[]|ObjectCollection
 	 */
 	public function get_cstk_items() {
-		$cstk = $this->get_cstk_head();
-		$q = $this->get_cstk_item_query($cstk);
-		return $q->find();
+		if ($this->does_cstk_exist()) {
+			$cstk = $this->get_cstk_head();
+			$q = $this->get_cstk_item_query($cstk);
+			return $q->find();
+		} else {
+			return array();
+		}
+
 	}
 
 	/**
@@ -47,9 +51,13 @@ class LastSoldItemsCustomerCstk extends WireData implements Module {
 	 */
 	public function get_cstk_itemids() {
 		$cstk = $this->get_cstk_head();
-		$q = $this->get_cstk_item_query($cstk);
-		$q->select(CstkItem::get_aliasproperty('itemid'));
-		return $q->find()->toArray();
+		if ($cstk) {
+			$q = $this->get_cstk_item_query($cstk);
+			$q->select(CstkItem::get_aliasproperty('itemid'));
+			return $q->find()->toArray();
+		} else {
+			return array();
+		}
 	}
 
 	/**
@@ -97,6 +105,17 @@ class LastSoldItemsCustomerCstk extends WireData implements Module {
 		$q->filterBySessionid(session_id());
 		$q->filterByItemid($itemID);
 		return $q->findOne();
+	}
+
+	/**
+	 * Returns if CSTK exists for custid, shiptoid
+	 * @return bool
+	 */
+	public function does_cstk_exist() {
+		$q = CstkHeadQuery::create();
+		$q->filterByCustidShiptoid($this->custID, $this->shiptoID);
+		$q->filterByType(CstkHead::TYPE_ORDER);
+		return boolval($q->count());
 	}
 
 	/**

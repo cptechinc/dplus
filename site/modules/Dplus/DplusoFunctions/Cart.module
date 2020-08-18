@@ -1,237 +1,251 @@
 <?php namespace ProcessWire;
 
-	use Purl\Url;
+use Purl\Url;
 
-	use CarthedQuery, Carthed;
-	use CartdetQuery, Cartdet;
-	use QnoteQuery, Qnote;
+use CarthedQuery, Carthed;
+use CartdetQuery, Cartdet;
 
-	use ItemMasterItemQuery, ItemMasterItem;
+use ItemMasterItemQuery, ItemMasterItem;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
 
-	class Cart extends WireData implements Module {
+class Cart extends WireData implements Module {
+	/**
+	 * Returns if Cart Customer has been defined
+	 * @return bool
+	 */
+	public function has_custid() {
+		return boolval(CarthedQuery::create()->select('custid')->findOneBySessionid(session_id()));
+	}
 
+	/**
+	 * Returns Customer ID
+	 * @return string
+	 */
+	public function get_custid() {
+		return CarthedQuery::create()->select('custid')->findOneBySessionid(session_id());
+	}
 
-		public function init() {
+	/**
+	 * Returns if Cart  Customer Shipto ID has been defined
+	 * @return bool
+	 */
+	public function has_shiptoid() {
+		return boolval(CarthedQuery::create()->select('shiptoid')->findOneBySessionid(session_id()));
+	}
 
-			/**
-			 * Adds Function remove_itemURL() to Page
-			 * @param  int    $linenbr Line Number to remove
-			 * @return string          URL to redirect to Remove Line Item
-			 */
-			$this->addHook('Page(pw_template=cart)::remove_itemURL', function($event) {
-				$page = $event->object;
-				$linenbr = $event->arguments(0);
-				$event->return = $page->child('template=redir')->url."?action=remove-line&linenbr=$linenbr";
-			});
+	/**
+	 * Returns  Customer Shipto ID
+	 * @return string
+	 */
+	public function get_shiptoid() {
+		return CarthedQuery::create()->select('shiptoid')->findOneBySessionid(session_id());
+	}
 
-			/**
-			 * Adds Function empty_cartURL() to Page
-			 * @return string URL to redirect to Empty Cart
-			 */
-			$this->addHook('Page(pw_template=cart)::empty_cartURL', function($event) {
-				$page = $event->object;
-				$event->return = $page->child('template=redir')->url."?action=empty-cart";
-			});
-
-			/**
-			 * Adds Function ci_customerURL() to Page
-			 * @return string CI Customer Page URL
-			 */
-			$this->addHook('Page(pw_template=cart)::ci_customerURL', function($event) {
-				$page = $event->object;
-				$custID = $event->arguments(0);
-				$event->return = $this->wire('pages')->get('pw_template=ci-customer')->url.'?custID='.urlencode($custID);
-			});
-
-			/**
-			 * Adds Function ci_customerURL() to Page
-			 * @return string CI Customer Page URL
-			 */
-			$this->addHook('Page(pw_template=cart)::ci_customershiptoURL', function($event) {
-				$page = $event->object;
-				$custID   = $event->arguments(0);
-				$shiptoID = $event->arguments(1);
-
-				if ($shiptoID) {
-					$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customershiptoURL($custID, $shiptoID);
-				} else {
-					$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customerURL($custID);
-				}
-			});
-
-			/**
-			 * Adds Function view_notesURL to Page
-			 * @return string Cart Notes URL
-			 */
-			$this->addHook('Page(pw_template=cart)::view_notesURL', function($event) {
-				$page = $event->object;
-				$event->return = $page->child('pw_template=cart-notes')->url;
-			});
-
-			/**
-			 * Adds Function create_quoteURL() to Page
-			 * @return string URL to redirect to Create Quote
-			 */
-			$this->addHook('Page(pw_template=cart)::create_quoteURL', function($event) {
-				$page = $event->object;
-				$event->return = $page->child('template=redir')->url."?action=create-quote";
-			});
-
-			/**
-			 * Adds Function create_orderURL() to Page
-			 * @return string URL to redirect to Create Sales Order
-			 */
-			$this->addHook('Page(pw_template=cart)::create_orderURL', function($event) {
-				$page = $event->object;
-				$event->return = $page->child('template=redir')->url."?action=create-order";
-			});
+	/**
+	 * Sets Cart Customer ID
+	 *
+	 * @return string
+	 */
+	public function set_custid($custID) {
+		if (CarthedQuery::create()->filterBySessionid(session_id())->count()) {
+			$cart = CarthedQuery::create()->findOneBySessionid(session_id());
+		} else {
+			$cart = new Carthed();
+			$cart->setSessionid(session_id());
 		}
 
-		/**
-		 * Returns if Cart Customer has been defined
-		 * @return bool
-		 */
-		public function has_custid() {
-			return boolval(CarthedQuery::create()->select('custid')->findOneBySessionid(session_id()));
+		$cart->setCustid($custID);
+		$cart->save();
+	}
+
+	/**
+	 * Sets Cart Customer Shipto ID
+	 *
+	 * @return string
+	 */
+	public function set_shiptoid($shiptoID) {
+		if (CarthedQuery::create()->filterBySessionid(session_id())->count()) {
+			$cart = CarthedQuery::create()->findOneBySessionid(session_id());
+		} else {
+			$cart = new Carthed();
+			$cart->setSessionid(session_id());
 		}
 
-		/**
-		 * Returns Customer ID
-		 * @return string
-		 */
-		public function get_custid() {
-			return CarthedQuery::create()->select('custid')->findOneBySessionid(session_id());
-		}
+		$cart->setShiptoid($shiptoID);
+		$cart->save();
+	}
 
-		/**
-		 * Returns if Cart  Customer Shipto ID has been defined
-		 * @return bool
-		 */
-		public function has_shiptoid() {
-			return boolval(CarthedQuery::create()->select('shiptoid')->findOneBySessionid(session_id()));
-		}
+	/**
+	 * Returns if Session has items in the cart
+	 *
+	 * @return bool Does the User's cart have items?
+	 */
+	public function has_items() {
+		return boolval(CartdetQuery::create()->filterBySessionid(session_id())->count());
+	}
 
-		/**
-		 * Returns  Customer Shipto ID
-		 * @return string
-		 */
-		public function get_shiptoid() {
-			return CarthedQuery::create()->select('shiptoid')->findOneBySessionid(session_id());
-		}
+	/**
+	 * Return Items that are in the cart
+	 * @return Cartdet[]|ObjectCollection
+	 */
+	public function get_items() {
+		return CartdetQuery::create()->filterBySessionid(session_id())->find();
+	}
 
-		/**
-		 * Sets Cart Customer ID
-		 *
-		 * @return string
-		 */
-		public function set_custid($custID) {
-			if (CarthedQuery::create()->filterBySessionid(session_id())->count()) {
-				$cart = CarthedQuery::create()->findOneBySessionid(session_id());
-			} else {
-				$cart = new Carthed();
-				$cart->setSessionid(session_id());
-			}
 
-			$cart->setCustid($custID);
-			$cart->save();
-		}
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return OItemMasterItem
+	 * @param  string $itemID Item ID
+	 * @return ItemMasterItem
+	 */
+	public function get_im_item($itemID) {
+		return ItemMasterItemQuery::create()->findOneByItemid($itemID);
+	}
 
-		/**
-		 * Sets Cart Customer Shipto ID
-		 *
-		 * @return string
-		 */
-		public function set_shiptoid($shiptoID) {
-			if (CarthedQuery::create()->filterBySessionid(session_id())->count()) {
-				$cart = CarthedQuery::create()->findOneBySessionid(session_id());
-			} else {
-				$cart = new Carthed();
-				$cart->setSessionid(session_id());
-			}
+	/**
+	 * Return the number of decimal places for qty values
+	 * @return int
+	 */
+	public function decimal_places_qty() {
+		$config = $this->config('so');
+		return $config->decimal_places_qty;
+	}
 
-			$cart->setShiptoid($shiptoID);
-			$cart->save();
-		}
+	/**
+	 * Return the number of decimal places for price values
+	 * @return int
+	 */
+	public function decimal_places_price() {
+		$config = $this->config('so');
+		return $config->decimal_places_price;
+	}
 
-		/**
-		 * Returns if Session has items in the cart
-		 *
-		 * @return bool Does the User's cart have items?
-		 */
-		public function has_items() {
-			return boolval(CartdetQuery::create()->filterBySessionid(session_id())->count());
-		}
-
-		/**
-		 * Return Items that are in the cart
-		 * @return Cartdet[]|ObjectCollection
-		 */
-		public function get_items() {
-			return CartdetQuery::create()->filterBySessionid(session_id())->find();
-		}
-
-		/**
-		 * Return OItemMasterItem
-		 * @param  string $itemID Item ID
-		 * @return ItemMasterItem
-		 */
-		public function get_im_item($itemID) {
-			return ItemMasterItemQuery::create()->findOneByItemid($itemID);
-		}
-
-		/**
-		 * Sends HTTP GET request to send Dplus Item Search Request
-		 * @param  string $q Query or Item ID
-		 * @return void
-		 */
-		public function request_itemsearch($q) {
-			$requestor = $this->wire('modules')->get('DplusRequest');
-			$url = new Url($this->wire('pages')->get('template=redir,redir_file=ii')->url);
-			$url->query->set('action', 'item-search');
-			$url->query->set('q', $q);
-			$url->query->set('custID', $this->get_custid());
-			$url->query->set('sessionID', session_id());
-			$requestor->self_request($url->getUrl());
-		}
-
-		/**
-		 * Returns Notes for the Cart Line Number
-		 *
-		 * @param  int    $linenbr  0 = Header
-		 * @return SalesOrderNotes[]|ObjectCollection
-		 */
-		public function get_notes($linenbr = 0) {
-			$query = QnoteQuery::create()->filterByRectype(Qnote::TYPE_CART);
-			$query->filterBykey1(session_id())->filterBykey2($linenbr);
-			return $query->find();
-		}
-
-		/**
-		 * Returns the number of Notes for the Cart Line Number
-		 *
-		 * @param  int    $linenbr  0 = Header
-		 * @return int
-		 */
-		public function count_notes($linenbr = 0) {
-			$query = QnoteQuery::create()->filterByRectype(Qnote::TYPE_CART);
-			$query->filterBykey1(session_id())->filterBykey2($linenbr);
-			return $query->count();
-		}
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
-		/**
-		 * ProcessWire Module Info
-		 *
-		 * @return void
-		 */
-		public static function getModuleInfo() {
-			return array(
-				'title' => 'Dpluso Cart Module',
-				'version' => 101,
-				'summary' => 'Handles Dpluso Cart',
-				'singular' => true,
-				'autoload' => true,
-			);
+	/**
+	 * Return a Config Class
+	 * @param  string $code Config Code
+	 * @return Config(x)
+	 */
+	public function config($code) {
+		switch ($code) {
+			case 'so':
+			default:
+				return ConfigSalesOrderQuery::create()->findOne();
+				break;
 		}
 	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	/**
+	 * Sends HTTP GET request to send Dplus Item Search Request
+	 * @param  string $q Query or Item ID
+	 * @return void
+	 */
+	public function request_itemsearch($q) {
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$url = new Url($this->wire('pages')->get('template=redir,redir_file=ii')->url);
+		$url->query->set('action', 'item-search');
+		$url->query->set('q', $q);
+		$url->query->set('custID', $this->get_custid());
+		$url->query->set('sessionID', session_id());
+		$requestor->self_request($url->getUrl());
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Cart Module',
+			'version' => 101,
+			'summary' => 'Handles Dpluso Cart',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+	public function init() {
+
+		/**
+		 * Adds Function remove_itemURL() to Page
+		 * @param  int    $linenbr Line Number to remove
+		 * @return string          URL to redirect to Remove Line Item
+		 */
+		$this->addHook('Page(pw_template=cart)::remove_itemURL', function($event) {
+			$page = $event->object;
+			$linenbr = $event->arguments(0);
+			$event->return = $page->child('template=redir')->url."?action=remove-line&linenbr=$linenbr";
+		});
+
+		/**
+		 * Adds Function empty_cartURL() to Page
+		 * @return string URL to redirect to Empty Cart
+		 */
+		$this->addHook('Page(pw_template=cart)::empty_cartURL', function($event) {
+			$page = $event->object;
+			$event->return = $page->child('template=redir')->url."?action=empty-cart";
+		});
+
+		/**
+		 * Adds Function ci_customerURL() to Page
+		 * @return string CI Customer Page URL
+		 */
+		$this->addHook('Page(pw_template=cart)::ci_customerURL', function($event) {
+			$page = $event->object;
+			$custID = $event->arguments(0);
+			$event->return = $this->wire('pages')->get('pw_template=ci-customer')->url.'?custID='.urlencode($custID);
+		});
+
+		/**
+		 * Adds Function ci_customerURL() to Page
+		 * @return string CI Customer Page URL
+		 */
+		$this->addHook('Page(pw_template=cart)::ci_customershiptoURL', function($event) {
+			$page = $event->object;
+			$custID   = $event->arguments(0);
+			$shiptoID = $event->arguments(1);
+
+			if ($shiptoID) {
+				$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customershiptoURL($custID, $shiptoID);
+			} else {
+				$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customerURL($custID);
+			}
+		});
+
+		/**
+		 * Adds Function view_notesURL to Page
+		 * @return string Cart Notes URL
+		 */
+		$this->addHook('Page(pw_template=cart)::view_notesURL', function($event) {
+			$page = $event->object;
+			$event->return = $page->child('pw_template=cart-notes')->url;
+		});
+
+		/**
+		 * Adds Function create_quoteURL() to Page
+		 * @return string URL to redirect to Create Quote
+		 */
+		$this->addHook('Page(pw_template=cart)::create_quoteURL', function($event) {
+			$page = $event->object;
+			$event->return = $page->child('template=redir')->url."?action=create-quote";
+		});
+
+		/**
+		 * Adds Function create_orderURL() to Page
+		 * @return string URL to redirect to Create Sales Order
+		 */
+		$this->addHook('Page(pw_template=cart)::create_orderURL', function($event) {
+			$page = $event->object;
+			$event->return = $page->child('template=redir')->url."?action=create-order";
+		});
+	}
+}

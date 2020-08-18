@@ -1,0 +1,83 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	receiveditem           PurchaseOrderDetailLotReceiving
+	labelsession           LabelPrintSession
+	m_print                module PrintLabelItemReceiving
+#}
+<div class="form-group">
+	<a href="{{ page.receive_poURL(receiveditem.ponbr) }}" class="btn btn-primary">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Receiving PO # {{ receiveditem.ponbr }}
+	</a>
+</div>
+<h3>Printing a label for {{ labelsession.itemid }} - {{ labelsession.lotserial }}</h3>
+<div class="row">
+	<div class="col-sm-6">
+		<form action="{{ page.fullURL.getUrl() }}" id="print-label-form" method="post">
+			<input type="hidden" name="action" value="print-receive-item-label">
+			<input type="hidden" name="ponbr" value="{{ receiveditem.ponbr }}">
+			<input type="hidden" name="linenbr" value="{{ receiveditem.linenbr }}">
+			<input type="hidden" name="itemID" value="{{ receiveditem.itemid }}">
+			<input type="hidden" name="lotserial" value="{{ receiveditem.lotserial }}">
+			<input type="hidden" name="binID" value="{{ receiveditem.binID }}">
+			<input type="hidden" name="whseID" value="{{ labelsession.whse }}">
+
+			<table class="table table-striped">
+				<tr>
+					<td colspan="2" class="bg-info text-white text-center"><b>Product Label</b></td>
+				</tr>
+				<tr class="input-row">
+					<td class="control-label" for="box-label">Product Label</td>
+					<td>
+						<div class="label-input">
+							<div class="input-group">
+								<div class="input-group-prepent">
+									<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#labelformats-modal" data-input="box-label">
+										<span class="fa fa-search"></span>
+									</button>
+								</div>
+								<input type="text" class="form-control input-sm required" name="box-label" id="box-label" value="{{ labelsession.label_box }}">
+							</div>
+							<small class="form-text text-muted label-desc">
+								{{ labelsession.label_box is not empty ? m_print.get_labelformat(labelsession.label_box).description : '' }}
+							</small>
+						</div>
+					</td>
+				</tr>
+				<tr class="input-row">
+					<td class="control-label" for="box-printer">Printer</td>
+					<td>
+						<div class="printer-input">
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#labelprinters-modal" data-input="box-printer">
+										<span class="fa fa-search"></span>
+									</button>
+								</div>
+								<input type="text" class="form-control input-sm required" name="box-printer" id="box-printer" value="{{ labelsession.printer_box }}">
+							</div>
+							<small class="form-text text-muted printer-desc">
+							{{ labelsession.printer_box is not empty ? m_print.get_printer(labelsession.printer_box).description : '' }}
+							</small>
+						</div>
+					</td>
+				</tr>
+				<tr class="input-row">
+					<td class="control-label" for="box-label-count">Nbr of Labels</td>
+					<td>
+						<input class="form-control input-sm qty required" type="number" name="box-label-count" id="box-label-count" value="{{ labelsession.nbr_box_labels }}">
+					</td>
+				</tr>
+			</table>
+			<div class="d-flex justify-content-between align-items-center">
+				<button type="submit" class="btn btn-success">
+					<i class="fa fa-print" aria-hidden="true"></i> Print Labels
+				</button>
+				<a href="{{ page.receive_poURL(receiveditem.ponbr) }}" class="btn btn-warning">
+					Cancel
+				</a>
+			</div>
+		</form>
+	</div>
+</div>

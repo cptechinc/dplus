@@ -26,8 +26,8 @@
 				if ($json['error']) {
 					$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 				} else {
-					$document_management = $modules->get('DocumentManagement');
-					$page->body .= $config->twig->render('items/ii/activity/activity-screen.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'date' => $date, 'itemID' => $itemID, 'document_management' => $document_management]);
+					$docm = $modules->get('DocumentManagementIi');
+					$page->body .= $config->twig->render('items/ii/activity/activity-screen.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'date' => $date, 'itemID' => $itemID, 'docm' => $docm]);
 				}
 			} else {
 				if ($session->activitytry > 3) {

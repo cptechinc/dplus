@@ -16,7 +16,7 @@
 									{{ module_formatter.format_celldata(invoice, column) }}
 
 									{% if i == 1 and invoice['Invoice Number'] %}
-										{% if document_management.count_arinvoicedocuments(invoice['Invoice Number']) %}
+										{% if docm.count_documents_invoice(invoice['Invoice Number']) %}
 											<a href="{{ page.documentsview_arinvoice(custID, invoice['Invoice Number'])}}" class="text-success" title="View Documents for Quote # {{ invoice['Invoice Number'] }}">
 												<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Invoice # {{ invoice['Invoice Number'] }}</span>
 											</a>

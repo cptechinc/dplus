@@ -1,12 +1,12 @@
 <?php namespace ProcessWire;
 
-include_once(__DIR__.'/Configs.trait.php');
+use ConfigSalesOrderQuery, ConfigSalesOrder;
 
 /**
  * Module for Warehouse Inventory configurations
  */
 class ConfigsWarehouseInventory extends Process implements ConfigurableModule {
-	use ConfigTraits;
+
 /* =============================================================
 		ProcessWire Module Functions
 =============================================================== */
@@ -40,6 +40,18 @@ class ConfigsWarehouseInventory extends Process implements ConfigurableModule {
 			'description' => 'Receive Lots as Single Items',
 			'notes'       => "Receive Lots as Single Items"
 		),
+		'receive_force_bin_itemlookup' => array(
+			'type'        => 'checkbox',  // TRUE OR FALSE
+			'label'       => 'Require Bin when looking up Item in Receving?',
+			'description' => 'Choose to Require the bin ID at Item Search',
+			'notes'       => ""
+		),
+		'receive_disregard_bin' => array(
+			'type'        => 'checkbox',
+			'label'       => 'Hide / Readonly Bin when Looking up',
+			'description' => 'Disregard Bin when Looking up',
+			'notes'       => ""
+		),
 	);
 
 	const DEFAULT_CONFIG = array(
@@ -47,25 +59,24 @@ class ConfigsWarehouseInventory extends Process implements ConfigurableModule {
 		'show_inventoryresults'   => 'lotserial',
 		'physicalcount_savebin'   => true,
 		'receive_lotserial_as_single' => false,
+		'receive_force_bin_itemlookup' => false,
+		'receive_disregard_bin'   => false
 	);
+
+	/**
+	 * Return number of decimals used for item quantities
+	 * @return int
+	 */
+	public function decimal_places() {
+		return ConfigSalesOrderQuery::create()->findOne()->decimal_places;
+	}
 
 	/* =============================================================
 			ProcessWire Module Functions
 	=============================================================== */
 	public function init() {
 		parent::init();
-
-		foreach(self::DEFAULT_CONFIG as $key => $value) {
-			if (isset($this->data[$key])) {
-				if (empty($this->data[$key])) {
-					$this->data[$key] = $value;
-				} else {
-					$this->data[$key] = $this->data[$key];
-				}
-			} else {
-				$this->data[$key] = $value;
-			}
-		}
+		$this->wire('modules')->get('ConfigsFields')->init_config($this);
 	}
 
 	/**
@@ -85,36 +96,14 @@ class ConfigsWarehouseInventory extends Process implements ConfigurableModule {
 
 	static public function getModuleConfigInputfields(array $data) {
 		$modules = wire('modules');
+		$fieldmaker = $modules->get('ConfigsFields');
 		$fields = new InputfieldWrapper();
 		$data = array_merge(self::DEFAULT_CONFIG, $data);
 
-		$traits = self::CONFIG_FIELDS['allow_negativeinventory'];
-		$f = $modules->get('InputfieldCheckbox');
-		$f->attr('name', 'allow_negativeinventory');
-		$f->attr('checked', $data['allow_negativeinventory'] ? 'checked' : '' );
-		$f->label = __($traits['label']);
-		$f->description = __($traits['description']);
-		$f->notes = _($traits['notes']);
-		$fields->add($f);
-
-		$traits = self::CONFIG_FIELDS['physicalcount_savebin'];
-		$f = $modules->get('InputfieldCheckbox');
-		$f->attr('name', 'physicalcount_savebin');
-		$f->attr('checked', $data['physicalcount_savebin'] ? 'checked' : '' );
-		$f->label = __($traits['label']);
-		$f->description = __($traits['description']);
-		$f->notes = _($traits['notes']);
-		$fields->add($f);
-
-		$traits = self::CONFIG_FIELDS['receive_lotserial_as_single'];
-		$f = $modules->get('InputfieldCheckbox');
-		$f->attr('name', 'receive_lotserial_as_single');
-		$f->attr('checked', $data['receive_lotserial_as_single'] ? 'checked' : '' );
-		$f->label = __($traits['label']);
-		$f->description = __($traits['description']);
-		$f->notes = _($traits['notes']);
-		$fields->add($f);
-
+		foreach (self::CONFIG_FIELDS as $name => $traits) {
+			$f = $fieldmaker->get_module_config_inputfield($traits, $name, $data[$name]);
+			$fields->add($f);
+		}
 		return $fields;
 	}
 }

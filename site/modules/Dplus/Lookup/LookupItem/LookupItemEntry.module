@@ -32,7 +32,7 @@ class LookupItemEntry extends LookupItem implements Module {
 	 */
 	public function lookup_input(WireInput $input) {
 		$itemID = $input->get->itemID ? $input->get->text('itemID') : $input->get->text('q');
-
+		$itemID = strtoupper($itemID);
 		$custID = $input->get->text('custID');
 		$shiptoID = $input->get->text('shiptoID');
 

@@ -1,0 +1,45 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	config                 module ConfigsWarehouseInventory
+	resultscount           number of items returned
+	items                  Invsearch[]|ObjectCollection
+	warehouse              Warehouse
+	inventory              module SearchInventory
+#}
+<div class="d-flex justify-content-between p-2 mb-3">
+	<strong>Bin:</strong> (MULTIPLE)
+	<strong>Qty:</strong> {{ inventory.get_qty_itemid(item.itemid)|number_format(config.decimal_places()) }}
+	{% if (not page.is_print()) %}
+		<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ item.itemid|attrJS }}-bins" aria-expanded="false" aria-controls="{{ item.itemid }}-lotserial">
+			Show / Hide Bins
+		</button>
+	{% endif %}
+</div>
+
+<div class="collapse-bin {{ not page.is_print() ? 'collapse' : '' }}" id="{{ item.itemid|attrJS  }}-bins">
+	<div class="">
+		<div class="list-group list-group-flush">
+			{% for binitem in inventory.get_bins_itemid(item.itemid) %}
+				<div class="list-group-item bg-light p-1">
+					<div class="row">
+						<div class="col">
+							<h5>
+								<strong>Bin:</strong> {{ binitem.bin }}
+							</h5>
+						</div>
+						<div class="col">
+							<strong>Qty:</strong> {{ inventory.get_qty_itemid(item.itemid, binitem.bin)|number_format(config.decimal_places()) }}
+						</div>
+						<div class="col">
+							{% if (not warehouse.validate_bin(binitem.bin)) %}
+								<span class="badge badge-danger">Invalid Bin</span>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
