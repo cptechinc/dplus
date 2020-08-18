@@ -1,8 +1,11 @@
 <?php namespace ProcessWire;
 
 use PurchaseOrderNoteQuery, PurchaseOrderNote;
-use ConfigArQuery, ConfigAr;
-use ConfigSalesOrderQuery, ConfigSalesOrder;
+
+use Purl\Url;
+
+use ConfigApQuery;
+
 
 include_once(__DIR__.'/QnotesResponse.php');
 
@@ -28,8 +31,8 @@ class QnotesPo extends WireData implements Module {
 	 * @return int
 	 */
 	public function get_column_count() {
-		$configAR = ConfigArQuery::create()->findOne();
-		return $configAR->columns_notes_invoice;
+		$configAP = $this->wire('modules')->get('ConfigureAp')->config();
+		return $configAP->columns_notes_pord;
 	}
 
 	/**
@@ -62,11 +65,11 @@ class QnotesPo extends WireData implements Module {
 	 * @param  int    $linenbr Line Number
 	 * @return bool
 	 */
-	public function get_note($ponbr, $linenbr) {
+	public function get_note($ponbr, $linenbr, $sequence = 1) {
 		$q = $this->get_query();
 		$q->filterByPonbr($ponbr);
 		$q->filterByLine($linenbr);
-		$q->filterBySequence(1);
+		$q->filterBySequence($sequence);
 		return $q->findOne();
 	}
 
@@ -99,7 +102,7 @@ class QnotesPo extends WireData implements Module {
 	}
 
 /* =============================================================
-	CRUD Delete
+	CRUD Delete, Create
 ============================================================= */
 	/**
 	 * Delete Notes for Form
@@ -118,6 +121,28 @@ class QnotesPo extends WireData implements Module {
 		return true;
 	}
 
+	/**
+	 * Creates Purchase Order Note Record
+	 * @param  string $ponbr    Purchase Order Number
+	 * @param  int    $linenbr  Line Number (On PO)
+	 * @param  int    $sequence Sequence (Note Line Number)
+	 * @param  string $note     Note Line
+	 * @return bool
+	 */
+	public function create_new_note($ponbr, int $linenbr, int $sequence = 1, $note = '') {
+		$record = PurchaseOrderNote::new();
+		$record->setPonbr($ponbr);
+		$record->setLine($linenbr);
+		$record->generateKey2(); // PK
+		$record->setSequence($sequence); // PK
+		$record->setForm('');
+		$record->setNote($note);
+		$record->setDate(date('Ymd'));
+		$record->setTime(date('His'));
+		$record->setDummy('P');
+		return $record->save();
+	}
+
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
@@ -129,12 +154,12 @@ class QnotesPo extends WireData implements Module {
 	 */
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$lookup_orders = $this->wire('modules')->get('LookupSalesOrder');
+		$validate_ponbr = $this->wire('modules')->get('ValidatePurchaseOrderNbr');
 		$ponbr = $input->$rm->text('ponbr');
 
-		if ($lookup_orders->lookup_saleshistory($ponbr)) {
-			$this->wire('modules')->get('QnotesSalesHistory')->process_input($input);
-		} else {
+		if ($validate_ponbr->validate_invoice($ponbr)) {
+			// $this->wire('modules')->get('QnotesSalesHistory')->process_input($input);
+		} elseif ($validate_ponbr->validate($ponbr)) {
 			switch ($input->$rm->text('action')) {
 				case 'update-notes':
 					$this->update_notes_input($input);
@@ -143,6 +168,8 @@ class QnotesPo extends WireData implements Module {
 					$this->delete_notes_input($input);
 					break;
 			}
+		} else {
+
 		}
 	}
 
@@ -154,19 +181,16 @@ class QnotesPo extends WireData implements Module {
 	 */
 	public function delete_notes_input($input) {
 		$rm = strtolower($input->requestMethod());
-		$ponbr  = $input->$rm->text('ponbr');
-		$linenbr = $input->$rm->text('linenbr');
-		$q = $this->get_query();
-		$q->filterByPonbr($ponbr);
-		$q->filterByLine($linenbr);
+		$values  = $input->$rm;
+		$ponbr   = $values->text('ponbr');
+		$linenbr = $values->int('linenbr');
 
-		if ($q->count()) {
-			$note = $q->findOne();
+		if ($this->notes_exist($ponbr, $linenbr)) {
+			$note = $this->get_note($ponbr, $linenbr);
 		} else {
 			$note = new PurchaseOrderNote();
 			$note->setPonbr($ponbr);
 			$note->setLine($linenbr);
-			$note->setForm($form);
 		}
 		$success = $this->delete_notes($ponbr, $linenbr);
 
@@ -183,36 +207,18 @@ class QnotesPo extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$ponbr   = $values->text('ponbr');
-		$linenbr = $values->text('linenbr');
-		$form    = $values->text('form');
-		$note_lines = $this->wire('modules')->get('Qnote')->note_lines($values->textarea('note'), $this->get_column_count());
+		$linenbr = $values->int('linenbr');
+		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($values->textarea('note'), $this->get_column_count());
 		$lines_saved = array();
 
 		$this->delete_notes($ponbr, $linenbr);
 
 		foreach ($note_lines as $key => $line) {
 			$sequence = $key + 1;
-			$record = new PurchaseOrderNote();
-			$record->setType(PurchaseOrderNote::TYPE); // PK
-			$record->setDescription(PurchaseOrderNote::DESCRIPTION);
-			$record->setPonbr($ponbr);
-			$record->setLine($linenbr);
-			$record->generateKey2(); // PK
-			$record->setSequence($sequence); // PK
-			$record->setForm($form);
-			$record->setNote($line);
-
-			$record->setPickticket($input->$rm->text('check_pick') == PurchaseOrderNote::FORM_TRUE ? 'Y' : 'N');
-			$record->setPackticket($input->$rm->text('check_pack') == PurchaseOrderNote::FORM_TRUE ? 'Y' : 'N');
-			$record->setInvoice($input->$rm->text('check_invoice') == PurchaseOrderNote::FORM_TRUE ? 'Y' : 'N');
-			$record->setAcknowledgement($input->$rm->text('check_acknowledgement') == PurchaseOrderNote::FORM_TRUE ? 'Y' : 'N');
-
-			$record->setDate(date('Ymd'));
-			$record->setTime(date('His'));
-			$record->setDummy('P');
-			$lines_saved[$sequence] = $record->save();
+			$lines_saved[$sequence] = $this->create_new_note($ponbr, $linenbr, $sequence, $line);
 		}
-		$this->wire('session')->response_qnote = $this->process_responses($record, $ponbr, $lines_saved);
+
+		$this->wire('session')->response_qnote = $this->process_responses($this->get_note($ponbr, $linenbr, $sequence), $ponbr, $lines_saved);
 	}
 
 /* =============================================================
@@ -305,11 +311,11 @@ class QnotesPo extends WireData implements Module {
 		}
 
 		if ($this->notes_exist($ponbr, $linenbr)) {
-			$note = $this->get_note();
+			$note = $this->get_note($ponbr, $linenbr);
 			return $note->editable();
 		} else {
-			$config = ConfigPoQuery::create()->findOne();
-			return $config->allow_po_item_notes();
+			$configPO = $this->wire('modules')->get('ConfigurePo')->config();
+			return $configPO->allow_po_item_notes();
 		}
 	}
 
@@ -326,5 +332,18 @@ class QnotesPo extends WireData implements Module {
 			'autoload' => true,
 			'requires' => array('Qnotes')
 		);
+	}
+
+	public function init() {
+
+		$this->addHook('Page(pw_template=purchase-order-notes)::view_notesURL', function($event) {
+			$p = $event->object;
+			$ponbr = $event->arguments(0);
+			$linenbr = $event->arguments(1);
+			$url = new Url($this->wire('pages')->get('pw_template=purchase-order-notes')->url);
+			$url->query->set('ponbr', $ponbr);
+			$hash = $linenbr > 0 ? "#line-$linenbr" : '';
+			$event->return = $url->getUrl()."$hash";
+		});
 	}
 }

@@ -13,11 +13,11 @@
 </div>
 
 <h3>Header Notes</h3>
-{% include 'purchase-orders/purchase-order/qnotes/qnote.twig' with {'title': 'Header', 'linenbr': 0} %}
+{% include 'purchase-orders/purchase-order/qnotes/qnote.twig' with {'title': 'Header', 'linenbr': 0, 'show_edit': true} %}
 
 <h3>Item Notes</h3>
 {% for item in purchaseorder.getPurchaseOrderDetails() %}
-	{% include 'purchase-orders/purchase-order/qnotes/qnote.twig' with {'title': 'Line #' ~ item.linenbr ~ ': ' ~ item.itemid , 'linenbr': item.linenbr} %}
+	{% include 'purchase-orders/purchase-order/qnotes/qnote.twig' with {'title': 'Line #' ~ item.linenbr ~ ': ' ~ item.itemid , 'linenbr': item.linenbr, 'show_edit': true} %}
 {% endfor %}
 {% include 'purchase-orders/purchase-order/qnotes/modal.twig' %}
 {% include 'msa/noce/ajax/notes-modal.twig' %}

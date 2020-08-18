@@ -1,8 +1,16 @@
 <?php
 	// TODO : INVOICED
+	$rm = strtolower($input->requestMethod());
+	$values = $input->$rm;
 	$modules->get('DpagesMpo')->init_purchaseorder_hooks();
 	$qnotes = $modules->get('QnotesPo');
 	$page->title = "Notes";
+
+	if ($values->action) {
+		$ponbr = PurchaseOrder::get_paddedponumber($values->text('ponbr'));
+		$qnotes->process_input($input);
+		$session->redirect($page->view_notesURL($ponbr));
+	}
 
 	if ($input->get->ponbr) {
 		$ponbr = PurchaseOrder::get_paddedponumber($input->get->text('ponbr'));
@@ -16,6 +24,7 @@
 			$page->body .= $config->twig->render('purchase-orders/purchase-order/qnotes/qnotes.twig', ['page' => $page, 'ponbr' => $ponbr, 'purchaseorder' => $purchaseorder, 'qnotes' => $qnotes]);
 			$page->search_notesURL = $pages->get('pw_template=msa-noce-ajax')->url;
 			$page->js .= $config->twig->render('msa/noce/ajax/js.twig', ['page' => $page]);
+			$page->js .= $config->twig->render('purchase-orders/purchase-order/qnotes/js.twig', []);
 		} else {
 			$page->headline = $page->title = "Purchase Order #$ponbr could not be found";
 			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Check if the Purchase Order Number is correct"]);
