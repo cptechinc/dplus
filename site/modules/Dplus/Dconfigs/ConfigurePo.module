@@ -1,0 +1,38 @@
+<?php namespace ProcessWire;
+
+use ConfigPoQuery, ConfigPo;
+
+
+/**
+ * ConfigurePo
+ *
+ * Class for setting PurchaseOrder Configs
+ */
+class ConfigurePo extends WireData implements Module {
+	/**
+	 * Returns Quote Notes Query
+	 * @return ConfigPoQuery
+	 */
+	public function query() {
+		return ConfigPoQuery::create();
+	}
+
+	/**
+	 * Return Config Record
+	 * @return ConfigPo
+	 */
+	public function config() {
+		return $this->query()->findOne();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Configure Purchase Order Config',
+			'version' => 101,
+			'summary' => 'Dplus ConfigPo CRUD methods',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array()
+		);
+	}
+}

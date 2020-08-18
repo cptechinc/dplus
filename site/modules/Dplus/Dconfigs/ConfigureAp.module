@@ -1,0 +1,38 @@
+<?php namespace ProcessWire;
+
+use ConfigApQuery, ConfigAp;
+
+
+/**
+ * ConfigureAp
+ *
+ * Class for setting Accounts Payable Configs
+ */
+class ConfigureAp extends WireData implements Module {
+	/**
+	 * Returns Quote Notes Query
+	 * @return ConfigApQuery
+	 */
+	public function query() {
+		return ConfigApQuery::create();
+	}
+
+	/**
+	 * Return Config Record
+	 * @return ConfigAp
+	 */
+	public function config() {
+		return $this->query()->findOne();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Configure Accounts Payable',
+			'version' => 101,
+			'summary' => 'Dplus ConfigAp CRUD methods',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array()
+		);
+	}
+}
