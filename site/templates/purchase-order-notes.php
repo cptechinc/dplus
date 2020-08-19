@@ -1,8 +1,9 @@
 <?php
-	// TODO : INVOICED
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
 	$modules->get('DpagesMpo')->init_purchaseorder_hooks();
+
+
 	$qnotes = $modules->get('QnotesPo');
 	$page->title = "Notes";
 
@@ -21,10 +22,11 @@
 			$page->body .= $config->twig->render('purchase-orders/purchase-order/bread-crumbs.twig', ['page' => $page, 'ponbr' => $ponbr]);
 			$purchaseorder = $query->findOne();
 			$page->headline = "PO #$ponbr Notes";
-			$page->body .= $config->twig->render('purchase-orders/purchase-order/qnotes/qnotes.twig', ['page' => $page, 'ponbr' => $ponbr, 'purchaseorder' => $purchaseorder, 'qnotes' => $qnotes]);
+			$page->body .= $config->twig->render('purchase-orders/purchase-order/qnotes/qnotes.twig', ['page' => $page, 'db' => $db_dplusdata, 'ponbr' => $ponbr, 'purchaseorder' => $purchaseorder, 'qnotes' => $qnotes]);
 			$page->search_notesURL = $pages->get('pw_template=msa-noce-ajax')->url;
 			$page->js .= $config->twig->render('msa/noce/ajax/js.twig', ['page' => $page]);
-			$page->js .= $config->twig->render('purchase-orders/purchase-order/qnotes/js.twig', []);
+			$page->js .= $config->twig->render('purchase-orders/purchase-order/qnotes/pord/js.twig', []);
+			$page->js .= $config->twig->render('purchase-orders/purchase-order/qnotes/intl/js.twig', []);
 		} else {
 			$page->headline = $page->title = "Purchase Order #$ponbr could not be found";
 			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Check if the Purchase Order Number is correct"]);

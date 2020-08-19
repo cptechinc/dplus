@@ -1,0 +1,23 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	purchaseorder          PurchaseOrder
+	ponbr                  Purchase Order Number
+	qnotes                 module QnotesPo
+	qnotes.pord            module QnotesPoPord
+
+	title                  Title for Notes
+	linenbr                Purchase Order Line Number
+	show_edit              (bool) Show Edit Button?
+#}
+<div class="form-group qnote-row" data-linenbr="{{ linenbr }}" id="notes-{{ linenbr }}" data-editable="{{ qnotes.pord.allow_edit(ponbr, linenbr) ? 'true' : 'false' }}">
+	<textarea class="form-control-plaintext qnotes" cols="{{ qnotes.pord.get_column_count() }}" readonly>{{ qnotes.pord.get_notes_form_array(ponbr, linenbr)|join('\r') }}</textarea>
+</div>
+
+{% if qnotes.pord.allow_edit(ponbr, linenbr) and show_edit == true %}
+	<button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#notes-pord-modal" data-linenbr="{{ linenbr }}">
+		<i class="fa {{ qnotes.pord.notes_exist(ponbr,  linenbr) ? 'fa-pencil' : 'fa-plus' }}" aria-hidden="true"></i>
+		{{ qnotes.pord.notes_exist(ponbr, linenbr) ? 'Edit' : 'Add' }}
+	</button>
+{% endif %}

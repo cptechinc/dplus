@@ -1,5 +1,5 @@
 $(function() {
-	var modal_notes = $('#note-modal');
+	var modal_notes = $('#notes-pord-modal');
 	var form = modal_notes.find('form');
 	var input_note = form.find('textarea[name=note]');
 /* =============================================================
@@ -10,8 +10,6 @@ $(function() {
 		var modal = $(this);
 		var button = $(event.relatedTarget);
 		var linenbr = button.data('linenbr');
-
-
 		var modaltitle = modal.find('.modal-title');
 
 		if (note.length) {
@@ -22,9 +20,7 @@ $(function() {
 
 		var description = parseInt(linenbr) > 0 ? 'Line #' + linenbr : 'Header';
 		modaltitle.find('.description').text(description);
-
 		populate_form(linenbr);
-
 	});
 
 	function populate_form(linenbr) {

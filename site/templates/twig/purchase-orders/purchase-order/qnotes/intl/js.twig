@@ -1,0 +1,47 @@
+$(function() {
+	var modal_notes = $('#notes-intl-modal');
+	var form = modal_notes.find('form');
+	var input_note = form.find('textarea[name=note]');
+	var input_date = form.find('input[name=notedate]');
+	var input_time = form.find('input[name=notetime]');
+	var input_linenbr = form.find('input[name=linenbr]');
+
+/* =============================================================
+	Event Functions
+============================================================= */
+
+	modal_notes.on('show.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget);
+		populate_form(modal, button);
+	});
+
+	function populate_form(modal, button) {
+		var linenbr = button.data('linenbr');
+		var userid  = button.data('userid');
+		var date_raw = button.data('date');
+		var time_raw = button.data('time');
+		var date_formatted = moment(date_raw,'YYYYMMDD').format('MM/DD/YYYY');
+		var time_formatted = moment(time_raw,'hhmmss').format('HH:mm');
+		var note = '';
+		var title = 'Add Note';
+
+		if ($('#notes-intl-'+date_raw+'-'+time_raw+'-'+userid).length) {
+			input_date.attr('readonly', 'true');
+			input_time.attr('readonly', 'true');
+			note = $('#notes-intl-'+date_raw+'-'+time_raw+'-'+userid).val();
+			title = 'Edit Note';
+		} else {
+			note = '';
+			input_date.removeAttr('readonly');
+			input_time.removeAttr('readonly');
+		}
+
+		modal.find('.modal-title').text(title);
+
+		input_linenbr.val(linenbr);
+		input_note.val(note);
+		input_date.val(date_formatted);
+		input_time.val(time_formatted);
+	}
+});
