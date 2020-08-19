@@ -1,29 +1,30 @@
 <?php namespace ProcessWire;
 
-use PurchaseOrderNoteQuery, PurchaseOrderNote;
+use PurchaseOrderNoteInternalQuery, PurchaseOrderNoteInternal;
 
 use Purl\Url;
 
 use ConfigApQuery;
 
 
-include_once(__DIR__.'/QnotesResponse.php');
+include_once(__DIR__.'/../QnotesResponse.php');
 
 /**
- * QnotesSalesOrder
+ * QnotesIntl
  *
- * Class for Writing and Reading Qnotes for Purchase Orders
+ * Class for Writing and Reading Qnotes for Purchase Orders (iNTL)
  */
-class QnotesPo extends WireData implements Module {
-	const MODEL              = 'PurchaseOrderNote';
+class QnotesPoIntl extends WireData implements Module {
+	const MODEL              = 'PurchaseOrderNoteInternal';
 	const MODEL_KEY          = '';
-	const DESCRIPTION        = 'Purchase Order Note';
-	const DESCRIPTION_RECORD = 'Purchase Order Note';
-	const DESCRIPTION_RESPONSE = 'Purchase Order ';
-	const MODEL_TABLE = 'notes_po_head_det';
+	const DESCRIPTION        = 'Purchase Order Internal Note';
+	const DESCRIPTION_RECORD = 'Purchase Order Internal Note';
+	const DESCRIPTION_RESPONSE = 'Purchase Order Internal ';
+	const MODEL_TABLE = 'notes_po_internal';
+	const TYPE = 'INTL';
 
-	public function allow_add(User $user, $ponbr) {
-		return true;
+	public function type() {
+		return self::TYPE;
 	}
 
 	/**
@@ -31,16 +32,24 @@ class QnotesPo extends WireData implements Module {
 	 * @return int
 	 */
 	public function get_column_count() {
-		$configAP = $this->wire('modules')->get('ConfigureAp')->config();
-		return $configAP->columns_notes_pord;
+		return 63;
 	}
 
 	/**
 	 * Returns Purchase Order Notes Query
-	 * @return PurchaseOrderNoteQuery
+	 * @return PurchaseOrderNoteInternalQuery
 	 */
 	public function get_query() {
-		return PurchaseOrderNoteQuery::create();
+		return PurchaseOrderNoteInternalQuery::create();
+	}
+
+	/**
+	 * Set User & User ID
+	 * @param User $user
+	 */
+	public function set_user(User $user) {
+		$this->user   = $user;
+		$this->userID = $user->loginid;
 	}
 
 /* =============================================================
@@ -60,12 +69,35 @@ class QnotesPo extends WireData implements Module {
 	}
 
 	/**
-	 * Returns if Notes Exist
-	 * @param  string $ponbr   Order Number
-	 * @param  int    $linenbr Line Number
-	 * @return bool
+	 * Return if User Note Exists
+	 * @param  string $ponbr    Order Number
+	 * @param  int    $linenbr  Line Number
+	 * @param  string $userID   Note Author
+	 * @param  string $date     Note Date (raw)
+	 * @param  string $time     Note Time (raw)
+	 * @return array
 	 */
-	public function get_note($ponbr, $linenbr, $sequence = 1) {
+	public function user_notes_exist($ponbr, $linenbr, $userID, $date, $time) {
+		$q = $this->get_query();
+		$q->filterByPonbr($ponbr);
+		$q->filterByLine($linenbr);
+		$q->filterByUserid($userID);
+		$q->filterByNotedate(date(PurchaseOrderNoteInternal::FORMAT_NOTEDATE, strtotime($date)));
+		$q->filterByNotetime(date(PurchaseOrderNoteInternal::FORMAT_NOTETIME, strtotime($date.$time)));
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return Note Line
+	 * @param  string $ponbr     Order Number
+	 * @param  int    $linenbr   Line Number
+	 * @param  string $userID    Note Author
+	 * @param  string $date      Note Date (raw)
+	 * @param  string $time      Note Time (raw)
+	 * @param  int    $sequence  Note Line number
+	 * @return PurchaseOrderNoteInternal
+	 */
+	public function get_note($ponbr, $linenbr, $userID, $date, $time, $sequence = 1) {
 		$q = $this->get_query();
 		$q->filterByPonbr($ponbr);
 		$q->filterByLine($linenbr);
@@ -77,27 +109,37 @@ class QnotesPo extends WireData implements Module {
 	 * Returns Line 1 of Every Note
 	 * @param  string $ponbr    Order Number
 	 * @param  int    $linenbr Line Number
-	 * @return PurchaseOrderNote[]|ObjectCollection
+	 * @return PurchaseOrderNoteInternal[]|ObjectCollection
 	 */
-	public function get_notes_summarized($ponbr, $linenbr) {
+	public function get_notes_summarized($ponbr, $linenbr, $orderby = '') {
 		$q = $this->get_query();
 		$q->filterByPonbr($ponbr);
 		$q->filterByLine($linenbr);
 		$q->filterBySequence(1);
+		if (!$orderby) {
+			$q->orderByNotedate('DESC');
+			$q->orderByNotetime('DESC');
+		}
 		return $q->find();
 	}
 
 	/**
-	 * Return Notes for Form
+	 * Return User Notes
 	 * @param  string $ponbr    Order Number
-	 * @param  int    $linenbr Line Number
+	 * @param  int    $linenbr  Line Number
+	 * @param  string $userID   Note Author
+	 * @param  string $date     Note Date (raw)
+	 * @param  string $time     Note Time (raw)
 	 * @return array
 	 */
-	public function get_notes_form_array($ponbr, $linenbr) {
+	public function get_notes_form_array($ponbr, $linenbr, $userID, $date, $time) {
 		$q = $this->get_query();
-		$q->select(PurchaseOrderNote::get_aliasproperty('note'));
+		$q->select(PurchaseOrderNoteInternal::get_aliasproperty('note'));
 		$q->filterByPonbr($ponbr);
 		$q->filterByLine($linenbr);
+		$q->filterByUserid($userID);
+		$q->filterByNotedate($date);
+		$q->filterByNotetime($time);
 		return $q->find()->toArray();
 	}
 
@@ -107,13 +149,19 @@ class QnotesPo extends WireData implements Module {
 	/**
 	 * Delete Notes for Form
 	 * @param  string $ponbr    Order Number
-	 * @param  int    $linenbr Line Number
+	 * @param  int    $linenbr  Line Number
+	 * @param  string $userID   Note Author
+	 * @param  string $date     Note Date (raw)
+	 * @param  string $time     Note Time (raw)
 	 * @return array
 	 */
-	public function delete_notes($ponbr, $linenbr) {
+	public function delete_notes($ponbr, $linenbr, $userID, $date, $time) {
 		$q = $this->get_query();
 		$q->filterByPonbr($ponbr);
 		$q->filterByLine($linenbr);
+		$q->filterByUserid($userID);
+		$q->filterByNotedate($date);
+		$q->filterByNotetime($time);
 
 		if ($q->count()) {
 			return $q->delete();
@@ -125,14 +173,20 @@ class QnotesPo extends WireData implements Module {
 	 * Creates Purchase Order Note Record
 	 * @param  string $ponbr    Purchase Order Number
 	 * @param  int    $linenbr  Line Number (On PO)
+	 * @param  string $userID   Note Author
+	 * @param  string $date     Note Date (raw)
+	 * @param  string $time     Note Time (raw)
 	 * @param  int    $sequence Sequence (Note Line Number)
 	 * @param  string $note     Note Line
 	 * @return bool
 	 */
-	public function create_new_note($ponbr, int $linenbr, int $sequence = 1, $note = '') {
-		$record = PurchaseOrderNote::new();
+	public function create_note($ponbr, int $linenbr, $userID, $date, $time, int $sequence = 1, $note = '') {
+		$record = PurchaseOrderNoteInternal::new();
 		$record->setPonbr($ponbr);
 		$record->setLine($linenbr);
+		$record->setUserid($userID);
+		$record->setNotedate($date);
+		$record->setNotetime($time);
 		$record->generateKey2(); // PK
 		$record->setSequence($sequence); // PK
 		$record->setForm('');
@@ -157,9 +211,7 @@ class QnotesPo extends WireData implements Module {
 		$validate_ponbr = $this->wire('modules')->get('ValidatePurchaseOrderNbr');
 		$ponbr = $input->$rm->text('ponbr');
 
-		if ($validate_ponbr->validate_invoice($ponbr)) {
-			// $this->wire('modules')->get('QnotesSalesHistory')->process_input($input);
-		} elseif ($validate_ponbr->validate($ponbr)) {
+		if ($validate_ponbr->validate($ponbr)) {
 			switch ($input->$rm->text('action')) {
 				case 'update-notes':
 					$this->update_notes_input($input);
@@ -167,9 +219,12 @@ class QnotesPo extends WireData implements Module {
 				case 'delete-notes':
 					$this->delete_notes_input($input);
 					break;
+				default:
+					$this->wire('session')->response_qnote = QnotesResponse::response_error($ponbr, 'Unspecified Qnote Action');
+					break;
 			}
 		} else {
-
+			$this->wire('session')->response_qnote = QnotesResponse::response_error($ponbr, 'Invalid PO Number');
 		}
 	}
 
@@ -184,15 +239,22 @@ class QnotesPo extends WireData implements Module {
 		$values  = $input->$rm;
 		$ponbr   = $values->text('ponbr');
 		$linenbr = $values->int('linenbr');
+		$userID  = $values->text('userID');
+		$date    = date(PurchaseOrderNoteInternal::FORMAT_NOTEDATE, strtotime($values->text('date')));
+		$time    = date(PurchaseOrderNoteInternal::FORMAT_NOTETIME, strtotime($date.$values->text('time')));
+		$time    = str_pad($time, 8, '0', STR_PAD_RIGHT);
 
-		if ($this->notes_exist($ponbr, $linenbr)) {
-			$note = $this->get_note($ponbr, $linenbr);
+		if ($this->user_notes_exist($ponbr, $linenbr, $userID, $date, $time)) {
+			$note = $this->get_note($ponbr, $linenbr, $userID, $date, $time);
 		} else {
-			$note = new PurchaseOrderNote();
+			$note = new PurchaseOrderNoteInternal();
 			$note->setPonbr($ponbr);
 			$note->setLine($linenbr);
+			$note->setUserid($userID);
+			$note->setNotedate($date);
+			$note->setNotetime($time);
 		}
-		$success = $this->delete_notes($ponbr, $linenbr);
+		$success = $this->delete_notes($ponbr, $linenbr, $userID, $date, $time);
 
 		$this->wire('session')->response_qnote = $this->process_response_delete($note, $ponbr, $success);
 	}
@@ -208,17 +270,22 @@ class QnotesPo extends WireData implements Module {
 		$values = $input->$rm;
 		$ponbr   = $values->text('ponbr');
 		$linenbr = $values->int('linenbr');
+		$userID  = $values->text('userID');
+		$date    = date(PurchaseOrderNoteInternal::FORMAT_NOTEDATE, strtotime($values->text('notedate')));
+		$time    = date(PurchaseOrderNoteInternal::FORMAT_NOTETIME, strtotime($date.$values->text('notetime')));
+		$time    = str_pad($time, 8, '0', STR_PAD_RIGHT);
+
 		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($values->textarea('note'), $this->get_column_count());
 		$lines_saved = array();
 
-		$this->delete_notes($ponbr, $linenbr);
+		$this->delete_notes($ponbr, $linenbr, $userID, $date, $time);
 
 		foreach ($note_lines as $key => $line) {
 			$sequence = $key + 1;
-			$lines_saved[$sequence] = $this->create_new_note($ponbr, $linenbr, $sequence, $line);
+			$lines_saved[$sequence] = $this->create_note($ponbr, $linenbr, $userID, $date, $time, $sequence, $line);
 		}
 
-		$this->wire('session')->response_qnote = $this->process_responses($this->get_note($ponbr, $linenbr, $sequence), $ponbr, $lines_saved);
+		$this->wire('session')->response_qnote = $this->process_responses($this->get_note($ponbr, $linenbr, $userID, $date, $time), $ponbr, $lines_saved);
 	}
 
 /* =============================================================
@@ -227,14 +294,14 @@ class QnotesPo extends WireData implements Module {
 	/**
 	 * Return Code Table Response based on the number of lines that were written to the database
 	 * @param  string $ponbr         Purchase Order Number
-	 * @param  array  $lines_saved  array of line numbers and if they got saved e.g. (1 => true, 2 => false)
+	 * @param  array  $lines_saved   array of line numbers and if they got saved e.g. (1 => true, 2 => false)
 	 * @return CodeTableResponse
 	 */
-	protected function process_responses(PurchaseOrderNote $note, $ponbr, array $lines_saved) {
+	protected function process_responses(PurchaseOrderNoteInternal $note, $ponbr, array $lines_saved) {
 		$message = self::DESCRIPTION_RESPONSE . " ($ponbr) Note Lines";
 
 		$response = new QnotesResponse();
-		$response->set_key("$ponbr-{$note->line}-{$note->form}");
+		$response->set_key("$ponbr-{$note->line}");
 
 		if (in_array(false, $lines_saved)) {
 			$lines_error =
@@ -257,19 +324,19 @@ class QnotesPo extends WireData implements Module {
 
 		// IF there are lines saved
 		if (sizeof($lines_saved)) {
-			$this->wire('modules')->get('Qnotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+			$this->wire('modules')->get('Qponotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
 		}
 		return $response;
 	}
 
 	/**
 	 * Return QnoteResponse based if Notes were able to be Deleted
-	 * @param  PurchaseOrderNote   $note         Attributes are needed to generate key
-	 * @param  string            $ponbr         Purchase Order Number
-	 * @param  array             $success      Were Notes able to be deleted?
+	 * @param  PurchaseOrderNoteInternal   $note         Attributes are needed to generate key
+	 * @param  string                      $ponbr        Purchase Order Number
+	 * @param  array                       $success      Were Notes able to be deleted?
 	 * @return QnoteResponse
 	 */
-	public function process_response_delete(PurchaseOrderNote $note, $ponbr, bool $success) {
+	public function process_response_delete(PurchaseOrderNoteInternal $note, $ponbr, bool $success) {
 		$message = self::DESCRIPTION_RESPONSE . " ($ponbr) Notes ";
 
 		$response = new QnotesResponse();
@@ -288,7 +355,7 @@ class QnotesPo extends WireData implements Module {
 
 		// IF there are lines saved
 		if ($success) {
-			$this->wire('modules')->get('Qnotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+			$this->wire('modules')->get('Qponotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
 		}
 		return $response;
 	}
@@ -325,9 +392,9 @@ class QnotesPo extends WireData implements Module {
 ============================================================= */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Qnotes Purchase Order',
+			'title' => 'Qnotes Purchase Order Internal',
 			'version' => 101,
-			'summary' => 'Qnotes Purchase Order methods',
+			'summary' => 'Qnotes Purchase Order Internal methods',
 			'singular' => true,
 			'autoload' => true,
 			'requires' => array('Qnotes')
@@ -335,15 +402,7 @@ class QnotesPo extends WireData implements Module {
 	}
 
 	public function init() {
-
-		$this->addHook('Page(pw_template=purchase-order-notes)::view_notesURL', function($event) {
-			$p = $event->object;
-			$ponbr = $event->arguments(0);
-			$linenbr = $event->arguments(1);
-			$url = new Url($this->wire('pages')->get('pw_template=purchase-order-notes')->url);
-			$url->query->set('ponbr', $ponbr);
-			$hash = $linenbr > 0 ? "#line-$linenbr" : '';
-			$event->return = $url->getUrl()."$hash";
-		});
+		$this->user   = $this->wire('user');
+		$this->userID = $this->wire('user')->loginid;
 	}
 }
