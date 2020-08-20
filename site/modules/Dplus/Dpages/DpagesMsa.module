@@ -140,6 +140,11 @@ class DpagesMsa extends Dpages implements Module {
 			$focus = $event->arguments(0);
 			$event->return = $this->get_noce_listURL($focus);
 		});
+
+		$this->addHook('Page(pw_template=msa-noce)::code_deleteURL', function($event) {
+			$code = $event->arguments(0);
+			$event->return = $this->get_noce_deleteURL($code);
+		});
 	}
 
 	public function get_codetable_listURL($table, $code = false) {
@@ -198,6 +203,13 @@ class DpagesMsa extends Dpages implements Module {
 	public function get_noce_listURL($focus = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=msa-noce")->url);
 		$url->query->set('focus', $focus);
+		return $url->getUrl();
+	}
+
+	public function get_noce_deleteURL($id) {
+		$url = new Url($this->wire('pages')->get("pw_template=msa-noce")->url);
+		$url->query->set('action', 'delete-notes');
+		$url->query->set('id', $id);
 		return $url->getUrl();
 	}
 
