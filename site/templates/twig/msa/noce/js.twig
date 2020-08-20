@@ -11,86 +11,50 @@ $(function() {
 	var ids = {{ qnotes.get_notes_ids()|json_encode()|raw }};
 
 /* =============================================================
-	Event Functions
-============================================================= */
-	{% if page.focus %}
-		$('.code[data-id="{{ page.focus }}"]').addClass('highlight');
-		$('html, body').animate({scrollTop: $('.code[data-id="{{ page.focus }}"]').offset().top,},700,'linear');
-	{% endif %}
-
-	$('.hidden-note').on('hidden.bs.collapse', function () {
-		var textarea = $(this);
-		var id = textarea.data('id');
-		$('span.summary[data-id="'+id+'"]').removeClass('collapse');
-	});
-
-	$('.hidden-note').on('show.bs.collapse', function () {
-		var textarea = $(this);
-		var id = textarea.data('id');
-		$('span.summary[data-id="'+id+'"]').addClass('collapse');
-	});
-
-	modal_notes.on('change', 'input[name=id]', function(e) {
-		if (validate_id()) {
-			return true;
-		} else {
-			alert_id(function(submit) {});
-		}
-	});
-
-	modal_notes.on('show.bs.modal', function (event) {
-		var modal = $(this);
-		var button = $(event.relatedTarget);
-		var id = button.data('id');
-		populate_form(modal, id);
-	});
-
-	modal_notes.on('shown.bs.modal', function (event) {
-		var button = $(event.relatedTarget) // Button that triggered the modal
-		var modal = $(this);
-		var id = button.data('id');
-
-		if (id.length) {
-			modal.find('textarea[name=note]').focus();
-		} else {
-			modal.find('input[name=id]').focus();
-		}
-	});
-
-	modal_notes.on('hidden.bs.modal', function (event) {
-		var modal = $(this);
-		var button = $(event.relatedTarget); // Button that triggered the modal
-		var code = modal.find('input[name=id]').val().toString();
-
-		$('.bg-success').removeClass('bg-success text-white');
-		$('.highlight').removeClass('highlight');
-		$('.code[data-id="'+code+'"]').addClass('highlight');
-	});
-
-/* =============================================================
 	Validation Functions
 ============================================================= */
 	jQuery.validator.addMethod("id", function(value, element) {
 		return this.optional(element) || validate_id();
-	}, "ID already exists");
+	}, "Code already exists");
 
-	form_notes.validate({
+	var validator = form_notes.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		rules: {
-			id: { required: true, id: true },
+			id: {
+				required: true,
+				id: true,
+				maxlength: {{ qnotes.get_max_length_code() }},
+			 },
 			note: { required: true },
 		},
 		messages: { note: "Please Enter a Note",},
 		submitHandler: function(form) {
 			var action = $(this.submitButton).attr("value");
 			var jform = $(form);
+			var code = input_id.val();
 
 			if (action == 'delete-notes') {
-				form.submit();
+				swal2.fire({
+					title: 'Confirm Deletion',
+					text: 'Delete '+ code +'?',
+					icon: 'question',
+					showCancelButton: true,
+					confirmButtonText: 'Yes',
+					cancelButtonText: 'No',
+				}).then((result) => {
+					if (result.value) {
+						var url = URI(jform.attr('action'));
+						url.addQuery('action', 'delete-notes');
+						url.addQuery('id', code);
+						window.location.href = url.toString();
+					} else if (result.dismiss === Swal.DismissReason.cancel) {
+
+					}
+				});
 			} else {
 				if (validate_id()) {
 					form.submit();
@@ -115,6 +79,73 @@ $(function() {
 	}
 
 /* =============================================================
+	Event Functions
+============================================================= */
+	{% if page.focus %}
+		if ($('.code[data-id="{{ page.focus }}"]').length) {
+			$('.code[data-id="{{ page.focus }}"]').addClass('highlight');
+			$('html, body').animate({scrollTop: $('.code[data-id="{{ page.focus }}"]').offset().top,},700,'linear');
+		}
+	{% endif %}
+
+	$('.hidden-note').on('hidden.bs.collapse', function () {
+		var textarea = $(this);
+		var id = textarea.data('id');
+		$('span.summary[data-id="'+id+'"]').removeClass('collapse');
+	});
+
+	$('.hidden-note').on('show.bs.collapse', function () {
+		var textarea = $(this);
+		var id = textarea.data('id');
+		$('span.summary[data-id="'+id+'"]').addClass('collapse');
+	});
+
+	modal_notes.on('change', 'input[name=id]', function(e) {
+		if (validate_id()) {
+			return true;
+		} else {
+			alert_id(function(value) {
+				if (value === false) {
+					modal_notes.modal('hide');
+				}
+			});
+		}
+	});
+
+	modal_notes.on('show.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget);
+		var id = button.data('id');
+		populate_form(modal, id);
+	});
+
+	modal_notes.on('shown.bs.modal', function (event) {
+		var button = $(event.relatedTarget) // Button that triggered the modal
+		var modal = $(this);
+		var id = button.data('id');
+
+		$('#notes-form').clearValidation();
+
+		if (id.toString().length) {
+			modal.find('textarea[name=note]').focus();
+		} else {
+			modal.find('input[name=id]').focus();
+		}
+
+	});
+
+	modal_notes.on('hidden.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var code = modal.find('input[name=id]').val().toString();
+
+		$('#code-table-alert').remove();
+		$('.bg-success').removeClass('bg-success text-white');
+		$('.highlight').removeClass('highlight');
+		$('.code[data-id="'+code+'"]').addClass('highlight');
+	});
+
+/* =============================================================
 	Form Functions
 ============================================================= */
 	function populate_form(modal, id) {
@@ -130,6 +161,12 @@ $(function() {
 		modal.find('span.id').text(id);
 		modal.find('textarea[name=note]').text(note).attr('cols', {{ qnotes.get_column_count() }} - 1);
 		modal.find('input[name=id]').attr('data-id', id).val(id);
+
+		if (ids.contains(id)) {
+			modal.find('input[name=id]').attr('readonly', 'true');
+		} else {
+			modal.find('input[name=id]').removeAttr('readonly');
+		}
 	}
 
 	function alert_id(callback) {
@@ -137,7 +174,7 @@ $(function() {
 
 		swal2.fire({
 			title: 'This note ('+ id +') exists!',
-			text: 'Do you want View / Edit that note?',
+			text: 'Do you want to View / Edit that note?',
 			icon: 'question',
 			showCancelButton: true,
 			confirmButtonText: 'Yes',
@@ -145,7 +182,7 @@ $(function() {
 		}).then((result) => {
 			if (result.value) {
 				populate_form($('#notes-modal'), id);
-				callback(false);
+				callback(true);
 			} else if (result.dismiss === Swal.DismissReason.cancel) {
 				callback(false);
 			}

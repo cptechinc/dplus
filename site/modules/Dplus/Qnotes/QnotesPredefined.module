@@ -24,6 +24,10 @@ class QnotesPredefined extends WireData implements Module {
 		return 50;
 	}
 
+	public function get_max_length_code() {
+		return NotePredefined::MAX_LENGTH_CODE;
+	}
+
 	/**
 	 * Returns Quote Notes Query
 	 * @return NotePredefinedQuery
@@ -138,7 +142,7 @@ class QnotesPredefined extends WireData implements Module {
 			$note = $q->findOne();
 		} else {
 			$note = NotePredefined::new();
-			$note->setId($itemID);
+			$note->setId($id);
 			$note->generateKey2();
 		}
 		$success = $this->delete_notes($id);

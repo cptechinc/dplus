@@ -14,20 +14,21 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form action="{{ page.url }}" method="post">
+				<form action="{{ page.url }}" method="post" id="notes-form">
 					<div class="form-group">
 						<label for="id">Code</label>
-						<input type="text" class="form-control" name="id" id="id" data-id="">
+						<input type="text" class="form-control w-auto" name="id" id="id" maxlength="{{ qnotes.get_max_length_code() }}" data-id="">
 					</div>
-					<label for="note">Note</label>
-					<div class="form-group d-flex justify-content-between align-items-center">
-						<textarea name="note" id="note" class="form-control w-auto qnotes" rows="10" cols=""></textarea>
+					<div class="form-group">
+						<label for="note">Note</label>
+						<div class="form-group d-flex justify-content-between align-items-center">
+							<textarea name="note" id="note" class="form-control w-auto qnotes" rows="10" cols="{{ qnotes.get_column_count() - 1}}"></textarea>
+						</div>
 					</div>
 					<div class="d-flex justify-content-between align-items-center">
 						<button type="submit" name="action" value="update-notes" class="btn btn-success">
 							<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 						</button>
-						{# TODO: add confirmation for deletion 'delete_button' #}
 						<button type="submit" name="action" value="delete-notes" class="btn btn-danger">
 							<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 						</button>
