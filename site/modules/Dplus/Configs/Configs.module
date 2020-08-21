@@ -1,7 +1,16 @@
 <?php namespace ProcessWire;
 
+/**
+ * Configs
+ *
+ * Installs sub-modules
+ * Exports Config Values, app configurations
+ * Imports configs
+ *
+ * @property string $exportPath  path that configs dump are exported to
+ * @property string $exportUrl   URL  that configs DB dump is exported to
+ */
 class Configs extends Process {
-
 	const EXTRA_MODULES = array(
 		'DplusConnectDatabase',
 		'DplusOnlineDatabase',
@@ -19,20 +28,8 @@ class Configs extends Process {
 
 	const CONFIG_TEMPLATE_CUSTOMER = 'config-customer';
 
-	/**
-	 * Path that profile DB dump is exported to
-	 *
-	 * @var string
-	 *
-	 */
 	protected $exportPath;
 
-	/**
-	 * URL that profile DB dump is exported to
-	 *
-	 * @var string
-	 *
-	 */
 	protected $exportURL;
 
 	/**
@@ -67,8 +64,8 @@ class Configs extends Process {
 	}
 
 	/**
-	 * [get_pw_customer_data description]
-	 * @return [type] [description]
+	 * Return ProcessWire\Page('template=config-customer') data
+	 * @return array
 	 */
 	public function get_pw_customer_data() {
 		$pw_cust = $this->get_pw_customer();
@@ -77,7 +74,7 @@ class Configs extends Process {
 		$data['address']      = $pw_cust->address;
 		$data['images'] = array();
 		$data['images']['logo_large']  = $pw_cust->logo_large ? $pw_cust->logo_large->basename : false;
-		$data['images']['logo_small'] = $pw_cust->logo_small ? $pw_cust->logo_small->basename : false;
+		$data['images']['logo_small']  = $pw_cust->logo_small ? $pw_cust->logo_small->basename : false;
 		return $data;
 	}
 
@@ -109,8 +106,8 @@ class Configs extends Process {
 	 */
 	public function get_all() {
 		$data = array();
-		$data['configs'] = $this->get_configs();
-		$data['config-file'] = $this->get_pwconfig_data();
+		$data['configs']         = $this->get_configs();
+		$data['config-file']     = $this->get_pwconfig_data();
 		$data['config-customer'] = $this->get_pw_customer_data();
 		return $data;
 	}
@@ -122,9 +119,6 @@ class Configs extends Process {
 	public function write_configs_file() {
 		$data = $this->get_all();
 		$dir = $this->get_export_directory();
-		if (!file_exists($dir)) {
-			mkdir($dir);
-		}
 		$file = $dir . self::CONFIG_FILE;
 		file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT));
 		return $data;
@@ -163,7 +157,7 @@ class Configs extends Process {
 	 * @return string
 	 */
 	public function get_export_directory() {
-		$dir = __DIR__ . '/configs/';
+		$dir = $this->exportPath;
 		if (!file_exists($dir)) {
 			mkdir($dir);
 		}
@@ -200,7 +194,6 @@ class Configs extends Process {
 		$this->import_config_pwcustomer($data);
 		$this->import_config_pwcustomer_images($data);
 		$data['results']['modules'] = $this->import_configs($data);
-
 		return $data;
 	}
 
@@ -350,17 +343,18 @@ class Configs extends Process {
 	}
 
 	public function init() {
-		$this->exportdir = 'backups/export-configs/';
+		$this->exportdir = 'backups/export-configs/configs/';
 		$this->exportPath = $this->config->paths->assets . $this->exportdir;
-		$this->exportURL  = $this->config->urls->assets . $this->exportdir;
+		$this->exportURL  = $this->config->urls->assets  . $this->exportdir;
 	}
 
+/* =============================================================
+	Module Form Functions
+============================================================= */
 	/**
 	 * Build the initial form used by the profile exporter
-	 *
 	 */
 	protected function buildForm() {
-
 		/** @var InputfieldForm $form */
 		$form = $this->modules->get('InputfieldForm');
 
@@ -379,9 +373,7 @@ class Configs extends Process {
 
 	/**
 	 * Present the instructions and initial info collection form
-	 *
 	 * @return string
-	 *
 	 */
 	public function ___execute() {
 		$form = $this->buildForm();
@@ -397,11 +389,9 @@ class Configs extends Process {
 
 	/**
 	 * Process the initial info collection form and begin export
-	 *
-	 * @param InputfieldForm $form
+	 * @param  InputfieldForm $form
 	 * @return bool
 	 * @throws WireException
-	 *
 	 */
 	protected function processInput($form) {
 
@@ -431,24 +421,23 @@ class Configs extends Process {
 
 	/**
 	 * Copy Configs
-	 *
 	 * @return string
-	 *
 	 */
 	public function ___executeExport() {
 		$this->export_configs();
 		set_time_limit(3600);
 
+		if (!file_exists($this->exportPath)) {
+			mkdir($this->exportPath);
+		}
 		$zipfile = $this->exportPath . "configs.zip";
 
 		// templates and modules
-		$files = array(
-			$this->get_export_directory(),
-			);
+		$files = array($this->get_export_directory());
 		$options = array(
 			'dir' => $this->exportdir,
 			'exclude' => false
-			);
+		);
 		$result = wireZipFile($zipfile, $files, $options);
 		$errors = $result['errors'];
 
@@ -463,10 +452,64 @@ class Configs extends Process {
 			$this->error($this->_('ZIP file creation failed. Try saving to server directory instead.'));
 			$out = "<p>" . $this->button('../') . "</p>";
 		}
-
 		return $out;
 	}
 
+	/**
+	 * Download site configs
+	 */
+	public function ___executeDownload() {
+		$file = $this->sanitizer->pageName($this->input->urlSegment2);
+		if(!$file) throw new WireException("No file specified");
+		$file = basename($file, '.zip') . '.zip';
+		$pathname = $this->exportPath . $file;
+		if(!is_file($pathname)) throw new WireException("Invalid file: $pathname");
+		wireSendFile($pathname);
+	}
 
+	/**
+	 * Remove existing profile
+	 * @return string
+	 */
+	public function ___executeRemove() {
+		if (wireRmdir($this->exportPath, true)) {
+			$this->message($this->_('Removed existing configs') . " - $this->exportURL");
+			$this->session->redirect('../');
+			return '';
+		} else {
+			$this->error($this->_('Error removing existing configs') . " - $this->exportURL");
+			return $this->button('../');
+		}
+	}
 
+	/**
+	 * Render a button
+	 * @param string $href
+	 * @param string $label
+	 * @param string $icon
+	 * @param string $class
+	 * @return string
+	 */
+	protected function button($href, $label = '', $icon = 'angle-right', $class = '') {
+		if(empty($label)) $label = $this->labels['continue'];
+		$btn = $this->modules->get('InputfieldButton');
+		$btn->href = $href;
+		$btn->icon = $icon;
+		if($class) $btn->addClass($class);
+		$btn->value = $label;
+		return $btn->render();
+	}
+
+	/**
+	 * Render a "remove" button with JS confirm dialog
+	 * @return string
+	 */
+	protected function removeButton() {
+		$btn = $this->modules->get('InputfieldButton');
+		$btn->href = $this->wire('page')->url . 'remove/';
+		$btn->icon = 'trash-o';
+		$btn->value = 'Remove';
+		$btn->addClass('ui-priority-secondary');
+		return $btn->render();
+	}
 }
