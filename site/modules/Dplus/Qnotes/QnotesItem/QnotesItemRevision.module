@@ -138,16 +138,18 @@ class QnotesItemRevision extends WireData implements Module {
 	 * Delete Notes for Item
 	 * @param  string $itemID   Item ID
 	 * @param  string $userID   Note Author
-	 * @param  string $notedate Note Date
-	 * @param  string $notetime Note Time
+	 * @param  string $date     Format: Ymd
+	 * @param  string $time     Format: Hi
+	 * @param  string $revision Revision Code
 	 * @return array
 	 */
-	public function delete_notes($itemID, $userID, $notedate, $notetime) {
+	public function delete_notes($itemID, $userID, $date, $time, $revision) {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
-		$q->filterByNotedate(date(ItemRevisionNote::FORMAT_NOTEDATE, strtotime($notedate)));
-		$q->filterByNotetime(date(ItemRevisionNote::FORMAT_NOTETIME, strtotime($notedate.$notetime)));
-
+		$q->filterByUser($userID);
+		$q->filterByNotedate($date);
+		$q->filterByNotetime($time);
+		$q->filterByRevision($revision);
 		if ($q->count()) {
 			return $q->delete();
 		}
