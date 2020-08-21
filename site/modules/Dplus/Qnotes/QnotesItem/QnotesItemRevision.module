@@ -6,9 +6,9 @@ use ConfigInQuery, ConfigIn;
 include_once(__DIR__.'/../QnotesResponse.php');
 
 /**
- * QnotesSalesOrder
+ * QnotesItemRevision
  *
- * Class for Writing and Reading Qnotes for Sales Orders
+ * Class for Writing and Reading Qnotes for Item Revision
  */
 class QnotesItemRevision extends WireData implements Module {
 	const MODEL              = 'ItemRevisionNote';
@@ -16,6 +16,15 @@ class QnotesItemRevision extends WireData implements Module {
 	const DESCRIPTION        = 'Item Revision Notes';
 	const DESCRIPTION_RECORD = 'Item Revision Notes';
 	const DESCRIPTION_RESPONSE = 'Item ';
+	const TYPE                 = 'IREV';
+
+	/**
+	 * Return Note Type
+	 * @return string
+	 */
+	public function get_type() {
+		return self::TYPE;
+	}
 
 
 	/**
