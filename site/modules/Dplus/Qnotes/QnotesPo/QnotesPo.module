@@ -39,6 +39,9 @@ class QnotesPo extends WireData implements Module {
 				case 'INTL':
 					$this->intl->process_input($input);
 					break;
+				case 'IREV':
+					$this->irev->process_input($input);
+					break;
 				default:
 					$this->wire('session')->response_qnote = QnotesResponse::response_error($ponbr, 'Invalid Note Type');
 					break;
@@ -69,6 +72,8 @@ class QnotesPo extends WireData implements Module {
 	public function init() {
 		$this->pord = $this->wire('modules')->get('QnotesPoPord');
 		$this->intl = $this->wire('modules')->get('QnotesPoIntl');
+		$this->vend = $this->wire('modules')->get('QnotesVendorVend');
+		$this->irev = $this->wire('modules')->get('QnotesItemRevision');
 
 		$this->addHook('Page(pw_template=purchase-order-notes)::view_notesURL', function($event) {
 			$p = $event->object;
