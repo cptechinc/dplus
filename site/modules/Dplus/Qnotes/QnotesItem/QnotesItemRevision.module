@@ -154,6 +154,33 @@ class QnotesItemRevision extends WireData implements Module {
 		return true;
 	}
 
+	/**
+	 * Create Revision Note
+	 * @param  string $itemID   Item ID
+	 * @param  string $userID   User ID
+	 * @param  string $revision Revision Code
+	 * @param  string $date     format: Ymd
+	 * @param  string $time     Format: Hi
+	 * @param  string $note     Line of Text
+	 * @param  int    $sequence Note Line Number
+	 * @return bool
+	 */
+	public function create_note($itemID, $userID, $revision, $date, $time, $note, int $sequence = 1) {
+		$record = ItemRevisionNote::new();
+		$record->setItemid($itemID);
+		$record->setRevision($revision);
+		$record->setNotedate($date);
+		$record->setNotetime($time);
+		$record->setUser($userID);
+		$record->generateKey2(); // PK
+		$record->setSequence($sequence); // PK
+		$record->setNote($note);
+		$record->setDate(date('Ymd'));
+		$record->setTime(date('His'));
+		$record->setDummy('P');
+		return $record->save();
+	}
+
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
