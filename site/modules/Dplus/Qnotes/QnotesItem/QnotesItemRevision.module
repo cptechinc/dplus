@@ -8,7 +8,7 @@ include_once(__DIR__.'/../QnotesResponse.php');
 /**
  * QnotesItemRevision
  *
- * Class for Writing and Reading Qnotes for Item Revision
+ * Class for Writing and Reading Qnotes for Item Revision (IREV)
  */
 class QnotesItemRevision extends WireData implements Module {
 	const MODEL              = 'ItemRevisionNote';
