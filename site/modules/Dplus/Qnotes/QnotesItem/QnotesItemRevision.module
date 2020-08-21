@@ -91,6 +91,46 @@ class QnotesItemRevision extends WireData implements Module {
 		return $q->find()->toArray();
 	}
 
+	/**
+	 * Return If note exists
+	 * @param  string $itemID   Item ID
+	 * @param  string $userID   Note Author
+	 * @param  string $date     format: Ymd
+	 * @param  string $time     format: His0000
+	 * @param  int    $sequence Line number
+	 * @return bool
+	 */
+	public function note_exists($itemID, $userID, $revision, $date, $time, $sequence = 1) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->filterByUser($userID);
+		$q->filterByNotedate($date);
+		$q->filterByNotetime($time);
+		$q->filterByRevision($revision);
+		$q->filterBySequence($sequence);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return Note
+	 * @param  string $itemID   Item ID
+	 * @param  string $userID   Note Author
+	 * @param  string $date     format: Ymd
+	 * @param  string $time     format: His0000
+	 * @param  int    $sequence Line number
+	 * @return ItemRevisionNote
+	 */
+	public function get_note($itemID, $userID, $revision, $date, $time, $sequence = 1) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->filterByUser($userID);
+		$q->filterByNotedate($date);
+		$q->filterByNotetime($time);
+		$q->filterByRevision($revision);
+		$q->filterBySequence($sequence);
+		return $q->findOne();
+	}
+
 /* =============================================================
 	CRUD Delete, Create Functions
 ============================================================= */
