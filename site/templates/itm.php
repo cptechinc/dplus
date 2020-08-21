@@ -58,7 +58,8 @@
 			$page->js   .= $config->twig->render("items/itm/js.twig", ['page' => $page, 'validateurl' => $pages->get('pw_template=itm-json')->url, 'item' => $item, 'm_itm' => $itm]);
 
 			if ($itm->item_exists($itemID)) {
-				$page->body .= $html->div('class=mb-3');
+				$page->body .= $html->div('class=mb-3', '&nbsp;');
+				$page->body .= $html->div('class=mb-3', '&nbsp;');
 				$module_notes = $modules->get('QnotesItem');
 
 				$page->body .= $config->twig->render('items/itm/notes/notes.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes, 'user' => $user]);
@@ -106,7 +107,14 @@
 	} else {
 		$recordlocker->remove_lock($page->lockcode);
 		$page->searchURL = $page->url;
+		$search_items = $modules->get('FilterItemMaster');
+		$search_items->init_query($user);
+		$search_items->apply_sortby($page);
+		$query = $search_items->get_query();
+		$items = $query->paginate($input->pageNum, 10);
+		
 		$page->body .= $html->a("href=$page->url?itemID=new|class=btn btn-secondary mb-2", $html->icon('fa fa-plus') . " Create Item");
-		$page->body .= $config->twig->render('items/item-search.twig', ['page' => $page, 'items' => array()]);
+		$page->body .= $config->twig->render('items/item-search.twig', ['page' => $page, 'items' => $items]);
+		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
 	}
 	include __DIR__ . "/basic-page.php";
