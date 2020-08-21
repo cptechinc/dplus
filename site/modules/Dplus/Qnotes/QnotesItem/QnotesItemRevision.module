@@ -244,24 +244,24 @@ class QnotesItemRevision extends WireData implements Module {
 	public function update_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID  = $values->text('itemID');
-		$notedate = $values->text('notedate');
-		$notetime = $values->text('notetime');
-		$revision = $values->text('revision');
-		$user     = $values->text('user');
-		$note = $values->textarea('note');
+		$itemID    = $values->text('itemID');
+		$date      = date(ItemRevisionNote::FORMAT_NOTEDATE, strtotime($values->text('notedate')));
+		$time      = date(ItemRevisionNote::FORMAT_NOTETIME, strtotime($notedate.$values->text('notetime')));
+		$revision  = $values->text('revision');
+		$userID    = $values->text('user');
+		$note      = $values->textarea('note');
 		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
 		$lines_saved = array();
 
-		if (empty($notedate)) {
+		if (empty($date)) {
 			$notedate = date(ItemRevisionNote::FORMAT_NOTEDATE);
 		}
 
-		if (empty($notetime)) {
+		if (empty($time)) {
 			$notetime = date(ItemRevisionNote::FORMAT_NOTETIME);
 		}
 
-		$this->delete_notes($itemID, $user, $notedate, $notetime);
+		$this->delete_notes($itemID, $userID, $date, $time, $revision);
 
 		foreach ($note_lines as $key => $line) {
 			$sequence = $key + 1;
