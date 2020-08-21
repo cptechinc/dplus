@@ -213,27 +213,24 @@ class QnotesItemRevision extends WireData implements Module {
 	 */
 	public function delete_notes_input($input) {
 		$rm = strtolower($input->requestMethod());
-		$itemID  = $input->$rm->text('itemID');
-		$notedate = $input->$rm->text('notedate');
-		$notetime = $input->$rm->text('notetime');
+		$itemID   = $input->$rm->text('itemID');
+		$date = date(ItemRevisionNote::FORMAT_NOTEDATE, strtotime($input->$rm->text('notedate')));
+		$time = date(ItemRevisionNote::FORMAT_NOTETIME, strtotime($date.$input->$rm->text('notetime')));
 		$userID   = $input->$rm->text('user');
+		$revision = $input->$rm->text('revision');
 
-		$q = $this->get_query();
-		$q->filterByItemid($itemID);
-		$q->filterByNotedate(date(ItemRevisionNote::FORMAT_NOTEDATE, strtotime($notedate)));
-		$q->filterByNotetime(date(ItemRevisionNote::FORMAT_NOTETIME, strtotime($notedate.$notetime)));
-
-		if ($q->count()) {
-			$note = $q->findOne();
+		if ($this->note_exists($itemID, $userID, $revision, $date, $time)) {
+			$note = $this->get_note($itemID, $userID, $revision, $date, $time);
 		} else {
 			$note = ItemRevisionNote::new();
 			$note->setItemid($itemID);
-			$note->setNotedate(date(ItemRevisionNote::FORMAT_NOTEDATE, strtotime($notedate)));
-			$note->setNotetime(date(ItemRevisionNote::FORMAT_NOTETIME, strtotime($notedate.$notetime)));
+			$note->setNotedate($date);
+			$note->setNotetime($time);
 			$note->setUser($userID);
+			$note->setRevision($revision);
 			$note->generateKey2();
 		}
-		$success = $this->delete_notes($itemID, $user, $notedate, $notetime);
+		$success = $this->delete_notes($itemID, $userID, $date, $time, $revision);
 
 		$this->wire('session')->response_qnote = $this->process_response_delete($note, $itemID, $success);
 	}
