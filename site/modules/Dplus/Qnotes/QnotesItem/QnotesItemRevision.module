@@ -43,6 +43,9 @@ class QnotesItemRevision extends WireData implements Module {
 		$this->user = $user;
 	}
 
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
 	/**
 	 * Returns if Notes Exist
 	 * @param  string $itemID  Item ID
@@ -88,6 +91,9 @@ class QnotesItemRevision extends WireData implements Module {
 		return $q->find()->toArray();
 	}
 
+/* =============================================================
+	CRUD Delete, Create Functions
+============================================================= */
 	/**
 	 * Delete Notes for Item
 	 * @param  string $itemID   Item ID
@@ -108,6 +114,9 @@ class QnotesItemRevision extends WireData implements Module {
 		return true;
 	}
 
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
 	/**
 	 * Takes Input, Processes it, updates Quote Notes in the Database
 	 *
@@ -207,6 +216,9 @@ class QnotesItemRevision extends WireData implements Module {
 		$this->wire('session')->response_qnote = $this->process_responses($record, $itemID, $lines_saved);
 	}
 
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
 	/**
 	 * Return Code Table Response based on the number of lines that were written to the database
 	 * @param  string $itemID       Item ID
@@ -276,6 +288,9 @@ class QnotesItemRevision extends WireData implements Module {
 		return $response;
 	}
 
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
 	/**
 	 * Return Data needed for Dplus to UPDATE the Customer Type Notes
 	 * @param  string $notetype Note Type @see WarehouseNote::TYPES
@@ -306,6 +321,9 @@ class QnotesItemRevision extends WireData implements Module {
 		$requestor->cgi_request($config->cgis['database'], session_id());
 	}
 
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus Qnotes Item Revision',
