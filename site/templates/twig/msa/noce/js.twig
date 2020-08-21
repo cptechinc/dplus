@@ -198,6 +198,7 @@ $(function() {
 		}).then((result) => {
 			if (result.value) {
 				populate_form($('#notes-modal'), id);
+				$('#notes-form').clearValidation();
 				callback(true);
 			} else if (result.dismiss === Swal.DismissReason.cancel) {
 				callback(false);
