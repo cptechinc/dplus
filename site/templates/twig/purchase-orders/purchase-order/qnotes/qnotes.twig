@@ -6,6 +6,8 @@
 	ponbr                  Purchase Order Number
 	qnotes                 module QnotesPo
 	qnotes.pord            module QnotesPoPord
+	qnotes.intl            module QnotesPoIntl
+	qnotes.irev            module QnotesItemRevision
 #}
 <div class="mb-3">
 	<a href="{{ page.view_purchaseorderURL(ponbr) }}" class="btn btn-sm btn-primary">
@@ -14,7 +16,7 @@
 </div>
 
 <h3>Header Notes</h3>
-{% include 'purchase-orders/purchase-order/qnotes/qnotes-line.twig' with {'title': 'Header', 'qnotes': qnotes, 'linenbr': 0, 'show_edit': true} %}
+{% include 'purchase-orders/purchase-order/qnotes/line.twig' with {'qnotes': qnotes, 'linenbr': 0, 'show_edit': true} %}
 
 <h3>Item Notes</h3>
 {% for item in purchaseorder.getPurchaseOrderDetails() %}
@@ -29,10 +31,11 @@
 			</div>
 		</div>
 		<div class="list-group-item collapse" id="notes-line-{{ item.linenbr }}">
-			{% include 'purchase-orders/purchase-order/qnotes/qnotes-line.twig' with {'title': 'Line #' ~ item.linenbr ~ ': ' ~ item.itemid, 'qnotes': qnotes, 'linenbr': item.linenbr, 'show_edit': true} %}
+			{% include 'purchase-orders/purchase-order/qnotes/line-item.twig' with {'qnotes': qnotes, 'item': item, 'linenbr': item.linenbr, 'show_edit': true} %}
 		</div>
 	</div>
 {% endfor %}
 {% include 'purchase-orders/purchase-order/qnotes/pord/modal.twig' %}
 {% include 'purchase-orders/purchase-order/qnotes/intl/modal.twig' %}
+{% include 'purchase-orders/purchase-order/qnotes/irev/modal.twig' %}
 {% include 'msa/noce/ajax/notes-modal.twig' %}

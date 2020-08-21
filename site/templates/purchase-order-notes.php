@@ -13,6 +13,11 @@
 		$session->redirect($page->view_notesURL($ponbr));
 	}
 
+	if ($session->response_qnote) {
+		$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
+		$session->remove('response_qnote');
+	}
+
 	if ($input->get->ponbr) {
 		$ponbr = PurchaseOrder::get_paddedponumber($input->get->text('ponbr'));
 		$query = PurchaseOrderQuery::create()->filterByPonbr($ponbr);
@@ -25,8 +30,8 @@
 			$page->body .= $config->twig->render('purchase-orders/purchase-order/qnotes/qnotes.twig', ['page' => $page, 'db' => $db_dplusdata, 'ponbr' => $ponbr, 'purchaseorder' => $purchaseorder, 'qnotes' => $qnotes]);
 			$page->search_notesURL = $pages->get('pw_template=msa-noce-ajax')->url;
 			$page->js .= $config->twig->render('msa/noce/ajax/js.twig', ['page' => $page]);
-			$page->js .= $config->twig->render('purchase-orders/purchase-order/qnotes/pord/js.twig', []);
-			$page->js .= $config->twig->render('purchase-orders/purchase-order/qnotes/intl/js.twig', []);
+			$page->js .= $config->twig->render('purchase-orders/purchase-order/qnotes/js.twig');
+			$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 		} else {
 			$page->headline = $page->title = "Purchase Order #$ponbr could not be found";
 			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Check if the Purchase Order Number is correct"]);

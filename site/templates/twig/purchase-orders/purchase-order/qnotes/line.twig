@@ -8,6 +8,8 @@
 	qnotes                 module QnotesPo
 	qnotes.pord            module QnotesPoPord
 	qnotes.intl            module QnotesPoIntl
+	qnotes.vend            module QnotesVendorVend
+	qnotes.irev            module QnotesItemRevision
 #}
 
 <div class="mb-3">
@@ -22,9 +24,13 @@
 				Internal
 			</a>
 		</li>
-		<li class="nav-item" role="presentation">
-			<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+		{% block extra_qnotes_tabs_links %}
+			<li class="nav-item" role="presentation">
+				<a class="nav-link" id="vendor-tab" data-toggle="tab" href="#vendor" role="tab" aria-controls="vendor" aria-selected="false">
+					Vendor
+				</a>
 		</li>
+		{% endblock %}
 	</ul>
 	<div class="tab-content" id="qnotes-tab">
 		<div class="tab-pane fade show active" id="pord-line-{{ linenbr }}" role="tabpanel" aria-labelledby="pord-tab-{{ linenbr }}">
@@ -33,6 +39,10 @@
 		<div class="tab-pane fade" id="internal-line-{{ linenbr }}" role="tabpanel" aria-labelledby="internal-tab-{{ linenbr }}">
 			{% include 'purchase-orders/purchase-order/qnotes/intl/list.twig' %}
 		</div>
-		<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+		{% block extra_qnotes_tabs %}
+			<div class="tab-pane fade" id="vendor" role="tabpanel" aria-labelledby="vendor-tab">
+				{% include 'purchase-orders/purchase-order/qnotes/vend/note.twig' %}
+			</div>
+		{% endblock %}
 	</div>
 </div>

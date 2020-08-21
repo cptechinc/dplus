@@ -1,0 +1,29 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	purchaseorder          PurchaseOrder
+	ponbr                  Purchase Order Number
+	item                   PurchaseOrderDetail
+	linenbr                Line Number
+	qnotes                 module QnotesPo
+	qnotes.pord            module QnotesPoPord
+	qnotes.intl            module QnotesPoIntl
+	qnotes.vend            module QnotesVendorVend
+	qnotes.irev            module QnotesItemRevision
+#}
+
+{% extends 'purchase-orders/purchase-order/qnotes/line.twig' %}
+{% block extra_qnotes_tabs_links %}
+	<li class="nav-item" role="presentation">
+		<a class="nav-link" id="revision-{{ linenbr }}-tab" data-toggle="tab" href="#revision-{{ linenbr }}" role="tab" aria-controls="revision-{{ linenbr }}" aria-selected="false">
+			Revision
+		</a>
+	</li>
+{% endblock %}
+
+{% block extra_qnotes_tabs %}
+	<div class="tab-pane fade" id="revision-{{ linenbr }}" role="tabpanel" aria-labelledby="revision-{{ linenbr }}-tab">
+		{% include 'purchase-orders/purchase-order/qnotes/irev/list.twig' %}
+	</div>
+{% endblock %}
