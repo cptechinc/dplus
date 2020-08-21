@@ -131,8 +131,24 @@ $(function() {
 		} else {
 			modal.find('input[name=id]').focus();
 		}
-
 	});
+
+	modal_notes.on('hidden.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var code = modal.find('input[name=id]').val().toString();
+
+		$('.bg-success').removeClass('bg-success text-white');
+		$('.highlight').removeClass('highlight');
+		$('.code[data-id="'+code+'"]').addClass('highlight');
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	jQuery.validator.addMethod("id", function(value, element) {
+		return this.optional(element) || validate_id();
+	}, "ID already exists");
 
 	modal_notes.on('hidden.bs.modal', function (event) {
 		var modal = $(this);
@@ -182,6 +198,7 @@ $(function() {
 		}).then((result) => {
 			if (result.value) {
 				populate_form($('#notes-modal'), id);
+				$('#notes-form').clearValidation();
 				callback(true);
 			} else if (result.dismiss === Swal.DismissReason.cancel) {
 				callback(false);

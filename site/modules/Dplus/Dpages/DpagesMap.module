@@ -17,6 +17,11 @@ class DpagesMap extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
+		'vxm-validate' => array(
+			'name'   => 'vxm',
+			'fields' => array(),
+			'paginated' => true
+		),
 		'ap-code-table' => array(
 			'name'   => 'ap-code-table',
 			'fields' => array()
@@ -95,64 +100,23 @@ class DpagesMap extends Dpages implements Module {
 	ProcessWire Module Functions
 ============================================================= */
 	public function init() {
-		/**
-		 * Returns Sales Order Page URL
-		 */
-		$this->addHook('Pages::vxm_vendorURL', function($event) {
+		$this->addHook("Page(pw_template=vxm)::vxm_itemURL", function($event) {
+			$p = $event->object;
 			$vendorID = $event->arguments(0);
-			$event->return = $this->get_vxm_vendorURL($vendorID);
+			$vendoritemID = $event->arguments(1);
+			$event->return = $this->get_vxm_itemURL($vendorID, $vendoritemID);
 		});
 
-		/**
-		 * Returns Sales Order Page URL
-		 */
+		$this->addHook("Page(pw_template=vxm)::vxm_itemidURL", function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_vxm_itemidURL($itemID);
+		});
+
 		$this->addHook('Page(pw_template=vxm)::vxm_vendorURL', function($event) {
 			$vendorID = $event->arguments(0);
 			$event->return = $this->get_vxm_vendorURL($vendorID);
 		});
-
-		/**
-		 * Returns Sales Order Page URL
-		 */
-		$this->addHook('Pages::vxm_vendors_itemURL', function($event) {
-			$vendorID = $event->arguments(0);
-			$itemID = $event->arguments(1); // VENDOR ITEM ID
-			$event->return = $this->get_vxm_vendors_itemURL($vendorID, $itemID);
-		});
-
-		/**
-		 * Returns Sales Order Page URL
-		 */
-		$this->addHook('Page(pw_template=vxm)::vxm_vendors_itemURL', function($event) {
-			$vendorID = $event->arguments(0);
-			$itemID = $event->arguments(1); // VENDOR ITEM ID
-			$event->return = $this->get_vxm_vendors_itemURL($vendorID, $itemID);
-		});
-
-		/**
-		 * Returns Sales Order Page URL
-		 */
-		$this->addHook('Pages::vxm_itemURL', function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_vxm_itemURL($itemID);
-		});
-
-		/**
-		 * Returns Sales Order Page URL
-		 */
-		$this->addHook('Page(pw_template=vxm)::vxm_itemURL', function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_vxm_itemURL($itemID);
-		});
-
-		/**
-		 * Returns Sales Order Page URL
-		 */
-		$this->addHook('Page(pw_template=vxm)::get_itemURL', function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_vxm_itemURL($itemID);
-		});
-
 
 		$this->addHookProperty('Page(pw_template=vxm)::vendorID', function($event) {
 			$p = $event->object;
@@ -167,6 +131,14 @@ class DpagesMap extends Dpages implements Module {
 		$this->addHookProperty('Page(pw_template=vxm)::itemID', function($event) {
 			$p = $event->object;
 			$event->return = $p->fullURL->query->get('itemID');
+		});
+
+		$this->addHookProperty('Page(pw_template=vxm)::vxm_item_deleteURL', function($event) {
+			$p = $event->object;
+			$vendorID = $event->arguments(0);
+			$vendoritemID = $event->arguments(1);
+			$itemID = $p->itemID;
+			$event->return = $this->get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID);
 		});
 
 		// Code Tables
@@ -201,22 +173,63 @@ class DpagesMap extends Dpages implements Module {
 		});
 	}
 
+	/**
+	 * Return URL for VXM items filtered by Vendor ID
+	 * @param  string $vendorID Vendor ID
+	 * @return string
+	 */
 	public function get_vxm_vendorURL($vendorID) {
 		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
 		$url->query->set('vendorID', $vendorID);
 		return $url->getUrl();
 	}
 
-	public function get_vxm_vendors_itemURL($vendorID, $vendoritemID) {
+	/**
+	 * Return URL for VXM Item
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor Item ID
+	 * @return string
+	 */
+	public function get_vxm_itemURL($vendorID, $vendoritemID) {
 		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
-		$url->query->set('vendorID', $vendorID);
+
+		if ($vendorID) {
+			$url->query->set('vendorID', $vendorID);
+		}
+
 		$url->query->set('vendoritemID', $vendoritemID);
 		return $url->getUrl();
 	}
 
-	public function get_vxm_itemURL($itemID) {
+	/**
+	 * Return URL for VXM ItemID
+	 * @param  string $itemID Item ID
+	 * @return string
+	 */
+	public function get_vxm_itemidURL($itemID) {
 		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
+
 		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to Delete VXM Item
+	 * @param  string  $itemID       Item ID
+	 * @param  string  $vendorID     Vendor ID
+	 * @param  string  $vendoritemID Vendor's Item ID
+	 * @return string
+	 */
+	public function get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
+		$url->query->set('action', 'remove-vxm-item');
+		$url->query->set('itemID', $itemID);
+
+		if ($vendorID) {
+			$url->query->set('vendorID', $vendorID);
+		}
+
+		$url->query->set('vendoritemID', $vendoritemID);
 		return $url->getUrl();
 	}
 

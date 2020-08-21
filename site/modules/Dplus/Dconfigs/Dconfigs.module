@@ -1,0 +1,71 @@
+<?php namespace ProcessWire;
+
+/**
+ * Class for Hosting, Installing Dplus Configure Modules
+ * NOTE: These configs handle Distribution Plus Config records which
+ * affect both this and the cobol versions
+ */
+class Dconfigs extends WireData implements Module {
+
+	const MODULE_ALIASES = array(
+		'ap'   => 'ConfigureAp',
+		'po'   => 'ConfigurePo'
+	);
+
+	/**
+	 * Return Configure Module
+	 * @param  string $code Configure Module Name
+	 * @return Module
+	 */
+	public function module($code) {
+		$modules = $this->wire('modules');
+
+		if (array_key_exists(strtolower($code), self::MODULE_ALIASES)) {
+			$module = self::MODULE_ALIASES[strtolower($code)];
+		} elseif (in_array($code, self::MODULE_ALIASES)) {
+			$module = $code;
+		}
+		return $modules->get($module);
+	}
+
+	/**
+	 * Return Configure Module's Config Record
+	 * @param  string $code Configure Module Name
+	 * @return mixed
+	 */
+	public function config($code) {
+		return $this->config_module($code)->config();
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dconfigs Module',
+			'version' => 101,
+			'summary' => 'Handles Loading of Dplus Config File Modules',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(
+				'ConfigureAp',
+				'ConfigurePo'
+			)
+		);
+	}
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+		$modules->refresh();
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
+	}
+}

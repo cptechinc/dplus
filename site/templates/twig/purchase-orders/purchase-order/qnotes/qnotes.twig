@@ -3,8 +3,11 @@
 	-------------------------------------------------
 	page                   ProcessWire\Page
 	purchaseorder          PurchaseOrder
-	ponbr                  Purcahse Order Number
+	ponbr                  Purchase Order Number
 	qnotes                 module QnotesPo
+	qnotes.pord            module QnotesPoPord
+	qnotes.intl            module QnotesPoIntl
+	qnotes.irev            module QnotesItemRevision
 #}
 <div class="mb-3">
 	<a href="{{ page.view_purchaseorderURL(ponbr) }}" class="btn btn-sm btn-primary">
@@ -13,11 +16,26 @@
 </div>
 
 <h3>Header Notes</h3>
-{% include 'purchase-orders/purchase-order/qnotes/qnote.twig' with {'title': 'Header', 'linenbr': 0} %}
+{% include 'purchase-orders/purchase-order/qnotes/line.twig' with {'qnotes': qnotes, 'linenbr': 0, 'show_edit': true} %}
 
 <h3>Item Notes</h3>
 {% for item in purchaseorder.getPurchaseOrderDetails() %}
-	{% include 'purchase-orders/purchase-order/qnotes/qnote.twig' with {'title': 'Line #' ~ item.linenbr ~ ': ' ~ item.itemid , 'linenbr': item.linenbr} %}
+	<div class="list-group">
+		<div class="list-group-item bg-dark text-white">
+			<div class="d-flex w-100 justify-content-between">
+				Line # {{ item.linenbr }} : {{ item.itemid }}
+
+				<button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#notes-line-{{ item.linenbr }}" aria-expanded="false" aria-controls="notes-line-{{ item.linenbr }}">
+					<i class="fa fa-eye" aria-hidden="true"></i> Show
+				</button>
+			</div>
+		</div>
+		<div class="list-group-item collapse" id="notes-line-{{ item.linenbr }}">
+			{% include 'purchase-orders/purchase-order/qnotes/line-item.twig' with {'qnotes': qnotes, 'item': item, 'linenbr': item.linenbr, 'show_edit': true} %}
+		</div>
+	</div>
 {% endfor %}
-{% include 'purchase-orders/purchase-order/qnotes/modal.twig' %}
+{% include 'purchase-orders/purchase-order/qnotes/pord/modal.twig' %}
+{% include 'purchase-orders/purchase-order/qnotes/intl/modal.twig' %}
+{% include 'purchase-orders/purchase-order/qnotes/irev/modal.twig' %}
 {% include 'msa/noce/ajax/notes-modal.twig' %}

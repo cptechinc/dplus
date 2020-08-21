@@ -72,6 +72,20 @@ class FilterXrefItemVxm extends WireData implements Module {
 		}
 	}
 
+	/**
+	 * Searches the ItemXrefVendor Table to find vendors that match the query provided
+	 *
+	 * @param  string $q Search Query
+	 * @return void
+	 */
+	public function filter_search($q) {
+		$columns = array(
+			ItemXrefVendor::get_aliasproperty('ouritemid'),
+			ItemXrefVendor::get_aliasproperty('vendoritemid'),
+			ItemXrefVendor::get_aliasproperty('description')
+		);
+		$this->query->search_filter($columns, strtoupper($q));
+	}
 
 	/**
 	 * Adds the Sort By to the query

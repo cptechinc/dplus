@@ -117,6 +117,7 @@
 		public function set_vendorID($vendorID) {
 			$this->vendorID = $vendorID;
 			$this->wire('page')->vendorID = $vendorID;
+			return $this;
 		}
 
 		/**

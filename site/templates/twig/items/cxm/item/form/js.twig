@@ -1,0 +1,242 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemXrefCustomer
+	item.item              ItemMasterItem
+	url_validate           URL to validate CXM form inputs
+#}
+$(function() {
+	var form_cxm = $('#cxm-item-form');
+	var input_itemID = form_cxm.find('input[name=itemID]');
+	var input_custitemID = form_cxm.find('input[name=custitemID]');
+	var input_custID = form_cxm.find('input[name=custID]');
+	var select_uom_pricing = form_cxm.find('select[name=uom_pricing]');
+	var input_price_uom    = form_cxm.find('input[name=price_uom]');
+	var input_price_customer    = form_cxm.find('input[name=price_customer]');
+	var modal_ajax = $('#ajax-modal');
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on("change", "#price_customer", function(e) {
+		calculate_peruom();
+	});
+
+	$("body").on("change", "#uom_pricing", function(e) {
+		calculate_peruom();
+	});
+
+	$("body").on("change", "#price_uom", function(e) {
+		calculate_custprice();
+	});
+
+
+	$("body").on("click", "a.remove-cxm-item", function(e) {
+		e.preventDefault();
+		var button = $(this);
+
+		swal2.fire({
+			title: "Remove CXM Item?",
+			text: "Are you sure you want to remove this CXM Item?",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Yes!'
+		}).then(function (result) {
+			if (result.value) {
+				window.location.href = button.attr('href');
+			}
+		});
+	});
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = form_cxm.serialize();
+
+	$("body").on("click", "a:not(#cxm-item-form.form-link, #ajax-modal a, [data-target=#ajax-modal])", function(e) {
+		if (form_cxm.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			swal2.fire({
+				title: 'Changes have occurred!',
+				text: 'Do you want to save?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+				cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value) {
+					form_cxm.find('button[type=submit]').click();
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					// Send HTTP GET Request to remove Record Lock
+					$.get('{{ page.cxm_itemURL(item.ouritemid) }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
+/* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = '{{ page.searchcustomersURL }}';
+
+		if (button.data('search') == 'customer') {
+			url = '{{ page.searchcustomersURL }}';
+		} else {
+			url = '{{ page.searchitemsURL }}';
+		}
+
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.customer-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var custID = button.data('custid');
+		var name = button.data('name');
+		input_custID.val(custID);
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		var description = button.find('.description').text();
+		input_itemID.val(itemID);
+		input_itemID.closest('.item-col').find('.description').text(description);
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	form_cxm.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			custID: {required: true},
+			custitemID: {required: true},
+			itemID: {
+				required: true,
+				remote: {
+					url: '{{ url_validate }}',
+					type: "get",
+					data: {
+						action: 'validate-itemid'
+					}
+				}
+			},
+		},
+		messages: {
+			itemID: "Please enter the Your Item ID",
+		},
+		submitHandler: function(form) {
+			var formdata = form_cxm.serializeArray().reduce(function(obj, item) {
+				obj[item.name] = item.value;
+				return obj;
+			}, {});
+			update_cxm(form);
+		}
+	});
+
+	function update_cxm(form) {
+		request_validate_custitemID(function(exists) {
+			if (exists === true) {
+				if (input_custitemID.val() != input_custitemID.data('custitemid')) {
+					swal2.fire({
+						title: "Customer Item " + input_custitemID.val() + " exists",
+						text: 'Would you like to go edit this item?',
+						icon: 'error',
+						showCancelButton: true,
+						confirmButtonText: 'Yes',
+						cancelButtonText: 'No',
+					}).then((result) => {
+						if (result.value) {
+							var uri = new URI();
+							uri.removeQuery('custitemID');
+							uri.setQuery('custID', input_custID.val());
+							uri.setQuery('custitemID', input_custitemID.val());
+							window.location.href = uri.toString();
+						}
+					});
+				} else {
+					form.submit();
+				}
+			} else {
+				form.submit();
+			}
+		});
+	}
+
+/* =============================================================
+	AJAX Request Functions
+============================================================= */
+	/**
+	 * Gets boolean value if CXM item exists then calls callback function
+	 * @param  {Function} callback
+	 * @return bool       Does CXM item exist?
+	 */
+	function request_validate_custitemID(callback) {
+		var url = new URI('{{ url_validate }}');
+		url.addQuery('action', 'validate-cust-itemid').addQuery('custID', input_custID.val());
+		url.addQuery('custitemID', input_custitemID.val());
+		url.addQuery('return', 'bool');
+		console.log(url.toString());
+		$.getJSON(url.toString(), function( valid ) {
+			callback(valid);
+		});
+	}
+
+/* =============================================================
+	Per UoM Calculation Functions
+============================================================= */
+	function calculate_peruom() {
+		var custprice = input_price_customer.val();
+		var qty_percase = {{ item.item.qty_percase ? item.item.qty_percase : 0 }};
+		var conversion = select_uom_pricing.find('option:selected').data('conversion');
+		var peruom = 0;
+		if (conversion) {
+			peruom = custprice / qty_percase * conversion;
+		}
+		input_price_uom.val(peruom.toFixed(3));
+	}
+
+	function calculate_custprice() {
+		var peruom = input_price_uom.val();
+		var qty_percase = {{ item.item.qty_percase ? item.item.qty_percase : 0 }};
+		var conversion = select_uom_pricing.find('option:selected').data('conversion');
+		var custprice = peruom * qty_percase * conversion;
+		input_price_customer.val(custprice.toFixed(2));
+	}
+});

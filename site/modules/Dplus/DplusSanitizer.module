@@ -1,0 +1,32 @@
+<?php namespace ProcessWire;
+/**
+ * DplusSanitizer
+ *
+ * Module for Adding Hooks to the Sanitizer Class
+ */
+class DplusSanitizer extends WireData implements Module {
+
+	public function init() {
+		$this->addHook('Sanitizer::yn', function(HookEvent $event) {
+			$sanitizer = $event->object;
+			$value = strtoupper($event->arguments(0));
+			$event->return = $value == 'Y' ? 'Y' : 'N';
+		});
+
+		$this->addHook('Sanitizer::ynbool', function(HookEvent $event) {
+			$sanitizer = $event->object;
+			$value = strtoupper($event->arguments(0));
+			$event->return = $value == 'Y' ? true : false;
+		});
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Sanitizer',
+			'version' => 101,
+			'summary' => 'Adds Hooks to the Sanitizer Class',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

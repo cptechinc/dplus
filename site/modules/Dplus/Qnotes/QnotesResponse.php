@@ -41,4 +41,38 @@ class QnotesResponse extends WireData {
 	public function set_key($key) {
 		$this->key = $key;
 	}
+
+	/**
+	 * Return Error Response
+	 * @param  string $key     Key of Note
+	 * @param  string $message Error Message
+	 * @param  int    $action
+	 * @return QnotesResponse
+	 */
+	public static function response_error($key, $message, $action = 2) {
+		$note = new QnotesResponse();
+		$note->set_key($key);
+		$note->set_message($message);
+		$note->set_action($action);
+		$note->set_success(false);
+		$note->set_error(true);
+		return $note;
+	}
+
+	/**
+	 * Return Error Response
+	 * @param  string $key     Key of Note
+	 * @param  string $message Error Message
+	 * @param  int    $action
+	 * @return QnotesResponse
+	 */
+	public static function response_success($key, $message, $action = 2) {
+		$note = new QnotesResponse();
+		$note->set_key($key);
+		$note->set_message($message);
+		$note->set_action($action);
+		$note->set_success(true);
+		$note->set_error(false);
+		return $note;
+	}
 }

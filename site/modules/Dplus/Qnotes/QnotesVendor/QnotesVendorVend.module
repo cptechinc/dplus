@@ -1,0 +1,316 @@
+<?php namespace ProcessWire;
+
+use VendorOrderNoteQuery, VendorOrderNote;
+
+use Purl\Url;
+
+use ConfigApQuery;
+
+
+include_once(__DIR__.'/../QnotesResponse.php');
+
+/**
+ * QnotesVendorVend
+ *
+ * Class for Writing and Reading Qnotes for Vendor Orders (VEND)
+ */
+class QnotesVendorVend extends WireData implements Module {
+	const MODEL              = 'VendorOrderNote';
+	const MODEL_KEY          = '';
+	const DESCRIPTION        = 'Vendor Order Note';
+	const DESCRIPTION_RECORD = 'Vendor Order Note';
+	const DESCRIPTION_RESPONSE = 'Vendor Order ';
+	const MODEL_TABLE = 'notes_vend_ship_order';
+	const TYPE = 'VEND';
+
+	public function type() {
+		return self::TYPE;
+	}
+
+	/**
+	 * Return the Max Number of columns for Note Type
+	 * @return int
+	 */
+	public function get_column_count() {
+		$configAP = $this->wire('modules')->get('ConfigureAp')->config();
+		return $configAP->columns_notes_pord;
+	}
+
+	/**
+	 * Returns Vendor Order Notes Query
+	 * @return VendorOrderNoteQuery
+	 */
+	public function get_query() {
+		return VendorOrderNoteQuery::create();
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Returns if Notes Exist
+	 * @param  string $vendorID    Vendor ID
+	 * @param  int    $shipfromID  Shipfrom ID
+	 * @return bool
+	 */
+	public function notes_exist($vendorID, $shipfromID = '') {
+		$q = $this->get_query();
+		$q->filterByVendorid($vendorID);
+		$q->filterByShipfromid($shipfromID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Returns if Notes Exist
+	 * @param  string $vendorID    Vendor Order Number
+	 * @param  int    $shipfromID  Line Number
+	 * @return bool
+	 */
+	public function get_note($vendorID, $shipfromID, $sequence = 1) {
+		$q = $this->get_query();
+		$q->filterByVendorid($vendorID);
+		$q->filterByShipfromid($shipfromID);
+		$q->filterBySequence($sequence);
+		return $q->findOne();
+	}
+
+	/**
+	 * Returns Line 1 of Every Note
+	 * @param  string $vendorID    Vendor Order Number
+	 * @param  int    $shipfromID  Line Number
+	 * @return VendorOrderNote[]|ObjectCollection
+	 */
+	public function get_notes_summarized($vendorID, $shipfromID = '') {
+		$q = $this->get_query();
+		$q->filterByVendorid($vendorID);
+		$q->filterByShipfromid($shipfromID);
+		$q->filterBySequence(1);
+		return $q->find();
+	}
+
+	/**
+	 * Return Notes for Form
+	 * @param  string $vendorID    Vendor Order Number
+	 * @param  int    $shipfromID  Line Number
+	 * @return array
+	 */
+	public function get_notes_form_array($vendorID, $shipfromID = '') {
+		$q = $this->get_query();
+		$q->select(VendorOrderNote::get_aliasproperty('note'));
+		$q->filterByVendorid($vendorID);
+		$q->filterByShipfromid($shipfromID);
+		return $q->find()->toArray();
+	}
+
+/* =============================================================
+	CRUD Delete, Create
+============================================================= */
+	/**
+	 * Delete Notes for Form
+	 * @param  string $vendorID    Vendor Order Number
+	 * @param  int    $shipfromID  Line Number
+	 * @return array
+	 */
+	public function delete_notes($vendorID, $shipfromID) {
+		$q = $this->get_query();
+		$q->filterByVendorid($vendorID);
+		$q->filterByShipfromid($shipfromID);
+
+		if ($q->count()) {
+			return $q->delete();
+		}
+		return true;
+	}
+
+	/**
+	 * Creates Vendor Order Note Record
+	 * @param  string $vendorID     Vendor Order Number
+	 * @param  int    $shipfromID   Line Number (On PO)
+	 * @param  int    $sequence  Sequence (Note Line Number)
+	 * @param  string $note      Note Line
+	 * @return bool
+	 */
+	public function create_note($vendorID, int $shipfromID, int $sequence = 1, $note = '') {
+		$record = VendorOrderNote::new();
+		$record->setVendorid($vendorID);
+		$record->setShipfromid($shipfromID);
+		$record->generateKey2(); // PK
+		$record->setSequence($sequence); // PK
+		$record->setForm('');
+		$record->setNote($note);
+		$record->setDate(date('Ymd'));
+		$record->setTime(date('His'));
+		$record->setDummy('P');
+		return $record->save();
+	}
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Takes Input, Processes it, updates Vendor Order Notes in the Database
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$validate_ponbr = $this->wire('modules')->get('ValidatePurchaseOrderNbr');
+		$vendorID = $input->$rm->text('ponbr');
+
+		if ($validate_ponbr->validate($vendorID)) {
+			switch ($input->$rm->text('action')) {
+				case 'update-notes':
+					$this->update_notes_input($input);
+					break;
+				case 'delete-notes':
+					$this->delete_notes_input($input);
+					break;
+				default:
+					$this->wire('session')->response_qnote = QnotesResponse::response_error($vendorID, 'Unspecified Qnote Action');
+					break;
+			}
+		} else {
+			$this->wire('session')->response_qnote = QnotesResponse::response_error($vendorID, 'Invalid PO Number');
+		}
+	}
+
+	/**
+	 * Takes Input, Processes it, deletes Vendor Order Notes
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function delete_notes_input($input) {
+		$rm = strtolower($input->requestMethod());
+		$values  = $input->$rm;
+		$vendorID   = $values->text('ponbr');
+		$shipfromID = $values->int('linenbr');
+
+		if ($this->notes_exist($vendorID, $shipfromID)) {
+			$note = $this->get_note($vendorID, $shipfromID);
+		} else {
+			$note = new VendorOrderNote();
+			$note->setVendorid($vendorID);
+			$note->setShipfromid($shipfromID);
+		}
+		$success = $this->delete_notes($vendorID, $shipfromID);
+
+		$this->wire('session')->response_qnote = $this->process_response_delete($note, $vendorID, $success);
+	}
+
+	/**
+	 * Takes Input, Processes it, updates Vendor Order Notes
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function update_notes_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$vendorID   = $values->text('ponbr');
+		$shipfromID = $values->int('linenbr');
+		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($values->textarea('note'), $this->get_column_count());
+		$lines_saved = array();
+
+		$this->delete_notes($vendorID, $shipfromID);
+
+		foreach ($note_lines as $key => $line) {
+			$sequence = $key + 1;
+			$lines_saved[$sequence] = $this->create_note($vendorID, $shipfromID, $sequence, $line);
+		}
+
+		$this->wire('session')->response_qnote = $this->process_responses($this->get_note($vendorID, $shipfromID, $sequence), $vendorID, $lines_saved);
+	}
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
+	/**
+	 * Return Code Table Response based on the number of lines that were written to the database
+	 * @param  string $vendorID         Vendor Order Number
+	 * @param  array  $lines_saved   array of line numbers and if they got saved e.g. (1 => true, 2 => false)
+	 * @return CodeTableResponse
+	 */
+	protected function process_responses(VendorOrderNote $note, $vendorID, array $lines_saved) {
+		$message = self::DESCRIPTION_RESPONSE . " ($vendorID) Note Lines";
+
+		$response = new QnotesResponse();
+		$response->set_key("$vendorID-{$note->line}");
+
+		if (in_array(false, $lines_saved)) {
+			$lines_error =
+			array_filter($lines_saved, function($value, $key) {
+				return  $value == false;
+			}, ARRAY_FILTER_USE_BOTH);
+			$message .= implode(", ", array_keys($lines_error));
+			$message .= " were not able to be saved";
+
+			if (sizeof($lines_error)) {
+				$response->set_error(true);
+			}
+		} else {
+			$response->set_success(true);
+			$message .= " were able to be saved";
+		}
+
+		$response->set_action(QnotesResponse::CRUD_UPDATE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if (sizeof($lines_saved)) {
+			$this->wire('modules')->get('Qponotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+		}
+		return $response;
+	}
+
+	/**
+	 * Return QnoteResponse based if Notes were able to be Deleted
+	 * @param  VendorOrderNote  $note         Attributes are needed to generate key
+	 * @param  string             $vendorID        Vendor Order Number
+	 * @param  array              $success      Were Notes able to be deleted?
+	 * @return QnoteResponse
+	 */
+	public function process_response_delete(VendorOrderNote $note, $vendorID, bool $success) {
+		$message = self::DESCRIPTION_RESPONSE . " ($vendorID) Notes ";
+
+		$response = new QnotesResponse();
+		$response->set_key("$vendorID-{$note->line}-{$note->form}");
+
+		if ($success) {
+			$response->set_success(true);
+			$message .= " were able to be deleted";
+		} else {
+			$response->set_success(true);
+			$message .= " were not able to be deleted";
+		}
+
+		$response->set_action(QnotesResponse::CRUD_DELETE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if ($success) {
+			$this->wire('modules')->get('Qponotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+		}
+		return $response;
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Qnotes Vendor Order',
+			'version' => 101,
+			'summary' => 'Qnotes Vendor Order CRUD',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('Qnotes')
+		);
+	}
+}

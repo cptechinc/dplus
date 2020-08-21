@@ -1,0 +1,62 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	item                 WarehouseInventory
+	m_notes              module QnotesItemWhseOrder
+#}
+<div class="modal fade" id="notes-order-modal" tabindex="-1" role="dialog" aria-labelledby="notes-order-modal-label" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="notes-order-modal-label"><span class="action-desc">Adding</span> {{ item.itemid }} Order Notes</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form action="{{ page.fullURL.getURL() }}" id="order-notes-form" method="post">
+					<input type="hidden" name="itemID" value="{{ item.itemid }}">
+					<input type="hidden" name="whseID" value="{{ item.warehouseid }}">
+					<input type="hidden" name="form" value="">
+
+					<div class="form-group">
+						<div class="row">
+							{% for form, label in m_notes.get_forms_shortlabels() %}
+								<div class="col">
+									<div class="custom-control custom-checkbox">
+										<input type="checkbox" class="custom-control-input" name={{ form }} id="order-{{form}}" value="Y">
+										<label class="custom-control-label" for="order-{{form}}">{{ label }}</label>
+									</div>
+								</div>
+							{% endfor %}
+						</div>
+					</div>
+
+					<div class="feedback">
+
+					</div>
+
+					<div class="form-group">
+						<label for="order-notes">Notes</label>
+						<div class="d-flex justify-content-between align-items-center">
+							<textarea class="form-control w-auto qnotes" name="note" id="order-notes" rows="10" cols="{{ m_notes.get_column_count() }}"></textarea>
+						</div>
+					</div>
+
+					<div class="d-flex justify-content-between align-items-center">
+						<button type="submit" name="action" value="update-notes" class="btn btn-success">
+							<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+						</button>
+						{# TODO: add confirmation for deletion 'delete_button' #}
+						<button type="submit" name="action" value="delete-notes" class="btn btn-danger">
+							<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+						</button>
+						<button type="button" class="btn btn-warning pull-right" data-dismiss="modal">
+							Close
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

@@ -42,7 +42,7 @@ if ($page->id != $config->errorpage_dplusdb) {
 		$module->connect_propel();
 
 		try {
-			$propel_name = $module->get_connection_name_propel();
+			$propel_name = $module->get_connection_name_db();
 			$$propel_name = $module->get_propel_write_connection();
 			$$propel_name->useDebug(true);
 		} catch (Exception $e) {

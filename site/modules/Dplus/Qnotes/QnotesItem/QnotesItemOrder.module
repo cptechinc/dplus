@@ -1,0 +1,278 @@
+<?php namespace ProcessWire;
+
+use ItemOrderNoteQuery, ItemOrderNote;
+use ConfigArQuery, ConfigAr;
+
+include_once(__DIR__.'/../QnotesResponse.php');
+
+/**
+ * QnotesSalesOrder
+ *
+ * Class for Writing and Reading Qnotes for Sales Orders
+ */
+class QnotesItemOrder extends WireData implements Module {
+	const MODEL              = 'ItemOrderNote';
+	const MODEL_KEY          = 'itemid sequence';
+	const DESCRIPTION        = 'Item Order Notes';
+	const DESCRIPTION_RECORD = 'Item Order Notes';
+	const DESCRIPTION_RESPONSE = 'Item ';
+
+	public function get_forms() {
+		return ItemOrderNote::FORMS_LABELS;
+	}
+
+	public function get_forms_shortlabels() {
+		return ItemOrderNote::FORMS_LABELS_SHORT;
+	}
+
+
+	/**
+	 * Return the Max Number of columns for Note Type
+	 * @return int
+	 */
+	public function get_column_count() {
+		$configAR = ConfigArQuery::create()->findOne();
+		return $configAR->columns_notes_invoice;
+	}
+
+	/**
+	 * Returns Quote Notes Query
+	 * @return ItemOrderNoteQuery
+	 */
+	public function get_query() {
+		return ItemOrderNoteQuery::create();
+	}
+
+	/**
+	 * Returns if Notes Exist
+	 * @param  string $itemID  Item ID
+	 * @param  string $form    Forms Code
+	 * @return bool
+	 */
+	public function notes_exist($itemID, $form) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->filterByForm($form);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Returns Line 1 of Every Note
+	 * @param  string $itemID  Item ID
+	 * @return ItemOrderNote[]|ObjectCollection
+	 */
+	public function get_notes_summarized($itemID) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->filterBySequence(1);
+		return $q->find();
+	}
+
+	/**
+	 * Return Notes for Form
+	 * @param  string $itemID  Item ID
+	 * @param  string $form    Forms Code
+	 * @return array
+	 */
+	public function get_notes_form_array($itemID, $form) {
+		$q = $this->get_query();
+		$q->select(ItemOrderNote::get_aliasproperty('note'));
+		$q->filterByItemid($itemID);
+		$q->filterByForm($form);
+		return $q->find()->toArray();
+	}
+
+	/**
+	 * Delete Notes for Item
+	 * @param  string $itemID   Item ID
+	 * @param  string $form     Forms Code
+	 * @return array
+	 */
+	public function delete_notes($itemID, $form) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->filterByForm($form);
+
+		if ($q->count()) {
+			return $q->delete();
+		}
+		return true;
+	}
+
+	/**
+	 * Takes Input, Processes it, updates Quote Notes in the Database
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+
+		switch ($input->$rm->text('action')) {
+			case 'update-notes':
+				$this->update_notes_input($input);
+				break;
+			case 'delete-notes':
+				$this->delete_notes_input($input);
+				break;
+		}
+	}
+
+	/**
+	 * Takes Input, Processes it, deletes Quote Notes
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function delete_notes_input($input) {
+		$rm = strtolower($input->requestMethod());
+		$itemID  = $input->$rm->text('itemID');
+		$form    = $input->$rm->text('form');
+
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->filterByForm($form);
+
+		if ($q->count()) {
+			$note = $q->findOne();
+		} else {
+			$note = ItemOrderNote::new();
+			$note->setItemid($itemID);
+			$note->setForm($form);
+			$note->generateKey2();
+		}
+		$success = $this->delete_notes($itemID, $form);
+
+		$this->wire('session')->response_qnote = $this->process_response_delete($note, $itemID, $success);
+	}
+
+	/**
+	 * Takes Input, Processes it, updates Quote Notes
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function update_notes_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID  = $values->text('itemID');
+		$form = $this->get_form_input($input);
+		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
+		$lines_saved = array();
+		$this->delete_notes($itemID, $form);
+
+		foreach ($note_lines as $key => $line) {
+			$sequence = $key + 1;
+			$record = ItemOrderNote::new();
+			$record->setItemid($itemID);
+			$record->generateKey2(); // PK
+			foreach (array_keys(ItemOrderNote::FORMS_LABELS) as $formfield) {
+				$func = 'set'.ucfirst($formfield);
+				$record->$func($values->yn($formfield));
+			}
+			$record->generateForm();
+			$record->setSequence($sequence); // PK
+			$record->setNote($line);
+			$record->setDate(date('Ymd'));
+			$record->setTime(date('His'));
+			$record->setDummy('P');
+			$lines_saved[$sequence] = $record->save();
+		}
+		$this->wire('session')->response_qnote = $this->process_responses($record, $itemID, $lines_saved);
+	}
+
+	public function get_form_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$note = ItemOrderNote::new();
+		$note->setItemid($values->text('itemID'));
+
+		foreach (array_keys(ItemOrderNote::FORMS_LABELS) as $formfield) {
+			$func = 'set'.ucfirst($formfield);
+			$note->$func($values->yn($formfield));
+		}
+		$note->generateForm();
+		echo $note->form;
+		return $note->form;
+	}
+
+	/**
+	 * Return Code Table Response based on the number of lines that were written to the database
+	 * @param  string $itemID       Item ID
+	 * @param  array  $lines_saved  array of line numbers and if they got saved e.g. (1 => true, 2 => false)
+	 * @return CodeTableResponse
+	 */
+	protected function process_responses(ItemOrderNote $note, $itemID, array $lines_saved) {
+		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Order Note Lines";
+
+		$response = new QnotesResponse();
+		$response->set_key("$itemID-{$note->key2}");
+
+		if (in_array(false, $lines_saved)) {
+			$lines_error =
+			array_filter($lines_saved, function($value, $key) {
+				return  $value == false;
+			}, ARRAY_FILTER_USE_BOTH);
+			$message .= implode(", ", array_keys($lines_error));
+			$message .= " were not able to be saved";
+
+			if (sizeof($lines_error)) {
+				$response->set_error(true);
+			}
+		} else {
+			$response->set_success(true);
+			$message .= " were able to be saved";
+		}
+
+		$response->set_action(QnotesResponse::CRUD_UPDATE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if (sizeof($lines_saved)) {
+			$this->wire('modules')->get('Qnotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+		}
+		return $response;
+	}
+
+	/**
+	 * Return QnoteResponse based if Notes were able to be Deleted
+	 * @param  ItemOrderNote  $note         Attributes are needed to generate key
+	 * @param  string            $itemID       Item ID
+	 * @param  array             $success      Were Notes able to be deleted?
+	 * @return QnoteResponse
+	 */
+	public function process_response_delete(ItemOrderNote $note, $itemID, bool $success) {
+		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Order Notes ";
+
+		$response = new QnotesResponse();
+		$response->set_key("$itemID-{$note->key2}");
+
+		if ($success) {
+			$response->set_success(true);
+			$message .= " were able to be deleted";
+		} else {
+			$response->set_success(true);
+			$message .= " were not able to be deleted";
+		}
+
+		$response->set_action(QnotesResponse::CRUD_DELETE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if ($success) {
+			$this->wire('modules')->get('Qnotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+		}
+		return $response;
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Qnotes Item Order',
+			'version' => 101,
+			'summary' => 'Dplus Qnotes Item Order CRUD methods',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('Qnotes')
+		);
+	}
+}

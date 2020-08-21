@@ -1,0 +1,91 @@
+<?php namespace ProcessWire;
+
+use QuoteNotesQuery, QuoteNotes;
+use ConfigArQuery, ConfigAr;
+
+include_once(__DIR__.'/../QnotesResponse.php');
+
+/**
+ * QnotesItem
+ *
+ * Container class to call classes to handle Item Notes
+ */
+class QnotesItemVxm extends WireData implements Module {
+
+	const TYPES = array(
+		'internal',
+		'detail'
+	);
+
+	public function init() {
+		$modules = $this->wire('modules');
+		$this->notes = new WireData();
+		$this->notes->internal   = $modules->get('QnotesItemVxmInternal');
+		$this->notes->detail   = $modules->get('QnotesItemVxmDetail');
+	}
+
+	/**
+	 * Takes Input, validates it's a valid action, and a valid item
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+
+		if ($input->$rm->text('action') == 'update-notes' || $input->$rm->text('action') == 'delete-notes') {
+			$itemID = $input->$rm->text('itemID');
+			$itm = $this->wire('modules')->get('Itm');
+
+			if ($itm->item_exists($itemID)) {
+				if (in_array($input->$rm->text('type'), self::TYPES)) {
+					$type = $input->$rm->text('type');
+					$this->notes->$type->process_input($input);
+				} else {
+					$response = new QnotesResponse();
+					$response->set_message($input->$rm->text('type'). " is not a valid note type");
+					$response->set_error(true);
+					$response->set_key($itemID);
+					$this->wire('session')->response_qnote = $response;
+				}
+			} else {
+				$response = new QnotesResponse();
+				$response->set_message("$itemID does not exist, notes can't be created for it");
+				$response->set_error(true);
+				$response->set_key($itemID);
+				$this->wire('session')->response_qnote = $response;
+			}
+
+			if ($this->wire('session')->response_qnote->has_success()) {
+				$this->wire('session')->qnotes_itm = $input->$rm->text('type');
+			}
+		}
+	}
+
+	public function update() {
+		$modules = $this->wire('modules');
+		$modules->refresh();
+
+		$info = self::getModuleInfo();
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Qnotes Item VXM',
+			'version' => 101,
+			'summary' => 'Dplus Qnotes Item VXM Factory',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('Qnotes'),
+			'installs' => array(
+				'QnotesItemVxmInternal',
+				'QnotesItemVxmDetail',
+			)
+		);
+	}
+}

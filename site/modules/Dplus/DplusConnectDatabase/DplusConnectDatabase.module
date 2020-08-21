@@ -18,6 +18,9 @@ class DplusConnectDatabase extends Process implements ConfigurableModule {
 		return $this::CONNECTION_NAME_PROPEL;
 	}
 
+	public function get_connection_name_db($prefix = true) {
+		return "db_".$this::CONNECTION_NAME_PW;
+	}
 
 	/**
 	 * Returns Default Configuration Values

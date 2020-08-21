@@ -24,13 +24,16 @@ table.table-md td, table.table-md th {
 /**************************************
 	Bootstrap Styles
 **************************************/
+.invalid-feedback.show {
+	display: block;
+}
 .breadcrumb .breadcrumb-item::before {color: white;}
 .breadcrumb-item+.breadcrumb-item::before {
 	display: inline-block;
 	padding-right: 0.5rem;
 	color: #6c757d;
 	content: "/"
- }
+}
 
 .breadcrumb-item.active {
 	color: #FF304F;
@@ -49,6 +52,14 @@ table.table-md td, table.table-md th {
 
 .form-group label {
 	font-weight: bold;
+}
+
+.modal-600 {
+	max-width: 600px;
+}
+
+.modal-700 {
+	max-width: 700px;
 }
 
 /*==============================================================
@@ -151,6 +162,10 @@ a.image-link:hover {
 
 .toolbar-sidebar .nav li {
 	width: 100%;
+}
+
+.list-group.dplus-menu .list-group-item {
+	padding: .5rem 1.25rem;
 }
 
 /************************************** Navbar **************************************/

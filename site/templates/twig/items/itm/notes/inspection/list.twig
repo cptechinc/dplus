@@ -1,0 +1,43 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	item                     ItemMasterItem
+	user                     ProcessWire\User
+	m_notes                  module QnotesItem
+	m_notes.notes.inspection module QnotesItemInspection
+#}
+<div class="list-group">
+	<div class="list-group-item list-group-item-action bg-dark text-white">
+		<div class="row">
+			<div class="col">Date</div>
+			<div class="col">Time</div>
+			<div class="col">Author</div>
+			<div class="col">
+				Note &nbsp;
+				<button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#notes-inspection-modal" data-date="{{ "now"|convertdate("m/d/Y") }}" data-time="{{ "now"|convertdate("H:i") }}" data-rawnotetime="">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add
+				</button>
+			</div>
+		</div>
+	</div>
+	{% for note in m_notes.notes.inspection.get_notes_summarized(item.itemid) %}
+		<div class="list-group-item qnote-row">
+			<div class="row mb-1">
+				<div class="col">{{ note.notedate|convertdate }}</div>
+				<div class="col">{{ (note.notedate ~ note.get_time())|convertdate("H:i") }}</div>
+				<div class="col">{{ note.user }}</div>
+				<div class="col">
+					<button type="button" class="btn btn-light" data-toggle="collapse" data-target="#notes-inspection-{{ note.notedate|convertdate('Ymd') }}-{{ (note.notedate ~ note.get_time())|convertdate("Hi") }}" aria-controls="notes-inspection-{{ note.notedate|convertdate('Ymd') }}-{{ note.note.get_time()|convertdate('Hi') }}">
+						<i class="fa fa-eye" aria-hidden="true"></i> Show
+					</button>
+					{% if note.user == user.loginid %}
+						<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-inspection-modal" data-date="{{ note.notedate|convertdate("m/d/Y") }}" data-time="{{ (note.notedate ~ note.get_time())|convertdate("H:i") }}" data-rawnotetime="{{ note.notetime }}">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</button>
+					{% endif %}
+				</div>
+			</div>
+			<textarea class="collapse form-control-plaintext" id="notes-inspection-{{ note.notedate|convertdate('Ymd') }}-{{ (note.notedate ~ note.get_time())|convertdate("Hi") }}" cols="{{ qnotes_so.get_column_count() }}" readonly>{{ m_notes.notes.inspection.get_notes_form_array(item.itemid, note.user, note.notedate, note.notetime)|join('\r') }}</textarea>
+		</div>
+	{% endfor %}
+</div>

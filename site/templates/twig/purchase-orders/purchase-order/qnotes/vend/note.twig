@@ -1,0 +1,10 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	purchaseorder          PurchaseOrder
+	ponbr                  Purchase Order Number
+	qnotes                 module QnotesPo
+	qnotes.vend            module QnotesVendorVend
+#}
+<textarea class="form-control-plaintext qnotes" cols="{{ qnotes.pord.get_column_count() }}" readonly>{{ qnotes.vend.get_notes_form_array(purchaseorder.vendorid)|join('\r') }}</textarea>

@@ -6,6 +6,7 @@
 				<a href="{{ parent.url }}">{{ parent.title }}</a>
 			</li>
 		{% endfor %}
+
 		{% if page.has('itemID') %}
 			<li class="breadcrumb-item">
 				<a href="{{ page.url }}">{{ page.title }}</a>
@@ -13,14 +14,16 @@
 			<li class="breadcrumb-item active" aria-current="page">Item: {{ page.itemID }}</li>
 		{% endif %}
 
-		{% if upc %}
+		{% if page.has('upc') %}
 			<li class="breadcrumb-item">
 				<a href="{{ page.url }}">{{ page.title }}</a>
 			</li>
-			<li class="breadcrumb-item">
-				<a href="{{ page.item_upcsURL(upc.itemid) }}">Item: {{ upc.itemid }}</a>
-			</li>
-			<li class="breadcrumb-item active" aria-current="page">UPC: {{ upc.upc }}</li>
+			{% if input.get('itemID') %}
+				<li class="breadcrumb-item">
+					<a href="{{ page.item_upcsURL(page.itemID) }}">Item: {{ page.itemID }}</a>
+				</li>
+			{% endif %}
+			<li class="breadcrumb-item active" aria-current="page">{{ page.upc }}</li>
 		{% endif %}
 	</ol>
 </nav>

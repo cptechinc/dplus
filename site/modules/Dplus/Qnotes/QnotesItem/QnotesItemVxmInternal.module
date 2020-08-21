@@ -1,0 +1,339 @@
+<?php namespace ProcessWire;
+
+use ItemXrefVendorNoteInternalQuery, ItemXrefVendorNoteInternal;
+use ConfigInQuery, ConfigIn;
+
+include_once(__DIR__.'/../QnotesResponse.php');
+
+/**
+ * QnotesItemXrefCustomer
+ *
+ * Class for Writing and Reading Qnotes for VXM Internal (INTV)
+ */
+class QnotesItemVxmInternal extends WireData implements Module {
+	const MODEL                = 'ItemXrefVendorNoteInternal';
+	const MODEL_KEY            = 'key2, sequence, form';
+	const DESCRIPTION          = 'VXM Item Notes';
+	const DESCRIPTION_RECORD   = 'VXM Item Notes';
+	const DESCRIPTION_RESPONSE = 'Internal VXM Notes';
+
+	/**
+	 * Return the Max Number of columns for Note Type
+	 * @return int
+	 */
+	public function get_column_count() {
+		return 63;
+	}
+
+	/**
+	 * Returns Quote Notes Query
+	 * @return ItemXrefVendorNoteInternalQuery
+	 */
+	public function get_query() {
+		return ItemXrefVendorNoteInternalQuery::create();
+	}
+
+/* =============================================================
+	CRUD Read / Validation Functions
+============================================================= */
+	public function get_query_filter_itemvendor($itemID, $vendorID) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->filterByVendorid($vendorID);
+		return $q;
+	}
+
+	/**
+	 * Returns if Notes Exist
+	 * @param  string $itemID    Item ID (Internal)
+	 * @param  string $vendorID  Vendor ID
+	 * @return bool
+	 */
+	public function notes_exist($itemID, $vendorID, $form) {
+		$q = $this->get_query_filter_itemvendor($itemID, $vendorID);
+		$q->filterByForm($form);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Returns if Notes Exist
+	 * @param  string $itemID    Item ID (Internal)
+	 * @param  string $vendorID  Vendor ID
+	 * @return bool
+	 */
+	public function notes_exist_item($itemID, $vendorID) {
+		$q = $this->get_query_filter_itemvendor($itemID, $vendorID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Returns Line 1 of Every Note
+	 * @param  string $itemID    Item ID (Internal)
+	 * @param  string $vendorID  Vendor ID
+	 * @return ItemXrefVendorNoteInternal[]|ObjectCollection
+	 */
+	public function get_notes_summarized($itemID, $vendorID) {
+		$q = $this->get_query_filter_itemvendor($itemID, $vendorID);
+		$q->filterBySequence(1);
+		return $q->find();
+	}
+
+	/**
+	 * Return Notes for Form
+	 * @param  string $itemID    Item ID (Internal)
+	 * @param  string $vendorID  Vendor ID
+	 * @param  string $userID    User ID
+	 * @param  string $date      Note Date (raw)
+	 * @param  string $time      Note Time (raw)
+	 * @return array
+	 */
+	public function get_notes_date_array($itemID, $vendorID, $userID, $date, $time) {
+		$q = $this->get_query_filter_itemvendor($itemID, $vendorID);
+		$q->select(ItemXrefVendorNoteInternal::get_aliasproperty('note'));
+		$q->filterByUserid($userID);
+		$q->filterByNotedate($date);
+		$q->filterByNotetime($time);
+		return $q->find()->toArray();
+	}
+
+/* =============================================================
+	CRUD Functions
+============================================================= */
+	/**
+	 * Takes Input, Processes it, updates Quote Notes in the Database
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+
+		switch ($input->$rm->text('action')) {
+			case 'update-notes':
+				$this->update_notes_input($input);
+				break;
+			case 'delete-notes':
+				$this->delete_notes_input($input);
+				break;
+		}
+	}
+
+	/**
+	 * Takes Input, Processes it, deletes Quote Notes
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function delete_notes_input($input) {
+		$rm = strtolower($input->requestMethod());
+		$values    = $input->$rm;
+		$itemID    = $values->text('itemID');
+		$vendorID  = $values->text('vendorID');
+		$userID    = $values->text('userID');
+		$date      = date(ItemXrefVendorNoteInternal::FORMAT_NOTEDATE, strtotime($values->text('notedate')));
+		$time      = $values->text('rawnotetime');
+
+		$q = $this->get_query_filter_itemvendor($itemID, $vendorID);
+		$q->filterByNotedate($date);
+		$q->filterByNotetime($time);
+
+		if ($q->count()) {
+			$note = $q->findOne();
+		} else {
+			$note = ItemXrefVendorNoteInternal::new();
+			$note->setItemid($itemID);
+			$note->setVendorid($vendorID);
+			$note->setNotedate($date);
+			$note->setNotetime($time);
+			$note->generateKey2();
+		}
+		$success = $this->delete_notes($itemID, $vendorID, $userID, $date, $time);
+
+		$this->wire('session')->response_qnote = $this->process_response_delete($note, $itemID, $vendorID, $success);
+	}
+
+	/**
+	 * Takes Input, Processes it, updates Quote Notes
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function update_notes_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID    = $values->text('itemID');
+		$vendorID  = $values->text('vendorID');
+		$userID    = $values->text('userID');
+		$notedate      = $values->text('notedate');
+		$notetimeraw   = $values->text('rawnotetime');
+		$notetime      = $values->text('notetime');
+
+		if (empty($notedate)) {
+			$notedate = date(ItemXrefVendorNoteInternal::FORMAT_NOTEDATE);
+		}
+
+		if (empty($notetime)) {
+			$notetime = date(ItemXrefVendorNoteInternal::FORMAT_NOTETIME);
+		}
+
+		$this->delete_notes($itemID, $vendorID, $userID, date(ItemXrefVendorNoteInternal::FORMAT_NOTEDATE, strtotime($notedate)), $notetimeraw);
+
+		$note_lines = explode(PHP_EOL, $values->textarea('note'));
+		$lines_saved = array();
+
+		foreach ($note_lines as $key => $line) {
+			$sequence = $key + 1;
+			$record = ItemXrefVendorNoteInternal::new();
+			$record->setVendorid($vendorID);
+			$record->setItemid($itemID);
+			$record->setNotedate(date(ItemXrefVendorNoteInternal::FORMAT_NOTEDATE, strtotime($notedate)));
+			$record->setNotetime(date(ItemXrefVendorNoteInternal::FORMAT_NOTETIME, strtotime($notedate.$notetime)).'00');
+			$record->setUserid($userID);
+			$record->generateKey2(); // PK
+			$record->setSequence($sequence); // PK
+			$record->setNote($line);
+			$record->setDate(date('Ymd'));
+			$record->setTime(date('His'));
+			$record->setDummy('P');
+			$lines_saved[$sequence] = $record->save();
+		}
+		$this->wire('session')->response_qnote = $this->process_responses($record, $itemID, $vendorID, $lines_saved);
+	}
+
+	/**
+	 * Delete Notes for Item
+	 * @param  string $itemID    Item ID (Internal)
+	 * @param  string $vendorID  Vendor ID
+	 * @param  string $userID    User ID
+	 * @param  string $date      Raw Date
+	 * @param  string $date      Raw Time
+	 * @return array
+	 */
+	public function delete_notes($itemID, $vendorID, $userID, $date, $time) {
+		$q = $this->get_query_filter_itemvendor($itemID, $vendorID);
+		$q->filterByNotedate($date);
+		$q->filterByNotetime($time);
+
+		if ($q->count()) {
+			return $q->delete();
+		}
+		return true;
+	}
+
+	/**
+	 * Return Code Table Response based on the number of lines that were written to the database
+	 * @param  string $itemID       Item ID (Internal)
+	 * @param  string $vendorID       Vendor ID
+	 * @param  array  $lines_saved  array of line numbers and if they got saved e.g. (1 => true, 2 => false)
+	 * @return CodeTableResponse
+	 */
+	protected function process_responses(ItemXrefVendorNoteInternal $note, $itemID, $vendorID, array $lines_saved) {
+		$message = $this->get_response_message_base($itemID, $vendorID);
+
+		$response = new QnotesResponse();
+		$response->set_key("$itemID-$vendorID-{$note->key2}");
+
+		if (in_array(false, $lines_saved)) {
+			$lines_error =
+			array_filter($lines_saved, function($value, $key) {
+				return  $value == false;
+			}, ARRAY_FILTER_USE_BOTH);
+			$message .= implode(", ", array_keys($lines_error));
+			$message .= " were not able to be saved";
+
+			if (sizeof($lines_error)) {
+				$response->set_error(true);
+			}
+		} else {
+			$response->set_success(true);
+			$message .= " were able to be saved";
+		}
+
+		$response->set_action(QnotesResponse::CRUD_UPDATE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if (sizeof($lines_saved)) {
+			$this->wire('modules')->get('Qponotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+		}
+		return $response;
+	}
+
+	/**
+	 * Return QnoteResponse based if Notes were able to be Deleted
+	 * @param  ItemXrefVendorNoteInternal  $note         Attributes are needed to generate key
+	 * @param  string             $itemID       Item ID (Internal)
+	 * @param  string             $vendorID       Whse ID
+	 * @param  array              $success      Were Notes able to be deleted?
+	 * @return QnoteResponse
+	 */
+	public function process_response_delete(ItemXrefVendorNoteInternal $note, $itemID, $vendorID, bool $success) {
+		$message = $this->get_response_message_base($itemID, $vendorID);
+
+		$response = new QnotesResponse();
+		$response->set_key("$itemID-$vendorID-{$note->key2}");
+
+		if ($success) {
+			$response->set_success(true);
+			$message .= " were able to be deleted";
+		} else {
+			$response->set_success(true);
+			$message .= " were not able to be deleted";
+		}
+
+		$response->set_action(QnotesResponse::CRUD_DELETE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if ($success) {
+			$this->wire('modules')->get('Qponotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+		}
+		return $response;
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return Message with provided Item ID and Vendor ID
+	 * @param  string $itemID Item ID (Internal)
+	 * @param  string $vendorID Vendor ID
+	 * @return string
+	 */
+	public function get_response_message_base($itemID, $vendorID) {
+		$message = self::DESCRIPTION_RESPONSE;
+		$replace = array('{itemID}', '{vendorID}');
+		$values  = array($itemID, $vendorID);
+		return str_replace($replace, $values, $message);
+	}
+
+	/**
+	 * Return Key Value array for forms
+	 * @return array
+	 */
+	public function get_forms() {
+		return ItemXrefVendorNoteInternal::FORMS_LABELS;
+	}
+
+	/**
+	 * Return Key Value array for forms, with shortened labels
+	 * @return array
+	 */
+	public function get_forms_shortlabels() {
+		return ItemXrefVendorNoteInternal::FORMS_LABELS_SHORT;
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Qnotes VXM Internal',
+			'version' => 101,
+			'summary' => 'Dplus Qnotes Internal',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('Qnotes', 'Qponotes')
+		);
+	}
+}

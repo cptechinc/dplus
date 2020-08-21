@@ -1,0 +1,35 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemXrefVendor
+	qnotes                 module QnotesItemVxm
+	qnotes.internal        module QnotesItemVxmInternal
+#}
+<h3>Notes <i class="fa fa-commenting" aria-hidden="true"></i></h3>
+
+<ul class="nav nav-tabs mb-3" id="notes-tab" role="tablist">
+	<li class="nav-item" role="presentation">
+		<a class="nav-link active" id="internal-tab" data-toggle="tab" href="#internal" role="tab" aria-controls="internal" aria-selected="true">
+			Internal
+		</a>
+	</li>
+	<li class="nav-item" role="presentation">
+		<a class="nav-link" id="detail-tab" data-toggle="tab" href="#detail" role="tab" aria-controls="detail" aria-selected="false">
+			Detail
+		</a>
+	</li>
+</ul>
+
+<div class="tab-content" id="notes-tab-content">
+	<div class="tab-pane fade show active" id="internal" role="tabpanel" aria-labelledby="internal-tab">
+		{% include 'items/vxm/notes/internal/list.twig' %}
+	</div>
+	<div class="tab-pane fade" id="detail" role="tabpanel" aria-labelledby="detail-tab">
+		{% include 'items/vxm/notes/detail/note.twig' %}
+	</div>
+</div>
+
+{% include 'items/vxm/notes/internal/modal.twig' %}
+{% include 'items/vxm/notes/detail/modal.twig' %}
+{% include 'msa/noce/ajax/notes-modal.twig' %}

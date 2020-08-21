@@ -1,0 +1,62 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	qnotes                 module QnotesPo
+	qnotes.intl            module QnotesPoPord
+#}
+<div class="modal fade" id="notes-intl-modal" tabindex="-1" role="dialog" aria-labelledby="notes-intl-modal-label" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="notes-intl-modal-label"><span class="verb">Add</span> Purchase Order Note: <b class="description"></b></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form action="{{ page.url }}" method="post" id="qnote-form">
+					<input type="hidden" name="ponbr" value="{{ ponbr }}">
+					<input type="hidden" name="linenbr" value="">
+					<input type="hidden" name="type" value="{{ qnotes.intl.type() }}">
+					<input type="hidden" name="userID" value="{{ qnotes.intl.user.loginid }}">
+					<input type="hidden" name="action" value="update-notes">
+					<div class="feedback">
+
+					</div>
+					<div class="row">
+						<div class="col-6">
+							<div class="form-group">
+								<label for="intl_note_date">Date</label>
+								{% include 'util/date-picker.twig' with {'name': 'notedate', 'id': 'intl_note_date', 'value': "now"|date("m/d/Y")} %}
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="form-group">
+								<label for="intl_notetime">Time</label>
+								<input type="text" class="form-control" name="notetime" id="intl_notetime" value="{{ "now"|date("H:i") }}">
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						{% include 'msa/noce/ajax/button.twig' with {'input': '#intl-note'} %}
+					</div>
+					<div class="form-group">
+						<label for="intl-note">Notes</label>
+						{% include 'util/form/qnotes-textarea.twig' with {'id': 'intl-note', 'cols': qnotes.intl.get_column_count()} %}
+					</div>
+
+					<div class="d-flex justify-content-between align-items-center">
+						<button type="submit" name="action" value="update-notes" class="btn btn-success crud collapse show">
+							<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+						</button>
+						<button type="submit" name="action" novalidate value="delete-notes" class="btn btn-danger crud collapse show">
+							<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+						</button>
+						<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

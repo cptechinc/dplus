@@ -1,3 +1,4 @@
+
 $(function() {
 	var modal_ajax = $('#ajax-modal');
 
@@ -5,21 +6,47 @@ $(function() {
 	var input_customer  = form.find('input[name=custid]');
 	var input_custname  = form.find('input[name=cust_name]');
 
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = form.serialize();
 
-	/**
-	 *
-	 * Customer Lookup Modal
-	 *
-	 */
+	$("body").on("click", "a:not(#itm-form a, #ajax-modal a)", function(e) {
+		if (form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			swal2.fire({
+				title: 'Changes have occurred!',
+				text: 'Do you want to save?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+				cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value) {
+					form.find('button[type=submit]').click();
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					// Send HTTP GET Request to remove Record Lock
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
+/* =============================================================
+	Customer Lookup Modal Functions
+============================================================= */
 	modal_ajax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
 		var url = '{{ page.customerlookupURL }}';
 		modal.find('.modal-title').text('Search for a Customer');
 		modal.resizeModal('xl');
-		modal.find('.modal-body').loadin(url, function() {
-
-		});
+		modal.find('.modal-body').loadin(url, function() {});
 	});
 
 	$("body").on('click', '.ci-customer', function(e) {
@@ -39,9 +66,75 @@ $(function() {
 		var search = form.find('input[name=q]').val();
 		var url = action + '?' + query;
 		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
-		form.closest('.modal').find('.modal-body').loadin(url, function() {
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
 
-		});
+/* =============================================================
+	Validation Functions
+============================================================= */
+	form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		ignore: ".validate-ignore",
+		rules: {
+			{% if m_itm.configs.inventory.use_pricegroup() %}
+				pricecode: { required: true },
+			{% endif %}
+			{% if m_itm.configs.inventory.use_commgroup() %}
+				commissiongroup: { required: true },
+			{% endif %}
+			itemID: {
+				required: true,
+				minlength: 3,
+				maxlength: {{ item.get_length_itemid() }},
+			},
+		},
+		messages: {
+			itemID: "Please review the itemID value",
+		},
+		submitHandler: function(form) {
+			var itemID_input = $(form).find('input[name=itemID]').val();
+			var itemID_form = $(form).data('itemid');
+			var url = URI('{{ validateurl }}');
+			url.addQuery('itemID', itemID_input);
 
+			$.getJSON(url.toString(), function( json ) {
+				if (json.exists) { // Item Exists
+					if (itemID_input == itemID_form) { // Item input == Form's item ID, allow save
+						form.submit();
+					} else {
+						var itemurl = new URI('{{ page.url }}');
+						itemurl.addQuery('itemID', itemID_input);
+						var bootstrap = new JsContento();
+						var content = bootstrap.open('div', 'class=swal2-content|id=swal2-content');
+						content += bootstrap.openandclose('a', 'class=btn btn-secondary mb-2|href='+itemurl.toString(), 'View Item');
+						content += '<br>';
+						content += "Do you want to overwrite?";
+						content += bootstrap.close('div');
+
+						swal2.fire({
+							title: 'Item ID ' + itemID_input + ' exists',
+							text: "Do you want to overwrite?",
+							icon: 'warning',
+							showCancelButton: true,
+							confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+							cancelButtonText: 'No',
+							html: content,
+						}).then((result) => {
+							if (result.value) {
+								form.find('button[type=submit]').click();
+							}
+						});
+					}
+				} else { // ITEM does not exist yet, allow save
+					if (itemID_form == '') {
+						form.submit();
+					}
+				}
+			});
+		}
 	});
 });

@@ -1,0 +1,72 @@
+$(function() {
+	var form  = $('#item-whse-form');
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = form.serialize();
+
+	$("body").on("click", "a:not(#item-costing-form .form_button)", function(e) {
+		if (form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			swal2.fire({
+				title: 'Changes have occurred!',
+				text: 'Do you want to save?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+				cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value) {
+					form.find('button[type=submit][name=update-itm-whse]').click();
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					// Send HTTP GET Request to remove Record Lock
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
+/* =============================================================
+	Validation Methods
+============================================================= */
+	form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		ignore: ".validate-ignore",
+		rules: {
+			whseID: { required: true },
+			whsesupply: { required: true }
+		},
+		submitHandler : function(form) {
+			var valid_bin      = validate_bin();
+			var valid_codeabc  = validate_codeabc();
+			var valid_form     = new SwalError(false, '', '', false);
+
+			if (valid_bin.error) {
+				valid_form = valid_bin;
+			} else if (valid_codeabc.error) {
+				valid_form = valid_codeabc;
+			}
+
+			if (valid_form.error) {
+				swal2.fire({
+					icon: 'error',
+					title: valid_form.title,
+					text: valid_form.msg,
+					html: valid_form.html
+				});
+			} else {
+				form.submit();
+			}
+		}
+	});
+});

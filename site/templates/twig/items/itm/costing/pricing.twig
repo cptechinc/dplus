@@ -1,0 +1,49 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	item                   ItemMasterItem
+#}
+{% set pricing = item.pricing %}
+<div class="form-group row">
+	<div class="col-sm-6">
+		<strong>Sales UoM:</strong> {{ item.uom_sale }}
+	</div>
+	<div class="col-sm-6">
+		<strong>Date:</strong> {{ pricing.updated|convertdate }}
+	</div>
+</div>
+<table class="table table-striped table-sm">
+	<thead>
+		<tr>
+			<th class="col-3">Qty</th>
+			<th class="col-3 text-right">Price</th>
+			<th class="col-3 text-right">Margin %</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="unit-row">
+			<td>
+				<b>Base</b>
+			</td>
+			<td class="text-right">
+				{{ pricing.baseprice|currency }}
+			</td>
+			<td class="text-right">
+				<span class="unit-margin">{{ pricing.get_pricebreak_margin(0)|number_format(4) }}</span> %
+			</td>
+		</tr>
+		{% for i in 1..pricing.count_qtybreaks() if pricing.get_pricebreak_qty(i) != 0 %}
+			<tr class="pricebreak-row">
+				<td>
+					{{ pricing.get_pricebreak_qty(i) }}
+				</td>
+				<td class="text-right">
+					{{ pricing.get_pricebreak_price(i)|currency }}
+				</td>
+				<td class="text-right">
+					<span class="unit-margin">{{ pricing.get_pricebreak_margin(i)|number_format(4) }}</span> %
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
