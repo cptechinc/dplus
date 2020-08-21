@@ -59,7 +59,7 @@
 			<div class="form-group">
 				<label for="country">Country</label>
 				<select name="country" class="form-control" id="country" tabindex="8">
-					<option value="{{ code.country }}"></option>
+					<option value=""></option>
 					{% for country in countries %}
 						<option value="{{ country.iso }}" {{ code.country == country.iso ? 'selected' : '' }}>{{ country.iso }} - {{ country.name }}</option>
 					{% endfor %}
