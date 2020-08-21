@@ -265,20 +265,9 @@ class QnotesItemRevision extends WireData implements Module {
 
 		foreach ($note_lines as $key => $line) {
 			$sequence = $key + 1;
-			$record = ItemRevisionNote::new();
-			$record->setItemid($itemID);
-			$record->setRevision($revision);
-			$record->setNotedate(date(ItemRevisionNote::FORMAT_NOTEDATE, strtotime($notedate)));
-			$record->setNotetime(date(ItemRevisionNote::FORMAT_NOTETIME, strtotime($notedate.$notetime)));
-			$record->setUser($user);
-			$record->generateKey2(); // PK
-			$record->setSequence($sequence); // PK
-			$record->setNote($line);
-			$record->setDate(date('Ymd'));
-			$record->setTime(date('His'));
-			$record->setDummy('P');
-			$lines_saved[$sequence] = $record->save();
+			$lines_saved[$sequence] = $this->create_note($itemID, $userID, $revision, $date, $time, $line, $sequence);
 		}
+		$record = $this->get_note($itemID, $userID, $revision, $date, $time, $sequence);
 		$this->wire('session')->response_qnote = $this->process_responses($record, $itemID, $lines_saved);
 	}
 
