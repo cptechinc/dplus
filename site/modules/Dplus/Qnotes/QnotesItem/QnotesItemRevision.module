@@ -36,6 +36,14 @@ class QnotesItemRevision extends WireData implements Module {
 	}
 
 	/**
+	 * Set User property
+	 * @param User $user
+	 */
+	public function set_user(User $user) {
+		$this->user = $user;
+	}
+
+	/**
 	 * Returns if Notes Exist
 	 * @param  string $itemID  Item ID
 	 * @return bool
@@ -307,5 +315,9 @@ class QnotesItemRevision extends WireData implements Module {
 			'autoload' => true,
 			'requires' => array('Qnotes')
 		);
+	}
+
+	public function init() {
+		$this->user = $this->wire('user');
 	}
 }
