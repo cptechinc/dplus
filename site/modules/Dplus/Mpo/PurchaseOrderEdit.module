@@ -10,6 +10,9 @@ use WarehouseQuery, Warehouse;
 use VendorQuery, Vendor;
 use ConfigSalesOrderQuery, ConfigSalesOrder;
 use ConfigPoQuery, ConfigPo;
+use ShipviaQuery, Shipvia;
+use ApTermsCodeQuery, ApTermsCode;
+use CountryCodesQuery, CountryCodes;
 
 use EditPoHeadQuery, EditPoHead;
 use EditPoDetailQuery, EditPoDetail;
@@ -278,6 +281,15 @@ class PurchaseOrderEdit extends WireData implements Module {
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
+	public function init_configs() {
+		$this->configs = new WireData();
+		$this->configs->po = $this->config_po();
+	}
+
+	public function get_purchaseorder($ponbr) {
+		return PurchaseOrderQuery::create()->findOneByPonbr($ponbr);
+	}
+
 	/**
 	 * Return if User has Purchase Order Editing Permission
 	 * @param  User $user User
@@ -405,13 +417,60 @@ class PurchaseOrderEdit extends WireData implements Module {
 	}
 
 	/**
+	 * Return the number of decimal places for qty values
+	 * @return int
+	 */
+	public function decimal_places_price_so() {
+		return ConfigSalesOrderQuery::create()->findOne()->decimal_places_price;
+	}
+
+	/**
 	 * Return the number of decimal places for cost values
 	 * @return int
 	 */
 	public function decimal_places_cost() {
-		return ConfigPoQuery::create()->findOne()->decimal_places_cost;
+		return $this->configs->po->decimal_places_cost;
 	}
-	
+
+	/**
+	 * Return Shipvias
+	 * @return Shipvia[]|ObjectCollection
+	 */
+	public function get_shipvias() {
+		return ShipviaQuery::create()->find();
+	}
+
+	/**
+	 * Return Accounts Payable Terms Codes
+	 * @return ApTermsCode[]|ObjectCollection
+	 */
+	public function get_termscodes() {
+		return ApTermsCodeQuery::create()->find();
+	}
+
+	/**
+	 * Return termscode description
+	 * @return string
+	 */
+	public function get_termscode($termscode) {
+		return ApTermsCodeQuery::create()->findOneByCode($termscode)->description;
+	}
+
+	public function get_label_date_canceled() {
+		return $this->config_po()->description_date_canceled();
+	}
+
+	public function get_label_date_acknowledged() {
+		return $this->config_po()->description_date_acknowledged();
+	}
+
+	public function config_po() {
+		return $this->wire('modules')->get('ConfigurePo')->config();
+	}
+
+	public function get_country_codes() {
+		return CountryCodesQuery::create()->find();
+	}
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
@@ -426,6 +485,11 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$this->addHook('Page(pw_template=purchase-order-edit)::itm_jsonURL', function($event) {
 			$url = new Url($this->wire('pages')->get('pw_template=itm-json')->httpUrl);
 			$url->query->set('json', 'true');
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page(pw_template=purchase-order-edit)::vi_jsonURL', function($event) {
+			$url = new Url($this->wire('pages')->get('pw_template=vi-json')->httpUrl);
 			$event->return = $url->getUrl();
 		});
 
