@@ -3,12 +3,16 @@
 	-------------------------------------------------
 	page                   ProcessWire\Page
 	po                     EditPoHead
+	po_readonly            PurchaseOrder
 	epo                    PurchaseOrderEdit
 #}
-<form action="{{ page.url }}" method="POST" class="mb-3">
+<form action="{{ page.url }}" method="POST" class="mb-3" id="header-form">
 	<div class="row">
 		<div class="col-sm-6">
 			{% include 'purchase-orders/purchase-order/edit/header/form-left.twig' %}
+		</div>
+		<div class="col-sm-6">
+			{% include 'purchase-orders/purchase-order/edit/header/form-right.twig' %}
 		</div>
 	</div>
 	<div class="d-flex w-100 justify-content-between">
