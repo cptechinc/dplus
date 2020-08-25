@@ -5,7 +5,7 @@
 	if ($input->get->code) {
 		$code = $input->get->text('code');
 		$page->headline = "Editing $page->title $code";
-		$countries = CountryCodesQuery::create()->find();
+		$countries = CountryCodeQuery::create()->find();
 
 		if ($module_codetable->code_exists($code)) {
 			$tariff = $module_codetable->get_code($code);
