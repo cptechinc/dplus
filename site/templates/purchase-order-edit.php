@@ -19,15 +19,21 @@
 		$query = PurchaseOrderQuery::create()->filterByPonbr($ponbr);
 
 		if ($epo->exists($ponbr)) {
+			$epo->init_configs();
 			$page->headline = "Editing Purchase Order #$ponbr";
 			$purchaseorder = $query->findOne();
 
 			if ($epo->exists_editable($ponbr)) {
 				$po_edit = $epo->get_editable_header($ponbr);
-				$page->searchitemsURL = $pages->get('pw_template=itm-search')->url;
-				$page->body .= $config->twig->render('purchase-orders/purchase-order/edit/edit.twig', ['page' => $page, 'epo' => $epo, 'po' => $po_edit]);
+				$po_readonly = $epo->get_purchaseorder($ponbr);
+				$page->search_itemsURL = $pages->get('pw_template=itm-search')->url;
+				$page->search_vendorsURL = $pages->get('pw_template=vi-search')->url;
+				$page->body .= $config->twig->render('purchase-orders/purchase-order/edit/edit.twig', ['page' => $page, 'epo' => $epo, 'po' => $po_edit, 'po_readonly' => $po_readonly]);
+				// $page->body .= $config->twig->render('purchase-orders/purchase-order/edit/header/modal-country-codes.twig', ['page' => $page, 'epo' => $epo]);
 				$page->js   .= $config->twig->render('purchase-orders/purchase-order/edit/js.twig', ['page' => $page, 'epo' => $epo]);
 				$page->js   .= $config->twig->render('purchase-orders/purchase-order/edit/lookup/js.twig', ['page' => $page]);
+				$config->scripts->append(hash_templatefile('scripts/lib/datatables.js'));
+				$config->styles->append(hash_templatefile('styles/lib/datatables.css'));
 
 				if ($values->q) {
 					$q = $values->text('q');
