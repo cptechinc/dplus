@@ -1,0 +1,76 @@
+<?php namespace ProcessWire;
+
+use CountryCodeQuery, CountryCode;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+class FilterCountryCodes extends WireData implements Module {
+	/**
+	 * Returns Query
+	 * @return CountryCodeQuery
+	 */
+	public function get_query() {
+		return $this->query;
+	}
+
+	/**
+	 * Initializes Query
+	 * NOTE: Filters by Sales Rep if provided user is a Sales rep
+	 *
+	 * @param  User   $user User to Check if they are a Sales Person
+	 * @return void
+	 */
+	public function init_query(User $user) {
+		$this->query = CountryCodeQuery::create();
+	}
+
+	/**
+	 * Searches the CountryCode Table to find vendors that match the query provided
+	 *
+	 * @param  string $q Search Query
+	 * @return void
+	 */
+	public function filter_search($q) {
+		$columns = array(
+			CountryCode::get_aliasproperty('iso3'),
+			CountryCode::get_aliasproperty('iso2'),
+			CountryCode::get_aliasproperty('numeric'),
+			CountryCode::get_aliasproperty('description'),
+		);
+		$this->query->search_filter($columns, strtoupper($q));
+	}
+
+	/**
+	 * Adds the Sort By to the query
+	 *
+	 * @param  Page   $page
+	 * @return void
+	 */
+	public function apply_sortby(Page $page) {
+		if ($page->has_orderby()) {
+			$orderbycolumn = $page->orderby_column;
+			$sort = $page->orderby_sort;
+
+			$tablecolumn = CountryCode::get_aliasproperty($orderbycolumn);
+			$this->query->sortBy($tablecolumn, $sort);
+		}
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Filter Country Codes Module',
+			'version' => 101,
+			'summary' => 'Handles Country Codes Filtering',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
