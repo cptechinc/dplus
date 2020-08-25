@@ -18,7 +18,7 @@ $(function () {
 		modal.find('table').DataTable();
 	});
 
-	$("body").on('click', '#country-modal .countrycode', function(e) {
+	$("body").on('click', '#ajax-modal .country-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
 		var modal = button.closest('.modal');

@@ -19,6 +19,8 @@ $(function() {
 			url = '{{ page.search_itemsURL }}';
 		} else if (button.data('search') == 'vendor') {
 			url = '{{ page.search_vendorsURL }}';
+		} else if (button.data('search') == 'country') {
+			url = '{{ page.search_countriesURL }}';
 		}
 
 		modal.find('.modal-title').text(button.attr('title'));

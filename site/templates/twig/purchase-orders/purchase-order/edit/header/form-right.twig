@@ -144,7 +144,7 @@
 	<div class="col-sm-8">
 		<div class="row">
 			<div class="col-sm-6">
-				{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'currency', 'modaltarget': '#country-modal', 'modaldescription': 'Search / Select Country Currency'} %}
+				{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'currency', 'modaltarget': '#ajax-modal', 'modaldescription': 'Search / Select Country Currency', attributes_button: {'data-search': 'country'}} %}
 			</div>
 			<div class="col-sm-6">
 				<p class="form-control-plaintext">Rate: <span class="currency-rate"></span></p>
