@@ -166,6 +166,7 @@ class DpagesMci extends Dpages implements Module {
 			'title'            => 'Phonebook',
 			'summary'          => 'Search through customers by Phonebook',
 			'parent'           => '/mci/',
+			'dplus_function'   => '',
 			'dplus_permission' => 'mci',
 			'pw_template'      => 'ci-phonebook'
 		),
