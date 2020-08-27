@@ -1,23 +1,23 @@
 <?php
 	if ($input->get->qnbr) {
 		$qnbr = $input->get->text('qnbr');
-		$document_management = $modules->get('DocumentManagement');
+		$docm = $modules->get('DocumentManagementQt');
 
 		if (QuoteQuery::create()->filterByQuoteid($qnbr)->count()) {
 			$page->title = "Quote #$qnbr Documents";
 
-			$documents = $document_management->get_quotedocuments($qnbr);
+			$documents = $docm->get_documents($qnbr);
 
 			if ($input->get->document && $input->get->folder) {
 				$folder = $input->get->text('folder');
 				$filename = $input->get->text('document');
-				$document_management->move_document($folder, $filename);
+				$docm->move_document($folder, $filename);
 
-				if ($document_management->is_filewebaccessible($filename)) {
+				if ($docm->is_filewebaccessible($filename)) {
 					$session->redirect($config->url_webdocs.$filename);
 				}
 			}
-			$page->body .= $config->twig->render('quotes/quote/quote-documents.twig', ['page' => $page, 'documents' => $documents, 'document_management' => $document_management]);
+			$page->body .= $config->twig->render('quotes/quote/quote-documents.twig', ['page' => $page, 'documents' => $documents]);
 
 		} else {
 			$page->headline = "Quote #$qnbr could not be found";
