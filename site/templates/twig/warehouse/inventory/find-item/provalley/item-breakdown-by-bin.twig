@@ -8,7 +8,7 @@
 	inventory              module SearchInventory
 #}
 <div class="d-flex justify-content-between p-2 mb-3">
-	<strong>Bins:</strong> {{ inventory.count_itemid_bins(item.itemid) }}
+	<strong>Bins:</strong> {{ inventory.count_bins_itemid(item.itemid) }}
 	<strong>Boxes:</strong> {{ inventory.count_lotserials_itemid(item.itemid) }}
 	<strong>Total Weight:</strong> {{ inventory.get_qty_itemid(item.itemid)|number_format(config.decimal_places()) }}
 	{% if (not page.is_print()) %}
