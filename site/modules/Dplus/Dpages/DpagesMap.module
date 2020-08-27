@@ -56,7 +56,7 @@ class DpagesMap extends Dpages implements Module {
 			'title'          => 'VXM',
 			'summary'        => 'View Vendor Item Xref',
 			'parent'         => '/map/apmain/',
-			'dplus_function' => ''
+			'dplus_function' => 'vxm'
 		),
 		'ap-vxm-validate' => array(
 			'template'       => 'dplus-json',
@@ -233,7 +233,13 @@ class DpagesMap extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
-	public function get_codetable_viewURL($table, $code = false) {
+	/**
+	 * Return View Code Table URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_viewURL($table, $code = '') {
 		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
 
 		if ($table == 'aoptm') {
@@ -244,9 +250,14 @@ class DpagesMap extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
-	public function get_codetable_listURL($table, $code = false) {
+	/**
+	 * Return View Code Table List URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_listURL($table, $code = '') {
 		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
-		$code = str_replace(' ', '-', $code);
 		if ($table == 'aoptm') {
 			$url->query->set('sysop', $code);
 		} else {
@@ -255,6 +266,12 @@ class DpagesMap extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
+	/**
+	 * Return Code Table Code Delete URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
 	public function get_codetable_code_deleteURL($table, $code) {
 		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
 		$url->query->set('action', 'remove-code');
@@ -263,12 +280,21 @@ class DpagesMap extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
+	/**
+	 * Return Code Table Edit Code URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
 	public function get_codetable_code_editURL($table, $code) {
 		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
 		$url->query->set('code', $code);
 		return $url->getUrl();
 	}
 
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	/**
 	 * ProcessWire Module Info
 	 *
