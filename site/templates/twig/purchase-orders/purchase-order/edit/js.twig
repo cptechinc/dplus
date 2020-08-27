@@ -19,6 +19,10 @@ $(function() {
 			url = '{{ page.search_itemsURL }}';
 		} else if (button.data('search') == 'vendor') {
 			url = '{{ page.search_vendorsURL }}';
+		} else if (button.data('search') == 'shipfrom') {
+			uri = URI('{{ page.search_shipfromURL }}');
+			uri.setQuery('vendorID', $('input#vendorID').val());
+			url = uri.toString();
 		} else if (button.data('search') == 'country') {
 			url = '{{ page.search_countriesURL }}';
 		}
