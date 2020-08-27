@@ -573,6 +573,11 @@ class DpagesMii extends Dpages implements Module {
 		});
 	}
 
+	/**
+	 * Return II Subfunction pages that user has permissions to
+	 * @param  User   $user User
+	 * @return Pages
+	 */
 	public function get_ii_user_allowed_functions(User $user) {
 		$p = $this->wire('pages')->get('pw_template=ii-item');
 		$dplus_functions = array_unique($p->children()->explode('dplus_function'));
@@ -607,6 +612,9 @@ class DpagesMii extends Dpages implements Module {
 		return self::REQUIREMENTS_OPTIONS;
 	}
 
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus Online Item Information Pages',
