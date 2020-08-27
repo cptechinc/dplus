@@ -209,19 +209,36 @@ class DpagesMar extends Dpages implements Module {
 		});
 	}
 
+	/**
+	 * Return View Code Table URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
 	public function get_codetable_viewURL($table, $code = false) {
 		$url = new Url($this->wire('pages')->get("pw_template=ar-code-table, name=$table")->url);
 		$url->query->set('code', $code);
 		return $url->getUrl();
 	}
 
-
-	public function get_codetable_listURL($table, $code = false) {
+	/**
+	 * Return View Code Table List URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_listURL($table, $code = '') {
 		$url = new Url($this->wire('pages')->get("pw_template=ar-code-table, name=$table")->url);
 		$url->query->set('focus', $code);
 		return $url->getUrl();
 	}
 
+	/**
+	 * Return Code Table Code Delete URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
 	public function get_codetable_code_deleteURL($table, $code) {
 		$url = new Url($this->wire('pages')->get("pw_template=ar-code-table, name=$table")->url);
 		$url->query->set('action', 'remove-code');
@@ -230,13 +247,21 @@ class DpagesMar extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
+	/**
+	 * Return Code Table Edit Code URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
 	public function get_codetable_code_editURL($table, $code) {
 		$url = new Url($this->wire('pages')->get("pw_template=ar-code-table, name=$table")->url);
 		$url->query->set('code', $code);
 		return $url->getUrl();
 	}
 
-
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	/**
 	 * ProcessWire Module Info
 	 *
