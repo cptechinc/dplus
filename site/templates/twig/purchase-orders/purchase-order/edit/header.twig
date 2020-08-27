@@ -7,6 +7,8 @@
 	epo                    PurchaseOrderEdit
 #}
 <form action="{{ page.url }}" method="POST" class="mb-3" id="header-form">
+	<input type="hidden" name="action" value="update-header">
+	<input type="hidden" name="ponbr" value="{{ po.ponbr }}">
 	<div class="row">
 		<div class="col-sm-6">
 			{% include 'purchase-orders/purchase-order/edit/header/form-left.twig' %}
