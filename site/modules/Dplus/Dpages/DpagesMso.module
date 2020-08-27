@@ -154,40 +154,44 @@ class DpagesMso extends Dpages implements Module {
 			'dplus_function' => ''
 		),
 		'sales-orders' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'sales-orders',
-			'title'          => 'Sales Orders',
-			'summary'        => 'View / Search through Open Orders',
-			'parent'         => '/mso/',
-			'dplus_function' => 'mso',
-			'pw_template'    => 'sales-orders'
+			'template'         => 'dplus-function',
+			'name'             => 'sales-orders',
+			'title'            => 'Sales Orders',
+			'summary'          => 'View / Search through Open Orders',
+			'parent'           => '/mso/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mso',
+			'pw_template'      => 'sales-orders'
 		),
 		'sales-orders-customer' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'customer',
-			'title'          => 'Customer Sales Orders',
-			'summary'        => 'View / Search through Open Orders for a Customer',
-			'parent'         => '/mso/sales-orders/',
-			'dplus_function' => 'mso',
-			'pw_template'    => 'sales-orders-customer'
+			'template'         => 'dplus-function',
+			'name'             => 'customer',
+			'title'            => 'Customer Sales Orders',
+			'summary'          => 'View / Search through Open Orders for a Customer',
+			'parent'           => '/mso/sales-orders/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mso',
+			'pw_template'      => 'sales-orders-customer'
 		),
 		'sales-order' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'sales-order',
-			'title'          => 'Sales Order',
-			'summary'        => 'View Sales Order',
-			'parent'         => '/mso/',
-			'dplus_function' => 'mso',
-			'pw_template'    => 'sales-order-view'
+			'template'         => 'dplus-function',
+			'name'             => 'sales-order',
+			'title'            => 'Sales Order',
+			'summary'          => 'View Sales Order',
+			'parent'           => '/mso/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mso',
+			'pw_template'      => 'sales-order-view'
 		),
 		'sales-order-print' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'print',
-			'title'          => 'Print Sales Order',
-			'summary'        => 'Print Sales Order',
-			'parent'         => '/mso/sales-order/',
-			'dplus_function' => '',
-			'pw_template'    => 'sales-order-print'
+			'template'         => 'dplus-function',
+			'name'             => 'print',
+			'title'            => 'Print Sales Order',
+			'summary'          => 'Print Sales Order',
+			'parent'           => '/mso/sales-order/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mso',
+			'pw_template'      => 'sales-order-print'
 		),
 		'sales-order-edit' => array(
 			'template'       => 'dplus-function',
@@ -199,40 +203,44 @@ class DpagesMso extends Dpages implements Module {
 			'pw_template'    => 'sales-order-edit'
 		),
 		'sales-order-documents' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'documents',
-			'title'          => 'Sales Order Documents',
-			'summary'        => 'View Sales Order Documents',
-			'parent'         => '/mso/sales-order/',
-			'dplus_function' => 'mso',
-			'pw_template'    => 'sales-order-documents'
+			'template'         => 'dplus-function',
+			'name'             => 'documents',
+			'title'            => 'Sales Order Documents',
+			'summary'          => 'View Sales Order Documents',
+			'parent'           => '/mso/sales-order/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mso',
+			'pw_template'      => 'sales-order-documents'
 		),
 		'sales-order-notes' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'notes',
-			'title'          => 'Sales Order Notes',
-			'summary'        => 'View Sales Order Notes',
-			'parent'         => '/mso/sales-order/',
-			'dplus_function' => 'mso',
-			'pw_template'    => 'sales-order-notes'
+			'template'         => 'dplus-function',
+			'name'             => 'notes',
+			'title'            => 'Sales Order Notes',
+			'summary'          => 'View Sales Order Notes',
+			'parent'           => '/mso/sales-order/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mso',
+			'pw_template'      => 'sales-order-notes'
 		),
 		'sales-history' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'sales-history',
-			'title'          => 'Sales History',
-			'summary'        => 'View Sales History Orders',
-			'parent'         => '/mso/',
-			'dplus_function' => '',
-			'pw_template'    => 'sales-history-orders'
+			'template'         => 'dplus-function',
+			'name'             => 'sales-history',
+			'title'            => 'Sales History',
+			'summary'          => 'View Sales History Orders',
+			'parent'           => '/mso/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mso',
+			'pw_template'      => 'sales-history-orders'
 		),
 		'sales-history-customer' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'customer',
-			'title'          => 'Customer Sales History',
-			'summary'        => 'View Sales History Orders for a Customer',
-			'parent'         => '/mso/sales-history/',
-			'dplus_function' => '',
-			'pw_template'    => 'sales-history-orders-customer'
+			'template'         => 'dplus-function',
+			'name'             => 'customer',
+			'title'            => 'Customer Sales History',
+			'summary'          => 'View Sales History Orders for a Customer',
+			'parent'           => '/mso/sales-history/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mso',
+			'pw_template'      => 'sales-history-orders-customer'
 		),
 	);
 
