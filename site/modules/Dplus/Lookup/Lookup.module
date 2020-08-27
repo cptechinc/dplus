@@ -41,7 +41,11 @@ class Lookup extends WireData implements Module {
 				'LookupVendor',
 				'LookupQuote',
 				'LookupWarehouse',
-				'ValidatePurchaseOrderNbr'
+				'ValidatePurchaseOrderNbr',
+				'ValidateSalesOrder',
+				'ValidateVendorId',
+				'ValidateAr',
+				'ValidateAp',
 			)
 		);
 	}

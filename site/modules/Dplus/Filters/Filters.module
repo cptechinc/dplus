@@ -31,7 +31,7 @@ class Filters extends WireData implements Module {
 		$info = self::getModuleInfo();
 		$modules = $this->wire('modules');
 		$modules->refresh();
-		
+
 		foreach ($info['installs'] as $module_name) {
 			$modules->install($module_name);
 		}
@@ -65,6 +65,7 @@ class Filters extends WireData implements Module {
 				'FilterItemMaster',
 				'FilterItemXrefVxm',
 				'FilterQnotes',
+				'FilterCountryCodes',
 			)
 		);
 	}

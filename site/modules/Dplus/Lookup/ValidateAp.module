@@ -1,0 +1,65 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use ApTermsCodeQuery, ApTermsCode;
+use CountryCodeQuery, CountryCode;
+
+/**
+ * ValidateAp
+ *
+ * Class for Validating AP table codes, IDs
+ *
+ * @property bool $exists      Code / ID exists
+ */
+class ValidateAp extends WireData implements Module {
+	public function __construct() {
+		$this->exists   = false;
+	}
+
+	/**
+	 * Return if AP Terms Code Exists
+	 * @param  string $code AP Terms Code
+	 * @return bool
+	 */
+	public function validate_termscode($code) {
+		$q = ApTermsCodeQuery::create();
+		$q->filterByCode($code);
+
+		if ($q->count()) {
+			$this->exists = true;
+		}
+		return $this->exists;
+	}
+
+	public function validate_countrycode($code) {
+		$q = CountryCodeQuery::create();
+		$q->filterByCode($code);
+
+		if ($q->count()) {
+			$this->exists = true;
+		}
+		return $this->exists;
+	}
+
+
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Validate AP Module',
+			'version' => 101,
+			'summary' => 'Validates AP table codes',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(),
+		);
+	}
+}

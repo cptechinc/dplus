@@ -1,0 +1,75 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	epo                    PurchaseOrderEdit
+#}
+$(function () {
+	var modal_edit    = $('#edit-item-modal');
+	var modal_ajax    = $('#ajax-modal');
+	var form_edit = $('#edit-item-form');
+	var form_add  = $('#add-item-form');
+	var items = {{ epo.get_details_array(page.ponbr)|json_encode()|raw }};
+	var decimal_places_qty = {{ epo.decimal_places_qty() }};
+	var decimal_places_cost = {{ epo.decimal_places_cost() }};
+
+	modal_edit.on('show.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget);
+		var linenbr = button.data('linenbr');
+		modal.find('.modal-title').find('.linenbr').text(linenbr);
+		populate_item_inputs(linenbr);
+	});
+
+	function populate_item_inputs(linenbr) {
+		var item = items[linenbr];
+		var form = new EditItemForm(form_edit);
+		form.inputs.linenbr.val(linenbr);
+		form.inputs.itemID.val(item.itemid);
+		form.inputs.description.val(item.description);
+		form.inputs.vendoritemID.val(item.vendoritemid);
+		form.inputs.whse.val(item.whseid);
+		form.inputs.specialorder.val(item.specialorder);
+		form.inputs.uom.val(item.uom);
+		form.inputs.qty.ordered.val(parseFloat(item.qty.ordered).toFixed(decimal_places_qty));
+		form.inputs.qty.received.val(parseFloat(item.qty.received).toFixed(decimal_places_qty));
+		form.inputs.qty.invoiced.val(parseFloat(item.qty.invoiced).toFixed(decimal_places_qty));
+		form.inputs.cost.val(parseFloat(item.cost).toFixed(decimal_places_cost));
+		form.inputs.cost_total.val(parseFloat(item.cost_total).toFixed(decimal_places_cost));
+	}
+
+	function EditItemForm(form) {
+		this.form = form;
+		this.id = form.attr('id');
+		this.inputs = {
+			linenbr: form.find('input[name=linenbr]'),
+			itemID: form.find('input[name=itemID]'),
+			description: form.find('input[name=description]'),
+			vendoritemID: form.find('input[name=vendoritemID]'),
+			whse: form.find('select[name=whse]'),
+			specialorder: form.find('input[name=specialorder]'),
+			uom: form.find('input#uom'),
+			qty: {
+				ordered:  form.find('input[name=qty_ordered]'),
+				received: form.find('input#qty_received'),
+				invoiced: form.find('input#qty_invoiced'),
+			},
+			cost: form.find('input[name=cost]'),
+			cost_total: form.find('input#cost_total'),
+		}
+	}
+
+/* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		var description = button.find('.description').text();
+		var input_itemID = form_add.find('input[name=itemID]');
+		input_itemID.val(itemID);
+		input_itemID.closest('.item-col').find('.description').text(description);
+		modal_ajax.modal('hide');
+	});
+});

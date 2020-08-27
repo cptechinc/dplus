@@ -18,7 +18,7 @@
 				$page->body .= $config->twig->render('vendors/vi/vi-links.twig', ['page' => $page, 'refreshurl' => $refreshurl]);
 				$function_pages = [];
 				$toolbar = '';
-				$header  = $config->twig->render('vendors/vi/shipfrom/header.twig', ['page' => $page, 'shipfrom' => $shipfrom, 'con' => $con]);
+				$header  = $config->twig->render('vendors/vi/shipfrom/header.twig', ['page' => $page, 'shipfrom' => $shipfrom]);
 
 				//$page->body .= $config->twig->render('vendors/ci/ci-links.twig', ['page' => $page]);
 				$page->body .= "<div class='row'>";
@@ -38,13 +38,13 @@
 				$shipfrom = $query_shipfrom->findOne();
 				$session->redirect($page->get_vi_vendorshipfromURL($vendorID, $shipfrom->shipfromid));
 			} elseif ($query_shipfrom->count() != 0) {
-				$shipfroms = $query->shipfrom->find();
-				//$page->body .= $config->twig->render('vendors/ci/bread-crumbs.twig', ['page' => $page, 'vendor' => $vendor]);
+				$shipfroms = $query_shipfrom->find();
 				$page->body .= $config->twig->render('vendors/vi/shipfrom/shipfrom-list.twig', ['page' => $page, 'vendor' => $vendor, 'shipfroms' => $shipfroms]);
 			} else {
 				$page->headline = $page->title = "Ship Froms could not be loaded";
+				$refreshurl = $page->get_vi_vendorshipfromURL($vendorID);
 				$page->body = $config->twig->render('vendors/vi/vi-links.twig', ['page' => $page, 'refreshurl' => $refreshurl]);
-				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "No Ship Froms Available", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "No Ship Froms Available"]);
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "No Ship-Froms Available", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "No Ship-Froms Available"]);
 			}
 		}
 	}
@@ -52,6 +52,11 @@
 	if ($page->print) {
 		$page->show_title = true;
 		include __DIR__ . "/blank-page.php";
+	} elseif ($config->ajax) {
+		$query_shipfrom = VendorShipfromQuery::create()->filterByVendorid($vendorID);
+		$shipfroms = $query_shipfrom->find();
+		$page->body = $config->twig->render('vendors/vi/shipfrom/shipfrom-list.twig', ['page' => $page, 'vendor' => $vendor, 'shipfroms' => $shipfroms]);
+		echo $page->body;
 	} else {
 		include __DIR__ . "/basic-page.php";
 	}

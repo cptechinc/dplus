@@ -104,6 +104,11 @@ class DpagesMvi extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
+		'vi-json' => array(
+			'name'   => 'vi-json',
+			'fields' => array(),
+			'paginated' => true
+		),
 	);
 
 	const PAGES = array(
@@ -114,6 +119,15 @@ class DpagesMvi extends Dpages implements Module {
 			'summary'        => 'Vendor Menu',
 			'parent'         => '/',
 			'dplus_function' => 'mvi'
+		),
+		'vi-json' => array(
+			'template'       => 'dplus-json',
+			'name'           => 'vi-json',
+			'title'          => 'VI JSON',
+			'summary'        => 'JSON API for VI',
+			'parent'         => '/mvi/',
+			'dplus_function' => '',
+			'pw_template'    => 'vi-json'
 		),
 		'vi-admin' => array(
 			'template'       => 'dplus-menu',
@@ -464,10 +478,13 @@ class DpagesMvi extends Dpages implements Module {
 	 * @param  string $shipfromID Vendor Shipfrom ID
 	 * @return string             URL
 	 */
-	public function get_vi_vendorshipfromURL($vendorID, $shipfromID) {
+	public function get_vi_vendorshipfromURL($vendorID, $shipfromID = '') {
 		$url = new Url($this->wire('pages')->get('pw_template=vi-shipfrom')->url);
 		$url->query->set('vendorID', $vendorID);
-		$url->query->set('shipfromID', $shipfromID);
+
+		if ($shipfromID) {
+			$url->query->set('shipfromID', $shipfromID);
+		}
 		return $url->getUrl();
 	}
 

@@ -39,6 +39,11 @@
 			"type": "C",
 			"headingjustify": "r",
 			"datajustify": "r"
+		},
+		"Avail by Lb": {
+			"type": "C",
+			"headingjustify": "r",
+			"datajustify": "r"
 		}
 	}
 }

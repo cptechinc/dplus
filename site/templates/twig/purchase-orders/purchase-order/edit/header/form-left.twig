@@ -13,20 +13,20 @@
 	<div class="col-sm-6">
 		<div class="form-group">
 			<label for="vendorID">Vendor ID</label>
-			<input type="text" class="form-control form-control-sm" name="vendorID" id="vendorID" value="{{ po.vendorid }}">
-			<address class="small mt-1">
+			{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'vendorID', value: po.vendorid, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search / Select Vendor', attributes_button: {'data-search': 'vendor'}} %}
+			<address class="small mt-1 vendor-address">
 				{% set vendor = epo.get_vendor(po.vendorid) %}
-				{{ vendor.name }} <br>
-				{{ vendor.address }} <br>
-				{{ vendor.address2 ? vendor.address2 ~ '<br>' : '' }}
-				{{ vendor.city ~ ', ' ~ vendor.state ~ ' ' ~ vendor.zip }}
+				<span class="name">{{ vendor.name }}</span> <br>
+				<span class="address">{{ vendor.address }}</span> <br>
+				<span class="address2 {{ vendor.address2 ? 'collapse show': 'collapse' }}"> {{ vendor.address2 }} <br> </span>
+				<span class="city">{{ vendor.city }}</span>, <span class="state">{{ vendor.state }}</span> <span class="zip"> {{ vendor.zip}}</span>
 			</address>
 		</div>
 	</div>
 	<div class="col-sm-6">
 		<div class="form-group">
-			<label for="vendorshipfromID">Ship-From</label>
-			<input type="text" class="form-control form-control-sm" name="vendorshipfromID" id="vendorshipfromID" value="{{ po.shipfromid }}">
+			<label for="shipfromID">Ship-From</label>
+			{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'shipfromID', value: po.shipfromid, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search / Select Vendor Ship-From', attributes_button: {'data-search': 'shipfrom'}} %}
 		</div>
 	</div>
 </div>
