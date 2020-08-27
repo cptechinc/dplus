@@ -10,14 +10,8 @@ $(function () {
 	var form_header   = $('#header-form');
 
 /* =============================================================
-	Country Modal Functions
+	AJAX Lookup Modal Functions
 ============================================================= */
-	modal_country.on('shown.bs.modal', function (event) {
-		var modal = $(this);
-		var button = $(event.relatedTarget);
-		modal.find('table').DataTable();
-	});
-
 	$("body").on('click', '#ajax-modal .country-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
@@ -28,9 +22,7 @@ $(function () {
 		form_header.find('.currency-rate').text(rate);
 		modal.modal('hide');
 	});
-/* =============================================================
-	Lookup Modal Functions
-============================================================= */
+
 	$("body").on('click', '.vendor-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
@@ -49,6 +41,15 @@ $(function () {
 				modal_ajax.modal('hide');
 			}
 		});
+	});
+
+	$("body").on('click', '#ajax-modal .shipfrom-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal = button.closest('.modal');
+		var shipfromID = button.data('shipfromid');
+		form_header.find('input[name=shipfromID]').val(shipfromID);
+		modal.modal('hide');
 	});
 
 	function get_vendor_address(vendorID, callback) {
