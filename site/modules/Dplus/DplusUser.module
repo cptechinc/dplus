@@ -192,8 +192,9 @@ class DplusUser extends WireData implements Module {
 	public function setup_user_logperm(User $user, $sessionID) {
 		$q = LogpermQuery::create();
 		$logperm = $q->findOneBySessionid($sessionID);
-		$user->loginid = $logperm->loginid;
+		$user->loginid  = $logperm->loginid;
 		$user->fullname = $logperm->loginname;
+		$user->sessionID = $logperm->sessionid;
 	}
 
 	/**
