@@ -1,5 +1,5 @@
 <div class="mb-3">
-	{% if user.is_editingquote(quote) %}
+	{% if user.is_editingquote(quote.quotenumber) %}
 		<a href="{{ page.edit_quoteURL(quote.quotenumber) }}" class="btn btn-primary">
 			<i class="fa fa-arrow-left" aria-hidden="true"></i> Go back to Quote
 		</a>
