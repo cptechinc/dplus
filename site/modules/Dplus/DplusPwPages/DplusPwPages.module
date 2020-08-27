@@ -36,22 +36,22 @@
 		const TEMPLATES = array(
 			'dplus-menu' => array(
 				'name'   => 'dplus-menu',
-				'fields' => array('dplus_function', 'dplus_permission', 'summary'),
+				'fields' => array('summary', 'dplus_function', 'dplus_permission'),
 				'paginated' => false
 			),
 			'dplus-function' => array(
 				'name'   => 'dplus-function',
-				'fields' => array('summary', 'pw_template', 'dplus_function', 'dplus_permission'),
+				'fields' => array('summary', 'dplus_function', 'dplus_permission', 'pw_template'),
 				'paginated' => true
 			),
 			'dplus-function-link' => array(
 				'name'   => 'dplus-function-link',
-				'fields' => array('summary', 'function_url', 'dplus_function', 'dplus_permission'),
+				'fields' => array('summary', 'dplus_function', 'dplus_permission', 'function_url',),
 				'paginated' => false
 			),
 			'dplus-json' => array(
 				'name'   => 'dplus-json',
-				'fields' => array('summary', 'pw_template', 'dplus_function', 'dplus_permission'),
+				'fields' => array('summary', 'pw_template'),
 				'paginated' => true
 			),
 			'warehouse-menu' => array(
@@ -61,7 +61,7 @@
 			),
 			'warehouse-function' => array(
 				'name'   => 'warehouse-function',
-				'fields' => array('summary', 'pw_template', 'dplus_function', 'dplus_permission'),
+				'fields' => array('summary', 'dplus_function', 'dplus_permission', 'pw_template'),
 				'paginated' => true
 			)
 		);
@@ -332,11 +332,11 @@
 			$f->name  = $field['name'];
 			$f->label = $field['label'];
 
-			if ($field['notes']) {
+			if (isset($field['notes'])) {
 				$f->notes = $field['notes'];
 			}
 
-			if ($field['description']) {
+			if (isset($field['description'])) {
 				$f->description = $field['description'];
 			}
 
