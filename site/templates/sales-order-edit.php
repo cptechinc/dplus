@@ -22,7 +22,11 @@
 		$ordn = $values->text('ordn');
 
 		if ($lookup_orders->lookup_salesorder($ordn)) {
-			$eso->exists_editable_header($ordn);
+
+			if ($eso->can_order_be_edited($ordn))  {
+				$eso->request_so_edit($ordn);
+			}
+
 			if ($eso->exists_editable($ordn)) {
 				$eso->set_ordn($ordn);
 				$order = $eso->get_editable_header($ordn);
