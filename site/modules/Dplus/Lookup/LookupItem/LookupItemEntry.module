@@ -53,7 +53,7 @@ class LookupItemEntry extends LookupItem implements Module {
 			}
 		}
 
-		if ($this->exists) {
+		if ($this->exists && !$this->lookup_itm_short($itemID)) {
 			$this->validate_active($custID, $shiptoID);
 		}
 
@@ -79,25 +79,32 @@ class LookupItemEntry extends LookupItem implements Module {
 	 * @return void
 	 */
 	private function validate_active($custID, $shiptoID = '') {
-		if ($shiptoID) {
-			$q = CustomerShiptoQuery::create();
-			$shipto = $q->filterByCustid($custID)->filterByShiptoid($shiptoID)->findOne();
-			$warehouse = $shipto->warehouse;
+		$validate_custid = $this->wire('modules')->get('LookupCustomer');
+
+		if ($validate_custid->lookup_customer($custID)) {
+			if ($shiptoID) {
+				$q = CustomerShiptoQuery::create();
+				$shipto = $q->filterByCustid($custID)->filterByShiptoid($shiptoID)->findOne();
+				$warehouse = $shipto->warehouse;
+			} else {
+				$q = CustomerQuery::create();
+				$customer = $q->filterByCustid($custID)->findOne();
+				$warehouse = $customer->warehouse;
+			}
+
+			$q = WarehouseInventoryQuery::create();
+			$q->select(WarehouseInventory::get_aliasproperty('status'));
+			$q->filterByWarehouseid($warehouse);
+			$q->filterByItemid($this->itemID);
+			$status = $q->findOne();
+
+			if (!$status == WarehouseInventory::STATUS_ACTIVE) {
+				$this->exists = false;
+				$this->message = 'Item is not active';
+			}
 		} else {
-			$q = CustomerQuery::create();
-			$customer = $q->filterByCustid($custID)->findOne();
-			$warehouse = $customer->warehouse;
-		}
-
-		$q = WarehouseInventoryQuery::create();
-		$q->select(WarehouseInventory::get_aliasproperty('status'));
-		$q->filterByWarehouseid($warehouse);
-		$q->filterByItemid($this->itemID);
-		$status = $q->findOne();
-
-		if (!$status == WarehouseInventory::STATUS_ACTIVE) {
 			$this->exists = false;
-			$this->message = 'Item is not active';
+			$this->message = "$custID does not exist";
 		}
 	}
 
