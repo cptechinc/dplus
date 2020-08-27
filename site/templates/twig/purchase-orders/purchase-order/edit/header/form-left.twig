@@ -25,8 +25,8 @@
 	</div>
 	<div class="col-sm-6">
 		<div class="form-group">
-			<label for="vendorshipfromID">Ship-From</label>
-			<input type="text" class="form-control form-control-sm" name="vendorshipfromID" id="vendorshipfromID" value="{{ po.shipfromid }}">
+			<label for="shipfromID">Ship-From</label>
+			{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'shipfromID', value: po.shipfromid, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search / Select Vendor Ship-From', attributes_button: {'data-search': 'shipfrom'}} %}
 		</div>
 	</div>
 </div>
