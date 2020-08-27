@@ -282,26 +282,6 @@ class DpagesMso extends Dpages implements Module {
 
 	public function init_salesorder_hooks() {
 		/**
-		 * Adds self::can_user_editorder() as User hook
-		 * @uses self::can_user_editorder()
-		 */
-		$this->addHook('User::can_editorder', function($event) {
-			$user = $event->object;
-			$order = $event->arguments(0);
-			$event->return = $this->can_user_editorder($user, $order);
-		});
-
-		/**
-		 * Adds self::is_user_editingorder() as User hook
-		 * @uses self::is_user_editingorder()
-		 */
-		$this->addHook('User::is_editingorder', function($event) {
-			$user = $event->object;
-			$order = $event->arguments(0);
-			$event->return = $this->is_user_editingorder($user, $order);
-		});
-
-		/**
 		 * Adds self::is_user_editingorder() as User hook
 		 * @uses self::is_user_editingorder()
 		 */
@@ -496,47 +476,6 @@ class DpagesMso extends Dpages implements Module {
 		$url = new Url($this->wire('pages')->get('pw_template=sales-order-view')->url);
 		$url->query->set('ordn', $ordn);
 		return $url->getUrl();
-	}
-
-	/**
-	 * Return if User can edit Sales Order
-	 * @param  User              $user  User
-	 * @param  SalesOrder|string $order Sales Order
-	 * @return bool                     Can User Edit Sales Order?
-	 */
-	public function can_user_editorder(User $user, $order) {
-		if (gettype($order) != 'object') {
-			$lookup_order = $this->wire('modules')->get('LookupSalesOrder');
-
-			if ($lookup_order->lookup_salesorder($order)) {
-				$order = SalesOrderQuery::create()->findOneByOrdernumber($order);
-			} else {
-				$order = SalesHistoryQuery::create()->findOneByOrdernumber($order);
-			}
-		}
-
-		$config_orders = $this->wire('modules')->get('ConfigsSalesOrders');
-		$canedit = false;
-
-		if ($config_orders->allow_salesorderedit) {
-			if ($order->is_editable() && $order->status == SalesOrder::STATUS_NEW && $user->has_function(self::USERPERM_SALESORDERS_EDIT)) {
-				$canedit = true;
-			}
-		}
-		return $canedit;
-	}
-
-	/**
-	 * Return if User is editing Sales Order
-	 * @param  User       $user  User
-	 * @param  SalesOrder|string $order Sales Order
-	 * @return bool              IS User is editing Sales Order?
-	 */
-	public function is_user_editingorder(User $user, $order) {
-		if (gettype($order) != 'object') {
-			$order = SalesOrderQuery::create()->findOneByOrdernumber($order);
-		}
-		return $order->heldby == $user->loginid;
 	}
 
 	public function get_codetable_viewURL($table, $code = false) {
