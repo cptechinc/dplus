@@ -57,14 +57,6 @@ class DpagesMqo extends Dpages implements Module {
 			'parent'         => '/',
 			'dplus_function' => 'mqo'
 		),
-		'quote-redir' => array(
-			'template'   => 'redir',
-			'name'       => 'redir',
-			'title'      => 'redir',
-			'summary'    => 'Quote Redirects',
-			'parent'     => '/mqo/',
-			'redir_file' => 'quote'
-		),
 		'quotes' => array(
 			'template'         => 'dplus-function',
 			'name'             => 'quotes',
