@@ -7,7 +7,7 @@
 	required               Is this required (bool)
 	disabled               Disable Input?
 #}
-<div class="input-group datepicker">
+<div class="input-group input-group-sm datepicker">
 	<input class="form-control input-sm date-input" name="{{ name }}" type="text" value="{{ value }}" id="{{ id ? id : '' }}" tabindex="{{ tab }}" {{ required ? 'required' : '' }} {{ autofocus ? 'autofocus' : '' }} {{ disabled ? 'disabled' : '' }}/>
 	<div class="input-group-append">
 		<button type="button" class="btn btn-outline-secondary form_button input-group-text dropdown-toggle" data-toggle="dropdown">
