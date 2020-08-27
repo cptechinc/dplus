@@ -10,10 +10,10 @@
 </div>
 <div class="row form-group">
 	<div class="col-sm-4">
-		<label for="poref">Reference</label>
+		<label for="reference">Reference</label>
 	</div>
 	<div class="col-sm-8">
-		<input type="text" class="form-control form-control-sm" id="poref" name="poref" value="{{ po.poref }}">
+		<input type="text" class="form-control form-control-sm" id="reference" name="reference" value="{{ po.reference }}">
 	</div>
 </div>
 <div class="row form-group">
@@ -46,7 +46,7 @@
 </div>
 <div class="row form-group">
 	<div class="col-sm-4">
-		<label for="fob">Freight Paid By</label>
+		<label for="fob">FOB</label>
 	</div>
 	<div class="col-sm-8">
 		<select name="fob" id="fob" class="form-control form-control-sm">
@@ -98,7 +98,7 @@
 </div>
 <div class="row form-group">
 	<div class="col-sm-4">
-		<label for="date_acknowledged">{{ epo.get_label_date_acknowledged()|capitalize }} Date</label>
+		<label for="date_acknowledged">{{ epo.get_label_date_acknowledged()|upper }} Date</label>
 	</div>
 	<div class="col-sm-8">
 		{% include 'util/date-picker.twig' with {'name': 'date_acknowledged', 'id': 'date_acknowledged', 'value': po.date_acknowledged ? po.date_acknowledged|convertdate : '', 'disabled': epo.configs.po.edit_date_acknowledged_detail()} %}
@@ -106,10 +106,10 @@
 </div>
 <div class="row form-group">
 	<div class="col-sm-4">
-		<label for="date_cancelled">{{ epo.get_label_date_canceled()|capitalize }} Date</label>
+		<label for="date_cancel">{{ epo.get_label_date_cancel()|upper }} Date</label>
 	</div>
 	<div class="col-sm-8">
-		{% include 'util/date-picker.twig' with {'name': 'date_cancelled', 'id': 'date_cancelled', 'value': po.date_cancelled|convertdate, 'disabled': epo.configs.po.edit_date_canceled_detail()} %}
+		{% include 'util/date-picker.twig' with {'name': 'date_cancel', 'id': 'date_cancelled', 'value': po.date_cancel|convertdate, 'disabled': epo.configs.po.edit_date_cancel_detail()} %}
 	</div>
 </div>
 <div class="row form-group">
