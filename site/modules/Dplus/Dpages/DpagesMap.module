@@ -97,82 +97,8 @@ class DpagesMap extends Dpages implements Module {
 	);
 
 /* =============================================================
-	ProcessWire Module Functions
+	URL Functions
 ============================================================= */
-	public function init() {
-		$this->addHook("Page(pw_template=vxm)::vxm_itemURL", function($event) {
-			$p = $event->object;
-			$vendorID = $event->arguments(0);
-			$vendoritemID = $event->arguments(1);
-			$event->return = $this->get_vxm_itemURL($vendorID, $vendoritemID);
-		});
-
-		$this->addHook("Page(pw_template=vxm)::vxm_itemidURL", function($event) {
-			$p = $event->object;
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_vxm_itemidURL($itemID);
-		});
-
-		$this->addHook('Page(pw_template=vxm)::vxm_vendorURL', function($event) {
-			$vendorID = $event->arguments(0);
-			$event->return = $this->get_vxm_vendorURL($vendorID);
-		});
-
-		$this->addHookProperty('Page(pw_template=vxm)::vendorID', function($event) {
-			$p = $event->object;
-			$event->return = $p->fullURL->query->get('vendorID');
-		});
-
-		$this->addHookProperty('Page(pw_template=vxm)::vendoritemID', function($event) {
-			$p = $event->object;
-			$event->return = $p->fullURL->query->get('vendoritemID');
-		});
-
-		$this->addHookProperty('Page(pw_template=vxm)::itemID', function($event) {
-			$p = $event->object;
-			$event->return = $p->fullURL->query->get('itemID');
-		});
-
-		$this->addHookProperty('Page(pw_template=vxm)::vxm_item_deleteURL', function($event) {
-			$p = $event->object;
-			$vendorID = $event->arguments(0);
-			$vendoritemID = $event->arguments(1);
-			$itemID = $p->itemID;
-			$event->return = $this->get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID);
-		});
-
-		// Code Tables
-		$this->addHook('Page(pw_template=ap-code-table-menu|ap-code-table)::get_codetable_viewURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_viewURL($table, $code);
-		});
-
-
-		$this->addHook('Page(pw_template=ap-code-table)::get_codetable_code_deleteURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_code_deleteURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=ap-code-table)::get_codetable_code_editURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_code_editURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=ap-code-table)::get_codetable_listURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_listURL($table, $code);
-		});
-
-		$this->addHookProperty('Page(pw_template=ap-code-table)::codetable', function($event) {
-			$page = $event->object;
-			$event->return = $page->name;
-		});
-	}
-
 	/**
 	 * Return URL for VXM items filtered by Vendor ID
 	 * @param  string $vendorID Vendor ID
@@ -295,11 +221,6 @@ class DpagesMap extends Dpages implements Module {
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus AP Pages Modules',
@@ -310,5 +231,79 @@ class DpagesMap extends Dpages implements Module {
 			'requires' => array('DplusPwPages', 'Dpages'),
 			'installs' => array(),
 		);
+	}
+
+	public function init() {
+		$this->addHook("Page(pw_template=vxm)::vxm_itemURL", function($event) {
+			$p = $event->object;
+			$vendorID = $event->arguments(0);
+			$vendoritemID = $event->arguments(1);
+			$event->return = $this->get_vxm_itemURL($vendorID, $vendoritemID);
+		});
+
+		$this->addHook("Page(pw_template=vxm)::vxm_itemidURL", function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_vxm_itemidURL($itemID);
+		});
+
+		$this->addHook('Page(pw_template=vxm)::vxm_vendorURL', function($event) {
+			$vendorID = $event->arguments(0);
+			$event->return = $this->get_vxm_vendorURL($vendorID);
+		});
+
+		$this->addHookProperty('Page(pw_template=vxm)::vendorID', function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('vendorID');
+		});
+
+		$this->addHookProperty('Page(pw_template=vxm)::vendoritemID', function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('vendoritemID');
+		});
+
+		$this->addHookProperty('Page(pw_template=vxm)::itemID', function($event) {
+			$p = $event->object;
+			$event->return = $p->fullURL->query->get('itemID');
+		});
+
+		$this->addHookProperty('Page(pw_template=vxm)::vxm_item_deleteURL', function($event) {
+			$p = $event->object;
+			$vendorID = $event->arguments(0);
+			$vendoritemID = $event->arguments(1);
+			$itemID = $p->itemID;
+			$event->return = $this->get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID);
+		});
+
+		// Code Tables
+		$this->addHook('Page(pw_template=ap-code-table-menu|ap-code-table)::get_codetable_viewURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_viewURL($table, $code);
+		});
+
+
+		$this->addHook('Page(pw_template=ap-code-table)::get_codetable_code_deleteURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_code_deleteURL($table, $code);
+		});
+
+		$this->addHook('Page(pw_template=ap-code-table)::get_codetable_code_editURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_code_editURL($table, $code);
+		});
+
+		$this->addHook('Page(pw_template=ap-code-table)::get_codetable_listURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_listURL($table, $code);
+		});
+
+		$this->addHookProperty('Page(pw_template=ap-code-table)::codetable', function($event) {
+			$page = $event->object;
+			$event->return = $page->name;
+		});
 	}
 }

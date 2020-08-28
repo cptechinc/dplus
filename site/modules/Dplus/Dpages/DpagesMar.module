@@ -176,39 +176,8 @@ class DpagesMar extends Dpages implements Module {
 	);
 
 /* =============================================================
-	ProcessWire Module Functions
+	URL Functions
 ============================================================= */
-	public function init() {
-		$this->addHook('Page(pw_template=ar-code-table-menu|ar-code-table)::get_codetable_viewURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_viewURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=ar-code-table)::get_codetable_code_deleteURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_code_deleteURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=ar-code-table)::get_codetable_code_editURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_code_editURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=ar-code-table)::get_codetable_listURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_listURL($table, $code);
-		});
-
-		$this->addHookProperty('Page(pw_template=ar-code-table)::codetable', function($event) {
-			$page = $event->object;
-			$event->return = $page->name;
-		});
-	}
-
 	/**
 	 * Return View Code Table URL
 	 * @param  string $table Code Table
@@ -262,11 +231,6 @@ class DpagesMar extends Dpages implements Module {
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus AR Pages Modules',
@@ -277,5 +241,36 @@ class DpagesMar extends Dpages implements Module {
 			'requires' => array('DplusPwPages', 'Dpages'),
 			'installs' => array(),
 		);
+	}
+
+	public function init() {
+		$this->addHook('Page(pw_template=ar-code-table-menu|ar-code-table)::get_codetable_viewURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_viewURL($table, $code);
+		});
+
+		$this->addHook('Page(pw_template=ar-code-table)::get_codetable_code_deleteURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_code_deleteURL($table, $code);
+		});
+
+		$this->addHook('Page(pw_template=ar-code-table)::get_codetable_code_editURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_code_editURL($table, $code);
+		});
+
+		$this->addHook('Page(pw_template=ar-code-table)::get_codetable_listURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_listURL($table, $code);
+		});
+
+		$this->addHookProperty('Page(pw_template=ar-code-table)::codetable', function($event) {
+			$page = $event->object;
+			$event->return = $page->name;
+		});
 	}
 }

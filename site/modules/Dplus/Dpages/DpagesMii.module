@@ -6,7 +6,7 @@ use Purl\Url;
  * class DpagesMii
  *
  * Installs fields, templates, pages, hooks necessary for Mii Pages
- * Adds Hooks for getting URLs to Mcii pages
+ * Adds Hooks for getting URLs to Mii pages
  */
 class DpagesMii extends Dpages implements Module {
 	const REQUIREMENTS_OPTIONS = array(
@@ -573,6 +573,9 @@ class DpagesMii extends Dpages implements Module {
 		});
 	}
 
+/* =============================================================
+	Supplemental Functions
+============================================================= */
 	/**
 	 * Return II Subfunction pages that user has permissions to
 	 * @param  User   $user User
@@ -585,6 +588,13 @@ class DpagesMii extends Dpages implements Module {
 		return $p->children('dplus_function='.implode('|', $filtered_functions));
 	}
 
+	public function get_requirementsoptions() {
+		return self::REQUIREMENTS_OPTIONS;
+	}
+
+/* =============================================================
+	URL Functions
+============================================================= */
 	/**
 	 * Returns URL to II item page
 	 * @param  string $itemID Item ID
@@ -606,10 +616,6 @@ class DpagesMii extends Dpages implements Module {
 		$url->query->set('action','ii-item');
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
-	}
-
-	public function get_requirementsoptions() {
-		return self::REQUIREMENTS_OPTIONS;
 	}
 
 /* =============================================================

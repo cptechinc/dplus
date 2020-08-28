@@ -269,11 +269,6 @@ class DpagesMsa extends Dpages implements Module {
 		});
 	}
 
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus MSA Pages Modules',

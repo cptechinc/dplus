@@ -3,10 +3,10 @@
 use Purl\Url;
 
 /**
- * class Dpages
+ * class DpagesMin
  *
- * Installs fields, templates, pages, hooks necessary for Top Menus
- * NOTE: Also installs the basic fields, templates, to build the rest of the Application
+ * Installs fields, templates, pages, hooks necessary for Min Pages
+ * Adds Hooks for getting URLs to Min pages
  */
 class DpagesMin extends Dpages implements Module {
 	const FIELDS = array();

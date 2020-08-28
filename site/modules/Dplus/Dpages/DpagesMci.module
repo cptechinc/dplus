@@ -647,6 +647,9 @@ class DpagesMci extends Dpages implements Module {
 		});
 	}
 
+/* =============================================================
+	URL Functions
+============================================================= */
 	/**
 	 * Returns URL to CI Customer Page
 	 * @param  string $custID Customer ID
@@ -684,11 +687,14 @@ class DpagesMci extends Dpages implements Module {
 		return $p->children('dplus_function='.implode('|', $filtered_functions));
 	}
 
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus Online Customer Pages',
+			'title' => 'Dplus MCI Pages',
 			'version' => 101,
-			'summary' => 'Installs and creates Dplus Online Customer Pages',
+			'summary' => 'Installs and creates Dplus MCI Pages',
 			'singular' => true,
 			'autoload' => true,
 			'requires' => array('DplusPwPages', 'Dpages'),

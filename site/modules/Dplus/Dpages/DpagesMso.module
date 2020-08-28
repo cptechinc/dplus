@@ -244,42 +244,6 @@ class DpagesMso extends Dpages implements Module {
 		),
 	);
 
-	const USERPERM_SALESORDERS_EDIT = 'eso';
-
-	public function init() {
-		/**
-		 * Returns Sales Order Page URL
-		 */
-		$this->addHook('Page(pw_template=so-code-table-menu|so-code-table)::get_codetable_viewURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_viewURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=so-code-table)::get_codetable_code_deleteURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_code_deleteURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=so-code-table)::get_codetable_code_editURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_code_editURL($table, $code);
-		});
-
-		$this->addHook('Page(pw_template=so-code-table)::get_codetable_listURL', function($event) {
-			$table = $event->arguments(0);
-			$code = $event->arguments(1);
-			$event->return = $this->get_codetable_listURL($table, $code);
-		});
-
-		$this->addHookProperty('Page(pw_template=so-code-table)::codetable', function($event) {
-			$page = $event->object;
-			$event->return = $page->name;
-		});
-	}
-
 	public function init_salesorder_hooks() {
 		/**
 		 * Adds self::is_user_editingorder() as User hook
@@ -408,6 +372,9 @@ class DpagesMso extends Dpages implements Module {
 		});
 	}
 
+/* =============================================================
+	URL Functions
+============================================================= */
 	/**
 	 * Return URL for CXM items filtered by Customer ID
 	 * @param  string $custID Customer ID
@@ -478,7 +445,13 @@ class DpagesMso extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
-	public function get_codetable_viewURL($table, $code = false) {
+	/**
+	 * Return View Code Table URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_viewURL($table, $code = '') {
 		$url = new Url($this->wire('pages')->get("pw_template=so-code-table, name=$table")->url);
 
 		if ($table == 'soptm') {
@@ -489,7 +462,13 @@ class DpagesMso extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
-	public function get_codetable_listURL($table, $code = false) {
+	/**
+	 * Return View Code Table List URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_listURL($table, $code = '') {
 		$url = new Url($this->wire('pages')->get("pw_template=so-code-table, name=$table")->url);
 		$code = str_replace(' ', '-', $code);
 		if ($table == 'soptm') {
@@ -500,6 +479,12 @@ class DpagesMso extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
+	/**
+	 * Return Code Table Code Delete URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
 	public function get_codetable_code_deleteURL($table, $code) {
 		$url = new Url($this->wire('pages')->get("pw_template=so-code-table, name=$table")->url);
 		$url->query->set('action', 'remove-code');
@@ -508,20 +493,63 @@ class DpagesMso extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
+	/**
+	 * Return Code Table Edit Code URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
 	public function get_codetable_code_editURL($table, $code) {
 		$url = new Url($this->wire('pages')->get("pw_template=so-code-table, name=$table")->url);
 		$url->query->set('code', $code);
 		return $url->getUrl();
 	}
 
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dpluso Sales Order Pages',
+			'title' => 'Dpluso MSO Pages',
 			'version' => 101,
-			'summary' => 'Installs and creates Dpluso Sales Order Pages',
+			'summary' => 'Installs and creates Dplus MSO Pages',
 			'singular' => true,
 			'autoload' => true,
 			'requires' => array('DplusPwPages', 'Dpages'),
 		);
+	}
+
+	public function init() {
+		/**
+		 * Returns Sales Order Page URL
+		 */
+		$this->addHook('Page(pw_template=so-code-table-menu|so-code-table)::get_codetable_viewURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_viewURL($table, $code);
+		});
+
+		$this->addHook('Page(pw_template=so-code-table)::get_codetable_code_deleteURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_code_deleteURL($table, $code);
+		});
+
+		$this->addHook('Page(pw_template=so-code-table)::get_codetable_code_editURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_code_editURL($table, $code);
+		});
+
+		$this->addHook('Page(pw_template=so-code-table)::get_codetable_listURL', function($event) {
+			$table = $event->arguments(0);
+			$code = $event->arguments(1);
+			$event->return = $this->get_codetable_listURL($table, $code);
+		});
+
+		$this->addHookProperty('Page(pw_template=so-code-table)::codetable', function($event) {
+			$page = $event->object;
+			$event->return = $page->name;
+		});
 	}
 }
