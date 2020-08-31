@@ -17,6 +17,7 @@ use CountryCodesQuery, CountryCodes;
 use EditPoHeadQuery, EditPoHead;
 use EditPoDetailQuery, EditPoDetail;
 use StatesQuery, States;
+use LogpermQuery, Logperm;
 
 include(__DIR__.'/MpoResponse.php');
 
@@ -60,7 +61,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 	 * @return bool
 	 */
 	public function exists_editable($ponbr) {
-		return $this->exists_editable_header($ponbr) && $this->exists_editable_details($ponbr);
+		return $this->exists_editable_header($ponbr);
 	}
 
 	/**
@@ -114,6 +115,9 @@ class PurchaseOrderEdit extends WireData implements Module {
 				break;
 			case 'update-header':
 				$this->process_input_update_header($input);
+				break;
+			case 'create-po':
+				$this->process_input_create_po($input);
 				break;
 			case 'exit':
 				break;
@@ -199,6 +203,34 @@ class PurchaseOrderEdit extends WireData implements Module {
 			$response = MpoResponse::response_success($values->text('ponbr'), "PO # $ponbr header was updated");
 		} else {
 			$response = MpoResponse::response_error($values->text('ponbr'), "PO # $ponbr header was not updated");
+		}
+		$this->wire('session')->response_epo = $response;
+	}
+
+	/**
+	 * Create Purchase Order
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function process_input_create_po(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$vendorID = $values->text('vendorID');
+		$validate_vendor = $this->wire('modules')->get('ValidateVendorId');
+
+		if ($validate_vendor->validate($vendorID)) {
+			$this->request_create_po($vendorID);
+			$logperm = $this->get_logperm();
+
+			if (strlen($logperm->ordernbr) != PurchaseOrder::LENGTH) {
+				$response = MpoResponse::response_error('NEW', "Purchase Order for $vendorID not created");
+			} else {
+				$values->ponbr = $logperm->ordernbr;
+				$ponbr = $values->text('ponbr');
+				$response = MpoResponse::response_success($logperm->ordernbr, "PO # $ponbr was created");
+			}
+		} else {
+			$response = MpoResponse::response_error('NEW', "Vendor $vendorID not found");
 		}
 		$this->wire('session')->response_epo = $response;
 	}
@@ -395,6 +427,21 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());
 		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
+	}
+
+	/**
+	 * Send Create PO request
+	 * TODO: get command in 600p (default) cgi
+	 * @param  string $vendorID  Vendor ID
+	 * @return void
+	 */
+	public function request_create_po($vendorID) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'CREATERECEIVEPO', "VENDORID=$vendorID");
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['warehouse'], $this->sessionID);
 	}
 
 	/**
@@ -667,6 +714,15 @@ class PurchaseOrderEdit extends WireData implements Module {
 	public function get_country_codes() {
 		return CountryCodesQuery::create()->find();
 	}
+
+	/**
+	 * Return Logperm Record
+	 * @return Logperm
+	 */
+	public function get_logperm() {
+		$q = LogpermQuery::create();
+		return $q->findOneBySessionid($this->sessionID);
+	}
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
@@ -689,7 +745,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 			$event->return = $url->getUrl();
 		});
 
-		$this->addHook('Page(pw_template=purchase-order-edit)::po_editURL', function($event) {
+		$this->addHook('Page(pw_template=purchase-order-edit|purchase-order-epo)::po_editURL', function($event) {
 			$ponbr = $event->arguments(0);
 			$event->return = $this->get_po_editURL($ponbr);
 		});
@@ -702,6 +758,15 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$this->addHook('Page(pw_template=purchase-order-edit)::po_viewURL', function($event) {
 			$ponbr = $event->arguments(0);
 			$event->return = $this->get_po_viewURL($ponbr);
+		});
+
+		$this->addHook('Page(pw_template=purchase-order-epo)::choose_vendorURL', function($event) {
+			$p = $event->object;
+			$vendorID = $event->arguments(0);
+			$url = new Url($p->fullURL->getUrl());
+			$url->query->set('ponbr', 'new');
+			$url->query->set('vendorID', $vendorID);
+			$event->return = $url->getUrl();
 		});
 	}
 
