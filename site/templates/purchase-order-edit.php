@@ -1,5 +1,6 @@
 <?php
-	$epo = $modules->get('PurchaseOrderEdit');
+	$epo  = $modules->get('PurchaseOrderEdit');
+	$html = $modules->get('HtmlWriter');
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
 
@@ -61,7 +62,7 @@
 			$page->body .= $config->twig->render('util/error-page.twig', ['msg' => "Check if the Purchase Order Number is correct"]);
 		}
 	} else {
-		$page->title = 'Enter a Purchase Order Number';
+		$page->title = 'EPO';
 		$page->body .= $config->twig->render('purchase-orders/purchase-order/lookup-form.twig', ['page' => $page]);
 	}
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
