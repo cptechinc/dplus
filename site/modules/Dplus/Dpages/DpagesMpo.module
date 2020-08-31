@@ -65,7 +65,7 @@ class DpagesMpo extends Dpages implements Module {
 			'title'          => 'Purchase Orders',
 			'summary'        => 'Purchase Orders Menu',
 			'parent'         => '/',
-			'dplus_function' => 'mpo' // TODO: Change to mpo
+			'dplus_function' => 'mpo'
 		),
 		'poadmn' => array(
 			'template'       => 'dplus-menu',
@@ -76,76 +76,94 @@ class DpagesMpo extends Dpages implements Module {
 			'dplus_function' => 'poadmn'
 		),
 		'po-list' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'purchase-orders',
-			'title'          => 'Purchase Order List',
-			'summary'        => 'View Purchase Order List',
-			'parent'         => '/mpo/',
-			'dplus_function' => '',
-			'pw_template'    => 'purchase-orders'
+			'template'         => 'dplus-function',
+			'name'             => 'purchase-orders',
+			'title'            => 'Purchase Order List',
+			'summary'          => 'View Purchase Order List',
+			'parent'           => '/mpo/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mpo',
+			'pw_template'      => 'purchase-orders'
 		),
 		'po-list-vendor' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'vendor',
-			'title'          => 'Vendor Purchase Orders',
-			'summary'        => 'View Vendor Purchase Orders',
-			'parent'         => '/mpo/purchase-orders/',
-			'dplus_function' => '',
-			'pw_template'    => 'purchase-orders-vendor'
+			'template'         => 'dplus-function',
+			'name'             => 'vendor',
+			'title'            => 'Vendor Purchase Orders',
+			'summary'          => 'View Vendor Purchase Orders',
+			'parent'           => '/mpo/purchase-orders/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mpo',
+			'pw_template'      => 'purchase-orders-vendor'
 		),
 		'po-view' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'purchase-order',
-			'title'          => 'Purchase Order',
-			'summary'        => 'View a Purchase Order',
-			'parent'         => '/mpo/',
-			'dplus_function' => '',
-			'pw_template'    => 'purchase-order-view'
+			'template'         => 'dplus-function',
+			'name'             => 'purchase-order',
+			'title'            => 'Purchase Order',
+			'summary'          => 'View a Purchase Order',
+			'parent'           => '/mpo/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mpo',
+			'pw_template'      => 'purchase-order-view'
 		),
 		'po-edit' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'edit',
-			'title'          => 'Edit Purchase Order',
-			'summary'        => 'View a Purchase Order',
-			'parent'         => '/mpo/purchase-order/',
-			'dplus_function' => 'epo',
-			'pw_template'    => 'purchase-order-edit'
+			'template'         => 'dplus-function',
+			'name'             => 'edit',
+			'title'            => 'Edit Purchase Order',
+			'summary'          => 'Edit a Purchase Order',
+			'parent'           => '/mpo/purchase-order/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'epo',
+			'pw_template'      => 'purchase-order-edit'
+		),
+		'po-epo' => array(
+			'template'         => 'dplus-function',
+			'name'             => 'epo',
+			'title'            => 'Purchase Order Entry',
+			'summary'          => 'Edit / Create Purchase Order',
+			'parent'           => '/mpo',
+			'dplus_function'   => '',
+			'dplus_permission' => 'epo',
+			'pw_template'      => 'purchase-order-epo'
 		),
 		'po-documents' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'documents',
-			'title'          => 'Purchase Order Documents',
-			'summary'        => 'View Purchase Order Documents',
-			'parent'         => '/mpo/purchase-order/',
-			'dplus_function' => '',
-			'pw_template'    => 'purchase-order-documents'
+			'template'         => 'dplus-function',
+			'name'             => 'documents',
+			'title'            => 'Purchase Order Documents',
+			'summary'          => 'View Purchase Order Documents',
+			'parent'           => '/mpo/purchase-order/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mpo',
+			'pw_template'      => 'purchase-order-documents'
 		),
 		'po-notes' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'notes',
-			'title'          => 'Purchase Order Notes',
-			'summary'        => 'View Purchase Order Notes',
-			'parent'         => '/mpo/purchase-order/',
-			'dplus_function' => '',
-			'pw_template'    => 'purchase-order-notes'
+			'template'         => 'dplus-function',
+			'name'             => 'notes',
+			'title'            => 'Purchase Order Notes',
+			'summary'          => 'View Purchase Order Notes',
+			'parent'           => '/mpo/purchase-order/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mpo',
+			'pw_template'      => 'purchase-order-notes'
 		),
 		'purchase-history-list' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'purchase-history',
-			'title'          => 'Purchase History',
-			'summary'        => 'View Purchase Order History',
-			'parent'         => '/mpo/',
-			'dplus_function' => '',
-			'pw_template'    => 'purchase-history-orders'
+			'template'         => 'dplus-function',
+			'name'             => 'purchase-history',
+			'title'            => 'Purchase History',
+			'summary'          => 'View Purchase Order History',
+			'parent'           => '/mpo/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mpo',
+			'pw_template'      => 'purchase-history-orders'
 		),
 		'purchase-history-list-vendor' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'vendor',
-			'title'          => 'Vendor Purchase History',
-			'summary'        => 'View Vendor Purchase Order History',
-			'parent'         => '/mpo/purchase-history/',
-			'dplus_function' => '',
-			'pw_template'    => 'purchase-history-orders-vendor'
+			'template'         => 'dplus-function',
+			'name'             => 'vendor',
+			'title'            => 'Vendor Purchase History',
+			'summary'          => 'View Vendor Purchase Order History',
+			'parent'           => '/mpo/purchase-history/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mpo',
+			'pw_template'      => 'purchase-history-orders-vendor'
 		),
 		'po-cnfm' => array(
 			'template'       => 'dplus-function',
@@ -217,6 +235,115 @@ class DpagesMpo extends Dpages implements Module {
 		});
 	}
 
+/* =============================================================
+	URL Functions
+============================================================= */
+	/**
+	 * Returns URL to Purchase Orders Page
+	 * @return string           URL
+	 */
+	public function get_purchaseordersURL() {
+		return $this->wire('pages')->get('pw_template=purchase-orders')->url;
+	}
+
+	/**
+	 * Returns URL to Purchase Order Edit Page
+	 * @param  string $ponbr  Purchase Order Number
+	 * @return string           URL
+	 */
+	public function get_po_editURL($ponbr) {
+		return $this->wire('modules')->get('PurchaseOrderEdit')->get_po_editURL($ponbr);
+	}
+
+	/**
+	 * Returns URL to Purchase Orders Vendor Page
+	 * @return string           URL
+	 */
+	public function get_purchaseorders_vendorURL() {
+		return $this->wire('pages')->get('pw_template=purchase-orders-vendor')->url;
+	}
+
+	/**
+	 * Returns URL to Purchase Orders Page
+	 * @return string           URL
+	 */
+	public function get_purchasehistoryURL() {
+		return $this->wire('pages')->get('pw_template=purchase-history-orders')->url;
+	}
+
+	/**
+	 * Returns URL to Purchase Orders Vendor Page
+	 * @return string           URL
+	 */
+	public function get_purchasehistory_vendorURL() {
+		return $this->wire('pages')->get('pw_template=purchase-history-orders-vendor')->url;
+	}
+
+	/**
+	 * Return View Code Table URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_viewURL($table, $code = false) {
+		$url = new Url($this->wire('pages')->get("pw_template=po-code-table, name=$table")->url);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return View Code Table List URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_listURL($table, $code = false) {
+		$url = new Url($this->wire('pages')->get("pw_template=po-code-table, name=$table")->url);
+		$code = str_replace(' ', '-', $code);
+		$url->query->set('focus', $code);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Code Table Code Delete URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_code_deleteURL($table, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=po-code-table, name=$table")->url);
+		$url->query->set('action', 'remove-code');
+		$url->query->set('table', $table);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Code Table Edit Code URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_code_editURL($table, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=po-code-table, name=$table")->url);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Online Purchase Order Pages',
+			'version' => 101,
+			'summary' => 'Installs and creates Dplus Online Purchase Order Pages',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
+		);
+	}
+
 	public function init() {
 		$this->addHook('Page(pw_template=po-code-table-menu|po-code-table)::get_codetable_viewURL', function($event) {
 			$table = $event->arguments(0);
@@ -262,84 +389,5 @@ class DpagesMpo extends Dpages implements Module {
 			$ponbr = $event->arguments(0);
 			$event->return = $this->get_po_editURL($ponbr);
 		});
-	}
-
-	/**
-	 * Returns URL to Purchase Orders Page
-	 * @return string           URL
-	 */
-	public function get_purchaseordersURL() {
-		return $this->wire('pages')->get('pw_template=purchase-orders')->url;
-	}
-
-	/**
-	 * Returns URL to Purchase Order Edit Page
-	 * @param  string $ponbr  Purchase Order Number
-	 * @return string           URL
-	 */
-	public function get_po_editURL($ponbr) {
-		return $this->wire('modules')->get('PurchaseOrderEdit')->get_po_editURL($ponbr);
-	}
-
-	/**
-	 * Returns URL to Purchase Orders Vendor Page
-	 * @return string           URL
-	 */
-	public function get_purchaseorders_vendorURL() {
-		return $this->wire('pages')->get('pw_template=purchase-orders-vendor')->url;
-	}
-
-	/**
-	 * Returns URL to Purchase Orders Page
-	 * @return string           URL
-	 */
-	public function get_purchasehistoryURL() {
-		return $this->wire('pages')->get('pw_template=purchase-history-orders')->url;
-	}
-
-	/**
-	 * Returns URL to Purchase Orders Vendor Page
-	 * @return string           URL
-	 */
-	public function get_purchasehistory_vendorURL() {
-		return $this->wire('pages')->get('pw_template=purchase-history-orders-vendor')->url;
-	}
-
-	public function get_codetable_viewURL($table, $code = false) {
-		$url = new Url($this->wire('pages')->get("pw_template=po-code-table, name=$table")->url);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	public function get_codetable_listURL($table, $code = false) {
-		$url = new Url($this->wire('pages')->get("pw_template=po-code-table, name=$table")->url);
-		$code = str_replace(' ', '-', $code);
-		$url->query->set('focus', $code);
-		return $url->getUrl();
-	}
-
-	public function get_codetable_code_deleteURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=po-code-table, name=$table")->url);
-		$url->query->set('action', 'remove-code');
-		$url->query->set('table', $table);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	public function get_codetable_code_editURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=po-code-table, name=$table")->url);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'Dplus Online Purchase Order Pages',
-			'version' => 101,
-			'summary' => 'Installs and creates Dplus Online Purchase Order Pages',
-			'singular' => true,
-			'autoload' => true,
-			'requires' => array('DplusPwPages', 'Dpages'),
-		);
 	}
 }
