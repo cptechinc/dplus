@@ -142,12 +142,17 @@
 		<label for="currency">Currency</label>
 	</div>
 	<div class="col-sm-8">
-		<div class="row">
+		<div class="form-row">
 			<div class="col-sm-6">
-				{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'currency', 'modaltarget': '#ajax-modal', 'modaldescription': 'Search / Select Country Currency', attributes_button: {'data-search': 'country'}} %}
+				{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'exchange_country', 'value': po.exchange_country, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search / Select Country Currency', attributes_button: {'data-search': 'country'}, class_add: epo.field_has_error_header('exchange_country') ? 'is-invalid' : '' } %}
 			</div>
 			<div class="col-sm-6">
-				<p class="form-control-plaintext">Rate: <span class="currency-rate"></span></p>
+				<div class="form-row">
+					<div class="col"><label for="exchange_rate">Rate</label></div>
+					<div class="col">
+						<input type="text" class="form-control form-control-sm" id="exchange_rate" name="exchange_rate" value="{{ po.exchange_rate|number_format(epo.decimal_places_cost()) }}">
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
