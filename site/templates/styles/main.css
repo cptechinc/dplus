@@ -172,6 +172,14 @@ a.image-link:hover {
 	padding: .5rem 1.25rem;
 }
 
+.list-inline.comma-list {
+	display: inline;
+}
+
+.list-inline.comma-list li.list-inline-item:not(:last-child):after {
+	content: ","
+}
+
 /************************************** Navbar **************************************/
 #yt-menu {
 	width: 300px;
