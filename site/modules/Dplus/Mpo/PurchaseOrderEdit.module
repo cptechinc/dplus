@@ -191,15 +191,20 @@ class PurchaseOrderEdit extends WireData implements Module {
 	 * @param  WireInput $input Input Data
 	 * @return void
 	 */
-	public function process_input_update_Header(WireInput $input) {
+	public function process_input_update_header(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$ponbr = $values->text('ponbr');
 		$po = $this->get_editable_header($ponbr);
-		$this->update_header($po, $input);
+		$invalidfields = $this->update_header($po, $input);
 
-		if ($po->save()) {
-			$this->request_update_header($ponbr);
+		$saved = $po->save();
+
+		if ($invalidfields) {
+			$response = MpoResponse::response_error($values->text('ponbr'), "PO # $ponbr header was not updated");
+			$response->set_fields($invalidfields);
+		} elseif ($saved) {
+			// $this->request_update_header($ponbr);
 			$response = MpoResponse::response_success($values->text('ponbr'), "PO # $ponbr header was updated");
 		} else {
 			$response = MpoResponse::response_error($values->text('ponbr'), "PO # $ponbr header was not updated");
@@ -239,24 +244,27 @@ class PurchaseOrderEdit extends WireData implements Module {
 	 * Updates EditPoHead Record
 	 * @param  EditPoHead  $item  Purchase Order
 	 * @param  WireInput   $input Input Data
-	 * @return void
+	 * @return array              Invalid Input Field Names
 	 */
 	protected function update_header(EditPoHead $po, WireInput $input) {
 		$this->init_configs();
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
+		$invalid = array();
 
 		$this->update_header_shipto($po, $input);
 		$this->update_header_contact($po, $input);
 		$this->update_header_dates($po, $input);
-		$this->update_header_validated($po, $input);
 
 		$po->setTax_exempt($values->yn('tax_exempt'));
 		$po->setFuturebuy($values->yn('futurebuy'));
-		$po->setLandedcost($values->text('landedcost'));
+		$po->setLandedcost($values->float('landedcost', ['precision' => $this->decimal_places_cost()]));
 		$po->setReleasenbr($values->text('releasenbr'));
 		$po->setReference($values->text('reference'));
-		$po->setReference($values->text('reference'));
+		$po->setExchange_rate($values->float('exchange_rate', ['precision' => $this->decimal_places_cost()]));
+
+		$invalid = $this->update_header_validated($po, $input);
+		return $invalid;
 	}
 
 	/**
@@ -324,48 +332,56 @@ class PurchaseOrderEdit extends WireData implements Module {
 	 * Update PO Header fields that need external validation
 	 * @param  EditPoHead $po    Purchase Order
 	 * @param  WireInput  $input Input Data
-	 * @return void
+	 * @return array             Array of Invalid input fieldnames
 	 */
 	protected function update_header_validated(EditPoHead $po, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
+		$invalid = array();
 
-		$validate = new WireData();
-		$validate->vendor = $this->wire('modules')->get('ValidateVendorId');
-		$validate->ar     = $this->wire('modules')->get('ValidateAr');
-		$validate->ap     = $this->wire('modules')->get('ValidateAp');
+		$validate = $this->wire('modules')->get('ValidatePo');
+		$fields = array(
+			'vendorid' => array(
+				'description'  => 'Vendor ID',
+				'input'        => 'vendorID'
+			),
+			'shipvia' => array(
+				'description'  => 'Shipvia',
+				'input'        => 'shipvia'
+			),
+			'termscode' => array(
+				'description'  => 'Terms Code',
+				'input'        => 'termscode'
+			),
+			'freightpaidby' => array(
+				'description'  => 'Freight Paid By',
+				'input'        => 'freightpaidby'
+			),
+			'fob' => array(
+				'description'  => 'FOB',
+				'input'        => 'fob'
+			),
+			'exchange_country' => array(
+				'description'  => 'Currency Country Code',
+				'input'        => 'exchange_country'
+			),
+		);
 
-		if ($validate->vendor->validate($values->text('vendorID'))) {
-			$po->setVendorid($values->text('vendorID'));
+		foreach ($fields as $property => $field) {
+			if ($validate->$property($values->text($field['input']))) {
+				$setProperty = "set".ucfirst($property);
+				$po->$setProperty($values->text($field['input']));
+			} else {
+				$invalid[$property] = $field['description'];
+			}
 		}
-
-		if ($validate->vendor->validate_shipfrom($po->vendorid, $values->text('shipfromID'))) {
+		if ($validate->vendor_shipfromid($values->text('vendorID'), $values->text('shipfromID'))) {
 			$po->setShipfromid($values->text('shipfromID'));
+		} else {
+			$invalid['shipfromID'] = 'Ship-From ID';
 		}
 
-		if ($validate->ar->validate_shipvia($values->text('shipvia'))) {
-			$po->setShipvia($values->text('shipvia'));
-		}
-
-		if (array_key_exists($values->text('freightpaidby'), PurchaseOrder::FREIGHTPAIDBY_DESCRIPTIONS)) {
-			$po->setFreightpaidby($values->text('freightpaidby'));
-		}
-
-		if (array_key_exists($values->text('fob'), PurchaseOrder::FOB_DESCRIPTIONS)) {
-			$po->setFob($values->text('fob'));
-		}
-
-		if ($validate->ap->validate_termscode($values->text('termscode'))) {
-			$po->setTermscode($values->text('termscode'));
-		}
-
-		if ($validate->ar->validate_shipvia($values->text('shipvia'))) {
-			$po->setShipvia($values->text('shipvia'));
-		}
-
-		if ($validate->ap->validate_countrycode($values->text('currency'))) {
-			$po->setCurrency($values->text('currency'));
-		}
+		return $invalid;
 	}
 
 /* =============================================================
@@ -493,6 +509,15 @@ class PurchaseOrderEdit extends WireData implements Module {
 	public function get_po_viewURL($ponbr) {
 		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-view')->url);
 		$url->query->set('ponbr', $ponbr);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Validate PO URL
+	 * @return string
+	 */
+	public function get_po_validateURL() {
+		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-validate')->url);
 		return $url->getUrl();
 	}
 
@@ -723,6 +748,12 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$q = LogpermQuery::create();
 		return $q->findOneBySessionid($this->sessionID);
 	}
+
+	public function field_has_error_header($inputname) {
+		$response = $this->wire('session')->response_epo;
+		return array_key_exists($inputname, $response->fields);
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
@@ -758,6 +789,10 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$this->addHook('Page(pw_template=purchase-order-edit)::po_viewURL', function($event) {
 			$ponbr = $event->arguments(0);
 			$event->return = $this->get_po_viewURL($ponbr);
+		});
+
+		$this->addHook('Page(pw_template=purchase-order-edit)::po_validateURL', function($event) {
+			$event->return = $this->get_po_validateURL();
 		});
 
 		$this->addHook('Page(pw_template=purchase-order-epo)::choose_vendorURL', function($event) {
