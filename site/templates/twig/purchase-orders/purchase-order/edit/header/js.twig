@@ -17,9 +17,9 @@ $(function () {
 		var button = $(this);
 		var modal = button.closest('.modal');
 		var code = button.data('code');
-		var rate = button.data('rate');
-		form_header.find('input[name=currency]').val(code);
-		form_header.find('.currency-rate').text(rate);
+		var rate = parseFloat(button.data('rate')).toFixed({{ epo.decimal_places_cost() }});
+		form_header.find('input[name=exchange_country]').val(code);
+		form_header.find('input[name=exchange_rate]').val(rate);
 		modal.modal('hide');
 	});
 
@@ -60,4 +60,45 @@ $(function () {
 			callback(vendor);
 		});
 	}
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	console.log('{{ page.po_validateURL() }}');
+	form_header.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			vendorID: {
+				required: true,
+				remote: {
+					url: '{{ page.po_validateURL() }}',
+					type: "get",
+					data: {
+						action: 'validate-vendorid'
+					}
+				}
+			},
+			shipfromID: {
+				required: true,
+				remote: {
+					url: '{{ page.po_validateURL() }}',
+					type: "get",
+					data: {
+						action: 'validate-shipfromid',
+						vendorID: $('#vendorID').val()
+					}
+				}
+			},
+		},
+		messages: {
+
+		},
+		submitHandler: function(form) {
+			// form.submit();
+		}
+	});
 });
