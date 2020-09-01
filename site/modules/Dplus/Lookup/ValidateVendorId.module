@@ -45,6 +45,7 @@ class ValidateVendorId extends WireData implements Module {
 	 */
 	public function validate_shipfrom($vendorID, $shipfromID) {
 		if ($this->validate($vendorID)) {
+			$this->exists = false;
 			$q = VendorShipfromQuery::create();
 			$q->filterByVendorid($vendorID);
 			$q->filterByShipfromid($shipfromID);
