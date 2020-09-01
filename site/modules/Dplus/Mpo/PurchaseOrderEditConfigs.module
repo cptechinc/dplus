@@ -1,0 +1,93 @@
+<?php namespace ProcessWire;
+
+use ConfigSalesOrderQuery, ConfigSalesOrder;
+use ConfigPoQuery, ConfigPo;
+
+/**
+ * PurchaseOrderEditConfigs
+ *
+ * Handles Configs for PO Editing
+ */
+class PurchaseOrderEditConfigs extends WireData implements Module {
+	const PERMISSION_DPLUS = 'epo';
+
+	/**
+	 * Return the number of decimal places for qty values
+	 * @return int
+	 */
+	public function decimal_places_qty() {
+		return $this->so->decimal_places_qty;
+	}
+
+	/**
+	 * Return the number of decimal places for qty values
+	 * @return int
+	 */
+	public function decimal_places_price_so() {
+		return $this->so->decimal_places_price;
+	}
+
+	/**
+	 * Return the number of decimal places for cost values
+	 * @return int
+	 */
+	public function decimal_places_cost() {
+		return $this->po->decimal_places_cost;
+	}
+
+	/**
+	 * Return Description Label for Cancel Date
+	 * @return string
+	 */
+	public function get_label_date_cancel() {
+		return $this->po->description_date_cancel();
+	}
+
+	/**
+	 * Return Description Label for Acknowledged Date
+	 * @return string
+	 */
+	public function get_label_date_acknowledged() {
+		return $this->po->description_date_acknowledged();
+	}
+
+	/**
+	 * Return PO Config
+	 * @return ConfigPo
+	 */
+	public function config_po() {
+		return $this->wire('modules')->get('ConfigurePo')->config();
+	}
+
+	/**
+	 * Return SO Config
+	 * @return ConfigSalesOrder
+	 */
+	public function config_so() {
+		return ConfigSalesOrderQuery::create()->findOne();
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public function init_configs() {
+		$this->po = $this->config_po();
+		$this->so = $this->config_so();
+	}
+
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Purchase Order Edit Configs',
+			'version' => 101,
+			'summary' => 'Provides Configs for Purchase Order Edit',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+}
