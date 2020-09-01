@@ -21,7 +21,7 @@
 		<label for="shipvia">Ship-Via</label>
 	</div>
 	<div class="col-sm-8">
-		<select name="shipvia" id="shipvia" class="form-control form-control-sm">
+		<select name="shipvia" id="shipvia" class="custom-select custom-select-sm {{ epo.field_has_error_header('shipvia') ? 'is-invalid' : ''}}">
 			{% for shipvia in epo.get_shipvias() %}
 				<option value="{{ shipvia.code }}" {{ shipvia.code == po.shipvia ? 'selected' : '' }}>
 					{{ shipvia.code }} - {{ shipvia.description }}
@@ -35,7 +35,7 @@
 		<label for="freightpaidby">Freight Paid By</label>
 	</div>
 	<div class="col-sm-8">
-		<select name="freightpaidby" id="freightpaidby" class="form-control form-control-sm">
+		<select name="freightpaidby" id="freightpaidby" class="custom-select custom-select-sm {{ epo.field_has_error_header('freightpaidby') ? 'is-invalid' : ''}}">
 			{% for value, description in po.get_options_freightpaidby() %}
 				<option value="{{ value }}" {{ value == po.freightpaidby ? 'selected' : '' }}>
 					{{ description|capitalize }}
@@ -49,7 +49,7 @@
 		<label for="fob">FOB</label>
 	</div>
 	<div class="col-sm-8">
-		<select name="fob" id="fob" class="form-control form-control-sm">
+		<select name="fob" id="fob" class="custom-select custom-select-sm {{ epo.field_has_error_header('fob') ? 'is-invalid' : ''}}">
 			{% for value, description in po.get_options_fob() %}
 				<option value="{{ value }}" {{ value == po.fob ? 'selected' : '' }}>
 					{{ description|capitalize }}
@@ -63,7 +63,7 @@
 		<label for="termscode">Terms Code</label>
 	</div>
 	<div class="col-sm-8">
-		<select name="shipvia" id="shipvia" class="form-control form-control-sm">
+		<select name="termscode" id="termscode" class="custom-select custom-select-sm {{ epo.field_has_error_header('termscode') ? 'is-invalid' : ''}}">
 			{% for termscode in epo.get_termscodes() %}
 				<option value="{{ termscode.code }}" {{ termscode.code == po.termscode ? 'selected' : '' }}>
 					{{ termscode.code }} - {{ termscode.description }}
