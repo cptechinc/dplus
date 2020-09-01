@@ -15,8 +15,7 @@
 	}
 
 	if ($session->response_epo) {
-		$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_epo]);
-		$session->remove('response_epo');
+		$page->body .= $config->twig->render('purchase-orders/purchase-order/edit/response.twig', ['response' => $session->response_epo]);
 	}
 
 	if ($input->get->ponbr) {
@@ -39,8 +38,8 @@
 				$page->body .= $config->twig->render('purchase-orders/purchase-order/edit/edit.twig', ['page' => $page, 'epo' => $epo, 'po' => $po_edit, 'po_readonly' => $po_readonly]);
 				$page->js   .= $config->twig->render('purchase-orders/purchase-order/edit/js.twig', ['page' => $page, 'epo' => $epo]);
 				$page->js   .= $config->twig->render('purchase-orders/purchase-order/edit/lookup/js.twig', ['page' => $page]);
-				$config->scripts->append(hash_templatefile('scripts/lib/datatables.js'));
-				$config->styles->append(hash_templatefile('styles/lib/datatables.css'));
+				// $config->scripts->append(hash_templatefile('scripts/lib/datatables.js'));
+				// $config->styles->append(hash_templatefile('styles/lib/datatables.css'));
 
 				if ($values->q) {
 					$q = $values->text('q');
