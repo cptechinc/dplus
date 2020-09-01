@@ -9,9 +9,9 @@ $(function () {
 	var modal_ajax    = $('#ajax-modal');
 	var form_edit = $('#edit-item-form');
 	var form_add  = $('#add-item-form');
-	var items = {{ epo.get_details_array(page.ponbr)|json_encode()|raw }};
-	var decimal_places_qty = {{ epo.decimal_places_qty() }};
-	var decimal_places_cost = {{ epo.decimal_places_cost() }};
+	var items = {{ epo.items.get_details_array(page.ponbr)|json_encode()|raw }};
+	var decimal_places_qty = {{ epo.configs.decimal_places_qty() }};
+	var decimal_places_cost = {{ epo.configs.decimal_places_cost() }};
 
 	modal_edit.on('show.bs.modal', function (event) {
 		var modal = $(this);

@@ -4,6 +4,7 @@
 	page                   ProcessWire\Page
 	po                     EditPoHead
 	epo                    PurchaseOrderEdit
+	epo.configs            PurchaseOrderEditConfigs
 #}
 <div class="list-group">
 	<div class="list-group-item bg-dark text-white font-weight-bold">
@@ -31,13 +32,13 @@
 					{{ item.uom }}
 				</div>
 				<div class="col-sm-1 text-right">
-					{{ item.qty_ordered|number_format(epo.decimal_places_qty()) }}
+					{{ item.qty_ordered|number_format(epo.configs.decimal_places_qty()) }}
 				</div>
 				<div class="col-sm-2 text-right">
-					$ {{ item.cost|number_format(epo.decimal_places_cost())  }}
+					$ {{ item.cost|number_format(epo.configs.decimal_places_cost())  }}
 				</div>
 				<div class="col-sm-2 text-right">
-					$ {{ item.cost_total|number_format(epo.decimal_places_cost()) }}
+					$ {{ item.cost_total|number_format(epo.configs.decimal_places_cost()) }}
 				</div>
 				<div class="col-sm-1 text-center">
 					{{ item.whse }}

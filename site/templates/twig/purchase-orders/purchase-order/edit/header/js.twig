@@ -17,7 +17,7 @@ $(function () {
 		var button = $(this);
 		var modal = button.closest('.modal');
 		var code = button.data('code');
-		var rate = parseFloat(button.data('rate')).toFixed({{ epo.decimal_places_cost() }});
+		var rate = parseFloat(button.data('rate')).toFixed({{ epo.configs.decimal_places_cost() }});
 		form_header.find('input[name=exchange_country]').val(code);
 		form_header.find('input[name=exchange_rate]').val(rate);
 		modal.modal('hide');
@@ -64,7 +64,6 @@ $(function () {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	console.log('{{ page.po_validateURL() }}');
 	form_header.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",

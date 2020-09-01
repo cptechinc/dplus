@@ -98,7 +98,7 @@
 </div>
 <div class="row form-group">
 	<div class="col-sm-4">
-		<label for="date_acknowledged">{{ epo.get_label_date_acknowledged()|upper }} Date</label>
+		<label for="date_acknowledged">{{ epo.configs.get_label_date_acknowledged()|upper }} Date</label>
 	</div>
 	<div class="col-sm-8">
 		{% include 'util/date-picker.twig' with {'name': 'date_acknowledged', 'id': 'date_acknowledged', 'value': po.date_acknowledged ? po.date_acknowledged|convertdate : '', 'disabled': epo.configs.po.edit_date_acknowledged_detail()} %}
@@ -106,7 +106,7 @@
 </div>
 <div class="row form-group">
 	<div class="col-sm-4">
-		<label for="date_cancel">{{ epo.get_label_date_cancel()|upper }} Date</label>
+		<label for="date_cancel">{{ epo.configs.get_label_date_cancel()|upper }} Date</label>
 	</div>
 	<div class="col-sm-8">
 		{% include 'util/date-picker.twig' with {'name': 'date_cancel', 'id': 'date_cancelled', 'value': po.date_cancel|convertdate, 'disabled': epo.configs.po.edit_date_cancel_detail()} %}
@@ -133,7 +133,7 @@
 		<label for="landedcost">Landed Cost</label>
 	</div>
 	<div class="col-sm-8">
-		<input type="text" class="form-control form-control-sm" id="landedcost" name="landedcost" value="{{ po.landedcost|number_format(epo.decimal_places_cost()) }}">
+		<input type="text" class="form-control form-control-sm" id="landedcost" name="landedcost" value="{{ po.landedcost|number_format(epo.configs.decimal_places_cost()) }}">
 	</div>
 </div>
 
@@ -150,7 +150,7 @@
 				<div class="form-row">
 					<div class="col"><label for="exchange_rate">Rate</label></div>
 					<div class="col">
-						<input type="text" class="form-control form-control-sm" id="exchange_rate" name="exchange_rate" value="{{ po.exchange_rate|number_format(epo.decimal_places_cost()) }}">
+						<input type="text" class="form-control form-control-sm" id="exchange_rate" name="exchange_rate" value="{{ po.exchange_rate|number_format(epo.configs.decimal_places_cost()) }}">
 					</div>
 				</div>
 			</div>
