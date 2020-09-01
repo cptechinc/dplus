@@ -16,7 +16,6 @@ use WarehouseInventoryQuery, WarehouseInventory;
  * @property string $source  itm|cxm
  */
 class LookupItemEntry extends LookupItem implements Module {
-
 	public function __construct() {
 		parent::__construct();
 		$this->message = '';
@@ -53,10 +52,9 @@ class LookupItemEntry extends LookupItem implements Module {
 			}
 		}
 
-		if ($this->exists && !$this->lookup_itm_short($itemID)) {
+		if ($this->exists) {
 			$this->validate_active($custID, $shiptoID);
 		}
-
 		return $this->data;
 	}
 
