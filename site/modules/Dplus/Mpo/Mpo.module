@@ -19,9 +19,9 @@ class Mpo extends WireData implements Module {
 		}
 	}
 
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	/**
 	 * ProcessWire Module Info
 	 *
@@ -36,6 +36,8 @@ class Mpo extends WireData implements Module {
 			'autoload' => true,
 			'installs' => array(
 				'PurchaseOrderEdit',
+				'PurchaseOrderEditItems',
+				'PurchaseOrderEditConfigs',
 			)
 		);
 	}
