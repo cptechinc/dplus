@@ -87,6 +87,9 @@ class PurchaseOrderEdit extends WireData implements Module {
 			case 'update-header-payto':
 				$this->process_input_update_header_payto($input);
 				break;
+			case 'update-header-phone':
+				$this->process_input_update_header_phone($input);
+				break;
 			case 'create-po':
 				$this->process_input_create_po($input);
 				break;
@@ -189,9 +192,9 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$invalid = array();
 
 		$this->update_header_shipto($po, $input);
-		$this->update_header_contact($po, $input);
 		$this->update_header_dates($po, $input);
 
+		$po->setContact($values->text('contact'));
 		$po->setTax_exempt($values->yn('tax_exempt'));
 		$po->setFuturebuy($values->yn('futurebuy'));
 		$po->setLandedcost($values->float('landedcost', ['precision' => $this->configs->decimal_places_cost()]));
@@ -248,11 +251,10 @@ class PurchaseOrderEdit extends WireData implements Module {
 	 * @param  WireInput  $input Input Data
 	 * @return void
 	 */
-	protected function update_header_contact(EditPoHead $po, WireInput $input) {
+	protected function update_header_phone(EditPoHead $po, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		$po->setContact($values->text('contact'));
 		$po->setPhone(str_replace('-', '', $values->text('phone')));
 		$po->setFax(str_replace('-', '', $values->text('fax')));
 		$po->setEmail($values->text('email'));
