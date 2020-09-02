@@ -84,6 +84,9 @@ class PurchaseOrderEdit extends WireData implements Module {
 			case 'update-header':
 				$this->process_input_update_header($input);
 				break;
+			case 'update-header-payto':
+				$this->process_input_update_header_payto($input);
+				break;
 			case 'create-po':
 				$this->process_input_create_po($input);
 				break;
@@ -151,6 +154,29 @@ class PurchaseOrderEdit extends WireData implements Module {
 	}
 
 	/**
+	 * Update Payto fields Purchase Order Header
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function process_input_update_header_payto(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$ponbr = $values->text('ponbr');
+		$po = $this->get_editable_header($ponbr);
+		$invalidfields = $this->update_header_payto($po, $input);
+
+		$saved = $po->save();
+
+		if ($saved) {
+			$this->request_update_header($ponbr);
+			$response = MpoResponse::response_success($values->text('ponbr'), "PO # $ponbr header was updated");
+		} else {
+			$response = MpoResponse::response_error($values->text('ponbr'), "PO # $ponbr header was not updated");
+		}
+		$this->wire('session')->response_epo = $response;
+	}
+
+	/**
 	 * Updates EditPoHead Record
 	 * @param  EditPoHead  $item  Purchase Order
 	 * @param  WireInput   $input Input Data
@@ -175,6 +201,26 @@ class PurchaseOrderEdit extends WireData implements Module {
 
 		$invalid = $this->update_header_validated($po, $input);
 		return $invalid;
+	}
+
+	/**
+	 * Updates Oayto fields on the EditPoHead Record
+	 * @param  EditPoHead  $item  Purchase Order
+	 * @param  WireInput   $input Input Data
+	 * @return void
+	 */
+	protected function update_header_payto(EditPoHead $po, WireInput $input) {
+		//$this->init_configs();
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$base = 'payto_';
+		$fields = ['name', 'address', 'address2', 'address3', 'city', 'state', 'zip'];
+
+		foreach ($fields as $field) {
+			$property = $base.$field;
+			$setProperty = 'set'.ucfirst($property);
+			$po->$setProperty($values->text($property));
+		}
 	}
 
 	/**
