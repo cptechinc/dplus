@@ -14,12 +14,12 @@ class DpagesMwm extends Dpages implements Module {
 	const TEMPLATES = array(
 		'warehouse-menu' => array(
 			'name'   => 'warehouse-menu',
-			'fields' => array('title', 'dplus_function', 'summary'),
-			'paginated' => true
+			'fields' => array('summary','dplus_function', 'dplus_permission'),
+			'paginated' => false
 		),
 		'warehouse-function' => array(
 			'name'   => 'warehouse-function',
-			'fields' => array('title', 'dplus_function', 'pw_template', 'summary'),
+			'fields' => array('summary', 'dplus_function', 'dplus_permission', 'pw_template'),
 			'paginated' => true
 		),
 		'whse-binr' => array(

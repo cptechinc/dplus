@@ -56,7 +56,7 @@ class DpagesMap extends Dpages implements Module {
 			'title'          => 'VXM',
 			'summary'        => 'View Vendor Item Xref',
 			'parent'         => '/map/apmain/',
-			'dplus_function' => ''
+			'dplus_function' => 'vxm'
 		),
 		'ap-vxm-validate' => array(
 			'template'       => 'dplus-json',
@@ -97,8 +97,142 @@ class DpagesMap extends Dpages implements Module {
 	);
 
 /* =============================================================
+	URL Functions
+============================================================= */
+	/**
+	 * Return URL for VXM items filtered by Vendor ID
+	 * @param  string $vendorID Vendor ID
+	 * @return string
+	 */
+	public function get_vxm_vendorURL($vendorID) {
+		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
+		$url->query->set('vendorID', $vendorID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL for VXM Item
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor Item ID
+	 * @return string
+	 */
+	public function get_vxm_itemURL($vendorID, $vendoritemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
+
+		if ($vendorID) {
+			$url->query->set('vendorID', $vendorID);
+		}
+
+		$url->query->set('vendoritemID', $vendoritemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL for VXM ItemID
+	 * @param  string $itemID Item ID
+	 * @return string
+	 */
+	public function get_vxm_itemidURL($itemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
+
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to Delete VXM Item
+	 * @param  string  $itemID       Item ID
+	 * @param  string  $vendorID     Vendor ID
+	 * @param  string  $vendoritemID Vendor's Item ID
+	 * @return string
+	 */
+	public function get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
+		$url->query->set('action', 'remove-vxm-item');
+		$url->query->set('itemID', $itemID);
+
+		if ($vendorID) {
+			$url->query->set('vendorID', $vendorID);
+		}
+
+		$url->query->set('vendoritemID', $vendoritemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return View Code Table URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_viewURL($table, $code = '') {
+		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
+
+		if ($table == 'aoptm') {
+			$url->query->set('sysop', $code);
+		} else {
+			$url->query->set('code', $code);
+		}
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return View Code Table List URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_listURL($table, $code = '') {
+		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
+		if ($table == 'aoptm') {
+			$url->query->set('sysop', $code);
+		} else {
+			$url->query->set('focus', $code);
+		}
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Code Table Code Delete URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_code_deleteURL($table, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
+		$url->query->set('action', 'remove-code');
+		$url->query->set('table', $table);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Code Table Edit Code URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_code_editURL($table, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+/* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus AP Pages Modules',
+			'version' => 101,
+			'summary' => 'Installs and creates AP Pages',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
+			'installs' => array(),
+		);
+	}
+
 	public function init() {
 		$this->addHook("Page(pw_template=vxm)::vxm_itemURL", function($event) {
 			$p = $event->object;
@@ -171,118 +305,5 @@ class DpagesMap extends Dpages implements Module {
 			$page = $event->object;
 			$event->return = $page->name;
 		});
-	}
-
-	/**
-	 * Return URL for VXM items filtered by Vendor ID
-	 * @param  string $vendorID Vendor ID
-	 * @return string
-	 */
-	public function get_vxm_vendorURL($vendorID) {
-		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
-		$url->query->set('vendorID', $vendorID);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL for VXM Item
-	 * @param  string $vendorID     Vendor ID
-	 * @param  string $vendoritemID Vendor Item ID
-	 * @return string
-	 */
-	public function get_vxm_itemURL($vendorID, $vendoritemID) {
-		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
-
-		if ($vendorID) {
-			$url->query->set('vendorID', $vendorID);
-		}
-
-		$url->query->set('vendoritemID', $vendoritemID);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL for VXM ItemID
-	 * @param  string $itemID Item ID
-	 * @return string
-	 */
-	public function get_vxm_itemidURL($itemID) {
-		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
-
-		$url->query->set('itemID', $itemID);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to Delete VXM Item
-	 * @param  string  $itemID       Item ID
-	 * @param  string  $vendorID     Vendor ID
-	 * @param  string  $vendoritemID Vendor's Item ID
-	 * @return string
-	 */
-	public function get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID) {
-		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
-		$url->query->set('action', 'remove-vxm-item');
-		$url->query->set('itemID', $itemID);
-
-		if ($vendorID) {
-			$url->query->set('vendorID', $vendorID);
-		}
-
-		$url->query->set('vendoritemID', $vendoritemID);
-		return $url->getUrl();
-	}
-
-	public function get_codetable_viewURL($table, $code = false) {
-		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
-
-		if ($table == 'aoptm') {
-			$url->query->set('sysop', $code);
-		} else {
-			$url->query->set('code', $code);
-		}
-		return $url->getUrl();
-	}
-
-	public function get_codetable_listURL($table, $code = false) {
-		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
-		$code = str_replace(' ', '-', $code);
-		if ($table == 'aoptm') {
-			$url->query->set('sysop', $code);
-		} else {
-			$url->query->set('focus', $code);
-		}
-		return $url->getUrl();
-	}
-
-	public function get_codetable_code_deleteURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
-		$url->query->set('action', 'remove-code');
-		$url->query->set('table', $table);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	public function get_codetable_code_editURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=ap-code-table, name=$table")->url);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'Dplus AP Pages Modules',
-			'version' => 101,
-			'summary' => 'Installs and creates AP Pages',
-			'singular' => true,
-			'autoload' => true,
-			'requires' => array('DplusPwPages', 'Dpages'),
-			'installs' => array(),
-		);
 	}
 }

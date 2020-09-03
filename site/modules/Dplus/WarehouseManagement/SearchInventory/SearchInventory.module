@@ -2,6 +2,10 @@
 
 use InvsearchQuery, Invsearch;
 
+/**
+ * SearchInventory
+ * Class for filtering Inventory using InvsearchQuery
+ */
 class SearchInventory extends WireData implements Module {
 	public function get_query() {
 		$q = InvsearchQuery::create();
@@ -39,7 +43,6 @@ class SearchInventory extends WireData implements Module {
 		if ($item->is_lotted() || $item->is_serialized()) {
 			$q->filterByLotserial($item->lotserial);
 		}
-
 		return intval($q->findOne());
 	}
 
@@ -48,7 +51,7 @@ class SearchInventory extends WireData implements Module {
 	 * @param  string $itemID
 	 * @return int
 	 */
-	public function count_itemid_bins($itemID) {
+	public function count_bins_itemid($itemID) {
 		$q = $this->get_query();
 		$q->addAsColumn('count', 'COUNT(DISTINCT(bin))');
 		$q->select('count');
@@ -133,7 +136,7 @@ class SearchInventory extends WireData implements Module {
 		if (!empty($binID)) {
 			$q->filterByBin($binID);
 		}
-		return intval($this->findOne());
+		return intval($q->findOne());
 	}
 
 

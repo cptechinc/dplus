@@ -16,6 +16,7 @@ use StatesQuery, States;
 use ShipviaQuery, Shipvia;
 
 class SalesOrderEdit extends WireData implements Module {
+	const PERMISSION_DPLUS = 'eso';
 
 	protected $ordn;
 
@@ -343,7 +344,6 @@ class SalesOrderEdit extends WireData implements Module {
 		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
 	}
 
-
 	/**
 	 * Sends HTTP GET request to send Dplus Item Search Request
 	 * @param  string $q Query or Item ID
@@ -359,6 +359,63 @@ class SalesOrderEdit extends WireData implements Module {
 		$url->query->set('custID', $order->custid);
 		$url->query->set('sessionID', session_id());
 		$requestor->self_request($url->getUrl());
+	}
+
+	/**
+	 * Return if User can edit Sales Order
+	 * @param  User              $user  User
+	 * @param  string $order Sales Order Number
+	 * @return bool                     Can User Edit Sales Order?
+	 */
+	public function can_user_editorder(User $user, $ordn) {
+		$canedit = false;
+		$lookup_order = $this->wire('modules')->get('LookupSalesOrder');
+
+		if ($lookup_order->lookup_saleshistory($ordn)) {
+			return false;
+		} else {
+
+			$config_orders = $this->wire('modules')->get('ConfigsSalesOrders');
+
+			if ($config_orders->allow_salesorderedit) {
+				if ($this->can_order_be_edited($ordn) && $user->has_function(self::PERMISSION_DPLUS)) {
+					$canedit = true;
+				}
+			}
+		}
+		return $canedit;
+	}
+
+	/**
+	 * Return if Sales Order is in an Editable State
+	 * @param  string $ordn Sales Order number
+	 * @return bool
+	 */
+	public function can_order_be_edited($ordn) {
+		$order = SalesOrderQuery::create()->findOneByOrdernumber($ordn);
+		return $order->is_editable() && $order->status == SalesOrder::STATUS_NEW;
+	}
+
+	/**
+	 * Return if User is editing Sales Order
+	 * @param  User   $user  User
+	 * @param  string $order Sales Order
+	 * @return bool              IS User is editing Sales Order?
+	 */
+	public function is_user_editingorder(User $user, $ordn) {
+		return $this->get_so_edit_user($ordn) == $user->loginid;
+	}
+
+	/**
+	 * Return Userid of Sales Order Current User
+	 * @param  string $ordn Sales Order Number
+	 * @return string
+	 */
+	public function get_so_edit_user($ordn) {
+		$q = SalesOrderQuery::create();
+		$q->select(SalesOrder::get_aliasproperty('heldby'));
+		$q->filterByOrdernumber($ordn);
+		return $q->findOne();
 	}
 
 
@@ -440,6 +497,22 @@ class SalesOrderEdit extends WireData implements Module {
 		$this->addHook('Page(pw_template=sales-order-edit)::get_ii_lookupURL', function($event) {
 			$url = new Url($this->wire('pages')->get('pw_template=ii-item-lookup')->httpUrl);
 			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('User::can_editorder', function($event) {
+			$user = $event->object;
+			$ordn = $event->arguments(0);
+			$event->return = $this->can_user_editorder($user, $ordn);
+		});
+
+		/**
+		 * Adds self::is_user_editingorder() as User hook
+		 * @uses self::is_user_editingorder()
+		 */
+		$this->addHook('User::is_editingorder', function($event) {
+			$user = $event->object;
+			$ordn = $event->arguments(0);
+			$event->return = $this->is_user_editingorder($user, $ordn);
 		});
 	}
 }
