@@ -37,10 +37,6 @@
 			if ($epo->exists_editable($ponbr)) {
 				$po_edit = $epo->get_editable_header($ponbr);
 				$po_readonly = $epo->get_purchaseorder($ponbr);
-				$page->search_itemsURL = $pages->get('pw_template=itm-search')->url;
-				$page->search_vendorsURL = $pages->get('pw_template=vi-search')->url;
-				$page->search_countriesURL = $pages->get('pw_template=lookup-country-codes')->url;
-				$page->search_shipfromURL =  $pages->get('pw_template=vi-shipfrom')->url;
 				$page->search_notesURL = $pages->get('pw_template=msa-noce-ajax')->url;
 				$page->body .= $config->twig->render('purchase-orders/purchase-order/edit/edit.twig', ['page' => $page, 'epo' => $epo, 'po' => $po_edit, 'po_readonly' => $po_readonly, 'qnotes' => $qnotes]);
 				$page->js   .= $config->twig->render('purchase-orders/purchase-order/edit/js.twig', ['page' => $page, 'epo' => $epo]);
