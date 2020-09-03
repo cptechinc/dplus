@@ -27,6 +27,18 @@ include_once(__DIR__.'/MpoResponse.php');
 class PurchaseOrderEdit extends WireData implements Module {
 	const PERMISSION_DPLUS = 'epo';
 
+
+	const HOOK_FUNCTIONS_LOOKUPS = array(
+		// Hook     =>  PW Template
+		'ii_lookup' => 'ii-item-lookup',
+		'itm_json'  => 'itm-json',
+		'vi_json'   => 'vi-json',
+		'search_items'     => 'item-search',
+		'search_vendors'   => 'vi-search',
+		'search_countries' => 'lookup-country-codes',
+		'search_shipfrom'  => 'vi-shipfrom'
+	);
+
 	/**
 	 * Returns Query for Purchase Order Header Edit
 	 * @param  string $ponbr Purchase Order Number
@@ -449,8 +461,23 @@ class PurchaseOrderEdit extends WireData implements Module {
 	 * Return Validate PO URL
 	 * @return string
 	 */
-	public function get_po_validateURL() {
+	public function get_po_validateURL($ponbr = '') {
 		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-validate')->url);
+		if ($ponbr) {
+			$url->query->set('ponbr', $ponbr);
+		}
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Validate PO URL
+	 * @return string
+	 */
+	public function get_po_documentsURL($ponbr = '') {
+		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-documents')->url);
+		if ($ponbr) {
+			$url->query->set('ponbr', $ponbr);
+		}
 		return $url->getUrl();
 	}
 
@@ -584,20 +611,16 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$this->items = $this->wire('modules')->get('PurchaseOrderEditItems');
 		$this->configs = $this->wire('modules')->get('PurchaseOrderEditConfigs');
 
-		$this->addHook('Page(pw_template=purchase-order-edit)::ii_lookupURL', function($event) {
-			$url = new Url($this->wire('pages')->get('pw_template=ii-item-lookup')->httpUrl);
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page(pw_template=purchase-order-edit)::itm_jsonURL', function($event) {
-			$url = new Url($this->wire('pages')->get('pw_template=itm-json')->httpUrl);
-			$url->query->set('json', 'true');
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page(pw_template=purchase-order-edit)::vi_jsonURL', function($event) {
-			$url = new Url($this->wire('pages')->get('pw_template=vi-json')->httpUrl);
-			$event->return = $url->getUrl();
+		foreach (self::HOOK_FUNCTIONS_LOOKUPS as $hook => $pwtemplate) {
+			$this->addHook("Page(pw_template=purchase-order-edit)::{$hook}URL", function($event) {
+				$hook = rtrim($event->method, 'URL');
+				$pwtemplate = self::HOOK_FUNCTIONS_LOOKUPS[$hook];
+				$event->return = $this->wire('pages')->get("pw_template=$pwtemplate")->url;
+			});
+		}
+		$this->addHookProperty('Page(pw_template=purchase-order-edit)::ponbr', function($event) {
+			$p = $event->object;
+			$event->return = $this->get_po_editURL($p->fullURL->query->get('ponbr'));
 		});
 
 		$this->addHook('Page(pw_template=purchase-order-edit|purchase-order-epo)::po_editURL', function($event) {
@@ -616,7 +639,13 @@ class PurchaseOrderEdit extends WireData implements Module {
 		});
 
 		$this->addHook('Page(pw_template=purchase-order-edit)::po_validateURL', function($event) {
-			$event->return = $this->get_po_validateURL();
+			$ponbr = $event->arguments(0);
+			$event->return = $this->get_po_validateURL($ponbr);
+		});
+
+		$this->addHook('Page(pw_template=purchase-order-edit)::po_documentsURL', function($event) {
+			$ponbr = $event->arguments(0);
+			$event->return = $this->get_po_documentsURL($ponbr);
 		});
 
 		$this->addHook('Page(pw_template=purchase-order-epo)::choose_vendorURL', function($event) {
