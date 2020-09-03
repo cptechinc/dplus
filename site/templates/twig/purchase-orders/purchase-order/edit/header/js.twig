@@ -76,7 +76,7 @@ $(function () {
 			vendorID: {
 				required: true,
 				remote: {
-					url: '{{ page.po_validateURL() }}',
+					url: '{{ page.po_validateURL(page.ponbr) }}',
 					type: "get",
 					data: {
 						action: 'validate-vendorid'
@@ -86,7 +86,7 @@ $(function () {
 			shipfromID: {
 				required: true,
 				remote: {
-					url: '{{ page.po_validateURL() }}',
+					url: '{{ page.po_validateURL(page.ponbr) }}',
 					type: "get",
 					data: {
 						action: 'validate-shipfromid',
@@ -95,7 +95,7 @@ $(function () {
 				}
 			},
 			reference: {
-				required: {{ epo.configs.po.force_po_reference() ? 'true' : 'false' }} 
+				required: {{ epo.configs.po.force_po_reference() ? 'true' : 'false' }}
 			}
 		},
 		messages: {
