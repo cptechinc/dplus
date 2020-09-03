@@ -6,49 +6,62 @@
 			'dplus_function' => array(
 				'name'  => 'dplus_function',
 				'type'  => 'text',
-				'label' => 'Dplus Function'
+				'label' => 'Dplus Function',
+				'description' => 'Dplus Function Code',
+				'notes'       => 'Use if this is a Dplus Function Equivalent'
 			),
 			'function_url' => array(
 				'name'  => 'function_url',
 				'type'  => 'text',
-				'label' => 'URL to function'
+				'label' => 'URL to function',
+				'description' => '',
+				'notes'       => 'Use to Route to another function'
 			),
 			'pw_template' => array(
 				'name'  => 'pw_template',
 				'type'  => 'text',
-				'label' => 'ProcessWire Template'
-			)
+				'label' => 'ProcessWire Template',
+				'description' => '',
+				'notes'       => ''
+			),
+			'dplus_permission' => array(
+				'name'  => 'dplus_permission',
+				'type'  => 'text',
+				'label' => 'Dplus Permission Code',
+				'description' => 'Dplus Function Code as a permission',
+				'notes'       => 'Use the code as permissions barrier'
+			),
 		);
 
 		const TEMPLATES = array(
 			'dplus-menu' => array(
 				'name'   => 'dplus-menu',
-				'fields' => array('dplus_function', 'summary'),
+				'fields' => array('summary', 'dplus_function', 'dplus_permission'),
 				'paginated' => false
 			),
 			'dplus-function' => array(
 				'name'   => 'dplus-function',
-				'fields' => array('dplus_function', 'pw_template', 'summary'),
+				'fields' => array('summary', 'dplus_function', 'dplus_permission', 'pw_template'),
 				'paginated' => true
 			),
 			'dplus-function-link' => array(
 				'name'   => 'dplus-function-link',
-				'fields' => array('function_url', 'dplus_function', 'pw_template', 'summary'),
+				'fields' => array('summary', 'dplus_function', 'dplus_permission', 'function_url',),
 				'paginated' => false
 			),
 			'dplus-json' => array(
 				'name'   => 'dplus-json',
-				'fields' => array('dplus_function', 'pw_template', 'summary'),
+				'fields' => array('summary', 'pw_template'),
 				'paginated' => true
 			),
 			'warehouse-menu' => array(
 				'name'   => 'warehouse-menu',
-				'fields' => array('dplus_function', 'summary'),
+				'fields' => array('summary','dplus_function', 'dplus_permission'),
 				'paginated' => false
 			),
 			'warehouse-function' => array(
 				'name'   => 'warehouse-function',
-				'fields' => array('dplus_function', 'pw_template', 'summary'),
+				'fields' => array('summary', 'dplus_function', 'dplus_permission', 'pw_template'),
 				'paginated' => true
 			)
 		);
@@ -64,6 +77,7 @@
 				'parent'     => '/',
 				'parent-new' => '/' NOTE ** Optional **
 				'dplus_function' => NOTE ** If Needed by template **
+				'dplus_permission' => NOTE ** If Needed by template, permission needed **
 			)
 			*/
 		);
@@ -314,9 +328,17 @@
 		}
 
 		public function set_fieldproperties(Field $f, array $field) {
-			$f->type = ctype_upper($field['type']) ? $field['type'] : ucfirst($field['type']); // get a field type
-			$f->name = $field['name'];
+			$f->type  = ctype_upper($field['type']) ? $field['type'] : ucfirst($field['type']); // get a field type
+			$f->name  = $field['name'];
 			$f->label = $field['label'];
+
+			if (isset($field['notes'])) {
+				$f->notes = $field['notes'];
+			}
+
+			if (isset($field['description'])) {
+				$f->description = $field['description'];
+			}
 
 			if (isset($field['notes'])) {
 				$f->notes = $field['notes'];
@@ -461,6 +483,7 @@
 				}
 			} else {
 				foreach ($this::TEMPLATES[$page['template']]['fields'] as $fieldname) {
+					echo $page['template'] . "-".$fieldname . "<br>";
 					if (array_key_exists($fieldname, $page)) {
 						$pw_page->$fieldname = $page[$fieldname];
 					}

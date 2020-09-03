@@ -5,8 +5,8 @@ use Purl\Url;
 /**
  * class DpagesMvi
  *
- * Installs fields, templates, pages, hooks necessary for Mci Pages
- * Adds Hooks for getting URLs to Mci pages
+ * Installs fields, templates, pages, hooks necessary for Mvi Pages
+ * Adds Hooks for getting URLs to Mvi pages
  */
 class DpagesMvi extends Dpages implements Module {
 	const FIELDS = array(
@@ -156,132 +156,145 @@ class DpagesMvi extends Dpages implements Module {
 			'pw_template'    => 'vi-vendor'
 		),
 		'vi-shipfrom' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'shipfrom',
-			'title'          => 'Shipfroms',
-			'summary'        => 'View Vendor Shipfrom Information',
-			'parent'         => '/mvi/vi/',
-			'dplus_function' => '',
-			'pw_template'    => 'vi-shipfrom'
+			'template'         => 'dplus-function',
+			'name'             => 'shipfrom',
+			'title'            => 'Shipfroms',
+			'summary'          => 'View Vendor Shipfrom Information',
+			'parent'           => '/mvi/vi/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'vi',
+			'pw_template'      => 'vi-shipfrom'
 		),
 		'vi-contact' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'contacts',
-			'title'          => 'Contacts',
-			'summary'        => 'View Vendor Contacts',
-			'parent'         => '/mvi/vi/',
-			'dplus_function' => '',
-			'pw_template'    => 'vi-contact'
+			'template'         => 'dplus-function',
+			'name'             => 'contacts',
+			'title'            => 'Contacts',
+			'summary'          => 'View Vendor Contacts',
+			'parent'           => '/mvi/vi/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'vi',
+			'pw_template'      => 'vi-contact'
 		),
 		'vi-purchase-orders' => array(
-			'template'       => 'vi-function',
-			'name'           => 'purchase-orders',
-			'title'          => 'Purchase Orders',
-			'summary'        => 'View Vendor Purchase Orders',
-			'parent'         => '/mvi/vi/',
-			'dplus_function' => '',
-			'pw_template'    => 'vi-purchase-orders',
-			'jsoncode'       => 'vi-purchase-orders'
+			'template'         => 'vi-function',
+			'name'             => 'purchase-orders',
+			'title'            => 'Purchase Orders',
+			'summary'          => 'View Vendor Purchase Orders',
+			'parent'           => '/mvi/vi/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'vi',
+			'pw_template'      => 'vi-purchase-orders',
+			'jsoncode'         => 'vi-purchase-orders'
 		),
 		'vi-open-invoices' => array(
-			'template'       => 'vi-function',
-			'name'           => 'open-invoices',
-			'title'          => 'Open Invoices',
-			'summary'        => 'View Vendor Open Invoices',
-			'parent'         => '/mvi/vi/',
-			'dplus_function' => '',
-			'pw_template'    => 'vi-open-invoices',
-			'jsoncode'       => 'vi-openinvoices'
+			'template'         => 'vi-function',
+			'name'             => 'open-invoices',
+			'title'            => 'Open Invoices',
+			'summary'          => 'View Vendor Open Invoices',
+			'parent'           => '/mvi/vi/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'vi',
+			'pw_template'      => 'vi-open-invoices',
+			'jsoncode'         => 'vi-openinvoices'
 		),
 		'vi-purchase-history' => array(
-			'template'       => 'vi-function',
-			'name'           => 'purchase-history',
-			'title'          => 'Purchase History',
-			'summary'        => 'View Vendor Purchase History',
-			'parent'         => '/mvi/vi/',
-			'dplus_function' => '',
-			'pw_template'    => 'vi-purchase-history',
-			'jsoncode'       => 'vi-purchase-history'
+			'template'         => 'vi-function',
+			'name'             => 'purchase-history',
+			'title'            => 'Purchase History',
+			'summary'          => 'View Vendor Purchase History',
+			'parent'           => '/mvi/vi/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'vi',
+			'pw_template'      => 'vi-purchase-history',
+			'jsoncode'         => 'vi-purchase-history'
 		),
 		'vi-unreleased' => array(
-			'template'       => 'vi-function',
-			'name'           => 'unreleased',
-			'title'          => 'Unreleased Purchase Orders',
-			'summary'        => 'View Vendor Unreleased',
-			'parent'         => '/mvi/vi/',
-			'dplus_function' => '',
-			'pw_template'    => 'vi-unreleased',
-			'jsoncode'       => 'vi-unreleased'
+			'template'         => 'vi-function',
+			'name'             => 'unreleased',
+			'title'            => 'Unreleased Purchase Orders',
+			'summary'          => 'View Vendor Unreleased',
+			'parent'           => '/mvi/vi/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'vi',
+			'pw_template'      => 'vi-unreleased',
+			'jsoncode'         => 'vi-unreleased'
 		),
 		'vi-uninvoiced' => array(
-			'template'       => 'vi-function',
-			'name'           => 'uninvoiced',
-			'title'          => 'Uninvoiced',
-			'summary'        => 'View Vendor Uninvoiced',
-			'parent'         => '/mvi/vi/',
-			'dplus_function' => '',
-			'pw_template'    => 'vi-uninvoiced',
-			'jsoncode'       => 'vi-uninvoiced'
+			'template'         => 'vi-function',
+			'name'             => 'uninvoiced',
+			'title'            => 'Uninvoiced',
+			'summary'          => 'View Vendor Uninvoiced',
+			'parent'           => '/mvi/vi/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'vi',
+			'pw_template'      => 'vi-uninvoiced',
+			'jsoncode'         => 'vi-uninvoiced'
 		),
 		'vi-24monthsummary' => array(
-			'template'       => 'vi-function',
-			'name'           => '24monthsummary',
-			'title'          => '24-month Summary',
-			'summary'        => 'View Vendor 24-month Summary',
-			'parent'         => '/mvi/vi/',
-			'dplus_function' => '',
-			'pw_template'    => 'vi-24monthsummary',
-			'jsoncode'       => 'vi-24monthsummary'
+			'template'         => 'vi-function',
+			'name'             => '24monthsummary',
+			'title'            => '24-month Summary',
+			'summary'          => 'View Vendor 24-month Summary',
+			'parent'           => '/mvi/vi/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'vi',
+			'pw_template'      => 'vi-24monthsummary',
+			'jsoncode'         => 'vi-24monthsummary'
 		),
 		'vi-costing' => array(
-			'template'       => 'vi-function',
-			'name'           => 'costing',
-			'title'          => 'Costing',
-			'summary'        => 'View Vendor Costing',
-			'parent'         => '/mvi/vi/',
-			'dplus_function' => '',
-			'pw_template'    => 'vi-costing',
-			'jsoncode'       => 'vi-costing'
+			'template'         => 'vi-function',
+			'name'             => 'costing',
+			'title'            => 'Costing',
+			'summary'          => 'View Vendor Costing',
+			'parent'           => '/mvi/vi/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'vi',
+			'pw_template'      => 'vi-costing',
+			'jsoncode'         => 'vi-costing'
 		),
 		'vi-sub' => array(
-			'template'       => 'vi-function',
-			'name'           => 'sub',
-			'title'          => 'Substitutions',
-			'summary'        => 'View Vendor Substitutions',
-			'parent'         => '/mvi/vi/',
-			'dplus_function' => '',
-			'pw_template'    => 'vi-sub',
-			'jsoncode'       => 'vi-sub'
+			'template'         => 'vi-function',
+			'name'             => 'sub',
+			'title'            => 'Substitutions',
+			'summary'          => 'View Vendor Substitutions',
+			'parent'           => '/mvi/vi/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'vi',
+			'pw_template'      => 'vi-sub',
+			'jsoncode'         => 'vi-sub'
 		),
 		'vi-payments' => array(
-			'template'       => 'vi-function',
-			'name'           => 'payments',
-			'title'          => 'Payments',
-			'summary'        => 'View Vendor Payments',
-			'parent'         => '/mvi/vi/',
-			'dplus_function' => '',
-			'pw_template'    => 'vi-payments',
-			'jsoncode'       => 'vi-payments'
+			'template'         => 'vi-function',
+			'name'             => 'payments',
+			'title'            => 'Payments',
+			'summary'          => 'View Vendor Payments',
+			'parent'           => '/mvi/vi/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'vi',
+			'pw_template'      => 'vi-payments',
+			'jsoncode'         => 'vi-payments'
 		),
 		'vi-notes' => array(
-			'template'       => 'vi-function',
-			'name'           => 'notes',
-			'title'          => 'Notes',
-			'summary'        => 'View Vendor Notes',
-			'parent'         => '/mvi/vi/',
-			'dplus_function' => '',
-			'pw_template'    => 'vi-notes',
-			'jsoncode'       => 'vi-notes'
+			'template'         => 'vi-function',
+			'name'             => 'notes',
+			'title'            => 'Notes',
+			'summary'          => 'View Vendor Notes',
+			'parent'           => '/mvi/vi/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'vi',
+			'pw_template'      => 'vi-notes',
+			'jsoncode'         => 'vi-notes'
 		),
 		'vi-documents' => array(
-			'template'       => 'vi-function',
-			'name'           => 'documents',
-			'title'          => 'Documents',
-			'summary'        => 'View Vendor Documents',
-			'parent'         => '/mvi/vi/',
-			'dplus_function' => '',
-			'pw_template'    => 'vi-documents',
-			'jsoncode'       => 'vi-documents'
+			'template'         => 'vi-function',
+			'name'             => 'documents',
+			'title'            => 'Documents',
+			'summary'          => 'View Vendor Documents',
+			'parent'           => '/mvi/vi/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'vi',
+			'pw_template'      => 'vi-documents',
+			'jsoncode'         => 'vi-documents'
 		),
 	);
 
@@ -461,6 +474,9 @@ class DpagesMvi extends Dpages implements Module {
 		});
 	}
 
+/* =============================================================
+	URL Functions
+============================================================= */
 	/**
 	 * Returns URL to Vendor Page
 	 * @param  string $vendorID Vendor ID
@@ -501,11 +517,14 @@ class DpagesMvi extends Dpages implements Module {
 		return $p->children('dplus_function='.implode('|', $filtered_functions));
 	}
 
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus Online Vendor Pages',
+			'title' => 'Dplus MVI Pages',
 			'version' => 101,
-			'summary' => 'Installs and creates Dplus Online Vendor Pages',
+			'summary' => 'Installs and creates Dplus MVI Pages',
 			'singular' => true,
 			'autoload' => true,
 			'requires' => array('DplusPwPages', 'Dpages'),

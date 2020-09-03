@@ -140,7 +140,7 @@ class DpagesMpo extends Dpages implements Module {
 			'name'             => 'epo',
 			'title'            => 'Purchase Order Entry',
 			'summary'          => 'Edit / Create Purchase Order',
-			'parent'           => '/mpo',
+			'parent'           => '/mpo/',
 			'dplus_function'   => '',
 			'dplus_permission' => 'epo',
 			'pw_template'      => 'purchase-order-epo'

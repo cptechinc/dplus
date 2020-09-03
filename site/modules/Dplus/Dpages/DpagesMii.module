@@ -6,7 +6,7 @@ use Purl\Url;
  * class DpagesMii
  *
  * Installs fields, templates, pages, hooks necessary for Mii Pages
- * Adds Hooks for getting URLs to Mcii pages
+ * Adds Hooks for getting URLs to Mii pages
  */
 class DpagesMii extends Dpages implements Module {
 	const REQUIREMENTS_OPTIONS = array(
@@ -140,7 +140,6 @@ class DpagesMii extends Dpages implements Module {
 			'dplus_function' => 'ii-sst',
 			'pw_template'    => 'ii-stock',
 			'jsoncode'       => 'ii-stock_whse',
-			'has_print'      => true
 		),
 		'ii-requirements' => array(
 			'template'       => 'ii-function',
@@ -151,7 +150,6 @@ class DpagesMii extends Dpages implements Module {
 			'dplus_function' => 'ii-req',
 			'pw_template'    => 'ii-requirements',
 			'jsoncode'       => 'ii-requirements',
-			'has_print'      => true
 		),
 		'ii-pricing' => array(
 			'template'       => 'ii-function',
@@ -161,7 +159,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-prc',
 			'pw_template'    => 'ii-pricing',
-			'has_print'      => true,
 			'jsoncode'       => 'ii-pricing'
 		),
 		'ii-costing' => array(
@@ -172,7 +169,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-cst',
 			'pw_template'    => 'ii-costing',
-			'has_print'      => true,
 			'jsoncode'       => 'ii-costing'
 		),
 		'ii-usage' => array(
@@ -183,7 +179,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-usg',
 			'pw_template'    => 'ii-usage',
-			'has_print'      => true,
 			'jsoncode'       => 'ii-usage'
 		),
 		'ii-activity' => array(
@@ -194,7 +189,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-act',
 			'pw_template'    => 'ii-activity',
-			'has_print'      => true,
 			'jsoncode'       => 'ii-activity'
 		),
 		'ii-components' => array(
@@ -205,7 +199,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-bom',
 			'pw_template'    => 'ii-components',
-			'has_print'      => true,
 			'jsoncode'       => 'ii-components'
 		),
 		'ii-kit' => array(
@@ -216,7 +209,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-kit',
 			'pw_template'    => 'ii-kit',
-			'has_print'      => true,
 			'jsoncode'       => 'ii-components'
 		),
 		'ii-bom' => array(
@@ -227,7 +219,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-bom',
 			'pw_template'    => 'ii-bom',
-			'has_print'      => true,
 			'jsoncode'       => 'ii-components'
 		),
 		'ii-where-used' => array(
@@ -238,7 +229,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-use',
 			'pw_template'    => 'ii-where-used',
-			'has_print'      => true,
 			'jsoncode'       => 'ii-whereused'
 		),
 		'ii-lotserial' => array(
@@ -249,7 +239,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-lot',
 			'pw_template'    => 'ii-lotserial',
-			'has_print'      => true,
 			'jsoncode'       => 'ii-lotserial'
 		),
 		'ii-general' => array(
@@ -260,7 +249,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-gen',
 			'pw_template'    => 'ii-general',
-			'has_print'      => true,
 			'jsoncode'       => ''
 		),
 		'ii-substitutes' => array(
@@ -271,7 +259,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-sub',
 			'pw_template'    => 'ii-substitutes',
-			'has_print'      => true,
 			'jsoncode'       => 'ii-substitutes'
 		),
 		'ii-documents' => array(
@@ -282,7 +269,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-doc',
 			'pw_template'    => 'ii-documents',
-			'has_print'      => true,
 			'jsoncode'       => 'ii-documents'
 		),
 		'ii-sales-orders' => array(
@@ -293,7 +279,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-sor',
 			'pw_template'    => 'ii-sales-orders',
-			'has_print'      => true,
 			'jsoncode'       => 'ii-sales-orders'
 		),
 		'ii-sales-history' => array(
@@ -304,7 +289,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-sht',
 			'pw_template'    => 'ii-sales-history',
-			'has_print'      => true,
 			'jsoncode'       => 'ii-sales-history'
 		),
 		'ii-quotes' => array(
@@ -315,7 +299,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-qte',
 			'pw_template'    => 'ii-quotes',
-			'has_print'      => true,
 			'jsoncode'       => 'ii-quotes'
 		),
 		'ii-purchase-orders' => array(
@@ -326,7 +309,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-pur',
 			'pw_template'    => 'ii-purchase-orders',
-			'has_print'      => true,
 			'jsoncode'       => 'ii-purchase-orders'
 		),
 		'ii-purchase-history' => array(
@@ -337,7 +319,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-pht',
 			'pw_template'    => 'ii-purchase-history',
-			'has_print'      => true,
 			'jsoncode'       => 'ii-purchase-history'
 		),
 		'ii-item-lookup'     => array(
@@ -592,6 +573,14 @@ class DpagesMii extends Dpages implements Module {
 		});
 	}
 
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return II Subfunction pages that user has permissions to
+	 * @param  User   $user User
+	 * @return Pages
+	 */
 	public function get_ii_user_allowed_functions(User $user) {
 		$p = $this->wire('pages')->get('pw_template=ii-item');
 		$dplus_functions = array_unique($p->children()->explode('dplus_function'));
@@ -599,6 +588,13 @@ class DpagesMii extends Dpages implements Module {
 		return $p->children('dplus_function='.implode('|', $filtered_functions));
 	}
 
+	public function get_requirementsoptions() {
+		return self::REQUIREMENTS_OPTIONS;
+	}
+
+/* =============================================================
+	URL Functions
+============================================================= */
 	/**
 	 * Returns URL to II item page
 	 * @param  string $itemID Item ID
@@ -622,10 +618,9 @@ class DpagesMii extends Dpages implements Module {
 		return $url->getUrl();
 	}
 
-	public function get_requirementsoptions() {
-		return self::REQUIREMENTS_OPTIONS;
-	}
-
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus Online Item Information Pages',

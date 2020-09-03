@@ -29,17 +29,17 @@ class DpagesScreenFormatter extends Dpages implements Module {
 	const TEMPLATES = array(
 		'formatter-menu' => array(
 			'name'   => 'formatter-menu',
-			'fields' => array('title', 'summary'),
+			'fields' => array('title', 'summary', 'dplus_function', 'dplus_permission',),
 			'paginated' => true
 		),
 		'formatter-screen' => array(
 			'name'   => 'formatter-screen',
-			'fields' => array('title', 'jsoncode', 'formatter', 'summary', 'twig_include', 'dplus_function'),
+			'fields' => array('title', 'summary', 'dplus_function', 'dplus_permission', 'jsoncode', 'formatter', 'twig_include'),
 			'paginated' => true
 		),
 		'dplus-screen-formatter' => array(
 			'name'   => 'dplus-screen-formatter',
-			'fields' => array('title', 'jsoncode', 'formatter', 'summary', 'twig_include', 'dplus_function'),
+			'fields' => array('title', 'summary', 'dplus_function', 'dplus_permission', 'jsoncode', 'formatter', 'twig_include'),
 			'paginated' => true
 		)
 	);

@@ -18,11 +18,6 @@ class DpagesCart extends Dpages implements Module {
 			'name'   => 'cart',
 			'fields' => array('dplus_function', 'summary'),
 			'paginated' => false
-		),
-		'cart-notes' => array(
-			'name'   => 'cart-notes',
-			'fields' => array(),
-			'paginated' => false
 		)
 	);
 
@@ -35,15 +30,6 @@ class DpagesCart extends Dpages implements Module {
 			'parent'         => '/',
 			'dplus_function' => '',
 			'pw_template'    => 'cart'
-		),
-		'cart-notes' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'notes',
-			'title'          => 'Cart Notes',
-			'summary'        => 'Cart Notes',
-			'parent'         => '/cart/',
-			'dplus_function' => '',
-			'pw_template'    => 'cart-notes'
 		),
 	);
 

@@ -55,6 +55,20 @@ class DpagesUserActions extends Dpages implements Module {
 		),
 	);
 
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso User Action Pages',
+			'version' => 101,
+			'summary' => 'Installs and creates Dpluso User Action Pages',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
+		);
+	}
+
 	public function init() {
 		$this->addHook('Page::get_createactionURL', function($event) {
 			$p = $event->object;
@@ -88,16 +102,5 @@ class DpagesUserActions extends Dpages implements Module {
 			}
 			$event->return = $url->getUrl();
 		});
-	}
-
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'Dpluso User Action Pages',
-			'version' => 101,
-			'summary' => 'Installs and creates Dpluso User Action Pages',
-			'singular' => true,
-			'autoload' => true,
-			'requires' => array('DplusPwPages', 'Dpages'),
-		);
 	}
 }
