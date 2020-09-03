@@ -1,4 +1,12 @@
-<h3 class="font-weight-bold text-secondary">Ship-To Name / Address</h3>
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	po                     EditPoHead
+	po_readonly            PurchaseOrder
+	epo                    PurchaseOrderEdit
+#}
+<h4 class="font-weight-bold text-secondary">Ship-To Name / Address</h4>
 {% set fields = ['shipto_name', 'shipto_address', 'shipto_address2', 'shipto_address3'] %}
 
 {% for field in fields %}
