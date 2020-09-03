@@ -197,6 +197,28 @@ class PurchaseOrderEdit extends WireData implements Module {
 	}
 
 	/**
+	 * Update Phone, Email fields Purchase Order Header
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function process_input_update_header_phone(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$ponbr = $values->text('ponbr');
+		$po = $this->get_editable_header($ponbr);
+		$invalidfields = $this->update_header_phone($po, $input);
+		$saved = $po->save();
+
+		if ($saved) {
+			$this->request_update_header($ponbr);
+			$response = MpoResponse::response_success($values->text('ponbr'), "PO # $ponbr header was updated");
+		} else {
+			$response = MpoResponse::response_error($values->text('ponbr'), "PO # $ponbr header was not updated");
+		}
+		$this->wire('session')->response_epo = $response;
+	}
+
+	/**
 	 * Updates EditPoHead Record
 	 * @param  EditPoHead  $item  Purchase Order
 	 * @param  WireInput   $input Input Data
@@ -272,7 +294,14 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		$po->setPhone(str_replace('-', '', $values->text('phone')));
+		$po->setPhone_intl($values->yn('phone_intl'));
+		if ($po->phone_intl == 'N') {
+			$po->setPhone(str_replace('-', '', $values->text('phone_office_us')));
+		} else {
+			// TODO INTL
+		}
+
+		$po->setPhone_extension($values->text('phone_extension'));
 		$po->setFax(str_replace('-', '', $values->text('fax')));
 		$po->setEmail($values->text('email'));
 	}
