@@ -1,5 +1,6 @@
 <?php
 	$epo  = $modules->get('PurchaseOrderEdit');
+	$qnotes = $modules->get('QnotesPo');
 	$html = $modules->get('HtmlWriter');
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
@@ -25,8 +26,13 @@
 
 		if ($epo->exists($ponbr)) {
 			$epo->init_configs();
-			$page->headline = "Editing Purchase Order #$ponbr";
+			$page->headline = "Edit PO #$ponbr";
 			$purchaseorder = $query->findOne();
+
+			if ($session->response_qnote) {
+				$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
+				$session->remove('response_qnote');
+			}
 
 			if ($epo->exists_editable($ponbr)) {
 				$po_edit = $epo->get_editable_header($ponbr);
@@ -35,8 +41,10 @@
 				$page->search_vendorsURL = $pages->get('pw_template=vi-search')->url;
 				$page->search_countriesURL = $pages->get('pw_template=lookup-country-codes')->url;
 				$page->search_shipfromURL =  $pages->get('pw_template=vi-shipfrom')->url;
-				$page->body .= $config->twig->render('purchase-orders/purchase-order/edit/edit.twig', ['page' => $page, 'epo' => $epo, 'po' => $po_edit, 'po_readonly' => $po_readonly]);
+				$page->search_notesURL = $pages->get('pw_template=msa-noce-ajax')->url;
+				$page->body .= $config->twig->render('purchase-orders/purchase-order/edit/edit.twig', ['page' => $page, 'epo' => $epo, 'po' => $po_edit, 'po_readonly' => $po_readonly, 'qnotes' => $qnotes]);
 				$page->js   .= $config->twig->render('purchase-orders/purchase-order/edit/js.twig', ['page' => $page, 'epo' => $epo]);
+				$page->js   .= $config->twig->render('purchase-orders/purchase-order/edit/qnotes/js.twig', ['page' => $page]);
 				$page->js   .= $config->twig->render('purchase-orders/purchase-order/edit/lookup/js.twig', ['page' => $page]);
 
 				if ($values->q) {

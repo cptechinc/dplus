@@ -1,0 +1,15 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	po                     EditPoHead
+	po_readonly            PurchaseOrder
+	epo                    PurchaseOrderEdit
+	qnotes                 QnotesPo
+#}
+{% set ponbr = po.ponbr %}
+{% include 'purchase-orders/purchase-order/qnotes/pord/modal.twig' %}
+{% include 'purchase-orders/purchase-order/qnotes/intl/modal.twig' %}
+{% include 'purchase-orders/purchase-order/qnotes/irev/modal.twig' %}
+{% include 'msa/noce/ajax/notes-modal.twig' %}
+{% include 'purchase-orders/purchase-order/edit/qnotes/header-modal.twig' %}

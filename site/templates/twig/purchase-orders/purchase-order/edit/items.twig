@@ -48,9 +48,16 @@
 						<button type="button" name="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit-item-modal" data-linenbr="{{ item.linenbr }}">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</button>
+						<button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#notes-line-{{ item.linenbr }}" aria-expanded="false" aria-controls="notes-line-{{ item.linenbr }}">
+							<i class="fa fa-sticky-note" aria-hidden="true"></i> Notes
+						</button>
 					</div>
 				</div>
 			</div>
+			<div class="collapse" id="notes-line-{{ item.linenbr }}">
+				<div class="mt-3">
+					<hr>
+					{% include 'purchase-orders/purchase-order/qnotes/line-item.twig' with {'qnotes': qnotes, 'ponbr': po.ponbr, 'purchaseorder': po_readonly, 'item': item, 'linenbr': item.linenbr, 'show_edit': true} %}
 				</div>
 			</div>
 		</div>
