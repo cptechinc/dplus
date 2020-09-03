@@ -31,6 +31,7 @@
 			</div>
 		</div>
 	</div>
+
 	{% for note in qnotes.intl.get_notes_summarized(ponbr, linenbr) %}
 		{% set datetime = note.notedate|convertdate('Ymd') ~ '-' ~ note.notetime() %}
 		<div class="list-group-item">

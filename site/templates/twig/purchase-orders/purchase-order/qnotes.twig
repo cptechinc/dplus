@@ -1,13 +1,13 @@
-<div id="notes" class="mb-4">
-	<div class="row">
-		<div class="col">
-			<h3 class="font-weight-bold text-secondary">Header Notes <i class="fa fa-sticky-note-o" aria-hidden="true"></i></h3>
-		</div>
-		<div class="col text-right">
-			<a href="{{ page.view_notesURL(ponbr, 0) }}" class="btn btn-primary">
-				<i class="fa fa-sticky-note" aria-hidden="true"></i> View All Notes
-			</a>
-		</div>
-	</div>
-	{% include 'purchase-orders/purchase-order/qnotes/pord/qnote.twig' with {'title': 'Header', 'linenbr': 0, 'edit': false} %}
-</div>
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	purchaseorder          PurchaseOrder
+	qnotes                 QnotesPo
+#}
+{% set ponbr = purchaseorder.ponbr %}
+{% include 'purchase-orders/purchase-order/qnotes/pord/modal.twig' %}
+{% include 'purchase-orders/purchase-order/qnotes/intl/modal.twig' %}
+{% include 'purchase-orders/purchase-order/qnotes/irev/modal.twig' %}
+{% include 'msa/noce/ajax/notes-modal.twig' %}
+{% include 'purchase-orders/purchase-order/view/qnotes/header-modal.twig' %}
