@@ -22,7 +22,7 @@
 		{% include 'purchase-orders/purchase-order/edit/lookup/form.twig' %}
 	</div>
 	{% for item in po.get_items() %}
-		<div class="list-group-item">
+		<div class="list-group-item {{ item.is_closed() ? 'bg-light' : '' }}">
 			<div class="form-row">
 				<div class="col-sm-3">
 					{{ item.itemid }} <br>
