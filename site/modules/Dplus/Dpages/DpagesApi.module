@@ -1,0 +1,70 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+/**
+ * class DpagesApi
+ *
+ * Installs fields, templates, pages, hooks necessary for Api Pages
+ * api Pages will provide api functionality to the site if not available through other means
+ */
+class DpagesApi extends Dpages implements Module {
+	const FIELDS = array();
+
+	const TEMPLATES = array(
+		'api-menu' => array(
+			'name'   => 'api-menu',
+			'fields' => array('dplus_function', 'summary'),
+			'paginated' => false
+		),
+		'api-json' => array(
+			'name'   => 'api-json',
+			'fields' => array('dplus_function', 'pw_template', 'summary'),
+			'paginated' => true
+		),
+		'api-ajax' => array(
+			'name'   => 'api-ajax',
+			'fields' => array('dplus_function', 'pw_template', 'summary'),
+			'paginated' => true
+		),
+	);
+
+	const PAGES = array(
+		'api' => array(
+			'template'       => 'api-menu',
+			'name'           => 'api',
+			'title'          => 'API Menu',
+			'summary'        => 'API Menu',
+			'parent'         => '/',
+			'dplus_function' => ''
+		),
+		'menu-lookup' => array(
+			'template'       => 'api-menu',
+			'name'           => 'lookup',
+			'title'          => 'API Lookup Menu',
+			'summary'        => 'API Lookup Menu',
+			'parent'         => '/api/',
+			'dplus_function' => ''
+		),
+		'lookup-country-codes' => array(
+			'template'       => 'api-ajax',
+			'name'           => 'country-codes',
+			'title'          => 'Lookup Country Codes',
+			'summary'        => 'Lookup Country Codes',
+			'parent'         => '/api/lookup/',
+			'dplus_function' => '',
+			'pw_template'    => 'lookup-country-codes'
+		),
+	);
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Online API Pages',
+			'version' => 101,
+			'summary' => 'Installs and creates Dplus Online API Pages',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
+		);
+	}
+}

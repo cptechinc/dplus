@@ -1,6 +1,5 @@
 <?php namespace ProcessWire;
 
-require_once('./DplusConnectDatabase.module');
 use Propel\Runtime\ServiceContainer\ServiceContainerInterface;
 
 /**
@@ -9,17 +8,17 @@ use Propel\Runtime\ServiceContainer\ServiceContainerInterface;
  * Class for Creating Connection to the dpluso(x) databases for Dplus
  * NOTE these are the Session based database so the data is only live for the session and last refresh
  */
-class DplusOnlineDatabase extends DplusConnectDatabase implements ConfigurableModule {
+class DplusOnlineDatabase extends DplusDatabase implements ConfigurableModule {
 	const CONNECTION_NAME_PROPEL = 'dplusodb';
-	const CONNECTION_NAME_PW = 'dpluso';
+	const CONNECTION_NAME_PW     = 'dpluso';
 
 	/**
 	 * Returns Config to connect to Database
 	 * @return Config
 	 */
-	public function get_dbconfig() {
+	public function dbconfig() {
 		$config = $this->wire('config');
-		$dbconfig = parent::get_dbconfig();
+		$dbconfig = parent::dbconfig();
 
 		if (!empty($this->db_name)){
 			$this->db_name = $this->db_name;
@@ -29,31 +28,31 @@ class DplusOnlineDatabase extends DplusConnectDatabase implements ConfigurableMo
 		return $dbconfig;
 	}
 
-	/* =============================================================
-		Propel Functions
-	============================================================= */
+/* =============================================================
+	Propel Functions
+============================================================= */
 	/**
 	 * Sets the Default datasource
 	 * NOTE we don't want it to do anything when connecting
 	 * @param ServiceContainerInterface $serviceContainer
 	 */
-	protected function set_propel_service_default(ServiceContainerInterface $serviceContainer) {
+	protected function setPropelDefaultService(ServiceContainerInterface $serviceContainer) {
 
 	}
 
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
-
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	public static function getModuleInfo() {
 		$infoArray = array(
-			'title' => __('Dplus Online Database Connection'),
-			'version' => 115,
-			'summary' => __("Creates Connection to Dplus Online Database"),
+			'title'    => __('Dplus Online Database Connection'),
+			'version'  => 115,
+			'summary'  => __("Creates Connection to Dplus Online Database"),
 			'autoload' => true,
 			'singular' => true,
-			'author' => 'pauldro',
-			'icon' => 'database'
+			'author'   => 'pauldro',
+			'icon'     => 'database',
+			'requires' => array('DplusDatabase')
 		);
 		return $infoArray;
 	}

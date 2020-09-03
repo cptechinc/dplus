@@ -1,0 +1,24 @@
+<table class="table table-striped" id="countries-table">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th colspan="3" class="text-center">ISO Codes</th>
+			<th>Custom</th>
+			<th>Description</th>
+			<th class="text-right">Exchange Rate</th>
+		</tr>
+	</thead>
+	{% for country in countries %}
+		<tr>
+			<td>
+				<a href="#" class="link country-link" data-code="{{ country.code }}" data-rate="{{ country.exchange_rate }}">
+					{{ country.code }}
+				</a>
+			</td>
+			<td>{{ country.alpha2 }}</td>
+			<td>{{ country.numeric }}</td>
+			<td>{{ country.custom_code }}</td>
+			<td>{{ country.description }}</td>
+			<td class="text-right">{{ country.exchange_rate }}</td>
+		</tr>
+	{% endfor %}
+</table>

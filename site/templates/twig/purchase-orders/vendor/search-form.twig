@@ -19,8 +19,8 @@
 						<input class="form-control form-group inline" type="text" name="ponbr_from" value="{{ input.get.text('ponbr_from') }}" placeholder="From PO #">
 						<input class="form-control form-group inline" type="text" name="ponbr_through" value="{{ input.get.text('ponbr_through') }}" placeholder="Through PO #">
 					</div>
-                    {# TODO: Order total is an added column to table #}
-                    <!-- <div class="col-sm-3">
+					{# TODO: Order total is an added column to table #}
+					<!-- <div class="col-sm-3">
 						<h5>Order Total</h5>
 						<div class="input-group form-group">
 							<input class="form-control form-group inline" type="text" name="po_total_from" id="po-total-min" value="{{ input.get.text('po_total_from') }}" placeholder="From PO Total">
@@ -38,7 +38,7 @@
 				</div>
 				<hr>
 				<div class="row mt-4">
-                    <div class="col-sm-3">
+					<div class="col-sm-3">
 						<h5>Order Date</h5>
 						<label for="afterdate">From Date</label>
 						{% set name = 'date_ordered_from' %}
@@ -50,7 +50,7 @@
 						{% set value = input.get.text('date_ordered_through') %}
 						{% include 'util/date-picker.twig' %}
 					</div>
-                    <div class="col-sm-3">
+					<div class="col-sm-3">
 						<h5>Expected Date</h5>
 						<label for="afterdate">From Date</label>
 						{% set name = 'date_expected_from' %}

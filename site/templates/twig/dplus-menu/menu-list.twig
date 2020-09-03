@@ -18,7 +18,7 @@
 					{% else %}
 						<i class="fa fa-microchip" aria-hidden="true"></i>
 					{% endif %} &nbsp; &nbsp;
-					<strong>{{ item.title|raw }} ({{item.dplus_function}})</strong>
+					<strong>{{ item.title|raw }} {{ item.dplus_function ? '(' ~ item.dplus_function ~ ')' }}</strong>
 					<br>
 				</div>
 				<div class="col-8">

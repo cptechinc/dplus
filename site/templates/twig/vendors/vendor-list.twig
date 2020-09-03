@@ -1,4 +1,4 @@
-<table id="vendor-index" class="table table-bordered">
+<table id="vendor-index" class="table table-bordered table-smd">
 	<thead>
 		<tr>
 			<th scope="col">
@@ -17,8 +17,8 @@
 			<th scope="col">
 				<a href="{{ page.get_sortURL('zip') }}" class="link">Zip</a>
 			</th>
-			<th scope="col">
-				<a href="{{ page.get_sortURL('date_lastpurchased') }}" class="link">Last Purchase Date</a>
+			<th scope="col" class="text-right">
+				<a href="{{ page.get_sortURL('date_lastpurchased') }}" class="link">Last Purchase</a>
 			</th>
 		</tr>
 	</thead>
@@ -36,7 +36,7 @@
 					<td>{{ vendor.city }}</td>
 					<td>{{ vendor.state }}</td>
 					<td>{{ vendor.zip }}</td>
-					<td>{{ vendor.date_lastpurchased|convertdate }}</td>
+					<td class="text-right">{{ vendor.date_lastpurchased|convertdate }}</td>
 				</tr>
 			{% endfor %}
 		{% else %}

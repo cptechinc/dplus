@@ -1,5 +1,5 @@
 <div class="row">
-	{% if user.can_editquote(quote) %}
+	{% if user.can_editquote(quote.quotenumber) %}
 		<div class="col">
 			<a href="{{ page.edit_quoteURL(quote.quotenumber) }}" class="btn btn-block btn-warning">
 				<i class="fa fa-pencil" aria-hidden="true"></i> Edit Quote
