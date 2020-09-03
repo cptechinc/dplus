@@ -180,6 +180,10 @@ a.image-link:hover {
 	content: ","
 }
 
+.modal#ajax-notes-modal {
+	z-index: 1500;
+}
+
 /************************************** Navbar **************************************/
 #yt-menu {
 	width: 300px;
