@@ -12,6 +12,31 @@ $(function () {
 	var form_header   = $('#header-form');
 
 /* =============================================================
+	Unsaved Changes Alert
+============================================================= */
+	origForm = form_header.serialize();
+
+	$("body").on("click", "a:not([href^=#], [data-toggle=modal])", function(e) {
+		if (form_header.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+
+			swal2.fire({
+				title: 'Purchase Order not saved!',
+				text: "Are you sure you want to leave this page?",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Leave',
+				cancelButtonText: 'Stay'
+			}).then(function (result) {
+				if (result.value) {
+					window.location.href = a.attr('href');
+				}
+			});
+		}
+	});
+
+/* =============================================================
 	AJAX Lookup Modal Functions
 ============================================================= */
 	$("body").on('click', '#ajax-modal .country-link', function(e) {
