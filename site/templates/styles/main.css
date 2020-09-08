@@ -50,6 +50,11 @@ table.table-md td, table.table-md th {
 	background-color: #c8bfc7 !important;
 }
 
+.bg-totals {
+	background-color: #C5D86D !important;
+	font-weight: bold;
+}
+
 .form-group label {
 	font-weight: bold;
 }
