@@ -49,6 +49,7 @@
 	} else {
 		$q = $input->get->q ? $input->get->text('q') : '';
 		$page->title = $q ? "II: results for '$q'" : $page->title;
+		$pricingm = $modules->get('ItemPricing');
 
 		if ($lookup_ii->lookup(strtoupper($q))) {
 			$session->redirect($page->get_itemURL($lookup_ii->itemID));
@@ -58,10 +59,11 @@
 			$filter_itm->filter_search($q);
 			$query = $filter_itm->get_query();
 			$items = $query->paginate($input->pageNum, 10);
+			$pricingm->request_multiple(array_keys($items->toArray(ItemMasterItem::get_aliasproperty('itemid'))));
 		}
 
 		$page->searchURL = $page->url;
-		$page->body = $config->twig->render('items/item-search.twig', ['page' => $page, 'items' => $items]);
+		$page->body .= $config->twig->render('items/item-search.twig', ['page' => $page, 'items' => $items, 'pricing' => $pricingm]);
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
 	}
 

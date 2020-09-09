@@ -5,6 +5,7 @@
 	items                  ItemMasterItem[]|ObjectCollectiion
 	datamatcher            module RegexData
 	q                      Search
+	pricing                module ItemPricing
 #}
 <table id="item-index" class="table table-bordered">
 	<thead>
@@ -15,11 +16,17 @@
 			<th scope="col">
 				Description
 			</th>
+			{% if pricing %}
+				<th scope="col">
+					Available
+				</th>
+			{% endif %}
 		</tr>
 	</thead>
 	<tbody>
 		{% if items.count() %}
 			{% for item in items %}
+
 				<tr>
 					<td>
 						<a href="{{ page.get_itemURL(item.itemid) }}" class="link ii-item item-link" data-itemid="{{ item.itemid }}">
@@ -32,6 +39,12 @@
 							{{ item.desc2 }}
 						</small>
 					</td>
+					{% if pricing %}
+						{% set itempricing = pricing.get_pricing(item.itemid) %}
+						<td>
+							{{ itempricing.qty }}
+						</td>
+					{% endif %}
 				</tr>
 			{% endfor %}
 		{% else %}
