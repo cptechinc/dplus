@@ -40,7 +40,7 @@
 			$q = strtoupper($input->get->text('q'));
 
 			if ($lookup_vendor->lookup_vendor($q)) {
-				$session->redirect($page->get_vi_vendorURL($q));
+				$session->redirect($page->choose_vendorURL($q));
 			}
 
 			$page->headline = "VI: Searching for '$q'";

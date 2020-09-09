@@ -488,6 +488,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 
 	/**
 	 * Return Validate PO URL
+	 * @param  string $ponbr  Purchase Order Number
 	 * @return string
 	 */
 	public function get_po_validateURL($ponbr = '') {
@@ -499,7 +500,8 @@ class PurchaseOrderEdit extends WireData implements Module {
 	}
 
 	/**
-	 * Return Validate PO URL
+	 * Return PO Documents URL
+	 * @param  string $ponbr  Purchase Order Number
 	 * @return string
 	 */
 	public function get_po_documentsURL($ponbr = '') {
@@ -507,6 +509,18 @@ class PurchaseOrderEdit extends WireData implements Module {
 		if ($ponbr) {
 			$url->query->set('ponbr', $ponbr);
 		}
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to Create PO for Vendor
+	 * @param  string $vendorID Vendor ID
+	 * @return string
+	 */
+	public function get_po_createURL($vendorID) {
+		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-epo')->url);
+		$url->query->set('ponbr', 'new');
+		$url->query->set('vendorID', $vendorID);
 		return $url->getUrl();
 	}
 
@@ -627,9 +641,15 @@ class PurchaseOrderEdit extends WireData implements Module {
 		return $q->findOneBySessionid($this->sessionID);
 	}
 
+	/**
+	 * Return if Field has Error
+	 * NOTE: Uses $session->response_epo->fields to derive this
+	 * @param  string $inputname Input name e.g. vendorID
+	 * @return bool
+	 */
 	public function field_has_error_header($inputname) {
 		$response = $this->wire('session')->response_epo;
-		return array_key_exists($inputname, $response->fields);
+		return ($response) ? array_key_exists($inputname, $response->fields) : false;
 	}
 
 /* =============================================================
@@ -684,6 +704,10 @@ class PurchaseOrderEdit extends WireData implements Module {
 			$url->query->set('ponbr', 'new');
 			$url->query->set('vendorID', $vendorID);
 			$event->return = $url->getUrl();
+		});
+		$this->addHook('Page(pw_template=vi-vendor)::po_createURL', function($event) {
+			$vendorID = $event->arguments(0);
+			$event->return = $this->get_po_createURL($vendorID);
 		});
 	}
 
