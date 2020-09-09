@@ -23,12 +23,10 @@
 		$query = PurchaseOrderQuery::create()->filterByPonbr($ponbr);
 
 		if ($query->count()) {
-			$page->title = "Purchase Order #$ponbr";
+			$page->title = "PO #$ponbr";
 			$purchaseorder = $query->findOne();
 			$documents = $docm->get_documents_po($ponbr);
 			$page->search_notesURL = $pages->get('pw_template=msa-noce-ajax')->url;
-			$qnotes->intl->get_notes_summarized($ponbr, 1);
-			echo $db_dplusdata->getLastExecutedQuery();
 
 			$page->body .= $config->twig->render('purchase-orders/purchase-order/links-header.twig', ['page' => $page, 'purchaseorder' => $purchaseorder]);
 			$page->body .= $config->twig->render('purchase-orders/purchase-order/purchase-order.twig', ['page' => $page, 'config' => $config, 'user' => $user, 'purchaseorder' => $purchaseorder, 'qnotes' => $qnotes]);
