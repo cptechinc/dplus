@@ -3,6 +3,7 @@
 use Propel\Runtime\ActiveQuery\Criteria;
 
 use ShipviaQuery, Shipvia;
+use CustomerQuery, Customer;
 
 /**
  * ValidateAr
@@ -13,7 +14,22 @@ use ShipviaQuery, Shipvia;
  */
 class ValidateAr extends WireData implements Module {
 	public function __construct() {
-		$this->exists   = false;
+		$this->exists = false;
+	}
+
+	/**
+	 * Return true if Customer ID exists Exists
+	 * @param  string $custID Customer ID
+	 * @return bool
+	 */
+	public function validate_custid($custID) {
+		$q = CustomerQuery::create();
+		$q->filterByCustid($custID);
+
+		if ($q->count()) {
+			$this->exists = true;
+		}
+		return $this->exists;
 	}
 
 	/**
