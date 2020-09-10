@@ -75,7 +75,11 @@ class DpagesMin extends Dpages implements Module {
 		'itm-search' => array(
 			'name'   => 'itm-search',
 			'fields' => array()
-		)
+		),
+		'itm-validate' => array(
+			'name'   => 'itm-validate',
+			'fields' => array()
+		),
 	);
 
 	const PAGES = array(
@@ -308,6 +312,15 @@ class DpagesMin extends Dpages implements Module {
 			'name'           => 'itm',
 			'title'          => 'ITM',
 			'summary'        => 'View / Edit Item',
+			'parent'         => '/min/inmain/itm/',
+			'dplus_function' => ''
+		),
+		'itm-json' => array(
+			'template'       => 'dplus-json',
+			'pw_template'    => 'itm-validate',
+			'name'           => 'validate',
+			'title'          => 'ITM Validate',
+			'summary'        => 'ITM JSON validation',
 			'parent'         => '/min/inmain/itm/',
 			'dplus_function' => ''
 		),
