@@ -93,6 +93,7 @@ class Itm extends WireData implements Module {
 		if ($this->item_exists($itemID)) {
 			$record = $this->get_item($itemID);
 		} else {
+			$itemID = substr($itemID, 0, ItemMasterItem::LENGTH_ITEMID);
 			$record = $this->get_new_item();
 			$record->setItemid($itemID);
 		}
@@ -172,7 +173,7 @@ class Itm extends WireData implements Module {
 		$recordlocker = $this('modules')->get('RecordLockerUser');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = strtoupper($input->$rm->text('itemID'));
+		$itemID = strtoupper($values->text('itemID'));
 		$record = $this->get_create_item($itemID);
 
 		/**
@@ -596,6 +597,26 @@ class Itm extends WireData implements Module {
 		return $url->getUrl();
 	}
 
+	/**
+	 * Return URL to view / edit Item Xrefs
+	 * @param  string $itemID
+	 * @return string
+	 */
+	public function get_itm_validateURL() {
+		$url = new Url($this->wire('pages')->get("pw_template=itm-validate")->url);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to view / edit Item Xrefs
+	 * @param  string $itemID
+	 * @return string
+	 */
+	public function get_itm_jsonURL() {
+		$url = new Url($this->wire('pages')->get("pw_template=itm-json")->url);
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
@@ -677,6 +698,14 @@ class Itm extends WireData implements Module {
 		$this->addHook("Page(pw_template=$templates)::itm_xrefsURL", function($event) {
 			$itemID = $event->arguments(0);
 			$event->return = $this->get_itm_xrefsURL($itemID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::itm_validateURL", function($event) {
+			$event->return = $this->get_itm_validateURL();
+		});
+
+		$this->addHook("Page(pw_template=$templates)::itm_jsonURL", function($event) {
+			$event->return = $this->get_itm_jsonURL();
 		});
 
 		$this->addHook("Page(pw_template=$templates)::itemIDURL", function($event) {
