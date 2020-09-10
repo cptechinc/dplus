@@ -1,0 +1,41 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use ItemMasterItemQuery, ItemMasterItem;
+
+/**
+ * ValidatePo
+ *
+ * Class for validating Itm fields
+ */
+class ValidateItm extends WireData implements Module {
+	public function custid($custID) {
+		return $this->validate->ar->custid($custID);
+	}
+
+	public function itemid_exists($itemID) {
+		$q = ItemMasterItemQuery::create();
+		$q->filterByItemid($itemID);
+		return boolval($q->count());
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'ITM Validate Module',
+			'version' => 101,
+			'summary' => 'Handles ITM Fields Validation',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+
+	public function init() {
+		$this->validate = new WireData();
+		$this->validate->ar     = $this->wire('modules')->get('ValidateAr');
+	}
+}
