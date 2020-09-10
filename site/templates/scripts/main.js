@@ -144,10 +144,16 @@ $(function() {
 	$('a.delete_button').click(function(e){
 		e.preventDefault();
 		var link = $(this);
+		var title = "Confirm Deletion"
+		var text = 'Are you sure?';
+
+		if (link.data('delete').length) {
+			text = 'Delete ' + link.data('delete') + '?';
+		}
 
 		swal2.fire({
-			title: "Confirm Deletion",
-			text: "Are you sure you want to delete?",
+			title: title,
+			text: text,
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonText: 'Yes'
@@ -158,14 +164,14 @@ $(function() {
 		});
 	});
 
-	$('button.delete_button').click(function(e){
+	$('button.delete_button').click(function(e) {
 		e.preventDefault();
 		var button = $(this);
 		var action = $('.modal-form').attr("action");
 
 		swal2.fire({
 			title: "Confirm Deletion",
-			text: "Are you sure you want to delete?",
+			text: "Are you sure?",
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonText: 'Yes'
@@ -258,8 +264,19 @@ $.fn.extend({
 				modal_dialog.addClass(modal_size);
 			}
 		}
+	},
+	clearValidation: function(){
+		var v = $(this).validate();
+		$('[name]',this).each(function(){
+			v.successList.push(this);
+			v.showErrors();
+		});
+		v.resetForm();
+		v.reset();
 	}
 });
+
+
 
 function toggle_nav() {
 	$(nav).toggle();

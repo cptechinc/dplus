@@ -57,67 +57,65 @@ class DpagesMqo extends Dpages implements Module {
 			'parent'         => '/',
 			'dplus_function' => 'mqo'
 		),
-		'quote-redir' => array(
-			'template'   => 'redir',
-			'name'       => 'redir',
-			'title'      => 'redir',
-			'summary'    => 'Quote Redirects',
-			'parent'     => '/mqo/',
-			'redir_file' => 'quote'
-		),
 		'quotes' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'quotes',
-			'title'          => 'Quotes',
-			'summary'        => 'View / Search through Quotes',
-			'parent'         => '/mqo/',
-			'dplus_function' => '',
-			'pw_template'    => 'quotes'
+			'template'         => 'dplus-function',
+			'name'             => 'quotes',
+			'title'            => 'Quotes',
+			'summary'          => 'View / Search through Quotes',
+			'parent'           => '/mqo/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mqo',
+			'pw_template'      => 'quotes'
 		),
 		'quotes-customer' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'customer',
-			'title'          => 'Customer Quotes',
-			'summary'        => 'View / Search through Customer Quotes',
-			'parent'         => '/mqo/quotes/',
-			'dplus_function' => '',
-			'pw_template'    => 'quotes-customer'
+			'template'         => 'dplus-function',
+			'name'             => 'customer',
+			'title'            => 'Customer Quotes',
+			'summary'          => 'View / Search through Customer Quotes',
+			'parent'           => '/mqo/quotes/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mqo',
+			'pw_template'      => 'quotes-customer'
 		),
 		'quote-view' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'quote',
-			'title'          => 'Quote',
-			'summary'        => 'View Quote',
-			'parent'         => '/mqo/',
-			'dplus_function' => '',
-			'pw_template'    => 'quote-view'
+			'template'         => 'dplus-function',
+			'name'             => 'quote',
+			'title'            => 'Quote',
+			'summary'          => 'View Quote',
+			'parent'           => '/mqo/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mqo',
+			'pw_template'      => 'quote-view'
 		),
 		'quote-print' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'Print',
-			'title'          => 'Print Quote',
-			'summary'        => 'Print Quote',
-			'parent'         => '/mqo/quote/',
-			'dplus_function' => '',
-			'pw_template'    => 'quote-print'
+			'template'         => 'dplus-function',
+			'name'             => 'Print',
+			'title'            => 'Print Quote',
+			'summary'          => 'Print Quote',
+			'parent'           => '/mqo/quote/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mqo',
+			'pw_template'      => 'quote-print'
 		),
 		'quote-notes' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'notes',
-			'title'          => 'Quote Notes',
-			'summary'        => 'View Quote Notes',
-			'parent'         => '/mqo/quote/',
-			'dplus_function' => '',
-			'pw_template'    => 'quote-notes'
+			'template'         => 'dplus-function',
+			'name'             => 'notes',
+			'title'            => 'Quote Notes',
+			'summary'          => 'View Quote Notes',
+			'parent'           => '/mqo/quote/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mqo',
+			'pw_template'      => 'quote-notes'
 		),
 		'quote-documents' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'documents',
-			'title'          => 'Quote Documents',
-			'summary'        => 'View Quote Documents',
-			'parent'         => '/mqo/quote/',
-			'dplus_function' => '',
-			'pw_template'    => 'quote-documents'
+			'template'         => 'dplus-function',
+			'name'             => 'documents',
+			'title'            => 'Quote Documents',
+			'summary'          => 'View Quote Documents',
+			'parent'           => '/mqo/quote/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'mqo',
+			'pw_template'      => 'quote-documents'
 		),
 		'quote-edit' => array(
 			'template'       => 'dplus-function',
@@ -125,7 +123,7 @@ class DpagesMqo extends Dpages implements Module {
 			'title'          => 'Edit Quote',
 			'summary'        => 'Edit Quote',
 			'parent'         => '/mqo/quote/',
-			'dplus_function' => '',
+			'dplus_function' => 'eqo',
 			'pw_template'    => 'quote-edit'
 		),
 		'quote-order' => array(
@@ -134,22 +132,10 @@ class DpagesMqo extends Dpages implements Module {
 			'title'          => 'Push Quote to Order',
 			'summary'        => 'Push Quote to Order',
 			'parent'         => '/mqo/quote/',
-			'dplus_function' => '',
+			'dplus_function' => 'eqo',
 			'pw_template'    => 'quote-order'
 		),
 	);
-
-	public function init() {
-		/**
-		 * Adds self::can_user_editquote() as User hook
-		 * @uses self::can_user_editquote()
-		 */
-		$this->addHook('User::can_editquote', function($event) {
-			$user = $event->object;
-			$quote = $event->arguments(0);
-			$event->return = $this->can_user_editquote($user, $quote);
-		});
-	}
 
 	public function init_mqopage() {
 		$this->addHook('Page::get_redirURL', function($event) {
@@ -193,14 +179,10 @@ class DpagesMqo extends Dpages implements Module {
 			$event->return = $url->getUrl();
 		});
 
-		/**
-		 * Adds self::is_user_editingquote() as User hook
-		 * @uses self::is_user_editingquoter()
-		 */
 		$this->addHook('User::is_editingquote', function($event) {
 			$user = $event->object;
-			$quote = $event->arguments(0);
-			$event->return = $this->is_user_editingquote($user, $quote);
+			$qnbr = $event->arguments(0);
+			$event->return = $this->is_user_editingquote($user, $qnbr);
 		});
 
 		$this->addHook('Page::ii_itemURL', function($event) {
@@ -229,18 +211,18 @@ class DpagesMqo extends Dpages implements Module {
 		});
 	}
 
+/* =============================================================
+	Supplemental Functions
+============================================================= */
 	/**
 	 * Return if User can edit Quote
-	 * @param  User              $user  User
-	 * @param  Quote|string      $quote Quote uote
-	 * @return bool                     Can User Edit Quote?
+	 * @param  User   $user  User
+	 * @param  string  $qnbr Quote Number
+	 * @return bool
 	 */
-	public function can_user_editquote(User $user, $quote) {
+	public function can_user_editquote(User $user, $qnr) {
 		// TODO: add quote edit logic
 		return true;
-		if (get_class($quote) != 'Quote') {
-			$quote = QuoteQuery::create()->findOneByQuotenumber($quote);
-		}
 	}
 
 	/**
@@ -249,15 +231,15 @@ class DpagesMqo extends Dpages implements Module {
 	 * @param  SalesOrder|string $quote Sales Order
 	 * @return bool                     IS User is editing Quote?
 	 */
-	public function is_user_editingquote(User $user, $quote) {
-		if (get_class($order) != 'Quote') {
-			$quote = QuoteQuery::create()->findOneByQuotenumber($quote);
-		}
+	public function is_user_editingquote(User $user, $qnbr) {
 		$q = LogpermQuery::create();
-		$logperm = $q->findOneBySessionid($sessionID);
-		return $quote->quotenumber == $user->ordernbr;
+		$logperm = $q->findOneBySessionid($user->sessionID);
+		return $qnbr == $logperm->ordernbr;
 	}
 
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus Online Quote Pages',
@@ -267,5 +249,13 @@ class DpagesMqo extends Dpages implements Module {
 			'autoload' => true,
 			'requires' => array('DplusPwPages', 'Dpages'),
 		);
+	}
+
+	public function init() {
+		$this->addHook('User::can_editquote', function($event) {
+			$user = $event->object;
+			$qnbr = $event->arguments(0);
+			$event->return = $this->can_user_editquote($user, $qnbr);
+		});
 	}
 }

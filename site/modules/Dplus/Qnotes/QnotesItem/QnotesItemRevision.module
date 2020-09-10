@@ -1,0 +1,405 @@
+<?php namespace ProcessWire;
+
+use ItemRevisionNoteQuery, ItemRevisionNote;
+use ConfigInQuery, ConfigIn;
+
+include_once(__DIR__.'/../QnotesResponse.php');
+
+/**
+ * QnotesItemRevision
+ *
+ * Class for Writing and Reading Qnotes for Item Revision (IREV)
+ */
+class QnotesItemRevision extends WireData implements Module {
+	const MODEL              = 'ItemRevisionNote';
+	const MODEL_KEY          = 'itemid sequence';
+	const DESCRIPTION        = 'Item Revision Notes';
+	const DESCRIPTION_RECORD = 'Item Revision Notes';
+	const DESCRIPTION_RESPONSE = 'Item ';
+	const TYPE                 = 'IREV';
+
+	/**
+	 * Return Note Type
+	 * @return string
+	 */
+	public function get_type() {
+		return self::TYPE;
+	}
+
+
+	/**
+	 * Return the Max Number of columns for Note Type
+	 * @return int
+	 */
+	public function get_column_count() {
+		$configIN = ConfigInQuery::create()->findOne();
+		return $configIN->columns_notes_internal;
+	}
+
+	/**
+	 * Returns Quote Notes Query
+	 * @return ItemRevisionNoteQuery
+	 */
+	public function get_query() {
+		return ItemRevisionNoteQuery::create();
+	}
+
+	/**
+	 * Set User property
+	 * @param User $user
+	 */
+	public function set_user(User $user) {
+		$this->user = $user;
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Returns if Notes Exist
+	 * @param  string $itemID  Item ID
+	 * @return bool
+	 */
+	public function notes_exist($itemID) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Returns Line 1 of Every Note
+	 * @param  string $itemID  Item ID
+	 * @return ItemRevisionNote[]|ObjectCollection
+	 */
+	public function get_notes_summarized($itemID, $orderby = '') {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->filterBySequence(1);
+		if (!$orderby) {
+			$q->orderByNotedate('DESC');
+			$q->orderByNotetime('DESC');
+		}
+		return $q->find();
+	}
+
+	/**
+	 * Return Notes for Form
+	 * @param  string $itemID  Item ID
+	 * @param  string $userID  Note Author
+	 * @param  string $date    Note Date (raw)
+	 * @param  string $time    Note Time (raw)
+	 * @return array
+	 */
+	public function get_notes_form_array($itemID, $userID, $date, $time) {
+		$q = $this->get_query();
+		$q->select(ItemRevisionNote::get_aliasproperty('note'));
+		$q->filterByItemid($itemID);
+		$q->filterByUser($userID);
+		$q->filterByNotedate($date);
+		$q->filterByNotetime($time);
+		return $q->find()->toArray();
+	}
+
+	/**
+	 * Return If note exists
+	 * @param  string $itemID   Item ID
+	 * @param  string $userID   Note Author
+	 * @param  string $date     format: Ymd
+	 * @param  string $time     format: His0000
+	 * @param  int    $sequence Line number
+	 * @return bool
+	 */
+	public function note_exists($itemID, $userID, $revision, $date, $time, $sequence = 1) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->filterByUser($userID);
+		$q->filterByNotedate($date);
+		$q->filterByNotetime($time);
+		$q->filterByRevision($revision);
+		$q->filterBySequence($sequence);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return Note
+	 * @param  string $itemID   Item ID
+	 * @param  string $userID   Note Author
+	 * @param  string $date     format: Ymd
+	 * @param  string $time     format: His0000
+	 * @param  int    $sequence Line number
+	 * @return ItemRevisionNote
+	 */
+	public function get_note($itemID, $userID, $revision, $date, $time, $sequence = 1) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->filterByUser($userID);
+		$q->filterByNotedate($date);
+		$q->filterByNotetime($time);
+		$q->filterByRevision($revision);
+		$q->filterBySequence($sequence);
+		return $q->findOne();
+	}
+
+/* =============================================================
+	CRUD Delete, Create Functions
+============================================================= */
+	/**
+	 * Delete Notes for Item
+	 * @param  string $itemID   Item ID
+	 * @param  string $userID   Note Author
+	 * @param  string $date     Format: Ymd
+	 * @param  string $time     Format: Hi
+	 * @param  string $revision Revision Code
+	 * @return array
+	 */
+	public function delete_notes($itemID, $userID, $date, $time, $revision) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->filterByUser($userID);
+		$q->filterByNotedate($date);
+		$q->filterByNotetime($time);
+		$q->filterByRevision($revision);
+		if ($q->count()) {
+			return $q->delete();
+		}
+		return true;
+	}
+
+	/**
+	 * Create Revision Note
+	 * @param  string $itemID   Item ID
+	 * @param  string $userID   User ID
+	 * @param  string $revision Revision Code
+	 * @param  string $date     format: Ymd
+	 * @param  string $time     Format: Hi
+	 * @param  string $note     Line of Text
+	 * @param  int    $sequence Note Line Number
+	 * @return bool
+	 */
+	public function create_note($itemID, $userID, $revision, $date, $time, $note, int $sequence = 1) {
+		$record = ItemRevisionNote::new();
+		$record->setItemid($itemID);
+		$record->setRevision($revision);
+		$record->setNotedate($date);
+		$record->setNotetime($time);
+		$record->setUser($userID);
+		$record->generateKey2(); // PK
+		$record->setSequence($sequence); // PK
+		$record->setNote($note);
+		$record->setDate(date('Ymd'));
+		$record->setTime(date('His'));
+		$record->setDummy('P');
+		return $record->save();
+	}
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Takes Input, Processes it, updates Quote Notes in the Database
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+
+		switch ($input->$rm->text('action')) {
+			case 'update-notes':
+				$this->update_notes_input($input);
+				break;
+			case 'delete-notes':
+				$this->delete_notes_input($input);
+				break;
+		}
+	}
+
+	/**
+	 * Takes Input, Processes it, deletes Quote Notes
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function delete_notes_input($input) {
+		$rm = strtolower($input->requestMethod());
+		$itemID   = $input->$rm->text('itemID');
+		$date = date(ItemRevisionNote::FORMAT_NOTEDATE, strtotime($input->$rm->text('notedate')));
+		$time = date(ItemRevisionNote::FORMAT_NOTETIME, strtotime($date.$input->$rm->text('notetime')));
+		$userID   = $input->$rm->text('user');
+		$revision = $input->$rm->text('revision');
+
+		if ($this->note_exists($itemID, $userID, $revision, $date, $time)) {
+			$note = $this->get_note($itemID, $userID, $revision, $date, $time);
+		} else {
+			$note = ItemRevisionNote::new();
+			$note->setItemid($itemID);
+			$note->setNotedate($date);
+			$note->setNotetime($time);
+			$note->setUser($userID);
+			$note->setRevision($revision);
+			$note->generateKey2();
+		}
+		$success = $this->delete_notes($itemID, $userID, $date, $time, $revision);
+
+		$this->wire('session')->response_qnote = $this->process_response_delete($note, $itemID, $success);
+	}
+
+	/**
+	 * Takes Input, Processes it, updates Quote Notes
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function update_notes_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID    = $values->text('itemID');
+		$date      = date(ItemRevisionNote::FORMAT_NOTEDATE, strtotime($values->text('notedate')));
+		$time      = date(ItemRevisionNote::FORMAT_NOTETIME, strtotime($notedate.$values->text('notetime')));
+		$revision  = $values->text('revision');
+		$userID    = $values->text('user');
+		$note      = $values->textarea('note');
+		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
+		$lines_saved = array();
+
+		if (empty($date)) {
+			$notedate = date(ItemRevisionNote::FORMAT_NOTEDATE);
+		}
+
+		if (empty($time)) {
+			$notetime = date(ItemRevisionNote::FORMAT_NOTETIME);
+		}
+
+		$this->delete_notes($itemID, $userID, $date, $time, $revision);
+
+		foreach ($note_lines as $key => $line) {
+			$sequence = $key + 1;
+			$lines_saved[$sequence] = $this->create_note($itemID, $userID, $revision, $date, $time, $line, $sequence);
+		}
+		$record = $this->get_note($itemID, $userID, $revision, $date, $time, $sequence);
+		$this->wire('session')->response_qnote = $this->process_responses($record, $itemID, $lines_saved);
+	}
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
+	/**
+	 * Return Code Table Response based on the number of lines that were written to the database
+	 * @param  string $itemID       Item ID
+	 * @param  array  $lines_saved  array of line numbers and if they got saved e.g. (1 => true, 2 => false)
+	 * @return CodeTableResponse
+	 */
+	protected function process_responses(ItemRevisionNote $note, $itemID, array $lines_saved) {
+		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Note Lines";
+
+		$response = new QnotesResponse();
+		$response->set_key("$itemID-{$note->key2}");
+
+		if (in_array(false, $lines_saved)) {
+			$lines_error =
+			array_filter($lines_saved, function($value, $key) {
+				return  $value == false;
+			}, ARRAY_FILTER_USE_BOTH);
+			$message .= implode(", ", array_keys($lines_error));
+			$message .= " were not able to be saved";
+
+			if (sizeof($lines_error)) {
+				$response->set_error(true);
+			}
+		} else {
+			$response->set_success(true);
+			$message .= " were able to be saved";
+		}
+
+		$response->set_action(QnotesResponse::CRUD_UPDATE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if (sizeof($lines_saved)) {
+			$this->update_dplus_cobol($note->type, $note->key2, $note->user);
+		}
+		return $response;
+	}
+
+	/**
+	 * Return QnoteResponse based if Notes were able to be Deleted
+	 * @param  ItemRevisionNote  $note         Attributes are needed to generate key
+	 * @param  string            $itemID       Item ID
+	 * @param  array             $success      Were Notes able to be deleted?
+	 * @return QnoteResponse
+	 */
+	public function process_response_delete(ItemRevisionNote $note, $itemID, bool $success) {
+		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Revision Notes ";
+
+		$response = new QnotesResponse();
+		$response->set_key("$itemID-{$note->key2}");
+
+		if ($success) {
+			$response->set_success(true);
+			$message .= " were able to be deleted";
+		} else {
+			$response->set_success(true);
+			$message .= " were not able to be deleted";
+		}
+
+		$response->set_action(QnotesResponse::CRUD_DELETE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if ($success) {
+			$this->update_dplus_cobol($note->type, $note->key2, $note->user);
+		}
+		return $response;
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	/**
+	 * Return Data needed for Dplus to UPDATE the Customer Type Notes
+	 * @param  string $notetype Note Type @see WarehouseNote::TYPES
+	 * @param  string $userID   Note User ID
+	 * @param  string $key2     Key 2
+	 * @param  string $form     Form e.g YNNN
+	 * @return array
+	 */
+	public function write_dplus_data($notetype, $key2, $userID) {
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		return array("DBNAME=$dplusdb", 'UPDATEITEMNOTE', "TYPE=$notetype", "USER=$userID", "KEY2=$key2");
+	}
+
+	/**
+	 * Sends Update Request for Qnote Type
+	 * @param  string $notetype Note Type
+	 * @param  string $userID   Note User ID
+	 * @param  string $key2     Key 2
+	 * @param  string $form     Form e.g YNNN
+	 * @return void
+	 */
+	public function update_dplus_cobol($notetype, $key2, $userID) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$data = $this->write_dplus_data($notetype, $key2, $userID);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Qnotes Item Revision',
+			'version' => 101,
+			'summary' => 'Dplus Qnotes Item Revision CRUD methods',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('Qnotes')
+		);
+	}
+
+	public function init() {
+		$this->user = $this->wire('user');
+	}
+}

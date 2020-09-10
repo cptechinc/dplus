@@ -32,7 +32,15 @@ function JsContento() {
 			var attributes = '';
 
 			for (var i = 0; i < array.length; i++) {
+				var index = array[i].indexOf('=');
+
 				var attribute = array[i].split('=');
+
+				if (attribute.length > 2) {
+					attribute = [array[i].slice(0, index),array[i].slice(index + 1)];
+				}
+
+
 				attributes += attribute[0] + '="' + attribute[1] + '" ';
 			}
 			return attributes.trim();

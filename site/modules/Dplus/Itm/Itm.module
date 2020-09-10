@@ -457,6 +457,9 @@ class Itm extends WireData implements Module {
 		return InvSpecialCodeQuery::create()->find();
 	}
 
+/* =============================================================
+	URL Functions
+============================================================= */
 	/**
 	 * Return if Item Type for Item ID is normal (N)
 	 * @param  string $itemID Item ID

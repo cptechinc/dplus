@@ -8,7 +8,7 @@
         {% for i in (page.pagenbr - 3)..(page.pagenbr + 4) %}
             {% if i > 0 and i <= page.get_pagecount(resultscount) %}
                 <li class="page-item {{ (page.pagenbr == i) ? 'active' : '' }}">
-                    <a href="{{ page.paginate(i) ~ '?' ~ page.fullURL.query  }}" class="page-link">{{ i }}</a>
+                    <a href="{{ page.paginate(i) ~ '?' ~ page.fullURL.query  }}" class="page-link paginator-link">{{ i }}</a>
                 </li>
             {% endif %}
         {% endfor %}

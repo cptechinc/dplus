@@ -1,0 +1,19 @@
+{#
+	This js.twig file is just for including the others necessary for vxm notes
+
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	session                ProcessWire\Session
+#}
+
+{% include 'items/vxm/notes/internal/js.twig' %}
+{% include 'items/vxm/notes/detail/js.twig' %}
+
+{% include 'msa/noce/ajax/js.twig' %}
+
+$(function() {
+	{% if session.get('response_qnote') %}
+		$('html, body').animate({scrollTop: $('#notes-tab').offset().top - 60}, 1000);
+	{% endif %}
+});

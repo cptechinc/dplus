@@ -1,0 +1,39 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	item                ItemXrefCustomer
+	qnotes              module QnotesItemCxm
+#}
+<div class="list-group">
+	<div class="list-group-item list-group-item-action bg-dark text-white">
+		<div class="form-row">
+			{% for form, label in qnotes.get_forms_shortlabels() %}
+				<div class="col">{{ label|capitalize }}</div>
+			{% endfor %}
+			<div class="col-sm-2">
+				Note &nbsp;
+				<button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#notes-order-modal" data-form="">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add
+				</button>
+			</div>
+		</div>
+	</div>
+	{% for note in qnotes.get_notes_summarized(item.itemid, item.custid) %}
+		<div class="list-group-item qnote-order-row" data-form="{{ note.form }}">
+			<div class="form-row mb-1">
+				{% for form, label in qnotes.get_forms_shortlabels() %}
+					<div class="col">{{ note|dynamicproperty(form) }}</div>
+				{% endfor %}
+				<div class="col-sm-2">
+					<button type="button" class="btn btn-light" data-toggle="collapse" data-target="#notes-order-{{ note.form }}" aria-controls="notes-order-{{ note.form }}">
+						<i class="fa fa-eye" aria-hidden="true"></i> Show
+					</button>
+					<button type="button" class="btn btn-secondary edit" data-toggle="modal" data-target="#notes-order-modal" data-form="{{ note.form }}" {% for form, label in qnotes.get_forms_shortlabels() %} data-{{form}}="{{ note|dynamicproperty(form) }}" {% endfor %}>
+						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+					</button>
+				</div>
+			</div>
+			<textarea class="collapse form-control-plaintext" id="notes-order-{{ note.form }}" cols="{{ qnotes.get_column_count() }}" readonly>{{ qnotes.get_notes_form_array(item.itemid, item.custid, note.form)|join('\r') }}</textarea>
+		</div>
+	{% endfor %}
+</div>

@@ -1,0 +1,110 @@
+<div class="row form-group">
+	<div class="col-sm-6">
+		<label for="uom_customer">Customer UoM</label>
+	</div>
+	<div class="col-sm-6">
+		<select name="uom_customer" class="form-control form-control-sm mb-1" id="uom_customer">
+			<option value=""></option>
+			{% for uom in cxm.get_unitsofm_sales() %}
+				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_customer ? 'selected' : ''}}>
+					{{ uom.code }} - {{ uom.description }}
+				</option>
+			{% endfor %}
+		</select>
+		<small class="form-text text-muted">Item UoM: {{ item.item.uom_sale }}</small>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-6">
+		<label for="convert">Conversion</label>
+	</div>
+	<div class="col-sm-6">
+		<div class="input-group input-group-sm mb-2">
+			<input type="number" name="convert" class="form-control text-right" id="convert" value="{{ item.convert }}">
+		</div>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-6">
+		<label for="qty_percase">Qty Per Case</label>
+	</div>
+	<div class="col-sm-6">
+		<div class="input-group input-group-sm mb-2">
+			<input type="number" name="qty_percase" class="form-control text-right" id="qty_percase" value="{{ item.qty_percase }}">
+		</div>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-6">
+		<label for="qty_purchase">Purchase Qty</label>
+	</div>
+	<div class="col-sm-6">
+		<div class="input-group input-group-sm mb-2">
+			<input type="number" name="qty_purchase" class="form-control text-right" id="qty_purchase" value="{{ item.qty_purchase }}">
+		</div>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-6">
+		<label for="price_retail">Retail Price</label>
+	</div>
+	<div class="col-sm-6">
+		<div class="input-group input-group-sm mb-2">
+			<input type="number" name="price_retail" class="form-control text-right" id="price_retail" value="{{ item.price_retail }}">
+		</div>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-6">
+		<label for="price_customer">Cust Price</label>
+	</div>
+	<div class="col-sm-6">
+		<div class="input-group input-group-sm mb-2">
+			<input type="number" name="price_customer" class="form-control text-right" id="price_customer" value="{{ item.price_customer }}">
+		</div>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-6"><label>Contract</label></div>
+	<div class="col-sm-6">
+		0.00 {# TODO: #}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-6">
+		<label for="uom_pricing">Pricing UoM</label>
+	</div>
+	<div class="col-sm-6">
+		<select name="uom_pricing" class="form-control form-control-sm mb-1" id="uom_pricing">
+			<option value=""></option>
+			{% for uom in cxm.get_unitsofm_sales() %}
+				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_pricing ? 'selected' : ''}}>
+					{{ uom.code }} - {{ uom.description }}
+				</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-6">
+		<label for="price_uom">Per UoM</label>
+	</div>
+	<div class="col-sm-6">
+		<input type="number" name="price_uom" class="form-control text-right" id="price_uom" value="{{ item.get_pricing_peruom()|number_format(3) }}">
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-6">
+		<label for="rounding">Rounding</label>
+	</div>
+	<div class="col-sm-6">
+		<select name="rounding" class="form-control form-control-sm mb-1" id="rounding">
+			<option value=""></option>
+			{% for value, label in cxm.get_rounding_options() %}
+				<option value="{{ value }}" {{ value == item.rounding ? 'selected' : ''}}>
+					{{ label|capitalize }}
+				</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>

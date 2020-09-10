@@ -23,7 +23,7 @@
 		{% for shipfrom in shipfroms %}
 			<tr>
 				<td scope="row">
-					<a href="{{ page.get_vi_vendorshipfromURL(customer.id, shipfrom.id)}}" class="link">
+					<a href="{{ page.get_vi_vendorshipfromURL(customer.id, shipfrom.id)}}" class="link shipfrom-link" data-shipfromid="{{ shipfrom.shipfromid }}">
 						<strong>{{ shipfrom.shipfromid }}</strong>
 					</a>
 				</td>

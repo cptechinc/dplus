@@ -13,19 +13,19 @@
 				$session->redirect($pages->get("dplus_function=$code")->url, $http301 = false);
 			} else {
 				$resultscount = 0;
-				$page->pagetitle = "Searching for functions that match '$code'";
+				$page->headline = "Searching for functions that match '$code'";
 				$page->body = $config->twig->render('dplus-menu/menu-search-page.twig', ['page' => $page, 'items' => new ProcessWire\PageArray()]);
 			}
 		} else {
 			$mainmenu = $pages->get('/');
-			$page->pagetitle = "Searching for functions that match '$code'";
+			$page->headline = "Searching for functions that match '$code'";
 			$functions = $mainmenu->children("dplus_function~=$code");
 			$functions->filter("dplus_function=$permission_list");
 			$page->body = $config->twig->render('dplus-menu/menu-search-page.twig', ['page' => $page, 'items' => $functions]);
 		}
 	} else {
 		$mainmenu = $pages->get('/');
-		$page->pagetitle = "Menu";
+		$page->headline = "Menu";
 		$menus = $mainmenu->children("template=dplus-menu|warehouse-menu, dplus_function=$permission_list");
 		$page->body = $config->twig->render('dplus-menu/menu-search-page.twig', ['page' => $page, 'items' => $menus]);
 	}

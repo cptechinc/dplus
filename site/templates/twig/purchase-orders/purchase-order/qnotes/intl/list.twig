@@ -1,0 +1,59 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	purchaseorder          PurchaseOrder
+	ponbr                  Purchase Order Number
+	linenbr                Line Number
+	qnotes                 module QnotesPo
+	qnotes.pord            module QnotesPoPord
+	qnotes.intl            module QnotesPoIntl
+#}
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row">
+			<div class="col">
+				Date
+			</div>
+			<div class="col">
+				Time
+			</div>
+			<div class="col">
+				Author
+			</div>
+			<div class="col">
+				Note
+				<span class="pull-right">
+					<button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#notes-intl-modal" data-linenbr="{{ linenbr }}" data-date="{{ now|date('Ymd') }}" data-time="{{ now|date('His') }}">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add
+					</button>
+				</span>
+			</div>
+		</div>
+	</div>
+	{% for note in qnotes.intl.get_notes_summarized(ponbr, linenbr) %}
+		{% set datetime = note.notedate|convertdate('Ymd') ~ '-' ~ note.notetime() %}
+		<div class="list-group-item">
+			<div class="row">
+				<div class="col">
+					{{ note.notedate|convertdate }}
+				</div>
+				<div class="col">
+					{{ (note.notedate ~ note.notetime())|convertdate("H:i") }}
+				</div>
+				<div class="col">{{ note.userid }}</div>
+				<div class="col">
+					<button type="button" class="btn btn-sm btn-light" data-toggle="collapse" data-target="#notes-intl-{{ datetime }}-{{ note.userid }}" aria-controls="notes-intl-{{ datetime }}-{{ note.userid }}">
+						<i class="fa fa-eye" aria-hidden="true"></i> Show
+					</button>
+					{% if note.userid == qnotes.intl.user.loginid %}
+						<button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#notes-intl-modal" data-linenbr="{{ linenbr }}" data-date="{{ note.notedate }}" data-time="{{ note.notetime() }}" data-userid="{{ note.userid }}">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</button>
+					{% endif %}
+				</div>
+			</div>
+			<textarea class="collapse form-control-plaintext qnotes" id="notes-intl-{{ datetime }}-{{ note.userid }}" cols="{{ qnotes.intl.get_column_count() }}" rows="20" readonly>{{ qnotes.intl.get_notes_form_array(note.ponbr, note.linenbr, note.userid, note.notedate, note.notetime)|join('\r') }}</textarea>
+		</div>
+	{% endfor %}
+</div>

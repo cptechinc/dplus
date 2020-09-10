@@ -1,0 +1,51 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	input                  ProcessWire\WireInput
+#}
+<nav aria-label="breadcrumb" class="rounded-0 mb-4">
+	<ol class="breadcrumb">
+		{% for parent in page.parents() %}
+			{% if parent.pw_template == 'itm' %}
+				<li class="breadcrumb-item">
+					<i class="fa fa-list" aria-hidden="true"></i>
+					<a href="{{ parent.url }}">{{ parent.title }}</a>
+				</li>
+				<li class="breadcrumb-item">
+					<i class="fa fa-cubes" aria-hidden="true"></i>
+					<a href="{{ page.itmURL(input.get.text('itemID')) }}">{{ input.get.text('itemID') }}</a>
+				</li>
+			{% else %}
+				{% if parent.pw_template == 'itm-xrefs' %}
+					<li class="breadcrumb-item">
+						<i class="fa fa-arrows" aria-hidden="true"></i>
+						<a href="{{ page.itm_xrefsURL(input.get.text('itemID')) }}">{{ parent.title }}</a>
+					</li>
+				{% else %}
+					<li class="breadcrumb-item">
+						<i class="fa fa-list" aria-hidden="true"></i>
+						<a href="{{ parent.url }}">{{ parent.title }}</a>
+					</li>
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+		{% if page.pw_template == 'itm-whse' and input.get.text('whseID') %}
+			<li class="breadcrumb-item" aria-current="page">
+				<a href="{{ page.itm_warehouseURL(input.get.text('itemID')) }}">
+					{{ page.title }}
+				</a>
+			</li>
+			<li class="breadcrumb-item active" aria-current="page">{{ input.get.text('whseID') }}</li>
+		{% elseif page.pw_template == 'itm-xrefs-vxm' and input.get.text('vendoritemID') %}
+			<li class="breadcrumb-item" aria-current="page">
+				<a href="{{ page.itm_xrefsURL(input.get.text('itemID')) }}">
+					{{ page.title }}
+				</a>
+			</li>
+			<li class="breadcrumb-item active" aria-current="page">{{ input.get.text('vendoritemID') }}</li>
+		{% else %}
+			<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+		{% endif %}
+	</ol>
+</nav>

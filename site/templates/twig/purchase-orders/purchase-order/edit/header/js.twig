@@ -1,0 +1,63 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	epo                    PurchaseOrderEdit
+#}
+$(function () {
+	var modal_ajax    = $('#ajax-modal');
+	var modal_country = $('#country-modal');
+	var form_header   = $('#header-form');
+
+/* =============================================================
+	AJAX Lookup Modal Functions
+============================================================= */
+	$("body").on('click', '#ajax-modal .country-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal = button.closest('.modal');
+		var code = button.data('code');
+		var rate = button.data('rate');
+		form_header.find('input[name=currency]').val(code);
+		form_header.find('.currency-rate').text(rate);
+		modal.modal('hide');
+	});
+
+	$("body").on('click', '.vendor-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var vendorID = button.data('vendorid');
+
+		get_vendor_address(vendorID, function(vendor) {
+			if (vendor) {
+				form_header.find('input[name=vendorID]').val(vendorID);
+				var address = form_header.find('address.vendor-address');
+				address.find('.name').text(vendor.name);
+				address.find('.address').text(vendor.address);
+				address.find('.address2').text(vendor.address2);
+				address.find('.city').text(vendor.city);
+				address.find('.state').text(vendor.state);
+				address.find('.zip').text(vendor.zip);
+				modal_ajax.modal('hide');
+			}
+		});
+	});
+
+	$("body").on('click', '#ajax-modal .shipfrom-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal = button.closest('.modal');
+		var shipfromID = button.data('shipfromid');
+		form_header.find('input[name=shipfromID]').val(shipfromID);
+		modal.modal('hide');
+	});
+
+	function get_vendor_address(vendorID, callback) {
+		var url = URI('{{ page.vi_jsonURL() }}');
+		url.setQuery('action', 'get-vendor-address');
+		url.setQuery('vendorID', vendorID);
+		$.getJSON(url.toString(), function(vendor) {
+			callback(vendor);
+		});
+	}
+});

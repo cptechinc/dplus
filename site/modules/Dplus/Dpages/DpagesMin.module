@@ -3,10 +3,10 @@
 use Purl\Url;
 
 /**
- * class Dpages
+ * class DpagesMin
  *
- * Installs fields, templates, pages, hooks necessary for Top Menus
- * NOTE: Also installs the basic fields, templates, to build the rest of the Application
+ * Installs fields, templates, pages, hooks necessary for Min Pages
+ * Adds Hooks for getting URLs to Min pages
  */
 class DpagesMin extends Dpages implements Module {
 	const FIELDS = array();
@@ -44,10 +44,38 @@ class DpagesMin extends Dpages implements Module {
 			'name'   => 'itm-pricing',
 			'fields' => array()
 		),
+		'itm-whse' => array(
+			'name'   => 'itm-whse',
+			'fields' => array()
+		),
+		'itm-costing' => array(
+			'name'   => 'itm-costing',
+			'fields' => array()
+		),
+		'itm-xrefs' => array(
+			'name'   => 'itm-xrefs',
+			'fields' => array()
+		),
+		'itm-upcx' => array(
+			'name'   => 'itm-upcx',
+			'fields' => array()
+		),
+		'itm-vxm' => array(
+			'name'   => 'itm-vxm',
+			'fields' => array()
+		),
+		'itm-cxm' => array(
+			'name'   => 'itm-cxm',
+			'fields' => array()
+		),
 		'itm-json' => array(
 			'name'   => 'itm-json',
 			'fields' => array()
 		),
+		'itm-search' => array(
+			'name'   => 'itm-search',
+			'fields' => array()
+		)
 	);
 
 	const PAGES = array(
@@ -215,9 +243,63 @@ class DpagesMin extends Dpages implements Module {
 			'template'       => 'dplus-function',
 			'pw_template'    => 'itm-pricing',
 			'name'           => 'pricing',
-			'title'          => 'ITM Pricing',
+			'title'          => 'Pricing',
 			'summary'        => 'View / Edit Item Pricing',
 			'parent'         => '/min/inmain/itm/',
+			'dplus_function' => ''
+		),
+		'itm-warehouse' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'itm-whse',
+			'name'           => 'warehouses',
+			'title'          => 'Warehouses',
+			'summary'        => 'View / Edit Item Warehouses',
+			'parent'         => '/min/inmain/itm/',
+			'dplus_function' => ''
+		),
+		'itm-costing' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'itm-costing',
+			'name'           => 'costing',
+			'title'          => 'Costing',
+			'summary'        => 'View / Edit Item Costing',
+			'parent'         => '/min/inmain/itm/',
+			'dplus_function' => ''
+		),
+		'itm-xrefs' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'itm-xrefs',
+			'name'           => 'xrefs',
+			'title'          => 'XRefs',
+			'summary'        => 'View / Edit Item Cross References',
+			'parent'         => '/min/inmain/itm/',
+			'dplus_function' => ''
+		),
+		'itm-xrefs-upcx' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'itm-xrefs-upcx',
+			'name'           => 'upcx',
+			'title'          => 'UPC X-ref',
+			'summary'        => 'View / Edit Item UPC X-ref',
+			'parent'         => '/min/inmain/itm/xrefs/',
+			'dplus_function' => ''
+		),
+		'itm-xrefs-vxm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'itm-xrefs-vxm',
+			'name'           => 'vxm',
+			'title'          => 'VXM X-ref',
+			'summary'        => 'View / Edit Item VXM X-ref',
+			'parent'         => '/min/inmain/itm/xrefs/',
+			'dplus_function' => ''
+		),
+		'itm-xrefs-cxm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'itm-xrefs-cxm',
+			'name'           => 'cxm',
+			'title'          => 'CXM X-ref',
+			'summary'        => 'View / Edit Item CXM X-ref',
+			'parent'         => '/min/inmain/itm/xrefs/',
 			'dplus_function' => ''
 		),
 		'itm-json' => array(
@@ -227,13 +309,101 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'ITM',
 			'summary'        => 'View / Edit Item',
 			'parent'         => '/min/inmain/itm/',
-			'dplus_function' => 'itm'
+			'dplus_function' => ''
+		),
+		'itm-search' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'itm-search',
+			'name'           => 'search',
+			'title'          => 'Search',
+			'summary'        => 'Search ITM Items',
+			'parent'         => '/min/inmain/itm/',
+			'dplus_function' => ''
 		),
 	);
 
 /* =============================================================
+	URL Functions
+============================================================= */
+	/**
+	 * Return View Code Table URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_viewURL($table, $code = false) {
+		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
+
+		if ($table == 'ioptm') {
+			$url->query->set('sysop', $code);
+		} else {
+			$url->query->set('code', $code);
+		}
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return View Code Table List URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_listURL($table, $code = false) {
+		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
+		if ($table == 'ioptm') {
+			$url->query->set('sysop', $code);
+		} else {
+			$url->query->set('focus', $code);
+		}
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Code Table Code Delete URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_code_deleteURL($table, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
+		$url->query->set('action', 'remove-code');
+		$url->query->set('table', $table);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Code Table Edit Code URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_code_editURL($table, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+/* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus MIN Pages Modules',
+			'version' => 101,
+			'summary' => 'Installs and creates MIN Pages',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
+			'installs' => array(),
+		);
+	}
+
 	public function init() {
 		/**
 		 * Returns Sales Order Page URL
@@ -266,57 +436,5 @@ class DpagesMin extends Dpages implements Module {
 			$page = $event->object;
 			$event->return = $page->name;
 		});
-	}
-
-	public function get_codetable_viewURL($table, $code = false) {
-		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
-
-		if ($table == 'ioptm') {
-			$url->query->set('sysop', $code);
-		} else {
-			$url->query->set('code', $code);
-		}
-		return $url->getUrl();
-	}
-
-	public function get_codetable_listURL($table, $code = false) {
-		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
-		if ($table == 'ioptm') {
-			$url->query->set('sysop', $code);
-		} else {
-			$url->query->set('focus', $code);
-		}
-		return $url->getUrl();
-	}
-
-	public function get_codetable_code_deleteURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
-		$url->query->set('action', 'remove-code');
-		$url->query->set('table', $table);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	public function get_codetable_code_editURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=min-code-table, name=$table")->url);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'Dplus MIN Pages Modules',
-			'version' => 101,
-			'summary' => 'Installs and creates MIN Pages',
-			'singular' => true,
-			'autoload' => true,
-			'requires' => array('DplusPwPages', 'Dpages'),
-			'installs' => array(),
-		);
 	}
 }

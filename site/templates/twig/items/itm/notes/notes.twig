@@ -1,0 +1,54 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	item                   ItemMasterItem
+	m_notes                module QnotesItem
+	m_notes.notes.internal module QnotesItemInternal
+#}
+<h3>Notes</h3>
+<ul class="nav nav-tabs" id="notes-tab" role="tablist">
+	<li class="nav-item">
+		<a class="nav-link active" id="internal-tab" data-toggle="tab" href="#internal-content" role="tab" aria-controls="internal-content" aria-selected="true">
+			Internal
+		</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" id="revision-tab" data-toggle="tab" href="#revision-content" role="tab" aria-controls="revision-content" aria-selected="false">
+			Revision
+		</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" id="inspection-tab" data-toggle="tab" href="#inspection-content" role="tab" aria-controls="inspection-content" aria-selected="false">
+			Inspection
+		</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" id="order-tab" data-toggle="tab" href="#order-content" role="tab" aria-controls="order-content" aria-selected="false">
+			Order
+		</a>
+	</li>
+</ul>
+<div class="tab-content" id="notes-tab-content">
+	<br>
+	<div class="tab-pane fade show active" id="internal-content" role="tabpanel" aria-labelledby="internal-tab">
+		<div class="mb-3">
+			<textarea class="form-control-plaintext" cols="{{ m_notes.notes.internal.get_column_count() }}" readonly>{{ m_notes.notes.internal.get_notes_form_array(item.itemid)|join('\r') }}</textarea>
+		</div>
+		<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-internal-modal">
+			{% if m_notes.notes.internal.notes_exist(item.itemid) %}
+				<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+			{% else %}
+				<i class="fa fa-plus" aria-hidden="true"></i> Add
+			{% endif %}
+		</button>
+	</div>
+	<div class="tab-pane fade" id="revision-content" role="tabpanel" aria-labelledby="revision-tab">
+		{% include 'items/itm/notes/revision/list.twig' %}
+	</div>
+	<div class="tab-pane fade" id="inspection-content" role="tabpanel" aria-labelledby="inspection-tab">
+		{% include 'items/itm/notes/inspection/list.twig' %}
+	</div>
+	<div class="tab-pane fade" id="order-content" role="tabpanel" aria-labelledby="order-tab">
+		{% include 'items/itm/notes/order/list.twig' %}
+	</div>
+</div>

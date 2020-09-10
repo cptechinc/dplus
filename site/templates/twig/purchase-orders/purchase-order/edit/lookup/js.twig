@@ -9,16 +9,24 @@ $(function() {
 				if (form_additem.attr('data-validated') == input_itemid.val()) {
 					validate_qtysubmit(form);
 				} else {
-					lookup_item(function(exists) {
-						if (exists) {
-							validate_qtysubmit(form);
+					validate_itemid(function(valid) {
+						if (valid) {
+							get_item_data(function(exists) {
+								if (exists) {
+									validate_qtysubmit(form);
+								}
+							});
 						}
 					});
 				}
 			} else {
-				lookup_item(function(exists) {
-					if (exists) {
-						validate_qtysubmit(form);
+				validate_itemid(function(valid) {
+					if (valid) {
+						get_item_data(function(exists) {
+							if (exists) {
+								validate_qtysubmit(form);
+							}
+						});
 					}
 				});
 			}
@@ -37,7 +45,25 @@ $(function() {
 		$('body,html').animate({ scrollTop: input_qty.offset().top - 100 }, 800);
 	});
 
-	function lookup_item(callback) {
+	function validate_itemid(callback) {
+		var ii_url = URI("{{ page.ii_lookupURL() }}");
+		ii_url.addQuery('itemID', input_itemid.val());
+		
+		$.getJSON(ii_url.toString(), function( response ) {
+			if (response.exists) {
+				input_itemid.val(response.itemID);
+				input_itemid.addClass('is-valid');
+				form_additem.attr('data-validated', response.itemID);
+				return callback(response.exists);
+			} else {
+				input_itemid.addClass('is-invalid');
+				form_additem.attr('data-validated', '');
+				alert_itemnotfound();
+			}
+		});
+	}
+
+	function get_item_data(callback) {
 		var itm_url = URI("{{ page.itm_jsonURL() }}");
 		itm_url.addQuery('itemID', input_itemid.val());
 		itm_url.addQuery('fields', 'uom_purchase');

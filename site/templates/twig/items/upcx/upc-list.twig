@@ -20,13 +20,15 @@
 				</a>
 			</th>
 			<th class="pt-3 pb-3">Eaches</th>
-			<th class="pt-3 pb-3">
-				<a href="{{ page.get_sortURL('itemid') }}" class="link">Item ID / Desription
-					{% if page.orderby_column == 'itemid' %}
-						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
-					{% endif %}
-				</a>
-			</th>
+			{% if itemID == false %}
+				<th class="pt-3 pb-3">
+					<a href="{{ page.get_sortURL('itemid') }}" class="link">Item ID / Desription
+						{% if page.orderby_column == 'itemid' %}
+							<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+						{% endif %}
+					</a>
+				</th>
+			{% endif %}
 			<th class="pt-3 pb-3">UoM</th>
 			<th class="pt-3 pb-3">
 				<a href="{{ page.get_sortURL('primary') }}" class="link">Primary
@@ -43,23 +45,24 @@
 				</a>
 			</th>
 			<th class="pt-3 pb-3">Label</th>
+			<th class="pt-3 pb-3">Edit</th>
 		</tr>
 	</thead>
 	<tbody>
 		{% for upc in upcs %}
 			<tr class="{{ upc.is_primary() and upc.itemid == itemID ? 'highlight'  : '' }}">
 				<td>
-					<a href="{{ page.upcURL(upc.upc) }}" class="link">
-						{{ upc.upc }}
-					</a>
+					{{ upc.upc }}
 				</td>
 				<td>
 					{{ upc.qty }}
 				</td>
-				<td>
-					{{ upc.itemid }} <br>
-					<small>{{ upc.ItemMasterItem.desc }}</small>
-				</td>
+				{% if itemID == false %}
+					<td>
+						{{ upc.itemid }} <br>
+						<small>{{ upc.ItemMasterItem.desc }}</small>
+					</td>
+				{% endif %}
 				<td>
 					{{ upc.uom }}
 				</td>
@@ -71,6 +74,17 @@
 				</td>
 				<td>
 					{{ upc.needslabel|yesorno|capitalize }}
+				</td>
+				<td>
+					{% if recordlocker.function_locked('upcx', upc.upc) == false or recordlocker.function_locked_by_user('upcx', upc.upc) %}
+						<a href="{{ page.upcURL(upc.upc) }}" class="btn btn-warning btn-sm">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</a>
+					{% else %}
+						<span class="badge badge-secondary">
+							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ recordlocker.get_locked_user('upcx', upc.upc) }}
+						</span>
+					{% endif %}
 				</td>
 			</tr>
 		{% endfor %}

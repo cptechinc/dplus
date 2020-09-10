@@ -1,0 +1,69 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemXrefVendor
+	qnotes                 module QnotesItemVxm
+	qnotes.internal        module QnotesItemVxmInternal
+#}
+<div class="modal fade" id="notes-internal-modal" tabindex="-1" role="dialog" aria-labelledby="notes-internal-modal-label" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="notes-internal-modal-label"><span class="action-desc">Adding</span> {{ item.itemid }} Vendor {{ item.vendorid }} Internal Notes</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form action="{{ page.fullURL.getURL() }}" method="post">
+					<input type="hidden" name="itemID" value="{{ item.ouritemid }}">
+					<input type="hidden" name="vendorID" value="{{ item.vendorid }}">
+					<input type="hidden" name="vendoritemID" value="{{ item.vendoritemid }}">
+					<input type="hidden" name="type" value="internal">
+					<input type="hidden" name="userID" value="{{ user.loginid }}">
+					<input type="hidden" name="rawnotetime" value="">
+
+					<div class="row">
+						<div class="col-6">
+							<div class="form-group">
+								<label for="internal_note_date">Date</label>
+								{% include 'util/date-picker.twig' with {'name': 'notedate', 'id': 'internal_note_date', 'value': "now"|date("m/d/Y")} %}
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="form-group">
+								<label for="internal_notetime">Time</label>
+								<input type="text" class="form-control" name="notetime" id="internal_notetime" value="{{ "now"|date("H:i") }}">
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						{% include 'msa/noce/ajax/button.twig' with {'input': '#internal-notes'} %}
+					</div>
+
+					<div class="form-group">
+						<label for="internal-notes">Notes</label>
+						<div class="d-flex justify-content-between align-items-center">
+							<textarea class="form-control w-auto qnotes" name="note" id="internal-notes" rows="10" cols="{{ qnotes.notes.internal.get_column_count() }}" wrap="hard"></textarea>
+						</div>
+					</div>
+
+					<div class="d-flex justify-content-between align-items-center">
+						<button type="submit" name="action" value="update-notes" class="btn btn-success">
+							<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+						</button>
+						{# TODO: add confirmation for deletion 'delete_button' #}
+						<button type="submit" name="action" value="delete-notes" class="btn btn-danger">
+							<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+						</button>
+						<button type="button" class="btn btn-warning pull-right" data-dismiss="modal">
+							<i class="fa fa-times" aria-hidden="true"></i> Close
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

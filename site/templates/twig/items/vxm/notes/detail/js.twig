@@ -1,0 +1,15 @@
+$(function () {
+	$('#notes-detail-modal').on('shown.bs.modal', function (e) {
+		var modal = $(this);
+		var button = $(e.relatedTarget);
+		var note   = $('#notes-detail').val();
+
+		if (note.length) {
+			modal.find('.action-desc').text('Editing');
+			modal.find('textarea[name=note]').val(note);
+		} else {
+			modal.find('.action-desc').text('Adding');
+			modal.find('textarea[name=note]').val('');
+		}
+	});
+});

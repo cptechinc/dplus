@@ -1,0 +1,45 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	item                   PurchaseOrderDetail
+	qnotes                 module QnotesPo
+	qnotes.irev            module QnotesItemRevision
+	qnotes.irev.user       ProcessWire\User
+#}
+<div class="list-group">
+	<div class="list-group-item list-group-item-action bg-dark text-white">
+		<div class="row">
+			<div class="col">Date</div>
+			<div class="col">Time</div>
+			<div class="col">Author</div>
+			<div class="col">Revision</div>
+			<div class="col">
+				Note &nbsp;
+				<button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#notes-revision-modal" data-date="{{ "now"|convertdate("m/d/Y") }}" data-time="{{ "now"|convertdate("H:i") }}" data-itemid="{{ item.itemid }}">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add
+				</button>
+			</div>
+		</div>
+	</div>
+	{% for note in qnotes.irev.get_notes_summarized(item.itemid) %}
+		<div class="list-group-item qnote-row">
+			<div class="row mb-1">
+				<div class="col">{{ note.notedate|convertdate }}</div>
+				<div class="col">{{ (note.notedate ~ note.notetime)|convertdate("H:i") }}</div>
+				<div class="col">{{ note.user }}</div>
+				<div class="col">{{ note.revision }}</div>
+				<div class="col">
+					<button type="button" class="btn btn-light" data-toggle="collapse" data-target="#notes-revision-{{ item.linenbr }}-{{ note.notedate|convertdate('Ymd') }}-{{ note.notetime|convertdate('Hi') }}" aria-controls="notes-revision-{{ note.notedate|convertdate('Ymd') }}-{{ note.notetime|convertdate('Hi') }}">
+						<i class="fa fa-eye" aria-hidden="true"></i> Show
+					</button>
+					{% if note.user == qnotes.irev.user.loginid %}
+						<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-revision-modal" data-date="{{ note.notedate|convertdate("m/d/Y") }}" data-time="{{ (note.notedate ~ note.notetime)|convertdate("H:i") }}" data-revision="{{ note.revision }}" data-itemid="{{ item.itemid }}">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</button>
+					{% endif %}
+				</div>
+			</div>
+			<textarea class="collapse form-control-plaintext qnotes" id="notes-revision-{{ item.linenbr }}-{{ note.notedate|convertdate('Ymd') }}-{{ note.notetime|convertdate('Hi') }}" cols="{{ qnotes_so.get_column_count() }}" rows="20" readonly>{{ qnotes.irev.get_notes_form_array(item.itemid, note.user, note.notedate, note.notetime)|join('\r') }}</textarea>
+		</div>
+	{% endfor %}
+</div>

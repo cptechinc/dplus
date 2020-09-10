@@ -22,13 +22,13 @@ if (!empty($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != '/') {
 // CHECK DATABASE CONNECTIONS
 if ($page->id != $config->errorpage_dplusdb) {
 	if (empty(wire('dplusdata')) || empty(wire('dpluso'))) {
-		$modules->get('DplusConnectDatabase')->log_error('At least One database is not connected');
+		$modules->get('DplusDatabase')->logError('At least One database is not connected');
 		$session->redirect($pages->get($config->errorpage_dplusdb)->url, $http301 = false);
 	}
 
 	$db_modules = array(
 		'dplusdata' => array(
-			'module'   => 'DplusConnectDatabase',
+			'module'   => 'DplusDatabase',
 			'default'  => true
 		),
 		'dpluso' => array(
@@ -39,14 +39,14 @@ if ($page->id != $config->errorpage_dplusdb) {
 
 	foreach ($db_modules as $key => $connection) {
 		$module = $modules->get($connection['module']);
-		$module->connect_propel();
+		$module->connectPropel();
 
 		try {
-			$propel_name = $module->get_connection_name_propel();
-			$$propel_name = $module->get_propel_write_connection();
+			$propel_name  = $module->dbConnectionName();
+			$$propel_name = $module->propelWriteConnection();
 			$$propel_name->useDebug(true);
 		} catch (Exception $e) {
-			$module->log_error($e->getMessage());
+			$module->logError($e->getMessage());
 			$session->redirect($pages->get($config->errorpage_dplusdb)->url, $http301 = false);
 		}
 	}
@@ -71,8 +71,8 @@ if ($page->id != $config->errorpage_dplusdb) {
 		}
 	} else {
 		try {
-			$con    = $modules->get('DplusConnectDatabase')->get_propel_write_connection();
-			$dpluso = $modules->get('DplusOnlineDatabase')->get_propel_write_connection();
+			$con    = $modules->get('DplusDatabase')->propelWriteConnection();
+			$dpluso = $modules->get('DplusOnlineDatabase')->propelWriteConnection();
 		} catch (Exception $e) {
 			$page->show_title = true;
 		}

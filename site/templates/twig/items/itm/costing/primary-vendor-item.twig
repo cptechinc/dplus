@@ -1,0 +1,41 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	item                   ItemMasterItem
+#}
+<div class="form-group row">
+	<div class="col-sm-4">
+		<strong>Primary Vendor </strong> &nbsp;
+	</div>
+	<div class="col-sm-8">
+		{{ item.primaryvxm.vendorid }}
+	</div>
+</div>
+<div class="form-group row">
+	<div class="col-sm-4">
+		<strong>Item ID </strong> &nbsp;
+	</div>
+	<div class="col-sm-8">
+		{{ item.primaryvxm.vendoritemid }}
+	</div>
+</div>
+<div class="form-group row">
+	<div class="col-sm-4">
+		<strong>Unit Cost </strong> &nbsp;
+	</div>
+	<div class="col-sm-8">
+		<div class="row">
+			<div class="col-sm-8">
+				<div class="input-group input-group-sm">
+					<input type="text" class="form-control-plaintext" value="{{ item.primaryvxm.get_unitcost(0)|number_format(4) }}">
+					<div class="input-group-append">
+						<div class="input-group-text">{{ item.primaryvxm.uom_purchase }}</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<p class="form-control-plaintext">{{ item.primaryvxm.date_changed|convertdate }}</p>
+			</div>
+		</div>
+	</div>
+</div>

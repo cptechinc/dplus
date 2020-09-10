@@ -1,0 +1,76 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+include_once(__DIR__.'/../QnotesResponse.php');
+
+/**
+ * QnotesVendor
+ *
+ * Wrapper Class that houses the modules for Vendor Qnotes CRUD modules
+ */
+class QnotesVendor extends WireData implements Module {
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Takes Input, Processes it, updates Purchase Order Notes in the Database
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$validate_ponbr = $this->wire('modules')->get('ValidatePurchaseOrderNbr');
+		$ponbr = $values->text('ponbr');
+
+		if ($validate_ponbr->validate($ponbr)) {
+			switch ($values->text('type')) {
+				case 'VEND':
+					$this->order->process_input($input);
+					break;
+				case 'INTL':
+					$this->intl->process_input($input);
+					break;
+				default:
+					$this->wire('session')->response_qnote = QnotesResponse::response_error($ponbr, 'Invalid Note Type');
+					break;
+			}
+		} else {
+			$this->wire('session')->response_qnote = QnotesResponse::response_error($ponbr, 'Invalid PO Number');
+		}
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Qnotes Vendor',
+			'version' => 101,
+			'summary' => 'Wrapper for Qnotes Vendor Modules',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('Qnotes'),
+			'installs' => array(
+				'QnotesVendorVend'
+			)
+		);
+	}
+
+	public function init() {
+		$this->order = $this->wire('modules')->get('QnotesVendorVend');
+	}
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+		$modules->refresh();
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
+	}
+}

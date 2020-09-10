@@ -1,0 +1,41 @@
+$(function() {
+	var modal_notes = $('#notes-pord-modal');
+	var form = modal_notes.find('form');
+	var input_note = form.find('textarea[name=note]');
+/* =============================================================
+	Event Functions
+============================================================= */
+
+	modal_notes.on('show.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget);
+		var linenbr = button.data('linenbr');
+		var modaltitle = modal.find('.modal-title');
+
+		if (note.length) {
+			modaltitle.find('.verb').text('Edit');
+		} else {
+			modaltitle.find('.verb').text('Add');
+		}
+
+		var description = parseInt(linenbr) > 0 ? 'Line #' + linenbr : 'Header';
+		modaltitle.find('.description').text(description);
+		populate_form(linenbr);
+	});
+
+	function populate_form(linenbr) {
+		var notediv = $('#notes-'+linenbr);
+		var note = notediv.find('textarea').val();
+		form.find('input[name=linenbr]').val(linenbr);
+		input_note.val(note);
+
+		if (notediv.data('editable') == true) {
+			input_note.removeAttr('readonly');
+			$('button.crud').addClass('show');
+		} else {
+			input_note.attr('readonly', 'true');
+			$('button.crud').removeClass('show');
+		}
+	}
+
+});

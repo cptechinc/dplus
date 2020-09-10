@@ -8,7 +8,7 @@
 		{% endif %}
 	</div>
 {% endif %}
-<div class="list-group">
+<div class="list-group dplus-menu">
 	{% for item in items %}
 		<a href="{{ item.url }}" class="list-group-item list-group-item-action">
 			<div class="row align-items-center">
@@ -18,7 +18,7 @@
 					{% else %}
 						<i class="fa fa-microchip" aria-hidden="true"></i>
 					{% endif %} &nbsp; &nbsp;
-					<strong>{{ item.title|raw }} ({{item.dplus_function}})</strong>
+					<strong>{{ item.title|raw }} {{ item.dplus_function ? '(' ~ item.dplus_function ~ ')' }}</strong>
 					<br>
 				</div>
 				<div class="col-8">

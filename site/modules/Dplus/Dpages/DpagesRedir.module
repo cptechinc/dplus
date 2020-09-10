@@ -113,6 +113,14 @@ class DpagesRedir extends DplusPwPages implements Module {
 			'parent'     => '/mvi/',
 			'redir_file' => 'vi'
 		),
+		'quote-redir' => array(
+			'template'   => 'redir',
+			'name'       => 'redir',
+			'title'      => 'redir',
+			'summary'    => 'Quote Redirects',
+			'parent'     => '/mqo/',
+			'redir_file' => 'quote'
+		),
 	);
 
 	/* =============================================================

@@ -1,8 +1,45 @@
-<div class="list-group">
-	{% for item in items %}
-		<a href="{{ page.get_itemURL(item.itemid) }}" class="list-group-item list-group-item-action item-link" data-itemid="{{ item.itemid }}">
-			<h4 class="list-group-item-heading itemid">{{ item.itemid }}</h4>
-			<p class="list-group-item-text mb-0 description">{{ item.desc }}</p>
-		</a>
-	{% endfor %}
-</div>
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	items                  ItemMasterItem[]|ObjectCollectiion
+	datamatcher            module RegexData
+	q                      Search
+#}
+<table id="item-index" class="table table-bordered">
+	<thead>
+		<tr>
+			<th scope="col">
+				Item ID
+			</th>
+			<th scope="col">
+				Description
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if items.count() %}
+			{% for item in items %}
+				<tr>
+					<td>
+						<a href="{{ page.get_itemURL(item.itemid) }}" class="link ii-item item-link" data-itemid="{{ item.itemid }}">
+							<strong>{{ item.itemid }}</strong>
+						</a>
+					</td>
+					<td class="{{ datamatcher.string(item.name, q) ? 'highlight' : '' }}">
+						<small>
+							{{ item.desc }} <br>
+							{{ item.desc2 }}
+						</small>
+					</td>
+				</tr>
+			{% endfor %}
+		{% else %}
+			<tr>
+				<td colspan="7" class="bg-secondary text-white text-center">
+					No Results found
+				</td>
+			</tr>
+		{% endif %}
+	</tbody>
+</table>

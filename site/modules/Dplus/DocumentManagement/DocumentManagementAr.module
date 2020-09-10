@@ -224,20 +224,6 @@ class DocumentManagementAr extends DocumentManagement implements Module {
 	}
 
 	public function init() {
-		$this->addHook('Page(pw_template=quote-view)::documentload', function($event) {
-			$page = $event->object;
-			$folder   = $event->arguments(0);
-			$document = $event->arguments(1);
-			$qnbr     = $event->arguments(2);
-			$event->return = $this->get_docsURL($qnbr, $folder, $document);
-		});
-
-		$this->addHook('Page(pw_template=quote-documents)::documentload', function($event) {
-			$page = $event->object;
-			$folder   = $event->arguments(0);
-			$document = $event->arguments(1);
-			$qnbr     = $event->arguments(2);
-			$event->return = $this->get_docsURL($qnbr, $folder, $document);
-		});
+		
 	}
 }

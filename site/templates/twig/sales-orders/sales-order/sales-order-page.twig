@@ -11,7 +11,7 @@
 	{% include 'sales-orders/sales-order/sales-order-items.twig' %}
 {% endif %}
 
-{% if user.can_editorder(order) %}
+{% if user.can_editorder(order.ordernumber) %}
 	<a href="{{ page.edit_orderURL(order.ordernumber) }}" class="btn btn-warning btn-block mb-5">
 		Edit Order&ensp;<i class="fa fa-pencil" aria-hidden="true"></i>
 	</a>

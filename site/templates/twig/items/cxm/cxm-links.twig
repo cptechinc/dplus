@@ -1,0 +1,19 @@
+<div class="mb-3">
+	<button class="btn btn-primary" onclick="window.history.back()">
+		<i class="fa fa-arrow-left" aria-hidden="true"></i> Back
+	</button>
+	&nbsp;
+	<a href="{{ page.url }}" class="btn btn-primary">
+		<i class="fa fa-search" aria-hidden="true"></i> Search Item ID or Customer ID
+	</a>
+
+	{% if page.has('custID') and page.has('custitemID') == false %}
+		<a href="{{ page.cxm_itemURL(page.custID, 'new') }}" class="btn btn-primary">
+			<i class="fa fa-plus" aria-hidden="true"></i> Add Item to Customer {{ page.custID }}
+		</a>
+	{% endif %}
+
+	{% if page.has('custitemID') %}
+		<a href="{{ page.cxm_customerURL(page.custID) }}" class="btn btn-primary"> View Customer {{ page.custID }}</a>
+	{% endif %}
+</div>

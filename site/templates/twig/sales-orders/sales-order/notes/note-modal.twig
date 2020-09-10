@@ -44,11 +44,11 @@
 
 					</div>
 					<div class="form-group">
-						{% include 'msa/noce/ajax/button.twig' with {'input': '#q-notes-text'} %}
+						{% include 'msa/noce/ajax/button.twig' with {'input': '#note'} %}
 					</div>
 					<div class="form-group">
-						<label for="q-notes-text">Notes</label>
-						<textarea name="note" class="form-control w-auto" id="q-notes-text" cols="{{ qnotes_so.get_column_count() }}" rows="15"></textarea>
+						<label for="note">Notes</label>
+						{% include 'util/qnotes-textarea.twig' with {'cols': qnotes_so.get_column_count() - 1, 'rows': 15 } %}
 					</div>
 
 					<div class="d-flex justify-content-between align-items-center">

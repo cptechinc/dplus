@@ -1,0 +1,54 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use ShipviaQuery, Shipvia;
+
+/**
+ * ValidateAr
+ *
+ * Class for Validating AR table codes, IDs
+ *
+ * @property bool $exists      Code / ID exists
+ */
+class ValidateAr extends WireData implements Module {
+	public function __construct() {
+		$this->exists   = false;
+	}
+
+	/**
+	 * Return if Ship-Via Code Exists
+	 * @param  string $code Ship-Via Code
+	 * @return bool
+	 */
+	public function validate_shipvia($code) {
+		$q = ShipviaQuery::create();
+		$q->filterByCode($code);
+
+		if ($q->count()) {
+			$this->exists = true;
+		}
+		return $this->exists;
+	}
+
+
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Validate AR Module',
+			'version' => 101,
+			'summary' => 'Validates AR table codes',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(),
+		);
+	}
+}

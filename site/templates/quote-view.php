@@ -32,7 +32,7 @@
 			$page->body .= $config->twig->render('quotes/quote/user-actions.twig', ['page' => $page, 'module_useractions' => $module_useractions, 'actions' => $actions, 'qnbr' => $qnbr]);
 		} else {
 			$page->headline = $page->title = "Quote #$qnbr could not be found";
-			$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Check if the Quote Number is correct"]);
+			$page->body = $config->twig->render('util/error-page.twig', ['title' => 'Quote Not Found', 'msg' => "Check if the Quote Number is correct"]);
 		}
 	} else {
 		$page->body = $config->twig->render('quotes/quote/lookup-form.twig', ['page' => $page]);

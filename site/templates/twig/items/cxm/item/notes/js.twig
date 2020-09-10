@@ -1,0 +1,128 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	qnotes                 module QnotesItemXrefCustomer
+#}
+
+$(function() {
+/* =============================================================
+	Order Notes Functions
+============================================================= */
+
+	$('#notes-order-modal').on('show.bs.modal', function (e) {
+		var modal = $(this);
+		var button = $(e.relatedTarget);
+		populate_notes_form(button, modal);
+	});
+
+	$('#notes-order-modal').on('shown.bs.modal', function (e) {
+		var modal = $(this);
+		modal.find('textarea[name=note]').focus();
+	});
+
+	$("#order-notes-form").validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			note: {
+				required: true,
+			},
+		},
+		messages: {
+			note: "Please Enter a Note",
+		},
+		submitHandler: function(form) {
+			var action = $(this.submitButton).attr("value");
+			var jform = $(form);
+
+			if (action == 'delete-notes') {
+				swal2.fire({
+					title: 'Confirm Delete',
+					text: 'Would you like to delete these notes?',
+					icon: 'question',
+					showCancelButton: true,
+					confirmButtonText: 'Yes',
+					cancelButtonText: 'No',
+				}).then((result) => {
+					$('<input type="hidden" name="action" value="delete-notes">').appendTo(jform);
+					form.submit();
+				});
+			} else {
+				if (has_document_selected()) {
+					if (note_forms_exists() && jform.find('input[name=form]').val() != get_notes_formscode() )  {
+						swal2.fire({
+							title: 'This note type ('+ get_notes_formscode() +') exists!',
+							text: 'Do you want View / Edit that note?',
+							icon: 'question',
+							showCancelButton: true,
+							confirmButtonText: 'Yes',
+							cancelButtonText: 'No',
+						}).then((result) => {
+							if (result.value) {
+								var button = $('.qnote-order-row[data-form='+get_notes_formscode()+']').find('button.edit');
+								var modal = $('#notes-order-modal');
+								populate_notes_form(button, modal);
+							}
+						});
+					} else {
+						form.submit();
+					}
+				} else {
+					var notesform = $(form);
+					var ele_feedback = notesform.find('.feedback');
+					ele_feedback.addClass('is-invalid');
+					ele_feedback.html($('<label>Please check a document to add a note to</label>').addClass('invalid-feedback').show());
+				}
+			}
+		}
+	});
+
+	function has_document_selected() {
+		{% for form, label in qnotes.get_forms_shortlabels() %}
+			if ($("#order-notes-form").find('input[name={{ form }}]').prop('checked')) {
+				return true;
+			}
+		{% endfor %}
+		return false;
+	}
+
+	function get_notes_formscode() {
+		var formcode = '';
+
+		{% for form, label in qnotes.get_forms_shortlabels() %}
+			formcode += $("#order-notes-form").find('input[name={{ form }}]').prop('checked') ? 'Y' : 'N';
+		{% endfor %}
+		return formcode;
+	}
+
+	function note_forms_exists() {
+		var formcode = get_notes_formscode();
+
+		if ($('.qnote-order-row[data-form='+formcode+']').length) {
+			return true;
+		}
+		return false;
+	}
+
+	function populate_notes_form(button, modal) {
+		var note_row = button.closest('.qnote-order-row');
+		if (note_row.length) {
+			modal.find('.action-desc').text('Editing');
+			{% for form, label in qnotes.get_forms_shortlabels() %}
+				modal.find('input[name={{ form }}]').prop('checked', button.data('{{ form }}') == 'Y');
+			{% endfor %}
+			modal.addClass('is-invalid');
+			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
+		} else {
+			modal.find('.action-desc').text('Adding');
+			{% for form, label in qnotes.get_forms_shortlabels() %}
+				modal.find('input[name={{ form }}]').prop('checked', false);
+			{% endfor %}
+			modal.find('textarea[name=note]').val('');
+		}
+		modal.find('input[name=form]').val(button.data('form'));
+	}
+});

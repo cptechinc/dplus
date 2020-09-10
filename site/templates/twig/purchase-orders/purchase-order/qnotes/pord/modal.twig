@@ -1,0 +1,47 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	qnotes                 module QnotesPo
+	qnotes.pord            module QnotesPoPord
+#}
+<div class="modal fade" id="notes-pord-modal" tabindex="-1" role="dialog" aria-labelledby="notes-pord-modal-label" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="notes-pord-modal-label"><span class="verb">Add</span> Purchase Order Note: <b class="description"></b></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form action="{{ page.url }}" method="post" id="qnote-form">
+					<input type="hidden" name="ponbr" value="{{ ponbr }}">
+					<input type="hidden" name="linenbr" value="">
+					<input type="hidden" name="type" value="{{ qnotes.pord.type() }}">
+					<input type="hidden" name="action" value="update-notes">
+					<div class="feedback">
+
+					</div>
+					<div class="form-group">
+						{% include 'msa/noce/ajax/button.twig' with {'input': '#note'} %}
+					</div>
+					<div class="form-group">
+						<label for="note">Notes</label>
+						{% include 'util/form/qnotes-textarea.twig' with {'cols': qnotes.pord.get_column_count()} %}
+					</div>
+
+					<div class="d-flex justify-content-between align-items-center">
+						<button type="submit" name="action" value="update-notes" class="btn btn-success crud collapse show">
+							<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+						</button>
+						<button type="submit" name="action" novalidate value="delete-notes" class="btn btn-danger crud collapse show">
+							<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+						</button>
+						<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

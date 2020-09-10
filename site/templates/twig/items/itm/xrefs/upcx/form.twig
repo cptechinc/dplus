@@ -1,0 +1,12 @@
+{% extends 'items/upcx/upc-form.twig' %}
+
+{% block form_input_itemid %}
+	<div class="form-group row">
+		<div class="col-sm-6">
+			<label for="itemID">Item ID</label>
+		</div>
+		<div class="col-sm-6">
+			<input type="text" class="form-control-plaintext" name="itemID" id="itemID" value="{{ upc.itemID }}" readonly>
+		</div>
+	</div>
+{% endblock %}

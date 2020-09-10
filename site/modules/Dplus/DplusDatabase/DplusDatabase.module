@@ -1,0 +1,260 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\Connection\ConnectionManagerSingle;
+use Propel\Runtime\Propel;
+use Propel\Runtime\ServiceContainer\ServiceContainerInterface;
+
+/**
+ * DplusDatabase
+ *
+ * Class for Creating Connection to the data(x) databases for Dplus
+ * NOTE these are the DPLUS main files, not pertaining to a session
+ */
+class DplusDatabase extends Process implements ConfigurableModule {
+	const CONNECTION_NAME_PROPEL = 'default';
+	const CONNECTION_NAME_PW     = 'dplusdata';
+
+	const CONFIG_FIELDS = array(
+		'db_name' => array(
+			'name'        => 'db_name',
+			'type'        => 'text',
+			'label'       => 'Database Name',
+			'description' => 'This is the name of the Database to connect to read Dplus Data',
+			'notes'       => 'If omitted the name of the database derived from the company number',
+			'icon'        => 'fa-database',
+			'required'    => false,
+			'pattern'     => '[A-Za-z0-9%#_-]*',
+		),
+		'db_host' => array(
+			'name'        => 'db_host',
+			'type'        => 'text',
+			'label'       => 'Database Host',
+			'description' => 'This is the database IP or URL to connect to Database',
+			'notes'       => 'If omitted, will default to the same Host as the processwire Database Host',
+			'icon'        => 'fa-database',
+			'required'    => false,
+			'pattern'     => '',
+		),
+		'db_user' => array(
+			'name'        => 'db_user',
+			'type'        => 'text',
+			'label'       => 'Database User',
+			'description' => 'This is the database IP or URL to connect to Database',
+			'notes'       => 'If omitted, will default to the same Host as the processwire Database Host',
+			'icon'        => 'fa-database',
+			'required'    => false,
+			'pattern'     => '[A-Za-z0-9%#_-]*',
+		),
+		'db_pass' => array(
+			'name'        => 'db_pass',
+			'type'        => 'text',
+			'label'       => 'Database Password',
+			'description' => 'Database User password',
+			'notes'       => 'If omitted, will default to the same Password as the processwire Database Password',
+			'icon'        => 'fa-database',
+			'required'    => false,
+			'pattern'     => '[A-Za-z0-9%#_-]*',
+		),
+		'db_port' => array(
+			'name'        => 'db_port',
+			'type'        => 'text',
+			'label'       => 'Database Port',
+			'description' => 'Database Port',
+			'notes'       => 'If omitted, will default to the same Port as the processwire Database Port',
+			'icon'        => 'fa-database',
+			'required'    => false,
+			'pattern'     => '',
+		),
+	);
+
+	public function propelConnectionName() {
+		return $this::CONNECTION_NAME_PROPEL;
+	}
+
+	public function dbConnectionName($prefix = true) {
+		return "db_".$this::CONNECTION_NAME_PW;
+	}
+
+	/**
+	 * Returns Default Configuration Values
+	 * @var array
+	 */
+	static public function getDefaultConfig() {
+		return array(
+			'db_name' => '',
+			'db_host' => '',
+			'db_user' => '',
+			'db_pass' => '',
+			'db_port' => '',
+		);
+	}
+
+	/**
+	 * Creates a PDO object and attaches it to wire to connect
+	 * @return void
+	 */
+	public function connectDatabase() {
+		$dbconfig = $this->dbconfig();
+		$session = $this->wire('session');
+
+		try {
+			$pdo = WireDatabasePDO::getInstance($dbconfig);
+			$this->wire($this::CONNECTION_NAME_PW, $pdo, true);
+			$session->set($this::CONNECTION_NAME_PW, true);
+		} catch (PDOException $e) {
+			if (!empty($session->get($this::CONNECTION_NAME_PW))) {
+				$this->logError($e->getMessage());
+
+			}
+			$session->remove($this::CONNECTION_NAME_PW);
+		}
+	}
+
+	/**
+	 * Writes Error Message to Database Error Log
+	 * @param  string $message Error Message
+	 * @return void
+	 */
+	public function logError($message) {
+		$date = date("Y-m-d h:m:s");
+		$class = get_class($this);
+		$message = "[{$date}] [{$class}] $message";
+		$this->wire('log')->save('db-errors', $message);
+	}
+
+	/**
+	 * Returns Config to connect to Database
+	 * @return Config
+	 */
+	public function dbconfig() {
+		$config = $this->wire('config');
+		$dbname = '';
+
+		if (!empty($this->db_name)){
+			$this->db_name = $this->db_name;
+		} else {
+			$this->db_name = !empty($config->dplusdbname) ? $config->dplusdbname : "data$config->COMPANYNBR";
+		}
+
+		$dbconfig = new Config();
+		$dbconfig->dbHost = !empty($this->db_host) ? $this->db_host : $config->dbHost;;
+		$dbconfig->dbName = $this->db_name;
+		$dbconfig->dbUser = !empty($this->db_user) ? $this->db_user : $config->dbUser;
+		$dbconfig->dbPass = !empty($this->db_pass) ? $this->db_pass : $config->dbPass;
+		$dbconfig->dbPort = !empty($this->db_port) ? $this->db_port : $config->dbport;
+
+		return $dbconfig;
+	}
+
+/* =============================================================
+	Propel Functions
+============================================================= */
+	/**
+	 * Makes Propel Connection to database
+	 * @return void
+	 */
+	public function connectPropel() {
+		$manager = $this->propelConnectionManager();
+		$serviceContainer = Propel::getServiceContainer();
+		$serviceContainer->checkVersion('2.0.0-dev');
+		$serviceContainer->setAdapterClass($this::CONNECTION_NAME_PROPEL, 'mysql');
+		$serviceContainer->setConnectionManager($this::CONNECTION_NAME_PROPEL, $manager);
+		$this->setPropelDefaultService($serviceContainer);
+	}
+
+	/**
+	 * Sets the Default datasource
+	 * @param ServiceContainerInterface $serviceContainer
+	 */
+	protected function setPropelDefaultService(ServiceContainerInterface $serviceContainer) {
+		$serviceContainer->setDefaultDatasource($this::CONNECTION_NAME_PROPEL);
+	}
+
+	/**
+	 * Return ConnectionManager
+	 * @return ConnectionManagerSingle
+	 */
+	public function propelConnectionManager() {
+		$manager = new ConnectionManagerSingle();
+		$manager->setConfiguration($this->propelConfiguration());
+		return $manager;
+	}
+
+	/**
+	 * Returns Propel connection Configuration
+	 * @return array
+	 */
+	public function propelConfiguration() {
+		return array(
+			'classname' => 'Propel\\Runtime\\Connection\\ConnectionWrapper',
+			'dsn' => "mysql:host=$this->db_host;dbname=$this->db_name",
+			'user' => $this->db_user,
+			'password' => $this->db_pass,
+			'attributes' =>
+			array(
+				'ATTR_EMULATE_PREPARES' => false,
+				'ATTR_TIMEOUT' => 30,
+			),
+			'model_paths' =>
+			array (
+				0 => 'src',
+				1 => 'vendor',
+			),
+		);
+	}
+
+	/**
+	 * Return Connection Interface for this Connection Name
+	 * @return ConnectionInterface
+	 */
+	public function propelWriteConnection() {
+		return Propel::getWriteConnection($this::CONNECTION_NAME_PROPEL);
+	}
+
+	/* =============================================================
+		ProcessWire Module Functions
+	============================================================= */
+	public function __construct() {
+		foreach(self::getDefaultConfig() as $key => $value) {
+			$this->$key = $value;
+		}
+	}
+
+	public function init() {
+		parent::init();
+		$this->connectDatabase();
+	}
+
+	public static function getModuleInfo() {
+		$infoArray = array(
+			'title' => __('Dplus Database Connection'),
+			'version' => 115,
+			'summary' => __("Creates Connection to Dplus Database"),
+			'autoload' => true,
+			'singular' => true,
+			'author' => 'pauldro',
+			'icon' => 'database'
+		);
+		return $infoArray;
+	}
+
+	/**
+	 * Return Input Fields for Database Connectiion Configuration
+	 * @var InputfieldWrapper
+	 */
+	static public function getModuleConfigInputfields(array $data) {
+		$modules = wire('modules');
+		$config = wire('config');
+		$fieldmaker = $modules->get('ConfigFields');
+
+		$fields = new InputfieldWrapper();
+		$defaults = self::getDefaultConfig();
+		$data = array_merge($defaults, $data);
+
+		foreach (self::CONFIG_FIELDS as $name => $traits) {
+			$f = $fieldmaker->inputfield($traits, $data[$name]);
+			$fields->add($f);
+		}
+		return $fields;
+	}
+}

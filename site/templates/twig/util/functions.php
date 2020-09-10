@@ -44,6 +44,7 @@
 			' ' => '+',
 			'=' => 'eq',
 			'%' => 'per',
+			'+' => 'plus'
 		);
 		$string = str_replace(array_keys($replace), array_values($replace), $string);
 		return $jsprepend ? "js-$string" : $string;
@@ -103,6 +104,11 @@
 		$newstring = substr($string, 0, $length);
 		$newstring .= strlen($string) > $length ? $append : '';
 		return $newstring;
+	});
+	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('dynamicproperty', function ($object, $property) {
+		return $object->$property;
 	});
 	$config->twig->addFilter($filter);
 

@@ -1,0 +1,76 @@
+$(function() {
+	var modal_ajax = $('#ajax-modal');
+	var form = $('#itm-xrefs-form');
+	var input_supercededby = form.find('input[name=supercededby]');
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = form.serialize();
+
+	$("body").on("click", "a:not(#itm-xrefs-form.form_button, #ajax-modal a)", function(e) {
+		if (form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			swal2.fire({
+				title: 'Changes have occurred!',
+				text: 'Do you want to save?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+				cancelButtonText: 'No',
+			}).then((result) => {
+				if (result.value) {
+					form.find('button[type=submit]').click();
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					// Send HTTP GET Request to remove Record Lock
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
+/* =============================================================
+	Item Lookup Modal Methods
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = '{{ page.itemlookupURL }}';
+		modal.find('.modal-title').text('Search for an Item');
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {
+
+		});
+	});
+
+	$("body").on("submit", "#ajax-modal .item-search", function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {
+
+		});
+	});
+
+	$("body").on("click", "#ajax-modal .item-link", function(e) {
+		e.preventDefault();
+		var button = $(this);
+		input_supercededby.val(button.data('itemid'));
+		$('#ajax-modal').modal('hide');
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+});

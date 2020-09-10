@@ -1,0 +1,65 @@
+<div class="modal fade" id="bins-modal" tabindex="-1" role="dialog" aria-labelledby="bins-modal-label" aria-hidden="true" data-input="">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="bins-modal-label">Showing Bins for Warehouse <span class="whse-title"></span></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<ul class="nav nav-tabs collapse" id="warehouses-tab" role="tablist">
+					{% for id in m_whse.get_warehouses_ids() %}
+						<li class="nav-item">
+							<a class="nav-link" id="whse-{{ id }}-tab" data-toggle="tab" href="#whse-{{ id }}-bins" role="tab" aria-controls="whse-{{ id }}-bins" aria-selected="false">
+								{{ id }}
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+
+				<div class="tab-content" id="warehouses-bins-list">
+					{% for warehouse in m_whse.get_warehouses() %}
+						<div class="tab-pane fade show" id="whse-{{ warehouse.id }}-bins" role="tabpanel" aria-labelledby="whse-{{ warehouse.id }}-tab">
+							{% if (warehouse.are_binslisted()) %}
+								<div class="list-group">
+									{% if warehouse.count_bins() %}
+										{% for bin in warehouse.get_bins() %}
+											<a href="#" class="list-group-item choose-bin" data-bin="{{ bin.from }}">
+												<h6 class="list-group-item-heading">{{ bin.from }}</h6>
+												{{ bin.bindesc }}
+											</a>
+										{% endfor %}
+									{% else %}
+										<div class="list-group-item" data-bin="{{ bin.from }}">
+											<h6 class="list-group-item-heading">Bin List is empty</h6>
+										</div>
+									{% endif %}
+								</div>
+							{% else	%}
+								<table class="table table-condensed table-striped table-bordered">
+									<tr>
+										<th>Range From</th>
+										<th>Range Through</th>
+									</tr>
+									{% if warehouse.count_bins() %}
+										{% for bin in warehouse.get_bins() %}
+											<tr>
+												<td>{{ bin.from }}</td>
+												<td>{{ bin.through }}</td>
+											</tr>
+										{% endfor %}
+									{% else %}
+										<tr>
+											<td colspan="2">No Ranges are defined</td>
+										</tr>
+									{% endif %}
+								</table>
+							{% endif %}
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

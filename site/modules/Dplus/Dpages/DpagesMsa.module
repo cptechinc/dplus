@@ -82,6 +82,128 @@ class DpagesMsa extends Dpages implements Module {
 	);
 
 /* =============================================================
+	URL Module Functions
+============================================================= */
+	/**
+	 * Return View Code Table URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_viewURL($table, $code = false) {
+		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop|msa-lgrp, name=$table")->url);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return View Code Table List URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_listURL($table, $code = false) {
+		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop|msa-lgrp, name=$table")->url);
+		$code = str_replace(' ', '-', $code);
+		$url->query->set('focus', $code);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Code Table Code Delete URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_code_deleteURL($table, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop|msa-lgrp, name=$table")->url);
+		$url->query->set('action', 'remove-code');
+		$url->query->set('table', $table);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Code Table Edit Code URL
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return string
+	 */
+	public function get_codetable_code_editURL($table, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop|msa-lgrp, name=$table")->url);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return List Sysop Codes
+	 * @param  string $table  Table
+	 * @param  string $system System Sysop
+	 * @param  string $code Sysop Code
+	 * @return string
+	 */
+	public function get_codetable_list_sysopURL($table, $system, $code = '') {
+		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop, name=$table")->url);
+
+		if ($system == '') {
+			$url->query->set('focus', $code);
+		} else {
+			$url->query->set('focus', $system.'-'.$code);
+		}
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Delete Sysop Code URL
+	 * @param  string $system System Sysop
+	 * @param  string $code   Sysop Code
+	 * @return string
+	 */
+	public function get_sysop_code_deleteURL($system, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop")->url);
+		$url->query->set('action', 'remove-code');
+		$url->query->set('system', $system);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Edit Sysop Code URL
+	 * @param  string $system System Sysop
+	 * @param  string $code   Sysop Code
+	 * @return string
+	 */
+	public function get_sysop_code_editURL($system, $code) {
+		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop")->url);
+		$url->query->set('system', $system);
+		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Noce Note List URL
+	 * @param  string $focus Note Code to focus
+	 * @return string
+	 */
+	public function get_noce_listURL($focus = '') {
+		$url = new Url($this->wire('pages')->get("pw_template=msa-noce")->url);
+		$url->query->set('focus', $focus);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Noce Note Delete URL
+	 * @param  string $focus Note Code to focus
+	 * @return string
+	 */
+	public function get_noce_deleteURL($id) {
+		$url = new Url($this->wire('pages')->get("pw_template=msa-noce")->url);
+		$url->query->set('action', 'delete-notes');
+		$url->query->set('id', $id);
+		return $url->getUrl();
+	}
+
+/* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
 	public function init() {
@@ -140,72 +262,13 @@ class DpagesMsa extends Dpages implements Module {
 			$focus = $event->arguments(0);
 			$event->return = $this->get_noce_listURL($focus);
 		});
+
+		$this->addHook('Page(pw_template=msa-noce)::code_deleteURL', function($event) {
+			$code = $event->arguments(0);
+			$event->return = $this->get_noce_deleteURL($code);
+		});
 	}
 
-	public function get_codetable_listURL($table, $code = false) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop|msa-lgrp, name=$table")->url);
-		$code = str_replace(' ', '-', $code);
-		$url->query->set('focus', $code);
-		return $url->getUrl();
-	}
-
-	public function get_codetable_list_sysopURL($table, $system, $code = false) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop, name=$table")->url);
-
-		if ($system == '') {
-			$url->query->set('focus', $code);
-		} else {
-			$url->query->set('focus', $system.'-'.$code);
-		}
-		return $url->getUrl();
-	}
-
-	public function get_codetable_viewURL($table, $code = false) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop|msa-lgrp, name=$table")->url);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	public function get_codetable_code_deleteURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop|msa-lgrp, name=$table")->url);
-		$url->query->set('action', 'remove-code');
-		$url->query->set('table', $table);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	public function get_codetable_code_editURL($table, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop|msa-lgrp, name=$table")->url);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	public function get_sysop_code_deleteURL($system, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop")->url);
-		$url->query->set('action', 'remove-code');
-		$url->query->set('system', $system);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	public function get_sysop_code_editURL($system, $code) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-sysop")->url);
-		$url->query->set('system', $system);
-		$url->query->set('code', $code);
-		return $url->getUrl();
-	}
-
-	public function get_noce_listURL($focus = false) {
-		$url = new Url($this->wire('pages')->get("pw_template=msa-noce")->url);
-		$url->query->set('focus', $focus);
-		return $url->getUrl();
-	}
-
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus MSA Pages Modules',

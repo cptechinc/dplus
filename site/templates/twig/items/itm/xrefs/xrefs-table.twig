@@ -1,0 +1,76 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	item                   ItemMasterItem
+#}
+<table class="table table-sm">
+	<tr>
+		<td>
+			<a href="{{ page.itm_xrefs_upcxURL(item.itemid) }}" class="link">UPC X-refs</a>
+		</td>
+		<td>
+			<div class="custom-control custom-checkbox">
+				<input type="checkbox" class="custom-control-input" id="xref-upcx-count" {{ item.countItemXrefUpcs() ? 'checked' : '' }}>
+				<label class="custom-control-label" for="customCheck1" >{{ item.countItemXrefUpcs() }} Records</label>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="{{ page.itm_xrefs_vxmURL(item.itemid) }}" class="link">Vendor X-refs</a>
+		</td>
+		<td>
+			<div class="custom-control custom-checkbox">
+				<input type="checkbox" class="custom-control-input" id="xref-vendor-count" {{ item.countItemXrefVendors() ? 'checked' : '' }}>
+				<label class="custom-control-label" for="customCheck1" >{{ item.countItemXrefVendors() }} Records</label>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="{{ page.itm_xrefs_cxmURL(item.itemid) }}" class="link">Customer X-refs</a>
+		</td>
+		<td>
+			<div class="custom-control custom-checkbox">
+				<input type="checkbox" class="custom-control-input" id="xref-customer-count" {{ item.countItemXrefCustomers() ? 'checked' : '' }}>
+				<label class="custom-control-label" for="customCheck1" >{{ item.countItemXrefCustomers() }} Records</label>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>Kit</td>
+		<td>
+			<div class="custom-control custom-checkbox">
+				<input type="checkbox" class="custom-control-input" id="is-kit" {{ item.is_kit() ? 'checked' : '' }}>
+				<label class="custom-control-label" for="customCheck1" ></label>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>Subtitute Items</td>
+		<td>
+			<div class="custom-control custom-checkbox">
+				<input type="checkbox" class="custom-control-input" id="substitutes" {{ item.has_substitutes() ? 'checked' : '' }}>
+				<label class="custom-control-label" for="customCheck1" >{{ item.count_substitutes() }} Records</label>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>Mnfg / Competitor</td>
+		<td>
+			<div class="custom-control custom-checkbox">
+				<input type="checkbox" class="custom-control-input" id="mfr" {{ item.countItemXrefManufacturers() ? 'checked' : '' }}>
+				<label class="custom-control-label" for="customCheck1" >{{ item.countItemXrefManufacturers() }} Records</label>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>Add-On Items</td>
+		<td>
+			<div class="custom-control custom-checkbox">
+				<input type="checkbox" class="custom-control-input" id="addons" {{ item.has_addonitems() ? 'checked' : '' }}>
+				<label class="custom-control-label" for="customCheck1" >{{ item.count_addonitems() }} Records</label>
+			</div>
+		</td>
+	</tr>
+</table>
