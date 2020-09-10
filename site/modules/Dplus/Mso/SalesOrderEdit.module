@@ -384,27 +384,43 @@ class SalesOrderEdit extends WireData implements Module {
 
 		if ($lookup_order->lookup_saleshistory($ordn)) {
 			return false;
-		} else {
-
+		} elseif ($this->can_order_be_edited($ordn)) { // VALIDATE if ORDER is not being locked
 			$config_orders = $this->wire('modules')->get('ConfigsSalesOrders');
 
 			if ($config_orders->allow_salesorderedit) {
-				if ($this->can_order_be_edited($ordn) && $user->has_function(self::PERMISSION_DPLUS)) {
-					$canedit = true;
-				}
+				$canedit = $this->validate_user_order_permissions($user, $ordn);
 			}
 		}
 		return $canedit;
 	}
+	/**
+	 * Validates User Permissions based on Dplus Permission and SOCP permission
+	 * @param  User   $user User
+	 * @param  string $ordn Sales Order Number, used to get status
+	 * @return bool
+	 */
+	public function validate_user_order_permissions(User $user, $ordn) {
+		$permitted = false;
+
+		if ($user->has_function(self::PERMISSION_DPLUS)) {
+			$order = $this->get_order_static($ordn);
+			$status = $order->status(); // new | picked | verified | invoiced
+			$socp = $this->wire('modules')->get('SoControlsSocp'); // SALES ORDER Permissions
+			$permissions = $socp->permissions_user_default($user->loginid);
+			$permitted = $permissions->allow($status);
+		}
+
+		return $permitted;
+	}
 
 	/**
-	 * Return if Sales Order is in an Editable State
-	 * @param  string $ordn Sales Order number
+	 * Return true if Sales Order does not have someone locking it.
+	 * @param  string $ordn Sales Order Number
 	 * @return bool
 	 */
 	public function can_order_be_edited($ordn) {
-		$order = SalesOrderQuery::create()->findOneByOrdernumber($ordn);
-		return $order->is_editable() && $order->status == SalesOrder::STATUS_NEW;
+		$order = $this->get_order_static($ordn);
+		return $order->is_editable();
 	}
 
 	/**
