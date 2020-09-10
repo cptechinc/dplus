@@ -72,6 +72,11 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
+
+	jQuery.validator.addMethod("custid", function(value, element) {
+		return validate_custid(value);
+	}, "Custid not found in the Customer Master");
+
 	form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
@@ -91,20 +96,25 @@ $(function() {
 				minlength: 3,
 				maxlength: {{ item.get_length_itemid() }},
 			},
+			custid: {
+				custid: true
+			},
 		},
 		messages: {
 			itemID: "Please review the itemID value",
 		},
 		submitHandler: function(form) {
 			var itemID_input = $(form).find('input[name=itemID]').val();
-			var itemID_form = $(form).data('itemid');
-			var url = URI('{{ validateurl }}');
+			var itemID_form  = $(form).data('itemid');
+			var url = URI('{{ page.itm_validateURL() }}');
+			url.addQuery('action', 'validate-itemid-exists');
+			url.addQuery('return', 'obj');
 			url.addQuery('itemID', itemID_input);
 
 			$.getJSON(url.toString(), function( json ) {
 				if (json.exists) { // Item Exists
 					if (itemID_input == itemID_form) { // Item input == Form's item ID, allow save
-						form.submit();
+					//	form.submit();
 					} else {
 						var itemurl = new URI('{{ page.url }}');
 						itemurl.addQuery('itemID', itemID_input);
@@ -131,10 +141,19 @@ $(function() {
 					}
 				} else { // ITEM does not exist yet, allow save
 					if (itemID_form == '') {
-						form.submit();
+						//form.submit();
 					}
 				}
 			});
 		}
 	});
+
+	function validate_custid(custID, callback) {
+		var url = URI('{{ page.itm_validateURL() }}');
+		url.addQuery('action', 'validate-custid');
+		$.getJSON(url.toString(), function( valid ) {
+			console.log(valid);
+			return valid;
+		});
+	}
 });
