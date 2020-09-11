@@ -26,17 +26,25 @@
 				$itemID = $values->text('itemID');
 
 				if ($validator->itemid_exists($itemID)) {
+					$response = true;
+				} else {
 					if ($returntype == 'obj') {
-						$loader = $modules->get('LoadItem');
 						$response = array(
-							'exists' => true,
-							'item'   => $loader->get_item_array($itemID, [])
+							'exists' => false,
+							'item'   => false
 						);
 					} else {
-						$response = true;
+						$response = ($returntype == 'bool') ? false : "$itemID was not found in the Item Master";
 					}
+				}
+				break;
+			case 'validate-stockcode':
+				$code = $values->text('code');
+
+				if ($validator->stockcode($code)) {
+					$response = true;
 				} else {
-					$response = ($returntype == 'bool') ? false : "$itemID was not found in the Item Master";
+					$response = ($returntype == 'bool') ? false : "$code is an invalid Stock Code";
 				}
 				break;
 		}
