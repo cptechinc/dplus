@@ -175,6 +175,7 @@ class Itm extends WireData implements Module {
 		$values = $input->$rm;
 		$itemID = strtoupper($values->text('itemID'));
 		$record = $this->get_create_item($itemID);
+		$invalidfields = array();
 
 		/**
 		 * Create lock for ITM item ID if not already locked.
@@ -197,12 +198,18 @@ class Itm extends WireData implements Module {
 				$record->setSplitorder($values->yn('splitorder'));
 				$record->setInspection($values->yn('inspection'));
 				$record->setTaxable($values->yn('taxable'));
-				$this->set_validated_fields($record, $input);
+				$invalidfields = $this->set_validated_fields($record, $input);
 			}
 
 			if ($values->action) {
-				$response = $this->save_and_process_response($record);
-				$response->set_saved_itm($response->success);
+				$response = $this->save_and_process_response($record, $invalidfields);
+
+				if ($invalidfields) {
+					$response->set_saved_itm(false);
+					$response->set_message("$itemID was not saved to Dplus");
+				} else {
+					$response->set_saved_itm($response->success);
+				}
 
 				if ($values->text('action') == 'remove-itm-item') {
 					$response = $this->verify_delete($itemID);
@@ -223,56 +230,70 @@ class Itm extends WireData implements Module {
 
 	/**
 	 * Updates the fields that need to be validated against a table
-	 * @param ItemMasterItem $record Item
-	 * @param WireInput      $input  Input Values
+	 * @param  ItemMasterItem $record Item
+	 * @param  WireInput      $input  Input Values
+	 * @return array                  Invalid Input fields, empty if none
 	 */
 	protected function set_validated_fields(ItemMasterItem $record, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$modules = $this->wire('modules');
+		$invalid = array();
 
-		// VALIDATE with Respective tables
-		$validate_custid = $modules->get('LookupCustomer');
-		$custID = $input->$rm->text('custid');
-		if ($validate_custid->lookup_customer($custID)) {
-			$record->setCustid($custID);
-		}
+		$validate = $this->wire('modules')->get('ValidateItm');
+		$fields = array(
+			'custid' => array(
+				'description' => 'Cust ID',
+				'input'       => 'custid',
+				'allow_blank' => true
+			),
+			'itemtype' => array(
+				'description' => 'Item Type',
+				'input'       => 'itemtype',
+				'allow_blank' => false
+			),
+			'stockcode' => array(
+				'description' => 'Stock Code',
+				'input'       => 'stockcode',
+				'allow_blank' => false
+			),
+			'itemgroup' => array(
+				'description' => 'Item Group',
+				'input'       => 'itemgroup',
+				'allow_blank' => false
+			),
+		);
 
-		if (in_array($input->$rm->text('itemtype'), array_keys(ItemMasterItem::ITEMTYPE_DESCRIPTIONS))) {
-			$record->setItemtype($values->text('itemtype'));
-		}
-
-		$validate_stockcode = $modules->get('CodeTablesStcm');
-		$stockcode = $values->text('stockcode');
-
-		if ($validate_stockcode->code_exists($stockcode)) {
-			$record->setStockcode($stockcode);
-		}
-
-		$validate_itemgroup = $modules->get('CodeTablesIgm');
-		$itemgroup = $values->text('itemgroup');
-
-		if ($validate_itemgroup->code_exists($itemgroup)) {
-			$record->setItemgroup($itemgroup);
+		foreach ($fields as $property => $field) {
+			if ($field['allow_blank'] == false) {
+				if ($validate->$property($values->text($field['input']))) {
+					$setProperty = "set".ucfirst($property);
+					$record->$setProperty($values->text($field['input']));
+				} else {
+					$invalid[$property] = $field['description'];
+				}
+			}
 		}
 
 		if ($this->configs->inventory->use_pricegroup()) {
-			$validate_pricecode = $modules->get('CodeTablesIgpm');
 			$pricecode = $values->text('pricecode');
 
-			if ($validate_pricecode->code_exists($pricecode)) {
+			if ($validate->pricecode($pricecode)) {
 				$record->setPricecode($pricecode);
+			} else {
+				$invalid['pricecode'] = "Price Code";
 			}
 		}
 
 		if ($this->configs->inventory->use_commgroup()) {
-			$validate_commissiongroup = $modules->get('CodeTablesIgcm');
 			$commissiongroup = $values->text('commissiongroup');
 
-			if ($validate_commissiongroup->code_exists($commissiongroup)) {
+			if ($validate->commissiongroup($commissiongroup)) {
 				$record->setCommissiongroup($commissiongroup);
+			} else {
+				$invalid['commissiongroup'] = "Comission Group";
 			}
 		}
+		return $invalid;
 	}
 
 /* =============================================================
@@ -280,10 +301,11 @@ class Itm extends WireData implements Module {
 ============================================================= */
 	/**
 	 * Returns ItmResponse based on the outcome of the database save
-	 * @param  ItemMasterItem $record Record to record response of database save
+	 * @param  ItemMasterItem $record        Record to record response of database save
+	 * @param  array          $invalidfields Input fields that require attention
 	 * @return ItmResponse
 	 */
-	public function save_and_process_response(ItemMasterItem $record) {
+	public function save_and_process_response(ItemMasterItem $record, array $invalidfields) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
@@ -311,13 +333,14 @@ class Itm extends WireData implements Module {
 
 		$response->set_message($message);
 
-		if ($response->has_success()) {
+		if ($response->has_success() && empty($invalidfields)) {
 			if ($record->isDeleted()) {
-				$this->delete_dplus_cobol($record->itemid);
+				$this->request_item_delete($record->itemid);
 			} else {
-				$this->update_dplus_cobol($record->itemid);
+				$this->request_item_update($record->itemid);
 			}
 		}
+		$response->set_fields($invalidfields);
 		return $response;
 	}
 
@@ -341,14 +364,15 @@ class Itm extends WireData implements Module {
 /* =============================================================
 	Dplus Cobol Request Functions
 ============================================================= */
+
 	/**
 	 * Writes File for Dplus to update the ITM file for this ITEM
 	 * @param  string $itemID Item ID
 	 * @return void
 	 */
-	public function update_dplus_cobol($itemID) {
+	public function request_item_update($itemID) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
 		$data = array("DBNAME=$dplusdb", 'UPDATEITM', "ITEMID=$itemID");
 
 		$requestor = $this->wire('modules')->get('DplusRequest');
@@ -361,7 +385,7 @@ class Itm extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return void
 	 */
-	public function delete_dplus_cobol($itemID, $debug = false) {
+	public function request_item_delete($itemID, $debug = false) {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
 		$data = array("DBNAME=$dplusdb", 'DELETEITM', "ITEMID=$itemID");
@@ -456,6 +480,17 @@ class Itm extends WireData implements Module {
 	 */
 	public function get_speicialitemcodes() {
 		return InvSpecialCodeQuery::create()->find();
+	}
+
+	/**
+	 * Return if Field has Error
+	 * NOTE: Uses $session->response_itm->fields to derive this
+	 * @param  string $inputname Input name e.g. commissiongroup
+	 * @return bool
+	 */
+	public function field_has_error($inputname) {
+		$response = $this->wire('session')->response_itm;
+		return ($response) ? array_key_exists($inputname, $response->fields) : false;
 	}
 
 /* =============================================================
