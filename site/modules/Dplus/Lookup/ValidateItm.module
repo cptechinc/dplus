@@ -5,19 +5,81 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use ItemMasterItemQuery, ItemMasterItem;
 
 /**
- * ValidatePo
+ * ValidateItm
  *
  * Class for validating Itm fields
  */
 class ValidateItm extends WireData implements Module {
+	/**
+	 * Return if Cust ID is Valid
+	 * @param  string $custID Customer ID
+	 * @return bool
+	 */
 	public function custid($custID) {
 		return $this->validate->ar->custid($custID);
 	}
 
+	/**
+	 * Return if Item ID is Valid
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
 	public function itemid_exists($itemID) {
-		$q = ItemMasterItemQuery::create();
-		$q->filterByItemid($itemID);
-		return boolval($q->count());
+		return $this->validate->in->itemid_exists($itemID);
+	}
+
+	/**
+	 * Return if Item Type is Valid
+	 * @param  string $type Item Type
+	 * @return bool
+	 */
+	public function itemtype($type) {
+		return $this->validate->in->itemtype($type);
+	}
+
+	/**
+	 * Return if Inventory Stock Code is valid
+	 * @param  string $code Inventory Stock Code
+	 * @return bool
+	 */
+	public function stockcode($code) {
+		return $this->validate->in->stockcode($code);
+	}
+
+	/**
+	 * Return if Inventory Stock Code is valid
+	 * @param  string $code Inventory Stock Code
+	 * @return bool
+	 */
+	public function itemgroup($code) {
+		return $this->validate->in->itemgroup($code);
+	}
+
+	/**
+	 * Return if Inventory Price Code is valid
+	 * @param  string $code Inventory Price Code
+	 * @return bool
+	 */
+	public function pricecode($code) {
+		return $this->validate->in->pricecode($code);
+	}
+
+	/**
+	 * Return if Inventory Commission Group Code is valid
+	 * @param  string $code Inventory Commission Group Code
+	 * @return bool
+	 */
+	public function commissiongroup($code) {
+		return $this->validate->in->commissiongroup($code);
+	}
+
+	/**
+	 * Return if Inventory Special Item Code is valid
+	 * @param  string $code Inventory Special Item Group Code
+	 * @return bool
+	 */
+	public function specialitem($code) {
+		return $this->validate->in->specialitem($code);
 	}
 
 /* =============================================================
@@ -36,6 +98,8 @@ class ValidateItm extends WireData implements Module {
 
 	public function init() {
 		$this->validate = new WireData();
-		$this->validate->ar     = $this->wire('modules')->get('ValidateAr');
+		$this->validate->ar  = $this->wire('modules')->get('ValidateAr');
+		$this->validate->in  = $this->wire('modules')->get('ValidateIn');
+		$this->modules = $this->wire('modules');
 	}
 }
