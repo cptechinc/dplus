@@ -16,7 +16,7 @@
 			<label for="liters">Liters</label>
 		</div>
 		<div class="col-sm-6">
-			<input type="number" name="liters" class="form-control text-right" value="{{ item.liters }}" id="liters">
+			<input type="number" name="liters" class="form-control form-control-sm text-right" value="{{ item.liters }}" id="liters">
 		</div>
 	</div>
 {% endif %}
@@ -26,7 +26,7 @@
 	</div>
 	<div class="col-sm-8">
 		<div class="input-group">
-			<input type="number" name="weight" class="form-control text-right" value="{{ item.weight }}" id="weight">
+			<input type="number" name="weight" class="form-control form-control-sm text-right" value="{{ item.weight }}" id="weight">
 			<span class="input-group-append">
 				<span class="input-group-text" id="basic-addon2">{{ item.unitofmsale.id }}</span>
 			</span>
@@ -48,6 +48,6 @@
 		<label for="cubes">Cubes</label>
 	</div>
 	<div class="col-sm-6">
-		<input type="number" name="cubes" class="form-control text-right" value="{{ item.cubes }}" id="cubes">
+		<input type="number" name="cubes" class="form-control form-control-sm text-right" value="{{ item.cubes }}" id="cubes">
 	</div>
 </div>
