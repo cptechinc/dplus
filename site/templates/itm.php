@@ -72,7 +72,6 @@
 
 				$page->body .= $config->twig->render('items/itm/notes/notes.twig', ['page' => $page, 'item' => $item, 'qnotes' => $qnotes, 'user' => $user]);
 				$page->js   .= $config->twig->render("items/itm/notes/js.twig", ['page' => $page, 'item' => $item, 'qnotes' => $qnotes, 'session' => $session]);
-				$page->js   .= $config->twig->render('msa/noce/ajax/js.twig', ['page' => $page]);
 				$session->remove('qnotes_itm');
 			}
 			$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
