@@ -1,7 +1,16 @@
 {#
-	Fields: liters, weight, grams, cubes
+	****************************************************
+		Fields: liters, weight, grams, cubes
+	****************************************************
+
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemMasterItem
+	itm                    module Itm
+	recordlocker           module RecordLockerUser
 #}
-{% if m_itm.configs.inventory.use_liters() %}
+{% if itm.configs.inv.use_liters() %}
 	<div class="form-group row">
 		<div class="col-sm-6">
 			<label for="liters">Liters</label>
@@ -24,7 +33,7 @@
 		</div>
 	</div>
 </div>
-{% if m_itm.configs.inventory.use_grams() %}
+{% if itm.configs.inv.use_grams() %}
 	<div class="form-group row">
 		<div class="col-sm-6">
 

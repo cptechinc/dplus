@@ -94,10 +94,10 @@ $(function() {
 		ignore: ".validate-ignore",
 		rules: {
 			pricecode: {
-				required: {{ m_itm.configs.inventory.use_pricegroup() ? 'true' : 'false' }}
+				required: {{ itm.configs.inv.use_pricegroup() ? 'true' : 'false' }}
 			},
 			commissiongroup: {
-				required: {{ m_itm.configs.inventory.use_commgroup() ? 'true' : 'false' }}
+				required: {{ itm.configs.inv.use_commgroup() ? 'true' : 'false' }}
 			},
 			itemID: {
 				required: true,

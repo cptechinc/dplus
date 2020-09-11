@@ -10,7 +10,7 @@
 
 	if ($values->action) {
 		$itm->process_input($input);
-		
+
 		if ($values->text('action') == 'remove-itm-item') {
 			$page->fullURL->query->remove('itemID');
 		} else {
@@ -62,8 +62,8 @@
 		if ($exists) {
 			$page->customerlookupURL = $pages->get('pw_template=mci-lookup')->url;
 			$page->body .= $config->twig->render('items/itm/itm-links.twig', ['page' => $page, 'page_itm' => $page]);
-			$page->body .= $config->twig->render('items/itm/itm-form.twig', ['page' => $page, 'item' => $item, 'm_itm' => $itm, 'recordlocker' => $recordlocker]);
-			$page->js   .= $config->twig->render("items/itm/js.twig", ['page' => $page, 'validateurl' => $pages->get('pw_template=itm-json')->url, 'item' => $item, 'm_itm' => $itm]);
+			$page->body .= $config->twig->render('items/itm/itm-form.twig', ['page' => $page, 'item' => $item, 'itm' => $itm, 'recordlocker' => $recordlocker]);
+			$page->js   .= $config->twig->render("items/itm/js.twig", ['page' => $page, 'item' => $item, 'itm' => $itm]);
 
 			if ($itm->item_exists($itemID)) {
 				$page->body .= $html->div('class=mb-3', '&nbsp;');
@@ -75,7 +75,7 @@
 				$page->body .= $config->twig->render('items/itm/notes/revision/modal.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes, 'user' => $user]);
 				$page->body .= $config->twig->render('items/itm/notes/inspection/modal.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes, 'user' => $user]);
 				$page->body .= $config->twig->render('items/itm/notes/order/modal.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes]);
-				$page->js   .= $config->twig->render("items/itm/notes/js.twig", ['page' => $page, 'validateurl' => $pages->get('pw_template=itm-json')->url, 'item' => $item, 'm_notes' => $module_notes, 'session' => $session]);
+				$page->js   .= $config->twig->render("items/itm/notes/js.twig", ['page' => $page, 'item' => $item, 'm_notes' => $module_notes, 'session' => $session]);
 
 				$page->search_notesURL = $pages->get('pw_template=msa-noce-ajax')->url;
 				$page->body .= $config->twig->render('msa/noce/ajax/notes-modal.twig', []);

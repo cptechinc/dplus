@@ -35,11 +35,11 @@ class Itm extends WireData implements Module {
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
 		$this->configs = new WireData();
-		$this->configs->inventory = false;
+		$this->configs->inv = false;
 	}
 
 	public function init2() {
-		$this->configs->inventory = $this->get_config_in();
+		$this->configs->inv = $this->get_config_in();
 	}
 
 	/**
@@ -106,19 +106,19 @@ class Itm extends WireData implements Module {
 	 */
 	public function get_new_item() {
 		$item = new ItemMasterItem();
-		$this->configs->inventory = $this->get_config_in();
+		$this->configs->inv = $this->get_config_in();
 
-		$item->setItemgroup($this->configs->inventory->default_itemgroup);
+		$item->setItemgroup($this->configs->inv->default_itemgroup);
 
-		if ($this->configs->inventory->use_pricegroup()) {
-			$item->setPricecode($this->configs->inventory->default_pricegroup);
+		if ($this->configs->inv->use_pricegroup()) {
+			$item->setPricecode($this->configs->inv->default_pricegroup);
 		}
 
-		if ($this->configs->inventory->use_commgroup()) {
-			$item->setCommissiongroup($this->configs->inventory->default_commgroup);
+		if ($this->configs->inv->use_commgroup()) {
+			$item->setCommissiongroup($this->configs->inv->default_commgroup);
 		}
 
-		$item->setItemtype($this->configs->inventory->default_itemtype);
+		$item->setItemtype($this->configs->inv->default_itemtype);
 
 		$item->setTaxable('Y');
 		$item->setAllow_backorder('Y');
@@ -127,12 +127,12 @@ class Itm extends WireData implements Module {
 		$item->setCore('N');
 		$item->setSplitorder('Y');
 
-		$item->setUom_sale($this->configs->inventory->default_uom_sale);
-		$item->setUom_purchase($this->configs->inventory->default_uom_purchase);
-		$item->setPreference($this->configs->inventory->default_nafta_pref_code);
-		$item->setProducer($this->configs->inventory->default_nafta_producer);
-		$item->setDocumentation($this->configs->inventory->default_nafta_documentation);
-		$item->setBasestandardcost($this->configs->inventory->default_base_standard_cost);
+		$item->setUom_sale($this->configs->inv->default_uom_sale);
+		$item->setUom_purchase($this->configs->inv->default_uom_purchase);
+		$item->setPreference($this->configs->inv->default_nafta_pref_code);
+		$item->setProducer($this->configs->inv->default_nafta_producer);
+		$item->setDocumentation($this->configs->inv->default_nafta_documentation);
+		$item->setBasestandardcost($this->configs->inv->default_base_standard_cost);
 
 		if ($this->wire('modules')->get('DplusCustomer')->get_custID() == 'LINDST') {
 			$item->setStockcode('MM');
@@ -169,7 +169,7 @@ class Itm extends WireData implements Module {
 	 * @return void
 	 */
 	public function process_input_itm(WireInput $input) {
-		$this->configs->inventory = $this->get_config_in();
+		$this->configs->inv = $this->get_config_in();
 		$recordlocker = $this('modules')->get('RecordLockerUser');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
@@ -286,12 +286,12 @@ class Itm extends WireData implements Module {
 					$setProperty = "set".ucfirst($field['input']);
 					$record->$setProperty($values->text($field['input']));
 				} else {
-					$invalid[$field['input']y] = $field['description'];
+					$invalid[$field['input']] = $field['description'];
 				}
 			}
 		}
 
-		if ($this->configs->inventory->use_pricegroup()) {
+		if ($this->configs->inv->use_pricegroup()) {
 			$pricecode = $values->text('pricecode');
 
 			if ($validate->pricecode($pricecode)) {
@@ -301,7 +301,7 @@ class Itm extends WireData implements Module {
 			}
 		}
 
-		if ($this->configs->inventory->use_commgroup()) {
+		if ($this->configs->inv->use_commgroup()) {
 			$commissiongroup = $values->text('commissiongroup');
 
 			if ($validate->commissiongroup($commissiongroup)) {

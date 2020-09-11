@@ -1,8 +1,17 @@
 {#
-	Fields: itemid, inspection, revision, stockcode, splitorder, custid
-	includes:
-			'items/itm/form/description.twig'
-			'items/itm/form/groups.twig'
+	****************************************************
+		Fields: itemid, inspection, revision, stockcode, splitorder, custid
+		includes:
+				'items/itm/form/description.twig'
+				'items/itm/form/groups.twig'
+	****************************************************
+
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemMasterItem
+	itm                    module Itm
+	recordlocker           module RecordLockerUser
 #}
 <div class="form-group row">
 	<div class="col-sm-4">
@@ -40,9 +49,9 @@
 		<label for="stockcode">Stock Code</label>
 	</div>
 	<div class="col-sm-6">
-		<select name="stockcode" class="custom-select custom-select-sm {{ m_itm.field_has_error('stockcode') ? 'is-invalid' : ''}}" id="stockcode">
+		<select name="stockcode" class="custom-select custom-select-sm {{ itm.field_has_error('stockcode') ? 'is-invalid' : ''}}" id="stockcode">
 			<option value="">-- Choose --</option>
-			{% for stockcode in m_itm.get_stockcodes() %}
+			{% for stockcode in itm.get_stockcodes() %}
 				<option value="{{ stockcode.code }}" {{ stockcode.code == item.stockcode ? 'selected' : ''}}>{{ stockcode.code }} - {{ stockcode.description }}</option>
 			{% endfor %}
 		</select>
@@ -64,9 +73,9 @@
 		<label for="specialitemcode">Special Item Code</label>
 	</div>
 	<div class="col-sm-6">
-		<select name="specialitemcode" class="custom-select custom-select-sm {{ m_itm.field_has_error('specialitemcode') ? 'is-invalid' : ''}}" id="stockcode">
+		<select name="specialitemcode" class="custom-select custom-select-sm {{ itm.field_has_error('specialitemcode') ? 'is-invalid' : ''}}" id="stockcode">
 			<option value="">-- Choose --</option>
-			{% for code in m_itm.get_speicialitemcodes() %}
+			{% for code in itm.get_speicialitemcodes() %}
 				<option value="{{ code.code }}" {{ code.code == item.specialitemcode ? 'selected' : ''}}>{{ code.code }} - {{ code.description }}</option>
 			{% endfor %}
 		</select>
@@ -83,7 +92,7 @@
 					<i class="fa fa-search" aria-hidden="true"></i> <span class="sr-only">Search Customers</span>
 				</button>
 			</span>
-			<input type="text" name="custid" class="form-control {{ m_itm.field_has_error('custid') ? 'is-invalid' : ''}}" maxlength="6" value="{{ item.custid }}" id="custid">
+			<input type="text" name="custid" class="form-control {{ itm.field_has_error('custid') ? 'is-invalid' : ''}}" maxlength="6" value="{{ item.custid }}" id="custid">
 		</div>
 		<input type="text" class="form-control-plaintext" value="" id="cust_name" readonly>
 	</div>
