@@ -273,15 +273,20 @@ class Itm extends WireData implements Module {
 				'input'       => 'itemgroup',
 				'allow_blank' => false
 			),
+			'specialitem' => array(
+				'description' => 'Special Item Code',
+				'input'       => 'specialitemcode',
+				'allow_blank' => true
+			),
 		);
 
 		foreach ($fields as $property => $field) {
-			if ($field['allow_blank'] == false) {
+			if ($field['allow_blank'] == false || strlen($values->text($field['input']))) {
 				if ($validate->$property($values->text($field['input']))) {
-					$setProperty = "set".ucfirst($property);
+					$setProperty = "set".ucfirst($field['input']);
 					$record->$setProperty($values->text($field['input']));
 				} else {
-					$invalid[$property] = $field['description'];
+					$invalid[$field['input']y] = $field['description'];
 				}
 			}
 		}

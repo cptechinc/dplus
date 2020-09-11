@@ -47,6 +47,15 @@
 					$response = ($returntype == 'bool') ? false : "$code is an invalid Stock Code";
 				}
 				break;
+			case 'validate-specialitemcode':
+				$code = $values->text('code');
+
+				if ($validator->specialitem($code)) {
+					$response = true;
+				} else {
+					$response = ($returntype == 'bool') ? false : "$code is an invalid Special Item Code";
+				}
+				break;
 		}
 	}
 

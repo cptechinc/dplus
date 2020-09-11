@@ -77,8 +77,8 @@ class ValidateIn extends WireData implements Module {
 	 * @return bool
 	 */
 	public function specialitem($code) {
-		$igpm = $this->modules->get('CodeTablesSpit');
-		return $igpm->code_exists($code);
+		$spit = $this->modules->get('CodeTablesSpit');
+		return $spit->code_exists($code);
 	}
 
 
