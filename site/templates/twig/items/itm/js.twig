@@ -75,7 +75,11 @@ $(function() {
 
 	jQuery.validator.addMethod("custid", function(value, element) {
 		return validate_custid(value);
-	}, "Custid not found in the Customer Master");
+	}, "Cust ID not found in the Customer Master");
+
+	jQuery.validator.addMethod("stockcode", function(value, element) {
+		return validate_stockcode(value);
+	}, "Stock Code is invalid");
 
 	form.validate({
 		errorClass: "is-invalid",
@@ -85,12 +89,12 @@ $(function() {
 		},
 		ignore: ".validate-ignore",
 		rules: {
-			{% if m_itm.configs.inventory.use_pricegroup() %}
-				pricecode: { required: true },
-			{% endif %}
-			{% if m_itm.configs.inventory.use_commgroup() %}
-				commissiongroup: { required: true },
-			{% endif %}
+			pricecode: {
+				required: {{ m_itm.configs.inventory.use_pricegroup() ? 'true' : 'false' }}
+			},
+			commissiongroup: {
+				required: {{ m_itm.configs.inventory.use_commgroup() ? 'true' : 'false' }}
+			},
 			itemID: {
 				required: true,
 				minlength: 3,
@@ -99,49 +103,27 @@ $(function() {
 			custid: {
 				custid: true
 			},
+			stockcode: {
+				stockcode: true
+			},
 		},
 		messages: {
-			itemID: "Please review the itemID value",
+			itemID: "Please review itemID, must not be more than {{ item.get_length_itemid() }} characters",
 		},
 		submitHandler: function(form) {
 			var itemID_input = $(form).find('input[name=itemID]').val();
 			var itemID_form  = $(form).data('itemid');
-			var url = URI('{{ page.itm_validateURL() }}');
-			url.addQuery('action', 'validate-itemid-exists');
-			url.addQuery('return', 'obj');
-			url.addQuery('itemID', itemID_input);
 
-			$.getJSON(url.toString(), function( json ) {
-				if (json.exists) { // Item Exists
+			request_item_json(itemID_input, function(exists) {
+				if (exists) { // Item Exists
 					if (itemID_input == itemID_form) { // Item input == Form's item ID, allow save
-					//	form.submit();
+						form.submit();
 					} else {
-						var itemurl = new URI('{{ page.url }}');
-						itemurl.addQuery('itemID', itemID_input);
-						var bootstrap = new JsContento();
-						var content = bootstrap.open('div', 'class=swal2-content|id=swal2-content');
-						content += bootstrap.openandclose('a', 'class=btn btn-secondary mb-2|href='+itemurl.toString(), 'View Item');
-						content += '<br>';
-						content += "Do you want to overwrite?";
-						content += bootstrap.close('div');
-
-						swal2.fire({
-							title: 'Item ID ' + itemID_input + ' exists',
-							text: "Do you want to overwrite?",
-							icon: 'warning',
-							showCancelButton: true,
-							confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
-							cancelButtonText: 'No',
-							html: content,
-						}).then((result) => {
-							if (result.value) {
-								form.find('button[type=submit]').click();
-							}
-						});
+						alert_item_exists(itemID_input);
 					}
 				} else { // ITEM does not exist yet, allow save
 					if (itemID_form == '') {
-						//form.submit();
+						form.submit();
 					}
 				}
 			});
@@ -149,11 +131,56 @@ $(function() {
 	});
 
 	function validate_custid(custID, callback) {
+		if (custID.length) {
+			var url = URI('{{ page.itm_validateURL() }}');
+			url.addQuery('action', 'validate-custid');
+
+			$.getJSON(url.toString(), function( valid ) {
+				return valid;
+			});
+		}
+		return true;
+	}
+
+	function validate_stockcode(code, callback) {
+		if (code.length) {
+			var url = URI('{{ page.itm_validateURL() }}');
+			url.addQuery('action', 'validate-stockcode');
+			url.addQuery('code', code);
+
+			$.getJSON(url.toString(), function( valid ) {
+				return valid;
+			});
+		}
+		return true;
+	}
+
+	function request_item_json(itemID, callback) {
 		var url = URI('{{ page.itm_validateURL() }}');
-		url.addQuery('action', 'validate-custid');
-		$.getJSON(url.toString(), function( valid ) {
-			console.log(valid);
-			return valid;
+		url.addQuery('action', 'validate-itemid-exists');
+		url.addQuery('return', 'bool');
+		url.addQuery('itemID', itemID);
+
+		$.getJSON(url.toString(), function(exists) {
+			callback(exists);
+		});
+	}
+
+	function alert_item_exists(itemID) {
+		var itemurl = new URI('{{ page.url }}');
+		itemurl.addQuery('itemID', itemID);
+
+		swal2.fire({
+			title: 'Item ID ' + itemID + ' exists',
+			text: "Do you want to edit " + itemID + '?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: '<i class="fa fa-pencil" aria-hidden="true"></i> Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			if (result.value) {
+				window.location.href = itemurl.toString();
+			}
 		});
 	}
 });
