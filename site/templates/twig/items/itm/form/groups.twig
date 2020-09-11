@@ -6,7 +6,7 @@
 		<label for="itemgroup">Item Group</label>
 	</div>
 	<div class="col-sm-6">
-		<select name="itemgroup" class="form-control" id="itemgroup">
+		<select name="itemgroup" class="custom-select custom-select-sm {{ m_itm.field_has_error('itemgroup') ? 'is-invalid' : ''}}" id="itemgroup">
 			<option value="">-- Choose --</option>
 			{% for itemgroup in m_itm.get_itemgroups() %}
 				<option value="{{ itemgroup.code }}" {{ itemgroup.code == item.itemgroup ? 'selected' : ''}}>{{ itemgroup.code }} - {{ itemgroup.description }}</option>
@@ -19,7 +19,7 @@
 		<label for="pricecode">Price Group</label>
 	</div>
 	<div class="col-sm-6">
-		<select name="pricecode" class="form-control" id="pricecode" {{ m_itm.configs.inventory.use_pricegroup() ? '' : 'disabled' }}>
+		<select name="pricecode" class="custom-select custom-select-sm {{ m_itm.field_has_error('pricecode') ? 'is-invalid' : ''}}" id="pricecode" {{ m_itm.configs.inventory.use_pricegroup() ? '' : 'disabled' }}>
 			<option value="">-- Choose --</option>
 			{% for pricecode in m_itm.get_pricecodes() %}
 				<option value="{{ pricecode.code }}" {{ pricecode.code == item.pricecode ? 'selected' : ''}}>{{ pricecode.code }} - {{ pricecode.description }}</option>
@@ -32,7 +32,7 @@
 		<label for="commissiongroup">Comm Group</label>
 	</div>
 	<div class="col-sm-6">
-		<select name="commissiongroup" class="form-control" id="commissiongroup" {{ m_itm.configs.inventory.use_commgroup() ? '' : 'disabled' }}>
+		<select name="commissiongroup" class="custom-select custom-select-sm {{ m_itm.field_has_error('commissiongroup') ? 'is-invalid' : ''}}" id="commissiongroup" {{ m_itm.configs.inventory.use_commgroup() ? '' : 'disabled' }}>
 			<option value="">-- Choose --</option>
 			{% for code in m_itm.get_commissoncodes() %}
 				<option value="{{ code.code }}" {{ code.code == item.commissiongroup ? 'selected' : ''}}>{{ code.code }} - {{ code.description }}</option>
