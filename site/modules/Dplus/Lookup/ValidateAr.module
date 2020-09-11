@@ -22,7 +22,7 @@ class ValidateAr extends WireData implements Module {
 	 * @param  string $custID Customer ID
 	 * @return bool
 	 */
-	public function validate_custid($custID) {
+	public function custid($custID) {
 		$q = CustomerQuery::create();
 		$q->filterByCustid($custID);
 
@@ -37,7 +37,7 @@ class ValidateAr extends WireData implements Module {
 	 * @param  string $code Ship-Via Code
 	 * @return bool
 	 */
-	public function validate_shipvia($code) {
+	public function shipvia($code) {
 		$q = ShipviaQuery::create();
 		$q->filterByCode($code);
 
