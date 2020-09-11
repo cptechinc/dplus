@@ -2,8 +2,8 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	item                 ItemMasterItem
-	m_notes              module QnotesItem
-	m_notes.notes.order  module QnotesItemOrder
+	qnotes              module QnotesItem
+	qnotes.notes.order  module QnotesItemOrder
 #}
 
 $(function() {
@@ -128,7 +128,7 @@ $(function() {
 	});
 
 	function has_document_selected() {
-		{% for form, label in m_notes.notes.order.get_forms_shortlabels() %}
+		{% for form, label in qnotes.notes.order.get_forms_shortlabels() %}
 			if ($("#order-notes-form").find('input[name={{ form }}]').prop('checked')) {
 				return true;
 			}
@@ -139,7 +139,7 @@ $(function() {
 	function get_notes_formscode() {
 		var formcode = '';
 
-		{% for form, label in m_notes.notes.order.get_forms_shortlabels() %}
+		{% for form, label in qnotes.notes.order.get_forms_shortlabels() %}
 			formcode += $("#order-notes-form").find('input[name={{ form }}]').prop('checked') ? 'Y' : 'N';
 		{% endfor %}
 		return formcode;
@@ -159,14 +159,14 @@ $(function() {
 
 		if (note_row.length) {
 			modal.find('.action-desc').text('Editing');
-			{% for form, label in m_notes.notes.order.get_forms_shortlabels() %}
+			{% for form, label in qnotes.notes.order.get_forms_shortlabels() %}
 				modal.find('input[name={{ form }}]').prop('checked', button.data('{{ form }}') == 'Y');
 			{% endfor %}
 			modal.addClass('is-invalid');
 			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
 		} else {
 			modal.find('.action-desc').text('Adding');
-			{% for form, label in m_notes.notes.order.get_forms_shortlabels() %}
+			{% for form, label in qnotes.notes.order.get_forms_shortlabels() %}
 				modal.find('input[name={{ form }}]').prop('checked', false);
 			{% endfor %}
 			modal.find('textarea[name=note]').val('');
