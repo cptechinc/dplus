@@ -188,23 +188,15 @@ class Itm extends WireData implements Module {
 			if ($values->text('action') == 'remove-itm-item') {
 				$record->delete();
 			} elseif ($values->text('action') == 'update-itm') {
-				$record->setDescription($values->text('description'));
-				$record->setDescription2($values->text('description2'));
-				$record->setRevision($values->text('revision'));
-				$record->setTimefence($values->text('itemfence'));
-				$record->setQtypercase($values->int('qtypercase'));
-
-				$record->setAllow_backorder($values->yn('allow_backorder'));
-				$record->setSplitorder($values->yn('splitorder'));
-				$record->setInspection($values->yn('inspection'));
-				$record->setTaxable($values->yn('taxable'));
-				$invalidfields = $this->set_validated_fields($record, $input);
+				$invalidfields = $this->set_item_fields($record, $input);
 			}
 
 			if ($values->action) {
 				$response = $this->save_and_process_response($record, $invalidfields);
 
 				if ($invalidfields) {
+					$response->set_error(true);
+					$response->set_success(false);
 					$response->set_saved_itm(false);
 					$response->set_message("$itemID was not saved to Dplus");
 				} else {
@@ -213,19 +205,39 @@ class Itm extends WireData implements Module {
 
 				if ($values->text('action') == 'remove-itm-item') {
 					$response = $this->verify_delete($itemID);
-					$this->wire('page')->fullURL->query->remove('itemID');
-				} else {
-					$this->wire('page')->fullURL->query->set('itemID', $record->itemid);
 				}
 			} else {
 				$message = self::DESCRIPTION_RECORD . " ($record->itemid) was not saved, no action was specified";
-				$response = $this->create_error_response($record->itemid, $message);
+				$response = ItmResponse::response_error($record->itemid, $message);
 			}
 		} else {
 			$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $recordlocker->get_locked_user('itm', $itemID);
-			$response = $this->create_error_response($record->itemid, $message);
+			$response = ItmResponse::response_error($record->itemid, $message);
 		}
 		$this->wire('session')->response_itm = $response;
+	}
+
+	/**
+	 * Sets Item Values
+	 * @param ItemMasterItem $record Item Master Item
+	 * @param WireInput      $input  Input Data
+	 */
+	protected function set_item_fields(ItemMasterItem $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$invalidfields = array();
+		$record->setDescription($values->text('description'));
+		$record->setDescription2($values->text('description2'));
+		$record->setRevision($values->text('revision'));
+		$record->setTimefence($values->text('itemfence'));
+		$record->setQtypercase($values->int('qtypercase'));
+
+		$record->setAllow_backorder($values->yn('allow_backorder'));
+		$record->setSplitorder($values->yn('splitorder'));
+		$record->setInspection($values->yn('inspection'));
+		$record->setTaxable($values->yn('taxable'));
+		$invalidfields = $this->set_validated_fields($record, $input);
+		return $invalidfields;
 	}
 
 	/**
@@ -341,23 +353,6 @@ class Itm extends WireData implements Module {
 			}
 		}
 		$response->set_fields($invalidfields);
-		return $response;
-	}
-
-	/**
-	 * Return Error Response with Provided Message
-	 * @param  string $itemID     Item ID
-	 * @param  string $message    Error Message
-	 * @param  int    $actiontype ItmResponse CRUD value
-	 * @return ItmResponse
-	 */
-	public function create_error_response($itemID, $message, $actiontype = 0) {
-		$response = new ItmResponse();
-		$response->set_itemID($itemID);
-		$response->set_error(true);
-		$response->set_saved_itm(false);
-		$response->set_action($actiontype != 0 ? $actiontype : ItmResponse::CRUD_UPDATE);
-		$response->set_message($message);
 		return $response;
 	}
 
