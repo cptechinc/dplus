@@ -384,7 +384,7 @@ class SalesOrderEdit extends WireData implements Module {
 
 		if ($lookup_order->lookup_saleshistory($ordn)) {
 			return false;
-		} elseif ($this->can_order_be_edited($ordn)) { // VALIDATE if ORDER is not being locked
+		} elseif (!$this->is_order_locked($ordn) || $this->is_user_editingorder($user, $ordn)) { // VALIDATE if ORDER is not being locked
 			$config_orders = $this->wire('modules')->get('ConfigsSalesOrders');
 
 			if ($config_orders->allow_salesorderedit) {
@@ -421,6 +421,16 @@ class SalesOrderEdit extends WireData implements Module {
 	public function can_order_be_edited($ordn) {
 		$order = $this->get_order_static($ordn);
 		return $order->is_editable();
+	}
+
+	/**
+	 * Return true if Sales Order does not have someone locking it.
+	 * @param  string $ordn Sales Order Number
+	 * @return bool
+	 */
+	public function is_order_locked($ordn) {
+		$order = $this->get_order_static($ordn);
+		return $order->is_locked();
 	}
 
 	/**
