@@ -1,4 +1,6 @@
 <?php
+	$rm = strtolower($input->requestMethod());
+	$values = $input->$rm;
 	$page->title = "ITM";
 	$itm = $modules->get('Itm');
 	$itm->init2();
@@ -6,9 +8,16 @@
 	$recordlocker = $modules->get('RecordLockerUser');
 	$exists = false;
 
-	if ($input->requestMethod('POST') || $input->get->action) {
+	if ($values->action) {
 		$itm->process_input($input);
+		
+		if ($values->text('action') == 'remove-itm-item') {
+			$page->fullURL->query->remove('itemID');
+		} else {
+			$page->fullURL->query->set('itemID', $values->text('itemID'));
+		}
 		$page->fullURL->query->remove('action');
+
 		$session->redirect($page->fullURL->getUrl(), $http301 = false);
 	}
 
