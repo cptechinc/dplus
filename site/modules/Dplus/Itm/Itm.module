@@ -786,5 +786,9 @@ class Itm extends WireData implements Module {
 			$p = $event->object;
 			$event->return = $p->fullURL->query->get('itemID');
 		});
+
+		$this->addHookProperty("Page(pw_template=$templates)::search_notesURL", function($event) {
+			$event->return = $this->wire('pages')->get('pw_template=msa-noce-ajax')->url;
+		});
 	}
 }
