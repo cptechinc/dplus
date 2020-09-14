@@ -236,6 +236,8 @@ class Itm extends WireData implements Module {
 		$record->setSplitorder($values->yn('splitorder'));
 		$record->setInspection($values->yn('inspection'));
 		$record->setTaxable($values->yn('taxable'));
+		$record->setWeight($values->float('taxable'));
+		$record->setCubes($values->float('cubes'));
 		$invalidfields = $this->set_validated_fields($record, $input);
 		return $invalidfields;
 	}
@@ -266,7 +268,7 @@ class Itm extends WireData implements Module {
 			'stockcode' => array(
 				'description' => 'Stock Code',
 				'input'       => 'stockcode',
-				'allow_blank' => false
+				'allow_blank' => true
 			),
 			'itemgroup' => array(
 				'description' => 'Item Group',
@@ -281,6 +283,7 @@ class Itm extends WireData implements Module {
 		);
 
 		foreach ($fields as $property => $field) {
+			// IF FIELD MUST NOT BLANK OR IF there is a value for field
 			if ($field['allow_blank'] == false || strlen($values->text($field['input']))) {
 				if ($validate->$property($values->text($field['input']))) {
 					$setProperty = "set".ucfirst($field['input']);
@@ -288,6 +291,9 @@ class Itm extends WireData implements Module {
 				} else {
 					$invalid[$field['input']] = $field['description'];
 				}
+			} elseif ($field['allow_blank'] && strlen($values->text($field['input'])) == 0) {
+				$setProperty = "set".ucfirst($field['input']);
+				$record->$setProperty($values->text($field['input']));
 			}
 		}
 
