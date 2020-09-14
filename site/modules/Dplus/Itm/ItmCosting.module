@@ -24,6 +24,7 @@ class ItmCosting extends WireData implements Module {
 		$this->configs = new WireData();
 		$this->configs->inv = false;
 		$this->configs->po  = false;
+		$this->appcustID    = '';
 	}
 
 	public function init_configs() {
@@ -98,6 +99,11 @@ class ItmCosting extends WireData implements Module {
 				$item->setBuyer($values->text('buyer'));
 			}
 		}
+
+		if ($this->appcustID == 'LINDST') {
+			$item->Qty_purchase_carton($values->int('qty_purchase_carton'));
+		}
+
 		return $this->save_and_process_response($item);
 	}
 
