@@ -4,6 +4,8 @@ include_once(__DIR__.'/ItmResponse.php');
 
 use Purl\Url;
 
+use ConfigInQuery, ConfigIn;
+use ConfigPoQuery, ConfigPo;
 use ItemMasterItemQuery, ItemMasterItem;
 use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
 use ApBuyerQuery, ApBuyer;
@@ -20,11 +22,14 @@ class ItmCosting extends WireData implements Module {
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
 		$this->configs = new WireData();
-		$this->configs->po = false;
+		$this->configs->inv = false;
+		$this->configs->po  = false;
 	}
 
-	public function init2() {
-		//TODO GET PO Config
+	public function init_configs() {
+		$this->configs->inv = $this->get_config_in();
+		$this->configs->po  = $this->get_config_po();
+		$this->appcustID    = $this->wire('modules')->get('DplusCustomer')->get_custID();
 	}
 
 	/**
@@ -74,6 +79,7 @@ class ItmCosting extends WireData implements Module {
 	 * @return ItmResponse
 	 */
 	public function update_itm_input(WireInput $input) {
+		$this->init_configs();
 		$itm = $this->wire('modules')->get('Itm');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
@@ -158,6 +164,22 @@ class ItmCosting extends WireData implements Module {
 
 	public function get_ap_buyers() {
 		return ApBuyerQuery::create()->find();
+	}
+
+	/**
+	 * Returns IN config
+	 * @return ConfigIn
+	 */
+	public function get_config_in() {
+		return ConfigInQuery::create()->findOne();
+	}
+
+	/**
+	 * Returns PO config
+	 * @return ConfigPo
+	 */
+	public function get_config_po() {
+		return ConfigPoQuery::create()->findOne();
 	}
 
 	public function is_buyercontrol_item() {
