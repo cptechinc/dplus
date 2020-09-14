@@ -31,9 +31,12 @@
 					</div>
 
 					<div class="form-group">
+						{% include 'msa/noce/ajax/button.twig' with {'input': '#order-notes'} %}
+					</div>
+					<div class="form-group">
 						<label for="order-notes">Notes</label>
 						<div class="d-flex justify-content-between align-items-center">
-							<textarea class="form-control w-auto qnotes" name="note" id="order-notes" rows="10" cols="{{ qnotes.notes.order.get_column_count() }}"></textarea>
+							{% include 'util/qnotes-textarea.twig' with {'id':'order-notes', 'cols': qnotes.notes.order.get_column_count() - 1, 'rows': 15 } %}
 						</div>
 					</div>
 
