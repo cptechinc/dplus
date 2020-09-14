@@ -285,7 +285,7 @@ class ItmWarehouse extends WireData implements Module {
 		$response->set_saved_itm_whse($response->has_success());
 
 		if ($response->has_success()) {
-			$this->update_dplus_cobol($record->itemid, $record->whseid);
+			$this->request_whse_update($record->itemid, $record->whseid);
 		}
 		return $response;
 	}
@@ -296,7 +296,7 @@ class ItmWarehouse extends WireData implements Module {
 	 * @param  string $whseID Warehouse ID
 	 * @return void
 	 */
-	public function update_dplus_cobol($itemID, $whseID) {
+	public function request_whse_update($itemID, $whseID) {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
 		$data = array("DBNAME=$dplusdb", 'UPDATEITMWHSE', "ITEMID=$itemID", "WHSE=$whseID");

@@ -143,7 +143,7 @@ class ItmPricing extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$itemID = $input->$rm->text('itemID');
 
-		$module_itm = $this->wire('modules')->get('Itm');
+		$itm = $this->wire('modules')->get('Itm');
 		$item = $module_itm->get_item($itemID);
 		$item->setUom_sale($input->$rm->text('uom_sale'));
 		$item->setAllow_discount($input->$rm->text('allow_discount'));
@@ -152,7 +152,7 @@ class ItmPricing extends WireData implements Module {
 		$saved = $item->save();
 
 		if ($saved) {
-			$module_itm->update_dplus_cobol($itemID);
+			$itm->request_item_update($itemID);
 		}
 		return $saved;
 	}
@@ -192,7 +192,7 @@ class ItmPricing extends WireData implements Module {
 		$response->set_saved_itm_pricing($response->has_success());
 
 		if ($response->has_success()) {
-			$this->update_dplus_cobol($record->itemid);
+			$this->request_pricing_update($record->itemid);
 		}
 		return $response;
 	}
@@ -202,7 +202,7 @@ class ItmPricing extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return void
 	 */
-	public function update_dplus_cobol($itemID) {
+	public function request_pricing_update($itemID) {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
 		$data = array("DBNAME=$dplusdb", 'UPDATEITMPRICE', "ITEMID=$itemID");
@@ -229,7 +229,7 @@ class ItmPricing extends WireData implements Module {
 		$response->set_message($message);
 		return $response;
 	}
-	
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
