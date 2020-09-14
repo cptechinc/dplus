@@ -48,7 +48,7 @@ class ItmCosting extends WireData implements Module {
 				if (!$recordlocker->function_locked('itm', $itemID)) {
 					$recordlocker->create_lock('itm', $itemID);
 				}
-				
+
 				if ($recordlocker->function_locked_by_user('itm', $itemID)) {
 					if ($values->text('action') == 'update-itm-costing') {
 						$response = $this->update_itm_input($input);
@@ -123,7 +123,7 @@ class ItmCosting extends WireData implements Module {
 
 		if ($response->has_success()) {
 			$module_itm = $this->wire('modules')->get('Itm');
-			$module_itm->update_dplus_cobol($itemID);
+			$module_itm->request_item_update($itemID);
 		}
 		return $response;
 	}
