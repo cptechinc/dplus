@@ -12,6 +12,11 @@ use ApBuyerQuery, ApBuyer;
 
 /**
  * Module that handles the editing of the ITM record for costing
+ *
+ * @param WireData $configs       Wrappper Class for configs
+ * @param ConfigIn $configs->inv  IN Config
+ * @param ConfigPo $configs->po   PO Config
+ * @param string   $appcustID     Application CustId from ConfigSys
  */
 class ItmCosting extends WireData implements Module {
 	const MODEL              = 'ItemMasterItem';
