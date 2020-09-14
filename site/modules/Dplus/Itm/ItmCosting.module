@@ -81,6 +81,7 @@ class ItmCosting extends WireData implements Module {
 	public function update_itm_input(WireInput $input) {
 		$this->init_configs();
 		$itm = $this->wire('modules')->get('Itm');
+		$validate = $this->wire('modules')->get('ValidateItm');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itemID = $values->text('itemID');
@@ -91,6 +92,12 @@ class ItmCosting extends WireData implements Module {
 		$item->setLastcost($values->text('lastcost'));
 		$item->setMinmargin($values->text('minmargin'));
 		$item->setStandardcostbasedon($values->text('standardcostbasedon'));
+
+		if ($this->is_buyercontrol_item()) {
+			if (strlen($values->text('buyer')) && $validate->buyercode($values->text('buyer'))) {
+				$item->setBuyer($values->text('buyer'));
+			}
+		}
 		return $this->save_and_process_response($item);
 	}
 
