@@ -3,6 +3,7 @@
 use Propel\Runtime\ActiveQuery\Criteria;
 
 use ApTermsCodeQuery, ApTermsCode;
+use ApBuyerQuery, ApBuyer;
 use CountryCodeQuery, CountryCode;
 
 /**
@@ -25,21 +26,19 @@ class ValidateAp extends WireData implements Module {
 	public function validate_termscode($code) {
 		$q = ApTermsCodeQuery::create();
 		$q->filterByCode($code);
-
-		if ($q->count()) {
-			$this->exists = true;
-		}
-		return $this->exists;
+		return boolval($q->count());
 	}
 
 	public function validate_countrycode($code) {
 		$q = CountryCodeQuery::create();
 		$q->filterByCode($code);
+		return boolval($q->count());
+	}
 
-		if ($q->count()) {
-			$this->exists = true;
-		}
-		return $this->exists;
+	public function buyercode($code) {
+		$q = ApBuyerQuery::create();
+		$q->filterByCode($code);
+		return boolval($q->count());
 	}
 
 
