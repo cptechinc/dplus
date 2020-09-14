@@ -34,7 +34,7 @@
 				</div>
 			</div>
 			<div class="col-sm-4">
-				<p class="form-control-plaintext">{{ item.primaryvxm.date_changed|convertdate }}</p>
+				<p class="form-control-plaintext">{{ item.primaryvxm.date_changed ? item.primaryvxm.date_changed|convertdate : 'N/A' }}</p>
 			</div>
 		</div>
 	</div>
