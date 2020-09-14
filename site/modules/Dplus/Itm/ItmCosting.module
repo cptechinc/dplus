@@ -167,14 +167,26 @@ class ItmCosting extends WireData implements Module {
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
+	/**
+	 * Return UOM Purchases
+	 * @return UnitofMeasurePurchase[]|ObjectCollection
+	 */
 	public function get_uom_purchases() {
 		return UnitofMeasurePurchaseQuery::create()->find();
 	}
 
+	/**
+	 * Return Options for which Standard Cost is based on
+	 * @return array
+	 */
 	public function get_standardcost_basedon_options() {
 		return ItemMasterItem::STANDARDCOST_BASE_OPTIONS;
 	}
 
+	/**
+	 * Return ApBuyers
+	 * @return ApBuyer[]|ObjectCollection
+	 */
 	public function get_ap_buyers() {
 		return ApBuyerQuery::create()->find();
 	}
@@ -195,6 +207,10 @@ class ItmCosting extends WireData implements Module {
 		return ConfigPoQuery::create()->findOne();
 	}
 
+	/**
+	 * Return if ConfigPo's Buyer Control is Item
+	 * @return bool
+	 */
 	public function is_buyercontrol_item() {
 		if (empty($this->configs->po)) {
 			$this->init_configs();
