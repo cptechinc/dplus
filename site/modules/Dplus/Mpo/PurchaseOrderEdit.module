@@ -137,7 +137,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 			$response = MpoResponse::response_error($values->text('ponbr'), "PO # $ponbr header was not updated");
 			$response->set_fields($invalidfields);
 		} elseif ($saved) {
-			// $this->request_update_header($ponbr);
+			$this->request_update_header($ponbr);
 			$response = MpoResponse::response_success($values->text('ponbr'), "PO # $ponbr header was updated");
 		} else {
 			$response = MpoResponse::response_error($values->text('ponbr'), "PO # $ponbr header was not updated");
@@ -379,10 +379,13 @@ class PurchaseOrderEdit extends WireData implements Module {
 				$invalid[$property] = $field['description'];
 			}
 		}
-		if ($validate->vendor_shipfromid($values->text('vendorID'), $values->text('shipfromID'))) {
-			$po->setShipfromid($values->text('shipfromID'));
-		} else {
-			$invalid['shipfromID'] = 'Ship-From ID';
+
+		if (strlen($values->text('shipfromID'))) {
+			if ($validate->vendor_shipfromid($values->text('vendorID'), $values->text('shipfromID'))) {
+				$po->setShipfromid($values->text('shipfromID'));
+			} else {
+				$invalid['shipfromID'] = 'Ship-From ID';
+			}
 		}
 
 		return $invalid;
