@@ -3,7 +3,7 @@
 	$values = $input->$rm;
 	$page->title = "ITM";
 	$itm = $modules->get('Itm');
-	$itm->init2();
+	$itm->init_configs();
 	$html = $modules->get('HtmlWriter');
 	$recordlocker = $modules->get('RecordLockerUser');
 	$exists = false;
