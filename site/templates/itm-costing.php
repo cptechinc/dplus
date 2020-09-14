@@ -1,13 +1,16 @@
 <?php
+	$rm = strtolower($input->requestMethod());
+	$values = $input->$rm;
 	$itm = $modules->get('Itm');
 	$itm_costing = $modules->get('ItmCosting');
+	$itm_costing->init_configs();
 	$recordlocker = $modules->get('RecordLockerUser');
 
 	if ($input->get->itemID) {
 		$itemID = $input->get->text('itemID');
 
 		if ($itm->item_exists($itemID)) {
-			if ($input->requestMethod('POST') || $input->get->action) {
+			if ($values->action) {
 				$rm = strtolower($input->requestMethod());
 				$itm_costing->process_input($input);
 				$itemID = $input->$rm->text('itemID');
