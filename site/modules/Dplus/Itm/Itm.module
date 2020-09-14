@@ -236,7 +236,7 @@ class Itm extends WireData implements Module {
 		$record->setSplitorder($values->yn('splitorder'));
 		$record->setInspection($values->yn('inspection'));
 		$record->setTaxable($values->yn('taxable'));
-		$record->setWeight($values->float('taxable'));
+		$record->setWeight($values->float('weight'));
 		$record->setCubes($values->float('cubes'));
 		$invalidfields = $this->set_validated_fields($record, $input);
 		return $invalidfields;
@@ -283,8 +283,10 @@ class Itm extends WireData implements Module {
 		);
 
 		foreach ($fields as $property => $field) {
+			$validate = true;
+
 			// IF FIELD MUST NOT BLANK OR IF there is a value for field
-			if ($field['allow_blank'] == false || strlen($values->text($field['input']))) {
+			if (strlen($values->text($field['input']))) {
 				if ($validate->$property($values->text($field['input']))) {
 					$setProperty = "set".ucfirst($field['input']);
 					$record->$setProperty($values->text($field['input']));
@@ -370,7 +372,6 @@ class Itm extends WireData implements Module {
 /* =============================================================
 	Dplus Cobol Request Functions
 ============================================================= */
-
 	/**
 	 * Writes File for Dplus to update the ITM file for this ITEM
 	 * @param  string $itemID Item ID
