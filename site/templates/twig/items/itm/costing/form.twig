@@ -12,7 +12,7 @@
 			<label for="uom_purchase">Purchase UoM</label>
 		</div>
 		<div class="col-sm-8">
-			<select name="uom_purchase" class="form-control" id="uom_purchase">
+			<select name="uom_purchase" class="custom-select custom-select-sm" id="uom_purchase">
 				{% for uom in m_costing.get_uom_purchases() %}
 					<option value="{{ uom.code }}" {{ uom.code == item.unitofmpurchase.code ? 'selected' : '' }}>{{ uom.description }}</option>
 				{% endfor %}
@@ -26,8 +26,8 @@
 		<div class="col-sm-8">
 			<div class="row">
 				<div class="col-sm-8">
-					<div class="input-group">
-						<input type="text" class="form-control text-right" name="standardcost" id="standardcost" value="{{ item.standardcost|number_format(4) }}">
+					<div class="input-group input-group-sm">
+						<input type="text" class="form-control text-right" name="standardcost" id="standardcost" value="{{ item.standardcost|number_format(m_costing.configs.po.decimal_places_cost) }}">
 						<div class="input-group-append">
 							<span class="input-group-text uom-purchase-display">{{ item.unitofmpurchase.code }}</span>
 						</div>
@@ -54,8 +54,8 @@
 		<div class="col-sm-8">
 			<div class="row">
 				<div class="col-sm-8">
-					<div class="input-group">
-						<input type="text" class="form-control text-right" name="lastcost" id="lastcost" value="{{ item.lastcost|number_format(4) }}">
+					<div class="input-group input-group-sm">
+						<input type="text" class="form-control text-right" name="lastcost" id="lastcost" value="{{ item.lastcost|number_format(m_costing.configs.po.decimal_places_cost) }}">
 						<div class="input-group-append">
 							<span class="input-group-text uom-purchase-display">{{ item.unitofmpurchase.code }}</span>
 						</div>
@@ -89,12 +89,22 @@
 			<label for="minmargin">Min Margin</label>
 		</div>
 		<div class="col-sm-8">
-			<div class="input-group">
+			<div class="input-group input-group-sm">
 				<input type="text" class="form-control text-right" name="minmargin" id="minmargin" value="{{ item.minmargin|number_format(4) }}">
 				<div class="input-group-append">
 					<span class="input-group-text uom-purchase-display">%</span>
 				</div>
 			</div>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-sm-4">
+			<label for="qty_purchase_carton">{{ m_costing.appcustID == 'LINDST' ? 'Carton Qty' : 'N/A'}}</label>
+		</div>
+		<div class="col-sm-8">
+			{% if m_costing.appcustID == 'LINDST' %}
+				<input type="number" class="form-control form-control-sm text-right" name="qty_purchase_carton" id="qty_purchase_carton" value="{{ item.qty_purchase_carton }}">
+			{% endif %}
 		</div>
 	</div>
 	<div class="d-flex justify-content-between align-items-center">
