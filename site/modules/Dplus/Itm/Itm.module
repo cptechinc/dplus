@@ -38,7 +38,7 @@ class Itm extends WireData implements Module {
 		$this->configs->inv = false;
 	}
 
-	public function init2() {
+	public function init_configs() {
 		$this->configs->inv = $this->get_config_in();
 	}
 
@@ -106,7 +106,7 @@ class Itm extends WireData implements Module {
 	 */
 	public function get_new_item() {
 		$item = new ItemMasterItem();
-		$this->configs->inv = $this->get_config_in();
+		$this->init_configs();
 
 		$item->setItemgroup($this->configs->inv->default_itemgroup);
 
@@ -169,7 +169,7 @@ class Itm extends WireData implements Module {
 	 * @return void
 	 */
 	public function process_input_itm(WireInput $input) {
-		$this->configs->inv = $this->get_config_in();
+		$this->init_configs();
 		$recordlocker = $this('modules')->get('RecordLockerUser');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
