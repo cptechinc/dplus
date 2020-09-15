@@ -15,7 +15,7 @@
 				<input type="text" class="form-control form-control-sm pricebreak-price" name="baseprice" value="{{ item_pricing.baseprice|currency }}">
 			</td>
 			<td class="text-right">
-				<span class="unit-margin">{{ item_pricing.get_pricebreak_margin(0) }}</span> %
+				<span class="unit-margin">{{ item_pricing.get_pricebreak_margin(0)|number_format(4) }}</span> %
 			</td>
 		</tr>
 		{% for i in 1..item_pricing.count_qtybreaks() %}

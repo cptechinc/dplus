@@ -19,6 +19,6 @@
 		<label>Last Change Date</label>
 	</div>
 	<div class="col-sm-6">
-		<p class="form-control-plaintext text-right">{{ item_pricing.updated|convertdate }}</p>
+		<p class="form-control-plaintext text-right">{{ item_pricing.updated ? item_pricing.updated|convertdate : 'N/A' }}</p>
 	</div>
 </div>
