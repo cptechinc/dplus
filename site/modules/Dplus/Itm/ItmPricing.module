@@ -4,7 +4,12 @@ include_once(__DIR__.'/ItmResponse.php');
 
 use Purl\Url;
 
+use ConfigInQuery, ConfigIn;
+use ConfigPoQuery, ConfigPo;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
 use ItemPricingQuery, ItemPricing;
+use InvAssortmentCodeQuery, InvAssortmentCode;
+use UnitofMeasureSaleQuery, UnitofMeasureSale;
 
 /**
  * Module that handles the editing of the UPC item Xref
@@ -17,7 +22,29 @@ class ItmPricing extends WireData implements Module {
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
+		$this->configs = new WireData();
+		$this->configs->inv = false;
+		$this->configs->po  = false;
+		$this->configs->so  = false;
 	}
+
+	/**
+	 * Returns ItemPricingQuery
+	 * @return ItemPricingQuery
+	 */
+	public function get_query() {
+		return ItemPricingQuery::create();
+	}
+
+	public function init_configs() {
+		$this->configs->inv = $this->get_config_in();
+		$this->configs->po  = $this->get_config_po();
+		$this->configs->so  = $this->get_config_so();
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
 
 	/**
 	 * Return if Item Exists
@@ -43,14 +70,6 @@ class ItmPricing extends WireData implements Module {
 	}
 
 	/**
-	 * Returns ItemPricingQuery
-	 * @return ItemPricingQuery
-	 */
-	public function get_query() {
-		return ItemPricingQuery::create();
-	}
-
-	/**
 	 * Returns ItemPricing after retreiving or creating it
 	 * @param  WireInput $input Input Data
 	 * @return ItemPricing
@@ -67,6 +86,10 @@ class ItmPricing extends WireData implements Module {
 		}
 		return $record;
 	}
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
 
 	/**
 	 * Takes Input, validates Item Updates the pricing record for it, sends update to DPlus
@@ -157,6 +180,9 @@ class ItmPricing extends WireData implements Module {
 		return $saved;
 	}
 
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
 	/**
 	 * Returns XrefResponse based on the outcome of the database save
 	 * @param  ItemPricing $record Record to record response of database save
@@ -198,21 +224,6 @@ class ItmPricing extends WireData implements Module {
 	}
 
 	/**
-	 * Writes File for Dplus to update the ITM file for this ITEM
-	 * @param  string $itemID Item ID
-	 * @return void
-	 */
-	public function request_pricing_update($itemID) {
-		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
-		$data = array("DBNAME=$dplusdb", 'UPDATEITMPRICE', "ITEMID=$itemID");
-
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['database'], session_id());
-	}
-
-	/**
 	 * Return Error Response with Provided Message
 	 * @param  string $itemID     Item ID
 	 * @param  string $message    Error Message
@@ -228,6 +239,59 @@ class ItmPricing extends WireData implements Module {
 		$response->set_action($actiontype != 0 ? $actiontype : ItmResponse::CRUD_UPDATE);
 		$response->set_message($message);
 		return $response;
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	/**
+	 * Writes File for Dplus to update the ITM file for this ITEM
+	 * @param  string $itemID Item ID
+	 * @return void
+	 */
+	public function request_pricing_update($itemID) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'UPDATEITMPRICE', "ITEMID=$itemID");
+
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Returns IN config
+	 * @return ConfigIn
+	 */
+	public function get_config_in() {
+		return ConfigInQuery::create()->findOne();
+	}
+
+	/**
+	 * Returns PO config
+	 * @return ConfigPo
+	 */
+	public function get_config_po() {
+		return ConfigPoQuery::create()->findOne();
+	}
+
+	/**
+	 * Returns SO config
+	 * @return ConfigSo
+	 */
+	public function get_config_so() {
+		return ConfigSalesOrderQuery::create()->findOne();
+	}
+
+	public function get_unitsofm_sale() {
+		return UnitofMeasureSaleQuery::create()->find();
+	}
+
+	public function get_assortmentcodes() {
+		return InvAssortmentCodeQuery::create()->find();
 	}
 
 /* =============================================================
