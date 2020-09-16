@@ -42,6 +42,8 @@ class Lookup extends WireData implements Module {
 				'ValidateAr',
 				'ValidateAp',
 				'ValidateItm',
+				'ValidatePo',
+				'ValidateCxm'
 			)
 		);
 	}
