@@ -1,7 +1,7 @@
 <?php namespace ProcessWire;
 
 /**
- * Volume
+ * ItmResponse
  * Handles Response Data for Itm functions
  *
  * @author Paul Gomez
@@ -16,7 +16,7 @@
  * @property bool    $saved_itm_whse     Was ITM Warehouse record Updated?
  * @property bool    $saved_itm_pricing  Was ITM Pricing record Updated?
  * @property bool    $saved_itm_costing  Was ITM Pricing record Updated?
- *  @property array  $fields             Key-Value array of fields that need attention
+ * @property array   $fields             Key-Value array of fields that need attention
  *
  */
 class ItmResponse extends WireData {
