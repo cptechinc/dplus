@@ -10,6 +10,9 @@ use ItemMasterItemQuery, ItemMasterItem;
  * Class for validating Itm fields
  */
 class ValidateItm extends WireData implements Module {
+/* =============================================================
+	AR Functions
+============================================================= */
 	/**
 	 * Return if Cust ID is Valid
 	 * @param  string $custID Customer ID
@@ -19,6 +22,9 @@ class ValidateItm extends WireData implements Module {
 		return $this->validate->ar->custid($custID);
 	}
 
+/* =============================================================
+	IN Functions
+============================================================= */
 	/**
 	 * Return if Item ID is Valid
 	 * @param  string $itemID Item ID
