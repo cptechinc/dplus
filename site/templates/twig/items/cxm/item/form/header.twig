@@ -20,7 +20,7 @@
 						<span class="fa fa-search" aria-hidden="true"></span> <span class="sr-only">Search for / Choose Customer</span>
 					</button>
 				</span>
-				<input type="text" name="custID" id="custID" class="form-control" value="{{ item.custID }}">
+				<input type="text" name="custID" id="custID" class="form-control {{ itm.field_has_error('custID') ? 'is-invalid' : ''}}" value="{{ item.custID }}">
 			</div>
 		</div>
 	</div>

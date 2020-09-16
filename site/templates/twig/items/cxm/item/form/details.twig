@@ -3,7 +3,7 @@
 		<label for="uom_customer">Customer UoM</label>
 	</div>
 	<div class="col-sm-6">
-		<select name="uom_customer" class="form-control form-control-sm mb-1" id="uom_customer">
+		<select name="uom_customer" class="custom-select custom-select-sm mb-1 {{ cxm.field_has_error('uom_customer') ? 'is-invalid' : ''}}" id="uom_customer">
 			<option value=""></option>
 			{% for uom in cxm.get_unitsofm_sales() %}
 				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_customer ? 'selected' : ''}}>
@@ -20,7 +20,7 @@
 	</div>
 	<div class="col-sm-6">
 		<div class="input-group input-group-sm mb-2">
-			<input type="number" name="convert" class="form-control text-right" id="convert" value="{{ item.convert }}">
+			<input type="number" name="convert" class="form-control form-control-sm text-right" id="convert" value="{{ item.convert }}">
 		</div>
 	</div>
 </div>
@@ -30,7 +30,7 @@
 	</div>
 	<div class="col-sm-6">
 		<div class="input-group input-group-sm mb-2">
-			<input type="number" name="qty_percase" class="form-control text-right" id="qty_percase" value="{{ item.qty_percase }}">
+			<input type="number" name="qty_percase" class="form-control form-control-sm text-right" id="qty_percase" value="{{ item.qty_percase }}">
 		</div>
 	</div>
 </div>
@@ -40,7 +40,7 @@
 	</div>
 	<div class="col-sm-6">
 		<div class="input-group input-group-sm mb-2">
-			<input type="number" name="qty_purchase" class="form-control text-right" id="qty_purchase" value="{{ item.qty_purchase }}">
+			<input type="number" name="qty_purchase" class="form-control form-control-sm text-right" id="qty_purchase" value="{{ item.qty_purchase }}">
 		</div>
 	</div>
 </div>
@@ -50,7 +50,7 @@
 	</div>
 	<div class="col-sm-6">
 		<div class="input-group input-group-sm mb-2">
-			<input type="number" name="price_retail" class="form-control text-right" id="price_retail" value="{{ item.price_retail }}">
+			<input type="number" name="price_retail" class="form-control form-control-sm text-right" id="price_retail" value="{{ item.price_retail }}">
 		</div>
 	</div>
 </div>
@@ -60,7 +60,7 @@
 	</div>
 	<div class="col-sm-6">
 		<div class="input-group input-group-sm mb-2">
-			<input type="number" name="price_customer" class="form-control text-right" id="price_customer" value="{{ item.price_customer }}">
+			<input type="number" name="price_customer" class="form-control form-control-sm text-right" id="price_customer" value="{{ item.price_customer }}">
 		</div>
 	</div>
 </div>
@@ -75,7 +75,7 @@
 		<label for="uom_pricing">Pricing UoM</label>
 	</div>
 	<div class="col-sm-6">
-		<select name="uom_pricing" class="form-control form-control-sm mb-1" id="uom_pricing">
+		<select name="uom_pricing" class="custom-select custom-select-sm mb-1 {{ cxm.field_has_error('uom_pricing') ? 'is-invalid' : ''}}" id="uom_pricing">
 			<option value=""></option>
 			{% for uom in cxm.get_unitsofm_sales() %}
 				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_pricing ? 'selected' : ''}}>
