@@ -38,6 +38,10 @@ class ItmCosting extends WireData implements Module {
 		$this->appcustID    = $this->wire('modules')->get('DplusCustomer')->get_custID();
 	}
 
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+
 	/**
 	 * Takes Input, validates Item Updates the pricing record for it, sends update to DPlus
 	 * NOTE: Updates ITM record with changes to the uom_sale, allow_discount, assortmentcode, assortmentqty fields
@@ -112,6 +116,9 @@ class ItmCosting extends WireData implements Module {
 		return $this->save_and_process_response($item);
 	}
 
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
 	/**
 	 * Returns XrefResponse based on the outcome of the database save
 	 * @param  ItemMasterItem $record Record to record response of database save
@@ -152,6 +159,7 @@ class ItmCosting extends WireData implements Module {
 		}
 		return $response;
 	}
+
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
@@ -205,6 +213,7 @@ class ItmCosting extends WireData implements Module {
 		}
 		return $this->configs->po->controlbuyer == ConfigPo::CONTROL_BUYER_ITEM;
 	}
+	
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
