@@ -10,6 +10,8 @@
 	<input type="hidden" name="action" value="update-cxm">
 	<input type="hidden" name="original_custitemID" value="{{ item.custitemID }}">
 
+	{% include 'items/cxm/item/form/form-heading.twig' %}
+	
 	<div class="row mb-3">
 		{% include 'items/cxm/item/form/header.twig' %}
 	</div>
