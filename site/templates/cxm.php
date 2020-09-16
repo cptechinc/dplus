@@ -13,7 +13,6 @@
 
 		if ($cxm->cxm_item_exists($custID, $custitemID)) {
 			$session->redirect($page->cxm_itemURL($custID, $custitemID));
-
 		} else {
 			$session->redirect($page->cxm_customerURL($custID));
 		}
@@ -23,8 +22,7 @@
 	$page->body .= $config->twig->render('items/cxm/bread-crumbs.twig', ['page' => $page]);
 
 	if ($session->response_xref) {
-		$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_xref]);
-		$session->remove('response_xref');
+		$page->body .= $config->twig->render('items/cxm/response.twig', ['response' => $session->response_xref]);
 	}
 
 	if ($session->response_qnote) {
@@ -47,6 +45,7 @@
 			if ($cxm->cxm_item_exists($custID, $custitemID)) {
 				$item = $cxm->get_cxm_item($custID, $custitemID);
 				$page->title = "CXM: $custID Item $custitemID";
+				$qnotes = $modules->get('QnotesItemCxm');
 
 				/**
 				 * Show alert that CXM is locked if
@@ -77,13 +76,13 @@
 			}
 			$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;
 			$page->searchitemsURL     = $pages->get('pw_template=itm-search')->url;
-			$page->body .= $config->twig->render('items/cxm/item/form.twig', ['page' => $page, 'item' => $item, 'cxm' => $cxm, 'recordlocker' => $recordlocker, 'qnotes' => $qnotes_cxm]);
+			$page->body .= $config->twig->render('items/cxm/item/form.twig', ['page' => $page, 'item' => $item, 'cxm' => $cxm, 'recordlocker' => $recordlocker, 'qnotes' => $qnotes]);
 
 			if (!$item->isNew()) {
 				$page->body .= $html->div('class=mt-3', $html->h3('', 'Notes'));
-				$page->body .= $config->twig->render('items/cxm/item/notes/list.twig', ['page' => $page, 'item' => $item, 'qnotes' => $qnotes_cxm]);
-				$page->body .= $config->twig->render('items/cxm/item/notes/modal.twig', ['page' => $page, 'item' => $item, 'qnotes' => $qnotes_cxm]);
-				$page->js   .= $config->twig->render('items/cxm/item/notes/js.twig', ['page' => $page, 'qnotes' => $qnotes_cxm]);
+				$page->body .= $config->twig->render('items/cxm/item/notes/qnotes.twig', ['page' => $page, 'item' => $item, 'qnotes' => $qnotes]);
+				$page->js   .= $config->twig->render('items/cxm/item/notes/js.twig', ['page' => $page, 'qnotes' => $qnotes]);
+				$page->js   .= $config->twig->render('msa/noce/ajax/js.twig', ['page' => $page, 'qnotes' => $qnotes]);
 			}
 
 			$page->js   .= $config->twig->render('items/cxm/item/form/js.twig', ['page' => $page, 'item' => $item, 'url_validate' => $pages->get('pw_template=cxm-validate')->httpUrl]);
