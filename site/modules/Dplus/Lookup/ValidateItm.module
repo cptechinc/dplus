@@ -82,6 +82,24 @@ class ValidateItm extends WireData implements Module {
 		return $this->validate->in->specialitem($code);
 	}
 
+	/**
+	 * Return if Inventory Assortment Code is valid
+	 * @param  string $code Inventory Special Assortment Code
+	 * @return bool
+	 */
+	public function assortmentcode($code) {
+		return $this->validate->in->assortmentcode($code);
+	}
+
+	/**
+	 * Return if Unit of Measure Sale Code is valid
+	 * @param  string $code Unit of Measure Sale Code
+	 * @return bool
+	 */
+	public function unitofm_sale($code) {
+		return $this->validate->in->unitofm_sale($code);
+	}
+
 /* =============================================================
 	AP Functions
 ============================================================= */

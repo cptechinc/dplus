@@ -3,6 +3,8 @@
 use Propel\Runtime\ActiveQuery\Criteria;
 
 use ItemMasterItemQuery, ItemMasterItem;
+use InvAssortmentCodeQuery, InvAssortmentCode;
+use UnitofMeasureSaleQuery, UnitofMeasureSale;
 
 /**
  * ValidateIn
@@ -79,6 +81,26 @@ class ValidateIn extends WireData implements Module {
 	public function specialitem($code) {
 		$spit = $this->modules->get('CodeTablesSpit');
 		return $spit->code_exists($code);
+	}
+
+	/**
+	 * Return if Inventory Assortment Code is valid
+	 * @param  string $code Inventory Special Assortment Code
+	 * @return bool
+	 */
+	public function assortmentcode($code) {
+		$iasm = $this->modules->get('CodeTablesIasm');
+		return $iasm->code_exists($code);
+	}
+
+	/**
+	 * Return if Unit of Measure Sale Code is valid
+	 * @param  string $code Unit of Measure Sale Code
+	 * @return bool
+	 */
+	public function unitofm_sale($code) {
+		$umm = $this->modules->get('CodeTablesUmm');
+		return $umm->code_exists($code);
 	}
 
 

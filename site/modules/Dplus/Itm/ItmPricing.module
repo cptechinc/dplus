@@ -164,17 +164,31 @@ class ItmPricing extends WireData implements Module {
 	 */
 	public function update_itm(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$itemID = $input->$rm->text('itemID');
-
+		$values = $input->$rm;
+		$this->errorfields = array();
 		$itm = $this->wire('modules')->get('Itm');
-		$item = $module_itm->get_item($itemID);
-		$item->setUom_sale($input->$rm->text('uom_sale'));
-		$item->setAllow_discount($input->$rm->text('allow_discount'));
-		$item->setAssortmentcode($input->$rm->text('assortmentcode'));
-		$item->setAssortmentqty($input->$rm->text('assortmentqty'));
+		$validate = $this->wire('modules')->get('ValidateItm');
+		$itemID = $values->text('itemID');
+
+		$item = $itm->get_item($itemID);
+
+		if ($validate->unitofm_sale($values->text('uom_sale'))) {
+			$item->setUom_sale($values->text('uom_sale'));
+		} else {
+			$this->invalidfields['uom_sale'] = "UoM Sale";
+		}
+		
+		if ($validate->assortmentcode($values->text('assortmentcode'))) {
+			$item->setAssortmentcode($values->text('assortmentcode'));
+		} else {
+			$this->invalidfields['assortmentcode'] = "Assortment Code";
+		}
+
+		$item->setAssortmentqty($values->float('assortmentqty'));
+		$item->setAllow_discount($values->text('allow_discount'));
 		$saved = $item->save();
 
-		if ($saved) {
+		if ($saved && empty($this->errorfields)) {
 			$itm->request_item_update($itemID);
 		}
 		return $saved;
