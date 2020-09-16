@@ -18,29 +18,14 @@ $(function() {
 
 	$("body").on("change", "input[name=primary]", function(e) {
 		input_validatedprimary.val('false');
-	});
-
-	$("body").on("click", "button[value=remove-upc-item]", function(e) {
-		e.preventDefault();
-
-		swal2.fire({
-			title: "Remove UPC?",
-			text: "Are you sure you want to remove this UPC?",
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonText: 'Yes!'
-		}).then(function (result) {
-			if (result.value) {
-				form_upc.submit();
-			}
-		});
-	});
-
+	})
 
 	form_upc.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		rules: {
+			uom: {required: true},
+			qty: {required: true},
 			upc: {
 				required: true,
 				remote: {
@@ -48,9 +33,7 @@ $(function() {
 					type: "get",
 					data: {
 						action: 'validate-upc',
-						itemID: function() {
-							return $( "input[name=itemID]" ).val();
-						}
+						itemID: $( "input[name=itemID]" ).val()
 					}
 				}
 			},
@@ -64,8 +47,6 @@ $(function() {
 					}
 				}
 			},
-			uom: 'required',
-			qty: 'required',
 		},
 		messages: {
 			upc: "Please enter the UPC Code",
@@ -76,7 +57,6 @@ $(function() {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		submitHandler: function(form) {
-
 			var formdata = form_upc.serializeArray().reduce(function(obj, item) {
 				obj[item.name] = item.value;
 				return obj;
