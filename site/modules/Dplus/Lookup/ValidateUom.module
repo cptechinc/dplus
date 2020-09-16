@@ -8,6 +8,8 @@ use UnitofMeasureSaleQuery, UnitofMeasureSale;
 /**
  * ValidateUom
  *
+ * //TODO DEPRECATE
+ *
  * Class for Looking up / Validating Items through ITM and different X-refs
  *
  * @property string $exists  UoM Exists
