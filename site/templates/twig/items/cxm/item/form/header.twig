@@ -9,7 +9,7 @@
 	item.item              ItemMasterItem
 #}
 <div class="col-sm-6">
-	{% if item.isNew() %}
+	{% if item.isNew() and page.has('custID') == false %}
 		<div class="row form-group">
 			<div class="col-sm-4">
 				<label for="custID">Customer ID</label>

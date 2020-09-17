@@ -66,14 +66,14 @@
 				$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;
 				$page->searchitemsURL     = $pages->get('pw_template=itm-search')->url;
 				$page->body .= $config->twig->render('items/cxm/item/form.twig', ['page' => $page, 'item' => $item, 'cxm' => $cxm, 'recordlocker' => $recordlocker]);
-				$page->body .= $html->div('class=mt-3', $html->h3('', 'Notes'));
 
 				if (!$item->isNew()) {
+					$page->body .= $html->div('class=mt-3', $html->h3('', 'Notes'));
 					$page->body .= $config->twig->render('items/cxm/item/notes/qnotes.twig', ['page' => $page, 'item' => $item, 'qnotes' => $qnotes]);
 					$page->js   .= $config->twig->render('items/cxm/item/notes/js.twig', ['page' => $page, 'qnotes' => $qnotes]);
 					$page->js   .= $config->twig->render('msa/noce/ajax/js.twig', ['page' => $page, 'qnotes' => $qnotes]);
 				}
-				$page->js   .= $config->twig->render('items/cxm/item/form/js.twig', ['page' => $page, 'item' => $item, 'url_validate' => $pages->get('pw_template=cxm-validate')->httpUrl]);
+				$page->js   .= $config->twig->render('items/cxm/item/form/js.twig', ['page' => $page, 'cxm' => $cxm, 'item' => $item, 'url_validate' => $pages->get('pw_template=cxm-validate')->httpUrl]);
 			} else {
 				$recordlocker->remove_lock($page->name);
 				$filter_cxm->filter_query($input);
@@ -81,8 +81,8 @@
 				$page->headline = "ITEM: CXM Item $itemID";
 				$items = $filter_cxm->query->paginate($input->pageNum, 10);
 
-				$page->body .= $config->twig->render('items/cxm/item-list-header.twig', ['page' => $page, 'heading' => $items->getNbResults() ." CXM Items for $itemID"]);
-				$page->body .= $config->twig->render('items/cxm/item-list.twig', ['page' => $page, 'items' => $items, 'recordlocker' => $recordlocker]);
+				$page->body .= $config->twig->render('items/itm/xrefs/cxm/list/header.twig', ['page' => $page, 'items' => $items, 'itemid' => $itemID]);
+				$page->body .= $config->twig->render('items/itm/xrefs/cxm/list/list.twig', ['page' => $page, 'items' => $items, 'recordlocker' => $recordlocker]);
 				$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
 			}
 

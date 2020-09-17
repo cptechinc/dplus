@@ -49,6 +49,12 @@ $(function() {
 		});
 	});
 
+	$("body").on('change', 'input[name=custitemID]', function(e) {
+		e.preventDefault();
+		alert_existing();
+	});
+
+
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
@@ -138,6 +144,18 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
+	jQuery.validator.addMethod("custid", function(value, element) {
+		return validate_custid(value);
+	}, "Use a valid Cust ID");
+
+	jQuery.validator.addMethod("custitemid", function(value, element) {
+		return validate_custitemid(value);
+	}, "Use a valid Cust ID");
+
+	jQuery.validator.addMethod("itemid", function(value, element) {
+		return validate_custid(value);
+	}, "Use a valid Item ID");
+
 	form_cxm.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
@@ -145,28 +163,33 @@ $(function() {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		rules: {
-			custID: {required: true},
-			custitemID: {required: true},
-			itemID: {
+			custID: {
 				required: true,
-				remote: {
-					url: '{{ url_validate }}',
-					type: "get",
-					data: {
-						action: 'validate-itemid'
-					}
-				}
+				custid: true,
+			},
+			custitemID: {
+				required: true,
+				maxlength: {{ cxm.maxlength_custitemid() }},
+				custitemid: true,
+			},
+			itemID: {
+				{% if page.pw_template == 'cxm' %}
+					required: true,
+					itemid: true,
+				{% endif %}
 			},
 		},
 		messages: {
-			itemID: "Please enter the Your Item ID",
+			itemID: "Use a valid Item ID",
+			custID: "Use a valid Cust ID",
+			custitemID: "Use a valid Cust Item ID, (No more than {{ cxm.maxlength_custitemid() }} characters)",
 		},
 		submitHandler: function(form) {
-			var formdata = form_cxm.serializeArray().reduce(function(obj, item) {
-				obj[item.name] = item.value;
-				return obj;
-			}, {});
-			update_cxm(form);
+			// var formdata = form_cxm.serializeArray().reduce(function(obj, item) {
+			// 	obj[item.name] = item.value;
+			// 	return obj;
+			// }, {});
+			//update_cxm(form);
 		}
 	});
 
@@ -174,22 +197,7 @@ $(function() {
 		request_validate_custitemID(function(exists) {
 			if (exists === true) {
 				if (input_custitemID.val() != input_custitemID.data('custitemid')) {
-					swal2.fire({
-						title: "Customer Item " + input_custitemID.val() + " exists",
-						text: 'Would you like to go edit this item?',
-						icon: 'error',
-						showCancelButton: true,
-						confirmButtonText: 'Yes',
-						cancelButtonText: 'No',
-					}).then((result) => {
-						if (result.value) {
-							var uri = new URI();
-							uri.removeQuery('custitemID');
-							uri.setQuery('custID', input_custID.val());
-							uri.setQuery('custitemID', input_custitemID.val());
-							window.location.href = uri.toString();
-						}
-					});
+					alert_existing();
 				} else {
 					form.submit();
 				}
@@ -197,6 +205,69 @@ $(function() {
 				form.submit();
 			}
 		});
+	}
+
+	function alert_existing() {
+		swal2.fire({
+			title: "Customer Item " + input_custitemID.val() + " exists",
+			text: 'Would you like to go edit this item?',
+			icon: 'error',
+			showCancelButton: true,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			if (result.value) {
+				var uri = new URI();
+				uri.removeQuery('custitemID');
+				uri.setQuery('custID', input_custID.val());
+				uri.setQuery('custitemID', input_custitemID.val());
+				window.location.href = uri.toString();
+			}
+		});
+	}
+
+	function validate_custid(custID) {
+		var url = URI('{{ url_validate }}');
+		url.addQuery('action', 'validate-custid');
+		url.addQuery('custID', custID);
+		url.addQuery('return', 'bool');
+
+		$.getJSON(url.toString(), function( valid ) {
+			return valid;
+		});
+		return true;
+	}
+
+	function validate_custitemid(custitemID) {
+		var url = URI('{{ url_validate }}');
+
+		if (input_custitemID.val() == input_custitemID.data('custitemid')) {
+			url.addQuery('action', 'validate-cust-itemid');
+		} else {
+			url.addQuery('action', 'validate-cust-itemid-new');
+		}
+		url.addQuery('custID', input_custID.val());
+		url.addQuery('custitemID', custitemID);
+		url.addQuery('return', 'bool');
+		console.log(url.toString());
+
+		$.getJSON(url.toString(), function( valid ) {
+			console.log(valid);
+			return valid;
+		});
+		return true;
+	}
+
+	function validate_itemid(itemID) {
+		var url = URI('{{ url_validate }}');
+		url.addQuery('action', 'validate-itemid');
+		url.addQuery('itemID', itemID);
+		url.addQuery('return', 'bool');
+
+		$.getJSON(url.toString(), function( valid ) {
+			return valid;
+		});
+		return true;
 	}
 
 /* =============================================================
