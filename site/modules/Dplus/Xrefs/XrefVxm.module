@@ -359,7 +359,7 @@ class XrefVxm extends WireData implements Module {
 	 */
 	public function update_dplus_cobol(ItemXrefVendor $item) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
 		$data = array("DBNAME=$dplusdb", 'UPDATEVXM', "VENDORID=$item->vendorid", "VENDITEM=$item->vendoritemid", "OURITEM=$item->ouritemid");
 
 		$requestor = $this->wire('modules')->get('DplusRequest');
