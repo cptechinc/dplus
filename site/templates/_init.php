@@ -80,29 +80,35 @@ if ($page->id != $config->errorpage_dplusdb) {
 	}
 }
 
-// ADD JS AND CSS
-$config->styles->append(hash_templatefile('styles/bootstrap-grid.min.css'));
-$config->styles->append(hash_templatefile('styles/theme.css'));
-$config->styles->append('//fonts.googleapis.com/css?family=Lusitana:400,700|Quattrocento:400,700');
-$config->styles->append('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
-$config->styles->append(hash_templatefile('styles/lib/fuelux.css'));
-//$config->styles->append(hash_templatefile('styles/lib/sweetalert.css'));
-$config->styles->append(hash_templatefile('styles/lib/sweetalert2.css'));
-$config->styles->append(hash_templatefile('styles/main.css'));
+$rm = strtolower($input->requestMethod());
+$values = $input->$rm;
+
+if (!$values->action) {
+	// ADD JS AND CSS
+	$config->styles->append(hash_templatefile('styles/bootstrap-grid.min.css'));
+	$config->styles->append(hash_templatefile('styles/theme.css'));
+	$config->styles->append('//fonts.googleapis.com/css?family=Lusitana:400,700|Quattrocento:400,700');
+	$config->styles->append('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+	$config->styles->append(hash_templatefile('styles/lib/fuelux.css'));
+	//$config->styles->append(hash_templatefile('styles/lib/sweetalert.css'));
+	$config->styles->append(hash_templatefile('styles/lib/sweetalert2.css'));
+	$config->styles->append(hash_templatefile('styles/main.css'));
 
 
-$config->scripts->append(hash_templatefile('scripts/lib/jquery.js'));
-$config->scripts->append(hash_templatefile('scripts/popper.js'));
-$config->scripts->append(hash_templatefile('scripts/bootstrap.min.js'));
-$config->scripts->append(hash_templatefile('scripts/lib/fuelux.js'));
-$config->scripts->append(hash_templatefile('scripts/lib/sweetalert.js'));
-$config->scripts->append(hash_templatefile('scripts/lib/moment.js'));
-$config->scripts->append(hash_templatefile('scripts/lib/bootstrap-notify.js'));
-$config->scripts->append(hash_templatefile('scripts/uri.js'));
-$config->scripts->append(hash_templatefile('scripts/lib/sweetalert.js'));
-$config->scripts->append(hash_templatefile('scripts/lib/sweetalert2.js'));
-$config->scripts->append(hash_templatefile('scripts/classes.js'));
-$config->scripts->append(hash_templatefile('scripts/main.js'));
+	$config->scripts->append(hash_templatefile('scripts/lib/jquery.js'));
+	$config->scripts->append(hash_templatefile('scripts/popper.js'));
+	$config->scripts->append(hash_templatefile('scripts/bootstrap.min.js'));
+	$config->scripts->append(hash_templatefile('scripts/lib/fuelux.js'));
+	$config->scripts->append(hash_templatefile('scripts/lib/sweetalert.js'));
+	$config->scripts->append(hash_templatefile('scripts/lib/moment.js'));
+	$config->scripts->append(hash_templatefile('scripts/lib/bootstrap-notify.js'));
+	$config->scripts->append(hash_templatefile('scripts/uri.js'));
+	$config->scripts->append(hash_templatefile('scripts/lib/sweetalert.js'));
+	$config->scripts->append(hash_templatefile('scripts/lib/sweetalert2.js'));
+	$config->scripts->append(hash_templatefile('scripts/classes.js'));
+	$config->scripts->append(hash_templatefile('scripts/main.js'));
+}
+
 
 
 // SET CONFIG PROPERTIES
@@ -128,18 +134,20 @@ $config->customer = $pages->get('/config/customer/');
 
 $session->sessionid = session_id();
 
-$config->twigloader = new Twig_Loader_Filesystem($config->paths->templates.'twig/');
-$config->twig = new Twig_Environment($config->twigloader, [
-	'cache' => $config->paths->templates.'twig/cache/',
-	'auto_reload' => true,
-	'debug' => true
-]);
+if (!$values->action) {
+	$config->twigloader = new Twig_Loader_Filesystem($config->paths->templates.'twig/');
+	$config->twig = new Twig_Environment($config->twigloader, [
+		'cache' => $config->paths->templates.'twig/cache/',
+		'auto_reload' => true,
+		'debug' => true
+	]);
 
-$config->twig->addExtension(new Twig\Extension\DebugExtension());
-include($config->paths->templates."/twig/util/functions.php");
+	$config->twig->addExtension(new Twig\Extension\DebugExtension());
+	include($config->paths->templates."/twig/util/functions.php");
 
-if ($page->fullURL->query->__toString() != '') {
-	$page->title_previous = $page->title;
+	if ($page->fullURL->query->__toString() != '') {
+		$page->title_previous = $page->title;
+	}
+
+	$page->show_breadcrumbs = true;
 }
-
-$page->show_breadcrumbs = true;
