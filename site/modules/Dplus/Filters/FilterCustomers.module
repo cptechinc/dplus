@@ -40,6 +40,15 @@ class FilterCustomers extends WireData implements Module {
 	}
 
 	/**
+	 * Filter Query by Cust ID
+	 * @param  string|array $custID Cust ID
+	 * @return void
+	 */
+	public function custid($custID) {
+		return $this->query->filterByCustid($custID);
+	}
+
+	/**
 	 * Searches the Customer Table to find vendors that match the query provided
 	 *
 	 * @param  string $q Search Query
