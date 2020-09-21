@@ -22,6 +22,8 @@
 				$sales_orders = $load_customer->get_salesorders();
 				$sales_history = $load_customer->get_saleshistory();
 				$quotes = $load_customer->get_quotes();
+				$page->show_breadcrumbs = false;
+				$page->body .= $config->twig->render('customers/ci/bread-crumbs.twig', ['page' => $page, 'customer' => $customer]);
 				$page->headline = "CI: $customer->name";
 
 				if (!$customer->is_active()) {
