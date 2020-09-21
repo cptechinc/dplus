@@ -108,6 +108,20 @@ class LastSoldItemsCustomerCstk extends WireData implements Module {
 	}
 
 	/**
+	 * Returns Price for Item
+	 * NOTE: Record must be loaded
+	 * @param  string $itemID Item ID
+	 * @return float
+	 */
+	public function get_item_availability($itemID) {
+		$q = PricingQuery::create();
+		$q->select('qty');
+		$q->filterBySessionid(session_id());
+		$q->filterByItemid($itemID);
+		return $q->findOne();
+	}
+
+	/**
 	 * Returns if CSTK exists for custid, shiptoid
 	 * @return bool
 	 */
