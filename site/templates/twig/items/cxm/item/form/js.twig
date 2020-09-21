@@ -49,12 +49,6 @@ $(function() {
 		});
 	});
 
-	$("body").on('change', 'input[name=custitemID]', function(e) {
-		e.preventDefault();
-		alert_existing();
-	});
-
-
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
@@ -144,38 +138,56 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	jQuery.validator.addMethod("custid", function(value, element) {
-		return validate_custid(value);
-	}, "Use a valid Cust ID");
 
-	jQuery.validator.addMethod("custitemid", function(value, element) {
-		return validate_custitemid(value);
-	}, "Use a valid Cust ID");
-
-	jQuery.validator.addMethod("itemid", function(value, element) {
-		return validate_custid(value);
-	}, "Use a valid Item ID");
-
-	form_cxm.validate({
+	var validator = form_cxm.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		rules: {
+			rounding: required: true,
 			custID: {
 				required: true,
-				custid: true,
+				remote: {
+					url: '{{ url_validate }}',
+					type: "get",
+					data: {
+						action: 'validate-custid'
+					}
+				}
 			},
 			custitemID: {
 				required: true,
 				maxlength: {{ cxm.maxlength_custitemid() }},
-				custitemid: true,
+				remote: {
+					url: '{{ url_validate }}',
+					type: "get",
+					data: {
+						custID: function() {
+							return $('input[name=custID]').val();
+						},
+						action: function() {
+							var input = $('input[name=custitemID]');
+							if (input.val == input.data('custitemid')) {
+								return 'validate-cust-itemid';
+							} else {
+								return 'validate-cust-itemid-new';
+							}
+						}
+					}
+				}
 			},
 			itemID: {
 				{% if page.pw_template == 'cxm' %}
 					required: true,
-					itemid: true,
+					remote: {
+						url: '{{ url_validate }}',
+						type: "get",
+						data: {
+							action: 'validate-itemid'
+						}
+					}
 				{% endif %}
 			},
 		},
@@ -189,9 +201,10 @@ $(function() {
 			// 	obj[item.name] = item.value;
 			// 	return obj;
 			// }, {});
-			//update_cxm(form);
+			update_cxm(form);
 		}
 	});
+
 
 	function update_cxm(form) {
 		request_validate_custitemID(function(exists) {
@@ -206,6 +219,18 @@ $(function() {
 			}
 		});
 	}
+
+	$("body").on('change', 'input[name=custitemID]', function(e) {
+		e.preventDefault();
+
+		request_validate_custitemID(function(exists) {
+			if (exists === true) {
+				if (input_custitemID.val() != input_custitemID.data('custitemid')) {
+					alert_existing();
+				}
+			}
+		});
+	});
 
 	function alert_existing() {
 		swal2.fire({
@@ -226,50 +251,6 @@ $(function() {
 		});
 	}
 
-	function validate_custid(custID) {
-		var url = URI('{{ url_validate }}');
-		url.addQuery('action', 'validate-custid');
-		url.addQuery('custID', custID);
-		url.addQuery('return', 'bool');
-
-		$.getJSON(url.toString(), function( valid ) {
-			return valid;
-		});
-		return true;
-	}
-
-	function validate_custitemid(custitemID) {
-		var url = URI('{{ url_validate }}');
-
-		if (input_custitemID.val() == input_custitemID.data('custitemid')) {
-			url.addQuery('action', 'validate-cust-itemid');
-		} else {
-			url.addQuery('action', 'validate-cust-itemid-new');
-		}
-		url.addQuery('custID', input_custID.val());
-		url.addQuery('custitemID', custitemID);
-		url.addQuery('return', 'bool');
-		console.log(url.toString());
-
-		$.getJSON(url.toString(), function( valid ) {
-			console.log(valid);
-			return valid;
-		});
-		return true;
-	}
-
-	function validate_itemid(itemID) {
-		var url = URI('{{ url_validate }}');
-		url.addQuery('action', 'validate-itemid');
-		url.addQuery('itemID', itemID);
-		url.addQuery('return', 'bool');
-
-		$.getJSON(url.toString(), function( valid ) {
-			return valid;
-		});
-		return true;
-	}
-
 /* =============================================================
 	AJAX Request Functions
 ============================================================= */
@@ -283,7 +264,7 @@ $(function() {
 		url.addQuery('action', 'validate-cust-itemid').addQuery('custID', input_custID.val());
 		url.addQuery('custitemID', input_custitemID.val());
 		url.addQuery('return', 'bool');
-		console.log(url.toString());
+
 		$.getJSON(url.toString(), function( valid ) {
 			callback(valid);
 		});

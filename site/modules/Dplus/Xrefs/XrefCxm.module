@@ -183,6 +183,7 @@ class XrefCxm extends WireData implements Module {
 		$q->select(ItemXrefCustomer::get_aliasproperty('custid'));
 		return $q->find()->toArray();
 	}
+	
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
