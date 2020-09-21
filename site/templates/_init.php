@@ -128,6 +128,8 @@ if ($input->get->pdf) {
 	$page->pdf = true;
 }
 
+$page->focus = $input->get->text('focus');
+
 $appconfig = $pages->get('/config/app/');
 $siteconfig = $pages->get('/config/');
 $config->customer = $pages->get('/config/customer/');
