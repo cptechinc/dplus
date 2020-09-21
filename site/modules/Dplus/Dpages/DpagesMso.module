@@ -372,6 +372,12 @@ class DpagesMso extends Dpages implements Module {
 
 			$event->return = $this->get_cxm_item_deleteURL($itemID, $custID, $custitemID);
 		});
+
+		$this->addHook('Page(pw_template=cxm)::cxm_item_exitURL', function($event) {
+			$p = $event->object;
+			$custID = $p->custID;
+			$event->return = $this->get_cxm_customerURL($custID);
+		});
 	}
 
 /* =============================================================

@@ -411,5 +411,11 @@ class ItmXrefs extends WireData implements Module {
 			$itemID = $p->itemID;
 			$event->return = $this->get_cxm_itemURL($itemID, '','new');
 		});
+
+		$this->addHook("Page(pw_template=$templates)::cxm_item_exitURL", function($event) {
+			$p = $event->object;
+			$itemID = $p->itemID;
+			$event->return = $this->get_itm_xrefs_cxmURL($itemID);
+		});
 	}
 }
