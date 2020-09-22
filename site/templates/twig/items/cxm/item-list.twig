@@ -5,7 +5,9 @@
 	cxm                    module XrefCxm
 	recordlocker           module RecordLockerUser
 	items                  ItemXrefCxm[]|ObjectCollection
+	response               XrefResponse|null
 #}
+
 {% if page.has('custID') %}
 	{% include 'items/cxm/list/customer.twig' %}
 {% elseif page.has('itemID') %}

@@ -25,7 +25,7 @@
 	<tbody>
 		{% if items.count() %}
 			{% for item in items %}
-				<tr>
+				<tr data-cxm="{{ item.custid ~ '-' ~ item.custitemID }}">
 					{% if page.has('custID') == false %}
 						<td>{{ item.custID }}</td>
 					{% endif %}

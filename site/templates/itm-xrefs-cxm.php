@@ -82,8 +82,9 @@
 				$items = $filter_cxm->query->paginate($input->pageNum, 10);
 
 				$page->body .= $config->twig->render('items/itm/xrefs/cxm/list/header.twig', ['page' => $page, 'items' => $items, 'itemid' => $itemID]);
-				$page->body .= $config->twig->render('items/itm/xrefs/cxm/list/list.twig', ['page' => $page, 'items' => $items, 'recordlocker' => $recordlocker]);
+				$page->body .= $config->twig->render('items/itm/xrefs/cxm/list/list.twig', ['page' => $page, 'response' => $session->response_xref, 'items' => $items, 'recordlocker' => $recordlocker]);
 				$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
+				$page->js   .= $config->twig->render('items/itm/xrefs/cxm/list/js.twig', ['page' => $page]);
 			}
 
 		} else {

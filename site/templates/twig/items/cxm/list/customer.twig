@@ -19,7 +19,7 @@
 	<tbody>
 		{% if items.count() %}
 			{% for item in items %}
-				<tr>
+				<tr class="{{ (response.key == (item.custid ~ '-' ~ item.custitemID) and response.has_success() ) ? 'bg-success text-white' : ''}}" data-cxm="{{ item.custid ~ '-' ~ item.custitemID }}">
 					<td>{{ item.custitemID }}</td>
 					<td>{{ item.itemID }}</td>
 					<td>{{ item.description }}</td>
