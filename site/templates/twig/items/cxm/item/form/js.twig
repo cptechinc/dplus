@@ -31,7 +31,6 @@ $(function() {
 		calculate_custprice();
 	});
 
-
 	$("body").on("click", "a.remove-cxm-item", function(e) {
 		e.preventDefault();
 		var button = $(this);
@@ -146,7 +145,7 @@ $(function() {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		rules: {
-			rounding: required: true,
+			rounding: {required: true},
 			custID: {
 				required: true,
 				remote: {
@@ -169,7 +168,8 @@ $(function() {
 						},
 						action: function() {
 							var input = $('input[name=custitemID]');
-							if (input.val == input.data('custitemid')) {
+
+							if (input.val() == input.data('custitemid')) {
 								return 'validate-cust-itemid';
 							} else {
 								return 'validate-cust-itemid-new';
