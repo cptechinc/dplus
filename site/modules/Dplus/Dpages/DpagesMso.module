@@ -374,9 +374,10 @@ class DpagesMso extends Dpages implements Module {
 		});
 
 		$this->addHook('Page(pw_template=cxm)::cxm_item_exitURL', function($event) {
-			$p = $event->object;
-			$custID = $p->custID;
-			$event->return = $this->get_cxm_customerURL($custID);
+			$item = $event->arguments(0);
+			$custID = $item->custid;
+			$custitemID = $item->custitemid;
+			$event->return = $this->get_cxm_customerURL($custID, "$custID-$custitemID");
 		});
 	}
 
@@ -388,9 +389,12 @@ class DpagesMso extends Dpages implements Module {
 	 * @param  string $custID Customer ID
 	 * @return string
 	 */
-	public function get_cxm_customerURL($custID) {
+	public function get_cxm_customerURL($custID, $focus = '') {
 		$url = new Url($this->wire('pages')->get('pw_template=cxm')->url);
 		$url->query->set('custID', $custID);
+		if ($focus) {
+			$url->query->set('focus', $focus);
+		}
 		return $url->getUrl();
 	}
 

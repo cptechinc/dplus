@@ -230,9 +230,12 @@ class ItmXrefs extends WireData implements Module {
 	 * @param  string $itemID
 	 * @return string
 	 */
-	public function get_itm_xrefs_cxmURL($itemID) {
+	public function get_itm_xrefs_cxmURL($itemID, $focus = '') {
 		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-cxm")->url);
 		$url->query->set('itemID', $itemID);
+		if ($focus) {
+			$url->query->set('focus', $focus);
+		}
 		return $url->getUrl();
 	}
 
@@ -413,9 +416,10 @@ class ItmXrefs extends WireData implements Module {
 		});
 
 		$this->addHook("Page(pw_template=$templates)::cxm_item_exitURL", function($event) {
-			$p = $event->object;
-			$itemID = $p->itemID;
-			$event->return = $this->get_itm_xrefs_cxmURL($itemID);
+			$item = $event->arguments(0);
+			$custID = $item->custid;
+			$custitemID = $item->custitemid;
+			$event->return = $this->get_itm_xrefs_cxmURL($item->itemid, "$custID-$custitemID");
 		});
 	}
 }
