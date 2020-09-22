@@ -183,7 +183,7 @@ class XrefCxm extends WireData implements Module {
 		$q->select(ItemXrefCustomer::get_aliasproperty('custid'));
 		return $q->find()->toArray();
 	}
-	
+
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
@@ -441,7 +441,7 @@ class XrefCxm extends WireData implements Module {
 	protected function save_and_process_response(ItemXrefCustomer $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
-		$code = "$record->custid-$record->custitemid-$record->itemid";
+		$code = "$record->custid-$record->custitemid";
 
 		$response = new XrefResponse();
 		$response->set_key($code);
