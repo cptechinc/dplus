@@ -1,18 +1,18 @@
 <?php
+	$rm = strtolower($input->requestMethod());
+	$values = $values;
 	$html = $modules->get('HtmlWriter');
 	$vxm = $modules->get('XrefVxm');
 	$filter_vxm = $modules->get('FilterXrefItemVxm');
 	$recordlocker = $modules->get('RecordLockerUser');
 
-	if ($input->requestMethod('POST') || $input->get->action) {
-		$rm = strtolower($input->requestMethod());
-		$vendorID = $input->$rm->text('vendorID');
-		$vendoritemID = $input->$rm->text('vendoritemID');
+	if ($values->action) {
+		$vendorID = $values->text('vendorID');
+		$vendoritemID = $values->text('vendoritemID');
 		$vxm->process_input($input);
 
 		if ($vxm->vxm_item_exists($vendorID, $vendoritemID)) {
 			$session->redirect($page->vxm_itemURL($vendorID, $vendoritemID));
-
 		} else {
 			$session->redirect($page->vxm_vendorURL($vendorID));
 		}
@@ -26,8 +26,8 @@
 		$session->remove('response_xref');
 	}
 
-	if ($input->get->vendorID) {
-		$vendorID = $input->get->text('vendorID');
+	if ($values->vendorID) {
+		$vendorID = $values->text('vendorID');
 		$validate_vendor = $modules->get('LookupVendor');
 		$vendor = VendorQuery::create()->findOneById($vendorID);
 
@@ -35,8 +35,8 @@
 			$session->redirect($page->url."?q=$vendorID");
 		}
 
-		if ($input->get->vendoritemID) {
-			$vendoritemID = $input->get->text('vendoritemID');
+		if ($values->vendoritemID) {
+			$vendoritemID = $values->text('vendoritemID');
 
 			if ($vxm->vxm_item_exists($vendorID, $vendoritemID)) {
 				$page->headline = "VXM: $vendorID Item $vendoritemID";
@@ -87,11 +87,11 @@
 			$recordlocker->remove_lock($page->name);
 			$page->headline = "VXM: Vendor $vendor->name";
 			$filter_vxm->filter_query($input);
- 			$q = $input->get->q ? $input->get->text('q') : '';
-			if ($input->get->q) {
+ 			$q = $values->q ? $values->text('q') : '';
 
+			if ($values->q) {
 				$page->headline = "VXM: Search '$q' for Vendor $vendor->name";
-				$filter_vxm->filter_search($input->get->text('q'));
+				$filter_vxm->filter_search($values->text('q'));
 			}
 			$filter_vxm->apply_sortby($page);
 			$items = $filter_vxm->query->paginate($input->pageNum, 10);
@@ -101,9 +101,9 @@
 			$page->body .= $config->twig->render('items/vxm/list/item/vendor/results.twig', ['page' => $page, 'items' => $items, 'vendorID' => $vendorID, 'recordlocker' => $recordlocker]);
 			$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
 		}
-	} elseif ($input->get->itemID) {
+	} elseif ($values->itemID) {
 		$recordlocker->remove_lock($page->name);
-		$itemID = $input->get->text('itemID');
+		$itemID = $values->text('itemID');
 		$filter_vxm->filter_query($input);
 		$filter_vxm->apply_sortby($page);
 		$items = $filter_vxm->query->paginate($input->pageNum, 10);
@@ -115,8 +115,8 @@
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
 	} else {
 		$recordlocker->remove_lock($page->name);
-		$q = $input->get->q ? strtoupper($input->get->text('q')) : '';
-		$page->title = $input->get->q ? "VXM: searching vendors for '$q'" : $page->title;
+		$q = $values->q ? strtoupper($values->text('q')) : '';
+		$page->title = $values->q ? "VXM: searching vendors for '$q'" : $page->title;
 		$filter = $modules->get('FilterVendors');
 		$filter->init_query($user);
 		$filter->filter_search($q);
