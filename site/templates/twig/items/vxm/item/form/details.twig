@@ -17,7 +17,7 @@
 		<label for="qty_percase"><b>Qty Per Case</b></label>
 	</div>
 	<div class="col-sm-6">
-		<input type="number" name="qty_percase" class="form-control form-control-sm" id="qty_percase" value="{{ item.qty_percase }}">
+		<input type="number" name="qty_percase" class="form-control form-control-sm" id="qty_percase" value="{{ item.qty_percase|number_format(vxm.decimal_places_qty()) }}">
 	</div>
 </div>
 <div class="row form-group">
