@@ -145,6 +145,16 @@ class XrefVxm extends WireData implements Module {
 		return $q->findOne();
 	}
 
+	/**
+	 * Return Vendor IDs of Existing VXM items
+	 * @return array
+	 */
+	public function vendorids() {
+		$q = $this->get_query();
+		$q->select(ItemXrefVendor::get_aliasproperty('vendorid'));
+		return $q->find()->toArray();
+	}
+
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
