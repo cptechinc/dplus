@@ -235,17 +235,20 @@ class XrefVxm extends WireData implements Module {
 			$record->setVendoritemid($values->text('vendoritemID'));
 			$record->save();
 		}
-
+		//TODO validate ITEM ID
 		$record->setOuritemid($values->text('ouritemID'));
 		$record->setQty_percase($values->text('qty_percase'));
 		$record->setMinbuyqty($values->text('minbuyqty'));
+		//TODO validate APPROVAL CODE
 		$record->setApprovalcode($values->text('approvalcode'));
+		//TODO validate UOM
 		$record->setUom_purchase($values->text('uom_purchase'));
 		$record->setListprice($values->text('listprice'));
 		$record->setUnitcost_base($values->text('unitcost_base'));
 
 		$this->update_record_unitx_input($record, $input);
 
+		//TODO validate PO ORDER CODE
 		if ($input->$rm->text('po_ordercode') == ItemXrefVendor::POORDERCODE_PRIMARY) {
 			if ($input->$rm->text('po_ordercode_validated') == 'true') {
 				$record->setPo_ordercode($values->text('po_ordercode'));
@@ -381,17 +384,6 @@ class XrefVxm extends WireData implements Module {
 	Supplemental Functions
 ============================================================= */
 	/**
-	 * Returns if Item ID is valid
-	 * @param  string $itemID Item ID
-	 * @return bool
-	 */
-	public function validate_itemID($itemID) {
-		$q = ItemMasterItemQuery::create();
-		$q->filterByItemid($itemID);
-		return boolval($q->count());
-	}
-
-	/**
 	 * Return Key for VXM Item
 	 * @param  ItemXrefVendor $item VXM Item
 	 * @return string
@@ -422,7 +414,57 @@ class XrefVxm extends WireData implements Module {
 	 * @return ConfigIn
 	 */
 	public function get_config_in() {
-		return ConfigInQuery::create()->findOne();
+		return $this->wire('modules')->get('ConfigureIn')->config();
+	}
+
+	/**
+	 * Return Config SO
+	 * @return ConfigSalesOrder
+	 */
+	public function get_config_so() {
+		return $this->wire('modules')->get('ConfigureSo')->config();
+	}
+
+	/**
+	 * Return Config PO
+	 * @return ConfigPo
+	 */
+	public function get_config_po() {
+		return $this->wire('modules')->get('ConfigurePo')->config();
+	}
+
+	public function init_configs() {
+		$this->configs = new WireData();
+		$this->configs->in = $this->get_config_in();
+		$this->configs->so = $this->get_config_so();
+		$this->configs->po = $this->get_config_po();
+	}
+
+	/**
+	 * Return the number of Decimal Places to use for Qty
+	 * @return int
+	 */
+	public function decimal_places_qty() {
+		$config = $this->get_config_so();
+		return $config->decimal_places_qty;
+	}
+
+	/**
+	 * Return the number of Decimal Places to use for price
+	 * @return int
+	 */
+	public function decimal_places_price() {
+		$config = $this->get_config_so();
+		return $config->decimal_places_price;
+	}
+
+	/**
+	 * Return the number of Decimal Places to use for cost
+	 * @return int
+	 */
+	public function decimal_places_cost() {
+		$config = $this->get_config_po();
+		return $config->decimal_places_cost;
 	}
 
 /* =============================================================
