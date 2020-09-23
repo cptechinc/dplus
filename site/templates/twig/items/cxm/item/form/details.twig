@@ -11,7 +11,7 @@
 		<label for="uom_customer">Customer UoM</label>
 	</div>
 	<div class="col-sm-6">
-		<select name="uom_customer" class="custom-select custom-select-sm mb-1 {{ cxm.field_has_error('uom_customer') ? 'is-invalid' : ''}}" id="uom_customer">
+		<select name="uom_customer" class="form-control form-control-sm mb-1 {{ cxm.field_has_error('uom_customer') ? 'is-invalid' : ''}}" id="uom_customer">
 			<option value=""></option>
 			{% for uom in cxm.get_unitsofm_sales() %}
 				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_customer ? 'selected' : ''}}>
@@ -83,7 +83,7 @@
 		<label for="uom_pricing">Pricing UoM</label>
 	</div>
 	<div class="col-sm-6">
-		<select name="uom_pricing" class="custom-select custom-select-sm mb-1 {{ cxm.field_has_error('uom_pricing') ? 'is-invalid' : ''}}" id="uom_pricing">
+		<select name="uom_pricing" class="form-control form-control-sm mb-1 {{ cxm.field_has_error('uom_pricing') ? 'is-invalid' : ''}}" id="uom_pricing">
 			<option value=""></option>
 			{% for uom in cxm.get_unitsofm_sales() %}
 				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_pricing ? 'selected' : ''}}>
@@ -98,7 +98,7 @@
 		<label for="price_uom">Per UoM</label>
 	</div>
 	<div class="col-sm-6">
-		<input type="number" name="price_uom" class="form-control text-right" id="price_uom" value="{{ item.get_pricing_peruom()|number_format(3) }}">
+		<input type="number" name="price_uom" class="form-control form-control-sm text-right" id="price_uom" value="{{ item.get_pricing_peruom() ? item.get_pricing_peruom()|number_format(3) : '' }}">
 	</div>
 </div>
 <div class="row form-group">
