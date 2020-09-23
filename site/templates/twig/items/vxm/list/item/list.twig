@@ -8,14 +8,8 @@
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
-			{% if page.has('vendorID') == false %}
-				<th class="pt-3 pb-3">Vendor ID</th>
-			{% endif %}
+			<th class="pt-3 pb-3">Vendor ID</th>
 			<th class="pt-3 pb-3">Vendor ItemID</th>
-
-			{% if page.has('itemID') == false %}
-				<th class="pt-3 pb-3">Our ItemID</th>
-			{% endif %}
 			<th class="pt-3 pb-3">Description</th>
 			<th class="pt-3 pb-3">UoM</th>
 			<th class="pt-3 pb-3 text-right">Base Cost</th>
@@ -27,14 +21,9 @@
 		{% if items.count() %}
 			{% for item in items %}
 				<tr>
-					{% if page.has('vendorID') == false %}
-						<td>{{ item.vendorID }}</td>
-					{% endif %}
+					<td>{{ item.vendorID }}</td>
 					<td>{{ item.vendoritemID }}</td>
-
-					{% if page.has('itemID') == false %}
-						<td>{{ item.ouritemID }}</td>
-					{% endif %}
+					<td>{{ item.ouritemID }}</td>
 					<td>{{ item.description }}</td>
 					<td>{{ item.uompurchase.code }}</td>
 					<td class="text-right">$ {{ item.unitcost_base|currency }}</td>

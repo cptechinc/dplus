@@ -1,0 +1,7 @@
+<div>
+	{% include 'items/vxm/search/vendor/form.twig' %}
+</div>
+<div>
+	{% include 'items/vxm/list/header.twig' with {'page': page, 'heading': vendors.getNbResults() ~ ' Vendors'} %}
+	{% include 'items/vxm/search/vendor/list.twig' %}
+</div>
