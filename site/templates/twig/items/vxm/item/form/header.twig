@@ -12,14 +12,18 @@
 			<label for="Vendor ID">Vendor ID</label>
 		</div>
 		<div class="col-sm-6">
-			<div class="input-group">
-				<span class="input-group-prepend">
-					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Search for / Choose Vendor" aria-label="Search for / Choose Vendor">
-						<span class="fa fa-search" aria-hidden="true"></span> <span class="sr-only">Search for / Choose Vendor</span>
-					</button>
-				</span>
-				<input type="text" name="vendorID" id="vendorID" class="form-control" value="{{ item.vendorID }}">
-			</div>
+			{% if item.isNew() %}
+				<div class="input-group input-group-sm">
+					<span class="input-group-prepend">
+						<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Search for / Choose Vendor" aria-label="Search for / Choose Vendor">
+							<span class="fa fa-search" aria-hidden="true"></span> <span class="sr-only">Search for / Choose Vendor</span>
+						</button>
+					</span>
+					<input type="text" name="vendorID" id="vendorID" class="form-control" value="{{ item.vendorID }}">
+				</div>
+			{% else %}
+				<input type="text" class="form-control-plaintext form-control-sm" name="vendorID" id="vendorID" value="{{ item.vendorid }}" readonly>
+			{% endif %}
 		</div>
 	</div>
 	<div class="row form-group">
@@ -36,12 +40,13 @@
 		</div>
 		<div class="col-sm-6">
 			{% if page.has('itemID') %}
-				<input type="text" class="form-control-plaintext" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}" readonly>
+				<input type="text" class="form-control-plaintext form-control-sm" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}" readonly>
 			{% elseif item.isNew() %}
 				<input type="text" class="form-control form-control-sm" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}">
 			{% else %}
-				<input type="text" class="form-control-plaintext" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}" readonly>
+				<input type="text" class="form-control-plaintext form-control-sm" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}" readonly>
 			{% endif %}
+			<small class="form-text text-muted ouritemid-description">{{ item.imitem.description }}</small>
 		</div>
 	</div>
 	<div class="row">
@@ -57,7 +62,7 @@
 			<label for="uom_purchase"><b>Purchase UoM</b></label>
 		</div>
 		<div class="col-sm-6">
-			<select name="uom_purchase" class="form-control mb-1" id="uom_purchase">
+			<select name="uom_purchase" class="custom-select custom-select-sm mb-1" id="uom_purchase">
 				<option value="">-- Choose --</option>
 				{% for uom in vxm.get_unitsofm_purchases() %}
 					<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_purchase ? 'selected' : ''}}>
