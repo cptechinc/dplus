@@ -11,19 +11,13 @@
 		<div class="col-sm-6">
 			<label for="Vendor ID">Vendor ID</label>
 		</div>
-		<div class="col-sm-6">
+		<div class="col-sm-6 vendor-col">
 			{% if item.isNew() %}
-				<div class="input-group input-group-sm">
-					<span class="input-group-prepend">
-						<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Search for / Choose Vendor" aria-label="Search for / Choose Vendor">
-							<span class="fa fa-search" aria-hidden="true"></span> <span class="sr-only">Search for / Choose Vendor</span>
-						</button>
-					</span>
-					<input type="text" name="vendorID" id="vendorID" class="form-control" value="{{ item.vendorID }}">
-				</div>
+				{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'vendorID', value: item.vendorID, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Vendor', attributes_button: {'data-search': 'vendor'}} %}
 			{% else %}
 				<input type="text" class="form-control-plaintext form-control-sm" name="vendorID" id="vendorID" value="{{ item.vendorid }}" readonly>
 			{% endif %}
+			<small class="form-text text-muted name">{{ item.vendor.name }}</small>
 		</div>
 	</div>
 	<div class="row form-group">
@@ -38,15 +32,15 @@
 		<div class="col-sm-6">
 			<b>Our Item ID</b>
 		</div>
-		<div class="col-sm-6">
+		<div class="col-sm-6 item-col">
 			{% if page.has('itemID') %}
 				<input type="text" class="form-control-plaintext form-control-sm" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}" readonly>
 			{% elseif item.isNew() %}
-				<input type="text" class="form-control form-control-sm" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}">
+				{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'ouritemID', value: item.ouritemid, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Item', attributes_button: {'data-search': 'item'}} %}
 			{% else %}
 				<input type="text" class="form-control-plaintext form-control-sm" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}" readonly>
 			{% endif %}
-			<small class="form-text text-muted ouritemid-description">{{ item.imitem.description }}</small>
+			<small class="form-text text-muted description">{{ item.imitem.description }}</small>
 		</div>
 	</div>
 	<div class="row">
@@ -81,7 +75,7 @@
 		</div>
 		<div class="col-sm-6">
 			<div class="input-group input-group-sm mb-2">
-				<input type="number" name="listprice" class="form-control" id="listprice" value="{{ item.listprice }}">
+				<input type="number" name="listprice" class="form-control" id="listprice" value="{{ item.listprice|number_format(vxm.decimal_places_price) }}">
 				<div class="input-group-append">
 					<div class="input-group-text">{{ item.uom_purchase }}</div>
 				</div>
@@ -92,7 +86,7 @@
 		<div class="col-sm-6"></div>
 		<div class="col-sm-6">
 			<div class="input-group input-group-sm mb-2">
-				<input type="number" name="eachlistprice" class="form-control" id="eachlistprice" value="{{ item.get_listprice_uom_sale() }}" step="any">
+				<input type="number" name="eachlistprice" class="form-control" id="eachlistprice" value="{{ item.get_listprice_uom_sale()|number_format(vxm.decimal_places_price) }}" step="any">
 				<div class="input-group-append">
 					<div class="input-group-text">{{ item.imitem.uom_sale }}</div>
 				</div>
