@@ -103,6 +103,16 @@ class ValidateIn extends WireData implements Module {
 		return $umm->code_exists($code);
 	}
 
+	/**
+	 * Return if Unit of Measure Purchase Code is valid
+	 * @param  string $code Unit of Measure Sale Code
+	 * @return bool
+	 */
+	public function unitofm_purchase($code) {
+		$umm = $this->modules->get('CodeTablesUmm');
+		return $umm->code_exists($code);
+	}
+
 
 
 /* =============================================================
