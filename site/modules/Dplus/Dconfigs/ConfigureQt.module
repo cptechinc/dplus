@@ -1,0 +1,38 @@
+<?php namespace ProcessWire;
+
+use ConfigQtQuery, ConfigQt;
+
+
+/**
+ * ConfigureSo
+ *
+ * Class for setting Inventory Configs
+ */
+class ConfigureQt extends WireData implements Module {
+	/**
+	 * Returns Quote Notes Query
+	 * @return ConfigQtQuery
+	 */
+	public function query() {
+		return ConfigQtQuery::create();
+	}
+
+	/**
+	 * Return Config Record
+	 * @return ConfigQt
+	 */
+	public function config() {
+		return $this->query()->findOne();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Configure Quotes',
+			'version' => 101,
+			'summary' => 'Dplus ConfigQt CRUD methods',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array()
+		);
+	}
+}
