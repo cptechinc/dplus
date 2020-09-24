@@ -16,6 +16,10 @@
 			<a href="{{ page.get_printURL() }}" class="btn btn-primary" target="_blank" aria-label="View Printable" title="View Printable">
 				<i class="fa fa-print" aria-hidden="true"></i> View Print
 			</a>
+			&nbsp;
+			<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#header-notes-modal">
+				<i class="fa fa-sticky-note-o" aria-hidden="true"></i> Notes
+			</button>
 		</div>
 		<div class="col text-right">
 			{% if document_management.count_documents_po(purchaseorder.ponbr) %}

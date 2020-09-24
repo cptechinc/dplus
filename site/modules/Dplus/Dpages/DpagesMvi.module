@@ -299,7 +299,7 @@ class DpagesMvi extends Dpages implements Module {
 	);
 
 	public function init_vipage() {
-		$this->addHook('Page::get_vi_vendorURL', function($event) {
+		$this->addHook('Page::choose_vendorURL', function($event) {
 			$vendorID = $event->arguments(0);
 			$event->return = $this->get_vi_vendorURL($vendorID);
 		});

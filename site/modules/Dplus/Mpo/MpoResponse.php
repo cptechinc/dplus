@@ -1,5 +1,18 @@
 <?php namespace ProcessWire;
 
+/**
+ * MpoResponse
+ * Class for Getting Responses out of the MPO set of functions
+ *
+ * @property bool   $success  Did action Succeed?
+ * @property bool   $error    Did Error Occur?
+ * @property string $message  Success / Error Message
+ * @property string $po       Purchase Order Number
+ * @property int    $action   CRUD_* action
+ * @property int    $section  SECTION_*
+ * @property int    $line     Line Number
+ * @property array  $fields   Key-Value array of fields that need attention
+ */
 class MpoResponse extends WireData {
 
 	const CRUD_CREATE = 1;
@@ -17,6 +30,7 @@ class MpoResponse extends WireData {
 		$this->action = 0;
 		$this->section = 0;
 		$this->line = 0;
+		$this->fields = array();
 	}
 
 	public function has_success() {
@@ -52,6 +66,14 @@ class MpoResponse extends WireData {
 
 	public function set_line(int $line = 0) {
 		$this->line = $line;
+	}
+
+	public function set_fields(array $fields) {
+		$this->fields = $fields;
+	}
+
+	public function has_field($field) {
+		return array_key_exists($field, $this->fields);
 	}
 
 	public static function response_error($ponbr, $message) {

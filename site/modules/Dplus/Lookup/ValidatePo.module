@@ -1,0 +1,98 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use PurchaseOrderQuery, PurchaseOrder;
+
+/**
+ * ValidatePo
+ *
+ * Class for validating PO header fields
+ */
+class ValidatePo extends WireData implements Module {
+
+	/**
+	 * Validates VendorID
+	 * @param  string $vendorID VendorID
+	 * @return bool
+	 */
+	public function vendorid($vendorID) {
+		return $this->validate->vendor->validate($vendorID);
+	}
+
+	/**
+	 * Validates Vendor Ship-FromID
+	 * @param  string $vendorID   VendorID
+	 * @param  string $shipfromID Vendor Ship-FromID
+	 * @return bool
+	 */
+	public function shipfromid($vendorID, $shipfromID) {
+		return $this->validate->vendor->validate_shipfrom($vendorID, $shipfromID);
+	}
+
+	/**
+	 * Validates VendorID
+	 * @param  string $vendorID VendorID
+	 * @return bool
+	 */
+	public function shipvia($shipvia) {
+		return $this->validate->ar->validate_shipvia($shipvia);
+	}
+
+	/**
+	 * Validates Terms Code
+	 * @param  string $termscode  AP Terms Code
+	 * @return bool
+	 */
+	public function termscode($termscode) {
+		return $this->validate->ap->validate_termscode($termscode);
+	}
+
+	/**
+	 * Validates Freight Paid By Code
+	 * @param  string $freightpaidby  Freight Paid By Code
+	 * @return bool
+	 */
+	public function freightpaidby($freightpaidby) {
+		return array_key_exists($freightpaidby, PurchaseOrder::FREIGHTPAIDBY_DESCRIPTIONS);
+	}
+
+	/**
+	 * Validates FOB
+	 * @param  string $fob  FOB
+	 * @return bool
+	 */
+	public function fob($fob) {
+		return array_key_exists($fob, PurchaseOrder::FOB_DESCRIPTIONS);
+	}
+
+	/**
+	 * Validate Exchange Country Code
+	 * @param  string $countrycode  Currency Country Code
+	 * @return bool
+	 */
+	public function exchange_country($countrycode) {
+		return $this->validate->ap->validate_countrycode($countrycode);
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Purchase Order Validate Module',
+			'version' => 101,
+			'summary' => 'Handles Purchase Order Fields Validation',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+
+	public function init() {
+		$this->validate = new WireData();
+		$this->validate->vendor = $this->wire('modules')->get('ValidateVendorId');
+		$this->validate->ar     = $this->wire('modules')->get('ValidateAr');
+		$this->validate->ap     = $this->wire('modules')->get('ValidateAp');
+	}
+}

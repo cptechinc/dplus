@@ -1,0 +1,20 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+#}
+{% include 'msa/noce/ajax/js.twig' %}
+{% include 'purchase-orders/purchase-order/qnotes/js.twig' %}
+
+$(function() {
+	$('#header-notes-modal [data-toggle=modal]').click(function(e) {
+		var button = $(this);
+
+		var modal = $(button.data('target'));
+		var zindex = parseInt(modal.css('z-index'));
+		if (zindex <= parseInt(button.closest('.modal').css('z-index'))) {
+			zindex++;
+			modal.css('z-index', zindex);
+		}
+	});
+});

@@ -1,0 +1,43 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	po                     EditPoHead
+	po_readonly            PurchaseOrder
+	epo                    PurchaseOrderEdit
+#}
+<div class="modal fade show" id="phone-modal" tabindex="-1" role="dialog" aria-labelledby="phone-modal-label" aria-hidden="true" data-input="">
+	<div class="modal-dialog modal-600" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="phone-modal-label">Edit Phone/Fax/E-mail</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form action="{{ page.url }}" method="post" id="edit-item-form">
+					<input type="hidden" name="action" value="update-header-phone">
+					<input type="hidden" name="ponbr" value="{{ po.ponbr }}">
+					{% include 'purchase-orders/purchase-order/edit/header/phone/fields.twig' %}
+
+					<div class="form-group row">
+						<div class="col-sm-3">
+							<label for="email">Email</label>
+						</div>
+						<div class="col-sm-9">
+							{% include 'util/form/input.twig' with {'type': 'email', 'name': 'email', 'value': po.email }%}
+						</div>
+					</div>
+
+					<div class="d-flex justify-content-between align-items-center">
+						<button type="submit" class="btn btn-success">
+							<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+						</button>
+						<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

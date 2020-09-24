@@ -2,7 +2,9 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
-	epo                    PurchaseOrderEdit
+	epo                    module PurchaseOrderEdit
+	epo.configs            module PurchaseOrderEditConfigs
+	epo.configs.po         ConfigPo
 #}
 $(function() {
 	var modal_ajax    = $('#ajax-modal');
@@ -15,17 +17,23 @@ $(function() {
 		var modal = $(this);
 		var url = '';
 
-		if (button.data('search') == 'item') {
-			url = '{{ page.search_itemsURL }}';
-		} else if (button.data('search') == 'vendor') {
-			url = '{{ page.search_vendorsURL }}';
-		} else if (button.data('search') == 'shipfrom') {
-			uri = URI('{{ page.search_shipfromURL }}');
-			uri.setQuery('vendorID', $('input#vendorID').val());
-			url = uri.toString();
-		} else if (button.data('search') == 'country') {
-			url = '{{ page.search_countriesURL }}';
+		switch(button.data('search')) {
+			case 'item':
+				url = '{{ page.search_itemsURL() }}';
+				break;
+			case 'shipfrom':
+				uri = URI('{{ page.search_shipfromURL() }}');
+				uri.setQuery('vendorID', $('input#vendorID').val());
+				url = uri.toString();
+				break;
+			case 'country':
+				url = '{{ page.search_countriesURL() }}';
+				break;
+			case 'documents':
+				url = '{{ page.po_documentsURL(page.ponbr) }}';
+				break;
 		}
+		console.log(url);
 
 		modal.find('.modal-title').text(button.attr('title'));
 		modal.resizeModal('xl');

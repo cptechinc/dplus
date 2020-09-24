@@ -47,7 +47,7 @@ class QnotesPo extends WireData implements Module {
 					break;
 			}
 		} else {
-			$this->wire('session')->response_qnote = QnotesResponse::response_error($ponbr, 'Invalid PO Number');
+			$this->wire('session')->response_qnote = QnotesResponse::response_error($ponbr, "Invalid PO # $ponbr");
 		}
 	}
 

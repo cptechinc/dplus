@@ -1,0 +1,19 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+#}
+<div class="row">
+	<div class="col-sm-4">
+		{% include 'purchase-orders/purchase-order/lookup-form.twig' %}
+	</div>
+	<div class="col-sm-4">
+		<p class="h3 mt-3">-- OR --</p>
+	</div>
+	<div class="col-sm-4 ">
+		<label for=""><b>Create PO</b></label><br>
+		<a href="{{ page.url }}?ponbr=new" class="btn btn-secondary">
+			Create
+		</a>
+	</div>
+</div>

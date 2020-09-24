@@ -56,4 +56,8 @@
 		$page->body = $config->twig->render('purchase-orders/purchase-order/lookup-form.twig', ['page' => $page]);
 	}
 
-	include __DIR__ . "/basic-page.php";
+	if ($config->ajax) {
+		echo $page->body;
+	} else {
+		include __DIR__ . "/basic-page.php";
+	}

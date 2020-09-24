@@ -1,0 +1,21 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	vendors                Vendor[]|ObjectCollection
+#}
+<div>
+	<form action="{{ page.searchURL }}" method="get" class="allow-enterkey-submit" id="vendor-search-form">
+		<input type="hidden" name="ponbr" value="new">
+
+		<div class="input-group form-group">
+			<input class="form-control form-group inline" type="text" name="q" value="" placeholder="Search VendorID, Vendor Name">
+			<span class="input-group-btn">
+				<button type="submit" class="btn btn-default"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
+			</span>
+		</div>
+	</form>
+</div>
+<div>
+	{% include 'vendors/vendor-list.twig' %}
+</div>

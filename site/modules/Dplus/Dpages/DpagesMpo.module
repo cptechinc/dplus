@@ -42,6 +42,16 @@ class DpagesMpo extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
+		'purchase-order-validate' => array(
+			'name'   => 'purchase-order-validate',
+			'fields' => array(),
+			'paginated' => true
+		),
+		'purchase-order-epo' => array(
+			'name'   => 'purchase-order-epo',
+			'fields' => array(),
+			'paginated' => true
+		),
 		'purchase-order-documents' => array(
 			'name'   => 'purchase-order-documents',
 			'fields' => array(),
@@ -106,13 +116,34 @@ class DpagesMpo extends Dpages implements Module {
 			'pw_template'      => 'purchase-order-view'
 		),
 		'po-edit' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'edit',
-			'title'          => 'Edit Purchase Order',
-			'summary'        => 'Edit a Purchase Order',
-			'parent'         => '/mpo/purchase-order/',
-			'dplus_function' => 'epo',
-			'pw_template'    => 'purchase-order-edit'
+			'template'         => 'dplus-function',
+			'name'             => 'edit',
+			'title'            => 'Edit Purchase Order',
+			'summary'          => 'Edit a Purchase Order',
+			'parent'           => '/mpo/purchase-order/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'epo',
+			'pw_template'      => 'purchase-order-edit'
+		),
+		'po-edit-validate' => array(
+			'template'         => 'dplus-json',
+			'name'             => 'validate',
+			'title'            => 'Purchase Order Validate JSON',
+			'summary'          => 'Provides JSON API to validate Purchase Order Fields',
+			'parent'           => '/mpo/purchase-order/edit/',
+			'dplus_function'   => '',
+			'dplus_permission' => '',
+			'pw_template'      => 'purchase-order-validate'
+		),
+		'po-epo' => array(
+			'template'         => 'dplus-function',
+			'name'             => 'epo',
+			'title'            => 'Purchase Order Entry',
+			'summary'          => 'Edit / Create Purchase Order',
+			'parent'           => '/mpo/',
+			'dplus_function'   => '',
+			'dplus_permission' => 'epo',
+			'pw_template'      => 'purchase-order-epo'
 		),
 		'po-documents' => array(
 			'template'         => 'dplus-function',

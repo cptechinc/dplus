@@ -1,10 +1,24 @@
-<h3 class="font-weight-bold text-secondary">Ship-To Name / Address</h3>
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	po                     EditPoHead
+	po_readonly            PurchaseOrder
+	epo                    PurchaseOrderEdit
+#}
+<h4 class="font-weight-bold text-secondary">Ship-To Name / Address</h4>
 {% set fields = ['shipto_name', 'shipto_address', 'shipto_address2', 'shipto_address3'] %}
 
 {% for field in fields %}
 	<div class="form-group">
-		<label for="{{ field }}">{{ field|replace({'shipto_': ''})|capitalize }}</label>
-		<input type="text" class="form-control form-control-sm" name="{{ field }}" id="{{ field }}" value="{{ po|objproperty(field) }}">
+		<div class="row">
+			<div class="col-sm-4">
+				<label for="{{ field }}">{{ field|replace({'shipto_': ''})|capitalize }}</label>
+			</div>
+			<div class="col-sm-8">
+				<input type="text" class="form-control form-control-sm" name="{{ field }}" id="{{ field }}" value="{{ po|objproperty(field) }}">
+			</div>
+		</div>
 	</div>
 {% endfor %}
 
@@ -24,6 +38,6 @@
 	</div>
 	<div class="col-sm-4 form-group">
 		<label for="shipto_zip">Zip</label>
-		<input type="text" class="form-control form-control-sm" name="shipto_zip" value="{{ order.shipto_zip }}">
+		<input type="text" class="form-control form-control-sm" name="shipto_zip" value="{{ po.shipto_zip }}">
 	</div>
 </div>

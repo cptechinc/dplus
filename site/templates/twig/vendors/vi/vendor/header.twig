@@ -6,6 +6,11 @@
 		{% include 'vendors/vi/vendor/ap-data.twig' %}
 	</div>
 	<div class="col-sm-6 form-group">
+		<div class="text-center form-group">
+			<a href="{{ page.po_createURL(vendor.vendorid) }}" class="btn btn-primary">
+				<i class="fa fa-plus" aria-hidden="true"></i> Create PO
+			</a>
+		</div>
 		{% include 'vendors/vi/vendor/activity.twig' %}
 	</div>
 </div>

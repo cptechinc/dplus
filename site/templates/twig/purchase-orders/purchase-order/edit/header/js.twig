@@ -2,12 +2,39 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
-	epo                    PurchaseOrderEdit
+	epo                    module PurchaseOrderEdit
+	epo.configs            module PurchaseOrderEditConfigs
+	epo.configs.po         ConfigPo
 #}
 $(function () {
 	var modal_ajax    = $('#ajax-modal');
 	var modal_country = $('#country-modal');
 	var form_header   = $('#header-form');
+
+/* =============================================================
+	Unsaved Changes Alert
+============================================================= */
+	origForm = form_header.serialize();
+
+	$("body").on("click", "a:not([href^=#], [data-toggle=modal])", function(e) {
+		if (form_header.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+
+			swal2.fire({
+				title: 'Purchase Order not saved!',
+				text: "Are you sure you want to leave this page?",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Leave',
+				cancelButtonText: 'Stay'
+			}).then(function (result) {
+				if (result.value) {
+					window.location.href = a.attr('href');
+				}
+			});
+		}
+	});
 
 /* =============================================================
 	AJAX Lookup Modal Functions
@@ -17,9 +44,9 @@ $(function () {
 		var button = $(this);
 		var modal = button.closest('.modal');
 		var code = button.data('code');
-		var rate = button.data('rate');
-		form_header.find('input[name=currency]').val(code);
-		form_header.find('.currency-rate').text(rate);
+		var rate = parseFloat(button.data('rate')).toFixed({{ epo.configs.decimal_places_cost() }});
+		form_header.find('input[name=exchange_country]').val(code);
+		form_header.find('input[name=exchange_rate]').val(rate);
 		modal.modal('hide');
 	});
 
@@ -60,4 +87,47 @@ $(function () {
 			callback(vendor);
 		});
 	}
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	form_header.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			vendorID: {
+				required: true,
+				remote: {
+					url: '{{ page.po_validateURL(page.ponbr) }}',
+					type: "get",
+					data: {
+						action: 'validate-vendorid'
+					}
+				}
+			},
+			shipfromID: {
+				required: false,
+				remote: {
+					url: '{{ page.po_validateURL(page.ponbr) }}',
+					type: "get",
+					data: {
+						action: 'validate-shipfromid',
+						vendorID: $('#vendorID').val()
+					}
+				}
+			},
+			reference: {
+				required: {{ epo.configs.po.force_po_reference() ? 'true' : 'false' }}
+			}
+		},
+		messages: {
+
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
 });

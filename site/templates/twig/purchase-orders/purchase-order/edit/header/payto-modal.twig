@@ -1,0 +1,64 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	po                     EditPoHead
+	po_readonly            PurchaseOrder
+	epo                    PurchaseOrderEdit
+#}
+<div class="modal fade show" id="payto-modal" tabindex="-1" role="dialog" aria-labelledby="payto-modal-label" aria-hidden="true" data-input="">
+	<div class="modal-dialog modal-600" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="payto-modal-label">Edit Pay-To Name / Address</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form action="{{ page.url }}" method="post" id="edit-item-form">
+					<input type="hidden" name="action" value="update-header-payto">
+					<input type="hidden" name="ponbr" value="{{ po.ponbr }}">
+					{% set fields = ['payto_name', 'payto_address', 'payto_address2', 'payto_address3'] %}
+
+					{% for field in fields %}
+						<div class="form-group row">
+							<div class="col-sm-4">
+								<label for="{{ field }}">{{ field|replace({'payto_': ''})|capitalize }}</label>
+							</div>
+							<div class="col-sm-8">
+								<input type="text" class="form-control form-control-sm" name="{{ field }}" id="{{ field }}" value="{{ po|objproperty(field) }}">
+							</div>
+						</div>
+					{% endfor %}
+
+					<div class="row">
+						<div class="col-sm-4 form-group">
+							<label for="payto_city">City</label>
+							<input type="text" class="form-control form-control-sm" name="payto_city" id="payto_city" value="{{ po.payto_city }}">
+						</div>
+						<div class="col-sm-4 form-group">
+							<label for="payto_state">State</label>
+							<select name="payto_state" id="payto_state" class="form-control form-control-sm">
+								<option value=""></option>
+								{% for state in epo.get_states() %}
+									<option value="{{ state.abbreviation }}" {{ state.abbreviation == po.payto_state ? 'selected' : ''}}>{{ state.name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="col-sm-4 form-group">
+							<label for="payto_zip">Zip</label>
+							<input type="text" class="form-control form-control-sm" name="payto_zip" value="{{ po.payto_zip }}">
+						</div>
+					</div>
+					<div class="d-flex justify-content-between align-items-center">
+						<button type="submit" class="btn btn-success">
+							<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+						</button>
+						<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

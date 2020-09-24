@@ -1,3 +1,10 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	po                     EditPoHead
+	epo                    PurchaseOrderEdit
+#}
 <div class="row">
 	<div class="col-sm-6 form-group">
 		<label>PO Nbr</label>
@@ -13,7 +20,7 @@
 	<div class="col-sm-6">
 		<div class="form-group">
 			<label for="vendorID">Vendor ID</label>
-			{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'vendorID', value: po.vendorid, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search / Select Vendor', attributes_button: {'data-search': 'vendor'}} %}
+			{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'vendorID', value: po.vendorid, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search / Select Vendor', attributes_button: {'data-search': 'vendor'}, class_add:  epo.field_has_error_header('vendorID') ? 'is-invalid' : ''} %}
 			<address class="small mt-1 vendor-address">
 				{% set vendor = epo.get_vendor(po.vendorid) %}
 				<span class="name">{{ vendor.name }}</span> <br>
@@ -26,7 +33,7 @@
 	<div class="col-sm-6">
 		<div class="form-group">
 			<label for="shipfromID">Ship-From</label>
-			{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'shipfromID', value: po.shipfromid, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search / Select Vendor Ship-From', attributes_button: {'data-search': 'shipfrom'}} %}
+			{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'shipfromID', value: po.shipfromid, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search / Select Vendor Ship-From', attributes_button: {'data-search': 'shipfrom'}, class_add: epo.field_has_error_header('shipfromID') ? 'is-invalid' : ''} %}
 		</div>
 	</div>
 </div>

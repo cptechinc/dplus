@@ -1,0 +1,37 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	po                     EditPoHead
+	epo                    PurchaseOrderEdit
+#}
+<div class="form-group">
+	<label for="phone_intl">International?</label>
+	{% include 'util/select.twig' with {'name': 'phone_intl', 'id': 'phone_intl', selectedvalue: po.phone_intl, 'options': {'Y': 'Yes', 'N': 'No'}, hideblankoption: true} %}
+</div>
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="phone_office_us">Office</label>
+	</div>
+	<div class="col-sm-9">
+		<div class="row">
+			<div class="col-sm-6">
+				<input type="text" class="form-control form-control-sm phone-input" name="phone_office_us" id="phone_office_us" value="{{ po.phone|phone_us }}">
+			</div>
+			<div class="col-sm-2">
+				<label for="phone_us_extension">Ext.</label>
+			</div>
+			<div class="col-sm-4">
+				<input type="text" class="form-control form-control-sm" name="phone_extension" id="phone_extension" value="{{ po.phone_extension }}">
+			</div>
+		</div>
+	</div>
+</div>
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="fax_us">Fax</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/form/input.twig' with {'name': 'fax_us', 'value': po.fax|phone_us, 'class_add': 'phone-input' }%}
+	</div>
+</div>

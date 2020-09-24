@@ -1,0 +1,61 @@
+<?php namespace ProcessWire;
+
+use CustomerShiptoQuery, CustomerShipto;
+use CustomerQuery, Customer;
+use WarehouseInventoryQuery, WarehouseInventory;
+
+/**
+ * LookupItemEntryPo
+ *
+ * Class for Looking up / Validating Items through ITM and different X-refs
+ * for the purposes of Item Entry for POs
+ *
+ * @property string $exists  Item Exists
+ * @property string $itemID  Item ID associated with Item
+ * @property string $request What was sent to find Item
+ * @property string $source  itm|cxm
+ */
+class LookupItemEntryPo extends LookupItem implements Module {
+
+	public function __construct() {
+		parent::__construct();
+		$this->message = '';
+	}
+
+
+	/**
+	 * Validates if string corresponds to an Item
+	 * NOTE: Validates if Item is Active
+	 * @param  WireInput $input
+	 * @return void
+	 */
+	public function lookup_input(WireInput $input) {
+		$itemID = $input->get->itemID ? $input->get->text('itemID') : $input->get->text('q');
+		$itemID = strtoupper($itemID);
+		$custID = $input->get->text('custID');
+		$shiptoID = $input->get->text('shiptoID');
+
+		$this->lookup_itm($itemID);
+
+		if (!$this->exists) {
+			$this->lookup_itm_short($itemID);
+		}
+		return $this->data;
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Item Entry Lookup PO Module',
+			'version' => 101,
+			'summary' => 'Handles Item Lookup for PO Item Entry',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(),
+			'requires' => array('LookupItem')
+		);
+	}
+}

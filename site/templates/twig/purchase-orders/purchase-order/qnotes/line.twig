@@ -15,8 +15,8 @@
 <div class="mb-3">
 	<ul class="nav nav-tabs mb-3" id="qnotes-tab" role="tablist">
 		<li class="nav-item" role="presentation">
-			<a class="nav-link active" id="pord-tab-{{ linenbr }}" data-toggle="tab" href="#pord-line-{{ linenbr }}" role="tab" aria-controls="pord-line-{{ linenbr }}d" aria-selected="true">
-				Header Notes
+			<a class="nav-link active" id="pord-tab-{{ linenbr }}" data-toggle="tab" href="#pord-line-{{ linenbr }}" role="tab" aria-controls="pord-line-{{ linenbr }}" aria-selected="true">
+				{{ linenbr > 0 ? 'Detail' : 'Header' }} Notes
 			</a>
 		</li>
 		<li class="nav-item" role="presentation">
@@ -29,7 +29,7 @@
 				<a class="nav-link" id="vendor-tab" data-toggle="tab" href="#vendor" role="tab" aria-controls="vendor" aria-selected="false">
 					Vendor
 				</a>
-		</li>
+			</li>
 		{% endblock %}
 	</ul>
 	<div class="tab-content" id="qnotes-tab">

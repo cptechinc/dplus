@@ -96,9 +96,9 @@ class LookupItem extends WireData implements Module {
 		return $this->exists;
 	}
 
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	/**
 	 * ProcessWire Module Info
 	 *
@@ -111,7 +111,7 @@ class LookupItem extends WireData implements Module {
 			'summary' => 'Handles Item Lookup',
 			'singular' => true,
 			'autoload' => true,
-			'installs' => array('LookupItemEntry', 'LookupItemIi')
+			'installs' => array('LookupItemEntry', 'LookupItemIi', 'LookupItemPo')
 		);
 	}
 }

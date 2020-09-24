@@ -276,6 +276,7 @@ class QnotesPoIntl extends WireData implements Module {
 		$time    = str_pad($time, 8, '0', STR_PAD_RIGHT);
 
 		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($values->textarea('note'), $this->get_column_count());
+
 		$lines_saved = array();
 
 		$this->delete_notes($ponbr, $linenbr, $userID, $date, $time);
@@ -284,6 +285,7 @@ class QnotesPoIntl extends WireData implements Module {
 			$sequence = $key + 1;
 			$lines_saved[$sequence] = $this->create_note($ponbr, $linenbr, $userID, $date, $time, $sequence, $line);
 		}
+		exit;
 
 		$this->wire('session')->response_qnote = $this->process_responses($this->get_note($ponbr, $linenbr, $userID, $date, $time), $ponbr, $lines_saved);
 	}
