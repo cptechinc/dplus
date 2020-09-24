@@ -107,7 +107,6 @@
 	</div>
 	<div class="col-sm-6">
 		<select name="rounding" class="form-control form-control-sm mb-1" id="rounding">
-			<option value=""></option>
 			{% for value, label in cxm.get_rounding_options() %}
 				<option value="{{ value }}" {{ value == item.rounding ? 'selected' : ''}}>
 					{{ label|capitalize }}
