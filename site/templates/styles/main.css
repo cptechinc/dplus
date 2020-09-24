@@ -247,7 +247,8 @@ a.image-link:hover {
 	FORM Styles
 ==============================================================*/
 
-select.form-control.is-valid, select.form-control.is-invalid  {
+input.form-control.is-valid, select.form-control.is-invalid  {
+	background: rgba(255, 255, 255, 0);
 	background-position: center right calc(.375em + .9875rem);
 }
 
