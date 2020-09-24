@@ -26,7 +26,7 @@ class ValidatePo extends WireData implements Module {
 	 * @param  string $shipfromID Vendor Ship-FromID
 	 * @return bool
 	 */
-	public function vendor_shipfromid($vendorID, $shipfromID) {
+	public function shipfromid($vendorID, $shipfromID) {
 		return $this->validate->vendor->validate_shipfrom($vendorID, $shipfromID);
 	}
 

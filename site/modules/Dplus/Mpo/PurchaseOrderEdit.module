@@ -381,7 +381,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 		}
 
 		if (strlen($values->text('shipfromID'))) {
-			if ($validate->vendor_shipfromid($values->text('vendorID'), $values->text('shipfromID'))) {
+			if ($validate->shipfromid($values->text('vendorID'), $values->text('shipfromID'))) {
 				$po->setShipfromid($values->text('shipfromID'));
 			} else {
 				$invalid['shipfromID'] = 'Ship-From ID';
