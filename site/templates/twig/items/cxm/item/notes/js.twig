@@ -5,6 +5,8 @@
 #}
 
 $(function() {
+	var formdefaults = {{ qnotes.get_form_defaults()|json_encode()|raw }};
+
 /* =============================================================
 	Order Notes Functions
 ============================================================= */
@@ -109,6 +111,7 @@ $(function() {
 
 	function populate_notes_form(button, modal) {
 		var note_row = button.closest('.qnote-order-row');
+
 		if (note_row.length) {
 			modal.find('.action-desc').text('Editing');
 			{% for form, label in qnotes.get_forms_shortlabels() %}
@@ -118,8 +121,10 @@ $(function() {
 			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
 		} else {
 			modal.find('.action-desc').text('Adding');
+
 			{% for form, label in qnotes.get_forms_shortlabels() %}
-				modal.find('input[name={{ form }}]').prop('checked', false);
+				var value = formdefaults['{{ form }}'] == 'Y';
+				modal.find('input[name={{ form }}]').prop('checked', value);
 			{% endfor %}
 			modal.find('textarea[name=note]').val('');
 		}
