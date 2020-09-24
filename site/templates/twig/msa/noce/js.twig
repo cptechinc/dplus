@@ -173,9 +173,10 @@ $(function() {
 			note = ele_notes.text();
 		} else {
 			modal.find('.desc-action').text('Adding');
+			note = '';
 		}
 		modal.find('span.id').text(id);
-		modal.find('textarea[name=note]').text(note).attr('cols', {{ qnotes.get_column_count() }} - 1);
+		modal.find('textarea[name=note]').val(note);
 		modal.find('input[name=id]').attr('data-id', id).val(id);
 
 		if (ids.contains(id)) {

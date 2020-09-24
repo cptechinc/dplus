@@ -1,3 +1,12 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemMasterItem
+	item_pricing           ItemMasterItem
+	pricingm               module ItmPricing
+	pricingm.configs       WireData
+#}
 <div class="form-group row">
 	<div class="col-sm-4">
 		<label>Purchase UoM</label>
@@ -12,7 +21,7 @@
 	</div>
 	<div class="col-sm-8">
 		<div class="input-group input-group-sm">
-			<input type="text" class="form-control-plaintext" value="{{ item_pricing.item.standardcost }}" readonly>
+			<input type="text" class="form-control-plaintext" value="{{ item_pricing.item.standardcost|number_format(4) }}" readonly>
 			<div class="input-group-append">
 				<div class="input-group-text">{{ item_pricing.item.unitofmpurchase.code }}</div>
 			</div>
@@ -24,7 +33,7 @@
 	</div>
 	<div class="col-sm-8">
 		<div class="input-group input-group-sm">
-			<input type="text" class="form-control-plaintext" value="{{ item_pricing.item.get_standardcost_uom_sale() }}" readonly>
+			<input type="text" class="form-control-plaintext" value="{{ item_pricing.item.get_standardcost_uom_sale()|number_format(4) }}" readonly>
 			<div class="input-group-append">
 				<div class="input-group-text">{{ item_pricing.item.unitofmsale.code }}</div>
 			</div>
@@ -38,7 +47,7 @@
 	</div>
 	<div class="col-sm-8">
 		<div class="input-group input-group-sm">
-			<input type="text" class="form-control-plaintext" value="{{ item_pricing.item.lastcost }}" readonly>
+			<input type="text" class="form-control-plaintext" value="{{ item_pricing.item.lastcost|number_format(4) }}" readonly>
 			<div class="input-group-append">
 				<div class="input-group-text">{{ item_pricing.item.unitofmpurchase.code }}</div>
 			</div>
@@ -50,7 +59,7 @@
 	</div>
 	<div class="col-sm-8">
 		<div class="input-group input-group-sm">
-			<input type="text" class="form-control-plaintext" value="{{ item_pricing.item.get_standardcost_uom_sale() }}" readonly>
+			<input type="text" class="form-control-plaintext" value="{{ item_pricing.item.get_standardcost_uom_sale()|number_format(4) }}" readonly>
 			<div class="input-group-append">
 				<div class="input-group-text">{{ item_pricing.item.unitofmsale.code }}</div>
 			</div>
@@ -69,8 +78,11 @@
 	<div class="col-sm-4">
 		<label>Primary Vendor</label>
 	</div>
-	<div class="col-sm-8">
+	<div class="col-sm-2">
 		<input type="text" class="form-control-plaintext" value="{{ item_pricing.item.primaryvxm.vendorid }}" readonly>
+	</div>
+	<div class="col-sm-6">
+		<p class="form-control-plaintext">{{ item_pricing.item.primaryvxm.vendor.name }}</p>
 	</div>
 </div>
 <div class="form-group row">
@@ -87,7 +99,7 @@
 	</div>
 	<div class="col-sm-8">
 		<div class="input-group input-group-sm">
-			<input type="text" class="form-control-plaintext" value="{{ item_pricing.primaryvxm.unitcost ?  item_pricing.primaryvxm.unitcost : '0.00' }}" readonly>
+			<input type="text" class="form-control-plaintext" value="{{ item_pricing.primaryvxm.unitcost ?  item_pricing.primaryvxm.unitcost|number_format(4) : '0.00'|number_format(4) }}" readonly>
 			<div class="input-group-append">
 				<div class="input-group-text">{{ item_pricing.item.unitofmpurchase.code }}</div>
 			</div>
@@ -100,7 +112,7 @@
 	</div>
 	<div class="col-sm-8">
 		<div class="input-group input-group-sm">
-			<input type="text" class="form-control-plaintext" value="{{ item_pricing.primaryvxm.get_listprice_uom_sale() ?  item_pricing.primaryvxm.get_listprice_uom_sale() : '0.00' }}" readonly>
+			<input type="text" class="form-control-plaintext" value="{{ item_pricing.primaryvxm.get_listprice_uom_sale() ?  item_pricing.primaryvxm.get_listprice_uom_sale()|number_format(4) : '0.00'|number_format(4) }}" readonly>
 			<div class="input-group-append">
 				<div class="input-group-text">{{ item_pricing.item.unitofmsale.code  }}</div>
 			</div>

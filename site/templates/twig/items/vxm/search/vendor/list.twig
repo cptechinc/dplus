@@ -7,7 +7,6 @@
 			<th scope="col">
 				<a href="{{ page.get_sortURL('name') }}" class="link">Name</a>
 			</th>
-			<th scope="col">Address</th>
 			<th scope="col">
 				<a href="{{ page.get_sortURL('city') }}" class="link">City</a>
 			</th>
@@ -16,9 +15,6 @@
 			</th>
 			<th scope="col">
 				<a href="{{ page.get_sortURL('zip') }}" class="link">Zip</a>
-			</th>
-			<th scope="col">
-				<a href="{{ page.get_sortURL('date_lastpurchased') }}" class="link">Last Purchase Date</a>
 			</th>
 		</tr>
 	</thead>
@@ -32,11 +28,9 @@
 						</a>
 					</td>
 					<td>{{ vendor.name }}</td>
-					<td>{{ vendor.address }}</td>
 					<td>{{ vendor.city }}</td>
 					<td>{{ vendor.state }}</td>
 					<td>{{ vendor.zip }}</td>
-					<td>{{ vendor.date_lastpurchased|convertdate }}</td>
 				</tr>
 			{% endfor %}
 		{% else %}

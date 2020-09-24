@@ -6,18 +6,19 @@
 	recordlocker           module RecordLockerUser
 	item                   ItemXrefCustomer
 #}
+{% include 'items/cxm/item/form/form-heading.twig' %}
+
 <form action="{{ page.fullURL.getURL() }}" method="POST" id="cxm-item-form">
 	<input type="hidden" name="action" value="update-cxm">
 	<input type="hidden" name="original_custitemID" value="{{ item.custitemID }}">
 
-	<div class="row mb-3">
-		{% include 'items/cxm/item/form/header.twig' %}
-	</div>
 	<div class="row">
 		<div class="col-sm-6">
+			{% include 'items/cxm/item/form/key.twig' %}
 			{% include 'items/cxm/item/form/details.twig' %}
 		</div>
 		<div class="col-sm-6">
+			{% include 'items/cxm/item/form/header.twig' %}
 			{% include 'items/cxm/item/form/packaging.twig' %}
 		</div>
 	</div>
@@ -34,11 +35,13 @@
 			</button>
 
 			{% if item.isNew() == false %}
-				<a href="{{ page.cxm_item_deleteURL(item.ouritemid, item.custid, item.custitemid) }}" class="btn btn-danger remove-cxm-item">
+				<a href="{{ page.cxm_item_deleteURL(item.itemid, item.custid, item.custitemid) }}" class="btn btn-danger remove-cxm-item">
 					<i class="fa fa-trash" aria-hidden="true"></i> Remove
 				</a>
 			{% endif %}
 		{% endif %}
-		<a href="{{ page.cxm_itemURL(item.ouritemid) }}" class="btn btn-warning">Close</a>
+		<a href="{{ page.cxm_item_exitURL(item) }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
 	</div>
 </form>

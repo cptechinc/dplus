@@ -31,7 +31,6 @@ $(function() {
 		calculate_custprice();
 	});
 
-
 	$("body").on("click", "a.remove-cxm-item", function(e) {
 		e.preventDefault();
 		var button = $(this);
@@ -138,63 +137,116 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	form_cxm.validate({
+
+	var validator = form_cxm.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		rules: {
-			custID: {required: true},
-			custitemID: {required: true},
-			itemID: {
+			rounding: {required: true},
+			custID: {
 				required: true,
 				remote: {
 					url: '{{ url_validate }}',
 					type: "get",
 					data: {
-						action: 'validate-itemid'
+						action: 'validate-custid'
 					}
 				}
 			},
+			custitemID: {
+				required: true,
+				maxlength: {{ cxm.maxlength_custitemid() }},
+				remote: {
+					url: '{{ url_validate }}',
+					type: "get",
+					data: {
+						custID: function() {
+							return $('input[name=custID]').val();
+						},
+						action: function() {
+							var input = $('input[name=custitemID]');
+
+							if (input.val() == input.data('custitemid')) {
+								return 'validate-cust-itemid';
+							} else {
+								return 'validate-cust-itemid-new';
+							}
+						}
+					}
+				}
+			},
+			itemID: {
+				{% if page.pw_template == 'cxm' %}
+					required: true,
+					remote: {
+						url: '{{ url_validate }}',
+						type: "get",
+						data: {
+							action: 'validate-itemid'
+						}
+					}
+				{% endif %}
+			},
 		},
 		messages: {
-			itemID: "Please enter the Your Item ID",
+			itemID: "Use a valid Item ID",
+			custID: "Use a valid Cust ID",
+			custitemID: "Use a valid Cust Item ID, (No more than {{ cxm.maxlength_custitemid() }} characters)",
 		},
 		submitHandler: function(form) {
-			var formdata = form_cxm.serializeArray().reduce(function(obj, item) {
-				obj[item.name] = item.value;
-				return obj;
-			}, {});
+			// var formdata = form_cxm.serializeArray().reduce(function(obj, item) {
+			// 	obj[item.name] = item.value;
+			// 	return obj;
+			// }, {});
 			update_cxm(form);
 		}
 	});
+
 
 	function update_cxm(form) {
 		request_validate_custitemID(function(exists) {
 			if (exists === true) {
 				if (input_custitemID.val() != input_custitemID.data('custitemid')) {
-					swal2.fire({
-						title: "Customer Item " + input_custitemID.val() + " exists",
-						text: 'Would you like to go edit this item?',
-						icon: 'error',
-						showCancelButton: true,
-						confirmButtonText: 'Yes',
-						cancelButtonText: 'No',
-					}).then((result) => {
-						if (result.value) {
-							var uri = new URI();
-							uri.removeQuery('custitemID');
-							uri.setQuery('custID', input_custID.val());
-							uri.setQuery('custitemID', input_custitemID.val());
-							window.location.href = uri.toString();
-						}
-					});
+					alert_existing();
 				} else {
 					form.submit();
 				}
 			} else {
 				form.submit();
+			}
+		});
+	}
+
+	$("body").on('change', 'input[name=custitemID]', function(e) {
+		e.preventDefault();
+
+		request_validate_custitemID(function(exists) {
+			if (exists === true) {
+				if (input_custitemID.val() != input_custitemID.data('custitemid')) {
+					alert_existing();
+				}
+			}
+		});
+	});
+
+	function alert_existing() {
+		swal2.fire({
+			title: "Customer Item " + input_custitemID.val() + " exists",
+			text: 'Would you like to go edit this item?',
+			icon: 'error',
+			showCancelButton: true,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			if (result.value) {
+				var uri = new URI();
+				uri.removeQuery('custitemID');
+				uri.setQuery('custID', input_custID.val());
+				uri.setQuery('custitemID', input_custitemID.val());
+				window.location.href = uri.toString();
 			}
 		});
 	}
@@ -212,7 +264,7 @@ $(function() {
 		url.addQuery('action', 'validate-cust-itemid').addQuery('custID', input_custID.val());
 		url.addQuery('custitemID', input_custitemID.val());
 		url.addQuery('return', 'bool');
-		console.log(url.toString());
+
 		$.getJSON(url.toString(), function( valid ) {
 			callback(valid);
 		});

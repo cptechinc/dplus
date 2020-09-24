@@ -3,18 +3,26 @@
 use Propel\Runtime\ActiveQuery\Criteria;
 
 use ApTermsCodeQuery, ApTermsCode;
+use ApBuyerQuery, ApBuyer;
 use CountryCodeQuery, CountryCode;
+use VendorQuery, Vendor;
 
 /**
  * ValidateAp
  *
  * Class for Validating AP table codes, IDs
- *
- * @property bool $exists      Code / ID exists
  */
 class ValidateAp extends WireData implements Module {
-	public function __construct() {
-		$this->exists   = false;
+
+	/**
+	 * Return if Vendor ID exists
+	 * @param  string $vendorID  Vendor ID
+	 * @return bool
+	 */
+	public function vendorid($vendorID) {
+		$q = VendorQuery::create();
+		$q->filterByVendorid($vendorID);
+		return boolval($q->count());
 	}
 
 	/**
@@ -22,27 +30,33 @@ class ValidateAp extends WireData implements Module {
 	 * @param  string $code AP Terms Code
 	 * @return bool
 	 */
-	public function validate_termscode($code) {
+	public function termscode($code) {
 		$q = ApTermsCodeQuery::create();
 		$q->filterByCode($code);
-
-		if ($q->count()) {
-			$this->exists = true;
-		}
-		return $this->exists;
+		return boolval($q->count());
 	}
 
-	public function validate_countrycode($code) {
+	/**
+	 * Return if Country Code Exists
+	 * @param  string $code Country Code
+	 * @return bool
+	 */
+	public function countrycode($code) {
 		$q = CountryCodeQuery::create();
 		$q->filterByCode($code);
-
-		if ($q->count()) {
-			$this->exists = true;
-		}
-		return $this->exists;
+		return boolval($q->count());
 	}
 
-
+	/**
+	 * Return if AP Buyer Code Exists
+	 * @param  string $code CAP Buyer Code
+	 * @return bool
+	 */
+	public function buyercode($code) {
+		$q = ApBuyerQuery::create();
+		$q->filterByCode($code);
+		return boolval($q->count());
+	}
 
 /* =============================================================
 	ProcessWire Module Functions

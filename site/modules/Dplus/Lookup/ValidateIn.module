@@ -1,0 +1,137 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use ItemMasterItemQuery, ItemMasterItem;
+use InvAssortmentCodeQuery, InvAssortmentCode;
+use UnitofMeasureSaleQuery, UnitofMeasureSale;
+
+/**
+ * ValidateIn
+ *
+ * Class for Validating Inventory (IN) table codes, IDs
+ */
+class ValidateIn extends WireData implements Module {
+
+	/**
+	 * Return if Item ID is Valid
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function itemid_exists($itemID) {
+		$q = ItemMasterItemQuery::create();
+		$q->filterByItemid($itemID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return if Item Type is Valid
+	 * @param  string $type Item Type
+	 * @return bool
+	 */
+	public function itemtype($type) {
+		return in_array($type, array_keys(ItemMasterItem::ITEMTYPE_DESCRIPTIONS));
+	}
+
+	/**
+	 * Return if Inventory Stock Code is valid
+	 * @param  string $code Inventory Stock Code
+	 * @return bool
+	 */
+	public function stockcode($code) {
+		$stcm = $this->modules->get('CodeTablesStcm');
+		return $stcm->code_exists($code);
+	}
+
+	/**
+	 * Return if Inventory Stock Code is valid
+	 * @param  string $code Inventory Stock Code
+	 * @return bool
+	 */
+	public function itemgroup($code) {
+		$igm = $this->modules->get('CodeTablesIgm');
+		return $igm->code_exists($code);
+	}
+
+	/**
+	 * Return if Inventory Price Code is valid
+	 * @param  string $code Inventory Price Code
+	 * @return bool
+	 */
+	public function pricecode($code) {
+		$igpm = $this->modules->get('CodeTablesIgpm');
+		return $igpm->code_exists($code);
+	}
+
+	/**
+	 * Return if Inventory Commission Group Code is valid
+	 * @param  string $code Inventory Commission Group Code
+	 * @return bool
+	 */
+	public function commissiongroup($code) {
+		$igpm = $this->modules->get('CodeTablesIgcm');
+		return $igpm->code_exists($code);
+	}
+
+	/**
+	 * Return if Inventory Special Item Code is valid
+	 * @param  string $code Inventory Special Item Group Code
+	 * @return bool
+	 */
+	public function specialitem($code) {
+		$spit = $this->modules->get('CodeTablesSpit');
+		return $spit->code_exists($code);
+	}
+
+	/**
+	 * Return if Inventory Assortment Code is valid
+	 * @param  string $code Inventory Special Assortment Code
+	 * @return bool
+	 */
+	public function assortmentcode($code) {
+		$iasm = $this->modules->get('CodeTablesIasm');
+		return $iasm->code_exists($code);
+	}
+
+	/**
+	 * Return if Unit of Measure Sale Code is valid
+	 * @param  string $code Unit of Measure Sale Code
+	 * @return bool
+	 */
+	public function unitofm_sale($code) {
+		$umm = $this->modules->get('CodeTablesUmm');
+		return $umm->code_exists($code);
+	}
+
+	/**
+	 * Return if Unit of Measure Purchase Code is valid
+	 * @param  string $code Unit of Measure Sale Code
+	 * @return bool
+	 */
+	public function unitofm_purchase($code) {
+		$umm = $this->modules->get('CodeTablesUmm');
+		return $umm->code_exists($code);
+	}
+
+
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'IN Validate Module',
+			'version' => 101,
+			'summary' => 'Validates IN table codes',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(),
+			'requires' => array(
+				'CodeTablesStcm',
+				'CodeTablesIgm',
+				'CodeTablesIgpm',
+				'CodeTablesIgcm'
+			)
+		);
+	}
+}

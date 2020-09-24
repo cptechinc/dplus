@@ -1,0 +1,42 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	cxm                    module XrefCxm
+	recordlocker           module RecordLockerUser
+	items                  ItemXrefCxm[]|ObjectCollection
+#}
+<table class="table table-sm">
+	<thead>
+		<tr class="bg-dark text-white p-3">
+			<th class="pt-3 pb-3">Customer ID</th>
+			<th class="pt-3 pb-3">Their ItemID</th>
+			<th class="pt-3 pb-3">Description</th>
+			<th class="pt-3 pb-3">UoM</th>
+			<th class="pt-3 pb-3 text-center">Edit</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if items.count() %}
+			{% for item in items %}
+				<tr data-cxm="{{ item.custid ~ '-' ~ item.custitemID }}">
+					<td>{{ item.custID }}</td>
+					<td>{{ item.custitemID }}</td>
+					<td>{{ item.description }}</td>
+					<td>{{ item.uom_customer }}</td>
+					<td class="text-center">
+						{% if recordlocker.function_locked('cxm', cxm.get_recordlocker_key(item)) == false or recordlocker.function_locked_by_user('cxm', cxm.get_recordlocker_key(item)) %}
+							<a href="{{ page.cxm_itemURL(item.custID, item.custitemID) }}" class="btn btn-warning">
+								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+							</a>
+						{% else %}
+							<span class="badge badge-secondary">
+								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ recordlocker.get_locked_user('cxm', cxm.get_recordlocker_key(item)) }}
+							</span>
+						{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+		{% endif %}
+	</tbody>
+</table>

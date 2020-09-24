@@ -16,7 +16,9 @@
 				</li>
 				<li class="breadcrumb-item active" aria-current="page">Cust Item: {{ page.custitemID }}</li>
 			{% else %}
-				<li class="breadcrumb-item active" aria-current="page">Customer: {{ page.custID }}</li>
+				{% if page.custID %}
+					<li class="breadcrumb-item active" aria-current="page">Customer: {{ page.custID }}</li>
+				{% endif %}
 			{% endif %}
 		{% elseif page.has('itemID') %}
 			<li class="breadcrumb-item">

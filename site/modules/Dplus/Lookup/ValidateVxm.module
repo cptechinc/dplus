@@ -1,0 +1,88 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use ItemMasterItemQuery, ItemMasterItem;
+use ItemXrefVendorQuery, ItemXrefVendor;
+
+/**
+ * ValidateCxm
+ *
+ * Class for validating Cxm fields
+ */
+class ValidateVxm extends WireData implements Module {
+/* =============================================================
+	AP Functions
+============================================================= */
+	/**
+	 * Return if Cust ID is Valid
+	 * @param  string $custID Customer ID
+	 * @return bool
+	 */
+	public function vendorid($custID) {
+		return $this->validate->ap->vendorid($custID);
+	}
+
+/* =============================================================
+	IN Functions
+============================================================= */
+	/**
+	 * Return if Item ID is Valid
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function itemid($itemID) {
+		return $this->validate->in->itemid_exists($itemID);
+	}
+
+	/**
+	 * Return if Unit of Measure Purchase Code is valid
+	 * @param  string $code Unit of Measure Sale Code
+	 * @return bool
+	 */
+	public function unitofm_purchase($code) {
+		return $this->validate->in->unitofm_purchase($code);
+	}
+
+/* =============================================================
+	VXM Functions
+============================================================= */
+	/**
+	 * Return if PO order code Exists
+	 * @param  string $option PO Order Code Option
+	 * @return bool
+	 */
+	public function ordercode($option) {
+		return array_key_exists($option, ItemXrefVendor::OPTIONS_POORDERCODE);
+	}
+
+	/**
+	 * Return if approval code Exists
+	 * @param  string $option Approval Code
+	 * @return bool
+	 */
+	public function approvalcode($option) {
+		return array_key_exists($option, ItemXrefVendor::OPTIONS_APPROVALCODE);
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'VXM Validate Module',
+			'version' => 101,
+			'summary' => 'Handles VXM Fields Validation',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+
+	public function init() {
+		$this->validate = new WireData();
+		$this->validate->ap  = $this->wire('modules')->get('ValidateAp');
+		$this->validate->in  = $this->wire('modules')->get('ValidateIn');
+		$this->modules = $this->wire('modules');
+	}
+}

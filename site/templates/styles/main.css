@@ -172,6 +172,19 @@ a.image-link:hover {
 	padding: .5rem 1.25rem;
 }
 
+.list-inline.comma-list {
+	display: inline;
+}
+
+.list-inline.comma-list li.list-inline-item:not(:last-child):after {
+	content: ","
+}
+
+.modal#ajax-notes-modal {
+	z-index: 1500;
+}
+
+
 /************************************** Navbar **************************************/
 #yt-menu {
 	width: 300px;
@@ -223,6 +236,26 @@ a.image-link:hover {
 
 .highlight {
 	background: #FADA5E;
+}
+
+/*==============================================================
+	FORM Styles
+==============================================================*/
+
+select.form-control.is-valid, select.form-control.is-invalid  {
+	background-position: center right calc(.375em + .9875rem);
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input.form-control[type=number] {
+  -moz-appearance: textfield;
 }
 
 textarea.qnotes {

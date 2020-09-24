@@ -15,9 +15,9 @@
 
 <div class="input-group input-group-sm">
 	<span class="input-group-prepend">
-		<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="{{modaltarget}}" title="{{ modaldescription }}" aria-label="{{ modaldescription }}" {{ attributes_extra_button }}>
+		<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="{{ modaltarget }}" title="{{ modaldescription }}" aria-label="{{ modaldescription }}" {{ attributes_extra_button }}>
 			<span class="fa fa-search" aria-hidden="true"></span> <span class="sr-only">{{ modaldescription }}</span>
 		</button>
 	</span>
-	<input tabindex="{{tabindex}}" type="{{type}}" name="{{ name }}" id="{{ id }}" maxlength="{{ maxlength }}" class="{{ class }}" value="{{ value }}" placeholder="{{ placeholder }}" {{ attributes_extra }} {{ required ? 'required' : '' }} {{ autofocus ? 'autofocus' : '' }} {{ disabled ? 'disabled' : '' }}>
+	<input tabindex="{{tabindex}}" type="{{type}}" name="{{ name }}" id="{{ id }}" {% if maxlength %} maxlength="{{ maxlength }}" {% endif %} class="{{ class }}" value="{{ value }}" placeholder="{{ placeholder }}" {{ attributes_extra }} {{ required ? 'required' : '' }} {{ autofocus ? 'autofocus' : '' }} {{ disabled ? 'disabled' : '' }}>
 </div>
