@@ -12,7 +12,7 @@
 			<label for="uom_purchase">Purchase UoM</label>
 		</div>
 		<div class="col-sm-8">
-			<select name="uom_purchase" class="form-control" id="uom_purchase">
+			<select name="uom_purchase" class="custom-select custom-select-sm" id="uom_purchase">
 				{% for uom in m_costing.get_uom_purchases() %}
 					<option value="{{ uom.code }}" {{ uom.code == item.unitofmpurchase.code ? 'selected' : '' }}>{{ uom.description }}</option>
 				{% endfor %}
@@ -26,8 +26,8 @@
 		<div class="col-sm-8">
 			<div class="row">
 				<div class="col-sm-8">
-					<div class="input-group">
-						<input type="text" class="form-control text-right" name="standardcost" id="standardcost" value="{{ item.standardcost|number_format(4) }}">
+					<div class="input-group input-group-sm">
+						<input type="text" class="form-control text-right" name="standardcost" id="standardcost" value="{{ item.standardcost|number_format(m_costing.configs.po.decimal_places_cost) }}">
 						<div class="input-group-append">
 							<span class="input-group-text uom-purchase-display">{{ item.unitofmpurchase.code }}</span>
 						</div>
@@ -44,7 +44,7 @@
 			<label for="standardcostbasedon">Based On</label>
 		</div>
 		<div class="col-sm-8">
-			{% include 'util/select.twig' with {'name': 'standardcostbasedon', 'id': 'standardcostbasedon', 'selectedvalue': item.standardcostbasedon, 'options': m_costing.get_standardcost_basedon_options() } %}
+			{% include 'util/select.twig' with {'name': 'standardcostbasedon', 'id': 'standardcostbasedon', 'selectedvalue': item.standardcostbasedon, 'options': m_costing.get_standardcost_basedon_options(), 'show_value': true } %}
 		</div>
 	</div>
 	<div class="form-group row">
@@ -54,8 +54,8 @@
 		<div class="col-sm-8">
 			<div class="row">
 				<div class="col-sm-8">
-					<div class="input-group">
-						<input type="text" class="form-control text-right" name="lastcost" id="lastcost" value="{{ item.lastcost|number_format(4) }}">
+					<div class="input-group input-group-sm">
+						<input type="text" class="form-control text-right" name="lastcost" id="lastcost" value="{{ item.lastcost|number_format(m_costing.configs.po.decimal_places_cost) }}">
 						<div class="input-group-append">
 							<span class="input-group-text uom-purchase-display">{{ item.unitofmpurchase.code }}</span>
 						</div>
@@ -69,15 +69,42 @@
 	</div>
 	<div class="form-group row">
 		<div class="col-sm-4">
+			<label for="buyer">{{ m_costing.is_buyercontrol_item() ? 'Buyer' : 'N/A'}}</label>
+		</div>
+		<div class="col-sm-8">
+			{% if m_costing.is_buyercontrol_item() %}
+				<select name="buyer" id="buyer" class="custom-select custom-select-sm">
+					<option value=""></option>
+					{% for buyer in m_costing.get_ap_buyers() %}
+						<option value="{{ buyer.code }}" {{ buyer.code == item.buyer ? 'selected' : ''}}>
+							{{ buyer.description }}
+						</option>
+					{% endfor %}
+				</select>
+			{% endif %}
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-sm-4">
 			<label for="minmargin">Min Margin</label>
 		</div>
 		<div class="col-sm-8">
-			<div class="input-group">
+			<div class="input-group input-group-sm">
 				<input type="text" class="form-control text-right" name="minmargin" id="minmargin" value="{{ item.minmargin|number_format(4) }}">
 				<div class="input-group-append">
 					<span class="input-group-text uom-purchase-display">%</span>
 				</div>
 			</div>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-sm-4">
+			<label for="qty_purchase_carton">{{ m_costing.appcustID == 'LINDST' ? 'Carton Qty' : 'N/A'}}</label>
+		</div>
+		<div class="col-sm-8">
+			{% if m_costing.appcustID == 'LINDST' %}
+				<input type="number" class="form-control form-control-sm text-right" name="qty_purchase_carton" id="qty_purchase_carton" value="{{ item.qty_purchase_carton }}">
+			{% endif %}
 		</div>
 	</div>
 	<div class="d-flex justify-content-between align-items-center">
@@ -90,6 +117,8 @@
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 		{% endif %}
-		<a href="{{ page.itmURL(item.itemid) }}" class="btn btn-warning">Close</a>
+		<a href="{{ page.itmURL(item.itemid) }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
 	</div>
 </form>

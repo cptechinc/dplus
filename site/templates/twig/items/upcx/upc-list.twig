@@ -1,14 +1,28 @@
-<div class="mb-3">
-	{% if itemID %}
-		<a href="{{ page.upc_create_itemidURL(itemID) }}" class="btn btn-primary">
-			<i class="fa fa-plus" aria-hidden="true"></i> Create UPC for {{ itemID }}
-		</a>
-	{% else %}
-		<a href="{{ page.upc_createURL() }}" class="btn btn-primary">
-			<i class="fa fa-plus" aria-hidden="true"></i> Create UPC
-		</a>
-	{% endif %}
-</div>
+{% block header %}
+	<div class="row">
+		<div class="col-sm-6">
+			<h3>
+				{% if itemID %}
+					{{ upcs.getNbResults() }} UPCs for {{ itemID }}
+				{% else %}
+					{{ upcs.getNbResults() }} UPCs
+				{% endif %}
+			</h3>
+		</div>
+		<div class="col-sm-6 text-right">
+			{% if itemID %}
+				<a href="{{ page.upc_create_itemidURL(itemID) }}" class="btn btn-secondary">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add UPC for {{ itemID }}
+				</a>
+			{% else %}
+				<a href="{{ page.upc_createURL() }}" class="btn btn-secondary">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add UPC
+				</a>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}
+
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">

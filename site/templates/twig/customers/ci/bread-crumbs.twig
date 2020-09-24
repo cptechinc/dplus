@@ -27,6 +27,13 @@
 				<a href="{{ page.customer_shiptoURL() }}">{{ page.shipto.name }}</a>
 			</li>
 		{% endif %}
-		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+		{% if (page.pw_template == 'ci-customer' and page.has('custID')) %}
+			<li class="breadcrumb-item">
+				<a href="{{ page.url }}">CI</a>
+			</li>
+			<li class="breadcrumb-item active" aria-current="page">{{ customer.name }}</li>
+		{% else %}
+			<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+		{% endif %}
 	</ol>
 </nav>

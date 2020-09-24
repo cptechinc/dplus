@@ -50,6 +50,11 @@ table.table-md td, table.table-md th {
 	background-color: #c8bfc7 !important;
 }
 
+.bg-totals {
+	background-color: #C5D86D !important;
+	font-weight: bold;
+}
+
 .form-group label {
 	font-weight: bold;
 }
@@ -184,6 +189,7 @@ a.image-link:hover {
 	z-index: 1500;
 }
 
+
 /************************************** Navbar **************************************/
 #yt-menu {
 	width: 300px;
@@ -235,6 +241,26 @@ a.image-link:hover {
 
 .highlight {
 	background: #FADA5E;
+}
+
+/*==============================================================
+	FORM Styles
+==============================================================*/
+
+select.form-control.is-valid, select.form-control.is-invalid  {
+	background-position: center right calc(.375em + .9875rem);
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input.form-control[type=number] {
+  -moz-appearance: textfield;
 }
 
 textarea.qnotes {

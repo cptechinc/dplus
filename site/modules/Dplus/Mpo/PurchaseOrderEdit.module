@@ -387,7 +387,6 @@ class PurchaseOrderEdit extends WireData implements Module {
 				$invalid['shipfromID'] = 'Ship-From ID';
 			}
 		}
-
 		return $invalid;
 	}
 

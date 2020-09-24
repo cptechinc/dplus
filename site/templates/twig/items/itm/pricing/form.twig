@@ -1,3 +1,13 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemMasterItem
+	item_pricing           ItemMasterItem
+	pricingm               module ItmPricing
+	pricingm.configs       WireData
+	pricingm.configs.so    ConfigSalesOrder
+#}
 <form action="{{ page.fullURL.getUrl() }}" method="POST">
 	<input type="hidden" name="action" value="update-itm-pricing">
 	<input type="hidden" name="itemID" value="{{ item_pricing.itemid }}">

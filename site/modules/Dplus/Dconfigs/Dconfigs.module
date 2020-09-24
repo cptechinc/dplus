@@ -54,7 +54,9 @@ class Dconfigs extends WireData implements Module {
 			'autoload' => true,
 			'installs' => array(
 				'ConfigureAp',
-				'ConfigurePo'
+				'ConfigurePo',
+				'ConfigureIn',
+				'ConfigureSo',
 			)
 		);
 	}

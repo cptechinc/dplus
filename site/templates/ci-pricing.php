@@ -40,19 +40,11 @@
 			}
 		} else {
 			$q = $input->get->q ? $input->get->text('q') : '';
-			$query = ItemsearchQuery::create();
-			$query->filterActive();
-			$query->filterByOrigintype([Itemsearch::ORIGINTYPE_VENDOR, Itemsearch::ORIGINTYPE_ITEM]);
 
-			if ($query->filterByItemid($q)->count()) {
-				$query->groupby('itemid');
-			} else {
-				$query->clear();
-				$query->filterActive();
-				$query->filterByOrigintype([Itemsearch::ORIGINTYPE_VENDOR, Itemsearch::ORIGINTYPE_ITEM]);
-				$query->where("MATCH(Itemsearch.itemid, Itemsearch.refitemid, Itemsearch.desc1, Itemsearch.desc2) AGAINST (? IN BOOLEAN MODE)", "*$q*");
-				$query->groupby('itemid');
-			}
+			$filter_itm = $modules->get('FilterItemMaster');
+			$filter_itm->init_query($user);
+			$filter_itm->filter_search($q);
+			$query = $filter_itm->get_query();
 
 			if ($query->count() == 1) {
 				$item = $query->findOne();

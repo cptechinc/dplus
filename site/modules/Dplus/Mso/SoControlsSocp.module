@@ -1,0 +1,73 @@
+<?php namespace ProcessWire;
+
+use SoEditPermissionsQuery, SoEditPermissions;
+
+/**
+ * SoControlsSocp
+ *
+ * Module for CRUD of SOCP User Permissions
+ * NOTE: SOCP is Sales Order User Edit Permissions
+ */
+class SoControlsSocp extends WireData implements Module {
+	const DEFAULT_USER = 'system';
+
+	/**
+	 * Return Query
+	 * @return SoEditPermissionsQuery
+	 */
+	public function get_query() {
+		return SoEditPermissionsQuery::create();
+	}
+
+	/**
+	 * Return true if User Permissions Exist
+	 * @param  string $userID User ID
+	 * @return bool
+	 */
+	public function exists($userID) {
+		$q = $this->get_query();
+		$q->filterByUserid($userID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return Permissions for User
+	 * @param  string $userID User ID
+	 * @return SoEditPermissions
+	 */
+	public function permissions($userID) {
+		$q = $this->get_query();
+		$q->filterByUserid($userID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return Permissions for ***DEFAULT*** User
+	 * @return SoEditPermissions
+	 */
+	public function permissions_default() {
+		return $this->permissions(self::DEFAULT_USER);
+	}
+
+	/**
+	 * Return Permissions for User If Exists, if not return default
+	 * @param  string $userID User ID
+	 * @return SoEditPermissions
+	 */
+	public function permissions_user_default($userID) {
+		return $this->exists($userID) ? $this->permissions($userID) : $this->permissions_default();
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'SOCP',
+			'version' => 101,
+			'summary' => 'Handles CRUD Sales Order User Edit Permissions',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

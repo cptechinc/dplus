@@ -4,14 +4,17 @@
 	 * This template is made for Validating Data Inputs for the CXM form
 	 * NOTE: the response values are formatted to be used by Jquery Validate's remote validation method
 	 */
+	$rm = strtolower($input->requestMethod());
+ 	$values = $input->$rm;
 	$cxm = $modules->get('XrefCxm');
+	$validate = $modules->get('ValidateCxm');
 	$response   = '';
-	$returntype = $input->get->return ? $input->get->text('return') : 'jqueryvalidate';
+	$returntype = $values->return ? $values->text('return') : 'jqueryvalidate';
 
-	if ($input->get->action) {
-		switch ($input->get->text('action')) {
+	if ($values->action) {
+		switch ($values->text('action')) {
 			case 'validate-itemid':
-				$itemID = $input->get->itemID ? $input->get->text('itemID') : $input->get->text('ouritemID');
+				$itemID = $values->itemID ? $values->text('itemID') : $values->text('ouritemID');
 
 				if ($cxm->validate_itemID($itemID)) {
 					$response = true;
@@ -20,14 +23,34 @@
 				}
 				break;
 			case 'validate-cust-itemid':
-				$custID     = $input->get->text('custID');
-				$custitemID = $input->get->text('custitemID');
-				$returntype   = $input->get->return ? $input->get->text('return') : 'jqueryvalidate';
+				$custID     = $values->text('custID');
+				$custitemID = $values->text('custitemID');
+				$returntype   = $values->return ? $values->text('return') : 'jqueryvalidate';
 
 				if ($cxm->cxm_item_exists($custID, $custitemID)) {
 					$response = true;
 				} else {
-					$response = ($returntype == 'bool') ? false : "$itemID from $custID was not found in the Customer X-ref";
+					$response = ($returntype == 'bool') ? false : "$custitemID from $custID was not found in the Customer X-ref";
+				}
+				break;
+			case 'validate-cust-itemid-new':
+				$custID     = $values->text('custID');
+				$custitemID = $values->text('custitemID');
+				$returntype   = $values->return ? $values->text('return') : 'jqueryvalidate';
+
+				if ($cxm->cxm_item_exists($custID, $custitemID)) {
+					$response = ($returntype == 'bool') ? false : "$custitemID from $custID already exists in the Customer X-ref";
+				} else {
+					$response = true;
+				}
+				break;
+			case 'validate-custid':
+				$custID = $values->text('custID');
+
+				if ($validate->custid($custID)) {
+					$response = true;
+				} else {
+					$response = "$custID was not found in the Customer Master";
 				}
 				break;
 		}

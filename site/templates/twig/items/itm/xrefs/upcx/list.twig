@@ -1,0 +1,20 @@
+{% extends 'items/upcx/upc-list.twig' %}
+
+{% block header %}
+	<div class="mb-3">
+		<a href="{{ page.itm_xrefsURL(itemID) }}" class="btn btn-primary">
+			<i class="fa fa-undo" aria-hidden="true"></i> Back to {{ itemID }} X-refs
+		</a>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-6">
+			<h3>{{ upcs.getNbResults() }} UPCs for {{ itemID }}</h3>
+		</div>
+		<div class="col-sm-6 text-right">
+			<a href="{{ page.upc_create_itemidURL(itemID) }}" class="btn btn-secondary">
+				<i class="fa fa-plus" aria-hidden="true"></i> Add UPC for {{ itemID }}
+			</a>
+		</div>
+	</div>
+{% endblock %}
