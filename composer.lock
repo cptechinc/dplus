@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cptechinc/dplus-model.git",
-                "reference": "c2c2b03da5c0181e96f75f49845658424ce74f4a"
+                "reference": "17f31a6cde98cfa836cbe80a5d7a296bb2ed5ff4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/c2c2b03da5c0181e96f75f49845658424ce74f4a",
-                "reference": "c2c2b03da5c0181e96f75f49845658424ce74f4a",
+                "url": "https://api.github.com/repos/cptechinc/dplus-model/zipball/17f31a6cde98cfa836cbe80a5d7a296bb2ed5ff4",
+                "reference": "17f31a6cde98cfa836cbe80a5d7a296bb2ed5ff4",
                 "shasum": ""
             },
             "type": "library",
@@ -39,7 +39,7 @@
                 "qnote",
                 "quote"
             ],
-            "time": "2020-09-15T19:43:55+00:00"
+            "time": "2020-09-24T19:01:00+00:00"
         },
         {
             "name": "cptechinc/dpluso-model",
@@ -663,12 +663,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/picqer/php-barcode-generator.git",
-                "reference": "16c51a795454198500cdfb4f82de288945af3960"
+                "reference": "27f03c604832d433efe98ca3d3b1c9e08d1b83fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/picqer/php-barcode-generator/zipball/16c51a795454198500cdfb4f82de288945af3960",
-                "reference": "16c51a795454198500cdfb4f82de288945af3960",
+                "url": "https://api.github.com/repos/picqer/php-barcode-generator/zipball/27f03c604832d433efe98ca3d3b1c9e08d1b83fb",
+                "reference": "27f03c604832d433efe98ca3d3b1c9e08d1b83fb",
                 "shasum": ""
             },
             "require": {
@@ -731,7 +731,7 @@
                 "svg",
                 "upc"
             ],
-            "time": "2020-01-28T13:00:23+00:00"
+            "time": "2020-09-16T19:29:34+00:00"
         },
         {
             "name": "propel/propel",
@@ -808,12 +808,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/container.git",
-                "reference": "fc1bc363ecf887921e3897c7b1dad3587ae154eb"
+                "reference": "b1fbdff230c2fae8b3e600ead18e711563f05a04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/container/zipball/fc1bc363ecf887921e3897c7b1dad3587ae154eb",
-                "reference": "fc1bc363ecf887921e3897c7b1dad3587ae154eb",
+                "url": "https://api.github.com/repos/php-fig/container/zipball/b1fbdff230c2fae8b3e600ead18e711563f05a04",
+                "reference": "b1fbdff230c2fae8b3e600ead18e711563f05a04",
                 "shasum": ""
             },
             "require": {
@@ -837,7 +837,7 @@
             "authors": [
                 {
                     "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
+                    "homepage": "https://www.php-fig.org/"
                 }
             ],
             "description": "Common Container Interface (PHP FIG PSR-11)",
@@ -849,7 +849,7 @@
                 "container-interop",
                 "psr"
             ],
-            "time": "2019-10-04T14:07:35+00:00"
+            "time": "2020-09-18T06:44:01+00:00"
         },
         {
             "name": "psr/http-client",
@@ -857,12 +857,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-client.git",
-                "reference": "2dfb5f6c5eff0e91e20e913f8c5452ed95b86621"
+                "reference": "22b2ef5687f43679481615605d7a15c557ce85b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-client/zipball/2dfb5f6c5eff0e91e20e913f8c5452ed95b86621",
-                "reference": "2dfb5f6c5eff0e91e20e913f8c5452ed95b86621",
+                "url": "https://api.github.com/repos/php-fig/http-client/zipball/22b2ef5687f43679481615605d7a15c557ce85b1",
+                "reference": "22b2ef5687f43679481615605d7a15c557ce85b1",
                 "shasum": ""
             },
             "require": {
@@ -887,7 +887,7 @@
             "authors": [
                 {
                     "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
+                    "homepage": "https://www.php-fig.org/"
                 }
             ],
             "description": "Common interface for HTTP clients",
@@ -898,7 +898,7 @@
                 "psr",
                 "psr-18"
             ],
-            "time": "2020-06-29T06:28:15+00:00"
+            "time": "2020-09-19T09:12:31+00:00"
         },
         {
             "name": "psr/http-factory",
@@ -906,12 +906,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-factory.git",
-                "reference": "1a2099a23a7bca67f13c0634723137a364a3ebf8"
+                "reference": "36fa03d50ff82abcae81860bdaf4ed9a1510c7cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-factory/zipball/1a2099a23a7bca67f13c0634723137a364a3ebf8",
-                "reference": "1a2099a23a7bca67f13c0634723137a364a3ebf8",
+                "url": "https://api.github.com/repos/php-fig/http-factory/zipball/36fa03d50ff82abcae81860bdaf4ed9a1510c7cd",
+                "reference": "36fa03d50ff82abcae81860bdaf4ed9a1510c7cd",
                 "shasum": ""
             },
             "require": {
@@ -936,7 +936,7 @@
             "authors": [
                 {
                     "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
+                    "homepage": "https://www.php-fig.org/"
                 }
             ],
             "description": "Common interfaces for PSR-7 HTTP message factories",
@@ -950,7 +950,7 @@
                 "request",
                 "response"
             ],
-            "time": "2019-12-29T01:52:41+00:00"
+            "time": "2020-09-17T16:52:55+00:00"
         },
         {
             "name": "psr/http-message",
@@ -1008,12 +1008,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "0f73288fd15629204f9d42b7055f72dacbe811fc"
+                "reference": "dd738d0b4491f32725492cf345f6b501f5922fec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/0f73288fd15629204f9d42b7055f72dacbe811fc",
-                "reference": "0f73288fd15629204f9d42b7055f72dacbe811fc",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/dd738d0b4491f32725492cf345f6b501f5922fec",
+                "reference": "dd738d0b4491f32725492cf345f6b501f5922fec",
                 "shasum": ""
             },
             "require": {
@@ -1037,7 +1037,7 @@
             "authors": [
                 {
                     "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
+                    "homepage": "https://www.php-fig.org/"
                 }
             ],
             "description": "Common interface for logging libraries",
@@ -1047,7 +1047,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2020-03-23T09:12:05+00:00"
+            "time": "2020-09-18T06:44:51+00:00"
         },
         {
             "name": "psr/simple-cache",
@@ -1103,12 +1103,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "c67f0765f8d7e400d540c998fc291718bf345b67"
+                "reference": "dc8bda628f4f044182055ddb9d13608ea30c8084"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/c67f0765f8d7e400d540c998fc291718bf345b67",
-                "reference": "c67f0765f8d7e400d540c998fc291718bf345b67",
+                "url": "https://api.github.com/repos/symfony/config/zipball/dc8bda628f4f044182055ddb9d13608ea30c8084",
+                "reference": "dc8bda628f4f044182055ddb9d13608ea30c8084",
                 "shasum": ""
             },
             "require": {
@@ -1161,7 +1161,7 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2020-09-02T16:27:44+00:00"
+            "time": "2020-09-22T09:22:20+00:00"
         },
         {
             "name": "symfony/console",
@@ -1169,12 +1169,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "8f67de03e7a717137a443b438260351d67072210"
+                "reference": "84ec97f7cc87bd2938dceb44ae2b717ef2fbbec2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/8f67de03e7a717137a443b438260351d67072210",
-                "reference": "8f67de03e7a717137a443b438260351d67072210",
+                "url": "https://api.github.com/repos/symfony/console/zipball/84ec97f7cc87bd2938dceb44ae2b717ef2fbbec2",
+                "reference": "84ec97f7cc87bd2938dceb44ae2b717ef2fbbec2",
                 "shasum": ""
             },
             "require": {
@@ -1246,7 +1246,7 @@
                 "console",
                 "terminal"
             ],
-            "time": "2020-09-09T12:41:49+00:00"
+            "time": "2020-09-20T07:20:17+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -1849,12 +1849,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "15b391c17c13623a81da54c81971e2148558bbe4"
+                "reference": "4dfc0b23e58ae0060af6bf72af6e80c557848386"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/15b391c17c13623a81da54c81971e2148558bbe4",
-                "reference": "15b391c17c13623a81da54c81971e2148558bbe4",
+                "url": "https://api.github.com/repos/symfony/string/zipball/4dfc0b23e58ae0060af6bf72af6e80c557848386",
+                "reference": "4dfc0b23e58ae0060af6bf72af6e80c557848386",
                 "shasum": ""
             },
             "require": {
@@ -1912,7 +1912,7 @@
                 "utf-8",
                 "utf8"
             ],
-            "time": "2020-09-15T12:13:10+00:00"
+            "time": "2020-09-24T09:57:23+00:00"
         },
         {
             "name": "symfony/translation",
@@ -1920,12 +1920,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation.git",
-                "reference": "834997294ad70740a6b376d666fce870e1297d78"
+                "reference": "fe0e1f2c61715d6d6e33bf533ca2db4467307605"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation/zipball/834997294ad70740a6b376d666fce870e1297d78",
-                "reference": "834997294ad70740a6b376d666fce870e1297d78",
+                "url": "https://api.github.com/repos/symfony/translation/zipball/fe0e1f2c61715d6d6e33bf533ca2db4467307605",
+                "reference": "fe0e1f2c61715d6d6e33bf533ca2db4467307605",
                 "shasum": ""
             },
             "require": {
@@ -1993,7 +1993,7 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "https://symfony.com",
-            "time": "2020-09-10T08:35:47+00:00"
+            "time": "2020-09-20T07:20:17+00:00"
         },
         {
             "name": "symfony/translation-contracts",
@@ -2062,12 +2062,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "adce1157ac1b3bc749bea8390bedee4a789cc55f"
+                "reference": "60e519132676807eb448a6634323c7583ee025ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/adce1157ac1b3bc749bea8390bedee4a789cc55f",
-                "reference": "adce1157ac1b3bc749bea8390bedee4a789cc55f",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/60e519132676807eb448a6634323c7583ee025ca",
+                "reference": "60e519132676807eb448a6634323c7583ee025ca",
                 "shasum": ""
             },
             "require": {
@@ -2104,7 +2104,7 @@
                 "symfony/http-kernel": "^4.4|^5.0",
                 "symfony/intl": "^4.4|^5.0",
                 "symfony/mime": "^4.4|^5.0",
-                "symfony/phpunit-bridge": "^5.1",
+                "symfony/phpunit-bridge": "^5.1.1",
                 "symfony/property-access": "^4.4|^5.0",
                 "symfony/property-info": "^4.4|^5.0",
                 "symfony/translation": "^4.4|^5.0",
@@ -2154,7 +2154,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2020-09-13T05:01:37+00:00"
+            "time": "2020-09-24T14:49:16+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -2162,12 +2162,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "2e8333393fc986936285d7e5cf6485d14fa6a11f"
+                "reference": "711292b2b8baeb15165c4c0910cdc47d3f1da26e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/2e8333393fc986936285d7e5cf6485d14fa6a11f",
-                "reference": "2e8333393fc986936285d7e5cf6485d14fa6a11f",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/711292b2b8baeb15165c4c0910cdc47d3f1da26e",
+                "reference": "711292b2b8baeb15165c4c0910cdc47d3f1da26e",
                 "shasum": ""
             },
             "require": {
@@ -2217,7 +2217,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2020-09-08T14:20:09+00:00"
+            "time": "2020-09-20T07:20:17+00:00"
         },
         {
             "name": "twig/twig",
