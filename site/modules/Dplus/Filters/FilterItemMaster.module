@@ -32,8 +32,8 @@ class FilterItemMaster extends WireData implements Module {
 	 */
 	public function filter_search($q) {
 		$col_itemid = ItemMasterItem::get_aliasproperty('itemid');
-		$col_desc1 = ItemMasterItem::get_aliasproperty('description');
-		$col_desc2 = ItemMasterItem::get_aliasproperty('description2');
+		$col_desc1  = ItemMasterItem::get_aliasproperty('description');
+		$col_desc2  = ItemMasterItem::get_aliasproperty('description2');
 		$columns = array($col_itemid, $col_desc1, $col_desc2);
 		$this->query->search_filter($columns, strtoupper($q));
 	}

@@ -1,0 +1,82 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+use PricingQuery, Pricing;
+
+class ItemPricing extends WireData implements Module {
+
+	public function query() {
+		$q = PricingQuery::create();
+		$q->filterBySessionid($this->sessionID);
+		return $q;
+	}
+
+	public function has_pricing($itemID) {
+		$q = $this->query();
+		$q->filterByItemid($itemID);
+		return boolval($q->count());
+	}
+
+	public function get_pricing($itemID) {
+		$q = $this->query();
+		$q->filterByItemid($itemID);
+		return $q->findOne();
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+
+	/**
+	 * Request Item Search from Dplus
+	 * @param  string $q       Search Query
+	 * @param  string $custID  Customer ID
+	 * @return void
+	 */
+	public function request_search($q, $custID = '') {
+		$config = $this->wire('config');
+		$custID = $custID ? $custID : $config->default_webcustomer;
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", "ITNOSRCH=$q", "CUSTID=$custID");
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
+	}
+
+	/**
+	 * Request Item Pricing from Dplus
+	 * @param  array  $itemIDs  Item IDs
+	 * @param  string $custID   Customer ID
+	 * @return void
+	 */
+	public function request_multiple(array $itemIDs, $custID = '') {
+		$config = $this->wire('config');
+		$custID = $custID ? $custID : $config->default_webcustomer;
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", "ITMPRIMULT", "CUSTID=$custID");
+		foreach ($itemIDs as $itemID) {
+				$data[] = "ITEMID=$itemID";
+		}
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['default'], session_id());
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Item Pricing Module',
+			'version' => 101,
+			'summary' => 'Module for requesting pricing records',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+	public function init() {
+		$this->sessionID = session_id();
+	}
+}

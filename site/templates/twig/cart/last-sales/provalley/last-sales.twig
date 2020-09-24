@@ -5,8 +5,8 @@
 	<div class="list-group mb-3">
 		<div class="list-group-item p-0 border-0">
 			<div class="form-row">
-				<div class="col-sm-4"></div>
-				<div class="col-sm-5">
+				<div class="col-sm-5"></div>
+				<div class="col-sm-4">
 					<div class="alert bg-dark text-white p-1 mb-0 text-center">
 						<small>Last Sale</small>
 					</div>
@@ -28,7 +28,10 @@
 				<div class="col-sm-1">
 					Price
 				</div>
-				<div class="col-sm-5">
+				<div class="col-sm-1">
+					Available
+				</div>
+				<div class="col-sm-4">
 					<div class="form-row">
 						<div class="col-sm-3 text-right">Date</div>
 						<div class="col-sm-3 text-right">Price</div>
@@ -62,7 +65,10 @@
 					<div class="col-sm-1 text-right">
 						{{ lastsold.get_item_pricing(cstkitem.itemid) }}
 					</div>
-					<div class="col-sm-5">
+					<div class="col-sm-1 text-right">
+						{{ lastsold.get_item_availability(cstkitem.itemid) }}
+					</div>
+					<div class="col-sm-4">
 						<div class="form-row">
 							<div class="col-sm-3 text-right">
 								{{ cstkitem.proval_lastsale_date|convertdate }}

@@ -41,4 +41,22 @@
 			</tr>
 		{% endfor %}
 	</tbody>
+	<tfoot>
+		<tr class="bg-totals">
+			<td>
+				Totals
+			</td>
+			<td class="text-right">
+				{{ order.count_cases() }}
+			</td>
+			<td class="text-right">
+				{{ order.total_weight()|number_format(config.decimal_places_qty) }}
+			</td>
+			<td></td>
+			<td class="text-right">
+				$ {{ order.subtotal_nontax|number_format(config.decimal_places_price) }}
+			</td>
+			<td></td>
+		</tr>
+	</tfoot>
 </table>

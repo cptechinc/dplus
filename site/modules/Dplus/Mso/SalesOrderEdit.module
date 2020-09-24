@@ -124,6 +124,9 @@ class SalesOrderEdit extends WireData implements Module {
 			case 'update-item-quick':
 				$this->process_input_update_item_quick($input);
 				break;
+			case 'unlock-order':
+				$ordn = $values->text('ordn');
+				$this->request_so_unlock($ordn);
 			case 'exit':
 				break;
 		}
@@ -297,8 +300,8 @@ class SalesOrderEdit extends WireData implements Module {
 	Dplus Request Functions
 ============================================================= */
 	/**
-	 * Send PO Header Update Request
-	 * @param  string $ordn Purchase Order Number
+	 * Send SO edit request
+	 * @param  string $ordn Sales Order Number
 	 * @return void
 	 */
 	public function request_so_edit($ordn) {
@@ -312,8 +315,8 @@ class SalesOrderEdit extends WireData implements Module {
 	}
 
 	/**
-	 * Send PO Header Update Request
-	 * @param  string $ordn Purchase Order Number
+	 * Send SO Header Update Request
+	 * @param  string $ordn Sales Order Number
 	 * @return void
 	 */
 	public function request_so_update_header($ordn, bool $unlock = false) {
@@ -330,8 +333,8 @@ class SalesOrderEdit extends WireData implements Module {
 	}
 
 	/**
-	 * Send PO Header Update Request
-	 * @param  string $ordn Purchase Order Number
+	 * Send SO Detail Update Request
+	 * @param  string $ordn Sales Order Number
 	 * @return void
 	 */
 	public function request_so_update_detail($ordn, int $linenbr) {
@@ -345,20 +348,28 @@ class SalesOrderEdit extends WireData implements Module {
 	}
 
 	/**
+	 * Send Unlock Sales Order
+	 * @param  string $ordn Sales Order Number
+	 * @return void
+	 */
+	public function request_so_unlock($ordn) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$custID = SalesOrderQuery::create()->get_custid($ordn);
+		$data = array("DBNAME=$dplusdb", 'UNLOCK', "ORDERNO=$ordn");
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
+	}
+
+	/**
 	 * Sends HTTP GET request to send Dplus Item Search Request
 	 * @param  string $q Query or Item ID
 	 * @return void
 	 */
 	public function request_itemsearch($q) {
-		$ordn = $this->ordn;
-		$order = $this->get_order_static($ordn);
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$url = new Url($this->wire('pages')->get('template=redir,redir_file=ii')->url);
-		$url->query->set('action', 'item-search');
-		$url->query->set('q', $q);
-		$url->query->set('custID', $order->custid);
-		$url->query->set('sessionID', session_id());
-		$requestor->self_request($url->getUrl());
+		$order = $this->get_order_static($this->ordn);
+		$this->wire('modules')->get('ItemPricing')->request_search($q, $order->custid);
 	}
 
 	/**
@@ -373,27 +384,53 @@ class SalesOrderEdit extends WireData implements Module {
 
 		if ($lookup_order->lookup_saleshistory($ordn)) {
 			return false;
-		} else {
-
+		} elseif (!$this->is_order_locked($ordn) || $this->is_user_editingorder($user, $ordn)) { // VALIDATE if ORDER is not being locked
 			$config_orders = $this->wire('modules')->get('ConfigsSalesOrders');
 
 			if ($config_orders->allow_salesorderedit) {
-				if ($this->can_order_be_edited($ordn) && $user->has_function(self::PERMISSION_DPLUS)) {
-					$canedit = true;
-				}
+				$canedit = $this->validate_user_order_permissions($user, $ordn);
 			}
 		}
 		return $canedit;
 	}
+	/**
+	 * Validates User Permissions based on Dplus Permission and SOCP permission
+	 * @param  User   $user User
+	 * @param  string $ordn Sales Order Number, used to get status
+	 * @return bool
+	 */
+	public function validate_user_order_permissions(User $user, $ordn) {
+		$permitted = false;
+
+		if ($user->has_function(self::PERMISSION_DPLUS)) {
+			$order = $this->get_order_static($ordn);
+			$status = $order->status(); // new | picked | verified | invoiced
+			$socp = $this->wire('modules')->get('SoControlsSocp'); // SALES ORDER Permissions
+			$permissions = $socp->permissions_user_default($user->loginid);
+			$permitted = $permissions->allow($status);
+		}
+
+		return $permitted;
+	}
 
 	/**
-	 * Return if Sales Order is in an Editable State
-	 * @param  string $ordn Sales Order number
+	 * Return true if Sales Order does not have someone locking it.
+	 * @param  string $ordn Sales Order Number
 	 * @return bool
 	 */
 	public function can_order_be_edited($ordn) {
-		$order = SalesOrderQuery::create()->findOneByOrdernumber($ordn);
-		return $order->is_editable() && $order->status == SalesOrder::STATUS_NEW;
+		$order = $this->get_order_static($ordn);
+		return $order->is_editable();
+	}
+
+	/**
+	 * Return true if Sales Order does not have someone locking it.
+	 * @param  string $ordn Sales Order Number
+	 * @return bool
+	 */
+	public function is_order_locked($ordn) {
+		$order = $this->get_order_static($ordn);
+		return $order->is_locked();
 	}
 
 	/**

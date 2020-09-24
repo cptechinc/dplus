@@ -36,6 +36,7 @@ class Mso extends WireData implements Module {
 			'autoload' => true,
 			'installs' => array(
 				'SalesOrderEdit',
+				'SoControlsSocp',
 			)
 		);
 	}
