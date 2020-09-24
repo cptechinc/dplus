@@ -6,20 +6,19 @@
 	recordlocker           module RecordLockerUser
 	item                   ItemXrefCustomer
 #}
+{% include 'items/cxm/item/form/form-heading.twig' %}
+
 <form action="{{ page.fullURL.getURL() }}" method="POST" id="cxm-item-form">
 	<input type="hidden" name="action" value="update-cxm">
 	<input type="hidden" name="original_custitemID" value="{{ item.custitemID }}">
 
-	{% include 'items/cxm/item/form/form-heading.twig' %}
-
-	<div class="row mb-3">
-		{% include 'items/cxm/item/form/header.twig' %}
-	</div>
 	<div class="row">
 		<div class="col-sm-6">
+			{% include 'items/cxm/item/form/key.twig' %}
 			{% include 'items/cxm/item/form/details.twig' %}
 		</div>
 		<div class="col-sm-6">
+			{% include 'items/cxm/item/form/header.twig' %}
 			{% include 'items/cxm/item/form/packaging.twig' %}
 		</div>
 	</div>

@@ -8,95 +8,20 @@
 	item                   ItemXrefCustomer
 	item.item              ItemMasterItem
 #}
-<div class="col-sm-6">
-	{% if item.isNew() and page.has('custID') == false %}
-		<div class="row form-group">
-			<div class="col-sm-4">
-				<label for="custID">Customer ID</label>
-			</div>
-			<div class="col-sm-8">
-				{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'custID', value: item.custID, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Customer', attributes_button: {'data-search': 'customer'}} %}
-			</div>
-		</div>
-	{% else %}
-		<input type="hidden" name="custID" value="{{ item.custid }}">
 
-		{% if (page.pw_template == 'itm-xrefs-cxm') %}
-			<div class="row form-group">
-				<div class="col-sm-4">
-					<label for="custID">Customer ID</label>
-				</div>
-				<div class="col-sm-8">
-					<p class="form-control-plaintext">{{ item.custid }} - {{ item.customer.name }}</p>
-				</div>
-			</div>
-		{% endif %}
-	{% endif %}
-	<div class="row form-group">
-		<div class="col-sm-4">
-			<label for="custitemID">Customer Item ID</label>
-		</div>
-		<div class="col-sm-8">
-			{% if item.isNew() %}
-				<input type="text" name="custitemID" class="form-control form-control-sm" id="custitemID" value="{{ item.custitemID }}" data-custitemid="{{ item.custitemID }}">
-			{% else %}
-				<input type="text" name="custitemID" class="form-control-plaintext form-control-sm" id="custitemID" value="{{ item.custitemID }}" data-custitemid="{{ item.custitemID }}" readonly>
-			{% endif %}
-		</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label>Notes</label>
 	</div>
-	<div class="row form-group">
-		<div class="col-sm-4">
-			<label for="description">Description</label>
-		</div>
-		<div class="col-sm-8">
-			<input type="text" name="description" class="form-control form-control-sm" id="description" value="{{ item.description }}">
-		</div>
-	</div>
-	<div class="row form-group">
-		<div class="col-sm-4">
-
-		</div>
-		<div class="col-sm-8">
-			<input type="text" name="description2" class="form-control form-control-sm" id="description2" value="{{ item.description2 }}">
-		</div>
-	</div>
-	<div class="row form-group">
-		<div class="col-sm-4">
-			<label for="itemID">Our Item ID</label>
-		</div>
-		<div class="col-sm-8 item-col">
-			{% if page.pw_template == 'cxm' %}
-				<div class="input-group input-group-sm">
-					<span class="input-group-prepend">
-						<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Search for / Choose Item" aria-label="Search for / Choose Item" data-search="item">
-							<span class="fa fa-search" aria-hidden="true"></span> <span class="sr-only">Search for / Choose Item</span>
-						</button>
-					</span>
-					<input type="text" class="form-control" name="itemID" id="itemID" value="{{ item.itemid }}">
-				</div>
-			{% else %}
-				<input type="text" class="form-control-plaintext" name="itemID" id="itemID" value="{{ item.itemid }}" readonly>
-			{% endif %}
-
-			<small class="form-text text-muted description">{{ item.item.description }}</small>
-		</div>
+	<div class="col-sm-8">
+		{{ qnotes.notes_exist_item(item.itemid, item.custid)|yesorno|capitalize }}
 	</div>
 </div>
-<div class="col-sm-6">
-	<div class="row form-group">
-		<div class="col-sm-4">
-			<label>Notes</label>
-		</div>
-		<div class="col-sm-8">
-			{{ qnotes.notes_exist_item(item.itemid, item.custid)|yesorno|capitalize }}
-		</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="revision">Revision</label>
 	</div>
-	<div class="row form-group">
-		<div class="col-sm-4">
-			<label for="revision">Revision</label>
-		</div>
-		<div class="col-sm-8">
-			<input type="text" class="form-control form-control-sm" name="revision" id="revision" value="{{ item.revision }}">
-		</div>
+	<div class="col-sm-8">
+		<input type="text" class="form-control form-control-sm" name="revision" id="revision" value="{{ item.revision }}">
 	</div>
 </div>
