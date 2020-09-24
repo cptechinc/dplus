@@ -6,24 +6,6 @@ include_once(__DIR__.'/XrefResponse.php');
 
 class Xrefs extends WireData implements Module {
 
-	/**
-	 * ProcessWire Installer Function
-	 * NOTE: Runs when installed through ProcessWire
-	 * @return void
-	 */
-	public function ___install() {
-
-	}
-
-	/**
-	 * ProcessWire removal Function
-	 * NOTE: Runs when removed through ProcessWire
-	 * @return void
-	 */
-	public function ___uninstall() {
-
-	}
-
 	public function update() {
 		$info = self::getModuleInfo();
 		$modules = $this->wire('modules');

@@ -1,10 +1,13 @@
 <form action="{{ page.url }}" method="get" class="allow-enterkey-submit">
-	<input type="hidden" name="search" value="customers">
-	<label for="custID">Search Customers</label>
-	<div class="input-group form-group">
-		<input class="form-control form-group inline" type="text" name="q" value="" id="custID" placeholder="Customer ID" autofocus>
-		<span class="input-group-btn">
-			<button type="submit" class="btn btn-default"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
-		</span>
+	<div class="form-group">
+		<label for="custID">Search Customers</label>
+		<div class="input-group">
+			<input class="form-control form-group inline" type="text" name="q" value="" id="custID" placeholder="CustID, Name, etc" autofocus>
+			<span class="input-group-btn">
+				<button type="submit" class="btn btn-default">
+					<i class="fa fa-search"></i> <span class="sr-only">Search</span>
+				</button>
+			</span>
+		</div>
 	</div>
 </form>

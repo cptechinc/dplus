@@ -1,6 +1,7 @@
 <?php
 	$itm = $modules->get('Itm');
 	$itm_pricing = $modules->get('ItmPricing');
+	$itm_pricing->init_configs();
 	$recordlocker = $modules->get('RecordLockerUser');
 
 	if ($input->get->itemID) {
@@ -38,11 +39,9 @@
 			$itm_pricing = $modules->get('ItmPricing');
 			$item = $itm->get_item($itemID);
 			$itempricing = $itm_pricing->get_pricing($itemID);
-			$unitsofm = UnitofMeasureSaleQuery::create()->find();
-			$assortmentcodes = InvAssortmentCodeQuery::create()->find();
 
 			$page->body .= $config->twig->render('items/itm/itm-links.twig', ['page' => $page, 'page_itm' => $page->parent]);
-			$page->body .= $config->twig->render('items/itm/pricing/form.twig', ['page' => $page, 'item' => $item, 'item_pricing' => $itempricing, 'unitsofm' => $unitsofm, 'assortmentcodes' => $assortmentcodes]);
+			$page->body .= $config->twig->render('items/itm/pricing/form.twig', ['page' => $page, 'item' => $item, 'pricingm' => $itm_pricing, 'item_pricing' => $itempricing]);
 			$page->js   .= $config->twig->render('items/itm/pricing/js.twig', ['page' => $page, 'item_pricing' => $itempricing]);
 		} else {
 			$session->redirect($page->itmURL($itemID));

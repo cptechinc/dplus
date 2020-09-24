@@ -73,6 +73,15 @@ class FilterXrefItemVxm extends WireData implements Module {
 	}
 
 	/**
+	 * Filter Query by Vendor ID
+	 * @param  array|string $vendorID  Vendor ID(s)
+	 * @return void
+	 */
+	public function vendorid($vendorID) {
+		$this->query->filterByVendorid($vendorID);
+	}
+
+	/**
 	 * Searches the ItemXrefVendor Table to find vendors that match the query provided
 	 *
 	 * @param  string $q Search Query

@@ -1,5 +1,13 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemMasterItem
+	item_pricing           ItemMasterItem
+	pricingm               module ItmPricing
+	pricingm.configs       WireData
+#}
 $(function() {
-	// item_pricing is an instance of ItemPricing
 	var eachlistprice = {{ item_pricing.baseprice }};
 	var standardcost = {{ item_pricing.item.standardcost }};
 	var itemID = '{{ item_pricing.itemid }}';

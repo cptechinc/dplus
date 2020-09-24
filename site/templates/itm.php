@@ -1,20 +1,28 @@
 <?php
+	$rm = strtolower($input->requestMethod());
+	$values = $input->$rm;
 	$page->title = "ITM";
 	$itm = $modules->get('Itm');
-	$itm->init2();
+	$itm->init_configs();
 	$html = $modules->get('HtmlWriter');
 	$recordlocker = $modules->get('RecordLockerUser');
 	$exists = false;
 
-	if ($input->requestMethod('POST') || $input->get->action) {
+	if ($values->action) {
 		$itm->process_input($input);
+
+		if ($values->text('action') == 'remove-itm-item') {
+			$page->fullURL->query->remove('itemID');
+		} else {
+			$page->fullURL->query->set('itemID', $values->text('itemID'));
+		}
 		$page->fullURL->query->remove('action');
+
 		$session->redirect($page->fullURL->getUrl(), $http301 = false);
 	}
 
 	if ($session->response_itm) {
-		$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_itm]);
-		$session->remove('response_itm');
+		$page->body .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->response_itm]);
 	}
 
 	if ($session->response_qnote) {
@@ -54,27 +62,18 @@
 		if ($exists) {
 			$page->customerlookupURL = $pages->get('pw_template=mci-lookup')->url;
 			$page->body .= $config->twig->render('items/itm/itm-links.twig', ['page' => $page, 'page_itm' => $page]);
-			$page->body .= $config->twig->render('items/itm/itm-form.twig', ['page' => $page, 'item' => $item, 'm_itm' => $itm, 'recordlocker' => $recordlocker]);
-			$page->js   .= $config->twig->render("items/itm/js.twig", ['page' => $page, 'validateurl' => $pages->get('pw_template=itm-json')->url, 'item' => $item, 'm_itm' => $itm]);
+			$page->body .= $config->twig->render('items/itm/itm-form.twig', ['page' => $page, 'item' => $item, 'itm' => $itm, 'recordlocker' => $recordlocker]);
+			$page->js   .= $config->twig->render("items/itm/js.twig", ['page' => $page, 'item' => $item, 'itm' => $itm]);
 
 			if ($itm->item_exists($itemID)) {
 				$page->body .= $html->div('class=mb-3', '&nbsp;');
 				$page->body .= $html->div('class=mb-3', '&nbsp;');
-				$module_notes = $modules->get('QnotesItem');
+				$qnotes = $modules->get('QnotesItem');
 
-				$page->body .= $config->twig->render('items/itm/notes/notes.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes, 'user' => $user]);
-				$page->body .= $config->twig->render('items/itm/notes/internal/modal.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes, 'user' => $user]);
-				$page->body .= $config->twig->render('items/itm/notes/revision/modal.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes, 'user' => $user]);
-				$page->body .= $config->twig->render('items/itm/notes/inspection/modal.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes, 'user' => $user]);
-				$page->body .= $config->twig->render('items/itm/notes/order/modal.twig', ['page' => $page, 'item' => $item, 'm_notes' => $module_notes]);
-				$page->js   .= $config->twig->render("items/itm/notes/js.twig", ['page' => $page, 'validateurl' => $pages->get('pw_template=itm-json')->url, 'item' => $item, 'm_notes' => $module_notes, 'session' => $session]);
-
-				$page->search_notesURL = $pages->get('pw_template=msa-noce-ajax')->url;
-				$page->body .= $config->twig->render('msa/noce/ajax/notes-modal.twig', []);
-				$page->js   .= $config->twig->render('msa/noce/ajax/js.twig', ['page' => $page]);
+				$page->body .= $config->twig->render('items/itm/notes/notes.twig', ['page' => $page, 'item' => $item, 'qnotes' => $qnotes, 'user' => $user]);
+				$page->js   .= $config->twig->render("items/itm/notes/js.twig", ['page' => $page, 'item' => $item, 'qnotes' => $qnotes, 'session' => $session]);
 				$session->remove('qnotes_itm');
 			}
-			$page->body .= $config->twig->render("util/ajax-modal.twig");
 			$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 		} else {
 			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID '$itemID' not found in the Item Master"]);
@@ -112,7 +111,7 @@
 		$search_items->apply_sortby($page);
 		$query = $search_items->get_query();
 		$items = $query->paginate($input->pageNum, 10);
-		
+
 		$page->body .= $html->a("href=$page->url?itemID=new|class=btn btn-secondary mb-2", $html->icon('fa fa-plus') . " Create Item");
 		$page->body .= $config->twig->render('items/item-search.twig', ['page' => $page, 'items' => $items]);
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);

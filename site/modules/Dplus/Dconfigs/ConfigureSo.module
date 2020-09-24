@@ -1,0 +1,38 @@
+<?php namespace ProcessWire;
+
+use ConfigSalesOrderQuery, ConfigSalesOrder;
+
+
+/**
+ * ConfigureSo
+ *
+ * Class for setting Inventory Configs
+ */
+class ConfigureSo extends WireData implements Module {
+	/**
+	 * Returns Quote Notes Query
+	 * @return ConfigSalesOrderQuery
+	 */
+	public function query() {
+		return ConfigSalesOrderQuery::create();
+	}
+
+	/**
+	 * Return Config Record
+	 * @return ConfigSalesOrder
+	 */
+	public function config() {
+		return $this->query()->findOne();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Configure Sales Orders',
+			'version' => 101,
+			'summary' => 'Dplus ConfigSalesOrder CRUD methods',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array()
+		);
+	}
+}

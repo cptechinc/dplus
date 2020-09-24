@@ -18,7 +18,7 @@ use EditPoHeadQuery, EditPoHead;
 use EditPoDetailQuery, EditPoDetail;
 use StatesQuery, States;
 
-include(__DIR__.'/MpoResponse.php');
+include_once(__DIR__.'/MpoResponse.php');
 
 
 /**
@@ -323,15 +323,15 @@ class PurchaseOrderEdit extends WireData implements Module {
 			$po->setFob($values->text('fob'));
 		}
 
-		if ($validate->ap->validate_termscode($values->text('termscode'))) {
+		if ($validate->ap->termscode($values->text('termscode'))) {
 			$po->setTermscode($values->text('termscode'));
 		}
 
-		if ($validate->ar->validate_shipvia($values->text('shipvia'))) {
+		if ($validate->ar->shipvia($values->text('shipvia'))) {
 			$po->setShipvia($values->text('shipvia'));
 		}
 
-		if ($validate->ap->validate_countrycode($values->text('currency'))) {
+		if ($validate->ap->countrycode($values->text('currency'))) {
 			$po->setCurrency($values->text('currency'));
 		}
 	}

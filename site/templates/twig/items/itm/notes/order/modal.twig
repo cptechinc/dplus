@@ -15,7 +15,7 @@
 
 					<div class="form-group">
 						<div class="row">
-							{% for form, label in m_notes.notes.order.get_forms_shortlabels() %}
+							{% for form, label in qnotes.notes.order.get_forms_shortlabels() %}
 								<div class="col">
 									<div class="custom-control custom-checkbox">
 										<input type="checkbox" class="custom-control-input" name={{ form }} id="order-{{form}}" value="Y">
@@ -27,13 +27,16 @@
 					</div>
 
 					<div class="feedback">
-						
+
 					</div>
 
 					<div class="form-group">
+						{% include 'msa/noce/ajax/button.twig' with {'input': '#order-notes'} %}
+					</div>
+					<div class="form-group">
 						<label for="order-notes">Notes</label>
 						<div class="d-flex justify-content-between align-items-center">
-							<textarea class="form-control w-auto qnotes" name="note" id="order-notes" rows="10" cols="{{ m_notes.notes.order.get_column_count() }}"></textarea>
+							{% include 'util/qnotes-textarea.twig' with {'id':'order-notes', 'cols': qnotes.notes.order.get_column_count() - 1, 'rows': 15 } %}
 						</div>
 					</div>
 

@@ -9,7 +9,7 @@
 		<strong>Sales UoM:</strong> {{ item.uom_sale }}
 	</div>
 	<div class="col-sm-6">
-		<strong>Date:</strong> {{ pricing.updated|convertdate }}
+		<strong>Date:</strong> {{ pricing.updated ? pricing.updated|convertdate : 'N/A' }}
 	</div>
 </div>
 <table class="table table-striped table-sm">

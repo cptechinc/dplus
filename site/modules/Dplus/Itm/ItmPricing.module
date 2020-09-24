@@ -4,7 +4,12 @@ include_once(__DIR__.'/ItmResponse.php');
 
 use Purl\Url;
 
+use ConfigInQuery, ConfigIn;
+use ConfigPoQuery, ConfigPo;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
 use ItemPricingQuery, ItemPricing;
+use InvAssortmentCodeQuery, InvAssortmentCode;
+use UnitofMeasureSaleQuery, UnitofMeasureSale;
 
 /**
  * Module that handles the editing of the UPC item Xref
@@ -17,7 +22,29 @@ class ItmPricing extends WireData implements Module {
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
+		$this->configs = new WireData();
+		$this->configs->inv = false;
+		$this->configs->po  = false;
+		$this->configs->so  = false;
 	}
+
+	/**
+	 * Returns ItemPricingQuery
+	 * @return ItemPricingQuery
+	 */
+	public function get_query() {
+		return ItemPricingQuery::create();
+	}
+
+	public function init_configs() {
+		$this->configs->inv = $this->get_config_in();
+		$this->configs->po  = $this->get_config_po();
+		$this->configs->so  = $this->get_config_so();
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
 
 	/**
 	 * Return if Item Exists
@@ -43,14 +70,6 @@ class ItmPricing extends WireData implements Module {
 	}
 
 	/**
-	 * Returns ItemPricingQuery
-	 * @return ItemPricingQuery
-	 */
-	public function get_query() {
-		return ItemPricingQuery::create();
-	}
-
-	/**
 	 * Returns ItemPricing after retreiving or creating it
 	 * @param  WireInput $input Input Data
 	 * @return ItemPricing
@@ -67,6 +86,10 @@ class ItmPricing extends WireData implements Module {
 		}
 		return $record;
 	}
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
 
 	/**
 	 * Takes Input, validates Item Updates the pricing record for it, sends update to DPlus
@@ -100,13 +123,13 @@ class ItmPricing extends WireData implements Module {
 					}
 				} else {
 					$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $recordlocker->get_locked_user('itm', $itemID);
-					$response = $this->create_error_response($record->itemid, $message, ItmResponse::CRUD_UPDATE);
+					$response = ItmResponse::response_error($record->itemid, $message);
 				}
 			} else {
-				$response = $this->create_error_response($record->itemid, "No Item with ItemID $itemID exists", ItmResponse::CRUD_UPDATE);
+				$response = ItmResponse::response_error($record->itemid, "No Item with ItemID $itemID exists");
 			}
 		} else {
-			$response = $this->create_error_response($record->itemid, "($record->itemid) was not saved, no action was specified", ItmResponse::CRUD_UPDATE);
+			$response = ItmResponse::response_error($record->itemid, "($record->itemid) was not saved, no action was specified");
 		}
 		$this->wire('session')->response_itm = $response;
 	}
@@ -141,22 +164,39 @@ class ItmPricing extends WireData implements Module {
 	 */
 	public function update_itm(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$itemID = $input->$rm->text('itemID');
+		$values = $input->$rm;
+		$this->errorfields = array();
+		$itm = $this->wire('modules')->get('Itm');
+		$validate = $this->wire('modules')->get('ValidateItm');
+		$itemID = $values->text('itemID');
 
-		$module_itm = $this->wire('modules')->get('Itm');
-		$item = $module_itm->get_item($itemID);
-		$item->setUom_sale($input->$rm->text('uom_sale'));
-		$item->setAllow_discount($input->$rm->text('allow_discount'));
-		$item->setAssortmentcode($input->$rm->text('assortmentcode'));
-		$item->setAssortmentqty($input->$rm->text('assortmentqty'));
+		$item = $itm->get_item($itemID);
+
+		if ($validate->unitofm_sale($values->text('uom_sale'))) {
+			$item->setUom_sale($values->text('uom_sale'));
+		} else {
+			$this->invalidfields['uom_sale'] = "UoM Sale";
+		}
+		
+		if ($validate->assortmentcode($values->text('assortmentcode'))) {
+			$item->setAssortmentcode($values->text('assortmentcode'));
+		} else {
+			$this->invalidfields['assortmentcode'] = "Assortment Code";
+		}
+
+		$item->setAssortmentqty($values->float('assortmentqty'));
+		$item->setAllow_discount($values->text('allow_discount'));
 		$saved = $item->save();
 
-		if ($saved) {
-			$module_itm->update_dplus_cobol($itemID);
+		if ($saved && empty($this->errorfields)) {
+			$itm->request_item_update($itemID);
 		}
 		return $saved;
 	}
 
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
 	/**
 	 * Returns XrefResponse based on the outcome of the database save
 	 * @param  ItemPricing $record Record to record response of database save
@@ -192,19 +232,22 @@ class ItmPricing extends WireData implements Module {
 		$response->set_saved_itm_pricing($response->has_success());
 
 		if ($response->has_success()) {
-			$this->update_dplus_cobol($record->itemid);
+			$this->request_pricing_update($record->itemid);
 		}
 		return $response;
 	}
 
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
 	/**
 	 * Writes File for Dplus to update the ITM file for this ITEM
 	 * @param  string $itemID Item ID
 	 * @return void
 	 */
-	public function update_dplus_cobol($itemID) {
+	public function request_pricing_update($itemID) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
 		$data = array("DBNAME=$dplusdb", 'UPDATEITMPRICE', "ITEMID=$itemID");
 
 		$requestor = $this->wire('modules')->get('DplusRequest');
@@ -212,24 +255,41 @@ class ItmPricing extends WireData implements Module {
 		$requestor->cgi_request($config->cgis['database'], session_id());
 	}
 
+/* =============================================================
+	Supplemental Functions
+============================================================= */
 	/**
-	 * Return Error Response with Provided Message
-	 * @param  string $itemID     Item ID
-	 * @param  string $message    Error Message
-	 * @param  int    $actiontype ItmResponse CRUD value
-	 * @return ItmResponse
+	 * Returns IN config
+	 * @return ConfigIn
 	 */
-	protected function create_error_response($itemID, $message, $actiontype = 0) {
-		$response = new ItmResponse();
-		$response->set_itemID($itemID);
-		$response->set_error(true);
-		$response->set_saved_itm_pricing(false);
-		$response->set_saved_itm(false);
-		$response->set_action($actiontype != 0 ? $actiontype : ItmResponse::CRUD_UPDATE);
-		$response->set_message($message);
-		return $response;
+	public function get_config_in() {
+		return ConfigInQuery::create()->findOne();
 	}
-	
+
+	/**
+	 * Returns PO config
+	 * @return ConfigPo
+	 */
+	public function get_config_po() {
+		return ConfigPoQuery::create()->findOne();
+	}
+
+	/**
+	 * Returns SO config
+	 * @return ConfigSo
+	 */
+	public function get_config_so() {
+		return ConfigSalesOrderQuery::create()->findOne();
+	}
+
+	public function get_unitsofm_sale() {
+		return UnitofMeasureSaleQuery::create()->find();
+	}
+
+	public function get_assortmentcodes() {
+		return InvAssortmentCodeQuery::create()->find();
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */

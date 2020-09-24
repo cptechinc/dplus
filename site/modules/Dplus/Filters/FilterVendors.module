@@ -42,6 +42,15 @@ class FilterVendors extends WireData implements Module {
 		$this->query->search_filter($columns, strtoupper($q));
 	}
 
+	/**
+	 * Filter Query by VendorID
+	 * @param  array|string $vendorID  Vendor ID(s)
+	 * @return void
+	 */
+	public function vendorid($vendorID) {
+		$this->query->filterByVendorid($vendorID);
+	}
+
 
 	/**
 	 * Adds the Sort By to the query

@@ -1,0 +1,137 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use ItemMasterItemQuery, ItemMasterItem;
+
+/**
+ * ValidateItm
+ *
+ * Class for validating Itm fields
+ */
+class ValidateItm extends WireData implements Module {
+/* =============================================================
+	AR Functions
+============================================================= */
+	/**
+	 * Return if Cust ID is Valid
+	 * @param  string $custID Customer ID
+	 * @return bool
+	 */
+	public function custid($custID) {
+		return $this->validate->ar->custid($custID);
+	}
+
+/* =============================================================
+	IN Functions
+============================================================= */
+	/**
+	 * Return if Item ID is Valid
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function itemid_exists($itemID) {
+		return $this->validate->in->itemid_exists($itemID);
+	}
+
+	/**
+	 * Return if Item Type is Valid
+	 * @param  string $type Item Type
+	 * @return bool
+	 */
+	public function itemtype($type) {
+		return $this->validate->in->itemtype($type);
+	}
+
+	/**
+	 * Return if Inventory Stock Code is valid
+	 * @param  string $code Inventory Stock Code
+	 * @return bool
+	 */
+	public function stockcode($code) {
+		return $this->validate->in->stockcode($code);
+	}
+
+	/**
+	 * Return if Inventory Stock Code is valid
+	 * @param  string $code Inventory Stock Code
+	 * @return bool
+	 */
+	public function itemgroup($code) {
+		return $this->validate->in->itemgroup($code);
+	}
+
+	/**
+	 * Return if Inventory Price Code is valid
+	 * @param  string $code Inventory Price Code
+	 * @return bool
+	 */
+	public function pricecode($code) {
+		return $this->validate->in->pricecode($code);
+	}
+
+	/**
+	 * Return if Inventory Commission Group Code is valid
+	 * @param  string $code Inventory Commission Group Code
+	 * @return bool
+	 */
+	public function commissiongroup($code) {
+		return $this->validate->in->commissiongroup($code);
+	}
+
+	/**
+	 * Return if Inventory Special Item Code is valid
+	 * @param  string $code Inventory Special Item Group Code
+	 * @return bool
+	 */
+	public function specialitem($code) {
+		return $this->validate->in->specialitem($code);
+	}
+
+	/**
+	 * Return if Inventory Assortment Code is valid
+	 * @param  string $code Inventory Special Assortment Code
+	 * @return bool
+	 */
+	public function assortmentcode($code) {
+		return $this->validate->in->assortmentcode($code);
+	}
+
+	/**
+	 * Return if Unit of Measure Sale Code is valid
+	 * @param  string $code Unit of Measure Sale Code
+	 * @return bool
+	 */
+	public function unitofm_sale($code) {
+		return $this->validate->in->unitofm_sale($code);
+	}
+
+/* =============================================================
+	AP Functions
+============================================================= */
+	public function buyercode($code) {
+		return $this->validate->ap->buyercode($code);
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'ITM Validate Module',
+			'version' => 101,
+			'summary' => 'Handles ITM Fields Validation',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+
+	public function init() {
+		$this->validate = new WireData();
+		$this->validate->ar  = $this->wire('modules')->get('ValidateAr');
+		$this->validate->ap  = $this->wire('modules')->get('ValidateAp');
+		$this->validate->in  = $this->wire('modules')->get('ValidateIn');
+		$this->modules = $this->wire('modules');
+	}
+}

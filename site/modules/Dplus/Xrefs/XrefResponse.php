@@ -1,15 +1,32 @@
 <?php namespace ProcessWire;
 
+/**
+ * XrefResponse
+ * Handles Response Data for Xref functions
+ *
+ * @author Paul Gomez
+ *
+ * @property bool    $success            Did the function Succeed?
+ * @property bool    $error              Was there an error?
+ * @property bool    $message            Error Message / Success Message
+ * @property string  $key                Key
+ * @property int     $action             1 = CREATE | 2 = UPDATE | 3 = DELETE
+ * @property array   $fields             Key-Value array of fields that need attention
+ *
+ */
 class XrefResponse  {
-	protected $success = false;
-	protected $error = false;
-	protected $message = '';
-	protected $key = '';
-	protected $action = 0;
-
 	const CRUD_CREATE = 1;
 	const CRUD_UPDATE = 2;
 	const CRUD_DELETE = 3;
+
+	public function __construct() {
+		$this->success = false;
+		$this->error = false;
+		$this->action = 0;
+		$this->message = '';
+		$this->key = '';
+		$this->fields = array();
+	}
 
 	public function set_action(int $action = 0) {
 		$this->action = $action;
@@ -39,37 +56,30 @@ class XrefResponse  {
 		$this->key = $key;
 	}
 
-	/**
-	 * Properties are protected from modification without function, but
-	 * We want to allow the property values to be accessed
-	 *
-	 * @param  string $property  The $property trying to be accessed
-	 * @return mixed			  property value or Error
-	 */
-	 public function __get($property) {
-		$method = "get_".ucfirst($property);
-
-		if (method_exists($this, $method)) {
-			return $this->$method();
-		} elseif (property_exists($this, $property)) {
-			return $this->$property;
-		}  else {
-			$this->error("This property ($property) does not exist");
-			return false;
-		}
+	public function set_fields(array $fields) {
+		$this->fields = $fields;
 	}
 
-	/**
-	* Is used to PHP functions like isset() and empty() get access and see
-	* if property is set
-	* @param  string  $property Column Name
-	* @return bool				 Whether $this->$property is set
-	*/
-	public function __isset($property) {
-		if (isset($this->$property)) {
-			return isset($this->$property);
-		} else {
-			return false;
-		}
+	public function has_field($field) {
+		return array_key_exists($field, $this->fields);
 	}
+
+	public static function response_error($key, $message) {
+		$response = new XrefResponse();
+		$response->key = $key;
+		$response->message = $message;
+		$response->set_error(true);
+		$response->set_success(false);
+		return $response;
+	}
+
+	public static function response_success($key, $message) {
+		$response = new XrefResponse();
+		$response->key = $key;
+		$response->message = $message;
+		$response->set_error(false);
+		$response->set_success(true);
+		return $response;
+	}
+
 }

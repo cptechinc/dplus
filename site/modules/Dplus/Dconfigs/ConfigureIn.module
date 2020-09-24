@@ -1,0 +1,38 @@
+<?php namespace ProcessWire;
+
+use ConfigInQuery, ConfigIn;
+
+
+/**
+ * ConfigureIn
+ *
+ * Class for setting Inventory Configs
+ */
+class ConfigureIn extends WireData implements Module {
+	/**
+	 * Returns Quote Notes Query
+	 * @return ConfigInQuery
+	 */
+	public function query() {
+		return ConfigInQuery::create();
+	}
+
+	/**
+	 * Return Config Record
+	 * @return ConfigIn
+	 */
+	public function config() {
+		return $this->query()->findOne();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Configure Inventory',
+			'version' => 101,
+			'summary' => 'Dplus ConfigIn CRUD methods',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array()
+		);
+	}
+}

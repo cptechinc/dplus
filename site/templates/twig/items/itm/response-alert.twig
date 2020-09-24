@@ -1,9 +1,13 @@
-{# var response is an instance of CodeTablesResponse #}
+{# var response is an instance of ItmResponse #}
 
 {% set type  = response.has_error() ? 'danger' : 'success' %}
-{% set icon  = response.has_error() ? 'fa fa-warning fa-2x' : 'fa fa-floppy-o fa-2x' %}
+{% set size  = response.fields      ? 'fa-3x' : 'fa-2x'%}
+{% set icon  = response.has_error() ? 'fa fa-warning' : 'fa fa-floppy-o' %}
+{% set iconclass = icon ~ ' ' ~ size %}
+
 {% set title = response.has_error() ? 'Error!' : 'Success!' %}
 
-<div class="mb-3">
-	{% include 'util/alert.twig' with {'type': type,'iconclass': icon, 'title': title, 'message': response.message } %}
+
+<div id="mpo-alert" class="mb-3">
+	{% include 'util/form/alert.twig' with {'type': type, 'iconclass': iconclass, 'title': title, 'message': response.message, 'fields': response.fields } %}
 </div>

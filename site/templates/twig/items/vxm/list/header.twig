@@ -1,0 +1,16 @@
+<div class="row">
+	<div class="col-sm-8">
+		<h4>{{ heading }}</h4>
+	</div>
+	<div class="col-sm-4 text-right">
+		{% if page.has('vendorID') and page.vendorID %}
+			<a href="{# page.cxm_item_newURL(page.custID) #}" class="btn btn-secondary">
+				<i class="fa fa-plus" aria-hidden="true"></i> Add New
+			</a>
+		{% else %}
+			<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Choose Customer to Add CXM" aria-label="Choose Customer to Add CXM" data-custid="{{ page.has('custID') ? page.custID : '' }}" data-search="customers">
+				<i class="fa fa-plus" aria-hidden="true"></i> Add New
+			</button>
+		{% endif %}
+	</div>
+</div>

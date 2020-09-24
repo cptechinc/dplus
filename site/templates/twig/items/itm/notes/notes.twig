@@ -1,9 +1,10 @@
 {#
 	var                    Description / Instance of
 	-------------------------------------------------
+	page                   ProcessWire\Page
 	item                   ItemMasterItem
-	m_notes                module QnotesItem
-	m_notes.notes.internal module QnotesItemInternal
+	qnotes                module QnotesItem
+	qnotes.notes.internal module QnotesItemInternal
 #}
 <h3>Notes</h3>
 <ul class="nav nav-tabs" id="notes-tab" role="tablist">
@@ -32,10 +33,10 @@
 	<br>
 	<div class="tab-pane fade show active" id="internal-content" role="tabpanel" aria-labelledby="internal-tab">
 		<div class="mb-3">
-			<textarea class="form-control-plaintext" cols="{{ m_notes.notes.internal.get_column_count() }}" readonly>{{ m_notes.notes.internal.get_notes_form_array(item.itemid)|join('\r') }}</textarea>
+			<textarea class="form-control-plaintext" cols="{{ qnotes.notes.internal.get_column_count() }}" readonly>{{ qnotes.notes.internal.get_notes_form_array(item.itemid)|join('\r') }}</textarea>
 		</div>
 		<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-internal-modal">
-			{% if m_notes.notes.internal.notes_exist(item.itemid) %}
+			{% if qnotes.notes.internal.notes_exist(item.itemid) %}
 				<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 			{% else %}
 				<i class="fa fa-plus" aria-hidden="true"></i> Add
@@ -52,3 +53,10 @@
 		{% include 'items/itm/notes/order/list.twig' %}
 	</div>
 </div>
+
+{% include 'items/itm/notes/internal/modal.twig' %}
+{% include 'items/itm/notes/revision/modal.twig' %}
+{% include 'items/itm/notes/inspection/modal.twig' %}
+{% include 'items/itm/notes/order/modal.twig' %}
+
+{% include 'msa/noce/ajax/notes-modal.twig' %}

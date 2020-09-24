@@ -94,7 +94,14 @@ $(function() {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
 		var url = '{{ page.searchvendorsURL }}';
-		modal.find('.modal-title').text('Search for a Vendor');
+
+		if (button.data('search') == 'vendor') {
+			url = '{{ page.searchvendorsURL }}';
+		} else {
+			url = '{{ page.searchitemsURL }}';
+		}
+
+		modal.find('.modal-title').text(button.attr('title'));
 		modal.resizeModal('xl');
 		modal.find('.modal-body').loadin(url, function() {});
 	});
@@ -105,10 +112,21 @@ $(function() {
 		var vendorID = button.data('vendorid');
 		var name = button.data('name');
 		input_vendorID.val(vendorID);
+		input_vendorID.closest('.vendor-col').find('.name').text(name);
 		modal_ajax.modal('hide');
 	});
 
-	$("body").on('submit', 'form#vendor-search-form', function(e) {
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		var description = button.data('description');
+		input_ouritemID.val(itemID);
+		input_ouritemID.closest('.item-col').find('.description').text(description);
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
 		e.preventDefault();
 		var form = $(this);
 		var query = form.serialize();
@@ -135,8 +153,37 @@ $(function() {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		rules: {
-			vendorID: {required: true},
-			vendoritemID: {required: true},
+			vendorID: {
+				required: true,
+				remote: {
+					url: '{{ url_validate }}',
+					type: "get",
+					data: {
+						action: 'validate-vendorid'
+					}
+				}
+			},
+			vendoritemID: {
+				required: true,
+				remote: {
+					url: '{{ url_validate }}',
+					type: "get",
+					data: {
+						vendorID: function() {
+							return $('input[name=vendorID]').val();
+						},
+						action: function() {
+							var input = $('input[name=vendoritemID]');
+
+							if (input.val() == input.data('vendoritemid')) {
+								return 'validate-vendor-itemid';
+							} else {
+								return 'validate-vendor-itemid-new';
+							}
+						}
+					}
+				}
+			},
 			ouritemID: {
 				required: true,
 				remote: {
@@ -147,12 +194,12 @@ $(function() {
 					}
 				}
 			},
-			uom_purchase: 'required',
-			qty_percase: 'required',
+			uom_purchase: {required: true},
+			qty_percase: {required: true},
 		},
 		messages: {
 			ouritemID: "Please enter the Your Item ID",
-			uom_purchase: "Please choose a Purchase Unit of Measure",
+			uom_purchase: "Select a Purchase Unit of Measure",
 		},
 		submitHandler: function(form) {
 			var select_poordercode = form_vxm.find('select[name=po_ordercode]');
@@ -175,7 +222,6 @@ $(function() {
 	}
 
 	function update_vxm(form) {
-		console.log('update vxm');
 		request_validate_vendoritemID(function(exists) {
 			console.log(exists);
 			if (exists === true) {
@@ -229,17 +275,17 @@ $(function() {
 						}).then(function (result) {
 							if (result.value) {
 								input_validatedpoordercode.val('true');
-								form_vxm.submit();
+								//form_vxm.submit();
 							}
 						});
 					}
 				});
 			} else {
 				input_validatedpoordercode.val('true');
-				form_vxm.submit();
+				//form_vxm.submit();
 			}
 		} else {
-			form.submit();
+			//form.submit();
 		}
 	}
 
