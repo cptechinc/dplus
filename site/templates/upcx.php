@@ -36,6 +36,7 @@
 			$page->headline = "UPCX: UPC $code";
 		} else {
 			$upc = new ItemXrefUpc();
+			$upc->setQty(1);
 
 			if ($input->get->itemID) {
 				$itemID = $input->get->text('itemID');
@@ -74,7 +75,7 @@
 			}
 		}
 
-		$page->body .= $config->twig->render('items/upcx/form.twig', ['page' => $page, 'upc' => $upc, 'unitsofm' => $unitsofm, 'recordlocker' => $recordlocker]);
+		$page->body .= $config->twig->render('items/upcx/form.twig', ['page' => $page, 'upcx' => $upcx, 'upc' => $upc, 'unitsofm' => $unitsofm, 'recordlocker' => $recordlocker]);
 		$url_validate = $pages->get('pw_template=upcx-validate')->httpUrl;
 		$page->js .= $config->twig->render('items/upcx/js.twig', ['upc' => $upc, 'url_validate' => $url_validate]);
 	} else {
