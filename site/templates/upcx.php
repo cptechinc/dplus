@@ -1,15 +1,16 @@
 <?php
+	$rm = strtolower($input->requestMethod());
+	$values = $values;
 	$html = $modules->get('HtmlWriter');
 	$upcx = $modules->get('XrefUpc');
 	$filter_upcs = $modules->get('FilterXrefItemUpc');
 	$recordlocker = $modules->get('RecordLockerUser');
 
 
-	if ($input->requestMethod('POST') || $input->get->action) {
-		$rm = strtolower($input->requestMethod());
+	if ($values->action) {
 		$upcx->process_input($input);
-		$code = $input->$rm->text('upc');
-		$itemID = $input->$rm->text('itemID');
+		$code = $values->text('upc');
+		$itemID = $values->text('itemID');
 
 		if ($code) {
 			$session->redirect($page->upcURL($code));
@@ -72,7 +73,7 @@
 				$recordlocker->create_lock($page->name, $code);
 			}
 		}
-		
+
 		$page->body .= $config->twig->render('items/upcx/form.twig', ['page' => $page, 'upc' => $upc, 'unitsofm' => $unitsofm, 'recordlocker' => $recordlocker]);
 		$url_validate = $pages->get('pw_template=upcx-validate')->httpUrl;
 		$page->js .= $config->twig->render('items/upcx/js.twig', ['upc' => $upc, 'url_validate' => $url_validate]);
