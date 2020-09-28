@@ -6,6 +6,7 @@ use Purl\Url;
 
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemXrefUpcQuery, ItemXrefUpc;
+use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
 
 /**
  * Module that handles the editing of the UPC item Xref
@@ -13,8 +14,8 @@ use ItemXrefUpcQuery, ItemXrefUpc;
 class XrefUpc extends WireData implements Module {
 	const MODEL              = 'ItemXrefUpc';
 	const MODEL_KEY          = 'code';
-	const DESCRIPTION        = 'Item UPC X-ref';
-	const DESCRIPTION_RECORD = 'Item UPC X-ref';
+	const DESCRIPTION        = 'UPC X-ref';
+	const DESCRIPTION_RECORD = 'UPC X-ref';
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
@@ -309,7 +310,7 @@ class XrefUpc extends WireData implements Module {
 	 */
 	public function update_dplus_cobol(ItemXrefUpc $item) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
 		$data = array("DBNAME=$dplusdb", 'UPDATEUPC', "UPCCODE=$item->upc", "OURITEM=$item->itemid");
 
 		$requestor = $this->wire('modules')->get('DplusRequest');
@@ -324,6 +325,14 @@ class XrefUpc extends WireData implements Module {
 		$q = ItemMasterItemQuery::create();
 		$q->filterByItemid($itemID);
 		return boolval($q->count());
+	}
+
+	/**
+	 * Return Units of Measure Purchase
+	 * @return UnitofMeasurePurchase[]|ObjectCollection
+	 */
+	public function get_unitsofm_purchase() {
+		return UnitofMeasurePurchaseQuery::create()->find();
 	}
 
 /* =============================================================
@@ -372,9 +381,9 @@ class XrefUpc extends WireData implements Module {
 ============================================================= */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus VXM CRUD Manager',
+			'title' => 'Dplus UPCX CRUD Manager',
 			'version' => 101,
-			'summary' => 'Module for CRUD Methods for VXM',
+			'summary' => 'Module for CRUD Methods for UPCX',
 			'singular' => true,
 			'autoload' => true,
 		);

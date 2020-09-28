@@ -63,9 +63,9 @@
 					<label for="uom">Unit of Measure</label>
 				</div>
 				<div class="col-sm-6">
-					<select name="uom" class="custom-select custom-select-sm" id="uom">
+					<select name="uom" class="form-control form-control-sm" id="uom">
 						<option value=""></option>
-						{% for uom in unitsofm %}
+						{% for uom in upcx.get_unitsofm_purchase() %}
 							<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == upc.uom ? 'selected' : ''}}>{{ uom.description }}</option>
 						{% endfor %}
 					</select>
