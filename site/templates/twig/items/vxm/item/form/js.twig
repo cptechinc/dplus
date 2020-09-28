@@ -252,7 +252,6 @@ $(function() {
 	}
 
 	function validate_form_poordercode(form) {
-		console.log('validating PO Order Code');
 		var select_poordercode = form_vxm.find('select[name=po_ordercode]');
 		var input_validatedpoordercode = select_poordercode.siblings('input[name=po_ordercode_validated]');
 
@@ -282,10 +281,10 @@ $(function() {
 				});
 			} else {
 				input_validatedpoordercode.val('true');
-				//form_vxm.submit();
+				form_vxm.submit();
 			}
 		} else {
-			//form.submit();
+			form.submit();
 		}
 	}
 
