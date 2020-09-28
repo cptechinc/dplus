@@ -29,7 +29,6 @@
 
 	if ($input->get->upc) {
 		$code = $input->get->text('upc');
-		$unitsofm = UnitofMeasurePurchaseQuery::create()->find();
 
 		if ($upcx->upc_exists($code)) {
 			$upc = $upcx->get_upc($code);
@@ -75,7 +74,7 @@
 			}
 		}
 
-		$page->body .= $config->twig->render('items/upcx/form.twig', ['page' => $page, 'upcx' => $upcx, 'upc' => $upc, 'unitsofm' => $unitsofm, 'recordlocker' => $recordlocker]);
+		$page->body .= $config->twig->render('items/upcx/form.twig', ['page' => $page, 'upcx' => $upcx, 'upc' => $upc, 'recordlocker' => $recordlocker]);
 		$url_validate = $pages->get('pw_template=upcx-validate')->httpUrl;
 		$page->js .= $config->twig->render('items/upcx/js.twig', ['upc' => $upc, 'url_validate' => $url_validate]);
 	} else {
