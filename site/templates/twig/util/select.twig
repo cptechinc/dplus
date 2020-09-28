@@ -1,5 +1,5 @@
 {% set show_value = show_value ? show_value : false %}
-<select name="{{ name }}" id="{{ id }}" tabindex="{{ tabindex ? tabindex : '' }}" class="custom-select custom-select-sm" {{ disabled == true ? 'disabled' : '' }}>
+<select name="{{ name }}" id="{{ id }}" tabindex="{{ tabindex ? tabindex : '' }}" class="form-control form-control-sm" {{ disabled == true ? 'disabled' : '' }}>
 	{% if hideblankoption == false %}
 		<option value="">
 			{{ blankoption ? blankoption : '-- Choose --'}}
