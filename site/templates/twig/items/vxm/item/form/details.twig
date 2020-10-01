@@ -3,8 +3,8 @@
 		<label for="po_ordercode"><b>PO Order Code</b></label>
 	</div>
 	<div class="col-sm-6">
-		<select name="po_ordercode" id="po_ordercode" class="custom-select custom-select-sm" data-primaryvalidated="false">
-			<option value="">-- Choose --</option>
+		<select name="po_ordercode" id="po_ordercode" class="form-control form-control-sm" data-primaryvalidated="false">
+			<option value=""></option>
 			{% for value, description in item.get_po_ordercodeoptions() %}
 				<option value="{{ value }}" {{ value == item.po_ordercode ? 'selected' : ''}}>{{ description }}</option>
 			{% endfor %}
@@ -17,7 +17,7 @@
 		<label for="qty_percase"><b>Qty Per Case</b></label>
 	</div>
 	<div class="col-sm-6">
-		<input type="number" name="qty_percase" class="form-control form-control-sm" id="qty_percase" value="{{ item.qty_percase|number_format(vxm.decimal_places_qty()) }}">
+		<input type="number" name="qty_percase" class="form-control form-control-sm text-right" id="qty_percase" value="{{ item.qty_percase|number_format(vxm.decimal_places_qty()) }}">
 	</div>
 </div>
 <div class="row form-group">
