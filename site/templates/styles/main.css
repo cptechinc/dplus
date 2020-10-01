@@ -246,22 +246,27 @@ a.image-link:hover {
 /*==============================================================
 	FORM Styles
 ==============================================================*/
-
-input.form-control.is-valid, select.form-control.is-invalid  {
-	background: rgba(255, 255, 255, 0);
+input.form-control.is-valid, input.form-control.is-invalid,
+select.form-control.is-invalid, select.form-control.is-valid {
 	background-position: center right calc(.375em + .9875rem);
+}
+
+input.form-control.is-valid.text-right,
+input.form-control.is-invalid.text-right {
+	background-position: center left calc(.375em + .25rem);
+	padding-right: inherit;
 }
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 /* Firefox */
 input.form-control[type=number] {
-  -moz-appearance: textfield;
+	-moz-appearance: textfield;
 }
 
 textarea.qnotes {
