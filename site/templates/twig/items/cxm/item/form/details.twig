@@ -73,7 +73,9 @@
 	</div>
 </div>
 <div class="row form-group">
-	<div class="col-sm-6"><label>Contract</label></div>
+	<div class="col-sm-6">
+		<label>Contract</label>
+	</div>
 	<div class="col-sm-6">
 		0.00 {# TODO: #}
 	</div>
@@ -94,11 +96,12 @@
 	</div>
 </div>
 <div class="row form-group">
-	<div class="col-sm-6">
+	<div class="col-sm-1"></div>
+	<div class="col-sm-5">
 		<label for="price_uom">Per UoM</label>
 	</div>
 	<div class="col-sm-6">
-		<input type="number" name="price_uom" class="form-control form-control-sm text-right" id="price_uom" value="{{ item.get_pricing_peruom() ? item.get_pricing_peruom()|number_format(3) : '' }}">
+		<input type="number" name="price_uom" class="form-control form-control-sm text-right" id="price_uom" value="{{ item.get_pricing_peruom() ? item.get_pricing_peruom()|number_format(3) : '' }}" {{ item.uom_pricing ? '' : 'readonly' }}>
 	</div>
 </div>
 <div class="row form-group">
