@@ -97,10 +97,12 @@
 			$filter_vxm->apply_sortby($page);
 			$items = $filter_vxm->query->paginate($input->pageNum, 10);
 
+			$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 			$page->body .= $config->twig->render('items/vxm/vxm-links.twig', ['page' => $page]);
 			$page->body .= $config->twig->render('items/vxm/search/item/vendor/form.twig', ['page' => $page, 'q' => $q, 'vendorID' => $vendorID, 'q' => $q]);
 			$page->body .= $config->twig->render('items/vxm/list/item/vendor/results.twig', ['page' => $page, 'items' => $items, 'vendorID' => $vendorID, 'recordlocker' => $recordlocker]);
 			$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
+			$page->js   .= $config->twig->render('items/vxm/list/item/js.twig', ['page' => $page]);
 		}
 	} elseif ($values->itemID) {
 		$recordlocker->remove_lock($page->name);
@@ -110,10 +112,12 @@
 		$items = $filter_vxm->query->paginate($input->pageNum, 10);
 
 		$page->headline = "VXM: Item $itemID";
+		$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 		$page->body .= $html->h3('', $items->getNbResults() ." VXM Items for $itemID");
 		$page->body .= $config->twig->render('items/vxm/vxm-links.twig', ['page' => $page]);
 		$page->body .= $config->twig->render('items/vxm/list/item/results.twig', ['page' => $page, 'items' => $items, 'recordlocker' => $recordlocker]);
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
+		$page->js   .= $config->twig->render('items/vxm/list/item/js.twig', ['page' => $page]);
 	} else {
 		$recordlocker->remove_lock($page->name);
 		$q = $values->q ? strtoupper($values->text('q')) : '';
@@ -124,7 +128,9 @@
 		$filter->vendorid($vxm->vendorids());
 		$filter->apply_sortby($page);
 		$vendors = $filter->query->paginate($input->pageNum, 10);
+		$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 		$page->body .= $config->twig->render('items/vxm/search/vendor/search.twig', ['page' => $page, 'vendors' => $vendors]);
+		$page->js   .= $config->twig->render('items/vxm/list/item/js.twig', ['page' => $page]);
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $vendors->getNbResults()]);
 	}
 
