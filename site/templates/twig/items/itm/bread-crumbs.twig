@@ -39,7 +39,7 @@
 			<li class="breadcrumb-item active" aria-current="page">{{ input.get.text('whseID') }}</li>
 		{% elseif page.pw_template == 'itm-xrefs-vxm' and input.get.text('vendoritemID') %}
 			<li class="breadcrumb-item" aria-current="page">
-				<a href="{{ page.itm_xrefsURL(input.get.text('itemID')) }}">
+				<a href="{{ page.itm_xrefs_vxmURL(input.get.text('itemID')) }}">
 					{{ page.title }}
 				</a>
 			</li>
