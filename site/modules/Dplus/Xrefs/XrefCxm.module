@@ -315,10 +315,10 @@ class XrefCxm extends WireData implements Module {
 		$record->setDescription2($values->text('description2'));
 		$record->setRevision($values->text('revision'));
 		$record->setConvert($values->text('convert'));
-		$record->setQty_percase($values->text('qty_percase'));
-		$record->setQty_purchase($values->text('qty_purchase'));
-		$record->setPrice_retail($values->text('price_retail'));
-		$record->setPrice_customer($values->text('price_customer'));
+		$record->setQty_percase($values->int('qty_percase'));
+		$record->setQty_purchase($values->int('qty_purchase'));
+		$record->setPrice_retail($values->float('price_retail', ['precision' => $this->decimal_places_price()]));
+		$record->setPrice_customer($values->float('price_customer', ['precision' => $this->decimal_places_price_uom()]));
 		$invalidfields = $this->update_record_input_validated($record, $input, $response);
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));
@@ -397,7 +397,7 @@ class XrefCxm extends WireData implements Module {
 		$record->setRounding($rounding);
 
 		if ($record->uom_pricing != '') {
-			$record->setPrice_uom($values->text('price_uom'));
+			// $record->setPrice_uom($values->float('price_uom', ['precision' => $this->decimal_places_price_uom()]));
 		}
 
 		return $invalid;
@@ -555,6 +555,30 @@ class XrefCxm extends WireData implements Module {
 	public function field_has_error($inputname) {
 		$response = $this->wire('session')->response_xref;
 		return ($response) ? array_key_exists($inputname, $response->fields) : false;
+	}
+
+	/**
+	 * Return the number of Decimal Places to use for price
+	 * @return int
+	 */
+	public function decimal_places_price() {
+		return 2;
+	}
+
+	/**
+	 * Return the number of Decimal Places to use for price
+	 * @return int
+	 */
+	public function decimal_places_price_uom() {
+		return 3;
+	}
+
+	/**
+	 * Return the number of Decimal Places to use for Qty
+	 * @return int
+	 */
+	public function decimal_places_qty() {
+		return 0;
 	}
 
 /* =============================================================

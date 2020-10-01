@@ -38,7 +38,7 @@
 	</div>
 	<div class="col-sm-6">
 		<div class="input-group input-group-sm mb-2">
-			<input type="number" name="qty_percase" class="form-control form-control-sm text-right" id="qty_percase" value="{{ item.qty_percase }}">
+			<input type="number" name="qty_percase" class="form-control form-control-sm text-right" id="qty_percase" value="{{ item.qty_percase|number_format(cxm.decimal_places_qty()) }}">
 		</div>
 	</div>
 </div>
@@ -48,7 +48,7 @@
 	</div>
 	<div class="col-sm-6">
 		<div class="input-group input-group-sm mb-2">
-			<input type="number" name="qty_purchase" class="form-control form-control-sm text-right" id="qty_purchase" value="{{ item.qty_purchase }}">
+			<input type="number" name="qty_purchase" class="form-control form-control-sm text-right" id="qty_purchase" value="{{ item.qty_purchase|number_format(cxm.decimal_places_qty()) }}">
 		</div>
 	</div>
 </div>
@@ -58,7 +58,7 @@
 	</div>
 	<div class="col-sm-6">
 		<div class="input-group input-group-sm mb-2">
-			<input type="number" name="price_retail" class="form-control form-control-sm text-right" id="price_retail" value="{{ item.price_retail }}">
+			<input type="number" name="price_retail" class="form-control form-control-sm text-right" id="price_retail" value="{{ item.price_retail|number_format(cxm.decimal_places_price()) }}">
 		</div>
 	</div>
 </div>
@@ -68,7 +68,7 @@
 	</div>
 	<div class="col-sm-6">
 		<div class="input-group input-group-sm mb-2">
-			<input type="number" name="price_customer" class="form-control form-control-sm text-right" id="price_customer" value="{{ item.price_customer }}">
+			<input type="number" name="price_customer" class="form-control form-control-sm text-right" id="price_customer" value="{{ item.price_customer|number_format(cxm.decimal_places_price())  }}">
 		</div>
 	</div>
 </div>
@@ -77,7 +77,7 @@
 		<label>Contract</label>
 	</div>
 	<div class="col-sm-6">
-		0.00 {# TODO: #}
+		<input type="text" class="form-control-plaintext form-control-sm text-right" value="{{ (item.has_customerpricing() ? item.getCustomerPricing().baseprice : '0.00')|number_format(cxm.decimal_places_price()) }}" readonly>
 	</div>
 </div>
 <div class="row form-group">
@@ -101,7 +101,7 @@
 		<label for="price_uom">Per UoM</label>
 	</div>
 	<div class="col-sm-6">
-		<input type="number" name="price_uom" class="form-control form-control-sm text-right" id="price_uom" value="{{ item.get_pricing_peruom() ? item.get_pricing_peruom()|number_format(3) : '' }}" {{ item.uom_pricing ? '' : 'readonly' }}>
+		<input type="number" name="price_uom" class="form-control form-control-sm text-right" id="price_uom" value="{{ item.get_pricing_peruom() ? item.get_pricing_peruom()|number_format(cxm.decimal_places_price_uom())  : '' }}" {{ item.uom_pricing ? '' : 'readonly' }}>
 	</div>
 </div>
 <div class="row form-group">
