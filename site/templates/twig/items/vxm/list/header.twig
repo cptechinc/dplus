@@ -8,7 +8,7 @@
 				<i class="fa fa-plus" aria-hidden="true"></i> Add New
 			</a>
 		{% else %}
-			<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Choose Customer to Add CXM" aria-label="Choose Customer to Add CXM" data-custid="{{ page.has('custID') ? page.custID : '' }}" data-search="customers">
+			<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Choose Vendor to Add VXM" aria-label="Choose Vendor to Add VXM" data-vendorid="{{ page.has('vendorID') ? page.vendorID : '' }}" data-search="vendor">
 				<i class="fa fa-plus" aria-hidden="true"></i> Add New
 			</button>
 		{% endif %}
