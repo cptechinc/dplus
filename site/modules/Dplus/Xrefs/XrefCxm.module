@@ -389,11 +389,17 @@ class XrefCxm extends WireData implements Module {
 				$record->$setProperty($values->text($field['input']));
 			}
 		}
+
 		$rounding = $values->text('rounding');
 		if (!$validate->rounding_option($rounding)) {
 			$rounding = ItemXrefCustomer::ROUNDING_DEFAULT;
 		}
 		$record->setRounding($rounding);
+
+		if ($record->uom_pricing != '') {
+			$record->setPrice_uom($values->text('price_uom'));
+		}
+
 		return $invalid;
 	}
 
@@ -566,7 +572,7 @@ class XrefCxm extends WireData implements Module {
 
 	public function init() {
 		$this->addHook('Page(pw_template=cxm|itm-xrefs-cxm)::search_notesURL', function($event) {
-			$event->return = $this->wire('pages')->get('pw_template=msa-noce-ajax');
+			$event->return = $this->wire('pages')->get('pw_template=msa-noce-ajax')->url;
 		});
 	}
 }
