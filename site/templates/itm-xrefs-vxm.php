@@ -63,7 +63,8 @@
 					}
 				}
 				$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
-				$page->body .= $config->twig->render('items/itm/description.twig', ['page' => $page, 'item' => $itm->get_item($itemID)]);
+				$page->searchitemsURL     = $pages->get('pw_template=itm-search')->url;
+				// $page->body .= $config->twig->render('items/itm/description.twig', ['page' => $page, 'item' => $itm->get_item($itemID)]);
 				$page->body .= $config->twig->render('items/vxm/item/form.twig', ['page' => $page, 'item' => $item, 'vxm' => $vxm, 'recordlocker' => $recordlocker]);
 				$page->js .= $config->twig->render('items/vxm/item/form/js.twig', ['page' => $page, 'item' => $item, 'url_validate' => $pages->get('pw_template=vxm-validate')->httpUrl]);
 
@@ -85,9 +86,11 @@
 				$page->headline = "ITEM: VXM Item $itemID";
 				$items = $filter_vxm->query->paginate($input->pageNum, 10);
 
-				$page->body .= $config->twig->render('items/vxm/item-list-header.twig', ['page' => $page, 'heading' => $items->getNbResults() ." VXM Items for $itemID"]);
-				$page->body .= $config->twig->render('items/vxm/item-list.twig', ['page' => $page, 'items' => $items, 'vxm' => $vxm, 'recordlocker' => $recordlocker]);
+				$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
+				$page->body .= $config->twig->render('items/vxm/list/header.twig', ['page' => $page, 'heading' => $items->getNbResults() ." VXM Items for $itemID"]);
+				$page->body .= $config->twig->render('items/vxm/list/item/list.twig', ['page' => $page, 'items' => $items, 'vxm' => $vxm, 'recordlocker' => $recordlocker]);
 				$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
+				$page->js   .= $config->twig->render('items/vxm/list/item/js.twig', ['page' => $page]);
 			}
 
 		} else {
