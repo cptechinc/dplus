@@ -25,10 +25,17 @@ $(function() {
 
 	$("body").on("change", "#uom_pricing", function(e) {
 		calculate_peruom();
+
+		var uom = $(this).val();
+
+		if (uom.length) {
+			$('#price_uom').removeAttr('readonly');
+		} else {
+			$('#price_uom').attr('readonly', '');
+		}
 	});
 
 	$("body").on("change", "#price_uom", function(e) {
-		calculate_custprice();
 	});
 
 	$("body").on("click", "a.remove-cxm-item", function(e) {
