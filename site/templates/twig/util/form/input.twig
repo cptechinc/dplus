@@ -3,11 +3,36 @@
 {% set name = name ? name : '' %}
 {% set id = id ? id : name %}
 {% set maxlength = maxlength ? maxlength : '' %}
-{% set class_input = class_input ? class_input : 'form-control form-control-sm'%}
+{% set class_input = class_input ? class_input : 'form-control form-control-sm' %}
 {% set class_add = class_add ? class_add : '' %}
 {% set class = class_override ? class_override : class_input ~ ' ' ~ class_add %}
 {% set value = value ? value : '' %}
 {% set placeholder = placeholder ? placeholder : '' %}
 {% set disabled = disabled ? disabled : false %}
 {% set attributes_extra = attributes ? attributes|htmlattributes : '' %}
+
+{%
+	set attributes = {
+		'type': type ? type : 'text',
+		'name': name,
+		'id': id,
+		'class': class,
+		'value': value,
+		'placeholder': placeholder,
+	}
+
+%}
+{%
+	set optional = {
+		'tabindex': tabindex,
+		'maxlength': maxlength,
+		'max': max
+	}
+
+%}
+
+{#
 <input tabindex="{{tabindex}}" type="{{type}}" name="{{ name }}" id="{{ id }}" {% if maxlength %} maxlength="{{ maxlength }}" {% endif %} class="{{ class }}" value="{{ value }}" placeholder="{{ placeholder }}" {{ attributes_extra }} {{ disabled ? 'disabled' : '' }}>
+#}
+
+<input {% for attribute, value in attributes %} {{ attribute }}="{{ value }}" {% endfor %} {% for attribute, value in optional if value != '' %} {{ attribute }}="{{ value }}" {% endfor %}>
