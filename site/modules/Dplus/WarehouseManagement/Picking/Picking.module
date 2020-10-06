@@ -71,6 +71,7 @@ class Picking extends WireData implements Module {
 		return $this->ordn;
 	}
 
+
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
@@ -97,6 +98,9 @@ class Picking extends WireData implements Module {
 					break;
 				case 'verify-whseitempicks':
 					$this->verify_whseitempicks($input);
+					break;
+				case 'scan-pick-item':
+					$this->inventory->send_searchscan_request($values->text('ordn'), $values->text('scan'));
 					break;
 			}
 		}
