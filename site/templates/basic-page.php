@@ -14,7 +14,9 @@
 					<?php foreach ($parents as $parent) : ?>
 						<li class="breadcrumb-item">
 							<i class="fa fa-list" aria-hidden="true"></i>
-							<a href="<?= $parent->url; ?>"><?= $parent->title; ?></a>
+							<a href="<?= $parent->url; ?>">
+								<?= $parent->has('dplus_function') ? strtoupper($parent->dplus_function) : $parent->title; ?>
+							</a>
 						</li>
 					<?php endforeach; ?>
 					<?php if ($page->has('title_previous') && $page->title_previous != $page->title) : ?>
