@@ -12,7 +12,7 @@
 			include('./basic-page.php');
 		}
 	} else {
-		$url = $page->get_loginURL();
-		$modules->get('DplusRequest')->self_request($url);
-		$session->redirect($page->url);
+		$loginm = $modules->get('DplusUser');
+		$loginm->request_login_whse($user->loginid);
+		$session->redirect($page->url, $http301 = false);
 	}

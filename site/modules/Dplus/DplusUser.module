@@ -5,6 +5,8 @@ use LogmQuery, Logm;
 use FuncpermQuery, Funcperm;
 use CustpermQuery, Custperm;
 
+use WhsesessionQuery, Whsesession;
+
 /**
  * Module that Handles Tying User to their Dplus data through roles && permissions
  */
@@ -48,6 +50,34 @@ class DplusUser extends WireData implements Module {
 	);
 
 /* =============================================================
+	Input Request Processing Functions
+============================================================= */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'login':
+				$this->wire('session')->loggingin = true;
+				$this->request_login($values->text('username'), $values->text('password'));
+				break;
+			case 'logout':
+				$this->request_logout();
+
+				if (WhsesessionQuery::create()->sessionExists(session_id())) {
+					$this->request_logout_whse();
+				}
+				break;
+			case 'login-whse':
+				$this->request_login_whse($values->text('username'));
+				break;
+			case 'logout-whse':
+				$this->request_logout_whse();
+				break;
+		}
+	}
+
+/* =============================================================
 	Module Update Functions
 ============================================================= */
 	public function update_user_roles() {
@@ -66,6 +96,169 @@ class DplusUser extends WireData implements Module {
 			$role->homepage = $user_role['homepage'];
 			$role->save();
 		}
+	}
+
+/* =============================================================
+	User Setup Functions
+============================================================= */
+	/**
+	 * Sets User Properties needed for Dplus Online and functons
+	 * @param  User   $user
+	 * @param  string $sessionID User SessionID
+	 * @return string
+	 */
+	public function setup_user(User $user, $sessionID) {
+		$q = LogpermQuery::create();
+
+		if ($q->is_loggedin($sessionID)) {
+			$user->loggedin = true;
+			$this->setup_user_logperm($user, $sessionID);
+			$this->setup_user_logm($user);
+		} else {
+			$user->loggedin = false;
+		}
+	}
+
+	/**
+	 * Sets User Properties for Login Id, and Login Name
+	 * @uses  LogPermQuery
+	 *
+	 * @param  User   $user
+	 * @param  string $sessionID User SessionID
+	 * @return void
+
+	 */
+	public function setup_user_logperm(User $user, $sessionID) {
+		$q = LogpermQuery::create();
+		$logperm = $q->findOneBySessionid($sessionID);
+		$user->loginid  = $logperm->loginid;
+		$user->fullname = $logperm->loginname;
+		$user->sessionID = $logperm->sessionid;
+	}
+
+	/**
+	 * Sets User Properties and role(s) based out of Logm
+	 * Then calls a function based on the Logm User role to add additional Properties
+	 * @param  User $user
+	 * @return void
+	 */
+	private function setup_user_logm(User $user) {
+		$logmuser = LogmQuery::create()->findOneByLoginid($user->loginid);
+		$role = strtolower($logmuser->role);
+		$user->addRole($role);
+		$user->dplusrole = $role;
+		$user->roleid    = $logmuser->roleid;
+		$user->company   = $logmuser->company;
+		$user->email     = $logmuser->email;
+
+		$function = "setup_user_$role";
+
+		if (method_exists($this, $function)) {
+			$this->$function($user);
+		}
+	}
+
+	/**
+	 * Sets User Properties needed for a Sales Rep User
+	 * @param  User $user
+	 * @return void
+	 */
+	private function setup_user_slsrep(User $user) {
+		$logmuser = LogmQuery::create()->findOneByLoginid($user->loginid);
+		$user->repid = $logmuser->roleid;
+	}
+
+	/**
+	 * Sets User Properties needed for a Sales Manager User
+	 * @uses self::setup_user_slsrep()
+	 *
+	 * @param  User $user
+	 * @return void
+	 */
+	private function setup_user_slsmgr(User $user) {
+		$this->setup_user_slsrep($user);
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	/**
+	 * Requests Login from Dplus
+	 * @param  string $username User ID
+	 * @param  string $password Password
+	 * @return void
+	 */
+	public function request_login($username, $password) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'LOGPERM', "LOGINID=$username", "PSWD=$password");
+		$this->send_request_dplus($data, $config->cgis['default']);
+	}
+
+	/**
+	 * Requests Logout from Dplus
+	 * @return void
+	 */
+	public function request_logout() {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'LOGOUT');
+		$this->send_request_dplus($data, $config->cgis['default']);
+	}
+
+	/**
+	 * Requests Login to Warehouse from Dplus
+	 * @param  string $username User ID
+	 * @param  string $password Password
+	 * @return void
+	 */
+	public function request_login_whse($username, $password = '') {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", "LOGIN=$username");
+		$this->send_request_dplus($data, $config->cgis['warehouse']);
+	}
+
+	/**
+	 * Requests Logout from Dplus Warehouse
+	 * @return void
+	 */
+	public function request_logout_whse() {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'LOGOUT');
+		$this->send_request_dplus($data, $config->cgis['warehouse']);
+	}
+
+	protected function send_request_dplus($data, $cgi) {
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($cgi, session_id());
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus User Extension',
+			'version' => 101,
+			'summary' => 'Extends User for Dplus',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+	public function init() {
+		$this->add_hooks();
+	}
+
+	public function install() {
+		$this->update_user_roles();
+	}
+
+	public function update() {
+		$this->update_user_roles();
 	}
 
 /* =============================================================
@@ -157,111 +350,5 @@ class DplusUser extends WireData implements Module {
 
 			$event->return = $q->find()->toArray();
 		});
-	}
-
-/* =============================================================
-	User Setup Functions
-============================================================= */
-	/**
-	 * Sets User Properties needed for Dplus Online and functons
-	 * @param  User   $user
-	 * @param  string $sessionID User SessionID
-	 * @return string
-	 */
-	public function setup_user(User $user, $sessionID) {
-		$q = LogpermQuery::create();
-
-		if ($q->is_loggedin($sessionID)) {
-			$user->loggedin = true;
-			$this->setup_user_logperm($user, $sessionID);
-			$this->setup_user_logm($user);
-		} else {
-			$user->loggedin = false;
-		}
-	}
-
-	/**
-	 * Sets User Properties for Login Id, and Login Name
-	 * @uses  LogPermQuery
-	 *
-	 * @param  User   $user
-	 * @param  string $sessionID User SessionID
-	 * @return void
-
-	 */
-	public function setup_user_logperm(User $user, $sessionID) {
-		$q = LogpermQuery::create();
-		$logperm = $q->findOneBySessionid($sessionID);
-		$user->loginid  = $logperm->loginid;
-		$user->fullname = $logperm->loginname;
-		$user->sessionID = $logperm->sessionid;
-	}
-
-	/**
-	 * Sets User Properties and role(s) based out of Logm
-	 * Then calls a function based on the Logm User role to add additional Properties
-	 * @param  User $user
-	 * @return void
-	 */
-	private function setup_user_logm(User $user) {
-		$logmuser = LogmQuery::create()->findOneByLoginid($user->loginid);
-		$role = strtolower($logmuser->role);
-		$user->addRole($role);
-		$user->dplusrole = $role;
-		$user->roleid    = $logmuser->roleid;
-		$user->company   = $logmuser->company;
-		$user->email     = $logmuser->email;
-
-		$function = "setup_user_$role";
-
-		if (method_exists($this, $function)) {
-			$this->$function($user);
-		}
-	}
-
-	/**
-	 * Sets User Properties needed for a Sales Rep User
-	 * @param  User $user
-	 * @return void
-	 */
-	private function setup_user_slsrep(User $user) {
-		$logmuser = LogmQuery::create()->findOneByLoginid($user->loginid);
-		$user->repid = $logmuser->roleid;
-	}
-
-	/**
-	 * Sets User Properties needed for a Sales Manager User
-	 * @uses self::setup_user_slsrep()
-	 *
-	 * @param  User $user
-	 * @return void
-	 */
-	private function setup_user_slsmgr(User $user) {
-		$this->setup_user_slsrep($user);
-	}
-
-/* =============================================================
-	ProcessWire Module Functions
-============================================================= */
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'Dplus User Extension',
-			'version' => 101,
-			'summary' => 'Extends User for Dplus',
-			'singular' => true,
-			'autoload' => true,
-		);
-	}
-
-	public function init() {
-		$this->add_hooks();
-	}
-
-	public function install() {
-		$this->update_user_roles();
-	}
-
-	public function update() {
-		$this->update_user_roles();
 	}
 }

@@ -56,6 +56,7 @@ if ($page->id != $config->errorpage_dplusdb) {
 	if ($input->get->pdf || $input->get->print) {
 
 	} elseif (!in_array($page->template, $templates_nosignin) && LogpermQuery::create()->is_loggedin(session_id()) == false) {
+		$session->returnurl = $page->fullURL->getUrl();
 		$session->redirect($pages->get('template=login')->url, $http301 = false);
 	}
 
