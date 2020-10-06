@@ -397,7 +397,7 @@ class XrefCxm extends WireData implements Module {
 		$record->setRounding($rounding);
 
 		if ($record->uom_pricing != '') {
-			// $record->setPrice_uom($values->float('price_uom', ['precision' => $this->decimal_places_price_uom()]));
+			//$record->setPrice_uom($values->float('price_uom', ['precision' => $this->decimal_places_price_uom()]));
 		}
 
 		return $invalid;
