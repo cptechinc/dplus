@@ -56,9 +56,15 @@
 					{{ page.title }}
 				</a>
 			</li>
-			<li class="breadcrumb-item active" aria-current="page">
-			{{ input.get.text('custID') }}: {{ input.get.text('custitemID') }}
-			</li>
+			{% if input.get.text('custitemID') == 'new' %}
+				<li class="breadcrumb-item active" aria-current="page">
+					Creating X-ref for {{ input.get.text('itemID') }}
+				</li>
+			{% else %}
+				<li class="breadcrumb-item active" aria-current="page">
+					{{ input.get.text('custID') }}: {{ input.get.text('custitemID') }}
+				</li>
+			{% endif %}
 		{% else %}
 			<li class="breadcrumb-item active" aria-current="page">
 				{{ page.dplus_function ? page.dplus_function : page.title }}
