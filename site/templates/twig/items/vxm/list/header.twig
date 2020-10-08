@@ -4,7 +4,7 @@
 	</div>
 	<div class="col-sm-4 text-right">
 		{% if page.has('vendorID') and page.vendorID %}
-			<a href="{# page.cxm_item_newURL(page.custID) #}" class="btn btn-secondary">
+			<a href="{{ page.vxm_itemURL(page.vendorID, 'new') }}" class="btn btn-secondary">
 				<i class="fa fa-plus" aria-hidden="true"></i> Add New
 			</a>
 		{% else %}
