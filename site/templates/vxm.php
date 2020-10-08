@@ -59,7 +59,7 @@
 			} else {
 				$item = $vxm->get_vxm_item_new();
 				$item->setVendorid($vendorID);
-				$page->headline = "VXM: Creating Item";
+				$page->headline = "VXM: Creating X-ref for $vendorID";
 
 				if ($vendoritemID != 'new') {
 					$item->setVendoritemid($vendoritemID);
@@ -70,8 +70,9 @@
 			}
 			$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 			$page->searchitemsURL     = $pages->get('pw_template=itm-search')->url;
+			$page->body .= $config->twig->render('items/vxm/vxm-links.twig', ['page' => $page]);
 			$page->body .= $config->twig->render('items/vxm/item/form.twig', ['page' => $page, 'item' => $item, 'vxm' => $vxm, 'recordlocker' => $recordlocker]);
-			$page->js .= $config->twig->render('items/vxm/item/form/js.twig', ['page' => $page, 'item' => $item, 'url_validate' => $pages->get('pw_template=vxm-validate')->httpUrl]);
+			$page->js .= $config->twig->render('items/vxm/item/form/js.twig', ['page' => $page, 'vxm' => $vxm, 'item' => $item, 'url_validate' => $pages->get('pw_template=vxm-validate')->httpUrl]);
 
 			if (!$item->isNew()) {
 				$qnotes = $modules->get('QnotesItemVxm');
