@@ -29,7 +29,7 @@
 					<td class="text-right">{{ item.date_changed|convertdate }}</td>
 					<td class="text-center">
 						{% if recordlocker.function_locked('vxm', vxm.get_recordlocker_key(item)) == false or recordlocker.function_locked_by_user('vxm', vxm.get_recordlocker_key(item)) %}
-							<a href="{{ page.vxm_itemURL(item.vendorID, item.vendoritemID) }}" class="btn btn-warning">
+							<a href="{{ page.vxm_itemURL(item.vendorID, item.vendoritemID) }}" class="btn btn-sm btn-warning">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
 						{% else %}
