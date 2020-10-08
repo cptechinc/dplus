@@ -21,6 +21,8 @@ class XrefVxm extends WireData implements Module {
 	const DESCRIPTION        = 'VXM Item';
 	const DESCRIPTION_RECORD = 'VXM Item';
 
+	const MARGIN_DECIMALPLACES = 3;
+
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
 	}
@@ -182,24 +184,43 @@ class XrefVxm extends WireData implements Module {
 					break;
 			}
 		} else {
-			$this->wire('session')->response_xref = $this->create_error_response('vxm', "No VXM Action specified");
+			$this->wire('session')->response_xref = XrefResponse::response_error('vxm', "No VXM Action specified");
 		}
 	}
 
 	protected function process_input_vxm(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
+		$response = new XrefResponse();
+		$record = $this->get_create_vxm_item($input);
+		$recordlocker = $this('modules')->get('RecordLockerUser');
 
-		if ($values->action) {
-			$record = $this->get_create_vxm_item($input);
+		/**
+		 * Create lock for ITM code if not already locked.
+		 */
+		if (!$recordlocker->function_locked('vxm', $this->get_recordlocker_key($record))) {
+			$recordlocker->create_lock('vxm', $this->get_recordlocker_key($record));
+		}
 
-			if ($values->text('action') == 'remove-vxm-item') {
-				$record->delete();
-			} elseif ($values->text('action') == 'update-vxm') {
-				$this->update_record_input($record, $input);
+		if ($recordlocker->function_locked_by_user('vxm', $this->get_recordlocker_key($record))) {
+			switch ($values->text('action')) {
+				case 'remove-vxm-item':
+					$record->delete();
+					break;
+				case 'update-vxm':
+					$response = $this->update_record_input($record, $input);
+					break;
+				default:
+					$message = self::DESCRIPTION_RECORD . " (".$this->get_recordlocker_key($record).")  was not saved, no action was specified";
+					$response = XrefResponse::response_error($this->get_recordlocker_key($record), $message);
+					break;
 			}
 
-			$response = $this->save_and_process_response($record);
+			if (!$response->has_error()) {
+				$response = $this->save_and_process_response($record);
+			} elseif(!empty($response->fields)) {
+				$record->save();
+			}
 
 			/**
 			 * IF we saved this Item as the Primary PO ORDER then we have to update
@@ -213,54 +234,68 @@ class XrefVxm extends WireData implements Module {
 					$this->update_dplus_cobol($vxmitem);
 				}
 			}
-			$this->wire('session')->response_xref = $response;
+		} else {
+			$message = self::DESCRIPTION_RECORD . " (".$this->get_recordlocker_key($record).")  was not saved, it is locked by " . $recordlocker->get_locked_user('cxm', $this->get_recordlocker_key($record));
+			$response = XrefResponse::response_error($this->get_recordlocker_key($record), $message);
 		}
+		$this->wire('session')->response_xref = $response;
 	}
 
+	/**
+	 * Updates VXM Item Record
+	 * @param  ItemXrefVendor  $record VXM Item Record
+	 * @param  WireInput       $input  Input Data
+	 * @return XrefResponse
+	 */
 	public function update_record_input(ItemXrefVendor $record, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
+		$invalidfields = array();
+
+		$response = new XrefResponse();
+		$response->set_action(XrefResponse::CRUD_UPDATE);
 
 		$record->setVendoritemid($values->text('vendoritemID'));
 
 		if ($this->is_modifying_vxm_key($record) && !$record->isNew()) {
-			$record_delete = $record;
-			$array = $record_delete->toArray();
-
-			$record_delete->setVendoritemid($values->text('original_vendoritemID'));
-			$this->update_dplus_cobol($record_delete);
-			$record_delete->delete();
-			$record = ItemXrefVendor::new();
-			$record->fromArray($array);
-			$record->setVendoritemid($values->text('vendoritemID'));
-			$record->save();
+			$this->delete_recreate_record($record);
 		}
-		//TODO validate ITEM ID
-		$record->setOuritemid($values->text('ouritemID'));
+
 		$record->setQty_percase($values->text('qty_percase'));
 		$record->setMinbuyqty($values->text('minbuyqty'));
-		//TODO validate APPROVAL CODE
-		$record->setApprovalcode($values->text('approvalcode'));
-		//TODO validate UOM
-		$record->setUom_purchase($values->text('uom_purchase'));
 		$record->setListprice($values->text('listprice'));
 		$record->setUnitcost_base($values->text('unitcost_base'));
-
 		$this->update_record_unitx_input($record, $input);
+		$invalidfields = $this->update_record_validated($record, $input);
 
-		//TODO validate PO ORDER CODE
-		if ($input->$rm->text('po_ordercode') == ItemXrefVendor::POORDERCODE_PRIMARY) {
-			if ($input->$rm->text('po_ordercode_validated') == 'true') {
-				$record->setPo_ordercode($values->text('po_ordercode'));
-			} else {
-				$record->setPo_ordercode(ItemXrefVendor::POORDERCODE_SECONDARY);
-			}
-		} else {
-			$record->setPo_ordercode($values->text('po_ordercode'));
-		}
 		$record->setDate_changed(date('Ymd'));
 		$record->setDate(date('Ymd'));
-		$record->setTime(0);
+		$record->setTime(date('His'));
+
+		if ($invalidfields) {
+			$response->set_error(true);
+			$response->set_success(false);
+			$response->set_fields($invalidfields);
+		}
+		return $response;
+	}
+
+	/**
+	 * Deletes and recreates VXM record so key can be allowed to be saved
+	 * @param  ItemXrefVendor $record [description]
+	 * @return
+	 */
+	public function delete_recreate_record(ItemXrefVendor $record) {
+		$record_delete = $record;
+		$array = $record_delete->toArray();
+
+		$record_delete->setVendoritemid($values->text('original_vendoritemID'));
+		$this->update_dplus_cobol($record_delete);
+		$record_delete->delete();
+		$record = ItemXrefVendor::new();
+		$record->fromArray($array);
+		$record->setVendoritemid($values->text('vendoritemID'));
+		$record->save();
 	}
 
 	/**
@@ -281,6 +316,65 @@ class XrefVxm extends WireData implements Module {
 			$record->$function_unitqty($values->text("unit_qty$i"));
 			$record->$function_unitcost($values->text("unit_cost$i"));
 		}
+	}
+
+	/**
+	 * Sets Record fields if valid, returns invalid fields
+	 * @param  ItemXrefVendor $record VXM Item
+	 * @param  WireInput      $input  Input Data
+	 * @return array
+	 */
+	public function update_record_validated(ItemXrefVendor $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$validate = $this->wire('modules')->get('ValidateVxm');
+		$invalid = array();
+
+		$fields = array(
+			'ouritemid' => array(
+				'description' => 'Item ID',
+				'input'       => 'ouritemID',
+				'function'    => 'itemid'
+			),
+			'approvalcode' => array(
+				'description' => 'Approval Code',
+				'input'       => 'approvalcode',
+				'function'    => 'approvalcode'
+			),
+			'uom_purchase' => array(
+				'description' => 'UoM Purchase',
+				'input'       => 'uom_purchase',
+				'function'    => 'unitofm_purchase'
+			),
+		);
+
+		foreach ($fields as $property => $field) {
+			if (strlen($values->text($field['input']))) {
+				$function = $field['function'];
+
+				if ($validate->$function($values->text($field['input']))) {
+					$setProperty = "set".ucfirst($property);
+					$record->$setProperty($values->text($field['input']));
+				} else {
+					$invalid[$field['input']] = $field['description'];
+				}
+			}
+		}
+
+		if ($validate->ordercode($values->text('po_ordercode'))) {
+			if ($values->text('po_ordercode') == ItemXrefVendor::POORDERCODE_PRIMARY) {
+				if ($values->text('po_ordercode_validated') == 'true') {
+					$record->setPo_ordercode($values->text('po_ordercode'));
+				} else {
+					$record->setPo_ordercode('');
+				}
+			} else {
+				$record->setPo_ordercode($values->text('po_ordercode'));
+			}
+		} else {
+			$invalid['po_ordercode'] = "PO Order Code";
+		}
+		return $invalid;
 	}
 
 	/**
@@ -314,7 +408,7 @@ class XrefVxm extends WireData implements Module {
 	protected function save_and_process_response(ItemXrefVendor $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
-		$code = "$record->vendorID-$record->vendoritemID-$record->ouritemID";
+		$code   = "$record->vendorID-$record->vendoritemID-$record->ouritemID";
 
 		$response = new XrefResponse();
 		$response->set_key($code);
@@ -343,22 +437,6 @@ class XrefVxm extends WireData implements Module {
 		if ($response->has_success()) {
 			$this->update_dplus_cobol($record);
 		}
-		return $response;
-	}
-
-	/**
-	 * Return Error Response with Provided Message
-	 * @param  string $upc        UPC Code
-	 * @param  string $message    Error Message
-	 * @param  int    $actiontype XrefResponse CRUD value
-	 * @return XrefResponse
-	 */
-	public function create_error_response($upc, $message, $actiontype = 0) {
-		$response = new XrefResponse();
-		$response->set_key($upc);
-		$response->set_error(true);
-		$response->set_action($actiontype != 0 ? $actiontype : XrefResponse::CRUD_UPDATE);
-		$response->set_message($message);
 		return $response;
 	}
 
@@ -433,6 +511,10 @@ class XrefVxm extends WireData implements Module {
 		return $this->wire('modules')->get('ConfigurePo')->config();
 	}
 
+	/**
+	 * Intialize configs
+	 * @return void
+	 */
 	public function init_configs() {
 		$this->configs = new WireData();
 		$this->configs->in = $this->get_config_in();
@@ -465,6 +547,25 @@ class XrefVxm extends WireData implements Module {
 	public function decimal_places_cost() {
 		$config = $this->get_config_po();
 		return $config->decimal_places_cost;
+	}
+
+	/**
+	 * Return the number of Decimal Places to use for Margin
+	 * @return int
+	 */
+	public function decimal_places_margin() {
+		return self::MARGIN_DECIMALPLACES;
+	}
+
+	/**
+	 * Return if Field has Error
+	 * NOTE: Uses $session->response_itm->fields to derive this
+	 * @param  string $inputname Input name e.g. itemid
+	 * @return bool
+	 */
+	public function field_has_error($inputname) {
+		$response = $this->wire('session')->response_xref;
+		return ($response) ? array_key_exists($inputname, $response->fields) : false;
 	}
 
 /* =============================================================
