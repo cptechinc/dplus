@@ -246,15 +246,13 @@ a.image-link:hover {
 /*==============================================================
 	FORM Styles
 ==============================================================*/
-input.form-control.is-valid, input.form-control.is-invalid,
 select.form-control.is-invalid, select.form-control.is-valid {
 	background-position: center right calc(.375em + .9875rem);
 }
-
 input.form-control.is-valid.text-right,
 input.form-control.is-invalid.text-right {
-	background-position: center left calc(.375em + .25rem);
-	padding-right: inherit;
+	background-position: center left calc(.25em + .25rem);
+	padding-right: .375em;
 }
 
 /* Chrome, Safari, Edge, Opera */
