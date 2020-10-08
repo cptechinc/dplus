@@ -14,10 +14,10 @@
 				<input type="hidden" class="form-control form-control-sm unit-qty" value="1">
 			</td>
 			<td>
-				<input type="text" class="form-control form-control-sm unit-cost" name="unitcost_base" value="{{ item.get_unitcost(0) }}">
+				<input type="text" class="form-control form-control-sm unit-cost text-right" name="unitcost_base" value="{{ item.get_unitcost(0)|number_format(vxm.decimal_places_price()) }}">
 			</td>
 			<td class="text-right">
-				<span class="unit-margin">{{ item.get_unitmargin(0) }}</span> %
+				<span class="unit-margin">{{ item.get_unitmargin(0)|number_format(vxm.decimal_places_margin()) }}</span> %
 			</td>
 		</tr>
 		{% for i in 1..item.get_unitsavailable() %}
@@ -26,10 +26,10 @@
 					Qty {{ i }}
 				</td>
 				<td>
-					<input type="text" class="form-control form-control-sm unit-qty" name="unit_qty{{ i }}" value="{{ item.get_unitqty(i) }}">
+					<input type="text" class="form-control form-control-sm unit-qty text-right" name="unit_qty{{ i }}" value="{{ item.get_unitqty(i) }}">
 				</td>
 				<td>
-					<input type="text" class="form-control form-control-sm unit-cost" name="unit_cost{{ i }}" value="{{ item.get_unitcost(i)|number_format(vxm.decimal_places_price) }}">
+					<input type="text" class="form-control form-control-sm unit-cost text-right" name="unit_cost{{ i }}" value="{{ item.get_unitcost(i)|number_format(vxm.decimal_places_price()) }}">
 				</td>
 				<td class="text-right">
 					<span class="unit-margin">{{ item.get_unitmargin(i) }}</span> %
