@@ -75,7 +75,7 @@
 		</div>
 		<div class="col-sm-6">
 			<div class="input-group input-group-sm mb-2">
-				<input type="number" name="listprice" class="form-control" id="listprice" value="{{ item.listprice|number_format(vxm.decimal_places_price) }}">
+				<input type="number" name="listprice" class="form-control text-right" id="listprice" value="{{ item.listprice|number_format(vxm.decimal_places_price) }}">
 				<div class="input-group-append">
 					<div class="input-group-text">{{ item.uom_purchase }}</div>
 				</div>
@@ -86,7 +86,7 @@
 		<div class="col-sm-6"></div>
 		<div class="col-sm-6">
 			<div class="input-group input-group-sm mb-2">
-				<input type="number" name="eachlistprice" class="form-control" id="eachlistprice" value="{{ item.get_listprice_uom_sale()|number_format(vxm.decimal_places_price) }}" step="any">
+				<input type="number" name="eachlistprice" class="form-control text-right" id="eachlistprice" value="{{ item.get_listprice_uom_sale()|number_format(vxm.decimal_places_price) }}" step="any">
 				<div class="input-group-append">
 					<div class="input-group-text">{{ item.imitem.uom_sale }}</div>
 				</div>
