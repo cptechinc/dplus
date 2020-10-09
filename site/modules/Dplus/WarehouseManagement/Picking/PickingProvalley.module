@@ -23,30 +23,16 @@ use Propel\Runtime\Propel;
  * 1. Retrieves Order Items
  * 2. Adds items to be picked for order in a working file
  * 3. Validates Items against inventory
+ *
+ * @property Session  $session ProcessWire Session
+ * @property string   $sessionID Session ID
+ * @property string   $ordn      Order Number
+ * @property WireData $config   Object that contains Config Objects
  */
 class PickingProvalley extends WireData implements Module {
-	/**
-	 * Processwire Session
-	 * @var Session
-	 */
 	protected $session;
-
-	/**
-	 * Session ID
-	 * @var string
-	 */
 	protected $sessionID;
-
-	/**
-	 * Order Number
-	 * @var string
-	 */
 	protected $ordn;
-
-	/**
-	 * Object with config modules
-	 * @var WireData
-	 */
 	protected $config;
 
 
@@ -103,9 +89,14 @@ class PickingProvalley extends WireData implements Module {
 					break;
 				case 'remove-lotserial':
 					$this->remove_lotserial($input);
+					$this->wire('page')->fullURL->query->remove('scan');
 					break;
 				case 'verify-whseitempicks':
 					$this->verify_whseitempicks($input);
+					break;
+				case 'scan-pick-item':
+					$this->inventory->send_searchscan_request($values->text('ordn'), $values->text('scan'));
+					$this->wire('page')->fullURL->query->set('scan', $values->text('scan'));
 					break;
 			}
 		}
