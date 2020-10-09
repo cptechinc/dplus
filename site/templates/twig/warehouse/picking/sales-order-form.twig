@@ -1,8 +1,7 @@
 <h3>Enter Order Number</h3>
 
-<form action="{{ page.formurl }}" method="post" class="allow-enterkey-submit sales-order-entry-form" id="sales-order-entry-form">
+<form action="{{ page.url }}" method="get" class="allow-enterkey-submit sales-order-entry-form" id="sales-order-entry-form">
 	<input type="hidden" name="action" value="start-order">
-	<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
 
 	<div class="input-group form-group">
 		<input class="form-control" name="ordn" placeholder="Order #" type="text" autofocus>
@@ -20,9 +19,8 @@
 
 
 <div class="collapse" id="so-lock-div">
-	<form action="{{ page.formurl }}" method="post" class="allow-enterkey-submit" id="sales-order-entry-form">
-		<input type="hidden" name="action" value="remove-order-locks">
-		<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
+	<form action="{{ page.url }}" method="get" class="allow-enterkey-submit" id="sales-order-entry-form">
+		<input type="hidden" name="action" value="unlock-order">
 
 		<div class="input-group form-group">
 			<input class="form-control" name="ordn" placeholder="Order #" type="text">
