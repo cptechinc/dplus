@@ -1,9 +1,11 @@
 <?php
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
-	$config_inventory = $modules->get('ConfigsWarehouseInventory');
-	$config_picking   = $modules->get('ConfigsWarehousePicking');
+	$config->inventory = $modules->get('ConfigsWarehouseInventory');
+	$config->picking   = $modules->get('ConfigsWarehousePicking');
 	$http = new ProcessWire\WireHttp();
+	$rm = strtolower($input->requestMethod());
+	$values = $input->$rm;
 
 	$template = '';
 
@@ -16,12 +18,20 @@
 
 	$action = 'start-pick-unguided';
 
+	if ($values->action) {
+		$pickingsession = $modules->get('Picking');
+		$pickingsession->set_sessionID(session_id());
+		$pickingsession->set_ordn($values->text('ordn'));
+		$pickingsession->handle_action($input);
+		$session->redirect($page->fullURL->getUrl(), $http301 = false);
+	}
+
 	// CHECK If Sales Order is Provided
 	if ($input->get->ordn) {
 		$ordn = SalesOrder::get_paddedordernumber($input->get->text('ordn'));
 		$pickorder = PickSalesOrderQuery::create()->findOneByOrdernbr($ordn);
 
-		if ($config_picking->picking_method == 'unguided') {
+		if ($config->picking ->picking_method == 'unguided') {
 			$whsesession->set('bin', 'WHSE');
 			$whsesession->save();
 		}
@@ -34,7 +44,7 @@
 			// CHECK the Order is not finished
 		} elseif ($whsesession->is_usingwrongfunction()) {
 			$page->body = $config->twig->render('warehouse/picking/status.twig', ['page' => $page, 'whsesession' => $whsesession]);
-		} elseif ($whsesession->is_orderonhold() || $whsesession->is_orderverified() || $whsesession->is_orderinvoiced() || $whsesession->is_ordernotfound() || (!$config_inventory->allow_negativeinventory && $whsesession->is_ordershortstocked())) {
+		} elseif ($whsesession->is_orderonhold() || $whsesession->is_orderverified() || $whsesession->is_orderinvoiced() || $whsesession->is_ordernotfound() || (!$config->inventory->allow_negativeinventory && $whsesession->is_ordershortstocked())) {
 			$page->body = $config->twig->render('warehouse/picking/status.twig', ['page' => $page, 'whsesession' => $whsesession]);
 		} elseif ($whsesession->needs_functionprompt()) {
 			if ($input->get->removeprompt) {

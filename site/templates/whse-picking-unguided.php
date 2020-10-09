@@ -1,6 +1,9 @@
 <?php
 	use Propel\Runtime\ActiveQuery\Criteria;
 
+	$rm = strtolower($input->requestMethod());
+	$values = $input->$rm;
+
 	$html = $modules->get('HtmlWriter');
 
 	$modules->get('DpagesMwm')->init_picking();
@@ -10,8 +13,6 @@
 
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
-	$config_inventory = $modules->get('ConfigsWarehouseInventory');
-	$config_picking   = $modules->get('ConfigsWarehousePicking');
 
 	// CHECK If there are details to pick
 	$lines_query = PickSalesOrderDetailQuery::create()->filterBySessionidOrder(session_id(), $ordn);
@@ -20,7 +21,7 @@
 	if ($whsesession->is_orderfinished()) {
 		$page->body .= $config->twig->render('warehouse/picking/finished-order.twig', ['page' => $page, 'ordn' => $ordn]);
 	} elseif ($lines_query->count() > 0) {
-		if ($input->requestMethod('POST')) {
+		if ($values->action) {
 			$pickingsession->handle_action($input);
 			$session->redirect($page->fullURL->getUrl(), $http301 = false);
 		}

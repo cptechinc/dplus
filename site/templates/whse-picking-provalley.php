@@ -1,5 +1,7 @@
 <?php
 	use Propel\Runtime\ActiveQuery\Criteria;
+	$rm = strtolower($input->requestMethod());
+	$values = $input->$rm;
 
 	$html = $modules->get('HtmlWriter');
 	$modules->get('DpagesMwm')->init_picking();
@@ -20,9 +22,9 @@
 		$page->body .= $config->twig->render('warehouse/picking/finished-order.twig', ['page' => $page, 'ordn' => $ordn]);
 	} elseif ($lines_query->count() > 0) {
 
-		if ($input->requestMethod('POST')) {
-			$pickingsession->handle_barcodeaction($input);
-			$session->redirect($page->fullURL->getUrl());
+		if ($values->action) {
+			$pickingsession->handle_action($input);
+			$session->redirect($page->fullURL->getUrl(), $http301 = false);
 		}
 
 		if ($session->pickingerror) {
