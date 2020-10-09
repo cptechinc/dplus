@@ -37,9 +37,9 @@
 					{% set imitem = m_picking.inventory.get_master_item(item.itemid) %}
 					<br> <small class="text-muted">UoM: {{ imitem.uom_sale }}</small>
 
-					{% if item.count_pickeditems() > item.qtyordered %}
+					{% if item.qtypulled > item.qtyordered %}
 						<br>
-						<small> You are Picking more qty than what was ordered </small>
+						<span class="badge badge-warning"> You are Picking more qty than what was ordered </span>
 					{% endif %}
 				</div>
 				<div class="col-sm-1 text-right">{{ item.qtyordered|number_format(m_picking.decimal_places()) }}</div>
