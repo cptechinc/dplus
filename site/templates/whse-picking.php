@@ -3,7 +3,6 @@
 	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
 	$config->inventory = $modules->get('ConfigsWarehouseInventory');
 	$config->picking   = $modules->get('ConfigsWarehousePicking');
-	$http = new ProcessWire\WireHttp();
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
 
@@ -19,6 +18,7 @@
 	$action = 'start-pick-unguided';
 
 	if ($values->action) {
+		$ordn = SalesOrder::get_paddedordernumber($values->text('ordn') ? $values->text('ordn') : $input->get->text('ordn'))
 		$pickingsession = $modules->get('Picking');
 		$pickingsession->set_sessionID(session_id());
 		$pickingsession->set_ordn($values->text('ordn'));
