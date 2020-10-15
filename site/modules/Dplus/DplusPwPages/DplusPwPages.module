@@ -1,540 +1,548 @@
 <?php namespace ProcessWire;
-	use Purl\Url;
+use Purl\Url;
 
-	class DplusPwPages extends WireData implements Module {
-		const FIELDS = array(
-			'dplus_function' => array(
-				'name'  => 'dplus_function',
-				'type'  => 'text',
-				'label' => 'Dplus Function',
-				'description' => 'Dplus Function Code',
-				'notes'       => 'Use if this is a Dplus Function Equivalent'
-			),
-			'function_url' => array(
-				'name'  => 'function_url',
-				'type'  => 'text',
-				'label' => 'URL to function',
-				'description' => '',
-				'notes'       => 'Use to Route to another function'
-			),
-			'pw_template' => array(
-				'name'  => 'pw_template',
-				'type'  => 'text',
-				'label' => 'ProcessWire Template',
-				'description' => '',
-				'notes'       => ''
-			),
-			'dplus_permission' => array(
-				'name'  => 'dplus_permission',
-				'type'  => 'text',
-				'label' => 'Dplus Permission Code',
-				'description' => 'Dplus Function Code as a permission',
-				'notes'       => 'Use the code as permissions barrier'
-			),
-		);
+class DplusPwPages extends WireData implements Module {
+	const FIELDS = array(
+		'dplus_function' => array(
+			'name'  => 'dplus_function',
+			'type'  => 'text',
+			'label' => 'Dplus Function',
+			'description' => 'Dplus Function Code',
+			'notes'       => 'Use if this is a Dplus Function Equivalent'
+		),
+		'function_url' => array(
+			'name'  => 'function_url',
+			'type'  => 'text',
+			'label' => 'URL to function',
+			'description' => '',
+			'notes'       => 'Use to Route to another function'
+		),
+		'pw_template' => array(
+			'name'  => 'pw_template',
+			'type'  => 'text',
+			'label' => 'ProcessWire Template',
+			'description' => '',
+			'notes'       => ''
+		),
+		'dplus_permission' => array(
+			'name'  => 'dplus_permission',
+			'type'  => 'text',
+			'label' => 'Dplus Permission Code',
+			'description' => 'Dplus Function Code as a permission',
+			'notes'       => 'Use the code as permissions barrier'
+		),
+	);
 
-		const TEMPLATES = array(
-			'dplus-menu' => array(
-				'name'   => 'dplus-menu',
-				'fields' => array('summary', 'dplus_function', 'dplus_permission'),
-				'paginated' => false
-			),
-			'dplus-function' => array(
-				'name'   => 'dplus-function',
-				'fields' => array('summary', 'dplus_function', 'dplus_permission', 'pw_template'),
-				'paginated' => true
-			),
-			'dplus-function-link' => array(
-				'name'   => 'dplus-function-link',
-				'fields' => array('summary', 'dplus_function', 'dplus_permission', 'function_url',),
-				'paginated' => false
-			),
-			'dplus-json' => array(
-				'name'   => 'dplus-json',
-				'fields' => array('summary', 'pw_template'),
-				'paginated' => true
-			),
-			'warehouse-menu' => array(
-				'name'   => 'warehouse-menu',
-				'fields' => array('summary','dplus_function', 'dplus_permission'),
-				'paginated' => false
-			),
-			'warehouse-function' => array(
-				'name'   => 'warehouse-function',
-				'fields' => array('summary', 'dplus_function', 'dplus_permission', 'pw_template'),
-				'paginated' => true
-			)
-		);
+	const TEMPLATES = array(
+		'dplus-menu' => array(
+			'name'   => 'dplus-menu',
+			'fields' => array('summary', 'dplus_function', 'dplus_permission'),
+			'paginated' => false
+		),
+		'dplus-function' => array(
+			'name'   => 'dplus-function',
+			'fields' => array('summary', 'dplus_function', 'dplus_permission', 'pw_template'),
+			'paginated' => true
+		),
+		'dplus-function-link' => array(
+			'name'   => 'dplus-function-link',
+			'fields' => array('summary', 'dplus_function', 'dplus_permission', 'function_url',),
+			'paginated' => false
+		),
+		'dplus-json' => array(
+			'name'   => 'dplus-json',
+			'fields' => array('summary', 'pw_template'),
+			'paginated' => true
+		),
+		'warehouse-menu' => array(
+			'name'   => 'warehouse-menu',
+			'fields' => array('summary','dplus_function', 'dplus_permission'),
+			'paginated' => false
+		),
+		'warehouse-function' => array(
+			'name'   => 'warehouse-function',
+			'fields' => array('summary', 'dplus_function', 'dplus_permission', 'pw_template'),
+			'paginated' => true
+		)
+	);
 
-		const PAGES = array(
-			/* Example
-			'user-page' => array(
-				'code'       => 'user-page',
-				'template'   => 'user-page',
-				'name'       => 'user',
-				'title'      => 'User',
-				'summary'    => '',
-				'parent'     => '/',
-				'parent-new' => '/' NOTE ** Optional **
-				'dplus_function' => NOTE ** If Needed by template **
-				'dplus_permission' => NOTE ** If Needed by template, permission needed **
-			)
-			*/
-		);
+	const PAGES = array(
+		/* Example
+		'user-page' => array(
+			'code'       => 'user-page',
+			'template'   => 'user-page',
+			'name'       => 'user',
+			'title'      => 'User',
+			'summary'    => '',
+			'parent'     => '/',
+			'parent-new' => '/' NOTE ** Optional **
+			'dplus_function' => NOTE ** If Needed by template **
+			'dplus_permission' => NOTE ** If Needed by template, permission needed **
+		)
+		*/
+	);
 
-		const PROCESSWIRE_FIELDS = array(
-			'summary',
-			'title'
-		);
+	const PROCESSWIRE_FIELDS = array(
+		'title','summary',
+	);
 
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
-		/**
-		 * ProcessWire Module Info
-		 *
-		 * @return void
-		 */
-		public static function getModuleInfo() {
-			return array(
-				'title' => 'Dplus Create ProcesWire Pages',
-				'version' => 101,
-				'summary' => 'Dplus Create ProcesWire Pages Base Class',
-				'singular' => true,
-				'autoload' => true,
-			);
+/* =============================================================
+	Field CRUD Functions
+============================================================= */
+	/**
+	 * Installs (updates | creates) the fields
+	 * @return void
+	 */
+	protected function install_fields() {
+		foreach ($this::FIELDS as $fieldname => $field) {
+			if (boolval($this->wire('fields')->get($field['name']))) {
+				$this->update_field($field);
+			} else {
+				$this->create_field($field);
+			}
+		}
+	}
+
+	/**
+	 * Updates Field for Template
+	 * NOTE Field is an element from the array created from $this->get_fields()
+	 * @param  array  $field array('name' => 'ordernumber', 'type' => 'Text', 'size', => '20', 'column' => 'varchar(20)');
+	 * @return bool          Was Field able to be saved?
+	 */
+	protected function update_field(array $field) {
+		$f = wire('fields')->get($field['name']);
+		return $this->set_fieldproperties($f, $field);
+	}
+
+	public function set_fieldproperties(Field $f, array $field) {
+		$f->type  = ctype_upper($field['type']) ? $field['type'] : ucfirst($field['type']); // get a field type
+		$f->name  = $field['name'];
+		$f->label = $field['label'];
+
+		if (isset($field['notes'])) {
+			$f->notes = $field['notes'];
 		}
 
-		public function init() {
-			$this->addHookProperty('Page::pagenbr', function($event) {
-				$page = $event->object;
-				$event->return = $this->wire('input')->pageNum;
-			});
+		if (isset($field['description'])) {
+			$f->description = $field['description'];
+		}
 
-			$this->addHook('Page::paginate', function($event) {
-				$page = $event->object;
-				$pagenbr = $event->arguments(0);
-				$event->return = $this->paginate_page($page, $pagenbr);
-			});
+		if (isset($field['notes'])) {
+			$f->notes = $field['notes'];
+		}
+		$function = "update_field_".$field['type'];
 
-			$this->addHook('Page::get_pagecount', function($event) {
-				$page = $event->object;
-				$count = $event->arguments(0);
-				$totalpages = ceil($count / $this->wire('session')->display);
-				$event->return = $totalpages == 0 ? 1 : $totalpages;
-			});
+		if (method_exists($this, $function)) {
+			$this->$function($f, $field);
+		}
 
-			$this->addHookBefore('Page::render', function($event) {
-				if ($this->wire('input')->get->display) {
-					$this->wire('session')->display = $this->wire('input')->get->text('display');
+		return $f->save();
+	}
+
+	/**
+	 * Sets Options for Select Type Fields
+	 * @param  Field  $field           [description]
+	 * @param  array  $fieldproperties Field Properties
+	 * @return void
+	 */
+	protected function update_field_select(Field $field, array $fieldproperties) {
+		$options = new SelectableOptionArray();
+		foreach ($fieldproperties['options'] as $option => $title) {
+			$selectoption = new SelectableOption();
+			$selectoption->title = $title;
+			$selectoption->value = $option;
+			$options->add($selectoption);
+		}
+		$field->type->setOptions($field, $options);
+	}
+
+	/**
+	 * Creates Field for Template
+	 * NOTE Field is an element from the array created from $this->get_fields()
+	 * @param  array  $field array('name' => 'ordernumber', 'type' => 'Text', 'size', => '20', 'column' => 'varchar(20)');
+	 * @return bool          Was Field able to be saved?
+	 */
+	protected function create_field(array $field) {
+		$f = new Field(); // create new field object
+		return $this->set_fieldproperties($f, $field);
+	}
+
+/* =============================================================
+	Fieldgroup CRUD Functions
+============================================================= */
+	/**
+	 * Creates Field Group for Template
+	 * @return bool Was Field Group Saved?
+	 */
+	protected function create_fieldgroup($template) {
+		$pw_fields = new Fieldgroup();
+		$pw_fields->name = $template;
+		$pw_fields->save();
+		return $pw_fields;
+	}
+
+	/**
+	 * Updates Field Group for Template
+	 * @return bool Was Field Group Saved?
+	 */
+	protected function update_fieldgroup($template) {
+		$pw_fields = $this->wire('templates')->get($template)->fieldgroup;
+
+		if (get_class($pw_fields) != 'ProcessWire\Fieldgroup') {
+			$pw_fields = $this->create_fieldgroup($template);
+		}
+
+		$templatefields = $this::TEMPLATES[$template]['fields'];
+
+		foreach ($templatefields as $fieldname) {
+			if (!in_array($fieldname, $this::PROCESSWIRE_FIELDS)) {
+				if (array_key_exists($fieldname, $this::FIELDS)) {
+					$field = $this::FIELDS[$fieldname];
 				} else {
-					if (!$this->wire('session')->display) {
-						$this->wire('session')->display = $this->wire('config')->showonpage;
-					}
-				}
-			});
-
-			$this->addHook('Page::has_orderby', function($event) {
-				$page = $event->object;
-				$event->return = boolval($this->wire('input')->get->orderby);
-			});
-
-			$this->addHook('Page::orderby', function($event) {
-				$page = $event->object;
-				$event->return = $this->wire('input')->get->text('orderby');
-			});
-
-			$this->addHookProperty('Page::orderby_column', function($event) {
-				$page = $event->object;
-				$sortby = $this->wire('input')->get->text('orderby');
-				$sortby_array = explode('-', $sortby);
-				$event->return = $sortby_array[0];
-			});
-
-			$this->addHookProperty('Page::orderby_sort', function($event) {
-				$page = $event->object;
-				$sortby = $this->wire('input')->get->text('orderby');
-				$order = 'ASC';
-
-				if (strpos($sortby, '-') !== false) {
-					$sortby_array = explode('-', $sortby);
-					$order = $sortby_array[1];
+					$pw_pages = $this->wire('modules')->get('DplusPwPages');
+					$field = $pw_pages::FIELDS[$fieldname];
 				}
 
-				$event->return = $order;
-			});
-
-			$this->addHook('Page::get_sort', function($event) {
-				$sort = 'ASC';
-
-				$page = $event->object;
-				$column = $event->arguments(0);
-
-				if ($page->has_orderby()) {
-					if ($column == $page->orderby_column) {
-						$sort = $page->orderby_sort == 'ASC' ? 'DESC' : 'ASC';
-					}
-				}
-				$event->return = $sort;
-			});
-
-			$this->addHook('Page::get_sortURL', function($event) {
-				$page = $event->object;
-				$column = $event->arguments(0);
-				$sort = $page->get_sort($column);
-				$url = new Url($page->fullURL->getUrl());
-				$url->query->set('orderby', "$column-$sort");
-				$url->path = $this->paginate_page($page, 1);
-				$event->return = $url->getUrl();
-			});
-
-			$this->addHook('Page::get_printURL', function($event) {
-				$page = $event->object;
-				$url = new Url($page->fullURL->getUrl());
-				$url->query->set('print', 'true');
-				$event->return = $url->getUrl();
-			});
-
-			$this->addHook('Page::is_print', function($event) {
-				$page = $event->object;
-				$event->return = $page->print == true;
-			});
-
-			$this->addHook('Page::pw_template', function($event) {
-				$page = $event->object;
-				$event->return = str_replace('.php', '', $page->pw_template) . '.php';
-			});
-
-			$this->addHook('Page::is_filtering', function($event) {
-				$page = $event->object;
-				$event->return = $page->fullURL->query->has('filter');
-			});
-
-			$this->addHook('Page::has_redirect_from', function($event) {
-				$page = $event->object;
-				$event->return = $page->fullURL->query->has('redirect_from');
-			});
-
-			$this->addHookProperty('Page::redirect_from', function($event) {
-				$page = $event->object;
-				$event->return = $page->fullURL->query->get('redirect_from');
-			});
-
-			$this->addHookProperty('Page::redirect_from_page', function($event) {
-				$page = $event->object;
-				$redirect_from = $page->fullURL->query->get('redirect_from');
-				$patharray = explode('/', trim($this->wire('config')->paths->root, '/'));
-				$basepath = end($patharray);
-
-				$redirect_from = ltrim(str_replace("$basepath", '', $redirect_from), '/');
-				$event->return = $this->wire('pages')->get("/$redirect_from");
-			});
-		}
-
-		/**
-		 * ProcessWire Installer Function
-		 * NOTE: Runs when installed through ProcessWire
-		 * @return void
-		 */
-		public function ___install() {
-			$this->install_fields();
-			$this->install_templates();
-			$this->install_pages();
-		}
-
-		/**
-		 * ProcessWire removal Function
-		 * NOTE: Runs when removed through ProcessWire
-		 * @return void
-		 */
-		public function ___uninstall() {
-
-		}
-
-		public function update() {
-			$this->install_fields();
-			$this->install_templates();
-			$this->install_pages();
-		}
-
-
-	/* =============================================================
-		Module Functions
-	============================================================= */
-		/**
-		 * Installs (updates | creates) the fields
-		 * @return void
-		 */
-		protected function install_fields() {
-			foreach ($this::FIELDS as $fieldname => $field) {
-				if (boolval($this->wire('fields')->get($field['name']))) {
-					$this->update_field($field);
-				} else {
+				if (boolval($this->wire('fields')->get($fieldname)) == false) {
 					$this->create_field($field);
-				}
-			}
-		}
-
-		/**
-		 * Installs (updates | creates) the templates
-		 * @return void
-		 */
-		protected function install_templates() {
-			foreach ($this::TEMPLATES as $templatename => $template) {
-				if ($this->wire('templates')->get($templatename)) {
-					$this->update_template($templatename);
 				} else {
-					$this->create_template($templatename);
-				}
-			}
-		}
-
-		/**
-		 * Installs (updates | creates) the pages
-		 * @return void
-		 */
-		protected function install_pages() {
-			foreach ($this::PAGES as $pagename => $page) {
-				$pagepath = $page['parent'].$page['name']."/";
-
-				if (boolval($this->wire('pages')->find($pagepath)->count)) {
-					$this->update_page($page);
-				} else {
-					$this->create_page($page);
-				}
-			}
-		}
-
-		/**
-		 * Creates Field for Template
-		 * NOTE Field is an element from the array created from $this->get_fields()
-		 * @param  array  $field array('name' => 'ordernumber', 'type' => 'Text', 'size', => '20', 'column' => 'varchar(20)');
-		 * @return bool          Was Field able to be saved?
-		 */
-		protected function create_field(array $field) {
-			$f = new Field(); // create new field object
-			return $this->set_fieldproperties($f, $field);
-		}
-
-		/**
-		 * Updates Field for Template
-		 * NOTE Field is an element from the array created from $this->get_fields()
-		 * @param  array  $field array('name' => 'ordernumber', 'type' => 'Text', 'size', => '20', 'column' => 'varchar(20)');
-		 * @return bool          Was Field able to be saved?
-		 */
-		protected function update_field(array $field) {
-			$f = wire('fields')->get($field['name']);
-			return $this->set_fieldproperties($f, $field);
-		}
-
-		public function set_fieldproperties(Field $f, array $field) {
-			$f->type  = ctype_upper($field['type']) ? $field['type'] : ucfirst($field['type']); // get a field type
-			$f->name  = $field['name'];
-			$f->label = $field['label'];
-
-			if (isset($field['notes'])) {
-				$f->notes = $field['notes'];
-			}
-
-			if (isset($field['description'])) {
-				$f->description = $field['description'];
-			}
-
-			if (isset($field['notes'])) {
-				$f->notes = $field['notes'];
-			}
-			$function = "update_field_".$field['type'];
-
-			if (method_exists($this, $function)) {
-				$this->$function($f, $field);
-			}
-
-			return $f->save();
-		}
-
-		protected function update_field_select(Field $field, array $fieldproperties) {
-			$options = new SelectableOptionArray();
-			foreach ($fieldproperties['options'] as $option => $title) {
-				$selectoption = new SelectableOption();
-				$selectoption->title = $title;
-				$selectoption->value = $option;
-				$options->add($selectoption);
-			}
-			$field->type->setOptions($field, $options);
-		}
-
-		/**
-		 * Creates Field Group for Template
-		 * @return bool Was Field Group Saved?
-		 */
-		protected function create_fieldgroup($template) {
-			$pw_fields = new Fieldgroup();
-			$pw_fields->name = $template;
-			$pw_fields->save();
-			return $pw_fields;
-		}
-
-		/**
-		 * Updates Field Group for Template
-		 * @return bool Was Field Group Saved?
-		 */
-		protected function update_fieldgroup($template) {
-			$pw_fields = $this->wire('templates')->get($template)->fieldgroup;
-
-			if (get_class($pw_fields) != 'ProcessWire\Fieldgroup') {
-				$pw_fields = $this->create_fieldgroup($template);
-			}
-
-			$templatefields = $this::TEMPLATES[$template]['fields'];
-
-			foreach ($templatefields as $fieldname) {
-				if (!in_array($fieldname, $this::PROCESSWIRE_FIELDS)) {
-					if (array_key_exists($fieldname, $this::FIELDS)) {
-						$field = $this::FIELDS[$fieldname];
-					} else {
-						$pw_pages = $this->wire('modules')->get('DplusPwPages');
-						$field = $pw_pages::FIELDS[$fieldname];
-					}
-
-					if (boolval($this->wire('fields')->get($fieldname)) == false) {
-						$this->create_field($field);
-					} else {
-						if (!in_array($fieldname, $this::PROCESSWIRE_FIELDS) && in_array($fieldname, $this::FIELDS)) {
-							$this->update_field($field);
-						}
+					if (!in_array($fieldname, $this::PROCESSWIRE_FIELDS) && in_array($fieldname, $this::FIELDS)) {
+						$this->update_field($field);
 					}
 				}
+			}
 
+			$pw_field = $this->wire('fields')->get($fieldname);
+			$pw_fields->add($pw_field);
+		}
+
+		foreach ($this::PROCESSWIRE_FIELDS as $fieldname) {
+			if ($pw_fields->hasField($fieldname) == false) {
 				$pw_field = $this->wire('fields')->get($fieldname);
 				$pw_fields->add($pw_field);
 			}
-
-			foreach ($this::PROCESSWIRE_FIELDS as $fieldname) {
-				if ($pw_fields->hasField($fieldname) == false) {
-					$pw_field = $this->wire('fields')->get($fieldname);
-					$pw_fields->add($pw_field);
-				}
-			}
-
-			return $pw_fields->save();
 		}
+		return $pw_fields->save();
+	}
 
-		/**
-		 * Creates Template
-		 * @uses create_fieldgroup()
-		 * @return bool Was Template able to be saved?
-		 */
-		protected function create_template($template) {
-			$allow_pagination = array_key_exists('paginated', $this::TEMPLATES[$template]) ? $this::TEMPLATES[$template]['paginated'] : 0;
-			$t = new Template();
-			$t->name = $template;
-			$t->fieldgroup = $this->create_fieldgroup($template);
-			$t->save();
-			$this->update_fieldgroup($template);
-			$t->fieldgroup = $this->wire('fieldgroups')->get($template);
-			$this->allowPageNum = $allow_pagination ? 1 : 0;
-			$this->slashPageNum = 1;
-			$t->save();
-		}
 
-		/**
-		 * Updates Template
-		 * @uses update_fieldgroup()
-		 * @return bool Was Template able to be saved?
-		 */
-		protected function update_template($template) {
-			if (array_key_exists('paginated', $this::TEMPLATES[$template])) {
-				$allow_pagination = $this::TEMPLATES[$template]['paginated'];
+/* =============================================================
+	Template CRUD Functions
+============================================================= */
+	/**
+	 * Installs (updates | creates) the templates
+	 * @return void
+	 */
+	protected function install_templates() {
+		foreach ($this::TEMPLATES as $templatename => $template) {
+			if ($this->wire('templates')->get($templatename)) {
+				$this->update_template($templatename);
 			} else {
-				$allow_pagination = 1;
+				$this->create_template($templatename);
 			}
-
-			$t = wire('templates')->get($template);
-			$this->update_fieldgroup($template);
-			$t->fieldgroup = wire('templates')->get($template)->fieldgroup;
-			$t->allowPageNum = $allow_pagination;
-			$t->slashPageNum = 1;
-			$t->save();
-		}
-
-		/**
-		 * Updates Existing Page
-		 * @param  string $page
-		 * @return bool        Was Page updated?
-		 */
-		protected function update_page($page) {
-			$pagepath = $page['parent'].$page['name']."/";
-			$parentpath = isset($page['parent-new']) ? $page['parent-new'] : $page['parent'];
-
-			$pw_page = $this->wire('pages')->get($pagepath);
-			$pw_page->of(false);
-			$pw_page->template = $page['template'];
-			$pw_page->parent = $this->wire('pages')->get($parentpath);
-			$pw_page->name = $page['name'];
-			$pw_page->title = $page['title'];
-
-			$default_templates = $this->wire('modules')->get('DplusPwPages')::TEMPLATES;
-
-			if (in_array($page['template'], array_keys($default_templates))) {
-				foreach ($default_templates[$page['template']]['fields'] as $fieldname) {
-					if (array_key_exists($fieldname, $page)) {
-						$pw_page->$fieldname = $page[$fieldname];
-					}
-				}
-			} else {
-				foreach ($this::TEMPLATES[$page['template']]['fields'] as $fieldname) {
-					echo $page['template'] . "-".$fieldname . "<br>";
-					if (array_key_exists($fieldname, $page)) {
-						$pw_page->$fieldname = $page[$fieldname];
-					}
-				}
-			}
-
-			return $pw_page->save();
-		}
-
-		/**
-		 * Creates Page
-		 * @param  string $page
-		 * @return bool         Was Page created?
-		 */
-		protected function create_page($page) {
-			$pw_page = new Page();
-			$pw_page->template = $page['template'];
-			$pw_page->parent = $this->wire('pages')->get($page['parent']);
-			$pw_page->name = $page['name'];
-			$pw_page->title = $page['title'];
-			$pw_page->save();
-
-			$default_templates = $this->wire('modules')->get('DplusPwPages')::TEMPLATES;
-
-			if (in_array($page['template'], array_keys($default_templates))) {
-				foreach ($default_templates[$page['template']]['fields'] as $fieldname) {
-					$pw_page->$fieldname = $page[$fieldname];
-				}
-			} else {
-				foreach ($this::TEMPLATES[$page['template']]['fields'] as $fieldname) {
-					if (array_key_exists($fieldname, $page)) {
-						$pw_page->$fieldname = $page[$fieldname];
-					}
-				}
-			}
-			return $pw_page->save();
-		}
-
-		public function paginate_page(Page $page, $pagenbr) {
-			$url = $page->url;
-
-			if (strpos($url, 'page') !== false) {
-				$regex = "((page)\d{1,3})";
-				$replace = ($pagenbr > 1) ? "page".$pagenbr : "";
-				$url = preg_replace($regex, $replace, $url);
-			} else {
-				$insertafter = "/$page->name/";
-				$regex = "(($insertafter))";
-				$replace = ($pagenbr > 1) ? $insertafter."page".$pagenbr."/" : $insertafter;
-				$url = preg_replace($regex, $replace, $url);
-			}
-			return $url;
 		}
 	}
+
+	/**
+	 * Creates Template
+	 * @uses create_fieldgroup()
+	 * @return bool Was Template able to be saved?
+	 */
+	protected function create_template($template) {
+		$allow_pagination = array_key_exists('paginated', $this::TEMPLATES[$template]) ? $this::TEMPLATES[$template]['paginated'] : 0;
+		$t = new Template();
+		$t->name = $template;
+		$t->fieldgroup = $this->create_fieldgroup($template);
+		$t->save();
+		$this->update_fieldgroup($template);
+		$t->fieldgroup = $this->wire('fieldgroups')->get($template);
+		$this->allowPageNum = $allow_pagination ? 1 : 0;
+		$this->slashPageNum = 1;
+		$t->save();
+	}
+
+	/**
+	 * Updates Template
+	 * @uses update_fieldgroup()
+	 * @return bool Was Template able to be saved?
+	 */
+	protected function update_template($template) {
+		if (array_key_exists('paginated', $this::TEMPLATES[$template])) {
+			$allow_pagination = $this::TEMPLATES[$template]['paginated'];
+		} else {
+			$allow_pagination = 1;
+		}
+
+		$t = wire('templates')->get($template);
+		$this->update_fieldgroup($template);
+		$t->fieldgroup = wire('templates')->get($template)->fieldgroup;
+		$t->allowPageNum = $allow_pagination;
+		$t->slashPageNum = 1;
+		$t->save();
+	}
+
+/* =============================================================
+	Page CRUD Functions
+============================================================= */
+	/**
+	 * Installs (updates | creates) the pages
+	 * @return void
+	 */
+	protected function install_pages() {
+		foreach ($this::PAGES as $pagename => $page) {
+			$pagepath = $page['parent'].$page['name']."/";
+
+			if (boolval($this->wire('pages')->find($pagepath)->count)) {
+				$this->update_page($page);
+			} else {
+				$this->create_page($page);
+			}
+		}
+	}
+
+	/**
+	 * Creates Page
+	 * @param  string $page
+	 * @return bool         Was Page created?
+	 */
+	protected function create_page($page) {
+		$pw_page = new Page();
+		$pw_page->template = $page['template'];
+		$pw_page->parent = $this->wire('pages')->get($page['parent']);
+		$pw_page->name = $page['name'];
+		$pw_page->title = $page['title'];
+		$pw_page->save();
+
+		$default_templates = $this->wire('modules')->get('DplusPwPages')::TEMPLATES;
+
+		if (in_array($page['template'], array_keys($default_templates))) {
+			foreach ($default_templates[$page['template']]['fields'] as $fieldname) {
+				$pw_page->$fieldname = $page[$fieldname];
+			}
+		} else {
+			foreach ($this::TEMPLATES[$page['template']]['fields'] as $fieldname) {
+				if (array_key_exists($fieldname, $page)) {
+					$pw_page->$fieldname = $page[$fieldname];
+				}
+			}
+		}
+		return $pw_page->save();
+	}
+
+	/**
+	 * Updates Existing Page
+	 * @param  string $page
+	 * @return bool        Was Page updated?
+	 */
+	protected function update_page($page) {
+		$pagepath = $page['parent'].$page['name']."/";
+		$parentpath = isset($page['parent-new']) ? $page['parent-new'] : $page['parent'];
+
+		$pw_page = $this->wire('pages')->get($pagepath);
+		$pw_page->of(false);
+		$pw_page->template = $page['template'];
+		$pw_page->parent = $this->wire('pages')->get($parentpath);
+		$pw_page->name = $page['name'];
+		$pw_page->title = $page['title'];
+
+		$default_templates = $this->wire('modules')->get('DplusPwPages')::TEMPLATES;
+
+		if (in_array($page['template'], array_keys($default_templates))) {
+			foreach ($default_templates[$page['template']]['fields'] as $fieldname) {
+				if (array_key_exists($fieldname, $page)) {
+					$pw_page->$fieldname = $page[$fieldname];
+				}
+			}
+		} else {
+			foreach ($this::TEMPLATES[$page['template']]['fields'] as $fieldname) {
+				echo $page['template'] . "-".$fieldname . "<br>";
+				if (array_key_exists($fieldname, $page)) {
+					$pw_page->$fieldname = $page[$fieldname];
+				}
+			}
+		}
+
+		return $pw_page->save();
+	}
+
+	public function paginate_page(Page $page, $pagenbr) {
+		$url = $page->url;
+
+		if (strpos($url, 'page') !== false) {
+			$regex = "((page)\d{1,3})";
+			$replace = ($pagenbr > 1) ? "page".$pagenbr : "";
+			$url = preg_replace($regex, $replace, $url);
+		} else {
+			$insertafter = "/$page->name/";
+			$regex = "(($insertafter))";
+			$replace = ($pagenbr > 1) ? $insertafter."page".$pagenbr."/" : $insertafter;
+			$url = preg_replace($regex, $replace, $url);
+		}
+		return $url;
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Create ProcesWire Pages',
+			'version' => 101,
+			'summary' => 'Dplus Create ProcesWire Pages Base Class',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+	public function init() {
+		$this->addHookProperty('Page::pagenbr', function($event) {
+			$page = $event->object;
+			$event->return = $this->wire('input')->pageNum;
+		});
+
+		$this->addHook('Page::paginate', function($event) {
+			$page = $event->object;
+			$pagenbr = $event->arguments(0);
+			$event->return = $this->paginate_page($page, $pagenbr);
+		});
+
+		$this->addHook('Page::get_pagecount', function($event) {
+			$page = $event->object;
+			$count = $event->arguments(0);
+			$totalpages = ceil($count / $this->wire('session')->display);
+			$event->return = $totalpages == 0 ? 1 : $totalpages;
+		});
+
+		$this->addHookBefore('Page::render', function($event) {
+			if ($this->wire('input')->get->display) {
+				$this->wire('session')->display = $this->wire('input')->get->text('display');
+			} else {
+				if (!$this->wire('session')->display) {
+					$this->wire('session')->display = $this->wire('config')->showonpage;
+				}
+			}
+		});
+
+		$this->addHook('Page::has_orderby', function($event) {
+			$page = $event->object;
+			$event->return = boolval($this->wire('input')->get->orderby);
+		});
+
+		$this->addHook('Page::orderby', function($event) {
+			$page = $event->object;
+			$event->return = $this->wire('input')->get->text('orderby');
+		});
+
+		$this->addHookProperty('Page::orderby_column', function($event) {
+			$page = $event->object;
+			$sortby = $this->wire('input')->get->text('orderby');
+			$sortby_array = explode('-', $sortby);
+			$event->return = $sortby_array[0];
+		});
+
+		$this->addHookProperty('Page::orderby_sort', function($event) {
+			$page = $event->object;
+			$sortby = $this->wire('input')->get->text('orderby');
+			$order = 'ASC';
+
+			if (strpos($sortby, '-') !== false) {
+				$sortby_array = explode('-', $sortby);
+				$order = $sortby_array[1];
+			}
+
+			$event->return = $order;
+		});
+
+		$this->addHook('Page::get_sort', function($event) {
+			$sort = 'ASC';
+
+			$page = $event->object;
+			$column = $event->arguments(0);
+
+			if ($page->has_orderby()) {
+				if ($column == $page->orderby_column) {
+					$sort = $page->orderby_sort == 'ASC' ? 'DESC' : 'ASC';
+				}
+			}
+			$event->return = $sort;
+		});
+
+		$this->addHook('Page::get_sortURL', function($event) {
+			$page = $event->object;
+			$column = $event->arguments(0);
+			$sort = $page->get_sort($column);
+			$url = new Url($page->fullURL->getUrl());
+			$url->query->set('orderby', "$column-$sort");
+			$url->path = $this->paginate_page($page, 1);
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::get_printURL', function($event) {
+			$page = $event->object;
+			$url = new Url($page->fullURL->getUrl());
+			$url->query->set('print', 'true');
+			$event->return = $url->getUrl();
+		});
+
+		$this->addHook('Page::is_print', function($event) {
+			$page = $event->object;
+			$event->return = $page->print == true;
+		});
+
+		$this->addHook('Page::pw_template', function($event) {
+			$page = $event->object;
+			$event->return = str_replace('.php', '', $page->pw_template) . '.php';
+		});
+
+		$this->addHook('Page::is_filtering', function($event) {
+			$page = $event->object;
+			$event->return = $page->fullURL->query->has('filter');
+		});
+
+		$this->addHook('Page::has_redirect_from', function($event) {
+			$page = $event->object;
+			$event->return = $page->fullURL->query->has('redirect_from');
+		});
+
+		$this->addHookProperty('Page::redirect_from', function($event) {
+			$page = $event->object;
+			$event->return = $page->fullURL->query->get('redirect_from');
+		});
+
+		$this->addHookProperty('Page::redirect_from_page', function($event) {
+			$page = $event->object;
+			$redirect_from = $page->fullURL->query->get('redirect_from');
+			$patharray = explode('/', trim($this->wire('config')->paths->root, '/'));
+			$basepath = end($patharray);
+
+			$redirect_from = ltrim(str_replace("$basepath", '', $redirect_from), '/');
+			$event->return = $this->wire('pages')->get("/$redirect_from");
+		});
+	}
+
+	/**
+	 * ProcessWire Installer Function
+	 * NOTE: Runs when installed through ProcessWire
+	 * @return void
+	 */
+	public function ___install() {
+		$this->install_fields();
+		$this->install_templates();
+		$this->install_pages();
+	}
+
+	/**
+	 * ProcessWire removal Function
+	 * NOTE: Runs when removed through ProcessWire
+	 * @return void
+	 */
+	public function ___uninstall() {
+
+	}
+
+	public function update() {
+		$this->install_fields();
+		$this->install_templates();
+		$this->install_pages();
+	}
+}
