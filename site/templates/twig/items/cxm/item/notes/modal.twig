@@ -18,7 +18,6 @@
 					<input type="hidden" name="custID" value="{{ item.custid }}">
 					<input type="hidden" name="custitemID" value="{{ item.custitemid }}">
 					<input type="hidden" name="itemID" value="{{ item.itemid }}">
-
 					<input type="hidden" name="form" value="">
 
 					<div class="form-group">
@@ -27,7 +26,7 @@
 								<div class="col">
 									<div class="custom-control custom-checkbox">
 										<input type="checkbox" class="custom-control-input" name={{ form }} id="order-{{form}}" value="Y">
-										<label class="custom-control-label" for="order-{{form}}">{{ label }}</label>
+										<label class="custom-control-label" for="order-{{form}}">{{ form|capitalize }}</label>
 									</div>
 								</div>
 							{% endfor %}

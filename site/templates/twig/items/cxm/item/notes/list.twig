@@ -8,7 +8,7 @@
 	<div class="list-group-item list-group-item-action bg-dark text-white">
 		<div class="form-row">
 			{% for form, label in qnotes.get_forms_shortlabels() %}
-				<div class="col">{{ label|capitalize }}</div>
+				<div class="col">{{ form|capitalize }}</div>
 			{% endfor %}
 			<div class="col-sm-2">
 				Note &nbsp;

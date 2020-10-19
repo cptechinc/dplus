@@ -53,6 +53,21 @@
 					$response = "$custID was not found in the Customer Master";
 				}
 				break;
+			case 'get-item':
+				$itemID = $values->itemID ? $values->text('itemID') : $values->text('ouritemID');
+
+				if ($cxm->validate_itemID($itemID)) {
+					$item = ItemMasterItemQuery::create()->findOneByItemid($itemID);
+					$response = array(
+						'itemid' => $itemID,
+						'description' => $item->description,
+						'description2' => $item->description2,
+						'uofmsale'     => $item->uom_sale
+					);
+				} else {
+					$response = false;
+				}
+				break;
 		}
 	}
 

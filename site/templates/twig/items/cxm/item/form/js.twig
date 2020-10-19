@@ -38,6 +38,19 @@ $(function() {
 	$("body").on("change", "#price_uom", function(e) {
 	});
 
+	$("body").on("change", "input[name=itemID]", function(e) {
+		var input = $(this);
+		get_item(input.val(), function(item) {
+			if (item) {
+				var itemcol = $('.item-col');
+				itemcol.find('.description').text(item.description);
+				itemcol.find('.description2').text(item.description2);
+				itemcol.find('.description2').text(item.description2);
+				$('.item-uom').text(item.uofmsale);
+			}
+		});
+	});
+
 	$("body").on("click", "a.remove-cxm-item", function(e) {
 		e.preventDefault();
 		var button = $(this);
@@ -118,9 +131,11 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var itemID = button.data('itemid');
-		var description = button.find('.description').text();
-		input_itemID.val(itemID);
-		input_itemID.closest('.item-col').find('.description').text(description);
+		var description = button.data('description');
+		var description2 = button.data('description2');
+		input_itemID.val(itemID).change() ;
+		// input_itemID.closest('.item-col').find('.description').text(description);
+		// input_itemID.closest('.item-col').find('.description2').text(description2);
 		modal_ajax.modal('hide');
 	});
 
@@ -274,6 +289,15 @@ $(function() {
 
 		$.getJSON(url.toString(), function( valid ) {
 			callback(valid);
+		});
+	}
+
+	function get_item(itemID, callback) {
+		var url = new URI('{{ url_validate }}');
+		url.addQuery('action', 'get-item').addQuery('itemID', input_itemID.val());
+		$.getJSON(url.toString(), function( item ) {
+			console.log(item);
+			callback(item);
 		});
 	}
 
