@@ -68,7 +68,7 @@
 				$recordlocker->remove_lock($page->name);
 				$item = $cxm->get_cxm_item_new();
 				$item->setCustid($custID);
-				$page->headline = "CXM: New Item for $custID";
+				$page->headline = "CXM: New Item X-Ref for $custID";
 
 				if ($custitemID != 'new') {
 					$item->setCustitemid($custitemID);
