@@ -10,7 +10,7 @@
 
 	if ($user->loggedin) {
 		$session->remove('loggingin');
-		
+
 		if ($session->returnurl) {
 			$url = $session->returnurl;
 			$session->remove('returnurl');
