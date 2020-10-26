@@ -73,6 +73,13 @@ $(function() {
 			}
 		});
 	});
+
+	$("body").on("change", "input[name=listprice]", function(e) {
+		var input = $(this);
+		input.val(parseFloat(input.val()).toFixed({{ vxm.decimal_places_price }}));
+		$('input[name=eachlistprice]').val(parseFloat(get_eachlistprice()).toFixed({{ vxm.decimal_places_price }}));
+	});
+
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
@@ -356,20 +363,22 @@ $(function() {
 	 */
 	function calculate_eachlistprice() {
 		var oldlistprice = eachlistprice;
-		var conversion = input_uom.find('option:selected').data('conversion');
-		eachlistprice = input_listprice.val() / parseFloat(conversion);
+		eachlistprice = get_eachlistprice();
 		input_eachlistprice.val(eachlistprice);
 
-		if (eachlistprice != oldlistprice) {
-			calculate_margins();
-		}
+		calculate_margins();
+	}
+
+	function get_eachlistprice() {
+		var conversion = input_uom.find('option:selected').data('conversion');
+		return eachlistprice = input_listprice.val() / parseFloat(conversion);
 	}
 
 	/**
 	 * Calculates Margin for each Unit Cost
 	 */
 	function calculate_margins() {
-		$(".unit-row").each(function( index ) {
+		$(".unit-row").each(function(index ) {
 			update_unitrow_margin($(this));
 		});
 	}
@@ -381,10 +390,13 @@ $(function() {
 	function update_unitrow_margin(unitrow) {
 		var input_unitqty = unitrow.find('.unit-qty');
 		var input_unitcost = unitrow.find('.unit-cost');
-		var ele_margin = unitrow.find('.unit-margin');
-		var margin = determine_unitmargin(input_unitcost.val());
+		input_unitcost.val(parseFloat(input_unitcost.val()).toFixed({{ vxm.decimal_places_price() }}));
 
-		ele_margin.text(margin.toFixed({{ vxm.decimal_places_margin() }}));
+		if (parseFloat(input_unitcost.val())) {
+			var ele_margin = unitrow.find('.unit-margin');
+			var margin = determine_unitmargin(input_unitcost.val());
+			ele_margin.text(parseFloat(margin).toFixed({{ vxm.decimal_places_margin() }}));
+		}
 	}
 
 	/**
@@ -393,6 +405,8 @@ $(function() {
 	 * @return float
 	 */
 	function determine_unitmargin(cost) {
+		var eachlistprice = get_eachlistprice();
+
 		if (eachlistprice == 0 || cost == 0) {
 			return '';
 		} else {
