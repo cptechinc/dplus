@@ -69,6 +69,27 @@
 					$response = true;
 				}
 				break;
+			case 'get-item':
+				$itemID = $values->itemID ? $values->text('itemID') : $values->text('ouritemID');
+
+				if ($validate->itemid($itemID)) {
+					$item = ItemMasterItemQuery::create()->findOneByItemid($itemID);
+					$response = array(
+						'itemid' => $itemID,
+						'description' => $item->description,
+						'description2' => $item->description2,
+						'uom' => array(
+							'sale' => array(
+								'code'        => $item->UnitofMeasureSale ? $item->UnitofMeasureSale->code : '',
+								'description' => $item->UnitofMeasureSale ? $item->UnitofMeasureSale->description : '',
+								'conversion'  => $item->UnitofMeasureSale ? $item->UnitofMeasureSale->conversion : '',
+							)
+						)
+					);
+				} else {
+					$response = false;
+				}
+				break;
 		}
 	}
 
