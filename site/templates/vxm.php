@@ -87,7 +87,7 @@
 			}
 		} else {
 			$recordlocker->remove_lock($page->name);
-			$page->headline = "Vendor X-ref for $vendor->name";
+			$page->headline = "Vendor X-Ref for $vendor->name";
 			$filter_vxm->filter_query($input);
  			$q = $values->q ? $values->text('q') : '';
 
