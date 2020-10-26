@@ -58,6 +58,21 @@ $(function() {
 		});
 	});
 
+	$("body").on("change", "input[name=ouritemID]", function(e) {
+		var input = $(this);
+
+		request_item(input.val(), function(item) {
+			if (item) {
+				var itemcol = $('.item-col');
+				itemcol.find('.description').text(item.description);
+				itemcol.find('.description2').text(item.description2);
+				itemcol.find('.uom-sale').text(item.uom.sale.description);
+				$('.uom-sale-code').attr('data-conversion', item.uom.sale.conversion);
+				$('.uom-sale-code').text(item.uom.sale.code);
+				input_listprice.change();
+			}
+		});
+	});
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
@@ -123,8 +138,7 @@ $(function() {
 		var button = $(this);
 		var itemID = button.data('itemid');
 		var description = button.data('description');
-		input_ouritemID.val(itemID);
-		input_ouritemID.closest('.item-col').find('.description').text(description);
+		input_ouritemID.val(itemID).change();
 		modal_ajax.modal('hide');
 	});
 
@@ -210,7 +224,6 @@ $(function() {
 				obj[item.name] = item.value;
 				return obj;
 			}, {});
-
 			update_vxm(form);
 		}
 	});
@@ -323,6 +336,15 @@ $(function() {
 		console.log(url.toString());
 		$.getJSON(url.toString(), function( valid ) {
 			callback(valid);
+		});
+	}
+
+	function request_item(itemID, callback) {
+		var url = new URI('{{ url_validate }}');
+		url.addQuery('action', 'get-item').addQuery('itemID', itemID);
+		console.log(url.toString());
+		$.getJSON(url.toString(), function( item ) {
+			callback(item);
 		});
 	}
 /* =============================================================
