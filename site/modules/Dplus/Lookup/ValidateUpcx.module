@@ -3,13 +3,24 @@
 use Propel\Runtime\ActiveQuery\Criteria;
 
 use ItemMasterItemQuery, ItemMasterItem;
-
+use ItemXrefUpcQuery, ItemXrefUpc;
 /**
- * ValidateItm
+ * ValidateUpcx
  *
  * Class for validating Itm fields
  */
 class ValidateUpcx extends WireData implements Module {
+	/**
+	 * Return if UPC exists
+	 * @param  string $upc UPC Code
+	 * @return bool
+	 */
+	public function upc_exists($upc) {
+		$q = ItemXrefUpcQuery::create();
+		$q->filterByUpc($upc);
+		return boolval($q->count());
+	}
+
 /* =============================================================
 	IN Functions
 ============================================================= */
@@ -18,7 +29,7 @@ class ValidateUpcx extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return bool
 	 */
-	public function itemid_exists($itemID) {
+	public function itemid($itemID) {
 		return $this->validate->in->itemid_exists($itemID);
 	}
 
