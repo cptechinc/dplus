@@ -112,7 +112,7 @@ $(function() {
 	});
 
 /* =============================================================
-	Vendor Lookup Modal Functions
+	AJAX Lookup Modal Functions
 ============================================================= */
 	modal_ajax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
@@ -349,7 +349,7 @@ $(function() {
 	function request_item(itemID, callback) {
 		var url = new URI('{{ url_validate }}');
 		url.addQuery('action', 'get-item').addQuery('itemID', itemID);
-		console.log(url.toString());
+
 		$.getJSON(url.toString(), function( item ) {
 			callback(item);
 		});
