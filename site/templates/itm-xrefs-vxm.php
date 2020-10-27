@@ -83,7 +83,7 @@
 				$recordlocker->remove_lock($page->name);
 				$filter_vxm->filter_query($input);
 				$filter_vxm->apply_sortby($page);
-				$page->headline = "ITEM: VXM Item $itemID";
+				$page->headline = "ITM: VXM Item $itemID";
 				$items = $filter_vxm->query->paginate($input->pageNum, 10);
 
 				$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
