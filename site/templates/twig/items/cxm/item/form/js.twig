@@ -288,6 +288,7 @@ $(function() {
 		url.addQuery('return', 'bool');
 
 		$.getJSON(url.toString(), function( valid ) {
+
 			callback(valid);
 		});
 	}
@@ -296,7 +297,6 @@ $(function() {
 		var url = new URI('{{ url_validate }}');
 		url.addQuery('action', 'get-item').addQuery('itemID', input_itemID.val());
 		$.getJSON(url.toString(), function( item ) {
-			console.log(item);
 			callback(item);
 		});
 	}
