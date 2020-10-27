@@ -147,7 +147,7 @@ class XrefUpc extends WireData implements Module {
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
-	/**
+/**
 	 * Takes Input, validates it's for one of the code tables
 	 * Processes it, and if updated sends request to dplus
 	 *
@@ -155,23 +155,28 @@ class XrefUpc extends WireData implements Module {
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$upc = $values->text('upc');
+
+		switch ($values->text('action')) {
+			case 'remove-upcx':
+			case 'update-upcx':
+				$this->process_input_upcx($input);
+				break;
+			default:
+				$message = self::DESCRIPTION_RECORD . " ($upc) was not saved, no action was specified";
+				$this->wire('session')->response_xref = XrefResponse::response_error($upc, $message);
+				break;
+		}
+	}
+
+	public function process_input_upcx(WireInput $input) {
 		$recordlocker = $this('modules')->get('RecordLockerUser');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$upc = $input->$rm->text('upc');
-		$itemID = $input->$rm->text('itemID');
-
+		$upc = $values->text('upc');
 		$record = $this->get_create_upc($input);
-
-		if (!$values->action) {
-			$message = self::DESCRIPTION_RECORD . " ($upc) was not saved, no action was specified";
-			$response = $this->create_error_response($upc, $message);
-		}
-
-		if (!$record->isNew() && !$recordlocker->function_locked_by_user('upcx', $upc)) {
-			$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $recordlocker->get_locked_user('upcx', $upc);
-			$response = $this->create_error_response($upc, $message);
-		}
 
 		/**
 		 * Create lock for UPC code if not already locked.
@@ -180,15 +185,17 @@ class XrefUpc extends WireData implements Module {
 			$recordlocker->create_lock('upcx', $upc);
 		}
 
-		if ($record->isNew() || $recordlocker->function_locked_by_user('upcx', $upc)) {
-			if ($input->$rm->text('action') == 'remove-upcx') {
-				$record->delete();
-			} elseif ($input->$rm->text('action') == 'update-upcx') {
-				$this->update_record_input($record, $input);
-			}
-
-			if ($input->$rm->action) {
-				$response = $this->save_and_process_response($record);
+		if ($recordlocker->function_locked_by_user('upcx', $upc)) {
+			if ($values->action) {
+				switch ($values->text('action')) {
+					case 'remove-upcx':
+						$record->delete();
+						break;
+					case 'update-upcx':
+						$this->update_record_input($record, $input);
+						break;
+				}
+				$response = $this->save_and_respond($record);
 
 				/**
 				 * IF we saved this Item as the Primary PO ORDER then we have to update
@@ -198,6 +205,9 @@ class XrefUpc extends WireData implements Module {
 					$this->update_primary_record($record);
 				}
 			}
+		} elseif (!$recordlocker->function_locked_by_user('upcx', $upc)) {
+			$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $recordlocker->get_locked_user('upcx', $upc);
+			$response = $response = XrefResponse::response_error($upc, $message);
 		}
 		$this->wire('session')->response_xref = $response;
 	}
@@ -249,7 +259,7 @@ class XrefUpc extends WireData implements Module {
 	 * @param  ItemXrefUpc $record Record to record response of database save
 	 * @return XrefResponse
 	 */
-	protected function save_and_process_response(ItemXrefUpc $record) {
+	protected function save_and_respond(ItemXrefUpc $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 		$code = "$record->upc";
@@ -426,6 +436,14 @@ class XrefUpc extends WireData implements Module {
 		$this->addHookProperty('Page(pw_template=upcx)::itemID', function($event) {
 			$p = $event->object;
 			$event->return = $p->fullURL->query->get('itemID');
+		});
+
+		$this->addHookProperty('Page(pw_template=upcx|itm-upcx)::search_itemsURL', function($event) {
+			$event->return = $this->wire('pages')->get('pw_template=itm-search')->url;
+		});
+
+		$this->addHookProperty('Page(pw_template=upcx|itm-upcx)::validateURL', function($event) {
+			$event->return = $this->wire('pages')->get('pw_template=upcx-validate')->httpUrl;
 		});
 	}
 }
