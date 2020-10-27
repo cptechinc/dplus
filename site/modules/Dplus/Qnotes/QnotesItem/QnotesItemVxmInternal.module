@@ -178,7 +178,8 @@ class QnotesItemVxmInternal extends WireData implements Module {
 
 		$this->delete_notes($itemID, $vendorID, $userID, date(ItemXrefVendorNoteInternal::FORMAT_NOTEDATE, strtotime($notedate)), $notetimeraw);
 
-		$note_lines = explode(PHP_EOL, $values->textarea('note'));
+		$note = $values->textarea('note');
+		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
 		$lines_saved = array();
 
 		foreach ($note_lines as $key => $line) {

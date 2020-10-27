@@ -15,7 +15,7 @@ class QnotesItemCxm extends WireData implements Module {
 	const MODEL_KEY            = 'key2, sequence, form';
 	const DESCRIPTION          = 'CXM Item Notes';
 	const DESCRIPTION_RECORD   = 'CXM Item Notes';
-	const DESCRIPTION_RESPONSE = 'Item {itemID} Customer {custID} Order Notes';
+	const DESCRIPTION_RESPONSE = 'Item {itemID} Customer {custID} Item Notes';
 
 /* =============================================================
 	CRUD Read / Validation Functions
@@ -189,7 +189,8 @@ class QnotesItemCxm extends WireData implements Module {
 		$itemID  = $values->text('itemID');
 		$custID  = $input->$rm->text('custID');
 		$form = $this->get_form_input($input);
-		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
+		$note = $values->textarea('note');
+		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
 		$lines_saved = array();
 		$this->delete_notes($itemID, $custID, $form);
 
