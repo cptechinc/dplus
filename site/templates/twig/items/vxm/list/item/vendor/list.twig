@@ -8,12 +8,22 @@
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
-			<th class="pt-3 pb-3">Vendor Item ID</th>
-			<th class="pt-3 pb-3">Our Item ID</th>
-			<th class="pt-3 pb-3">Description</th>
-			<th class="pt-3 pb-3 text-right">Base Cost</th>
-			<th class="pt-3 pb-3 text-right">Changed Date</th>
-			<th class="pt-3 pb-3 text-center">Edit</th>
+			<th class="pt-3 pb-3 align-middle">Vendor Item ID</th>
+			<th class="pt-3 pb-3 align-middle">Our Item ID</th>
+			<th class="pt-3 pb-3 align-middle">Description</th>
+			<th class="pt-3 pb-3 align-middle text-right">Base Cost</th>
+			<th class="pt-3 pb-3 align-middle text-right">Changed Date</th>
+			<th class="pt-3 pb-3 align-middle text-center">
+				{% if page.has('vendorID') and page.vendorID %}
+					<a href="{{ page.vxm_itemURL(page.vendorID, 'new') }}" class="btn btn-secondary">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add New
+					</a>
+				{% else %}
+					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Choose Vendor to Add VXM" aria-label="Choose Vendor to Add VXM" data-vendorid="{{ page.has('vendorID') ? page.vendorID : '' }}" data-search="vendor">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add New
+					</button>
+				{% endif %}
+			</th>
 		</tr>
 	</thead>
 	<tbody>
