@@ -263,7 +263,7 @@ class XrefVxm extends WireData implements Module {
 		$record->setVendoritemid($values->text('vendoritemID'));
 
 		if ($this->is_modifying_vxm_key($record) && !$record->isNew()) {
-			$this->delete_recreate_record($record);
+			$this->delete_recreate_record($record, $input);
 		}
 
 		$record->setQty_percase($values->text('qty_percase'));
@@ -290,7 +290,9 @@ class XrefVxm extends WireData implements Module {
 	 * @param  ItemXrefVendor $record [description]
 	 * @return
 	 */
-	public function delete_recreate_record(ItemXrefVendor $record) {
+	public function delete_recreate_record(ItemXrefVendor $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
 		$record_delete = $record;
 		$array = $record_delete->toArray();
 
