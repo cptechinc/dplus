@@ -206,6 +206,18 @@ class ItmXrefs extends WireData implements Module {
 	}
 
 	/**
+	 * Return URL to view Item ID VXM List
+	 * @param  string  $itemID       Item ID
+	 * @return string
+	 */
+	public function get_vxm_itemidURL($itemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=itm-xrefs-vxm')->url);
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+
+	/**
 	 * Return URL to Delete VXM Item
 	 * @param  string  $itemID       Item ID
 	 * @param  string  $vendorID     Vendor ID
@@ -361,6 +373,12 @@ class ItmXrefs extends WireData implements Module {
 			$event->return = $this->get_itm_xrefs_vxmURL($itemID);
 		});
 
+		$this->addHook("Page(pw_template=$templates)::vxm_itemidURL", function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_vxm_itemidURL($itemID);
+		});
+
 		$this->addHook("Page(pw_template=$templates)::vxm_itemURL", function($event) {
 			$p = $event->object;
 			$vendorID = $event->arguments(0);
@@ -377,9 +395,9 @@ class ItmXrefs extends WireData implements Module {
 
 		$this->addHook("Page(pw_template=$templates)::vxm_item_deleteURL", function($event) {
 			$p = $event->object;
-			$vendorID = $event->arguments(0);
-			$vendoritemID = $event->arguments(1);
-			$itemID = $p->itemID;
+			$itemID = $event->arguments(0);
+			$vendorID = $event->arguments(1);
+			$vendoritemID = $event->arguments(2);
 			$event->return = $this->get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID);
 		});
 	}
