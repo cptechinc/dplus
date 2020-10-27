@@ -140,7 +140,7 @@ class DpagesMso extends Dpages implements Module {
 			'pw_template'    => 'cxm',
 			'name'           => 'cxm',
 			'title'          => 'Customer Item X-Reference',
-			'summary'        => 'View / Edit Customer Item X-ref',
+			'summary'        => 'View / Edit Customer Item X-Ref',
 			'parent'         => '/mso/somain/',
 			'dplus_function' => 'cxm'
 		),
