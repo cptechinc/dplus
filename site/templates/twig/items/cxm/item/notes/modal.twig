@@ -8,7 +8,7 @@
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="notes-order-modal-label"><span class="action-desc">Adding</span> {{ item.itemid }} Order Notes</h5>
+				<h5 class="modal-title" id="notes-order-modal-label"><span class="action-desc">Adding</span> {{ item.itemid }} Item Notes</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -20,6 +20,7 @@
 					<input type="hidden" name="itemID" value="{{ item.itemid }}">
 					<input type="hidden" name="form" value="">
 
+					<p>Print Notes On:</p>
 					<div class="form-group">
 						<div class="row">
 							{% for form, label in qnotes.get_forms_shortlabels() %}
@@ -32,11 +33,9 @@
 							{% endfor %}
 						</div>
 					</div>
-
 					<div class="feedback">
 
 					</div>
-
 					<div class="form-group">
 						{% include 'msa/noce/ajax/button.twig' with {'input': '#note'} %}
 					</div>
