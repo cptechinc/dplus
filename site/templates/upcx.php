@@ -75,8 +75,7 @@
 		}
 
 		$page->body .= $config->twig->render('items/upcx/form.twig', ['page' => $page, 'upcx' => $upcx, 'upc' => $upc, 'recordlocker' => $recordlocker]);
-		$url_validate = $pages->get('pw_template=upcx-validate')->httpUrl;
-		$page->js .= $config->twig->render('items/upcx/js.twig', ['upc' => $upc, 'url_validate' => $url_validate]);
+		$page->js .= $config->twig->render('items/upcx/js.twig', ['page' => $page, 'upc' => $upc]);
 	} else {
 		$recordlocker->remove_lock($page->name);
 		$itemID = strtoupper($input->get->text('itemID'));
