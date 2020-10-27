@@ -138,7 +138,8 @@ class QnotesItemWhseOrder extends WireData implements Module {
 		$itemID  = $values->text('itemID');
 		$whseID  = $input->$rm->text('whseID');
 		$form = $this->get_form_input($input);
-		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
+		$note = $values->textarea('note');
+		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
 		$lines_saved = array();
 		$this->delete_notes($itemID, $whseID, $form);
 
