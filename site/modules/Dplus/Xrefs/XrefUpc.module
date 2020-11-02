@@ -16,6 +16,7 @@ class XrefUpc extends WireData implements Module {
 	const MODEL_KEY          = 'code';
 	const DESCRIPTION        = 'UPC X-ref';
 	const DESCRIPTION_RECORD = 'UPC X-ref';
+	const RECORDLOCKER_FUNCTION   = 'upcx';
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
@@ -294,22 +295,6 @@ class XrefUpc extends WireData implements Module {
 		return $response;
 	}
 
-	/**
-	 * Return Error Response with Provided Message
-	 * @param  string $upc        UPC Code
-	 * @param  string $message    Error Message
-	 * @param  int    $actiontype XrefResponse CRUD value
-	 * @return XrefResponse
-	 */
-	public function create_error_response($upc, $message, $actiontype = 0) {
-		$response = new XrefResponse();
-		$response->set_key($upc);
-		$response->set_error(true);
-		$response->set_action($actiontype != 0 ? $actiontype : XrefResponse::CRUD_UPDATE);
-		$response->set_message($message);
-		return $response;
-	}
-
 /* =============================================================
 	Dplus Request Functions
 ============================================================= */
@@ -438,11 +423,11 @@ class XrefUpc extends WireData implements Module {
 			$event->return = $p->fullURL->query->get('itemID');
 		});
 
-		$this->addHookProperty('Page(pw_template=upcx|itm-upcx)::search_itemsURL', function($event) {
+		$this->addHookProperty('Page(pw_template=upcx|itm-xrefs-upcx)::search_itemsURL', function($event) {
 			$event->return = $this->wire('pages')->get('pw_template=itm-search')->url;
 		});
 
-		$this->addHookProperty('Page(pw_template=upcx|itm-upcx)::validateURL', function($event) {
+		$this->addHookProperty('Page(pw_template=upcx|itm-xrefs-upcx)::validateURL', function($event) {
 			$event->return = $this->wire('pages')->get('pw_template=upcx-validate')->httpUrl;
 		});
 	}

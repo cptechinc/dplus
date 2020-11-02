@@ -3,7 +3,7 @@
 	$values = $values;
 	$html = $modules->get('HtmlWriter');
 	$upcx = $modules->get('XrefUpc');
-	$filter_upcs = $modules->get('FilterXrefItemUpc');
+	$filter = $modules->get('FilterXrefItemUpc');
 	$recordlocker = $modules->get('RecordLockerUser');
 
 
@@ -75,13 +75,14 @@
 		}
 
 		$page->body .= $config->twig->render('items/upcx/form.twig', ['page' => $page, 'upcx' => $upcx, 'upc' => $upc, 'recordlocker' => $recordlocker]);
-		$page->js .= $config->twig->render('items/upcx/js.twig', ['page' => $page, 'upc' => $upc]);
+		$page->js   .= $config->twig->render('items/upcx/js.twig', ['page' => $page, 'upc' => $upc]);
 	} else {
+		$filter = $modules->get('FilterXrefItemUpc');
 		$recordlocker->remove_lock($page->name);
 		$itemID = strtoupper($input->get->text('itemID'));
-		$filter_upcs->filter_query($input);
-		$filter_upcs->apply_sortby($page);
-		$upcs = $filter_upcs->query->paginate($input->pageNum, 10);
+		$filter->filter_query($input);
+		$filter->apply_sortby($page);
+		$upcs = $filter->query->paginate($input->pageNum, 10);
 
 		if ($input->get->itemID) {
 			if ($upcx->validate_itemID($itemID)) {

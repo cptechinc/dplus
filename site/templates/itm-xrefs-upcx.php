@@ -2,10 +2,10 @@
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
 	$itm = $modules->get('Itm');
-	$itm_xrefs = $modules->get('ItmXrefs');
 	$recordlocker = $modules->get('RecordLockerUser');
 	$upcx = $modules->get('XrefUpc');
-	$filter_upcs = $modules->get('FilterXrefItemUpc');
+	$validate = $modules->get('ValidateUpcx');
+
 	$html = $modules->get('HtmlWriter');
 
 	if ($values->action) {
@@ -27,9 +27,8 @@
 	if ($input->get->itemID) {
 		$itemID = strtoupper($input->get->text('itemID'));
 
-		if ($itm->item_exists($itemID)) {
+		if ($validate->itemid($itemID)) {
 			$item = $itm->get_item($itemID);
-			$unitsofm = UnitofMeasurePurchaseQuery::create()->find();
 
 			if ($input->get->upc) {
 				$code = $input->get->text('upc');
@@ -41,7 +40,7 @@
 					$upc = new ItemXrefUpc();
 
 					if ($input->get->itemID) {
-						if ($upcx->validate_itemID($itemID)) {
+						if ($validate->itemid($itemID)) {
 							$page->title = "Adding UPC X-ref for $itemID";
 							$upc->setItemid($itemID);
 						} else {
@@ -69,15 +68,15 @@
 					}
 				}
 
-				$page->body .= $config->twig->render('items/itm/xrefs/upcx/form.twig', ['page' => $page, 'upc' => $upc, 'unitsofm' => $unitsofm, 'recordlocker' => $recordlocker]);
-				$url_validate = $pages->get('pw_template=upcx-validate')->httpUrl;
-				$page->js .= $config->twig->render('items/upcx/js.twig', ['upc' => $upc, 'url_validate' => $url_validate]);
+				$page->body .= $config->twig->render('items/itm/xrefs/upcx/form.twig', ['page' => $page, 'upcx' => $upcx, 'upc' => $upc, 'recordlocker' => $recordlocker]);
+				$page->js .= $config->twig->render('items/upcx/js.twig', ['upc' => $upc]);
 				$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 			} else {
+				$filter = $modules->get('FilterXrefItemUpc');
 				$recordlocker->remove_lock($page->lockcode);
-				$filter_upcs->filter_query($input);
-				$filter_upcs->apply_sortby($page);
-				$upcs = $filter_upcs->query->paginate($input->pageNum, 10);
+				$filter->filter_query($input);
+				$filter->apply_sortby($page);
+				$upcs = $filter->query->paginate($input->pageNum, 10);
 
 				$page->title = "ITM: UPCs for $itemID";
 				$page->body .= $config->twig->render('items/itm/xrefs/upcx/list.twig', ['page' => $page, 'upcs' => $upcs, 'itemID' => $itemID, 'recordlocker' => $recordlocker]);
