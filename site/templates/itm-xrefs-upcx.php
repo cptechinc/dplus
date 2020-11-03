@@ -69,7 +69,7 @@
 				}
 
 				$page->body .= $config->twig->render('items/itm/xrefs/upcx/form.twig', ['page' => $page, 'upcx' => $upcx, 'upc' => $upc, 'recordlocker' => $recordlocker]);
-				$page->js .= $config->twig->render('items/upcx/js.twig', ['upc' => $upc]);
+				$page->js .= $config->twig->render('items/upcx/js.twig', ['page' => $page, 'upc' => $upc]);
 				$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 			} else {
 				$filter = $modules->get('FilterXrefItemUpc');

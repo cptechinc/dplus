@@ -211,7 +211,7 @@ $(function() {
 	function request_validate_itemid(itemID, callback) {
 		var url = new URI('{{ page.validateURL }}');
 		url.addQuery('action', 'validate-itemid').addQuery('itemID', itemID);
-
+		console.log(url.toString());
 		$.getJSON(url.toString(), function(response) {
 			var valid = typeof response == 'boolean' && response === true;
 			callback(valid);
