@@ -25,7 +25,9 @@
 				{% else %}
 					<li class="breadcrumb-item">
 						<i class="fa fa-list" aria-hidden="true"></i>
-						<a href="{{ parent.url }}">{{ parent.title }}</a>
+						<a href="{{ parent.url }}">
+							{{ parent.has('dplus_function') ? parent.dplus_function|upper : parent.title }}
+						</a>
 					</li>
 				{% endif %}
 			{% endif %}
@@ -36,16 +38,37 @@
 					{{ page.title }}
 				</a>
 			</li>
-			<li class="breadcrumb-item active" aria-current="page">{{ input.get.text('whseID') }}</li>
+			<li class="breadcrumb-item active" aria-current="page">
+				{{ input.get.text('whseID') }}
+			</li>
 		{% elseif page.pw_template == 'itm-xrefs-vxm' and input.get.text('vendoritemID') %}
 			<li class="breadcrumb-item" aria-current="page">
-				<a href="{{ page.itm_xrefsURL(input.get.text('itemID')) }}">
+				<a href="{{ page.itm_xrefs_vxmURL(input.get.text('itemID')) }}">
 					{{ page.title }}
 				</a>
 			</li>
-			<li class="breadcrumb-item active" aria-current="page">{{ input.get.text('vendoritemID') }}</li>
+			<li class="breadcrumb-item active" aria-current="page">
+				{{ input.get.text('vendorID') }}: {{ input.get.text('vendoritemID') }}
+			</li>
+		{% elseif page.pw_template == 'itm-xrefs-cxm' and input.get.text('custitemID') %}
+			<li class="breadcrumb-item" aria-current="page">
+				<a href="{{ page.itm_xrefs_cxmURL(input.get.text('itemID')) }}">
+					{{ page.title }}
+				</a>
+			</li>
+			{% if input.get.text('custitemID') == 'new' %}
+				<li class="breadcrumb-item active" aria-current="page">
+					Creating X-ref for {{ input.get.text('itemID') }}
+				</li>
+			{% else %}
+				<li class="breadcrumb-item active" aria-current="page">
+					{{ input.get.text('custID') }}: {{ input.get.text('custitemID') }}
+				</li>
+			{% endif %}
 		{% else %}
-			<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+			<li class="breadcrumb-item active" aria-current="page">
+				{{ page.dplus_function ? page.dplus_function : page.title }}
+			</li>
 		{% endif %}
 	</ol>
 </nav>

@@ -9,11 +9,20 @@
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
-			<th class="pt-3 pb-3">Customer ID</th>
-			<th class="pt-3 pb-3">Their ItemID</th>
-			<th class="pt-3 pb-3">Description</th>
-			<th class="pt-3 pb-3">UoM</th>
-			<th class="pt-3 pb-3 text-center">Edit</th>
+			<th class="pt-3 pb-3 align-middle">Customer ID</th>
+			<th class="pt-3 pb-3 align-middle">Their Item ID</th>
+			<th class="pt-3 pb-3 align-middle">Description</th>
+			<th class="pt-3 pb-3 text-center">
+				{% if page.has('custID') and page.custID %}
+					<a href="{{ page.cxm_item_newURL(page.custID) }}" class="btn btn-secondary">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add New
+					</a>
+				{% else %}
+					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Choose Customer to Add CXM" aria-label="Choose Customer to Add CXM" data-custid="{{ page.has('custID') ? page.custID : '' }}" data-search="customers">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add New
+					</button>
+				{% endif %}
+			</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -23,11 +32,13 @@
 					<td>{{ item.custID }}</td>
 					<td>{{ item.custitemID }}</td>
 					<td>{{ item.description }}</td>
-					<td>{{ item.uom_customer }}</td>
 					<td class="text-center">
 						{% if recordlocker.function_locked('cxm', cxm.get_recordlocker_key(item)) == false or recordlocker.function_locked_by_user('cxm', cxm.get_recordlocker_key(item)) %}
 							<a href="{{ page.cxm_itemURL(item.custID, item.custitemID) }}" class="btn btn-warning">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+							</a>
+							<a href="{{ page.cxm_item_deleteURL(item.itemid, item.custid, item.custitemid) }}" class="btn btn-danger remove-cxm-item">
+								<i class="fa fa-trash" aria-hidden="true"></i> Delete
 							</a>
 						{% else %}
 							<span class="badge badge-secondary">

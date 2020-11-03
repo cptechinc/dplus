@@ -1,10 +1,18 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	vxm                    module XrefVxm
+	recordlocker           module RecordLockerUser
+	item                   ItemXrefVendor
+#}
 <div class="row form-group">
 	<div class="col-sm-6">
 		<label for="po_ordercode"><b>PO Order Code</b></label>
 	</div>
 	<div class="col-sm-6">
-		<select name="po_ordercode" id="po_ordercode" class="custom-select custom-select-sm" data-primaryvalidated="false">
-			<option value="">-- Choose --</option>
+		<select name="po_ordercode" id="po_ordercode" class="form-control form-control-sm" data-primaryvalidated="false">
+			<option value=""></option>
 			{% for value, description in item.get_po_ordercodeoptions() %}
 				<option value="{{ value }}" {{ value == item.po_ordercode ? 'selected' : ''}}>{{ description }}</option>
 			{% endfor %}
@@ -17,7 +25,7 @@
 		<label for="qty_percase"><b>Qty Per Case</b></label>
 	</div>
 	<div class="col-sm-6">
-		<input type="number" name="qty_percase" class="form-control form-control-sm" id="qty_percase" value="{{ item.qty_percase|number_format(vxm.decimal_places_qty()) }}">
+		<input type="number" name="qty_percase" class="form-control form-control-sm w-50 pull-right text-right" id="qty_percase" value="{{ item.qty_percase|number_format(vxm.decimal_places_qty()) }}">
 	</div>
 </div>
 <div class="row form-group">
@@ -25,7 +33,7 @@
 		<label for="minbuyqty"><b>Min Buy Qty</b></label>
 	</div>
 	<div class="col-sm-6">
-		<input type="number" name="minbuyqty" class="form-control form-control-sm" id="minbuyqty" value="{{ item.minbuyqty }}">
+		<input type="number" name="minbuyqty" class="form-control form-control-sm w-50 pull-right text-right" id="minbuyqty" value="{{ item.minbuyqty }}">
 	</div>
 </div>
 <div class="row form-group">
@@ -41,6 +49,6 @@
 		<label for="date_changed"><b>Last Change Date</b></label>
 	</div>
 	<div class="col-sm-6">
-		<input type="text" name="date_changed" class="form-control-plaintext form-control-sm" id="date_changed" value="{{ item.date_changed ? item.date_changed|convertdate : '' }}" readonly>
+		<input type="text" name="date_changed" class="form-control-plaintext form-control-sm" id="date_changed" value="{{ item.date_changed ? item.date_changed|convertdate : 'N/A' }}" readonly>
 	</div>
 </div>

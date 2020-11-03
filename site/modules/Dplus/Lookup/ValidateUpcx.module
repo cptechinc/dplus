@@ -1,0 +1,66 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use ItemMasterItemQuery, ItemMasterItem;
+use ItemXrefUpcQuery, ItemXrefUpc;
+/**
+ * ValidateUpcx
+ *
+ * Class for validating Itm fields
+ */
+class ValidateUpcx extends WireData implements Module {
+	/**
+	 * Return if UPC exists
+	 * @param  string $upc UPC Code
+	 * @return bool
+	 */
+	public function upc_exists($upc) {
+		$q = ItemXrefUpcQuery::create();
+		$q->filterByUpc($upc);
+		return boolval($q->count());
+	}
+
+/* =============================================================
+	IN Functions
+============================================================= */
+	/**
+	 * Return if Item ID is Valid
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function itemid($itemID) {
+		return $this->validate->in->itemid_exists($itemID);
+	}
+
+	/**
+	 * Return if Unit of Measure Purchase Code is valid
+	 * @param  string $code Unit of Measure Purchase Code
+	 * @return bool
+	 */
+	public function unitofm_purchase($code) {
+		return $this->validate->in->unitofm_purchase($code);
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'UPCX Validate Module',
+			'version' => 101,
+			'summary' => 'Handles UPCX Fields Validation',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+
+	public function init() {
+		$this->validate = new WireData();
+		//$this->validate->ar  = $this->wire('modules')->get('ValidateAr');
+		//$this->validate->ap  = $this->wire('modules')->get('ValidateAp');
+		$this->validate->in  = $this->wire('modules')->get('ValidateIn');
+		$this->modules = $this->wire('modules');
+	}
+}

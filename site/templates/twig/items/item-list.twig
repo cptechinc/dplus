@@ -26,10 +26,9 @@
 	<tbody>
 		{% if items.count() %}
 			{% for item in items %}
-
 				<tr>
 					<td>
-						<a href="{{ page.get_itemURL(item.itemid) }}" class="link ii-item item-link" data-itemid="{{ item.itemid }}" data-description="{{ item.desc }}">
+						<a href="{{ page.get_itemURL(item.itemid) }}" class="link ii-item item-link" data-itemid="{{ item.itemid }}" data-description="{{ item.description }}" data-description2="{{ item.description2 }}">
 							<strong>{{ item.itemid }}</strong>
 						</a>
 					</td>

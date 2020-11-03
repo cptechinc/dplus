@@ -10,8 +10,7 @@
 		$cxm->process_input($input);
 
 		if ($cxm->cxm_item_exists($custID, $custitemID)) {
-			$session->redirect($page->cxm_customerURL($custID), $http301 = false);
-			//$session->redirect($page->cxm_itemURL($custID, $custitemID), $http301 = false);
+			$session->redirect($page->cxm_itemURL($custID, $custitemID), $http301 = false);
 		} else {
 			$session->redirect($page->cxm_customerURL($custID), $http301 = false);
 		}
@@ -69,7 +68,7 @@
 				$recordlocker->remove_lock($page->name);
 				$item = $cxm->get_cxm_item_new();
 				$item->setCustid($custID);
-				$page->headline = "ITM: CXM Add Item";
+				$page->headline = "CXM: New Item X-Ref for $custID";
 
 				if ($custitemID != 'new') {
 					$item->setCustitemid($custitemID);
@@ -98,7 +97,7 @@
 			$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;
 			$page->body .= $config->twig->render('items/cxm/cxm-links.twig', ['page' => $page]);
 			$page->body .= $config->twig->render('items/cxm/item-list-header.twig', ['page' => $page, 'heading' => $items->getNbResults() . " CXM Items for $customer->name"]);
-			$page->body .= $config->twig->render('items/cxm/item-list.twig', ['page' => $page, 'response' => $session->response_xref, 'items' => $items, 'custID' => $custID, 'recordlocker' => $recordlocker]);
+			$page->body .= $config->twig->render('items/cxm/item-list.twig', ['page' => $page, 'cxm' => $cxm, 'response' => $session->response_xref, 'items' => $items, 'custID' => $custID, 'recordlocker' => $recordlocker, 'db' => $db_dpluso]);
 			$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
 			$page->js   .= $config->twig->render('items/cxm/list/js.twig', ['page' => $page]);
 		}

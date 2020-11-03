@@ -56,6 +56,7 @@ if ($page->id != $config->errorpage_dplusdb) {
 	if ($input->get->pdf || $input->get->print) {
 
 	} elseif (!in_array($page->template, $templates_nosignin) && LogpermQuery::create()->is_loggedin(session_id()) == false) {
+		$session->returnurl = $page->fullURL->getUrl();
 		$session->redirect($pages->get('template=login')->url, $http301 = false);
 	}
 
@@ -99,11 +100,9 @@ if (!$values->action) {
 	$config->scripts->append(hash_templatefile('scripts/popper.js'));
 	$config->scripts->append(hash_templatefile('scripts/bootstrap.min.js'));
 	$config->scripts->append(hash_templatefile('scripts/lib/fuelux.js'));
-	$config->scripts->append(hash_templatefile('scripts/lib/sweetalert.js'));
 	$config->scripts->append(hash_templatefile('scripts/lib/moment.js'));
 	$config->scripts->append(hash_templatefile('scripts/lib/bootstrap-notify.js'));
 	$config->scripts->append(hash_templatefile('scripts/uri.js'));
-	$config->scripts->append(hash_templatefile('scripts/lib/sweetalert.js'));
 	$config->scripts->append(hash_templatefile('scripts/lib/sweetalert2.js'));
 	$config->scripts->append(hash_templatefile('scripts/classes.js'));
 	$config->scripts->append(hash_templatefile('scripts/main.js'));

@@ -15,7 +15,7 @@ class QnotesItemCxm extends WireData implements Module {
 	const MODEL_KEY            = 'key2, sequence, form';
 	const DESCRIPTION          = 'CXM Item Notes';
 	const DESCRIPTION_RECORD   = 'CXM Item Notes';
-	const DESCRIPTION_RESPONSE = 'Item {itemID} Customer {custID} Order Notes';
+	const DESCRIPTION_RESPONSE = 'Item {itemID} Customer {custID} Item Notes';
 
 /* =============================================================
 	CRUD Read / Validation Functions
@@ -87,7 +87,45 @@ class QnotesItemCxm extends WireData implements Module {
 	}
 
 /* =============================================================
-	CRUD Functions
+	CRUD Create, Delete Functions
+============================================================= */
+	/**
+	 * Return note with default form
+	 * @return ItemXrefCustomerNote
+	 */
+	public function get_new_note() {
+		$config = $this->wire('modules')->get('ConfigureQt')->config();
+		$note = ItemXrefCustomerNote::new();
+		$note->setQuote($config->note_default_quote);
+		$note->setPick($config->note_default_pick);
+		$note->setPack($config->note_default_pack);
+		$note->setInvoice($config->note_default_invoice);
+		$note->setAcknowledgement($config->note_default_acknowledgement);
+		return $note;
+	}
+
+	/**
+	 * Delete Notes for Item
+	 * @param  string $itemID  Item ID (Internal Item ID)
+	 * @param  string $custID  Cust ID
+	 * @param  string $form    Forms Code
+	 * @return array
+	 */
+	public function delete_notes($itemID, $custID, $form) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->filterByCustid($custID);
+		$q->filterByForm($form);
+
+		if ($q->count()) {
+			return $q->delete();
+		}
+		return true;
+	}
+
+
+/* =============================================================
+	CRUD Processing Functions
 ============================================================= */
 	/**
 	 * Takes Input, Processes it, updates Quote Notes in the Database
@@ -128,7 +166,7 @@ class QnotesItemCxm extends WireData implements Module {
 		if ($q->count()) {
 			$note = $q->findOne();
 		} else {
-			$note = ItemXrefCustomerNote::new();
+			$note = $this->get_new_note();
 			$note->setItemid($itemID);
 			$note->setCustid($custID);
 			$note->setForm($form);
@@ -151,13 +189,14 @@ class QnotesItemCxm extends WireData implements Module {
 		$itemID  = $values->text('itemID');
 		$custID  = $input->$rm->text('custID');
 		$form = $this->get_form_input($input);
-		$note_lines = explode(PHP_EOL, $input->$rm->textarea('note'));
+		$note = $values->textarea('note');
+		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
 		$lines_saved = array();
 		$this->delete_notes($itemID, $custID, $form);
 
 		foreach ($note_lines as $key => $line) {
 			$sequence = $key + 1;
-			$record = ItemXrefCustomerNote::new();
+			$record = $this->get_new_note();
 			$record->setItemid($itemID);
 			$record->setCustid($custID);
 			$record->generateKey2(); // PK
@@ -194,25 +233,6 @@ class QnotesItemCxm extends WireData implements Module {
 		}
 		$note->generateForm();
 		return $note->form;
-	}
-
-	/**
-	 * Delete Notes for Item
-	 * @param  string $itemID  Item ID (Internal Item ID)
-	 * @param  string $custID  Cust ID
-	 * @param  string $form    Forms Code
-	 * @return array
-	 */
-	public function delete_notes($itemID, $custID, $form) {
-		$q = $this->get_query();
-		$q->filterByItemid($itemID);
-		$q->filterByCustid($custID);
-		$q->filterByForm($form);
-
-		if ($q->count()) {
-			return $q->delete();
-		}
-		return true;
 	}
 
 	/**
@@ -325,6 +345,22 @@ class QnotesItemCxm extends WireData implements Module {
 	public function get_column_count() {
 		$config_ar = ConfigArQuery::create()->findOne();
 		return $config_ar->columns_notes_invoice;
+	}
+
+	/**
+	 * Return default form values
+	 * @return array
+	 */
+	public function get_form_defaults() {
+		$config = $this->wire('modules')->get('ConfigureQt')->config();
+
+		return array(
+			'quote' => $config->note_default_quote,
+			'pick'  => $config->note_default_pick,
+			'pack'  => $config->note_default_pack,
+			'invoice' => $config->note_default_invoice,
+			'acknowledgement' => $config->note_default_acknowledgement
+		);
 	}
 
 /* =============================================================

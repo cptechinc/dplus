@@ -8,13 +8,21 @@
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
-			<th class="pt-3 pb-3">Vendor ID</th>
-			<th class="pt-3 pb-3">Vendor ItemID</th>
-			<th class="pt-3 pb-3">Description</th>
-			<th class="pt-3 pb-3">UoM</th>
-			<th class="pt-3 pb-3 text-right">Base Cost</th>
-			<th class="pt-3 pb-3 text-right">Changed Date</th>
-			<th class="pt-3 pb-3 text-center">Edit</th>
+			<th class="pt-3 pb-3 align-middle">Vendor ID</th>
+			<th class="pt-3 pb-3 align-middle">Vendor Item ID</th>
+			<th class="pt-3 pb-3 align-middle text-right">Base Cost</th>
+			<th class="pt-3 pb-3 align-middle text-right">Changed Date</th>
+			<th class="pt-3 pb-3 align-middle text-center">
+				{% if page.has('vendorID') and page.vendorID %}
+					<a href="{{ page.vxm_itemURL(page.vendorID, 'new') }}" class="btn btn-secondary">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add New
+					</a>
+				{% else %}
+					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Choose Vendor to Add VXM" aria-label="Choose Vendor to Add VXM" data-vendorid="{{ page.has('vendorID') ? page.vendorID : '' }}" data-search="vendor">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add New
+					</button>
+				{% endif %}
+			</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -23,15 +31,16 @@
 				<tr>
 					<td>{{ item.vendorID }}</td>
 					<td>{{ item.vendoritemID }}</td>
-					<td>{{ item.ouritemID }}</td>
-					<td>{{ item.description }}</td>
-					<td>{{ item.uompurchase.code }}</td>
 					<td class="text-right">$ {{ item.unitcost_base|currency }}</td>
 					<td class="text-right">{{ item.date_changed|convertdate }}</td>
 					<td class="text-center">
 						{% if recordlocker.function_locked('vxm', vxm.get_recordlocker_key(item)) == false or recordlocker.function_locked_by_user('vxm', vxm.get_recordlocker_key(item)) %}
-							<a href="{{ page.vxm_itemURL(item.vendorID, item.vendoritemID) }}" class="btn btn-warning">
+							<a href="{{ page.vxm_itemURL(item.vendorID, item.vendoritemID) }}" class="btn btn-sm btn-warning">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+							</a>
+							&nbsp;
+							<a href="{{ page.vxm_item_deleteURL(item.ouritemid, item.vendorid, item.vendoritemid) }}" class="btn btn-sm btn-danger remove-vxm-item">
+								<i class="fa fa-trash" aria-hidden="true"></i> Remove
 							</a>
 						{% else %}
 							<span class="badge badge-secondary">

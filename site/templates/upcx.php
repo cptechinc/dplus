@@ -1,15 +1,16 @@
 <?php
+	$rm = strtolower($input->requestMethod());
+	$values = $values;
 	$html = $modules->get('HtmlWriter');
 	$upcx = $modules->get('XrefUpc');
-	$filter_upcs = $modules->get('FilterXrefItemUpc');
+	$filter = $modules->get('FilterXrefItemUpc');
 	$recordlocker = $modules->get('RecordLockerUser');
 
 
-	if ($input->requestMethod('POST') || $input->get->action) {
-		$rm = strtolower($input->requestMethod());
+	if ($values->action) {
 		$upcx->process_input($input);
-		$code = $input->$rm->text('upc');
-		$itemID = $input->$rm->text('itemID');
+		$code = $values->text('upc');
+		$itemID = $values->text('itemID');
 
 		if ($code) {
 			$session->redirect($page->upcURL($code));
@@ -28,13 +29,13 @@
 
 	if ($input->get->upc) {
 		$code = $input->get->text('upc');
-		$unitsofm = UnitofMeasurePurchaseQuery::create()->find();
 
 		if ($upcx->upc_exists($code)) {
 			$upc = $upcx->get_upc($code);
 			$page->headline = "UPCX: UPC $code";
 		} else {
 			$upc = new ItemXrefUpc();
+			$upc->setQty(1);
 
 			if ($input->get->itemID) {
 				$itemID = $input->get->text('itemID');
@@ -72,16 +73,16 @@
 				$recordlocker->create_lock($page->name, $code);
 			}
 		}
-		
-		$page->body .= $config->twig->render('items/upcx/form.twig', ['page' => $page, 'upc' => $upc, 'unitsofm' => $unitsofm, 'recordlocker' => $recordlocker]);
-		$url_validate = $pages->get('pw_template=upcx-validate')->httpUrl;
-		$page->js .= $config->twig->render('items/upcx/js.twig', ['upc' => $upc, 'url_validate' => $url_validate]);
+
+		$page->body .= $config->twig->render('items/upcx/form.twig', ['page' => $page, 'upcx' => $upcx, 'upc' => $upc, 'recordlocker' => $recordlocker]);
+		$page->js   .= $config->twig->render('items/upcx/js.twig', ['page' => $page, 'upc' => $upc]);
 	} else {
+		$filter = $modules->get('FilterXrefItemUpc');
 		$recordlocker->remove_lock($page->name);
 		$itemID = strtoupper($input->get->text('itemID'));
-		$filter_upcs->filter_query($input);
-		$filter_upcs->apply_sortby($page);
-		$upcs = $filter_upcs->query->paginate($input->pageNum, 10);
+		$filter->filter_query($input);
+		$filter->apply_sortby($page);
+		$upcs = $filter->query->paginate($input->pageNum, 10);
 
 		if ($input->get->itemID) {
 			if ($upcx->validate_itemID($itemID)) {

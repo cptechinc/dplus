@@ -54,7 +54,7 @@
 					$item = $cxm->get_cxm_item_new();
 					$item->setCustid($custID);
 					$item->setItemid($itemID);
-					$page->headline = "ITM: CXM Creating Item";
+					$page->headline = "ITM:  Creating CXM X-ref for $itemID";
 
 					if ($custitemID != 'new') {
 						$item->setCustitemid($custitemID);
@@ -86,7 +86,6 @@
 				$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
 				$page->js   .= $config->twig->render('items/itm/xrefs/cxm/list/js.twig', ['page' => $page]);
 			}
-
 		} else {
 			$session->redirect($page->itmURL($itemID), $http301 = false);
 		}

@@ -1,17 +1,17 @@
 $(function() {
 	{% if page.focus and page.focus != 'new' %}
-		$('tr[data-cxm="{{ page.focus }}"]').addClass('highlight');
+		$('tr[data-vxm="{{ page.focus }}"]').addClass('highlight');
 		// $('html, body').animate({scrollTop: $('#{{ page.focus }}').offset().top,},700,'linear');
-		$('html, body').animate({scrollTop: $('[data-cxm="{{ page.focus }}"]"]').offset().top,},700,'linear');
+		$('html, body').animate({scrollTop: $('[data-vxm="{{ page.focus }}"]"]').offset().top,},700,'linear');
 	{% endif %}
 
-	$("body").on("click", "a.remove-cxm-item", function(e) {
+	$("body").on("click", "a.remove-vxm-item", function(e) {
 		e.preventDefault();
 		var button = $(this);
 
 		swal2.fire({
-			title: "Remove CXM Item?",
-			text: "Are you sure you want to remove this CXM Item?",
+			title: "Remove VXM Item?",
+			text: "Are you sure you want to remove this VXM Item?",
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonText: 'Yes!'
@@ -30,15 +30,15 @@ $(function() {
 	modal_ajax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 
-		if (button.data('custid')) {
-			window.location.href = cxm_customerURL(button.data('custid'));
+		if (button.data('vendorid')) {
+			window.location.href = vxm_vendorURL(button.data('vendorid'));
 		}
 
 		var modal = $(this);
-		var url = '{{ page.searchcustomersURL }}';
+		var url = '{{ page.searchvendorsURL }}';
 
-		if (button.data('search') == 'customer') {
-			url = '{{ page.searchcustomersURL }}';
+		if (button.data('search') == 'vendor') {
+			url = '{{ page.searchvendorsURL }}';
 		}
 
 		modal.find('.modal-title').text(button.attr('title'));
@@ -46,11 +46,12 @@ $(function() {
 		modal.find('.modal-body').loadin(url, function() {});
 	});
 
-	$("body").on('click', '.customer-link', function(e) {
+	$("body").on('click', '.vendor-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
-		var custID = button.data('custid');
-		window.location.href = cxm_customerURL(button.data('custid'));
+		var vendorID = button.data('vendorid');
+		alert(vendorID);
+		window.location.href = vxm_vendorURL(button.data('vendorid'));
 	});
 
 	$("body").on('submit', '#ajax-modal form', function(e) {
@@ -70,10 +71,10 @@ $(function() {
 		modal_ajax.find('.modal-body').load(href);
 	});
 
-	function cxm_customerURL(custID) {
-		var uri = new URI('{{ page.url }}');
-		uri.addQuery('custID', custID);
-		uri.addQuery('custitemID', 'new');
+	function vxm_vendorURL(vendorID) {
+		var uri = new URI('{{ page.fullURL.getUrl() }}');
+		uri.addQuery('vendorID', vendorID);
+		uri.addQuery('vendoritemID', 'new');
 		return uri.toString()
 	}
 });

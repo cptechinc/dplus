@@ -1,30 +1,29 @@
-<nav aria-label="breadcrumb rounded-0">
-	<ol class="breadcrumb">
-		{% for parent in page.parents() %}
+{% extends 'util/bread-crumbs.twig' %}
+{% block current_page %}
+	{% if page.has('vendorID') %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.url }}">
+				{{ page.has('dplus_function') ? page.dplus_function|upper : page.title }}
+			</a>
+		</li>
+		{% if (page.has('vendoritemID')) %}
 			<li class="breadcrumb-item">
-				<i class="fa fa-list" aria-hidden="true"></i>
-				<a href="{{ parent.url }}">{{ parent.title }}</a>
+				<a href="{{ page.vxm_vendorURL(page.vendorID) }}">Vendor: {{ page.vendorID }}</a>
 			</li>
-		{% endfor %}
-		{% if page.has('vendorID') %}
-			<li class="breadcrumb-item">
-				<a href="{{ page.url }}">{{ page.title }}</a>
-			</li>
-			{% if (page.has('vendoritemID')) %}
-				<li class="breadcrumb-item">
-					<a href="{{ page.vxm_vendorURL(page.vendorID) }}">Vendor: {{ page.vendorID }}</a>
-				</li>
-				<li class="breadcrumb-item active" aria-current="page">Vend Item: {{ page.vendoritemID }}</li>
+			{% if page.vendoritemID == 'new' %}
+				<li class="breadcrumb-item active" aria-current="page">New Item X-Ref</li>
 			{% else %}
-				<li class="breadcrumb-item active" aria-current="page">Vendor: {{ page.vendorID }}</li>
+				<li class="breadcrumb-item active" aria-current="page">X-Ref Item: {{ page.vendoritemID }}</li>
 			{% endif %}
-		{% elseif page.has('itemID') %}
-			<li class="breadcrumb-item">
-				<a href="{{ page.url }}">{{ page.title }}</a>
-			</li>
-			<li class="breadcrumb-item active" aria-current="page">Item: {{ page.itemID }}</li>
 		{% else %}
-			<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+			<li class="breadcrumb-item active" aria-current="page">Vendor: {{ page.vendorID }}</li>
 		{% endif %}
-	</ol>
-</nav>
+	{% elseif page.has('itemID') %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.url }}">{{ page.title }}</a>
+		</li>
+		<li class="breadcrumb-item active" aria-current="page">Item: {{ page.itemID }}</li>
+	{% else %}
+		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+	{% endif %}
+{% endblock %}

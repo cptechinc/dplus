@@ -26,7 +26,7 @@
 				<label for="custID">Customer ID</label>
 			</div>
 			<div class="col-sm-8">
-				<p class="form-control-plaintext">{{ item.custid }} - {{ item.customer.name }}</p>
+				<p class="form-control-plaintext form-control-sm">{{ item.custid }} - {{ item.customer.name }}</p>
 			</div>
 		</div>
 	{% endif %}
@@ -76,7 +76,7 @@
 		{% else %}
 			<input type="text" class="form-control-plaintext" name="itemID" id="itemID" value="{{ item.itemid }}" readonly>
 		{% endif %}
-
 		<small class="form-text text-muted description">{{ item.item.description }}</small>
+		<small class="form-text text-muted description2">{{ item.item.description2 }}</small>
 	</div>
 </div>

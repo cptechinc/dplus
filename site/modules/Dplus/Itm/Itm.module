@@ -283,7 +283,6 @@ class Itm extends WireData implements Module {
 		);
 
 		foreach ($fields as $property => $field) {
-			$validate = true;
 
 			// IF FIELD MUST NOT BLANK OR IF there is a value for field
 			if (strlen($values->text($field['input']))) {

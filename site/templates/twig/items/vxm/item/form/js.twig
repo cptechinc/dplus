@@ -2,9 +2,11 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
+	vxm                    module XrefVxm
 	item                   ItemXrefVendor
 	url_validate           URL to validate form inputs
 #}
+
 $(function() {
 	var eachlistprice = {{ item.eachlistprice }};
 	var itemID = '{{ item.ouritemID }}';
@@ -56,6 +58,28 @@ $(function() {
 		});
 	});
 
+	$("body").on("change", "input[name=ouritemID]", function(e) {
+		var input = $(this);
+
+		request_item(input.val(), function(item) {
+			if (item) {
+				var itemcol = $('.item-col');
+				itemcol.find('.description').text(item.description);
+				itemcol.find('.description2').text(item.description2);
+				itemcol.find('.uom-sale').text(item.uom.sale.description);
+				$('.uom-sale-code').attr('data-conversion', item.uom.sale.conversion);
+				$('.uom-sale-code').text(item.uom.sale.code);
+				input_listprice.change();
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=listprice]", function(e) {
+		var input = $(this);
+		input.val(parseFloat(input.val()).toFixed({{ vxm.decimal_places_price }}));
+		$('input[name=eachlistprice]').val(parseFloat(get_eachlistprice()).toFixed({{ vxm.decimal_places_price }}));
+	});
+
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
@@ -88,7 +112,7 @@ $(function() {
 	});
 
 /* =============================================================
-	Vendor Lookup Modal Functions
+	AJAX Lookup Modal Functions
 ============================================================= */
 	modal_ajax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
@@ -121,8 +145,7 @@ $(function() {
 		var button = $(this);
 		var itemID = button.data('itemid');
 		var description = button.data('description');
-		input_ouritemID.val(itemID);
-		input_ouritemID.closest('.item-col').find('.description').text(description);
+		input_ouritemID.val(itemID).change();
 		modal_ajax.modal('hide');
 	});
 
@@ -208,7 +231,6 @@ $(function() {
 				obj[item.name] = item.value;
 				return obj;
 			}, {});
-
 			update_vxm(form);
 		}
 	});
@@ -252,7 +274,6 @@ $(function() {
 	}
 
 	function validate_form_poordercode(form) {
-		console.log('validating PO Order Code');
 		var select_poordercode = form_vxm.find('select[name=po_ordercode]');
 		var input_validatedpoordercode = select_poordercode.siblings('input[name=po_ordercode_validated]');
 
@@ -282,10 +303,10 @@ $(function() {
 				});
 			} else {
 				input_validatedpoordercode.val('true');
-				//form_vxm.submit();
+				form_vxm.submit();
 			}
 		} else {
-			//form.submit();
+			form.submit();
 		}
 	}
 
@@ -324,6 +345,15 @@ $(function() {
 			callback(valid);
 		});
 	}
+
+	function request_item(itemID, callback) {
+		var url = new URI('{{ url_validate }}');
+		url.addQuery('action', 'get-item').addQuery('itemID', itemID);
+
+		$.getJSON(url.toString(), function( item ) {
+			callback(item);
+		});
+	}
 /* =============================================================
 	Margin Calculation Functions
 ============================================================= */
@@ -333,20 +363,22 @@ $(function() {
 	 */
 	function calculate_eachlistprice() {
 		var oldlistprice = eachlistprice;
-		var conversion = input_uom.find('option:selected').data('conversion');
-		eachlistprice = input_listprice.val() / parseFloat(conversion);
+		eachlistprice = get_eachlistprice();
 		input_eachlistprice.val(eachlistprice);
 
-		if (eachlistprice != oldlistprice) {
-			calculate_margins();
-		}
+		calculate_margins();
+	}
+
+	function get_eachlistprice() {
+		var conversion = input_uom.find('option:selected').data('conversion');
+		return eachlistprice = input_listprice.val() / parseFloat(conversion);
 	}
 
 	/**
 	 * Calculates Margin for each Unit Cost
 	 */
 	function calculate_margins() {
-		$(".unit-row").each(function( index ) {
+		$(".unit-row").each(function(index ) {
 			update_unitrow_margin($(this));
 		});
 	}
@@ -358,9 +390,13 @@ $(function() {
 	function update_unitrow_margin(unitrow) {
 		var input_unitqty = unitrow.find('.unit-qty');
 		var input_unitcost = unitrow.find('.unit-cost');
-		var ele_margin = unitrow.find('.unit-margin');
-		var margin = determine_unitmargin(input_unitcost.val());
-		ele_margin.text(margin);
+		input_unitcost.val(parseFloat(input_unitcost.val()).toFixed({{ vxm.decimal_places_price() }}));
+
+		if (parseFloat(input_unitcost.val())) {
+			var ele_margin = unitrow.find('.unit-margin');
+			var margin = determine_unitmargin(input_unitcost.val());
+			ele_margin.text(parseFloat(margin).toFixed({{ vxm.decimal_places_margin() }}));
+		}
 	}
 
 	/**
@@ -369,6 +405,8 @@ $(function() {
 	 * @return float
 	 */
 	function determine_unitmargin(cost) {
+		var eachlistprice = get_eachlistprice();
+
 		if (eachlistprice == 0 || cost == 0) {
 			return '';
 		} else {

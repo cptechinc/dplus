@@ -1,0 +1,26 @@
+<nav aria-label="breadcrumb rounded-0">
+	<ol class="breadcrumb">
+		{% block parents %}
+			{% for parent in page.parents() %}
+				<li class="breadcrumb-item">
+					<a href="{{ parent.url }}">
+						<i class="fa fa-list" aria-hidden="true"></i>
+						{{ parent.has('dplus_function') ? parent.dplus_function|upper : parent.title }}
+					</a>
+				</li>
+			{% endfor %}
+		{% endblock %}
+
+		{% block extra_parents %}
+		{% endblock %}
+
+		{% block current_page %}
+			{% if page.has('title_previous') and page.title_previous != page.title %}
+				<li class="breadcrumb-item">
+					<a href="{{ page.url }}">{{ page.title_previous }}</a>
+				</li>
+			{% endif %}
+			<li class="breadcrumb-item active" aria-current="page">{{ page.get('pagetitle|headline|title') }}</li>
+		{% endblock %}
+	</ol>
+</nav>

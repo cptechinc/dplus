@@ -11,8 +11,8 @@
 	<thead>
 		<tr>
 			<th class="col-sm-4">Packaging</th>
-			<th class="col-sm-4">Cust</th>
-			<th class="col-sm-4">Item</th>
+			<th class="col-sm-4 text-right">Cust</th>
+			<th class="col-sm-4 text-right">Item</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -21,7 +21,7 @@
 				<label for="qty_pack_inner">Items per Inner</label>
 			</td>
 			<td>
-				<input type="text" class="form-control form-control-sm" name="qty_pack_inner" id="qty_pack_inner" value="{{ item.qty_pack_inner }}">
+				<input type="text" class="form-control form-control-sm w-75 text-right float-right" name="qty_pack_inner" id="qty_pack_inner" value="{{ item.qty_pack_inner }}">
 			</td>
 			<td>
 				<p class="form-control-plaintext form-control-sm text-right">{{ item.item.qty_pack_inner }}</p>
@@ -31,10 +31,10 @@
 					<label for="qty_pack_outer">Items per Outer</label>
 				</td>
 				<td>
-					<input type="text" class="form-control form-control-sm" name="qty_pack_outer" id="qty_pack_outer" value="{{ item.qty_pack_outer }}">
+					<input type="text" class="form-control form-control-sm w-75 text-right float-right" name="qty_pack_outer" id="qty_pack_outer" value="{{ item.qty_pack_outer }}">
 				</td>
 				<td>
-					<p class="form-control-plaintext form-control-sm text-right">{{ item.item.qty_pack_outer }}</p>
+					<p class="form-control-plaintext form-control-sm text-right float-right">{{ item.item.qty_pack_outer }}</p>
 				</td>
 			</tr>
 			<tr class="form-group">
@@ -42,7 +42,7 @@
 					<label for="qty_tare">Items per Tare</label>
 				</td>
 				<td>
-					<input type="text" class="form-control form-control-sm" name="qty_tare" id="qty_tare" value="{{ item.qty_tare }}">
+					<input type="text" class="form-control form-control-sm w-75 text-right float-right" name="qty_tare" id="qty_tare" value="{{ item.qty_tare }}">
 				</td>
 				<td>
 					<p class="form-control-plaintext form-control-sm text-right">{{ item.item.qty_tare }}</p>

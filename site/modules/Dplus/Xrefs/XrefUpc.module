@@ -6,6 +6,7 @@ use Purl\Url;
 
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemXrefUpcQuery, ItemXrefUpc;
+use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
 
 /**
  * Module that handles the editing of the UPC item Xref
@@ -13,8 +14,9 @@ use ItemXrefUpcQuery, ItemXrefUpc;
 class XrefUpc extends WireData implements Module {
 	const MODEL              = 'ItemXrefUpc';
 	const MODEL_KEY          = 'code';
-	const DESCRIPTION        = 'Item UPC X-ref';
-	const DESCRIPTION_RECORD = 'Item UPC X-ref';
+	const DESCRIPTION        = 'UPC X-ref';
+	const DESCRIPTION_RECORD = 'UPC X-ref';
+	const RECORDLOCKER_FUNCTION   = 'upcx';
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
@@ -146,7 +148,7 @@ class XrefUpc extends WireData implements Module {
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
-	/**
+/**
 	 * Takes Input, validates it's for one of the code tables
 	 * Processes it, and if updated sends request to dplus
 	 *
@@ -154,23 +156,28 @@ class XrefUpc extends WireData implements Module {
 	 * @return void
 	 */
 	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$upc = $values->text('upc');
+
+		switch ($values->text('action')) {
+			case 'remove-upcx':
+			case 'update-upcx':
+				$this->process_input_upcx($input);
+				break;
+			default:
+				$message = self::DESCRIPTION_RECORD . " ($upc) was not saved, no action was specified";
+				$this->wire('session')->response_xref = XrefResponse::response_error($upc, $message);
+				break;
+		}
+	}
+
+	public function process_input_upcx(WireInput $input) {
 		$recordlocker = $this('modules')->get('RecordLockerUser');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$upc = $input->$rm->text('upc');
-		$itemID = $input->$rm->text('itemID');
-
+		$upc = $values->text('upc');
 		$record = $this->get_create_upc($input);
-
-		if (!$values->action) {
-			$message = self::DESCRIPTION_RECORD . " ($upc) was not saved, no action was specified";
-			$response = $this->create_error_response($upc, $message);
-		}
-
-		if (!$record->isNew() && !$recordlocker->function_locked_by_user('upcx', $upc)) {
-			$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $recordlocker->get_locked_user('upcx', $upc);
-			$response = $this->create_error_response($upc, $message);
-		}
 
 		/**
 		 * Create lock for UPC code if not already locked.
@@ -179,15 +186,17 @@ class XrefUpc extends WireData implements Module {
 			$recordlocker->create_lock('upcx', $upc);
 		}
 
-		if ($record->isNew() || $recordlocker->function_locked_by_user('upcx', $upc)) {
-			if ($input->$rm->text('action') == 'remove-upcx') {
-				$record->delete();
-			} elseif ($input->$rm->text('action') == 'update-upcx') {
-				$this->update_record_input($record, $input);
-			}
-
-			if ($input->$rm->action) {
-				$response = $this->save_and_process_response($record);
+		if ($recordlocker->function_locked_by_user('upcx', $upc)) {
+			if ($values->action) {
+				switch ($values->text('action')) {
+					case 'remove-upcx':
+						$record->delete();
+						break;
+					case 'update-upcx':
+						$this->update_record_input($record, $input);
+						break;
+				}
+				$response = $this->save_and_respond($record);
 
 				/**
 				 * IF we saved this Item as the Primary PO ORDER then we have to update
@@ -197,6 +206,9 @@ class XrefUpc extends WireData implements Module {
 					$this->update_primary_record($record);
 				}
 			}
+		} elseif (!$recordlocker->function_locked_by_user('upcx', $upc)) {
+			$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $recordlocker->get_locked_user('upcx', $upc);
+			$response = $response = XrefResponse::response_error($upc, $message);
 		}
 		$this->wire('session')->response_xref = $response;
 	}
@@ -248,7 +260,7 @@ class XrefUpc extends WireData implements Module {
 	 * @param  ItemXrefUpc $record Record to record response of database save
 	 * @return XrefResponse
 	 */
-	protected function save_and_process_response(ItemXrefUpc $record) {
+	protected function save_and_respond(ItemXrefUpc $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 		$code = "$record->upc";
@@ -283,22 +295,6 @@ class XrefUpc extends WireData implements Module {
 		return $response;
 	}
 
-	/**
-	 * Return Error Response with Provided Message
-	 * @param  string $upc        UPC Code
-	 * @param  string $message    Error Message
-	 * @param  int    $actiontype XrefResponse CRUD value
-	 * @return XrefResponse
-	 */
-	public function create_error_response($upc, $message, $actiontype = 0) {
-		$response = new XrefResponse();
-		$response->set_key($upc);
-		$response->set_error(true);
-		$response->set_action($actiontype != 0 ? $actiontype : XrefResponse::CRUD_UPDATE);
-		$response->set_message($message);
-		return $response;
-	}
-
 /* =============================================================
 	Dplus Request Functions
 ============================================================= */
@@ -309,7 +305,7 @@ class XrefUpc extends WireData implements Module {
 	 */
 	public function update_dplus_cobol(ItemXrefUpc $item) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
 		$data = array("DBNAME=$dplusdb", 'UPDATEUPC', "UPCCODE=$item->upc", "OURITEM=$item->itemid");
 
 		$requestor = $this->wire('modules')->get('DplusRequest');
@@ -324,6 +320,14 @@ class XrefUpc extends WireData implements Module {
 		$q = ItemMasterItemQuery::create();
 		$q->filterByItemid($itemID);
 		return boolval($q->count());
+	}
+
+	/**
+	 * Return Units of Measure Purchase
+	 * @return UnitofMeasurePurchase[]|ObjectCollection
+	 */
+	public function get_unitsofm_purchase() {
+		return UnitofMeasurePurchaseQuery::create()->find();
 	}
 
 /* =============================================================
@@ -372,9 +376,9 @@ class XrefUpc extends WireData implements Module {
 ============================================================= */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus VXM CRUD Manager',
+			'title' => 'Dplus UPCX CRUD Manager',
 			'version' => 101,
-			'summary' => 'Module for CRUD Methods for VXM',
+			'summary' => 'Module for CRUD Methods for UPCX',
 			'singular' => true,
 			'autoload' => true,
 		);
@@ -417,6 +421,14 @@ class XrefUpc extends WireData implements Module {
 		$this->addHookProperty('Page(pw_template=upcx)::itemID', function($event) {
 			$p = $event->object;
 			$event->return = $p->fullURL->query->get('itemID');
+		});
+
+		$this->addHookProperty('Page(pw_template=upcx|itm-xrefs-upcx)::search_itemsURL', function($event) {
+			$event->return = $this->wire('pages')->get('pw_template=itm-search')->url;
+		});
+
+		$this->addHookProperty('Page(pw_template=upcx|itm-xrefs-upcx)::validateURL', function($event) {
+			$event->return = $this->wire('pages')->get('pw_template=upcx-validate')->httpUrl;
 		});
 	}
 }

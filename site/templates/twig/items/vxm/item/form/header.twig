@@ -41,12 +41,7 @@
 				<input type="text" class="form-control-plaintext form-control-sm" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}" readonly>
 			{% endif %}
 			<small class="form-text text-muted description">{{ item.imitem.description }}</small>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-6"></div>
-		<div class="col-sm-6">
-			<p>{{ item.description }}</p>
+			<small class="form-text text-muted description2">{{ item.imitem.description2 }}</small>
 		</div>
 	</div>
 </div>
@@ -56,7 +51,7 @@
 			<label for="uom_purchase"><b>Purchase UoM</b></label>
 		</div>
 		<div class="col-sm-6">
-			<select name="uom_purchase" class="custom-select custom-select-sm mb-1" id="uom_purchase">
+			<select name="uom_purchase" class="form-control form-control-sm mb-1" id="uom_purchase">
 				<option value="">-- Choose --</option>
 				{% for uom in vxm.get_unitsofm_purchases() %}
 					<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_purchase ? 'selected' : ''}}>
@@ -75,7 +70,7 @@
 		</div>
 		<div class="col-sm-6">
 			<div class="input-group input-group-sm mb-2">
-				<input type="number" name="listprice" class="form-control" id="listprice" value="{{ item.listprice|number_format(vxm.decimal_places_price) }}">
+				<input type="number" name="listprice" class="form-control text-right" id="listprice" value="{{ item.listprice|number_format(vxm.decimal_places_price) }}">
 				<div class="input-group-append">
 					<div class="input-group-text">{{ item.uom_purchase }}</div>
 				</div>
@@ -86,9 +81,9 @@
 		<div class="col-sm-6"></div>
 		<div class="col-sm-6">
 			<div class="input-group input-group-sm mb-2">
-				<input type="number" name="eachlistprice" class="form-control" id="eachlistprice" value="{{ item.get_listprice_uom_sale()|number_format(vxm.decimal_places_price) }}" step="any">
+				<input type="number" name="eachlistprice" class="form-control text-right" id="eachlistprice" value="{{ item.get_listprice_uom_sale()|number_format(vxm.decimal_places_price) }}" step="any">
 				<div class="input-group-append">
-					<div class="input-group-text">{{ item.imitem.uom_sale }}</div>
+					<div class="input-group-text uom-sale-code" data-conversion="{{ item.imitem.UnitofMeasureSale ? item.imitem.UnitofMeasureSale.conversion : '0' }}">{{ item.imitem.uom_sale }}</div>
 				</div>
 			</div>
 		</div>

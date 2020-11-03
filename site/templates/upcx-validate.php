@@ -6,16 +6,14 @@
 	 */
 	$upcx = $modules->get('XrefUpc');
 	$response = '';
+	$validate = $modules->get('ValidateUpcx');
 
 	if ($input->get->action) {
 		switch ($input->get->text('action')) {
 			case 'validate-itemid':
 				$itemID = $input->get->text('itemID');
 
-				$q = ItemMasterItemQuery::create();
-				$q->filterByItemid($itemID);
-
-				if ($q->count()) {
+				if ($validate->itemid($itemID)) {
 					$response = true;
 				} else {
 					$response = "$itemID was not found in the Item Master";
@@ -52,6 +50,22 @@
 					}
 				} else {
 					$response = true;
+				}
+				break;
+			case 'get-item':
+				$itemID = $input->get->text('itemID');
+
+				if ($validate->itemid($itemID)) {
+					$item = ItemMasterItemQuery::create()->findOneByItemid($itemID);
+					$primaryupc = $upcx->upc_primary_exists($itemID) ? $upcx->get_primary_upc_itemid($itemID)->upc : false;
+					$response = array(
+						'itemid' => $itemID	,
+						'description'  => $item->description,
+						'description2' => $item->description2,
+						'primaryupc'   => $primaryupc
+					);
+				} else {
+					$response = false;
 				}
 				break;
 		}

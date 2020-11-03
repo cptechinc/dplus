@@ -59,7 +59,7 @@
 			} else {
 				$item = $vxm->get_vxm_item_new();
 				$item->setVendorid($vendorID);
-				$page->headline = "VXM: Creating Item";
+				$page->headline = "VXM: Creating X-ref for $vendorID";
 
 				if ($vendoritemID != 'new') {
 					$item->setVendoritemid($vendoritemID);
@@ -70,8 +70,9 @@
 			}
 			$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 			$page->searchitemsURL     = $pages->get('pw_template=itm-search')->url;
+			$page->body .= $config->twig->render('items/vxm/vxm-links.twig', ['page' => $page]);
 			$page->body .= $config->twig->render('items/vxm/item/form.twig', ['page' => $page, 'item' => $item, 'vxm' => $vxm, 'recordlocker' => $recordlocker]);
-			$page->js .= $config->twig->render('items/vxm/item/form/js.twig', ['page' => $page, 'item' => $item, 'url_validate' => $pages->get('pw_template=vxm-validate')->httpUrl]);
+			$page->js .= $config->twig->render('items/vxm/item/form/js.twig', ['page' => $page, 'vxm' => $vxm, 'item' => $item, 'url_validate' => $pages->get('pw_template=vxm-validate')->httpUrl]);
 
 			if (!$item->isNew()) {
 				$qnotes = $modules->get('QnotesItemVxm');
@@ -86,7 +87,7 @@
 			}
 		} else {
 			$recordlocker->remove_lock($page->name);
-			$page->headline = "VXM: Vendor $vendor->name";
+			$page->headline = "Vendor X-Ref for $vendor->name";
 			$filter_vxm->filter_query($input);
  			$q = $values->q ? $values->text('q') : '';
 
@@ -97,10 +98,12 @@
 			$filter_vxm->apply_sortby($page);
 			$items = $filter_vxm->query->paginate($input->pageNum, 10);
 
+			$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 			$page->body .= $config->twig->render('items/vxm/vxm-links.twig', ['page' => $page]);
 			$page->body .= $config->twig->render('items/vxm/search/item/vendor/form.twig', ['page' => $page, 'q' => $q, 'vendorID' => $vendorID, 'q' => $q]);
 			$page->body .= $config->twig->render('items/vxm/list/item/vendor/results.twig', ['page' => $page, 'items' => $items, 'vendorID' => $vendorID, 'recordlocker' => $recordlocker]);
 			$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
+			$page->js   .= $config->twig->render('items/vxm/list/item/js.twig', ['page' => $page]);
 		}
 	} elseif ($values->itemID) {
 		$recordlocker->remove_lock($page->name);
@@ -110,10 +113,12 @@
 		$items = $filter_vxm->query->paginate($input->pageNum, 10);
 
 		$page->headline = "VXM: Item $itemID";
+		$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 		$page->body .= $html->h3('', $items->getNbResults() ." VXM Items for $itemID");
 		$page->body .= $config->twig->render('items/vxm/vxm-links.twig', ['page' => $page]);
 		$page->body .= $config->twig->render('items/vxm/list/item/results.twig', ['page' => $page, 'items' => $items, 'recordlocker' => $recordlocker]);
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
+		$page->js   .= $config->twig->render('items/vxm/list/item/js.twig', ['page' => $page]);
 	} else {
 		$recordlocker->remove_lock($page->name);
 		$q = $values->q ? strtoupper($values->text('q')) : '';
@@ -124,7 +129,9 @@
 		$filter->vendorid($vxm->vendorids());
 		$filter->apply_sortby($page);
 		$vendors = $filter->query->paginate($input->pageNum, 10);
+		$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 		$page->body .= $config->twig->render('items/vxm/search/vendor/search.twig', ['page' => $page, 'vendors' => $vendors]);
+		$page->js   .= $config->twig->render('items/vxm/list/item/js.twig', ['page' => $page]);
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $vendors->getNbResults()]);
 	}
 

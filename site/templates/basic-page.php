@@ -9,22 +9,7 @@
 	</div>
 	<div class="container">
 		<?php if ($page->show_breadcrumbs) : ?>
-			<nav aria-label="breadcrumb rounded-0">
-				<ol class="breadcrumb">
-					<?php foreach ($parents as $parent) : ?>
-						<li class="breadcrumb-item">
-							<i class="fa fa-list" aria-hidden="true"></i>
-							<a href="<?= $parent->url; ?>"><?= $parent->title; ?></a>
-						</li>
-					<?php endforeach; ?>
-					<?php if ($page->has('title_previous') && $page->title_previous != $page->title) : ?>
-						<li class="breadcrumb-item">
-							<a href="<?= $page->url; ?>"><?= $page->title_previous; ?></a>
-						</li>
-					<?php endif; ?>
-					<li class="breadcrumb-item active" aria-current="page"><?= $page->get('pagetitle|headline|title'); ?></li>
-				</ol>
-			</nav>
+			<?= $config->twig->render('util/bread-crumbs.twig', ['page' => $page]); ?>
 		<?php endif; ?>
 	</div>
 	<div class='container page <?= ($page->show_breadcrumbs) ? 'pt-3' : ''; ?>'>

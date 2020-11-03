@@ -11,7 +11,7 @@ class Qnotes extends WireData implements Module {
 		$lines = array();
 
 		if ($length) {
-			$wrapped = wordwrap($note, $length, PHP_EOL);
+			$wrapped = wordwrap($note, $length, PHP_EOL, $cut = true);
 			$note_lines = explode(PHP_EOL, $wrapped);
 		} else {
 			$note_lines = explode(PHP_EOL, $note);

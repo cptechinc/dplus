@@ -53,8 +53,8 @@ class DpagesMap extends Dpages implements Module {
 			'template'       => 'dplus-function',
 			'pw_template'    => 'vxm',
 			'name'           => 'vxm',
-			'title'          => 'VXM',
-			'summary'        => 'View Vendor Item Xref',
+			'title'          => 'Vendor X-Ref',
+			'summary'        => 'View Vendor Item X-Ref',
 			'parent'         => '/map/apmain/',
 			'dplus_function' => 'vxm'
 		),
