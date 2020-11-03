@@ -148,7 +148,7 @@ class XrefUpc extends WireData implements Module {
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
-/**
+	/**
 	 * Takes Input, validates it's for one of the code tables
 	 * Processes it, and if updated sends request to dplus
 	 *
@@ -227,7 +227,7 @@ class XrefUpc extends WireData implements Module {
 		$record->setMastercase($values->text('mastercase'));
 		$record->setNeedslabel($values->text('needslabel'));
 		$record->setDate(date('Ymd'));
-		$record->setTime(0);
+		$record->setTime(date('His'));
 
 		if ($values->text('primary') == ItemXrefUpc::PRIMARY_TRUE) {
 			if ($values->text('valid_primary') == 'true') {
