@@ -17,6 +17,7 @@
 		</div>
 	</div>
 	{% for item in lineitems %}
+		{% set imitem = m_picking.inventory.get_master_item(item.itemid) %}
 		<div class="list-group-item first-txn-row {{ item.count_pickeditems() > item.qtyordered ? 'bg-warning text-white'}}">
 			<div class="row">
 				<div class="col-sm-1">
@@ -30,11 +31,11 @@
 				</div>
 				<div class="col-sm-4">
 					{{ item.itemid }}
-					{% if item.description %}
+					{% if imitem.description %}
 						<br>
-						<small>{{ item.description }}</small>
+						<small>{{ imitem.description }}</small>
 					{% endif %}
-					{% set imitem = m_picking.inventory.get_master_item(item.itemid) %}
+
 					<br> <small class="text-muted">UoM: {{ imitem.uom_sale }}</small>
 
 					{% if item.qtypulled > item.qtyordered %}
