@@ -20,29 +20,6 @@ use InvLotQuery, InvLot;
  * Class that Handles the link to the Inventory for Picking
  */
 class PickingInventoryManager extends WireData implements Module {
-/* =============================================================
-	ProcessWire Module Functions
-============================================================= */
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'Dpluso Warehouse Picking Inventory Functions Module',
-			'version' => 101,
-			'summary' => 'Handles Dplus Inventory for Picking',
-			'singular' => true,
-			'autoload' => false,
-		);
-	}
-
-	public function init() {
-		$this->session = $this->wire('session');
-		$this->sessionID = '';
-	}
-
 	/**
 	 * Return Inventory Items
 	 * @param  string $scan        Scan
@@ -127,5 +104,37 @@ class PickingInventoryManager extends WireData implements Module {
 	 */
 	public function get_whsesession() {
 		return WhsesessionQuery::create()->findOneBySessionid($this->sessionID);
+	}
+
+	/**
+	 * Sends Dplus Request to Search Inventory for $q
+	 * @param  string $ordn  Sales Order Number
+	 * @param  string $q     Query
+	 * @return bool
+	 */
+	public function send_searchscan_request($ordn, $q) {
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'PICKSEARCH', "QUERY=$q", "ORDERNBR=$ordn");
+
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($this->wire('config')->cgis['warehouse'], $this->sessionID);
+	}
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Warehouse Picking Inventory Functions Module',
+			'version' => 101,
+			'summary' => 'Handles Dplus Inventory for Picking',
+			'singular' => true,
+			'autoload' => false,
+		);
+	}
+
+	public function init() {
+		$this->session = $this->wire('session');
+		$this->sessionID = '';
 	}
 }

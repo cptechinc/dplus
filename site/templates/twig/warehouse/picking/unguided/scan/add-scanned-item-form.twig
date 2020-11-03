@@ -43,7 +43,7 @@
 					<label for="qty">Qty </label>
 					<span class="pull-right">Ordered: {{ orderitem.qtyordered|number_format(m_picking.decimal_places()) }}</span>
 				</div>
-				<input type="number" class="form-control" name="qty" id="qty" max="{{ item.qty|number_format(m_picking.decimal_places())  }}" value="">
+				<input type="number" class="form-control" name="qty" id="qty" {% if m_picking.allow_pick_more_than_available() == false  %} max="{{ item.qty }}" {% endif %} value="">
 				<small class="form-text text-muted">Bin Qty: {{ item.qty|number_format(m_picking.decimal_places()) }}</small>
 			</div>
 		</div>
