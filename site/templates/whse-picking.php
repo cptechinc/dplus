@@ -21,7 +21,7 @@
 		$ordn = SalesOrder::get_paddedordernumber($values->text('ordn') ? $values->text('ordn') : $input->get->text('ordn'));
 		$pickingsession = $modules->get('Picking');
 		$pickingsession->set_sessionID(session_id());
-		$pickingsession->set_ordn($values->text('ordn'));
+		$pickingsession->set_ordn($ordn);
 		$pickingsession->handle_action($input);
 		$session->redirect($page->fullURL->getUrl(), $http301 = false);
 	}
