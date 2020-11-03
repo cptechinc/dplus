@@ -301,7 +301,7 @@ class DpagesMwm extends Dpages implements Module {
 	}
 
 	public function init_picking() {
-		$this->addHook('Page::get_finishitemURL', function($event) {
+		$this->addHook('Page(pw_template=whse-picking)::get_finishitemURL', function($event) {
 			$p = $event->object;
 			$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
 			$url->query->set('action','finish-item');
@@ -313,36 +313,19 @@ class DpagesMwm extends Dpages implements Module {
 			$event->return = $url->getUrl();
 		});
 
-		$this->addHook('Page::get_skipitemURL', function($event) {
+		$this->addHook('Page(pw_template=whse-picking)::get_exitorderURL', function($event) {
 			$p = $event->object;
-			$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
-			$url->query->set('action','skip-item');
-			$url->query->set('page', $p->fullURL->getUrl());
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page::get_exitorderURL', function($event) {
-			$p = $event->object;
-			$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
+			$url = new Url($this->wire('pages')->get('pw_template=whse-picking')->url);
 			$url->query->set('action','exit-order');
-			$url->query->set('page', $p->fullURL->getUrl());
+			$url->query->set('ordn', $p->fullURL->query->get('ordn'));
 			$event->return = $url->getUrl();
 		});
 
-		$this->addHook('Page::get_finishorderURL', function($event) {
+		$this->addHook('Page(pw_template=whse-picking)::get_finishorderURL', function($event) {
 			$p = $event->object;
-			$url = new Url($p->parent('template=warehouse-menu')->child('template=redir')->url);
+			$url = new Url($this->wire('pages')->get('pw_template=whse-picking')->url);
 			$url->query->set('action','finish-order');
-			$url->query->set('page', $p->fullURL->getUrl());
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page::get_selectlineURL', function($event) {
-			$p = $event->object;
-			$item = $event->arguments(0); // Instance of PickSalesOrderDetail
-			$url = new Url($p->fullURL->getUrl());
-			$url->query->set('linenbr', $item->linenbr);
-			$url->query->set('sublinenbr', $item->sublinenbr);
+			$url->query->set('ordn', $p->fullURL->query->get('ordn'));
 			$event->return = $url->getUrl();
 		});
 

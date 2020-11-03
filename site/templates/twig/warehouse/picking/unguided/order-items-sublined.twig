@@ -39,9 +39,9 @@
 						<small>{{ item.description }}</small>
 					{% endif %}
 
-					{% if item.count_pickeditems() > item.qtyordered %}
+					{% if item.qtypulled > item.qtyordered %}
 						<br>
-						<small> You are Picking more boxes than what was ordered </small>
+						<span class="badge badge-warning"> You are Picking more qty than what was ordered </span>
 					{% endif %}
 				</div>
 				<div class="col-sm-1 text-right">{{ item.qtyordered|number_format(m_picking.decimal_places()) }}</div>
