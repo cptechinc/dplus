@@ -9,7 +9,22 @@ use Purl\Url;
  * api Pages will provide api functionality to the site if not available through other means
  */
 class DpagesApi extends Dpages implements Module {
-	const FIELDS = array();
+	const FIELDS = array(
+		'ajaxcode' => array(
+			'name'  => 'ajaxcode',
+			'type'  => 'text',
+			'label' => 'AJAX Code'
+		),
+		'ajaxtype' => array(
+			'name'  => 'ajaxtype',
+			'type'  => 'select',
+			'label' => 'AJAX Code'
+			'options' => array(
+				'lookup' => 'Lookup',
+				'json'   => 'JSON',
+			)
+		),
+	);
 
 	const TEMPLATES = array(
 		'api-menu' => array(
@@ -24,7 +39,12 @@ class DpagesApi extends Dpages implements Module {
 		),
 		'api-ajax' => array(
 			'name'   => 'api-ajax',
-			'fields' => array('dplus_function', 'pw_template', 'summary'),
+			'fields' => array('ajaxtype', 'ajaxcode', 'pw_template', 'summary'),
+			'paginated' => true
+		),
+		'api-ajax-lookup' => array(
+			'name'   => 'api-ajax-lookup',
+			'fields' => array(),
 			'paginated' => true
 		),
 	);
@@ -52,8 +72,19 @@ class DpagesApi extends Dpages implements Module {
 			'title'          => 'Lookup Country Codes',
 			'summary'        => 'Lookup Country Codes',
 			'parent'         => '/api/lookup/',
-			'dplus_function' => '',
+			'ajaxtype'       => '',
+			'ajaxcode'       => '',
 			'pw_template'    => 'lookup-country-codes'
+		),
+		'lookup-tariff-codes' => array(
+			'template'       => 'api-ajax',
+			'name'           => 'tariff-codes',
+			'title'          => 'Lookup Tariff Codes',
+			'summary'        => 'Lookup Tariff Codes',
+			'parent'         => '/api/lookup/',
+			'ajaxtype'       => 'lookup',
+			'ajaxcode'       => 'tariff-codes',
+			'pw_template'    => ''
 		),
 	);
 
