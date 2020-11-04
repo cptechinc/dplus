@@ -30,6 +30,7 @@ class Itm extends WireData implements Module {
 		'itm-xrefs-upcx',
 		'itm-xrefs-vxm',
 		'itm-xrefs-cxm',
+		'itm-misc',
 	);
 
 	public function __construct() {
@@ -194,10 +195,12 @@ class Itm extends WireData implements Module {
 				$record->delete();
 			} elseif ($values->text('action') == 'update-itm') {
 				$invalidfields = $this->set_item_fields($record, $input);
+			} elseif($values->text('action') == 'update-itm-misc') {
+				$invalidfields = $this->set_item_fields_misc($record, $input);
 			}
 
 			if ($values->action) {
-				$response = $this->save_and_process_response($record, $invalidfields);
+				$response = $this->save_and_respond($record, $invalidfields);
 
 				if ($invalidfields) {
 					$response->set_error(true);
@@ -333,7 +336,7 @@ class Itm extends WireData implements Module {
 	 * @param  array          $invalidfields Input fields that require attention
 	 * @return ItmResponse
 	 */
-	public function save_and_process_response(ItemMasterItem $record, array $invalidfields) {
+	public function save_and_respond(ItemMasterItem $record, array $invalidfields) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
@@ -675,6 +678,7 @@ class Itm extends WireData implements Module {
 				'ItmPricing',
 				'ItmWarehouse',
 				'ItmXrefs',
+				'Itm',
 			)
 		);
 	}
@@ -798,5 +802,10 @@ class Itm extends WireData implements Module {
 		$this->addHookProperty("Page(pw_template=$templates)::search_notesURL", function($event) {
 			$event->return = $this->wire('pages')->get('pw_template=msa-noce-ajax')->url;
 		});
+
+		$this->addHookProperty("Page(pw_template=$templates)::search_countriesURL", function($event) {
+			$event->return = $this->wire('pages')->get('pw_template=lookup-country-codes')->url;
+		});
 	}
+
 }
