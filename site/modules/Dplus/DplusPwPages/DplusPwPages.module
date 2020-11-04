@@ -317,7 +317,9 @@ class DplusPwPages extends WireData implements Module {
 
 		if (in_array($page['template'], array_keys($default_templates))) {
 			foreach ($default_templates[$page['template']]['fields'] as $fieldname) {
-				$pw_page->$fieldname = $page[$fieldname];
+				if (array_key_exists($fieldname, $page)) {
+					$pw_page->$fieldname = $page[$fieldname];
+				}
 			}
 		} else {
 			foreach ($this::TEMPLATES[$page['template']]['fields'] as $fieldname) {
