@@ -1,11 +1,14 @@
 <?php
 	$q = $input->get->text('q');
 	$page->searchURL = $page->url;
-	$count = 0
+	$count = 0;
 
 	switch ($page->ajaxcode) {
 		case 'tariff-codes':
-			$filter = $modules->get('FilterCountryCodes');
+			$filter = $modules->get('FilterInvTariffCodes');
+			break;
+		case 'msds-codes':
+			$filter = $modules->get('FilterInvMsdsCodes');
 			break;
 	}
 
@@ -18,10 +21,15 @@
 	$query = $filter->get_query();
 
 	switch ($page->ajaxcode) {
-		case 'tariff-codes':
-			$countries = $query->paginate($input->pageNum, 10);
-			$count = $countries->getNbResults();
-			$page->body = $config->twig->render('api/lookup/country-codes/search.twig', ['page' => $page, 'countries' => $countries, 'datamatcher' => $modules->get('RegexData'), 'q' => $q]);
+		default:
+			$twigloader = $config->twig->getLoader();
+			if ($twigloader->exists("api/lookup/$page->ajaxcode/search.twig")) {
+				$results = $query->paginate($input->pageNum, 10);
+				$count   = $results->getNbResults();
+				$page->body .= $config->twig->render("api/lookup/$page->ajaxcode/search.twig", ['page' => $page, 'results' => $results, 'datamatcher' => $modules->get('RegexData'), 'q' => $q]);
+			} else {
+				$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "$page->ajaxcode lookup does not exist"]);
+			}
 			break;
 	}
 

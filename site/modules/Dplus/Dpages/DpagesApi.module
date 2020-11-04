@@ -18,7 +18,7 @@ class DpagesApi extends Dpages implements Module {
 		'ajaxtype' => array(
 			'name'  => 'ajaxtype',
 			'type'  => 'select',
-			'label' => 'AJAX Code'
+			'label' => 'AJAX Code',
 			'options' => array(
 				'lookup' => 'Lookup',
 				'json'   => 'JSON',
