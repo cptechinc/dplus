@@ -6,6 +6,85 @@ $(function() {
 	var modal_ajax = $('#ajax-modal');
 
 /* =============================================================
+	Validation Functions
+============================================================= */
+	var validator_misc = form_misc.validate({
+			errorClass: "is-invalid",
+			validClass: "is-valid",
+			errorPlacement: function(error, element) {
+				error.insertAfter(element).addClass('invalid-feedback');
+			},
+			rules: {
+				tariffcode: {
+					required: false,
+					remote: function() {
+						return object_validate_remote_code('tariffcode', 'tariffcode');
+					}
+				},
+				origincountry: {
+					required: false,
+					remote: function() {
+						return object_validate_remote_code('origincountry', 'countrycode');
+					}
+				}
+			},
+			messages: {
+
+			},
+			submitHandler: function(form) {
+				// form.submit();
+			}
+		});
+
+		function object_validate_remote_code(inputid, validating) {
+			return {
+				url: '{{ page.jsonapiURL }}',
+				type: "get",
+				data: {
+					action: 'validate-'+validating,
+					code: function() {
+						return $('#'+inputid).val();
+					}
+				}
+			}
+		}
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on('change', 'input[name=tariffcode]', function(e) {
+		if (validator_misc.element('#tariffcode')) {
+			get_tariffcode($(this).val(), function(tariff) {
+				if (tariff) {
+					$('.tariff-number').text(tariff.number);
+					$('.tariff-rate').text(tariff.rate + '%');
+					$('.tariff-description').text(tariff.description);
+				}
+			});
+		}
+	});
+
+	$("body").on('change', 'input[name=origincountry]', function(e) {
+		if (validator_misc.element('#origincountry')) {
+			get_countrycode($(this).val(), function(country) {
+				if (country) {
+					$('.origincountry-description').text(country.description);
+				}
+			});
+		}
+	});
+
+	$("body").on('change', 'input[name=msdscode]', function(e) {
+		if (validator_misc.element('#msdscode')) {
+			get_msdscode($(this).val(), function(country) {
+				if (country) {
+					$('.msdscode-description').text(country.description);
+				}
+			});
+		}
+	});
+
+/* =============================================================
 	AJAX Lookup Modal Functions
 ============================================================= */
 	modal_ajax.on('show.bs.modal', function (event) {
@@ -21,7 +100,6 @@ $(function() {
 			url = '{{ page.search_msdscodesURL }}';
 		}
 
-
 		modal.find('.modal-title').text(button.attr('title'));
 		modal.resizeModal('xl');
 		modal.find('.modal-body').loadin(url, function() {});
@@ -31,7 +109,7 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var code = button.data('code');
-		input_country.val(code);
+		input_country.val(code).change();
 		modal_ajax.modal('hide');
 	});
 
@@ -39,7 +117,7 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var code = button.data('code');
-		input_tariff.val(code);
+		input_tariff.val(code).change();
 		modal_ajax.modal('hide');
 	});
 
@@ -47,7 +125,7 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var code = button.data('code');
-		input_msds.val(code);
+		input_msds.val(code).change();
 		modal_ajax.modal('hide');
 	});
 
@@ -67,4 +145,34 @@ $(function() {
 		var href = $(this).attr('href');
 		modal_ajax.find('.modal-body').load(href);
 	});
+
+/* =============================================================
+	AJAX Request Functions
+============================================================= */
+	function get_tariffcode(code, callback) {
+		fetch_jsonapi_code('tariffcode', code, function(obj) {
+			callback(obj);
+		});
+	}
+
+	function get_countrycode(code, callback) {
+		fetch_jsonapi_code('countrycode', code, function(obj) {
+			callback(obj);
+		});
+	}
+
+	function get_msdscode(code, callback) {
+		fetch_jsonapi_code('msdscode', code, function(obj) {
+			callback(obj);
+		});
+	}
+
+	function fetch_jsonapi_code(fetching, code, callback) {
+		var url = new URI('{{ page.jsonapiURL }}');
+		url.addQuery('action', 'get-'+fetching).addQuery('code', code);
+		$.getJSON(url.toString(), function( obj ) {
+			callback(obj);
+		});
+	}
+
 });
