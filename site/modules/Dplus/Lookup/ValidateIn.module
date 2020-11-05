@@ -113,6 +113,35 @@ class ValidateIn extends WireData implements Module {
 		return $umm->code_exists($code);
 	}
 
+	/**
+	 * Return if Inventory Tarriff Code is valid
+	 * @param  string $code Inventory Tarriff Code
+	 * @return bool
+	 */
+	public function tariffcode($code) {
+		$stcm = $this->modules->get('CodeTablesTarm');
+		return $stcm->code_exists($code);
+	}
+
+	/**
+	 * Return if Country Code is valid
+	 * @param  string $code Country Code
+	 * @return bool
+	 */
+	public function countrycode($code) {
+		$validate = $this->modules->get('ValidateAp');
+		return $validate->countrycode($code);
+	}
+
+	/**
+	 * Return if Msds Code is valid
+	 * @param  string $code Msds Code
+	 * @return bool
+	 */
+	public function msdscode($code) {
+		$msdsm = $this->modules->get('CodeTablesMsdsm');
+		return $msdsm->code_exists($code);
+	}
 
 
 /* =============================================================
@@ -130,7 +159,8 @@ class ValidateIn extends WireData implements Module {
 				'CodeTablesStcm',
 				'CodeTablesIgm',
 				'CodeTablesIgpm',
-				'CodeTablesIgcm'
+				'CodeTablesIgcm',
+				'CodeTablesTarm',
 			)
 		);
 	}
