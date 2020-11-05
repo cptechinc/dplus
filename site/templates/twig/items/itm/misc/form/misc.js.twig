@@ -2,6 +2,7 @@ $(function() {
 	var form_misc = $('#item-misc-form');
 	var input_country = form_misc.find('input[name=origincountry]');
 	var input_tariff  = form_misc.find('input[name=tariffcode]');
+	var input_msds    = form_misc.find('input[name=msdscode]');
 	var modal_ajax = $('#ajax-modal');
 
 /* =============================================================
@@ -16,6 +17,8 @@ $(function() {
 			url = '{{ page.search_countriesURL }}';
 		} else if (button.data('search') == 'tariffcode') {
 			url = '{{ page.search_tariffcodesURL }}';
+		} else if (button.data('search') == 'msdscode') {
+			url = '{{ page.search_msdscodesURL }}';
 		}
 
 
@@ -40,7 +43,13 @@ $(function() {
 		modal_ajax.modal('hide');
 	});
 
-
+	$("body").on('click', '.msds-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var code = button.data('code');
+		input_msds.val(code);
+		modal_ajax.modal('hide');
+	});
 
 	$("body").on('submit', '#ajax-modal form', function(e) {
 		e.preventDefault();

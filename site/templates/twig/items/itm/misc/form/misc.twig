@@ -26,6 +26,9 @@
 		<div class="col-sm-4">
 			<label for="msdscode">MSDS Code</label>
 		</div>
+		<div class="col-sm-8">
+			{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'msdscode', 'value': '', 'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Msds Code', 'attributes_button': {'data-search': 'msdscode'}} %}
+		</div>
 	</div>
 	<div class="form-group row">
 		<div class="col-sm-4">
