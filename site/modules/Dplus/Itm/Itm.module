@@ -814,6 +814,10 @@ class Itm extends WireData implements Module {
 		$this->addHookProperty("Page(pw_template=$templates)::search_msdscodesURL", function($event) {
 			$event->return = $this->wire('pages')->get('template=api-ajax,ajaxcode=msds-codes')->url;
 		});
+
+		$this->addHookProperty("Page(pw_template=itm-misc)::jsonapiURL", function($event) {
+			$event->return = $this->wire('pages')->get('template=dplus-json,name=inv')->url;
+		});
 	}
 
 }
