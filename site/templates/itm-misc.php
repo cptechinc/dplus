@@ -41,6 +41,7 @@
 			$page->body .= $config->twig->render('items/itm/description.twig', ['page' => $page, 'item' => $item]);
 			$page->body .= $config->twig->render('items/itm/misc/page.twig', ['page' => $page, 'item' => $item, 'recordlocker' => $recordlocker]);
 			$page->js   .= $config->twig->render('items/itm/misc/js.twig', ['page' => $page]);
+			$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 		} else {
 			$session->redirect($page->itmURL($itemID), $http301 = false);
 		}
