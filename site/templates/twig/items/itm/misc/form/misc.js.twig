@@ -1,8 +1,9 @@
 $(function() {
 	var form_misc = $('#item-misc-form');
-	var input_country = form_misc.find('input[name=origincountry]');
-	var input_tariff  = form_misc.find('input[name=tariffcode]');
-	var input_msds    = form_misc.find('input[name=msdscode]');
+	var input_country  = form_misc.find('input[name=origincountry]');
+	var input_tariff   = form_misc.find('input[name=tariffcode]');
+	var input_msds     = form_misc.find('input[name=msdscode]');
+	var input_freight  = form_misc.find('input[name=freightcode]');
 	var modal_ajax = $('#ajax-modal');
 
 /* =============================================================
@@ -18,13 +19,19 @@ $(function() {
 				tariffcode: {
 					required: false,
 					remote: function() {
-						return object_validate_remote_code('tariffcode', 'tariffcode');
+						return object_validate_remote_code('inv', 'tariffcode', 'tariffcode');
 					}
 				},
 				origincountry: {
 					required: false,
 					remote: function() {
-						return object_validate_remote_code('origincountry', 'countrycode');
+						return object_validate_remote_code('inv', 'origincountry', 'countrycode');
+					}
+				},
+				freightcode: {
+					required: false,
+					remote: function() {
+						return object_validate_remote_code('mso', 'freightcode', 'freightcode');
 					}
 				}
 			},
@@ -32,13 +39,16 @@ $(function() {
 
 			},
 			submitHandler: function(form) {
-				// form.submit();
+				form.submit();
 			}
 		});
 
-		function object_validate_remote_code(inputid, validating) {
+		function object_validate_remote_code(api, inputid, validating) {
+			var url = URI('{{ page.jsonapiURL() }}');
+			url.path(url.path()+api+'/');
+
 			return {
-				url: '{{ page.jsonapiURL }}',
+				url: url.toString(),
 				type: "get",
 				data: {
 					action: 'validate-'+validating,
@@ -52,37 +62,21 @@ $(function() {
 /* =============================================================
 	Event Functions
 ============================================================= */
-	$("body").on('change', 'input[name=tariffcode]', function(e) {
-		if (validator_misc.element('#tariffcode')) {
-			get_tariffcode($(this).val(), function(tariff) {
-				if (tariff) {
-					$('.tariff-number').text(tariff.number);
-					$('.tariff-rate').text(tariff.rate + '%');
-					$('.tariff-description').text(tariff.description);
+	$("body").on('change', 'input.ajax-lookup', function(e) {
+		var input = $(this);
+		if (validator_misc.element('#'+input.attr('id'))) {
+			fetch_jsonapi_code(input.data('api'), input.data('validate'), $(this).val(), function(obj) {
+				if (obj) {
+					var ajaxfields_str = input.data('ajaxfields');
+					var ajaxfields = ajaxfields_str.split(',');
+					ajaxfields.forEach((field , i) => {
+						$('.'+input.attr('name')+'-'+field).text(obj[field]);
+					});
 				}
 			});
 		}
 	});
 
-	$("body").on('change', 'input[name=origincountry]', function(e) {
-		if (validator_misc.element('#origincountry')) {
-			get_countrycode($(this).val(), function(country) {
-				if (country) {
-					$('.origincountry-description').text(country.description);
-				}
-			});
-		}
-	});
-
-	$("body").on('change', 'input[name=msdscode]', function(e) {
-		if (validator_misc.element('#msdscode')) {
-			get_msdscode($(this).val(), function(country) {
-				if (country) {
-					$('.msdscode-description').text(country.description);
-				}
-			});
-		}
-	});
 
 /* =============================================================
 	AJAX Lookup Modal Functions
@@ -90,15 +84,7 @@ $(function() {
 	modal_ajax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
-		var url = '{{ page.search_countriesURL }}';
-
-		if (button.data('search') == 'country') {
-			url = '{{ page.search_countriesURL }}';
-		} else if (button.data('search') == 'tariffcode') {
-			url = '{{ page.search_tariffcodesURL }}';
-		} else if (button.data('search') == 'msdscode') {
-			url = '{{ page.search_msdscodesURL }}';
-		}
+		var url = button.data('lookupurl');
 
 		modal.find('.modal-title').text(button.attr('title'));
 		modal.resizeModal('xl');
@@ -129,6 +115,14 @@ $(function() {
 		modal_ajax.modal('hide');
 	});
 
+	$("body").on('click', '.freight-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var code = button.data('code');
+		input_freight.val(code).change();
+		modal_ajax.modal('hide');
+	});
+
 	$("body").on('submit', '#ajax-modal form', function(e) {
 		e.preventDefault();
 		var form = $(this);
@@ -149,26 +143,10 @@ $(function() {
 /* =============================================================
 	AJAX Request Functions
 ============================================================= */
-	function get_tariffcode(code, callback) {
-		fetch_jsonapi_code('tariffcode', code, function(obj) {
-			callback(obj);
-		});
-	}
 
-	function get_countrycode(code, callback) {
-		fetch_jsonapi_code('countrycode', code, function(obj) {
-			callback(obj);
-		});
-	}
-
-	function get_msdscode(code, callback) {
-		fetch_jsonapi_code('msdscode', code, function(obj) {
-			callback(obj);
-		});
-	}
-
-	function fetch_jsonapi_code(fetching, code, callback) {
-		var url = new URI('{{ page.jsonapiURL }}');
+	function fetch_jsonapi_code(api, fetching, code, callback) {
+		var url = new URI('{{ page.jsonapiURL() }}');
+		url.path(url.path() + api + "/");
 		url.addQuery('action', 'get-'+fetching).addQuery('code', code);
 		$.getJSON(url.toString(), function( obj ) {
 			callback(obj);

@@ -4,66 +4,21 @@
 	page                   ProcessWire\Page
 	item                   ItemMasterItem
 #}
-<form action="{{ page.itm_costingURL(item.itemid) }}" class="mb-3" id="item-misc-form" method="post">
+<form action="{{ page.itm_miscURL(item.itemid) }}" class="mb-3" id="item-misc-form" method="post">
+	<input type="hidden" name="action" value="update-itm-misc">
 	<input type="hidden" name="itemID" value="{{ item.itemid }}">
-	<div class="form-group row">
-		<div class="col-sm-4">
-			<label for="tariffcode">Tarriff Code</label>
-		</div>
+
+	<div class="row">
 		<div class="col-sm-8">
-			<div class="row">
-				<div class="col-sm-3">
-					{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'tariffcode', 'value': '', 'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Tariff Code', 'attributes_button': {'data-search': 'tariffcode'}} %}
-				</div>
-				<div class="col-sm-3">
-					<p class="form-control-plaintext form-control-sm tariff-number"></p>
-				</div>
-				<div class="col-sm-3">
-					<p class="form-control-plaintext form-control-sm tariff-description"></p>
-				</div>
-				<div class="col-sm-3">
-					<p class="form-control-plaintext form-control-sm tariff-rate"></p>
-				</div>
-			</div>
+			{% include 'items/itm/misc/form/misc-left.twig' %}
+		</div>
+		<div class="col-sm-4">
+			{% include 'items/itm/misc/form/misc-right.twig' %}
 		</div>
 	</div>
-	<div class="form-group row">
-		<div class="col-sm-4">
-			<label for="origincountry">Country of Origin</label>
-		</div>
-		<div class="col-sm-8">
-			<div class="row">
-				<div class="col-sm-3">
-					{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'origincountry', 'value': '', 'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Country', 'attributes_button': {'data-search': 'country'}} %}
-				</div>
-				<div class="col-sm-9">
-					<p class="form-control-plaintext form-control-sm origincountry-description"></p>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="form-group row">
-		<div class="col-sm-4">
-			<label for="msdscode">MSDS Code</label>
-		</div>
-		<div class="col-sm-8">
-			<div class="row">
-				<div class="col-sm-3">
-					{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'msdscode', 'value': '', 'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Msds Code', 'attributes_button': {'data-search': 'msdscode'}} %}
-				</div>
-				<div class="col-sm-9">
-					<p class="form-control-plaintext form-control-sm msdscode-description"></p>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="form-group row">
-		<div class="col-sm-4">
-			<label for="freightcode">Motor Freight Code</label>
-		</div>
-		<div class="col-sm-8">
-		</div>
-	</div>
+
+
+
 	<div class="d-flex justify-content-between align-items-center">
 		{#
 			Only show Edit Actions if the Item is
