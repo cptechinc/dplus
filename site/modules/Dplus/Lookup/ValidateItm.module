@@ -11,6 +11,35 @@ use ItemMasterItemQuery, ItemMasterItem;
  */
 class ValidateItm extends WireData implements Module {
 /* =============================================================
+	Itm Item Functions
+============================================================= */
+	/**
+	 * Return if Preference Value is valid
+	 * @param  string $value  Preference Value
+	 * @return bool
+	 */
+	public function preference($value) {
+		return in_array($value, ItemMasterItem::OPTIONS_PREFERENCE);
+	}
+
+	/**
+	 * Return if Producer Value is valid
+	 * @param  string $value  Producer Value
+	 * @return bool
+	 */
+	public function producer($value) {
+		return array_key_exists($value, ItemMasterItem::OPTIONS_PRODUCER);
+	}
+
+	/**
+	 * Return if Preference Value is valid
+	 * @param  string $value  Preference Value
+	 * @return bool
+	 */
+	public function documentation($value) {
+		return in_array($value, ItemMasterItem::OPTIONS_DOCUMENTATION);
+	}
+/* =============================================================
 	AR Functions
 ============================================================= */
 	/**
@@ -142,6 +171,18 @@ class ValidateItm extends WireData implements Module {
 	}
 
 /* =============================================================
+	SO Functions
+============================================================= */
+	/**
+	 * Return if Motor Freight Code is valid
+	 * @param  string $code  Motor Freight Code
+	 * @return bool
+	 */
+	public function freightcode($code) {
+		return $this->validate->so->freightcode($code);
+	}
+
+/* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
 	public static function getModuleInfo() {
@@ -160,6 +201,7 @@ class ValidateItm extends WireData implements Module {
 		$this->validate->ar  = $this->wire('modules')->get('ValidateAr');
 		$this->validate->ap  = $this->wire('modules')->get('ValidateAp');
 		$this->validate->in  = $this->wire('modules')->get('ValidateIn');
+		$this->validate->so  = $this->wire('modules')->get('ValidateSo');
 		$this->modules = $this->wire('modules');
 	}
 }
