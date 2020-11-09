@@ -2,6 +2,7 @@
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
 	$itm = $modules->get('ItmMisc');
+	$itm->init_configs();
 
 	if ($input->get->itemID) {
 		$itemID = $input->get->text('itemID');
