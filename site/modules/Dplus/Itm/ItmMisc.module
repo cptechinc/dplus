@@ -5,12 +5,7 @@ include_once(__DIR__.'/ItmResponse.php');
 use Purl\Url;
 
 use ItemMasterItemQuery, ItemMasterItem;
-use ConfigInQuery, ConfigIn;
-use InvGroupCodeQuery, InvGroupCode;
-use InvPriceCodeQuery, InvPriceCode;
-use InvCommissionCodeQuery, InvCommissionCode;
-use InvStockCodeQuery, InvStockCode;
-use InvSpecialCodeQuery, InvSpecialCode;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
 
 /**
  * Module that handles the editing of the UPC item Itm
@@ -20,6 +15,24 @@ class ItmMisc extends Itm implements Module {
 	const MODEL_KEY          = 'code';
 	const DESCRIPTION        = 'Item Master Item';
 	const DESCRIPTION_RECORD = 'Item Master Item';
+
+	public function __construct() {
+		parent::__construct();
+		$this->configs->so = false;
+	}
+
+	public function init_configs() {
+		parent::init_configs();
+		$this->configs->so = $this->get_config_so();
+	}
+
+	/**
+	 * Return if Core Items are Allowed
+	 * @return bool
+	 */
+	public function use_core_items() {
+		return $this->configs->so->use_core_items();
+	}
 
 /* =============================================================
 	CRUD Processing Functions
@@ -193,7 +206,13 @@ class ItmMisc extends Itm implements Module {
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
-
+	/**
+	 * Returns IN config
+	 * @return ConfigSalesOrder
+	 */
+	public function get_config_so() {
+		return ConfigSalesOrderQuery::create()->findOne();
+	}
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
