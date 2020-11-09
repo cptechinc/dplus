@@ -10,6 +10,9 @@
 		case 'msds-codes':
 			$filter = $modules->get('FilterInvMsdsCodes');
 			break;
+		case 'freight-codes':
+			$filter = $modules->get('FilterMsoFreightCodes');
+			break;
 	}
 
 	$filter->init_query($user);

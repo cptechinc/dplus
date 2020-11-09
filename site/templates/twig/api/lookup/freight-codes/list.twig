@@ -1,0 +1,18 @@
+<table class="table table-striped" id="msds-table">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th>Code</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	{% for freight in results %}
+		<tr>
+			<td>
+				<a href="#" class="link freight-link" data-code="{{ freight.code }}">
+					{{ freight.code }}
+				</a>
+			</td>
+			<td>{{ freight.description }}</td>
+		</tr>
+	{% endfor %}
+</table>
