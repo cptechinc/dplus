@@ -1,0 +1,102 @@
+<?php namespace ProcessWire;
+
+use LockRecordQuery, LockRecord;
+
+/**
+ * RecordLockerUserFunction
+ *
+ * Class for Creating, Reading LockRecord for the purposes of Dplus User from the perspective of a function.
+ * NOTE: Examples provided will be for IWHM
+ */
+class RecordLockerUserFunction extends WireData implements Module {
+	public function set_user(User $user) {
+		$this->recordlocker->set_user($user);
+	}
+
+	/**
+	 * Set the Function to Use for Class Methods
+	 * @param  string $function  Function e.g IWHM
+	 */
+	public function set_function($function = '') {
+		$this->function = $function;
+		return $this;
+	}
+
+	/**
+	 * Returns if Function is being locked by User ID
+	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @return bool
+	 */
+	public function function_locked_by_user($key) {
+		return $this->recordlocker->function_locked_by_user($this->function, $key);
+	}
+
+	/**
+	 * Returns if Function is being locked
+	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @return bool
+	 */
+	public function function_locked($key) {
+		return $this->recordlocker->function_locked($this->function, $key);
+	}
+
+	/**
+	 * Return LoginID of User who has locked function record
+	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @return string
+	 */
+	public function get_locked_user($key) {
+		return $this->recordlocker->get_locked_user($this->function, $key);
+	}
+
+	/**
+	 * Creates Lock for User
+	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @return bool
+	 */
+	public function create_lock($key) {
+		return $this->recordlocker->create_lock($this->function, $key);
+	}
+
+	/**
+	 * Removes Lock(s) for User
+	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @return bool
+	 */
+	public function remove_lock($key = '') {
+		return $this->recordlocker->remove_lock($this->function, $key);
+	}
+
+	/**
+	 * Removes User's Locks older than X hours
+	 * @param  int    $hours Number of Hours
+	 * @return bool
+	 */
+	public function remove_locks_olderthan(int $hours) {
+		return $this->recordlocker->remove_locks_olderthan($hours);
+	}
+
+	/**
+	 * Return RecordLocker
+	 * @return RecordLockerUser
+	 */
+	public function get_recordlocker() {
+		return $this->wire('modules')->get('RecordLockerUser');
+	}
+
+	public function init() {
+		$this->recordlocker = $this->get_recordlocker();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus RecordLockerUserFunction ',
+			'version' => 101,
+			'summary' => 'Dplus RecordLockerUser Function',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(),
+			'requires' => array('RecordLocker', 'RecordLockerUser'),
+		);
+	}
+}
