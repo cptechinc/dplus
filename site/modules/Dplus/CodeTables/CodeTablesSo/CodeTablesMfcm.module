@@ -30,6 +30,16 @@ class CodeTablesMfcm extends WireData implements Module {
 	}
 
 	/**
+	 * Return MotorFreightCode
+	 * @param  string $code
+	 * @return MotorFreightCode
+	 */
+	public function get_code($code) {
+		$q = $this->get_query();
+		return $q->findOneByCode($code);
+	}
+
+	/**
 	 * Return the IDs for the Motor Freight Codes
 	 * @return array
 	 */
@@ -37,6 +47,16 @@ class CodeTablesMfcm extends WireData implements Module {
 		$q = $this->get_query();
 		$q->select(MotorFreightCode::get_aliasproperty('id'));
 		return $q->find()->toArray();
+	}
+
+	/**
+	 * Returns if Codes Exist
+	 * @param  string $code
+	 * @return bool
+	 */
+	public function code_exists($code) {
+		$q = $this->get_query();
+		return boolval($q->filterByCode($code)->count());
 	}
 
 	/**
