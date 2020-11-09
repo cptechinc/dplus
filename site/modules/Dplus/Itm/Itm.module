@@ -20,6 +20,7 @@ class Itm extends WireData implements Module {
 	const MODEL_KEY          = 'code';
 	const DESCRIPTION        = 'Item Master Item';
 	const DESCRIPTION_RECORD = 'Item Master Item';
+	const RECORDLOCKER_FUNCTION   = 'itm';
 
 	const TEMPLATES_ITM = array(
 		'itm',
@@ -257,11 +258,7 @@ class Itm extends WireData implements Module {
 	 * @return array                  Invalid Input fields, empty if none
 	 */
 	protected function set_validated_fields(ItemMasterItem $record, WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
 		$invalid = array();
-
-		$validate = $this->wire('modules')->get('ValidateItm');
 		$fields = array(
 			'custid' => array(
 				'description' => 'Cust ID',
@@ -290,38 +287,50 @@ class Itm extends WireData implements Module {
 			),
 		);
 
+		if ($this->configs->inv->use_pricegroup()) {
+			$fields['pricecode'] = array(
+				'description' => 'Price Code',
+				'input'       => 'pricecode',
+				'allow_blank' => true
+			);
+		}
+		if ($this->configs->inv->use_commgroup()) {
+			$fields['commissiongroup'] = array(
+				'description' => 'Comission Group',
+				'input'       => 'commissiongroup',
+				'allow_blank' => true
+			);
+		}
+
+		$invalid = $this->_set_validated_fields($record, $fields, $input);
+		return $invalid;
+	}
+
+	/**
+	 * Use Validator to Validate fields, if valid, set them.
+	 * @param ItemMasterItem $item     IteM
+	 * @param array          $fields   array of fields
+	 * @param WireInput      $input    Input Data
+	 * @param Module         $validate Validator
+	 */
+	public function _set_validated_fields(ItemMasterItem $item, array $fields, WireInput $input, Module $validate = null) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$invalid = array();
+		$validate = empty($validate) ? $this->wire('modules')->get('ValidateItm') : $validate;
+
 		foreach ($fields as $property => $field) {
 			// IF FIELD MUST NOT BLANK OR IF there is a value for field
 			if (strlen($values->text($field['input']))) {
 				if ($validate->$property($values->text($field['input']))) {
 					$setProperty = "set".ucfirst($field['input']);
-					$record->$setProperty($values->text($field['input']));
+					$item->$setProperty($values->text($field['input']));
 				} else {
 					$invalid[$field['input']] = $field['description'];
 				}
 			} elseif ($field['allow_blank'] && strlen($values->text($field['input'])) == 0) {
 				$setProperty = "set".ucfirst($field['input']);
-				$record->$setProperty($values->text($field['input']));
-			}
-		}
-
-		if ($this->configs->inv->use_pricegroup()) {
-			$pricecode = $values->text('pricecode');
-
-			if ($validate->pricecode($pricecode)) {
-				$record->setPricecode($pricecode);
-			} else {
-				$invalid['pricecode'] = "Price Code";
-			}
-		}
-
-		if ($this->configs->inv->use_commgroup()) {
-			$commissiongroup = $values->text('commissiongroup');
-
-			if ($validate->commissiongroup($commissiongroup)) {
-				$record->setCommissiongroup($commissiongroup);
-			} else {
-				$invalid['commissiongroup'] = "Comission Group";
+				$item->$setProperty($values->text($field['input']));
 			}
 		}
 		return $invalid;
@@ -336,7 +345,7 @@ class Itm extends WireData implements Module {
 	 * @param  array          $invalidfields Input fields that require attention
 	 * @return ItmResponse
 	 */
-	public function save_and_respond(ItemMasterItem $record, array $invalidfields) {
+	protected function save_and_respond(ItemMasterItem $record, array $invalidfields) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
@@ -378,7 +387,7 @@ class Itm extends WireData implements Module {
 /* =============================================================
 	Dplus Cobol Request Functions
 ============================================================= */
-	public function request_dplus(array $data) {
+	private function request_dplus(array $data) {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
 		$data = array_merge(["DBNAME=$dplusdb"], $data);
@@ -401,7 +410,7 @@ class Itm extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return void
 	 */
-	public function request_item_delete($itemID, $debug = false) {
+	private function request_item_delete($itemID, $debug = false) {
 		$data = array('DELETEITM', "ITEMID=$itemID");
 		$this->request_dplus($data);
 	}
@@ -411,7 +420,7 @@ class Itm extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return bool
 	 */
-	public function verify_delete($itemID) {
+	private function verify_delete($itemID) {
 		$m_json = $this->wire('modules')->get('JsonDataFiles');
 		$json = $m_json->get_file(session_id(), 'itm-delete');
 		$response = new ItmResponse();
@@ -505,7 +514,7 @@ class Itm extends WireData implements Module {
 	}
 
 /* =============================================================
-	URL Functions
+	Item Functions
 ============================================================= */
 	/**
 	 * Return if Item Type for Item ID is normal (N)
@@ -633,6 +642,17 @@ class Itm extends WireData implements Module {
 	}
 
 	/**
+	 * Return URL to view / edit Item Misc
+	 * @param  string $itemID
+	 * @return string
+	 */
+	public function get_itm_miscURL($itemID) {
+		$url = new Url($this->wire('pages')->get("pw_template=itm-misc")->url);
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	/**
 	 * Return URL to view / edit Item Xrefs
 	 * @param  string $itemID
 	 * @return string
@@ -678,7 +698,7 @@ class Itm extends WireData implements Module {
 				'ItmPricing',
 				'ItmWarehouse',
 				'ItmXrefs',
-				'Itm',
+				'ItmMisc',
 			)
 		);
 	}
@@ -698,6 +718,9 @@ class Itm extends WireData implements Module {
 	 * @return void
 	 */
 	public function init() {
+		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
+		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
+
 		$templates = implode('|', self::TEMPLATES_ITM);
 
 		$this->addHook("Page(pw_template=$templates)::itmURL", function($event) {
@@ -740,6 +763,11 @@ class Itm extends WireData implements Module {
 		$this->addHook("Page(pw_template=$templates)::itm_costingURL", function($event) {
 			$itemID = $event->arguments(0);
 			$event->return = $this->get_itm_costingURL($itemID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::itm_miscURL", function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_itm_miscURL($itemID);
 		});
 
 		$this->addHook("Page(pw_template=$templates)::itm_xrefsURL", function($event) {
@@ -815,9 +843,14 @@ class Itm extends WireData implements Module {
 			$event->return = $this->wire('pages')->get('template=api-ajax,ajaxcode=msds-codes')->url;
 		});
 
-		$this->addHookProperty("Page(pw_template=itm-misc)::jsonapiURL", function($event) {
-			$event->return = $this->wire('pages')->get('template=dplus-json,name=inv')->url;
+		$this->addHookProperty("Page(pw_template=$templates)::search_freightcodesURL", function($event) {
+			$event->return = $this->wire('pages')->get('template=api-ajax,ajaxcode=freight-codes')->url;
+		});
+
+		$this->addHook("Page(pw_template=itm-misc)::jsonapiURL", function($event) {
+			$api = $event->arguments(0);
+			$pages = $this->wire('pages');
+			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
 		});
 	}
-
 }
