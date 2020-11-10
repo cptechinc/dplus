@@ -5,13 +5,12 @@
 	$itm = $modules->get('Itm');
 	$itm->init_configs();
 	$html = $modules->get('HtmlWriter');
-	$recordlocker = $modules->get('RecordLockerUser');
 	$exists = false;
 
 	if ($values->action) {
 		$itm->process_input($input);
 
-		if ($values->text('action') == 'remove-itm-item') {
+		if ($values->text('action') == 'delete-itm-item') {
 			$page->fullURL->query->remove('itemID');
 		} else {
 			$page->fullURL->query->set('itemID', $values->text('itemID'));
@@ -46,14 +45,14 @@
 			 *  3. Userid does not match the lock
 			 * Otherwise if not locked, create lock
 			 */
-			if ($recordlocker->function_locked($page->lockcode, $itemID) && !$recordlocker->function_locked_by_user($page->lockcode, $itemID)) {
-				$msg = "ITM Item $itemID is being locked by " . $recordlocker->get_locked_user($page->lockcode, $itemID);
+			if ($itm->recordlocker->function_locked($itemID) && !$itm->recordlocker->function_locked_by_user($itemID)) {
+				$msg = "ITM Item $itemID is being locked by " . $itm->recordlocker->get_locked_user($itemID);
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "ITM Item $itemID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 				$page->body .= $html->div('class=mb-3');
-			} elseif (!$recordlocker->function_locked($page->lockcode, $itemID)) {
-				$recordlocker->create_lock($page->lockcode, $itemID);
+			} elseif (!$itm->recordlocker->function_locked($itemID)) {
+				$itm->recordlocker->create_lock($itemID);
 			}
-		} elseif ($itemID == 'NEW') {
+		} elseif (strtolower($itemID) == 'new') {
 			$exists = true;
 			$item = $itm->get_new_item();
 			$page->title .= ": New Item";
@@ -62,7 +61,7 @@
 		if ($exists) {
 			$page->customerlookupURL = $pages->get('pw_template=mci-lookup')->url;
 			$page->body .= $config->twig->render('items/itm/itm-links.twig', ['page' => $page, 'page_itm' => $page]);
-			$page->body .= $config->twig->render('items/itm/itm-form.twig', ['page' => $page, 'item' => $item, 'itm' => $itm, 'recordlocker' => $recordlocker]);
+			$page->body .= $config->twig->render('items/itm/itm-form.twig', ['page' => $page, 'item' => $item, 'itm' => $itm, 'recordlocker' => $itm->recordlocker]);
 			$page->js   .= $config->twig->render("items/itm/js.twig", ['page' => $page, 'item' => $item, 'itm' => $itm]);
 
 			if ($itm->item_exists($itemID)) {
@@ -83,19 +82,18 @@
 			$page->body .= $config->twig->render('items/vxm/search/item/item-search.twig', ['page' => $page, 'items' => array()]);
 		}
 	} elseif ($input->get->q) {
-		$recordlocker->remove_lock($page->lockcode);
+		$itm->recordlocker->remove_lock();
 		$q = strtoupper($input->get->text('q'));
-		$exact_query = ItemMasterItemQuery::create();
 
-		if ($exact_query->filterByItemid($q)->count() == 1) {
+		if ($itm->item_exists($q)) {
 			$session->redirect($page->itmURL($q));
 		} else {
 			$page->headline = "ITM: Searching Items for '$q'";
-			$search_items = $modules->get('FilterItemMaster');
-			$search_items->init_query($user);
-			$search_items->filter_search($q);
-			$search_items->apply_sortby($page);
-			$query = $search_items->get_query();
+			$filter = $modules->get('FilterItemMaster');
+			$filter->init_query($user);
+			$filter->filter_search($q);
+			$filter->apply_sortby($page);
+			$query = $filter->get_query();
 			$items = $query->paginate($input->pageNum, 10);
 			$page->searchURL = $page->url;
 
@@ -104,12 +102,12 @@
 			$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
 		}
 	} else {
-		$recordlocker->remove_lock($page->lockcode);
+		$itm->recordlocker->remove_lock();
 		$page->searchURL = $page->url;
-		$search_items = $modules->get('FilterItemMaster');
-		$search_items->init_query($user);
-		$search_items->apply_sortby($page);
-		$query = $search_items->get_query();
+		$filter = $modules->get('FilterItemMaster');
+		$filter->init_query($user);
+		$filter->apply_sortby($page);
+		$query = $filter->get_query();
 		$items = $query->paginate($input->pageNum, 10);
 
 		$page->body .= $html->a("href=$page->url?itemID=new|class=btn btn-secondary mb-2", $html->icon('fa fa-plus') . " Create Item");
