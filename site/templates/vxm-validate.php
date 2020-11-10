@@ -39,7 +39,7 @@
 				if ($vxm->vxm_item_exists($vendorID, $vendoritemID)) {
 					$response = true;
 				} else {
-					$response = ($returntype == 'bool') ? false : "$itemID from $vendorID was not found in the Vendor X-ref";
+					$response = ($returntype == 'bool') ? false : "$vendoritemID from $vendorID was not found in the Vendor X-ref";
 				}
 				break;
 			case 'validate-vendor-itemid-new':

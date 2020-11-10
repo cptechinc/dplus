@@ -197,8 +197,8 @@ $(function() {
 						},
 						action: function() {
 							var input = $('input[name=vendoritemID]');
-
-							if (input.val() == input.data('vendoritemid')) {
+							
+							if (input.val() == input.data('vendoritemid') && input.data('new') !== true) {
 								return 'validate-vendor-itemid';
 							} else {
 								return 'validate-vendor-itemid-new';

@@ -25,7 +25,7 @@
 			<label for="vendoritemID"><b>Vendor Item ID</b></label>
 		</div>
 		<div class="col-sm-6">
-			<input type="text" name="vendoritemID" class="form-control form-control-sm" id="vendoritemID" value="{{ item.vendoritemID }}" data-vendoritemid="{{ item.vendoritemID }}">
+			<input type="text" name="vendoritemID" class="form-control form-control-sm" id="vendoritemID" value="{{ item.vendoritemID }}" data-vendoritemid="{{ item.vendoritemID }}" data-new="{{ item.isNew() ? 'true' : 'false'}}">
 		</div>
 	</div>
 	<div class="row">
@@ -35,7 +35,7 @@
 		<div class="col-sm-6 item-col">
 			{% if page.has('itemID') %}
 				<input type="text" class="form-control-plaintext form-control-sm" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}" readonly>
-			{% elseif item.isNew() %}
+			{% elseif item.isNew() or item.ouritemid == '' %}
 				{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'ouritemID', value: item.ouritemid, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Item', attributes_button: {'data-search': 'item'}} %}
 			{% else %}
 				<input type="text" class="form-control-plaintext form-control-sm" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}" readonly>
