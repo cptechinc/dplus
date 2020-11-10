@@ -262,7 +262,8 @@ class XrefVxm extends WireData implements Module {
 
 		$record->setVendoritemid($values->text('vendoritemID'));
 
-		if ($this->is_modifying_vxm_key($record) && !$record->isNew()) {
+		$invalidfields = $this->update_record_validated($record, $input);
+		if (($this->is_modifying_vxm_key($record)) && !$record->isNew()) {
 			$this->delete_recreate_record($record, $input);
 		}
 
@@ -270,8 +271,8 @@ class XrefVxm extends WireData implements Module {
 		$record->setMinbuyqty($values->text('minbuyqty'));
 		$record->setListprice($values->text('listprice'));
 		$record->setUnitcost_base($values->text('unitcost_base'));
+
 		$this->update_record_unitx_input($record, $input);
-		$invalidfields = $this->update_record_validated($record, $input);
 
 		$record->setDate_changed(date('Ymd'));
 		$record->setDate(date('Ymd'));
@@ -291,18 +292,18 @@ class XrefVxm extends WireData implements Module {
 	 * @return
 	 */
 	public function delete_recreate_record(ItemXrefVendor $record, WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-		$record_delete = $record;
-		$array = $record_delete->toArray();
+		$array = $record->toArray();
+		$original = new ItemXrefVendor();
+		$original->fromArray($array);
+		$original->setVendoritemid($record->originalvalues[ItemXrefVendor::get_aliasproperty('vendoritemid')]);
+		$original->setOuritemid($record->originalvalues[ItemXrefVendor::get_aliasproperty('ouritemid')]);
+		$original->delete();
 
-		$record_delete->setVendoritemid($values->text('original_vendoritemID'));
-		$this->update_dplus_cobol($record_delete);
-		$record_delete->delete();
-		$record = ItemXrefVendor::new();
-		$record->fromArray($array);
-		$record->setVendoritemid($values->text('vendoritemID'));
-		$record->save();
+		$new =  new ItemXrefVendor();
+		$new->fromArray($array);
+
+		$new->save();
+		$record = $new;
 	}
 
 	/**
