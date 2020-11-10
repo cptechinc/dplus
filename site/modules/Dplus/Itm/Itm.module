@@ -20,7 +20,7 @@ class Itm extends WireData implements Module {
 	const MODEL_KEY          = 'code';
 	const DESCRIPTION        = 'Item Master Item';
 	const DESCRIPTION_RECORD = 'Item Master Item';
-	const RECORDLOCKER_FUNCTION   = 'itm';
+	const RECORDLOCKER_FUNCTION  = 'itm';
 
 	const TEMPLATES_ITM = array(
 		'itm',
@@ -177,7 +177,6 @@ class Itm extends WireData implements Module {
 	 */
 	public function process_input_itm(WireInput $input) {
 		$this->init_configs();
-		$recordlocker = $this('modules')->get('RecordLockerUser');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itemID = strtoupper($values->text('itemID'));
@@ -187,17 +186,15 @@ class Itm extends WireData implements Module {
 		/**
 		 * Create lock for ITM item ID if not already locked.
 		 */
-		if (!$recordlocker->function_locked('itm', $itemID)) {
-			$recordlocker->create_lock('itm', $itemID);
+		if (!$this->recordlocker->function_locked($itemID)) {
+			$this->recordlocker->create_lock($itemID);
 		}
 
-		if ($record->isNew() || $recordlocker->function_locked_by_user('itm', $itemID)) {
-			if ($values->text('action') == 'remove-itm-item') {
+		if ($record->isNew() || $this->recordlocker->function_locked_by_user($itemID)) {
+			if ($values->text('action') == 'delete-itm-item') {
 				$record->delete();
 			} elseif ($values->text('action') == 'update-itm') {
 				$invalidfields = $this->set_item_fields($record, $input);
-			} elseif($values->text('action') == 'update-itm-misc') {
-				$invalidfields = $this->set_item_fields_misc($record, $input);
 			}
 
 			if ($values->action) {
@@ -212,7 +209,7 @@ class Itm extends WireData implements Module {
 					$response->set_saved_itm($response->success);
 				}
 
-				if ($values->text('action') == 'remove-itm-item') {
+				if ($values->text('action') == 'delete-itm-item') {
 					$response = $this->verify_delete($itemID);
 				}
 			} else {
@@ -220,7 +217,7 @@ class Itm extends WireData implements Module {
 				$response = ItmResponse::response_error($record->itemid, $message);
 			}
 		} else {
-			$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $recordlocker->get_locked_user('itm', $itemID);
+			$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($itemID);
 			$response = ItmResponse::response_error($record->itemid, $message);
 		}
 		$this->wire('session')->response_itm = $response;
@@ -587,7 +584,7 @@ class Itm extends WireData implements Module {
 	 */
 	public function get_itm_deleteURL($itemID) {
 		$url = new Url($this->wire('pages')->get("pw_template=itm")->url);
-		$url->query->set('action', 'remove-itm-item');
+		$url->query->set('action', 'delete-itm-item');
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
@@ -699,6 +696,7 @@ class Itm extends WireData implements Module {
 				'ItmWarehouse',
 				'ItmXrefs',
 				'ItmMisc',
+				'ItmHazmat',
 			)
 		);
 	}
