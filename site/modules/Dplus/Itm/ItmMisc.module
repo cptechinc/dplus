@@ -120,10 +120,11 @@ class ItmMisc extends Itm implements Module {
 				'input'       => 'tariffcode',
 				'allow_blank' => true
 			),
-			'countrycode' => array(
-				'description' => 'Country of Origiin',
+			'origincountry' => array(
+				'function'    => 'countrycode',
+				'description' => 'Country of Origin',
 				'input'       => 'origincountry',
-				'allow_blank' => true
+				'allow_blank' => true,
 			),
 			'msdscode' => array(
 				'description' => 'Msds Code',
@@ -151,7 +152,10 @@ class ItmMisc extends Itm implements Module {
 				'allow_blank' => false
 			),
 		);
-		$invalid = $this->_set_validated_fields($record, $fields, $input);
+		$validator = $this->wire('modules')->get('InputValidator');
+		$validator->set_validator($this->wire('modules')->get('ValidateItm'))->set_input($input)->set_record($record)->set_validatefields($fields);
+		$invalid = $validator->validate();
+		$validator->set_valid_properties();
 		return $invalid;
 	}
 
@@ -213,6 +217,7 @@ class ItmMisc extends Itm implements Module {
 	public function get_config_so() {
 		return ConfigSalesOrderQuery::create()->findOne();
 	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
