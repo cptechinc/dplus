@@ -3,6 +3,7 @@
 use Propel\Runtime\ActiveQuery\Criteria;
 
 use ItemMasterItemQuery, ItemMasterItem;
+use InvHazmatItemQuery, InvHazmatItem;
 
 /**
  * ValidateItm
@@ -39,6 +40,55 @@ class ValidateItm extends WireData implements Module {
 	public function documentation($value) {
 		return in_array($value, ItemMasterItem::OPTIONS_DOCUMENTATION);
 	}
+
+/* =============================================================
+	Itm Hazmat Functions
+============================================================= */
+	/**
+	 * Return if Group is valid Hazmat Pack Group
+	 * @param  string $group
+	 * @return bool
+	 */
+	public function hazmat_packgroup($group) {
+		return in_array($group, InvHazmatItem::OPTIONS_PACKGROUP);
+	}
+
+	/**
+	 * Return if $class is valid Hazmat Class
+	 * @param  string $class
+	 * @return bool
+	 */
+	public function hazmat_class($group) {
+		return true;
+	}
+
+	/**
+	 * Return if $nbr is valid UN Nbr
+	 * @param  string $nbr UN Nbr
+	 * @return bool
+	 */
+	public function hazmat_unnbr($nbr) {
+		return true;
+	}
+
+	/**
+	 * Return if $label is valid Label Value
+	 * @param  string $label Label
+	 * @return bool
+	 */
+	public function hazmat_label($label) {
+		return true;
+	}
+
+	/**
+	 * Return if Hazmat Allow Air value is valid
+	 * @param  string $val Allow Air
+	 * @return bool
+	 */
+	public function hazmat_allowair($val) {
+		return in_array(strtoupper($val), ['Y', 'N']);
+	}
+
 /* =============================================================
 	AR Functions
 ============================================================= */
@@ -161,7 +211,6 @@ class ValidateItm extends WireData implements Module {
 	public function msdscode($code) {
 		return $this->validate->in->msdscode($code);
 	}
-
 
 /* =============================================================
 	AP Functions
