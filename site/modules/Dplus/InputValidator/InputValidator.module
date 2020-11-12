@@ -11,6 +11,8 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
  */
 class InputValidator extends WireData implements Module {
 
+	protected $invalid = array();
+
 	const EXAMPLE_FIELDS = [
 		'packgroup' => array( // KEY CAN BE USED AS PROPERTY / FUNCTION
 			'function'    => 'hazmat_packgroup', // IF ABSENT / EMPTY WILL DEFAULT TO KEY'S VALUE
@@ -23,11 +25,15 @@ class InputValidator extends WireData implements Module {
 
 	public function __construct() {
 		$this->validate  = false;
-		$this->fields    = array();
+		$this->fields    = false;
 		$this->rawfields = array();
 		$this->invalid   = array();
 		$this->input     = new WireInput();
 		$this->record    = false;
+	}
+
+	public function get_invalid() {
+		return $this->invalid;
 	}
 
 	/**
@@ -63,7 +69,7 @@ class InputValidator extends WireData implements Module {
 	 */
 	public function set_validatefields(array $fields) {
 		$this->rawfields = $fields;
-		$this->fields = InputValidatorField::multiple_from_array($fields);
+		$this->fields = InputValidatorFieldArray::from_array($fields);
 		return $this;
 	}
 
@@ -75,16 +81,52 @@ class InputValidator extends WireData implements Module {
 		$rm = strtolower($this->input->requestMethod());
 		$values = $this->input->$rm;
 		$this->invalid = array();
-
 		foreach ($this->fields as $field) {
-			if (strlen($values->text($field->input()))) {
-				$function = $field->function();
-				if ($this->validate->$function($values->text($field->input())) == false) {
-					$this->invalid[$field->input()] = $field->description;
-				}
+			$valid = $this->validate_field($field);
+
+			if ($valid == false) {
+				$this->invalid[$field->input()] = $field->description;
+			} elseif (!$this->validate_field_requires($field)) {
+				$this->validate_field_requires_message($field);
 			}
 		}
 		return $this->invalid;
+	}
+
+	public function validate_field(InputValidatorField $field) {
+		$rm = strtolower($this->input->requestMethod());
+		$values = $this->input->$rm;
+		$function = $field->function();
+
+		if (strlen($values->text($field->input())) == 0 && $field->allow_blank()) {
+			$valid = true;
+		} else {
+			$valid = $this->validate->$function($values->text($field->input()));
+		}
+		return $valid;
+	}
+
+	public function validate_field_requires(InputValidatorField $field) {
+		if (!empty($field->requires)) {
+			foreach ($field->requires as $property) {
+				if (empty($this->record->$property)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public function validate_field_requires_message(InputValidatorField $field) {
+		if (!empty($field->requires)) {
+			foreach ($field->requires as $property) {
+				if (empty($this->record->$property)) {
+					$requiredfield = $this->fields->get($property);
+					$this->invalid[$field->input()] = "$field->description requires $requiredfield->description";
+					break;
+				}
+			}
+		}
 	}
 
 	/**

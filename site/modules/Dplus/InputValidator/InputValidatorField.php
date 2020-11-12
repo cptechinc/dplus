@@ -72,6 +72,10 @@ class InputValidatorField extends WireData {
 		return $this->sanitizer ? $this->sanitizer : 'text';
 	}
 
+	public function allow_blank() {
+		return boolval($this->allow_blank);
+	}
+
 /* =============================================================
 	Static Constructor Functions
 ============================================================= */
@@ -103,5 +107,21 @@ class InputValidatorField extends WireData {
 			$validatorfields[] = self::from_array($key, $field);
 		}
 		return $validatorfields;
+	}
+}
+
+class InputValidatorFieldArray extends WireArray {
+	/**
+	 * Return Multiple instances from Array with Keys
+	 * @param  array  $fields Field with properties see self::EXAMPLE_FIELDS
+	 * @return InputValidatorField[]
+	 */
+	public static function from_array(array $fields) {
+		$wireArray = new self();
+
+		foreach ($fields as $key => $field) {
+			$wireArray->set($key, InputValidatorField::from_array($key, $field));
+		}
+		return $wireArray;
 	}
 }
