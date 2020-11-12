@@ -47,6 +47,10 @@ class ItmMisc extends Itm implements Module {
 		$values = $input->$rm;
 
 		switch ($values->text('action')) {
+			case 'delete-itm-hazmat':
+			case 'update-itm-hazmat':
+				$this->hazmat->process_input($input);
+				break;
 			case 'update-itm-misc':
 				$this->process_input_misc($input);
 				break;
@@ -197,11 +201,11 @@ class ItmMisc extends Itm implements Module {
 		$response->set_message($message);
 
 		if ($response->has_success() && empty($invalidfields)) {
-			if ($record->isDeleted()) {
-				$this->request_item_delete($record->itemid);
-			} else {
-				$this->request_item_update($record->itemid);
-			}
+			// if ($record->isDeleted()) {
+			// 	$this->request_item_delete($record->itemid);
+			// } else {
+			// 	$this->request_item_update($record->itemid);
+			// }
 		}
 		$response->set_fields($invalidfields);
 		return $response;
@@ -232,5 +236,10 @@ class ItmMisc extends Itm implements Module {
 				'Itm',
 			)
 		);
+	}
+
+	public function init() {
+		parent::init();
+		$this->hazmat = $this->wire('modules')->get('ItmHazmat');
 	}
 }
