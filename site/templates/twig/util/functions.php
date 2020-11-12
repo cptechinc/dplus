@@ -141,10 +141,23 @@
 	$config->twig->addFilter($filter);
 
 	$filter = new Twig_Filter('htmlattributes', function ($array) {
-		$attr = '';
+		$attrnoval = ['readonly', 'disabled'];
+		$attr = [];
 		foreach ($array as $key => $value) {
-			$attr .= " $key=$value";
+			if (in_array($key, $attrnoval)) {
+				$attr[] = $value === true ? $key : '';
+			} else {
+				$attr[] = "$key=$value";
+			}
 		}
-		return $attr;
+		return trim(implode(' ', array_filter($attr)));
+	});
+	$config->twig->addFilter($filter);
+
+	$filter = new Twig_Filter('join2', function ($str, $glue = '') {
+		if (is_array($str)) {
+			return implode($glue, $str);
+		}
+		return trim($str);
 	});
 	$config->twig->addFilter($filter);

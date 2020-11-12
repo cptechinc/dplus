@@ -2,7 +2,7 @@
 {% set name = name ? name : '' %}
 {% set id = id ? id : name %}
 {% set class_input = class_input ? class_input : 'form-control form-control-sm' %}
-{% set class_add = class_add ? class_add : '' %}
+{% set class_add = class_add ? class_add|join2(' ') : '' %}
 {% set class = class_override ? class_override : class_input ~ ' ' ~ class_add %}
 {% set value = value ? value : '' %}
 {% set disabled = disabled ? disabled : false %}
@@ -26,7 +26,7 @@
 	}
 %}
 
-<select {% for attribute, value in attributes %} {{ attribute }}="{{ value }}" {% endfor %} {% for attribute, value in optional if value != '' %} {{ attribute }}="{{ value }}" {% endfor %}>
+<select {% for attribute, value in attributes %} {{ attribute }}="{{ value }}" {% endfor %} {% for attribute, value in optional if value != '' %} {{ attribute }}="{{ value }}" {% endfor %} {{ attributes_extra }}>
 	{% if use_blank_option %}
 		<option value="">
 			{{ blank_option_label }}
