@@ -16,7 +16,6 @@
 
 			if ($session->response_itm) {
 				$page->body .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->response_itm]);
-				$session->remove('response_itm');
 			}
 
 			/**
@@ -27,20 +26,24 @@
 			 * Otherwise if not locked, create lock
 			 */
 			if ($itm->recordlocker->function_locked($itemID) && !$itm->recordlocker->function_locked_by_user($itemID)) {
-				$msg = "ITM Item $itemID is being locked by " . $itm->recordlocker->get_locked_user($page->lockcode, $itemID);
+				$msg = "ITM Item $itemID is being locked by " . $itm->recordlocker->get_locked_user($itemID);
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "ITM Item $itemID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 				$page->body .= $html->div('class=mb-3');
-			} elseif (!$itm->recordlocker->function_locked($page->lockcode, $itemID)) {
-				$itm->recordlocker->create_lock($page->lockcode, $itemID);
+			} elseif (!$itm->recordlocker->function_locked($itemID)) {
+				$itm->recordlocker->create_lock($itemID);
 			}
 
 			$page->headline = "Misc for $itemID";
 			$item = $itm->get_item($itemID);
+			$hazmat = $item->has_hazmat() ? $item->get_hazmat() : new InvHazmatItem();
 			$page->body .= $config->twig->render('items/itm/itm-links.twig', ['page' => $page, 'page_itm' => $page->parent]);
 			$page->body .= $config->twig->render('items/itm/description.twig', ['page' => $page, 'item' => $item]);
 			$page->body .= $config->twig->render('items/itm/misc/page.twig', ['page' => $page, 'itm' => $itm, 'item' => $item, 'recordlocker' => $itm->recordlocker]);
-			$page->js   .= $config->twig->render('items/itm/misc/js.twig', ['page' => $page]);
+			$page->js   .= $config->twig->render('items/itm/misc/js.twig', ['page' => $page, 'itm' => $itm]);
 			$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+			if ($session->response_itm) {
+				$session->remove('response_itm');
+			}
 		} else {
 			$session->redirect($page->itmURL($itemID), $http301 = false);
 		}
