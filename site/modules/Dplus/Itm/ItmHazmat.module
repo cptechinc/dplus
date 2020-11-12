@@ -1,0 +1,412 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'/ItmResponse.php');
+
+use Purl\Url;
+
+use InvHazmatItemQuery, InvHazmatItem;
+use ItemMasterItemQuery, ItemMasterItem;
+
+// TODO DPLUS REQUEST
+
+/**
+ * Module that handles the editing of the UPC item Itm
+ */
+class ItmHazmat extends WireData implements Module {
+	const MODEL              = 'InvHazmatItem';
+	const MODEL_KEY          = 'code';
+	const DESCRIPTION        = 'INV Hazmat Item';
+	const DESCRIPTION_RECORD = 'INV Hazmat Item';
+	const RECORDLOCKER_FUNCTION = 'itm';
+
+	/**
+	 * Returns InvHazmatItemQuery
+	 * @return InvHazmatItemQuery
+	 */
+	public function query() {
+		return InvHazmatItemQuery::create();
+	}
+
+	public function options_packgroup() {
+		return InvHazmatItem::OPTIONS_PACKGROUP;
+	}
+
+	public function maxlength_dot() {
+		return InvHazmatItem::MAX_LENGTH_DOT1;
+	}
+
+	public function maxlength_class() {
+		return InvHazmatItem::MAX_LENGTH_CLASS;
+	}
+
+	public function maxlength_label() {
+		return InvHazmatItem::MAX_LENGTH_LABEL;
+	}
+
+	public function maxlength_unnbr() {
+		return InvHazmatItem::MAX_LENGTH_UNNBR;
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return if Hazmat Item Exists
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function hazmat_exists($itemID) {
+		$q = $this->query();
+		$q->filterByItemid($itemID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return InvHazmatItem
+	 * @param  string $itemID Item ID
+	 * @return InvHazmatItem
+	 */
+	public function get_hazmat($itemID) {
+		$q = $this->query();
+		$q->filterByItemid($itemID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Returns InvHazmatItem after retreiving or creating it
+	 * @param  string $itemID Item ID
+	 * @return InvHazmatItem
+	 */
+	public function get_create_hazmat($itemID) {
+		if ($this->hazmat_exists($itemID)) {
+			$record = $this->get_hazmat($itemID);
+		} else {
+			$itemID = substr($itemID, 0, ItemMasterItem::LENGTH_ITEMID);
+			$record = new InvHazmatItem();
+			$record->setItemid($itemID);
+		}
+		return $record;
+	}
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Takes Input, processses the action, calls the process_input
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'delete-itm-hazmat':
+			case 'update-itm-hazmat':
+				$this->process_input_hazmat($input);
+				break;
+			default:
+				$this->wire('session')->response_itm = ItmResponse::response_error("ItmMisc", "No Action Provided");
+				break;
+		}
+	}
+
+	/**
+	 * Takes Input, validates it's for an Item
+	 * Updates Item
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input_hazmat(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID = strtoupper($values->text('itemID'));
+		$record = $this->get_create_hazmat($itemID);
+		$invalidfields = array();
+
+		/**
+		 * Create lock for ITM item ID if not already locked.
+		 */
+		if (!$this->recordlocker->function_locked($itemID)) {
+			$this->recordlocker->create_lock($itemID);
+		}
+
+		if ($record->isNew() || $this->recordlocker->function_locked_by_user($itemID)) {
+			if ($values->text('action') == 'delete-itm-hazmat') {
+				$record->delete();
+			} elseif ($values->text('action') == 'update-itm-hazmat') {
+				$invalidfields = $this->set_hazmat_fields($record, $input);
+			}
+
+			if ($values->action) {
+				$response = $this->save_and_respond($record, $invalidfields);
+
+				if ($invalidfields) {
+					$response->set_error(true);
+					$response->set_success(false);
+					$response->set_saved_itm(false);
+					$response->set_message("$itemID Hazmat was not saved to Dplus");
+				} else {
+					$response->set_saved_itm($response->success);
+				}
+
+				if ($values->text('action') == 'remove-itm-item') {
+					$response = $this->verify_delete($itemID);
+				}
+			} else {
+				$message = self::DESCRIPTION_RECORD . " ($record->itemid) was not saved, no action was specified";
+				$response = ItmResponse::response_error($record->itemid, $message);
+			}
+		} else {
+			$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $this->recordlocker->get_locked_user('itm', $itemID);
+			$response = ItmResponse::response_error($record->itemid, $message);
+		}
+		$this->wire('session')->response_itm = $response;
+	}
+
+	/**
+	 * Sets Item Values
+	 * @param InvHazmatItem $record Item Master Item
+	 * @param WireInput      $input  Input Data
+	 */
+	protected function set_hazmat_fields(InvHazmatItem $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$invalidfields = array();
+
+
+		$invalidfields = $this->set_validated_fields($record, $input);
+		return $invalidfields;
+	}
+
+	/**
+	 * Updates the fields that need to be validated against a table
+	 * @param  InvHazmatItem $record Item
+	 * @param  WireInput      $input  Input Values
+	 * @return array                  Invalid Input fields, empty if none
+	 */
+	protected function set_validated_fields(InvHazmatItem $record, WireInput $input) {
+		$invalid = array();
+		$fields = array(
+			'dot1' => array(
+				'description' => 'DOT Ship Name 1',
+				'input'       => 'dot1',
+				'allow_blank' => true,
+				'length'      => InvHazmatItem::MAX_LENGTH_DOT1,
+				'requires'    => []
+			),
+			'dot2' => array(
+				'description' => 'DOT Ship Name 2',
+				'input'       => 'dot2',
+				'allow_blank' => true,
+				'length'      => InvHazmatItem::MAX_LENGTH_DOT2,
+				'requires'    => ['dot1']
+			),
+			'class' => array(
+				'function'    => 'hazmat_class',
+				'description' => 'Hazard Class',
+				'input'       => 'class',
+				'allow_blank' => true,
+				'length'      => InvHazmatItem::MAX_LENGTH_CLASS,
+				'requires'    => ['dot1']
+			),
+			'unnbr' => array(
+				'function'    => 'hazmat_unnbr',
+				'description' => 'UN Nbr',
+				'input'       => 'unnbr',
+				'allow_blank' => true,
+				'length'      => InvHazmatItem::MAX_LENGTH_UNNBR,
+				'requires'    => ['dot1']
+			),
+			'packgroup' => array(
+				'function'    => 'hazmat_packgroup',
+				'description' => 'Packing Group',
+				'input'       => 'packgroup',
+				'allow_blank' => true,
+				'requires'    => ['unnbr']
+			),
+			'label' => array(
+				'function'    => 'hazmat_label',
+				'description' => 'Label',
+				'input'       => 'label',
+				'allow_blank' => true,
+				'length'      => InvHazmatItem::MAX_LENGTH_LABEL,
+				'requires'    => ['dot1']
+			),
+			'allowair' => array(
+				'function'    => 'hazmat_allowair',
+				'description' => 'Allow Air',
+				'input'       => 'allowair',
+				'allow_blank' => true,
+				'requires'    => ['dot1']
+			),
+		);
+		$validator = $this->wire('modules')->get('InputValidator');
+		$validator->set_validator($this->wire('modules')->get('ValidateItm'))->set_input($input)->set_record($record)->set_validatefields($fields);
+		$invalid = $validator->validate();
+		$validator->set_valid_properties();
+		return $invalid;
+	}
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
+	/**
+	 * Returns ItmResponse based on the outcome of the database save
+	 * @param  InvHazmatItem $record        Record to record response of database save
+	 * @param  array          $invalidfields Input fields that require attention
+	 * @return ItmResponse
+	 */
+	protected function save_and_respond(InvHazmatItem $record, array $invalidfields) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new ItmResponse();
+		$response->set_itemID($record->itemid);
+		$message = self::DESCRIPTION_RECORD . " ($record->itemid) was ";
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+			$message .= "not ";
+		}
+
+		if ($is_new) {
+			$message .= 'added';
+			$response->set_action(ItmResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$message .= 'deleted';
+			$response->set_action(ItmResponse::CRUD_DELETE);
+		} else {
+			$message .= 'updated';
+			$response->set_action(ItmResponse::CRUD_UPDATE);
+		}
+
+		$response->set_message($message);
+
+		if ($response->has_success() && empty($invalidfields)) {
+			if ($record->isDeleted()) {
+				$this->request_item_delete($record->itemid);
+			} else {
+				$this->request_hazmat_update($record->itemid);
+			}
+		}
+		$response->set_fields($invalidfields);
+		return $response;
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	private function request_dplus(array $data) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$data = array_merge(["DBNAME=$dplusdb"], $data);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+	/**
+	 * Writes File for Dplus to update the ITM file for this ITEM
+	 * @param  string $itemID Item ID
+	 * @return void
+	 */
+	public function request_hazmat_update($itemID) {
+		$data = array('UPDATEITM', "ITEMID=$itemID");
+		$this->request_dplus($data);
+	}
+
+	/**
+	 * Return if Item was able to be deleted
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	private function verify_delete($itemID) {
+		$m_json = $this->wire('modules')->get('JsonDataFiles');
+		$json = $m_json->get_file(session_id(), 'itm-delete');
+		$response = new ItmResponse();
+		$response->set_itemID($itemID);
+		$response->set_action(ItmResponse::CRUD_DELETE);
+		$message = self::DESCRIPTION_RECORD . " ($itemID) was ";
+
+		if ($m_json->had_succeeded()) {
+			if ($json['itemid'] != $itemID) {
+				$response->set_error(true);
+				$message .= "not deleted";
+			} elseif ($json['error'] === true) {
+				$response->set_error(true);
+				$message .= "not deleted";
+			} else {
+				$response->set_success(true);
+				$message .= "deleted";
+			}
+		} else {
+			$response->set_error(true);
+			$message .= "not deleted";
+		}
+
+		if ($json['error']) {
+			$message .= " Error: " . $json['errormsg'];
+		}
+		$response->set_message($message);
+		return $response;
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return if Field has Error
+	 * NOTE: Uses $session->response_itm->fields to derive this
+	 * @param  string $inputname Input name e.g. commissiongroup
+	 * @return bool
+	 */
+	public function field_has_error($inputname) {
+		$response = $this->wire('session')->response_itm;
+		return ($response) ? array_key_exists($inputname, $response->fields) : false;
+	}
+
+/* =============================================================
+	URL Functions
+============================================================= */
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus ITM Hazmat CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for ITM Hazmat',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array(
+				'Itm',
+			)
+		);
+	}
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+		$modules->refresh();
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
+	}
+
+	/**
+	 * Set up Functions / Properties for pw_templated pages
+	 * @return void
+	 */
+	public function init() {
+		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
+		$this->recordlocker->set_function(Itm::RECORDLOCKER_FUNCTION);
+	}
+}
