@@ -391,16 +391,6 @@ class ItmHazmat extends WireData implements Module {
 		);
 	}
 
-	public function update() {
-		$info = self::getModuleInfo();
-		$modules = $this->wire('modules');
-		$modules->refresh();
-
-		foreach ($info['installs'] as $module_name) {
-			$modules->install($module_name);
-		}
-	}
-
 	/**
 	 * Set up Functions / Properties for pw_templated pages
 	 * @return void
