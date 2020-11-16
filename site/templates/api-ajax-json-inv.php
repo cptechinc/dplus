@@ -82,6 +82,17 @@
 					$response = false;
 				}
 				break;
+			case 'get-item':
+				$itemID = $values->text('itemID');
+
+				if ($validate->itemid_exists($itemID)) {
+					$fields = $input->get->array('fields', null, ['delimiter' => ","]);
+					$loader = $modules->get('LoadItem');
+					$response = $loader->get_item_array($itemID, $fields);
+				} else {
+					$response = false;
+				}
+				break;
 		}
 	}
 
