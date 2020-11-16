@@ -143,7 +143,6 @@ $(function() {
 /* =============================================================
 	AJAX Request Functions
 ============================================================= */
-
 	function fetch_jsonapi_code(api, fetching, code, callback) {
 		var url = new URI('{{ page.jsonapiURL() }}');
 		url.path(url.path() + api + "/");

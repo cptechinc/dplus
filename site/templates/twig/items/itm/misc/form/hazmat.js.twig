@@ -92,21 +92,6 @@ $(function() {
 /* =============================================================
 	Event Functions
 ============================================================= */
-	$("body").on('change', 'input.ajax-lookup', function(e) {
-		var input = $(this);
-		if (validator_hazmat.element('#'+input.attr('id'))) {
-			fetch_jsonapi_code(input.data('api'), input.data('validate'), $(this).val(), function(obj) {
-				if (obj) {
-					var ajaxfields_str = input.data('ajaxfields');
-					var ajaxfields = ajaxfields_str.split(',');
-					ajaxfields.forEach((field , i) => {
-						$('.'+input.attr('name')+'-'+field).text(obj[field]);
-					});
-				}
-			});
-		}
-	});
-
 
 /* =============================================================
 	AJAX Lookup Modal Functions
@@ -143,12 +128,4 @@ $(function() {
 	AJAX Request Functions
 ============================================================= */
 
-	function fetch_jsonapi_code(api, fetching, code, callback) {
-		var url = new URI('{{ page.jsonapiURL() }}');
-		url.path(url.path() + api + "/");
-		url.addQuery('action', 'get-'+fetching).addQuery('code', code);
-		$.getJSON(url.toString(), function( obj ) {
-			callback(obj);
-		});
-	}
 });
