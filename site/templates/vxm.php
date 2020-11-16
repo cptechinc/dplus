@@ -101,7 +101,7 @@
 			$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 			$page->body .= $config->twig->render('items/vxm/vxm-links.twig', ['page' => $page]);
 			$page->body .= $config->twig->render('items/vxm/search/item/vendor/form.twig', ['page' => $page, 'q' => $q, 'vendorID' => $vendorID, 'q' => $q]);
-			$page->body .= $config->twig->render('items/vxm/list/item/vendor/results.twig', ['page' => $page, 'items' => $items, 'vendorID' => $vendorID, 'recordlocker' => $recordlocker]);
+			$page->body .= $config->twig->render('items/vxm/list/item/vendor/results.twig', ['page' => $page, 'vxm' => $vxm, 'items' => $items, 'vendorID' => $vendorID, 'recordlocker' => $recordlocker]);
 			$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
 			$page->js   .= $config->twig->render('items/vxm/list/item/js.twig', ['page' => $page]);
 		}
