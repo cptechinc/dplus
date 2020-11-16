@@ -3,13 +3,19 @@
 	-------------------------------------------------
 	item                   ItemMasterItem
 #}
-<div class="form-group row bg-light">
-	<div class="col-sm-4">
-		<strong>Item ID: </strong> &nbsp;
-		{{ item.itemid }}
-	</div>
-	<div class="col-sm-8">
-		<small>{{ item.description }}</small><br>
-		<small>{{ item.description2 }}</small>
+<div class="bg-light">
+	<div class="form-group row">
+		<div class="col-sm-4">
+			<div>
+				<strong>Item ID: </strong> &nbsp;
+				{{ item.itemid }}
+			</div>
+		</div>
+		<div class="col-sm-8 ">
+			<div>
+				<small>{{ item.description }}</small><br>
+				<small>{{ item.description2 }}</small>
+			</div>
+		</div>
 	</div>
 </div>
