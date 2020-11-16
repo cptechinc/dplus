@@ -32,6 +32,8 @@ class Itm extends WireData implements Module {
 		'itm-xrefs-vxm',
 		'itm-xrefs-cxm',
 		'itm-misc',
+		'itm-components',
+		'itm-kit',
 	);
 
 	public function __construct() {
@@ -622,6 +624,17 @@ class Itm extends WireData implements Module {
 	}
 
 	/**
+	 * Return URL to view / edit Item Kit
+	 * @param  string $itemID
+	 * @return string
+	 */
+	public function get_itm_kitURL($itemID) {
+		$url = new Url($this->wire('pages')->get("pw_template=itm-kit")->url);
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	/**
 	 * Return URL to view / edit Item Xrefs
 	 * @param  string $itemID
 	 * @return string
@@ -698,6 +711,10 @@ class Itm extends WireData implements Module {
 			$event->return = $this->get_itmURL($itemID);
 		});
 
+		$this->addHook("Page(pw_template=$templates)::itm_validateURL", function($event) {
+			$event->return = $this->get_itm_validateURL();
+		});
+
 		$this->addHook("Page(pw_template=$templates)::itm_deleteURL", function($event) {
 			$itemID = $event->arguments(0);
 			$event->return = $this->get_itm_deleteURL($itemID);
@@ -738,6 +755,11 @@ class Itm extends WireData implements Module {
 		$this->addHook("Page(pw_template=$templates)::itm_miscURL", function($event) {
 			$itemID = $event->arguments(0);
 			$event->return = $this->get_itm_miscURL($itemID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::itm_kitURL", function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_itm_kitURL($itemID);
 		});
 
 		$this->addHook("Page(pw_template=$templates)::itm_xrefsURL", function($event) {
@@ -817,7 +839,7 @@ class Itm extends WireData implements Module {
 			$event->return = $this->wire('pages')->get('template=api-ajax,ajaxcode=freight-codes')->url;
 		});
 
-		$this->addHook("Page(pw_template=itm-misc)::jsonapiURL", function($event) {
+		$this->addHook("Page(pw_template=$templates)::jsonapiURL", function($event) {
 			$api = $event->arguments(0);
 			$pages = $this->wire('pages');
 			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
