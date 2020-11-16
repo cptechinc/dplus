@@ -197,7 +197,7 @@ $(function() {
 						},
 						action: function() {
 							var input = $('input[name=vendoritemID]');
-							
+
 							if (input.val() == input.data('vendoritemid') && input.data('new') !== true) {
 								return 'validate-vendor-itemid';
 							} else {
@@ -390,7 +390,7 @@ $(function() {
 	function update_unitrow_margin(unitrow) {
 		var input_unitqty = unitrow.find('.unit-qty');
 		var input_unitcost = unitrow.find('.unit-cost');
-		input_unitcost.val(parseFloat(input_unitcost.val()).toFixed({{ vxm.decimal_places_price() }}));
+		input_unitcost.val(parseFloat(input_unitcost.val()).toFixed({{ vxm.decimal_places_cost() }}));
 
 		if (parseFloat(input_unitcost.val())) {
 			var ele_margin = unitrow.find('.unit-margin');

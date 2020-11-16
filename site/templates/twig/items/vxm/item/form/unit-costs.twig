@@ -37,7 +37,7 @@
 					<input type="text" class="form-control form-control-sm w-50 unit-qty text-right pull-right" name="unit_qty{{ i }}" value="{{ item.get_unitqty(i) }}">
 				</td>
 				<td>
-					<input type="text" class="form-control form-control-sm w-75 unit-cost text-right pull-right" name="unit_cost{{ i }}" value="{{ item.get_unitcost(i)|number_format(vxm.decimal_places_price()) }}">
+					<input type="text" class="form-control form-control-sm w-75 unit-cost text-right pull-right" name="unit_cost{{ i }}" value="{{ item.get_unitcost(i)|number_format(vxm.decimal_places_cost()) }}">
 				</td>
 				<td class="text-right">
 					<span class="unit-margin">{{ item.get_unitmargin(i) }}</span> %
