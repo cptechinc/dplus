@@ -47,7 +47,9 @@
 		</td>
 	</tr>
 	<tr>
-		<td>Kit</td>
+		<td>
+			<a href="{{ page.itm_kitURL(item.itemid) }}" class="link">Kit</a>
+		</td>
 		<td>
 			<div class="custom-control custom-checkbox">
 				<input type="checkbox" class="custom-control-input" id="is-kit" {{ item.is_kit() ? 'checked' : '' }}>
