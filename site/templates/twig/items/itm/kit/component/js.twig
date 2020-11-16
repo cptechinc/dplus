@@ -1,0 +1,143 @@
+$(function() {
+	var form = $('#kit-component-form');
+	var input_component = form.find('input[name=component]');
+	var modal_ajax = $('#ajax-modal');
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	jQuery.validator.addMethod("suppliedby", function(value, element) {
+		return this.optional(element) || validate_suppliedby(value);
+	}, "Please select a valid Vendor Supplied");
+
+	jQuery.validator.addMethod("usagetag", function(value, element) {
+		return this.optional(element) || validate_usagetag(value);
+	}, "Please select a valid Usage Tag");
+
+	var validator = form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			component: {
+				required: true,
+				remote: {
+					url: '{{ page.itm_validateURL() }}',
+					type: "get",
+					data: {
+						action: 'validate-itemid-exists',
+						itemID: function() {
+							return $('input[name=component]').val()
+						}
+					}
+				}
+			},
+			usage: {
+				required: true,
+				number: true,
+				min: 1
+			},
+			suppliedby: {
+				required: true,
+				suppliedby: true
+			},
+			suppliedby: {
+				required: false,
+				usagetag: true
+			}
+		},
+		messages: {
+
+		},
+		submitHandler: function(form) {
+			//form.submit();
+		}
+	});
+
+	function validate_suppliedby(val) {
+		var options = {{ kitm.options_component_suppliedby()|json_encode()|raw }};
+		return options.hasOwnProperty(val);
+	}
+
+	function validate_usagetag(val) {
+		var options = {{ kitm.options_component_usagetag()|json_encode()|raw }};
+		return options.hasOwnProperty(val);
+	}
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on('change', 'input[name=component]', function(e) {
+		var input = $(this);
+		if (validator.element('#'+input.attr('id'))) {
+			fetch_jsonapi_item($(this).val(), function(obj) {
+				if (obj) {
+					var ajaxfields_str = input.data('ajaxfields');
+					var ajaxfields = ajaxfields_str.split(',');
+					ajaxfields.forEach((field , i) => {
+						$('.'+input.attr('name')+'-'+field).text(obj[field]);
+					});
+				}
+			});
+		}
+	});
+
+	$("body").on('change', 'input[name=usage]', function(e) {
+		var input = $(this);
+		var usage = parseFloat(input.val());
+		input.val(usage.toFixed({{ kitm.decimal_places_qty() }}));
+	});
+
+/* =============================================================
+	AJAX Lookup Modal Functions
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = button.data('lookupurl');
+		console.log(url);
+
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		input_component.val(itemID).change();
+		modal_ajax.modal('hide');
+	});
+
+/* =============================================================
+	AJAX Request Functions
+============================================================= */
+	function fetch_jsonapi_item(itemID, callback) {
+		var url = new URI('{{ page.jsonapiURL() }}');
+		url.path(url.path() + "inv/");
+		url.addQuery('action', 'get-item').addQuery('itemID', itemID);
+		$.getJSON(url.toString(), function( obj ) {
+			callback(obj);
+		});
+	}
+});
