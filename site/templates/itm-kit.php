@@ -2,7 +2,7 @@
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
 	$itm  = $modules->get('Itm');
-	$kitm = $modules->get('InvKitMaster');
+	$kitm = $modules->get('Kim');
 
 	if ($input->get->itemID) {
 		$kitID = $input->get->text('itemID');

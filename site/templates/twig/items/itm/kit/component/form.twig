@@ -2,13 +2,15 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
-	kitm                   module InvKitMaster
+	kitm                   module Kim
+	kitm.component         module KimComponent
 	item                   ItemMasterItem
 	kit                    InvKit
 	component              InvKitComponent
+	kitm.recordlocker      module RecordLockerUserFunction
 #}
 <form action="{{ page.url }}" method="post" id="kit-component-form">
-	<input type="hidden" name="action" value="update-kit-component">
+	<input type="hidden" name="action" value="update-component">
 	<input type="hidden" name="itemID" value="{{ kit.itemid }}">
 	<input type="hidden" name="kitID" value="{{ kit.itemid }}">
 
@@ -39,7 +41,7 @@
 		</div>
 		<div class="col-sm-8">
 			{% include 'util/form/input.twig' with {
-					'name': 'usage', 'value': component.usage|number_format(kitm.decimal_places_qty()),
+					'name': 'usage', 'value': component.usage|number_format(kitm.component.decimal_places_qty()),
 					'class_add': [
 						'w-50',
 						'text-right',
@@ -61,10 +63,10 @@
 					'use_blank_option': true,
 					'show_value': true,
 					'use_blank_option': true,
-					'options': kitm.options_component_suppliedby(),
+					'options': kitm.component.options_component_suppliedby(),
 					'class_add': [
 						'hazmat-step',
-						itm.hazmat.field_has_error('suppliedby') ? 'is-invalid' : ''
+						kitm.field_has_error('suppliedby') ? 'is-invalid' : ''
 					],
 					'attributes': {}
 				}
@@ -81,10 +83,10 @@
 					'use_blank_option': true,
 					'show_value': true,
 					'use_blank_option': true,
-					'options': kitm.options_component_usagetag(),
+					'options': kitm.component.options_component_usagetag(),
 					'class_add': [
 						'hazmat-step',
-						itm.hazmat.field_has_error('usagetag') ? 'is-invalid' : ''
+						kitm.field_has_error('usagetag') ? 'is-invalid' : ''
 					],
 					'attributes': {}
 				}
@@ -99,7 +101,7 @@
 			NOTE: Only show delete if item already exists.
 		#}
 		{% if kitm.recordlocker.function_locked_by_user(kit.itemid) or component.isNew() %}
-			<button type="submit" class="btn btn-success" name="action" value="update-itm">
+			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 			{% if component.isNew() == false %}

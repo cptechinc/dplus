@@ -1,0 +1,183 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+use InvKitQuery, InvKit;
+use InvKitComponentQuery, InvKitComponent;
+use ItemMasterItemQuery, ItemMasterItem;
+
+include_once(__DIR__.'/KimResponse.php');
+
+/**
+ * Kim
+ * Kit Master
+ * Handles CRUD of Kits
+ */
+class Kim extends WireData implements Module {
+	const MODEL              = 'InvKit, InvKitComponent';
+	const DESCRIPTION        = 'Kit';
+	const RESPONSE_TEMPLATE  = 'Kit {kit} was {not} {crud}';
+	const RECORDLOCKER_FUNCTION = 'kim';
+
+	/**
+	 * Return Kit Query
+	 * @return InvKitQuery
+	 */
+	public function query() {
+		return InvKitQuery::create();
+	}
+
+/* =============================================================
+	CRUD Create, Read, Validate Functions
+============================================================= */
+	/**
+	 * Return if Hazmat Item Exists
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function kit_exists($itemID) {
+		$q = $this->query();
+		$q->filterByItemid($itemID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return InvKit
+	 * @param  string $itemID Item ID
+	 * @return InvKit
+	 */
+	public function get_kit($itemID) {
+		$q = $this->query();
+		$q->filterByItemid($itemID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Create InvKit
+	 * @param  string $itemID Item ID
+	 * @return InvKit
+	 */
+	public function create_kit($itemID) {
+		$kit = new InvKit();
+		$kit->setItemid($itemID);
+		$kit->setDate(date(InvKit::FORMAT_DATE));
+		$kit->setTime(date(InvKit::FORMAT_TIME));
+		return $kit->save();
+	}
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Takes Input, processses the action, calls the process_input
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if (strpos($values->text('action'), 'component') !== false) {
+			return $this->component->process_input($input);
+		}
+
+		switch ($values->text('action')) {
+			case 'create-kit':
+				$this->input_create($input);
+				break;
+				//$this->wire('session')->response_kim = KimResponse::response_error("ItmMisc", "No Action Provided");
+				break;
+		}
+	}
+
+	protected function input_create(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$kitID = $values->text('kitID');
+
+		if ($this->kit_exists($kitID)) {
+			return true;
+		}
+
+		if ($this->create_kit($kitID)) {
+			return true;
+		}
+		$this->wire('session')->response_kim = KimResponse::response_error($kitID, "Kit $kitID can not be created");
+		return false;
+	}
+
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
+
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	public function request_dplus(array $data) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$data = array_merge(["DBNAME=$dplusdb"], $data);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return if Field has Error
+	 * NOTE: Uses $session->response_kim->fields to derive this
+	 * @param  string $inputname Input name e.g. commissiongroup
+	 * @return bool
+	 */
+	public function field_has_error($inputname) {
+		$response = $this->wire('session')->response_kim;
+		return ($response) ? array_key_exists($inputname, $response->fields) : false;
+	}
+
+	/**
+	 * Return Config SO
+	 * @return ConfigSalesOrder
+	 */
+	public function get_config_so() {
+		return $this->wire('modules')->get('ConfigureSo')->config();
+	}
+
+	/**
+	 * Intialize configs
+	 * @return void
+	 */
+	public function init_configs() {
+		$this->configs = new WireData();
+		$this->configs->so = $this->get_config_so();
+	}
+
+/* =============================================================
+	URL Functions
+============================================================= */
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus INV Kit Master CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for INV Kit Master',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array('KimComponent')
+		);
+	}
+
+	public function init() {
+		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
+		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
+		$this->component = $this->wire('modules')->get('KitComponent');
+	}
+
+}
