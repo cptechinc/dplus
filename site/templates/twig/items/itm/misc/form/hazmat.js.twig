@@ -11,7 +11,7 @@ $(function() {
 
 		if (input.val() != '') {
 			var nextstep = parseInt(input.data('step')) + 1;
-			$('[data-step="'+nextstep+'"]').removeAttr('disabled');
+			$('[data-step="'+nextstep+'"]').removeAttr('readonly');
 		}
 	});
 /* =============================================================

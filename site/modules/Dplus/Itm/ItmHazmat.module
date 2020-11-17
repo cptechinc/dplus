@@ -17,6 +17,7 @@ class ItmHazmat extends WireData implements Module {
 	const MODEL_KEY          = 'code';
 	const DESCRIPTION        = 'INV Hazmat Item';
 	const DESCRIPTION_RECORD = 'INV Hazmat Item';
+	const RESPONSE_TEMPLATE  = 'ITM Hazmat {itemid} {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'itm';
 
 	/**
@@ -88,6 +89,17 @@ class ItmHazmat extends WireData implements Module {
 		return $record;
 	}
 
+	/**
+	 * Delete Hazmat if Exists
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function delete_hazmat($itemID) {
+		$q = $this->query();
+		$q->filterByItemid($itemID);
+		return $q->count() ? $q->delete() : true;
+	}
+
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
@@ -103,80 +115,83 @@ class ItmHazmat extends WireData implements Module {
 
 		switch ($values->text('action')) {
 			case 'delete-itm-hazmat':
+				$this->input_delete($input);
 			case 'update-itm-hazmat':
-				$this->process_input_hazmat($input);
+				$this->input_update($input);
 				break;
 			default:
-				$this->wire('session')->response_itm = ItmResponse::response_error("ItmMisc", "No Action Provided");
+				$this->wire('session')->response_itm = ItmResponse::response_error("ItmHazmat", "No Action Provided");
 				break;
 		}
 	}
 
 	/**
-	 * Takes Input, validates it's for an Item
-	 * Updates Item
-	 * Processes it, and if updated sends request to dplus
-	 *
-	 * @param  WireInput $input Input
-	 * @return void
+	 * Delete Hazmat Record
+	 * @param  WireInput $input Input Data
+	 * @return bool
 	 */
-	public function process_input_hazmat(WireInput $input) {
+	private function input_delete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID = strtoupper($values->text('itemID'));
+
+		if (!$this->recordlocker->function_locked($itemID)) {
+			$this->recordlocker->create_lock($itemID);
+		}
+
+		if ($this->recordlocker->function_locked_by_user($itemID)) {
+			return $this->delete_hazmat($itemID);
+		}
+		$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($itemID);
+		$this->wire('session')->response_itm = ItmResponse::response_error($itemID, $message);
+		return false;
+	}
+
+	/**
+	 * Delete Hazmat Record
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function input_update(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itemID = strtoupper($values->text('itemID'));
 		$record = $this->get_create_hazmat($itemID);
-		$invalidfields = array();
 
-		/**
-		 * Create lock for ITM item ID if not already locked.
-		 */
 		if (!$this->recordlocker->function_locked($itemID)) {
 			$this->recordlocker->create_lock($itemID);
 		}
 
 		if ($record->isNew() || $this->recordlocker->function_locked_by_user($itemID)) {
-			if ($values->text('action') == 'delete-itm-hazmat') {
-				$record->delete();
-			} elseif ($values->text('action') == 'update-itm-hazmat') {
-				$invalidfields = $this->set_hazmat_fields($record, $input);
-			}
+			$invalidfields = $this->set_hazmat_fields($record, $input);
+			$response = $this->save_and_respond($record, $invalidfields);
 
-			if ($values->action) {
-				$response = $this->save_and_respond($record, $invalidfields);
-
-				if ($invalidfields) {
-					$response->set_error(true);
-					$response->set_success(false);
-					$response->set_saved_itm(false);
-					$response->set_message("$itemID Hazmat was not saved to Dplus");
-				} else {
-					$response->set_saved_itm($response->success);
-				}
-
-				if ($values->text('action') == 'remove-itm-item') {
-					$response = $this->verify_delete($itemID);
-				}
+			if ($invalidfields) {
+				$response->set_error(true);
+				$response->set_success(false);
+				$response->set_saved_itm(false);
+				$response->set_message("$itemID Hazmat was not saved to Dplus");
 			} else {
-				$message = self::DESCRIPTION_RECORD . " ($record->itemid) was not saved, no action was specified";
-				$response = ItmResponse::response_error($record->itemid, $message);
+				$response->set_saved_itm($response->success);
 			}
-		} else {
-			$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $this->recordlocker->get_locked_user('itm', $itemID);
-			$response = ItmResponse::response_error($record->itemid, $message);
+			$this->wire('session')->response_itm = $response;
+			return $response->has_success();
 		}
-		$this->wire('session')->response_itm = $response;
+
+		$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($itemID);
+		$this->wire('session')->response_itm = ItmResponse::response_error($itemID, $message);
+		return false;
 	}
 
 	/**
 	 * Sets Item Values
-	 * @param InvHazmatItem $record Item Master Item
+	 * @param InvHazmatItem  $record Item Master Item
 	 * @param WireInput      $input  Input Data
 	 */
 	protected function set_hazmat_fields(InvHazmatItem $record, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = array();
-
 
 		$invalidfields = $this->set_validated_fields($record, $input);
 		return $invalidfields;
@@ -193,12 +208,14 @@ class ItmHazmat extends WireData implements Module {
 		$fields = array(
 			'dot1' => array(
 				'description' => 'DOT Ship Name 1',
+				'function'    => 'hazmat_dot1',
 				'input'       => 'dot1',
-				'allow_blank' => true,
+				'allow_blank' => false,
 				'length'      => InvHazmatItem::MAX_LENGTH_DOT1,
 				'requires'    => []
 			),
 			'dot2' => array(
+				'function'    => 'hazmat_dot2',
 				'description' => 'DOT Ship Name 2',
 				'input'       => 'dot2',
 				'allow_blank' => true,
@@ -209,7 +226,7 @@ class ItmHazmat extends WireData implements Module {
 				'function'    => 'hazmat_class',
 				'description' => 'Hazard Class',
 				'input'       => 'class',
-				'allow_blank' => true,
+				'allow_blank' => false,
 				'length'      => InvHazmatItem::MAX_LENGTH_CLASS,
 				'requires'    => ['dot1']
 			),
@@ -217,7 +234,7 @@ class ItmHazmat extends WireData implements Module {
 				'function'    => 'hazmat_unnbr',
 				'description' => 'UN Nbr',
 				'input'       => 'unnbr',
-				'allow_blank' => true,
+				'allow_blank' => false,
 				'length'      => InvHazmatItem::MAX_LENGTH_UNNBR,
 				'requires'    => ['dot1']
 			),
@@ -225,14 +242,14 @@ class ItmHazmat extends WireData implements Module {
 				'function'    => 'hazmat_packgroup',
 				'description' => 'Packing Group',
 				'input'       => 'packgroup',
-				'allow_blank' => true,
+				'allow_blank' => false,
 				'requires'    => ['unnbr']
 			),
 			'label' => array(
 				'function'    => 'hazmat_label',
 				'description' => 'Label',
 				'input'       => 'label',
-				'allow_blank' => true,
+				'allow_blank' => false,
 				'length'      => InvHazmatItem::MAX_LENGTH_LABEL,
 				'requires'    => ['dot1']
 			),
@@ -240,7 +257,7 @@ class ItmHazmat extends WireData implements Module {
 				'function'    => 'hazmat_allowair',
 				'description' => 'Allow Air',
 				'input'       => 'allowair',
-				'allow_blank' => true,
+				'allow_blank' => false,
 				'requires'    => ['dot1']
 			),
 		);
@@ -266,34 +283,25 @@ class ItmHazmat extends WireData implements Module {
 
 		$response = new ItmResponse();
 		$response->set_itemID($record->itemid);
-		$message = self::DESCRIPTION_RECORD . " ($record->itemid) was ";
 
 		if ($saved) {
 			$response->set_success(true);
 		} else {
 			$response->set_error(true);
-			$message .= "not ";
 		}
 
 		if ($is_new) {
-			$message .= 'added';
 			$response->set_action(ItmResponse::CRUD_CREATE);
 		} elseif ($record->isDeleted()) {
-			$message .= 'deleted';
 			$response->set_action(ItmResponse::CRUD_DELETE);
 		} else {
-			$message .= 'updated';
 			$response->set_action(ItmResponse::CRUD_UPDATE);
 		}
 
-		$response->set_message($message);
+		$response->build_message(self::RESPONSE_TEMPLATE);
 
 		if ($response->has_success() && empty($invalidfields)) {
-			if ($record->isDeleted()) {
-				$this->request_item_delete($record->itemid);
-			} else {
-				$this->request_hazmat_update($record->itemid);
-			}
+			$this->request_hazmat_update($record->itemid);
 		}
 		$response->set_fields($invalidfields);
 		return $response;
@@ -317,44 +325,8 @@ class ItmHazmat extends WireData implements Module {
 	 * @return void
 	 */
 	public function request_hazmat_update($itemID) {
-		$data = array('UPDATEITM', "ITEMID=$itemID");
+		$data = array('UPDATEITMHAZMAT', "ITEMID=$itemID");
 		$this->request_dplus($data);
-	}
-
-	/**
-	 * Return if Item was able to be deleted
-	 * @param  string $itemID Item ID
-	 * @return bool
-	 */
-	private function verify_delete($itemID) {
-		$m_json = $this->wire('modules')->get('JsonDataFiles');
-		$json = $m_json->get_file(session_id(), 'itm-delete');
-		$response = new ItmResponse();
-		$response->set_itemID($itemID);
-		$response->set_action(ItmResponse::CRUD_DELETE);
-		$message = self::DESCRIPTION_RECORD . " ($itemID) was ";
-
-		if ($m_json->had_succeeded()) {
-			if ($json['itemid'] != $itemID) {
-				$response->set_error(true);
-				$message .= "not deleted";
-			} elseif ($json['error'] === true) {
-				$response->set_error(true);
-				$message .= "not deleted";
-			} else {
-				$response->set_success(true);
-				$message .= "deleted";
-			}
-		} else {
-			$response->set_error(true);
-			$message .= "not deleted";
-		}
-
-		if ($json['error']) {
-			$message .= " Error: " . $json['errormsg'];
-		}
-		$response->set_message($message);
-		return $response;
 	}
 
 /* =============================================================
