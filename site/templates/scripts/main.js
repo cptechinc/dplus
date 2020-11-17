@@ -353,7 +353,15 @@ Number.prototype.formatMoney = function(c, d, t) {
 		i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
 		j = (j = i.length) > 3 ? j % 3 : 0;
 		return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
- };
+};
+
+Number.prototype.truncate = function(precision) {
+	var number = this;
+	var array = number.toString().split(".");
+	array.push(array.pop().substring(0, precision));
+	var trimmed =  array.join(".");
+	return trimmed;
+}
 
 String.prototype.capitalize = function() {
 	return this.charAt(0).toUpperCase() + this.slice(1)
@@ -364,7 +372,6 @@ String.prototype.urlencode = function() {
 	string = string.replace('!', '%21')
 	return encodeURIComponent(string);
 }
-
 
 Array.prototype.contains = function ( needle ) {
 	for (i in this) {
