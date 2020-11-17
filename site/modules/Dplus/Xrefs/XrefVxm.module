@@ -270,7 +270,6 @@ class XrefVxm extends WireData implements Module {
 		$record->setQty_percase($values->text('qty_percase'));
 		$record->setMinbuyqty($values->text('minbuyqty'));
 		$record->setListprice($values->text('listprice'));
-		$record->setUnitcost_base($values->text('unitcost_base'));
 
 		$this->update_record_unitx_input($record, $input);
 
@@ -298,10 +297,10 @@ class XrefVxm extends WireData implements Module {
 		$original->setVendoritemid($record->originalvalues[ItemXrefVendor::get_aliasproperty('vendoritemid')]);
 		$original->setOuritemid($record->originalvalues[ItemXrefVendor::get_aliasproperty('ouritemid')]);
 		$original->delete();
+		$this->update_dplus_cobol($original);
 
 		$new =  new ItemXrefVendor();
 		$new->fromArray($array);
-
 		$new->save();
 		$record = $new;
 	}
@@ -315,6 +314,14 @@ class XrefVxm extends WireData implements Module {
 	public function update_record_unitx_input(ItemXrefVendor $record, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
+		$sanitizer = $this->wire('sanitizer');
+
+		if ($record->uompurchase) {
+			$cost = $values->float('unitcost_base', ['precision' => $this->decimal_places_cost()]);
+			$unitcost = $cost / $record->uompurchase->conversion;
+			$record->setUnitcost_base($sanitizer->float($unitcost));
+		}
+
 
 		for ($i = 1; $i < ItemXrefVendor::UNITS_AVAILABLE + 1; $i++) {
 			$col_qty = ucfirst(ItemXrefVendor::get_unitqty_column($i));
@@ -322,7 +329,14 @@ class XrefVxm extends WireData implements Module {
 			$function_unitqty = "set$col_qty";
 			$function_unitcost = "set$col_cost";
 			$record->$function_unitqty($values->float("unit_qty$i", ['precision' => $this->decimal_places_qty()]));
-			$record->$function_unitcost($values->float("unit_cost$i", ['precision' => $this->decimal_places_price()]));
+
+			if ($record->uompurchase) {
+				$cost = $values->float("unit_cost$i", ['precision' => $this->decimal_places_cost()]);
+				$unitcost = $cost / $record->uompurchase->conversion;
+				$record->$function_unitcost($sanitizer->float($unitcost));
+			} else {
+				$record->$function_unitcost($values->float("unit_cost$i"));
+			}
 		}
 	}
 
