@@ -1,0 +1,35 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+/**
+ * Module that handles the editing of the UPC item Itm
+ */
+class Inv extends WireData implements Module {
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus INV',
+			'version' => 101,
+			'summary' => 'Module for Installing Inv Submodules',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(
+				'Kim'
+			)
+		);
+	}
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+		$modules->refresh();
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
+	}
+}
