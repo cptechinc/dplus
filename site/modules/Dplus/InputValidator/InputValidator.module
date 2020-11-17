@@ -93,30 +93,47 @@ class InputValidator extends WireData implements Module {
 		return $this->invalid;
 	}
 
+	/**
+	 * Validates Field According to it's InputValidatorField Property Rules
+	 * @param  InputValidatorField $field
+	 * @return bool
+	 */
 	public function validate_field(InputValidatorField $field) {
 		$rm = strtolower($this->input->requestMethod());
 		$values = $this->input->$rm;
 		$function = $field->function();
 
 		if (strlen($values->text($field->input())) == 0 && $field->allow_blank()) {
-			$valid = true;
-		} else {
-			$valid = $this->validate->$function($values->text($field->input()));
+			return true;
 		}
-		return $valid;
+		return $this->validate->$function($values->text($field->input()));
 	}
 
+	/**
+	 * Validate Field by checking the required fields
+	 * @param  InputValidatorField $field Field to Validate Requirements
+	 * @return bool
+	 */
 	public function validate_field_requires(InputValidatorField $field) {
 		if (!empty($field->requires)) {
 			foreach ($field->requires as $property) {
-				if (empty($this->record->$property)) {
-					return false;
+				if (empty($this->record->$property)) { // CHECK if Record already has this property set
+					$required = $this->fields->get($property);
+
+					if (!$this->validate_field($required)) {
+						return false;
+					}
 				}
 			}
 		}
 		return true;
 	}
 
+	/**
+	 * Set the Invalid Field Message for fields that require
+	 * @param  InputValidatorField $field
+	 * @return void
+	 */
 	public function validate_field_requires_message(InputValidatorField $field) {
 		if (!empty($field->requires)) {
 			foreach ($field->requires as $property) {
@@ -174,4 +191,6 @@ class InputValidator extends WireData implements Module {
 			'autoload' => true,
 		);
 	}
+
+
 }
