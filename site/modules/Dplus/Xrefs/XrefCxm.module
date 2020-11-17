@@ -306,11 +306,11 @@ class XrefCxm extends WireData implements Module {
 		$response->set_action(XrefResponse::CRUD_UPDATE);
 
 		$record->setCustitemid($values->text('custitemID'));
+		$record->setItemid($values->text('itemID'));
 
 		if ($this->is_modifying_cxm_key($record) && !$record->isNew()) {
 			$this->delete_recreate_record($record);
 		}
-		$record->setItemid($values->text('itemID'));
 		$record->setDescription($values->text('description'));
 		$record->setDescription2($values->text('description2'));
 		$record->setRevision($values->text('revision'));
@@ -399,21 +399,28 @@ class XrefCxm extends WireData implements Module {
 		if ($record->uom_pricing != '') {
 			//$record->setPrice_uom($values->float('price_uom', ['precision' => $this->decimal_places_price_uom()]));
 		}
-
 		return $invalid;
 	}
 
+	/**
+	 * Deletes CXM Record, then recreates it
+	 * Used for when modifying a CXM record key
+	 * @param  ItemXrefCustomer $record
+	 * @return void
+	 */
 	public function delete_recreate_record(ItemXrefCustomer $record) {
-		$record_delete = $record;
-		$array = $record_delete->toArray();
+		$array = $record->toArray();
+		$original = new ItemXrefCustomer();
+		$original->fromArray($array);
+		$original->setCustitemid($record->originalvalues[ItemXrefCustomer::get_aliasproperty('custitemid')]);
+		$original->setItemid($record->originalvalues[ItemXrefCustomer::get_aliasproperty('itemid')]);
+		$original->delete();
+		$this->update_dplus_cobol($original);
 
-		$record_delete->setCustitemid($values->text('original_custitemID'));
-		$this->update_cxm_dplus($record_delete);
-		$record_delete->delete();
-		$record = ItemXrefCustomer::new();
-		$record->fromArray($array);
-		$record->setCustitemid($values->text('custitemID'));
-		$record->save();
+		$new = ItemXrefCustomer::new();
+		$new->fromArray($array);
+		$new->save();
+		$record = $new;
 	}
 
 	/**
@@ -474,7 +481,7 @@ class XrefCxm extends WireData implements Module {
 		$response->set_message($message);
 
 		if ($response->has_success()) {
-			$this->update_cxm_dplus($record);
+			$this->update_dplus_cobol($record);
 		}
 		return $response;
 	}
@@ -487,7 +494,7 @@ class XrefCxm extends WireData implements Module {
 	 * @param  ItemXrefCustomer $item
 	 * @return void
 	 */
-	public function update_cxm_dplus(ItemXrefCustomer $item) {
+	public function update_dplus_cobol(ItemXrefCustomer $item) {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
 		$data = array("DBNAME=$dplusdb", 'UPDATECXM', "CUSTID=$item->custid", "CUSTITEM=$item->custitemid", "OURITEM=$item->itemid");
