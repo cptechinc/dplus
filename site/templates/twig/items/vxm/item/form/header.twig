@@ -13,7 +13,7 @@
 		</div>
 		<div class="col-sm-6 vendor-col">
 			{% if item.isNew() %}
-				{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'vendorID', value: item.vendorID, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Vendor', attributes_button: {'data-search': 'vendor'}} %}
+				{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'vendorID', 'value': item.vendorID, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Vendor', 'attributes_button': {'data-search': 'vendor'}} %}
 			{% else %}
 				<input type="text" class="form-control-plaintext form-control-sm" name="vendorID" id="vendorID" value="{{ item.vendorid }}" readonly>
 			{% endif %}
@@ -33,13 +33,19 @@
 			<b>Our Item ID</b>
 		</div>
 		<div class="col-sm-6 item-col">
-			{% if page.has('itemID') %}
-				<input type="text" class="form-control-plaintext form-control-sm" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}" readonly>
-			{% elseif item.isNew() or item.ouritemid == '' %}
-				{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'ouritemID', value: item.ouritemid, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Item', attributes_button: {'data-search': 'item'}} %}
-			{% else %}
-				<input type="text" class="form-control-plaintext form-control-sm" name="ouritemID" id="ouritemID" value="{{ item.ouritemid }}" readonly>
-			{% endif %}
+			{% include 'util/form/input-with-modal-lookup.twig' with {
+					'name': 'ouritemID', 'value': item.ouritemid,
+					'attributes': {
+						'readonly': item.ouritemid ? true : false,
+						'disabled': item.ouritemid ? true : false
+					},
+					'modaltarget': '#ajax-modal',
+					'modaldescription': 'Search for / Choose Item',
+					'attributes_button': {
+						'data-search': 'item'
+					}
+				}
+			%}
 			<small class="form-text text-muted description">{{ item.imitem.description }}</small>
 			<small class="form-text text-muted description2">{{ item.imitem.description2 }}</small>
 		</div>
@@ -52,7 +58,6 @@
 		</div>
 		<div class="col-sm-6">
 			<select name="uom_purchase" class="form-control form-control-sm mb-1" id="uom_purchase">
-				<option value="">-- Choose --</option>
 				{% for uom in vxm.get_unitsofm_purchases() %}
 					<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_purchase ? 'selected' : ''}}>
 						{{ uom.code }} - {{ uom.description }}
