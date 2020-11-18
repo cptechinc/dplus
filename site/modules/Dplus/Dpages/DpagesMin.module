@@ -311,7 +311,7 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'UPC X-ref',
 			'summary'        => 'View / Edit Item UPC X-ref',
 			'parent'         => '/min/inmain/itm/xrefs/',
-			'dplus_function' => 'upcx'
+			'dplus_permission' => 'upcx'
 		),
 		'itm-xrefs-vxm' => array(
 			'template'       => 'dplus-function',
@@ -320,7 +320,7 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'VXM X-ref',
 			'summary'        => 'View / Edit Item VXM X-ref',
 			'parent'         => '/min/inmain/itm/xrefs/',
-			'dplus_function' => 'vxm'
+			'dplus_permission' => 'vxm'
 		),
 		'itm-xrefs-cxm' => array(
 			'template'       => 'dplus-function',
@@ -329,7 +329,7 @@ class DpagesMin extends Dpages implements Module {
 			'title'          => 'CXM X-ref',
 			'summary'        => 'View / Edit Item CXM X-ref',
 			'parent'         => '/min/inmain/itm/xrefs/',
-			'dplus_function' => 'cxm'
+			'dplus_permission' => 'cxm'
 		),
 		'itm-json' => array(
 			'template'       => 'dplus-json',
