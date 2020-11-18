@@ -37,8 +37,8 @@
 			if (!$item_warehouse->isNew()) {
 				$itmw->lockrecord($item_warehouse);
 
-				if ($itmw->recordlocker->function_locked($page->pw_template, $itmw->get_warehouseitem_lockkey($item_warehouse)) && !$recordlocker->function_locked_by_user($page->pw_template, $itmw->get_warehouseitem_lockkey($item_warehouse))) {
-					$msg = "Warehouse $item_warehouse->warehouseid for $item_warehouse->itemid is being locked by " . $recordlocker->get_locked_user($page->pw_template, $itmw->get_warehouseitem_lockkey($item_warehouse));
+				if ($itmw->recordlocker->function_locked($itmw->get_warehouseitem_lockkey($item_warehouse)) && !$itmw->recordlocker->function_locked_by_user($itmw->get_warehouseitem_lockkey($item_warehouse))) {
+					$msg = "Warehouse $item_warehouse->warehouseid for $item_warehouse->itemid is being locked by " . $itmw->recordlocker->get_locked_user($itmw->get_warehouseitem_lockkey($item_warehouse));
 					$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Warehouse $item_warehouse->warehouseid is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 					$page->body .= $html->div('class=mb-3');
 				}
@@ -65,7 +65,7 @@
 		$itmw->recordlocker->remove_lock($page->lockcode);
 		$page->headline = "Warehouses for $itemID";
 		$page->body .= $config->twig->render('items/itm/warehouse/description.twig', ['page' => $page, 'item' => $item]);
-		$page->body .= $config->twig->render('items/itm/warehouse/list.twig', ['page' => $page, 'itemID' => $itemID, 'warehouses' => $itmw->get_itemwarehouses($itemID)]);
+		$page->body .= $config->twig->render('items/itm/warehouse/list.twig', ['page' => $page, 'itmw' => $itmw, 'itemID' => $itemID, 'warehouses' => $itmw->get_itemwarehouses($itemID)]);
 	}
 
 	$session->remove('response_itm');
