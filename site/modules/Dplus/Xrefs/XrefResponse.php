@@ -19,6 +19,12 @@ class XrefResponse  {
 	const CRUD_UPDATE = 2;
 	const CRUD_DELETE = 3;
 
+	const CRUD_DESCRIPTION = [
+		1 => 'created',
+		2 => 'updated',
+		3 => 'deleted'
+	];
+
 	public function __construct() {
 		$this->success = false;
 		$this->error = false;
@@ -62,6 +68,13 @@ class XrefResponse  {
 
 	public function has_field($field) {
 		return array_key_exists($field, $this->fields);
+	}
+
+	public function build_message($template) {
+		$crud = self::CRUD_DESCRIPTION[$this->action];
+		$replace = ['{key}' => $this->key, '{not}' => $this->has_success() ? '' : 'not', '{crud}' => $crud];
+		$msg = str_replace(array_keys($replace), array_values($replace), $template);
+		$this->message = $msg;
 	}
 
 	public static function response_error($key, $message) {
