@@ -169,7 +169,7 @@ class ItmXrefs extends WireData implements Module {
 	 */
 	public function get_upc_deleteURL($itemID, $upc) {
 		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-upcx")->url);
-		$url->query->set('action', 'remove-upcx');
+		$url->query->set('action', 'delete-upcx');
 		$url->query->set('itemID', $itemID);
 		$url->query->set('upc', $upc);
 		return $url->getUrl();
