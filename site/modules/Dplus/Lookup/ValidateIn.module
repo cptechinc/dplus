@@ -143,6 +143,15 @@ class ValidateIn extends WireData implements Module {
 		return $msdsm->code_exists($code);
 	}
 
+	/**
+	 * Validate Warehouse ID
+	 * @param  string $id Warehouse ID
+	 * @return bool
+	 */
+	public function whseid($id) {
+		return $this->modules->get('CodeTablesIwhm')->code_exists($id);
+	}
+
 
 /* =============================================================
 	ProcessWire Module Functions
@@ -161,6 +170,7 @@ class ValidateIn extends WireData implements Module {
 				'CodeTablesIgpm',
 				'CodeTablesIgcm',
 				'CodeTablesTarm',
+				'CodeTablesIwhm'
 			)
 		);
 	}
