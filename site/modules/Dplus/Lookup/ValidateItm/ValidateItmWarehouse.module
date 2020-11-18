@@ -115,7 +115,7 @@ class ValidateItmWarehouse extends WireData implements Module {
 		$this->validate->in  = $this->wire('modules')->get('ValidateIn');
 		$this->modules = $this->wire('modules');
 
-		$this->configs = new WireData();
-		$this->configs->in = $this->config_in();
+
 	}
+
 }
