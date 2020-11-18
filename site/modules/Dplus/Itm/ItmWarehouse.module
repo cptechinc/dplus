@@ -346,6 +346,7 @@ class ItmWarehouse extends WireData implements Module {
 		}
 		return $this->recordlocker->function_locked_by_user($this->get_warehouseitem_lockkey($record));
 	}
+	
 	/**
 	 * Return WarehouseInventory Item Status Options
 	 * @return array
