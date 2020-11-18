@@ -19,7 +19,14 @@
 					<label for="upc">UPC Code</label>
 				</div>
 				<div class="col-sm-6">
-					<input type="text" class="{{ upc.isNew() ? 'form-control' : 'form-control-plaintext' }} form-control-sm" name="upc" id="upc" value="{{ upc.upc }}" {{ upc.isNew() ? '' : 'readonly' }}>
+					{% include 'util/form/input.twig' with {
+							'name': 'upc', 'value': upc.upc,
+							'class_add': [],
+							'attributes': {
+								'readonly': upc.isNew() == false,
+							}
+						}
+					%}
 				</div>
 			</div>
 			{% block form_input_itemid %}
@@ -28,11 +35,18 @@
 						<label for="itemID">Item ID</label>
 					</div>
 					<div class="col-sm-6">
-						{% if upc.isNew() %}
-							{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'itemID', 'value': item.itemID, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Items', 'attributes_button': {'data-search': 'item'}} %}
-						{% else %}
-							<input type="text" class="form-control-plaintext form-control-sm" name="itemID" id="itemID" value="{{ upc.itemID }}" readonly>
-						{% endif %}
+						{% include 'util/form/input-with-modal-lookup.twig' with {
+								'name': 'itemID', 'value': upc.itemid,
+								'attributes': {
+									'readonly': upc.itemid ? true : false
+								},
+								'modaltarget': '#ajax-modal',
+								'modaldescription': 'Search for / Choose Item',
+								'attributes_button': {
+									'data-search': 'item'
+								}
+							}
+						%}
 						<small class="text-muted help-text item-description">{{ upc.ItemMasterItem.description }}</small>
 					</div>
 				</div>
@@ -106,7 +120,7 @@
 					2. Is a new Item
 					NOTE: Only show delete if item already exists.
 				#}
-				{% if recordlocker.function_locked_by_user('upcx', upc.upc) or upc.isNew() %}
+				{% if upcx.recordlocker.function_locked_by_user( upc.upc) or upc.isNew() %}
 					<button type="submit" class="btn btn-success" name="action" value="update-upcx">
 						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 					</button>

@@ -5,7 +5,7 @@
 	xrefs.cxm              module XrefCxm
 	xrefs.upcx             module XrefUpc
 	xrefs.vxm              module XrefVxm
-	m_itm                  module Itm
+	itm                    module Itm
 	item                   ItemMasterItem
 	recordlocker           module RecordLockerUser
 #}
@@ -58,11 +58,13 @@
 			2. Is a new Item
 			NOTE: Only show delete if item already exists.
 		#}
-		{% if recordlocker.function_locked_by_user(page.lockcode, item.itemid) or item.isNew() %}
+		{% if itm.recordlocker.function_locked_by_user(item.itemid) or item.isNew() %}
 			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 		{% endif %}
-		<a href="{{ page.itmURL() }}" class="btn btn-warning">Close</a>
+		<a href="{{ page.itmURL() }}" class="btn btn-warning">
+			<i aria-hidden="true" class="fa fa-times"></i> Close
+		</a>
 	</div>
 </form>
