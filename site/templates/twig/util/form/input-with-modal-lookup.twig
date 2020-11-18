@@ -2,7 +2,7 @@
 {% set modaltarget = disabled ? '' : modaltarget %}
 {% set attributes_extra_button = attributes_button ? attributes_button|htmlattributes : '' %}
 {% set attributes_extra_button = attributes.disabled ? attributes_extra_button ~ ' disabled' : attributes_extra_button %}
-{% set attributes_extra_button = attributes.readonly ? attributes_extra_button ~ ' readonly' : attributes_extra_button %}
+{% set attributes_extra_button = attributes.readonly ? attributes_extra_button ~ ' disabled' : attributes_extra_button %}
 <div class="input-group input-group-sm">
 	<span class="input-group-prepend">
 		<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="{{ modaltarget }}" title="{{ modaldescription }}" aria-label="{{ modaldescription }}" {{ attributes_extra_button }}>
