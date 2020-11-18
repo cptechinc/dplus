@@ -259,7 +259,9 @@ class ValidateItm extends WireData implements Module {
 			'summary' => 'Handles ITM Fields Validation',
 			'singular' => true,
 			'autoload' => true,
-			'installs' => array()
+			'installs' => array(
+				'ItmWarehouse'
+			)
 		);
 	}
 
@@ -270,5 +272,17 @@ class ValidateItm extends WireData implements Module {
 		$this->validate->in  = $this->wire('modules')->get('ValidateIn');
 		$this->validate->so  = $this->wire('modules')->get('ValidateSo');
 		$this->modules = $this->wire('modules');
+	}
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+		$modules->refresh();
+
+		foreach ($info['installs'] as $module_name) {
+			if (!$modules->isInstalled($module_name)) {
+				$result = $modules->install($module_name);
+			}
+		}
 	}
 }
