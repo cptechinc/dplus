@@ -104,6 +104,9 @@ class ItmResponse extends WireData {
 	public function build_message($template) {
 		$crud = self::CRUD_DESCRIPTION[$this->action];
 		$replace = ['{itemid}' => $this->itemID, '{not}' => $this->has_success() ? '' : 'not', '{crud}' => $crud];
+		if ($this->whseID) {
+			$replace['{whseid}'] = $this->whseID;
+		}
 		$msg = str_replace(array_keys($replace), array_values($replace), $template);
 		$this->message = $msg;
 	}
