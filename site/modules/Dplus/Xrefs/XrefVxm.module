@@ -85,7 +85,7 @@ class XrefVxm extends WireData implements Module {
 		if ($this->vxm_item_exists($vendorID, $vendoritemID)) {
 			$record = $this->get_vxm_item($vendorID, $vendoritemID);
 		} else {
-			$vendoritemID = $vendoritemID == 'new' ? $vendoritemiID : '';
+			$vendoritemID = $vendoritemID == 'new' ? $vendoritemID : '';
 			$record = $this->get_vxm_item_new();
 			$record->setVendorid($vendorID);
 			$record->setVendoritemid($vendoritemID);
@@ -233,6 +233,7 @@ class XrefVxm extends WireData implements Module {
 		}
 		$invalidfields = $this->update_record_input($record, $input);
 		$response = $this->save_and_respond($record, $invalidfields);
+
 		/**
 		 * IF we saved this Item as the Primary PO ORDER then we have to update
 		 * the other primary item to be a secondary
@@ -265,7 +266,7 @@ class XrefVxm extends WireData implements Module {
 		$record->setVendoritemid($values->text('vendoritemID'));
 		$itemID = $record->ouritemid;
 		$invalidfields = $this->update_record_validated($record, $input);
-		
+
 		if ($this->is_key_modified($record) && !$record->isNew()) {
 			$this->delete_recreate_record($record, $input);
 		}
