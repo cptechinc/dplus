@@ -268,8 +268,7 @@ class ItmWarehouse extends WireData implements Module {
 		$validator->set_validator($validate)->set_input($input)->set_record($record)->set_validatefields($fields);
 		$invalid = $validator->validate();
 		$validator->set_valid_properties();
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
+
 
 		if (!$validate->whsebin($values->text('whseID'), $values->text('bin_default'))) {
 			$invalid['bin_default'] = "Default Bin";
@@ -346,7 +345,7 @@ class ItmWarehouse extends WireData implements Module {
 		}
 		return $this->recordlocker->function_locked_by_user($this->get_warehouseitem_lockkey($record));
 	}
-	
+
 	/**
 	 * Return WarehouseInventory Item Status Options
 	 * @return array
