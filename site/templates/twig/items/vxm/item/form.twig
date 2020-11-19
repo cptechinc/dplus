@@ -28,7 +28,7 @@
 			2. Is a new Item
 			NOTE: Only show delete if item already exists.
 		#}
-		{% if recordlocker.function_locked_by_user('vxm', vxm.get_recordlocker_key(item)) or item.isNew() %}
+		{% if vxm.recordlocker.function_locked_by_user(vxm.get_recordlocker_key(item)) or item.isNew() %}
 			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
