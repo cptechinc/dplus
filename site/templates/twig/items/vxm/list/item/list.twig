@@ -34,7 +34,7 @@
 					<td class="text-right">$ {{ item.unitcost_base|currency }}</td>
 					<td class="text-right">{{ item.date_changed|convertdate }}</td>
 					<td class="text-center">
-						{% if recordlocker.function_locked('vxm', vxm.get_recordlocker_key(item)) == false or recordlocker.function_locked_by_user('vxm', vxm.get_recordlocker_key(item)) %}
+						{% if vxm.recordlocker.function_locked(vxm.get_recordlocker_key(item)) == false or vxm.recordlocker.function_locked_by_user(vxm.get_recordlocker_key(item)) %}
 							<a href="{{ page.vxm_itemURL(item.vendorID, item.vendoritemID) }}" class="btn btn-sm btn-warning">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
@@ -44,7 +44,7 @@
 							</a>
 						{% else %}
 							<span class="badge badge-secondary">
-								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ recordlocker.get_locked_user('vxm', vxm.get_recordlocker_key(item)) }}
+								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ vxm.recordlocker.get_locked_user(vxm.get_recordlocker_key(item)) }}
 							</span>
 						{% endif %}
 					</td>
