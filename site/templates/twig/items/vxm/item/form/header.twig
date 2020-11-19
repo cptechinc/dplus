@@ -12,11 +12,18 @@
 			<label for="Vendor ID">Vendor ID</label>
 		</div>
 		<div class="col-sm-6 vendor-col">
-			{% if item.isNew() %}
-				{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'vendorID', 'value': item.vendorID, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Vendor', 'attributes_button': {'data-search': 'vendor'}} %}
-			{% else %}
-				<input type="text" class="form-control-plaintext form-control-sm" name="vendorID" id="vendorID" value="{{ item.vendorid }}" readonly>
-			{% endif %}
+			{% include 'util/form/input-with-modal-lookup.twig' with {
+					'name': 'vendorID', 'value': item.vendorid,
+					'attributes': {
+						'readonly': item.vendorid ? true : false,
+					},
+					'modaltarget': '#ajax-modal',
+					'modaldescription': 'Search for / Choose Vendor',
+					'attributes_button': {
+						'data-search': 'vendor'
+					}
+				}
+			%}
 			<small class="form-text text-muted name">{{ item.vendor.name }}</small>
 		</div>
 	</div>
@@ -34,10 +41,9 @@
 		</div>
 		<div class="col-sm-6 item-col">
 			{% include 'util/form/input-with-modal-lookup.twig' with {
-					'name': 'ouritemID', 'value': item.ouritemid,
+					'name': 'itemID', 'value': item.ouritemid,
 					'attributes': {
-						'readonly': item.ouritemid ? true : false,
-						'disabled': item.ouritemid ? true : false
+						
 					},
 					'modaltarget': '#ajax-modal',
 					'modaldescription': 'Search for / Choose Item',
