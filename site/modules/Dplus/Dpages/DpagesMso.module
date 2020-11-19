@@ -435,7 +435,7 @@ class DpagesMso extends Dpages implements Module {
 	 */
 	public function get_cxm_item_deleteURL($itemID, $custID, $custitemID) {
 		$url = new Url($this->wire('pages')->get('pw_template=cxm')->url);
-		$url->query->set('action', 'remove-cxm-item');
+		$url->query->set('action', 'delete-cxm-item');
 		$url->query->set('itemID', $itemID);
 
 		if ($custID) {

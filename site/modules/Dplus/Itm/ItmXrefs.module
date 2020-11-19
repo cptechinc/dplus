@@ -280,7 +280,7 @@ class ItmXrefs extends WireData implements Module {
 	 */
 	public function get_cxm_item_deleteURL($itemID, $custID, $custitemID) {
 		$url = new Url($this->wire('pages')->get('pw_template=itm-xrefs-cxm')->url);
-		$url->query->set('action', 'remove-cxm-item');
+		$url->query->set('action', 'delete-cxm-item');
 		$url->query->set('itemID', $itemID);
 
 		if ($custID) {
@@ -421,9 +421,9 @@ class ItmXrefs extends WireData implements Module {
 
 		$this->addHook("Page(pw_template=$templates)::cxm_item_deleteURL", function($event) {
 			$p = $event->object;
-			$custID = $event->arguments(0);
-			$custitemID = $event->arguments(1);
-			$itemID = $p->itemID;
+			$itemID = $event->arguments(0);
+			$custID = $event->arguments(1);
+			$custitemID = $event->arguments(2);
 			$event->return = $this->get_cxm_item_deleteURL($itemID, $custID, $custitemID);
 		});
 
