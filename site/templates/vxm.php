@@ -4,7 +4,6 @@
 	$html = $modules->get('HtmlWriter');
 	$vxm = $modules->get('XrefVxm');
 	$filter_vxm = $modules->get('FilterXrefItemVxm');
-	$recordlocker = $modules->get('RecordLockerUser');
 
 	if ($values->action) {
 		$vendorID = $values->text('vendorID');
@@ -49,12 +48,12 @@
 				 *  3. Userid does not match the lock
 				 * Otherwise if not locked, create lock
 				 */
-				if ($recordlocker->function_locked($page->name, $vxm->get_recordlocker_key($item)) && !$recordlocker->function_locked_by_user($page->name, $vxm->get_recordlocker_key($item))) {
-					$msg = "VXM ". $vxm->get_recordlocker_key($item) ." is being locked by " . $recordlocker->get_locked_user($page->name, $vxm->get_recordlocker_key($item));
+				if ($vxm->recordlocker->function_locked($vxm->get_recordlocker_key($item)) && !$vxm->recordlocker->function_locked_by_user($vxm->get_recordlocker_key($item))) {
+					$msg = "VXM ". $vxm->get_recordlocker_key($item) ." is being locked by " . $vxm->recordlocker->get_locked_user($vxm->get_recordlocker_key($item));
 					$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "VXM ".$vxm->get_recordlocker_key($item)." is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 					$page->body .= $html->div('class=mb-3');
-				} elseif (!$recordlocker->function_locked($page->name, $vxm->get_recordlocker_key($item))) {
-					$recordlocker->create_lock($page->name, $vxm->get_recordlocker_key($item));
+				} elseif (!$vxm->recordlocker->function_locked($vxm->get_recordlocker_key($item))) {
+					$vxm->recordlocker->create_lock($vxm->get_recordlocker_key($item));
 				}
 			} else {
 				$item = $vxm->get_vxm_item_new();
@@ -71,7 +70,7 @@
 			$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 			$page->searchitemsURL     = $pages->get('pw_template=itm-search')->url;
 			$page->body .= $config->twig->render('items/vxm/vxm-links.twig', ['page' => $page]);
-			$page->body .= $config->twig->render('items/vxm/item/form.twig', ['page' => $page, 'item' => $item, 'vxm' => $vxm, 'recordlocker' => $recordlocker]);
+			$page->body .= $config->twig->render('items/vxm/item/form.twig', ['page' => $page, 'item' => $item, 'vxm' => $vxm]);
 			$page->js .= $config->twig->render('items/vxm/item/form/js.twig', ['page' => $page, 'vxm' => $vxm, 'item' => $item, 'url_validate' => $pages->get('pw_template=vxm-validate')->httpUrl]);
 
 			if (!$item->isNew()) {
@@ -86,7 +85,7 @@
 				$session->remove('response_qnote');
 			}
 		} else {
-			$recordlocker->remove_lock($page->name);
+			$vxm->recordlocker->remove_lock($page->name);
 			$page->headline = "Vendor X-Ref for $vendor->name";
 			$filter_vxm->filter_query($input);
  			$q = $values->q ? $values->text('q') : '';
@@ -101,12 +100,12 @@
 			$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 			$page->body .= $config->twig->render('items/vxm/vxm-links.twig', ['page' => $page]);
 			$page->body .= $config->twig->render('items/vxm/search/item/vendor/form.twig', ['page' => $page, 'q' => $q, 'vendorID' => $vendorID, 'q' => $q]);
-			$page->body .= $config->twig->render('items/vxm/list/item/vendor/results.twig', ['page' => $page, 'vxm' => $vxm, 'items' => $items, 'vendorID' => $vendorID, 'recordlocker' => $recordlocker]);
+			$page->body .= $config->twig->render('items/vxm/list/item/vendor/results.twig', ['page' => $page, 'vxm' => $vxm, 'items' => $items, 'vendorID' => $vendorID]);
 			$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
 			$page->js   .= $config->twig->render('items/vxm/list/item/js.twig', ['page' => $page]);
 		}
 	} elseif ($values->itemID) {
-		$recordlocker->remove_lock($page->name);
+		$vxm->recordlocker->remove_lock($page->name);
 		$itemID = $values->text('itemID');
 		$filter_vxm->filter_query($input);
 		$filter_vxm->apply_sortby($page);
@@ -116,11 +115,11 @@
 		$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 		$page->body .= $html->h3('', $items->getNbResults() ." VXM Items for $itemID");
 		$page->body .= $config->twig->render('items/vxm/vxm-links.twig', ['page' => $page]);
-		$page->body .= $config->twig->render('items/vxm/list/item/results.twig', ['page' => $page, 'items' => $items, 'recordlocker' => $recordlocker]);
+		$page->body .= $config->twig->render('items/vxm/list/item/results.twig', ['page' => $page, 'items' => $items, 'recordlocker' => $vxm->recordlocker]);
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
 		$page->js   .= $config->twig->render('items/vxm/list/item/js.twig', ['page' => $page]);
 	} else {
-		$recordlocker->remove_lock($page->name);
+		$vxm->recordlocker->remove_lock($page->name);
 		$q = $values->q ? strtoupper($values->text('q')) : '';
 		$page->title = $values->q ? "VXM: searching vendors for '$q'" : $page->title;
 		$filter = $modules->get('FilterVendors');
