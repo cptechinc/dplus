@@ -16,7 +16,7 @@ $(function() {
 	var input_listprice = form_vxm.find('input[name=listprice]');
 	var input_uom       = form_vxm.find('select[name=uom_purchase]');
 	var input_eachlistprice = form_vxm.find('input[name=eachlistprice]');
-	var input_ouritemID = form_vxm.find('input[name=ouritemID]');
+	var input_itemID = form_vxm.find('input[name=itemID]');
 	var input_vendoritemID = form_vxm.find('input[name=vendoritemID]');
 	var input_vendorID = form_vxm.find('input[name=vendorID]');
 
@@ -150,7 +150,7 @@ $(function() {
 		var button = $(this);
 		var itemID = button.data('itemid');
 		var description = button.data('description');
-		input_ouritemID.val(itemID).change();
+		input_itemID.val(itemID).change();
 		modal_ajax.modal('hide');
 	});
 
@@ -212,7 +212,7 @@ $(function() {
 					}
 				}
 			},
-			ouritemID: {
+			itemID: {
 				required: true,
 				remote: {
 					url: '{{ url_validate }}',
@@ -324,7 +324,7 @@ $(function() {
 	 */
 	function validate_poordercode(callback) {
 		var url = new URI('{{ url_validate }}');
-		url.addQuery('action', 'validate-primary-poordercode').addQuery('ouritemID', input_ouritemID.val());
+		url.addQuery('action', 'validate-primary-poordercode').addQuery('ouritemID', input_itemID.val());
 		url.addQuery('vendoritemID', input_vendoritemID.val());
 		url.addQuery('return', 'bool');
 
