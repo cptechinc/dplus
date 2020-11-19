@@ -3,6 +3,7 @@
 include_once(__DIR__.'/XrefResponse.php');
 
 use Purl\Url;
+use Propel\Runtime\Map\TableMap as PropelTableMap;
 
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemXrefVendorQuery, ItemXrefVendor;
@@ -19,7 +20,8 @@ class XrefVxm extends WireData implements Module {
 	const MODEL              = 'ItemXrefVendor';
 	const MODEL_KEY          = 'code';
 	const DESCRIPTION        = 'VXM Item';
-	const DESCRIPTION_RECORD = 'VXM Item';
+	const RESPONSE_TEMPLATE  = 'VXM X-ref {key} was {not} {crud}';
+	const RECORDLOCKER_FUNCTION = 'vxm';
 
 	const MARGIN_DECIMALPLACES = 3;
 
@@ -27,24 +29,24 @@ class XrefVxm extends WireData implements Module {
 		$this->description = self::DESCRIPTION;
 	}
 
-/* =============================================================
-	CRUD Read, Validate Functions
-============================================================= */
 	/**
 	 * Returns ItemXrefVendorQuery
 	 * @return ItemXrefVendorQuery
 	 */
-	public function get_query() {
+	public function query() {
 		return ItemXrefVendorQuery::create();
 	}
 
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
 	/**
 	 * Return ItemXrefVendor[] for vendor
 	 * @param  string $vendorID Vendor ID
 	 * @return ObjectCollection
 	 */
 	public function get_vendoritems($vendorID) {
-		$q = $this->get_query();
+		$q = $this->query();
 		$q->filterByVendorid($vendorID);
 		return $q->find();
 	}
@@ -55,7 +57,7 @@ class XrefVxm extends WireData implements Module {
 	 * @return ObjectCollection
 	 */
 	public function get_ouritemitems($itemID) {
-		$q = $this->get_query();
+		$q = $this->query();
 		$q->filterByOuritemid($itemID);
 		return $q->find();
 	}
@@ -67,30 +69,23 @@ class XrefVxm extends WireData implements Module {
 	 * @return ItemXrefVendor
 	 */
 	public function get_vxm_item($vendorID, $vendoritemID) {
-		$q = $this->get_query();
+		$q = $this->query();
 		$q->filterByVendorid($vendorID);
 		$q->filterByVendoritemid($vendoritemID);
 		return $q->findOne();
 	}
 
 	/**
-	 * Returns ItemXrefVendor after retreiving or creating it
-	 * @param  WireInput $input Input Data
+	 * Return Existing or New X-ref
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor Item ID
 	 * @return ItemXrefVendor
 	 */
-	public function get_create_vxm_item(WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-		$vendorID = $values->text('vendorID');
-		$vendoritemID = $values->original_vendoritemID ? $values->text('original_vendoritemID') : $values->text('vendoritemID');
-
-		$q = $this->get_query();
-		$q->filterByVendorid($vendorID);
-		$q->filterByVendoritemid($vendoritemID);
-
-		if ($q->count()) {
-			$record = $q->findOne();
+	public function get_create_vxm_item($vendorID, $vendoritemID) {
+		if ($this->vxm_item_exists($vendorID, $vendoritemID)) {
+			$record = $this->get_vxm_item($vendorID, $vendoritemID);
 		} else {
+			$vendoritemID = $vendoritemID == 'new' ? $vendoritemiID : '';
 			$record = $this->get_vxm_item_new();
 			$record->setVendorid($vendorID);
 			$record->setVendoritemid($vendoritemID);
@@ -117,7 +112,7 @@ class XrefVxm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function vxm_item_exists($vendorID, $vendoritemID) {
-		$q = $this->get_query();
+		$q = $this->query();
 		$q->filterByVendorid($vendorID);
 		$q->filterByVendoritemid($vendoritemID);
 		return boolval($q->count());
@@ -129,7 +124,7 @@ class XrefVxm extends WireData implements Module {
 	 * @return ItemXrefVendor
 	 */
 	public function get_primary_poordercode_itemid($itemID) {
-		$q = $this->get_query();
+		$q = $this->query();
 		$q->filterByOuritemid($itemID);
 		$q->filterByPo_ordercode(ItemXrefVendor::POORDERCODE_PRIMARY);
 		return $q->findOne();
@@ -141,7 +136,7 @@ class XrefVxm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function poordercode_primary_exists($itemID) {
-		$q = $this->get_query();
+		$q = $this->query();
 		$q->filterByOuritemid($itemID);
 		$q->filterByPo_ordercode(ItemXrefVendor::POORDERCODE_PRIMARY);
 		return $q->findOne();
@@ -152,7 +147,7 @@ class XrefVxm extends WireData implements Module {
 	 * @return array
 	 */
 	public function vendorids() {
-		$q = $this->get_query();
+		$q = $this->query();
 		$q->select(ItemXrefVendor::get_aliasproperty('vendorid'));
 		return $q->find()->toArray();
 	}
@@ -174,8 +169,10 @@ class XrefVxm extends WireData implements Module {
 		if ($values->action) {
 			switch ($values->text('action')) {
 				case 'remove-vxm-item':
+					$this->input_delete($input);
+					break;
 				case 'update-vxm':
-					$this->process_input_vxm($input);
+					$this->input_update($input);
 					break;
 				case 'delete-notes':
 				case 'update-notes';
@@ -184,73 +181,79 @@ class XrefVxm extends WireData implements Module {
 					break;
 			}
 		} else {
-			$this->wire('session')->response_xref = XrefResponse::response_error('vxm', "No VXM Action specified");
+			$this->wire('session')->response_xref = XrefResponse::response_error("No VXM Action specified");
 		}
 	}
 
 	/**
-	 * Processes Input for VXM
+	 * Delete VXM Item from Input Data
 	 * @param  WireInput $input Input Data
-	 * @return void
+	 * @return bool
 	 */
-	protected function process_input_vxm(WireInput $input) {
+	protected function input_delete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$response = new XrefResponse();
-		$record = $this->get_create_vxm_item($input);
-		$recordlocker = $this('modules')->get('RecordLockerUser');
+		$vendorID = $values->text('vendorID');
+		$vendoritemID = $values->text('vendoritemID');
 
-		/**
-		 * Create lock for ITM code if not already locked.
-		 */
-		if (!$recordlocker->function_locked('vxm', $this->get_recordlocker_key($record))) {
-			$recordlocker->create_lock('vxm', $this->get_recordlocker_key($record));
+		if ($this->vxm_item_exists($vendorID, $vendoritemID)) {
+			$record = $this->get_vxm_item($vendorID, $vendoritemID);
+
+			if (!$this->lockrecord($record)) {
+				$message = self::DESCRIPTION_RECORD . " ($vendorID-$vendoritemID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
+				$this->wire('session')->response_xref = XrefResponse::response_error("$vendorID-$vendoritemID", $message);
+				return false;
+			}
+			$record->delete();
+			$this->wire('session')->response_xref = $this->save_and_respond($record);
+			return $this->wire('session')->response_xref->has_success();
 		}
-
-		if ($recordlocker->function_locked_by_user('vxm', $this->get_recordlocker_key($record))) {
-			switch ($values->text('action')) {
-				case 'remove-vxm-item':
-					$record->delete();
-					break;
-				case 'update-vxm':
-					$response = $this->update_record_input($record, $input);
-					break;
-				default:
-					$message = self::DESCRIPTION_RECORD . " (".$this->get_recordlocker_key($record).")  was not saved, no action was specified";
-					$response = XrefResponse::response_error($this->get_recordlocker_key($record), $message);
-					break;
-			}
-
-			if (!$response->has_error()) {
-				$response = $this->save_and_process_response($record);
-			} elseif(!empty($response->fields)) {
-				$record->save();
-			}
-
-			/**
-			 * IF we saved this Item as the Primary PO ORDER then we have to update
-			 * the other primary item to be a secondary
-			 */
-			if ($response->has_success() && !$record->isDeleted()) {
-				if ($record->is_po_ordercode_primary() && $record->other_primary_poordercode_exists()) {
-					$vxmitem = $record->get_other_primary_vxm_item();
-					$vxmitem->setPo_ordercode(ItemXrefVendor::POORDERCODE_SECONDARY);
-					$vxmitem->save();
-					$this->update_dplus_cobol($vxmitem);
-				}
-			}
-		} else {
-			$message = self::DESCRIPTION_RECORD . " (".$this->get_recordlocker_key($record).")  was not saved, it is locked by " . $recordlocker->get_locked_user('cxm', $this->get_recordlocker_key($record));
-			$response = XrefResponse::response_error($this->get_recordlocker_key($record), $message);
-		}
-		$this->wire('session')->response_xref = $response;
+		return true;
 	}
 
 	/**
-	 * Updates VXM Item Record
+	 * Update VXM Item from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function input_update(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$vendorID = $values->text('vendorID');
+		$vendoritemID = $values->text('original_vendoritemID') != $values->text('vendoritemID') ? $values->text('original_vendoritemID') : $values->text('vendoritemID');
+
+		$record = $this->get_create_vxm_item($vendorID, $vendoritemID);
+
+		if (!$record->isNew()) {
+			if (!$this->lockrecord($record)) {
+				$message = self::DESCRIPTION_RECORD . " ($vendorID-$vendoritemID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
+				$this->wire('session')->response_xref = XrefResponse::response_error("$vendorID-$vendoritemID", $message);
+				return false;
+			}
+		}
+		$invalidfields = $this->update_record_input($record, $input);
+		$response = $this->save_and_respond($record, $invalidfields);
+		/**
+		 * IF we saved this Item as the Primary PO ORDER then we have to update
+		 * the other primary item to be a secondary
+		 */
+		if ($response->has_success() && !$record->isDeleted()) {
+			if ($record->is_po_ordercode_primary() && $record->other_primary_poordercode_exists()) {
+				$vxmitem = $record->get_other_primary_vxm_item();
+				$vxmitem->setPo_ordercode(ItemXrefVendor::POORDERCODE_SECONDARY);
+				$vxmitem->save();
+				$this->update_dplus_cobol($vxmitem);
+			}
+		}
+		$this->wire('session')->response_xref = $response;
+		return $this->wire('session')->response_xref->has_success();
+	}
+
+	/**
+	 * Updates VXM Item Record, Returns Invalid Fields
 	 * @param  ItemXrefVendor  $record VXM Item Record
 	 * @param  WireInput       $input  Input Data
-	 * @return XrefResponse
+	 * @return array
 	 */
 	public function update_record_input(ItemXrefVendor $record, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
@@ -259,36 +262,29 @@ class XrefVxm extends WireData implements Module {
 
 		$response = new XrefResponse();
 		$response->set_action(XrefResponse::CRUD_UPDATE);
-
 		$record->setVendoritemid($values->text('vendoritemID'));
-
+		$itemID = $record->ouritemid;
 		$invalidfields = $this->update_record_validated($record, $input);
-		if (($this->is_modifying_vxm_key($record)) && !$record->isNew()) {
+		
+		if ($this->is_key_modified($record) && !$record->isNew()) {
 			$this->delete_recreate_record($record, $input);
 		}
-
 		$record->setQty_percase($values->text('qty_percase'));
 		$record->setMinbuyqty($values->text('minbuyqty'));
 		$record->setListprice($values->text('listprice'));
-
 		$this->update_record_unitx_input($record, $input);
-
 		$record->setDate_changed(date('Ymd'));
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));
-
-		if ($invalidfields) {
-			$response->set_error(true);
-			$response->set_success(false);
-			$response->set_fields($invalidfields);
-		}
-		return $response;
+		return $invalidfields;
 	}
 
 	/**
-	 * Deletes and recreates VXM record so key can be allowed to be saved
-	 * @param  ItemXrefVendor $record [description]
-	 * @return
+	 * Deletes Record in Database, so then record can be saved
+	 * NOTE: Used for When Keys are Updated since Propel doesn't keep track of keys
+	 * NOTE: Sends Cobol Request for delete for original Record
+	 * @param  ItemXrefVendor $record
+	 * @return void
 	 */
 	public function delete_recreate_record(ItemXrefVendor $record, WireInput $input) {
 		$array = $record->toArray();
@@ -322,7 +318,6 @@ class XrefVxm extends WireData implements Module {
 			$record->setUnitcost_base($sanitizer->float($unitcost));
 		}
 
-
 		for ($i = 1; $i < ItemXrefVendor::UNITS_AVAILABLE + 1; $i++) {
 			$col_qty = ucfirst(ItemXrefVendor::get_unitqty_column($i));
 			$col_cost = ucfirst(ItemXrefVendor::get_unitcost_column($i));
@@ -355,7 +350,7 @@ class XrefVxm extends WireData implements Module {
 		$fields = array(
 			'ouritemid' => array(
 				'description' => 'Item ID',
-				'input'       => 'ouritemID',
+				'input'       => 'itemID',
 				'function'    => 'itemid'
 			),
 			'approvalcode' => array(
@@ -369,19 +364,10 @@ class XrefVxm extends WireData implements Module {
 				'function'    => 'unitofm_purchase'
 			),
 		);
-
-		foreach ($fields as $property => $field) {
-			if (strlen($values->text($field['input']))) {
-				$function = $field['function'];
-
-				if ($validate->$function($values->text($field['input']))) {
-					$setProperty = "set".ucfirst($property);
-					$record->$setProperty($values->text($field['input']));
-				} else {
-					$invalid[$field['input']] = $field['description'];
-				}
-			}
-		}
+		$validator = $this->wire('modules')->get('InputValidator');
+		$validator->set_validator($validate)->set_input($input)->set_record($record)->set_validatefields($fields);
+		$invalid = $validator->validate();
+		$validator->set_valid_properties();
 
 		if ($validate->ordercode($values->text('po_ordercode'))) {
 			if ($values->text('po_ordercode') == ItemXrefVendor::POORDERCODE_PRIMARY) {
@@ -404,15 +390,16 @@ class XrefVxm extends WireData implements Module {
 	 * @param  ItemXrefVendor $record
 	 * @return bool
 	 */
-	protected function is_modifying_vxm_key(ItemXrefVendor $record) {
-		$q = $this->get_query();
+	protected function is_key_modified(ItemXrefVendor $record) {
+		$q = $this->query();
 		$tablemap = $q->getTableMap();
 		$primarykeys = array_keys($tablemap->getPrimaryKeys());
 		$modified = $record->getModifiedColumns();
 
-		foreach ($modified as $column) {
-			$col = str_replace($tablemap::TABLE_NAME.'.', '', $column);
-			if (in_array($col, $primarykeys)) {
+		foreach ($primarykeys as $key) {
+			$col = $tablemap->translateFieldName($key, PropelTableMap::TYPE_FIELDNAME, $tablemap::TYPE_COLNAME);
+
+			if ($record->isColumnModified($col)) {
 				return true;
 			}
 		}
@@ -424,39 +411,34 @@ class XrefVxm extends WireData implements Module {
 ============================================================= */
 	/**
 	 * Returns XrefResponse based on the outcome of the database save
-	 * @param  ItemXrefVendor $record Record to record response of database save
+	 * @param  ItemXrefVendor $record        Record to record response of database save
+	 * @param  array          $invalidfields
 	 * @return XrefResponse
 	 */
-	protected function save_and_process_response(ItemXrefVendor $record) {
+	protected function save_and_respond(ItemXrefVendor $record, array $invalidfields = null) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
-		$code   = "$record->vendorID-$record->vendoritemID-$record->ouritemID";
 
 		$response = new XrefResponse();
-		$response->set_key($code);
-		$message = self::DESCRIPTION_RECORD . " ($code) was ";
+		$response->set_key($this->get_recordlocker_key($record));
 
 		if ($saved) {
 			$response->set_success(true);
 		} else {
 			$response->set_error(true);
-			$message .= "not ";
 		}
 
 		if ($is_new) {
-			$message .= 'added';
 			$response->set_action(XrefResponse::CRUD_CREATE);
 		} elseif ($record->isDeleted()) {
-			$message .= 'deleted';
 			$response->set_action(XrefResponse::CRUD_DELETE);
 		} else {
-			$message .= 'updated';
 			$response->set_action(XrefResponse::CRUD_UPDATE);
 		}
 
-		$response->set_message($message);
+		$response->build_message(self::RESPONSE_TEMPLATE);
 
-		if ($response->has_success()) {
+		if ($response->has_success() && empty($invalidfields)) {
 			$this->update_dplus_cobol($record);
 		}
 		return $response;
@@ -483,6 +465,18 @@ class XrefVxm extends WireData implements Module {
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
+	/**
+	 * Lock Record, validate User is locking Record
+	 * @param  ItemXrefVendor $item
+	 * @return bool
+	 */
+	public function lockrecord(ItemXrefVendor $item) {
+		if (!$this->recordlocker->function_locked($this->get_recordlocker_key($item))) {
+			$this->recordlocker->create_lock($this->get_recordlocker_key($item));
+		}
+		return $this->recordlocker->function_locked_by_user($this->get_recordlocker_key($item));
+	}
+
 	/**
 	 * Return Key for VXM Item
 	 * @param  ItemXrefVendor $item VXM Item
@@ -601,5 +595,10 @@ class XrefVxm extends WireData implements Module {
 			'singular' => true,
 			'autoload' => true,
 		);
+	}
+
+	public function init() {
+		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
+		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
 	}
 }
