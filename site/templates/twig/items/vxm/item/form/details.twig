@@ -14,7 +14,9 @@
 		<select name="po_ordercode" id="po_ordercode" class="form-control form-control-sm" data-primaryvalidated="false">
 			<option value=""></option>
 			{% for value, description in item.get_po_ordercodeoptions() %}
-				<option value="{{ value }}" {{ value == item.po_ordercode ? 'selected' : ''}}>{{ value }} - {{ description }}</option>
+				<option value="{{ value }}" {{ value == item.po_ordercode ? 'selected' : ''}}>
+					{{ value }} {{ value ? ' - ' ~ description : ''}}
+				</option>
 			{% endfor %}
 		</select>
 		<input type="hidden" name="po_ordercode_validated" id="po_ordercode_validated" value="false">
