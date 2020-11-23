@@ -58,6 +58,38 @@ class DpagesApi extends Dpages implements Module {
 			'parent'         => '/',
 			'dplus_function' => ''
 		),
+		'menu-json' => array(
+			'template'       => 'api-menu',
+			'name'           => 'json',
+			'title'          => 'API JSON Menu',
+			'summary'        => 'API JSON Menu',
+			'parent'         => '/api/',
+			'dplus_function' => ''
+		),
+		'json-inv' => array(
+			'template'       => 'dplus-json',
+			'name'           => 'inv',
+			'title'          => 'API JSON INV',
+			'summary'        => 'API JSON INV',
+			'parent'         => '/api/json/',
+			'pw_template'    => 'api-ajax-json-inv'
+		),
+		'json-mso' => array(
+			'template'       => 'dplus-json',
+			'name'           => 'mso',
+			'title'          => 'API JSON MSO',
+			'summary'        => 'API JSON MSO',
+			'parent'         => '/api/json/',
+			'pw_template'    => 'api-ajax-json-mso'
+		),
+		'json-msa' => array(
+			'template'       => 'dplus-json',
+			'name'           => 'mso',
+			'title'          => 'API JSON MSA',
+			'summary'        => 'API JSON MSA',
+			'parent'         => '/api/json/',
+			'pw_template'    => 'api-ajax-json-msa'
+		),
 		'menu-lookup' => array(
 			'template'       => 'api-menu',
 			'name'           => 'lookup',
@@ -84,6 +116,26 @@ class DpagesApi extends Dpages implements Module {
 			'parent'         => '/api/lookup/',
 			'ajaxtype'       => 'lookup',
 			'ajaxcode'       => 'tariff-codes',
+			'pw_template'    => ''
+		),
+		'lookup-freight-codes' => array(
+			'template'       => 'api-ajax',
+			'name'           => 'freight-codes',
+			'title'          => 'Lookup Motor Freight Codes',
+			'summary'        => 'Lookup Motor Freight Codes',
+			'parent'         => '/api/lookup/',
+			'ajaxtype'       => 'lookup',
+			'ajaxcode'       => 'freight-codes',
+			'pw_template'    => ''
+		),
+		'lookup-msds-codes' => array(
+			'template'       => 'api-ajax',
+			'name'           => 'msds-codes',
+			'title'          => 'Lookup Msds Codes',
+			'summary'        => 'Lookup Msds Codes',
+			'parent'         => '/api/lookup/',
+			'ajaxtype'       => 'lookup',
+			'ajaxcode'       => 'msds-codes',
 			'pw_template'    => ''
 		),
 	);
