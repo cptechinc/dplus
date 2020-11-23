@@ -83,7 +83,10 @@ class FilterPurchaseOrders extends WireData implements Module {
 		} else {
 			$vendorID = $values->text('vendorID');
 		}
-		$this->vendorid($vendorID);
+
+		if (!empty($vendorID)) {
+			$this->vendorid($vendorID);
+		}
 		return $this;
 	}
 
