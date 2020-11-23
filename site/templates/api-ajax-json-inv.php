@@ -1,7 +1,7 @@
 <?php
 	/**
-	 * CI JSON
-	 * This template is made for validating, getting values for Customer
+	 * Inventory JSON
+	 * This template is made for validating, getting values for Inventory
 	 * NOTE: the response values can be formatted to be used by Jquery Validate's remote validation method
 	 */
 	$response   = '';
@@ -91,6 +91,16 @@
 					$response = $loader->get_item_array($itemID, $fields);
 				} else {
 					$response = false;
+				}
+				break;
+			case 'validate-itmp-exists':
+				$loginID = $values->text('loginID') ? $values->text('loginID') : $values->text('userID');
+				$itmp = $modules->get('Itmp');
+
+				if ($itmp->exists($loginID)) {
+					$response = true;
+				} else {
+					$response = "ITMP for $loginID not found";
 				}
 				break;
 		}
