@@ -35,7 +35,7 @@
 					<td>{{ item.itemID }}</td>
 					<td>{{ item.item.description }}</td>
 					<td class="text-center">
-						{% if cxm.recordlocker.function_locked('cxm', cxm.get_recordlocker_key(item)) == false or cxm.recordlocker.function_locked_by_user('cxm', cxm.get_recordlocker_key(item)) %}
+						{% if cxm.recordlocker.function_locked(cxm.get_recordlocker_key(item)) == false or cxm.recordlocker.function_locked_by_user(cxm.get_recordlocker_key(item)) %}
 							<a href="{{ page.cxm_itemURL(item.custID, item.custitemID) }}" class="btn btn-warning btn-sm">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
@@ -44,7 +44,7 @@
 							</a>
 						{% else %}
 							<span class="badge badge-secondary">
-								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ cxm.recordlocker.get_locked_user('cxm', cxm.get_recordlocker_key(item)) }}
+								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ cxm.recordlocker.get_locked_user(cxm.get_recordlocker_key(item)) }}
 							</span>
 						{% endif %}
 					</td>

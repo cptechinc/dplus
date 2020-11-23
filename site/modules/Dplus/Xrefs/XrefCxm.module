@@ -211,7 +211,7 @@ class XrefCxm extends WireData implements Module {
 			}
 		}
 	}
-	
+
 	/**
 	 * Return XrefResponse for Updating the CXM record for Short Item ID
 	 * @param  WireInput $input Input Data
@@ -302,12 +302,9 @@ class XrefCxm extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = array();
-
-		$response = new XrefResponse();
-		$response->set_action(XrefResponse::CRUD_UPDATE);
-
+		
 		$record->setCustitemid($values->text('custitemID'));
-		$invalidfields = $this->update_record_input_validated($record, $input, $response);
+		$invalidfields = $this->update_record_input_validated($record, $input);
 
 		if ($this->is_key_modified($record) && !$record->isNew()) {
 			$this->delete_recreate_record($record);
