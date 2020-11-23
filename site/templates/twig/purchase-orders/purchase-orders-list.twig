@@ -19,8 +19,8 @@
 		</div>
 	{% endblock %}
 </div>
-{% if purchaseorders.count > 0 %}
-	{% for order in purchaseorders %}
+{% if orders.count > 0 %}
+	{% for order in orders %}
 		<a href="{{ orderpage ~ '?ponbr=' ~ order.ponbr }}" class="list-group-item list-group-item-action">
 			<div class="form-row">
 				<div class="col">{{ order.ponbr }}</div>
