@@ -12,7 +12,6 @@
 	</div>
 	<div class="col-sm-6">
 		<select name="po_ordercode" id="po_ordercode" class="form-control form-control-sm" data-primaryvalidated="false">
-			<option value=""></option>
 			{% for value, description in item.get_po_ordercodeoptions() %}
 				<option value="{{ value }}" {{ value == item.po_ordercode ? 'selected' : ''}}>
 					{{ value }} {{ value ? ' - ' ~ description : ''}}
