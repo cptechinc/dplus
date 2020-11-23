@@ -13,6 +13,9 @@
 		case 'freight-codes':
 			$filter = $modules->get('FilterMsoFreightCodes');
 			break;
+		case 'users':
+			$filter = $modules->get('FilterDplusUsers');
+			break;
 	}
 
 	$filter->init_query($user);
