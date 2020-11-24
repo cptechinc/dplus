@@ -171,19 +171,61 @@ class KimComponent extends WireData implements Module {
 	 * @return void
 	 */
 	public function input_update(WireInput $input) {
+		$this->init_configs();
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$kitID  = $input->get->text('kitID');
-		$itemID = $input->get->text($itemID);
+		$kitID  = $values->text('kitID');
+		$itemID = $values->text('component');
+		$invalidfields = [];
 
 		$component = $this->new_get_component($kitID, $itemID);
-
+		$invalidfields = $this->update_record_input($component, $input);
+		$this->wire('session')->response_kim = $this->save_and_respond($component, $invalidfields);
+		return $this->wire('session')->response_kim->has_success();
 	}
 
-	public function update_component_fields(InvKitComponent $component, WireInput $input) {
+	public function update_record_input(InvKitComponent $component, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
+		$invalidfields = [];
+		$component->setUsage($values->text('usage')); // TODO GET Precision
+		$invalidfields = $this->update_record_input_validated($component, $input);
+		return $invalidfields;
+	}
 
+	public function update_record_input_validated(InvKitComponent $record, WireInput $input) {
+		$modules = $this->wire('modules');
+		$validate = $modules->get('ValidateKim');
+		$invalid = array();
+
+		$fields = array(
+			'suppliedby' => array(
+				'input'       => 'suppliedby',
+				'description' => 'Vendor Supplied',
+				'allow_blank' => false,
+				'function'    => 'component_suppliedby'
+			)
+		);
+
+		if ($this->configs->kt->usageorfreeusage()) {
+			$fields['usagetag'] = array(
+				'description' => 'Usage Tag Code',
+				'allow_blank' => false,
+				'function'    => 'component_usagetag'
+			);
+		}
+		if ($this->configs->kt->usageorfreefree()) {
+			$fields['freegoods'] = array(
+				'description' => 'Free Goods',
+				'allow_blank' => false,
+				'function'    => 'component_freegoods'
+			);
+		}
+		$validator = $modules->get('InputValidator');
+		$validator->set_validator($validate)->set_input($input)->set_record($record)->set_validatefields($fields);
+		$invalid = $validator->validate();
+		$validator->set_valid_properties();
+		return $invalid;
 	}
 
 /* =============================================================
@@ -220,6 +262,9 @@ class KimComponent extends WireData implements Module {
 
 		$response->build_message($templatemsg);
 		$response->set_fields($invalidfields);
+		if ($response->has_success()) {
+			$this->update_dplus_cobol($record);
+		}
 		return $response;
 	}
 
@@ -234,6 +279,13 @@ class KimComponent extends WireData implements Module {
 		$requestor->write_dplusfile($data, session_id());
 		$requestor->cgi_request($config->cgis['database'], session_id());
 	}
+
+	private function update_dplus_cobol(InvKitComponent $c) {
+		$data = array('UPDATEKIM', "KITITEM=$c->kitid", "COMPITEM=$c->itemid");
+		$this->request_dplus($data);
+	}
+
+
 
 
 /* =============================================================
@@ -259,12 +311,21 @@ class KimComponent extends WireData implements Module {
 	}
 
 	/**
+	 * Return Config kt
+	 * @return ConfigKt
+	 */
+	public function get_config_kt() {
+		return $this->wire('modules')->get('ConfigureKt')->config();
+	}
+
+	/**
 	 * Intialize configs
 	 * @return void
 	 */
 	public function init_configs() {
 		$this->configs = new WireData();
 		$this->configs->so = $this->get_config_so();
+		$this->configs->kt = $this->get_config_kt();
 	}
 
 	/**

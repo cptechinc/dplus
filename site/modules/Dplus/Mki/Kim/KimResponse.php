@@ -65,6 +65,10 @@ class KimResponse extends WireData {
 		$this->kitID = $kitID;
 	}
 
+	public function set_component($component) {
+		$this->component = $component;
+	}
+
 	public function set_fields(array $fields) {
 		$this->fields = $fields;
 	}
@@ -75,7 +79,7 @@ class KimResponse extends WireData {
 
 	public function build_message($templatemsg) {
 		$crud = self::CRUD_DESCRIPTION[$this->action];
-		$replace = ['{kit}', $this->kitID, '{not}' => $this->has_success() ? '' : 'not', '{crud}' => $crud];
+		$replace = ['{kit}' => $this->kitID, '{component}' => $this->component, '{not}' => $this->has_success() ? '' : 'not', '{crud}' => $crud];
 		$msg = str_replace(array_keys($replace), array_values($replace), $templatemsg);
 		$this->message = $msg;
 	}

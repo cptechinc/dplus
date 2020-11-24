@@ -1,64 +1,51 @@
 <?php
-	$rm = strtolower($input->requestMethod());
-	$values = $input->$rm;
-	$itm  = $modules->get('Itm');
-	$kitm = $modules->get('Kim');
+	include_once('./itm-prepend.php');
+	$kim = $modules->get('Kim');
+	$kim->init_configs();
+	$kitID = $values->text('itemID');
 
-	if ($input->get->itemID) {
-		$kitID = $input->get->text('itemID');
+	if ($values->action) {
+		$kim->process_input($input);
+		$session->redirect($page->itm_kitURL($kitID));
+	}
 
-		if ($itm->item_exists($kitID)) {
-			if ($values->action) {
-				$kitm->process_input($input);
-				$kitID = $values->text('itemID');
-				$session->redirect($page->itm_miscURL($kitID));
-			}
+	if ($session->response_kim) {
+		$page->body .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->response_kim]);
+	}
 
-			if ($session->response_itm) {
-				$page->body .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->response_itm]);
-			}
+	/**
+	 * Show alert that Kit is locked if
+	 *  1. Kit isn't new
+	 *  2. The Kit has a record lock
+	 *  3. Userid does not match the lock
+	 * Otherwise if not locked, create lock
+	 */
+	if (!$kim->lockrecord($kitID)) {
+		$msg = "ITM Item $kitID is being locked by " . $kim->recordlocker->get_locked_user($kitID);
+		$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "ITM Item $kitID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		$page->body .= $html->div('class=mb-3');
+	}
 
-			/**
-			 * Show alert that Kit is locked if
-			 *  1. Kit isn't new
-			 *  2. The Kit has a record lock
-			 *  3. Userid does not match the lock
-			 * Otherwise if not locked, create lock
-			 */
-			if ($kitm->recordlocker->function_locked($kitID) && !$kitm->recordlocker->function_locked_by_user($kitID)) {
-				$msg = "ITM Item $kitID is being locked by " . $kitm->recordlocker->get_locked_user($kitID);
-				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "ITM Item $kitID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
-				$page->body .= $html->div('class=mb-3');
-			} elseif (!$kitm->recordlocker->function_locked($kitID)) {
-				$kitm->recordlocker->create_lock($kitID);
-			}
+	$page->headline = "Kit for $kitID";
+	$item = $itm->get_item($kitID);
+	$kit = $kim->get_kit($kitID);
 
-			$page->headline = "Kit for $kitID";
-			$item = $itm->get_item($kitID);
-			$kit = $kitm->get_kit($kitID);
+	$page->body .= $config->twig->render('items/itm/itm-links.twig', ['page' => $page, 'page_itm' => $page->parent('pw_template=itm')]);
+	$page->body .= $config->twig->render('items/itm/description.twig', ['page' => $page, 'item' => $item]);
 
-			$page->body .= $config->twig->render('items/itm/itm-links.twig', ['page' => $page, 'page_itm' => $page->parent]);
-
-			if ($input->get->component) {
-				$itemID = $input->get->text('component');
-				$component = $itemID == 'new'? new InvKitComponent() : $kitm->get_component($kitID, $itemID);
-				$page->headline = $itemID == 'new' ? "ITM Kit - $kitID" : "ITM Kit - $kitID - $itemID";
-				$page->body .= $config->twig->render('items/itm/kit/component/page.twig', ['page' => $page, 'kitm' => $kitm, 'kit' => $kit, 'component' => $component]);
-				$page->js   .= $config->twig->render('items/itm/kit/component/js.twig', ['page' => $page, 'kitm' => $kitm, 'kit' => $kit, 'component' => $component]);
-			} else {
-				$page->body .= $config->twig->render('items/itm/kit/page.twig', ['page' => $page, 'kitm' => $kitm, 'kit' => $kit]);
-			}
-
-			// $page->js   .= $config->twig->render('items/itm/misc/js.twig', ['page' => $page, 'itm' => $itm]);
-			$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
-			if ($session->response_itm) {
-				$session->remove('response_itm');
-			}
-		} else {
-			$session->redirect($page->itmURL($itemID), $http301 = false);
-		}
+	if ($input->get->component) {
+		$itemID = $input->get->text('component');
+		$component = $kim->component->new_get_component($kitID, $itemID);
+		$page->headline = $itemID == 'new' ? "ITM Kit - $kitID" : "ITM Kit - $kitID - $itemID";
+		$page->body .= $config->twig->render('items/itm/kit/component/page.twig', ['page' => $page, 'kim' => $kim, 'kit' => $kit, 'component' => $component]);
+		$page->js   .= $config->twig->render('items/itm/kit/component/js.twig', ['page' => $page, 'kim' => $kim, 'kit' => $kit, 'component' => $component]);
 	} else {
-		$session->redirect($page->itmURL(), $http301 = false);
+		$page->body .= $config->twig->render('items/itm/kit/page.twig', ['page' => $page, 'kim' => $kim, 'kit' => $kit]);
+	}
+
+	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+	if ($session->response_kim) {
+		$session->remove('response_kim');
 	}
 
 	include __DIR__ . "/basic-page.php";

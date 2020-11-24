@@ -65,6 +65,15 @@ class Kim extends WireData implements Module {
 		return $kit->save();
 	}
 
+	/**
+	 * Return All Kits
+	 * @return InvKit[]|ObjectCollection
+	 */
+	public function all() {
+		$q = $this->query();
+		return $q->find();
+	}
+
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
@@ -155,7 +164,6 @@ class Kim extends WireData implements Module {
 		return $this->wire('modules')->get('ConfigureKt')->config();
 	}
 
-
 	/**
 	 * Intialize configs
 	 * @return void
@@ -177,7 +185,7 @@ class Kim extends WireData implements Module {
 		}
 		return $this->recordlocker->function_locked_by_user($kitID);
 	}
-	
+
 /* =============================================================
 	URL Functions
 ============================================================= */

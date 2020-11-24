@@ -14,6 +14,10 @@ $(function() {
 		return this.optional(element) || validate_usagetag(value);
 	}, "Please select a valid Usage Tag");
 
+	jQuery.validator.addMethod("freegoods", function(value, element) {
+		return this.optional(element) || validate_freegoods(value);
+	}, "Please select a valid Free Goods Value");
+
 	var validator = form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
@@ -43,10 +47,17 @@ $(function() {
 				required: true,
 				suppliedby: true
 			},
-			suppliedby: {
-				required: false,
-				usagetag: true
-			}
+			{% if kim.configs.kt.usageorfreeusage() %}
+				usagetag: {
+					required: false,
+					usagetag: true
+				}
+			{% else %}
+				freegoods: {
+					required: false,
+					freegoods: true
+				}
+			{% endif %}
 		},
 		messages: {
 
@@ -64,6 +75,11 @@ $(function() {
 	function validate_usagetag(val) {
 		var options = {{ kitm.options_component_usagetag()|json_encode()|raw }};
 		return options.hasOwnProperty(val);
+	}
+	
+	function validate_freegoods(val) {
+		var options = ['Y', 'N'];
+		return options.contains(val);
 	}
 
 /* =============================================================

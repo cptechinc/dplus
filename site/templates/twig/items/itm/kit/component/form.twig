@@ -2,12 +2,12 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
-	kitm                   module Kim
-	kitm.component         module KimComponent
+	kim                   module Kim
+	kim.component         module KimComponent
 	item                   ItemMasterItem
 	kit                    InvKit
 	component              InvKitComponent
-	kitm.recordlocker      module RecordLockerUserFunction
+	kim.recordlocker      module RecordLockerUserFunction
 #}
 <form action="{{ page.url }}" method="post" id="kit-component-form">
 	<input type="hidden" name="action" value="update-component">
@@ -41,11 +41,11 @@
 		</div>
 		<div class="col-sm-8">
 			{% include 'util/form/input.twig' with {
-					'name': 'usage', 'value': component.usage|number_format(kitm.component.decimal_places_qty()),
+					'name': 'usage', 'value': component.usage|number_format(kim.component.decimal_places_qty()),
 					'class_add': [
 						'w-50',
 						'text-right',
-						kitm.field_has_error('usage') ? 'is-invalid' : ''
+						kim.field_has_error('usage') ? 'is-invalid' : ''
 					],
 					'attributes': {}
 				}
@@ -63,10 +63,10 @@
 					'use_blank_option': true,
 					'show_value': true,
 					'use_blank_option': true,
-					'options': kitm.component.options_component_suppliedby(),
+					'options': kim.component.options_component_suppliedby(),
 					'class_add': [
 						'hazmat-step',
-						kitm.field_has_error('suppliedby') ? 'is-invalid' : ''
+						kim.field_has_error('suppliedby') ? 'is-invalid' : ''
 					],
 					'attributes': {}
 				}
@@ -74,24 +74,42 @@
 		</div>
 	</div>
 	<div class="form-group row">
-		<div class="col-sm-4">
-			<label for="usagetag">Usage Tag Code</label>
-		</div>
-		<div class="col-sm-8">
-			{% include 'util/form/select.twig' with {
-					'name': 'usagetag', 'selected_value': component.usagetag,
-					'use_blank_option': true,
-					'show_value': true,
-					'use_blank_option': true,
-					'options': kitm.component.options_component_usagetag(),
-					'class_add': [
-						'hazmat-step',
-						kitm.field_has_error('usagetag') ? 'is-invalid' : ''
-					],
-					'attributes': {}
-				}
-			%}
-		</div>
+		{% if kim.configs.kt.usageorfreeusage() %}
+			<div class="col-sm-4">
+				<label for="usagetag">Usage Tag Code</label>
+			</div>
+			<div class="col-sm-8">
+				{% include 'util/form/select.twig' with {
+						'name': 'usagetag', 'selected_value': component.usagetag,
+						'use_blank_option': true,
+						'show_value': true,
+						'use_blank_option': true,
+						'options': kim.component.options_component_usagetag(),
+						'class_add': [
+							kim.field_has_error('usagetag') ? 'is-invalid' : ''
+						],
+						'attributes': {}
+					}
+				%}
+			</div>
+		{% else %}
+			<div class="col-sm-4">
+				<label for="freegoods">Free Goods</label>
+			</div>
+			<div class="col-sm-8">
+				{% include 'util/form/select.twig' with {
+						'name': 'freegoods', 'selected_value': component.freegoods,
+						'show_value': true,
+						'options': {'Y': 'Yes', 'N': 'No'},
+						'class_add': [
+							kim.field_has_error('freegoods') ? 'is-invalid' : ''
+						],
+						'attributes': {}
+					}
+				%}
+			</div>
+		{% endif %}
+
 	</div>
 	<div class="d-flex justify-content-between align-items-center">
 		{#
@@ -100,7 +118,7 @@
 			2. Is a new Item
 			NOTE: Only show delete if item already exists.
 		#}
-		{% if kitm.recordlocker.function_locked_by_user(kit.itemid) or component.isNew() %}
+		{% if kim.recordlocker.function_locked_by_user(kit.itemid) or component.isNew() %}
 			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>

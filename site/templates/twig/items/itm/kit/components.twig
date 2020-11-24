@@ -2,8 +2,8 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
-	kitm                   module Kim
-	kitm.recordlocker      module RecordLockerUserFunction
+	kim                   module Kim
+	kim.recordlocker      module RecordLockerUserFunction
 	item                   ItemMasterItem
 	kit                    InvKit
 #}
@@ -23,10 +23,12 @@
 				<td>{{ component.itemid }}</td>
 				<td>{{ component.usagetag }}</td>
 				<td>{{ component.item.description }}</td>
-				<td class="text-right">{{ component.usage|number_format }}</td>
+				<td class="text-right">
+					{{ kim.configs.kt.usageorfreeusage() ? component.usage()|number_format : '' }}
+				</td>
 				<td class="text-center">
-					{% if kitm.recordlocker.function_locked(kit.itemid) == false or kitm.recordlocker.function_locked_by_user(kit.itemid) %}
-						<a href="" class="btn btn-sm btn-warning">
+					{% if kim.recordlocker.function_locked(kit.itemid) == false or kim.recordlocker.function_locked_by_user(kit.itemid) %}
+						<a href="{{ page.kit_componentURL(kit.itemid, component.itemid) }}" class="btn btn-sm btn-warning">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</a>
 						&nbsp;
