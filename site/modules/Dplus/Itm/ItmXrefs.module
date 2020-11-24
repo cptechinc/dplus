@@ -180,9 +180,12 @@ class ItmXrefs extends WireData implements Module {
 	 * @param  string $itemID
 	 * @return string
 	 */
-	public function get_itm_xrefs_vxmURL($itemID) {
+	public function get_itm_xrefs_vxmURL($itemID, $focus = '') {
 		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-vxm")->url);
 		$url->query->set('itemID', $itemID);
+		if ($focus) {
+			$url->query->set('focus', $focus);
+		}
 		return $url->getUrl();
 	}
 
@@ -251,7 +254,6 @@ class ItmXrefs extends WireData implements Module {
 		return $url->getUrl();
 	}
 
-
 	/**
 	 * Return URL to view CXM Item
 	 * @param  string  $itemID      Item ID
@@ -291,6 +293,30 @@ class ItmXrefs extends WireData implements Module {
 		return $url->getUrl();
 	}
 
+	/**
+	 * Return URL to view Kit
+	 * @param  string  $itemID      Item ID / Kit ID
+	 * @return string
+	 */
+	public function get_kitURL($itemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=itm-kit')->url);
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to view Kit Component
+	 * @param  string  $itemID      Item ID / Kit ID
+	 * @param  string  $component   Component Item ID
+	 * @return string
+	 */
+	public function get_kit_componentURL($itemID, $component = '') {
+		$url = new Url($this->wire('pages')->get('pw_template=itm-kit')->url);
+		$url->query->set('itemID', $itemID);
+		$url->query->set('component', $component);
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
@@ -320,6 +346,7 @@ class ItmXrefs extends WireData implements Module {
 		$this->add_pagehooks_upcx();
 		$this->add_pagehooks_vxm();
 		$this->add_pagehooks_cxm();
+		$this->add_pagehooks_kim();
 	}
 
 	public function add_pagehooks_upcx() {
@@ -390,7 +417,7 @@ class ItmXrefs extends WireData implements Module {
 		$this->addHook("Page(pw_template=$templates)::vxm_item_newURL", function($event) {
 			$p = $event->object;
 			$itemID = $p->itemID;
-			$event->return = $this->get_vxm_itemURL($itemID, '','new');
+			$event->return = $this->get_vxm_itemURL($itemID, '', 'new');
 		});
 
 		$this->addHook("Page(pw_template=$templates)::vxm_item_deleteURL", function($event) {
@@ -399,6 +426,14 @@ class ItmXrefs extends WireData implements Module {
 			$vendorID = $event->arguments(1);
 			$vendoritemID = $event->arguments(2);
 			$event->return = $this->get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::vxm_item_exitURL", function($event) {
+			$p = $event->object;
+			$item = $event->arguments(0);
+			$vendorID = $item->vendorid;
+			$vendoritemID = $item->vendoritemid;
+			$event->return = $this->get_itm_xrefs_vxmURL($vendorID, "$vendorID-$vendoritemID");
 		});
 	}
 
@@ -438,6 +473,22 @@ class ItmXrefs extends WireData implements Module {
 			$custID = $item->custid;
 			$custitemID = $item->custitemid;
 			$event->return = $this->get_itm_xrefs_cxmURL($item->itemid, "$custID-$custitemID");
+		});
+	}
+
+	public function add_pagehooks_kim() {
+		$itm = $this->wire('modules')->get('Itm');
+		$templates = implode('|', $itm::TEMPLATES_ITM);
+
+		$this->addHook("Page(pw_template=$templates)::kitURL", function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->get_kit_componentURL($itemID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::kit_componentURL", function($event) {
+			$itemID = $event->arguments(0);
+			$component = $event->arguments(1);
+			$event->return = $this->get_kit_componentURL($itemID, $component);
 		});
 	}
 }

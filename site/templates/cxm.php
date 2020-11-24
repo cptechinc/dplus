@@ -10,6 +10,9 @@
 		$cxm->process_input($input);
 
 		if ($cxm->cxm_item_exists($custID, $custitemID)) {
+			if ($session->response_xref && $session->response_xref->has_success()) {
+				$session->redirect($page->cxm_item_exitURL($cxm->get_cxm_item($custID, $custitemID)), $http301 = false);
+			}
 			$session->redirect($page->cxm_itemURL($custID, $custitemID), $http301 = false);
 		} else {
 			$session->redirect($page->cxm_customerURL($custID), $http301 = false);
@@ -44,7 +47,6 @@
 		if ($input->get->custitemID) {
 			$custitemID = $input->get->text('custitemID');
 			$page->title = "CXM: $custID Item $custitemID";
-
 			$item = $cxm->get_create_cxm_item($custID, $custitemID);
 
 			if (!$item->isNew()) {
@@ -73,7 +75,7 @@
 
 			$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;
 			$page->searchitemsURL     = $pages->get('pw_template=itm-search')->url;
-			$page->body .= $config->twig->render('items/cxm/item/form.twig', ['page' => $page, 'item' => $item, 'cxm' => $cxm]);
+			$page->body .= $config->twig->render('items/cxm/item/form.twig', ['page' => $page, 'item' => $item, 'cxm' => $cxm, 'qnotes' => $qnotes]);
 
 			if (!$item->isNew()) {
 				$qnotes = $modules->get('QnotesItemCxm');

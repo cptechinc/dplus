@@ -7,9 +7,15 @@
 
 	if ($values->action) {
 		$cxm->process_input($input);
-		$custitemID = $values->text('action') == 'remove-vxm-item' ? '' : $values->text('custitemID');
-
-		$session->redirect($page->cxm_itemURL($values->text('custID'), $custitemID));
+		
+		if ($cxm->cxm_item_exists($custID, $custitemID)) {
+			if ($session->response_xref && $session->response_xref->has_success()) {
+				$session->redirect($page->cxm_item_exitURL($cxm->get_cxm_item($custID, $custitemID)), $http301 = false);
+			}
+			$session->redirect($page->cxm_itemURL($custID, $custitemID), $http301 = false);
+		} else {
+			$session->redirect($page->cxm_customerURL($custID), $http301 = false);
+		}
 	}
 
 	if ($session->response_xref) {

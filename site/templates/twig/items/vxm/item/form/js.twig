@@ -297,6 +297,7 @@ $(function() {
 	}
 
 	function swal_overwrite_poordercode() {
+		msg = input_itemID.val() + " already has a primary";
 		swal2.fire({
 			title: "Overwrite Primary PO Ordercode?",
 			text: msg,
@@ -330,7 +331,7 @@ $(function() {
 
 		// URL RETURNS boolean true or string UPC code for false
 		$.getJSON(url.toString(), function( valid ) {
-			callback();
+			callback(valid);
 		});
 	}
 

@@ -8,6 +8,7 @@
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
+			<th></th>
 			<th class="pt-3 pb-3 align-middle">Vendor Item ID</th>
 			<th class="pt-3 pb-3 align-middle">Our Item ID</th>
 			<th class="pt-3 pb-3 align-middle">Description</th>
@@ -29,7 +30,10 @@
 	<tbody>
 		{% if items.count() %}
 			{% for item in items %}
-				<tr>
+				<tr data-vxm="{{ item.vendorid ~ '-' ~ item.vendoritemID }}">
+					<td>
+						{{ item.po_ordercode }}
+					</td>
 					<td>{{ item.vendoritemID }}</td>
 					<td>{{ item.ouritemid }}</td>
 					<td>{{ item.imitem.description }}</td>
@@ -42,7 +46,7 @@
 							</a>
 							&nbsp;
 							<a href="{{ page.vxm_item_deleteURL(item.ouritemid, item.vendorid, item.vendoritemid) }}" class="btn btn-sm btn-danger remove-vxm-item">
-								<i class="fa fa-trash" aria-hidden="true"></i> Remove
+								<i class="fa fa-trash" aria-hidden="true"></i> Delete
 							</a>
 						{% else %}
 							<span class="badge badge-secondary">

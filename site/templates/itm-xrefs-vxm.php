@@ -6,15 +6,23 @@
 	$page->title = "VXM";
 
 	if ($values->action) {
-		$vxm->process_input($input);
-		$vendoritemID = $values->text('action') == 'delete-vxm-item' ? '' : $input->$rm->text('vendoritemID');
+		$vendorID = $values->text('vendorID');
+		$vendoritemID = $values->text('vendoritemID');
 
-		$session->redirect($page->vxm_itemURL($values->text('vendorID'), $vendoritemID));
+		$vxm->process_input($input);
+
+		if ($vxm->vxm_item_exists($vendorID, $vendoritemID)) {
+			if ($session->response_xref && $session->response_xref->has_success()) {
+				$session->redirect($page->vxm_item_exitURL($vxm->get_vxm_item($vendorID, $vendoritemID)), $http301 = false);
+			}
+			$session->redirect($page->vxm_itemURL($vendorID, $vendoritemID), $http301 = false);
+		} else {
+			$session->redirect($page->vxm_itemidURL($itemID), $http301 = false);
+		}
 	}
 
 	if ($session->response_xref) {
 		$page->body .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->response_xref]);
-		$session->remove('response_xref');
 	}
 
 	if ($input->get->vendoritemID) {
@@ -76,5 +84,5 @@
 		$page->js   .= $config->twig->render('items/vxm/list/item/js.twig', ['page' => $page]);
 	}
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
-
+	$session->remove('response_xref');
 	include __DIR__ . "/basic-page.php";

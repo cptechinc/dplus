@@ -104,9 +104,12 @@ class DpagesMap extends Dpages implements Module {
 	 * @param  string $vendorID Vendor ID
 	 * @return string
 	 */
-	public function get_vxm_vendorURL($vendorID) {
+	public function get_vxm_vendorURL($vendorID, $focus = '') {
 		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
 		$url->query->set('vendorID', $vendorID);
+		if ($focus) {
+			$url->query->set('focus', $focus);
+		}
 		return $url->getUrl();
 	}
 
@@ -267,12 +270,20 @@ class DpagesMap extends Dpages implements Module {
 			$event->return = $p->fullURL->query->get('itemID');
 		});
 
-		$this->addHookProperty('Page(pw_template=vxm)::vxm_item_deleteURL', function($event) {
+		$this->addHook('Page(pw_template=vxm)::vxm_item_deleteURL', function($event) {
 			$p = $event->object;
-			$vendorID = $event->arguments(0);
-			$vendoritemID = $event->arguments(1);
-			$itemID = $p->itemID;
+			$itemID = $event->arguments(0);
+			$vendorID = $event->arguments(1);
+			$vendoritemID = $event->arguments(2);
 			$event->return = $this->get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID);
+		});
+
+		$this->addHook('Page(pw_template=vxm)::vxm_item_exitURL', function($event) {
+			$p = $event->object;
+			$item = $event->arguments(0);
+			$vendorID = $item->vendorid;
+			$vendoritemID = $item->vendoritemid;
+			$event->return = $this->get_vxm_vendorURL($vendorID, "$vendorID-$vendoritemID");
 		});
 
 		// Code Tables
