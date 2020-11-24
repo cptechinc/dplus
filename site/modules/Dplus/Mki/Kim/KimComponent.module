@@ -24,7 +24,7 @@ class KimComponent extends WireData implements Module {
 	}
 
 	public function options_component_usagetag() {
-		return InvKitComponent::OPTIONS_SUPPLIEDBY;
+		return InvKitComponent::OPTIONS_USAGETAG;
 	}
 
 
@@ -74,7 +74,10 @@ class KimComponent extends WireData implements Module {
 	public function new_component($kitID, $itemID) {
 		$c = new InvKitComponent();
 		$c->setKitid($kitID);
-		$c->setItemid($itemID);
+
+		if ($this->wire('modules')->get('ValidateIn')->itemid_exists($itemID)) {
+			$c->setItemid($itemID);
+		}
 		return $c;
 	}
 
@@ -100,7 +103,7 @@ class KimComponent extends WireData implements Module {
 	 * @param  string $itemID Kit Component Item ID
 	 * @return InvKitComponent
 	 */
-	public function new_or_get_component($kitID, $itemID) {
+	public function new_get_component($kitID, $itemID) {
 		if ($this->component_exists($kitID, $itemID)) {
 			return $this->get_component($kitID, $itemID);
 		}
@@ -173,14 +176,14 @@ class KimComponent extends WireData implements Module {
 		$kitID  = $input->get->text('kitID');
 		$itemID = $input->get->text($itemID);
 
-		$component = $this->new_or_get_component($kitID, $itemID);
+		$component = $this->new_get_component($kitID, $itemID);
 
 	}
 
 	public function update_component_fields(InvKitComponent $component, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		
+
 	}
 
 /* =============================================================
