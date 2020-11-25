@@ -43,7 +43,7 @@
 
 			$filter_itm = $modules->get('FilterItemMaster');
 			$filter_itm->init_query($user);
-			$filter_itm->filter_search($q);
+			$filter_itm->search($q);
 			$query = $filter_itm->get_query();
 
 			if ($query->count() == 1) {

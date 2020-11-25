@@ -91,7 +91,7 @@
 			$page->headline = "ITM: Searching Items for '$q'";
 			$filter = $modules->get('FilterItemMaster');
 			$filter->init_query($user);
-			$filter->filter_search($q);
+			$filter->search($q);
 			$filter->apply_sortby($page);
 			$query = $filter->get_query();
 			$items = $query->paginate($input->pageNum, 10);
