@@ -26,6 +26,7 @@ class FilterInv extends WireData implements Module {
 			'installs' => array(
 				'FilterInvTariffCodes',
 				'FilterInvMsdsCodes',
+				'FilterKim',
 			)
 		);
 	}
