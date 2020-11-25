@@ -13,7 +13,7 @@
 
 		if ($vxm->vxm_item_exists($vendorID, $vendoritemID)) {
 			if ($session->response_xref && $session->response_xref->has_success()) {
-				$session->redirect($page->vxm_item_exitURL($vxm->get_vxm_item($vendorID, $vendoritemID)), $http301 = false);
+				$session->redirect($page->vxm_itemidURL($itemID), $http301 = false);
 			}
 			$session->redirect($page->vxm_itemURL($vendorID, $vendoritemID), $http301 = false);
 		} else {
@@ -75,7 +75,7 @@
 		$filter_vxm->filter_query($input);
 		$filter_vxm->apply_sortby($page);
 		$page->headline = "ITM: VXM Item $itemID";
-		$items = $filter_vxm->query->paginate($input->pageNum, 10);
+		$items = $filter_vxm->query->paginate($input->pageNum, 0);
 
 		$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 		$page->body .= $config->twig->render('items/vxm/list/header.twig', ['page' => $page, 'heading' => $items->getNbResults() ." VXM Items for $itemID"]);
