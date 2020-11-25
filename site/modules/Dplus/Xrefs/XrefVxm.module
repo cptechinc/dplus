@@ -585,6 +585,14 @@ class XrefVxm extends WireData implements Module {
 		return ($response) ? array_key_exists($inputname, $response->fields) : false;
 	}
 
+	/**
+	 * Return Response
+	 * @return XrefResponse|null
+	 */
+	public function response() {
+		return $this->wire('session')->response_xref;
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
