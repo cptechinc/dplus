@@ -31,7 +31,6 @@
 	$kit = $kim->get_kit($kitID);
 
 	$page->body .= $config->twig->render('items/itm/itm-links.twig', ['page' => $page, 'page_itm' => $page->parent('pw_template=itm')]);
-	$page->body .= $config->twig->render('items/itm/description.twig', ['page' => $page, 'item' => $item]);
 
 	if ($input->get->component) {
 		$itemID = $input->get->text('component');
@@ -40,7 +39,7 @@
 		$page->body .= $config->twig->render('items/itm/kit/component/page.twig', ['page' => $page, 'kim' => $kim, 'kit' => $kit, 'component' => $component]);
 		$page->js   .= $config->twig->render('items/itm/kit/component/js.twig', ['page' => $page, 'kim' => $kim, 'kit' => $kit, 'component' => $component]);
 	} else {
-		$page->body .= $config->twig->render('items/itm/kit/page.twig', ['page' => $page, 'kim' => $kim, 'kit' => $kit]);
+		$page->body .= $config->twig->render('mki/kim/kit/page.twig', ['page' => $page, 'kim' => $kim, 'kit' => $kit]);
 	}
 
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));

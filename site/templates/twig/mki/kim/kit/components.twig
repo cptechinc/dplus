@@ -2,9 +2,8 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
-	kim                   module Kim
-	kim.recordlocker      module RecordLockerUserFunction
-	item                   ItemMasterItem
+	kim                    module Kim
+	kim.recordlocker       module RecordLockerUserFunction
 	kit                    InvKit
 #}
 <table class="table table-sm">
@@ -14,7 +13,7 @@
 			<th>Tag</th>
 			<th>Description</th>
 			<th class="text-right">Rate</th>
-			<th>
+			<th class="text-center">
 				<a href="{{ page.kit_componentURL(kit.itemid, 'new') }}" class="btn btn-sm btn-secondary">
 					<i class="fa fa-plus" aria-hidden="true"></i> Add
 				</a>
@@ -23,7 +22,9 @@
 	</thead>
 	<tbody>
 		{% for component in kit.components %}
-			<tr>
+			{% set class = component.itemid == page.focus ? 'highlight' : '' %}
+			{# set class = (response.key == kit.itemid and response.has_success()) ? 'bg-success text-white' : class #}
+			<tr class="{{ class }}">
 				<td>{{ component.itemid }}</td>
 				<td>{{ component.usagetag }}</td>
 				<td>{{ component.item.description }}</td>
@@ -36,7 +37,7 @@
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</a>
 						&nbsp;
-						<a href="" class="btn btn-sm btn-danger">
+						<a href="{{ page.kit_component_deleteURL(kit.itemid, component.itemid) }}" class="btn btn-sm btn-danger">
 							<i class="fa fa-trash" aria-hidden="true"></i> Delete
 						</a>
 					{% else %}
