@@ -59,6 +59,13 @@ class XrefCxm extends WireData implements Module {
 		return $q->findOne();
 	}
 
+	public function get_cxm_item_recordlockerkey($key) {
+		$keys = explode('-', $key);
+		$custID = $keys[0];
+		$custitemID = $keys[1];
+		return $this->get_cxm_item($custID, $custitemID);
+	}
+
 	/**
 	 * Return ItemXrefCustomer
 	 * @param  string $custID     Cust ID
@@ -302,7 +309,7 @@ class XrefCxm extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = array();
-		
+
 		$record->setCustitemid($values->text('custitemID'));
 		$invalidfields = $this->update_record_input_validated($record, $input);
 
