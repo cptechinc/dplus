@@ -154,12 +154,12 @@ class KimComponent extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$kitID = $input->get->text('kitID');
-		$itemID = $input->get->text($itemID);
+		$itemID = $input->get->text('component');
 
 		if ($this->component_exists($kitID, $itemID)) {
 			$component = $this->get_component($kitID, $itemID);
 			$component->delete();
-			$this->wire('session')->response_kim = $this->save_and_respond($component);
+			$this->wire('session')->response_kim = $this->save_and_respond($component, null);
 			return $this->wire('session')->response_kim->has_success();
 		}
 		return true;
