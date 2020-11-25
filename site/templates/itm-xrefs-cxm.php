@@ -7,20 +7,19 @@
 
 	if ($values->action) {
 		$cxm->process_input($input);
-		
+
 		if ($cxm->cxm_item_exists($custID, $custitemID)) {
 			if ($session->response_xref && $session->response_xref->has_success()) {
-				$session->redirect($page->cxm_item_exitURL($cxm->get_cxm_item($custID, $custitemID)), $http301 = false);
+				$session->redirect($page->itm_xrefs_cxmURL($itemID, $session->response_xref->key), $http301 = false);
 			}
 			$session->redirect($page->cxm_itemURL($custID, $custitemID), $http301 = false);
 		} else {
-			$session->redirect($page->cxm_customerURL($custID), $http301 = false);
+			$session->redirect($page->itm_xrefs_cxmURL($itemID), $http301 = false);
 		}
 	}
 
 	if ($session->response_xref) {
 		$page->body .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->response_xref]);
-		$session->remove('response_xref');
 	}
 
 	if ($session->response_qnote) {
@@ -73,10 +72,11 @@
 		$page->js   .= $config->twig->render('items/cxm/item/form/js.twig', ['page' => $page, 'cxm' => $cxm, 'item' => $item, 'url_validate' => $pages->get('pw_template=cxm-validate')->httpUrl]);
 	} else {
 		$cxm->recordlocker->remove_lock();
-		$filter_cxm->filter_query($input);
+		$filter_cxm->filter_input($input);
 		$filter_cxm->apply_sortby($page);
 		$page->headline = "ITEM: CXM Item $itemID";
-		$items = $filter_cxm->query->paginate($input->pageNum, 10);
+
+		$items = $filter_cxm->query->paginate($input->pageNum, 0);
 
 		$page->body .= $config->twig->render('items/itm/xrefs/cxm/list/header.twig', ['page' => $page, 'items' => $items, 'itemid' => $itemID]);
 		$page->body .= $config->twig->render('items/itm/xrefs/cxm/list/list.twig', ['page' => $page, 'response' => $session->response_xref, 'items' => $items, 'recordlocker' => $cxm->recordlocker]);
@@ -85,5 +85,5 @@
 	}
 
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
-
+	$session->remove('response_xref');
 	include __DIR__ . "/basic-page.php";

@@ -249,7 +249,40 @@ class ItmXrefs extends WireData implements Module {
 		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-cxm")->url);
 		$url->query->set('itemID', $itemID);
 		if ($focus) {
+			return $this->get_cxm_customer_focusURL($itemID, $focus);
+		}
+		return $url->getUrl();
+	}
+
+	/**
+	 * REturn Paginated URL to CXM Item Page
+	 * @param  string $itemID Item ID
+	 * @param  string $focus  Record Locker Key for Item
+	 * @return string 
+	 */
+	public function get_cxm_customer_focusURL($itemID, $focus) {
+		$page = $this->wire('pages')->get('pw_template=itm-xrefs-cxm');
+		$url = new Url($page->url);
+		$url->query->set('itemID', $itemID);
+
+		if ($this->wire('session')->response_xref) {
+			if ($this->wire('session')->response_xref->key != $focus) {
+				$url->query->set('focus', $focus);
+			}
+		} else {
 			$url->query->set('focus', $focus);
+		}
+
+		$cxm = $this->wire('modules')->get('XrefCxm');
+		$item = $cxm->get_cxm_item_recordlockerkey($focus);
+
+		if ($item) {
+			$filter = $this->wire('modules')->get('FilterXrefItemCxm');
+			$filter->itemid($itemID);
+			$position = $filter->position($item);
+
+			$pagenbr = ceil($filter->query->count() / $this->wire('session')->display);
+			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		}
 		return $url->getUrl();
 	}
@@ -472,7 +505,8 @@ class ItmXrefs extends WireData implements Module {
 			$item = $event->arguments(0);
 			$custID = $item->custid;
 			$custitemID = $item->custitemid;
-			$event->return = $this->get_itm_xrefs_cxmURL($item->itemid, "$custID-$custitemID");
+			$cxm = $this->wire('modules')->get('XrefCxm');
+			$event->return = $this->get_itm_xrefs_cxmURL($item->itemid, $cxm->get_recordlocker_key($item));
 		});
 	}
 

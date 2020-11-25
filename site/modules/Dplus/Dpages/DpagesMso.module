@@ -345,7 +345,8 @@ class DpagesMso extends Dpages implements Module {
 
 		$this->addHook('Page(pw_template=cxm)::cxm_customerURL', function($event) {
 			$custID = $event->arguments(0);
-			$event->return = $this->get_cxm_customerURL($custID);
+			$key = $event->arguments(1);
+			$event->return = $this->get_cxm_customerURL($custID, $key);
 		});
 
 		$this->addHookProperty('Page(pw_template=cxm)::custID', function($event) {
@@ -377,7 +378,8 @@ class DpagesMso extends Dpages implements Module {
 			$item = $event->arguments(0);
 			$custID = $item->custid;
 			$custitemID = $item->custitemid;
-			$event->return = $this->get_cxm_customerURL($custID, "$custID-$custitemID");
+			$cxm = $this->wire('modules')->get('XrefCxm');
+			$event->return = $this->get_cxm_customerURL($custID, $cxm->get_recordlocker_key($item));
 		});
 	}
 
@@ -393,7 +395,40 @@ class DpagesMso extends Dpages implements Module {
 		$url = new Url($this->wire('pages')->get('pw_template=cxm')->url);
 		$url->query->set('custID', $custID);
 		if ($focus) {
+			return $this->get_cxm_customer_focusURL($custID, $focus);
+		}
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Paginated URL to CXM Item Page
+	 * @param  string $itemID Item ID
+	 * @param  string $focus  Record Locker Key for Item
+	 * @return string
+	 */
+	public function get_cxm_customer_focusURL($custID, $focus) {
+		$page = $this->wire('pages')->get('pw_template=cxm');
+		$url = new Url($page->url);
+		$url->query->set('custID', $custID);
+
+		if ($this->wire('session')->response_xref) {
+			if ($this->wire('session')->response_xref->key != $focus) {
+				$url->query->set('focus', $focus);
+			}
+		} else {
 			$url->query->set('focus', $focus);
+		}
+
+		$cxm = $this->wire('modules')->get('XrefCxm');
+		$item = $cxm->get_cxm_item_recordlockerkey($focus);
+
+		if ($item) {
+			$filter = $this->wire('modules')->get('FilterXrefItemCxm');
+			$filter->custid($custID);
+			$position = $filter->position($item);
+
+			$pagenbr = ceil($filter->query->count() / $this->wire('session')->display);
+			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		}
 		return $url->getUrl();
 	}

@@ -11,7 +11,7 @@
 
 		if ($cxm->cxm_item_exists($custID, $custitemID)) {
 			if ($session->response_xref && $session->response_xref->has_success()) {
-				$session->redirect($page->cxm_item_exitURL($cxm->get_cxm_item($custID, $custitemID)), $http301 = false);
+				$session->redirect($page->cxm_customerURL($custID, $session->response_xref->key), $http301 = false);
 			}
 			$session->redirect($page->cxm_itemURL($custID, $custitemID), $http301 = false);
 		} else {
@@ -88,9 +88,10 @@
 			$page->js   .= $config->twig->render('items/cxm/item/form/js.twig', ['page' => $page, 'item' => $item, 'cxm' => $cxm, 'url_validate' => $pages->get('pw_template=cxm-validate')->httpUrl]);
 		} else {
 			$page->headline = "CXM: Customer $customer->name";
-			$filter_cxm->filter_query($input);
+			$filter_cxm->filter_input($input);
 			$filter_cxm->apply_sortby($page);
-			$items = $filter_cxm->query->paginate($input->pageNum, 10);
+
+			$items = $filter_cxm->query->paginate($input->pageNum, $session->display);
 			$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;
 			$page->body .= $config->twig->render('items/cxm/cxm-links.twig', ['page' => $page]);
 			$page->body .= $config->twig->render('items/cxm/item-list-header.twig', ['page' => $page, 'heading' => $items->getNbResults() . " CXM Items for $customer->name"]);
@@ -103,7 +104,7 @@
 		$itemID = $input->get->text('itemID');
 		$filter_cxm->filter_query($input);
 		$filter_cxm->apply_sortby($page);
-		$items = $filter_cxm->query->paginate($input->pageNum, 10);
+		$items = $filter_cxm->query->paginate($input->pageNum, $session->display);
 
 		$page->headline = "CXM: Item $itemID";
 		$page->body .= $html->h3('', $items->getNbResults() ." CXM Items for $itemID");
@@ -119,7 +120,7 @@
 		$filter->filter_search($q);
 		$filter->apply_sortby($page);
 		$query = $filter->get_query();
-		$customers = $query->paginate($input->pageNum, 10);
+		$customers = $query->paginate($input->pageNum, $session->display);
 
 		$page->searchURL = $page->url;
 		$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;
