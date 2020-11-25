@@ -41,53 +41,69 @@ class FilterXrefItemVxm extends WireData implements Module {
 	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
 	 * @return void
 	 */
-	public function filter_query(WireInput $input) {
-		$this->filter_itemid($input);
-		$this->filter_vendorid($input);
+	public function filter_input(WireInput $input) {
+		$this->itemid_input($input);
+		$this->vendorid_input($input);
 	}
 
+/* =============================================================
+	Input Functions
+============================================================= */
+	public function itemid_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$itemID = $values->ouritemID ? $values->text('ouritemID') : $values->text('itemID') ;
+		return $this->itemid($itemID);
+	}
+
+	/**
+	 * Filters Query by Customer ID
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function vendorid_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		if ($values->vendorID) {
+			$this->vendorid($values->text('vendorID'));
+		}
+		return $this;
+	}
+
+/* =============================================================
+	Base Filter Functions
+============================================================= */
 	/**
 	 * Filters Query by Item ID
-	 *
-	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-	 * @return void
+	 * @param  string|array $itemID Item ID(s)
+	 * @return self
 	 */
-	public function filter_itemid($input) {
-		if ($input->get->itemID) {
-			$this->query->filterByOuritemid($input->get->text('itemID'));
-		} elseif ($input->get->ouritemID) {
-			$this->query->filterByOuritemid($input->get->text('ouritemID'));
+	public function itemid($itemID) {
+		if ($itemID) {
+			$this->query->filterByItemid($itemID);
 		}
+		return $this;
 	}
 
 	/**
-	 * Filters Query by Vendor ID
-	 *
-	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-	 * @return void
-	 */
-	public function filter_vendorid($input) {
-		if ($input->get->vendorID) {
-			$this->query->filterByVendorid($input->get->text('vendorID'));
-		}
-	}
-
-	/**
-	 * Filter Query by Vendor ID
-	 * @param  array|string $vendorID  Vendor ID(s)
-	 * @return void
+	 * Filters Query by Customer ID
+	 * @param  string|array  Customer ID(s)
+	 * @return self
 	 */
 	public function vendorid($vendorID) {
-		$this->query->filterByVendorid($vendorID);
+		if ($vendorID) {
+			$this->query->filterByVendorid($vendorID);
+		}
+		return $this;
 	}
 
 	/**
 	 * Searches the ItemXrefVendor Table to find vendors that match the query provided
-	 *
 	 * @param  string $q Search Query
 	 * @return void
 	 */
-	public function filter_search($q) {
+	public function search($q) {
 		$columns = array(
 			ItemXrefVendor::get_aliasproperty('ouritemid'),
 			ItemXrefVendor::get_aliasproperty('vendoritemid'),
@@ -96,9 +112,11 @@ class FilterXrefItemVxm extends WireData implements Module {
 		$this->query->search_filter($columns, strtoupper($q));
 	}
 
+/* =============================================================
+	Misc Query Functions
+============================================================= */
 	/**
 	 * Adds the Sort By to the query
-	 *
 	 * @param  Page   $page
 	 * @return void
 	 */
@@ -113,21 +131,26 @@ class FilterXrefItemVxm extends WireData implements Module {
 		}
 	}
 
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
-		/**
-		 * ProcessWire Module Info
-		 *
-		 * @return void
-		 */
-		public static function getModuleInfo() {
-			return array(
-				'title' => 'Dpluso filter X-ref Item VXM Module',
-				'version' => 101,
-				'summary' => 'Handles X-ref Item VXM Filtering',
-				'singular' => true,
-				'autoload' => true,
-			);
-		}
+	/**
+	 * Return Position of CXM item in Results
+	 * @param  ItemXrefCustomer $item CXM Item
+	 * @return int
+	 */
+	public function position(ItemXrefVendor $item) {
+		$items = $this->query->find();
+		return $items->search($item);
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso filter X-ref Item VXM Module',
+			'version' => 101,
+			'summary' => 'Handles X-ref Item VXM Filtering',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
 }

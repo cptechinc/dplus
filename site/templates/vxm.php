@@ -12,7 +12,7 @@
 
 		if ($vxm->vxm_item_exists($vendorID, $vendoritemID)) {
 			if ($session->response_xref && $session->response_xref->has_success()) {
-				$session->redirect($page->vxm_vendorURL($vendorID));
+				$session->redirect($page->vxm_vendorURL($vendorID, $session->response_xref->key));
 			}
 			$session->redirect($page->vxm_itemURL($vendorID, $vendoritemID));
 		} else {
@@ -89,15 +89,15 @@
 		} else {
 			$vxm->recordlocker->remove_lock($page->name);
 			$page->headline = "Vendor X-Ref for $vendor->name";
-			$filter_vxm->filter_query($input);
+			$filter_vxm->filter_input($input);
  			$q = $values->q ? $values->text('q') : '';
 
 			if ($values->q) {
 				$page->headline = "VXM: Search '$q' for Vendor $vendor->name";
-				$filter_vxm->filter_search($values->text('q'));
+				$filter_vxm->search($values->text('q'));
 			}
 			$filter_vxm->apply_sortby($page);
-			$items = $filter_vxm->query->paginate($input->pageNum, 0);
+			$items = $filter_vxm->query->paginate($input->pageNum, $session->display);
 
 			$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 			$page->body .= $config->twig->render('items/vxm/vxm-links.twig', ['page' => $page]);
@@ -109,9 +109,9 @@
 	} elseif ($values->itemID) {
 		$vxm->recordlocker->remove_lock($page->name);
 		$itemID = $values->text('itemID');
-		$filter_vxm->filter_query($input);
+		$filter_vxm->filter_input($input);
 		$filter_vxm->apply_sortby($page);
-		$items = $filter_vxm->query->paginate($input->pageNum, 10);
+		$items = $filter_vxm->query->paginate($input->pageNum, $session->display);
 
 		$page->headline = "VXM: Item $itemID";
 		$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
@@ -129,7 +129,7 @@
 		$filter->filter_search($q);
 		$filter->vendorid($vxm->vendorids());
 		$filter->apply_sortby($page);
-		$vendors = $filter->query->paginate($input->pageNum, 10);
+		$vendors = $filter->query->paginate($input->pageNum, $session->display);
 		$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 		$page->body .= $config->twig->render('items/vxm/search/vendor/search.twig', ['page' => $page, 'vendors' => $vendors]);
 		$page->js   .= $config->twig->render('items/vxm/list/item/js.twig', ['page' => $page]);

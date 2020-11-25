@@ -427,7 +427,7 @@ class DpagesMso extends Dpages implements Module {
 			$filter->custid($custID);
 			$position = $filter->position($item);
 
-			$pagenbr = ceil($filter->query->count() / $this->wire('session')->display);
+			$pagenbr = floor($filter->query->count() / $this->wire('session')->display);
 			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		}
 		return $url->getUrl();

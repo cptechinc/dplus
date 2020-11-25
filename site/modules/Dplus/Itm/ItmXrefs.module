@@ -184,10 +184,43 @@ class ItmXrefs extends WireData implements Module {
 		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-vxm")->url);
 		$url->query->set('itemID', $itemID);
 		if ($focus) {
-			$url->query->set('focus', $focus);
+			return $this->get_itm_xrefs_vxm_focusURL($itemID, $focus);
 		}
 		return $url->getUrl();
 	}
+	/**
+	 * Return URL to VXM List
+	 * @param  string $itemID Item ID
+	 * @param  string $focus  VXM Key
+	 * @return string
+	 */
+	public function get_itm_xrefs_vxm_focusURL($itemID, $focus) {
+		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-vxm")->url);
+		$url->query->set('itemID', $itemID);
+
+		if ($this->wire('session')->response_xref) {
+			if ($this->wire('session')->response_xref->key != $focus) {
+				$url->query->set('focus', $focus);
+			}
+		} else {
+			$url->query->set('focus', $focus);
+		}
+
+		$vxm = $this->wire('modules')->get('XrefVxm');
+		$item = $vxm->get_vxm_item_recordlocker_key($focus);
+
+		if ($item) {
+			$filter = $this->wire('modules')->get('FilterXrefItemVxm');
+			$filter->itemid($itemID);
+			$position = $filter->position($item);
+
+			$pagenbr = floor($filter->query->count() / $this->wire('session')->display);
+			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
+		}
+		return $url->getUrl();
+	}
+
+
 
 	/**
 	 * Return URL to view VXM Item
@@ -258,7 +291,7 @@ class ItmXrefs extends WireData implements Module {
 	 * REturn Paginated URL to CXM Item Page
 	 * @param  string $itemID Item ID
 	 * @param  string $focus  Record Locker Key for Item
-	 * @return string 
+	 * @return string
 	 */
 	public function get_cxm_customer_focusURL($itemID, $focus) {
 		$page = $this->wire('pages')->get('pw_template=itm-xrefs-cxm');
@@ -281,7 +314,7 @@ class ItmXrefs extends WireData implements Module {
 			$filter->itemid($itemID);
 			$position = $filter->position($item);
 
-			$pagenbr = ceil($filter->query->count() / $this->wire('session')->display);
+			$pagenbr = floor($filter->query->count() / $this->wire('session')->display);
 			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		}
 		return $url->getUrl();
@@ -464,9 +497,8 @@ class ItmXrefs extends WireData implements Module {
 		$this->addHook("Page(pw_template=$templates)::vxm_item_exitURL", function($event) {
 			$p = $event->object;
 			$item = $event->arguments(0);
-			$vendorID = $item->vendorid;
-			$vendoritemID = $item->vendoritemid;
-			$event->return = $this->get_itm_xrefs_vxmURL($vendorID, "$vendorID-$vendoritemID");
+			$vxm = $this->wire('modules')->get('XrefVxm');
+			$event->return = $this->get_itm_xrefs_vxmURL($itemID, $vxm->get_recordlocker_key($item));
 		});
 	}
 

@@ -75,6 +75,13 @@ class XrefVxm extends WireData implements Module {
 		return $q->findOne();
 	}
 
+	public function get_vxm_item_recordlocker_key($key) {
+		$keys = explode('-', $key);
+		$vendorID = $keys[0];
+		$vendoritemID = $keys[1];
+		return $this->get_vxm_item($vendorID, $vendoritemID);
+	}
+
 	/**
 	 * Return Existing or New X-ref
 	 * @param  string $vendorID     Vendor ID
