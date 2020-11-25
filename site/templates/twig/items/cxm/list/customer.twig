@@ -29,7 +29,9 @@
 	<tbody>
 		{% if items.count() %}
 			{% for item in items %}
-				<tr class="{{ (response.key == (item.custid ~ '-' ~ item.custitemID) and response.has_success() ) ? 'bg-success text-white' : ''}}" data-cxm="{{ item.custid ~ '-' ~ item.custitemID }}">
+				{% set class = cxm.get_recordlocker_key(item) == page.focus ? 'highlight' : '' %}
+				{% set class = (response.key == cxm.get_recordlocker_key(item) and response.has_success()) ? 'bg-success text-white' : class %}
+				<tr class="{{ class }}" data-cxm="{{ cxm.get_recordlocker_key(item) }}">
 					<td>{{ item.custitemID }}</td>
 					<td>{{ item.description }}</td>
 					<td>{{ item.itemID }}</td>

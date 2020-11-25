@@ -5,6 +5,7 @@
 	recordlocker           module RecordLockerUser
 	items                  ItemXrefVxm[]|ObjectCollection
 #}
+{% set response = vxm.response() %}
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
@@ -30,7 +31,7 @@
 	<tbody>
 		{% if items.count() %}
 			{% for item in items %}
-				<tr data-vxm="{{ item.vendorid ~ '-' ~ item.vendoritemID }}">
+				<tr data-vxm="{{ item.vendorid ~ '-' ~ item.vendoritemID }}" class="{{ (response.key == vxm.get_recordlocker_key(item) and response.has_success()) ? 'bg-success text-white' : ''}}">
 					<td>
 						{{ item.po_ordercode }}
 					</td>
