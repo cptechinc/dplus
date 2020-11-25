@@ -62,8 +62,7 @@ $(function() {
 							text: 'Do you want View / Edit that note?',
 							icon: 'question',
 							showCancelButton: true,
-							confirmButtonText: 'Yes',
-							cancelButtonText: 'No',
+							confirmButtonText: 'Yes'
 						}).then((result) => {
 							if (result.value) {
 								var button = $('.qnote-order-row[data-form='+get_notes_formscode()+']').find('button.edit');

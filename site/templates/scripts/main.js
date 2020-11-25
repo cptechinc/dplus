@@ -156,7 +156,8 @@ $(function() {
 			text: text,
 			icon: 'warning',
 			showCancelButton: true,
-			confirmButtonText: 'Yes'
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
 		}).then((result) => {
 			if (result.value) {
 				window.location.href = link.attr('href');
@@ -174,7 +175,8 @@ $(function() {
 			text: "Are you sure?",
 			icon: 'warning',
 			showCancelButton: true,
-			confirmButtonText: 'Yes'
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
 		}).then((confirm) => {
 			if (confirm.value) {
 				button.closest('form').submit();
@@ -388,5 +390,7 @@ const swal2 = Swal.mixin({
 		inputClass: 'form-control',
 		selectClass: 'form-control',
 	},
-	buttonsStyling: false
+	buttonsStyling: false,
+	cancelButtonText: 'No',
+	confirmButtonText: 'Yes'
 })
