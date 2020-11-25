@@ -5,8 +5,8 @@ use ItemXrefCustomerQuery, ItemXrefCustomer;
 
 /**
  * FilterItemXrefCustomer
- * Filters Input to Retreive ItemXrefCustomer objects
  *
+ * Filters Input to Retreive ItemXrefCustomer objects
  * @property ItemXrefCustomerQuery $query
  */
 class FilterXrefItemCxm extends WireData implements Module {
@@ -40,40 +40,69 @@ class FilterXrefItemCxm extends WireData implements Module {
 	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
 	 * @return void
 	 */
-	public function filter_query(WireInput $input) {
-		$this->filter_itemid($input);
-		$this->filter_customerid($input);
+	public function filter_input(WireInput $input) {
+		$this->itemid_input($input);
+		$this->custid_input($input);
 	}
 
-	/**
-	 * Filters Query by Item ID
-	 *
-	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-	 * @return void
-	 */
-	public function filter_itemid($input) {
-		if ($input->get->itemID) {
-			$this->query->filterByItemid($input->get->text('itemID'));
-		} elseif ($input->get->ouritemID) {
-			$this->query->filterByItemid($input->get->text('ouritemID'));
-		}
+/* =============================================================
+	Input Functions
+============================================================= */
+	public function itemid_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$itemID = $values->ouritemID ? $values->text('ouritemID') : $values->text('itemID') ;
+		return $this->itemid($itemID);
 	}
 
 	/**
 	 * Filters Query by Customer ID
-	 *
 	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
 	 * @return void
 	 */
-	public function filter_customerid($input) {
-		if ($input->get->custID) {
-			$this->query->filterByCustid($input->get->text('custID'));
+	public function custid_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		if ($values->custID) {
+			$this->custid($values->text('custID'));
 		}
+		return $this;
+	}
+
+
+/* =============================================================
+	Base Filter Functions
+============================================================= */
+	/**
+	 * Filters Query by Item ID
+	 * @param  string|array $itemID Item ID(s)
+	 * @return self
+	 */
+	public function itemid($itemID) {
+		if ($itemID) {
+			$this->query->filterByItemid($itemID);
+		}
+		return $this;
 	}
 
 	/**
+	 * Filters Query by Customer ID
+	 * @param  string|array  Customer ID(s)
+	 * @return self
+	 */
+	public function custid($custID) {
+		if ($custID) {
+			$this->query->filterByCustid($custID);
+		}
+		return $this;
+	}
+
+/* =============================================================
+	Misc Query Functions
+============================================================= */
+	/**
 	 * Adds the Sort By to the query
-	 *
 	 * @param  Page   $page
 	 * @return void
 	 */
@@ -88,21 +117,31 @@ class FilterXrefItemCxm extends WireData implements Module {
 		}
 	}
 
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
-		/**
-		 * ProcessWire Module Info
-		 *
-		 * @return void
-		 */
-		public static function getModuleInfo() {
-			return array(
-				'title' => 'Dpluso filter X-ref Item CXM Module',
-				'version' => 101,
-				'summary' => 'Handles X-ref Item CXM Filtering',
-				'singular' => true,
-				'autoload' => true,
-			);
-		}
+	/**
+	 * Return Position of CXM item in Results
+	 * @param  ItemXrefCustomer $item CXM Item
+	 * @return int
+	 */
+	public function position(ItemXrefCustomer $item) {
+		$items = $this->query->find();
+		return $items->search($item);
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso filter X-ref Item CXM Module',
+			'version' => 101,
+			'summary' => 'Handles X-ref Item CXM Filtering',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
 }
