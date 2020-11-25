@@ -49,8 +49,10 @@ $(function() {
 					confirmButtonText: 'Yes',
 					cancelButtonText: 'No',
 				}).then((result) => {
-					$('<input type="hidden" name="action" value="delete-notes">').appendTo(jform);
-					form.submit();
+					if (result.value) {
+						$('<input type="hidden" name="action" value="delete-notes">').appendTo(jform);
+						form.submit();
+					}
 				});
 			} else {
 				if (has_document_selected()) {
