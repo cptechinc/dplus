@@ -11,15 +11,9 @@
 			<th class="pt-3 pb-3 align-middle">Kit Item ID</th>
 			<th class="pt-3 pb-3 align-middle">Description</th>
 			<th class="pt-3 pb-3 text-center">
-				{% if page.has('custID') and page.custID %}
-					<a href="{# page.cxm_item_newURL(page.custID) #}" class="btn btn-secondary">
-						<i class="fa fa-plus" aria-hidden="true"></i> Add New
-					</a>
-				{% else %}
-					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Choose Customer to Add CXM" aria-label="Choose Customer to Add CXM" data-custid="{{ page.has('custID') ? page.custID : '' }}" data-search="customers">
-						<i class="fa fa-plus" aria-hidden="true"></i> Add New
-					</button>
-				{% endif %}
+				<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#create-kit-modal" title="Choose Customer to Add CXM" aria-label="Choose Customer to Add CXM" data-custid="{{ page.has('custID') ? page.custID : '' }}" data-search="customers">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add New
+				</button>
 			</th>
 		</tr>
 	</thead>
@@ -36,7 +30,7 @@
 							<a href="{{ page.kitURL(kit.itemid) }}" class="btn btn-warning btn-sm">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
-							<a href="{# page.cxm_item_deleteURL(item.itemid, item.custid, item.custitemid) #}" class="btn btn-danger btn-sm remove-cxm-item">
+							<a href="{{ page.kit_deleteURL(kit.itemid) }}" class="btn btn-danger btn-sm delete-kit" data-kitid="{{ kit.itemid }}">
 								<i class="fa fa-trash" aria-hidden="true"></i> Delete
 							</a>
 						{% else %}
