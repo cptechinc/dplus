@@ -1,9 +1,39 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	kim                    module Kim
+#}
 {% include 'mki/kim/kit/component/delete.js.twig' %}
 
 $(function() {
 	var form = $('#kit-component-form');
 	var input_component = form.find('input[name=component]');
 	var modal_ajax = $('#ajax-modal');
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = form.serialize();
+
+	$("body").on("click", "a:not(#kit-component-form .form-link, #ajax-modal a, [data-target=#ajax-modal])", function(e) {
+		if (form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			swal_unsaved(function(result) {
+				if (result.value) { // If OL to save was clicked
+					form.find('button[type=submit]').click();
+				} else if (result.dismiss === Swal.DismissReason.cancel) {
+					// Send HTTP GET Request to remove Record Lock
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
 
 /* =============================================================
 	Validation Functions
@@ -75,7 +105,6 @@ $(function() {
 
 	function validate_usagetag(val) {
 		var options = {{ kim.component.options_component_usagetag()|json_encode()|raw }};
-		console.log(options.hasOwnProperty(val));
 		return options.hasOwnProperty(val);
 	}
 
@@ -156,6 +185,22 @@ $(function() {
 		url.addQuery('action', 'get-item').addQuery('itemID', itemID);
 		$.getJSON(url.toString(), function( obj ) {
 			callback(obj);
+		});
+	}
+
+/* =============================================================
+	Swal (SweetAlert) Functions
+============================================================= */
+	function swal_unsaved(callback) {
+		swal2.fire({
+			title: 'Changes have occurred!',
+			text: 'Do you want to save?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			callback(result);
 		});
 	}
 });
