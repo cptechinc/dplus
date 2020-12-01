@@ -67,7 +67,7 @@ class ValidateKim extends WireData implements Module {
 	 * @return bool
 	 */
 	public function can_delete($kitID) {
-		return $this->is_ordered($kitID);
+		return $this->is_ordered($kitID) === false;
 	}
 
 	/**
@@ -76,7 +76,7 @@ class ValidateKim extends WireData implements Module {
 	 * @return bool
 	 */
 	public function is_ordered($kitID) {
-		return boolval(SalesOrderDetailQuery::create()->filterByItemid($this->itemid)->count());
+		return boolval(SalesOrderDetailQuery::create()->filterByItemid($kitID)->count());
 	}
 
 /* =============================================================
