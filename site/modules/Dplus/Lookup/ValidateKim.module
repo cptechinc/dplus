@@ -4,6 +4,7 @@ use Propel\Runtime\ActiveQuery\Criteria;
 
 use InvKitQuery, InvKit;
 use InvKitComponent, InvHazmatItem;
+use SalesOrderDetailQuery, SalesOrderDetail;
 
 /**
  * ValidateKim
@@ -20,7 +21,7 @@ class ValidateKim extends WireData implements Module {
 	 * @return bool
 	 */
 	public function kit_exists($kitID) {
-		return boolval(InvKitQuery::create()->filterByItemid($kitID));
+		return boolval(InvKitQuery::create()->filterByItemid($kitID)->count());
 	}
 
 	/**
@@ -30,7 +31,7 @@ class ValidateKim extends WireData implements Module {
 	 * @return bool
 	 */
 	public function kit_component_exists($kitID, $component) {
-		return boolval(InvKitComponentQuery::create()->filteryByKitid($kitID)->filterByItemid($component));
+		return boolval(InvKitComponentQuery::create()->filteryByKitid($kitID)->filterByItemid($component)->count());
 	}
 
 	/**
@@ -58,6 +59,24 @@ class ValidateKim extends WireData implements Module {
 	 */
 	public function component_usagetag($val) {
 		return array_key_exists($val, InvKitComponent::OPTIONS_USAGETAG);
+	}
+
+	/**
+	 * Return if Kit can deleted
+	 * @param  string $kitID Kit Item ID
+	 * @return bool
+	 */
+	public function can_delete($kitID) {
+		return $this->is_ordered($kitID);
+	}
+
+	/**
+	 * Return If Kit Item exists on Order
+	 * @param  string $kitID Kit Item ID
+	 * @return bool
+	 */
+	public function is_ordered($kitID) {
+		return boolval(SalesOrderDetailQuery::create()->filterByItemid($this->itemid)->count());
 	}
 
 /* =============================================================
