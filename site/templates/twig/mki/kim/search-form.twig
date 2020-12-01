@@ -1,0 +1,13 @@
+{% include 'util/form/search-form.twig' with {
+		'formid': 'kit-search-form', 'url': page.url,
+		'label': 'Search Kits',
+		'name': 'q', 'id': 'kitq', 'value': '', 'placeholder': 'Kit ID'
+	}
+%}
+{% if q %}
+	<div class="form-group">
+		<a href="{{ page.url }}" class="btn btn-sm btn-warning">
+			<i class="fa fa-filter" aria-hidden="true"></i> Clear Filter
+		</a>
+	</div>
+{% endif %}

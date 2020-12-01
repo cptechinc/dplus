@@ -4,12 +4,15 @@
 	$kim = $modules->get('Kim');
 	$kim->init_configs();
 	$html = $modules->get('HtmlWriter');
+	$page->show_breadcrumbs = false;
 
 	if ($values->action) {
 		$kim->process_input($input);
 		$kitID = $values->text('kitID');
 		$session->redirect($page->kitURL($kitID));
 	}
+
+	$page->body .= $config->twig->render('mki/kim/bread-crumbs.twig', ['page' => $page, 'input' => $input]);
 
 	if ($session->response_kim) {
 		$page->body .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->response_kim]);
@@ -50,11 +53,16 @@
 			$page->body .= $config->twig->render('mki/kim/kit/page.twig', ['page' => $page, 'kim' => $kim, 'kit' => $kit]);
 			$page->js   .= $config->twig->render('mki/kim/kit/js.twig', ['page' => $page, 'kim' => $kim]);
 		}
-
 	} else {
+		$q = $input->get->text('q');
 		$filter = $modules->get('FilterKim');
 		$filter->init_query();
+		if ($q) {
+			$page->headline = "KIM: Searching for '$q'";
+			$filter->search($q);
+		}
 		$kits = $filter->query->paginate($input->pageNum, $session->display);
+		$page->body .= $config->twig->render('mki/kim/search-form.twig', ['page' => $page, 'q' => $q]);
 		$page->body .= $config->twig->render('mki/kim/page.twig', ['page' => $page, 'kim' => $kim, 'kits' => $kits]);
 		$page->js   .= $config->twig->render('mki/kim/list.js.twig', ['page' => $page, 'kim' => $kim]);
 	}
