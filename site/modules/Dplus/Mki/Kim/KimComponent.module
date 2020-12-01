@@ -110,23 +110,27 @@ class KimComponent extends WireData implements Module {
 		return $this->new_component($kitID, $itemID);
 	}
 
-
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
 	/**
 	 * Takes Input, processses the action, calls the process_input
 	 * @param  WireInput $input Input
-	 * @return void
+	 * @return bool
 	 */
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
+		$kitID = $values->text('kitID');
+		$kim = $this->wire('modules')->get('Kim');
 
-		$kit_exists = $this->wire('modules')->get('Kim')->kit_exists($values->text('kitID'));
+		if (!$kim->kit_exists($kitID)) {
+			$created = $this->create_kit($kitID);
 
-		if (!$kit_exists) {
-			$this->wire('session')->response_kim = KimResponse::response_error($values->text('kitID'), "Kit Does not exist");
+			if (!$created) {
+				$this->wire('session')->response_kim = KimResponse::response_error($kitID, "Kit $kitID doesn't exist and wasn't able to be created");
+				return false;
+			}
 		}
 
 		switch ($values->text('action')) {
@@ -140,7 +144,7 @@ class KimComponent extends WireData implements Module {
 				$this->input_delete($input);
 				break;
 			default:
-				//$this->wire('session')->response_kim = KimResponse::response_error("ItmMisc", "No Action Provided");
+				$this->wire('session')->response_kim = KimResponse::response_error($kitID, "No Action Provided");
 				break;
 		}
 	}
@@ -184,6 +188,12 @@ class KimComponent extends WireData implements Module {
 		return $this->wire('session')->response_kim->has_success();
 	}
 
+	/**
+	 * Update Component Record from Input Data
+	 * @param  InvKitComponent $component Kit Component
+	 * @param  WireInput       $input     Input Data
+	 * @return array
+	 */
 	public function update_record_input(InvKitComponent $component, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
@@ -193,6 +203,12 @@ class KimComponent extends WireData implements Module {
 		return $invalidfields;
 	}
 
+	/**
+	 * Update validated Kit Component Record fields
+	 * @param  InvKitComponent $record Kit Component
+	 * @param  WireInput       $input  Input Data
+	 * @return array
+	 */
 	public function update_record_input_validated(InvKitComponent $record, WireInput $input) {
 		$modules = $this->wire('modules');
 		$validate = $modules->get('ValidateKim');
@@ -271,6 +287,11 @@ class KimComponent extends WireData implements Module {
 /* =============================================================
 	Dplus Cobol Request Functions
 ============================================================= */
+	/**
+	 * Sends CGI request to Dplus Cobol
+	 * @param  array  $data Data to write to file
+	 * @return void
+	 */
 	private function request_dplus(array $data) {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
@@ -280,13 +301,15 @@ class KimComponent extends WireData implements Module {
 		$requestor->cgi_request($config->cgis['database'], session_id());
 	}
 
+	/**
+	 * Send Update Kit Component Request to Dplus Cobol
+	 * @param  InvKitComponent $c Kit Component
+	 * @return void
+	 */
 	private function update_dplus_cobol(InvKitComponent $c) {
 		$data = array('UPDATEKIM', "KITITEM=$c->kitid", "COMPITEM=$c->itemid");
 		$this->request_dplus($data);
 	}
-
-
-
 
 /* =============================================================
 	Supplemental Functions
@@ -335,6 +358,20 @@ class KimComponent extends WireData implements Module {
 	 */
 	public function decimal_places_qty() {
 		return 4;
+	}
+
+	/**
+	 * Create Kit with Kim module
+	 * @param  string $kitID Kit ID
+	 * @return bool
+	 */
+	public function create_kit($kitID) {
+		$input = new WireInput();
+		$values = $input->post;
+		$values->__set('action', 'create-kit');
+		$values->__set('kitID', $kitID);
+		$kim = $this->wire('modules')->get('Kim');
+		return $kim->process_input($input);
 	}
 
 /* =============================================================

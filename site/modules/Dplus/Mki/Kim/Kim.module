@@ -112,13 +112,23 @@ class Kim extends WireData implements Module {
 
 		switch ($values->text('action')) {
 			case 'create-kit':
-				$this->input_create($input);
+				return $this->input_create($input);
 				break;
-				//$this->wire('session')->response_kim = KimResponse::response_error("ItmMisc", "No Action Provided");
+			case 'delete-kit':
+				return $this->input_delete($input);
+				break;
+			default:
+				$this->wire('session')->response_kim = KimResponse::response_error("ItmMisc", "No Action Provided");
+				return false;
 				break;
 		}
 	}
 
+	/**
+	 * Creates Kit from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
 	protected function input_create(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
@@ -129,22 +139,89 @@ class Kim extends WireData implements Module {
 		}
 
 		if ($this->create_kit($kitID)) {
+			$this->update_dplus_cobol($kitID);
 			return true;
 		}
 		$this->wire('session')->response_kim = KimResponse::response_error($kitID, "Kit $kitID can not be created");
 		return false;
 	}
 
+	/**
+	 * Delete Kit from Input Data
+	 * NOTE: It validates if Kit can be deleted
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function input_delete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$kitID = $values->text('kitID');
+
+		if ($this->kit_exists($kitID)) {
+			$validate = $this->wire('modules')->get('ValidateKim');
+
+			if ($validate->can_delete($KitID)) {
+				$kit = $this->get_kit($kitID);
+				$kit->delete();
+				$response = $this->save_and_respond($kit);
+				$this->wire('session')->response_kim = $response;
+				return $response->has_success();
+			}
+
+			$this->wire('session')->response_kim = KimResponse::response_error($kitID, "Cannot delete Kit ID $kitID. It has committed orders.");
+			return false;
+		}
+		return true;
+	}
 
 /* =============================================================
 	CRUD Response Functions
 ============================================================= */
+	/**
+	 * Returns KimResponse based on the outcome of the database save
+	 * @param  InvKit $record        Record to record response of database save
+	 * @param  array           $invalidfields Input fields that require attention
+	 * @return KimResponse
+	 */
+	protected function save_and_respond(InvKit $record, array $invalidfields = []) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
+		$response = new KimResponse();
+		$response->set_kitID($record->itemid);
+		$templatemsg = self::RESPONSE_TEMPLATE;
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+		}
+
+		if ($is_new) {
+			$response->set_action(KimResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$response->set_action(KimResponse::CRUD_DELETE);
+		} else {
+			$response->set_action(KimResponse::CRUD_UPDATE);
+		}
+
+		$response->build_message($templatemsg);
+		$response->set_fields($invalidfields);
+		if ($response->has_success()) {
+			$this->update_dplus_cobol($record->itemid);
+		}
+		return $response;
+	}
 
 /* =============================================================
 	Dplus Cobol Request Functions
 ============================================================= */
-	public function request_dplus(array $data) {
+	/**
+	 * Sends CGI request to Dplus Cobol
+	 * @param  array  $data Data to write to file
+	 * @return void
+	 */
+	private function request_dplus(array $data) {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
 		$data = array_merge(["DBNAME=$dplusdb"], $data);
@@ -153,6 +230,15 @@ class Kim extends WireData implements Module {
 		$requestor->cgi_request($config->cgis['database'], session_id());
 	}
 
+	/**
+	 * Send Update Kit Master Request to Dplus Cobol
+	 * @param  string $kitID Kit Item ID
+	 * @return void
+	 */
+	private function update_dplus_cobol($kitID) {
+		$data = array('UPDATEKIM', "KITITEM=$kitID");
+		$this->request_dplus($data);
+	}
 
 /* =============================================================
 	Supplemental Functions
@@ -209,6 +295,12 @@ class Kim extends WireData implements Module {
 /* =============================================================
 	URL Functions
 ============================================================= */
+	/**
+	 * Return URL to Kit Page
+	 * @param  string $kitID *** Optional *** Kit ID
+	 * @param  string $focus *** Optional *** Kit ID to highlight
+	 * @return string
+	 */
 	public function kitURL($kitID = '', $focus = '') {
 		$url = new Url($this->wire('pages')->get('pw_template=kim')->url);
 		if ($kitID) {
@@ -221,11 +313,36 @@ class Kim extends WireData implements Module {
 		return $url->getUrl();
 	}
 
+	/**
+	 * Return URL to delete Kit
+	 * @param  string $kitID Kit ID
+	 * @return string
+	 */
+	public function kit_deleteURL($kitID) {
+		$url = new Url($this->wire('pages')->get('pw_template=kim')->url);
+		$url->query->set('action', 'delete-kit');
+		$url->query->set('kitID', $kitID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to view Kit Component
+	 * @param  string $kitID     Kit ID
+	 * @param  string $component Component Item ID
+	 * @return string
+	 */
 	public function kit_componentURL($kitID, $component) {
 		$url = new Url($this->kitURL($kitID));
 		$url->query->set('component', $component);
 		return $url->getUrl();
 	}
+
+	/**
+	 * Return URL to delete Kit Component
+	 * @param  string $kitID     Kit ID
+	 * @param  string $component Component Item ID
+	 * @return string
+	 */
 	public function kit_component_deleteURL($kitID, $component) {
 		$url = new Url($this->kitURL($kitID));
 		$url->query->set('action', 'delete-component');
@@ -263,6 +380,12 @@ class Kim extends WireData implements Module {
 			$page = $event->object;
 			$kitID = $event->arguments(0);
 			$event->return = $this->kitURL('', $kitID);
+		});
+
+		$this->addHook('Page(pw_template=kim)::kit_deleteURL', function($event) {
+			$page = $event->object;
+			$kitID = $event->arguments(0);
+			$event->return = $this->kit_deleteURL($kitID);
 		});
 
 		$this->addHook('Page(pw_template=kim)::kit_componentURL', function($event) {
