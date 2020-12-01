@@ -1,0 +1,24 @@
+<form action="{{ page.url }}" method="post" id="create-kit-form">
+	<input type="hidden" name="action" value="create-kit">
+	
+	<div class="form-group item-col">
+		<label for="kitID">Kit Item ID</label>
+		{% include 'util/form/input-with-modal-lookup.twig' with {
+				'name': 'kitID', 'value': '',
+				'attributes': {
+					'readonly': false,
+				},
+				'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Item',
+				'attributes_button': {
+					'data-search': 'item',
+					'data-lookupurl': page.itemlookupURL()
+				}
+			}
+		%}
+		<small class="form-text text-muted description">{{ item.item.description }}</small>
+		<small class="form-text text-muted description2">{{ item.item.description2 }}</small>
+	</div>
+	<button type="submit" class="btn btn-success">
+		<i class="fa fa-sitemap" aria-hidden="true"></i> Create Kit
+	</button>
+</form>
