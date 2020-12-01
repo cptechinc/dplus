@@ -1,0 +1,59 @@
+$(function() {
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on("click", "a.delete-kit", function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var kitID = button.data('kitid');
+
+		swal_kit_delete(kitID, function(greenlight) {
+			if (greenlight) {
+				validate_can_delete_kit(kitID, function(permitted) {
+					if (permitted === true) {
+						window.location.href = button.attr('href');
+					} else {
+						swal_kit_delete_false(permitted);
+					}
+				});
+			}
+		});
+	});
+
+/* =============================================================
+	AJAX Request Functions
+============================================================= */
+	function validate_can_delete_kit(kitID, callback) {
+		var url = new URI('{{ page.jsonapiURL('mki') }}');
+		url.addQuery('action', 'validate-can-delete-kit').addQuery('kitID', kitID);
+		$.getJSON(url.toString(), function(permitted) {
+			callback(permitted);
+		});
+	}
+
+/* =============================================================
+	Swal / Sweet Alert Functions
+============================================================= */
+	function swal_kit_delete(kitID, callback) {
+		swal2.fire({
+			title: "Are you sure?",
+			text: "Do you want to delete "+kitID+"?",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Yes'
+		}).then(function (result) {
+			callback(result.value);
+		});
+	}
+
+	function swal_kit_delete_false(permitted) {
+		if (permitted !== true) {
+			swal2.fire({
+				title: "Cannot delete kit",
+				text: permitted,
+				icon: 'warning',
+				confirmButtonText: 'Ok'
+			});
+		}
+	}
+});
