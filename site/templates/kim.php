@@ -3,6 +3,7 @@
 	$values = $input->$rm;
 	$kim = $modules->get('Kim');
 	$kim->init_configs();
+	$html = $modules->get('HtmlWriter');
 
 	if ($values->action) {
 		$kim->process_input($input);
@@ -28,10 +29,15 @@
 			 * Otherwise if not locked, create lock
 			 */
 			if (!$kim->lockrecord($kitID)) {
-				$msg = "ITM Item $kitID is being locked by " . $kim->recordlocker->get_locked_user($kitID);
-				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "ITM Item $kitID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+				$msg = "Kit $kitID is being locked by " . $kim->recordlocker->get_locked_user($kitID);
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Kit $kitID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 				$page->body .= $html->div('class=mb-3');
 			}
+		}
+
+		if ($kit->isNew()) {
+			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Kit $kitID does not exist", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You will be able to create this kit"]);
+			$page->body .= $html->div('class=mb-3');
 		}
 
 		if ($values->component) {
@@ -39,16 +45,18 @@
 			$component = $kim->component->new_get_component($kitID, $itemID);
 			$page->headline = $itemID == 'new' ? "Kit Master: $kitID" : "Kit Master: $kitID - $itemID";
 			$page->body .= $config->twig->render('mki/kim/kit/component/page.twig', ['page' => $page, 'kim' => $kim, 'kit' => $kit, 'component' => $component]);
-			$page->js   .= $config->twig->render('mki/kim/kit/component/js.twig', ['page' => $page, 'kim' => $kim, 'kit' => $kit, 'component' => $component]);
-			$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+			$page->js   .= $config->twig->render('mki/kim/kit/component/js.twig', ['page' => $page, 'kim' => $kim,]);
 		} else {
 			$page->body .= $config->twig->render('mki/kim/kit/page.twig', ['page' => $page, 'kim' => $kim, 'kit' => $kit]);
+			$page->js   .= $config->twig->render('mki/kim/kit/js.twig', ['page' => $page, 'kim' => $kim]);
 		}
+
 	} else {
 		$filter = $modules->get('FilterKim');
 		$filter->init_query();
 		$kits = $filter->query->paginate($input->pageNum, $session->display);
 		$page->body .= $config->twig->render('mki/kim/page.twig', ['page' => $page, 'kim' => $kim, 'kits' => $kits]);
+		$page->js   .= $config->twig->render('mki/kim/list.js.twig', ['page' => $page, 'kim' => $kim]);
 	}
-
+	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 	include __DIR__ . "/basic-page.php";
