@@ -1,0 +1,18 @@
+{% set method = method ? method : 'get' %}
+{% set formclass = formclass ? formclass : 'allow-enterkey-submit' %}
+{% set formclass_add = formclass_add ? class_add|join2(' ') : '' %}
+{% set class_form = formclass ~ ' ' ~ formclass_add %}
+
+{%
+	set form = {
+		'action': url,
+		'method': method,
+		'id': formid,
+		'class': class_form
+	}
+%}
+
+<form action="{{ form.action }}" method="{{ form.method }}" class="{{ form.class }}" id="{{ form.id }}">
+	{% block form %}
+	{% endblock %}
+</form>
