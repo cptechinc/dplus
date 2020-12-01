@@ -10,6 +10,7 @@
 		<tr class="bg-dark text-white p-3">
 			<th class="pt-3 pb-3 align-middle">Kit Item ID</th>
 			<th class="pt-3 pb-3 align-middle">Description</th>
+			<th class="pt-3 pb-3 align-middle"># of Items</th>
 			<th class="pt-3 pb-3 text-center">
 				<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#create-kit-modal" title="Choose Customer to Add CXM" aria-label="Choose Customer to Add CXM" data-custid="{{ page.has('custID') ? page.custID : '' }}" data-search="customers">
 					<i class="fa fa-plus" aria-hidden="true"></i> Add New
@@ -25,6 +26,7 @@
 				<tr class="{{ class }}" data-kit="{# kit.itemid #}">
 					<td>{{ kit.itemid }}</td>
 					<td>{{ kit.item.description }}</td>
+					<td class="text-center">{{ kit.countInvKitComponents() }}</td>
 					<td class="text-center">
 						{% if kim.recordlocker.function_locked(kit.itemid) == false or kim.recordlocker.function_locked_by_user(kit.itemid) %}
 							<a href="{{ page.kitURL(kit.itemid) }}" class="btn btn-warning btn-sm">
