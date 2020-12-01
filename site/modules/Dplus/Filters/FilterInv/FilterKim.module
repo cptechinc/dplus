@@ -47,9 +47,9 @@ class FilterKim extends WireData implements Module {
 	 * @param  string $q Search Query
 	 * @return void
 	 */
-	public function filter_search($q) {
+	public function search($q) {
 		$columns = array(
-			// InvKit::get_aliasproperty('id'),
+			InvKit::get_aliasproperty('itemid'),
 			// InvKit::get_aliasproperty('description'),
 			// InvKit::get_aliasproperty('effective_date'),
 		);
