@@ -90,6 +90,14 @@ class DpagesApi extends Dpages implements Module {
 			'parent'         => '/api/json/',
 			'pw_template'    => 'api-ajax-json-msa'
 		),
+		'json-mki' => array(
+			'template'       => 'dplus-json',
+			'name'           => 'mso',
+			'title'          => 'API JSON MKI',
+			'summary'        => 'API JSON MKI',
+			'parent'         => '/api/json/',
+			'pw_template'    => 'api-ajax-json-mki'
+		),
 		'menu-lookup' => array(
 			'template'       => 'api-menu',
 			'name'           => 'lookup',
