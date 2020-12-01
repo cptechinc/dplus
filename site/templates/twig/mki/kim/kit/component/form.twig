@@ -122,7 +122,7 @@
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 			{% if component.isNew() == false %}
-				<a href="{{ page.kit_component_deleteURL(kit.itemid, component.itemid) }}" class="btn btn-danger delete-component" data-component="{{ component.itemid }}">
+				<a href="{{ page.kit_component_deleteURL(kit.itemid, component.itemid) }}" class="btn btn-danger form-link delete-component" data-component="{{ component.itemid }}">
 					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}
