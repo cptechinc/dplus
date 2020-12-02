@@ -14,7 +14,6 @@ class FilterXrefItemVxm extends WireData implements Module {
 		$this->query = ItemXrefVendorQuery::create();
 	}
 
-
 	/**
 	 * Returns Query
 	 * @return ItemXrefVendorQuery
@@ -49,6 +48,11 @@ class FilterXrefItemVxm extends WireData implements Module {
 /* =============================================================
 	Input Functions
 ============================================================= */
+	/**
+	 * Filters Query by Item ID
+	 * @param  WireInput $input Input Data
+	 * @return self
+	 */
 	public function itemid_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
@@ -59,8 +63,8 @@ class FilterXrefItemVxm extends WireData implements Module {
 
 	/**
 	 * Filters Query by Customer ID
-	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-	 * @return void
+	 * @param  WireInput $input Input Data
+	 * @return self
 	 */
 	public function vendorid_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
