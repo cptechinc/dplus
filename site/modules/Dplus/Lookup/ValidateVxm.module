@@ -15,12 +15,12 @@ class ValidateVxm extends WireData implements Module {
 	AP Functions
 ============================================================= */
 	/**
-	 * Return if Cust ID is Valid
-	 * @param  string $custID Customer ID
+	 * Return if Vendor ID is Valid
+	 * @param  string $vendorID Vendor ID
 	 * @return bool
 	 */
-	public function vendorid($custID) {
-		return $this->validate->ap->vendorid($custID);
+	public function vendorid($vendorID) {
+		return $this->validate->ap->vendorid($vendorID);
 	}
 
 /* =============================================================
@@ -63,6 +63,42 @@ class ValidateVxm extends WireData implements Module {
 	 */
 	public function approvalcode($option) {
 		return array_key_exists($option, ItemXrefVendor::OPTIONS_APPROVALCODE);
+	}
+
+	/**
+	 * Validate if Vendor ID has a X-ref for Item ID
+	 * @param  string $vendorID Vendor ID
+	 * @param  string $itemID   Item ID
+	 * @return bool
+	 */
+	public function vendor_has_xref_itemid($vendorID, $itemID) {
+		if ($this->vendorid($vendorID) === false || $this->itemid($itemID) === false) {
+			return false;
+		}
+		$q = ItemXrefVendorQuery::create()->filterByItemid($itemID)->filterByVendorid($vendorID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Validate if VXM X-ref exists
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor Item ID
+	 * @return bool
+	 */
+	public function exists($vendorID, $vendoritemID) {
+		return $this->modules->get('XrefVxm')->vxm_item_exists($vendorID, $vendoritemID);
+	}
+
+	/**
+	 * Validate Vendor has Primary X-ref
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor Item ID
+	 * @return bool
+	 */
+	public function vendor_has_primary($vendorID, $itemID) {
+		$q = ItemXrefVendorQuery::create()->filterByItemid($itemID)->filterByVendorid($vendorID);
+		$q->filterByPo_ordercode(ItemXrefVendor::POORDERCODE_PRIMARY);
+		return boolval($q);
 	}
 
 /* =============================================================
