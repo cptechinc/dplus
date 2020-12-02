@@ -33,7 +33,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 		'ii_lookup' => 'ii-item-lookup',
 		'itm_json'  => 'itm-json',
 		'vi_json'   => 'vi-json',
-		'search_items'     => 'item-search',
+		'search_items'     => 'itm-search',
 		'search_vendors'   => 'vi-search',
 		'search_countries' => 'lookup-country-codes',
 		'search_shipfrom'  => 'vi-shipfrom'
@@ -697,6 +697,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 				$event->return = $this->wire('pages')->get("pw_template=$pwtemplate")->url;
 			});
 		}
+
 		$this->addHookProperty('Page(pw_template=purchase-order-edit)::ponbr', function($event) {
 			$p = $event->object;
 			$event->return = $this->get_po_editURL($p->fullURL->query->get('ponbr'));
@@ -725,6 +726,16 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$this->addHook('Page(pw_template=purchase-order-edit)::po_documentsURL', function($event) {
 			$ponbr = $event->arguments(0);
 			$event->return = $this->get_po_documentsURL($ponbr);
+		});
+
+		$this->addHook("Page(pw_template=purchase-order-edit)::jsonapiURL", function($event) {
+			$api = $event->arguments(0);
+			$pages = $this->wire('pages');
+			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
+		});
+
+		$this->addHookProperty("Page(pw_template=purchase-order-edit)::search_vxmURL", function($event) {
+			$event->return = $this->wire('pages')->get('template=api-ajax,ajaxcode=vxm')->url;
 		});
 
 		$this->addHook('Page(pw_template=purchase-order-epo)::choose_vendorURL', function($event) {
