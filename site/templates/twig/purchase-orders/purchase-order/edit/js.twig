@@ -17,8 +17,13 @@ $(function() {
 		var modal = $(this);
 		var url = '';
 
-		switch(button.data('search')) {
+		modal.attr('data-input', button.data('input'));
+
+		switch (button.data('search')) {
 			case 'item':
+				url = '{{ page.search_itemsURL() }}';
+				break;
+			case 'vendoritem':
 				url = '{{ page.search_itemsURL() }}';
 				break;
 			case 'shipfrom':
@@ -33,7 +38,6 @@ $(function() {
 				url = '{{ page.po_documentsURL(page.ponbr) }}';
 				break;
 		}
-		console.log(url);
 
 		modal.find('.modal-title').text(button.attr('title'));
 		modal.resizeModal('xl');
