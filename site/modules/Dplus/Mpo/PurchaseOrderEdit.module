@@ -734,7 +734,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
 		});
 
-		$this->addHookProperty("Page(pw_template=purchase-order-edit)::search_vxmURL", function($event) {
+		$this->addHook("Page(pw_template=purchase-order-edit)::search_vxmURL", function($event) {
 			$event->return = $this->wire('pages')->get('template=api-ajax,ajaxcode=vxm')->url;
 		});
 
