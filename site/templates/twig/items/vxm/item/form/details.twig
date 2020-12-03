@@ -50,6 +50,6 @@
 		<label for="date_changed"><b>Last Change Date</b></label>
 	</div>
 	<div class="col-sm-6">
-		<input type="text" name="date_changed" class="form-control-plaintext form-control-sm" id="date_changed" value="{{ item.date_changed ? item.date_changed|convertdate : 'N/A' }}" readonly>
+		<p class="form-control-plaintext form-control-sm">{{ item.date_changed ? item.date_changed|convertdate : 'N/A' }}</p>
 	</div>
 </div>
