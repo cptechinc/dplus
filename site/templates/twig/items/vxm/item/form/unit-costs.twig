@@ -16,7 +16,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr class="unit-row">
+		<tr class="unit-row" data-break="{{ 0 }}">
 			<td>Base</td>
 			<td>
 				<input type="hidden" class="form-control form-control-sm unit-qty" value="1">
@@ -26,7 +26,7 @@
 						'name': 'unitcost_base', 'value': item.get_unitcost_uom(0)|number_format(vxm.decimal_places_cost()),
 						'class_add': [
 							'unit-cost',
-							'w-75',
+							'w-50',
 							'text-right',
 							'pull-right'
 						]
@@ -47,25 +47,53 @@
 			</td>
 		</tr>
 		{% for i in 1..item.get_unitsavailable() %}
-			<tr class="unit-row">
+			<tr class="unit-row" data-break="{{ i }}">
 				<td>
 					Qty {{ i }}
 				</td>
 				<td>
-					<input type="text" class="form-control form-control-sm w-50 unit-qty text-right pull-right" name="unit_qty{{ i }}" value="{{ item.get_unitqty(i) }}">
+					{% set readonly_qty = i - 1 > 0 ? item.get_unitqty(i - 1) == '' or item.get_unitqty(i - 1) == 0 : false %}
+					{% include 'util/form/input.twig' with {
+							'name': 'unit_qty' ~ i, 'value': item.get_unitqty(i),
+							'class_add': [
+								'unit-qty',
+								'w-50',
+								'text-right',
+								'pull-right'
+							],
+							'attributes': {
+								'readonly': readonly_qty
+							}
+						}
+					%}
 				</td>
 				<td>
-					<input type="text" class="form-control form-control-sm w-75 unit-cost text-right pull-right" name="unit_cost{{ i }}" value="{{ item.get_unitcost_uom(i)|number_format(vxm.decimal_places_cost()) }}">
+					{% include 'util/form/input.twig' with {
+							'name': 'unit_cost' ~ i, 'value': item.get_unitcost_uom(i)|number_format(vxm.decimal_places_cost()),
+							'class_add': [
+								'unit-cost',
+								'w-50',
+								'text-right',
+								'pull-right'
+							],
+							'attributes': {
+								'readonly': item.get_unitqty(i) == '' or item.get_unitqty(i) == 0
+							}
+						}
+					%}
 				</td>
 				<td class="text-right">
 					{% include 'util/form/input.twig' with {
-							'name': 'unitmargin_' ~ i, 'value': item.get_unitmargin(i)|number_format(vxm.decimal_places_margin()),
+							'name': 'unit_margin' ~ i, 'value': item.get_unitmargin(i)|number_format(vxm.decimal_places_margin()),
 							'class_add': [
 								'unit-margin',
 								'w-50',
 								'text-right',
 								'pull-right'
-							]
+							],
+							'attributes': {
+								'readonly': item.get_unitqty(i) == '' or item.get_unitqty(i) == 0
+							}
 						}
 					%}
 				</td>
