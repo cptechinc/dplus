@@ -1,0 +1,87 @@
+<?php namespace ProcessWire;
+
+use DplusUserQuery, DplusUser;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+class FilterDplusUsers extends WireData implements Module {
+	/**
+	 * Returns Query
+	 * @return DplusUserQuery
+	 */
+	public function get_query() {
+		return $this->query;
+	}
+
+	/**
+	 * Initializes Query
+	 * @return void
+	 */
+	public function init_query() {
+		$this->query = DplusUserQuery::create();
+	}
+
+/* =============================================================
+	Input Filter Functions
+============================================================= */
+	/**
+	 * Applies Filters to the Query
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function filter_input(WireInput $input) {
+
+	}
+
+/* =============================================================
+	Base Filter Functions
+============================================================= */
+
+	/**
+	 * Searches the DplusUser Table to find vendors that match the query provided
+	 * @param  string $q Search Query
+	 * @return void
+	 */
+	public function filter_search($q) {
+		$columns = [
+			DplusUser::get_aliasproperty('loginid'),
+			DplusUser::get_aliasproperty('name'),
+			DplusUser::get_aliasproperty('whseid'),
+			DplusUser::get_aliasproperty('group'),
+			DplusUser::get_aliasproperty('role'),
+			DplusUser::get_aliasproperty('email'),
+		];
+		$this->query->search_filter($columns, strtoupper($q));
+	}
+
+/* =============================================================
+	Misc Query Functions
+============================================================= */
+	/**
+	 * Adds the Sort By to the query
+	 * @param  Page   $page
+	 * @return void
+	 */
+	public function apply_sortby(Page $page) {
+		if ($page->has_orderby()) {
+			$orderbycolumn = $page->orderby_column;
+			$sort = $page->orderby_sort;
+
+			$tablecolumn = DplusUser::get_aliasproperty($orderbycolumn);
+			$this->query->sortBy($tablecolumn, $sort);
+		}
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Filter DplusUser Module',
+			'version' => 101,
+			'summary' => 'Handles DplusUser Filtering',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
