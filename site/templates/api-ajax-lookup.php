@@ -25,7 +25,7 @@
 	$filter->filter_input($input);
 
 	if ($input->get->q) {
-		$filter->filter_search($q);
+		$filter->search($q);
 		$page->headline = "Searching for '$q'";
 	}
 	$filter->apply_sortby($page);
@@ -38,7 +38,7 @@
 	switch ($page->ajaxcode) {
 		case 'vxm':
 			$vendorID = $input->get->text('vendorID');
-			$page->body .= $config->twig->render("api/lookup/$page->ajaxcode/search.twig", ['page' => $page, 'results' => $results, 'datamatcher' => $modules->get('RegexData'), 'q' => $q]);
+			$page->body .= $config->twig->render("api/lookup/$page->ajaxcode/search.twig", ['page' => $page, 'results' => $results, 'datamatcher' => $modules->get('RegexData'), 'vendorID' => $vendorID, 'q' => $q]);
 			break;
 		default:
 			if ($twigloader->exists("api/lookup/$page->ajaxcode/search.twig")) {
