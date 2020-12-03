@@ -24,9 +24,14 @@ class FilterKim extends WireData implements Module {
 /* =============================================================
 	Input Filter Functions
 ============================================================= */
+	/**
+	 * Applies Filters to the Query
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function filter_input(WireInput $input) {
 
-
-
+	}
 
 /* =============================================================
 	Base Filter Functions
@@ -55,6 +60,7 @@ class FilterKim extends WireData implements Module {
 		);
 		$this->query->search_filter($columns, strtoupper($q));
 	}
+
 /* =============================================================
 	Misc Query Functions
 ============================================================= */
