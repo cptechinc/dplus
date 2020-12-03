@@ -26,13 +26,24 @@ $(function() {
 	Event Functions
 ============================================================= */
 	$("body").on("change", ".unit-cost, .unit-qty", function(e) {
-		var unitrow = $(this).closest('.unit-row');
+		var input = $(this);
+		var unitrow = input.closest('.unit-row');
 		update_unitrow_margin(unitrow);
+
+		if (input.hasClass('unit-qty')) {
+			update_input_availability(unitrow);
+		}
 	});
 
 	$("body").on("change", ".unit-margin", function(e) {
 		var unitrow = $(this).closest('.unit-row');
 		update_unitrow_cost(unitrow);
+
+		if (parseInt(unitrow.data('break')) > 0) {
+			var step = parseInt(unitrow.data('break'));
+			var nextrow = $('.unit-row[data-break='+(step + 1)+']');
+			nextrow.find('.unit-qty').removeAttr('readonly');
+		}
 	});
 
 	/**
@@ -345,7 +356,6 @@ $(function() {
 		url.addQuery('action', 'validate-vendor-itemid').addQuery('vendorID', input_vendorID.val());
 		url.addQuery('vendoritemID', input_vendoritemID.val());
 		url.addQuery('return', 'bool');
-		console.log(url.toString());
 		$.getJSON(url.toString(), function( valid ) {
 			callback(valid);
 		});
@@ -362,7 +372,6 @@ $(function() {
 /* =============================================================
 	Margin Calculation Functions
 ============================================================= */
-
 	/**
 	 * Recalculates Each List Price based on the Unit of Measure Purchase Conversion
 	 */
@@ -405,7 +414,8 @@ $(function() {
 			var input_margin = unitrow.find('.unit-margin');
 			var margin = determine_unitmargin(parseFloat(input_unitcost.val()));
 			var displaymargin = parseFloat(margin).truncate({{ vxm.decimal_places_margin() }});
-			input_margin.val(displaymargin);
+			console.log(displaymargin);
+			input_margin.val(displaymargin).change();
 		}
 	}
 
@@ -424,6 +434,21 @@ $(function() {
 		if (parseFloat(input_margin.val())) {
 			var cost = parseFloat(determine_unitcost(margin)).toFixed({{ vxm.decimal_places_cost() }});
 			input_unitcost.val(cost);
+		}
+	}
+
+	/**
+	 * Calculates Margin for one Unit Cost
+	 * @param  JqueryElement unitrow
+	 */
+	function update_input_availability(unitrow) {
+		var input_unitqty = unitrow.find('.unit-qty');
+		var inputs = unitrow.find('.unit-cost, .unit-margin');
+
+		if (parseFloat(input_unitqty.val()) > 0) {
+			inputs.removeAttr('readonly');
+		} else {
+			inputs.attr('readonly', 'readonly');
 		}
 	}
 
