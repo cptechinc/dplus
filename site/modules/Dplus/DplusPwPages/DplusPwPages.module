@@ -317,7 +317,9 @@ class DplusPwPages extends WireData implements Module {
 
 		if (in_array($page['template'], array_keys($default_templates))) {
 			foreach ($default_templates[$page['template']]['fields'] as $fieldname) {
-				$pw_page->$fieldname = $page[$fieldname];
+				if (array_key_exists($fieldname, $page)) {
+					$pw_page->$fieldname = $page[$fieldname];
+				}
 			}
 		} else {
 			foreach ($this::TEMPLATES[$page['template']]['fields'] as $fieldname) {
@@ -404,6 +406,14 @@ class DplusPwPages extends WireData implements Module {
 			$page = $event->object;
 			$pagenbr = $event->arguments(0);
 			$event->return = $this->paginate_page($page, $pagenbr);
+		});
+
+		$this->addHook('Page::paginatefull', function($event) {
+			$page = $event->object;
+			$pagenbr = $event->arguments(0);
+			$url = new Url($page->fullURL->getUrl());
+			$url->path = $this->paginate_page($page, $pagenbr);
+			$event->return = $url->getUrl();
 		});
 
 		$this->addHook('Page::get_pagecount', function($event) {

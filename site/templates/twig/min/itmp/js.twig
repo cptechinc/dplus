@@ -1,0 +1,26 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	itmp                   module Itmp
+#}
+$(function() {
+	$('#edit-modal').on('hidden.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var loginID = modal.find('input[name=loginID]').val().toString();
+
+		$('#response-alert').hide();
+		$('.bg-success').removeClass('bg-success text-white');
+		$('.highlight').removeClass('highlight');
+		$('.user-row[data-loginid="'+loginID+'"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('.user-row[data-loginid="'+loginID+'"]').offset().top,},700,'linear');
+	});
+
+	{% if itmp.has_response() %}
+		{% set response = itmp.response() %}
+		$('.user-row[data-loginid="{{ response.key }}"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('.user-row[data-loginid="{{ response.key }}"]').offset().top,},700,'linear');
+	{% endif %}
+});
+{% include 'min/itmp/edit/js.twig' %}

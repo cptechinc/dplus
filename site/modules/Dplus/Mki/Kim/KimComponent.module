@@ -1,0 +1,402 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+use InvKitQuery, InvKit;
+use InvKitComponentQuery, InvKitComponent;
+use ItemMasterItemQuery, ItemMasterItem;
+
+include_once(__DIR__.'/KimResponse.php');
+
+/**
+ * KimComponent
+ * Kit Master
+ * Handles CRUD of Kit Components
+ */
+class KimComponent extends WireData implements Module {
+	const MODEL              = 'InvKit, InvKitComponent';
+	const DESCRIPTION        = 'Kit Component';
+	const RESPONSE_TEMPLATE = 'Kit {kit} component {component} was {not} {crud}';
+	const RECORDLOCKER_FUNCTION = 'kim';
+
+	public function options_component_suppliedby() {
+		return InvKitComponent::OPTIONS_SUPPLIEDBY;
+	}
+
+	public function options_component_usagetag() {
+		return InvKitComponent::OPTIONS_USAGETAG;
+	}
+
+
+	/**
+	 * Return Kit Component Query
+	 * @return InvKitComponentQuery
+	 */
+	public function query() {
+		return InvKitComponentQuery::create();
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return if Kit Component Exists
+	 * @param  string $kitID  Kit Item ID
+	 * @param  string $itemID Component Item ID
+	 * @return bool
+	 */
+	public function component_exists($kitID, $itemID) {
+		$q = $this->query();
+		$q->filterByKitid($kitID);
+		$q->filterByItemid($itemID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return Kit Component
+	 * @param  string $kitID  Kit Item ID
+	 * @param  string $itemID Component Item ID
+	 * @return InvKitComponent
+	 */
+	public function get_component($kitID, $itemID) {
+		$q = $this->query();
+		$q->filterByKitid($kitID);
+		$q->filterByItemid($itemID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return ***New*** Kit Component
+	 * @param  string $kitID  Kit Item ID
+	 * @param  string $itemID Component Item ID
+	 * @return InvKitComponent
+	 */
+	public function new_component($kitID, $itemID) {
+		$c = new InvKitComponent();
+		$c->setKitid($kitID);
+
+		if ($this->wire('modules')->get('ValidateIn')->itemid_exists($itemID)) {
+			$c->setItemid($itemID);
+		}
+		return $c;
+	}
+
+	/**
+	 * Delete Component
+	 * @param  string $kitID  Kit Item ID
+	 * @param  string $itemID Component Item ID
+	 * @return bool
+	 */
+	public function delete_component($kitID, $itemID) {
+		$q = $this->query();
+		$q->filterByKitid($kitID);
+		$q->filterByItemid($itemID);
+		if ($q->count()) {
+			return $q->delete();
+		}
+		return true;
+	}
+
+	/**
+	 * Return Component, Returns new if doesn't exist
+	 * @param  string $kitID  Kit ID
+	 * @param  string $itemID Kit Component Item ID
+	 * @return InvKitComponent
+	 */
+	public function new_get_component($kitID, $itemID) {
+		if ($this->component_exists($kitID, $itemID)) {
+			return $this->get_component($kitID, $itemID);
+		}
+		return $this->new_component($kitID, $itemID);
+	}
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Takes Input, processses the action, calls the process_input
+	 * @param  WireInput $input Input
+	 * @return bool
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$kitID = $values->text('kitID');
+		$kim = $this->wire('modules')->get('Kim');
+
+		if (!$kim->kit_exists($kitID)) {
+			$created = $this->create_kit($kitID);
+
+			if (!$created) {
+				$this->wire('session')->response_kim = KimResponse::response_error($kitID, "Kit $kitID doesn't exist and wasn't able to be created");
+				return false;
+			}
+		}
+
+		switch ($values->text('action')) {
+			case 'create-component':
+				$this->input_create($input);
+				break;
+			case 'update-component':
+				$this->input_update($input);
+				break;
+			case 'delete-component':
+				$this->input_delete($input);
+				break;
+			default:
+				$this->wire('session')->response_kim = KimResponse::response_error($kitID, "No Action Provided");
+				break;
+		}
+	}
+
+	/**
+	 * Delete Component using Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	public function input_delete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$kitID = $input->get->text('kitID');
+		$itemID = $input->get->text('component');
+
+		if ($this->component_exists($kitID, $itemID)) {
+			$component = $this->get_component($kitID, $itemID);
+			$component->delete();
+			$this->wire('session')->response_kim = $this->save_and_respond($component, null);
+			return $this->wire('session')->response_kim->has_success();
+		}
+		return true;
+	}
+
+	/**
+	 * Update Component
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function input_update(WireInput $input) {
+		$this->init_configs();
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$kitID  = $values->text('kitID');
+		$itemID = $values->text('component');
+		$invalidfields = [];
+
+		$component = $this->new_get_component($kitID, $itemID);
+		$invalidfields = $this->update_record_input($component, $input);
+		$this->wire('session')->response_kim = $this->save_and_respond($component, $invalidfields);
+		return $this->wire('session')->response_kim->has_success();
+	}
+
+	/**
+	 * Update Component Record from Input Data
+	 * @param  InvKitComponent $component Kit Component
+	 * @param  WireInput       $input     Input Data
+	 * @return array
+	 */
+	public function update_record_input(InvKitComponent $component, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$invalidfields = [];
+		$component->setUsage($values->text('usage')); // TODO GET Precision
+		$invalidfields = $this->update_record_input_validated($component, $input);
+		return $invalidfields;
+	}
+
+	/**
+	 * Update validated Kit Component Record fields
+	 * @param  InvKitComponent $record Kit Component
+	 * @param  WireInput       $input  Input Data
+	 * @return array
+	 */
+	public function update_record_input_validated(InvKitComponent $record, WireInput $input) {
+		$modules = $this->wire('modules');
+		$validate = $modules->get('ValidateKim');
+		$invalid = array();
+
+		$fields = array(
+			'suppliedby' => array(
+				'input'       => 'suppliedby',
+				'description' => 'Vendor Supplied',
+				'allow_blank' => false,
+				'function'    => 'component_suppliedby'
+			)
+		);
+
+		if ($this->configs->kt->usageorfreeusage()) {
+			$fields['usagetag'] = array(
+				'description' => 'Usage Tag Code',
+				'allow_blank' => false,
+				'function'    => 'component_usagetag'
+			);
+		}
+		if ($this->configs->kt->usageorfreefree()) {
+			$fields['freegoods'] = array(
+				'description' => 'Free Goods',
+				'allow_blank' => false,
+				'function'    => 'component_freegoods'
+			);
+		}
+		$validator = $modules->get('InputValidator');
+		$validator->set_validator($validate)->set_input($input)->set_record($record)->set_validatefields($fields);
+		$invalid = $validator->validate();
+		$validator->set_valid_properties();
+		return $invalid;
+	}
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
+	/**
+	 * Returns KimResponse based on the outcome of the database save
+	 * @param  InvKitComponent $record        Record to record response of database save
+	 * @param  array           $invalidfields Input fields that require attention
+	 * @return KimResponse
+	 */
+	protected function save_and_respond(InvKitComponent $record, array $invalidfields = null) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new KimResponse();
+		$response->set_kitID($record->kitid);
+		$response->set_component($record->itemid);
+		$templatemsg = self::RESPONSE_TEMPLATE;
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+		}
+
+		if ($is_new) {
+			$response->set_action(KimResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$response->set_action(KimResponse::CRUD_DELETE);
+		} else {
+			$response->set_action(KimResponse::CRUD_UPDATE);
+		}
+
+		$response->build_message($templatemsg);
+		$response->set_fields($invalidfields);
+		if ($response->has_success()) {
+			$this->update_dplus_cobol($record);
+		}
+		return $response;
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	/**
+	 * Sends CGI request to Dplus Cobol
+	 * @param  array  $data Data to write to file
+	 * @return void
+	 */
+	private function request_dplus(array $data) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$data = array_merge(["DBNAME=$dplusdb"], $data);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+	/**
+	 * Send Update Kit Component Request to Dplus Cobol
+	 * @param  InvKitComponent $c Kit Component
+	 * @return void
+	 */
+	private function update_dplus_cobol(InvKitComponent $c) {
+		$data = array('UPDATEKIM', "KITITEM=$c->kitid", "COMPITEM=$c->itemid");
+		$this->request_dplus($data);
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return if Field has Error
+	 * NOTE: Uses $session->response_kim->fields to derive this
+	 * @param  string $inputname Input name e.g. commissiongroup
+	 * @return bool
+	 */
+	public function field_has_error($inputname) {
+		$response = $this->wire('session')->response_kim;
+		return ($response) ? array_key_exists($inputname, $response->fields) : false;
+	}
+
+	/**
+	 * Return Config SO
+	 * @return ConfigSalesOrder
+	 */
+	public function get_config_so() {
+		return $this->wire('modules')->get('ConfigureSo')->config();
+	}
+
+	/**
+	 * Return Config kt
+	 * @return ConfigKt
+	 */
+	public function get_config_kt() {
+		return $this->wire('modules')->get('ConfigureKt')->config();
+	}
+
+	/**
+	 * Intialize configs
+	 * @return void
+	 */
+	public function init_configs() {
+		$this->configs = new WireData();
+		$this->configs->so = $this->get_config_so();
+		$this->configs->kt = $this->get_config_kt();
+	}
+
+	/**
+	 * Return the number of Decimal Places to use for Qty
+	 * TODO
+	 * @return int
+	 */
+	public function decimal_places_qty() {
+		return 4;
+	}
+
+	/**
+	 * Create Kit with Kim module
+	 * @param  string $kitID Kit ID
+	 * @return bool
+	 */
+	public function create_kit($kitID) {
+		$input = new WireInput();
+		$values = $input->post;
+		$values->__set('action', 'create-kit');
+		$values->__set('kitID', $kitID);
+		$kim = $this->wire('modules')->get('Kim');
+		return $kim->process_input($input);
+	}
+
+/* =============================================================
+	URL Functions
+============================================================= */
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus INV Kit Component Master CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for INV Kit Master',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array(
+
+			)
+		);
+	}
+
+	public function init() {
+		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
+		$this->recordlocker->set_function(Kim::RECORDLOCKER_FUNCTION);
+	}
+
+}

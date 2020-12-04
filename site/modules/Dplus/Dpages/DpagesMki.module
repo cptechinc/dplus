@@ -1,0 +1,59 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+/**
+ * class DpagesMki
+ *
+ * Installs fields, templates, pages, hooks necessary for Mki Pages
+ * Adds Hooks for getting URLs to Mki pages
+ */
+class DpagesMki extends Dpages implements Module {
+	const FIELDS = array();
+
+	const TEMPLATES = array(
+		'kim' => array(
+			'name'   => 'kim',
+			'fields' => array()
+		),
+	);
+
+	const PAGES = array(
+		'mki' => array(
+			'template'       => 'dplus-menu',
+			'name'           => 'mki',
+			'title'          => 'Kits',
+			'summary'        => 'Kits Menu',
+			'parent'         => '/',
+			'dplus_function' => '' // TODO
+		),
+		'kim' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'kim',
+			'name'           => 'kim',
+			'title'          => 'Kit Master',
+			'summary'        => 'View / Edit Kits',
+			'parent'         => '/mki/',
+			'dplus_function' => '' // TODO
+		),
+	);
+
+/* =============================================================
+	URL Functions
+============================================================= */
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus MKI Pages Modules',
+			'version' => 101,
+			'summary' => 'Installs and creates MKI Pages',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array('DplusPwPages', 'Dpages'),
+			'installs' => array(),
+		);
+	}
+}

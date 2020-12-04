@@ -16,7 +16,7 @@ $(function() {
 	var input_listprice = form_vxm.find('input[name=listprice]');
 	var input_uom       = form_vxm.find('select[name=uom_purchase]');
 	var input_eachlistprice = form_vxm.find('input[name=eachlistprice]');
-	var input_ouritemID = form_vxm.find('input[name=ouritemID]');
+	var input_itemID = form_vxm.find('input[name=itemID]');
 	var input_vendoritemID = form_vxm.find('input[name=vendoritemID]');
 	var input_vendorID = form_vxm.find('input[name=vendorID]');
 
@@ -26,8 +26,24 @@ $(function() {
 	Event Functions
 ============================================================= */
 	$("body").on("change", ".unit-cost, .unit-qty", function(e) {
-		var unitrow = $(this).closest('.unit-row');
+		var input = $(this);
+		var unitrow = input.closest('.unit-row');
 		update_unitrow_margin(unitrow);
+
+		if (input.hasClass('unit-qty')) {
+			update_input_availability(unitrow);
+		}
+	});
+
+	$("body").on("change", ".unit-margin", function(e) {
+		var unitrow = $(this).closest('.unit-row');
+		update_unitrow_cost(unitrow);
+
+		if (parseInt(unitrow.data('break')) > 0) {
+			var step = parseInt(unitrow.data('break'));
+			var nextrow = $('.unit-row[data-break='+(step + 1)+']');
+			nextrow.find('.unit-qty').removeAttr('readonly');
+		}
 	});
 
 	/**
@@ -145,7 +161,7 @@ $(function() {
 		var button = $(this);
 		var itemID = button.data('itemid');
 		var description = button.data('description');
-		input_ouritemID.val(itemID).change();
+		input_itemID.val(itemID).change();
 		modal_ajax.modal('hide');
 	});
 
@@ -198,7 +214,7 @@ $(function() {
 						action: function() {
 							var input = $('input[name=vendoritemID]');
 
-							if (input.val() == input.data('vendoritemid')) {
+							if (input.val() == input.data('vendoritemid') && input.data('new') !== true) {
 								return 'validate-vendor-itemid';
 							} else {
 								return 'validate-vendor-itemid-new';
@@ -207,7 +223,7 @@ $(function() {
 					}
 				}
 			},
-			ouritemID: {
+			itemID: {
 				required: true,
 				remote: {
 					url: '{{ url_validate }}',
@@ -235,35 +251,11 @@ $(function() {
 		}
 	});
 
-	function remove_vxm_item(form) {
-		request_validate_vendoritemID(function(exists) {
-			if (exists === true) {
-				form.submit();
-			}
-		});
-	}
-
 	function update_vxm(form) {
 		request_validate_vendoritemID(function(exists) {
-			console.log(exists);
 			if (exists === true) {
 				if (input_vendoritemID.val() != input_vendoritemID.data('vendoritemid')) {
-					swal2.fire({
-						title: "Vendor Item " + input_vendoritemID.val() + " exists",
-						text: 'Would you like to go edit this item?',
-						icon: 'error',
-						showCancelButton: true,
-						confirmButtonText: 'Yes',
-						cancelButtonText: 'No',
-					}).then((result) => {
-						if (result.value) {
-							var uri = new URI();
-							uri.removeQuery('vendoritemID');
-							uri.setQuery('vendorID', input_vendorID.val());
-							uri.setQuery('vendoritemID', input_vendoritemID.val());
-							window.location.href = uri.toString();
-						}
-					});
+					swal_vendoritem_exists();
 				} else {
 					validate_form_poordercode(form);
 				}
@@ -284,21 +276,7 @@ $(function() {
 						input_validatedpoordercode.val('true');
 						form_vxm.submit();
 					} else {
-						swal2.fire({
-							title: "Overwrite Primary PO Ordercode?",
-							text: msg,
-							icon: 'warning',
-							showCancelButton: true,
-							confirmButtonClass: 'btn btn-success',
-							cancelButtonClass: 'btn btn-danger',
-							buttonsStyling: false,
-							confirmButtonText: 'Yes!'
-						}).then(function (result) {
-							if (result.value) {
-								input_validatedpoordercode.val('true');
-								//form_vxm.submit();
-							}
-						});
+						swal_overwrite_poordercode();
 					}
 				});
 			} else {
@@ -308,6 +286,44 @@ $(function() {
 		} else {
 			form.submit();
 		}
+	}
+
+	function swal_vendoritem_exists() {
+		swal2.fire({
+			title: "Vendor Item " + input_vendoritemID.val() + " exists",
+			text: 'Would you like to go edit this item?',
+			icon: 'error',
+			showCancelButton: true,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			if (result.value) {
+				var uri = new URI();
+				uri.removeQuery('vendoritemID');
+				uri.setQuery('vendorID', input_vendorID.val());
+				uri.setQuery('vendoritemID', input_vendoritemID.val());
+				window.location.href = uri.toString();
+			}
+		});
+	}
+
+	function swal_overwrite_poordercode() {
+		msg = input_itemID.val() + " already has a primary";
+		swal2.fire({
+			title: "Overwrite Primary PO Ordercode?",
+			text: msg,
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonClass: 'btn btn-success',
+			cancelButtonClass: 'btn btn-danger',
+			buttonsStyling: false,
+			confirmButtonText: 'Yes!'
+		}).then(function (result) {
+			if (result.value) {
+				input_validatedpoordercode.val('true');
+				form_vxm.submit();
+			}
+		});
 	}
 
 /* =============================================================
@@ -320,13 +336,13 @@ $(function() {
 	 */
 	function validate_poordercode(callback) {
 		var url = new URI('{{ url_validate }}');
-		url.addQuery('action', 'validate-primary-poordercode').addQuery('ouritemID', input_ouritemID.val());
+		url.addQuery('action', 'validate-primary-poordercode').addQuery('ouritemID', input_itemID.val());
 		url.addQuery('vendoritemID', input_vendoritemID.val());
 		url.addQuery('return', 'bool');
 
 		// URL RETURNS boolean true or string UPC code for false
 		$.getJSON(url.toString(), function( valid ) {
-			callback();
+			callback(valid);
 		});
 	}
 
@@ -340,7 +356,6 @@ $(function() {
 		url.addQuery('action', 'validate-vendor-itemid').addQuery('vendorID', input_vendorID.val());
 		url.addQuery('vendoritemID', input_vendoritemID.val());
 		url.addQuery('return', 'bool');
-		console.log(url.toString());
 		$.getJSON(url.toString(), function( valid ) {
 			callback(valid);
 		});
@@ -357,7 +372,6 @@ $(function() {
 /* =============================================================
 	Margin Calculation Functions
 ============================================================= */
-
 	/**
 	 * Recalculates Each List Price based on the Unit of Measure Purchase Conversion
 	 */
@@ -372,6 +386,10 @@ $(function() {
 	function get_eachlistprice() {
 		var conversion = input_uom.find('option:selected').data('conversion');
 		return eachlistprice = input_listprice.val() / parseFloat(conversion);
+	}
+
+	function get_listprice() {
+		return input_listprice.val();
 	}
 
 	/**
@@ -390,12 +408,47 @@ $(function() {
 	function update_unitrow_margin(unitrow) {
 		var input_unitqty = unitrow.find('.unit-qty');
 		var input_unitcost = unitrow.find('.unit-cost');
-		input_unitcost.val(parseFloat(input_unitcost.val()).toFixed({{ vxm.decimal_places_price() }}));
+		input_unitcost.val(parseFloat(input_unitcost.val()).toFixed({{ vxm.decimal_places_cost() }}));
 
 		if (parseFloat(input_unitcost.val())) {
-			var ele_margin = unitrow.find('.unit-margin');
-			var margin = determine_unitmargin(input_unitcost.val());
-			ele_margin.text(parseFloat(margin).toFixed({{ vxm.decimal_places_margin() }}));
+			var input_margin = unitrow.find('.unit-margin');
+			var margin = determine_unitmargin(parseFloat(input_unitcost.val()));
+			var displaymargin = parseFloat(margin).truncate({{ vxm.decimal_places_margin() }});
+			console.log(displaymargin);
+			input_margin.val(displaymargin).change();
+		}
+	}
+
+	/**
+	 * Calculates Margin for one Unit Cost
+	 * @param JqueryElement unitrow
+	 */
+	function update_unitrow_cost(unitrow) {
+		var input_unitqty = unitrow.find('.unit-qty');
+		var input_unitcost = unitrow.find('.unit-cost');
+		var input_margin = unitrow.find('.unit-margin');
+		var margin = parseFloat(input_margin.val()).truncate({{ vxm.decimal_places_margin() }});
+
+		input_margin.val(margin);
+
+		if (parseFloat(input_margin.val())) {
+			var cost = parseFloat(determine_unitcost(margin)).toFixed({{ vxm.decimal_places_cost() }});
+			input_unitcost.val(cost);
+		}
+	}
+
+	/**
+	 * Calculates Margin for one Unit Cost
+	 * @param  JqueryElement unitrow
+	 */
+	function update_input_availability(unitrow) {
+		var input_unitqty = unitrow.find('.unit-qty');
+		var inputs = unitrow.find('.unit-cost, .unit-margin');
+
+		if (parseFloat(input_unitqty.val()) > 0) {
+			inputs.removeAttr('readonly');
+		} else {
+			inputs.attr('readonly', 'readonly');
 		}
 	}
 
@@ -405,13 +458,28 @@ $(function() {
 	 * @return float
 	 */
 	function determine_unitmargin(cost) {
-		var eachlistprice = get_eachlistprice();
+		var listprice = get_listprice();
 
-		if (eachlistprice == 0 || cost == 0) {
+		if (listprice == 0 || cost == 0) {
 			return '';
 		} else {
-			var markup = eachlistprice - cost;
-			return markup / eachlistprice * 100;
+			var markup = listprice - cost;
+			return markup / listprice * 100;
+		}
+	}
+
+	/**
+	 * Returns Cost for Margin
+	 * @param  float    margin Margin Percent
+	 * @return float
+	 */
+	function determine_unitcost(margin) {
+		var listprice = get_listprice();
+
+		if (listprice == 0 || margin == 0) {
+			return '';
+		} else {
+			return (1 - (margin / 100)) * listprice;
 		}
 	}
 });

@@ -1,0 +1,179 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemMasterItem
+	itm                    module ItmMisc
+#}
+{% set hazmat = itm.hazmat.get_hazmat(item.itemid) %}
+<div >
+	<h3 class="text-center">Hazardous Materials</h3>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<form action="{{ page.itm_miscURL(item.itemid) }}" class="mb-3" id="item-hazmat-form" method="post">
+			<input type="hidden" name="action" value="update-itm-hazmat">
+			<input type="hidden" name="itemID" value="{{ item.itemid }}">
+
+			<div class="form-group row">
+				<div class="col-sm-4">
+					<label for="dot1">DOT Ship Name</label>
+				</div>
+				<div class="col-sm-8">
+					{% include 'util/form/input.twig' with {
+							'name': 'dot1', 'value': hazmat.dot1,
+							'class_add': [
+								'hazmat-step',
+								itm.hazmat.field_has_error('dot1') ? 'is-invalid' : ''
+							],
+							'attributes': {
+								'maxlength': itm.hazmat.maxlength_dot(),
+								'data-step': 1
+							}
+						}
+					%}
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-4"></div>
+				<div class="col-sm-8">
+					{% include 'util/form/input.twig' with {
+							'name': 'dot2', 'value': hazmat.dot2,
+							'class_add': [
+								'hazmat-step',
+								itm.hazmat.field_has_error('dot2') ? 'is-invalid' : ''
+							],
+							'attributes': {
+								'maxlength': itm.hazmat.maxlength_dot(),
+								'data-step': 2,
+								'readonly': hazmat.dot1 == ''
+							}
+						}
+					%}
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<div class="col-sm-4">
+					<label for="class">Hazard Class</label>
+				</div>
+				<div class="col-sm-3">
+					{% include 'util/form/input.twig' with {
+							'name': 'class', 'value': hazmat.class,
+							'class_add': [
+								'hazmat-step',
+								itm.hazmat.field_has_error('class') ? 'is-invalid' : ''
+							],
+							'attributes': {
+								'maxlength': itm.hazmat.maxlength_class(),
+								'data-step': 2,
+								'readonly': hazmat.dot1 == ''
+							}
+						}
+					%}
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<div class="col-sm-4">
+					<label for="unnbr">UN Number</label>
+				</div>
+				<div class="col-sm-3">
+					{% include 'util/form/input.twig' with {
+							'name': 'unnbr', 'value': hazmat.unnbr,
+							'class_add': [
+								'hazmat-step',
+								itm.hazmat.field_has_error('unnbr') ? 'is-invalid' : ''
+							],
+							'attributes': {
+								'maxlength': itm.hazmat.maxlength_unnbr(),
+								'data-step': 3,
+								'readonly': hazmat.class == ''
+							}
+						}
+					%}
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<div class="col-sm-4">
+					<label for="packgroup">Packing Group</label>
+				</div>
+				<div class="col-sm-3">
+					{% include 'util/form/select.twig' with {
+							'name': 'packgroup', 'selected_value': hazmat.packgroup,
+							'options_has_keys': false,
+							'use_blank_option': true,
+							'options': itm.hazmat.options_packgroup(),
+							'class_add': [
+								'hazmat-step',
+								itm.hazmat.field_has_error('label') ? 'is-invalid' : ''
+							],
+							'attributes': {
+								'data-step': 4,
+								'readonly': hazmat.unnbr == ''
+							}
+						}
+					%}
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<div class="col-sm-4">
+					<label for="label">Hazard Label</label>
+				</div>
+				<div class="col-sm-8">
+					{% include 'util/form/input.twig' with {
+							'name': 'label', 'value': hazmat.label,
+							'class_add': [
+								'hazmat-step',
+								itm.hazmat.field_has_error('label') ? 'is-invalid' : ''
+							],
+							'attributes': {
+								'maxlength': itm.hazmat.maxlength_label(),
+								'data-step': 5,
+								'readonly': hazmat.packgroup == ''
+							}
+						}
+					%}
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-4">
+					<label for="allowair">Packing Group</label>
+				</div>
+				<div class="col-sm-3">
+					{% include 'util/form/select.twig' with {
+							'name': 'allowair', 'selected_value': hazmat.allowair,
+							'use_blank_option': true,
+							'options': {'Y': 'Yes', 'N': 'No'},
+							'class_add': [
+								'hazmat-step',
+								itm.hazmat.field_has_error('allowair') ? 'is-invalid' : ''
+							],
+							'attributes': {
+								'data-step': 6,
+								'readonly': hazmat.label == ''
+							}
+						}
+					%}
+				</div>
+			</div>
+
+			<div class="d-flex justify-content-between align-items-center">
+				{#
+					Only show Edit Actions if the Item is
+					1. Locked for editing by the User
+				#}
+				{% if itm.recordlocker.function_locked_by_user(item.itemid) %}
+					<button type="submit" class="btn btn-success" name="action" value="update-itm-hazmat">
+						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+					</button>
+				{% endif %}
+				<a href="{{ page.itmURL(item.itemid) }}" class="btn btn-warning">
+					<i class="fa fa-times" aria-hidden="true"></i> Close
+				</a>
+			</div>
+		</form>
+	</div>
+</div>

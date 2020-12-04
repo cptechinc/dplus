@@ -1,0 +1,24 @@
+<div class="form-group row">
+	<div class="col-sm-4">
+		<label for="preference">Preference</label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/form/select.twig' with {'name': 'preference', 'selected_value': item.preference, 'options_has_keys': false, 'options': item.get_options_preference()} %}
+	</div>
+</div>
+<div class="form-group row">
+	<div class="col-sm-4">
+		<label for="producer">Producer</label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/form/select.twig' with {'name': 'producer', 'selected_value': item.producer, 'options': item.get_options_producer()} %}
+	</div>
+</div>
+<div class="form-group row">
+	<div class="col-sm-4">
+		<label for="documentation">Documentation</label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/form/select.twig' with {'name': 'documentation', 'selected_value': item.documentation, 'options': item.get_options_documentation()} %}
+	</div>
+</div>

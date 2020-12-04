@@ -1,0 +1,22 @@
+<table class="table table-striped" id="countries-table">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th>Code</th>
+			<th>Tariff Number</th>
+			<th>Description</th>
+			<th class="text-right">Tariff %</th>
+		</tr>
+	</thead>
+	{% for tariff in results %}
+		<tr>
+			<td>
+				<a href="#" class="link tariff-link" data-code="{{ tariff.code }}">
+					{{ tariff.code }}
+				</a>
+			</td>
+			<td>{{ tariff.number }}</td>
+			<td>{{ tariff.description }}</td>
+			<td class="text-right">{{ tariff.duty_rate }}</td>
+		</tr>
+	{% endfor %}
+</table>

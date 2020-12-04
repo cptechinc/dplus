@@ -144,7 +144,7 @@ class Dpages extends DplusPwPages implements Module {
 				'DpagesBookings',
 				'DpagesCart',
 				'DpagesMar', 'DpagesMap',
-				'DpagesMci', 'DpagesMii', 'DpagesMin',
+				'DpagesMci', 'DpagesMii', 'DpagesMin', 'DpagesMki',
 				'DpagesMpo', 'DpagesMqo', 'DpagesMsa', 'DpagesMso', 'DpagesMvi',
 				'DpagesMwm',
 				'DpagesRedir',

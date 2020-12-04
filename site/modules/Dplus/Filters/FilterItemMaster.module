@@ -24,20 +24,45 @@ class FilterItemMaster extends WireData implements Module {
 		$this->query = ItemMasterItemQuery::create();
 	}
 
+/* =============================================================
+	Input Filter Functions
+============================================================= */
+
+
+
+
+/* =============================================================
+	Base Filter Functions
+============================================================= */
+	/**
+	 * Filter Query by Item ID
+	 * @param  string $itemID Item ID
+	 * @return self
+	 */
+	public function itemid($itemID) {
+		if ($itemID) {
+			$this->query->filterByItemid($itemID);
+		}
+		return $this;
+	}
+
 	/**
 	 * Searches the ItemMasterItem Table to find vendors that match the query provided
-	 *
 	 * @param  string $q Search Query
 	 * @return void
 	 */
-	public function filter_search($q) {
-		$col_itemid = ItemMasterItem::get_aliasproperty('itemid');
-		$col_desc1  = ItemMasterItem::get_aliasproperty('description');
-		$col_desc2  = ItemMasterItem::get_aliasproperty('description2');
-		$columns = array($col_itemid, $col_desc1, $col_desc2);
+	public function search($q) {
+		$columns = [
+			ItemMasterItem::get_aliasproperty('itemid'),
+			ItemMasterItem::get_aliasproperty('description'),
+			ItemMasterItem::get_aliasproperty('description2')
+		];
 		$this->query->search_filter($columns, strtoupper($q));
 	}
 
+/* =============================================================
+	Misc Query Functions
+============================================================= */
 	/**
 	 * Adds the Sort By to the query
 	 *

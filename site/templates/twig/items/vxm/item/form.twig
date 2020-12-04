@@ -13,11 +13,11 @@
 	<div class="row mb-3">
 		{% include 'items/vxm/item/form/header.twig' %}
 	</div>
-	<div class="row">
-		<div class="col-sm-6">
+	<div class="form-row">
+		<div class="col-sm-5">
 			{% include 'items/vxm/item/form/details.twig' %}
 		</div>
-		<div class="col-sm-6">
+		<div class="col-sm-7">
 			{% include 'items/vxm/item/form/unit-costs.twig' %}
 		</div>
 	</div>
@@ -28,19 +28,19 @@
 			2. Is a new Item
 			NOTE: Only show delete if item already exists.
 		#}
-		{% if recordlocker.function_locked_by_user('vxm', vxm.get_recordlocker_key(item)) or item.isNew() %}
+		{% if vxm.recordlocker.function_locked_by_user(vxm.get_recordlocker_key(item)) or item.isNew() %}
 			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 
 			{% if item.isNew() == false %}
 				<a href="{{ page.vxm_item_deleteURL(item.ouritemid, item.vendorid, item.vendoritemid) }}" class="btn btn-danger remove-vxm-item">
-					<i class="fa fa-trash" aria-hidden="true"></i> Remove
+					<i class="fa fa-trash" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}
 		{% endif %}
 
-		<a href="{{ page.pw_template == 'vxm' ? page.vxm_vendorURL(item.vendorid) : page.vxm_itemidURL(item.ouritemid) }}" class="btn btn-warning">
+		<a href="{{ page.vxm_item_exitURL(item) }}" class="btn btn-warning">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
 		</a>
 	</div>

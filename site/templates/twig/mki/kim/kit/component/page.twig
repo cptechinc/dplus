@@ -1,0 +1,30 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	kim                    module InvKitMaster
+	kit                    InvKit
+	component              InvKitComponent
+#}
+<div class="card">
+	<div class="card-header">
+		<div class="row">
+			<div class="col-sm-3">
+				<strong>Kit ID:</strong> {{ kit.itemid }}
+			</div>
+			<div class="col-sm-6">
+				<div>
+					<small>{{ kit.item.description }}</small><br>
+					<small>{{ kit.item.description2 }}</small>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="card-body">
+		<div class="row">
+			<div class="col-sm-8">
+				{% include 'mki/kim/kit/component/form.twig' %}
+			</div>
+		</div>
+	</div>
+</div>

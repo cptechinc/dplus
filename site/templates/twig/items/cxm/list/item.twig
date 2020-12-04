@@ -28,7 +28,9 @@
 	<tbody>
 		{% if items.count() %}
 			{% for item in items %}
-				<tr data-cxm="{{ item.custid ~ '-' ~ item.custitemID }}">
+				{% set class = cxm.get_recordlocker_key(item) == page.focus ? 'highlight' : '' %}
+				{% set class = (response.key == cxm.get_recordlocker_key(item) and response.has_success()) ? 'bg-success text-white' : class %}
+				<tr data-cxm="{{ cxm.get_recordlocker_key(item) }}" class="{{ class }}">
 					<td>{{ item.custID }}</td>
 					<td>{{ item.custitemID }}</td>
 					<td>{{ item.description }}</td>

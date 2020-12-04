@@ -1,0 +1,196 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'/InputValidatorField.php');
+
+use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
+
+/**
+ * InputValidator
+ *
+ * Module for Validating Input, using a Validate* module based on Field Properties
+ */
+class InputValidator extends WireData implements Module {
+
+	protected $invalid = array();
+
+	const EXAMPLE_FIELDS = [
+		'packgroup' => array( // KEY CAN BE USED AS PROPERTY / FUNCTION
+			'function'    => 'hazmat_packgroup', // IF ABSENT / EMPTY WILL DEFAULT TO KEY'S VALUE
+			'description' => 'Packing Group',
+			'input'       => 'packgroup', //
+			'allow_blank' => true,
+			'requires'    => ['number']
+		),
+	];
+
+	public function __construct() {
+		$this->validate  = false;
+		$this->fields    = false;
+		$this->rawfields = array();
+		$this->invalid   = array();
+		$this->input     = new WireInput();
+		$this->record    = false;
+	}
+
+	public function get_invalid() {
+		return $this->invalid;
+	}
+
+	/**
+	 * Set Validator Module
+	 * @param Module $validator Validate*
+	 */
+	public function set_validator(Module $validator) {
+		$this->validate = $validator;
+		return $this;
+	}
+
+	/**
+	 * Set Input
+	 * @param WireInput $input Input Data
+	 */
+	public function set_input(WireInput $input) {
+		$this->input = $input;
+		return $this;
+	}
+
+	/**
+	 * Set Record that will be updated
+	 * @param ActiveRecordInterface $record
+	 */
+	public function set_record(ActiveRecordInterface $record) {
+		$this->record = $record;
+		return $this;
+	}
+
+	/**
+	 * Set the fields to be validated
+	 * @param array $fields
+	 */
+	public function set_validatefields(array $fields) {
+		$this->rawfields = $fields;
+		$this->fields = InputValidatorFieldArray::from_array($fields);
+		return $this;
+	}
+
+	/**
+	 * Loop through fields, set invalid fields in $this->invalid
+	 * @return array
+	 */
+	public function validate() {
+		$rm = strtolower($this->input->requestMethod());
+		$values = $this->input->$rm;
+		$this->invalid = array();
+		foreach ($this->fields as $field) {
+			$valid = $this->validate_field($field);
+
+			if ($valid == false) {
+				$this->invalid[$field->input()] = $field->description;
+			} elseif (!$this->validate_field_requires($field)) {
+				$this->validate_field_requires_message($field);
+			}
+		}
+		return $this->invalid;
+	}
+
+	/**
+	 * Validates Field According to it's InputValidatorField Property Rules
+	 * @param  InputValidatorField $field
+	 * @return bool
+	 */
+	public function validate_field(InputValidatorField $field) {
+		$rm = strtolower($this->input->requestMethod());
+		$values = $this->input->$rm;
+		$function = $field->function();
+
+		if (strlen($values->text($field->input())) == 0 && $field->allow_blank()) {
+			return true;
+		}
+		return $this->validate->$function($values->text($field->input()));
+	}
+
+	/**
+	 * Validate Field by checking the required fields
+	 * @param  InputValidatorField $field Field to Validate Requirements
+	 * @return bool
+	 */
+	public function validate_field_requires(InputValidatorField $field) {
+		if (!empty($field->requires)) {
+			foreach ($field->requires as $property) {
+				if (empty($this->record->$property)) { // CHECK if Record already has this property set
+					$required = $this->fields->get($property);
+
+					if (!$this->validate_field($required)) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Set the Invalid Field Message for fields that require
+	 * @param  InputValidatorField $field
+	 * @return void
+	 */
+	public function validate_field_requires_message(InputValidatorField $field) {
+		if (!empty($field->requires)) {
+			foreach ($field->requires as $property) {
+				if (empty($this->record->$property)) {
+					$requiredfield = $this->fields->get($property);
+					$this->invalid[$field->input()] = "$field->description requires $requiredfield->description";
+					break;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Loop through fields, check if field is valid, set Property as needed.
+	 */
+	public function set_valid_properties() {
+		$rm = strtolower($this->input->requestMethod());
+		$values = $this->input->$rm;
+
+		foreach ($this->fields as $field) {
+			if (!array_key_exists($field->input(), $this->invalid)) {
+				if (strlen($values->text($field->input()))) {
+					$function = $field->function();
+
+					if ($this->validate->$function($values->text($field->input()))) {
+						$this->set_property($field);
+					}
+				} elseif ($field->allow_blank && strlen($values->text($field->input())) == 0) {
+					$this->set_property($field);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Set Record Property value
+	 * @param InputValidatorField $field
+	 */
+	public function set_property(InputValidatorField $field) {
+		$rm = strtolower($this->input->requestMethod());
+		$values = $this->input->$rm;
+		$setProperty = "set".ucfirst($field->property());
+		$this->record->$setProperty($values->text($field->input(), $opt = ['maxLength' => $field->length]));
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Input Validator',
+			'version' => 101,
+			'summary' => 'Module for Validating Inputs using a Validator Module',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+
+}

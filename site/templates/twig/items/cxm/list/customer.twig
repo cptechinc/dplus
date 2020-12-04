@@ -29,22 +29,24 @@
 	<tbody>
 		{% if items.count() %}
 			{% for item in items %}
-				<tr class="{{ (response.key == (item.custid ~ '-' ~ item.custitemID) and response.has_success() ) ? 'bg-success text-white' : ''}}" data-cxm="{{ item.custid ~ '-' ~ item.custitemID }}">
+				{% set class = cxm.get_recordlocker_key(item) == page.focus ? 'highlight' : '' %}
+				{% set class = (response.key == cxm.get_recordlocker_key(item) and response.has_success()) ? 'bg-success text-white' : class %}
+				<tr class="{{ class }}" data-cxm="{{ cxm.get_recordlocker_key(item) }}">
 					<td>{{ item.custitemID }}</td>
 					<td>{{ item.description }}</td>
 					<td>{{ item.itemID }}</td>
 					<td>{{ item.item.description }}</td>
 					<td class="text-center">
-						{% if recordlocker.function_locked('cxm', cxm.get_recordlocker_key(item)) == false or recordlocker.function_locked_by_user('cxm', cxm.get_recordlocker_key(item)) %}
-							<a href="{{ page.cxm_itemURL(item.custID, item.custitemID) }}" class="btn btn-warning">
+						{% if cxm.recordlocker.function_locked(cxm.get_recordlocker_key(item)) == false or cxm.recordlocker.function_locked_by_user(cxm.get_recordlocker_key(item)) %}
+							<a href="{{ page.cxm_itemURL(item.custID, item.custitemID) }}" class="btn btn-warning btn-sm">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
-							<a href="{{ page.cxm_item_deleteURL(item.itemid, item.custid, item.custitemid) }}" class="btn btn-danger remove-cxm-item">
+							<a href="{{ page.cxm_item_deleteURL(item.itemid, item.custid, item.custitemid) }}" class="btn btn-danger btn-sm remove-cxm-item">
 								<i class="fa fa-trash" aria-hidden="true"></i> Delete
 							</a>
 						{% else %}
 							<span class="badge badge-secondary">
-								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ recordlocker.get_locked_user('cxm', cxm.get_recordlocker_key(item)) }}
+								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ cxm.recordlocker.get_locked_user(cxm.get_recordlocker_key(item)) }}
 							</span>
 						{% endif %}
 					</td>

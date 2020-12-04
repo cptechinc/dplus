@@ -1,0 +1,20 @@
+<table class="table table-striped" id="countries-table">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th>Login ID</th>
+			<th>Name</th>
+			<th>Whse</th>
+		</tr>
+	</thead>
+	{% for user in results %}
+		<tr>
+			<td>
+				<a href="#" class="link user-link" data-loginid="{{ user.loginid }}">
+					{{ user.loginid }}
+				</a>
+			</td>
+			<td>{{ user.name }}</td>
+			<td>{{ user.whseid }}</td>
+		</tr>
+	{% endfor %}
+</table>

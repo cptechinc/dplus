@@ -1,0 +1,55 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	itmp                   module Itmp
+#}
+<form action="{{ page.url }}" id="itmp-form" data-crud="create" method="post">
+	<input type="hidden" name="action" value="update-itmp">
+
+	<div class="row form-group">
+		<div class="col-sm-4">
+			<label for="loginID">Login ID</label>
+		</div>
+		<div class="col-sm-8">
+			{% include 'util/form/input-with-modal-lookup.twig' with {
+					'name': 'loginID', 'value': '',
+					'modaltarget': '#ajax-modal',
+					'modaldescription': 'Search for / Choose User Login ID',
+					'attributes_button': {'data-search': 'user', 'data-lookupurl': page.search_lookupURL('users')},
+					'class_add': 'ajax-lookup',
+					'attributes': {'data-loginid': '', 'data-validate': 'loginid', 'data-ajaxfields': ''}
+				}
+			%}
+		</div>
+	</div>
+	{% for field, label in itmp.permissions_labels() %}
+		<div class="row form-group">
+			<div class="col-sm-4">
+				<label for="{{ field }}">{{ label|title }}</label>
+			</div>
+			<div class="col-sm-8">
+				{% include 'util/form/select.twig' with {
+						'name': field, 'selected_value': 'N',
+						'options': {'Y': 'Yes', 'N': 'No'},
+						'class_add': [],
+						'attributes': {}
+					}
+				%}
+			</div>
+		</div>
+	{% endfor %}
+	<div class="d-flex justify-content-between align-items-center">
+		<button type="submit" class="btn btn-success">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+
+		<a href="{{ page.delete_userURL('') }}" class="btn btn-danger delete_button" data-delete="{{ user.userid }} ITMP permissions">
+			<i class="fa fa-trash" aria-hidden="true"></i> Delete
+		</a>
+
+		<button type="button" class="btn btn-warning" data-dismiss="modal">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</button>
+	</div>
+</form>

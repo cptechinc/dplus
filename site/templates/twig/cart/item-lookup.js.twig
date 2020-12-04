@@ -78,7 +78,8 @@ $(function() {
 					text: input_itemid.val() + ' cannot be found.',
 					icon: 'warning',
 					showCancelButton: true,
-					confirmButtonText: 'Make advanced search?'
+					confirmButtonText: 'Make advanced search?',
+					cancelButtonText: 'No',
 				}).then(function (result) {
 					if (result.value) {
 						var url = URI("{{ page.url }}");

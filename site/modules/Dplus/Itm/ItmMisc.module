@@ -1,0 +1,245 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'/ItmResponse.php');
+
+use Purl\Url;
+
+use ItemMasterItemQuery, ItemMasterItem;
+use ConfigSalesOrderQuery, ConfigSalesOrder;
+
+/**
+ * Module that handles the editing of the UPC item Itm
+ */
+class ItmMisc extends Itm implements Module {
+	const MODEL              = 'ItemMasterItem';
+	const MODEL_KEY          = 'code';
+	const DESCRIPTION        = 'Item Master Item';
+	const DESCRIPTION_RECORD = 'Item Master Item';
+
+	public function __construct() {
+		parent::__construct();
+		$this->configs->so = false;
+	}
+
+	public function init_configs() {
+		parent::init_configs();
+		$this->configs->so = $this->get_config_so();
+	}
+
+	/**
+	 * Return if Core Items are Allowed
+	 * @return bool
+	 */
+	public function use_core_items() {
+		return $this->configs->so->use_core_items();
+	}
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Takes Input, processses the action, calls the process_input
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'delete-itm-hazmat':
+			case 'update-itm-hazmat':
+				$this->hazmat->process_input($input);
+				break;
+			case 'update-itm-misc':
+				$this->process_input_misc($input);
+				break;
+			default:
+				$this->wire('session')->response_itm = ItmResponse::response_error('itm', "No Action Provided");
+				break;
+		}
+	}
+
+	/**
+	 * Takes Input, validates it's for an Item
+	 * Updates Item
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input_misc(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID = strtoupper($values->text('itemID'));
+
+		if ($this->item_exists($itemID)) {
+			$invalidfields = array();
+			/**
+			 * Create lock for ITM item ID if not already locked.
+			 */
+			if (!$this->recordlocker->function_locked($itemID)) {
+				$this->recordlocker->create_lock($itemID);
+			}
+
+			if ($this->recordlocker->function_locked_by_user($itemID)) {
+				$record = $this->get_item($itemID);
+				$invalidfields = $this->set_item_fields_misc($record, $input);
+
+				if ($values->action) {
+					$response = $this->save_and_respond($record, $invalidfields);
+
+					if ($invalidfields) {
+						$response->set_error(true);
+						$response->set_success(false);
+						$response->set_saved_itm(false);
+						$response->set_message("$itemID was not saved to Dplus");
+					} else {
+						$response->set_saved_itm($response->success);
+					}
+				} else {
+					$message = self::DESCRIPTION_RECORD . " ($record->itemid) was not saved, no action was specified";
+					$response = ItmResponse::response_error($record->itemid, $message);
+				}
+			} else {
+				$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $recordlocker->get_locked_user($this->item::RECORDLOCKER_KEY, $itemID);
+				$response = ItmResponse::response_error($record->itemid, $message);
+			}
+		} else {
+			$response = ItmResponse::response_error($itemID, "$itemID does not exist");
+		}
+		$this->wire('session')->response_itm = $response;
+	}
+
+	/**
+	 * Sets Item Values
+	 * @param ItemMasterItem $record Item Master Item
+	 * @param WireInput      $input  Input Data
+	 */
+	protected function set_item_fields_misc(ItemMasterItem $record, WireInput $input) {
+		$invalid = array();
+		$fields = array(
+			'tariffcode' => array(
+				'description' => 'Tariff Code',
+				'input'       => 'tariffcode',
+				'allow_blank' => true
+			),
+			'origincountry' => array(
+				'function'    => 'countrycode',
+				'description' => 'Country of Origin',
+				'input'       => 'origincountry',
+				'allow_blank' => true,
+			),
+			'msdscode' => array(
+				'description' => 'Msds Code',
+				'input'       => 'msdscode',
+				'allow_blank' => true
+			),
+			'freightcode' => array(
+				'description' => 'Freight Code',
+				'input'       => 'freightcode',
+				'allow_blank' => true
+			),
+			'preference' => array(
+				'description' => 'Preference',
+				'input'       => 'preference',
+				'allow_blank' => false
+			),
+			'producer' => array(
+				'description' => 'Producer',
+				'input'       => 'producer',
+				'allow_blank' => false
+			),
+			'documentation' => array(
+				'description' => 'Documentation',
+				'input'       => 'documentation',
+				'allow_blank' => false
+			),
+		);
+		$validator = $this->wire('modules')->get('InputValidator');
+		$validator->set_validator($this->wire('modules')->get('ValidateItm'))->set_input($input)->set_record($record)->set_validatefields($fields);
+		$invalid = $validator->validate();
+		$validator->set_valid_properties();
+		return $invalid;
+	}
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
+	/**
+	 * Returns ItmResponse based on the outcome of the database save
+	 * @param  ItemMasterItem $record        Record to record response of database save
+	 * @param  array          $invalidfields Input fields that require attention
+	 * @return ItmResponse
+	 */
+	public function save_and_respond(ItemMasterItem $record, array $invalidfields) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new ItmResponse();
+		$response->set_itemID($record->itemid);
+		$message = self::DESCRIPTION_RECORD . " ($record->itemid) was ";
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+			$message .= "not ";
+		}
+
+		if ($is_new) {
+			$message .= 'added';
+			$response->set_action(ItmResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$message .= 'deleted';
+			$response->set_action(ItmResponse::CRUD_DELETE);
+		} else {
+			$message .= 'updated';
+			$response->set_action(ItmResponse::CRUD_UPDATE);
+		}
+
+		$response->set_message($message);
+
+		if ($response->has_success() && empty($invalidfields)) {
+			// if ($record->isDeleted()) {
+			// 	$this->request_item_delete($record->itemid);
+			// } else {
+			// 	$this->request_item_update($record->itemid);
+			// }
+		}
+		$response->set_fields($invalidfields);
+		return $response;
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Returns IN config
+	 * @return ConfigSalesOrder
+	 */
+	public function get_config_so() {
+		return ConfigSalesOrderQuery::create()->findOne();
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus ITM Misc CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for Updating ITM Misc',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array(
+				'Itm',
+			)
+		);
+	}
+
+	public function init() {
+		parent::init();
+		$this->hazmat = $this->wire('modules')->get('ItmHazmat');
+	}
+}

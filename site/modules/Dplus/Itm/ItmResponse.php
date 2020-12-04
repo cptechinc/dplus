@@ -25,6 +25,12 @@ class ItmResponse extends WireData {
 	const CRUD_UPDATE = 2;
 	const CRUD_DELETE = 3;
 
+	const CRUD_DESCRIPTION = [
+		1 => 'created',
+		2 => 'updated',
+		3 => 'deleted'
+	];
+
 	public function __construct() {
 		$this->success = false;
 		$this->error = false;
@@ -93,6 +99,16 @@ class ItmResponse extends WireData {
 
 	public function has_field($field) {
 		return array_key_exists($field, $this->fields);
+	}
+
+	public function build_message($template) {
+		$crud = self::CRUD_DESCRIPTION[$this->action];
+		$replace = ['{itemid}' => $this->itemID, '{not}' => $this->has_success() ? '' : 'not', '{crud}' => $crud];
+		if ($this->whseID) {
+			$replace['{whseid}'] = $this->whseID;
+		}
+		$msg = str_replace(array_keys($replace), array_values($replace), $template);
+		$this->message = $msg;
 	}
 
 	public static function response_error($itemID, $message) {

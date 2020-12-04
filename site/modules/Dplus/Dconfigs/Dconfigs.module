@@ -57,6 +57,7 @@ class Dconfigs extends WireData implements Module {
 				'ConfigurePo',
 				'ConfigureIn',
 				'ConfigureSo',
+				'ConfigureKt',
 			)
 		);
 	}

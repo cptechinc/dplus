@@ -1,0 +1,34 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+class Dpurl extends WireData implements Module {
+
+	public function paginate(Url $url, $segment, $pagenbr = 1) {
+		$path = $url->getPath();
+		$path = rtrim($path, '/').'/';
+
+		if (strpos($path, 'page') !== false) {
+			$regex = "((page)\d{1,3})";
+			$replace = ($pagenbr > 1) ? "page".$pagenbr : "";
+			$path  = preg_replace($regex, $replace, $path);
+		} else {
+			$insertafter = "/$segment/";
+			$regex = "(($insertafter))";
+			$replace = ($pagenbr > 1) ? $insertafter."page".$pagenbr."/" : $insertafter;
+			$path  = preg_replace($regex, $replace, $path);
+		}
+		$url->path = $path;
+		return $url;
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpurl URL ',
+			'version' => 101,
+			'summary' => 'Wrapper for Purl\Url',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

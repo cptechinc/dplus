@@ -1,0 +1,38 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+/**
+ * ValidateSo
+ *
+ * Class for Validating Sales Order (SO) table codes, IDs
+ */
+class ValidateSo extends WireData implements Module {
+	/**
+	 * Return if Motor Freight Code is valid
+	 * @param  string $code  Motor Freight Code
+	 * @return bool
+	 */
+	public function freightcode($code) {
+		$stcm = $this->modules->get('CodeTablesMfcm');
+		return $stcm->code_exists($code);
+	}
+
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'So Validate Module',
+			'version' => 101,
+			'summary' => 'Validates So table codes',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(),
+			'requires' => array(
+				'CodeTablesMfcm',
+			)
+		);
+	}
+}

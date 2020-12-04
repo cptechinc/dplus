@@ -1,0 +1,36 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+#}
+$(function() {
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on("click", "a.delete-component", function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var component = button.data('component');
+
+		swal_component_delete(component, function(confirmed) {
+			if (confirmed) {
+				window.location.href = button.attr('href');
+			}
+		});
+	});
+
+/* =============================================================
+	Swal (SweetAlert) Functions
+============================================================= */
+	function swal_component_delete(component, callback) {
+		swal2.fire({
+			title: "Are you sure?",
+			text: "Do you want to delete component "+component+"?",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Yes'
+		}).then(function (result) {
+			callback(result.value);
+		});
+	}
+});

@@ -1,0 +1,38 @@
+<?php namespace ProcessWire;
+
+use ConfigKtQuery, ConfigKt;
+
+
+/**
+ * ConfigureKt
+ *
+ * Class for setting Kit Configs
+ */
+class ConfigureKt extends WireData implements Module {
+	/**
+	 * Returns Quote Notes Query
+	 * @return ConfigKtQuery
+	 */
+	public function query() {
+		return ConfigKtQuery::create();
+	}
+
+	/**
+	 * Return Config Record
+	 * @return ConfigKt
+	 */
+	public function config() {
+		return $this->query()->findOne();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Configure Kits Config',
+			'version' => 101,
+			'summary' => 'Dplus ConfigKt CRUD methods',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array()
+		);
+	}
+}

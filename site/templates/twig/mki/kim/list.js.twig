@@ -1,0 +1,141 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+#}
+{% include 'mki/kim/kit/delete.js.twig' %}
+
+$(function() {
+	var modal_ajax = $('#ajax-modal');
+	var form_create = $('#create-kit-form');
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = form_create.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			kitID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('mki') }}',
+					type: "get",
+					data: {
+						action: 'validate-kitid-new'
+					}
+				}
+			},
+		},
+		messages: {
+			kitID: "Enter a valid Item ID"
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on("change", "input[name=kitID]", function(e) {
+		var input = $(this);
+
+		if (validator.element("#kitID")) {
+			get_item(input.val(), function(item) {
+				if (item) {
+					var itemcol = $('.item-col');
+					itemcol.find('.description').text(item.description);
+					itemcol.find('.description2').text(item.description2);
+					$('.item-uom').text(item.uofmsale);
+				}
+			});
+		}
+
+		validate_kit_exists(input.val(), function(exists) {
+			if (exists === true) {
+				swal_kit_exists(input.val());
+			}
+		});
+	});
+
+/* =============================================================
+	AJAX Lookup Modal Functions
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = button.data('lookupurl');
+
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+	$("body").on('click', '#ajax-modal .item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		form_create.find('input[name=kitID]').val(button.data('itemid')).change();
+		modal_ajax.modal('hide');
+	});
+
+/* =============================================================
+	AJAX Request Functions
+============================================================= */
+	function get_item(itemID, callback) {
+		var url = new URI('{{ page.jsonapiURL('inv') }}');
+		url.addQuery('action', 'get-item').addQuery('itemID', itemID);
+		$.getJSON(url.toString(), function( item ) {
+			callback(item);
+		});
+	}
+
+	function validate_kit_exists(kitID, callback) {
+		var url = new URI('{{ page.jsonapiURL('mki') }}');
+		url.addQuery('action', 'validate-kitid').addQuery('kitID', kitID);
+		$.getJSON(url.toString(), function( exists ) {
+			callback(exists);
+		});
+	}
+	
+/* =============================================================
+	Swal (SweetAlert) Functions
+============================================================= */
+	function swal_kit_exists(kitID) {
+		swal2.fire({
+			title: "Kit "+ kitID + " exists",
+			text: "Do you want to edit it?",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Yes'
+		}).then(function (result) {
+			if (result.value) {
+				var uri = URI('{{ page.url }}');
+				uri.addQuery('kitID', kitID);
+				window.location.href = uri.toString();
+			} else {
+				form_create.find('input[name=kitID]').val('');
+			}
+		});
+	}
+});

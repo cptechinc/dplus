@@ -1,0 +1,41 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	kim                    module Kim
+	kit                    InvKit
+#}
+<div class="card">
+	<div class="card-header">
+		<div class="row">
+			<div class="col-sm-3">
+				<strong>Kit ID:</strong> {{ kit.itemid }}
+			</div>
+			<div class="col-sm-6">
+				<div>
+					<small>{{ kit.item.description }}</small><br>
+					<small>{{ kit.item.description2 }}</small>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% include 'mki/kim/kit/components.twig' %}
+
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<div>
+				{% if kit.isNew() == false and kim.recordlocker.function_locked_by_user(kit.itemid) %}
+					<a href="{{ page.kit_deleteURL(kit.itemid) }}" class="btn btn-danger btn-sm delete-kit" data-kitid="{{ kit.itemid }}">
+						<i class="fa fa-trash" aria-hidden="true"></i> Delete
+					</a>
+				{% endif %}
+			</div>
+			<div>
+				<a href="{{ page.kit_exitURL(kit.itemid) }}" class="btn btn-warning btn-sm">
+					<i class="fa fa-times" aria-hidden="true"></i> Close
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

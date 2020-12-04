@@ -1,0 +1,104 @@
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="tariffcode">Tariff Code</label>
+	</div>
+	<div class="col-sm-9">
+		<div class="row">
+			<div class="col-sm-3">
+				{% include 'util/form/input-with-modal-lookup.twig' with {
+						'name': 'tariffcode', 'value': item.tariffcode,
+						'modaltarget': '#ajax-modal',
+						'modaldescription': 'Search for / Choose Tariff Code',
+						'attributes_button': {'data-search': 'tariffcode', 'data-lookupurl': page.search_tariffcodesURL},
+						'class_add': 'ajax-lookup',
+						'attributes': {'data-api': 'inv', 'data-validate': 'tariffcode', 'data-ajaxfields': 'number,description,rate'}
+					}
+				%}
+			</div>
+			<div class="col-sm-9">
+				{% set tariffcode = item.getCodeTariff() %}
+				<div class="row">
+					<div class="col-sm-6">
+						<p class="form-control-plaintext form-control-sm tariffcode-number">{{ tariffcode.number }}</p>
+					</div>
+					<div class="col-sm-6">
+						<p class="form-control-plaintext form-control-sm tariffcode-rate">{{ tariffcode.duty_rate }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<small class="form-text text-muted tariffcode-description">{{ tariffcode.description }}</small>
+	</div>
+</div>
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="origincountry">Country of Origin</label>
+	</div>
+	<div class="col-sm-9">
+		<div class="row">
+			<div class="col-sm-3">
+				{% include 'util/form/input-with-modal-lookup.twig' with {
+						'name': 'origincountry','value': item.origincountry,
+						'modaltarget': '#ajax-modal',
+						'modaldescription': 'Search for / Choose Country',
+						'attributes_button': {'data-search': 'country', 'data-lookupurl': page.search_countriesURL },
+						'class_add': 'ajax-lookup',
+						'attributes': {'data-api': 'inv', 'data-validate': 'countrycode', 'data-ajaxfields': 'description'}
+					}
+				%}
+			</div>
+			<div class="col-sm-8">
+				{% set country = item.getCodeOriginCountry() %}
+				<p class="form-control-plaintext form-control-sm origincountry-description">{{ country.description }}</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="msdscode">MSDS Code</label>
+	</div>
+	<div class="col-sm-9">
+		<div class="row">
+			<div class="col-sm-3">
+				{% include 'util/form/input-with-modal-lookup.twig' with {
+						'name': 'msdscode', 'value': item.msdscode,
+						'modaltarget': '#ajax-modal',
+						'modaldescription': 'Search for / Choose Msds Code',
+						'attributes_button': {'data-search': 'msdscode', 'data-lookupurl': page.search_msdscodesURL},
+						'class_add': 'ajax-lookup',
+						'attributes': {'data-api': 'inv', 'data-validate': 'msdscode', 'data-ajaxfields': 'description'}
+					}
+				%}
+			</div>
+			<div class="col-sm-9">
+				{% set msds = item.getCodeMsds() %}
+				<p class="form-control-plaintext form-control-sm msdscode-description">{{ msds.description }}</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="freightcode">Motor Freight Code</label>
+	</div>
+	<div class="col-sm-9">
+		<div class="row">
+			<div class="col-sm-3">
+				{% include 'util/form/input-with-modal-lookup.twig' with {
+						'name': 'freightcode', 'value': item.freightcode,
+						'modaltarget': '#ajax-modal',
+						'modaldescription': 'Search for / Choose Freight Code',
+						'attributes_button': {'data-search': 'freightcode', 'data-lookupurl': page.search_freightcodesURL},
+						'class_add': 'ajax-lookup',
+						'attributes': {'data-api': 'mso', 'data-validate': 'freightcode', 'data-ajaxfields': 'description'}
+					}
+				%}
+			</div>
+			<div class="col-sm-9">
+				{% set freight = item.getCodeFreight() %}
+				<p class="form-control-plaintext form-control-sm freightcode-description">{{ freight.description }}</p>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,20 @@
+<table class="table table-striped" id="msds-table">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th>Code</th>
+			<th>Description</th>
+			<th class="text-right">Effective Date</th>
+		</tr>
+	</thead>
+	{% for msds in results %}
+		<tr>
+			<td>
+				<a href="#" class="link msds-link" data-code="{{ msds.code }}">
+					{{ msds.code }}
+				</a>
+			</td>
+			<td>{{ msds.description }}</td>
+			<td class="text-right">{{ msds.effective_date|convertdate }}</td>
+		</tr>
+	{% endfor %}
+</table>

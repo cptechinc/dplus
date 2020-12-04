@@ -1,0 +1,121 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use ItemMasterItemQuery, ItemMasterItem;
+use InvHazmatItemQuery, InvHazmatItem;
+use WarehouseInventoryQuery, WarehouseInventory;
+use WarehouseQuery, Warehouse;
+
+/**
+ * ValidateItmWarehouse
+ *
+ * Class for validating ItmWarehouse fields
+ */
+class ValidateItmWarehouse extends WireData implements Module {
+/* =============================================================
+	Itm Warehouse Functions
+============================================================= */
+	/**
+	 * Validate Code ABC value
+	 * @param  string $code Code ABC
+	 * @return bool
+	 */
+	public function codeabc($code) {
+		return preg_match(ItmWarehouse::REGEX_CODEABC, $code);
+	}
+
+	/**
+	 * Validate Warehouse Inventory Status
+	 * @param  string $status Status Code
+	 * @return bool
+	 */
+	public function status($status) {
+		return array_key_exists($status, WarehouseInventory::STATUS_DESCRIPTIONS);
+	}
+
+	/**
+	 * Validate Warehouse Inventory Special Order
+	 * @param  string $code Special Order Code
+	 * @return bool
+	 */
+	public function specialorder($code) {
+		return array_key_exists($code, WarehouseInventory::SPECIALORDER_DESCRIPTIONS);
+	}
+
+/* =============================================================
+	IN Functions
+============================================================= */
+	/**
+	 * Validate Item ID
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function itemid($itemID) {
+		return $this->validate->in->itemid_exists($itemID);
+	}
+
+	/**
+	 * Validate Warehouse ID
+	 * @param  string $id Warehouse ID
+	 * @return bool
+	 */
+	public function whseid($id) {
+		return $this->validate->in->whseid($id);
+	}
+
+	/**
+	 * Validate Warehouse ID
+	 * @param  string $id Warehouse ID
+	 * @return bool
+	 */
+	public function whsebin($whseID, $binID) {
+		if ($this->whseid($whseID)) {
+			$whse = WarehouseQuery::create()->findOneByWhseid($whseID);
+			if ($whse->validate_bin($binID)) {
+				return true;
+			}
+
+			$config = $this->config_in();
+			if ($binID == $config->default_bin) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+/* =============================================================
+	Config Functions
+============================================================= */
+	/**
+	 * Returns IN config
+	 * @return ConfigIn
+	 */
+	private function config_in() {
+		return $this->modules->get('ConfigureIn')->config();
+	}
+
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'ITM Validate Module',
+			'version' => 101,
+			'summary' => 'Handles ITM Fields Validation',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+
+	public function init() {
+		$this->validate = new WireData();
+		$this->validate->in  = $this->wire('modules')->get('ValidateIn');
+		$this->modules = $this->wire('modules');
+
+
+	}
+
+}

@@ -5,9 +5,11 @@
 	recordlocker           module RecordLockerUser
 	items                  ItemXrefVxm[]|ObjectCollection
 #}
+{% set response = vxm.response() %}
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
+			<th></th>
 			<th class="pt-3 pb-3 align-middle">Vendor Item ID</th>
 			<th class="pt-3 pb-3 align-middle">Our Item ID</th>
 			<th class="pt-3 pb-3 align-middle">Description</th>
@@ -29,24 +31,27 @@
 	<tbody>
 		{% if items.count() %}
 			{% for item in items %}
-				<tr>
+				<tr data-vxm="{{ item.vendorid ~ '-' ~ item.vendoritemID }}" class="{{ (response.key == vxm.get_recordlocker_key(item) and response.has_success()) ? 'bg-success text-white' : ''}}">
+					<td>
+						{{ item.po_ordercode }}
+					</td>
 					<td>{{ item.vendoritemID }}</td>
 					<td>{{ item.ouritemid }}</td>
 					<td>{{ item.imitem.description }}</td>
 					<td class="text-right">$ {{ item.unitcost_base|currency }}</td>
 					<td class="text-right">{{ item.date_changed|convertdate }}</td>
 					<td class="text-center">
-						{% if recordlocker.function_locked('vxm', vxm.get_recordlocker_key(item)) == false or recordlocker.function_locked_by_user('vxm', vxm.get_recordlocker_key(item)) %}
+						{% if vxm.recordlocker.function_locked(vxm.get_recordlocker_key(item)) == false or vxm.recordlocker.function_locked_by_user(vxm.get_recordlocker_key(item)) %}
 							<a href="{{ page.vxm_itemURL(item.vendorID, item.vendoritemID) }}" class="btn btn-sm btn-warning">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
 							&nbsp;
 							<a href="{{ page.vxm_item_deleteURL(item.ouritemid, item.vendorid, item.vendoritemid) }}" class="btn btn-sm btn-danger remove-vxm-item">
-								<i class="fa fa-trash" aria-hidden="true"></i> Remove
+								<i class="fa fa-trash" aria-hidden="true"></i> Delete
 							</a>
 						{% else %}
 							<span class="badge badge-secondary">
-								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ recordlocker.get_locked_user('vxm', vxm.get_recordlocker_key(item)) }}
+								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ vxm.recordlocker.get_locked_user(vxm.get_recordlocker_key(item)) }}
 							</span>
 						{% endif %}
 					</td>

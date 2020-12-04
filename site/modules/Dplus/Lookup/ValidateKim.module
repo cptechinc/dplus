@@ -1,0 +1,114 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use InvKitQuery, InvKit;
+use InvKitComponent, InvHazmatItem;
+use SalesOrderDetailQuery, SalesOrderDetail;
+
+/**
+ * ValidateKim
+ *
+ * Class for validating Kim fields
+ */
+class ValidateKim extends WireData implements Module {
+/* =============================================================
+	Kim Functions
+============================================================= */
+	/**
+	 * Return if Kit  Exists
+	 * @param  string $kitID  Kit ID
+	 * @return bool
+	 */
+	public function kit_exists($kitID) {
+		return boolval(InvKitQuery::create()->filterByItemid($kitID)->count());
+	}
+
+	/**
+	 * Return if Kit Component Exists
+	 * @param  string $kitID      Kit ID
+	 * @param  string $component  component Item ID
+	 * @return bool
+	 */
+	public function kit_component_exists($kitID, $component) {
+		return boolval(InvKitComponentQuery::create()->filteryByKitid($kitID)->filterByItemid($component)->count());
+	}
+
+	/**
+	 * Validate Freegoods Value
+	 * @param  string $val Free Goods
+	 * @return bool
+	 */
+	public function component_freegoods($val) {
+		return in_array($val, ['Y', 'N']);
+	}
+
+	/**
+	 * Validate Component Supplied By
+	 * @param  string $val Supplied By
+	 * @return bool
+	 */
+	public function component_suppliedby($val) {
+		return array_key_exists($val, InvKitComponent::OPTIONS_SUPPLIEDBY);
+	}
+
+	/**
+	 * Validate Component Usage Tag
+	 * @param  string $val Usage Tag
+	 * @return bool
+	 */
+	public function component_usagetag($val) {
+		return array_key_exists($val, InvKitComponent::OPTIONS_USAGETAG);
+	}
+
+	/**
+	 * Return if Kit can deleted
+	 * @param  string $kitID Kit Item ID
+	 * @return bool
+	 */
+	public function can_delete($kitID) {
+		return $this->is_ordered($kitID) === false;
+	}
+
+	/**
+	 * Return If Kit Item exists on Order
+	 * @param  string $kitID Kit Item ID
+	 * @return bool
+	 */
+	public function is_ordered($kitID) {
+		return boolval(SalesOrderDetailQuery::create()->filterByItemid($kitID)->count());
+	}
+
+/* =============================================================
+	IN Functions
+============================================================= */
+	/**
+	 * Return if Item ID is Valid
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function itemid_exists($itemID) {
+		return $this->validate->in->itemid_exists($itemID);
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'KIM Validate Module',
+			'version' => 101,
+			'summary' => 'Handles Kim Fields Validation',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+
+	public function init() {
+		$this->validate = new WireData();
+		$this->validate->in  = $this->wire('modules')->get('ValidateIn');
+		$this->modules = $this->wire('modules');
+	}
+
+}

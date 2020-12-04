@@ -8,7 +8,7 @@ $(function() {
 ============================================================= */
 	origForm = form_whse.serialize();
 
-	$("body").on("click", "a:not(#item-whse-form .form_button)", function(e) {
+	$("body").on("click", "a:not(#item-whse-form .form_button, #ajax-modal a, [data-toggle])", function(e) {
 		if (form_whse.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);
@@ -81,15 +81,11 @@ $(function() {
 		},
 		submitHandler : function(form) {
 			var valid_bin      = validate_bin();
-			var valid_codeabc  = validate_codeabc();
 			var valid_form     = new SwalError(false, '', '', false);
 
 			if (valid_bin.error) {
 				valid_form = valid_bin;
-			} else if (valid_codeabc.error) {
-				valid_form = valid_codeabc;
 			}
-
 			if (valid_form.error) {
 				swal2.fire({
 					icon: 'error',
@@ -137,18 +133,21 @@ $(function() {
 			whseID = form_whse.find('input[name=whseID]').val();
 		}
 
+		var warehouse = warehouses[whseID];
+
 		if (input_bin.val() == '') {
 			error = true;
 			title = 'Error';
 			msg   = 'Please Fill in the Bin';
-		} else if (warehouses[whseID].binarrangement == 'list' && (input_bin.val() != in_defaultbin && !warehouses[whseID].bins.contains(input_bin.val()))) {
+		} else if (warehouse.binarrangement == 'list' && (input_bin.val() != in_defaultbin && !warehouse.bins.contains(input_bin.val()))) {
+			alert('doe snot ');
 			error = true;
 			title = 'Invalid Bin ID';
 			msg   = 'Please use a valid bin';
 		} else if (warehouse.binarrangement == 'range') {
 			error = true;
 
-			warehouse.bins.bins.forEach(function(bin) {
+			warehouse.bins.forEach(function(bin) {
 				if (input_bin.val() >= bin.from && input_bin.val() <= bin.through) {
 					error = false;
 				}
@@ -164,9 +163,15 @@ $(function() {
 	}
 
 	function create_binrangetable() {
+		if (form_whse.find('select[name=whseID]').length) {
+			whseID = form_whse.find('select[name=whseID]').val();
+		} else {
+			whseID = form_whse.find('input[name=whseID]').val();
+		}
+		var warehouse = warehouses[whseID];
 		var bootstrap = new JsContento();
 		var table = bootstrap.open('table', 'class=table table-striped table-condensed');
-			warehouse.bins.bins.forEach(function(bin) {
+			warehouse.bins.forEach(function(bin) {
 				table += bootstrap.open('tr', '');
 					table += bootstrap.openandclose('td', '', bin.from);
 					table += bootstrap.openandclose('td', '', bin.through);

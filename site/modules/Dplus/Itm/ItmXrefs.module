@@ -169,7 +169,7 @@ class ItmXrefs extends WireData implements Module {
 	 */
 	public function get_upc_deleteURL($itemID, $upc) {
 		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-upcx")->url);
-		$url->query->set('action', 'remove-upcx');
+		$url->query->set('action', 'delete-upcx');
 		$url->query->set('itemID', $itemID);
 		$url->query->set('upc', $upc);
 		return $url->getUrl();
@@ -180,11 +180,47 @@ class ItmXrefs extends WireData implements Module {
 	 * @param  string $itemID
 	 * @return string
 	 */
-	public function get_itm_xrefs_vxmURL($itemID) {
+	public function get_itm_xrefs_vxmURL($itemID, $focus = '') {
 		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-vxm")->url);
 		$url->query->set('itemID', $itemID);
+		if ($focus) {
+			return $this->get_itm_xrefs_vxm_focusURL($itemID, $focus);
+		}
 		return $url->getUrl();
 	}
+	/**
+	 * Return URL to VXM List
+	 * @param  string $itemID Item ID
+	 * @param  string $focus  VXM Key
+	 * @return string
+	 */
+	public function get_itm_xrefs_vxm_focusURL($itemID, $focus) {
+		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-vxm")->url);
+		$url->query->set('itemID', $itemID);
+
+		if ($this->wire('session')->response_xref) {
+			if ($this->wire('session')->response_xref->key != $focus) {
+				$url->query->set('focus', $focus);
+			}
+		} else {
+			$url->query->set('focus', $focus);
+		}
+
+		$vxm = $this->wire('modules')->get('XrefVxm');
+		$item = $vxm->get_vxm_item_recordlocker_key($focus);
+
+		if ($item) {
+			$filter = $this->wire('modules')->get('FilterXrefItemVxm');
+			$filter->itemid($itemID);
+			$position = $filter->position($item);
+
+			$pagenbr = floor($filter->query->count() / $this->wire('session')->display);
+			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
+		}
+		return $url->getUrl();
+	}
+
+
 
 	/**
 	 * Return URL to view VXM Item
@@ -246,11 +282,43 @@ class ItmXrefs extends WireData implements Module {
 		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-cxm")->url);
 		$url->query->set('itemID', $itemID);
 		if ($focus) {
-			$url->query->set('focus', $focus);
+			return $this->get_cxm_customer_focusURL($itemID, $focus);
 		}
 		return $url->getUrl();
 	}
 
+	/**
+	 * REturn Paginated URL to CXM Item Page
+	 * @param  string $itemID Item ID
+	 * @param  string $focus  Record Locker Key for Item
+	 * @return string
+	 */
+	public function get_cxm_customer_focusURL($itemID, $focus) {
+		$page = $this->wire('pages')->get('pw_template=itm-xrefs-cxm');
+		$url = new Url($page->url);
+		$url->query->set('itemID', $itemID);
+
+		if ($this->wire('session')->response_xref) {
+			if ($this->wire('session')->response_xref->key != $focus) {
+				$url->query->set('focus', $focus);
+			}
+		} else {
+			$url->query->set('focus', $focus);
+		}
+
+		$cxm = $this->wire('modules')->get('XrefCxm');
+		$item = $cxm->get_cxm_item_recordlockerkey($focus);
+
+		if ($item) {
+			$filter = $this->wire('modules')->get('FilterXrefItemCxm');
+			$filter->itemid($itemID);
+			$position = $filter->position($item);
+
+			$pagenbr = floor($filter->query->count() / $this->wire('session')->display);
+			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
+		}
+		return $url->getUrl();
+	}
 
 	/**
 	 * Return URL to view CXM Item
@@ -280,7 +348,7 @@ class ItmXrefs extends WireData implements Module {
 	 */
 	public function get_cxm_item_deleteURL($itemID, $custID, $custitemID) {
 		$url = new Url($this->wire('pages')->get('pw_template=itm-xrefs-cxm')->url);
-		$url->query->set('action', 'remove-cxm-item');
+		$url->query->set('action', 'delete-cxm-item');
 		$url->query->set('itemID', $itemID);
 
 		if ($custID) {
@@ -288,6 +356,48 @@ class ItmXrefs extends WireData implements Module {
 		}
 
 		$url->query->set('custitemID', $custitemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to view Kit
+	 * @param  string  $itemID      Item ID / Kit ID
+	 * @return string
+	 */
+	public function get_kitURL($itemID, $focus = '') {
+		$url = new Url($this->wire('pages')->get('pw_template=itm-kit')->url);
+		$url->query->set('itemID', $itemID);
+		if ($focus) {
+			$url->query->set('focus', $focus);
+		}
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to view Kit Component
+	 * @param  string  $itemID      Item ID / Kit ID
+	 * @param  string  $component   Component Item ID
+	 * @return string
+	 */
+	public function get_kit_componentURL($itemID, $component = '') {
+		$url = new Url($this->wire('pages')->get('pw_template=itm-kit')->url);
+		$url->query->set('itemID', $itemID);
+		$url->query->set('component', $component);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to view Kit Component
+	 * @param  string  $itemID      Item ID / Kit ID
+	 * @param  string  $component   Component Item ID
+	 * @return string
+	 */
+	public function get_kit_component_deleteURL($itemID, $component) {
+		$url = new Url($this->wire('pages')->get('pw_template=itm-kit')->url);
+		$url->query->set('action', 'delete-component');
+		$url->query->set('itemID', $itemID);
+		$url->query->set('kitID', $itemID);
+		$url->query->set('component', $component);
 		return $url->getUrl();
 	}
 
@@ -320,6 +430,7 @@ class ItmXrefs extends WireData implements Module {
 		$this->add_pagehooks_upcx();
 		$this->add_pagehooks_vxm();
 		$this->add_pagehooks_cxm();
+		$this->add_pagehooks_kim();
 	}
 
 	public function add_pagehooks_upcx() {
@@ -390,7 +501,7 @@ class ItmXrefs extends WireData implements Module {
 		$this->addHook("Page(pw_template=$templates)::vxm_item_newURL", function($event) {
 			$p = $event->object;
 			$itemID = $p->itemID;
-			$event->return = $this->get_vxm_itemURL($itemID, '','new');
+			$event->return = $this->get_vxm_itemURL($itemID, '', 'new');
 		});
 
 		$this->addHook("Page(pw_template=$templates)::vxm_item_deleteURL", function($event) {
@@ -399,6 +510,13 @@ class ItmXrefs extends WireData implements Module {
 			$vendorID = $event->arguments(1);
 			$vendoritemID = $event->arguments(2);
 			$event->return = $this->get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::vxm_item_exitURL", function($event) {
+			$p = $event->object;
+			$item = $event->arguments(0);
+			$vxm = $this->wire('modules')->get('XrefVxm');
+			$event->return = $this->get_itm_xrefs_vxmURL($itemID, $vxm->get_recordlocker_key($item));
 		});
 	}
 
@@ -421,9 +539,9 @@ class ItmXrefs extends WireData implements Module {
 
 		$this->addHook("Page(pw_template=$templates)::cxm_item_deleteURL", function($event) {
 			$p = $event->object;
-			$custID = $event->arguments(0);
-			$custitemID = $event->arguments(1);
-			$itemID = $p->itemID;
+			$itemID = $event->arguments(0);
+			$custID = $event->arguments(1);
+			$custitemID = $event->arguments(2);
 			$event->return = $this->get_cxm_item_deleteURL($itemID, $custID, $custitemID);
 		});
 
@@ -437,7 +555,37 @@ class ItmXrefs extends WireData implements Module {
 			$item = $event->arguments(0);
 			$custID = $item->custid;
 			$custitemID = $item->custitemid;
-			$event->return = $this->get_itm_xrefs_cxmURL($item->itemid, "$custID-$custitemID");
+			$cxm = $this->wire('modules')->get('XrefCxm');
+			$event->return = $this->get_itm_xrefs_cxmURL($item->itemid, $cxm->get_recordlocker_key($item));
+		});
+	}
+
+	public function add_pagehooks_kim() {
+		$itm = $this->wire('modules')->get('Itm');
+		$templates = implode('|', $itm::TEMPLATES_ITM);
+
+		$this->addHook("Page(pw_template=$templates)::kitURL", function($event) {
+			$itemID = $event->arguments(0);
+			$focus  = $event->arguments(1);
+			$event->return = $this->get_kitURL($itemID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::kit_exitURL", function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$event->return = $p->itm_xrefsURL($itemID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::kit_componentURL", function($event) {
+			$itemID = $event->arguments(0);
+			$component = $event->arguments(1);
+			$event->return = $this->get_kit_componentURL($itemID, $component);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::kit_component_deleteURL", function($event) {
+			$itemID = $event->arguments(0);
+			$component = $event->arguments(1);
+			$event->return = $this->get_kit_component_deleteURL($itemID, $component);
 		});
 	}
 }
