@@ -2,6 +2,15 @@
 	$cart = $modules->get('Cart');
 	$html = $modules->get('HtmlWriter');
 
+	$rm = strtolower($input->requestMethod());
+	$values = $input->$rm;
+
+	if ($values->action) {
+		$cart->process_input($input);
+		$session->redirect($page->redirectURL(), $http301 = false);
+	}
+
+
 	if ($cart->has_custid()) {
 		$custID = $cart->get_custid();
 		$customer = CustomerQuery::create()->findOneByCustid($custID);
@@ -16,9 +25,7 @@
 			$shipto = false;
 		}
 
-		$page->formurl = $page->child('template=redir')->url;
 		$page->body .= $config->twig->render('cart/cart-links.twig', ['page' => $page, 'customer' => $customer, 'cart' => $cart, 'shipto' => $shipto]);
-
 
 		if ($modules->get('ConfigsCi')->option_lastsold  == 'cstk') {
 			$lastsold = $modules->get('LastSoldItemsCustomerCstk');
