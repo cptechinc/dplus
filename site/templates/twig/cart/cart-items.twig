@@ -20,9 +20,10 @@
 <div class="pb-3"></div>
 {% for detail in cart.get_items() %}
 	{% set item = cart.get_im_item(detail.itemid) %}
-	<form action="{{ page.formurl }}" class="form-row px-3 allow-enterkey-submit">
-		<input type="hidden" name="action" value="quick-update-line">
+	<form action="{{ page.url }}" class="form-row px-3 allow-enterkey-submit">
+		<input type="hidden" name="action" value="update-item-quick">
 		<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
+
 		<div class="col-sm-4">
 			{{ detail.itemid }}
 			<br>
@@ -45,11 +46,11 @@
 			$ {{ detail.totalprice|number_format(cart.decimal_places_price) }}
 		</div>
 		<div class="col-sm-3 text-right">
-			<button type="submit" class="btn btn-success">
+			<button type="submit" class="btn btn-sm btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
-			<a href="{{ page.remove_itemURL(detail.linenbr) }}" class="btn btn-danger exclude">
-				<i class="fa fa-times" aria-hidden="true"></i> Remove
+			<a href="{{ page.delete_itemURL(detail.linenbr) }}" class="btn btn-sm btn-danger exclude">
+				<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 			</a>
 		</div>
 	</form>
