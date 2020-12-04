@@ -55,10 +55,10 @@ class PurchaseOrderEditItems extends WireData implements Module {
 
 		switch ($values->text('action')) {
 			case 'add-item':
-				$this->process_input_add_item($input);
+				$this->input_add_item($input);
 				break;
 			case 'update-item':
-				$this->process_input_update_item($input);
+				$this->input_update_item($input);
 				break;
 		}
 	}
@@ -68,7 +68,7 @@ class PurchaseOrderEditItems extends WireData implements Module {
 	 * @param WireInput $input Input data
 	 * @return void
 	 */
-	public function process_input_add_item(WireInput $input) {
+	public function input_add_item(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$q = $this->get_query_details($values->text('ponbr'));
@@ -89,7 +89,7 @@ class PurchaseOrderEditItems extends WireData implements Module {
 	 * @param  WireInput $input Input Data
 	 * @return void
 	 */
-	public function process_input_update_item(WireInput $input) {
+	public function input_update_item(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$ponbr = $values->text('ponbr');
@@ -125,11 +125,9 @@ class PurchaseOrderEditItems extends WireData implements Module {
 		$item->setCost_total($values->text('cost_total'));
 	}
 
-
 /* =============================================================
 	Dplus Request Functions
 ============================================================= */
-
 	/**
 	 * Send PO Add Item Request
 	 * @param string $ponbr  Purchase Order Number
@@ -174,7 +172,6 @@ class PurchaseOrderEditItems extends WireData implements Module {
 		$url->query->set('sessionID', $this->sessionID);
 		$requestor->self_request($url->getUrl());
 	}
-
 
 /* =============================================================
 	Supplemental Functions
@@ -248,6 +245,7 @@ class PurchaseOrderEditItems extends WireData implements Module {
 		$q->filterByLinenbr($linenbr);
 		return number_format($q->findOne(), $this->configs->decimal_places_qty());
 	}
+	
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */

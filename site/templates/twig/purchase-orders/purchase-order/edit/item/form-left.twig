@@ -5,27 +5,39 @@
 	po                     EditPoHead
 	epo                    PurchaseOrderEdit
 #}
-<div class="row form-group">
-	<div class="col-sm-4">
-		<label for="itemID">Item ID</label>
-	</div>
-	<div class="col-sm-8">
-		<div class="input-group input-group-sm">
-			<span class="input-group-prepend">
-				<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Search for / Choose Item" aria-label="Search for / Choose Item" data-search="item">
-					<span class="fa fa-search" aria-hidden="true"></span> <span class="sr-only">Search for / Choose Item</span>
-				</button>
-			</span>
-			<input type="text" class="form-control" name="itemID" id="itemID">
+<div class="item-col">
+	<div class="row form-group">
+		<div class="col-sm-4">
+			<label for="edititemID">Item ID</label>
+		</div>
+		<div class="col-sm-8">
+			{% include 'util/form/input-with-modal-lookup.twig' with {
+					'name': 'itemID', 'id': 'edititemID', 'value': '',
+					'attributes': {
+
+					},
+					'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Item',
+					'attributes_button': {
+						'data-search': 'item',
+						'data-input': '#edititemID'
+					}
+				}
+			%}
 		</div>
 	</div>
-</div>
-<div class="row form-group">
-	<div class="col-sm-4">
-		<label for="description">Description</label>
-	</div>
-	<div class="col-sm-8">
-		<input type="text" class="form-control form-control-sm" name="description" id="description">
+	<div class="row form-group">
+		<div class="col-sm-4">
+			<label for="description">Description</label>
+		</div>
+		<div class="col-sm-8">
+			{% include 'util/form/input.twig' with {
+					'name': 'description', 'id': 'editdescription', 'value': '',
+					'class_add': [
+						'description'
+					]
+				}
+			%}
+		</div>
 	</div>
 </div>
 <div class="row form-group">
@@ -33,14 +45,15 @@
 		<label for="vendoritemID">Vendor Item ID</label>
 	</div>
 	<div class="col-sm-8">
-		<div class="input-group input-group-sm">
-			<span class="input-group-prepend">
-				<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Search for / Choose Item" aria-label="Search for / Choose Item" data-search="item">
-					<span class="fa fa-search" aria-hidden="true"></span> <span class="sr-only">Search for / Choose Item</span>
-				</button>
-			</span>
-			<input type="text" class="form-control" name="vendoritemID" id="vendoritemID">
-		</div>
+		{% include 'util/form/input-with-modal-lookup.twig' with {
+				'name': 'vendoritemID', 'id': 'vendoritemID', 'value': '',
+				'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Vendor Item',
+				'attributes_button': {
+					'data-search': 'vendoritem',
+					'data-input': '#vendoritemID'
+				}
+			}
+		%}
 	</div>
 </div>
 <div class="row form-group">

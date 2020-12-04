@@ -1,9 +1,11 @@
 <div class="mb-4 row">
 	<div class="col-sm-6">
-		<a href="{{ page.parent.url }}" class="btn btn-info"><i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i>&ensp;Back to Purchase Orders Menu</a>
+		<a href="{{ page.parent.url }}" class="btn btn-primary"><i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i>&ensp;Back to Purchase Orders Menu</a>
 	</div>
 	<div class="col-sm-6">
-		<button class="btn btn-info toggle-po-search pull-right" type="button" data-toggle="collapse" data-target="#purchase-orders-search-div" aria-expanded="false" aria-controls="purchase-orders-search-div">Toggle Search&ensp;<i class="fa fa-search" aria-hidden="true"></i></button>
+		<button class="btn btn-info toggle-po-search pull-right" type="button" data-toggle="collapse" data-target="#purchase-orders-search-div" aria-expanded="false" aria-controls="purchase-orders-search-div">
+			<i class="fa fa-filter" aria-hidden="true"></i> Toggle Filter
+		</button>
 	</div>
 </div>
 
@@ -16,42 +18,47 @@
 				<div class="row mt-3">
 					<div class="col-sm-4">
 						<h5>PO #</h5>
-						<input class="form-control form-group inline" type="text" name="ponbr_from" value="{{ input.get.text('ponbr_from') }}" placeholder="From PO #">
-						<input class="form-control form-group inline" type="text" name="ponbr_through" value="{{ input.get.text('ponbr_through') }}" placeholder="Through PO #">
+						<div class="form-group">
+							{% include 'util/form/input.twig' with {'name': 'ponbr_from', 'value': input.get.text('ponbr_from'), 'placeholder': 'From PO #' } %}
+						</div>
+						{% include 'util/form/input.twig' with {'name': 'ponbr_through', 'value': input.get.text('ponbr_through'), 'placeholder': 'Through PO #' } %}
 					</div>
 					<div class="col-sm-4">
 						<h5>Vend ID</h5>
-
+						{% set vend_array = input.get('vendorID', 'array') %}
 						<div class="input-group form-group">
-							{% set vend_array = input.get('vendorID', 'array') %}
-							<input class="form-control form-group inline" type="text" name="vendorID[]" id="po-vend-from" value="{{ vend_array[0] }}" placeholder="From Vend ID">
-							<span class="input-group-append">
-								<button type="button" class="btn btn-default not-round get-vendid-search" data-field="#po-vend-from"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
-							</span>
+							{% include 'util/form/input-with-modal-lookup.twig' with {
+									'name': 'vendorID[]', 'id':'vendorid1', 'value': vend_array[0],
+									'placeholder': 'From Vend ID',
+									'attributes': {},
+									'class_add': 'ajax-lookup',
+									'modaltarget': '#ajax-modal',
+									'modaldescription': 'Search for / Choose Vendor',
+									'attributes_button': {
+										'data-search': 'vendor',
+										'data-lookupurl': page.search_vendorsURL,
+										'data-input': '#vendorid1'
+									}
+								}
+							%}
 						</div>
 						<div class="input-group form-group">
-							<input class="form-control form-group inline" type="text" name="vendorID[]" id="po-vend-to" value="{{ vend_array[1] }}" placeholder="Through Vend ID">
-							<span class="input-group-append">
-								<button type="button" class="btn btn-default not-round get-vendid-search" data-field="#po-vend-to"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
-							</span>
+							{% include 'util/form/input-with-modal-lookup.twig' with {
+									'name': 'vendorID[]', 'id':'vendorid2', 'value': vend_array[1],
+									'placeholder': 'Through Vend ID',
+									'attributes': {},
+									'class_add': 'ajax-lookup',
+									'modaltarget': '#ajax-modal',
+									'modaldescription': 'Search for / Choose Vendor',
+									'attributes_button': {
+										'data-search': 'vendor',
+										'data-lookupurl': page.search_vendorsURL,
+										'data-input': '#vendorid2'
+									}
+								}
+							%}
 						</div>
 					</div>
-					{# TODO: Order total is an added column to table #}
-					<!-- <div class="col-sm-4">
-						<h5>Order Total</h5>
-						<div class="input-group form-group">
-							<input class="form-control form-group inline" type="text" name="po_total_from" id="po-total-min" value="{{ input.get.text('po_total_from') }}" placeholder="From PO Total">
-							<span class="input-group-append">
-								<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-down" aria-hidden="true"></span> <span class="sr-only">Min</span> </button>
-							</span>
-						</div>
-						<div class="input-group form-group">
-							<input class="form-control form-group inline" type="text" name="po_total_through" id="po-total-max" value="{{ input.get.text('po_total_through') }}" placeholder="Through PO Total">
-							<span class="input-group-append">
-								<button type="button" class="btn btn-default not-round" onclick=""> <span class="fa fa-angle-double-up" aria-hidden="true"></span> <span class="sr-only">Max</span> </button>
-							</span>
-						</div>
-					</div> -->
 					<div class="col-sm-4">
 						<h5>Status</h5>
 						<label>New</label>
@@ -66,26 +73,18 @@
 					<div class="col-sm-4">
 						<h5>Order Date</h5>
 						<label for="afterdate">From Date</label>
-						{% set name = 'date_ordered_from' %}
-						{% set value = input.get.text('date_ordered_from') %}
-						{% include 'util/date-picker.twig' %}
+						{% include 'util/date-picker.twig' with {'name': 'date_ordered_from', 'value': input.get.text('date_ordered_from') } %}
 
 						<label for="beforedate">Through Date</label>
-						{% set name = 'date_ordered_through' %}
-						{% set value = input.get.text('date_ordered_through') %}
-						{% include 'util/date-picker.twig' %}
+						{% include 'util/date-picker.twig' with {'name': 'date_ordered_through', 'value': input.get.text('date_ordered_through') } %}
 					</div>
 					<div class="col-sm-4">
 						<h5>Expected Date</h5>
 						<label for="afterdate">From Date</label>
-						{% set name = 'date_expected_from' %}
-						{% set value = input.get.text('date_expected_from') %}
-						{% include 'util/date-picker.twig' %}
+						{% include 'util/date-picker.twig' with {'name': 'date_expected_from', 'value': input.get.text('date_expected_from') } %}
 
 						<label for="beforedate">Through Date</label>
-						{% set name = 'date_expected_through' %}
-						{% set value = input.get.text('date_expected_through') %}
-						{% include 'util/date-picker.twig' %}
+						{% include 'util/date-picker.twig' with {'name': 'date_expected_through', 'value': input.get.text('date_expected_through') } %}
 					</div>
 				</div>
 				<br>

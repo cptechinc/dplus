@@ -1,7 +1,7 @@
 <?php
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
-	
+
 	switch ($values->text('entry')) {
 		case 'po':
 			$lookup = $modules->get('LookupItemEntryPo');

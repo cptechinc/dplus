@@ -32,11 +32,7 @@
 			</a>
 		</div>
 		<div class="col">
-			<a href="{{ page.get_sortURL('shipfromid') }}" class="link">ShipfromID
-				{% if page.orderby_column == 'shipfromid' %}
-					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
-				{% endif %}
-			</a>
+			Name
 		</div>
 		<div class="col">
 			<a href="{{ page.get_sortURL('total_total') }}" class="link">Order Total
@@ -48,13 +44,6 @@
 		<div class="col">
 			<a href="{{ page.get_sortURL('date_ordered') }}" class="link">Order Date
 				{% if page.orderby_column == 'date_ordered' %}
-					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
-				{% endif %}
-			</a>
-		</div>
-		<div class="col">
-			<a href="{{ page.get_sortURL('date_expected') }}" class="link">Expected Date
-				{% if page.orderby_column == 'date_expected' %}
 					<i class="fa fa-sort-amount-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
 				{% endif %}
 			</a>
