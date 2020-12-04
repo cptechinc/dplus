@@ -20,6 +20,15 @@ class SalesOrderEdit extends WireData implements Module {
 
 	protected $ordn;
 
+	const HOOK_FUNCTIONS_LOOKUPS = array(
+		// Hook     =>  PW Template
+		'ii_lookup'   => 'ii-item-lookup',
+		'itm_json'    => 'itm-json',
+		'itm_lookup'  => 'itm-lookup',
+		'search_items'     => 'itm-search',
+		'search_customers'   => 'ci-search',
+	);
+
 	/**
 	 * Returns if Sales Order Customer has been defined
 	 * @return bool
@@ -525,15 +534,18 @@ class SalesOrderEdit extends WireData implements Module {
 			$event->return = $url->getUrl();
 		});
 
-		$this->addHook('Page(pw_template=sales-order-edit)::get_itm_lookupURL', function($event) {
-			$url = new Url($this->wire('pages')->get('pw_template=itm-json')->httpUrl);
-			$url->query->set('json', 'true');
-			$event->return = $url->getUrl();
-		});
+		foreach (self::HOOK_FUNCTIONS_LOOKUPS as $hook => $pwtemplate) {
+			$this->addHook("Page(pw_template=sales-order-edit)::{$hook}URL", function($event) {
+				$hook = rtrim($event->method, 'URL');
+				$pwtemplate = self::HOOK_FUNCTIONS_LOOKUPS[$hook];
+				$event->return = $this->wire('pages')->get("pw_template=$pwtemplate")->url;
+			});
+		}
 
-		$this->addHook('Page(pw_template=sales-order-edit)::get_ii_lookupURL', function($event) {
-			$url = new Url($this->wire('pages')->get('pw_template=ii-item-lookup')->httpUrl);
-			$event->return = $url->getUrl();
+		$this->addHook("Page(pw_template=sales-order-edit)::jsonapiURL", function($event) {
+			$api = $event->arguments(0);
+			$pages = $this->wire('pages');
+			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
 		});
 
 		$this->addHook('User::can_editorder', function($event) {
