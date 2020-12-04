@@ -5,8 +5,10 @@
 	order                  SalesOrder
 #}
 <form action="{{ page.formurl }}" class="pt-3 px-3 allow-enterkey-submit" id="add-item-form">
+	<input type="hidden" name="action" value="add-item">
+	<input type="hidden" name="ordn" value="{{ order.ordernumber }}">
+	
 	<div class="row">
-		<input type="hidden" name="action" value="add-item">
 		<div class="col-sm-4">
 			<div class="form-group">
 				{% include 'util/form/input-with-modal-lookup.twig' with {
