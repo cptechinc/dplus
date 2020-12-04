@@ -36,11 +36,7 @@
 			$page->body .= $config->twig->render('cart/cart-items.twig', ['page' => $page, 'cart' => $cart]);
 		}
 
-		if ($config->twigloader->exists("cart/lookup/$config->company/form.twig")) {
-			$page->body .= $config->twig->render("cart/lookup/$config->company/form.twig", ['page' => $page, 'cart' => $cart]);
-		} else {
-			$page->body .= $config->twig->render('cart/lookup/form.twig', ['page' => $page, 'cart' => $cart, 'soconfig' => $cart->config('so')]);
-		}
+		$page->body .= $config->twig->render('cart/lookup/form.twig', ['page' => $page, 'cart' => $cart]);
 
 		$page->js   .= $config->twig->render('cart/lookup/js.twig', ['page' => $page, 'cart' => $cart]);
 		$page->body .= $config->twig->render('cart/last-sales/modal.twig', ['page' => $page, 'cart' => $cart, 'lastsold' => $lastsold, 'company' => $config->company, 'loader' => $config->twig->getLoader()]);
