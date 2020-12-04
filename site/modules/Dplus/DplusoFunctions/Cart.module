@@ -9,6 +9,7 @@ use ItemMasterItemQuery, ItemMasterItem;
 use ConfigSalesOrderQuery, ConfigSalesOrder;
 
 class Cart extends WireData implements Module {
+
 	/**
 	 * Returns if Cart Customer has been defined
 	 * @return bool
