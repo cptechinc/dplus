@@ -1,14 +1,14 @@
 <div class="form-group">
 	<label for="custpo">Customer PO</label>
-	<input type="text" class="form-control" name="custpo" id="custpo" value="{{ order.custpo }}">
+	<input type="text" class="form-control form-control-sm" name="custpo" id="custpo" value="{{ order.custpo }}">
 </div>
 <div class="form-group">
 	<label for="releasenumber">Release Number</label>
-	<input type="text" class="form-control" name="releasenumber" id="releasenumber" value="{{ order.releasenumber }}">
+	<input type="text" class="form-control form-control-sm" name="releasenumber" id="releasenumber" value="{{ order.releasenumber }}">
 </div>
 <div class="form-group">
 	<label for="shipvia">Shipvia</label>
-	<select name="shipvia" id="shipvia" class="form-control">
+	<select name="shipvia" id="shipvia" class="form-control form-control-sm">
 		{% for shipvia in shipvias %}
 			<option value="{{ shipvia.code }}" {{ shipvia.code == order.shipvia ? 'selected' : ''}}>{{ shipvia.description }}</option>
 		{% endfor %}
@@ -23,7 +23,7 @@
 	{% include 'util/select.twig' with {'name': 'shipcomplete', 'id': 'shipcomplete', 'selectedvalue': order.shipcomplete, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 </div>
 <label for="termscode">Terms</label>
-<select name="termscode" class="form-control" id="termscode">
+<select name="termscode" class="form-control form-control-sm" id="termscode">
 	{% for termscode in termscodes %}
 		<option value="{{ termscode.code }}" {{ termscode.code == order.termcode ? 'selected' : '' }}>
 			{{ termscode.code }} - {{ termscode.description }}
