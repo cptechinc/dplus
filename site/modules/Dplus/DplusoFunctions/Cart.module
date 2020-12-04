@@ -8,8 +8,13 @@ use CartdetQuery, Cartdet;
 use ItemMasterItemQuery, ItemMasterItem;
 use ConfigSalesOrderQuery, ConfigSalesOrder;
 
+use LogpermQuery, Logperm;
+
 class Cart extends WireData implements Module {
 
+/* =============================================================
+	Cart Header Functions
+============================================================= */
 	/**
 	 * Returns if Cart Customer has been defined
 	 * @return bool
@@ -44,7 +49,6 @@ class Cart extends WireData implements Module {
 
 	/**
 	 * Sets Cart Customer ID
-	 *
 	 * @return string
 	 */
 	public function set_custid($custID) {
@@ -54,14 +58,12 @@ class Cart extends WireData implements Module {
 			$cart = new Carthed();
 			$cart->setSessionid(session_id());
 		}
-
 		$cart->setCustid($custID);
 		$cart->save();
 	}
 
 	/**
 	 * Sets Cart Customer Shipto ID
-	 *
 	 * @return string
 	 */
 	public function set_shiptoid($shiptoID) {
@@ -76,6 +78,9 @@ class Cart extends WireData implements Module {
 		$cart->save();
 	}
 
+/* =============================================================
+	Cart Items Functions
+============================================================= */
 	/**
 	 * Returns if Session has items in the cart
 	 *
@@ -91,6 +96,137 @@ class Cart extends WireData implements Module {
 	 */
 	public function get_items() {
 		return CartdetQuery::create()->filterBySessionid(session_id())->find();
+	}
+
+	/**
+	 * Return Cartdet
+	 * @param  int      $linenbr Line Number
+	 * @return Cartdet
+	 */
+	public function get_cart_lineitem($linenbr = 1) {
+		return CartdetQuery::create()->filterBySessionidLinenbr($this->sessionID, $linenbr)->findOne();
+	}
+
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Process Input Data and act on upon action
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'add-item':
+				$this->input_item_add($input);
+				break;
+			case 'add-item-popular':
+				$this->input_item_add_popular($input);
+				break;
+			case 'update-item-quick':
+				$this->input_item_update_quick($input);
+				break;
+			case 'delete-item':
+				$this->input_item_delete($input);
+				break;
+			case 'empty-cart':
+				$this->request_emptycart();
+				break;
+			case 'create-order':
+				$this->request_create_order();
+				break;
+			case 'create-quote':
+				$this->request_create_quote();
+				break;
+		}
+	}
+
+	/**
+	 * Add Item
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function input_item_add(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID = $values->text('itemID');
+		$qty    = $values->int('qty');
+		$this->request_item_add($itemID, $qty);
+		return true;
+	}
+
+	/**
+	 * Add Item
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function input_item_add_multiple(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$qtys = $values->array('qty');
+		$itemIDs = $values->array('itemID');
+		$this->request_item_add_multiple($itemID, $qty);
+		return true;
+	}
+
+	/**
+	 * Update Item using Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function input_item_update_quick(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$linenbr = $values->int('linenbr');
+		$lineitem = $this->get_cart_lineitem($linenbr);
+		$this->update_lineitem_input($lineitem, $input);
+		$saved = $lineitem->save();
+
+		if ($saved) {
+			$this->request_item_update($linenbr);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Update Cart Detail from Input Data
+	 * @param  Cartdet   $item  Line Item
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	private function update_lineitem_input(Cartdet $item, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$item->setQty($values->int('qty'));
+		$item->setPrice($values->text('price'));
+		$item->setRshipdate($values->text('rqstdate'));
+	}
+
+	/**
+	 * UDelete Item using Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function input_item_delete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$linenbr = $values->int('linenbr');
+		$lineitem = $this->get_cart_lineitem($linenbr);
+		$lineitem->setQty(0);
+		$saved = $lineitem->save();
+
+		if ($saved) {
+			$this->request_item_delete($linenbr);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 
@@ -141,75 +277,185 @@ class Cart extends WireData implements Module {
 /* =============================================================
 	Dplus Cobol Request Functions
 ============================================================= */
+	private function request_dplus(array $data) {
+		$config = $this->wire('config');
+		$custID = $this->get_custid();
+		$custID = !empty($custID) ? $custID : $config->default_webcustomer;
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array_merge(["DBNAME=$dplusdb"], $data);
+		$data[] = "CUSTID=$custID";
+
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
+	}
+
 	/**
 	 * Sends HTTP GET request to send Dplus Item Search Request
 	 * @param  string $q Query or Item ID
 	 * @return void
 	 */
-	public function request_itemsearch($q) {
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$url = new Url($this->wire('pages')->get('template=redir,redir_file=ii')->url);
-		$url->query->set('action', 'item-search');
-		$url->query->set('q', $q);
-		$url->query->set('custID', $this->get_custid());
-		$url->query->set('sessionID', session_id());
-		$requestor->self_request($url->getUrl());
+	private function request_itemsearch($q) {
+		$data = array("ITNOSRCH=$q");
+		$this->request_dplus($data);
+	}
+
+	/**
+	 * Request Item Add to cart for CustID
+	 * @param string $itemID Item ID
+	 * @param string $qty    Qty to be added
+	 */
+	private function request_item_add($itemID, $qty) {
+		$data = array('CARTDET', "ITEMID=$itemID", "QTY=$qty");
+		$this->request_dplus($data);
+	}
+
+	/**
+	 * Request Item Add to cart for CustID
+	 * @param string $itemID Item ID
+	 * @param string $qty    Qty to be added
+	 */
+	private function request_item_add_multiple(array $itemIDs, array $qtys) {
+		$data = array('CARTADDMULTIPLE');
+		for ($i = 0; $i < sizeof($qtys); $i++) {
+			if (!empty($qtys[$i])) {
+				$itemID = str_pad($itemIDs[$i], 30, ' ');
+				$qty = $qtys[$i];
+				$data[] = "ITEMID={$itemID}QTY=$qty";
+			}
+		}
+		$this->request_dplus($data);
+	}
+
+	/**
+	 * Request Item Update
+	 * @param string $itemID   Item ID
+	 * @param int    $linenbr  Line Number
+	 * @param string $custID   Customer ID
+	 */
+	private function request_item_update($linenbr) {
+		$data = array('CARTDET', "LINENO=$linenbr");
+
+	}
+
+	/**
+	 * Request Item Delete
+	 * @param int    $linenbr  Line Number
+	 */
+	private function request_item_delete($linenbr = 1) {
+		$data = array('CARTDET', "LINENO=$linenbr", 'QTY=0');
+		$this->request_dplus($data);
+	}
+
+	/**
+	 * Request cart to be emptied
+	 * @return void
+	 */
+	private function request_emptycart() {
+		$data = array("EMPTYCART");
+		$this->request_dplus($data);
+	}
+
+	/**
+	 * Request Sales Order to be created from Cart
+	 * @return void
+	 */
+	private function request_create_order() {
+		$data = array("CREATESO");
+		$this->request_dplus($data);
+	}
+
+	/**
+	 * Request Quote to be created from Cart
+	 * @return void
+	 */
+	private function request_create_quote() {
+		$data = array("CREATEQT");
+		$this->request_dplus($data);
+	}
+
+/* =============================================================
+	URL Functions
+============================================================= */
+	/**
+	 * Return URL to Cart
+	 * @return string
+	 */
+	public function cartURL() {
+		return $this->wire('pages')->get('pw_template=cart')->url;
+	}
+
+	/**
+	 * Return Purl
+	 * @return Url
+	 */
+	public function cartPURL() {
+		return new Url($this->wire('pages')->get('pw_template=cart')->url);
+	}
+
+	/**
+	 * Return URL to delete Line Item
+	 * @param  int    $linenbr Line Number
+	 * @return string
+	 */
+	public function delete_itemURL($linenbr = 0) {
+		$url = $this->cartPURL();
+		$url->query->set('action', 'delete-item');
+		$url->query->set('linenbr', $linenbr);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to Empty Cart
+	 * @return string
+	 */
+	public function empty_cartURL() {
+		$url = $this->cartPURL();
+		$url->query->set('action', 'empty-cart');
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to Create Order
+	 * @return string
+	 */
+	public function create_orderURL() {
+		$url = $this->cartPURL();
+		$url->query->set('action', 'create-order');
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to Create Quote
+	 * @return string
+	 */
+	public function create_quoteURL() {
+		$url = $this->cartPURL();
+		$url->query->set('action', 'create-quote');
+		return $url->getUrl();
 	}
 
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'Dpluso Cart Module',
-			'version' => 101,
-			'summary' => 'Handles Dpluso Cart',
-			'singular' => true,
-			'autoload' => true,
-		);
-	}
-
 	public function init() {
+		$this->sessionID = session_id();
 
-		/**
-		 * Adds Function remove_itemURL() to Page
-		 * @param  int    $linenbr Line Number to remove
-		 * @return string          URL to redirect to Remove Line Item
-		 */
-		$this->addHook('Page(pw_template=cart)::remove_itemURL', function($event) {
-			$page = $event->object;
+		$this->addHook('Page(pw_template=cart)::delete_itemURL', function($event) {
 			$linenbr = $event->arguments(0);
-			$event->return = $page->child('template=redir')->url."?action=remove-line&linenbr=$linenbr";
+			$event->return = $this->delete_itemURL($linenbr);
 		});
 
-		/**
-		 * Adds Function empty_cartURL() to Page
-		 * @return string URL to redirect to Empty Cart
-		 */
 		$this->addHook('Page(pw_template=cart)::empty_cartURL', function($event) {
-			$page = $event->object;
-			$event->return = $page->child('template=redir')->url."?action=empty-cart";
+			$event->return = $this->empty_cartURL();
 		});
 
-		/**
-		 * Adds Function ci_customerURL() to Page
-		 * @return string CI Customer Page URL
-		 */
 		$this->addHook('Page(pw_template=cart)::ci_customerURL', function($event) {
 			$page = $event->object;
 			$custID = $event->arguments(0);
 			$event->return = $this->wire('pages')->get('pw_template=ci-customer')->url.'?custID='.urlencode($custID);
 		});
 
-		/**
-		 * Adds Function ci_customerURL() to Page
-		 * @return string CI Customer Page URL
-		 */
 		$this->addHook('Page(pw_template=cart)::ci_customershiptoURL', function($event) {
 			$page = $event->object;
 			$custID   = $event->arguments(0);
@@ -222,31 +468,39 @@ class Cart extends WireData implements Module {
 			}
 		});
 
-		/**
-		 * Adds Function view_notesURL to Page
-		 * @return string Cart Notes URL
-		 */
-		$this->addHook('Page(pw_template=cart)::view_notesURL', function($event) {
-			$page = $event->object;
-			$event->return = $page->child('pw_template=cart-notes')->url;
-		});
-
-		/**
-		 * Adds Function create_quoteURL() to Page
-		 * @return string URL to redirect to Create Quote
-		 */
 		$this->addHook('Page(pw_template=cart)::create_quoteURL', function($event) {
-			$page = $event->object;
-			$event->return = $page->child('template=redir')->url."?action=create-quote";
+			$event->return = $this->create_quoteURL();
 		});
 
-		/**
-		 * Adds Function create_orderURL() to Page
-		 * @return string URL to redirect to Create Sales Order
-		 */
 		$this->addHook('Page(pw_template=cart)::create_orderURL', function($event) {
-			$page = $event->object;
-			$event->return = $page->child('template=redir')->url."?action=create-order";
+			$event->return = $this->create_orderURL();
 		});
+
+		$this->addHook('Page(pw_template=cart)::redirectURL', function($event) {
+			$p = $event->object;
+			$action = $p->fullURL->query->get('action');
+			$url = $this->cartURL();
+
+			if (strpos($action, 'create') !== false) {
+				$q = LogpermQuery::create();
+				$logperm = $q->findOneBySessionid($this->sessionID);
+				if ($action == 'create-order') {
+					$url = $this->wire->modules->get('SalesOrderEdit')->edit_salesorderURL($logperm->ordernbr);
+				} else if($action == 'create-quote') {
+					$url = $this->wire('pages')->get('template=redir,redir_file=quote')->url.'?action=edit-new-quote';
+				}
+			}
+			$event->return = $url;
+		});
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Cart Module',
+			'version' => 101,
+			'summary' => 'Handles Dpluso Cart',
+			'singular' => true,
+			'autoload' => true,
+		);
 	}
 }
