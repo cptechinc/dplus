@@ -94,16 +94,16 @@ class PurchaseOrderEdit extends WireData implements Module {
 
 		switch ($values->text('action')) {
 			case 'update-header':
-				$this->process_input_update_header($input);
+				$this->input_update_header($input);
 				break;
 			case 'update-header-payto':
-				$this->process_input_update_header_payto($input);
+				$this->input_update_header_payto($input);
 				break;
 			case 'update-header-phone':
-				$this->process_input_update_header_phone($input);
+				$this->input_update_header_phone($input);
 				break;
 			case 'create-po':
-				$this->process_input_create_po($input);
+				$this->input_create_po($input);
 				break;
 			case 'verify-po-created':
 				$this->input_verify_created_po($input);
@@ -127,7 +127,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 	 * @param  WireInput $input Input Data
 	 * @return void
 	 */
-	public function process_input_update_header(WireInput $input) {
+	public function input_update_header(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$ponbr = $values->text('ponbr');
@@ -153,7 +153,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 	 * @param  WireInput $input Input Data
 	 * @return void
 	 */
-	public function process_input_create_po(WireInput $input) {
+	public function input_create_po(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$vendorID = $values->text('vendorID');
@@ -191,7 +191,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 	 * @param  WireInput $input Input Data
 	 * @return void
 	 */
-	public function process_input_update_header_payto(WireInput $input) {
+	public function input_update_header_payto(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$ponbr = $values->text('ponbr');
@@ -214,7 +214,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 	 * @param  WireInput $input Input Data
 	 * @return void
 	 */
-	public function process_input_update_header_phone(WireInput $input) {
+	public function input_update_header_phone(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$ponbr = $values->text('ponbr');
