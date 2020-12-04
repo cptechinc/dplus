@@ -1,0 +1,22 @@
+<table class="table table-striped" id="vxm-table">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th class="text-center">Vendor Item ID</th>
+			<th>Our Item ID</th>
+			<th>Description</th>
+			<th class="text-right">Base Cost</th>
+		</tr>
+	</thead>
+	{% for xref in results %}
+		<tr>
+			<td>
+				<a href="#" class="link vxm-link" data-vendoritemid="{{ xref.vendoritemid }}" data-vendorid="{{ xref.vendorid }}" data-itemid="{{ xref.itemid }}">
+					{{ xref.vendoritemid }}
+				</a>
+			</td>
+			<td>{{ xref.itemid }}</td>
+			<td>{{ item.imitem.description }}</td>
+			<td>$ {{ item.unitcost_base|currency }}</td>
+		</tr>
+	{% endfor %}
+</table>

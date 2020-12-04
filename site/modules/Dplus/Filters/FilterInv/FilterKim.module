@@ -1,0 +1,94 @@
+<?php namespace ProcessWire;
+
+use InvKitQuery, InvKit;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+class FilterKim extends WireData implements Module {
+	/**
+	 * Returns Query
+	 * @return InvKitQuery
+	 */
+	public function get_query() {
+		return $this->query;
+	}
+
+	/**
+	 * Initializes Query
+	 * @return void
+	 */
+	public function init_query() {
+		$this->query = InvKitQuery::create();
+	}
+
+/* =============================================================
+	Input Filter Functions
+============================================================= */
+	/**
+	 * Applies Filters to the Query
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function filter_input(WireInput $input) {
+
+	}
+
+/* =============================================================
+	Base Filter Functions
+============================================================= */
+	/**
+	 * Filter Query by Item ID
+	 * @param  string $itemID Item ID
+	 * @return self
+	 */
+	public function itemid($itemID) {
+		if ($itemID) {
+			$this->query->filterByItemid($itemID);
+		}
+	}
+
+	/**
+	 *
+	 * @param  string $q Search Query
+	 * @return void
+	 */
+	public function search($q) {
+		$columns = array(
+			InvKit::get_aliasproperty('itemid'),
+			// InvKit::get_aliasproperty('description'),
+			// InvKit::get_aliasproperty('effective_date'),
+		);
+		$this->query->search_filter($columns, strtoupper($q));
+	}
+
+/* =============================================================
+	Misc Query Functions
+============================================================= */
+	/**
+	 * Adds the Sort By to the query
+	 * @param  Page   $page
+	 * @return void
+	 */
+	public function apply_sortby(Page $page) {
+		if ($page->has_orderby()) {
+			$orderbycolumn = $page->orderby_column;
+			$sort = $page->orderby_sort;
+
+			$tablecolumn = InvKit::get_aliasproperty($orderbycolumn);
+			$this->query->sortBy($tablecolumn, $sort);
+		}
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Filter Kits Module',
+			'version' => 101,
+			'summary' => 'Handles Kits Filtering',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

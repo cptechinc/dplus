@@ -1,23 +1,13 @@
-{% set tabindex = tabindex ? tabindex : '' %}
-{% set type = type ? type : 'text' %}
-{% set name = name ? name : '' %}
-{% set id = id ? id : name %}
-{% set maxlength = maxlength ? maxlength : '' %}
-{% set class_input = class_input ? class_input : 'form-control form-control-sm'%}
-{% set class_add = class_add ? class_add : '' %}
-{% set class = class_override ? class_override : class_input ~ ' ' ~ class_add %}
-{% set value = value ? value : '' %}
-{% set placeholder = placeholder ? placeholder : '' %}
-{% set disabled = disabled ? disabled : false %}
-{% set attributes_extra = attributes ? attributes|htmlattributes : '' %}
+{% set disabled = attributes.disabled ? attributes.disabled : false %}
 {% set modaltarget = disabled ? '' : modaltarget %}
 {% set attributes_extra_button = attributes_button ? attributes_button|htmlattributes : '' %}
-
+{% set attributes_extra_button = attributes.disabled ? attributes_extra_button ~ ' disabled' : attributes_extra_button %}
+{% set attributes_extra_button = attributes.readonly ? attributes_extra_button ~ ' disabled' : attributes_extra_button %}
 <div class="input-group input-group-sm">
 	<span class="input-group-prepend">
 		<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="{{ modaltarget }}" title="{{ modaldescription }}" aria-label="{{ modaldescription }}" {{ attributes_extra_button }}>
 			<span class="fa fa-search" aria-hidden="true"></span> <span class="sr-only">{{ modaldescription }}</span>
 		</button>
 	</span>
-	<input tabindex="{{tabindex}}" type="{{type}}" name="{{ name }}" id="{{ id }}" {% if maxlength %} maxlength="{{ maxlength }}" {% endif %} class="{{ class }}" value="{{ value }}" placeholder="{{ placeholder }}" {{ attributes_extra }} {{ required ? 'required' : '' }} {{ autofocus ? 'autofocus' : '' }} {{ disabled ? 'disabled' : '' }}>
+	{% include 'util/form/input.twig' %}
 </div>

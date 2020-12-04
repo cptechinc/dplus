@@ -75,6 +75,15 @@ class ValidatePo extends WireData implements Module {
 		return $this->validate->ap->validate_countrycode($countrycode);
 	}
 
+	/**
+	 * Validate Status Code
+	 * @param  string $status Status Code
+	 * @return bool
+	 */
+	public function status($status) {
+		return array_key_exists($status, PurchaseOrder::STATUS_DESCRIPTIONS);
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */

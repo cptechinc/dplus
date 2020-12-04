@@ -3,98 +3,76 @@ $(function() {
 	var input_itemid = form_additem.find('input[name=itemID]');
 	var input_qty = form_additem.find('input[name=qty]');
 
-	form_additem.validate({
-		submitHandler: function(form) {
-			if (form_additem[0].hasAttribute("data-validated")) {
-				if (form_additem.attr('data-validated') == input_itemid.val()) {
-					validate_qtysubmit(form);
-				} else {
-					validate_itemid(function(valid) {
-						if (valid) {
-							get_item_data(function(exists) {
-								if (exists) {
-									validate_qtysubmit(form);
-								}
-							});
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = form_additem.validate({
+		rules: {
+			additemID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv') }}',
+					type: "get",
+					data: {
+						action: 'validate-itemid',
+						itemID: function() {
+							return $('#additemID').val();
 						}
-					});
-				}
-			} else {
-				validate_itemid(function(valid) {
-					if (valid) {
-						get_item_data(function(exists) {
-							if (exists) {
-								validate_qtysubmit(form);
-							}
-						});
 					}
-				});
+				}
+			},
+			addqty: {
+				required: true,
+				min: 1
 			}
+		},
+		submitHandler: function(form) {
+			validate_itm_item(input_itemid.val(), function(exists) {
+				if (exists) {
+					form.submit();
+				} else {
+					validate_get_item();
+				}
+			});
 		}
 	});
 
-	$('.item-lookup-result').on('click', function (e) {
-		e.preventDefault();
-
-		var button = $(this);
-		var itemID = button.data('itemid');
-		form_additem.attr('data-validated', itemID);
-		input_itemid.val(itemID);
-		input_qty.focus();
-
-		$('body,html').animate({ scrollTop: input_qty.offset().top - 100 }, 800);
-	});
-
-	function validate_itemid(callback) {
-		var ii_url = URI("{{ page.ii_lookupURL() }}");
-		ii_url.addQuery('entry', 'po');
-		ii_url.addQuery('itemID', input_itemid.val());
-
-		$.getJSON(ii_url.toString(), function( response ) {
+	function validate_get_item() {
+		validate_itemid_entry(input_itemid.val(), $('input#vendorID').val(), function(response) {
 			if (response.exists) {
 				input_itemid.val(response.itemID);
 				input_itemid.addClass('is-valid');
-				form_additem.attr('data-validated', response.itemID);
-				return callback(response.exists);
+				get_item_data(function(exists) {});
 			} else {
 				input_itemid.addClass('is-invalid');
-				form_additem.attr('data-validated', '');
-				alert_itemnotfound();
+				swal_notfound();
 			}
 		});
 	}
 
 	function get_item_data(callback) {
-		var itm_url = URI("{{ page.itm_jsonURL() }}");
-		itm_url.addQuery('itemID', input_itemid.val());
-		itm_url.addQuery('fields', 'uom_purchase');
-
-		$.getJSON(itm_url.toString(), function( response ) {
-			if (response.exists) {
-				input_itemid.val(response.item.itemid);
+		get_itm_item(input_itemid.val(), function(item) {
+			if (item) {
+				input_itemid.val(item.itemid);
 				input_itemid.addClass('is-valid');
-				form_additem.attr('data-validated', response.item.itemid);
-				$('.descriptions .desc1').text(response.item.description);
-				$('.descriptions .desc2').text(response.item.description2);
+				$('.descriptions .desc1').text(item.description);
+				$('.descriptions .desc2').text(item.description2);
 				$('.descriptions').addClass('show');
-				form_additem.find('.uom').text(response.item.uom_purchase);
-				callback(response.exists);
+				form_additem.find('.uom').text(item.uom_purchase);
+				callback(true);
 			} else {
-				input_itemid.addClass('is-invalid');
-				form_additem.attr('data-validated', '');
-
-				alert_itemnotfound();
+				callback(false);
 			}
 		});
 	}
 
-	function alert_itemnotfound() {
+	function swal_notfound() {
 		swal2.fire({
 			title: 'Item not found.',
 			text: input_itemid.val() + ' cannot be found.',
 			icon: 'warning',
 			showCancelButton: true,
-			confirmButtonText: 'Make Advanced Search?'
+			confirmButtonText: 'Make Advanced Search'
 		}).then(function (result) {
 			if (result.value) {
 				var url = URI("{{ page.fullURL.getUrl() }}");
@@ -105,11 +83,90 @@ $(function() {
 		});
 	}
 
-	function validate_qtysubmit(form) {
-		if (input_qty.val() == '') {
-			input_qty.addClass('is-invalid').focus();
-		} else {
-			form.submit()
-		}
+/* =============================================================
+	Event Functions
+============================================================= */
+	$('.item-lookup-result').on('click', function (e) {
+		e.preventDefault();
+
+		var button = $(this);
+		var itemID = button.data('itemid');
+		form_additem.attr('data-validated', itemID);
+		input_itemid.val(itemID);
+		input_qty.focus();
+		$('body,html').animate({ scrollTop: input_qty.offset().top - 100 }, 800);
+	});
+
+	$("body").on('change', '#add-item-form input[name=itemID]', function(e) {
+		var input = $(this);
+		validate_get_item();
+		validator.element('#'+input.attr('id'));
+	});
+
+/* =============================================================
+	AJAX Request Functions
+============================================================= */
+	/**
+	 * Return Xref Item Object
+	 * @param  string     vendorID     Vendor ID
+	 * @param  string     vendoritemID Vendor Item ID
+	 * @param  {Function} callback     Function to call after result
+	 * @return {object}                {vendorid: xxx, vendoritemid: xxx, itemid: xxx}
+	 */
+	function get_vxm_xref(vendorID, vendoritemID, callback) {
+		var url = new URI('{{ page.jsonapiURL('map') }}');
+		url.addQuery('action', 'get-vxm-xref').addQuery('vendorID', vendorID).addQuery('vendoritemID', vendoritemID);
+
+		$.getJSON(url.toString(), function(xref) {
+			callback(xref);
+		});
+	}
+
+	/**
+	 * Return ITM Item
+	 * @param  string     itemID    Item ID
+	 * @param  {Function} callback  Function to call after result
+	 * @return {object}             {itemid: xxx, description: xxx, description2: xxx, uom_purchase: xxx}
+	 */
+	function get_itm_item(itemID, callback) {
+		var url = new URI('{{ page.jsonapiURL('inv') }}');
+		url.addQuery('action', 'get-item').addQuery('itemID', itemID).addQuery('fields', 'uom_purchase');
+
+		$.getJSON(url.toString(), function(item) {
+			callback(item);
+		});
+	}
+
+	/**
+	 * Return if Item ID is valid in ITM
+	 * @param  {string}   itemID   Item ID
+	 * @param  {Function} callback Callback function
+	 * @return {bool}
+	 */
+	function validate_itm_item(itemID, callback) {
+		var url = new URI('{{ page.jsonapiURL('inv') }}');
+		url.addQuery('action', 'validate-itemid').addQuery('itemID', itemID);
+
+		$.getJSON(url.toString(), function(exists) {
+			callback(exists);
+		});
+	}
+
+	/**
+	 * Return Item Entry Object Validation
+	 * @param  string     itemID    Item ID
+	 * @param  string     vendorID  Vendor ID
+	 * @param  {Function} callback  Callback Function
+	 * @return {object}             {exists: (bool), itemID: xxx, message: xxx, source: xxx }
+	 */
+	function validate_itemid_entry(itemID, vendorID, callback) {
+		var ii_url = URI("{{ page.ii_lookupURL() }}");
+		ii_url.addQuery('entry', 'po');
+		ii_url.addQuery('itemID', itemID);
+		ii_url.addQuery('vendorID', vendorID);
+
+		$.getJSON(ii_url.toString(), function( response ) {
+			return callback(response);
+		});
 	}
 });

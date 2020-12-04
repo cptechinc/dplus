@@ -1,0 +1,33 @@
+<?php namespace ProcessWire;
+
+class FilterInv extends WireData implements Module {
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+		$modules->refresh();
+
+		foreach ($info['installs'] as $module_name) {
+			$modules->install($module_name);
+		}
+	}
+
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Filters Inv Module',
+			'version' => 101,
+			'summary' => 'Handles Loading of Inv Filters Modules',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(
+				'FilterInvTariffCodes',
+				'FilterInvMsdsCodes',
+				'FilterKim',
+			)
+		);
+	}
+}

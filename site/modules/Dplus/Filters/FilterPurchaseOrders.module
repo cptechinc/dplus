@@ -1,250 +1,322 @@
 <?php namespace ProcessWire;
 
-	use PurchaseOrderQuery, PurchaseOrder;
-	use PurchaseOrderDetailQuery, PurchaseOrderDetail;
+use PurchaseOrderQuery, PurchaseOrder;
+use PurchaseOrderDetailQuery, PurchaseOrderDetail;
 
-	use Propel\Runtime\ActiveQuery\Criteria;
+use Propel\Runtime\ActiveQuery\Criteria;
 
-	class FilterPurchaseOrders extends WireData implements Module {
+/**
+ * FilterPurchaseOrders
+ * Module for Filtering Purchase Orders
+ */
+class FilterPurchaseOrders extends WireData implements Module {
 
-		/**
-		 * Query
-		 * @var PurchaseOrderQuery
-		 */
-		protected $query;
+	/**
+	 * Query
+	 * @var PurchaseOrderQuery
+	 */
+	protected $query;
 
-		/**
-		 * Returns Query
-		 * @return PurchaseOrderQuery
-		 */
-		public function get_query() {
-			return $this->query;
+	/**
+	 * Returns Query
+	 * @return PurchaseOrderQuery
+	 */
+	public function get_query() {
+		return $this->query;
+	}
+
+	/**
+	 * Initializes Query
+	 * @return void
+	 */
+	public function init_query(User $user) {
+		$this->query = PurchaseOrderQuery::create();
+	}
+
+/* =============================================================
+	Filter Input Functions
+============================================================= */
+	/**
+	 * Applies Filters to the Query
+	 * NOTE:: Filters include TODO::
+	 *
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return void
+	 */
+	public function filter_input(WireInput $input) {
+		$this->vendorid_input($input);
+		$this->shipfromid_input($input);
+
+		if ($input->get->filter) {
+			$this->ponbr_input($input);
+			$this->orderdate_input($input);
+			$this->expecteddate_input($input);
+			$this->status_input($input);
 		}
 
-		/**
-		 * Initializes Query
-		 * NOTE: Filters by Sales Rep if provided user is a Sales rep
-		 *
-		 * @param  User   $user User to Check if they are a Sales Person
-		 * @return void
-		 */
-		public function init_query(User $user) {
-			$this->query = PurchaseOrderQuery::create();
-
-		}
-
-		/**
-		 * Applies Filters to the Query
-		 * NOTE:: Filters include TODO::
-		 *
-		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-		 * @return void
-		 */
-		public function filter_query(WireInput $input) {
-			$this->filter_vendorid($input);
-			$this->filter_shiptofromid($input);
-
-			if ($input->get->filter) {
-				$this->filter_ponumber($input);
-				$this->filter_pototal($input);
-				$this->filter_orderdate($input);
-				$this->filter_expecteddate($input);
-				$this->filter_postatus($input);
-			} else {
-				$input->get->status = array();
-			}
-		}
-
-		/**
-		 * Filters Query by Vendor ID
-		 *
-		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-		 * @return void
-		 */
-		public function filter_vendorid($input) {
-			if ($input->get->vendorID) {
-				if (is_array($input->get->vendorID)) {
-					$filter = $input->get->array('vendorID');
-				} else {
-					$filter = $input->get->text('vendorID');
-				}
-
-				if (sizeof($filter) == 2) {
-					if (!empty($filter[0])) {
-						$this->query->filterByVendorid($filter[0], Criteria::GREATER_EQUAL);
-					}
-
-					if (!empty($filter[1])) {
-						$this->query->filterByVendorid($filter[1], Criteria::LESS_EQUAL);
-					}
-				} else {
-					$this->query->filterByVendorid($filter);
-				}
-			}
-		}
-
-		/**
-		 * Filters Query by Vendor ShipfromID
-		 *
-		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-		 * @return void
-		 */
-		public function filter_shiptofromid($input) {
-			if ($input->get->shipfromID && $input->get->vendorID) {
-				if (is_array($input->get->shipfromID)) {
-					$filter = $input->get->array('shipfromID');
-				} else {
-					$filter = $input->get->text('shipfromID');
-				}
-				$this->query->filterByShipfromid($filter);
-			}
-		}
-
-		/**
-		 * Filters Query by Quote Number
-		 *
-		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-		 * @return void
-		 */
-		public function filter_ponumber(WireInput $input) {
-			if ($input->get->text('ponbr_from')) {
-				$this->query->filterByPonbr($input->get->text('ponbr_from'), Criteria::GREATER_EQUAL);
-			}
-			if ($input->get->text('ponbr_through')) {
-				$this->query->filterByPonbr($input->get->text('ponbr_through'), Criteria::LESS_EQUAL);
-			}
-		}
-
-		/**
-		 * Filters Query by Quote Total
-		 *
-		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-		 * @return void
-		 */
-		public function filter_pototal(WireInput $input) {
-			if ($input->get->text('po_total_from')) {
-				$this->query->filterByTotal_total($input->get->text('po_total_from'), Criteria::GREATER_EQUAL);
-			} else if ($input->get->text('po_total_through')) {
-				$this->query->filterByTotal_total($input->get->text('po_total_through'), Criteria::LESS_EQUAL);
-			}
-		}
-
-		/**
-		 * Filters Query by Quote Date
-		 *
-		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-		 * @return void
-		 */
-		public function filter_orderdate(WireInput $input) {
-			if ($input->get->text('date_ordered_from') || $input->get->text('date_ordered_through')) {
-				$date_ordered_from = date("Ymd", strtotime($input->get->text('date_ordered_from')));
-
-				if (empty($input->get->text('date_ordered_through'))) {
-					$date_ordered_through = date('Ymd');
-				} else {
-					$date_ordered_through = date("Ymd", strtotime($input->get->text('date_ordered_through')));
-				}
-
-				if ($date_ordered_from) {
-					$this->query->filterByDate_ordered($date_ordered_from, Criteria::GREATER_EQUAL);
-				}
-
-				if ($date_ordered_through) {
-					$this->query->filterByDate_ordered($date_ordered_through, Criteria::LESS_EQUAL);
-				}
-			}
-		}
-
-		/**
-		 * Filters Query by Expected Date
-		 *
-		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-		 * @return void
-		 */
-		public function filter_expecteddate(WireInput $input) {
-			if ($input->get->text('date_expected_from') || $input->get->text('date_expected_through')) {
-				$date_expected_from = date("Ymd", strtotime($input->get->text('date_expected_from')));
-
-				if (empty($input->get->text('date_expected_through'))) {
-					$date_expected_through = date('Ymd');
-				} else {
-					$date_expected_through = date("Ymd", strtotime($input->get->text('date_expected_through')));
-				}
-
-				if ($date_expected_from) {
-					$this->query->filterByDate_expected($date_expected_from, Criteria::GREATER_EQUAL);
-				} else if ($date_expected_through) {
-					$this->query->filterByDate_expected($date_expected_through, Criteria::LESS_EQUAL);
-				}
-			}
-		}
-
-		/**
-		 * Filters Query by Order Status
-		 *
-		 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-		 * @return void
-		 */
-		public function filter_postatus(WireInput $input) {
-			$sanitizer = new Sanitizer();
-
-			if ($input->get->status) {
-				$statuses = array();
-
-				foreach ($input->get->status as $status) {
-					$sanitized = $sanitizer->text($status);
-
-					if (array_key_exists($sanitized, PurchaseOrder::STATUS_DESCRIPTIONS)) {
-						$statuses[] = $sanitized;
-					}
-				}
-				$this->query->filterByStatus($statuses);
-			} else {
-				$input->get->status = array();
-			}
-		}
-
-		/**
-		 * Adds the Sort By to the query
-		 *
-		 * @param  Page   $page
-		 * @return void
-		 */
-		public function apply_sortby(Page $page) {
-			if ($page->has_orderby()) {
-				$orderbycolumn = $page->orderby_column;
-				$sort = $page->orderby_sort;
-
-				if ($orderbycolumn == 'total_total') {
-					$this->query->join('PurchaseOrderDetail');
-					$tablecolumn = PurchaseOrderDetail::get_aliasproperty('cost_total');
-					$this->query->withColumn("SUM(PurchaseOrderDetail.$tablecolumn)", 'total_total');
-					$this->query->groupBy('PurchaseOrder.pohdnbr');
-					$this->query->orderBy("total_total", $sort);
-				} else {
-					$tablecolumn = PurchaseOrder::get_aliasproperty($orderbycolumn);
-					$this->query->sortBy($tablecolumn, $sort);
-				}
-			} else {
-				$this->query->orderByDate_ordered('DESC');
-			}
-		}
-
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
-		/**
-		 * ProcessWire Module Info
-		 *
-		 * @return void
-		 */
-		public static function getModuleInfo() {
-			return array(
-				'title' => 'Dpluso filter Purchase Orders Module',
-				'version' => 101,
-				'summary' => 'Handles Purchase Orders Filtering',
-				'singular' => true,
-				'autoload' => true,
-			);
+		if (!$input->get->status) {
+			$input->get->status = array();
 		}
 	}
+
+	/**
+	 * Filter Vendor ID from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return self
+	 */
+	public function vendorid_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if (is_array($values->vendorID)) {
+			$vendorID = $values->array('vendorID');
+
+			if (sizeof($vendorID) == 2) {
+				if (!empty($vendorID[0])) {
+					$this->_vendorid($vendorID[0], Criteria::GREATER_EQUAL);
+				}
+				if (!empty($vendorID[1])) {
+					$this->_vendorid($vendorID[1], Criteria::LESS_EQUAL);
+				}
+				return $this;
+			}
+		} else {
+			$vendorID = $values->text('vendorID');
+		}
+
+		if (!empty($vendorID)) {
+			$this->vendorid($vendorID);
+		}
+		return $this;
+	}
+
+	/**
+	 * Filters Query by Vendor ShipfromID from Input Data
+	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
+	 * @return self
+	 */
+	public function shipfromid_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if ($values->shipfromID && $values->vendorID) {
+			$shipfromID = is_array($values->shipfromID) ? $values->array('shipfromID') : $values->text('shipfromID');
+			$this->shipfromid($shipfromID);
+		}
+		return $this;
+	}
+
+	/**
+	 * Filter By PO Number from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return self
+	 */
+	public function ponbr_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if ($values->text('ponbr_from')) {
+			$this->ponbr($values->text('ponbr_from'), Criteria::GREATER_EQUAL);
+		}
+		if ($values->text('ponbr_through')) {
+			$this->ponbr($values->text('ponbr_through'), Criteria::LESS_EQUAL);
+		}
+		return $this;
+	}
+
+	/**
+	 * Filter By Ordered Date from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return self
+	 */
+	public function orderdate_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if ($values->text('date_ordered_from') || $values->text('date_ordered_through')) {
+			$date_ordered_from = date("Ymd", strtotime($values->text('date_ordered_from')));
+
+			if (empty($values->text('date_ordered_through'))) {
+				$date_ordered_through = date('Ymd');
+			} else {
+				$date_ordered_through = date("Ymd", strtotime($values->text('date_ordered_through')));
+			}
+
+			if ($date_ordered_from) {
+				$this->orderdate($date_ordered_from, Criteria::GREATER_EQUAL);
+			}
+
+			if ($date_ordered_through) {
+				$this->orderdate($date_ordered_through, Criteria::LESS_EQUAL);
+			}
+		}
+		return $this;
+	}
+
+	/**
+	 * Filters Query by Expected Date
+	 * @param  WireInput $input Input Datan
+	 * @return self
+	 */
+	public function expecteddate_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if ($values->text('date_expected_from') || $values->text('date_expected_through')) {
+			$date_expected_from = date("Ymd", strtotime($values->text('date_expected_from')));
+
+			if (empty($values->text('date_expected_through'))) {
+				$date_expected_through = date('Ymd');
+			} else {
+				$date_expected_through = date("Ymd", strtotime($values>text('date_expected_through')));
+			}
+
+			if ($date_expected_from) {
+				$this->expecteddate($date_expected_from, Criteria::GREATER_EQUAL);
+			} elseif ($date_expected_through) {
+				$this->expecteddate($date_expected_through, Criteria::LESS_EQUAL);
+			}
+		}
+		return $this;
+	}
+
+
+	/**
+	 * Filters Query by Order Status from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return self
+	 */
+	public function status_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if ($values->status) {
+			$statusesinput = $values->array('status');
+			$statuses = array();
+
+			foreach ($statusesinput as $status) {
+				if (array_key_exists($status, PurchaseOrder::STATUS_DESCRIPTIONS)) {
+					$statuses[] = $status;
+				}
+			}
+			$this->status($statuses);
+		}
+		return $this;
+	}
+
+/* =============================================================
+	Base Filter Functions
+============================================================= */
+	/**
+	 * Filters Query by VendorID
+	 * @param  string|array $vendorID VendorID(s) to filter for
+	 * @param  string       $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @return self
+	 */
+	public function vendorid($vendorID, $comparison = null) {
+		$this->query->filterByVendorid($vendorID, $comparison);
+		return $this;
+	}
+
+	/**
+	 * Filters Query By Vendor Ship-from ID
+	 * @param  string|array $shipfromID Vendor Ship-from ID(s)
+	 * @param  string       $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @return self
+	 */
+	public function shipfromid($shipfromID, $comparison = null) {
+		$this->query->filterByShipfromid($shipfromID, $comparison);
+		return $this;
+	}
+
+	/**
+	 * Filters Query By PO Number(s)
+	 * @param  string|array $ponbr      PO Number(s)
+	 * @param  string       $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @return bool
+	 */
+	public function ponbr($ponbr, $comparison = null) {
+		$this->query->filterByPonbr($ponbr, $comparison);
+		return $this;
+	}
+
+	/**
+	 * Filters Query By Order Date(s)
+	 * @param  string|array $date        PO Ordered Date(s)
+	 * @param  string       $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @return bool
+	 */
+	public function orderdate($date, $comparison = null) {
+		$this->query->filterByDate_ordered($date, $comparison);
+		return $this;
+	}
+
+	/**
+	 * Filters Query By Expected Date(s)
+	 * @param  string|array $date        PO Expected Date(s)
+	 * @param  string       $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @return bool
+	 */
+	public function expecteddate($date, $comparison = null) {
+		$this->query->filterByDate_expected($date, $comparison);
+		return $this;
+	}
+
+	/**
+	 * Filter Query By PO Status Code(s)
+	 * @param  string|array $status     Status Code(s)
+	 * @param  string       $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @return self
+	 */
+	public function status($status, $comparison = null) {
+		$this->query->filterByStatus($status, $comparison);
+		return $this;
+	}
+
+/* =============================================================
+	Misc Query Functions
+============================================================= */
+	/**
+	 * Adds the Sort By to the query
+	 * @param  Page   $page
+	 * @return self
+	 */
+	public function apply_sortby(Page $page) {
+		if ($page->has_orderby()) {
+			$orderbycolumn = $page->orderby_column;
+			$sort = $page->orderby_sort;
+
+			if ($orderbycolumn == 'total_total') {
+				$this->query->join('PurchaseOrderDetail');
+				$tablecolumn = PurchaseOrderDetail::get_aliasproperty('cost_total');
+				$this->query->withColumn("SUM(PurchaseOrderDetail.$tablecolumn)", 'total_total');
+				$this->query->groupBy('PurchaseOrder.pohdnbr');
+				$this->query->orderBy("total_total", $sort);
+			} else {
+				$tablecolumn = PurchaseOrder::get_aliasproperty($orderbycolumn);
+				$this->query->sortBy($tablecolumn, $sort);
+			}
+		} else {
+			$this->query->orderByDate_ordered('DESC');
+		}
+		$this;
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso filter Purchase Orders Module',
+			'version' => 101,
+			'summary' => 'Handles Purchase Orders Filtering',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

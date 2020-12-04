@@ -32,15 +32,35 @@ class LookupItemEntryPo extends LookupItem implements Module {
 	public function lookup_input(WireInput $input) {
 		$itemID = $input->get->itemID ? $input->get->text('itemID') : $input->get->text('q');
 		$itemID = strtoupper($itemID);
-		$custID = $input->get->text('custID');
-		$shiptoID = $input->get->text('shiptoID');
 
 		$this->lookup_itm($itemID);
 
 		if (!$this->exists) {
 			$this->lookup_itm_short($itemID);
 		}
+
+		if (!$this->exists) {
+			$vendorID = $input->get->text('vendorID');
+			$this->validate_vxm($vendorID, $itemID);
+		}
 		return $this->data;
+	}
+
+	/**
+	 * Validate Item Exists in VXM
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor Item ID
+	 * @return void
+	 */
+	public function validate_vxm($vendorID, $vendoritemID) {
+		$vxm = $this->wire('modules')->get('XrefVxm');
+		$this->exists = $vxm->vxm_item_exists($vendorID, $vendoritemID);
+		$this->source = 'vxm';
+
+		if ($this->exists) {
+			$xref = $vxm->get_vxm_item($vendorID, $vendoritemID);
+			$this->itemID = $xref->itemid;
+		}
 	}
 
 /* =============================================================

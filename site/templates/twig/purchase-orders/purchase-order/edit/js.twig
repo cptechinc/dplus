@@ -17,9 +17,16 @@ $(function() {
 		var modal = $(this);
 		var url = '';
 
-		switch(button.data('search')) {
+		modal.attr('data-input', button.data('input'));
+
+		switch (button.data('search')) {
 			case 'item':
 				url = '{{ page.search_itemsURL() }}';
+				break;
+			case 'vendoritem':
+				uri = URI('{{ page.search_vxmURL() }}');
+				uri.setQuery('vendorID', $('input#vendorID').val());
+				url = uri.toString();
 				break;
 			case 'shipfrom':
 				uri = URI('{{ page.search_shipfromURL() }}');
@@ -33,7 +40,6 @@ $(function() {
 				url = '{{ page.po_documentsURL(page.ponbr) }}';
 				break;
 		}
-		console.log(url);
 
 		modal.find('.modal-title').text(button.attr('title'));
 		modal.resizeModal('xl');

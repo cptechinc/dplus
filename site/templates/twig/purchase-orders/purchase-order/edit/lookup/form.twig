@@ -12,11 +12,11 @@
 		<div class="col-sm-3">
 			<div class="input-group input-group-sm">
 				<span class="input-group-prepend">
-					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Search for / Choose Item" aria-label="Search for / Choose Item" data-search="item">
+					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Search for / Choose Item" aria-label="Search for / Choose Item" data-search="item" data-input="#additemID">
 						<span class="fa fa-search" aria-hidden="true"></span> <span class="sr-only">Search for / Choose Item</span>
 					</button>
 				</span>
-				<input type="text" name="itemID" class="form-control">
+				<input type="text" name="itemID" id="additemID" class="form-control">
 			</div>
 			<div class="descriptions collapse">
 				<div class="mt-1">
@@ -29,7 +29,7 @@
 			<span class="uom"></span>
 		</div>
 		<div class="col-sm-1 text-right">
-			<input type="text" class="form-control form-control-sm text-right qty-input" name="qty">
+			<input type="text" class="form-control form-control-sm text-right qty-input" name="qty" id="addqty">
 		</div>
 		<div class="col-sm-2 text-right">
 			<div class="input-group">

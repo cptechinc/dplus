@@ -7,13 +7,6 @@
 	if ($values->action) {
 		$epo->process_input($input);
 		$url = $page->fullURL->getUrl();
-
-		if ($session->response_epo) {
-			if ($values->text('action') == 'create-po' && $session->response_epo->has_success()) {
-				$url = $page->po_editURL($session->response_epo->ponbr);
-			}
-		}
-
 		$session->redirect($url, $http301 = false);
 	}
 

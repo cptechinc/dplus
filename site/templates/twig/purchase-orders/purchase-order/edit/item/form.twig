@@ -1,6 +1,7 @@
 <form action="{{ page.url }}" method="post" id="edit-item-form">
 	<input type="hidden" name="action" value="update-item">
 	<input type="hidden" name="ponbr" value="{{ po.ponbr }}">
+	<input type="hidden" name="vendorID" value="{{ po.vendorid }}">
 	<input type="hidden" name="linenbr" value="">
 
 	<div class="row">
@@ -15,6 +16,8 @@
 		<button type="submit" class="btn btn-success">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 		</button>
-		<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</button>
 	</div>
 </form>
