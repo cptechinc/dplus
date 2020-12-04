@@ -24,7 +24,9 @@ $(function() {
 				url = '{{ page.search_itemsURL() }}';
 				break;
 			case 'vendoritem':
-				url = '{{ page.search_itemsURL() }}';
+				uri = URI('{{ page.search_vxmURL() }}');
+				uri.setQuery('vendorID', $('input#vendorID').val());
+				url = uri.toString();
 				break;
 			case 'shipfrom':
 				uri = URI('{{ page.search_shipfromURL() }}');

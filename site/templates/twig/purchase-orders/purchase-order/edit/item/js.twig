@@ -117,9 +117,17 @@ $(function () {
 		e.preventDefault();
 		var input = $(this);
 		var form = input.closest('form');
-		var vendorID = form.find('input[name=vendorID]').val();
+		var vendorID = form.find('input#vendorID').val();
 		var input_vendoritemID = form.find('input[name=vendoritemID]');
-		input_vendoritemID.val('');
+
+		get_vxm_xref(vendorID, input_vendoritemID.val(), function(xref) {
+			if (xref) {
+				if (xref.itemid != input.val()) {
+					input_vendoritemID.val('');
+				}
+			}
+		});
+
 
 		if (validator.element('#'+input.attr('id'))) {
 			get_itm_item(input.val(), function(item) {
@@ -146,7 +154,7 @@ $(function () {
 		e.preventDefault();
 		var input = $(this);
 		var form = input.closest('form');
-		var vendorID = form.find('input[name=vendorID]').val();
+		var vendorID = $('input#vendorID').val();
 
 		get_vxm_xref(vendorID, input.val(), function(xref) {
 			if (xref) {
@@ -172,6 +180,16 @@ $(function () {
 		modal_ajax.modal('hide');
 	});
 
+	$("body").on('click', '.vxm-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var vendoritemID = button.data('vendoritemid');
+		var itemID = button.data('itemid');
+		form_edit.find('input[name=vendoritemID]').val(vendoritemID);
+		form_edit.find('input[name=itemID]').val(itemID).change();
+		modal_ajax.modal('hide');
+	});
+
 /* =============================================================
 	AJAX Request Functions
 ============================================================= */
@@ -182,16 +200,6 @@ $(function () {
 
 		$.getJSON(url.toString(), function(exists) {
 			callback(exists);
-		});
-	}
-
-	function get_vxm_itemid(itemID, vendorID, callback) {
-		var url = new URI('{{ page.jsonapiURL('map') }}');
-		url.addQuery('action', 'get-vxm-itemid').addQuery('itemID', itemID);
-		url.addQuery('vendorID', vendorID).addQuery('primary', 'primary');
-
-		$.getJSON(url.toString(), function(xref) {
-			callback(xref);
 		});
 	}
 
