@@ -37,7 +37,6 @@
 		}
 
 		$page->body .= $config->twig->render('cart/lookup/form.twig', ['page' => $page, 'cart' => $cart]);
-
 		$page->js   .= $config->twig->render('cart/lookup/js.twig', ['page' => $page, 'cart' => $cart]);
 		$page->body .= $config->twig->render('cart/last-sales/modal.twig', ['page' => $page, 'cart' => $cart, 'lastsold' => $lastsold, 'company' => $config->company, 'loader' => $config->twig->getLoader()]);
 
