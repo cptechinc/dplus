@@ -4,7 +4,7 @@
 
 	if ($input->get->qnbr) {
 		$qnbr = $input->get->text('qnbr');
-		$module_edit = $modules->get('QuoteEdit');
+		$module_edit = $modules->get('Eqo');
 		$module_edit->set_qnbr($qnbr);
 
 		if (QuoteQuery::create()->filterByQuoteid($qnbr)->count()) {
@@ -43,8 +43,8 @@
 
 				$page->body .= $config->twig->render('quotes/quote/edit/quote-items.twig', ['page' => $page, 'user' => $user, 'quote' => $quote_edit]);
 				$page->body .= $html->h3('class=text-secondary', 'Add Item');
-				$page->body .= $config->twig->render('quotes/quote/edit/add-item-form.twig', ['page' => $page, 'quote' => $quote_readonly]);
-				$page->js .= $config->twig->render('quotes/quote/edit/item-lookup.js.twig', ['page' => $page, 'quote' => $quote_readonly]);
+				$page->body .= $config->twig->render('quotes/quote/edit/lookup/form.twig', ['page' => $page, 'quote' => $quote_readonly]);
+				$page->js .= $config->twig->render('quotes/quote/edit/lookup/js.twig', ['page' => $page, 'quote' => $quote_readonly]);
 
 				if ($input->get->q) {
 					$q = $input->get->text('q');
