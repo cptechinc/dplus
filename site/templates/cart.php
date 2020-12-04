@@ -36,20 +36,20 @@
 			$page->body .= $config->twig->render('cart/cart-items.twig', ['page' => $page, 'cart' => $cart]);
 		}
 
-		if ($config->twigloader->exists("cart/$config->company/add-item-form.twig")) {
-			$page->body .= $config->twig->render("cart/$config->company/add-item-form.twig", ['page' => $page, 'cart' => $cart]);
+		if ($config->twigloader->exists("cart/lookup/$config->company/form.twig")) {
+			$page->body .= $config->twig->render("cart/lookup/$config->company/form.twig", ['page' => $page, 'cart' => $cart]);
 		} else {
-			$page->body .= $config->twig->render('cart/add-item-form.twig', ['page' => $page, 'cart' => $cart, 'soconfig' => $cart->config('so')]);
+			$page->body .= $config->twig->render('cart/lookup/form.twig', ['page' => $page, 'cart' => $cart, 'soconfig' => $cart->config('so')]);
 		}
 
-		$page->js .= $config->twig->render('cart/item-lookup.js.twig', ['page' => $page, 'cart' => $cart]);
+		$page->js   .= $config->twig->render('cart/lookup/js.twig', ['page' => $page, 'cart' => $cart]);
 		$page->body .= $config->twig->render('cart/last-sales/modal.twig', ['page' => $page, 'cart' => $cart, 'lastsold' => $lastsold, 'company' => $config->company, 'loader' => $config->twig->getLoader()]);
 
 		if ($input->get->q) {
 			$q = $input->get->text('q');
 			$cart->request_itemsearch($q);
 			$results = PricingQuery::create()->findBySessionid(session_id());
-			$page->body .= $config->twig->render('cart/lookup-results.twig', ['page' => $page, 'cart' => $cart, 'q' => $q, 'results' => $results]);
+			$page->body .= $config->twig->render('cart/lookup/results.twig', ['page' => $page, 'cart' => $cart, 'q' => $q, 'results' => $results]);
 		}
 
 		$page->body .= $html->div('class=mb-4', '');
@@ -69,7 +69,7 @@
 
 		if ($input->get->q) {
 			$q = $input->get->text('q');
-			$page->title = "CI: Searching for '$q'";
+			$page->title = "Cart: Searching for '$q'";
 			$col_custid = Customer::get_aliasproperty('custid');
 			$col_name = Customer::get_aliasproperty('name');
 			$columns = array($col_custid, $col_name);
