@@ -11,6 +11,13 @@ use ConfigSalesOrderQuery, ConfigSalesOrder;
 use LogpermQuery, Logperm;
 
 class Cart extends WireData implements Module {
+	public function query_header($sessionID = '') {
+		$q = CarthedQuery::create();
+		if ($sessionID) {
+			$q->filterBySessionid($sessionID);
+		}
+		return $q;
+	}
 
 /* =============================================================
 	Cart Header Functions
@@ -20,7 +27,9 @@ class Cart extends WireData implements Module {
 	 * @return bool
 	 */
 	public function has_custid() {
-		return boolval(CarthedQuery::create()->select('custid')->findOneBySessionid(session_id()));
+		$q = $this->query_header($this->sessionID);
+		$q->select('custid');
+		return boolval($q->count());
 	}
 
 	/**
@@ -28,7 +37,9 @@ class Cart extends WireData implements Module {
 	 * @return string
 	 */
 	public function get_custid() {
-		return CarthedQuery::create()->select('custid')->findOneBySessionid(session_id());
+		$q = $this->query_header($this->sessionID);
+		$q->select('custid');
+		return boolval($q->findOne());
 	}
 
 	/**
@@ -36,7 +47,9 @@ class Cart extends WireData implements Module {
 	 * @return bool
 	 */
 	public function has_shiptoid() {
-		return boolval(CarthedQuery::create()->select('shiptoid')->findOneBySessionid(session_id()));
+		$q = $this->query_header($this->sessionID);
+		$q->select('shiptoid');
+		return boolval($q->count());
 	}
 
 	/**
@@ -44,7 +57,9 @@ class Cart extends WireData implements Module {
 	 * @return string
 	 */
 	public function get_shiptoid() {
-		return CarthedQuery::create()->select('shiptoid')->findOneBySessionid(session_id());
+		$q = $this->query_header($this->sessionID);
+		$q->select('shiptoid');
+		return boolval($q->findOne());
 	}
 
 	/**
@@ -52,7 +67,8 @@ class Cart extends WireData implements Module {
 	 * @return string
 	 */
 	public function set_custid($custID) {
-		if (CarthedQuery::create()->filterBySessionid(session_id())->count()) {
+		$q = $this->query_header($this->sessionID);
+		if ($q->count()) {
 			$cart = CarthedQuery::create()->findOneBySessionid(session_id());
 		} else {
 			$cart = new Carthed();
@@ -73,7 +89,6 @@ class Cart extends WireData implements Module {
 			$cart = new Carthed();
 			$cart->setSessionid(session_id());
 		}
-
 		$cart->setShiptoid($shiptoID);
 		$cart->save();
 	}
@@ -106,7 +121,6 @@ class Cart extends WireData implements Module {
 	public function get_cart_lineitem($linenbr = 1) {
 		return CartdetQuery::create()->filterBySessionidLinenbr($this->sessionID, $linenbr)->findOne();
 	}
-
 
 /* =============================================================
 	CRUD Processing Functions
@@ -209,7 +223,7 @@ class Cart extends WireData implements Module {
 	}
 
 	/**
-	 * UDelete Item using Input Data
+	 * Delete Item using Input Data
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
@@ -229,12 +243,11 @@ class Cart extends WireData implements Module {
 		}
 	}
 
-
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
 	/**
-	 * Return OItemMasterItem
+	 * Return ItemMasterItem
 	 * @param  string $itemID Item ID
 	 * @return ItemMasterItem
 	 */
