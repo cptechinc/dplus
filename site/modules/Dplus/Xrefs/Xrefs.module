@@ -27,6 +27,7 @@ class Xrefs extends WireData implements Module {
 				'XrefVxm',
 				'XrefUpc',
 				'XrefCxm',
+				'XrefMxrfe',
 			)
 		);
 	}
