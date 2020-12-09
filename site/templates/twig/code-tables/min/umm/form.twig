@@ -19,14 +19,18 @@
 	</div>
 
 	<div class="form-group">
-	    <label for="pricebyweight">Price by Weight</label>
-	    {% include 'util/select.twig' with {'name': 'pricebyweight', 'id': 'pricebyweight', 'hideblankoption' : 'true', 'options': {'S': 'Standard Weight', 'C': 'Catch Weight', 'N': 'Neither'}} %}
-    </div>
+		<label for="pricebyweight">Price by Weight</label>
+		{% include 'util/select.twig' with {'name': 'pricebyweight', 'id': 'pricebyweight', 'hideblankoption' : 'true', 'options': {'S': 'Standard Weight', 'C': 'Catch Weight', 'N': 'Neither'}} %}
+	</div>
 
 	<div class="modal-footer">
-		<button type="submit" class="btn btn-success form_button">
-			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-		</button>
-		<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+		<div class="d-flex justify-content-between align-items-center">
+			<button type="submit" class="btn btn-success form_button">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			<button type="button" class="btn btn-warning" data-dismiss="modal">
+				<i class="fa fa-times" aria-hidden="true"></i> Close
+			</button>
+		</div>
 	</div>
 </form>
