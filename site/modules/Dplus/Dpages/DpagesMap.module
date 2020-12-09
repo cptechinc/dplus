@@ -152,7 +152,7 @@ class DpagesMap extends Dpages implements Module {
 			$filter = $this->wire('modules')->get('FilterXrefItemVxm');
 			$filter->vendorid($vendorID);
 			$position = $filter->position($item);
-			$pagenbr = floor($filter->query->count() / $this->wire('session')->display);
+			$pagenbr = ceil($position / $this->wire('session')->display);
 			$url->query->set('pagenbr', $pagenbr);
 			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		}
