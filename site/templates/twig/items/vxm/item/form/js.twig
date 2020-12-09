@@ -35,6 +35,12 @@ $(function() {
 		}
 	});
 
+	$("body").on("keydown", ".unit-qty", function(e) {
+		var input = $(this);
+		var unitrow = input.closest('.unit-row');
+		update_input_availability(unitrow);
+	});
+
 	$("body").on("change", ".unit-margin", function(e) {
 		var unitrow = $(this).closest('.unit-row');
 		update_unitrow_cost(unitrow);
@@ -414,7 +420,6 @@ $(function() {
 			var input_margin = unitrow.find('.unit-margin');
 			var margin = determine_unitmargin(parseFloat(input_unitcost.val()));
 			var displaymargin = parseFloat(margin).truncate({{ vxm.decimal_places_margin() }});
-			console.log(displaymargin);
 			input_margin.val(displaymargin).change();
 		}
 	}
@@ -447,8 +452,10 @@ $(function() {
 
 		if (parseFloat(input_unitqty.val()) > 0) {
 			inputs.removeAttr('readonly');
+			inputs.removeAttr('tabindex');
 		} else {
 			inputs.attr('readonly', 'readonly');
+			inputs.attr('tabindex', '-1');
 		}
 	}
 
