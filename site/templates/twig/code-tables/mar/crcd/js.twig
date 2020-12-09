@@ -12,7 +12,6 @@ $(function () {
 /* =============================================================
 	Event Functions
 ============================================================= */
-
 	$("body").on("change", "input[name=code]", function(e) {
 		var input = $(this);
 		var codeID = input.val();
@@ -176,7 +175,7 @@ $(function () {
 				content += bootstrap.close('div');
 
 				swal2.fire({
-					title: 'Customer Credit Card ' +input_codeID.val() + ' Exists' ,
+					title: 'Code ' +input_codeID.val() + ' Exists' ,
 					text: 'Do you want to overwrite?',
 					icon: 'warning',
 					showCancelButton: true,
@@ -209,8 +208,6 @@ $(function () {
 		var jform = $(form);
 
 		if (codeIDs.contains(input_codeID.val())) {
-			console.log('Customer Credit Card Exists');
-
 			if (input_codeID.val() != jform.attr('data-code')) {
 				return false;
 			}
