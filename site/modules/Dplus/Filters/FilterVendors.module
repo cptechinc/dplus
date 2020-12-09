@@ -5,6 +5,10 @@ use VendorQuery, Vendor;
 use Propel\Runtime\ActiveQuery\Criteria;
 
 class FilterVendors extends WireData implements Module {
+	public function __construct() {
+		$this->query = VendorQuery::create();
+	}
+
 	/**
 	 * Returns Query
 	 * @return VendorQuery
