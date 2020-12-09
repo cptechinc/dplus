@@ -47,7 +47,6 @@ class FilterXrefItemUpc extends WireData implements Module {
 
 	/**
 	 * Filters Query by Item ID
-	 *
 	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
 	 * @return void
 	 */
@@ -60,7 +59,6 @@ class FilterXrefItemUpc extends WireData implements Module {
 
 	/**
 	 * Adds the Sort By to the query
-	 *
 	 * @param  Page   $page
 	 * @return void
 	 */
