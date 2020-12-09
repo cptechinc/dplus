@@ -2,6 +2,15 @@
 	{% include 'items/vxm/search/vendor/form.twig' %}
 </div>
 <div>
-	{% include 'items/vxm/list/header.twig' with {'page': page, 'heading': vendors.getNbResults() ~ ' Vendors'} %}
+	<div class="row">
+		<div class="col-sm-8">
+			<h4>{{ vendors.getNbResults() }} Vendors</h4>
+		</div>
+		<div class="col-sm-4 text-right">
+			<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#new-xref-modal">
+				<i class="fa fa-plus" aria-hidden="true"></i> Add Vendor
+			</button>
+		</div>
+	</div>
 	{% include 'items/vxm/search/vendor/list.twig' %}
 </div>

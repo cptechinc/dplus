@@ -125,7 +125,8 @@
 		$page->searchURL = $page->url;
 		$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;
 		$page->body .= $config->twig->render('items/cxm/search/customer/results.twig', ['page' => $page, 'customers' => $customers]);
-		$page->js   .= $config->twig->render('items/cxm/list/js.twig', ['page' => $page]);
+		$page->body .= $config->twig->render('items/cxm/new-cxm-modal.twig', ['page' => $page]);
+		$page->js   .= $config->twig->render('items/cxm/search/customer/js.twig', ['page' => $page]);
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $customers->getNbResults()]);
 	}
 	$session->remove('response_xref');

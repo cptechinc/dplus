@@ -1,0 +1,33 @@
+<div class="modal fade" id="new-cxm-modal" tabindex="-1" role="dialog" aria-labelledby="new-cxm-modal-label" aria-hidden="true" data-input="">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="new-cxm-modal-label">Insert X-Ref</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form action="{{ page.url }}" method="get" id="new-cxm-form">
+					<div class="form-group">
+						<label for="newcustID">Customer ID</label>
+						{% include 'util/form/input-with-modal-lookup.twig' with {
+								'name': 'custID', 'id': 'newcustID', 'value': '',
+								'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Customer',
+								'attributes_button': {
+									'data-search': 'customer',
+									'data-lookupurl': page.searchcustomersURL,
+									'data-input': '#newcustID'
+								}
+							}
+						%}
+					</div>
+					<input type="hidden" name="custitemID" value="new">
+					<button type="submit" class="btn btn-success" >
+						Insert
+					</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

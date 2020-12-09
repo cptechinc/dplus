@@ -2,6 +2,15 @@
 	{% include 'items/cxm/search/customer/form.twig' %}
 </div>
 <div>
-	{% include 'items/cxm/item-list-header.twig' with {'page': page, 'heading': customers.getNbResults() ~ ' Customers'} %}
+	<div class="row">
+		<div class="col-sm-8">
+			<h4>{{ customers.getNbResults() }} Customers</h4>
+		</div>
+		<div class="col-sm-4 text-right">
+			<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#new-cxm-modal">
+				<i class="fa fa-plus" aria-hidden="true"></i> Add Customer
+			</button>
+		</div>
+	</div>
 	{% include 'items/cxm/search/customer/list.twig' %}
 </div>

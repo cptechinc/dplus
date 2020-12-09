@@ -132,7 +132,8 @@
 		$vendors = $filter->query->paginate($input->pageNum, $session->display);
 		$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 		$page->body .= $config->twig->render('items/vxm/search/vendor/search.twig', ['page' => $page, 'vendors' => $vendors]);
-		$page->js   .= $config->twig->render('items/vxm/list/item/js.twig', ['page' => $page]);
+		$page->body .= $config->twig->render('items/vxm/new-xref-modal.twig', ['page' => $page]);
+		$page->js   .= $config->twig->render('items/vxm/search/vendor/js.twig', ['page' => $page]);
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $vendors->getNbResults()]);
 	}
 
