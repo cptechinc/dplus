@@ -76,7 +76,7 @@ class XrefCxm extends WireData implements Module {
 		if ($this->cxm_item_exists($custID, $custitemID)) {
 			$record = $this->get_cxm_item($custID, $custitemID);
 		} else {
-			$custitemID = $custitemID == 'new' ? $custitemID : '';
+			$custitemID = $custitemID == 'new' ? '' : $custitemID;
 			$record = $this->new_cxm_item();
 			$record->setCustid($custID);
 			$record->setCustitemid($custitemID);

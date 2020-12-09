@@ -92,7 +92,7 @@ class XrefVxm extends WireData implements Module {
 		if ($this->vxm_item_exists($vendorID, $vendoritemID)) {
 			$record = $this->get_vxm_item($vendorID, $vendoritemID);
 		} else {
-			$vendoritemID = $vendoritemID == 'new' ? $vendoritemID : '';
+			$vendoritemID = $vendoritemID == 'new' ? '' : $vendoritemID;
 			$record = $this->get_vxm_item_new();
 			$record->setVendorid($vendorID);
 			$record->setVendoritemid($vendoritemID);
