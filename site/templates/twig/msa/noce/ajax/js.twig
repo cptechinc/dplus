@@ -20,7 +20,11 @@ $(function() {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
 		var input = button.data('input');
-		var url = '{{ page.has('search_notesURL') ? page.search_notesURL : page.searchURL }}';
+		var uri = URI('{{ page.has('search_notesURL') ? page.search_notesURL : page.searchURL }}');
+		if (button.data('width')) {
+			uri.addQuery('width', button.data('width'));
+		}
+		var url = uri.toString();
 		modal.attr('data-input', input);
 		modal.find('.modal-title').text('Search / Choose Pre-Defined Note');
 		modal.find('.modal-body').loadin(url, function() {
@@ -35,9 +39,9 @@ $(function() {
 		var modal = button.closest('.modal');
 		var note = modal.find('textarea[data-id="'+id+'"]').val();
 		var target = modal_notes_ajax.attr('data-input');
-		var newnote = $(target).val() + "\r" + note;
-
-		$(target).val(newnote);
+		note = note.replace(/(\r\n|\n|\r)/gm, " ");
+		var newnote = $(target).val().trim() + " " + note.trim();
+		insertAtCursor($(target).get(0), note.trim());
 		modal_notes_ajax.modal('hide');
 	});
 
@@ -59,4 +63,25 @@ $(function() {
 		var href = $(this).attr('href');
 		modal_notes_ajax.find('.modal-body').load(href);
 	});
+
+	function insertAtCursor(myField, myValue) {
+		//IE support
+		if (document.selection) {
+			myField.focus();
+			sel = document.selection.createRange();
+			sel.text = myValue;
+		}
+		//MOZILLA and others
+		else if (myField.selectionStart || myField.selectionStart == '0') {
+			var startPos = myField.selectionStart;
+			var endPos = myField.selectionEnd;
+			myField.value = myField.value.substring(0, startPos)
+				+ myValue
+				+ myField.value.substring(endPos, myField.value.length);
+			myField.selectionStart = startPos + myValue.length;
+			myField.selectionEnd = startPos + myValue.length;
+		} else {
+			myField.value += myValue;
+		}
+	}
 });
