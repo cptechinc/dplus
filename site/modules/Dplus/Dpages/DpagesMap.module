@@ -30,6 +30,10 @@ class DpagesMap extends Dpages implements Module {
 			'name'   => 'ap-code-table-aoptm',
 			'fields' => array()
 		),
+		'mxrfe' => array(
+			'name'   => 'mxrfe',
+			'fields' => array()
+		),
 	);
 
 	const PAGES = array(
@@ -93,6 +97,15 @@ class DpagesMap extends Dpages implements Module {
 			'summary'        => 'View / Edit Accounts Payable Optional Code',
 			'parent'         => '/map/apmain/',
 			'dplus_function' => 'aoptm'
+		),
+		'mxrfe' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'mxrfe',
+			'name'           => 'mxrfe',
+			'title'          => 'Mnfr / Competitor Item X-ref',
+			'summary'        => 'View / Edit Manufacturer / Competitor X-ref',
+			'parent'         => '/map/apmain/',
+			'dplus_function' => 'mxrfe'
 		),
 	);
 
