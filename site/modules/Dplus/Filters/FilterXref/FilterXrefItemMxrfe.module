@@ -64,13 +64,25 @@ class FilterXrefItemMxrfe extends WireData implements Module {
 	Base Filter Functions
 ============================================================= */
 	/**
-	 * Filter Query By item ID
+	 * Filter Query By Item ID
 	 * @param  string|array $itemID Item ID
 	 * @return self
 	 */
 	public function itemid($itemID) {
 		if ($itemID) {
 			$this->query->filterByItemid($itemID);
+		}
+		return $this;
+	}
+
+	/**
+	 * Filter Query By Vendor ID
+	 * @param  string|array $vendorID Vendor ID
+	 * @return self
+	 */
+	public function vendorid($vendorID) {
+		if ($vendorID) {
+			$this->query->filterByVendorid($vendorID);
 		}
 		return $this;
 	}
@@ -90,7 +102,7 @@ class FilterXrefItemMxrfe extends WireData implements Module {
 			$tablecolumn = ItemXrefManufacturer::get_aliasproperty($orderbycolumn);
 			$this->query->sortBy($tablecolumn, $sort);
 		} else {
-			$this->query->orderByUpc('ASC');
+			$this->query->orderByVendoritemid('ASC');
 		}
 	}
 
