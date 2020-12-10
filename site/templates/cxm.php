@@ -117,7 +117,7 @@
 		$filter = $modules->get('FilterCustomers');
 		$filter->init_query($user);
 		$filter->custid($cxm->custids());
-		$filter->filter_search($q);
+		$filter->search($q);
 		$filter->apply_sortby($page);
 		$query = $filter->get_query();
 		$customers = $query->paginate($input->pageNum, $session->display);
