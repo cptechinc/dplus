@@ -21,7 +21,7 @@
 	<tbody>
 		{% if vendors.count() %}
 			{% for vendor in vendors %}
-				<tr>
+				<tr data-vendorid="{{ vendor.id}}">
 					<td scope="row">
 						<a href="{{ page.vxm_vendorURL(vendor.id) }}" class="link">
 							<strong>{{ vendor.id }}</strong>

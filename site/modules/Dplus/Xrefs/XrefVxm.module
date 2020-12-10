@@ -512,6 +512,15 @@ class XrefVxm extends WireData implements Module {
 	}
 
 	/**
+	 * Return Vendor by Vendor ID
+	 * @param  string $vendorID Vendor ID
+	 * @return Vendor
+	 */
+	public function vendor_exists($vendorID) {
+		return boolval(VendorQuery::create()->filterById($vendorID)->count());
+	}
+
+	/**
 	 * Return Config IN
 	 * @return ConfigIn
 	 */

@@ -1,9 +1,13 @@
 $(function() {
+	{% if page.focus and page.focus != 'new' %}
+		$('tr[data-vendorid="{{ page.focus }}"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('tr[data-vendorid="{{ page.focus }}"]').offset().top,},700,'linear');
+	{% endif %}
+
 /* =============================================================
 	Lookup Modal Functions
 ============================================================= */
 	var modal_ajax = $('#ajax-modal');
-
 	modal_ajax.on('show.bs.modal', function (event) {
 		var modal = $(this);
 		var button = $(event.relatedTarget); // Button that triggered the modal

@@ -153,6 +153,29 @@ class DpagesMap extends Dpages implements Module {
 			$filter->vendorid($vendorID);
 			$position = $filter->position($item);
 			$pagenbr = ceil($position / $this->wire('session')->display);
+			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
+		}
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL for VXM and add focus if provided
+	 * @param  string $vendorID  Vendor ID to highlight / focus
+	 * @return string
+	 */
+	public function get_vxmURL($vendorID = '') {
+		$page = $this->wire('pages')->get('pw_template=vxm');
+		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
+		$vxm = $this->wire('modules')->get('XrefVxm');
+		$filter = $this->wire('modules')->get('FilterVendors');
+		$filter->init_query($this->wire('user'));
+
+		if ($filter->exists($vendorID)) {
+			$url->query->set('focus', $vendorID);
+			$filter->vendorid($vxm->vendorids());
+			$position = $filter->position($vendorID);
+			$pagenbr = ceil($position / $this->wire('session')->display);
+			$url->query->set('pos', $position);
 			$url->query->set('pagenbr', $pagenbr);
 			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		}
@@ -283,6 +306,11 @@ class DpagesMap extends Dpages implements Module {
 	}
 
 	public function init() {
+		$this->addHook("Page(pw_template=vxm)::vxmURL", function($event) {
+			$p = $event->object;
+			$vendorID = $event->arguments(0); // To focus on
+			$event->return = $this->get_vxmURL($vendorID);
+		});
 		$this->addHook("Page(pw_template=vxm)::vxm_itemURL", function($event) {
 			$p = $event->object;
 			$vendorID = $event->arguments(0);
