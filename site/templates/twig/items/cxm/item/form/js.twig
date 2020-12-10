@@ -30,8 +30,10 @@ $(function() {
 
 		if (uom.length) {
 			$('#price_uom').removeAttr('readonly');
+			$('#price_uom').removeAttr('tabindex');
 		} else {
 			$('#price_uom').attr('readonly', '');
+			$('#price_uom').attr('tabindex', '-1');
 		}
 	});
 
