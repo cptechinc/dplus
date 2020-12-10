@@ -115,7 +115,7 @@
 			if ($input->get->q) {
 				$q = strtoupper($input->get->text('q'));
 				$page->headline = "Receving: Searching Vendors for '$q'";
-				$filter_vendors->filter_search($q);
+				$filter_vendors->search($q);
 			}
 
 			$filter_vendors->apply_sortby($page);
