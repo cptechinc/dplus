@@ -5,23 +5,6 @@ $(function() {
 		$('html, body').animate({scrollTop: $('[data-vxm="{{ page.focus }}"]"]').offset().top,},700,'linear');
 	{% endif %}
 
-	$("body").on("click", "a.remove-cxm-item", function(e) {
-		e.preventDefault();
-		var button = $(this);
-
-		swal2.fire({
-			title: "Remove CXM Item?",
-			text: "Are you sure you want to remove this CXM Item?",
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonText: 'Yes!'
-		}).then(function (result) {
-			if (result.value) {
-				window.location.href = button.attr('href');
-			}
-		});
-	});
-
 /* =============================================================
 	Lookup Modal Functions
 ============================================================= */

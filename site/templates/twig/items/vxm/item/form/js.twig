@@ -63,23 +63,6 @@ $(function() {
 		calculate_eachlistprice();
 	});
 
-	$("body").on("click", "a.remove-vxm-item", function(e) {
-		e.preventDefault();
-		var button = $(this);
-
-		swal2.fire({
-			title: "Remove VXM Item?",
-			text: "Are you sure you want to remove this VXM Item?",
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonText: 'Yes!'
-		}).then(function (result) {
-			if (result.value) {
-				window.location.href = button.attr('href');
-			}
-		});
-	});
-
 	$("body").on("change", "input[name=ouritemID]", function(e) {
 		var input = $(this);
 
