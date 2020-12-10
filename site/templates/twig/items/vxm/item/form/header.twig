@@ -16,6 +16,7 @@
 					'name': 'vendorID', 'value': item.vendorid,
 					'attributes': {
 						'readonly': item.vendorid ? true : false,
+						'tabindex': item.vendorid ? '-1' : ''
 					},
 					'modaltarget': '#ajax-modal',
 					'modaldescription': 'Search for / Choose Vendor',
@@ -43,7 +44,7 @@
 			{% include 'util/form/input-with-modal-lookup.twig' with {
 					'name': 'itemID', 'value': item.ouritemid,
 					'attributes': {
-						
+
 					},
 					'modaltarget': '#ajax-modal',
 					'modaldescription': 'Search for / Choose Item',
