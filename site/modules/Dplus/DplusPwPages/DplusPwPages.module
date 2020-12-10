@@ -397,6 +397,11 @@ class DplusPwPages extends WireData implements Module {
 	}
 
 	public function init() {
+		$this->addHookProperty('Page::focus', function($event) {
+			$p = $event->object;
+			$focus = $p->fullURL->query->get('focus');
+			$event->return = $focus;
+		});
 		$this->addHookProperty('Page::pagenbr', function($event) {
 			$page = $event->object;
 			$event->return = $this->wire('input')->pageNum;
