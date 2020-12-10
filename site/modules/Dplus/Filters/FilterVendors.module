@@ -33,11 +33,10 @@ class FilterVendors extends WireData implements Module {
 ============================================================= */
 	/**
 	 * Searches the Vendor Table to find vendors that match the query provided
-	 *
 	 * @param  string $q Search Query
 	 * @return void
 	 */
-	public function filter_search($q) {
+	public function search($q) {
 		$columns = [
 			Vendor::get_aliasproperty('vendorid'),
 			Vendor::get_aliasproperty('name'),
