@@ -245,10 +245,6 @@ class DpagesMso extends Dpages implements Module {
 	);
 
 	public function init_salesorder_hooks() {
-		/**
-		 * Adds self::is_user_editingorder() as User hook
-		 * @uses self::is_user_editingorder()
-		 */
 		$this->addHook('Page::remove_itemURL', function($event) {
 			$p = $event->object;
 			$ordn = $event->arguments(0);
@@ -260,9 +256,6 @@ class DpagesMso extends Dpages implements Module {
 			$event->return = $url->getUrl();
 		});
 
-		/**
-		 * Returns Edit Sales Order Page URL
-		 */
 		$this->addHook('Page::view_notesURL', function($event) {
 			$p = $event->object;
 			$ordn = $event->arguments(0);
@@ -273,9 +266,6 @@ class DpagesMso extends Dpages implements Module {
 			$event->return = $url->getUrl()."$hash";
 		});
 
-		/**
-		 * Returns Edit Sales Order Page URL
-		 */
 		$this->addHook('Page::edit_orderURL', function($event) {
 			$p = $event->object;
 			$ordn = $event->arguments(0);
@@ -284,17 +274,11 @@ class DpagesMso extends Dpages implements Module {
 			$event->return = $url->getUrl();
 		});
 
-		/**
-		 * Returns Sales Order Page URL
-		 */
 		$this->addHook('Page::view_orderURL', function($event) {
 			$ordn = $event->arguments(0);
 			$event->return = $this->get_salesorder_viewURL($ordn);
 		});
 
-		/**
-		 * Returns Sales Order Page URL
-		 */
 		$this->addHook('Page::unlock_orderURL', function($event) {
 			$ordn = $event->arguments(0);
 			$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
@@ -324,6 +308,12 @@ class DpagesMso extends Dpages implements Module {
 	}
 
 	public function init_cxm_hooks() {
+		$this->addHook("Page(pw_template=cxm)::cxmURL", function($event) {
+			$p = $event->object;
+			$custID = $event->arguments(0);
+			$event->return = $this->get_cxmURL($custID);
+		});
+
 		$this->addHook("Page(pw_template=cxm)::cxm_itemURL", function($event) {
 			$p = $event->object;
 			$custID = $event->arguments(0);
@@ -386,6 +376,28 @@ class DpagesMso extends Dpages implements Module {
 /* =============================================================
 	URL Functions
 ============================================================= */
+
+	/**
+	 * Return Paginated URL to CXM Item Page
+	 * @param  string $custID Customer ID to focus / highlight
+	 * @return string
+	 */
+	public function get_cxmURL($custID = '') {
+		$page = $this->wire('pages')->get('pw_template=cxm');
+		$url = new Url($page->url);
+
+		$cxm = $this->wire('modules')->get('XrefCxm');
+		$filter = $this->wire('modules')->get('FilterCustomers');
+
+		if ($filter->exists($custID)) {
+			$url->query->set('focus', $custID);
+			$filter->custid($cxm->custids());
+			$position = $filter->position($custID);
+			$pagenbr = ceil($position / $this->wire('session')->display);
+			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
+		}
+		return $url->getUrl();
+	}
 	/**
 	 * Return URL for CXM items filtered by Customer ID
 	 * @param  string $custID Customer ID

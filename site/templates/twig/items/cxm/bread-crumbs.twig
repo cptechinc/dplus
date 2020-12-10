@@ -2,8 +2,8 @@
 {% block current_page %}
 	{% if page.has('custID') %}
 		<li class="breadcrumb-item">
-			<a href="{{ page.url }}">
-				{{ page.has('dplus_function') ? page.dplus_function|upper : page.title }}
+			<a href="{{ page.cxmURL(page.custID) }}">
+				<i class="fa fa-arrows" aria-hidden="true"></i> {{ page.has('dplus_function') ? page.dplus_function|upper : page.title }}
 			</a>
 		</li>
 		{% if (page.has('custitemID')) %}

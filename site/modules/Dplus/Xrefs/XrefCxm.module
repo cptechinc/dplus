@@ -583,6 +583,24 @@ class XrefCxm extends WireData implements Module {
 		return 0;
 	}
 
+	/**
+	 * Return Customer
+	 * @param  string $custID Customer ID
+	 * @return Customer
+	 */
+	public function get_customer($custID) {
+		return CustomerQuery::create()->findOneByCustid($custID);
+	}
+
+	/**
+	 * Return if Customer exists
+	 * @param  string $custID Customer ID
+	 * @return bool
+	 */
+	public function exists_customer($custID) {
+		return boolval(CustomerQuery::create()->filterByCustid($custID)->count());
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
