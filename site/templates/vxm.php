@@ -126,7 +126,7 @@
 		$page->title = $values->q ? "VXM: searching vendors for '$q'" : $page->title;
 		$filter = $modules->get('FilterVendors');
 		$filter->init_query($user);
-		$filter->filter_search($q);
+		$filter->search($q);
 		$filter->vendorid($vxm->vendorids());
 		$filter->apply_sortby($page);
 		$vendors = $filter->query->paginate($input->pageNum, $session->display);

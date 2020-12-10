@@ -44,7 +44,7 @@
 			}
 
 			$page->headline = "VI: Searching for '$q'";
-			$filter_vendors->filter_search($q);
+			$filter_vendors->search($q);
 		}
 
 		$filter_vendors->apply_sortby($page);
