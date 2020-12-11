@@ -9,9 +9,13 @@
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
-			<th class="pt-3 pb-3 align-middle">Their Item ID</th>
+			<th class="pt-3 pb-3 align-middle">
+				<a href="{{ page.get_sortURL('custitemid') }}" class="link">Their Item ID</a>
+			</th>
 			<th class="pt-3 pb-3 align-middle">Description</th>
-			<th class="pt-3 pb-3 align-middle">Our Item ID</th>
+			<th class="pt-3 pb-3 align-middle">
+				<a href="{{ page.get_sortURL('itemid') }}" class="link">Our Item ID</a>
+			</th>
 			<th class="pt-3 pb-3 align-middle">Description</th>
 			<th class="pt-3 pb-3 text-center">
 				{% if page.has('custID') and page.custID %}
@@ -31,7 +35,8 @@
 			{% for item in items %}
 				{% set class = cxm.get_recordlocker_key(item) == page.focus ? 'highlight' : '' %}
 				{% set class = (response.key == cxm.get_recordlocker_key(item) and response.has_success()) ? 'bg-success text-white' : class %}
-				<tr class="{{ class }}" data-cxm="{{ cxm.get_recordlocker_key(item) }}">
+
+				<tr class="{{ class }} small" data-cxm="{{ cxm.get_recordlocker_key(item) }}">
 					<td>{{ item.custitemID }}</td>
 					<td>{{ item.description }}</td>
 					<td>{{ item.itemID }}</td>

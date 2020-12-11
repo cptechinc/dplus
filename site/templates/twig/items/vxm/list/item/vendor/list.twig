@@ -10,8 +10,12 @@
 	<thead>
 		<tr class="bg-dark text-white p-3">
 			<th></th>
-			<th class="pt-3 pb-3 align-middle">Vendor Item ID</th>
-			<th class="pt-3 pb-3 align-middle">Our Item ID</th>
+			<th class="pt-3 pb-3 align-middle">
+				<a href="{{ page.get_sortURL('vendoritemid') }}" class="link">Vendor Item ID</a>
+			</th>
+			<th class="pt-3 pb-3 align-middle">
+				<a href="{{ page.get_sortURL('itemid') }}" class="link">Our Item ID</a>
+			</th>
 			<th class="pt-3 pb-3 align-middle">Description</th>
 			<th class="pt-3 pb-3 align-middle text-right">Base Cost</th>
 			<th class="pt-3 pb-3 align-middle text-right">Changed Date</th>
