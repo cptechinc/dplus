@@ -393,7 +393,7 @@ class DpagesMso extends Dpages implements Module {
 			$url->query->set('focus', $custID);
 			$filter->custid($cxm->custids());
 			$position = $filter->position($custID);
-			$pagenbr = ceil($position / $this->wire('session')->display);
+			$pagenbr = ceil($position / ($this->wire('session')->display - 1));
 			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		}
 		return $url->getUrl();

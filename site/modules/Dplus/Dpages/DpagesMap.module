@@ -174,7 +174,7 @@ class DpagesMap extends Dpages implements Module {
 			$url->query->set('focus', $vendorID);
 			$filter->vendorid($vxm->vendorids());
 			$position = $filter->position($vendorID);
-			$pagenbr = ceil($position / $this->wire('session')->display);
+			$pagenbr = ceil($position / ($this->wire('session')->display - 1));
 			$url->query->set('pos', $position);
 			$url->query->set('pagenbr', $pagenbr);
 			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
