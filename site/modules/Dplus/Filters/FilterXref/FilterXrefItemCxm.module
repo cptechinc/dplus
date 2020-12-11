@@ -98,6 +98,20 @@ class FilterXrefItemCxm extends WireData implements Module {
 		return $this;
 	}
 
+	/**
+	 * Searches the ItemXrefCustomer Table to find vendors that match the query provided
+	 * @param  string $q Search Query
+	 * @return void
+	 */
+	public function search($q) {
+		$columns = array(
+			ItemXrefCustomer::get_aliasproperty('itemid'),
+			ItemXrefCustomer::get_aliasproperty('custitemid'),
+			ItemXrefCustomer::get_aliasproperty('description')
+		);
+		$this->query->search_filter($columns, strtoupper($q));
+	}
+
 /* =============================================================
 	Misc Query Functions
 ============================================================= */
