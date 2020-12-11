@@ -72,7 +72,7 @@
 			$page->searchvendorsURL = $pages->get('pw_template=vi-search')->url;
 			$page->searchitemsURL     = $pages->get('pw_template=itm-search')->url;
 			$page->body .= $config->twig->render('items/vxm/vxm-links.twig', ['page' => $page]);
-			$page->body .= $config->twig->render('items/vxm/item/form.twig', ['page' => $page, 'item' => $item, 'vxm' => $vxm]);
+			$page->body .= $config->twig->render('items/vxm/item/form/display.twig', ['page' => $page, 'item' => $item, 'vxm' => $vxm]);
 			$page->js .= $config->twig->render('items/vxm/item/form/js.twig', ['page' => $page, 'vxm' => $vxm, 'item' => $item, 'url_validate' => $pages->get('pw_template=vxm-validate')->httpUrl]);
 
 			if (!$item->isNew()) {
@@ -87,10 +87,10 @@
 				$session->remove('response_qnote');
 			}
 		} else {
-			$vxm->recordlocker->remove_lock($page->name);
+			$vxm->recordlocker->remove_lock();
 			$page->headline = "Vendor X-Ref for $vendor->name";
 			$filter_vxm->filter_input($input);
- 			$q = $values->q ? $values->text('q') : '';
+			$q = $values->q ? $values->text('q') : '';
 
 			if ($values->q) {
 				$page->headline = "VXM: Search '$q' for Vendor $vendor->name";
