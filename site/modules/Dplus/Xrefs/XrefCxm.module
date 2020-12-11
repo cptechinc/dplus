@@ -43,6 +43,14 @@ class XrefCxm extends WireData implements Module {
 		return ItemXrefCustomer::LENGTH_CUSTITEMID;
 	}
 
+	/**
+	 * Returns Cust Item ID Max Length
+	 * @return int
+	 */
+	public function maxlength_description() {
+		return ItemXrefCustomer::LENGTH_DESCRIPTION;
+	}
+
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
