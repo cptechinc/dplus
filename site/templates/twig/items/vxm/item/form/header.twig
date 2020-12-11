@@ -7,56 +7,7 @@
 	item                   ItemXrefVendor
 #}
 <div class="col-sm-6">
-	<div class="row form-group">
-		<div class="col-sm-6">
-			<label for="Vendor ID">Vendor ID</label>
-		</div>
-		<div class="col-sm-6 vendor-col">
-			{% include 'util/form/input-with-modal-lookup.twig' with {
-					'name': 'vendorID', 'value': item.vendorid,
-					'attributes': {
-						'readonly': item.vendorid ? true : false,
-						'tabindex': item.vendorid ? '-1' : ''
-					},
-					'modaltarget': '#ajax-modal',
-					'modaldescription': 'Search for / Choose Vendor',
-					'attributes_button': {
-						'data-search': 'vendor'
-					}
-				}
-			%}
-			<small class="form-text text-muted name">{{ item.vendor.name }}</small>
-		</div>
-	</div>
-	<div class="row form-group">
-		<div class="col-sm-6">
-			<label for="vendoritemID"><b>Vendor Item ID</b></label>
-		</div>
-		<div class="col-sm-6">
-			<input type="text" name="vendoritemID" class="form-control form-control-sm" id="vendoritemID" value="{{ item.vendoritemID }}" data-vendoritemid="{{ item.vendoritemID }}" data-new="{{ item.isNew() ? 'true' : 'false'}}">
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-6">
-			<b>Our Item ID</b>
-		</div>
-		<div class="col-sm-6 item-col">
-			{% include 'util/form/input-with-modal-lookup.twig' with {
-					'name': 'itemID', 'value': item.ouritemid,
-					'attributes': {
-
-					},
-					'modaltarget': '#ajax-modal',
-					'modaldescription': 'Search for / Choose Item',
-					'attributes_button': {
-						'data-search': 'item'
-					}
-				}
-			%}
-			<small class="form-text text-muted description">{{ item.imitem.description }}</small>
-			<small class="form-text text-muted description2">{{ item.imitem.description2 }}</small>
-		</div>
-	</div>
+	{% include 'items/vxm/item/form/key.twig' %}
 </div>
 <div class="col-sm-6">
 	<div class="row form-group">

@@ -63,7 +63,7 @@ $(function() {
 		calculate_eachlistprice();
 	});
 
-	$("body").on("change", "input[name=ouritemID]", function(e) {
+	$("body").on("change", "input[name=itemID]", function(e) {
 		var input = $(this);
 
 		request_item(input.val(), function(item) {
