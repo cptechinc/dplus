@@ -75,7 +75,7 @@
 
 			$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;
 			$page->searchitemsURL     = $pages->get('pw_template=itm-search')->url;
-			$page->body .= $config->twig->render('items/cxm/item/form.twig', ['page' => $page, 'item' => $item, 'cxm' => $cxm, 'qnotes' => $qnotes]);
+			$page->body .= $config->twig->render('items/cxm/item/form/display.twig', ['page' => $page, 'item' => $item, 'cxm' => $cxm, 'qnotes' => $qnotes]);
 
 			if (!$item->isNew()) {
 				$qnotes = $modules->get('QnotesItemCxm');
@@ -87,13 +87,22 @@
 
 			$page->js   .= $config->twig->render('items/cxm/item/form/js.twig', ['page' => $page, 'item' => $item, 'cxm' => $cxm, 'url_validate' => $pages->get('pw_template=cxm-validate')->httpUrl]);
 		} else {
+			$cxm->recordlocker->remove_lock();
 			$page->headline = "CXM: Customer $customer->name";
 			$filter_cxm->filter_input($input);
+			$q = $values->q ? $values->text('q') : '';
+
+			if ($values->q) {
+				$page->headline = "CXM: Search '$q' for Customer $customer->name";
+				$filter_cxm->search($values->text('q'));
+			}
 			$filter_cxm->apply_sortby($page);
+
 
 			$items = $filter_cxm->query->paginate($input->pageNum, $session->display);
 			$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;
 			$page->body .= $config->twig->render('items/cxm/cxm-links.twig', ['page' => $page]);
+			$page->body .= $config->twig->render('items/cxm/search/item/customer/form.twig', ['page' => $page, 'q' => $q, 'custID' => $custID, 'q' => $q]);
 			$page->body .= $config->twig->render('items/cxm/item-list-header.twig', ['page' => $page, 'heading' => $items->getNbResults() . " CXM Items for $customer->name"]);
 			$page->body .= $config->twig->render('items/cxm/item-list.twig', ['page' => $page, 'cxm' => $cxm, 'response' => $session->response_xref, 'items' => $items, 'custID' => $custID, 'recordlocker' => $cxm->recordlocker, 'db' => $db_dpluso]);
 			$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
