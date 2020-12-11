@@ -356,7 +356,7 @@ class XrefVxm extends WireData implements Module {
 		$invalid = array();
 
 		$fields = array(
-			'ouritemid' => array(
+			'itemid' => array(
 				'description' => 'Item ID',
 				'input'       => 'itemID',
 				'function'    => 'itemid'
