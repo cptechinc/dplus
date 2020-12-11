@@ -11,7 +11,7 @@
 		<tr>
 			<th>Qty Break</th>
 			<th class="text-right">Unit</th>
-			<th class="text-center">Unit Cost</th>
+			<th class="text-right">Unit Cost</th>
 			<th class="text-right">Margin %</th>
 		</tr>
 	</thead>
@@ -23,7 +23,7 @@
 			</td>
 			<td>
 				{% include 'util/form/input.twig' with {
-						'name': 'unitcost_base', 'value': item.get_unitcost_uom(0)|number_format(vxm.decimal_places_cost()),
+						'name': 'unitcost_base', 'value': item.unitcost_base|number_format(vxm.decimal_places_cost()),
 						'class_add': [
 							'unit-cost',
 							'w-50',
