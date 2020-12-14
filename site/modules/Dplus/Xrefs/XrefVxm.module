@@ -37,6 +37,18 @@ class XrefVxm extends WireData implements Module {
 		return ItemXrefVendorQuery::create();
 	}
 
+	/**
+	 * Returns ItemXrefVendorQuery with filters applied to VendorID, Vendor ItemID, Item ID
+	 * @return ItemXrefVendorQuery
+	 */
+	public function query_xref($vendorID, $vendoritemID, $itemID) {
+		$q = $this->query();
+		$q->filterByVendorid($vendorID);
+		$q->filterByVendoritemid($vendoritemID);
+		$q->filterByItemid($itemID);
+		return $q;
+	}
+
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
@@ -63,23 +75,35 @@ class XrefVxm extends WireData implements Module {
 	}
 
 	/**
+	 * Returns if Vendor Item ID exists
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor's Item ID'
+	 * @return bool
+	 */
+	public function vxm_item_exists($vendorID, $vendoritemID, $itemID) {
+		$q = $this->query_xref($vendorID, $vendoritemID, $itemID);
+		return boolval($q->count());
+	}
+
+	/**
 	 * Return ItemXrefVendor
 	 * @param  string $vendorID     Vendor ID
 	 * @param  string $vendoritemID Vendor's Item ID'
+	 * @param  string $itemID       ITM Item ID
 	 * @return ItemXrefVendor
 	 */
-	public function get_vxm_item($vendorID, $vendoritemID) {
-		$q = $this->query();
-		$q->filterByVendorid($vendorID);
-		$q->filterByVendoritemid($vendoritemID);
+	public function get_vxm_item($vendorID, $vendoritemID, $itemID) {
+		$q = $this->query_xref($vendorID, $vendoritemID, $itemID);
 		return $q->findOne();
 	}
+
 
 	public function get_vxm_item_recordlocker_key($key) {
 		$keys = explode('-', $key);
 		$vendorID = $keys[0];
 		$vendoritemID = $keys[1];
-		return $this->get_vxm_item($vendorID, $vendoritemID);
+		$itemID = $keys[2];
+		return $this->get_vxm_item($vendorID, $vendoritemID, $itemID);
 	}
 
 	/**
@@ -88,14 +112,16 @@ class XrefVxm extends WireData implements Module {
 	 * @param  string $vendoritemID Vendor Item ID
 	 * @return ItemXrefVendor
 	 */
-	public function get_create_vxm_item($vendorID, $vendoritemID) {
-		if ($this->vxm_item_exists($vendorID, $vendoritemID)) {
-			$record = $this->get_vxm_item($vendorID, $vendoritemID);
+	public function get_create_vxm_item($vendorID, $vendoritemID, $itemID) {
+		if ($this->vxm_item_exists($vendorID, $vendoritemID, $itemID)) {
+			$record = $this->get_vxm_item($vendorID, $vendoritemID, $itemID);
 		} else {
 			$vendoritemID = $vendoritemID == 'new' ? '' : $vendoritemID;
 			$record = $this->get_vxm_item_new();
 			$record->setVendorid($vendorID);
 			$record->setVendoritemid($vendoritemID);
+			// TODO VALIDATE Item ID
+			$record->setItemid($itemID);
 		}
 		return $record;
 	}
@@ -110,19 +136,6 @@ class XrefVxm extends WireData implements Module {
 		$record->setUom_purchase($config_in->default_uom_purchase);
 		$record->setMinbuyqty(0);
 		return $record;
-	}
-
-	/**
-	 * Returns if Vendor Item ID exists
-	 * @param  string $vendorID     Vendor ID
-	 * @param  string $vendoritemID Vendor's Item ID'
-	 * @return bool
-	 */
-	public function vxm_item_exists($vendorID, $vendoritemID) {
-		$q = $this->query();
-		$q->filterByVendorid($vendorID);
-		$q->filterByVendoritemid($vendoritemID);
-		return boolval($q->count());
 	}
 
 	/**
@@ -202,13 +215,15 @@ class XrefVxm extends WireData implements Module {
 		$values = $input->$rm;
 		$vendorID = $values->text('vendorID');
 		$vendoritemID = $values->text('vendoritemID');
+		$itemID = $values->text('itemID');
 
-		if ($this->vxm_item_exists($vendorID, $vendoritemID)) {
-			$record = $this->get_vxm_item($vendorID, $vendoritemID);
+		if ($this->vxm_item_exists($vendorID, $vendoritemID, $itemID)) {
+			$record = $this->get_vxm_item($vendorID, $vendoritemID, $itemID);
 
 			if (!$this->lockrecord($record)) {
-				$message = self::DESCRIPTION_RECORD . " ($vendorID-$vendoritemID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
-				$this->wire('session')->response_xref = XrefResponse::response_error("$vendorID-$vendoritemID", $message);
+				$key = $this->get_recordlocker_key($record);
+				$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
+				$this->wire('session')->response_xref = XrefResponse::response_error($key, $message);
 				return false;
 			}
 			$record->delete();
