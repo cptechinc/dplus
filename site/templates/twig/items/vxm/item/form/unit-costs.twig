@@ -70,7 +70,7 @@
 				</td>
 				<td>
 					{% include 'util/form/input.twig' with {
-							'name': 'unit_cost' ~ i, 'value': item.get_unitcost_uom(i)|number_format(vxm.decimal_places_cost()),
+							'name': 'unit_cost' ~ i, 'value': item.get_unitcost(i)|number_format(vxm.decimal_places_cost()),
 							'class_add': [
 								'unit-cost',
 								'w-50',
