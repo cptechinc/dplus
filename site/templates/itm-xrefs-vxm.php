@@ -11,11 +11,11 @@
 
 		$vxm->process_input($input);
 
-		if ($vxm->vxm_item_exists($vendorID, $vendoritemID)) {
+		if ($vxm->vxm_item_exists($vendorID, $vendoritemID, $itemID)) {
 			if ($session->response_xref && $session->response_xref->has_success()) {
 				$session->redirect($page->vxm_item_exitURL($itemID, $session->response_xref->key), $http301 = false);
 			}
-			$session->redirect($page->vxm_itemURL($vendorID, $vendoritemID), $http301 = false);
+			$session->redirect($page->vxm_itemURL($vendorID, $vendoritemID, $itemID), $http301 = false);
 		} else {
 			$session->redirect($page->vxm_itemidURL($itemID), $http301 = false);
 		}
@@ -30,7 +30,7 @@
 		$vendoritemID = $input->get->text('vendoritemID');
 		$page->headline = "ITM: $itemID VXM Item $vendoritemID for $vendorID";
 
-		$item = $vxm->get_create_vxm_item($vendorID, $vendoritemID);
+		$item = $vxm->get_create_vxm_item($vendorID, $vendoritemID, $itemID);
 
 		if (!$item->isNew()) {
 			/**
@@ -47,7 +47,7 @@
 		} else {
 			$page->headline = "ITM: VXM Creating Item";
 			if ($vendoritemID != 'new') {
-				$msg = "VXM for Vendor $vendorID Vendor Item ID $vendoritemID does not exist";
+				$msg = "VXM for Vendor $vendorID Vendor Item ID $vendoritemID for $itemID does not exist";
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => 'Error with VXM Record', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $msg]);
 				$page->body .= $html->div('class=mb-3');
 			}
