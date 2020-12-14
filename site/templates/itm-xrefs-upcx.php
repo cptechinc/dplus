@@ -21,8 +21,8 @@
 	if ($input->get->upc) {
 		$code = $input->get->text('upc');
 
-		if ($upcx->upc_exists($code)) {
-			$upc = $upcx->get_upc($code);
+		if ($upcx->xref_exists($code)) {
+			$upc = $upcx->xref($code);
 			$page->title = "ITM: $itemID UPC $code";
 		} else {
 			$upc = new ItemXrefUpc();

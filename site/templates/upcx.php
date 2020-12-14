@@ -28,8 +28,7 @@
 	if ($input->get->upc) {
 		$code = $input->get->text('upc');
 		$page->headline = "UPCX: UPC $code";
-
-		$upc = $upcx->get_create_upc($code);
+		$upc = $upcx->get_create_xref($code);
 
 		if ($input->get->itemID) {
 			$itemID = $input->get->text('itemID');

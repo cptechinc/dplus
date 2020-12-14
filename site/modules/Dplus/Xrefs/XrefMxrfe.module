@@ -84,7 +84,7 @@ class XrefMxrfe extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return bool
 	 */
-	public function primary_upc_itemid_exists($itemID) {
+	public function xref_primary_by_itemid_exists($itemID) {
 		$q = $this->query();
 		$q->filterByItemid($itemID);
 		$q->filterByPrimary(ItemXrefManufacturer::PRIMARY_TRUE);
