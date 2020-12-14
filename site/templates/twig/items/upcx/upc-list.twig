@@ -65,6 +65,13 @@
 		</tr>
 	</thead>
 	<tbody>
+		{% if upcs.count() == 0 %}
+			<tr>
+				<td colspan="8" class="text-center bg-light">
+					<strong>No UPCs Found</strong>
+				</td>
+			</tr>
+		{% endif %}
 		{% for upc in upcs %}
 			<tr class="{{ upc.is_primary() and upc.itemid == itemID ? 'highlight'  : '' }}">
 				<td>
