@@ -11,7 +11,7 @@
 
 		$vxm->process_input($input);
 
-		if ($vxm->vxm_item_exists($vendorID, $vendoritemID, $itemID)) {
+		if ($vxm->xref_exists($vendorID, $vendoritemID, $itemID)) {
 			if ($session->response_xref && $session->response_xref->has_success()) {
 				$session->redirect($page->vxm_item_exitURL($itemID, $session->response_xref->key), $http301 = false);
 			}

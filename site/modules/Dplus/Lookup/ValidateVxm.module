@@ -83,10 +83,11 @@ class ValidateVxm extends WireData implements Module {
 	 * Validate if VXM X-ref exists
 	 * @param  string $vendorID     Vendor ID
 	 * @param  string $vendoritemID Vendor Item ID
+	 * @param  string $itemID       ITM Item ID
 	 * @return bool
 	 */
-	public function exists($vendorID, $vendoritemID) {
-		return $this->modules->get('XrefVxm')->vxm_item_exists($vendorID, $vendoritemID);
+	public function exists($vendorID, $vendoritemID, $itemID) {
+		return $this->modules->get('XrefVxm')->xref_exists($vendorID, $vendoritemID, $itemID);
 	}
 
 	/**

@@ -11,7 +11,7 @@
 		$itemID = $values->text('itemID');
 		$vxm->process_input($input);
 
-		if ($vxm->vxm_item_exists($vendorID, $vendoritemID)) {
+		if ($vxm->xref_exists($vendorID, $vendoritemID, $itemID)) {
 			if ($session->response_xref && $session->response_xref->has_success()) {
 				$session->redirect($page->vxm_vendorURL($vendorID, $session->response_xref->key));
 			}
@@ -32,7 +32,6 @@
 		$vendorID = $values->text('vendorID');
 		$validate_vendor = $modules->get('LookupVendor');
 		$vendor = VendorQuery::create()->findOneById($vendorID);
-
 		$filter_vxm->filter_input($input);
 
 		if (!$validate_vendor->lookup_vendor($vendorID)) {
@@ -48,11 +47,11 @@
 			}
 		}
 
-		if ($values->vendoritemID && $filter_vxm->query->count() == 1) {
+		if ($values->vendoritemID && ($values->text('vendoritemID') == 'new' || $filter_vxm->query->count() == 1)) {
 			$vendoritemID = $values->text('vendoritemID');
 			$itemID       = $values->text('itemID');
 
-			if ($vxm->vxm_item_exists($vendorID, $vendoritemID, $itemID)) {
+			if ($vxm->xref_exists($vendorID, $vendoritemID, $itemID)) {
 				$page->headline = "VXM: $vendorID Item $vendoritemID for $itemID";
 				$item = $vxm->get_vxm_item($vendorID, $vendoritemID, $itemID);
 

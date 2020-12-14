@@ -80,7 +80,7 @@ class XrefVxm extends WireData implements Module {
 	 * @param  string $vendoritemID Vendor's Item ID'
 	 * @return bool
 	 */
-	public function vxm_item_exists($vendorID, $vendoritemID, $itemID) {
+	public function xref_exists($vendorID, $vendoritemID, $itemID) {
 		$q = $this->query_xref($vendorID, $vendoritemID, $itemID);
 		return boolval($q->count());
 	}
@@ -113,15 +113,17 @@ class XrefVxm extends WireData implements Module {
 	 * @return ItemXrefVendor
 	 */
 	public function get_create_vxm_item($vendorID, $vendoritemID, $itemID) {
-		if ($this->vxm_item_exists($vendorID, $vendoritemID, $itemID)) {
+		if ($this->xref_exists($vendorID, $vendoritemID, $itemID)) {
 			$record = $this->get_vxm_item($vendorID, $vendoritemID, $itemID);
 		} else {
 			$vendoritemID = $vendoritemID == 'new' ? '' : $vendoritemID;
 			$record = $this->get_vxm_item_new();
 			$record->setVendorid($vendorID);
 			$record->setVendoritemid($vendoritemID);
-			// TODO VALIDATE Item ID
-			$record->setItemid($itemID);
+
+			if ($this->itemid_exists($itemID)) {
+				$record->setItemid($itemID);
+			}
 		}
 		return $record;
 	}
@@ -188,7 +190,7 @@ class XrefVxm extends WireData implements Module {
 
 		if ($values->action) {
 			switch ($values->text('action')) {
-				case 'remove-vxm-item':
+				case 'delete-vxm-item':
 					$this->input_delete($input);
 					break;
 				case 'update-vxm':
@@ -217,7 +219,7 @@ class XrefVxm extends WireData implements Module {
 		$vendoritemID = $values->text('vendoritemID');
 		$itemID = $values->text('itemID');
 
-		if ($this->vxm_item_exists($vendorID, $vendoritemID, $itemID)) {
+		if ($this->xref_exists($vendorID, $vendoritemID, $itemID)) {
 			$record = $this->get_vxm_item($vendorID, $vendoritemID, $itemID);
 
 			if (!$this->lockrecord($record)) {
@@ -243,13 +245,15 @@ class XrefVxm extends WireData implements Module {
 		$values = $input->$rm;
 		$vendorID = $values->text('vendorID');
 		$vendoritemID = $values->text('original_vendoritemID') != $values->text('vendoritemID') ? $values->text('original_vendoritemID') : $values->text('vendoritemID');
+		$itemID = $values->text('itemID');
 
-		$record = $this->get_create_vxm_item($vendorID, $vendoritemID);
+		$record = $this->get_create_vxm_item($vendorID, $vendoritemID, $itemID);
 
 		if (!$record->isNew()) {
 			if (!$this->lockrecord($record)) {
-				$message = self::DESCRIPTION_RECORD . " ($vendorID-$vendoritemID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
-				$this->wire('session')->response_xref = XrefResponse::response_error("$vendorID-$vendoritemID", $message);
+				$key = $this->get_recordlocker_key($record);
+				$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
+				$this->wire('session')->response_xref = XrefResponse::response_error("$key", $message);
 				return false;
 			}
 		}
@@ -385,6 +389,11 @@ class XrefVxm extends WireData implements Module {
 				'description' => 'UoM Purchase',
 				'input'       => 'uom_purchase',
 				'function'    => 'unitofm_purchase'
+			),
+			'vendorid' => array(
+				'description' => 'Vendor ID',
+				'input'       => 'vendorID',
+				'function'    => 'vendorid'
 			),
 		);
 		$validator = $this->wire('modules')->get('InputValidator');
@@ -527,12 +536,21 @@ class XrefVxm extends WireData implements Module {
 	}
 
 	/**
-	 * Return Vendor by Vendor ID
+	 * Return if Vendor exists
 	 * @param  string $vendorID Vendor ID
-	 * @return Vendor
+	 * @return bool
 	 */
 	public function vendor_exists($vendorID) {
 		return boolval(VendorQuery::create()->filterById($vendorID)->count());
+	}
+
+	/**
+	 * Return if itemID Exists
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function itemid_exists($itemID) {
+		return boolval(ItemMasterItemQuery::create()->filterByItemid($itemID)->count());
 	}
 
 	/**

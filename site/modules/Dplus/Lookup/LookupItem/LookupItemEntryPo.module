@@ -54,7 +54,7 @@ class LookupItemEntryPo extends LookupItem implements Module {
 	 */
 	public function validate_vxm($vendorID, $vendoritemID) {
 		$vxm = $this->wire('modules')->get('XrefVxm');
-		$this->exists = $vxm->vxm_item_exists($vendorID, $vendoritemID);
+		$this->exists = $vxm->xref_exists($vendorID, $vendoritemID);
 		$this->source = 'vxm';
 
 		if ($this->exists) {
