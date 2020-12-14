@@ -31,6 +31,17 @@
 				$itemID   = $values->text('itemID');
 				$response = $validate->vxm->vendor_has_xref_itemid($itemID, $vendorID);
 				break;
+			case 'count-vxm-itemid':
+				$vendorID = $values->text('vendorID');
+				$itemID   = $values->text('itemID');
+
+				if ($validate->vxm->vendor_has_xref_itemid($vendorID, $itemID)) {
+					$q = ItemXrefVendorQuery::create()->filterByItemid($itemID)->filterByVendorid($vendorID);
+					$response = $q->count();
+				} else {
+					$response = false;
+				}
+				break;
 			case 'get-vxm-itemid': // NOT FOR JQUERYVALIDATE
 				$vendorID = $values->text('vendorID');
 				$itemID   = $values->text('itemID');
@@ -53,9 +64,10 @@
 			case 'get-vxm-xref': // NOT FOR JQUERYVALIDATE
 				$vendorID = $values->text('vendorID');
 				$vendoritemID   = $values->text('vendoritemID');
+				$itemID   = $values->text('itemID');
 
-				if ($validate->vxm->exists($vendorID, $vendoritemID)) {
-					$xref = $modules->get('XrefVxm')->get_vxm_item($vendorID, $vendoritemID)
+				if ($validate->vxm->exists($vendorID, $vendoritemID, $itemID)) {
+					$xref = $modules->get('XrefVxm')->get_vxm_item($vendorID, $vendoritemID, $itemID)
 					$response = array(
 						'vendorid'     => $vendorID,
 						'itemid'       => $itemID,
