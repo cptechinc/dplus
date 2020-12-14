@@ -8,13 +8,14 @@
 	if ($values->action) {
 		$vendorID = $values->text('vendorID');
 		$vendoritemID = $values->text('vendoritemID');
+		$itemID = $values->text('itemID');
 		$vxm->process_input($input);
 
 		if ($vxm->vxm_item_exists($vendorID, $vendoritemID)) {
 			if ($session->response_xref && $session->response_xref->has_success()) {
 				$session->redirect($page->vxm_vendorURL($vendorID, $session->response_xref->key));
 			}
-			$session->redirect($page->vxm_itemURL($vendorID, $vendoritemID));
+			$session->redirect($page->vxm_itemURL($vendorID, $vendoritemID, $itemID));
 		} else {
 			$session->redirect($page->vxm_vendorURL($vendorID));
 		}
@@ -32,16 +33,28 @@
 		$validate_vendor = $modules->get('LookupVendor');
 		$vendor = VendorQuery::create()->findOneById($vendorID);
 
+		$filter_vxm->filter_input($input);
+
 		if (!$validate_vendor->lookup_vendor($vendorID)) {
-			$session->redirect($page->url."?q=$vendorID");
+			$session->redirect($page->url."?q=$vendorID", $http301 = false);
 		}
 
-		if ($values->vendoritemID) {
-			$vendoritemID = $values->text('vendoritemID');
 
-			if ($vxm->vxm_item_exists($vendorID, $vendoritemID)) {
-				$page->headline = "VXM: $vendorID Item $vendoritemID";
-				$item = $vxm->get_vxm_item($vendorID, $vendoritemID);
+		if ($values->vendoritemID) {
+			// IF ITM ID key does not exist, and only one record matches redirect to that record.
+			if (!$values->offsetExists('itemID') && $filter_vxm->query->count() == 1) {
+				$xref = $filter_vxm->query->findOne();
+				$session->redirect($page->vxm_itemURL($xref->vendorid, $xref->vendoritemid, $xref->itemid));
+			}
+		}
+
+		if ($values->vendoritemID && $filter_vxm->query->count() == 1) {
+			$vendoritemID = $values->text('vendoritemID');
+			$itemID       = $values->text('itemID');
+
+			if ($vxm->vxm_item_exists($vendorID, $vendoritemID, $itemID)) {
+				$page->headline = "VXM: $vendorID Item $vendoritemID for $itemID";
+				$item = $vxm->get_vxm_item($vendorID, $vendoritemID, $itemID);
 
 				/**
 				 * Show alert that VXM is locked if
@@ -60,6 +73,7 @@
 			} else {
 				$item = $vxm->get_vxm_item_new();
 				$item->setVendorid($vendorID);
+				$item->setItemid($itemID);
 				$page->headline = "VXM: Creating X-ref for $vendorID";
 
 				if ($vendoritemID != 'new') {
