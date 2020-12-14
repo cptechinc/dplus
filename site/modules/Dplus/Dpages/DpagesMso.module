@@ -432,7 +432,7 @@ class DpagesMso extends Dpages implements Module {
 		}
 
 		$cxm = $this->wire('modules')->get('XrefCxm');
-		$item = $cxm->get_cxm_item_recordlockerkey($focus);
+		$item = $cxm->xref_by_recordlocker_key($focus);
 
 		if ($item) {
 			$filter = $this->wire('modules')->get('FilterXrefItemCxm');

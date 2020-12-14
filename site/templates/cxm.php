@@ -9,7 +9,7 @@
 		$custitemID = $input->$rm->text('custitemID');
 		$cxm->process_input($input);
 
-		if ($cxm->cxm_item_exists($custID, $custitemID)) {
+		if ($cxm->xref_exists($custID, $custitemID)) {
 			if ($session->response_xref && $session->response_xref->has_success()) {
 				$session->redirect($page->cxm_customerURL($custID, $session->response_xref->key), $http301 = false);
 			}
@@ -47,7 +47,7 @@
 		if ($input->get->custitemID) {
 			$custitemID = $input->get->text('custitemID');
 			$page->title = "CXM: $custID Item $custitemID";
-			$item = $cxm->get_create_cxm_item($custID, $custitemID);
+			$item = $cxm->get_create_xref($custID, $custitemID);
 
 			if (!$item->isNew()) {
 				/**

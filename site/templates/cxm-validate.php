@@ -27,7 +27,7 @@
 				$custitemID = $values->text('custitemID');
 				$returntype   = $values->return ? $values->text('return') : 'jqueryvalidate';
 
-				if ($cxm->cxm_item_exists($custID, $custitemID)) {
+				if ($cxm->xref_exists($custID, $custitemID)) {
 					$response = true;
 				} else {
 					$response = ($returntype == 'bool') ? false : "$custitemID from $custID was not found in the Customer X-ref";
@@ -38,7 +38,7 @@
 				$custitemID = $values->text('custitemID');
 				$returntype   = $values->return ? $values->text('return') : 'jqueryvalidate';
 
-				if ($cxm->cxm_item_exists($custID, $custitemID)) {
+				if ($cxm->xref_exists($custID, $custitemID)) {
 					$response = ($returntype == 'bool') ? false : "$custitemID from $custID already exists in the Customer X-ref";
 				} else {
 					$response = true;

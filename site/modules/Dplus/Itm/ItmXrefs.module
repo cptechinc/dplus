@@ -112,7 +112,7 @@ class ItmXrefs extends WireData implements Module {
 		$values = $input->$rm;
 		$itemID = strtoupper($values->text('itemID'));
 
-		if (!$cxm->cxm_shortitem_exists($itemID) ||$cxm->get_cxm_shortitem($itemID)->custitemid != $values->text('cxm_custitemid')) {
+		if (!$cxm->xref_shortitem_exists($itemID) ||$cxm->xref_shortitem($itemID)->custitemid != $values->text('cxm_custitemid')) {
 			$data_cxm = array('action' => 'update-cxm-shortitem', 'itemID' => $itemID, 'custitemid' => $values->text('cxm_custitemid'));
 			$input_cxm = new WireInput();
 			$input_cxm->$rm->setArray($data_cxm);
@@ -302,7 +302,7 @@ class ItmXrefs extends WireData implements Module {
 		}
 
 		$cxm = $this->wire('modules')->get('XrefCxm');
-		$item = $cxm->get_cxm_item_recordlockerkey($focus);
+		$item = $cxm->xref_by_recordlocker_key($focus);
 
 		if ($item) {
 			$filter = $this->wire('modules')->get('FilterXrefItemCxm');

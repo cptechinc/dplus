@@ -60,18 +60,24 @@ class XrefCxm extends WireData implements Module {
 	 * @param  string $custitemID Cust's Item ID'
 	 * @return ItemXrefCustomer
 	 */
-	public function get_cxm_item($custID, $custitemID) {
+	public function xref($custID, $custitemID) {
 		$q = $this->query();
 		$q->filterByCustid($custID);
 		$q->filterByCustitemid($custitemID);
 		return $q->findOne();
 	}
 
-	public function get_cxm_item_recordlockerkey($key) {
+	/**
+	 * Return ItemXrefCustomer from Record Locker Key
+	 * @param  string $custID     Cust ID
+	 * @param  string $custitemID Cust's Item ID'
+	 * @return ItemXrefCustomer
+	 */
+	public function xref_by_recordlocker_key($key) {
 		$keys = explode('-', $key);
 		$custID = $keys[0];
 		$custitemID = $keys[1];
-		return $this->get_cxm_item($custID, $custitemID);
+		return $this->xref($custID, $custitemID);
 	}
 
 	/**
@@ -80,12 +86,12 @@ class XrefCxm extends WireData implements Module {
 	 * @param  string $custitemID Cust's Item ID'
 	 * @return ItemXrefCustomer
 	 */
-	public function get_create_cxm_item($custID, $custitemID) {
-		if ($this->cxm_item_exists($custID, $custitemID)) {
-			$record = $this->get_cxm_item($custID, $custitemID);
+	public function get_create_xref($custID, $custitemID) {
+		if ($this->xref_exists($custID, $custitemID)) {
+			$record = $this->xref($custID, $custitemID);
 		} else {
 			$custitemID = $custitemID == 'new' ? '' : $custitemID;
-			$record = $this->new_cxm_item();
+			$record = $this->new_xref();
 			$record->setCustid($custID);
 			$record->setCustitemid($custitemID);
 		}
@@ -96,7 +102,7 @@ class XrefCxm extends WireData implements Module {
 	 * Return ItemXrefCustomer and set Defaults
 	 * @return ItemXrefCustomer
 	 */
-	public function new_cxm_item() {
+	public function new_xref() {
 		$record = ItemXrefCustomer::new();
 		return $record;
 	}
@@ -107,7 +113,7 @@ class XrefCxm extends WireData implements Module {
 	 * @param  string $custitemID Customer's Item ID'
 	 * @return bool
 	 */
-	public function cxm_item_exists($custID, $custitemID) {
+	public function xref_exists($custID, $custitemID) {
 		$q = $this->query();
 		$q->filterByCustid($custID);
 		$q->filterByCustitemid($custitemID);
@@ -119,7 +125,7 @@ class XrefCxm extends WireData implements Module {
 	 * @param  string $itemID Item ID / Our Item ID
 	 * @return ItemXrefCustomer
 	 */
-	public function get_cxm_shortitem($itemID) {
+	public function xref_shortitem($itemID) {
 		$q = $this->query();
 		$custID = ConfigSysQuery::create()->findOne()->custid;
 		$q->filterByCustid($custID);
@@ -132,7 +138,7 @@ class XrefCxm extends WireData implements Module {
 	 * @param  string $custitemID Customer Item ID
 	 * @return ItemXrefCustomer
 	 */
-	public function get_cxm_shortitem_custitemid($custitemID) {
+	public function xref_shortitem_by_custitemid($custitemID) {
 		$q = $this->query();
 		$custID = ConfigSysQuery::create()->findOne()->custid;
 		$q->filterByCustid($custID);
@@ -145,14 +151,15 @@ class XrefCxm extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return ItemXrefCustomer
 	 */
-	public function get_create_cxm_shortitem($itemID) {
-		if ($this->cxm_shortitem_exists($itemID)) {
-			return $this->get_cxm_shortitem($itemID);
+	public function get_create_xref_shortitem($itemID, $custitemID = '') {
+		if ($this->xref_shortitem_exists($itemID)) {
+			return $this->xref_shortitem($itemID);
 		} else {
-			$custID = ConfigSysQuery::create()->findOne()->custid;
+			$custitemID = in_array($custitemID, ['new', ''])  ? '' : $custitemID;
 			$item = ItemXrefCustomer::new();
 			$item->setItemid($itemID);
 			$item->setCustid($custID);
+			$item->setCustitemid($custitemID);
 			return $item;
 		}
 	}
@@ -162,7 +169,7 @@ class XrefCxm extends WireData implements Module {
 	 * @param  string $itemID Item ID / Our Item ID
 	 * @return bool
 	 */
-	public function cxm_shortitem_exists($itemID) {
+	public function xref_shortitem_exists($itemID) {
 		$q = $this->query();
 		$custID = ConfigSysQuery::create()->findOne()->custid;
 		$q->filterByCustid($custID);
@@ -175,7 +182,7 @@ class XrefCxm extends WireData implements Module {
 	 * @param  string $custitemID Customer Item ID
 	 * @return bool
 	 */
-	public function cxm_shortitem_exists_custitemid($custitemID) {
+	public function xref_shortitem_exists_by_custitemid($custitemID) {
 		$q = $this->query();
 		$custID = ConfigSysQuery::create()->findOne()->custid;
 		$q->filterByCustid($custID);
@@ -239,13 +246,12 @@ class XrefCxm extends WireData implements Module {
 		$itemID = $values->text('itemID');
 		$custitemID = $values->text('custitemid');
 
-		if ($this->cxm_shortitem_exists_custitemid($custitemID)) {
-			$cxmitem = $this->get_cxm_shortitem_custitemid($custitemID);
+		if ($this->xref_shortitem_exists($custitemID)) {
+			$cxmitem = $this->xref_shortitem_by_custitemid($custitemID);
 			$message = "Short ItemID '$custitemID' already exists for $cxmitem->itemid";
 			$response = XrefResponse::response_error($record->itemid, $message);
 		} else {
-			$record = $this->get_create_cxm_shortitem($itemID);
-			$record->setCustitemid($custitemID);
+			$record = $this->get_create_xref_shortitem($itemID, $custitemID);
 			$record->delete_recreate_record($record);
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
@@ -265,8 +271,8 @@ class XrefCxm extends WireData implements Module {
 		$custID = $values->text('custID');
 		$custitemID = $values->text('custitemID');
 
-		if ($this->cxm_item_exists($custID, $custitemID)) {
-			$record = $this->get_cxm_item($custID, $custitemID);
+		if ($this->xref_exists($custID, $custitemID)) {
+			$record = $this->xref($custID, $custitemID);
 
 			if (!$this->lockrecord($record)) {
 				$message = self::DESCRIPTION_RECORD . " ($custID-$custitemID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
@@ -291,7 +297,7 @@ class XrefCxm extends WireData implements Module {
 		$custID = $values->text('custID');
 		$custitemID = $values->text('original_custitemID') != $values->text('custitemID') ? $values->text('original_custitemID') : $values->text('custitemID');
 
-		$record = $this->get_create_cxm_item($custID, $custitemID);
+		$record = $this->get_create_xref($custID, $custitemID);
 
 		if (!$record->isNew()) {
 			if (!$this->lockrecord($record)) {
