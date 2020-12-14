@@ -67,7 +67,7 @@
 				$itemID   = $values->text('itemID');
 
 				if ($validate->vxm->exists($vendorID, $vendoritemID, $itemID)) {
-					$xref = $modules->get('XrefVxm')->get_vxm_item($vendorID, $vendoritemID, $itemID)
+					$xref = $modules->get('XrefVxm')->xref($vendorID, $vendoritemID, $itemID)
 					$response = array(
 						'vendorid'     => $vendorID,
 						'itemid'       => $itemID,

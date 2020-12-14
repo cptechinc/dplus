@@ -53,28 +53,6 @@ class XrefVxm extends WireData implements Module {
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return ItemXrefVendor[] for vendor
-	 * @param  string $vendorID Vendor ID
-	 * @return ObjectCollection
-	 */
-	public function get_vendoritems($vendorID) {
-		$q = $this->query();
-		$q->filterByVendorid($vendorID);
-		return $q->find();
-	}
-
-	/**
-	 * Return ItemXrefVendor[] for our Item ID
-	 * @param  string $itemID  Our Item ID
-	 * @return ObjectCollection
-	 */
-	public function get_ouritemitems($itemID) {
-		$q = $this->query();
-		$q->filterByOuritemid($itemID);
-		return $q->find();
-	}
-
-	/**
 	 * Returns if Vendor Item ID exists
 	 * @param  string $vendorID     Vendor ID
 	 * @param  string $vendoritemID Vendor's Item ID'
@@ -92,18 +70,22 @@ class XrefVxm extends WireData implements Module {
 	 * @param  string $itemID       ITM Item ID
 	 * @return ItemXrefVendor
 	 */
-	public function get_vxm_item($vendorID, $vendoritemID, $itemID) {
+	public function xref($vendorID, $vendoritemID, $itemID) {
 		$q = $this->query_xref($vendorID, $vendoritemID, $itemID);
 		return $q->findOne();
 	}
 
-
-	public function get_vxm_item_recordlocker_key($key) {
+	/**
+	 * Return ItemXrefVendor from Recordlocker Key
+	 * @param  string $key Key (vendorID-vendoritemID-itemID)
+	 * @return ItemXrefVendor
+	 */
+	public function xref_by_recordlocker_key($key) {
 		$keys = explode('-', $key);
 		$vendorID = $keys[0];
 		$vendoritemID = $keys[1];
 		$itemID = $keys[2];
-		return $this->get_vxm_item($vendorID, $vendoritemID, $itemID);
+		return $this->xref($vendorID, $vendoritemID, $itemID);
 	}
 
 	/**
@@ -112,12 +94,12 @@ class XrefVxm extends WireData implements Module {
 	 * @param  string $vendoritemID Vendor Item ID
 	 * @return ItemXrefVendor
 	 */
-	public function get_create_vxm_item($vendorID, $vendoritemID, $itemID) {
+	public function get_create_xref($vendorID, $vendoritemID, $itemID) {
 		if ($this->xref_exists($vendorID, $vendoritemID, $itemID)) {
-			$record = $this->get_vxm_item($vendorID, $vendoritemID, $itemID);
+			$record = $this->xref($vendorID, $vendoritemID, $itemID);
 		} else {
 			$vendoritemID = $vendoritemID == 'new' ? '' : $vendoritemID;
-			$record = $this->get_vxm_item_new();
+			$record = $this->new_xref();
 			$record->setVendorid($vendorID);
 			$record->setVendoritemid($vendoritemID);
 
@@ -132,7 +114,7 @@ class XrefVxm extends WireData implements Module {
 	 * Return ItemXrefVendor and set Defaults
 	 * @return ItemXrefVendor
 	 */
-	public function get_vxm_item_new() {
+	public function new_xref() {
 		$config_in = $this->get_config_in();
 		$record = ItemXrefVendor::new();
 		$record->setUom_purchase($config_in->default_uom_purchase);
@@ -220,7 +202,7 @@ class XrefVxm extends WireData implements Module {
 		$itemID = $values->text('itemID');
 
 		if ($this->xref_exists($vendorID, $vendoritemID, $itemID)) {
-			$record = $this->get_vxm_item($vendorID, $vendoritemID, $itemID);
+			$record = $this->xref($vendorID, $vendoritemID, $itemID);
 
 			if (!$this->lockrecord($record)) {
 				$key = $this->get_recordlocker_key($record);
@@ -247,7 +229,7 @@ class XrefVxm extends WireData implements Module {
 		$vendoritemID = $values->text('original_vendoritemID') != $values->text('vendoritemID') ? $values->text('original_vendoritemID') : $values->text('vendoritemID');
 		$itemID = $values->text('itemID');
 
-		$record = $this->get_create_vxm_item($vendorID, $vendoritemID, $itemID);
+		$record = $this->get_create_xref($vendorID, $vendoritemID, $itemID);
 
 		if (!$record->isNew()) {
 			if (!$this->lockrecord($record)) {

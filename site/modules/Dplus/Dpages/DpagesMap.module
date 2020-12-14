@@ -146,7 +146,7 @@ class DpagesMap extends Dpages implements Module {
 		}
 
 		$vxm = $this->wire('modules')->get('XrefVxm');
-		$item = $vxm->get_vxm_item_recordlocker_key($focus);
+		$item = $vxm->xref_by_recordlocker_key($focus);
 
 		if ($item) {
 			$filter = $this->wire('modules')->get('FilterXrefItemVxm');

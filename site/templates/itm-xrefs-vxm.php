@@ -30,7 +30,7 @@
 		$vendoritemID = $input->get->text('vendoritemID');
 		$page->headline = "ITM: $itemID VXM Item $vendoritemID for $vendorID";
 
-		$item = $vxm->get_create_vxm_item($vendorID, $vendoritemID, $itemID);
+		$item = $vxm->get_create_xref($vendorID, $vendoritemID, $itemID);
 
 		if (!$item->isNew()) {
 			/**

@@ -53,7 +53,7 @@
 
 			if ($vxm->xref_exists($vendorID, $vendoritemID, $itemID)) {
 				$page->headline = "VXM: $vendorID Item $vendoritemID for $itemID";
-				$item = $vxm->get_vxm_item($vendorID, $vendoritemID, $itemID);
+				$item = $vxm->xref($vendorID, $vendoritemID, $itemID);
 
 				/**
 				 * Show alert that VXM is locked if
@@ -70,7 +70,7 @@
 					$vxm->recordlocker->create_lock($vxm->get_recordlocker_key($item));
 				}
 			} else {
-				$item = $vxm->get_vxm_item_new();
+				$item = $vxm->new_xref();
 				$item->setVendorid($vendorID);
 				$item->setItemid($itemID);
 				$page->headline = "VXM: Creating X-ref for $vendorID";
