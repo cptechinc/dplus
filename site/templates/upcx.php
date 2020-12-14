@@ -43,13 +43,14 @@
 			}
 		}
 
-		if ($code == 'new') {
-			$page->headline = "Adding UPC X-ref";
-		} else {
-			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "UPC $code not found, you may create it below"]);
-			$page->body .= $html->div('class=mb-3');
+		if ($upc->isNew()) {
+			if ($code == 'new') {
+				$page->headline = "Adding UPC X-ref";
+			} else {
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "UPC $code not found, you may create it below"]);
+				$page->body .= $html->div('class=mb-3');
+			}
 		}
-
 
 		if (!$upc->isNew()) {
 			/**
