@@ -197,9 +197,6 @@ $(function() {
 					url: '{{ url_validate }}',
 					type: "get",
 					data: {
-						vendorID: function() {
-							return $('input[name=vendorID]').val();
-						},
 						action: function() {
 							var input = $('input[name=vendoritemID]');
 
@@ -208,7 +205,13 @@ $(function() {
 							} else {
 								return 'validate-vendor-itemid-new';
 							}
-						}
+						},
+						vendorID: function() {
+							return $('input[name=vendorID]').val();
+						},
+						itemID: function() {
+							return $('input[name=itemID]').val();
+						},
 					}
 				}
 			},
