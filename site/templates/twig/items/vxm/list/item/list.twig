@@ -26,7 +26,7 @@
 			</th>
 		</tr>
 	</thead>
-	<tbody>
+	<tbody class="small">
 		{% if items.count() %}
 			{% for item in items %}
 				<tr data-vxm="{{ vxm.get_recordlocker_key(item) }}" class="{{ (response.key == vxm.get_recordlocker_key(item) and response.has_success()) ? 'bg-success text-white' : ''}}">
