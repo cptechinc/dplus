@@ -222,7 +222,7 @@ class DpagesMap extends Dpages implements Module {
 	 */
 	public function get_vxm_item_deleteURL($vendorID, $vendoritemID, $itemID) {
 		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
-		$url->query->set('action', 'remove-vxm-item');
+		$url->query->set('action', 'delete-vxm-item');
 		$url->query->set('vendorID', $vendorID);
 		$url->query->set('vendoritemID', $vendoritemID);
 		$url->query->set('itemID', $itemID);
