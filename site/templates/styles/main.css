@@ -189,6 +189,11 @@ a.image-link:hover {
 	z-index: 1500;
 }
 
+.paginator .dropdown-menu {
+	max-height: 200px;
+	overflow-y:auto;
+}
+
 
 /************************************** Navbar **************************************/
 #yt-menu {
