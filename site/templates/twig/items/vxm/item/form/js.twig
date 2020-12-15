@@ -56,9 +56,10 @@ $(function() {
 	 * Change the Unit of Measure Description when the Unit of Measure is changed
 	 */
 	$("body").on("change", "#uom_purchase", function(e) {
-		var input_uompurchase = $(this);
-		var conversion = input_uompurchase.find('option:selected').data('conversion');
-		var ele_description = input_uompurchase.siblings('p').find('.conversion-description');
+		var input = $(this);
+		var conversion = input.find('option:selected').data('conversion');
+		var ele_description = input.siblings('p').find('.conversion-description');
+		$('.uom-purchase-code').text(input.val());
 		ele_description.text(conversion);
 		calculate_eachlistprice();
 	});
@@ -369,8 +370,8 @@ $(function() {
 	 */
 	function calculate_eachlistprice() {
 		var oldlistprice = eachlistprice;
-		eachlistprice = get_eachlistprice();
-		input_eachlistprice.val(eachlistprice);
+		eachlistprice = parseFloat(get_eachlistprice());
+		input_eachlistprice.val(eachlistprice.toFixed(vxm.decimal_places_price()));
 
 		calculate_margins();
 	}
