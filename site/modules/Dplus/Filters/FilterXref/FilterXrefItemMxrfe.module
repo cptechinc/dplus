@@ -106,6 +106,16 @@ class FilterXrefItemMxrfe extends WireData implements Module {
 		}
 	}
 
+	/**
+	 * Return Position of MXRFE x-ref in Results
+	 * @param  ItemXrefManufacturer $xref X-ref
+	 * @return int
+	 */
+	public function position(ItemXrefManufacturer $xref) {
+		$xrefs = $this->query->find();
+		return $xrefs->search($xref);
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
