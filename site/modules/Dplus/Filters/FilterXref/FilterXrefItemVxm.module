@@ -161,8 +161,8 @@ class FilterXrefItemVxm extends WireData implements Module {
 	}
 
 	/**
-	 * Return Position of CXM item in Results
-	 * @param  ItemXrefCustomer $item CXM Item
+	 * Return Position of VXM item in Results
+	 * @param  ItemXrefVendor $item VXM Item
 	 * @return int
 	 */
 	public function position(ItemXrefVendor $item) {
