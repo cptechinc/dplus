@@ -118,11 +118,11 @@ class DpagesMap extends Dpages implements Module {
 	 * @return string
 	 */
 	public function get_vxm_vendorURL($vendorID, $focus = '') {
-		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
-		$url->query->set('vendorID', $vendorID);
 		if ($focus) {
 			return $this->get_vxm_vendor_focusURL($vendorID, $focus);
 		}
+		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
+		$url->query->set('vendorID', $vendorID);
 		return $url->getUrl();
 	}
 
