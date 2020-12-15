@@ -1,14 +1,14 @@
-{% if item.isNew() and page.has('vendorID') == false %}
+{% if xref.vendorid == '' %}
 	<div class="row form-group">
 		<div class="col-sm-4">
 			<label for="vendorID">Vendor ID</label>
 		</div>
 		<div class="col-sm-8">
 			{% include 'util/form/input-with-modal-lookup.twig' with {
-					'name': 'vendorID', 'value': item.vendorid,
+					'name': 'vendorID', 'value': xref.vendorid,
 					'attributes': {
-						'readonly': item.vendorid ? true : false,
-						'tabindex': item.vendorid ? '-1' : ''
+						'readonly': xref.vendorid ? true : false,
+						'tabindex': xref.vendorid ? '-1' : ''
 					},
 					'modaltarget': '#ajax-modal',
 					'modaldescription': 'Search for / Choose Vendor',
@@ -20,7 +20,7 @@
 		</div>
 	</div>
 {% else %}
-	<input type="hidden" name="vendorID" value="{{ item.vendorid }}">
+	<input type="hidden" name="vendorID" value="{{ xref.vendorid }}">
 
 	{% if (page.pw_template == 'itm-xrefs-vxm') %}
 		<div class="row form-group">
@@ -28,7 +28,7 @@
 				<label for="vendorID">Vendor ID</label>
 			</div>
 			<div class="col-sm-8">
-				<p class="form-control-plaintext form-control-sm">{{ item.vendorid }} - {{ item.vendor.name }}</p>
+				<p class="form-control-plaintext form-control-sm">{{ xref.vendorid }} - {{ xref.vendor.name }}</p>
 			</div>
 		</div>
 	{% endif %}
@@ -40,27 +40,27 @@
 	</div>
 	<div class="col-sm-8">
 		{% include 'util/form/input.twig' with {
-				'name': 'vendoritemID', 'value': item.vendoritemid,
+				'name': 'vendoritemID', 'value': xref.vendoritemid,
 				'attributes': {
-					'data-vendoritemid': item.vendoritemid,
-					'data-new': item.isNew() ? 'true' : 'false',
-					'readonly': item.vendoritemid ? true : false,
-					'tabindex': item.vendoritemid ? '-1' : '',
+					'data-vendoritemid': xref.vendoritemid,
+					'data-new': xref.isNew() ? 'true' : 'false',
+					'readonly': xref.vendoritemid ? true : false,
+					'tabindex': xref.vendoritemid ? '-1' : '',
 				}
 			}
 		%}
 	</div>
 </div>
-<div class="row">
+<div class="row form-group">
 	<div class="col-sm-4">
 		<b>Our Item ID</b>
 	</div>
 	<div class="col-sm-8 item-col">
 		{% include 'util/form/input-with-modal-lookup.twig' with {
-				'name': 'itemID', 'value': item.ouritemid,
+				'name': 'itemID', 'value': xref.itemid,
 				'attributes': {
-					'readonly': item.itemid ? true : false,
-					'tabindex': item.itemid ? '-1' : '',
+					'readonly': xref.itemid ? true : false,
+					'tabindex': xref.itemid ? '-1' : '',
 				},
 				'modaltarget': '#ajax-modal',
 				'modaldescription': 'Search for / Choose Item',
@@ -69,7 +69,7 @@
 				}
 			}
 		%}
-		<small class="form-text text-muted description">{{ item.imitem.description }}</small>
-		<small class="form-text text-muted description2">{{ item.imitem.description2 }}</small>
+		<small class="form-text text-muted description">{{ xref.imitem.description }}</small>
+		<small class="form-text text-muted description2">{{ xref.imitem.description2 }}</small>
 	</div>
 </div>

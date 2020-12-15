@@ -1,0 +1,62 @@
+$(function() {
+	{% if page.focus and page.focus != 'new' %}
+		$('tr[data-mxrfe="{{ page.focus }}"]').addClass('highlight');
+		// $('html, body').animate({scrollTop: $('#{{ page.focus }}').offset().top,},700,'linear');
+		$('html, body').animate({scrollTop: $('[data-mxrfe="{{ page.focus }}"]').offset().top,},700,'linear');
+	{% endif %}
+
+/* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	var modal_ajax = $('#ajax-modal');
+
+	// modal_ajax.on('show.bs.modal', function (event) {
+	// 	var button = $(event.relatedTarget); // Button that triggered the modal
+	//
+	// 	if (button.data('custid')) {
+	// 		window.location.href = cxm_customerURL(button.data('custid'));
+	// 	}
+	//
+	// 	var modal = $(this);
+	// 	var url = '{{ page.searchcustomersURL }}';
+	//
+	// 	if (button.data('search') == 'customer') {
+	// 		url = '{{ page.searchcustomersURL }}';
+	// 	}
+	//
+	// 	modal.find('.modal-title').text(button.attr('title'));
+	// 	modal.resizeModal('xl');
+	// 	modal.find('.modal-body').loadin(url, function() {});
+	// });
+	//
+	// $("body").on('click', '.customer-link', function(e) {
+	// 	e.preventDefault();
+	// 	var button = $(this);
+	// 	var custID = button.data('custid');
+	// 	window.location.href = cxm_customerURL(button.data('custid'));
+	// });
+	//
+	// $("body").on('submit', '#ajax-modal form', function(e) {
+	// 	e.preventDefault();
+	// 	var form = $(this);
+	// 	var query = form.serialize();
+	// 	var action = form.attr('action');
+	// 	var search = form.find('input[name=q]').val();
+	// 	var url = action + '?' + query;
+	// 	form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+	// 	form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	// });
+	//
+	// $("body").on('click', '#ajax-modal .paginator-link', function(e) {
+	// 	e.preventDefault();
+	// 	var href = $(this).attr('href');
+	// 	modal_ajax.find('.modal-body').load(href);
+	// });
+	//
+	// function cxm_customerURL(custID) {
+	// 	var uri = new URI('{{ page.url }}');
+	// 	uri.addQuery('custID', custID);
+	// 	uri.addQuery('custitemID', 'new');
+	// 	return uri.toString()
+	// }
+});

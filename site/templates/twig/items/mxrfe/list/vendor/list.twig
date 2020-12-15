@@ -32,11 +32,11 @@
 					<td>{{ xref.item.description }}</td>
 					<td class="text-center">
 						{% if mxrfe.recordlocker.function_locked(mxrfe.get_recordlocker_key(xref)) == false or mxrfe.recordlocker.function_locked_by_user(mxrfe.get_recordlocker_key(xref)) %}
-							<a href="{{ page.xrefURL(xref.vendorid, xref.vendoritemid) }}" class="btn btn-warning btn-sm">
+							<a href="{{ page.xrefURL(xref.vendorid, xref.vendoritemid, xref.itemid) }}" class="btn btn-warning btn-sm">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
 							&nbsp;
-							<a href="" class="btn btn-danger btn-sm remove-mxrfe-item">
+							<a href="{{ page.xref_deleteURL(xref.vendorid, xref.vendoritemid, xref.itemid) }}" class="btn btn-danger btn-sm delete_button">
 								<i class="fa fa-trash" aria-hidden="true"></i> Delete
 							</a>
 						{% else %}
