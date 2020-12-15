@@ -36,7 +36,7 @@ class XrefCxm extends WireData implements Module {
 	}
 
 	/**
-	 * Returns Cust Item ID Max Length
+	 * Return Cust Item ID Max Length
 	 * @return int
 	 */
 	public function maxlength_custitemid() {
@@ -44,11 +44,19 @@ class XrefCxm extends WireData implements Module {
 	}
 
 	/**
-	 * Returns Cust Item ID Max Length
+	 * Return Description Max Length
 	 * @return int
 	 */
 	public function maxlength_description() {
 		return ItemXrefCustomer::LENGTH_DESCRIPTION;
+	}
+
+	/**
+	 * Return Max Length Description 2
+	 * @return int
+	 */
+	public function maxlength_description2() {
+		return ItemXrefCustomer::LENGTH_DESCRIPTION2;
 	}
 
 /* =============================================================
@@ -308,7 +316,6 @@ class XrefCxm extends WireData implements Module {
 		}
 
 		$this->update_record_input($record, $input);
-
 		$this->wire('session')->response_xref = $this->save_and_respond($record);
 		return $this->wire('session')->response_xref->has_success();
 	}
@@ -330,8 +337,8 @@ class XrefCxm extends WireData implements Module {
 		if ($this->is_key_modified($record) && !$record->isNew()) {
 			$this->delete_recreate_record($record);
 		}
-		$record->setDescription($values->text('description'));
-		$record->setDescription2($values->text('description2'));
+		$record->setDescription($values->text('description'), ['maxLength' => $this->maxlength_description()]);
+		$record->setDescription2($values->text('description2'), ['maxLength' => $this->maxlength_description2()]);
 		$record->setRevision($values->text('revision'));
 		$record->setConvert($values->text('convert'));
 		$record->setQty_percase($values->int('qty_percase'));
