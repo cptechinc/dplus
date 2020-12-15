@@ -30,7 +30,7 @@ class XrefVxm extends WireData implements Module {
 	}
 
 	/**
-	 * Returns ItemXrefVendorQuery
+	 * Return Query
 	 * @return ItemXrefVendorQuery
 	 */
 	public function query() {
@@ -38,7 +38,7 @@ class XrefVxm extends WireData implements Module {
 	}
 
 	/**
-	 * Returns ItemXrefVendorQuery with filters applied to VendorID, Vendor ItemID, Item ID
+	 * Return Query with filters applied to VendorID, Vendor ItemID, Item ID
 	 * @return ItemXrefVendorQuery
 	 */
 	public function query_xref($vendorID, $vendoritemID, $itemID) {
@@ -56,6 +56,7 @@ class XrefVxm extends WireData implements Module {
 	 * Returns if Vendor Item ID exists
 	 * @param  string $vendorID     Vendor ID
 	 * @param  string $vendoritemID Vendor's Item ID'
+	 * @param  string $itemID       ITM Item ID'
 	 * @return bool
 	 */
 	public function xref_exists($vendorID, $vendoritemID, $itemID) {
