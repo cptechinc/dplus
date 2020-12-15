@@ -53,7 +53,13 @@
 		<label for="description">Description</label>
 	</div>
 	<div class="col-sm-8">
-		<input type="text" name="description" class="form-control form-control-sm" id="description" value="{{ item.description }}" maxlength="{{ cxm.maxlength_description() }}">
+		{% include 'util/form/input.twig' with {
+				'name': 'description', 'value': item.description,
+				'attributes': {
+					'maxlength': cxm.maxlength_description()
+				}
+			}
+		%}
 	</div>
 </div>
 <div class="row form-group">
@@ -61,7 +67,13 @@
 
 	</div>
 	<div class="col-sm-8">
-		<input type="text" name="description2" class="form-control form-control-sm" id="description2" value="{{ item.description2 }}">
+		{% include 'util/form/input.twig' with {
+				'name': 'description2', 'value': item.description2,
+				'attributes': {
+					'maxlength': cxm.maxlength_description2()
+				}
+			}
+		%}
 	</div>
 </div>
 <div class="row form-group">
