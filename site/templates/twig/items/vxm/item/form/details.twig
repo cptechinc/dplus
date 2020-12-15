@@ -53,3 +53,21 @@
 		<p class="form-control-plaintext form-control-sm">{{ item.date_changed ? item.date_changed|convertdate : 'N/A' }}</p>
 	</div>
 </div>
+
+<div class="row">
+	<div class="col-sm-6">
+		<b>Notes Detail</b>
+	</div>
+	<div class="col-sm-6">
+		<p class="form-control-plaintext form-control-sm">{{ qnotes.notes.detail.notes_exist(item.itemid, item.vendorid)|yesorno|capitalize }}</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-1"></div>
+	<div class="col-sm-5">
+		<b>Internal</b>
+	</div>
+	<div class="col-sm-6">
+		<p class="form-control-plaintext form-control-sm">{{ qnotes.notes.internal.notes_exist_item(item.itemid, item.vendorid)|yesorno|capitalize }}</p>
+	</div>
+</div>
