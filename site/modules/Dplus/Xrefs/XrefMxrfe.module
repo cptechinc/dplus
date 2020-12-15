@@ -26,119 +26,83 @@ class XrefMxrfe extends WireData implements Module {
 	}
 
 	/**
-	 * Returns ItemXrefManufacturerQuery
+	 * Return ItemXrefManufacturerQuery
 	 * @return ItemXrefManufacturerQuery
 	 */
 	public function query() {
 		return ItemXrefManufacturerQuery::create();
 	}
 
+	/**
+	 * Return Query with filters applied to VendorID, Vendor ItemID, Item ID
+	 * @return ItemXrefManufacturerQuery
+	 */
+	public function query_xref($vendorID, $vendoritemID, $itemID) {
+		$q = $this->query();
+		$q->filterByVendorid($vendorID);
+		$q->filterByVendoritemid($vendoritemID);
+		$q->filterByItemid($itemID);
+		return $q;
+	}
+
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return ItemXrefManufacturer[]
-	 * @return ItemXrefManufacturer[]|ObjectCollection
-	 */
-	public function get_upcs() {
-		$q = $this->query();
-		return $q->find();
-	}
-
-	/**
-	 * Return ItemXrefManufacturer[] for Item ID
-	 * @param  string $itemID  Our Item ID
-	 * @return ItemXrefManufacturer[]|ObjectCollection
-	 */
-	public function get_upcs_itemID($itemID) {
-		$q = $this->query();
-		$q->filterByItemid($itemID);
-		return $q->find();
-	}
-
-	/**
 	 * Return ItemXrefManufacturer
-	 * @param  string $upc UPC Code
-	 * @return ItemXrefManufacturer
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor's Item ID'
+	 * @param  string $itemID       ITM Item ID'
 	 */
-	public function get_upc($upc) {
-		$q = $this->query();
-		$q->filterByUpc($upc);
+	public function xref($vendorID, $vendoritemID, $itemID) {
+		$q = $this->query_xref($vendorID, $vendoritemID, $itemID);
 		return $q->findOne();
 	}
 
 	/**
-	 * Return Primary ItemXrefManufacturer
-	 * @param  string $itemID Item ID
+	 * Return ItemXrefVendor from Recordlocker Key
+	 * @param  string $key Key (vendorID-vendoritemID-itemID)
+	 * @return ItemXrefVendor
+	 */
+	public function xref_by_recordlocker_key($key) {
+		$keys = explode('-', $key);
+		$vendorID = $keys[0];
+		$vendoritemID = $keys[1];
+		$itemID = $keys[2];
+		return $this->xref($vendorID, $vendoritemID, $itemID);
+	}
+
+	/**
+	 * Return if X-ref Exists
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor's Item ID'
+	 * @param  string $itemID       ITM Item ID'
+	 * @return bool
+	 */
+	public function xref_exists($vendorID, $vendoritemID, $itemID) {
+		$q = $this->query_xref($vendorID, $vendoritemID, $itemID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return Existing or New X-ref
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor's Item ID'
+	 * @param  string $itemID       ITM Item ID'
 	 * @return ItemXrefManufacturer
 	 */
-	public function get_primary_upc_itemid($itemID) {
-		$q = $this->query();
-		$q->filterByItemid($itemID);
-		$q->filterByPrimary(ItemXrefManufacturer::PRIMARY_TRUE);
-		return $q->findOne();
-	}
-
-	/**
-	 * Return Primary ItemXrefManufacturer
-	 * @param  string $itemID Item ID
-	 * @return bool
-	 */
-	public function xref_primary_by_itemid_exists($itemID) {
-		$q = $this->query();
-		$q->filterByItemid($itemID);
-		$q->filterByPrimary(ItemXrefManufacturer::PRIMARY_TRUE);
-		return boolval($q->count());
-	}
-
-	/**
-	 * Return if UPC exists
-	 * @param  string $upc UPC Code
-	 * @return bool
-	 */
-	public function upc_exists($upc) {
-		$q = $this->query();
-		$q->filterByUpc($upc);
-		return boolval($q->count());
-	}
-
-	/**
-	 * Returns if UPC Code Matches ItemID
-	 * @param  string $upc    UPC Code
-	 * @param  string $itemID Item ID
-	 * @return bool
-	 */
-	public function upc_isfor_itemID($upc, $itemID) {
-		$q = $this->query();
-		$q->filterByUpc($upc);
-		$q->filterByItemid($itemID);
-		return boolval($q->count());
-	}
-
-	/**
-	 * Return if Primary UPC for itemID exists
-	 * @param  string $itemID Item ID
-	 * @return bool
-	 */
-	public function upc_primary_exists($itemID) {
-		$q = $this->query();
-		$q->filterByItemid($itemID);
-		$q->filterByPrimary(ItemXrefManufacturer::PRIMARY_TRUE);
-		return boolval($q->count());
-	}
-
-	/**
-	 * Return Existing or New UPC X-ref
-	 * @param  string  $upc    UPC Code
-	 * @return ItemXrefManufacturer
-	 */
-	public function get_create_upc($upc) {
-		if ($this->upc_exists($upc)) {
-			$record = $this->get_upc($upc);
+	public function get_create_xref($vendorID, $vendoritemID, $itemID) {
+		if ($this->xref_exists($vendorID, $vendoritemID, $itemID)) {
+			$record = $this->xref($vendorID, $vendoritemID, $itemID);
 		} else {
-			$record = new ItemXrefManufacturer();
-			$record->setUpc($upc);
-			$record->setQty(1);
+			$vendoritemID = $vendoritemID == 'new' ? '' : $vendoritemID;
+			$record = $this->new_xref();
+			$record->setVendorid($vendorID);
+			$record->setVendoritemid($vendoritemID);
+
+			if ($this->itemid_exists($itemID)) {
+				$record->setItemid($itemID);
+			}
 		}
 		return $record;
 	}
@@ -182,13 +146,13 @@ class XrefMxrfe extends WireData implements Module {
 		$values = $input->$rm;
 		$upc = $values->text('upc');
 
-		if ($this->upc_exists($upc)) {
+		if ($this->xref_exists($upc)) {
 			if (!$this->lockrecord($upc)) {
 				$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($upc);
 				$this->wire('session')->response_xref = XrefResponse::response_error($upc, $message);
 				return false;
 			}
-			$record = $this->get_upc($upc);
+			$record = $this->xref($upc);
 			$record->delete();
 			$this->wire('session')->response_xref = $this->save_and_respond($record);
 			return $this->wire('session')->response_xref->has_success();
@@ -205,7 +169,7 @@ class XrefMxrfe extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$upc = $values->text('upc');
-		$record = $this->get_upc($upc);
+		$record = $this->xref($upc);
 
 		if (!$this->lockrecord($upc) && !$record->isNew()) {
 			$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($upc);
@@ -361,6 +325,78 @@ class XrefMxrfe extends WireData implements Module {
 		return VendorQuery::create()->filterByVendorid($vendorID)->findOne();
 	}
 
+	/**
+	 * Return if Vendor exists
+	 * @param  string $vendorID Vendor ID
+	 * @return bool
+	 */
+	public function vendorid_exists($vendorID) {
+		return boolval(VendorQuery::create()->filterById($vendorID)->count());
+	}
+
+	/**
+	 * Return if itemID Exists
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function itemid_exists($itemID) {
+		return boolval(ItemMasterItemQuery::create()->filterByItemid($itemID)->count());
+	}
+
+	/**
+	 * Return Units of Measure
+	 * @return UnitofMeasurePurchase[]|ObjectCollection
+	 */
+	public function unitsofm() {
+		return UnitofMeasurePurchaseQuery::create()->find();
+	}
+
+	/**
+	 * Return Config SO
+	 * @return ConfigSalesOrder
+	 */
+	public function config_so() {
+		return $this->wire('modules')->get('ConfigureSo')->config();
+	}
+
+	/**
+	 * Return Config PO
+	 * @return ConfigPo
+	 */
+	public function config_po() {
+		return $this->wire('modules')->get('ConfigurePo')->config();
+	}
+
+	/**
+	 * Return the number of Decimal Places to use for price
+	 * @return int
+	 */
+	public function decimal_places_price() {
+		$config = $this->config_so();
+		return $config->decimal_places_price;
+	}
+
+	/**
+	 * Return the number of Decimal Places to use for cost
+	 * @return int
+	 */
+	public function decimal_places_cost() {
+		$config = $this->config_po();
+		return $config->decimal_places_cost;
+	}
+
+
+	/**
+	 * Intialize configs
+	 * @return void
+	 */
+	public function init_configs() {
+		$this->configs = new WireData();
+		$this->configs->in = $this->get_config_in();
+		$this->configs->so = $this->get_config_so();
+		$this->configs->po = $this->get_config_po();
+	}
+
 
 /* =============================================================
 	URL Functions
@@ -370,21 +406,73 @@ class XrefMxrfe extends WireData implements Module {
 	 * @param  string $vendorID VendorID
 	 * @return string
 	 */
-	public function vendorURL($vendorID) {
+	public function _vendorURL($vendorID) {
 		$url = new Url($this->wire('pages')->get('pw_template=mxrfe')->url);
 		$url->query->set('vendorID', $vendorID);
 		return $url->getUrl();
 	}
 
 	/**
-	 * Return URL to MXRFRE X-ref list
+	 * Return URL to MXRFRE vendor list
 	 * @param  string $vendorID VendorID
 	 * @return string
 	 */
-	public function xrefURL($vendorID, $vendoritemID) {
+	public function vendorURL($vendorID, $focus = '') {
+		if ($focus == '') {
+			return $this->_vendorURL($vendorID);
+		}
+		return $this->vendor_focusURL($vendorID, $focus);
+	}
+
+	/**
+	 * Return Paginated URL to MXRFE Vendor Page
+	 * @param  string $vendorID Mnfr / Comp ID
+	 * @param  string $focus    Record Locker Key for X-Ref
+	 * @return string
+	 */
+	public function vendor_focusURL($vendorID, $focus) {
+		$xref = $this->xref_by_recordlocker_key($focus);
+		if ($xref == false) {
+			return $this->_vendorURL($vendorID);
+		}
+		$url = new Url($this->_vendorURL($vendorID));
+		$url->query->set('focus', $focus);
+		$filter = $this->wire('modules')->get('FilterXrefItemMxrfe');
+		$filter->vendorid($vendorID);
+		$position = $filter->position($xref);
+		$pagenbr = ceil($position / $this->wire('session')->display);
+		$url = $this->wire('modules')->get('Dpurl')->paginate($url, $this->wire('pages')->get('pw_template=mxrfe')->name, $pagenbr);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to MXRFE X-ref
+	 * @param  string $vendorID      Vendor ID
+	 * @param  string $vendoritemID  Vendor Item ID
+	 * @param  string $itemID        ITM Item ID
+	 * @return string
+	 */
+	public function xrefURL($vendorID, $vendoritemID, $itemID) {
 		$url = new Url($this->wire('pages')->get('pw_template=mxrfe')->url);
 		$url->query->set('vendorID', $vendorID);
 		$url->query->set('vendoritemID', $vendoritemID);
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to DELETE MXRFE X-ref
+	 * @param  string $vendorID      Vendor ID
+	 * @param  string $vendoritemID  Vendor Item ID
+	 * @param  string $itemID        ITM Item ID
+	 * @return string
+	 */
+	public function xref_deleteURL($vendorID, $vendoritemID, $itemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=mxrfe')->url);
+		$url->query->set('action', 'delete-xref');
+		$url->query->set('vendorID', $vendorID);
+		$url->query->set('vendoritemID', $vendoritemID);
+		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
 
@@ -405,21 +493,34 @@ class XrefMxrfe extends WireData implements Module {
 		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
 		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
 
+		$this->addHookProperty('Page(pw_template=mxrfe)::vendorID', function($event) {
+			$p = $event->object;
+			$vendorID = $p->fullURL->query->get('vendorID') ? $p->fullURL->query->get('vendorID') : '';
+			$event->return = $vendorID;
+		});
+
 		$this->addHook('Page(pw_template=mxrfe)::vendorURL', function($event) {
 			$vendorID = $event->arguments(0);
 			$event->return = $this->vendorURL($vendorID);
 		});
 
 		$this->addHook('Page(pw_template=mxrfe)::xrefURL', function($event) {
-			$vendorID = $event->arguments(0);
+			$vendorID     = $event->arguments(0);
 			$vendoritemID = $event->arguments(1);
-			$event->return = $this->xrefURL($vendorID, $vendoritemID);
+			$itemID       = $event->arguments(2);
+			$event->return = $this->xrefURL($vendorID, $vendoritemID, $itemID);
 		});
 
-		$this->addHookProperty('Page(pw_template=mxrfe)::vendorID', function($event) {
-			$p = $event->object;
-			$vendorID = $p->fullURL->query->get('vendorID') ? $p->fullURL->query->get('vendorID') : '';
-			$event->return = $vendorID;
+		$this->addHook('Page(pw_template=mxrfe)::xref_exitURL', function($event) {
+			$xref = $event->arguments(0);
+			$event->return = $this->vendorURL($xref->vendorid, $this->get_recordlocker_key($xref));
+		});
+
+		$this->addHook('Page(pw_template=mxrfe)::xref_deleteURL', function($event) {
+			$vendorID     = $event->arguments(0);
+			$vendoritemID = $event->arguments(1);
+			$itemID       = $event->arguments(2);
+			$event->return = $this->xref_deleteURL($vendorID, $vendoritemID, $itemID);
 		});
 	}
 }
