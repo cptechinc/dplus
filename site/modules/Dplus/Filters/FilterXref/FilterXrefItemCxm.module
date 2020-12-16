@@ -33,6 +33,9 @@ class FilterXrefItemCxm extends WireData implements Module {
 		$this->query = ItemXrefCustomerQuery::create();
 	}
 
+/* =============================================================
+	Input Functions
+============================================================= */
 	/**
 	 * Applies Filters to the Query
 	 * NOTE:: Filters include Customer, ItemXrefCustomer #, ItemXrefCustomer Date, Review Date, Expire Date, ItemXrefCustomer Total, ItemXrefCustomer Status
@@ -45,14 +48,16 @@ class FilterXrefItemCxm extends WireData implements Module {
 		$this->custid_input($input);
 	}
 
-/* =============================================================
-	Input Functions
-============================================================= */
+	/**
+	 * Filter Query by ItemID using Input Data
+	 * @param  WireInput $input Input Data
+	 * @return self
+	 */
 	public function itemid_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		$itemID = $values->ouritemID ? $values->text('ouritemID') : $values->text('itemID') ;
+		$itemID = $values->ouritemID ? $values->text('ouritemID') : $values->text('itemID');
 		return $this->itemid($itemID);
 	}
 
