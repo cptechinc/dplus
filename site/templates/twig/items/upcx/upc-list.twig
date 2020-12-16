@@ -51,7 +51,7 @@
 				</a>
 			</th>
 			<th class="pt-3 pb-3">Label</th>
-			<th class="pt-3 pb-3">
+			<th class="pt-3 pb-3 text-center">
 				{% if itemID %}
 					<a href="{{ page.upc_create_itemidURL(itemID) }}" class="btn btn-secondary btn-sm">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add UPC
@@ -98,11 +98,12 @@
 				<td>
 					{{ upc.needslabel|yesorno|capitalize }}
 				</td>
-				<td>
+				<td class="text-center">
 					{% if upcx.recordlocker.function_locked(upc.upc) == false or upcx.recordlocker.function_locked_by_user( upc.upc) %}
 						<a href="{{ page.upcURL(upc.upc) }}" class="btn btn-warning btn-sm">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</a>
+						&nbsp; &nbsp;
 						<a href="{{ page.upc_deleteURL(upc.upc)}}" class="btn btn-danger btn-sm delete_button" data-delete="UPC {{ upc.upc }}">
 							<i class="fa fa-trash" aria-hidden="true"></i> Delete
 						</a>

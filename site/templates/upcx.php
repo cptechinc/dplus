@@ -71,21 +71,19 @@
 		$page->body .= $config->twig->render('items/upcx/form.twig', ['page' => $page, 'upcx' => $upcx, 'upc' => $upc, 'recordlocker' => $upcx->recordlocker]);
 		$page->js   .= $config->twig->render('items/upcx/js.twig', ['page' => $page, 'upc' => $upc]);
 	} else {
-		$filter = $modules->get('FilterXrefItemUpc');
 		$upcx->recordlocker->remove_lock($page->name);
-		$itemID = strtoupper($input->get->text('itemID'));
-		$filter->filter_query($input);
+		$filter = $modules->get('FilterXrefItemUpc');
+		$q = strtoupper($values->text('q'));
+		if ($values->q) {
+			$page->headline = "UPCX: Searching for '$q'";
+			$filter->search($q);
+		}
+
 		$filter->apply_sortby($page);
 		$upcs = $filter->query->paginate($input->pageNum, 10);
 
-		if ($input->get->itemID) {
-			if ($upcx->validate_itemID($itemID)) {
-				$page->headline = "UPCs for $itemID";
-			}
-		}
-
-		$page->body .= $config->twig->render('items/upcx/upc-filters.twig', ['page' => $page, 'input' => $input]);
-		$page->body .= $config->twig->render('items/upcx/upc-list.twig', ['page' => $page, 'upcx' => $upcx, 'upcs' => $upcs, 'itemID' => $itemID]);
+		$page->body .= $config->twig->render('items/upcx/search.twig', ['page' => $page, 'q' => $q]);
+		$page->body .= $config->twig->render('items/upcx/upc-list.twig', ['page' => $page, 'upcx' => $upcx, 'upcs' => $upcs]);
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $upcs->getNbResults()]);
 	}
 
