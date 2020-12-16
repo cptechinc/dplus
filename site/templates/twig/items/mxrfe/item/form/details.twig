@@ -32,3 +32,27 @@
 		%}
 	</div>
 </div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="cost">Cost</label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/form/input.twig' with {
+				'type': 'number',
+				'name': 'cost', 'value': xref.cost|number_format(mxrfe.decimal_places_cost()),
+				'class_add': [
+					'w-50',
+					'text-right'
+				]
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<strong>Change Date</strong>
+	</div>
+	<div class="col-sm-8">
+		<p class="form-control-plaintext form-control-sm">{{ xref.dateupdated|convertdate }}</p>
+	</div>
+</div>
