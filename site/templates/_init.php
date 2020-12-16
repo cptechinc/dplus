@@ -142,6 +142,7 @@ if (!$values->action) {
 		'auto_reload' => true,
 		'debug' => true
 	]);
+	$config->twig->getExtension(\Twig\Extension\CoreExtension::class)->setNumberFormat(3, '.', '');
 
 	$config->twig->addExtension(new Twig\Extension\DebugExtension());
 	include($config->paths->templates."/twig/util/functions.php");
