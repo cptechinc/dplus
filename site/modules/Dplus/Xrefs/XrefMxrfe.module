@@ -123,15 +123,15 @@ class XrefMxrfe extends WireData implements Module {
 		$upc = $values->text('upc');
 
 		switch ($values->text('action')) {
-			case 'delete-upcx':
+			case 'delete-xref':
 				$this->input_delete($input);
 				break;
-			case 'update-upcx':
+			case 'update-xref':
 				$this->input_update($input);
 				break;
 			default:
-				$message = self::DESCRIPTION_RECORD . " ($upc) was not saved, no action was specified";
-				$this->wire('session')->response_xref = XrefResponse::response_error($upc, $message);
+				$message = self::DESCRIPTION_RECORD . " No action was specified";
+				$this->wire('session')->response_xref = XrefResponse::response_error(session_id(), $message);
 				break;
 		}
 	}
@@ -161,71 +161,61 @@ class XrefMxrfe extends WireData implements Module {
 	}
 
 	/**
-	 * Update UPC from Input Data
+	 * Update VXM Item from Input Data
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
-	public function input_update(WireInput $input) {
+	protected function input_update(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$upc = $values->text('upc');
-		$record = $this->xref($upc);
+		$vendorID     = $values->text('vendorID');
+		$vendoritemID = $values->text('vendoritemID');
+		$itemID       = $values->text('itemID');
 
-		if (!$this->lockrecord($upc) && !$record->isNew()) {
-			$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($upc);
-			$this->wire('session')->response_xref = XrefResponse::response_error($upc, $message);
-			return false;
+		$record = $this->get_create_xref($vendorID, $vendoritemID, $itemID);
+
+		if (!$record->isNew()) {
+			if (!$this->lockrecord($record)) {
+				$key = $this->get_recordlocker_key($record);
+				$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
+				$this->wire('session')->response_xref = XrefResponse::response_error("$key", $message);
+				return false;
+			}
 		}
-		$this->update_record_input($record, $input);
 
-		$response = $this->save_and_respond($record);
+		$invalidfields = $this->update_record_input($record, $input);
+		$response = $this->save_and_respond($record, $invalidfields);
 
-		if ($response->has_success() && !$record->isDeleted()) {
-			$this->update_primary_record($record);
+		if ($response->has_success()) {
+			$this->update_dplus_cobol($vxmitem);
 		}
 		$this->wire('session')->response_xref = $response;
 		return $this->wire('session')->response_xref->has_success();
 	}
 
 	/**
-	 * Updates Record
-	 * @param  ItemXrefManufacturer $record UPC Record to update
-	 * @param  WireInput   $input  Input Data
-	 * @return void
+	 * Updates Record, Returns Invalid Fields
+	 * @param  ItemXrefVendor  $record VXM Item Record
+	 * @param  WireInput       $input  Input Data
+	 * @return array
 	 */
-	public function update_record_input(ItemXrefManufacturer $record, WireInput $input) {
+	public function update_record_input(ItemXrefVendor $record, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$record->setItemid($values->text('itemID'));
-		$record->setQty($values->int('qty'));
-		$record->setUom($values->text('uom'));
-		$record->setMastercase($values->yn('mastercase'));
-		$record->setNeedslabel($values->yn('needslabel'));
+		$invalidfields = array();
+
+		$response = new XrefResponse();
+		$response->set_action(XrefResponse::CRUD_UPDATE);
+		$invalidfields = $this->update_record_validated($record, $input);
+
+		$record->setPrice($values->float('price'), ['precision' => $this->decimal_places_cost()]);
+		$record->setCost($values->float('cost'), ['precision' => $this->decimal_places_cost()]);
+		$record->setDateupdated(date('Ymd'));
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));
-
-		if ($values->text('primary') == ItemXrefManufacturer::PRIMARY_TRUE) {
-			if ($values->text('valid_primary') == 'true') {
-				$record->setPrimary(ItemXrefManufacturer::PRIMARY_TRUE);
-			}
-		} else {
-			$record->setPrimary(ItemXrefManufacturer::PRIMARY_FALSE);
-		}
+		return $invalidfields;
 	}
 
-	/**
-	 * Updates Old Primary UPC to be non primary
-	 * @param  ItemXrefManufacturer $record UPC record
-	 * @return void
-	 */
-	public function update_primary_record(ItemXrefManufacturer $record) {
-		if ($record->is_primary() && $record->get_primary_upc_code()) {
-			$primary_old = $record->get_primary_upc();
-			$primary_old->setPrimary(ItemXrefManufacturer::PRIMARY_FALSE);
-			$primary_old->save();
-			$this->update_dplus_cobol($primary_old);
-		}
-	}
 
 /* =============================================================
 	CRUD Response Functions
