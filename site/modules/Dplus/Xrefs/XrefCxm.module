@@ -59,6 +59,10 @@ class XrefCxm extends WireData implements Module {
 		return ItemXrefCustomer::LENGTH_DESCRIPTION2;
 	}
 
+	public function decimal_places_conversion() {
+		return 5;
+	}
+
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
