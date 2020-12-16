@@ -35,6 +35,42 @@ class XrefCxm extends WireData implements Module {
 		return ItemXrefCustomerQuery::create();
 	}
 
+/* =============================================================
+	Const, Config Functions
+============================================================= */
+	const FIELD_ATTRIBUTES = [
+		'conversion'     => ['type' => 'number', 'precision' => 5, 'max' => 9999],
+		'qty_percase'    => ['type' => 'number', 'precision' => 0, 'max' => 9999],
+		'qty_purchase'   => ['type' => 'number', 'precision' => 0, 'max' => 999999],
+		'price_retail'   => ['type' => 'number', 'precision' => 2, 'max'  => 9999999.99],
+		'price_customer' => ['type' => 'number', 'precision' => 2, 'max'  => 9999999.99],
+		'revision'       => ['type' => 'text', 'maxlength' => 8],
+		'revision'       => ['type' => 'text', 'maxlength' => 8],
+		'qty_pack_inner'    => ['type' => 'number', 'precision' => 0, 'max' => 9999],
+		'qty_pack_outer'    => ['type' => 'number', 'precision' => 0, 'max' => 9999],
+		'qty_pack_tare'     => ['type' => 'number', 'precision' => 0, 'max' => 9999],
+	];
+
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function field_attribute($field = '', $attr = '') {
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		if (array_key_exists($field, self::FIELD_ATTRIBUTES) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, self::FIELD_ATTRIBUTES[$field]) === false) {
+			return false;
+		}
+		return self::FIELD_ATTRIBUTES[$field][$attr];
+	}
+
+
 	/**
 	 * Return Cust Item ID Max Length
 	 * @return int
@@ -57,10 +93,6 @@ class XrefCxm extends WireData implements Module {
 	 */
 	public function maxlength_description2() {
 		return ItemXrefCustomer::LENGTH_DESCRIPTION2;
-	}
-
-	public function decimal_places_conversion() {
-		return 5;
 	}
 
 /* =============================================================
@@ -341,14 +373,14 @@ class XrefCxm extends WireData implements Module {
 		if ($this->is_key_modified($record) && !$record->isNew()) {
 			$this->delete_recreate_record($record);
 		}
-		$record->setDescription($values->text('description'), ['maxLength' => $this->maxlength_description()]);
-		$record->setDescription2($values->text('description2'), ['maxLength' => $this->maxlength_description2()]);
-		$record->setRevision($values->text('revision'));
-		$record->setConvert($values->text('convert'));
-		$record->setQty_percase($values->int('qty_percase'));
-		$record->setQty_purchase($values->int('qty_purchase'));
-		$record->setPrice_retail($values->float('price_retail', ['precision' => $this->decimal_places_price()]));
-		$record->setPrice_customer($values->float('price_customer', ['precision' => $this->decimal_places_price_uom()]));
+		$record->setDescription($values->text('description', ['maxLength' => $this->maxlength_description()]));
+		$record->setDescription2($values->text('description2', ['maxLength' => $this->maxlength_description2()]));
+		$record->setRevision($values->text('revision', ['maxLength' => $this->field_attributes('revision', 'maxlength')]));
+		$record->setConversion($values->float('conversion', ['precision' => $this->field_attributes('conversion', 'precision'), 'max' => $this->field_attributes('conversion', 'max')]));
+		$record->setQty_percase($values->int('qty_percase',   ['max' => $this->field_attributes('qty_percase', 'max')]));
+		$record->setQty_purchase($values->int('qty_purchase', ['max' => $this->field_attributes('qty_purchase', 'max')]));
+		$record->setPrice_retail($values->float('price_retail', ['precision' => $this->field_attributes('price_retail', 'precision'), 'max' => $this->field_attributes('price_retail', 'max')]));
+		$record->setPrice_customer($values->float('price_customer', ['precision' => $this->field_attributes('price_customer', 'precision'), 'max' => $this->field_attributes('price_customer', 'max')]));
 
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));

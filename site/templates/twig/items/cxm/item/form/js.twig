@@ -57,7 +57,7 @@ $(function() {
 	$("body").on("change", "input[name=convert]", function(e) {
 		var input = $(this);
 		var conversion = parseFloat(input.val());
-		input.val(conversion.toFixed({{ cxm.decimal_places_conversion() }}));
+		input.val(conversion.toFixed({{ cxm.field_attribute('conversion', 'precision') }}));
 	});
 
 
@@ -312,6 +312,6 @@ $(function() {
 		var qty_percase = {{ item.item.qty_percase ? item.item.qty_percase : 0 }};
 		var conversion = select_uom_pricing.find('option:selected').data('conversion');
 		var custprice = peruom * qty_percase * conversion;
-		input_price_customer.val(custprice.toFixed(2));
+		input_price_customer.val(custprice.toFixed(cxm.field_attribute('price_customer', 'precision')));
 	}
 });

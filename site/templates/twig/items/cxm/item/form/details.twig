@@ -24,12 +24,21 @@
 </div>
 <div class="row form-group">
 	<div class="col-sm-6">
-		<label for="convert">Conversion</label>
+		<label for="conversion">Conversion</label>
 	</div>
 	<div class="col-sm-6">
-		<div class="input-group input-group-sm mb-2">
-			<input type="number" name="convert" class="form-control form-control-sm text-right" id="convert" value="{{ item.convert }}" step="0.00001" max="99999">
-		</div>
+		{% include 'util/form/input.twig' with {
+				'name': 'conversion', 'value': item.conversion|number_format(cxm.field_attribute('conversion', 'precision')),
+				'type': 'number',
+				'class_add': [
+					'text-right',
+					'w-75'
+				],
+				'attributes': {
+					'max': cxm.field_attribute('conversion', 'max'),
+				}
+			}
+		%}
 	</div>
 </div>
 <div class="row form-group">
@@ -37,9 +46,18 @@
 		<label for="qty_percase">Qty Per Case</label>
 	</div>
 	<div class="col-sm-6">
-		<div class="input-group input-group-sm mb-2">
-			<input type="number" name="qty_percase" class="form-control form-control-sm text-right" id="qty_percase" value="{{ item.qty_percase|number_format(cxm.decimal_places_qty()) }}">
-		</div>
+		{% include 'util/form/input.twig' with {
+				'name': 'qty_percase', 'value': item.qty_percase|number_format(cxm.field_attribute('qty_percase', 'precision')),
+				'type': 'number',
+				'class_add': [
+					'text-right',
+					'w-75'
+				],
+				'attributes': {
+					'max': cxm.field_attribute('qty_percase', 'max'),
+				}
+			}
+		%}
 	</div>
 </div>
 <div class="row form-group">
@@ -47,9 +65,18 @@
 		<label for="qty_purchase">Purchase Qty</label>
 	</div>
 	<div class="col-sm-6">
-		<div class="input-group input-group-sm mb-2">
-			<input type="number" name="qty_purchase" class="form-control form-control-sm text-right" id="qty_purchase" value="{{ item.qty_purchase|number_format(cxm.decimal_places_qty()) }}">
-		</div>
+		{% include 'util/form/input.twig' with {
+				'name': 'qty_purchase', 'value': item.qty_purchase|number_format(cxm.field_attribute('qty_purchase', 'precision')),
+				'type': 'number',
+				'class_add': [
+					'text-right',
+					'w-75'
+				],
+				'attributes': {
+					'max': cxm.field_attribute('qty_purchase', 'max'),
+				}
+			}
+		%}
 	</div>
 </div>
 <div class="row form-group">
@@ -57,9 +84,18 @@
 		<label for="price_retail">Retail Price</label>
 	</div>
 	<div class="col-sm-6">
-		<div class="input-group input-group-sm mb-2">
-			<input type="number" name="price_retail" class="form-control form-control-sm text-right" id="price_retail" value="{{ item.price_retail|number_format(cxm.decimal_places_price()) }}">
-		</div>
+		{% include 'util/form/input.twig' with {
+				'name': 'price_retail', 'value': item.price_retail|number_format(cxm.field_attribute('price_retail', 'precision')),
+				'type': 'number',
+				'class_add': [
+					'text-right',
+					'w-75'
+				],
+				'attributes': {
+					'max': cxm.field_attribute('price_retail', 'max'),
+				}
+			}
+		%}
 	</div>
 </div>
 <div class="row form-group">
@@ -67,9 +103,18 @@
 		<label for="price_customer">Cust Price</label>
 	</div>
 	<div class="col-sm-6">
-		<div class="input-group input-group-sm mb-2">
-			<input type="number" name="price_customer" class="form-control form-control-sm text-right" id="price_customer" value="{{ item.price_customer|number_format(cxm.decimal_places_price())  }}">
-		</div>
+		{% include 'util/form/input.twig' with {
+				'name': 'price_customer', 'value': item.price_customer|number_format(cxm.field_attribute('price_customer', 'precision')),
+				'type': 'number',
+				'class_add': [
+					'text-right',
+					'w-75'
+				],
+				'attributes': {
+					'max': cxm.field_attribute('price_customer', 'max'),
+				}
+			}
+		%}
 	</div>
 </div>
 <div class="row form-group">
@@ -77,7 +122,7 @@
 		<label>Contract</label>
 	</div>
 	<div class="col-sm-6">
-		<p class="form-control-plaintext form-control-sm text-right">
+		<p class="form-control-plaintext form-control-sm text-right w-75">
 			{{ (item.has_customerpricing() ? item.getCustomerPricing().baseprice : '0.00')|number_format(cxm.decimal_places_price()) }}
 		</p>
 	</div>

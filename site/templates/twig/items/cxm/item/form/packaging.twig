@@ -21,7 +21,19 @@
 				<label for="qty_pack_inner">Items per Inner</label>
 			</td>
 			<td>
-				<input type="text" class="form-control form-control-sm w-75 text-right float-right" name="qty_pack_inner" id="qty_pack_inner" value="{{ item.qty_pack_inner }}">
+				<div class="input-group w-75 float-right">
+					{% include 'util/form/input.twig' with {
+							'name': 'qty_pack_inner', 'value': item.qty_pack_inner|number_format(cxm.field_attribute('qty_pack_inner', 'precision')),
+							'type': 'number',
+							'class_add': [
+								'text-right',
+							],
+							'attributes': {
+								'max': cxm.field_attribute('qty_pack_inner', 'max'),
+							}
+						}
+					%}
+				</div>
 			</td>
 			<td>
 				<p class="form-control-plaintext form-control-sm text-right">{{ item.item.qty_pack_inner }}</p>
@@ -31,7 +43,19 @@
 					<label for="qty_pack_outer">Items per Outer</label>
 				</td>
 				<td>
-					<input type="text" class="form-control form-control-sm w-75 text-right float-right" name="qty_pack_outer" id="qty_pack_outer" value="{{ item.qty_pack_outer }}">
+					<div class="input-group w-75 float-right">
+						{% include 'util/form/input.twig' with {
+								'name': 'qty_pack_outer', 'value': item.qty_pack_outer|number_format(cxm.field_attribute('qty_pack_outer', 'precision')),
+								'type': 'number',
+								'class_add': [
+									'text-right',
+								],
+								'attributes': {
+									'max': cxm.field_attribute('qty_pack_outer', 'max'),
+								}
+							}
+						%}
+					</div>
 				</td>
 				<td>
 					<p class="form-control-plaintext form-control-sm text-right float-right">{{ item.item.qty_pack_outer }}</p>
@@ -42,7 +66,19 @@
 					<label for="qty_tare">Items per Tare</label>
 				</td>
 				<td>
-					<input type="text" class="form-control form-control-sm w-75 text-right float-right" name="qty_tare" id="qty_tare" value="{{ item.qty_tare }}">
+					<div class="input-group w-75 float-right">
+						{% include 'util/form/input.twig' with {
+								'name': 'qty_pack_tare', 'value': item.qty_pack_tare|number_format(cxm.field_attribute('qty_pack_tare', 'precision')),
+								'type': 'number',
+								'class_add': [
+									'text-right',
+								],
+								'attributes': {
+									'max': cxm.field_attribute('qty_pack_tare', 'max'),
+								}
+							}
+						%}
+					</div>
 				</td>
 				<td>
 					<p class="form-control-plaintext form-control-sm text-right">{{ item.item.qty_tare }}</p>
