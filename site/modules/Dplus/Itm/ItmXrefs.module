@@ -52,7 +52,6 @@ class ItmXrefs extends WireData implements Module {
 		$this->wire('session')->response_itm = $response;
 	}
 
-
 	/**
 	 * Takes Input, validates it's for an Item
 	 * Updates Item
@@ -309,7 +308,7 @@ class ItmXrefs extends WireData implements Module {
 			$filter->itemid($itemID);
 			$position = $filter->position($item);
 
-			$pagenbr = floor($filter->query->count() / $this->wire('session')->display);
+			$pagenbr = ceil($position / ($this->wire('session')->display - 1));
 			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		}
 		return $url->getUrl();
