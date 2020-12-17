@@ -25,7 +25,7 @@ class DpagesMki extends Dpages implements Module {
 			'title'          => 'Kits',
 			'summary'        => 'Kits Menu',
 			'parent'         => '/',
-			'dplus_function' => '' // TODO
+			'dplus_function' => 'mki' // TODO
 		),
 		'kim' => array(
 			'template'       => 'dplus-function',
@@ -34,7 +34,7 @@ class DpagesMki extends Dpages implements Module {
 			'title'          => 'Kit Master',
 			'summary'        => 'View / Edit Kits',
 			'parent'         => '/mki/',
-			'dplus_function' => '' // TODO
+			'dplus_function' => 'kim' // TODO
 		),
 	);
 

@@ -19,7 +19,6 @@
 	</div>
 {% else %}
 	<input type="hidden" name="custID" value="{{ item.custid }}">
-
 	{% if (page.pw_template == 'itm-xrefs-cxm') %}
 		<div class="row form-group">
 			<div class="col-sm-4">
@@ -39,7 +38,25 @@
 		{% include 'util/form/input.twig' with {
 				'name': 'custitemID', 'value': item.custitemID,
 				'attributes': {
-					'data-custitemid': item.custitemID
+					'data-custitemid': item.custitemID,
+					'maxlength': cxm.maxlength_custitemid(),
+					'readonly': item.custitemid ? true : false,
+					'tabindex': item.custitemid ? '-1' : '',
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-1"></div>
+	<div class="col-sm-3">
+		<label for="description">Description</label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/form/input.twig' with {
+				'name': 'description', 'value': item.description,
+				'attributes': {
+					'maxlength': cxm.maxlength_description()
 				}
 			}
 		%}
@@ -47,18 +64,16 @@
 </div>
 <div class="row form-group">
 	<div class="col-sm-4">
-		<label for="description">Description</label>
-	</div>
-	<div class="col-sm-8">
-		<input type="text" name="description" class="form-control form-control-sm" id="description" value="{{ item.description }}">
-	</div>
-</div>
-<div class="row form-group">
-	<div class="col-sm-4">
 
 	</div>
 	<div class="col-sm-8">
-		<input type="text" name="description2" class="form-control form-control-sm" id="description2" value="{{ item.description2 }}">
+		{% include 'util/form/input.twig' with {
+				'name': 'description2', 'value': item.description2,
+				'attributes': {
+					'maxlength': cxm.maxlength_description2()
+				}
+			}
+		%}
 	</div>
 </div>
 <div class="row form-group">
@@ -68,9 +83,6 @@
 	<div class="col-sm-8 item-col">
 		{% include 'util/form/input-with-modal-lookup.twig' with {
 				'name': 'itemID', 'value': item.itemid,
-				'attributes': {
-					'readonly': item.itemid ? true : false,
-				},
 				'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Item',
 				'attributes_button': {
 					'data-search': 'item'

@@ -14,7 +14,6 @@ class FilterXrefItemUpc extends WireData implements Module {
 		$this->query = ItemXrefUpcQuery::create();
 	}
 
-
 	/**
 	 * Returns Query
 	 * @return ItemXrefUpcQuery
@@ -41,26 +40,58 @@ class FilterXrefItemUpc extends WireData implements Module {
 	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
 	 * @return void
 	 */
-	public function filter_query(WireInput $input) {
-		$this->filter_itemid($input);
+	public function filter_input(WireInput $input) {
+		$this->itemid_input($input);
+		return $this;
 	}
 
+	/**
+	 * Filter Query by ItemID using Input Data
+	 * @param  WireInput $input Input Data
+	 * @return self
+	 */
+	public function itemid_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$itemID = $values->text('itemID');
+		return $this->itemid($itemID);
+	}
+
+/* =============================================================
+	Base Filter Functions
+============================================================= */
 	/**
 	 * Filters Query by Item ID
-	 *
-	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-	 * @return void
+	 * @param  string|array $itemID Item ID(s)
+	 * @return self
 	 */
-	public function filter_itemid($input) {
-		if ($input->get->itemID) {
-			$this->query->filterByItemid(strtoupper($input->get->text('itemID')));
+	public function itemid($itemID) {
+		if ($itemID) {
+			$this->query->filterByItemid($itemID);
 		}
+		return $this;
 	}
 
+	/**
+	 * Searches the ItemXrefUpc Table to find vendors that match the query provided
+	 * @param  string $q Search Query
+	 * @return self
+	 */
+	public function search($q) {
+		$columns = [
+			ItemXrefUpc::get_aliasproperty('upc'),
+			ItemXrefUpc::get_aliasproperty('itemid'),
+		];
+		$this->query->search_filter($columns, strtoupper($q));
+		return $this;
+	}
 
+/* =============================================================
+	Misc Query Functions
+============================================================= */
 	/**
 	 * Adds the Sort By to the query
-	 *
 	 * @param  Page   $page
 	 * @return void
 	 */
@@ -75,21 +106,21 @@ class FilterXrefItemUpc extends WireData implements Module {
 		}
 	}
 
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
-		/**
-		 * ProcessWire Module Info
-		 *
-		 * @return void
-		 */
-		public static function getModuleInfo() {
-			return array(
-				'title' => 'Dpluso filter X-ref Item UPC Module',
-				'version' => 101,
-				'summary' => 'Handles X-ref Item UPC Filtering',
-				'singular' => true,
-				'autoload' => true,
-			);
-		}
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso filter X-ref Item UPC Module',
+			'version' => 101,
+			'summary' => 'Handles X-ref Item UPC Filtering',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
 }

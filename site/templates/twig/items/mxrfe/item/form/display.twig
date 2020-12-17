@@ -1,0 +1,23 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	mxrfe                  module XrefMxrfe
+	xref                   ItemXrefManufacturer
+	vendor                 Vendor
+#}
+<div class="card">
+	<div class="card-header">
+		<div class="row">
+			<div class="col-sm-2">
+				<strong> Mnfr / Comp ID:</strong>
+			</div>
+			<div class="col-sm-6">
+				{{ vendor.vendorid }} - {{ vendor.name }}
+			</div>
+		</div>
+	</div>
+	<div class="card-body">
+		{% include 'items/mxrfe/item/form/form.twig' %}
+	</div>
+</div>

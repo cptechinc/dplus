@@ -9,7 +9,7 @@
 		$custitemID = $input->$rm->text('custitemID');
 		$cxm->process_input($input);
 
-		if ($cxm->cxm_item_exists($custID, $custitemID)) {
+		if ($cxm->xref_exists($custID, $custitemID)) {
 			if ($session->response_xref && $session->response_xref->has_success()) {
 				$session->redirect($page->cxm_customerURL($custID, $session->response_xref->key), $http301 = false);
 			}
@@ -47,7 +47,7 @@
 		if ($input->get->custitemID) {
 			$custitemID = $input->get->text('custitemID');
 			$page->title = "CXM: $custID Item $custitemID";
-			$item = $cxm->get_create_cxm_item($custID, $custitemID);
+			$item = $cxm->get_create_xref($custID, $custitemID);
 
 			if (!$item->isNew()) {
 				/**
@@ -75,7 +75,7 @@
 
 			$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;
 			$page->searchitemsURL     = $pages->get('pw_template=itm-search')->url;
-			$page->body .= $config->twig->render('items/cxm/item/form.twig', ['page' => $page, 'item' => $item, 'cxm' => $cxm, 'qnotes' => $qnotes]);
+			$page->body .= $config->twig->render('items/cxm/item/form/display.twig', ['page' => $page, 'item' => $item, 'cxm' => $cxm, 'qnotes' => $qnotes]);
 
 			if (!$item->isNew()) {
 				$qnotes = $modules->get('QnotesItemCxm');
@@ -87,13 +87,22 @@
 
 			$page->js   .= $config->twig->render('items/cxm/item/form/js.twig', ['page' => $page, 'item' => $item, 'cxm' => $cxm, 'url_validate' => $pages->get('pw_template=cxm-validate')->httpUrl]);
 		} else {
+			$cxm->recordlocker->remove_lock();
 			$page->headline = "CXM: Customer $customer->name";
 			$filter_cxm->filter_input($input);
+			$q = $values->q ? $values->text('q') : '';
+
+			if ($values->q) {
+				$page->headline = "CXM: Search '$q' for Customer $customer->name";
+				$filter_cxm->search($values->text('q'));
+			}
 			$filter_cxm->apply_sortby($page);
+
 
 			$items = $filter_cxm->query->paginate($input->pageNum, $session->display);
 			$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;
 			$page->body .= $config->twig->render('items/cxm/cxm-links.twig', ['page' => $page]);
+			$page->body .= $config->twig->render('items/cxm/search/item/customer/form.twig', ['page' => $page, 'q' => $q, 'custID' => $custID, 'q' => $q]);
 			$page->body .= $config->twig->render('items/cxm/item-list-header.twig', ['page' => $page, 'heading' => $items->getNbResults() . " CXM Items for $customer->name"]);
 			$page->body .= $config->twig->render('items/cxm/item-list.twig', ['page' => $page, 'cxm' => $cxm, 'response' => $session->response_xref, 'items' => $items, 'custID' => $custID, 'recordlocker' => $cxm->recordlocker, 'db' => $db_dpluso]);
 			$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
@@ -117,7 +126,7 @@
 		$filter = $modules->get('FilterCustomers');
 		$filter->init_query($user);
 		$filter->custid($cxm->custids());
-		$filter->filter_search($q);
+		$filter->search($q);
 		$filter->apply_sortby($page);
 		$query = $filter->get_query();
 		$customers = $query->paginate($input->pageNum, $session->display);
@@ -125,7 +134,8 @@
 		$page->searchURL = $page->url;
 		$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;
 		$page->body .= $config->twig->render('items/cxm/search/customer/results.twig', ['page' => $page, 'customers' => $customers]);
-		$page->js   .= $config->twig->render('items/cxm/list/js.twig', ['page' => $page]);
+		$page->body .= $config->twig->render('items/cxm/new-cxm-modal.twig', ['page' => $page]);
+		$page->js   .= $config->twig->render('items/cxm/search/customer/js.twig', ['page' => $page]);
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $customers->getNbResults()]);
 	}
 	$session->remove('response_xref');

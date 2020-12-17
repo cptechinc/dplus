@@ -34,22 +34,24 @@
 			case 'validate-vendor-itemid':
 				$vendorID     = $values->text('vendorID');
 				$vendoritemID = $values->text('vendoritemID');
+				$itemID = $values->text('itemID');
 				$returntype   = $values->return ? $values->text('return') : 'jqueryvalidate';
 
-				if ($vxm->vxm_item_exists($vendorID, $vendoritemID)) {
+				if ($vxm->xref_exists($vendorID, $vendoritemID, $itemID)) {
 					$response = true;
 				} else {
-					$response = ($returntype == 'bool') ? false : "$vendoritemID from $vendorID was not found in the Vendor X-ref";
+					$response = ($returntype == 'bool') ? false : "$vendoritemID from $vendorID for $itemID was not found in the Vendor X-ref";
 				}
 				break;
 			case 'validate-vendor-itemid-new':
 				$vendorID     = $values->text('vendorID');
 				$vendoritemID = $values->text('vendoritemID');
+				$itemID       = $values->text('itemID');
 
-				if (!$vxm->vxm_item_exists($vendorID, $vendoritemID)) {
+				if (!$vxm->xref_exists($vendorID, $vendoritemID, $itemID)) {
 					$response = true;
 				} else {
-					$response = "$vendoritemID from $vendorID already exists";
+					$response = "$vendoritemID from $vendorID for $itemID already exists";
 				}
 				break;
 			case 'validate-primary-poordercode': // Returns if VXM Item can be used as Primary

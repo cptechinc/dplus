@@ -30,6 +30,10 @@ class DpagesMap extends Dpages implements Module {
 			'name'   => 'ap-code-table-aoptm',
 			'fields' => array()
 		),
+		'mxrfe' => array(
+			'name'   => 'mxrfe',
+			'fields' => array()
+		),
 	);
 
 	const PAGES = array(
@@ -94,6 +98,15 @@ class DpagesMap extends Dpages implements Module {
 			'parent'         => '/map/apmain/',
 			'dplus_function' => 'aoptm'
 		),
+		'mxrfe' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'mxrfe',
+			'name'           => 'mxrfe',
+			'title'          => 'Mnfr / Competitor Item X-ref',
+			'summary'        => 'View / Edit Manufacturer / Competitor X-ref',
+			'parent'         => '/map/apmain/',
+			'dplus_function' => 'mxrfe'
+		),
 	);
 
 /* =============================================================
@@ -105,11 +118,11 @@ class DpagesMap extends Dpages implements Module {
 	 * @return string
 	 */
 	public function get_vxm_vendorURL($vendorID, $focus = '') {
-		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
-		$url->query->set('vendorID', $vendorID);
 		if ($focus) {
 			return $this->get_vxm_vendor_focusURL($vendorID, $focus);
 		}
+		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
+		$url->query->set('vendorID', $vendorID);
 		return $url->getUrl();
 	}
 
@@ -133,13 +146,36 @@ class DpagesMap extends Dpages implements Module {
 		}
 
 		$vxm = $this->wire('modules')->get('XrefVxm');
-		$item = $vxm->get_vxm_item_recordlocker_key($focus);
+		$item = $vxm->xref_by_recordlocker_key($focus);
 
 		if ($item) {
 			$filter = $this->wire('modules')->get('FilterXrefItemVxm');
 			$filter->vendorid($vendorID);
 			$position = $filter->position($item);
-			$pagenbr = floor($filter->query->count() / $this->wire('session')->display);
+			$pagenbr = ceil($position / $this->wire('session')->display);
+			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
+		}
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL for VXM and add focus if provided
+	 * @param  string $vendorID  Vendor ID to highlight / focus
+	 * @return string
+	 */
+	public function get_vxmURL($vendorID = '') {
+		$page = $this->wire('pages')->get('pw_template=vxm');
+		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
+		$vxm = $this->wire('modules')->get('XrefVxm');
+		$filter = $this->wire('modules')->get('FilterVendors');
+		$filter->init_query($this->wire('user'));
+
+		if ($filter->exists($vendorID)) {
+			$url->query->set('focus', $vendorID);
+			$filter->vendorid($vxm->vendorids());
+			$position = $filter->position($vendorID);
+			$pagenbr = ceil($position / ($this->wire('session')->display - 1));
+			$url->query->set('pos', $position);
 			$url->query->set('pagenbr', $pagenbr);
 			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		}
@@ -150,9 +186,10 @@ class DpagesMap extends Dpages implements Module {
 	 * Return URL for VXM Item
 	 * @param  string $vendorID     Vendor ID
 	 * @param  string $vendoritemID Vendor Item ID
+	 * @param  string $itemID       Item ID
 	 * @return string
 	 */
-	public function get_vxm_itemURL($vendorID, $vendoritemID) {
+	public function get_vxm_itemURL($vendorID, $vendoritemID, $itemID) {
 		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
 
 		if ($vendorID) {
@@ -160,6 +197,7 @@ class DpagesMap extends Dpages implements Module {
 		}
 
 		$url->query->set('vendoritemID', $vendoritemID);
+		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
 
@@ -177,21 +215,17 @@ class DpagesMap extends Dpages implements Module {
 
 	/**
 	 * Return URL to Delete VXM Item
-	 * @param  string  $itemID       Item ID
 	 * @param  string  $vendorID     Vendor ID
 	 * @param  string  $vendoritemID Vendor's Item ID
+	 * @param  string  $itemID       Item ID
 	 * @return string
 	 */
-	public function get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID) {
+	public function get_vxm_item_deleteURL($vendorID, $vendoritemID, $itemID) {
 		$url = new Url($this->wire('pages')->get('pw_template=vxm')->url);
-		$url->query->set('action', 'remove-vxm-item');
-		$url->query->set('itemID', $itemID);
-
-		if ($vendorID) {
-			$url->query->set('vendorID', $vendorID);
-		}
-
+		$url->query->set('action', 'delete-vxm-item');
+		$url->query->set('vendorID', $vendorID);
 		$url->query->set('vendoritemID', $vendoritemID);
+		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
 
@@ -270,11 +304,18 @@ class DpagesMap extends Dpages implements Module {
 	}
 
 	public function init() {
+		$this->addHook("Page(pw_template=vxm)::vxmURL", function($event) {
+			$p = $event->object;
+			$vendorID = $event->arguments(0); // To focus on
+			$event->return = $this->get_vxmURL($vendorID);
+		});
+
 		$this->addHook("Page(pw_template=vxm)::vxm_itemURL", function($event) {
 			$p = $event->object;
 			$vendorID = $event->arguments(0);
 			$vendoritemID = $event->arguments(1);
-			$event->return = $this->get_vxm_itemURL($vendorID, $vendoritemID);
+			$itemID = $event->arguments(2);
+			$event->return = $this->get_vxm_itemURL($vendorID, $vendoritemID, $itemID);
 		});
 
 		$this->addHook("Page(pw_template=vxm)::vxm_itemidURL", function($event) {
@@ -306,18 +347,17 @@ class DpagesMap extends Dpages implements Module {
 
 		$this->addHook('Page(pw_template=vxm)::vxm_item_deleteURL', function($event) {
 			$p = $event->object;
-			$itemID = $event->arguments(0);
-			$vendorID = $event->arguments(1);
-			$vendoritemID = $event->arguments(2);
-			$event->return = $this->get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID);
+			$vendorID = $event->arguments(0);
+			$vendoritemID = $event->arguments(1);
+			$itemID = $event->arguments(2);
+			$event->return = $this->get_vxm_item_deleteURL($vendorID, $vendoritemID, $itemID);
 		});
 
 		$this->addHook('Page(pw_template=vxm)::vxm_item_exitURL', function($event) {
 			$p = $event->object;
 			$item = $event->arguments(0);
-			$vendorID = $item->vendorid;
-			$vendoritemID = $item->vendoritemid;
-			$event->return = $this->get_vxm_vendorURL($vendorID, "$vendorID-$vendoritemID");
+			$vxm = $this->wire('modules')->get('XrefVxm');
+			$event->return = $this->get_vxm_vendorURL($item->vendorid, $vxm->get_recordlocker_key($item));
 		});
 
 		// Code Tables

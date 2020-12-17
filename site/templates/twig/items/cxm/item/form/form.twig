@@ -1,0 +1,37 @@
+<form action="{{ page.fullURL.getURL() }}" method="POST" id="cxm-item-form">
+	<input type="hidden" name="action" value="update-cxm">
+	<input type="hidden" name="original_custitemID" value="{{ item.custitemID }}">
+
+	<div class="row">
+		<div class="col-sm-6">
+			{% include 'items/cxm/item/form/key.twig' %}
+			{% include 'items/cxm/item/form/details.twig' %}
+		</div>
+		<div class="col-sm-6">
+			{% include 'items/cxm/item/form/header.twig' %}
+			{% include 'items/cxm/item/form/packaging.twig' %}
+		</div>
+	</div>
+	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the Item is
+			1. Locked for editing by the User
+			2. Is a new Item
+			NOTE: Only show delete if item already exists.
+		#}
+		{% if cxm.recordlocker.function_locked_by_user(cxm.get_recordlocker_key(item)) or item.isNew() %}
+			<button type="submit" class="btn btn-success">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+
+			{% if item.isNew() == false %}
+				<a href="{{ page.cxm_item_deleteURL(item.itemid, item.custid, item.custitemid) }}" class="btn btn-danger delete_button">
+					<i class="fa fa-trash" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+		<a href="{{ page.cxm_item_exitURL(item) }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
+	</div>
+</form>

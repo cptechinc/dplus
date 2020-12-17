@@ -9,7 +9,7 @@
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$code = $values->text('action') == 'delete-upcx' ? '' : $values->text('upc');
-		$session->redirect($page->upcURL($code));
+		$session->redirect($page->upcURL($code). $http301 = false);
 	}
 
 	if ($session->response_xref) {
@@ -18,25 +18,16 @@
 	}
 
 	$item = $itm->get_item($itemID);
+
 	if ($input->get->upc) {
 		$code = $input->get->text('upc');
 
-		if ($upcx->upc_exists($code)) {
-			$upc = $upcx->get_upc($code);
-			$page->title = "ITM: $itemID UPC $code";
-		} else {
-			$upc = new ItemXrefUpc();
-
-			if ($input->get->itemID) {
-				if ($validate->itemid($itemID)) {
-					$page->title = "Adding UPC X-ref for $itemID";
-					$upc->setItemid($itemID);
-				} else {
-					$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID $itemID not found in the Item Master"]);
-					$page->body .= $html->div('class=mb-3');
-				}
-			}
+		if ($upcx->xref_itemid_matches($code, $itemID) === false) {
+			$session->redirect($page->upcURL(). $http301 = false);
 		}
+
+		$upc = $upcx->get_create_xref($code);
+		$page->title = "ITM: $itemID UPC $code";
 
 		if (!$upc->isNew()) {
 			/**

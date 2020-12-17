@@ -9,18 +9,22 @@
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
-			<th class="pt-3 pb-3 align-middle">Their Item ID</th>
+			<th class="pt-3 pb-3 align-middle">
+				<a href="{{ page.get_sortURL('custitemid') }}" class="link">Their Item ID</a>
+			</th>
 			<th class="pt-3 pb-3 align-middle">Description</th>
-			<th class="pt-3 pb-3 align-middle">Our Item ID</th>
+			<th class="pt-3 pb-3 align-middle">
+				<a href="{{ page.get_sortURL('itemid') }}" class="link">Our Item ID</a>
+			</th>
 			<th class="pt-3 pb-3 align-middle">Description</th>
 			<th class="pt-3 pb-3 text-center">
 				{% if page.has('custID') and page.custID %}
-					<a href="{{ page.cxm_item_newURL(page.custID) }}" class="btn btn-secondary">
-						<i class="fa fa-plus" aria-hidden="true"></i> Add New
+					<a href="{{ page.cxm_item_newURL(page.custID) }}" class="btn btn-light">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add Item
 					</a>
 				{% else %}
-					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Choose Customer to Add CXM" aria-label="Choose Customer to Add CXM" data-custid="{{ page.has('custID') ? page.custID : '' }}" data-search="customers">
-						<i class="fa fa-plus" aria-hidden="true"></i> Add New
+					<button type="button" class="btn btn-light" data-toggle="modal" data-target="#ajax-modal" title="Choose Customer to Add CXM" aria-label="Choose Customer to Add CXM" data-custid="{{ page.has('custID') ? page.custID : '' }}" data-search="customers">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add Item
 					</button>
 				{% endif %}
 			</th>
@@ -31,7 +35,8 @@
 			{% for item in items %}
 				{% set class = cxm.get_recordlocker_key(item) == page.focus ? 'highlight' : '' %}
 				{% set class = (response.key == cxm.get_recordlocker_key(item) and response.has_success()) ? 'bg-success text-white' : class %}
-				<tr class="{{ class }}" data-cxm="{{ cxm.get_recordlocker_key(item) }}">
+
+				<tr class="{{ class }} small" data-cxm="{{ cxm.get_recordlocker_key(item) }}">
 					<td>{{ item.custitemID }}</td>
 					<td>{{ item.description }}</td>
 					<td>{{ item.itemID }}</td>
@@ -41,7 +46,8 @@
 							<a href="{{ page.cxm_itemURL(item.custID, item.custitemID) }}" class="btn btn-warning btn-sm">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
-							<a href="{{ page.cxm_item_deleteURL(item.itemid, item.custid, item.custitemid) }}" class="btn btn-danger btn-sm remove-cxm-item">
+							&nbsp; &nbsp;
+							<a href="{{ page.cxm_item_deleteURL(item.itemid, item.custid, item.custitemid) }}" class="btn btn-danger btn-sm delete_button">
 								<i class="fa fa-trash" aria-hidden="true"></i> Delete
 							</a>
 						{% else %}

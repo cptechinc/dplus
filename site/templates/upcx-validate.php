@@ -24,7 +24,7 @@
 				$itemID = $input->get->text('itemID');
 
 				if ($upcx->upc_exists($code)) {
-					$upc = $upcx->get_upc($code);
+					$upc = $upcx->xref($code);
 
 					if ($upc->itemid == $itemID) {
 						$response = true;
@@ -40,8 +40,8 @@
 				$itemID = $input->get->text('itemID');
 
 				// Validate that there is a primary UPC
-				if ($upcx->upc_primary_exists($itemID)) {
-					$upc = $upcx->get_primary_upc_itemid($itemID);
+				if ($upcx->xref_primary_exists_for_itemid($itemID)) {
+					$upc = $upcx->xref_primary_by_itemid($itemID);
 
 					if ($upc->upc == $code) {
 						$response = true;
@@ -57,7 +57,7 @@
 
 				if ($validate->itemid($itemID)) {
 					$item = ItemMasterItemQuery::create()->findOneByItemid($itemID);
-					$primaryupc = $upcx->upc_primary_exists($itemID) ? $upcx->get_primary_upc_itemid($itemID)->upc : false;
+					$primaryupc = $upcx->upc_primary_exists($itemID) ? $upcx->xref_primary_by_itemid($itemID)->upc : false;
 					$response = array(
 						'itemid' => $itemID	,
 						'description'  => $item->description,

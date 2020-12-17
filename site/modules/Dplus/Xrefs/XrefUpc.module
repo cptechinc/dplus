@@ -34,31 +34,11 @@ class XrefUpc extends WireData implements Module {
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return ItemXrefUpc[]
-	 * @return ItemXrefUpc[]|ObjectCollection
-	 */
-	public function get_upcs() {
-		$q = $this->query();
-		return $q->find();
-	}
-
-	/**
-	 * Return ItemXrefUpc[] for Item ID
-	 * @param  string $itemID  Our Item ID
-	 * @return ItemXrefUpc[]|ObjectCollection
-	 */
-	public function get_upcs_itemID($itemID) {
-		$q = $this->query();
-		$q->filterByItemid($itemID);
-		return $q->find();
-	}
-
-	/**
 	 * Return ItemXrefUpc
 	 * @param  string $upc UPC Code
 	 * @return ItemXrefUpc
 	 */
-	public function get_upc($upc) {
+	public function xref($upc) {
 		$q = $this->query();
 		$q->filterByUpc($upc);
 		return $q->findOne();
@@ -69,7 +49,7 @@ class XrefUpc extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return ItemXrefUpc
 	 */
-	public function get_primary_upc_itemid($itemID) {
+	public function xref_primary_by_itemid($itemID) {
 		$q = $this->query();
 		$q->filterByItemid($itemID);
 		$q->filterByPrimary(ItemXrefUpc::PRIMARY_TRUE);
@@ -81,7 +61,7 @@ class XrefUpc extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return bool
 	 */
-	public function primary_upc_itemid_exists($itemID) {
+	public function xref_primary_by_itemid_exists($itemID) {
 		$q = $this->query();
 		$q->filterByItemid($itemID);
 		$q->filterByPrimary(ItemXrefUpc::PRIMARY_TRUE);
@@ -93,7 +73,7 @@ class XrefUpc extends WireData implements Module {
 	 * @param  string $upc UPC Code
 	 * @return bool
 	 */
-	public function upc_exists($upc) {
+	public function xref_exists($upc) {
 		$q = $this->query();
 		$q->filterByUpc($upc);
 		return boolval($q->count());
@@ -105,7 +85,7 @@ class XrefUpc extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return bool
 	 */
-	public function upc_isfor_itemID($upc, $itemID) {
+	public function xref_itemid_matches($upc, $itemID) {
 		$q = $this->query();
 		$q->filterByUpc($upc);
 		$q->filterByItemid($itemID);
@@ -117,7 +97,7 @@ class XrefUpc extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return bool
 	 */
-	public function upc_primary_exists($itemID) {
+	public function xref_primary_exists_for_itemid($itemID) {
 		$q = $this->query();
 		$q->filterByItemid($itemID);
 		$q->filterByPrimary(ItemXrefUpc::PRIMARY_TRUE);
@@ -129,10 +109,11 @@ class XrefUpc extends WireData implements Module {
 	 * @param  string  $upc    UPC Code
 	 * @return ItemXrefUpc
 	 */
-	public function get_create_upc($upc) {
-		if ($this->upc_exists($upc)) {
-			$record = $this->get_upc($upc);
+	public function get_create_xref($upc) {
+		if ($this->xref_exists($upc)) {
+			$record = $this->xref($upc);
 		} else {
+			$upc = $upc == 'new' ? '' : $upc;
 			$record = new ItemXrefUpc();
 			$record->setUpc($upc);
 			$record->setQty(1);
@@ -179,13 +160,13 @@ class XrefUpc extends WireData implements Module {
 		$values = $input->$rm;
 		$upc = $values->text('upc');
 
-		if ($this->upc_exists($upc)) {
+		if ($this->xref_exists($upc)) {
 			if (!$this->lockrecord($upc)) {
 				$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($upc);
 				$this->wire('session')->response_xref = XrefResponse::response_error($upc, $message);
 				return false;
 			}
-			$record = $this->get_upc($upc);
+			$record = $this->xref($upc);
 			$record->delete();
 			$this->wire('session')->response_xref = $this->save_and_respond($record);
 			return $this->wire('session')->response_xref->has_success();
@@ -202,7 +183,7 @@ class XrefUpc extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$upc = $values->text('upc');
-		$record = $this->get_upc($upc);
+		$record = $this->xref($upc);
 
 		if (!$this->lockrecord($upc) && !$record->isNew()) {
 			$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($upc);

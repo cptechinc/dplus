@@ -87,7 +87,7 @@
 
 		if (!$input->get->scan) {
 			$page->body .= $html->div('class=mb-3');
-			$page->body .= $config->twig->render('warehouse/picking/picking-actions.twig', ['page' => $page]);
+			$page->body .= $config->twig->render('warehouse/picking/provalley/picking-actions.twig', ['page' => $page]);
 		}
 
 		if ($session->removefromline) {

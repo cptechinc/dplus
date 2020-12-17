@@ -75,6 +75,8 @@ class QnotesItemVxmInternal extends WireData implements Module {
 	public function get_notes_summarized($itemID, $vendorID) {
 		$q = $this->get_query_filter_itemvendor($itemID, $vendorID);
 		$q->filterBySequence(1);
+		$q->orderByDate('DESC');
+		$q->orderByTime('DESC');
 		return $q->find();
 	}
 

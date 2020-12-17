@@ -6,7 +6,7 @@
 {% set class_input = class_input ? class_input : 'form-control form-control-sm' %}
 {% set class_add = class_add ? class_add|join2(' ')|trim : '' %}
 {% set class = class_input ~ ' ' ~ class_add %}
-{% set value = value ? value : '' %}
+{% set value = value|length ? value : '' %}
 {% set placeholder = placeholder ? placeholder : '' %}
 {% set disabled = disabled ? disabled : false %}
 {% set attributes_extra = attributes ? attributes|htmlattributes : '' %}
@@ -20,7 +20,6 @@
 		'value': value,
 		'placeholder': placeholder,
 	}
-
 %}
 {%
 	set optional = {

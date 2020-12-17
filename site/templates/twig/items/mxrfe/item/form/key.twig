@@ -1,0 +1,75 @@
+{% if xref.vendorid == '' %}
+	<div class="row form-group">
+		<div class="col-sm-3">
+			<label for="vendorID">Vendor ID</label>
+		</div>
+		<div class="col-sm-8">
+			{% include 'util/form/input-with-modal-lookup.twig' with {
+					'name': 'vendorID', 'value': xref.vendorid,
+					'attributes': {
+						'readonly': xref.vendorid ? true : false,
+						'tabindex': xref.vendorid ? '-1' : ''
+					},
+					'modaltarget': '#ajax-modal',
+					'modaldescription': 'Search for / Choose Vendor',
+					'attributes_button': {
+						'data-search': 'vendor'
+					}
+				}
+			%}
+		</div>
+	</div>
+{% else %}
+	<input type="hidden" name="vendorID" value="{{ xref.vendorid }}">
+
+	{% if (page.pw_template == 'itm-xrefs-vxm') %}
+		<div class="row form-group">
+			<div class="col-sm-4">
+				<label for="vendorID">Vendor ID</label>
+			</div>
+			<div class="col-sm-8">
+				<p class="form-control-plaintext form-control-sm">{{ xref.vendorid }} - {{ xref.vendor.name }}</p>
+			</div>
+		</div>
+	{% endif %}
+{% endif %}
+
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="vendoritemID"><b>Vendor Item ID</b></label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/form/input.twig' with {
+				'name': 'vendoritemID', 'value': xref.vendoritemid,
+				'attributes': {
+					'data-vendoritemid': xref.vendoritemid,
+					'data-new': xref.isNew() ? 'true' : 'false',
+					'readonly': xref.vendoritemid ? true : false,
+					'tabindex': xref.vendoritemid ? '-1' : '',
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<b>Our Item ID</b>
+	</div>
+	<div class="col-sm-8 item-col">
+		{% include 'util/form/input-with-modal-lookup.twig' with {
+				'name': 'itemID', 'value': xref.itemid,
+				'attributes': {
+					'readonly': xref.itemid ? true : false,
+					'tabindex': xref.itemid ? '-1' : '',
+				},
+				'modaltarget': '#ajax-modal',
+				'modaldescription': 'Search for / Choose Item',
+				'attributes_button': {
+					'data-search': 'item'
+				}
+			}
+		%}
+		<small class="form-text text-muted description">{{ xref.imitem.description }}</small>
+		<small class="form-text text-muted description2">{{ xref.imitem.description2 }}</small>
+	</div>
+</div>

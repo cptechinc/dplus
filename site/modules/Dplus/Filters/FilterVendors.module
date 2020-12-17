@@ -5,6 +5,10 @@ use VendorQuery, Vendor;
 use Propel\Runtime\ActiveQuery\Criteria;
 
 class FilterVendors extends WireData implements Module {
+	public function __construct() {
+		$this->query = VendorQuery::create();
+	}
+
 	/**
 	 * Returns Query
 	 * @return VendorQuery
@@ -24,21 +28,24 @@ class FilterVendors extends WireData implements Module {
 		$this->query = VendorQuery::create();
 	}
 
+/* =============================================================
+	Base Filter Functions
+============================================================= */
 	/**
 	 * Searches the Vendor Table to find vendors that match the query provided
-	 *
 	 * @param  string $q Search Query
 	 * @return void
 	 */
-	public function filter_search($q) {
-		$columns = array();
-		$columns[] = Vendor::get_aliasproperty('vendorid');
-		$columns[] = Vendor::get_aliasproperty('name');
-		$columns[] = Vendor::get_aliasproperty('address');
-		$columns[] = Vendor::get_aliasproperty('address2');
-		$columns[] = Vendor::get_aliasproperty('city');
-		$columns[] = Vendor::get_aliasproperty('state');
-		$columns[] = Vendor::get_aliasproperty('zip');
+	public function search($q) {
+		$columns = [
+			Vendor::get_aliasproperty('vendorid'),
+			Vendor::get_aliasproperty('name'),
+			Vendor::get_aliasproperty('address'),
+			Vendor::get_aliasproperty('address2'),
+			Vendor::get_aliasproperty('city'),
+			Vendor::get_aliasproperty('state'),
+			Vendor::get_aliasproperty('zip'),
+		];
 		$this->query->search_filter($columns, strtoupper($q));
 	}
 
@@ -52,9 +59,11 @@ class FilterVendors extends WireData implements Module {
 	}
 
 
+/* =============================================================
+	Misc Query Functions
+============================================================= */
 	/**
 	 * Adds the Sort By to the query
-	 *
 	 * @param  Page   $page
 	 * @return void
 	 */
@@ -66,6 +75,39 @@ class FilterVendors extends WireData implements Module {
 			$tablecolumn = Vendor::get_aliasproperty($orderbycolumn);
 			$this->query->sortBy($tablecolumn, $sort);
 		}
+	}
+
+	/**
+	 * Return Position of Vendor in Results
+	 * @param  Vendor $vendor Vendor
+	 * @return int
+	 */
+	public function position($vendorID) {
+		if (!$this->exists($vendorID)) {
+			return 0;
+		}
+		$vendor = $this->get_vendor($vendorID);
+		$vendors = $this->query->find();
+
+		return $vendors->search($vendor);
+	}
+
+	/**
+	 * Return Vendor
+	 * @param  string $vendorID Vendor ID
+	 * @return Vendor
+	 */
+	public function get_vendor($vendorID) {
+		return VendorQuery::create()->findOneByVendorid($vendorID);
+	}
+
+	/**
+	 * Return if Vendor exists
+	 * @param  string $vendorID Vendor ID
+	 * @return bool
+	 */
+	public function exists($vendorID) {
+		return boolval(VendorQuery::create()->filterByVendorid($vendorID)->count());
 	}
 
 /* =============================================================

@@ -19,8 +19,23 @@ $(function() {
 /* =============================================================
 	Event Functions
 ============================================================= */
-	$("body").on("change", "#price_customer", function(e) {
+	$("body").on("change", "input[name=price_customer]", function(e) {
+		var input = $(this);
+		var price = parseInt(input.val());
+		input.val(price.toFixed({{ cxm.field_attribute('price_customer', 'precision') }}));
 		calculate_peruom();
+	});
+
+	$("body").on("change", "input[name=price_retail]", function(e) {
+		var input = $(this);
+		var price = parseInt(input.val());
+		input.val(price.toFixed({{ cxm.field_attribute('price_retail', 'precision') }}));
+	});
+
+	$("body").on("change", "input[name=conversion]", function(e) {
+		var input = $(this);
+		var price = parseInt(input.val());
+		input.val(price.toFixed({{ cxm.field_attribute('conversion', 'precision') }}));
 	});
 
 	$("body").on("change", "#uom_pricing", function(e) {
@@ -30,12 +45,15 @@ $(function() {
 
 		if (uom.length) {
 			$('#price_uom').removeAttr('readonly');
+			$('#price_uom').removeAttr('tabindex');
 		} else {
 			$('#price_uom').attr('readonly', '');
+			$('#price_uom').attr('tabindex', '-1');
 		}
 	});
 
 	$("body").on("change", "#price_uom", function(e) {
+
 	});
 
 	$("body").on("change", "input[name=itemID]", function(e) {
@@ -51,22 +69,12 @@ $(function() {
 		});
 	});
 
-	$("body").on("click", "a.remove-cxm-item", function(e) {
-		e.preventDefault();
-		var button = $(this);
-
-		swal2.fire({
-			title: "Remove CXM Item?",
-			text: "Are you sure you want to remove this CXM Item?",
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonText: 'Yes!'
-		}).then(function (result) {
-			if (result.value) {
-				window.location.href = button.attr('href');
-			}
-		});
+	$("body").on("change", "input[name=convert]", function(e) {
+		var input = $(this);
+		var conversion = parseFloat(input.val());
+		input.val(conversion.toFixed({{ cxm.field_attribute('conversion', 'precision') }}));
 	});
+
 
 /* =============================================================
 	Unsaved Fields Alert
@@ -319,6 +327,6 @@ $(function() {
 		var qty_percase = {{ item.item.qty_percase ? item.item.qty_percase : 0 }};
 		var conversion = select_uom_pricing.find('option:selected').data('conversion');
 		var custprice = peruom * qty_percase * conversion;
-		input_price_customer.val(custprice.toFixed(2));
+		input_price_customer.val(custprice.toFixed(cxm.field_attribute('price_customer', 'precision')));
 	}
 });

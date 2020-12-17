@@ -1,0 +1,11 @@
+<div>
+	{% include 'util/form/search-form.twig' with {
+			'formid': 'vendor-search-form', 'url': page.url,
+			'label': 'Search Manufacturers',
+			'name': 'q', 'id': 'vendorq', 'value': '', 'placeholder': 'Manufacturer ID, Name, City, State'
+		}
+	%}
+</div>
+<div>
+	{% include 'items/mxrfe/search/vendor/list.twig' %}
+</div>

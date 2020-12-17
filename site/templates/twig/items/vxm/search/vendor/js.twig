@@ -1,0 +1,83 @@
+$(function() {
+	{% if page.focus and page.focus != 'new' %}
+		$('tr[data-vendorid="{{ page.focus }}"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('tr[data-vendorid="{{ page.focus }}"]').offset().top,},700,'linear');
+	{% endif %}
+
+/* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	var modal_ajax = $('#ajax-modal');
+	modal_ajax.on('show.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var url = button.data('lookupurl');
+		modal.attr('data-input', button.data('input'));
+
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.vendor-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var vendorID = button.data('vendorid');
+		var modal = button.closest('.modal');
+		$(modal.attr('data-input')).val(vendorID);
+		modal.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+/* =============================================================
+	New CXM Modal Functions
+============================================================= */
+	var modal_new = $('#new-xref-modal');
+
+	modal_new.on('shown.bs.modal', function (event) {
+		var modal = $(this);
+		modal.find('input[name=vendorID]').focus();
+	});
+
+	var validator = $('#new-xref-form').validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			vendorID: {
+				required: true,
+				remote: {
+					url: '{{ page.child('pw_template=vxm-validate').httpUrl }}',
+					type: "get",
+					data: {
+						action: 'validate-vendorid'
+					}
+				}
+			},
+		},
+		messages: {
+			vendorID: "Use a valid Vendor ID",
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+});

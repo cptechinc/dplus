@@ -17,15 +17,19 @@
 
 	{% if config_so.is_request_program() %}
 		<div class="form-group">
-		    <label for="sales_program">Sales Program</label>
-		    {% include 'util/select.twig' with {'name': 'sales_program', 'hideblankoption' : 'true', 'id': 'sales_program', 'options': {'Y': 'Yes', 'N': 'No'}} %}
-	    </div>
+			<label for="sales_program">Sales Program</label>
+			{% include 'util/select.twig' with {'name': 'sales_program', 'hideblankoption' : 'true', 'id': 'sales_program', 'options': {'Y': 'Yes', 'N': 'No'}} %}
+		</div>
 	{% endif %}
 
 	<div class="modal-footer">
-		<button type="submit" class="btn btn-success form_button">
-			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-		</button>
-		<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+		<div class="d-flex justify-content-between align-items-center">
+			<button type="submit" class="btn btn-success form_button">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			<button type="button" class="btn btn-warning" data-dismiss="modal">
+				<i class="fa fa-times" aria-hidden="true"></i> Close
+			</button>
+		</div>
 	</div>
 </form>

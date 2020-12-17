@@ -38,7 +38,7 @@
 				if ($input->get->q) {
 					$q = strtoupper($input->get->text('q'));
 					$page->headline = "EPO: Searching for '$q'";
-					$filter_vendors->filter_search($q);
+					$filter_vendors->search($q);
 				}
 
 				$filter_vendors->apply_sortby($page);

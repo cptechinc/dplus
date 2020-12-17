@@ -59,9 +59,9 @@
 			/**
 			 * Returns VI Vendor Page URL
 			 */
-			$this->addHook('Page::vendorURL', function($event) {
-				$event->return = $this->get_vendorURL();
-			});
+			// $this->addHook('Page::vendorURL', function($event) {
+			// 	$event->return = $this->get_vendorURL();
+			// });
 
 			/**
 			 * Returns VI Vendor Shipto Page URL

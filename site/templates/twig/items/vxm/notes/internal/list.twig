@@ -12,10 +12,10 @@
 			<div class="col-1">User</div>
 			<div class="col-2">Date</div>
 			<div class="col-1">Time</div>
-			<div class="col-5">Note</div>
+			<div class="col-6">Note</div>
 			<div class="col">
-				<button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#notes-internal-modal" data-date="{{ "now"|convertdate("m/d/Y") }}" data-time="{{ "now"|convertdate("H:i") }}">
-					<i class="fa fa-plus" aria-hidden="true"></i> Add
+				<button type="button" class="btn btn-sm btn-light" data-toggle="modal" data-target="#notes-internal-modal" data-date="{{ "now"|convertdate("m/d/Y") }}" data-time="{{ "now"|convertdate("H:i") }}">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add Note
 				</button>
 			</div>
 		</div>
@@ -26,13 +26,13 @@
 				<div class="col-1">{{ note.userid }}</div>
 				<div class="col-2">{{ note.notedate|convertdate }}</div>
 				<div class="col-1">{{ (note.notedate ~ note.notetime())|convertdate("H:i") }}</div>
-				<div class="col-5">{{ note.note }}</div>
+				<div class="col-6">{{ note.note }}</div>
 				<div class="col">
-					<button type="button" class="btn btn-light" data-toggle="collapse" data-target="#notes-internal-{{ (note.notedate ~ note.notetime())|convertdate("Ymd-Hi") }}" aria-controls="notes-internal-{{ (note.notedate ~ note.notetime())|convertdate("Ymd-Hi") }}">
+					<button type="button" class="btn btn-sm btn-light" data-toggle="collapse" data-target="#notes-internal-{{ (note.notedate ~ note.notetime())|convertdate("Ymd-Hi") }}" aria-controls="notes-internal-{{ (note.notedate ~ note.notetime())|convertdate("Ymd-Hi") }}">
 						<i class="fa fa-eye" aria-hidden="true"></i> Show
 					</button>
 					{% if note.userid == user.loginid %}
-						<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-internal-modal" data-date="{{ note.notedate|convertdate("m/d/Y") }}" data-time="{{ (note.notedate ~ note.notetime())|convertdate("H:i") }}" data-rawnotetime="{{ note.notetime }}">
+						<button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#notes-internal-modal" data-date="{{ note.notedate|convertdate("m/d/Y") }}" data-time="{{ (note.notedate ~ note.notetime())|convertdate("H:i") }}" data-rawnotetime="{{ note.notetime }}">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</button>
 					{% endif %}

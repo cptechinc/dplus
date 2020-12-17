@@ -54,7 +54,9 @@
 				</a>
 			{% endif %}
 		{% endif %}
-		<a href="{{ page.get_codetable_listURL(page.codetable, warehouse.id) }}" class="btn btn-warning">Close</a>
+		<a href="{{ page.get_codetable_listURL(page.codetable, warehouse.id) }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
 	</div>
 </form>
 <hr class="border-top border-primary">

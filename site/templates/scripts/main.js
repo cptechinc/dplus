@@ -158,6 +158,7 @@ $(function() {
 			showCancelButton: true,
 			confirmButtonText: 'Yes',
 			cancelButtonText: 'No',
+			focusCancel: true,
 		}).then((result) => {
 			if (result.value) {
 				window.location.href = link.attr('href');
@@ -177,6 +178,7 @@ $(function() {
 			showCancelButton: true,
 			confirmButtonText: 'Yes',
 			cancelButtonText: 'No',
+			focusCancel: true,
 		}).then((confirm) => {
 			if (confirm.value) {
 				button.closest('form').submit();
@@ -392,5 +394,7 @@ const swal2 = Swal.mixin({
 	},
 	buttonsStyling: false,
 	cancelButtonText: 'No',
-	confirmButtonText: 'Yes'
+	confirmButtonText: 'Yes',
+	focusConfirm: false,
+	focusCancel: true,
 })

@@ -1,10 +1,7 @@
 <div class="mb-3">
-	<button class="btn btn-primary" onclick="window.history.back()">
-		<i class="fa fa-undo" aria-hidden="true"></i> Back
-	</button>
 	&nbsp;
-	<a href="{{ page.url }}" class="btn btn-primary">
-		<i class="fa fa-search" aria-hidden="true"></i> CXM
+	<a href="{{ page.cxmURL(page.custID) }}" class="btn btn-primary">
+		<i class="fa fa-arrows" aria-hidden="true"></i> CXM
 	</a>
 
 	{% if page.has('custitemID') %}

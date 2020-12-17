@@ -7,7 +7,7 @@
 <div id="upcs-filter-div" class="mb-3 {{ input.get.text('filter') is empty and input.get.text('itemID') is empty ? 'collapse' : ''}}">
 	<div class="card">
 		<div class="card-body">
-			<form action="" method="get" class="remove-empty-fields" submit-empty="false">
+			<form action="{{ page.url }}" method="get" class="remove-empty-fields" submit-empty="false">
 				<div class="row">
 					<div class="col-sm-4">
 						<h5>Item ID</h5>

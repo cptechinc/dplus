@@ -1,0 +1,131 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+use ItemXrefManufacturerQuery, ItemXrefManufacturer;
+
+/**
+ * FilterXrefItemMxrfe
+ * Filter for the ItemXrefManufacturer
+ *
+ * @property ItemXrefManufacturerQuery $query
+ */
+class FilterXrefItemMxrfe extends WireData implements Module {
+	public function __construct() {
+		$this->query = ItemXrefManufacturerQuery::create();
+	}
+
+	/**
+	 * Returns Query
+	 * @return ItemXrefManufacturerQuery
+	 */
+	public function get_query() {
+		return $this->query;
+	}
+
+	/**
+	 * Initializes Query
+	 * @return void
+	 */
+	public function init_query() {
+		$this->query = ItemXrefManufacturerQuery::create();
+	}
+
+/* =============================================================
+	Input Filter Functions
+============================================================= */
+	/**
+	 * Applies Filters to the Query
+	 * NOTE:: Filters include itemid
+	 * @param  WireInput $input Input Data
+	 * @return self
+	 */
+	public function filter_input(WireInput $input) {
+		$this->itemid_input($input);
+		return $this;
+	}
+
+	/**
+	 * Filters Query by Item ID
+	 * @param  WireInput $input Input Data
+	 * @return self
+	 */
+	public function itemid_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if ($values->itemID) {
+			$itemID = is_array($values->itemID) ? $values->array('itemID') : $values->text('itemID');
+			$this->itemid($itemID);
+		}
+		return $this;
+	}
+
+/* =============================================================
+	Base Filter Functions
+============================================================= */
+	/**
+	 * Filter Query By Item ID
+	 * @param  string|array $itemID Item ID
+	 * @return self
+	 */
+	public function itemid($itemID) {
+		if ($itemID) {
+			$this->query->filterByItemid($itemID);
+		}
+		return $this;
+	}
+
+	/**
+	 * Filter Query By Vendor ID
+	 * @param  string|array $vendorID Vendor ID
+	 * @return self
+	 */
+	public function vendorid($vendorID) {
+		if ($vendorID) {
+			$this->query->filterByVendorid($vendorID);
+		}
+		return $this;
+	}
+
+/* =============================================================
+	Misc Query Functions
+============================================================= */
+	/**
+	 * Adds the Sort By to the query
+	 * @param  Page   $page
+	 * @return void
+	 */
+	public function apply_sortby(Page $page) {
+		if ($page->has_orderby()) {
+			$orderbycolumn = $page->orderby_column;
+			$sort = $page->orderby_sort;
+			$tablecolumn = ItemXrefManufacturer::get_aliasproperty($orderbycolumn);
+			$this->query->sortBy($tablecolumn, $sort);
+		} else {
+			$this->query->orderByVendoritemid('ASC');
+		}
+	}
+
+	/**
+	 * Return Position of MXRFE x-ref in Results
+	 * @param  ItemXrefManufacturer $xref X-ref
+	 * @return int
+	 */
+	public function position(ItemXrefManufacturer $xref) {
+		$xrefs = $this->query->find();
+		return $xrefs->search($xref);
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Filter X-ref Item X-ref Manufacturer Module',
+			'version' => 101,
+			'summary' => 'Handles X-ref Item Manufacturer Filtering',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

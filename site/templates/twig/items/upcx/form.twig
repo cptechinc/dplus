@@ -125,8 +125,8 @@
 						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 					</button>
 					{% if upc.isNew() == false %}
-						<a href="{{ page.upc_deleteURL(upc.upc)}}" class="btn btn-danger" data-delete="UPC {{ upc.upc }}">
-							<i class="fa fa-trash" aria-hidden="true"></i> Remove
+						<a href="{{ page.upc_deleteURL(upc.upc)}}" class="btn btn-danger delete_button" data-delete="UPC {{ upc.upc }}">
+							<i class="fa fa-trash" aria-hidden="true"></i> Delete
 						</a>
 					{% endif %}
 				{% endif %}

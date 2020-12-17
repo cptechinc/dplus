@@ -41,6 +41,7 @@ class FilterXrefItemVxm extends WireData implements Module {
 	public function filter_input(WireInput $input) {
 		$this->itemid_input($input);
 		$this->vendorid_input($input);
+		$this->vendoritemid_input($input);
 	}
 
 /* =============================================================
@@ -73,6 +74,20 @@ class FilterXrefItemVxm extends WireData implements Module {
 		return $this;
 	}
 
+	/**
+	 * Filters Query by Customer ID
+	 * @param  WireInput $input Input Data
+	 * @return self
+	 */
+	public function vendoritemid_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		if ($values->vendoritemID) {
+			$this->vendoritemid($values->text('vendoritemID'));
+		}
+		return $this;
+	}
+
 /* =============================================================
 	Base Filter Functions
 ============================================================= */
@@ -89,13 +104,25 @@ class FilterXrefItemVxm extends WireData implements Module {
 	}
 
 	/**
-	 * Filters Query by Customer ID
-	 * @param  string|array  Customer ID(s)
+	 * Filters Query by Vendor ID
+	 * @param  string|array  Vendor ID(s)
 	 * @return self
 	 */
 	public function vendorid($vendorID) {
 		if ($vendorID) {
 			$this->query->filterByVendorid($vendorID);
+		}
+		return $this;
+	}
+
+	/**
+	 * Filters Query by Vendor Item ID
+	 * @param  string|array  Vendor Item ID(s)
+	 * @return self
+	 */
+	public function vendoritemid($vendoritemID) {
+		if ($vendoritemID) {
+			$this->query->filterByVendoritemid($vendoritemID);
 		}
 		return $this;
 	}
@@ -134,8 +161,8 @@ class FilterXrefItemVxm extends WireData implements Module {
 	}
 
 	/**
-	 * Return Position of CXM item in Results
-	 * @param  ItemXrefCustomer $item CXM Item
+	 * Return Position of VXM item in Results
+	 * @param  ItemXrefVendor $item VXM Item
 	 * @return int
 	 */
 	public function position(ItemXrefVendor $item) {

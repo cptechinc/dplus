@@ -1,0 +1,75 @@
+{% if item.isNew() and page.has('vendorID') == false %}
+	<div class="row form-group">
+		<div class="col-sm-4">
+			<label for="vendorID">Vendor ID</label>
+		</div>
+		<div class="col-sm-8">
+			{% include 'util/form/input-with-modal-lookup.twig' with {
+					'name': 'vendorID', 'value': item.vendorid,
+					'attributes': {
+						'readonly': item.vendorid ? true : false,
+						'tabindex': item.vendorid ? '-1' : ''
+					},
+					'modaltarget': '#ajax-modal',
+					'modaldescription': 'Search for / Choose Vendor',
+					'attributes_button': {
+						'data-search': 'vendor'
+					}
+				}
+			%}
+		</div>
+	</div>
+{% else %}
+	<input type="hidden" name="vendorID" value="{{ item.vendorid }}">
+
+	{% if (page.pw_template == 'itm-xrefs-vxm') %}
+		<div class="row form-group">
+			<div class="col-sm-4">
+				<label for="vendorID">Vendor ID</label>
+			</div>
+			<div class="col-sm-8">
+				<p class="form-control-plaintext form-control-sm">{{ item.vendorid }} - {{ item.vendor.name }}</p>
+			</div>
+		</div>
+	{% endif %}
+{% endif %}
+
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="vendoritemID"><b>Vendor Item ID</b></label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/form/input.twig' with {
+				'name': 'vendoritemID', 'value': item.vendoritemid,
+				'attributes': {
+					'data-vendoritemid': item.vendoritemid,
+					'data-new': item.isNew() ? 'true' : 'false',
+					'readonly': item.vendoritemid ? true : false,
+					'tabindex': item.vendoritemid ? '-1' : '',
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-4">
+		<b>Our Item ID</b>
+	</div>
+	<div class="col-sm-8 item-col">
+		{% include 'util/form/input-with-modal-lookup.twig' with {
+				'name': 'itemID', 'value': item.ouritemid,
+				'attributes': {
+					'readonly': item.itemid ? true : false,
+					'tabindex': item.itemid ? '-1' : '',
+				},
+				'modaltarget': '#ajax-modal',
+				'modaldescription': 'Search for / Choose Item',
+				'attributes_button': {
+					'data-search': 'item'
+				}
+			}
+		%}
+		<small class="form-text text-muted description">{{ item.imitem.description }}</small>
+		<small class="form-text text-muted description2">{{ item.imitem.description2 }}</small>
+	</div>
+</div>

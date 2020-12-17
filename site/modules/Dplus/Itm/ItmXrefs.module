@@ -52,7 +52,6 @@ class ItmXrefs extends WireData implements Module {
 		$this->wire('session')->response_itm = $response;
 	}
 
-
 	/**
 	 * Takes Input, validates it's for an Item
 	 * Updates Item
@@ -112,7 +111,7 @@ class ItmXrefs extends WireData implements Module {
 		$values = $input->$rm;
 		$itemID = strtoupper($values->text('itemID'));
 
-		if (!$cxm->cxm_shortitem_exists($itemID) ||$cxm->get_cxm_shortitem($itemID)->custitemid != $values->text('cxm_custitemid')) {
+		if (!$cxm->xref_shortitem_exists($itemID) ||$cxm->xref_shortitem($itemID)->custitemid != $values->text('cxm_custitemid')) {
 			$data_cxm = array('action' => 'update-cxm-shortitem', 'itemID' => $itemID, 'custitemid' => $values->text('cxm_custitemid'));
 			$input_cxm = new WireInput();
 			$input_cxm->$rm->setArray($data_cxm);
@@ -195,7 +194,8 @@ class ItmXrefs extends WireData implements Module {
 	 * @return string
 	 */
 	public function get_itm_xrefs_vxm_focusURL($itemID, $focus) {
-		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-vxm")->url);
+		$page = $this->wire('pages')->get("pw_template=itm-xrefs-vxm");
+		$url = new Url($page->url);
 		$url->query->set('itemID', $itemID);
 
 		if ($this->wire('session')->response_xref) {
@@ -207,7 +207,7 @@ class ItmXrefs extends WireData implements Module {
 		}
 
 		$vxm = $this->wire('modules')->get('XrefVxm');
-		$item = $vxm->get_vxm_item_recordlocker_key($focus);
+		$item = $vxm->xref_by_recordlocker_key($focus);
 
 		if ($item) {
 			$filter = $this->wire('modules')->get('FilterXrefItemVxm');
@@ -219,8 +219,6 @@ class ItmXrefs extends WireData implements Module {
 		}
 		return $url->getUrl();
 	}
-
-
 
 	/**
 	 * Return URL to view VXM Item
@@ -262,13 +260,9 @@ class ItmXrefs extends WireData implements Module {
 	 */
 	public function get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID) {
 		$url = new Url($this->wire('pages')->get('pw_template=itm-xrefs-vxm')->url);
-		$url->query->set('action', 'remove-vxm-item');
+		$url->query->set('action', 'delete-vxm-item');
 		$url->query->set('itemID', $itemID);
-
-		if ($vendorID) {
-			$url->query->set('vendorID', $vendorID);
-		}
-
+		$url->query->set('vendorID', $vendorID);
 		$url->query->set('vendoritemID', $vendoritemID);
 		return $url->getUrl();
 	}
@@ -307,14 +301,14 @@ class ItmXrefs extends WireData implements Module {
 		}
 
 		$cxm = $this->wire('modules')->get('XrefCxm');
-		$item = $cxm->get_cxm_item_recordlockerkey($focus);
+		$item = $cxm->xref_by_recordlocker_key($focus);
 
 		if ($item) {
 			$filter = $this->wire('modules')->get('FilterXrefItemCxm');
 			$filter->itemid($itemID);
 			$position = $filter->position($item);
 
-			$pagenbr = floor($filter->query->count() / $this->wire('session')->display);
+			$pagenbr = ceil($position / ($this->wire('session')->display - 1));
 			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		}
 		return $url->getUrl();
@@ -494,7 +488,7 @@ class ItmXrefs extends WireData implements Module {
 			$p = $event->object;
 			$vendorID = $event->arguments(0);
 			$vendoritemID = $event->arguments(1);
-			$itemID = $p->itemID;
+			$itemID = $event->arguments(2);
 			$event->return = $this->get_vxm_itemURL($itemID, $vendorID, $vendoritemID);
 		});
 
@@ -506,9 +500,9 @@ class ItmXrefs extends WireData implements Module {
 
 		$this->addHook("Page(pw_template=$templates)::vxm_item_deleteURL", function($event) {
 			$p = $event->object;
-			$itemID = $event->arguments(0);
-			$vendorID = $event->arguments(1);
-			$vendoritemID = $event->arguments(2);
+			$vendorID = $event->arguments(0);
+			$vendoritemID = $event->arguments(1);
+			$itemID = $event->arguments(2);
 			$event->return = $this->get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID);
 		});
 
@@ -516,7 +510,7 @@ class ItmXrefs extends WireData implements Module {
 			$p = $event->object;
 			$item = $event->arguments(0);
 			$vxm = $this->wire('modules')->get('XrefVxm');
-			$event->return = $this->get_itm_xrefs_vxmURL($itemID, $vxm->get_recordlocker_key($item));
+			$event->return = $this->get_itm_xrefs_vxmURL($item->itemid, $vxm->get_recordlocker_key($item));
 		});
 	}
 

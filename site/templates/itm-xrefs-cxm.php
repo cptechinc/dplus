@@ -8,7 +8,7 @@
 	if ($values->action) {
 		$cxm->process_input($input);
 
-		if ($cxm->cxm_item_exists($custID, $custitemID)) {
+		if ($cxm->xref_exists($custID, $custitemID)) {
 			if ($session->response_xref && $session->response_xref->has_success()) {
 				$session->redirect($page->itm_xrefs_cxmURL($itemID, $session->response_xref->key), $http301 = false);
 			}
@@ -32,7 +32,7 @@
 		$custitemID = $input->get->text('custitemID');
 		$page->headline = "ITM: $itemID CXM Item $custitemID for $custID";
 
-		$item = $cxm->get_create_cxm_item($custID, $custitemID);
+		$item = $cxm->get_create_xref($custID, $custitemID);
 
 		if (!$item->isNew()) {
 			/**

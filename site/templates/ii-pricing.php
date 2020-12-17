@@ -46,7 +46,7 @@
 		} else {
 			$filter_customers = $modules->get('FilterCustomers');
 			$filter_customers->init_query($user);
-			$filter_customers->filter_search($input->get->text('q'));
+			$filter_customers->search($input->get->text('q'));
 
 			$query = CustomerQuery::create();
 

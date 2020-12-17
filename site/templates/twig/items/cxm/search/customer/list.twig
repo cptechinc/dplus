@@ -8,7 +8,7 @@
 	<thead>
 		<tr>
 			<th scope="col">
-				<a href="{{ page.get_sortURL('customerID') }}" class="link">ID</a>
+				<a href="{{ page.get_sortURL('custid') }}" class="link">ID</a>
 			</th>
 			<th scope="col">
 				<a href="{{ page.get_sortURL('name') }}" class="link">Name</a>
@@ -27,7 +27,7 @@
 	<tbody>
 		{% if customers.count() %}
 			{% for customer in customers %}
-				<tr>
+				<tr data-custid="{{ customer.id }}">
 					<td scope="row">
 						<a href="{{ page.cxm_customerURL(customer.id) }}" class="link">
 							<strong>{{ customer.id }}</strong>

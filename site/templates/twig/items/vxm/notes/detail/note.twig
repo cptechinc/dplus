@@ -1,4 +1,6 @@
-<textarea class="form-control-plaintext" id="notes-detail" cols="{{ qnotes.notes.detail.get_column_count() }}" readonly>{{ qnotes.notes.detail.get_notes_array(item.ouritemid, item.vendorid)|join('\r') }}</textarea>
-<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-detail-modal">
+<div class="form-group">
+	<textarea class="form-control-plaintext" id="notes-detail" cols="{{ qnotes.notes.detail.get_column_count() }}" readonly>{{ qnotes.notes.detail.get_notes_array(item.ouritemid, item.vendorid)|join('\r') }}</textarea>
+</div>
+<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#notes-detail-modal">
 	<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 </button>

@@ -6,6 +6,10 @@ use ConfigCiQuery, ConfigCi;
 use Propel\Runtime\ActiveQuery\Criteria;
 
 class FilterCustomers extends WireData implements Module {
+	public function __construct() {
+		$this->query = CustomerQuery::create();
+	}
+
 	/**
 	 * Returns Query
 	 * @return CustomerQuery
@@ -19,7 +23,7 @@ class FilterCustomers extends WireData implements Module {
 	 * NOTE: Filters by Sales Rep if provided user is a Sales rep
 	 *
 	 * @param  User   $user User to Check if they are a Sales Person
-	 * @return void
+	 * @return self
 	 */
 	public function init_query(User $user) {
 		$this->query = CustomerQuery::create();
@@ -27,16 +31,24 @@ class FilterCustomers extends WireData implements Module {
 		if ($user->is_salesrep()) {
 			$this->query->filterByCustid($user->get_customers(), Criteria::IN);
 		}
-
-		$this->filter_active();
+		$this->active();
+		return $this;
 	}
 
-	public function filter_active() {
+/* =============================================================
+	Base Filter Functions
+============================================================= */
+	/**
+	 * Filter for Active Customers Only
+	 * @return self
+	 */
+	public function active() {
 		$config = ConfigCiQuery::create()->findOne();
 
 		if ($config->show_inactive != ConfigCi::BOOL_TRUE) {
 			$this->query->filterByActive(Customer::STATUS_ACTIVE);
 		}
+		return $this;
 	}
 
 	/**
@@ -54,21 +66,24 @@ class FilterCustomers extends WireData implements Module {
 	 * @param  string $q Search Query
 	 * @return void
 	 */
-	public function filter_search($q) {
-		$columns = array();
-		$columns[] = Customer::get_aliasproperty('custid');
-		$columns[] = Customer::get_aliasproperty('name');
-		$columns[] = Customer::get_aliasproperty('address1');
-		$columns[] = Customer::get_aliasproperty('address2');
-		$columns[] = Customer::get_aliasproperty('city');
-		$columns[] = Customer::get_aliasproperty('state');
-		$columns[] = Customer::get_aliasproperty('zip');
+	public function search($q) {
+		$columns = [
+			Customer::get_aliasproperty('custid'),
+			Customer::get_aliasproperty('name'),
+			Customer::get_aliasproperty('address1'),
+			Customer::get_aliasproperty('address2'),
+			Customer::get_aliasproperty('city'),
+			Customer::get_aliasproperty('state'),
+			Customer::get_aliasproperty('zip'),
+		];
 		$this->query->search_filter($columns, strtoupper($q));
 	}
 
+/* =============================================================
+	Misc Query Functions
+============================================================= */
 	/**
 	 * Adds the Sort By to the query
-	 *
 	 * @param  Page   $page
 	 * @return void
 	 */
@@ -82,14 +97,41 @@ class FilterCustomers extends WireData implements Module {
 		}
 	}
 
+	/**
+	 * Return Position of Customer ID in Results
+	 * @param  Vendor $custID  Customer ID
+	 * @return int
+	 */
+	public function position($custID) {
+		if (!$this->exists($custID)) {
+			return 0;
+		}
+		$customers = $this->query->find();
+		$customer = $this->get_customer($custID);
+		return $customers->search($customer);
+	}
+
+	/**
+	 * Return if Customer Exists
+	 * @param  string $custID Customer ID
+	 * @return bool
+	 */
+	public function exists($custID) {
+		return boolval(CustomerQuery::create()->filterByCustid($custID)->count());
+	}
+
+	/**
+	 * Return if Vendor Exists
+	 * @param  string $custID Customer ID
+	 * @return bool
+	 */
+	public function get_customer($custID) {
+		return CustomerQuery::create()->findOneByCustid($custID);
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus Filter Customer Module',
