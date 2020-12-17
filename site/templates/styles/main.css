@@ -77,6 +77,10 @@ table.table-md td, table.table-md th {
 	padding: .45rem;
 }
 
+.page-item.disabled .page-link {
+	background-color: #e9ecef;
+}
+
 /*==============================================================
 	FUELUX Styles
 ==============================================================*/
