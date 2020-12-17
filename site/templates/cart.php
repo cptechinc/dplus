@@ -13,14 +13,19 @@
 	if ($cart->has_custid()) {
 		$custID = $cart->get_custid();
 		$customer = CustomerQuery::create()->findOneByCustid($custID);
+		$shipto = CustomerShiptoQuery::create()->filterByCustid($custID)->filterByShiptoid($cart->get_shiptoid())->findOne();
 		$page->title = "Cart for $customer->name";
 
-		$page->body .= $config->twig->render('cart/cart-links.twig', ['page' => $page, 'customer' => $customer, 'cart' => $cart]);
+		if ($cart->has_shiptoid()) {
+			$page->title = "Cart for $shipto->name";
+		}
+
+		$page->body .= $config->twig->render('cart/cart-links.twig', ['page' => $page, 'customer' => $customer, 'shipto' => $shipto, 'cart' => $cart]);
 
 		if ($modules->get('ConfigsCi')->option_lastsold  == 'cstk') {
 			$lastsold = $modules->get('LastSoldItemsCustomerCstk');
-			$lastsold->custID = $custID;
-			$lastsold->shiptoID = $shiptoID;
+			$lastsold->custID = $cart->get_custid();
+			$lastsold->shiptoID = $cart->get_shiptoid();
 			$lastsold->function = 'cart';
 			$lastsold->request_pricing();
 		} else {
@@ -32,7 +37,7 @@
 		} else {
 			$page->body .= $config->twig->render('cart/cart-items.twig', ['page' => $page, 'cart' => $cart]);
 		}
-
+		$page->js   .= $config->twig->render('cart/js.twig');
 		$page->body .= $config->twig->render('cart/lookup/form.twig', ['page' => $page, 'cart' => $cart]);
 		$page->js   .= $config->twig->render('cart/lookup/js.twig', ['page' => $page, 'cart' => $cart]);
 		$page->body .= $config->twig->render('cart/last-sales/modal.twig', ['page' => $page, 'cart' => $cart, 'lastsold' => $lastsold, 'company' => $config->company, 'loader' => $config->twig->getLoader()]);
