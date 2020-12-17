@@ -27,12 +27,12 @@
 			 *  3. Userid does not match the lock
 			 * Otherwise if not locked, create lock
 			 */
-			if ($recordlocker->function_locked($page->codetable, $customer->code) && !$recordlocker->function_locked_by_user($page->codetable, $customer->code)) {
-				$msg = "$customer->code is being locked by " . $recordlocker->get_locked_user($page->codetable, $customer->code);
-				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Customer $customer->code is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+			if ($recordlocker->function_locked($page->codetable, $customer->custid) && !$recordlocker->function_locked_by_user($page->codetable, $customer->custid)) {
+				$msg = "$customer->custid is being locked by " . $recordlocker->get_locked_user($page->codetable, $customer->custid);
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Customer $customer->custid is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 				$page->body .= $html->div('class=mb-3');
-			} elseif (!$recordlocker->function_locked($page->codetable, $customer->code)) {
-				$recordlocker->create_lock($page->codetable, $customer->code);
+			} elseif (!$recordlocker->function_locked($page->codetable, $customer->custid)) {
+				$recordlocker->create_lock($page->codetable, $customer->custid);
 			}
 		}
 
