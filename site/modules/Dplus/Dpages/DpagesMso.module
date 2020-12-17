@@ -245,16 +245,6 @@ class DpagesMso extends Dpages implements Module {
 	);
 
 	public function init_salesorder_hooks() {
-		$this->addHook('Page::remove_itemURL', function($event) {
-			$p = $event->object;
-			$ordn = $event->arguments(0);
-			$linenbr = $event->arguments(1);
-			$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
-			$url->query->set('action', 'remove-line');
-			$url->query->set('ordn', $ordn);
-			$url->query->set('linenbr', $linenbr);
-			$event->return = $url->getUrl();
-		});
 
 		$this->addHook('Page::view_notesURL', function($event) {
 			$p = $event->object;
