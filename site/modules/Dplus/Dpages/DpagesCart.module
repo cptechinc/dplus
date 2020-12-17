@@ -39,7 +39,7 @@ class DpagesCart extends Dpages implements Module {
 		'itm_json'    => 'itm-json',
 		'itm_lookup'  => 'itm-lookup',
 		'search_items'     => 'itm-search',
-		'search_customers'   => 'ci-search',
+		'search_customers' => 'mci-lookup',
 	);
 
 	public function init() {

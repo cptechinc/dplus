@@ -39,7 +39,7 @@ class Cart extends WireData implements Module {
 	public function get_custid() {
 		$q = $this->query_header($this->sessionID);
 		$q->select('custid');
-		return boolval($q->findOne());
+		return $q->findOne();
 	}
 
 	/**
@@ -135,6 +135,9 @@ class Cart extends WireData implements Module {
 		$values = $input->$rm;
 
 		switch ($values->text('action')) {
+			case 'set-customer':
+				$this->input_set_customer($input);
+				break;
 			case 'add-item':
 				$this->input_item_add($input);
 				break;
@@ -157,6 +160,19 @@ class Cart extends WireData implements Module {
 				$this->request_create_quote();
 				break;
 		}
+	}
+
+	/**
+	 * Set Customer
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function input_set_customer(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$custID = $values->text('custID');
+		$this->set_custid($custID);
+		return true;
 	}
 
 	/**

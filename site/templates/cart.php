@@ -10,22 +10,12 @@
 		$session->redirect($page->redirectURL(), $http301 = false);
 	}
 
-
 	if ($cart->has_custid()) {
 		$custID = $cart->get_custid();
 		$customer = CustomerQuery::create()->findOneByCustid($custID);
 		$page->title = "Cart for $customer->name";
 
-		if ($cart->has_shiptoid()) {
-			$shiptoID = $cart->get_shiptoID();
-			$shipto = CustomerShiptoQuery::create()->filterByCustid($custID)->findOneByShiptoid($shiptoID);
-			$page->title = "Cart for $shipto->name";
-		} else {
-			$shiptoID = '';
-			$shipto = false;
-		}
-
-		$page->body .= $config->twig->render('cart/cart-links.twig', ['page' => $page, 'customer' => $customer, 'cart' => $cart, 'shipto' => $shipto]);
+		$page->body .= $config->twig->render('cart/cart-links.twig', ['page' => $page, 'customer' => $customer, 'cart' => $cart]);
 
 		if ($modules->get('ConfigsCi')->option_lastsold  == 'cstk') {
 			$lastsold = $modules->get('LastSoldItemsCustomerCstk');
@@ -56,8 +46,6 @@
 
 		$page->body .= $html->div('class=mb-4', '');
 		$page->body .= $config->twig->render('cart/cart-actions.twig', ['page' => $page, 'cart' => $cart, 'user' => $user]);
-
-		$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 	} elseif ($input->get->custID) {
 		$custID = $input->get->text('custID');
 		$cart->set_custid($custID);
@@ -67,29 +55,10 @@
 		}
 		$session->redirect($page->url);
 	} else {
-		$query = CustomerQuery::create();
-
-		if ($input->get->q) {
-			$q = $input->get->text('q');
-			$page->title = "Cart: Searching for '$q'";
-			$col_custid = Customer::get_aliasproperty('custid');
-			$col_name = Customer::get_aliasproperty('name');
-			$columns = array($col_custid, $col_name);
-			$query->search_filter($columns, strtoupper($q));
-		}
-
-		if ($page->has_orderby()) {
-			$orderbycolumn = $page->orderby_column;
-			$sort = $page->orderby_sort;
-			$tablecolumn = Customer::get_aliasproperty($orderbycolumn);
-			$query->sortBy($tablecolumn, $sort);
-		}
-
-		$customers = $query->paginate($input->pageNum, 10);
-
-		$page->searchURL = $page->url;
-		$page->body = $config->twig->render('customers/customer-search.twig', ['page' => $page, 'customers' => $customers]);
-		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $customers->getNbResults()]);
+		$page->body .= $config->twig->render('cart/form/customer-form.twig', ['page' => $page]);
+		$page->js   .= $config->twig->render('cart/form/js.twig', ['page' => $page]);
 	}
+
+$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 
 include __DIR__ . "/basic-page.php";
