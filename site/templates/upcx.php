@@ -11,9 +11,9 @@
 		$itemID = $values->text('itemID');
 
 		if ($code) {
-			$session->redirect($page->upcURL($code));
+			$session->redirect($page->upcURL($code), $http301 = false);
 		} else {
-			$session->redirect($page->upcURL($code));
+			$session->redirect($page->upcURL(), $http301 = false);
 		}
 	}
 
@@ -74,6 +74,7 @@
 		$upcx->recordlocker->remove_lock($page->name);
 		$filter = $modules->get('FilterXrefItemUpc');
 		$q = strtoupper($values->text('q'));
+
 		if ($values->q) {
 			$page->headline = "UPCX: Searching for '$q'";
 			$filter->search($q);
@@ -81,7 +82,6 @@
 
 		$filter->apply_sortby($page);
 		$upcs = $filter->query->paginate($input->pageNum, 10);
-
 		$page->body .= $config->twig->render('items/upcx/search.twig', ['page' => $page, 'q' => $q]);
 		$page->body .= $config->twig->render('items/upcx/upc-list.twig', ['page' => $page, 'upcx' => $upcx, 'upcs' => $upcs]);
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $upcs->getNbResults()]);
