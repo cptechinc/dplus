@@ -39,13 +39,12 @@ class XrefCxm extends WireData implements Module {
 	Const, Config Functions
 ============================================================= */
 	const FIELD_ATTRIBUTES = [
-		'conversion'     => ['type' => 'number', 'precision' => 5, 'max' => 9999],
+		'conversion'     => ['type' => 'number', 'precision' => 5, 'max' => 99999],
 		'qty_percase'    => ['type' => 'number', 'precision' => 0, 'max' => 9999],
 		'qty_purchase'   => ['type' => 'number', 'precision' => 0, 'max' => 999999],
 		'price_retail'   => ['type' => 'number', 'precision' => 2, 'max'  => 9999999.99],
 		'price_customer' => ['type' => 'number', 'precision' => 2, 'max'  => 9999999.99],
-		'revision'       => ['type' => 'text', 'maxlength' => 8],
-		'revision'       => ['type' => 'text', 'maxlength' => 8],
+		'revision'       => ['type' => 'text', 'maxlength' => 10],
 		'qty_pack_inner'    => ['type' => 'number', 'precision' => 0, 'max' => 9999],
 		'qty_pack_outer'    => ['type' => 'number', 'precision' => 0, 'max' => 9999],
 		'qty_pack_tare'     => ['type' => 'number', 'precision' => 0, 'max' => 9999],
@@ -375,12 +374,16 @@ class XrefCxm extends WireData implements Module {
 		}
 		$record->setDescription($values->text('description', ['maxLength' => $this->maxlength_description()]));
 		$record->setDescription2($values->text('description2', ['maxLength' => $this->maxlength_description2()]));
-		$record->setRevision($values->text('revision', ['maxLength' => $this->field_attributes('revision', 'maxlength')]));
-		$record->setConversion($values->float('conversion', ['precision' => $this->field_attributes('conversion', 'precision'), 'max' => $this->field_attributes('conversion', 'max')]));
-		$record->setQty_percase($values->int('qty_percase',   ['max' => $this->field_attributes('qty_percase', 'max')]));
-		$record->setQty_purchase($values->int('qty_purchase', ['max' => $this->field_attributes('qty_purchase', 'max')]));
-		$record->setPrice_retail($values->float('price_retail', ['precision' => $this->field_attributes('price_retail', 'precision'), 'max' => $this->field_attributes('price_retail', 'max')]));
-		$record->setPrice_customer($values->float('price_customer', ['precision' => $this->field_attributes('price_customer', 'precision'), 'max' => $this->field_attributes('price_customer', 'max')]));
+		$record->setRevision($values->text('revision', ['maxLength' => $this->field_attribute('revision', 'maxlength')]));
+		$record->setConversion($values->float('conversion', ['precision' => $this->field_attribute('conversion', 'precision'), 'max' => $this->field_attribute('conversion', 'max')]));
+		$record->setQty_percase($values->int('qty_percase',   ['max' => $this->field_attribute('qty_percase', 'max')]));
+		$record->setQty_purchase($values->int('qty_purchase', ['max' => $this->field_attribute('qty_purchase', 'max')]));
+		$record->setPrice_retail($values->float('price_retail', ['precision' => $this->field_attribute('price_retail', 'precision'), 'max' => $this->field_attribute('price_retail', 'max')]));
+		$record->setPrice_customer($values->float('price_customer', ['precision' => $this->field_attribute('price_customer', 'precision'), 'max' => $this->field_attribute('price_customer', 'max')]));
+
+		$record->setQty_pack_inner($values->float('qty_pack_inner', ['precision' => $this->field_attribute('qty_pack_inner', 'precision'), 'max' => $this->field_attribute('qty_pack_inner', 'max')]));
+		$record->setQty_pack_outer($values->float('qty_pack_outer', ['precision' => $this->field_attribute('qty_pack_outer', 'precision'), 'max' => $this->field_attribute('qty_pack_outer', 'max')]));
+		$record->setQty_pack_tare($values->float('qty_pack_tare', ['precision' => $this->field_attribute('qty_pack_tare', 'precision'), 'max' => $this->field_attribute('qty_pack_tare', 'max')]));
 
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));
