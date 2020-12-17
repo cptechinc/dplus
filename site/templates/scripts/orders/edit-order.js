@@ -28,7 +28,7 @@ $(function() {
 		input_zip.val(shipto.zip);
 	});
 
-	$("body").on("click", "a:not([href^=#],.sales-order-notes, #ajax-modal a)", function(e) {
+	$("body").on("click", "a:not([href^=#],.sales-order-notes, #ajax-modal a, .delete_button)", function(e) {
 		e.preventDefault();
 		var a = $(this);
 
