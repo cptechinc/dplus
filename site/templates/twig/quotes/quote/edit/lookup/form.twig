@@ -1,6 +1,12 @@
-<form action="{{ page.formurl }}" class="allow-enterkey-submit" id="add-item-form">
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	quote                  Quote
+#}
+<form action="{{ page.formurl }}" class="pt-3 px-3 allow-enterkey-submit" id="add-item-form">
 	<input type="hidden" name="action" value="add-item">
-	<input type="hidden" name="qnbr" value="{{ quote.quotenumber }}">
+	<input type="hidden" name="qnbr" value="{{ quote.quotenbr }}">
 
 	<div class="row">
 		<div class="col-sm-4">
