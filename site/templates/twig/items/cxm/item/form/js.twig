@@ -19,8 +19,23 @@ $(function() {
 /* =============================================================
 	Event Functions
 ============================================================= */
-	$("body").on("change", "#price_customer", function(e) {
+	$("body").on("change", "input[name=price_customer]", function(e) {
+		var input = $(this);
+		var price = parseInt(input.val());
+		input.val(price.toFixed({{ cxm.field_attribute('price_customer', 'precision') }}));
 		calculate_peruom();
+	});
+
+	$("body").on("change", "input[name=price_retail]", function(e) {
+		var input = $(this);
+		var price = parseInt(input.val());
+		input.val(price.toFixed({{ cxm.field_attribute('price_retail', 'precision') }}));
+	});
+
+	$("body").on("change", "input[name=conversion]", function(e) {
+		var input = $(this);
+		var price = parseInt(input.val());
+		input.val(price.toFixed({{ cxm.field_attribute('conversion', 'precision') }}));
 	});
 
 	$("body").on("change", "#uom_pricing", function(e) {

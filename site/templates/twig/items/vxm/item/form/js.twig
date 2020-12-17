@@ -35,6 +35,18 @@ $(function() {
 		}
 	});
 
+	$("body").on("change", "input[name=qty_percase]", function(e) {
+		var input = $(this);
+		var qty = parseFloat(input.val());
+		input.val(qty.toFixed({{ vxm.field_attribute('qty_percase', 'precision') }}));
+	});
+
+	$("body").on("change", "input[name=minbuyqty]", function(e) {
+		var input = $(this);
+		var qty = parseFloat(input.val());
+		input.val(qty.toFixed({{ vxm.field_attribute('minbuyqty', 'precision') }}));
+	});
+
 	$("body").on("keydown", ".unit-qty", function(e) {
 		var input = $(this);
 		var unitrow = input.closest('.unit-row');
@@ -82,8 +94,8 @@ $(function() {
 
 	$("body").on("change", "input[name=listprice]", function(e) {
 		var input = $(this);
-		input.val(parseFloat(input.val()).toFixed({{ vxm.decimal_places_price }}));
-		$('input[name=eachlistprice]').val(parseFloat(get_eachlistprice()).toFixed({{ vxm.decimal_places_price }}));
+		input.val(parseFloat(input.val()).toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
+		$('input[name=eachlistprice]').val(parseFloat(get_eachlistprice()).toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
 	});
 
 /* =============================================================
@@ -371,7 +383,7 @@ $(function() {
 	function calculate_eachlistprice() {
 		var oldlistprice = eachlistprice;
 		eachlistprice = parseFloat(get_eachlistprice());
-		input_eachlistprice.val(eachlistprice.toFixed(vxm.decimal_places_price()));
+		input_eachlistprice.val(eachlistprice.toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
 
 		calculate_margins();
 	}
@@ -401,13 +413,14 @@ $(function() {
 	function update_unitrow_margin(unitrow) {
 		var input_unitqty = unitrow.find('.unit-qty');
 		var input_unitcost = unitrow.find('.unit-cost');
-		input_unitcost.val(parseFloat(input_unitcost.val()).toFixed({{ vxm.decimal_places_cost() }}));
+		input_unitcost.val(parseFloat(input_unitcost.val()).toFixed({{ vxm.field_attribute('unit_cost', 'precision') }}));
 
 		if (parseFloat(input_unitcost.val())) {
 			var input_margin = unitrow.find('.unit-margin');
 			var margin = determine_unitmargin(parseFloat(input_unitcost.val()));
-			var displaymargin = parseFloat(margin).truncate({{ vxm.decimal_places_margin() }});
-			input_margin.val(displaymargin).change();
+			var displaymargin = parseFloat(margin).toFixed({{ vxm.field_attribute('unit_margin', 'precision') }});
+			input_margin.val(displaymargin);
+			console.log({{ vxm.field_attribute('unit_margin', 'precision') }})
 		}
 	}
 
@@ -419,12 +432,12 @@ $(function() {
 		var input_unitqty = unitrow.find('.unit-qty');
 		var input_unitcost = unitrow.find('.unit-cost');
 		var input_margin = unitrow.find('.unit-margin');
-		var margin = parseFloat(input_margin.val()).truncate({{ vxm.decimal_places_margin() }});
+		var margin = parseFloat(input_margin.val()).truncate({{ vxm.field_attribute('unit_margin', 'precision') }});
 
 		input_margin.val(margin);
 
 		if (parseFloat(input_margin.val())) {
-			var cost = parseFloat(determine_unitcost(margin)).toFixed({{ vxm.decimal_places_cost() }});
+			var cost = parseFloat(determine_unitcost(margin)).toFixed({{ vxm.field_attribute('unit_cost', 'precision') }});
 			input_unitcost.val(cost);
 		}
 	}

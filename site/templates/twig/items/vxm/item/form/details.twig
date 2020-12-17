@@ -26,7 +26,19 @@
 		<label for="qty_percase"><b>Qty Per Case</b></label>
 	</div>
 	<div class="col-sm-6">
-		<input type="number" name="qty_percase" class="form-control form-control-sm w-50 pull-right text-right" id="qty_percase" value="{{ item.qty_percase|number_format(vxm.decimal_places_qty()) }}">
+		<div class="input-group w-75">
+			{% include 'util/form/input.twig' with {
+					'name': 'qty_percase', 'value': item.qty_percase|number_format(vxm.field_attribute('qty_percase', 'precision')),
+					'type': 'number',
+					'class_add': [
+						'text-right',
+					],
+					'attributes': {
+						'max': vxm.field_attribute('qty_percase', 'max')
+					}
+				}
+			%}
+		</div>
 	</div>
 </div>
 <div class="row form-group">
@@ -34,7 +46,19 @@
 		<label for="minbuyqty"><b>Min Buy Qty</b></label>
 	</div>
 	<div class="col-sm-6">
-		<input type="number" name="minbuyqty" class="form-control form-control-sm w-50 pull-right text-right" id="minbuyqty" value="{{ item.minbuyqty }}">
+		<div class="input-group w-75">
+			{% include 'util/form/input.twig' with {
+					'name': 'minbuyqty', 'value': item.minbuyqty|number_format(vxm.field_attribute('minbuyqty', 'precision')),
+					'type': 'number',
+					'class_add': [
+						'text-right',
+					],
+					'attributes': {
+						'max': vxm.field_attribute('minbuyqty', 'max')
+					}
+				}
+			%}
+		</div>
 	</div>
 </div>
 <div class="row form-group">
@@ -42,7 +66,11 @@
 		<label for="approvalcode"><b>Approval Code</b></label>
 	</div>
 	<div class="col-sm-6">
-		{% include 'util/form/select.twig' with {'name': 'approvalcode', 'show_value': true, 'selectedvalue': item.approvalcode, 'options': item.get_approvalcodeoptions()} %}
+		{% include 'util/form/select.twig' with {
+				'name': 'approvalcode', 'show_value': true, 'selectedvalue': item.approvalcode,
+				'options': item.get_approvalcodeoptions()
+			}
+		%}
 	</div>
 </div>
 <div class="row form-group">
