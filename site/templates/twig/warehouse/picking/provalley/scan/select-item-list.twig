@@ -16,18 +16,16 @@
 		<div class="list-group-item">
 			<div class="row">
 				<div class="col-sm-2">
-					{% if (item.is_item_serialized() or item.is_item_lotted())  %}
-						<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#{{ item.itemid|attrJS }}" aria-expanded="false" aria-controls="{{ item.linenbr|attrJS }}">
-							<i class="fa fa-plus-circle" aria-hidden="true"></i>
-						</button>
-					{% endif %}
+					<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#{{ item.itemid|attrJS }}" aria-expanded="false" aria-controls="{{ item.linenbr|attrJS }}">
+						<i class="fa fa-plus-circle" aria-hidden="true"></i>
+					</button>
 				</div>
 				<div class="col-sm-6">{{ item.itemid }}</div>
 				<div class="col-sm-2">{{ item.get_total_qty()|number_format(2, '.', ',')  }}</div>
 				<div class="col-sm-2"></div>
 			</div>
 		</div>
-		{% if (item.is_item_serialized() or item.is_item_lotted()) %}
+		{% if 1 == 1 %}
 			<div class="collapse" id="{{ item.itemid|attrJS }}">
 				<div class="list-group-item bg-dark text-white">
 					<div class="row">
