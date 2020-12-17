@@ -1,0 +1,8 @@
+$(function() {
+	$("body").on('change', '#select_shipto', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var form = input.closest('form');
+		form.submit();
+	});
+});
