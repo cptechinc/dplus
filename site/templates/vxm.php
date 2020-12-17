@@ -3,6 +3,7 @@
 	$values = $input->$rm;
 	$html = $modules->get('HtmlWriter');
 	$vxm = $modules->get('XrefVxm');
+	$vxm->init_configs();
 	$filter_vxm = $modules->get('FilterXrefItemVxm');
 
 	if ($values->action) {
@@ -52,6 +53,7 @@
 			$itemID       = $values->text('itemID');
 			$qnotes = $modules->get('QnotesItemVxm');
 			$item = $vxm->get_create_xref($vendorID, $vendoritemID, $itemID);
+			$vxm->init_field_attributes_config();
 
 			if (!$item->isNew()) {
 				$page->headline = "VXM: $vendorID Item $vendoritemID for $itemID";
