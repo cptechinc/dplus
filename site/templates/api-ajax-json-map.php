@@ -21,7 +21,7 @@
 				if ($validate->vxm->exists($vendorID, $vendoritemID)) {
 					$q = ItemXrefVendorQuery::create()->filterByItemid($itemID)->filterByVendorid($vendorID);
 					$q->filterByVendoritemid($vendoritemID);
-					$response = boolval($q->count()) ? true : "Vendor $vendorID Item $vendortemID is not for $itemID"
+					$response = boolval($q->count()) ? true : "Vendor $vendorID Item $vendortemID is not for $itemID";
 				} else {
 					$response = "Vendor $vendorID Item $vendortemID does not exist in the X-ref";
 				}

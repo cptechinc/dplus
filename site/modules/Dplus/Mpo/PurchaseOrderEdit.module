@@ -753,11 +753,6 @@ class PurchaseOrderEdit extends WireData implements Module {
 		});
 	}
 
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'PurchaseOrderEdit',

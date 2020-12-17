@@ -10,11 +10,7 @@
 	if ($values->action) {
 		$eso->process_input($input);
 
-		if ($values->exit) {
-			$url = $page->so_viewURL($values->text('ordn'));
-		} else {
-			$url = $page->so_editURL($values->text('ordn'));
-		}
+		$url = $values->exit ? $page->so_viewURL($values->text('ordn')) : $page->so_editURL($values->text('ordn'));
 		$session->redirect($url, $http301 = false);
 	}
 
@@ -22,7 +18,6 @@
 		$ordn = $values->text('ordn');
 
 		if ($lookup_orders->lookup_salesorder($ordn)) {
-
 			if ($eso->can_order_be_edited($ordn))  {
 				$eso->request_so_edit($ordn);
 			}
@@ -34,7 +29,6 @@
 				$page->title = "Editing Sales Order #$ordn";
 				$page->listpage = $pages->get('pw_template=sales-orders');
 				$page->formurl = $pages->get('template=dplus-menu, name=mso')->child('template=redir')->url;
-				$page->lookupURL = $pages->get('pw_template=ii-item-lookup')->httpUrl;
 
 				$page->body .= $config->twig->render('sales-orders/sales-order/edit/links-header.twig', ['page' => $page, 'user' => $user, 'order' => $order]);
 				$page->body .= $config->twig->render('sales-orders/sales-order/edit/sales-order-header.twig', ['page' => $page, 'customer' => $customer, 'order' => $eso->get_order_static($ordn)]);
@@ -64,15 +58,9 @@
 
 				if ($user->is_editingorder($order->ordernumber)) {
 					$page->body .= $html->div('class=mt-3');
-					$page->body .= $html->h3('class=text-secondary', 'Add Item');
 
-					if ($config->twigloader->exists("sales-orders/sales-order/edit/$config->company/add-item-form.twig")) {
-						$page->body .= $config->twig->render("sales-orders/sales-order/edit/$config->company/add-item-form.twig", ['page' => $page, 'order' => $order]);
-					} else {
-						$page->body .= $config->twig->render('sales-orders/sales-order/edit/add-item-form.twig', ['page' => $page, 'order' => $order]);
-					}
-
-					$page->js .= $config->twig->render('sales-orders/sales-order/edit/item-lookup.js.twig', ['page' => $page, 'order' => $order]);
+					$page->body .= $config->twig->render('sales-orders/sales-order/edit/lookup/form.twig', ['page' => $page, 'order' => $order]);
+					$page->js   .= $config->twig->render('sales-orders/sales-order/edit/lookup/js.twig', ['page' => $page, 'order' => $order]);
 
 					if ($input->get->q) {
 						$q = $input->get->text('q');
@@ -89,8 +77,6 @@
 				$module_qnotes = $modules->get('QnotesSalesOrder');
 				$page->body .= $html->div('class=mb-4');
 				$page->body .= $config->twig->render('sales-orders/sales-order/qnotes.twig', ['page' => $page, 'qnotes_so' => $module_qnotes, 'ordn' => $ordn]);
-				$page->body .= $config->twig->render('sales-orders/sales-order/notes/note-modal.twig', ['page' => $page, 'ordn' => $ordn]);
-				$config->scripts->append(hash_templatefile('scripts/quotes/quote-notes.js'));
 			} else {
 				if ($input->get->load) {
 					$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Order Number # $ordn can not be loaded for editing"]);

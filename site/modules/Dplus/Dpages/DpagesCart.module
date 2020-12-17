@@ -33,16 +33,28 @@ class DpagesCart extends Dpages implements Module {
 		),
 	);
 
-	public function init() {
-		$this->addHook('Page(pw_template=cart)::get_itm_lookupURL', function($event) {
-			$url = new Url($this->wire('pages')->get('pw_template=itm-json')->httpUrl);
-			$url->query->set('json', 'true');
-			$event->return = $url->getUrl();
-		});
+	const HOOK_FUNCTIONS_LOOKUPS = array(
+		// Hook     =>  PW Template
+		'ii_lookup'   => 'ii-item-lookup',
+		'itm_json'    => 'itm-json',
+		'itm_lookup'  => 'itm-lookup',
+		'search_items'     => 'itm-search',
+		'search_customers' => 'mci-lookup',
+	);
 
-		$this->addHook('Page(pw_template=cart)::get_ii_lookupURL', function($event) {
-			$url = new Url($this->wire('pages')->get('pw_template=ii-item-lookup')->httpUrl);
-			$event->return = $url->getUrl();
+	public function init() {
+		foreach (self::HOOK_FUNCTIONS_LOOKUPS as $hook => $pwtemplate) {
+			$this->addHook("Page(pw_template=cart)::{$hook}URL", function($event) {
+				$hook = rtrim($event->method, 'URL');
+				$pwtemplate = self::HOOK_FUNCTIONS_LOOKUPS[$hook];
+				$event->return = $this->wire('pages')->get("pw_template=$pwtemplate")->url;
+			});
+		}
+
+		$this->addHook("Page(pw_template=cart)::jsonapiURL", function($event) {
+			$api = $event->arguments(0);
+			$pages = $this->wire('pages');
+			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
 		});
 	}
 

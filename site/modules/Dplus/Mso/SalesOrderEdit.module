@@ -20,6 +20,15 @@ class SalesOrderEdit extends WireData implements Module {
 
 	protected $ordn;
 
+	const HOOK_FUNCTIONS_LOOKUPS = array(
+		// Hook     =>  PW Template
+		'ii_lookup'   => 'ii-item-lookup',
+		'itm_json'    => 'itm-json',
+		'itm_lookup'  => 'itm-lookup',
+		'search_items'     => 'itm-search',
+		'search_customers'   => 'ci-search',
+	);
+
 	/**
 	 * Returns if Sales Order Customer has been defined
 	 * @return bool
@@ -296,82 +305,6 @@ class SalesOrderEdit extends WireData implements Module {
 		return $shiptos->toArray('id');
 	}
 
-/* =============================================================
-	Dplus Request Functions
-============================================================= */
-	/**
-	 * Send SO edit request
-	 * @param  string $ordn Sales Order Number
-	 * @return void
-	 */
-	public function request_so_edit($ordn) {
-		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
-		$custID = SalesOrderQuery::create()->get_custid($ordn);
-		$data = array("DBNAME=$dplusdb", "ORDRDET=$ordn", "CUSTID=$custID", "LOCK");
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
-	}
-
-	/**
-	 * Send SO Header Update Request
-	 * @param  string $ordn Sales Order Number
-	 * @return void
-	 */
-	public function request_so_update_header($ordn, bool $unlock = false) {
-		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
-		$custID = SalesOrderQuery::create()->get_custid($ordn);
-		$data = array("DBNAME=$dplusdb", 'SALESHEAD', "ORDERNO=$ordn", "CUSTID=$custID");
-		if ($unlock) {
-			$data[] = "UNLOCK";
-		}
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
-	}
-
-	/**
-	 * Send SO Detail Update Request
-	 * @param  string $ordn Sales Order Number
-	 * @return void
-	 */
-	public function request_so_update_detail($ordn, int $linenbr) {
-		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
-		$custID = SalesOrderQuery::create()->get_custid($ordn);
-		$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "CUSTID=$custID");
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
-	}
-
-	/**
-	 * Send Unlock Sales Order
-	 * @param  string $ordn Sales Order Number
-	 * @return void
-	 */
-	public function request_so_unlock($ordn) {
-		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
-		$custID = SalesOrderQuery::create()->get_custid($ordn);
-		$data = array("DBNAME=$dplusdb", 'UNLOCK', "ORDERNO=$ordn");
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
-	}
-
-	/**
-	 * Sends HTTP GET request to send Dplus Item Search Request
-	 * @param  string $q Query or Item ID
-	 * @return void
-	 */
-	public function request_itemsearch($q) {
-		$order = $this->get_order_static($this->ordn);
-		$this->wire('modules')->get('ItemPricing')->request_search($q, $order->custid);
-	}
-
 	/**
 	 * Return if User can edit Sales Order
 	 * @param  User              $user  User
@@ -455,43 +388,97 @@ class SalesOrderEdit extends WireData implements Module {
 		return $q->findOne();
 	}
 
+/* =============================================================
+	Dplus Request Functions
+============================================================= */
+	private function request_dplus(array $data) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array_merge(["DBNAME=$dplusdb"], $data);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
+	}
+	/**
+	 * Send SO edit request
+	 * @param  string $ordn Sales Order Number
+	 * @return void
+	 */
+	public function request_so_edit($ordn) {
+		$custID = SalesOrderQuery::create()->get_custid($ordn);
+		$data = array("ORDRDET=$ordn", "CUSTID=$custID", "LOCK");
+		$this->request_dplus($data);
+	}
+
+	/**
+	 * Send SO Header Update Request
+	 * @param  string $ordn Sales Order Number
+	 * @return void
+	 */
+	public function request_so_update_header($ordn, bool $unlock = false) {
+		$custID = SalesOrderQuery::create()->get_custid($ordn);
+		$data = array('SALESHEAD', "ORDERNO=$ordn", "CUSTID=$custID");
+		if ($unlock) {
+			$data[] = "UNLOCK";
+		}
+		$this->request_dplus($data);
+	}
+
+	/**
+	 * Send SO Detail Update Request
+	 * @param  string $ordn Sales Order Number
+	 * @return void
+	 */
+	public function request_so_update_detail($ordn, int $linenbr) {
+		$custID = SalesOrderQuery::create()->get_custid($ordn);
+		$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "CUSTID=$custID");
+		$this->request_dplus($data);
+	}
+
+	/**
+	 * Send Unlock Sales Order
+	 * @param  string $ordn Sales Order Number
+	 * @return void
+	 */
+	public function request_so_unlock($ordn) {
+		$data = array("DBNAME=$dplusdb", 'UNLOCK', "ORDERNO=$ordn");
+		$this->request_dplus($data);
+	}
+
+	/**
+	 * Sends HTTP GET request to send Dplus Item Search Request
+	 * @param  string $q Query or Item ID
+	 * @return void
+	 */
+	public function request_itemsearch($q) {
+		$order = $this->get_order_static($this->ordn);
+		$custID = SalesOrderQuery::create()->get_custid($ordn);
+		$data = array("ITNOSRCH=$q", "CUSTID=$custID");
+		$this->request_dplus($data);
+	}
+
+/* =============================================================
+	Dplus Request Functions
+============================================================= */
+	public function edit_salesorderURL($ordn) {
+		$url = new Url($this->wire('pages')->get('pw_template=sales-order-edit')->url);
+		$url->query->set('ordn', $ordn);
+		return $url->getUrl();
+	}
 
 
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'Sales Order Edit Module',
-			'version' => 101,
-			'summary' => 'Handles Sales Order Editing',
-			'singular' => true,
-			'autoload' => true,
-		);
-	}
-
 	public function init() {
 		$this->ordn = '';
 		$this->sessionID = session_id();
 
-		/**
-		 * Returns Sales Order Page URL
-		 */
 		$this->addHook('Page::so_editURL', function($event) {
 			$ordn = $event->arguments(0);
-			$url = new Url($this->wire('pages')->get('pw_template=sales-order-edit')->url);
-			$url->query->set('ordn', $ordn);
-			$event->return = $url->getUrl();
+			$event->return = $this->edit_salesorderURL($ordn);
 		});
 
-		/**
-		 * Returns Sales Order Page URL
-		 */
 		$this->addHook('Page::so_viewURL', function($event) {
 			$ordn = $event->arguments(0);
 			$url = new Url($this->wire('pages')->get('pw_template=sales-order-view')->url);
@@ -499,9 +486,6 @@ class SalesOrderEdit extends WireData implements Module {
 			$event->return = $url->getUrl();
 		});
 
-		/**
-		 * Returns Sales Order Page URL
-		 */
 		$this->addHook('Page::unlock_orderURL', function($event) {
 			$ordn = $event->arguments(0);
 			$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
@@ -510,10 +494,6 @@ class SalesOrderEdit extends WireData implements Module {
 			$event->return = $url->getUrl();
 		});
 
-		/**
-		 * Adds self::is_user_editingorder() as User hook
-		 * @uses self::is_user_editingorder()
-		 */
 		$this->addHook('Page::remove_itemURL', function($event) {
 			$p = $event->object;
 			$ordn = $event->arguments(0);
@@ -525,15 +505,18 @@ class SalesOrderEdit extends WireData implements Module {
 			$event->return = $url->getUrl();
 		});
 
-		$this->addHook('Page(pw_template=sales-order-edit)::get_itm_lookupURL', function($event) {
-			$url = new Url($this->wire('pages')->get('pw_template=itm-json')->httpUrl);
-			$url->query->set('json', 'true');
-			$event->return = $url->getUrl();
-		});
+		foreach (self::HOOK_FUNCTIONS_LOOKUPS as $hook => $pwtemplate) {
+			$this->addHook("Page(pw_template=sales-order-edit)::{$hook}URL", function($event) {
+				$hook = rtrim($event->method, 'URL');
+				$pwtemplate = self::HOOK_FUNCTIONS_LOOKUPS[$hook];
+				$event->return = $this->wire('pages')->get("pw_template=$pwtemplate")->url;
+			});
+		}
 
-		$this->addHook('Page(pw_template=sales-order-edit)::get_ii_lookupURL', function($event) {
-			$url = new Url($this->wire('pages')->get('pw_template=ii-item-lookup')->httpUrl);
-			$event->return = $url->getUrl();
+		$this->addHook("Page(pw_template=sales-order-edit)::jsonapiURL", function($event) {
+			$api = $event->arguments(0);
+			$pages = $this->wire('pages');
+			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
 		});
 
 		$this->addHook('User::can_editorder', function($event) {
@@ -542,14 +525,20 @@ class SalesOrderEdit extends WireData implements Module {
 			$event->return = $this->can_user_editorder($user, $ordn);
 		});
 
-		/**
-		 * Adds self::is_user_editingorder() as User hook
-		 * @uses self::is_user_editingorder()
-		 */
 		$this->addHook('User::is_editingorder', function($event) {
 			$user = $event->object;
 			$ordn = $event->arguments(0);
 			$event->return = $this->is_user_editingorder($user, $ordn);
 		});
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Sales Order Edit Module',
+			'version' => 101,
+			'summary' => 'Handles Sales Order Editing',
+			'singular' => true,
+			'autoload' => true,
+		);
 	}
 }
