@@ -1,0 +1,18 @@
+<h3>Enter Customer ID</h3>
+<form action="{{ page.url }}" method="post" class="allow-enterkey-submit" id="customer-search-form">
+	<input type="hidden" name="action" value="set-customer">
+	<div class="form-group">
+		{% include 'util/form/input-with-modal-lookup.twig' with {
+				'name': 'custID', 'value': '', 'placeholder': 'Customer ID, Name',
+				'small': false,
+				'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Customer',
+				'attributes_button': {
+					'data-search': 'customer',
+					'data-input': '#custID',
+					'data-lookupurl': page.search_customersURL()
+				}
+			}
+		%}
+	</div>
+	<button type="submit" class="btn btn-success">Start</button>
+</form>
