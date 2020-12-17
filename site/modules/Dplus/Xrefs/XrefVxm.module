@@ -23,8 +23,6 @@ class XrefVxm extends WireData implements Module {
 	const RESPONSE_TEMPLATE  = 'VXM X-ref {key} was {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'vxm';
 
-	const MARGIN_DECIMALPLACES = 3;
-
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
 	}
@@ -47,6 +45,48 @@ class XrefVxm extends WireData implements Module {
 		$q->filterByVendoritemid($vendoritemID);
 		$q->filterByItemid($itemID);
 		return $q;
+	}
+
+/* =============================================================
+	Field Attributes, Functions
+============================================================= */
+	const PRECISION_MARGIN = 3;
+
+	const FIELD_ATTRIBUTES = [
+		'qty_percase' => ['type' => 'number', 'precision' => 2, 'max' => 999999.99],
+		'minbuyqty' => ['type' => 'number', 'precision' => 2, 'max' => 99999999],
+		'listprice'   => ['type' => 'number', 'precision' => 2, 'max'  => 999999999.000],
+	];
+
+	public function init_field_attributes_config() {
+		$this->init_configs();
+		$configs = $this->configs;
+		$attributes = self::FIELD_ATTRIBUTES;
+		$attributes['listprice'] = ['type' => 'number', 'precision' => $configs->so->decimal_places_price, 'max' => 99999999.9999];
+		$attributes['unit_cost'] = ['type' => 'number', 'precision' => $configs->po->decimal_places_cost, 'max' => 9999999.9999];
+		$attributes['unit_qty'] = ['type' => 'number', 'precision' => $configs->so->decimal_places_qty, 'max' => 9999999];
+		$attributes['unit_margin'] = ['type' => 'number', 'precision' => 3, 'max' => 99.999];
+		$this->field_attributes = $attributes;
+	}
+
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function field_attribute($field = '', $attr = '') {
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		$this->init_field_attributes_config();
+		if (array_key_exists($field, $this->field_attributes) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, $this->field_attributes[$field]) === false) {
+			return false;
+		}
+		return $this->field_attributes[$field][$attr];
 	}
 
 /* =============================================================
@@ -279,9 +319,10 @@ class XrefVxm extends WireData implements Module {
 		if ($this->is_key_modified($record) && !$record->isNew()) {
 			$this->delete_recreate_record($record, $input);
 		}
-		$record->setQty_percase($values->text('qty_percase'));
-		$record->setMinbuyqty($values->text('minbuyqty'));
-		$record->setListprice($values->text('listprice'));
+		$this->init_field_attributes_config();
+		$record->setQty_percase($values->float('qty_percase', ['precision' => $this->field_attribute('qty_percase', 'precision'), 'max' => $this->field_attribute('qty_percase', 'max')]));
+		$record->setMinbuyqty($values->float('minbuyqty', ['precision' => $this->field_attribute('minbuyqty', 'precision'), 'max' => $this->field_attribute('minbuyqty', 'max')]));
+		$record->setListprice($values->float('listprice', ['precision' => $this->field_attribute('listprice', 'precision'), 'max' => $this->field_attribute('listprice', 'max')]));
 		$this->update_record_unitx_input($record, $input);
 		$record->setDate_changed(date('Ymd'));
 		$record->setDate(date('Ymd'));
@@ -317,13 +358,13 @@ class XrefVxm extends WireData implements Module {
 	 * @param  WireInput      $input  Input Data
 	 * @return void
 	 */
-	public function update_record_unitx_input(ItemXrefVendor $record, WireInput $input) {
+	protected function update_record_unitx_input(ItemXrefVendor $record, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$sanitizer = $this->wire('sanitizer');
 
 		if ($record->uompurchase) {
-			$cost = $values->float('unitcost_base', ['precision' => $this->decimal_places_cost()]);
+			$cost = $values->float('unitcost_base', ['precision' => $this->field_attribute('unit_cost', 'precision')]);
 			$unitcost = $cost / $record->uompurchase->conversion;
 			$record->setUnitcost_base($sanitizer->float($unitcost));
 		}
@@ -333,10 +374,10 @@ class XrefVxm extends WireData implements Module {
 			$col_cost = ucfirst(ItemXrefVendor::get_unitcost_column($i));
 			$function_unitqty = "set$col_qty";
 			$function_unitcost = "set$col_cost";
-			$record->$function_unitqty($values->float("unit_qty$i", ['precision' => $this->decimal_places_qty()]));
+			$record->$function_unitqty($values->float("unit_qty$i", ['precision' => $this->field_attribute('unit_qty', 'precision')]));
 
 			if ($record->uompurchase) {
-				$cost = $values->float("unit_cost$i", ['precision' => $this->decimal_places_cost()]);
+				$cost = $values->float("unit_cost$i", ['precision' => $this->field_attribute('unit_cost', 'precision')]);
 				$unitcost = $cost / $record->uompurchase->conversion;
 				$record->$function_unitcost($sanitizer->float($unitcost));
 			} else {
@@ -565,45 +606,12 @@ class XrefVxm extends WireData implements Module {
 	 * @return void
 	 */
 	public function init_configs() {
-		$this->configs = new WireData();
-		$this->configs->in = $this->get_config_in();
-		$this->configs->so = $this->get_config_so();
-		$this->configs->po = $this->get_config_po();
-	}
-
-	/**
-	 * Return the number of Decimal Places to use for Qty
-	 * @return int
-	 */
-	public function decimal_places_qty() {
-		$config = $this->get_config_so();
-		return $config->decimal_places_qty;
-	}
-
-	/**
-	 * Return the number of Decimal Places to use for price
-	 * @return int
-	 */
-	public function decimal_places_price() {
-		$config = $this->get_config_so();
-		return $config->decimal_places_price;
-	}
-
-	/**
-	 * Return the number of Decimal Places to use for cost
-	 * @return int
-	 */
-	public function decimal_places_cost() {
-		$config = $this->get_config_po();
-		return $config->decimal_places_cost;
-	}
-
-	/**
-	 * Return the number of Decimal Places to use for Margin
-	 * @return int
-	 */
-	public function decimal_places_margin() {
-		return self::MARGIN_DECIMALPLACES;
+		if ($this->configs == false) {
+			$this->configs = new WireData();
+			$this->configs->in = $this->get_config_in();
+			$this->configs->so = $this->get_config_so();
+			$this->configs->po = $this->get_config_po();
+		}
 	}
 
 	/**
@@ -641,5 +649,7 @@ class XrefVxm extends WireData implements Module {
 	public function init() {
 		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
 		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
+
+		$this->field_attributes = self::FIELD_ATTRIBUTES;
 	}
 }
