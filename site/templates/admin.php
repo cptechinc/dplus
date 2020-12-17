@@ -9,7 +9,7 @@
  *
  * Feel free to hook admin-specific functionality from this file,
  * but remember to leave the require() statement below at the end.
- * 
+ *
  */
 
 require($config->paths->adminTemplates . 'controller.php');
