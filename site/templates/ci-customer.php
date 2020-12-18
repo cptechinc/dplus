@@ -67,9 +67,9 @@
 			$lookup_customer->lookup_customer($q);
 
 			if ($lookup_customer->exists) {
-				$session->redirect($page->url."?custID=$q");
+				$session->redirect($page->url."?custID=$q", $http301 = false);
 			}
-			$filter_customers->filter_search($q);
+			$filter_customers->search($q);
 			$page->headline = "CI: Searching for '$q'";
 		}
 
