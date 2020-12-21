@@ -15,14 +15,15 @@
 				$session->redirect($page->get_itemlotserialURL($itemID));
 			}
 			$session->lotserialtry = 0;
-
+			$formatter = $modules->get('SfIiLotserial');
 			$refreshurl = $page->get_itemlotserialURL($itemID);
 			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 
 			if ($json['error']) {
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 			} else {
-				$page->body .= $config->twig->render('items/ii/lotserial/lotserial.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json]);
+				$formatter->init_formatter();
+				$page->body .= $config->twig->render('items/ii/lotserial/lotserial.twig', ['page' => $page, 'json' => $json, 'module_json' => $module_json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint()]);
 			}
 		} else {
 			if ($session->lotserialtry > 3) {

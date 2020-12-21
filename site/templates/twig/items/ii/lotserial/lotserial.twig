@@ -1,23 +1,51 @@
 <h4>Available Lot / Serial Numbers</h4>
 <table class="table table-striped table-sm">
 	<thead>
-		<tr>
-			{% for column in json['columns'] %}
-				<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
-					{{ column['heading'] }}
-				</th>
-			{% endfor %}
-		</tr>
+		{% for x in 1..blueprint['lots']['rowcount']  %}
+			<tr>
+				{% set columncount = 0 %}
+				{% for i in 1..blueprint['cols'] + 1 %}
+					{% set colspan = 0 %}
+					{% if blueprint['lots']['rows'][x]['columns'][i] %}
+						{% set column = blueprint['lots']['rows'][x]['columns'][i] %}
+						{% set colspan = column['col-length'] %}
+						<th colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['label-justify']) }}">
+							{{ column['label'] }}
+						</th>
+					{% else %}
+						{% if columncount < blueprint['cols'] %}
+							{% set colspan = 1 %}
+							<th></th>
+						{% endif %}
+					{% endif %}
+					{% set columncount = columncount + colspan %}
+				{% endfor %}
+			</tr>
+		{% endfor %}
 	</thead>
 	<tbody>
 		{% for lotserial in json['data']['lots'] %}
-			<tr>
-				{% for column, properties in json['columns'] %}
-					<td class="{{ module_json.get_justifyclass(properties['datajustify']) }}">
-						{{ lotserial[column] }}
-					</td>
-				{% endfor %}
-			</tr>
+			{% for x in 1..blueprint['lots']['rowcount']  %}
+				<tr>
+					{% set columncount = 0 %}
+					{% for i in 1..blueprint['cols'] + 1 %}
+						{% set colspan = 0 %}
+						{% if blueprint['lots']['rows'][x]['columns'][i] %}
+							{% set column = blueprint['lots']['rows'][x]['columns'][i] %}
+							{% set colspan = column['col-length'] %}
+							<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+								{{ formatter.format_celldata(lotserial, column) }}
+							</td>
+						{% else %}
+							{% if columncount < blueprint['cols'] %}
+								{% set colspan = 1 %}
+								<td></td>
+							{% endif %}
+						{% endif %}
+						{% set columncount = columncount + colspan %}
+					{% endfor %}
+				</tr>
+			{% endfor %}
 		{% endfor %}
 	</tbody>
 </table>
