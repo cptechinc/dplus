@@ -14,7 +14,14 @@
 			<label for="custID">Customer ID</label>
 		</div>
 		<div class="col-sm-8">
-			{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'custID', 'value': item.custID, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Customer', 'attributes_button': {'data-search': 'customer'}} %}
+			{% include 'util/form/input-with-modal-lookup.twig' with {
+					'name': 'custID', 'value': item.custID,
+					'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Customer',
+					'attributes_button': {
+						'data-search': 'customer'
+					}
+				}
+			%}
 		</div>
 	</div>
 {% else %}
@@ -86,6 +93,10 @@
 				'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Item',
 				'attributes_button': {
 					'data-search': 'item'
+				},
+				'attributes': {
+					'itemid':     item.itemid,
+					'qtypercase': item.qty_percase
 				}
 			}
 		%}
