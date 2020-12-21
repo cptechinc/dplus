@@ -44,6 +44,7 @@ class XrefCxm extends WireData implements Module {
 		'qty_purchase'   => ['type' => 'number', 'precision' => 0, 'max' => 999999],
 		'price_retail'   => ['type' => 'number', 'precision' => 2, 'max'  => 9999999.99],
 		'price_customer' => ['type' => 'number', 'precision' => 2, 'max'  => 9999999.99],
+		'price_uom'      => ['type' => 'number', 'precision' =>3, 'max'  => 999999.999],
 		'revision'       => ['type' => 'text', 'maxlength' => 10],
 		'qty_pack_inner'    => ['type' => 'number', 'precision' => 0, 'max' => 9999],
 		'qty_pack_outer'    => ['type' => 'number', 'precision' => 0, 'max' => 9999],
