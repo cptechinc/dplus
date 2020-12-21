@@ -84,7 +84,7 @@ if ($page->id != $config->errorpage_dplusdb) {
 $rm = strtolower($input->requestMethod());
 $values = $input->$rm;
 
-if (!$values->action) {
+if (!$values->action || $page->template == 'dplus-screen-formatter') {
 	// ADD JS AND CSS
 	$config->styles->append(hash_templatefile('styles/bootstrap-grid.min.css'));
 	$config->styles->append(hash_templatefile('styles/theme.css'));
@@ -94,7 +94,6 @@ if (!$values->action) {
 	//$config->styles->append(hash_templatefile('styles/lib/sweetalert.css'));
 	$config->styles->append(hash_templatefile('styles/lib/sweetalert2.css'));
 	$config->styles->append(hash_templatefile('styles/main.css'));
-
 
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery.js'));
 	$config->scripts->append(hash_templatefile('scripts/popper.js'));
@@ -135,7 +134,7 @@ $config->customer = $pages->get('/config/customer/');
 
 $session->sessionid = session_id();
 
-if (!$values->action) {
+if (!$values->action || $page->template == 'dplus-screen-formatter') {
 	$config->twigloader = new Twig_Loader_Filesystem($config->paths->templates.'twig/');
 	$config->twig = new Twig_Environment($config->twigloader, [
 		'cache' => $config->paths->templates.'twig/cache/',
