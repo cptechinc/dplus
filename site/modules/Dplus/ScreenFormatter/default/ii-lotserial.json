@@ -1,0 +1,96 @@
+{
+	"cols": 8,
+	"lots": {
+		"rows": 1,
+		"columns": {
+			"warehouse": {
+				"line": 1,
+				"column": 1,
+				"col-length": 1,
+				"label": "WH",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"warehouse city": {
+				"line": 1,
+				"column": 2,
+				"col-length": 1,
+				"label": "Warehouse City",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"lot/serial": {
+				"line": 1,
+				"column": 3,
+				"col-length": 1,
+				"label": "Lot/Serial Number",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"bin": {
+				"line": 1,
+				"column": 4,
+				"col-length": 1,
+				"label": "Bin Nbr",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"lot reference": {
+				"line": 1,
+				"column": 5,
+				"col-length": 1,
+				"label": "Lot Ref",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"expire date": {
+				"line": 1,
+				"column": 6,
+				"col-length": 1,
+				"label": "Expire Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"daysaged": {
+				"line": 1,
+				"column": 7,
+				"col-length": 1,
+				"label": "Age",
+				"before-decimal": 4,
+				"after-decimal": 0,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			},
+			"available": {
+				"line": 1,
+				"column": 8,
+				"col-length": 1,
+				"label": "Available",
+				"before-decimal": 4,
+				"after-decimal": 0,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			}
+		}
+	}
+}

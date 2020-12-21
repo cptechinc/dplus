@@ -1,0 +1,49 @@
+{
+	"lots": {
+		"Quote ID": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"warehouse": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"warehouse city": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"lot/serial": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"bin": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"lot reference": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"expire date": {
+			"type": "D",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"daysaged": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"available": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		}
+	}
+}
