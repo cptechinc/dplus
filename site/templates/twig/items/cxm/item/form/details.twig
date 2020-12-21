@@ -123,7 +123,7 @@
 	</div>
 	<div class="col-sm-6">
 		<p class="form-control-plaintext form-control-sm text-right w-75">
-			{{ (item.has_customerpricing() ? item.getCustomerPricing().baseprice : '0.00')|number_format(cxm.decimal_places_price()) }}
+			{{ (item.has_customerpricing() ? item.getCustomerPricing().baseprice : '0.00')|number_format(cxm.field_attribute('price_customer', 'precision')) }}
 		</p>
 	</div>
 </div>
@@ -150,10 +150,16 @@
 	<div class="col-sm-6">
 		{% include 'util/form/input.twig' with {
 				'type': 'number',
-				'name': 'price_uom', 'value': item.get_pricing_peruom() ? item.get_pricing_peruom()|number_format(cxm.decimal_places_price_uom()),
+				'name': 'price_uom',
+				'value': item.get_pricing_peruom() ? item.get_pricing_peruom()|number_format(cxm.field_attribute('price_uom', 'precision')),
+				'class_add': [
+					'text-right',
+					'w-75'
+				],
 				'attributes': {
 					'readonly': item.uom_pricing ? false : true,
 					'tabindex': item.uom_pricing ? '' : '-1',
+					'max': cxm.field_attribute('price_uom', 'max')
 				}
 			}
 		%}
