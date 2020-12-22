@@ -13,6 +13,7 @@
 {% set use_blank_option = use_blank_option ? use_blank_option : false %}
 {% set blank_option_label = blank_option_label ? blank_option_label : '' %}
 {% set options_has_keys = options_has_keys is defined ? options_has_keys : true %}
+
 {%
 	set attributes = {
 		'name': name,
@@ -20,13 +21,8 @@
 		'class': class
 	}
 %}
-{%
-	set optional = {
-		'tabindex': tabindex,
-	}
-%}
 
-<select {% for attribute, value in attributes %} {{ attribute }}="{{ value }}" {% endfor %} {% for attribute, value in optional if value != '' %} {{ attribute }}="{{ value }}" {% endfor %} {{ attributes_extra }}>
+<select {% for attribute, value in attributes %} {{ attribute }}="{{ value }}" {% endfor %} {{ attributes_extra|raw }}>
 	{% if use_blank_option %}
 		<option value="">
 			{{ blank_option_label }}

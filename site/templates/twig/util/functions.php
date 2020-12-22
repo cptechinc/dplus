@@ -143,11 +143,12 @@
 	$filter = new Twig_Filter('htmlattributes', function ($array) {
 		$attrnoval = ['readonly', 'disabled'];
 		$attr = [];
+
 		foreach ($array as $key => $value) {
 			if (in_array($key, $attrnoval)) {
 				$attr[] = $value === true ? $key : '';
 			} else {
-				$attr[] = "$key=$value";
+				$attr[] = "$key=\"$value\"";
 			}
 		}
 		return trim(implode(' ', array_filter($attr)));
