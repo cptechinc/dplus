@@ -21,7 +21,6 @@
 		'class': class
 	}
 %}
-
 <select {% for attribute, value in attributes %} {{ attribute }}="{{ value }}" {% endfor %} {{ attributes_extra|raw }}>
 	{% if use_blank_option %}
 		<option value="">
