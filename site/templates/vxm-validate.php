@@ -86,7 +86,11 @@
 								'description' => $item->UnitofMeasureSale ? $item->UnitofMeasureSale->description : '',
 								'conversion'  => $item->UnitofMeasureSale ? $item->UnitofMeasureSale->conversion : '',
 							)
-						)
+						),
+						'iskit' => $item->is_kit(),
+						'pricing' => [
+							'base' => $item->pricing->baseprice
+						]
 					);
 				} else {
 					$response = false;
