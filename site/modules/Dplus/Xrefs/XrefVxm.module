@@ -54,7 +54,7 @@ class XrefVxm extends WireData implements Module {
 
 	const FIELD_ATTRIBUTES = [
 		'qty_percase' => ['type' => 'number', 'precision' => 2, 'max' => 999999.99],
-		'minbuyqty' => ['type' => 'number', 'precision' => 2, 'max' => 99999999],
+		'minbuyqty'   => ['type' => 'number', 'precision' => 2, 'max' => 99999999],
 		'listprice'   => ['type' => 'number', 'precision' => 2, 'max'  => 999999999.000],
 	];
 
@@ -62,10 +62,11 @@ class XrefVxm extends WireData implements Module {
 		$this->init_configs();
 		$configs = $this->configs;
 		$attributes = self::FIELD_ATTRIBUTES;
-		$attributes['listprice'] = ['type' => 'number', 'precision' => $configs->so->decimal_places_price, 'max' => 99999999.9999];
-		$attributes['unit_cost'] = ['type' => 'number', 'precision' => $configs->po->decimal_places_cost, 'max' => 9999999.9999];
-		$attributes['unit_qty'] = ['type' => 'number', 'precision' => $configs->so->decimal_places_qty, 'max' => 9999999];
+		$attributes['listprice']   = ['type' => 'number', 'precision' => $configs->so->decimal_places_price, 'max' => 99999999.9999];
+		$attributes['unit_cost']   = ['type' => 'number', 'precision' => $configs->po->decimal_places_cost, 'max' => 9999999.9999];
+		$attributes['unit_qty']    = ['type' => 'number', 'precision' => $configs->so->decimal_places_qty, 'max' => 9999999];
 		$attributes['unit_margin'] = ['type' => 'number', 'precision' => 3, 'max' => 99.999];
+		$attributes['optioncode']  = ['type' => 'text', 'label' => $configs->ap->vxm_optioncode1_label, 'disabled' => $configs->ap->vxm_optioncode1_label == '', 'maxlength' => 8];
 		$this->field_attributes = $attributes;
 	}
 
@@ -438,6 +439,10 @@ class XrefVxm extends WireData implements Module {
 		} else {
 			$invalid['po_ordercode'] = "PO Order Code";
 		}
+
+		if ($this->field_attribute('optioncode', 'disabled') === false) {
+			$record->setOptioncode($values->text('optioncode', ['maxlength' => 8]));
+		}
 		return $invalid;
 	}
 
@@ -602,6 +607,14 @@ class XrefVxm extends WireData implements Module {
 	}
 
 	/**
+	 * Return Config Ap
+	 * @return ConfigAp
+	 */
+	public function get_config_ap() {
+		return $this->wire('modules')->get('ConfigureAp')->config();
+	}
+
+	/**
 	 * Intialize configs
 	 * @return void
 	 */
@@ -611,6 +624,7 @@ class XrefVxm extends WireData implements Module {
 			$this->configs->in = $this->get_config_in();
 			$this->configs->so = $this->get_config_so();
 			$this->configs->po = $this->get_config_po();
+			$this->configs->ap = $this->get_config_ap();
 		}
 	}
 

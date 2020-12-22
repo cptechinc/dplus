@@ -240,6 +240,10 @@ $(function() {
 			},
 			uom_purchase: {required: true},
 			qty_percase: {required: true},
+			optioncode: {
+				required: false,
+				maxlength: {{ vxm.field_attribute('optioncode', 'maxlength') }}
+			},
 		},
 		messages: {
 			ouritemID: "Please enter the Your Item ID",

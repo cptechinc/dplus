@@ -63,6 +63,25 @@
 </div>
 <div class="row form-group">
 	<div class="col-sm-6">
+		<label for="optioncode">{{ vxm.field_attribute('optioncode', 'label') }}</label>
+	</div>
+	<div class="col-sm-6">
+		<div class="input-group w-75">
+			{% set disabled = vxm.field_attribute('optioncode', 'disabled') %}
+			{% include 'util/form/input.twig' with {
+					'name': 'optioncode', 'value': item.optioncode,
+					'attributes': {
+						'readonly':  disabled,
+						'tabindex':  disabled ? '-1' : '',
+						'maxlength': vxm.field_attribute('optioncode', 'maxlength'),
+					}
+				}
+			%}
+		</div>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-6">
 		<label for="approvalcode"><b>Approval Code</b></label>
 	</div>
 	<div class="col-sm-6">
@@ -84,7 +103,7 @@
 
 <div class="row">
 	<div class="col-sm-6">
-		<b>Notes Detail</b>
+		<b>Notes -  Detail</b>
 	</div>
 	<div class="col-sm-6">
 		<p class="form-control-plaintext form-control-sm">{{ qnotes.notes.detail.notes_exist(item.itemid, item.vendorid)|yesorno|capitalize }}</p>
