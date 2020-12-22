@@ -78,18 +78,7 @@ $(function() {
 
 	$("body").on("change", "input[name=itemID]", function(e) {
 		var input = $(this);
-
-		request_item(input.val(), function(item) {
-			if (item) {
-				var itemcol = $('.item-col');
-				itemcol.find('.description').text(item.description);
-				itemcol.find('.description2').text(item.description2);
-				itemcol.find('.uom-sale').text(item.uom.sale.description);
-				$('.uom-sale-code').attr('data-conversion', item.uom.sale.conversion);
-				$('.uom-sale-code').text(item.uom.sale.code);
-				input_listprice.change();
-			}
-		});
+		populate_item_data(input.val());
 	});
 
 	$("body").on("change", "input[name=listprice]", function(e) {
@@ -97,6 +86,44 @@ $(function() {
 		input.val(parseFloat(input.val()).toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
 		$('input[name=eachlistprice]').val(parseFloat(get_eachlistprice()).toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
 	});
+
+	function populate_item_data(itemID) {
+		request_item(itemID, function(item) {
+			if (item) {
+				console.log(item);
+				var itemcol = $('.item-col');
+				input_itemID.attr('data-iskit',  item.iskit ? 'true' : 'false');
+				input_itemID.attr('data-itemid', item.itemid);
+				itemcol.find('.description').text(item.description);
+				itemcol.find('.description2').text(item.description2);
+				itemcol.find('.uom-sale').text(item.uom.sale.description);
+				$('.uom-sale-code').attr('data-conversion', item.uom.sale.conversion);
+				$('.uom-sale-code').text(item.uom.sale.code);
+				input_listprice.val(item.pricing.base).change();
+				input_uom.val(item.uom.sale.code).change();
+
+				enable_disable_kit();
+			} else {
+				input_itemID.attr('data-iskit', 'false');
+				input_itemID.attr('data-itemid', '');
+				enable_disable_kit();
+			}
+		});
+	}
+
+	function enable_disable_kit() {
+		var input_iskit = $('select[name=iskit]');
+
+		if (input_itemID.attr('data-iskit') == 'false') {
+			input_iskit.val('N');
+			input_iskit.attr('disabled', 'disabled');
+			input_iskit.attr('tabindex', '-1');
+		} else {
+			input_iskit.val('Y');
+			input_iskit.removeAttr('disabled');
+			input_iskit.attr('tabindex', '');
+		}
+	}
 
 /* =============================================================
 	Unsaved Fields Alert
