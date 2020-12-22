@@ -7,7 +7,7 @@
 	item                   ItemXrefVendor
 #}
 <div class="row form-group">
-	<div class="col-sm-6">
+	<div class="col-sm-3">
 		<label for="po_ordercode"><b>PO Order Code</b></label>
 	</div>
 	<div class="col-sm-6">
@@ -22,10 +22,10 @@
 	</div>
 </div>
 <div class="row form-group">
-	<div class="col-sm-6">
+	<div class="col-sm-3">
 		<label for="qty_percase"><b>Qty Per Case</b></label>
 	</div>
-	<div class="col-sm-6">
+	<div class="col-sm-3">
 		<div class="input-group w-75">
 			{% include 'util/form/input.twig' with {
 					'name': 'qty_percase', 'value': item.qty_percase|number_format(vxm.field_attribute('qty_percase', 'precision')),
@@ -42,10 +42,10 @@
 	</div>
 </div>
 <div class="row form-group">
-	<div class="col-sm-6">
+	<div class="col-sm-3">
 		<label for="minbuyqty"><b>Min Buy Qty</b></label>
 	</div>
-	<div class="col-sm-6">
+	<div class="col-sm-3">
 		<div class="input-group w-75">
 			{% include 'util/form/input.twig' with {
 					'name': 'minbuyqty', 'value': item.minbuyqty|number_format(vxm.field_attribute('minbuyqty', 'precision')),
@@ -62,11 +62,11 @@
 	</div>
 </div>
 <div class="row form-group">
-	<div class="col-sm-6">
+	<div class="col-sm-3">
 		<label for="optioncode">{{ vxm.field_attribute('optioncode', 'label') }}</label>
 	</div>
 	<div class="col-sm-6">
-		<div class="input-group w-75">
+		<div class="input-group w-50">
 			{% set disabled = vxm.field_attribute('optioncode', 'disabled') %}
 			{% include 'util/form/input.twig' with {
 					'name': 'optioncode', 'value': item.optioncode,
@@ -81,19 +81,38 @@
 	</div>
 </div>
 <div class="row form-group">
+	<div class="col-sm-3">
+		<label for="iskit">Kit Detail</label>
+	</div>
 	<div class="col-sm-6">
+		{% include 'util/form/select.twig' with {
+				'name': 'iskit', 'show_value': true, 'selected_value': item.iskit,
+				'options': {
+					'Y': 'Yes',
+					'N': 'No'
+				},
+				'attributes': {
+					'disabled': item.imitem.is_kit() == false,
+					'tabindex': item.imitem.is_kit() == false ? '-1' : '',
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-3">
 		<label for="approvalcode"><b>Approval Code</b></label>
 	</div>
 	<div class="col-sm-6">
 		{% include 'util/form/select.twig' with {
-				'name': 'approvalcode', 'show_value': true, 'selectedvalue': item.approvalcode,
+				'name': 'approvalcode', 'show_value': true, 'selected_value': item.approvalcode,
 				'options': item.get_approvalcodeoptions()
 			}
 		%}
 	</div>
 </div>
 <div class="row form-group">
-	<div class="col-sm-6">
+	<div class="col-sm-3">
 		<label for="date_changed"><b>Last Change Date</b></label>
 	</div>
 	<div class="col-sm-6">
@@ -102,7 +121,7 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-6">
+	<div class="col-sm-3">
 		<b>Notes -  Detail</b>
 	</div>
 	<div class="col-sm-6">
@@ -111,7 +130,7 @@
 </div>
 <div class="row">
 	<div class="col-sm-1"></div>
-	<div class="col-sm-5">
+	<div class="col-sm-2">
 		<b>Internal</b>
 	</div>
 	<div class="col-sm-6">
