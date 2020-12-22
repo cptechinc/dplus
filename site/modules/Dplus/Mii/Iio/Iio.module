@@ -1,0 +1,486 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+use UserPermissionsItmQuery, UserPermissionsItm;
+
+/**
+ * Module that handles the editing of the ITMP User Permissions
+ */
+class Iio extends WireData implements Module {
+	const MODEL              = 'OptionsIi';
+	const MODEL_KEY          = 'userid';
+	const RESPONSE_TEMPLATE  = 'User {key} permissions were {not} {crud}';
+	const RECORDLOCKER_FUNCTION  = 'iio';
+
+	const TEMPLATES_II = [
+		'ii-pricing',
+		'ii-activity',
+		'ii-bom',
+		'ii-kit',
+		'ii-components',
+		'ii-costing',
+		'ii-documents',
+		'ii-general',
+		'ii-lotserial',
+		'ii-pricing',
+		'ii-purchase-history',
+		'ii-purchase-orders',
+		'ii-quotes',
+		'ii-requirements',
+		'ii-sales-history',
+		'ii-sales-orders',
+		'ii-stock',
+		'ii-substitutes',
+		'ii-usage',
+		'ii-where-used',
+	];
+
+	const TEMPLATES_PERMISSIONS = [
+		'ii-pricing'          => 'pricing',
+		'ii-activity'         => 'activity',
+		'ii-bom'              => 'kit',
+		'ii-kit'              => 'kit',
+		'ii-components'       => 'kit',
+		'ii-costing'          => 'costing',
+		'ii-documents'        => '',
+		'ii-general'          => 'general',
+		'ii-lotserial'        => 'lotserial',
+		'ii-pricing'          => 'pricing',
+		'ii-purchase-history' => 'purchasehistory',
+		'ii-purchase-orders'  => 'purchaseorders',
+		'ii-quotes'           => 'lotsales',
+		'ii-requirements'     => 'requirements',
+		'ii-sales-history'    => 'saleshistory',
+		'ii-sales-orders'     => 'salesorders',
+		'ii-stock'            => 'stock',
+		'ii-substitutes'      => 'substitutes',
+		'ii-usage'            => '',
+		'ii-where-used'       => '',
+	];
+
+	const PERMISSIONS_LABELS = [
+		'activity'          => 'Activity',
+		'cost'              => 'Costing',
+		'general'           => 'General',
+		'kit'               => 'Kits/BOM',
+		'pricing'           => 'Pricing',
+		'purchasehistory'   => 'Purchase History',
+		'purchaseorders'    => 'Purchase Orders',
+		'requirements'      => 'Requirement',
+		'saleshistory'      => 'Sales history',
+		'salesorders'       => 'Sales Order',
+		'lotserial'         => 'Serial / Lot Search',
+		'stock'             => 'Stock Status',
+		'substitutes'       => 'Subtitutes / Supercede',
+		'lostsales'         => 'Lost Sales / Quote',
+	];
+
+	const PERMISSIONS_DEFAULT = [
+		'whse'      => 'Y',
+		'costing'   => 'Y',
+		'pricing'   => 'Y',
+		'xrefs'     => 'Y',
+		'misc'      => 'Y',
+		'packaging' => 'Y'
+	];
+
+	/**
+	 * Returns UserPermissionsItmQuery
+	 * @return UserPermissionsItmQuery
+	 */
+	public function query() {
+		return UserPermissionsItmQuery::create();
+	}
+
+	/**
+	 * Return Permissions Labels, and fields
+	 * @return array
+	 */
+	public function permissions_labels() {
+		return self::PERMISSIONS_LABELS;
+	}
+
+	/**
+	 * Return DEFAULT PERMISSIONS
+	 * @return array
+	 */
+	public function default_permissions() {
+		return self::PERMISSIONS_DEFAULT;
+	}
+
+	public function has_response() {
+		return boolval($this->wire('session')->response_itmp);
+	}
+
+	public function response() {
+		return $this->wire('session')->response_itmp;
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return UserPermissionsItm[]
+	 * @return UserPermissionsItm[]|ObjectCollection
+	 */
+	public function users() {
+		$q = $this->query();
+		return $q->find();
+	}
+
+	/**
+	 * Return if User Permissions Exists
+	 * @param  string $loginID Login ID
+	 * @return bool
+	 */
+	public function exists($loginID) {
+		$q = $this->query();
+		$q->filterByUserid($loginID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return UserPermissionsItm
+	 * @param  string $loginID Login ID
+	 * @return UserPermissionsItm
+	 */
+	public function user($loginID) {
+		$q = $this->query();
+		$q->filterByUserid($loginID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return new UserPermissionsItm
+	 * @param  string $loginID
+	 * @return UserPermissionsItm
+	 */
+	public function new($loginID = '') {
+		$user = new UserPermissionsItm();
+		foreach (self::PERMISSIONS_DEFAULT as $key => $value) {
+			$setFunction = "set".ucfirst($key);
+			$user->$setFunction($value);
+		}
+		if (strlen($loginID) && $loginID != 'new') {
+			$user->setUserid($loginID);
+		}
+		return $user;
+	}
+
+	/**
+	 * Return New or Existing User
+	 * @param  string $loginID
+	 * @return UserPermissionsItm
+	 */
+	public function get_create($loginID) {
+		if ($this->exists($loginID)) {
+			return $this->user($loginID);
+		}
+		return $this->new($loginID);
+	}
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Takes Input, processses the action, calls the input_{$crud} to execute
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'update-itmp':
+				$this->input_update($input);
+			default:
+				// TODO;
+				break;
+		}
+	}
+
+	/**
+	 * Update CXM Item from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function input_update(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$loginID = $values->text('loginID');
+		$invalidfields = [];
+		$record = $this->get_create($loginID);
+
+		if (!$record->isNew()) {
+			if (!$this->lockrecord($record->loginid)) {
+				$message = self::DESCRIPTION_RECORD . " ($record->loginid)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record->loginid);
+				$this->wire('session')->response_itmp = MsaResponse::response_error($record->loginid, $message);
+				return false;
+			}
+		}
+		$invalidfields = $this->update_record_input($record, $input);
+		$this->wire('session')->response_itmp = $this->save_and_respond($record, $invalidfields);
+		return $this->wire('session')->response_itmp->has_success();
+	}
+
+
+	/**
+		 * Updates CXM Item Record
+		 * @param  UserPermissionsItm $record CXM Item Record
+		 * @param  WireInput        $input  Input Data
+		 * @return MsaResponse
+		 */
+		public function update_record_input(UserPermissionsItm $record, WireInput $input) {
+			$rm = strtolower($input->requestMethod());
+			$values = $input->$rm;
+			$invalidfields = array();
+			$invalidfields = $this->update_record_input_validated($record, $input);
+			foreach (self::PERMISSIONS_DEFAULT as $key => $default) {
+				$setFunction = "set".ucfirst($key);
+				$record->$setFunction($values->$key ? $values->yn($key) : $default);
+			}
+
+			$record->setDate(date('Ymd'));
+			$record->setTime(date('His'));
+			return $invalidfields;
+		}
+
+		/**
+	 * Updates CXM Item Record's UoM Pricing, UoM Customer, Item ID, CustID
+	 * Validates Each property is valid, returns invalid inputs, descriptions
+	 * @param  UserPermissionsItm $record   CXM Item
+	 * @param  WireInput        $input    Input Data
+	 * @return array
+	 */
+	protected function update_record_input_validated(UserPermissionsItm $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$modules = $this->wire('modules');
+		$validate = $modules->get('ValidateMsa');
+
+		$invalid = array();
+
+		$fields = array(
+			'loginID' => array(
+				'description' => 'Login ID',
+				'input'       => 'loginID',
+				'property'    => 'loginid',
+				'allow_blank' => false,
+				'function'    => 'loginid'
+			),
+		);
+
+		$validator = $modules->get('InputValidator');
+		$validator->set_validator($validate)->set_input($input)->set_record($record)->set_validatefields($fields);
+		$invalid = $validator->validate();
+		$validator->set_valid_properties();
+		return $invalid;
+	}
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
+	/**
+	 * Returns MsaResponse based on the outcome of the database save
+	 * @param  UserPermissionsItm $record        Record to record response of database save
+	 * @param  array          $invalidfields Input fields that require attention
+	 * @return MsaResponse
+	 */
+	protected function save_and_respond(UserPermissionsItm $record, array $invalidfields) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new MsaResponse();
+		$response->set_key($record->loginid);
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+		}
+
+		if ($is_new) {
+			$response->set_action(MsaResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$response->set_action(MsaResponse::CRUD_DELETE);
+		} else {
+			$response->set_action(MsaResponse::CRUD_UPDATE);
+		}
+		$response->build_message(self::RESPONSE_TEMPLATE);
+
+		if ($response->has_success() && empty($invalidfields)) {
+			$this->request_update($record->loginid);
+		}
+		$response->set_fields($invalidfields);
+		return $response;
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	private function request_dplus(array $data) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$data = array_merge(["DBNAME=$dplusdb"], $data);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+	/**
+	 * Writes File for Dplus to update the ITM Perm File for this login ID
+	 * @param  string $loginID Login ID
+	 * @return void
+	 */
+	public function request_update($loginID) {
+		$data = array('UPDATEITMPERM', "LOGINID=$loginID");
+		$this->request_dplus($data);
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return if Field has Error
+	 * NOTE: Uses $session->response_itm->fields to derive this
+	 * @param  string $inputname Input name e.g. commissiongroup
+	 * @return bool
+	 */
+	public function field_has_error($inputname) {
+		$response = $this->wire('session')->response_itmp;
+		return ($response) ? array_key_exists($inputname, $response->fields) : false;
+	}
+
+	/**
+	 * Return Itm Subfunctions that the user has permissions to
+	 * @param  User   $user
+	 * @return PageArray
+	 */
+	public function itm_subfunctions(User $user) {
+		$permitted = $user->permitted_itm();
+		if (empty($permitted)) {
+			return new PageArray();
+		}
+		$p = $this->wire('pages')->get('pw_template=itm');
+		$templates = implode('|', $this->permissions_to_templates($permitted));
+		return $p->children("pw_template=$templates");
+	}
+
+	/**
+	 * Return Templates that the user has permissions to
+	 * @param  array  $permitted e.g ['pricing', 'xrefs']
+	 * @return array
+	 */
+	public function permissions_to_templates(array $permitted) {
+		$templates = [];
+		foreach (self::TEMPLATES_PERMISSIONS as $template => $permission) {
+			if (in_array($permission, $permitted)) {
+				$templates[] = $template;
+			}
+		}
+		return $templates;
+	}
+
+	/**
+	 * Return if User is allowed to view Template
+	 * @param  User   $user     Dplus User
+	 * @param  string $template Template name
+	 * @return bool
+	 */
+	public function is_user_allowed_template(User $user, $template) {
+		$permissions = $this->user($user->loginid);
+		$needed = self::TEMPLATES_PERMISSIONS[$template];
+		return $permissions->is_true($needed);
+	}
+
+	/**
+	 * Lock Record, validate User is locking Record
+	 * @param  string $loginID
+	 * @return bool
+	 */
+	public function lockrecord($loginID) {
+		if (!$this->recordlocker->function_locked($loginID)) {
+			$this->recordlocker->create_lock($loginID);
+		}
+		return $this->recordlocker->function_locked_by_user($loginID);
+	}
+
+/* =============================================================
+	URL Functions
+============================================================= */
+	public function itmpURL($loginID) {
+		$url = new Url($this->wire('pages')->get('pw_template=itmp')->url);
+		$url->query->set('focus', $loginID);
+		return $url->getUrl();
+	}
+
+	public function user_deleteURL($loginID) {
+		$url = new Url($this->wire('pages')->get('pw_template=itmp')->url);
+		$url->query->set('action', 'delete-itmp-user');
+		$url->query->set('userID', $loginID);
+		return $url->getUrl();
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus ITMP CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for ITMP',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+	/**
+	 * Set up Functions / Properties for pw_templated pages
+	 * @return void
+	 */
+	public function init() {
+		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
+		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
+
+		$this->addHook("User::permitted_itm", function($event) {
+			$user = $event->object;
+			$permission = $this->user($user->loginid);
+			$event->return = $permission->permitted();
+		});
+
+		$this->addHook("User::permitted_template", function($event) {
+			$user = $event->object;
+			$template = $event->arguments(0);
+			$event->return = $this->is_user_allowed_template($user, $template);
+		});
+
+		$this->addHook("Page(pw_template=itm)::subfunctions", function($event) {
+			$user = $this->wire('user');
+			$event->return = $this->itm_subfunctions($user);
+		});
+
+		$this->addHook("Page(pw_template=itmp)::itmpURL", function($event) {
+			$loginID = $event->arguments(0);
+			$event->return = $this->itmpURL($loginID);
+		});
+
+		$this->addHook("Page(pw_template=itmp)::delete_userURL", function($event) {
+			$loginID = $event->arguments(0);
+			$event->return = $this->user_deleteURL($loginID);
+		});
+
+		$this->addHook("Page(pw_template=itmp)::jsonapiURL", function($event) {
+			$api = $event->arguments(0);
+			$pages = $this->wire('pages');
+			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
+		});
+
+		$this->addHook("Page(pw_template=itmp)::search_lookupURL", function($event) {
+			$ajaxcode = $event->arguments(0);
+			$event->return = $this->wire('pages')->get("template=api-ajax,ajaxcode=$ajaxcode")->httpUrl;
+		});
+
+	}
+}
