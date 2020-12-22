@@ -443,6 +443,9 @@ class XrefVxm extends WireData implements Module {
 		if ($this->field_attribute('optioncode', 'disabled') === false) {
 			$record->setOptioncode($values->text('optioncode', ['maxlength' => 8]));
 		}
+		if (array_key_exists('itemid', $invalid) === false) {
+			$record->setIskit($values->yn('iskit'));
+		}
 		return $invalid;
 	}
 
