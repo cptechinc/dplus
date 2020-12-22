@@ -36,6 +36,10 @@
 		$session->remove('response_qnote');
 	}
 
+	if ($session->response_pdm ) {
+		$page->body .= $config->twig->render('mso/pdm/response-alert.twig', ['response' => $session->response_pdm]);
+	}
+
 	if ($input->get->custID) {
 		$custID = $input->get->text('custID');
 
@@ -97,7 +101,6 @@
 				$filter_cxm->search($values->text('q'));
 			}
 			$filter_cxm->apply_sortby($page);
-
 
 			$items = $filter_cxm->query->paginate($input->pageNum, $session->display);
 			$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;

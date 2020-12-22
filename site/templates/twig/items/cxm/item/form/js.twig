@@ -21,7 +21,7 @@ $(function() {
 ============================================================= */
 	$("body").on("change", "input[name=price_customer]", function(e) {
 		var input = $(this);
-		var price = parseInt(input.val());
+		var price = parseFloat(input.val());
 		input.val(price.toFixed({{ cxm.field_attribute('price_customer', 'precision') }}));
 		calculate_peruom();
 	});
@@ -135,9 +135,7 @@ $(function() {
 		var itemID = button.data('itemid');
 		var description = button.data('description');
 		var description2 = button.data('description2');
-		input_itemID.val(itemID).change() ;
-		// input_itemID.closest('.item-col').find('.description').text(description);
-		// input_itemID.closest('.item-col').find('.description2').text(description2);
+		input_itemID.val(itemID).change();
 		modal_ajax.modal('hide');
 	});
 
@@ -221,25 +219,23 @@ $(function() {
 			custitemID: "Use a valid Cust Item ID, (No more than {{ cxm.maxlength_custitemid() }} characters)",
 		},
 		submitHandler: function(form) {
-			// var formdata = form_cxm.serializeArray().reduce(function(obj, item) {
-			// 	obj[item.name] = item.value;
-			// 	return obj;
-			// }, {});
-			update_cxm(form);
+			submit_cxm(form);
 		}
 	});
 
 
-	function update_cxm(form) {
+	function submit_cxm(form) {
 		request_validate_custitemID(function(exists) {
-			if (exists === true) {
-				if (input_custitemID.val() != input_custitemID.data('custitemid')) {
-					alert_existing();
+			if (exists === true && input_custitemID.val() != input_custitemID.data('custitemid')) {
+				swal_existing();
+			} else {
+				var allow_pdm_change = {{ cxm.allow_pdm_update() }};
+
+				if (allow_pdm_change && input_price_customer.val() != $('input[name=price_contract]').val()) {
+					swal_update_pdm(form);
 				} else {
 					form.submit();
 				}
-			} else {
-				form.submit();
 			}
 		});
 	}
@@ -248,15 +244,13 @@ $(function() {
 		e.preventDefault();
 
 		request_validate_custitemID(function(exists) {
-			if (exists === true) {
-				if (input_custitemID.val() != input_custitemID.data('custitemid')) {
-					alert_existing();
-				}
+			if (exists === true && input_custitemID.val() != input_custitemID.data('custitemid')) {
+				swal_existing();
 			}
 		});
 	});
 
-	function alert_existing() {
+	function swal_existing() {
 		swal2.fire({
 			title: "Customer Item " + input_custitemID.val() + " exists",
 			text: 'Would you like to go edit this item?',
@@ -272,6 +266,36 @@ $(function() {
 				uri.setQuery('custitemID', input_custitemID.val());
 				window.location.href = uri.toString();
 			}
+		});
+	}
+
+	function swal_update_pdm(form) {
+		var html = '<table class="table table-sm">' +
+			'<tr>' +
+				'<td>Current Price</td>' +
+				'<td class="text-right">'+ $('input[name=price_contract]').val() +'</td>' +
+			'</tr>' +
+			'<tr>' +
+				'<td>X-ref Price</td>' +
+				'<td class="text-right">'+input_price_customer.val()+'</td>'+
+			'</tr>'+
+		'</table>';
+		html += 'Do you want to create a discount record with this price?';
+
+		swal2.fire({
+			title: "Confirmation",
+			html: html,
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			if (result.value) {
+				$('input[name=updatepdm]').val('true');
+			} else {
+				$('input[name=updatepdm]').val('false');
+			}
+			form.submit();
 		});
 	}
 
@@ -342,10 +366,10 @@ $(function() {
 	function calculate_custprice() {
 		if (input_itemID.attr('data-qtypercase') == '' || input_itemID.attr('data-itemid') != input_itemID.val()) {
 			populate_item_data(input_itemID.val(), function() {
-				_calculate_custprice()
+				_calculate_custprice();
 			});
 		} else {
-			_calculate_custprice()
+			_calculate_custprice();
 		}
 	}
 

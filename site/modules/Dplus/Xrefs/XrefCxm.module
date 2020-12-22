@@ -70,7 +70,6 @@ class XrefCxm extends WireData implements Module {
 		return self::FIELD_ATTRIBUTES[$field][$attr];
 	}
 
-
 	/**
 	 * Return Cust Item ID Max Length
 	 * @return int
@@ -93,6 +92,11 @@ class XrefCxm extends WireData implements Module {
 	 */
 	public function maxlength_description2() {
 		return ItemXrefCustomer::LENGTH_DESCRIPTION2;
+	}
+
+	public function allow_pdm_update() {
+		$config = $this('modules')->get('ConfigureSo')->config();
+		return $config->update_pdm_from_cxm();
 	}
 
 /* =============================================================
@@ -353,7 +357,25 @@ class XrefCxm extends WireData implements Module {
 
 		$this->update_record_input($record, $input);
 		$this->wire('session')->response_xref = $this->save_and_respond($record);
+
+		if ($this->wire('session')->response_xref->has_success() && $this->allow_pdm_update()) {
+			$this->update_pdm($record);
+		}
 		return $this->wire('session')->response_xref->has_success();
+	}
+
+	private function update_pdm(ItemXrefCustomer $xref) {
+		if ($this->allow_pdm_update()) {
+			$input = new WireInput();
+			$rm = strtolower($input->requestMethod());
+			$values = $input->$rm;
+			$values->action = 'update-pdm-cxm';
+			$values->price  = $xref->price_customer;
+			$values->custID  = $xref->custid;
+			$values->custitemID  = $xref->custitemid;
+			$values->itemID  = $xref->itemid;
+			$this->wire('modules')->get('Pdm')->process_input($input);
+		}
 	}
 
 	/**
@@ -370,9 +392,6 @@ class XrefCxm extends WireData implements Module {
 		$record->setCustitemid($values->text('custitemID'));
 		$invalidfields = $this->update_record_input_validated($record, $input);
 
-		if ($this->is_key_modified($record) && !$record->isNew()) {
-			$this->delete_recreate_record($record);
-		}
 		$record->setDescription($values->text('description', ['maxLength' => $this->maxlength_description()]));
 		$record->setDescription2($values->text('description2', ['maxLength' => $this->maxlength_description2()]));
 		$record->setRevision($values->text('revision', ['maxLength' => $this->field_attribute('revision', 'maxlength')]));
@@ -444,8 +463,8 @@ class XrefCxm extends WireData implements Module {
 		}
 		$record->setRounding($rounding);
 
-		if ($record->uom_pricing != '') {
-			//$record->setPrice_uom($values->float('price_uom', ['precision' => $this->decimal_places_price_uom()]));
+		if ($record->price_uom != '') {
+			$record->setPrice_uom($values->float('price_uom', ['precision' => $this->decimal_places_price_uom()]));
 		}
 		return $invalid;
 	}

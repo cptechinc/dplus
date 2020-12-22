@@ -124,6 +124,7 @@
 	<div class="col-sm-6">
 		<p class="form-control-plaintext form-control-sm text-right w-75">
 			{{ (item.has_customerpricing() ? item.getCustomerPricing().baseprice : '0.00')|number_format(cxm.field_attribute('price_customer', 'precision')) }}
+			<input type="hidden" name="price_contract" value="{{ (item.has_customerpricing() ? item.getCustomerPricing().baseprice : '0.00')|number_format(cxm.field_attribute('price_customer', 'precision')) }}">
 		</p>
 	</div>
 </div>
