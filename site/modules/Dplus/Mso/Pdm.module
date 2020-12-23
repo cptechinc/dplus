@@ -65,8 +65,12 @@ class Pdm extends WireData implements Module {
 
 		$q = $this->query_customer($xref->custid, $xref->itemid);
 		$pricing = $q->findOneOrCreate();
+		$pricing->setDefaults();
 		$pricing->setBaseprice($values->float('price'));
 		$pricing->setLastchangedate(date('Ymd'));
+		$pricing->setDate(date('Ymd'));
+		$pricing->setTime(date('His'));
+		$pricing->setDummy('P');
 		$this->wire('session')->response_pdm = $this->save_and_respond($pricing);
 	}
 

@@ -358,22 +358,29 @@ class XrefCxm extends WireData implements Module {
 		$this->update_record_input($record, $input);
 		$this->wire('session')->response_xref = $this->save_and_respond($record);
 
-		if ($this->wire('session')->response_xref->has_success() && $this->allow_pdm_update()) {
+		if ($this->wire('session')->response_xref->has_success() && $values->text('updatepdm') == 'true') {
 			$this->update_pdm($record);
 		}
 		return $this->wire('session')->response_xref->has_success();
 	}
 
 	private function update_pdm(ItemXrefCustomer $xref) {
-		if ($this->allow_pdm_update()) {
+		$allowed = false;
+		$allowed = $this->allow_pdm_update();
+
+		if ($xref->has_customerpricing()) {
+			$allowed = $xref->getCustomerPricing()->baseprice != $xref->price_customer;
+		}
+
+		if ($allowed) {
 			$input = new WireInput();
 			$rm = strtolower($input->requestMethod());
 			$values = $input->$rm;
-			$values->action = 'update-pdm-cxm';
-			$values->price  = $xref->price_customer;
-			$values->custID  = $xref->custid;
+			$values->action      = 'update-pdm-cxm';
+			$values->price       = $xref->price_customer;
+			$values->custID      = $xref->custid;
 			$values->custitemID  = $xref->custitemid;
-			$values->itemID  = $xref->itemid;
+			$values->itemID      = $xref->itemid;
 			$this->wire('modules')->get('Pdm')->process_input($input);
 		}
 	}

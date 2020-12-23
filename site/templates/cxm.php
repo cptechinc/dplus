@@ -36,7 +36,7 @@
 		$session->remove('response_qnote');
 	}
 
-	if ($session->response_pdm ) {
+	if ($session->response_pdm) {
 		$page->body .= $config->twig->render('mso/pdm/response-alert.twig', ['response' => $session->response_pdm]);
 	}
 
@@ -142,6 +142,7 @@
 		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $customers->getNbResults()]);
 	}
 	$session->remove('response_xref');
+	$session->remove('response_pdm');
 
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 
