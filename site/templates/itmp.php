@@ -4,7 +4,7 @@
 
 	if ($values->action) {
 		$itmp->process_input($input);
-		$session->redirect($page->itmpURL($values->text('loginID')));
+		$session->redirect($page->itmpURL($values->text('loginID')), $http301);
 	}
 
 	if ($itmp->has_response()) {
