@@ -2,7 +2,7 @@
 
 use Purl\Url;
 
-use UserPermissionsItmQuery, UserPermissionsItm;
+use OptionsIiQuery, OptionsIi;
 
 /**
  * Module that handles the editing of the ITMP User Permissions
@@ -59,38 +59,89 @@ class Iio extends WireData implements Module {
 		'ii-where-used'       => '',
 	];
 
-	const PERMISSIONS_LABELS = [
-		'activity'          => 'Activity',
-		'cost'              => 'Costing',
-		'general'           => 'General',
-		'kit'               => 'Kits/BOM',
-		'pricing'           => 'Pricing',
-		'purchasehistory'   => 'Purchase History',
-		'purchaseorders'    => 'Purchase Orders',
-		'requirements'      => 'Requirement',
-		'saleshistory'      => 'Sales history',
-		'salesorders'       => 'Sales Order',
-		'lotserial'         => 'Serial / Lot Search',
-		'stock'             => 'Stock Status',
-		'substitutes'       => 'Subtitutes / Supercede',
-		'lostsales'         => 'Lost Sales / Quote',
+	const II_SCREENS = [
+		'activity',
+		'cost',
+		'general',
+		'kit',
+		'pricing',
+		'purchasehistory',
+		'purchaseorders',
+		'requirements',
+		'saleshistory',
+		'salesorders',
+		'lotserial',
+		'stock',
+		'substitutes',
+		'lostsales',
 	];
 
-	const PERMISSIONS_DEFAULT = [
-		'whse'      => 'Y',
-		'costing'   => 'Y',
-		'pricing'   => 'Y',
-		'xrefs'     => 'Y',
-		'misc'      => 'Y',
-		'packaging' => 'Y'
+/* =============================================================
+	Const, Config Functions
+============================================================= */
+	public function iiscreens() {
+		return self::II_SCREENS;
+	}
+
+	const OPTION_ATTRIBUTES = [
+		'activity'        => ['default' => 'Y', 'label' => 'Activity', 'whse'=> true,  'lotserial'=> true,  'date'=> true],
+		'cost'            => ['default' => 'Y', 'label' => 'Costing', 'whse'=> true,  'lotserial'=> true,  'date'=> false],
+		'general'         => ['default' => 'Y', 'label' => 'General', 'whse'=> false, 'lotserial'=> false, 'date'=> false],
+		'kit'             => ['default' => 'Y', 'label' => 'Kits/BOM', 'whse'=> false, 'lotserial'=> false, 'date'=> false],
+		'pricing'         => ['default' => 'Y', 'label' => 'Pricing', 'whse'=> false, 'lotserial'=> false, 'date'=> false],
+		'purchasehistory' => ['default' => 'Y', 'label' => 'Purchase History', 'whse'=> true,  'lotserial'=> true,  'date'=> true],
+		'purchaseorders'  => ['default' => 'Y', 'label' => 'Purchase Orders',  'whse'=> true,  'lotserial'=> false, 'date'=> false],
+		'requirements'    => ['default' => 'Y', 'label' => 'Requirement', 'whse'=> true,  'lotserial'=> true,  'date'=> false],
+		'saleshistory'    => ['default' => 'Y', 'label' => 'Sales History',  'whse'=> true,  'lotserial'=> true,  'date'=> true],
+		'salesorders'     => ['default' => 'Y', 'label' => 'Sales Orders',  'whse'=> true,  'lotserial'=> false, 'date'=> false],
+		'lotserial'       => ['default' => 'Y', 'label' => 'Serial / Lot Search',  'whse'=> true,  'lotserial'=> false, 'date'=> false],
+		'stock'           => ['default' => 'Y', 'label' => 'Stock Status',  'whse'=> true,  'lotserial'=> true,  'date'=> false],
+		'substitutes'     => ['default' => 'Y', 'label' => 'Subtitutes / Supercede',  'whse'=> true,  'lotserial'=> false, 'date'=> false],
+		'lostsales'       => ['default' => 'Y', 'label' => 'Lost Sales / Quote',  'whse'=> true,  'lotserial'=> false, 'date'=> false],
 	];
 
 	/**
-	 * Returns UserPermissionsItmQuery
-	 * @return UserPermissionsItmQuery
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function field_attribute($field = '', $attr = '') {
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		if (array_key_exists($field, self::OPTION_ATTRIBUTES) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, self::OPTION_ATTRIBUTES[$field]) === false) {
+			return false;
+		}
+		return self::OPTION_ATTRIBUTES[$field][$attr];
+	}
+
+	const PERMISSIONS_DEFAULT = [
+		'activity'          => 'Y',
+		'cost'              => 'Y',
+		'general'           => 'Y',
+		'kit'               => 'Y',
+		'pricing'           => 'Y',
+		'purchasehistory'   => 'Y',
+		'purchaseorders'    => 'Y',
+		'requirements'      => 'Y',
+		'saleshistory'      => 'Y',
+		'salesorders'       => 'Y',
+		'lotserial'         => 'Y',
+		'stock'             => 'Y',
+		'substitutes'       => 'Y',
+		'lostsales'         => 'Y',
+	];
+
+	/**
+	 * Returns OptionsIiQuery
+	 * @return OptionsIiQuery
 	 */
 	public function query() {
-		return UserPermissionsItmQuery::create();
+		return OptionsIiQuery::create();
 	}
 
 	/**
@@ -121,8 +172,8 @@ class Iio extends WireData implements Module {
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
-	 * Return UserPermissionsItm[]
-	 * @return UserPermissionsItm[]|ObjectCollection
+	 * Return OptionsIi[]
+	 * @return OptionsIi[]|ObjectCollection
 	 */
 	public function users() {
 		$q = $this->query();
@@ -141,9 +192,9 @@ class Iio extends WireData implements Module {
 	}
 
 	/**
-	 * Return UserPermissionsItm
+	 * Return OptionsIi
 	 * @param  string $loginID Login ID
-	 * @return UserPermissionsItm
+	 * @return OptionsIi
 	 */
 	public function user($loginID) {
 		$q = $this->query();
@@ -152,12 +203,12 @@ class Iio extends WireData implements Module {
 	}
 
 	/**
-	 * Return new UserPermissionsItm
+	 * Return new OptionsIi
 	 * @param  string $loginID
-	 * @return UserPermissionsItm
+	 * @return OptionsIi
 	 */
 	public function new($loginID = '') {
-		$user = new UserPermissionsItm();
+		$user = new OptionsIi();
 		foreach (self::PERMISSIONS_DEFAULT as $key => $value) {
 			$setFunction = "set".ucfirst($key);
 			$user->$setFunction($value);
@@ -171,7 +222,7 @@ class Iio extends WireData implements Module {
 	/**
 	 * Return New or Existing User
 	 * @param  string $loginID
-	 * @return UserPermissionsItm
+	 * @return OptionsIi
 	 */
 	public function get_create($loginID) {
 		if ($this->exists($loginID)) {
@@ -193,7 +244,7 @@ class Iio extends WireData implements Module {
 		$values = $input->$rm;
 
 		switch ($values->text('action')) {
-			case 'update-itmp':
+			case 'update-iio':
 				$this->input_update($input);
 			default:
 				// TODO;
@@ -228,11 +279,11 @@ class Iio extends WireData implements Module {
 
 	/**
 		 * Updates CXM Item Record
-		 * @param  UserPermissionsItm $record CXM Item Record
+		 * @param  OptionsIi $record CXM Item Record
 		 * @param  WireInput        $input  Input Data
 		 * @return MsaResponse
 		 */
-		public function update_record_input(UserPermissionsItm $record, WireInput $input) {
+		public function update_record_input(OptionsIi $record, WireInput $input) {
 			$rm = strtolower($input->requestMethod());
 			$values = $input->$rm;
 			$invalidfields = array();
@@ -250,11 +301,11 @@ class Iio extends WireData implements Module {
 		/**
 	 * Updates CXM Item Record's UoM Pricing, UoM Customer, Item ID, CustID
 	 * Validates Each property is valid, returns invalid inputs, descriptions
-	 * @param  UserPermissionsItm $record   CXM Item
+	 * @param  OptionsIi $record   CXM Item
 	 * @param  WireInput        $input    Input Data
 	 * @return array
 	 */
-	protected function update_record_input_validated(UserPermissionsItm $record, WireInput $input) {
+	protected function update_record_input_validated(OptionsIi $record, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$modules = $this->wire('modules');
@@ -284,11 +335,11 @@ class Iio extends WireData implements Module {
 ============================================================= */
 	/**
 	 * Returns MsaResponse based on the outcome of the database save
-	 * @param  UserPermissionsItm $record        Record to record response of database save
+	 * @param  OptionsIi $record        Record to record response of database save
 	 * @param  array          $invalidfields Input fields that require attention
 	 * @return MsaResponse
 	 */
-	protected function save_and_respond(UserPermissionsItm $record, array $invalidfields) {
+	protected function save_and_respond(OptionsIi $record, array $invalidfields) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
