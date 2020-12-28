@@ -1,0 +1,17 @@
+<div class="row">
+	<div class="col-sm-3">
+		<label for="userID">User ID</label>
+	</div>
+	<div class="col-sm-9">
+		{% include 'util/form/input-with-modal-lookup.twig' with {
+				'name': 'userID', 'value': '',
+				'modaltarget': '#ajax-modal',
+				'modaldescription': 'Search for / Choose User ID',
+				'attributes_button': {'data-search': 'user', 'data-lookupurl': ''},
+				'class_add': ['ajax-lookup'],
+				'small': true,
+				'attributes': {'data-loginid': '', 'data-validate': 'loginid', 'data-ajaxfields': ''}
+			}
+		%}
+	</div>
+</div>

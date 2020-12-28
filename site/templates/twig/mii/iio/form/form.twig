@@ -1,0 +1,21 @@
+<form action="">
+	<div class="mb-3">
+		{% include 'mii/iio/form/key.twig' %}
+	</div>
+
+
+	<div class="list-group">
+		<div class="list-group-item bg-dark text-white">
+			<div class="row">
+				<div class="col-sm-2">Screen Option</div>
+				<div class="col-sm-1">Avail</div>
+				<div class="col-sm-2">Whse</div>
+				<div class="col-sm-1">L / S</div>
+				<div class="col-sm-6"></div>
+			</div>
+		</div>
+		{% for option in iio.iiscreens() %}
+			{% include 'mii/iio/form/screen-options.twig' %}
+		{% endfor %}
+	</div>
+</form>
