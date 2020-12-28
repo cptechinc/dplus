@@ -7,7 +7,7 @@
 	item                   ItemXrefCustomer
 #}
 <div class="row form-group">
-	<div class="col-sm-6">
+	<div class="col-sm-4">
 		<label for="uom_customer">Customer UoM</label>
 	</div>
 	<div class="col-sm-6">
@@ -23,7 +23,7 @@
 	</div>
 </div>
 <div class="row form-group">
-	<div class="col-sm-6">
+	<div class="col-sm-4">
 		<label for="conversion">Conversion</label>
 	</div>
 	<div class="col-sm-6">
@@ -42,7 +42,7 @@
 	</div>
 </div>
 <div class="row form-group">
-	<div class="col-sm-6">
+	<div class="col-sm-4">
 		<label for="qty_percase">Qty Per Case</label>
 	</div>
 	<div class="col-sm-6">
@@ -61,7 +61,7 @@
 	</div>
 </div>
 <div class="row form-group">
-	<div class="col-sm-6">
+	<div class="col-sm-4">
 		<label for="qty_purchase">Purchase Qty</label>
 	</div>
 	<div class="col-sm-6">
@@ -80,7 +80,7 @@
 	</div>
 </div>
 <div class="row form-group">
-	<div class="col-sm-6">
+	<div class="col-sm-4">
 		<label for="price_retail">Retail Price</label>
 	</div>
 	<div class="col-sm-6">
@@ -99,7 +99,7 @@
 	</div>
 </div>
 <div class="row form-group">
-	<div class="col-sm-6">
+	<div class="col-sm-4">
 		<label for="price_customer">Cust Price</label>
 	</div>
 	<div class="col-sm-6">
@@ -118,17 +118,18 @@
 	</div>
 </div>
 <div class="row form-group">
-	<div class="col-sm-6">
+	<div class="col-sm-4">
 		<label>Contract</label>
 	</div>
 	<div class="col-sm-6">
 		<p class="form-control-plaintext form-control-sm text-right w-75">
-			{{ (item.has_customerpricing() ? item.getCustomerPricing().baseprice : '0.00')|number_format(cxm.decimal_places_price()) }}
+			{{ (item.has_customerpricing() ? item.getCustomerPricing().baseprice : '0.00')|number_format(cxm.field_attribute('price_customer', 'precision')) }}
+			<input type="hidden" name="price_contract" value="{{ (item.has_customerpricing() ? item.getCustomerPricing().baseprice : '0.00')|number_format(cxm.field_attribute('price_customer', 'precision')) }}">
 		</p>
 	</div>
 </div>
 <div class="row form-group">
-	<div class="col-sm-6">
+	<div class="col-sm-4">
 		<label for="uom_pricing">Pricing UoM</label>
 	</div>
 	<div class="col-sm-6">
@@ -144,23 +145,29 @@
 </div>
 <div class="row form-group">
 	<div class="col-sm-1"></div>
-	<div class="col-sm-5">
+	<div class="col-sm-3">
 		<label for="price_uom">Per UoM</label>
 	</div>
 	<div class="col-sm-6">
 		{% include 'util/form/input.twig' with {
 				'type': 'number',
-				'name': 'price_uom', 'value': item.get_pricing_peruom() ? item.get_pricing_peruom()|number_format(cxm.decimal_places_price_uom()),
+				'name': 'price_uom',
+				'value': item.get_pricing_peruom() ? item.get_pricing_peruom()|number_format(cxm.field_attribute('price_uom', 'precision')),
+				'class_add': [
+					'text-right',
+					'w-75'
+				],
 				'attributes': {
 					'readonly': item.uom_pricing ? false : true,
 					'tabindex': item.uom_pricing ? '' : '-1',
+					'max': cxm.field_attribute('price_uom', 'max')
 				}
 			}
 		%}
 	</div>
 </div>
 <div class="row form-group">
-	<div class="col-sm-6">
+	<div class="col-sm-4">
 		<label for="rounding">Rounding</label>
 	</div>
 	<div class="col-sm-6">
