@@ -231,7 +231,7 @@ $(function() {
 			} else {
 				var allow_pdm_change = {{ cxm.allow_pdm_update() }};
 
-				if (allow_pdm_change && parseFloat(input_price_customer.val()) > 0 && input_price_customer.val() != $('input[name=price_contract]').val()) {
+				if (allow_pdm_change && parseFloat(input_price_customer.val()) != 0.0 && input_price_customer.val() != $('input[name=price_contract]').val()) {
 					swal_update_pdm(form);
 				} else {
 					form.submit();
