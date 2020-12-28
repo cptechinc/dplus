@@ -49,7 +49,7 @@ class Iio extends WireData implements Module {
 		'ii-pricing'          => 'pricing',
 		'ii-purchase-history' => 'purchasehistory',
 		'ii-purchase-orders'  => 'purchaseorders',
-		'ii-quotes'           => 'lotsales',
+		'ii-quotes'           => 'lostsales',
 		'ii-requirements'     => 'requirements',
 		'ii-sales-history'    => 'saleshistory',
 		'ii-sales-orders'     => 'salesorders',
@@ -75,6 +75,8 @@ class Iio extends WireData implements Module {
 		'substitutes',
 		'lostsales',
 	];
+
+	const USER_DEFAULT = 'system';
 
 /* =============================================================
 	Const, Config Functions
@@ -146,14 +148,6 @@ class Iio extends WireData implements Module {
 	 */
 	public function query() {
 		return OptionsIiQuery::create();
-	}
-
-	/**
-	 * Return Permissions Labels, and fields
-	 * @return array
-	 */
-	public function permissions_labels() {
-		return self::PERMISSIONS_LABELS;
 	}
 
 	/**
@@ -413,12 +407,12 @@ class Iio extends WireData implements Module {
 	 * @param  User   $user
 	 * @return PageArray
 	 */
-	public function itm_subfunctions(User $user) {
-		$permitted = $user->permitted_itm();
+	public function ii_subfunctions(User $user) {
+		$permitted = $user->permitted_ii();
 		if (empty($permitted)) {
 			return new PageArray();
 		}
-		$p = $this->wire('pages')->get('pw_template=itm');
+		$p = $this->wire('pages')->get('pw_template=ii-item');
 		$templates = implode('|', $this->permissions_to_templates($permitted));
 		return $p->children("pw_template=$templates");
 	}
@@ -431,7 +425,7 @@ class Iio extends WireData implements Module {
 	public function permissions_to_templates(array $permitted) {
 		$templates = [];
 		foreach (self::TEMPLATES_PERMISSIONS as $template => $permission) {
-			if (in_array($permission, $permitted)) {
+			if (empty($permission) || in_array($permission, $permitted)) {
 				$templates[] = $template;
 			}
 		}
@@ -445,9 +439,10 @@ class Iio extends WireData implements Module {
 	 * @return bool
 	 */
 	public function is_user_allowed_template(User $user, $template) {
-		$permissions = $this->user($user->loginid);
+		$loginID = $this->exists($user->loginid) ? $user->loginid : self::DEFAULT_USER;
+		$permissions = $this->user($loginID);
 		$needed = self::TEMPLATES_PERMISSIONS[$template];
-		return $permissions->is_true($needed);
+		return $needed ? $permissions->is_true($needed) : true;
 	}
 
 	/**
@@ -465,16 +460,9 @@ class Iio extends WireData implements Module {
 /* =============================================================
 	URL Functions
 ============================================================= */
-	public function itmpURL($loginID) {
-		$url = new Url($this->wire('pages')->get('pw_template=itmp')->url);
+	public function iioURL($loginID) {
+		$url = new Url($this->wire('pages')->get('pw_template=iio')->url);
 		$url->query->set('focus', $loginID);
-		return $url->getUrl();
-	}
-
-	public function user_deleteURL($loginID) {
-		$url = new Url($this->wire('pages')->get('pw_template=itmp')->url);
-		$url->query->set('action', 'delete-itmp-user');
-		$url->query->set('userID', $loginID);
 		return $url->getUrl();
 	}
 
@@ -483,9 +471,9 @@ class Iio extends WireData implements Module {
 ============================================================= */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Dplus ITMP CRUD Manager',
+			'title' => 'Dplus IIO CRUD Manager',
 			'version' => 101,
-			'summary' => 'Module for CRUD Methods for ITMP',
+			'summary' => 'Module for CRUD Methods for IIO',
 			'singular' => true,
 			'autoload' => true,
 		);
@@ -499,31 +487,20 @@ class Iio extends WireData implements Module {
 		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
 		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
 
-		$this->addHook("User::permitted_itm", function($event) {
+		$this->addHook("User::permitted_ii", function($event) {
 			$user = $event->object;
 			$permission = $this->user($user->loginid);
 			$event->return = $permission->permitted();
 		});
 
-		$this->addHook("User::permitted_template", function($event) {
-			$user = $event->object;
-			$template = $event->arguments(0);
-			$event->return = $this->is_user_allowed_template($user, $template);
-		});
-
-		$this->addHook("Page(pw_template=itm)::subfunctions", function($event) {
+		$this->addHook("Page(pw_template=ii-item)::subfunctions", function($event) {
 			$user = $this->wire('user');
-			$event->return = $this->itm_subfunctions($user);
+			$event->return = $this->ii_subfunctions($user);
 		});
 
-		$this->addHook("Page(pw_template=itmp)::itmpURL", function($event) {
+		$this->addHook("Page(pw_template=iio)::iioURL", function($event) {
 			$loginID = $event->arguments(0);
-			$event->return = $this->itmpURL($loginID);
-		});
-
-		$this->addHook("Page(pw_template=itmp)::delete_userURL", function($event) {
-			$loginID = $event->arguments(0);
-			$event->return = $this->user_deleteURL($loginID);
+			$event->return = $this->iiopURL($loginID);
 		});
 
 		$this->addHook("Page(pw_template=itmp)::jsonapiURL", function($event) {
@@ -536,6 +513,5 @@ class Iio extends WireData implements Module {
 			$ajaxcode = $event->arguments(0);
 			$event->return = $this->wire('pages')->get("template=api-ajax,ajaxcode=$ajaxcode")->httpUrl;
 		});
-
 	}
 }
