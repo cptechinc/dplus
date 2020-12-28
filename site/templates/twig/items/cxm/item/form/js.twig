@@ -272,15 +272,21 @@ $(function() {
 	function swal_update_pdm(form) {
 		var html = '<table class="table table-sm">' +
 			'<tr>' +
-				'<td>Current Price</td>' +
+				'<td>Discount Price</td>' +
 				'<td class="text-right">'+ $('input[name=price_contract]').val() +'</td>' +
 			'</tr>' +
 			'<tr>' +
-				'<td>X-ref Price</td>' +
+				'<td>Customer X-ref Price</td>' +
 				'<td class="text-right">'+input_price_customer.val()+'</td>'+
 			'</tr>'+
 		'</table>';
-		html += 'Do you want to create a discount record with this price?';
+		html += 'Do you want to ';
+		if (parseFloat(input_price_customer.val()) == 0.00) {
+			html += 'create';
+		} else {
+			html += 'update';
+		}
+		html += ' discount record with this price?';
 
 		swal2.fire({
 			title: "Confirmation",
