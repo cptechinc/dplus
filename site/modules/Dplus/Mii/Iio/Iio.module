@@ -201,6 +201,18 @@ class Iio extends WireData implements Module {
 	}
 
 	/**
+	 * Return OptionsIi
+	 * @param  string $loginID Login ID
+	 * @return OptionsIi
+	 */
+	public function useriio($loginID) {
+		if ($this->exists($loginID) == false) {
+			$loginID = self::USER_DEFAULT;
+		}
+		return $this->user($loginID);
+	}
+
+	/**
 	 * Return new OptionsIi
 	 * @param  string $loginID
 	 * @return OptionsIi
@@ -489,7 +501,7 @@ class Iio extends WireData implements Module {
 
 		$this->addHook("User::permitted_ii", function($event) {
 			$user = $event->object;
-			$permission = $this->user($user->loginid);
+			$permission = $this->useriio($user->loginid);
 			$event->return = $permission->permitted();
 		});
 

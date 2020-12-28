@@ -1,11 +1,11 @@
 <?php namespace ProcessWire;
 
 /**
- * Mii
+ * Mci
  *
- * Parent Module to Install Sub Mii Modules
+ * Parent Module to Install Sub Mcn Modules
  */
-class Mii extends WireData implements Module {
+class Mci extends WireData implements Module {
 
 	public function update() {
 		$info = self::getModuleInfo();
@@ -24,13 +24,13 @@ class Mii extends WireData implements Module {
 ============================================================= */
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'Mii',
+			'title' => 'Mci',
 			'version' => 101,
-			'summary' => 'Handles Mii Modules Installation & Updates',
+			'summary' => 'Handles Mci Modules Installation & Updates',
 			'singular' => true,
 			'autoload' => true,
 			'installs' => array(
-				'Iio'
+				'Cio'
 			)
 		);
 	}

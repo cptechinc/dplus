@@ -1,0 +1,213 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+use OptionsCiQuery, OptionsCi;
+
+/**
+ * Module that handles the editing of the Cio User Permissions
+ */
+class Cio extends WireData implements Module {
+	const MODEL              = 'OptionsCi';
+	const MODEL_KEY          = 'userid';
+	const RESPONSE_TEMPLATE  = 'User {key} permissions were {not} {crud}';
+	const RECORDLOCKER_FUNCTION  = 'cio';
+
+	const TEMPLATES_CI = [
+		'ci-pricing',
+		'ci-shipto',
+		'ci-contacts',
+		'ci-sales-orders',
+		'ci-sales-history',
+		'ci-customer-po',
+		'ci-quotes',
+		'ci-open-invoices',
+		'ci-payments',
+		'ci-credit',
+		'ci-standing-orders',
+		'ci-stock',
+		'ci-notes',
+		'ci-documents',
+		'ci-customer-phonebook',
+		'ci-activity'
+	];
+
+	const TEMPLATES_PERMISSIONS = [
+		'ci-pricing'       => 'pricing',
+		'ci-shipto'        => '',
+		'ci-contacts'      => 'contacts',
+		'ci-sales-orders'  => 'salesorders',
+		'ci-sales-history' => 'saleshistory',
+		'ci-customer-po'   => 'customerpo',
+		'ci-quotes'        => 'quotes',
+		'ci-open-invoices' => 'openinvoices',
+		'ci-payments'      => 'payments',
+		'ci-credit'        => 'credit',
+		'ci-standing-orders' => 'standingorders',
+		'ci-stock'           => '',
+		'ci-notes'           => 'notes',
+		'ci-documents'       => '',
+		'ci-customer-phonebook' => '',
+		'ci-activity'         => ''
+	];
+
+	const USER_DEFAULT = 'system';
+
+	/**
+	 * Returns OptionsCiQuery
+	 * @return OptionsCiQuery
+	 */
+	public function query() {
+		return OptionsCiQuery::create();
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return OptionsCi[]
+	 * @return OptionsCi[]|ObjectCollection
+	 */
+	public function users() {
+		$q = $this->query();
+		return $q->find();
+	}
+
+	/**
+	 * Return if User Permissions Exists
+	 * @param  string $loginID Login ID
+	 * @return bool
+	 */
+	public function exists($loginID) {
+		$q = $this->query();
+		$q->filterByUserid($loginID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return OptionsCi
+	 * @param  string $loginID Login ID
+	 * @return OptionsCi
+	 */
+	public function user($loginID) {
+		$q = $this->query();
+		$q->filterByUserid($loginID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return OptionsCi
+	 * @param  string $loginID Login ID
+	 * @return OptionsCi
+	 */
+	public function usercio($loginID) {
+		if ($this->exists($loginID) === false) {
+			$loginID = $this->user(self::DEFAULT_USER);
+		}
+		return $this->user($loginID);
+	}
+
+	/**
+	 * Return new OptionsCi
+	 * @param  string $loginID
+	 * @return OptionsCi
+	 */
+	public function new($loginID = '') {
+		$user = new OptionsCi();
+		if (strlen($loginID) && $loginID != 'new') {
+			$user->setUserid($loginID);
+		}
+		return $user;
+	}
+
+	/**
+	 * Return New or Existing User
+	 * @param  string $loginID
+	 * @return OptionsCi
+	 */
+	public function get_create($loginID) {
+		if ($this->exists($loginID)) {
+			return $this->user($loginID);
+		}
+		return $this->new($loginID);
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return Itm Subfunctions that the user has permissions to
+	 * @param  User   $user
+	 * @return PageArray
+	 */
+	public function ci_subfunctions(User $user) {
+		$permitted = $user->permitted_ci();
+		if (empty($permitted)) {
+			return new PageArray();
+		}
+		$p = $this->wire('pages')->get('pw_template=ci-customer');
+		$templates = implode('|', $this->permissions_to_templates($permitted));
+		return $p->children("pw_template=$templates");
+	}
+
+	/**
+	 * Return Templates that the user has permissions to
+	 * @param  array  $permitted e.g ['pricing', 'xrefs']
+	 * @return array
+	 */
+	public function permissions_to_templates(array $permitted) {
+		$templates = [];
+		foreach (self::TEMPLATES_PERMISSIONS as $template => $permission) {
+			if (empty($permission) || in_array($permission, $permitted)) {
+				$templates[] = $template;
+			}
+		}
+		return $templates;
+	}
+
+	/**
+	 * Return if User is allowed to view Template
+	 * @param  User   $user     Dplus User
+	 * @param  string $template Template name
+	 * @return bool
+	 */
+	public function is_user_allowed_template(User $user, $template) {
+		$loginID = $this->exists($user->loginid) ? $user->loginid : self::DEFAULT_USER;
+		$permissions = $this->user($loginID);
+		$needed = self::TEMPLATES_PERMISSIONS[$template];
+		return $needed ? $permissions->is_true($needed) : true;
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus CIO CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for CIO',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+	/**
+	 * Set up Functions / Properties for pw_templated pages
+	 * @return void
+	 */
+	public function init() {
+		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
+		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
+
+		$this->addHook("User::permitted_ci", function($event) {
+			$user = $event->object;
+			$options = $this->usercio($user->loginid);
+			$event->return = $options->permitted();
+		});
+
+		$this->addHook("Page(pw_template=ci-customer)::subfunctions", function($event) {
+			$user = $this->wire('user');
+			$event->return = $this->ci_subfunctions($user);
+		});
+	}
+}
