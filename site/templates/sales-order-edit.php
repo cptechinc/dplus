@@ -71,7 +71,8 @@
 
 					$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('shiptos' => $eso->get_shiptos_json_array())]);
 					$page->body .= $config->twig->render('sales-orders/sales-order/edit/last-sales/modal.twig', ['page' => $page, 'ordn' => $ordn, 'lastsold' => $lastsold, 'loader' => $config->twigloader, 'company' => $config->company]);
-					$config->scripts->append(hash_templatefile('scripts/orders/edit-order.js'));
+					$page->js   .= $config->twig->render('sales-orders/sales-order/edit/js/js.twig', ['eso' => $eso]);
+
 					$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 				}
 				$module_qnotes = $modules->get('QnotesSalesOrder');
