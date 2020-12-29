@@ -14,6 +14,7 @@
 		$custID = $cart->get_custid();
 		$customer = CustomerQuery::create()->findOneByCustid($custID);
 		$shipto = CustomerShiptoQuery::create()->filterByCustid($custID)->filterByShiptoid($cart->get_shiptoid())->findOne();
+
 		$page->title = "Cart for $customer->name";
 
 		if ($cart->has_shiptoid()) {
@@ -37,7 +38,7 @@
 		} else {
 			$page->body .= $config->twig->render('cart/cart-items.twig', ['page' => $page, 'cart' => $cart]);
 		}
-		$page->js   .= $config->twig->render('cart/js.twig');
+		$page->js   .= $config->twig->render('cart/js.twig', ['page' => $page, 'cart' => $cart]);
 		$page->body .= $config->twig->render('cart/lookup/form.twig', ['page' => $page, 'cart' => $cart]);
 		$page->js   .= $config->twig->render('cart/lookup/js.twig', ['page' => $page, 'cart' => $cart]);
 		$page->body .= $config->twig->render('cart/last-sales/modal.twig', ['page' => $page, 'cart' => $cart, 'lastsold' => $lastsold, 'company' => $config->company, 'loader' => $config->twig->getLoader()]);
