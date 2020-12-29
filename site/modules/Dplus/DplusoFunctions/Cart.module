@@ -572,6 +572,12 @@ class Cart extends WireData implements Module {
 			}
 			$event->return = $url;
 		});
+
+		$this->addHook("Page(pw_template=cart)::jsonapiURL", function($event) {
+			$api = $event->arguments(0);
+			$pages = $this->wire('pages');
+			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
+		});
 	}
 
 	public static function getModuleInfo() {
