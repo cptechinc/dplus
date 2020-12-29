@@ -34,7 +34,16 @@
 				<small>Avg Wgt: {{ item.weight|number_format(cart.decimal_places_qty) }}</small>
 			</div>
 			<div class="col-sm-1 text-right">
-				<input type="text" class="form-control text-right" size="4" name="qty" value="{{ detail.qty|number_format() }}">
+				{% include 'util/form/input.twig' with {
+						'name': 'qty', 'value': detail.qty|number_format(cart.decimal_places_qty),
+						'class_add': [
+							'text-right',
+							'qty-input'
+						],
+						'attributes': {
+						}
+					}
+				%}
 			</div>
 			<div class="col-sm-1 text-right">
 				{{ (item.weight * detail.qty)|number_format(cart.decimal_places_qty) }}
@@ -44,7 +53,18 @@
 					<div class="input-group-prepend">
 						<span class="input-group-text">$</span>
 					</div>
-					<input type="text" class="form-control text-right qty-input" name="price" value="{{ detail.price|number_format(cart.decimal_places_price) }}">
+					{% include 'util/form/input.twig' with {
+							'name': 'price', 'value': detail.price|number_format(cart.decimal_places_price),
+							'class_add': [
+								'text-right',
+								'qty-input'
+							],
+							'attributes': {
+								'data-allowdiscount': item.allow_discount() ? 'Y' : 'N',
+								'data-itemid': detail.itemid,
+							}
+						}
+					%}
 				</div>
 			</div>
 			<div class="col-sm-2 text-right">

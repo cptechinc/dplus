@@ -15,10 +15,21 @@ $(function() {
 	$("body").on('change', 'input[name=price]', function(e) {
 		e.preventDefault();
 		var input = $(this);
-		var price = parseFloat($(this).val());
+		var price = parseFloat(input.val());
 		var row   = input.closest('.cart-item');
 		input.val(price.toFixed({{ cart.decimal_places_price }}));
 		update_totalprice(row);
+
+		request_validate_pricemargin(input.data('itemid'), price, function(valid) {
+			if (valid === false) {
+				swal2.fire({
+					icon: 'warning',
+					title: 'Attention',
+					text: 'The line does not meet minimum margin requirements, saving this item will place this order on hold',
+					confirmButtonText: 'Ok'
+				});
+			}
+		});
 	});
 
 	$("body").on('change', 'input[name=qty]', function(e) {
@@ -35,5 +46,16 @@ $(function() {
 		var qty   = parseFloat(row.find('input[name=qty]').val());
 		var total = price * qty;
 		row.find('.total-price').text(total.toFixed({{ cart.decimal_places_price }}));
+	}
+
+	function request_validate_pricemargin(itemID, price, callback) {
+		var uri = URI('{{ page.jsonapiURL('mso') }}');
+		uri.setQuery('action', 'validate-price-margin');
+		uri.setQuery('itemID', itemID);
+		uri.setQuery('price', price);
+
+		$.getJSON(uri.toString(), function(valid) {
+			callback(valid);
+		});
 	}
 });
