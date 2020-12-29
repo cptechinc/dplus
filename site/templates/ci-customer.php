@@ -31,6 +31,11 @@
 					$page->body .= $html->div('class=mb-3');
 				}
 
+				if ($customer->has_credithold()) {
+					$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => 'Credit Hold', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $custID has a credit hold"]);
+					$page->body .= $html->div('class=mb-3');
+				}
+
 				$toolbar = $config->twig->render('customers/ci/customer/toolbar.twig', ['page' => $page, 'custID' => $customer->id]);
 				$header =  $config->twig->render('customers/ci/customer/header.twig', ['page' => $page, 'customer' => $customer]);
 
