@@ -260,7 +260,7 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @param  string $code Config Code
 	 * @return Config(x)
 	 */
-	public function config($code) {
+	public function config($code = '') {
 		switch ($code) {
 			default:
 				return ConfigSalesOrderQuery::create()->findOne();

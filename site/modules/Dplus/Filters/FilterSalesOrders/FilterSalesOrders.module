@@ -37,51 +37,69 @@ class FilterSalesOrders extends WireData implements Module {
 		}
 	}
 
+/* =============================================================
+	Input Functions
+============================================================= */
 	/**
 	 * Applies Filters to the Query
-	 * NOTE:: Filters include Customer, Shipto, Order #, Customer PO, Order Date, Order Total, Order Status
+	 * NOTE:: Filters include Customer, ItemXrefCustomer #, ItemXrefCustomer Date, Review Date, Expire Date, ItemXrefCustomer Total, ItemXrefCustomer Status
 	 *
 	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
 	 * @return void
 	 */
-	public function filter_query(WireInput $input) {
-		$this->filter_custid($input);
-		$this->filter_shiptoid($input);
+	public function filter_input(WireInput $input) {
+		$this->custid_input($input);
+		$this->shiptoid_input($input);
 
 		if ($input->get->filter) {
-			$this->filter_ordernumber($input);
-			$this->filter_custpo($input);
-			$this->filter_orderdate($input);
-			$this->filter_ordertotal($input);
-			$this->filter_orderstatus($input);
+			$this->ordernumber_input($input);
+			$this->custpo_input($input);
+			$this->orderdate_input($input);
+			$this->requestdate_input($input);
+			$this->ordertotal_input($input);
+			$this->orderstatus_input($input);
 		} else {
 			$input->get->status = array();
 		}
 	}
 
 	/**
-	 * Filters Query by Order Status
-	 *
-	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-	 * @return void
+	 * Filter the Query on the Order Status column
+	 * @param  WireInput $input
+	 * @return self
 	 */
-	public function filter_orderstatus(WireInput $input) {
+	public function orderstatus_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
 		$sanitizer = new Sanitizer();
 
-		if ($input->get->status) {
+		if ($values->status) {
 			$statuses = array();
 
-			foreach ($input->get->status as $status) {
+			foreach ($values->status as $status) {
 				$sanitized = $sanitizer->text($status);
 
 				if (array_key_exists($sanitized, SalesOrder::STATUS_DESCRIPTIONS)) {
 					$statuses[] = $sanitized;
 				}
 			}
-			$this->query->filterByStatus($statuses);
+			$this->orderstatus($statuses);
 		} else {
 			$input->get->status = array();
 		}
+		return $this;
+	}
+
+	/**
+	 * Filter The Query on the Order Status Column
+	 * @param  mixed $status Order Status
+	 * @return self
+	 */
+	public function orderstatus($status) {
+		if ($status) {
+			$this->query->filterByStatus($status);
+		}
+		return $this;
 	}
 
 	/**
