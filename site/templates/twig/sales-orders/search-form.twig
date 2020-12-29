@@ -3,7 +3,9 @@
 		<a href="{{ page.parent.url }}" class="btn btn-info"><i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i>&ensp;Back to Sales Orders Menu</a>
 	</div>
 	<div class="col-sm-6">
-		<button class="btn btn-info toggle-order-search pull-right" type="button" data-toggle="collapse" data-target="#orders-search-div" aria-expanded="false" aria-controls="orders-search-div">Toggle Search&ensp;<i class="fa fa-search" aria-hidden="true"></i></button>
+		<button class="btn btn-info toggle-order-search pull-right" type="button" data-toggle="collapse" data-target="#orders-search-div" aria-expanded="false" aria-controls="orders-search-div">
+			<i class="fa fa-filter" aria-hidden="true"></i> Toggle Filters
+		</button>
 	</div>
 </div>
 
@@ -43,16 +45,24 @@
 				<hr>
 				<div class="row mt-4">
 					<div class="col-sm-4">
-						<h5>Order Date</h5>
-						<label for="afterdate">From Date</label>
-						{% set name = 'orderdate_from' %}
-						{% set value = input.get.text('orderdate_from') %}
-						{% include 'util/date-picker.twig' %}
+						<div class="row">
+							<div class="col">
+								<h5>Order Date</h5>
+								<label for="afterdate">From Date</label>
+								{% include 'util/date-picker.twig' with {'name':'orderdate_from', 'value': input.get.text('orderdate_from')} %}
 
-						<label for="beforedate">Through Date</label>
-						{% set name = 'orderdate_through' %}
-						{% set value = input.get.text('orderdate_through') %}
-						{% include 'util/date-picker.twig' %}
+								<label for="beforedate">Through Date</label>
+								{% include 'util/date-picker.twig' with {'name':'orderdate_through', 'value': input.get.text('orderdate_through')} %}
+							</div>
+							<div class="col">
+								<h5>Request Date</h5>
+								<label for="afterdate">From Date</label>
+								{% include 'util/date-picker.twig' with {'name':'requestdate_from', 'value': input.get.text('requestdate_from')} %}
+
+								<label for="beforedate">Through Date</label>
+								{% include 'util/date-picker.twig' with {'name':'requestdate_through', 'value': input.get.text('requestdate_through')} %}
+							</div>
+						</div>
 					</div>
 					<div class="col-sm-4">
 						<h5>Order Total</h5>
@@ -85,19 +95,17 @@
 					</div>
 				</div>
 				<br>
-				<div class="row mt-3">
-					<div class="col-sm-12 form-group">
-						<button class="btn btn-success btn-block" type="submit">Search <i class="fa fa-search" aria-hidden="true"></i></button>
+				<div class="d-flex w-100 justify-content-between">
+					<div>
+						<button class="btn btn-success" type="submit">
+							<i class="fa fa-filter" aria-hidden="true"></i> Filter
+						</button>
 					</div>
-					{% if input.get.text('filter') %}
-						<div class="col-sm-12 form-group">
-							<div>
-								<a href="{{ page.url }}" class="btn btn-warning btn-block">
-									Clear Search <i class="fa fa-search-minus" aria-hidden="true"></i>
-								</a>
-							</div>
-						</div>
-					{% endif %}
+					<div>
+						<a href="{{ page.url }}" class="btn btn-warning">
+							<i class="fa fa-times" aria-hidden="true"></i> Clear Filter
+						</a>
+					</div>
 				</div>
 			</form>
 		</div>

@@ -1,9 +1,9 @@
 <?php
-	$filter_salesorders = $modules->get('FilterSalesOrders');
-	$filter_salesorders->init_query($user);
-	$filter_salesorders->filter_query($input);
-	$filter_salesorders->apply_sortby($page);
-	$query = $filter_salesorders->get_query();
+	$filter = $modules->get('FilterSalesOrders');
+	$filter->init_query($user);
+	$filter->filter_input($input);
+	$filter->apply_sortby($page);
+	$query = $filter->get_query();
 
 	$load_customer = $modules->get('CiLoadCustomerShipto');
 	$load_customer->set_custID($input->get->text('custID'));

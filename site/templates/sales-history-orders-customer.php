@@ -1,7 +1,7 @@
 <?php
 	$filter_saleshistory = $modules->get('FilterSalesHistory');
 	$filter_saleshistory->init_query($user);
-	$filter_saleshistory->filter_query($input);
+	$filter_saleshistory->filter_input($input);
 	$filter_saleshistory->apply_sortby($page);
 	$query = $filter_saleshistory->get_query();
 
