@@ -1,6 +1,7 @@
 <?php namespace ProcessWire;
 
 use Purl\Url;
+use Propel\Runtime\ActiveQuery\Criteria;
 
 use CarthedQuery, Carthed;
 use CartdetQuery, Cartdet;
@@ -31,6 +32,7 @@ class Cart extends WireData implements Module {
 	public function has_custid() {
 		$q = $this->query_header($this->sessionID);
 		$q->select('custid');
+		$q->filterByCustid('', Criteria::NOT_EQUAL);
 		return boolval($q->count());
 	}
 
@@ -51,6 +53,7 @@ class Cart extends WireData implements Module {
 	public function has_shiptoid() {
 		$q = $this->query_header($this->sessionID);
 		$q->select('shiptoid');
+		$q->filterByShiptoid('', Criteria::NOT_EQUAL);
 		return boolval($q->count());
 	}
 
