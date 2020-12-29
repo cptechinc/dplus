@@ -1,8 +1,39 @@
 $(function() {
+/* =============================================================
+	Header Functions
+============================================================= */
 	$("body").on('change', '#select_shipto', function(e) {
 		e.preventDefault();
 		var input = $(this);
 		var form = input.closest('form');
 		form.submit();
 	});
+
+/* =============================================================
+	Cart items Functions
+============================================================= */
+	$("body").on('change', 'input[name=price]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var price = parseFloat($(this).val());
+		var row   = input.closest('.cart-item');
+		input.val(price.toFixed({{ cart.decimal_places_price }}));
+		update_totalprice(row);
+	});
+
+	$("body").on('change', 'input[name=qty]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var qty = parseFloat($(this).val());
+		var row   = input.closest('.cart-item');
+		input.val(qty.toFixed({{ cart.decimal_places_qty }}));
+		update_totalprice(row);
+	});
+
+	function update_totalprice(row) {
+		var price = parseFloat(row.find('input[name=price]').val());
+		var qty   = parseFloat(row.find('input[name=qty]').val());
+		var total = price * qty;
+		row.find('.total-price').text(total.toFixed({{ cart.decimal_places_price }}));
+	}
 });
