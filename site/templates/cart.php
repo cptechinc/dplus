@@ -17,7 +17,7 @@
 
 		$page->title = "Cart for $customer->name";
 
-		if ($cart->has_shiptoid()) {
+		if ($shipto) {
 			$page->title = "Cart for $shipto->name";
 		}
 
