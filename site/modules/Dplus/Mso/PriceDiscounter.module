@@ -69,22 +69,19 @@ class PriceDiscounter extends WireData implements Module {
 	 * @param  ItemMasterItem|string $item Item ID | Item
 	 * @return float
 	 */
-	public function minprice($item) {
-		if (get_class($item) != 'ItemMasterItem') {
-			$item = $this->itmitem($item);
-		}
-		$cost = $this->costMarginBased($item, $this->marginbasedoff());
-		$minprice = $cost / (1 - ($item->minmargin / 100));
+	public function minprice() {
+		$cost = $this->costMarginBased($this->marginbasedoff());
+		$minprice = $cost / (1 - ($this->itmitem->minmargin / 100));
 		return $minprice;
 	}
 
-	public function costMarginBased(ItemMasterItem $item, $marginbasedoff) {
+	public function costMarginBased($marginbasedoff) {
 		switch ($marginbasedoff) {
 			case 'S':
-				return $item->standardcost;
+				return $this->itmitem->standardcost;
 				break;
 			case 'L':
-				$item->lastcost;
+				return $this->itmitem->lastcost;
 				break;
 		}
 	}
