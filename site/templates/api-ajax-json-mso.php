@@ -40,12 +40,18 @@
 				$discounter = $modules->get('PriceDiscounter');
 				$discounter->setItemid($values->text('itemID'));
 				$discounter->setPrice($values->float('price'));
-				
+
 				if ($discounter->allowPrice()) {
 					$response = true;
 				} else {
 					$response = false;
 				}
+				break;
+			case 'get-lowest-price':
+				$discounter = $modules->get('PriceDiscounter');
+				$discounter->setItemid($values->text('itemID'));
+				$discounter->setPrice($values->float('price'));
+				$response = $discounter->minprice();
 				break;
 		}
 	}
