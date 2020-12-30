@@ -28,6 +28,7 @@
 		<div class="col-sm-3 "></div>
 	</div>
 </div>
+<div class="pb-2"></div>
 
 {% for detail in eso.get_editable_details(order.ordernumber) %}
 	{% set item = eso.get_im_item(detail.itemid) %}
@@ -53,16 +54,17 @@
 							'qty-input'
 						],
 						'attributes': {
-							'disabled': user.is_editingorder(order.ordernumber) ? false : true
+							'disabled': user.is_editingorder(order.ordernumber) ? false : true,
+							'data-avgweight': item.weight|number_format(eso.decimal_places_qty())
 						}
 					}
 				%}
 			</div>
 			<div class="col-sm-1 text-right">
-				{{ (item.weight * detail.qty)|number_format(eso.decimal_places_qty()) }}
+				<span class="total-weight">{{ (item.weight * detail.qty)|number_format(eso.decimal_places_qty()) }}</span>
 			</div>
 			<div class="col-sm-2 text-right">
-				<div class="input-group">
+				<div class="input-group input-group-sm">
 					<div class="input-group-prepend">
 						<span class="input-group-text">$</span>
 					</div>

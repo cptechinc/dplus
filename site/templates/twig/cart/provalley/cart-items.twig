@@ -21,6 +21,7 @@
 <div class="pb-3"></div>
 {% for detail in cart.get_items() %}
 	{% set item = cart.get_im_item(detail.itemid) %}
+
 	<form action="{{ page.url }}" class="allow-enterkey-submit">
 		<input type="hidden" name="action" value="update-item-quick">
 		<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
@@ -38,18 +39,19 @@
 						'name': 'qty', 'value': detail.qty|number_format(cart.decimal_places_qty),
 						'class_add': [
 							'text-right',
-							'qty-input'
+							'qty-input',
 						],
 						'attributes': {
+							'data-avgweight': item.weight|number_format(cart.decimal_places_qty)
 						}
 					}
 				%}
 			</div>
 			<div class="col-sm-1 text-right">
-				{{ (item.weight * detail.qty)|number_format(cart.decimal_places_qty) }}
+				<span class="total-weight">{{ (item.weight * detail.qty)|number_format(cart.decimal_places_qty) }}</span>
 			</div>
 			<div class="col-sm-2 text-right">
-				<div class="input-group">
+				<div class="input-group input-group-sm">
 					<div class="input-group-prepend">
 						<span class="input-group-text">$</span>
 					</div>

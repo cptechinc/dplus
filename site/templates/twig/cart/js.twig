@@ -42,10 +42,17 @@ $(function() {
 	});
 
 	function update_totalprice(row) {
+		var input_qty = row.find('input[name=qty]');
 		var price = parseFloat(row.find('input[name=price]').val());
-		var qty   = parseFloat(row.find('input[name=qty]').val());
+		var qty   = parseFloat(input_qty.val());
+
+		if (input_qty.attr('data-avgweight')) {
+			var totalweight = parseFloat(input_qty.val()) * parseFloat(input_qty.attr('data-avgweight'));
+			qty = totalweight;
+		}
 		var total = price * qty;
 		row.find('.total-price').text(total.toFixed({{ cart.decimal_places_price }}));
+		row.find('.total-weight').text(totalweight.toFixed({{ cart.decimal_places_qty }}));
 	}
 
 	function request_validate_pricemargin(itemID, price, callback) {
