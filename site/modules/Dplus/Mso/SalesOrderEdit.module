@@ -454,7 +454,7 @@ class SalesOrderEdit extends WireData implements Module {
 	 */
 	public function request_so_update_detail($ordn, int $linenbr) {
 		$custID = SalesOrderQuery::create()->get_custid($ordn);
-		$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "CUSTID=$custID");
+		$data = array('SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "CUSTID=$custID");
 		$this->request_dplus($data);
 	}
 
@@ -475,7 +475,7 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @return void
 	 */
 	public function request_so_unlock($ordn) {
-		$data = array("DBNAME=$dplusdb", 'UNLOCK', "ORDERNO=$ordn");
+		$data = array('UNLOCK', "ORDERNO=$ordn");
 		$this->request_dplus($data);
 	}
 
