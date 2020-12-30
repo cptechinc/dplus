@@ -77,7 +77,7 @@ $(function() {
 	function validate_get_item() {
 		validate_itemid_entry(input_itemid.val(), '{{ cart.get_custid() }}', '{{ cart.get_shiptoid() }}', function(response) {
 			if (response.exists) {
-				input_itemid.val(response.itemID);
+				input_itemid.val(response.itemID).change();
 				input_itemid.addClass('is-valid');
 
 				get_itm_item(input_itemid.val(), function(item) {
@@ -199,5 +199,4 @@ $(function() {
 		input.val(itemID).change();
 		modal_ajax.modal('hide');
 	});
-
 });
