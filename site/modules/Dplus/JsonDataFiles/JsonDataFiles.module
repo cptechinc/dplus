@@ -6,6 +6,7 @@
 
 		const JSON_FILENAMES = array(
 			'ii' => array(
+				'item'         => 'iiitem',
 				'stock'        => 'iistkstat',
 				'stock_whse'   => 'iistkbywhse',
 				'requirements' => 'iirequire',

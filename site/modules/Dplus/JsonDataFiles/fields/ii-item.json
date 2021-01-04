@@ -1,0 +1,324 @@
+{
+	"item": {
+		"Invoice Number": {
+			"type": "I",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Customer PO Number": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Order Date": {
+			"type": "D",
+			"headingjustify": "c",
+			"datajustify": "l"
+		},
+		"Item ID": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Item Type": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Item Description 1": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Item Description 2": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Taxable Code": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Item Group Code": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Item Group Description": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"UPC Code": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Price Group Code": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Price Group Description": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Supercede Item": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Supercede Description": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Weight": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Liters": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Quantity per Case": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Short Item ID": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Special Item Code/Desc": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Kit/BOM Indicator": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Revision": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Last Activity Date": {
+			"type": "D",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Activity Description": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Assortment Code": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Assortment Quantity": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Primary Vendor": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Primary Vendor Name": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Primary Vendor Item ID": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Primary Vendor Unit Cost": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Purchase Unit of Measure": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Usage - Month-to-Date": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Usage - Year-to-Date": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Usage - Previous Year": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Catalog ID - 1": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Catalog Base Price - 1": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Catalog ID - 2": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Catalog Base Price - 2": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Catalog ID - 3": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Catalog Base Price - 3": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Catalog ID - 4": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Catalog Base Price - 4": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Catalog ID - 5": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Catalog Base Price - 5": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Catalog ID - 6": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Catalog Base Price - 6": {
+			"type": "N",
+			"headingjustify": "r",
+			"datajustify": "r"
+		},
+		"Stock Code": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Stock Code Description": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Merged Item Flag": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"Create Date": {
+			"type": "D",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"IN-CAT-1 Code": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"IN-CAT-1 Desc": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"IN-CAT-2 Code": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"IN-CAT-2 Desc": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"IN-CAT-3 Code": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"IN-CAT-3 Desc": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"IN-CAT-4 Code": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"IN-CAT-4 Desc": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"IN-CAT-5 Code": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"IN-CAT-5 Desc": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"IN-Family Code": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"IN-Family Desc": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"IN-WEBAVAIL Code": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		},
+		"IN-WEBAVAIL Desc": {
+			"type": "C",
+			"headingjustify": "l",
+			"datajustify": "l"
+		}
+	}
+}
