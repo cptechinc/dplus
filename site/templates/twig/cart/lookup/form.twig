@@ -2,9 +2,8 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
-	po                     EditPoHead
-	epo                    PurchaseOrderEdit
 #}
+
 <form action="{{ page.url }}" class="pt-3 px-3 allow-enterkey-submit" id="add-item-form">
 	<input type="hidden" name="action" value="add-item">
 
@@ -24,9 +23,19 @@
 				%}
 			</div>
 			<div class="mt-2">
-				<small class="desc1"></small>
-				<br>
-				<small class="desc2"></small>
+				<ul class="list-unstyled">
+					<li>
+						<small class="desc1"></small>
+					</li>
+					<li>
+						<small class="desc2"></small>
+					</li>
+					{% if page.config.company == 'provalley' %}
+						<li>
+							<small class="weight-desc collapse">Weight: <span class="item-weight"></span></small>
+						</li>
+					{% endif %}
+				</ul>
 			</div>
 		</div>
 		<div class="col-sm-1 text-right">
