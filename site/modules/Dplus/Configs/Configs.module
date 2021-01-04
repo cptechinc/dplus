@@ -23,284 +23,15 @@ class Configs extends Process {
 		'companynbr'
 	);
 
-	const CONFIG_FILE = 'configs.json';
+	const CONFIG_ZIP  = 'configs.zip';
 
+	const CONFIG_FILE = 'configs.json';
 
 	const CONFIG_TEMPLATE_CUSTOMER = 'config-customer';
 
 	protected $exportPath;
 
 	protected $exportURL;
-
-	/**
-	 * Returns Module Config Data
-	 * @param  string $name Module Name
-	 * @return array
-	 */
-	public function get_config($name) {
-		$modules = $this->wire('modules');
-
-		if ($modules->isInstalled($name)) {
-			return $modules->getConfig($name);
-		}
-	}
-
-	/**
-	 * Return Module Config Data for every module
-	 * @param  string $name Module Name
-	 * @return array
-	 */
-	public function get_configs() {
-		$info = self::getModuleInfo();
-		$modules = array_merge($info['installs'], self::EXTRA_MODULES);
-		$data = array();
-
-		foreach ($modules as $name) {
-			if ($this->wire('modules')->isInstalled($name)) {
-				$data[$name] = $this->get_config($name);
-			}
-		}
-		return $data;
-	}
-
-	/**
-	 * Return ProcessWire\Page('template=config-customer') data
-	 * @return array
-	 */
-	public function get_pw_customer_data() {
-		$pw_cust = $this->get_pw_customer();
-		$data = array();
-		$data['company_name'] = $pw_cust->company_name;
-		$data['address']      = $pw_cust->address;
-		$data['images'] = array();
-		$data['images']['logo_large']  = $pw_cust->logo_large ? $pw_cust->logo_large->basename : false;
-		$data['images']['logo_small']  = $pw_cust->logo_small ? $pw_cust->logo_small->basename : false;
-		return $data;
-	}
-
-	/**
-	 * Return config-customer page
-	 * @return Page
-	 */
-	public function get_pw_customer() {
-		return $this->wire('pages')->get('template=' . self::CONFIG_TEMPLATE_CUSTOMER);
-	}
-
-	/**
-	 * Return Config file (config.php) Data
-	 * @return array
-	 */
-	public function get_pwconfig_data() {
-		$config = $this->wire('config');
-		$data = array();
-
-		foreach (self::CONFIG_PROPERTIES as $property)  {
-			$data[$property] = $config->$property;
-		}
-		return $data;
-	}
-
-	/**
-	 * Return Application Configuration Data Including Module Configs
-	 * @return array
-	 */
-	public function get_all() {
-		$data = array();
-		$data['configs']         = $this->get_configs();
-		$data['config-file']     = $this->get_pwconfig_data();
-		$data['config-customer'] = $this->get_pw_customer_data();
-		return $data;
-	}
-
-	/**
-	 * Writes Configs File for Config Data
-	 * @return array Application Configuration Data
-	 */
-	public function write_configs_file() {
-		$data = $this->get_all();
-		$dir = $this->get_export_directory();
-		$file = $dir . self::CONFIG_FILE;
-		file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT));
-		return $data;
-	}
-
-	/**
-	 * Exports config-customer PW Images to configs directory
-	 * @return void
-	 */
-	public function export_config_pwcustomer() {
-		$dir = $this->get_export_directory();
-		$pw_cust = $this->get_pw_customer();
-
-		if ($pw_cust->logo_large) {
-			$imagefile = $pw_cust->logo_large->first();
-			copy($imagefile->filename(), $dir . $imagefile->basename);
-		}
-
-		if ($pw_cust->logo_small) {
-			$imagefile = $pw_cust->logo_small->first();
-			copy($imagefile->filename(), $dir . $imagefile->basename);
-		}
-	}
-
-	/**
-	 * Exports Config Files
-	 * @return array Configs Data
-	 */
-	public function export_configs() {
-		$this->export_config_pwcustomer();
-		return $this->write_configs_file();
-	}
-
-	/**
-	 * Return the Directory all the Export Files will be written to
-	 * @return string
-	 */
-	public function get_export_directory() {
-		$dir = $this->exportPath;
-		if (!file_exists($dir)) {
-			mkdir($dir);
-		}
-		return $dir;
-	}
-
-	/**
-	 * Returns Exported configs.json file
-	 * @return array
-	 */
-	public function export_datafile_exists() {
-		$dir = $this->get_export_directory();
-		$configfile = $dir . self::CONFIG_FILE;
-		return file_exists($configfile);
-	}
-
-	/**
-	 * Returns Exported configs.json file
-	 * @return array
-	 */
-	public function get_export_datafile() {
-		$dir = $this->get_export_directory();
-		$configfile = $dir . self::CONFIG_FILE;
-		return json_decode(file_get_contents($configfile), true);
-	}
-
-	/**
-	 * Processes Export Config File and Imports the Config Data
-	 * @return array
-	 */
-	public function import() {
-		$data = $this->get_export_datafile();
-		$data['results'] = array();
-		$this->import_config_pwcustomer($data);
-		$this->import_config_pwcustomer_images($data);
-		$data['results']['modules'] = $this->import_configs($data);
-		return $data;
-	}
-
-	/**
-	 * Sets the config-customer PW Page values
-	 * @param  array  $data config.json data
-	 * @return bool         Was Succesful?
-	 */
-	public function import_config_pwcustomer(array $data) {
-		if (array_key_exists('config-customer', $data)) {
-			$custdata = $data['config-customer'];
-			$pw_cust = $this->get_pw_customer();
-			$pw_cust->of(false);
-
-			foreach ($custdata as $key => $value)  {
-				if ($key != 'images') {
-					$pw_cust->$key = $value;
-				}
-			}
-			return $pw_cust->save();
-		}
-		return false;
-	}
-
-	/**
-	 * Sets the config-customer Page Images
-	 * @param  array  $data config.json data
-	 * @return bool         Did Images save?
-	 */
-	public function import_config_pwcustomer_images(array $data) {
-		if (array_key_exists('config-customer', $data)) {
-			$dir = $this->get_export_directory();
-			$custdata = $data['config-customer'];
-			$pw_cust = $this->get_pw_customer();
-			$pw_cust->of(false);
-
-			if ($custdata['images']['logo_large']) {
-				$file = $dir . $custdata['images']['logo_large'];
-				$pw_cust->logo_large->deleteAll();
-				$pw_cust->logo_large = $file;
-			}
-
-			if ($custdata['images']['logo_small']) {
-				$file = $dir . $custdata['images']['logo_small'];
-				$pw_cust->logo_large->deleteAll();
-				$pw_cust->logo_large = $file;
-			}
-			return $pw_cust->save();
-		}
-		return false;
-	}
-
-	public function import_configs(array $data) {
-		$results = array();
-		$modules = $this->wire('modules');
-
-		if (array_key_exists('configs', $data)) {
-			foreach ($data['configs'] as $class => $configdata) {
-				if ($modules->isInstalled($class)) {
-					if ($configdata) {
-						$results[$class] = $modules->saveConfig($class, $configdata);
-					} else {
-						$results[$class] = 'Empty Config Data';
-					}
-				} else {
-					$results[$class] = "Not Installed";
-				}
-			}
-		}
-		return $results;
-	}
-
-	/**
-	 * Removes Config files after 6 days for security
-	 * @return void
-	 */
-	public function cleanup_configs() {
-		$dir = $this->get_export_directory();
-		$configfile = $dir . self::CONFIG_FILE;
-
-		if (file_exists($configfile)) {
-			$lastmodified = filemtime($configfile);
-			$lastmodified_date = date('Y-m-d', $lastmodified);
-
-			if (strtotime('now') > strtotime("$lastmodified_date +6 days")) {
-				$this->remove_files($dir);
-			}
-		}
-	}
-
-	/**
-	 * Removes Files in a given directory
-	 * @param  string $directory Directory Path
-	 * @return void
-	 */
-	public function remove_files($directory) {
-		if (is_dir($directory)) {
-			$files = glob($directory . '*', GLOB_MARK); //GLOB_MARK adds a slash to directories returned
-
-			foreach($files as $file){
-				$this->remove_files($file);
-			}
-			rmdir($directory);
-		} elseif(is_file($directory)) {
-			unlink($directory);
-		}
-	}
 
 /* =============================================================
 	ProcessWire Module Functions
@@ -315,11 +46,6 @@ class Configs extends Process {
 		}
 	}
 
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Configs Module',
@@ -343,7 +69,8 @@ class Configs extends Process {
 	}
 
 	public function init() {
-		$this->exportdir = 'backups/export-configs/configs/';
+		$this->tmpdir     = __DIR__ . '/configs/';
+		$this->exportdir  = 'backups/export-configs/';
 		$this->exportPath = $this->config->paths->assets . $this->exportdir;
 		$this->exportURL  = $this->config->urls->assets  . $this->exportdir;
 	}
@@ -365,9 +92,16 @@ class Configs extends Process {
 		$f = $this->modules->get('InputfieldSubmit');
 		$f->attr('name', 'submit_export');
 		$f->attr('value', $this->_('Start Export'));
-		$f->icon = 'angle-right';
+		$f->icon = 'download';
 		$form->add($f);
 
+		if (is_file($this->exportPath.self::CONFIG_ZIP)) {
+			$f = $this->modules->get('InputfieldSubmit');
+			$f->attr('name', 'submit_import');
+			$f->attr('value', $this->_('Start Import'));
+			$f->icon = 'upload';
+			$form->add($f);
+		}
 		return $form;
 	}
 
@@ -377,14 +111,13 @@ class Configs extends Process {
 	 */
 	public function ___execute() {
 		$form = $this->buildForm();
-		$note = "<p class='detail'>" . $this->_('After clicking the button, we will begin the configs export. Be patient! Depending on how large your site is, this may take some time.') . "</p>";
 
-		if($this->input->post('submit_export')) {
+		if ($this->input->post('submit_export') || $this->input->post('submit_import')) {
 			$out = $this->processInput($form);
 			if($out) return $out;
 		}
 
-		return $form->render() . $note;
+		return $form->render();
 	}
 
 	/**
@@ -394,29 +127,42 @@ class Configs extends Process {
 	 * @throws WireException
 	 */
 	protected function processInput($form) {
-
 		// process form
 		$form->processInput($this->input->post);
 		if($form->getErrors()) return false;
 
+		if ($this->input->post('submit_export')) {
+			$form = $this->formImportExport();
+			$out =
+				"<h2>" . $this->_('The next step will copy/archive all of your site config files, and values') . "</h2>" .
+				"<p>" . $this->_('It will not make any changes to your current site. If your site has a lot of files, this could take while, so please be patient.') . "</p>" .
+				$form->render();
+		}
+
+		if ($this->input->post('submit_import')) {
+			$form = $this->formImportExport('import');
+			$out =
+				"<h2>" . $this->_('The next step will import all of your site config values and files') . "</h2>" .
+				"<p>" . $this->_('This could take while, so please be patient.') . "</p>" .
+				$form->render();
+		}
+
+		return $out;
+	}
+
+	private function formImportExport($action = 'export') {
 		// present screen for next step
 		/** @var InputfieldForm $form */
 		$form = $this->modules->get('InputfieldForm');
-		$form->attr('action', './export/');
+		$form->attr('action', "./$action/");
 
 		/** @var InputfieldSubmit $f */
 		$f = $this->modules->get('InputfieldSubmit');
-		$f->attr('name', 'submit_export');
-		$f->attr('value', 'Export');
+		$f->attr('name', "submit_$action");
+		$f->attr('value', ucfirst($action));
 		$f->icon = 'angle-right';
 		$form->add($f);
-
-		$out =
-			"<h2>" . $this->_('The next step will copy/archive all of your site config files, and values') . "</h2>" .
-			"<p>" . $this->_('It will not make any changes to your current site. If your site has a lot of files, this could take while, so please be patient.') . "</p>" .
-			$form->render();
-
-		return $out;
+		return $form;
 	}
 
 	/**
@@ -427,29 +173,35 @@ class Configs extends Process {
 		$this->export_configs();
 		set_time_limit(3600);
 
-		if (!file_exists($this->exportPath)) {
-			mkdir($this->exportPath);
-		}
-		$zipfile = $this->exportPath . "configs.zip";
+		$made  = $this->makeZipfile();
+		$moved = $this->moveZipfile();
 
-		// templates and modules
-		$files = array($this->get_export_directory());
-		$options = array(
-			'dir' => $this->exportdir,
-			'exclude' => false
-		);
-		$result = wireZipFile($zipfile, $files, $options);
-		$errors = $result['errors'];
-
-		if(is_file($zipfile)) {
+		if (is_file($this->exportPath.self::CONFIG_ZIP)) {
+			$this->cleanupTmpDirectory();
 			$out =
 				"<h2>Your Configs have been Exported</h2>" .
 				"<p><a href='../download/configs.zip'>{$this->exportURL}configs.zip</a></p>" .
 				$this->button("../download/configs.zip", sprintf($this->_('Download'), "configs.zip"), 'cloud-download') .
 				$this->removeButton();
-
 		} else {
 			$this->error($this->_('ZIP file creation failed. Try saving to server directory instead.'));
+			$out = "<p>" . $this->button('../') . "</p>";
+		}
+		return $out;
+	}
+
+	/**
+	 * Copy Configs
+	 * @return string
+	 */
+	public function ___executeImport() {
+		if (is_file($this->exportPath.self::CONFIG_ZIP)) {
+			$this->import();
+			$out =
+				"<h2>Your Configs have been Imported</h2>" .
+				$this->removeButton();
+		} else {
+			$this->error($this->_('Import from ZIP file failed.'));
 			$out = "<p>" . $this->button('../') . "</p>";
 		}
 		return $out;
@@ -511,5 +263,342 @@ class Configs extends Process {
 		$btn->value = 'Remove';
 		$btn->addClass('ui-priority-secondary');
 		return $btn->render();
+	}
+
+/* =============================================================
+	Module Form Functions
+============================================================= */
+	/**
+	 * Return Module Config Data for every module
+	 * @param  string $name Module Name
+	 * @return array
+	 */
+	public function getConfigModulesData() {
+		$info = self::getModuleInfo();
+		$modules = array_merge($info['installs'], self::EXTRA_MODULES);
+		$data = array();
+
+		foreach ($modules as $name) {
+			if ($this->wire('modules')->isInstalled($name)) {
+				$data[$name] = $this->wire('modules')->getConfig($name);
+			}
+		}
+		return $data;
+	}
+
+	/**
+	 * Return ProcessWire\Page('template=config-customer') data
+	 * @return array
+	 */
+	public function getPwCustomerData() {
+		$pw_cust = $this->getPwCustomer();
+		$data = array();
+		$data['company_name'] = $pw_cust->company_name;
+		$data['address']      = $pw_cust->address;
+		$data['images'] = array();
+		$data['images']['logo_large']  = $pw_cust->logo_large ? $pw_cust->logo_large->basename : false;
+		$data['images']['logo_small']  = $pw_cust->logo_small ? $pw_cust->logo_small->basename : false;
+		return $data;
+	}
+
+	/**
+	 * Return config-customer page
+	 * @return Page
+	 */
+	public function getPwCustomer() {
+		return $this->wire('pages')->get('template=' . self::CONFIG_TEMPLATE_CUSTOMER);
+	}
+
+	/**
+	 * Return Config file (config.php) Data
+	 * @return array
+	 */
+	public function getPwConfigData() {
+		$config = $this->wire('config');
+		$data = array();
+
+		foreach (self::CONFIG_PROPERTIES as $property)  {
+			$data[$property] = $config->$property;
+		}
+		return $data;
+	}
+
+	/**
+	 * Return Application Configuration Data Including Module Configs
+	 * @return array
+	 */
+	public function getAllConfigsData() {
+		$data = array();
+		$data['configs']         = $this->getConfigModulesData();
+		$data['config-file']     = $this->getPwConfigData();
+		$data['config-customer'] = $this->getPwCustomerData();
+		return $data;
+	}
+
+	/**
+	 * Writes Configs File for Config Data
+	 * @return array Application Configuration Data
+	 */
+	public function writeConfigsJson() {
+		$data = $this->getAllConfigsData();
+		$dir  = $this->getTmpDirectory();
+		$file = $dir . self::CONFIG_FILE;
+		file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT));
+		return $data;
+	}
+
+	/**
+	 * Exports config-customer PW Images to configs directory
+	 * @return void
+	 */
+	public function exportPwConfigCustomer() {
+		$dir = $this->getTmpDirectory();
+		$pw_cust = $this->getPwCustomer();
+
+		if ($pw_cust->logo_large) {
+			$imagefile = $pw_cust->logo_large->first();
+			copy($imagefile->filename(), $dir . $imagefile->basename);
+		}
+
+		if ($pw_cust->logo_small) {
+			$imagefile = $pw_cust->logo_small->first();
+			copy($imagefile->filename(), $dir . $imagefile->basename);
+		}
+	}
+
+	/**
+	 * Exports Config Files
+	 * @return array Configs Data
+	 */
+	public function export_configs() {
+		$this->exportPwConfigCustomer();
+		return $this->writeConfigsJson();
+	}
+
+	/**
+	 * Return the Directory all the Export Files will be written to
+	 * @return string
+	 */
+	public function getExportDirectory() {
+		$dir = $this->exportPath;
+		if (!file_exists($dir)) {
+			mkdir($dir);
+		}
+		return $dir;
+	}
+
+	/**
+	 * Return the Directory all the Export Files will be written to
+	 * @return string
+	 */
+	public function getImportDirectory() {
+		$dir = $this->exportPath;
+		$dir .= 'configs/';
+		if (!file_exists($dir)) {
+			mkdir($dir);
+		}
+		return $dir;
+	}
+
+	/**
+	 * Return the Directory all the Export Files will be written to
+	 * @return string
+	 */
+	public function getTmpDirectory() {
+		$dir = $this->tmpdir;
+		if (!file_exists($dir)) {
+			mkdir($dir);
+		}
+		return $dir;
+	}
+
+	/**
+	 * Returns Exported configs.json file
+	 * @return array
+	 */
+	public function getImportJsonExist() {
+		$dir = $this->getImportDirectory();
+		$configfile = $dir . self::CONFIG_FILE;
+		return file_exists($configfile);
+	}
+
+	/**
+	 * Returns Exported configs.json file
+	 * @return array
+	 */
+	public function getImportJson() {
+		$dir = $this->getImportDirectory();
+		$configfile = $dir . self::CONFIG_FILE;
+		return json_decode(file_get_contents($configfile), true);
+	}
+
+	/**
+	 * Processes Export Config File and Imports the Config Data
+	 * @return array
+	 */
+	public function import() {
+		$this->unzipExportZip();
+		$json = $this->getImportJson();
+		$data['json'] = $json;
+		$data['results'] = array();
+		$this->importPwCustomerData($json);
+		$this->importPwCustomerImages($json);
+		$data['results']['modules'] = $this->importConfigModulesData($json);
+		return $data;
+	}
+
+	/**
+	 * Unzip Exported Zip into Import Directory
+	 * @return array
+	 */
+	public function unzipExportZip() {
+		$dir = $this->getExportDirectory();
+		return $this->wire('files')->unzip($dir.self::CONFIG_ZIP, $dir);
+	}
+
+	/**
+	 * Sets the config-customer PW Page values
+	 * @param  array  $data config.json data
+	 * @return bool         Was Succesful?
+	 */
+	public function importPwCustomerData(array $data) {
+		if (array_key_exists('config-customer', $data)) {
+			$custdata = $data['config-customer'];
+			$pw_cust = $this->getPwCustomer();
+			$pw_cust->of(false);
+
+			foreach ($custdata as $key => $value)  {
+				if ($key != 'images') {
+					$pw_cust->$key = $value;
+				}
+			}
+			return $pw_cust->save();
+		}
+		return false;
+	}
+
+	/**
+	 * Sets the config-customer Page Images
+	 * @param  array  $data config.json data
+	 * @return bool         Did Images save?
+	 */
+	public function importPwCustomerImages(array $data) {
+		if (array_key_exists('config-customer', $data)) {
+			$dir = $this->getExportDirectory();
+			$custdata = $data['config-customer'];
+			$pw_cust = $this->getPwCustomer();
+			$pw_cust->of(false);
+
+			if ($custdata['images']['logo_large']) {
+				$file = $dir . $custdata['images']['logo_large'];
+				$pw_cust->logo_large->deleteAll();
+				$pw_cust->logo_large = $file;
+			}
+
+			if ($custdata['images']['logo_small']) {
+				$file = $dir . $custdata['images']['logo_small'];
+				$pw_cust->logo_large->deleteAll();
+				$pw_cust->logo_large = $file;
+			}
+			return $pw_cust->save();
+		}
+		return false;
+	}
+
+	/**
+	 * Imports Each Config Modules Data
+	 * @param  array  $data array
+	 * @return array
+	 */
+	public function importConfigModulesData(array $data) {
+		$results = array();
+		$modules = $this->wire('modules');
+
+		if (array_key_exists('configs', $data)) {
+			foreach ($data['configs'] as $class => $configdata) {
+				if ($modules->isInstalled($class)) {
+					if ($configdata) {
+						$results[$class] = $modules->saveConfig($class, $configdata);
+					} else {
+						$results[$class] = 'Empty Config Data';
+					}
+				} else {
+					$results[$class] = "Not Installed";
+				}
+			}
+		}
+		return $results;
+	}
+
+	/**
+	 * Removes Config files after 6 days for security
+	 * @return void
+	 */
+	public function cleanupExportDirectory() {
+		$dir = $this->getExportDirectory();
+		$configfile = $dir . self::CONFIG_FILE;
+
+		if (file_exists($configfile)) {
+			$lastmodified = filemtime($configfile);
+			$lastmodified_date = date('Y-m-d', $lastmodified);
+
+			if (strtotime('now') > strtotime("$lastmodified_date +6 days")) {
+				$this->deleteFiles($dir);
+			}
+		}
+	}
+
+	/**
+	 * Removes Files in a given directory
+	 * @param  string $directory Directory Path
+	 * @return void
+	 */
+	public function deleteFiles($directory) {
+		if (is_dir($directory)) {
+			$files = glob($directory . '*', GLOB_MARK); //GLOB_MARK adds a slash to directories returned
+
+			foreach($files as $file){
+				$this->deleteFiles($file);
+			}
+			rmdir($directory);
+		} elseif(is_file($directory)) {
+			unlink($directory);
+		}
+	}
+
+	/**
+	 * Create Zip File from Tmp Config Directory
+	 * @return bool
+	 */
+	private function makeZipfile() {
+		$this->getTmpDirectory();
+
+		$zipfile = $this->tmpdir . self::CONFIG_ZIP;
+		// templates and modules
+		$files = array($this->getTmpDirectory());
+		$options = array(
+			'exclude' => $this->getTmpDirectory(),
+			'allowEmptyDirs' => false
+		);
+		$result = wireZipFile($zipfile, $files, $options);
+		$errors = $result['errors'];
+		return $result;
+	}
+
+	/**
+	 * Remove files from Tmp Directory
+	 * @return bool
+	 */
+	private function cleanupTmpDirectory() {
+		return $this->deleteFiles($this->getTmpDirectory());
+	}
+
+	/**
+	 * Move Zip file from Tmp Directory to final directory
+	 * @return bool
+	 */
+	private function moveZipfile() {
+		$this->getExportDirectory();
+		return rename($this->tmpdir.self::CONFIG_ZIP, $this->exportPath.self::CONFIG_ZIP);
 	}
 }
