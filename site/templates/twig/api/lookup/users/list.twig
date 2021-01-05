@@ -1,4 +1,4 @@
-<table class="table table-striped" id="countries-table">
+<table class="table table-striped" id="users-table">
 	<thead>
 		<tr class="bg-dark text-white">
 			<th>Login ID</th>
@@ -9,8 +9,8 @@
 	{% for user in results %}
 		<tr>
 			<td>
-				<a href="#" class="link user-link" data-loginid="{{ user.loginid }}">
-					{{ user.loginid }}
+				<a href="#" class="link user-link" data-userid="{{ user.userid }}">
+					{{ user.userid }}
 				</a>
 			</td>
 			<td>{{ user.name }}</td>
