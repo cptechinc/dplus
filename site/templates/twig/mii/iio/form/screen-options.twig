@@ -58,7 +58,9 @@
 										'name': name, 'value': attribute(user, name) != 0 ? attribute(user, name) : '',
 										'type': 'number',
 										'class_add': ['text-right'],
-										'attributes': {}
+										'attributes': {
+											'max': cio.field_attribute(name, 'max')
+										},
 									}
 								%}
 							</div>

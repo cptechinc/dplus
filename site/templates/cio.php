@@ -13,7 +13,6 @@
 	}
 
 	$iiuser = $cio->get_create($values->text('userID'));
-	echo $db_dplusdata->getLastExecutedQuery();
 
 	if (!$iiuser->isNew()) {
 		/**

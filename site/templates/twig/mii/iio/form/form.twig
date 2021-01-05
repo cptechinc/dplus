@@ -50,7 +50,7 @@
 			</button>
 
 			{% if user.isNew() == false %}
-				<a href="#" class="btn btn-danger delete_button">
+				<a href="{{ page.iio_deleteURL(user.userid) }}" class="btn btn-danger delete_button">
 					<i class="fa fa-trash" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}

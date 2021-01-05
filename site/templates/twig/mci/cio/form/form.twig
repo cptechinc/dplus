@@ -3,7 +3,7 @@
 	<div class="mb-3">
 		{% include 'mci/cio/form/key.twig' %}
 	</div>
-	{{ user.isNew() }}
+	
 	<div class="list-group mb-3">
 		<div class="list-group-item bg-dark text-white">
 			<div class="row">
@@ -27,7 +27,7 @@
 			</button>
 
 			{% if user.isNew() == false %}
-				<a href="#" class="btn btn-danger delete_button">
+				<a href="{{ page.cio_deleteURL(user.userid) }}" class="btn btn-danger delete_button">
 					<i class="fa fa-trash" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}

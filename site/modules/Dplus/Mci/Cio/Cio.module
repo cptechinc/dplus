@@ -250,6 +250,8 @@ class Cio extends WireData implements Module {
 		switch ($values->text('action')) {
 			case 'update-cio':
 				$this->input_update($input);
+			case 'delete-cio':
+				$this->input_delete($input);
 			default:
 				// TODO;
 				break;
@@ -257,7 +259,34 @@ class Cio extends WireData implements Module {
 	}
 
 	/**
-	 * Update CXM Item from Input Data
+	 * Delete CIO from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function input_delete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$userID = $values->text('userID');
+
+		if ($this->exists($userID) == false) {
+			return true;
+		}
+
+		$record = $this->user($userID);
+
+		if (!$this->lockrecord($record->userid)) {
+			$message = self::DESCRIPTION_RECORD . " ($record->userid) could not deleted, it is locked by " . $this->recordlocker->get_locked_user($record->userid);
+			$this->wire('session')->response_cio = MsaResponse::response_error($record->userid, $message);
+			return false;
+		}
+
+		$record->delete();
+		$this->wire('session')->response_cio = $this->save_and_respond($record, []);
+		return $this->wire('session')->response_cio->has_success();
+	}
+
+	/**
+	 * Update CIO record from Input Data
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
@@ -515,6 +544,13 @@ class Cio extends WireData implements Module {
 		return $url->getUrl();
 	}
 
+	public function cio_deleteURL($userID = '') {
+		$url = new Url($this->wire('pages')->get('pw_template=cio')->url);
+		$url->query->set('action', 'delete-cio');
+		$url->query->set('userID', $userID);
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
@@ -551,6 +587,11 @@ class Cio extends WireData implements Module {
 			$userID = $event->arguments(0);
 			$focus = $event->arguments(1);
 			$event->return = $this->cioURL($userID, $focus);
+		});
+
+		$this->addHook("Page(pw_template=cio)::cio_deleteURL", function($event) {
+			$userID = $event->arguments(0);
+			$event->return = $this->cio_deleteURL($userID);
 		});
 
 		$this->addHook("Page(pw_template=cio)::jsonapiURL", function($event) {
