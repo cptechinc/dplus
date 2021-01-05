@@ -23,6 +23,4 @@
 				break;
 		}
 	}
-
 	$page->body = json_encode($response);
-	

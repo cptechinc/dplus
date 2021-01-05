@@ -1,6 +1,6 @@
 <nav class="toolbar-sidebar">
 	<ul class="nav">
-		{% for child in page.children_user_allowed() %}
+		{% for child in page.subfunctions() %}
 			<li>
 				<a href="{{ child.url_itemID(item.itemid) }}">
 					{{ child.title }}

@@ -31,6 +31,11 @@
 					$page->body .= $html->div('class=mb-3');
 				}
 
+				if ($customer->has_credithold()) {
+					$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => 'Credit Hold', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $custID has a credit hold"]);
+					$page->body .= $html->div('class=mb-3');
+				}
+
 				$toolbar = $config->twig->render('customers/ci/customer/toolbar.twig', ['page' => $page, 'custID' => $customer->id]);
 				$header =  $config->twig->render('customers/ci/customer/header.twig', ['page' => $page, 'customer' => $customer]);
 
@@ -67,9 +72,9 @@
 			$lookup_customer->lookup_customer($q);
 
 			if ($lookup_customer->exists) {
-				$session->redirect($page->url."?custID=$q");
+				$session->redirect($page->url."?custID=$q", $http301 = false);
 			}
-			$filter_customers->filter_search($q);
+			$filter_customers->search($q);
 			$page->headline = "CI: Searching for '$q'";
 		}
 

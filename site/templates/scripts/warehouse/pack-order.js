@@ -63,10 +63,10 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 
-		swal({
+		swal2.fire({
 			title: 'Are you sure?',
 			text: "You are trying to submit this order",
-			type: 'warning',
+			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonClass: 'btn btn-success',
 			cancelButtonClass: 'btn btn-danger',

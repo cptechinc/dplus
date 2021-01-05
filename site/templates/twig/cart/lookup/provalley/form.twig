@@ -1,0 +1,91 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+#}
+<div class="bg-dark text-white font-weight-bold pt-3 px-3 pb-1">
+	<div class="row">
+		<div class="col-sm-3">Item</div>
+		<div class="col-sm-1 text-right">Cases</div>
+		<div class="col-sm-1 text-right">Weight</div>
+		<div class="col-sm-2 text-right"></div>
+		<div class="col-sm-2 text-right"></div>
+		<div class="col-sm-3 "></div>
+	</div>
+</div>
+<form action="{{ page.url }}" class="pt-3 allow-enterkey-submit" id="add-item-form">
+	<input type="hidden" name="action" value="add-item">
+
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="form-group">
+				{% include 'util/form/input-with-modal-lookup.twig' with {
+						'name': 'itemID', 'id': 'additemID', 'value': '', 'placeholder': 'Item ID',
+						'small': true,
+						'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Item',
+						'attributes_button': {
+							'data-search': 'item',
+							'data-input': '#additemID',
+							'data-lookupurl': page.search_itemsURL()
+						}
+					}
+				%}
+			</div>
+			<div class="mt-2">
+				<ul class="list-unstyled">
+					<li>
+						<small class="desc1"></small>
+					</li>
+					<li>
+						<small class="desc2"></small>
+					</li>
+					<li>
+						<small class="weight-desc collapse">Weight: <span class="item-weight"></span></small>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-sm-1 text-right">
+			<div class="form-group">
+				{% include 'util/form/input.twig' with {
+						'type': 'number',
+						'name': 'qty', 'id': 'addqty', 'value': '',
+						'class_add': [
+							'text-right',
+							'qty-input'
+						],
+						'attributes': {
+							'disabled': true
+						}
+					}
+				%}
+				<small class="text-muted" id="qty-weight"></small>
+			</div>
+		</div>
+		<div class="col-sm-1 text-right">
+			<div class="form-group">
+				{% include 'util/form/input.twig' with {
+						'type': 'number',
+						'name': 'weight', 'value': '',
+						'class_add': [
+							'text-right',
+							'qty-input',
+							'ignore'
+						],
+						'attributes': {
+							'disabled': true
+						}
+					}
+				%}
+			</div>
+		</div>
+		<div class="col-sm-2 text-right">
+			<div class="input-group">
+				<button type="submit" class="btn btn-primary">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add
+				</button>
+			</div>
+		</div>
+		<div class="col-sm-5"></div>
+	</div>
+</form>

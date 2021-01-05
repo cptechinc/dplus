@@ -36,12 +36,10 @@ $(function() {
 		submitHandler: function(form) {
 			validate_itm_item(input_itemid.val(), function(exists) {
 				if (exists) {
-					if (validator.element('#'+input_itemid.attr('id'))) {
-						if (validator.element('#'+input_qty.attr('id'))) {
-							form.submit();
-						} else {
-							input_qty.focus();
-						}
+					if (input_qty.val() != '') {
+						form.submit();
+					} else {
+						input_qty.focus();
 					}
 				} else {
 					validate_get_item();
@@ -77,13 +75,16 @@ $(function() {
 	function validate_get_item() {
 		validate_itemid_entry(input_itemid.val(), '{{ cart.get_custid() }}', '{{ cart.get_shiptoid() }}', function(response) {
 			if (response.exists) {
+				var original = input_itemid.val();
 				input_itemid.val(response.itemID);
-				input_itemid.addClass('is-valid');
+				validator.element('#additemID');
 
 				get_itm_item(input_itemid.val(), function(item) {
 					if (item) {
 						$('small.desc1').text(item.description);
 						$('small.desc2').text(item.description2);
+						$('span.item-weight').text(item.weight);
+						$('small.weight-desc').addClass('show');
 					}
 				});
 			} else {
@@ -152,7 +153,7 @@ $(function() {
 	 */
 	function get_itm_item(itemID, callback) {
 		var url = new URI('{{ page.jsonapiURL('inv') }}');
-		url.addQuery('action', 'get-item').addQuery('itemID', itemID).addQuery('fields', 'uom_purchase');
+		url.addQuery('action', 'get-item').addQuery('itemID', itemID).addQuery('fields', 'uom_purchase,weight');
 
 		$.getJSON(url.toString(), function(item) {
 			callback(item);
@@ -199,5 +200,4 @@ $(function() {
 		input.val(itemID).change();
 		modal_ajax.modal('hide');
 	});
-
 });

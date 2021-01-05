@@ -1,0 +1,59 @@
+$(function() {
+
+/* =============================================================
+	Cart items Functions
+============================================================= */
+	$("body").on('change', 'input[name=price]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var price = parseFloat(input.val());
+		var row   = input.closest('.order-item');
+		input.val(price.toFixed({{ eso.decimal_places_price() }}));
+		update_totalprice(row);
+
+		request_validate_pricemargin(input.data('itemid'), price, function(valid) {
+			if (valid === false) {
+				swal2.fire({
+					icon: 'warning',
+					title: 'Attention',
+					text: 'The line does not meet minimum margin requirements, saving this item will place this order on hold',
+					confirmButtonText: 'Ok'
+				});
+			}
+		});
+	});
+
+	$("body").on('change', 'input[name=qty]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var qty = parseFloat($(this).val());
+		var row   = input.closest('.order-item');
+		input.val(qty.toFixed({{ eso.decimal_places_qty() }}));
+		update_totalprice(row);
+	});
+
+	function update_totalprice(row) {
+		var input_qty = row.find('input[name=qty]');
+		var price = parseFloat(row.find('input[name=price]').val());
+		var qty   = parseFloat(input_qty.val());
+
+		if (input_qty.attr('data-avgweight')) {
+			var totalweight = parseFloat(input_qty.val()) * parseFloat(input_qty.attr('data-avgweight'));
+			qty = totalweight;
+		}
+		var total = price * qty;
+		row.find('.total-price').text(total.toFixed({{ eso.decimal_places_price() }}));
+		row.find('.total-weight').text(totalweight.toFixed({{ eso.decimal_places_qty() }}));
+	}
+
+	function request_validate_pricemargin(itemID, price, callback) {
+		var uri = URI('{{ page.jsonapiURL('mso') }}');
+		uri.setQuery('action', 'validate-price-margin');
+		uri.setQuery('itemID', itemID);
+		uri.setQuery('price', price);
+
+		$.getJSON(uri.toString(), function(valid) {
+			callback(valid);
+		});
+	}
+});

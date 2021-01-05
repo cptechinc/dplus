@@ -1,0 +1,50 @@
+<div class="row">
+	<div class="col-sm-6">
+		<table class="table table-striped table-sm">
+			{% for x in 1..blueprint['item']['rowcount'] %}
+				<tr>
+					{% if blueprint['item']['rows'][x]['columns'][1] %}
+						{% set column = blueprint['item']['rows'][x]['columns'][1] %}
+						<td class="{{ module_formatter.get_justifyclass(column['label-justify']) }}">
+							<strong>{{ column['label'] }}</strong>
+						</td>
+						{% if column['id'] == 'Item ID' %}
+							<td>
+								<form action="{{ page.url }}" method="GET" class="allow-enterkey-submit">
+									<div class="input-group form-group">
+										<input type="text" class="form-control" name="q" value="{{ module_formatter.format_celldata(json['data'], column) }}">
+										<span class="input-group-btn">
+											<button type="submit" class="btn btn-primary"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
+										</span>
+									</div>
+								</form>
+							</td>
+						{% else %}
+							<td class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
+								{{ module_formatter.format_celldata(json['data'], column) }}
+							</td>
+						{% endif %}
+					{% endif %}
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+	<div class="col-sm-6">
+		<table class="table table-striped table-sm">
+			{% for x in 1..blueprint['item']['rowcount'] %}
+				<tr>
+					{% if blueprint['item']['rows'][x]['columns'][2] %}
+						{% set column = blueprint['item']['rows'][x]['columns'][2] %}
+						{% set colspan = column['col-length'] %}
+						<td class="{{ module_formatter.get_justifyclass(column['label-justify']) }}">
+							<strong>{{ column['label'] }}</strong>
+						</td>
+						<td class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
+							{{ module_formatter.format_celldata(json['data'], column) }}
+						</td>
+					{% endif %}
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+</div>

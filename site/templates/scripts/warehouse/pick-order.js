@@ -108,7 +108,7 @@ $(function() {
 				confirmButtonText: 'Continue'
 			});
 		} else if (pickitem.item.qty.remaining > 0) {
-			icon({
+			swal2.fire({
 				title: 'Are you sure?',
 				text: "You have not met the Quantity Requirements",
 				icon: 'warning',

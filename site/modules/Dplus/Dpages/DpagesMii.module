@@ -102,6 +102,10 @@ class DpagesMii extends Dpages implements Module {
 		'ii-item-lookup' => array(
 			'name'   => 'ii-item-lookup',
 			'fields' => array(),
+		),
+		'iio' => array(
+			'name'   => 'iio',
+			'fields' => array(),
 		)
 	);
 
@@ -121,6 +125,15 @@ class DpagesMii extends Dpages implements Module {
 			'summary'        => 'Item Information Administration',
 			'parent'         => '/mii/',
 			'dplus_function' => 'iiadmn'
+		),
+		'iio' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'iio',
+			'title'          => 'II Options',
+			'summary'        => 'Item Information Options',
+			'parent'         => '/mii/admin/',
+			'dplus_function' => 'iio',
+			'pw_template'    => 'iio'
 		),
 		'ii' => array(
 			'template'       => 'dplus-function',

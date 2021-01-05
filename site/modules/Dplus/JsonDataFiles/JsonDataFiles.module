@@ -1,241 +1,237 @@
 <?php namespace ProcessWire;
 
-	class JsonDataFiles extends WireData implements Module {
-		protected $success = true;
-		protected $error;
+class JsonDataFiles extends WireData implements Module {
+	protected $success = true;
+	protected $error;
 
-		const JSON_FILENAMES = array(
-			'ii' => array(
-				'stock'        => 'iistkstat',
-				'stock_whse'   => 'iistkbywhse',
-				'requirements' => 'iirequire',
-				'pricing'      => 'iiprice',
-				'costing'      => 'iicost',
-				'usage'        => 'iiusage',
-				'activity'     => 'iiactivity',
-				'components' => array(
-					'kit' => 'iikit',
-					'bom' => array(
-						'single'       => 'iibomsingle',
-						'consolidated' => 'iibomcons'
-					)
-				),
-				'whereused'   => 'iiwhereused',
-				'lotserial'   => 'iilotser',
-				'substitutes' => 'iisub',
-				'misc'        => 'iimisc',
-				'notes'       => 'iinotes',
-				'documents'   => 'docview',
-				'quotes'      => 'iiquote',
-				'sales' => array(
-					'orders' => 'iisalesordr',
-					'history' => 'iisaleshist'
-				),
-				'purchase' => array(
-					'orders' => 'iipurchordr',
-					'history' => 'iipurchhist'
+	const JSON_FILENAMES = array(
+		'ii' => array(
+			'item'         => 'iiitem',
+			'stock'        => 'iistkstat',
+			'stock_whse'   => 'iistkbywhse',
+			'requirements' => 'iirequire',
+			'pricing'      => 'iiprice',
+			'costing'      => 'iicost',
+			'usage'        => 'iiusage',
+			'activity'     => 'iiactivity',
+			'components' => array(
+				'kit' => 'iikit',
+				'bom' => array(
+					'single'       => 'iibomsingle',
+					'consolidated' => 'iibomcons'
 				)
 			),
-			'ci' => array(
-				'pricing'  => 'iiprice',
-				'ship-tos' => 'cishiptoinfo',
-				'contacts' => 'cicontact',
-				'sales' => array(
-					'orders'  => 'cisalesordr',
-					'history' => 'cisaleshist'
-				),
-				'purchaseorders' => 'cipurchordr',
-				'quotes'         => 'ciquote',
-				'openinvoices'   => 'ciopeninv',
-				'payments'       => 'cipayment',
-				'credit'         => 'cicredit',
-				'standingorders' => 'cistandordr',
-				'stock'          => 'cistkstat',
-				'notes'          => 'cinotes',
-				'documents'      => 'docview',
-				'phonebook'      => 'cicontact'
+			'whereused'   => 'iiwhereused',
+			'lotserial'   => 'iilotser',
+			'substitutes' => 'iisub',
+			'misc'        => 'iimisc',
+			'notes'       => 'iinotes',
+			'documents'   => 'docview',
+			'quotes'      => 'iiquote',
+			'sales' => array(
+				'orders' => 'iisalesordr',
+				'history' => 'iisaleshist'
 			),
-			'vi' => array(
-				'purchase' => array(
-					'orders'    => 'vipurchordr',
-					'history'   => 'vipurchhist',
-				),
-				'openinvoices'  => 'viopeninv',
-				'unreleased'    => 'viunreleased',
-				'uninvoiced'    => 'viuninvoiced',
-				'24monthsummary'=> 'vimonthsum',
-				'costing'       => 'vicost',
-				'sub'			=> 'visub',
-				'payments'      => 'vipayment',
-				'notes'         => 'vinotes'
-			),
-			'itm' => array(
-				'delete' => 'deleteitm'
-			),
-			'whse' => array(
-				'stock' => array(
-					'status' => 'stockstat'
-				),
-				'sales' => array(
-					'orders' => 'soopenorder'
-				)
+			'purchase' => array(
+				'orders' => 'iipurchordr',
+				'history' => 'iipurchhist'
 			)
-		);
+		),
+		'ci' => array(
+			'pricing'  => 'iiprice',
+			'ship-tos' => 'cishiptoinfo',
+			'contacts' => 'cicontact',
+			'sales' => array(
+				'orders'  => 'cisalesordr',
+				'history' => 'cisaleshist'
+			),
+			'purchaseorders' => 'cipurchordr',
+			'quotes'         => 'ciquote',
+			'openinvoices'   => 'ciopeninv',
+			'payments'       => 'cipayment',
+			'credit'         => 'cicredit',
+			'standingorders' => 'cistandordr',
+			'stock'          => 'cistkstat',
+			'notes'          => 'cinotes',
+			'documents'      => 'docview',
+			'phonebook'      => 'cicontact'
+		),
+		'vi' => array(
+			'purchase' => array(
+				'orders'    => 'vipurchordr',
+				'history'   => 'vipurchhist',
+			),
+			'openinvoices'  => 'viopeninv',
+			'unreleased'    => 'viunreleased',
+			'uninvoiced'    => 'viuninvoiced',
+			'24monthsummary'=> 'vimonthsum',
+			'costing'       => 'vicost',
+			'sub'			=> 'visub',
+			'payments'      => 'vipayment',
+			'notes'         => 'vinotes'
+		),
+		'itm' => array(
+			'delete' => 'deleteitm'
+		),
+		'whse' => array(
+			'stock' => array(
+				'status' => 'stockstat'
+			),
+			'sales' => array(
+				'orders' => 'soopenorder'
+			)
+		)
+	);
 
-		const JUSTIFY_CLASSES = array(
-			'r' => 'text-right',
-			'l' => 'text-left',
-			'c' => 'text-center'
-		);
+	const JUSTIFY_CLASSES = array(
+		'r' => 'text-right',
+		'l' => 'text-left',
+		'c' => 'text-center'
+	);
 
-		/**
-		 * Return if Error was found
-		 * @return bool
-		 */
-		public function has_error() {
-			return boolval(strlen($this->error));
-		}
+	/**
+	 * Return if Error was found
+	 * @return bool
+	 */
+	public function has_error() {
+		return boolval(strlen($this->error));
+	}
 
-		/**
-		 * Returns if file get was successful
-		 * @return bool
-		 */
-		public function had_succeeded() {
-			return $this->success;
-		}
+	/**
+	 * Returns if file get was successful
+	 * @return bool
+	 */
+	public function had_succeeded() {
+		return $this->success;
+	}
 
-		/**
-		 * Returns Error Message
-		 * @return string ex.JSON file $jsonfile not found
-		 */
-		public function get_error() {
-			return $this->error;
-		}
+	/**
+	 * Returns Error Message
+	 * @return string ex.JSON file $jsonfile not found
+	 */
+	public function get_error() {
+		return $this->error;
+	}
 
-		/**
-		 * Returns Bootstrap Text Justify class from code
-		 * @param  string $justifycode Code given e.g. r, right
-		 * @return string              Bootstrap Text justify code e.g. text-right
-		 */
-		public function get_justifyclass($justifycode) {
-			$justifycode = substr($justifycode, 0, 1);
-			return self::JUSTIFY_CLASSES[$justifycode];
-		}
+	/**
+	 * Returns Bootstrap Text Justify class from code
+	 * @param  string $justifycode Code given e.g. r, right
+	 * @return string              Bootstrap Text justify code e.g. text-right
+	 */
+	public function get_justifyclass($justifycode) {
+		$justifycode = substr($justifycode, 0, 1);
+		return self::JUSTIFY_CLASSES[$justifycode];
+	}
 
-		public function get_justifyclasses() {
-			return self::JUSTIFY_CLASSES;
-		}
+	public function get_justifyclasses() {
+		return self::JUSTIFY_CLASSES;
+	}
 
-		/**
-		 * Return JSON FILE
-		 * @param  string $sessionID Session ID
-		 * @param  string $jsoncode  ex. ii-stock
-		 * @return array             Decoded json array
-		 */
-		public function get_file($sessionID, $jsoncode) {
-			$basefile = $this->get_filename($jsoncode);
-			$filepath = $this->wire('config')->jsonfilepath;
-			$jsonfile = $filepath."$sessionID-$basefile.json";
-			$json = array();
+	/**
+	 * Return JSON FILE
+	 * @param  string $sessionID Session ID
+	 * @param  string $jsoncode  ex. ii-stock
+	 * @return array             Decoded json array
+	 */
+	public function get_file($sessionID, $jsoncode) {
+		$basefile = $this->get_filename($jsoncode);
+		$filepath = $this->wire('config')->jsonfilepath;
+		$jsonfile = $filepath."$sessionID-$basefile.json";
+		$json = array();
 
-			if (file_exists($jsonfile)) {
-				$json = json_decode(file_get_contents($jsonfile), true);
+		if (file_exists($jsonfile)) {
+			$json = json_decode(file_get_contents($jsonfile), true);
 
-				if (empty($json)) {
-					$this->success = false;
-					$this->error = "The $jsoncode JSON contains errors, JSON ERROR: ". json_last_error();
-				}
-			} else {
+			if (empty($json)) {
 				$this->success = false;
-				$this->error = "JSON file $jsonfile not found";
+				$this->error = "The $jsoncode JSON contains errors, JSON ERROR: ". json_last_error();
 			}
-			return $json;
+		} else {
+			$this->success = false;
+			$this->error = "JSON file $jsonfile not found";
 		}
+		return $json;
+	}
 
-		/**
-		 * Returns if the File Exists
-		 *
-		 * @param  string $sessionID Session ID
-		 * @param  string $jsoncode  Json Code ii-quotes
-		 * @return bool              Does File Exist
-		 */
-		public function file_exists($sessionID, $jsoncode) {
-			$basefile = $this->get_filename($jsoncode);
-			$filepath = $this->wire('config')->jsonfilepath;
-			$jsonfile = $filepath."$sessionID-$basefile.json";
-			return file_exists($jsonfile);
-		}
+	/**
+	 * Returns if the File Exists
+	 *
+	 * @param  string $sessionID Session ID
+	 * @param  string $jsoncode  Json Code ii-quotes
+	 * @return bool              Does File Exist
+	 */
+	public function file_exists($sessionID, $jsoncode) {
+		$basefile = $this->get_filename($jsoncode);
+		$filepath = $this->wire('config')->jsonfilepath;
+		$jsonfile = $filepath."$sessionID-$basefile.json";
+		return file_exists($jsonfile);
+	}
 
-		/**
-		 * Removes Json file
-		 *
-		 * @param  string $sessionID Session ID
-		 * @param  string $jsoncode  Json Code ii-quotes
-		 * @return bool              Was File Removed
-		 */
-		public function remove_file($sessionID, $jsoncode) {
-			$basefile = $this->get_filename($jsoncode);
-			$filepath = $this->wire('config')->jsonfilepath;
-			$jsonfile = $filepath."$sessionID-$basefile.json";
-			return unlink($jsonfile);
-		}
+	/**
+	 * Removes Json file
+	 *
+	 * @param  string $sessionID Session ID
+	 * @param  string $jsoncode  Json Code ii-quotes
+	 * @return bool              Was File Removed
+	 */
+	public function remove_file($sessionID, $jsoncode) {
+		$basefile = $this->get_filename($jsoncode);
+		$filepath = $this->wire('config')->jsonfilepath;
+		$jsonfile = $filepath."$sessionID-$basefile.json";
+		return unlink($jsonfile);
+	}
 
-		/**
-		 * Returns Date Time of when Json file was modified
-		 *
-		 * @param  string $sessionID Session ID
-		 * @param  string $jsoncode  Json Code ii-quotes
-		 * @return bool              Date Time of when Json file was modified
-		 */
-		public function file_modified($sessionID, $jsoncode) {
-			$basefile = $this->get_filename($jsoncode);
-			$filepath = $this->wire('config')->jsonfilepath;
-			$jsonfile = $filepath."$sessionID-$basefile.json";
-			return filemtime($jsonfile);
-		}
+	/**
+	 * Returns Date Time of when Json file was modified
+	 *
+	 * @param  string $sessionID Session ID
+	 * @param  string $jsoncode  Json Code ii-quotes
+	 * @return bool              Date Time of when Json file was modified
+	 */
+	public function file_modified($sessionID, $jsoncode) {
+		$basefile = $this->get_filename($jsoncode);
+		$filepath = $this->wire('config')->jsonfilepath;
+		$jsonfile = $filepath."$sessionID-$basefile.json";
+		return filemtime($jsonfile);
+	}
 
-		/**
-		 * Returns the base file name for json file code
-		 * @param  string $jsoncode ex. ii-stock
-		 * @return string           ex. iistkstat
-		 */
-		public function get_filename($jsoncode) {
-			$codearray = explode('-', $jsoncode);
-			$menu = $codearray[0];
-			$screen = $codearray[1];
+	/**
+	 * Returns the base file name for json file code
+	 * @param  string $jsoncode ex. ii-stock
+	 * @return string           ex. iistkstat
+	 */
+	public function get_filename($jsoncode) {
+		$codearray = explode('-', $jsoncode);
+		$menu = $codearray[0];
+		$screen = $codearray[1];
 
-			if (is_array(self::JSON_FILENAMES[$menu][$screen])) {
-				$subscreen = self::JSON_FILENAMES[$menu][$screen];
-				array_shift($codearray);
+		if (is_array(self::JSON_FILENAMES[$menu][$screen])) {
+			$subscreen = self::JSON_FILENAMES[$menu][$screen];
+			array_shift($codearray);
+			array_shift($codearray);
+			$codearray = array_filter($codearray);
+
+			while (is_array($subscreen)) {
+				$subscreen = $subscreen[$codearray[0]];
 				array_shift($codearray);
 				$codearray = array_filter($codearray);
-
-				while (is_array($subscreen)) {
-					$subscreen = $subscreen[$codearray[0]];
-					array_shift($codearray);
-					$codearray = array_filter($codearray);
-				}
-				return $subscreen;
-			} else {
-				return self::JSON_FILENAMES[$menu][$screen];
 			}
-		}
-
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
-		/**
-		 * ProcessWire Module Info
-		 *
-		 * @return void
-		 */
-		public static function getModuleInfo() {
-			return array(
-				'title' => 'Dpluso JSON Data Files Module',
-				'version' => 101,
-				'summary' => 'Handles Dpluso JSON Data Files',
-				'singular' => true,
-				'autoload' => true,
-			);
+			return $subscreen;
+		} else {
+			return self::JSON_FILENAMES[$menu][$screen];
 		}
 	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso JSON Data Files Module',
+			'version' => 101,
+			'summary' => 'Handles Dpluso JSON Data Files',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

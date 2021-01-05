@@ -10,7 +10,7 @@
 	{% for country in countries %}
 		<tr>
 			<td>
-				<a href="#" class="link country-link" data-code="{{ country.code }}" data-rate="{{ country.exchange_rate }}">
+				<a href="#" class="link country-link" data-code="{{ country.code }}" data-rate="{{ country.exchange_rate }}" data-description="{{ country.description }}">
 					{{ country.code }}
 				</a>
 			</td>
