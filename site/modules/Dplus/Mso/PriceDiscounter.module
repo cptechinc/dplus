@@ -1,0 +1,103 @@
+<?php namespace ProcessWire;
+
+use ItemMasterItemQuery, ItemMasterItem;
+use ConfigCcQuery, ConfigCc;
+
+/**
+ * I
+ *
+ * Parent Module to Install Sub Mso Modules
+ */
+class PriceDiscounter extends WireData implements Module {
+	public function __construct() {
+		$this->itemID = '';
+		$this->price  = 0.00;
+		$this->itmitem = new ItemMasterItem();
+	}
+
+	public function setItemid($itemID) {
+		$this->itemID = $itemID;
+		$this->itmitem = $this->itmitem($itemID);
+	}
+
+	public function setPrice($price = 0.00) {
+		$this->price = $price;
+	}
+
+	/**
+	 * Return if ITM item allows discount
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function allowDiscount() {
+		$q = ItemMasterItemQuery::create();
+		$q->select(ItemMasterItem::get_aliasproperty('allow_discount'));
+		$q->filterbyItemid($this->itemID);
+		$allowed = $q->findOne();
+		return $allowed == ItemMasterItem::YN_TRUE;
+	}
+
+	/**
+	 * Return what Margin will be based off
+	 * S = Standard Cost | R = Replacement | L = Last Cost
+	 * @return string
+	 */
+	public function marginBasedoff() {
+		$config = $this->wire('modules')->get('ConfigureCc')->config();
+		return $config->marginbase();
+	}
+
+	/**
+	 * Return if Price is allowed for Item
+	 * @return bool
+	 */
+	public function allowPrice() {
+		if ($this->itmitem->allow_discount() == false) {
+			return false;
+		}
+		return $this->price >= $this->minprice($this->itmitem);
+	}
+
+	public function itmitem($itemID) {
+		$q = ItemMasterItemQuery::create();
+		$q->filterbyItemid($itemID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return Minimum Allowed Price
+	 * @param  ItemMasterItem|string $item Item ID | Item
+	 * @return float
+	 */
+	public function minprice() {
+		$cost = $this->costMarginBased($this->marginbasedoff());
+		$minprice = $cost / (1 - ($this->itmitem->minmargin / 100));
+		return $minprice;
+	}
+
+	public function costMarginBased($marginbasedoff) {
+		switch ($marginbasedoff) {
+			case 'S':
+				return $this->itmitem->standardcost;
+				break;
+			case 'L':
+				return $this->itmitem->lastcost;
+				break;
+		}
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Price Discounter',
+			'version' => 101,
+			'summary' => 'Module for checking price discounting',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(
+			)
+		);
+	}
+}

@@ -6,6 +6,7 @@ class JsonDataFiles extends WireData implements Module {
 
 	const JSON_FILENAMES = array(
 		'ii' => array(
+			'item'         => 'iiitem',
 			'stock'        => 'iistkstat',
 			'stock_whse'   => 'iistkbywhse',
 			'requirements' => 'iirequire',
@@ -224,11 +225,6 @@ class JsonDataFiles extends WireData implements Module {
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dpluso JSON Data Files Module',
@@ -238,4 +234,4 @@ class JsonDataFiles extends WireData implements Module {
 			'autoload' => true,
 		);
 	}
-	}
+}

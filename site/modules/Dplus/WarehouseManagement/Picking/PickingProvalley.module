@@ -140,15 +140,9 @@ class PickingProvalley extends WireData implements Module {
 		if ($exists_onorder) {
 			$filters = ['linenbr' => $orderitem->linenbr, 'sublinenbr' => $orderitem->sublinenbr, 'lotserial' => $lotserial, 'bin' => $binID];
 			$q = $this->get_whseitempick_query($filters);
-
 			$exists_fororderitem = boolval($q->count());
-
 			if ($exists_fororderitem) {
-				$qty = $values->text('qty');
-				$pickingitem = $q->findOne();
-				$pickingitem->setQty($pickingitem->qty + $qty);
-				$pickingitem->save();
-				$recordnumbers[] = $pickingitem->recordnumber;
+				$this->session->pickingerror = "$scan has been added to order already";
 			} else {
 				$this->session->pickingerror = "$scan has been added to another line already";
 			}
@@ -405,6 +399,8 @@ class PickingProvalley extends WireData implements Module {
 		if (empty($item->lotserial) || empty($item->lotserialref) || empty($item->qty)) {
 			return false;
 		}
+
+
 
 		return true;
 	}

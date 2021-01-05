@@ -8,7 +8,7 @@ use InvCommissionCodeQuery, InvCommissionCode;
 use ConfigInQuery, ConfigIn;
 
 /**
- * Module that handles the editing of the CCM codetable
+ * Module that handles the editing of the IGCM codetable
  */
 class CodeTablesIgcm extends WireData implements Module {
 	const MODEL              = 'InvCommissionCode';

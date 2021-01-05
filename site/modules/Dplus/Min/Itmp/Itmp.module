@@ -422,12 +422,6 @@ class Itmp extends WireData implements Module {
 			$event->return = $permission->permitted();
 		});
 
-		$this->addHook("User::permitted_template", function($event) {
-			$user = $event->object;
-			$template = $event->arguments(0);
-			$event->return = $this->is_user_allowed_template($user, $template);
-		});
-
 		$this->addHook("Page(pw_template=itm)::subfunctions", function($event) {
 			$user = $this->wire('user');
 			$event->return = $this->itm_subfunctions($user);

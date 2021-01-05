@@ -63,13 +63,23 @@
 				</div>
 			</div>
 		</li>
-		<li class="list-group-item">
+		<li class="list-group-item {{customer.credithold == 'Y' ? 'bg-warning' : ''}}">
 			<div class="row">
 				<div class="col-sm-7">
 					Credit Hold:
 				</div>
 				<div class="col-sm-5">
 					{{ yesorno(customer.credithold)|capitalize }}
+				</div>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col-sm-7">
+					Credit Limit:
+				</div>
+				<div class="col-sm-5">
+					{{ customer.creditlimit }}
 				</div>
 			</div>
 		</li>

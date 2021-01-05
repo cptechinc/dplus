@@ -16,5 +16,24 @@
 				<i class="fa fa-eraser" aria-hidden="true"></i> Clear Cart
 			</a>
 		</div>
+		<div class="col">
+			<form action="{{ page.url }}" method="get">
+				<input type="hidden" name="action" value="set-shiptoid">
+				<input type="hidden" name="custID" value="{{ customer.id }}">
+
+				<div class="row">
+					<div class="col">
+						<label for="select_shipto">Ship-to</label>
+					</div>
+					<div class="col">
+						<select name="shiptoID" class="form-control form-control-sm" id="select_shipto">
+							{% for ship in customer.get_shiptos() %}
+								<option value="{{ ship.id }}" {{ ship.id == shipto.id ? 'selected' : '' }}>{{ ship.name }}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+			</form>
+		</div>
 	</div>
 </div>

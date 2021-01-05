@@ -1,12 +1,15 @@
 <?php namespace ProcessWire;
 
 use Purl\Url;
+use Propel\Runtime\ActiveQuery\Criteria;
 
 use CarthedQuery, Carthed;
 use CartdetQuery, Cartdet;
 
 use ItemMasterItemQuery, ItemMasterItem;
 use ConfigSalesOrderQuery, ConfigSalesOrder;
+use CustomerShiptoQuery, CustomerShipto;
+use CustomerQuery, Customer;
 
 use LogpermQuery, Logperm;
 
@@ -29,6 +32,7 @@ class Cart extends WireData implements Module {
 	public function has_custid() {
 		$q = $this->query_header($this->sessionID);
 		$q->select('custid');
+		$q->filterByCustid('', Criteria::NOT_EQUAL);
 		return boolval($q->count());
 	}
 
@@ -49,6 +53,7 @@ class Cart extends WireData implements Module {
 	public function has_shiptoid() {
 		$q = $this->query_header($this->sessionID);
 		$q->select('shiptoid');
+		$q->filterByShiptoid('', Criteria::NOT_EQUAL);
 		return boolval($q->count());
 	}
 
@@ -59,7 +64,7 @@ class Cart extends WireData implements Module {
 	public function get_shiptoid() {
 		$q = $this->query_header($this->sessionID);
 		$q->select('shiptoid');
-		return boolval($q->findOne());
+		return $q->findOne();
 	}
 
 	/**
@@ -74,7 +79,10 @@ class Cart extends WireData implements Module {
 			$cart = new Carthed();
 			$cart->setSessionid(session_id());
 		}
-		$cart->setCustid($custID);
+
+		if ($this->validate_custid($custID)) {
+			$cart->setCustid($custID);
+		}
 		$cart->save();
 	}
 
@@ -138,11 +146,14 @@ class Cart extends WireData implements Module {
 			case 'set-customer':
 				$this->input_set_customer($input);
 				break;
+			case 'set-shiptoid':
+				$this->input_set_shipto($input);
+				break;
 			case 'add-item':
 				$this->input_item_add($input);
 				break;
-			case 'add-item-popular':
-				$this->input_item_add_popular($input);
+			case 'add-popular-items':
+				$this->input_item_add_multiple($input);
 				break;
 			case 'update-item-quick':
 				$this->input_item_update_quick($input);
@@ -172,6 +183,30 @@ class Cart extends WireData implements Module {
 		$values = $input->$rm;
 		$custID = $values->text('custID');
 		$this->set_custid($custID);
+		$q = CustomerShiptoQuery::create()->filterByCustid($custID);
+
+		if ($q->count() == 1) {
+			$shipto = $q->findOne();
+			$this->set_shiptoid($shipto->shiptoid);
+		}
+		return true;
+	}
+
+	/**
+	 * Set Customer
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function input_set_shipto(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$shiptoID = $values->text('shiptoID');
+		$this->set_shiptoid($shiptoID);
+		$q = CustomerShiptoQuery::create()->filterByCustid($custID)->filterByShiptoid($shiptoID);
+
+		if ($q->count()) {
+			$this->set_shiptoid($shiptoID);
+		}
 		return true;
 	}
 
@@ -197,8 +232,8 @@ class Cart extends WireData implements Module {
 	private function input_item_add_multiple(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$qtys = $values->array('qty');
-		$itemIDs = $values->array('itemID');
+		$qty = $values->array('qty');
+		$itemID = $values->array('itemID');
 		$this->request_item_add_multiple($itemID, $qty);
 		return true;
 	}
@@ -303,17 +338,31 @@ class Cart extends WireData implements Module {
 		}
 	}
 
+	public function validate_custid($custID) {
+		$q = CustomerQuery::create();
+		$q->filterByCustid($custID);
+		return boolval($q->count());
+	}
+
+	public function get_customer($custID) {
+		$q = CustomerQuery::create();
+		$q->filterByCustid($custID);
+		return $q->findOne();
+	}
+
 /* =============================================================
 	Dplus Cobol Request Functions
 ============================================================= */
-	private function request_dplus(array $data) {
+	private function request_dplus(array $data, $addcustID = true) {
 		$config = $this->wire('config');
-		$custID = $this->get_custid();
-		$custID = !empty($custID) ? $custID : $config->default_webcustomer;
 		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
 		$data = array_merge(["DBNAME=$dplusdb"], $data);
-		$data[] = "CUSTID=$custID";
 
+		if ($addcustID) {
+			$custID = $this->get_custid();
+			$custID = !empty($custID) ? $custID : $config->default_webcustomer;
+			$data[] = "CUSTID=$custID";
+		}
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $this->sessionID);
 		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
@@ -345,7 +394,9 @@ class Cart extends WireData implements Module {
 	 * @param string $qty    Qty to be added
 	 */
 	private function request_item_add_multiple(array $itemIDs, array $qtys) {
-		$data = array('CARTADDMULTIPLE');
+		$custID = $this->get_custid();
+		$custID = !empty($custID) ? $custID : $config->default_webcustomer;
+		$data = array('CARTADDMULTIPLE', "CUSTID=$custID");
 		for ($i = 0; $i < sizeof($qtys); $i++) {
 			if (!empty($qtys[$i])) {
 				$itemID = str_pad($itemIDs[$i], 30, ' ');
@@ -353,7 +404,7 @@ class Cart extends WireData implements Module {
 				$data[] = "ITEMID={$itemID}QTY=$qty";
 			}
 		}
-		$this->request_dplus($data);
+		$this->request_dplus($data, $addcustID = false);
 	}
 
 	/**
@@ -391,7 +442,7 @@ class Cart extends WireData implements Module {
 	 */
 	private function request_create_order() {
 		$data = array("CREATESO");
-		$this->request_dplus($data);
+		$this->request_dplus($data, $addcustID = false);
 	}
 
 	/**
@@ -400,7 +451,7 @@ class Cart extends WireData implements Module {
 	 */
 	private function request_create_quote() {
 		$data = array("CREATEQT");
-		$this->request_dplus($data);
+		$this->request_dplus($data, $addcustID = false);
 	}
 
 /* =============================================================
@@ -520,6 +571,12 @@ class Cart extends WireData implements Module {
 				}
 			}
 			$event->return = $url;
+		});
+
+		$this->addHook("Page(pw_template=cart)::jsonapiURL", function($event) {
+			$api = $event->arguments(0);
+			$pages = $this->wire('pages');
+			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
 		});
 	}
 

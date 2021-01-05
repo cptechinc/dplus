@@ -1,3 +1,4 @@
+{% set config = eso.config() %}
 <div class="form-group">
 	<label for="custpo">Customer PO</label>
 	<input type="text" class="form-control form-control-sm" name="custpo" id="custpo" value="{{ order.custpo }}">
@@ -14,10 +15,13 @@
 		{% endfor %}
 	</select>
 </div>
-<div class="form-group">
-	<label for="date_requested">Request Date</label>
-	{% include 'util/date-picker.twig' with {'name': 'date_requested', 'id': 'date_requested', 'value': order.date_requested} %}
-</div>
+{% if config.request_date_header() %}
+	<div class="form-group">
+		<label for="date_requested">Request Date</label>
+		{% include 'util/date-picker.twig' with {'name': 'date_requested', 'id': 'date_requested', 'value': order.date_requested} %}
+	</div>
+{% endif %}
+
 <div class="form-group">
 	<label for="shipcomplete">Ship complete</label>
 	{% include 'util/select.twig' with {'name': 'shipcomplete', 'id': 'shipcomplete', 'selectedvalue': order.shipcomplete, 'options': {'Y': 'Yes', 'N': 'No'}} %}

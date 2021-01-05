@@ -1,0 +1,62 @@
+<form action="" id="iio-user-form" method="post">
+	<input type="hidden" name="action" value="update-iio">
+	<div class="mb-3">
+		{% include 'mii/iio/form/key.twig' %}
+	</div>
+
+	<div class="list-group mb-3">
+		<div class="list-group-item bg-dark text-white">
+			<div class="row">
+				<div class="col-sm-2">Screen Option</div>
+				<div class="col-sm-1">Avail</div>
+				<div class="col-sm-2">Whse</div>
+				<div class="col-sm-1">L / S</div>
+				<div class="col-sm-6"></div>
+			</div>
+		</div>
+		{% for option in iio.iiscreens() %}
+			{% include 'mii/iio/form/screen-options.twig' %}
+		{% endfor %}
+		<div class="list-group-item">
+			<div class="row">
+				<div class="col-sm-2">Item Get-Desc 1 or 2</div>
+				<div class="col-sm-1">
+					{% include 'util/form/select.twig' with {
+							'name': 'whichdesc', 'selected_value': user.whichdesc,
+							'options': ['1','2'],
+							'options_has_keys': false
+						}
+					%}
+				</div>
+			</div>
+		</div>
+		<div class="list-group-item">
+			<div class="row">
+				<div class="col-sm-2">Delete LOTI Certs</div>
+				<div class="col-sm-1">
+					{% include 'util/form/select.twig' with {
+							'name': 'deleteloticerts', 'selected_value': user.deleteloticerts,
+							'options': {'Y': 'Yes', 'N': 'No'}
+						}
+					%}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="d-flex justify-content-between align-items-center">
+		{% if iio.recordlocker.function_locked_by_user(user.userid) or user.isNew() %}
+			<button type="submit" class="btn btn-success">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+
+			{% if user.isNew() == false %}
+				<a href="#" class="btn btn-danger delete_button">
+					<i class="fa fa-trash" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+		<a href="{{ page.url }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
+	</div>
+</form>

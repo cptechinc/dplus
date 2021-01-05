@@ -1,0 +1,37 @@
+<?php namespace ProcessWire;
+
+/**
+ * Mii
+ *
+ * Parent Module to Install Sub Mii Modules
+ */
+class Mii extends WireData implements Module {
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+		$modules->refresh();
+
+		foreach ($info['installs'] as $module_name) {
+			if (!$modules->isInstalled($module_name)) {
+				$result = $modules->install($module_name);
+			}
+		}
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Mii',
+			'version' => 101,
+			'summary' => 'Handles Mii Modules Installation & Updates',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(
+				'Iio'
+			)
+		);
+	}
+}

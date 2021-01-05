@@ -75,7 +75,7 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @return bool
 	 */
 	public function exists_editable($ordn) {
-		return $this->exists_editable_header($ordn) && $this->exists_editable_details($ordn);
+		return $this->exists_editable_header($ordn);
 	}
 
 	/**
@@ -132,6 +132,9 @@ class SalesOrderEdit extends WireData implements Module {
 				break;
 			case 'update-item-quick':
 				$this->process_input_update_item_quick($input);
+				break;
+			case 'delete-item':
+				$this->process_input_delete_item($input);
 				break;
 			case 'unlock-order':
 				$ordn = $values->text('ordn');
@@ -192,6 +195,26 @@ class SalesOrderEdit extends WireData implements Module {
 		$editline->setPrice($price);
 		$editline->save();
 		$this->request_so_update_detail($ordn, $linenbr);
+	}
+
+	/**
+	 * Delete Sales Order Item
+	 * @param WireInput $input Input data
+	 * @return void
+	 */
+	public function process_input_delete_item(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$ordn = SalesOrder::get_paddedordernumber($values->text('ordn'));
+		$linenbr = $values->int('linenbr');
+
+		$custID = SalesOrderQuery::create()->get_custid($ordn);
+		$editline = OrdrdetQuery::create()->findOneBySessionidOrder(session_id(), $ordn, $linenbr);
+		$editline->setQty(0);
+		$editline->save();
+		$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "QTY=0", "CUSTID=$custID");
+
+		$this->request_so_delete_detail($ordn, $linenbr);
 	}
 
 /* =============================================================
@@ -260,7 +283,7 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @param  string $code Config Code
 	 * @return Config(x)
 	 */
-	public function config($code) {
+	public function config($code = '') {
 		switch ($code) {
 			default:
 				return ConfigSalesOrderQuery::create()->findOne();
@@ -431,7 +454,18 @@ class SalesOrderEdit extends WireData implements Module {
 	 */
 	public function request_so_update_detail($ordn, int $linenbr) {
 		$custID = SalesOrderQuery::create()->get_custid($ordn);
-		$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "CUSTID=$custID");
+		$data = array('SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "CUSTID=$custID");
+		$this->request_dplus($data);
+	}
+
+	/**
+	 * Send SO Detail Delete Request
+	 * @param  string $ordn Sales Order Number
+	 * @return void
+	 */
+	public function request_so_delete_detail($ordn, int $linenbr) {
+		$custID = SalesOrderQuery::create()->get_custid($ordn);
+		$data = array('SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "QTY=0", "CUSTID=$custID");
 		$this->request_dplus($data);
 	}
 
@@ -441,7 +475,7 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @return void
 	 */
 	public function request_so_unlock($ordn) {
-		$data = array("DBNAME=$dplusdb", 'UNLOCK', "ORDERNO=$ordn");
+		$data = array('UNLOCK', "ORDERNO=$ordn");
 		$this->request_dplus($data);
 	}
 
@@ -488,7 +522,7 @@ class SalesOrderEdit extends WireData implements Module {
 
 		$this->addHook('Page::unlock_orderURL', function($event) {
 			$ordn = $event->arguments(0);
-			$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
+			$url = new Url($this->wire('pages')->get('pw_template=sales-order-edit')->url);
 			$url->query->set('action', 'unlock-order');
 			$url->query->set('ordn', $ordn);
 			$event->return = $url->getUrl();
@@ -498,8 +532,8 @@ class SalesOrderEdit extends WireData implements Module {
 			$p = $event->object;
 			$ordn = $event->arguments(0);
 			$linenbr = $event->arguments(1);
-			$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
-			$url->query->set('action', 'remove-line');
+			$url = new Url($this->wire('pages')->get('pw_template=sales-order-edit')->url);
+			$url->query->set('action', 'delete-item');
 			$url->query->set('ordn', $ordn);
 			$url->query->set('linenbr', $linenbr);
 			$event->return = $url->getUrl();

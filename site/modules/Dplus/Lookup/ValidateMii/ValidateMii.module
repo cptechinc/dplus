@@ -1,0 +1,38 @@
+<?php namespace ProcessWire;
+
+use DplusUserQuery, DplusUser;
+
+/**
+ * ValidateMii
+ * Module to validate Mii Codes
+ */
+class ValidateMii extends WireData implements Module {
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Validate Mii Module',
+			'version' => 101,
+			'summary' => 'Handles Mii Validation modules Installation & Updates',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array(
+				'ValidateIio'
+			)
+		);
+	}
+
+	public function update() {
+		$info = self::getModuleInfo();
+		$modules = $this->wire('modules');
+		$modules->refresh();
+
+		foreach ($info['installs'] as $module_name) {
+			if (!$modules->isInstalled($module_name)) {
+				$result = $modules->install($module_name);
+			}
+		}
+	}
+}

@@ -53,7 +53,7 @@
 			if ($input->get->q) {
 				$q = strtoupper($input->get->text('q'));
 				$page->title = "II Pricing: Searching for '$q'";
-				$filter_customers->filter_search($q);
+				$filter_customers->search($q);
 			}
 			$filter_customers->apply_sortby($page);
 			$query = $filter_customers->get_query();
