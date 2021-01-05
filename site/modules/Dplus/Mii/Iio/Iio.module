@@ -1,0 +1,612 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+use OptionsIiQuery, OptionsIi;
+
+/**
+ * Module that handles the editing of the ITMP User Permissions
+ */
+class Iio extends WireData implements Module {
+	const MODEL              = 'OptionsIi';
+	const MODEL_KEY          = 'userid';
+	const RESPONSE_TEMPLATE  = 'User {key} permissions were {not} {crud}';
+	const RECORDLOCKER_FUNCTION  = 'iio';
+
+	const TEMPLATES_II = [
+		'ii-pricing',
+		'ii-activity',
+		'ii-bom',
+		'ii-kit',
+		'ii-components',
+		'ii-costing',
+		'ii-documents',
+		'ii-general',
+		'ii-lotserial',
+		'ii-pricing',
+		'ii-purchase-history',
+		'ii-purchase-orders',
+		'ii-quotes',
+		'ii-requirements',
+		'ii-sales-history',
+		'ii-sales-orders',
+		'ii-stock',
+		'ii-substitutes',
+		'ii-usage',
+		'ii-where-used',
+	];
+
+	const TEMPLATES_PERMISSIONS = [
+		'ii-pricing'          => 'pricing',
+		'ii-activity'         => 'activity',
+		'ii-bom'              => 'kit',
+		'ii-kit'              => 'kit',
+		'ii-components'       => 'kit',
+		'ii-costing'          => 'costing',
+		'ii-documents'        => '',
+		'ii-general'          => 'general',
+		'ii-lotserial'        => 'lotserial',
+		'ii-pricing'          => 'pricing',
+		'ii-purchase-history' => 'purchasehistory',
+		'ii-purchase-orders'  => 'purchaseorders',
+		'ii-quotes'           => 'lostsales',
+		'ii-requirements'     => 'requirements',
+		'ii-sales-history'    => 'saleshistory',
+		'ii-sales-orders'     => 'salesorders',
+		'ii-stock'            => 'stock',
+		'ii-substitutes'      => 'substitutes',
+		'ii-usage'            => '',
+		'ii-where-used'       => '',
+	];
+
+	const II_SCREENS = [
+		'activity',
+		'cost',
+		'general',
+		'kit',
+		'pricing',
+		'purchasehistory',
+		'purchaseorders',
+		'requirements',
+		'saleshistory',
+		'salesorders',
+		'lotserial',
+		'stock',
+		'substitutes',
+		'lostsales',
+	];
+
+	const USER_DEFAULT = 'system';
+
+/* =============================================================
+	Const, Config Functions
+============================================================= */
+	public function iiscreens() {
+		return self::II_SCREENS;
+	}
+
+	const OPTION_ATTRIBUTES = [
+		'activity'        => ['default' => 'Y', 'label' => 'Activity', 'whse'=> true,  'detail'=> true,  'date'=> true],
+		'cost'            => ['default' => 'Y', 'label' => 'Costing', 'whse'=> true,  'detail'=> true,  'date'=> false],
+		'general'         => ['default' => 'Y', 'label' => 'General', 'whse'=> false, 'detail'=> false, 'date'=> false],
+		'kit'             => ['default' => 'Y', 'label' => 'Kits/BOM', 'whse'=> false, 'detail'=> false, 'date'=> false],
+		'pricing'         => ['default' => 'Y', 'label' => 'Pricing', 'whse'=> false, 'detail'=> false, 'date'=> false],
+		'purchasehistory' => ['default' => 'Y', 'label' => 'Purchase History', 'whse'=> true,  'detail'=> true,  'date'=> true],
+		'purchaseorders'  => ['default' => 'Y', 'label' => 'Purchase Orders',  'whse'=> true,  'detail'=> false, 'date'=> false],
+		'requirements'    => ['default' => 'Y', 'label' => 'Requirement', 'whse'=> true,  'detail'=> true,  'date'=> false],
+		'saleshistory'    => ['default' => 'Y', 'label' => 'Sales History',  'whse'=> true,  'detail'=> true,  'date'=> true],
+		'salesorders'     => ['default' => 'Y', 'label' => 'Sales Orders',  'whse'=> true,  'detail'=> false, 'date'=> false],
+		'lotserial'       => ['default' => 'Y', 'label' => 'Serial / Lot Search',  'whse'=> false,  'detail'=> false, 'date'=> false],
+		'stock'           => ['default' => 'Y', 'label' => 'Stock Status',  'whse'=> true,  'detail'=> true,  'date'=> false],
+		'substitutes'     => ['default' => 'Y', 'label' => 'Subtitutes / Supercede',  'whse'=> true,  'detail'=> false, 'date'=> false],
+		'lostsales'       => ['default' => 'Y', 'label' => 'Lost Sales / Quote',  'whse'=> true,  'detail'=> false, 'date'=> false],
+
+		'daysactivity'        => ['max' => 9999],
+		'dayspurchasehistory' => ['max' => 9999],
+		'dayssaleshistory'    => ['max' => 9999],
+	];
+
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function field_attribute($field = '', $attr = '') {
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		if (array_key_exists($field, self::OPTION_ATTRIBUTES) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, self::OPTION_ATTRIBUTES[$field]) === false) {
+			return false;
+		}
+		return self::OPTION_ATTRIBUTES[$field][$attr];
+	}
+
+	public function screens_with_x($x) {
+		$screens = [];
+
+		foreach (self::II_SCREENS as $screen) {
+			if (self::OPTION_ATTRIBUTES[$screen][$x] === true) {
+				$screens[] = $screen;
+			}
+		}
+		return $screens;
+	}
+
+	public function screens_with_detail() {
+		return $this->screens_with_x('detail');
+	}
+
+	public function screens_with_dates() {
+		return $this->screens_with_x('date');
+	}
+
+	public function screens_with_warehouses() {
+		return $this->screens_with_x('whse');
+	}
+
+	const PERMISSIONS_DEFAULT = [
+		'activity'          => 'Y',
+		'cost'              => 'Y',
+		'general'           => 'Y',
+		'kit'               => 'Y',
+		'pricing'           => 'Y',
+		'purchasehistory'   => 'Y',
+		'purchaseorders'    => 'Y',
+		'requirements'      => 'Y',
+		'saleshistory'      => 'Y',
+		'salesorders'       => 'Y',
+		'lotserial'         => 'Y',
+		'stock'             => 'Y',
+		'substitutes'       => 'Y',
+		'lostsales'         => 'Y',
+	];
+
+	/**
+	 * Returns OptionsIiQuery
+	 * @return OptionsIiQuery
+	 */
+	public function query() {
+		return OptionsIiQuery::create();
+	}
+
+	/**
+	 * Return DEFAULT PERMISSIONS
+	 * @return array
+	 */
+	public function default_permissions() {
+		return self::PERMISSIONS_DEFAULT;
+	}
+
+	public function has_response() {
+		return boolval($this->wire('session')->response_iio);
+	}
+
+	public function response() {
+		return $this->wire('session')->response_iio;
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return OptionsIi[]
+	 * @return OptionsIi[]|ObjectCollection
+	 */
+	public function users() {
+		$q = $this->query();
+		return $q->find();
+	}
+
+	/**
+	 * Return if User Permissions Exists
+	 * @param  string $userID Login ID
+	 * @return bool
+	 */
+	public function exists($userID) {
+		$q = $this->query();
+		$q->filterByUserid($userID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return OptionsIi
+	 * @param  string $userID Login ID
+	 * @return OptionsIi
+	 */
+	public function user($userID) {
+		$q = $this->query();
+		$q->filterByUserid($userID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return OptionsIi
+	 * @param  string $userID Login ID
+	 * @return OptionsIi
+	 */
+	public function useriio($userID) {
+		if ($this->exists($userID) == false) {
+			$userID = self::USER_DEFAULT;
+		}
+		return $this->user($userID);
+	}
+
+	/**
+	 * Return new OptionsIi
+	 * @param  string $userID
+	 * @return OptionsIi
+	 */
+	public function new($userID = '') {
+		$user = new OptionsIi();
+		foreach (self::PERMISSIONS_DEFAULT as $key => $value) {
+			$setFunction = "set".ucfirst($key);
+			$user->$setFunction($value);
+		}
+		if (strlen($userID) && $userID != 'new') {
+			$user->setUserid($userID);
+		}
+		return $user;
+	}
+
+	/**
+	 * Return New or Existing User
+	 * @param  string $userID
+	 * @return OptionsIi
+	 */
+	public function get_create($userID) {
+		if ($this->exists($userID)) {
+			return $this->user($userID);
+		}
+		return $this->new($userID);
+	}
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Takes Input, processses the action, calls the input_{$crud} to execute
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'update-iio':
+				$this->input_update($input);
+			default:
+				// TODO;
+				break;
+		}
+	}
+
+	/**
+	 * Update CXM Item from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function input_update(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$userID = $values->text('userID');
+		$invalidfields = [];
+		$record = $this->get_create($userID);
+
+		if (!$record->isNew()) {
+			if (!$this->lockrecord($record->userid)) {
+				$message = self::DESCRIPTION_RECORD . " ($record->userid)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record->userid);
+				$this->wire('session')->response_iio = MsaResponse::response_error($record->userid, $message);
+				return false;
+			}
+		}
+		$invalidfields = $this->update_record_input($record, $input);
+		$this->wire('session')->response_iio = $this->save_and_respond($record, $invalidfields);
+		return $this->wire('session')->response_iio->has_success();
+	}
+
+
+	/**
+	 * Updates CXM Item Record
+	 * @param  OptionsIi $record CXM Item Record
+	 * @param  WireInput        $input  Input Data
+	 * @return MsaResponse
+	 */
+	public function update_record_input(OptionsIi $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$this->update_record_input_screenoptions($record, $input);
+		$this->update_record_input_dates($record, $input);
+		$this->update_record_input_detail($record, $input);
+		$invalidfields = array();
+		$invalidfields = $this->update_record_input_validated($record, $input);
+
+		foreach (self::PERMISSIONS_DEFAULT as $key => $default) {
+			$setFunction = "set".ucfirst($key);
+			$record->$setFunction($values->$key ? $values->yn($key) : $default);
+		}
+
+		$record->setDate(date('Ymd'));
+		$record->setTime(date('His'));
+		return $invalidfields;
+	}
+
+	private function update_record_input_screenoptions(OptionsIi $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		foreach (self::II_SCREENS as $screen) {
+			$setFunction = "set".ucfirst($screen);
+			$record->$setFunction($values->yn($screen));
+		}
+		return true;
+	}
+
+	private function update_record_input_dates(OptionsIi $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		foreach ($this->screens_with_dates() as $screen) {
+			$datefield = "date$screen";
+			$dayfield = "days$screen";
+			$date = '';
+			$days = '';
+
+			if ($values->int($dayfield) > 0) {
+				$days = $values->int($dayfield);
+			}
+
+			if (strlen($values->text($datefield))) {
+				$date = date('Ymd', strtotime($values->text($datefield)));
+			}
+
+			$record->set($dayfield, $days);
+			$record->set($datefield, $date);
+		}
+	}
+
+	private function update_record_input_detail(OptionsIi $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		foreach ($this->screens_with_detail() as $screen) {
+			$field = "detail$screen";
+			$record->set($field, $values->yn($field));
+		}
+	}
+
+	/**
+	 * Updates CXM Item Record's UoM Pricing, UoM Customer, Item ID, CustID
+	 * Validates Each property is valid, returns invalid inputs, descriptions
+	 * @param  OptionsIi $record   CXM Item
+	 * @param  WireInput        $input    Input Data
+	 * @return array
+	 */
+	protected function update_record_input_validated(OptionsIi $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$modules = $this->wire('modules');
+		$validate = $modules->get('ValidateIio');
+
+		$invalid = array();
+
+		$fields = array(
+			'userID' => array(
+				'description' => 'User ID',
+				'input'       => 'userID',
+				'property'    => 'userid',
+				'allow_blank' => false,
+				'function'    => 'userid'
+			),
+		);
+
+		foreach ($this->screens_with_warehouses() as $screen) {
+			$fields[] = array(
+				'description' => 'Warehouse ' . ucfirst($screen),
+				'input'       => "whse$screen",
+				'property'    => "whse$screen",
+				'allow_blank' => false,
+				'function'    => 'whseid'
+			);
+		}
+
+		$validator = $modules->get('InputValidator');
+		$validator->set_validator($validate)->set_input($input)->set_record($record)->set_validatefields($fields);
+		$invalid = $validator->validate();
+		$validator->set_valid_properties();
+		return $invalid;
+	}
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
+	/**
+	 * Returns MsaResponse based on the outcome of the database save
+	 * @param  OptionsIi $record        Record to record response of database save
+	 * @param  array          $invalidfields Input fields that require attention
+	 * @return MsaResponse
+	 */
+	protected function save_and_respond(OptionsIi $record, array $invalidfields) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new MsaResponse();
+		$response->set_key($record->userid);
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+		}
+
+		if ($is_new) {
+			$response->set_action(MsaResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$response->set_action(MsaResponse::CRUD_DELETE);
+		} else {
+			$response->set_action(MsaResponse::CRUD_UPDATE);
+		}
+		$response->build_message(self::RESPONSE_TEMPLATE);
+
+		if ($response->has_success() && empty($invalidfields)) {
+			$this->request_update($record->userid);
+		}
+		$response->set_fields($invalidfields);
+		return $response;
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	private function request_dplus(array $data) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$data = array_merge(["DBNAME=$dplusdb"], $data);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+	/**
+	 * Writes File for Dplus to update the ITM Perm File for this login ID
+	 * @param  string $userID Login ID
+	 * @return void
+	 */
+	public function request_update($userID) {
+		$data = array('UPDATEITMPERM', "LOGINID=$userID");
+		$this->request_dplus($data);
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return if Field has Error
+	 * NOTE: Uses $session->response_itm->fields to derive this
+	 * @param  string $inputname Input name e.g. commissiongroup
+	 * @return bool
+	 */
+	public function field_has_error($inputname) {
+		$response = $this->wire('session')->response_iio;
+		return ($response) ? array_key_exists($inputname, $response->fields) : false;
+	}
+
+	/**
+	 * Return Itm Subfunctions that the user has permissions to
+	 * @param  User   $user
+	 * @return PageArray
+	 */
+	public function ii_subfunctions(User $user) {
+		$permitted = $user->permitted_ii();
+		if (empty($permitted)) {
+			return new PageArray();
+		}
+		$p = $this->wire('pages')->get('pw_template=ii-item');
+		$templates = implode('|', $this->permissions_to_templates($permitted));
+		return $p->children("pw_template=$templates");
+	}
+
+	/**
+	 * Return Templates that the user has permissions to
+	 * @param  array  $permitted e.g ['pricing', 'xrefs']
+	 * @return array
+	 */
+	public function permissions_to_templates(array $permitted) {
+		$templates = [];
+		foreach (self::TEMPLATES_PERMISSIONS as $template => $permission) {
+			if (empty($permission) || in_array($permission, $permitted)) {
+				$templates[] = $template;
+			}
+		}
+		return $templates;
+	}
+
+	/**
+	 * Return if User is allowed to view Template
+	 * @param  User   $user     Dplus User
+	 * @param  string $template Template name
+	 * @return bool
+	 */
+	public function is_user_allowed_template(User $user, $template) {
+		$userID = $this->exists($user->loginid) ? $user->loginid : self::DEFAULT_USER;
+		$permissions = $this->user($userID);
+		$needed = self::TEMPLATES_PERMISSIONS[$template];
+		return $needed ? $permissions->is_true($needed) : true;
+	}
+
+	/**
+	 * Lock Record, validate User is locking Record
+	 * @param  string $userID
+	 * @return bool
+	 */
+	public function lockrecord($userID) {
+		if (!$this->recordlocker->function_locked($userID)) {
+			$this->recordlocker->create_lock($userID);
+		}
+		return $this->recordlocker->function_locked_by_user($userID);
+	}
+
+/* =============================================================
+	URL Functions
+============================================================= */
+	public function iioURL($userID = '', $focus = '') {
+		$url = new Url($this->wire('pages')->get('pw_template=iio')->url);
+		$url->query->set('userID', $userID);
+		$url->query->set('focus', $focus);
+		return $url->getUrl();
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus IIO CRUD Manager',
+			'version' => 101,
+			'summary' => 'Module for CRUD Methods for IIO',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+
+	/**
+	 * Set up Functions / Properties for pw_templated pages
+	 * @return void
+	 */
+	public function init() {
+		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
+		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
+
+		$this->addHook("User::permitted_ii", function($event) {
+			$user = $event->object;
+			$permission = $this->useriio($user->loginid);
+			$event->return = $permission->permitted();
+		});
+
+		$this->addHook("Page(pw_template=ii-item)::subfunctions", function($event) {
+			$user = $this->wire('user');
+			$event->return = $this->ii_subfunctions($user);
+		});
+
+		$this->addHook("Page(pw_template=iio)::iioURL", function($event) {
+			$userID = $event->arguments(0);
+			$focus = $event->arguments(1);
+			$event->return = $this->iioURL($userID, $focus);
+		});
+
+		$this->addHook("Page(pw_template=iio)::jsonapiURL", function($event) {
+			$api = $event->arguments(0);
+			$pages = $this->wire('pages');
+			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
+		});
+
+		$this->addHook("Page(pw_template=iio)::search_lookupURL", function($event) {
+			$ajaxcode = $event->arguments(0);
+			$event->return = $this->wire('pages')->get("template=api-ajax,ajaxcode=$ajaxcode")->httpUrl;
+		});
+	}
+}
