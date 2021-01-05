@@ -42,12 +42,10 @@ $(function() {
 		submitHandler: function(form) {
 			validate_itm_item(input_itemid.val(), function(exists) {
 				if (exists) {
-					if (validator.element('#'+input_itemid.attr('id'))) {
-						if (validator.element('#'+input_qty.attr('id'))) {
-							form.submit();
-						} else {
-							input_qty.focus();
-						}
+					if (input_qty.val() != '') {
+						form.submit();
+					} else {
+						input_qty.focus();
 					}
 				} else {
 					validate_get_item();
