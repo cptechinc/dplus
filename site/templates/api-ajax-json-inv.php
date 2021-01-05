@@ -103,6 +103,14 @@
 					$response = "ITMP for $loginID not found";
 				}
 				break;
+			case 'validate-warehouseid':
+				$whseID = $values->text('whseID');
+				if ($validate->whseid($whseID) || $whseID == '**') {
+					$response = true;
+				} else {
+					$response = "Warehouse ID $whseID not found";
+				}
+				break;
 		}
 	}
 
