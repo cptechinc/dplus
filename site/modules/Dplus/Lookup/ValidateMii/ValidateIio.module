@@ -1,0 +1,44 @@
+<?php namespace ProcessWire;
+
+use DplusUserQuery, DplusUser;
+
+/**
+ * ValidateIio
+ * Module to validate IO fields
+ */
+class ValidateIio extends WireData implements Module {
+	/**
+	 * Validate Login ID
+	 * @param  string $userID User ID
+	 * @return bool
+	 */
+	public function userid($userID) {
+		return $this->wire('modules')->get('ValidateMsa')->userid($userID);
+	}
+
+	/**
+	 * Validate Warehouse ID
+	 * @param  string $whseID Warehouse ID
+	 * @return bool
+	 */
+	public function whseid($whseID) {
+		if ($whseID == '**') {
+			return true;
+		}
+		return $this->wire('modules')->get('CodeTablesIwhm')->code_exists($whseID);
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Validate Iio',
+			'version' => 101,
+			'summary' => 'Handles Iio Field Validation',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+}
