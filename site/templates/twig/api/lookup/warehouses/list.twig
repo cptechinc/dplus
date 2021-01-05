@@ -1,0 +1,18 @@
+<table class="table table-striped" id="warehouses-table">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th>Whse</th>
+			<th>Name</th>
+		</tr>
+	</thead>
+	{% for whse in results %}
+		<tr>
+			<td>
+				<a href="#" class="link whse-link" data-whseid="{{ whse.id }}">
+					{{ whse.id }}
+				</a>
+			</td>
+			<td>{{ whse.name }}</td>
+		</tr>
+	{% endfor %}
+</table>
