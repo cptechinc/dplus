@@ -56,7 +56,7 @@ class CodeTables extends WireData implements Module {
 	 */
 	public function update_dplus_cobol($table, $code) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusConnectDatabase')->db_name;
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
 		$table = strtoupper($table);
 		$data = array("DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code");
 		$requestor = $this->wire('modules')->get('DplusRequest');
