@@ -35,12 +35,11 @@
 		<div class="col-sm-1">
 			{% if iio.field_attribute(option, 'detail') is same as(true) %}
 				{% set name = 'detail' ~ option %}
+				{% set options = option == 'requirements' ? constant('VIEW_REQUIREMENTS_OPTIONS', user) : {'Y': 'Yes','N': 'No'} %}
 				{% include 'util/form/select.twig' with {
 						'name': name, 'selected_value': attribute(user, name),
-						'options': {
-							'Y': 'Yes',
-							'N': 'No'
-						},
+						'options': options,
+						'show_value': option == 'requirements'
 					}
 				%}
 			{% endif %}
