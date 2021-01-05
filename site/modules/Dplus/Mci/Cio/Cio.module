@@ -51,7 +51,85 @@ class Cio extends WireData implements Module {
 		'ci-activity'         => ''
 	];
 
+/* =============================================================
+	Const, Config Functions
+============================================================= */
 	const USER_DEFAULT = 'system';
+
+	const CI_SCREENS = [
+		'notes',
+		'contacts',
+		'payments',
+		'corebank',
+		'credit',
+		'stock',
+		'pricing',
+		'standingorders',
+		'salesorders',
+		'quotes',
+		'openinvoices',
+		'customerpo',
+		'saleshistory',
+	];
+
+	public function Ciscreens() {
+		return self::CI_SCREENS;
+	}
+
+	const OPTION_ATTRIBUTES = [
+		'notes'          => ['default' => 'N', 'label' => 'Notes', 'date'=> false],
+		'contacts'       => ['default' => 'N', 'label' => 'Contact / Notes', 'date'=> false],
+		'payments'       => ['default' => 'N', 'label' => 'Payment', 'date'=> false],
+		'corebank'       => ['default' => 'N', 'label' => 'Core Bank', 'date'=> false],
+		'credit'         => ['default' => 'N', 'label' => 'Credit', 'date'=> false],
+		'stock'          => ['default' => 'N', 'label' => 'Customer Stock', 'date'=> false],
+		'pricing'        => ['default' => 'N', 'label' => 'Pricing', 'date'=> false],
+		'standingorders' => ['default' => 'N', 'label' => 'Standing Order', 'date'=> false],
+		'salesorders'    => ['default' => 'N', 'label' => 'Sales Order', 'date'=> false],
+		'quotes'         => ['default' => 'N', 'label' => 'Quote', 'date'=> false],
+		'openinvoices'   => ['default' => 'N', 'label' => 'Open Invoices', 'date'=> false],
+		'customerpo'     => ['default' => 'N', 'label' => 'Customer PO', 'date'=> true],
+		'saleshistory'   => ['default' => 'N', 'label' => 'Sales History', 'date'=> true],
+
+		'dayscustomerpo'    => ['max' => 9999],
+		'dayssaleshistory'  => ['max' => 9999],
+	];
+
+	/**
+	 * Return Screens that have $x === true
+	 * @param  string $x property e.g detail|date|whse
+	 * @return array
+	 */
+	public function screens_with_x($x) {
+		$screens = [];
+
+		foreach (self::CI_SCREENS as $screen) {
+			if (self::OPTION_ATTRIBUTES[$screen][$x] === true) {
+				$screens[] = $screen;
+			}
+		}
+		return $screens;
+	}
+
+
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function field_attribute($field = '', $attr = '') {
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		if (array_key_exists($field, self::OPTION_ATTRIBUTES) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, self::OPTION_ATTRIBUTES[$field]) === false) {
+			return false;
+		}
+		return self::OPTION_ATTRIBUTES[$field][$attr];
+	}
 
 	/**
 	 * Returns OptionsCiQuery
@@ -101,10 +179,15 @@ class Cio extends WireData implements Module {
 	 * @return OptionsCi
 	 */
 	public function usercio($loginID) {
-		if ($this->exists($loginID) === false) {
-			$loginID = $this->user(self::DEFAULT_USER);
+		if ($this->exists($loginID)) {
+			return $this->user($loginID);
 		}
-		return $this->user($loginID);
+
+		if ($this->exists(self::USER_DEFAULT)) {
+			return $this->user(self::USER_DEFAULT);
+		}
+
+		return OptionsCi::new();
 	}
 
 	/**
@@ -113,11 +196,32 @@ class Cio extends WireData implements Module {
 	 * @return OptionsCi
 	 */
 	public function new($loginID = '') {
-		$user = new OptionsCi();
+		$user = OptionsCi::new();
 		if (strlen($loginID) && $loginID != 'new') {
 			$user->setUserid($loginID);
 		}
+
+		if ($loginID != self::USER_DEFAULT) {
+			$this->copyoptions(self::USER_DEFAULT, $user);
+		}
 		return $user;
+	}
+
+	/**
+	 * Copies Options from User to another
+	 * @param  string    $from User ID to copy from
+	 * @param  OptionsCi $to   Record to copy to
+	 * @return OptionsCi
+	 */
+	public function copyoptions($from = '', OptionsCi $to) {
+		if ($this->exists($from) == false) {
+			return $to;
+		}
+		$template = $this->user($from);
+		foreach(array_keys(self::OPTION_ATTRIBUTES) as $option) {
+			$to->set($option, $template->$option);
+		}
+		return $to;
 	}
 
 	/**
@@ -130,6 +234,217 @@ class Cio extends WireData implements Module {
 			return $this->user($loginID);
 		}
 		return $this->new($loginID);
+	}
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Takes Input, processses the action, calls the input_{$crud} to execute
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'update-cio':
+				$this->input_update($input);
+			default:
+				// TODO;
+				break;
+		}
+	}
+
+	/**
+	 * Update CXM Item from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function input_update(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$userID = $values->text('userID');
+		$invalidfields = [];
+		$record = $this->get_create($userID);
+
+		if (!$record->isNew()) {
+			if (!$this->lockrecord($record->userid)) {
+				$message = self::DESCRIPTION_RECORD . " ($record->userid)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record->userid);
+				$this->wire('session')->response_cio = MsaResponse::response_error($record->userid, $message);
+				return false;
+			}
+		}
+		$invalidfields = $this->update_record_input($record, $input);
+		$this->wire('session')->response_cio = $this->save_and_respond($record, $invalidfields);
+		return $this->wire('session')->response_cio->has_success();
+	}
+
+	/**
+	 * Updates CXM Item Record
+	 * @param  OptionsCi $record CXM Item Record
+	 * @param  WireInput        $input  Input Data
+	 * @return MsaResponse
+	 */
+	public function update_record_input(OptionsCi $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$this->update_record_input_screenoptions($record, $input);
+		$this->update_record_input_dates($record, $input);
+		$invalidfields = array();
+		$invalidfields = $this->update_record_input_validated($record, $input);
+
+		$record->setDate(date('Ymd'));
+		$record->setTime(date('His'));
+		return $invalidfields;
+	}
+
+	/**
+	 * Update Screen options Permissions for record
+	 * @param  OptionsCi $record User Record
+	 * @param  WireInput $input  Input Data
+	 * @return bool
+	 */
+	private function update_record_input_screenoptions(OptionsCi $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		foreach (self::CI_SCREENS as $screen) {
+			$setFunction = "set".ucfirst($screen);
+			$record->$setFunction($values->yn($screen));
+		}
+		return true;
+	}
+
+	/**
+	 * Update Screen options Date Values for record
+	 * @param  OptionsCi $record User Record
+	 * @param  WireInput $input  Input Data
+	 * @return bool
+	 */
+	private function update_record_input_dates(OptionsCi $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		foreach ($this->screens_with_x('date') as $screen) {
+			$datefield = "date$screen";
+			$dayfield = "days$screen";
+			$date = '';
+			$days = '';
+
+			if ($values->int($dayfield) > 0) {
+				$days = $values->int($dayfield, ['max' => $this->field_attribute($dayfield, 'max')]);
+			}
+
+			if (strlen($values->text($datefield))) {
+				$date = date('Ymd', strtotime($values->text($datefield)));
+			}
+
+			$record->set($dayfield, $days);
+			$record->set($datefield, $date);
+		}
+	}
+
+	/**
+	 * Updates Cio Record's userID
+	 * Validates Each property is valid, returns invalid inputs, descriptions
+	 * @param  OptionsCi  $record   User Record
+	 * @param  WireInput  $input    Input Data
+	 * @return array
+	 */
+	protected function update_record_input_validated(OptionsCi $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$modules = $this->wire('modules');
+		$validate = $modules->get('ValidateMsa');
+
+		$invalid = array();
+
+		$fields = array(
+			'userID' => array(
+				'description' => 'User ID',
+				'input'       => 'userID',
+				'property'    => 'userid',
+				'allow_blank' => false,
+				'function'    => 'userid'
+			),
+		);
+
+		$validator = $modules->get('InputValidator');
+		$validator->set_validator($validate)->set_input($input)->set_record($record)->set_validatefields($fields);
+		$invalid = $validator->validate();
+		$validator->set_valid_properties();
+		return $invalid;
+	}
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
+	/**
+	 * Returns MsaResponse based on the outcome of the database save
+	 * @param  OptionsCi $record        Record to record response of database save
+	 * @param  array          $invalidfields Input fields that require attention
+	 * @return MsaResponse
+	 */
+	protected function save_and_respond(OptionsCi $record, array $invalidfields) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new MsaResponse();
+		$response->set_key($record->userid);
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+		}
+
+		if ($is_new) {
+			$response->set_action(MsaResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$response->set_action(MsaResponse::CRUD_DELETE);
+		} else {
+			$response->set_action(MsaResponse::CRUD_UPDATE);
+		}
+		$response->build_message(self::RESPONSE_TEMPLATE);
+
+		if ($response->has_success() && empty($invalidfields)) {
+			$this->request_update($record->userid);
+		}
+		$response->set_fields($invalidfields);
+		return $response;
+	}
+
+	public function has_response() {
+		return boolval($this->wire('session')->response_cio);
+	}
+
+	public function response() {
+		return $this->wire('session')->response_cio;
+	}
+
+	/**
+	 * Return if Field has Error
+	 * NOTE: Uses $session->response_itm->fields to derive this
+	 * @param  string $inputname Input name e.g. commissiongroup
+	 * @return bool
+	 */
+	public function field_has_error($inputname) {
+		$response = $this->response();
+		return ($response) ? array_key_exists($inputname, $response->fields) : false;
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	/**
+	 * Writes File for Dplus to update the ITM Perm File for this login ID
+	 * @param  string $userID Login ID
+	 * @return void
+	 */
+	public function request_update($userID) {
+		$this->wire('modules')->get('CodeTables')->update_dplus_cobol('CIO', $userID);
 	}
 
 /* =============================================================
@@ -172,10 +487,32 @@ class Cio extends WireData implements Module {
 	 * @return bool
 	 */
 	public function is_user_allowed_template(User $user, $template) {
-		$loginID = $this->exists($user->loginid) ? $user->loginid : self::DEFAULT_USER;
+		$loginID = $this->exists($user->loginid) ? $user->loginid : self::USER_DEFAULT;
 		$permissions = $this->user($loginID);
 		$needed = self::TEMPLATES_PERMISSIONS[$template];
 		return $needed ? $permissions->is_true($needed) : true;
+	}
+
+	/**
+	 * Lock Record, validate User is locking Record
+	 * @param  string $userID
+	 * @return bool
+	 */
+	public function lockrecord($userID) {
+		if (!$this->recordlocker->function_locked($userID)) {
+			$this->recordlocker->create_lock($userID);
+		}
+		return $this->recordlocker->function_locked_by_user($userID);
+	}
+
+/* =============================================================
+	URL Functions
+============================================================= */
+	public function cioURL($userID = '', $focus = '') {
+		$url = new Url($this->wire('pages')->get('pw_template=cio')->url);
+		$url->query->set('userID', $userID);
+		$url->query->set('focus', $focus);
+		return $url->getUrl();
 	}
 
 /* =============================================================
@@ -208,6 +545,23 @@ class Cio extends WireData implements Module {
 		$this->addHook("Page(pw_template=ci-customer)::subfunctions", function($event) {
 			$user = $this->wire('user');
 			$event->return = $this->ci_subfunctions($user);
+		});
+
+		$this->addHook("Page(pw_template=cio)::cioURL", function($event) {
+			$userID = $event->arguments(0);
+			$focus = $event->arguments(1);
+			$event->return = $this->cioURL($userID, $focus);
+		});
+
+		$this->addHook("Page(pw_template=cio)::jsonapiURL", function($event) {
+			$api = $event->arguments(0);
+			$pages = $this->wire('pages');
+			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
+		});
+
+		$this->addHook("Page(pw_template=cio)::search_lookupURL", function($event) {
+			$ajaxcode = $event->arguments(0);
+			$event->return = $this->wire('pages')->get("template=api-ajax,ajaxcode=$ajaxcode")->httpUrl;
 		});
 	}
 }
