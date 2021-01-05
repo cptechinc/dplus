@@ -166,20 +166,20 @@ class Iio extends WireData implements Module {
 	}
 
 	const PERMISSIONS_DEFAULT = [
-		'activity'          => 'Y',
-		'cost'              => 'Y',
-		'general'           => 'Y',
-		'kit'               => 'Y',
-		'pricing'           => 'Y',
-		'purchasehistory'   => 'Y',
-		'purchaseorders'    => 'Y',
-		'requirements'      => 'Y',
-		'saleshistory'      => 'Y',
-		'salesorders'       => 'Y',
-		'lotserial'         => 'Y',
-		'stock'             => 'Y',
-		'substitutes'       => 'Y',
-		'lostsales'         => 'Y',
+		'activity'          => 'N',
+		'cost'              => 'N',
+		'general'           => 'N',
+		'kit'               => 'N',
+		'pricing'           => 'N',
+		'purchasehistory'   => 'N',
+		'purchaseorders'    => 'N',
+		'requirements'      => 'N',
+		'saleshistory'      => 'N',
+		'salesorders'       => 'N',
+		'lotserial'         => 'N',
+		'stock'             => 'N',
+		'substitutes'       => 'N',
+		'lostsales'         => 'N',
 	];
 
 	/**
@@ -246,10 +246,15 @@ class Iio extends WireData implements Module {
 	 * @return OptionsIi
 	 */
 	public function useriio($userID) {
-		if ($this->exists($userID) == false) {
-			$userID = self::USER_DEFAULT;
+		if ($this->exists($loginID)) {
+			return $this->user($loginID);
 		}
-		return $this->user($userID);
+
+		if ($this->exists(self::USER_DEFAULT)) {
+			return $this->user(self::USER_DEFAULT);
+		}
+
+		return OptionsCi::new();
 	}
 
 	/**
@@ -258,15 +263,31 @@ class Iio extends WireData implements Module {
 	 * @return OptionsIi
 	 */
 	public function new($userID = '') {
-		$user = new OptionsIi();
-		foreach (self::PERMISSIONS_DEFAULT as $key => $value) {
-			$setFunction = "set".ucfirst($key);
-			$user->$setFunction($value);
-		}
+		$user = OptionsIi::new();
 		if (strlen($userID) && $userID != 'new') {
 			$user->setUserid($userID);
 		}
+		if ($userID != self::USER_DEFAULT) {
+			$this->copyoptions(self::USER_DEFAULT, $user);
+		}
 		return $user;
+	}
+
+	/**
+	 * Copies Options from User to another
+	 * @param  string    $from User ID to copy from
+	 * @param  OptionsIi $to   Record to copy to
+	 * @return OptionsIi
+	 */
+	public function copyoptions($from = '', OptionsCi $to) {
+		if ($this->exists($from) == false) {
+			return $to;
+		}
+		$template = $this->user($from);
+		foreach(array_keys(self::OPTION_ATTRIBUTES) as $option) {
+			$to->set($option, $template->$option);
+		}
+		return $to;
 	}
 
 	/**
@@ -296,6 +317,8 @@ class Iio extends WireData implements Module {
 		switch ($values->text('action')) {
 			case 'update-iio':
 				$this->input_update($input);
+			case 'delete-iio':
+				$this->input_delete($input);
 			default:
 				// TODO;
 				break;
@@ -303,7 +326,34 @@ class Iio extends WireData implements Module {
 	}
 
 	/**
-	 * Update CXM Item from Input Data
+	 * Delete IIO from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function input_delete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$userID = $values->text('userID');
+
+		if ($this->exists($userID) == false) {
+			return true;
+		}
+
+		$record = $this->user($userID);
+
+		if (!$this->lockrecord($record->userid)) {
+			$message = self::DESCRIPTION_RECORD . " ($record->userid) could not deleted, it is locked by " . $this->recordlocker->get_locked_user($record->userid);
+			$this->wire('session')->response_iio = MsaResponse::response_error($record->userid, $message);
+			return false;
+		}
+
+		$record->delete();
+		$this->wire('session')->response_iio = $this->save_and_respond($record, []);
+		return $this->wire('session')->response_iio->has_success();
+	}
+
+	/**
+	 * Update IIO Record from Input Data
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
@@ -325,7 +375,6 @@ class Iio extends WireData implements Module {
 		$this->wire('session')->response_iio = $this->save_and_respond($record, $invalidfields);
 		return $this->wire('session')->response_iio->has_success();
 	}
-
 
 	/**
 	 * Updates CXM Item Record
@@ -385,7 +434,7 @@ class Iio extends WireData implements Module {
 			$days = '';
 
 			if ($values->int($dayfield) > 0) {
-				$days = $values->int($dayfield);
+				$days = $values->int($dayfield, ['max' => $this->field_attribute($dayfield, 'max')]);
 			}
 
 			if (strlen($values->text($datefield))) {
@@ -414,7 +463,7 @@ class Iio extends WireData implements Module {
 	}
 
 	/**
-	 * Updates CXM Item Record's userID, whse* fields
+	 * Updates IIO Record's userID, whse* fields
 	 * Validates Each property is valid, returns invalid inputs, descriptions
 	 * @param  OptionsIi  $record   User Record
 	 * @param  WireInput  $input    Input Data
@@ -584,6 +633,13 @@ class Iio extends WireData implements Module {
 		return $url->getUrl();
 	}
 
+	public function iio_deleteURL($userID = '') {
+		$url = new Url($this->wire('pages')->get('pw_template=iio')->url);
+		$url->query->set('action', 'delete-iio');
+		$url->query->set('userID', $userID);
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
@@ -620,6 +676,11 @@ class Iio extends WireData implements Module {
 			$userID = $event->arguments(0);
 			$focus = $event->arguments(1);
 			$event->return = $this->iioURL($userID, $focus);
+		});
+
+		$this->addHook("Page(pw_template=iio)::iio_deleteURL", function($event) {
+			$userID = $event->arguments(0);
+			$event->return = $this->iio_deleteURL($userID);
 		});
 
 		$this->addHook("Page(pw_template=iio)::jsonapiURL", function($event) {
