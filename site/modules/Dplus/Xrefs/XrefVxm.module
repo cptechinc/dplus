@@ -372,10 +372,11 @@ class XrefVxm extends WireData implements Module {
 			$unitcost = $cost / $record->uompurchase->conversion;
 			$record->setUnitcost_base($sanitizer->float($unitcost));
 		}
+
 		if ($this->configs->ap->vxm->use_vendor_cost_breaks()) {
 			return true;
 		}
-		
+
 		for ($i = 1; $i < ItemXrefVendor::UNITS_AVAILABLE + 1; $i++) {
 			$col_qty = ucfirst(ItemXrefVendor::get_unitqty_column($i));
 			$col_cost = ucfirst(ItemXrefVendor::get_unitcost_column($i));
