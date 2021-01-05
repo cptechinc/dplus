@@ -125,6 +125,11 @@ class Iio extends WireData implements Module {
 		return self::OPTION_ATTRIBUTES[$field][$attr];
 	}
 
+	/**
+	 * Return Screens that have $x === true
+	 * @param  string $x property e.g detail|date|whse
+	 * @return array
+	 */
 	public function screens_with_x($x) {
 		$screens = [];
 
@@ -136,14 +141,26 @@ class Iio extends WireData implements Module {
 		return $screens;
 	}
 
+	/**
+	 * Return Screens that have detail === true
+	 * @return array
+	 */
 	public function screens_with_detail() {
 		return $this->screens_with_x('detail');
 	}
 
+	/**
+	 * Return Screens that have date === true
+	 * @return array
+	 */
 	public function screens_with_dates() {
 		return $this->screens_with_x('date');
 	}
 
+	/**
+	 * Return Screens that have whse === true
+	 * @return array
+	 */
 	public function screens_with_warehouses() {
 		return $this->screens_with_x('whse');
 	}
