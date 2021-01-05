@@ -4,8 +4,7 @@
 		{% include 'mii/iio/form/key.twig' %}
 	</div>
 
-
-	<div class="list-group">
+	<div class="list-group mb-3">
 		<div class="list-group-item bg-dark text-white">
 			<div class="row">
 				<div class="col-sm-2">Screen Option</div>
@@ -18,6 +17,31 @@
 		{% for option in iio.iiscreens() %}
 			{% include 'mii/iio/form/screen-options.twig' %}
 		{% endfor %}
+		<div class="list-group-item">
+			<div class="row">
+				<div class="col-sm-2">Item Get-Desc 1 or 2</div>
+				<div class="col-sm-1">
+					{% include 'util/form/select.twig' with {
+							'name': 'whichdesc', 'selected_value': user.whichdesc,
+							'options': ['1','2'],
+							'options_has_keys': false
+						}
+					%}
+				</div>
+			</div>
+		</div>
+		<div class="list-group-item">
+			<div class="row">
+				<div class="col-sm-2">Delete LOTI Certs</div>
+				<div class="col-sm-1">
+					{% include 'util/form/select.twig' with {
+							'name': 'deleteloticerts', 'selected_value': user.deleteloticerts,
+							'options': {'Y': 'Yes', 'N': 'No'}
+						}
+					%}
+				</div>
+			</div>
+		</div>
 	</div>
 	<div class="d-flex justify-content-between align-items-center">
 		{% if iio.recordlocker.function_locked_by_user(user.userid) or user.isNew() %}

@@ -336,22 +336,27 @@ class Iio extends WireData implements Module {
 	public function update_record_input(OptionsIi $record, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
+
 		$this->update_record_input_screenoptions($record, $input);
 		$this->update_record_input_dates($record, $input);
 		$this->update_record_input_detail($record, $input);
 		$invalidfields = array();
 		$invalidfields = $this->update_record_input_validated($record, $input);
 
-		foreach (self::PERMISSIONS_DEFAULT as $key => $default) {
-			$setFunction = "set".ucfirst($key);
-			$record->$setFunction($values->$key ? $values->yn($key) : $default);
-		}
+		$record->setDeleteloticerts($values->yn('deleteloticerts'));
+		$record->setWhichdesc($values->int('whichdesc', ['min' => 1, 'max' => 2, 'blankValue' => 1]));
 
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));
 		return $invalidfields;
 	}
 
+	/**
+	 * Update Screen options Permissions for record
+	 * @param  OptionsIi $record User Record
+	 * @param  WireInput $input  Input Data
+	 * @return bool
+	 */
 	private function update_record_input_screenoptions(OptionsIi $record, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
@@ -363,6 +368,12 @@ class Iio extends WireData implements Module {
 		return true;
 	}
 
+	/**
+	 * Update Screen options Date Values for record
+	 * @param  OptionsIi $record User Record
+	 * @param  WireInput $input  Input Data
+	 * @return bool
+	 */
 	private function update_record_input_dates(OptionsIi $record, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
@@ -386,6 +397,12 @@ class Iio extends WireData implements Module {
 		}
 	}
 
+	/**
+	 * Update Screen options Detail Values for record
+	 * @param  OptionsIi $record User Record
+	 * @param  WireInput $input  Input Data
+	 * @return bool
+	 */
 	private function update_record_input_detail(OptionsIi $record, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
@@ -397,10 +414,10 @@ class Iio extends WireData implements Module {
 	}
 
 	/**
-	 * Updates CXM Item Record's UoM Pricing, UoM Customer, Item ID, CustID
+	 * Updates CXM Item Record's userID, whse* fields
 	 * Validates Each property is valid, returns invalid inputs, descriptions
-	 * @param  OptionsIi $record   CXM Item
-	 * @param  WireInput        $input    Input Data
+	 * @param  OptionsIi  $record   User Record
+	 * @param  WireInput  $input    Input Data
 	 * @return array
 	 */
 	protected function update_record_input_validated(OptionsIi $record, WireInput $input) {
@@ -479,23 +496,13 @@ class Iio extends WireData implements Module {
 /* =============================================================
 	Dplus Cobol Request Functions
 ============================================================= */
-	private function request_dplus(array $data) {
-		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
-		$data = array_merge(["DBNAME=$dplusdb"], $data);
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['database'], session_id());
-	}
-
 	/**
 	 * Writes File for Dplus to update the ITM Perm File for this login ID
 	 * @param  string $userID Login ID
 	 * @return void
 	 */
 	public function request_update($userID) {
-		$data = array('UPDATEITMPERM', "LOGINID=$userID");
-		$this->request_dplus($data);
+		$this->wire('modules')->get('CodeTables')->update_dplus_cobol('IIO', $userID);
 	}
 
 /* =============================================================
