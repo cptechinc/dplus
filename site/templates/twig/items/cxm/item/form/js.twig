@@ -21,7 +21,7 @@ $(function() {
 ============================================================= */
 	$("body").on("change", "input[name=price_customer]", function(e) {
 		var input = $(this);
-		var price = parseInt(input.val());
+		var price = parseFloat(input.val());
 		input.val(price.toFixed({{ cxm.field_attribute('price_customer', 'precision') }}));
 		calculate_peruom();
 	});
@@ -40,7 +40,6 @@ $(function() {
 
 	$("body").on("change", "#uom_pricing", function(e) {
 		calculate_peruom();
-
 		var uom = $(this).val();
 
 		if (uom.length) {
@@ -53,20 +52,15 @@ $(function() {
 	});
 
 	$("body").on("change", "#price_uom", function(e) {
-
+		var input = $(this);
+		var price = parseFloat(input.val());
+		input.val(price.toFixed({{ cxm.field_attribute('price_uom', 'precision') }}));
+		calculate_custprice();
 	});
 
 	$("body").on("change", "input[name=itemID]", function(e) {
 		var input = $(this);
-		get_item(input.val(), function(item) {
-			if (item) {
-				var itemcol = $('.item-col');
-				itemcol.find('.description').text(item.description);
-				itemcol.find('.description2').text(item.description2);
-				itemcol.find('.description2').text(item.description2);
-				$('.item-uom').text(item.uofmsale);
-			}
-		});
+		populate_item_data(input.val());
 	});
 
 	$("body").on("change", "input[name=convert]", function(e) {
@@ -141,9 +135,7 @@ $(function() {
 		var itemID = button.data('itemid');
 		var description = button.data('description');
 		var description2 = button.data('description2');
-		input_itemID.val(itemID).change() ;
-		// input_itemID.closest('.item-col').find('.description').text(description);
-		// input_itemID.closest('.item-col').find('.description2').text(description2);
+		input_itemID.val(itemID).change();
 		modal_ajax.modal('hide');
 	});
 
@@ -227,25 +219,23 @@ $(function() {
 			custitemID: "Use a valid Cust Item ID, (No more than {{ cxm.maxlength_custitemid() }} characters)",
 		},
 		submitHandler: function(form) {
-			// var formdata = form_cxm.serializeArray().reduce(function(obj, item) {
-			// 	obj[item.name] = item.value;
-			// 	return obj;
-			// }, {});
-			update_cxm(form);
+			submit_cxm(form);
 		}
 	});
 
 
-	function update_cxm(form) {
+	function submit_cxm(form) {
 		request_validate_custitemID(function(exists) {
-			if (exists === true) {
-				if (input_custitemID.val() != input_custitemID.data('custitemid')) {
-					alert_existing();
+			if (exists === true && input_custitemID.val() != input_custitemID.data('custitemid')) {
+				swal_existing();
+			} else {
+				var allow_pdm_change = {{ cxm.allow_pdm_update() }};
+
+				if (allow_pdm_change && parseFloat(input_price_customer.val()) != 0.0 && input_price_customer.val() != $('input[name=price_contract]').val()) {
+					swal_update_pdm(form);
 				} else {
 					form.submit();
 				}
-			} else {
-				form.submit();
 			}
 		});
 	}
@@ -254,15 +244,13 @@ $(function() {
 		e.preventDefault();
 
 		request_validate_custitemID(function(exists) {
-			if (exists === true) {
-				if (input_custitemID.val() != input_custitemID.data('custitemid')) {
-					alert_existing();
-				}
+			if (exists === true && input_custitemID.val() != input_custitemID.data('custitemid')) {
+				swal_existing();
 			}
 		});
 	});
 
-	function alert_existing() {
+	function swal_existing() {
 		swal2.fire({
 			title: "Customer Item " + input_custitemID.val() + " exists",
 			text: 'Would you like to go edit this item?',
@@ -278,6 +266,42 @@ $(function() {
 				uri.setQuery('custitemID', input_custitemID.val());
 				window.location.href = uri.toString();
 			}
+		});
+	}
+
+	function swal_update_pdm(form) {
+		var html = '<table class="table table-sm">' +
+			'<tr>' +
+				'<td>Discount Price</td>' +
+				'<td class="text-right">'+ $('input[name=price_contract]').val() +'</td>' +
+			'</tr>' +
+			'<tr>' +
+				'<td>Customer X-ref Price</td>' +
+				'<td class="text-right">'+input_price_customer.val()+'</td>'+
+			'</tr>'+
+		'</table>';
+		html += 'Do you want to ';
+		if (parseFloat(input_price_customer.val()) == 0.00) {
+			html += 'create';
+		} else {
+			html += 'update';
+		}
+		html += ' discount record with this price?';
+
+		swal2.fire({
+			title: "Confirmation",
+			html: html,
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			if (result.value) {
+				$('input[name=updatepdm]').val('true');
+			} else {
+				$('input[name=updatepdm]').val('false');
+			}
+			form.submit();
 		});
 	}
 
@@ -308,25 +332,61 @@ $(function() {
 		});
 	}
 
+	function populate_item_data(itemID, callback) {
+		get_item(itemID, function(item) {
+			var itemcol = $('.item-col');
+			itemcol.find('.description').text(item.description);
+			itemcol.find('.description2').text(item.description2);
+			itemcol.find('.description2').text(item.description2);
+			$('.item-uom').text(item.uofmsale);
+			input_itemID.attr('data-qtypercase', item.qtypercase);
+			input_itemID.attr('data-itemid', itemID);
+			callback();
+		});
+	}
+
 /* =============================================================
 	Per UoM Calculation Functions
 ============================================================= */
 	function calculate_peruom() {
-		var custprice = input_price_customer.val();
-		var qty_percase = {{ item.item.qty_percase ? item.item.qty_percase : 0 }};
+		if (input_itemID.attr('data-qtypercase') == '' || input_itemID.attr('data-itemid') != input_itemID.val()) {
+			populate_item_data(input_itemID.val(), function() {
+				_calculate_peruom();
+			});
+		} else {
+			_calculate_peruom();
+		}
+	}
+
+	function _calculate_peruom() {
+		var custprice = parseFloat(input_price_customer.val());
+		var qty_percase = parseFloat(input_itemID.attr('data-qtypercase'));
 		var conversion = select_uom_pricing.find('option:selected').data('conversion');
 		var peruom = 0;
 		if (conversion) {
-			peruom = custprice / qty_percase * conversion;
+			peruom = (custprice / qty_percase) * parseFloat(conversion);
 		}
 		input_price_uom.val(peruom.toFixed(3));
 	}
 
 	function calculate_custprice() {
+		if (input_itemID.attr('data-qtypercase') == '' || input_itemID.attr('data-itemid') != input_itemID.val()) {
+			populate_item_data(input_itemID.val(), function() {
+				_calculate_custprice();
+			});
+		} else {
+			_calculate_custprice();
+		}
+	}
+
+	function _calculate_custprice() {
 		var peruom = input_price_uom.val();
-		var qty_percase = {{ item.item.qty_percase ? item.item.qty_percase : 0 }};
+		var qty_percase = parseFloat(input_itemID.attr('data-qtypercase'));
 		var conversion = select_uom_pricing.find('option:selected').data('conversion');
-		var custprice = peruom * qty_percase * conversion;
-		input_price_customer.val(custprice.toFixed(cxm.field_attribute('price_customer', 'precision')));
+		if (conversion) {
+			var custprice = (peruom * qty_percase) / conversion;
+			input_price_customer.val(custprice.toFixed({{ cxm.field_attribute('price_customer', 'precision') }}));
+		}
+		input_price_uom.val(peruom.toFixed({{ cxm.field_attribute('price_uom', 'precision') }}));
 	}
 });

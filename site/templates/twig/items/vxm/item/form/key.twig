@@ -1,6 +1,6 @@
 {% if item.isNew() and page.has('vendorID') == false %}
 	<div class="row form-group">
-		<div class="col-sm-4">
+		<div class="col-sm-3">
 			<label for="vendorID">Vendor ID</label>
 		</div>
 		<div class="col-sm-8">
@@ -24,7 +24,7 @@
 
 	{% if (page.pw_template == 'itm-xrefs-vxm') %}
 		<div class="row form-group">
-			<div class="col-sm-4">
+			<div class="col-sm-3">
 				<label for="vendorID">Vendor ID</label>
 			</div>
 			<div class="col-sm-8">
@@ -35,7 +35,7 @@
 {% endif %}
 
 <div class="row form-group">
-	<div class="col-sm-4">
+	<div class="col-sm-3">
 		<label for="vendoritemID"><b>Vendor Item ID</b></label>
 	</div>
 	<div class="col-sm-8">
@@ -52,15 +52,17 @@
 	</div>
 </div>
 <div class="row">
-	<div class="col-sm-4">
+	<div class="col-sm-3">
 		<b>Our Item ID</b>
 	</div>
 	<div class="col-sm-8 item-col">
 		{% include 'util/form/input-with-modal-lookup.twig' with {
-				'name': 'itemID', 'value': item.ouritemid,
+				'name': 'itemID', 'value': item.itemid,
 				'attributes': {
 					'readonly': item.itemid ? true : false,
 					'tabindex': item.itemid ? '-1' : '',
+					'data-itemid': item.itemid,
+					'data-iskit':  item.itemid ? (item.imitem.is_kit() ? 'true' : 'false') : ''
 				},
 				'modaltarget': '#ajax-modal',
 				'modaldescription': 'Search for / Choose Item',

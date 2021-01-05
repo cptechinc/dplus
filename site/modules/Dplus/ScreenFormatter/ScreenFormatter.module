@@ -107,6 +107,7 @@ class ScreenFormatter extends WireData implements Module {
 				'SfCiPurchaseOrders',
 				'SfCiSalesHistory',
 				'SfCiSalesOrders',
+				'SfIiLotserial',
 				'SfIiPurchaseHistory',
 				'SfIiPurchaseOrders',
 				'SfIiQuotes',

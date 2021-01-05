@@ -27,11 +27,10 @@
 		'maxlength': maxlength,
 		'max': max
 	}
-
 %}
 
 {#
 <input tabindex="{{tabindex}}" type="{{type}}" name="{{ name }}" id="{{ id }}" {% if maxlength %} maxlength="{{ maxlength }}" {% endif %} class="{{ class }}" value="{{ value }}" placeholder="{{ placeholder }}" {{ attributes_extra }} {{ disabled ? 'disabled' : '' }}>
 #}
 
-<input {% for attribute, value in attributes %} {{ attribute }}="{{ value }}" {% endfor %} {% for attribute, value in optional if value != '' %} {{ attribute }}="{{ value }}" {% endfor %} {{ attributes_extra }}>
+<input {% for attribute, value in attributes %} {{ attribute }}="{{ value }}" {% endfor %} {% for attribute, value in optional if value != '' %} {{ attribute }}="{{ value }}" {% endfor %} {{ attributes_extra|raw }}>

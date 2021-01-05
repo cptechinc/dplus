@@ -62,7 +62,8 @@
 						'itemid' => $itemID,
 						'description' => $item->description,
 						'description2' => $item->description2,
-						'uofmsale'     => $item->uom_sale
+						'uofmsale'     => $item->uom_sale,
+						'qtypercase'   => $item->qty_percase ? $item->qty_percase : 0
 					);
 				} else {
 					$response = false;

@@ -78,6 +78,17 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'twig_include'   => 'items/ii/quotes/quotes.twig',
 			'dplus_function' => 'iiqtf'
 		),
+		'ii-quotes' => array(
+			'template'       => 'dplus-screen-formatter',
+			'name'           => 'lotserial',
+			'title'          => 'II Lotserial',
+			'summary'        => 'II Lotserial Formatter',
+			'parent'         => '/mii/admin/',
+			'formatter'      => 'SfIiLotserial',
+			'jsoncode'       => 'ii-lotserial',
+			'twig_include'   => 'items/ii/lotserial/lotserial.twig',
+			'dplus_function' => ''
+		),
 		'ii-purchase-orders' => array(
 			'template'       => 'dplus-screen-formatter',
 			'name'           => 'purchase-orders',

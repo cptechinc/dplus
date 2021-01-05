@@ -1,0 +1,173 @@
+<?php namespace ProcessWire;
+
+include(__DIR__.'/PdmResponse.php');
+
+use ItemPricingDiscountQuery, ItemPricingDiscount;
+
+/**
+ * Pdm
+ *
+ * Handles Price Discount Matrix
+ */
+class Pdm extends WireData implements Module {
+	const MODEL              = 'ItemPricingDiscount';
+	const MODEL_KEY          = '';
+	const DESCRIPTION        = 'PDM Discount';
+	const RESPONSE_TEMPLATE  = 'PDM {key} was {not} {crud}';
+	const RECORDLOCKER_FUNCTION = 'pdm';
+
+	public function query() {
+		return ItemPricingDiscountQuery::create();
+	}
+
+	/**
+	 * Return Query with Filters for Customer applied
+	 * @param  string $custID Customer ID
+	 * @param  string $itemID Item ID
+	 * @return ItemPricingDiscountQuery
+	 */
+	public function query_customer($custID, $itemID) {
+		$q = $this->query();
+		$q->filterByType(ItemPricingDiscount::TYPE_PRICEDISCOUNT);
+		$q->filterByTable(ItemPricingDiscount::TABLE_CUSTID_ITEMID);
+		$q->filterByCustid($custID);
+		$q->filterByItemid($itemID);
+		return $q;
+	}
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Takes Input, calls the function to process input
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'update-pdm-cxm':
+				$this->input_update_cxm($input);
+				break;
+		}
+	}
+
+	public function input_update_cxm(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$cxm = $this->wire('modules')->get('XrefCxm');
+		if ($cxm->xref_exists($values->text('custID'), $values->text('custitemID')) === false) {
+			return false;
+		}
+		$xref = $cxm->xref($values->text('custID'), $values->text('custitemID'));
+
+		$q = $this->query_customer($xref->custid, $xref->itemid);
+		$pricing = $q->findOneOrCreate();
+		$pricing->setDefaults();
+		$pricing->setBaseprice($values->float('price'));
+		$pricing->setLastchangedate(date('Ymd'));
+		$pricing->setDate(date('Ymd'));
+		$pricing->setTime(date('His'));
+		$pricing->setDummy('P');
+		$this->wire('session')->response_pdm = $this->save_and_respond($pricing);
+	}
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
+	/**
+	 * Returns PdmResponse based on the outcome of the database save
+	 * @param  ItemPricingDiscount $record Record to record response of database save
+	 * @param  array          $invalidfields
+	 * @return PdmResponse
+	 */
+	protected function save_and_respond(ItemPricingDiscount $record, array $invalidfields = null) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new PdmResponse();
+		$response->set_key($this->recordlocker_key($record));
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+		}
+
+		if ($is_new) {
+			$response->set_action(PdmResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$response->set_action(PdmResponse::CRUD_DELETE);
+		} else {
+			$response->set_action(PdmResponse::CRUD_UPDATE);
+		}
+
+		$response->build_message(self::RESPONSE_TEMPLATE);
+
+		if ($response->has_success() && empty($invalidfields)) {
+			$this->request_pdm_update($record);
+		}
+		return $response;
+	}
+
+/* =============================================================
+	Dplus Cobol Request Functions
+============================================================= */
+	/**
+	 * Writes File for Dplus to update the CXM file for this ITEM
+	 * @param  ItemXrefCustomer $item
+	 * @return void
+	 */
+	public function request_pdm_update(ItemPricingDiscount $pricing) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$data = [
+			"DBNAME=$dplusdb", 'UPDATEPDM',
+			"TYPE=$pricing->type", "TBLTYPE=$pricing->table", "STRTDATE=$pricing->startdate",
+			"CUSTID=$pricing->custid", "CUSTCODE=$pricing->custcode", "ITEMID=$pricing->itemid",
+			"ITEMGRUP=$pricing->itemgroupcode", "SLSPSN=$pricing->salespersonid"
+		];
+
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Lock Record, validate User is locking Record
+	 * @param  ItemPricingDiscount $item
+	 * @return bool
+	 */
+	public function lockrecord(ItemPricingDiscount $pricing) {
+		if (!$this->recordlocker->function_locked($this->recordlocker_key($pricing))) {
+			$this->recordlocker->create_lock($this->recordlocker_key($pricing));
+		}
+		return $this->recordlocker->function_locked_by_user($this->recordlocker_key($pricing));
+	}
+
+	/**
+	 * Return Key for CXM Item
+	 * @param  ItemPricingDiscount $item CXM Item
+	 * @return string
+	 */
+	public function recordlocker_key(ItemPricingDiscount $p) {
+		return implode('-', [$p->table, $p->startdate, $p->custid, $p->custcode, $p->itemid, $p->itemgroupcode, $p->salespersonid]);
+	}
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'PDM',
+			'version' => 101,
+			'summary' => 'Handles PDM Updating',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+}
