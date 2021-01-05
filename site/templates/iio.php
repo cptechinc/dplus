@@ -1,10 +1,13 @@
 <?php
 	$iio = $modules->get('Iio');
+	$iio->init();
 	$page->title = "Item Information Options";
 
 	if ($values->action) {
 		$iio->process_input($input);
 		// $session->redirect($page->iioURL($values->text('loginID')), $http301 = false);
+		$session->sql = $db_dplusdata->getLastExecutedQuery();
+		$session->redirect($page->iioURL($values->text('userID')), $http301 = false);
 	}
 
 	if ($iio->has_response()) {
