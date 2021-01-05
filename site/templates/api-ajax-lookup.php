@@ -19,6 +19,9 @@
 		case 'vxm':
 			$filter = $modules->get('FilterXrefItemVxm');
 			break;
+		case 'warehouses':
+			$filter = $modules->get('FilterWarehouses');
+			break;
 	}
 
 	$filter->init_query();
