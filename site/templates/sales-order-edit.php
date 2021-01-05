@@ -59,8 +59,13 @@
 				if ($user->is_editingorder($order->ordernumber)) {
 					$page->body .= $html->div('class=mt-3');
 
-					$page->body .= $config->twig->render('sales-orders/sales-order/edit/lookup/form.twig', ['page' => $page, 'order' => $order]);
-					$page->js   .= $config->twig->render('sales-orders/sales-order/edit/lookup/js.twig', ['page' => $page, 'order' => $order]);
+					if ($config->twigloader->exists("sales-orders/sales-order/edit/lookup/$config->company/form.twig")) {
+						$page->body .= $config->twig->render("sales-orders/sales-order/edit/lookup/$config->company/form.twig", ['page' => $page, 'order' => $order]);
+						$page->js   .= $config->twig->render("sales-orders/sales-order/edit/lookup/$config->company/js.twig", ['page' => $page, 'order' => $order, 'eso' => $eso]);
+					} else {
+						$page->body .= $config->twig->render('sales-orders/sales-order/edit/lookup/form.twig', ['page' => $page, 'order' => $order]);
+						$page->js   .= $config->twig->render('sales-orders/sales-order/edit/lookup/js.twig', ['page' => $page, 'order' => $order]);
+					}
 
 					if ($input->get->q) {
 						$q = $input->get->text('q');
