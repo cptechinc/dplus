@@ -1,0 +1,87 @@
+<div class="list-group-item">
+	<div class="row">
+		<div class="col-sm-2">
+			{{ iio.field_attribute(option, 'label') }}
+		</div>
+		<div class="col-sm-1">
+			{% include 'util/form/select.twig' with {
+					'name': option, 'selected_value': attribute(user, option),
+					'options': {
+						'Y': 'Yes',
+						'N': 'No'
+					},
+				}
+			%}
+		</div>
+		<div class="col-sm-2">
+			{% if (iio.field_attribute(option, 'whse') is same as(true)) %}
+				{% set name = 'whse' ~ option %}
+				{% include 'util/form/input-with-modal-lookup.twig' with {
+						'name': name, 'value': attribute(user, name),
+						'modaltarget': '#ajax-modal',
+						'modaldescription': 'Search for / Choose Warehouse ID',
+						'attributes_button': {
+							'data-search': 'warehouse',
+							'data-lookupurl': page.search_lookupURL('warehouses'),
+							'data-input': '#' ~ name
+						},
+						'class_add': ['ajax-lookup'],
+						'small': true,
+						'attributes': {'data-whse': '', 'data-validate': 'whseid', 'data-ajaxfields': ''}
+					}
+				%}
+			{% endif %}
+		</div>
+		<div class="col-sm-1">
+			{% if iio.field_attribute(option, 'detail') is same as(true) %}
+				{% set name = 'detail' ~ option %}
+				{% include 'util/form/select.twig' with {
+						'name': name, 'selected_value': attribute(user, name),
+						'options': {
+							'Y': 'Yes',
+							'N': 'No'
+						},
+					}
+				%}
+			{% endif %}
+		</div>
+		<div class="col-sm-6">
+			{% if iio.field_attribute(option, 'date') is same as(true) %}
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="form-row">
+							<div class="col-sm-3">
+								Days
+							</div>
+							<div class="col-sm-9">
+								{% set name = 'days' ~ option %}
+								{% include 'util/form/input.twig' with {
+										'name': name, 'value': attribute(user, name) != 0 ? attribute(user, name) : '',
+										'type': 'number',
+										'class_add': ['text-right'],
+										'attributes': {}
+									}
+								%}
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-8">
+						<div class="form-row">
+							<div class="col-sm-3">
+								Start Date
+							</div>
+							<div class="col-sm-9">
+								{% set name = 'date' ~ option %}
+								{% include 'util/date-picker.twig' with {
+										'name': name, 'id': name,
+										'value': attribute(user, name) > 0 ? attribute(user, name)|convertdate : ''
+									}
+								%}
+							</div>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+</div>
