@@ -265,6 +265,7 @@ class XrefVxm extends WireData implements Module {
 	 * @return bool
 	 */
 	protected function input_update(WireInput $input) {
+		$this->init_configs();
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$vendorID = $values->text('vendorID');
@@ -324,7 +325,9 @@ class XrefVxm extends WireData implements Module {
 		$record->setQty_percase($values->float('qty_percase', ['precision' => $this->field_attribute('qty_percase', 'precision'), 'max' => $this->field_attribute('qty_percase', 'max')]));
 		$record->setMinbuyqty($values->float('minbuyqty', ['precision' => $this->field_attribute('minbuyqty', 'precision'), 'max' => $this->field_attribute('minbuyqty', 'max')]));
 		$record->setListprice($values->float('listprice', ['precision' => $this->field_attribute('listprice', 'precision'), 'max' => $this->field_attribute('listprice', 'max')]));
-		$this->update_record_unitx_input($record, $input);
+		if ($this->configs->ap->vxm->use_vendor_cost_breaks()) {
+			$this->update_record_unitx_input($record, $input);
+		}
 		$record->setDate_changed(date('Ymd'));
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));
@@ -369,7 +372,10 @@ class XrefVxm extends WireData implements Module {
 			$unitcost = $cost / $record->uompurchase->conversion;
 			$record->setUnitcost_base($sanitizer->float($unitcost));
 		}
-
+		if ($this->configs->ap->vxm->use_vendor_cost_breaks()) {
+			return true;
+		}
+		
 		for ($i = 1; $i < ItemXrefVendor::UNITS_AVAILABLE + 1; $i++) {
 			$col_qty = ucfirst(ItemXrefVendor::get_unitqty_column($i));
 			$col_cost = ucfirst(ItemXrefVendor::get_unitcost_column($i));
