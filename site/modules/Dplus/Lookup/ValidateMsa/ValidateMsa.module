@@ -12,10 +12,19 @@ class ValidateMsa extends WireData implements Module {
 	 * @param  string $loginID Login ID
 	 * @return bool
 	 */
-	public function loginid($loginID) {
+	public function userid($loginID) {
 		$q = DplusUserQuery::create();
-		$q->filterByLoginid($loginID);
+		$q->filterByUserid($loginID);
 		return boolval($q->count());
+	}
+
+	/**
+	 * Validate User ID
+	 * @param  string $loginID Login ID
+	 * @return bool
+	 */
+	public function loginid($loginID) {
+		return $this->userid($loginID);
 	}
 
 /* =============================================================
