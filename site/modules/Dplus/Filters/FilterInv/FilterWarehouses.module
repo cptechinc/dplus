@@ -1,0 +1,83 @@
+<?php namespace ProcessWire;
+
+use WarehouseQuery, Warehouse;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+class FilterWarehouses extends WireData implements Module {
+	/**
+	 * Returns Query
+	 * @return WarehouseQuery
+	 */
+	public function get_query() {
+		return $this->query;
+	}
+
+	/**
+	 * Initializes Query
+	 * NOTE: Filters by Sales Rep if provided user is a Sales rep
+	 * @return void
+	 */
+	public function init_query() {
+		$this->query = WarehouseQuery::create();
+	}
+
+/* =============================================================
+	Input Filter Functions
+============================================================= */
+	/**
+	 * Applies Filters to the Query
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function filter_input(WireInput $input) {
+
+	}
+
+/* =============================================================
+	Base Filter Functions
+============================================================= */
+	/**
+	 * Searches the Tariff Code Table to find vendors that match the query provided
+	 * @param  string $q Search Query
+	 * @return void
+	 */
+	public function search($q) {
+		$columns = array(
+			Warehouse::get_aliasproperty('id'),
+			Warehouse::get_aliasproperty('name'),
+		);
+		$this->query->search_filter($columns, strtoupper($q));
+	}
+
+/* =============================================================
+	Misc Query Functions
+============================================================= */
+	/**
+	 * Adds the Sort By to the query
+	 * @param  Page   $page
+	 * @return void
+	 */
+	public function apply_sortby(Page $page) {
+		if ($page->has_orderby()) {
+			$orderbycolumn = $page->orderby_column;
+			$sort = $page->orderby_sort;
+
+			$tablecolumn = Warehouse::get_aliasproperty($orderbycolumn);
+			$this->query->sortBy($tablecolumn, $sort);
+		}
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Filter Warehouses Module',
+			'version' => 101,
+			'summary' => 'Handles Warehouse Filtering',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
