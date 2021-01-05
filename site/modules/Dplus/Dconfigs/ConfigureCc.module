@@ -1,0 +1,38 @@
+<?php namespace ProcessWire;
+
+use ConfigCcQuery, ConfigCc;
+
+
+/**
+ * ConfigureCc
+ *
+ * Class for setting Customer Credit Configs
+ */
+class ConfigureCc extends WireData implements Module {
+	/**
+	 * Returns Quote Notes Query
+	 * @return ConfigCcQuery
+	 */
+	public function query() {
+		return ConfigCcQuery::create();
+	}
+
+	/**
+	 * Return Config Record
+	 * @return ConfigCc
+	 */
+	public function config() {
+		return $this->query()->findOne();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Configure Customer Credit',
+			'version' => 101,
+			'summary' => 'Dplus ConfigCc CRUD methods',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array()
+		);
+	}
+}

@@ -9,7 +9,11 @@ class Dconfigs extends WireData implements Module {
 
 	const MODULE_ALIASES = array(
 		'ap'   => 'ConfigureAp',
-		'po'   => 'ConfigurePo'
+		'po'   => 'ConfigurePo',
+		'cc'   => 'ConfigureCc',
+		'so'   => 'ConfigureSo',
+		'qt'   => 'ConfigureQt',
+		'in'   => 'ConfigureIn',
 	);
 
 	/**
@@ -58,6 +62,7 @@ class Dconfigs extends WireData implements Module {
 				'ConfigureIn',
 				'ConfigureSo',
 				'ConfigureKt',
+				'ConfigureCc',
 			)
 		);
 	}
