@@ -3,7 +3,7 @@
 	<div class="mb-3">
 		{% include 'mci/cio/form/key.twig' %}
 	</div>
-	
+
 	<div class="list-group mb-3">
 		<div class="list-group-item bg-dark text-white">
 			<div class="row">
@@ -14,7 +14,6 @@
 				<div class="col-sm-6"></div>
 			</div>
 		</div>
-
 		{% for option in cio.ciscreens() %}
 			{% include 'mci/cio/form/screen-options.twig' %}
 		{% endfor %}
