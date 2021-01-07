@@ -18,14 +18,14 @@ if ($session->response_xref) {
 	$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_xref]);
 }
 
-if ($values->vendorID) {
-	$vendorID = $values->text('vendorID');
-	$vendor = $mxrfe->vendor($vendorID);
+if ($values->mnfrID) {
+	$mnfrID = $values->text('mnfrID');
+	$vendor = $mxrfe->vendor($mnfrID);
 
 	if ($values->itemID) {
-		$vendoritemID = $values->text('vendoritemID');
-		$xrefID = $values->text('itemID');
-		$xref = $mxrfe->get_create_xref($vendorID, $vendoritemID, $xrefID);
+		$mnfritemID = $values->text('mnfritemID');
+		$itemID = $values->text('itemID');
+		$xref = $mxrfe->get_create_xref($mnfrID, $mnfritemID, $itemID);
 		$qnotes = $modules->get('QnotesItemMxrfe');
 
 		if (!$xref->isNew()) {
@@ -49,9 +49,8 @@ if ($values->vendorID) {
 			$page->body .= $config->twig->render('items/mxrfe/item/notes/notes.twig', ['page' => $page, 'xref' => $xref, 'qnotes' => $qnotes]);
 			$page->js   .= $config->twig->render('items/mxrfe/item/notes/js.twig', ['page' => $page, 'xref' => $xref, 'qnotes' => $qnotes]);
 		}
-
 	} else {
-		$filter->vendorid($vendorID);
+		$filter->vendorid($mnfrID);
 		$filter->apply_sortby($page);
 		$xrefs = $filter->query->paginate($input->pageNum, $session->display);
 		$page->body .= $config->twig->render('items/mxrfe/list/vendor/page.twig', ['page' => $page, 'mxrfe' => $mxrfe, 'xrefs' => $xrefs, 'vendor' => $vendor]);
