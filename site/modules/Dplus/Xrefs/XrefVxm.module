@@ -325,7 +325,7 @@ class XrefVxm extends WireData implements Module {
 		$record->setQty_percase($values->float('qty_percase', ['precision' => $this->field_attribute('qty_percase', 'precision'), 'max' => $this->field_attribute('qty_percase', 'max')]));
 		$record->setMinbuyqty($values->float('minbuyqty', ['precision' => $this->field_attribute('minbuyqty', 'precision'), 'max' => $this->field_attribute('minbuyqty', 'max')]));
 		$record->setListprice($values->float('listprice', ['precision' => $this->field_attribute('listprice', 'precision'), 'max' => $this->field_attribute('listprice', 'max')]));
-		if ($this->configs->ap->vxm->use_vendor_cost_breaks()) {
+		if ($this->configs->ap->use_vendor_cost_breaks()) {
 			$this->update_record_unitx_input($record, $input);
 		}
 		$record->setDate_changed(date('Ymd'));
@@ -373,7 +373,7 @@ class XrefVxm extends WireData implements Module {
 			$record->setUnitcost_base($sanitizer->float($unitcost));
 		}
 
-		if ($this->configs->ap->vxm->use_vendor_cost_breaks()) {
+		if ($this->configs->ap->use_vendor_cost_breaks() == false) {
 			return true;
 		}
 
