@@ -64,7 +64,7 @@ class XrefVxm extends WireData implements Module {
 		$attributes = self::FIELD_ATTRIBUTES;
 		$attributes['listprice']   = ['type' => 'number', 'precision' => $configs->so->decimal_places_price, 'max' => 99999999.9999];
 		$attributes['unit_cost']   = ['type' => 'number', 'precision' => $configs->po->decimal_places_cost, 'max' => 9999999.9999];
-		$attributes['unit_qty']    = ['type' => 'number', 'precision' => $configs->so->decimal_places_qty, 'max' => 9999999];
+		$attributes['unit_qty']    = ['type' => 'number', 'precision' => 0, 'max' => 9999999];
 		$attributes['unit_margin'] = ['type' => 'number', 'precision' => 3, 'max' => 99.999];
 		$attributes['optioncode']  = ['type' => 'text', 'label' => $configs->ap->vxm_optioncode1_label, 'disabled' => $configs->ap->vxm_optioncode1_label == '', 'maxlength' => 8];
 		$this->field_attributes = $attributes;
