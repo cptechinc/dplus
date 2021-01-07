@@ -20,10 +20,11 @@
 				<form action="{{ page.fullURL.getURL() }}" method="post">
 					<input type="hidden" name="mnfrID" value="{{ xref.mnfrid }}">
 					<input type="hidden" name="mnfritemID" value="{{ xref.mnfritemid }}">
+					<input type="hidden" name="itemID" value="{{ xref.itemid }}">
 					<input type="hidden" name="type" value="mnfr">
 
 					<div class="form-group">
-						{% include 'msa/noce/ajax/button.twig' with {'input': '#mnfr-notes'} %}
+						{% include 'msa/noce/ajax/button.twig' with {'input': '#mnfr-note'} %}
 					</div>
 
 					<div class="form-group">
