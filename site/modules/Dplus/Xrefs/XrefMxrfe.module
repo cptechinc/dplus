@@ -37,10 +37,10 @@ class XrefMxrfe extends WireData implements Module {
 	 * Return Query with filters applied to VendorID, Vendor ItemID, Item ID
 	 * @return ItemXrefManufacturerQuery
 	 */
-	public function query_xref($vendorID, $vendoritemID, $itemID) {
+	public function query_xref($mnfrID, $mnfritemID, $itemID) {
 		$q = $this->query();
-		$q->filterByVendorid($vendorID);
-		$q->filterByVendoritemid($vendoritemID);
+		$q->filterByVendorid($mnfrID);
+		$q->filterByVendoritemid($mnfritemID);
 		$q->filterByItemid($itemID);
 		return $q;
 	}
@@ -50,12 +50,12 @@ class XrefMxrfe extends WireData implements Module {
 ============================================================= */
 	/**
 	 * Return ItemXrefManufacturer
-	 * @param  string $vendorID     Vendor ID
-	 * @param  string $vendoritemID Vendor's Item ID'
+	 * @param  string $mnfrID     Vendor ID
+	 * @param  string $mnfritemID Vendor's Item ID'
 	 * @param  string $itemID       ITM Item ID'
 	 */
-	public function xref($vendorID, $vendoritemID, $itemID) {
-		$q = $this->query_xref($vendorID, $vendoritemID, $itemID);
+	public function xref($mnfrID, $mnfritemID, $itemID) {
+		$q = $this->query_xref($mnfrID, $mnfritemID, $itemID);
 		return $q->findOne();
 	}
 
@@ -66,39 +66,39 @@ class XrefMxrfe extends WireData implements Module {
 	 */
 	public function xref_by_recordlocker_key($key) {
 		$keys = explode('-', $key);
-		$vendorID = $keys[0];
-		$vendoritemID = $keys[1];
+		$mnfrID = $keys[0];
+		$mnfritemID = $keys[1];
 		$itemID = $keys[2];
-		return $this->xref($vendorID, $vendoritemID, $itemID);
+		return $this->xref($mnfrID, $mnfritemID, $itemID);
 	}
 
 	/**
 	 * Return if X-ref Exists
-	 * @param  string $vendorID     Vendor ID
-	 * @param  string $vendoritemID Vendor's Item ID'
+	 * @param  string $mnfrID     Vendor ID
+	 * @param  string $mnfritemID Vendor's Item ID'
 	 * @param  string $itemID       ITM Item ID'
 	 * @return bool
 	 */
-	public function xref_exists($vendorID, $vendoritemID, $itemID) {
-		$q = $this->query_xref($vendorID, $vendoritemID, $itemID);
+	public function xref_exists($mnfrID, $mnfritemID, $itemID) {
+		$q = $this->query_xref($mnfrID, $mnfritemID, $itemID);
 		return boolval($q->count());
 	}
 
 	/**
 	 * Return Existing or New X-ref
-	 * @param  string $vendorID     Vendor ID
-	 * @param  string $vendoritemID Vendor's Item ID'
+	 * @param  string $mnfrID     Vendor ID
+	 * @param  string $mnfritemID Vendor's Item ID'
 	 * @param  string $itemID       ITM Item ID'
 	 * @return ItemXrefManufacturer
 	 */
-	public function get_create_xref($vendorID, $vendoritemID, $itemID) {
-		if ($this->xref_exists($vendorID, $vendoritemID, $itemID)) {
-			$record = $this->xref($vendorID, $vendoritemID, $itemID);
+	public function get_create_xref($mnfrID, $mnfritemID, $itemID) {
+		if ($this->xref_exists($mnfrID, $mnfritemID, $itemID)) {
+			$record = $this->xref($mnfrID, $mnfritemID, $itemID);
 		} else {
-			$vendoritemID = $vendoritemID == 'new' ? '' : $vendoritemID;
+			$mnfritemID = $mnfritemID == 'new' ? '' : $mnfritemID;
 			$record = $this->new_xref();
-			$record->setVendorid($vendorID);
-			$record->setVendoritemid($vendoritemID);
+			$record->setVendorid($mnfrID);
+			$record->setVendoritemid($mnfritemID);
 
 			if ($this->itemid_exists($itemID)) {
 				$record->setItemid($itemID);
@@ -120,9 +120,13 @@ class XrefMxrfe extends WireData implements Module {
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$upc = $values->text('upc');
 
 		switch ($values->text('action')) {
+			case 'delete-notes':
+			case 'update-notes';
+				$qnotes = $this->wire('modules')->get('QnotesItemMxrfe');
+				$qnotes->process_input($input);
+				break;
 			case 'delete-xref':
 				$this->input_delete($input);
 				break;
@@ -168,11 +172,11 @@ class XrefMxrfe extends WireData implements Module {
 	protected function input_update(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$vendorID     = $values->text('vendorID');
-		$vendoritemID = $values->text('vendoritemID');
+		$mnfrID     = $values->text('mnfrID');
+		$mnfritemID = $values->text('mnfritemID');
 		$itemID       = $values->text('itemID');
 
-		$record = $this->get_create_xref($vendorID, $vendoritemID, $itemID);
+		$record = $this->get_create_xref($mnfrID, $mnfritemID, $itemID);
 
 		if (!$record->isNew()) {
 			if (!$this->lockrecord($record)) {
@@ -236,7 +240,7 @@ class XrefMxrfe extends WireData implements Module {
 			),
 			'vendorid' => array(
 				'description' => 'Vendor ID',
-				'input'       => 'vendorID',
+				'input'       => 'mnfrID',
 				'function'    => 'vendorid'
 			),
 		);
@@ -337,17 +341,17 @@ class XrefMxrfe extends WireData implements Module {
 	 * Return Vendor
 	 * @return Vendor
 	 */
-	public function vendor($vendorID) {
-		return VendorQuery::create()->filterByVendorid($vendorID)->findOne();
+	public function vendor($mnfrID) {
+		return VendorQuery::create()->filterByVendorid($mnfrID)->findOne();
 	}
 
 	/**
 	 * Return if Vendor exists
-	 * @param  string $vendorID Vendor ID
+	 * @param  string $mnfrID Vendor ID
 	 * @return bool
 	 */
-	public function vendorid_exists($vendorID) {
-		return boolval(VendorQuery::create()->filterById($vendorID)->count());
+	public function vendorid_exists($mnfrID) {
+		return boolval(VendorQuery::create()->filterById($mnfrID)->count());
 	}
 
 	/**
@@ -419,42 +423,42 @@ class XrefMxrfe extends WireData implements Module {
 ============================================================= */
 	/**
 	 * Return URL to MXRFRE vendor list
-	 * @param  string $vendorID VendorID
+	 * @param  string $mnfrID VendorID
 	 * @return string
 	 */
-	public function _vendorURL($vendorID) {
+	public function _manufacturerURL($mnfrID) {
 		$url = new Url($this->wire('pages')->get('pw_template=mxrfe')->url);
-		$url->query->set('vendorID', $vendorID);
+		$url->query->set('mnfrID', $mnfrID);
 		return $url->getUrl();
 	}
 
 	/**
 	 * Return URL to MXRFRE vendor list
-	 * @param  string $vendorID VendorID
+	 * @param  string $mnfrID VendorID
 	 * @return string
 	 */
-	public function vendorURL($vendorID, $focus = '') {
+	public function manufacturerURL($mnfrID, $focus = '') {
 		if ($focus == '') {
-			return $this->_vendorURL($vendorID);
+			return $this->_manufacturerURL($mnfrID);
 		}
-		return $this->vendor_focusURL($vendorID, $focus);
+		return $this->vendor_focusURL($mnfrID, $focus);
 	}
 
 	/**
 	 * Return Paginated URL to MXRFE Vendor Page
-	 * @param  string $vendorID Mnfr / Comp ID
+	 * @param  string $mnfrID Mnfr / Comp ID
 	 * @param  string $focus    Record Locker Key for X-Ref
 	 * @return string
 	 */
-	public function vendor_focusURL($vendorID, $focus) {
+	public function vendor_focusURL($mnfrID, $focus) {
 		$xref = $this->xref_by_recordlocker_key($focus);
 		if ($xref == false) {
-			return $this->_vendorURL($vendorID);
+			return $this->_manufacturerURL($mnfrID);
 		}
-		$url = new Url($this->_vendorURL($vendorID));
+		$url = new Url($this->_manufacturerURL($mnfrID));
 		$url->query->set('focus', $focus);
 		$filter = $this->wire('modules')->get('FilterXrefItemMxrfe');
-		$filter->vendorid($vendorID);
+		$filter->vendorid($mnfrID);
 		$position = $filter->position($xref);
 		$pagenbr = ceil($position / $this->wire('session')->display);
 		$url = $this->wire('modules')->get('Dpurl')->paginate($url, $this->wire('pages')->get('pw_template=mxrfe')->name, $pagenbr);
@@ -463,31 +467,31 @@ class XrefMxrfe extends WireData implements Module {
 
 	/**
 	 * Return URL to MXRFE X-ref
-	 * @param  string $vendorID      Vendor ID
-	 * @param  string $vendoritemID  Vendor Item ID
+	 * @param  string $mnfrID      Vendor ID
+	 * @param  string $mnfritemID  Vendor Item ID
 	 * @param  string $itemID        ITM Item ID
 	 * @return string
 	 */
-	public function xrefURL($vendorID, $vendoritemID, $itemID) {
+	public function xrefURL($mnfrID, $mnfritemID, $itemID) {
 		$url = new Url($this->wire('pages')->get('pw_template=mxrfe')->url);
-		$url->query->set('vendorID', $vendorID);
-		$url->query->set('vendoritemID', $vendoritemID);
+		$url->query->set('mnfrID', $mnfrID);
+		$url->query->set('mnfritemID', $mnfritemID);
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
 
 	/**
 	 * Return URL to DELETE MXRFE X-ref
-	 * @param  string $vendorID      Vendor ID
-	 * @param  string $vendoritemID  Vendor Item ID
+	 * @param  string $mnfrID      Vendor ID
+	 * @param  string $mnfritemID  Vendor Item ID
 	 * @param  string $itemID        ITM Item ID
 	 * @return string
 	 */
-	public function xref_deleteURL($vendorID, $vendoritemID, $itemID) {
+	public function xref_deleteURL($mnfrID, $mnfritemID, $itemID) {
 		$url = new Url($this->wire('pages')->get('pw_template=mxrfe')->url);
 		$url->query->set('action', 'delete-xref');
-		$url->query->set('vendorID', $vendorID);
-		$url->query->set('vendoritemID', $vendoritemID);
+		$url->query->set('mnfrID', $mnfrID);
+		$url->query->set('mnfritemID', $mnfritemID);
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
@@ -509,34 +513,34 @@ class XrefMxrfe extends WireData implements Module {
 		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
 		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
 
-		$this->addHookProperty('Page(pw_template=mxrfe)::vendorID', function($event) {
+		$this->addHookProperty('Page(pw_template=mxrfe)::mnfrID', function($event) {
 			$p = $event->object;
-			$vendorID = $p->fullURL->query->get('vendorID') ? $p->fullURL->query->get('vendorID') : '';
-			$event->return = $vendorID;
+			$mnfrID = $p->fullURL->query->get('mnfrID') ? $p->fullURL->query->get('mnfrID') : '';
+			$event->return = $mnfrID;
 		});
 
-		$this->addHook('Page(pw_template=mxrfe)::vendorURL', function($event) {
-			$vendorID = $event->arguments(0);
-			$event->return = $this->vendorURL($vendorID);
+		$this->addHook('Page(pw_template=mxrfe)::manufacturerURL', function($event) {
+			$mnfrID = $event->arguments(0);
+			$event->return = $this->manufacturerURL($mnfrID);
 		});
 
 		$this->addHook('Page(pw_template=mxrfe)::xrefURL', function($event) {
-			$vendorID     = $event->arguments(0);
-			$vendoritemID = $event->arguments(1);
+			$mnfrID     = $event->arguments(0);
+			$mnfritemID = $event->arguments(1);
 			$itemID       = $event->arguments(2);
-			$event->return = $this->xrefURL($vendorID, $vendoritemID, $itemID);
+			$event->return = $this->xrefURL($mnfrID, $mnfritemID, $itemID);
 		});
 
 		$this->addHook('Page(pw_template=mxrfe)::xref_exitURL', function($event) {
 			$xref = $event->arguments(0);
-			$event->return = $this->vendorURL($xref->vendorid, $this->get_recordlocker_key($xref));
+			$event->return = $this->manufacturerURL($xref->vendorid, $this->get_recordlocker_key($xref));
 		});
 
 		$this->addHook('Page(pw_template=mxrfe)::xref_deleteURL', function($event) {
-			$vendorID     = $event->arguments(0);
-			$vendoritemID = $event->arguments(1);
+			$mnfrID     = $event->arguments(0);
+			$mnfritemID = $event->arguments(1);
 			$itemID       = $event->arguments(2);
-			$event->return = $this->xref_deleteURL($vendorID, $vendoritemID, $itemID);
+			$event->return = $this->xref_deleteURL($mnfrID, $mnfritemID, $itemID);
 		});
 	}
 }
