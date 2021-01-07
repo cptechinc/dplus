@@ -6,8 +6,17 @@ $values = $input->$rm;
 $filter = $modules->get('FilterXrefItemMxrfe');
 $mxrfe  = $modules->get('XrefMxrfe');
 
+if ($values->action) {
+	$mxrfe->process_input($input);
+	$session->redirect($page->url, $http301 = false);
+}
+
 $page->show_breadcrumbs = false;
 $page->body .= $config->twig->render('items/mxrfe/bread-crumbs.twig', ['page' => $page]);
+
+if ($session->response_xref) {
+	$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_xref]);
+}
 
 if ($values->vendorID) {
 	$vendorID = $values->text('vendorID');
@@ -17,7 +26,8 @@ if ($values->vendorID) {
 		$vendoritemID = $values->text('vendoritemID');
 		$xrefID = $values->text('itemID');
 		$xref = $mxrfe->get_create_xref($vendorID, $vendoritemID, $xrefID);
-		
+		$qnotes = $modules->get('QnotesItemMxrfe');
+
 		if (!$xref->isNew()) {
 			/**
 			 * Show alert that MXRFE is locked if
@@ -33,7 +43,12 @@ if ($values->vendorID) {
 			}
 		}
 
-		$page->body .= $config->twig->render('items/mxrfe/item/form/display.twig', ['page' => $page, 'mxrfe' => $mxrfe, 'vendor' => $vendor, 'xref' => $xref]);
+		$page->body .= $config->twig->render('items/mxrfe/item/form/display.twig', ['page' => $page, 'mxrfe' => $mxrfe, 'vendor' => $vendor, 'xref' => $xref, 'qnotes' => $qnotes]);
+
+		if (!$xref->isNew()) {
+			$page->body .= $config->twig->render('items/mxrfe/item/notes/notes.twig', ['page' => $page, 'xref' => $xref, 'qnotes' => $qnotes]);
+			$page->js   .= $config->twig->render('items/mxrfe/item/notes/js.twig', ['page' => $page, 'xref' => $xref, 'qnotes' => $qnotes]);
+		}
 
 	} else {
 		$filter->vendorid($vendorID);
@@ -50,5 +65,7 @@ if ($values->vendorID) {
 	$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $vendors->getNbResults()]);
 	// $page->js   .= $config->twig->render('items/mxrfe/list/js.twig', ['page' => $page]);
 }
+
+$session->remove('response_xref');
 
 include __DIR__ . "/basic-page.php";
