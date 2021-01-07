@@ -277,4 +277,11 @@ class QnotesPredefined extends WireData implements Module {
 			'requires' => array('Qnotes')
 		);
 	}
+
+	public function init() {
+		$this->addHook('Page::search_noceURL', function($event) {
+			$p = $event->object;
+			$event->return = $this->wire('pages')->get('pw_template=msa-noce-ajax')->httpUrl;
+		});
+	}
 }
