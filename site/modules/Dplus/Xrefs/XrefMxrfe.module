@@ -187,7 +187,7 @@ class XrefMxrfe extends WireData implements Module {
 		$response = $this->save_and_respond($record, $invalidfields);
 
 		if ($response->has_success()) {
-			$this->update_dplus_cobol($vxmitem);
+			$this->update_dplus_cobol($record);
 		}
 		$this->wire('session')->response_xref = $response;
 		return $this->wire('session')->response_xref->has_success();
@@ -195,11 +195,11 @@ class XrefMxrfe extends WireData implements Module {
 
 	/**
 	 * Updates Record, Returns Invalid Fields
-	 * @param  ItemXrefVendor  $record VXM Item Record
-	 * @param  WireInput       $input  Input Data
+	 * @param  ItemXrefManufacturer  $record MXRFE Record
+	 * @param  WireInput             $input  Input Data
 	 * @return array
 	 */
-	public function update_record_input(ItemXrefVendor $record, WireInput $input) {
+	public function update_record_input(ItemXrefManufacturer $record, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = array();
@@ -216,6 +216,36 @@ class XrefMxrfe extends WireData implements Module {
 		return $invalidfields;
 	}
 
+	/**
+	 * Sets Record fields if valid, returns invalid fields
+	 * @param  ItemXrefManufacturer $record MXRFE record
+	 * @param  WireInput            $input  Input Data
+	 * @return array
+	 */
+	public function update_record_validated(ItemXrefManufacturer $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$validate = $this->wire('modules')->get('ValidateVxm');
+		$invalid = array();
+
+		$fields = array(
+			'itemid' => array(
+				'description' => 'Item ID',
+				'input'       => 'itemID',
+				'function'    => 'itemid'
+			),
+			'vendorid' => array(
+				'description' => 'Vendor ID',
+				'input'       => 'vendorID',
+				'function'    => 'vendorid'
+			),
+		);
+		$validator = $this->wire('modules')->get('InputValidator');
+		$validator->set_validator($validate)->set_input($input)->set_record($record)->set_validatefields($fields);
+		$invalid = $validator->validate();
+		$validator->set_valid_properties();
+		return $invalid;
+	}
 
 /* =============================================================
 	CRUD Response Functions
@@ -230,7 +260,7 @@ class XrefMxrfe extends WireData implements Module {
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
 		$response = new XrefResponse();
-		$response->set_key($record->upc);
+		$response->set_key($this->get_recordlocker_key($record));
 
 		if ($saved) {
 			$response->set_success(true);
@@ -247,10 +277,6 @@ class XrefMxrfe extends WireData implements Module {
 		}
 
 		$response->build_message(self::RESPONSE_TEMPLATE);
-
-		if ($response->has_success()) {
-			$this->update_dplus_cobol($record);
-		}
 		return $response;
 	}
 
@@ -262,10 +288,10 @@ class XrefMxrfe extends WireData implements Module {
 	 * @param  ItemXrefManufacturer $item
 	 * @return void
 	 */
-	public function update_dplus_cobol(ItemXrefManufacturer $item) {
+	public function update_dplus_cobol(ItemXrefManufacturer $xref) {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
-		$data = array("DBNAME=$dplusdb", 'UPDATEUPC', "UPCCODE=$item->upc", "OURITEM=$item->itemid");
+		$data = array("DBNAME=$dplusdb", 'UPDATEMXRFE', "VENDORID=$xref->vendorid", "VENDITEM=$xref->vendoritemid", "OURITEM=$xref->itemid");
 
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());
