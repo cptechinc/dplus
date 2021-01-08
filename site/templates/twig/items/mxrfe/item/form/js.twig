@@ -9,19 +9,16 @@
 
 $(function() {
 	var form_mxrfe = $('#mxrfe-xref-form');
-	var input_uom       = form_mxrfe.find('select[name=unitofm]');
-	var input_itemID = form_mxrfe.find('input[name=itemID]');
-
+	var input_uom        = form_mxrfe.find('select[name=unitofm]');
+	var input_itemID     = form_mxrfe.find('input[name=itemID]');
 	var input_mnfritemID = form_mxrfe.find('input[name=mnfritemID]');
-	var input_mnfrID = form_mxrfe.find('input[name=mnfrID]');
+	var input_mnfrID     = form_mxrfe.find('input[name=mnfrID]');
 
 	var modal_ajax = $('#ajax-modal');
 
 /* =============================================================
 	Event Functions
 ============================================================= */
-
-
 	/**
 	 * Change the Unit of Measure Description when the Unit of Measure is changed
 	 */
@@ -31,9 +28,6 @@ $(function() {
 		var ele_description = input.siblings('small').find('.conversion-description');
 		ele_description.text(conversion);
 	});
-
-
-
 
 /* =============================================================
 	Unsaved Fields Alert
@@ -45,26 +39,29 @@ $(function() {
 			e.preventDefault();
 			var a = $(this);
 			var href = a.attr('href');
-
-			swal2.fire({
-				title: 'Changes have occurred!',
-				text: 'Do you want to save?',
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
-				cancelButtonText: 'No',
-			}).then((result) => {
-				if (result.value) {
-					form_mxrfe.find('button[type=submit]').click();
-				} else if (result.dismiss === Swal.DismissReason.cancel) {
-					// Send HTTP GET Request to remove Record Lock
-					// $.get('', function() {
-					// 	window.location.href = href;
-					// });
-				}
-			});
+			swal_unsaved_changes();
 		}
 	});
+
+	function swal_unsaved_changes() {
+		swal2.fire({
+			title: 'Changes have occurred!',
+			text: 'Do you want to save?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			if (result.value) {
+				form_mxrfe.find('button[type=submit]').click();
+			} else if (result.dismiss === Swal.DismissReason.cancel) {
+				// Send HTTP GET Request to remove Record Lock
+				$.get('{{ page.httpUrl }}', function() {
+					window.location.href = href;
+				});
+			}
+		});
+	}
 
 /* =============================================================
 	AJAX Lookup Modal Functions
