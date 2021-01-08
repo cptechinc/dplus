@@ -14,6 +14,14 @@
 
 	if ($values->action) {
 		switch ($values->text('action')) {
+			case 'validate-vendorid':
+				$vendorID = $values->text('vendorID');
+				if ($validate->vendorid($vendorID)) {
+					$response = false;
+				} else {
+					$response = "Vendor $vendorID not found";
+				}
+				break;
 			case 'validate-vxm-item-itemid':
 				$vendorID = $values->text('vendorID');
 				$itemID   = $values->text('itemID');
@@ -67,7 +75,7 @@
 				$itemID   = $values->text('itemID');
 
 				if ($validate->vxm->exists($vendorID, $vendoritemID, $itemID)) {
-					$xref = $modules->get('XrefVxm')->xref($vendorID, $vendoritemID, $itemID)
+					$xref = $modules->get('XrefVxm')->xref($vendorID, $vendoritemID, $itemID);
 					$response = array(
 						'vendorid'     => $vendorID,
 						'itemid'       => $itemID,
@@ -75,6 +83,28 @@
 					);
 				} else {
 					$response = false;
+				}
+				break;
+			case 'validate-mxrfe-xref':
+				$mnfrID = $values->text('mnfrID');
+				$mnfritemID = $values->text('mnfritemID');
+				$itemID = $values->text('itemID');
+
+				if ($validate->mxrfe->exists($mnfrID, $mnfritemID, $itemID)) {
+					$response = true;
+				} else {
+					$response = "MXRFE X-ref not found";
+				}
+				break;
+			case 'validate-mxrfe-xref-new':
+				$mnfrID = $values->text('mnfrID');
+				$mnfritemID = $values->text('mnfritemID');
+				$itemID = $values->text('itemID');
+
+				if ($validate->mxrfe->exists($mnfrID, $mnfritemID, $itemID) == false) {
+					$response = true;
+				} else {
+					$response = "MXRFE X-ref exists";
 				}
 				break;
 		}
