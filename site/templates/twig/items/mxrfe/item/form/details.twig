@@ -23,11 +23,14 @@
 	<div class="col-sm-8">
 		{% include 'util/form/input.twig' with {
 				'type': 'number',
-				'name': 'price', 'value': xref.price|number_format(mxrfe.decimal_places_cost()),
+				'name': 'price', 'value': xref.price|number_format(mxrfe.field_attribute('price', 'precision')),
 				'class_add': [
 					'w-50',
 					'text-right'
-				]
+				],
+				'attributes': {
+					'max': mxrfe.field_attribute('price', 'max'),
+				}
 			}
 		%}
 	</div>
@@ -39,11 +42,14 @@
 	<div class="col-sm-8">
 		{% include 'util/form/input.twig' with {
 				'type': 'number',
-				'name': 'cost', 'value': xref.cost|number_format(mxrfe.decimal_places_cost()),
+				'name': 'cost', 'value': xref.cost|number_format(mxrfe.field_attribute('cost', 'precision')),
 				'class_add': [
 					'w-50',
 					'text-right'
-				]
+				],
+				'attributes': {
+					'max': mxrfe.field_attribute('cost', 'max'),
+				}
 			}
 		%}
 	</div>
@@ -53,6 +59,6 @@
 		<strong>Change Date</strong>
 	</div>
 	<div class="col-sm-8">
-		<p class="form-control-plaintext form-control-sm">{{ xref.dateupdated|convertdate }}</p>
+		<p class="form-control-plaintext form-control-sm">{{ xref.dateupdated ? xref.dateupdated|convertdate : '' }}</p>
 	</div>
 </div>

@@ -29,6 +29,18 @@ $(function() {
 		ele_description.text(conversion);
 	});
 
+	$("body").on("change", "input[name=price]", function(e) {
+		var input = $(this);
+		var price = parseFloat(input.val());
+		input.val(price.toFixed({{ mxrfe.field_attribute('price', 'precision') }}));
+	});
+
+	$("body").on("change", "input[name=cost]", function(e) {
+		var input = $(this);
+		var cost = parseFloat(input.val());
+		input.val(cost.toFixed({{ mxrfe.field_attribute('cost', 'precision') }}));
+	});
+
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */

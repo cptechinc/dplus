@@ -50,14 +50,13 @@ class XrefMxrfe extends WireData implements Module {
 ============================================================= */
 	const PRECISION_MARGIN = 3;
 
-	const FIELD_ATTRIBUTES = [];
+	const FIELD_ATTRIBUTES = [
+		'price' => ['type' => 'number', 'precision' => 2, 'max' => 9999999.99],
+		'cost'  => ['type' => 'number', 'precision' => 2, 'max'  => 9999999.99]
+	];
 
 	public function init_field_attributes_config() {
-		$this->init_configs();
-		$configs = $this->configs;
 		$attributes = self::FIELD_ATTRIBUTES;
-		$attributes['price'] = ['type' => 'number', 'precision' => $configs->so->decimal_places_price, 'max' => 9999999.99];
-		$attributes['cost']  = ['type' => 'number', 'precision' => $configs->po->decimal_places_cost, 'max'  => 9999999.99];
 		$this->field_attributes = $attributes;
 	}
 
@@ -259,8 +258,8 @@ class XrefMxrfe extends WireData implements Module {
 		$response->set_action(XrefResponse::CRUD_UPDATE);
 		$invalidfields = $this->update_record_validated($record, $input);
 
-		$record->setPrice($values->float('price'), ['precision' => $this->decimal_places_cost()]);
-		$record->setCost($values->float('cost'), ['precision' => $this->decimal_places_cost()]);
+		$record->setPrice($values->float('price'), ['precision' => $this->field_attribute('price', 'precision')]);
+		$record->setCost($values->float('cost'), ['precision' => $this->field_attribute('cost', 'precision')]);
 		$record->setDateupdated(date('Ymd'));
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));
@@ -446,25 +445,7 @@ class XrefMxrfe extends WireData implements Module {
 	public function config_po() {
 		return $this->wire('modules')->get('ConfigurePo')->config();
 	}
-
-	/**
-	 * Return the number of Decimal Places to use for price
-	 * @return int
-	 */
-	public function decimal_places_price() {
-		$config = $this->config_so();
-		return $config->decimal_places_price;
-	}
-
-	/**
-	 * Return the number of Decimal Places to use for cost
-	 * @return int
-	 */
-	public function decimal_places_cost() {
-		$config = $this->config_po();
-		return $config->decimal_places_cost;
-	}
-
+	
 	/**
 	 * Intialize configs
 	 * @return void
