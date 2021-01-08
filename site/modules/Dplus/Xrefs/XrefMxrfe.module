@@ -417,7 +417,6 @@ class XrefMxrfe extends WireData implements Module {
 		return $config->decimal_places_cost;
 	}
 
-
 	/**
 	 * Intialize configs
 	 * @return void
@@ -428,7 +427,6 @@ class XrefMxrfe extends WireData implements Module {
 		$this->configs->so = $this->get_config_so();
 		$this->configs->po = $this->get_config_po();
 	}
-
 
 /* =============================================================
 	URL Functions
@@ -453,7 +451,7 @@ class XrefMxrfe extends WireData implements Module {
 		if ($focus == '') {
 			return $this->_manufacturerURL($mnfrID);
 		}
-		return $this->vendor_focusURL($mnfrID, $focus);
+		return $this->mnfr_focusURL($mnfrID, $focus);
 	}
 
 	/**
@@ -462,7 +460,7 @@ class XrefMxrfe extends WireData implements Module {
 	 * @param  string $focus    Record Locker Key for X-Ref
 	 * @return string
 	 */
-	public function vendor_focusURL($mnfrID, $focus) {
+	public function mnfr_focusURL($mnfrID, $focus) {
 		$xref = $this->xref_by_recordlocker_key($focus);
 		if ($xref == false) {
 			return $this->_manufacturerURL($mnfrID);
@@ -506,6 +504,43 @@ class XrefMxrfe extends WireData implements Module {
 		$url->query->set('mnfritemID', $mnfritemID);
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to MXRFE X-ref
+	 * @param  string $mnfrID      Vendor ID
+	 * @param  string $mnfritemID  Vendor Item ID
+	 * @param  string $itemID      ITM Item ID
+	 * @return string
+	 */
+	public function redirectURL(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if (empty($values->text('mnfrID'))) {
+			return $this->wire('pages')->get('template=mxrfe')->url;
+		}
+
+		$mnfrID     = $values->text('mnfrID');
+		$mnfritemID = $values->text('mnfritemID');
+		$itemID     = $values->text('itemID');
+
+		if ($this->xref_exists($mnfrID, $mnfritemID, $itemID) === false) {
+			return $this->wire('pages')->get('template=mxrfe')->url;
+		}
+
+		$xref = $this->xref($mnfrID, $mnfritemID, $itemID);
+
+		switch ($values->text('action')) {
+			case 'update-xref':
+				$focus = $this->get_recordlocker_key($xref);
+				return $this->mnfr_focusURL($mnfrID, $focus);
+				break;
+			case 'delete-notes':
+			case 'update-notes';
+				return $this->xrefURL($mnfrID, $mnfritemID, $itemID);
+				break;
+		}
 	}
 
 /* =============================================================
@@ -580,6 +615,11 @@ class XrefMxrfe extends WireData implements Module {
 
 		$this->addHook("Page(pw_template=mxrfe)::search_itemsURL", function($event) {
 			$event->return = $this->wire('pages')->get("pw_template=itm-search")->httpUrl;
+		});
+
+		$this->addHook("Page(pw_template=mxrfe)::redirectURL", function($event) {
+			$input = $event->arguments(0);
+			$event->return = $this->redirectURL($input);
 		});
 	}
 }

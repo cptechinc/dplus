@@ -8,7 +8,7 @@ $mxrfe  = $modules->get('XrefMxrfe');
 
 if ($values->action) {
 	$mxrfe->process_input($input);
-	$session->redirect($page->url, $http301 = false);
+	$session->redirect($page->redirectURL($input), $http301 = false);
 }
 
 $page->show_breadcrumbs = false;
