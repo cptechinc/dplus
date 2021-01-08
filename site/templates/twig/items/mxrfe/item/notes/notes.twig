@@ -19,6 +19,11 @@
 			Manufacturer
 		</a>
 	</li>
+	<li class="nav-item" role="presentation">
+		<a class="nav-link" id="mmsc-tab" data-toggle="tab" href="#mmsc" role="tab" aria-controls="mmsc" aria-selected="false">
+			Misc
+		</a>
+	</li>
 </ul>
 
 <div class="tab-content" id="notes-tab-content">
@@ -27,6 +32,9 @@
 	</div>
 	<div class="tab-pane fade" id="mnfr" role="tabpanel" aria-labelledby="mnfr-tab">
 		{% include 'items/mxrfe/item/notes/mnfr/notes.twig' %}
+	</div>
+	<div class="tab-pane fade" id="mmsc" role="tabpanel" aria-labelledby="mmsc-tab">
+		{% include 'items/mxrfe/item/notes/mmsc/notes.twig' %}
 	</div>
 </div>
 
