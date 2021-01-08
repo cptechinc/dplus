@@ -16,7 +16,7 @@ use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
  */
 class XrefMxrfe extends WireData implements Module {
 	const MODEL              = 'ItemXrefManufacturer';
-	const MODEL_KEY          = 'vendorid,vendoritemid,itemid';
+	const MODEL_KEY          = 'mnfrid,mnfritemid,itemid';
 	const DESCRIPTION        = 'Mxrfe X-ref';
 	const RESPONSE_TEMPLATE  = 'Mxrfe X-ref {key} was {not} {crud}';
 	const RECORDLOCKER_FUNCTION   = 'upcx';
@@ -39,8 +39,8 @@ class XrefMxrfe extends WireData implements Module {
 	 */
 	public function query_xref($mnfrID, $mnfritemID, $itemID) {
 		$q = $this->query();
-		$q->filterByVendorid($mnfrID);
-		$q->filterByVendoritemid($mnfritemID);
+		$q->filterByMnfrid($mnfrID);
+		$q->filterByMnfritemid($mnfritemID);
 		$q->filterByItemid($itemID);
 		return $q;
 	}
@@ -84,6 +84,13 @@ class XrefMxrfe extends WireData implements Module {
 		return boolval($q->count());
 	}
 
+	public function new_xref() {
+		$config = $this->wire('modules')->get('ConfigureIn')->config();
+		$xref = new ItemXrefManufacturer();
+		$xref->setUnitofm($config->default_uom_purchase);
+		return $xref;
+	}
+
 	/**
 	 * Return Existing or New X-ref
 	 * @param  string $mnfrID     Vendor ID
@@ -97,8 +104,8 @@ class XrefMxrfe extends WireData implements Module {
 		} else {
 			$mnfritemID = $mnfritemID == 'new' ? '' : $mnfritemID;
 			$record = $this->new_xref();
-			$record->setVendorid($mnfrID);
-			$record->setVendoritemid($mnfritemID);
+			$record->setMnfrid($mnfrID);
+			$record->setMnfritemid($mnfritemID);
 
 			if ($this->itemid_exists($itemID)) {
 				$record->setItemid($itemID);
@@ -134,7 +141,7 @@ class XrefMxrfe extends WireData implements Module {
 				$this->input_update($input);
 				break;
 			default:
-				$message = self::DESCRIPTION_RECORD . " No action was specified";
+				$message = self::DESCRIPTION . " No action was specified";
 				$this->wire('session')->response_xref = XrefResponse::response_error(session_id(), $message);
 				break;
 		}
@@ -152,7 +159,7 @@ class XrefMxrfe extends WireData implements Module {
 
 		if ($this->xref_exists($upc)) {
 			if (!$this->lockrecord($upc)) {
-				$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($upc);
+				$message = self::DESCRIPTION . " ($upc)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($upc);
 				$this->wire('session')->response_xref = XrefResponse::response_error($upc, $message);
 				return false;
 			}
@@ -174,14 +181,14 @@ class XrefMxrfe extends WireData implements Module {
 		$values = $input->$rm;
 		$mnfrID     = $values->text('mnfrID');
 		$mnfritemID = $values->text('mnfritemID');
-		$itemID       = $values->text('itemID');
+		$itemID     = $values->text('itemID');
 
 		$record = $this->get_create_xref($mnfrID, $mnfritemID, $itemID);
 
 		if (!$record->isNew()) {
 			if (!$this->lockrecord($record)) {
 				$key = $this->get_recordlocker_key($record);
-				$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
+				$message = self::DESCRIPTION . " ($key)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
 				$this->wire('session')->response_xref = XrefResponse::response_error("$key", $message);
 				return false;
 			}
@@ -242,6 +249,11 @@ class XrefMxrfe extends WireData implements Module {
 				'description' => 'Vendor ID',
 				'input'       => 'mnfrID',
 				'function'    => 'vendorid'
+			),
+			'unitofm' => array(
+				'description' => 'Unit of Measure',
+				'input'       => 'unitofm',
+				'function'    => 'unitofm_purchase'
 			),
 		);
 		$validator = $this->wire('modules')->get('InputValidator');
@@ -342,7 +354,7 @@ class XrefMxrfe extends WireData implements Module {
 	 * @return Vendor
 	 */
 	public function vendor($mnfrID) {
-		return VendorQuery::create()->filterByVendorid($mnfrID)->findOne();
+		return VendorQuery::create()->filterById($mnfrID)->findOne();
 	}
 
 	/**
@@ -519,6 +531,18 @@ class XrefMxrfe extends WireData implements Module {
 			$event->return = $mnfrID;
 		});
 
+		$this->addHookProperty('Page(pw_template=mxrfe)::mnfritemID', function($event) {
+			$p = $event->object;
+			$mnfritemID = $p->fullURL->query->get('mnfritemID') ? $p->fullURL->query->get('mnfritemID') : '';
+			$event->return = $mnfritemID;
+		});
+
+		$this->addHookProperty('Page(pw_template=mxrfe)::itemID', function($event) {
+			$p = $event->object;
+			$itemID = $p->fullURL->query->get('itemID') ? $p->fullURL->query->get('itemID') : '';
+			$event->return = $itemID;
+		});
+
 		$this->addHook('Page(pw_template=mxrfe)::manufacturerURL', function($event) {
 			$mnfrID = $event->arguments(0);
 			$event->return = $this->manufacturerURL($mnfrID);
@@ -541,6 +565,21 @@ class XrefMxrfe extends WireData implements Module {
 			$mnfritemID = $event->arguments(1);
 			$itemID       = $event->arguments(2);
 			$event->return = $this->xref_deleteURL($mnfrID, $mnfritemID, $itemID);
+		});
+
+		$this->addHook("Page(pw_template=mxrfe)::jsonapiURL", function($event) {
+			$api = $event->arguments(0);
+			$pages = $this->wire('pages');
+			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
+		});
+
+		$this->addHook("Page(pw_template=mxrfe)::search_lookupURL", function($event) {
+			$ajaxcode = $event->arguments(0);
+			$event->return = $this->wire('pages')->get("template=api-ajax,ajaxcode=$ajaxcode")->httpUrl;
+		});
+
+		$this->addHook("Page(pw_template=mxrfe)::search_itemsURL", function($event) {
+			$event->return = $this->wire('pages')->get("pw_template=itm-search")->httpUrl;
 		});
 	}
 }
