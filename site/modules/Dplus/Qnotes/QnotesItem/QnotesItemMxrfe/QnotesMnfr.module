@@ -5,9 +5,9 @@ use NoteMnfrQuery, NoteMnfr;
 include_once(__DIR__.'/../../QnotesResponse.php');
 
 /**
- * QnotesSalesOrder
+ * QnotesMnfr
  *
- * Class for Writing and Reading Qnotes for Sales Orders
+ * Class for Writing and Reading Qnotes for Manfacturer Items
  */
 class QnotesMnfr extends WireData implements Module {
 	const MODEL              = 'NoteMnfr';
