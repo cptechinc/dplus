@@ -22,7 +22,7 @@ if ($values->mnfrID) {
 	$mnfrID = $values->text('mnfrID');
 	$vendor = $mxrfe->vendor($mnfrID);
 
-	if ($values->itemID) {
+	if ($values->mnfritemID) {
 		$mnfritemID = $values->text('mnfritemID');
 		$itemID = $values->text('itemID');
 		$xref = $mxrfe->get_create_xref($mnfrID, $mnfritemID, $itemID);
@@ -44,7 +44,8 @@ if ($values->mnfrID) {
 		}
 
 		$page->body .= $config->twig->render('items/mxrfe/item/form/display.twig', ['page' => $page, 'mxrfe' => $mxrfe, 'vendor' => $vendor, 'xref' => $xref, 'qnotes' => $qnotes]);
-
+		$page->js   .= $config->twig->render('items/mxrfe/item/form/js.twig', ['page' => $page, 'mxrfe' => $mxrfe]);
+		$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 		if (!$xref->isNew()) {
 			$page->body .= $config->twig->render('items/mxrfe/item/notes/notes.twig', ['page' => $page, 'xref' => $xref, 'qnotes' => $qnotes]);
 			$page->js   .= $config->twig->render('items/mxrfe/item/notes/js.twig', ['page' => $page, 'xref' => $xref, 'qnotes' => $qnotes]);
