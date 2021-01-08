@@ -5,6 +5,7 @@ $values = $input->$rm;
 
 $filter = $modules->get('FilterXrefItemMxrfe');
 $mxrfe  = $modules->get('XrefMxrfe');
+$mxrfe->init_field_attributes_config();
 
 if ($values->action) {
 	$mxrfe->process_input($input);
@@ -47,6 +48,9 @@ if ($values->mnfrID) {
 		$page->js   .= $config->twig->render('items/mxrfe/item/form/js.twig', ['page' => $page, 'mxrfe' => $mxrfe]);
 		$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 		if (!$xref->isNew()) {
+			if ($session->response_qnote) {
+				$page->body .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
+			}
 			$page->body .= $config->twig->render('items/mxrfe/item/notes/notes.twig', ['page' => $page, 'xref' => $xref, 'qnotes' => $qnotes]);
 			$page->js   .= $config->twig->render('items/mxrfe/item/notes/js.twig', ['page' => $page, 'xref' => $xref, 'qnotes' => $qnotes]);
 		}
@@ -67,5 +71,6 @@ if ($values->mnfrID) {
 }
 
 $session->remove('response_xref');
+$session->remove('response_qnote');
 
 include __DIR__ . "/basic-page.php";
