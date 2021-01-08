@@ -51,7 +51,6 @@ class QnotesMnfr extends WireData implements Module {
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
-
 	/**
 	 * Returns if Notes Exist
 	 * @param  string $mnfrID      Manufacturer ID
@@ -143,7 +142,7 @@ class QnotesMnfr extends WireData implements Module {
 		} else {
 			$note = new NoteMnfr();
 			$note->setMnfrid($mnfrID);
-			$note->setMnfrtemid($mnfritemID);
+			$note->setMnfritemid($mnfritemID);
 			$note->generateKey2();
 		}
 		$success = $this->delete_notes($mnfrID, $mnfritemID);
@@ -162,6 +161,7 @@ class QnotesMnfr extends WireData implements Module {
 		$values = $input->$rm;
 		$mnfrID = $values->text('mnfrID');
 		$mnfritemID = $values->text('mnfritemID');
+		$note = $values->textarea('note');
 		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
 		$lines_saved = array();
 
@@ -171,7 +171,7 @@ class QnotesMnfr extends WireData implements Module {
 			$sequence = $key + 1;
 			$record = NoteMnfr::new();
 			$record->setMnfrid($mnfrID);
-			$record->setMnfrtemid($mnfritemID);
+			$record->setMnfritemid($mnfritemID);
 			$record->generateKey2(); // PK
 			$record->setSequence($sequence); // PK
 			$record->setNote($line);
@@ -217,7 +217,7 @@ class QnotesMnfr extends WireData implements Module {
 
 		// IF there are lines saved
 		if (sizeof($lines_saved)) {
-			$this->wire('modules')->get('Qnotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+			$this->wire('modules')->get('Qponotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
 		}
 		return $response;
 	}
@@ -233,7 +233,7 @@ class QnotesMnfr extends WireData implements Module {
 		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Notes ";
 
 		$response = new QnotesResponse();
-		$response->set_key("$itemID-{$note->key2}");
+		$response->set_key("$note->mnfrid-$note->mnfritemid");
 
 		if ($success) {
 			$response->set_success(true);
@@ -248,7 +248,7 @@ class QnotesMnfr extends WireData implements Module {
 
 		// IF there are lines saved
 		if ($success) {
-			$this->wire('modules')->get('Qnotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+			$this->wire('modules')->get('Qponotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
 		}
 		return $response;
 	}
@@ -264,7 +264,7 @@ class QnotesMnfr extends WireData implements Module {
 			'singular' => true,
 			'autoload' => true,
 			'requires' => array(
-				'QnotesPo',
+				'Qponotes',
 				'Qnotes',
 			)
 		);

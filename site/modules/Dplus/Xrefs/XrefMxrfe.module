@@ -46,6 +46,42 @@ class XrefMxrfe extends WireData implements Module {
 	}
 
 /* =============================================================
+	Field Attributes, Functions
+============================================================= */
+	const PRECISION_MARGIN = 3;
+
+	const FIELD_ATTRIBUTES = [];
+
+	public function init_field_attributes_config() {
+		$this->init_configs();
+		$configs = $this->configs;
+		$attributes = self::FIELD_ATTRIBUTES;
+		$attributes['price'] = ['type' => 'number', 'precision' => $configs->so->decimal_places_price, 'max' => 9999999.99];
+		$attributes['cost']  = ['type' => 'number', 'precision' => $configs->po->decimal_places_cost, 'max'  => 9999999.99];
+		$this->field_attributes = $attributes;
+	}
+
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function field_attribute($field = '', $attr = '') {
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		$this->init_field_attributes_config();
+		if (array_key_exists($field, $this->field_attributes) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, $this->field_attributes[$field]) === false) {
+			return false;
+		}
+		return $this->field_attributes[$field][$attr];
+	}
+
+/* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
@@ -84,8 +120,12 @@ class XrefMxrfe extends WireData implements Module {
 		return boolval($q->count());
 	}
 
+	/**
+	 * Return New Xref with defaults
+	 * @return ItemXrefManufacturer
+	 */
 	public function new_xref() {
-		$config = $this->wire('modules')->get('ConfigureIn')->config();
+		$config = $this->get_config_in();
 		$xref = new ItemXrefManufacturer();
 		$xref->setUnitofm($config->default_uom_purchase);
 		return $xref;
@@ -392,6 +432,14 @@ class XrefMxrfe extends WireData implements Module {
 	}
 
 	/**
+	 * Return Config SO
+	 * @return ConfigIn
+	 */
+	public function config_in() {
+		return $this->wire('modules')->get('ConfigureIn')->config();
+	}
+
+	/**
 	 * Return Config PO
 	 * @return ConfigPo
 	 */
@@ -423,9 +471,9 @@ class XrefMxrfe extends WireData implements Module {
 	 */
 	public function init_configs() {
 		$this->configs = new WireData();
-		$this->configs->in = $this->get_config_in();
-		$this->configs->so = $this->get_config_so();
-		$this->configs->po = $this->get_config_po();
+		$this->configs->in = $this->config_in();
+		$this->configs->so = $this->config_so();
+		$this->configs->po = $this->config_po();
 	}
 
 /* =============================================================
