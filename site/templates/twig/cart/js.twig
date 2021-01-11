@@ -32,7 +32,7 @@ $(function() {
 		});
 	});
 
-	$("body").on('change', 'input[name=qty]', function(e) {
+	$("body").on('change', '.cart-item input[name=qty]', function(e) {
 		e.preventDefault();
 		var input = $(this);
 		var qty = parseFloat($(this).val());
