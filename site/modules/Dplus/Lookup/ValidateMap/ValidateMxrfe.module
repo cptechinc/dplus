@@ -1,0 +1,82 @@
+<?php namespace ProcessWire;
+
+use Propel\Runtime\ActiveQuery\Criteria;
+
+use ItemMasterItemQuery, ItemMasterItem;
+use ItemXrefManufacturerQuery, ItemXrefManufacturer;
+
+/**
+ * ValidateMxrfe
+ *
+ * Class for validating MXRFE fields
+ */
+class ValidateMxrfe extends WireData implements Module {
+/* =============================================================
+	AP Functions
+============================================================= */
+	/**
+	 * Return if Vendor ID is Valid
+	 * @param  string $mnfrID Vendor ID
+	 * @return bool
+	 */
+	public function vendorid($mnfrID) {
+		return $this->validate->ap->vendorid($mnfrID);
+	}
+
+/* =============================================================
+	IN Functions
+============================================================= */
+	/**
+	 * Return if Item ID is Valid
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function itemid($itemID) {
+		return $this->validate->in->itemid_exists($itemID);
+	}
+
+	/**
+	 * Return if Unit of Measure Purchase Code is valid
+	 * @param  string $code Unit of Measure Sale Code
+	 * @return bool
+	 */
+	public function unitofm($code) {
+		return $this->validate->in->unitofm_purchase($code);
+	}
+
+/* =============================================================
+	MXRFE Functions
+============================================================= */
+
+	/**
+	 * Validate if MXRFE X-ref exists
+	 * @param  string $mnfrID     Vendor ID
+	 * @param  string $mnfritemID Vendor Item ID
+	 * @param  string $itemID       ITM Item ID
+	 * @return bool
+	 */
+	public function exists($mnfrID, $mnfritemID, $itemID) {
+		return $this->modules->get('XrefMxrfe')->xref_exists($mnfrID, $mnfritemID, $itemID);
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'MXRFE Validate Module',
+			'version' => 101,
+			'summary' => 'Handles MXRFE Fields Validation',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+
+	public function init() {
+		$this->validate = new WireData();
+		$this->validate->ap  = $this->wire('modules')->get('ValidateAp');
+		$this->validate->in  = $this->wire('modules')->get('ValidateIn');
+		$this->modules = $this->wire('modules');
+	}
+}

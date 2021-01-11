@@ -64,7 +64,7 @@ class XrefVxm extends WireData implements Module {
 		$attributes = self::FIELD_ATTRIBUTES;
 		$attributes['listprice']   = ['type' => 'number', 'precision' => $configs->so->decimal_places_price, 'max' => 99999999.9999];
 		$attributes['unit_cost']   = ['type' => 'number', 'precision' => $configs->po->decimal_places_cost, 'max' => 9999999.9999];
-		$attributes['unit_qty']    = ['type' => 'number', 'precision' => $configs->so->decimal_places_qty, 'max' => 9999999];
+		$attributes['unit_qty']    = ['type' => 'number', 'precision' => 0, 'max' => 9999999];
 		$attributes['unit_margin'] = ['type' => 'number', 'precision' => 3, 'max' => 99.999];
 		$attributes['optioncode']  = ['type' => 'text', 'label' => $configs->ap->vxm_optioncode1_label, 'disabled' => $configs->ap->vxm_optioncode1_label == '', 'maxlength' => 8];
 		$this->field_attributes = $attributes;
@@ -325,7 +325,7 @@ class XrefVxm extends WireData implements Module {
 		$record->setQty_percase($values->float('qty_percase', ['precision' => $this->field_attribute('qty_percase', 'precision'), 'max' => $this->field_attribute('qty_percase', 'max')]));
 		$record->setMinbuyqty($values->float('minbuyqty', ['precision' => $this->field_attribute('minbuyqty', 'precision'), 'max' => $this->field_attribute('minbuyqty', 'max')]));
 		$record->setListprice($values->float('listprice', ['precision' => $this->field_attribute('listprice', 'precision'), 'max' => $this->field_attribute('listprice', 'max')]));
-		if ($this->configs->ap->vxm->use_vendor_cost_breaks()) {
+		if ($this->configs->ap->use_vendor_cost_breaks()) {
 			$this->update_record_unitx_input($record, $input);
 		}
 		$record->setDate_changed(date('Ymd'));
@@ -373,7 +373,7 @@ class XrefVxm extends WireData implements Module {
 			$record->setUnitcost_base($sanitizer->float($unitcost));
 		}
 
-		if ($this->configs->ap->vxm->use_vendor_cost_breaks()) {
+		if ($this->configs->ap->use_vendor_cost_breaks() == false) {
 			return true;
 		}
 

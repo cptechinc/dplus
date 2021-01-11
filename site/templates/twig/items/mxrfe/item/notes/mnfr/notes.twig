@@ -1,0 +1,13 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	mxrfe                  module XrefMxrfe
+	xref                   ItemXrefManufacturer
+	qnotes                 module QnotesItemMxrfe
+	qnotes.mnfr            module QnotesMnfr
+#}
+<textarea class="form-control-plaintext w-auto qnotes" id="manf-notes" rows="8" cols="{{ qnotes.mnfr.get_column_count() }}" readonly>{{ qnotes.mnfr.notes_array(xref.mnfrid, xref.mnfritemid)|join('\r') }}</textarea>
+<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#notes-mnfr-modal" data-notesinput="#manf-notes">
+	<i class="fa fa-pencil"></i> Edit
+</button>

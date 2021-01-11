@@ -20,7 +20,7 @@ $(function() {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
 		var input = button.data('input');
-		var uri = URI('{{ page.has('search_notesURL') ? page.search_notesURL : page.searchURL }}');
+		var uri = URI('{{ page.search_noceURL() }}');
 		if (button.data('width')) {
 			uri.addQuery('width', button.data('width'));
 		}

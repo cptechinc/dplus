@@ -82,6 +82,15 @@
 					$response = false;
 				}
 				break;
+			case 'validate-itemid':
+				$itemID = $values->text('itemID');
+
+				if ($validate->itemid_exists($itemID)) {
+					$response = true;
+				} else {
+					$response = "$itemID not found";
+				}
+				break;
 			case 'get-item':
 				$itemID = $values->text('itemID');
 

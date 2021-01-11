@@ -1,0 +1,49 @@
+<?php namespace ProcessWire;
+
+class WhseLabelPrinter extends WireData implements Module {
+
+	public function init() {
+		$this->sessionID = session_id();
+		$this->addHook("Page(pw_template=whse-print-item-label)::jsonapiURL", function($event) {
+			$api = $event->arguments(0);
+			$pages = $this->wire('pages');
+			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
+		});
+
+		$this->addHook("Page(pw_template=whse-print-item-label)::search_lookupURL", function($event) {
+			$ajaxcode = $event->arguments(0);
+			$event->return = $this->wire('pages')->get("template=api-ajax,ajaxcode=$ajaxcode")->httpUrl;
+		});
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public function update() {
+		$modules = $this->wire('modules');
+		$modules->refresh();
+		$moduleinfo = self::getModuleInfo();
+
+		foreach ($moduleinfo['installs'] as $sub) {
+			$modules->install($sub);
+		}
+	}
+
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso Warehouse Label Printing',
+			'version' => 101,
+			'summary' => 'Handles Default Warehouse Label Printing',
+			'singular' => true,
+			'autoload' => false,
+			'installs' => array(
+				'WhseLabelPrinterProvalley',
+			)
+		);
+	}
+}
