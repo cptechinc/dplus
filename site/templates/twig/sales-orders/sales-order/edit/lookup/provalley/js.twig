@@ -63,7 +63,7 @@ $(function() {
 
 		var button = $(this);
 		var itemID = button.data('itemid');
-		input_itemid.val(itemID);
+		input_itemid.val(itemID).change();
 		input_qty.focus();
 	});
 

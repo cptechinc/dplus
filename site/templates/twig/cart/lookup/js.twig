@@ -56,13 +56,14 @@ $(function() {
 
 		var button = $(this);
 		var itemID = button.data('itemid');
-		input_itemid.val(itemID);
+		input_itemid.val(itemID).change();
 		input_qty.focus();
 	});
 
 	$("body").on('change', '#add-item-form input[name=itemID]', function(e) {
 		var input = $(this);
 		validate_get_item();
+
 		if (validator.element('#'+input.attr('id'))) {
 			if (validator.element('#'+input_qty.attr('id'))) {
 				form_additem.submit();

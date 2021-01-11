@@ -1,4 +1,5 @@
-{% set config = eso.config() %}
+{% set config = eso.config('so') %}
+
 <div class="form-group">
 	<label for="custpo">Customer PO</label>
 	<input type="text" class="form-control form-control-sm" name="custpo" id="custpo" value="{{ order.custpo }}">
@@ -26,6 +27,7 @@
 	<label for="shipcomplete">Ship complete</label>
 	{% include 'util/select.twig' with {'name': 'shipcomplete', 'id': 'shipcomplete', 'selectedvalue': order.shipcomplete, 'options': {'Y': 'Yes', 'N': 'No'}} %}
 </div>
+
 <label for="termscode">Terms</label>
 <select name="termscode" class="form-control form-control-sm" id="termscode">
 	{% for termscode in termscodes %}

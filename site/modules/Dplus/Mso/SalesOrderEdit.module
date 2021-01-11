@@ -14,6 +14,7 @@ use OrdrhedQuery, Ordrhed;
 use OrdrdetQuery, Ordrdet;
 use StatesQuery, States;
 use ShipviaQuery, Shipvia;
+use LogpermQuery, Logperm;
 
 class SalesOrderEdit extends WireData implements Module {
 	const PERMISSION_DPLUS = 'eso';
@@ -139,6 +140,10 @@ class SalesOrderEdit extends WireData implements Module {
 			case 'unlock-order':
 				$ordn = $values->text('ordn');
 				$this->request_so_unlock($ordn);
+			case 'edit-order-new':
+				$q = LogpermQuery::create();
+				$logperm = $q->findOneBySessionid(session_id());
+				$this->wire('session')->redirect($this->edit_salesorderURL($logperm->ordernbr), $http301 = false);
 			case 'exit':
 				break;
 		}
@@ -152,6 +157,7 @@ class SalesOrderEdit extends WireData implements Module {
 	public function process_input_update_header(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
+		$config = $this->config('so');
 		$ordn = SalesOrder::get_paddedordernumber($values->text('ordn'));
 		$editorder = $this->get_editable_header($ordn);
 		$editorder->setShipname($values->text('shipto_name'));
@@ -168,7 +174,10 @@ class SalesOrderEdit extends WireData implements Module {
 		$editorder->setCustpo($values->text('custpo'));
 		$editorder->setReleasenbr($values->text('releasenumber'));
 		$editorder->setShipviacd($values->text('shipvia'));
-		$editorder->setRqstDate($values->text('date_requested'));
+		if ($config->request_date_header() && strlen($values->text('date_requested'))) {
+			$editorder->setRqstDate($values->text('date_requested'));
+		}
+
 		$editorder->setShipcom($values->text('shipcomplete'));
 		$editorder->setTermcode($values->text('termscode'));
 		$saved = $editorder->save();
