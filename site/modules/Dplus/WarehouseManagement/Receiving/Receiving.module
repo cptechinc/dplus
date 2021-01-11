@@ -285,12 +285,12 @@ class Receiving extends WireData implements Module {
 
 		$this->addHook('Page(pw_template=whse-receiving)::delete_received_itemURL', function($event) {
 			$url = new Url($this->wire('pages')->get('template=redir, redir_file=inventory')->url);
-			$item     = $event->arguments(0); // Instance of PurchaseOrderDetailLotReceiving
+			$lot     = $event->arguments(0); // Instance of PurchaseOrderDetailLotReceiving
 			$url->query->set('action', 'remove-received-item');
-			$url->query->set('ponbr', $item->ponbr);
-			$url->query->set('linenbr', $item->linenbr);
-			$url->query->set('lotserial', $item->lotserial);
-			$url->query->set('binID', $item->bin);
+			$url->query->set('ponbr', $lot->ponbr);
+			$url->query->set('linenbr', $lot->linenbr);
+			$url->query->set('lotserial', $lot->lotserial);
+			$url->query->set('binID', $lot->bin);
 			$event->return = $url->getUrl();
 		});
 
