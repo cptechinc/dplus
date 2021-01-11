@@ -83,7 +83,8 @@ class QnotesItemMxrfe extends WireData implements Module {
 			'autoload' => true,
 			'requires' => array('Qnotes'),
 			'installs' => array(
-				'QnotesItemMnfr',
+				'QnotesMnfr',
+				'QnotesMmsc',
 			)
 		);
 	}
