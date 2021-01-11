@@ -250,7 +250,6 @@ class Cart extends WireData implements Module {
 		$lineitem = $this->get_cart_lineitem($linenbr);
 		$this->update_lineitem_input($lineitem, $input);
 		$saved = $lineitem->save();
-
 		if ($saved) {
 			$this->request_item_update($linenbr);
 			return true;
@@ -415,7 +414,7 @@ class Cart extends WireData implements Module {
 	 */
 	private function request_item_update($linenbr) {
 		$data = array('CARTDET', "LINENO=$linenbr");
-
+		$this->request_dplus($data);
 	}
 
 	/**
