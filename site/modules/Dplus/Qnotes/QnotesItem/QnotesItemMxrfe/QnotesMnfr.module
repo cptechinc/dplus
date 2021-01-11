@@ -1,0 +1,272 @@
+<?php namespace ProcessWire;
+
+use NoteMnfrQuery, NoteMnfr;
+
+include_once(__DIR__.'/../../QnotesResponse.php');
+
+/**
+ * QnotesMnfr
+ *
+ * Class for Writing and Reading Qnotes for Manfacturer Items
+ */
+class QnotesMnfr extends WireData implements Module {
+	const MODEL              = 'NoteMnfr';
+	const MODEL_KEY          = 'itemid sequence';
+	const DESCRIPTION        = 'Manufacturer Notes';
+	const DESCRIPTION_RECORD = 'Manufacturer Notes';
+	const DESCRIPTION_RESPONSE = 'Item ';
+
+	const MAXLENGTH_NOTE = 35;
+
+
+	/**
+	 * Return the Max Number of columns for Note Type
+	 * @return int
+	 */
+	public function get_column_count() {
+		return self::MAXLENGTH_NOTE;
+	}
+
+	/**
+	 * Return Quote Notes Query
+	 * @return NoteMnfrQuery
+	 */
+	public function query() {
+		return NoteMnfrQuery::create();
+	}
+
+	/**
+	 * Return Query Filtered By Manufacturer, Manfacturer Item
+	 * @param  string $mnfrID      Manufacturer ID
+	 * @param  string $mnfritemID  Manufacturer Item ID
+	 * @return NoteMnfrQuery
+	 */
+	public function query_xref($mnfrID, $mnfritemID) {
+		$q = $this->query();
+		$q->filterByMnfrid($mnfrID);
+		$q->filterByMnfritemid($mnfritemID);
+		return $q;
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Returns if Notes Exist
+	 * @param  string $mnfrID      Manufacturer ID
+	 * @param  string $mnfritemID  Manufacturer Item ID
+	 * @return bool
+	 */
+	public function exist($mnfrID, $mnfritemID) {
+		$q = $this->query_xref($mnfrID, $mnfritemID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Returns Line 1 of Every Note
+	 * @param  string $mnfrID      Manufacturer ID
+	 * @param  string $mnfritemID  Manufacturer Item ID
+	 * @return NoteMnfr[]|ObjectCollection
+	 */
+	public function notes_summarized($mnfrID, $mnfritemID) {
+		$q = $this->query_xref($mnfrID, $mnfritemID);
+		$q->filterBySequence(1);
+		return $q->find();
+	}
+
+	/**
+	 * Return Notes
+	 * @param  string $mnfrID      Manufacturer ID
+	 * @param  string $mnfritemID  Manufacturer Item ID
+	 * @return array
+	 */
+	public function notes_array($mnfrID, $mnfritemID) {
+		$q = $this->query_xref($mnfrID, $mnfritemID);
+		$q->select(NoteMnfr::get_aliasproperty('note'));
+		return $q->find()->toArray();
+	}
+
+	/**
+	 * Delete Notes for X-Ref
+	 * @param  string $mnfrID      Manufacturer ID
+	 * @param  string $mnfritemID  Manufacturer Item ID
+	 * @return bool
+	 */
+	public function delete_notes($mnfrID, $mnfritemID) {
+		$q = $this->query_xref($mnfrID, $mnfritemID);
+
+		if ($q->count()) {
+			return $q->delete();
+		}
+		return true;
+	}
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Takes Input, Processes it, updates Quote Notes in the Database
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+
+		switch ($input->$rm->text('action')) {
+			case 'update-notes':
+				$this->input_update($input);
+				break;
+			case 'delete-notes':
+				$this->input_delete($input);
+				break;
+		}
+	}
+
+	/**
+	 * Takes Input, Processes it, deletes Quote Notes
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function input_delete($input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$mnfrID = $values->text('mnfrID');
+		$mnfritemID = $values->text('mnfritemID');
+
+		$q = $this->query_xref($mnfrID, $mnfritemID);
+
+		if ($q->count()) {
+			$note = $q->findOne();
+		} else {
+			$note = new NoteMnfr();
+			$note->setMnfrid($mnfrID);
+			$note->setMnfritemid($mnfritemID);
+			$note->generateKey2();
+		}
+		$success = $this->delete_notes($mnfrID, $mnfritemID);
+
+		$this->wire('session')->response_qnote = $this->process_response_delete($note, $itemID, $success);
+	}
+
+	/**
+	 * Takes Input, Processes it, updates Quote Notes
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function input_update(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$mnfrID = $values->text('mnfrID');
+		$mnfritemID = $values->text('mnfritemID');
+		$note = $values->textarea('note');
+		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
+		$lines_saved = array();
+
+		$this->delete_notes($mnfrID, $mnfritemID);
+
+		foreach ($note_lines as $key => $line) {
+			$sequence = $key + 1;
+			$record = NoteMnfr::new();
+			$record->setMnfrid($mnfrID);
+			$record->setMnfritemid($mnfritemID);
+			$record->generateKey2(); // PK
+			$record->setSequence($sequence); // PK
+			$record->setNote($line);
+
+			$record->setDate(date('Ymd'));
+			$record->setTime(date('His'));
+			$record->setDummy('P');
+			$lines_saved[$sequence] = $record->save();
+		}
+		$this->wire('session')->response_qnote = $this->process_responses($record, $itemID, $lines_saved);
+	}
+
+	/**
+	 * Return Code Table Response based on the number of lines that were written to the database
+	 * @param  string $itemID         item ID
+	 * @param  array  $lines_saved  array of line numbers and if they got saved e.g. (1 => true, 2 => false)
+	 * @return CodeTableResponse
+	 */
+	protected function process_responses(NoteMnfr $note, $itemID, array $lines_saved) {
+		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Note Lines";
+
+		$response = new QnotesResponse();
+		$response->set_key("$itemID-{$note->key2}");
+
+		if (in_array(false, $lines_saved)) {
+			$lines_error =
+			array_filter($lines_saved, function($value, $key) {
+				return  $value == false;
+			}, ARRAY_FILTER_USE_BOTH);
+			$message .= implode(", ", array_keys($lines_error));
+			$message .= " were not able to be saved";
+
+			if (sizeof($lines_error)) {
+				$response->set_error(true);
+			}
+		} else {
+			$response->set_success(true);
+			$message .= " were able to be saved";
+		}
+
+		$response->set_action(QnotesResponse::CRUD_UPDATE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if (sizeof($lines_saved)) {
+			$this->wire('modules')->get('Qponotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+		}
+		return $response;
+	}
+
+	/**
+	 * Return QnoteResponse based if Notes were able to be Deleted
+	 * @param  NoteMnfr  $note         Attributes are needed to generate key
+	 * @param  string            $itemID         item ID
+	 * @param  array             $success      Were Notes able to be deleted?
+	 * @return QnoteResponse
+	 */
+	public function process_response_delete(NoteMnfr $note, $itemID, bool $success) {
+		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Notes ";
+
+		$response = new QnotesResponse();
+		$response->set_key("$note->mnfrid-$note->mnfritemid");
+
+		if ($success) {
+			$response->set_success(true);
+			$message .= " were able to be deleted";
+		} else {
+			$response->set_success(true);
+			$message .= " were not able to be deleted";
+		}
+
+		$response->set_action(QnotesResponse::CRUD_DELETE);
+		$response->set_message($message);
+
+		// IF there are lines saved
+		if ($success) {
+			$this->wire('modules')->get('Qponotes')->update_dplus_cobol($note->type, $note->key2, $note->form);
+		}
+		return $response;
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Qnotes Mnfr Item',
+			'version' => 101,
+			'summary' => 'Dplus Qnotes Mnfr Item',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array(
+				'Qponotes',
+				'Qnotes',
+			)
+		);
+	}
+}

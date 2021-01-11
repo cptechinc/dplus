@@ -77,11 +77,14 @@ class ValidateMap extends WireData implements Module {
 			'summary' => 'Validates AP table codes',
 			'singular' => true,
 			'autoload' => true,
-			'installs' => array(),
+			'installs' => array(
+				'ValidateMxrfe'
+			),
 		);
 	}
 
 	public function init() {
-		$this->vxm = $this->wire('modules')->get('ValidateVxm');
+		$this->vxm   = $this->wire('modules')->get('ValidateVxm');
+		$this->mxrfe = $this->wire('modules')->get('ValidateMxrfe');
 	}
 }
