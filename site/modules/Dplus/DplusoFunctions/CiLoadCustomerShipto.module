@@ -101,6 +101,13 @@
 			$this->addHook('Page::cart_customerURL', function($event) {
 				$event->return = $this->get_cart_customerURL();
 			});
+
+			/**
+			 * Returns CI Customer Shipto Page URL
+			 */
+			$this->addHook('Page::create_blank_orderURL', function($event) {
+				$event->return = $this->create_blank_orderURL();
+			});
 		}
 
 		/**
@@ -350,6 +357,14 @@
 		 */
 		public function get_cart_customerURL() {
 			return $this->wire('modules')->get('DpagesCart')->get_cart_customerURL($this->custID, $this->shiptoID);
+		}
+
+		/**
+		 * Returns URL to set Cart Customer
+		 * @return string
+		 */
+		public function create_blank_orderURL() {
+			return $this->wire('modules')->get('DpagesCart')->create_blank_orderURL($this->custID, $this->shiptoID);
 		}
 
 	/* =============================================================

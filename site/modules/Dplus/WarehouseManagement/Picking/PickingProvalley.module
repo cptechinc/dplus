@@ -134,6 +134,12 @@ class PickingProvalley extends WireData implements Module {
 		$itemID = $values->text('itemID');
 		$lotserial = $values->text('lotserial');
 		$binID     = $values->text('binID');
+
+		if ($this->items->is_itemid_onorder($itemID) === false) {
+			$this->session->pickingerror = "$itemID is not on the order";
+			return false;
+		}
+
 		$orderitem = $this->items->get_picksalesorderdetail_itemid($itemID);
 		$exists_onorder = $this->does_whseitempick_exist($orderitem, $lotserial, $binID);
 

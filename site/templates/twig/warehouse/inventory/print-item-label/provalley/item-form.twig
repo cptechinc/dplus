@@ -1,5 +1,15 @@
 {% extends 'warehouse/inventory/print-item-label/item-form.twig'%}
-
+{% block header_links %}
+	<div class="form-group">
+		<a href="{{ page.parent.url }}" class="btn btn-primary">
+			<i class="fa fa-arrow-left" aria-hidden="true"></i> Return to {{ page.parent.title }} Menu
+		</a>
+		&nbsp;
+		<a href="{{ page.create_newlabelURL() }}" class="btn btn-primary">
+			<i class="fa fa-plus" aria-hidden="true"></i> Create New Label
+		</a>
+	</div>
+{% endblock %}
 {% block action %}
 	<input type="hidden" name="action" value="print-label-search">
 {% endblock %}

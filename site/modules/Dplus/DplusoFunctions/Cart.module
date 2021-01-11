@@ -170,6 +170,11 @@ class Cart extends WireData implements Module {
 			case 'create-quote':
 				$this->request_create_quote();
 				break;
+			case 'create-blank-order':
+				if ($this->input_set_customer($input)) {
+					$this->request_create_order();
+				}
+				break;
 		}
 	}
 
@@ -183,9 +188,22 @@ class Cart extends WireData implements Module {
 		$values = $input->$rm;
 		$custID = $values->text('custID');
 		$this->set_custid($custID);
+		
+		if ($values->shiptoID) {
+			$this->set_shiptoid($values->text('shiptoID'));
+			return true;
+		}
+
 		$q = CustomerShiptoQuery::create()->filterByCustid($custID);
 
 		if ($q->count() == 1) {
+			$shipto = $q->findOne();
+			$this->set_shiptoid($shipto->shiptoid);
+			return true;
+		}
+
+		$q->filterByPrimary(CustomerShipto::YN_TRUE);
+		if ($q->count()) {
 			$shipto = $q->findOne();
 			$this->set_shiptoid($shipto->shiptoid);
 		}
@@ -250,7 +268,6 @@ class Cart extends WireData implements Module {
 		$lineitem = $this->get_cart_lineitem($linenbr);
 		$this->update_lineitem_input($lineitem, $input);
 		$saved = $lineitem->save();
-
 		if ($saved) {
 			$this->request_item_update($linenbr);
 			return true;
@@ -415,7 +432,7 @@ class Cart extends WireData implements Module {
 	 */
 	private function request_item_update($linenbr) {
 		$data = array('CARTDET', "LINENO=$linenbr");
-
+		$this->request_dplus($data);
 	}
 
 	/**
@@ -564,9 +581,9 @@ class Cart extends WireData implements Module {
 			if (strpos($action, 'create') !== false) {
 				$q = LogpermQuery::create();
 				$logperm = $q->findOneBySessionid($this->sessionID);
-				if ($action == 'create-order') {
-					$url = $this->wire->modules->get('SalesOrderEdit')->edit_salesorderURL($logperm->ordernbr);
-				} else if($action == 'create-quote') {
+				if ($action == 'create-order' || $action == 'create-blank-order') {
+					$url = $this->wire('pages')->get('pw_template=sales-order-edit')->url."?action=edit-order-new";
+				} elseif($action == 'create-quote') {
 					$url = $this->wire('pages')->get('template=redir,redir_file=quote')->url.'?action=edit-new-quote';
 				}
 			}

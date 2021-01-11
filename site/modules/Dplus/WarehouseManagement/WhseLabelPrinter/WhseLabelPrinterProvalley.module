@@ -1,0 +1,87 @@
+<?php namespace ProcessWire;
+
+use WhseitemphysicalcountQuery, Whseitemphysicalcount;
+use Purl\Url;
+
+class WhseLabelPrinterProvalley extends WhseLabelPrinter implements Module {
+
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'print-labels':
+				$this->input_print_label($input);
+				break;
+		}
+	}
+
+	protected function input_print_label(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		WhseitemphysicalcountQuery::create()->filterBySessionid($this->sessionID)->delete();
+		$this->input_create_record($input);
+		$this->request_print_labels($values->int('labelcount'));
+	}
+
+	protected function input_create_record(WireInput $input) {
+		$label = new Whseitemphysicalcount();
+		$label->setSessionid($this->sessionID);
+		$label->setRecno(1);
+		$label->setScan($this->sessionID);
+		$label->setLotserial($values->text('lotserial'));
+		$label->setLotserialref($values->text('lotreference'));
+		$label->setProductiondate($values->text('productiondate'));
+		$label->setQty($values->text('qty'));
+		$label->save();
+	}
+
+/* =============================================================
+	Dplus Request Functions
+============================================================= */
+	protected function request_dplus(array $data) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array_merge(["DBNAME=$dplusdb"], $data);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['warehouse'], $this->sessionID);
+	}
+	/**
+	 * Sends Update Request for Qnote Type
+	 * @param  string $notetype Note Type
+	 * @param  string $key2     Key 2
+	 * @param  string $form     Form e.g YNNN
+	 * @return void
+	 */
+	public function request_print_labels($labelcount = 0) {
+		$data = ['PRINTLABELS', "NBRLABELS=$labelcount"];
+		$this->request_dplus($data);
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public function init() {
+		parent::init();
+
+		$this->addHook("Page(pw_template=whse-print-item-label)::create_newlabelURL", function($event) {
+			$p = $event->object;
+			$url = new Url($p->url);
+			$url->query->set('label', 'new');
+			$event->return = $url->getUrl();
+		});
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Warehouse Label Printing for Provalley',
+			'version' => 101,
+			'summary' => 'Handles Provalley Warehouse Label Printing',
+			'singular' => true,
+			'autoload' => false,
+			'installs' => array(
+			)
+		);
+	}
+}
