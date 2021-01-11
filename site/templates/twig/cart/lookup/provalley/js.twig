@@ -58,8 +58,7 @@ $(function() {
 
 		var button = $(this);
 		var itemID = button.data('itemid');
-		input_itemid.val(itemID);
-		input_qty.focus();
+		input_itemid.val(itemID).change();
 	});
 
 	$("body").on('change', '#add-item-form input[name=itemID]', function(e) {
