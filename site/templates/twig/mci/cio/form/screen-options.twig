@@ -1,7 +1,7 @@
-<div class="list-group-item">
+<div class="list-group-item py-2">
 	<div class="row">
 		<div class="col-sm-2">
-			{{ iio.field_attribute(option, 'label') }}
+			{{ cio.field_attribute(option, 'label') }}
 		</div>
 		<div class="col-sm-1">
 			{% include 'util/form/select.twig' with {
@@ -13,39 +13,8 @@
 				}
 			%}
 		</div>
-		<div class="col-sm-2">
-			{% if (iio.field_attribute(option, 'whse') is same as(true)) %}
-				{% set name = 'whse' ~ option %}
-				{% include 'util/form/input-with-modal-lookup.twig' with {
-						'name': name, 'value': attribute(user, name),
-						'modaltarget': '#ajax-modal',
-						'modaldescription': 'Search for / Choose Warehouse ID',
-						'attributes_button': {
-							'data-search': 'warehouse',
-							'data-lookupurl': page.search_lookupURL('warehouses'),
-							'data-input': '#' ~ name
-						},
-						'class_add': ['ajax-lookup'],
-						'small': true,
-						'attributes': {'data-whse': '', 'data-validate': 'whseid', 'data-ajaxfields': ''}
-					}
-				%}
-			{% endif %}
-		</div>
-		<div class="col-sm-1">
-			{% if iio.field_attribute(option, 'detail') is same as(true) %}
-				{% set name = 'detail' ~ option %}
-				{% set options = option == 'requirements' ? constant('VIEW_REQUIREMENTS_OPTIONS', user) : {'Y': 'Yes','N': 'No'} %}
-				{% include 'util/form/select.twig' with {
-						'name': name, 'selected_value': attribute(user, name),
-						'options': options,
-						'show_value': option == 'requirements'
-					}
-				%}
-			{% endif %}
-		</div>
 		<div class="col-sm-6">
-			{% if iio.field_attribute(option, 'date') is same as(true) %}
+			{% if cio.field_attribute(option, 'date') is same as(true) %}
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="form-row">
@@ -60,7 +29,7 @@
 										'class_add': ['text-right'],
 										'attributes': {
 											'max': cio.field_attribute(name, 'max')
-										},
+										}
 									}
 								%}
 							</div>
