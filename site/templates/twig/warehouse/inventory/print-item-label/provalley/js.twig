@@ -1,67 +1,66 @@
 $(function() {
-	var labelform = $('#print-label-form');
-	var input_weight     = labelform.find('input[name=weight]');
-	var input_labelcount = labelform.find('input[name=labelcount]');
+	var form = $('#print-label-form');
 
-/////////////////////////////////////
-// 3. Validate form
-////////////////////////////////////
-	labelform.validate({
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = form.validate({
 		errorClass: "is-invalid",
-		highlight: function(element, errorClass, validClass) {
-			$(element).addClass(errorClass).removeClass(validClass);
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			itemID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv') }}',
+					type: "get",
+					data: {
+						action: 'validate-itemid'
+					}
+				}
+			},
+			productiondate: {
+				required: true
+			},
+			qty: {
+				required: true
+			},
+			labelcount: {
+				required: true
+			},
 		},
 		submitHandler : function(form) {
-			var valid_form = new SwalError(false, '', '', false);
-			var valid_weight = validate_weight();
-			var valid_labelcount = validate_labelcount();
-
-			if (valid_weight.error) {
-				valid_form = valid_weight;
-			} else if (valid_labelcount.error) {
-				valid_form = valid_labelcount;
-			}
-
-			if (valid_form.error) {
-				swal2.fire({
-					icon: 'error',
-					title: valid_form.title,
-					text: valid_form.msg,
-					html: valid_form.html
-				});
-			} else {
-				form.submit();
-			}
+			form.submit();
 		}
 	});
 
-	function validate_weight() {
-		var error = false;
-		var title = '';
-		var msg = '';
-		var html = false;
-		var weight = parseFloat(input_weight.val());
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on("change", "input[name=itemID]", function(e) {
+		var input = $(this);
+		populate_item_data(input.val());
+	});
 
-		if (weight == 0) {
-			error = true;
-			title = 'Invalid Weight';
-			msg   = "Weight must be more than 0";
-		}
-		return new SwalError(error, title, msg, html);
+	function populate_item_data(itemID) {
+		request_item(itemID, function(item) {
+			if (item) {
+				$('.item-description').text(item.description);
+			}
+		});
 	}
 
-	function validate_labelcount() {
-		var error = false;
-		var title = '';
-		var msg = '';
-		var html = false;
-		var count = parseInt(input_labelcount.val());
+/* =============================================================
+	AJAX Request Functions
+============================================================= */
+	function request_item(itemID, callback) {
+		var url = new URI('{{ page.jsonapiURL('inv') }}');
+		url.addQuery('action', 'get-item').addQuery('itemID', itemID);
 
-		if (count == 0) {
-			error = true;
-			title = 'Invalid Label Qty';
-			msg   = "Must Print off at least 1 label";
-		}
-		return new SwalError(error, title, msg, html);
+		$.getJSON(url.toString(), function( item ) {
+			callback(item);
+		});
 	}
 });
