@@ -5,8 +5,8 @@
 </div>
 <div class="row">
 	<div class="col-sm-8">
-		<form action="{{ page.formurl }}" id="print-label-form" method="post">
-			<input type="hidden" name="action" value="print-labels-simple">
+		<form action="{{ page.url }}" id="print-label-form" method="post">
+			<input type="hidden" name="action" value="print-labels">
 			<input type="hidden" name="scan" value="{{ item.scan }}">
 
 			<div class="form-row form-group">
@@ -14,8 +14,20 @@
 					Item ID
 				</div>
 				<div class="col-sm-6">
-					{{ item.itemid }} <br>
-					<small>{{ item.desc1 }}</small>
+					{% include 'util/form/input-with-modal-lookup.twig' with {
+							'name': 'itemID', 'value': item.itemid,
+							'attributes': {
+								'readonly': item.itemid ? true : false,
+								'tabindex': item.itemid ? '-1' : '',
+							},
+							'modaltarget': '#ajax-modal',
+							'modaldescription': 'Search for / Choose Item',
+							'attributes_button': {
+								'data-search': 'item'
+							}
+						}
+					%}
+				<small class="form-text text-muted item-description">{{ item.desc1 }}</small>
 				</div>
 			</div>
 			<div class="form-row form-group">
@@ -23,7 +35,14 @@
 					Lot
 				</div>
 				<div class="col-sm-6">
-					{{ item.lotserial }}
+					{% include 'util/form/input.twig' with {
+							'name': 'lotserial', 'value': item.lotserial,
+							'attributes': {
+								'readonly': item.lotserial ? true : false,
+								'tabindex': item.lotserial ? '-1' : '',
+							}
+						}
+					%}
 				</div>
 			</div>
 			<div class="form-row form-group">
@@ -31,7 +50,14 @@
 					Lot Reference
 				</div>
 				<div class="col-sm-6">
-					{{ item.lotreference }}
+					{% include 'util/form/input.twig' with {
+							'name': 'lotreference', 'value': item.lotreference,
+							'attributes': {
+								'readonly': item.lotreference ? true : false,
+								'tabindex': item.lotreference ? '-1' : '',
+							}
+						}
+					%}
 				</div>
 			</div>
 			<div class="form-row form-group">
@@ -47,7 +73,14 @@
 					<label class="control-label" for="weight">Weight</label>
 				</div>
 				<div class="col-sm-6">
-					<input class="form-control input-sm qty required" type="number" name="weight" id="weight" value="{{ item.qty }}">
+					{% include 'util/form/input.twig' with {
+							'name': 'qty', 'value': item.qty,
+							'type': 'number',
+							'attributes': {
+
+							}
+						}
+					%}
 				</div>
 			</div>
 			<div class="form-row form-group mb-3">
@@ -55,7 +88,14 @@
 					<label class="control-label" for="labelcount">Nbr of Labels</label>
 				</div>
 				<div class="col-sm-6">
-					<input class="form-control input-sm qty required" type="number" name="labelcount" id="labelcount" value="1">
+					{% include 'util/form/input.twig' with {
+							'name': 'labelcount', 'value': 1,
+							'type': 'number',
+							'attributes': {
+								'min': 1
+							}
+						}
+					%}
 				</div>
 			</div>
 			<button type="submit" class="btn btn-lg btn-success">
