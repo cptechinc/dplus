@@ -54,7 +54,7 @@ class XrefVxm extends WireData implements Module {
 
 	const FIELD_ATTRIBUTES = [
 		'qty_percase' => ['type' => 'number', 'precision' => 2, 'max' => 999999.99],
-		'minbuyqty'   => ['type' => 'number', 'precision' => 2, 'max' => 99999999],
+		'minbuyqty'   => ['type' => 'number', 'precision' => 0, 'max' => 99999999],
 		'listprice'   => ['type' => 'number', 'precision' => 2, 'max'  => 999999999.000],
 	];
 
