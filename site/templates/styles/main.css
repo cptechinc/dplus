@@ -299,3 +299,51 @@ textarea.qnotes {
 .input-group .input-group-text {
 	width: 100%;
 }
+
+
+.screen-overlay {
+	height: 100%;
+	z-index: 30;
+	position: fixed;
+	top: 0;
+	left: 0;
+	opacity:0;
+	visibility:hidden;
+	background-color: rgba(34, 34, 34, 0.6);
+	transition:opacity .2s linear, visibility .1s, width 1s ease-in;
+}
+.screen-overlay.show {
+	transition:opacity .5s ease, width 0s;
+	opacity:1;
+	width:100%;
+	visibility:visible;
+}
+
+.offcanvas {
+	width:400px;
+	visibility: hidden;
+	transform:translateX(-100%);
+	transition:all .2s;
+	border-radius:0;
+	box-shadow: 0 5px 10px rgba(0,0,0, .2);
+	display:block;
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	z-index: 1200;
+	background-color: #fff;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+.offcanvas.show {
+	visibility: visible;
+	transform: translateX(0);
+	transition: transform .2s;
+}
+
+.offcanvas .nav-actions {
+	position: fixed;
+	bottom: 1rem;
+}
