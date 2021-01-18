@@ -1,0 +1,23 @@
+<div class="list-group-item">
+	<h4 class="list-group-item-heading">ITEMID: {{ item.itemid }}</h4>
+	<p class="list-group-item-text">{{ item.desc1 }}</p>
+
+	{% if (item.is_serialized() or item.is_lotted()) %}
+		<p class="list-group-item-text bg-light"><strong>Bin:</strong> (MULTIPLE) <strong>Qty:</strong> {{ inventory.get_qty_itemid(item.sessionid, item.itemid, page.frombin) }}</p>
+
+		<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ item.itemid|attrJS }}-lotserial" aria-expanded="false" aria-controls="{{ item.itemid }}-lotserial">
+			Show / Hide {{ item.get_itemtypepropertydesc()|upper ~ "S" }}
+		</button>
+		<div class="collapse" id="{{ item.itemid|attrJS }}-lotserial">
+			{% include 'warehouse/binr/inventory-results/item-lotserials.twig' %}
+		</div>
+	{% else %}
+		<p class="list-group-item-text bg-light">
+			<strong>Bin:</strong> {{ item.bin }} <strong>Qty:</strong> {{ item.qty|number_format(config.decimal_places()) }}
+		</p>
+		{% if (not warehouse.validate_bin(item.bin)) %}
+			<span class="badge badge-danger pull-right">Invalid Bin</span>
+		{% endif %}
+		<a href="{{ page.binr_itemURL(item) }}" class="btn btn-primary">Choose {{ item.itemid }}</a>
+	{% endif %}
+</div>
