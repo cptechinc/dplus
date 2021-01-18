@@ -59,10 +59,10 @@
 				if ($item->is_lotted() || $item->is_serialized()) {
 					$resultscount = InvsearchQuery::create()->countByItemid(session_id(), $item->itemid, $binID);
 					$items = InvsearchQuery::create()->findDistinctItems(session_id(), $binID);
-					$inventory = InvsearchQuery::create();
+					$inventory = $modules->get('SearchInventory');
 
 					if ($config->twigloader->exists("warehouse/binr/$config->company/inventory-results.twig")) {
-						$page->body = $config->twig->render("warehouse/binr/$config->company/inventory-results.twig", ['page' => $page, 'config' => $config->binr, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
+						$page->body = $config->twig->render("warehouse/binr/$config->company/inventory-results.twig", ['page' => $page, 'config' => $config->binr, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory, 'db' => $db_dpluso]);
 					} else {
 						$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'config' => $config->binr, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
 					}
@@ -109,7 +109,7 @@
 				$page->body = $config->twig->render('warehouse/binr/binr-result.twig', ['session' => $session, 'page' => $page, 'whsesession' => $whsesession, 'item' => $item, 'nexturl' => $nexturl]);
 				$session->remove('binr');
 			} else { // Prepare Binr Form
-				$inventory = InvsearchQuery::create();
+				$inventory   = InvsearchQuery::create();
 				$currentbins = BininfoQuery::create()->filterByItem(session_id(), $item)->select_bin_qty()->find();
 
 				// 1. Binr form
@@ -120,7 +120,7 @@
 				$page->body .= $config->twig->render('warehouse/binr/from-bins-modal.twig', ['config' => $config->binr, 'item' => $item, 'bins' => $currentbins]);
 
 				// 3. Choose To Bin Modals
-				$page->body .= $config->twig->render('warehouse/binr/to-bins-modal.twig', ['config' => $config->binr, 'currentbins' => $currentbins, 'warehouse' => $warehouse, 'session' => $session, 'item' => $item, 'inventory' => $inventory]);
+				$page->body .= $config->twig->render('warehouse/binr/to-bins-modal.twig', ['config' => $config->binr, 'currentbins' => $currentbins, 'warehouse' => $warehouse, 'session' => $session, 'item' => $item, 'inventory' => $modules->get('SearchInventory'), 'loader' => $config->twigloader, 'db' => $db_dpluso]);
 
 				// 4. Warehouse Config JS
 				$bins = $warehouse->get_bins();
