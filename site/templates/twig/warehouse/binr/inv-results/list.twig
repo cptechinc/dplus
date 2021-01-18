@@ -1,0 +1,12 @@
+{% for item in items %}
+	<div class="list-group-item">
+		<h5 class="mb-1">ITEMID: {{ item.itemid }}</h5>
+		<p class="mb-1">
+			<small>
+				{{ item.desc1 }} {{ item.desc2 ? ('<br>' ~ item.desc2)|raw : '' }}
+			</small>
+		</p>
+
+		{% include 'warehouse/binr/inv-results/item.twig' %}
+	</div>
+{% endfor %}

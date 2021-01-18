@@ -2,6 +2,7 @@
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
 	$config->binr = $modules->get('ConfigsBinr');
+	$inventory = $modules->get('SearchInventory');
 
 	$page->frombin = '';
 	$page->tobin = '';
@@ -59,7 +60,7 @@
 				if ($item->is_lotted() || $item->is_serialized()) {
 					$resultscount = InvsearchQuery::create()->countByItemid(session_id(), $item->itemid, $binID);
 					$items = InvsearchQuery::create()->findDistinctItems(session_id(), $binID);
-					$inventory = InvsearchQuery::create();
+					$inventory = $modules->get('SearchInventory');
 
 					if ($config->twigloader->exists("warehouse/binr/$config->company/inventory-results.twig")) {
 						$page->body = $config->twig->render("warehouse/binr/$config->company/inventory-results.twig", ['page' => $page, 'config' => $config->binr, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
@@ -129,8 +130,7 @@
 				$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('warehouse' => $jsconfig, 'validfrombins' => $validbins)]);
 			}
 		} else { // Show Inventory Search Results
-			$items = InvsearchQuery::create()->findBySessionid(session_id());
-			$inventory = InvsearchQuery::create();
+			$items = $inventory->get_items_distinct();
 			$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'inventory' => $inventory]);
 		}
 	} else { // Show Item Form
