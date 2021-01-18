@@ -23,6 +23,9 @@ class XrefVxm extends WireData implements Module {
 	const RESPONSE_TEMPLATE  = 'VXM X-ref {key} was {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'vxm';
 
+	const ORDERCODES_ITM_COST  = ['C', 'P'];
+	const ITM_COSTBASE_ALLOWED = ['R', 'M'];
+
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
 	}
@@ -655,6 +658,36 @@ class XrefVxm extends WireData implements Module {
 	 */
 	public function response() {
 		return $this->wire('session')->response_xref;
+	}
+
+	/**
+	 * Return if ITM costing can be updated
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor Item ID
+	 * @param  string $itemID       Item ID
+	 * @return bool
+	 */
+	public function allow_itm_cost_update($vendorID, $vendoritemID, $itemID) {
+		if ($this->xref_exists($vendorID, $vendoritemID, $itemID) == false) {
+			return false;
+		}
+		if ($this->configs->ap->update_itm_cost() == false) {
+			return false;
+		}
+		$xref = $this->xref($vendorID, $vendoritemID, $itemID);
+
+		if (in_array($xref->imitem->standardcostbasedon, self::ITM_COSTBASE_ALLOWED) == false) {
+			return false;
+		}
+
+		if (in_array($xref->po_ordercode, self::ORDERCODES_ITM_COST) == false) {
+			return false;
+		}
+
+		if ($xref->costing_xref_for_itemid_exists()) {
+			return 'false';
+		}
+		return true;
 	}
 
 /* =============================================================
