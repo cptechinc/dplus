@@ -162,6 +162,16 @@ class DpagesApi extends Dpages implements Module {
 			'ajaxcode'       => 'msds-codes',
 			'pw_template'    => ''
 		),
+		'lookup-items' => array(
+			'template'       => 'api-ajax',
+			'name'           => 'items',
+			'title'          => 'Lookup ITM items',
+			'summary'        => 'Lookup ITM items',
+			'parent'         => '/api/lookup/',
+			'ajaxtype'       => 'lookup',
+			'ajaxcode'       => 'items',
+			'pw_template'    => ''
+		),
 	);
 
 	public static function getModuleInfo() {
