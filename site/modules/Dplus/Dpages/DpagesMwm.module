@@ -162,7 +162,8 @@ class DpagesMwm extends Dpages implements Module {
 			'title'          => 'Bin Inquiry',
 			'summary'        => 'Show Items in a bin',
 			'parent'         => '/warehouse/binr/',
-			'dplus_function' => 'pbini',
+			'dplus_function' => '',
+			'dplus_permission' => '',
 			'pw_template'    => 'whse-bin-inquiry'
 		),
 		'menu-inventory' => array(

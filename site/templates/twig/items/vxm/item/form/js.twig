@@ -8,8 +8,6 @@
 #}
 
 $(function() {
-	var eachlistprice = {{ item.eachlistprice }};
-	var itemID = '{{ item.ouritemID }}';
 	var primarypoordercode = '{{ item.getOptionpoordercodePrimary() }}';
 
 	var form_vxm = $('#vxm-item-form');
@@ -19,6 +17,7 @@ $(function() {
 	var input_itemID = form_vxm.find('input[name=itemID]');
 	var input_vendoritemID = form_vxm.find('input[name=vendoritemID]');
 	var input_vendorID = form_vxm.find('input[name=vendorID]');
+	var input_update_itm_cost = form_vxm.find('input[name=update_itm_cost]');
 
 	var modal_ajax = $('#ajax-modal');
 
@@ -94,6 +93,7 @@ $(function() {
 				var itemcol = $('.item-col');
 				input_itemID.attr('data-iskit',  item.iskit ? 'true' : 'false');
 				input_itemID.attr('data-itemid', item.itemid);
+				input_itemID.attr('data-standardcostbase', item.standardcost.base);
 				itemcol.find('.description').text(item.description);
 				itemcol.find('.description2').text(item.description2);
 				itemcol.find('.uom-sale').text(item.uom.sale.description);
@@ -241,9 +241,9 @@ $(function() {
 							var input = $('input[name=vendoritemID]');
 
 							if (input.val() == input.data('vendoritemid') && input.data('new') !== true) {
-								return 'validate-vendor-itemid';
+								return 'validate-xref';
 							} else {
-								return 'validate-vendor-itemid-new';
+								return 'validate-xref-new';
 							}
 						},
 						vendorID: function() {
@@ -277,54 +277,100 @@ $(function() {
 			uom_purchase: "Select a Purchase Unit of Measure",
 		},
 		submitHandler: function(form) {
-			var select_poordercode = form_vxm.find('select[name=po_ordercode]');
-			var input_validatedpoordercode = select_poordercode.siblings('input[name=po_ordercode_validated]');
-			var formdata = form_vxm.serializeArray().reduce(function(obj, item) {
-				obj[item.name] = item.value;
-				return obj;
-			}, {});
 			update_vxm(form);
 		}
 	});
 
 	function update_vxm(form) {
-		request_validate_vendoritemID(function(exists) {
-			if (exists === true) {
-				if (input_vendoritemID.val() != input_vendoritemID.data('vendoritemid')) {
-					swal_vendoritem_exists();
-				} else {
-					validate_form_poordercode(form);
-				}
-			} else {
-				validate_form_poordercode(form);
+		validate_xref(function(valid) {
+			if (valid) {
+				validate_form_poordercode(function(validated) {
+					confirm_cost(function() {
+						form.submit();
+					});
+				});
 			}
 		});
 	}
 
-	function validate_form_poordercode(form) {
+	function confirm_cost(callback) {
+		var costbase = form_vxm.find('input[name=unitcost_base]');
+
+		if (costbase.data('cost') != costbase.val() && costbase.data('itmcost') != costbase.val()) {
+			request_can_update_itm_cost(input_vendorID.val(), input_vendoritemID.val(), input_itemID.val(), function (response) {
+				if (response.allow) {
+					if (response.confirm) {
+						swal_confirm_cost(function() {
+							callback();
+						});
+					} else {
+						input_update_itm_cost.val('true');
+						callback();
+					}
+				}
+			});
+		} else {
+			callback();
+		}
+	}
+
+	function swal_confirm_cost(callback) {
+		var ordercode = form_vxm.find('select[name=po_ordercode]').val();
+		var codes = {{ constant('OPTIONS_POORDERCODE', item)|json_encode()|raw }};
+		var type = codes[ordercode];
+		var costbase = form_vxm.find('input[name=itemID]').attr('data-standardcostbase');
+
+		swal2.fire({
+			title: 'Confirmation',
+			html: 'This is the <b>' + type + '</b> Vendor for this item and the Standard Cost Base code is <b>'+costbase+'</b>, do you want to update the <b>Standard Cost</b> on the Item Master?',
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			input_update_itm_cost.val(result.value ? 'true' : 'false');
+			callback();
+		});
+	}
+
+	function validate_xref(callback) {
+		request_validate_xref(function(exists) {
+			if (exists === true && input_vendoritemID.val() != input_vendoritemID.data('vendoritemid')) {
+				swal_xref_exists();
+				callback(false)
+			} else {
+				callback(true);
+			}
+		});
+	}
+
+	function validate_form_poordercode(callback) {
 		var select_poordercode = form_vxm.find('select[name=po_ordercode]');
 		var input_validatedpoordercode = select_poordercode.siblings('input[name=po_ordercode_validated]');
 
 		if (input_validatedpoordercode.val() == 'false') {
 			if (select_poordercode.val() == primarypoordercode) {
-				validate_poordercode(function(valid) {
+				request_validate_poordercode(function(valid) {
 					if (valid) {
 						input_validatedpoordercode.val('true');
 						form_vxm.submit();
+						callback(true);
 					} else {
 						swal_overwrite_poordercode();
+						callback(false);
 					}
 				});
 			} else {
 				input_validatedpoordercode.val('true');
 				form_vxm.submit();
+				callback(true);
 			}
 		} else {
-			form.submit();
+			callback(true);
 		}
 	}
 
-	function swal_vendoritem_exists() {
+	function swal_xref_exists() {
 		swal2.fire({
 			title: "Vendor Item " + input_vendoritemID.val() + " exists",
 			text: 'Would you like to go edit this item?',
@@ -370,10 +416,12 @@ $(function() {
 	 * @param  {Function} callback
 	 * @return bool       Can VXM item be used as Primary PO Order Code?
 	 */
-	function validate_poordercode(callback) {
+	function request_validate_poordercode(callback) {
 		var url = new URI('{{ url_validate }}');
-		url.addQuery('action', 'validate-primary-poordercode').addQuery('ouritemID', input_itemID.val());
+		url.addQuery('action', 'validate-primary-poordercode');
+		url.addQuery('vendorID', input_vendorID.val());
 		url.addQuery('vendoritemID', input_vendoritemID.val());
+		url.addQuery('ouritemID', input_itemID.val());
 		url.addQuery('return', 'bool');
 
 		// URL RETURNS boolean true or string UPC code for false
@@ -387,13 +435,32 @@ $(function() {
 	 * @param  {Function} callback
 	 * @return bool       Does VXM item exist?
 	 */
-	function request_validate_vendoritemID(callback) {
+	function request_validate_xref(callback) {
 		var url = new URI('{{ url_validate }}');
-		url.addQuery('action', 'validate-vendor-itemid').addQuery('vendorID', input_vendorID.val());
+		url.addQuery('action', 'validate-xref');
+		url.addQuery('vendorID', input_vendorID.val());
 		url.addQuery('vendoritemID', input_vendoritemID.val());
+		url.addQuery('itemID', input_itemID.val());
 		url.addQuery('return', 'bool');
 		$.getJSON(url.toString(), function( valid ) {
 			callback(valid);
+		});
+	}
+
+	/**
+	 * Gets boolean value if VXM item exists then calls callback function
+	 * @param  {Function} callback
+	 * @return json                [allow: {bool}, confirm: {bool}];
+	 */
+	function request_can_update_itm_cost(vendorID, vendoritemID, itemID, callback) {
+		var url = new URI('{{ url_validate }}');
+		url.addQuery('action', 'validate-update-itm-cost');
+		url.addQuery('vendorID', vendorID);
+		url.addQuery('vendoritemID', vendoritemID);
+		url.addQuery('itemID', itemID);
+		url.addQuery('return', 'bool');
+		$.getJSON(url.toString(), function( response ) {
+			callback(response);
 		});
 	}
 
@@ -405,6 +472,7 @@ $(function() {
 			callback(item);
 		});
 	}
+
 /* =============================================================
 	Margin Calculation Functions
 ============================================================= */
@@ -412,10 +480,8 @@ $(function() {
 	 * Recalculates Each List Price based on the Unit of Measure Purchase Conversion
 	 */
 	function calculate_eachlistprice() {
-		var oldlistprice = eachlistprice;
-		eachlistprice = parseFloat(get_eachlistprice());
+		var eachlistprice = parseFloat(get_eachlistprice());
 		input_eachlistprice.val(eachlistprice.toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
-
 		calculate_margins();
 	}
 

@@ -9,6 +9,7 @@
 <form action="{{ page.fullURL.getURL() }}" method="POST" id="vxm-item-form">
 	<input type="hidden" name="action" value="update-vxm">
 	<input type="hidden" name="original_vendoritemID" value="{{ item.vendoritemID }}">
+	<input type="hidden" name="update_itm_cost" value="false">
 
 	<div class="row mb-3">
 		{% include 'items/vxm/item/form/header.twig' %}

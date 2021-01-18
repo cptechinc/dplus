@@ -162,6 +162,16 @@ class DpagesApi extends Dpages implements Module {
 			'ajaxcode'       => 'msds-codes',
 			'pw_template'    => ''
 		),
+		'lookup-items' => array(
+			'template'       => 'api-ajax',
+			'name'           => 'items',
+			'title'          => 'Lookup ITM items',
+			'summary'        => 'Lookup ITM items',
+			'parent'         => '/api/lookup/',
+			'ajaxtype'       => 'lookup',
+			'ajaxcode'       => 'items',
+			'pw_template'    => ''
+		),
 	);
 
 	public static function getModuleInfo() {
@@ -173,5 +183,18 @@ class DpagesApi extends Dpages implements Module {
 			'autoload' => true,
 			'requires' => array('DplusPwPages', 'Dpages'),
 		);
+	}
+
+	public function init() {
+		$this->addHook("Page::jsonapiURL", function($event) {
+			$api = $event->arguments(0);
+			$pages = $this->wire('pages');
+			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
+		});
+
+		$this->addHook("Page::search_lookupURL", function($event) {
+			$ajaxcode = $event->arguments(0);
+			$event->return = $this->wire('pages')->get("template=api-ajax,ajaxcode=$ajaxcode")->httpUrl;
+		});
 	}
 }
