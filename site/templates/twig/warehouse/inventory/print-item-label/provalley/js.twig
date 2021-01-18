@@ -1,5 +1,53 @@
 $(function() {
 	var form = $('#print-label-form');
+	var modal_ajax    = $('#ajax-modal');
+
+	if (form.find('input[name=qty]').val() == '') {
+		form.find('input[name=qty]').focus();
+	} else {
+		form.find('input[name=labelcount]').focus();
+	}
+
+/* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = button.data('lookupurl');
+
+		modal.attr('data-input', button.data('input'));
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		var modal = button.closest('.modal');
+		var input = $(modal.attr('data-input'));
+		input.val(itemID).change();
+		modal_ajax.modal('hide');
+	});
 
 /* =============================================================
 	Validation Functions
@@ -39,9 +87,16 @@ $(function() {
 /* =============================================================
 	Event Functions
 ============================================================= */
-	$("body").on("change", "input[name=itemID]", function(e) {
+	$("body").on('change', '#print-label-form input[name=itemID]', function(e) {
+		e.preventDefault();
 		var input = $(this);
-		populate_item_data(input.val());
+		validate_itemid_entry(input.val(), function(item) {
+			if (item.exists) {
+				input.val(item.itemID).change();
+				validator.element('#itemID');
+				populate_item_data(input.val());
+			}
+		});
 	});
 
 	function populate_item_data(itemID) {
@@ -61,6 +116,24 @@ $(function() {
 
 		$.getJSON(url.toString(), function( item ) {
 			callback(item);
+		});
+	}
+
+	/**
+	 * Return Item Entry Object Validation
+	 * @param  string     itemID    Item ID
+	 * @param  string     vendorID  Vendor ID
+	 * @param  {Function} callback  Callback Function
+	 * @return {object}             {exists: (bool), itemID: xxx, message: xxx, source: xxx }
+	 */
+	function validate_itemid_entry(itemID, callback) {
+		var url = URI("{{ page.ii_lookupURL() }}");
+		url.addQuery('itemID', itemID);
+		url.addQuery('custID', '');
+		url.addQuery('shiptoID', '');
+
+		$.getJSON(url.toString(), function( response ) {
+			return callback(response);
 		});
 	}
 });
