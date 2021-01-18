@@ -1,0 +1,8 @@
+{% include 'warehouse/po-amend/po/header.twig' with {'po': apo.po(ponbr)} %}
+{% if loader.exists('warehouse/po-amend/po/' ~ page.config.company ~ '/items.twig') %}
+	{% include 'warehouse/po-amend/po/' ~ page.config.company ~ '/items.twig' %}
+{% else %}
+	{% include 'warehouse/po-amend/po/items.twig' %}
+{% endif %}
+
+{% include 'warehouse/po-amend/po/item/modal.twig' %}

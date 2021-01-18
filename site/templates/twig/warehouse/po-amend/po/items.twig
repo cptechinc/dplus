@@ -1,0 +1,62 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	po                     EditPoHead
+	epo                    PurchaseOrderEdit
+	epo.configs            PurchaseOrderEditConfigs
+#}
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white font-weight-bold">
+		<div class="form-row">
+			<div class="col-sm-3">Item ID</div>
+			<div class="col-sm-1 text-center">UoM</div>
+			<div class="col-sm-1 text-right">Ordered</div>
+			<div class="col-sm-2 text-right">Price</div>
+			<div class="col-sm-2 text-right">Amount</div>
+			<div class="col-sm-1 text-center">Whse</div>
+			<div class="col-sm-2"></div>
+		</div>
+	</div>
+	<div class="list-group-item">
+		{% include 'purchase-orders/purchase-order/edit/lookup/form.twig' %}
+	</div>
+	{% for item in apo.items.all(ponbr) %}
+		<div class="list-group-item {{ item.is_closed() ? 'bg-light' : '' }}">
+			<div class="form-row">
+				<div class="col-sm-3">
+					{{ item.itemid }} <br>
+					<small>{{ item.description }}</small>
+				</div>
+				<div class="col-sm-1 text-center">
+					{{ item.uom }}
+				</div>
+				<div class="col-sm-1 text-right">
+					{{ item.qty_ordered|number_format(apo.items.configs.decimal_places_qty()) }}
+				</div>
+				<div class="col-sm-2 text-right">
+					$ {{ item.cost|number_format(apo.items.configs.decimal_places_cost())  }}
+				</div>
+				<div class="col-sm-2 text-right">
+					$ {{ item.cost_total|number_format(apo.items.configs.decimal_places_cost()) }}
+				</div>
+				<div class="col-sm-1 text-center">
+					{{ item.whse }}
+				</div>
+				<div class="col-sm-2">
+					<div class="d-flex justify-content-between align-items-center">
+						<button type="button" name="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit-item-modal" data-linenbr="{{ item.linenbr }}">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="collapse" id="notes-line-{{ item.linenbr }}">
+				<div class="mt-3">
+					<hr>
+					{% include 'purchase-orders/purchase-order/qnotes/line-item.twig' with {'qnotes': qnotes, 'ponbr': po.ponbr, 'purchaseorder': po_readonly, 'item': item, 'linenbr': item.linenbr, 'show_edit': true} %}
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+</div>

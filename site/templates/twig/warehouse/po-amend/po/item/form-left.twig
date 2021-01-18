@@ -1,0 +1,79 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	po                     EditPoHead
+	epo                    PurchaseOrderEdit
+#}
+<div class="item-col">
+	<div class="row form-group">
+		<div class="col-sm-4">
+			<label for="edititemID">Item ID</label>
+		</div>
+		<div class="col-sm-8">
+			{% include 'util/form/input-with-modal-lookup.twig' with {
+					'name': 'itemID', 'id': 'edititemID', 'value': '',
+					'attributes': {
+						readonly: true,
+					},
+					'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Item',
+					'attributes_button': {
+						'data-search': 'item',
+						'data-input': '#edititemID',
+						'data-lookupurl': page.search_lookupURL('items'),
+						'disabled': true,
+					}
+				}
+			%}
+			{% if page.config.company == 'provalley' %}
+				<small class="text-muted">Avg Weight: <span class="item-weight"></span></small>
+			{% endif %}
+		</div>
+	</div>
+	<div class="row form-group">
+		<div class="col-sm-4">
+			<label for="description">Description</label>
+		</div>
+		<div class="col-sm-8">
+			{% include 'util/form/input.twig' with {
+					'name': 'description', 'id': 'editdescription', 'value': '',
+					'class_add': [
+						'description'
+					]
+				}
+			%}
+		</div>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="vendoritemID">Vendor Item ID</label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/form/input-with-modal-lookup.twig' with {
+				'name': 'vendoritemID', 'id': 'vendoritemID', 'value': '',
+				'attributes': {
+					'readonly': true
+				},
+				'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Vendor Item',
+				'attributes_button': {
+					'data-search': 'vendoritem',
+					'data-input': '#vendoritemID',
+					'disabled': true,
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="whse">Warehouse</label>
+	</div>
+	<div class="col-sm-8">
+		<select class="form-control form-control-sm" name="whse" id="whse">
+			{% for warehouse in apo.items.warehouses() %}
+				<option value="{{ warehouse.id }}">{{ warehouse.id }} - {{ warehouse.name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>

@@ -1,0 +1,33 @@
+<div class="row">
+	<div class="col-sm-4">
+		<table class="table table-sm">
+			<tr>
+				<td>PO Number</td>
+				<td>{{ po.ponbr }}</td>
+			</tr>
+			<tr>
+				<td>Vendor</td>
+				<td>{{ po.vendorid }} - {{ po.vendor.name }}</td>
+			</tr>
+			<tr>
+				<td>Order Date</td>
+				<td>{{ po.date_ordered|convertdate }}</td>
+			</tr>
+			<tr>
+				<td>Warehouse</td>
+				<td>{{ po.whse }}</td>
+			</tr>
+		</table>
+	</div>
+	<div class="col-sm-4">
+		<table class="table table-sm">
+			<h5>Ship From:</h5>
+			<address>
+				{{ po.shipfrom_name }} <br>
+				{{ po.shipfrom_address }} <br>
+				{{ po.shipfrom_city ~ ', ' ~ po.shipfrom_state ~ ' ' ~ po.shipfrom_zip }} <br>
+				{{ po.shipfrom_country }}
+			</address>
+		</table>
+	</div>
+</div>
