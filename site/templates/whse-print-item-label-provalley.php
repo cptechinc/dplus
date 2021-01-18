@@ -19,11 +19,17 @@
 
 	if ($values->action) {
 		$printing->process_input($input);
+		$url = $page->url;
+		if ($values->text('action') == 'print-labels') {
+			$url = $page.create_newlabelURL($values->text('itemID'));
+		}
+		$session->redirect($url, $http301 = false);
 	}
 
 	if ($values->text('label') == 'new') {
 		$item = new Invsearch();
 		$item->setSessionid(session_id());
+		$item->setItemid($values->text('itemID'));
 		$page->body .= $config->twig->render('warehouse/inventory/print-item-label/provalley/label-form.twig', ['page' => $page, 'item' => $item]);
 		$page->js   .= $config->twig->render('warehouse/inventory/print-item-label/provalley/js.twig', ['page' => $page]);
 	}

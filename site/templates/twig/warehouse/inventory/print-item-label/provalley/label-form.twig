@@ -29,7 +29,7 @@
 							}
 						}
 					%}
-				<small class="form-text text-muted item-description">{{ item.desc1 }}</small>
+					<small class="form-text text-muted item-description">{{ item.desc1 }}</small>
 				</div>
 			</div>
 			<div class="form-row form-group">
@@ -40,8 +40,8 @@
 					{% include 'util/form/input.twig' with {
 							'name': 'lotserial', 'value': item.lotserial,
 							'attributes': {
-								'readonly': item.lotserial ? true : false,
-								'tabindex': item.lotserial ? '-1' : '',
+								'readonly': true,
+								'tabindex': '-1',
 							}
 						}
 					%}
@@ -55,8 +55,8 @@
 					{% include 'util/form/input.twig' with {
 							'name': 'lotreference', 'value': item.lotreference,
 							'attributes': {
-								'readonly': item.lotreference ? true : false,
-								'tabindex': item.lotreference ? '-1' : '',
+								'readonly': true,
+								'tabindex': '-1',
 							}
 						}
 					%}
@@ -67,7 +67,13 @@
 					<label for="productiondate">Production Date</label>
 				</div>
 				<div class="col-sm-6">
-					{% include 'util/date-picker.twig' with {'name': 'productiondate', 'id': 'productiondate', 'value': item.productiondate ? item.productiondate|convertdate('m/d/Y') : "now"|date("m/d/Y") } %}
+					{% include 'util/date-picker.twig' with {
+							'name': 'productiondate',
+							'id': 'productiondate',
+							'value': item.productiondate ? item.productiondate|convertdate('m/d/Y') : "now"|date("m/d/Y"),
+							'readonly': item.productiondate ? true : false,
+						}
+					%}
 				</div>
 			</div>
 			<div class="form-row form-group">
@@ -79,7 +85,8 @@
 							'name': 'qty', 'value': item.qty,
 							'type': 'number',
 							'attributes': {
-
+								'readonly': item.qty ? true : false,
+								'tabindex': item.qty ? '-1' : '',
 							}
 						}
 					%}
