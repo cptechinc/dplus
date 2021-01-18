@@ -47,6 +47,24 @@ class SearchInventory extends WireData implements Module {
 	}
 
 	/**
+	 * Return the number of Bins this item is found at
+	 * @param  InvSearch $item Item to find
+	 * @return int
+	 */
+	public function get_item_bins(InvSearch $item) {
+		$q = $this->get_query();
+		$q->addAsColumn('count', 'COUNT(DISTINCT(bin))');
+		$q->select('count');
+		$q->filterByQty(array('min' => 0));
+		$q->filterByItemid($item->itemid);
+
+		if ($item->is_lotted() || $item->is_serialized()) {
+			$q->filterByLotserial($item->lotserial);
+		}
+		return $q->find();
+	}
+
+	/**
 	 * Return the number of Bins this itemID is found at
 	 * @param  string $itemID
 	 * @return int
@@ -74,6 +92,12 @@ class SearchInventory extends WireData implements Module {
 		return $q->find();
 	}
 
+	/**
+	 * Get Total Qty for Item ID
+	 * @param  string $itemID Item ID
+	 * @param  string $binID  Bin ID
+	 * @return float
+	 */
 	public function get_qty_itemid($itemID, $binID = '') {
 		$q = $this->get_query();
 		$q->addAsColumn('qty', 'SUM(qty)');
@@ -88,13 +112,38 @@ class SearchInventory extends WireData implements Module {
 	}
 
 	/**
+	 * Get Qty by Item, and filter to lotserial if needed
+	 * @param  Invsearch $item
+	 * @param  string    $binID Bin ID
+	 * @return float
+	 */
+	public function get_qty_invsearch(Invsearch $item, $binID = '') {
+		$q = $this->get_query();
+		$q->addAsColumn('qty', 'SUM(qty)');
+		$q->select('qty');
+		$q->filterBySessionid($this->sessionID);
+		$q->filterByItemid($item->itemid);
+		if ($item->lotserial) {
+			$q->filterByLotserial($item->lotserial);
+		}
+
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+		return $q->findOne();
+	}
+
+	/**
 	 * Return Invsearch Records for Item ID grouped by Bin ID
 	 * @param  string $itemID Item ID
 	 * @return Invsearch[]|ObjectCollection
 	 */
-	public function get_bins_itemid($itemID) {
+	public function get_bins_itemid($itemID, $binID = '') {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
 		$q->withColumn('SUM(qty)', 'qty');
 		$q->groupBy('Bin');
 		return $q->find();
@@ -143,11 +192,6 @@ class SearchInventory extends WireData implements Module {
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Search Warehouse Inventory',
