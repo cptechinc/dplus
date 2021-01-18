@@ -26,7 +26,7 @@
 				$vendorID = $values->text('vendorID');
 				$itemID   = $values->text('itemID');
 				$vendoritemID   = $values->text('vendoritemID');
-				
+
 				if ($validate->vxm->exists($vendorID, $vendoritemID, $itemID)) {
 					$q = ItemXrefVendorQuery::create();
 					$q->filterByItemid($itemID)->filterByVendorid($vendorID);
@@ -107,6 +107,38 @@
 					$response = true;
 				} else {
 					$response = "MXRFE X-ref exists";
+				}
+				break;
+			case 'get-po-item':
+				$ponbr   = PurchaseOrder::get_paddedponumber($values->text('ponbr'));
+				$linenbr = $values->int('linenbr');
+				$q = PurchaseOrderDetailQuery::create()->filterByPonbr($ponbr)->filterByLinenbr($linenbr);
+				$configs = $modules->get('PurchaseOrderEditConfigs');
+				$configs->init_configs();
+
+				if ($q->count()) {
+					$line = $q->findOne();
+					$response = [
+						'linenbr'      => $linenbr,
+						'itemid'       => $line->itemid,
+						'description'  => $line->description,
+						'vendoritemid' => $line->vendoritemid,
+						'whseid'       => $line->whse,
+						'specialorder' => $line->specialorder,
+						'uom'          => $line->uom,
+						'qty' => [
+							'ordered'  => number_format($line->qty_ordered, $configs->decimal_places_qty()),
+							'received' => number_format($line->qty_receipt() / $line->itm->weight, $configs->decimal_places_qty()),
+							'invoiced' => number_format($line->qty_invoiced(), $configs->decimal_places_qty())
+						],
+						'cost'         => number_format($line->cost, $configs->decimal_places_cost()),
+						'cost_total'   => number_format($line->cost_total, $configs->decimal_places_cost()),
+						'itm' => [
+							'weight'   => number_format($line->itm->weight, $configs->decimal_places_qty())
+						]
+					];
+				} else {
+					$response = false;
 				}
 				break;
 		}
