@@ -26,11 +26,13 @@
 				$vendorID = $values->text('vendorID');
 				$itemID   = $values->text('itemID');
 				$vendoritemID   = $values->text('vendoritemID');
-				if ($validate->vxm->exists($vendorID, $vendoritemID)) {
-					$q = ItemXrefVendorQuery::create()->filterByItemid($itemID)->filterByVendorid($vendorID);
+				
+				if ($validate->vxm->exists($vendorID, $vendoritemID, $itemID)) {
+					$q = ItemXrefVendorQuery::create();
+					$q->filterByItemid($itemID)->filterByVendorid($vendorID);
 					$q->filterByVendoritemid($vendoritemID);
 					$response = boolval($q->count()) ? true : "Vendor $vendorID Item $vendortemID is not for $itemID";
-				} else {
+				}  else {
 					$response = "Vendor $vendorID Item $vendortemID does not exist in the X-ref";
 				}
 				break;
