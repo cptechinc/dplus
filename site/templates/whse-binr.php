@@ -135,7 +135,7 @@
 		}
 	} else { // Show Item Form
 		$page->formurl = $page->parent('template=warehouse-menu')->child('template=redir')->url;
-		$page->body    = $config->twig->render('warehouse/item-form.twig', ['page' => $page]);
+		$page->body    .= $config->twig->render('warehouse/item-form.twig', ['page' => $page]);
 	}
 
 	// Add JS
