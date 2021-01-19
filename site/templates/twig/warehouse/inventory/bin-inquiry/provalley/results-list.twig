@@ -19,7 +19,7 @@
 
 				{% if (item.is_serialized() or item.is_lotted()) %}
 					<div class="d-flex justify-content-between p-2 mb-1">
-						<span><strong>Lots:</strong> {{ inventory.count_lotserials_itemid(item.itemid, binitem.bin) }}</span>
+						<span><strong>Lots:</strong> {{ inventory.count_lotserials_itemid(item.itemid, page.binID) }}</span>
 						{% if (not page.is_print()) %}
 							<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ item.itemid|attrJS  }}-lotserial" aria-expanded="false" aria-controls="{{ item.itemid }}-lotserial">
 								Show / Hide {{ item.get_itemtypepropertydesc()|upper ~ "S" }}

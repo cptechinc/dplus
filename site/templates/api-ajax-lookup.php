@@ -22,6 +22,9 @@
 		case 'warehouses':
 			$filter = $modules->get('FilterWarehouses');
 			break;
+		case 'items':
+			$filter = $modules->get('FilterItemMaster');
+			break;
 	}
 
 	$filter->init_query();

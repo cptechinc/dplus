@@ -1,0 +1,23 @@
+<form action="{{ page.url }}" method="post" id="edit-item-form">
+	<input type="hidden" name="action" value="update-item">
+	<input type="hidden" name="ponbr" value="{{ ponbr }}">
+	<input type="hidden" name="vendorID" id="vendorID" value="{{ apo.vendorid(ponbr) }}">
+	<input type="hidden" name="linenbr" value="">
+
+	<div class="row">
+		<div class="col-sm-6">
+			{% include 'warehouse/po-amend/po/item/form-left.twig' %}
+		</div>
+		<div class="col-sm-6">
+			{% include 'warehouse/po-amend/po/item/form-right.twig' %}
+		</div>
+	</div>
+	<div class="d-flex justify-content-between align-items-center">
+		<button type="submit" class="btn btn-success">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+		<button type="button" class="btn btn-warning" data-dismiss="modal">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</button>
+	</div>
+</form>

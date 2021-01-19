@@ -246,8 +246,8 @@ class Iio extends WireData implements Module {
 	 * @return OptionsIi
 	 */
 	public function useriio($userID) {
-		if ($this->exists($loginID)) {
-			return $this->user($loginID);
+		if ($this->exists($userID)) {
+			return $this->user($userID);
 		}
 
 		if ($this->exists(self::USER_DEFAULT)) {
@@ -605,7 +605,7 @@ class Iio extends WireData implements Module {
 	 * @return bool
 	 */
 	public function is_user_allowed_template(User $user, $template) {
-		$userID = $this->exists($user->loginid) ? $user->loginid : self::DEFAULT_USER;
+		$userID = $this->exists($user->loginid) ? $user->loginid : self::USER_DEFAULT;
 		$permissions = $this->user($userID);
 		$needed = self::TEMPLATES_PERMISSIONS[$template];
 		return $needed ? $permissions->is_true($needed) : true;

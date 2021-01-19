@@ -71,50 +71,64 @@ class LookupItemEntry extends LookupItem implements Module {
 	}
 
 	/**
-	 * Validates if Item Is active by checking the provided Customer / Shipto's Warehouse
+	 * Return Customer's Corresponding Warehouse ID
 	 * @param  string $custID   Customer ID
-	 * @param  string $shiptoID Shipto ID
-	 * @return void
+	 * @param  string $shiptoID Customer Shipto ID
+	 * @return string
 	 */
-	private function validate_active($custID, $shiptoID = '') {
-		$validate_custid = $this->wire('modules')->get('LookupCustomer');
-
+	private function customer_whseid($custID, $shiptoID = '') {
 		if ($validate_custid->lookup_customer($custID)) {
 			if ($shiptoID) {
 				$q = CustomerShiptoQuery::create();
 				$shipto = $q->filterByCustid($custID)->filterByShiptoid($shiptoID)->findOne();
-				$warehouse = $shipto->warehouse;
+				return $shipto->warehouse;
 			} else {
 				$q = CustomerQuery::create();
 				$customer = $q->filterByCustid($custID)->findOne();
-				$warehouse = $customer->warehouse;
+				return $customer->warehouse;
 			}
+		}
+		return false;
+	}
 
-			$q = WarehouseInventoryQuery::create();
-			$q->select(WarehouseInventory::get_aliasproperty('status'));
-			$q->filterByWarehouseid($warehouse);
-			$q->filterByItemid($this->itemID);
-			$status = $q->findOne();
+	/**
+	 * Return User's Warehouse ID
+	 * @return string
+	 */
+	private function user_warehouse() {
+		$user = $this->wire('user');
+		return $user->whseid;
+	}
 
-			if (!$status == WarehouseInventory::STATUS_ACTIVE) {
-				$this->exists = false;
-				$this->message = 'Item is not active';
-			}
-		} else {
+	/**
+	 * Validate If Item ID is active through custid, or User warehouse
+	 * @param  string $custID   Customer ID
+	 * @param  string $shiptoID Customer Shipto ID
+	 * @return void
+	 */
+	private function validate_active($custID, $shiptoID = '') {
+		$whseID = $this->user_warehouse();
+
+		if ($custID) {
+			$whseID = $this->customer_whseid($custID, $shiptoID) ;
+		}
+
+		$q = WarehouseInventoryQuery::create();
+		$q->select(WarehouseInventory::get_aliasproperty('status'));
+		$q->filterByWarehouseid($whseID);
+		$q->filterByItemid($this->itemID);
+		$status = $q->findOne();
+
+		if (!$status == WarehouseInventory::STATUS_ACTIVE) {
 			$this->exists = false;
-			$this->message = "$custID does not exist";
+			$this->message = 'Item is not active';
 		}
 	}
 
 
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Item Entry Lookup Module',

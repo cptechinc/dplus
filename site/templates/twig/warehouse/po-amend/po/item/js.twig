@@ -1,0 +1,270 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	apo                    PurchaseOrderEdit
+#}
+$(function () {
+	var modal_edit    = $('#edit-item-modal');
+	var modal_ajax    = $('#ajax-modal');
+	var form_edit = $('#edit-item-form');
+	var form_add  = $('#add-item-form');
+	var decimal_places_qty = {{ apo.items.configs.decimal_places_qty() }};
+	var decimal_places_cost = {{ apo.items.configs.decimal_places_cost() }};
+
+
+/* =============================================================
+	Edit Line Item Functions
+============================================================= */
+	modal_edit.on('show.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget);
+		var linenbr = button.data('linenbr');
+		modal.find('.modal-title').find('.linenbr').text(linenbr);
+		populate_item_inputs(linenbr);
+	});
+
+	function populate_item_inputs(linenbr) {
+		get_po_line(form_edit.find('input[name=ponbr]').val(), linenbr, function(item) {
+			if (item) {
+				var form = new EditItemForm(form_edit);
+				form.inputs.linenbr.val(linenbr);
+				form.inputs.itemID.val(item.itemid);
+				form.inputs.description.val(item.description);
+				form.inputs.vendoritemID.val(item.vendoritemid);
+				form.inputs.whse.val(item.whseid);
+				form.inputs.specialorder.val(item.specialorder);
+				form.inputs.uom.val(item.uom);
+				form.inputs.qty.ordered.val(floatParse(item.qty.ordered).toFixed(decimal_places_qty));
+				form.inputs.qty.received.text(floatParse(item.qty.received).toFixed(decimal_places_qty));
+				form.inputs.qty.invoiced.text(floatParse(item.qty.invoiced).toFixed(decimal_places_qty));
+				form.inputs.cost.val(floatParse(item.cost).toFixed(decimal_places_cost));
+				{% if page.config.company == 'provalley' %}
+					form.inputs.weight.text(floatParse(item.itm.weight).toFixed(decimal_places_qty));
+				{% endif %}
+				calculate_totalcost();
+			}
+		});
+	}
+
+	function EditItemForm(form) {
+		this.form = form;
+		this.id = form.attr('id');
+		this.inputs = {
+			linenbr: form.find('input[name=linenbr]'),
+			itemID: form.find('input[name=itemID]'),
+			weight: form.find('span.item-weight'),
+			description: form.find('input[name=description]'),
+			vendoritemID: form.find('input[name=vendoritemID]'),
+			whse: form.find('select[name=whse]'),
+			specialorder: form.find('input[name=specialorder]'),
+			uom: form.find('input#uom'),
+			qty: {
+				ordered:  form.find('input[name=qty_ordered]'),
+				received: form.find('p#qty_received'),
+				invoiced: form.find('p#qty_invoiced'),
+			},
+			cost: form.find('input[name=cost]'),
+			cost_total: form.find('input#cost_total'),
+		}
+	}
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = form_edit.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			edititemID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv') }}',
+					type: "get",
+					data: {
+						action: 'validate-itemid',
+						itemID: function() {
+							return $('#edititemID').val();
+						}
+					}
+				}
+			},
+			vendoritemID: {
+				required: false,
+				remote: {
+					url: '{{ page.jsonapiURL('map') }}',
+					type: "get",
+					data: {
+						action: 'validate-vxm-item-itemid',
+						itemID: function() {
+							return $('#edititemID').val();
+						},
+						vendorID: function() {
+							console.log($('input#vendorID').val());
+							return $('input#vendorID').val();
+						}
+					}
+				}
+			},
+		},
+		messages: {
+
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+
+/* =============================================================
+	Edit Modal Event Functions
+============================================================= */
+	$("body").on('change', '#edit-item-modal input[name=qty_ordered]', function(e) {
+		var input = $(this);
+		var value = floatParse(input.val());
+		input.val(value.toFixed(decimal_places_qty));
+		calculate_totalcost();
+	});
+
+	$("body").on('change', '#edit-item-modal input[name=cost]', function(e) {
+		var input = $(this);
+		var value = floatParse(input.val());
+		input.val(value.toFixed(decimal_places_cost));
+		calculate_totalcost();
+	});
+
+	function calculate_totalcost() {
+		var qty = floatParse($('#edit-item-modal input[name=qty_ordered]').val());
+		var cost = floatParse($('#edit-item-modal input[name=cost]').val());
+		qty = qty.toFixed(decimal_places_qty);
+		{% if page.config.company == 'provalley' %}
+			qty = qty * floatParse($('#edit-item-modal .item-weight').text());
+		{% endif %}
+		qty = qty.toFixed(decimal_places_qty);
+		cost = cost.toFixed(decimal_places_cost);
+		var total = qty * cost;
+		$('#edit-item-modal input#cost_total').val(total.toFixed(decimal_places_cost));
+	}
+
+	$("body").on('change', '#edit-item-modal input[name=vendoritemID]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var form = input.closest('form');
+		var vendorID = $('input#vendorID').val();
+
+		get_vxm_xref(vendorID, input.val(), function(xref) {
+			if (xref) {
+				if (form.find('input[name=itemID]').val() != xref.itemid) {
+					form.find('input[name=itemID]').val(xref.itemid);
+				}
+			}
+		});
+		validator.element('#'+input.attr('id'));
+	});
+
+/* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = button.data('lookupurl');
+
+		modal.attr('data-input', button.data('input'));
+
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		var description = button.data('description');
+		var modal = button.closest('.modal');
+		var input = $(modal.attr('data-input'));
+		input.val(itemID).change();
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('click', '.vxm-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var vendoritemID = button.data('vendoritemid');
+		var itemID = button.data('itemid');
+		form_edit.find('input[name=vendoritemID]').val(vendoritemID);
+		form_edit.find('input[name=itemID]').val(itemID).change();
+		modal_ajax.modal('hide');
+	});
+
+/* =============================================================
+	AJAX Request Functions
+============================================================= */
+	function vendor_vxm_itemid_exists(itemID, vendorID, callback) {
+		var url = new URI('{{ page.jsonapiURL('map') }}');
+		url.addQuery('action', 'validate-vxm-itemid-exists').addQuery('itemID', itemID);
+		url.addQuery('vendorID', vendorID);
+
+		$.getJSON(url.toString(), function(exists) {
+			callback(exists);
+		});
+	}
+
+	function get_vxm_itemid(itemID, vendorID, callback) {
+		var url = new URI('{{ page.jsonapiURL('map') }}');
+		url.addQuery('action', 'get-vxm-itemid').addQuery('itemID', itemID);
+		url.addQuery('vendorID', vendorID).addQuery('primary', 'primary');
+
+		$.getJSON(url.toString(), function(xref) {
+			callback(xref);
+		});
+	}
+
+	function get_vxm_xref(vendorID, vendoritemID, callback) {
+		var url = new URI('{{ page.jsonapiURL('map') }}');
+		url.addQuery('action', 'get-vxm-xref').addQuery('vendorID', vendorID).addQuery('vendoritemID', vendoritemID);
+
+		$.getJSON(url.toString(), function(xref) {
+			callback(xref);
+		});
+	}
+
+	function get_itm_item(itemID, callback) {
+		var url = new URI('{{ page.jsonapiURL('inv') }}');
+		url.addQuery('action', 'get-item').addQuery('itemID', itemID);
+
+		$.getJSON(url.toString(), function(xref) {
+			callback(xref);
+		});
+	}
+
+	function get_po_line(ponbr, linenbr, callback) {
+		var url = new URI('{{ page.jsonapiURL('map') }}');
+		url.addQuery('action', 'get-po-item').addQuery('ponbr', ponbr).addQuery('linenbr',linenbr);
+
+		$.getJSON(url.toString(), function(item) {
+			callback(item);
+		});
+	}
+
+});

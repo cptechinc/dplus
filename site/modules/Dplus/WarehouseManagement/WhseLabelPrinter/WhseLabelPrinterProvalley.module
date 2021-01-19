@@ -25,13 +25,16 @@ class WhseLabelPrinterProvalley extends WhseLabelPrinter implements Module {
 	}
 
 	protected function input_create_record(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
 		$label = new Whseitemphysicalcount();
 		$label->setSessionid($this->sessionID);
 		$label->setRecno(1);
 		$label->setScan($this->sessionID);
+		$label->setItemid($values->text('itemID'));
 		$label->setLotserial($values->text('lotserial'));
 		$label->setLotserialref($values->text('lotreference'));
-		$label->setProductiondate($values->text('productiondate'));
+		$label->setProductiondate(date('Ymd', strtotime($values->text('productiondate'))));
 		$label->setQty($values->text('qty'));
 		$label->save();
 	}
@@ -67,9 +70,18 @@ class WhseLabelPrinterProvalley extends WhseLabelPrinter implements Module {
 
 		$this->addHook("Page(pw_template=whse-print-item-label)::create_newlabelURL", function($event) {
 			$p = $event->object;
+			$itemID = $event->arguments(0);
 			$url = new Url($p->url);
 			$url->query->set('label', 'new');
+			if ($itemID) {
+				$url->query->set('itemID', $itemID);
+			}
+
 			$event->return = $url->getUrl();
+		});
+
+		$this->addHook("Page(pw_template=whse-print-item-label)::ii_lookupURL", function($event) {
+			$event->return = $this->wire('pages')->get("pw_template=ii-item-lookup")->httpUrl;
 		});
 	}
 

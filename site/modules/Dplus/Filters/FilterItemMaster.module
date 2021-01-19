@@ -20,14 +20,16 @@ class FilterItemMaster extends WireData implements Module {
 	 * @param  User   $user User to Check if they are a Sales Person
 	 * @return void
 	 */
-	public function init_query(User $user) {
+	public function init_query() {
 		$this->query = ItemMasterItemQuery::create();
 	}
 
 /* =============================================================
 	Input Filter Functions
 ============================================================= */
-
+	public function filter_input($input) {
+		
+	}
 
 
 

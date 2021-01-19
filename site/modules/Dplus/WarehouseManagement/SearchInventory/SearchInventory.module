@@ -13,6 +13,18 @@ class SearchInventory extends WireData implements Module {
 		return $q;
 	}
 
+/* =============================================================
+	Count Functions
+============================================================= */
+	/**
+	 * Return number of all records
+	 * @return int
+	 */
+	public function count_all() {
+		$q = $this->get_query();
+		return $q->count();
+	}
+
 	/**
 	 * Return the Number of Distinct Item IDs
 	 * @param  string $binID ** Optional, Bin ID to narrow down
@@ -25,6 +37,68 @@ class SearchInventory extends WireData implements Module {
 		if (!empty($binID)) {
 			$q->filterByBin($binID);
 		}
+		return intval($q->findOne());
+	}
+
+	/**
+	 * Return the number of Invsearch records for this Item ID, Bin
+	 * @param  string $itemID Item ID
+	 * @param  string $binID  ** Optional ***, Bin ID to narrow down
+	 * @return int
+	 */
+	public function count_itemid_records($itemID, $binID = '') {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		if (!empty($binID)) {
+			$q->filterBy('Bin', $binID);
+		}
+		return $q->count();
+	}
+
+	/**
+	 * Return the Number of Lotserials for Item ID
+	 * @param  string $itemID Item ID
+	 * @param  string $binID  ** Optional ***, Bin ID to narrow down
+	 * @return int
+	 */
+	public function count_lotserials_itemid($itemID, $binID = '') {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->addAsColumn('count', 'COUNT(DISTINCT(lotserial))');
+		$q->select('count');
+
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+		return intval($q->findOne());
+	}
+
+	/**
+	 * Return the number of records for Lotserial
+	 * @param  string $lotserial Lot Number / Serial Number
+	 * @param  string $binID     Bin ID
+	 * @return int
+	 */
+	public function count_lotserial_records($lotserial, $binID = '') {
+		$q = $this->get_query();
+		$q->filterByLotserial($lotserial);
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+		return $q->count();
+	}
+
+	/**
+	 * Return the number of Bins this itemID is found at
+	 * @param  string $itemID
+	 * @return int
+	 */
+	public function count_bins_itemid($itemID) {
+		$q = $this->get_query();
+		$q->addAsColumn('count', 'COUNT(DISTINCT(bin))');
+		$q->select('count');
+		$q->filterByQty(array('min' => 0));
+		$q->filterByItemid($itemID);
 		return intval($q->findOne());
 	}
 
@@ -47,19 +121,26 @@ class SearchInventory extends WireData implements Module {
 	}
 
 	/**
-	 * Return the number of Bins this itemID is found at
-	 * @param  string $itemID
+	 * Return the number of Bins this item is found at
+	 * @param  InvSearch $item Item to find
 	 * @return int
 	 */
-	public function count_bins_itemid($itemID) {
+	public function get_item_bins(InvSearch $item) {
 		$q = $this->get_query();
 		$q->addAsColumn('count', 'COUNT(DISTINCT(bin))');
 		$q->select('count');
 		$q->filterByQty(array('min' => 0));
-		$q->filterByItemid($itemID);
-		return intval($q->findOne());
+		$q->filterByItemid($item->itemid);
+
+		if ($item->is_lotted() || $item->is_serialized()) {
+			$q->filterByLotserial($item->lotserial);
+		}
+		return $q->find();
 	}
 
+/* =============================================================
+	GET Functions
+============================================================= */
 	/**
 	 * Return Inventory Items that are distinct itemids
 	 * @param  string $binID *** Optional ***l, Bin ID to narrow down
@@ -74,30 +155,19 @@ class SearchInventory extends WireData implements Module {
 		return $q->find();
 	}
 
-	public function get_qty_itemid($itemID, $binID = '') {
+	/**
+	 * Return one Invsearch filter bty item ID
+	 * @param  string $itemID Item ID
+	 * @param  string $binID  ** Optional ***, Bin ID to narrow down
+	 * @return int
+	 */
+	public function get_invsearch_by_itemid($itemID, $binID = '') {
 		$q = $this->get_query();
-		$q->addAsColumn('qty', 'SUM(qty)');
-		$q->select('qty');
-		$q->filterBySessionid($this->sessionID);
 		$q->filterByItemid($itemID);
-
 		if (!empty($binID)) {
 			$q->filterByBin($binID);
 		}
 		return $q->findOne();
-	}
-
-	/**
-	 * Return Invsearch Records for Item ID grouped by Bin ID
-	 * @param  string $itemID Item ID
-	 * @return Invsearch[]|ObjectCollection
-	 */
-	public function get_bins_itemid($itemID) {
-		$q = $this->get_query();
-		$q->filterByItemid($itemID);
-		$q->withColumn('SUM(qty)', 'qty');
-		$q->groupBy('Bin');
-		return $q->find();
 	}
 
 	/**
@@ -122,32 +192,86 @@ class SearchInventory extends WireData implements Module {
 	}
 
 	/**
-	 * Return the Number of Lotserials for Item ID
-	 * @param  [type] $itemID Item ID
-	 * @param  string $binID  ** Optional ***, Bin ID to narrow down
-	 * @return int
+	 * Return One Invsearch Record filtered by Lotserial
+	 * @param  string $lotserial Lot / Serial number
+	 * @param  string $binID     Bin ID
+	 * @return Invsearch
 	 */
-	public function count_lotserials_itemid($itemID, $binID = '') {
+	public function get_lotserial($lotserial, $binID = '') {
 		$q = $this->get_query();
+		$q->filterByLotserial($lotserial);
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+		return $q->findOne();
+	}
+
+/* =============================================================
+	GET QTY Functions
+============================================================= */
+	/**
+	 * Get Total Qty for Item ID
+	 * @param  string $itemID Item ID
+	 * @param  string $binID  Bin ID
+	 * @return float
+	 */
+	public function get_qty_itemid($itemID, $binID = '') {
+		$q = $this->get_query();
+		$q->addAsColumn('qty', 'SUM(qty)');
+		$q->select('qty');
+		$q->filterBySessionid($this->sessionID);
 		$q->filterByItemid($itemID);
-		$q->addAsColumn('count', 'COUNT(DISTINCT(lotserial))');
-		$q->select('count');
 
 		if (!empty($binID)) {
 			$q->filterByBin($binID);
 		}
-		return intval($q->findOne());
+		return $q->findOne();
 	}
 
+	/**
+	 * Get Qty by Item, and filter to lotserial if needed
+	 * @param  Invsearch $item
+	 * @param  string    $binID Bin ID
+	 * @return float
+	 */
+	public function get_qty_invsearch(Invsearch $item, $binID = '') {
+		$q = $this->get_query();
+		$q->addAsColumn('qty', 'SUM(qty)');
+		$q->select('qty');
+		$q->filterBySessionid($this->sessionID);
+		$q->filterByItemid($item->itemid);
+		if ($item->lotserial) {
+			$q->filterByLotserial($item->lotserial);
+		}
+
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+		return $q->findOne();
+	}
+
+/* =============================================================
+	GET BINS Functions
+============================================================= */
+	/**
+	 * Return Invsearch Records for Item ID grouped by Bin ID
+	 * @param  string $itemID Item ID
+	 * @return Invsearch[]|ObjectCollection
+	 */
+	public function get_bins_itemid($itemID, $binID = '') {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+		$q->withColumn('SUM(qty)', 'qty');
+		$q->groupBy('Bin');
+		return $q->find();
+	}
 
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Search Warehouse Inventory',
