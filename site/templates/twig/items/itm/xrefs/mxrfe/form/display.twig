@@ -1,0 +1,11 @@
+{% extends 'items/mxrfe/item/form/display.twig' %}
+{% block header %}
+	<div class="row">
+		<div class="col-sm-2">
+			<strong> Item ID:</strong>
+		</div>
+		<div class="col-sm-6">
+			{{ xref.itemid }} - {{ xref.item.description }}
+		</div>
+	</div>
+{% endblock %}

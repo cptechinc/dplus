@@ -4,18 +4,19 @@
 	page                   ProcessWire\Page
 	mxrfe                  module XrefMxrfe
 	xref                   ItemXrefManufacturer
-	vendor                 Vendor
 #}
 <div class="card">
 	<div class="card-header">
-		<div class="row">
-			<div class="col-sm-2">
-				<strong> Mnfr / Comp ID:</strong>
+		{% block header %}
+			<div class="row">
+				<div class="col-sm-2">
+					<strong> Mnfr / Comp ID:</strong>
+				</div>
+				<div class="col-sm-6">
+					{{ xref.vendorid }} - {{ xref.vendor.name }}
+				</div>
 			</div>
-			<div class="col-sm-6">
-				{{ vendor.vendorid }} - {{ vendor.name }}
-			</div>
-		</div>
+		{% endblock %}
 	</div>
 	<div class="card-body">
 		{% include 'items/mxrfe/item/form/form.twig' %}

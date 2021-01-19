@@ -67,7 +67,9 @@
 		</td>
 	</tr>
 	<tr>
-		<td>Mnfg / Competitor</td>
+		<td>
+			<a href="{{ page.itm_xrefs_mxrfeURL(item.itemid) }}" class="link">Mnfr / Competitor</a>
+		</td>
 		<td>
 			<div class="custom-control custom-checkbox">
 				<input type="checkbox" class="custom-control-input" id="mfr" {{ item.countItemXrefManufacturers() ? 'checked' : '' }}>
