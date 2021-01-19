@@ -106,7 +106,6 @@ class QnotesMmsc extends WireData implements Module {
 ============================================================= */
 	/**
 	 * Takes Input, Processes it, updates Quote Notes in the Database
-	 *
 	 * @param  WireInput $input Input
 	 * @return void
 	 */
@@ -191,7 +190,7 @@ class QnotesMmsc extends WireData implements Module {
 	 * @return CodeTableResponse
 	 */
 	protected function process_responses(NoteMmsc $note, $itemID, array $lines_saved) {
-		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Note Lines";
+		$message = self::DESCRIPTION_RESPONSE . " $itemID-{$note->key2} Note Lines";
 
 		$response = new QnotesResponse();
 		$response->set_key("$itemID-{$note->key2}");
