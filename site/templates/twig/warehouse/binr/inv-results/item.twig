@@ -1,0 +1,17 @@
+{% extends 'warehouse/inventory/find-item/breakdown/bin.twig' %}
+
+{% block show_button %}
+	<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ item.itemid|attrJS }}-lotserial" aria-expanded="false" aria-controls="{{ item.itemid }}-lotserial">
+		Show / Hide Bins
+	</button>
+{% endblock %}
+
+{% block list %}
+	<div class="collapse-lotserial {{ not page.is_print() ? 'collapse' : '' }}" id="{{ item.itemid|attrJS  }}-lotserial">
+		<div class="list-group list-group-flush">
+			{% for lotserial in inventory.get_lotserials_itemid(item.itemid, page.frombin) %}
+				{% include 'warehouse/binr/inv-results/item-lotserial.twig' %}
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+<div class="list-group-item p-1">
+	<div class="row">
+		<div class="col-sm-1">
+			<a href="{{ page.binr_itemURL(lotserial) }}" class="btn btn-sm btn-primary">Use</a>
+		</div>
+		<div class="col-sm-2">
+			<strong>Bin:</strong> {{ lotserial.bin }}
+		</div>
+		<div class="col-sm-2">
+			<strong>Qty:</strong> <span class="pull-right">{{ lotserial.qty|number_format(config.decimal_places()) }}</span>
+		</div>
+		<div class="col-sm-3">
+			<strong>{{ item.get_itemtypepropertydesc()|upper }}:</strong> {{ lotserial.get_itemidentifier() }}
+		</div>
+		<div class="col-sm-2">
+			<strong>Lot Ref:</strong> {{ lotserial.lotreference }}
+		</div>
+		<div class="col">
+			{% if (not warehouse.validate_bin(lotserial.bin)) %}
+				<span class="badge badge-danger pull-right">Invalid Bin</span>
+			{% endif %}
+		</div>
+	</div>
+</div>

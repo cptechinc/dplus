@@ -14,18 +14,13 @@
 		<i class="fa fa-arrow-left" aria-hidden="true"></i> Back
 	</a>
 </div>
-<div class="row">
-	<div class="col-sm-8">
-		<div class="list-group">
-			{% if (resultscount) %}
-				{% for item in items %}
-					{% include 'warehouse/binr/inventory-results/item.twig' %}
-				{% endfor %}
-			{% else %}
-				<div class="list-group-item">
-					<h3 class="list-group-item-heading">No items found for "{{ page.scan }}"</h3>
-				</div>
-			{% endif %}
+
+<div class="list-group">
+	{% if (resultscount) %}
+		{% include 'warehouse/binr/inv-results/list.twig' %}
+	{% else %}
+		<div class="list-group-item">
+			<h3 class="list-group-item-heading">No items found for "{{ page.scan }}"</h3>
 		</div>
-	</div>
+	{% endif %}
 </div>

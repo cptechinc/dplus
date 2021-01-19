@@ -21,38 +21,31 @@
 		<button class="btn btn-secondary show-hide-all">Show / Hide All</button>
 	</div>
 {% endif %}
-<div class="row">
-	<div class="col-sm-10">
-		<div class="list-group">
-			{% if (inventory.count_itemids_distinct()) %}
-				{% for item in inventory.get_items_distinct() %}
-					<div class="list-group-item border border-dark border-bottom">
-						<h4 class="list-group-item-heading">ITEMID: {{ item.itemid }}</h4>
-						<p class="list-group-item-text">
-							{{ item.desc1 }} {{ item.desc2 ? ('<br>' ~ item.desc2)|raw : '' }}
-						</p>
-
-						{% if (item.is_serialized() or item.is_lotted()) %}
-							{% include 'warehouse/inventory/find-item/item-breakdown-by-' ~ config.show_inventoryresults ~ '.twig' %}
-						{% else %}
-							{% if inventory.count_item_bins(item) > 1 %}
-								{% include 'warehouse/inventory/find-item/item-breakdown-by-item-bin.twig' %}
-							{% else %}
-								<p class="list-group-item-text bg-light">
-									<strong>Bin:</strong> {{ item.bin }} <strong>Qty:</strong> {{ item.qty|number_format(config.decimal_places()) }}
-								</p>
-								{% if (not warehouse.validate_bin(item.bin)) %}
-									<span class="badge badge-danger pull-right">Invalid Bin</span>
-								{% endif %}
-							{% endif %}
-						{% endif %}
-					</div>
-				{% endfor %}
-			{% else %}
-				<div class="list-group-item">
-					<h3 class="list-group-item-heading">No items found for "{{ page.scan }}"</h3>
-				</div>
-			{% endif %}
+<div class="list-group">
+	{% if (inventory.count_itemids_distinct()) %}
+		{% for item in inventory.get_items_distinct() %}
+			<div class="list-group-item px-2">
+				<h5 class="mb-1">ITEMID: {{ item.itemid }}</h5>
+				<p class="mb-1">
+					<small>
+						{{ item.desc1 }} {{ item.desc2 ? ('<br>' ~ item.desc2)|raw : '' }}
+					</small>
+				</p>
+				{% if (item.is_serialized() or item.is_lotted()) %}
+					{% include 'warehouse/inventory/find-item/breakdown/' ~ config.show_inventoryresults ~ '.twig' %}
+				{% else %}
+					{% if inventory.count_item_bins(item) > 1 %}
+						{% include 'warehouse/inventory/find-item/breakdown/bin.twig' %}
+					{% else %}
+						{% set binitem = item %}
+						{% include 'warehouse/inventory/find-item/breakdown/bin/normal.twig' %}
+					{% endif %}
+				{% endif %}
+			</div>
+		{% endfor %}
+	{% else %}
+		<div class="list-group-item px-2">
+			<p class="text-center mb-1">0 results found for "{{ page.scan }}"</p>
 		</div>
-	</div>
+	{% endif %}
 </div>
