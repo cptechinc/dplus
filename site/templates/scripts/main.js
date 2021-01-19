@@ -295,7 +295,6 @@ $.fn.extend({
 			}
 		}
 	},
-	clearValidation: function(){
 		var v = $(this).validate();
 		$('[name]',this).each(function(){
 			v.successList.push(this);
@@ -303,6 +302,17 @@ $.fn.extend({
 		});
 		v.resetForm();
 		v.reset();
+	},
+	formValues: function() {
+		var form = $(this);
+		if (form[0].tagName != 'FORM') {
+			return false;
+		}
+		var values = form.serializeArray().reduce(function(obj, item) {
+			obj[item.name] = item.value;
+			return obj;
+		}, {});
+		return values;
 	}
 });
 
