@@ -84,6 +84,7 @@ $(function() {
 		var input = $(this);
 		input.val(parseFloat(input.val()).toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
 		$('input[name=eachlistprice]').val(parseFloat(get_eachlistprice()).toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
+		recalculate_margins_costs();
 	});
 
 	function populate_item_data(itemID) {
@@ -477,6 +478,30 @@ $(function() {
 	Margin Calculation Functions
 ============================================================= */
 	/**
+	 * Recalculate Margin or Costs
+	 * NOTE: USED when list price changes 
+	 * @return {[type]} [description]
+	 */
+	function recalculate_margins_costs() {
+		if (parseInt($('input[name=listprice]').val()) == 0) {
+			$(".unit-row").each(function(index ) {
+				$(this).find('input').val('');
+
+				if (parseInt($(this).data('break')) > 0) {
+					$(this).find('input.unit-qty,input.unit-cost,input.unit-margin').attr('readonly', 'readonly');
+				}
+			});
+			return true;
+		}
+		var update = '{{ vxm.configs.ap.computepercentageorcost }}';
+		if (update == 'P') { // Update Margins
+			calculate_margins();
+		} else if (update == 'C') { // Update Costs
+			calculate_costs();
+		}
+	}
+
+	/**
 	 * Recalculates Each List Price based on the Unit of Measure Purchase Conversion
 	 */
 	function calculate_eachlistprice() {
@@ -504,6 +529,15 @@ $(function() {
 	}
 
 	/**
+	 * Calculates Margin for each Unit Cost
+	 */
+	function calculate_costs() {
+		$(".unit-row").each(function(index ) {
+			update_unitrow_cost($(this));
+		});
+	}
+
+	/**
 	 * Calculates Margin for one Unit Cost
 	 * @param  JqueryElement unitrow
 	 */
@@ -515,9 +549,13 @@ $(function() {
 		if (parseFloat(input_unitcost.val())) {
 			var input_margin = unitrow.find('.unit-margin');
 			var margin = determine_unitmargin(parseFloat(input_unitcost.val()));
-			var displaymargin = parseFloat(margin).toFixed({{ vxm.field_attribute('unit_margin', 'precision') }});
+			var displaymargin = '';
+
+			if (margin != 0) {
+				displaymargin = parseFloat(margin).toFixed({{ vxm.field_attribute('unit_margin', 'precision') }});
+			}
+
 			input_margin.val(displaymargin);
-			console.log({{ vxm.field_attribute('unit_margin', 'precision') }})
 		}
 	}
 
@@ -565,8 +603,11 @@ $(function() {
 		var listprice = get_listprice();
 
 		if (listprice == 0 || cost == 0) {
-			return '';
+			return 0;
 		} else {
+			if (listprice == 0) {
+				return 0;
+			}
 			var markup = listprice - cost;
 			return markup / listprice * 100;
 		}
