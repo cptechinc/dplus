@@ -9,6 +9,7 @@
 	 */
 	$vxm = $modules->get('XrefVxm');
 	$validate = $modules->get('ValidateVxm');
+	$vxm->init_configs();
 	$response = '';
 
 	if ($values->action) {
@@ -31,7 +32,7 @@
 					$response = "$vendorID was not found in the Vendor Master";
 				}
 				break;
-			case 'validate-vendor-itemid':
+			case 'validate-xref':
 				$vendorID     = $values->text('vendorID');
 				$vendoritemID = $values->text('vendoritemID');
 				$itemID = $values->text('itemID');
@@ -43,7 +44,7 @@
 					$response = ($returntype == 'bool') ? false : "$vendoritemID from $vendorID for $itemID was not found in the Vendor X-ref";
 				}
 				break;
-			case 'validate-vendor-itemid-new':
+			case 'validate-xref-new':
 				$vendorID     = $values->text('vendorID');
 				$vendoritemID = $values->text('vendoritemID');
 				$itemID       = $values->text('itemID');
@@ -55,14 +56,16 @@
 				}
 				break;
 			case 'validate-primary-poordercode': // Returns if VXM Item can be used as Primary
-				$ouritemID = $values->text('ouritemID');
+				$vendorID     = $values->text('vendorID');
 				$vendoritemID = $values->text('vendoritemID');
+				$itemID       = $values->text('ouritemID');
+
 				$returntype  = $values->return ? 'bool' : 'jqueryvalidate';
 
-				if ($vxm->poordercode_primary_exists($ouritemID)) {
-					$primary = $vxm->get_primary_poordercode_itemid($ouritemID);
+				if ($vxm->poordercode_primary_exists($itemID)) {
+					$primary = $vxm->get_primary_poordercode_itemid($itemID);
 
-					if ($primary->vendoritemid == $vendoritemID) {
+					if ($primary->vendorid == $vendorID && $primary->vendoritemid == $vendoritemID) {
 						$response = true;
 					} else {
 						$response = ($returntype == 'bool') ? false : "Item $primary->ouritemID has another Primary Vendor Item";
@@ -70,6 +73,18 @@
 				} else {
 					$response = true;
 				}
+				break;
+			case 'validate-update-itm-cost':
+				$response = ['allow' => false, 'confirm' => false];
+				$vendorID     = $values->text('vendorID');
+				$vendoritemID = $values->text('vendoritemID');
+				$itemID       = $values->text('itemID');
+				$response['allow'] = $vxm->allow_itm_cost_update($vendorID, $vendoritemID, $itemID);
+
+				if ($response['allow']) {
+					$response['confirm'] = $vxm->configs->ap->confirm_update_itm_cost();
+				}
+
 				break;
 			case 'get-item':
 				$itemID = $values->itemID ? $values->text('itemID') : $values->text('ouritemID');
@@ -90,6 +105,9 @@
 						'iskit' => $item->is_kit(),
 						'pricing' => [
 							'base' => $item->pricing->baseprice
+						],
+						'standardcost' => [
+							'base' => $item->standardcostbasedon
 						]
 					);
 				} else {

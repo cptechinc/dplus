@@ -8,7 +8,7 @@
 	disabled               Disable Input?
 #}
 <div class="input-group input-group-sm datepicker">
-	<input class="form-control input-sm date-input" name="{{ name }}" type="text" value="{{ value }}" id="{{ id ? id : '' }}" tabindex="{{ tab }}" {{ required ? 'required' : '' }} {{ autofocus ? 'autofocus' : '' }} {{ disabled ? 'disabled' : '' }}/>
+	<input class="form-control input-sm date-input" name="{{ name }}" type="text" value="{{ value }}" id="{{ id ? id : '' }}" tabindex="{{ tab }}" {{ required ? 'required' : '' }} {{ autofocus ? 'autofocus' : '' }} {{ disabled ? 'disabled' : '' }} {{ readonly ? 'readonly' : '' }}/>
 	<div class="input-group-append">
 		<button type="button" class="btn btn-outline-secondary form_button input-group-text dropdown-toggle" data-toggle="dropdown">
 			<i class="fa fa-calendar" aria-hidden="true"></i> <span class="sr-only">Toggle Calendar</span>

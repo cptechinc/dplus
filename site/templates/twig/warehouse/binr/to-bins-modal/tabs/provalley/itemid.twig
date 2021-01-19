@@ -1,0 +1,21 @@
+{% set bins = inventory.get_bins_itemid(item.itemid) %}
+<div class="list-group">
+	{% for bin in inventory.get_bins_itemid(item.itemid) %}
+		<a href="#" class="list-group-item choose-tobin" data-bin="{{ bin.bin }}">
+			<div class="row">
+				<div class="col-4">
+					<h6 class="list-group-item-heading">{{ bin.bin }}</h6>
+				</div>
+				<div class="col-4">
+					<h6 class="list-group-item-heading">Boxes: {{ inventory.count_lotserials_itemid(item.itemid, bin.bin) }}</h6>
+				</div>
+				<div class="col-4">
+					<h6 class="list-group-item-heading">Weight: {{ bin.qty|number_format(config.decimal_places()) }}</h6>
+				</div>
+			</div>
+			{% if (warehouse.validate_bin(bin.bin) == false)	%}
+				<span class="badge badge-danger">Invalid Bin</span>
+			{% endif %}
+		</a>
+	{% endfor %}
+</div>

@@ -123,12 +123,8 @@ class QnotesItemVxmDetail extends WireData implements Module {
 		$itemID    = $values->text('itemID');
 		$vendorID  = $values->text('vendorID');
 		$userID    = $values->text('userID');
-		$date      = date(ItemXrefVendorNoteDetail::FORMAT_NOTEDATE, strtotime($values->text('notedate')));
-		$time      = $values->text('rawnotetime');
 
 		$q = $this->get_query_filter_itemvendor($itemID, $vendorID);
-		$q->filterByNotedate($date);
-		$q->filterByNotetime($time);
 
 		if ($q->count()) {
 			$note = $q->findOne();
@@ -136,8 +132,6 @@ class QnotesItemVxmDetail extends WireData implements Module {
 			$note = ItemXrefVendorNoteDetail::new();
 			$note->setItemid($itemID);
 			$note->setVendorid($vendorID);
-			$note->setNotedate($date);
-			$note->setNotetime($time);
 			$note->generateKey2();
 		}
 		$success = $this->delete_notes($itemID, $vendorID, $userID, $date, $time);

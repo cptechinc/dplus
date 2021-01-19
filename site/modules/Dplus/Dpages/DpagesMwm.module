@@ -91,7 +91,12 @@ class DpagesMwm extends Dpages implements Module {
 			'name'   => 'whse-sales-orders',
 			'fields' => array('title'),
 			'paginated' => false
-		)
+		),
+		'whse-po-amend' => array(
+			'name'   => 'whse-po-amend',
+			'fields' => array('title'),
+			'paginated' => false
+		),
 	);
 
 	const PAGES = array(
@@ -162,7 +167,8 @@ class DpagesMwm extends Dpages implements Module {
 			'title'          => 'Bin Inquiry',
 			'summary'        => 'Show Items in a bin',
 			'parent'         => '/warehouse/binr/',
-			'dplus_function' => 'pbini',
+			'dplus_function' => '',
+			'dplus_permission' => '',
 			'pw_template'    => 'whse-bin-inquiry'
 		),
 		'menu-inventory' => array(
@@ -226,6 +232,15 @@ class DpagesMwm extends Dpages implements Module {
 			'parent'         => '/warehouse/inventory/',
 			'dplus_function' => 'er',
 			'pw_template'    => 'whse-receiving'
+		),
+		'whse-po-amend' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'po-amend',
+			'title'          => 'Purchase Order Amend',
+			'summary'        => 'Add / Edit PO Items',
+			'parent'         => '/warehouse/inventory/',
+			'dplus_function' => '', // TODO: poa
+			'pw_template'    => 'whse-po-amend'
 		),
 		'menu-pick' => array(
 			'template'       => 'warehouse-menu',

@@ -4,10 +4,9 @@
 	page                   ProcessWire\Page
 	po                     EditPoHead
 #}
-<form action="{{ page.url }}" class="allow-enterkey-submit" id="add-item-form">
+<form action="{{ page.url }}" class="allow-enterkey-submit" method="post" id="add-item-form">
 	<input type="hidden" name="action" value="add-item">
-	<input type="hidden" name="ponbr" value="{{ po.ponbr }}">
-
+	<input type="hidden" name="ponbr" value="{{ page.ponbr }}">
 	<div class="row">
 		<div class="col-sm-3">
 			{% include 'util/form/input-with-modal-lookup.twig' with {
@@ -18,7 +17,8 @@
 					'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Item',
 					'attributes_button': {
 						'data-search': 'item',
-						'data-input': '#additemID'
+						'data-input': '#additemID',
+						'data-lookupurl': page.search_lookupURL('items'),
 					}
 				}
 			%}
@@ -26,6 +26,9 @@
 				<div class="mt-1">
 					<small class="desc1"></small> <br>
 					<small class="desc2"></small>
+					{% if page.modules.get('SfIiItem').is_weight_formatted() %}
+						<br> <small>Avg Weight:</small> <small class="weight"></small>
+					{% endif %}
 				</div>
 			</div>
 		</div>

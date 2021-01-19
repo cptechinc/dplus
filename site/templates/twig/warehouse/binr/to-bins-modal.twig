@@ -8,7 +8,7 @@
 	item                   Invsearch
 #}
 <div class="modal fade" id="choose-to-bins-modal" tabindex="-1" role="dialog" aria-labelledby="choose-to-bins-modal-label" aria-hidden="true">
-	<div class="modal-dialog" role="document">
+	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title" id="choose-to-bins-modal-label">Choose To bin for {{ item.get_itemtypedesc()|upper ~ ' ' ~ item.get_itemidentifier() }}</h4>
@@ -17,70 +17,28 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<ul class="nav nav-tabs mb-3" id="to-bins-tab" role="tablist">
-					<li class="nav-item">
-						<a class="nav-link active" id="current-tab" data-toggle="tab" href="#current" role="tab" aria-controls="current" aria-selected="true">Current</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" id="all-bins-tab" data-toggle="tab" href="#all-bins" role="tab" aria-controls="all-bins" aria-selected="false">All Bins</a>
-					</li>
-				</ul>
+				{% include 'warehouse/binr/to-bins-modal/tabs.twig' %}
+
 				<div class="tab-content" id="to-bins-tab-content">
-					<div class="tab-pane fade show active" id="current" role="tabpanel" aria-labelledby="current-tab">
-						<h4>Bins That Contain {{ item.get_itemtypedesc()|upper ~ ' ' ~ item.get_itemidentifier() }} </h4>
-						<div class="list-group">
-							{% for bin in currentbins	%}
-								<a href="#" class="list-group-item choose-tobin" data-bin="{{ bin.bin }}">
-									<div class="row">
-										<div class="col-6">
-											<h6 class="list-group-item-heading">{{ bin.bin }}</h6>
-										</div>
-										<div class="col-6">
-											<h6 class="list-group-item-heading">Qty {{ bin.qty|number_format(config.decimal_places()) }}</h6>
-										</div>
-									</div>
-									{% if (warehouse.validate_bin(bin.bin) == false)	%}
-										<span class="badge badge-danger">Invalid Bin</span>
-									{% endif %}
-								</a>
-							{% endfor %}
-						</div>
+					<div class="tab-pane fade show active" id="lotserial" role="tabpanel" aria-labelledby="lotserial-tab">
+						<h4>Bins That Contain {{ item.get_itemtypepropertydesc()|upper ~ ' ' ~ item.get_itemidentifier() }} </h4>
+						{% if loader.exists('warehouse/binr/to-bins-modal/tabs/' ~ session.config.company ~ '/lotserial.twig') %}
+							{% include 'warehouse/binr/to-bins-modal/tabs/' ~ session.config.company ~ '/lotserial.twig' %}
+						{% else %}
+							{% include 'warehouse/binr/to-bins-modal/tabs/lotserial.twig' %}
+						{% endif %}
+					</div>
+					<div class="tab-pane fade" id="itemid-bins" role="tabpanel" aria-labelledby="itemid-tab">
+						<h4>All Bins for Item {{ item.itemid }}</h4>
+						{% if loader.exists('warehouse/binr/to-bins-modal/tabs/' ~ session.config.company ~ '/itemid.twig') %}
+							{% include 'warehouse/binr/to-bins-modal/tabs/' ~ session.config.company ~ '/itemid.twig' %}
+						{% else %}
+							{% include 'warehouse/binr/to-bins-modal/tabs/itemid.twig' %}
+						{% endif %}
 					</div>
 					<div class="tab-pane fade" id="all-bins" role="tabpanel" aria-labelledby="all-bins-tab">
 						<h4>All Bins</h4>
-
-						{% if (warehouse.are_binslisted())	%}
-							<div class="list-group">
-								{% for bin in warehouse.get_bins()	%}
-									<a href="#" class="list-group-item choose-tobin" data-bin="{{ bin.from }}">
-										<div class="row">
-											<div class="col-6">
-												<h6 class="list-group-item-heading">{{ bin.from }}</h6>
-											</div>
-											<div class="col-6">
-												{% if (bin.from in currentbins.toArray('bin')|keys)	%}
-													<h5 class="list-group-item-heading">Qty {{ inventory.get_binqty(session.get('sessionid'), item, bin.from) }}</h5>
-												{% endif %}
-											</div>
-										</div>
-										{{ bin.bindesc }}
-									</a>
-								{% endfor %}
-							</div>
-						{% else	%}
-							<table class="table table-condensed table-striped table-bordered">
-								<tr>
-									<th>Range From</th>
-									<th>Range Through</th>
-								</tr>
-								{% for bin in warehousebins	%}
-									<tr>
-										<td>{{ bin.from }}</td>
-										<td>{{ bin.through }}</td>
-									</tr>
-								{% endfor %}
-							</table>
-						{% endif %}
+						{% include 'warehouse/binr/to-bins-modal/tabs/all.twig' %}
 					</div>
 				</div>
 			</div>

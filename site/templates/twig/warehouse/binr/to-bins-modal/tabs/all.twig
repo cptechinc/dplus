@@ -1,0 +1,32 @@
+{% if (warehouse.are_binslisted())	%}
+	<div class="list-group">
+		{% for bin in warehouse.get_bins()	%}
+			<a href="#" class="list-group-item choose-tobin" data-bin="{{ bin.from }}">
+				<div class="row">
+					<div class="col-6">
+						<h6 class="list-group-item-heading">{{ bin.from }}</h6>
+					</div>
+					<div class="col-6">
+						{% if (bin.from in lotserialbins.toArray('bin')|keys)	%}
+							``<h5 class="list-group-item-heading">Qty {{ inventory.get_qty_invsearch(item, bin.from) }}</h5>
+						{% endif %}
+					</div>
+				</div>
+				{{ bin.bindesc }}
+			</a>
+		{% endfor %}
+	</div>
+{% else	%}
+	<table class="table table-condensed table-striped table-bordered">
+		<tr>
+			<th>Range From</th>
+			<th>Range Through</th>
+		</tr>
+		{% for bin in warehousebins	%}
+			<tr>
+				<td>{{ bin.from }}</td>
+				<td>{{ bin.through }}</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endif %}

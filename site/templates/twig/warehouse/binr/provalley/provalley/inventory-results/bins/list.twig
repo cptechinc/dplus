@@ -1,0 +1,6 @@
+<div class="list-group">
+	{% for binitem in inventory.get_bins_itemid(item.itemid, page.frombin) %}
+		{% include 'warehouse/binr/provalley/inventory-results/bins/item.twig' %}
+		{% include 'warehouse/binr/provalley/inventory-results/bins/lotserial/list.twig' %}
+	{% endfor %}
+</div>
