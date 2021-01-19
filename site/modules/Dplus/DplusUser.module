@@ -2,6 +2,7 @@
 
 use LogpermQuery, Logperm;
 use LogmQuery, Logm;
+use DplusUserQuery as UserQuery, DplusUser as Duser;
 use FuncpermQuery, Funcperm;
 use CustpermQuery, Custperm;
 
@@ -145,12 +146,14 @@ class DplusUser extends WireData implements Module {
 	 */
 	private function setup_user_logm(User $user) {
 		$logmuser = LogmQuery::create()->findOneByLoginid($user->loginid);
+		$syslogin = UserQuery::create()->findOneByUserid($user->loginid);
 		$role = strtolower($logmuser->role);
 		$user->addRole($role);
 		$user->dplusrole = $role;
 		$user->roleid    = $logmuser->roleid;
 		$user->company   = $logmuser->company;
 		$user->email     = $logmuser->email;
+		$user->whseid    = $syslogin->whseid;
 
 		$function = "setup_user_$role";
 

@@ -1,0 +1,113 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+use PurchaseOrderQuery, PurchaseOrder;
+use ItemMasterItemQuery, ItemMasterItem;
+
+include_once(__DIR__.'/classes/PoAmendItems.php');
+
+class PoAmend extends WireData implements Module {
+
+	const HOOK_FUNCTIONS_LOOKUPS = array(
+		// Hook     =>  PW Template
+		'ii_lookup' => 'ii-item-lookup',
+	);
+
+	public function query($ponbr = '') {
+		$q = PurchaseOrderQuery::create();
+		if ($ponbr) {
+			$q->filterByPonbr(PurchaseOrder::get_paddedponumber($ponbr));
+		}
+		return $q;
+	}
+
+	public function exists($ponbr) {
+		return boolval($this->query($ponbr)->count());
+	}
+
+	public function po($ponbr) {
+		return $this->query($ponbr)->findOne();
+	}
+
+	public function vendorid($ponbr) {
+		$q = $this->query($ponbr);
+		$q->select(PurchaseOrder::get_aliasproperty('vendorid'));
+		return $q->findOne();
+	}
+
+	public function exists_editable($ponbr) {
+		$epo = $this->wire('modules')->get('PurchaseOrderEdit');
+		return $epo->exists_editable($ponbr);
+	}
+
+	public function delete_editable() {
+		$epo = $this->wire('modules')->get('PurchaseOrderEdit');
+		return $epo->delete_editable_header();
+	}
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Process Input Data and act on upon action
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'add-item':
+			case 'update-item':
+				$this->items->process_input($input);
+				break;
+			case 'exit':
+				break;
+		}
+	}
+
+
+/* =============================================================
+	Dplus Request
+============================================================= */
+	public function request_edit_po($ponbr) {
+		$epo = $this->wire('modules')->get('PurchaseOrderEdit');
+		$epo->request_po_edit($ponbr);
+	}
+
+	/**
+	 * Return ITM item
+	 * @param  string $itemID Item ID
+	 * @return ItemMasterItem
+	 */
+	public function itmitem($itemID) {
+		return ItemMasterItemQuery::create()->findOneByItemid($itemID);
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'PoAmend',
+			'version' => 101,
+			'summary' => 'Adds / Edit Items PO for Warehouse Receiving',
+			'singular' => true,
+			'autoload' => false,
+		);
+	}
+
+	public function init() {
+		$this->items = new PoAmendItems();
+
+		foreach (self::HOOK_FUNCTIONS_LOOKUPS as $hook => $pwtemplate) {
+			$this->addHook("Page(pw_template=whse-po-amend)::{$hook}URL", function($event) {
+				$hook = rtrim($event->method, 'URL');
+				$pwtemplate = self::HOOK_FUNCTIONS_LOOKUPS[$hook];
+				$event->return = $this->wire('pages')->get("pw_template=$pwtemplate")->url;
+			});
+		}
+	}
+}

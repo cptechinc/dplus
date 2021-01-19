@@ -11,68 +11,20 @@
 <div class="list-group">
 	{% if (inventory.count_itemids_distinct(page.binID)) %}
 		{% for item in inventory.get_items_distinct(page.binID) %}
-			<div class="list-group-item">
-				<h4 class="list-group-item-heading">ITEMID: {{ item.itemid }}</h4>
-				<p class="list-group-item-text">
-					{{ item.desc1 }} {{ item.desc2 ? ('<br>' ~ item.desc2)|raw : '' }}
+			<div class="list-group-item px-2">
+				<h5 class="mb-1">ITEMID: {{ item.itemid }}</h5>
+				<p class="mb-1">
+					<small>
+						{{ item.desc1 }} {{ item.desc2 ? ('<br>' ~ item.desc2)|raw : '' }}
+					</small>
 				</p>
 
-				{% if (item.is_serialized() or item.is_lotted()) %}
-					<div class="d-flex justify-content-between p-2 mb-1">
-						<span><strong>Lots:</strong> {{ inventory.count_lotserials_itemid(item.itemid, binitem.bin) }}</span>
-						{% if (not page.is_print()) %}
-							<button type="button" class="btn btn-primary btn-sm mb-3" data-toggle="collapse" data-target="#{{ item.itemid|attrJS  }}-lotserial" aria-expanded="false" aria-controls="{{ item.itemid }}-lotserial">
-								Show / Hide {{ item.get_itemtypepropertydesc()|upper ~ "S" }}
-							</button>
-						{% endif %}
-					</div>
-
-					<div class="collapse-lotserial {{ not page.is_print() ? 'collapse' : '' }}" id="{{ item.itemid|attrJS }}-lotserial">
-						<div class="list-group list-group-flush bg-light">
-							{% for lotserial in inventory.get_lotserials_itemid(item.itemid, item.bin) %}
-								<div class="list-group-item bg-light p-1">
-									<div class="row">
-										<div class="col">
-											<strong>Lot #:</strong> {{ lotserial.get_itemidentifier() }}
-										</div>
-										<div class="col">
-											<strong>Lot Ref:</strong> {{ lotserial.lotreference }}
-										</div>
-										<div class="col">
-											<strong>Qty:</strong> {{ lotserial.qty|number_format(config.decimal_places()) }}
-										</div>
-										<div class="col">
-											<strong>Prod Date:</strong> {{ lotserial.expirationdate ? lotserial.expirationdate|convertdate : '' }}
-										</div>
-										<div class="col">
-											{% if (not warehouse.validate_bin(lotserial.bin)) %}
-												<span class="badge badge-danger pull-right">Invalid Bin</span>
-											{% endif %}
-										</div>
-									</div>
-								</div>
-							{% endfor %}
-						</div>
-					</div>
-				{% else %}
-				<div class="list-group-item bg-light p-1">
-					<div class="row">
-						<div class="col">
-							<strong>Qty:</strong> {{ item.qty }}
-						</div>
-						<div class="col">
-							{% if (not warehouse.validate_bin(item.bin)) %}
-								<span class="badge badge-danger pull-right">Invalid Bin</span>
-							{% endif %}
-						</div>
-					</div>
-				</div>
-				{% endif %}
+				{% include 'warehouse/inventory/find-item/provalley/breakdown/lotserial.twig' %}
 			</div>
 		{% endfor %}
 	{% else %}
 		<div class="list-group-item">
-			<h3 class="list-group-item-heading">No items found in Bin <strong>{{ page.binID }}</strong></h3>
+			<p class="text-center">No items found in Bin <strong>{{ page.binID }}</strong></hp>
 		</div>
 	{% endif %}
 </div>

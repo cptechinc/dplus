@@ -176,7 +176,7 @@
 			$view = $input->$requestmethod->text('view');
 			if ($view == '') {
 				$q = OptionsIiQuery::create();
-				$q->filterByUser(OptionsIi::USER_SYSTEM);
+				$q->filterByUserid(OptionsIi::USER_SYSTEM);
 				$config_ii = $q->findOne();
 				$view = OptionsIi::VIEW_REQUIREMENTS_OPTIONS_JSON[$config_ii->view_requirements];
 			}

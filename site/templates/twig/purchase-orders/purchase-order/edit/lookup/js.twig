@@ -62,6 +62,9 @@ $(function() {
 				input_itemid.addClass('is-valid');
 				$('.descriptions .desc1').text(item.description);
 				$('.descriptions .desc2').text(item.description2);
+				if ($('.descriptions').find('.weight').length) {
+					$('.descriptions .weight').text(item.weight);
+				}
 				$('.descriptions').addClass('show');
 				form_additem.find('.uom').text(item.uom_purchase);
 				callback(true);
@@ -135,7 +138,7 @@ $(function() {
 	 */
 	function get_itm_item(itemID, callback) {
 		var url = new URI('{{ page.jsonapiURL('inv') }}');
-		url.addQuery('action', 'get-item').addQuery('itemID', itemID).addQuery('fields', 'uom_purchase');
+		url.addQuery('action', 'get-item').addQuery('itemID', itemID).addQuery('fields', 'uom_purchase,weight');
 
 		$.getJSON(url.toString(), function(item) {
 			callback(item);

@@ -374,6 +374,20 @@ function format_phone(input) {
 /*==============================================================
 	JS Prototype FUNCTIONS
 =============================================================*/
+function floatParse(num) {
+	if (num.indexOf(',')) {
+		num = num.replace(",", '');
+	}
+	return parseFloat(num);
+}
+
+function intParse(num) {
+	if (num.indexOf(',')) {
+		num = num.replace(",", '');
+	}
+	return parseInt(num);
+}
+
 Number.prototype.formatMoney = function(c, d, t) {
 	var n = this,
 		c = isNaN(c = Math.abs(c)) ? 2 : c,

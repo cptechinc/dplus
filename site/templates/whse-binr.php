@@ -2,6 +2,7 @@
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
 	$config->binr = $modules->get('ConfigsBinr');
+	$inventory = $modules->get('SearchInventory');
 
 	$page->frombin = '';
 	$page->tobin = '';
@@ -33,7 +34,7 @@
 		$scan = $input->get->text('scan');
 		$page->scan = $scan;
 		$page->fullURL->query->remove('scan');
-		$resultscount = InvsearchQuery::create()->filterBy('Sessionid', session_id())->count();
+		$resultscount = $inventory->get_query()->count();
 
 		$page->addHookProperty('Page::scan', function($event) {
 			$p = $event->object;
@@ -45,21 +46,21 @@
 			$items = array();
 			$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page]);
 		} elseif ($resultscount == 1) { // If one item is found
-			$item = InvsearchQuery::create()->findOneBySessionid(session_id());
+			$item = $inventory->get_query()->findOne();
 			$url = $page->binr_itemURL($item);
 			$session->redirect($url , $http301 = false);
 		} else {
 			// Multiple Items - count the number Distinct Item IDs
-			$resultscount = InvsearchQuery::create()->countDistinctItemid(session_id(), $binID);
+			$resultscount = $inventory->count_itemids_distinct($binID);
 
 			if ($resultscount == 1) {
-				$item = InvsearchQuery::create()->findOneBySessionidBin(session_id(), $binID);
+				$item = $inventory->get_query->filterByBin($binID)->findOne();
 
 				// If Item is Lotted / Serialized show results to choose which lot or serial to move
 				if ($item->is_lotted() || $item->is_serialized()) {
-					$resultscount = InvsearchQuery::create()->countByItemid(session_id(), $item->itemid, $binID);
-					$items = InvsearchQuery::create()->findDistinctItems(session_id(), $binID);
-					$inventory = InvsearchQuery::create();
+					$resultscount = $inventory->count_itemid_records($itemID, $binID);
+					$items = $inventory->get_items_distinct($binID);
+					$inventory = $modules->get('SearchInventory');
 
 					if ($config->twigloader->exists("warehouse/binr/$config->company/inventory-results.twig")) {
 						$page->body = $config->twig->render("warehouse/binr/$config->company/inventory-results.twig", ['page' => $page, 'config' => $config->binr, 'resultscount' => $resultscount, 'items' => $items, 'warehouse' => $warehouse, 'inventory' => $inventory]);
@@ -73,7 +74,7 @@
 					$session->redirect($url, $http301 = false);
 				}
 			} else {
-				$items = InvsearchQuery::create()->findDistinctItems(session_id(), $item->itemid);
+				$items = $inventory->get_items_distinct($binID);
 				$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'config' => $config->binr,  'resultscount' => $resultscount, 'items' => $items]);
 			}
 		}
@@ -81,18 +82,18 @@
 		if ($input->get->lotnbr) {
 			$lotnbr = $input->get->text('lotnbr');
 			$input->get->scan = $page->scan = $lotnbr;
-			$resultscount = InvsearchQuery::create()->countByLotserial(session_id(), $lotnbr, $binID);
-			$item = $resultscount == 1 ? InvsearchQuery::create()->get_lotserial(session_id(), $lotnbr, $binID) : false;
+			$resultscount = $inventory->count_lotserial_records($lotnbr, $binID);
+			$item = $resultscount == 1 ? $inventory->get_lotserial($lotnbr, $binID) : false;
 		} if ($input->get->serialnbr) {
 			$serialnbr = $input->get->text('serialnbr');
 			$input->get->scan = $page->scan = $serialnbr;
-			$resultscount = InvsearchQuery::create()->countByLotserial(session_id(), $serialnbr, $binID);
-			$item = $resultscount == 1 ? InvsearchQuery::create()->get_lotserial(session_id(), $serialnbr, $binID) : false;
+			$resultscount = $inventory->count_lotserial_records($lotnbr, $binID);
+			$item = $resultscount == 1 ? $inventory->get_lotserial($lotnbr, $binID) : false;
 		} elseif ($input->get->itemID) {
 			$itemID = $input->get->text('itemID');
 			$input->get->scan = $page->scan = $itemID;
-			$resultscount = InvsearchQuery::create()->countByItemid(session_id(), $itemID, $binID);
-			$item = $resultscount == 1 ? InvsearchQuery::create()->findOneByItemid(session_id(), $itemID, $binID) : false;
+			$resultscount = $inventory->count_itemid_records($itemID, $binID);
+			$item = $resultscount == 1 ? $inventory->get_invsearch_by_itemid($itemID, $binID) : false;
 		}
 
 		if ($resultscount == 1) {
@@ -109,7 +110,6 @@
 				$page->body = $config->twig->render('warehouse/binr/binr-result.twig', ['session' => $session, 'page' => $page, 'whsesession' => $whsesession, 'item' => $item, 'nexturl' => $nexturl]);
 				$session->remove('binr');
 			} else { // Prepare Binr Form
-				$inventory = InvsearchQuery::create();
 				$currentbins = BininfoQuery::create()->filterByItem(session_id(), $item)->select_bin_qty()->find();
 
 				// 1. Binr form
@@ -129,8 +129,7 @@
 				$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('warehouse' => $jsconfig, 'validfrombins' => $validbins)]);
 			}
 		} else { // Show Inventory Search Results
-			$items = InvsearchQuery::create()->findBySessionid(session_id());
-			$inventory = InvsearchQuery::create();
+			$items = $inventory->get_items_distinct();
 			$page->body = $config->twig->render('warehouse/binr/inventory-results.twig', ['page' => $page, 'resultscount' => $resultscount, 'items' => $items, 'inventory' => $inventory]);
 		}
 	} else { // Show Item Form

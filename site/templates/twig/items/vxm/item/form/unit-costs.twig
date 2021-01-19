@@ -32,7 +32,9 @@
 							'pull-right'
 						],
 						'attributes': {
-							'max': vxm.field_attribute('unit_cost', 'max')
+							'max': vxm.field_attribute('unit_cost', 'max'),
+							'data-cost': item.unitcost_base|number_format(vxm.field_attribute('unit_cost', 'precision')),
+							'data-itmcost': item.imitem.standardcost
 						}
 					}
 				%}
