@@ -295,6 +295,7 @@ $.fn.extend({
 			}
 		}
 	},
+	clearValidation: function() {
 		var v = $(this).validate();
 		$('[name]',this).each(function(){
 			v.successList.push(this);
