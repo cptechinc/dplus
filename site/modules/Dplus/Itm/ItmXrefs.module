@@ -395,6 +395,112 @@ class ItmXrefs extends WireData implements Module {
 		return $url->getUrl();
 	}
 
+	/**
+	 * Return URL to view MXRFE
+	 * @param  string  $itemID      Item ID / Kit ID
+	 * @return string
+	 */
+	public function itm_xrefs_mxrfeURL($itemID, $focus = '') {
+		return $this->itm_xrefs_mxrfe_focusURL($itemID, $focus);
+	}
+
+	/**
+	 * Return URL to view Item MXRFE List
+	 * @param  string $itemID Item ID
+	 * @param  string $focus  X-ref Key to focus on
+	 * @return string
+	 */
+	public function itm_xrefs_mxrfe_focusURL($itemID, $focus) {
+		$mxrfe = $this->wire('modules')->get('XrefMxrfe');
+		$xref = $mxrfe->xref_by_recordlocker_key($focus);
+
+		if ($xref == false) {
+			return $this->_itm_xrefs_mxrfeURL($itemID);
+		}
+		$url = new Url($this->_itm_xrefs_mxrfeURL($itemID));
+		$url->query->set('focus', $focus);
+		$filter = $this->wire('modules')->get('FilterXrefItemMxrfe');
+		$filter->itemid($itemID);
+		$position = $filter->position($xref);
+		$pagenbr = ceil($position / $this->wire('session')->display);
+		$url = $this->wire('modules')->get('Dpurl')->paginate($url, $this->wire('pages')->get('pw_template=itm-xrefs-mxrfe')->name, $pagenbr);
+		return $url->getUrl();
+	}
+
+	public function _itm_xrefs_mxrfeURL($itemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=itm-xrefs-mxrfe')->url);
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to MXRFE X-ref
+	 * @param  string $mnfrID      Vendor ID
+	 * @param  string $mnfritemID  Vendor Item ID
+	 * @param  string $itemID        ITM Item ID
+	 * @return string
+	 */
+	public function xref_mxrfeURL($mnfrID, $mnfritemID, $itemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=itm-xrefs-mxrfe')->url);
+		$url->query->set('itemID', $itemID);
+		$url->query->set('mnfrID', $mnfrID);
+		$url->query->set('mnfritemID', $mnfritemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to DELETE MXRFE X-ref
+	 * @param  string $mnfrID      Vendor ID
+	 * @param  string $mnfritemID  Vendor Item ID
+	 * @param  string $itemID        ITM Item ID
+	 * @return string
+	 */
+	public function xref_mxrfe_deleteURL($mnfrID, $mnfritemID, $itemID) {
+		$url = new Url($this->wire('pages')->get('pw_template=itm-xrefs-mxrfe')->url);
+		$url->query->set('action', 'delete-xref');
+		$url->query->set('mnfrID', $mnfrID);
+		$url->query->set('mnfritemID', $mnfritemID);
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to MXRFE X-ref
+	 * @param  WireInput $input  Input Data
+	 * @return string
+	 */
+	public function redirect_mxrfeURL(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if (empty($values->text('itemID'))) {
+			return $this->wire('pages')->get('template=item-xrefs-mxrfe')->url;
+		}
+
+		$mxrfe = $this->wire('modules')->get('XrefMxrfe');
+
+		$mnfrID     = $values->text('mnfrID');
+		$mnfritemID = $values->text('mnfritemID');
+		$itemID     = $values->text('itemID');
+
+		if ($mxrfe->xref_exists($mnfrID, $mnfritemID, $itemID) === false) {
+			return $this->itm_xrefs_mxrfeURL($itemID);
+		}
+
+		$xref = $mxrfe->xref($mnfrID, $mnfritemID, $itemID);
+
+		switch ($values->text('action')) {
+			case 'update-xref':
+				$focus = $mxrfe->get_recordlocker_key($xref);
+				return $this->itm_xrefs_mxrfeURL($itemID, $focus);
+				break;
+			case 'delete-notes':
+			case 'update-notes';
+				return $this->xref_mxrfeURL($mnfrID, $mnfritemID, $itemID);
+				break;
+		}
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
@@ -425,6 +531,7 @@ class ItmXrefs extends WireData implements Module {
 		$this->add_pagehooks_vxm();
 		$this->add_pagehooks_cxm();
 		$this->add_pagehooks_kim();
+		$this->add_pagehooks_mxrfe();
 	}
 
 	public function add_pagehooks_upcx() {
@@ -580,6 +687,41 @@ class ItmXrefs extends WireData implements Module {
 			$itemID = $event->arguments(0);
 			$component = $event->arguments(1);
 			$event->return = $this->get_kit_component_deleteURL($itemID, $component);
+		});
+	}
+
+	public function add_pagehooks_mxrfe() {
+		$itm = $this->wire('modules')->get('Itm');
+		$templates = implode('|', $itm::TEMPLATES_ITM);
+
+		$this->addHook("Page(pw_template=$templates)::itm_xrefs_mxrfeURL", function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = $this->itm_xrefs_mxrfeURL($itemID);
+		});
+
+		$this->addHook('Page(pw_template=itm-xrefs-mxrfe)::xrefURL', function($event) {
+			$mnfrID        = $event->arguments(0);
+			$mnfritemID    = $event->arguments(1);
+			$itemID        = $event->arguments(2);
+			$event->return = $this->xref_mxrfeURL($mnfrID, $mnfritemID, $itemID);
+		});
+
+		$this->addHook('Page(pw_template=itm-xrefs-mxrfe)::xref_deleteURL', function($event) {
+			$mnfrID        = $event->arguments(0);
+			$mnfritemID    = $event->arguments(1);
+			$itemID        = $event->arguments(2);
+			$event->return = $this->xref_mxrfe_deleteURL($mnfrID, $mnfritemID, $itemID);
+		});
+
+		$this->addHook('Page(pw_template=itm-xrefs-mxrfe)::xref_exitURL', function($event) {
+			$mxrfe = $this->wire('modules')->get('XrefMxrfe');
+			$xref = $event->arguments(0);
+			$event->return = $this->itm_xrefs_mxrfeURL($xref->itemid, $mxrfe->get_recordlocker_key($xref));
+		});
+
+		$this->addHook("Page(pw_template=itm-xrefs-mxrfe)::redirectURL", function($event) {
+			$input = $event->arguments(0);
+			$event->return = $this->redirect_mxrfeURL($input);
 		});
 	}
 }
