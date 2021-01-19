@@ -1,0 +1,46 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	mxrfe                  module XrefMxrfe
+	xref                   ItemXrefManufacturer
+	qnotes                 module QnotesItemMxrfe
+	qnotes.intv            module QnotesItemVxmInternal
+#}
+
+<div class="list-group">
+	<div class="list-group-item list-group-item-action bg-dark text-white">
+		<div class="row">
+			<div class="col-1">User</div>
+			<div class="col-2">Date</div>
+			<div class="col-1">Time</div>
+			<div class="col-6">Note</div>
+			<div class="col">
+				<button type="button" class="btn btn-sm btn-light" data-toggle="modal" data-target="#notes-intv-modal" data-date="{{ "now"|convertdate("m/d/Y") }}" data-time="{{ "now"|convertdate("H:i") }}">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add Note
+				</button>
+			</div>
+		</div>
+	</div>
+	{% for note in qnotes.intv.get_notes_summarized(xref.itemid, xref.mnfrid) %}
+		<div class="list-group-item qnote-row" data-date="{{ note.notedate|convertdate("m/d/Y") }}" data-time="{{ (note.notedate ~ note.notetime())|convertdate("H:i") }}">
+			<div class="row mb-1">
+				<div class="col-1">{{ note.userid }}</div>
+				<div class="col-2">{{ note.notedate|convertdate }}</div>
+				<div class="col-1">{{ (note.notedate ~ note.notetime())|convertdate("H:i") }}</div>
+				<div class="col-6">{{ note.note }}</div>
+				<div class="col">
+					<button type="button" class="btn btn-sm btn-light" data-toggle="collapse" data-target="#notes-intv-{{ (note.notedate ~ note.notetime())|convertdate("Ymd-Hi") }}" aria-controls="notes-intv-{{ (note.notedate ~ note.notetime())|convertdate("Ymd-Hi") }}">
+						<i class="fa fa-eye" aria-hidden="true"></i> Show
+					</button>
+					{% if note.userid == page.user.loginid %}
+						<button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#notes-intv-modal" data-date="{{ note.notedate|convertdate("m/d/Y") }}" data-time="{{ (note.notedate ~ note.notetime())|convertdate("H:i") }}" data-rawnotetime="{{ note.notetime }}">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</button>
+					{% endif %}
+				</div>
+			</div>
+			<textarea class="collapse form-control-plaintext" id="notes-intv-{{ (note.notedate ~ note.notetime())|convertdate("Ymd-Hi") }}" cols="{{ qnotes.intv.get_column_count() }}" readonly>{{ qnotes.intv.get_notes_date_array(note.itemid, note.vendorid, note.userid, note.notedate, note.notetime)|join('\r') }}</textarea>
+		</div>
+	{% endfor %}
+</div>
