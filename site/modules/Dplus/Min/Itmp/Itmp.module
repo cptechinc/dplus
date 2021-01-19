@@ -22,21 +22,23 @@ class Itmp extends WireData implements Module {
 		'itm-xrefs-upcx',
 		'itm-xrefs-vxm',
 		'itm-xrefs-cxm',
+		'itm-xrefs-mxrfe',
 		'itm-misc',
 		'itm-components',
 		'itm-kit',
 	];
 
 	const TEMPLATES_PERMISSIONS = [
-		'itm-pricing'    => 'pricing',
-		'itm-whse'       => 'whse',
-		'itm-costing'    => 'costing',
-		'itm-xrefs'      => 'xrefs',
-		'itm-xrefs-upcx' => 'xrefs',
-		'itm-xrefs-vxm'  => 'xrefs',
-		'itm-xrefs-cxm'  => 'xrefs',
-		'itm-misc'       => 'misc',
-		'itm-kit'        => 'xrefs',
+		'itm-pricing'     => 'pricing',
+		'itm-whse'        => 'whse',
+		'itm-costing'     => 'costing',
+		'itm-xrefs'       => 'xrefs',
+		'itm-xrefs-upcx'  => 'xrefs',
+		'itm-xrefs-vxm'   => 'xrefs',
+		'itm-xrefs-cxm'   => 'xrefs',
+		'itm-xrefs-mxrfe' => 'xrefs',
+		'itm-misc'        => 'misc',
+		'itm-kit'         => 'xrefs',
 	];
 
 	const PERMISSIONS_LABELS = [
