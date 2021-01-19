@@ -353,6 +353,24 @@ $('a.delete_button').click(function(e){
 	});
 });
 
+function swal_delete_notes(callback) {
+	swal2.fire({
+		title: 'Confirm Deletion',
+		text: 'Are you sure?',
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
+		focusCancel: true,
+	}).then((result) => {
+		if (result.value) {
+			callback(true);
+		} else {
+			callback(false);
+		}
+	});
+}
+
 /*==============================================================
 	STRING FUNCTIONS
 =============================================================*/
