@@ -16,7 +16,7 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form action="{{ page.fullURL.getURL() }}" method="post">
+				<form action="{{ page.fullURL.getURL() }}" method="post" id="detail-form">
 					<input type="hidden" name="itemID" value="{{ item.ouritemid }}">
 					<input type="hidden" name="vendorID" value="{{ item.vendorid }}">
 					<input type="hidden" name="vendoritemID" value="{{ item.vendoritemid }}">

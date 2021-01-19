@@ -1,5 +1,8 @@
 $(function () {
-	$('#notes-internal-modal').on('shown.bs.modal', function (e) {
+	var form_intv  = $('#intv-form');
+	var modal_intv = $('#notes-internal-modal');
+
+	modal_intv.on('shown.bs.modal', function (e) {
 		var modal = $(this);
 		var button = $(e.relatedTarget);
 		var note_row = button.closest('.qnote-row');
@@ -16,6 +19,41 @@ $(function () {
 			modal.find('input[name=notetime]').val(button.data('time')).removeAttr('readonly');
 			modal.find('input[name=rawnotetime]').val('');
 			modal.find('textarea[name=note]').val('');
+		}
+	});
+	
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = form_intv.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			intv_note_date: {
+				required: true,
+			},
+			intv_notetime: {
+				required: true,
+			},
+		},
+		messages: {
+		},
+		submitHandler: function(form) {
+			var values = $(form).formValues();
+			$('<input type="hidden" name="action" value="'+values.action+'">').appendTo($(form));
+
+			if (values.action == 'delete-notes') {
+				swal_delete_notes(function(confirmed) {
+					if (confirmed) {
+						form.submit();
+					}
+				});
+			} else {
+				form.submit();
+			}
 		}
 	});
 });
