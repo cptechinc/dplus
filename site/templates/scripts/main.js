@@ -23,6 +23,32 @@ $(function() {
 		return false;
 	});
 
+	$(".toggle-menu").on("click", function(e){
+		e.preventDefault();
+		e.stopPropagation();
+		var offcanvas_id =  $(this).attr('data-target');
+		$(offcanvas_id).toggleClass("show");
+		$('body').toggleClass("offcanvas-active");
+		$(".screen-overlay").toggleClass("show");
+		if ($(offcanvas_id).hasClass("show")) {
+			$(offcanvas_id).find('input[name=q]').focus();
+		}
+	});
+
+	$(".close, .screen-overlay").click(function(e){
+		$(".screen-overlay").removeClass("show");
+		$(".offcanvas").removeClass("show");
+		$("body").removeClass("offcanvas-active");
+	});
+
+	$(document).keyup(function(e) {
+		if (e.keyCode == 27) { // escape key maps to keycode `27`
+			if ($("#my_offcanvas1").hasClass("show")) {
+				$("#my_offcanvas1 .close").click();
+			}
+		}
+	});
+
 	$('.placard').on('accepted.fu.placard', function () {
 		var placard = $(this);
 		var form = placard.closest('form');

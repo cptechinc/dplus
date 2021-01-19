@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-light">
 	<div class="container-fluid">
-		<a href="#" class="nav-toggle pr-1 pl-2" onclick="toggle_nav()">
+		<a href="#" class="toggle-menu pr-1 pl-2" data-target="#dplus-nav">
 			<i class="fa fa-bars fa-1-2x" aria-hidden="true"></i>
 		</a>
 		<a href="<?= $pages->get('/')->url; ?>" class=""  aria-label="homepage link">

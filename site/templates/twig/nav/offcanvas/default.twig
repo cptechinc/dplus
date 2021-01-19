@@ -1,0 +1,50 @@
+<div class="screen-overlay"></div>
+
+<!-- offcanvas panel -->
+<aside class="offcanvas" id="dplus-nav">
+	<div class="card">
+		<div class="card-header">
+			<div class="d-flex w-100 justify-content-between">
+				<span>
+					<img src="{{ pages.get('/config/app/').logo_small.url }}" width="30" height="30" alt="">
+					DistributionPlus
+				</span>
+				<button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+		</div>
+		<div class="card-body pb-1">
+			<div class="pb-1">
+				<h6 class="mb-0">Welcome, {{ user.fullname }}</h6>
+			</div>
+			<div>
+				<form action="{{ pages.get('template=menu').url }}" class="mt-1 mb-3 allow-enterkey-submit">
+					<label for="nav-menu-search">Dplus Code</label>
+					<div class="input-group input-group-sm mb-3">
+						<input type="text" class="form-control" name="q" id="nav-menu-search">
+						<div class="input-group-append">
+							<button type="submit" class="btn btn-primary">
+								<i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<ul class="list-group list-group-flush">
+			{% block nav_links %}
+				{% for menu in pages.user_allowed_menus() %}
+					<li class="list-group-item py-2">
+						<a href="{{ menu.url }}">{{ menu.title }}</a>
+					</li>
+				{% endfor %}
+			{% endblock %}
+		</ul>
+		<div class="card-footer">
+			<a class="btn btn-danger btn-sm" href="{{ pages.get('template=login').url ~ "?action=logout" }}">
+				<i class="fa fa-sign-out" aria-hidden="true"></i> Logout
+			</a>
+		</div>
+	</div>
+</aside>
