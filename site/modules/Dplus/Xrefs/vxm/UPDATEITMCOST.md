@@ -5,7 +5,7 @@
 2. If the config `AptbConfVxmCostItemUpdM` (`ap_config`) from APC is ‘Y’
 3. ITM Our Item Cost Base is Replacement (R) or Manual (M)
 4. Vendor X-ref is a Primary (P) or Cost (C)
-5. If there is a Cost (C) X-ref for this Our Item **skip**
+5. If there is **NOT** a Cost (C) X-ref for this Our Item
 6. X-ref `VexrUnitCost` is **NOT** equal to `InitStanCost`
 7. If `AptbConfVxmCostMMesg` = 'Y' **user** must confirm
 
