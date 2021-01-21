@@ -699,6 +699,29 @@ class XrefVxm extends WireData implements Module {
 		return true;
 	}
 
+	/**
+	 * Return Base Price for X-ref
+	 * NOTE: Will use itm BASE Price if configured
+	 * @param  ItemXrefVendor $xref Vendor X-ref
+	 * @return float
+	 */
+	public function baseprice(ItemXrefVendor $xref) {
+		if ($this->use_itm_baseprice($xref)) {
+			return $xref->imitem->pricing->baseprice;
+		}
+		return $xref->get_listprice_uom_sale();
+	}
+
+	/**
+	 * Return if ITM Base price should be used for VXM baseprice
+	 * @param  ItemXrefVendor $xref Vendor X-ref
+	 * @return bool
+	 */
+	public function use_itm_baseprice(ItemXrefVendor $xref) {
+		$config = $this->get_config_ap();
+		return ($config->update_itm_pricing() === false || $xref->is_primary_vxmitem() === false);
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
