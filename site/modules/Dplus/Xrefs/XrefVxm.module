@@ -680,10 +680,12 @@ class XrefVxm extends WireData implements Module {
 		if ($this->xref_exists($vendorID, $vendoritemID, $itemID) == false) {
 			return false;
 		}
-		if ($this->configs->ap->update_itm_cost() == false) {
+
+		$xref = $this->xref($vendorID, $vendoritemID, $itemID);
+
+		if ($this->configs->ap->update_itm_cost($xref->imitem->standardcostbasedon) == false) {
 			return false;
 		}
-		$xref = $this->xref($vendorID, $vendoritemID, $itemID);
 
 		if (in_array($xref->imitem->standardcostbasedon, self::ITM_COSTBASE_ALLOWED) == false) {
 			return false;
