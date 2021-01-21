@@ -9,6 +9,7 @@ use ConfigPoQuery, ConfigPo;
 use ItemMasterItemQuery, ItemMasterItem;
 use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
 use ApBuyerQuery, ApBuyer;
+use ItemXrefVendorQuery, ItemXrefVendor;
 
 /**
  * Module that handles the editing of the ITM record for costing
@@ -88,7 +89,7 @@ class ItmCosting extends WireData implements Module {
 	 * @param  WireInput $input
 	 * @return ItmResponse
 	 */
-	public function update_itm_input(WireInput $input) {
+	private function update_itm_input(WireInput $input) {
 		$this->init_configs();
 		$itm = $this->wire('modules')->get('Itm');
 		$validate = $this->wire('modules')->get('ValidateItm');
@@ -116,6 +117,37 @@ class ItmCosting extends WireData implements Module {
 		return $this->save_and_process_response($item);
 	}
 
+	/**
+	 * Update ITM standard Cost from X-Ref Record
+	 * @param  ItemXrefVendor $xref [description]
+	 * @return bool
+	 */
+	public function update_cost_from_vxm(ItemXrefVendor $xref) {
+		$itm = $this->wire('modules')->get('Itm');
+		$vxm = $this->wire('modules')->get('XrefVxm');
+		$vxm->init_configs();
+
+
+		if ($itm->item_exists($xref->itemid) === false) {
+			return false;
+		}
+
+		if ($vxm->allow_itm_cost_update($xref->vendorid, $xref->vendoritemid, $xref->itemid) == false) {
+			return false;
+		}
+
+		$item = $xref->imitem;
+		$allowed = [ItemMasterItem::STANDARDCOST_BASE_REPLACEMENT, ItemMasterItem::STANDARDCOST_BASE_MANUAL];
+
+		if ($vxm->configs->ap->update_itm_cost($item->standardcostbasedon) == false) {
+			return false;
+		}
+		$item->setStandardcost($xref->unitcost_base);
+		$item->setDate_laststandardcost(date('Ymd'));
+		$response = $this->save_and_process_response($item);
+		return $response->has_success();
+	}
+
 /* =============================================================
 	CRUD Response Functions
 ============================================================= */
@@ -124,7 +156,7 @@ class ItmCosting extends WireData implements Module {
 	 * @param  ItemMasterItem $record Record to record response of database save
 	 * @return ItmResponse
 	 */
-	protected function save_and_process_response(ItemMasterItem $record) {
+	private function save_and_process_response(ItemMasterItem $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
@@ -155,7 +187,7 @@ class ItmCosting extends WireData implements Module {
 
 		if ($response->has_success()) {
 			$module_itm = $this->wire('modules')->get('Itm');
-			$module_itm->request_item_update($itemID);
+			$module_itm->request_item_update($record->itemid);
 		}
 		return $response;
 	}
@@ -213,7 +245,7 @@ class ItmCosting extends WireData implements Module {
 		}
 		return $this->configs->po->controlbuyer == ConfigPo::CONTROL_BUYER_ITEM;
 	}
-	
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
