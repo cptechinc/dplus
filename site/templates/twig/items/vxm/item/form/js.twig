@@ -278,6 +278,7 @@ $(function() {
 			uom_purchase: "Select a Purchase Unit of Measure",
 		},
 		submitHandler: function(form) {
+			$('#loading-modal').modal('show');
 			update_vxm(form);
 		}
 	});
