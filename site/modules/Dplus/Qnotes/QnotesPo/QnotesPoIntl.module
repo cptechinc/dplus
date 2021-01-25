@@ -1,10 +1,11 @@
 <?php namespace ProcessWire;
 
-use PurchaseOrderNoteInternalQuery, PurchaseOrderNoteInternal;
-
 use Purl\Url;
 
+use Dplus\CodeValidators\Po as ValidatorPo;
+
 use ConfigApQuery;
+use PurchaseOrderNoteInternalQuery, PurchaseOrderNoteInternal;
 
 
 include_once(__DIR__.'/../QnotesResponse.php');
@@ -208,10 +209,10 @@ class QnotesPoIntl extends WireData implements Module {
 	 */
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$validate_ponbr = $this->wire('modules')->get('ValidatePurchaseOrderNbr');
+		$validate_ponbr = new ValidatorPo();
 		$ponbr = $input->$rm->text('ponbr');
 
-		if ($validate_ponbr->validate($ponbr)) {
+		if ($validate_ponbr->po($ponbr)) {
 			switch ($input->$rm->text('action')) {
 				case 'update-notes':
 					$this->update_notes_input($input);

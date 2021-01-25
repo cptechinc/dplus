@@ -7,5 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Dplus\\CodeValidators\\Ar' => $baseDir . '/src/Ar/Ar.php',
+    'Dplus\\CodeValidators\\In' => $baseDir . '/src/In/In.php',
+    'Dplus\\CodeValidators\\Po' => $baseDir . '/src/Po/Po.php',
     'Dplus\\CodeValidators\\So' => $baseDir . '/src/So/So.php',
 );

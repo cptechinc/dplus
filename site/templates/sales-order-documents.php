@@ -22,7 +22,7 @@
 					$session->redirect($config->url_webdocs.$filename);
 				}
 			}
-			$page->body .= $config->twig->render('sales-orders/sales-order/documents.twig', ['page' => $page, 'documents' => $documents);
+			$page->body .= $config->twig->render('sales-orders/sales-order/documents.twig', ['page' => $page, 'documents' => $documents]);
 
 		} else {
 			$page->headline = "Sales Order #$ordn could not be found";

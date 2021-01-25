@@ -8,6 +8,8 @@ class ComposerStaticInit05e8b5312246afdde1a9eb3568c1d72c
 {
     public static $classMap = array (
         'Dplus\\CodeValidators\\Ar' => __DIR__ . '/../..' . '/src/Ar/Ar.php',
+        'Dplus\\CodeValidators\\In' => __DIR__ . '/../..' . '/src/In/In.php',
+        'Dplus\\CodeValidators\\Po' => __DIR__ . '/../..' . '/src/Po/Po.php',
         'Dplus\\CodeValidators\\So' => __DIR__ . '/../..' . '/src/So/So.php',
     );
 

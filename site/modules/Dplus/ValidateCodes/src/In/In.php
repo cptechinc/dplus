@@ -1,4 +1,6 @@
-<?php namespace ProcessWire;
+<?php namespace Dplus\CodeValidators;
+
+use ProcessWire\WireData;
 
 use Propel\Runtime\ActiveQuery\Criteria;
 
@@ -7,18 +9,18 @@ use InvAssortmentCodeQuery, InvAssortmentCode;
 use UnitofMeasureSaleQuery, UnitofMeasureSale;
 
 /**
- * ValidateIn
+ * In
  *
  * Class for Validating Inventory (IN) table codes, IDs
  */
-class ValidateIn extends WireData implements Module {
+class In extends WireData {
 
 	/**
 	 * Return if Item ID is Valid
 	 * @param  string $itemID Item ID
 	 * @return bool
 	 */
-	public function itemid_exists($itemID) {
+	public function itemid($itemID) {
 		$q = ItemMasterItemQuery::create();
 		$q->filterByItemid($itemID);
 		return boolval($q->count());
@@ -150,28 +152,5 @@ class ValidateIn extends WireData implements Module {
 	 */
 	public function whseid($id) {
 		return $this->modules->get('CodeTablesIwhm')->code_exists($id);
-	}
-
-
-/* =============================================================
-	ProcessWire Module Functions
-============================================================= */
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'IN Validate Module',
-			'version' => 101,
-			'summary' => 'Validates IN table codes',
-			'singular' => true,
-			'autoload' => true,
-			'installs' => array(),
-			'requires' => array(
-				'CodeTablesStcm',
-				'CodeTablesIgm',
-				'CodeTablesIgpm',
-				'CodeTablesIgcm',
-				'CodeTablesTarm',
-				'CodeTablesIwhm'
-			)
-		);
 	}
 }
