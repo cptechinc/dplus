@@ -294,6 +294,8 @@ class XrefVxm extends WireData implements Module {
 		 */
 		if ($response->has_success() && !$record->isDeleted()) {
 			$this->update_other_primary($record);
+			if ($values->text('update_itm_cost') == 'true') {
+				$this->update_itm_cost($record);
 			}
 		}
 		$this->wire('session')->response_xref = $response;
@@ -489,6 +491,23 @@ class XrefVxm extends WireData implements Module {
 			$this->update_dplus_cobol($vxmitem);
 		}
 	}
+
+	/**
+	 * Request Itm Costing Update
+	 * @param  ItemXrefVendor $record [description]
+	 * @return bool
+	 */
+	protected function update_itm_cost(ItemXrefVendor $record) {
+		$allowed = $this->allow_itm_cost_update($record->vendorid, $record->vendoritemid, $record->itemid);
+		$costchanged = $record->originalvalues[ItemXrefVendor::get_aliasproperty('unitcost_base')] != $record->unitcost_base;
+
+		if ($allowed === false || $costchanged === false) {
+			return false;
+		}
+		$itm = $this->wire('modules')->get('ItmCosting');
+		return $itm->update_cost_from_vxm($record);
+	}
+
 /* =============================================================
 	CRUD Response Functions
 ============================================================= */
@@ -680,9 +699,16 @@ class XrefVxm extends WireData implements Module {
 		if ($this->xref_exists($vendorID, $vendoritemID, $itemID) == false) {
 			return false;
 		}
-
 		$xref = $this->xref($vendorID, $vendoritemID, $itemID);
+		return $this->allow_itm_cost_update_xref($xref);
+	}
 
+	/**
+	 * Return if ITM costing can be updated
+	 * @param  ItemXrefVendor $xref Vendor X-ref
+	 * @return bool
+	 */
+	public function allow_itm_cost_update_xref(ItemXrefVendor $xref) {
 		if ($this->configs->ap->update_itm_cost($xref->imitem->standardcostbasedon) == false) {
 			return false;
 		}
@@ -696,7 +722,7 @@ class XrefVxm extends WireData implements Module {
 		}
 
 		if ($xref->costing_xref_for_itemid_exists()) {
-			return 'false';
+			return false;
 		}
 		return true;
 	}
