@@ -17,6 +17,7 @@ return array(
     'Dplus\\ScreenFormatters\\Ii\\PurchaseHistory' => $baseDir . '/src/ii/PurchaseHistory.php',
     'Dplus\\ScreenFormatters\\Ii\\PurchaseOrders' => $baseDir . '/src/ii/PurchaseOrders.php',
     'Dplus\\ScreenFormatters\\Ii\\Quotes' => $baseDir . '/src/ii/Quotes.php',
+    'Dplus\\ScreenFormatters\\Ii\\SalesHistory' => $baseDir . '/src/ii/SalesHistory.php',
     'Dplus\\ScreenFormatters\\Ii\\Stock' => $baseDir . '/src/ii/Stock.php',
     'Dplus\\ScreenFormatters\\ScreenFormatter' => $baseDir . '/src/ScreenFormatter.php',
 );
