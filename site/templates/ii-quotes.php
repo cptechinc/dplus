@@ -15,13 +15,14 @@
 				$session->redirect($page->get_itemquotesURL($itemID));
 			}
 			$session->quotestry = 0;
-			$module_formatter = $modules->get('SfIiQuotes');
+
 			$refreshurl = $page->get_itemquotesURL($itemID);
 			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 
 			if ($json['error']) {
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 			} else {
+				$module_formatter = new Dplus\ScreenFormatters\Ii\Quotes();
 				$module_formatter->init_formatter();
 				$refreshurl = $page->get_itemquotesURL($itemID);
 				$docm = $modules->get('DocumentManagementQt');
