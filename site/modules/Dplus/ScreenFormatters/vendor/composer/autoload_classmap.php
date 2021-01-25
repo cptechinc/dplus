@@ -21,4 +21,5 @@ return array(
     'Dplus\\ScreenFormatters\\Ii\\SalesOrders' => $baseDir . '/src/ii/SalesOrders.php',
     'Dplus\\ScreenFormatters\\Ii\\Stock' => $baseDir . '/src/ii/Stock.php',
     'Dplus\\ScreenFormatters\\ScreenFormatter' => $baseDir . '/src/ScreenFormatter.php',
+    'Dplus\\ScreenFormatters\\Vi\\OpenInvoices' => $baseDir . '/src/vi/OpenInvoices.php',
 );

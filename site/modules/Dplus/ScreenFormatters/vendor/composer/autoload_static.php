@@ -22,6 +22,7 @@ class ComposerStaticInita3b9a800950900832f3209ceb394b8b6
         'Dplus\\ScreenFormatters\\Ii\\SalesOrders' => __DIR__ . '/../..' . '/src/ii/SalesOrders.php',
         'Dplus\\ScreenFormatters\\Ii\\Stock' => __DIR__ . '/../..' . '/src/ii/Stock.php',
         'Dplus\\ScreenFormatters\\ScreenFormatter' => __DIR__ . '/../..' . '/src/ScreenFormatter.php',
+        'Dplus\\ScreenFormatters\\Vi\\OpenInvoices' => __DIR__ . '/../..' . '/src/vi/OpenInvoices.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
