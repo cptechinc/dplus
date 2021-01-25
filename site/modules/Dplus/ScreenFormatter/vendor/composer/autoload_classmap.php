@@ -7,5 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Dplus\\ScreenFormatters\\Ci\\OpenInvoices' => $baseDir . '/src/ci/OpenInvoices.php',
+    'Dplus\\ScreenFormatters\\Ci\\Payments' => $baseDir . '/src/ci/Payments.php',
+    'Dplus\\ScreenFormatters\\Ci\\PurchaseOrders' => $baseDir . '/src/ci/PurchaseOrders.php',
     'Dplus\\ScreenFormatters\\ScreenFormatter' => $baseDir . '/src/ScreenFormatter.php',
 );
