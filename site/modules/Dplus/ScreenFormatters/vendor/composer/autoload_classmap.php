@@ -13,6 +13,7 @@ return array(
     'Dplus\\ScreenFormatters\\Ci\\SalesHistory' => $baseDir . '/src/ci/SalesHistory.php',
     'Dplus\\ScreenFormatters\\Ci\\SalesOrders' => $baseDir . '/src/ci/SalesOrders.php',
     'Dplus\\ScreenFormatters\\Ii\\Item' => $baseDir . '/src/ii/Item.php',
+    'Dplus\\ScreenFormatters\\Ii\\Lotserial' => $baseDir . '/src/ii/Lotserial.php',
     'Dplus\\ScreenFormatters\\Ii\\Quotes' => $baseDir . '/src/ii/Quotes.php',
     'Dplus\\ScreenFormatters\\Ii\\Stock' => $baseDir . '/src/ii/Stock.php',
     'Dplus\\ScreenFormatters\\ScreenFormatter' => $baseDir . '/src/ScreenFormatter.php',

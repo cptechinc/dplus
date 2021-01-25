@@ -15,7 +15,7 @@
 				$session->redirect($page->get_itemlotserialURL($itemID));
 			}
 			$session->lotserialtry = 0;
-			$formatter = $modules->get('SfIiLotserial');
+			$formatter = new Dplus\ScreenFormatters\Ii\Lotserial();
 			$refreshurl = $page->get_itemlotserialURL($itemID);
 			$page->body .= $config->twig->render('items/ii/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), $page->jsoncode), 'refreshurl' => $refreshurl]);
 

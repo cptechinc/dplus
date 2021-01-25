@@ -1,9 +1,8 @@
-<?php namespace ProcessWire;
+<?php namespace Dplus\ScreenFormatters\Ii;
 
-/**
- * Class for formatting the II Lotserial Screen
- */
-class SfIiLotserial extends ScreenFormatter implements Module {
+use Dplus\ScreenFormatters\ScreenFormatter;
+
+class Lotserial extends ScreenFormatter {
 	protected $code = 'ii-lotserial';
 
 	/**
@@ -26,25 +25,5 @@ class SfIiLotserial extends ScreenFormatter implements Module {
 		$pdate = new \DateTime($data['expire date']);
 		$today = new \DateTime();
 		return $today->diff($pdate)->format("%a");
-	}
-
-
-/* =============================================================
-	ProcessWire Module Functions
-============================================================= */
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'Dpluso II Lotserial Formatter Module',
-			'version' => 101,
-			'summary' => 'Handles II Lotserial Formatter',
-			'singular' => true,
-			'autoload' => false,
-			'requires' => 'ScreenFormatter'
-		);
 	}
 }
