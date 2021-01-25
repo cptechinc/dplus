@@ -1,0 +1,63 @@
+<?php namespace ProcessWire;
+
+require_once(__DIR__.'/../JsonDataFiles/JsonDataFiles.module');
+
+/**
+ * Class for Loading Example JSON data files for debug or / formatting previews
+ */
+class JsonExampleDataFiles extends JsonDataFiles implements Module {
+	protected $success = true;
+	protected $error;
+
+	/**
+	 * Return JSON FILE
+	 * @param  string $sessionID Session ID
+	 * @param  string $jsoncode  ex. ii-stock
+	 * @return array             Decoded json array
+	 */
+	public function get_file($sessionID, $jsoncode) {
+		$file = $this->get_filename($jsoncode);
+		$filepath = __DIR__.'/examples/';
+		$jsonfile = $filepath."$file.json";
+		$json = array();
+
+		if (file_exists($jsonfile)) {
+			$json = json_decode(file_get_contents($jsonfile), true);
+
+			if (empty($json)) {
+				$this->success = false;
+				$this->error = "The $jsoncode JSON contains errors, JSON ERROR: ". json_last_error();
+			}
+		} else {
+			$this->success = false;
+			$this->error = "JSON file $jsonfile not found";
+		}
+		return $json;
+	}
+
+	public function file_exists($sessionID, $jsoncode) {
+		$file = $this->get_filename($jsoncode);
+		$filepath = __DIR__.'/examples/';
+		$jsonfile = $filepath."$file.json";
+		return file_exists($jsonfile);
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	/**
+	 * ProcessWire Module Info
+	 *
+	 * @return void
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso JSON Example Data Files Module',
+			'version' => 101,
+			'summary' => 'Handles Dpluso JSON Example Data Files',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array("JsonDataFiles")
+		);
+	}
+}
