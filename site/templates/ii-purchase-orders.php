@@ -22,7 +22,7 @@
 			if ($json['error']) {
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 			} else {
-				$module_formatter = $modules->get('SfIiPurchaseOrders');
+				$module_formatter = new Dplus\ScreenFormatters\Ii\PurchaseOrders();
 				$module_formatter->init_formatter();
 				$docm = $modules->get('DocumentManagementPo');
 				$page->body .= $config->twig->render('items/ii/purchase-orders/purchase-orders.twig', ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'docm' => $docm]);

@@ -16,6 +16,7 @@ class ComposerStaticInita3b9a800950900832f3209ceb394b8b6
         'Dplus\\ScreenFormatters\\Ii\\Item' => __DIR__ . '/../..' . '/src/ii/Item.php',
         'Dplus\\ScreenFormatters\\Ii\\Lotserial' => __DIR__ . '/../..' . '/src/ii/Lotserial.php',
         'Dplus\\ScreenFormatters\\Ii\\PurchaseHistory' => __DIR__ . '/../..' . '/src/ii/PurchaseHistory.php',
+        'Dplus\\ScreenFormatters\\Ii\\PurchaseOrders' => __DIR__ . '/../..' . '/src/ii/PurchaseOrders.php',
         'Dplus\\ScreenFormatters\\Ii\\Quotes' => __DIR__ . '/../..' . '/src/ii/Quotes.php',
         'Dplus\\ScreenFormatters\\Ii\\Stock' => __DIR__ . '/../..' . '/src/ii/Stock.php',
         'Dplus\\ScreenFormatters\\ScreenFormatter' => __DIR__ . '/../..' . '/src/ScreenFormatter.php',

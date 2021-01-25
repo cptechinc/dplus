@@ -2,14 +2,15 @@
 
 use Dplus\ScreenFormatters\ScreenFormatter;
 
-class Quotes extends ScreenFormatter {
-	protected $code = 'ii-purchase-orders';
+class PurchaseOrders extends ScreenFormatter {
+	protected $code = 'ii-purchase-history';
 
 	/**
 	 * Key Value array of Sections that exist I.E. header => Header, detail => Detail
 	 * @var string
 	 */
 	protected $datasections = array(
-		"detail" => "Detail"
+		"detail"    => "Detail",
+		"lotserial" => "Lot / Serial"
 	);
 }
