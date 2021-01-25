@@ -3,6 +3,7 @@
 use Dplus\ScreenFormatters\ScreenFormatter;
 
 class OpenInvoices extends ScreenFormatter {
+	const URI = 'ci:open-invoices';
 
 	protected $code = 'ci-open-invoices';
 

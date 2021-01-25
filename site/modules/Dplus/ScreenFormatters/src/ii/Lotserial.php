@@ -3,6 +3,8 @@
 use Dplus\ScreenFormatters\ScreenFormatter;
 
 class Lotserial extends ScreenFormatter {
+	const URI = 'ii:lotserial';
+	
 	protected $code = 'ii-lotserial';
 
 	/**

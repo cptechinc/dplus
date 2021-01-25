@@ -3,6 +3,7 @@
 use Dplus\ScreenFormatters\ScreenFormatter;
 
 class Quotes extends ScreenFormatter {
+	const URI = 'ci:quotes';
 
 	protected $code = 'ci-quotes';
 

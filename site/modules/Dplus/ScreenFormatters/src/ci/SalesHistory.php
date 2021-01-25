@@ -3,6 +3,8 @@
 use Dplus\ScreenFormatters\ScreenFormatter;
 
 class SalesHistory extends ScreenFormatter {
+	const URI = 'ci:sales-history';
+
 	protected $code = 'ci-sales-history';
 
 	/**

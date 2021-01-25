@@ -3,6 +3,8 @@
 use Dplus\ScreenFormatters\ScreenFormatter;
 
 class PurchaseOrders extends ScreenFormatter {
+	const URI = 'ii:purchase-orders';
+	
 	protected $code = 'ii-purchase-history';
 
 	/**

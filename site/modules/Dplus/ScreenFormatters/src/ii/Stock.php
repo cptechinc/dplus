@@ -3,6 +3,8 @@
 use Dplus\ScreenFormatters\ScreenFormatter;
 
 class Stock extends ScreenFormatter {
+	const URI = 'ii:stock';
+	
 	protected $code = 'ii-stock';
 
 	/**

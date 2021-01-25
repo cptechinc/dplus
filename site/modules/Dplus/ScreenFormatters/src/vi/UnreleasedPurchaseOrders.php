@@ -3,6 +3,8 @@
 use Dplus\ScreenFormatters\ScreenFormatter;
 
 class UnreleasedPurchaseOrders extends ScreenFormatter {
+	const URI = 'vi:unrelased-purchase-orders';
+	
 	protected $code = 'vi-unreleased';
 
 	/**

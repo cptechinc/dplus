@@ -3,6 +3,8 @@
 use Dplus\ScreenFormatters\ScreenFormatter;
 
 class SalesOrders extends ScreenFormatter {
+	const URI = 'ci:sales-orders';
+
 	protected $code = 'ci-sales-orders';
 
 	/**

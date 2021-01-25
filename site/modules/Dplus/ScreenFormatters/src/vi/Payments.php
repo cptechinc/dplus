@@ -3,6 +3,8 @@
 use Dplus\ScreenFormatters\ScreenFormatter;
 
 class Payments extends ScreenFormatter {
+	const URI = 'vi:payments';
+
 	protected $code = 'vi-payments';
 
 	/**
