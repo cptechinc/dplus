@@ -26,7 +26,7 @@
 				<div class="mt-1">
 					<small class="desc1"></small> <br>
 					<small class="desc2"></small>
-					{% if page.modules.get('SfIiItem').is_weight_formatted() %}
+					{% if page.modules.get('ScreenFormatters').formatter('ii:item').is_weight_formatted() %}
 						<br> <small>Avg Weight:</small> <small class="weight"></small>
 					{% endif %}
 				</div>
