@@ -2,6 +2,8 @@
 
 use TableformatterQuery, Tableformatter;
 
+include_once(__DIR__.'/vendor/autoload.php');
+
 /**
  * Class for Formatting Screens
  */

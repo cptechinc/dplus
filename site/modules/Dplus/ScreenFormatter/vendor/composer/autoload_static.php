@@ -7,7 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInita3b9a800950900832f3209ceb394b8b6
 {
     public static $classMap = array (
-        'Dplus\\ScreenFormatters\\Ci\\PurchaseOrders' => __DIR__ . '/../..' . '/src/ci/OpenInvoices.php',
+        'Dplus\\ScreenFormatters\\Ci\\OpenInvoices' => __DIR__ . '/../..' . '/src/ci/OpenInvoices.php',
         'Dplus\\ScreenFormatters\\ScreenFormatter' => __DIR__ . '/../..' . '/src/ScreenFormatter.php',
     );
 

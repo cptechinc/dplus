@@ -6,6 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Dplus\\ScreenFormatters\\Ci\\PurchaseOrders' => $baseDir . '/src/ci/OpenInvoices.php',
+    'Dplus\\ScreenFormatters\\Ci\\OpenInvoices' => $baseDir . '/src/ci/OpenInvoices.php',
     'Dplus\\ScreenFormatters\\ScreenFormatter' => $baseDir . '/src/ScreenFormatter.php',
 );

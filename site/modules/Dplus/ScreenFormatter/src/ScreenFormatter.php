@@ -195,7 +195,7 @@ class ScreenFormatter extends WireData {
 			$this->formatter = $this->load_dbformatter('default', $this->code);
 			$this->source = 'database-default';
 		} else {
-			$this->formatter = file_get_contents(__DIR__."/default/$this->code.json");
+			$this->formatter = file_get_contents(__DIR__."/../default/$this->code.json");
 			$this->source = 'default';
 		}
 		$this->formatter = json_decode($this->formatter, true);

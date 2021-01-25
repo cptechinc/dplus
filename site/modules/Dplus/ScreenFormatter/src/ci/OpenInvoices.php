@@ -2,17 +2,15 @@
 
 use Dplus\ScreenFormatters\ScreenFormatter;
 
-class PurchaseOrders extends ScreenFormatter {
+class OpenInvoices extends ScreenFormatter {
 
-	protected $code = 'ci-customer-po';
+	protected $code = 'ci-open-invoices';
 
 	/**
 	 * Key Value array of Sections that exist I.E. header => Header, detail => Detail
 	 * @var string
 	 */
 	protected $datasections = array(
-		'header'  => 'Header',
-		"details" => "Details",
-		"totals"  => "Totals"
+		"detail" => "Detail"
 	);
 }
