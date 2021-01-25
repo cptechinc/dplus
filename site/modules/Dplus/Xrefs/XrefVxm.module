@@ -500,8 +500,7 @@ class XrefVxm extends WireData implements Module {
 	protected function update_itm_cost(ItemXrefVendor $record) {
 		$allowed = $this->allow_itm_cost_update($record->vendorid, $record->vendoritemid, $record->itemid);
 		$costchanged = $record->originalvalues[ItemXrefVendor::get_aliasproperty('unitcost_base')] != $record->unitcost_base;
-
-		if ($allowed === false || $costchanged === false) {
+		if ($allowed === false && $costchanged === false) {
 			return false;
 		}
 		$itm = $this->wire('modules')->get('ItmCosting');
