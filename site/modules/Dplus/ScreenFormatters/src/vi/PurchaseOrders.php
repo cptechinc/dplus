@@ -1,0 +1,16 @@
+<?php namespace Dplus\ScreenFormatters\Vi;
+
+use Dplus\ScreenFormatters\ScreenFormatter;
+
+class PurchaseOrders extends ScreenFormatter {
+	protected $code = 'vi-purchase-orders';
+
+	/**
+	 * Key Value array of Sections that exist I.E. header => Header, detail => Detail
+	 * @var string
+	 */
+	protected $datasections = array(
+		"header" => "Header",
+		"detail" => "Detail"
+	);
+}
