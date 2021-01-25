@@ -1,0 +1,96 @@
+{
+	"cols": 8,
+	"detail": {
+        "rows": 1,
+        "columns": {
+            "Item ID": {
+                "line": 0,
+                "column": 0,
+    			"col-length": 1,
+    			"label": "Item ID",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Warehouse ID": {
+                "line": 1,
+                "column": 2,
+    			"col-length": 1,
+    			"label": "Wh",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "Bin Number": {
+                "line": 1,
+                "column": 3,
+    			"col-length": 1,
+    			"label": "Bin Nbr",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "left",
+                "label-justify": "left"
+            },
+            "On Hand": {
+               "line": 1,
+                "column": 4,
+    			"col-length": 1,
+    			"label": "On Hand",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+                "data-justify": "right",
+                "label-justify": "right"
+            },
+            "On Order": {
+               "line": 1,
+                "column": 5,
+    			"col-length": 1,
+    			"label": "On Ordr",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+				"data-justify": "right",
+                "label-justify": "right"
+            },
+            "Committed": {
+                "line": 1,
+                "column": 6,
+    			"col-length": 1,
+    			"label": "Commit",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+				"data-justify": "right",
+                "label-justify": "right"
+            },
+            "Available": {
+                "line": 1,
+                "column": 7,
+    			"col-length": 1,
+    			"label": "Avail",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+				"data-justify": "right",
+                "label-justify": "right"
+            },
+            "On Hand-Boxes": {
+                "line": 1,
+                "column": 8,
+    			"col-length": 1,
+    			"label": "O-H Box",
+                "before-decimal": false,
+                "after-decimal": false,
+                "date-format": false,
+				"data-justify": "right",
+                "label-justify": "right"
+            }
+        }
+    }
+}

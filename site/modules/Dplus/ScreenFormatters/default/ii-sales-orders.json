@@ -1,0 +1,361 @@
+{
+	"cols": 9,
+	"detail": {
+		"rows": 1,
+		"columns": {
+			"Sales Order Number": {
+				"line": 1,
+				"column": 1,
+				"col-length": 1,
+				"label": "Sales Order Number",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Data Source": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Data Source",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Customer PO Number": {
+				"line": 1,
+				"column": 2,
+				"col-length": 1,
+				"label": "Customer PO Number",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Customer ID": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Customer ID",
+				"name": "Customer ID",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Customer Name": {
+				"line": 1,
+				"column": 4,
+				"col-length": 1,
+				"label": "Customer Name",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Order Date": {
+				"line": 1,
+				"column": 3,
+				"col-length": 1,
+				"label": "Order Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y",
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Ship-To ID": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Ship-To ID",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Ship-To Name": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Ship-To Name",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Ship-To City/State/Zip": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Ship-To City/State/Zip",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Customer Item ID": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Customer Item ID",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Order Status": {
+				"line": 1,
+				"column": 3,
+				"col-length": 1,
+				"label": "Order Status",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Warehouse Code": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Warehouse Code",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Pick Date": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Pick Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Verify Date": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Verify Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Arrive Date": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Arrive Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Sales Unit of Measure": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Sales Unit of Measure",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Quantity Ordered": {
+				"line": 1,
+				"column": 6,
+				"col-length": 1,
+				"label": "Quantity Ordered",
+				"before-decimal": 5,
+				"after-decimal": 0,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Quantity Shipped": {
+				"line": 1,
+				"col-length": 1,
+				"column": 7,
+				"label": "Quantity Shipped",
+				"before-decimal": 5,
+				"after-decimal": 0,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Quantity Backordered": {
+				"line": 1,
+				"col-length": 1,
+				"column": 8,
+				"label": "Quantity Backordered",
+				"before-decimal": 5,
+				"after-decimal": 0,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Quantity To Ship": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Quantity To Ship",
+				"before-decimal": 5,
+				"after-decimal": 0,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Price": {
+				"line": 1,
+				"column": 8,
+				"col-length": 1,
+				"label": "Price",
+				"before-decimal": 7,
+				"after-decimal": 2,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Amount": {
+				"line": 1,
+				"column": 9,
+				"col-length": 1,
+				"label": "Amount",
+				"before-decimal": 7,
+				"after-decimal": 2,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Requested Date": {
+				"line": 1,
+				"column": 5,
+				"col-length": 1,
+				"label": "Requested Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y",
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Ship Date": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Ship Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Cancel Date": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Cancel Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Special Order": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Special Order",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Reference Purchase Order": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Reference Purchase Order",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Item Reference": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Item Reference",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Non-Stock Vendor ID": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Non-Stock Vendor ID",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Non-Stock Vendor Item ID": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Non-Stock Vendor Item ID",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Non-Stock Vend Item Desc1": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Non-Stock Vend Item Desc1",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Non-Stock Vend Item Desc2": {
+				"line": 0,
+				"col-length": 0,
+				"column": 0,
+				"label": "Non-Stock Vend Item Desc2",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			}
+		}
+	}
+}

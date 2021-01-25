@@ -1,0 +1,432 @@
+{
+  "error": false,
+  "errormsg": "",
+  "sessionid": "bu0n29vefqt4as6cbo9oqk01sm",
+  "itemid": "8391",
+  "columns": {
+    "warehouse": {
+      "heading": "WH",
+      "headingjustify": "l",
+      "datajustify": "l",
+      "sortavailable": "y"
+    },
+    "warehouse city": {
+      "heading": "Warehouse City",
+      "headingjustify": "l",
+      "datajustify": "l",
+      "sortavailable": "n"
+    },
+    "lot/serial": {
+      "heading": "Lot/Serial Number",
+      "headingjustify": "l",
+      "datajustify": "l",
+      "sortavailable": "y"
+    },
+    "bin": {
+      "heading": "Bin Nbr",
+      "headingjustify": "l",
+      "datajustify": "l",
+      "sortavailable": "y"
+    },
+    "lot reference": {
+      "heading": "Lot Reference",
+      "headingjustify": "l",
+      "datajustify": "l",
+      "sortavailable": "n"
+    },
+    "expire date": {
+      "heading": "Expire Date",
+      "headingjustify": "l",
+      "datajustify": "l",
+      "sortavailable": "n"
+    },
+    "available": {
+      "heading": "Available",
+      "headingjustify": "r",
+      "datajustify": "r",
+      "sortavailable": "n"
+    }
+  },
+  "data": {
+    "lots": {
+      "1": {
+        "warehouse": "AL",
+        "warehouse city": "952-888-1888",
+        "lot/serial": "P052900002",
+        "bin": "WHSE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "12.00"
+      },
+      "2": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "K091500004",
+        "bin": "D0404",
+        "lot reference": "",
+        "expire date": "",
+        "available": "5.00"
+      },
+      "3": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "K091500004",
+        "bin": "PACK",
+        "lot reference": "RGA Nbr 00000005",
+        "expire date": "",
+        "available": "2.00"
+      },
+      "4": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "K091500004",
+        "bin": "TESTBIN",
+        "lot reference": "",
+        "expire date": "",
+        "available": "6.00"
+      },
+      "5": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "R020900004",
+        "bin": "A0101",
+        "lot reference": "",
+        "expire date": "",
+        "available": "3.00"
+      },
+      "6": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "R020900004",
+        "bin": "WHSE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "20.00"
+      },
+      "7": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "R031500002",
+        "bin": "A0101",
+        "lot reference": "",
+        "expire date": "",
+        "available": "69.00"
+      },
+      "8": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "R031500002",
+        "bin": "B0102",
+        "lot reference": "",
+        "expire date": "",
+        "available": "900.00"
+      },
+      "9": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "R031500002",
+        "bin": "E0505",
+        "lot reference": "",
+        "expire date": "",
+        "available": "6.00"
+      },
+      "10": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "R031500002",
+        "bin": "QUALIT",
+        "lot reference": "",
+        "expire date": "",
+        "available": "64.00"
+      },
+      "11": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "R031500002",
+        "bin": "TESTBIN",
+        "lot reference": "",
+        "expire date": "",
+        "available": "1.00"
+      },
+      "12": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "R051600004",
+        "bin": "SHIP",
+        "lot reference": "",
+        "expire date": "",
+        "available": "2.00"
+      },
+      "13": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "R081100002",
+        "bin": "QUALIT",
+        "lot reference": "",
+        "expire date": "",
+        "available": "1.00"
+      },
+      "14": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "R081100002",
+        "bin": "SHIP",
+        "lot reference": "",
+        "expire date": "",
+        "available": "1.00"
+      },
+      "15": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "R081100004",
+        "bin": "QUALIT",
+        "lot reference": "",
+        "expire date": "",
+        "available": "2.00"
+      },
+      "16": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "R091400004",
+        "bin": "QUALIT",
+        "lot reference": "",
+        "expire date": "",
+        "available": "2.00"
+      },
+      "17": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "R120600004",
+        "bin": "QUALIT",
+        "lot reference": "",
+        "expire date": "",
+        "available": "1.00"
+      },
+      "18": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "R120600004",
+        "bin": "RECEIVE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "1.00"
+      },
+      "19": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "S010800002",
+        "bin": "RECEIVE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "2.00"
+      },
+      "20": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "S032200002",
+        "bin": "RECEIVE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "2.00"
+      },
+      "21": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "S032600002",
+        "bin": "RECEIVE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "2.00"
+      },
+      "22": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "S042000002",
+        "bin": "RECEIVE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "2.00"
+      },
+      "23": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "S061800008",
+        "bin": "RECEIVE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "1.00"
+      },
+      "24": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "S120500001",
+        "bin": "B0102",
+        "lot reference": "",
+        "expire date": "",
+        "available": "1.00"
+      },
+      "25": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "T012300002",
+        "bin": "B0102",
+        "lot reference": "",
+        "expire date": "",
+        "available": "50.00"
+      },
+      "26": {
+        "warehouse": "BU",
+        "warehouse city": "EAGAN",
+        "lot/serial": "T091000008",
+        "bin": "B0102",
+        "lot reference": "",
+        "expire date": "",
+        "available": "12.00"
+      },
+      "27": {
+        "warehouse": "EA",
+        "warehouse city": "EAGAN",
+        "lot/serial": "S121700001",
+        "bin": "A0101",
+        "lot reference": "31415926",
+        "expire date": "",
+        "available": "124.00"
+      },
+      "28": {
+        "warehouse": "EA",
+        "warehouse city": "EAGAN",
+        "lot/serial": "S121700002",
+        "bin": "B0202",
+        "lot reference": "3125625125255",
+        "expire date": "",
+        "available": "124.00"
+      },
+      "29": {
+        "warehouse": "EA",
+        "warehouse city": "EAGAN",
+        "lot/serial": "S121700002",
+        "bin": "C0303",
+        "lot reference": "3125625125255",
+        "expire date": "",
+        "available": "1.00"
+      },
+      "30": {
+        "warehouse": "EF",
+        "warehouse city": "FARMINGTON",
+        "lot/serial": "K111100004",
+        "bin": "WHSE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "23.00"
+      },
+      "31": {
+        "warehouse": "LA",
+        "warehouse city": "",
+        "lot/serial": "R082300005",
+        "bin": "WHSE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "2.00"
+      },
+      "32": {
+        "warehouse": "LA",
+        "warehouse city": "",
+        "lot/serial": "R082500007",
+        "bin": "WHSE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "2.00"
+      },
+      "33": {
+        "warehouse": "LA",
+        "warehouse city": "",
+        "lot/serial": "R082800002",
+        "bin": "WHSE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "2.00"
+      },
+      "34": {
+        "warehouse": "LA",
+        "warehouse city": "",
+        "lot/serial": "R082800004",
+        "bin": "WHSE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "2.00"
+      },
+      "35": {
+        "warehouse": "LA",
+        "warehouse city": "",
+        "lot/serial": "R091900001",
+        "bin": "WHSE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "2.00"
+      },
+      "36": {
+        "warehouse": "NU",
+        "warehouse city": "",
+        "lot/serial": "P052900003",
+        "bin": "WHSE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "1.00"
+      },
+      "37": {
+        "warehouse": "NU",
+        "warehouse city": "",
+        "lot/serial": "P052900005",
+        "bin": "WHSE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "12.00"
+      },
+      "38": {
+        "warehouse": "NU",
+        "warehouse city": "",
+        "lot/serial": "P060400002",
+        "bin": "WHSE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "1.00"
+      },
+      "39": {
+        "warehouse": "NU",
+        "warehouse city": "",
+        "lot/serial": "R082100002",
+        "bin": "WHSE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "2.00"
+      },
+      "40": {
+        "warehouse": "NU",
+        "warehouse city": "",
+        "lot/serial": "R082100003",
+        "bin": "WHSE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "2.00"
+      },
+      "41": {
+        "warehouse": "NU",
+        "warehouse city": "",
+        "lot/serial": "R082100004",
+        "bin": "WHSE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "3.00"
+      },
+      "42": {
+        "warehouse": "NU",
+        "warehouse city": "",
+        "lot/serial": "R082100005",
+        "bin": "WHSE",
+        "lot reference": "",
+        "expire date": "",
+        "available": "2.00"
+      }
+    }
+  }
+}

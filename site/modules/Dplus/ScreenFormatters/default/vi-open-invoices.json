@@ -1,0 +1,140 @@
+{
+	"cols": 5,
+	"header": {
+		"rows": 1,
+		"columns": {
+			"Purchase Order Number": {
+				"line": 1,
+				"column": 1,
+				"col-length": 1,
+				"label": "PO #",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Invoice Number": {
+				"line": 1,
+				"column": 2,
+				"col-length": 1,
+				"label": "Invc #",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Status": {
+				"line": 0,
+				"column": 0,
+				"col-length": 1,
+				"label": "Status",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Invoice Date": {
+				"line": 1,
+				"column": 3,
+				"col-length": 1,
+				"label": "InvcDate",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Discount Date": {
+				"line": 0,
+				"column": 0,
+				"col-length": 1,
+				"label": "DscntDate",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Due Date": {
+				"line": 1,
+				"column": 4,
+				"col-length": 1,
+				"label": "DueDate",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Amount - Total": {
+				"line": 1,
+				"column": 5,
+				"col-length": 1,
+				"label": "TOTAL",
+				"before-decimal": 9,
+				"after-decimal": 2,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			},
+			"Amount - Discount": {
+				"line": 0,
+				"column": 0,
+				"col-length": 1,
+				"label": "DscntAmt",
+				"before-decimal": 9,
+				"after-decimal": 2,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			},
+			"Amount - Current": {
+				"line": 0,
+				"column": 0,
+				"col-length": 1,
+				"label": "CurAmt",
+				"before-decimal": 7,
+				"after-decimal": 2,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			},
+			"Amount - Aging 1": {
+				"line": 0,
+				"column": 0,
+				"col-length": 1,
+				"label": "Age1Amt",
+				"before-decimal": 7,
+				"after-decimal": 2,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			},
+			"Amount - Aging 2": {
+				"line": 0,
+				"column": 0,
+				"col-length": 1,
+				"label": "Age2Amt",
+				"before-decimal": 7,
+				"after-decimal": 2,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			},
+			"Amount - Aging 3": {
+				"line": 0,
+				"column": 0,
+				"col-length": 1,
+				"label": "Age3Amt",
+				"before-decimal": 7,
+				"after-decimal": 2,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			}
+		}
+	}
+}

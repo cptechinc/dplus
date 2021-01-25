@@ -1,0 +1,195 @@
+{
+	"cols": 10,
+	"detail": {
+		"rows": 1,
+		"columns": {
+		   "Purchase Order Number": {
+				"line": 1,
+				"column": 1,
+				"col-length": 1,
+				"label": "PO #",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Invoice Number": {
+				"line": 1,
+				"column": 2,
+				"col-length": 1,
+				"label": "Invc #",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Reference": {
+				"line": 1,
+				"column": 5,
+				"col-length": 1,
+				"label": "CUSTOMER",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Item ID": {
+				"line": 1,
+				"column": 4,
+				"col-length": 1,
+				"label": "ItemID",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Item Description 1": {
+				"line": 1,
+				"column": 6,
+				"col-length": 1,
+				"label": "ItemDesc1",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Item Description 2": {
+				"line": 0,
+				"column": 0,
+				"col-length": 1,
+				"label": "ItemDesc2",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Warehouse Code": {
+				"line": 0,
+				"column": 0,
+				"col-length": 1,
+				"label": "WhseCode",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Order Date": {
+				"line": 1,
+				"column": 7,
+				"col-length": 1,
+				"label": "OrdDate",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Receipt Date": {
+				"line": 1,
+				"column": 8,
+				"col-length": 1,
+				"label": "RcptDate",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Invoice Date": {
+				"line": 0,
+				"column": 0,
+				"col-length": 1,
+				"label": "InvcDate",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Purchase Unit of Measure": {
+				"line": 0,
+				"column": 0,
+				"col-length": 1,
+				"label": "PurUnit",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Received Quantity": {
+				"line": 1,
+				"column": 3,
+				"col-length": 1,
+				"label": "QTY IN",
+				"before-decimal": 7,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			},
+			"Received Unit Cost": {
+				"line": 1,
+				"column": 9,
+				"col-length": 1,
+				"label": "UnitCost",
+				"before-decimal": 7,
+				"after-decimal": 4,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			},
+			"Received Amount": {
+				"line": 1,
+				"column": 10,
+				"col-length": 1,
+				"label": "InvcAmt",
+				"before-decimal": 8,
+				"after-decimal": 2,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			},
+			"Invoiced Quantity": {
+				"line": 0,
+				"column": 0,
+				"col-length": 1,
+				"label": "InvcQty",
+				"before-decimal": 7,
+				"after-decimal": 3,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			},
+			"Invoiced Unit Cost": {
+				"line": 0,
+				"column": 0,
+				"col-length": 1,
+				"label": "InvcUntCst",
+				"before-decimal": 7,
+				"after-decimal": 4,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			},
+			"Invoiced Amount": {
+				"line": 0,
+				"column": 0,
+				"col-length": 1,
+				"label": "InvcAmt",
+				"before-decimal": 8,
+				"after-decimal": 2,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			}
+		}
+	}
+}

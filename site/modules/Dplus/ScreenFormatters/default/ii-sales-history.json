@@ -1,0 +1,322 @@
+{
+	"cols": 8,
+	"detail": {
+		"rows": 1,
+		"labelformat": "row",
+		"columns": {
+			"Invoice Number": {
+				"line": 1,
+				"column": 1,
+				"col-length": 1,
+				"label": "Invoice Number",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Order Number": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Order Number",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Customer PO Number": {
+				"line": 1,
+				"column": 2,
+				"col-length": 1,
+				"label": "PO Number",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Customer ID": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Data Source",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Customer Name": {
+				"line": 1,
+				"column": 3,
+				"col-length": 1,
+				"label": "Customer Name",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Requested Date": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Requested Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Order Date": {
+				"line": 1,
+				"column": 4,
+				"col-length": 1,
+				"label": "Order Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y",
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Invoice Date": {
+				"line": 1,
+				"column": 5,
+				"col-length": 1,
+				"label": "Invoice Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Unit of Measure": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Unit of Measure",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Quantity Shipped": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Quantity Shipped",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Quantity To Ship": {
+				"line": 1,
+				"column": 6,
+				"col-length": 1,
+				"label": "Quantity To Ship",
+				"before-decimal": 7,
+				"after-decimal": 2,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Unit Price": {
+				"line": 1,
+				"column": 7,
+				"col-length": 1,
+				"label": "Unit Price",
+				"before-decimal": 6,
+				"after-decimal": 2,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Amount": {
+				"line": 1,
+				"column": 8,
+				"col-length": 1,
+				"label": "Amount",
+				"before-decimal": 8,
+				"after-decimal": 2,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Unit Cost": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Unit Cost",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Total Cost": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Total Cost",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Special Order": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Special Order",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Item Reference": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Item Reference",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Pick Date": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Pick Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Verified Date": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Verified Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			},
+			"Non-Stock Vendor ID": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Non-Stock Vendor ID",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Non-Stock Vendor Item ID": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Non-Stock Vendor Item ID",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Non-Stock Vend Item Desc1": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Non-Stock Vend Item Desc1",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Non-Stock Vend Item Desc2": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Non-Stock Vend Item Desc2",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			}
+		}
+	},
+	"lotserial": {
+		"rows": 1,
+		"columns": {
+			"Lot/Serial Number": {
+				"line": 1,
+				"column": 2,
+				"col-length": 1,
+				"label": "Lot Number",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Bin Number": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Bin Number",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Lot/Serial Qty Shipped": {
+				"line": 1,
+				"column": 3,
+				"col-length": 1,
+				"label": "Qty Shipped",
+				"before-decimal": 7,
+				"after-decimal": 0,
+				"date-format": false,
+				"data-justify": "center",
+				"label-justify": "left"
+			},
+			"Lot Reference": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Lot Reference",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Number of Cartons": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Number of Cartons",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "left"
+			}
+		}
+	}
+}

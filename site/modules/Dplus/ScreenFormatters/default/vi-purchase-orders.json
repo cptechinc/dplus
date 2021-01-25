@@ -1,0 +1,354 @@
+{
+	"cols": 5,
+	"header": {
+		"rows": 1,
+		"columns": {
+			"Purchase Order Number": {
+				"line": 1,
+				"column": 1,
+				"col-length": 1,
+				"label": "PO #",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Order Date": {
+				"line": 1,
+				"column": 2,
+				"col-length": 1,
+				"label": "Ord Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Reference": {
+				"line": 1,
+				"column": 3,
+				"col-length": 1,
+				"label": "FOR CUSTOMER",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Ship-From ID": {
+				"line": 1,
+				"column": 4,
+				"col-length": 1,
+				"label": "Ship From",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Ship-To Name": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Ship To",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Ship-To City/State/Zip": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "City, St, Zip",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Ship Via Code": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Ship Via",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Ship Via Description": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Ship Via Desc",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Terms Code": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Terms Code",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Terms Description": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Terms Desc",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"FOB": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "ROB",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Expected Date": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Expected Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			}
+		}
+	},
+	"detail": {
+		"rows": 1,
+		"columns": {
+			"Line Number": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Line #",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Item ID": {
+				"line": 1,
+				"column": 1,
+				"col-length": 1,
+				"label": "ITEM ID",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Item Description 1": {
+				"line": 1,
+				"column": 2,
+				"col-length": 1,
+				"label": "Description",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Item Description 2": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Description 2",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Vendor Item ID": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Vendor Item ID",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Warehouse ID": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Warehouse ID",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Purchase Unit of Measure": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Purchase UoM",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Special Order": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Spec Order",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Release (Yes/No)": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Release",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Line Status": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Line Status",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": false,
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Ship Date": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Ship Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Expected Date": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Expected Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Acknowledgment Date": {
+				"line": 1,
+				"column": 3,
+				"col-length": 1,
+				"label": "Ack Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Cancel Date": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Cancel Date",
+				"before-decimal": false,
+				"after-decimal": false,
+				"date-format": "m/d/Y",
+				"data-justify": "left",
+				"label-justify": "left"
+			},
+			"Quantity Ordered": {
+				"line": 1,
+				"column": 4,
+				"col-length": 1,
+				"label": "Qty Ordered",
+				"before-decimal": 7,
+				"after-decimal": 3,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			},
+			"Quantity Received": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Qty Received",
+				"before-decimal": 7,
+				"after-decimal": 3,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			},
+			"Quantity On Order": {
+				"line": 0,
+				"column": 0,
+				"col-length": 0,
+				"label": "Qty On Order",
+				"before-decimal": 7,
+				"after-decimal": 3,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			},
+			"Unit Cost": {
+				"line": 1,
+				"column": 5,
+				"col-length": 1,
+				"label": "Unit Cost",
+				"before-decimal": 5,
+				"after-decimal": 3,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			},
+			"Total Amount": {
+				"line": 1,
+				"column": 6,
+				"col-length": 1,
+				"label": "Total Amt",
+				"before-decimal": 5,
+				"after-decimal": 3,
+				"date-format": false,
+				"data-justify": "right",
+				"label-justify": "right"
+			}
+		}
+	}
+}
