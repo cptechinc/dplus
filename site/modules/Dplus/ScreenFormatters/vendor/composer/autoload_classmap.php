@@ -25,4 +25,5 @@ return array(
     'Dplus\\ScreenFormatters\\Vi\\Payments' => $baseDir . '/src/vi/Payments.php',
     'Dplus\\ScreenFormatters\\Vi\\PurchaseHistory' => $baseDir . '/src/vi/PurchaseHistory.php',
     'Dplus\\ScreenFormatters\\Vi\\PurchaseOrders' => $baseDir . '/src/vi/PurchaseOrders.php',
+    'Dplus\\ScreenFormatters\\Vi\\UnreleasedPurchaseOrders' => $baseDir . '/src/vi/UnreleasedPurchaseOrders.php',
 );
