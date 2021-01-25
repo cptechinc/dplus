@@ -1,6 +1,7 @@
 <?php
 	$requestmethod = $input->requestMethod('POST') ? 'post' : 'get';
-	$module_formatter = $modules->get($page->formatter);
+	$formatters = $modules->get('ScreenFormatters');
+	$module_formatter = $formatters->formatter($page->formatter);
 	$module_formatter->set_userID('default');
 	$module_formatter->init_formatter();
 	$html = $modules->get('HtmlWriter');
