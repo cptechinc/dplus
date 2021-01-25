@@ -52,7 +52,7 @@
 					$session->redirect($page->get_customerpurchaseordersURL($custID, $custpo));
 				}
 				$session->saleshistorytry = 0;
-				$module_formatter = $modules->get('SfCiSalesHistory');
+				$module_formatter = new Dplus\ScreenFormatters\Ci\SalesHistory();
 				$module_formatter->init_formatter();
 				$page->body .= $config->twig->render('customers/ci/sales-history/sales-history.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'docm' => $docm]);
 			} else {

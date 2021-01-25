@@ -10,5 +10,6 @@ return array(
     'Dplus\\ScreenFormatters\\Ci\\Payments' => $baseDir . '/src/ci/Payments.php',
     'Dplus\\ScreenFormatters\\Ci\\PurchaseOrders' => $baseDir . '/src/ci/PurchaseOrders.php',
     'Dplus\\ScreenFormatters\\Ci\\Quotes' => $baseDir . '/src/ci/Quotes.php',
+    'Dplus\\ScreenFormatters\\Ci\\SalesHistory' => $baseDir . '/src/ci/SalesHistory.php',
     'Dplus\\ScreenFormatters\\ScreenFormatter' => $baseDir . '/src/ScreenFormatter.php',
 );
