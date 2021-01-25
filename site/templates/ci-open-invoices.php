@@ -23,7 +23,6 @@
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 			} else {
 				$module_formatter = new Dplus\ScreenFormatters\Ci\OpenInvoices();
-				echo var_dump($module_formatter);
 				$module_formatter->init_formatter();
 				$docm = $modules->get('DocumentManagementAr');
 				$page->body .= $config->twig->render('customers/ci/open-invoices/open-invoices.twig', ['page' => $page, 'custID' => $custID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'docm' => $docm]);
