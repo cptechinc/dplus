@@ -2,14 +2,14 @@
 	if ($input->get->ordn) {
 		$ordn = $input->get->text('ordn');
 		$docm = $modules->get('DocumentManagementSo');
-		$lookup_orders = $modules->get('LookupSalesOrder');
+		$lookup_orders = new Dplus\CodeValidators\So();
 
-		if ($lookup_orders->lookup_salesorder($ordn) || $lookup_orders->lookup_saleshistory($ordn)) {
+		if ($lookup_orders->order($ordn) || $lookup_orders->invoice($ordn)) {
 			$page->title = "Sales Order #$ordn Documents";
 
-			if ($lookup_orders->lookup_salesorder($ordn)) {
+			if ($lookup_orders->order($ordn)) {
 				$documents = $docm->get_documents($ordn);
-			} elseif ($lookup_orders->lookup_saleshistory($ordn)) {
+			} elseif ($lookup_orders->invoice($ordn)) {
 				$documents = $docm->get_documents($ordn);
 			}
 

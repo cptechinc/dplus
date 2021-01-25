@@ -31,4 +31,14 @@ class So extends WireData {
 		$q->filterByOrdernumber($ordn);
 		return boolval(($q->count()));
 	}
+
+	/**
+	 * Return if Motor Freight Code is valid
+	 * @param  string $code  Motor Freight Code
+	 * @return bool
+	 */
+	public function freightcode($code) {
+		$stcm = $this->modules->get('CodeTablesMfcm');
+		return $stcm->code_exists($code);
+	}
 }

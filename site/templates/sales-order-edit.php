@@ -1,7 +1,7 @@
 <?php
 $modules->get('DpagesMso')->init_salesorder_hooks();
 $html = $modules->get('HtmlWriter');
-$lookup_orders = $modules->get('LookupSalesOrder');
+$lookup_orders = new Dplus\CodeValidators\So();
 $eso = $modules->get('SalesOrderEdit');
 
 $rm = strtolower($input->requestMethod());
@@ -17,7 +17,7 @@ if ($values->action) {
 if ($values->ordn) {
 	$ordn = $values->text('ordn');
 
-	if ($lookup_orders->lookup_salesorder($ordn)) {
+	if ($lookup_orders->order($ordn)) {
 		if ($eso->can_order_be_edited($ordn))  {
 			$eso->request_so_edit($ordn);
 		}
@@ -92,7 +92,7 @@ if ($values->ordn) {
 				$session->redirect($page->fullURL->getUrl(), $http301 = false);
 			}
 		}
-	} elseif ($lookup_orders->lookup_saleshistory($ordn)) {
+	} elseif ($lookup_orders->invoice($ordn)) {
 		$page->headline = $page->title = "Sales Order #$ordn is not editable";
 		$page->body = $config->twig->render('util/error-page.twig', ['msg' => "Sales Order #$ordn is in Sales History"]);
 	} else {

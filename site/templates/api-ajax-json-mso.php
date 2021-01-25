@@ -7,7 +7,7 @@
 	$response   = '';
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
-	$validate = $modules->get('ValidateSo');
+	$validate = new Dplus\CodeValidators\So();
 
 	// NOTE USE WHEN NEEDED FOR JQUERYVALIDATE
 	// $returntype = $values->return ? $values->text('return') : 'jqueryvalidate';

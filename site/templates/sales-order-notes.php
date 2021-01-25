@@ -1,7 +1,7 @@
 <?php
 	$modules->get('DpagesMso')->init_salesorder_hooks();
 	$qnotes = $modules->get('QnotesSalesOrder');
-	$lookup_orders = $modules->get('LookupSalesOrder');
+	$lookup_orders = new Dplus\CodeValidators\So();
 
 	if ($input->requestMethod('POST')) {
 		$response = $qnotes->process_input($input);
@@ -10,7 +10,7 @@
 		if ($input->get->ordn) {
 			$ordn = $input->get->text('ordn');
 
-			if ($lookup_orders->lookup_salesorder($ordn) || $lookup_orders->lookup_saleshistory($ordn)) {
+			if ($lookup_orders->order($ordn) || $lookup_orders->invoice($ordn)) {
 				if ($lookup_orders->lookup_salesorder($ordn)) {
 					$order = SalesOrderQuery::create()->findOneByOrdernumber($ordn);
 				} elseif ($lookup_orders->lookup_saleshistory($ordn)) {

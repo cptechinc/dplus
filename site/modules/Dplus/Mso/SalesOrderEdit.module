@@ -2,6 +2,8 @@
 
 use Purl\Url;
 
+use Dplus\CodeValidators\So as ValidatorSo;
+
 // Dplus Data Database
 use SalesOrderQuery, SalesOrder;
 use CustomerShiptoQuery, CustomerShipto;
@@ -345,9 +347,9 @@ class SalesOrderEdit extends WireData implements Module {
 	 */
 	public function can_user_editorder(User $user, $ordn) {
 		$canedit = false;
-		$lookup_order = $this->wire('modules')->get('LookupSalesOrder');
+		$lookup_order = new ValidatorSo();
 
-		if ($lookup_order->lookup_saleshistory($ordn)) {
+		if ($lookup_order->invoice($ordn)) {
 			return false;
 		} elseif (!$this->is_order_locked($ordn) || $this->is_user_editingorder($user, $ordn)) { // VALIDATE if ORDER is not being locked
 			$config_orders = $this->wire('modules')->get('ConfigsSalesOrders');
