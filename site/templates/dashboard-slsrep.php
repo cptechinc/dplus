@@ -42,7 +42,7 @@
 
 	$filter_salesorders = $modules->get('FilterSalesOrders');
 	$filter_salesorders->init_query($user);
-	$filter_salesorders->filter_query($input);
+	$filter_salesorders->filter_input($input);
 	$query = $filter_salesorders->get_query();
 	$query->orderByDate_ordered('DESC');
 	$orders = $query->paginate($input->pageNum, 10);
@@ -55,7 +55,7 @@
 
 	$filter_saleshistory = $modules->get('FilterSalesHistory');
 	$filter_saleshistory->init_query($user);
-	$filter_saleshistory->filter_query($input);
+	$filter_saleshistory->filter_input($input);
 	$query = $filter_saleshistory->get_query();
 	$query->orderByDate_ordered('DESC');
 	$invoices = $query->paginate($input->pageNum, 10);

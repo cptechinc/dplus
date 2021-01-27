@@ -22,15 +22,16 @@
 			$sections = [
 				'itemdata' => [
 					'code'      => 'ii-item',
-					'formatter' => 'SfIiItem',
+					'formatter' => 'ii:item',
 					'twig'      => 'items/ii/item/item.twig',
 				],
 				'stock' => [
 					'code'      => 'ii-stock',
-					'formatter' => 'SfIiStockItem',
+					'formatter' => 'ii:stock',
 					'twig'      => 'items/ii/item/stock.twig',
 				]
 			];
+			$formatters = $modules->get('ScreenFormatters');
 
 			foreach ($sections as $var => $section) {
 				$json = $module_json->get_file(session_id(), $section['code']);
@@ -41,7 +42,7 @@
 					if ($json['error']) {
 						$$var .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 					} else {
-						$module_formatter = $modules->get($section['formatter']);
+						$module_formatter = $formatters->formatter($section['formatter']);
 						$module_formatter->init_formatter();
 						$$var = $config->twig->render($section['twig'], ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint()]);
 					}

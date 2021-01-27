@@ -30,7 +30,7 @@
 			}
 			$session->unreleasedpurchaseorderstry = 0;
 
-			$module_formatter = $modules->get('SfViUnreleasedPO');
+			$module_formatter = new Dplus\ScreenFormatters\Vi\UnreleasedPurchaseOrders();
 			$module_formatter->init_formatter();
 			$document_management = $modules->get('DocumentManagement');
 			$refreshurl = $page->get_viunreleasedpurchaseordersURL($vendorID, $shipfromID);

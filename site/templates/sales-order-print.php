@@ -2,19 +2,19 @@
 	$config->so = ConfigSalesOrderQuery::create()->findOne();
 	$modules->get('DpagesMso')->init_salesorder_hooks();
 	$html = $modules->get('HtmlWriter');
-	$lookup_orders = $modules->get('LookupSalesOrder');
+	$lookup_orders = new Dplus\CodeValidators\So();
 
 	if ($input->get->ordn) {
 		$ordn = $input->get->text('ordn');
 
-		if ($lookup_orders->lookup_salesorder($ordn) || $lookup_orders->lookup_saleshistory($ordn)) {
+		if ($lookup_orders->order($ordn) || $lookup_orders->invoice($ordn)) {
 			$page->print = true;
 			$page->title = "Sales Order #$ordn";
 			$type = 'order';
 
-			if ($lookup_orders->lookup_salesorder($ordn)) {
+			if ($lookup_orders->order($ordn)) {
 				$order = SalesOrderQuery::create()->findOneByOrdernumber($ordn);
-			} elseif ($lookup_orders->lookup_saleshistory($ordn)) {
+			} elseif ($lookup_orders->invoice($ordn)) {
 				$type = 'history';
 				$order = SalesHistoryQuery::create()->findOneByOrdernumber($ordn);
 			}

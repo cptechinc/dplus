@@ -1,6 +1,6 @@
 <?php
 	include_once('./vi-include.php');
-
+	$session->purchaseorderstry = 0;
 	if ($vendorquery->count()) {
 		$page->show_breadcrumbs = false;
 		$page->body .= $config->twig->render('vendors/vi/bread-crumbs.twig', ['page' => $page, 'vendor' => $vendor]);
@@ -12,7 +12,6 @@
 			if ($load_shipfrom->shipfrom_exists()) {
 				$shipfrom = $load_shipfrom->get_shipfrom();
 				$page->title = "$vendor->name Shipfrom $shipfrom->id Purchase Orders";
-
 			} else {
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "$vendorID Ship-to $shipfromID does not exist", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Check if shipfromID is correct"]);
 			}
@@ -36,13 +35,14 @@
 			if ($json['error']) {
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 			} else {
-				$module_formatter = $modules->get('SfViPurchaseOrders');
+				$module_formatter = new Dplus\ScreenFormatters\Vi\PurchaseOrders();
 				$module_formatter->init_formatter();
 				$docm = $modules->get('DocumentManagementPo');
 				$page->body .= $config->twig->render('vendors/vi/purchase-orders/purchase-orders.twig', ['page' => $page, 'vendorID' => $vendorID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint(), 'docm' => $docm]);
 			}
 		} else {
 			if ($session->purchaseorderstry > 3) {
+
 				$page->headline = $page->title = "Purchase Orders File could not be loaded";
 				$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
 			} else {

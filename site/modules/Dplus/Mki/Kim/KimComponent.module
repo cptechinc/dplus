@@ -2,6 +2,8 @@
 
 use Purl\Url;
 
+use Dplus\CodeValidators\In as ValidatorIn;
+
 use InvKitQuery, InvKit;
 use InvKitComponentQuery, InvKitComponent;
 use ItemMasterItemQuery, ItemMasterItem;
@@ -75,7 +77,9 @@ class KimComponent extends WireData implements Module {
 		$c = new InvKitComponent();
 		$c->setKitid($kitID);
 
-		if ($this->wire('modules')->get('ValidateIn')->itemid_exists($itemID)) {
+		$validator = new ValidatorIn();
+
+		if ($validator->itemid_exists($itemID)) {
 			$c->setItemid($itemID);
 		}
 		return $c;

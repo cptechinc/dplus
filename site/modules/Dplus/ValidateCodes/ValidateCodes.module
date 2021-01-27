@@ -1,0 +1,20 @@
+<?php namespace ProcessWire;
+
+include_once(__DIR__.'/vendor/autoload.php');
+
+class ValidateCodes extends WireData implements Module {
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Validate Codes',
+			'version' => 101,
+			'summary' => 'Handles Loading Code Validators',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+}

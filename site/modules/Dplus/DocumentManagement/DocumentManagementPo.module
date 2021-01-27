@@ -2,6 +2,8 @@
 
 use Purl\Url;
 
+use Dplus\CodeValidators\Po as ValidatorPo;
+
 use DocumentFoldersQuery, DocumentFolders;
 use DocumentsQuery, Documents;
 use PurchaseOrderQuery, PurchaseOrder;
@@ -77,7 +79,7 @@ class DocumentManagementPo extends DocumentManagement implements Module {
 	 */
 	protected function filter_invoice(DocumentsQuery $docs_query, $invnbr) {
 		$invnbr = PurchaseOrder::get_paddedponumber($invnbr);
-		$validate_inv = $this->wire('modules')->get('ValidatePurchaseOrderNbr');
+		$validate_inv = new ValidatorPo();
 
 		$this->columns = new WireData();
 		$this->columns->reference1 = Documents::get_aliasproperty('reference1');
@@ -88,7 +90,7 @@ class DocumentManagementPo extends DocumentManagement implements Module {
 		/**
 		 * Check if it's an Invoice #
 		 */
-		if ($validate_inv->validate_invoice($invnbr)) {
+		if ($validate_inv->invoice($invnbr)) {
 			$this->columns->tag = Documents::get_aliasproperty('tag');
 
 			$conditions[] = filter_condition_invoice_reference1($docs_query, $invnbr);

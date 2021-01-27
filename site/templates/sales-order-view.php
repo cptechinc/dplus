@@ -2,29 +2,27 @@
 	$config->so = ConfigSalesOrderQuery::create()->findOne();
 	$modules->get('DpagesMso')->init_salesorder_hooks();
 	$html = $modules->get('HtmlWriter');
-	$lookup_orders = $modules->get('LookupSalesOrder');
+	$lookup_orders = new Dplus\CodeValidators\So();;
 
 	if ($input->get->ordn) {
 		$ordn = SalesOrder::get_paddedordernumber($input->get->text('ordn'));
 
-		if ($lookup_orders->lookup_salesorder($ordn) || $lookup_orders->lookup_saleshistory($ordn)) {
+		if ($lookup_orders->order($ordn) || $lookup_orders->invoice($ordn)) {
 			if ($page->print) {
 				$session->redirect($pages->get('pw_template=sales-order-print')->url."?ordn=$ordn");
 			}
 
 			$page->title = "Sales Order #$ordn";
-
 			$docm = $modules->get('DocumentManagementSo');
 			$module_useractions = $modules->get('FilterUserActions');
-			$lookup_orders = $modules->get('LookupSalesOrder');
 
-			if ($lookup_orders->lookup_salesorder($ordn)) {
+			if ($lookup_orders->order($ordn)) {
 				$type = 'order';
 				$order = SalesOrderQuery::create()->findOneByOrdernumber($ordn);
 				$page->listpage = $pages->get('pw_template=sales-orders');
 				$documents = $docm->get_documents($ordn);
 				$module_qnotes = $modules->get('QnotesSalesOrder');
-			} elseif ($lookup_orders->lookup_saleshistory($ordn)) {
+			} elseif ($lookup_orders->invoice($ordn)) {
 				$type = 'history';
 				$order = SalesHistoryQuery::create()->findOneByOrdernumber($ordn);
 				$page->listpage = $pages->get('pw_template=sales-history-orders');
