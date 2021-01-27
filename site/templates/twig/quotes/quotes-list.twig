@@ -20,9 +20,9 @@
 					<div class="col">{{ quote.quotenumber }}</div>
 					<div class="col">{{ quote.custid }}</div>
 					<div class="col">{{ quote.shiptoid }}</div>
-					<div class="col text-right">{{ convertdate(quote.date_quoted) }}</div>
-					<div class="col text-right">{{ convertdate(quote.date_review) }}</div>
-					<div class="col text-right">{{ convertdate(quote.date_expires) }}</div>
+					<div class="col text-right">{{ quote.date_quoted|convertdate }}</div>
+					<div class="col text-right">{{ quote.date_review|convertdate }}</div>
+					<div class="col text-right">{{ quote.date_expires|convertdate }}</div>
 					<div class="col text-right">$ {{ quote.total_total|currency }}</div>
 					<div class="col">{{ quote.status()|capitalize }}</div>
 				</div>
