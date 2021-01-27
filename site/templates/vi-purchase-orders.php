@@ -1,6 +1,6 @@
 <?php
 	include_once('./vi-include.php');
-
+	$session->purchaseorderstry = 0;
 	if ($vendorquery->count()) {
 		$page->show_breadcrumbs = false;
 		$page->body .= $config->twig->render('vendors/vi/bread-crumbs.twig', ['page' => $page, 'vendor' => $vendor]);
@@ -12,7 +12,6 @@
 			if ($load_shipfrom->shipfrom_exists()) {
 				$shipfrom = $load_shipfrom->get_shipfrom();
 				$page->title = "$vendor->name Shipfrom $shipfrom->id Purchase Orders";
-
 			} else {
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "$vendorID Ship-to $shipfromID does not exist", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Check if shipfromID is correct"]);
 			}
@@ -43,6 +42,7 @@
 			}
 		} else {
 			if ($session->purchaseorderstry > 3) {
+
 				$page->headline = $page->title = "Purchase Orders File could not be loaded";
 				$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => $module_json->get_error()]);
 			} else {
