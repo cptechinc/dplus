@@ -13,7 +13,9 @@
 		<strong>Internal Notes</strong>
 	</div>
 	<div class="col-sm-8">
-		<p class="form-control-plaintext form-control-sm"></p>
+		<p class="form-control-plaintext form-control-sm">
+			{{ qnotes.intv.notes_exist(xref.mnfrid, xref.mnfritemid, '')|yesorno|capitalize }}
+		</p>
 	</div>
 </div>
 <div class="row mb-1">
@@ -21,7 +23,9 @@
 		<strong>Mnfr Notes</strong>
 	</div>
 	<div class="col-sm-8">
-		<p class="form-control-plaintext form-control-sm">{{ qnotes.mnfr.exist(xref.mnfrid, xref.mnfritemid)|yesorno|capitalize }}</p>
+		<p class="form-control-plaintext form-control-sm">
+			{{ qnotes.mnfr.exist(xref.mnfrid, xref.mnfritemid)|yesorno|capitalize }}
+		</p>
 	</div>
 </div>
 <div class="row mb-1">
@@ -29,6 +33,8 @@
 		<strong>Misc Notes</strong>
 	</div>
 	<div class="col-sm-8">
-		<p class="form-control-plaintext form-control-sm"></p>
+		<p class="form-control-plaintext form-control-sm">
+			{{ qnotes.mmsc.exist(xref.mnfrid, xref.mnfritemid)|yesorno|capitalize }}
+		</p>
 	</div>
 </div>
