@@ -79,12 +79,21 @@
 				$vendorID     = $values->text('vendorID');
 				$vendoritemID = $values->text('vendoritemID');
 				$itemID       = $values->text('itemID');
-				$response['allow'] = $vxm->allow_itm_cost_update($vendorID, $vendoritemID, $itemID);
+				$ordercode    = $values->text('ordercode');
 
-				if ($response['allow']) {
-					$response['confirm'] = $vxm->configs->ap->confirm_update_itm_cost();
+				if ($vxm->xref_exists($vendorID, $vendoritemID, $itemID)) {
+					$xref = $vxm->xref($vendorID, $vendoritemID, $itemID);
+
+					if (array_key_exists($ordercode, ItemXrefVendor::OPTIONS_POORDERCODE)) {
+						$xref->setPo_ordercode($ordercode);
+					}
+
+					$response['allow'] = $vxm->allow_itm_cost_update_xref($xref);
+
+					if ($response['allow']) {
+						$response['confirm'] = $vxm->configs->ap->confirm_update_itm_cost();
+					}
 				}
-
 				break;
 			case 'get-item':
 				$itemID = $values->itemID ? $values->text('itemID') : $values->text('ouritemID');

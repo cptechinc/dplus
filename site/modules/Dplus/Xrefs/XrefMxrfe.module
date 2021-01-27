@@ -124,7 +124,7 @@ class XrefMxrfe extends WireData implements Module {
 	 * @return ItemXrefManufacturer
 	 */
 	public function new_xref() {
-		$config = $this->get_config_in();
+		$config = $this->config_in();
 		$xref = new ItemXrefManufacturer();
 		$xref->setUnitofm($config->default_uom_purchase);
 		return $xref;
@@ -445,7 +445,7 @@ class XrefMxrfe extends WireData implements Module {
 	public function config_po() {
 		return $this->wire('modules')->get('ConfigurePo')->config();
 	}
-	
+
 	/**
 	 * Intialize configs
 	 * @return void

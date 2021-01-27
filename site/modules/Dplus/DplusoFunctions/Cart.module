@@ -188,7 +188,7 @@ class Cart extends WireData implements Module {
 		$values = $input->$rm;
 		$custID = $values->text('custID');
 		$this->set_custid($custID);
-		
+
 		if ($values->shiptoID) {
 			$this->set_shiptoid($values->text('shiptoID'));
 			return true;
@@ -390,7 +390,7 @@ class Cart extends WireData implements Module {
 	 * @param  string $q Query or Item ID
 	 * @return void
 	 */
-	private function request_itemsearch($q) {
+	public function request_itemsearch($q) {
 		$data = array("ITNOSRCH=$q");
 		$this->request_dplus($data);
 	}

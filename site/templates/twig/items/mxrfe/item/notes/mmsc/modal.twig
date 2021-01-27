@@ -17,8 +17,8 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form action="{{ page.fullURL.getURL() }}" method="post">
-					<input type="hidden" name="mmscID" value="{{ xref.mnfrid }}">
+				<form action="{{ page.fullURL.getURL() }}" method="post" id="mmsc-form">
+					<input type="hidden" name="mnfrID" value="{{ xref.mnfrid }}">
 					<input type="hidden" name="mnfritemID" value="{{ xref.mnfritemid }}">
 					<input type="hidden" name="itemID" value="{{ xref.itemid }}">
 					<input type="hidden" name="type" value="mmsc">
@@ -43,7 +43,6 @@
 						<button type="submit" name="action" value="update-notes" class="btn btn-success">
 							<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 						</button>
-						{# TODO: add confirmation for deletion 'delete_button' #}
 						<button type="submit" name="action" value="delete-notes" class="btn btn-danger">
 							<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 						</button>

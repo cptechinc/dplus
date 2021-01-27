@@ -1,17 +1,23 @@
 $(function () {
-	var form_detail  = $('#detail-form');
-	var modal_detail = $('#notes-detail-modal');
+	var form_intv  = $('#intv-form');
+	var modal_intv = $('#notes-intv-modal');
 
-	modal_detail.on('shown.bs.modal', function (e) {
+	modal_intv.on('shown.bs.modal', function (e) {
 		var modal = $(this);
 		var button = $(e.relatedTarget);
-		var note   = $('#notes-detail').val();
+		var note_row = button.closest('.qnote-row');
 
-		if (note.length) {
+		if (note_row.length) {
 			modal.find('.action-desc').text('Editing');
-			modal.find('textarea[name=note]').val(note);
+			modal.find('input[name=notedate]').val(button.data('date')).attr('readonly', '');
+			modal.find('input[name=notetime]').val(button.data('time')).attr('readonly', '');
+			modal.find('input[name=rawnotetime]').val(button.data('rawnotetime'));
+			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
 		} else {
 			modal.find('.action-desc').text('Adding');
+			modal.find('input[name=notedate]').val(button.data('date')).removeAttr('readonly');
+			modal.find('input[name=notetime]').val(button.data('time')).removeAttr('readonly');
+			modal.find('input[name=rawnotetime]').val('');
 			modal.find('textarea[name=note]').val('');
 		}
 	});
@@ -19,13 +25,16 @@ $(function () {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	var validator = form_detail.validate({
+	var validator = form_intv.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
-		rules: {},
+		rules: {
+			internal_note_date: { required: true, },
+			internal_notetime:  { required: true, },
+		},
 		messages: {},
 		submitHandler: function(form) {
 			var values = $(form).formValues();

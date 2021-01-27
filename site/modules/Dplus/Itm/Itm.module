@@ -31,10 +31,11 @@ class Itm extends WireData implements Module {
 		'itm-xrefs-upcx',
 		'itm-xrefs-vxm',
 		'itm-xrefs-cxm',
+		'itm-xrefs-mxrfe',
 		'itm-misc',
 		'itm-components',
 		'itm-kit',
-		'itm-function'
+		'itm-function',
 	);
 
 	public function __construct() {
@@ -706,7 +707,7 @@ class Itm extends WireData implements Module {
 		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
 
 		$templates = implode('|', self::TEMPLATES_ITM);
-		
+
 		$this->addHook("Page(pw_template=$templates)::itmURL", function($event) {
 			$itemID = $event->arguments(0);
 			$event->return = $this->get_itmURL($itemID);

@@ -167,31 +167,6 @@ $(function() {
 		$(this).attr('minlength', '12');
 	});
 
-	$('a.delete_button').click(function(e){
-		e.preventDefault();
-		var link = $(this);
-		var title = "Confirm Deletion"
-		var text = 'Are you sure?';
-
-		if (link.data('delete').length) {
-			text = 'Delete ' + link.data('delete') + '?';
-		}
-
-		swal2.fire({
-			title: title,
-			text: text,
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonText: 'Yes',
-			cancelButtonText: 'No',
-			focusCancel: true,
-		}).then((result) => {
-			if (result.value) {
-				window.location.href = link.attr('href');
-			}
-		});
-	});
-
 	$('button.delete_button').click(function(e) {
 		e.preventDefault();
 		var button = $(this);
@@ -199,7 +174,7 @@ $(function() {
 
 		swal2.fire({
 			title: "Confirm Deletion",
-			text: "Are you sure?",
+			text: "Are you sure you want to delete?",
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonText: 'Yes',
@@ -211,6 +186,16 @@ $(function() {
 				window.location.href = action;
 			}
 		});
+	});
+
+	$('#loading-modal').on('show.bs.modal', function (event) {
+		var modal = $(this);
+		modal.find('[role=status]').addClass('spinner-border');
+	});
+
+	$('#loading-modal').on('hide.bs.modal', function (event) {
+		var modal = $(this);
+		modal.find('[role=status]').removeClass('spinner-border');
 	});
 });
 
@@ -295,7 +280,7 @@ $.fn.extend({
 			}
 		}
 	},
-	clearValidation: function(){
+	clearValidation: function() {
 		var v = $(this).validate();
 		$('[name]',this).each(function(){
 			v.successList.push(this);
@@ -303,6 +288,17 @@ $.fn.extend({
 		});
 		v.resetForm();
 		v.reset();
+	},
+	formValues: function() {
+		var form = $(this);
+		if (form[0].tagName != 'FORM') {
+			return false;
+		}
+		var values = form.serializeArray().reduce(function(obj, item) {
+			obj[item.name] = item.value;
+			return obj;
+		}, {});
+		return values;
 	}
 });
 
@@ -341,6 +337,24 @@ $('a.delete_button').click(function(e){
 		}
 	});
 });
+
+function swal_delete_notes(callback) {
+	swal2.fire({
+		title: 'Confirm Deletion',
+		text: 'Are you sure you want to delete?',
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
+		focusCancel: true,
+	}).then((result) => {
+		if (result.value) {
+			callback(true);
+		} else {
+			callback(false);
+		}
+	});
+}
 
 /*==============================================================
 	STRING FUNCTIONS

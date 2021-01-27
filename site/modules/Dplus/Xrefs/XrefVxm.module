@@ -293,11 +293,9 @@ class XrefVxm extends WireData implements Module {
 		 * the other primary item to be a secondary
 		 */
 		if ($response->has_success() && !$record->isDeleted()) {
-			if ($record->is_po_ordercode_primary() && $record->other_primary_poordercode_exists()) {
-				$vxmitem = $record->get_other_primary_vxm_item();
-				$vxmitem->setPo_ordercode(ItemXrefVendor::POORDERCODE_SECONDARY);
-				$vxmitem->save();
-				$this->update_dplus_cobol($vxmitem);
+			$this->update_other_primary($record);
+			if ($values->text('update_itm_cost') == 'true') {
+				$this->update_itm_cost($record);
 			}
 		}
 		$this->wire('session')->response_xref = $response;
@@ -478,6 +476,35 @@ class XrefVxm extends WireData implements Module {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * IF Order Code is primary, check if other primary exists to change it's order code
+	 * @param  ItemXrefVendor $record X-ref
+	 * @return void
+	 */
+	protected function update_other_primary(ItemXrefVendor $record) {
+		if ($record->is_po_ordercode_primary() && $record->other_primary_poordercode_exists()) {
+			$vxmitem = $record->get_other_primary_vxm_item();
+			$vxmitem->setPo_ordercode(ItemXrefVendor::POORDERCODE_SECONDARY);
+			$vxmitem->save();
+			$this->update_dplus_cobol($vxmitem);
+		}
+	}
+
+	/**
+	 * Request Itm Costing Update
+	 * @param  ItemXrefVendor $record [description]
+	 * @return bool
+	 */
+	protected function update_itm_cost(ItemXrefVendor $record) {
+		$allowed = $this->allow_itm_cost_update($record->vendorid, $record->vendoritemid, $record->itemid);
+		$costchanged = $record->originalvalues[ItemXrefVendor::get_aliasproperty('unitcost_base')] != $record->unitcost_base;
+		if ($allowed === false && $costchanged === false) {
+			return false;
+		}
+		$itm = $this->wire('modules')->get('ItmCosting');
+		return $itm->update_cost_from_vxm($record);
 	}
 
 /* =============================================================
@@ -671,10 +698,19 @@ class XrefVxm extends WireData implements Module {
 		if ($this->xref_exists($vendorID, $vendoritemID, $itemID) == false) {
 			return false;
 		}
-		if ($this->configs->ap->update_itm_cost() == false) {
+		$xref = $this->xref($vendorID, $vendoritemID, $itemID);
+		return $this->allow_itm_cost_update_xref($xref);
+	}
+
+	/**
+	 * Return if ITM costing can be updated
+	 * @param  ItemXrefVendor $xref Vendor X-ref
+	 * @return bool
+	 */
+	public function allow_itm_cost_update_xref(ItemXrefVendor $xref) {
+		if ($this->configs->ap->update_itm_cost($xref->imitem->standardcostbasedon) == false) {
 			return false;
 		}
-		$xref = $this->xref($vendorID, $vendoritemID, $itemID);
 
 		if (in_array($xref->imitem->standardcostbasedon, self::ITM_COSTBASE_ALLOWED) == false) {
 			return false;
@@ -685,9 +721,32 @@ class XrefVxm extends WireData implements Module {
 		}
 
 		if ($xref->costing_xref_for_itemid_exists()) {
-			return 'false';
+			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Return Base Price for X-ref
+	 * NOTE: Will use itm BASE Price if configured
+	 * @param  ItemXrefVendor $xref Vendor X-ref
+	 * @return float
+	 */
+	public function baseprice(ItemXrefVendor $xref) {
+		if ($this->use_itm_baseprice($xref)) {
+			return $xref->imitem->pricing->baseprice;
+		}
+		return $xref->get_listprice_uom_sale();
+	}
+
+	/**
+	 * Return if ITM Base price should be used for VXM baseprice
+	 * @param  ItemXrefVendor $xref Vendor X-ref
+	 * @return bool
+	 */
+	public function use_itm_baseprice(ItemXrefVendor $xref) {
+		$config = $this->get_config_ap();
+		return ($config->update_itm_pricing() === false || $xref->is_primary_vxmitem() === false);
 	}
 
 /* =============================================================

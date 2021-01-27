@@ -6,7 +6,8 @@
 	recordlocker           module RecordLockerUser
 	item                   ItemXrefVendor
 #}
-<form action="{{ page.fullURL.getURL() }}" method="POST" id="vxm-item-form">
+
+<form action="{{ page.fullURL.getURL() }}" method="POST" id="vxm-item-form" data-new="{{ item.isNew() ? 'true' : 'false'}}">
 	<input type="hidden" name="action" value="update-vxm">
 	<input type="hidden" name="original_vendoritemID" value="{{ item.vendoritemID }}">
 	<input type="hidden" name="update_itm_cost" value="false">

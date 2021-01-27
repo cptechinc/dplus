@@ -18,12 +18,17 @@ $(function() {
 	var input_vendoritemID = form_vxm.find('input[name=vendoritemID]');
 	var input_vendorID = form_vxm.find('input[name=vendorID]');
 	var input_update_itm_cost = form_vxm.find('input[name=update_itm_cost]');
+	var input_ordercode = form_vxm.find('select[name=po_ordercode]');
 
 	var modal_ajax = $('#ajax-modal');
 
 /* =============================================================
 	Event Functions
 ============================================================= */
+	$("body").on("change", "input[name=unitcost_base]", function(e) {
+		recalculate_margins_listprice();
+	});
+
 	$("body").on("change", ".unit-cost, .unit-qty", function(e) {
 		var input = $(this);
 		var unitrow = input.closest('.unit-row');
@@ -83,13 +88,31 @@ $(function() {
 	$("body").on("change", "input[name=listprice]", function(e) {
 		var input = $(this);
 		input.val(parseFloat(input.val()).toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
-		$('input[name=eachlistprice]').val(parseFloat(get_eachlistprice()).toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
+		var allowlistpriceupdate = {{ vxm.configs.ap.update_itm_pricing() }};
+		var itmcost_ordercodes = {{ constant('ORDERCODES_ITM_COST', vxm)|json_encode()|raw }};
+		var iscostcode = itmcost_ordercodes.contains($('select[name=po_ordercode]').val());
+
+		if ((iscostcode && allowlistpriceupdate) || input.closest('form').data('new') == true) {
+			$('input[name=eachlistprice]').val(parseFloat(get_eachlistprice()).toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
+		}
+
+		recalculate_margins_costs();
+	});
+
+	$("body").on("change", "select[name=po_ordercode]", function(e) {
+		var input = $(this);
+		var input_validatedpoordercode = form_vxm.find('input[name=po_ordercode_validated]');
+		input_validatedpoordercode.val('false');
+		var itmcost_ordercodes = {{ constant('ORDERCODES_ITM_COST', vxm)|json_encode()|raw }};
+
+		if (itmcost_ordercodes.contains(input.val())) {
+			$('input[name=listprice]').change();
+		}
 	});
 
 	function populate_item_data(itemID) {
 		request_item(itemID, function(item) {
 			if (item) {
-				console.log(item);
 				var itemcol = $('.item-col');
 				input_itemID.attr('data-iskit',  item.iskit ? 'true' : 'false');
 				input_itemID.attr('data-itemid', item.itemid);
@@ -277,6 +300,7 @@ $(function() {
 			uom_purchase: "Select a Purchase Unit of Measure",
 		},
 		submitHandler: function(form) {
+			$('#loading-modal').modal('show');
 			update_vxm(form);
 		}
 	});
@@ -285,7 +309,8 @@ $(function() {
 		validate_xref(function(valid) {
 			if (valid) {
 				validate_form_poordercode(function(validated) {
-					confirm_cost(function() {
+					confirm_cost(function(confirmed) {
+						input_update_itm_cost.val(confirmed ? 'true' : 'false');
 						form.submit();
 					});
 				});
@@ -295,22 +320,27 @@ $(function() {
 
 	function confirm_cost(callback) {
 		var costbase = form_vxm.find('input[name=unitcost_base]');
+		var changedcost = costbase.data('cost') != costbase.val();
+		var itmdifferent = costbase.data('itmcost') != costbase.val();
+		var changedordercode = input_ordercode.val() != input_ordercode.data('ordercode');
+		var costorordercode = (itmdifferent || changedordercode);
 
-		if (costbase.data('cost') != costbase.val() && costbase.data('itmcost') != costbase.val()) {
+		if (itmdifferent && (changedcost || changedordercode)) {
 			request_can_update_itm_cost(input_vendorID.val(), input_vendoritemID.val(), input_itemID.val(), function (response) {
 				if (response.allow) {
 					if (response.confirm) {
-						swal_confirm_cost(function() {
-							callback();
+						swal_confirm_cost(function(confirmed) {
+							callback(confirmed);
 						});
 					} else {
-						input_update_itm_cost.val('true');
-						callback();
+						callback(true);
 					}
+				} else {
+					callback(false);
 				}
 			});
 		} else {
-			callback();
+			callback(false);
 		}
 	}
 
@@ -328,8 +358,7 @@ $(function() {
 			confirmButtonText: 'Yes',
 			cancelButtonText: 'No',
 		}).then((result) => {
-			input_update_itm_cost.val(result.value ? 'true' : 'false');
-			callback();
+			callback(result.value);
 		});
 	}
 
@@ -346,23 +375,22 @@ $(function() {
 
 	function validate_form_poordercode(callback) {
 		var select_poordercode = form_vxm.find('select[name=po_ordercode]');
-		var input_validatedpoordercode = select_poordercode.siblings('input[name=po_ordercode_validated]');
+		var input_validatedpoordercode = form_vxm.find('input[name=po_ordercode_validated]');
 
 		if (input_validatedpoordercode.val() == 'false') {
 			if (select_poordercode.val() == primarypoordercode) {
 				request_validate_poordercode(function(valid) {
 					if (valid) {
 						input_validatedpoordercode.val('true');
-						form_vxm.submit();
 						callback(true);
 					} else {
-						swal_overwrite_poordercode();
-						callback(false);
+						swal_overwrite_poordercode(function(overwrite) {
+							callback(overwrite);
+						});
 					}
 				});
 			} else {
 				input_validatedpoordercode.val('true');
-				form_vxm.submit();
 				callback(true);
 			}
 		} else {
@@ -389,21 +417,22 @@ $(function() {
 		});
 	}
 
-	function swal_overwrite_poordercode() {
+	function swal_overwrite_poordercode(callback) {
 		msg = input_itemID.val() + " already has a primary";
 		swal2.fire({
 			title: "Overwrite Primary PO Ordercode?",
 			text: msg,
 			icon: 'warning',
 			showCancelButton: true,
-			confirmButtonClass: 'btn btn-success',
-			cancelButtonClass: 'btn btn-danger',
 			buttonsStyling: false,
 			confirmButtonText: 'Yes!'
 		}).then(function (result) {
 			if (result.value) {
+				var input_validatedpoordercode = form_vxm.find('input[name=po_ordercode_validated]');
 				input_validatedpoordercode.val('true');
-				form_vxm.submit();
+				callback(true);
+			} else {
+				callback(false);
 			}
 		});
 	}
@@ -458,6 +487,7 @@ $(function() {
 		url.addQuery('vendorID', vendorID);
 		url.addQuery('vendoritemID', vendoritemID);
 		url.addQuery('itemID', itemID);
+		url.addQuery('ordercode', input_ordercode.val())
 		url.addQuery('return', 'bool');
 		$.getJSON(url.toString(), function( response ) {
 			callback(response);
@@ -477,11 +507,60 @@ $(function() {
 	Margin Calculation Functions
 ============================================================= */
 	/**
+	 * Recalculate Margin or Costs
+	 * NOTE: USED when list price changes
+	 * @return {[type]} [description]
+	 */
+	function recalculate_margins_listprice() {
+		var input_costbase = $('input[name=unitcost_base]');
+		var unitrow = input_costbase.closest('.unit-row');
+		var update = '{{ vxm.configs.ap.computelistpriceorpercent }}';
+
+		if (update == 'P') { // Update Margins
+			calculate_margins();
+		} else if (update == 'L') { // Update Costs
+			var costbase = input_costbase.val();
+			var listprice = costbase /  (1 - (unitrow.find('input.unit-margin').val() / 100));
+			$('input[name=listprice]').val(listprice).change();
+		}
+	}
+	/**
+	 * Recalculate Margin or Costs
+	 * NOTE: USED when list price changes
+	 * @return {[type]} [description]
+	 */
+	function recalculate_margins_costs() {
+		if (parseInt($('input[name=listprice]').val()) == 0) {
+			$(".unit-row").each(function(index ) {
+				$(this).find('input').val('');
+
+				if (parseInt($(this).data('break')) > 0) {
+					$(this).find('input.unit-qty,input.unit-cost,input.unit-margin').attr('readonly', 'readonly');
+				}
+			});
+			return true;
+		}
+		var update = '{{ vxm.configs.ap.computepercentageorcost }}';
+		if (update == 'P') { // Update Margins
+			calculate_margins();
+		} else if (update == 'C') { // Update Costs
+			calculate_costs();
+		}
+	}
+
+	/**
 	 * Recalculates Each List Price based on the Unit of Measure Purchase Conversion
 	 */
 	function calculate_eachlistprice() {
-		var eachlistprice = parseFloat(get_eachlistprice());
-		input_eachlistprice.val(eachlistprice.toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
+		var updateitmpricing = {{ vxm.configs.ap.update_itm_pricing() }};
+
+		var ordercode = form_vxm.find('select[name=po_ordercode]').val();
+		var isprimary = ordercode == primarypoordercode;
+
+		if (updateitmpricing === true && isprimary === true) {
+			var eachlistprice = parseFloat(get_eachlistprice());
+			input_eachlistprice.val(eachlistprice.toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
+		}
 		calculate_margins();
 	}
 
@@ -504,6 +583,15 @@ $(function() {
 	}
 
 	/**
+	 * Calculates Margin for each Unit Cost
+	 */
+	function calculate_costs() {
+		$(".unit-row").each(function(index ) {
+			update_unitrow_cost($(this));
+		});
+	}
+
+	/**
 	 * Calculates Margin for one Unit Cost
 	 * @param  JqueryElement unitrow
 	 */
@@ -515,9 +603,13 @@ $(function() {
 		if (parseFloat(input_unitcost.val())) {
 			var input_margin = unitrow.find('.unit-margin');
 			var margin = determine_unitmargin(parseFloat(input_unitcost.val()));
-			var displaymargin = parseFloat(margin).toFixed({{ vxm.field_attribute('unit_margin', 'precision') }});
+			var displaymargin = '';
+
+			if (margin != 0) {
+				displaymargin = parseFloat(margin).toFixed({{ vxm.field_attribute('unit_margin', 'precision') }});
+			}
+
 			input_margin.val(displaymargin);
-			console.log({{ vxm.field_attribute('unit_margin', 'precision') }})
 		}
 	}
 
@@ -565,8 +657,11 @@ $(function() {
 		var listprice = get_listprice();
 
 		if (listprice == 0 || cost == 0) {
-			return '';
+			return 0;
 		} else {
+			if (listprice == 0) {
+				return 0;
+			}
 			var markup = listprice - cost;
 			return markup / listprice * 100;
 		}

@@ -88,9 +88,13 @@ class DpagesMin extends Dpages implements Module {
 			'name'   => 'itm-kit',
 			'fields' => array()
 		),
+		'itm-xrefs-mxrfe' => array(
+			'name'   => 'itm-xrefs-mxrfe',
+			'fields' => array()
+		),
 		'itm-function' => array(
 			'name'   => 'itm-function',
-			'fields' => array()
+			'fields' => array('pw_template')
 		),
 		'min-itmp' => array(
 			'name'   => 'itm-itmp',
@@ -368,11 +372,20 @@ class DpagesMin extends Dpages implements Module {
 			'dplus_function' => ''
 		),
 		'itm-kit' => array(
-			'template'       => 'dplus-function',
+			'template'       => 'itm-function',
 			'pw_template'    => 'itm-kit',
 			'name'           => 'kit',
 			'title'          => 'Kit',
 			'summary'        => 'ITM Kit',
+			'parent'         => '/min/inmain/itm/xrefs/',
+			'dplus_function' => ''
+		),
+		'itm-xrefs-mxrfe' => array(
+			'template'       => 'itm-function',
+			'pw_template'    => 'itm-xrefs-mxrfe',
+			'name'           => 'mxrfe',
+			'title'          => 'Mnfr / Competitor X-ref',
+			'summary'        => 'View / Edit Manufacturer / Competitor X-ref',
 			'parent'         => '/min/inmain/itm/xrefs/',
 			'dplus_function' => ''
 		),

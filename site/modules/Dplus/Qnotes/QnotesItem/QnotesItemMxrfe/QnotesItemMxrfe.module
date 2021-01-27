@@ -14,7 +14,8 @@ class QnotesItemMxrfe extends WireData implements Module {
 
 	const TYPES = array(
 		'mnfr',
-		'misc',
+		'mmsc',
+		'intv'
 	);
 
 	/**
@@ -26,18 +27,19 @@ class QnotesItemMxrfe extends WireData implements Module {
 	 */
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
 
-		if ($input->$rm->text('action') == 'update-notes' || $input->$rm->text('action') == 'delete-notes') {
+		if ($values->text('action') == 'update-notes' || $values->text('action') == 'delete-notes') {
 			$itemID = $input->$rm->text('itemID');
 			$itm = $this->wire('modules')->get('Itm');
 
 			if ($itm->item_exists($itemID)) {
-				if (in_array($input->$rm->text('type'), self::TYPES)) {
-					$type = $input->$rm->text('type');
+				if (in_array($values->text('type'), self::TYPES)) {
+					$type = $values->text('type');
 					$this->$type->process_input($input);
 				} else {
 					$response = new QnotesResponse();
-					$response->set_message($input->$rm->text('type'). " is not a valid note type");
+					$response->set_message($values->text('type'). " is not a valid note type");
 					$response->set_error(true);
 					$response->set_key($itemID);
 					$this->wire('session')->response_qnote = $response;
@@ -51,16 +53,19 @@ class QnotesItemMxrfe extends WireData implements Module {
 			}
 
 			if ($this->wire('session')->response_qnote->has_success()) {
-				$this->wire('session')->qnotes_itm = $input->$rm->text('type');
+				$this->wire('session')->qnotes_itm = $values->text('type');
 			}
 		}
 	}
 
-
+/* =============================================================
+	ProcessWire module Functions
+============================================================= */
 	public function init() {
 		$modules = $this->wire('modules');
 		$this->mnfr   = $modules->get('QnotesMnfr');
-		$this->misc   = $modules->get('QnotesMmsc');
+		$this->mmsc   = $modules->get('QnotesMmsc');
+		$this->intv   = $modules->get('QnotesItemVxmInternal');
 	}
 
 	public function update() {

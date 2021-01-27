@@ -17,7 +17,7 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form action="{{ page.fullURL.getURL() }}" method="post">
+				<form action="{{ page.fullURL.getURL() }}" method="post" id="mnfr-form">
 					<input type="hidden" name="mnfrID" value="{{ xref.mnfrid }}">
 					<input type="hidden" name="mnfritemID" value="{{ xref.mnfritemid }}">
 					<input type="hidden" name="itemID" value="{{ xref.itemid }}">
