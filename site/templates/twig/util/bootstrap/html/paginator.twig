@@ -1,0 +1,34 @@
+<div class="d-flex w-100 justify-content-between paginator">
+	<div></div>
+	<div>
+		<ul class="pagination">
+			<li class="page-item {{ (page.input.pageNum() == 1) ? 'disabled' : '' }}">
+				<a href="{{ (page.input.paginate(input.pageNum() - 1)) }}" class="page-link paginator-link" aria-label="Previous">
+					<span aria-hidden="true">&laquo;</span>
+				</a>
+			</li>
+			<li class="page-item {{ (page.input.pageNum() == i) ? 'active' : '' }}">
+				<div class="dropdown">
+					<a class="page-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Page {{ page.input.pageNum() }} of {{ 50 }}
+					</a>
+
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+						{% for i in 1..(50) %}
+							<a class="dropdown-item paginator-link {{ (page.input.pageNum() == i) ? 'active' : '' }}" href="{{ page.input.paginate(i) }}">
+									{{ i }}
+								</a>
+						{% endfor %}
+					</div>
+				</div>
+			</li>
+
+			<li class="page-item {{ (page.input.pageNum() == 50) ? 'disabled' : '' }}">
+				<a href="{{ (page.input.pageNum() + 1)  }}" aria-label="Next" class="page-link paginator-link">
+					<span aria-hidden="true">&raquo;</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+	<div></div>
+</div>

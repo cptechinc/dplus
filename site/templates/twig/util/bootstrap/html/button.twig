@@ -1,0 +1,4 @@
+{% set tbutton = twigbutton(button) %}
+<button type="{{ tbutton.type }}" class="{{ tbutton.class() }}" {{ tbutton.attributes()|raw }}>
+	{{ button.text|raw }}
+</button>

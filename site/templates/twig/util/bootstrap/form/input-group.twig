@@ -1,0 +1,27 @@
+{% set group = twiginputgroup(inputgroup) %}
+<div class="{{ group.class() }}">
+	{% if group.type == 'prepend' %}
+		<span class="input-group-prepend">
+			{% if inputgroup.button %}
+				{% include 'util/html/button.twig' with {'button': group.button} %}
+			{% endif %}
+
+			{% if inputgroup.span %}
+				{% include 'util/form/input-group-span.twig' with {'span': group.span } %}
+			{% endif %}
+		</span>
+	{% endif %}
+
+	{% include 'util/form/input.twig' with {'input': group.input} %}
+
+	{% if group.type == 'append' %}
+		<span class="input-group-append">
+			{% if inputgroup.button %}
+				{% include 'util/html/button.twig' with {'button': group.button} %}
+			{% endif %}
+			{% if inputgroup.span %}
+				{% include 'util/form/input-group-span.twig' with {'span': group.span } %}
+			{% endif %}
+		</span>
+	{% endif %}
+</div>

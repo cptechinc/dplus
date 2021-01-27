@@ -1,0 +1,4 @@
+{% set tspan = twiginputgroupspan(span) %}
+<span class="{{ tspan.class() }}" {{ tspan.attributes()|raw }}>
+	{{ span.text|raw }}
+</span>
