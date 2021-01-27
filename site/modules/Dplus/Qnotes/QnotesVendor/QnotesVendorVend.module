@@ -1,11 +1,11 @@
 <?php namespace ProcessWire;
 
-use VendorOrderNoteQuery, VendorOrderNote;
-
 use Purl\Url;
 
-use ConfigApQuery;
+use Dplus\CodeValidators\Po as ValidatorPo;
 
+use ConfigApQuery;
+use VendorOrderNoteQuery, VendorOrderNote;
 
 include_once(__DIR__.'/../QnotesResponse.php');
 
@@ -155,7 +155,7 @@ class QnotesVendorVend extends WireData implements Module {
 	 */
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$validate_ponbr = $this->wire('modules')->get('ValidatePurchaseOrderNbr');
+		$validate_ponbr = new ValidatorPo();
 		$vendorID = $input->$rm->text('ponbr');
 
 		if ($validate_ponbr->validate($vendorID)) {

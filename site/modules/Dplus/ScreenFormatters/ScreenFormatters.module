@@ -1,0 +1,61 @@
+<?php namespace ProcessWire;
+
+use TableformatterQuery, Tableformatter;
+
+include_once(__DIR__.'/vendor/autoload.php');
+
+/**
+ * Class for Formatting Screens
+ */
+class ScreenFormatters extends WireData implements Module {
+	const NAMESPACE = '\Dplus\ScreenFormatters\\';
+	const SYSTEMS = ['ci', 'ii', 'vi'];
+
+
+	public function formatter($uri) {
+		$parts = explode(':', $uri);
+		$system = $parts[0];
+		$code   = $this->convertcode($parts[1]);
+		return $this->sysformatter($system, $code);
+	}
+
+	public function sysformatter($system, $code) {
+		if ($this->system_exists($system) === false) {
+			return false;
+		}
+		$code = $this->convertcode($code);
+		$ns = self::NAMESPACE.ucfirst($system).'\\';
+		$class = $ns.$code;
+		if (class_exists($class) === false) {
+			return false;
+		}
+		return new $class();
+	}
+
+	public function system_exists($system) {
+		return in_array(strtolower($system), self::SYSTEMS);
+	}
+
+	public function convertcode($code) {
+		$parts = explode('-', $code);
+		$pieces = [];
+		foreach ($parts as $part) {
+			$pieces[] = ucfirst($part);
+		}
+		return implode('', $pieces);
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Screen Formatters',
+			'version' => 101,
+			'summary' => 'Factory for loading/auto-loading Screen Formatters',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array(),
+			'installs' => array(
+				'JsonExampleDataFiles'
+			),
+		);
+	}
+}

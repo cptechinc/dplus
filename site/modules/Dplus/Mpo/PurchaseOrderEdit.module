@@ -3,6 +3,8 @@
 use Propel\Runtime\ActiveQuery\Criteria;
 use Purl\Url;
 
+use Dplus\CodeValidators\Po as ValidatorPo;
+
 use PurchaseOrderQuery, PurchaseOrder;
 use WarehouseQuery, Warehouse;
 use VendorQuery, Vendor;
@@ -622,8 +624,8 @@ class PurchaseOrderEdit extends WireData implements Module {
 	 * @return bool
 	 */
 	public function exists($ponbr) {
-		$validator = $this->wire('modules')->get('ValidatePurchaseOrderNbr');
-		return $validator->validate($ponbr);
+		$validator = new ValidatorPo();
+		return $validator->po($ponbr);
 	}
 
 	/**

@@ -7,7 +7,7 @@
 	$response   = '';
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
-	$validate = $modules->get('ValidateIn');
+	$validate = new Dplus\CodeValidators\In();
 
 	// NOTE USE WHEN NEEDED FOR JQUERYVALIDATE
 	// $returntype = $values->return ? $values->text('return') : 'jqueryvalidate';
@@ -85,7 +85,7 @@
 			case 'validate-itemid':
 				$itemID = $values->text('itemID');
 
-				if ($validate->itemid_exists($itemID)) {
+				if ($validate->itemid($itemID)) {
 					$response = true;
 				} else {
 					$response = "$itemID not found";

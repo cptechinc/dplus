@@ -1,0 +1,17 @@
+{
+	"name": "dplus/screen-formatters",
+	"description": "Screen Formatters",
+	"type": "pw-module",
+	"keywords": [ "processwire", "module" ],
+	"homepage": "http://modules.processwire.com",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Paul Gomez",
+			"email": "paul@cptechinc.com"
+		}
+	],
+	"autoload": {
+		"classmap": ["src/"]
+	}
+}

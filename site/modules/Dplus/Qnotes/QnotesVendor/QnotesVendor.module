@@ -4,6 +4,8 @@ use Purl\Url;
 
 include_once(__DIR__.'/../QnotesResponse.php');
 
+use Dplus\CodeValidators\Po as ValidatorPo;
+
 /**
  * QnotesVendor
  *
@@ -23,10 +25,10 @@ class QnotesVendor extends WireData implements Module {
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$validate_ponbr = $this->wire('modules')->get('ValidatePurchaseOrderNbr');
+		$validate_ponbr = new ValidatorPo();
 		$ponbr = $values->text('ponbr');
 
-		if ($validate_ponbr->validate($ponbr)) {
+		if ($validate_ponbr->po($ponbr)) {
 			switch ($values->text('type')) {
 				case 'VEND':
 					$this->order->process_input($input);
