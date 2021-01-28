@@ -12,7 +12,7 @@
 			<th class="pt-3 pb-3 align-middle">Description</th>
 			<th class="pt-3 pb-3 align-middle"># of Items</th>
 			<th class="pt-3 pb-3 text-center">
-				<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#create-kit-modal" title="Choose Customer to Add CXM" aria-label="Choose Customer to Add CXM" data-custid="{{ page.has('custID') ? page.custID : '' }}" data-search="customers">
+				<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#create-kit-modal" title="Choose Customer to Add CXM" aria-label="Choose Customer to Add CXM" data-custid="{{ page.has('custID') ? page.custID : '' }}" data-search="customers">
 					<i class="fa fa-plus" aria-hidden="true"></i> Add New
 				</button>
 			</th>
@@ -32,6 +32,7 @@
 							<a href="{{ page.kitURL(kit.itemid) }}" class="btn btn-warning btn-sm">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
+							&nbsp; &nbsp;
 							<a href="{{ page.kit_deleteURL(kit.itemid) }}" class="btn btn-danger btn-sm delete-kit" data-kitid="{{ kit.itemid }}">
 								<i class="fa fa-trash" aria-hidden="true"></i> Delete
 							</a>
