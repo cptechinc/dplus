@@ -194,15 +194,21 @@ class XrefMxrfe extends WireData implements Module {
 	public function input_delete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$upc = $values->text('upc');
+		$mnfrID     = $values->text('mnfrID');
+		$mnfritemID = $values->text('mnfritemID');
+		$itemID     = $values->text('itemID');
 
-		if ($this->xref_exists($upc)) {
-			if (!$this->lockrecord($upc)) {
-				$message = self::DESCRIPTION . " ($upc)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($upc);
-				$this->wire('session')->response_xref = XrefResponse::response_error($upc, $message);
-				return false;
+		if ($this->xref_exists($mnfrID, $mnfritemID, $itemID)) {
+			$record = $this->xref($mnfrID, $mnfritemID, $itemID);
+
+			if (!$record->isNew()) {
+				if (!$this->lockrecord($record)) {
+					$key = $this->get_recordlocker_key($record);
+					$message = self::DESCRIPTION . " ($key)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
+					$this->wire('session')->response_xref = XrefResponse::response_error("$key", $message);
+					return false;
+				}
 			}
-			$record = $this->xref($upc);
 			$record->delete();
 			$this->wire('session')->response_xref = $this->save_and_respond($record);
 			return $this->wire('session')->response_xref->has_success();
@@ -547,7 +553,7 @@ class XrefMxrfe extends WireData implements Module {
 		$values = $input->$rm;
 
 		if (empty($values->text('mnfrID'))) {
-			return $this->wire('pages')->get('template=mxrfe')->url;
+			return $this->wire('pages')->get('pw_template=mxrfe')->url;
 		}
 
 		$mnfrID     = $values->text('mnfrID');
@@ -555,7 +561,7 @@ class XrefMxrfe extends WireData implements Module {
 		$itemID     = $values->text('itemID');
 
 		if ($this->xref_exists($mnfrID, $mnfritemID, $itemID) === false) {
-			return $this->wire('pages')->get('template=mxrfe')->url;
+			return $this->wire('pages')->get('pw_template=mxrfe')->url;
 		}
 
 		$xref = $this->xref($mnfrID, $mnfritemID, $itemID);
@@ -564,6 +570,9 @@ class XrefMxrfe extends WireData implements Module {
 			case 'update-xref':
 				$focus = $this->get_recordlocker_key($xref);
 				return $this->mnfr_focusURL($mnfrID, $focus);
+				break;
+			case 'delete-xref':
+				return $this->manufacturerURL($mnfrID);
 				break;
 			case 'delete-notes':
 			case 'update-notes';
