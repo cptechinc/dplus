@@ -1,12 +1,12 @@
 {% extends 'util/bread-crumbs.twig' %}
 {% block current_page %}
-	{% if page.has('mnfrID') %}
+	{% if page.wire('input').get.offsetExists('mnfrID') %}
 		<li class="breadcrumb-item">
 			<a href="{{ page.url }}">
 				<i class="fa fa-arrows" aria-hidden="true"></i> {{ page.has('dplus_function') ? page.dplus_function|upper : page.title }}
 			</a>
 		</li>
-		{% if (page.has('mnfritemID')) %}
+		{% if (page.wire('input').get.offsetExists('mnfritemID')) %}
 			<li class="breadcrumb-item">
 				<a href="{{ page.manufacturerURL(page.mnfrID) }}">Mnfr / Comp: {{ page.mnfrID }}</a>
 			</li>
@@ -16,13 +16,13 @@
 				<li class="breadcrumb-item active" aria-current="page">X-Ref Item: {{ page.mnfritemID }}</li>
 			{% endif %}
 		{% else %}
-			{% if page.has('mnfrID') and page.mnfrID %}
+			{% if page.wire('input').get.offsetExists('mnfrID') and page.mnfrID %}
 				<li class="breadcrumb-item active" aria-current="page">
 					<i class="fa fa-user" aria-hidden="true"></i> Mnfr / Comp: {{ page.mnfrID }}
 				</li>
 			{% endif %}
 		{% endif %}
-	{% elseif page.has('itemID') %}
+	{% elseif page.wire('input').get.offsetExists('itemID') %}
 		<li class="breadcrumb-item">
 			<a href="{{ page.url }}">{{ page.title }}</a>
 		</li>
