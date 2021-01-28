@@ -118,7 +118,7 @@ class Kim extends WireData implements Module {
 				return $this->input_delete($input);
 				break;
 			default:
-				$this->wire('session')->response_kim = KimResponse::response_error("ItmMisc", "No Action Provided");
+				$this->wire('session')->setFor('response', 'kim', KimResponse::response_error("ItmMisc", "No Action Provided"));
 				return false;
 				break;
 		}
@@ -142,7 +142,7 @@ class Kim extends WireData implements Module {
 			$this->update_dplus_cobol($kitID);
 			return true;
 		}
-		$this->wire('session')->response_kim = KimResponse::response_error($kitID, "Kit $kitID can not be created");
+		$this->wire('session')->setFor('response', 'kim', KimResponse::response_error($kitID, "Kit $kitID can not be created"));
 		return false;
 	}
 
@@ -164,11 +164,11 @@ class Kim extends WireData implements Module {
 				$kit = $this->get_kit($kitID);
 				$kit->delete();
 				$response = $this->save_and_respond($kit);
-				$this->wire('session')->response_kim = $response;
+				$this->wire('session')->setFor('response', 'kim', $response);
 				return $response->has_success();
 			}
 
-			$this->wire('session')->response_kim = KimResponse::response_error($kitID, "Cannot delete Kit ID $kitID. It has committed orders.");
+			$this->wire('session')->setFor('response', 'kim', KimResponse::response_error($kitID, "Cannot delete Kit ID $kitID. It has committed orders."));
 			return false;
 		}
 		return true;
@@ -250,7 +250,7 @@ class Kim extends WireData implements Module {
 	 * @return bool
 	 */
 	public function field_has_error($inputname) {
-		$response = $this->wire('session')->response_kim;
+		$response = $this->wire('session')->getFor('response', 'kim');
 		return ($response) ? array_key_exists($inputname, $response->fields) : false;
 	}
 
