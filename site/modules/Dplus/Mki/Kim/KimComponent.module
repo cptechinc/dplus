@@ -132,7 +132,7 @@ class KimComponent extends WireData implements Module {
 			$created = $this->create_kit($kitID);
 
 			if (!$created) {
-				$this->wire('session')->response_kim = KimResponse::response_error($kitID, "Kit $kitID doesn't exist and wasn't able to be created");
+				$this->wire('session')->setFor('response', 'kim', KimResponse::response_error($kitID, "Kit $kitID doesn't exist and wasn't able to be created"));
 				return false;
 			}
 		}
@@ -148,7 +148,7 @@ class KimComponent extends WireData implements Module {
 				$this->input_delete($input);
 				break;
 			default:
-				$this->wire('session')->response_kim = KimResponse::response_error($kitID, "No Action Provided");
+				$this->wire('session')->setFor('response', 'kim', KimResponse::response_error($kitID, "No Action Provided"));
 				break;
 		}
 	}
@@ -167,8 +167,8 @@ class KimComponent extends WireData implements Module {
 		if ($this->component_exists($kitID, $itemID)) {
 			$component = $this->get_component($kitID, $itemID);
 			$component->delete();
-			$this->wire('session')->response_kim = $this->save_and_respond($component, null);
-			return $this->wire('session')->response_kim->has_success();
+			$this->wire('session')->setFor('response', 'kim', $this->save_and_respond($component, null));
+			return $this->wire('session')->getFor('response', 'kim')->has_success();
 		}
 		return true;
 	}
@@ -188,8 +188,8 @@ class KimComponent extends WireData implements Module {
 
 		$component = $this->new_get_component($kitID, $itemID);
 		$invalidfields = $this->update_record_input($component, $input);
-		$this->wire('session')->response_kim = $this->save_and_respond($component, $invalidfields);
-		return $this->wire('session')->response_kim->has_success();
+		$this->wire('session')->setFor('response', 'kim', $this->save_and_respond($component, $invalidfields));
+		return $this->wire('session')->getFor('response', 'kim')->has_success();
 	}
 
 	/**
@@ -325,7 +325,7 @@ class KimComponent extends WireData implements Module {
 	 * @return bool
 	 */
 	public function field_has_error($inputname) {
-		$response = $this->wire('session')->response_kim;
+		$response = $this->wire('session')->getFor('response', 'kim');
 		return ($response) ? array_key_exists($inputname, $response->fields) : false;
 	}
 
