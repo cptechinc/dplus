@@ -6,6 +6,12 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Controllers\\Ajax\\Json\\Map' => $baseDir . '/classes/ajax/json/Map.php',
+    'Controllers\\Ajax\\Json\\Mci' => $baseDir . '/classes/ajax/json/Mci.php',
+    'Controllers\\Ajax\\Json\\Min' => $baseDir . '/classes/ajax/json/Min.php',
+    'Controllers\\Ajax\\Json\\Mki' => $baseDir . '/classes/ajax/json/Mki.php',
+    'Controllers\\Ajax\\Json\\Msa' => $baseDir . '/classes/ajax/json/Msa.php',
+    'Controllers\\Ajax\\Json\\Mso' => $baseDir . '/classes/ajax/json/Mso.php',
     'Controllers\\Ajax\\Lookup' => $baseDir . '/classes/ajax/Lookup.php',
     'Controllers\\Mki\\Kim' => $baseDir . '/classes/mki/Kim.php',
 );
