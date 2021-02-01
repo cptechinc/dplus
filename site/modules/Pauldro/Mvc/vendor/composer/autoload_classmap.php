@@ -34,5 +34,6 @@ return array(
     'Jenssegers\\Agent\\Facades\\Agent' => $vendorDir . '/jenssegers/agent/src/Facades/Agent.php',
     'Mobile_Detect' => $vendorDir . '/mobiledetect/mobiledetectlib/Mobile_Detect.php',
     'Mvc\\Controllers\\AbstractController' => $baseDir . '/classes/AbstractController.php',
+    'Mvc\\JsonRouter' => $baseDir . '/classes/JsonRouter.php',
     'Mvc\\Router' => $baseDir . '/classes/Router.php',
 );

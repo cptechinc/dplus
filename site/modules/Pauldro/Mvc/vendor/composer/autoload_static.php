@@ -76,6 +76,7 @@ class ComposerStaticInitff1d725dfb3efe0c484110dfa1f529f6
         'Jenssegers\\Agent\\Facades\\Agent' => __DIR__ . '/..' . '/jenssegers/agent/src/Facades/Agent.php',
         'Mobile_Detect' => __DIR__ . '/..' . '/mobiledetect/mobiledetectlib/Mobile_Detect.php',
         'Mvc\\Controllers\\AbstractController' => __DIR__ . '/../..' . '/classes/AbstractController.php',
+        'Mvc\\JsonRouter' => __DIR__ . '/../..' . '/classes/JsonRouter.php',
         'Mvc\\Router' => __DIR__ . '/../..' . '/classes/Router.php',
     );
 
