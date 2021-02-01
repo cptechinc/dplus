@@ -35,7 +35,7 @@
 				<td>{{ shipto.city }}</td>
 				<td>{{ shipto.state }}</td>
 				<td>{{ shipto.zip }}</td>
-				<td>{{ convertdate(shipto.lastsaledate) }}</td>
+				<td>{{ shipto.lastsaledate|convertdate }}</td>
 			</tr>
 		{% endfor %}
 	</tbody>

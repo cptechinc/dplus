@@ -1,0 +1,249 @@
+<?php namespace ProcessWire;
+
+use Twig\Loader\FilesystemLoader, Twig\Environment;
+use Twig\Extension\DebugExtension;
+use Twig\TwigFilter, Twig\TwigFunction;
+
+include(__DIR__.'/vendor/autoload.php');
+
+use Twig\Html\TwigInput, Twig\Html\TwigInputGroup, Twig\Html\TwigInputSpan;
+use Twig\Html\TwigButton, Twig\Html\TwigLink;
+
+/**
+ * Woodstock
+ *
+ */
+class Twig extends WireData implements Module {
+
+	public function getLoader() {
+		return new FilesystemLoader($this->config->paths->root.$this->path);
+	}
+
+	public function getTwig() {
+		$loader = $this->getLoader();
+		$twig = new Environment($loader, [
+			'cache' => $this->config->paths->root.$this->cachepath,
+			'auto_reload' => true,
+			'debug' => boolval($this->debug)
+		]);
+		$twig->addExtension(new DebugExtension());
+		$this->setupTwig($twig);
+		return $twig;
+	}
+
+	public function setupTwig(Environment $twig) {
+		$this->setupTwigGlobals($twig);
+		$this->setupTwigFunctions($twig);
+	}
+
+	public function setupTwigGlobals(Environment $twig) {
+		foreach (['page', 'pages', 'config', 'user', 'languages', 'sanitizer', 'session', 'browseragent'] as $variable) {
+			$twig->addGlobal($variable, $this->wire($variable));
+		};
+		$twig->addGlobal('homepage', $this->wire('pages')->get('/'));
+	}
+
+	public function setupTwigFunctions(Environment $twig) {
+		$this->setupTwigFunctionsNumeric($twig);
+		$this->setupTwigFunctionsString($twig);
+		$this->setupTwigFunctionsArray($twig);
+		$this->setupTwigFunctionsHtmlOutput($twig);
+		$this->setupTwigFunctionsTwigObj($twig);
+		$this->setupTwigFunctionsObjects($twig);
+	}
+
+	private function setupTwigFunctionsNumeric(Environment $twig) {
+		$filter = new TwigFilter('currency', function ($money) {
+			return number_format($money, 2, '.', ",");
+		});
+		$twig->addFilter($filter);
+
+		$filter = new TwigFilter('round', function ($number) {
+			return number_format($number, 4, '.', ",");
+		});
+		$twig->addFilter($filter);
+	}
+
+	private function setupTwigFunctionsString(Environment $twig) {
+		$filter = new TwigFilter('stripslashes', function ($str) {
+			return stripslashes($str);
+		});
+		$twig->addFilter($filter);
+		$yesno = new TwigFilter('yesorno', function ($trueorfalse) {
+			return ($trueorfalse === true || strtoupper($trueorfalse) == 'Y') ? 'yes' : 'no';
+		});
+		$twig->addFilter($yesno);
+
+		$filter = new TwigFilter('attrJS', function ($string, $jsprepend = true) {
+			$replace = array(
+				' ' => '+',
+				'=' => 'eq',
+				'%' => 'per',
+				'+' => 'plus'
+			);
+			$string = str_replace(array_keys($replace), array_values($replace), $string);
+			return $jsprepend ? "js-$string" : $string;
+		});
+		$twig->addFilter($filter);
+
+		$filter = new TwigFilter('base64_encode', function ($str) {
+			return base64_encode($str);
+		});
+		$twig->addFilter($filter);
+
+		$filter = new TwigFilter('phone_us', function ($phone) {
+			$regexer = new Regexer;
+			return $regexer->phone_us_10($phone);
+		});
+		$twig->addFilter($filter);
+
+		$filter = new TwigFilter('phone_us_ext', function ($phone) {
+			$regexer = new Regexer;
+			return $regexer->phone_us_ext($phone);
+		});
+		$twig->addFilter($filter);
+
+		$filter = new TwigFilter('phone_us_x', function ($phone) {
+			$regexer = new Regexer;
+			return $regexer->phone_us_x($phone);
+		});
+		$twig->addFilter($filter);
+
+		$convertdate = new TwigFilter('convertdate', function ($date, $format = 'm/d/Y') {
+			$date = date($format, strtotime($date));
+			return $date == '11/30/-0001' ? '' : $date;
+		});
+		$twig->addFilter($convertdate);
+
+		$filter = new TwigFilter('shorten', function ($string, $length = 0, $append = '') {
+			$newstring = substr($string, 0, $length);
+			$newstring .= strlen($string) > $length ? $append : '';
+			return $newstring;
+		});
+		$twig->addFilter($filter);
+
+		$filter = new TwigFilter('urlencode', function ($string) {
+			return urlencode($string);
+		});
+		$twig->addFilter($filter);
+	}
+
+	private function setupTwigFunctionsArray(Environment $twig) {
+		$filter = new TwigFilter('htmlattributes', function ($array) {
+			$attrnoval = ['readonly', 'disabled'];
+			$attr = [];
+
+			foreach ($array as $key => $value) {
+				if (in_array($key, $attrnoval)) {
+					$attr[] = $value === true ? $key : '';
+				} else {
+					$attr[] = "$key=\"$value\"";
+				}
+			}
+			return trim(implode(' ', array_filter($attr)));
+		});
+		$twig->addFilter($filter);
+
+		$filter = new TwigFilter('array_key_exists', function ($array, $key) {
+			return array_key_exists($key, $array);
+		});
+		$twig->addFilter($filter);
+
+		$filter = new TwigFilter('array_values', function ($array) {
+			return array_values($array);
+		});
+		$twig->addFilter($filter);
+
+		$array_keys = new TwigFunction('array_keys', function ($array) {
+			return array_keys($array);
+		});
+		$twig->addFunction($array_keys);
+
+		$filter = new TwigFilter('join2', function ($str, $glue = '') {
+			if (is_array($str)) {
+				return implode($glue, $str);
+			}
+			return trim($str);
+		});
+		$twig->addFilter($filter);
+	}
+
+	private function setupTwigFunctionsHtmlOutput(Environment $twig) {
+		$filter = new TwigFilter('icon', function ($class) {
+			return "<i class=\"$class\" aria-hidden=\"true\"></i>";
+		});
+		$twig->addFilter($filter);
+
+		$matches_search = new TwigFunction('matches_search', function ($subject, $query) {
+			$regex = "/(".str_replace('-', '\-?', $query).")/i";
+			$contains = preg_match($regex, $subject, $matches);
+
+			if ($contains) {
+				$highlight = "<span class='highlight'>" . $matches[0] . "</span>";
+				return preg_replace($regex, $highlight, $subject);
+			}  else {
+				return $subject;
+			}
+		});
+		$twig->addFunction($matches_search);
+	}
+
+	private function setupTwigFunctionsTwigObj(Environment $twig) {
+		$function = new TwigFunction('twiginput', function (array $array) {
+			$input = new \Twig\Html\TwigInput();
+			$input->setFromArray($array);
+			return $input;
+		});
+		$twig->addFunction($function);
+
+		$function = new TwigFunction('twiginputgroup', function (array $array) {
+			$input = new \Twig\Html\TwigInputGroup();
+			$input->setFromArray($array);
+			return $input;
+		});
+		$twig->addFunction($function);
+
+		$function = new TwigFunction('twiginputgroupspan', function (array $array) {
+			$input = new \Twig\Html\TwigInputGroupSpan();
+			$input->setFromArray($array);
+			return $input;
+		});
+		$twig->addFunction($function);
+
+		$function = new TwigFunction('twigbutton', function (array $array) {
+			$input = new \Twig\Html\TwigButton();
+			$input->setFromArray($array);
+			return $input;
+		});
+		$twig->addFunction($function);
+
+		$function = new TwigFunction('twiglink', function (array $array) {
+			$input = new \Twig\Html\TwigLink();
+			$input->setFromArray($array);
+			return $input;
+		});
+		$twig->addFunction($function);
+	}
+
+	private function setupTwigFunctionsObjects(Environment $twig) {
+		$filter = new TwigFilter('purl', function ($url) {
+			if (strlen($url)) {
+				$url = new Url($url);
+				return $url->getUrl();
+			} else {
+				return false;
+			}
+		});
+		$twig->addFilter($filter);
+
+		$filter = new TwigFilter('dynamicproperty', function ($object, $property) {
+			return $object->$property;
+		});
+		$twig->addFilter($filter);
+
+		$filter = new TwigFilter('objproperty', function ($object, $property) {
+			return $object->$property;
+		});
+		$twig->addFilter($filter);
+	}
+}

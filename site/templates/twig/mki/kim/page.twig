@@ -1,3 +1,9 @@
+{% include 'mki/kim/bread-crumbs.twig' with {'page': page, 'input': page.wire('input')} %}
+
+{% if session.getFor('response', 'kim') %}
+	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'kim')} %}
+{% endif %}
+
 {% include 'mki/kim/list.twig' %}
 {% include 'util/paginator.twig' with {'page': page, 'resultscount': kits.getNbResults()} %}
 {% include 'mki/kim/modal.twig' %}

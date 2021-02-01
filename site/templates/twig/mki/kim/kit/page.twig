@@ -5,22 +5,27 @@
 	kim                    module Kim
 	kit                    InvKit
 #}
-<div class="card">
-	<div class="card-header">
-		<div class="row">
-			<div class="col-sm-3">
-				<strong>Kit ID:</strong> {{ kit.itemid }}
-			</div>
-			<div class="col-sm-6">
-				<div>
-					<small>{{ kit.item.description }}</small><br>
-					<small>{{ kit.item.description2 }}</small>
-				</div>
+{% extends 'mki/kim/kit/_page.twig' %}
+
+{% block header %}
+	<div class="row">
+		<div class="col-sm-3">
+			<strong>Kit ID:</strong> {{ kit.itemid }}
+		</div>
+		<div class="col-sm-6">
+			<div>
+				<small>{{ kit.item.description }}</small><br>
+				<small>{{ kit.item.description2 }}</small>
 			</div>
 		</div>
 	</div>
-	{% include 'mki/kim/kit/components.twig' %}
+{% endblock %}
 
+{% block list %}
+	{% include 'mki/kim/kit/components.twig' %}
+{% endblock %}
+
+{% block footer %}
 	<div class="card-footer">
 		<div class="d-flex justify-content-between align-items-center">
 			<div></div>
@@ -38,4 +43,4 @@
 			</div>
 		</div>
 	</div>
-</div>
+{% endblock %}

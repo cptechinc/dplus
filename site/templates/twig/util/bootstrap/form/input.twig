@@ -1,0 +1,2 @@
+{% set tinput = twiginput(input) %}
+<input type="{{ tinput.type }}" name="{{ tinput.name }}" id="{{ tinput.id() }}" class="{{ tinput.class() }}" value="{{ tinput.value }}"  {{ tinput.attributes()|raw }}>

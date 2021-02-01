@@ -71,11 +71,11 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-7">Invoice Date:</div>
-					<div class="col-sm-5 text-right">{{ convertdate(order.date_invoiced) }}</div>
+					<div class="col-sm-5 text-right">{{ order.date_invoiced|convertdate }}</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-7">Order Date:</div>
-					<div class="col-sm-5 text-right">{{ convertdate(order.date_ordered) }}</div>
+					<div class="col-sm-5 text-right">{{ order.date_ordered|convertdate }}</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-7">Subtotal:</div>

@@ -47,9 +47,22 @@ class DpagesApi extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
+		'ajax-lookups' => array(
+			'name'   => 'ajax-lookups',
+			'fields' => array(),
+			'paginated' => true
+		),
 	);
 
 	const PAGES = array(
+		'ajax' => array(
+			'template'       => 'ajax-lookups',
+			'name'           => 'ajax',
+			'title'          => 'AJAX Lookups',
+			'summary'        => 'AJAX Lookups',
+			'parent'         => '/',
+			'dplus_function' => ''
+		),
 		'api' => array(
 			'template'       => 'api-menu',
 			'name'           => 'api',

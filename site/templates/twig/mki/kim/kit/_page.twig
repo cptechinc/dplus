@@ -1,0 +1,24 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	kim                    module Kim
+	kit                    InvKit
+#}
+{% include 'mki/kim/bread-crumbs.twig' with {'page': page, 'input': page.wire('input')} %}
+
+{% if session.getFor('response', 'kim') %}
+	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'kim')} %}
+{% endif %}
+
+<div class="card">
+	<div class="card-header">
+		{% block header %} {% endblock %}
+	</div>
+
+	{% block list %} {% endblock %}
+
+	{% block body %} {% endblock %}
+
+	{% block footer %} {% endblock %}
+</div>

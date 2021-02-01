@@ -35,7 +35,7 @@
 				<td>{{ customer.city }}</td>
 				<td>{{ customer.state }}</td>
 				<td>{{ customer.zip }}</td>
-				<td>{{ convertdate(customer.lastsaledate) }}</td>
+				<td>{{ customer.lastsaledate|convertdate }}</td>
 			</tr>
 		{% endfor %}
 	</tbody>

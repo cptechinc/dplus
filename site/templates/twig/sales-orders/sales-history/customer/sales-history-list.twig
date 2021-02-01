@@ -19,8 +19,8 @@
 					<div class="col">{{ order.custpo }}</div>
 					<div class="col">{{ order.shiptoid }}</div>
 					<div class="col text-right">$ {{ order.total_total|currency }}</div>
-					<div class="col">{{ convertdate(order.date_invoiced) }}</div>
-					<div class="col">{{ convertdate(order.date_ordered) }}</div>
+					<div class="col">{{ order.date_invoiced|convertdate }}</div>
+					<div class="col">{{ order.date_ordered|convertdate }}</div>
 				</div>
 			</a>
 		{% endfor %}

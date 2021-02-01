@@ -16,8 +16,8 @@
 							{{ document.filename }}
 						</a>
 					</td>
-					<td>{{ convertdate(document.date, "m/d/Y") }}</td>
-					<td>{{ convertdate(document.date ~ document.time[:4], "h:i A") }}</td>
+					<td>{{ document.date|convertdate("m/d/Y") }}</td>
+					<td>{{ (document.date ~ document.time[:4])|convertdate("h:i A") }}</td>
 				</tr>
 			{% endfor %}
 		{% else %}
