@@ -17,6 +17,7 @@ class Router extends WireData {
 		$this->routes = [];
 		$this->path = '';
 		$this->routeInfo = [];
+		$this->routeprefix = '';
 	}
 
 	/**
@@ -27,6 +28,16 @@ class Router extends WireData {
 	 */
 	public function setRoutes($routes = []) {
 		$this->routes = $routes;
+	}
+
+	/**
+	 * Set Routes to route for
+	 *
+	 * @param  array $routes
+	 * @return void
+	 */
+	public function setRoutePrefix($prefix = '') {
+		$this->routeprefix = $prefix;
 	}
 
 	/**
@@ -138,15 +149,33 @@ class Router extends WireData {
 		return $default;
 	}
 
+	protected function flattenRoutes(&$putInArray, $group, $prefix = '') {
+		$prefix = rtrim($prefix, '/');
+
+		foreach ($group as $key => $item) {
+			// Check first item in item array to see if it is also an array
+			if (is_array(reset($item))) {
+				self::flattenRoutes($putInArray, $item, $prefix . '/' . $key);
+			} else {
+				$item[1] = $prefix . '/' . $item[1];
+				array_push($putInArray, $item);
+			}
+		}
+	}
+
 	/**
 	 * Return RouteCollector
 	 * @return RouteCollector
 	 */
 	public function router() {
 		$routes = $this->routes;
+
+		$flatroutes = [];
+		self::flattenRoutes($flatroutes, $routes, $this->routeprefix);
+
 		// create FastRoute Dispatcher:
-		$router = function (RouteCollector $r) use ($routes) {
-			foreach ($routes as $key => $route) {
+		$router = function (RouteCollector $r) use ($flatroutes) {
+			foreach ($flatroutes as $key => $route) {
 				if (!is_array($route)) {
 					continue;
 				}
