@@ -9,7 +9,7 @@
 		{% if order.countSalesOrderShipments() %}
 			{% for shipment in order.getSalesOrderShipments() %}
 				<tr>
-					<td>{{ convertdate(shipment.shipdate, "m/d/Y") }}</td>
+					<td>{{ shipment.shipdate|convertdate("m/d/Y") }}</td>
 					<td>{{ shipment.deliveredby }}</td>
 					<td>
 						<a href="{{ urlmaker.get_trackingURL(shipment.deliveredby, shipment.trackingnbr) }}" target="_blank" class="link">

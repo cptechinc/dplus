@@ -1,0 +1,65 @@
+<?php
+	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
+	use Controllers\Ajax\Json as Json;
+	
+	$routes  = [
+		'inv' => [
+			'validate' => [
+				['GET', 'tariff-code/', Json\Min::class, 'validateTariffCode'],
+				['GET', 'country-code/', Json\Min::class, 'validateCountryCode'],
+				['GET', 'msds-code/', Json\Min::class, 'validateMsdsCode'],
+				['GET', 'itemid/', Json\Min::class, 'validateItemid'],
+				['GET', 'warehouse/', Json\Min::class, 'validateWarehouse'],
+				['GET', 'itmp/exists/', Json\Min::class, 'validateItmpExists'],
+			],
+			['GET', 'tariff-code/', Json\Min::class, 'getTariffCode'],
+			['GET', 'item/', Json\Min::class, 'getItm'],
+		],
+		'map' => [
+			'validate' => [
+				['GET', 'vendorid/', Json\Map::class, 'validateVendorid'],
+				['GET', 'vxm/', Json\Map::class, 'validateVxm'],
+				['GET', 'vxm/itemid/', Json\Map::class, 'validateVxmExistsForItemid'],
+				['GET', 'mxrfe/', Json\Map::class, 'validateMxrfe'],
+				['GET', 'mxrfe/new/', Json\Map::class, 'validateMxrfeNew'],
+			],
+			['GET', 'vxm/', Json\Map::class, 'getVxm'],
+			['GET', 'vxm/itemid/', Json\Map::class, 'getVxmByItemid'],
+			['GET', 'po/item/', Json\Map::class, 'getPoItem'],
+		],
+		'mci' => [
+			'validate' => [
+				['GET', 'custid/', Json\Map::class, 'validateCustid'],
+			],
+		],
+		'mki' => [
+			'validate' => [
+				['GET', 'kit/', Json\Mki::class, 'validateKitid'],
+				['GET', 'kit/new/', Json\Mki::class, 'validateKitidNew'],
+				['GET', 'kit/delete/', Json\Mki::class, 'validateKitDeletion'],
+				['GET', 'kit/component/', Json\Mki::class, 'validateKitComponent'],
+			],
+			['GET', 'kit/', Json\Mki::class, 'getKit'],
+		],
+		'msa' => [
+			'validate' => [
+				['GET', 'loginid/', Json\Msa::class, 'validateUserid'],
+				['GET', 'userid/', Json\Msa::class, 'validateUserid'],
+			],
+			['GET', 'user/', Json\Msa::class, 'getUser'],
+		],
+		'mso' => [
+			'validate' => [
+				['GET', 'freight-code/', Json\Mso::class, 'validateFreightCode'],
+				['GET', 'price-discount/', Json\Mso::class, 'validatePriceDiscount'],
+			],
+			['GET', 'lowest-price/', Json\Mso::class, 'getLowestPrice'],
+		]
+	];
+
+	$router = new Mvc\JsonRouter();
+	$router->setRoutes($routes);
+	$router->setRoutePrefix($page->url);
+	$response = $router->route();
+
+	echo json_encode($response);

@@ -54,7 +54,7 @@
 					<td class="{{ datamatcher.string(customer.zip, q) ? 'highlight' : '' }}">
 						{{ customer.zip }}
 					</td>
-					<td>{{ convertdate(customer.lastsaledate) }}</td>
+					<td>{{ customer.lastsaledate|convertdate }}</td>
 				</tr>
 			{% endfor %}
 		{% else %}

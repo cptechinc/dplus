@@ -6,20 +6,11 @@
 	kit                    InvKit
 	component              InvKitComponent
 #}
-<div class="card">
-	<div class="card-header">
-		<div class="row">
-			<div class="col-sm-3">
-				<strong>Kit ID:</strong> {{ kit.itemid }}
-			</div>
-			<div class="col-sm-6">
-				<div>
-					<small>{{ kit.item.description }}</small><br>
-					<small>{{ kit.item.description2 }}</small>
-				</div>
-			</div>
-		</div>
-	</div>
+{% extends 'mki/kim/kit/page.twig' %}
+
+{% block list %} {% endblock %}
+
+{% block body %}
 	<div class="card-body">
 		<div class="row">
 			<div class="col-sm-8">
@@ -27,4 +18,6 @@
 			</div>
 		</div>
 	</div>
-</div>
+{% endblock %}
+
+{% block footer %} {% endblock %}

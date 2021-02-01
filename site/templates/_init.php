@@ -135,17 +135,11 @@ $config->customer = $pages->get('/config/customer/');
 $session->sessionid = session_id();
 
 if (!$values->action || $page->template == 'dplus-screen-formatter') {
-	$config->twigloader = new Twig_Loader_Filesystem($config->paths->templates.'twig/');
-	$config->twig = new Twig_Environment($config->twigloader, [
-		'cache' => $config->paths->templates.'twig/cache/',
-		'auto_reload' => true,
-		'debug' => true
-	]);
+	$mtwig = $modules->get('Twig');
+	$config->twigloader = $mtwig->getLoader();
+	$config->twig = $mtwig->getTwig();
 	$config->twig->getExtension(\Twig\Extension\CoreExtension::class)->setNumberFormat(3, '.', '');
-
-	$config->twig->addExtension(new Twig\Extension\DebugExtension());
-	include($config->paths->templates."/twig/util/functions.php");
-
+	
 	if ($page->fullURL->query->__toString() != '') {
 		$page->title_previous = $page->title;
 	}

@@ -1,0 +1,9 @@
+<?php namespace ProcessWire;
+
+include(__DIR__.'/vendor/autoload.php');
+
+class Mvc extends Process implements Module {
+	public function controllersPath() {
+		return $this->config->paths->root . $this->controllers_path;
+	}
+}

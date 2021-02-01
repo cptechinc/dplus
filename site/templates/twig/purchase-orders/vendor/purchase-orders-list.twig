@@ -27,8 +27,8 @@
 				<div class="col">{{ order.poref }}</div>
 				<div class="col">{{ order.shipfromid }}</div>
 				<div class="col text-right">$ {{ order.get_total()|number_format(config.po.decimal_places_cost) }}</div>
-				<div class="col text-right">{{ convertdate(order.date_ordered) }}</div>
-				<div class="col text-right">{{ convertdate(order.date_expected) }}</div>
+				<div class="col text-right">{{ order.date_ordered|convertdate }}</div>
+				<div class="col text-right">{{ order.date_expected|convertdate }}</div>
 				<div class="col">{{ order.status()|capitalize }}</div>
 			</div>
 		</a>

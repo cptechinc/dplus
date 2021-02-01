@@ -1,0 +1,11 @@
+{% extends 'util/alert.twig' %}
+
+{% block body %}
+	<h5>Check the following fields:</h5>
+	{% for field in fields %}
+		<ul class="">
+			<li><a href="#{{ field.name }}">{{ field.label }}</a> - {{ field.msg }}</li>
+		</ul>
+		
+	{% endfor %}
+{% endblock %}

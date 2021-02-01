@@ -1,0 +1,4 @@
+{% set tlink = twiglink(link) %}
+<a href="#{{ tlink.href }}" class="{{ tlink.class() }}" {{ tlink.attributes()|raw }}>
+	{{ tlink.text|raw }}
+</a>
