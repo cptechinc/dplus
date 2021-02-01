@@ -20,7 +20,7 @@ class Kim extends AbstractController {
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
 		}
-		
+
 		if (empty($data->kitID) === false) {
 			if (empty($data->component) === false) {
 				return self::kitComponent($data);
@@ -84,16 +84,6 @@ class Kim extends AbstractController {
 			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Kit $kit->itemid does not exist", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You will be able to create this kit"]);
 		}
 		return $page->body;
-	}
-
-	private static function breadcrumbs() {
-		$config = self::pw('config');
-		return $config->twig->render('mki/kim/bread-crumbs.twig', ['input' => self::pw('input')]);
-	}
-
-	private static function showresponse() {
-		$config = self::pw('config');
-		return $config->twig->render('items/itm/response-alert.twig', ['response' => self::pw('session')->response_kim]);
 	}
 
 	public static function listKits($data) {
