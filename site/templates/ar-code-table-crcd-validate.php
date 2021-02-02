@@ -11,11 +11,11 @@
 	if ($values->action) {
 		switch ($values->text('action')) {
 			case 'validate-custid':
-				$validate_custid = $modules->get('LookupCustomer');
+				$validate = new Dplus\CodeValidators\Mar();
 				$custID = $values->text('custID');
 				$returntype   = $values->return ? $values->text('return') : 'jqueryvalidate';
 
-				if ($validate_custid->lookup_customer($custID)) {
+				if ($validate->custid($custID)) {
 					$response = true;
 				} else {
 					$response = ($returntype == 'bool') ? false : "$custID was not found in the Customer Master";

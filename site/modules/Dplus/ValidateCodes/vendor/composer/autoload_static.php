@@ -7,10 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInit05e8b5312246afdde1a9eb3568c1d72c
 {
     public static $classMap = array (
-        'Dplus\\CodeValidators\\Ar' => __DIR__ . '/../..' . '/src/Ar/Ar.php',
         'Dplus\\CodeValidators\\Map' => __DIR__ . '/../..' . '/src/Map/Map.php',
         'Dplus\\CodeValidators\\Map\\Mxrfe' => __DIR__ . '/../..' . '/src/Map/Mxrfe.php',
         'Dplus\\CodeValidators\\Map\\Vxm' => __DIR__ . '/../..' . '/src/Map/Vxm.php',
+        'Dplus\\CodeValidators\\Mar' => __DIR__ . '/../..' . '/src/Mar/Mar.php',
         'Dplus\\CodeValidators\\Min' => __DIR__ . '/../..' . '/src/Min/Min.php',
         'Dplus\\CodeValidators\\Po' => __DIR__ . '/../..' . '/src/Po/Po.php',
         'Dplus\\CodeValidators\\So' => __DIR__ . '/../..' . '/src/So/So.php',

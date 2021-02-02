@@ -7,7 +7,7 @@
 	$response   = '';
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
-	$validate_custid = $modules->get('LookupCustomer');
+	$validate = new Dplus\CodeValidators\Mar();
 
 	// NOTE USE WHEN NEEDED FOR JQUERYVALIDATE
 	// $returntype = $values->return ? $values->text('return') : 'jqueryvalidate';
@@ -17,7 +17,7 @@
 			case 'validate-custid':
 				$custID = $values->text('custID');
 
-				if ($validate_custid->lookup_customer($custID)) {
+				if ($validate->custid($custID)) {
 					$response = true;
 				} else {
 					$response = "$custID was not found in the Customer Master";
@@ -26,7 +26,7 @@
 			case 'get-customer-name': // NOT FOR JQUERYVALIDATE
 				$custID = $values->text('custID');
 
-				if ($validate_custid->lookup_customer($custID)) {
+				if ($validate->custid($custID)) {
 					$customer = CustomerQuery::create()->findOneById($custID);
 					$response = $customer->name;
 				} else {

@@ -8,6 +8,8 @@ use CreditCardDigitGetQuery, CreditCardDigitGet;
 use ConfigArQuery, ConfigAr;
 use CustomerQuery, Customer;
 
+use Dplus\CodeValidators\Mar as MarValidator;
+
 /**
  * Module that handles the editing of the CCM codetable
  */
@@ -213,8 +215,8 @@ class CodeTablesCrcd extends WireData implements Module {
 	 * @return void
 	 */
 	public function customer_exists($custID) {
-		$validate_custid = $this->wire('modules')->get('LookupCustomer');
-		return $validate_custid->lookup_customer($custID);
+		$validate = new MarValidator();
+		return $validate->custid($custID);
 	}
 
 	public static function getModuleInfo() {

@@ -6,10 +6,10 @@ use ShipviaQuery, Shipvia;
 use CustomerQuery, Customer;
 
 /**
- * Ar
+ * Mar
  * Class for Validating AR table codes, IDs
  */
-class Ar extends WireData {
+class Mar extends WireData {
 	/**
 	 * Return true if Customer ID exists Exists
 	 * @param  string $custID Customer ID
