@@ -4,7 +4,7 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 
 use Mvc\Controllers\AbstractController;
 
-use Dplus\CodeValidators\Mar as MarValidator();
+use Dplus\CodeValidators\Mar as MarValidator;
 
 class Mci extends AbstractController {
 	public static function test() {
