@@ -4,6 +4,8 @@ use Propel\Runtime\ActiveQuery\Criteria;
 
 use Dplus\CodeValidators\Min as MinValidator;
 use Dplus\CodeValidators\Mar as MarValidator;
+use Dplus\CodeValidators\Map as MapValidator;
+use Dplus\CodeValidators\Mso as MsoValidator;
 
 use ItemMasterItemQuery, ItemMasterItem;
 use InvHazmatItemQuery, InvHazmatItem;
@@ -270,10 +272,10 @@ class ValidateItm extends WireData implements Module {
 
 	public function init() {
 		$this->validate = new WireData();
-		$this->validate->ar  = new MarValidator();
-		$this->validate->ap  = $this->wire('modules')->get('ValidateAp');
-		$this->validate->in  = new MinValidator();
-		$this->validate->so  = $this->wire('modules')->get('ValidateSo');
+		$this->validate->ar = new MarValidator();
+		$this->validate->ap = new MapValidator();
+		$this->validate->in = new MinValidator();
+		$this->validate->so = new MsoValidator();
 		$this->modules = $this->wire('modules');
 	}
 

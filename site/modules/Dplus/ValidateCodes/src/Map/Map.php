@@ -6,9 +6,10 @@ use ApTermsCodeQuery, ApTermsCode;
 use ApBuyerQuery, ApBuyer;
 use CountryCodeQuery, CountryCode;
 use VendorQuery, Vendor;
+use VendorShipfromQuery, VendorShipfrom;
 
 /**
- * ValidateAp
+ * Map
  *
  * Class for Validating AP table codes, IDs, X-refs
  */
@@ -21,6 +22,18 @@ class Map extends WireData {
 	public function vendorid($vendorID) {
 		$q = VendorQuery::create();
 		$q->filterByVendorid($vendorID);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return if Vendor ID exists
+	 * @param  string $vendorID  Vendor ID
+	 * @return bool
+	 */
+	public function vendor_shipfrom($vendorID, $shipfromID) {
+		$q = VendorShipfromQuery::create();
+		$q->filterByVendorid($vendorID);
+		$q->filterByShipfromid($shipfromID);
 		return boolval($q->count());
 	}
 

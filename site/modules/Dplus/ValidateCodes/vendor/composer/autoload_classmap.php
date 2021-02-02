@@ -14,6 +14,6 @@ return array(
     'Dplus\\CodeValidators\\Min' => $baseDir . '/src/Min/Min.php',
     'Dplus\\CodeValidators\\Mki\\Mki' => $baseDir . '/src/Mki/Mki.php',
     'Dplus\\CodeValidators\\Msa' => $baseDir . '/src/Msa/Msa.php',
+    'Dplus\\CodeValidators\\Mso' => $baseDir . '/src/Mso/Mso.php',
     'Dplus\\CodeValidators\\Po' => $baseDir . '/src/Po/Po.php',
-    'Dplus\\CodeValidators\\So' => $baseDir . '/src/So/So.php',
 );

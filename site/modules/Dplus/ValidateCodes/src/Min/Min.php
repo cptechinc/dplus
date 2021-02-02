@@ -4,6 +4,7 @@ use ProcessWire\WireData;
 
 use Propel\Runtime\ActiveQuery\Criteria;
 
+use Dplus\CodeValidators\Map as MapValidator;
 use ItemMasterItemQuery, ItemMasterItem;
 use InvAssortmentCodeQuery, InvAssortmentCode;
 use UnitofMeasureSaleQuery, UnitofMeasureSale;
@@ -131,7 +132,7 @@ class Min extends WireData {
 	 * @return bool
 	 */
 	public function countrycode($code) {
-		$validate = $this->modules->get('ValidateAp');
+		$validate = new MapValidator();
 		return $validate->countrycode($code);
 	}
 
