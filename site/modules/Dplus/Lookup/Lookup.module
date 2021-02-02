@@ -30,21 +30,9 @@ class Lookup extends WireData implements Module {
 			'singular' => true,
 			'autoload' => true,
 			'installs' => array(
-				'LookupCustomer',
 				'LookupItem',
-				'LookupSalesOrder',
-				'LookupVendor',
 				'LookupQuote',
-				'LookupWarehouse',
-				'ValidatePurchaseOrderNbr',
-				'ValidateSalesOrder',
-				'ValidateVendorId',
-				'ValidateAr',
-				'ValidateAp',
-				'ValidateItm',
-				'ValidatePo',
 				'ValidateCxm',
-				'ValidateVxm',
 				'ValidateUpcx',
 			)
 		);
