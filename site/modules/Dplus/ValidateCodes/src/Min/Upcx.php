@@ -5,9 +5,6 @@ use ProcessWire\WireData;
 use Propel\Runtime\ActiveQuery\Criteria;
 
 use Dplus\CodeValidators\Min;
-use Dplus\CodeValidators\Map as MapValidator;
-use Dplus\CodeValidators\Mar as MarValidator;
-use Dplus\CodeValidators\Mso as MsoValidator;
 
 /**
  * IUpcx
