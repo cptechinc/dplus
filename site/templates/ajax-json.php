@@ -13,6 +13,8 @@
 				['GET', 'itmp/exists/', Json\Min::class, 'validateItmpExists'],
 			],
 			['GET', 'tariff-code/', Json\Min::class, 'getTariffCode'],
+			['GET', 'country-code/', Json\Min::class, 'getCountryCode'],
+			['GET', 'msds-code/', Json\Min::class, 'getMsdsCode'],
 			['GET', 'item/', Json\Min::class, 'getItm'],
 		],
 		'map' => [
