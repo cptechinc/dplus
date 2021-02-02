@@ -408,15 +408,8 @@ class Kim extends WireData implements Module {
 			$event->return = $this->wire('modules')->get('Itm')->get_itm_validateURL();
 		});
 
-		$this->addHook("Page(pw_template=kim)::jsonapiURL", function($event) {
-			$api = $event->arguments(0);
-			$pages = $this->wire('pages');
-			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
-		});
-
 		$this->addHook("Page(pw_template=kim)::itemlookupURL", function($event) {
 			$event->return = $this->wire('pages')->get('pw_template=itm-search')->url;
 		});
 	}
-
 }

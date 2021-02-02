@@ -842,11 +842,5 @@ class Itm extends WireData implements Module {
 		$this->addHookProperty("Page(pw_template=$templates)::search_freightcodesURL", function($event) {
 			$event->return = $this->wire('pages')->get('template=api-ajax,ajaxcode=freight-codes')->url;
 		});
-
-		$this->addHook("Page(pw_template=$templates)::jsonapiURL", function($event) {
-			$api = $event->arguments(0);
-			$pages = $this->wire('pages');
-			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
-		});
 	}
 }

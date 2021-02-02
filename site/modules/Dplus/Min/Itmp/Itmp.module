@@ -439,11 +439,5 @@ class Itmp extends WireData implements Module {
 			$loginID = $event->arguments(0);
 			$event->return = $this->user_deleteURL($loginID);
 		});
-
-		$this->addHook("Page(pw_template=itmp)::jsonapiURL", function($event) {
-			$api = $event->arguments(0);
-			$pages = $this->wire('pages');
-			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
-		});
 	}
 }

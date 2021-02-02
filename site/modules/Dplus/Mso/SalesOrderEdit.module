@@ -558,12 +558,6 @@ class SalesOrderEdit extends WireData implements Module {
 			});
 		}
 
-		$this->addHook("Page(pw_template=sales-order-edit)::jsonapiURL", function($event) {
-			$api = $event->arguments(0);
-			$pages = $this->wire('pages');
-			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
-		});
-
 		$this->addHook('User::can_editorder', function($event) {
 			$user = $event->object;
 			$ordn = $event->arguments(0);

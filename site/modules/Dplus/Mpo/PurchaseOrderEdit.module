@@ -757,12 +757,6 @@ class PurchaseOrderEdit extends WireData implements Module {
 			$event->return = $this->get_po_documentsURL($ponbr);
 		});
 
-		$this->addHook("Page(pw_template=purchase-order-edit)::jsonapiURL", function($event) {
-			$api = $event->arguments(0);
-			$pages = $this->wire('pages');
-			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
-		});
-
 		$this->addHook("Page(pw_template=purchase-order-edit)::search_vxmURL", function($event) {
 			$event->return = $this->wire('pages')->get('template=api-ajax,ajaxcode=vxm')->url;
 		});
