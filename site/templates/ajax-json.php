@@ -1,7 +1,7 @@
 <?php
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Ajax\Json as Json;
-	
+
 	$routes  = [
 		'inv' => [
 			'validate' => [
@@ -29,7 +29,7 @@
 		],
 		'mci' => [
 			'validate' => [
-				['GET', 'custid/', Json\Map::class, 'validateCustid'],
+				['GET', 'custid/', Json\Mci::class, 'validateCustid'],
 			],
 		],
 		'mki' => [
