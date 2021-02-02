@@ -19,19 +19,19 @@ $(function() {
 				tariffcode: {
 					required: false,
 					remote: function() {
-						return object_validate_remote_code('inv', 'tariffcode', 'tariffcode');
+						return object_validate_remote_code('inv', 'tariffcode', 'tariff-code');
 					}
 				},
 				origincountry: {
 					required: false,
 					remote: function() {
-						return object_validate_remote_code('inv', 'origincountry', 'countrycode');
+						return object_validate_remote_code('inv', 'origincountry', 'country-code');
 					}
 				},
 				freightcode: {
 					required: false,
 					remote: function() {
-						return object_validate_remote_code('mso', 'freightcode', 'freightcode');
+						return object_validate_remote_code('mso', 'freightcode', 'freight-code');
 					}
 				}
 			},
@@ -45,13 +45,12 @@ $(function() {
 
 		function object_validate_remote_code(api, inputid, validating) {
 			var url = URI('{{ page.jsonapiURL() }}');
-			url.path(url.path()+api+'/');
+			url.path(url.path()+api+'/validate/'+validating+'/');
 
 			return {
 				url: url.toString(),
 				type: "get",
 				data: {
-					action: 'validate-'+validating,
 					code: function() {
 						return $('#'+inputid).val();
 					}
@@ -145,11 +144,11 @@ $(function() {
 ============================================================= */
 	function fetch_jsonapi_code(api, fetching, code, callback) {
 		var url = new URI('{{ page.jsonapiURL() }}');
-		url.path(url.path() + api + "/");
-		url.addQuery('action', 'get-'+fetching).addQuery('code', code);
+		url.path(url.path() + api + "/" + fetching + "/");
+		url.addQuery('code', code);
+		console.log(url.toString());
 		$.getJSON(url.toString(), function( obj ) {
 			callback(obj);
 		});
 	}
-
 });

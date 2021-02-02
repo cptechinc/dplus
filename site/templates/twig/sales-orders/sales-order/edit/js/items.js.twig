@@ -47,8 +47,7 @@ $(function() {
 	}
 
 	function request_validate_pricemargin(itemID, price, callback) {
-		var uri = URI('{{ page.jsonapiURL('mso') }}');
-		uri.setQuery('action', 'validate-price-margin');
+		var uri = URI('{{ page.jsonapiURL('mso/validate/price-discount/') }}');
 		uri.setQuery('itemID', itemID);
 		uri.setQuery('price', price);
 

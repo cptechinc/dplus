@@ -22,7 +22,7 @@ $(function() {
 			kitID: {
 				required: true,
 				remote: {
-					url: '{{ page.jsonapiURL('mki') }}',
+					url: '{{ page.jsonapiURL('mki/validate/kit/new/') }}',
 					type: "get",
 					data: {
 						action: 'validate-kitid-new'
@@ -103,21 +103,21 @@ $(function() {
 	AJAX Request Functions
 ============================================================= */
 	function get_item(itemID, callback) {
-		var url = new URI('{{ page.jsonapiURL('inv') }}');
-		url.addQuery('action', 'get-item').addQuery('itemID', itemID);
+		var url = new URI('{{ page.jsonapiURL('inv/item/') }}');
+		url.addQuery('itemID', itemID);
 		$.getJSON(url.toString(), function( item ) {
 			callback(item);
 		});
 	}
 
 	function validate_kit_exists(kitID, callback) {
-		var url = new URI('{{ page.jsonapiURL('mki') }}');
-		url.addQuery('action', 'validate-kitid').addQuery('kitID', kitID);
+		var url = new URI('{{ page.jsonapiURL('mki/validate/kit/') }}');
+		url.addQuery('kitID', kitID);
 		$.getJSON(url.toString(), function( exists ) {
 			callback(exists);
 		});
 	}
-	
+
 /* =============================================================
 	Swal (SweetAlert) Functions
 ============================================================= */

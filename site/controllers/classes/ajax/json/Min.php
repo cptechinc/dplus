@@ -34,7 +34,7 @@ class Min extends AbstractController {
 			return false;
 		}
 		$tariff = TariffCodeQuery::create()->findOneByCode($data->code);
-		$response = array(
+		return array(
 			'code'        => $data->code,
 			'number'      => $tariff->number,
 			'rate'        => $tariff->duty_rate,
@@ -63,7 +63,7 @@ class Min extends AbstractController {
 			return false;
 		}
 		$c = CountryCodeQuery::create()->findOneByCode($data->code);
-		$response = array(
+		return array(
 			'code'        => $data->code,
 			'description' => $c->description
 		);
@@ -89,8 +89,8 @@ class Min extends AbstractController {
 		if ($validate->msdscode($data->code) === false) {
 			return false;
 		}
-		$msds = $self::pw('modules')->get('CodeTablesMsdsm')->get_code($code);
-		$response = array(
+		$msds = self::pw('modules')->get('CodeTablesMsdsm')->get_code($data->code);
+		return array(
 			'code'        => $data->code,
 			'description' => $msds->description
 		);

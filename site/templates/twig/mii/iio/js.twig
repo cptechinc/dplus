@@ -75,10 +75,9 @@ $(function() {
 			userID: {
 				required: true,
 				remote: {
-					url: '{{ page.jsonapiURL('msa') }}',
+					url: '{{ page.jsonapiURL('msa/validate/userid/') }}',
 					type: "get",
 					data: {
-						action: 'validate-loginid',
 						loginID: function() {
 							return $('#userID').val();
 						}
@@ -151,10 +150,9 @@ $(function() {
 
 	function remote_validate_whseobj(whseID) {
 		return {
-			url: '{{ page.jsonapiURL('inv') }}',
+			url: '{{ page.jsonapiURL('inv/validate/warehouse/') }}',
 			type: "get",
 			data: {
-				action: 'validate-warehouseid',
 				whseID: whseID
 			}
 		}
@@ -163,8 +161,7 @@ $(function() {
 	AJAX Request Functions
 ============================================================= */
 	function validate_userid(userID, callback) {
-		var url = URI('{{ page.jsonapiURL('msa') }}');
-		url.addQuery('action', 'validate-loginid');
+		var url = URI('{{ page.jsonapiURL('msa/validate/userid/') }}');
 		url.addQuery('loginID', userID);
 
 		$.getJSON(url.toString(), function(exists) {

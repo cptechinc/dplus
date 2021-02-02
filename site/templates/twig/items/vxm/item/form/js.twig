@@ -247,11 +247,9 @@ $(function() {
 			vendorID: {
 				required: true,
 				remote: {
-					url: '{{ url_validate }}',
+					url: '{{ page.jsonapiURL('map/validate/vendorid/') }}',
 					type: "get",
-					data: {
-						action: 'validate-vendorid'
-					}
+					data: {}
 				}
 			},
 			vendoritemID: {
@@ -281,11 +279,9 @@ $(function() {
 			itemID: {
 				required: true,
 				remote: {
-					url: '{{ url_validate }}',
+					url: '{{ page.jsonapiURL('inv/itemid/') }}',
 					type: "get",
-					data: {
-						action: 'validate-itemid'
-					}
+					data: {}
 				}
 			},
 			uom_purchase: {required: true},

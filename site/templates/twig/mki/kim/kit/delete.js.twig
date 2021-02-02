@@ -30,8 +30,8 @@ $(function() {
 	AJAX Request Functions
 ============================================================= */
 	function validate_can_delete_kit(kitID, callback) {
-		var url = new URI('{{ page.jsonapiURL('mki') }}');
-		url.addQuery('action', 'validate-can-delete-kit').addQuery('kitID', kitID);
+		var url = new URI('{{ page.jsonapiURL('mki/validate/kit/delete/') }}');
+		url.addQuery('kitID', kitID);
 		$.getJSON(url.toString(), function(permitted) {
 			callback(permitted);
 		});

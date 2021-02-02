@@ -137,10 +137,9 @@ $(function() {
 			mnfrIDID: {
 				required: true,
 				remote: {
-					url: '{{ page.jsonapiURL('map') }}',
+					url: '{{ page.jsonapiURL('map/validate/vendorid/') }}',
 					type: "get",
 					data: {
-						action: 'validate-vendorid',
 						vendorID: function() {
 							return $('#mnfrID').val();
 						}
@@ -150,17 +149,11 @@ $(function() {
 			mnfritemID: {
 				required: true,
 				remote: {
-					url: '{{ page.jsonapiURL('map') }}',
+					url: '{{ page.jsonapiURL('map/validate/mxrfe/') }}' + (input.val() != input.data('mnfritemid') && input.data('new') == true) ? 'new/' : '',
 					type: "get",
 					data: {
 						action: function() {
 							var input = $('input[name=mnfritemID]');
-
-							if (input.val() == input.data('mnfritemid') && input.data('new') !== true) {
-								return 'validate-mxrfe-xref';
-							} else {
-								return 'validate-mxrfe-xref-new';
-							}
 						},
 						mnfrID: function() {
 							return $('input[name=mnfrID]').val();
@@ -174,11 +167,9 @@ $(function() {
 			itemID: {
 				required: true,
 				remote: {
-					url: '{{ page.jsonapiURL('inv') }}',
+					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
 					type: "get",
-					data: {
-						action: 'validate-itemid'
-					}
+					data: {}
 				}
 			},
 		},

@@ -75,13 +75,12 @@ $(function() {
 
 	function object_validate_remote_code(api, inputid, validating) {
 		var url = URI('{{ page.jsonapiURL() }}');
-		url.path(url.path()+api+'/');
+		url.path(url.path()+api+'/validate/'+validating+'/');
 
 		return {
 			url: url.toString(),
 			type: "get",
 			data: {
-				action: 'validate-'+validating,
 				code: function() {
 					return $('#'+inputid).val();
 				}
