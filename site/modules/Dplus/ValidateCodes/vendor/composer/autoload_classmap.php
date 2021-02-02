@@ -16,6 +16,7 @@ return array(
     'Dplus\\CodeValidators\\Mii\\Iio' => $baseDir . '/src/Mii/Iio.php',
     'Dplus\\CodeValidators\\Min' => $baseDir . '/src/Min/Min.php',
     'Dplus\\CodeValidators\\Min\\Itm' => $baseDir . '/src/Min/Itm/Itm.php',
+    'Dplus\\CodeValidators\\Min\\Upcx' => $baseDir . '/src/Min/Upcx.php',
     'Dplus\\CodeValidators\\Mki\\Mki' => $baseDir . '/src/Mki/Mki.php',
     'Dplus\\CodeValidators\\Mpo' => $baseDir . '/src/Mpo/Mpo.php',
     'Dplus\\CodeValidators\\Mpo\\Po' => $baseDir . '/src/Mpo/Po.php',
