@@ -2,7 +2,7 @@
 
 use Purl\Url;
 
-use Dplus\CodeValidators\In as ValidatorIn;
+use Dplus\CodeValidators\Min as MinValidator;
 
 use InvKitQuery, InvKit;
 use InvKitComponentQuery, InvKitComponent;
@@ -77,7 +77,7 @@ class KimComponent extends WireData implements Module {
 		$c = new InvKitComponent();
 		$c->setKitid($kitID);
 
-		$validator = new ValidatorIn();
+		$validator = new MinValidator();
 
 		if ($validator->itemid_exists($itemID)) {
 			$c->setItemid($itemID);

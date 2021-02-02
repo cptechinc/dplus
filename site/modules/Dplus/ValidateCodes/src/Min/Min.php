@@ -13,7 +13,7 @@ use UnitofMeasureSaleQuery, UnitofMeasureSale;
  *
  * Class for Validating Inventory (IN) table codes, IDs
  */
-class In extends WireData {
+class Min extends WireData {
 
 	/**
 	 * Return if Item ID is Valid

@@ -2,6 +2,8 @@
 
 use Propel\Runtime\ActiveQuery\Criteria;
 
+use Dplus\CodeValidators\Min as MinValidator;
+
 use ItemMasterItemQuery, ItemMasterItem;
 use InvHazmatItemQuery, InvHazmatItem;
 use WarehouseInventoryQuery, WarehouseInventory;
@@ -112,7 +114,7 @@ class ValidateItmWarehouse extends WireData implements Module {
 
 	public function init() {
 		$this->validate = new WireData();
-		$this->validate->in  = $this->wire('modules')->get('ValidateIn');
+		$this->validate->in  = new MinValidator();
 		$this->modules = $this->wire('modules');
 
 

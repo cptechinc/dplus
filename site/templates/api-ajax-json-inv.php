@@ -7,7 +7,7 @@
 	$response   = '';
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
-	$validate = new Dplus\CodeValidators\In();
+	$validate = new Dplus\CodeValidators\Min();
 
 	// NOTE USE WHEN NEEDED FOR JQUERYVALIDATE
 	// $returntype = $values->return ? $values->text('return') : 'jqueryvalidate';

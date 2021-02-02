@@ -1,7 +1,7 @@
 <?php namespace Dplus\CodeValidators\Map;
 
 use Dplus\CodeValidators\Map as MapValidator;
-use Dplus\CodeValidators\In as MinValidator;
+use Dplus\CodeValidators\Min as MinValidator;
 
 use ItemXrefVendorQuery, ItemXrefVendor;
 
