@@ -3,6 +3,7 @@
 use Propel\Runtime\ActiveQuery\Criteria;
 use Purl\Url;
 
+use Dplus\CodeValidators\Mar    as MarValidator;
 use Dplus\CodeValidators\Mpo    as MpoValidator;
 use Dplus\CodeValidators\Mpo\Po as PoValidator;
 
@@ -174,9 +175,9 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$vendorID = $values->text('vendorID');
-		$validate_vendor = $this->wire('modules')->get('ValidateVendorId');
+		$validater = new MarValidator();
 
-		if ($validate_vendor->validate($vendorID)) {
+		if ($validate->vendorid($vendorID)) {
 			$this->request_create_po($vendorID);
 			$this->wire('session')->redirect($this->get_po_createdURL($vendorID), $http301 = false);
 		} else {

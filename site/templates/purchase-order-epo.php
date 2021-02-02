@@ -20,10 +20,10 @@
 			$page->headline = "EPO: Create New PO";
 
 			if ($input->get->vendorID) {
-				$validate_vendor = $modules->get('ValidateVendorId');
+				$validate = new Dplus\CodeValidators\Mar();
 				$vendorID = $input->get->text('vendorID');
 
-				if ($validate_vendor->validate($vendorID)) {
+				if ($validate->vendorid($vendorID)) {
 					$vendor = $epo->get_vendor($vendorID);
 					$page->body = $config->twig->render('purchase-orders/epo/create-po-form.twig', ['page' => $page, 'vendor' => $vendor]);
 				} else {
@@ -52,7 +52,6 @@
 		} else {
 			$ponbr = PurchaseOrder::get_paddedponumber($input->get->text('ponbr'));
 			$page->ponbr = $ponbr;
-			$query = PurchaseOrderQuery::create()->filterByPonbr($ponbr);
 
 			if ($epo->exists($ponbr)) {
 				$session->redirect($page->po_editURL($ponbr), $http301 = false);
