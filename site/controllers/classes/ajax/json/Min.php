@@ -101,7 +101,7 @@ class Min extends AbstractController {
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
-		if ($validate->itemid_exists($data->itemID) === false) {
+		if ($validate->itemid($data->itemID) === false) {
 			return "$data->itemID not found";
 		}
 		return true;
@@ -113,14 +113,14 @@ class Min extends AbstractController {
 
 		$validate = self::validator();
 
-		if ($validate->itemid_exists($data->itemID) === false) {
+		if ($validate->itemid($data->itemID) === false) {
 			return false;
 		}
 		$wire = self::pw();
 		$sanitizer = $wire->wire('sanitizer');
 		$fields = $sanitizer->array($data->fields, 'string', ['delimiter' => ',']);
 		$loader = $wire->wire('modules')->get('LoadItem');
-		return $loader->get_item_array($itemID, $fields);
+		return $loader->get_item_array($data->itemID, $fields);
 	}
 
 	public static function validateWarehouseid($data) {
