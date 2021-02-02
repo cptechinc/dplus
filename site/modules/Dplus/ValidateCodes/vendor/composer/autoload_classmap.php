@@ -12,6 +12,7 @@ return array(
     'Dplus\\CodeValidators\\Map\\Vxm' => $baseDir . '/src/Map/Vxm.php',
     'Dplus\\CodeValidators\\Mar' => $baseDir . '/src/Mar/Mar.php',
     'Dplus\\CodeValidators\\Min' => $baseDir . '/src/Min/Min.php',
+    'Dplus\\CodeValidators\\Min\\Itm' => $baseDir . '/src/Min/Itm/Itm.php',
     'Dplus\\CodeValidators\\Mki\\Mki' => $baseDir . '/src/Mki/Mki.php',
     'Dplus\\CodeValidators\\Mpo' => $baseDir . '/src/Mpo/Mpo.php',
     'Dplus\\CodeValidators\\Mpo\\Po' => $baseDir . '/src/Mpo/Po.php',

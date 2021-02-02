@@ -4,10 +4,10 @@ include_once(__DIR__.'/ItmResponse.php');
 
 use Purl\Url;
 
+use Dplus\CodeValidators\Min\Itm as ItmValidator;
+
 use InvHazmatItemQuery, InvHazmatItem;
 use ItemMasterItemQuery, ItemMasterItem;
-
-// TODO DPLUS REQUEST
 
 /**
  * Module that handles the editing of the UPC item Itm
@@ -262,7 +262,7 @@ class ItmHazmat extends WireData implements Module {
 			),
 		);
 		$validator = $this->wire('modules')->get('InputValidator');
-		$validator->set_validator($this->wire('modules')->get('ValidateItm'))->set_input($input)->set_record($record)->set_validatefields($fields);
+		$validator->set_validator((new ItmValidator()))->set_input($input)->set_record($record)->set_validatefields($fields);
 		$invalid = $validator->validate();
 		$validator->set_valid_properties();
 		return $invalid;

@@ -6,7 +6,7 @@ use SalesOrderQuery, SalesOrder;
 use SalesHistoryQuery, SalesHistory;
 
 /**
- * So
+ * Mso
  * Class for Validating SO table codes, IDs
  */
 class Mso extends WireData {

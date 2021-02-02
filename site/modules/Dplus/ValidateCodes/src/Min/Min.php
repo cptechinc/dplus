@@ -15,7 +15,6 @@ use UnitofMeasureSaleQuery, UnitofMeasureSale;
  * Class for Validating Inventory (IN) table codes, IDs
  */
 class Min extends WireData {
-
 	/**
 	 * Return if Item ID is Valid
 	 * @param  string $itemID Item ID

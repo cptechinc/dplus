@@ -4,6 +4,8 @@ include_once(__DIR__.'/ItmResponse.php');
 
 use Purl\Url;
 
+use Dplus\CodeValidators\Min\Itm as ItmValidator;
+
 use ConfigInQuery, ConfigIn;
 use ConfigPoQuery, ConfigPo;
 use ConfigSalesOrderQuery, ConfigSalesOrder;
@@ -167,7 +169,7 @@ class ItmPricing extends WireData implements Module {
 		$values = $input->$rm;
 		$this->errorfields = array();
 		$itm = $this->wire('modules')->get('Itm');
-		$validate = $this->wire('modules')->get('ValidateItm');
+		$validate = new ItmValidator();
 		$itemID = $values->text('itemID');
 
 		$item = $itm->get_item($itemID);
@@ -177,7 +179,7 @@ class ItmPricing extends WireData implements Module {
 		} else {
 			$this->invalidfields['uom_sale'] = "UoM Sale";
 		}
-		
+
 		if ($validate->assortmentcode($values->text('assortmentcode'))) {
 			$item->setAssortmentcode($values->text('assortmentcode'));
 		} else {

@@ -7,7 +7,7 @@
 	$response   = '';
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
-	$validator = $modules->get('ValidateItm');
+	$validator = new Dplus\CodeValidators\Min\Itm();
 
 	$returntype   = $values->return ? $values->text('return') : 'jqueryvalidate';
 
@@ -25,7 +25,7 @@
 			case 'validate-itemid-exists':
 				$itemID = $values->text('itemID');
 
-				if ($validator->itemid_exists($itemID)) {
+				if ($validator->itemid($itemID)) {
 					$response = true;
 				} else {
 					if ($returntype == 'obj') {
