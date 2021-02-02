@@ -1,6 +1,6 @@
 <?php namespace ProcessWire;
 
-use Dplus\CodeValidators\So as ValidatorSo;
+use Dplus\CodeValidators\Mso as MsoValidator;
 
 use Purl\Url;
 use DocumentFoldersQuery, DocumentFolders;
@@ -108,9 +108,9 @@ class DocumentManagementSo extends DocumentManagement implements Module {
 	 */
 	protected function filter_sales_vendorpo(DocumentsQuery $docs_query, $ordn) {
 		$name = 'cond_vendorpo';
-		$validate_order = new ValidatorSo;
+		$validate = new MsoValidator();
 
-		if ($validate_order->invoice($ordn) || $validate_order->order($ordn)) {
+		if ($validate->invoice($ordn) || $validate->order($ordn)) {
 			if ($this->order_has_ponbrs($ordn)) {
 				$q = $this->get_detail_query($ordn);
 				$ponbrs = $q->find()->toArray();
@@ -139,11 +139,11 @@ class DocumentManagementSo extends DocumentManagement implements Module {
 	 * @return SalesOrderDetailQuery|SalesHistoryDetailQuery
 	 */
 	protected function get_detail_query($ordn) {
-		$validate_order = $this->wire('modules')->get('ValidateSalesOrder');
+		$validate = new MsoValidator();
 		$q = SalesOrderDetailQuery::create();
 		$q->select(SalesOrderDetail::get_aliasproperty('vendorpo'));
 
-		if ($validate_order->invoice($ordn)) {
+		if ($validate->invoice($ordn)) {
 			$q = SalesHistoryDetailQuery::create();
 			$q->select(SalesHistoryDetail::get_aliasproperty('vendorpo'));
 		}

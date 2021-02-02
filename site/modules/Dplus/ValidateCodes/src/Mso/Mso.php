@@ -9,7 +9,7 @@ use SalesHistoryQuery, SalesHistory;
  * So
  * Class for Validating SO table codes, IDs
  */
-class So extends WireData {
+class Mso extends WireData {
 	/**
 	 * Returns if Order # exists in the Sales Order table
 	 * @param  string $ordn Order #

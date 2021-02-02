@@ -2,7 +2,7 @@
 
 use Purl\Url;
 
-use Dplus\CodeValidators\So as ValidatorSo;
+use Dplus\CodeValidators\Mso as MsoValidator;
 
 // Dplus Data Database
 use SalesOrderQuery, SalesOrder;
@@ -347,7 +347,7 @@ class SalesOrderEdit extends WireData implements Module {
 	 */
 	public function can_user_editorder(User $user, $ordn) {
 		$canedit = false;
-		$lookup_order = new ValidatorSo();
+		$lookup_order = new MsoValidator();
 
 		if ($lookup_order->invoice($ordn)) {
 			return false;
