@@ -8,6 +8,10 @@ use ItemXrefVendorQuery, ItemXrefVendor;
 use PurchaseOrderDetailQuery, PurchaseOrderDetail;
 use PurchaseOrderQuery, PurchaseOrder;
 
+use Dplus\CodeValidators\Map       as MapValidator;
+use Dplus\CodeValidators\Map\Vxm   as VxmValidator;
+use Dplus\CodeValidators\Map\Mxrfe as MxrfeValidator;
+
 class Map extends AbstractController {
 	public static function test() {
 		return 'test';
@@ -16,7 +20,7 @@ class Map extends AbstractController {
 	public static function validateVendorid($data) {
 		$fields = ['vendorID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
+		$validate = new MapValidator();
 
 		if ($validate->vendorid($data->vendorID) === false) {
 			return "Vendor $data->vendorID not found";
@@ -27,8 +31,8 @@ class Map extends AbstractController {
 	public static function validateVxm($data) {
 		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
-		if ($validate->vxm->exists($data->vendorID, $data->vendoritemID, $data->itemID) === false) {
+		$validate = new VxmValidator();
+		if ($validate->exists($data->vendorID, $data->vendoritemID, $data->itemID) === false) {
 			return "VXM X-ref not found";
 		}
 		return true;
@@ -37,16 +41,16 @@ class Map extends AbstractController {
 	public static function validateVxmExistsForItemid($data) {
 		$fields = ['vendorID|text', 'itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
-		return $validate->vxm->vendor_has_xref_itemid($data->itemID, $data->vendorID);
+		$validate = new VxmValidator();
+		return $validate->vendor_has_xref_itemid($data->itemID, $data->vendorID);
 	}
 
 	public static function getVxm($data) {
 		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
+		$validate = new VxmValidator();
 
-		if ($validate->vxm->exists($data->vendorID, $data->vendoritemID, $data->itemID) === false) {
+		if ($validate->exists($data->vendorID, $data->vendoritemID, $data->itemID) === false) {
 			return false;
 		}
 
@@ -61,14 +65,14 @@ class Map extends AbstractController {
 	public static function getVxmByItemid($data) {
 		$fields = ['vendorID|text', 'itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
+		$validate = new VxmValidator();
 
-		if ($validate->vxm->vendor_has_xref_itemid($data->vendorID, $data->itemID) === false) {
-			return false
+		if ($validate->vendor_has_xref_itemid($data->vendorID, $data->itemID) === false) {
+			return false;
 		}
 
 		$q = ItemXrefVendorQuery::create()->filterByItemid($data->itemID)->filterByVendorid($data->vendorID);
-		if ($validate->vxm->vendor_has_primary($data->vendorID, $data->itemID)) {
+		if ($validate->vendor_has_primary($data->vendorID, $data->itemID)) {
 			$q->filterByPo_ordercode(ItemXrefVendor::POORDERCODE_PRIMARY);
 		}
 		$xref = $q->findOne();
@@ -82,9 +86,9 @@ class Map extends AbstractController {
 	public static function validateMxrfe($data) {
 		$fields = ['mnfrID|text', 'mnfritemID|text', 'itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
+		$validate = new MxrfeValidator();
 
-		if ($validate->mxrfe->exists($data->mnfrID, $data->mnfritemID, $data->itemID) === false) {
+		if ($validate->exists($data->mnfrID, $data->mnfritemID, $data->itemID) === false) {
 			return "MXRFE X-ref not found";
 		}
 		return true;
@@ -93,9 +97,9 @@ class Map extends AbstractController {
 	public static function validateMxrfeNew($data) {
 		$fields = ['mnfrID|text', 'mnfritemID|text', 'itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = self::validator();
+		$validate = new MxrfeValidator();
 
-		if ($validate->mxrfe->exists($data->mnfrID, $data->mnfritemID, $data->itemID) === false) {
+		if ($validate->exists($data->mnfrID, $data->mnfritemID, $data->itemID) === false) {
 			return true;
 		}
 		return "MXRFE X-ref exists";
@@ -132,9 +136,5 @@ class Map extends AbstractController {
 				'weight'   => number_format($line->itm->weight, $configs->decimal_places_qty())
 			]
 		];
-	}
-
-	private static function validator() {
-		return self::pw('modules')->geT('ValidateMap');
 	}
 }

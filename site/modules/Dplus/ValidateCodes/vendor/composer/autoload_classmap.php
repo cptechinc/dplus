@@ -8,6 +8,9 @@ $baseDir = dirname($vendorDir);
 return array(
     'Dplus\\CodeValidators\\Ar' => $baseDir . '/src/Ar/Ar.php',
     'Dplus\\CodeValidators\\In' => $baseDir . '/src/In/In.php',
+    'Dplus\\CodeValidators\\Map' => $baseDir . '/src/Map/Map.php',
+    'Dplus\\CodeValidators\\Map\\Mxrfe' => $baseDir . '/src/Map/Mxrfe.php',
+    'Dplus\\CodeValidators\\Map\\Vxm' => $baseDir . '/src/Map/Vxm.php',
     'Dplus\\CodeValidators\\Po' => $baseDir . '/src/Po/Po.php',
     'Dplus\\CodeValidators\\So' => $baseDir . '/src/So/So.php',
 );

@@ -1,6 +1,6 @@
-<?php namespace ProcessWire;
+<?php namespace Dplus\CodeValidators;
 
-use Propel\Runtime\ActiveQuery\Criteria;
+use ProcessWire\WireData;
 
 use ApTermsCodeQuery, ApTermsCode;
 use ApBuyerQuery, ApBuyer;
@@ -12,8 +12,7 @@ use VendorQuery, Vendor;
  *
  * Class for Validating AP table codes, IDs, X-refs
  */
-class ValidateMap extends WireData implements Module {
-
+class Map extends WireData {
 	/**
 	 * Return if Vendor ID exists
 	 * @param  string $vendorID  Vendor ID
@@ -56,35 +55,5 @@ class ValidateMap extends WireData implements Module {
 		$q = ApBuyerQuery::create();
 		$q->filterByCode($code);
 		return boolval($q->count());
-	}
-
-/* =============================================================
-	VXM
-============================================================= */
-
-/* =============================================================
-	ProcessWire Module Functions
-============================================================= */
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'Validate AP Module',
-			'version' => 101,
-			'summary' => 'Validates AP table codes',
-			'singular' => true,
-			'autoload' => true,
-			'installs' => array(
-				'ValidateMxrfe'
-			),
-		);
-	}
-
-	public function init() {
-		$this->vxm   = $this->wire('modules')->get('ValidateVxm');
-		$this->mxrfe = $this->wire('modules')->get('ValidateMxrfe');
 	}
 }
