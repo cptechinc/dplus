@@ -60,8 +60,6 @@ class ValidateUpcx extends WireData implements Module {
 
 	public function init() {
 		$this->validate = new WireData();
-		//$this->validate->ar  = $this->wire('modules')->get('ValidateAr');
-		//$this->validate->ap  = $this->wire('modules')->get('ValidateAp');
 		$this->validate->in  = new MinValidator();
 		$this->modules = $this->wire('modules');
 	}

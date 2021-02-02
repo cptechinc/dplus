@@ -3,6 +3,7 @@
 use Propel\Runtime\ActiveQuery\Criteria;
 
 use Dplus\CodeValidators\Min as MinValidator;
+use Dplus\CodeValidators\Mar as MarValidator;
 
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemXrefCustomerQuery, ItemXrefCustomer;
@@ -70,7 +71,7 @@ class ValidateCxm extends WireData implements Module {
 
 	public function init() {
 		$this->validate = new WireData();
-		$this->validate->ar  = $this->wire('modules')->get('ValidateAr');
+		$this->validate->ar  = new MarValidator();
 		$this->validate->in  = new MinValidator();
 		$this->modules = $this->wire('modules');
 	}
