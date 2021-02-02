@@ -2,6 +2,7 @@
 
 use Purl\Url;
 
+use Dplus\CodeValidators\Msa as MsaValidator;
 use OptionsCiQuery, OptionsCi;
 
 /**
@@ -386,7 +387,7 @@ class Cio extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$modules = $this->wire('modules');
-		$validate = $modules->get('ValidateMsa');
+		$validate = new MsaValidator();
 
 		$invalid = array();
 
