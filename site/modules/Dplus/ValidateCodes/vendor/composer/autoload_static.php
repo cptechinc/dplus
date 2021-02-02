@@ -7,11 +7,14 @@ namespace Composer\Autoload;
 class ComposerStaticInit05e8b5312246afdde1a9eb3568c1d72c
 {
     public static $classMap = array (
+        'Dplus\\CodeValidators\\Itm\\Warehouse' => __DIR__ . '/../..' . '/src/Min/Itm/Warehouse.php',
         'Dplus\\CodeValidators\\Kim' => __DIR__ . '/../..' . '/src/Mki/Kim.php',
         'Dplus\\CodeValidators\\Map' => __DIR__ . '/../..' . '/src/Map/Map.php',
         'Dplus\\CodeValidators\\Map\\Mxrfe' => __DIR__ . '/../..' . '/src/Map/Mxrfe.php',
         'Dplus\\CodeValidators\\Map\\Vxm' => __DIR__ . '/../..' . '/src/Map/Vxm.php',
         'Dplus\\CodeValidators\\Mar' => __DIR__ . '/../..' . '/src/Mar/Mar.php',
+        'Dplus\\CodeValidators\\Mii' => __DIR__ . '/../..' . '/src/Mii/Mii.php',
+        'Dplus\\CodeValidators\\Mii\\Iio' => __DIR__ . '/../..' . '/src/Mii/Iio.php',
         'Dplus\\CodeValidators\\Min' => __DIR__ . '/../..' . '/src/Min/Min.php',
         'Dplus\\CodeValidators\\Min\\Itm' => __DIR__ . '/../..' . '/src/Min/Itm/Itm.php',
         'Dplus\\CodeValidators\\Mki\\Mki' => __DIR__ . '/../..' . '/src/Mki/Mki.php',

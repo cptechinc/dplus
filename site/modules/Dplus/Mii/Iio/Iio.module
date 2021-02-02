@@ -2,6 +2,7 @@
 
 use Purl\Url;
 
+use Dplus\CodeValidators\Mii\Iio as IioValidator;
 use OptionsIiQuery, OptionsIi;
 
 /**
@@ -473,7 +474,7 @@ class Iio extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$modules = $this->wire('modules');
-		$validate = $modules->get('ValidateIio');
+		$validate = new IioValidator();
 
 		$invalid = array();
 
