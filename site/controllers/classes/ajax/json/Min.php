@@ -4,7 +4,7 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 
 use Mvc\Controllers\AbstractController;
 
-use Dplus\CodeValidators\Min as InValidator;
+use Dplus\CodeValidators\Min as MinValidator;
 
 use TariffCodeQuery, TariffCode;
 use CountryCodeQuery, CountryCode;
@@ -148,6 +148,6 @@ class Min extends AbstractController {
 
 
 	private static function validator() {
-		return new InValidator();
+		return new MinValidator();
 	}
 }
