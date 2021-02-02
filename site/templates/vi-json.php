@@ -7,7 +7,7 @@
 	$response   = '';
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
-	$validate_vendorid = $modules->get('LookupVendor');
+	$validate = new Dplus\CodeValidators\Map();
 
 	// NOTE USE WHEN NEEDED FOR JQUERYVALIDATE
 	// $returntype = $values->return ? $values->text('return') : 'jqueryvalidate';
@@ -17,7 +17,7 @@
 			case 'validate-vendorid':
 				$vendorID = $values->text('vendorID');
 
-				if ($validate_vendorid->lookup_vendor($vendorID)) {
+				if ($validate->vendorid($vendorID)) {
 					$response = true;
 				} else {
 					$response = "$vendorID  was not found in the Vendor Master";
@@ -26,7 +26,7 @@
 			case 'get-vendor-name': // NOT FOR JQUERYVALIDATE
 				$vendorID = $values->text('vendorID');
 
-				if ($validate_vendorid->lookup_vendor($vendorID)) {
+				if ($validate->vendorid($vendorID)) {
 					$vendor = VendorQuery::create()->findOneById($vendorID);
 					$response = $vendor->name;
 				} else {
@@ -36,7 +36,7 @@
 			case 'get-vendor-address': // NOT FOR JQUERYVALIDATE
 				$vendorID = $values->text('vendorID');
 
-				if ($validate_vendorid->lookup_vendor($vendorID)) {
+				if ($validate->vendorid($vendorID)) {
 					$vendor = VendorQuery::create()->findOneById($vendorID);
 					$response = array(
 						'name'     => $vendor->name,

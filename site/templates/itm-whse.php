@@ -25,7 +25,6 @@
 		$page->body .= $config->twig->render('items/itm/itm-links.twig', ['page' => $page, 'page_itm' => $page->parent]);
 
 		if ($itmw->itemwarehouse_exists($itemID, $whseID) || $whseID == 'new') {
-			$warehouse_lookup = $modules->get('LookupWarehouse');
 			if ($whseID == 'new') {
 				$page->headline = "Adding Warehouse for Item $itemID";
 				$whseID = '';

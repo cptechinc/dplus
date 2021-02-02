@@ -2,7 +2,7 @@
 	$page->title = "Search Vendors";
 	$modules->get('DpagesMvi')->init_vipage();
 	$html = $modules->get('HtmlWriter');
-	$lookup_vendor = $modules->get('LookupVendor');
+	$validate = new Dplus\CodeValidators\Map();
 
 	$filter_vendors = $modules->get('FilterVendors');
 	$filter_vendors->init_query($user);
@@ -10,8 +10,8 @@
 	if ($input->get->q) {
 		$q = strtoupper($input->get->text('q'));
 
-		if ($lookup_vendor->lookup_vendor($q)) {
-			$session->redirect($page->get_vi_vendorURL($q));
+		if ($validate->vendorid($q)) {
+			$session->redirect($page->get_vi_vendorURL($q), $http301 = false);
 		}
 
 		$page->headline = "Searching Vendors for '$q'";

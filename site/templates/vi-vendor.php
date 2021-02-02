@@ -1,12 +1,12 @@
 <?php
 	$modules->get('DpagesMvi')->init_vipage();
 	$html = $modules->get('HtmlWriter');
-	$lookup_vendor = $modules->get('LookupVendor');
+	$validate = new Dplus\CodeValidators\Map();
 
 	if ($input->get->vendorID) {
 		$vendorID = $input->get->text('vendorID');
 
-		if ($lookup_vendor->lookup_vendor($vendorID)) {
+		if ($validate->vendorid($vendorID)) {
 			$load_vendor = $modules->get('ViLoadVendorShipfrom');
 			$load_vendor->set_vendorID($vendorID);
 
@@ -39,8 +39,8 @@
 		if ($input->get->q) {
 			$q = strtoupper($input->get->text('q'));
 
-			if ($lookup_vendor->lookup_vendor($q)) {
-				$session->redirect($page->choose_vendorURL($q));
+			if ($validate->vendorid($q)) {
+				$session->redirect($page->choose_vendorURL($q), $http301);
 			}
 
 			$page->headline = "VI: Searching for '$q'";
