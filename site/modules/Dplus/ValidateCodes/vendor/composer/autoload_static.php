@@ -14,9 +14,10 @@ class ComposerStaticInit05e8b5312246afdde1a9eb3568c1d72c
         'Dplus\\CodeValidators\\Mar' => __DIR__ . '/../..' . '/src/Mar/Mar.php',
         'Dplus\\CodeValidators\\Min' => __DIR__ . '/../..' . '/src/Min/Min.php',
         'Dplus\\CodeValidators\\Mki\\Mki' => __DIR__ . '/../..' . '/src/Mki/Mki.php',
+        'Dplus\\CodeValidators\\Mpo' => __DIR__ . '/../..' . '/src/Mpo/Mpo.php',
+        'Dplus\\CodeValidators\\Mpo\\Po' => __DIR__ . '/../..' . '/src/Mpo/Po.php',
         'Dplus\\CodeValidators\\Msa' => __DIR__ . '/../..' . '/src/Msa/Msa.php',
         'Dplus\\CodeValidators\\Mso' => __DIR__ . '/../..' . '/src/Mso/Mso.php',
-        'Dplus\\CodeValidators\\Po' => __DIR__ . '/../..' . '/src/Po/Po.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

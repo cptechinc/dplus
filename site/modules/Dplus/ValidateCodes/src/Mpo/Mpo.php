@@ -9,12 +9,7 @@ use ApInvoiceQuery, ApInvoice;
  * Po
  * Class for Validating PO table codes, IDs
  */
-class Po extends WireData {
-	public function __construct() {
-		$this->exists  = false;
-		$this->ponbr  = '';
-	}
-
+class Mpo extends WireData {
 	/**
 	 * Returns if Purchase Order Number exists in the Purchase Order table
 	 * @param  string $ponbr Purchase Order Number

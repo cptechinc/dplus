@@ -1,19 +1,15 @@
-<?php namespace ProcessWire;
+<?php namespace Dplus\CodeValidators\Mpo;
 
-use Propel\Runtime\ActiveQuery\Criteria;
-
-use Dplus\CodeValidators\Mar as MarValidator;
-use Dplus\CodeValidators\Map as MapValidator;
+use Dplus\CodeValidators\Mpo;
 
 use PurchaseOrderQuery, PurchaseOrder;
+use ApInvoiceQuery, ApInvoice;
 
 /**
- * ValidatePo
- *
- * Class for validating PO header fields
+ * Po
+ * Class for Validating PO table codes, IDs
  */
-class ValidatePo extends WireData implements Module {
-
+class Po extends Mpo {
 	/**
 	 * Validates VendorID
 	 * @param  string $vendorID VendorID
@@ -90,23 +86,5 @@ class ValidatePo extends WireData implements Module {
 	 */
 	public function status($status) {
 		return array_key_exists($status, PurchaseOrder::STATUS_DESCRIPTIONS);
-	}
-
-/* =============================================================
-	ProcessWire Module Functions
-============================================================= */
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'Purchase Order Validate Module',
-			'version' => 101,
-			'summary' => 'Handles Purchase Order Fields Validation',
-			'singular' => true,
-			'autoload' => true,
-			'installs' => array()
-		);
-	}
-
-	public function init() {
-		$this->validate = new WireData();
 	}
 }

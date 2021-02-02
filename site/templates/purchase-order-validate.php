@@ -4,7 +4,7 @@
 	 * This template is made for Validating Data Inputs for a Purchase Order
 	 * NOTE: the response values are formatted to be used by Jquery Validate's remote validation method
 	 */
-	$validate = $modules->get('ValidatePo');
+	$validate = new Dplus\CodeValidators\Mpo\Po();
 	$rm = strtolower($input->requestMethod());
 	$values = $input->$rm;
 	$response   = '';

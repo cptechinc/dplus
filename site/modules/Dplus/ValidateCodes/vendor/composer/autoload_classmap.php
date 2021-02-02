@@ -13,7 +13,8 @@ return array(
     'Dplus\\CodeValidators\\Mar' => $baseDir . '/src/Mar/Mar.php',
     'Dplus\\CodeValidators\\Min' => $baseDir . '/src/Min/Min.php',
     'Dplus\\CodeValidators\\Mki\\Mki' => $baseDir . '/src/Mki/Mki.php',
+    'Dplus\\CodeValidators\\Mpo' => $baseDir . '/src/Mpo/Mpo.php',
+    'Dplus\\CodeValidators\\Mpo\\Po' => $baseDir . '/src/Mpo/Po.php',
     'Dplus\\CodeValidators\\Msa' => $baseDir . '/src/Msa/Msa.php',
     'Dplus\\CodeValidators\\Mso' => $baseDir . '/src/Mso/Mso.php',
-    'Dplus\\CodeValidators\\Po' => $baseDir . '/src/Po/Po.php',
 );
