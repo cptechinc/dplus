@@ -7,7 +7,7 @@
 	$rm = strtolower($input->requestMethod());
  	$values = $input->$rm;
 	$cxm = $modules->get('XrefCxm');
-	$validate = $modules->get('ValidateCxm');
+	$validate = new Dplus\CodeValidators\Mso\Cxm();
 	$response   = '';
 	$returntype = $values->return ? $values->text('return') : 'jqueryvalidate';
 
@@ -16,7 +16,7 @@
 			case 'validate-itemid':
 				$itemID = $values->itemID ? $values->text('itemID') : $values->text('ouritemID');
 
-				if ($cxm->validate_itemID($itemID)) {
+				if ($validate->itemid($itemID)) {
 					$response = true;
 				} else {
 					$response = "$itemID was not found in the Item Master";
@@ -27,7 +27,7 @@
 				$custitemID = $values->text('custitemID');
 				$returntype   = $values->return ? $values->text('return') : 'jqueryvalidate';
 
-				if ($cxm->xref_exists($custID, $custitemID)) {
+				if ($validate->exists($custID, $custitemID)) {
 					$response = true;
 				} else {
 					$response = ($returntype == 'bool') ? false : "$custitemID from $custID was not found in the Customer X-ref";
@@ -38,7 +38,7 @@
 				$custitemID = $values->text('custitemID');
 				$returntype   = $values->return ? $values->text('return') : 'jqueryvalidate';
 
-				if ($cxm->xref_exists($custID, $custitemID)) {
+				if ($validate->exists($custID, $custitemID)) {
 					$response = ($returntype == 'bool') ? false : "$custitemID from $custID already exists in the Customer X-ref";
 				} else {
 					$response = true;
@@ -56,7 +56,7 @@
 			case 'get-item':
 				$itemID = $values->itemID ? $values->text('itemID') : $values->text('ouritemID');
 
-				if ($cxm->validate_itemID($itemID)) {
+				if ($validate->itemid($itemID)) {
 					$item = ItemMasterItemQuery::create()->findOneByItemid($itemID);
 					$response = array(
 						'itemid' => $itemID,

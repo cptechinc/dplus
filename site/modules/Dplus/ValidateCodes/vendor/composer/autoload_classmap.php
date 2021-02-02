@@ -22,4 +22,5 @@ return array(
     'Dplus\\CodeValidators\\Mqo' => $baseDir . '/src/Mqo/Mqo.php',
     'Dplus\\CodeValidators\\Msa' => $baseDir . '/src/Msa/Msa.php',
     'Dplus\\CodeValidators\\Mso' => $baseDir . '/src/Mso/Mso.php',
+    'Dplus\\CodeValidators\\Mso\\Cxm' => $baseDir . '/src/Mso/Cxm.php',
 );
