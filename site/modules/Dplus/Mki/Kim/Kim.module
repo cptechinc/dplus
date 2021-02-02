@@ -2,6 +2,8 @@
 
 use Purl\Url;
 
+use Dplus\CodeValidators\Mki\Kim as KimValidator;
+
 use InvKitQuery, InvKit;
 use InvKitComponentQuery, InvKitComponent;
 use ItemMasterItemQuery, ItemMasterItem;
@@ -158,7 +160,7 @@ class Kim extends WireData implements Module {
 		$kitID = $values->text('kitID');
 
 		if ($this->kit_exists($kitID)) {
-			$validate = $this->wire('modules')->get('ValidateKim');
+			$validate = new KimValidator();
 
 			if ($validate->can_delete($KitID)) {
 				$kit = $this->get_kit($kitID);

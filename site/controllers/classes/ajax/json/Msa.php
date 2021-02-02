@@ -41,6 +41,6 @@ class Msa extends AbstractController {
 	}
 
 	private static function validator() {
-		return self::pw('modules')->geT('ValidateKim');
+		return self::pw('modules')->geT('ValidateMsa');
 	}
 }

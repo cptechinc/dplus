@@ -2,7 +2,8 @@
 
 use Purl\Url;
 
-use Dplus\CodeValidators\Min as MinValidator;
+use Dplus\CodeValidators\Min     as MinValidator;
+use Dplus\CodeValidators\Mki\Kim as KimValidator;
 
 use InvKitQuery, InvKit;
 use InvKitComponentQuery, InvKitComponent;
@@ -215,7 +216,7 @@ class KimComponent extends WireData implements Module {
 	 */
 	public function update_record_input_validated(InvKitComponent $record, WireInput $input) {
 		$modules = $this->wire('modules');
-		$validate = $modules->get('ValidateKim');
+		$validate = new KimValidator();
 		$invalid = array();
 
 		$fields = array(

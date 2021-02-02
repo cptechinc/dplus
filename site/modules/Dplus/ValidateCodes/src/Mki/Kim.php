@@ -1,19 +1,21 @@
-<?php namespace ProcessWire;
+<?php namespace Dplus\CodeValidators;
+
+use ProcessWire\WireData;
 
 use Propel\Runtime\ActiveQuery\Criteria;
 
-use Dplus\CodeValidators\Min as MinValidator;
+use Dplus\CodeValidators\Mki;
 
 use InvKitQuery, InvKit;
 use InvKitComponent, InvHazmatItem;
 use SalesOrderDetailQuery, SalesOrderDetail;
 
 /**
- * ValidateKim
+ * Kim
  *
- * Class for validating Kim fields
+ * Class for Validating Mki Code Tables / IDs
  */
-class ValidateKim extends WireData implements Module {
+class Kim extends Mki {
 /* =============================================================
 	Kim Functions
 ============================================================= */
@@ -22,7 +24,7 @@ class ValidateKim extends WireData implements Module {
 	 * @param  string $kitID  Kit ID
 	 * @return bool
 	 */
-	public function kit_exists($kitID) {
+	public function kit($kitID) {
 		return boolval(InvKitQuery::create()->filterByItemid($kitID)->count());
 	}
 
@@ -32,7 +34,7 @@ class ValidateKim extends WireData implements Module {
 	 * @param  string $component  component Item ID
 	 * @return bool
 	 */
-	public function kit_component_exists($kitID, $component) {
+	public function kit_component($kitID, $component) {
 		return boolval(InvKitComponentQuery::create()->filteryByKitid($kitID)->filterByItemid($component)->count());
 	}
 
@@ -80,37 +82,4 @@ class ValidateKim extends WireData implements Module {
 	public function is_ordered($kitID) {
 		return boolval(SalesOrderDetailQuery::create()->filterByItemid($kitID)->count());
 	}
-
-/* =============================================================
-	IN Functions
-============================================================= */
-	/**
-	 * Return if Item ID is Valid
-	 * @param  string $itemID Item ID
-	 * @return bool
-	 */
-	public function itemid_exists($itemID) {
-		return $this->validate->in->itemid_exists($itemID);
-	}
-
-/* =============================================================
-	ProcessWire Module Functions
-============================================================= */
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'KIM Validate Module',
-			'version' => 101,
-			'summary' => 'Handles Kim Fields Validation',
-			'singular' => true,
-			'autoload' => true,
-			'installs' => array()
-		);
-	}
-
-	public function init() {
-		$this->validate = new WireData();
-		$this->validate->in  = new MinValidator();
-		$this->modules = $this->wire('modules');
-	}
-
 }

@@ -6,11 +6,13 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Dplus\\CodeValidators\\Kim' => $baseDir . '/src/Mki/Kim.php',
     'Dplus\\CodeValidators\\Map' => $baseDir . '/src/Map/Map.php',
     'Dplus\\CodeValidators\\Map\\Mxrfe' => $baseDir . '/src/Map/Mxrfe.php',
     'Dplus\\CodeValidators\\Map\\Vxm' => $baseDir . '/src/Map/Vxm.php',
     'Dplus\\CodeValidators\\Mar' => $baseDir . '/src/Mar/Mar.php',
     'Dplus\\CodeValidators\\Min' => $baseDir . '/src/Min/Min.php',
+    'Dplus\\CodeValidators\\Mki\\Mki' => $baseDir . '/src/Mki/Mki.php',
     'Dplus\\CodeValidators\\Po' => $baseDir . '/src/Po/Po.php',
     'Dplus\\CodeValidators\\So' => $baseDir . '/src/So/So.php',
 );
