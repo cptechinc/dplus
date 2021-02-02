@@ -7,9 +7,7 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use Dplus\CodeValidators\Min;
 use Dplus\CodeValidators\Map as MapValidator;
 use Dplus\CodeValidators\Mar as MarValidator;
-use ItemMasterItemQuery, ItemMasterItem;
-use InvAssortmentCodeQuery, InvAssortmentCode;
-use UnitofMeasureSaleQuery, UnitofMeasureSale;
+use Dplus\CodeValidators\Mso as MsoValidator;
 
 /**
  * Itm

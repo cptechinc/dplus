@@ -5,6 +5,7 @@ use ProcessWire\WireData;
 use Propel\Runtime\ActiveQuery\Criteria;
 
 use Dplus\CodeValidators\Map as MapValidator;
+
 use ItemMasterItemQuery, ItemMasterItem;
 use InvAssortmentCodeQuery, InvAssortmentCode;
 use UnitofMeasureSaleQuery, UnitofMeasureSale;
@@ -152,5 +153,27 @@ class Min extends WireData {
 	 */
 	public function whseid($id) {
 		return $this->modules->get('CodeTablesIwhm')->code_exists($id);
+	}
+
+	/**
+	 * Validate Warehouse ID
+	 * @param  string $id Warehouse ID
+	 * @return bool
+	 */
+	public function whsebin($whseID, $binID) {
+		if ($this->whseid($whseID) === false) {
+			return false;
+		}
+
+		$whse = $this->modules->get('CodeTablesIwhm')->get_code($whseID);
+
+		if ($whse->validate_bin($binID) === false) {
+			$config = $this->modules->get('ConfigureIn')->config();
+
+			if ($binID != $config->default_bin) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

@@ -4,6 +4,7 @@ include_once(__DIR__.'/ItmResponse.php');
 
 use Purl\Url;
 
+use Dplus\CodeValidators\Itm\Warehouse as ItmwValidator;
 use WarehouseInventoryQuery, WarehouseInventory;
 use WarehouseQuery, Warehouse;
 use WarehouseBinQuery, WarehouseBin;
@@ -188,7 +189,7 @@ class ItmWarehouse extends WireData implements Module {
 	 * @return bool
 	 */
 	public function input_update(WireInput $input) {
-		$validate = $this->wire('modules')->get('ValidateItmWarehouse');
+		$validate = new ItmwValidator();
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itemID = $values->text('itemID');
@@ -263,7 +264,7 @@ class ItmWarehouse extends WireData implements Module {
 				'allow_blank' => false
 			),
 		);
-		$validate = $this->wire('modules')->get('ValidateItmWarehouse');
+		$validate = new ItmwValidator();
 		$validator = $this->wire('modules')->get('InputValidator');
 		$validator->set_validator($validate)->set_input($input)->set_record($record)->set_validatefields($fields);
 		$invalid = $validator->validate();
