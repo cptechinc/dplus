@@ -187,6 +187,18 @@ class DpagesApi extends Dpages implements Module {
 		),
 	);
 
+	public function lookupURL($code) {
+		$url = $this->wire('pages')->get("template=ajax-lookups")->httpUrl;
+		$url .= "$code/";
+		return $url;
+	}
+
+	public function jsonapiURL($api) {
+		$url = $this->wire('pages')->get("template=ajax-json")->httpUrl;
+		$url .= "$api/";
+		return $url;
+	}
+
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus Online API Pages',
@@ -207,7 +219,7 @@ class DpagesApi extends Dpages implements Module {
 
 		$this->addHook("Page::search_lookupURL", function($event) {
 			$ajaxcode = $event->arguments(0);
-			$event->return = $this->wire('pages')->get("template=api-ajax,ajaxcode=$ajaxcode")->httpUrl;
+			$event->return = $this->lookupURL($ajaxcode);
 		});
 	}
 }
