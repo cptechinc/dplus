@@ -689,10 +689,5 @@ class Iio extends WireData implements Module {
 			$pages = $this->wire('pages');
 			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
 		});
-
-		$this->addHook("Page(pw_template=iio)::search_lookupURL", function($event) {
-			$ajaxcode = $event->arguments(0);
-			$event->return = $this->wire('pages')->get("template=api-ajax,ajaxcode=$ajaxcode")->httpUrl;
-		});
 	}
 }

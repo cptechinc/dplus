@@ -646,11 +646,6 @@ class XrefMxrfe extends WireData implements Module {
 			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
 		});
 
-		$this->addHook("Page(pw_template=mxrfe)::search_lookupURL", function($event) {
-			$ajaxcode = $event->arguments(0);
-			$event->return = $this->wire('pages')->get("template=api-ajax,ajaxcode=$ajaxcode")->httpUrl;
-		});
-
 		$this->addHook("Page(pw_template=mxrfe)::search_itemsURL", function($event) {
 			$event->return = $this->wire('pages')->get("pw_template=itm-search")->httpUrl;
 		});
