@@ -1,4 +1,6 @@
 <form action="{{ page.fullURL.getURL() }}" method="POST" id="upc-item-form">
+	<input type="hidden" name="action" value="update-upcx">
+
 	<div class="row">
 		<div class="col-sm-8">
 			<div class="form-group row">
@@ -45,7 +47,7 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="custom-control custom-checkbox">
-						<input type="checkbox" class="custom-control-input" name="primary" id="primary" value="Y" {{ upc.is_primary() ? 'checked' : ''}}>
+						<input type="checkbox" class="custom-control-input" name="primary" id="primary" data-primary="{{ upc.is_primary() ? 'true' : 'false'}}" value="Y" {{ upc.is_primary() ? 'checked' : ''}}>
 						<label class="custom-control-label" for="primary">&nbsp;</label>
 					</div>
 					{% if upc.get_primary_upc_code() != '' %}
