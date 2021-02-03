@@ -2,107 +2,107 @@
 
 use Mvc\Controllers\AbstractController;
 
-use ProcessWire\Page, ProcessWire\Kim as KimModel;
-use Invkit;
+use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeModel;
+use ItemXrefManufacturer;
 
 class Mxrfe extends AbstractController {
 	public static function index($data) {
-		// $fields = [
-		// 	'kitID'     => ['sanitizer' => 'text'],
-		// 	'component' => ['sanitizer' => 'text'],
-		// 	'q'         => ['sanitizer' => 'text'],
-		// 	'action'    => ['sanitizer' => 'text']
-		// ];
-		// $data = self::sanitizeParameters($data, $fields);
-		// $page = self::pw('page');
-		// $page->show_breadcrumbs = false;
-		//
-		// if (empty($data->action) === false) {
-		// 	return self::handleCRUD($data);
-		// }
-		//
-		// if (empty($data->kitID) === false) {
-		// 	if (empty($data->component) === false) {
-		// 		return self::kitComponent($data);
-		// 	}
-		// 	return self::kit($data);
-		// }
-		// return self::listKits($data);
+		$fields = ['mnfrID|text', 'mnfritemID|text', 'q|text', 'action|text'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$page = self::pw('page');
+		$page->show_breadcrumbs = false;
+
+		if (empty($data->action) === false) {
+			return self::handleCRUD($data);
+		}
+
+		if (empty($data->mnfrID) === false) {
+			if (empty($data->mnfritemID) === false) {
+				return self::xref($data);
+			}
+			return self::mnfrXrefs($data);
+		}
+		return self::listMnfr($data);
 	}
 
-	public static function kit($data) {
+	public static function xref($data) {
+		$fields = ['mnfrID|text', 'mnfritemID|text', 'itemID|text', 'action|text'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		if ($data->action) {
+			return self::handleCRUD($data);
+		}
 		$wire = self::pw();
-		$config = self::pw('config');
-		$page = self::pw('page');
-		$kim = $wire->modules->get('Kim');
-		$kim->init_configs();
-		$kit = $kim->new_get_kit($data->kitID);
+		$config = $wire->wire('config');
+		$page = $wire->wire('page');
+		$mxrfe = $wire->modules->get('XrefMxrfe');
+		$mxrfe->init_field_attributes_config();
+		$vendor = $mxrfe->vendor($data->mnfrID);
+		$xref = $mxrfe->get_create_xref($data->mnfrID, $data->mnfritemID, $data->itemID);
+		$qnotes = $wire->wire('modules')->get('QnotesItemMxrfe');
 
-		$page->body .= self::lockKit($page, $kim, $kit);
-		$page->body .= $config->twig->render('mki/kim/kit/page.twig', ['kim' => $kim, 'kit' => $kit]);
-		$page->js   .= $config->twig->render('mki/kim/kit/js.twig', ['kim' => $kim]);
-		return $page->body;
-	}
+		$page->body .= self::lockXref($page, $mxrfe, $xref);
 
-	public static function kitComponent($data) {
-		$wire = self::pw();
-		$config = self::pw('config');
-		$page = self::pw('page');
-		$kim = $wire->modules->get('Kim');
-		$kim->init_configs();
-		$kit = $kim->new_get_kit($data->kitID);
+		$page->body .= $config->twig->render('items/mxrfe/item/form/page.twig', ['mxrfe' => $mxrfe, 'vendor' => $vendor, 'xref' => $xref, 'qnotes' => $qnotes]);
+		$page->js   .= $config->twig->render('items/mxrfe/item/form/js.twig', ['mxrfe' => $mxrfe]);
 
-		$page->body .= self::lockKit($page, $kim, $kit);
-		$component = $kim->component->new_get_component($data->kitID, $data->component);
-		$page->headline = $data->component == 'new' ? "Kit Master: $data->kitID" : "Kit Master: $data->kitID - $data->component";
-		$page->body .= $config->twig->render('mki/kim/kit/component/page.twig', ['kim' => $kim, 'kit' => $kit, 'component' => $component]);
-		$page->js   .= $config->twig->render('mki/kim/kit/component/js.twig', ['kim' => $kim,]);
+		if (!$xref->isNew()) {
+			$page->body .= $config->twig->render('items/mxrfe/item/notes/notes.twig', ['xref' => $xref, 'qnotes' => $qnotes]);
+			$page->js   .= $config->twig->render('items/mxrfe/item/notes/js.twig', ['xref' => $xref, 'qnotes' => $qnotes]);
+		}
 		return $page->body;
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['action' => ['sanitizer' => 'text'], 'kitID' => ['sanitizer' => 'text']];
+		$fields = ['action|text'];
 		$data = self::sanitizeParameters($data, $fields);
+		$input = self::pw('input');
 
 		if ($data->action) {
-			$kim = self::pw('modules')->get('Kim');
-			$kim->process_input(self::pw('input'));
+			$mxrfe = self::pw('modules')->get('XrefMxrfe');
+			$mxrfe->process_input($input);
 		}
-		self::pw('session')->redirect(self::pw('page')->kitURL($data->kitID));
+		self::pw('session')->redirect(self::pw('page')->redirectURL($input), $http301 = false);
 	}
 
-	private static function lockKit(Page $page, KimModel $kim, InvKit $kit) {
-		if (!$kit->isNew()) {
-			$page->headline = "Kit Master: $kit->itemid";
-			if (!$kim->lockrecord($kit->itemid)) {
-				$msg = "Kit $kit->itemid is being locked by " . $kim->recordlocker->get_locked_user($kit->itemid);
-				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Kit $kit->itemid is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+	private static function lockXref(Page $page, MxrfeModel $mxrfe, ItemXrefManufacturer $xref) {
+		if (!$xref->isNew()) {
+			$page->headline = "MXRFE: " . $mxrfe->get_recordlocker_key($xref);
+			if (!$mxrfe->lockrecord($xref)) {
+				$msg = "MXRFE ". $mxrfe->get_recordlocker_key($xref) ." is being locked by " . $mxrfe->recordlocker->get_locked_user($mxrfe->get_recordlocker_key($xref));
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "MXRFE ".$mxrfe->get_recordlocker_key($xref)." is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 			}
-		}
-
-		if ($kit->isNew()) {
-			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Kit $kit->itemid does not exist", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You will be able to create this kit"]);
 		}
 		return $page->body;
 	}
 
-	public static function listKits($data) {
-		$fields = ['q' => ['sanitizer' => 'text']];
-		$data = self::sanitizeParameters($data, $fields);
+	public static function listMnfr($data) {
+		$data = self::sanitizeParametersShort($data, ['q|text']);
 		$wire = self::pw();
 		$config = $wire->wire('config');
 		$page = $wire->wire('page');
-		$kim = $wire->modules->get('Kim');
-		$filter = $wire->wire('modules')->get('FilterKim');
-		$filter->init_query();
-		if ($data->q) {
-			$page->headline = "KIM: Searching for '$data->q'";
-			$filter->search($data->q);
-		}
-		$kits = $filter->query->paginate(self::pw('input')->pageNum, $wire->wire('session')->display);
-		$page->body .= $config->twig->render('mki/kim/search-form.twig', ['q' => $data->q]);
-		$page->body .= $config->twig->render('mki/kim/page.twig', ['kim' => $kim, 'kits' => $kits]);
-		$page->js   .= $config->twig->render('mki/kim/list.js.twig', ['kim' => $kim]);
+		$mxrfe = $wire->modules->get('XrefMxrfe');
+		$filter = $wire->wire('modules')->get('FilterVendors');
+		$filter->init_query($wire->wire('user'));
+		$filter->vendorid($mxrfe->vendorids());
+		$filter->apply_sortby($page);
+		$vendors = $filter->query->paginate(self::pw('input')->pageNum, $wire->wire('session')->display);
+		$page->body .= $config->twig->render('items/mxrfe/search/vendor/page.twig', ['vendors' => $vendors]);
+		$page->body .= $config->twig->render('util/paginator.twig', ['resultscount'=> $vendors->getNbResults()]);
+		return $page->body;
+	}
+
+	public static function mnfrXrefs($data) {
+		$data = self::sanitizeParametersShort($data, ['mnfrID|text']);
+		$wire = self::pw();
+		$config = $wire->wire('config');
+		$page   = $wire->wire('page');
+		$mxrfe  = $wire->modules->get('XrefMxrfe');
+		$vendor = $mxrfe->vendor($data->mnfrID);
+		$filter = $wire->modules->get('FilterXrefItemMxrfe');
+		$filter->vendorid($data->mnfrID);
+		$filter->apply_sortby($page);
+		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, $wire->wire('session')->display);
+		$page->body .= $config->twig->render('items/mxrfe/list/vendor/page.twig', ['mxrfe' => $mxrfe, 'xrefs' => $xrefs, 'vendor' => $vendor]);
 		return $page->body;
 	}
 }
