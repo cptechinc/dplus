@@ -13,4 +13,5 @@
 	$router->route();
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 	$session->removeFor('response', 'mxrfe');
+	$page->show_breadcrumbs = false;
 	include __DIR__ . "/basic-page.php";
