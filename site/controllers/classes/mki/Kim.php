@@ -72,6 +72,8 @@ class Kim extends AbstractController {
 	}
 
 	private static function lockKit(Page $page, KimModel $kim, InvKit $kit) {
+		$config = $page->wire('config');
+		
 		if (!$kit->isNew()) {
 			$page->headline = "Kit Master: $kit->itemid";
 			if (!$kim->lockrecord($kit->itemid)) {
