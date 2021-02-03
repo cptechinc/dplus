@@ -68,7 +68,7 @@ class Kim extends AbstractController {
 			$kim = self::pw('modules')->get('Kim');
 			$kim->process_input(self::pw('input'));
 		}
-		self::pw('session')->redirect(self::pw('page')->kitURL($data->kitID));
+		self::pw('session')->redirect(self::pw('page')->kitURL($data->kitID), $http301);
 	}
 
 	private static function lockKit(Page $page, KimModel $kim, InvKit $kit) {
