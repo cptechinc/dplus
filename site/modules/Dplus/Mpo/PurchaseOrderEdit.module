@@ -758,7 +758,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 		});
 
 		$this->addHook("Page(pw_template=purchase-order-edit)::search_vxmURL", function($event) {
-			$event->return = $this->wire('pages')->get('template=api-ajax,ajaxcode=vxm')->url;
+			$event->return = $this->wire('modules')->get('DpagesApi')->lookupURL('vxm');;
 		});
 
 		$this->addHook('Page(pw_template=purchase-order-epo)::choose_vendorURL', function($event) {
