@@ -7,7 +7,7 @@ use ItemXrefUpc;
 
 class Upcx extends AbstractController {
 	public static function index($data) {
-		$fields = ['upc|text','action|text'];
+		$fields = ['upc|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 		$page->show_breadcrumbs = false;
@@ -52,7 +52,7 @@ class Upcx extends AbstractController {
 		return $page->body;
 	}
 
-	private static function lockXref(Page $page, UpcModel $upcx, ItemXrefUpc $xref) {
+	public static function lockXref(Page $page, UpcModel $upcx, ItemXrefUpc $xref) {
 		$config = $page->wire('config');
 
 		if ($upcx->recordlocker->function_locked($xref->upc) && !$upcx->recordlocker->function_locked_by_user($xref->upc)) {
