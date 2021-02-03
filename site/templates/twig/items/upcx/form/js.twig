@@ -99,7 +99,7 @@ $(function() {
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		rules: {
-			uom: {required: true},
+			uom: {required: false},
 			qty: {required: true},
 			upc: {
 				required: true,
@@ -137,51 +137,53 @@ $(function() {
 			}, {});
 
 			if (formdata['action'] == 'update-upcx') {
-				if (input_validatedprimary.val() != 'true' && input_primary.prop("checked") == true) {
-					validate_primary();
-				} else {
-					form.submit();
-				}
+				validate_primary(function(canSubmit) {
+					if (canSubmit) {
+						form.submit();
+					}
+				});
 			} else {
 				form.submit();
 			}
 		}
 	});
 
-
-	function validate_primary() {
-
-		// Check that validation hasn't happened before
-		if (input_validatedprimary.val() != 'true') {
-			if (!upc.is_primary && input_primary.prop("checked") == true) {
-				request_validate_upc_primary(input_upc.val(), input_itemid.val(), function(valid) {
-					if (!valid) {
-						get_item(input_itemid.val(), function(item) {
-							console.log(item);
-							var primaryupc = item.primaryupc;
-							var msg = input_itemid.val() + ' has the UPC code ' + primaryupc;
-							msg += ' defined as the primary UPC';
-
-							swal2.fire({
-								title: 'Change Primary UPC?',
-								text: msg,
-								icon: 'warning',
-								showCancelButton: true,
-								confirmButtonText: 'Yes!'
-							}).then(function (result) {
-								if (result.value) {
-									input_validatedprimary.val('true');
-									form_upc.submit();
-								}
-							});
-						});
-					} else {
-						input_validatedprimary.val('true');
-						form_upc.submit();
-					}
-				});
-			}
+	function validate_primary(callback) {
+		if (input_primary.prop("checked") === false) {
+			callback(true);
 		}
+
+		if (input_primary.prop("checked") === true && input_primary.data("primary") == false) {
+			request_validate_upc_primary(input_upc.val(), input_itemid.val(), function(isPrimary) {
+				if (isPrimary === false) {
+					swal_change_primary_upc(function(canContinue) {
+						callback(canContinue);
+					});
+				}
+			});
+		}
+	}
+
+	function swal_change_primary_upc(callback {
+		get_item(input_itemid.val(), function(item) {
+			var primaryupc = item.primaryupc;
+			var msg = input_itemid.val() + ' has the UPC code ' + primaryupc;
+			msg += ' defined as the primary UPC';
+
+			swal2.fire({
+				title: 'Change Primary UPC?',
+				text: msg,
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Yes!'
+			}).then(function (result) {
+				if (result.value) {
+					callback(true);
+				} else {
+					callback(false);
+				}
+			});
+		});
 	}
 
 /* =============================================================
