@@ -1,4 +1,6 @@
-{% include 'items/upcx/bread-crumbs.twig' %}
+{% block breadcrumbs %}
+	{% include 'items/upcx/bread-crumbs.twig' %}
+{% endblock %}
 
 {% if session.getFor('response', 'upcx') %}
 	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'upcx')} %}
@@ -18,4 +20,6 @@
 	</div>
 {% endblock %}
 
-{% include 'items/upcx/form/display.twig' %}
+{% block formdisplay %}
+	{% include 'items/upcx/form/display.twig' %}
+{% endblock %}
