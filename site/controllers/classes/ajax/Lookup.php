@@ -108,6 +108,22 @@ class Lookup extends AbstractController {
 	}
 
 	/**
+	 * Search Vendors
+	 * @param  object $data
+	 *                     q   Search Term
+	 * @return void
+	 */
+	public static function vendors($data) {
+		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		$wire = self::pw();
+		$page = $wire->wire('page');
+		$filter = $wire->wire('modules')->get('FilterVendors');
+		$filter->init_query(self::pw('user'));
+		$page->headline = "Users";
+		self::filterResults($filter, $wire, $data);
+	}
+
+	/**
 	 * Search Items
 	 * @param  object $data
 	 *                     q   Search Term
