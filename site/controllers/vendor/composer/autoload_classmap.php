@@ -18,4 +18,5 @@ return array(
     'Controllers\\Min\\Itm\\Xrefs\\Upcx' => $baseDir . '/classes/min/itm/xrefs/Upcx.php',
     'Controllers\\Min\\Upcx' => $baseDir . '/classes/min/Upcx.php',
     'Controllers\\Mki\\Kim' => $baseDir . '/classes/mki/Kim.php',
+    'Controllers\\Mpo\\Epo' => $baseDir . '/classes/mpo/Epo.php',
 );

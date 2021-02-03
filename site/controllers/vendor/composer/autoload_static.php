@@ -19,6 +19,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Min\\Itm\\Xrefs\\Upcx' => __DIR__ . '/../..' . '/classes/min/itm/xrefs/Upcx.php',
         'Controllers\\Min\\Upcx' => __DIR__ . '/../..' . '/classes/min/Upcx.php',
         'Controllers\\Mki\\Kim' => __DIR__ . '/../..' . '/classes/mki/Kim.php',
+        'Controllers\\Mpo\\Epo' => __DIR__ . '/../..' . '/classes/mpo/Epo.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
