@@ -118,7 +118,7 @@ class Min extends AbstractController {
 		}
 		$wire = self::pw();
 		$sanitizer = $wire->wire('sanitizer');
-		$fields = $sanitizer->array($data->fields, 'string', ['delimiter' => ',']);
+		$fields = isset($data->fields) ? $sanitizer->array($data->fields, 'text', ['delimiter' => ',']) : [];
 		$loader = $wire->wire('modules')->get('LoadItem');
 		return $loader->get_item_array($data->itemID, $fields);
 	}
