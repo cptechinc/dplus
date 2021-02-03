@@ -6,8 +6,10 @@ use Propel\Runtime\ActiveQuery\Criteria;
 
 use Dplus\CodeValidators\Min;
 
+use ItemXrefUpcQuery, ItemXrefUpc;
+
 /**
- * IUpcx
+ * Upcx
  *
  * Class for Validating Upcx
  */
