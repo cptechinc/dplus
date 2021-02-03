@@ -1,0 +1,18 @@
+<div class="card">
+	<div class="card-header">
+		{% block header %}
+			<div class="row">
+				<div class="col-sm-2">
+					<strong>UPC:</strong>
+				</div>
+				<div class="col-sm-6">
+					{{ upc.upc ? upc.upc : 'NEW' }}
+				</div>
+			</div>
+		{% endblock %}
+	</div>
+	<div class="card-body">
+		{% include 'items/upcx/form/form.twig' %}
+	</div>
+</div>
+<hr>
