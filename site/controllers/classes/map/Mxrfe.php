@@ -25,6 +25,18 @@ class Mxrfe extends AbstractController {
 		return self::listMnfr($data);
 	}
 
+	public static function handleCRUD($data) {
+		$fields = ['action|text'];
+		$data = self::sanitizeParameters($data, $fields);
+		$input = self::pw('input');
+
+		if ($data->action) {
+			$mxrfe = self::pw('modules')->get('XrefMxrfe');
+			$mxrfe->process_input($input);
+		}
+		self::pw('session')->redirect(self::pw('page')->redirectURL($input), $http301 = false);
+	}
+
 	public static function xref($data) {
 		$fields = ['mnfrID|text', 'mnfritemID|text', 'itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -50,18 +62,6 @@ class Mxrfe extends AbstractController {
 			$page->js   .= $config->twig->render('items/mxrfe/item/notes/js.twig', ['xref' => $xref, 'qnotes' => $qnotes]);
 		}
 		return $page->body;
-	}
-
-	public static function handleCRUD($data) {
-		$fields = ['action|text'];
-		$data = self::sanitizeParameters($data, $fields);
-		$input = self::pw('input');
-
-		if ($data->action) {
-			$mxrfe = self::pw('modules')->get('XrefMxrfe');
-			$mxrfe->process_input($input);
-		}
-		self::pw('session')->redirect(self::pw('page')->redirectURL($input), $http301 = false);
 	}
 
 	private static function lockXref(Page $page, MxrfeModel $mxrfe, ItemXrefManufacturer $xref) {

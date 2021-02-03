@@ -34,8 +34,6 @@ class Upcx extends AbstractController {
 		self::pw('session')->redirect(self::pw('page')->upcURL($data->upc), $http301 = false);
 	}
 
-
-
 	public static function upc($data) {
 		$fields = ['upc|text','action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
