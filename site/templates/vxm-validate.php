@@ -8,7 +8,7 @@
 	 * NOTE: the response values are formatted to be used by Jquery Validate's remote validation method
 	 */
 	$vxm = $modules->get('XrefVxm');
-	$validate = $modules->get('ValidateVxm');
+	$validate = new Dplus\CodeValidators\Map\Vxm();
 	$vxm->init_configs();
 	$response = '';
 

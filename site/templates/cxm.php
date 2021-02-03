@@ -22,7 +22,7 @@
 	$html = $modules->get('HtmlWriter');
 	$filter_cxm = $modules->get('FilterXrefItemCxm');
 	$qnotes = $modules->get('QnotesItemCxm');
-	$validate = $modules->get('ValidateCxm');
+	$validate = new Dplus\CodeValidators\Mso\Cxm;
 
 	$page->show_breadcrumbs = false;
 	$page->body .= $config->twig->render('items/cxm/bread-crumbs.twig', ['page' => $page]);

@@ -3,7 +3,7 @@
 	$values = $input->$rm;
 	$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 	$warehouse   = WarehouseQuery::create()->findOneByWhseid($whsesession->whseid);
-	$validate_po = new Dplus\CodeValidators\Po();
+	$validate_po = new Dplus\CodeValidators\Mpo();
 	$receiving = $modules->get('Receiving');
 	$m_print = $modules->get('PrintLabelItemReceiving');
 

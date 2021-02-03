@@ -16,11 +16,9 @@ $(function() {
 			custID: {
 				required: true,
 				remote: {
-					url: '{{ page.jsonapiURL('mci') }}',
+					url: '{{ page.jsonapiURL('mci/validate/custid/') }}',
 					type: "get",
-					data: {
-						action: 'validate-custid'
-					}
+					data: {}
 				}
 			},
 		},

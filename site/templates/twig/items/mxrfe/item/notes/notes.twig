@@ -6,6 +6,9 @@
 	xref                   ItemXrefManufacturer
 	qnotes                 module QnotesItemMxrfe
 #}
+{% if session.get('response_qnote') %}
+	{% include 'code-tables/code-table-response.twig' with {'response':  session.get('response_qnote') } %}
+{% endif %}
 <h3>Notes <i class="fa fa-commenting" aria-hidden="true"></i></h3>
 
 <ul class="nav nav-tabs mb-3" id="notes-tab" role="tablist">

@@ -30,6 +30,17 @@ class Kim extends AbstractController {
 		return self::listKits($data);
 	}
 
+	public static function handleCRUD($data) {
+		$fields = ['action' => ['sanitizer' => 'text'], 'kitID' => ['sanitizer' => 'text']];
+		$data = self::sanitizeParameters($data, $fields);
+
+		if ($data->action) {
+			$kim = self::pw('modules')->get('Kim');
+			$kim->process_input(self::pw('input'));
+		}
+		self::pw('session')->redirect(self::pw('page')->kitURL($data->kitID), $http301);
+	}
+
 	public static function kit($data) {
 		$wire = self::pw();
 		$config = self::pw('config');
@@ -60,18 +71,9 @@ class Kim extends AbstractController {
 		return $page->body;
 	}
 
-	public static function handleCRUD($data) {
-		$fields = ['action' => ['sanitizer' => 'text'], 'kitID' => ['sanitizer' => 'text']];
-		$data = self::sanitizeParameters($data, $fields);
-
-		if ($data->action) {
-			$kim = self::pw('modules')->get('Kim');
-			$kim->process_input(self::pw('input'));
-		}
-		self::pw('session')->redirect(self::pw('page')->kitURL($data->kitID));
-	}
-
 	private static function lockKit(Page $page, KimModel $kim, InvKit $kit) {
+		$config = $page->wire('config');
+
 		if (!$kit->isNew()) {
 			$page->headline = "Kit Master: $kit->itemid";
 			if (!$kim->lockrecord($kit->itemid)) {

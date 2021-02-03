@@ -20,10 +20,9 @@ $(function() {
 			itemID: {
 				required: true,
 				remote: {
-					url: '{{ page.jsonapiURL('inv') }}',
+					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
 					type: "get",
 					data: {
-						action: 'validate-itemid',
 						itemID: function() {
 							return $('#additemID').val();
 						}
@@ -144,8 +143,8 @@ $(function() {
 	 * @return {bool}
 	 */
 	function validate_itm_item(itemID, callback) {
-		var url = new URI('{{ page.jsonapiURL('inv') }}');
-		url.addQuery('action', 'validate-itemid').addQuery('itemID', itemID);
+		var url = new URI('{{ page.jsonapiURL('inv/validate/itemid/') }}');
+		url.addQuery('itemID', itemID);
 
 		$.getJSON(url.toString(), function(exists) {
 			callback(exists);
@@ -176,8 +175,8 @@ $(function() {
 	 * @return {object}             {itemid: xxx, description: xxx, description2: xxx, uom_purchase: xxx}
 	 */
 	function get_itm_item(itemID, callback) {
-		var url = new URI('{{ page.jsonapiURL('inv') }}');
-		url.addQuery('action', 'get-item').addQuery('itemID', itemID).addQuery('fields', 'uom_purchase,weight');
+		var url = new URI('{{ page.jsonapiURL('inv/item/') }}');
+		url.addQuery('itemID', itemID).addQuery('fields', 'uom_purchase,weight');
 
 		$.getJSON(url.toString(), function(item) {
 			callback(item);

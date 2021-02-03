@@ -4,6 +4,7 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 
 use Mvc\Controllers\AbstractController;
 
+use Dplus\CodeValidators\Msa as MsaValidator;
 use DplusUserQuery, DplusUser;
 
 class Msa extends AbstractController {
@@ -17,7 +18,7 @@ class Msa extends AbstractController {
 		$validate = self::validator();
 		$userID = $data->loginID ? $data->loginID : $data->userID;
 
-		if ($validate->loginid($userID) === false) {
+		if ($validate->userid($userID) === false) {
 			return "User $userID not found";
 		}
 		return true;
@@ -29,7 +30,7 @@ class Msa extends AbstractController {
 		$validate = self::validator();
 		$userID = $data->loginID ? $data->loginID : $data->userID;
 
-		if ($validate->loginid($userID) === false) {
+		if ($validate->userid($userID) === false) {
 			false;
 		}
 		$login = DplusUserQuery::create()->findOneByLoginid($loginID);
@@ -41,6 +42,6 @@ class Msa extends AbstractController {
 	}
 
 	private static function validator() {
-		return self::pw('modules')->geT('ValidateKim');
+		return new MsaValidator();
 	}
 }

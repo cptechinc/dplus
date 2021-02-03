@@ -1,0 +1,43 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	pager                  Propel\Runtime\Util\PropelModelPager
+#}
+<div class="d-flex w-100 justify-content-between paginator">
+	<div></div>
+
+	<div>
+		<ul class="pagination">
+			<li class="page-item {{ (pager.isFirstPage()) ? 'disabled' : '' }}">
+				<a href="{{ page.paginatefull(pager.gePreviousPage()) }}" class="page-link paginator-link" aria-label="Previous">
+					<span aria-hidden="true">&laquo;</span>
+				</a>
+			</li>
+			<li class="page-item {{ (page.pagenbr == i) ? 'active' : '' }}">
+				<div class="dropdown">
+					<a class="page-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Page {{ pager.getPage() }} of {{ pager.getLastPage() }}
+					</a>
+
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+						{% for i in 1..pager.getLastPage() %}
+							{% if i > 0 %}
+								<a class="dropdown-item paginator-link {{ (pager.getPage() == i) ? 'active' : '' }}" href="{{ page.paginatefull(i) }}">
+									{{ i }}
+								</a>
+							{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+			</li>
+
+			<li class="page-item {{ (pager.isLastPage()) ? 'disabled' : '' }}">
+				<a href="{{ page.paginatefull(pager.getNextPage())  }}" aria-label="Next" class="page-link paginator-link">
+					<span aria-hidden="true">&raquo;</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+
+	<div></div>
+</div>

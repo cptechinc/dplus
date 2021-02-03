@@ -5,6 +5,7 @@ include_once(__DIR__.'/XrefResponse.php');
 use Purl\Url;
 use Propel\Runtime\Map\TableMap as PropelTableMap;
 
+use Dplus\CodeValidators\Mso\Cxm as CxmValidator;
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemXrefCustomerQuery, ItemXrefCustomer;
 use ConfigSysQuery, ConfigSys;
@@ -428,7 +429,7 @@ class XrefCxm extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$modules = $this->wire('modules');
-		$validate = $modules->get('ValidateCxm');
+		$validate = new CxmValidator();
 
 		$invalid = array();
 

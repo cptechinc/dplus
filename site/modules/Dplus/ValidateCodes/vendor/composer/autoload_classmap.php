@@ -6,8 +6,22 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Dplus\\CodeValidators\\Ar' => $baseDir . '/src/Ar/Ar.php',
-    'Dplus\\CodeValidators\\In' => $baseDir . '/src/In/In.php',
-    'Dplus\\CodeValidators\\Po' => $baseDir . '/src/Po/Po.php',
-    'Dplus\\CodeValidators\\So' => $baseDir . '/src/So/So.php',
+    'Dplus\\CodeValidators\\Itm\\Warehouse' => $baseDir . '/src/Min/Itm/Warehouse.php',
+    'Dplus\\CodeValidators\\Kim' => $baseDir . '/src/Mki/Kim.php',
+    'Dplus\\CodeValidators\\Map' => $baseDir . '/src/Map/Map.php',
+    'Dplus\\CodeValidators\\Map\\Mxrfe' => $baseDir . '/src/Map/Mxrfe.php',
+    'Dplus\\CodeValidators\\Map\\Vxm' => $baseDir . '/src/Map/Vxm.php',
+    'Dplus\\CodeValidators\\Mar' => $baseDir . '/src/Mar/Mar.php',
+    'Dplus\\CodeValidators\\Mii' => $baseDir . '/src/Mii/Mii.php',
+    'Dplus\\CodeValidators\\Mii\\Iio' => $baseDir . '/src/Mii/Iio.php',
+    'Dplus\\CodeValidators\\Min' => $baseDir . '/src/Min/Min.php',
+    'Dplus\\CodeValidators\\Min\\Itm' => $baseDir . '/src/Min/Itm/Itm.php',
+    'Dplus\\CodeValidators\\Min\\Upcx' => $baseDir . '/src/Min/Upcx.php',
+    'Dplus\\CodeValidators\\Mki\\Mki' => $baseDir . '/src/Mki/Mki.php',
+    'Dplus\\CodeValidators\\Mpo' => $baseDir . '/src/Mpo/Mpo.php',
+    'Dplus\\CodeValidators\\Mpo\\Po' => $baseDir . '/src/Mpo/Po.php',
+    'Dplus\\CodeValidators\\Mqo' => $baseDir . '/src/Mqo/Mqo.php',
+    'Dplus\\CodeValidators\\Msa' => $baseDir . '/src/Msa/Msa.php',
+    'Dplus\\CodeValidators\\Mso' => $baseDir . '/src/Mso/Mso.php',
+    'Dplus\\CodeValidators\\Mso\\Cxm' => $baseDir . '/src/Mso/Cxm.php',
 );

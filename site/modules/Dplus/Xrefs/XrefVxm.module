@@ -5,6 +5,8 @@ include_once(__DIR__.'/XrefResponse.php');
 use Purl\Url;
 use Propel\Runtime\Map\TableMap as PropelTableMap;
 
+use Dplus\CodeValidators\Map\Vxm as VxmValidator;
+
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemXrefVendorQuery, ItemXrefVendor;
 use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
@@ -404,7 +406,7 @@ class XrefVxm extends WireData implements Module {
 	public function update_record_validated(ItemXrefVendor $record, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$validate = $this->wire('modules')->get('ValidateVxm');
+		$validate = new VxmValidator();
 		$invalid = array();
 
 		$fields = array(

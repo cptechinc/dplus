@@ -4,6 +4,8 @@ include_once(__DIR__.'/ItmResponse.php');
 
 use Purl\Url;
 
+use Dplus\CodeValidators\Min\Itm as ItmValidator;
+
 use ConfigInQuery, ConfigIn;
 use ConfigPoQuery, ConfigPo;
 use ItemMasterItemQuery, ItemMasterItem;
@@ -92,7 +94,7 @@ class ItmCosting extends WireData implements Module {
 	private function update_itm_input(WireInput $input) {
 		$this->init_configs();
 		$itm = $this->wire('modules')->get('Itm');
-		$validate = $this->wire('modules')->get('ValidateItm');
+		$validate = new ItmValidator();
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itemID = $values->text('itemID');

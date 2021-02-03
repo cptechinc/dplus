@@ -4,7 +4,7 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 
 use Mvc\Controllers\AbstractController;
 
-use Dplus\CodeValidators\So as MsoValidator;
+use Dplus\CodeValidators\Mso as MsoValidator;
 
 use DplusUserQuery, DplusUser;
 

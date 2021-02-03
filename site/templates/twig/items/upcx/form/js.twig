@@ -1,0 +1,230 @@
+$(function() {
+	var form_upc = $('#upc-item-form');
+	var input_itemid = form_upc.find('input[name=itemID]');
+	var input_upc = form_upc.find('input[name=upc]');
+	var input_primary = form_upc.find('input[name=primary]');
+	var input_validatedprimary = form_upc.find('input[name=valid_primary]');
+	var modal_ajax = $('#ajax-modal');
+
+	var upc = {
+		is_primary: {{ upc.is_primary() ? 'true' : 'false' }}
+	}
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on("change", "input[name=upc]", function(e) {
+		var input = $(this);
+		request_validate_upc(input.val(), function(valid) {
+			if (!valid) {
+				swal2.fire({
+					title: 'UPC Exists',
+					text: 'Edit UPC ' + input.val() + '?',
+					icon: 'question',
+					showCancelButton: true,
+					confirmButtonText: 'Yes!'
+				}).then(function (result) {
+					if (result.value) {
+						var url = URI();
+						url.setQuery('upc', input.val());
+						window.location.href = url.toString();
+					}
+				});
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=itemID]", function(e) {
+		var input = $(this);
+		request_validate_itemid(input.val(), function(valid) {
+			if (valid) {
+				console.log(valid);
+				get_item(input.val(), function(item) {
+					$('.item-description').text(item.description);
+				});
+			}
+		});
+	});
+
+
+	$("body").on("change", "input[name=primary]", function(e) {
+		input_validatedprimary.val('false');
+	});
+
+/* =============================================================
+	AJAX Lookup Modal Functions
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = '{{ page.search_itemsURL }}';
+
+		if (button.data('search') == 'item') {
+			url = '{{ page.search_itemsURL }}';
+		}
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		input_itemid.val(itemID).change();
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	form_upc.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		rules: {
+			uom: {required: false},
+			qty: {required: true},
+			upc: {
+				required: true,
+				remote: {
+					url: '{{ page.validateURL }}',
+					type: "get",
+					data: {
+						action: 'validate-upc',
+						itemID: $( "input[name=itemID]" ).val()
+					}
+				}
+			},
+			itemID: {
+				required: true,
+				remote: {
+					url: '{{ page.validateURL }}',
+					type: "get",
+					data: {
+						action: 'validate-itemid',
+					}
+				}
+			},
+		},
+		messages: {
+			uom: "Please choose a Unit of Measure",
+			qty: "Please Enter Qty of Eaches for this UPC",
+		},
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		submitHandler: function(form) {
+			var formdata = form_upc.serializeArray().reduce(function(obj, item) {
+				obj[item.name] = item.value;
+				return obj;
+			}, {});
+
+			if (formdata['action'] == 'update-upcx') {
+				validate_primary(function(canSubmit) {
+					if (canSubmit) {
+						form.submit();
+					}
+				});
+			} else {
+				form.submit();
+			}
+		}
+	});
+
+	function validate_primary(callback) {
+		if (input_primary.prop("checked") === false) {
+			callback(true);
+		}
+
+		if (input_primary.prop("checked") === true && input_primary.data("primary") == false) {
+			request_validate_upc_primary(input_upc.val(), input_itemid.val(), function(isPrimary) {
+				if (isPrimary === false) {
+					swal_change_primary_upc(function(canContinue) {
+						callback(canContinue);
+					});
+				}
+			});
+		}
+	}
+
+	function swal_change_primary_upc(callback {
+		get_item(input_itemid.val(), function(item) {
+			var primaryupc = item.primaryupc;
+			var msg = input_itemid.val() + ' has the UPC code ' + primaryupc;
+			msg += ' defined as the primary UPC';
+
+			swal2.fire({
+				title: 'Change Primary UPC?',
+				text: msg,
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Yes!'
+			}).then(function (result) {
+				if (result.value) {
+					callback(true);
+				} else {
+					callback(false);
+				}
+			});
+		});
+	}
+
+/* =============================================================
+	AJAX Request Functions
+============================================================= */
+	function request_validate_upc(upc, callback) {
+		var url = new URI('{{ page.validateURL }}');
+		url.addQuery('action', 'validate-upc').addQuery('upc', upc);
+
+		$.getJSON(url.toString(), function(response) {
+			var valid = typeof response == 'boolean' && response === true;
+			callback(valid);
+		});
+	}
+
+	function request_validate_upc_primary(upc, itemID, callback) {
+		var url = new URI('{{ page.validateURL }}');
+		url.addQuery('action', 'validate-primary-upc').addQuery('upc', upc).addQuery('itemID', itemID);
+
+		$.getJSON(url.toString(), function(response) {
+			var valid = typeof response == 'boolean' && response === true;
+			callback(valid);
+		});
+	}
+
+	function request_validate_itemid(itemID, callback) {
+		var url = new URI('{{ page.validateURL }}');
+		url.addQuery('action', 'validate-itemid').addQuery('itemID', itemID);
+		console.log(url.toString());
+		$.getJSON(url.toString(), function(response) {
+			var valid = typeof response == 'boolean' && response === true;
+			callback(valid);
+		});
+	}
+
+	function get_item(itemID, callback) {
+		var url = new URI('{{ page.validateURL }}');
+		url.addQuery('action', 'get-item').addQuery('itemID', itemID);
+
+		$.getJSON(url.toString(), function(item) {
+			callback(item);
+		});
+	}
+});

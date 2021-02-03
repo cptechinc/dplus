@@ -7,13 +7,18 @@ use ProcessWire\User;
 
 
 abstract class AbstractController extends WireData {
+	public static $pw;
+
 	/**
 	 * Return the current ProcessWire Wire Instance
-	 * @return ProcessWire
+	 * @param  string            $var   Wire Object 
+	 * @return ProcessWire|mixed
 	 */
 	public static function pw($var = '') {
-		$wire = ProcessWire::getCurrentInstance();
-		return $var ? $wire->wire($var) : $wire;
+		if (empty(self::$pw)) {
+			self::$pw = ProcessWire::getCurrentInstance();
+		}
+		return $var ? self::$pw->wire($var) : self::$pw;
 	}
 
 	public static function sanitizeParameters($data, $fields) {

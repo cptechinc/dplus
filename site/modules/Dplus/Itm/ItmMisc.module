@@ -4,6 +4,8 @@ include_once(__DIR__.'/ItmResponse.php');
 
 use Purl\Url;
 
+use Dplus\CodeValidators\Min\Itm as ItmValidator;
+
 use ItemMasterItemQuery, ItemMasterItem;
 use ConfigSalesOrderQuery, ConfigSalesOrder;
 
@@ -157,7 +159,7 @@ class ItmMisc extends Itm implements Module {
 			),
 		);
 		$validator = $this->wire('modules')->get('InputValidator');
-		$validator->set_validator($this->wire('modules')->get('ValidateItm'))->set_input($input)->set_record($record)->set_validatefields($fields);
+		$validator->set_validator((new ItmValidator()))->set_input($input)->set_record($record)->set_validatefields($fields);
 		$invalid = $validator->validate();
 		$validator->set_valid_properties();
 		return $invalid;

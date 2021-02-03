@@ -4,6 +4,8 @@ include_once(__DIR__.'/ItmResponse.php');
 
 use Purl\Url;
 
+use Dplus\CodeValidators\Min\Itm as ItmValidator;
+
 use ItemMasterItemQuery, ItemMasterItem;
 use ConfigInQuery, ConfigIn;
 use InvGroupCodeQuery, InvGroupCode;
@@ -303,7 +305,7 @@ class Itm extends WireData implements Module {
 			);
 		}
 		$validator = $this->wire('modules')->get('InputValidator');
-		$validator->set_validator($this->wire('modules')->get('ValidateItm'))->set_input($input)->set_record($record)->set_validatefields($fields);
+		$validator->set_validator((new ItmValidator()))->set_input($input)->set_record($record)->set_validatefields($fields);
 		$invalid = $validator->validate();
 		$validator->set_valid_properties();
 		return $invalid;
@@ -830,21 +832,15 @@ class Itm extends WireData implements Module {
 		});
 
 		$this->addHookProperty("Page(pw_template=$templates)::search_tariffcodesURL", function($event) {
-			$event->return = $this->wire('pages')->get('template=api-ajax,ajaxcode=tariff-codes')->url;
+			$event->return = $this->wire('modules')->get('DpagesApi')->lookupURL('tariff-codes');
 		});
 
 		$this->addHookProperty("Page(pw_template=$templates)::search_msdscodesURL", function($event) {
-			$event->return = $this->wire('pages')->get('template=api-ajax,ajaxcode=msds-codes')->url;
+			$event->return = $this->wire('modules')->get('DpagesApi')->lookupURL('msds-codes');
 		});
 
 		$this->addHookProperty("Page(pw_template=$templates)::search_freightcodesURL", function($event) {
-			$event->return = $this->wire('pages')->get('template=api-ajax,ajaxcode=freight-codes')->url;
-		});
-
-		$this->addHook("Page(pw_template=$templates)::jsonapiURL", function($event) {
-			$api = $event->arguments(0);
-			$pages = $this->wire('pages');
-			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
+			$event->return = $this->wire('modules')->get('DpagesApi')->lookupURL('freight-codes');
 		});
 	}
 }

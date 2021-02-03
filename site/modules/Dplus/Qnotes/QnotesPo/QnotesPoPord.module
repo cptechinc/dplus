@@ -2,7 +2,7 @@
 
 use Purl\Url;
 
-use Dplus\CodeValidators\Po as ValidatorPo;
+use Dplus\CodeValidators\Mpo as MpoValidator;
 
 use ConfigApQuery;
 use PurchaseOrderNoteQuery, PurchaseOrderNote;
@@ -157,7 +157,7 @@ class QnotesPoPord extends WireData implements Module {
 	 */
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$validate_ponbr = new ValidatorPo();
+		$validate_ponbr = new MpoValidator();
 		$ponbr = $input->$rm->text('ponbr');
 
 		if ($validate_ponbr->po($ponbr)) {

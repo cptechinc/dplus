@@ -9,9 +9,9 @@
 						'name': 'tariffcode', 'value': item.tariffcode,
 						'modaltarget': '#ajax-modal',
 						'modaldescription': 'Search for / Choose Tariff Code',
-						'attributes_button': {'data-search': 'tariffcode', 'data-lookupurl': page.search_tariffcodesURL},
+						'attributes_button': {'data-search': 'tariffcode', 'data-lookupurl': page.search_lookupURL('tariff-codes')},
 						'class_add': 'ajax-lookup',
-						'attributes': {'data-api': 'inv', 'data-validate': 'tariffcode', 'data-ajaxfields': 'number,description,rate'}
+						'attributes': {'data-api': 'inv', 'data-validate': 'tariff-code', 'data-ajaxfields': 'number,description,rate'}
 					}
 				%}
 			</div>
@@ -43,7 +43,7 @@
 						'modaldescription': 'Search for / Choose Country',
 						'attributes_button': {'data-search': 'country', 'data-lookupurl': page.search_countriesURL },
 						'class_add': 'ajax-lookup',
-						'attributes': {'data-api': 'inv', 'data-validate': 'countrycode', 'data-ajaxfields': 'description'}
+						'attributes': {'data-api': 'inv', 'data-validate': 'country-code', 'data-ajaxfields': 'description'}
 					}
 				%}
 			</div>
@@ -65,9 +65,9 @@
 						'name': 'msdscode', 'value': item.msdscode,
 						'modaltarget': '#ajax-modal',
 						'modaldescription': 'Search for / Choose Msds Code',
-						'attributes_button': {'data-search': 'msdscode', 'data-lookupurl': page.search_msdscodesURL},
+						'attributes_button': {'data-search': 'msdscode', 'data-lookupurl': page.search_lookupURL('msds-codes')},
 						'class_add': 'ajax-lookup',
-						'attributes': {'data-api': 'inv', 'data-validate': 'msdscode', 'data-ajaxfields': 'description'}
+						'attributes': {'data-api': 'inv', 'data-validate': 'msds-code', 'data-ajaxfields': 'description'}
 					}
 				%}
 			</div>
@@ -89,9 +89,9 @@
 						'name': 'freightcode', 'value': item.freightcode,
 						'modaltarget': '#ajax-modal',
 						'modaldescription': 'Search for / Choose Freight Code',
-						'attributes_button': {'data-search': 'freightcode', 'data-lookupurl': page.search_freightcodesURL},
+						'attributes_button': {'data-search': 'freightcode', 'data-lookupurl': page.search_lookupURL('freight-codes')},
 						'class_add': 'ajax-lookup',
-						'attributes': {'data-api': 'mso', 'data-validate': 'freightcode', 'data-ajaxfields': 'description'}
+						'attributes': {'data-api': 'mso', 'data-validate': 'freight-code', 'data-ajaxfields': 'description'}
 					}
 				%}
 			</div>

@@ -4,13 +4,12 @@
 
 	$module_useractions = $modules->get('FilterUserActions');
 	$html = $modules->get('HtmlWriter');
-	$lookup_customer = $modules->get('LookupCustomer');
+	$validate = new Dplus\CodeValidators\Mar();
 
 	if ($input->get->custID) {
 		$custID = $input->get->text('custID');
 
-		// TODO VALIDATION
-		if ($lookup_customer->lookup_customer($custID)) {
+		if ($validate->custid($custID)) {
 			if ($user->has_customer($custID)) {
 				$modules->get('DpagesMci')->init_customer_hooks();
 				$modules->get('DpagesMci')->init_cipage();
@@ -69,9 +68,8 @@
 
 		if ($input->get->q) {
 			$q = strtoupper($input->get->text('q'));
-			$lookup_customer->lookup_customer($q);
 
-			if ($lookup_customer->exists) {
+			if ($validate->custid($q)) {
 				$session->redirect($page->url."?custID=$q", $http301 = false);
 			}
 			$filter_customers->search($q);

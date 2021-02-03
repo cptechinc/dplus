@@ -31,11 +31,11 @@
 
 	if ($values->vendorID) {
 		$vendorID = $values->text('vendorID');
-		$validate_vendor = $modules->get('LookupVendor');
+		$validate = new Dplus\CodeValidators\Map;
 		$vendor = VendorQuery::create()->findOneById($vendorID);
 		$filter_vxm->filter_input($input);
 
-		if (!$validate_vendor->lookup_vendor($vendorID)) {
+		if ($validate->vendorid($vendorID) === false) {
 			$session->redirect($page->url."?q=$vendorID", $http301 = false);
 		}
 

@@ -1,6 +1,6 @@
 <?php namespace ProcessWire;
 
-use Dplus\CodeValidators\So as ValidatorSo;
+use Dplus\CodeValidators\Mso as MsoValidator;
 
 use SalesOrderNotesQuery, SalesOrderNotes;
 use ConfigArQuery, ConfigAr;
@@ -121,7 +121,7 @@ class QnotesSalesOrder extends WireData implements Module {
 	 */
 	public function process_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
-		$lookup_orders = new ValidatorSo();
+		$lookup_orders = new MsoValidator();
 		$ordn = $input->$rm->text('ordn');
 
 		if ($lookup_orders->invoice($ordn)) {

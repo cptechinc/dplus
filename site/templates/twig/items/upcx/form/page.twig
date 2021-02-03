@@ -1,0 +1,25 @@
+{% block breadcrumbs %}
+	{% include 'items/upcx/bread-crumbs.twig' %}
+{% endblock %}
+
+{% if session.getFor('response', 'upcx') %}
+	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'upcx')} %}
+{% endif %}
+
+{% block return_links %}
+	<div class="mb-3">
+		<a href="{{ page.upc_listURL() }}" class="btn btn-primary">
+			<i class="fa fa-undo" aria-hidden="true"></i> &nbsp;
+			Back to List
+		</a>
+		&nbsp; &nbsp;
+		<a href="{{ page.parent.url }}" class="btn btn-primary">
+			<i class="fa fa-undo" aria-hidden="true"></i> &nbsp;
+			Back to {{ page.parent.title }}
+		</a>
+	</div>
+{% endblock %}
+
+{% block formdisplay %}
+	{% include 'items/upcx/form/display.twig' %}
+{% endblock %}

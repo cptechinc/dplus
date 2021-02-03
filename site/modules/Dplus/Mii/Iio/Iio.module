@@ -2,6 +2,7 @@
 
 use Purl\Url;
 
+use Dplus\CodeValidators\Mii\Iio as IioValidator;
 use OptionsIiQuery, OptionsIi;
 
 /**
@@ -473,7 +474,7 @@ class Iio extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$modules = $this->wire('modules');
-		$validate = $modules->get('ValidateIio');
+		$validate = new IioValidator();
 
 		$invalid = array();
 
@@ -681,17 +682,6 @@ class Iio extends WireData implements Module {
 		$this->addHook("Page(pw_template=iio)::iio_deleteURL", function($event) {
 			$userID = $event->arguments(0);
 			$event->return = $this->iio_deleteURL($userID);
-		});
-
-		$this->addHook("Page(pw_template=iio)::jsonapiURL", function($event) {
-			$api = $event->arguments(0);
-			$pages = $this->wire('pages');
-			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
-		});
-
-		$this->addHook("Page(pw_template=iio)::search_lookupURL", function($event) {
-			$ajaxcode = $event->arguments(0);
-			$event->return = $this->wire('pages')->get("template=api-ajax,ajaxcode=$ajaxcode")->httpUrl;
 		});
 	}
 }

@@ -4,7 +4,7 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 
 use Mvc\Controllers\AbstractController;
 
-use Dplus\CodeValidators\In as InValidator;
+use Dplus\CodeValidators\Min as MinValidator;
 
 use TariffCodeQuery, TariffCode;
 use CountryCodeQuery, CountryCode;
@@ -34,7 +34,7 @@ class Min extends AbstractController {
 			return false;
 		}
 		$tariff = TariffCodeQuery::create()->findOneByCode($data->code);
-		$response = array(
+		return array(
 			'code'        => $data->code,
 			'number'      => $tariff->number,
 			'rate'        => $tariff->duty_rate,
@@ -63,7 +63,7 @@ class Min extends AbstractController {
 			return false;
 		}
 		$c = CountryCodeQuery::create()->findOneByCode($data->code);
-		$response = array(
+		return array(
 			'code'        => $data->code,
 			'description' => $c->description
 		);
@@ -89,8 +89,8 @@ class Min extends AbstractController {
 		if ($validate->msdscode($data->code) === false) {
 			return false;
 		}
-		$msds = $self::pw('modules')->get('CodeTablesMsdsm')->get_code($code);
-		$response = array(
+		$msds = self::pw('modules')->get('CodeTablesMsdsm')->get_code($data->code);
+		return array(
 			'code'        => $data->code,
 			'description' => $msds->description
 		);
@@ -101,7 +101,7 @@ class Min extends AbstractController {
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
-		if ($validate->itemid_exists($data->itemID) === false) {
+		if ($validate->itemid($data->itemID) === false) {
 			return "$data->itemID not found";
 		}
 		return true;
@@ -113,14 +113,14 @@ class Min extends AbstractController {
 
 		$validate = self::validator();
 
-		if ($validate->itemid_exists($data->itemID) === false) {
+		if ($validate->itemid($data->itemID) === false) {
 			return false;
 		}
 		$wire = self::pw();
 		$sanitizer = $wire->wire('sanitizer');
-		$fields = $sanitizer->array($data->fields, 'string', ['delimiter' => ',']);
+		$fields = isset($data->fields) ? $sanitizer->array($data->fields, 'text', ['delimiter' => ',']) : [];
 		$loader = $wire->wire('modules')->get('LoadItem');
-		return $loader->get_item_array($itemID, $fields);
+		return $loader->get_item_array($data->itemID, $fields);
 	}
 
 	public static function validateWarehouseid($data) {
@@ -148,6 +148,6 @@ class Min extends AbstractController {
 
 
 	private static function validator() {
-		return new InValidator();
+		return new MinValidator();
 	}
 }

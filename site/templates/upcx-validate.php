@@ -6,7 +6,7 @@
 	 */
 	$upcx = $modules->get('XrefUpc');
 	$response = '';
-	$validate = $modules->get('ValidateUpcx');
+	$validate = new Dplus\CodeValidators\Min\Upcx;
 
 	if ($input->get->action) {
 		switch ($input->get->text('action')) {
@@ -23,7 +23,7 @@
 				$code = $input->get->text('upc');
 				$itemID = $input->get->text('itemID');
 
-				if ($upcx->upc_exists($code)) {
+				if ($validate->exists($code)) {
 					$upc = $upcx->xref($code);
 
 					if ($upc->itemid == $itemID) {

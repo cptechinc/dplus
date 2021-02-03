@@ -1,7 +1,7 @@
 <?php
 	$modules->get('DpagesMqo')->init_mqopage();
 	$qnotes = $modules->get('QnotesQuote');
-	$lookup_quotes = $modules->get('LookupQuote');
+	$validate = new Dplus\CodeValidators\Mqo;
 
 	if ($input->requestMethod('POST')) {
 		$qnotes->process_input($input);
@@ -11,7 +11,7 @@
 		if ($input->get->qnbr) {
 			$qnbr = $input->get->text('qnbr');
 
-			if ($lookup_quotes->lookup($qnbr)) {
+			if ($validate->quote($qnbr)) {
 				$quote = QuoteQuery::create()->filterByQuoteid($qnbr)->findOne();
 				$page->title = "Quote #$qnbr Notes";
 

@@ -6,6 +6,7 @@
 	recordlocker           module RecordLockerUser
 	xrefs                  ItemXrefManufacturer[]|ObjectCollection
 #}
+{% set response = mxrfe.response() %}
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
@@ -24,7 +25,8 @@
 		{% if xrefs.count() %}
 			{% for xref in xrefs %}
 				{% set class = mxrfe.get_recordlocker_key(xref) == page.focus ? 'highlight' : '' %}
-				{# set class = (response.key == mxrfe.get_recordlocker_key(xref) and response.has_success()) ? 'bg-success text-white' : class #}
+				{% set class = (response.key == mxrfe.get_recordlocker_key(xref) and response.has_success()) ? 'bg-success text-white' : class %}
+
 				<tr class="{{ class }}" data-mxrfe="{{ mxrfe.get_recordlocker_key(xref) }}">
 					<td>{{ xref.vendoritemid }}</td>
 					<td></td>

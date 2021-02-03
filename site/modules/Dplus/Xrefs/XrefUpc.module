@@ -145,7 +145,7 @@ class XrefUpc extends WireData implements Module {
 				break;
 			default:
 				$message = self::DESCRIPTION_RECORD . " ($upc) was not saved, no action was specified";
-				$this->wire('session')->response_xref = XrefResponse::response_error($upc, $message);
+				$this->wire('session')->setFor('response', 'upcx', XrefResponse::response_error($upc, $message));
 				break;
 		}
 	}
@@ -163,13 +163,13 @@ class XrefUpc extends WireData implements Module {
 		if ($this->xref_exists($upc)) {
 			if (!$this->lockrecord($upc)) {
 				$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($upc);
-				$this->wire('session')->response_xref = XrefResponse::response_error($upc, $message);
+				$this->wire('session')->setFor('response', 'upcx', XrefResponse::response_error($upc, $message));
 				return false;
 			}
 			$record = $this->xref($upc);
 			$record->delete();
-			$this->wire('session')->response_xref = $this->save_and_respond($record);
-			return $this->wire('session')->response_xref->has_success();
+			$this->wire('session')->setFor('response', 'upcx', $this->save_and_respond($record));
+			return $this->wire('session')->getFor('response', 'upcx')->has_success();
 		}
 		return true;
 	}
@@ -187,7 +187,7 @@ class XrefUpc extends WireData implements Module {
 
 		if (!$this->lockrecord($upc) && !$record->isNew()) {
 			$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($upc);
-			$this->wire('session')->response_xref = XrefResponse::response_error($upc, $message);
+			$this->wire('session')->setFor('response', 'upcx', XrefResponse::response_error($upc, $message));
 			return false;
 		}
 		$this->update_record_input($record, $input);
@@ -197,8 +197,8 @@ class XrefUpc extends WireData implements Module {
 		if ($response->has_success() && !$record->isDeleted()) {
 			$this->update_primary_record($record);
 		}
-		$this->wire('session')->response_xref = $response;
-		return $this->wire('session')->response_xref->has_success();
+		$this->wire('session')->setFor('response', 'upcx', $response);
+		return $this->wire('session')->getFor('response', 'upcx')->has_success();
 	}
 
 	/**

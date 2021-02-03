@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+use Dplus\CodeValidators\Mar as MarValidator;
+
 use CustomerShiptoQuery, CustomerShipto;
 use CustomerQuery, Customer;
 use WarehouseInventoryQuery, WarehouseInventory;
@@ -77,7 +79,9 @@ class LookupItemEntry extends LookupItem implements Module {
 	 * @return string
 	 */
 	private function customer_whseid($custID, $shiptoID = '') {
-		if ($validate_custid->lookup_customer($custID)) {
+		$validate = new MarValidator();
+
+		if ($validate->custid($custID)) {
 			if ($shiptoID) {
 				$q = CustomerShiptoQuery::create();
 				$shipto = $q->filterByCustid($custID)->filterByShiptoid($shiptoID)->findOne();

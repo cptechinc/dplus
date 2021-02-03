@@ -3,7 +3,9 @@
 use Propel\Runtime\ActiveQuery\Criteria;
 use Purl\Url;
 
-use Dplus\CodeValidators\Po as ValidatorPo;
+use Dplus\CodeValidators\Mar    as MarValidator;
+use Dplus\CodeValidators\Mpo    as MpoValidator;
+use Dplus\CodeValidators\Mpo\Po as PoValidator;
 
 use PurchaseOrderQuery, PurchaseOrder;
 use WarehouseQuery, Warehouse;
@@ -173,9 +175,9 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$vendorID = $values->text('vendorID');
-		$validate_vendor = $this->wire('modules')->get('ValidateVendorId');
+		$validater = new MarValidator();
 
-		if ($validate_vendor->validate($vendorID)) {
+		if ($validate->vendorid($vendorID)) {
 			$this->request_create_po($vendorID);
 			$this->wire('session')->redirect($this->get_po_createdURL($vendorID), $http301 = false);
 		} else {
@@ -372,7 +374,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$values = $input->$rm;
 		$invalid = array();
 
-		$validate = $this->wire('modules')->get('ValidatePo');
+		$validate = new PoValidator();
 		$fields = array(
 			'vendorid' => array(
 				'description'  => 'Vendor ID',
@@ -624,7 +626,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 	 * @return bool
 	 */
 	public function exists($ponbr) {
-		$validator = new ValidatorPo();
+		$validator = new MpoValidator();
 		return $validator->po($ponbr);
 	}
 
@@ -755,14 +757,8 @@ class PurchaseOrderEdit extends WireData implements Module {
 			$event->return = $this->get_po_documentsURL($ponbr);
 		});
 
-		$this->addHook("Page(pw_template=purchase-order-edit)::jsonapiURL", function($event) {
-			$api = $event->arguments(0);
-			$pages = $this->wire('pages');
-			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
-		});
-
 		$this->addHook("Page(pw_template=purchase-order-edit)::search_vxmURL", function($event) {
-			$event->return = $this->wire('pages')->get('template=api-ajax,ajaxcode=vxm')->url;
+			$event->return = $this->wire('modules')->get('DpagesApi')->lookupURL('vxm');;
 		});
 
 		$this->addHook('Page(pw_template=purchase-order-epo)::choose_vendorURL', function($event) {

@@ -46,12 +46,6 @@ class Eqo extends WireData implements Module {
 				$event->return = $this->wire('pages')->get("pw_template=$pwtemplate")->url;
 			});
 		}
-
-		$this->addHook("Page(pw_template=quote-edit)::jsonapiURL", function($event) {
-			$api = $event->arguments(0);
-			$pages = $this->wire('pages');
-			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
-		});
 	}
 
 	/**

@@ -1,0 +1,7 @@
+{% include 'items/mxrfe/bread-crumbs.twig' %}
+
+{% if session.getFor('response', 'mxrfe') %}
+	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'mxrfe')} %}
+{% endif %}
+
+{% include 'items/mxrfe/item/form/display.twig' with {'mxrfe': mxrfe, 'vendor': vendor, 'xref': xref, 'qnotes': qnotes} %}

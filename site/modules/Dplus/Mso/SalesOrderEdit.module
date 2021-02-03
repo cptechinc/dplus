@@ -2,7 +2,7 @@
 
 use Purl\Url;
 
-use Dplus\CodeValidators\So as ValidatorSo;
+use Dplus\CodeValidators\Mso as MsoValidator;
 
 // Dplus Data Database
 use SalesOrderQuery, SalesOrder;
@@ -347,7 +347,7 @@ class SalesOrderEdit extends WireData implements Module {
 	 */
 	public function can_user_editorder(User $user, $ordn) {
 		$canedit = false;
-		$lookup_order = new ValidatorSo();
+		$lookup_order = new MsoValidator();
 
 		if ($lookup_order->invoice($ordn)) {
 			return false;
@@ -557,12 +557,6 @@ class SalesOrderEdit extends WireData implements Module {
 				$event->return = $this->wire('pages')->get("pw_template=$pwtemplate")->url;
 			});
 		}
-
-		$this->addHook("Page(pw_template=sales-order-edit)::jsonapiURL", function($event) {
-			$api = $event->arguments(0);
-			$pages = $this->wire('pages');
-			$event->return = $api ? $pages->get("template=dplus-json,name=$api")->httpUrl : $pages->get("template=api-menu,name=json")->httpUrl;
-		});
 
 		$this->addHook('User::can_editorder', function($event) {
 			$user = $event->object;

@@ -4,7 +4,7 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 
 use Mvc\Controllers\AbstractController;
 
-use CustomerQuery, Customer;
+use Dplus\CodeValidators\Mar as MarValidator;
 
 class Mci extends AbstractController {
 	public static function test() {
@@ -16,9 +16,13 @@ class Mci extends AbstractController {
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
-		if (CustomerQuery::create()->filterByCustid($data->custID)->count() === 0) {
+		if ($validate->custid($data->custID) === false) {
 			return "Customer $data->custID not found";
 		}
 		return true;
+	}
+
+	private static function validator() {
+		return new MarValidator();
 	}
 }

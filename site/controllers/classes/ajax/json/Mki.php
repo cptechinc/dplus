@@ -5,6 +5,7 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 use Mvc\Controllers\AbstractController;
 
 use InvKitQuery, InvKit;
+use Dplus\CodeValidators\Mki\Kim as KimValidator;
 
 class Mki extends AbstractController {
 	public static function test() {
@@ -16,7 +17,7 @@ class Mki extends AbstractController {
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
-		if ($validate->kit_exists($data->kitID) === false) {
+		if ($validate->kit($data->kitID) === false) {
 			return "Kit $data->kitID not found";
 		}
 		return true;
@@ -46,7 +47,7 @@ class Mki extends AbstractController {
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
-		if ($validate->kit_exists($data->kitID) === false) {
+		if ($validate->kit($data->kitID) === false) {
 			return false
 		}
 		$kit = InvKitQuery::create()->findOneByItemid($data->kitID);
@@ -61,13 +62,13 @@ class Mki extends AbstractController {
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
-		if ($validate->kit_component_exists($data->kitID, $data->component) === false) {
+		if ($validate->kit_component($data->kitID, $data->component) === false) {
 			return "Kit $data->kitID Component $data->component not found";
 		}
 		return true;
 	}
 
 	private static function validator() {
-		return self::pw('modules')->geT('ValidateKim');
+		return new KimValidator();
 	}
 }
