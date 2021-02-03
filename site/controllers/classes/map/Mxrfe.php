@@ -75,6 +75,14 @@ class Mxrfe extends AbstractController {
 		return $page->body;
 	}
 
+	public static function list($data) {
+		$data = self::sanitizeParametersShort($data, ['mnfrID|text']);
+		if ($data->mnfrID) {
+			return self::mnfrXrefs($data);
+		}
+		return self::listMnfr($data);
+	}
+
 	public static function listMnfr($data) {
 		$data = self::sanitizeParametersShort($data, ['q|text']);
 		$wire = self::pw();
@@ -87,7 +95,7 @@ class Mxrfe extends AbstractController {
 		$filter->apply_sortby($page);
 		$vendors = $filter->query->paginate(self::pw('input')->pageNum, $wire->wire('session')->display);
 		$page->body .= $config->twig->render('items/mxrfe/search/vendor/page.twig', ['vendors' => $vendors]);
-		$page->body .= $config->twig->render('util/paginator.twig', ['resultscount'=> $vendors->getNbResults()]);
+		$page->body .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $vendors]);
 		return $page->body;
 	}
 
