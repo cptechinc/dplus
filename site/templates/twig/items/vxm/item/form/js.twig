@@ -261,7 +261,7 @@ $(function() {
 			itemID: {
 				required: true,
 				remote: {
-					url: '{{ page.jsonapiURL('inv/itemid/') }}',
+					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
 					type: "get",
 					data: {}
 				}
@@ -284,6 +284,8 @@ $(function() {
 	});
 
 	function validate_xref_remote_obj() {
+		var input = $('input[name=vendoritemID]');
+
 		var url = '{{ page.jsonapiURL('map/validate/vendorid/') }}';
 		url += (input.val() != input.data('vendoritemid') && input.data('new') === true) ? 'new/' : '';
 
