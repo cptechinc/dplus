@@ -7,14 +7,14 @@
 			</li>
 		{% endfor %}
 
-		{% if page.has('itemID') %}
+		{% if page.wire('input').get.offsetExists('itemID') %}
 			<li class="breadcrumb-item">
 				<a href="{{ page.url }}">{{ page.title }}</a>
 			</li>
 			<li class="breadcrumb-item active" aria-current="page">Item: {{ page.itemID }}</li>
 		{% endif %}
 
-		{% if page.has('upc') %}
+		{% if page.wire('input').get.offsetExists('upc') %}
 			<li class="breadcrumb-item">
 				<a href="{{ page.url }}">{{ page.title }}</a>
 			</li>
