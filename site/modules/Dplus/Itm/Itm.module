@@ -832,15 +832,15 @@ class Itm extends WireData implements Module {
 		});
 
 		$this->addHookProperty("Page(pw_template=$templates)::search_tariffcodesURL", function($event) {
-			$event->return = $this->wire('pages')->get('template=api-ajax,ajaxcode=tariff-codes')->url;
+			$event->return = $this->wire('modules')->get('DpagesApi')->lookupURL('tariff-codes');
 		});
 
 		$this->addHookProperty("Page(pw_template=$templates)::search_msdscodesURL", function($event) {
-			$event->return = $this->wire('pages')->get('template=api-ajax,ajaxcode=msds-codes')->url;
+			$event->return = $this->wire('modules')->get('DpagesApi')->lookupURL('msds-codes');
 		});
 
 		$this->addHookProperty("Page(pw_template=$templates)::search_freightcodesURL", function($event) {
-			$event->return = $this->wire('pages')->get('template=api-ajax,ajaxcode=freight-codes')->url;
+			$event->return = $this->wire('modules')->get('DpagesApi')->lookupURL('freight-codes');
 		});
 	}
 }
