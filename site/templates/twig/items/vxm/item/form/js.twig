@@ -254,26 +254,8 @@ $(function() {
 			},
 			vendoritemID: {
 				required: true,
-				remote: {
-					url: '{{ url_validate }}',
-					type: "get",
-					data: {
-						action: function() {
-							var input = $('input[name=vendoritemID]');
-
-							if (input.val() == input.data('vendoritemid') && input.data('new') !== true) {
-								return 'validate-xref';
-							} else {
-								return 'validate-xref-new';
-							}
-						},
-						vendorID: function() {
-							return $('input[name=vendorID]').val();
-						},
-						itemID: function() {
-							return $('input[name=itemID]').val();
-						},
-					}
+				remote: function() {
+					validate_xref_remote_obj();
 				}
 			},
 			itemID: {
@@ -300,6 +282,25 @@ $(function() {
 			update_vxm(form);
 		}
 	});
+
+	function validate_xref_remote_obj() {
+		var url = '{{ page.jsonapiURL('map/validate/vendorid/') }}';
+		url += (input.val() != input.data('vendoritemid') && input.data('new') === true) ? 'new/' : '';
+
+		return {
+			url: url,
+			type: "get",
+			data: {
+				vendorID: function() {
+					return $('input[name=vendorID]').val();
+				},
+				itemID: function() {
+					return $('input[name=itemID]').val();
+				},
+			}
+		}
+
+	}
 
 	function update_vxm(form) {
 		validate_xref(function(valid) {
