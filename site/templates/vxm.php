@@ -31,7 +31,7 @@
 
 	if ($values->vendorID) {
 		$vendorID = $values->text('vendorID');
-		$validater = new Dplus\CodeValidators\Map;
+		$validate = new Dplus\CodeValidators\Map;
 		$vendor = VendorQuery::create()->findOneById($vendorID);
 		$filter_vxm->filter_input($input);
 
