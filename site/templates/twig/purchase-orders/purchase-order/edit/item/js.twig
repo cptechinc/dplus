@@ -7,9 +7,9 @@
 $(function () {
 	var modal_edit    = $('#edit-item-modal');
 	var modal_ajax    = $('#ajax-modal');
-	var form_edit = $('#edit-item-form');
-	var form_add  = $('#add-item-form');
-	var items = {{ epo.items.get_details_array(page.ponbr)|json_encode()|raw }};
+	var form_edit     = $('#edit-item-form');
+	var form_add      = $('#add-item-form');
+	var items = {{ epo.items.get_details_array(page.wire('input').get.text('ponbr'))|json_encode()|raw }};
 	var decimal_places_qty = {{ epo.configs.decimal_places_qty() }};
 	var decimal_places_cost = {{ epo.configs.decimal_places_cost() }};
 
@@ -65,7 +65,7 @@ $(function () {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	var validator = form_edit.validate({
+	var validator_edit = form_edit.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -87,14 +87,14 @@ $(function () {
 			vendoritemID: {
 				required: false,
 				remote: {
-					url: '{{ page.jsonapiURL('map/validate/vxm/itemid/') }}',
+					url: '{{ page.jsonapiURL('map/validate/vxm/vendoritemid-itemid/') }}',
 					type: "get",
 					data: {
 						itemID: function() {
 							return $('#edititemID').val();
 						},
-						vendorID: function() {
-							return $('#vendorID').val();
+						vendoritemID: function() {
+							return $('#vendoritemID').val();
 						}
 					}
 				}
@@ -127,7 +127,7 @@ $(function () {
 		});
 
 
-		if (validator.element('#'+input.attr('id'))) {
+		if (validator_edit.element('#'+input.attr('id'))) {
 			get_itm_item(input.val(), function(item) {
 				var ele_description = input.closest('.item-col').find('.description');
 				if (ele_description.prop('tagName').toLowerCase() == 'input') {
@@ -161,7 +161,7 @@ $(function () {
 				}
 			}
 		});
-		validator.element('#'+input.attr('id'));
+		validator_edit.element('#'+input.attr('id'));
 	});
 
 /* =============================================================
