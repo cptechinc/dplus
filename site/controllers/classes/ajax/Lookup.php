@@ -1,8 +1,10 @@
 <?php namespace Controllers\Ajax;
 
 use ProcessWire\Module, ProcessWire\ProcessWire;
-
 use Mvc\Controllers\AbstractController;
+
+use Dplus\Filters\AbstractFilter as Filter;
+use Dplus\Filters\Misc\PhoneBook as PhoneBookFilter;
 
 class Lookup extends AbstractController {
 	const FIELDS_LOOKUP = ['q' => ['sanitizer' => 'text']];
@@ -23,7 +25,7 @@ class Lookup extends AbstractController {
 		$filter = $wire->wire('modules')->get('FilterInvTariffCodes');
 		$filter->init_query();
 		$page->headline = "Tariff Codes";
-		self::filterResults($filter, $wire, $data);
+		self::moduleFilterResults($filter, $wire, $data);
 	}
 
 	/**
@@ -39,7 +41,7 @@ class Lookup extends AbstractController {
 		$filter = $wire->wire('modules')->get('FilterInvMsdsCodes');
 		$filter->init_query();
 		$page->headline = "Msds Codes";
-		self::filterResults($filter, $wire, $data);
+		self::moduleFilterResults($filter, $wire, $data);
 	}
 
 	/**
@@ -55,7 +57,7 @@ class Lookup extends AbstractController {
 		$filter = $wire->wire('modules')->get('FilterMsoFreightCodes');
 		$filter->init_query();
 		$page->headline = "Freight Codes";
-		self::filterResults($filter, $wire, $data);
+		self::moduleFilterResults($filter, $wire, $data);
 	}
 
 	/**
@@ -72,7 +74,7 @@ class Lookup extends AbstractController {
 		$filter = $wire->wire('modules')->get('FilterXrefItemVxm');
 		$filter->init_query();
 		$page->headline = "VXM";
-		self::filterResults($filter, $wire, $data);
+		self::moduleFilterResults($filter, $wire, $data);
 	}
 
 	/**
@@ -88,7 +90,7 @@ class Lookup extends AbstractController {
 		$filter = $wire->wire('modules')->get('FilterWarehouses');
 		$filter->init_query();
 		$page->headline = "Warehouses";
-		self::filterResults($filter, $wire, $data);
+		self::moduleFilterResults($filter, $wire, $data);
 	}
 
 	/**
@@ -104,7 +106,7 @@ class Lookup extends AbstractController {
 		$filter = $wire->wire('modules')->get('FilterDplusUsers');
 		$filter->init_query();
 		$page->headline = "Users";
-		self::filterResults($filter, $wire, $data);
+		self::moduleFilterResults($filter, $wire, $data);
 	}
 
 	/**
@@ -120,7 +122,17 @@ class Lookup extends AbstractController {
 		$filter = $wire->wire('modules')->get('FilterVendors');
 		$filter->init_query(self::pw('user'));
 		$page->headline = "Users";
-		self::filterResults($filter, $wire, $data);
+		self::moduleFilterResults($filter, $wire, $data);
+	}
+
+	public static function vendorContacts($data) {
+		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		$data = self::sanitizeParametersShort($data, ['vendorID|text']);
+		$page = self::pw('page');
+		$filter = new PhoneBookFilter();
+		$filter->init();
+		$page->headline = "Vendor Contacts";
+		self::filterResults($filter, $data);
 	}
 
 	/**
@@ -135,10 +147,10 @@ class Lookup extends AbstractController {
 		$filter = $wire->wire('modules')->get('FilterItemMaster');
 		$filter->init_query();
 		$wire->wire('page')->headline = "Item Master";
-		self::filterResults($filter, $wire, $data);
+		self::moduleFilterResults($filter, $wire, $data);
 	}
 
-	private static function filterResults(Module $filter, ProcessWire $wire, $data) {
+	private static function moduleFilterResults(Module $filter, ProcessWire $wire, $data) {
 		$input = $wire->wire('input');
 		$page = $wire->wire('page');
 		$filter->filter_input($wire->wire('input'));
@@ -155,5 +167,26 @@ class Lookup extends AbstractController {
 		$path = $input->urlSegment(count($input->urlSegments()));
 		$page->body .= $wire->wire('config')->twig->render("api/lookup/$path/search.twig", ['results' => $results, 'datamatcher' => $wire->wire('modules')->get('RegexData'), 'q' => $data->q]);
 		$page->body .= $wire->wire('config')->twig->render('util/paginator.twig', ['resultscount'=> $results->getNbResults() != $query->count() ? $query->count() : $results->getNbResults()]);
+	}
+
+	private static function filterResults(Filter $filter, $data) {
+		$input = self::pw('input');
+		$page  = self::pw('page');
+		$filter->filterInput(self::pw('input'));
+
+		if ($data->q) {
+			$filter->search($data->q);
+			$page->headline = "Searching for '$data->q'";
+		}
+
+		$filter->sortby($page);
+		$query   = $filter->query;
+		$results = $query->paginate($input->pageNum, 10);
+
+		$path = $input->urlSegment(count($input->urlSegments()));
+
+		$path = rtrim(str_replace($page->url, '', self::pw('input')->url()), '/');
+		$page->body .= self::pw('config')->twig->render("api/lookup/$path/search.twig", ['results' => $results, 'datamatcher' => self::pw('modules')->get('RegexData'), 'q' => $data->q]);
+		$page->body .= self::pw('config')->twig->render('util/paginator.twig', ['resultscount'=> $results->getNbResults() != $query->count() ? $query->count() : $results->getNbResults()]);
 	}
 }
