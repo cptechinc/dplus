@@ -1,0 +1,40 @@
+<table id="vendor-contact-index" class="table table-bordered table-smd">
+	<thead>
+		<tr>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('vendorID') }}" class="link">Vendor</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('name') }}" class="link">Contact</a>
+			</th>
+			<th scope="col">Email</th>
+			<th scope="col">Phone</th>
+			<th scope="col">Fax</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if results.count() %}
+			{% for contact in results %}
+				<tr>
+					<td scope="row">
+						{{ contact.vendorid }}  {{ contact.shipfromid ? '- ' ~ contact.shipfromid : '' }}
+					</td>
+					<td>
+						<a href="#" class="link vendor-contact-link" data-vendorid="{{ contact.vendorid }}" data-shipfromid="{{ contact.shipfromidid }}" data-contact="{{ contact.contact }}">
+							<strong>{{ contact.contact ? contact.contact : '(blank)' }}</strong>
+						</a>
+					</td>
+					<td>{{ contact.email }}</td>
+					<td>{{ contact.phone|phone_us }}</td>
+					<td>{{ contact.fax|phone_us }}</td>
+				</tr>
+			{% endfor %}
+		{% else %}
+			<tr>
+				<td colspan="7" class="bg-secondary text-white text-center">
+					No Results found
+				</td>
+			</tr>
+		{% endif %}
+	</tbody>
+</table>
