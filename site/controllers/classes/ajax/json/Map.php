@@ -7,6 +7,7 @@ use Mvc\Controllers\AbstractController;
 use ItemXrefVendorQuery, ItemXrefVendor;
 use PurchaseOrderDetailQuery, PurchaseOrderDetail;
 use PurchaseOrderQuery, PurchaseOrder;
+use PhoneBookQuery, PhoneBook;
 
 use Dplus\CodeValidators\Map       as MapValidator;
 use Dplus\CodeValidators\Map\Vxm   as VxmValidator;
@@ -112,6 +113,29 @@ class Map extends AbstractController {
 		return "MXRFE X-ref exists";
 	}
 
+	public static function getVendorContact($data) {
+		$fields = ['vendorID|text', 'shipfromID|text', 'contact|text'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$q = new PhoneBookQuery();
+		$q->filterByVendorid($data->vendorID);
+		$q->filterByType([PhoneBook::TYPE_VENDOR, PhoneBook::TYPE_VENDORCONTACT]);
+		$q->filterByShipfromid($data->shipfromID);
+		$q->filterByContact($data->contact);
+		if ($q->count() === false) {
+			return false;
+		}
+		$c = $q->findOne();
+		$response = [
+			'vendorid'   => $c->vendorid,
+			'shipfromid' => $c->shipfromid,
+			'contact'    => $c->contact,
+			'phone'      => $c->phone,
+			'extension'  => $c->extension,
+			'fax'        => $c->fax
+		];
+		return $response;
+	}
+
 	public function getPoItem($data) {
 		$fields = ['ponbr|text', 'linenbr|int'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -143,5 +167,6 @@ class Map extends AbstractController {
 				'weight'   => number_format($line->itm->weight, $configs->decimal_places_qty())
 			]
 		];
+		return $response;
 	}
 }
