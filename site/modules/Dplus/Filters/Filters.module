@@ -1,31 +1,8 @@
 <?php namespace ProcessWire;
 
+include_once(__DIR__.'/vendor/autoload.php');
+
 class Filters extends WireData implements Module {
-
-	const MODULE_ALIASES = array(
-		'salesorder' => 'FilterSalesOrders',
-		'sales-order' => 'FilterSalesOrders',
-		'saleshistory' => 'FilterSalesHistory',
-		'sales-history' => 'FilterSalesHistory',
-		'quote' => 'FilterQuotes',
-		'purchaseorder'  => 'FilterPurchaseOrder',
-		'purchase-order' => 'FilterPurchaseOrder',
-		'purchasehistory'  => 'FilterApInvoices',
-		'purchase-history' => 'FilterApInvoices',
-		'bookings' => 'FilterBookings',
-		'vendors'  => 'FilterVendors'
-	);
-
-	/**
-	 * Returns Filter Module
-	 * @param  string $module Filter Module Name
-	 * @return Module
-	 */
-	public function get_filter($module) {
-		$modules = $this->wire('modules');
-		$filter = self::MODULE_ALIASES[strtolower($module)];
-		return $modules->get($filter);
-	}
 
 	public function update() {
 		$info = self::getModuleInfo();
@@ -38,14 +15,9 @@ class Filters extends WireData implements Module {
 	}
 
 
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Filters Module',
