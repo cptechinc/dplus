@@ -1,6 +1,8 @@
 <?php namespace Dplus\CodeValidators\Mpo;
 
 use Dplus\CodeValidators\Mpo;
+use Dplus\CodeValidators\Map as MapValidator;
+use Dplus\CodeValidators\Mar as MarValidator;
 
 use PurchaseOrderQuery, PurchaseOrder;
 use ApInvoiceQuery, ApInvoice;
