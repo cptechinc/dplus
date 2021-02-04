@@ -163,7 +163,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 		} else {
 			$response = MpoResponse::response_error($values->text('ponbr'), "PO # $ponbr header was not updated");
 		}
-		$this->wire('session')->response_epo = $response;
+		$this->wire('session')->setFor('response', 'epo', $response);
 	}
 
 	/**
@@ -183,7 +183,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 		} else {
 			$response = MpoResponse::response_error('NEW', "Vendor $vendorID not found");
 		}
-		$this->wire('session')->response_epo = $response;
+		$this->wire('session')->setFor('response', 'epo', $response);
 	}
 
 	/**
@@ -224,7 +224,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 		} else {
 			$response = MpoResponse::response_error($values->text('ponbr'), "PO # $ponbr header was not updated");
 		}
-		$this->wire('session')->response_epo = $response;
+		$this->wire('session')->setFor('response', 'epo', $response);
 	}
 
 	/**
@@ -246,7 +246,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 		} else {
 			$response = MpoResponse::response_error($values->text('ponbr'), "PO # $ponbr header was not updated");
 		}
-		$this->wire('session')->response_epo = $response;
+		$this->wire('session')->setFor('response', 'epo', $response);
 	}
 
 	/**
