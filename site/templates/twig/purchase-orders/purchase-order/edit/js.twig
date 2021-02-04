@@ -39,6 +39,11 @@ $(function() {
 			case 'documents':
 				url = '{{ page.po_documentsURL(page.ponbr) }}';
 				break;
+			case 'vendor-contacts':
+				uri = URI(button.data('lookupurl'));
+				uri.setQuery('vendorID', $('input#vendorID').val());
+				url = uri.toString();
+				break;
 		}
 
 		modal.find('.modal-title').text(button.attr('title'));

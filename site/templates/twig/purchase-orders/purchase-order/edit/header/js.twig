@@ -50,7 +50,7 @@ $(function () {
 		modal.modal('hide');
 	});
 
-	$("body").on('click', '.vendor-link', function(e) {
+	$("body").on('click', '#ajax-modal .vendor-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
 		var vendorID = button.data('vendorid');
@@ -79,6 +79,17 @@ $(function () {
 		modal.modal('hide');
 	});
 
+	$("body").on('click', '#ajax-modal .vendor-contact-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal = button.closest('.modal');
+		var vendorID   = button.data('vendorid');
+		var shipfromID = button.data('shipfromid');
+		var contact = button.data('contact');
+		form_header.find('input[name=contact]').val(contact);
+		modal.modal('hide');
+	});
+
 	function get_vendor_address(vendorID, callback) {
 		var url = URI('{{ page.vi_jsonURL() }}');
 		url.setQuery('action', 'get-vendor-address');
@@ -86,6 +97,10 @@ $(function () {
 		$.getJSON(url.toString(), function(vendor) {
 			callback(vendor);
 		});
+	}
+
+	function get_contact_info(vendorID, shipfromID, contactID) {
+		var url = URI('{{ page.jsonapiURL('vendors/contact/') }}');
 	}
 
 /* =============================================================
