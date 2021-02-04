@@ -20,5 +20,7 @@
 		</a>
 	</div>
 </div>
-{% include 'purchase-orders/purchase-orders-list-links.twig' %}
+<div class="mb-3">
+	{% include 'purchase-orders/purchase-orders-list-links.twig' %}
+</div>
 {% include 'util/paginator.twig' with {'page': page, 'pagenbr': input.pageNum, 'resultscount': orders.getNbResults()} %}
