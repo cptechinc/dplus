@@ -6,7 +6,7 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	var validator = form_additem.validate({
+	var validator_add = form_additem.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -25,7 +25,7 @@ $(function() {
 					}
 				}
 			},
-			addqty: {
+			qty: {
 				required: true,
 				min: 1
 			}
@@ -107,7 +107,7 @@ $(function() {
 	$("body").on('change', '#add-item-form input[name=itemID]', function(e) {
 		var input = $(this);
 		validate_get_item();
-		validator.element('#'+input.attr('id'));
+		validator_add.element('#'+input.attr('id'));
 	});
 
 /* =============================================================
