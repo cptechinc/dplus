@@ -70,6 +70,20 @@ class Vxm extends MapValidator {
 	}
 
 	/**
+	 * Validate if Vendor Item ID matches Item ID
+	 * @param  string $vendoritemID Vendor Item ID
+	 * @param  string $itemID       Our Item ID
+	 * @return bool
+	 */
+	public function vendoritemid_matches_itemid($vendoritemID, $itemID) {
+		if ($this->itemid($itemID) === false) {
+			return false;
+		}
+		$q = ItemXrefVendorQuery::create()->filterByItemid($itemID)->filterByVendoritemid($vendoritemID);
+		return boolval($q->count());
+	}
+
+	/**
 	 * Validate if VXM X-ref exists
 	 * @param  string $vendorID     Vendor ID
 	 * @param  string $vendoritemID Vendor Item ID
