@@ -22,6 +22,7 @@
 				['GET', 'vendorid/', Json\Map::class, 'validateVendorid'],
 				['GET', 'vxm/', Json\Map::class, 'validateVxm'],
 				['GET', 'vxm/itemid/', Json\Map::class, 'validateVxmExistsForItemid'],
+				['GET', 'vxm/vendoritemid-itemid/', Json\Map::class, 'validateVendoritemMatchesItemid'],
 				['GET', 'mxrfe/', Json\Map::class, 'validateMxrfe'],
 				['GET', 'mxrfe/new/', Json\Map::class, 'validateMxrfeNew'],
 			],

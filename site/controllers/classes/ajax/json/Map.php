@@ -45,6 +45,13 @@ class Map extends AbstractController {
 		return $validate->vendor_has_xref_itemid($data->itemID, $data->vendorID);
 	}
 
+	public static function validateVendoritemMatchesItemid($data) {
+		$fields = ['vendoritemID|text', 'itemID|text'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$validate = new VxmValidator();
+		return $validate->vendoritemid_matches_itemid($data->vendoritemID, $data->itemID);
+	}
+
 	public static function getVxm($data) {
 		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
