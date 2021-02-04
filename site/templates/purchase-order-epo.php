@@ -1,6 +1,6 @@
 <?php
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
-	use Controllers\Mpo\Epo;
+	use Controllers\Mpo\EpoCreate as Epo;
 
 	$routes = [
 		['GET',  '', Epo::class, 'index'],
@@ -11,5 +11,5 @@
 	$router->setRoutePrefix($page->url);
 	$router->route();
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
-	$session->removeFor('response', 'kim');
+	$session->removeFor('response', 'epo');
 	include __DIR__ . "/basic-page.php";
