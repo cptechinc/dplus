@@ -408,7 +408,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 			if ($validate->$property($values->text($field['input']))) {
 				$setProperty = "set".ucfirst($property);
 				$po->$setProperty($values->text($field['input']));
-			} else {
+			} elseif (array_key_exists('allow_blank', $field) === false || $field['allow_blank'] === false) {
 				$invalid[$property] = $field['description'];
 			}
 		}
@@ -567,8 +567,8 @@ class PurchaseOrderEdit extends WireData implements Module {
 	 */
 	public function get_po_createURL($vendorID = '') {
 		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-epo')->url);
-		$url->query->set('ponbr', 'new');
 		if ($vendorID) {
+			$url->query->set('action', 'create-po');
 			$url->query->set('vendorID', $vendorID);
 		}
 		return $url->getUrl();
