@@ -398,7 +398,6 @@ class PurchaseOrderEdit extends WireData implements Module {
 			),
 			'exchange_country' => array(
 				'description'  => 'Currency Country Code',
-				'input'        => 'exchange_country'
 				'input'        => 'exchange_country',
 				'allow_blank'  => true,
 			),
