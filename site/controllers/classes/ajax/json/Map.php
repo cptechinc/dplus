@@ -125,31 +125,33 @@ class Map extends AbstractController {
 			return false;
 		}
 		$c = $q->findOne();
+		$sanitizer = self::pw('sanitizer');
 		$response = [
 			'vendorid'   => $c->vendorid,
 			'shipfromid' => $c->shipfromid,
 			'contact'    => $c->contact,
-			'phone'      => $c->phone,
+			'phone'      => $sanitizer->phoneus($c->phone),
 			'extension'  => $c->extension,
-			'fax'        => $c->fax
+			'fax'        => $sanitizer->phoneus($c->fax)
 		];
 		return $response;
 	}
 
-	public function getPoItem($data) {
+	public static function getPoItem($data) {
 		$fields = ['ponbr|text', 'linenbr|int'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$data->ponbr = PurchaseOrder::get_paddedponumber($data->ponbr);
-		$q = PurchaseOrderDetailQuery::create()->filterByPonbr($ponbr)->filterByLinenbr($linenbr);
+		$q = PurchaseOrderDetailQuery::create()->filterByPonbr($data->ponbr)->filterByLinenbr($data->linenbr);
 
 		if (boolval($q->count()) === false) {
 			return false;
 		}
 		$configs = self::pw('modules')->get('PurchaseOrderEditConfigs');
 		$configs->init_configs();
+		$line = $q->findOne();
 
 		$response = [
-			'linenbr'      => $linenbr,
+			'linenbr'      => $line->linenbr,
 			'itemid'       => $line->itemid,
 			'description'  => $line->description,
 			'vendoritemid' => $line->vendoritemid,
