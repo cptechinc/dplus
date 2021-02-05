@@ -18,6 +18,13 @@ class DplusSanitizer extends WireData implements Module {
 			$value = strtoupper($event->arguments(0));
 			$event->return = $value == 'Y' ? true : false;
 		});
+
+		$this->addHook('Sanitizer::phoneus', function(HookEvent $event) {
+			$sanitizer = $event->object;
+			$value = $event->arguments(0);
+			$phone = preg_replace('^\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$^', '$1-$2-$3' , $value);
+			$event->return = $phone;
+		});
 	}
 
 	public static function getModuleInfo() {
