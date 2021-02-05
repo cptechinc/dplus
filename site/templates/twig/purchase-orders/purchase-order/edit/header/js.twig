@@ -87,7 +87,15 @@ $(function () {
 		var shipfromID = button.data('shipfromid');
 		var contact = button.data('contact');
 		form_header.find('input[name=contact]').val(contact);
-		modal.modal('hide');
+		get_contact_info(vendorID, shipfromID, contact, function(contact) {
+			if (contact) {
+				form_header.find('input[name=phone]').val(contact.phone);
+				form_header.find('input[name=fax]').val(contact.fax);
+				form_header.find('input[name=email]').val(contact.email);
+				modal.modal('hide');
+			}
+		});
+
 	});
 
 	function get_vendor_address(vendorID, callback) {
@@ -99,8 +107,14 @@ $(function () {
 		});
 	}
 
-	function get_contact_info(vendorID, shipfromID, contactID) {
-		var url = URI('{{ page.jsonapiURL('vendors/contact/') }}');
+	function get_contact_info(vendorID, shipfromID, contact, callback) {
+		var url = URI('{{ page.jsonapiURL('map/vendor/contact/') }}');
+		url.setQuery('vendorID', vendorID);
+		url.setQuery('shipfromID', shipfromID);
+		url.setQuery('contact', contact);
+		$.getJSON(url.toString(), function(contact) {
+			callback(contact);
+		});
 	}
 
 /* =============================================================
