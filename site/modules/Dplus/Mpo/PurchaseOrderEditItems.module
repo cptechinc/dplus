@@ -18,6 +18,12 @@ include_once(__DIR__.'/MpoResponse.php');
  * @property string sessionID Session ID
  */
 class PurchaseOrderEditItems extends WireData implements Module {
+	const LINE_TYPES = [
+		'N' => 'normal stock',
+		'S' => 'special order',
+		'D' => 'drop ships'
+	];
+	
 	/**
 	 * Returns Query for Purchase Order Details Edit
 	 * @param  string $ponbr Purchase Order Number
@@ -245,7 +251,7 @@ class PurchaseOrderEditItems extends WireData implements Module {
 		$q->filterByLinenbr($linenbr);
 		return number_format($q->findOne(), $this->configs->decimal_places_qty());
 	}
-	
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
