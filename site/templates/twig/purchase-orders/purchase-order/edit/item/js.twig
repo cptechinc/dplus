@@ -25,20 +25,23 @@ $(function () {
 	});
 
 	function populate_item_inputs(linenbr) {
-		var item = items[linenbr];
-		var form = new EditItemForm(form_edit);
-		form.inputs.linenbr.val(linenbr);
-		form.inputs.itemID.val(item.itemid);
-		form.inputs.description.val(item.description);
-		form.inputs.vendoritemID.val(item.vendoritemid);
-		form.inputs.whse.val(item.whseid);
-		form.inputs.specialorder.val(item.specialorder);
-		form.inputs.uom.val(item.uom);
-		form.inputs.qty.ordered.val(parseFloat(item.qty.ordered).toFixed(decimal_places_qty));
-		form.inputs.qty.received.val(parseFloat(item.qty.received).toFixed(decimal_places_qty));
-		form.inputs.qty.invoiced.val(parseFloat(item.qty.invoiced).toFixed(decimal_places_qty));
-		form.inputs.cost.val(parseFloat(item.cost).toFixed(decimal_places_cost));
-		form.inputs.cost_total.val(parseFloat(item.cost_total).toFixed(decimal_places_cost));
+		get_po_line(linenbr, function(item) {
+			if (item) {
+				var form = new EditItemForm(form_edit);
+				form.inputs.linenbr.val(linenbr);
+				form.inputs.itemID.val(item.itemid);
+				form.inputs.description.val(item.description);
+				form.inputs.vendoritemID.val(item.vendoritemid);
+				form.inputs.whse.val(item.whseid);
+				form.inputs.specialorder.val(item.specialorder);
+				form.inputs.uom.val(item.uom);
+				form.inputs.qty.ordered.val(parseFloat(item.qty.ordered).toFixed(decimal_places_qty));
+				form.inputs.qty.received.val(parseFloat(item.qty.received).toFixed(decimal_places_qty));
+				form.inputs.qty.invoiced.val(parseFloat(item.qty.invoiced).toFixed(decimal_places_qty));
+				form.inputs.cost.val(parseFloat(item.cost).toFixed(decimal_places_cost));
+				form.inputs.cost_total.val(parseFloat(item.cost_total).toFixed(decimal_places_cost));
+			}
+		});
 	}
 
 	function EditItemForm(form) {
@@ -226,6 +229,15 @@ $(function () {
 
 		$.getJSON(url.toString(), function(xref) {
 			callback(xref);
+		});
+	}
+
+	function get_po_line(linenbr, callback) {
+		var url = URI('{{ page.jsonapiURL('map/po/item/') }}');
+		url.setQuery('ponbr', '{{ page.wire('input').get.text('ponbr') }}');
+		url.setQuery('linenbr', linenbr);
+		$.getJSON(url.toString(), function(item) {
+			callback(item);
 		});
 	}
 
