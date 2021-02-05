@@ -109,8 +109,6 @@ if (!$values->action || $page->template == 'dplus-screen-formatter') {
 	$config->scripts->append(hash_templatefile('scripts/main.js'));
 }
 
-
-
 // SET CONFIG PROPERTIES
 if ($input->get->modal) {
 	$config->modal = true;
