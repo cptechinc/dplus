@@ -56,7 +56,7 @@ class EpoCreate extends AbstractController {
 	public static function epoForms() {
 		$page = self::pw('page');
 		$config = self::pw('config');
-		$page->body .= $config->twig->render('purchase-orders/epo/lookup-form.twig');
+		$page->body .= $config->twig->render('purchase-orders/epo/form.twig');
 		$page->js   .= $config->twig->render('purchase-orders/epo/.js.twig');
 	}
 }

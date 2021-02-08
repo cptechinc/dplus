@@ -29,6 +29,7 @@
 			['GET', 'vxm/', Json\Map::class, 'getVxm'],
 			['GET', 'vxm/itemid/', Json\Map::class, 'getVxmByItemid'],
 			['GET', 'po/item/', Json\Map::class, 'getPoItem'],
+			['GET', 'vendor/', Json\Map::class, 'getVendor'],
 			['GET', 'vendor/contact/', Json\Map::class, 'getVendorContact'],
 		],
 		'mci' => [

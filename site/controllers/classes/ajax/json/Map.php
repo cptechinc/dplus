@@ -8,6 +8,7 @@ use ItemXrefVendorQuery, ItemXrefVendor;
 use PurchaseOrderDetailQuery, PurchaseOrderDetail;
 use PurchaseOrderQuery, PurchaseOrder;
 use PhoneBookQuery, PhoneBook;
+use VendorQuery, Vendor;
 
 use Dplus\CodeValidators\Map       as MapValidator;
 use Dplus\CodeValidators\Map\Vxm   as VxmValidator;
@@ -113,6 +114,21 @@ class Map extends AbstractController {
 		return "MXRFE X-ref exists";
 	}
 
+	public static function getVendor($data) {
+		$fields = ['vendorID|text'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$q = new VendorQuery();
+		if ($q->count() === 0) {
+			return false;
+		}
+		$v = $q->findOne();
+		$response = [
+			'vendorid'   => $v->vendorid,
+			'name'       => $v->name,
+		];
+		return $response;
+	}
+
 	public static function getVendorContact($data) {
 		$fields = ['vendorID|text', 'shipfromID|text', 'contact|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -121,7 +137,7 @@ class Map extends AbstractController {
 		$q->filterByType([PhoneBook::TYPE_VENDOR, PhoneBook::TYPE_VENDORCONTACT]);
 		$q->filterByShipfromid($data->shipfromID);
 		$q->filterByContact($data->contact);
-		if ($q->count() === false) {
+		if ($q->count() === 0) {
 			return false;
 		}
 		$c = $q->findOne();

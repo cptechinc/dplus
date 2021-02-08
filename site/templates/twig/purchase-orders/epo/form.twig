@@ -1,0 +1,33 @@
+<form action="" id="create-po-form">
+	<div class="row">
+		<div class="col-sm-1 form-group">
+			<label>PO Nbr</label>
+		</div>
+		<div class="col-sm-4 form-group">
+			<input type="text" class="form-control form-control-sm">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-1 form-group">
+			<label for="vendorID">Vendor ID</label>
+		</div>
+		<div class="col-sm-4 form-group">
+			{% include 'util/form/input-with-modal-lookup.twig' with {
+					'name': 'vendorID', 'value': item.vendorid,
+					'attributes': {},
+					'modaltarget': '#ajax-modal',
+					'modaldescription': 'Search for / Choose Vendor',
+					'attributes_button': {
+						'data-search': 'vendor',
+						'data-lookupurl': page.search_lookupURL('vendors'),
+						'data-input': '#vendorID'
+					}
+				}
+			%}
+			<small id="vendorname" class="form-text text-muted">{{ vendor.name }}</small>
+		</div>
+	</div>
+	<div>
+		<button type="submit" class="btn btn-success">Create</button>
+	</div>
+</form>

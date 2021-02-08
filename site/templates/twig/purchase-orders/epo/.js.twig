@@ -1,6 +1,16 @@
 $(function() {
 	var modal_ajax = $('#ajax-modal');
 
+	$('body').on('change', 'input[name=vendorID]', function() {
+		var input = $(this);
+
+		get_vendor(input.val(), function(vendor) {
+			if (vendor) {
+				$('#vendorname').text(vendor.name);
+			}
+		});
+	});
+
 /* =============================================================
 	AJAX Lookup Modal Functions
 ============================================================= */
@@ -54,7 +64,7 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	$('#create-po-form').validate({
+	var validator = $('#create-po-form').validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -76,4 +86,13 @@ $(function() {
 			form.submit();
 		}
 	});
+
+	function get_vendor(vendorID, callback) {
+		var url = URI('{{ page.jsonapiURL('map/vendor/') }}');
+		url.addQuery('vendorID', vendorID);
+
+		$.getJSON(url.toString(), function( vendor ) {
+			callback(vendor);
+		});
+	}
 });
