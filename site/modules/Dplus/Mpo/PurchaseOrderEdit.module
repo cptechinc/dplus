@@ -126,6 +126,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 				break;
 			case 'add-item':
 			case 'update-item':
+			case 'delete-item':
 				$this->items->process_input($input);
 				break;
 			case 'update-notes':
@@ -560,6 +561,19 @@ class PurchaseOrderEdit extends WireData implements Module {
 	}
 
 	/**
+	 * Return PO Documents URL
+	 * @param  string $ponbr  Purchase Order Number
+	 * @return string
+	 */
+	public function get_po_delete_itemURL($ponbr, $linenbr = 0) {
+		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-edit')->url);
+		$url->query->set('action', 'delete-item');
+		$url->query->set('ponbr', $ponbr);
+		$url->query->set('linenbr', $linenbr);
+		return $url->getUrl();
+	}
+
+	/**
 	 * Return URL to Create PO for Vendor
 	 * @param  string $vendorID Vendor ID
 	 * @return string
@@ -765,6 +779,12 @@ class PurchaseOrderEdit extends WireData implements Module {
 
 		$this->addHook("Page(pw_template=purchase-order-edit)::search_vxmURL", function($event) {
 			$event->return = $this->wire('modules')->get('DpagesApi')->lookupURL('vxm');;
+		});
+
+		$this->addHook('Page(pw_template=purchase-order-edit)::delete_itemURL', function($event) {
+			$ponbr    = $event->arguments(0);
+			$linenbr  = $event->arguments(1);
+			$event->return = $this->get_po_delete_itemURL($ponbr, $linenbr);
 		});
 
 		$this->addHook('Page(pw_template=purchase-order-epo)::choose_vendorURL', function($event) {

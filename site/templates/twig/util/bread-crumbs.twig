@@ -5,7 +5,7 @@
 				<li class="breadcrumb-item">
 					<a href="{{ parent.url }}">
 						<i class="fa fa-list" aria-hidden="true"></i>
-						{{ parent.has('dplus_function') ? parent.dplus_function|upper : parent.title }}
+						{{ parent.has('dplus_function') and parent.dplus_function|length ? parent.dplus_function|upper : parent.title }}
 					</a>
 				</li>
 			{% endfor %}

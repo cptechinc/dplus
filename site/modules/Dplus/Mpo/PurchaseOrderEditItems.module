@@ -23,7 +23,7 @@ class PurchaseOrderEditItems extends WireData implements Module {
 		'S' => 'special order',
 		'D' => 'drop ships'
 	];
-	
+
 	/**
 	 * Returns Query for Purchase Order Details Edit
 	 * @param  string $ponbr Purchase Order Number
@@ -66,6 +66,9 @@ class PurchaseOrderEditItems extends WireData implements Module {
 			case 'update-item':
 				$this->input_update_item($input);
 				break;
+			case 'delete-item':
+				$this->input_delete_item($input);
+				break;
 		}
 	}
 
@@ -87,6 +90,22 @@ class PurchaseOrderEditItems extends WireData implements Module {
 		} else {
 			$response = MpoResponse::response_error($values->text('ponbr'), $values->text('itemID') . ' was not added to PO');
 		}
+		$this->wire('session')->response_epo = $response;
+	}
+
+	/**
+	 * DELETE Purchase Order Item
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function input_delete_item(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$ponbr = $values->text('ponbr');
+		$linenbr = $values->int('linenbr');
+		$q = $this->get_query_details($ponbr);
+		$item = $q->findOneByLinenbr($linenbr);
+		// TODO
 		$this->wire('session')->response_epo = $response;
 	}
 
