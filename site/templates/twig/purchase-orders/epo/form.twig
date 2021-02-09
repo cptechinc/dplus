@@ -1,10 +1,12 @@
-<form action="" id="create-po-form">
+<form action="" id="create-po-form" method="post">
+	<input type="hidden" name="action" value="create-po">
+
 	<div class="row">
 		<div class="col-sm-1 form-group">
 			<label>PO Nbr</label>
 		</div>
 		<div class="col-sm-4 form-group">
-			<input type="text" class="form-control form-control-sm">
+			<input type="text" class="form-control form-control-sm" name="ponbr" id="ponbr">
 		</div>
 	</div>
 	<div class="row">
