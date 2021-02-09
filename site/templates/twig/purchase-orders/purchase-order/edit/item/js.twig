@@ -167,6 +167,49 @@ $(function () {
 		validator_edit.element('#'+input.attr('id'));
 	});
 
+	$("body").on('change', '#edit-item-modal input[name=cost]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var form = input.closest('form');
+		input.val(parseFloat(input.val()).toFixed({{ epo.configs.decimal_places_cost() }}));
+		calculate_totalcost(input.val(), form.find('input[name=qty_ordered]').val());
+	});
+
+	$("body").on('change', '#edit-item-modal input[name=cost_total]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var form = input.closest('form');
+		input.val(parseFloat(input.val()).toFixed({{ epo.configs.decimal_places_cost() }}));
+		calculate_cost(input.val(), form.find('input[name=qty_ordered]').val());
+	});
+
+	$("body").on('change', '#edit-item-modal input[name=qty_ordered]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var form = input.closest('form');
+		input.val(parseFloat(input.val()).toFixed({{ epo.configs.decimal_places_qty() }}));
+		calculate_totalcost(form.find('input[name=cost]').val(), input.val());
+	});
+
+/* =============================================================
+	Field Change Functions
+============================================================= */
+	function calculate_totalcost(cost, qty) {
+		cost = parseFloat(cost);
+		qty  = parseFloat(qty);
+		var total = parseFloat(cost * qty);
+		total = total.toFixed({{ epo.configs.decimal_places_cost() }});
+		$('#edit-item-modal form').find('input[name=cost_total]').val(total);
+	}
+
+	function calculate_cost(totalcost, qty) {
+		totalcost = parseFloat(totalcost);
+		qty  = parseFloat(qty);
+		var cost = parseFloat(totalcost / qty);
+		cost = cost.toFixed({{ epo.configs.decimal_places_cost() }});
+		$('#edit-item-modal form').find('input[name=cost]').val(cost);
+	}
+
 /* =============================================================
 	Lookup Modal Functions
 ============================================================= */
@@ -233,12 +276,11 @@ $(function () {
 	}
 
 	function get_po_line(linenbr, callback) {
-		var url = URI('{{ page.jsonapiURL('map/po/item/') }}');
+		var url = URI('{{ page.jsonapiURL('mpo/po/item/') }}');
 		url.setQuery('ponbr', '{{ page.wire('input').get.text('ponbr') }}');
 		url.setQuery('linenbr', linenbr);
 		$.getJSON(url.toString(), function(item) {
 			callback(item);
 		});
 	}
-
 });
