@@ -11,6 +11,19 @@ $(function() {
 		});
 	});
 
+	$('body').on('change', 'input[name=ponbr]', function() {
+		var input = $(this);
+
+		validate_ponbr(input.val(), function(valid) {
+			if (valid) {
+				var url = URI('{{ pages.get('pw_template=purchase-order-edit').url }}');
+				alert(input.val());
+				url.addQuery('ponbr', input.val());
+				window.location.href = url.toString();
+			}
+		});
+	});
+
 /* =============================================================
 	AJAX Lookup Modal Functions
 ============================================================= */
@@ -91,8 +104,17 @@ $(function() {
 		var url = URI('{{ page.jsonapiURL('map/vendor/') }}');
 		url.addQuery('vendorID', vendorID);
 
-		$.getJSON(url.toString(), function( vendor ) {
+		$.getJSON(url.toString(), function(vendor) {
 			callback(vendor);
+		});
+	}
+
+	function validate_ponbr(ponbr, callback) {
+		var url = URI('{{ page.jsonapiURL('mpo/validate/po/ponbr/') }}');
+		url.addQuery('ponbr', ponbr);
+
+		$.getJSON(url.toString(), function(valid) {
+			callback(valid);
 		});
 	}
 });
