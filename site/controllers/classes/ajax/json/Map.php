@@ -118,6 +118,7 @@ class Map extends AbstractController {
 		$fields = ['vendorID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$q = new VendorQuery();
+		$q->filterByVendorid($data->vendorID);
 		if ($q->count() === 0) {
 			return false;
 		}
