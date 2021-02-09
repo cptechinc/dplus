@@ -28,6 +28,15 @@ class FilterVendors extends WireData implements Module {
 		$this->query = VendorQuery::create();
 	}
 
+	/**
+	 * Filter Query with Input Data
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function filter_input(WireInput $input) {
+
+	}
+
 /* =============================================================
 	Base Filter Functions
 ============================================================= */
