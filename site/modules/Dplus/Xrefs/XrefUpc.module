@@ -183,7 +183,7 @@ class XrefUpc extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$upc = $values->text('upc');
-		$record = $this->xref($upc);
+		$record = $this->get_create_xref($upc);
 
 		if (!$this->lockrecord($upc) && !$record->isNew()) {
 			$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($upc);
