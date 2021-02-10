@@ -7,6 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
 {
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Controllers\\Ajax\\Json\\Map' => __DIR__ . '/../..' . '/classes/ajax/json/Map.php',
         'Controllers\\Ajax\\Json\\Mci' => __DIR__ . '/../..' . '/classes/ajax/json/Mci.php',
         'Controllers\\Ajax\\Json\\Min' => __DIR__ . '/../..' . '/classes/ajax/json/Min.php',
@@ -15,6 +16,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Ajax\\Json\\Mso' => __DIR__ . '/../..' . '/classes/ajax/json/Mso.php',
         'Controllers\\Ajax\\Lookup' => __DIR__ . '/../..' . '/classes/ajax/Lookup.php',
         'Controllers\\Map\\Mxrfe' => __DIR__ . '/../..' . '/classes/map/Mxrfe.php',
+        'Controllers\\Mar\\Spm' => __DIR__ . '/../..' . '/classes/mar/Spm.php',
         'Controllers\\Min\\Itm\\ItmFunction' => __DIR__ . '/../..' . '/classes/min/itm/ItmFunction.php',
         'Controllers\\Min\\Itm\\Xrefs\\Upcx' => __DIR__ . '/../..' . '/classes/min/itm/xrefs/Upcx.php',
         'Controllers\\Min\\Upcx' => __DIR__ . '/../..' . '/classes/min/Upcx.php',
