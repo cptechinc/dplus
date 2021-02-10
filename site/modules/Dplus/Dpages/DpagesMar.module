@@ -36,6 +36,10 @@ class DpagesMar extends Dpages implements Module {
 			'name'   => 'ar-code-table-crcd-validate',
 			'fields' => array()
 		),
+		'spm' => array(
+			'name'   => 'spm',
+			'fields' => array()
+		),
 	);
 
 	const PAGES = array(
@@ -172,6 +176,15 @@ class DpagesMar extends Dpages implements Module {
 			'summary'        => 'JSON validation for CRCD',
 			'parent'         => '/mar/armain/crcd/',
 			'dplus_function' => ''
+		),
+		'spm' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'spm',
+			'name'           => 'spm',
+			'title'          => 'Sales Person Maintenance',
+			'summary'        => 'View / Edit Sales People',
+			'parent'         => '/mar/armain/',
+			'dplus_function' => 'spm'
 		),
 	);
 
