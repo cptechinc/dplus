@@ -1,0 +1,85 @@
+<?php namespace ProcessWire;
+
+use SalesPersonQuery, SalesPerson;
+
+/**
+ * Spm
+ *
+ * Parent Module to Install Sub Spm Modules
+ */
+class Spm extends WireData implements Module {
+	const MODEL              = 'SalesPerson';
+	const MODEL_KEY          = 'id';
+	const DESCRIPTION        = 'SPM';
+	const RESPONSE_TEMPLATE  = 'Sales Person {key} was {not} {crud}';
+	const RECORDLOCKER_FUNCTION   = 'spm';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Returns SalesPersonQuery
+	 * @return SalesPersonQuery
+	 */
+	public function query() {
+		return SalesPersonQuery::create();
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	public function exists($id) {
+		$q = $this->query();
+		$q->filterById($id);
+		return boolval($q->count());
+	}
+
+	public function salesperson($id) {
+		$q = $this->query();
+		$q->filterById($id);
+		return $q->findOne();
+	}
+
+	public function get_create($id) {
+		if ($this->exists($id)) {
+			return $this->salesperson($id);
+		}
+		$id = $id == 'new' ? '' : $id;
+		$sp = new SalesPerson();
+		$sp->setId($id);
+		return $sp;
+	}
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Lock Record, validate User is locking Record
+	 * @param  string $id  SalesPerson ID
+	 * @return bool
+	 */
+	public function lockrecord($id) {
+		if (!$this->recordlocker->function_locked($id)) {
+			$this->recordlocker->create_lock($id);
+		}
+		return $this->recordlocker->function_locked_by_user($id);
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public function init() {
+		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
+		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
+	}
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Spm',
+			'version' => 101,
+			'summary' => 'Handles Spm CRUD',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+}
