@@ -22,4 +22,17 @@ class SalesPerson extends AbstractFilter {
 		];
 		$this->query->search_filter($columns, strtoupper($q));
 	}
+
+/* =============================================================
+	Misc Query Functions
+============================================================= */
+	/**
+	 * Return Position of SalesPerson in results
+	 * @param  SalesPersonClass $item SalesPerson
+	 * @return int
+	 */
+	public function position(SalesPersonClass $p) {
+		$people = $this->query->find();
+		return $people->search($p);
+	}
 }
