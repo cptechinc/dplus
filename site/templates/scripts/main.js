@@ -389,14 +389,14 @@ function format_phone(input) {
 	JS Prototype FUNCTIONS
 =============================================================*/
 function floatParse(num) {
-	if (num.indexOf(',')) {
+	if (typeof num != 'number' && num.indexOf(',')) {
 		num = num.replace(",", '');
 	}
 	return parseFloat(num);
 }
 
 function intParse(num) {
-	if (num.indexOf(',')) {
+	if (typeof num != 'number' && num.indexOf(',')) {
 		num = num.replace(",", '');
 	}
 	return parseInt(num);
