@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Controllers\\Ajax\\Json\\Map' => $baseDir . '/classes/ajax/json/Map.php',
+    'Controllers\\Ajax\\Json\\Mar' => $baseDir . '/classes/ajax/json/Mar.php',
     'Controllers\\Ajax\\Json\\Mci' => $baseDir . '/classes/ajax/json/Mci.php',
     'Controllers\\Ajax\\Json\\Min' => $baseDir . '/classes/ajax/json/Min.php',
     'Controllers\\Ajax\\Json\\Mki' => $baseDir . '/classes/ajax/json/Mki.php',

@@ -44,7 +44,8 @@ class Spm extends AbstractController {
 		$spm  = self::pw('modules')->get('Spm');
 		$person = $spm->get_create($data->id);
 		self::lockUser($spm, $person);
-		$page->body .= self::pw('config')->twig->render('mar/armain/spm/form/page.twig', ['person' => $person]);
+		$page->body .= self::pw('config')->twig->render('mar/armain/spm/form/page.twig', ['person' => $person, 'spm' => $spm]);
+		$page->js   .= self::pw('config')->twig->render('mar/armain/spm/form/.js.twig');
 	}
 
 	private static function lockUser(SpmManager $spm, SalesPerson $person) {

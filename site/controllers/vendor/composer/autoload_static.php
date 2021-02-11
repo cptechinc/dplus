@@ -9,6 +9,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Controllers\\Ajax\\Json\\Map' => __DIR__ . '/../..' . '/classes/ajax/json/Map.php',
+        'Controllers\\Ajax\\Json\\Mar' => __DIR__ . '/../..' . '/classes/ajax/json/Mar.php',
         'Controllers\\Ajax\\Json\\Mci' => __DIR__ . '/../..' . '/classes/ajax/json/Mci.php',
         'Controllers\\Ajax\\Json\\Min' => __DIR__ . '/../..' . '/classes/ajax/json/Min.php',
         'Controllers\\Ajax\\Json\\Mki' => __DIR__ . '/../..' . '/classes/ajax/json/Mki.php',
