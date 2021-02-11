@@ -1,0 +1,12 @@
+<div class="card">
+	<div class="card-header">
+		{% if (person.isNew()) %}
+			New Sales Person
+		{% else %}
+			<strong>ID:</strong> {{ person.id }} - {{ person.name }}
+		{% endif %}
+	</div>
+	<div class="card-body">
+		{% include 'mar/armain/spm/form/form.twig' %}
+	</div>
+</div>
