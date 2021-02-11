@@ -1,0 +1,6 @@
+$(function() {
+	{% if page.wire('input').get.offsetExists('focus') %}
+		$('tr[data-id="{{ page.wire('input').get.text('focus') }}"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('[data-id="{{ page.wire('input').get.text('focus') }}"]').offset().top,},700,'linear');
+	{% endif %}
+});

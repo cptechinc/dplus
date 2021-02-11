@@ -1,0 +1,17 @@
+<form action="{{ page.url }}" method="get" class="allow-enterkey-submit">
+	<div class="input-group form-group">
+		<input class="form-control form-group inline" type="text" name="q" value="{{ q }}" placeholder="Search ID, name, email, etc." autofocus>
+		<span class="input-group-btn">
+			<button type="submit" class="btn btn-light">
+				<i class="fa fa-search"></i> <span class="sr-only">Search</span>
+			</button>
+		</span>
+	</div>
+	{% if q %}
+		<div class="form-group">
+			<a href="{{ page.url }}" class="btn btn-warning">
+				<i class="fa fa-times" aria-hidden="true"></i> Clear Search
+			</a>
+		</div>
+	{% endif %}
+</form>
