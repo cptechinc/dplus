@@ -29,6 +29,12 @@
 			['GET', 'vxm/itemid/', Json\Map::class, 'getVxmByItemid'],
 			['GET', 'po/item/', Json\Map::class, 'getPoItem'],
 		],
+		'mar' => [
+			'validate' => [
+				['GET', 'salespersonid/', Json\Mar::class, 'validateSalesPersonId'],
+				['GET', 'salesgroupid/', Json\Mar::class, 'validateSalesGroupid'],
+			],
+		],
 		'mci' => [
 			'validate' => [
 				['GET', 'custid/', Json\Mci::class, 'validateCustid'],
