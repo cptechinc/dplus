@@ -34,6 +34,7 @@ class TwigInputGroup extends TwigBaseHtml {
 		if (in_array($this->size, self::SIZES)) {
 			$class .= " $base-$this->size";
 		}
+		$class .= ' ' . implode(' ', $this->addclasses);
 		return trim($class);
 	}
 

@@ -1,0 +1,2 @@
+{% set tinput = twigtextarea(textarea) %}
+<textarea name="{{ tinput.name }}" id="{{ tinput.id() }}" class="{{ tinput.class() }}" {{ tinput.attributes()|raw }}>{{ tinput.value }}</textarea>

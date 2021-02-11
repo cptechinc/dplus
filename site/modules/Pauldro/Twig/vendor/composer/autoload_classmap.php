@@ -6,10 +6,14 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Twig\\Html\\TwigBaseHtml' => $baseDir . '/classes/BaseHtml.php',
     'Twig\\Html\\TwigButton' => $baseDir . '/classes/Button.twig.php',
+    'Twig\\Html\\TwigDatePicker' => $baseDir . '/classes/DatePicker.twig.php',
     'Twig\\Html\\TwigInput' => $baseDir . '/classes/Input.twig.php',
     'Twig\\Html\\TwigInputGroup' => $baseDir . '/classes/InputGroup.twig.php',
     'Twig\\Html\\TwigInputGroupSpan' => $baseDir . '/classes/InputGroupSpan.twig.php',
     'Twig\\Html\\TwigLink' => $baseDir . '/classes/Link.twig.php',
+    'Twig\\Html\\TwigSelectSimple' => $baseDir . '/classes/SelectSimple.twig.php',
+    'Twig\\Html\\TwigTextarea' => $baseDir . '/classes/Textarea.twig.php',
 );
