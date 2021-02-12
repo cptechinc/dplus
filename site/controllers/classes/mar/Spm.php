@@ -29,10 +29,11 @@ class Spm extends AbstractController {
 		$input = self::pw('input');
 
 		if ($data->action) {
-			$mxrfe = self::pw('modules')->get('XrefUpc');
-			$mxrfe->process_input($input);
+			$spm = self::pw('modules')->get('Spm');
+			$spm->process_input($input);
 		}
-		self::pw('session')->redirect(self::pw('page')->upcURL($data->upc), $http301 = false);
+
+		self::pw('session')->redirect(self::pw('page')->redirectURL(), $http301 = false);
 	}
 
 	public static function salesperson($data) {
