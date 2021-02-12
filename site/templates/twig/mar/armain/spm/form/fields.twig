@@ -8,7 +8,8 @@
 					'name': 'id', 'value': person.id,
 					'size': 'sm',
 					'attributes': {
-
+						'readonly': person.id ? true : false,
+						'tabindex': person.id ? '-1' : '',
 					}
 				}
 			}
@@ -53,7 +54,7 @@
 	<div class="col-sm-6">
 		{% include 'util/bootstrap/form/input.twig' with {
 				'input': {
-					'name': 'id', 'value': person.cycle,
+					'name': 'cycle', 'value': person.cycle,
 					'size': 'sm',
 					'attributes': {
 						'maxlength': spm.field_attribute('cycle', 'maxlength')
@@ -129,7 +130,7 @@
 				'inputgroup': {
 					'input': {
 						'name': 'lastsaledate',
-						'value': person.lastsaledate,
+						'value': person.lastsaledate|convertdate,
 						'attributes': {
 							'placeholder': '',
 							'aria-label':  'Last Sales Date'
@@ -203,7 +204,7 @@
 	<div class="col-sm-6">
 		{% include 'util/bootstrap/form/input.twig' with {
 				'input': {
-					'name': 'id', 'value': person.email,
+					'name': 'email', 'value': person.email,
 					'type': 'email',
 					'size': 'sm'
 				}
