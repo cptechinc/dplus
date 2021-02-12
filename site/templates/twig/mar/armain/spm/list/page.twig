@@ -1,7 +1,9 @@
-{% include 'items/upcx/bread-crumbs.twig' %}
+{% block breadcrumbs %}
+	{% include 'mar/armain/spm/bread-crumbs.twig' %}
+{% endblock %}
 
-{% if session.getFor('response', 'upcx') %}
-	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'upcx')} %}
+{% if session.getFor('response', 'spm') %}
+	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'spm')} %}
 {% endif %}
 
 {% include 'mar/armain/spm/search-form.twig' with {'q' : page.input.get.text('q')} %}
