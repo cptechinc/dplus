@@ -8,6 +8,15 @@
 <div class="mb-3">
 	{% include 'purchase-orders/purchase-order/edit/links.twig' with {'page': page, 'ponbr': po.ponbr } %}
 </div>
+
+{% if session.getFor('response', 'epo') %}
+	{% include 'purchase-orders/purchase-order/edit/response.twig' with {'response': session.getFor('response', 'epo')} %}
+{% endif %}
+
+{% if session.get('response_qnotes') %}
+	{% include 'purchase-orders/purchase-order/edit/response.twig' with {'response': session.get('response_qnotes')} %}
+{% endif %}
+
 <div class="mb-3">
 	{% include 'purchase-orders/purchase-order/edit/header.twig' %}
 </div>

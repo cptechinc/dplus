@@ -22,12 +22,15 @@
 				['GET', 'vendorid/', Json\Map::class, 'validateVendorid'],
 				['GET', 'vxm/', Json\Map::class, 'validateVxm'],
 				['GET', 'vxm/itemid/', Json\Map::class, 'validateVxmExistsForItemid'],
+				['GET', 'vxm/vendoritemid-itemid/', Json\Map::class, 'validateVendoritemMatchesItemid'],
 				['GET', 'mxrfe/', Json\Map::class, 'validateMxrfe'],
 				['GET', 'mxrfe/new/', Json\Map::class, 'validateMxrfeNew'],
 			],
 			['GET', 'vxm/', Json\Map::class, 'getVxm'],
 			['GET', 'vxm/itemid/', Json\Map::class, 'getVxmByItemid'],
-			['GET', 'po/item/', Json\Map::class, 'getPoItem'],
+
+			['GET', 'vendor/', Json\Map::class, 'getVendor'],
+			['GET', 'vendor/contact/', Json\Map::class, 'getVendorContact'],
 		],
 		'mar' => [
 			'validate' => [
@@ -48,6 +51,12 @@
 				['GET', 'kit/component/', Json\Mki::class, 'validateKitComponent'],
 			],
 			['GET', 'kit/', Json\Mki::class, 'getKit'],
+		],
+		'mpo' => [
+			'validate' => [
+				['GET', 'po/ponbr/', Json\Mpo::class, 'validatePonbr'],
+			],
+			['GET', 'po/item/', Json\Mpo::class, 'getPoItem'],
 		],
 		'msa' => [
 			'validate' => [

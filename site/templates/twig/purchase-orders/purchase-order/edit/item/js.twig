@@ -7,9 +7,9 @@
 $(function () {
 	var modal_edit    = $('#edit-item-modal');
 	var modal_ajax    = $('#ajax-modal');
-	var form_edit = $('#edit-item-form');
-	var form_add  = $('#add-item-form');
-	var items = {{ epo.items.get_details_array(page.ponbr)|json_encode()|raw }};
+	var form_edit     = $('#edit-item-form');
+	var form_add      = $('#add-item-form');
+	var items = {{ epo.items.get_details_array(page.wire('input').get.text('ponbr'))|json_encode()|raw }};
 	var decimal_places_qty = {{ epo.configs.decimal_places_qty() }};
 	var decimal_places_cost = {{ epo.configs.decimal_places_cost() }};
 
@@ -25,20 +25,23 @@ $(function () {
 	});
 
 	function populate_item_inputs(linenbr) {
-		var item = items[linenbr];
-		var form = new EditItemForm(form_edit);
-		form.inputs.linenbr.val(linenbr);
-		form.inputs.itemID.val(item.itemid);
-		form.inputs.description.val(item.description);
-		form.inputs.vendoritemID.val(item.vendoritemid);
-		form.inputs.whse.val(item.whseid);
-		form.inputs.specialorder.val(item.specialorder);
-		form.inputs.uom.val(item.uom);
-		form.inputs.qty.ordered.val(parseFloat(item.qty.ordered).toFixed(decimal_places_qty));
-		form.inputs.qty.received.val(parseFloat(item.qty.received).toFixed(decimal_places_qty));
-		form.inputs.qty.invoiced.val(parseFloat(item.qty.invoiced).toFixed(decimal_places_qty));
-		form.inputs.cost.val(parseFloat(item.cost).toFixed(decimal_places_cost));
-		form.inputs.cost_total.val(parseFloat(item.cost_total).toFixed(decimal_places_cost));
+		get_po_line(linenbr, function(item) {
+			if (item) {
+				var form = new EditItemForm(form_edit);
+				form.inputs.linenbr.val(linenbr);
+				form.inputs.itemID.val(item.itemid);
+				form.inputs.description.val(item.description);
+				form.inputs.vendoritemID.val(item.vendoritemid);
+				form.inputs.whse.val(item.whseid);
+				form.inputs.specialorder.val(item.specialorder);
+				form.inputs.uom.val(item.uom);
+				form.inputs.qty.ordered.val(parseFloat(item.qty.ordered).toFixed(decimal_places_qty));
+				form.inputs.qty.received.val(parseFloat(item.qty.received).toFixed(decimal_places_qty));
+				form.inputs.qty.invoiced.val(parseFloat(item.qty.invoiced).toFixed(decimal_places_qty));
+				form.inputs.cost.val(parseFloat(item.cost).toFixed(decimal_places_cost));
+				form.inputs.cost_total.val(parseFloat(item.cost_total).toFixed(decimal_places_cost));
+			}
+		});
 	}
 
 	function EditItemForm(form) {
@@ -65,7 +68,7 @@ $(function () {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	var validator = form_edit.validate({
+	var validator_edit = form_edit.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -87,14 +90,14 @@ $(function () {
 			vendoritemID: {
 				required: false,
 				remote: {
-					url: '{{ page.jsonapiURL('map/validate/vxm/itemid/') }}',
+					url: '{{ page.jsonapiURL('map/validate/vxm/vendoritemid-itemid/') }}',
 					type: "get",
 					data: {
 						itemID: function() {
 							return $('#edititemID').val();
 						},
-						vendorID: function() {
-							return $('#vendorID').val();
+						vendoritemID: function() {
+							return $('#vendoritemID').val();
 						}
 					}
 				}
@@ -127,7 +130,7 @@ $(function () {
 		});
 
 
-		if (validator.element('#'+input.attr('id'))) {
+		if (validator_edit.element('#'+input.attr('id'))) {
 			get_itm_item(input.val(), function(item) {
 				var ele_description = input.closest('.item-col').find('.description');
 				if (ele_description.prop('tagName').toLowerCase() == 'input') {
@@ -161,8 +164,51 @@ $(function () {
 				}
 			}
 		});
-		validator.element('#'+input.attr('id'));
+		validator_edit.element('#'+input.attr('id'));
 	});
+
+	$("body").on('change', '#edit-item-modal input[name=cost]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var form = input.closest('form');
+		input.val(parseFloat(input.val()).toFixed({{ epo.configs.decimal_places_cost() }}));
+		calculate_totalcost(input.val(), form.find('input[name=qty_ordered]').val());
+	});
+
+	$("body").on('change', '#edit-item-modal input[name=cost_total]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var form = input.closest('form');
+		input.val(parseFloat(input.val()).toFixed({{ epo.configs.decimal_places_cost() }}));
+		calculate_cost(input.val(), form.find('input[name=qty_ordered]').val());
+	});
+
+	$("body").on('change', '#edit-item-modal input[name=qty_ordered]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var form = input.closest('form');
+		input.val(parseFloat(input.val()).toFixed({{ epo.configs.decimal_places_qty() }}));
+		calculate_totalcost(form.find('input[name=cost]').val(), input.val());
+	});
+
+/* =============================================================
+	Field Change Functions
+============================================================= */
+	function calculate_totalcost(cost, qty) {
+		cost = parseFloat(cost);
+		qty  = parseFloat(qty);
+		var total = parseFloat(cost * qty);
+		total = total.toFixed({{ epo.configs.decimal_places_cost() }});
+		$('#edit-item-modal form').find('input[name=cost_total]').val(total);
+	}
+
+	function calculate_cost(totalcost, qty) {
+		totalcost = parseFloat(totalcost);
+		qty  = parseFloat(qty);
+		var cost = parseFloat(totalcost / qty);
+		cost = cost.toFixed({{ epo.configs.decimal_places_cost() }});
+		$('#edit-item-modal form').find('input[name=cost]').val(cost);
+	}
 
 /* =============================================================
 	Lookup Modal Functions
@@ -229,4 +275,12 @@ $(function () {
 		});
 	}
 
+	function get_po_line(linenbr, callback) {
+		var url = URI('{{ page.jsonapiURL('mpo/po/item/') }}');
+		url.setQuery('ponbr', '{{ page.wire('input').get.text('ponbr') }}');
+		url.setQuery('linenbr', linenbr);
+		$.getJSON(url.toString(), function(item) {
+			callback(item);
+		});
+	}
 });

@@ -617,9 +617,9 @@ $(function() {
 	 * @param JqueryElement unitrow
 	 */
 	function update_unitrow_cost(unitrow) {
-		var input_unitqty = unitrow.find('.unit-qty');
+		var input_unitqty  = unitrow.find('.unit-qty');
 		var input_unitcost = unitrow.find('.unit-cost');
-		var input_margin = unitrow.find('.unit-margin');
+		var input_margin   = unitrow.find('.unit-margin');
 		var margin = parseFloat(input_margin.val()).truncate({{ vxm.field_attribute('unit_margin', 'precision') }});
 
 		input_margin.val(margin);

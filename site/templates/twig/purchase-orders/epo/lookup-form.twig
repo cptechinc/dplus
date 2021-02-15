@@ -11,9 +11,31 @@
 		<p class="h3 mt-3">-- OR --</p>
 	</div>
 	<div class="col-sm-4 ">
-		<label for=""><b>Create PO</b></label><br>
-		<a href="{{ page.url }}?ponbr=new" class="btn btn-secondary">
-			Create
-		</a>
+
+		<form action="" method="post" id="create-po-form">
+			<input type="hidden" name="action" value="create-po">
+			
+			<div class="form-group">
+				<label for="vendorID">Vendor ID</label>
+				{% include 'util/form/input-with-modal-lookup.twig' with {
+						'name': 'vendorID', 'value': item.vendorid,
+						'attributes': {
+							'readonly': item.vendorid ? true : false,
+							'tabindex': item.vendorid ? '-1' : ''
+						},
+						'modaltarget': '#ajax-modal',
+						'modaldescription': 'Search for / Choose Vendor',
+						'attributes_button': {
+							'data-input': '#vendorID',
+							'data-lookupurl': page.search_lookupURL('vendors'),
+							'title': 'Search / Choose Vendor'
+						}
+					}
+				%}
+			</div>
+			<button type="submit" class="btn btn-success">
+				Create
+			</button>
+		</form>
 	</div>
 </div>

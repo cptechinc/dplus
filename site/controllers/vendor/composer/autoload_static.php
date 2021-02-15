@@ -13,6 +13,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Ajax\\Json\\Mci' => __DIR__ . '/../..' . '/classes/ajax/json/Mci.php',
         'Controllers\\Ajax\\Json\\Min' => __DIR__ . '/../..' . '/classes/ajax/json/Min.php',
         'Controllers\\Ajax\\Json\\Mki' => __DIR__ . '/../..' . '/classes/ajax/json/Mki.php',
+        'Controllers\\Ajax\\Json\\Mpo' => __DIR__ . '/../..' . '/classes/ajax/json/Mpo.php',
         'Controllers\\Ajax\\Json\\Msa' => __DIR__ . '/../..' . '/classes/ajax/json/Msa.php',
         'Controllers\\Ajax\\Json\\Mso' => __DIR__ . '/../..' . '/classes/ajax/json/Mso.php',
         'Controllers\\Ajax\\Lookup' => __DIR__ . '/../..' . '/classes/ajax/Lookup.php',
@@ -22,6 +23,8 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Min\\Itm\\Xrefs\\Upcx' => __DIR__ . '/../..' . '/classes/min/itm/xrefs/Upcx.php',
         'Controllers\\Min\\Upcx' => __DIR__ . '/../..' . '/classes/min/Upcx.php',
         'Controllers\\Mki\\Kim' => __DIR__ . '/../..' . '/classes/mki/Kim.php',
+        'Controllers\\Mpo\\Epo' => __DIR__ . '/../..' . '/classes/mpo/Epo.php',
+        'Controllers\\Mpo\\EpoCreate' => __DIR__ . '/../..' . '/classes/mpo/EpoCreate.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
