@@ -94,6 +94,10 @@ class Spm extends WireData implements Module {
 		return $q->findOne();
 	}
 
+	/**
+	 * Return New Sales Person with default values
+	 * @return SalesPerson
+	 */
 	public function new() {
 		return SalesPerson::new();
 	}
@@ -324,6 +328,10 @@ class Spm extends WireData implements Module {
 		return $this->recordlocker->function_locked_by_user($id);
 	}
 
+	/**
+	 * Return Sales Groups
+	 * @return SalespersonGroupCode[]
+	 */
 	public function salesgroups() {
 		return SalespersonGroupCodeQuery::create()->find();
 	}
