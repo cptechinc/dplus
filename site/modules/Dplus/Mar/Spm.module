@@ -231,11 +231,6 @@ class Spm extends WireData implements Module {
 		$invalid = array();
 
 		$fields = array(
-			'id' => array(
-				'description' => 'Sales Person ID',
-				'input'       => 'id',
-				'function'    => 'salespersonid'
-			),
 			'groupid' => array(
 				'description' => 'Group',
 				'input'       => 'groupid',
@@ -252,6 +247,13 @@ class Spm extends WireData implements Module {
 				'function'    => 'vendorid'
 			),
 		);
+		if ($record->isNew() === false) {
+			$fields['id'] = array(
+				'description' => 'Sales Person ID',
+				'input'       => 'id',
+				'function'    => 'salespersonid'
+			);
+		}
 		$validator = $this->wire('modules')->get('InputValidator');
 		$validator->set_validator($validate)->set_input($input)->set_record($record)->set_validatefields($fields);
 		$invalid = $validator->validate();
