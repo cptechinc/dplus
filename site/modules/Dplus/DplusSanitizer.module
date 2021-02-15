@@ -1,4 +1,7 @@
 <?php namespace ProcessWire;
+
+use PurchaseOrder;
+
 /**
  * DplusSanitizer
  *
@@ -17,6 +20,20 @@ class DplusSanitizer extends WireData implements Module {
 			$sanitizer = $event->object;
 			$value = strtoupper($event->arguments(0));
 			$event->return = $value == 'Y' ? true : false;
+		});
+
+		$this->addHook('Sanitizer::phoneus', function(HookEvent $event) {
+			$sanitizer = $event->object;
+			$value = $event->arguments(0);
+			$phone = preg_replace('^\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$^', '$1-$2-$3' , $value);
+			$event->return = $phone;
+		});
+
+		$this->addHook('Sanitizer::ponbr', function(HookEvent $event) {
+			$sanitizer = $event->object;
+			$value = $event->arguments(0);
+			$ponbr = str_pad($value, PurchaseOrder::LENGTH , "0", STR_PAD_LEFT);
+			$event->return = $ponbr;
 		});
 	}
 

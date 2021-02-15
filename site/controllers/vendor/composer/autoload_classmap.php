@@ -10,6 +10,7 @@ return array(
     'Controllers\\Ajax\\Json\\Mci' => $baseDir . '/classes/ajax/json/Mci.php',
     'Controllers\\Ajax\\Json\\Min' => $baseDir . '/classes/ajax/json/Min.php',
     'Controllers\\Ajax\\Json\\Mki' => $baseDir . '/classes/ajax/json/Mki.php',
+    'Controllers\\Ajax\\Json\\Mpo' => $baseDir . '/classes/ajax/json/Mpo.php',
     'Controllers\\Ajax\\Json\\Msa' => $baseDir . '/classes/ajax/json/Msa.php',
     'Controllers\\Ajax\\Json\\Mso' => $baseDir . '/classes/ajax/json/Mso.php',
     'Controllers\\Ajax\\Lookup' => $baseDir . '/classes/ajax/Lookup.php',
@@ -18,4 +19,6 @@ return array(
     'Controllers\\Min\\Itm\\Xrefs\\Upcx' => $baseDir . '/classes/min/itm/xrefs/Upcx.php',
     'Controllers\\Min\\Upcx' => $baseDir . '/classes/min/Upcx.php',
     'Controllers\\Mki\\Kim' => $baseDir . '/classes/mki/Kim.php',
+    'Controllers\\Mpo\\Epo' => $baseDir . '/classes/mpo/Epo.php',
+    'Controllers\\Mpo\\EpoCreate' => $baseDir . '/classes/mpo/EpoCreate.php',
 );

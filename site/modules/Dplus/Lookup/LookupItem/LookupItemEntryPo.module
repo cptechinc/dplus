@@ -41,7 +41,7 @@ class LookupItemEntryPo extends LookupItem implements Module {
 
 		if (!$this->exists) {
 			$vendorID = $input->get->text('vendorID');
-			$this->validate_vxm($vendorID, $itemID);
+			//$this->validate_vxm($vendorID, $itemID);
 		}
 		return $this->data;
 	}

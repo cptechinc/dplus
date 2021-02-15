@@ -48,6 +48,11 @@
 						<button type="button" name="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit-item-modal" data-linenbr="{{ item.linenbr }}">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</button>
+
+						<a href="{{ item.qty_receipt() ? '#' : '' }}" class="btn btn-sm btn-danger" {{ item.qty_receipt() ? 'disabled' : '' }}>
+							<i class="fa fa-trash" aria-hidden="true"></i> Delete
+						</a>
+
 						<button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#notes-line-{{ item.linenbr }}" aria-expanded="false" aria-controls="notes-line-{{ item.linenbr }}">
 							<i class="fa fa-sticky-note" aria-hidden="true"></i> Notes
 						</button>

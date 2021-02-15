@@ -12,6 +12,8 @@
 
 include_once("./_func.php"); // include our shared functions
 
+$config->maxUrlSegments = 8;
+
 // BUILD AND INSTATIATE CLASSES
 $page->fullURL = new Purl\Url($page->httpUrl);
 $page->fullURL->path = '';
@@ -107,8 +109,6 @@ if (!$values->action || $page->template == 'dplus-screen-formatter') {
 	$config->scripts->append(hash_templatefile('scripts/main.js'));
 }
 
-
-
 // SET CONFIG PROPERTIES
 if ($input->get->modal) {
 	$config->modal = true;
@@ -139,7 +139,7 @@ if (!$values->action || $page->template == 'dplus-screen-formatter') {
 	$config->twigloader = $mtwig->getLoader();
 	$config->twig = $mtwig->getTwig();
 	$config->twig->getExtension(\Twig\Extension\CoreExtension::class)->setNumberFormat(3, '.', '');
-	
+
 	if ($page->fullURL->query->__toString() != '') {
 		$page->title_previous = $page->title;
 	}

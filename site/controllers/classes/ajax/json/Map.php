@@ -7,6 +7,8 @@ use Mvc\Controllers\AbstractController;
 use ItemXrefVendorQuery, ItemXrefVendor;
 use PurchaseOrderDetailQuery, PurchaseOrderDetail;
 use PurchaseOrderQuery, PurchaseOrder;
+use PhoneBookQuery, PhoneBook;
+use VendorQuery, Vendor;
 
 use Dplus\CodeValidators\Map       as MapValidator;
 use Dplus\CodeValidators\Map\Vxm   as VxmValidator;
@@ -43,6 +45,13 @@ class Map extends AbstractController {
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new VxmValidator();
 		return $validate->vendor_has_xref_itemid($data->itemID, $data->vendorID);
+	}
+
+	public static function validateVendoritemMatchesItemid($data) {
+		$fields = ['vendoritemID|text', 'itemID|text'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$validate = new VxmValidator();
+		return $validate->vendoritemid_matches_itemid($data->vendoritemID, $data->itemID);
 	}
 
 	public static function getVxm($data) {
@@ -105,20 +114,61 @@ class Map extends AbstractController {
 		return "MXRFE X-ref exists";
 	}
 
-	public function getPoItem($data) {
+	public static function getVendor($data) {
+		$fields = ['vendorID|text'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$q = new VendorQuery();
+		$q->filterByVendorid($data->vendorID);
+		if ($q->count() === 0) {
+			return false;
+		}
+		$v = $q->findOne();
+		$response = [
+			'vendorid'   => $v->vendorid,
+			'name'       => $v->name,
+		];
+		return $response;
+	}
+
+	public static function getVendorContact($data) {
+		$fields = ['vendorID|text', 'shipfromID|text', 'contact|text'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$q = new PhoneBookQuery();
+		$q->filterByVendorid($data->vendorID);
+		$q->filterByType([PhoneBook::TYPE_VENDOR, PhoneBook::TYPE_VENDORCONTACT]);
+		$q->filterByShipfromid($data->shipfromID);
+		$q->filterByContact($data->contact);
+		if ($q->count() === 0) {
+			return false;
+		}
+		$c = $q->findOne();
+		$sanitizer = self::pw('sanitizer');
+		$response = [
+			'vendorid'   => $c->vendorid,
+			'shipfromid' => $c->shipfromid,
+			'contact'    => $c->contact,
+			'phone'      => $sanitizer->phoneus($c->phone),
+			'extension'  => $c->extension,
+			'fax'        => $sanitizer->phoneus($c->fax)
+		];
+		return $response;
+	}
+
+	public static function getPoItem($data) {
 		$fields = ['ponbr|text', 'linenbr|int'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$data->ponbr = PurchaseOrder::get_paddedponumber($data->ponbr);
-		$q = PurchaseOrderDetailQuery::create()->filterByPonbr($ponbr)->filterByLinenbr($linenbr);
+		$q = PurchaseOrderDetailQuery::create()->filterByPonbr($data->ponbr)->filterByLinenbr($data->linenbr);
 
 		if (boolval($q->count()) === false) {
 			return false;
 		}
 		$configs = self::pw('modules')->get('PurchaseOrderEditConfigs');
 		$configs->init_configs();
+		$line = $q->findOne();
 
 		$response = [
-			'linenbr'      => $linenbr,
+			'linenbr'      => $line->linenbr,
 			'itemid'       => $line->itemid,
 			'description'  => $line->description,
 			'vendoritemid' => $line->vendoritemid,
@@ -136,5 +186,6 @@ class Map extends AbstractController {
 				'weight'   => number_format($line->itm->weight, $configs->decimal_places_qty())
 			]
 		];
+		return $response;
 	}
 }

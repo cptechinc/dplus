@@ -74,7 +74,9 @@
 	</div>
 	<div class="col-sm-8">
 		<select class="form-control form-control-sm" name="specialorder" id="specialorder">
-
+			{% for code, desc in constant('LINE_TYPES', epo.items) %}
+				<option value="{{ code }}">{{ desc|title }}</option>
+			{% endfor %}
 		</select>
 	</div>
 </div>

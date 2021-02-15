@@ -50,7 +50,7 @@ $(function () {
 		modal.modal('hide');
 	});
 
-	$("body").on('click', '.vendor-link', function(e) {
+	$("body").on('click', '#ajax-modal .vendor-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
 		var vendorID = button.data('vendorid');
@@ -79,12 +79,41 @@ $(function () {
 		modal.modal('hide');
 	});
 
+	$("body").on('click', '#ajax-modal .vendor-contact-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal = button.closest('.modal');
+		var vendorID   = button.data('vendorid');
+		var shipfromID = button.data('shipfromid');
+		var contact = button.data('contact');
+		form_header.find('input[name=contact]').val(contact);
+		get_contact_info(vendorID, shipfromID, contact, function(contact) {
+			if (contact) {
+				form_header.find('input[name=phone]').val(contact.phone);
+				form_header.find('input[name=fax]').val(contact.fax);
+				form_header.find('input[name=email]').val(contact.email);
+				modal.modal('hide');
+			}
+		});
+
+	});
+
 	function get_vendor_address(vendorID, callback) {
 		var url = URI('{{ page.vi_jsonURL() }}');
 		url.setQuery('action', 'get-vendor-address');
 		url.setQuery('vendorID', vendorID);
 		$.getJSON(url.toString(), function(vendor) {
 			callback(vendor);
+		});
+	}
+
+	function get_contact_info(vendorID, shipfromID, contact, callback) {
+		var url = URI('{{ page.jsonapiURL('map/vendor/contact/') }}');
+		url.setQuery('vendorID', vendorID);
+		url.setQuery('shipfromID', shipfromID);
+		url.setQuery('contact', contact);
+		$.getJSON(url.toString(), function(contact) {
+			callback(contact);
 		});
 	}
 
