@@ -207,6 +207,7 @@ class Spm extends WireData implements Module {
 		$response = new XrefResponse();
 		$response->set_action(XrefResponse::CRUD_UPDATE);
 		$invalidfields = $this->update_record_validated($record, $input);
+		$record->setName($values->text('name', ['maxlength' => $this->field_attribute('name', 'maxlength')]));
 		$record->setEmail($values->email('email'));
 		$record->setCycle($values->text('cycle', ['maxLength' => $this->field_attribute('cycle', 'maxlength')]));
 		$record->setManager($values->yn('manager'));
