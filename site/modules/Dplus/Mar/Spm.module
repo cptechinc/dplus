@@ -180,7 +180,7 @@ class Spm extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$id = $values->text('id');
-		$record = $this->salesperson($id);
+		$record = $this->get_create($id);
 
 		if (!$this->lockrecord($id) && !$record->isNew()) {
 			$message = self::DESCRIPTION_RECORD . " ($id)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($id);
