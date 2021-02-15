@@ -357,6 +357,37 @@ class XrefUpc extends WireData implements Module {
 	}
 
 	/**
+	 * Return URL to List the UPCs associated with the ItemID
+	 * @param  string $itemID Item ID
+	 * @return string
+	 */
+	public function get_upc_listURL($focus = '') {
+		if ($focus == '') {
+			return $this->wire('pages')->get("pw_template=upcx")->url;
+		}
+		return $this->get_upc_list_focusURL($focus);
+	}
+
+	public function get_upc_list_focusURL($focus = '') {
+		$page = $this->wire('pages')->get("pw_template=upcx");
+
+		if ($focus == '' || $this->xref_exists($focus) === false) {
+			return $page->url;
+		}
+
+		$url = new Url($page->url);
+		$xref = $this->xref($focus);
+		$filter = $this->wire->modules('FilterXrefItemUpc');
+		$offset = $filter->position($xref);
+		$pagenbr = ceil($offset / $this->wire('session')->display);
+		$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
+		$url->query->set('focus', $focus);
+		return $url->getUrl();
+	}
+
+
+
+	/**
 	 * Return URL to delete UPC
 	 * @return string
 	 */
@@ -390,8 +421,8 @@ class XrefUpc extends WireData implements Module {
 		});
 
 		$this->addHook('Page(pw_template=upcx)::upc_listURL', function($event) {
-			$p = $event->object;
-			$event->return = $p->itemID ? $this->get_item_upcsURL($p->itemID) : $p->url;
+			$focus = $event->arguments(0);
+			$event->return = $this->get_upc_listURL($focus);
 		});
 
 		$this->addHook('Page(pw_template=upcx)::item_upcsURL', function($event) {

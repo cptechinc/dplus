@@ -92,6 +92,7 @@ class Upcx extends ItmFunction {
 
 		$page->body .= $config->twig->render('items/itm/xrefs/upcx/list/page.twig', ['upcs' => $upcs, 'itemID' => $data->itemID, 'upcx' => $upcx]);
 		$page->body .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $upcs]);
+		$page->js   .= $config->twig->render('items/upcx/list/.js.twig');
 		return $page->body;
 	}
 
