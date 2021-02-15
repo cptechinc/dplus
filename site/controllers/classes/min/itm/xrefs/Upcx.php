@@ -59,7 +59,11 @@ class Upcx extends ItmFunction {
 		$upcx = $wire->modules->get('XrefUpc');
 		$xref = $upcx->get_create_xref($data->upc);
 
-		$page->body .= BaseUpcx::lockXref($page, $upcx, $xref);
+		if ($xref->isNew()) {
+			$xref->setItemid($data->itemID);
+		}
+
+		BaseUpcx::lockXref($page, $upcx, $xref);
 		$page->body .= $config->twig->render('items/itm/xrefs/upcx/form/page.twig', ['upcx' => $upcx, 'upc' => $xref]);
 		$page->js   .= $config->twig->render('items/upcx/form/js.twig', ['upc' => $xref]);
 		return $page->body;
@@ -83,7 +87,8 @@ class Upcx extends ItmFunction {
 		$filter->filter_input($input);
 		$filter->apply_sortby($page);
 		$upcs = $filter->query->paginate($input->pageNum, 10);
-		$page->title = "ITM: UPCs for $data->itemID";
+		$page->title = "UPCs";
+		$page->headline = "ITM: UPCs for $data->itemID";
 
 		$page->body .= $config->twig->render('items/itm/xrefs/upcx/list/page.twig', ['upcs' => $upcs, 'itemID' => $data->itemID, 'upcx' => $upcx]);
 		$page->body .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $upcs]);

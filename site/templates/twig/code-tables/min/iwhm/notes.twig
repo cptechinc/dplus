@@ -10,10 +10,10 @@
 	{% for notetype in module_notes.get_notetypes() %}
 		<tr>
 			<td>{{ module_notes.get_notetype_description(notetype)|capitalize }}</td>
-			<td>{{ module_notes.notes_exist(notetype, warehouse.whseid)|bool|yesorno|capitalize }}</td>
+			<td>{{ module_notes.notes_exist(notetype, warehouse.whseid)|yesorno|capitalize }}</td>
 			<td class="text-right">
 				<textarea class="collapse" id="notes-{{ notetype }}" cols="{{ module_notes.get_notetype_column_count(notetype) }}">{{ module_notes.get_notes_array(notetype, warehouse.whseid)|join('\r') }}</textarea>
-				{% if module_notes.notes_exist(notetype, warehouse.whseid)|bool %}
+				{% if module_notes.notes_exist(notetype, warehouse.whseid) %}
 					<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-modal" data-type="{{ notetype }}" data-description="{{ module_notes.get_notetype_description(notetype)|capitalize }}">
 						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 					</button>

@@ -58,19 +58,18 @@ class Upcx extends AbstractController {
 		if ($upcx->recordlocker->function_locked($xref->upc) && !$upcx->recordlocker->function_locked_by_user($xref->upc)) {
 			$msg = "UPC $code is being locked by " . $upcx->recordlocker->get_locked_user($xref->upc);
 			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "UPC $xref->upc is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
-			$page->body .= $html->div('class=mb-3');
 		} elseif (!$upcx->recordlocker->function_locked($xref->upc)) {
 			$upcx->recordlocker->create_lock($xref->upc);
 		}
 
 		if ($xref->isNew()) {
-			if ($code == 'new') {
+			if ($xref->upc == '') {
 				$page->headline = "Adding UPC X-ref";
 			} else {
-				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "UPC $code not found, you may create it below"]);
-				$page->body .= $html->div('class=mb-3');
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "UPC not found, you may create it below"]);
 			}
 		}
+		$page->body .= '<div class="mb-3"></div>';
 		return $page->body;
 	}
 

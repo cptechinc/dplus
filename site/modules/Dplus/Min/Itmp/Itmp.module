@@ -48,7 +48,8 @@ class Itmp extends WireData implements Module {
 		'pricing'   => 'prices',
 		'xrefs'     => 'x-refs',
 		'misc'      => 'misc',
-		'packaging' => 'pkg / dim'
+		'packaging' => 'pkg / dim',
+		'options'   => 'options'
 	];
 
 	const PERMISSIONS_DEFAULT = [
@@ -57,7 +58,8 @@ class Itmp extends WireData implements Module {
 		'pricing'   => 'Y',
 		'xrefs'     => 'Y',
 		'misc'      => 'Y',
-		'packaging' => 'Y'
+		'packaging' => 'Y',
+		'options'   => 'Y',
 	];
 
 	/**
@@ -243,7 +245,7 @@ class Itmp extends WireData implements Module {
 				'input'       => 'loginID',
 				'property'    => 'loginid',
 				'allow_blank' => false,
-				'function'    => 'loginid'
+				'function'    => 'userid'
 			),
 		);
 
