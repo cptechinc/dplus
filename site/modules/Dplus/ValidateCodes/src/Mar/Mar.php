@@ -4,6 +4,8 @@ use ProcessWire\WireData;
 
 use ShipviaQuery, Shipvia;
 use CustomerQuery, Customer;
+use SalesPersonQuery, SalesPerson;
+use SalespersonGroupCodeQuery, SalespersonGroupCode;
 
 /**
  * Mar
@@ -29,6 +31,28 @@ class Mar extends WireData {
 	public function shipvia($code) {
 		$q = ShipviaQuery::create();
 		$q->filterByCode($code);
+		return boolval(($q->count()));
+	}
+
+	/**
+	 * Validate Sales Person ID exists
+	 * @param  string $id Sales Person ID
+	 * @return bool
+	 */
+	public function salespersonid($id) {
+		$q = SalesPersonQuery::create();
+		$q->filterById($id);
+		return boolval(($q->count()));
+	}
+
+	/**
+	 * Validate Sales Group ID exists
+	 * @param  string $id Sales Group ID
+	 * @return bool
+	 */
+	public function salesgroupid($id) {
+		$q = SalespersonGroupCodeQuery::create();
+		$q->filterById($id);
 		return boolval(($q->count()));
 	}
 }

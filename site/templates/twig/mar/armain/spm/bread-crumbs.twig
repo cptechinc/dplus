@@ -1,0 +1,14 @@
+{% extends 'util/bread-crumbs.twig' %}
+
+{% block current_page %}
+	{% if page.wire('input').get.offsetExists('id') %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.url }}">
+				<i class="fa fa-microchip" aria-hidden="true"></i> SPM
+			</a>
+		</li>
+		<li class="breadcrumb-item active" aria-current="page">{{ page.wire('input').get.text('id') }}</li>
+	{% else %}
+		<li class="breadcrumb-item active" aria-current="page">SPM</li>
+	{% endif %}
+{% endblock %}

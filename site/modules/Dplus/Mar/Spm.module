@@ -1,0 +1,464 @@
+<?php namespace ProcessWire;
+
+use Purl\Url;
+
+use Dplus\Filters\Mar\SalesPerson as FilterSalesPerson;
+use SalesPersonQuery, SalesPerson;
+
+use SalespersonGroupCodeQuery, SalespersonGroupCode;
+use Dplus\CodeValidators\Mar\Spm as SpmValidator;
+
+/**
+ * Spm
+ *
+ * Parent Module to Install Sub Spm Modules
+ */
+class Spm extends WireData implements Module {
+	const MODEL              = 'SalesPerson';
+	const MODEL_KEY          = 'id';
+	const DESCRIPTION        = 'SPM';
+	const RESPONSE_TEMPLATE  = 'Sales Person {key} was {not} {crud}';
+	const RECORDLOCKER_FUNCTION   = 'spm';
+
+	public function __construct() {
+		$this->description = self::DESCRIPTION;
+	}
+
+	/**
+	 * Returns SalesPersonQuery
+	 * @return SalesPersonQuery
+	 */
+	public function query() {
+		return SalesPersonQuery::create();
+	}
+
+/* =============================================================
+	FIELD ATTRIBUTES
+============================================================= */
+	const FIELD_ATTRIBUTES = [
+		'id'     => ['type' => 'text', 'maxlength' => 6],
+		'name'   => ['type' => 'text', 'maxlength' => 30],
+		'cycle'  => ['type' => 'text', 'maxlength' => 2],
+		'salesmtd' => ['type' => 'number', 'precision' => 2, 'max' => 99999999.99, 'label' => 'Sales MTD'],
+		'salesytd' => ['type' => 'number', 'precision' => 2, 'max' => 99999999.99, 'label' => 'Sales YTD'],
+		'salesltd' => ['type' => 'number', 'precision' => 2, 'max' => 99999999.99, 'label' => 'Sales LTD'],
+		'earnedmtd' => ['type' => 'number', 'precision' => 2, 'max' => 99999999.99, 'label' => 'Earned MTD'],
+		'earnedytd' => ['type' => 'number', 'precision' => 2, 'max' => 99999999.99, 'label' => 'Earned YTD'],
+		'earnedltd' => ['type' => 'number', 'precision' => 2, 'max' => 99999999.99, 'label' => 'Earned LTD'],
+		'paidmtd' => ['type' => 'number', 'precision' => 2, 'max' => 99999999.99, 'label' => 'Paid MTD'],
+		'paidytd' => ['type' => 'number', 'precision' => 2, 'max' => 99999999.99, 'label' => 'Paid YTD'],
+		'paidltd' => ['type' => 'number', 'precision' => 2, 'max' => 99999999.99, 'label' => 'Paid LTD'],
+	];
+
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function field_attribute($field = '', $attr = '') {
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		if (array_key_exists($field, self::FIELD_ATTRIBUTES) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, self::FIELD_ATTRIBUTES[$field]) === false) {
+			return false;
+		}
+		return self::FIELD_ATTRIBUTES[$field][$attr];
+	}
+
+/* =============================================================
+	CRUD Read, Validate Functions
+============================================================= */
+	/**
+	 * Return if Sales Person ID exists
+	 * @param  string $id Sales Person ID
+	 * @return bool
+	 */
+	public function exists($id) {
+		$q = $this->query();
+		$q->filterById($id);
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return Sales Person
+	 * @param  string $id Sales Person ID
+	 * @return SalesPerson
+	 */
+	public function salesperson($id) {
+		$q = $this->query();
+		$q->filterById($id);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return New Sales Person with default values
+	 * @return SalesPerson
+	 */
+	public function new() {
+		return SalesPerson::new();
+	}
+
+	/**
+	 * Return Sales Person Existing or new
+	 * @param  string $id Sales Person ID
+	 * @return SalesPerson
+	 */
+	public function get_create($id) {
+		if ($this->exists($id)) {
+			return $this->salesperson($id);
+		}
+		$id = $id == 'new' ? '' : $id;
+		$sp = $this->new();
+		$sp->setId($this->sanitizer->text($id, ['maxlength' => $this->field_attribute('id', 'maxlength')]));
+		return $sp;
+	}
+
+/* =============================================================
+	CRUD Processing Functions
+============================================================= */
+	/**
+	 * Takes Input, validates it's for one of the code tables
+	 * Processes it, and if updated sends request to dplus
+	 *
+	 * @param  WireInput $input Input
+	 * @return void
+	 */
+	public function process_input(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$id = $values->text('id');
+
+		switch ($values->text('action')) {
+			case 'delete':
+				$this->input_delete($input);
+				break;
+			case 'update':
+				$this->input_update($input);
+				break;
+			default:
+				$message = self::DESCRIPTION_RECORD . " ($id) was not saved, no action was specified";
+				$this->wire('session')->setFor('response', 'spm', XrefResponse::response_error($id, $message));
+				break;
+		}
+	}
+
+	/**
+	 * Delete Sales Rep
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function input_delete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$id = $values->text('id');
+
+		if ($this->exists($id) === false) {
+			return true;
+		}
+		$record = $this->salesperson($id);
+		if (!$this->lockrecord($id) && !$record->isNew()) {
+			$message = self::DESCRIPTION_RECORD . " ($id)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($id);
+			$this->wire('session')->setFor('response', 'spm', XrefResponse::response_error($id, $message));
+			return false;
+		}
+		$record->delete();
+		$response = $this->save_and_respond($record);
+		$this->wire('session')->setFor('response', 'spm', $response);
+		return $this->wire('session')->getFor('response', 'spm')->has_success();
+	}
+
+	/**
+	 * Update Sales Rep from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function input_update(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$id = $values->text('id');
+		$record = $this->get_create($id);
+
+		if (!$this->lockrecord($id) && !$record->isNew()) {
+			$message = self::DESCRIPTION_RECORD . " ($id)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($id);
+			$this->wire('session')->setFor('response', 'spm', XrefResponse::response_error($id, $message));
+			return false;
+		}
+		$invalidfields = $this->update_record_input($record, $input);
+		$response = $this->save_and_respond($record, $invalidfields);
+		$this->wire('session')->setFor('response', 'spm', $response);
+		return $this->wire('session')->getFor('response', 'spm')->has_success();
+	}
+
+	/**
+	 * Updates SalesPerson Record, Returns Invalid Fields
+	 * @param  SalesPerson  $record SalesPerson
+	 * @param  WireInput    $input  Input Data
+	 * @return array
+	 */
+	public function update_record_input(SalesPerson $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$invalidfields = array();
+
+		$response = new XrefResponse();
+		$response->set_action(XrefResponse::CRUD_UPDATE);
+		$invalidfields = $this->update_record_validated($record, $input);
+		$record->setName($values->text('name', ['maxlength' => $this->field_attribute('name', 'maxlength')]));
+		$record->setEmail($values->email('email'));
+		$record->setCycle($values->text('cycle', ['maxLength' => $this->field_attribute('cycle', 'maxlength')]));
+		$record->setManager($values->yn('manager'));
+		$record->setLastsaledate(date('Ymd', strtotime($values->text('lastsaledate'))));
+
+		$this->update_record_sales($record, $input);
+		$record->setDate(date('Ymd'));
+		$record->setTime(date('His'));
+		return $invalidfields;
+	}
+
+	/**
+	 * Sets Record fields if valid, returns invalid fields
+	 * @param  SalesPerson  $record Sales Person
+	 * @param  WireInput    $input  Input Data
+	 * @return array
+	 */
+	public function update_record_validated(SalesPerson $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$validate = new SpmValidator();
+		$invalid = array();
+
+		$fields = array(
+			'groupid' => array(
+				'description' => 'Group',
+				'input'       => 'groupid',
+				'function'    => 'salesgroupid'
+			),
+			'userid' => array(
+				'description' => 'Login ID',
+				'input'       => 'userid',
+				'function'    => 'userid'
+			),
+			'vendorid' => array(
+				'description' => 'Vendor ID',
+				'input'       => 'vendorid',
+				'function'    => 'vendorid'
+			),
+		);
+		if ($record->isNew() === false) {
+			$fields['id'] = array(
+				'description' => 'Sales Person ID',
+				'input'       => 'id',
+				'function'    => 'salespersonid'
+			);
+		}
+		$validator = $this->wire('modules')->get('InputValidator');
+		$validator->set_validator($validate)->set_input($input)->set_record($record)->set_validatefields($fields);
+		$invalid = $validator->validate();
+		$validator->set_valid_properties();
+		return $invalid;
+	}
+
+	private function update_record_sales(SalesPerson $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$fields = ['salesmtd', 'salesytd','salesltd', 'earnedmtd', 'earnedytd','earnedltd', 'paidmtd', 'paidytd', 'paidltd'];
+
+		foreach ($fields as $field) {
+			$setF = 'set'.ucfirst($field);
+			$record->$setF($values->float($field, ['precision' => $this->field_attribute($field, 'precision'), 'max' => $this->field_attribute($field, 'max')]));
+		}
+	}
+
+/* =============================================================
+	CRUD Response Functions
+============================================================= */
+	/**
+	 * Returns XrefResponse based on the outcome of the database save
+	 * @param  SalesPerson $record Record to record response of database save
+	 * @return XrefResponse
+	 */
+	protected function save_and_respond(SalesPerson $record, $invalidfields = []) {
+		$is_new = $record->isDeleted() ? false : $record->isNew();
+		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+
+		$response = new XrefResponse();
+		$response->set_key($record->id);
+
+		if ($saved) {
+			$response->set_success(true);
+		} else {
+			$response->set_error(true);
+		}
+
+		if ($is_new) {
+			$response->set_action(XrefResponse::CRUD_CREATE);
+		} elseif ($record->isDeleted()) {
+			$response->set_action(XrefResponse::CRUD_DELETE);
+		} else {
+			$response->set_action(XrefResponse::CRUD_UPDATE);
+		}
+
+		$response->build_message(self::RESPONSE_TEMPLATE);
+
+		if (empty($invalidfields) === false) {
+			$response->set_success(false);
+			$response->set_error(true);
+			$response->set_fields($invalidfields);
+		}
+
+		if ($response->has_success() && empty($invalidfields)) {
+			$this->update_dplus_cobol($record);
+		}
+		return $response;
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Lock Record, validate User is locking Record
+	 * @param  string $id  SalesPerson ID
+	 * @return bool
+	 */
+	public function lockrecord($id) {
+		if (!$this->recordlocker->function_locked($id)) {
+			$this->recordlocker->create_lock($id);
+		}
+		return $this->recordlocker->function_locked_by_user($id);
+	}
+
+	/**
+	 * Return Sales Groups
+	 * @return SalespersonGroupCode[]
+	 */
+	public function salesgroups() {
+		return SalespersonGroupCodeQuery::create()->find();
+	}
+/* =============================================================
+	Dplus Request Functions
+============================================================= */
+	/**
+	 * Writes File for Dplus to update the SPM record
+	 * @param  SalesPerson $sp
+	 * @return void
+	 */
+	public function update_dplus_cobol(SalesPerson $sp) {
+		$this->wire('modules')->get('CodeTables')->update_dplus_cobol('SPM', $sp->id);
+	}
+/* =============================================================
+	URL Functions
+============================================================= */
+	/**
+	 * Return Edit Sales Person URL
+	 * @param  string $id  Sales Person ID
+	 * @return string
+	 */
+	public function edit_salespersonURL($id) {
+		$url = new Url($this->wire('pages')->get('pw_template=spm')->url);
+		$url->query->set('id', $id);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Delete Sales Person URL
+	 * @param  string $id  Sales Person ID
+	 * @return string
+	 */
+	public function delete_salespersonURL($id) {
+		$url = new Url($this->wire('pages')->get('pw_template=spm')->url);
+		$url->query->set('action', 'delete');
+		$url->query->set('id', $id);
+		return $url->getUrl();
+	}
+
+	public function spmURL($focus = '') {
+		if ($focus) {
+			return $this->spm_focusURL($focus);
+		}
+		return $this->wire('pages')->get('pw_template=spm')->url;
+	}
+
+	public function spm_focusURL($focus = '') {
+		$page = $this->wire('pages')->get('pw_template=spm');
+
+		if ($focus == '') {
+			return $page->url;
+		}
+		$url = new Url($page->url);
+		$spm = $this->wire('modules')->get('Spm');
+		$person = $this->salesperson($focus);
+
+		if ($person) {
+			$filter = new FilterSalesPerson();
+			$filter->init();
+			$position = $filter->position($person);
+			$pagenbr = ceil($position / $this->wire('session')->display);
+			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
+			$url->query->set('focus', $focus);
+		}
+		return $url->getUrl();
+	}
+
+	public function redirectURL() {
+		$input = $this->wire('input');
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$this->wire('pages')->get('pw_template=spm')->url;
+
+		if ($values->text('action') == 'update') {
+			$response = $this->wire('session')->getFor('response', 'spm');
+
+			if ($response) {
+				if ($response->has_success()) {
+					return $this->spmURL($values->text('id'));
+				}
+				return $this->edit_salespersonURL($values->text('id'));
+			}
+		}
+		return $this->spmURL();
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public function init() {
+		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
+		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
+
+		$this->addHook('Page(pw_template=spm)::add_salespersonURL', function($event) {
+			$event->return = $this->edit_salespersonURL('new');
+		});
+
+		$this->addHook('Page(pw_template=spm)::edit_salespersonURL', function($event) {
+			$event->return = $this->edit_salespersonURL($event->arguments(0));
+		});
+
+		$this->addHook('Page(pw_template=spm)::delete_salespersonURL', function($event) {
+			$event->return = $this->delete_salespersonURL($event->arguments(0));
+		});
+
+		$this->addHook('Page(pw_template=spm)::spmURL', function($event) {
+			$event->return = $this->spmURL($event->arguments(0));
+		});
+
+		$this->addHook('Page(pw_template=spm)::redirectURL', function($event) {
+			$event->return = $this->redirectURL();
+		});
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Spm',
+			'version' => 101,
+			'summary' => 'Handles Spm CRUD',
+			'singular' => true,
+			'autoload' => true,
+			'installs' => array()
+		);
+	}
+}

@@ -1,0 +1,25 @@
+{% block breadcrumbs %}
+	{% include 'mar/armain/spm/bread-crumbs.twig' %}
+{% endblock %}
+
+{% if session.getFor('response', 'spm') %}
+	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'spm')} %}
+{% endif %}
+
+{% block return_links %}
+	<div class="mb-3">
+		<a href="{{ page.spmURL(person.id) }}" class="btn btn-primary">
+			<i class="fa fa-undo" aria-hidden="true"></i> &nbsp;
+			Back to List
+		</a>
+		&nbsp; &nbsp;
+		<a href="{{ page.parent.url }}" class="btn btn-primary">
+			<i class="fa fa-undo" aria-hidden="true"></i> &nbsp;
+			Back to {{ page.parent.title }}
+		</a>
+	</div>
+{% endblock %}
+
+{% block formdisplay %}
+	{% include 'mar/armain/spm/form/display.twig' %}
+{% endblock %}

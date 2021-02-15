@@ -7,7 +7,8 @@ use Twig\TwigFilter, Twig\TwigFunction;
 include(__DIR__.'/vendor/autoload.php');
 
 use Twig\Html\TwigInput, Twig\Html\TwigInputGroup, Twig\Html\TwigInputSpan;
-use Twig\Html\TwigButton, Twig\Html\TwigLink;
+use Twig\Html\TwigButton, Twig\Html\TwigLink, Twig\Html\TwigTextarea, Twig\Html\TwigSelectSimple;
+use Twig\Html\TwigDatePicker;
 
 /**
  * Woodstock
@@ -219,6 +220,27 @@ class Twig extends WireData implements Module {
 
 		$function = new TwigFunction('twiglink', function (array $array) {
 			$input = new \Twig\Html\TwigLink();
+			$input->setFromArray($array);
+			return $input;
+		});
+		$twig->addFunction($function);
+
+		$function = new TwigFunction('twigtextarea', function (array $array) {
+			$input = new \Twig\Html\TwigTextarea();
+			$input->setFromArray($array);
+			return $input;
+		});
+		$twig->addFunction($function);
+
+		$function = new TwigFunction('twigselectsimple', function (array $array) {
+			$input = new TwigSelectSimple();
+			$input->setFromArray($array);
+			return $input;
+		});
+		$twig->addFunction($function);
+		
+		$function = new TwigFunction('twigdatepicker', function (array $array) {
+			$input = new TwigDatePicker();
 			$input->setFromArray($array);
 			return $input;
 		});

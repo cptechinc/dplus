@@ -1,17 +1,25 @@
 <?php namespace Twig\Html;
 
-class TwigInput extends TwigBaseHtml {
+class TwigSelectSimple extends TwigBaseHtml {
 	const SIZES = ['xs', 'sm', 'md', 'lg', 'xl'];
 
 	const DEFAULTS = [
-		'type'       => 'text',
-		'inputclass' => 'form-control',
-		'name'       => '',
-		'id'         => '',
-		'value'      => '',
-		'size'       => '',
-		'addclasses' => [],
-		'attributes' => []
+		'inputclass'  => 'form-control',
+		'name'        => '',
+		'id'          => '',
+		'value'       => '',
+		'size'        => '',
+		'addclasses'  => [],
+		'attributes'  => [],
+		'showvalue'   => false,
+		'haskeys'     => false,
+		'capitalizelabels' => false,
+		'useblankoption' => false,
+		'options'     => [],
+		'blankoption' => [
+			'value'   => '',
+			'label'   => ''
+		]
 	];
 
 	const ATTRIBUTES_NOVALUE = [
@@ -20,14 +28,9 @@ class TwigInput extends TwigBaseHtml {
 	];
 
 	public function __construct() {
-		$this->type = 'text';
-		$this->inputclass = 'form-control';
-		$this->size       = '';
-		$this->name = '';
-		$this->id   = '';
-		$this->value = '';
-		$this->addclasses = [];
-		$this->attributes = [];
+		foreach (self::DEFAULTS as $prop => $value) {
+			$this->$prop = $value;
+		}
 	}
 
 	/**

@@ -32,6 +32,12 @@
 			['GET', 'vendor/', Json\Map::class, 'getVendor'],
 			['GET', 'vendor/contact/', Json\Map::class, 'getVendorContact'],
 		],
+		'mar' => [
+			'validate' => [
+				['GET', 'salespersonid/', Json\Mar::class, 'validateSalesPersonId'],
+				['GET', 'salesgroupid/', Json\Mar::class, 'validateSalesGroupid'],
+			],
+		],
 		'mci' => [
 			'validate' => [
 				['GET', 'custid/', Json\Mci::class, 'validateCustid'],

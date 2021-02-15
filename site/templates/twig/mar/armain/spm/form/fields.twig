@@ -1,0 +1,216 @@
+<div class="row form-group">
+	<div class="col-sm-3">
+		<label for="id">ID</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'id', 'value': person.id,
+					'size': 'sm',
+					'attributes': {
+						'readonly': person.id ? 'true' : 'false',
+						'tabindex': person.id ? 'true' : 'false',
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-3">
+		<label for="name">Name</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'name', 'value': person.name,
+					'size': 'sm',
+					'attributes': {
+						'maxlength': spm.field_attribute('name', 'maxlength')
+					},
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-3">
+		<label for="groupid">Group</label>
+	</div>
+	<div class="col-sm-6">
+		<select name="groupid" id="groupid" class="form-control form-control-sm">
+			<option value="" {{ person.groupid == '' ? 'selected' : '' }}></option>
+			
+			{% for group in spm.salesgroups() %}
+				<option value="{{ group.id }}" {{ group.id == person.groupid ? 'selected' : '' }}>
+					{{ group.id }} - {{ group.description }}
+				</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-3">
+		<label for="cycle">Commission Cycle</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'cycle', 'value': person.cycle,
+					'size': 'sm',
+					'attributes': {
+						'maxlength': spm.field_attribute('cycle', 'maxlength')
+					},
+					'addclasses': [
+						'w-25'
+					]
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-3">
+		<label for="userid">Login ID</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'input': {
+						'name': 'userid',
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Login ID'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Login IDs',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('users'),
+							'data-input': '#userid'
+						}
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+
+<div class="row form-group">
+	<div class="col-sm-1"></div>
+	<div class="col-sm-2">
+		<label for="manager">Manager</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/select-simple.twig' with {
+				'select': {
+					'name': 'manager',
+					'value': person.manager,
+					'haskeys': true,
+					'options': {'Y': 'yes', 'N': 'no'},
+					'capitalizelabels': true,
+					'addclasses': [
+						'w-25'
+					]
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-1"></div>
+	<div class="col-sm-2">
+		<label for="lastsaledate">Last Sale</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/date-picker.twig' with {
+				'inputgroup': {
+					'input': {
+						'name': 'lastsaledate',
+						'value': person.lastsaledate ? person.lastsaledate|convertdate : '',
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Last Sales Date'
+						}
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+{% include 'mar/armain/spm/form/fields/sales-figures-alt.twig' %}
+
+<div class="row form-group">
+	<div class="col-sm-3">
+		<label for="vendorid">Vendor ID</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'size': 'sm',
+					'type': 'prepend',
+					'input': {
+						'name': 'vendorid',
+						'value': person.vendorid,
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Vendor ID'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Vendor IDs',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('vendors'),
+							'data-input': '#vendorid'
+						}
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+
+<div class="row form-group">
+	<div class="col-sm-3">
+		<label for="restricted">Restricted</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/select-simple.twig' with {
+				'select': {
+					'name': 'restricted',
+					'value': person.restricted,
+					'haskeys': true,
+					'options': {'Y': 'yes', 'N': 'no'},
+					'capitalizelabels': true,
+					'addclasses': [
+						'w-25'
+					]
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-3">
+		<label for="email">Email</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'email', 'value': person.email,
+					'type': 'email',
+					'size': 'sm'
+				}
+			}
+		%}
+	</div>
+</div>

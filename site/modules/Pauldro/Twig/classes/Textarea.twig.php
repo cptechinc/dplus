@@ -1,6 +1,6 @@
 <?php namespace Twig\Html;
 
-class TwigInput extends TwigBaseHtml {
+class TwigTextarea extends TwigBaseHtml {
 	const SIZES = ['xs', 'sm', 'md', 'lg', 'xl'];
 
 	const DEFAULTS = [
