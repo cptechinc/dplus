@@ -13,6 +13,35 @@ $(function() {
 		input.val(value);
 	});
 
+	$("body").on('change', 'input[name=id]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+
+		if ($('#spm-form').data('new') === true) {
+			validate_salespersonid(input.val(), function(valid) {
+				if (valid === false) {
+					swal_salesperson_exists(input.val());
+				}
+			});
+		}
+	});
+
+	function swal_salesperson_exists(id) {
+		swal2.fire({
+			title: 'Sales Person Exists',
+			text: 'Edit Salesperson ID ' + id + '?',
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: 'Yes!'
+		}).then(function (result) {
+			if (result.value) {
+				var url = URI();
+				url.setQuery('id', id);
+				window.location.href = url.toString();
+			}
+		});
+	}
+
 /* =============================================================
 	AJAX Lookup Modal Functions
 ============================================================= */
@@ -111,4 +140,16 @@ $(function() {
 			form.submit();
 		}
 	});
+
+	function validate_salespersonid(id, callback) {
+		var url = URI('{{ page.jsonapiURL('mar/validate/salespersonid/') }}');
+		url.addQuery('id', id);
+		if ($('#spm-form').data('new') === true) {
+			url.addQuery('new', 'true');
+		}
+
+		$.getJSON(url.toString(), function(valid) {
+			callback(valid);
+		});
+	}
 });
