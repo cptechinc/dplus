@@ -113,7 +113,7 @@ class Spm extends WireData implements Module {
 		}
 		$id = $id == 'new' ? '' : $id;
 		$sp = $this->new();
-		$sp->setId($id);
+		$sp->setId($this->sanitizer->text($id, ['maxlength' => $this->field_attribute('id', 'maxlength')]));
 		return $sp;
 	}
 
