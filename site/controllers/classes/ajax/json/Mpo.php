@@ -26,8 +26,6 @@ class Mpo extends AbstractController {
 		return true;
 	}
 
-
-
 	public static function getPoItem($data) {
 		$fields = ['ponbr|text', 'linenbr|int'];
 		$data = self::sanitizeParametersShort($data, $fields);
