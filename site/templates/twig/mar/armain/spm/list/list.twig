@@ -75,7 +75,7 @@
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</a>
 						&nbsp; &nbsp;
-						<a href="#" class="btn btn-danger btn-sm delete_button" data-delete="UPC {{ person.id }}">
+						<a href="{{ page.delete_salespersonURL(person.id) }}" class="btn btn-danger btn-sm delete_button" data-delete="UPC {{ person.id }}">
 							<i class="fa fa-trash" aria-hidden="true"></i> Delete
 						</a>
 					{% else %}

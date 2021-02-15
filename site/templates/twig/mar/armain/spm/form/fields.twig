@@ -8,8 +8,8 @@
 					'name': 'id', 'value': person.id,
 					'size': 'sm',
 					'attributes': {
-						'readonly': person.id ? true : false,
-						'tabindex': person.id ? '-1' : '',
+						'readonly': person.id ? 'true' : 'false',
+						'tabindex': person.id ? 'true' : 'false',
 					}
 				}
 			}
@@ -130,7 +130,7 @@
 				'inputgroup': {
 					'input': {
 						'name': 'lastsaledate',
-						'value': person.lastsaledate|convertdate,
+						'value': person.lastsaledate ? person.lastsaledate|convertdate : '',
 						'attributes': {
 							'placeholder': '',
 							'aria-label':  'Last Sales Date'

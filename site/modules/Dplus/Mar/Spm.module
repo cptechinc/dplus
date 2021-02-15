@@ -94,6 +94,10 @@ class Spm extends WireData implements Module {
 		return $q->findOne();
 	}
 
+	public function new() {
+		return SalesPerson::new();
+	}
+
 	/**
 	 * Return Sales Person Existing or new
 	 * @param  string $id Sales Person ID
@@ -104,7 +108,7 @@ class Spm extends WireData implements Module {
 			return $this->salesperson($id);
 		}
 		$id = $id == 'new' ? '' : $id;
-		$sp = new SalesPerson();
+		$sp = $this->new();
 		$sp->setId($id);
 		return $sp;
 	}
@@ -139,11 +143,36 @@ class Spm extends WireData implements Module {
 	}
 
 	/**
-	 * Update UPC from Input Data
+	 * Delete Sales Rep
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
-	public function input_update(WireInput $input) {
+	protected function input_delete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$id = $values->text('id');
+
+		if ($this->exists($id) === false) {
+			return true;
+		}
+		$record = $this->salesperson($id);
+		if (!$this->lockrecord($id) && !$record->isNew()) {
+			$message = self::DESCRIPTION_RECORD . " ($id)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($id);
+			$this->wire('session')->setFor('response', 'spm', XrefResponse::response_error($id, $message));
+			return false;
+		}
+		$record->delete();
+		$response = $this->save_and_respond($record);
+		$this->wire('session')->setFor('response', 'spm', $response);
+		return $this->wire('session')->getFor('response', 'spm')->has_success();
+	}
+
+	/**
+	 * Update Sales Rep from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function input_update(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$id = $values->text('id');
@@ -315,10 +344,22 @@ class Spm extends WireData implements Module {
 	/**
 	 * Return Edit Sales Person URL
 	 * @param  string $id  Sales Person ID
-	 * @return bool
+	 * @return string
 	 */
 	public function edit_salespersonURL($id) {
 		$url = new Url($this->wire('pages')->get('pw_template=spm')->url);
+		$url->query->set('id', $id);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Delete Sales Person URL
+	 * @param  string $id  Sales Person ID
+	 * @return string
+	 */
+	public function delete_salespersonURL($id) {
+		$url = new Url($this->wire('pages')->get('pw_template=spm')->url);
+		$url->query->set('action', 'delete');
 		$url->query->set('id', $id);
 		return $url->getUrl();
 	}
@@ -368,7 +409,7 @@ class Spm extends WireData implements Module {
 				return $this->edit_salespersonURL($values->text('id'));
 			}
 		}
-		return $this->spmURL('');
+		return $this->spmURL();
 	}
 
 /* =============================================================
@@ -384,6 +425,10 @@ class Spm extends WireData implements Module {
 
 		$this->addHook('Page(pw_template=spm)::edit_salespersonURL', function($event) {
 			$event->return = $this->edit_salespersonURL($event->arguments(0));
+		});
+
+		$this->addHook('Page(pw_template=spm)::delete_salespersonURL', function($event) {
+			$event->return = $this->delete_salespersonURL($event->arguments(0));
 		});
 
 		$this->addHook('Page(pw_template=spm)::spmURL', function($event) {

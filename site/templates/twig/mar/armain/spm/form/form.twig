@@ -20,7 +20,7 @@
 			</button>
 
 			{% if item.isNew() == false %}
-				<a href="#" class="btn btn-danger delete_button">
+				<a href="{{ page.delete_salespersonURL(person.id) }}" class="btn btn-danger delete_button">
 					<i class="fa fa-trash" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}
