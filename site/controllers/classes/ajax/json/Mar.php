@@ -21,6 +21,7 @@ class Mar extends AbstractController {
 
 		if ($data->new) {
 			$canuse = $valid === false;
+
 			if ($canuse === false && $data->jqv) {
 				return "Sales Person $data->id already exists";
 			}
