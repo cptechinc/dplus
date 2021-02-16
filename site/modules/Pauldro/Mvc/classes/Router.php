@@ -9,6 +9,11 @@ use ProcessWire\Wire404Exception;
 
 /**
  * Router
+ * @property array  $routes      Array of Routes
+ * @property string $path        Path to Begin Routing from
+ * @property array  $routeInfo   Route Information from Dispatcher
+ * @property array  $routeprefix Path to Begin Routing from
+ *
  */
 class Router extends WireData {
 	protected $routes = [];
