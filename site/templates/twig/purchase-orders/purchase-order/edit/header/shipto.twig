@@ -30,7 +30,7 @@
 	<div class="col-sm-4 form-group">
 		<label for="shipto_state">State</label>
 		<select name="shipto_state" id="shipto_state" class="form-control form-control-sm">
-			<option value=""></option>
+			<option value="" {{ po.shipto_state == '' ? 'selected' : ''}}></option>
 			{% for state in epo.get_states() %}
 				<option value="{{ state.abbreviation }}" {{ state.abbreviation == po.shipto_state ? 'selected' : ''}}>{{ state.name }}</option>
 			{% endfor %}
