@@ -17,7 +17,6 @@ $(function() {
 		validate_ponbr(input.val(), function(valid) {
 			if (valid) {
 				var url = URI('{{ pages.get('pw_template=purchase-order-edit').url }}');
-				alert(input.val());
 				url.addQuery('ponbr', input.val());
 				window.location.href = url.toString();
 			}
