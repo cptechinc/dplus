@@ -2,7 +2,7 @@
 	$config->so = ConfigSalesOrderQuery::create()->findOne();
 	$modules->get('DpagesMso')->init_salesorder_hooks();
 	$html = $modules->get('HtmlWriter');
-	$lookup_orders = new Dplus\CodeValidators\So();
+	$lookup_orders = new Dplus\CodeValidators\Mso();
 
 	if ($input->get->ordn) {
 		$ordn = $input->get->text('ordn');

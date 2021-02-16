@@ -1,7 +1,7 @@
 <?php
 	$modules->get('DpagesMso')->init_salesorder_hooks();
 	$qnotes = $modules->get('QnotesSalesOrder');
-	$lookup_orders = new Dplus\CodeValidators\So();
+	$lookup_orders = new Dplus\CodeValidators\Mso();
 
 	if ($input->requestMethod('POST')) {
 		$response = $qnotes->process_input($input);

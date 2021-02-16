@@ -1,7 +1,7 @@
 <?php
 $modules->get('DpagesMso')->init_salesorder_hooks();
 $html = $modules->get('HtmlWriter');
-$lookup_orders = new Dplus\CodeValidators\So();
+$lookup_orders = new Dplus\CodeValidators\Mso();
 $eso = $modules->get('SalesOrderEdit');
 
 $rm = strtolower($input->requestMethod());

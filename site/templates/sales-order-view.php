@@ -1,8 +1,9 @@
 <?php
 	$config->so = ConfigSalesOrderQuery::create()->findOne();
 	$modules->get('DpagesMso')->init_salesorder_hooks();
+	$modules->get('SalesOrderEdit')->init();
 	$html = $modules->get('HtmlWriter');
-	$lookup_orders = new Dplus\CodeValidators\So();;
+	$lookup_orders = new Dplus\CodeValidators\Mso();
 
 	if ($input->get->ordn) {
 		$ordn = SalesOrder::get_paddedordernumber($input->get->text('ordn'));
