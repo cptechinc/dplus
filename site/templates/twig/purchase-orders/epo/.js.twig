@@ -38,6 +38,15 @@ $(function() {
 		modal.find('.modal-body').loadin(url, function() {});
 	});
 
+	$("body").on('click', '.ponbr-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var ponbr = button.data('ponbr');
+		var modal = button.closest('.modal');
+		$(modal.attr('data-input')).val(ponbr).change();
+		modal.modal('hide');
+	});
+
 	$("body").on('click', '.vendor-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
