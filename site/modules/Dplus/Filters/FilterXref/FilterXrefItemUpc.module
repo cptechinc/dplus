@@ -87,6 +87,16 @@ class FilterXrefItemUpc extends WireData implements Module {
 		return $this;
 	}
 
+	/**
+	 * Return Position of SalesPerson in results
+	 * @param  ItemXrefUpc $item SalesPerson
+	 * @return int
+	 */
+	public function position(ItemXrefUpc $xref) {
+		$results = $this->query->find();
+		return $results->search($xref);
+	}
+
 /* =============================================================
 	Misc Query Functions
 ============================================================= */

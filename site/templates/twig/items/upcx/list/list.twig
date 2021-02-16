@@ -73,31 +73,21 @@
 			</tr>
 		{% endif %}
 		{% for upc in upcs %}
-			<tr class="{{ upc.is_primary() and upc.itemid == itemID ? 'highlight'  : '' }}">
-				<td>
-					{{ upc.upc }}
-				</td>
-				<td>
-					{{ upc.qty }}
-				</td>
+			<tr class="{{ upc.is_primary() and upc.itemid == itemID ? 'bg-info text-white'  : '' }}" data-upc="{{ upc.upc }}">
+				<td>{{ upc.upc }}</td>
+				<td>{{ upc.qty }}</td>
+
 				{% if itemID == false %}
 					<td>
 						{{ upc.itemid }} <br>
 						<small>{{ upc.ItemMasterItem.desc }}</small>
 					</td>
 				{% endif %}
-				<td>
-					{{ upc.uom }}
-				</td>
-				<td>
-					{{ upc.primary|yesorno|capitalize }}
-				</td>
-				<td>
-					{{ upc.mastercarton|yesorno|capitalize }}
-				</td>
-				<td>
-					{{ upc.needslabel|yesorno|capitalize }}
-				</td>
+
+				<td>{{ upc.uom }}</td>
+				<td>{{ upc.primary|yesorno|capitalize }}</td>
+				<td>{{ upc.mastercarton|yesorno|capitalize }}</td>
+				<td>{{ upc.needslabel|yesorno|capitalize }}</td>
 				<td class="text-center">
 					{% if upcx.recordlocker.function_locked(upc.upc) == false or upcx.recordlocker.function_locked_by_user( upc.upc) %}
 						<a href="{{ page.upcURL(upc.upc) }}" class="btn btn-warning btn-sm">

@@ -91,6 +91,7 @@ class Upcx extends AbstractController {
 
 		$page->body .= $config->twig->render('items/upcx/list/page.twig', ['upcx' => $upcx, 'upcs' => $upcs]);
 		$page->body .= $config->twig->render('util/paginator/propel.twig', ['pager' => $upcs]);
+		$page->js   .= $config->twig->render('items/upcx/list/.js.twig');
 		return $page->body;
 	}
 }

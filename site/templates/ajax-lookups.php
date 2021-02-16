@@ -1,6 +1,7 @@
 <?php
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Ajax\Lookup as AjaxLookup;
+
 	$page->searchURL = $input->url();
 	$routes = [
 		['GET', '', AjaxLookup::class, 'test'],
@@ -42,7 +43,11 @@
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
-	$router->route();
+	$response = $router->route();
+
+	if ($router->hasError()) {
+		$page->body = $response;
+	}
 
 	if ($config->ajax) {
 		echo $page->body;
