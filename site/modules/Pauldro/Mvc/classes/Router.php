@@ -1,5 +1,10 @@
 <?php namespace Mvc;
 
+use Exception;
+
+use Whoops\Run as Whoops;
+use Mvc\Whoops\Handlers\Page as WhoopsHandler;
+
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 
@@ -17,6 +22,7 @@ use ProcessWire\Wire404Exception;
  */
 class Router extends WireData {
 	protected $routes = [];
+	protected $error = false;
 
 	public function __construct() {
 		$this->routes = [];
@@ -26,8 +32,23 @@ class Router extends WireData {
 	}
 
 	/**
+	 * Return if Router has Error
+	 * @return bool
+	 */
+	public function hasError() {
+		return $this->error;
+	}
+
+	/**
+	 * Set if Router has Error
+	 * @param bool $error
+	 */
+	public function setError($error = false) {
+		$this->error = $error;
+	}
+
+	/**
 	 * Set Routes to route for
-	 *
 	 * @param  array $routes
 	 * @return void
 	 */
@@ -37,7 +58,6 @@ class Router extends WireData {
 
 	/**
 	 * Set Routes to route for
-	 *
 	 * @param  array $routes
 	 * @return void
 	 */
@@ -53,7 +73,37 @@ class Router extends WireData {
 		$input = $this->wire('input');
 		$dispatcher = $this->dispatcher();
 		$this->routeInfo  = $dispatcher->dispatch($input->requestMethod(), $input->url());
-		return $this->handle($this->routeInfo);
+		$response = '';
+
+		try {
+			$response = $this->handle($this->routeInfo);
+		} catch (Wire404Exception $e) {
+			$this->error = true;
+			throw $e;
+		} catch (Exception $e) {
+			$this->error = true;
+			$response = $this->whoopsResponse($e);
+		}
+		return $response;
+	}
+
+	/**
+	 * Return Whoops Response Message
+	 * @param  Exception $e Exception
+	 * @return string       HTML Whoops Response
+	 */
+	protected function whoopsResponse(Exception $e) {
+		$handler = WhoopsHandler::handler();
+		$handler->addDataTable('Dplus', [
+			'User ID'    => $this->wire('user')->loginid,
+			'Session ID' => session_id(),
+			'Path'       => $input->url(),
+		]);
+		$whoops = new Whoops();
+		$whoops->allowQuit(false);
+		$whoops->writeToOutput(false);
+		$whoops->pushHandler($handler);
+		return $whoops->handleException($e);
 	}
 
 	/**
