@@ -87,10 +87,17 @@ class Router extends WireData {
 
 		$handler = $routeInfo[1];
 		$class = $handler[0];
+
 		if (class_exists($class) == false) {
-			throw new Wire404Exception();
+			throw new Exception("Class $class does not exist");
 		}
+
 		$methodName = strtoupper($handler[1]);
+
+		if (method_exists($class, $methodName) === false) {
+			throw new Exception("Class Method $class::$methodName does not exist");
+		}
+
 		$vars = (object) $routeInfo[2];
 		$vars = array_merge((array) $this->params(), (array) $vars);
 
