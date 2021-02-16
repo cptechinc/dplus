@@ -124,8 +124,15 @@ class Map extends AbstractController {
 		}
 		$v = $q->findOne();
 		$response = [
-			'vendorid'   => $v->vendorid,
-			'name'       => $v->name,
+			'id'   => $v->id,
+			'name' => $v->name,
+			'address' => [
+				'address1' => $v->address,
+				'address2' => $v->address2,
+				'city'     => $v->city,
+				'state'    => $v->state,
+				'zip'      => $v->zip,
+			]
 		];
 		return $response;
 	}
