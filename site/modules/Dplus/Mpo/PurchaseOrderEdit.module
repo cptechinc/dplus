@@ -178,7 +178,7 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$vendorID = $values->text('vendorID');
 		$validate = new MapValidator();
 
-		if ($validate->vendorid($vendorID)) {
+		if ($vendorID == '' || $validate->vendorid($vendorID)) {
 			$this->request_create_po($vendorID);
 			$this->wire('session')->redirect($this->get_po_createdURL($vendorID), $http301 = false);
 		} else {

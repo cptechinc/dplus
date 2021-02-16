@@ -93,7 +93,7 @@ $(function() {
 		},
 		rules: {
 			vendorID: {
-				required: true,
+				required: false,
 				remote: {
 					url: '{{ page.jsonapiURL('map/validate/vendorid/') }}',
 					type: "get",
