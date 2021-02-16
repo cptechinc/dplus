@@ -5,9 +5,11 @@ use Mvc\Controllers\AbstractController;
 
 use Dplus\Filters\AbstractFilter as Filter;
 use Dplus\Filters\Misc\PhoneBook as PhoneBookFilter;
+use Dplus\Filters\Mpo\PurchaseOrder as PurchaseOrderFilter;
 
 class Lookup extends AbstractController {
 	const FIELDS_LOOKUP = ['q' => ['sanitizer' => 'text']];
+
 	public static function test() {
 		return 'test';
 	}
@@ -150,6 +152,16 @@ class Lookup extends AbstractController {
 		self::moduleFilterResults($filter, $wire, $data);
 	}
 
+	public static function purchaseOrders($data) {
+		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		$wire = self::pw();
+		$filter = new PurchaseOrderFilter();
+		$filter->init();
+		$wire->wire('page')->headline = "Purchase Orders";
+		self::pw('config')->po = self::pw('modules')->get('ConfigurePo')->config();
+		self::filterResults($filter, $data);
+	}
+
 	private static function moduleFilterResults(Module $filter, ProcessWire $wire, $data) {
 		$input = $wire->wire('input');
 		$page = $wire->wire('page');
@@ -166,6 +178,7 @@ class Lookup extends AbstractController {
 
 		$path = $input->urlSegment(count($input->urlSegments()));
 		$page->body .= $wire->wire('config')->twig->render("api/lookup/$path/search.twig", ['results' => $results, 'datamatcher' => $wire->wire('modules')->get('RegexData'), 'q' => $data->q]);
+		$page->body .= '<div class="mb-3"></div>';
 		$page->body .= $wire->wire('config')->twig->render('util/paginator.twig', ['resultscount'=> $results->getNbResults() != $query->count() ? $query->count() : $results->getNbResults()]);
 	}
 
@@ -184,9 +197,9 @@ class Lookup extends AbstractController {
 		$results = $query->paginate($input->pageNum, 10);
 
 		$path = $input->urlSegment(count($input->urlSegments()));
-
 		$path = rtrim(str_replace($page->url, '', self::pw('input')->url()), '/');
 		$page->body .= self::pw('config')->twig->render("api/lookup/$path/search.twig", ['results' => $results, 'datamatcher' => self::pw('modules')->get('RegexData'), 'q' => $data->q]);
+		$page->body .= '<div class="mb-3"></div>';
 		$page->body .= self::pw('config')->twig->render('util/paginator.twig', ['resultscount'=> $results->getNbResults() != $query->count() ? $query->count() : $results->getNbResults()]);
 	}
 }
