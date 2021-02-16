@@ -77,6 +77,7 @@ class Epo extends AbstractController {
 		$page->js   .= $config->twig->render('purchase-orders/purchase-order/edit/js.twig', ['epo' => $epo]);
 		$page->js   .= $config->twig->render('purchase-orders/purchase-order/edit/qnotes/js.twig');
 		$page->js   .= $config->twig->render('purchase-orders/purchase-order/edit/lookup/js.twig');
+		self::pw('session')->removeFor('epo', 'scrollto');
 		return $page->body;
 	}
 
