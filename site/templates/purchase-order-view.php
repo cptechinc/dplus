@@ -55,7 +55,8 @@
 		}
 	} else {
 		$page->title = 'Enter a Purchase Order Number';
-		$page->body = $config->twig->render('purchase-orders/purchase-order/lookup-form.twig', ['page' => $page]);
+		$page->body .= $config->twig->render('purchase-orders/purchase-order/lookup-form.twig', ['page' => $page]);
+		$page->js   .= $config->twig->render('purchase-orders/purchase-order/lookup-form.js.twig');
 	}
 
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));

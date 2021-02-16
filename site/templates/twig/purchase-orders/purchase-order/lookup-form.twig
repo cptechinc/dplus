@@ -2,13 +2,18 @@
 	<label for="ponbr"><strong>Enter Purchase Order Number</strong></label> &nbsp; &nbsp;
 
 	<div class="form-inline">
-		<div class="input-group">
-			<input type="text" class="form-control" name="ponbr" id="ponbr">
-			<span class="input-group-append">
-				<button type="submit" class="btn btn-success">
-					<i class="fa fa-search" aria-hidden="true"></i> Find
-				</button>
-			</span>
-		</div>
+		{% include 'util/form/input-with-modal-lookup.twig' with {
+				'name': 'ponbr', 'value': '',
+				'attributes': {},
+				'modaltarget': '#ajax-modal',
+				'modaldescription': 'Search for / Choose Purchase Order',
+				'attributes_button': {
+					'data-search': 'ponbr',
+					'data-lookupurl': page.search_lookupURL('purchase-orders'),
+					'data-input': '#ponbr'
+				}
+			}
+		%}
+		<button type="submit" class="btn btn-success">Go</button>
 	</div>
 </form>
