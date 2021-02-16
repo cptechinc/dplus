@@ -10,8 +10,15 @@
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
-	$router->route();
-	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
-	$session->removeFor('response', 'spm');
-	$page->show_breadcrumbs = false;
+	$response = $router->route();
+
+	if ($router->hasError()) {
+		$page->body = $response;
+	}
+
+	if ($router->hasError() === false) {	
+		$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+		$session->removeFor('response', 'spm');
+		$page->show_breadcrumbs = false;
+	}
 	include __DIR__ . "/basic-page.php";
