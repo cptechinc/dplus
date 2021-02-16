@@ -8,6 +8,11 @@
 #}
 $(function() {
 	var modal_ajax    = $('#ajax-modal');
+	var scrollto = '{{ session.getFor('epo', 'scrollto') }}';
+
+	if ($('#'+scrollto).length) {
+		$('html, body').animate({scrollTop: $('#'+scrollto).offset().top,},700,'linear');
+	}
 
 /* =============================================================
 	Lookup Modal Functions
@@ -35,6 +40,9 @@ $(function() {
 				break;
 			case 'country':
 				url = '{{ page.search_countriesURL() }}';
+				break;
+			case 'vendor':
+				url = '{{ page.search_lookupURL('vendors') }}';
 				break;
 			case 'documents':
 				url = '{{ page.po_documentsURL(page.ponbr) }}';
