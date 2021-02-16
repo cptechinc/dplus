@@ -10,7 +10,6 @@ use Propel\Runtime\ActiveQuery\Criteria;
  * Module for Filtering Purchase Orders
  */
 class FilterPurchaseOrders extends WireData implements Module {
-
 	/**
 	 * Query
 	 * @var PurchaseOrderQuery
@@ -29,7 +28,7 @@ class FilterPurchaseOrders extends WireData implements Module {
 	 * Initializes Query
 	 * @return void
 	 */
-	public function init_query(User $user) {
+	public function init_query() {
 		$this->query = PurchaseOrderQuery::create();
 	}
 
@@ -305,11 +304,6 @@ class FilterPurchaseOrders extends WireData implements Module {
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dpluso filter Purchase Orders Module',
