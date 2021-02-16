@@ -70,6 +70,9 @@ class PurchaseOrderEditItems extends WireData implements Module {
 				$this->input_delete_item($input);
 				break;
 		}
+		if ($values->text('action')) {
+			$this->wire('session')->setFor('epo', 'scrollto', 'items');
+		}
 	}
 
 	/**
