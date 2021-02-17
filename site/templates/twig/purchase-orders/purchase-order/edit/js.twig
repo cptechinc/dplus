@@ -10,7 +10,7 @@ $(function() {
 	var modal_ajax    = $('#ajax-modal');
 	var scrollto = '{{ session.getFor('epo', 'scrollto') }}';
 
-	if ($('#'+scrollto).length) {
+	if (scrollto.length && $('#'+scrollto).length) {
 		$('html, body').animate({scrollTop: $('#'+scrollto).offset().top,},700,'linear');
 	}
 
