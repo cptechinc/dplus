@@ -80,6 +80,10 @@
 					<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 				</button>
 				&nbsp;
+				<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-item-modal" data-linenbr="{{ detail.linenbr }}" {{ user.is_editingorder(order.ordernumber) == false ? 'disabled' : ''}}>
+					<i class="fa fa-window-restore" aria-hidden="true"></i> Edit
+				</button>
+				&nbsp;
 				<a href="{{ page.remove_itemURL(order.ordernumber, detail.linenbr) }}" class="btn btn-sm btn-danger delete_button" {{ user.is_editingorder(order.ordernumber) == false ? 'disabled' : ''}}>
 					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 				</a>
