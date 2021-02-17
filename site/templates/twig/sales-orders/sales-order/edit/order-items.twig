@@ -76,11 +76,11 @@
 				$ <span class="total-price">{{ detail.totalprice|currency }}</span>
 			</div>
 			<div class="col-sm-3 text-right">
-				<button type="submit" class="btn btn-success" {{ user.is_editingorder(order.ordernumber) == false ? 'disabled' : ''}}>
+				<button type="submit" class="btn btn-success btn-sm" {{ user.is_editingorder(order.ordernumber) == false ? 'disabled' : ''}}>
 					<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 				</button>
 				&nbsp;
-				<a href="{{ page.remove_itemURL(order.ordernumber, detail.linenbr) }}" class="btn btn-danger delete_button" {{ user.is_editingorder(order.ordernumber) == false ? 'disabled' : ''}}>
+				<a href="{{ page.remove_itemURL(order.ordernumber, detail.linenbr) }}" class="btn btn-sm btn-danger delete_button" {{ user.is_editingorder(order.ordernumber) == false ? 'disabled' : ''}}>
 					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 				</a>
 			</div>
