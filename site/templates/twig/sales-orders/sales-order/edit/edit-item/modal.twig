@@ -1,0 +1,16 @@
+{% set id   = 'edit-item-modal' %}
+{% set size = 'xl' %}
+
+{% extends 'util/bootstrap/html/modal.twig' %}
+
+{% block modal_title %}
+	Edit Line # <span class="linenbr"></span>
+{% endblock %}
+
+{% block modal_body %}
+	{% include 'sales-orders/sales-order/edit/edit-item/display.twig' %}
+{% endblock %}
+
+{% block modal_footer %}
+
+{% endblock %}

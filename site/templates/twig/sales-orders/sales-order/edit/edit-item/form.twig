@@ -1,0 +1,131 @@
+<form action="" method="post">
+	<table class="table table-sm table-striped form-group">
+		<tr>
+			<td><label for="editqty">Qty</label></td>
+			<td>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'qty', 'id': 'editqty',
+							'type': 'number',
+							'value': 0,
+							'size': 'sm',
+							'attributes': {},
+							'addclasses': [
+								'text-right',
+								'qty-input'
+							]
+						}
+					}
+				%}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="editprice">Price</label>
+			</td>
+			<td>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'price', 'id': 'editprice',
+							'type': 'number',
+							'value': 0,
+							'size': 'sm',
+							'attributes': {},
+							'addclasses': [
+								'text-right',
+								'qty-input'
+							]
+						}
+					}
+				%}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="edittotal">Total</label>
+			</td>
+			<td>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'totalprice', 'id': 'edittotal',
+							'type': 'number',
+							'value': 0,
+							'size': 'sm',
+							'attributes': {
+							},
+							'addclasses': [
+								'text-right',
+								'qty-input'
+							]
+						}
+					}
+				%}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="rqstdate">Requested Ship Date</label>
+			</td>
+			<td>
+				{% include 'util/bootstrap/form/date-picker.twig' with {
+						'inputgroup': {
+							'size': 'sm',
+							'input': {
+								'name': 'rqstdate',
+								'value': '',
+								'attributes': {
+									'placeholder': '',
+									'aria-label':  'Requested Ship Date'
+								}
+							}
+						}
+					}
+				%}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="editwhse">Warehouse</label>
+			</td>
+			<td>
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'whseid', 'id': 'editwhse',
+							'size': 'sm',
+							'value': '',
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Warehouse ID'
+							},
+							'addclasses': [
+								'w-50'
+							]
+						}
+					}
+				%}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="editspecialorder">Special Order</label>
+			</td>
+			<td>
+				<select name="specialorder" id="editspecialorder" class="form-control form-control-sm">
+					{% for option, label in constant('SalesOrderDetail::OPTIONS_SPECIALORDER') %}
+						<option value="{{ option }}">{{ label|title }}</option>
+					{% endfor %}
+				</select>
+			</td>
+		</tr>
+	</table>
+	<div class="form-group">
+		<button type="submit" name="action" value="edit-line" class="btn btn-success btn-block">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+	</div>
+	<div class="form-group">
+		<button type="submit" name="action" value="delete-line" class="btn btn-danger btn-block">
+			<i class="fa fa-trash" aria-hidden="true"></i> Delete
+		</button>
+	</div>
+</form>

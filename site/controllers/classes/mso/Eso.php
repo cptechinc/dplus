@@ -84,6 +84,7 @@ class Eso extends AbstractController {
 		self::qnotes($order->ordernumber);
 		self::setupCstkLastSold($order);
 		self::js($eso, $order->ordernumber);
+		$page->body .= $config->twig->render('sales-orders/sales-order/edit/edit-item/modal.twig');
 		return $page->body;
 	}
 
