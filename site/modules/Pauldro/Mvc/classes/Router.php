@@ -3,7 +3,7 @@
 use Exception;
 
 use Whoops\Run as Whoops;
-use Mvc\Whoops\Handlers\Page as WhoopsHandler;
+use Mvc\Whoops\Handlers\PageHandler as WhoopsHandler;
 
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
@@ -97,7 +97,7 @@ class Router extends WireData {
 		$handler->addDataTable('Dplus', [
 			'User ID'    => $this->wire('user')->loginid,
 			'Session ID' => session_id(),
-			'Path'       => $input->url(),
+			'Path'       => $this->wire('input')->url(),
 		]);
 		$whoops = new Whoops();
 		$whoops->allowQuit(false);
