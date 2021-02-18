@@ -40,10 +40,17 @@ $(function() {
 		if (input_qty.attr('data-avgweight')) {
 			var totalweight = parseFloat(input_qty.val()) * parseFloat(input_qty.attr('data-avgweight'));
 			qty = totalweight;
+			row.find('.total-weight').text(totalweight.toFixed({{ eso.decimal_places_qty() }}));
 		}
 		var total = price * qty;
-		row.find('.total-price').text(total.toFixed({{ eso.decimal_places_price() }}));
-		row.find('.total-weight').text(totalweight.toFixed({{ eso.decimal_places_qty() }}));
+
+		if (row.find('input[name=totalprice]').length) {
+			row.find('input[name=totalprice]').val(total.toFixed({{ eso.decimal_places_price() }}));
+		}
+
+		if (row.find('.total-price').length) {
+			row.find('.total-price').text(total.toFixed({{ eso.decimal_places_price() }}));
+		}
 	}
 
 	function request_validate_pricemargin(itemID, price, callback) {
