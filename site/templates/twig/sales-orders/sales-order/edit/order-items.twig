@@ -29,6 +29,7 @@
 </div>
 
 {% for detail in eso.get_editable_details(order.ordernumber) %}
+	{% set item = eso.itm_item(detail.itemid) %}
 	<form action="{{ page.url }}" class="allow-enterkey-submit">
 		<input type="hidden" name="action" value="update-item-quick">
 		<input type="hidden" name="ordn" value="{{ order.ordernumber }}">
