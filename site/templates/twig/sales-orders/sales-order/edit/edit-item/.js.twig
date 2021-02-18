@@ -8,8 +8,8 @@ $(function() {
 	$('body').on('change', '#edit-item-modal select[name=specialorder]', function(e) {
 		e.preventDefault();
 		var input = $(this);
-		
-		if (input.val() == 'S') {
+
+		if (input.val() != 'N') {
 			$('.nonstock').addClass('show');
 		} else {
 			$('.nonstock').removeClass('show');
@@ -71,12 +71,51 @@ $(function() {
 						}
 					}
 				},
+				nsvendorid: {
+					required: function() {
+						return needs_nonstockfields();
+					},
+					remote: {
+						url: '{{ page.jsonapiURL('map/validate/vendorid/') }}',
+						type: "get",
+						data: {
+							vendorID: function() {
+								return $('#nsvendorid').val();
+							}
+						}
+					}
+				},
+				nsvendoritemid: {
+					required: function() {
+						return needs_nonstockfields();
+					}
+				},
+				nsitemgroupid: {
+					required: function() {
+						return needs_nonstockfields();
+					},
+					remote: {
+						url: '{{ page.jsonapiURL('inv/validate/item-group/') }}',
+						type: "get",
+						data: {
+							code: function() {
+								return $('#nsitemgroupid').val();
+							}
+						}
+					}
+				},
 			},
 			messages: {},
 			submitHandler: function(form) {
 				form.submit();
 			}
 		});
+	}
+
+	function needs_nonstockfields() {
+		var specialorder = $('#edit-item-modal select[name=specialorder]').val() != 'N';
+		var nonstock = $('#edit-item-modal input[name=itemID]').val() == 'N';
+		return specialorder === true || nonstock === true;
 	}
 /* =============================================================
 	Lookup Modal Functions
@@ -87,6 +126,24 @@ $(function() {
 		var modal = button.closest('.modal');
 		var input = $(modal.attr('data-input'));
 		input.val(button.data('whseid'));
+		$('#ajax-modal').modal('hide');
+	});
+
+	$("body").on('click', '#ajax-modal .vendor-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal = button.closest('.modal');
+		var input = $(modal.attr('data-input'));
+		input.val(button.data('vendorid'));
+		$('#ajax-modal').modal('hide');
+	});
+
+	$("body").on('click', '#ajax-modal .itemgroup-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal = button.closest('.modal');
+		var input = $(modal.attr('data-input'));
+		input.val(button.data('itemgroup'));
 		$('#ajax-modal').modal('hide');
 	});
 });
