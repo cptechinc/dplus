@@ -1,16 +1,18 @@
 <div class="form-row">
 	<div class="col-sm-8">
-		<div class="card">
+		<div class="card mb-3">
 			<div class="card-header bg-dark text-white">
 				Information
 			</div>
+			{% include 'sales-orders/sales-order/edit/edit-item/info.twig' %}
 		</div>
-		<div class="row">
+		<div class="form-row mb-3">
 			<div class="col-sm-6">
 				<div class="card">
 					<div class="card-header bg-dark text-white">
 						Pricing
 					</div>
+					{% include 'sales-orders/sales-order/edit/edit-item/pricing.twig' %}
 				</div>
 			</div>
 			<div class="col-sm-6">
@@ -18,6 +20,7 @@
 					<div class="card-header bg-dark text-white">
 						Customer History
 					</div>
+					{% include 'sales-orders/sales-order/edit/edit-item/price-history.twig' %}
 				</div>
 			</div>
 		</div>
@@ -25,6 +28,7 @@
 			<div class="card-header bg-dark text-white">
 				Availability
 			</div>
+			{% include 'sales-orders/sales-order/edit/edit-item/stock.twig' %}
 		</div>
 	</div>
 	<div class="col-sm-4">

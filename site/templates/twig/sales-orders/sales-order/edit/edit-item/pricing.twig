@@ -1,0 +1,22 @@
+{% if data.pricing %}
+	{% set columns = data.pricing.columns %}
+	<table class="table table-sm">
+		<thead>
+			<tr>
+				{% for col, label in columns %}
+					<th>{{ label }}</th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for pricing in data.pricing.data %}
+				<tr>
+					<td>{{ pricing.qty }}</td>
+					<td class="text-right">{{ pricing.price }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% else %}
+
+{% endif %}

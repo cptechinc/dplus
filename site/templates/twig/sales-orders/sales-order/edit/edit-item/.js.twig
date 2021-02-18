@@ -1,0 +1,25 @@
+$(function() {
+	var editmodal = $('#edit-item-modal');
+	var editform  = $('#edit-item-form');
+
+	editmodal.on('show.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget);
+		var linenbr = intParse(button.data('linenbr'));
+
+		modal.find('.modal-title').find('input[name=linenbr]').val(linenbr);
+		modal.find('.modal-title').find('.linenbr').text(linenbr);
+		modal.find('[role=status]').addClass('spinner-border');
+		var url = URI('{{ page.fullURL.getUrl() }}');
+		url.path(url.path() + 'line/');
+		url.setQuery('linenbr', linenbr);
+
+		modal.find('.modal-body .results').loadin(url.toString(), function() {
+			modal.find('[role=status]').removeClass('spinner-border');
+			modal.find('.loading').removeClass('show');
+		});
+	});
+
+
+
+});

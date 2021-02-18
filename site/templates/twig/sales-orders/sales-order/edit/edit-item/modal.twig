@@ -8,7 +8,17 @@
 {% endblock %}
 
 {% block modal_body %}
-	{% include 'sales-orders/sales-order/edit/edit-item/display.twig' %}
+	<div class="pt-4 loading collapse show">
+		<div class="text-center text-dark">
+			<div class="" role="status">
+
+			</div>
+			Loading...
+		</div>
+	</div>
+	<div class="results">
+		
+	</div>
 {% endblock %}
 
 {% block modal_footer %}

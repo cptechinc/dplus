@@ -1,13 +1,20 @@
-<form action="" method="post">
+{% set config = page.wire('modules').get('ConfigureSo').config() %}
+
+<form action="" method="post" id="edit-item-form">
+	<input type="hidden" name="ordn" value="{{ orderitem.ordernumber }}">
+	<input type="hidden" name="linenbr" value="{{ orderitem.linenbr }}">
+
 	<table class="table table-sm table-striped form-group">
 		<tr>
-			<td><label for="editqty">Qty</label></td>
+			<td>
+				<label for="editqty">Qty</label>
+			</td>
 			<td>
 				{% include 'util/bootstrap/form/input.twig' with {
 						'input': {
 							'name': 'qty', 'id': 'editqty',
 							'type': 'number',
-							'value': 0,
+							'value': orderitem.qty_ordered|number_format(config.decimal_places_qty),
 							'size': 'sm',
 							'attributes': {},
 							'addclasses': [
@@ -28,7 +35,7 @@
 						'input': {
 							'name': 'price', 'id': 'editprice',
 							'type': 'number',
-							'value': 0,
+							'value': orderitem.price|number_format(config.decimal_places_price),
 							'size': 'sm',
 							'attributes': {},
 							'addclasses': [
@@ -49,7 +56,7 @@
 						'input': {
 							'name': 'totalprice', 'id': 'edittotal',
 							'type': 'number',
-							'value': 0,
+							'value': orderitem.total_price|number_format(config.decimal_places_price),
 							'size': 'sm',
 							'attributes': {
 							},
@@ -72,7 +79,7 @@
 							'size': 'sm',
 							'input': {
 								'name': 'rqstdate',
-								'value': '',
+								'value': orderitem.rqstdate,
 								'attributes': {
 									'placeholder': '',
 									'aria-label':  'Requested Ship Date'
@@ -92,7 +99,7 @@
 						'input': {
 							'name': 'whseid', 'id': 'editwhse',
 							'size': 'sm',
-							'value': '',
+							'value': orderitem.whseid,
 							'attributes': {
 								'placeholder': '',
 								'aria-label':  'Warehouse ID'
@@ -112,7 +119,9 @@
 			<td>
 				<select name="specialorder" id="editspecialorder" class="form-control form-control-sm">
 					{% for option, label in constant('SalesOrderDetail::OPTIONS_SPECIALORDER') %}
-						<option value="{{ option }}">{{ label|title }}</option>
+						<option value="{{ option }}" {{ option == orderitem.specialorder ? 'selected'}}>
+							{{ label|title }}
+						</option>
 					{% endfor %}
 				</select>
 			</td>
