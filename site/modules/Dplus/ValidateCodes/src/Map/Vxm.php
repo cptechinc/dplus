@@ -65,7 +65,8 @@ class Vxm extends MapValidator {
 		if ($this->vendorid($vendorID) === false || $this->itemid($itemID) === false) {
 			return false;
 		}
-		$q = ItemXrefVendorQuery::create()->filterByItemid($itemID)->filterByVendorid($vendorID);
+		$q = ItemXrefVendorQuery::create();
+		$q->filterByItemid($itemID)->filterByVendorid($vendorID);
 		return boolval($q->count());
 	}
 
@@ -101,7 +102,8 @@ class Vxm extends MapValidator {
 	 * @return bool
 	 */
 	public function vendor_has_primary($vendorID, $itemID) {
-		$q = ItemXrefVendorQuery::create()->filterByItemid($itemID)->filterByVendorid($vendorID);
+		$q = ItemXrefVendorQuery::create();
+		$q->filterByItemid($itemID)->filterByVendorid($vendorID);
 		$q->filterByPo_ordercode(ItemXrefVendor::POORDERCODE_PRIMARY);
 		return boolval($q);
 	}
