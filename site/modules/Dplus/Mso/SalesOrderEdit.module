@@ -323,9 +323,15 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @return Config(x)
 	 */
 	public function config($code = '') {
+		$modules = $this->wire('modules');
 		switch ($code) {
+			case 'inv':
+			case 'in':
+			case 'min':
+				return $modules->get('ConfigureIn')->config();
+				break;
 			default:
-				return $this->wire('modules')->get('ConfigureSo')->config();
+				return $modules->get('ConfigureSo')->config();
 				break;
 		}
 	}
