@@ -227,6 +227,26 @@ class Eso extends AbstractController {
 		}
 
 		$orderitem = $q->findOne();
+		$vxm = self::pw('modules')->get('XrefVxm');
+
+		if ($vxm->poordercode_primary_exists($orderitem->itemid)) {
+			$xref = $vxm->get_primary_poordercode_itemid($orderitem->itemid);
+			$orderitem->setNsvendorid($xref->vendorid);
+			$orderitem->setNsvendoritemid($xref->vendoritemid);
+		}
+
+		$files = self::setupItemJsonFiles($eso, $orderitem);
+		$page->body .= $config->twig->render('sales-orders/sales-order/edit/edit-item/display.twig', ['orderitem' => $orderitem, 'data' => $files]);
+		return $page->body;
+	}
+
+	/**
+	 * Get Json Files
+	 * @param  EsoModel         $eso       [description]
+	 * @param  SalesOrderDetail $orderitem [description]
+	 * @return array
+	 */
+	private static function setupItemJsonFiles(EsoModel $eso, SalesOrderDetail $orderitem) {
 		$files = ['pricing' => false, 'pricehistory' => false, 'stock' => false];
 
 		if ($orderitem->itemid != 'N') {
@@ -259,8 +279,6 @@ class Eso extends AbstractController {
 				$files[$code] = $json;
 			}
 		}
-
-		$page->body .= $config->twig->render('sales-orders/sales-order/edit/edit-item/display.twig', ['orderitem' => $orderitem, 'data' => $files]);
-		return $page->body;
+		return $files;
 	}
 }
