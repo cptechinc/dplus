@@ -9,6 +9,7 @@
 				['GET', 'country-code/', Json\Min::class, 'validateCountryCode'],
 				['GET', 'msds-code/', Json\Min::class, 'validateMsdsCode'],
 				['GET', 'itemid/', Json\Min::class, 'validateItemid'],
+				['GET', 'item-group/', Json\Min::class, 'validateInvGroupCode'],
 				['GET', 'warehouse/', Json\Min::class, 'validateWarehouseid'],
 				['GET', 'itmp/exists/', Json\Min::class, 'validateItmpExists'],
 			],
@@ -26,9 +27,10 @@
 				['GET', 'mxrfe/', Json\Map::class, 'validateMxrfe'],
 				['GET', 'mxrfe/new/', Json\Map::class, 'validateMxrfeNew'],
 			],
-			['GET', 'vxm/', Json\Map::class, 'getVxm'],
-			['GET', 'vxm/itemid/', Json\Map::class, 'getVxmByItemid'],
-
+			'vxm' => [
+				['GET', '', Json\Map::class, 'getVxm'],
+				['GET', 'itemid/', Json\Map::class, 'getVxmByItemid'],
+			],
 			['GET', 'vendor/', Json\Map::class, 'getVendor'],
 			['GET', 'vendor/contact/', Json\Map::class, 'getVendorContact'],
 		],
