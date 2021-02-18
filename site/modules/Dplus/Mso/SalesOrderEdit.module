@@ -496,9 +496,20 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @return void
 	 */
 	public function request_itemsearch($q) {
-		$order = $this->get_order_static($this->ordn);
-		$custID = SalesOrderQuery::create()->get_custid($ordn);
+		$custID = SalesOrderQuery::create()->get_custid($this->ordn);
 		$data = array("ITNOSRCH=$q", "CUSTID=$custID");
+		$this->request_dplus($data);
+	}
+
+	/**
+	 * Sends HTTP GET request to send Dplus Item Search Request
+	 * @param  string $q Query or Item ID
+	 * @return void
+	 */
+	public function request_itempricing($q) {
+		$order = $this->get_order_static($this->ordn);
+		$custID = SalesOrderQuery::create()->get_custid($this->ordn);
+		$data = array('IIPRICING', "ITEMID=$q", "CUSTID=$custID");
 		$this->request_dplus($data);
 	}
 
@@ -510,7 +521,6 @@ class SalesOrderEdit extends WireData implements Module {
 		$url->query->set('ordn', $ordn);
 		return $url->getUrl();
 	}
-
 
 /* =============================================================
 	ProcessWire Module Functions
