@@ -1,10 +1,17 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	orderitem              SalesOrderDetail
+#}
+
 {% set config = page.wire('modules').get('ConfigureSo').config() %}
 
 <form action="" method="post" id="edit-item-form">
 	<input type="hidden" name="ordn" value="{{ orderitem.ordernumber }}">
 	<input type="hidden" name="linenbr" value="{{ orderitem.linenbr }}">
 
-	<table class="table table-sm table-striped form-group">
+	<table class="table table-sm table-striped form-group order-item">
 		<tr>
 			<td>
 				<label for="editqty">Qty</label>
@@ -37,7 +44,10 @@
 							'type': 'number',
 							'value': orderitem.price|number_format(config.decimal_places_price),
 							'size': 'sm',
-							'attributes': {},
+							'attributes': {
+								'data-allowdiscount': orderitem.item.allow_discount() ? 'Y' : 'N',
+								'data-itemid': orderitem.itemid,
+							},
 							'addclasses': [
 								'text-right',
 								'qty-input'
@@ -95,18 +105,30 @@
 				<label for="editwhse">Warehouse</label>
 			</td>
 			<td>
-				{% include 'util/bootstrap/form/input.twig' with {
-						'input': {
-							'name': 'whseid', 'id': 'editwhse',
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
 							'size': 'sm',
-							'value': orderitem.whseid,
-							'attributes': {
-								'placeholder': '',
-								'aria-label':  'Warehouse ID'
+							'type': 'prepend',
+							'input': {
+								'name': 'whseid', 'id': 'editwhse',
+								'size': 'sm',
+								'value': orderitem.whseid,
+								'attributes': {
+									'placeholder': '',
+									'aria-label':  'Warehouse ID'
+								},
 							},
-							'addclasses': [
-								'w-50'
-							]
+							'button': {
+								'colorclass': 'btn-secondary',
+								'text': 'fa fa-search'|icon,
+								'attributes': {
+									'title': 'Search Warehouse IDs',
+									'data-toggle': 'modal',
+									'data-target': '#ajax-modal',
+									'data-lookupurl': page.search_lookupURL('warehouses'),
+									'data-input': '#editwhse'
+								}
+							}
 						}
 					}
 				%}
