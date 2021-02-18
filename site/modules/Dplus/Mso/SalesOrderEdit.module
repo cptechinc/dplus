@@ -232,6 +232,14 @@ class SalesOrderEdit extends WireData implements Module {
 		$editline->setWhse($values->text('whseid'));
 		$editline->setSpcord($values->text('specialorder'));
 
+		if ($editline->spcord != 'S' || $editline->itemid == ItemMasterItem::ITEMID_NONSTOCK) {
+			$editline->setNsvendorid($values->text('nsvendorid'));
+			$editline->setNsvendoritemid($values->text('nsvendoritemid'));
+			$editline->setNsitemgroupid($values->text('nsitemgroupid'));
+			$editline->setPonbr($values->text('ponbr'));
+			$editline->setPoref($values->text('poref'));
+		}
+
 		$editline->save();
 		$this->request_so_update_detail($ordn, $linenbr);
 	}
