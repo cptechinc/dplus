@@ -139,9 +139,7 @@ class JsonDataFiles extends WireData implements Module {
 	 * @return array             Decoded json array
 	 */
 	public function get_file($sessionID, $jsoncode) {
-		$basefile = $this->get_filename($jsoncode);
-		$filepath = $this->wire('config')->jsonfilepath;
-		$jsonfile = $filepath."$sessionID-$basefile.json";
+		$jsonfile = $this->get_fullfilepath($sessionID, $jsoncode);
 		$json = array();
 
 		if (file_exists($jsonfile)) {
@@ -165,9 +163,7 @@ class JsonDataFiles extends WireData implements Module {
 	 * @return bool              Does File Exist
 	 */
 	public function file_exists($sessionID, $jsoncode) {
-		$basefile = $this->get_filename($jsoncode);
-		$filepath = $this->wire('config')->jsonfilepath;
-		$jsonfile = $filepath."$sessionID-$basefile.json";
+		$jsonfile = $this->get_fullfilepath($sessionID, $jsoncode);
 		return file_exists($jsonfile);
 	}
 
@@ -178,9 +174,7 @@ class JsonDataFiles extends WireData implements Module {
 	 * @return bool              Was File Removed
 	 */
 	public function remove_file($sessionID, $jsoncode) {
-		$basefile = $this->get_filename($jsoncode);
-		$filepath = $this->wire('config')->jsonfilepath;
-		$jsonfile = $filepath."$sessionID-$basefile.json";
+		$jsonfile = $this->get_fullfilepath($sessionID, $jsoncode);
 		return unlink($jsonfile);
 	}
 
