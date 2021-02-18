@@ -186,6 +186,9 @@ class JsonDataFiles extends WireData implements Module {
 	 */
 	public function file_modified($sessionID, $jsoncode) {
 		$jsonfile = $this->get_fullfilepath($sessionID, $jsoncode);
+		if (file_exists($jsonfile) === false) {
+			return 0;
+		}
 		return filemtime($jsonfile);
 	}
 
