@@ -10,6 +10,7 @@ $(function() {
 		modal.find('.modal-title').find('input[name=linenbr]').val(linenbr);
 		modal.find('.modal-title').find('.linenbr').text(linenbr);
 		modal.find('[role=status]').addClass('spinner-border');
+		modal.find('.loading').addClass('show');
 		var url = URI('{{ page.fullURL.getUrl() }}');
 		url.path(url.path() + 'line/');
 		url.setQuery('linenbr', linenbr);
