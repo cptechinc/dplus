@@ -3,6 +3,20 @@ $(function() {
 	var editform  = $('#edit-item-form');
 
 /* =============================================================
+	Event Functions
+============================================================= */
+	$('body').on('change', '#edit-item-modal select[name=specialorder]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		
+		if (input.val() == 'S') {
+			$('.nonstock').addClass('show');
+		} else {
+			$('.nonstock').removeClass('show');
+		}
+	});
+
+/* =============================================================
 	Edit Item Modal Functions
 ============================================================= */
 	editmodal.on('show.bs.modal', function (event) {
