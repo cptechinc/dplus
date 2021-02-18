@@ -128,7 +128,7 @@ class Min extends AbstractController {
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
-		if ($validate->whseid($data->whseID) === false || $data->whseID != '**') {
+		if ($validate->whseid($data->whseID) === false && $data->whseID != '**') {
 			return "Warehouse ID $data->whseID not found";
 		}
 		return true;

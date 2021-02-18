@@ -9,7 +9,7 @@
 				['GET', 'country-code/', Json\Min::class, 'validateCountryCode'],
 				['GET', 'msds-code/', Json\Min::class, 'validateMsdsCode'],
 				['GET', 'itemid/', Json\Min::class, 'validateItemid'],
-				['GET', 'warehouse/', Json\Min::class, 'validateWarehouse'],
+				['GET', 'warehouse/', Json\Min::class, 'validateWarehouseid'],
 				['GET', 'itmp/exists/', Json\Min::class, 'validateItmpExists'],
 			],
 			['GET', 'tariff-code/', Json\Min::class, 'getTariffCode'],
