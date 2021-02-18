@@ -21,6 +21,22 @@ $(function() {
 		});
 	});
 
+	$('body').on('click', '#edit-item-modal .whse-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal = $(button.closest('.modal'));
+		modal.find('input[name=whseid]').val(button.data('whseid'));
+	});
 
-
+/* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	$("body").on('click', '#ajax-modal .whse-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal = button.closest('.modal');
+		var input = $(modal.attr('data-input'));
+		input.val(button.data('whseid'));
+		$('#ajax-modal').modal('hide');
+	});
 });
