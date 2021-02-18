@@ -26,14 +26,15 @@
 		// User
 		['GET', 'users/', AjaxLookup::class, 'users'],
 		['GET', 'users/page{nbr:\d+}/', AjaxLookup::class, 'users'],
-
 		// Vendor
 		['GET', 'vendors/', AjaxLookup::class, 'vendors'],
 		['GET', 'vendors/page{nbr:\d+}/', AjaxLookup::class, 'vendors'],
-
-		// Vendor
+		// Vendor Contacts
 		['GET', 'vendor/contacts/', AjaxLookup::class, 'vendorContacts'],
 		['GET', 'vendor/contacts/page{nbr:\d+}/', AjaxLookup::class, 'vendorContacts'],
+		// Item Groups
+		['GET', 'item-groups/', AjaxLookup::class, 'itemGroups'],
+		['GET', 'item-groups/page{d:\d+}/', AjaxLookup::class, 'itemGroups'],
 	];
 
 	$router = new Mvc\Router();

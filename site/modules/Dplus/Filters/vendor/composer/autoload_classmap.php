@@ -10,5 +10,6 @@ return array(
     'Dplus\\Filters\\AbstractFilter' => $baseDir . '/src/AbstractFilter.php',
     'Dplus\\Filters\\Map\\ApContact' => $baseDir . '/src/Map/ApContact.php',
     'Dplus\\Filters\\Mar\\SalesPerson' => $baseDir . '/src/Mar/SalesPerson.php',
+    'Dplus\\Filters\\Min\\ItemGroup' => $baseDir . '/src/Min/ItemGroup.php',
     'Dplus\\Filters\\Misc\\PhoneBook' => $baseDir . '/src/Misc/PhoneBook.php',
 );
