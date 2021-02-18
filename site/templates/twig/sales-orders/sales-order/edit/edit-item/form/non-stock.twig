@@ -1,5 +1,5 @@
 {% set config = page.wire('modules').get('ConfigureIn').config() %}
-<tbody class="nonstock collapse">
+<tbody class="nonstock collapse {{ orderitem.itemid == constant('ItemMasterItem::ITEMID_NONSTOCK') ? 'show' : '' }}">
 	<tr>
 		<td colspan="2" class="bg-dark text-white text-center">
 			Non-stock / Special Order Information
@@ -29,7 +29,7 @@
 								'data-toggle': 'modal',
 								'data-target': '#ajax-modal',
 								'data-lookupurl': page.search_lookupURL('vendors'),
-								'data-input': '#vendorID'
+								'data-input': '#nsvendorid'
 							}
 						}
 					}
@@ -51,7 +51,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td> <label for="nsitemgroupid">Vendor ID</label> </td>
+		<td> <label for="nsitemgroupid">Group</label> </td>
 		<td>
 			{% include 'util/bootstrap/form/input-group.twig' with {
 					'inputgroup': {
