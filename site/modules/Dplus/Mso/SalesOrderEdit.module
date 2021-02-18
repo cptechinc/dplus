@@ -131,16 +131,16 @@ class SalesOrderEdit extends WireData implements Module {
 
 		switch ($values->text('action')) {
 			case 'update-header':
-				$this->process_input_update_header($input);
+				$this->input_update_header($input);
 				break;
 			case 'update-item-quick':
-				$this->process_input_update_item_quick($input);
+				$this->input_update_item_quick($input);
 				break;
 			case 'update-item':
-				$this->process_input_update_item($input);
+				$this->input_update_item($input);
 				break;
 			case 'delete-item':
-				$this->process_input_delete_item($input);
+				$this->input_delete_item($input);
 				break;
 			case 'unlock-order':
 				$ordn = $values->text('ordn');
@@ -159,7 +159,7 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @param WireInput $input Input data
 	 * @return void
 	 */
-	public function process_input_update_header(WireInput $input) {
+	public function input_update_header(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$config = $this->config('so');
@@ -195,7 +195,7 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @param WireInput $input Input data
 	 * @return void
 	 */
-	public function process_input_update_item_quick(WireInput $input) {
+	public function input_update_item_quick(WireInput $input) {
 		$config = $this->config();
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
@@ -217,7 +217,7 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @param WireInput $input Input data
 	 * @return void
 	 */
-	public function process_input_update_item(WireInput $input) {
+	public function input_update_item(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$ordn = $values->ordn('ordn');
@@ -241,7 +241,7 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @param WireInput $input Input data
 	 * @return void
 	 */
-	public function process_input_delete_item(WireInput $input) {
+	public function input_delete_item(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$ordn = SalesOrder::get_paddedordernumber($values->text('ordn'));
