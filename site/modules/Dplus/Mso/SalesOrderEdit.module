@@ -343,7 +343,7 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return ItemMasterItem
 	 */
-	public function get_im_item($itemID) {
+	public function itm_item($itemID) {
 		return ItemMasterItemQuery::create()->findOneByItemid($itemID);
 	}
 
