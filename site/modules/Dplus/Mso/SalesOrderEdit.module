@@ -136,6 +136,9 @@ class SalesOrderEdit extends WireData implements Module {
 			case 'update-item-quick':
 				$this->process_input_update_item_quick($input);
 				break;
+			case 'update-item':
+				$this->process_input_update_item($input);
+				break;
 			case 'delete-item':
 				$this->process_input_delete_item($input);
 				break;
@@ -193,17 +196,42 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @return void
 	 */
 	public function process_input_update_item_quick(WireInput $input) {
+		$config = $this->config();
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$ordn = SalesOrder::get_paddedordernumber($values->text('ordn'));
 		$linenbr = $values->int('linenbr');
-		$qty     = $values->text('qty');
-		$price   = $values->float('price');
+		$qty     = $values->float('qty', ['precision' => $config->decimal_places_qty]);
+		$price   = $values->float('price', ['precision' => $config->decimal_places_price]);
 
 		$custID = SalesOrderQuery::create()->get_custid($ordn);
 		$editline = OrdrdetQuery::create()->findOneBySessionidOrder(session_id(), $ordn, $linenbr);
 		$editline->setQty($qty);
 		$editline->setPrice($price);
+		$editline->save();
+		$this->request_so_update_detail($ordn, $linenbr);
+	}
+
+	/**
+	 * Update Sales Order Item
+	 * @param WireInput $input Input data
+	 * @return void
+	 */
+	public function process_input_update_item(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$ordn = $values->ordn('ordn');
+		$linenbr = $values->int('linenbr');
+		$config = $this->config();
+		$editline = OrdrdetQuery::create()->findOneBySessionidOrder(session_id(), $ordn, $linenbr);
+		$editline->setQty($values->float('qty', ['precision' => $config->decimal_places_qty]));
+		$editline->setPrice($values->float('price', ['precision' => $config->decimal_places_price]));
+		if ($values->rshipdate) {
+			$editline->setRshipdate(date('m/d/Y', strtotime($values->text('rshipdate'))));
+		}
+		$editline->setWhse($values->text('whseid'));
+		$editline->setSpcord($values->text('specialorder'));
+
 		$editline->save();
 		$this->request_so_update_detail($ordn, $linenbr);
 	}
@@ -297,7 +325,7 @@ class SalesOrderEdit extends WireData implements Module {
 	public function config($code = '') {
 		switch ($code) {
 			default:
-				return ConfigSalesOrderQuery::create()->findOne();
+				return $this->wire('modules')->get('ConfigureSo')->config();
 				break;
 		}
 	}
