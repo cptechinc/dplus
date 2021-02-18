@@ -229,8 +229,26 @@ class Eso extends AbstractController {
 		$files = ['pricing' => false, 'pricehistory' => false, 'stock' => false];
 
 		if ($orderitem->itemid != 'N') {
-			$eso->request_itempricing($orderitem->itemid);
+			$request = true;
 			$mjson = self::pw('modules')->get('JsonDataFiles');
+
+			if ($mjson->file_exists(session_id(), 'eso-pricing')) {
+				$request = false;
+				$modified = $mjson->file_modified(session_id(), 'eso-pricing');
+
+				if ($modified < strtotime('-5 minutes')) {
+					$request = true;
+				}
+
+				$json = $mjson->get_file(session_id(), "eso-pricing");
+				if ($json && $json['itemid'] != $orderitem->itemid) {
+					$request = true;
+				}
+			}
+
+			if ($request) {
+				$eso->request_itempricing($orderitem->itemid);
+			}
 
 			foreach (array_keys($files) as $code) {
 				$json = $mjson->get_file(session_id(), "eso-$code");
