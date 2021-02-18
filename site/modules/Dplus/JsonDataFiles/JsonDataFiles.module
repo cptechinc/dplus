@@ -160,7 +160,6 @@ class JsonDataFiles extends WireData implements Module {
 
 	/**
 	 * Returns if the File Exists
-	 *
 	 * @param  string $sessionID Session ID
 	 * @param  string $jsoncode  Json Code ii-quotes
 	 * @return bool              Does File Exist
@@ -174,7 +173,6 @@ class JsonDataFiles extends WireData implements Module {
 
 	/**
 	 * Removes Json file
-	 *
 	 * @param  string $sessionID Session ID
 	 * @param  string $jsoncode  Json Code ii-quotes
 	 * @return bool              Was File Removed
@@ -188,7 +186,6 @@ class JsonDataFiles extends WireData implements Module {
 
 	/**
 	 * Returns Date Time of when Json file was modified
-	 *
 	 * @param  string $sessionID Session ID
 	 * @param  string $jsoncode  Json Code e.g. ii-quotes
 	 * @return string            Date Time of when Json file was modified
