@@ -12,6 +12,8 @@ use CustomerQuery, Customer;
 use SalesOrder;
 use SalesOrderDetailQuery, SalesOrderDetail;
 
+use OrdrhedQuery, Ordrhed as SalesOrderEditable;
+
 class Eso extends AbstractController {
 	public static function index($data) {
 		$fields = ['ordn|text', 'action|text'];
@@ -78,7 +80,6 @@ class Eso extends AbstractController {
 		$config = self::pw('config');
 		$page->headline = "Editing Sales Order #$data->ordn";
 		$order = $eso->get_editable_header($data->ordn);
-
 		self::soEditHeader($eso, $order);
 		self::soEditItems($eso, $order);
 		self::itemLookupForm($order);
@@ -89,7 +90,7 @@ class Eso extends AbstractController {
 		return $page->body;
 	}
 
-	private static function soEditHeader(EsoModel $eso, $order) {
+	private static function soEditHeader(EsoModel $eso, SalesOrderEditable $order) {
 		$page  = self::pw('page');
 		$config = self::pw('config');
 		$customer = CustomerQuery::create()->findOneByCustid($order->custid);
@@ -103,7 +104,7 @@ class Eso extends AbstractController {
 		}
 	}
 
-	private static function soEditItems(EsoModel $eso, $order) {
+	private static function soEditItems(EsoModel $eso, SalesOrderEditable $order) {
 		$page   = self::pw('page');
 		$config = self::pw('config');
 		if ($config->twigloader->exists("sales-orders/sales-order/edit/$config->company/order-items.twig")) {
@@ -113,7 +114,7 @@ class Eso extends AbstractController {
 		}
 	}
 
-	private static function itemLookupForm($order) {
+	private static function itemLookupForm(SalesOrderEditable $order) {
 		if (self::pw('user')->is_editingorder($order->ordernumber)) {
 			$config = self::pw('config');
 			$page   = self::pw('page');
