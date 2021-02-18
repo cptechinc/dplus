@@ -80,7 +80,8 @@ class Map extends AbstractController {
 			return false;
 		}
 
-		$q = ItemXrefVendorQuery::create()->filterByItemid($data->itemID)->filterByVendorid($data->vendorID);
+		$q = ItemXrefVendorQuery::create();
+		$q->filterByItemid($data->itemID)->filterByVendorid($data->vendorID);
 		if ($validate->vendor_has_primary($data->vendorID, $data->itemID)) {
 			$q->filterByPo_ordercode(ItemXrefVendor::POORDERCODE_PRIMARY);
 		}
@@ -90,6 +91,7 @@ class Map extends AbstractController {
 			'itemid'       => $xref->itemid,
 			'vendoritemid' => $xref->vendoritemid
 		);
+		return $response;
 	}
 
 	public static function validateMxrfe($data) {
