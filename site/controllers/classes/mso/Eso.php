@@ -10,6 +10,7 @@ use PricingQuery, Pricing;
 
 use CustomerQuery, Customer;
 use SalesOrder;
+use SalesOrderDetailQuery, SalesOrderDetail;
 
 class Eso extends AbstractController {
 	public static function index($data) {
@@ -26,7 +27,6 @@ class Eso extends AbstractController {
 		return self::lookupForm();
 	}
 
-	// TODO
 	public static function handleCRUD($data) {
 		$data = self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn']);
 
@@ -58,6 +58,7 @@ class Eso extends AbstractController {
 		}
 
 		$eso = self::pw('modules')->get('SalesOrderEdit');
+		$eso->set_ordn($data->ordn);
 
 		if ($eso->exists_editable($data->ordn) === false) {
 			if ($data->load > 0) {
@@ -84,7 +85,7 @@ class Eso extends AbstractController {
 		self::qnotes($order->ordernumber);
 		self::setupCstkLastSold($order);
 		self::js($eso, $order->ordernumber);
-		$page->body .= $config->twig->render('sales-orders/sales-order/edit/edit-item/modal.twig');
+		$page->body .= $config->twig->render('sales-orders/sales-order/edit/edit-item/modal.twig', ['ordn' => $order->ordernumber]);
 		return $page->body;
 	}
 
@@ -96,6 +97,7 @@ class Eso extends AbstractController {
 		$page->formurl  = self::pw('pages')->get('template=dplus-menu, name=mso')->child('template=redir')->url;
 		$page->body .= $config->twig->render('sales-orders/sales-order/edit/links-header.twig', ['order' => $order]);
 		$page->body .= $config->twig->render('sales-orders/sales-order/edit/sales-order-header.twig', ['customer' => $customer, 'order' => $eso->get_order_static($order->ordernumber)]);
+
 		if (self::pw('user')->is_editingorder($order->ordernumber)) {
 			$page->body .= $config->twig->render('sales-orders/sales-order/edit/edit-form.twig', ['eso' => $eso, 'order' => $order, 'states' => $eso->get_states(), 'shipvias' => $eso->get_shipvias(), 'warehouses' => $eso->get_warehouses(), 'termscodes' => $eso->get_termscodes(), 'shiptos' => $customer->get_shiptos()]);
 		}
@@ -128,9 +130,11 @@ class Eso extends AbstractController {
 			$input = self::pw('input');
 			if ($input->get->q) {
 				$q = $input->get->text('q');
+				$eso = self::pw('modules')->get('SalesOrderEdit');
+				$eso->set_ordn($order->ordernumber);
 				$eso->request_itemsearch($q);
 				$results = PricingQuery::create()->findBySessionid(session_id());
-				$page->body .= $config->twig->render('sales-orders/sales-order/edit/item-lookup-results.twig', ['q' => $q, 'results' => $results, 'soconfig' => $eso->config('so') ]);
+				$page->body .= $config->twig->render('sales-orders/sales-order/edit/lookup/results.twig', ['q' => $q, 'results' => $results, 'soconfig' => $eso->config('so') ]);
 			}
 		}
 	}
@@ -193,6 +197,51 @@ class Eso extends AbstractController {
 		$page = self::pw('page');
 		$config = self::pw('config');
 		$page->body .= $config->twig->render('sales-orders/sales-order/lookup-form.twig');
+		return $page->body;
+	}
+
+	public static function editItem($data) {
+		$eso = self::pw('modules')->get('SalesOrderEdit');
+
+		$data = self::sanitizeParametersShort($data, ['ordn|ordn', 'linenbr|int']);
+		$data->ordn = self::pw('sanitizer')->ordn($data->ordn);
+		$page = self::pw('page');
+		$config = self::pw('config');
+		$validate = new MsoValidator();
+
+		if ($validate->order($data->ordn) === false) {
+			return self::invalidSo($data);
+		}
+
+		if (self::pw('user')->is_editingorder($data->ordn) == false) {
+			return self::invalidHistory($data);
+		}
+		$eso->set_ordn($data->ordn);
+
+		$q = SalesOrderDetailQuery::create()->filterByOrdernumber($data->ordn)->filterByLinenbr($data->linenbr);
+
+		if (empty($data->linenbr) || $q->count() === 0) {
+			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Invalid Line #", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Line # $data->linenbr does not exist on SO # $data->ordn"]);
+			return $page->body;
+		}
+
+		$orderitem = $q->findOne();
+		$files = ['pricing' => false, 'pricehistory' => false, 'stock' => false];
+
+		if ($orderitem->itemid != 'N') {
+			$eso->request_itempricing($orderitem->itemid);
+			$mjson = self::pw('modules')->get('JsonDataFiles');
+
+			foreach (array_keys($files) as $code) {
+				$json = $mjson->get_file(session_id(), "eso-$code");
+				if ($mjson->file_exists(session_id(), "eso-$code") == false) {
+					$json = false;
+				}
+				$files[$code] = $json;
+			}
+		}
+
+		$page->body .= $config->twig->render('sales-orders/sales-order/edit/edit-item/display.twig', ['orderitem' => $orderitem, 'data' => $files]);
 		return $page->body;
 	}
 }
