@@ -222,24 +222,33 @@ class SalesOrderEdit extends WireData implements Module {
 		$values = $input->$rm;
 		$ordn = $values->ordn('ordn');
 		$linenbr = $values->int('linenbr');
-		$config = $this->config();
 
-		$q = OrdrdetQuery::create()->filterbySessionid(session_id())->filterByOrdernumber($ordn)->filterByLinenbr($linenbr);
+		$q = OrdrdetQuery::create();
+		$q->filterbySessionid(session_id())->filterByOrderno($ordn)->filterByLinenbr($linenbr);
 
 		if ($q->count() || $linenbr == 0) {
 			$line = $q->findOneOrCreate();
 			if ($line->isNew()) {
 				$line->setSessionid(session_id());
-				$line->setOrdernumber($ordn);
-				$line->setLinenbr($linenbr);
+				$line->setOrderno($ordn);
+				$line->setLinenbr(0);
+				$line->setItemid($values->text('itemID'));
 			}
 			$this->input_update_item_record($input, $line);
-			$line->save();
+			$success = $line->save();
+			$db = $this->wire('modules')->get('DplusOnlineDatabase')->propelWriteConnection();
+			$db->useDebug(true);
+			echo $db->getLastExecutedQuery();
+			exit;
 			$this->request_so_update_detail($ordn, $linenbr);
 		}
 	}
 
 	private function input_update_item_record(WireInput $input, Ordrdet $line) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$config = $this->config();
+
 		$line->setQty($values->float('qty', ['precision' => $config->decimal_places_qty]));
 		$line->setPrice($values->float('price', ['precision' => $config->decimal_places_price]));
 		if ($values->rshipdate) {
@@ -248,7 +257,7 @@ class SalesOrderEdit extends WireData implements Module {
 		$line->setWhse($values->text('whseid'));
 		$line->setSpcord($values->text('specialorder'));
 
-		if ($line->spcord != 'S' || $editline->itemid == ItemMasterItem::ITEMID_NONSTOCK) {
+		if ($line->spcord != 'N' || $line->itemid == ItemMasterItem::ITEMID_NONSTOCK) {
 			$line->setNsvendorid($values->text('nsvendorid'));
 			$line->setNsvendoritemid($values->text('nsvendoritemid'));
 			$line->setNsitemgroupid($values->text('nsitemgroupid'));
