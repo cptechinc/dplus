@@ -44,6 +44,7 @@ class Eso extends AbstractController {
 			$url = $data->action == 'exit' ? $page->so_viewURL($data->ordn) : $page->so_editURL($data->ordn);
 			self::pw('session')->redirect($url, $http301 = false);
 		}
+		self::pw('session')->redirect(self::pw('input')->url(), $http301 = false);
 	}
 
 	public static function so($data) {
