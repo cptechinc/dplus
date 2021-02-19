@@ -1,6 +1,6 @@
 {% if data.pricing %}
 	{% set columns = data.pricing.columns %}
-	<table class="table table-sm mb-0">
+	<table class="table table-sm mb-0 pricing">
 		<thead>
 			<tr>
 				{% for col, label in columns %}
@@ -10,7 +10,7 @@
 		</thead>
 		<tbody>
 			{% for pricing in data.pricing.data %}
-				<tr>
+				<tr class="price-break" data-qty="{{ pricing.qty == 'EACH' ? 1 : pricing.qty }}" data-price="{{ pricing.price }}">
 					<td>{{ pricing.qty }}</td>
 					<td class="text-right">{{ pricing.price }}</td>
 				</tr>
