@@ -11,6 +11,7 @@ use PricingQuery, Pricing;
 use CustomerQuery, Customer;
 use SalesOrder;
 use SalesOrderDetailQuery, SalesOrderDetail;
+use ItemMasterItemQuery, ItemMasterItem;
 
 use OrdrhedQuery, Ordrhed as SalesOrderEditable;
 
@@ -107,6 +108,7 @@ class Eso extends AbstractController {
 	private static function soEditItems(EsoModel $eso, SalesOrderEditable $order) {
 		$page   = self::pw('page');
 		$config = self::pw('config');
+
 		if ($config->twigloader->exists("sales-orders/sales-order/edit/$config->company/order-items.twig")) {
 			$page->body .= $config->twig->render("sales-orders/sales-order/edit/$config->company/order-items.twig", ['order' => $order, 'eso' => $eso]);
 		} else {
@@ -129,6 +131,7 @@ class Eso extends AbstractController {
 			}
 
 			$input = self::pw('input');
+
 			if ($input->get->q) {
 				$q = $input->get->text('q');
 				$eso = self::pw('modules')->get('SalesOrderEdit');
@@ -204,7 +207,7 @@ class Eso extends AbstractController {
 	public static function editItem($data) {
 		$eso = self::pw('modules')->get('SalesOrderEdit');
 
-		$data = self::sanitizeParametersShort($data, ['ordn|ordn', 'linenbr|int']);
+		$data = self::sanitizeParametersShort($data, ['ordn|ordn', 'linenbr|int', 'itemID|text']);
 		$data->ordn = self::pw('sanitizer')->ordn($data->ordn);
 		$page = self::pw('page');
 		$config = self::pw('config');
@@ -219,14 +222,28 @@ class Eso extends AbstractController {
 		}
 		$eso->set_ordn($data->ordn);
 
+		// Validate Line Exists
 		$q = SalesOrderDetailQuery::create()->filterByOrdernumber($data->ordn)->filterByLinenbr($data->linenbr);
 
-		if (empty($data->linenbr) || $q->count() === 0) {
+		if ($data->linenbr !== 0 && $q->count() === 0) {
 			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Invalid Line #", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Line # $data->linenbr does not exist on SO # $data->ordn"]);
 			return $page->body;
 		}
 
-		$orderitem = $q->findOne();
+		$orderitem = $q->findOneOrCreate();
+		if ($orderitem->isNew()) {
+			$orderitem->setOrdernumber($data->ordn);
+			$orderitem->setLinenbr(0);
+			if (empty($data->itemID)) {
+				$data->itemID = ItemMasterItem::ITEMID_NONSTOCK;
+			}
+			$orderitem->setItemid($data->itemID);
+			if ($orderitem->itemid != ItemMasterItem::ITEMID_NONSTOCK) {
+				$pricing = PricingQuery::create()->filterBySessionid(session_id())->findOneByItemid($orderitem->itemid);
+				$orderitem->setPrice($pricing->price);
+			}
+
+		}
 		$vxm = self::pw('modules')->get('XrefVxm');
 
 		if ($vxm->poordercode_primary_exists($orderitem->itemid)) {
@@ -242,8 +259,8 @@ class Eso extends AbstractController {
 
 	/**
 	 * Get Json Files
-	 * @param  EsoModel         $eso       [description]
-	 * @param  SalesOrderDetail $orderitem [description]
+	 * @param  EsoModel         $eso
+	 * @param  SalesOrderDetail $orderitem
 	 * @return array
 	 */
 	private static function setupItemJsonFiles(EsoModel $eso, SalesOrderDetail $orderitem) {
