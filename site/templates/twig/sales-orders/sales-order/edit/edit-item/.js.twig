@@ -16,27 +16,61 @@ $(function() {
 		}
 	});
 
+	$('body').on('change', '#edit-item-modal input[name=price]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		input.attr('data-userchanged', 'true');
+	});
+
+	$('body').on('change', '#edit-item-modal input[name=qty]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var pricingtable = editmodal.find('.pricing');
+		var itemprice = editmodal.find('input[name=price]').val();
+
+		if (input.val() != 'N') {
+			pricingtable.find('.price-break').each(function( index ) {
+				var pricebreak = $(this);
+				var price = floatParse(pricebreak.data('price'));
+				var qty   = floatParse(pricebreak.data('qty'));
+				if (floatParse(input.val()) >= qty) {
+					itemprice = price;
+				}
+			});
+			editmodal.find('input[name=price]').val(itemprice.toFixed({{ eso.decimal_places_price() }}));
+		}
+	});
+
 /* =============================================================
 	Edit Item Modal Functions
 ============================================================= */
 	editmodal.on('show.bs.modal', function (event) {
 		var modal = $(this);
 		var button = $(event.relatedTarget);
-		var linenbr = intParse(button.data('linenbr'));
+		var linenbr = 0;
 
-		modal.find('.modal-title').find('input[name=linenbr]').val(linenbr);
+		var url = URI('{{ page.fullURL.getUrl() }}');
+		url.path(url.path() + 'line/');
+
+		if (button[0]) {
+			linenbr = intParse(button.data('linenbr'));
+		}
+		url.setQuery('linenbr', linenbr);
+
+		if (typeof button[0] == 'undefined') {
+			url.setQuery('itemID', modal.attr('data-itemid') ? modal.attr('data-itemid') : 'N');
+		}
+
 		modal.find('.modal-title').find('.linenbr').text(linenbr);
 		modal.find('[role=status]').addClass('spinner-border');
 		modal.find('.loading').addClass('show');
-		var url = URI('{{ page.fullURL.getUrl() }}');
-		url.path(url.path() + 'line/');
-		url.setQuery('linenbr', linenbr);
 
 		modal.find('.modal-body .results').loadin(url.toString(), function() {
 			modal.find('[role=status]').removeClass('spinner-border');
 			modal.find('.loading').removeClass('show');
 			setup_validation();
 		});
+
 	});
 
 	$('body').on('click', '#edit-item-modal .whse-link', function(e) {
