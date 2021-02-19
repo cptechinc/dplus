@@ -223,25 +223,38 @@ class SalesOrderEdit extends WireData implements Module {
 		$ordn = $values->ordn('ordn');
 		$linenbr = $values->int('linenbr');
 		$config = $this->config();
-		$editline = OrdrdetQuery::create()->findOneBySessionidOrder(session_id(), $ordn, $linenbr);
-		$editline->setQty($values->float('qty', ['precision' => $config->decimal_places_qty]));
-		$editline->setPrice($values->float('price', ['precision' => $config->decimal_places_price]));
+
+		$q = OrdrdetQuery::create()->filterbySessionid(session_id())->filterByOrdernumber($ordn)->filterByLinenbr($linenbr);
+
+		if ($q->count() || $linenbr == 0) {
+			$line = $q->findOneOrCreate();
+			if ($line->isNew()) {
+				$line->setSessionid(session_id());
+				$line->setOrdernumber($ordn);
+				$line->setLinenbr($linenbr);
+			}
+			$this->input_update_item_record($input, $line);
+			$line->save();
+			$this->request_so_update_detail($ordn, $linenbr);
+		}
+	}
+
+	private function input_update_item_record(WireInput $input, Ordrdet $line) {
+		$line->setQty($values->float('qty', ['precision' => $config->decimal_places_qty]));
+		$line->setPrice($values->float('price', ['precision' => $config->decimal_places_price]));
 		if ($values->rshipdate) {
-			$editline->setRshipdate(date('m/d/Y', strtotime($values->text('rshipdate'))));
+			$line->setRshipdate(date('m/d/Y', strtotime($values->text('rshipdate'))));
 		}
-		$editline->setWhse($values->text('whseid'));
-		$editline->setSpcord($values->text('specialorder'));
+		$line->setWhse($values->text('whseid'));
+		$line->setSpcord($values->text('specialorder'));
 
-		if ($editline->spcord != 'S' || $editline->itemid == ItemMasterItem::ITEMID_NONSTOCK) {
-			$editline->setNsvendorid($values->text('nsvendorid'));
-			$editline->setNsvendoritemid($values->text('nsvendoritemid'));
-			$editline->setNsitemgroupid($values->text('nsitemgroupid'));
-			$editline->setPonbr($values->text('ponbr'));
-			$editline->setPoref($values->text('poref'));
+		if ($line->spcord != 'S' || $editline->itemid == ItemMasterItem::ITEMID_NONSTOCK) {
+			$line->setNsvendorid($values->text('nsvendorid'));
+			$line->setNsvendoritemid($values->text('nsvendoritemid'));
+			$line->setNsitemgroupid($values->text('nsitemgroupid'));
+			$line->setPonbr($values->text('ponbr'));
+			$line->setPoref($values->text('poref'));
 		}
-
-		$editline->save();
-		$this->request_so_update_detail($ordn, $linenbr);
 	}
 
 	/**
@@ -259,8 +272,6 @@ class SalesOrderEdit extends WireData implements Module {
 		$editline = OrdrdetQuery::create()->findOneBySessionidOrder(session_id(), $ordn, $linenbr);
 		$editline->setQty(0);
 		$editline->save();
-		$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "QTY=0", "CUSTID=$custID");
-
 		$this->request_so_delete_detail($ordn, $linenbr);
 	}
 
@@ -549,7 +560,6 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @return void
 	 */
 	public function request_itempricing($q) {
-		$order = $this->get_order_static($this->ordn);
 		$custID = SalesOrderQuery::create()->get_custid($this->ordn);
 		$data = array('IIPRICING', "ITEMID=$q", "CUSTID=$custID");
 		$this->request_dplus($data);
