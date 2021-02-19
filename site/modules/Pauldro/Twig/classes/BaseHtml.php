@@ -44,7 +44,7 @@ abstract class TwigBaseHtml extends WireData {
 	 */
 	public function setFromArray(array $attributes) {
 		foreach ($attributes as $attribute => $value) {
-			if (array_key_exists($attribute, $this->data)) {
+			if (array_key_exists($attribute, $this->data) && is_null($value) === false) {
 				$this->$attribute = $value;
 			}
 		}
