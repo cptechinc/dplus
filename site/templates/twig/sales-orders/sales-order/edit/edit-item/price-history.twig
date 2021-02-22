@@ -1,19 +1,22 @@
 {% if data.pricehistory %}
-	{% set columns = data.pricehistory.columns %}
 	<table class="table table-sm mb-0">
 		<thead>
 			<tr>
-				{% for col, label in columns %}
-					<th>{{ label }}</th>
-				{% endfor %}
+				<th>Order</th>
+				<th>Date</th>
+				<th>Qty</th>
+				<th>Price</th>
+				<th>Amt</th>
 			</tr>
 		</thead>
 		<tbody>
-			{% for order in data.pricehistory.data %}
+			{% for detail in data.pricehistory %}
 				<tr>
-					{% for col, label in columns %}
-						<td>{{ order[col] }}</td>
-					{% endfor %}
+					<td>{{ detail.ordernumber }}</td>
+					<td>{{ detail.order.date_invoiced|convertdate }}</td>
+					<td>{{ detail.qty_ordered }}</td>
+					<td>{{ detail.price }}</td>
+					<td>{{ detail.total_price }}</td>
 				</tr>
 			{% endfor %}
 		</tbody>
