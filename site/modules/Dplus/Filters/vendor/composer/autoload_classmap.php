@@ -12,4 +12,7 @@ return array(
     'Dplus\\Filters\\Mar\\SalesPerson' => $baseDir . '/src/Mar/SalesPerson.php',
     'Dplus\\Filters\\Min\\ItemGroup' => $baseDir . '/src/Min/ItemGroup.php',
     'Dplus\\Filters\\Misc\\PhoneBook' => $baseDir . '/src/Misc/PhoneBook.php',
+    'Dplus\\Filters\\Mso\\SalesHistory' => $baseDir . '/src/Mso/SalesHistory/SalesHistory.php',
+    'Dplus\\Filters\\Mso\\SalesHistory\\Detail' => $baseDir . '/src/Mso/SalesHistory/SalesHistoryDetail.php',
+    'Dplus\\Filters\\Mso\\SalesOrderDetail' => $baseDir . '/src/Mso/SalesOrderDetail.php',
 );
