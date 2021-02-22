@@ -235,11 +235,7 @@ class SalesOrderEdit extends WireData implements Module {
 				$line->setItemid($values->text('itemID'));
 			}
 			$this->input_update_item_record($input, $line);
-			$success = $line->save();
-			$db = $this->wire('modules')->get('DplusOnlineDatabase')->propelWriteConnection();
-			$db->useDebug(true);
-			echo $db->getLastExecutedQuery();
-			exit;
+			$success = $line->save()
 			$this->request_so_update_detail($ordn, $linenbr);
 		}
 	}
