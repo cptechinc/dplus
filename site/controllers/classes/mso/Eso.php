@@ -1,17 +1,20 @@
 <?php namespace Controllers\Mso;
 
-use Mvc\Controllers\AbstractController;
+use Propel\Runtime\ActiveQuery\Criteria;
 
-use ProcessWire\Page, ProcessWire\SalesOrderEdit as EsoModel;
-
-use Dplus\CodeValidators\Mso as MsoValidator;
+use ProcessWire\Page, ProcessWire\SalesOrderEdit as EsoCRUD;
 
 use PricingQuery, Pricing;
 
 use CustomerQuery, Customer;
-use SalesOrder;
+use SalesOrderQuery, SalesOrder;
 use SalesOrderDetailQuery, SalesOrderDetail;
 use ItemMasterItemQuery, ItemMasterItem;
+
+use Dplus\CodeValidators\Mso as MsoValidator;
+use Dplus\Filters\Mso\SalesHistory\Detail as SalesHistoryDetailFilter;
+
+use Mvc\Controllers\AbstractController;
 
 use OrdrhedQuery, Ordrhed as SalesOrderEditable;
 
@@ -76,7 +79,7 @@ class Eso extends AbstractController {
 		return self::soEditForm($data, $eso, $page, $config);
 	}
 
-	private static function soEditForm($data, EsoModel $eso) {
+	private static function soEditForm($data, EsoCRUD $eso) {
 		self::pw('modules')->get('DpagesMso')->init_salesorder_hooks();
 		$page = self::pw('page');
 		$config = self::pw('config');
@@ -92,7 +95,7 @@ class Eso extends AbstractController {
 		return $page->body;
 	}
 
-	private static function soEditHeader(EsoModel $eso, SalesOrderEditable $order) {
+	private static function soEditHeader(EsoCRUD $eso, SalesOrderEditable $order) {
 		$page  = self::pw('page');
 		$config = self::pw('config');
 		$customer = CustomerQuery::create()->findOneByCustid($order->custid);
@@ -106,7 +109,7 @@ class Eso extends AbstractController {
 		}
 	}
 
-	private static function soEditItems(EsoModel $eso, SalesOrderEditable $order) {
+	private static function soEditItems(EsoCRUD $eso, SalesOrderEditable $order) {
 		$page   = self::pw('page');
 		$config = self::pw('config');
 
@@ -152,7 +155,7 @@ class Eso extends AbstractController {
 		$page->body .= $config->twig->render('sales-orders/sales-order/qnotes.twig', ['qnotes_so' => $qnotes, 'ordn' => $ordn]);
 	}
 
-	private static function js(EsoModel $eso, $ordn) {
+	private static function js(EsoCRUD $eso, $ordn) {
 		$config = self::pw('config');
 		$page   = self::pw('page');
 		if (self::pw('user')->is_editingorder($ordn)) {
@@ -260,12 +263,12 @@ class Eso extends AbstractController {
 
 	/**
 	 * Get Json Files
-	 * @param  EsoModel         $eso
+	 * @param  EsoCRUD         $eso
 	 * @param  SalesOrderDetail $orderitem
 	 * @return array
 	 */
-	private static function setupItemJsonFiles(EsoModel $eso, SalesOrderDetail $orderitem) {
-		$files = ['pricing' => false, 'pricehistory' => false, 'stock' => false];
+	private static function setupItemJsonFiles(EsoCRUD $eso, SalesOrderDetail $orderitem) {
+		$files = ['pricing' => false, 'stock' => false];
 
 		if ($orderitem->itemid != 'N') {
 			$request = true;
@@ -286,7 +289,7 @@ class Eso extends AbstractController {
 			}
 
 			if ($request) {
-				$eso->request_itempricing($orderitem->itemid);
+				//$eso->request_itempricing($orderitem->itemid);
 			}
 
 			foreach (array_keys($files) as $code) {
@@ -296,6 +299,13 @@ class Eso extends AbstractController {
 				}
 				$files[$code] = $json;
 			}
+
+			$custID = SalesOrderQuery::create()->select(SalesOrder::aliasproperty('custid'))->findOneByOrdernumber($orderitem->ordernumber);
+			$filter = new SalesHistoryDetailFilter();
+			$filter->filterCustomerHistory($custID);
+			$filter->query->filterByQty_ordered(1, Criteria::GREATER_EQUAL);
+			$filter->query->limit(5);
+			$files['pricehistory'] = $filter->query->find();
 		}
 		return $files;
 	}
