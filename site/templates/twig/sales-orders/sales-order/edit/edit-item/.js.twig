@@ -49,8 +49,9 @@ $(function() {
 		var button = $(event.relatedTarget);
 		var linenbr = 0;
 
-		var url = URI('{{ page.fullURL.getUrl() }}');
+		var url = URI();
 		url.path(url.path() + 'line/');
+		url.removeQuery('load');
 
 		if (button[0]) {
 			linenbr = intParse(button.data('linenbr'));
