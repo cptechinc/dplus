@@ -33,7 +33,7 @@ class DpagesMwm extends Dpages implements Module {
 			'paginated' => false
 		),
 		'whse-binr-to' => array(
-			'name'   => 'whse-binr-from',
+			'name'   => 'whse-binr-to',
 			'fields' => array('title'),
 			'paginated' => false
 		),
@@ -142,15 +142,6 @@ class DpagesMwm extends Dpages implements Module {
 			'parent'         => '/warehouse/binr/',
 			'dplus_function' => 'pbnrt',
 			'pw_template'    => 'whse-binr-to'
-		),
-		'whse-binr-from' => array(
-			'template'       => 'warehouse-function',
-			'name'           => 'move-from',
-			'title'          => 'Move From',
-			'summary'        => 'Move Single items from the same bin',
-			'parent'         => '/warehouse/binr/',
-			'dplus_function' => 'pbnrf',
-			'pw_template'    => 'whse-binr-from'
 		),
 		'whse-binr-contents' => array(
 			'template'       => 'warehouse-function',

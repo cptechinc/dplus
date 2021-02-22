@@ -5,19 +5,32 @@ use Purl\Url;
 use PricingQuery, Pricing;
 
 class ItemPricing extends WireData implements Module {
-
+	/**
+	 * Return Query for This SessionID
+	 * @return PricingQuery
+	 */
 	public function query() {
 		$q = PricingQuery::create();
 		$q->filterBySessionid($this->sessionID);
 		return $q;
 	}
 
+	/**
+	 * Return if Item Has Pricing
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
 	public function has_pricing($itemID) {
 		$q = $this->query();
 		$q->filterByItemid($itemID);
 		return boolval($q->count());
 	}
 
+	/**
+	 * Return Pricing Record for this Item ID
+	 * @param  string $itemID Item ID
+	 * @return Pricing
+	 */
 	public function get_pricing($itemID) {
 		$q = $this->query();
 		$q->filterByItemid($itemID);
@@ -27,7 +40,6 @@ class ItemPricing extends WireData implements Module {
 /* =============================================================
 	Dplus Cobol Request Functions
 ============================================================= */
-
 	/**
 	 * Request Item Search from Dplus
 	 * @param  string $q       Search Query
@@ -39,9 +51,7 @@ class ItemPricing extends WireData implements Module {
 		$custID = $custID ? $custID : $config->default_webcustomer;
 		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
 		$data = array("DBNAME=$dplusdb", "ITNOSRCH=$q", "CUSTID=$custID");
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, $this->sessionID);
-		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
+		$this->_request_dplus(array $data);
 	}
 
 	/**
@@ -58,9 +68,19 @@ class ItemPricing extends WireData implements Module {
 		foreach ($itemIDs as $itemID) {
 				$data[] = "ITEMID=$itemID";
 		}
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['default'], session_id());
+		$this->_request_dplus(array $data);
+	}
+
+	/**
+	 * Send Request to Dplus
+	 * @param  array  $data
+	 * @return void
+	 */
+	private function _request_dplus(array $data) {
+		$config = $this->wire('config');
+		$m = $this->wire('modules')->get('DplusRequest');
+		$m->write_dplusfile($data, $this->sessionID);
+		$m->cgi_request($config->cgis['default'], $this->sessionID);
 	}
 
 /* =============================================================
