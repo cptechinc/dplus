@@ -104,7 +104,6 @@ class DplusDatabase extends Process implements ConfigurableModule {
 		} catch (PDOException $e) {
 			if (!empty($session->get($this::CONNECTION_NAME_PW))) {
 				$this->logError($e->getMessage());
-
 			}
 			$session->remove($this::CONNECTION_NAME_PW);
 		}
@@ -211,9 +210,19 @@ class DplusDatabase extends Process implements ConfigurableModule {
 		return Propel::getWriteConnection($this::CONNECTION_NAME_PROPEL);
 	}
 
-	/* =============================================================
-		ProcessWire Module Functions
-	============================================================= */
+	/**
+	 * Return Connection Interface for debug
+	 * @return ConnectionInterface
+	 */
+	public function getDebugConnection() {
+		$conn = $this->propelWriteConnection();
+		$conn->useDebug(true);
+		return $conn;
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
 	public function __construct() {
 		foreach(self::getDefaultConfig() as $key => $value) {
 			$this->$key = $value;

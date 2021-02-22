@@ -45,8 +45,7 @@ if ($page->id != $config->errorpage_dplusdb) {
 
 		try {
 			$propel_name  = $module->dbConnectionName();
-			$$propel_name = $module->propelWriteConnection();
-			$$propel_name->useDebug(true);
+			$$propel_name = $module->getDebugConnection();
 		} catch (Exception $e) {
 			$module->logError($e->getMessage());
 			$session->redirect($pages->get($config->errorpage_dplusdb)->url, $http301 = false);
