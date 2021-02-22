@@ -491,6 +491,7 @@ class SalesOrderEdit extends WireData implements Module {
 		$requestor->write_dplusfile($data, $this->sessionID);
 		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
 	}
+	
 	/**
 	 * Send SO edit request
 	 * @param  string $ordn Sales Order Number
