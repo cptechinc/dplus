@@ -10,7 +10,6 @@
 <form action="" method="post" id="edit-item-form">
 	<input type="hidden" name="ordn" value="{{ orderitem.ordernumber }}">
 	<input type="hidden" name="linenbr" value="{{ orderitem.linenbr }}">
-	<input type="hidden" name="itemID" value="{{ orderitem.itemid }}">
 
 	<table class="table table-sm table-striped form-group order-item">
 		{% include 'sales-orders/sales-order/edit/edit-item/form/basic-inputs.twig' %}

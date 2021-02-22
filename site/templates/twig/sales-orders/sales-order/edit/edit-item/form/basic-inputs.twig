@@ -1,4 +1,54 @@
 <tr>
+	<td> <label for="itemID">Item ID</label> </td>
+	<td>
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'size': 'sm',
+					'attributes': {
+						'disabled': true
+					},
+					'type': 'prepend',
+					'input': {
+						'name': 'itemID', 'id': 'itemID',
+						'size': 'sm',
+						'value': orderitem.itemid,
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Item ID'
+						},
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Item IDs',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('items'),
+							'data-input': '#itemID'
+						}
+					}
+				}
+			}
+		%}
+	</td>
+</tr>
+<tr>
+	<td> <label for="editdescription">Description</label> </td>
+	<td>
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'description', 'id': 'editdescription',
+					'value': orderitem.description,
+					'size': 'sm',
+					'attributes': {},
+					'addclasses': []
+				}
+			}
+		%}
+	</td>
+</tr>
+<tr>
 	<td> <label for="editqty">Qty</label> </td>
 	<td>
 		{% include 'util/bootstrap/form/input.twig' with {
