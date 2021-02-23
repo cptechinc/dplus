@@ -25,10 +25,11 @@ $(function() {
 	$('body').on('change', '#edit-item-modal input[name=qty]', function(e) {
 		e.preventDefault();
 		var input = $(this);
+		var input_itemid = $('#edit-item-modal input[name=itemID]');
 		var pricingtable = editmodal.find('.pricing');
 		var itemprice = editmodal.find('input[name=price]').val();
 
-		if (input.val() != 'N') {
+		if (input_itemid.val() != 'N') {
 			pricingtable.find('.price-break').each(function( index ) {
 				var pricebreak = $(this);
 				var price = floatParse(pricebreak.data('price'));
@@ -37,8 +38,9 @@ $(function() {
 					itemprice = price;
 				}
 			});
-			editmodal.find('input[name=price]').val(itemprice.toFixed({{ eso.decimal_places_price() }}));
 		}
+		itemprice = floatParse(itemprice);
+		editmodal.find('input[name=price]').val(itemprice.toFixed({{ eso.decimal_places_price() }}));
 	});
 
 /* =============================================================
