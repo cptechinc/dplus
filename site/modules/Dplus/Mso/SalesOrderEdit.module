@@ -235,7 +235,7 @@ class SalesOrderEdit extends WireData implements Module {
 				$line->setItemid($values->text('itemID'));
 			}
 			$this->input_update_item_record($input, $line);
-			$success = $line->save()
+			$success = $line->save();
 			$this->request_so_update_detail($ordn, $linenbr);
 		}
 	}
@@ -491,7 +491,7 @@ class SalesOrderEdit extends WireData implements Module {
 		$requestor->write_dplusfile($data, $this->sessionID);
 		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
 	}
-	
+
 	/**
 	 * Send SO edit request
 	 * @param  string $ordn Sales Order Number
