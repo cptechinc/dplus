@@ -1,12 +1,13 @@
 {% if data.pricehistory %}
+	{% set config = eso.config() %}
 	<table class="table table-sm mb-0">
 		<thead>
 			<tr>
 				<th>Order</th>
 				<th>Date</th>
-				<th>Qty</th>
-				<th>Price</th>
-				<th>Amt</th>
+				<th class="text-right">Qty</th>
+				<th class="text-right">Price</th>
+				<th class="text-right">Amt</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -14,9 +15,9 @@
 				<tr>
 					<td>{{ detail.ordernumber }}</td>
 					<td>{{ detail.order.date_invoiced|convertdate }}</td>
-					<td>{{ detail.qty_ordered }}</td>
-					<td>{{ detail.price }}</td>
-					<td>{{ detail.total_price }}</td>
+					<td class="text-right">{{ detail.qty_ordered|number_format(config.decimal_places_qty) }}</td>
+					<td class="text-right">{{ detail.price|number_format(config.decimal_places_price) }}</td>
+					<td class="text-right">{{ detail.total_price|number_format(config.decimal_places_price) }}</td>
 				</tr>
 			{% endfor %}
 		</tbody>

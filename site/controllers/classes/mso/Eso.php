@@ -257,7 +257,7 @@ class Eso extends AbstractController {
 		}
 
 		$files = self::setupItemJsonFiles($eso, $orderitem);
-		$page->body .= $config->twig->render('sales-orders/sales-order/edit/edit-item/display.twig', ['orderitem' => $orderitem, 'data' => $files]);
+		$page->body .= $config->twig->render('sales-orders/sales-order/edit/edit-item/display.twig', ['eso' => $eso, 'orderitem' => $orderitem, 'data' => $files]);
 		return $page->body;
 	}
 
