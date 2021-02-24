@@ -61,11 +61,32 @@
 		<label for="whse">Warehouse</label>
 	</div>
 	<div class="col-sm-8">
-		<select class="form-control form-control-sm" name="whse" id="whse">
-			{% for warehouse in epo.get_warehouses() %}
-				<option value="{{ warehouse.id }}">{{ warehouse.id }} - {{ warehouse.name }}</option>
-			{% endfor %}
-		</select>
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'size': 'sm',
+					'type': 'prepend',
+					'input': {
+						'name': 'whse',
+						'value': '',
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Warehouse ID'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Warehouse IDs',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('warehouse'),
+							'data-input': '#whse'
+						}
+					}
+				}
+			}
+		%}
 	</div>
 </div>
 <div class="row mb-2">
