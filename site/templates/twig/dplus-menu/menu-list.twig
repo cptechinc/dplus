@@ -12,7 +12,7 @@
 	{% for item in items %}
 		<a href="{{ item.url }}" class="list-group-item list-group-item-action">
 			<div class="row align-items-center">
-				<div class="col-4">
+				<div class="col-sm-4">
 					{% if item.template == 'dplus-menu' or item.template == 'warehouse-menu' %}
 						<i class="fa fa-list" aria-hidden="true"></i>
 					{% else %}
@@ -21,7 +21,7 @@
 					<strong>{{ item.title|raw }} {{ item.dplus_function ? '(' ~ item.dplus_function ~ ')' }}</strong>
 					<br>
 				</div>
-				<div class="col-8">
+				<div class="col-sm-8">
 					<small>
 						{{ item.summary|raw }}
 					</small>
