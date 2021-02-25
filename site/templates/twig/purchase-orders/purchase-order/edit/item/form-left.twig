@@ -80,7 +80,7 @@
 							'title': 'Search Warehouse IDs',
 							'data-toggle': 'modal',
 							'data-target': '#ajax-modal',
-							'data-lookupurl': page.search_lookupURL('warehouse'),
+							'data-lookupurl': page.search_lookupURL('warehouses'),
 							'data-input': '#whse'
 						}
 					}
@@ -99,5 +99,64 @@
 				<option value="{{ code }}">{{ desc|title }}</option>
 			{% endfor %}
 		</select>
+	</div>
+</div>
+<div class="row mb-2">
+	<div class="col-sm-4">
+		<label for="ordn">Sales Order</label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'ordn',
+					'size': 'sm',
+					'value': '',
+					'attributes': {
+						'placeholder': '',
+						'aria-label':  'Sales Order Number'
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row mb-2">
+	<div class="col-sm-4">
+		<label for="glaccounts">GL Account</label>
+	</div>
+	<div class="col-sm-8">
+		<div class="row">
+			<div class="col-sm-6">
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'size': 'sm',
+							'type': 'prepend',
+							'input': {
+								'name': 'glaccount',
+								'value': '',
+								'attributes': {
+									'placeholder': '',
+									'aria-label':  'GL Account Number'
+								}
+							},
+							'button': {
+								'colorclass': 'btn-secondary',
+								'text': 'fa fa-search'|icon,
+								'attributes': {
+									'title': 'GL Accounts',
+									'data-toggle': 'modal',
+									'data-target': '#ajax-modal',
+									'data-lookupurl': page.search_lookupURL('gl-codes'),
+									'data-input': '#glaccount'
+								}
+							}
+						}
+					}
+				%}
+			</div>
+			<div class="col-sm-6">
+				<p class="form-control-plaintext form-control-sm gl-desc"></p>
+			</div>
+		</div>
 	</div>
 </div>
