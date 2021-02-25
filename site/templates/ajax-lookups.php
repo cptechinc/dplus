@@ -26,18 +26,18 @@
 		// User
 		['GET', 'users/', AjaxLookup::class, 'users'],
 		['GET', 'users/page{nbr:\d+}/', AjaxLookup::class, 'users'],
-
 		// Vendor
 		['GET', 'vendors/', AjaxLookup::class, 'vendors'],
 		['GET', 'vendors/page{nbr:\d+}/', AjaxLookup::class, 'vendors'],
-
-		// Vendor
+		// Vendor Contacts
 		['GET', 'vendor/contacts/', AjaxLookup::class, 'vendorContacts'],
 		['GET', 'vendor/contacts/page{nbr:\d+}/', AjaxLookup::class, 'vendorContacts'],
-
 		// Purchase Orders
 		['GET', 'purchase-orders/', AjaxLookup::class, 'purchaseOrders'],
 		['GET', 'purchase-orders/page{nbr:\d+}/', AjaxLookup::class, 'purchaseOrders'],
+		// General Ledger Codes
+		['GET', 'gl-codes/', AjaxLookup::class, 'generalLedgerCodes'],
+		['GET', 'gl-codes/page{nbr:\d+}/', AjaxLookup::class, 'generalLedgerCodes'],
 	];
 
 	$router = new Mvc\Router();
