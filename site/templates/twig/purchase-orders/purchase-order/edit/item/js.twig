@@ -203,6 +203,17 @@ $(function () {
 		calculate_totalcost(form.find('input[name=cost]').val(), input.val());
 	});
 
+	$("body").on('change', '#edit-item-modal input[name=glaccount]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var form = input.closest('form');
+		get_gl_account(input.val(), function(acct) {
+			if (acct) {
+				form.find('.gl-desc').text(acct.description);
+			}
+		});
+	});
+
 /* =============================================================
 	Field Change Functions
 ============================================================= */
@@ -303,6 +314,14 @@ $(function () {
 		url.setQuery('linenbr', linenbr);
 		$.getJSON(url.toString(), function(item) {
 			callback(item);
+		});
+	}
+
+	function get_gl_account(code, callback) {
+		var url = URI('{{ page.jsonapiURL('mgl/gl-code/') }}');
+		url.setQuery('code', code);
+		$.getJSON(url.toString(), function(acct) {
+			callback(acct);
 		});
 	}
 });
