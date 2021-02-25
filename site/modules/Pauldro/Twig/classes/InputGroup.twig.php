@@ -22,6 +22,7 @@ class TwigInputGroup extends TwigBaseHtml {
 		$this->input = [];
 		$this->button = [];
 		$this->span = [];
+		$this->addclasses = [];
 	}
 
 	/**
