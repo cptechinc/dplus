@@ -31,7 +31,7 @@ class Msa extends AbstractController {
 		$userID = $data->loginID ? $data->loginID : $data->userID;
 
 		if ($validate->userid($userID) === false) {
-			false;
+			return false;
 		}
 		$login = DplusUserQuery::create()->findOneByLoginid($loginID);
 		return array(
