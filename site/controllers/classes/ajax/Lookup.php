@@ -198,6 +198,7 @@ class Lookup extends AbstractController {
 
 		$path = $input->urlSegment(count($input->urlSegments()));
 		$path = rtrim(str_replace($page->url, '', self::pw('input')->url()), '/');
+		$path = preg_replace('/page\d+/', '', $path);
 		$page->body .= self::pw('config')->twig->render("api/lookup/$path/search.twig", ['results' => $results, 'datamatcher' => self::pw('modules')->get('RegexData'), 'q' => $data->q]);
 		$page->body .= '<div class="mb-3"></div>';
 		$page->body .= self::pw('config')->twig->render('util/paginator.twig', ['resultscount'=> $results->getNbResults() != $query->count() ? $query->count() : $results->getNbResults()]);
