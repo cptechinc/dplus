@@ -128,6 +128,13 @@ class Lookup extends AbstractController {
 		self::moduleFilterResults($filter, $wire, $data);
 	}
 
+	/**
+	 * Search Vendors
+	 * @param  object $data
+	 *                     vendorID  Vendor ID
+	 *                     q         Search Term
+	 * @return void
+	 */
 	public static function vendorContacts($data) {
 		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
 		$data = self::sanitizeParametersShort($data, ['vendorID|text']);
