@@ -14,6 +14,7 @@ return array(
     'Dplus\\CodeValidators\\Map\\Vxm' => $baseDir . '/src/Map/Vxm.php',
     'Dplus\\CodeValidators\\Mar' => $baseDir . '/src/Mar/Mar.php',
     'Dplus\\CodeValidators\\Mar\\Spm' => $baseDir . '/src/Mar/Spm.php',
+    'Dplus\\CodeValidators\\Mgl' => $baseDir . '/src/Mgl/Mgl.php',
     'Dplus\\CodeValidators\\Mii' => $baseDir . '/src/Mii/Mii.php',
     'Dplus\\CodeValidators\\Mii\\Iio' => $baseDir . '/src/Mii/Iio.php',
     'Dplus\\CodeValidators\\Min' => $baseDir . '/src/Min/Min.php',

@@ -15,6 +15,7 @@ class ComposerStaticInit05e8b5312246afdde1a9eb3568c1d72c
         'Dplus\\CodeValidators\\Map\\Vxm' => __DIR__ . '/../..' . '/src/Map/Vxm.php',
         'Dplus\\CodeValidators\\Mar' => __DIR__ . '/../..' . '/src/Mar/Mar.php',
         'Dplus\\CodeValidators\\Mar\\Spm' => __DIR__ . '/../..' . '/src/Mar/Spm.php',
+        'Dplus\\CodeValidators\\Mgl' => __DIR__ . '/../..' . '/src/Mgl/Mgl.php',
         'Dplus\\CodeValidators\\Mii' => __DIR__ . '/../..' . '/src/Mii/Mii.php',
         'Dplus\\CodeValidators\\Mii\\Iio' => __DIR__ . '/../..' . '/src/Mii/Iio.php',
         'Dplus\\CodeValidators\\Min' => __DIR__ . '/../..' . '/src/Min/Min.php',
