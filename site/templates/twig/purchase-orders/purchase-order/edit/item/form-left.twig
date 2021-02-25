@@ -125,38 +125,32 @@
 		<label for="glaccounts">GL Account</label>
 	</div>
 	<div class="col-sm-8">
-		<div class="form-row">
-			<div class="col-sm-4">
-				{% include 'util/bootstrap/form/input-group.twig' with {
-						'inputgroup': {
-							'size': 'sm',
-							'type': 'prepend',
-							'input': {
-								'name': 'glaccount',
-								'value': '',
-								'attributes': {
-									'placeholder': '',
-									'aria-label':  'GL Account Number'
-								}
-							},
-							'button': {
-								'colorclass': 'btn-secondary',
-								'text': 'fa fa-search'|icon,
-								'attributes': {
-									'title': 'GL Accounts',
-									'data-toggle': 'modal',
-									'data-target': '#ajax-modal',
-									'data-lookupurl': page.search_lookupURL('gl-codes'),
-									'data-input': '#glaccount'
-								}
-							}
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'size': 'sm',
+					'type': 'prepend',
+					'input': {
+						'name': 'glaccount',
+						'value': '',
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'GL Account Number'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'GL Accounts',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('gl-codes'),
+							'data-input': '#glaccount'
 						}
 					}
-				%}
-			</div>
-			<div class="col-sm-8">
-				<p class="form-control-plaintext form-control-sm gl-desc"></p>
-			</div>
-		</div>
+				}
+			}
+		%}
+		<p class="form-control-plaintext form-control-sm gl-desc"></p>
 	</div>
 </div>
