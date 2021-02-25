@@ -52,6 +52,9 @@ $(function() {
 				uri.setQuery('vendorID', $('input#vendorID').val());
 				url = uri.toString();
 				break;
+			default:
+				url = button.data('lookupurl');
+				break;
 		}
 
 		modal.find('.modal-title').text(button.attr('title'));
