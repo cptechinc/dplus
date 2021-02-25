@@ -6,6 +6,7 @@ use Mvc\Controllers\AbstractController;
 use Dplus\Filters\AbstractFilter as Filter;
 use Dplus\Filters\Misc\PhoneBook as PhoneBookFilter;
 use Dplus\Filters\Mpo\PurchaseOrder as PurchaseOrderFilter;
+use Dplus\Filters\Mgl\GlCode as GlCodeFilter;
 
 class Lookup extends AbstractController {
 	const FIELDS_LOOKUP = ['q' => ['sanitizer' => 'text']];
@@ -159,6 +160,21 @@ class Lookup extends AbstractController {
 		$filter->init();
 		$wire->wire('page')->headline = "Purchase Orders";
 		self::pw('config')->po = self::pw('modules')->get('ConfigurePo')->config();
+		self::filterResults($filter, $data);
+	}
+
+	/**
+	 * Filter General Ledger Codes
+	 * @param  object $data
+	 *                     q   Search Term
+	 * @return void
+	 */
+	public static function generalLedgerCodes($data) {
+		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		$wire = self::pw();
+		$filter = new GlCodeFilter();
+		$filter->init();
+		$wire->wire('page')->headline = "General Ledger Codes";
 		self::filterResults($filter, $data);
 	}
 
