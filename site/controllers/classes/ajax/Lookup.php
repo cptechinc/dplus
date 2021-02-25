@@ -123,7 +123,7 @@ class Lookup extends AbstractController {
 		$page = $wire->wire('page');
 		$filter = $wire->wire('modules')->get('FilterVendors');
 		$filter->init_query(self::pw('user'));
-		$page->headline = "Users";
+		$page->headline = "Vendors";
 		self::moduleFilterResults($filter, $wire, $data);
 	}
 
