@@ -114,6 +114,19 @@ $(function () {
 					}
 				}
 			},
+			glaccount: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('mgl/validate/gl-code/') }}',
+					type: "get",
+					data: {
+						code: function() {
+							return $('#glaccount').val();
+						},
+						jqv: 'true'
+					}
+				}
+			},
 		},
 		messages: {
 
@@ -208,9 +221,7 @@ $(function () {
 		var input = $(this);
 		var form = input.closest('form');
 		get_gl_account(input.val(), function(acct) {
-			if (acct) {
-				form.find('.gl-desc').text(acct.description);
-			}
+			form.find('.gl-desc').text(acct ? acct.description : '');
 		});
 	});
 
