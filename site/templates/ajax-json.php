@@ -43,6 +43,12 @@
 				['GET', 'custid/', Json\Mci::class, 'validateCustid'],
 			],
 		],
+		'mgl' => [
+			'validate' => [
+				['GET', 'gl-code/', Json\Mgl::class, 'validateGlCode'],
+			],
+			['GET', 'gl-code/', Json\Mgl::class, 'getGlCode'],
+		],
 		'mki' => [
 			'validate' => [
 				['GET', 'kit/', Json\Mki::class, 'validateKitid'],
