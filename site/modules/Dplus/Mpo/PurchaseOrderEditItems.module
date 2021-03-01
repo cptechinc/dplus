@@ -3,6 +3,8 @@
 use Propel\Runtime\ActiveQuery\Criteria;
 use Purl\Url;
 
+use Dplus\CodeValidators\Mpo\PoDetail as PoDetailValidator;
+
 use PurchaseOrderDetailReceivingQuery, PurchaseOrderDetailReceiving;
 use ApInvoiceDetailQuery, ApInvoiceDetail;
 
@@ -144,13 +146,39 @@ class PurchaseOrderEditItems extends WireData implements Module {
 	protected function update_item(EditPoDetail $item, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$item->setItemid($values->text('itemID'));
+
+		$this->update_item_validated($item, $input);
 		$item->setDescription($values->text('description'));
 		$item->setVendoritemid($values->text('vendoritemID'));
-		$item->setWhse($values->text('whse'));
-		$item->setQty_ordered($values->text('qty_ordered'));
-		$item->setCost($values->text('cost'));
-		$item->setCost_total($values->text('cost_total'));
+
+		$item->setQty_ordered($values->float('qty_ordered', ['precision' => $this->configs->decimal_places_qty()]));
+		$item->setQtyduein($values->float('qtyduein', ['precision' => $this->configs->decimal_places_qty()]));
+		$item->setCost($values->float('cost', ['precision' => $this->configs->decimal_places_cost()]));
+		$item->setCost_total($values->float('cost_total', ['precision' => $this->configs->decimal_places_cost()]));
+	}
+
+	/**
+	 * Updates EditPoDetail Record, that requires validation
+	 * @param  EditPoDetail $item  Purchase Order Item
+	 * @param  WireInput    $input Input Data
+	 * @return void
+	 */
+	protected function update_item_validated(EditPoDetail $item, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$validate = new PoDetailValidator();
+
+		if ($validate->itemid($values->text('itemID'))) {
+			$item->setItemid($values->text('itemID'));
+		}
+
+		if ($validate->whseid($values->text('whse'))) {
+			$item->setWhse($values->text('whse'));
+		}
+
+		if ($validate->glCode($values->text('glaccount'))) {
+			$item->setGlaccount($values->text('glaccount'));
+		}
 	}
 
 /* =============================================================
