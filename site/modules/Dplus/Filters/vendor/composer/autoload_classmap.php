@@ -10,7 +10,12 @@ return array(
     'Dplus\\Filters\\AbstractFilter' => $baseDir . '/src/AbstractFilter.php',
     'Dplus\\Filters\\Map\\ApContact' => $baseDir . '/src/Map/ApContact.php',
     'Dplus\\Filters\\Mar\\SalesPerson' => $baseDir . '/src/Mar/SalesPerson.php',
+    'Dplus\\Filters\\Mgl\\GlCode' => $baseDir . '/src/Mgl/GlCode.php',
+    'Dplus\\Filters\\Min\\ItemGroup' => $baseDir . '/src/Min/ItemGroup.php',
     'Dplus\\Filters\\Misc\\PhoneBook' => $baseDir . '/src/Misc/PhoneBook.php',
+    'Dplus\\Filters\\Mpo\\PurchaseOrder' => $baseDir . '/src/Mpo/PurchaseOrder.php',
     'Dplus\\Filters\\Mso\\SalesHistory' => $baseDir . '/src/Mso/SalesHistory.php',
+    'Dplus\\Filters\\Mso\\SalesHistory\\Detail' => $baseDir . '/src/Mso/SalesHistory/SalesHistoryDetail.php',
     'Dplus\\Filters\\Mso\\SalesOrder' => $baseDir . '/src/Mso/SalesOrder.php',
+    'Dplus\\Filters\\Mso\\SalesOrder\\SalesOrderDetail' => $baseDir . '/src/Mso/SalesOrder/SalesOrderDetail.php',
 );
