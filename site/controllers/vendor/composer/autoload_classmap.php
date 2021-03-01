@@ -20,6 +20,7 @@ return array(
     'Controllers\\Dplus\\Process' => $baseDir . '/classes/dplus/Process.php',
     'Controllers\\Map\\Mxrfe' => $baseDir . '/classes/map/Mxrfe.php',
     'Controllers\\Mar\\Spm' => $baseDir . '/classes/mar/Spm.php',
+    'Controllers\\Mci\\Ci' => $baseDir . '/classes/mci/Ci/Ci.php',
     'Controllers\\Min\\Itm\\ItmFunction' => $baseDir . '/classes/min/itm/ItmFunction.php',
     'Controllers\\Min\\Itm\\Xrefs\\Upcx' => $baseDir . '/classes/min/itm/xrefs/Upcx.php',
     'Controllers\\Min\\Upcx' => $baseDir . '/classes/min/Upcx.php',
