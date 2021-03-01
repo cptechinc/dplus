@@ -17,6 +17,8 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Ajax\\Json\\Msa' => __DIR__ . '/../..' . '/classes/ajax/json/Msa.php',
         'Controllers\\Ajax\\Json\\Mso' => __DIR__ . '/../..' . '/classes/ajax/json/Mso.php',
         'Controllers\\Ajax\\Lookup' => __DIR__ . '/../..' . '/classes/ajax/Lookup.php',
+        'Controllers\\Dplus\\Menu' => __DIR__ . '/../..' . '/classes/dplus/Menu.php',
+        'Controllers\\Dplus\\Process' => __DIR__ . '/../..' . '/classes/dplus/Process.php',
         'Controllers\\Map\\Mxrfe' => __DIR__ . '/../..' . '/classes/map/Mxrfe.php',
         'Controllers\\Mar\\Spm' => __DIR__ . '/../..' . '/classes/mar/Spm.php',
         'Controllers\\Min\\Itm\\ItmFunction' => __DIR__ . '/../..' . '/classes/min/itm/ItmFunction.php',

@@ -16,6 +16,8 @@ return array(
     'Controllers\\Ajax\\Json\\Msa' => $baseDir . '/classes/ajax/json/Msa.php',
     'Controllers\\Ajax\\Json\\Mso' => $baseDir . '/classes/ajax/json/Mso.php',
     'Controllers\\Ajax\\Lookup' => $baseDir . '/classes/ajax/Lookup.php',
+    'Controllers\\Dplus\\Menu' => $baseDir . '/classes/dplus/Menu.php',
+    'Controllers\\Dplus\\Process' => $baseDir . '/classes/dplus/Process.php',
     'Controllers\\Map\\Mxrfe' => $baseDir . '/classes/map/Mxrfe.php',
     'Controllers\\Mar\\Spm' => $baseDir . '/classes/mar/Spm.php',
     'Controllers\\Min\\Itm\\ItmFunction' => $baseDir . '/classes/min/itm/ItmFunction.php',
