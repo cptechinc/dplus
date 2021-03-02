@@ -4,6 +4,7 @@
 
 	$routes = [
 		['GET',  '', Ci::class, 'index'],
+		['GET',  'page{nbr:\d+}/', Ci::class, 'list'],
 	];
 
 	$router = new Mvc\Router();
