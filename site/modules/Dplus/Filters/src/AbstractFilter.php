@@ -29,7 +29,8 @@ abstract class AbstractFilter extends WireData {
 	Functions
 ============================================================= */
 	public function __construct() {
-		$this->query = '';
+		$model = $this::MODEL.'Query';
+		$this->query = $model::create();
 	}
 
 	/**
