@@ -1,8 +1,18 @@
 <?php
-	if (WhsesessionQuery::create()->sessionExists(session_id())) {
-		include('./dplus-menu.php');
-	} else {
-		$loginm = $modules->get('DplusUser');
-		$loginm->request_login_whse($user->loginid);
-		$session->redirect($page->url, $http301 = false);
-	}
+include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
+use Controllers\Mwm\Menu;
+
+$routes = [
+	['GET',  '', Menu::class, 'index'],
+];
+
+$router = new Mvc\Router();
+$router->setRoutes($routes);
+$router->setRoutePrefix($page->url);
+$response = $router->route();
+
+if ($router->hasError()) {
+	$page->body = $response;
+}
+
+include __DIR__ . "/basic-page.php";
