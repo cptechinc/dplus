@@ -2,20 +2,9 @@
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Dplus\Process as Dprocess;
 
-	$routes = [
-		['GET',  '', Dprocess::class, 'index'],
-	];
+	Dprocess::index(new WireData());
 
-	$router = new Mvc\Router();
-	$router->setRoutes($routes);
-	$router->setRoutePrefix($page->url);
-	$response = $router->route();
-
-	if ($router->hasError()) {
-		$page->body = $response;
-	}
-
-	if (Dprocess::$permitted === false || Dprocess::$templateExists === false || $router->hasError()) {
+	if (Dprocess::$permitted === false || Dprocess::$templateExists === false) {
 		include __DIR__ . "/basic-page.php";
 	}
 
