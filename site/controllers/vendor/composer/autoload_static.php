@@ -22,6 +22,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Map\\Mxrfe' => __DIR__ . '/../..' . '/classes/map/Mxrfe.php',
         'Controllers\\Mar\\Spm' => __DIR__ . '/../..' . '/classes/mar/Spm.php',
         'Controllers\\Mci\\Ci' => __DIR__ . '/../..' . '/classes/mci/Ci/Ci.php',
+        'Controllers\\Mii\\Ii' => __DIR__ . '/../..' . '/classes/mii/Ii/Ii.php',
         'Controllers\\Min\\Itm\\ItmFunction' => __DIR__ . '/../..' . '/classes/min/itm/ItmFunction.php',
         'Controllers\\Min\\Itm\\Xrefs\\Upcx' => __DIR__ . '/../..' . '/classes/min/itm/xrefs/Upcx.php',
         'Controllers\\Min\\Upcx' => __DIR__ . '/../..' . '/classes/min/Upcx.php',
