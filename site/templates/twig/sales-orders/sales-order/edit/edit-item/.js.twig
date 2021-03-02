@@ -1,0 +1,186 @@
+$(function() {
+	var editmodal = $('#edit-item-modal');
+	var editform  = $('#edit-item-form');
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$('body').on('change', '#edit-item-modal select[name=specialorder]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+
+		if (input.val() != 'N') {
+			$('.nonstock').addClass('show');
+		} else {
+			$('.nonstock').removeClass('show');
+		}
+	});
+
+	$('body').on('change', '#edit-item-modal input[name=price]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		input.attr('data-userchanged', 'true');
+	});
+
+	$('body').on('change', '#edit-item-modal input[name=qty]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var input_itemid = $('#edit-item-modal input[name=itemID]');
+		var pricingtable = editmodal.find('.pricing');
+		var itemprice = editmodal.find('input[name=price]').val();
+
+		if (input_itemid.val() != 'N') {
+			pricingtable.find('.price-break').each(function( index ) {
+				var pricebreak = $(this);
+				var price = floatParse(pricebreak.data('price'));
+				var qty   = floatParse(pricebreak.data('qty'));
+				if (floatParse(input.val()) >= qty) {
+					itemprice = price;
+				}
+			});
+		}
+		itemprice = floatParse(itemprice);
+		editmodal.find('input[name=price]').val(itemprice.toFixed({{ eso.decimal_places_price() }}));
+	});
+
+/* =============================================================
+	Edit Item Modal Functions
+============================================================= */
+	editmodal.on('show.bs.modal', function (event) {
+		var modal = $(this);
+		var button = $(event.relatedTarget);
+		var linenbr = 0;
+
+		var url = URI();
+		url.path(url.path() + 'line/');
+		url.removeQuery('load');
+
+		if (button[0]) {
+			linenbr = intParse(button.data('linenbr'));
+		}
+		url.setQuery('linenbr', linenbr);
+
+		if (typeof button[0] == 'undefined') {
+			url.setQuery('itemID', modal.attr('data-itemid') ? modal.attr('data-itemid') : 'N');
+		}
+
+		modal.find('.modal-title').find('.linenbr').text(linenbr);
+		modal.find('[role=status]').addClass('spinner-border');
+		modal.find('.loading').addClass('show');
+
+		modal.find('.modal-body .results').loadin(url.toString(), function() {
+			modal.find('[role=status]').removeClass('spinner-border');
+			modal.find('.loading').removeClass('show');
+			setup_validation();
+		});
+
+	});
+
+	$('body').on('click', '#edit-item-modal .whse-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal = $(button.closest('.modal'));
+		modal.find('input[name=whseid]').val(button.data('whseid'));
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	function setup_validation() {
+		$('#edit-item-form').validate({
+			errorClass: "is-invalid",
+			validClass: "is-valid",
+			errorPlacement: function(error, element) {
+				error.insertAfter(element).addClass('invalid-feedback');
+			},
+			rules: {
+				price: {required: true},
+				qty: {required: true},
+				whseid: {
+					required: true,
+					remote: {
+						url: '{{ page.jsonapiURL('inv/validate/warehouse/') }}',
+						type: "get",
+						data: {
+							whseID: function() {
+								return $('#editwhse').val();
+							}
+						}
+					}
+				},
+				nsvendorid: {
+					required: function() {
+						return needs_nonstockfields();
+					},
+					remote: {
+						url: '{{ page.jsonapiURL('map/validate/vendorid/') }}',
+						type: "get",
+						data: {
+							vendorID: function() {
+								return $('#nsvendorid').val();
+							}
+						}
+					}
+				},
+				nsvendoritemid: {
+					required: function() {
+						return needs_nonstockfields();
+					}
+				},
+				nsitemgroupid: {
+					required: function() {
+						return needs_nonstockfields();
+					},
+					remote: {
+						url: '{{ page.jsonapiURL('inv/validate/item-group/') }}',
+						type: "get",
+						data: {
+							code: function() {
+								return $('#nsitemgroupid').val();
+							}
+						}
+					}
+				},
+			},
+			messages: {},
+			submitHandler: function(form) {
+				form.submit();
+			}
+		});
+	}
+
+	function needs_nonstockfields() {
+		var specialorder = $('#edit-item-modal select[name=specialorder]').val() != 'N';
+		var nonstock = $('#edit-item-modal input[name=itemID]').val() == 'N';
+		return specialorder === true || nonstock === true;
+	}
+/* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	$("body").on('click', '#ajax-modal .whse-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal = button.closest('.modal');
+		var input = $(modal.attr('data-input'));
+		input.val(button.data('whseid'));
+		$('#ajax-modal').modal('hide');
+	});
+
+	$("body").on('click', '#ajax-modal .vendor-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal = button.closest('.modal');
+		var input = $(modal.attr('data-input'));
+		input.val(button.data('vendorid'));
+		$('#ajax-modal').modal('hide');
+	});
+
+	$("body").on('click', '#ajax-modal .itemgroup-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal = button.closest('.modal');
+		var input = $(modal.attr('data-input'));
+		input.val(button.data('itemgroup'));
+		$('#ajax-modal').modal('hide');
+	});
+});

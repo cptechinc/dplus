@@ -5,6 +5,7 @@ use Mvc\Controllers\AbstractController;
 
 use Dplus\Filters\AbstractFilter as Filter;
 use Dplus\Filters\Misc\PhoneBook as PhoneBookFilter;
+use Dplus\Filters\Min\ItemGroup as ItemGroupFilter;
 
 class Lookup extends AbstractController {
 	const FIELDS_LOOKUP = ['q' => ['sanitizer' => 'text']];
@@ -125,6 +126,12 @@ class Lookup extends AbstractController {
 		self::moduleFilterResults($filter, $wire, $data);
 	}
 
+	/**
+	 * Search Vendor Contacts
+	 * @param  object $data
+	 *                     q   Search Term
+	 * @return void
+	 */
 	public static function vendorContacts($data) {
 		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
 		$data = self::sanitizeParametersShort($data, ['vendorID|text']);
@@ -132,6 +139,22 @@ class Lookup extends AbstractController {
 		$filter = new PhoneBookFilter();
 		$filter->init();
 		$page->headline = "Vendor Contacts";
+		self::filterResults($filter, $data);
+	}
+
+	/**
+	 * Search Item Groups
+	 * @param  object $data
+	 *                     q   Search Term
+	 * @return void
+	 */
+	public static function itemGroups($data) {
+		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		$data = self::sanitizeParametersShort($data, ['vendorID|text']);
+		$page = self::pw('page');
+		$filter = new ItemGroupFilter();
+		$filter->init();
+		$page->headline = "Item Groups";
 		self::filterResults($filter, $data);
 	}
 

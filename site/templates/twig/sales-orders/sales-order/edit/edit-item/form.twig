@@ -1,0 +1,28 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	orderitem              SalesOrderDetail
+#}
+
+{% set config = page.wire('modules').get('ConfigureSo').config() %}
+
+<form action="" method="post" id="edit-item-form">
+	<input type="hidden" name="ordn" value="{{ orderitem.ordernumber }}">
+	<input type="hidden" name="linenbr" value="{{ orderitem.linenbr }}">
+
+	<table class="table table-sm table-striped form-group order-item">
+		{% include 'sales-orders/sales-order/edit/edit-item/form/basic-inputs.twig' %}
+		{% include 'sales-orders/sales-order/edit/edit-item/form/non-stock.twig' %}
+	</table>
+	<div class="form-group">
+		<button type="submit" name="action" value="update-item" class="btn btn-success btn-block">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+		</button>
+	</div>
+	<div class="form-group">
+		<button type="submit" name="action" value="delete-item" class="btn btn-danger btn-block">
+			<i class="fa fa-trash" aria-hidden="true"></i> Delete
+		</button>
+	</div>
+</form>

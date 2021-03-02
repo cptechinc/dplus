@@ -1,0 +1,23 @@
+{% if data.pricehistory %}
+	{% set columns = data.pricehistory.columns %}
+	<table class="table table-sm mb-0">
+		<thead>
+			<tr>
+				{% for col, label in columns %}
+					<th>{{ label }}</th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for order in data.pricehistory.data %}
+				<tr>
+					{% for col, label in columns %}
+						<td>{{ order[col] }}</td>
+					{% endfor %}
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% else %}
+
+{% endif %}

@@ -1,0 +1,27 @@
+{% if data.pricehistory %}
+	{% set config = eso.config() %}
+	<table class="table table-sm mb-0">
+		<thead>
+			<tr>
+				<th>Order</th>
+				<th>Date</th>
+				<th class="text-right">Qty</th>
+				<th class="text-right">Price</th>
+				<th class="text-right">Amt</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for detail in data.pricehistory %}
+				<tr>
+					<td>{{ detail.ordernumber }}</td>
+					<td>{{ detail.order.date_invoiced|convertdate }}</td>
+					<td class="text-right">{{ detail.qty_ordered|number_format(config.decimal_places_qty) }}</td>
+					<td class="text-right">{{ detail.price|number_format(config.decimal_places_price) }}</td>
+					<td class="text-right">{{ detail.total_price|number_format(config.decimal_places_price) }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% else %}
+
+{% endif %}
