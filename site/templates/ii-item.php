@@ -1,87 +1,19 @@
 <?php
-	$module_ii = $modules->get('DpagesMii');
-	$module_ii->init_iipage();
-	$html = $modules->get('HtmlWriter');
-	$lookup_ii = $modules->get('LookupItemIi');
+	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
+	use Controllers\Mii\Ii;
 
-	if ($input->get->itemID) {
-		$itemID = $input->get->text('itemID');
+	$routes = [
+		['GET',  '', Ii::class, 'index'],
+		['GET',  'page{nbr:\d+}/', Ii::class, 'list'],
+	];
 
-		if ($lookup_ii->lookup_itm($itemID)) {
-			$page->headline = "II: $itemID";
-			$item = ItemMasterItemQuery::create()->findOneByItemid($itemID);
-			$itempricing = ItemPricingQuery::create()->findOneByItemid($itemID);
-			$module_json = $modules->get('JsonDataFiles');
-			$documentmanagement = $modules->get('DocumentManagement');
-			$toolbar = $config->twig->render('items/ii/toolbar.twig', ['page' => $page, 'item' => $item]);
-			$links = $config->twig->render('items/ii/item/ii-links.twig', ['page' => $page, 'itemID' => $itemID, 'lastmodified' => $module_json->file_modified(session_id(), 'ii-stock'), 'refreshurl' => $page->get_itemURL($itemID)]);
-			$description = $config->twig->render('items/ii/item/description.twig', ['item' => $item, 'page' => $page]);
-			$description = '';
-			$itemdata = $config->twig->render('items/ii/item/item-data.twig', ['page' => $page, 'item' => $item, 'itempricing' => $itempricing]);
+	$router = new Mvc\Router();
+	$router->setRoutes($routes);
+	$router->setRoutePrefix($page->url);
+	$response = $router->route();
 
-			$sections = [
-				'itemdata' => [
-					'code'      => 'ii-item',
-					'formatter' => 'ii:item',
-					'twig'      => 'items/ii/item/item.twig',
-				],
-				'stock' => [
-					'code'      => 'ii-stock',
-					'formatter' => 'ii:stock',
-					'twig'      => 'items/ii/item/stock.twig',
-				]
-			];
-			$formatters = $modules->get('ScreenFormatters');
-
-			foreach ($sections as $var => $section) {
-				$json = $module_json->get_file(session_id(), $section['code']);
-
-				if ($module_json->file_exists(session_id(), $section['code'])) {
-					$session->itemtry = 0;
-
-					if ($json['error']) {
-						$$var .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
-					} else {
-						$module_formatter = $formatters->formatter($section['formatter']);
-						$module_formatter->init_formatter();
-						$$var = $config->twig->render($section['twig'], ['page' => $page, 'itemID' => $itemID, 'json' => $json, 'module_formatter' => $module_formatter, 'blueprint' => $module_formatter->get_tableblueprint()]);
-					}
-				} else {
-					if ($session->itemtry > 3) {
-						$$var = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "JSON Decode Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => $module_json->get_error()]);
-					} else {
-						$session->itemtry++;
-						$session->redirect($page->get_itemURL($itemID));
-					}
-				}
-			}
-			$page->body = "<div class='row'>";
-				$page->body .= $html->div('class=col-sm-2 pl-0', $toolbar);
-				$page->body .= $html->div('class=col-sm-10', $links.$description.$itemdata.$stock);
-			$page->body .= "</div>";
-		} else {
-			$page->headline = $page->title = "Item $itemID could not be found";
-			$page->body = $config->twig->render('util/error-page.twig', ['title' => $page->title, 'msg' => "Check if the item ID is correct"]);
-		}
-	} else {
-		$q = $input->get->q ? $input->get->text('q') : '';
-		$page->title = $q ? "II: results for '$q'" : $page->title;
-		$pricingm = $modules->get('ItemPricing');
-
-		if ($lookup_ii->lookup(strtoupper($q))) {
-			$session->redirect($page->get_itemURL($lookup_ii->itemID));
-		} else {
-			$filter_itm = $modules->get('FilterItemMaster');
-			$filter_itm->init_query($user);
-			$filter_itm->search($q);
-			$query = $filter_itm->get_query();
-			$items = $query->paginate($input->pageNum, 10);
-			$pricingm->request_multiple(array_keys($items->toArray(ItemMasterItem::get_aliasproperty('itemid'))));
-		}
-
-		$page->searchURL = $page->url;
-		$page->body .= $config->twig->render('items/item-search.twig', ['page' => $page, 'items' => $items, 'pricing' => $pricingm]);
-		$page->body .= $config->twig->render('util/paginator.twig', ['page' => $page, 'resultscount'=> $items->getNbResults()]);
+	if ($router->hasError()) {
+		$page->body = $response;
 	}
 
 	include __DIR__ . "/basic-page.php";

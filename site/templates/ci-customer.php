@@ -1,7 +1,7 @@
 <?php
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Mci\Ci;
-	
+
 	$routes = [
 		['GET',  '', Ci::class, 'index'],
 		['GET',  'page{nbr:\d+}/', Ci::class, 'list'],

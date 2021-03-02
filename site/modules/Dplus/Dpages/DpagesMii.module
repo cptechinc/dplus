@@ -372,8 +372,8 @@ class DpagesMii extends Dpages implements Module {
 		$this->addHook('Page::get_itemURL', function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
-			$url = new Url($this->get_ii_loaditemURL($itemID));
-			$url->query->set('page', $p->fullURL->getUrl());
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->query->set('itemID', $this->itemID);
 			$event->return = $url->getUrl();
 		});
 

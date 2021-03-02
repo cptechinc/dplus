@@ -13,7 +13,7 @@
 	if ($m_json->file_exists(session_id(), $page->pw_template)) {
 		$session->stockstatus = 0;
 
-		if ($json['error']) {
+		if ($json['error'] || empty($json)) {
 			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 		} else {
 

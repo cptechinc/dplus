@@ -17,14 +17,19 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Ajax\\Json\\Msa' => __DIR__ . '/../..' . '/classes/ajax/json/Msa.php',
         'Controllers\\Ajax\\Json\\Mso' => __DIR__ . '/../..' . '/classes/ajax/json/Mso.php',
         'Controllers\\Ajax\\Lookup' => __DIR__ . '/../..' . '/classes/ajax/Lookup.php',
+        'Controllers\\Dplus\\Menu' => __DIR__ . '/../..' . '/classes/dplus/Menu.php',
+        'Controllers\\Dplus\\Process' => __DIR__ . '/../..' . '/classes/dplus/Process.php',
         'Controllers\\Map\\Mxrfe' => __DIR__ . '/../..' . '/classes/map/Mxrfe.php',
         'Controllers\\Mar\\Spm' => __DIR__ . '/../..' . '/classes/mar/Spm.php',
+        'Controllers\\Mci\\Ci' => __DIR__ . '/../..' . '/classes/mci/Ci/Ci.php',
+        'Controllers\\Mii\\Ii' => __DIR__ . '/../..' . '/classes/mii/Ii/Ii.php',
         'Controllers\\Min\\Itm\\ItmFunction' => __DIR__ . '/../..' . '/classes/min/itm/ItmFunction.php',
         'Controllers\\Min\\Itm\\Xrefs\\Upcx' => __DIR__ . '/../..' . '/classes/min/itm/xrefs/Upcx.php',
         'Controllers\\Min\\Upcx' => __DIR__ . '/../..' . '/classes/min/Upcx.php',
         'Controllers\\Mki\\Kim' => __DIR__ . '/../..' . '/classes/mki/Kim.php',
         'Controllers\\Mpo\\Epo' => __DIR__ . '/../..' . '/classes/mpo/Epo.php',
         'Controllers\\Mpo\\EpoCreate' => __DIR__ . '/../..' . '/classes/mpo/EpoCreate.php',
+        'Controllers\\Mwm\\Menu' => __DIR__ . '/../..' . '/classes/Mwm/Menu.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

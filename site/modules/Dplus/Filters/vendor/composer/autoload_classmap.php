@@ -13,6 +13,7 @@ return array(
     'Dplus\\Filters\\Mar\\SalesPerson' => $baseDir . '/src/Mar/SalesPerson.php',
     'Dplus\\Filters\\Mgl\\GlCode' => $baseDir . '/src/Mgl/GlCode.php',
     'Dplus\\Filters\\Min\\ItemGroup' => $baseDir . '/src/Min/ItemGroup.php',
+    'Dplus\\Filters\\Min\\ItemMaster' => $baseDir . '/src/Min/ItemMaster.php',
     'Dplus\\Filters\\Misc\\PhoneBook' => $baseDir . '/src/Misc/PhoneBook.php',
     'Dplus\\Filters\\Mpo\\PurchaseOrder' => $baseDir . '/src/Mpo/PurchaseOrder.php',
     'Dplus\\Filters\\Mqo\\Quote' => $baseDir . '/src/Mqo/Quote.php',
