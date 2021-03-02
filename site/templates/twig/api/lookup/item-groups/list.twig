@@ -1,0 +1,28 @@
+<table class="table table-striped" id="itemgroups-table">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th>Code</th>
+			<th>Description</th>
+			<th>Sale</th>
+			<th>Credit</th>
+			<th>COGS</th>
+			<th>Inventory</th>
+			<th>Drop</th>
+		</tr>
+	</thead>
+	{% for group in results %}
+		<tr>
+			<td>
+				<a href="#" class="link itemgroup-link" data-code="{{ group.code }}">
+					{{ group.code }}
+				</a>
+			</td>
+			<td>{{ group.description }}</td>
+			<td>{{ group.sales }}</td>
+			<td>{{ group.credit }}</td>
+			<td>{{ group.cogs }}</td>
+			<td>{{ group.inventory }}</td>
+			<td>{{ group.drop_ship }}</td>
+		</tr>
+	{% endfor %}
+</table>

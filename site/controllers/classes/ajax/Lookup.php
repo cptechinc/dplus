@@ -9,6 +9,7 @@ use Dplus\Filters\AbstractFilter as Filter;
 use Dplus\Filters\Misc\PhoneBook as PhoneBookFilter;
 use Dplus\Filters\Mpo\PurchaseOrder as PurchaseOrderFilter;
 use Dplus\Filters\Mgl\GlCode as GlCodeFilter;
+use Dplus\Filters\Min\ItemGroup as ItemGroupFilter;
 
 class Lookup extends AbstractController {
 	const FIELDS_LOOKUP = ['q' => ['sanitizer' => 'text']];
@@ -131,7 +132,7 @@ class Lookup extends AbstractController {
 	}
 
 	/**
-	 * Search Vendors
+	 * Search Vendor Contacts
 	 * @param  object $data
 	 *                     vendorID  Vendor ID
 	 *                     q         Search Term
@@ -144,6 +145,22 @@ class Lookup extends AbstractController {
 		$filter = new PhoneBookFilter();
 		$filter->init();
 		$page->headline = "Vendor Contacts";
+		self::filterResults($filter, $data);
+	}
+
+	/**
+	 * Search Item Groups
+	 * @param  object $data
+	 *                     q   Search Term
+	 * @return void
+	 */
+	public static function itemGroups($data) {
+		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		$data = self::sanitizeParametersShort($data, ['vendorID|text']);
+		$page = self::pw('page');
+		$filter = new ItemGroupFilter();
+		$filter->init();
+		$page->headline = "Item Groups";
 		self::filterResults($filter, $data);
 	}
 

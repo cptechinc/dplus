@@ -1,0 +1,25 @@
+<table class="table table-sm mb-0">
+	<tr>
+		<td>Item ID</td>
+		<td>{{ orderitem.item.itemid }}</td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>
+			{{ orderitem.item.description }} <br>
+			{{ orderitem.item.description2 }}
+		</td>
+	</tr>
+	<tr>
+		<td>Unit of Measurement</td>
+		<td>
+			{{ orderitem.item.uom_sale }}
+		</td>
+	</tr>
+	<tr>
+		<td>Kit</td>
+		<td>
+			{{ orderitem.item.is_kit()|yesorno|capitalize }}
+		</td>
+	</tr>
+</table>

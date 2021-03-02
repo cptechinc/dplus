@@ -38,6 +38,9 @@
 		// General Ledger Codes
 		['GET', 'gl-codes/', AjaxLookup::class, 'generalLedgerCodes'],
 		['GET', 'gl-codes/page{nbr:\d+}/', AjaxLookup::class, 'generalLedgerCodes'],
+		// Item Groups
+		['GET', 'item-groups/', AjaxLookup::class, 'itemGroups'],
+		['GET', 'item-groups/page{d:\d+}/', AjaxLookup::class, 'itemGroups'],
 	];
 
 	$router = new Mvc\Router();

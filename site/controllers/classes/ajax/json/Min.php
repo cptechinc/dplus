@@ -15,7 +15,7 @@ class Min extends AbstractController {
 	}
 
 	public static function validateTariffCode($data) {
-		$fields = ['code|text', 'tarriffcode|text'];
+		$fields = ['code|text', 'tariffcode|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 		$code = $data->code ? $data->code : $data->tariffcode;
@@ -123,12 +123,23 @@ class Min extends AbstractController {
 		return $loader->get_item_array($data->itemID, $fields);
 	}
 
+	public static function validateInvGroupCode($data) {
+		$fields = ['code|text'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$validate = self::validator();
+
+		if ($validate->itemgroup($data->code) === false) {
+			return "Inv Group Code $data->code not found";
+		}
+		return true;
+	}
+
 	public static function validateWarehouseid($data) {
 		$fields = ['whseID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
-		if ($validate->whseid($data->whseID) === false || $data->whseID != '**') {
+		if ($validate->whseid($data->whseID) === false && $data->whseID != '**') {
 			return "Warehouse ID $data->whseID not found";
 		}
 		return true;

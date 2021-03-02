@@ -67,14 +67,33 @@ $(function() {
 
 	$("body").on('change', '#add-item-form input[name=itemID]', function(e) {
 		var input = $(this);
-		validate_get_item();
-		if (validator.element('#'+input.attr('id'))) {
-			if (validator.element('#'+input_qty.attr('id'))) {
-				form_additem.submit();
-			} else {
-				input_qty.focus();
+
+		if (input.val() == 'N') {
+			var modal = $('#edit-item-modal');
+			modal.attr('data-itemid', input.val());
+			$('#edit-item-modal').modal('show');
+			input.val('');
+		} else {
+			validate_get_item();
+			if (validator.element('#'+input.attr('id'))) {
+				if (validator.element('#'+input_qty.attr('id'))) {
+					form_additem.submit();
+				} else {
+					input_qty.focus();
+				}
 			}
 		}
+	});
+
+	$("body").on('click', '#add-item-form button.add-nonstock', function(e) {
+		var button = $(this);
+		var form = button.closest('form');
+		var input = form.find('input[name=itemID]');
+
+		var modal = $('#edit-item-modal');
+		modal.attr('data-itemid', input.val());
+		$('#edit-item-modal').modal('show');
+		input.val('');
 	});
 
 	function validate_get_item() {
@@ -169,35 +188,7 @@ $(function() {
 /* =============================================================
 	Lookup Modal Functions
 ============================================================= */
-	modal_ajax.on('show.bs.modal', function (event) {
-		var button = $(event.relatedTarget); // Button that triggered the modal
-		var modal = $(this);
-		var url = button.data('lookupurl');
-
-		modal.attr('data-input', button.data('input'));
-		modal.find('.modal-title').text(button.attr('title'));
-		modal.resizeModal('xl');
-		modal.find('.modal-body').loadin(url, function() {});
-	});
-
-	$("body").on('submit', '#ajax-modal form', function(e) {
-		e.preventDefault();
-		var form = $(this);
-		var query = form.serialize();
-		var action = form.attr('action');
-		var search = form.find('input[name=q]').val();
-		var url = action + '?' + query;
-		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
-		form.closest('.modal').find('.modal-body').loadin(url, function() {});
-	});
-
-	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
-		e.preventDefault();
-		var href = $(this).attr('href');
-		modal_ajax.find('.modal-body').load(href);
-	});
-
-	$("body").on('click', '.item-link', function(e) {
+	$("body").on('click', '#ajax-modal .item-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
 		var itemID = button.data('itemid');

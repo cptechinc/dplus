@@ -51,7 +51,7 @@ class ItemPricing extends WireData implements Module {
 		$custID = $custID ? $custID : $config->default_webcustomer;
 		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
 		$data = array("DBNAME=$dplusdb", "ITNOSRCH=$q", "CUSTID=$custID");
-		$this->_request_dplus(array $data);
+		$this->_request_dplus($data);
 	}
 
 	/**
@@ -68,7 +68,7 @@ class ItemPricing extends WireData implements Module {
 		foreach ($itemIDs as $itemID) {
 				$data[] = "ITEMID=$itemID";
 		}
-		$this->_request_dplus(array $data);
+		$this->_request_dplus($data);
 	}
 
 	/**

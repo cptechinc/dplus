@@ -1,0 +1,111 @@
+{% set config = page.wire('modules').get('ConfigureIn').config() %}
+<tbody class="nonstock collapse {{ orderitem.itemid == constant('ItemMasterItem::ITEMID_NONSTOCK') ? 'show' : '' }}">
+	<tr>
+		<td colspan="2" class="bg-dark text-white text-center">
+			Non-stock / Special Order Information
+		</td>
+	</tr>
+	<tr>
+		<td> <label for="nsvendorid">Vendor ID</label> </td>
+		<td>
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'size': 'sm',
+						'type': 'prepend',
+						'input': {
+							'name': 'nsvendorid',
+							'size': 'sm',
+							'value': orderitem.nsvendorid,
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Vendor ID'
+							},
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search Vendors',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.search_lookupURL('vendors'),
+								'data-input': '#nsvendorid'
+							}
+						}
+					}
+				}
+			%}
+		</td>
+	</tr>
+	<tr>
+		<td> <label for="nsvendoritemid">Item ID</label> </td>
+		<td>
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'nsvendoritemid',
+						'size': 'sm',
+						'value': orderitem.nsvendoritemid,
+					}
+				}
+			%}
+		</td>
+	</tr>
+	<tr>
+		<td> <label for="nsitemgroupid">Group</label> </td>
+		<td>
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'size': 'sm',
+						'type': 'prepend',
+						'input': {
+							'name': 'nsitemgroupid',
+							'size': 'sm',
+							'value': orderitem.nsitemgroupid ? orderitem.nsitemgroupid : config.default_itemgroup,
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Item Group'
+							},
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search Item Groups',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.search_lookupURL('vendors'),
+								'data-input': '#vendorID'
+							}
+						}
+					}
+				}
+			%}
+		</td>
+	</tr>
+	<tr>
+		<td> <label for="ponbr">PO Nbr</label> </td>
+		<td>
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'ponbr',
+						'size': 'sm',
+						'value': orderitem.ponbr > 0 ? orderitem.ponbr : '',
+					}
+				}
+			%}
+		</td>
+	</tr>
+	<tr>
+		<td> <label for="poref">Reference</label> </td>
+		<td>
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'poref',
+						'size': 'sm',
+						'value': orderitem.poref,
+					}
+				}
+			%}
+		</td>
+	</tr>
+</tbody>

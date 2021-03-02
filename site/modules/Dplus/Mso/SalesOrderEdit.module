@@ -131,13 +131,16 @@ class SalesOrderEdit extends WireData implements Module {
 
 		switch ($values->text('action')) {
 			case 'update-header':
-				$this->process_input_update_header($input);
+				$this->input_update_header($input);
 				break;
 			case 'update-item-quick':
-				$this->process_input_update_item_quick($input);
+				$this->input_update_item_quick($input);
+				break;
+			case 'update-item':
+				$this->input_update_item($input);
 				break;
 			case 'delete-item':
-				$this->process_input_delete_item($input);
+				$this->input_delete_item($input);
 				break;
 			case 'unlock-order':
 				$ordn = $values->text('ordn');
@@ -156,7 +159,7 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @param WireInput $input Input data
 	 * @return void
 	 */
-	public function process_input_update_header(WireInput $input) {
+	public function input_update_header(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$config = $this->config('so');
@@ -192,13 +195,14 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @param WireInput $input Input data
 	 * @return void
 	 */
-	public function process_input_update_item_quick(WireInput $input) {
+	public function input_update_item_quick(WireInput $input) {
+		$config = $this->config();
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$ordn = SalesOrder::get_paddedordernumber($values->text('ordn'));
 		$linenbr = $values->int('linenbr');
-		$qty     = $values->text('qty');
-		$price   = $values->float('price');
+		$qty     = $values->float('qty', ['precision' => $config->decimal_places_qty]);
+		$price   = $values->float('price', ['precision' => $config->decimal_places_price]);
 
 		$custID = SalesOrderQuery::create()->get_custid($ordn);
 		$editline = OrdrdetQuery::create()->findOneBySessionidOrder(session_id(), $ordn, $linenbr);
@@ -209,11 +213,61 @@ class SalesOrderEdit extends WireData implements Module {
 	}
 
 	/**
+	 * Update Sales Order Item
+	 * @param WireInput $input Input data
+	 * @return void
+	 */
+	public function input_update_item(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$ordn = $values->ordn('ordn');
+		$linenbr = $values->int('linenbr');
+
+		$q = OrdrdetQuery::create();
+		$q->filterbySessionid(session_id())->filterByOrderno($ordn)->filterByLinenbr($linenbr);
+
+		if ($q->count() || $linenbr == 0) {
+			$line = $q->findOneOrCreate();
+			if ($line->isNew()) {
+				$line->setSessionid(session_id());
+				$line->setOrderno($ordn);
+				$line->setLinenbr(0);
+				$line->setItemid($values->text('itemID'));
+			}
+			$this->input_update_item_record($input, $line);
+			$success = $line->save();
+			$this->request_so_update_detail($ordn, $linenbr);
+		}
+	}
+
+	private function input_update_item_record(WireInput $input, Ordrdet $line) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$config = $this->config();
+
+		$line->setQty($values->float('qty', ['precision' => $config->decimal_places_qty]));
+		$line->setPrice($values->float('price', ['precision' => $config->decimal_places_price]));
+		if ($values->rshipdate) {
+			$line->setRshipdate(date('m/d/Y', strtotime($values->text('rshipdate'))));
+		}
+		$line->setWhse($values->text('whseid'));
+		$line->setSpcord($values->text('specialorder'));
+
+		if ($line->spcord != 'N' || $line->itemid == ItemMasterItem::ITEMID_NONSTOCK) {
+			$line->setNsvendorid($values->text('nsvendorid'));
+			$line->setNsvendoritemid($values->text('nsvendoritemid'));
+			$line->setNsitemgroupid($values->text('nsitemgroupid'));
+			$line->setPonbr($values->text('ponbr'));
+			$line->setPoref($values->text('poref'));
+		}
+	}
+
+	/**
 	 * Delete Sales Order Item
 	 * @param WireInput $input Input data
 	 * @return void
 	 */
-	public function process_input_delete_item(WireInput $input) {
+	public function input_delete_item(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$ordn = SalesOrder::get_paddedordernumber($values->text('ordn'));
@@ -223,8 +277,6 @@ class SalesOrderEdit extends WireData implements Module {
 		$editline = OrdrdetQuery::create()->findOneBySessionidOrder(session_id(), $ordn, $linenbr);
 		$editline->setQty(0);
 		$editline->save();
-		$data = array("DBNAME=$dplusdb", 'SALEDET', "ORDERNO=$ordn", "LINENO=$linenbr", "QTY=0", "CUSTID=$custID");
-
 		$this->request_so_delete_detail($ordn, $linenbr);
 	}
 
@@ -295,9 +347,15 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @return Config(x)
 	 */
 	public function config($code = '') {
+		$modules = $this->wire('modules');
 		switch ($code) {
+			case 'inv':
+			case 'in':
+			case 'min':
+				return $modules->get('ConfigureIn')->config();
+				break;
 			default:
-				return ConfigSalesOrderQuery::create()->findOne();
+				return $modules->get('ConfigureSo')->config();
 				break;
 		}
 	}
@@ -315,7 +373,7 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return ItemMasterItem
 	 */
-	public function get_im_item($itemID) {
+	public function itm_item($itemID) {
 		return ItemMasterItemQuery::create()->findOneByItemid($itemID);
 	}
 
@@ -433,6 +491,7 @@ class SalesOrderEdit extends WireData implements Module {
 		$requestor->write_dplusfile($data, $this->sessionID);
 		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
 	}
+
 	/**
 	 * Send SO edit request
 	 * @param  string $ordn Sales Order Number
@@ -496,9 +555,19 @@ class SalesOrderEdit extends WireData implements Module {
 	 * @return void
 	 */
 	public function request_itemsearch($q) {
-		$order = $this->get_order_static($this->ordn);
-		$custID = SalesOrderQuery::create()->get_custid($ordn);
+		$custID = SalesOrderQuery::create()->get_custid($this->ordn);
 		$data = array("ITNOSRCH=$q", "CUSTID=$custID");
+		$this->request_dplus($data);
+	}
+
+	/**
+	 * Sends HTTP GET request to send Dplus Item Search Request
+	 * @param  string $q Query or Item ID
+	 * @return void
+	 */
+	public function request_itempricing($q) {
+		$custID = SalesOrderQuery::create()->get_custid($this->ordn);
+		$data = array('IIPRICING', "ITEMID=$q", "CUSTID=$custID");
 		$this->request_dplus($data);
 	}
 
@@ -510,7 +579,6 @@ class SalesOrderEdit extends WireData implements Module {
 		$url->query->set('ordn', $ordn);
 		return $url->getUrl();
 	}
-
 
 /* =============================================================
 	ProcessWire Module Functions

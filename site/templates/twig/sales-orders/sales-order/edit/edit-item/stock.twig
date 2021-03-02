@@ -1,0 +1,31 @@
+{% if data.stock %}
+	{% set columns = data.stock.columns %}
+	<table class="table table-sm mb-0">
+		<thead>
+			<tr>
+				{% for col, label in columns %}
+					<th>{{ label }}</th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for whse in data.stock.data %}
+				<tr>
+					{% for col, label in columns %}
+						<td>
+							{% if col == 'Warehouse ID' %}
+								<a href="#" class="link whse-link" data-whseid="{{ whse[col] }}">
+									{{ whse[col] }}
+								</a>
+							{% else %}
+								{{ whse[col] }}
+							{% endif %}
+						</td>
+					{% endfor %}
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% else %}
+
+{% endif %}

@@ -1,0 +1,26 @@
+{% set id   = 'edit-item-modal' %}
+{% set size = 'xl' %}
+
+{% extends 'util/bootstrap/html/modal.twig' %}
+
+{% block modal_title %}
+	Edit Line # <span class="linenbr"></span>
+{% endblock %}
+
+{% block modal_body %}
+	<div class="pt-4 loading collapse show">
+		<div class="text-center text-dark">
+			<div class="" role="status">
+
+			</div>
+			Loading...
+		</div>
+	</div>
+	<div class="results">
+		
+	</div>
+{% endblock %}
+
+{% block modal_footer %}
+
+{% endblock %}
