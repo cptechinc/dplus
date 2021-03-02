@@ -35,11 +35,17 @@ $(function () {
 				form.inputs.whse.val(item.whseid);
 				form.inputs.specialorder.val(item.specialorder);
 				form.inputs.uom.val(item.uom);
+
 				form.inputs.qty.ordered.val(parseFloat(item.qty.ordered).toFixed(decimal_places_qty));
 				form.inputs.qty.received.val(parseFloat(item.qty.received).toFixed(decimal_places_qty));
 				form.inputs.qty.invoiced.val(parseFloat(item.qty.invoiced).toFixed(decimal_places_qty));
+				form.inputs.qty.duein.val(parseFloat(item.qty.duein).toFixed(decimal_places_qty));
 				form.inputs.cost.val(parseFloat(item.cost).toFixed(decimal_places_cost));
 				form.inputs.cost_total.val(parseFloat(item.cost_total).toFixed(decimal_places_cost));
+				form.inputs.glaccount.code.val(item.glaccount.code);
+				form.inputs.glaccount.description.text(item.glaccount.description);
+
+				form.inputs.ordn.val(parseFloat(item.ordn) > 0 ? item.ordn : '');
 			}
 		});
 	}
@@ -52,16 +58,22 @@ $(function () {
 			itemID: form.find('input[name=itemID]'),
 			description: form.find('input[name=description]'),
 			vendoritemID: form.find('input[name=vendoritemID]'),
-			whse: form.find('select[name=whse]'),
+			whse: form.find('input[name=whse]'),
 			specialorder: form.find('input[name=specialorder]'),
 			uom: form.find('input#uom'),
 			qty: {
 				ordered:  form.find('input[name=qty_ordered]'),
 				received: form.find('input#qty_received'),
 				invoiced: form.find('input#qty_invoiced'),
+				duein:    form.find('input[name=qtyduein]'),
 			},
 			cost: form.find('input[name=cost]'),
 			cost_total: form.find('input#cost_total'),
+			ordn: form.find('input[name=ordn]'),
+			glaccount: {
+				code: form.find('input[name=glaccount]'),
+				description: form.find('p.gl-desc'),
+			}
 		}
 	}
 
@@ -99,6 +111,19 @@ $(function () {
 						vendoritemID: function() {
 							return $('#vendoritemID').val();
 						}
+					}
+				}
+			},
+			glaccount: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('mgl/validate/gl-code/') }}',
+					type: "get",
+					data: {
+						code: function() {
+							return $('#glaccount').val();
+						},
+						jqv: 'true'
 					}
 				}
 			},
@@ -191,6 +216,15 @@ $(function () {
 		calculate_totalcost(form.find('input[name=cost]').val(), input.val());
 	});
 
+	$("body").on('change', '#edit-item-modal input[name=glaccount]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var form = input.closest('form');
+		get_gl_account(input.val(), function(acct) {
+			form.find('.gl-desc').text(acct ? acct.description : '');
+		});
+	});
+
 /* =============================================================
 	Field Change Functions
 ============================================================= */
@@ -231,6 +265,16 @@ $(function () {
 		var itemID = button.data('itemid');
 		form_edit.find('input[name=vendoritemID]').val(vendoritemID);
 		form_edit.find('input[name=itemID]').val(itemID).change();
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('click', '.code-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var code = button.data('code');
+		var modal = button.closest('.modal');
+		var input = $(modal.attr('data-input'));
+		input.val(code).change();
 		modal_ajax.modal('hide');
 	});
 
@@ -281,6 +325,14 @@ $(function () {
 		url.setQuery('linenbr', linenbr);
 		$.getJSON(url.toString(), function(item) {
 			callback(item);
+		});
+	}
+
+	function get_gl_account(code, callback) {
+		var url = URI('{{ page.jsonapiURL('mgl/gl-code/') }}');
+		url.setQuery('code', code);
+		$.getJSON(url.toString(), function(acct) {
+			callback(acct);
 		});
 	}
 });

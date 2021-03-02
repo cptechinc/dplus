@@ -26,8 +26,6 @@ class Mpo extends AbstractController {
 		return true;
 	}
 
-
-
 	public static function getPoItem($data) {
 		$fields = ['ponbr|text', 'linenbr|int'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -51,14 +49,20 @@ class Mpo extends AbstractController {
 			'uom'          => $line->uom,
 			'qty' => [
 				'ordered'  => number_format($line->qty_ordered, $configs->decimal_places_qty()),
-				'received' => number_format($line->qty_receipt() / $line->itm->weight, $configs->decimal_places_qty()),
-				'invoiced' => number_format($line->qty_invoiced(), $configs->decimal_places_qty())
+				'received' => number_format($line->qty_receipt(), $configs->decimal_places_qty()),
+				'invoiced' => number_format($line->qty_invoiced(), $configs->decimal_places_qty()),
+				'duein'    => number_format($line->qtyduein, $configs->decimal_places_qty()),
 			],
 			'cost'         => number_format($line->cost, $configs->decimal_places_cost()),
 			'cost_total'   => number_format($line->cost_total, $configs->decimal_places_cost()),
 			'itm' => [
-				'weight'   => number_format($line->itm->weight, $configs->decimal_places_qty())
-			]
+				'weight'   => number_format($line->itm ? $line->itm->weight : 0.0, $configs->decimal_places_qty())
+			],
+			'glaccount'    =>  [
+				'code'        => $line->glaccount,
+				'description' => $line->glcode ? $line->glcode->description : ''
+			],
+			'ordn' => $line->ordn,
 		];
 		return $response;
 	}

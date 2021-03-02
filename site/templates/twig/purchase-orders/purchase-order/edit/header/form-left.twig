@@ -8,7 +8,7 @@
 <div class="row">
 	<div class="col-sm-6 form-group">
 		<label>PO Nbr</label>
-		<input type="text" class="form-control-plaintext form-control-sm" value="{{ po.ponbr }}" readonly>
+		<input type="text" class="form-control-plaintext form-control-lg" value="{{ po.ponbr }}" readonly>
 	</div>
 	<div class="col-sm-6 form-group">
 		<label for="releasenbr">Release Number</label>
@@ -20,7 +20,15 @@
 	<div class="col-sm-6">
 		<div class="form-group">
 			<label for="vendorID">Vendor ID</label>
-			{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'vendorID', value: po.vendorid, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search / Select Vendor', attributes_button: {'data-search': 'vendor'}, class_add:  epo.field_has_error_header('vendorID') ? 'is-invalid' : ''} %}
+			{% include 'util/form/input-with-modal-lookup.twig' with {
+					'name': 'vendorID',
+					'value': po.vendorid,
+					'modaltarget': '#ajax-modal',
+					'modaldescription': 'Search / Select Vendor',
+					'attributes_button': {'data-search': 'vendor'},
+					'class_add':  epo.field_has_error_header('vendorID') ? 'is-invalid' : ''
+				}
+			%}
 			<address class="small mt-1 vendor-address">
 				{% set vendor = epo.get_vendor(po.vendorid) %}
 				<span class="name">{{ vendor.name }}</span> <br>

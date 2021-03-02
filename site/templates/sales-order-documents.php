@@ -2,7 +2,7 @@
 	if ($input->get->ordn) {
 		$ordn = $input->get->text('ordn');
 		$docm = $modules->get('DocumentManagementSo');
-		$lookup_orders = new Dplus\CodeValidators\So();
+		$lookup_orders = new Dplus\CodeValidators\Mso();
 
 		if ($lookup_orders->order($ordn) || $lookup_orders->invoice($ordn)) {
 			$page->title = "Sales Order #$ordn Documents";

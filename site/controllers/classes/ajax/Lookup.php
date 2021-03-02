@@ -1,14 +1,19 @@
 <?php namespace Controllers\Ajax;
 
+use Propel\Runtime\ActiveQuery\ModelCriteria as BaseQuery;
+
 use ProcessWire\Module, ProcessWire\ProcessWire;
 use Mvc\Controllers\AbstractController;
 
 use Dplus\Filters\AbstractFilter as Filter;
 use Dplus\Filters\Misc\PhoneBook as PhoneBookFilter;
+use Dplus\Filters\Mpo\PurchaseOrder as PurchaseOrderFilter;
+use Dplus\Filters\Mgl\GlCode as GlCodeFilter;
 use Dplus\Filters\Min\ItemGroup as ItemGroupFilter;
 
 class Lookup extends AbstractController {
 	const FIELDS_LOOKUP = ['q' => ['sanitizer' => 'text']];
+
 	public static function test() {
 		return 'test';
 	}
@@ -122,14 +127,15 @@ class Lookup extends AbstractController {
 		$page = $wire->wire('page');
 		$filter = $wire->wire('modules')->get('FilterVendors');
 		$filter->init_query(self::pw('user'));
-		$page->headline = "Users";
+		$page->headline = "Vendors";
 		self::moduleFilterResults($filter, $wire, $data);
 	}
 
 	/**
 	 * Search Vendor Contacts
 	 * @param  object $data
-	 *                     q   Search Term
+	 *                     vendorID  Vendor ID
+	 *                     q         Search Term
 	 * @return void
 	 */
 	public static function vendorContacts($data) {
@@ -173,6 +179,37 @@ class Lookup extends AbstractController {
 		self::moduleFilterResults($filter, $wire, $data);
 	}
 
+	/**
+	 * filter Purchase Orders
+	 * @param  object $data
+	 *                     q   Search Term
+	 * @return void
+	 */
+	public static function purchaseOrders($data) {
+		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		$wire = self::pw();
+		$filter = new PurchaseOrderFilter();
+		$filter->init();
+		$wire->wire('page')->headline = "Purchase Orders";
+		self::pw('config')->po = self::pw('modules')->get('ConfigurePo')->config();
+		self::filterResults($filter, $data);
+	}
+
+	/**
+	 * Filter General Ledger Codes
+	 * @param  object $data
+	 *                     q   Search Term
+	 * @return void
+	 */
+	public static function generalLedgerCodes($data) {
+		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		$wire = self::pw();
+		$filter = new GlCodeFilter();
+		$filter->init();
+		$wire->wire('page')->headline = "General Ledger Codes";
+		self::filterResults($filter, $data);
+	}
+
 	private static function moduleFilterResults(Module $filter, ProcessWire $wire, $data) {
 		$input = $wire->wire('input');
 		$page = $wire->wire('page');
@@ -183,13 +220,8 @@ class Lookup extends AbstractController {
 			$page->headline = "Searching for '$data->q'";
 		}
 		$filter->apply_sortby($page);
-		$query = $filter->get_query();
-
-		$results = $query->paginate($input->pageNum, 10);
-
 		$path = $input->urlSegment(count($input->urlSegments()));
-		$page->body .= $wire->wire('config')->twig->render("api/lookup/$path/search.twig", ['results' => $results, 'datamatcher' => $wire->wire('modules')->get('RegexData'), 'q' => $data->q]);
-		$page->body .= $wire->wire('config')->twig->render('util/paginator.twig', ['resultscount'=> $results->getNbResults() != $query->count() ? $query->count() : $results->getNbResults()]);
+		self::filterResultsTwig($path, $filter->get_query(), $data->q);
 	}
 
 	private static function filterResults(Filter $filter, $data) {
@@ -201,15 +233,19 @@ class Lookup extends AbstractController {
 			$filter->search($data->q);
 			$page->headline = "Searching for '$data->q'";
 		}
-
 		$filter->sortby($page);
-		$query   = $filter->query;
-		$results = $query->paginate($input->pageNum, 10);
-
 		$path = $input->urlSegment(count($input->urlSegments()));
-
 		$path = rtrim(str_replace($page->url, '', self::pw('input')->url()), '/');
-		$page->body .= self::pw('config')->twig->render("api/lookup/$path/search.twig", ['results' => $results, 'datamatcher' => self::pw('modules')->get('RegexData'), 'q' => $data->q]);
+		$path = preg_replace('/page\d+/', '', $path);
+		self::filterResultsTwig($path, $filter->query, $data->q);
+	}
+
+	private static function filterResultsTwig($path = 'codes', BaseQuery $query, $q = '') {
+		$input = self::pw('input');
+		$page  = self::pw('page');
+		$results = $query->paginate($input->pageNum, 10);
+		$page->body .= self::pw('config')->twig->render("api/lookup/$path/search.twig", ['results' => $results, 'datamatcher' => self::pw('modules')->get('RegexData'), 'q' => $q]);
+		$page->body .= '<div class="mb-3"></div>';
 		$page->body .= self::pw('config')->twig->render('util/paginator.twig', ['resultscount'=> $results->getNbResults() != $query->count() ? $query->count() : $results->getNbResults()]);
 	}
 }

@@ -6,7 +6,18 @@
 			<label>PO Nbr</label>
 		</div>
 		<div class="col-sm-4 form-group">
-			<input type="text" class="form-control form-control-sm" name="ponbr" id="ponbr">
+			{% include 'util/form/input-with-modal-lookup.twig' with {
+					'name': 'ponbr', 'value': '',
+					'attributes': {},
+					'modaltarget': '#ajax-modal',
+					'modaldescription': 'Search for / Choose Purchase Order',
+					'attributes_button': {
+						'data-search': 'ponbr',
+						'data-lookupurl': page.search_lookupURL('purchase-orders'),
+						'data-input': '#ponbr'
+					}
+				}
+			%}
 		</div>
 	</div>
 	<div class="row">
@@ -15,7 +26,7 @@
 		</div>
 		<div class="col-sm-4 form-group">
 			{% include 'util/form/input-with-modal-lookup.twig' with {
-					'name': 'vendorID', 'value': item.vendorid,
+					'name': 'vendorID', 'value': '',
 					'attributes': {},
 					'modaltarget': '#ajax-modal',
 					'modaldescription': 'Search for / Choose Vendor',

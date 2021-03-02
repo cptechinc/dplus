@@ -71,11 +71,13 @@ class Epo extends AbstractController {
 		$config = self::pw('config');
 		$po_edit = $epo->get_editable_header($data->ponbr);
 		$po_readonly = $epo->get_purchaseorder($data->ponbr);
+		$page->headline = "Editing PO # $data->ponbr";
 		$page->search_notesURL = self::pw('pages')->get('pw_template=msa-noce-ajax')->url;
 		$page->body .= $config->twig->render('purchase-orders/purchase-order/edit/edit.twig', ['epo' => $epo, 'po' => $po_edit, 'po_readonly' => $po_readonly, 'qnotes' => $qnotes]);
 		$page->js   .= $config->twig->render('purchase-orders/purchase-order/edit/js.twig', ['epo' => $epo]);
 		$page->js   .= $config->twig->render('purchase-orders/purchase-order/edit/qnotes/js.twig');
 		$page->js   .= $config->twig->render('purchase-orders/purchase-order/edit/lookup/js.twig');
+		self::pw('session')->removeFor('epo', 'scrollto');
 		return $page->body;
 	}
 

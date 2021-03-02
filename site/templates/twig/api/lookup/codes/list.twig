@@ -1,0 +1,18 @@
+<table class="table table-striped" id="code-table">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th>Code</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	{% for code in results %}
+		<tr>
+			<td>
+				<a href="#" class="link code-link" data-code="{{ code.code }}">
+					{{ code.code }}
+				</a>
+			</td>
+			<td>{{ code.description }}</td>
+		</tr>
+	{% endfor %}
+</table>

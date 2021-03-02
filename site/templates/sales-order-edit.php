@@ -19,7 +19,7 @@
 		$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 		$session->removeFor('response', 'eso');
 	}
-	
+
 	if ($config->ajax) {
 		echo $page->body;
 	} else {

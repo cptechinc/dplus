@@ -17,7 +17,6 @@ $(function() {
 		validate_ponbr(input.val(), function(valid) {
 			if (valid) {
 				var url = URI('{{ pages.get('pw_template=purchase-order-edit').url }}');
-				alert(input.val());
 				url.addQuery('ponbr', input.val());
 				window.location.href = url.toString();
 			}
@@ -36,6 +35,15 @@ $(function() {
 		modal.find('.modal-title').text(button.attr('title'));
 		modal.resizeModal('xl');
 		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.ponbr-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var ponbr = button.data('ponbr');
+		var modal = button.closest('.modal');
+		$(modal.attr('data-input')).val(ponbr).change();
+		modal.modal('hide');
 	});
 
 	$("body").on('click', '.vendor-link', function(e) {
@@ -85,7 +93,7 @@ $(function() {
 		},
 		rules: {
 			vendorID: {
-				required: true,
+				required: false,
 				remote: {
 					url: '{{ page.jsonapiURL('map/validate/vendorid/') }}',
 					type: "get",
