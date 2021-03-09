@@ -29,5 +29,6 @@ return array(
     'Controllers\\Mki\\Kim' => $baseDir . '/classes/mki/Kim.php',
     'Controllers\\Mpo\\Epo' => $baseDir . '/classes/mpo/Epo.php',
     'Controllers\\Mpo\\EpoCreate' => $baseDir . '/classes/mpo/EpoCreate.php',
+    'Controllers\\Mso\\Eso' => $baseDir . '/classes/mso/Eso.php',
     'Controllers\\Mwm\\Menu' => $baseDir . '/classes/Mwm/Menu.php',
 );
