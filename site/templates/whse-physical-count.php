@@ -90,6 +90,8 @@
 	$bins = WarehouseBinQuery::create()->get_warehousebins($whsesession->whseid)->toArray();
 	$jsconfig = array('warehouse' => array('id' => $whsesession->whseid, 'binarrangement' => $warehouse->get_binarrangementdescription(), 'bins' => $bins));
 	$page->body .= $config->twig->render('util/js-variables.twig', ['variables' => array('warehouse' => $jsconfig)]);
+
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+	$config->scripts->append(hash_templatefile('scripts/warehouse/physical-count.js'));
 
 	include __DIR__ . "/basic-page.php";

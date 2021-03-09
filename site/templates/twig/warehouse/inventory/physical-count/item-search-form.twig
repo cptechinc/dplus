@@ -7,13 +7,21 @@
 <form action="{{ page.formurl }}" method="post" class="allow-enterkey-submit">
 	<input type="hidden" name="action" value="physical-count-search">
 	<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
-	<label>Scan Barcode, UPC, Item ID, or  Lot / Serial #</label>
+	<label for="scan">Scan Barcode, UPC, Item ID, or  Lot / Serial #</label>
+
 	<div class="form-group">
 		<div class="input-group">
-			<input type="text" class="form-control" name="scan" placeholder="Barcode, UPC, Item ID, Lot / Serial #" autofocus>
+			<span class="input-group-prepend">
+				<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Search Items" data-lookupurl="{{ page.search_lookupURL('items') }}" data-input="#scan">
+					<i class="fa fa-search" aria-hidden="true"></i>
+				</button>
+			</span>
+
+			<input type="text" class="form-control" name="scan" id="scan" placeholder="Barcode, UPC, Item ID, Lot / Serial #">
+
 			<span class="input-group-append">
 				<button type="submit" class="btn btn-primary">
-					<i class="fa fa-search" aria-hidden="true"></i> Search
+					<i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Search
 				</button>
 			</span>
 		</div>
