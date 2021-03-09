@@ -244,16 +244,19 @@ class Eso extends AbstractController {
 			$orderitem->setItemid($data->itemID);
 			if ($orderitem->itemid != ItemMasterItem::ITEMID_NONSTOCK) {
 				$pricing = PricingQuery::create()->filterBySessionid(session_id())->findOneByItemid($orderitem->itemid);
-				$orderitem->setPrice($pricing->price);
+				$orderitem->setPrice($pricing ? $pricing->price : 0.0);
 			}
 
 		}
-		$vxm = self::pw('modules')->get('XrefVxm');
 
-		if ($vxm->poordercode_primary_exists($orderitem->itemid)) {
-			$xref = $vxm->get_primary_poordercode_itemid($orderitem->itemid);
-			$orderitem->setNsvendorid($xref->vendorid);
-			$orderitem->setNsvendoritemid($xref->vendoritemid);
+		if ($orderitem->nsvendorid == '') {
+			$vxm = self::pw('modules')->get('XrefVxm');
+
+			if ($vxm->poordercode_primary_exists($orderitem->itemid)) {
+				$xref = $vxm->get_primary_poordercode_itemid($orderitem->itemid);
+				$orderitem->setNsvendorid($xref->vendorid);
+				$orderitem->setNsvendoritemid($xref->vendoritemid);
+			}
 		}
 
 		$files = self::setupItemJsonFiles($eso, $orderitem);
@@ -289,7 +292,7 @@ class Eso extends AbstractController {
 			}
 
 			if ($request) {
-				//$eso->request_itempricing($orderitem->itemid);
+				$eso->request_itempricing($orderitem->itemid);
 			}
 
 			foreach (array_keys($files) as $code) {
