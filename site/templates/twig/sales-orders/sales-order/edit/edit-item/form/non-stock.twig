@@ -73,8 +73,8 @@
 								'title': 'Search Item Groups',
 								'data-toggle': 'modal',
 								'data-target': '#ajax-modal',
-								'data-lookupurl': page.search_lookupURL('vendors'),
-								'data-input': '#vendorID'
+								'data-lookupurl': page.search_lookupURL('item-groups'),
+								'data-input': '#nsitemgroupid'
 							}
 						}
 					}
@@ -87,9 +87,13 @@
 		<td>
 			{% include 'util/bootstrap/form/input.twig' with {
 					'input': {
+						'inputclass': 'form-control-plaintext',
 						'name': 'ponbr',
 						'size': 'sm',
 						'value': orderitem.ponbr > 0 ? orderitem.ponbr : '',
+						'attributes': {
+							'readonly': true
+						}
 					}
 				}
 			%}
@@ -100,9 +104,13 @@
 		<td>
 			{% include 'util/bootstrap/form/input.twig' with {
 					'input': {
+						'inputclass': 'form-control-plaintext',
 						'name': 'poref',
 						'size': 'sm',
 						'value': orderitem.poref,
+						'attributes': {
+							'readonly': true
+						}
 					}
 				}
 			%}
