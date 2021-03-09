@@ -180,7 +180,7 @@ $(function() {
 		var button = $(this);
 		var modal = button.closest('.modal');
 		var input = $(modal.attr('data-input'));
-		input.val(button.data('itemgroup'));
+		input.val(button.data('code'));
 		$('#ajax-modal').modal('hide');
 	});
 });
