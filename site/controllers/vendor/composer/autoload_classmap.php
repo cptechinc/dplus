@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'Controllers\\Ajax\\Json\\Inv' => $baseDir . '/classes/ajax/json/Inv.php',
     'Controllers\\Ajax\\Json\\Map' => $baseDir . '/classes/ajax/json/Map.php',
     'Controllers\\Ajax\\Json\\Mar' => $baseDir . '/classes/ajax/json/Mar.php',
     'Controllers\\Ajax\\Json\\Mci' => $baseDir . '/classes/ajax/json/Mci.php',
@@ -23,6 +24,7 @@ return array(
     'Controllers\\Mar\\Spm' => $baseDir . '/classes/mar/Spm.php',
     'Controllers\\Mci\\Ci' => $baseDir . '/classes/mci/Ci/Ci.php',
     'Controllers\\Mii\\Ii' => $baseDir . '/classes/mii/Ii/Ii.php',
+    'Controllers\\Min\\Itm\\Itm' => $baseDir . '/classes/min/itm/Itm.php',
     'Controllers\\Min\\Itm\\ItmFunction' => $baseDir . '/classes/min/itm/ItmFunction.php',
     'Controllers\\Min\\Itm\\Xrefs\\Upcx' => $baseDir . '/classes/min/itm/xrefs/Upcx.php',
     'Controllers\\Min\\Upcx' => $baseDir . '/classes/min/Upcx.php',
