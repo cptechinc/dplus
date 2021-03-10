@@ -271,7 +271,7 @@ class DpagesMso extends Dpages implements Module {
 
 		$this->addHook('Page::unlock_orderURL', function($event) {
 			$ordn = $event->arguments(0);
-			$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mso')->child('template=redir')->url);
+			$url = new Url($this->wire('pages')->get('pw_template=sales-order-edit')->url);
 			$url->query->set('action', 'unlock-order');
 			$url->query->set('ordn', $ordn);
 			$event->return = $url->getUrl();
