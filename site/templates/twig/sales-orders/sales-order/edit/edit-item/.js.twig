@@ -22,6 +22,18 @@ $(function() {
 		input.attr('data-userchanged', 'true');
 	});
 
+	$('body').on('change', '#edit-item-modal select[name=kit]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var modal = input.closest('.modal');
+		
+		if (input.val() == 'Y') {
+			modal.find('.nonstock').removeClass('show');
+		} else {
+			modal.find('select[name=specialorder]').change();
+		}
+	});
+
 	$('body').on('change', '#edit-item-modal input[name=qty]', function(e) {
 		e.preventDefault();
 		var input = $(this);
