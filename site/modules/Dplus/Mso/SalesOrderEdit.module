@@ -145,6 +145,12 @@ class SalesOrderEdit extends WireData implements Module {
 			case 'unlock-order':
 				$ordn = $values->text('ordn');
 				$this->request_so_unlock($ordn);
+				if ($this->exists_editable_header($ordn)) {
+					$order = $this->get_editable_header($ordn);
+					$order->delete();
+					$order->save();
+				}
+				break;
 			case 'edit-order-new':
 				$q = LogpermQuery::create();
 				$logperm = $q->findOneBySessionid(session_id());
@@ -185,7 +191,7 @@ class SalesOrderEdit extends WireData implements Module {
 
 		$editorder->setShipcom($values->text('shipcomplete'));
 		$editorder->setTermcode($values->text('termscode'));
-		$saved = $editorder->save();
+		$saved  = $editorder->save();
 		$unlock = $values->exit ? true : false;
 		$this->request_so_update_header($ordn, $unlock);
 	}
