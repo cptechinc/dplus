@@ -163,6 +163,22 @@
 </tr>
 <tr>
 	<td>
+		<label for="editkit">Kit</label>
+	</td>
+	<td>
+		{% include 'util/form/select.twig' with {
+				'id': 'editkit',
+				'name': 'kit', 'show_value': true, 'selected_value': orderitem.kit,
+				'options': {
+					'Y': 'Yes',
+					'N': 'No'
+				},
+			}
+		%}
+	</td>
+</tr>
+<tr>
+	<td>
 		<label for="editspecialorder">Special Order</label>
 	</td>
 	<td>
