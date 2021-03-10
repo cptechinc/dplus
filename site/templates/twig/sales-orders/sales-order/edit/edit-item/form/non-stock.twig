@@ -1,5 +1,7 @@
 {% set config = page.wire('modules').get('ConfigureIn').config() %}
-<tbody class="nonstock collapse {{ orderitem.itemid == constant('ItemMasterItem::ITEMID_NONSTOCK') ? 'show' : '' }}">
+{% set show_ns = orderitem.itemid == constant('ItemMasterItem::ITEMID_NONSTOCK') or orderitem.specialorder != 'N' %}
+
+<tbody class="nonstock collapse {{ show_ns ? 'show' : '' }}">
 	<tr>
 		<td colspan="2" class="bg-dark text-white text-center">
 			Non-stock / Special Order Information
