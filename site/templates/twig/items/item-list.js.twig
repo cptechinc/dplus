@@ -1,0 +1,7 @@
+$(function() {
+	{% set input = page.wire('input') %}
+	{% if input.get.offsetExists('focus') and input.get.text('focus') != 'new' %}
+		$('tr[data-itemid="{{ input.get.text('focus') }}"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('[data-itemid="{{ input.get.text('focus') }}"]').offset().top,},700,'linear');
+	{% endif %}
+});
