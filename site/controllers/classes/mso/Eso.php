@@ -44,7 +44,10 @@ class Eso extends AbstractController {
 			$page = self::pw('page');
 			$eso  = self::pw('modules')->get('SalesOrderEdit');
 			$eso->process_input(self::pw('input'));
-			$url = $data->action == 'exit' || isset($data->exit) ? $page->so_viewURL($data->ordn) : $page->so_editURL($data->ordn);
+			$url = $page->so_editURL($data->ordn);
+			if (in_array($data->action, ['unlock-order', 'exit']) || isset($data->exit)) {
+				$url = $page->so_viewURL($data->ordn);
+			}
 			self::pw('session')->redirect($url, $http301 = false);
 		}
 		self::pw('session')->redirect(self::pw('input')->url(), $http301 = false);
