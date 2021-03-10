@@ -44,7 +44,7 @@ class Eso extends AbstractController {
 			$page = self::pw('page');
 			$eso  = self::pw('modules')->get('SalesOrderEdit');
 			$eso->process_input(self::pw('input'));
-			$url = $data->action == 'exit' ? $page->so_viewURL($data->ordn) : $page->so_editURL($data->ordn);
+			$url = $data->action == 'exit' || isset($data->exit) ? $page->so_viewURL($data->ordn) : $page->so_editURL($data->ordn);
 			self::pw('session')->redirect($url, $http301 = false);
 		}
 		self::pw('session')->redirect(self::pw('input')->url(), $http301 = false);
@@ -67,7 +67,7 @@ class Eso extends AbstractController {
 		$eso = self::pw('modules')->get('SalesOrderEdit');
 		$eso->set_ordn($data->ordn);
 
-		if ($eso->exists_editable($data->ordn) === false) {
+		if ($eso->exists_editable($data->ordn) === false || $eso->can_order_be_edited($data->ordn) ) {
 			if ($data->load > 0) {
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "SO # $data->ordn can not be loaded for editing"]);
 				return $page->body;
