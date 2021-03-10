@@ -258,6 +258,7 @@ class SalesOrderEdit extends WireData implements Module {
 		}
 		$line->setWhse($values->text('whseid'));
 		$line->setSpcord($values->text('specialorder'));
+		$line->setKititemflag($values->yn('kit'));
 
 		if ($line->spcord != 'N' || $line->itemid == ItemMasterItem::ITEMID_NONSTOCK) {
 			$line->setNsvendorid($values->text('nsvendorid'));
