@@ -1,5 +1,6 @@
 {% set config = page.wire('modules').get('ConfigureIn').config() %}
 {% set show_ns = orderitem.itemid == constant('ItemMasterItem::ITEMID_NONSTOCK') or orderitem.specialorder != 'N' %}
+{% set show_ns = orderitem.is_kit() ? false : show_ns %}
 
 <tbody class="nonstock collapse {{ show_ns ? 'show' : '' }}">
 	<tr>
