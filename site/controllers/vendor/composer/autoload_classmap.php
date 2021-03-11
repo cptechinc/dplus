@@ -27,6 +27,7 @@ return array(
     'Controllers\\Min\\Itm\\Itm' => $baseDir . '/classes/min/itm/Itm.php',
     'Controllers\\Min\\Itm\\ItmFunction' => $baseDir . '/classes/min/itm/ItmFunction.php',
     'Controllers\\Min\\Itm\\Pricing' => $baseDir . '/classes/min/itm/Pricing.php',
+    'Controllers\\Min\\Itm\\Warehouse' => $baseDir . '/classes/min/itm/Warehouse.php',
     'Controllers\\Min\\Itm\\Xrefs\\Upcx' => $baseDir . '/classes/min/itm/xrefs/Upcx.php',
     'Controllers\\Min\\Upcx' => $baseDir . '/classes/min/Upcx.php',
     'Controllers\\Mki\\Kim' => $baseDir . '/classes/mki/Kim.php',
