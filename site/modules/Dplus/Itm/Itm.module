@@ -77,7 +77,7 @@ class Itm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function item_exists($itemID) {
-		$this->exists($itemID);
+		return $this->exists($itemID);
 	}
 
 	/**
@@ -199,12 +199,7 @@ class Itm extends WireData implements Module {
 		$record = $this->get_create_item($itemID);
 		$invalidfields = array();
 
-		/**
-		 * Create lock for ITM item ID if not already locked.
-		 */
-		if (!$this->recordlocker->function_locked($itemID)) {
-			$this->recordlocker->create_lock($itemID);
-		}
+		$this->lockrecord($itemID);
 
 		if ($record->isNew() || $this->recordlocker->function_locked_by_user($itemID)) {
 			if ($values->text('action') == 'delete-itm-item') {
@@ -439,6 +434,17 @@ class Itm extends WireData implements Module {
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
+	/**
+	 * Lock Record, validate User is locking Record
+	 * @param  string $itemID ItemID
+	 * @return bool
+	 */
+	public function lockrecord($itemID) {
+		if ($this->recordlocker->function_locked($itemID) === false) {
+			$this->recordlocker->create_lock($itemID);
+		}
+		return $this->recordlocker->function_locked_by_user($itemID);
+	}
 	/**
 	 * Returns IN config
 	 * @return ConfigIn
