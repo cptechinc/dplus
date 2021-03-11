@@ -4,7 +4,6 @@
 
 	$routes = [
 		['GET',  '', PricingController::class, 'index'],
-		['GET',  'page{d:\d+}', PricingController::class, 'list'],
 		['POST', '', PricingController::class, 'handleCRUD'],
 	];
 	$router = new Mvc\Router();
