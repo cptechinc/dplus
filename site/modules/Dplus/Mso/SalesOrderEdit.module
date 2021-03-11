@@ -6,6 +6,7 @@ use Dplus\CodeValidators\Mso as MsoValidator;
 
 // Dplus Data Database
 use SalesOrderQuery, SalesOrder;
+use CustomerQuery, Customer;
 use CustomerShiptoQuery, CustomerShipto;
 use WarehouseQuery, Warehouse;
 use ItemMasterItemQuery, ItemMasterItem;
@@ -242,7 +243,7 @@ class SalesOrderEdit extends WireData implements Module {
 			}
 			$this->input_update_item_record($input, $line);
 			$success = $line->save();
-			$this->request_so_update_detail($ordn, $linenbr);
+			//$this->request_so_update_detail($ordn, $linenbr);
 		}
 	}
 
@@ -485,6 +486,19 @@ class SalesOrderEdit extends WireData implements Module {
 		$q->select(SalesOrder::get_aliasproperty('heldby'));
 		$q->filterByOrdernumber($ordn);
 		return $q->findOne();
+	}
+
+	/**
+	 * Return Sales Order Customer
+	 * @param  string $ordn Sales Order Number
+	 * @return Customer
+	 */
+	public function customer($ordn) {
+		$q = SalesOrderQuery::create();
+		$q->select(SalesOrder::get_aliasproperty('custid'));
+		$q->filterByOrdernumber($ordn);
+		$custID = $q->findOne();
+		return CustomerQuery::create()->findOneByCustid($custID);
 	}
 
 /* =============================================================
