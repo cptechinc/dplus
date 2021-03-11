@@ -43,7 +43,7 @@ class ItemMaster extends AbstractFilter {
 	 */
 	public function position(ItemMasterItemClass $item) {
 		$results = $this->query->find();
-		return $people->search($item);
+		return $results->search($item);
 	}
 
 	/**
