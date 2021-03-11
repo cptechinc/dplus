@@ -1,10 +1,5 @@
-<div class="mb-3">
-	<a href="{{ page.itm_warehouseURL(itemID, 'new') }}" class="btn btn-secondary">
-		<i class="fa fa-plus" aria-hidden="true"></i> Add
-	</a>
-</div>
 <table class="table table-sm">
-	<tr>
+	<tr class="bg-dark text-white">
 		<th>Whse</th>
 		<th>Bin</th>
 		<th>
@@ -21,7 +16,11 @@
 		<th class="text-right">Max Qty</th>
 		<th class="text-right">Count Date</th>
 		<th>Note</th>
-		<th>Edit</th>
+		<th>
+			<a href="{{ page.itm_warehouseURL(itemID, 'new') }}" class="btn btn-light">
+				<i class="fa fa-plus" aria-hidden="true"></i> Add
+			</a>
+		</th>
 	</tr>
 	<tbody>
 		{% for warehouse in warehouses %}
