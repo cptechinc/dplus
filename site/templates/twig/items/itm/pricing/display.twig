@@ -9,10 +9,10 @@
 			</div>
 		</div>
 	</div>
-	<div class="card-body">
-		{% block form %}
+	{% block body %}
+		<div class="card-body">
 			{% include 'items/itm/pricing/form.twig' %}
-		{% endblock %}
-	</div>
+		</div>
+	{% endblock %}
 </div>
 <hr>
