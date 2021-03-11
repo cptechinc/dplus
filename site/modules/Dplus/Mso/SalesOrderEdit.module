@@ -243,7 +243,7 @@ class SalesOrderEdit extends WireData implements Module {
 			}
 			$this->input_update_item_record($input, $line);
 			$success = $line->save();
-			//$this->request_so_update_detail($ordn, $linenbr);
+			$this->request_so_update_detail($ordn, $linenbr);
 		}
 	}
 
