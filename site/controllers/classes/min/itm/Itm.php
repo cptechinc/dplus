@@ -87,9 +87,9 @@ class Itm extends ItmFunction {
 		}
 		$page->customerlookupURL = self::pw('pages')->get('pw_template=mci-lookup')->url;
 		$item = $itm->get_item($data->itemID);
-		self::lockItem($data->itemID);
+		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page]);
-		$html .= $config->twig->render('items/itm/itm-form.twig', ['item' => $item, 'itm' => $itm, 'recordlocker' => $itm->recordlocker]);
+		$html .= $config->twig->render('items/itm/form/display.twig', ['item' => $item, 'itm' => $itm, 'recordlocker' => $itm->recordlocker]);
 		$page->js   .= $config->twig->render("items/itm/js.twig", ['item' => $item, 'itm' => $itm]);
 		if ($item->isNew() === false) {
 			$html .= self::qnotes($data);
@@ -112,14 +112,16 @@ class Itm extends ItmFunction {
 
 	public static function lockItem($itemID) {
 		$itm  = self::getItm();
+		$html = '';
 		if ($itm->recordlocker->function_locked($itemID) && !$itm->recordlocker->function_locked_by_user($itemID)) {
 			$config = self::pw('config');
 			$msg = "ITM Item $itemID is being locked by " . $itm->recordlocker->get_locked_user($itemID);
-			self::$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "ITM Item $itemID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
-			self::$html .= $html->div('class=mb-3');
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "ITM Item $itemID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+			$html .= $html->div('class=mb-3');
 		} elseif (!$itm->recordlocker->function_locked($itemID)) {
 			$itm->recordlocker->create_lock($itemID);
 		}
+		return $html;
 	}
 
 	public static function list($data) {
