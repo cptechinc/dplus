@@ -21,6 +21,7 @@ use ProcessWire\Page, ProcessWire\SalesOrderEdit as EsoCRUD;
 
 // Dplus Classes
 use Dplus\CodeValidators\Mso as MsoValidator;
+use Dplus\CodeValidators\Min as MinValidator;
 use Dplus\Filters\Mso\SalesHistory\Detail as SalesHistoryDetailFilter;
 
 use Mvc\Controllers\AbstractController;
@@ -259,20 +260,22 @@ class Eso extends AbstractController {
 		}
 
 		$orderitem = $q->findOneOrCreate();
-		self::_setupOrderItem($orderitem, $data);
+		self::_setupOrderItem($eso, $orderitem, $data);
 		$files = self::setupItemJsonFiles($eso, $orderitem);
 		$html  = $config->twig->render('sales-orders/sales-order/edit/edit-item/display.twig', ['eso' => $eso, 'orderitem' => $orderitem, 'data' => $files]);
 		return $html;
 	}
 
-	private static function _setupOrderItem(SalesOrderDetail $orderitem, stdClass $data) {
+	private static function _setupOrderItem(EsoCRUD $eso, SalesOrderDetail $orderitem, stdClass $data) {
 		if ($orderitem->isNew()) {
 			$orderitem->setOrdernumber($data->ordn);
 			$orderitem->setLinenbr(0);
 			$orderitem->setKit('N');
 			$orderitem->setSpecialorder('N');
 
-			if (empty($data->itemID)) {
+			$minvalidator = new MinValidator();
+
+			if (empty($data->itemID) || $minvalidator->itemid($data->itemID) === false) {
 				$data->itemID = ItemMasterItem::ITEMID_NONSTOCK;
 				$orderitem->setSpecialorder('D');
 			}
