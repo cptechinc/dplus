@@ -310,7 +310,7 @@ class Eso extends AbstractController {
 
 	/**
 	 * Get Json Files
-	 * @param  EsoCRUD         $eso
+	 * @param  EsoCRUD          $eso
 	 * @param  SalesOrderDetail $orderitem
 	 * @return array
 	 */
@@ -336,7 +336,7 @@ class Eso extends AbstractController {
 			}
 
 			if ($request) {
-				// $eso->request_itempricing($orderitem->itemid);
+				$eso->request_itempricing($orderitem->itemid);
 			}
 
 			foreach (array_keys($files) as $code) {
