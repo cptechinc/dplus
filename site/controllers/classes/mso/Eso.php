@@ -1,5 +1,7 @@
 <?php namespace Controllers\Mso;
 
+use stdClass;
+
 // Propel Query
 use Propel\Runtime\ActiveQuery\Criteria;
 
@@ -12,6 +14,7 @@ use SalesOrderQuery, SalesOrder;
 use SalesOrderDetailQuery, SalesOrderDetail;
 use CustomerQuery, Customer;
 use ItemMasterItemQuery, ItemMasterItem;
+use ConfigSalesOrderQuery, ConfigSalesOrder as ConfigSo;
 
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\SalesOrderEdit as EsoCRUD;
@@ -256,18 +259,42 @@ class Eso extends AbstractController {
 		}
 
 		$orderitem = $q->findOneOrCreate();
+		self::_setupOrderItem($orderitem, $data);
+		$files = self::setupItemJsonFiles($eso, $orderitem);
+		$html  = $config->twig->render('sales-orders/sales-order/edit/edit-item/display.twig', ['eso' => $eso, 'orderitem' => $orderitem, 'data' => $files]);
+		return $html;
+	}
+
+	private static function _setupOrderItem(SalesOrderDetail $orderitem, stdClass $data) {
 		if ($orderitem->isNew()) {
 			$orderitem->setOrdernumber($data->ordn);
 			$orderitem->setLinenbr(0);
+			$orderitem->setKit('N');
+			$orderitem->setSpecialorder('N');
+
 			if (empty($data->itemID)) {
 				$data->itemID = ItemMasterItem::ITEMID_NONSTOCK;
+				$orderitem->setSpecialorder('D');
 			}
 			$orderitem->setItemid($data->itemID);
+
 			if ($orderitem->itemid != ItemMasterItem::ITEMID_NONSTOCK) {
+				$eso = self::pw('modules')->get('SalesOrderEdit');
+				$eso->request_itemsearch($orderitem->itemid);
+
 				$pricing = PricingQuery::create()->filterBySessionid(session_id())->findOneByItemid($orderitem->itemid);
 				$orderitem->setPrice($pricing ? $pricing->price : 0.0);
 			}
 
+			// SET ITEM WAREHOUSE
+			// First Default to User, but if config is set to customer update it to customer warehouse
+			$soconfig = self::pw('modules')->get('ConfigureSo')->config();
+			$orderitem->setWhseid(self::pw('user')->whseid);
+
+			if ($soconfig->default_ship_whse == ConfigSo::SHIP_WHSE_CUSTOMER) {
+				$customer = $eso->customer($data->ordn);
+				$orderitem->setWhseid($customer->whseid);
+			}
 		}
 
 		if ($orderitem->nsvendorid == '') {
@@ -279,10 +306,6 @@ class Eso extends AbstractController {
 				$orderitem->setNsvendoritemid($xref->vendoritemid);
 			}
 		}
-
-		$files = self::setupItemJsonFiles($eso, $orderitem);
-		$html  = $config->twig->render('sales-orders/sales-order/edit/edit-item/display.twig', ['eso' => $eso, 'orderitem' => $orderitem, 'data' => $files]);
-		return $html;
 	}
 
 	/**
@@ -294,7 +317,7 @@ class Eso extends AbstractController {
 	private static function setupItemJsonFiles(EsoCRUD $eso, SalesOrderDetail $orderitem) {
 		$files = ['pricing' => false, 'stock' => false];
 
-		if ($orderitem->itemid != 'N') {
+		if ($orderitem->itemid != ItemMasterItem::ITEMID_NONSTOCK) {
 			$request = true;
 			$mjson = self::pw('modules')->get('JsonDataFiles');
 
@@ -313,7 +336,7 @@ class Eso extends AbstractController {
 			}
 
 			if ($request) {
-				$eso->request_itempricing($orderitem->itemid);
+				// $eso->request_itempricing($orderitem->itemid);
 			}
 
 			foreach (array_keys($files) as $code) {
