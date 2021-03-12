@@ -21,6 +21,12 @@ class Mso extends WireData {
 		return boolval($q->count());
 	}
 
+	/**
+	 * Return If User has access to Sales Order
+	 * @param  string $ordn Order #
+	 * @param  User   $user Check if User is Sales Rep
+	 * @return bool
+	 */
 	public function orderUser($ordn, User $user) {
 		if ($user->hasRole('slsrep') === false) {
 			return true;
@@ -42,6 +48,12 @@ class Mso extends WireData {
 		return boolval($q->count());
 	}
 
+	/**
+	 * Return If User has access to Sales Order
+	 * @param  string $ordn Order #
+	 * @param  User   $user Check if User is Sales Rep
+	 * @return bool
+	 */
 	public function invoiceUser($ordn, User $user) {
 		if ($user->hasRole('slsrep') === false) {
 			return true;
