@@ -37,6 +37,8 @@
 			$page->body .= $config->twig->render('sales-orders/sales-order/documents.twig', ['page' => $page, 'documents' => $documents, 'docm' => $docm, 'ordn' => $ordn]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/qnotes.twig', ['page' => $page, 'qnotes_so' => $module_qnotes, 'ordn' => $ordn]);
 			$page->body .= $config->twig->render('sales-orders/sales-order/user-actions.twig', ['page' => $page, 'module_useractions' => $module_useractions, 'actions' => $actions, 'ordn' => $ordn]);
+			$page->body .= $config->twig->render('sales-orders/sales-order/specialorder-modal.twig', ['page' => $page, 'ordn' => $ordn]);
+			$page->js   .= $config->twig->render('sales-orders/sales-order/specialorder-modal.js.twig', ['page' => $page, 'ordn' => $ordn]);
 
 			if ($type == 'order') {
 				$page->body .= $config->twig->render('sales-orders/sales-order/sales-order-actions.twig', ['page' => $page, 'order' => $order]);
