@@ -1,0 +1,7 @@
+<div class="mb-4">
+	{% include 'util/alert.twig' with {'type': 'info','iconclass': 'fa fa-info-circle fa-2x', 'title': 'This Order has been Invoiced', 'message': 'Sales Order #' ~ order.ordernumber ~ ' has been invoiced.'} %}
+</div>
+
+{% include 'sales-orders/sales-order/links-header.twig' with {'list': 'history'} %}
+
+{% include 'sales-orders/sales-history/sales-history-header.twig' %}

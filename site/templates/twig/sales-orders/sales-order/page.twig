@@ -1,0 +1,25 @@
+{{ html.header|raw }}
+
+<div class="row mt-3">
+	<div class="col-sm-6">
+		<h3 class="font-weight-bold text-danger">Order Items</h3>
+	</div>
+</div>
+
+{{ html.items|raw }}
+
+{% if user.can_editorder(order.ordernumber) %}
+	<a href="{{ page.edit_orderURL(order.ordernumber) }}" class="btn btn-warning btn-block mb-5">
+		Edit Order&ensp;<i class="fa fa-pencil" aria-hidden="true"></i>
+	</a>
+{% endif %}
+
+{{ html.tracking|raw }}
+
+{{ html.documents|raw }}
+
+{{ html.qnotes|raw }}
+
+{{ html.useractions|raw }}
+
+{{ html.modals|raw }}
