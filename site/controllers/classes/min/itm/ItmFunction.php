@@ -32,10 +32,12 @@ class ItmFunction extends AbstractController {
 	protected static function validateItemidAndPermission($data) {
 		self::validateItemid($data);
 
-		if (self::validateUserPermission() === false) {
-			$page = self::pw('page');
-			$config = $page->wire('config');
-			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: ITM $page->name"]);
+		if (static::validateUserPermission() === false) {
+			$page   = self::pw('page');
+			$config = self::pw('config');
+			if (isset($data->action) === false) {
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: ITM $page->name"]);
+			}
 			return false;
 		}
 		return true;
