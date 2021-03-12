@@ -1,6 +1,6 @@
 <?php namespace Dplus\CodeValidators;
 
-use ProcessWire\WireData;
+use ProcessWire\WireData, ProcessWire\User;
 
 use SalesOrderQuery, SalesOrder;
 use SalesHistoryQuery, SalesHistory;
@@ -17,7 +17,17 @@ class Mso extends WireData {
 	 */
 	public function order($ordn) {
 		$q = SalesOrderQuery::create();
-		$q->filterByOrdernumber($ordn);
+		$q->filterByOrdernumber($this->wire('sanitizer')->ordn($ordn));
+		return boolval($q->count());
+	}
+
+	public function orderUser($ordn, User $user) {
+		if ($user->hasRole('slsrep') === false) {
+			return true;
+		}
+		$q = SalesOrderQuery::create();
+		$q->filterByOrdernumber($this->wire('sanitizer')->ordn($ordn));
+		$q->filterBySalesPerson($user->repid);
 		return boolval($q->count());
 	}
 
@@ -28,8 +38,28 @@ class Mso extends WireData {
 	 */
 	public function invoice($ordn) {
 		$q = SalesHistoryQuery::create();
-		$q->filterByOrdernumber($ordn);
+		$q->filterByOrdernumber($this->wire('sanitizer')->ordn($ordn));
 		return boolval($q->count());
+	}
+
+	public function invoiceUser($ordn, User $user) {
+		if ($user->hasRole('slsrep') === false) {
+			return true;
+		}
+		$q = SalesHistoryQuery::create();
+		$q->filterByOrdernumber($this->wire('sanitizer')->ordn($ordn));
+		$q->filterBySalesPerson($user->repid);
+		return boolval($q->count());
+	}
+
+	public function orderAccess($ordn, User $user) {
+		if ($this->order($ordn)) {
+			return $this->orderUser($ordn, $user);
+		}
+		if ($this->invoice($ordn)) {
+			return $this->InvoiceUser($ordn, $user);
+		}
+		return false;
 	}
 
 	/**
