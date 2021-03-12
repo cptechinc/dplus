@@ -18,7 +18,7 @@ class Mso extends WireData {
 	public function order($ordn) {
 		$q = SalesOrderQuery::create();
 		$q->filterByOrdernumber($ordn);
-		return boolval(($q->count()));
+		return boolval($q->count());
 	}
 
 	/**
@@ -29,7 +29,7 @@ class Mso extends WireData {
 	public function invoice($ordn) {
 		$q = SalesHistoryQuery::create();
 		$q->filterByOrdernumber($ordn);
-		return boolval(($q->count()));
+		return boolval($q->count());
 	}
 
 	/**
