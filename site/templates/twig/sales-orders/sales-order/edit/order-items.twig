@@ -40,11 +40,11 @@
 			<div class="col-sm-4">
 				{{ detail.itemid }}</br>
 				<small>{{ detail.desc1 }}</small><br>
-				<a href="#specialorder-item-modal" data-toggle="modal" data-ordn="{{ detail.ordernumber }}" data-linenbr="{{ detail.linenbr }}">
-					{% if detail.spcord != 'N' %}
+				{% if detail.spcord != 'N' %}
+					<a href="#specialorder-item-modal" data-toggle="modal" data-ordn="{{ detail.ordernumber }}" data-linenbr="{{ detail.linenbr }}">
 						<span class="badge badge-primary">{{ specialorder_descriptions[detail.spcord]|title }}</span>
-					{% endif %}
-				</a>
+					</a>
+				{% endif %}
 			</div>
 			<div class="col-sm-1 text-right">
 				{% include 'util/form/input.twig' with {

@@ -24,11 +24,11 @@
 						{{ detail.itemid }}
 					</a></br>
 					<small>{{ detail.desc1 }}</small> <br>
-					<a href="#specialorder-item-modal" data-toggle="modal" data-ordn="{{ detail.ordernumber }}" data-linenbr="{{ detail.linenbr }}">
-						{% if detail.specialorder != 'N' %}
+					{% if detail.specialorder != 'N' %}
+						<a href="#specialorder-item-modal" data-toggle="modal" data-ordn="{{ detail.ordernumber }}" data-linenbr="{{ detail.linenbr }}">
 							<span class="badge badge-primary">{{ detail.specialorder()|title }}</span>
-						{% endif %}
-					</a>
+						</a>
+					{% endif %}
 				</td>
 				<td class="text-right">{{ detail.qty_ordered|number_format(config.decimal_places_qty) }}</td>
 				<td class="text-right">$ {{ detail.price|number_format(config.decimal_places_price) }}</td>
