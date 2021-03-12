@@ -1,12 +1,14 @@
 <?php namespace Controllers\Ajax\Json;
 
-use ProcessWire\Module, ProcessWire\ProcessWire;
 
-use Mvc\Controllers\AbstractController;
+use DplusUserQuery, DplusUser;
+use SalesOrderDetailQuery, SalesOrderDetail;
+
+use ProcessWire\Module, ProcessWire\ProcessWire;
 
 use Dplus\CodeValidators\Mso as MsoValidator;
 
-use DplusUserQuery, DplusUser;
+use Mvc\Controllers\AbstractController;
 
 class Mso extends AbstractController {
 	public static function test() {
@@ -57,6 +59,30 @@ class Mso extends AbstractController {
 		$discounter->setItemid($data->itemID);
 		$discounter->setPrice($data->price);
 		return $discounter->minprice();
+	}
+
+	public static function getSalesOrderDetail($data) {
+		$fields = ['ordn|text', 'linenbr|int'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$q = SalesOrderDetailQuery::create()->filterByOrdernumber($data->ordn)->filterByLinenbr($data->linenbr);
+
+		if (boolval($q->count()) === false) {
+			return false;
+		}
+
+		$item = $q->findOne();
+		$response = [
+			'ordn'    => $data->ordn,
+			'linenbr' => $data->linenbr,
+			'nonstock' => [
+				'vendorid' => $item->nsvendorid,
+				'vendoritemid' => $item->nsvendoritemid,
+				'itemgroupid'  => $item->nsitemgroupid,
+				'ponbr'        => $item->ponbr,
+				'poref'        => $item->poref,
+			]
+		];
+		return $response;
 	}
 
 	private static function validator() {
