@@ -132,6 +132,8 @@ class Eso extends AbstractController {
 		} else {
 			$html .= $config->twig->render('sales-orders/sales-order/edit/order-items.twig', ['order' => $order, 'eso' => $eso]);
 		}
+		$html .= $config->twig->render('sales-orders/sales-order/specialorder-modal.twig', ['ordn' => $order->ordernumber]);
+		self::pw('page')->js   .= $config->twig->render('sales-orders/sales-order/specialorder-modal.js.twig', ['ordn' => $order->ordernumber]);
 		return $html;
 	}
 
