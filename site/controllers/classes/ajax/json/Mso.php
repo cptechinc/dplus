@@ -1,12 +1,16 @@
 <?php namespace Controllers\Ajax\Json;
 
-use ProcessWire\Module, ProcessWire\ProcessWire;
+use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 
-use Mvc\Controllers\AbstractController;
+use DplusUserQuery, DplusUser;
+use SalesOrderDetailQuery, SalesOrderDetail;
+use SalesHistoryDetailQuery, SalesHistoryDetail;
+
+use ProcessWire\Module, ProcessWire\ProcessWire;
 
 use Dplus\CodeValidators\Mso as MsoValidator;
 
-use DplusUserQuery, DplusUser;
+use Mvc\Controllers\AbstractController;
 
 class Mso extends AbstractController {
 	public static function test() {
@@ -57,6 +61,62 @@ class Mso extends AbstractController {
 		$discounter->setItemid($data->itemID);
 		$discounter->setPrice($data->price);
 		return $discounter->minprice();
+	}
+
+	public static function getSalesOrderDetail($data) {
+		$fields = ['ordn|text', 'linenbr|int'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$validate = self::validator();
+		if ($validate->invoice($data->ordn)) {
+			return self::getSalesHistoryDetail($data);
+		}
+		$q = SalesOrderDetailQuery::create()->filterByOrdernumber($data->ordn)->filterByLinenbr($data->linenbr);
+
+		if (boolval($q->count()) === false) {
+			return false;
+		}
+
+		$item = $q->findOne();
+		$response = self::getSalesDetailResponse($item);
+		return $response;
+	}
+
+	public static function getSalesHistoryDetail($data) {
+		$fields = ['ordn|text', 'linenbr|int'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$validate = self::validator();
+		if ($validate->order($data->ordn)) {
+			return self::getSalesOrderDetail($data);
+		}
+		$q = SalesHistoryDetailQuery::create()->filterByOrdernumber($data->ordn)->filterByLinenbr($data->linenbr);
+
+		if (boolval($q->count()) === false) {
+			return false;
+		}
+
+		$item = $q->findOne();
+		$response = self::getSalesDetailResponse($item);
+		return $response;
+	}
+
+	/**
+	 * Return SalesHistoryDetail|SalesOrderDetail Data
+	 * @param  ActiveRecordInterface|SalesHistoryDetail|SalesOrderDetail $item
+	 * @return array
+	 */
+	private static function getSalesDetailResponse(ActiveRecordInterface $item) {
+		$response = [
+			'ordn'    => $item->ordernumber,
+			'linenbr' => $item->linenbr,
+			'nonstock' => [
+				'vendorid' => $item->nsvendorid,
+				'vendoritemid' => $item->nsvendoritemid,
+				'itemgroupid'  => $item->nsitemgroupid,
+				'ponbr'        => $item->ponbr,
+				'poref'        => $item->poref,
+			]
+		];
+		return $response;
 	}
 
 	private static function validator() {

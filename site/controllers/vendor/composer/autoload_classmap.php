@@ -34,5 +34,6 @@ return array(
     'Controllers\\Mpo\\Epo' => $baseDir . '/classes/mpo/Epo.php',
     'Controllers\\Mpo\\EpoCreate' => $baseDir . '/classes/mpo/EpoCreate.php',
     'Controllers\\Mso\\Eso' => $baseDir . '/classes/mso/Eso.php',
+    'Controllers\\Mso\\SalesOrder' => $baseDir . '/classes/mso/SalesOrder.php',
     'Controllers\\Mwm\\Menu' => $baseDir . '/classes/Mwm/Menu.php',
 );

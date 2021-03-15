@@ -35,6 +35,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mpo\\Epo' => __DIR__ . '/../..' . '/classes/mpo/Epo.php',
         'Controllers\\Mpo\\EpoCreate' => __DIR__ . '/../..' . '/classes/mpo/EpoCreate.php',
         'Controllers\\Mso\\Eso' => __DIR__ . '/../..' . '/classes/mso/Eso.php',
+        'Controllers\\Mso\\SalesOrder' => __DIR__ . '/../..' . '/classes/mso/SalesOrder.php',
         'Controllers\\Mwm\\Menu' => __DIR__ . '/../..' . '/classes/Mwm/Menu.php',
     );
 

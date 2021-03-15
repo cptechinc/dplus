@@ -21,6 +21,7 @@ use ProcessWire\Page, ProcessWire\SalesOrderEdit as EsoCRUD;
 
 // Dplus Classes
 use Dplus\CodeValidators\Mso as MsoValidator;
+use Dplus\CodeValidators\Min as MinValidator;
 use Dplus\Filters\Mso\SalesHistory\Detail as SalesHistoryDetailFilter;
 
 use Mvc\Controllers\AbstractController;
@@ -61,7 +62,7 @@ class Eso extends AbstractController {
 	}
 
 	public static function so($data) {
-		$data = self::sanitizeParametersShort($data, ['ordn|ordn', 'load|int']);
+		$data = self::sanitizeParametersShort($data, ['ordn|ordn']);
 		$data->ordn = self::pw('sanitizer')->ordn($data->ordn);
 		$page = self::pw('page');
 		$config = self::pw('config');
@@ -76,16 +77,18 @@ class Eso extends AbstractController {
 
 		$eso = self::pw('modules')->get('SalesOrderEdit');
 		$eso->set_ordn($data->ordn);
+		$session = self::pw('session');
 
-		if ($eso->exists_editable($data->ordn) === false || $eso->can_order_be_edited($data->ordn) ) {
-			if ($data->load > 0) {
+		if ($eso->exists_editable($data->ordn) === false || $eso->can_order_be_edited($data->ordn)) {
+			if ($session->getFor('load-eso', $data->ordn) > 0) {
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "SO # $data->ordn can not be loaded for editing"]);
 				return $page->body;
 			}
 			$eso->request_so_edit($data->ordn);
-			$page->fullURL->query->set('load', 1);
-			self::pw('session')->redirect($page->fullURL->getUrl(), $http301 = false);
+			$session->setFor('load-eso', $data->ordn, 1);
+			$session->redirect($page->fullURL->getUrl(), $http301 = false);
 		}
+		$session->removeFor('load-eso', $data->ordn);
 		return self::soEditForm($data, $eso, $page, $config);
 	}
 
@@ -131,6 +134,8 @@ class Eso extends AbstractController {
 		} else {
 			$html .= $config->twig->render('sales-orders/sales-order/edit/order-items.twig', ['order' => $order, 'eso' => $eso]);
 		}
+		$html .= $config->twig->render('sales-orders/sales-order/specialorder-modal.twig', ['ordn' => $order->ordernumber]);
+		self::pw('page')->js   .= $config->twig->render('sales-orders/sales-order/specialorder-modal.js.twig', ['ordn' => $order->ordernumber]);
 		return $html;
 	}
 
@@ -259,20 +264,22 @@ class Eso extends AbstractController {
 		}
 
 		$orderitem = $q->findOneOrCreate();
-		self::_setupOrderItem($orderitem, $data);
+		self::_setupOrderItem($eso, $orderitem, $data);
 		$files = self::setupItemJsonFiles($eso, $orderitem);
 		$html  = $config->twig->render('sales-orders/sales-order/edit/edit-item/display.twig', ['eso' => $eso, 'orderitem' => $orderitem, 'data' => $files]);
 		return $html;
 	}
 
-	private static function _setupOrderItem(SalesOrderDetail $orderitem, stdClass $data) {
+	private static function _setupOrderItem(EsoCRUD $eso, SalesOrderDetail $orderitem, stdClass $data) {
 		if ($orderitem->isNew()) {
 			$orderitem->setOrdernumber($data->ordn);
 			$orderitem->setLinenbr(0);
 			$orderitem->setKit('N');
 			$orderitem->setSpecialorder('N');
 
-			if (empty($data->itemID)) {
+			$minvalidator = new MinValidator();
+
+			if (empty($data->itemID) || $minvalidator->itemid($data->itemID) === false) {
 				$data->itemID = ItemMasterItem::ITEMID_NONSTOCK;
 				$orderitem->setSpecialorder('D');
 			}
