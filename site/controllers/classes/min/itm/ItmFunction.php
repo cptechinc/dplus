@@ -1,10 +1,10 @@
 <?php namespace Controllers\Min\Itm;
-
-use Mvc\Controllers\AbstractController;
-
+// ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Itm as ItmModel;
-
+// Validators
 use Dplus\CodeValidators\Min as MinValidator;
+// Mvc Controllers
+use Mvc\Controllers\AbstractController;
 
 class ItmFunction extends AbstractController {
 	private static $minvalidator;

@@ -1,9 +1,10 @@
 <?php namespace Controllers\Min;
-
-use Mvc\Controllers\AbstractController;
-
+// Dplus Model
+use ItemXrefUpcQuery, ItemXrefUpc;
+// ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\XrefUpc as UpcModel;
-use ItemXrefUpc;
+// Mvc Controllers
+use Mvc\Controllers\AbstractController;
 
 class Upcx extends AbstractController {
 	public static function index($data) {

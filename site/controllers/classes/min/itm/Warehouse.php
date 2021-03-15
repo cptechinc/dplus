@@ -1,10 +1,10 @@
 <?php namespace Controllers\Min\Itm;
-
-use Controllers\Min\Itm\ItmFunction;
-use Controllers\Min\Upcx as BaseUpcx;
-
-use ProcessWire\Page, ProcessWire\ItmPricing as PricingCRUD;
+// Dplus Model
 use WarehouseInventoryQuery, WarehouseInventory;
+// ProcessWire classes, modules
+use ProcessWire\Page, ProcessWire\ItmWarehouse as WarehouseCRUD;
+// Mvc Controllers
+use Controllers\Min\Itm\ItmFunction;
 
 class Warehouse extends ItmFunction {
 	public static function index($data) {

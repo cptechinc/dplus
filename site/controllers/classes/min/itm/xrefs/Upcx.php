@@ -1,10 +1,11 @@
 <?php namespace Controllers\Min\Itm\Xrefs;
-
+// Dplus Model
+use ItemXrefUpcQuery, ItemXrefUpc;
+// ProcessWire Classes, Modules
+use ProcessWire\Page, ProcessWire\XrefUpc as UpcModel;
+// Mvc Controllers
 use Controllers\Min\Itm\ItmFunction;
 use Controllers\Min\Upcx as BaseUpcx;
-
-use ProcessWire\Page, ProcessWire\XrefUpc as UpcModel;
-use ItemXrefUpc;
 
 class Upcx extends ItmFunction {
 	public static function index($data) {

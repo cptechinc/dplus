@@ -1,10 +1,11 @@
 <?php namespace Controllers\Min\Itm;
 
-use Controllers\Min\Itm\ItmFunction;
-use Controllers\Min\Upcx as BaseUpcx;
-
-use ProcessWire\Page, ProcessWire\ItmPricing as PricingCRUD;
+// Dplus Model
 use ItemPricingQuery, ItemPricing;
+// ProcessWire classes, modules
+use ProcessWire\Page, ProcessWire\ItmPricing as PricingCRUD;
+// Mvc Controllers
+use Controllers\Min\Itm\ItmFunction;
 
 class Pricing extends ItmFunction {
 	public static function index($data) {
