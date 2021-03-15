@@ -8,7 +8,7 @@ use Dplus\CodeValidators\Min as MinValidator;
 
 class ItmFunction extends AbstractController {
 	private static $minvalidator;
-	
+
 	protected static function validateItemid($data) {
 		$data = self::sanitizeParametersShort($data, ['itemID|text']);
 		$wire = self::pw();
@@ -61,6 +61,6 @@ class ItmFunction extends AbstractController {
 		if (empty(self::$minvalidator)) {
 			self::$minvalidator = new MinValidator();
 		}
-		return $minvalidator;
+		return self::$minvalidator;
 	}
 }
