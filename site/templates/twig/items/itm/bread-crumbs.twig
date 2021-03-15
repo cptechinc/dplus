@@ -66,6 +66,11 @@
 					{{ input.get.text('custID') }}: {{ input.get.text('custitemID') }}
 				</li>
 			{% endif %}
+		{% elseif page.pw_template == 'itm-xrefs' %}
+			<li class="breadcrumb-item active" aria-current="page">
+				<i class="fa fa-arrows" aria-hidden="true"></i>
+				{{ page.dplus_function ? page.dplus_function|upper : page.title }}
+			</li>
 		{% else %}
 			{% if input.get.offsetExists('itemID') %}
 				<li class="breadcrumb-item" aria-current="page">
