@@ -17,7 +17,7 @@
 		<th class="text-right">Count Date</th>
 		<th>Note</th>
 		<th>
-			<a href="{{ page.itm_warehouseURL(itemID, 'new') }}" class="btn btn-light">
+			<a href="{{ page.itm_warehouseURL(itemID, 'new') }}" class="btn btn-light btn-sm">
 				<i class="fa fa-plus" aria-hidden="true"></i> Add
 			</a>
 		</th>
@@ -37,7 +37,7 @@
 				<td></td>
 				<td>
 					{% if itmw.recordlocker.function_locked(itmw.get_warehouseitem_lockkey(warehouse)) == false or itmw.recordlocker.function_locked_by_user( itmw.get_warehouseitem_lockkey(warehouse)) %}
-						<a href="{{ page.itm_warehouseURL(warehouse.itemid, warehouse.warehouseid) }}" class="btn btn-warning">
+						<a href="{{ page.itm_warehouseURL(warehouse.itemid, warehouse.warehouseid) }}" class="btn btn-warning btn-sm">
 							<i aria-hidden="true" class="fa fa-pencil"></i> Edit
 						</a>
 					{% else %}
