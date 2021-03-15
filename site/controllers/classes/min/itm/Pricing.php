@@ -76,7 +76,7 @@ class Pricing extends ItmFunction {
 		}
 		$html .= Itm::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page->parent]);
-		$html .= $config->twig->render('items/itm/pricing/display.twig', ['item' => $item, 'pricingm' => $itmPricing, 'item_pricing' => $pricing]);
+		$html .= $config->twig->render('items/itm/pricing/display.twig', ['item' => $item, 'pricingm' => $itmPricing, 'item_pricing' => $pricing, 'itm' => $itm]);
 		$page->js .= $config->twig->render('items/itm/pricing/js.twig', ['item_pricing' => $pricing]);
 		self::pw('session')->remove('response_itm');
 		return $html;
