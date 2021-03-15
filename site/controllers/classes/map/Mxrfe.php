@@ -52,28 +52,36 @@ class Mxrfe extends AbstractController {
 		$vendor = $mxrfe->vendor($data->mnfrID);
 		$xref = $mxrfe->get_create_xref($data->mnfrID, $data->mnfritemID, $data->itemID);
 		$qnotes = $wire->wire('modules')->get('QnotesItemMxrfe');
+		$html = '';
+		if ($xref->isNew()) {
+			$page->headline = "MXRFE: New X-ref";
+		}
+		if ($xref->isNew() === false) {
+			$page->headline = "$xref->mnfrid-$xref->mnfritemid-$xref->itemid";
+		}
 
-		$page->body .= self::lockXref($page, $mxrfe, $xref);
+		$html .= self::lockXref($page, $mxrfe, $xref);
 
-		$page->body .= $config->twig->render('items/mxrfe/item/form/page.twig', ['mxrfe' => $mxrfe, 'vendor' => $vendor, 'xref' => $xref, 'qnotes' => $qnotes]);
+		$html .= $config->twig->render('items/mxrfe/item/form/page.twig', ['mxrfe' => $mxrfe, 'vendor' => $vendor, 'xref' => $xref, 'qnotes' => $qnotes]);
 		$page->js   .= $config->twig->render('items/mxrfe/item/form/js.twig', ['mxrfe' => $mxrfe]);
 
 		if (!$xref->isNew()) {
-			$page->body .= $config->twig->render('items/mxrfe/item/notes/notes.twig', ['xref' => $xref, 'qnotes' => $qnotes]);
+			$html .= $config->twig->render('items/mxrfe/item/notes/notes.twig', ['xref' => $xref, 'qnotes' => $qnotes]);
 			$page->js   .= $config->twig->render('items/mxrfe/item/notes/js.twig', ['xref' => $xref, 'qnotes' => $qnotes]);
 		}
-		return $page->body;
+		return $html;
 	}
 
 	private static function lockXref(Page $page, MxrfeModel $mxrfe, ItemXrefManufacturer $xref) {
+		$html = '';
 		if (!$xref->isNew()) {
 			$page->headline = "MXRFE: " . $mxrfe->get_recordlocker_key($xref);
 			if (!$mxrfe->lockrecord($xref)) {
 				$msg = "MXRFE ". $mxrfe->get_recordlocker_key($xref) ." is being locked by " . $mxrfe->recordlocker->get_locked_user($mxrfe->get_recordlocker_key($xref));
-				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "MXRFE ".$mxrfe->get_recordlocker_key($xref)." is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+				$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "MXRFE ".$mxrfe->get_recordlocker_key($xref)." is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 			}
 		}
-		return $page->body;
+		return $html;
 	}
 
 	public static function list($data) {
@@ -95,9 +103,10 @@ class Mxrfe extends AbstractController {
 		$filter->vendorid($mxrfe->vendorids());
 		$filter->apply_sortby($page);
 		$vendors = $filter->query->paginate(self::pw('input')->pageNum, $wire->wire('session')->display);
-		$page->body .= $config->twig->render('items/mxrfe/search/vendor/page.twig', ['vendors' => $vendors]);
-		$page->body .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $vendors]);
-		return $page->body;
+		$html = '';
+		$html .= $config->twig->render('items/mxrfe/search/vendor/page.twig', ['vendors' => $vendors]);
+		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $vendors]);
+		return $html;
 	}
 
 	public static function mnfrXrefs($data) {
@@ -110,8 +119,9 @@ class Mxrfe extends AbstractController {
 		$filter = $wire->modules->get('FilterXrefItemMxrfe');
 		$filter->vendorid($data->mnfrID);
 		$filter->apply_sortby($page);
+		$page->headline = "MXRFE: Mnfr $data->mnfrID";
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, $wire->wire('session')->display);
-		$page->body .= $config->twig->render('items/mxrfe/list/vendor/page.twig', ['mxrfe' => $mxrfe, 'xrefs' => $xrefs, 'vendor' => $vendor]);
-		return $page->body;
+		$html = $config->twig->render('items/mxrfe/list/vendor/page.twig', ['mxrfe' => $mxrfe, 'xrefs' => $xrefs, 'vendor' => $vendor]);
+		return $html;
 	}
 }
