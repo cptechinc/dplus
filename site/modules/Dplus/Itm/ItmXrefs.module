@@ -44,10 +44,10 @@ class ItmXrefs extends WireData implements Module {
 					$response = $this->process_input_xref($input);
 				}
 			} else {
-				$response = $itm->create_error_response($itemID, "Item $itemID does not exist");
+				$response = ItmResponse::response_error($itemID, "Item $itemID does not exist");
 			}
 		} else {
-			$response = $itm->create_error_response($itemID, "No Action was specified");
+			$response = ItmResponse::response_error($itemID, "No Action was specified");
 		}
 		$this->wire('session')->response_itm = $response;
 	}
@@ -62,37 +62,34 @@ class ItmXrefs extends WireData implements Module {
 	 */
 	public function process_input_xref(WireInput $input) {
 		$itm = $this('modules')->get('Itm');
-		$recordlocker = $this('modules')->get('RecordLockerUser');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itemID = strtoupper($values->text('itemID'));
 		$record = $itm->get_item($itemID);
 
-		/**
-		 * Create lock for ITM code if not already locked.
-		 */
-		if (!$recordlocker->function_locked('itm', $itemID)) {
-			$recordlocker->create_lock('itm', $itemID);
+		if ($record->isNew() === false) {
+			$itm->lockrecord($itemID);
 		}
 
-		if ($record->isNew() || $recordlocker->function_locked_by_user('itm', $itemID)) {
+
+		if ($record->isNew() || $itm->recordlocker->function_locked_by_user($itemID)) {
 			if ($values->text('action') == 'update-itm-xrefs') {
 				$record->setSupercededby(strtoupper($values->text('supercededby')));
 
 				if ($itm->item_exists($values->text('supercededby'))) {
-					$response_itm = $itm->save_and_process_response($record);
+					$response_itm = $itm->save_and_respond($record);
 				} else {
-					$response_itm = $itm->create_error_response($record->itemid, "Supercede Item $record->supercededby does not exist");
+					$response_itm = ItmResponse::response_error($record->itemid, "Supercede Item $record->supercededby does not exist");
 				}
 
 				$this->send_cxm_update($input);
 			} else {
 				$message = self::DESCRIPTION_RECORD . " ($record->itemid) was not saved, no action was specified";
-				$response_itm = $itm->create_error_response($record->itemid, $message);
+				$response_itm = ItmResponse::response_error($record->itemid, $message);
 			}
 		} else {
-			$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $recordlocker->get_locked_user('itm', $itemID);
-			$response_itm = $itm->create_error_response($record->itemid, $message);
+			$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $itm->recordlocker->get_locked_user($itemID);
+			$response_itm = ItmResponse::response_error($record->itemid, $message);
 		}
 		return $response_itm;
 	}
