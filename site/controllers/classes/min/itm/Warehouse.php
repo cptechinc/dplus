@@ -62,6 +62,9 @@ class Warehouse extends ItmFunction {
 		$html = '';
 		$config  = self::pw('config');
 		$page    = self::pw('page');
+		$page->headline = "ITM: $data->itemID Warehouse $data->whseID";
+		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
+		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page->parent]);
 
 	}
 
@@ -81,7 +84,9 @@ class Warehouse extends ItmFunction {
 		$itm     = self::getItm();
 		$itmw    = self::getItmWarehouse();
 		$itmw->recordlocker->remove_lock($page->lockcode);
-		$page->headline = "Warehouses for $data->itemID";
+		$page->headline = "ITM: $data->itemID Warehouses";
+		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
+		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page->parent]);
 		$html .= $config->twig->render('items/itm/warehouse/list-display.twig', ['itmw' => $itmw, 'itemID' => $data->itemID, 'item' => $itm->item($data->itemID), 'warehouses' => $itmw->get_itemwarehouses($data->itemID)]);
 		return $html;
 	}
