@@ -1,11 +1,12 @@
 <?php namespace Controllers\Ajax\Json;
-
-use ProcessWire\Module, ProcessWire\ProcessWire;
-
-use Mvc\Controllers\AbstractController;
-
-use Dplus\CodeValidators\Mgl as MglValidator;
+// Dplus Model
 use GlCodeQuery, GlCode;
+// ProcessWire Classes, Modules
+use ProcessWire\Module, ProcessWire\ProcessWire;
+// Dplus Validators
+use Dplus\CodeValidators\Mgl as MglValidator;
+// Mvc Controllers
+use Mvc\Controllers\AbstractController;
 
 class Mgl extends AbstractController {
 	public static function test() {

@@ -1,8 +1,8 @@
 <?php namespace Controllers\Dplus;
-
-use Mvc\Controllers\AbstractController;
-
+// ProcessWire Classes, Modules
 use ProcessWire\Page;
+// Mvc Controllers
+use Mvc\Controllers\AbstractController;
 
 class Menu extends AbstractController {
 	public static function index($data) {

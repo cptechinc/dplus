@@ -1,13 +1,13 @@
 <?php namespace Controllers\Ajax\Json;
-
-use ProcessWire\Module, ProcessWire\ProcessWire;
-
-use Mvc\Controllers\AbstractController;
-
+// Dplus Model
 use PurchaseOrderQuery, PurchaseOrder;
 use PurchaseOrderDetailQuery, PurchaseOrderDetail;
-
-use Dplus\CodeValidators\Mpo       as MpoValidator;
+// ProcessWire Classes, Modules
+use ProcessWire\Module, ProcessWire\ProcessWire;
+// Dplus Validators
+use Dplus\CodeValidators\Mpo as MpoValidator;
+// Mvc Controllers
+use Mvc\Controllers\AbstractController;
 
 class Mpo extends AbstractController {
 	public static function test() {

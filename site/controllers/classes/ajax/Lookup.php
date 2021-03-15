@@ -1,15 +1,16 @@
 <?php namespace Controllers\Ajax;
-
+// Propel Classes
 use Propel\Runtime\ActiveQuery\ModelCriteria as BaseQuery;
-
+// ProcessWire Classes, Modules
 use ProcessWire\Module, ProcessWire\ProcessWire;
-use Mvc\Controllers\AbstractController;
-
+// Dplus Filters
 use Dplus\Filters\AbstractFilter as Filter;
 use Dplus\Filters\Misc\PhoneBook as PhoneBookFilter;
 use Dplus\Filters\Mpo\PurchaseOrder as PurchaseOrderFilter;
 use Dplus\Filters\Mgl\GlCode as GlCodeFilter;
 use Dplus\Filters\Min\ItemGroup as ItemGroupFilter;
+// Mvc Controllers
+use Mvc\Controllers\AbstractController;
 
 class Lookup extends AbstractController {
 	const FIELDS_LOOKUP = ['q' => ['sanitizer' => 'text']];

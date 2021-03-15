@@ -1,29 +1,25 @@
 <?php namespace Controllers\Mso;
 
 use stdClass;
-
 // Propel Query
 use Propel\Runtime\ActiveQuery\Criteria;
-
-// Dpluso Models
+// Dpluso Model
 use PricingQuery, Pricing;
 use OrdrhedQuery, Ordrhed as SalesOrderEditable;
-
-// Dplus Data Models
+// Dplus Model
 use SalesOrderQuery, SalesOrder;
 use SalesOrderDetailQuery, SalesOrderDetail;
 use CustomerQuery, Customer;
 use ItemMasterItemQuery, ItemMasterItem;
 use ConfigSalesOrderQuery, ConfigSalesOrder as ConfigSo;
-
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\SalesOrderEdit as EsoCRUD;
-
-// Dplus Classes
+// Dplus Validators
 use Dplus\CodeValidators\Mso as MsoValidator;
 use Dplus\CodeValidators\Min as MinValidator;
+// Dplus Filters
 use Dplus\Filters\Mso\SalesHistory\Detail as SalesHistoryDetailFilter;
-
+// Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
 class Eso extends AbstractController {

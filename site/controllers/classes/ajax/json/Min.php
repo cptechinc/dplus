@@ -1,13 +1,13 @@
 <?php namespace Controllers\Ajax\Json;
-
-use ProcessWire\Module, ProcessWire\ProcessWire;
-
-use Mvc\Controllers\AbstractController;
-
-use Dplus\CodeValidators\Min as MinValidator;
-
+// Dplus Model
 use TariffCodeQuery, TariffCode;
 use CountryCodeQuery, CountryCode;
+// ProcessWire Classes, Modules
+use ProcessWire\Module, ProcessWire\ProcessWire;
+// Dplus Validators
+use Dplus\CodeValidators\Min as MinValidator;
+// Mvc Controllers
+use Mvc\Controllers\AbstractController;
 
 class Min extends AbstractController {
 	public static function test() {

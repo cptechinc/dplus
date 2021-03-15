@@ -1,15 +1,15 @@
 <?php namespace Controllers\Ajax\Json;
-
+// Propel
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
-
+// Dplus Model
 use DplusUserQuery, DplusUser;
 use SalesOrderDetailQuery, SalesOrderDetail;
 use SalesHistoryDetailQuery, SalesHistoryDetail;
-
+// ProcessWire Classes, Modules
 use ProcessWire\Module, ProcessWire\ProcessWire;
-
+// Dplus Validators
 use Dplus\CodeValidators\Mso as MsoValidator;
-
+// Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
 class Mso extends AbstractController {

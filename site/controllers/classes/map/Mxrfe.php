@@ -1,9 +1,10 @@
 <?php namespace Controllers\Map;
-
-use Mvc\Controllers\AbstractController;
-
-use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeModel;
+// Dplus Model
 use ItemXrefManufacturer;
+// ProcessWire Classes, Modules
+use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeModel;
+// Mvc Controllers
+use Mvc\Controllers\AbstractController;
 
 class Mxrfe extends AbstractController {
 	public static function index($data) {
