@@ -1,15 +1,12 @@
 <?php namespace Controllers\Min\Itm;
-// Dplus Model
-use ItemXrefUpcQuery, ItemXrefUpc;
 // ProcessWire Classes, Modules
-use ProcessWire\WireData, ProcessWire\Page, ProcessWire\XrefUpc as UpcModel;
+use ProcessWire\WireData, ProcessWire\Page;
 // Mvc Controllers
 use Controllers\Min\Itm\ItmFunction;
-use Controllers\Min\Upcx as BaseUpcx;
 
 class Xrefs extends ItmFunction {
 	public static function index($data) {
-		$fields = ['itemID|text', 'upc|text', 'action|text'];
+		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 
