@@ -38,8 +38,8 @@ class Upcx extends ItmFunction {
 		$input = self::pw('input');
 
 		if ($data->action) {
-			$mxrfe = self::pw('modules')->get('XrefUpc');
-			$mxrfe->process_input($input);
+			$upcx = self::pw('modules')->get('XrefUpc');
+			$upcx->process_input($input);
 		}
 		$upc = $data->action == 'delete-upcx' ? '' : $data->upc;
 		self::pw('session')->redirect(self::pw('page')->upcURL($upc), $http301 = false);
