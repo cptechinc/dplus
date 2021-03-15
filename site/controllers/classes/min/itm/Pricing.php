@@ -68,7 +68,8 @@ class Pricing extends ItmFunction {
 		$itmPricing = self::getItmPricing();
 		$item = $itm->get_item($data->itemID);
 		$pricing = $itmPricing->get_pricing($data->itemID);
-		$page->headline = "Pricing for $data->itemID";
+		$page->headline = "ITM: $data->itemID Pricing";
+		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 		if ($session->getFor('response', 'itm')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
 		}
@@ -83,5 +84,4 @@ class Pricing extends ItmFunction {
 	public static function getItmPricing() {
 		return self::pw('modules')->get('ItmPricing');
 	}
-
 }

@@ -70,6 +70,8 @@ class Itm extends ItmFunction {
 		$htmlwriter   = self::pw('modules')->get('HtmlWriter');
 		$html = '';
 
+		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
+
 		if ($session->getFor('response', 'itm')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
 		}
@@ -79,6 +81,14 @@ class Itm extends ItmFunction {
 			$session->remove('response_qnote');
 		}
 
+		if ($data->itemID === 'new') {
+			$page->headline = 'ITM: Creating new Item';
+		}
+
+		if ($validate->itemid($data->itemID)) {
+			$page->headline = "ITM: $data->itemID";
+		}
+		
 		if ($validate->itemid($data->itemID) === false && $data->itemID != 'new') {
 			$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID '$data->itemID' not found in the Item Master"]);
 			$html .= $htmlwriter->div('class=mb-3');
@@ -142,7 +152,8 @@ class Itm extends ItmFunction {
 		$items = $filter->query->paginate($input->pageNum, 10);
 
 		$page->searchURL = $page->url;
-		$html  = $config->twig->render('items/item-search.twig', ['items' => $items]);
+		$html  = $config->twig->render('items/itm/bread-crumbs.twig');
+		$html  .= $config->twig->render('items/item-search.twig', ['items' => $items]);
 		$html  .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
 		$page->js = $config->twig->render('items/item-list.js.twig');
 		return $html;
