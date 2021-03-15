@@ -29,7 +29,6 @@ class Warehouse extends ItmFunction {
 	}
 
 	public static function handleCRUD($data) {
-
 		$page = self::pw('page');
 		if (self::validateItemidAndPermission($data) === false) {
 			return $page->body;
@@ -54,7 +53,7 @@ class Warehouse extends ItmFunction {
 			return $page->body;
 		}
 
-		$fields = ['itemID|text', 'action|text'];
+		$fields = ['itemID|text', 'whseID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		if ($data->action) {
 			return self::handleCRUD($data);
@@ -65,7 +64,25 @@ class Warehouse extends ItmFunction {
 		$page->headline = "ITM: $data->itemID Warehouse $data->whseID";
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page->parent]);
+		$validate = self::getMinValidator();
 
+		if ($validate->whseid($data->whseID) === false) {
+			return self::invalidWhse($data);
+		}
+
+	}
+
+	private static function invalidWhse($data) {
+		$fields = ['whseID|text'];
+		$validate = self::getMinValidator();
+		$html = '';
+		if ($validate->whseid($data->whseID) === false) {
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Warehouse Not Found", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Warehouse '$data->whseID' not found "]);
+			$htmlwriter = self::pw('modules')->get('HtmlWriter');
+			$url = $page->itm_warehouseURL($data->itemID);
+			$html .= $htmlwriter->a("class=btn btn-primary mt-3|href=$url", $htmlwriter->icon('fa fa-undo')." Warehouses");
+		}
+		return $html;
 	}
 
 	public static function list($data) {
