@@ -4,7 +4,7 @@ use Controllers\Min\Itm\ItmFunction;
 use Controllers\Min\Upcx as BaseUpcx;
 
 use ProcessWire\Page, ProcessWire\ItmPricing as PricingCRUD;
-use ItemPricingQuery, ItemPricing;
+use WarehouseInventoryQuery, WarehouseInventory;
 
 class Warehouse extends ItmFunction {
 	public static function index($data) {
@@ -34,14 +34,14 @@ class Warehouse extends ItmFunction {
 			return $page->body;
 		}
 
-		$fields = ['itemID|text', 'action|text'];
-		$data = self::sanitizeParameters($data, $fields);
-		$input = self::pw('input');
-		$itmPricing = self::getItmPricing();
-		$itmPricing->init_configs();
+		$fields = ['itemID|text', 'whseID|text', 'action|text'];
+		$data   = self::sanitizeParameters($data, $fields);
+		$input  = self::pw('input');
+		$itmW  = self::getItmWarehouse();
+		$itmW->init_configs();
 
 		if ($data->action) {
-			$itmPricing->process_input($input);
+			$itmW->process_input($input);
 			$data->whseID = $data->action == 'remove-itm-whse' ? '' : $data->whseID;
 		}
 
@@ -64,12 +64,33 @@ class Warehouse extends ItmFunction {
 		$page->headline = "ITM: $data->itemID Warehouse $data->whseID";
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page->parent]);
+		$html .= Itm::lockItem($data->itemID);
 		$validate = self::getMinValidator();
 
 		if ($validate->whseid($data->whseID) === false) {
 			return self::invalidWhse($data);
 		}
+		$itm  = self::getItm();
+		$itmW = self::getItmWarehouse();
+		$itmW->init_configs();
+		$item = $itm->get_item($data->itemID);
+		$whse = $itmW->getOrCreate($data->itemID, $data->whseID);
 
+		if ($whse->isNew()) {
+			$page->headline = "ITM: $data->itemID Warehouse Add";
+		}
+
+		if (self::pw('session')->getFor('response', 'itm')) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => self::pw('session')->getFor('response', 'itm')]);
+		}
+
+		if ($whse->isNew() === false) {
+			self::lockItemWarehouse($whse);
+		}
+
+		$html .= $config->twig->render('items/itm/warehouse/display.twig', ['item' => $item, 'warehouse' => $whse, 'm_whse' => $itmW, 'recordlocker' => $itmW->recordlocker]);
+		$html .= $config->twig->render('items/itm/warehouse/bins-modal.twig', ['itemID' => $data->itemID, 'm_whse' => $itmW]);
+		return $html;
 	}
 
 	private static function invalidWhse($data) {
@@ -81,6 +102,20 @@ class Warehouse extends ItmFunction {
 			$htmlwriter = self::pw('modules')->get('HtmlWriter');
 			$url = $page->itm_warehouseURL($data->itemID);
 			$html .= $htmlwriter->a("class=btn btn-primary mt-3|href=$url", $htmlwriter->icon('fa fa-undo')." Warehouses");
+		}
+		return $html;
+	}
+
+	private static function lockItemWarehouse(WarehouseInventory $whse) {
+		$itmW = self::getItmWarehouse();
+		$html = '';
+		$itmW->lockrecord($whse);
+
+		if ($itmW->recordlocker->function_locked($whse->itemid) && !$itmW->recordlocker->function_locked_by_user($itmW->lockerkey($whse))) {
+			$config = self::pw('config');
+			$msg = "Warehouse $whse->whseid for $whse->itemid is being locked by " . $itmW->recordlocker->get_locked_user($itmW->lockerkey($whse));
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Warehouse $whse->whseid is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+			$html .= '<div class="mb-3"></div>';
 		}
 		return $html;
 	}
