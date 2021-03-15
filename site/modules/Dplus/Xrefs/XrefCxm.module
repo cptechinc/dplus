@@ -204,6 +204,7 @@ class XrefCxm extends WireData implements Module {
 		if ($this->xref_shortitem_exists($itemID)) {
 			return $this->xref_shortitem($itemID);
 		} else {
+			$custID = ConfigSysQuery::create()->findOne()->custid;
 			$custitemID = in_array($custitemID, ['new', ''])  ? '' : $custitemID;
 			$item = ItemXrefCustomer::new();
 			$item->setItemid($itemID);
@@ -301,7 +302,9 @@ class XrefCxm extends WireData implements Module {
 			$response = XrefResponse::response_error($record->itemid, $message);
 		} else {
 			$record = $this->get_create_xref_shortitem($itemID, $custitemID);
-			$record->delete_recreate_record($record);
+			if ($record->isNew() === false) {
+				$record->delete_recreate_record($record);
+			}
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
 			$response = $this->save_and_respond($record);
@@ -698,7 +701,7 @@ class XrefCxm extends WireData implements Module {
 			'version' => 101,
 			'summary' => 'Module for CRUD Methods for CXM',
 			'singular' => true,
-			'autoload' => true,
+			'autoload' => false,
 		);
 	}
 
