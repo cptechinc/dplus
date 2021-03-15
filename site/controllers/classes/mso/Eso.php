@@ -62,7 +62,7 @@ class Eso extends AbstractController {
 	}
 
 	public static function so($data) {
-		$data = self::sanitizeParametersShort($data, ['ordn|ordn', 'load|int']);
+		$data = self::sanitizeParametersShort($data, ['ordn|ordn']);
 		$data->ordn = self::pw('sanitizer')->ordn($data->ordn);
 		$page = self::pw('page');
 		$config = self::pw('config');
@@ -77,16 +77,18 @@ class Eso extends AbstractController {
 
 		$eso = self::pw('modules')->get('SalesOrderEdit');
 		$eso->set_ordn($data->ordn);
+		$session = self::pw('session');
 
-		if ($eso->exists_editable($data->ordn) === false || $eso->can_order_be_edited($data->ordn) ) {
-			if ($data->load > 0) {
+		if ($eso->exists_editable($data->ordn) === false || $eso->can_order_be_edited($data->ordn)) {
+			if ($session->getFor('load-eso', $data->ordn) > 0) {
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "SO # $data->ordn can not be loaded for editing"]);
 				return $page->body;
 			}
 			$eso->request_so_edit($data->ordn);
-			$page->fullURL->query->set('load', 1);
-			self::pw('session')->redirect($page->fullURL->getUrl(), $http301 = false);
+			$session->setFor('load-eso', $data->ordn, 1);
+			$session->redirect($page->fullURL->getUrl(), $http301 = false);
 		}
+		$session->removeFor('load-eso', $data->ordn);
 		return self::soEditForm($data, $eso, $page, $config);
 	}
 
