@@ -180,9 +180,7 @@ class Cxm extends AbstractController {
 		$page->searchcustomersURL = self::pw('pages')->get('pw_template=mci-lookup')->url;
 		$html .= self::cxmHeaders();
 		$html .= $config->twig->render('items/cxm/cxm-links.twig', []);
-		$html .= $config->twig->render('items/cxm/search/item/customer/form.twig', ['q' => $data->q, 'custID' => $data->custID]);
-		$html .= $config->twig->render('items/cxm/item-list-header.twig', ['heading' => $xrefs->getNbResults() . " CXM Items for $customer->name"]);
-		$html .= $config->twig->render('items/cxm/item-list.twig', ['cxm' => $cxm, 'response' => self::pw('session')->getFor('response', 'cxm'), 'items' => $xrefs, 'custID' => $data->custID]);
+		$html .= $config->twig->render('items/cxm/list/display.twig', ['cxm' => $cxm, 'customer' => $cxm->get_customer($data->custID), 'response' => self::pw('session')->getFor('response', 'cxm'), 'items' => $xrefs, 'custID' => $data->custID]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $xrefs]);
 		$page->js   .= $config->twig->render('items/cxm/list/js.twig', []);
 		return $html;
