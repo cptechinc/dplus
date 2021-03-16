@@ -22,6 +22,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Dplus\\Menu' => __DIR__ . '/../..' . '/classes/dplus/Menu.php',
         'Controllers\\Dplus\\Process' => __DIR__ . '/../..' . '/classes/dplus/Process.php',
         'Controllers\\Map\\Mxrfe' => __DIR__ . '/../..' . '/classes/map/Mxrfe.php',
+        'Controllers\\Map\\Vxm' => __DIR__ . '/../..' . '/classes/map/Vxm.php',
         'Controllers\\Mar\\Spm' => __DIR__ . '/../..' . '/classes/mar/Spm.php',
         'Controllers\\Mci\\Ci' => __DIR__ . '/../..' . '/classes/mci/Ci/Ci.php',
         'Controllers\\Mii\\Ii' => __DIR__ . '/../..' . '/classes/mii/Ii/Ii.php',

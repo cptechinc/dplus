@@ -21,6 +21,7 @@ return array(
     'Controllers\\Dplus\\Menu' => $baseDir . '/classes/dplus/Menu.php',
     'Controllers\\Dplus\\Process' => $baseDir . '/classes/dplus/Process.php',
     'Controllers\\Map\\Mxrfe' => $baseDir . '/classes/map/Mxrfe.php',
+    'Controllers\\Map\\Vxm' => $baseDir . '/classes/map/Vxm.php',
     'Controllers\\Mar\\Spm' => $baseDir . '/classes/mar/Spm.php',
     'Controllers\\Mci\\Ci' => $baseDir . '/classes/mci/Ci/Ci.php',
     'Controllers\\Mii\\Ii' => $baseDir . '/classes/mii/Ii/Ii.php',
