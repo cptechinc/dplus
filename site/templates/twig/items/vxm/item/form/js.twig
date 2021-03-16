@@ -185,13 +185,7 @@ $(function() {
 	modal_ajax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
-		var url = '{{ page.searchvendorsURL }}';
-
-		if (button.data('search') == 'vendor') {
-			url = '{{ page.searchvendorsURL }}';
-		} else {
-			url = '{{ page.searchitemsURL }}';
-		}
+		var url = button.data('lookupurl');
 
 		modal.find('.modal-title').text(button.attr('title'));
 		modal.resizeModal('xl');
