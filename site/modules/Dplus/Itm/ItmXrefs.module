@@ -274,7 +274,6 @@ class ItmXrefs extends WireData implements Module {
 		return $url->getUrl();
 	}
 
-
 	/**
 	 * Return URL to Delete VXM Item
 	 * @param  string  $itemID       Item ID
