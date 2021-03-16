@@ -8,7 +8,8 @@ use SalesHistoryDetailQuery, SalesHistoryDetail;
 // ProcessWire Classes, Modules
 use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Validators
-use Dplus\CodeValidators\Mso as MsoValidator;
+use Dplus\CodeValidators\Mso     as MsoValidator;
+use Dplus\CodeValidators\Mso\Cxm as CxmValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
@@ -117,6 +118,26 @@ class Mso extends AbstractController {
 			]
 		];
 		return $response;
+	}
+
+	public static function validateCxm($data) {
+		$fields = ['custID|text', 'custitemID|text', 'new|bool', 'jqv|bool'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$validate = new CxmValidator();
+		$exists = $validate->exists($data->custID, $data->custitemID);
+
+		if ($data->new) {
+			$valid = $exists === false;
+
+			if ($valid === false && $data->jqv) {
+				return "X-ref $data->custID-$data->custitemID exists";
+			}
+			return $valid;
+		}
+		if ($exists === false && $data->jqv) {
+			return "X-ref $data->custID-$data->custitemID not found";
+		}
+		return $exists;
 	}
 
 	private static function validator() {
