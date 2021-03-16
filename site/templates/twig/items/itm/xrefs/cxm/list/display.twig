@@ -1,0 +1,10 @@
+{% extends 'items/itm/pricing/display.twig' %}
+
+{% block body %}
+	{% if session.getFor('response', 'cxm') %}
+		<div class="card-body mb-2">
+			{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'cxm')} %}
+		</div>
+	{% endif %}
+	{% include 'items/itm/xrefs/cxm/list/list.twig' %}
+{% endblock %}
