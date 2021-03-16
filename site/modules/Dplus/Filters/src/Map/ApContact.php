@@ -3,7 +3,7 @@
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 use Dplus\Filters\AbstractFilter;
 
-use ApContactQuery, ApContact;
+use ApContactQuery, ApContact as Model;
 
 class ApContact extends AbstractFilter {
 	const MODEL = 'ApContact';
@@ -17,8 +17,8 @@ class ApContact extends AbstractFilter {
 
 	public function _search($q) {
 		$columns = [
-			ApContact::get_aliasproperty('contactid'),
-			ApContact::get_aliasproperty('title'),
+			Model::get_aliasproperty('contactid'),
+			Model::get_aliasproperty('title'),
 		];
 		$this->query->search_filter($columns, strtoupper($q));
 	}
