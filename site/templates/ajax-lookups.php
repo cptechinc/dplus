@@ -41,6 +41,9 @@
 		// Item Groups
 		['GET', 'item-groups/', AjaxLookup::class, 'itemGroups'],
 		['GET', 'item-groups/page{d:\d+}/', AjaxLookup::class, 'itemGroups'],
+		// Country Codes
+		['GET', 'country-codes/', AjaxLookup::class, 'countryCodes'],
+		['GET', 'country-codes/page{d:\d+}/', AjaxLookup::class, 'countryCodes'],
 	];
 
 	$router = new Mvc\Router();
