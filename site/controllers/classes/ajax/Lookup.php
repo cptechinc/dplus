@@ -11,6 +11,7 @@ use Dplus\Filters\Mpo\PurchaseOrder as PurchaseOrderFilter;
 use Dplus\Filters\Mgl\GlCode as GlCodeFilter;
 use Dplus\Filters\Min\ItemGroup as ItemGroupFilter;
 use Dplus\Filters\Mar\Customer as CustomerFilter;
+use Dplus\Filters\Map\Vendor as VendorFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
@@ -128,10 +129,10 @@ class Lookup extends AbstractController {
 		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
 		$wire = self::pw();
 		$page = $wire->wire('page');
-		$filter = $wire->wire('modules')->get('FilterVendors');
-		$filter->init_query(self::pw('user'));
+		$filter = new VendorFilter();
+		$filter->init();
 		$page->headline = "Vendors";
-		self::moduleFilterResults($filter, $wire, $data);
+		self::filterResults($filter, $wire, $data);
 	}
 
 	/**
