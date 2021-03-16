@@ -1,0 +1,35 @@
+{% include 'items/vxm/bread-crumbs.twig' %}
+
+{% if session.getFor('response', 'vxm') %}
+	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'vxm')} %}
+{% endif %}
+
+<div class="card">
+	<div class="card-header">
+		<div class="row">
+			<div class="col-sm-3">
+				<strong>Vendor ID:</strong> {{ vendor.vendorid }}
+			</div>
+			<div class="col-sm-6">
+				<div>
+					<small>{{ vendor.name }}</small>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% include 'items/vxm/list/item/vendor/list.twig' %}
+
+	{% include 'util/paginator/propel.twig' with {'pager': items} %}
+
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<div>
+				<a href="{{ page.url }}" class="btn btn-warning btn-sm">
+					<i class="fa fa-times" aria-hidden="true"></i> Close
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
