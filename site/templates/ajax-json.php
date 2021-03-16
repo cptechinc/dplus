@@ -37,6 +37,7 @@
 			'validate' => [
 				['GET', 'salespersonid/', Json\Mar::class, 'validateSalesPersonId'],
 				['GET', 'salesgroupid/', Json\Mar::class, 'validateSalesGroupid'],
+				['GET', 'custid/', Json\Mar::class, 'validateCustid'],
 			],
 		],
 		'mci' => [
@@ -76,6 +77,7 @@
 			'validate' => [
 				['GET', 'freight-code/', Json\Mso::class, 'validateFreightCode'],
 				['GET', 'price-discount/', Json\Mso::class, 'validatePriceDiscount'],
+				['GET', 'cxm/', Json\Mso::class, 'validateCxm'],
 			],
 			['GET', 'lowest-price/', Json\Mso::class, 'getLowestPrice'],
 		]
