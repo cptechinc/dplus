@@ -694,7 +694,6 @@ class XrefCxm extends WireData implements Module {
 		return CustomerQuery::create()->findOneByCustid($custID);
 	}
 
-
 	/**
 	 * Return if Customer exists
 	 * @param  string $custID Customer ID
