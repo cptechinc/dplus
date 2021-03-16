@@ -4,7 +4,6 @@
 	page                   ProcessWire\Page
 	vxm                    module XrefVxm
 	item                   ItemXrefVendor
-	url_validate           URL to validate form inputs
 #}
 
 $(function() {
@@ -116,7 +115,7 @@ $(function() {
 				var itemcol = $('.item-col');
 				input_itemID.attr('data-iskit',  item.iskit ? 'true' : 'false');
 				input_itemID.attr('data-itemid', item.itemid);
-				input_itemID.attr('data-standardcostbase', item.standardcost.base);
+				input_itemID.attr('data-standardcostbase', item.standardcostbasedon.base);
 				itemcol.find('.description').text(item.description);
 				itemcol.find('.description2').text(item.description2);
 				itemcol.find('.uom-sale').text(item.uom.sale.description);
@@ -243,7 +242,9 @@ $(function() {
 				remote: {
 					url: '{{ page.jsonapiURL('map/validate/vendorid/') }}',
 					type: "get",
-					data: {}
+					data: {
+						jqv: 'true'
+					}
 				}
 			},
 			vendoritemID: {
@@ -257,7 +258,9 @@ $(function() {
 				remote: {
 					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
 					type: "get",
-					data: {}
+					data: {
+						jqv: 'true'
+					}
 				}
 			},
 			uom_purchase: {required: true},
@@ -279,14 +282,16 @@ $(function() {
 
 	function validate_xref_remote_obj() {
 		var input = $('input[name=vendoritemID]');
-
-		var url = '{{ page.jsonapiURL('map/validate/vendorid/') }}';
-		url += (input.val() != input.data('vendoritemid') && input.data('new') === true) ? 'new/' : '';
+		var url = '{{ page.jsonapiURL('map/validate/vxm/') }}';
 
 		return {
 			url: url,
 			type: "get",
 			data: {
+				jqv: 'true',
+				new: function() {
+					return (input.val() != input.data('vendoritemid') && input.data('new') === true) ? 'true' : 'false';
+				},
 				vendorID: function() {
 					return $('input[name=vendorID]').val();
 				},
@@ -439,12 +444,10 @@ $(function() {
 	 * @return bool       Can VXM item be used as Primary PO Order Code?
 	 */
 	function request_validate_poordercode(callback) {
-		var url = new URI('{{ url_validate }}');
-		url.addQuery('action', 'validate-primary-poordercode');
+		var url = new URI('{{ page.jsonapiURL('map/vxm/primary-ordercode') }}');
 		url.addQuery('vendorID', input_vendorID.val());
 		url.addQuery('vendoritemID', input_vendoritemID.val());
 		url.addQuery('ouritemID', input_itemID.val());
-		url.addQuery('return', 'bool');
 
 		// URL RETURNS boolean true or string UPC code for false
 		$.getJSON(url.toString(), function( valid ) {
@@ -458,13 +461,11 @@ $(function() {
 	 * @return bool       Does VXM item exist?
 	 */
 	function request_validate_xref(callback) {
-		var url = new URI('{{ url_validate }}');
-		url.addQuery('action', 'validate-xref');
+		var url = new URI('{{ page.jsonapiURL('map/validate/vxm') }}');
 		url.addQuery('vendorID', input_vendorID.val());
 		url.addQuery('vendoritemID', input_vendoritemID.val());
 		url.addQuery('itemID', input_itemID.val());
-		url.addQuery('return', 'bool');
-		$.getJSON(url.toString(), function( valid ) {
+		$.getJSON(url.toString(), function(valid) {
 			callback(valid);
 		});
 	}
@@ -475,21 +476,19 @@ $(function() {
 	 * @return json                [allow: {bool}, confirm: {bool}];
 	 */
 	function request_can_update_itm_cost(vendorID, vendoritemID, itemID, callback) {
-		var url = new URI('{{ url_validate }}');
-		url.addQuery('action', 'validate-update-itm-cost');
+		var url = new URI('{{ page.jsonapiURL('map/validate/vxm/update-itm-cost') }}');
 		url.addQuery('vendorID', vendorID);
 		url.addQuery('vendoritemID', vendoritemID);
 		url.addQuery('itemID', itemID);
 		url.addQuery('ordercode', input_ordercode.val())
-		url.addQuery('return', 'bool');
 		$.getJSON(url.toString(), function( response ) {
 			callback(response);
 		});
 	}
 
 	function request_item(itemID, callback) {
-		var url = new URI('{{ url_validate }}');
-		url.addQuery('action', 'get-item').addQuery('itemID', itemID);
+		var url = new URI('{{ page.jsonapiURL('inv/item') }}');
+		url.addQuery('itemID', itemID).addQuery('fields', 'uom,iskit,pricing,standardcostbasedon');
 
 		$.getJSON(url.toString(), function( item ) {
 			callback(item);
