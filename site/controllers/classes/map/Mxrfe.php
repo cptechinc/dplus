@@ -95,6 +95,7 @@ class Mxrfe extends AbstractController {
 		$config = self::pw('config');
 		$page   = self::pw('page');
 		$mxrfe  = self::mxrfeMaster();
+		$mxrfe->recordlocker->remove_lock();
 		$filter = self::pw('modules')->get('FilterVendors');
 		$filter->init_query(self::pw('user'));
 		$filter->vendorid($mxrfe->vendorids());
@@ -109,10 +110,10 @@ class Mxrfe extends AbstractController {
 
 	public static function mnfrXrefs($data) {
 		$data = self::sanitizeParametersShort($data, ['mnfrID|text']);
-		$wire = self::pw();
 		$config = self::pw('config');
 		$page   = self::pw('page');
 		$mxrfe  = self::mxrfeMaster();
+		$mxrfe->recordlocker->remove_lock();
 		$vendor = $mxrfe->vendor($data->mnfrID);
 		$filter = $wire->modules->get('FilterXrefItemMxrfe');
 		$filter->vendorid($data->mnfrID);
