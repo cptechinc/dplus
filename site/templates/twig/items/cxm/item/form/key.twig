@@ -109,6 +109,9 @@
 		{% include 'util/bootstrap/form/input-group.twig' with {
 				'inputgroup': {
 					'type': 'prepend',
+					'attributes': {
+						'readonly': page.pw_template == 'itm-xrefs-cxm'
+					},
 					'input': {
 						'name': 'itemID',
 						'id': 'itemID',
