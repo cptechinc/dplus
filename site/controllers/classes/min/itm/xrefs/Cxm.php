@@ -19,9 +19,9 @@ class Cxm extends ItmFunction {
 
 		$page->show_breadcrumbs = false;
 
-		// if (empty($data->action) === false) {
-		// 	return self::handleCRUD($data);
-		// }
+		if (empty($data->action) === false) {
+			return self::handleCRUD($data);
+		}
 
 		if (empty($data->custitemID) == false) {
 			return self::xref($data);
