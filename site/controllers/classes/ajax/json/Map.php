@@ -31,13 +31,45 @@ class Map extends AbstractController {
 	}
 
 	public static function validateVxm($data) {
-		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text'];
+		$exists = false;
+		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text', 'jqv|bool', 'new|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new VxmValidator();
-		if ($validate->exists($data->vendorID, $data->vendoritemID, $data->itemID) === false) {
-			return "VXM X-ref not found";
+		$exists = $validate->exists($data->vendorID, $data->vendoritemID, $data->itemID);
+
+		// If trying to validate new item
+		if ($data->new) {
+			$valid = $exists === false;
+			if ($data->jqv && $valid === false) {
+				return "$data->vendoritemID from $data->vendorID for $data->itemID already exists";
+			}
+			return $valid;
 		}
-		return true;
+
+		if ($data->jqv && $exists === false) {
+			return "$data->vendoritemID from $data->vendorID for $data->itemID was not found in the Vendor X-ref";
+		}
+		return $exists;
+	}
+
+	public static function validateVxmCanBePrimary($data) {
+		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text', 'jqv|bool'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$validate = new VxmValidator();
+		$vxm = self::pw('modules')->get('XrefVxm');
+		if ($vxm->poordercode_primary_exists($data->itemID) === false) {
+			return true;
+		}
+		$primary = $vxm->get_primary_poordercode_itemid($data->itemID);
+
+		if ($primary->vendorid == $data->vendorID && $primary->vendoritemid == $data->vendoritemID) {
+			return true;
+		}
+		// FALSE Return
+		if ($data->jqv) {
+			return "$primary->ouritemID already has a Primary Vendor X-ref";
+		}
+		return false;
 	}
 
 	public static function validateVxmExistsForItemid($data) {
@@ -63,12 +95,24 @@ class Map extends AbstractController {
 			return false;
 		}
 
-		$xref = $modules->get('XrefVxm')->xref($data->vendorID, $data->vendoritemID, $data->itemID);
+		$xref = self::pw('modules')->get('XrefVxm')->xref($data->vendorID, $data->vendoritemID, $data->itemID);
 		return array(
 			'vendorid'     => $xref->vendorid,
 			'itemid'       => $xref->itemid,
 			'vendoritemid' => $xref->vendoritemid
 		);
+	}
+
+	public static function getVxmPrimary($data) {
+		$fields = ['itemID|text'];
+		$vxm = self::pw('modules')->get('XrefVxm');
+		if ($vxm->poordercode_primary_exists($data->itemID) === false) {
+			return false;
+		}
+		$primary = $vxm->get_primary_poordercode_itemid($data->itemID);
+		$data->vendorID = $primary->vendorid;
+		$data->vendoritemID = $primary->vendoritemid;
+		return self::getVxm($data);
 	}
 
 	public static function getVxmByItemid($data) {
@@ -91,6 +135,27 @@ class Map extends AbstractController {
 			'itemid'       => $xref->itemid,
 			'vendoritemid' => $xref->vendoritemid
 		);
+		return $response;
+	}
+
+	public function validateVxmUpdateItmCost($data) {
+		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text', 'ordercode|text'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$response = ['allow' => false, 'confirm' => false];
+		$validate = new VxmValidator();
+		if ($validate->exists($data->vendorID, $data->vendoritemID, $data->itemID) === false) {
+			return $response;
+		}
+		$vxm = self::pw('modules')->get('XrefVxm');
+		$vxm->init_configs();
+		$xref = $vxm->xref($data->vendorID, $data->vendoritemID, $data->itemID);
+		if (array_key_exists($ordercode, ItemXrefVendor::OPTIONS_POORDERCODE)) {
+			$xref->setPo_ordercode($ordercode);
+		}
+		$response['allow'] = $vxm->allow_itm_cost_update_xref($xref);
+		if ($response['allow']) {
+			$response['confirm'] = $vxm->configs->ap->confirm_update_itm_cost();
+		}
 		return $response;
 	}
 
