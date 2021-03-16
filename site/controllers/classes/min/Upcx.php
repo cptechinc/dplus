@@ -46,6 +46,14 @@ class Upcx extends AbstractController {
 		$upcx   = self::pw('modules')->get('XrefUpc');
 		$xref = $upcx->get_create_xref($data->upc);
 
+		if ($xref->isNew()) {
+			$page->headline = "UPCX: Create X-ref";
+		}
+
+		if ($xref->isNew() == false) {
+			$page->headline = "UPCX: $xref->upc";
+		}
+
 		$html = '';
 		$html .= self::lockXref($page, $upcx, $xref);
 		$html .= $config->twig->render('items/upcx/form/page.twig', ['upcx' => $upcx, 'upc' => $xref]);

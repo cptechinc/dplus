@@ -60,11 +60,15 @@ class Upcx extends ItmFunction {
 		$xref = $upcx->get_create_xref($data->upc);
 
 		if ($xref->isNew()) {
+			$page->headline = "UPCX: Create X-ref";
 			$xref->setItemid($data->itemID);
 		}
-		$html = '';
+		if ($xref->isNew() == false) {
+			$page->headline = "UPCX: $xref->upc";
+		}
 
-		BaseUpcx::lockXref($page, $upcx, $xref);
+		$html = '';
+		$html .= BaseUpcx::lockXref($page, $upcx, $xref);
 		$html .= $config->twig->render('items/itm/xrefs/upcx/form/page.twig', ['upcx' => $upcx, 'upc' => $xref]);
 		$page->js   .= $config->twig->render('items/upcx/form/js.twig', ['upc' => $xref]);
 		return $html;
