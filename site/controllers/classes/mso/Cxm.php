@@ -40,10 +40,12 @@ class Cxm extends AbstractController {
 		$session = self::pw('session');
 		$page    = self::pw('page');
 
+		$response = $session->getFor('response', 'cxm');
 		$url = $page->cxm_customerURL($data->custID);
+
 		if ($cxm->xref_exists($data->custID, $data->custitemID)) {
-			if ($session->getFor('response','cxm') && $session->getFor('response','cxm')->has_success()) {
-				$url = $page->cxm_customerURL($data->custID, $session->getFor('response','cxm')->key);
+			if ($response  && $response ->has_success()) {
+				$url = $page->cxm_customerURL($data->custID, $response->key);
 			}
 			$url = $page->cxm_itemURL($data->custID, $data->custitemID);
 		}
