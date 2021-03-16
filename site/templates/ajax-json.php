@@ -21,15 +21,21 @@
 		'map' => [
 			'validate' => [
 				['GET', 'vendorid/', Json\Map::class, 'validateVendorid'],
-				['GET', 'vxm/', Json\Map::class, 'validateVxm'],
-				['GET', 'vxm/itemid/', Json\Map::class, 'validateVxmExistsForItemid'],
-				['GET', 'vxm/vendoritemid-itemid/', Json\Map::class, 'validateVendoritemMatchesItemid'],
+				'vxm' => [
+					['GET', '', Json\Map::class, 'validateVxm'],
+					['GET', 'itemid/', Json\Map::class, 'validateVxmExistsForItemid'],
+					['GET', 'vendoritemid-itemid/', Json\Map::class, 'validateVendoritemMatchesItemid'],
+					['GET', 'primary-ordercode/', Json\Map::class, 'validateVxmCanBePrimary'],
+					['GET', 'update-itm-cost/', Json\Map::class, 'validateVxmUpdateItmCost'],
+				],
 				['GET', 'mxrfe/', Json\Map::class, 'validateMxrfe'],
 				['GET', 'mxrfe/new/', Json\Map::class, 'validateMxrfeNew'],
 			],
-			['GET', 'vxm/', Json\Map::class, 'getVxm'],
-			['GET', 'vxm/itemid/', Json\Map::class, 'getVxmByItemid'],
-
+			'vxm' => [
+				['GET', '', Json\Map::class, 'getVxm'],
+				['GET', 'itemid/', Json\Map::class, 'getVxmByItemid'],
+				['GET', 'primary/', Json\Map::class, 'getVxmPrimary'],
+			],
 			['GET', 'vendor/', Json\Map::class, 'getVendor'],
 			['GET', 'vendor/contact/', Json\Map::class, 'getVendorContact'],
 		],
