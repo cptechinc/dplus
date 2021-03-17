@@ -46,6 +46,19 @@ class Upcx extends ItmFunction {
 		self::pw('session')->redirect(self::pw('page')->upcURL($upc), $http301 = false);
 	}
 
+	private static function upcxHeaders() {
+		$html = '';
+		$session = self::pw('session');
+		$config  = self::pw('config');
+
+		$html .= self::breadCrumbs();
+
+		if ($session->getFor('response','upcx')) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response','upcx')]);
+		}
+		return $html;
+	}
+
 	public static function xref($data) {
 		if (self::validateItemidAndPermission($data) === false) {
 			return $page->body;
@@ -57,7 +70,9 @@ class Upcx extends ItmFunction {
 		}
 		$config = self::pw('config');
 		$page   = self::pw('page');
-		$upcx = $wire->modules->get('XrefUpc');
+		$upcx   = self::pw('modules')->get('XrefUpc');
+		$itm    = self::getItm();
+		$item = $itm->get_item($data->itemID);
 		$xref = $upcx->get_create_xref($data->upc);
 
 		if ($xref->isNew()) {
@@ -69,8 +84,9 @@ class Upcx extends ItmFunction {
 		}
 
 		$html = '';
+		$html .= self::upcxHeaders();
 		$html .= BaseUpcx::lockXref($page, $upcx, $xref);
-		$html .= $config->twig->render('items/itm/xrefs/upcx/form/page.twig', ['upcx' => $upcx, 'upc' => $xref]);
+		$html .= $config->twig->render('items/itm/xrefs/upcx/form/display.twig', ['upcx' => $upcx, 'upc' => $xref, 'item' => $item]);
 		$page->js   .= $config->twig->render('items/upcx/form/js.twig', ['upc' => $xref]);
 		return $html;
 	}
@@ -96,9 +112,8 @@ class Upcx extends ItmFunction {
 		$page->title = "UPCs";
 		$page->headline = "ITM: $data->itemID UPCX";
 		$html = '';
-
-		$html .= $config->twig->render('items/itm/xrefs/upcx/list/page.twig', ['upcs' => $upcs, 'itemID' => $data->itemID, 'upcx' => $upcx]);
-		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $upcs]);
+		$html .= self::upcxHeaders();
+		$html .= $config->twig->render('items/itm/xrefs/upcx/list/display.twig', ['upcs' => $upcs, 'item' => $item, 'upcx' => $upcx]);
 		$page->js   .= $config->twig->render('items/upcx/list/.js.twig');
 		return $html;
 	}
