@@ -59,8 +59,8 @@ class Xrefs extends ItmFunction {
 			$session->remove('response_xref');
 		}
 		$page->headline = "ITM: $data->itemID X-refs";
-		$html = Itm::lockItem($data->itemID);
-		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
+		$html .= self::breadCrumbs();
+		$html .= Itm::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page->parent]);
 		$html .= $config->twig->render('items/itm/xrefs/page.twig', ['itm' => $itm, 'item' => $item, 'xrefs' => $xrefs]);
 		$page->js   .= $config->twig->render('items/itm/xrefs/js.twig');

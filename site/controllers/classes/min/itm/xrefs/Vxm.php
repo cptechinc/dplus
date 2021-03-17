@@ -102,7 +102,7 @@ class Vxm extends ItmFunction {
 		$session = self::pw('session');
 		$config  = self::pw('config');
 
-		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
+		$html .= self::breadCrumbs();
 
 		if ($session->getFor('response','vxm')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response','vxm')]);

@@ -45,6 +45,10 @@ class ItmFunction extends AbstractController {
 		return true;
 	}
 
+	protected static function breadCrumbs() {
+		return self::pw('config')->twig->render('items/itm/bread-crumbs.twig');
+	}
+
 	/**
 	 * Return Itm
 	 * @return ItmModel
