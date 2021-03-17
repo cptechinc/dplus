@@ -28,10 +28,8 @@ class FilterItemMaster extends WireData implements Module {
 	Input Filter Functions
 ============================================================= */
 	public function filter_input($input) {
-		$q = SalesHistoryQuery::create()->select(SalesOrder::aliasproperty('ordernumber'))->filterByCustid($custID);
+
 	}
-
-
 
 /* =============================================================
 	Base Filter Functions

@@ -8,7 +8,7 @@ $(function() {
 	var input_qty          = form_physcount.find('input[name=qty]');
 
 
-	if (input_item.val().length) {
+	if (input_item.length && input_item.val().length) {
 		if (input_lotserial.val().length) {
 			input_bin.focus();
 		} else if (input_item.data('itemtype') == 'S') {
@@ -28,6 +28,30 @@ $(function() {
 		var binID = button.data('bin');
 		input_bin.val(binID);
 		button.closest('.modal').modal('hide');
+	});
+
+/* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	$('#ajax-modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = button.data('lookupurl');
+		modal.attr('data-input', button.data('input'));
+
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on("click", "#ajax-modal .item-link", function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var modal  = button.closest('.modal');
+		var itemID = button.data('itemid');
+		var input  = $(modal.attr('data-input'));
+		input.val(itemID);
+		modal.modal('hide');
 	});
 
 	form_physcount.validate({

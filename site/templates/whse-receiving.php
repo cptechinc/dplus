@@ -5,4 +5,6 @@
 		$template = 'whse-receiving-default';
 	}
 
+	$config->scripts->append(hash_templatefile('scripts/warehouse/receiving.js'));
+
 	include __DIR__ . "/$template.php";
