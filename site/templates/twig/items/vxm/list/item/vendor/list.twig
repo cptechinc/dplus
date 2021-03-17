@@ -20,15 +20,9 @@
 			<th class="pt-3 pb-3 align-middle text-right">Base Cost</th>
 			<th class="pt-3 pb-3 align-middle text-right">Changed Date</th>
 			<th class="pt-3 pb-3 align-middle text-center">
-				{% if page.has('vendorID') and page.vendorID %}
-					<a href="{{ page.vxm_itemURL(page.vendorID, 'new') }}" class="btn btn-light btn-sm">
-						<i class="fa fa-plus" aria-hidden="true"></i> Add Item
-					</a>
-				{% else %}
-					<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#ajax-modal" title="Choose Vendor to Add VXM" aria-label="Choose Vendor to Add VXM" data-vendorid="{{ page.has('vendorID') ? page.vendorID : '' }}" data-search="vendor">
-						<i class="fa fa-plus" aria-hidden="true"></i> Add Item
-					</button>
-				{% endif %}
+				<a href="{{ page.vxm_itemURL(page.vendorID, 'new') }}" class="btn btn-light btn-sm">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add Item
+				</a>
 			</th>
 		</tr>
 	</thead>
