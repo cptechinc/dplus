@@ -120,6 +120,10 @@ class Vxm extends AbstractController {
 		$filter = new VendorFilter();
 		$filter->init();
 		$filter->vendorid($vxm->vendorids());
+		if ($data->q) {
+			$page->headline = "Searching Vendors for '$data->q'";
+			$filter->search($data->q);
+		}
 		$filter->sortby($page);
 		$vendors = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 

@@ -147,6 +147,10 @@ class Cxm extends AbstractController {
 		$filter = $modules->get('FilterCustomers');
 		$filter->init_query(self::pw('user'));
 		$filter->custid($cxm->custids());
+		if ($data->q) {
+			$page->headline = "Searching Customers for '$data->q'";
+			$filter->search($data->q);
+		}
 		$filter->apply_sortby($page);
 		$customers = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		$html = '';

@@ -99,6 +99,10 @@ class Mxrfe extends AbstractController {
 		$filter = self::pw('modules')->get('FilterVendors');
 		$filter->init_query(self::pw('user'));
 		$filter->vendorid($mxrfe->vendorids());
+		if ($data->q) {
+			$page->headline = "Searching Mnfrs for '$data->q'";
+			$filter->search($data->q);
+		}
 		$filter->apply_sortby($page);
 		$vendors = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 

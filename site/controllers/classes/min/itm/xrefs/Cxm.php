@@ -1,6 +1,6 @@
 <?php namespace Controllers\Min\Itm\Xrefs;
 // Dplus Model
-use ItemXrefCxmQuery, ItemXrefCxm;
+use ItemXrefCustomerQuery, ItemXrefCustomer;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\XrefCxm as CxmCRUD;
 // Mvc Controllers
