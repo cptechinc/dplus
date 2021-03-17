@@ -70,7 +70,7 @@ class TwigInputGroup extends TwigBaseHtml {
 				$this->input = $input;
 
 				$button = $this->button;
-				$button['attributes']['readonly'] = $attributes['readonly'];
+				$button['attributes']['disabled'] = $attributes['readonly'];
 				$this->button = $button;
 			}
 		}
