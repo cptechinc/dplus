@@ -81,22 +81,32 @@ class Cxm extends AbstractController {
 		$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;
 		$page->searchitemsURL     = $pages->get('pw_template=itm-search')->url;
 		$html .= $config->twig->render('items/cxm/item/form/display.twig', ['item' => $xref, 'cxm' => $cxm, 'qnotes' => $qnotes]);
+		$page->headline = "CXM: " . $cxm->get_recordlocker_key($xref);
 
 		if ($xref->isNew()) {
 			$page->headline = "CXM: Create X-ref";
 		}
 
 		if (!$xref->isNew()) {
-			$page->headline = "CXM: " . $cxm->get_recordlocker_key($xref);
-			$html .= '<div class="mt-3"><h3>Notes</h3></div>';
-			$html .= $config->twig->render('items/cxm/item/notes/qnotes.twig', ['item' => $xref, 'qnotes' => $qnotes]);
-			$page->js .= $config->twig->render('items/cxm/item/notes/js.twig', ['qnotes' => $qnotes]);
-			$page->js .= $config->twig->render('msa/noce/ajax/js.twig', ['qnotes' => $qnotes]);
+			$html .= self::qnotesDisplay($xref);
 		}
 
 		$page->js .= $config->twig->render('items/cxm/item/form/js.twig', ['cxm' => $cxm]);
 		return $html;
 	}
+
+	public static function qnotesDisplay(ItemXrefCustomer $xref) {
+		$page   = self::pw('page');
+		$config = self::pw('config');
+		$qnotes = self::pw('modules')->get('QnotesItemCxm');
+		$html = '';
+		$html .= '<div class="mt-3"><h3>Notes</h3></div>';
+		$html .= $config->twig->render('items/cxm/item/notes/qnotes.twig', ['item' => $xref, 'qnotes' => $qnotes]);
+		$page->js .= $config->twig->render('items/cxm/item/notes/js.twig', ['qnotes' => $qnotes]);
+		$page->js .= $config->twig->render('msa/noce/ajax/js.twig', ['qnotes' => $qnotes]);
+		return $html;
+	}
+
 
 	private static function cxmHeaders() {
 		$html = '';

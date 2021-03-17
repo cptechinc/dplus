@@ -76,9 +76,6 @@ class Cxm extends ItmFunction {
 		$xref = $cxm->get_create_xref($data->custID, $data->custitemID);
 		$item = $itm->get_item($data->itemID);
 
-		if ($xref->isNew() === false) {
-
-		}
 		$page->headline = "ITM: $item->itemid CXM $xref->custid-$xref->custitemid";
 
 		if ($xref->isNew()) {
@@ -89,13 +86,10 @@ class Cxm extends ItmFunction {
 		$html = '';
 		$html .= self::cxmHeaders();
 		$html .= BaseCxm::lockXref($page, $cxm, $xref);
-		$html .= $config->twig->render('items/cxm/item/form/display.twig', ['item' => $xref, 'cxm' => $cxm, 'qnotes' => $qnotes, 'customer' => $cxm->get_customer($data->custID)]);
+		$html .= $config->twig->render('items/itm/xrefs/cxm/form/display.twig', ['xref' => $xref, 'item' => $item, 'cxm' => $cxm, 'qnotes' => $qnotes, 'customer' => $cxm->get_customer($data->custID)]);
 
 		if (!$xref->isNew()) {
-			$html .= '<div class="mt-3"><h3>Notes</h3></div>';
-			$html .= $config->twig->render('items/cxm/item/notes/qnotes.twig', ['item' => $xref, 'qnotes' => $qnotes]);
-			$page->js .= $config->twig->render('items/cxm/item/notes/js.twig', ['qnotes' => $qnotes]);
-			$page->js .= $config->twig->render('msa/noce/ajax/js.twig', ['qnotes' => $qnotes]);
+			$html .= BaseCxm::qnotesDisplay($xref);
 		}
 
 		$page->js .= $config->twig->render('items/cxm/item/form/js.twig', ['cxm' => $cxm]);
@@ -107,7 +101,7 @@ class Cxm extends ItmFunction {
 		$session = self::pw('session');
 		$config  = self::pw('config');
 
-		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
+		$html .= self::breadCrumbs();
 
 		if ($session->getFor('response','cxm')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response','cxm')]);
@@ -145,8 +139,7 @@ class Cxm extends ItmFunction {
 
 		$html = '';
 		$html .= self::cxmHeaders();
-		$html .= $config->twig->render('items/itm/xrefs/cxm/list/display.twig', ['item' => $item, 'response' => self::pw('session')->getFor('response', 'cxm'), 'items' => $xrefs]);
-		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $xrefs]);
+		$html .= $config->twig->render('items/itm/xrefs/cxm/list/display.twig', ['item' => $item, 'cxm' => $cxm, 'items' => $xrefs]);
 		$page->js .= $config->twig->render('items/itm/xrefs/cxm/list/js.twig');
 		return $html;
 	}
