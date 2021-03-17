@@ -1,0 +1,8 @@
+{% extends 'items/itm/xrefs/xrefs-display.twig' %}
+
+
+{% block body %}
+	{% include 'items/itm/xrefs/vxm/list/list.twig' %}
+
+	{% include 'util/paginator/propel.twig' with {'pager': items} %}
+{% endblock %}
