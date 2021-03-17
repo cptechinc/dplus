@@ -1,10 +1,11 @@
 <?php namespace Controllers\Min\Itm\Xrefs;
-
+// Dplus Model
+use ItemXrefUpcQuery, ItemXrefUpc;
+// ProcessWire Classes, Modules
+use ProcessWire\Page, ProcessWire\XrefUpc as UpcCRUD;
+// Mvc Controllers
 use Controllers\Min\Itm\ItmFunction;
 use Controllers\Min\Upcx as BaseUpcx;
-
-use ProcessWire\Page, ProcessWire\XrefUpc as UpcModel;
-use ItemXrefUpc;
 
 class Upcx extends ItmFunction {
 	public static function index($data) {
@@ -23,12 +24,13 @@ class Upcx extends ItmFunction {
 		}
 
 		if (empty($data->upc) === false) {
-			return self::upc($data);
+			return self::xref($data);
 		}
 		return self::list($data);
 	}
 
 	public static function handleCRUD($data) {
+		$page    = self::pw('page');
 		if (self::validateItemidAndPermission($data) === false) {
 			return $page->body;
 		}
@@ -37,14 +39,27 @@ class Upcx extends ItmFunction {
 		$input = self::pw('input');
 
 		if ($data->action) {
-			$mxrfe = self::pw('modules')->get('XrefUpc');
-			$mxrfe->process_input($input);
+			$upcx = self::pw('modules')->get('XrefUpc');
+			$upcx->process_input($input);
 		}
 		$upc = $data->action == 'delete-upcx' ? '' : $data->upc;
 		self::pw('session')->redirect(self::pw('page')->upcURL($upc), $http301 = false);
 	}
 
-	public static function upc($data) {
+	private static function upcxHeaders() {
+		$html = '';
+		$session = self::pw('session');
+		$config  = self::pw('config');
+
+		$html .= self::breadCrumbs();
+
+		if ($session->getFor('response','upcx')) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response','upcx')]);
+		}
+		return $html;
+	}
+
+	public static function xref($data) {
 		if (self::validateItemidAndPermission($data) === false) {
 			return $page->body;
 		}
@@ -53,20 +68,27 @@ class Upcx extends ItmFunction {
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
-		$wire = self::pw();
 		$config = self::pw('config');
-		$page = self::pw('page');
-		$upcx = $wire->modules->get('XrefUpc');
+		$page   = self::pw('page');
+		$upcx   = self::pw('modules')->get('XrefUpc');
+		$itm    = self::getItm();
+		$item = $itm->get_item($data->itemID);
 		$xref = $upcx->get_create_xref($data->upc);
 
 		if ($xref->isNew()) {
+			$page->headline = "ITM: $data->itemID UPCX: Create X-ref";
 			$xref->setItemid($data->itemID);
 		}
+		if ($xref->isNew() == false) {
+			$page->headline = "ITM: $data->itemID UPCX: $xref->upc";
+		}
 
-		BaseUpcx::lockXref($page, $upcx, $xref);
-		$page->body .= $config->twig->render('items/itm/xrefs/upcx/form/page.twig', ['upcx' => $upcx, 'upc' => $xref]);
+		$html = '';
+		$html .= self::upcxHeaders();
+		$html .= BaseUpcx::lockXref($page, $upcx, $xref);
+		$html .= $config->twig->render('items/itm/xrefs/upcx/form/display.twig', ['upcx' => $upcx, 'upc' => $xref, 'item' => $item]);
 		$page->js   .= $config->twig->render('items/upcx/form/js.twig', ['upc' => $xref]);
-		return $page->body;
+		return $html;
 	}
 
 	public static function list($data) {
@@ -75,25 +97,24 @@ class Upcx extends ItmFunction {
 		}
 		$fields = ['itemID|text', 'q|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
-		$wire = self::pw();
-		$input = $wire->wire('input');
-		$page = $wire->wire('page');
-		$config = $wire->wire('config');
-		$itm  = self::getItm();
+		$input  = self::pw('input');
+		$page   = self::pw('page');
+		$config = self::pw('config');
+		$modules = self::pw('modules');
+		$itm    = self::getItm();
 		$item = $itm->get_item($data->itemID);
-		$upcx = $wire->wire('modules')->get('XrefUpc');
+		$upcx = $modules->get('XrefUpc');
 		$upcx->recordlocker->remove_lock();
-		$filter = $wire->wire('modules')->get('FilterXrefItemUpc');
+		$filter = $modules->get('FilterXrefItemUpc');
 		$filter->filter_input($input);
 		$filter->apply_sortby($page);
 		$upcs = $filter->query->paginate($input->pageNum, 10);
 		$page->title = "UPCs";
-		$page->headline = "ITM: UPCs for $data->itemID";
-
-		$page->body .= $config->twig->render('items/itm/xrefs/upcx/list/page.twig', ['upcs' => $upcs, 'itemID' => $data->itemID, 'upcx' => $upcx]);
-		$page->body .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $upcs]);
+		$page->headline = "ITM: $data->itemID UPCX";
+		$html = '';
+		$html .= self::upcxHeaders();
+		$html .= $config->twig->render('items/itm/xrefs/upcx/list/display.twig', ['upcs' => $upcs, 'item' => $item, 'upcx' => $upcx]);
 		$page->js   .= $config->twig->render('items/upcx/list/.js.twig');
-		return $page->body;
+		return $html;
 	}
-
 }

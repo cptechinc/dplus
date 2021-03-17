@@ -1,10 +1,11 @@
 <?php namespace Controllers\Min\Itm;
 
-use Controllers\Min\Itm\ItmFunction;
-use Controllers\Min\Upcx as BaseUpcx;
-
-use ProcessWire\Page, ProcessWire\ItmPricing as PricingCRUD;
+// Dplus Model
 use ItemPricingQuery, ItemPricing;
+// ProcessWire classes, modules
+use ProcessWire\Page, ProcessWire\ItmPricing as PricingCRUD;
+// Mvc Controllers
+use Controllers\Min\Itm\ItmFunction;
 
 class Pricing extends ItmFunction {
 	public static function index($data) {
@@ -68,13 +69,14 @@ class Pricing extends ItmFunction {
 		$itmPricing = self::getItmPricing();
 		$item = $itm->get_item($data->itemID);
 		$pricing = $itmPricing->get_pricing($data->itemID);
-		$page->headline = "Pricing for $data->itemID";
+		$page->headline = "ITM: $data->itemID Pricing";
+		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 		if ($session->getFor('response', 'itm')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
 		}
 		$html .= Itm::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page->parent]);
-		$html .= $config->twig->render('items/itm/pricing/display.twig', ['item' => $item, 'pricingm' => $itmPricing, 'item_pricing' => $pricing]);
+		$html .= $config->twig->render('items/itm/pricing/display.twig', ['item' => $item, 'pricingm' => $itmPricing, 'item_pricing' => $pricing, 'itm' => $itm]);
 		$page->js .= $config->twig->render('items/itm/pricing/js.twig', ['item_pricing' => $pricing]);
 		self::pw('session')->remove('response_itm');
 		return $html;
@@ -83,5 +85,4 @@ class Pricing extends ItmFunction {
 	public static function getItmPricing() {
 		return self::pw('modules')->get('ItmPricing');
 	}
-
 }

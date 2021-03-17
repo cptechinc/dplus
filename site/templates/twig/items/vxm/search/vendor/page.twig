@@ -1,0 +1,7 @@
+{% include 'items/vxm/bread-crumbs.twig' %}
+
+{% if session.getFor('response', 'vxm') %}
+	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'vxm')} %}
+{% endif %}
+
+{% include 'items/vxm/search/vendor/search.twig' with {'vendors': vendors} %}

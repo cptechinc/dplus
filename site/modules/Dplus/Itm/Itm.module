@@ -5,6 +5,7 @@ include_once(__DIR__.'/ItmResponse.php');
 use Purl\Url;
 
 use Dplus\CodeValidators\Min\Itm as ItmValidator;
+use Dplus\Filters\Min\ItemMaster as ItemMasterFilter;
 
 use ItemMasterItemQuery, ItemMasterItem;
 use ConfigInQuery, ConfigIn;
@@ -76,6 +77,15 @@ class Itm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function item_exists($itemID) {
+		return $this->exists($itemID);
+	}
+
+	/**
+	 * Return if Item Exists
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function exists($itemID) {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
 		return boolval($q->count());
@@ -87,6 +97,15 @@ class Itm extends WireData implements Module {
 	 * @return ItemMasterItem
 	 */
 	public function get_item($itemID) {
+		return $this->item($itemID);
+	}
+
+	/**
+	 * Return ItemMasterItem
+	 * @param  string $itemID Item ID
+	 * @return ItemMasterItem
+	 */
+	public function item($itemID) {
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
 		return $q->findOne();
@@ -189,12 +208,7 @@ class Itm extends WireData implements Module {
 		$record = $this->get_create_item($itemID);
 		$invalidfields = array();
 
-		/**
-		 * Create lock for ITM item ID if not already locked.
-		 */
-		if (!$this->recordlocker->function_locked($itemID)) {
-			$this->recordlocker->create_lock($itemID);
-		}
+		$this->lockrecord($itemID);
 
 		if ($record->isNew() || $this->recordlocker->function_locked_by_user($itemID)) {
 			if ($values->text('action') == 'delete-itm-item') {
@@ -226,7 +240,7 @@ class Itm extends WireData implements Module {
 			$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($itemID);
 			$response = ItmResponse::response_error($record->itemid, $message);
 		}
-		$this->wire('session')->response_itm = $response;
+		$this->wire('session')->setFor('response', 'itm', $response);
 	}
 
 	/**
@@ -430,6 +444,17 @@ class Itm extends WireData implements Module {
 	Supplemental Functions
 ============================================================= */
 	/**
+	 * Lock Record, validate User is locking Record
+	 * @param  string $itemID ItemID
+	 * @return bool
+	 */
+	public function lockrecord($itemID) {
+		if ($this->recordlocker->function_locked($itemID) === false) {
+			$this->recordlocker->create_lock($itemID);
+		}
+		return $this->recordlocker->function_locked_by_user($itemID);
+	}
+	/**
 	 * Returns IN config
 	 * @return ConfigIn
 	 */
@@ -484,7 +509,7 @@ class Itm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function field_has_error($inputname) {
-		$response = $this->wire('session')->response_itm;
+		$response = $this->wire('session')->getFor('response', 'itm');
 		return ($response) ? array_key_exists($inputname, $response->fields) : false;
 	}
 
@@ -552,6 +577,28 @@ class Itm extends WireData implements Module {
 	public function get_itmURL($itemID) {
 		$url = new Url($this->wire('pages')->get("pw_template=itm")->url);
 		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	public function itmListURL($itemID = '') {
+		$page = $this->wire('pages')->get("pw_template=itm");
+		if (empty($itemID)) {
+			return $page->url;
+		}
+		return $this->itmListFocus($itemID);
+	}
+
+	public function itmListFocus($itemID = '') {
+		$page = $this->wire('pages')->get("pw_template=itm");
+		$url = new Url($page->url);
+		if ($this->exists($itemID) == false) {
+			return $url->getUrl();
+		}
+		$filter = new ItemMasterFilter();
+		$offset = $filter->position($this->get_item($itemID));
+		$pagenbr = ceil($offset / $this->wire('session')->display);
+		$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
+		$url->query->set('focus', $itemID);
 		return $url->getUrl();
 	}
 
@@ -713,6 +760,12 @@ class Itm extends WireData implements Module {
 		$this->addHook("Page(pw_template=$templates)::itmURL", function($event) {
 			$itemID = $event->arguments(0);
 			$event->return = $this->get_itmURL($itemID);
+		});
+
+		$this->addHook("Page(pw_template=$templates)::itmListURL", function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$event->return = $this->itmListURL($itemID);
 		});
 
 		$this->addHook("Page(pw_template=$templates)::itm_validateURL", function($event) {

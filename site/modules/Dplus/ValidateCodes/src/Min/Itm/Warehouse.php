@@ -4,6 +4,8 @@ use ProcessWire\WireData;
 
 use Propel\Runtime\ActiveQuery\Criteria;
 
+use WarehouseInventoryQuery, WarehouseInventory;
+
 use Dplus\CodeValidators\Min\Itm;
 
 
@@ -22,7 +24,7 @@ class Warehouse extends Itm {
 	 * @return bool
 	 */
 	public function codeabc($code) {
-		return preg_match(ItmWarehouse::REGEX_CODEABC, $code);
+		return preg_match(WarehouseInventory::REGEX_CODEABC, $code);
 	}
 
 	/**

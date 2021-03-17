@@ -1,12 +1,12 @@
 <?php namespace Controllers\Min\Itm;
-
-
+// External Libraries, classes
 Use Purl\Url;
+// ProcessWire classes, modules
 use ProcessWire\Page, ProcessWire\Itm as ItmModel;
-
+// Validators
 use Dplus\CodeValidators\Min as MinValidator;
 use Dplus\Filters\Min\ItemMaster as ItemMasterFilter;
-
+// Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
 class Itm extends ItmFunction {
@@ -70,6 +70,8 @@ class Itm extends ItmFunction {
 		$htmlwriter   = self::pw('modules')->get('HtmlWriter');
 		$html = '';
 
+		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
+
 		if ($session->getFor('response', 'itm')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
 		}
@@ -77,6 +79,14 @@ class Itm extends ItmFunction {
 		if ($session->response_qnote) {
 			$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
 			$session->remove('response_qnote');
+		}
+
+		if ($data->itemID === 'new') {
+			$page->headline = 'ITM: Creating new Item';
+		}
+
+		if ($validate->itemid($data->itemID)) {
+			$page->headline = "ITM: $data->itemID";
 		}
 
 		if ($validate->itemid($data->itemID) === false && $data->itemID != 'new') {
@@ -142,7 +152,8 @@ class Itm extends ItmFunction {
 		$items = $filter->query->paginate($input->pageNum, 10);
 
 		$page->searchURL = $page->url;
-		$html  = $config->twig->render('items/item-search.twig', ['items' => $items]);
+		$html  = $config->twig->render('items/itm/bread-crumbs.twig');
+		$html  .= $config->twig->render('items/item-search.twig', ['items' => $items]);
 		$html  .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
 		$page->js = $config->twig->render('items/item-list.js.twig');
 		return $html;

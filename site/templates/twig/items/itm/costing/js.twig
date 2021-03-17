@@ -1,5 +1,5 @@
 $(function() {
-	var form  = $('#item-whse-form');
+	var form  = $('#item-costing-form');
 
 /* =============================================================
 	Unsaved Fields Alert
@@ -43,30 +43,10 @@ $(function() {
 		},
 		ignore: ".validate-ignore",
 		rules: {
-			whseID: { required: true },
-			whsesupply: { required: true }
+
 		},
 		submitHandler : function(form) {
-			var valid_bin      = validate_bin();
-			var valid_codeabc  = validate_codeabc();
-			var valid_form     = new SwalError(false, '', '', false);
-
-			if (valid_bin.error) {
-				valid_form = valid_bin;
-			} else if (valid_codeabc.error) {
-				valid_form = valid_codeabc;
-			}
-
-			if (valid_form.error) {
-				swal2.fire({
-					icon: 'error',
-					title: valid_form.title,
-					text: valid_form.msg,
-					html: valid_form.html
-				});
-			} else {
-				form.submit();
-			}
+			form.submit();
 		}
 	});
 });

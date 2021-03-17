@@ -1,18 +1,19 @@
 <?php namespace Controllers\Mci;
-
-use Mvc\Controllers\AbstractController;
+// Dplus Model
+use CustomerQuery, Customer;
+// Dpluso Model
+use CustindexQuery, Custindex;
+// ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\CiLoadCustomerShipto;
-
+// Dplus Validators
 use Dplus\CodeValidators\Mar as MarValidator;
+// Dplus Filters
 use Dplus\Filters\Mar\Customer     as CustomerFilter;
 use Dplus\Filters\Mso\SalesOrder   as SalesOrderFilter;
 use Dplus\Filters\Mso\SalesHistory as SalesHistoryFilter;
 use Dplus\Filters\Mqo\Quote        as QuoteFilter;
-
-
-use CustomerQuery, Customer;
-
-use CustindexQuery, Custindex;
+// Mvc Controllers
+use Mvc\Controllers\AbstractController;
 
 class Ci extends AbstractController {
 	public static function index($data) {

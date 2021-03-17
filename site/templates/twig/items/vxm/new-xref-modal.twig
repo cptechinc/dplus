@@ -11,13 +11,29 @@
 				<form action="{{ page.url }}" method="get" id="new-xref-form">
 					<div class="form-group">
 						<label for="newvendorID">Vendor ID</label>
-						{% include 'util/form/input-with-modal-lookup.twig' with {
-								'name': 'vendorID', 'id': 'newvendorID', 'value': '',
-								'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Vendor',
-								'attributes_button': {
-									'data-search': 'vendoromer',
-									'data-lookupurl': page.searchvendorsURL,
-									'data-input': '#newvendorID'
+						{% include 'util/bootstrap/form/input-group.twig' with {
+								'inputgroup': {
+									'type': 'prepend',
+									'input': {
+										'name': 'vendorID',
+										'id': 'newvendorID',
+										'value': '',
+										'attributes': {
+											'placeholder': '',
+											'aria-label':  'Vendor ID'
+										}
+									},
+									'button': {
+										'colorclass': 'btn-secondary',
+										'text': 'fa fa-search'|icon,
+										'attributes': {
+											'title': 'Search for Vendor',
+											'data-toggle': 'modal',
+											'data-target': '#ajax-modal',
+											'data-lookupurl': page.search_lookupURL('vendors'),
+											'data-input': '#newvendorID'
+										}
+									}
 								}
 							}
 						%}

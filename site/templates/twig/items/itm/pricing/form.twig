@@ -12,8 +12,6 @@
 	<input type="hidden" name="action" value="update-itm-pricing">
 	<input type="hidden" name="itemID" value="{{ item_pricing.itemid }}">
 
-	{% include 'items/itm/description.twig' with {'item': item_pricing.item } %}
-
 	<div class="row mb-3">
 		<div class="col-sm-6">
 			{% include 'items/itm/pricing/sales.twig' %}
@@ -28,7 +26,14 @@
 			{% include 'items/itm/pricing/discount-assortment.twig' %}
 		</div>
 	</div>
-	<button type="submit" class="btn btn-block btn-success">
-		<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-	</button>
+	<div class="d-flex justify-content-between align-items-center">
+		{% if itm.recordlocker.function_locked_by_user(item.itemid) %}
+			<button type="submit" class="btn btn-success">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+		{% endif %}
+		<a href="{{ page.itmURL(item.itemid) }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
+	</div>
 </form>

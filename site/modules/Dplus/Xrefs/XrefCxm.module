@@ -204,6 +204,7 @@ class XrefCxm extends WireData implements Module {
 		if ($this->xref_shortitem_exists($itemID)) {
 			return $this->xref_shortitem($itemID);
 		} else {
+			$custID = ConfigSysQuery::create()->findOne()->custid;
 			$custitemID = in_array($custitemID, ['new', ''])  ? '' : $custitemID;
 			$item = ItemXrefCustomer::new();
 			$item->setItemid($itemID);
@@ -301,12 +302,15 @@ class XrefCxm extends WireData implements Module {
 			$response = XrefResponse::response_error($record->itemid, $message);
 		} else {
 			$record = $this->get_create_xref_shortitem($itemID, $custitemID);
-			$record->delete_recreate_record($record);
+			if ($record->isNew() === false) {
+				$record->delete_recreate_record($record);
+			}
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
 			$response = $this->save_and_respond($record);
 		}
-		$this->wire('session')->response_xref = $response;
+
+		$this->wire('session')->setFor('response', 'cxm', $response);
 	}
 
 	/**
@@ -325,12 +329,13 @@ class XrefCxm extends WireData implements Module {
 
 			if (!$this->lockrecord($record)) {
 				$message = self::DESCRIPTION_RECORD . " ($custID-$custitemID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
-				$this->wire('session')->response_xref = XrefResponse::response_error("$custID-$custitemID", $message);
+				$this->wire('session')->setFor('response', 'cxm', XrefResponse::response_error("$custID-$custitemID", $message));
 				return false;
 			}
 			$record->delete();
-			$this->wire('session')->response_xref = $this->save_and_respond($record);
-			return $this->wire('session')->response_xref->has_success();
+			$response = $this->save_and_respond($record);
+			$this->wire('session')->setFor('response', 'cxm', $response);
+			return $response->has_success();
 		}
 		return true;
 	}
@@ -351,18 +356,18 @@ class XrefCxm extends WireData implements Module {
 		if (!$record->isNew()) {
 			if (!$this->lockrecord($record)) {
 				$message = self::DESCRIPTION_RECORD . " ($custID-$custitemID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
-				$this->wire('session')->response_xref = XrefResponse::response_error("$custID-$custitemID", $message);
+				$this->wire('session')->setFor('response', 'cxm', XrefResponse::response_error("$custID-$custitemID", $message));
 				return false;
 			}
 		}
 
 		$this->update_record_input($record, $input);
-		$this->wire('session')->response_xref = $this->save_and_respond($record);
-
-		if ($this->wire('session')->response_xref->has_success() && $values->text('updatepdm') == 'true') {
+		$response = $this->save_and_respond($record);
+		$this->wire('session')->setFor('response', 'cxm', $response);
+		if ($response->has_success() && $values->text('updatepdm') == 'true') {
 			$this->update_pdm($record);
 		}
-		return $this->wire('session')->response_xref->has_success();
+		return $response->has_success();
 	}
 
 	private function update_pdm(ItemXrefCustomer $xref) {
@@ -643,7 +648,7 @@ class XrefCxm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function field_has_error($inputname) {
-		$response = $this->wire('session')->response_xref;
+		$response = $this->response();
 		return ($response) ? array_key_exists($inputname, $response->fields) : false;
 	}
 
@@ -681,12 +686,25 @@ class XrefCxm extends WireData implements Module {
 	}
 
 	/**
+	 * Return Customer
+	 * @param  string $custID Customer ID
+	 * @return Customer
+	 */
+	public function customer($custID) {
+		return CustomerQuery::create()->findOneByCustid($custID);
+	}
+
+	/**
 	 * Return if Customer exists
 	 * @param  string $custID Customer ID
 	 * @return bool
 	 */
 	public function exists_customer($custID) {
 		return boolval(CustomerQuery::create()->filterByCustid($custID)->count());
+	}
+
+	public function response() {
+		return $this->wire('session')->getFor('response', 'cxm');
 	}
 
 /* =============================================================
@@ -698,7 +716,7 @@ class XrefCxm extends WireData implements Module {
 			'version' => 101,
 			'summary' => 'Module for CRUD Methods for CXM',
 			'singular' => true,
-			'autoload' => true,
+			'autoload' => false,
 		);
 	}
 

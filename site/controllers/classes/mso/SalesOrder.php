@@ -1,24 +1,20 @@
 <?php namespace Controllers\Mso;
 
 use stdClass;
-
 // Propel Query
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
-
-// Dplus Data Models
+// Dplus Model
 use SalesOrderQuery, SalesOrder as SalesOrderModel;
 use SalesHistoryQuery, SalesHistory;
 use SalesOrderDetailQuery, SalesOrderDetail;
 use CustomerQuery, Customer;
 use ConfigSalesOrderQuery, ConfigSalesOrder as ConfigSo;
-
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module;
-
 // Dplus Classes
 use Dplus\CodeValidators\Mso as MsoValidator;
-
+// Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
 class SalesOrder extends AbstractController {
