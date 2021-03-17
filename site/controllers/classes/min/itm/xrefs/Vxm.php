@@ -9,7 +9,7 @@ use Controllers\Map\Vxm as BaseVxm;
 
 class Vxm extends ItmFunction {
 	public static function index($data) {
-		$fields = ['itemID|text', 'upc|text', 'action|text'];
+		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 
@@ -37,7 +37,7 @@ class Vxm extends ItmFunction {
 		$fields = ['itemID|text', 'vendorID|text', 'vendoritemID|text', 'action|text'];
 		$data  = self::sanitizeParameters($data, $fields);
 		$input = self::pw('input');
-		$vxm = self::pw('modules')->get('XrefVxm');
+		$vxm   = BaseVxm::vxmMaster();
 
 		if ($data->action) {
 			$vxm->process_input($input);

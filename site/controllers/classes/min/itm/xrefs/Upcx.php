@@ -76,11 +76,11 @@ class Upcx extends ItmFunction {
 		$xref = $upcx->get_create_xref($data->upc);
 
 		if ($xref->isNew()) {
-			$page->headline = "UPCX: Create X-ref";
+			$page->headline = "ITM: $data->itemID UPCX: Create X-ref";
 			$xref->setItemid($data->itemID);
 		}
 		if ($xref->isNew() == false) {
-			$page->headline = "UPCX: $xref->upc";
+			$page->headline = "ITM: $data->itemID UPCX: $xref->upc";
 		}
 
 		$html = '';

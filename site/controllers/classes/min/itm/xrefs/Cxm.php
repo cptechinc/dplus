@@ -9,7 +9,7 @@ use Controllers\Mso\Cxm as BaseCxm;
 
 class Cxm extends ItmFunction {
 	public static function index($data) {
-		$fields = ['itemID|text', 'upc|text', 'action|text'];
+		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 
