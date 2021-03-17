@@ -6,6 +6,7 @@ use Dplus\CodeValidators\Mso as MsoValidator;
 
 // Dplus Data Database
 use SalesOrderQuery, SalesOrder;
+use CustomerQuery, Customer;
 use CustomerShiptoQuery, CustomerShipto;
 use WarehouseQuery, Warehouse;
 use ItemMasterItemQuery, ItemMasterItem;
@@ -145,6 +146,12 @@ class SalesOrderEdit extends WireData implements Module {
 			case 'unlock-order':
 				$ordn = $values->text('ordn');
 				$this->request_so_unlock($ordn);
+				if ($this->exists_editable_header($ordn)) {
+					$order = $this->get_editable_header($ordn);
+					$order->delete();
+					$order->save();
+				}
+				break;
 			case 'edit-order-new':
 				$q = LogpermQuery::create();
 				$logperm = $q->findOneBySessionid(session_id());
@@ -185,7 +192,7 @@ class SalesOrderEdit extends WireData implements Module {
 
 		$editorder->setShipcom($values->text('shipcomplete'));
 		$editorder->setTermcode($values->text('termscode'));
-		$saved = $editorder->save();
+		$saved  = $editorder->save();
 		$unlock = $values->exit ? true : false;
 		$this->request_so_update_header($ordn, $unlock);
 	}
@@ -252,6 +259,8 @@ class SalesOrderEdit extends WireData implements Module {
 		}
 		$line->setWhse($values->text('whseid'));
 		$line->setSpcord($values->text('specialorder'));
+
+		$line->setKititemflag($values->yn('kit'));
 
 		if ($line->spcord != 'N' || $line->itemid == ItemMasterItem::ITEMID_NONSTOCK) {
 			$line->setNsvendorid($values->text('nsvendorid'));
@@ -409,7 +418,8 @@ class SalesOrderEdit extends WireData implements Module {
 
 		if ($lookup_order->invoice($ordn)) {
 			return false;
-		} elseif (!$this->is_order_locked($ordn) || $this->is_user_editingorder($user, $ordn)) { // VALIDATE if ORDER is not being locked
+			// VALIDATE if ORDER is not being locked
+		} elseif (!$this->is_order_locked($ordn) || $this->is_user_editingorder($user, $ordn)) {
 			$config_orders = $this->wire('modules')->get('ConfigsSalesOrders');
 
 			if ($config_orders->allow_salesorderedit) {
@@ -478,6 +488,19 @@ class SalesOrderEdit extends WireData implements Module {
 		$q->select(SalesOrder::get_aliasproperty('heldby'));
 		$q->filterByOrdernumber($ordn);
 		return $q->findOne();
+	}
+
+	/**
+	 * Return Sales Order Customer
+	 * @param  string $ordn Sales Order Number
+	 * @return Customer
+	 */
+	public function customer($ordn) {
+		$q = SalesOrderQuery::create();
+		$q->select(SalesOrder::get_aliasproperty('custid'));
+		$q->filterByOrdernumber($ordn);
+		$custID = $q->findOne();
+		return CustomerQuery::create()->findOneByCustid($custID);
 	}
 
 /* =============================================================

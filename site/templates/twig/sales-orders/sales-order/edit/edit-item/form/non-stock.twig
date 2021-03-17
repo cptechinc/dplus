@@ -1,5 +1,8 @@
 {% set config = page.wire('modules').get('ConfigureIn').config() %}
-<tbody class="nonstock collapse {{ orderitem.itemid == constant('ItemMasterItem::ITEMID_NONSTOCK') ? 'show' : '' }}">
+{% set show_ns = orderitem.itemid == constant('ItemMasterItem::ITEMID_NONSTOCK') or orderitem.specialorder != 'N' %}
+{% set show_ns = orderitem.is_kit() ? false : show_ns %}
+
+<tbody class="nonstock collapse {{ show_ns ? 'show' : '' }}">
 	<tr>
 		<td colspan="2" class="bg-dark text-white text-center">
 			Non-stock / Special Order Information
@@ -73,8 +76,8 @@
 								'title': 'Search Item Groups',
 								'data-toggle': 'modal',
 								'data-target': '#ajax-modal',
-								'data-lookupurl': page.search_lookupURL('vendors'),
-								'data-input': '#vendorID'
+								'data-lookupurl': page.search_lookupURL('item-groups'),
+								'data-input': '#nsitemgroupid'
 							}
 						}
 					}
@@ -87,9 +90,13 @@
 		<td>
 			{% include 'util/bootstrap/form/input.twig' with {
 					'input': {
+						'inputclass': 'form-control-plaintext',
 						'name': 'ponbr',
 						'size': 'sm',
 						'value': orderitem.ponbr > 0 ? orderitem.ponbr : '',
+						'attributes': {
+							'readonly': true
+						}
 					}
 				}
 			%}
@@ -100,9 +107,13 @@
 		<td>
 			{% include 'util/bootstrap/form/input.twig' with {
 					'input': {
+						'inputclass': 'form-control-plaintext',
 						'name': 'poref',
 						'size': 'sm',
 						'value': orderitem.poref,
+						'attributes': {
+							'readonly': true
+						}
 					}
 				}
 			%}

@@ -1,0 +1,22 @@
+$(function() {
+	$('#specialorder-item-modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget);
+		var linenbr = button.data('linenbr');
+		var ordn = button.data('ordn');
+		var modal = $(this);
+		modal.find('.modal-title').find('.linenbr').text(linenbr);
+		var url = URI('{{ page.jsonapiURL('mso/sales-order/line')}}');
+		url.setQuery('ordn', ordn);
+		url.setQuery('linenbr', linenbr);
+
+		$.getJSON(url.toString(), function(item) {
+			if (item) {
+				modal.find('.vendorid').text(item.nonstock.vendorid);
+				modal.find('.vendoritemid').text(item.nonstock.vendoritemid);
+				modal.find('.nsitemgroupid').text(item.nonstock.itemgroupid);
+				modal.find('.ponbr').text(item.nonstock.ponbr);
+				modal.find('.poref').text(item.nonstock.poref);
+			}
+		});
+	});
+});

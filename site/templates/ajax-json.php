@@ -86,6 +86,9 @@
 				['GET', 'cxm/', Json\Mso::class, 'validateCxm'],
 			],
 			['GET', 'lowest-price/', Json\Mso::class, 'getLowestPrice'],
+			'sales-order' => [
+				['GET', 'line/', Json\Mso::class, 'getSalesOrderDetail'],
+			],
 		]
 	];
 

@@ -1,6 +1,6 @@
 <?php namespace Dplus\CodeValidators;
 
-use ProcessWire\WireData;
+use ProcessWire\WireData, ProcessWire\User;
 
 use SalesOrderQuery, SalesOrder;
 use SalesHistoryQuery, SalesHistory;
@@ -17,8 +17,24 @@ class Mso extends WireData {
 	 */
 	public function order($ordn) {
 		$q = SalesOrderQuery::create();
-		$q->filterByOrdernumber($ordn);
-		return boolval(($q->count()));
+		$q->filterByOrdernumber($this->wire('sanitizer')->ordn($ordn));
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return If User has access to Sales Order
+	 * @param  string $ordn Order #
+	 * @param  User   $user Check if User is Sales Rep
+	 * @return bool
+	 */
+	public function orderUser($ordn, User $user) {
+		if ($user->hasRole('slsrep') === false) {
+			return true;
+		}
+		$q = SalesOrderQuery::create();
+		$q->filterByOrdernumber($this->wire('sanitizer')->ordn($ordn));
+		$q->filterBySalesPerson($user->repid);
+		return boolval($q->count());
 	}
 
 	/**
@@ -28,8 +44,34 @@ class Mso extends WireData {
 	 */
 	public function invoice($ordn) {
 		$q = SalesHistoryQuery::create();
-		$q->filterByOrdernumber($ordn);
-		return boolval(($q->count()));
+		$q->filterByOrdernumber($this->wire('sanitizer')->ordn($ordn));
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return If User has access to Sales Order
+	 * @param  string $ordn Order #
+	 * @param  User   $user Check if User is Sales Rep
+	 * @return bool
+	 */
+	public function invoiceUser($ordn, User $user) {
+		if ($user->hasRole('slsrep') === false) {
+			return true;
+		}
+		$q = SalesHistoryQuery::create();
+		$q->filterByOrdernumber($this->wire('sanitizer')->ordn($ordn));
+		$q->filterBySalesPerson($user->repid);
+		return boolval($q->count());
+	}
+
+	public function orderAccess($ordn, User $user) {
+		if ($this->order($ordn)) {
+			return $this->orderUser($ordn, $user);
+		}
+		if ($this->invoice($ordn)) {
+			return $this->InvoiceUser($ordn, $user);
+		}
+		return false;
 	}
 
 	/**

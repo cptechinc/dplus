@@ -23,7 +23,12 @@
 					<a href="{{ page.ii_itemURL(detail.itemid)}}" class="link" target="_blank" aria-label="View item in II" title="View item in II">
 						{{ detail.itemid }}
 					</a></br>
-					<small>{{ detail.desc1 }}</small>
+					<small>{{ detail.desc1 }}</small> <br>
+					{% if detail.specialorder != 'N' %}
+						<a href="#specialorder-item-modal" data-toggle="modal" data-ordn="{{ detail.ordernumber }}" data-linenbr="{{ detail.linenbr }}">
+							<span class="badge badge-primary">{{ detail.specialorder()|title }}</span>
+						</a>
+					{% endif %}
 				</td>
 				<td class="text-right">{{ detail.qty_ordered|number_format(config.decimal_places_qty) }}</td>
 				<td class="text-right">$ {{ detail.price|number_format(config.decimal_places_price) }}</td>
