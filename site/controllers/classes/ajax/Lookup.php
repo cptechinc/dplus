@@ -132,7 +132,7 @@ class Lookup extends AbstractController {
 		$filter = new VendorFilter();
 		$filter->init();
 		$page->headline = "Vendors";
-		self::filterResults($filter, $wire, $data);
+		self::filterResults($filter, $data);
 	}
 
 	/**
