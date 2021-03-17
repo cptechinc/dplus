@@ -344,7 +344,7 @@ $(function() {
 
 	function swal_confirm_cost(callback) {
 		var ordercode = form_vxm.find('select[name=po_ordercode]').val();
-		var codes = {{ constant('OPTIONS_POORDERCODE', item)|json_encode()|raw }};
+		var codes = {{ constant('ItemXrefVendor::OPTIONS_POORDERCODE')|json_encode()|raw }};
 		var type = codes[ordercode];
 		var costbase = form_vxm.find('input[name=itemID]').attr('data-standardcostbase');
 
