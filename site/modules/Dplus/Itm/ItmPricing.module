@@ -47,7 +47,6 @@ class ItmPricing extends WireData implements Module {
 /* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
-
 	/**
 	 * Return if Item Exists
 	 * @param  string $itemID Item ID
@@ -58,7 +57,6 @@ class ItmPricing extends WireData implements Module {
 		$q->filterByItemid($itemID);
 		return boolval($q->count());
 	}
-
 
 	/**
 	 * Return ItemPricing
@@ -80,7 +78,7 @@ class ItmPricing extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$itemID = $input->$rm->text('itemID');
 
-		if ($this->wire('modules')->get('Itm')->item_exists($itemID)) {
+		if ($this->wire('modules')->get('Itm')->exists($itemID)) {
 			$record = $this->get_pricing($itemID);
 		} else {
 			$record = new ItemPricing();
@@ -105,20 +103,15 @@ class ItmPricing extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itemID = $values->text('itemID');
-		$recordlocker = $this('modules')->get('RecordLockerUser');
+
 
 		if ($values->action) {
-			if ($itm->item_exists($itemID)) {
+			if ($itm->exists($itemID)) {
 				$record = $this->get_create_itempricing($input);
-				/**
-				 * Create lock for ITM code if not already locked.
-				 */
-				if (!$recordlocker->function_locked('itm', $itemID)) {
-					$recordlocker->create_lock('itm', $itemID);
-				}
+				$itm->lockrecord($itemID);
 
-				if ($recordlocker->function_locked_by_user('itm', $itemID)) {
-					if ($input->$rm->text('action') == 'update-itm-pricing') {
+				if ($itm->recordlocker->function_locked_by_user($itemID)) {
+					if ($values->text('action') == 'update-itm-pricing') {
 						$response = $this->update_itm_pricing($input, $record);
 						$saved_itm = $response->has_success() ? $this->update_itm($input) : false;
 						$response->set_saved_itm($saved_itm);
@@ -128,12 +121,12 @@ class ItmPricing extends WireData implements Module {
 					$response = ItmResponse::response_error($record->itemid, $message);
 				}
 			} else {
-				$response = ItmResponse::response_error($record->itemid, "No Item with ItemID $itemID exists");
+				$response = ItmResponse::response_error($itemID, "No Item with ItemID $itemID exists");
 			}
 		} else {
-			$response = ItmResponse::response_error($record->itemid, "($record->itemid) was not saved, no action was specified");
+			$response = ItmResponse::response_error($itemID, "($itemID) was not saved, no action was specified");
 		}
-		$this->wire('session')->response_itm = $response;
+		$this->wire('session')->setFor('response', 'itm', $response);
 	}
 
 	/**
@@ -144,6 +137,7 @@ class ItmPricing extends WireData implements Module {
 	 */
 	public function update_itm_pricing(WireInput $input, ItemPricing $record) {
 		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
 		$record->setBaseprice($input->$rm->text('baseprice'));
 		$record->setUpdated(date('Ymd'));
 
@@ -152,10 +146,10 @@ class ItmPricing extends WireData implements Module {
 			$col_price = ucfirst(ItemPricing::get_pricebreak_price_column($i));
 			$function_unitqty = "set$col_qty";
 			$function_unitprice = "set$col_price";
-			$record->$function_unitqty($input->$rm->text("pricebreak_qty$i"));
-			$record->$function_unitprice($input->$rm->text("pricebreak_price$i"));
+			$record->$function_unitqty($values->text("pricebreak_qty$i"));
+			$record->$function_unitprice($values->text("pricebreak_price$i"));
 		}
-		return $this->save_and_process_response($record);
+		return $this->save_and_respond($record);
 	}
 
 	/**
@@ -204,10 +198,10 @@ class ItmPricing extends WireData implements Module {
 	 * @param  ItemPricing $record Record to record response of database save
 	 * @return ItmResponse
 	 */
-	protected function save_and_process_response(ItemPricing $record) {
+	protected function save_and_respond(ItemPricing $record) {
+
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
-
 		$response = new ItmResponse();
 		$response->set_itemID($record->itemid);
 		$message = self::DESCRIPTION_RECORD . " ($record->itemid) was ";

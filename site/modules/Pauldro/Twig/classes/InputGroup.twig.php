@@ -52,16 +52,25 @@ class TwigInputGroup extends TwigBaseHtml {
 		}
 
 		if (array_key_exists('attributes', $array)) {
-
 			$attributes = $array['attributes'];
 
 			if (array_key_exists('disabled', $attributes)) {
 				$input = $this->input;
-				$input['attributes']['disabled']  = true;
+				$input['attributes']['disabled']  = $attributes['disabled'];
 				$this->input = $input;
 
 				$button = $this->button;
-				$button['attributes']['disabled'] = true;
+				$button['attributes']['disabled'] = $attributes['disabled'];
+				$this->button = $button;
+			}
+
+			if (array_key_exists('readonly', $attributes)) {
+				$input = $this->input;
+				$input['attributes']['readonly']  = $attributes['readonly'];
+				$this->input = $input;
+
+				$button = $this->button;
+				$button['attributes']['disabled'] = $attributes['readonly'];
 				$this->button = $button;
 			}
 		}

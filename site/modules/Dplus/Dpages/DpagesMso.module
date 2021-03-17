@@ -67,10 +67,6 @@ class DpagesMso extends Dpages implements Module {
 			'name'   => 'cxm',
 			'fields' => array()
 		),
-		'cxm-validate' => array(
-			'name'   => 'cxm-validate',
-			'fields' => array()
-		),
 	);
 
 	const PAGES = array(
@@ -142,15 +138,6 @@ class DpagesMso extends Dpages implements Module {
 			'title'          => 'Customer Item X-Reference',
 			'summary'        => 'View / Edit Customer Item X-Ref',
 			'parent'         => '/mso/somain/',
-			'dplus_function' => 'cxm'
-		),
-		'cxm-validate' => array(
-			'template'       => 'dplus-json',
-			'pw_template'    => 'cxm-validate',
-			'name'           => 'validate',
-			'title'          => 'CXM Validate',
-			'summary'        => 'Validate CXM',
-			'parent'         => '/mso/somain/cxm/',
 			'dplus_function' => 'cxm'
 		),
 		'sales-orders' => array(

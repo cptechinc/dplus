@@ -1,9 +1,10 @@
 <?php namespace Controllers\Mki;
-
-use Mvc\Controllers\AbstractController;
-
-use ProcessWire\Page, ProcessWire\Kim as KimModel;
+// Dplus Model
 use Invkit;
+// ProcessWire Classes, Modules
+use ProcessWire\Page, ProcessWire\Kim as KimModel;
+// Mvc Controllers
+use Mvc\Controllers\AbstractController;
 
 class Kim extends AbstractController {
 	public static function index($data) {

@@ -1,0 +1,68 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	customers              Customer[]|ObjectCollectiion
+	datamatcher            module RegexData
+	q                      Search
+#}
+<table id="customer-table" class="table table-bordered">
+	<thead>
+		<tr>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('custID') }}" class="link">ID</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('name') }}" class="link">Name</a>
+			</th>
+			<th scope="col">Address</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('city') }}" class="link">City</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('state') }}" class="link">State</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('zip') }}" class="link">Zip</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('lastsaledate') }}" class="link">Last Sales Date</a>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if results.count() %}
+			{% for customer in results %}
+				<tr>
+					<td scope="row">
+						<a href="#" class="link customer-link" data-custid="{{ customer.id }}" data-cust_name="{{ customer.name }}" >
+							<strong>{{ customer.id }}</strong>
+						</a>
+					</td>
+					<td class="{{ datamatcher.string(customer.name, q) ? 'highlight' : '' }}">
+						{{ customer.name }}
+					</td>
+					<td class="{{ datamatcher.string(customer.address1, q) ? 'highlight' : '' }}">
+						{{ customer.address1 }}
+					</td>
+					<td class="{{ datamatcher.string(customer.city, q) ? 'highlight' : '' }}">
+						{{ customer.city }}
+					</td>
+					<td class="{{ datamatcher.string(customer.state, q) ? 'highlight' : '' }}">
+						{{ customer.state }}
+					</td>
+					<td class="{{ datamatcher.string(customer.zip, q) ? 'highlight' : '' }}">
+						{{ customer.zip }}
+					</td>
+					<td>{{ customer.lastsaledate|convertdate }}</td>
+				</tr>
+			{% endfor %}
+		{% else %}
+			<tr>
+				<td colspan="7" class="bg-secondary text-white text-center">
+					No Results found
+				</td>
+			</tr>
+		{% endif %}
+	</tbody>
+</table>

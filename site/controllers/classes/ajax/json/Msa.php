@@ -1,11 +1,12 @@
 <?php namespace Controllers\Ajax\Json;
-
-use ProcessWire\Module, ProcessWire\ProcessWire;
-
-use Mvc\Controllers\AbstractController;
-
-use Dplus\CodeValidators\Msa as MsaValidator;
+// Dplus Model
 use DplusUserQuery, DplusUser;
+// ProcessWire Classes, Modules
+use ProcessWire\Module, ProcessWire\ProcessWire;
+// Dplus Validators
+use Dplus\CodeValidators\Msa as MsaValidator;
+// Mvc Controllers
+use Mvc\Controllers\AbstractController;
 
 class Msa extends AbstractController {
 	public static function test() {

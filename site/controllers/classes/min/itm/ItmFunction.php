@@ -1,16 +1,18 @@
 <?php namespace Controllers\Min\Itm;
-
+// ProcessWire Classes, Modules
+use ProcessWire\Page, ProcessWire\Itm as ItmModel;
+// Validators
+use Dplus\CodeValidators\Min as MinValidator;
+// Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
-use ProcessWire\Page, ProcessWire\Itm as ItmModel;
-
-use Dplus\CodeValidators\Min as MinValidator;
-
 class ItmFunction extends AbstractController {
+	private static $minvalidator;
+
 	protected static function validateItemid($data) {
 		$data = self::sanitizeParametersShort($data, ['itemID|text']);
 		$wire = self::pw();
-		$validate = new MinValidator();
+		$validate = self::getMinValidator();
 
 		if ($validate->itemid($data->itemID) === false) {
 			$wire->wire('session')->redirect($wire->wire('page')->itmURL($data->itemID), $http301 = false);
@@ -32,13 +34,19 @@ class ItmFunction extends AbstractController {
 	protected static function validateItemidAndPermission($data) {
 		self::validateItemid($data);
 
-		if (self::validateUserPermission() === false) {
-			$page = self::pw('page');
-			$config = $page->wire('config');
-			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: ITM $page->name"]);
+		if (static::validateUserPermission() === false) {
+			$page   = self::pw('page');
+			$config = self::pw('config');
+			if (isset($data->action) === false) {
+				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: ITM $page->name"]);
+			}
 			return false;
 		}
 		return true;
+	}
+
+	protected static function breadCrumbs() {
+		return self::pw('config')->twig->render('items/itm/bread-crumbs.twig');
 	}
 
 	/**
@@ -47,5 +55,16 @@ class ItmFunction extends AbstractController {
 	 */
 	protected static function getItm() {
 		return self::pw('modules')->get('Itm');
+	}
+
+	/**
+	 * Return Min Validator
+	 * @return MinValidator
+	 */
+	protected static function getMinValidator() {
+		if (empty(self::$minvalidator)) {
+			self::$minvalidator = new MinValidator();
+		}
+		return self::$minvalidator;
 	}
 }

@@ -57,6 +57,36 @@ class LoadItem extends WireData implements Module {
 		$item_array = array('itemid' => $item->itemid, 'description' => $item->description, 'description2' => $item->description2);
 
 		foreach ($fields as $field) {
+			if ($field == 'uom') {
+				$item_array[$field] = [
+					'sale' => [
+						'code'        => $item->UnitofMeasureSale ? $item->UnitofMeasureSale->code : '',
+						'description' => $item->UnitofMeasureSale ? $item->UnitofMeasureSale->description : '',
+						'conversion'  => $item->UnitofMeasureSale ? $item->UnitofMeasureSale->conversion : '',
+					]
+				];
+				continue;
+			}
+
+			if ($field == 'iskit') {
+				$item_array[$field] = $item->is_kit();
+				continue;
+			}
+
+			if ($field == 'pricing') {
+				$item_array[$field] = [
+					'base' => $item->pricing->baseprice
+				];
+				continue;
+			}
+
+			if ($field == 'standardcostbasedon') {
+				$item_array[$field] = [
+					'base' => $item->standardcostbasedon
+				];
+				continue;
+			}
+
 			if (ItemMasterItem::aliasproperty_exists($field)) {
 				$item_array[$field] = $item->$field;
 			}

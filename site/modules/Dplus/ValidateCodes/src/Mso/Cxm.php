@@ -1,5 +1,7 @@
 <?php namespace Dplus\CodeValidators\Mso;
 
+use ItemXrefCustomerQuery, ItemXrefCustomer;
+
 use ProcessWire\WireData;
 
 use Dplus\CodeValidators\Mar as MarValidator;

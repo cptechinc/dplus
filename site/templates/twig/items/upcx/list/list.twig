@@ -52,15 +52,11 @@
 			</th>
 			<th class="pt-3 pb-3">Label</th>
 			<th class="pt-3 pb-3 text-center">
-				{% if itemID %}
-					<a href="{{ page.upc_create_itemidURL(itemID) }}" class="btn btn-secondary btn-sm">
-						<i class="fa fa-plus" aria-hidden="true"></i> Add UPC
-					</a>
-				{% else %}
+				{% block add_upc_link %}
 					<a href="{{ page.upc_createURL() }}" class="btn btn-secondary btn-sm">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add UPC
 					</a>
-				{% endif %}
+				{% endblock %}
 			</th>
 		</tr>
 	</thead>

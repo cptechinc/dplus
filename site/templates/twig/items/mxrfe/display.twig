@@ -1,0 +1,34 @@
+<div class="card">
+	{% block header %}
+		<div class="card-header">
+			<div class="row">
+				<div class="col-sm-3">
+					<strong>Mnfr / Comp ID:</strong> {{ vendor.vendorid }}
+				</div>
+				<div class="col-sm-6">
+					<div>
+						<small>{{ vendor.name }}</small><br>
+						<small></small>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endblock %}
+
+	{% block body %}
+		
+	{% endblock %}
+
+	{% block footer %}
+		<div class="card-footer">
+			<div class="d-flex justify-content-between align-items-center">
+				<div></div>
+				<div>
+					<a href="{{ page.url }}" class="btn btn-warning btn-sm">
+						<i class="fa fa-times" aria-hidden="true"></i> Close
+					</a>
+				</div>
+			</div>
+		</div>
+	{% endblock %}
+</div>

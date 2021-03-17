@@ -2,9 +2,6 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
-	item                   ItemXrefCustomer
-	item.item              ItemMasterItem
-	url_validate           URL to validate CXM form inputs
 #}
 $(function() {
 	var form_cxm = $('#cxm-item-form');
@@ -107,13 +104,7 @@ $(function() {
 	modal_ajax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
-		var url = '{{ page.searchcustomersURL }}';
-
-		if (button.data('search') == 'customer') {
-			url = '{{ page.searchcustomersURL }}';
-		} else {
-			url = '{{ page.searchitemsURL }}';
-		}
+		var url = button.data('lookupurl');
 
 		modal.find('.modal-title').text(button.attr('title'));
 		modal.resizeModal('xl');
@@ -170,31 +161,28 @@ $(function() {
 			custID: {
 				required: true,
 				remote: {
-					url: '{{ url_validate }}',
+					url: '{{ page.jsonapiURL('mar/validate/custid/') }}',
 					type: "get",
-					data: {
-						action: 'validate-custid'
-					}
+					data: {}
 				}
 			},
 			custitemID: {
 				required: true,
 				maxlength: {{ cxm.maxlength_custitemid() }},
 				remote: {
-					url: '{{ url_validate }}',
+					url: '{{ page.jsonapiURL('mso/validate/cxm/') }}',
 					type: "get",
 					data: {
 						custID: function() {
 							return $('input[name=custID]').val();
 						},
-						action: function() {
+						new: function() {
 							var input = $('input[name=custitemID]');
 
-							if (input.val() == input.data('custitemid')) {
-								return 'validate-cust-itemid';
-							} else {
-								return 'validate-cust-itemid-new';
+							if (input.val() != input.data('custitemid')) {
+								return 'true';
 							}
+							return 'false';
 						}
 					}
 				}
@@ -203,11 +191,9 @@ $(function() {
 				{% if page.pw_template == 'cxm' %}
 					required: true,
 					remote: {
-						url: '{{ url_validate }}',
+						url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
 						type: "get",
-						data: {
-							action: 'validate-itemid'
-						}
+						data: {}
 					}
 				{% endif %}
 			},
@@ -313,10 +299,9 @@ $(function() {
 	 * @return bool       Does CXM item exist?
 	 */
 	function request_validate_custitemID(callback) {
-		var url = new URI('{{ url_validate }}');
-		url.addQuery('action', 'validate-cust-itemid').addQuery('custID', input_custID.val());
+		var url = new URI('{{ page.jsonapiURL('mso/validate/cxm/') }}');
+		url.addQuery('custID', input_custID.val());
 		url.addQuery('custitemID', input_custitemID.val());
-		url.addQuery('return', 'bool');
 
 		$.getJSON(url.toString(), function( valid ) {
 			callback(valid);
@@ -324,9 +309,9 @@ $(function() {
 	}
 
 	function get_item(itemID, callback) {
-		var url = new URI('{{ url_validate }}');
-		url.addQuery('action', 'get-item').addQuery('itemID', itemID);
-		$.getJSON(url.toString(), function( item ) {
+		var url = new URI('{{ page.jsonapiURL('inv/item/') }}');
+		url.addQuery('itemID', itemID).addQuery('fields', 'uom_sale,qtypercase');
+		$.getJSON(url.toString(), function(item) {
 			callback(item);
 		});
 	}
@@ -337,7 +322,7 @@ $(function() {
 			itemcol.find('.description').text(item.description);
 			itemcol.find('.description2').text(item.description2);
 			itemcol.find('.description2').text(item.description2);
-			$('.item-uom').text(item.uofmsale);
+			$('.item-uom').text(item.uom_sale);
 			input_itemID.attr('data-qtypercase', item.qtypercase);
 			input_itemID.attr('data-itemid', itemID);
 			callback();

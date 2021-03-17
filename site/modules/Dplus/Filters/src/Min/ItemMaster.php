@@ -41,8 +41,27 @@ class ItemMaster extends AbstractFilter {
 	 * @param  ItemMasterItemClass $item ItemMasterItem
 	 * @return int
 	 */
-	public function position(ItemMasterItemClass $p) {
-		$people = $this->query->find();
-		return $people->search($p);
+	public function position(ItemMasterItemClass $item) {
+		$results = $this->query->find();
+		return $results->search($item);
+	}
+
+	/**
+	 * Return Position of Item in results
+	 * @param  ItemMasterItemClass|string $item ItemMasterItem|Item ID
+	 * @return int
+	 */
+	public function positionQuick($item) {
+		$itemID = $item;
+		if (is_object($item)) {
+			$itemID = $item->itemid;
+		}
+		$q = ItemMasterItemQuery::create();
+		$q->execute_query('SET @rownum = 0');
+		$table = $q->getTableMap()::TABLE_NAME;
+		$sql = "SELECT x.position FROM (SELECT InitItemNbr, @rownum := @rownum + 1 AS position FROM $table) x WHERE InitItemNbr = :itemid";
+		$params = [':itemid' => $itemID];
+		$stmt = $q->execute_query($sql, $params);
+		return $stmt->fetchColumn();
 	}
 }

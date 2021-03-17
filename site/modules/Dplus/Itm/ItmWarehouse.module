@@ -34,7 +34,7 @@ class ItmWarehouse extends WireData implements Module {
 	 * Initializes the configs needed for this Module
 	 * @return void
 	 */
-	public function init2() {
+	public function init_configs() {
 		$this->configs->inventory  = $this->get_config_in();
 		$this->configs->salesorder = $this->get_config_so();
 	}
@@ -57,6 +57,16 @@ class ItmWarehouse extends WireData implements Module {
 	 * @return bool
 	 */
 	public function itemwarehouse_exists($itemID, $whseID) {
+		return $this->exists($itemID, $whseID);
+	}
+
+	/**
+	 * Return if Item Warehouse Exists
+	 * @param  string $itemID Item ID
+	 * @param  string $whseID Warehouse ID
+	 * @return bool
+	 */
+	public function exists($itemID, $whseID) {
 		$q = $this->query();
 		$q->filterByWhseid($whseID);
 		$q->filterByItemid($itemID);
@@ -70,6 +80,16 @@ class ItmWarehouse extends WireData implements Module {
 	 * @return WarehouseInventory
 	 */
 	public function get_itemwarehouse($itemID, $whseID) {
+		return $this->itemWarehouse($itemID, $whseID);
+	}
+
+	/**
+	 * Return WarehouseInventory
+	 * @param  string $itemID Item ID
+	 * @param  string $whseID Warehouse ID
+	 * @return WarehouseInventory
+	 */
+	public function itemWarehouse($itemID, $whseID) {
 		$q = $this->query();
 		$q->filterByWhseid($whseID);
 		$q->filterByItemid($itemID);
@@ -98,7 +118,6 @@ class ItmWarehouse extends WireData implements Module {
 		return true;
 	}
 
-
 /* =============================================================
 	CRUD Functions
 ============================================================= */
@@ -108,12 +127,23 @@ class ItmWarehouse extends WireData implements Module {
 	 * @return WarehouseInventory
 	 */
 	public function get_create_itemwarehouse($itemID, $whseID = '') {
+		return $this->getOrCreate($itemID, $whseID);
+	}
+
+	/**
+	 * Returns WarehouseInventory after retreiving or creating it
+	 * @param  WireInput $input Input Data
+	 * @return WarehouseInventory
+	 */
+	public function getOrCreate($itemID, $whseID = '') {
 		if ($this->itemwarehouse_exists($itemID, $whseID)) {
-			$record = $this->get_itemwarehouse($itemID, $whseID);
+			$record = $this->itemWarehouse($itemID, $whseID);
 		} else {
-			$record = $this->new_itemwarehouse();
-			$record->setWhseid($whseID);
+			$record = $this->new();
 			$record->setItemid($itemID);
+			if ($whseID != 'new') {
+				$record->setWhseid($whseID);
+			}
 		}
 		return $record;
 	}
@@ -123,12 +153,22 @@ class ItmWarehouse extends WireData implements Module {
 	 * @return WarehouseInventory
 	 */
 	public function new_itemwarehouse() {
-		$record = new WarehouseInventory();
-		$record->setBin_default($this->configs->inventory->default_bin);
-		$record->setStatus(WarehouseInventory::STATUS_ACTIVE);
-		$record->setSpecialorder(WarehouseInventory::SPECIALORDER_NORMAL);
-		return $record;
+		return $this->new();
 	}
+
+	/**
+	 * Return WarehouseInventory
+	 * @return WarehouseInventory
+	 */
+	public function new() {
+		$whse = new WarehouseInventory();
+		$whse->setBin_default($this->configs->inventory->default_bin);
+		$whse->setStatus(WarehouseInventory::STATUS_ACTIVE);
+		$whse->setSpecialorder(WarehouseInventory::SPECIALORDER_NORMAL);
+		return $whse;
+	}
+
+
 
 	/**
 	 * Takes Input, calls the function / module that will handle the action
@@ -172,15 +212,17 @@ class ItmWarehouse extends WireData implements Module {
 		}
 
 		if (!$this->lockrecord($record) && !$record->isNew()) {
-			$message = self::DESCRIPTION_RECORD . " ($itemID-$whseID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($this->get_warehouseitem_lockkey($record));
-			$session->response_itm = ItmResponse::response_error($itemID, $message);
-			$session->response_itm->set_whseID($whseID);
+			$message = self::DESCRIPTION_RECORD . " ($itemID-$whseID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($this->lockerkey($record));
+			$response = ItmResponse::response_error($itemID, $message);
+			$response->set_whseID($whseID);
+			$this->wire('session')->setFor('response', 'itm', $response);
 			return false;
 		}
 
 		$record->delete();
-		$this->wire('session')->response_itm = $this->save_and_respond($record, []);
-		return $this->wire('session')->response_itm->has_success();
+		$response = $this->save_and_respond($record, []);
+		$this->wire('session')->setFor('response', 'itm', $response);
+		return $response->has_success();
 	}
 
 	/**
@@ -194,18 +236,19 @@ class ItmWarehouse extends WireData implements Module {
 		$values = $input->$rm;
 		$itemID = $values->text('itemID');
 		$whseID = $values->text('whseID');
-		$record = $this->get_create_itemwarehouse($itemID, $whseID);
+		$record = $this->getOrCreate($itemID, $whseID);
 
 		if (!$this->lockrecord($record) && !$record->isNew()) {
-			$message = self::DESCRIPTION_RECORD . " ($itemID-$whseID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($this->get_warehouseitem_lockkey($record));
+			$message = self::DESCRIPTION_RECORD . " ($itemID-$whseID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($this->lockerkey($record));
 			$session->response_itm = ItmResponse::response_error($itemID, $message);
 			$session->response_itm->set_whseID($whseID);
 			return false;
 		}
 
 		$invalid = $this->set_fields($record, $input);
-		$this->wire('session')->response_itm = $this->save_and_respond($record, $invalid);
-		return $this->wire('session')->response_itm->has_success();
+		$response = $this->save_and_respond($record, $invalid);
+		$this->wire('session')->setFor('response', 'itm', $response);
+		return $response->has_success();
 	}
 
 	/**
@@ -270,7 +313,8 @@ class ItmWarehouse extends WireData implements Module {
 		$invalid = $validator->validate();
 		$validator->set_valid_properties();
 
-
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
 		if (!$validate->whsebin($values->text('whseID'), $values->text('bin_default'))) {
 			$invalid['bin_default'] = "Default Bin";
 		} else {
@@ -341,10 +385,10 @@ class ItmWarehouse extends WireData implements Module {
 	 * @return bool
 	 */
 	public function lockrecord(WarehouseInventory $record) {
-		if (!$this->recordlocker->function_locked($this->get_warehouseitem_lockkey($record))) {
-			$this->recordlocker->create_lock($this->get_warehouseitem_lockkey($record));
+		if (!$this->recordlocker->function_locked($this->lockerkey($record))) {
+			$this->recordlocker->create_lock($this->lockerkey($record));
 		}
-		return $this->recordlocker->function_locked_by_user($this->get_warehouseitem_lockkey($record));
+		return $this->recordlocker->function_locked_by_user($this->lockerkey($record));
 	}
 
 	/**
@@ -442,6 +486,10 @@ class ItmWarehouse extends WireData implements Module {
 	}
 
 	public function get_warehouseitem_lockkey(WarehouseInventory $warehouse) {
+		return $this->lockerkey($warehouse);
+	}
+
+	public function lockerkey(WarehouseInventory $warehouse) {
 		return "$warehouse->itemid-$warehouse->warehouseid";
 	}
 

@@ -6,6 +6,12 @@
 	recordlocker           module RecordLockerUser
 	item                   ItemXrefCustomer
 #}
+{% include 'items/vxm/bread-crumbs.twig' %}
+
+{% if session.getFor('response', 'vxm') %}
+	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'vxm')} %}
+{% endif %}
+
 <div class="card">
 	<div class="card-header">
 		<div class="row">

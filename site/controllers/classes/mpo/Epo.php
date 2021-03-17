@@ -1,12 +1,12 @@
 <?php namespace Controllers\Mpo;
-
-use Mvc\Controllers\AbstractController;
-
-use ProcessWire\Page, ProcessWire\PurchaseOrderEdit as EpoModel;
-
-use Dplus\CodeValidators\Mpo as MpoValidator;
-
+// Dplus Model
 use PurchaseOrder;
+// ProcessWire Classes, Modules
+use ProcessWire\Page, ProcessWire\PurchaseOrderEdit as EpoModel;
+// Dplus Validators
+use Dplus\CodeValidators\Mpo as MpoValidator;
+// Mvc Controllers
+use Mvc\Controllers\AbstractController;
 
 class Epo extends AbstractController {
 	public static function index($data) {

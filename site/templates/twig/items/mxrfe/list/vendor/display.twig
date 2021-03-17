@@ -1,0 +1,6 @@
+{% extends 'items/mxrfe/display.twig' %}
+
+{% block body %}
+	{% include 'items/mxrfe/list/vendor/list.twig' with {'mxrfe': mxrfe, 'xrefs': xrefs} %}
+	{% include 'util/paginator/propel.twig' with {'pager': xrefs} %}
+{% endblock %}

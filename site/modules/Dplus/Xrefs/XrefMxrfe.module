@@ -101,9 +101,9 @@ class XrefMxrfe extends WireData implements Module {
 	 */
 	public function xref_by_recordlocker_key($key) {
 		$keys = explode('-', $key);
-		$mnfrID = $keys[0];
+		$mnfrID     = $keys[0];
 		$mnfritemID = $keys[1];
-		$itemID = $keys[2];
+		$itemID     = $keys[2];
 		return $this->xref($mnfrID, $mnfritemID, $itemID);
 	}
 

@@ -4,6 +4,7 @@
 	page                   ProcessWire\Page
 	input                  ProcessWire\WireInput
 #}
+{% set input = page.wire('input') %}
 <nav aria-label="breadcrumb" class="rounded-0 mb-4">
 	<ol class="breadcrumb">
 		{% for parent in page.parents() %}
@@ -14,13 +15,13 @@
 				</li>
 				<li class="breadcrumb-item">
 					<i class="fa fa-cubes" aria-hidden="true"></i>
-					<a href="{{ page.itmURL(input.get.text('itemID')) }}">{{ page.wire('input').get.text('itemID') }}</a>
+					<a href="{{ page.itmURL(input.get.text('itemID')) }}">{{ input.get.text('itemID') }}</a>
 				</li>
 			{% else %}
 				{% if parent.pw_template == 'itm-xrefs' %}
 					<li class="breadcrumb-item">
 						<i class="fa fa-arrows" aria-hidden="true"></i>
-						<a href="{{ page.itm_xrefsURL(page.wire('input').get.text('itemID')) }}">{{ parent.title }}</a>
+						<a href="{{ page.itm_xrefsURL(input.get.text('itemID')) }}">{{ parent.title }}</a>
 					</li>
 				{% else %}
 					<li class="breadcrumb-item">
@@ -32,43 +33,58 @@
 				{% endif %}
 			{% endif %}
 		{% endfor %}
-		{% if page.pw_template == 'itm-whse' and page.wire('input').get.text('whseID') %}
+		{% if page.pw_template == 'itm-whse' and input.get.text('whseID') %}
 			<li class="breadcrumb-item" aria-current="page">
-				<a href="{{ page.itm_warehouseURL(page.wire('input').get.text('itemID')) }}">
+				<a href="{{ page.itm_warehouseURL(input.get.text('itemID')) }}">
 					{{ page.title }}
 				</a>
 			</li>
 			<li class="breadcrumb-item active" aria-current="page">
 				{{ input.get.text('whseID') }}
 			</li>
-		{% elseif page.pw_template == 'itm-xrefs-vxm' and page.wire('input').get.text('vendoritemID') %}
+		{% elseif page.pw_template == 'itm-xrefs-vxm' and input.get.text('vendoritemID') %}
 			<li class="breadcrumb-item" aria-current="page">
-				<a href="{{ page.itm_xrefs_vxmURL(page.wire('input').get.text('itemID')) }}">
+				<a href="{{ page.itm_xrefs_vxmURL(input.get.text('itemID')) }}">
 					{{ page.title }}
 				</a>
 			</li>
 			<li class="breadcrumb-item active" aria-current="page">
-				{{ page.wire('input').get.text('vendorID') }}: {{ page.wire('input').get.text('vendoritemID') }}
+				{{ input.get.text('vendorID') }}: {{ input.get.text('vendoritemID') }}
 			</li>
-		{% elseif page.pw_template == 'itm-xrefs-cxm' and page.wire('input').get.text('custitemID') %}
+		{% elseif page.pw_template == 'itm-xrefs-cxm' and input.get.text('custitemID') %}
 			<li class="breadcrumb-item" aria-current="page">
-				<a href="{{ page.itm_xrefs_cxmURL(page.wire('input').get.text('itemID')) }}">
-					{{ page.title }}
+				<a href="{{ page.itm_xrefs_cxmURL(input.get.text('itemID')) }}">
+					CXM
 				</a>
 			</li>
 			{% if input.get.text('custitemID') == 'new' %}
 				<li class="breadcrumb-item active" aria-current="page">
-					Creating X-ref for {{ page.wire('input').get.text('itemID') }}
+					Creating X-ref
 				</li>
 			{% else %}
 				<li class="breadcrumb-item active" aria-current="page">
-					{{ page.wire('input').get.text('custID') }}: {{ page.wire('input').get.text('custitemID') }}
+					{{ input.get.text('custID') }}: {{ input.get.text('custitemID') }}
 				</li>
 			{% endif %}
-		{% else %}
+		{% elseif page.pw_template == 'itm-xrefs' %}
 			<li class="breadcrumb-item active" aria-current="page">
-				{{ page.dplus_function ? page.dplus_function : page.title }}
+				<i class="fa fa-arrows" aria-hidden="true"></i>
+				{{ page.dplus_function ? page.dplus_function|upper : page.title }}
 			</li>
+		{% else %}
+			{% if input.get.offsetExists('itemID') and page.parent.pw_template != 'itm-xrefs' %}
+				<li class="breadcrumb-item" aria-current="page">
+					{{ page.dplus_function ? page.dplus_function|upper : page.title }}
+				</li>
+				<li class="breadcrumb-item active">
+					<i class="fa fa-cubes" aria-hidden="true"></i>
+					{{ input.get.text('itemID') }}
+				</li>
+			{% else %}
+				<li class="breadcrumb-item active" aria-current="page">
+					{{ page.dplus_function ? page.dplus_function|upper : page.title }}
+				</li>
+			{% endif %}
 		{% endif %}
 	</ol>
 </nav>

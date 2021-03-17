@@ -11,8 +11,8 @@
 	<thead>
 		<tr>
 			<th class="col-3">Unit</th>
-			<th class="col-3">Unit Cost</th>
-			<th class="col-3">Margin %</th>
+			<th class="col-3 text-right">Unit Cost</th>
+			<th class="col-3 text-right">Margin %</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -21,22 +21,22 @@
 				<b>Base</b>
 			</td>
 			<td>
-				<input type="text" class="form-control form-control-sm pricebreak-price" name="baseprice" value="{{ item_pricing.baseprice|currency }}">
+				<input type="text" class="form-control form-control-sm text-right pricebreak-price" name="baseprice" value="{{ item_pricing.baseprice|currency }}">
 			</td>
 			<td class="text-right">
-				<span class="unit-margin">{{ item_pricing.get_pricebreak_margin(0)|number_format(4) }}</span> %
+				<span class="unit-margin text-right">{{ item_pricing.get_pricebreak_margin(0)|number_format(4) }}</span> %
 			</td>
 		</tr>
 		{% for i in 1..item_pricing.count_qtybreaks() %}
 			<tr class="pricebreak-row">
 				<td>
-					<input type="text" class="form-control form-control-sm pricebreak-qty" name="pricebreak_qty{{ i }}" value="{{ item_pricing.get_pricebreak_qty(i) }}">
+					<input type="text" class="form-control form-control-sm text-right pricebreak-qty" name="pricebreak_qty{{ i }}" value="{{ item_pricing.get_pricebreak_qty(i) }}">
 				</td>
 				<td>
-					<input type="text" class="form-control form-control-sm pricebreak-price" name="pricebreak_price{{ i }}" value="{{ item_pricing.get_pricebreak_price(i)|currency }}">
+					<input type="text" class="form-control form-control-sm text-right pricebreak-price" name="pricebreak_price{{ i }}" value="{{ item_pricing.get_pricebreak_price(i)|currency }}">
 				</td>
 				<td class="text-right">
-					<span class="unit-margin">{{ item_pricing.get_pricebreak_margin(i)|number_format(4) }}</span> %
+					<span class="unit-margin text-right">{{ item_pricing.get_pricebreak_margin(i)|number_format(4) }}</span> %
 				</td>
 			</tr>
 		{% endfor %}

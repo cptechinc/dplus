@@ -66,11 +66,9 @@ $(function() {
 			custID: {
 				required: true,
 				remote: {
-					url: '{{ page.child('pw_template=cxm-validate').httpUrl }}',
+					url: '{{ page.jsonapiURL('mar/validate/custid') }}',
 					type: "get",
-					data: {
-						action: 'validate-custid'
-					}
+					data: {}
 				}
 			},
 		},

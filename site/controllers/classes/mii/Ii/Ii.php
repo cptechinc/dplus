@@ -1,15 +1,15 @@
 <?php namespace Controllers\Mii;
-
-use Mvc\Controllers\AbstractController;
-use ProcessWire\Page, ProcessWire\CiLoadCustomerShipto;
-
-use Dplus\CodeValidators\Min as MinValidator;
-use Dplus\Filters\Min\ItemMaster  as ItemMasterFilter;
-
-
-
+// Dplus Model
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemPricingQuery, ItemPricing;
+// ProcessWire Classes, Modules
+use ProcessWire\Page, ProcessWire\CiLoadCustomerShipto;
+// Dplus Validators
+use Dplus\CodeValidators\Min as MinValidator;
+// Dplus Filters
+use Dplus\Filters\Min\ItemMaster  as ItemMasterFilter;
+// Mvc Controllers
+use Mvc\Controllers\AbstractController;
 
 class Ii extends AbstractController {
 	public static function index($data) {

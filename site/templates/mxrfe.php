@@ -10,12 +10,8 @@
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
-	$response = $router->route();
-
-	if ($router->hasError()) {
-		$page->body = $response;
-	}
-
+	$page->body = $router->route();
+	
 	if ($router->hasError() === false) {
 		$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
 		$session->removeFor('response', 'mxrfe');
