@@ -20,6 +20,13 @@
 		</tr>
 	</thead>
 	<tbody>
+		{% if xrefs.count() == 0 %}
+			<tr class="text-center">
+				<td colspan="4">
+					No Mnfr X-refs
+				</td>
+			</tr>
+		{% endif %}
 		{% if xrefs.count() %}
 			{% for xref in xrefs %}
 				{% set class = mxrfe.get_recordlocker_key(xref) == page.focus ? 'highlight' : '' %}
