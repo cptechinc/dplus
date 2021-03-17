@@ -30,6 +30,7 @@ class Upcx extends ItmFunction {
 	}
 
 	public static function handleCRUD($data) {
+		$page    = self::pw('page');
 		if (self::validateItemidAndPermission($data) === false) {
 			return $page->body;
 		}

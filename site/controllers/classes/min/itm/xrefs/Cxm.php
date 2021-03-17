@@ -30,6 +30,7 @@ class Cxm extends ItmFunction {
 	}
 
 	public static function handleCRUD($data) {
+		$page    = self::pw('page');
 		if (self::validateItemidAndPermission($data) === false) {
 			return $page->body;
 		}
@@ -46,11 +47,12 @@ class Cxm extends ItmFunction {
 		$response = $session->getFor('response', 'cxm');
 		$url = $page->itm_xrefs_cxmURL($data->itemID);
 
-		if ($cxm->xref_exists($custID, $custitemID)) {
+		if ($cxm->xref_exists($data->custID, $data->custitemID)) {
+			$url = $page->cxm_itemURL($data->custID, $data->custitemID);
+
 			if ($response && $response->has_success()) {
 				$url = $page->itm_xrefs_cxmURL($data->itemID, $response->key);
 			}
-			$url = $page->cxm_itemURL($data->custID, $data->custitemID);
 		}
 		$session->redirect($url, $http301 = false);
 	}
@@ -108,7 +110,7 @@ class Cxm extends ItmFunction {
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 
 		if ($session->getFor('response','cxm')) {
-			$html .= $config->twig->render('items/cxm/response.twig', ['response' => $session->getFor('response','cxm')]);
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response','cxm')]);
 		}
 		if ($session->response_qnote) {
 			$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
