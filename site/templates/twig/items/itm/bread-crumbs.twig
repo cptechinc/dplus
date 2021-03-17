@@ -72,7 +72,7 @@
 				{{ page.dplus_function ? page.dplus_function|upper : page.title }}
 			</li>
 		{% else %}
-			{% if input.get.offsetExists('itemID') %}
+			{% if input.get.offsetExists('itemID') and page.parent.pw_template != 'itm-xrefs' %}
 				<li class="breadcrumb-item" aria-current="page">
 					{{ page.dplus_function ? page.dplus_function|upper : page.title }}
 				</li>
