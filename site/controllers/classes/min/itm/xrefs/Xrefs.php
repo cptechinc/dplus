@@ -24,6 +24,7 @@ class Xrefs extends ItmFunction {
 	}
 
 	public static function handleCRUD($data) {
+		$page    = self::pw('page');
 		if (self::validateItemidAndPermission($data) === false) {
 			return $page->body;
 		}
@@ -33,7 +34,6 @@ class Xrefs extends ItmFunction {
 		if ($data->action) {
 			$itmXrefs = self::pw('modules')->get('ItmXrefs');
 			$itmXrefs->process_input($input);
-
 		}
 		self::pw('session')->redirect(self::pw('page')->itm_xrefsURL($data->itemID), $http301 = false);
 	}
