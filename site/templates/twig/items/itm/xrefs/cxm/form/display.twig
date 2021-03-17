@@ -1,0 +1,10 @@
+{% extends 'items/itm/xrefs/xrefs-display.twig' %}
+
+{% block body %}
+	<div class="card-body">
+		{% include 'items/cxm/item/form/form.twig' with {'item': xref} %}
+	</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
