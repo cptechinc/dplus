@@ -434,8 +434,11 @@ class ItmXrefs extends WireData implements Module {
 	 * @return string
 	 */
 	public function itm_xrefs_mxrfe_focusURL($itemID, $focus) {
+		if (empty($focus)) {
+			return $this->_itm_xrefs_mxrfeURL($itemID);
+		}
 		$mxrfe = $this->wire('modules')->get('XrefMxrfe');
-		$xref = $mxrfe->xref_by_recordlocker_key($focus);
+		$xref  = $mxrfe->xref_by_recordlocker_key($focus);
 
 		if ($xref == false) {
 			return $this->_itm_xrefs_mxrfeURL($itemID);
