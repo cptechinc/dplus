@@ -11,13 +11,29 @@
 				<form action="{{ page.url }}" method="get" id="new-cxm-form">
 					<div class="form-group">
 						<label for="newcustID">Customer ID</label>
-						{% include 'util/form/input-with-modal-lookup.twig' with {
-								'name': 'custID', 'id': 'newcustID', 'value': '',
-								'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Customer',
-								'attributes_button': {
-									'data-search': 'customer',
-									'data-lookupurl': page.searchcustomersURL,
-									'data-input': '#newcustID'
+						{% include 'util/bootstrap/form/input-group.twig' with {
+								'inputgroup': {
+									'type': 'prepend',
+									'input': {
+										'name': 'custID',
+										'id': 'newcustID',
+										'value': '',
+										'attributes': {
+											'placeholder': '',
+											'aria-label':  'Customer ID'
+										}
+									},
+									'button': {
+										'colorclass': 'btn-secondary',
+										'text': 'fa fa-search'|icon,
+										'attributes': {
+											'title': 'Search Customer IDs',
+											'data-toggle': 'modal',
+											'data-target': '#ajax-modal',
+											'data-lookupurl': page.search_lookupURL('customers'),
+											'data-input': '#newcustID'
+										}
+									}
 								}
 							}
 						%}

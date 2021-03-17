@@ -7,7 +7,7 @@ use ProcessWire\User;
 
 
 abstract class AbstractController extends WireData {
-	public static $pw;
+	private static $pw;
 
 	/**
 	 * Return the current ProcessWire Wire Instance

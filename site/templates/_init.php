@@ -21,6 +21,8 @@ if (!empty($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != '/') {
 	$page->fullURL->join($_SERVER['REQUEST_URI']);
 }
 
+$input->purl = new Purl\Url($input->url($withQueryString = true));
+
 // CHECK DATABASE CONNECTIONS
 if ($page->id != $config->errorpage_dplusdb) {
 	if (empty(wire('dplusdata')) || empty(wire('dpluso'))) {

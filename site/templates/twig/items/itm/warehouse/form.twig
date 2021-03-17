@@ -4,11 +4,6 @@
 	warehouse              WarehouseInventory
 	m_whse                 module ItmWarehouse
 #}
-<div class="mb-3">
-	<a href="{{ page.itm_warehouseURL(warehouse.itemid) }}" class="btn btn-primary">
-		<i aria-hidden="true" class="fa fa-arrow-left"></i> Back to List
-	</a>
-</div>
 <form action="{{ page.url }}" method="post" id="item-whse-form">
 	<input type="hidden" name="itemID" value="{{ warehouse.itemid }}">
 	<div class="row mb-3">

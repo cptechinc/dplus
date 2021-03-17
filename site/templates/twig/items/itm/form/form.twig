@@ -6,11 +6,7 @@
 	itm                    module Itm
 	recordlocker           module RecordLockerUser
 #}
-<div class="form-group">
-	<a href="{{ page.url }}" class="btn btn-primary">
-		<i class="fa fa-arrow-left" aria-hidden="true"></i> Back
-	</a>
-</div>
+
 <form action="{{ page.fullURL.getURL() }}" method="POST" id="itm-form" data-itemID="{{ item.itemid }}">
 	<input type="hidden" name="action" value="update-itm">
 	<div class="row">
@@ -39,7 +35,7 @@
 				</a>
 			{% endif %}
 		{% endif %}
-		<a href="{{ page.itmURL() }}" class="btn btn-warning">
+		<a href="{{ page.itmListURL(item.itemid) }}" class="btn btn-warning">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
 		</a>
 	</div>

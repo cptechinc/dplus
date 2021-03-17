@@ -232,7 +232,7 @@ class XrefVxm extends WireData implements Module {
 					break;
 			}
 		} else {
-			$this->wire('session')->response_xref = XrefResponse::response_error("No VXM Action specified");
+			$this->wire('session')->setFor('response', 'vxm', XrefResponse::response_error("No VXM Action specified"));
 		}
 	}
 
@@ -254,12 +254,13 @@ class XrefVxm extends WireData implements Module {
 			if (!$this->lockrecord($record)) {
 				$key = $this->get_recordlocker_key($record);
 				$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
-				$this->wire('session')->response_xref = XrefResponse::response_error($key, $message);
+				$this->wire('session')->setFor('response', 'vxm', XrefResponse::response_error($key, $message));
 				return false;
 			}
 			$record->delete();
-			$this->wire('session')->response_xref = $this->save_and_respond($record);
-			return $this->wire('session')->response_xref->has_success();
+			$response = $this->save_and_respond($record);
+			$this->wire('session')->setFor('response', 'vxm', $response);
+			return $response->has_success();
 		}
 		return true;
 	}
@@ -283,7 +284,7 @@ class XrefVxm extends WireData implements Module {
 			if (!$this->lockrecord($record)) {
 				$key = $this->get_recordlocker_key($record);
 				$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
-				$this->wire('session')->response_xref = XrefResponse::response_error("$key", $message);
+				$this->wire('session')->setFor('response', 'vxm', XrefResponse::response_error("$key", $message));
 				return false;
 			}
 		}
@@ -300,8 +301,8 @@ class XrefVxm extends WireData implements Module {
 				$this->update_itm_cost($record);
 			}
 		}
-		$this->wire('session')->response_xref = $response;
-		return $this->wire('session')->response_xref->has_success();
+		$this->wire('session')->setFor('response', 'vxm', $response);
+		return $response->has_success();
 	}
 
 	/**
@@ -677,7 +678,7 @@ class XrefVxm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function field_has_error($inputname) {
-		$response = $this->wire('session')->response_xref;
+		$response = $this->response();
 		return ($response) ? array_key_exists($inputname, $response->fields) : false;
 	}
 
@@ -686,7 +687,7 @@ class XrefVxm extends WireData implements Module {
 	 * @return XrefResponse|null
 	 */
 	public function response() {
-		return $this->wire('session')->response_xref;
+		return $this->wire('session')->getFor('response', 'vxm');
 	}
 
 	/**

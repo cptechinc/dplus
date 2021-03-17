@@ -1,10 +1,12 @@
 <?php namespace Controllers\Mar;
-
-use Mvc\Controllers\AbstractController;
-
-use ProcessWire\Page, ProcessWire\Spm as SpmManager;
-use Dplus\Filters\Mar\SalesPerson as FilterSalesPerson;
+// Dplus Model
 use SalesPerson;
+// ProcessWire Classes, Modules
+use ProcessWire\Page, ProcessWire\Spm as SpmManager;
+// Dplus Validators
+use Dplus\Filters\Mar\SalesPerson as FilterSalesPerson;
+// Mvc Controllers
+use Mvc\Controllers\AbstractController;
 
 class Spm extends AbstractController {
 	public static function index($data) {

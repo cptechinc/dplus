@@ -1,11 +1,12 @@
 <?php namespace Controllers\Ajax\Json;
-
-use ProcessWire\Module, ProcessWire\ProcessWire;
-
-use Mvc\Controllers\AbstractController;
-
+// Dplus Model
 use InvKitQuery, InvKit;
+// ProcessWire Classes, Modules
+use ProcessWire\Module, ProcessWire\ProcessWire;
+// Dplus Validators
 use Dplus\CodeValidators\Mki\Kim as KimValidator;
+// Mvc Controllers
+use Mvc\Controllers\AbstractController;
 
 class Mki extends AbstractController {
 	public static function test() {

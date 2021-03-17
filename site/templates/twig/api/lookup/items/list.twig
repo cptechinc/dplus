@@ -10,26 +10,26 @@
 		</tr>
 	</thead>
 	{% if results.count() %}
-			{% for item in results %}
-				<tr>
-					<td>
-						<a href="#" class="link item-link" data-itemid="{{ item.itemid }}" data-description="{{ item.description }}" data-description2="{{ item.description2 }}">
-							<strong>{{ item.itemid }}</strong>
-						</a>
-					</td>
-					<td class="{{ datamatcher.string(item.name, q) ? 'highlight' : '' }}">
-						<small>
-							{{ item.desc }} <br>
-							{{ item.desc2 }}
-						</small>
-					</td>
-				</tr>
-			{% endfor %}
-		{% else %}
+		{% for item in results %}
 			<tr>
-				<td colspan="7" class="bg-secondary text-white text-center">
-					No Results found
+				<td>
+					<a href="#" class="link item-link" data-itemid="{{ item.itemid }}" data-description="{{ item.description }}" data-description2="{{ item.description2 }}">
+						<strong>{{ item.itemid }}</strong>
+					</a>
+				</td>
+				<td class="{{ datamatcher.string(item.name, q) ? 'highlight' : '' }}">
+					<small>
+						{{ item.desc }} <br>
+						{{ item.desc2 }}
+					</small>
 				</td>
 			</tr>
-		{% endif %}
+		{% endfor %}
+	{% else %}
+		<tr>
+			<td colspan="7" class="bg-secondary text-white text-center">
+				No Results found
+			</td>
+		</tr>
+	{% endif %}
 </table>

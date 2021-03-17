@@ -14,11 +14,29 @@
 			<label for="custID">Customer ID</label>
 		</div>
 		<div class="col-sm-8">
-			{% include 'util/form/input-with-modal-lookup.twig' with {
-					'name': 'custID', 'value': item.custID,
-					'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Customer',
-					'attributes_button': {
-						'data-search': 'customer'
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'input': {
+							'name': 'custID',
+							'id': 'custID',
+							'value': item.custID,
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Customer ID'
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search Customers',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.search_lookupURL('customers'),
+								'data-input': '#custID'
+							}
+						}
 					}
 				}
 			%}
@@ -88,15 +106,34 @@
 		<label for="itemID">Our Item ID</label>
 	</div>
 	<div class="col-sm-8 item-col">
-		{% include 'util/form/input-with-modal-lookup.twig' with {
-				'name': 'itemID', 'value': item.itemid,
-				'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Item',
-				'attributes_button': {
-					'data-search': 'item'
-				},
-				'attributes': {
-					'itemid':     item.itemid,
-					'qtypercase': item.qty_percase
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'attributes': {
+						'readonly': page.pw_template == 'itm-xrefs-cxm'
+					},
+					'input': {
+						'name': 'itemID',
+						'id': 'itemID',
+						'value': item.itemid,
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Item ID'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'itemid':     item.itemid,
+							'qtypercase': item.qty_percase,
+							'title': 'Search Items',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('items'),
+							'data-input': '#custID'
+						}
+					}
 				}
 			}
 		%}
