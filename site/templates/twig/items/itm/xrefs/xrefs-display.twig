@@ -1,0 +1,31 @@
+<div class="card">
+	<div class="card-header">
+		<div class="row">
+			<div class="col-sm-2">
+				<strong>Item ID:</strong>
+			</div>
+			<div class="col-sm-6">
+				{{ item.itemid }} - {{ item.description }}
+			</div>
+		</div>
+	</div>
+
+	{% block body %}
+		{% include 'items/itm/xrefs/vxm/list.twig' %}
+
+		{% include 'util/paginator/propel.twig' with {'pager': items} %}
+	{% endblock %}
+
+	{% block footer %}
+		<div class="card-footer">
+			<div class="d-flex justify-content-between align-items-center">
+				<div></div>
+				<div>
+					<a href="{{ page.itm_xrefsURL(item.itemid) }}" class="btn btn-warning btn-sm">
+						<i class="fa fa-times" aria-hidden="true"></i> Close
+					</a>
+				</div>
+			</div>
+		</div>
+	{% endblock %}
+</div>
