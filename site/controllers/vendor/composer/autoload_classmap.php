@@ -33,6 +33,7 @@ return array(
     'Controllers\\Min\\Itm\\Xrefs' => $baseDir . '/classes/min/itm/xrefs/Xrefs.php',
     'Controllers\\Min\\Itm\\Xrefs\\Cxm' => $baseDir . '/classes/min/itm/xrefs/Cxm.php',
     'Controllers\\Min\\Itm\\Xrefs\\Upcx' => $baseDir . '/classes/min/itm/xrefs/Upcx.php',
+    'Controllers\\Min\\Itm\\Xrefs\\Vxm' => $baseDir . '/classes/min/itm/xrefs/Vxm.php',
     'Controllers\\Min\\Upcx' => $baseDir . '/classes/min/Upcx.php',
     'Controllers\\Mki\\Kim' => $baseDir . '/classes/mki/Kim.php',
     'Controllers\\Mpo\\Epo' => $baseDir . '/classes/mpo/Epo.php',
