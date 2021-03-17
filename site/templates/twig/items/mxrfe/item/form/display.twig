@@ -5,21 +5,13 @@
 	mxrfe                  module XrefMxrfe
 	xref                   ItemXrefManufacturer
 #}
-<div class="card">
-	<div class="card-header">
-		{% block header %}
-			<div class="row">
-				<div class="col-sm-2">
-					<strong> Mnfr / Comp ID:</strong>
-				</div>
-				<div class="col-sm-6">
-					{{ xref.vendorid }} - {{ xref.vendor.name }}
-				</div>
-			</div>
-		{% endblock %}
-	</div>
+{% extends 'items/mxrfe/display.twig' %}
+
+{% block body %}
 	<div class="card-body">
 		{% include 'items/mxrfe/item/form/form.twig' %}
 	</div>
-</div>
-<hr>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
