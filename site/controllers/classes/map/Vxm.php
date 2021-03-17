@@ -9,6 +9,8 @@ use Dplus\Filters\Map\Vendor as VendorFilter;
 use Mvc\Controllers\AbstractController;
 
 class Vxm extends AbstractController {
+	private static $vxm;
+
 	public static function index($data) {
 		$fields = ['vendorID|text', 'vendoritemID|text', 'q|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -74,26 +76,36 @@ class Vxm extends AbstractController {
 			$page->headline = "VXM: " . $vxm->get_recordlocker_key($xref);
 		}
 
-		$html .= self::lockXref($page, $vxm, $xref);
+		$html .= self::lockXref($xref);
 
 		$html .= $config->twig->render('items/vxm/item/form/display.twig', ['mxrfe' => $vxm, 'vendor' => $vendor, 'item' => $xref, 'vxm' => $vxm, 'qnotes' => $qnotes]);
 		$page->js .= $config->twig->render('items/vxm/item/form/js.twig', ['page' => $page, 'vxm' => $vxm, 'item' => $xref]);
 
 		if (!$xref->isNew()) {
-			$html .= "<hr>";
-			if (self::pw('session')->response_qnote) {
-				$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => self::pw('session')->response_qnote]);
-			}
-			$page->searchURL = self::pw('pages')->get('pw_template=msa-noce-ajax')->url;
-			$html .= $config->twig->render('items/vxm/notes/notes.twig', ['qnotes' => $qnotes, 'item' => $xref]);
-			$page->js .= $config->twig->render('items/vxm/notes/js.twig');
-			self::pw('session')->remove('response_qnote');
+			$html .= self::qnotesDisplay($xref);
 		}
 		return $html;
 	}
 
-	private static function lockXref(Page $page, VxmCRUD $vxm, ItemXrefVendor $xref) {
+	public static function qnotesDisplay(ItemXrefVendor $xref) {
+		$page   = self::pw('page');
+		$config = self::pw('config');
+		$qnotes = self::pw('modules')->get('QnotesItemVxm');
+		$html = "<hr>";
+		if (self::pw('session')->response_qnote) {
+			$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => self::pw('session')->response_qnote]);
+		}
+		$page->searchURL = self::pw('pages')->get('pw_template=msa-noce-ajax')->url;
+		$html .= $config->twig->render('items/vxm/notes/notes.twig', ['qnotes' => $qnotes, 'item' => $xref]);
+		$page->js .= $config->twig->render('items/vxm/notes/js.twig');
+		self::pw('session')->remove('response_qnote');
+		return $html;
+	}
+
+	public static function lockXref(ItemXrefVendor $xref) {
 		$html = '';
+		$vxm = self::vxmMaster();
+
 		if (!$xref->isNew()) {
 			if (!$vxm->lockrecord($xref)) {
 				$msg = "VXM ". $vxm->get_recordlocker_key($xref) ." is being locked by " . $vxm->recordlocker->get_locked_user($vxm->get_recordlocker_key($xref));
@@ -154,6 +166,9 @@ class Vxm extends AbstractController {
 	}
 
 	public static function vxmMaster() {
-		return self::pw('modules')->get('XrefVxm');
+		if (empty(self::$vxm)) {
+			self::$vxm = self::pw('modules')->get('XrefVxm');
+		}
+		return self::$vxm;
 	}
 }
