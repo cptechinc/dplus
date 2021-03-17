@@ -32,6 +32,7 @@ return array(
     'Controllers\\Min\\Itm\\Warehouse' => $baseDir . '/classes/min/itm/Warehouse.php',
     'Controllers\\Min\\Itm\\Xrefs' => $baseDir . '/classes/min/itm/xrefs/Xrefs.php',
     'Controllers\\Min\\Itm\\Xrefs\\Cxm' => $baseDir . '/classes/min/itm/xrefs/Cxm.php',
+    'Controllers\\Min\\Itm\\Xrefs\\Mxrfe' => $baseDir . '/classes/min/itm/xrefs/Mxrfe.php',
     'Controllers\\Min\\Itm\\Xrefs\\Upcx' => $baseDir . '/classes/min/itm/xrefs/Upcx.php',
     'Controllers\\Min\\Itm\\Xrefs\\Vxm' => $baseDir . '/classes/min/itm/xrefs/Vxm.php',
     'Controllers\\Min\\Upcx' => $baseDir . '/classes/min/Upcx.php',
