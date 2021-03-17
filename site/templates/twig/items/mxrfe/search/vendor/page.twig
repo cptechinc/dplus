@@ -1,7 +1,1 @@
-{% include 'items/mxrfe/bread-crumbs.twig' %}
-
-{% if session.getFor('response', 'mxrfe') %}
-	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'mxrfe')} %}
-{% endif %}
-
 {% include 'items/mxrfe/search/vendor/results.twig' with {'vendors': vendors} %}
