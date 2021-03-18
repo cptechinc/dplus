@@ -3,6 +3,8 @@
 use Invkit;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Kim as KimCRUD;
+// Dplus Filters
+use Dplus\Filters\Mki\Kim as FilterKim;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
@@ -100,8 +102,8 @@ class Kim extends AbstractController {
 		$config = self::pw('config');
 		$page   = self::pw('page');
 		$kim    = self::getKim();
-		$filter = self::pw('modules')->get('FilterKim');
-		$filter->init_query();
+		$filter = new FilterKim();
+		$filter->init();
 		if ($data->q) {
 			$page->headline = "KIM: Searching for '$data->q'";
 			$filter->search($data->q);
