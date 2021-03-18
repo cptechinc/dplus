@@ -6,29 +6,17 @@ use Picqer\Barcode\BarcodeGeneratorHTML;
 use Picqer\Barcode\BarcodeGeneratorJPG;
 
 /**
- * Wrapper for Generating Barcodes
+ * @property string $imageType   Barcode Display Format
+ * @property string $barcodeType Barcode Format Type
+ * @property BarcodeGeneratorPNG|BarcodeGeneratorSVG|BarcodeGeneratorHTML|BarcodeGeneratorJPG Barcode Generator Class
  */
 class BarcodeMaker extends WireData implements Module {
-	const BASE_GENERATOR_CLASSNAME = 'Picqer\Barcode\BarcodeGenerator';
+	const BASE_CLASSNAME = 'Picqer\Barcode\BarcodeGenerator';
+	const IMAGE_TYPES = ['SVG', 'PNG', 'JPG', 'HTML'];
+	const BARCODE_TYPES = ['TYPE_CODE_128'];
 
-	/**
-	 * Image Type
-	 * @var string
-	 */
-	protected $image_type = 'PNG';
-
-	/**
-	 * Image Types
-	 */
-	const IMAGE_TYPES = array(
-		'SVG', 'PNG', 'JPG', 'HTML'
-	);
-
-	/**
-	 * Barcode Type
-	 * @var string
-	 */
-	protected $barcode_type = 'TYPE_CODE_128';
+	protected $imageType = 'PNG';
+	protected $barcodeType = 'TYPE_CODE_128';
 
 	/**
 	 * Barcode Generator
@@ -41,7 +29,7 @@ class BarcodeMaker extends WireData implements Module {
 	 * @return void
 	 */
 	public function init() {
-		$type = self::BASE_GENERATOR_CLASSNAME."$this->image_type";
+		$type = self::BASE_CLASSNAME."$this->imageType";
 		$this->generator = new $type();
 	}
 
@@ -51,8 +39,8 @@ class BarcodeMaker extends WireData implements Module {
 	 * @param  string $type e.g. PNG
 	 * @return void
 	 */
-	public function set_imagetype($type) {
-		$this->image_type = $type;
+	public function setImageType($type) {
+		$this->imageType = $type;
 		$this->init();
 	}
 
@@ -60,8 +48,8 @@ class BarcodeMaker extends WireData implements Module {
 	 * Sets Barcode Type
 	 * @param string $type
 	 */
-	public function set_barcodetype($type) {
-		$this->barcode_type = $type;
+	public function setBarcodeType($type) {
+		$this->barcodeType = $type;
 	}
 
 	/**
@@ -69,8 +57,8 @@ class BarcodeMaker extends WireData implements Module {
 	 * @param  string $code e.g. TYPE_CODE_128
 	 * @return string            image data or false in case of error
 	 */
-	public function generate_barcode($code) {
+	public function barcode($code) {
 		$class = get_class($this->generator);
-		return $this->generator->getBarcode($code, constant("$class::$this->barcode_type"));
+		return $this->generator->getBarcode($code, constant("$class::$this->barcodeType"));
 	}
 }
