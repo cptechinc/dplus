@@ -8,7 +8,6 @@ $baseDir = dirname($vendorDir);
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Dplus\\CodeValidators\\Itm\\Warehouse' => $baseDir . '/src/Min/Itm/Warehouse.php',
-    'Dplus\\CodeValidators\\Kim' => $baseDir . '/src/Mki/Kim.php',
     'Dplus\\CodeValidators\\Map' => $baseDir . '/src/Map/Map.php',
     'Dplus\\CodeValidators\\Map\\Mxrfe' => $baseDir . '/src/Map/Mxrfe.php',
     'Dplus\\CodeValidators\\Map\\Vxm' => $baseDir . '/src/Map/Vxm.php',
@@ -20,7 +19,8 @@ return array(
     'Dplus\\CodeValidators\\Min' => $baseDir . '/src/Min/Min.php',
     'Dplus\\CodeValidators\\Min\\Itm' => $baseDir . '/src/Min/Itm/Itm.php',
     'Dplus\\CodeValidators\\Min\\Upcx' => $baseDir . '/src/Min/Upcx.php',
-    'Dplus\\CodeValidators\\Mki\\Mki' => $baseDir . '/src/Mki/Mki.php',
+    'Dplus\\CodeValidators\\Mki' => $baseDir . '/src/Mki/Mki.php',
+    'Dplus\\CodeValidators\\Mki\\Kim' => $baseDir . '/src/Mki/Kim.php',
     'Dplus\\CodeValidators\\Mpo' => $baseDir . '/src/Mpo/Mpo.php',
     'Dplus\\CodeValidators\\Mpo\\Po' => $baseDir . '/src/Mpo/Po.php',
     'Dplus\\CodeValidators\\Mpo\\PoDetail' => $baseDir . '/src/Mpo/PoDetail.php',
