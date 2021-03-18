@@ -295,10 +295,31 @@ class Configs extends Process {
 		$data = array();
 		$data['company_name'] = $pw_cust->company_name;
 		$data['address']      = $pw_cust->address;
-		$data['images'] = array();
-		$data['images']['logo_large']  = $pw_cust->logo_large ? $pw_cust->logo_large->basename : false;
-		$data['images']['logo_small']  = $pw_cust->logo_small ? $pw_cust->logo_small->basename : false;
+		$data['images'] = [
+			'logo_large' => $this->getLogoImageName($pw_cust, 'logo_large'),
+			'logo_small' => $this->getLogoImageName($pw_cust, 'logo_small')
+		];
 		return $data;
+	}
+
+	/**
+	 * Return Image Name for image property
+	 * @param  Page        $pw_cust [description]
+	 * @param  string      $prop    'logo_large' | 'logo_small'
+	 * @return string|null
+	 */
+	public function getLogoImageName(Page $pw_cust, $prop) {
+		if ($pw_cust->has($prop) === false) {
+			return false;
+		}
+		if (get_class($pw_cust->$prop) == 'ProcessWire\Pageimage') {
+			return $pw_cust->$prop ? $pw_cust->$prop->basename : false;
+		}
+
+		if (get_class($pw_cust->$prop) == 'ProcessWire\Pageimages') {
+			return $pw_cust->$prop ? $pw_cust->$prop->first()->basename : false;
+		}
+		return false;
 	}
 
 	/**
