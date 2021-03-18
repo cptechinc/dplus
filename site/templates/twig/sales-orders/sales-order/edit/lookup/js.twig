@@ -129,7 +129,7 @@ $(function() {
 			if (result.value) {
 				var url = URI("{{ page.fullURL.getUrl() }}");
 				url.setQuery('q', input_itemid.val());
-				window.location.replace(url.toString());
+				window.location.replace(url.toString()+'#search-results');
 			}
 		});
 	}
