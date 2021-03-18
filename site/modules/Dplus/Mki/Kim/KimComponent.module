@@ -186,7 +186,7 @@ class KimComponent extends WireData implements Module {
 		$itemID = $values->text('component');
 		$invalidfields = [];
 
-		$component = $this->getCreateComponent$kitID, $itemID);
+		$component = $this->getCreateComponent($kitID, $itemID);
 		$invalidfields = $this->update_record_input($component, $input);
 		$this->wire('session')->setFor('response', 'kim', $this->save_and_respond($component, $invalidfields));
 		return $this->wire('session')->getFor('response', 'kim')->has_success();
