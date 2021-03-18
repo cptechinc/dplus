@@ -30,7 +30,6 @@ class KimComponent extends WireData implements Module {
 		return InvKitComponent::OPTIONS_USAGETAG;
 	}
 
-
 	/**
 	 * Return Kit Component Query
 	 * @return InvKitComponentQuery
@@ -48,7 +47,7 @@ class KimComponent extends WireData implements Module {
 	 * @param  string $itemID Component Item ID
 	 * @return bool
 	 */
-	public function component_exists($kitID, $itemID) {
+	public function exists($kitID, $itemID) {
 		$q = $this->query();
 		$q->filterByKitid($kitID);
 		$q->filterByItemid($itemID);
@@ -61,7 +60,7 @@ class KimComponent extends WireData implements Module {
 	 * @param  string $itemID Component Item ID
 	 * @return InvKitComponent
 	 */
-	public function get_component($kitID, $itemID) {
+	public function component($kitID, $itemID) {
 		$q = $this->query();
 		$q->filterByKitid($kitID);
 		$q->filterByItemid($itemID);
@@ -74,7 +73,7 @@ class KimComponent extends WireData implements Module {
 	 * @param  string $itemID Component Item ID
 	 * @return InvKitComponent
 	 */
-	public function new_component($kitID, $itemID) {
+	public function new($kitID, $itemID) {
 		$c = new InvKitComponent();
 		$c->setKitid($kitID);
 
@@ -108,11 +107,11 @@ class KimComponent extends WireData implements Module {
 	 * @param  string $itemID Kit Component Item ID
 	 * @return InvKitComponent
 	 */
-	public function new_get_component($kitID, $itemID) {
-		if ($this->component_exists($kitID, $itemID)) {
-			return $this->get_component($kitID, $itemID);
+	public function getCreateComponent($kitID, $itemID) {
+		if ($this->exists($kitID, $itemID)) {
+			return $this->component($kitID, $itemID);
 		}
-		return $this->new_component($kitID, $itemID);
+		return $this->new($kitID, $itemID);
 	}
 
 /* =============================================================
@@ -165,8 +164,8 @@ class KimComponent extends WireData implements Module {
 		$kitID = $input->get->text('kitID');
 		$itemID = $input->get->text('component');
 
-		if ($this->component_exists($kitID, $itemID)) {
-			$component = $this->get_component($kitID, $itemID);
+		if ($this->exists($kitID, $itemID)) {
+			$component = $this->component($kitID, $itemID);
 			$component->delete();
 			$this->wire('session')->setFor('response', 'kim', $this->save_and_respond($component, null));
 			return $this->wire('session')->getFor('response', 'kim')->has_success();
@@ -187,7 +186,7 @@ class KimComponent extends WireData implements Module {
 		$itemID = $values->text('component');
 		$invalidfields = [];
 
-		$component = $this->new_get_component($kitID, $itemID);
+		$component = $this->getCreateComponent$kitID, $itemID);
 		$invalidfields = $this->update_record_input($component, $input);
 		$this->wire('session')->setFor('response', 'kim', $this->save_and_respond($component, $invalidfields));
 		return $this->wire('session')->getFor('response', 'kim')->has_success();
