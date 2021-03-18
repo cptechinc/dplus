@@ -45,7 +45,7 @@ class Mki extends AbstractController {
 
 	public static function getKit($data) {
 		$fields = ['kitID|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		$data     = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
 		if ($validate->kit($data->kitID) === false) {
