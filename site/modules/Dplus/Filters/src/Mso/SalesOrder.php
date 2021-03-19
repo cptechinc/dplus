@@ -54,7 +54,6 @@ class SalesOrder extends AbstractFilter {
 
 	/**
 	 * Filter the Query by the Order Number column
-	 *
 	 * @param  WireInput $input
 	 * @return self
 	 */
@@ -226,6 +225,7 @@ class SalesOrder extends AbstractFilter {
 	public function orderdate($date, $comparison = null) {
 		$this->query->filterByOrderdate($date, $comparison);
 	}
+
 	/**
 	 * Filter the Query on the Request Date column
 	 * @param  string $date       Request Date
@@ -285,6 +285,11 @@ class SalesOrder extends AbstractFilter {
 		return $this;
 	}
 
+	/**
+	 * filter the Query By salespersonid if the User is a salesperson
+	 * @param  User   $user
+	 * @return self
+	 */
 	public function user(User $user) {
 		if ($user->is_salesrep()) {
 			$this->salespersonid($user->roleid);
