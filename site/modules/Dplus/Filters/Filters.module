@@ -26,8 +26,6 @@ class Filters extends WireData implements Module {
 			'singular' => true,
 			'autoload' => true,
 			'installs' => array(
-				'FilterSalesOrders',
-				'FilterSalesHistory',
 				'FilterQuotes',
 				'FilterPurchaseOrder',
 				'FilterApInvoices',
