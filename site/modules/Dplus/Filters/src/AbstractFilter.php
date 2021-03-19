@@ -7,7 +7,13 @@ use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 
 /**
  * Base Filter Class
- *
+ * |
+ * | Child Classes should be Organized in the Following Manner:
+ * | 1. Abstract / Extensible Functions
+ * | 2. Base Filter Functions
+ * | 4. Input Filter Classes
+ * | 5. Misc Query Functions
+ * |
  * @property Query $query Query to filter
  */
 abstract class AbstractFilter extends WireData {
@@ -20,6 +26,18 @@ abstract class AbstractFilter extends WireData {
 ============================================================= */
 	/** Filter Columns using a Wildcard Search **/
 	abstract public function _search($q);
+
+/* =============================================================
+	Extensible Functions
+============================================================= */
+	/**
+	 * Filter Query with Input Data
+	 * @param  WireInput $input Input Data
+	 * @return self
+	 */
+	public function _filterInput(WireInput $input) {
+
+	}
 
 /* =============================================================
 	Functions
@@ -86,15 +104,6 @@ abstract class AbstractFilter extends WireData {
 	public function filterInput(WireInput $input) {
 		$this->_filterInput($input);
 		return $this;
-	}
-
-	/**
-	 * Filter Query with Input Data
-	 * @param  WireInput $input Input Data
-	 * @return self
-	 */
-	public function _filterInput(WireInput $input) {
-
 	}
 
 	/**
