@@ -1,27 +1,27 @@
 <?php namespace Dplus\Filters\Misc;
-
+// Dplus Model
+use PhoneBookQuery, PhoneBook as Model;
+// ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
+// Dplus Filters
 use Dplus\Filters\AbstractFilter;
 
-use PhoneBookQuery, PhoneBook as PhoneBookModel;
-
+/**
+* Wrapper Class for PhoneBookQuery
+*/
 class PhoneBook extends AbstractFilter {
 	const MODEL = 'PhoneBook';
 
 /* =============================================================
-	Abstract Contract Functions
+	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function initQuery() {
-		$this->query = PhoneBookQuery::create();
-	}
-
 	public function _search($q) {
 		$columns = [
-			PhoneBookModel::get_aliasproperty('key1'),
-			PhoneBookModel::get_aliasproperty('key2'),
-			PhoneBookModel::get_aliasproperty('contact'),
-			PhoneBookModel::get_aliasproperty('phone'),
-			PhoneBookModel::get_aliasproperty('fax'),
+			Model::get_aliasproperty('key1'),
+			Model::get_aliasproperty('key2'),
+			Model::get_aliasproperty('contact'),
+			Model::get_aliasproperty('phone'),
+			Model::get_aliasproperty('fax'),
 		];
 		$this->query->search_filter($columns, strtoupper($q));
 	}
@@ -32,24 +32,23 @@ class PhoneBook extends AbstractFilter {
 	 * @return self
 	 */
 	public function _filterInput(WireInput $input) {
-		$this->filterInputVendorid($input);
+		$this->filterVendoridInput($input);
 	}
 
 /* =============================================================
-	Filter Functions
+	2. Base Filter Functions
 ============================================================= */
-	public function filterInputVendorid(WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-		$vendorID = $values->array('vendorID', 'text', ['delimiter' => ',']);
-		$this->filterVendorid($vendorID);
-	}
-
+	/**
+	 * Filter the Query By Vendor ID
+	 * @param  string $vendorID Vendor ID
+	 * @return self
+	 */
 	public function filterVendorid($vendorID) {
 		if ($vendorID) {
-			$this->query->filterByType([PhoneBookModel::TYPE_VENDOR, PhoneBookModel::TYPE_VENDORCONTACT]);
+			$this->query->filterByType([Model::TYPE_VENDOR, Model::TYPE_VENDORCONTACT]);
 			$this->query->filterByVendorid($vendorID);
 		}
+		return $this
 	}
 
 	/**
@@ -61,6 +60,22 @@ class PhoneBook extends AbstractFilter {
 		if ($type) {
 			$this->query->filterByType($type);
 		}
+		return $this;
+	}
+
+/* =============================================================
+	3. Input Filter Functions
+============================================================= */
+	/**
+	 * Filter the Query By Vendor Id using Input Data
+	 * @param  WireInput $input Input Data
+	 * @return self
+	 */
+	public function filterVendoridInput(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$vendorID = $values->array('vendorID', 'text', ['delimiter' => ',']);
+		$this->filterVendorid($vendorID);
 		return $this;
 	}
 }

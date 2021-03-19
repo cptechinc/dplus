@@ -1,0 +1,27 @@
+{% extends 'items/itm/display.twig' %}
+
+{% block header %}
+	<div class="card-header">
+		<div class="row">
+			<div class="col-sm-2">
+				<strong>Kit ID:</strong>
+			</div>
+			<div class="col-sm-6">
+				{{ item.itemid }} - {{ item.description }}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block body %}
+	<div class="card-body">
+		<div class="row">
+			<div class="col-sm-8">
+				{% include 'mki/kim/kit/component/form.twig' %}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

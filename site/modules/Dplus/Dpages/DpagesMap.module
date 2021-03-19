@@ -1,6 +1,8 @@
 <?php namespace ProcessWire;
-
+// Purl Classes
 use Purl\Url;
+// DplusFilters
+use Dplus\Filters\Map\Vxm as VxmFilter;
 
 /**
  * class DpagesMap
@@ -149,7 +151,7 @@ class DpagesMap extends Dpages implements Module {
 		$item = $vxm->xref_by_recordlocker_key($focus);
 
 		if ($item) {
-			$filter = $this->wire('modules')->get('FilterXrefItemVxm');
+			$filter = new VxmFilter();
 			$filter->vendorid($vendorID);
 			$position = $filter->position($item);
 			$pagenbr = ceil($position / $this->wire('session')->display);

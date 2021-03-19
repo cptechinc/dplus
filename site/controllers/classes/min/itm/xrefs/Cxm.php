@@ -3,9 +3,11 @@
 use ItemXrefCustomerQuery, ItemXrefCustomer;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\XrefCxm as CxmCRUD;
+// Dplus Filters
+use Dplus\Filters\Mso\Cxm as CxmFilter;
 // Mvc Controllers
 use Controllers\Min\Itm\ItmFunction;
-use Controllers\Mso\Cxm as BaseCxm;
+use Controllers\Mso\Cxm as CxmController;
 
 class Cxm extends ItmFunction {
 	public static function index($data) {
@@ -39,7 +41,7 @@ class Cxm extends ItmFunction {
 		$input = self::pw('input');
 
 		if ($data->action) {
-			$cxm = self::pw('modules')->get('XrefCxm');
+			$cxm = CxmController::getCxm();
 			$cxm->process_input($input);
 		}
 		$session  = self::pw('session');
@@ -72,7 +74,7 @@ class Cxm extends ItmFunction {
 		$itm     = self::getItm();
 		$modules = self::pw('modules');
 		$qnotes = $modules->get('QnotesItemCxm');
-		$cxm    = $modules->get('XrefCxm');
+		$cxm    = CxmController::getCxm();
 		$xref = $cxm->get_create_xref($data->custID, $data->custitemID);
 		$item = $itm->get_item($data->itemID);
 
@@ -85,11 +87,11 @@ class Cxm extends ItmFunction {
 
 		$html = '';
 		$html .= self::cxmHeaders();
-		$html .= BaseCxm::lockXref($page, $cxm, $xref);
+		$html .= CxmController::lockXref($page, $cxm, $xref);
 		$html .= $config->twig->render('items/itm/xrefs/cxm/form/display.twig', ['xref' => $xref, 'item' => $item, 'cxm' => $cxm, 'qnotes' => $qnotes, 'customer' => $cxm->get_customer($data->custID)]);
 
 		if (!$xref->isNew()) {
-			$html .= BaseCxm::qnotesDisplay($xref);
+			$html .= CxmController::qnotesDisplay($xref);
 		}
 
 		$page->js .= $config->twig->render('items/cxm/item/form/js.twig', ['cxm' => $cxm]);
@@ -126,13 +128,13 @@ class Cxm extends ItmFunction {
 		$page    = self::pw('page');
 		$config  = self::pw('config');
 		$modules = self::pw('modules');
-		$itm    = self::getItm();
+		$itm     = self::getItm();
 		$item = $itm->get_item($data->itemID);
-		$cxm = $modules->get('XrefCxm');
+		$cxm  = CxmController::getCxm();
 		$cxm->recordlocker->remove_lock();
-		$filter = $modules->get('FilterXrefItemCxm');
-		$filter->filter_input($input);
-		$filter->apply_sortby($page);
+		$filter = new CxmFilter();
+		$filter->filterInput($input);
+		$filter->sortby($page);
 		$xrefs = $filter->query->paginate($input->pageNum, 10);
 		$page->title = "CXM";
 		$page->headline = "ITM: $data->itemID CXM";

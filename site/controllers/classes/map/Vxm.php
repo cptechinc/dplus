@@ -5,6 +5,7 @@ use ItemXrefVendor;
 use ProcessWire\Page, ProcessWire\XrefVxm as VxmCRUD;
 // DplusFilters
 use Dplus\Filters\Map\Vendor as VendorFilter;
+use Dplus\Filters\Map\Vxm    as VxmFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
@@ -155,9 +156,9 @@ class Vxm extends AbstractController {
 		$vxm    = self::vxmMaster();
 		$vxm->recordlocker->remove_lock();
 		$vendor = $vxm->get_vendor($data->vendorID);
-		$filter = self::pw('modules')->get('FilterXrefItemVxm');
+		$filter = new VxmFilter();
 		$filter->vendorid($data->vendorID);
-		$filter->apply_sortby($page);
+		$filter->sortby($page);
 		$page->headline = "VXM: Vendor $data->vendorID";
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		$html = $config->twig->render('items/vxm/list/item/vendor/display.twig', ['vxm' => $vxm, 'items' => $xrefs, 'vendor' => $vendor]);

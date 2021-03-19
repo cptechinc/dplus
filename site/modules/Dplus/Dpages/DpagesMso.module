@@ -1,8 +1,11 @@
 <?php namespace ProcessWire;
-
+// Purl
 use Purl\Url;
+// Dplus Model
 use SalesOrder, SalesOrderQuery;
 use SalesHistory, SalesHistoryQuery;
+// Dplus Filters
+use Dplus\Filters\Mso\Cxm as CxmFilter;
 
 /**
  * class DpagesMso
@@ -408,11 +411,11 @@ class DpagesMso extends Dpages implements Module {
 			$url->query->set('focus', $focus);
 		}
 
-		$cxm = $this->wire('modules')->get('XrefCxm');
+		$cxm  = $this->wire('modules')->get('XrefCxm');
 		$item = $cxm->xref_by_recordlocker_key($focus);
 
 		if ($item) {
-			$filter = $this->wire('modules')->get('FilterXrefItemCxm');
+			$filter = new CxmFilter();
 			$filter->custid($custID);
 			$position = $filter->position($item);
 			$pagenbr = ceil($position / ($this->wire('session')->display - 1));

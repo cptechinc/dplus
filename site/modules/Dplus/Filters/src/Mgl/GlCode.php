@@ -1,47 +1,27 @@
 <?php namespace Dplus\Filters\Mgl;
-
+// Propel Classes
 use Propel\Runtime\ActiveQuery\Criteria;
+// Dplus Model
+use GlCodeQuery, GlCode as Model;
+// ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
+// Dplus Filters
 use Dplus\Filters\AbstractFilter;
 
-use GlCodeQuery, GlCode as GlCodeClass;
-
+/**
+ * Wrapper Class for adding Filters to the GlCodeQuery class
+ */
 class GlCode extends AbstractFilter {
 	const MODEL = 'GlCode';
 
 /* =============================================================
-	Abstract Contract Functions
+	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function initQuery() {
-		$this->query = GlCodeQuery::create();
-	}
-
 	public function _search($q) {
 		$columns = [
-			GlCodeClass::aliasproperty('id'),
-			GlCodeClass::aliasproperty('description'),
+			Model::aliasproperty('id'),
+			Model::aliasproperty('description'),
 		];
 		$this->query->search_filter($columns, strtoupper($q));
 	}
-
-/* =============================================================
-	Misc Query Functions
-============================================================= */
-	/**
-	 * Return Position of GlCode in results
-	 * @param  GlCodeClass $item GlCode
-	 * @return int
-	 */
-	public function position(GlCodeClass $p) {
-		$people = $this->query->find();
-		return $people->search($p);
-	}
-
-/* =============================================================
-	Filter Input Functions
-============================================================= */
-
-/* =============================================================
-	Base Filter Functions
-============================================================= */
 }

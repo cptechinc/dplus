@@ -3,9 +3,11 @@
 use ItemXrefUpcQuery, ItemXrefUpc;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\XrefUpc as UpcCRUD;
+// Dplus Filters
+use Dplus\Filters\Min\Upcx as UpcxFilter;
 // Mvc Controllers
 use Controllers\Min\Itm\ItmFunction;
-use Controllers\Min\Upcx as BaseUpcx;
+use Controllers\Min\Upcx as UpcxController;
 
 class Upcx extends ItmFunction {
 	public static function index($data) {
@@ -39,7 +41,7 @@ class Upcx extends ItmFunction {
 		$input = self::pw('input');
 
 		if ($data->action) {
-			$upcx = self::pw('modules')->get('XrefUpc');
+			$upcx = UpcxController::getUpcx();
 			$upcx->process_input($input);
 		}
 		$upc = $data->action == 'delete-upcx' ? '' : $data->upc;
@@ -70,7 +72,7 @@ class Upcx extends ItmFunction {
 		}
 		$config = self::pw('config');
 		$page   = self::pw('page');
-		$upcx   = self::pw('modules')->get('XrefUpc');
+		$upcx   = UpcxController::getUpcx();
 		$itm    = self::getItm();
 		$item = $itm->get_item($data->itemID);
 		$xref = $upcx->get_create_xref($data->upc);
@@ -85,7 +87,7 @@ class Upcx extends ItmFunction {
 
 		$html = '';
 		$html .= self::upcxHeaders();
-		$html .= BaseUpcx::lockXref($page, $upcx, $xref);
+		$html .= UpcxController::lockXref($page, $upcx, $xref);
 		$html .= $config->twig->render('items/itm/xrefs/upcx/form/display.twig', ['upcx' => $upcx, 'upc' => $xref, 'item' => $item]);
 		$page->js   .= $config->twig->render('items/upcx/form/js.twig', ['upc' => $xref]);
 		return $html;
@@ -100,14 +102,13 @@ class Upcx extends ItmFunction {
 		$input  = self::pw('input');
 		$page   = self::pw('page');
 		$config = self::pw('config');
-		$modules = self::pw('modules');
-		$itm    = self::getItm();
+		$itm     = self::getItm();
 		$item = $itm->get_item($data->itemID);
-		$upcx = $modules->get('XrefUpc');
+		$upcx = UpcxController::getUpcx();
 		$upcx->recordlocker->remove_lock();
-		$filter = $modules->get('FilterXrefItemUpc');
-		$filter->filter_input($input);
-		$filter->apply_sortby($page);
+		$filter = new UpcxFilter();
+		$filter->itemid($data->itemID);
+		$filter->sortby($page);
 		$upcs = $filter->query->paginate($input->pageNum, 10);
 		$page->title = "UPCs";
 		$page->headline = "ITM: $data->itemID UPCX";

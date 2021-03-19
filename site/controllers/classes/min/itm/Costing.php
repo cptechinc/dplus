@@ -10,10 +10,9 @@ class Costing extends ItmFunction {
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
-		$page = self::pw('page');
 
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::pw('page')->body;
 		}
 
 		self::getItmCosting()->init_configs();
@@ -30,20 +29,18 @@ class Costing extends ItmFunction {
 	}
 
 	public static function handleCRUD($data) {
-
-		$page = self::pw('page');
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::pw('page')->body;
 		}
 
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParameters($data, $fields);
 		$input = self::pw('input');
-		$itmPricing = self::getItmCosting();
-		$itmPricing->init_configs();
+		$itmCosting = self::getItmCosting();
+		$itmCosting->init_configs();
 
 		if ($data->action) {
-			$itmPricing->process_input($input);
+			$itmCosting->process_input($input);
 		}
 
 		self::pw('session')->redirect($page->itm_pricingURL($data->itemID), $http301 = false);
@@ -51,7 +48,7 @@ class Costing extends ItmFunction {
 
 	public static function costing($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::pw('page')->body;
 		}
 
 		$fields = ['itemID|text', 'action|text'];

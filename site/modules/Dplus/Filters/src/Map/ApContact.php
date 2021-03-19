@@ -1,20 +1,20 @@
 <?php namespace Dplus\Filters\Map;
-
+// Dplus Model
+use ApContactQuery, ApContact as Model;
+// ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
+// Dplus Filters
 use Dplus\Filters\AbstractFilter;
 
-use ApContactQuery, ApContact as Model;
-
+/**
+ * Wrapper Class for adding Filters to the ApContactQuery class
+ */
 class ApContact extends AbstractFilter {
 	const MODEL = 'ApContact';
 
 /* =============================================================
-	Abstract Contract Functions
+	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function initQuery() {
-		$this->query = ApContactQuery::create();
-	}
-
 	public function _search($q) {
 		$columns = [
 			Model::get_aliasproperty('contactid'),

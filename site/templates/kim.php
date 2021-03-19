@@ -1,20 +1,16 @@
 <?php
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
-	use Controllers\Mki\Kim;
+	use Controllers\Mki\Kim as KimController;
 
 	$routes = [
-		['GET', '', Kim::class, 'index'],
-		['GET', 'page{d:\d+}', Kim::class, 'listKits'],
-		['POST', '', Kim::class, 'handleCRUD'],
+		['GET', '', KimController::class, 'index'],
+		['GET', 'page{d:\d+}', KimController::class, 'listKits'],
+		['POST', '', KimController::class, 'handleCRUD'],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
-	$response = $router->route();
-
-	if ($router->hasError()) {
-		$page->body = $response;
-	}
+	$page->body = $router->route();
 
 	if ($router->hasError() === false) {
 		$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));

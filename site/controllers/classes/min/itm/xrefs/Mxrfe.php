@@ -3,6 +3,8 @@
 use ItemXrefManufacturerQuery, ItemXrefManufacturer;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeCRUD;
+// Dplus Filters
+use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
 // Mvc Controllers
 use Controllers\Min\Itm\ItmFunction;
 use Controllers\Map\Mxrfe as BaseMxrfe;
@@ -105,7 +107,6 @@ class Mxrfe extends ItmFunction {
 		}
 		$fields = ['itemID|text', 'q|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
-		$input   = self::pw('input');
 		$page    = self::pw('page');
 		$config  = self::pw('config');
 		$modules = self::pw('modules');
@@ -113,10 +114,10 @@ class Mxrfe extends ItmFunction {
 		$item = $itm->get_item($data->itemID);
 		$mxrfe = BaseMxrfe::mxrfeMaster();
 		$mxrfe->recordlocker->remove_lock();
-		$filter = $modules->get('FilterXrefItemMxrfe');
-		$filter->filter_input($input);
-		$filter->apply_sortby($page);
-		$xrefs = $filter->query->paginate($input->pageNum, 10);
+		$filter = new MxrfeFilter();
+		$filter->itemid($data->itemID);
+		$filter->sortby($page);
+		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 10);
 		$page->title = "MXRFE";
 		$page->headline = "ITM: $data->itemID MXRFE";
 
