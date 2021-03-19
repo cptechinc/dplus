@@ -16,8 +16,7 @@ abstract class AbstractFilter extends WireData {
 /* =============================================================
 	Abstract Functions
 ============================================================= */
-	/** Set $this->query **/
-	abstract public function initQuery();
+
 
 	/** Filter Query with Input Data **/
 
@@ -29,8 +28,32 @@ abstract class AbstractFilter extends WireData {
 	Functions
 ============================================================= */
 	public function __construct() {
-		$model = $this::MODEL.'Query';
-		$this->query = $model::create();
+		$this->_initQuery();
+	}
+
+	/**
+	 * Return Query Class Name
+	 * @return string
+	 */
+	public function queryClassName() {
+		return $this::MODEL.'Query';
+	}
+
+	/**
+	 * Return Query Class for self::MODEL
+	 * @return ModelCriteria
+	 */
+	public function _initQuery() {
+		$class = self::queryClassName();
+		$this->query = $class::create();
+	}
+
+	/**
+	 * Set and Initialize $this->query
+	 * @return void
+	 */
+	public function initQuery() {
+		$this->_initQuery();
 	}
 
 	/**
