@@ -2,7 +2,8 @@
 // Purl
 use Purl\Url;
 // Dplus Filters
-use Dplus\Filters\Mso\Cxm as CxmFilter;
+use Dplus\Filters\Mso\Cxm   as CxmFilter;
+use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
 
 /**
  * Module that handles the editing of the ITM item X-refs
@@ -447,7 +448,7 @@ class ItmXrefs extends WireData implements Module {
 		}
 		$url = new Url($this->_itm_xrefs_mxrfeURL($itemID));
 		$url->query->set('focus', $focus);
-		$filter = $this->wire('modules')->get('FilterXrefItemMxrfe');
+		$filter = new MxrfeFilter();
 		$filter->itemid($itemID);
 		$position = $filter->position($xref);
 		$pagenbr = ceil($position / $this->wire('session')->display);

@@ -28,10 +28,8 @@ class FilterXref extends WireData implements Module {
 				'singular' => true,
 				'autoload' => true,
 				'installs' => array(
-					'FilterItemCxm',
 					'FilterItemVxm',
 					'FilterItemUpc',
-					'FilterXrefItemMxrfe'
 				)
 			);
 		}
