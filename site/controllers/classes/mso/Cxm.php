@@ -3,10 +3,14 @@
 use ItemXrefCustomer;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\XrefCxm as CxmCRUD;
+// Dplus Filters
+use Dplus\Filters\Mso\Cxm as CxmFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
 class Cxm extends AbstractController {
+	private static $cxm;
+
 	public static function index($data) {
 		$fields = ['custID|text', 'custitemID|text', 'q|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -34,7 +38,7 @@ class Cxm extends AbstractController {
 		$modules->get('DpagesMso')->init_cxm_hooks();
 
 		if ($data->action) {
-			$cxm = $modules->get('XrefCxm');
+			$cxm = self::getCxm();
 			$cxm->process_input($input);
 		}
 		$session = self::pw('session');
@@ -62,9 +66,9 @@ class Cxm extends AbstractController {
 		$page    = self::pw('page');
 		$modules = self::pw('modules');
 		$modules->get('DpagesMso')->init_cxm_hooks();
-		$cxm = $modules->get('XrefCxm');
+		$cxm = self::getCxm();;
 		$customer = $cxm->customer($data->custID);
-		$xref = $cxm->get_create_xref($data->custID, $data->custitemID, $data->itemID);
+		$xref     = $cxm->get_create_xref($data->custID, $data->custitemID, $data->itemID);
 		$qnotes = $modules->get('QnotesItemCxm');
 		$html = '';
 		if ($xref->isNew()) {
@@ -151,7 +155,7 @@ class Cxm extends AbstractController {
 		$config  = self::pw('config');
 		$page    = self::pw('page');
 		$modules = self::pw('modules');
-		$cxm = $modules->get('XrefCxm');
+		$cxm     = self::getCxm();
 		$cxm->recordlocker->remove_lock();
 		$modules->get('DpagesMso')->init_cxm_hooks();
 		$filter = $modules->get('FilterCustomers');
@@ -178,15 +182,15 @@ class Cxm extends AbstractController {
 		$page    = self::pw('page');
 		$modules = self::pw('modules');
 		$modules->get('DpagesMso')->init_cxm_hooks();
-		$cxm  = $modules->get('XrefCxm');
+		$cxm  = self::getCxm();
 		$cxm->recordlocker->remove_lock();
 		$customer = $cxm->customer($data->custID);
-		$filter = $modules->get('FilterXrefItemCxm');
+		$filter   = new CxmFilter();
 		$filter->custid($data->custID);
-		$filter->apply_sortby($page);
+		$filter->sortby($page);
 		if ($data->q) {
 			$page->headline = "CXM: $customer->name searching '$data->q'";
-			$filter_cxm->search($data->q);
+			$filter->search($data->q);
 		}
 		$page->headline = "CXM: $customer->name";
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
@@ -198,5 +202,12 @@ class Cxm extends AbstractController {
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $xrefs]);
 		$page->js   .= $config->twig->render('items/cxm/list/js.twig', []);
 		return $html;
+	}
+
+	public static function getCxm() {
+		if (empty(self::$cxm)) {
+			self::$cxm = self::pw('modules')->get('XrefCxm');
+		}
+		return self::$cxm;
 	}
 }

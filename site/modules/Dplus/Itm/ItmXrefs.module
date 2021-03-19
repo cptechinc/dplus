@@ -1,6 +1,8 @@
 <?php namespace ProcessWire;
-
+// Purl
 use Purl\Url;
+// Dplus Filters
+use Dplus\Filters\Mso\Cxm as CxmFilter;
 
 /**
  * Module that handles the editing of the ITM item X-refs
@@ -327,7 +329,7 @@ class ItmXrefs extends WireData implements Module {
 		$item = $cxm->xref_by_recordlocker_key($focus);
 
 		if ($item) {
-			$filter = $this->wire('modules')->get('FilterXrefItemCxm');
+			$filter = new CxmFilter();
 			$filter->itemid($itemID);
 			$position = $filter->position($item);
 
