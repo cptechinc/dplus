@@ -1,20 +1,20 @@
 <?php namespace Dplus\Filters\Mki;
-
+// Dplus Model
+use InvKitQuery, InvKit as Model;
+// ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
+// Dplus Filters
 use Dplus\Filters\AbstractFilter;
 
-use InvKitQuery, InvKit as Model;
-
+/**
+* Wrapper Class for InvKitQuery
+*/
 class Kim extends AbstractFilter {
 	const MODEL = 'InvKit';
 
 /* =============================================================
-	Abstract Contract Functions
+	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function initQuery() {
-		$this->query = InvKitQuery::create();
-	}
-
 	public function _search($q) {
 		$columns = [
 			Model::aliasproperty('itemid'),
@@ -22,6 +22,17 @@ class Kim extends AbstractFilter {
 		$this->query->search_filter($columns, strtoupper($q));
 	}
 
+/* =============================================================
+	2. Base Filter Functions
+============================================================= */
+
+/* =============================================================
+	3. Input Filter Functions
+============================================================= */
+
+/* =============================================================
+	4. Misc Query Functions
+============================================================= */
 	/**
 	 * Return if Item Exists
 	 * @param  string $itemID Item ID
@@ -29,19 +40,6 @@ class Kim extends AbstractFilter {
 	 */
 	public function exists($itemID) {
 		return boolval(InvKitQuery::create()->filterByItemid($itemID)->count());
-	}
-
-/* =============================================================
-	Misc Query Functions
-============================================================= */
-	/**
-	 * Return Position of InvKit in results
-	 * @param  Model $item InvKit
-	 * @return int
-	 */
-	public function position(Model $item) {
-		$results = $this->query->find();
-		return $results->search($item);
 	}
 
 	/**
@@ -54,7 +52,7 @@ class Kim extends AbstractFilter {
 		if (is_object($item)) {
 			$itemID = $item->itemid;
 		}
-		$q = InvKitQuery::create();
+		$q = $this->getQueryClass();
 		$q->execute_query('SET @rownum = 0');
 		$table = $q->getTableMap()::TABLE_NAME;
 		$sql = "SELECT x.position FROM (SELECT InitItemNbr, @rownum := @rownum + 1 AS position FROM $table) x WHERE InitItemNbr = :itemid";

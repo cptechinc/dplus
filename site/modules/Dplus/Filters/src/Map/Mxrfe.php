@@ -35,7 +35,7 @@ class Mxrfe extends AbstractFilter {
 		$this->itemidInput($input);
 		$this->vendoridInput($input);
 	}
-	
+
 /* =============================================================
 	2. Base Filter Functions
 ============================================================= */
@@ -64,6 +64,7 @@ class Mxrfe extends AbstractFilter {
 		}
 		return $this;
 	}
+	
 /* =============================================================
 	3. Input Functions
 ============================================================= */

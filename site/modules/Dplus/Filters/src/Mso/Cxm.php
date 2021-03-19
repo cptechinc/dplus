@@ -7,6 +7,7 @@ use ItemXrefCustomerQuery, ItemXrefCustomer as Model;
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page, ProcessWire\User;
 // Dplus filters
 use Dplus\Filters\AbstractFilter;
+
 /**
  * Wrapper Class for adding Filters to the ItemXrefCustomerQuery class
  */
@@ -14,12 +15,8 @@ class Cxm extends AbstractFilter {
 	const MODEL = 'ItemXrefCustomer';
 
 /* =============================================================
-	Abstract Contract Functions
+	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function initQuery() {
-		$this->query = ItemXrefCustomerQuery::create();
-	}
-
 	public function _search($q) {
 		$columns = [
 			Model::get_aliasproperty('itemid'),
@@ -38,22 +35,37 @@ class Cxm extends AbstractFilter {
 		$this->itemidInput($input);
 		$this->custidInput($input);
 	}
-
 /* =============================================================
-	Misc Query Functions
+	2. Base Filter Functions
 ============================================================= */
 	/**
-	 * Return Position of ItemXrefCustomer in results
-	 * @param  Model $item ItemXrefCustomer
-	 * @return int
+	 * Filter the Query on the Customer ID column
+	 * @param  string|array $custID      Customer ID
+	 * @param  string       $comparison
+	 * @return self
 	 */
-	public function position(Model $x) {
-		$xrefs = $this->query->find();
-		return $xrefs->search($x);
+	public function custid($custID, $comparison = null) {
+		if ($custID)  {
+			$this->query->filterByCustid($custID, $comparison);
+		}
+		return $this;
+	}
+
+	/**
+	 * Filter the Query on the Customer ID column
+	 * @param  string|array $itemID      Item ID
+	 * @param  string       $comparison
+	 * @return self
+	 */
+	public function itemid($itemID, $comparison = null) {
+		if ($itemID)  {
+			$this->query->filterByItemid($itemID, $comparison);
+		}
+		return $this;
 	}
 
 /* =============================================================
-	Input Functions
+	3. Input Functions
 ============================================================= */
 	/**
 	 * Filter the Query on the Customer ID column
@@ -81,34 +93,5 @@ class Cxm extends AbstractFilter {
 
 		$itemID = $values->ouritemID ? $values->array('ouritemID') : $values->array('itemID');
 		return $this->itemid($itemID);
-	}
-
-/* =============================================================
-	Base Filter Functions
-============================================================= */
-	/**
-	 * Filter the Query on the Customer ID column
-	 * @param  string|array $custID      Customer ID
-	 * @param  string       $comparison
-	 * @return self
-	 */
-	public function custid($custID, $comparison = null) {
-		if ($custID)  {
-			$this->query->filterByCustid($custID, $comparison);
-		}
-		return $this;
-	}
-
-	/**
-	 * Filter the Query on the Customer ID column
-	 * @param  string|array $itemID      Item ID
-	 * @param  string       $comparison
-	 * @return self
-	 */
-	public function itemid($itemID, $comparison = null) {
-		if ($itemID)  {
-			$this->query->filterByItemid($itemID, $comparison);
-		}
-		return $this;
 	}
 }

@@ -6,16 +6,15 @@ use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Filters
 use Dplus\Filters\AbstractFilter;
 
+/**
+ * Wrapper Class for adding Filters to the ItemMasterItemQuery class
+ */
 class ItemMaster extends AbstractFilter {
 	const MODEL = 'ItemMasterItem';
 
 /* =============================================================
-	Abstract Contract Functions
+	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function initQuery() {
-		$this->query = ItemMasterItemQuery::create();
-	}
-
 	public function _search($q) {
 		$columns = [
 			Model::aliasproperty('itemid'),
@@ -25,6 +24,9 @@ class ItemMaster extends AbstractFilter {
 		$this->query->search_filter($columns, strtoupper($q));
 	}
 
+/* =============================================================
+	Misc Query Functions
+============================================================= */
 	/**
 	 * Return if Item Exists
 	 * @param  string $itemID Item ID
@@ -34,9 +36,6 @@ class ItemMaster extends AbstractFilter {
 		return boolval(ItemMasterItemQuery::create()->filterByItemid($itemID)->count());
 	}
 
-/* =============================================================
-	Misc Query Functions
-============================================================= */
 	/**
 	 * Return Position of Item in results
 	 * @param  Model|string $item ItemMasterItem|Item ID
@@ -47,7 +46,7 @@ class ItemMaster extends AbstractFilter {
 		if (is_object($item)) {
 			$itemID = $item->itemid;
 		}
-		$q = ItemMasterItemQuery::create();
+		$q = $this->getQueryClass();
 		$q->execute_query('SET @rownum = 0');
 		$table = $q->getTableMap()::TABLE_NAME;
 		$sql = "SELECT x.position FROM (SELECT InitItemNbr, @rownum := @rownum + 1 AS position FROM $table) x WHERE InitItemNbr = :itemid";

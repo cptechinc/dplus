@@ -79,7 +79,7 @@ class Vxm extends AbstractFilter {
 	}
 
 /* =============================================================
-	3. Input Functions
+	3. Input Filter Functions
 ============================================================= */
 	/**
 	 * Filter the Query on the Vendor ID column
