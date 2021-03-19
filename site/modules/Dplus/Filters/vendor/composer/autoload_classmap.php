@@ -20,6 +20,7 @@ return array(
     'Dplus\\Filters\\Mki\\Kim' => $baseDir . '/src/Mki/Kim.php',
     'Dplus\\Filters\\Mpo\\PurchaseOrder' => $baseDir . '/src/Mpo/PurchaseOrder.php',
     'Dplus\\Filters\\Mqo\\Quote' => $baseDir . '/src/Mqo/Quote.php',
+    'Dplus\\Filters\\Mso\\Cxm' => $baseDir . '/src/Mso/Cxm.php',
     'Dplus\\Filters\\Mso\\SalesHistory' => $baseDir . '/src/Mso/SalesHistory.php',
     'Dplus\\Filters\\Mso\\SalesHistory\\Detail' => $baseDir . '/src/Mso/SalesHistory/SalesHistoryDetail.php',
     'Dplus\\Filters\\Mso\\SalesOrder' => $baseDir . '/src/Mso/SalesOrder.php',
