@@ -1,9 +1,10 @@
 <?php namespace Dplus\Filters\Min;
-
+// Dplus Model
+use ItemMasterItemQuery, ItemMasterItem as Model;
+// ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
+// Dplus Filters
 use Dplus\Filters\AbstractFilter;
-
-use ItemMasterItemQuery, ItemMasterItem as ItemMasterItemClass;
 
 class ItemMaster extends AbstractFilter {
 	const MODEL = 'ItemMasterItem';
@@ -17,9 +18,9 @@ class ItemMaster extends AbstractFilter {
 
 	public function _search($q) {
 		$columns = [
-			ItemMasterItemClass::aliasproperty('itemid'),
-			ItemMasterItemClass::aliasproperty('description'),
-			ItemMasterItemClass::aliasproperty('description2'),
+			Model::aliasproperty('itemid'),
+			Model::aliasproperty('description'),
+			Model::aliasproperty('description2'),
 		];
 		$this->query->search_filter($columns, strtoupper($q));
 	}
@@ -38,17 +39,17 @@ class ItemMaster extends AbstractFilter {
 ============================================================= */
 	/**
 	 * Return Position of ItemMasterItem in results
-	 * @param  ItemMasterItemClass $item ItemMasterItem
+	 * @param  Model $item ItemMasterItem
 	 * @return int
 	 */
-	public function position(ItemMasterItemClass $item) {
+	public function position(Model $item) {
 		$results = $this->query->find();
 		return $results->search($item);
 	}
 
 	/**
 	 * Return Position of Item in results
-	 * @param  ItemMasterItemClass|string $item ItemMasterItem|Item ID
+	 * @param  Model|string $item ItemMasterItem|Item ID
 	 * @return int
 	 */
 	public function positionQuick($item) {
