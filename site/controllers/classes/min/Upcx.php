@@ -3,10 +3,14 @@
 use ItemXrefUpcQuery, ItemXrefUpc;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\XrefUpc as UpcCRUD;
+// Dplus Filters
+use Dplus\Filters\Min\Upcx as UpcxFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
 class Upcx extends AbstractController {
+	private static $upcx;
+
 	public static function index($data) {
 		$fields = ['upc|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -29,7 +33,7 @@ class Upcx extends AbstractController {
 		$input = self::pw('input');
 
 		if ($data->action) {
-			$upcx = self::pw('modules')->get('XrefUpc');
+			$upcx = self::getUpcx();
 			$upcx->process_input($input);
 		}
 		self::pw('session')->redirect(self::pw('page')->upcURL($data->upc), $http301 = false);
@@ -43,7 +47,7 @@ class Upcx extends AbstractController {
 		}
 		$config = self::pw('config');
 		$page   = self::pw('page');
-		$upcx   = self::pw('modules')->get('XrefUpc');
+		$upcx   = self::getUpcx();
 		$xref = $upcx->get_create_xref($data->upc);
 
 		if ($xref->isNew()) {
@@ -83,24 +87,30 @@ class Upcx extends AbstractController {
 
 	public static function list($data) {
 		$data = self::sanitizeParametersShort($data, ['q|text']);
-		$wire = self::pw();
-		$page = $wire->wire('page');
-		$upcx = $wire->modules->get('XrefUpc');
+		$page = self::pw('page');
+		$upcx = self::getUpcx();
 		$upcx->recordlocker->remove_lock();
-		$filter = $wire->modules->get('FilterXrefItemUpc');
+		$filter = new UpcxFilter();
 
 		if ($data->q) {
 			$page->headline = "UPCX: Results for '$data->q'";
 			$filter->search(strtoupper($data->q));
 		}
-		$filter->apply_sortby($page);
-		$upcs = $filter->query->paginate($wire->wire('input')->pageNum, 10);
-		$config = $wire->wire('config');
+		$filter->sortby($page);
+		$upcs = $filter->query->paginate(self::pw('input')->pageNum, 10);
+		$config = self::pw('config');
 
 		$html = '';
 		$html .= $config->twig->render('items/upcx/list/page.twig', ['upcx' => $upcx, 'upcs' => $upcs]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $upcs]);
 		$page->js   .= $config->twig->render('items/upcx/list/.js.twig');
 		return $html;
+	}
+
+	public static function getUpcx() {
+		if (empty(self::$upcx)) {
+			self::$upcx = self::pw('modules')->get('XrefUpc');
+		}
+		return self::$upcx;
 	}
 }

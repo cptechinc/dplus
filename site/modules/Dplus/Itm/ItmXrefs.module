@@ -4,6 +4,7 @@ use Purl\Url;
 // Dplus Filters
 use Dplus\Filters\Mso\Cxm   as CxmFilter;
 use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
+use Dplus\Filters\Min\Upcx as UpcxFilter;
 
 /**
  * Module that handles the editing of the ITM item X-refs
@@ -178,7 +179,7 @@ class ItmXrefs extends WireData implements Module {
 
 		$url = new Url($this->get_upc_listURL($itemID));
 		$xref = $upcx->xref($focus);
-		$filter = $this->wire->modules('FilterXrefItemUpc');
+		$filter = new UpcxFilter();
 		$filter->itemid($itemID);
 		$offset = $filter->position($xref);
 		$pagenbr = ceil($offset / $this->wire('session')->display);
