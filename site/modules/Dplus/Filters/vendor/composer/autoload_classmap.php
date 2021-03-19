@@ -9,6 +9,7 @@ return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Dplus\\Filters\\AbstractFilter' => $baseDir . '/src/AbstractFilter.php',
     'Dplus\\Filters\\Map\\ApContact' => $baseDir . '/src/Map/ApContact.php',
+    'Dplus\\Filters\\Map\\Mxrfe' => $baseDir . '/src/Map/Mxrfe.php',
     'Dplus\\Filters\\Map\\Vendor' => $baseDir . '/src/Map/Vendor.php',
     'Dplus\\Filters\\Mar\\Customer' => $baseDir . '/src/Mar/Customer.php',
     'Dplus\\Filters\\Mar\\SalesPerson' => $baseDir . '/src/Mar/SalesPerson.php',
