@@ -4,7 +4,8 @@ use Purl\Url;
 // Dplus Filters
 use Dplus\Filters\Mso\Cxm   as CxmFilter;
 use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
-use Dplus\Filters\Min\Upcx as UpcxFilter;
+use Dplus\Filters\Map\Vxm   as VxmFilter;
+use Dplus\Filters\Min\Upcx  as UpcxFilter;
 
 /**
  * Module that handles the editing of the ITM item X-refs
@@ -238,7 +239,7 @@ class ItmXrefs extends WireData implements Module {
 		$item = $vxm->xref_by_recordlocker_key($focus);
 
 		if ($item) {
-			$filter = $this->wire('modules')->get('FilterXrefItemVxm');
+			$filter = new VxmFilter();
 			$filter->itemid($itemID);
 			$position = $filter->position($item);
 

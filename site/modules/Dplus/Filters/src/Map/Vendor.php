@@ -32,16 +32,6 @@ class Vendor extends AbstractFilter {
 	Misc Query Functions
 ============================================================= */
 	/**
-	 * Return Position of Vendor in results
-	 * @param  Model $v Vendor
-	 * @return int
-	 */
-	public function position(Model $v) {
-		$vendors = $this->query->find();
-		return $people->search($v);
-	}
-
-	/**
 	 * Return Vendor
 	 * @param  string $vendorID Vendor ID
 	 * @return Vendor
