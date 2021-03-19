@@ -15,16 +15,13 @@ class Mxrfe extends AbstractFilter {
 	const MODEL = 'ItemXrefManufacturer';
 
 /* =============================================================
-	Abstract Contract Functions
+	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function initQuery() {
-		$this->query = ItemXrefManufacturerQuery::create();
-	}
-
 	public function _search($q) {
 		$columns = [
-			Model::get_aliasproperty('itemid'),
-			Model::get_aliasproperty('vendorid')
+			Model::aliasproperty('itemid'),
+			Model::aliasproperty('mnfrid'),
+			Model::aliasproperty('mnfritemid'),
 		];
 		$this->query->search_filter($columns, strtoupper($q));
 	}
@@ -38,22 +35,37 @@ class Mxrfe extends AbstractFilter {
 		$this->itemidInput($input);
 		$this->vendoridInput($input);
 	}
-
+	
 /* =============================================================
-	Misc Query Functions
+	2. Base Filter Functions
 ============================================================= */
 	/**
-	 * Return Position of ItemXrefManufacturer in results
-	 * @param  Model $item ItemXrefManufacturer
-	 * @return int
+	 * Filter the Query on the Vendor ID column
+	 * @param  string|array $vendorID      Vendor ID
+	 * @param  string       $comparison
+	 * @return self
 	 */
-	public function position(Model $x) {
-		$xrefs = $this->query->find();
-		return $xrefs->search($x);
+	public function vendorid($vendorID, $comparison = null) {
+		if ($vendorID)  {
+			$this->query->filterByVendorid($vendorID, $comparison);
+		}
+		return $this;
 	}
 
+	/**
+	 * Filter the Query on the Item ID column
+	 * @param  string|array $itemID      Item ID
+	 * @param  string       $comparison
+	 * @return self
+	 */
+	public function itemid($itemID, $comparison = null) {
+		if ($itemID)  {
+			$this->query->filterByItemid($itemID, $comparison);
+		}
+		return $this;
+	}
 /* =============================================================
-	Input Functions
+	3. Input Functions
 ============================================================= */
 	/**
 	 * Filter the Query on the Vendor ID column
@@ -81,34 +93,5 @@ class Mxrfe extends AbstractFilter {
 
 		$itemID = $values->ouritemID ? $values->array('ouritemID') : $values->array('itemID');
 		return $this->itemid($itemID);
-	}
-
-/* =============================================================
-	Base Filter Functions
-============================================================= */
-	/**
-	 * Filter the Query on the Vendor ID column
-	 * @param  string|array $vendorID      Vendor ID
-	 * @param  string       $comparison
-	 * @return self
-	 */
-	public function vendorid($vendorID, $comparison = null) {
-		if ($vendorID)  {
-			$this->query->filterByVendorid($vendorID, $comparison);
-		}
-		return $this;
-	}
-
-	/**
-	 * Filter the Query on the Item ID column
-	 * @param  string|array $itemID      Item ID
-	 * @param  string       $comparison
-	 * @return self
-	 */
-	public function itemid($itemID, $comparison = null) {
-		if ($itemID)  {
-			$this->query->filterByItemid($itemID, $comparison);
-		}
-		return $this;
 	}
 }
