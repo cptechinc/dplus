@@ -1,12 +1,14 @@
 <?php namespace Dplus\Filters;
-
+// Propel Classes
+use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
+use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Model;
+//  ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
-use Propel\Runtime\ActiveQuery\ModelCriteria;
 
 /**
  * Base Filter Class
  *
- * @property ModelCriteria $query Query to filter
+ * @property Query $query Query to filter
  */
 abstract class AbstractFilter extends WireData {
 	const MODEL = '';
@@ -16,11 +18,6 @@ abstract class AbstractFilter extends WireData {
 /* =============================================================
 	Abstract Functions
 ============================================================= */
-
-
-	/** Filter Query with Input Data **/
-
-
 	/** Filter Columns using a Wildcard Search **/
 	abstract public function _search($q);
 
@@ -40,12 +37,20 @@ abstract class AbstractFilter extends WireData {
 	}
 
 	/**
+	 * Return New Query Class
+	 * @return Query
+	 */
+	public function getQueryClass() {
+		$class = self::queryClassName();
+		return $class::create();
+	}
+
+	/**
 	 * Return Query Class for self::MODEL
-	 * @return ModelCriteria
+	 * @return Query
 	 */
 	public function _initQuery() {
-		$class = self::queryClassName();
-		$this->query = $class::create();
+		$this->query = $this->getQueryClass();
 	}
 
 	/**
@@ -58,7 +63,7 @@ abstract class AbstractFilter extends WireData {
 
 	/**
 	 * Returns Query
-	 * @return ModelCriteria
+	 * @return Query
 	 */
 	public function query() {
 		return $this->query;
@@ -112,8 +117,18 @@ abstract class AbstractFilter extends WireData {
 			$orderbycolumn = $page->orderby_column;
 			$sort = $page->orderby_sort;
 			$model = $this::MODEL;
-			$tablecolumn = $model::get_aliasproperty($orderbycolumn);
+			$tablecolumn = $model::aliasproperty($orderbycolumn);
 			$this->query->sortBy($tablecolumn, $sort);
 		}
+	}
+
+	/**
+	 * Return Position of Record in results
+	 * @param  Model $record (Record Class)
+	 * @return int
+	 */
+	public function position(Model $record) {
+		$results = $this->query->find();
+		return $results->search($record);
 	}
 }
