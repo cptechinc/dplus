@@ -1,10 +1,9 @@
 <?php
-	$filter_salesorders = $modules->get('FilterSalesOrders');
-	$filter_salesorders->init_query($user);
-	$filter_salesorders->filter_query($input);
-	$query = $filter_salesorders->get_query();
-	$query->orderByDate_ordered('DESC');
-	$orders = $query->paginate($input->pageNum, 10);
+	$filter_salesorders = new Dplus\Filters\Mso\SalesOrder();
+	$filter_salesorders->user($user);
+	$filter_salesorders->filterInput($input);
+	$filter_salesorders->query->orderByDate_ordered('DESC');
+	$orders = $filter_salesorders->query->paginate($input->pageNum, 10);
 
 	$twig_params['orders']       = $orders;
 	$twig_params['orders_count'] = $orders->getNbResults();
