@@ -9,10 +9,10 @@ use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
  * Base Filter Class
  * |
  * | Child Classes should be Organized in the Following Manner:
- * | 1. Abstract / Extensible Functions
+ * | 1. Abstract Contract / Extensible Functions
  * | 2. Base Filter Functions
- * | 4. Input Filter Classes
- * | 5. Misc Query Functions
+ * | 3. Input Filter Classes
+ * | 4. Misc Query Functions
  * |
  * @property Query $query Query to filter
  */
