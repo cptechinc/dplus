@@ -1,12 +1,20 @@
 <?php namespace Dplus\Filters;
-
+// Propel Classes
+use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
+use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Model;
+//  ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
-use Propel\Runtime\ActiveQuery\ModelCriteria;
 
 /**
  * Base Filter Class
- *
- * @property ModelCriteria $query Query to filter
+ * |
+ * | Child Classes should be Organized in the Following Manner:
+ * | 1. Abstract Contract / Extensible Functions
+ * | 2. Base Filter Functions
+ * | 3. Input Filter Classes
+ * | 4. Misc Query Functions
+ * |
+ * @property Query $query Query to filter
  */
 abstract class AbstractFilter extends WireData {
 	const MODEL = '';
@@ -16,26 +24,64 @@ abstract class AbstractFilter extends WireData {
 /* =============================================================
 	Abstract Functions
 ============================================================= */
-	/** Set $this->query **/
-	abstract public function initQuery();
-
-	/** Filter Query with Input Data **/
-
-
 	/** Filter Columns using a Wildcard Search **/
 	abstract public function _search($q);
+
+/* =============================================================
+	Extensible Functions
+============================================================= */
+	/**
+	 * Filter Query with Input Data
+	 * @param  WireInput $input Input Data
+	 * @return self
+	 */
+	public function _filterInput(WireInput $input) {
+
+	}
 
 /* =============================================================
 	Functions
 ============================================================= */
 	public function __construct() {
-		$model = $this::MODEL.'Query';
-		$this->query = $model::create();
+		$this->_initQuery();
+	}
+
+	/**
+	 * Return Query Class Name
+	 * @return string
+	 */
+	public function queryClassName() {
+		return $this::MODEL.'Query';
+	}
+
+	/**
+	 * Return New Query Class
+	 * @return Query
+	 */
+	public function getQueryClass() {
+		$class = self::queryClassName();
+		return $class::create();
+	}
+
+	/**
+	 * Return Query Class for self::MODEL
+	 * @return Query
+	 */
+	public function _initQuery() {
+		$this->query = $this->getQueryClass();
+	}
+
+	/**
+	 * Set and Initialize $this->query
+	 * @return void
+	 */
+	public function initQuery() {
+		$this->_initQuery();
 	}
 
 	/**
 	 * Returns Query
-	 * @return ModelCriteria
+	 * @return Query
 	 */
 	public function query() {
 		return $this->query;
@@ -61,15 +107,6 @@ abstract class AbstractFilter extends WireData {
 	}
 
 	/**
-	 * Filter Query with Input Data
-	 * @param  WireInput $input Input Data
-	 * @return self
-	 */
-	public function _filterInput(WireInput $input) {
-
-	}
-
-	/**
 	 * Do a Wildcard search against columns
 	 * @param  string $q Search Query
 	 * @return self
@@ -89,8 +126,18 @@ abstract class AbstractFilter extends WireData {
 			$orderbycolumn = $page->orderby_column;
 			$sort = $page->orderby_sort;
 			$model = $this::MODEL;
-			$tablecolumn = $model::get_aliasproperty($orderbycolumn);
+			$tablecolumn = $model::aliasproperty($orderbycolumn);
 			$this->query->sortBy($tablecolumn, $sort);
 		}
+	}
+
+	/**
+	 * Return Position of Record in results
+	 * @param  Model $record (Record Class)
+	 * @return int
+	 */
+	public function position(Model $record) {
+		$results = $this->query->find();
+		return $results->search($record);
 	}
 }

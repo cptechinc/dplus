@@ -40,12 +40,11 @@
 	$config->scripts->append(hash_templatefile('scripts/lib/morris.js'));
 
 
-	$filter_salesorders = $modules->get('FilterSalesOrders');
-	$filter_salesorders->init_query($user);
-	$filter_salesorders->filter_input($input);
-	$query = $filter_salesorders->get_query();
-	$query->orderByDate_ordered('DESC');
-	$orders = $query->paginate($input->pageNum, 10);
+	$filter_salesorders = new Dplus\Filters\Mso\SalesOrder();
+	$filter_salesorders->user($user);
+	$filter_salesorders->filterInput($input);
+	$filter_salesorders->query->orderByDate_ordered('DESC');
+	$orders = $filter_salesorders->query->paginate($input->pageNum, 10);
 
 	$params_order['orders']         = $orders;
 	$params_order['count']          = $orders->getNbResults();
@@ -53,12 +52,11 @@
 	$params_order['url_order_list'] = $pages->get('pw_template=sales-orders')->url;
 	$page->body .= $config->twig->render("dashboard/components/sales-orders.twig", $params_order);
 
-	$filter_saleshistory = $modules->get('FilterSalesHistory');
-	$filter_saleshistory->init_query($user);
-	$filter_saleshistory->filter_input($input);
-	$query = $filter_saleshistory->get_query();
-	$query->orderByDate_ordered('DESC');
-	$invoices = $query->paginate($input->pageNum, 10);
+	$filter_saleshistory = new Dplus\Filters\Mso\SalesHistory();
+	$filter_saleshistory->user($user);
+	$filter_saleshistory->filterInput($input);
+	$filter_saleshistory->query->orderByDate_ordered('DESC');
+	$invoices = $filter_saleshistory->query->paginate($input->pageNum, 10);
 
 	$params_invoice['invoices']         = $invoices;
 	$params_invoice['count']   = $invoices->getNbResults();

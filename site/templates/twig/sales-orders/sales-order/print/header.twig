@@ -14,7 +14,7 @@
 	</div>
 	<div class="col-6 pull-left text-right">
 		<h1>Order # {{ order.ordernumber }}</h1>
-		<img src="data:image/png;base64, {{ barcoder.generate_barcode(order.ordernumber)|base64_encode }}" alt="Barcode for Order # {{ order.ordernumber }}">
+		<img src="data:image/png;base64, {{ barcoder.barcode(order.ordernumber)|base64_encode }}" alt="Barcode for Order # {{ order.ordernumber }}">
 
 		<div class="row">
 			<div class="col-7 pull-left">Order Date:</div>

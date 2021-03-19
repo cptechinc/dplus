@@ -1,6 +1,11 @@
 <?php namespace ProcessWire;
-
+// Purl
 use Purl\Url;
+// Dplus Filters
+use Dplus\Filters\Mso\Cxm   as CxmFilter;
+use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
+use Dplus\Filters\Map\Vxm   as VxmFilter;
+use Dplus\Filters\Min\Upcx  as UpcxFilter;
 
 /**
  * Module that handles the editing of the ITM item X-refs
@@ -175,7 +180,7 @@ class ItmXrefs extends WireData implements Module {
 
 		$url = new Url($this->get_upc_listURL($itemID));
 		$xref = $upcx->xref($focus);
-		$filter = $this->wire->modules('FilterXrefItemUpc');
+		$filter = new UpcxFilter();
 		$filter->itemid($itemID);
 		$offset = $filter->position($xref);
 		$pagenbr = ceil($offset / $this->wire('session')->display);
@@ -234,7 +239,7 @@ class ItmXrefs extends WireData implements Module {
 		$item = $vxm->xref_by_recordlocker_key($focus);
 
 		if ($item) {
-			$filter = $this->wire('modules')->get('FilterXrefItemVxm');
+			$filter = new VxmFilter();
 			$filter->itemid($itemID);
 			$position = $filter->position($item);
 
@@ -327,7 +332,7 @@ class ItmXrefs extends WireData implements Module {
 		$item = $cxm->xref_by_recordlocker_key($focus);
 
 		if ($item) {
-			$filter = $this->wire('modules')->get('FilterXrefItemCxm');
+			$filter = new CxmFilter();
 			$filter->itemid($itemID);
 			$position = $filter->position($item);
 
@@ -445,7 +450,7 @@ class ItmXrefs extends WireData implements Module {
 		}
 		$url = new Url($this->_itm_xrefs_mxrfeURL($itemID));
 		$url->query->set('focus', $focus);
-		$filter = $this->wire('modules')->get('FilterXrefItemMxrfe');
+		$filter = new MxrfeFilter();
 		$filter->itemid($itemID);
 		$position = $filter->position($xref);
 		$pagenbr = ceil($position / $this->wire('session')->display);

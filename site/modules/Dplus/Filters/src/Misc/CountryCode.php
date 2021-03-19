@@ -1,41 +1,27 @@
 <?php namespace Dplus\Filters\Misc;
-
+// Dplus Model
+use CountryCodeQuery, CountryCode as Model;
+// ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
+// Dplus Filters
 use Dplus\Filters\AbstractFilter;
 
-use CountryCodeQuery, CountryCode as CountryCodeModel;
-
+/**
+ * Wrapper Class for CountryCodeQuery
+ */
 class CountryCode extends AbstractFilter {
 	const MODEL = 'CountryCode';
 
 /* =============================================================
-	Abstract Contract Functions
+	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function initQuery() {
-		$this->query = CountryCodeQuery::create();
-	}
-
 	public function _search($q) {
 		$columns = [
-			CountryCode::get_aliasproperty('iso3'),
-			CountryCode::get_aliasproperty('iso2'),
-			CountryCode::get_aliasproperty('numeric'),
-			CountryCode::get_aliasproperty('description'),
+			CountryCode::aliasproperty('iso3'),
+			CountryCode::aliasproperty('iso2'),
+			CountryCode::aliasproperty('numeric'),
+			CountryCode::aliasproperty('description'),
 		];
 		$this->query->search_filter($columns, strtoupper($q));
 	}
-
-	/**
-	 * Filter Query with Input Data
-	 * @param  WireInput $input Input Data
-	 * @return self
-	 */
-	public function _filterInput(WireInput $input) {
-
-	}
-
-/* =============================================================
-	Filter Functions
-============================================================= */
-
 }

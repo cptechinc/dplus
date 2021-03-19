@@ -48,7 +48,7 @@ class Kim extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return InvKit
 	 */
-	public function get_kit($itemID) {
+	public function kit($itemID) {
 		$q = $this->query();
 		$q->filterByItemid($itemID);
 		return $q->findOne();
@@ -59,7 +59,7 @@ class Kim extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return InvKit
 	 */
-	public function create_kit($itemID) {
+	public function create($itemID) {
 		$kit = new InvKit();
 		$kit->setItemid($itemID);
 		$kit->setDate(date(InvKit::FORMAT_DATE));
@@ -72,7 +72,7 @@ class Kim extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return InvKit
 	 */
-	public function new_kit($itemID) {
+	public function new($itemID) {
 		$kit = new InvKit();
 		$kit->setItemid($itemID);
 		return $kit;
@@ -83,8 +83,8 @@ class Kim extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return InvKit
 	 */
-	public function new_get_kit($itemID) {
-		return $this->kit_exists($itemID) ? $this->get_kit($itemID) : $this->new_kit($itemID);
+	public function getCreateKit($itemID) {
+		return $this->kit_exists($itemID) ? $this->kit($itemID) : $this->new($itemID);
 	}
 
 	/**
@@ -140,7 +140,7 @@ class Kim extends WireData implements Module {
 			return true;
 		}
 
-		if ($this->create_kit($kitID)) {
+		if ($this->create($kitID)) {
 			$this->update_dplus_cobol($kitID);
 			return true;
 		}
@@ -159,11 +159,11 @@ class Kim extends WireData implements Module {
 		$values = $input->$rm;
 		$kitID = $values->text('kitID');
 
-		if ($this->kit_exists($kitID)) {
+		if ($this->exists($kitID)) {
 			$validate = new KimValidator();
 
 			if ($validate->can_delete($KitID)) {
-				$kit = $this->get_kit($kitID);
+				$kit = $this->kit($kitID);
 				$kit->delete();
 				$response = $this->save_and_respond($kit);
 				$this->wire('session')->setFor('response', 'kim', $response);

@@ -14,7 +14,7 @@
 	</div>
 	<div class="col-6 pull-left text-right">
 		<h1>Quote # {{ quote.quotenumber }}</h1>
-		<img src="data:image/png;base64, {{ barcoder.generate_barcode(quote.quotenumber)|base64_encode }}" alt="Barcode for Quote # {{ quote.quotenumber }}">
+		<img src="data:image/png;base64, {{ barcoder.barcode(quote.quotenumber)|base64_encode }}" alt="Barcode for Quote # {{ quote.quotenumber }}">
 
 		<div class="row">
 			<div class="col-7 pull-left">Quote Date:</div>

@@ -1,52 +1,58 @@
 <?php namespace Dplus\Filters\Map;
-
+// Dplus Model
+use VendorQuery, Vendor as Model;
+// ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
+// Dplus Filters
 use Dplus\Filters\AbstractFilter;
 
-use VendorQuery, Vendor as Model;
-
+/**
+ * Wrapper Class for adding Filters to the VendorQuery class
+ */
 class Vendor extends AbstractFilter {
 	const MODEL = 'Vendor';
 
 /* =============================================================
-	Abstract Contract Functions
+	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function initQuery() {
-		$this->query = VendorQuery::create();
-	}
-
 	public function _search($q) {
 		$columns = [
-			Model::get_aliasproperty('vendorid'),
-			Model::get_aliasproperty('name'),
-			Model::get_aliasproperty('address'),
-			Model::get_aliasproperty('address2'),
-			Model::get_aliasproperty('city'),
-			Model::get_aliasproperty('state'),
-			Model::get_aliasproperty('zip'),
+			Model::aliasproperty('vendorid'),
+			Model::aliasproperty('name'),
+			Model::aliasproperty('address'),
+			Model::aliasproperty('address2'),
+			Model::aliasproperty('city'),
+			Model::aliasproperty('state'),
+			Model::aliasproperty('zip'),
 		];
 		$this->query->search_filter($columns, strtoupper($q));
 	}
 
 /* =============================================================
-	Misc Query Functions
+	2. Base Filter Functions
 ============================================================= */
 	/**
-	 * Return Position of Vendor in results
-	 * @param  Model $v Vendor
-	 * @return int
+	 * Filter Query by VendorID
+	 * @param  array|string $vendorID  Vendor ID(s)
+	 * @return void
 	 */
-	public function position(Model $v) {
-		$vendors = $this->query->find();
-		return $people->search($v);
+	public function vendorid($vendorID) {
+		$this->query->filterByVendorid($vendorID);
 	}
 
+/* =============================================================
+	3. Input Filter Functions
+============================================================= */
+
+/* =============================================================
+	4. Misc Query Functions
+============================================================= */
 	/**
 	 * Return Vendor
 	 * @param  string $vendorID Vendor ID
 	 * @return Vendor
 	 */
-	public function get_vendor($vendorID) {
+	public function getVendor($vendorID) {
 		return VendorQuery::create()->findOneByVendorid($vendorID);
 	}
 
@@ -57,17 +63,5 @@ class Vendor extends AbstractFilter {
 	 */
 	public function exists($vendorID) {
 		return boolval(VendorQuery::create()->filterByVendorid($vendorID)->count());
-	}
-
-/* =============================================================
-	Base Filter Functions
-============================================================= */
-	/**
-	 * Filter Query by VendorID
-	 * @param  array|string $vendorID  Vendor ID(s)
-	 * @return void
-	 */
-	public function vendorid($vendorID) {
-		$this->query->filterByVendorid($vendorID);
 	}
 }

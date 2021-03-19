@@ -1,4 +1,4 @@
-<?php namespace Dplus\CodeValidators\Mki;
+<?php namespace Dplus\CodeValidators;
 
 use ProcessWire\WireData;
 

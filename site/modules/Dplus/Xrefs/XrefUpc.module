@@ -1,12 +1,14 @@
 <?php namespace ProcessWire;
 
 include_once(__DIR__.'/XrefResponse.php');
-
+// Purl
 use Purl\Url;
-
+// Dplus Model
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemXrefUpcQuery, ItemXrefUpc;
 use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
+// Dplus Filters
+use Dplus\Filters\Min\Upcx as UpcxFilter;
 
 /**
  * Module that handles the editing of the UPC item Xref
@@ -376,16 +378,14 @@ class XrefUpc extends WireData implements Module {
 		}
 
 		$url = new Url($page->url);
-		$xref = $this->xref($focus);
-		$filter = $this->wire->modules('FilterXrefItemUpc');
+		$xref   = $this->xref($focus);
+		$filter = new UpcxFilter();
 		$offset = $filter->position($xref);
 		$pagenbr = ceil($offset / $this->wire('session')->display);
 		$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		$url->query->set('focus', $focus);
 		return $url->getUrl();
 	}
-
-
 
 	/**
 	 * Return URL to delete UPC

@@ -2,11 +2,15 @@
 // Dplus Model
 use Invkit;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Kim as KimModel;
+use ProcessWire\Page, ProcessWire\Kim as KimCRUD;
+// Dplus Filters
+use Dplus\Filters\Mki\Kim as FilterKim;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
 class Kim extends AbstractController {
+	private static $kim;
+
 	public static function index($data) {
 		$fields = [
 			'kitID'     => ['sanitizer' => 'text'],
@@ -43,69 +47,94 @@ class Kim extends AbstractController {
 	}
 
 	public static function kit($data) {
-		$wire = self::pw();
 		$config = self::pw('config');
-		$page = self::pw('page');
-		$kim = $wire->modules->get('Kim');
+		$page   = self::pw('page');
+		$kim    = self::getKim();
 		$kim->init_configs();
-		$kit = $kim->new_get_kit($data->kitID);
+		$kit = $kim->getCreateKit($data->kitID);
+		$page->headline = "Kit Master: $kit->itemid";
 
-		$page->body .= self::lockKit($page, $kim, $kit);
-		$page->body .= $config->twig->render('mki/kim/kit/page.twig', ['kim' => $kim, 'kit' => $kit]);
+		$html = '';
+		$html .= self::kimHeader();
+		$html .= self::lockKit($kit);
+		if ($kit->isNew()) {
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Kit $kit->itemid does not exist", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You will be able to create this kit"]);
+		}
+		$html .= $config->twig->render('mki/kim/kit/page.twig', ['kim' => $kim, 'kit' => $kit]);
 		$page->js   .= $config->twig->render('mki/kim/kit/js.twig', ['kim' => $kim]);
-		return $page->body;
+		return $html;
 	}
 
 	public static function kitComponent($data) {
-		$wire = self::pw();
 		$config = self::pw('config');
-		$page = self::pw('page');
-		$kim = $wire->modules->get('Kim');
+		$page   = self::pw('page');
+		$kim    = self::getKim();
 		$kim->init_configs();
-		$kit = $kim->new_get_kit($data->kitID);
-
-		$page->body .= self::lockKit($page, $kim, $kit);
-		$component = $kim->component->new_get_component($data->kitID, $data->component);
+		$kit = $kim->kit($data->kitID);
+		$component = $kim->component->getCreateComponent($data->kitID, $data->component);
 		$page->headline = $data->component == 'new' ? "Kit Master: $data->kitID" : "Kit Master: $data->kitID - $data->component";
-		$page->body .= $config->twig->render('mki/kim/kit/component/page.twig', ['kim' => $kim, 'kit' => $kit, 'component' => $component]);
-		$page->js   .= $config->twig->render('mki/kim/kit/component/js.twig', ['kim' => $kim,]);
-		return $page->body;
+
+		$html = '';
+		$html .= self::kimHeader();
+		$html .= self::lockKit($kit);
+		$html .= $config->twig->render('mki/kim/kit/component/page.twig', ['kim' => $kim, 'kit' => $kit, 'component' => $component]);
+		$page->js   .= $config->twig->render('mki/kim/kit/component/js.twig', ['kim' => $kim]);
+		return $html;
 	}
 
-	private static function lockKit(Page $page, KimModel $kim, InvKit $kit) {
-		$config = $page->wire('config');
+	public static function lockKit(InvKit $kit) {
+		$config = self::pw('config');
+		$kim    = self::getKim();
+		$html = '';
 
 		if (!$kit->isNew()) {
-			$page->headline = "Kit Master: $kit->itemid";
 			if (!$kim->lockrecord($kit->itemid)) {
 				$msg = "Kit $kit->itemid is being locked by " . $kim->recordlocker->get_locked_user($kit->itemid);
-				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Kit $kit->itemid is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+				$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Kit $kit->itemid is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 			}
 		}
-
-		if ($kit->isNew()) {
-			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Kit $kit->itemid does not exist", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You will be able to create this kit"]);
-		}
-		return $page->body;
+		return $html;
 	}
 
 	public static function listKits($data) {
 		$fields = ['q' => ['sanitizer' => 'text']];
 		$data = self::sanitizeParameters($data, $fields);
-		$wire = self::pw();
-		$config = $wire->wire('config');
-		$page = $wire->wire('page');
-		$kim = $wire->modules->get('Kim');
-		$filter = $wire->wire('modules')->get('FilterKim');
-		$filter->init_query();
+		$config = self::pw('config');
+		$page   = self::pw('page');
+		$kim    = self::getKim();
+		$filter = new FilterKim();
+		$filter->init();
 		if ($data->q) {
 			$page->headline = "KIM: Searching for '$data->q'";
 			$filter->search($data->q);
 		}
-		$kits = $filter->query->paginate(self::pw('input')->pageNum, $wire->wire('session')->display);
-		$page->body .= $config->twig->render('mki/kim/search-form.twig', ['q' => $data->q]);
-		$page->body .= $config->twig->render('mki/kim/page.twig', ['kim' => $kim, 'kits' => $kits]);
+		$kits = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+
+		$html = '';
+		$html .= self::kimHeader();
+		$html .= $config->twig->render('mki/kim/search-form.twig', ['q' => $data->q]);
+		$html .= $config->twig->render('mki/kim/page.twig', ['kim' => $kim, 'kits' => $kits]);
 		$page->js   .= $config->twig->render('mki/kim/list.js.twig', ['kim' => $kim]);
-		return $page->body;
+		return $html;
+	}
+
+	private static function kimHeader() {
+		$session = self::pw('session');
+		$config  = self::pw('config');
+		$html = '';
+
+		$html .= $config->twig->render('mki/kim/bread-crumbs.twig', ['input' => self::pw('input')]);
+
+		if ($session->getFor('response','kim')) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response','kim')]);
+		}
+		return $html;
+	}
+
+	public static function getKim() {
+		if (empty(self::$kim)) {
+			self::$kim = self::pw('modules')->get('Kim');
+		}
+		return self::$kim;
 	}
 }

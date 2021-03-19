@@ -1,45 +1,32 @@
 <?php namespace Dplus\Filters\Mso\SalesHistory;
-
-use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
-use Dplus\Filters\AbstractFilter;
-
+// Dplus Model
 use SalesHistoryQuery, SalesHistory;
 use SalesHistoryDetailQuery, SalesHistoryDetail as Model;
+// ProcessWire Classes
+use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
+// Dplus Filters
+use Dplus\Filters\AbstractFilter;
 use Dplus\Filters\Mso\SalesHistory as SalesHistoryFilter;
 
+/**
+ * Wrapper Class for SalesHistoryDetailQuery
+ */
 class Detail extends AbstractFilter {
 	const MODEL = 'SalesHistoryDetail';
 
 /* =============================================================
-	Abstract Contract Functions
+	1. Abstract Contract Functions
 ============================================================= */
-	public function initQuery() {
-		$this->query = SalesHistoryDetailQuery::create();
-	}
-
 	public function _search($q) {
 		$columns = [
-			Model::get_aliasproperty('code'),
-			Model::get_aliasproperty('description'),
+			Model::aliasproperty('code'),
+			Model::aliasproperty('description'),
 		];
 		$this->query->search_filter($columns, strtoupper($q));
 	}
-
+	
 /* =============================================================
-	Misc Query Functions
-============================================================= */
-	/**
-	 * Return Position of SalesHistoryDetail in results
-	 * @param  Model $item SalesHistoryDetail
-	 * @return int
-	 */
-	public function position(Model $p) {
-		$people = $this->query->find();
-		return $people->search($p);
-	}
-
-/* =============================================================
-	Base Filter Functions
+	2. Base Filter Functions
 ============================================================= */
 	/**
 	 * Filter Query by Item ID
@@ -65,9 +52,11 @@ class Detail extends AbstractFilter {
 		return $this;
 	}
 
-/* =============================================================
-	Base Filter Functions
-============================================================= */
+	/**
+	 * Filter To Customer's By Getting their Sales Order Numbers from Sales History
+	 * @param  string $custID Customer ID
+	 * @return self
+	 */
 	public function filterCustomerHistory($custID) {
 		$q = SalesHistoryQuery::create();
 		$q->filterByCustid($custID);
@@ -76,5 +65,6 @@ class Detail extends AbstractFilter {
 
 		$this->ordernumber($ordn);
 		$this->query->sortBy('oedhyear', 'DESC');
+		return $this;
 	}
 }

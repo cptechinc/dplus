@@ -4,14 +4,15 @@ use Propel\Runtime\ActiveQuery\ModelCriteria as BaseQuery;
 // ProcessWire Classes, Modules
 use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Filters
-use Dplus\Filters\AbstractFilter as Filter;
-use Dplus\Filters\Misc\PhoneBook as PhoneBookFilter;
-use Dplus\Filters\Misc\CountryCode as CountryCodeFilter;
+use Dplus\Filters\AbstractFilter    as Filter;
+use Dplus\Filters\Misc\PhoneBook    as PhoneBookFilter;
+use Dplus\Filters\Misc\CountryCode  as CountryCodeFilter;
 use Dplus\Filters\Mpo\PurchaseOrder as PurchaseOrderFilter;
-use Dplus\Filters\Mgl\GlCode as GlCodeFilter;
-use Dplus\Filters\Min\ItemGroup as ItemGroupFilter;
-use Dplus\Filters\Mar\Customer as CustomerFilter;
-use Dplus\Filters\Map\Vendor as VendorFilter;
+use Dplus\Filters\Mgl\GlCode        as GlCodeFilter;
+use Dplus\Filters\Min\ItemGroup     as ItemGroupFilter;
+use Dplus\Filters\Mar\Customer      as CustomerFilter;
+use Dplus\Filters\Map\Vendor        as VendorFilter;
+use Dplus\Filters\Map\Vxm           as VxmFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
@@ -81,10 +82,9 @@ class Lookup extends AbstractController {
 		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
 		$wire = self::pw();
 		$page = $wire->wire('page');
-		$filter = $wire->wire('modules')->get('FilterXrefItemVxm');
-		$filter->init_query();
+		$filter = new VxmFilter();
 		$page->headline = "VXM";
-		self::moduleFilterResults($filter, $wire, $data);
+		self::filterResults($filter, $wire, $data);
 	}
 
 	/**

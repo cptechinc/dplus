@@ -2,14 +2,17 @@
 
 include_once(__DIR__.'/XrefResponse.php');
 
+// Purl
 use Purl\Url;
-
-use Dplus\CodeValidators\Map\Vxm as VxmValidator;
-
+// Dplus Model
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemXrefManufacturerQuery, ItemXrefManufacturer;
 use VendorQuery, Vendor;
 use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
+// Dplus Filters
+use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
+// Dplus Code Validators
+use Dplus\CodeValidators\Map\Vxm as VxmValidator;
 
 /**
  * Module that handles the editing of the UPC item Xref
@@ -506,7 +509,7 @@ class XrefMxrfe extends WireData implements Module {
 		}
 		$url = new Url($this->_manufacturerURL($mnfrID));
 		$url->query->set('focus', $focus);
-		$filter = $this->wire('modules')->get('FilterXrefItemMxrfe');
+		$filter = new MxrfeFilter();
 		$filter->vendorid($mnfrID);
 		$position = $filter->position($xref);
 		$pagenbr = ceil($position / $this->wire('session')->display);

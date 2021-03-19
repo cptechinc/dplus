@@ -1,23 +1,21 @@
 <?php
-	$filter_salesorders = $modules->get('FilterSalesOrders');
-	$filter_salesorders->init_query($user);
-	$filter_salesorders->filter_query($input);
-	$query = $filter_salesorders->get_query();
-	$query->orderByDate_ordered('DESC');
-	$orders = $query->paginate($input->pageNum, 10);
+	$filter_salesorders = new Dplus\Filters\Mso\SalesOrder();
+	$filter_salesorders->user($user);
+	$filter_salesorders->filterInput($input);
+	$filter_salesorders->query->orderByDate_ordered('DESC');
+	$orders = $filter_salesorders->query->paginate($input->pageNum, 10);
 
 	$twig_params['orders']       = $orders;
 	$twig_params['orders_count'] = $orders->getNbResults();
 	$twig_params['url_order']    = $pages->get('pw_template=sales-order-view')->url;
 	$twig_params['url_order_list']    = $pages->get('pw_template=sales-orders')->url;
 
-	$filter_saleshistory = $modules->get('FilterSalesHistory');
-	$filter_saleshistory->init_query($user);
-	$filter_saleshistory->filter_query($input);
-	$query = $filter_saleshistory->get_query();
-	$query->orderByDate_ordered('DESC');
+	$filter_saleshistory = new Dplus\Filters\Mso\SalesHistory();
+	$filter_saleshistory->user($user);
+	$filter_saleshistory->filterInput($input);
+	$filter_saleshistory->query->orderByDate_ordered('DESC');
 
-	$invoices = $query->paginate($input->pageNum, 10);
+	$invoices = $filter_saleshistory->query->paginate($input->pageNum, 10);
 	$twig_params['invoices']         = $invoices;
 	$twig_params['invoices_count']   = $invoices->getNbResults();
 	$twig_params['url_invoice']      = $pages->get('pw_template=sales-order-view')->url;

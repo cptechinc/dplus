@@ -1,16 +1,16 @@
-<?php namespace Dplus\Filters\Min;
+<?php namespace Dplus\Filters\Mki;
 // Dplus Model
-use ItemMasterItemQuery, ItemMasterItem as Model;
+use InvKitQuery, InvKit as Model;
 // ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Filters
 use Dplus\Filters\AbstractFilter;
 
 /**
- * Wrapper Class for adding Filters to the ItemMasterItemQuery class
- */
-class ItemMaster extends AbstractFilter {
-	const MODEL = 'ItemMasterItem';
+* Wrapper Class for InvKitQuery
+*/
+class Kim extends AbstractFilter {
+	const MODEL = 'InvKit';
 
 /* =============================================================
 	1. Abstract Contract / Extensible Functions
@@ -18,14 +18,20 @@ class ItemMaster extends AbstractFilter {
 	public function _search($q) {
 		$columns = [
 			Model::aliasproperty('itemid'),
-			Model::aliasproperty('description'),
-			Model::aliasproperty('description2'),
 		];
 		$this->query->search_filter($columns, strtoupper($q));
 	}
 
 /* =============================================================
-	Misc Query Functions
+	2. Base Filter Functions
+============================================================= */
+
+/* =============================================================
+	3. Input Filter Functions
+============================================================= */
+
+/* =============================================================
+	4. Misc Query Functions
 ============================================================= */
 	/**
 	 * Return if Item Exists
@@ -33,12 +39,12 @@ class ItemMaster extends AbstractFilter {
 	 * @return bool
 	 */
 	public function exists($itemID) {
-		return boolval(ItemMasterItemQuery::create()->filterByItemid($itemID)->count());
+		return boolval(InvKitQuery::create()->filterByItemid($itemID)->count());
 	}
 
 	/**
 	 * Return Position of Item in results
-	 * @param  Model|string $item ItemMasterItem|Item ID
+	 * @param  Model|string $item InvKit|Item ID
 	 * @return int
 	 */
 	public function positionQuick($item) {

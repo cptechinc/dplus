@@ -1,38 +1,25 @@
 <?php namespace Dplus\Filters\Min;
-
+// Dplus Model
+use InvGroupCodeQuery, InvGroupCode as Model;
+// ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
+// Dplus Filters
 use Dplus\Filters\AbstractFilter;
 
-use InvGroupCodeQuery, InvGroupCode as InvGroupCodeClass;
-
+/**
+ * Wrapper Class for adding Filters to the InvGroupCodeQuery class
+ */
 class ItemGroup extends AbstractFilter {
 	const MODEL = 'InvGroupCode';
 
 /* =============================================================
-	Abstract Contract Functions
+	1. Abstract Contract / Extensible Functions
 ============================================================= */
-	public function initQuery() {
-		$this->query = InvGroupCodeQuery::create();
-	}
-
 	public function _search($q) {
 		$columns = [
-			InvGroupCodeClass::get_aliasproperty('code'),
-			InvGroupCodeClass::get_aliasproperty('description'),
+			Model::aliasproperty('code'),
+			Model::aliasproperty('description'),
 		];
 		$this->query->search_filter($columns, strtoupper($q));
-	}
-
-/* =============================================================
-	Misc Query Functions
-============================================================= */
-	/**
-	 * Return Position of InvGroupCode in results
-	 * @param  InvGroupCodeClass $item InvGroupCode
-	 * @return int
-	 */
-	public function position(InvGroupCodeClass $p) {
-		$people = $this->query->find();
-		return $people->search($p);
 	}
 }

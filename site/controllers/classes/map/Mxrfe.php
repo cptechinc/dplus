@@ -3,6 +3,8 @@
 use ItemXrefManufacturer;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeCRUD;
+// Dplus Filters
+use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
@@ -146,9 +148,9 @@ class Mxrfe extends AbstractController {
 		$mxrfe  = self::mxrfeMaster();
 		$mxrfe->recordlocker->remove_lock();
 		$vendor = $mxrfe->vendor($data->mnfrID);
-		$filter = self::pw('modules')->get('FilterXrefItemMxrfe');
+		$filter = new MxrfeFilter();
 		$filter->vendorid($data->mnfrID);
-		$filter->apply_sortby($page);
+		$filter->sortby($page);
 		$page->headline = "MXRFE: Mnfr $data->mnfrID";
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		$html = '';

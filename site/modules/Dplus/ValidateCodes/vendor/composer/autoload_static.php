@@ -9,7 +9,6 @@ class ComposerStaticInit05e8b5312246afdde1a9eb3568c1d72c
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Dplus\\CodeValidators\\Itm\\Warehouse' => __DIR__ . '/../..' . '/src/Min/Itm/Warehouse.php',
-        'Dplus\\CodeValidators\\Kim' => __DIR__ . '/../..' . '/src/Mki/Kim.php',
         'Dplus\\CodeValidators\\Map' => __DIR__ . '/../..' . '/src/Map/Map.php',
         'Dplus\\CodeValidators\\Map\\Mxrfe' => __DIR__ . '/../..' . '/src/Map/Mxrfe.php',
         'Dplus\\CodeValidators\\Map\\Vxm' => __DIR__ . '/../..' . '/src/Map/Vxm.php',
@@ -21,7 +20,8 @@ class ComposerStaticInit05e8b5312246afdde1a9eb3568c1d72c
         'Dplus\\CodeValidators\\Min' => __DIR__ . '/../..' . '/src/Min/Min.php',
         'Dplus\\CodeValidators\\Min\\Itm' => __DIR__ . '/../..' . '/src/Min/Itm/Itm.php',
         'Dplus\\CodeValidators\\Min\\Upcx' => __DIR__ . '/../..' . '/src/Min/Upcx.php',
-        'Dplus\\CodeValidators\\Mki\\Mki' => __DIR__ . '/../..' . '/src/Mki/Mki.php',
+        'Dplus\\CodeValidators\\Mki' => __DIR__ . '/../..' . '/src/Mki/Mki.php',
+        'Dplus\\CodeValidators\\Mki\\Kim' => __DIR__ . '/../..' . '/src/Mki/Kim.php',
         'Dplus\\CodeValidators\\Mpo' => __DIR__ . '/../..' . '/src/Mpo/Mpo.php',
         'Dplus\\CodeValidators\\Mpo\\Po' => __DIR__ . '/../..' . '/src/Mpo/Po.php',
         'Dplus\\CodeValidators\\Mpo\\PoDetail' => __DIR__ . '/../..' . '/src/Mpo/PoDetail.php',
