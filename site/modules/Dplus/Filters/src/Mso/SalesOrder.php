@@ -24,8 +24,30 @@ class SalesOrder extends AbstractFilter {
 		$this->query->search_filter($columns, strtoupper($q));
 	}
 
+	/**
+	 * Filter Query with Input Data
+	 * @param  WireInput $input Input Data
+	 * @return self
+	 */
+	public function _filterInput(WireInput $input) {
+		$this->custidInput($input);
+		$this->shiptoidInput($input);
+
+		if ($input->get->filter) {
+			$this->ordernumberInput($input);
+			$this->custpoInput($input);
+			$this->orderdateInput($input);
+			$this->ordertotalInput($input);
+			$this->requestdateInput($input);
+		}
+
+		if ($input->get->offsetExists('status') === false) {
+			$input->get->status = [];
+		}
+	}
+
 /* =============================================================
-	1. Base Filter Functions
+	2. Base Filter Functions
 ============================================================= */
 	/**
 	 * Filter the Query on the Order Number column
@@ -131,6 +153,7 @@ class SalesOrder extends AbstractFilter {
 		}
 		return $this;
 	}
+
 /* =============================================================
 	3. Input Filter Functions
 ============================================================= */
