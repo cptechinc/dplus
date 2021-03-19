@@ -38,16 +38,6 @@ class ItemMaster extends AbstractFilter {
 	Misc Query Functions
 ============================================================= */
 	/**
-	 * Return Position of ItemMasterItem in results
-	 * @param  Model $item ItemMasterItem
-	 * @return int
-	 */
-	public function position(Model $item) {
-		$results = $this->query->find();
-		return $results->search($item);
-	}
-
-	/**
 	 * Return Position of Item in results
 	 * @param  Model|string $item ItemMasterItem|Item ID
 	 * @return int
