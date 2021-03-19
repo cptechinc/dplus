@@ -11,7 +11,8 @@
 	use ContactQuery, Contact;
 	use UseractionsQuery, Useractions;
 
-	use Dplus\Filters\Mso\SalesOrder as SalesOrderFilter;
+	use Dplus\Filters\Mso\SalesOrder   as SalesOrderFilter;
+	use Dplus\Filters\Mso\SalesHistory as SalesHistoryFilter;
 
 	class CiLoadCustomerShipto extends WireData implements Module {
 		/**
@@ -272,15 +273,14 @@
 		 * @return PropelModelPager
 		 */
 		public function get_saleshistory($limit = 10, $page = 1) {
-			$filter_history = $this->wire('modules')->get('FilterSalesHistory');
-			$filter_history->init_query($this->get_user());
-			$query = $filter_history->get_query();
-			$query->filterByCustid($this->custID);
+			$filter = new SalesOrderFilter();
+			$filter->user($this->get_user());
+			$filter->query->filterByCustid($this->custID);
 
 			if ($this->shiptoID) {
-				$query->filterByShiptoid($this->shiptoID);
+				$filter->query->filterByShiptoid($this->shiptoID);
 			}
-			return $query->paginate($page, $limit);
+			return $filter->query->paginate($page, $limit);
 		}
 
 		/**
