@@ -1,0 +1,38 @@
+<?php namespace ProcessWire;
+
+use ConfigCiQuery, ConfigCi;
+
+
+/**
+ * ConfigureCi
+ *
+ * Class for setting CI Configs
+ */
+class ConfigureCi extends WireData implements Module {
+	/**
+	 * Returns Quote Notes Query
+	 * @return ConfigCiQuery
+	 */
+	public function query() {
+		return ConfigCiQuery::create();
+	}
+
+	/**
+	 * Return Config Record
+	 * @return ConfigCi
+	 */
+	public function config() {
+		return $this->query()->findOne();
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Configure Customer Information',
+			'version' => 101,
+			'summary' => 'Dplus ConfigCi CRUD methods',
+			'singular' => true,
+			'autoload' => true,
+			'requires' => array()
+		);
+	}
+}
