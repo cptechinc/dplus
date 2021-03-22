@@ -4,9 +4,29 @@
 	page                   ProcessWire\Page
 	item                   ItemMasterItem
 #}
-<div class="mb-3">
-	{% include 'items/itm/misc/form/misc.twig' %}
-</div>
-<hr>
+{% extends 'items/itm/display.twig' %}
 
-{% include 'items/itm/misc/form/hazmat.twig' %}
+{% block body %}
+	<div class="card-body">
+		<div class="mb-3">
+			{% include 'items/itm/misc/form/misc.twig' %}
+		</div>
+		<hr>
+
+		{% include 'items/itm/misc/form/hazmat.twig' %}
+	</div>
+
+{% endblock %}
+
+{% block footer %}
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<div>
+				<a href="{{ page.itmURL(item.itemid) }}" class="btn btn-warning btn-sm">
+					<i class="fa fa-times" aria-hidden="true"></i> Close
+				</a>
+			</div>
+		</div>
+	</div>
+{% endblock %}
