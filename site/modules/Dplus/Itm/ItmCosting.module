@@ -82,7 +82,7 @@ class ItmCosting extends WireData implements Module {
 		} else {
 			$response = ItmResponse::response_error($itemID, "No Action was specified");
 		}
-		$this->wire('session')->response_itm = $response;
+		$this->wire('session')->setFor('response', 'itm', $response);
 	}
 
 	/**

@@ -120,7 +120,7 @@ class ItmHazmat extends WireData implements Module {
 				$this->input_update($input);
 				break;
 			default:
-				$this->wire('session')->response_itm = ItmResponse::response_error("ItmHazmat", "No Action Provided");
+				$this->wire('session')->setFor('response', 'itm', ItmResponse::response_error("ItmHazmat", "No Action Provided"));
 				break;
 		}
 	}
@@ -143,7 +143,7 @@ class ItmHazmat extends WireData implements Module {
 			return $this->delete_hazmat($itemID);
 		}
 		$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($itemID);
-		$this->wire('session')->response_itm = ItmResponse::response_error($itemID, $message);
+		$this->wire('session')->setFor('response', 'itm', ItmResponse::response_error($itemID, $message));
 		return false;
 	}
 
@@ -174,12 +174,12 @@ class ItmHazmat extends WireData implements Module {
 			} else {
 				$response->set_saved_itm($response->success);
 			}
-			$this->wire('session')->response_itm = $response;
+			$this->wire('session')->setFor('response', 'itm', $response);
 			return $response->has_success();
 		}
 
 		$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($itemID);
-		$this->wire('session')->response_itm = ItmResponse::response_error($itemID, $message);
+		$this->wire('session')->setFor('response', 'itm', ItmResponse::response_error($itemID, $message));
 		return false;
 	}
 
@@ -339,7 +339,7 @@ class ItmHazmat extends WireData implements Module {
 	 * @return bool
 	 */
 	public function field_has_error($inputname) {
-		$response = $this->wire('session')->response_itm;
+		$response = $this->wire('session')->getFor('response', 'itm') ;
 		return ($response) ? array_key_exists($inputname, $response->fields) : false;
 	}
 
