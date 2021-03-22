@@ -21,7 +21,7 @@ class Costing extends ItmFunction {
 			return self::handleCRUD($data);
 		}
 
-		$page->show_breadcrumbs = false;
+		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->itemID) === false) {
 			return self::costing($data);
@@ -33,9 +33,9 @@ class Costing extends ItmFunction {
 			return self::pw('page')->body;
 		}
 
-		$fields = ['itemID|text', 'action|text'];
-		$data = self::sanitizeParameters($data, $fields);
-		$input = self::pw('input');
+		$fields     = ['itemID|text', 'action|text'];
+		$data       = self::sanitizeParameters($data, $fields);
+		$input      = self::pw('input');
 		$itmCosting = self::getItmCosting();
 		$itmCosting->init_configs();
 
@@ -43,7 +43,7 @@ class Costing extends ItmFunction {
 			$itmCosting->process_input($input);
 		}
 
-		self::pw('session')->redirect($page->itm_pricingURL($data->itemID), $http301 = false);
+		self::pw('session')->redirect(self::pw('page')->itm_pricingURL($data->itemID), $http301 = false);
 	}
 
 	public static function costing($data) {
