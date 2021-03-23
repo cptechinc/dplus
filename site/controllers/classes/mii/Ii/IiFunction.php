@@ -84,6 +84,10 @@ abstract class IiFunction extends AbstractController {
 		return self::$jsonm;
 	}
 
+	public static function getItmItem($itemID) {
+		return self::pw('modules')->get('Itm')->item($itemID);
+	}
+
 	public static function requestIiItem($itemID, $sessionID = '') {
 		$sessionID = $sessionID ? $sessionID : session_id();
 		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;

@@ -16,7 +16,8 @@ use Controllers\Mii\IiFunction;
 
 class Ii extends IiFunction {
 	const SUBFUNCTIONS = [
-		'stock' => 'Stock'
+		'stock'        => 'Stock',
+		'requirements' => 'Requirements',
 	];
 
 	public static function index($data) {

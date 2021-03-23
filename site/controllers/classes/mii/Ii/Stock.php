@@ -1,17 +1,9 @@
-<?php namespace Controllers\Mii;
+<?php namespace Controllers\Mii\Ii;
 // Purl\Url
 use Purl\Url as Purl;
-// Dplus Model
-use ItemMasterItemQuery, ItemMasterItem;
-use ItemPricingQuery, ItemPricing;
-// ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\CiLoadCustomerShipto;
 // Dplus Validators
 use Dplus\CodeValidators\Min as MinValidator;
-// Dplus Filters
-use Dplus\Filters\Min\ItemMaster  as ItemMasterFilter;
 // Mvc Controllers
-use Mvc\Controllers\AbstractController;
 use Controllers\Mii\IiFunction;
 
 class Stock extends IiFunction {
@@ -45,7 +37,7 @@ class Stock extends IiFunction {
 	public static function stockUrl($itemID = '', $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
 		$url->path->add('stock');
-		
+
 		if ($itemID) {
 			$url->query->set('itemID', $itemID);
 			if ($refreshdata) {
@@ -91,7 +83,6 @@ class Stock extends IiFunction {
 			}
 			$session->setFor('ii', 'stock', 0);
 			$refreshurl = self::stockUrl($data->itemID, $refreshdata = true);
-			$html .= $config->twig->render('items/ii/ii-links.twig', ['itemID' => $data->itemID, 'lastmodified' => $jsonm->lastModified(self::JSONCODE), 'refreshurl' => $refreshurl]);
 			$html .= self::stockDataDisplay($data, $json);
 			return $html;
 		}
@@ -117,7 +108,11 @@ class Stock extends IiFunction {
 		if ($json['error']) {
 			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 		}
-		return $config->twig->render('items/ii/stock-whse/stock-screen.twig', ['json' => $json, 'module_json' => $jsonm->jsonm, 'itemID' => $data->itemID, 'company' => $config->company]);
+		$iim  = self::pw('modules')->get('DpagesMii');
+		$page = self::pw('page');
+		$page->refreshurl = self::stockUrl($data->itemID, $refreshdata = true);
+		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
+		return $config->twig->render('items/ii/stock-whse/display.twig', ['item' => self::getItmItem($data->itemID), 'module_ii' => $iim, 'company' => $config->companys, 'json' => $json, 'module_json' => $jsonm->jsonm]);
 	}
 
 }
