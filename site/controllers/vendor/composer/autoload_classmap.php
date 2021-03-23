@@ -50,5 +50,6 @@ return array(
     'Controllers\\Mso\\Cxm' => $baseDir . '/classes/mso/Cxm.php',
     'Controllers\\Mso\\Eso' => $baseDir . '/classes/mso/Eso.php',
     'Controllers\\Mso\\SalesOrder' => $baseDir . '/classes/mso/SalesOrder.php',
+    'Controllers\\Mso\\SalesOrder\\Documents' => $baseDir . '/classes/mso/SalesOrder/Documents.php',
     'Controllers\\Mwm\\Menu' => $baseDir . '/classes/Mwm/Menu.php',
 );
