@@ -11,7 +11,7 @@
 		{% if documents.count() %}
 			{% for document in documents %}
 				<tr id="doc-{{ document.filename }}">
-					<td>{{ document.folder }}</td>
+					<td>{{ document.folderDescription() }}</td>
 					<td>{{ document.title }}</td>
 					<td>
 						<a href="{{ page.documentload(document.folder, document.filename, ordn) }}" class="link" target="_blank">
