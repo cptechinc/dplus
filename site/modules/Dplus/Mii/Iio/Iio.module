@@ -613,6 +613,19 @@ class Iio extends WireData implements Module {
 	}
 
 	/**
+	 * Return if User is allowed to II subfunction
+	 * @param  User   $user
+	 * @param  string $option II subfunction
+	 * @return bool
+	 */
+	public function allowUser(User $user, $option = '') {
+		$userID = $this->exists($user->loginid) ? $user->loginid : self::USER_DEFAULT;
+		$permissions = $this->user($userID);
+		$exists = array_key_exists($option, self::PERMISSIONS_DEFAULT);
+		return $exists ? $permissions->is_true($option) : true;
+	}
+
+	/**
 	 * Lock Record, validate User is locking Record
 	 * @param  string $userID
 	 * @return bool
