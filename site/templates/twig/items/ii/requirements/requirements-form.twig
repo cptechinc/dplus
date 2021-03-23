@@ -1,14 +1,10 @@
-<form action="{{ page.get_itemrequirementsURL(itemID) }}" method="get">
-	<input type="hidden" name="action" value="ii-requirements">
+<form action="{{ page.wire('input').url() }}" method="get">
 	<input type="hidden" name="itemID" value="{{ itemID }}">
+	<input type="hidden" name="refresh" value="true">
 
 	<div class="row">
 		<div class="col-sm-4">
 			<table class="table table-striped table-sm">
-				<tr>
-					<td><b>Item ID:</b></td>
-					<td>{{ itemID }}</td>
-				</tr>
 				<tr>
 					<td><b>Whse:</b></td>
 					<td>
