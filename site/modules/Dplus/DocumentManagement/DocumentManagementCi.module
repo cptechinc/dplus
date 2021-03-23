@@ -2,8 +2,8 @@
 
 use Purl\Url;
 
-use DocumentFoldersQuery, DocumentFolders;
-use DocumentsQuery, Documents;
+use DocumentFolderQuery, DocumentFolder;
+use DocumentQuery, Document;
 use SalesOrderQuery, SalesOrder;
 use SalesHistoryQuery, SalesHistory;
 
@@ -44,7 +44,7 @@ class DocumentManagementCi extends DocumentManagement implements Module {
 		$url->query->set('document', $document);
 		return $url->getUrl();
 	}
-	
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */

@@ -2,11 +2,13 @@
 // Dplus Model
 use ItemMasterItemQuery, ItemMasterItem;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\ItmCosting as CostingCRUD;
+use ProcessWire\Page, ProcessWire\ItmMisc as MiscCRUD;
 // Mvc Controllers
 use Controllers\Min\Itm\ItmFunction;
 
-class Costing extends ItmFunction {
+class Misc extends ItmFunction {
+	private static $misc;
+
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -15,7 +17,7 @@ class Costing extends ItmFunction {
 			return self::pw('page')->body;
 		}
 
-		self::getItmCosting()->init_configs();
+		self::getItmMisc()->init_configs();
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -24,7 +26,7 @@ class Costing extends ItmFunction {
 		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->itemID) === false) {
-			return self::costing($data);
+			return self::misc($data);
 		}
 	}
 
@@ -33,20 +35,20 @@ class Costing extends ItmFunction {
 			return self::pw('page')->body;
 		}
 
-		$fields     = ['itemID|text', 'action|text'];
-		$data       = self::sanitizeParameters($data, $fields);
-		$input      = self::pw('input');
-		$itmCosting = self::getItmCosting();
-		$itmCosting->init_configs();
+		$fields   = ['itemID|text', 'action|text'];
+		$data    = self::sanitizeParameters($data, $fields);
+		$input   = self::pw('input');
+		$itmMiscisc = self::getItmMisc();
+		$itmMiscisc->init_configs();
 
 		if ($data->action) {
-			$itmCosting->process_input($input);
+			$itmMiscisc->process_input($input);
 		}
 
-		self::pw('session')->redirect(self::pw('page')->itm_pricingURL($data->itemID), $http301 = false);
+		self::pw('session')->redirect(self::pw('page')->itm_miscURL($data->itemID), $http301 = false);
 	}
 
-	public static function costing($data) {
+	public static function misc($data) {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::pw('page')->body;
 		}
@@ -61,21 +63,25 @@ class Costing extends ItmFunction {
 		$page    = self::pw('page');
 		$session = self::pw('session');
 		$itm     = self::getItm();
-		$itmC    = self::getItmCosting();
+		$itmMisc    = self::getItmMisc();
 		$item = $itm->get_item($data->itemID);
-		$page->headline = "ITM: $data->itemID Costing";
+		$page->headline = "ITM: $data->itemID Misc";
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 		if ($session->getFor('response', 'itm')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
 		}
 		$html .= Itm::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page->parent]);
-		$html .= $config->twig->render('items/itm/costing/page.twig', ['itm' => $itm, 'item' => $item, 'm_costing' => $itmC, 'recordlocker' => $itm->recordlocker]);
-		$page->js .= $config->twig->render('items/itm/costing/js.twig', []);
+		$html .= $config->twig->render('items/itm/misc/page.twig', ['itm' => $itmMisc, 'item' => $item, 'recordlocker' => $itm->recordlocker]);
+		$page->js   .= $config->twig->render('items/itm/misc/js.twig', ['itm' => $itmMisc]);
 		return $html;
 	}
 
-	public static function getItmCosting() {
-		return self::pw('modules')->get('ItmCosting');
+	public static function getItmMisc() {
+		if (empty(self::$misc)) {
+			self::$misc = self::pw('modules')->get('ItmMisc');
+			self::$misc->init();
+		}
+		return self::$misc;
 	}
 }

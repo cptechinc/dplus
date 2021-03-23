@@ -36,6 +36,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Min\\Itm\\Itm' => __DIR__ . '/../..' . '/classes/min/itm/Itm.php',
         'Controllers\\Min\\Itm\\ItmFunction' => __DIR__ . '/../..' . '/classes/min/itm/ItmFunction.php',
         'Controllers\\Min\\Itm\\Kit' => __DIR__ . '/../..' . '/classes/min/itm/Kit.php',
+        'Controllers\\Min\\Itm\\Misc' => __DIR__ . '/../..' . '/classes/min/itm/Misc.php',
         'Controllers\\Min\\Itm\\Pricing' => __DIR__ . '/../..' . '/classes/min/itm/Pricing.php',
         'Controllers\\Min\\Itm\\Warehouse' => __DIR__ . '/../..' . '/classes/min/itm/Warehouse.php',
         'Controllers\\Min\\Itm\\Xrefs' => __DIR__ . '/../..' . '/classes/min/itm/xrefs/Xrefs.php',
@@ -50,6 +51,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mso\\Cxm' => __DIR__ . '/../..' . '/classes/mso/Cxm.php',
         'Controllers\\Mso\\Eso' => __DIR__ . '/../..' . '/classes/mso/Eso.php',
         'Controllers\\Mso\\SalesOrder' => __DIR__ . '/../..' . '/classes/mso/SalesOrder.php',
+        'Controllers\\Mso\\SalesOrder\\Documents' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Documents.php',
         'Controllers\\Mwm\\Menu' => __DIR__ . '/../..' . '/classes/Mwm/Menu.php',
     );
 

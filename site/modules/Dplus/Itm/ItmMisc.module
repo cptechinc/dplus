@@ -57,7 +57,7 @@ class ItmMisc extends Itm implements Module {
 				$this->process_input_misc($input);
 				break;
 			default:
-				$this->wire('session')->response_itm = ItmResponse::response_error('itm', "No Action Provided");
+				$this->wire('session')->setFor('response', 'itm', ItmResponse::response_error('itm', "No Action Provided"));
 				break;
 		}
 	}
@@ -110,7 +110,7 @@ class ItmMisc extends Itm implements Module {
 		} else {
 			$response = ItmResponse::response_error($itemID, "$itemID does not exist");
 		}
-		$this->wire('session')->response_itm = $response;
+		$this->wire('session')->setFor('response', 'itm', $response);
 	}
 
 	/**
@@ -221,7 +221,7 @@ class ItmMisc extends Itm implements Module {
 	 * @return ConfigSalesOrder
 	 */
 	public function get_config_so() {
-		return ConfigSalesOrderQuery::create()->findOne();
+		return $this->modules('ConfigureSo')->config();
 	}
 
 /* =============================================================

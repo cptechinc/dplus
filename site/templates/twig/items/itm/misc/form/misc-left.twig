@@ -5,13 +5,35 @@
 	<div class="col-sm-9">
 		<div class="row">
 			<div class="col-sm-3">
-				{% include 'util/form/input-with-modal-lookup.twig' with {
-						'name': 'tariffcode', 'value': item.tariffcode,
-						'modaltarget': '#ajax-modal',
-						'modaldescription': 'Search for / Choose Tariff Code',
-						'attributes_button': {'data-search': 'tariffcode', 'data-lookupurl': page.search_lookupURL('tariff-codes')},
-						'class_add': 'ajax-lookup',
-						'attributes': {'data-api': 'inv', 'data-validate': 'tariff-code', 'data-ajaxfields': 'number,description,rate'}
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'prepend',
+							'size': 'sm',
+							'input': {
+								'name': 'tariffcode',
+								'value': item.tariffcode,
+								'addclasses': ['ajax-lookup'],
+								'attributes': {
+									'placeholder': '',
+									'aria-label':  'Tariff Code',
+									'data-ajaxfields': 'number,description,rate',
+									'data-api': 'inv',
+									'data-validate': 'tariff-code',
+								}
+							},
+							'button': {
+								'colorclass': 'btn-secondary',
+								'text': 'fa fa-search'|icon,
+								'attributes': {
+									'title': 'Search for / Choose Tariff Code',
+									'data-toggle': 'modal',
+									'data-target': '#ajax-modal',
+									'data-lookupurl': page.search_lookupURL('tariff-codes'),
+									'data-input': '#tariffcode',
+									'data-search': 'tariffcode',
+								}
+							}
+						}
 					}
 				%}
 			</div>
@@ -37,13 +59,35 @@
 	<div class="col-sm-9">
 		<div class="row">
 			<div class="col-sm-3">
-				{% include 'util/form/input-with-modal-lookup.twig' with {
-						'name': 'origincountry','value': item.origincountry,
-						'modaltarget': '#ajax-modal',
-						'modaldescription': 'Search for / Choose Country',
-						'attributes_button': {'data-search': 'country', 'data-lookupurl': page.search_lookupURL('country-codes') },
-						'class_add': 'ajax-lookup',
-						'attributes': {'data-api': 'inv', 'data-validate': 'country-code', 'data-ajaxfields': 'description'}
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'prepend',
+							'size': 'sm',
+							'input': {
+								'name': 'origincountry',
+								'value': item.origincountry,
+								'addclasses': ['ajax-lookup'],
+								'attributes': {
+									'placeholder': '',
+									'aria-label':  'Country Code',
+									'data-ajaxfields': 'description',
+									'data-api': 'inv',
+									'data-validate': 'country-code',
+								}
+							},
+							'button': {
+								'colorclass': 'btn-secondary',
+								'text': 'fa fa-search'|icon,
+								'attributes': {
+									'title': 'Search for / Choose Country',
+									'data-toggle': 'modal',
+									'data-target': '#ajax-modal',
+									'data-lookupurl': page.search_lookupURL('country-codes'),
+									'data-input': '#origincountry',
+									'data-search': 'origincountry',
+								}
+							}
+						}
 					}
 				%}
 			</div>
@@ -61,13 +105,35 @@
 	<div class="col-sm-9">
 		<div class="row">
 			<div class="col-sm-3">
-				{% include 'util/form/input-with-modal-lookup.twig' with {
-						'name': 'msdscode', 'value': item.msdscode,
-						'modaltarget': '#ajax-modal',
-						'modaldescription': 'Search for / Choose Msds Code',
-						'attributes_button': {'data-search': 'msdscode', 'data-lookupurl': page.search_lookupURL('msds-codes')},
-						'class_add': 'ajax-lookup',
-						'attributes': {'data-api': 'inv', 'data-validate': 'msds-code', 'data-ajaxfields': 'description'}
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'prepend',
+							'size': 'sm',
+							'input': {
+								'name': 'msdscode',
+								'value': item.msdscode,
+								'addclasses': ['ajax-lookup'],
+								'attributes': {
+									'placeholder': '',
+									'aria-label':  'Msds Code',
+									'data-ajaxfields': 'description',
+									'data-api': 'inv',
+									'data-validate': 'msds-code',
+								}
+							},
+							'button': {
+								'colorclass': 'btn-secondary',
+								'text': 'fa fa-search'|icon,
+								'attributes': {
+									'title': 'Search for / Choose Msds Code',
+									'data-toggle': 'modal',
+									'data-target': '#ajax-modal',
+									'data-lookupurl': page.search_lookupURL('msds-codes'),
+									'data-input': '#msdscode',
+									'data-search': 'msdscode',
+								}
+							}
+						}
 					}
 				%}
 			</div>
@@ -85,13 +151,35 @@
 	<div class="col-sm-9">
 		<div class="row">
 			<div class="col-sm-3">
-				{% include 'util/form/input-with-modal-lookup.twig' with {
-						'name': 'freightcode', 'value': item.freightcode,
-						'modaltarget': '#ajax-modal',
-						'modaldescription': 'Search for / Choose Freight Code',
-						'attributes_button': {'data-search': 'freightcode', 'data-lookupurl': page.search_lookupURL('freight-codes')},
-						'class_add': 'ajax-lookup',
-						'attributes': {'data-api': 'mso', 'data-validate': 'freight-code', 'data-ajaxfields': 'description'}
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'prepend',
+							'size': 'sm',
+							'input': {
+								'name': 'freightcode',
+								'value': item.freightcode,
+								'addclasses': ['ajax-lookup'],
+								'attributes': {
+									'placeholder': '',
+									'aria-label':  'Msds Code',
+									'data-ajaxfields': 'description',
+									'data-api': 'mso',
+									'data-validate': 'freight-code',
+								}
+							},
+							'button': {
+								'colorclass': 'btn-secondary',
+								'text': 'fa fa-search'|icon,
+								'attributes': {
+									'title': 'Search for / Choose Freight',
+									'data-toggle': 'modal',
+									'data-target': '#ajax-modal',
+									'data-lookupurl': page.search_lookupURL('freight-codes'),
+									'data-input': '#freightcode',
+									'data-search': 'freightcode',
+								}
+							}
+						}
 					}
 				%}
 			</div>
