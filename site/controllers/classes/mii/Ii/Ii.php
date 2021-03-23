@@ -1,5 +1,6 @@
 <?php namespace Controllers\Mii;
-
+// Purl/Url Library
+use Purl\Url as Purl;
 // Dplus Model
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemPricingQuery, ItemPricing;
@@ -11,12 +12,20 @@ use Dplus\CodeValidators\Min as MinValidator;
 use Dplus\Filters\Min\ItemMaster  as ItemMasterFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+use Controllers\Mii\IiFunction;
 
-class Ii extends AbstractController {
+class Ii extends IiFunction {
+	const SUBFUNCTIONS = [
+		'stock' => 'Stock'
+	];
+
 	public static function index($data) {
 		$fields = ['itemID|text', 'q|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
-		$page = self::pw('page');
+
+		if (self::validateItemidPermission($data) === false) {
+			return self::alertInvalidItemPermissions($data);
+		}
 		self::pw('modules')->get('DpagesMii')->init_iipage();
 
 		if (empty($data->itemID) === false) {
@@ -26,16 +35,13 @@ class Ii extends AbstractController {
 	}
 
 	public static function item($data) {
-		self::pw('modules')->get('DpagesMii')->init_iipage();
-		$fields = ['custID|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = new MinValidator();
-		$html = '';
-
-		if ($validate->itemid($data->itemID) === false) {
-			$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item $data->itemID could not be found"]);
-			return $html;
+		if (self::validateItemidPermission($data) === false) {
+			return self::alertInvalidItemPermissions($data);
 		}
+		self::pw('modules')->get('DpagesMii')->init_iipage();
+		$fields = ['itemID|text'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$html = '';
 
 		$page    = self::pw('page');
 		$config  = self::pw('config');
@@ -43,7 +49,6 @@ class Ii extends AbstractController {
 		$modules = self::pw('modules');
 		$htmlwriter = $modules->get('HtmlWriter');
 		$jsonM      = $modules->get('JsonDataFiles');
-
 
 		$item = ItemMasterItemQuery::create()->findOneByItemid($data->itemID);
 		$itempricing = ItemPricingQuery::create()->findOneByItemid($data->itemID);
@@ -53,7 +58,6 @@ class Ii extends AbstractController {
 		$details = $config->twig->render('items/ii/item/item-data.twig', ['item' => $item, 'itempricing' => $itempricing]);
 		$stock   = self::itemStock($data->itemID);
 		$header  = self::itemHeader($data->itemID);
-
 
 		$html .= "<div class='row'>";
 			$html .= $htmlwriter->div('class=col-sm-2 pl-0', $toolbar);
@@ -87,8 +91,6 @@ class Ii extends AbstractController {
 		$session = self::pw('session');
 		$formatters = $modules->get('ScreenFormatters');
 		$jsonM      = $modules->get('JsonDataFiles');
-		$formatters = $modules->get('ScreenFormatters');
-		$jsonM      = $modules->get('JsonDataFiles');
 
 		$json = $jsonM->get_file(session_id(), $jsonInfo['code']);
 
@@ -119,19 +121,12 @@ class Ii extends AbstractController {
 		return $htmlwriter;
 	}
 
-	public static function requestIiItem($itemID, $sessionID = '') {
-		$sessionID = $sessionID ? $sessionID : session_id();
-		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
-		$data = array("DBNAME=$db", 'IISELECT', "ITEMID=$itemID");
-		$requestor = self::pw('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, $sessionID);
-		$requestor->cgi_request(self::pw('config')->cgis['default'], $sessionID);
-	}
-
 	public static function list($data) {
+		if (self::validateItemidPermission($data) === false) {
+			return self::alertInvalidItemPermissions($data);
+		}
 		self::pw('modules')->get('DpagesMii')->init_iipage();
-		$fields = ['q|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		$data = self::sanitizeParametersShort($data, ['q|text']);
 		$page = self::pw('page');
 		$pricingM = self::pw('modules')->get('ItemPricing');
 		$filter = new ItemMasterFilter();
@@ -156,5 +151,26 @@ class Ii extends AbstractController {
 		$html .= $config->twig->render('items/item-search.twig', ['items' => $items, 'pricing' => $pricingM]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
 		return $html;
+	}
+
+	public static function init() {
+		$m = self::pw('modules')->get('DpagesMii');
+		$m->addHook('Page(pw_template=ii-item)::subfunctions2', function($event) {
+			$user = self::pw('user');
+			$allowed = [];
+			$iio = self::getIio();
+			foreach (self::SUBFUNCTIONS as $option => $title) {
+				if ($iio->allowUser($user, $option)) {
+					$allowed[$option] = $title;
+				}
+			}
+			$event->return = $allowed;
+		});
+		$m->addHook('Page(pw_template=ii-item)::subfunctionURL', function($event) {
+			$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
+			$url->path->add($event->arguments(1));
+			$url->query->set('itemID', $event->arguments(0));
+			$event->return = $url->getUrl();
+		});
 	}
 }
