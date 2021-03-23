@@ -1,4 +1,5 @@
 <?php namespace Controllers\Mii;
+
 // Dplus Model
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemPricingQuery, ItemPricing;
@@ -16,6 +17,7 @@ class Ii extends AbstractController {
 		$fields = ['itemID|text', 'q|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
+		self::pw('modules')->get('DpagesMii')->init_iipage();
 
 		if (empty($data->itemID) === false) {
 			return self::item($data);
@@ -28,18 +30,19 @@ class Ii extends AbstractController {
 		$fields = ['custID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new MinValidator();
+		$html = '';
 
 		if ($validate->itemid($data->itemID) === false) {
-			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item $data->itemID could not be found"]);
-			return $page->body;
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item $data->itemID could not be found"]);
+			return $html;
 		}
 
-		$page   = self::pw('page');
-		$config = self::pw('config');
+		$page    = self::pw('page');
+		$config  = self::pw('config');
 		$pages   = self::pw('pages');
 		$modules = self::pw('modules');
-		$html    = $modules->get('HtmlWriter');
-		$jsonM   = $modules->get('JsonDataFiles');
+		$htmlwriter = $modules->get('HtmlWriter');
+		$jsonM      = $modules->get('JsonDataFiles');
 
 
 		$item = ItemMasterItemQuery::create()->findOneByItemid($data->itemID);
@@ -51,11 +54,12 @@ class Ii extends AbstractController {
 		$stock   = self::itemStock($data->itemID);
 		$header  = self::itemHeader($data->itemID);
 
-		$page->body .= "<div class='row'>";
-			$page->body .= $html->div('class=col-sm-2 pl-0', $toolbar);
-			$page->body .= $html->div('class=col-sm-10', $links.$header.$details.$stock);
-		$page->body .= "</div>";
-		return $page->body;
+
+		$html .= "<div class='row'>";
+			$html .= $htmlwriter->div('class=col-sm-2 pl-0', $toolbar);
+			$html .= $htmlwriter->div('class=col-sm-10', $links.$header.$details.$stock);
+		$html .= "</div>";
+		return $html;
 	}
 
 	private static function itemStock($itemID) {
@@ -77,7 +81,7 @@ class Ii extends AbstractController {
 	}
 
 	private static function jsonFormattedData($jsonInfo, $itemID) {
-		$html = '';
+		$htmlwriter = '';
 		$modules = self::pw('modules');
 		$config  = self::pw('config');
 		$session = self::pw('session');
@@ -97,22 +101,22 @@ class Ii extends AbstractController {
 			$session->setFor('ii', 'item', 0);
 
 			if ($json['error']) {
-				$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
+				$htmlwriter .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 			} else {
 				$formatter = $formatters->formatter($jsonInfo['formatter']);
 				$formatter->init_formatter();
-				$html .= $config->twig->render($jsonInfo['twig'], ['itemID' => $itemID, 'json' => $json, 'module_formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint()]);
+				$htmlwriter .= $config->twig->render($jsonInfo['twig'], ['itemID' => $itemID, 'json' => $json, 'module_formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint()]);
 			}
 		} else {
 			if ($session->getFor('ii', 'item') > 3) {
-				$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "JSON Decode Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => $jsonM->get_error()]);
+				$htmlwriter .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "JSON Decode Error", 'iconclass' => 'fa fa-warning fa-2x', 'message' => $jsonM->get_error()]);
 			} else {
 				$session->setFor('ii', 'item', $session->getFor('ii', 'item') + 1);
 				self::requestIiItem($itemID);
 				$session->redirect(self::pw('page')->fullURL->getUrl(), $http301 = false);
 			}
 		}
-		return $html;
+		return $htmlwriter;
 	}
 
 	public static function requestIiItem($itemID, $sessionID = '') {
@@ -146,9 +150,11 @@ class Ii extends AbstractController {
 		$config = self::pw('config');
 		$items = $filter->query->paginate(self::pw('input')->pageNum, 10);
 		$pricingM->request_multiple(array_keys($items->toArray(ItemMasterItem::get_aliasproperty('itemid'))));
+
 		$page->searchURL = $page->url;
-		$page->body .= $config->twig->render('items/item-search.twig', ['page' => $page, 'items' => $items, 'pricing' => $pricingM]);
-		$page->body .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
-		return $page->body;
+		$html = '';
+		$html .= $config->twig->render('items/item-search.twig', ['items' => $items, 'pricing' => $pricingM]);
+		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
+		return $html;
 	}
 }

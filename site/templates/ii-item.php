@@ -10,10 +10,6 @@
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
-	$response = $router->route();
-
-	if ($router->hasError()) {
-		$page->body = $response;
-	}
+	$page->body = $router->route();
 
 	include __DIR__ . "/basic-page.php";
