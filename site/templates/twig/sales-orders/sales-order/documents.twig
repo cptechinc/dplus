@@ -2,6 +2,7 @@
 	<h3 class="font-weight-bold text-secondary">Documents <i class="fa fa-file-text" aria-hidden="true"></i></h3>
 	<table class="table table-striped">
 		<tr class="bg-dark text-white">
+			<th>Folder</th>
 			<th>Title</th>
 			<th>Filename</th>
 			<th>Date</th>
@@ -10,6 +11,7 @@
 		{% if documents.count() %}
 			{% for document in documents %}
 				<tr id="doc-{{ document.filename }}">
+					<td>{{ document.folder }}</td>
 					<td>{{ document.title }}</td>
 					<td>
 						<a href="{{ page.documentload(document.folder, document.filename, ordn) }}" class="link" target="_blank">
