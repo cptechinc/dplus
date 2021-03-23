@@ -22,13 +22,6 @@
 	*		IISELECT
 	*		ITEMID=$itemID
 	*		break;
-	*	case 'ii-stock':
-	* 		Request II Stock JSON file
-	* 		Response: Creates II Stock JSON file
-	*		DBNAME=$dplusdb
-	*		IISTKBYWHSE
-	*		ITEMID=$itemID
-	*		break;
 	*	case 'ii-requirements':
 	* 		Request II Requirements JSON file
 	* 		Response: Creates II Requirements JSON file
@@ -155,19 +148,6 @@
 				$session->loc = $url->getUrl();
 			} else {
 				$url = $pages->get('pw_template=ii-item')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-stock':
-			$data = array("DBNAME=$dplusdb", 'IISTKBYWHSE', "ITEMID=$itemID");
-
-			if ($input->$requestmethod->page) {
-				$url = new Purl\Url($input->$requestmethod->text('page'));
-				$url->query->remove('q');
-				$url->query->set('itemID', $itemID);
-				$session->loc = $url->getUrl();
-			} else {
-				$url = $pages->get('pw_template=ii-stock')->httpUrl."?itemID=$itemID";
 				$session->loc = $url;
 			}
 			break;
