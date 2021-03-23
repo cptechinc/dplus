@@ -1,0 +1,66 @@
+<?php namespace ProcessWire;
+
+class JsonDataFilesSession extends WireData implements Module {
+
+	public function init() {
+		$this->sessionID = session_id();
+		$this->jsonm = $this->wire('modules')->get('JsonDataFiles');
+	}
+
+	/**
+	 * Return JSON FILE
+	 * @param  string $jsoncode  ex. ii-stock
+	 * @return array             Decoded json array
+	 */
+	public function getFile($jsoncode) {
+		return $this->jsonm->get_file($this->sessionID, $jsoncode);
+	}
+
+	/**
+	 * Returns if the File Exists
+	 * @param  string $jsoncode  Json Code ii-quotes
+	 * @return bool              Does File Exist
+	 */
+	public function exists($jsoncode) {
+		return $this->jsonm->file_exists($this->sessionID, $jsoncode);
+	}
+
+	/**
+	 * Removes Json file
+	 * @param  string $jsoncode  Json Code ii-quotes
+	 * @return bool              Was File Removed
+	 */
+	public function delete($jsoncode) {
+		return $this->jsonm->remove_file($this->sessionID, $jsoncode);
+	}
+
+	/**
+	 * Returns Date Time of when Json file was modified
+	 * @return string            Date Time of when Json file was modified
+	 */
+	public function lastModified($jsoncode) {
+		return $this->jsonm->file_modified($this->sessionID, $jsoncode);
+	}
+
+	/**
+	 * Return Full File Path
+	 * @param  string $jsoncode  Json Code e.g. ii-quotes
+	 * @return string
+	 */
+	public function filePath($jsoncode) {
+		return $this->jsonm->get_fullfilepath($this->sessionID, $jsoncode);
+	}
+
+/* =============================================================
+	ProcessWire Module Functions
+============================================================= */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dpluso JSON Data Files Session Module',
+			'version' => 101,
+			'summary' => 'Handles Dpluso JSON Data Files',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}
