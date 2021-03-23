@@ -22,15 +22,6 @@
 	*		IISELECT
 	*		ITEMID=$itemID
 	*		break;
-	*	case 'ii-requirements':
-	* 		Request II Requirements JSON file
-	* 		Response: Creates II Requirements JSON file
-	*		DBNAME=$dplusdb
-	*		IIREQUIRE
-	*		ITEMID=$itemID
-	*		WHSE=$whse
-	*		REQAVL=$view
-	*		break;
 	*	case 'ii-pricing':
 	* 		Request II Pricing JSON file
 	* 		Response: Creates II Pricing JSON file
@@ -148,32 +139,6 @@
 				$session->loc = $url->getUrl();
 			} else {
 				$url = $pages->get('pw_template=ii-item')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-requirements':
-			$whse = $input->$requestmethod->text('whseID');
-			$view = $input->$requestmethod->text('view');
-			if ($view == '') {
-				$q = OptionsIiQuery::create();
-				$q->filterByUserid(OptionsIi::USER_SYSTEM);
-				$config_ii = $q->findOne();
-				$view = OptionsIi::VIEW_REQUIREMENTS_OPTIONS_JSON[$config_ii->view_requirements];
-			}
-			//screen type would be REQ or AVL
-			$data = array("DBNAME=$dplusdb", 'IIREQUIRE', "ITEMID=$itemID", "WHSE=$whse", "REQAVL=$view");
-
-			if ($input->$requestmethod->page) {
-				$url = new Purl\Url($input->$requestmethod->text('page'));
-				$url->query->set('itemID', $itemID);
-
-				if (isset($input->$requestmethod->whse)) {
-					$url->query->set('whseID', $whse);
-					$url->query->set('view', $view);
-				}
-				$session->loc = $url->getUrl();
-			} else {
-				$url = $pages->get('pw_template=ii-requirements')->httpUrl."?itemID=$itemID";
 				$session->loc = $url;
 			}
 			break;
