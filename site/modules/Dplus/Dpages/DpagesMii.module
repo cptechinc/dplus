@@ -373,7 +373,7 @@ class DpagesMii extends Dpages implements Module {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
 			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
-			$url->query->set('itemID', $this->itemID);
+			$url->query->set('itemID', $itemID);
 			$event->return = $url->getUrl();
 		});
 
