@@ -31,6 +31,8 @@ return array(
     'Controllers\\Mar\\Spm' => $baseDir . '/classes/mar/Spm.php',
     'Controllers\\Mci\\Ci' => $baseDir . '/classes/mci/Ci/Ci.php',
     'Controllers\\Mii\\Ii' => $baseDir . '/classes/mii/Ii/Ii.php',
+    'Controllers\\Mii\\IiFunction' => $baseDir . '/classes/mii/Ii/IiFunction.php',
+    'Controllers\\Mii\\Stock' => $baseDir . '/classes/mii/Ii/Stock.php',
     'Controllers\\Min\\Itm\\Costing' => $baseDir . '/classes/min/itm/Costing.php',
     'Controllers\\Min\\Itm\\Itm' => $baseDir . '/classes/min/itm/Itm.php',
     'Controllers\\Min\\Itm\\ItmFunction' => $baseDir . '/classes/min/itm/ItmFunction.php',
