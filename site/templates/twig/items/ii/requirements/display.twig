@@ -1,0 +1,20 @@
+{% extends 'items/ii/display.twig' %}
+
+
+{% block body %}
+	<div class="card-body pb-0">
+		{% include 'items/ii/requirements/requirements-form.twig' with {'itemID': item.itemid, 'warehouses': warehouses, 'module_ii': module_ii, 'view': json['reqavl'], 'whse': json['whse']} %}
+
+	</div>
+
+	<div class="card-body pb-0">
+		<h4>{{ module_ii.get_requirementsoptions()[json['reqavl']]|capitalize }} </h4>
+	</div>
+
+	{% include 'items/ii/requirements/requirements.twig' %}
+
+{% endblock %}
+
+{% block footer %}
+	
+{% endblock %}
