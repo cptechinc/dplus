@@ -162,7 +162,8 @@ class DocumentManagementSo extends DocumentManagement implements Module {
 	 * @return string
 	 */
 	public function get_docsURL($ordn, $folder, $document) {
-		$url = new Url($this->wire('pages')->get('pw_template=sales-order-documents')->url);
+		$url = new Url($this->wire('pages')->get('pw_template=sales-order-view')->url);
+		$url->path->add('documents');
 		$url->query->set('ordn', $ordn);
 		$url->query->set('folder', $folder);
 		$url->query->set('document', $document);
