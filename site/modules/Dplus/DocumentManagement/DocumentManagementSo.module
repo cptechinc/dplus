@@ -3,8 +3,8 @@
 use Dplus\CodeValidators\Mso as MsoValidator;
 
 use Purl\Url;
-use DocumentFoldersQuery, DocumentFolders;
-use DocumentsQuery, Documents;
+use DocumentFolderQuery, DocumentFolder;
+use DocumentQuery, Document;
 use SalesOrderQuery, SalesOrder;
 use SalesOrderDetailQuery, SalesOrderDetail;
 use SalesHistoryQuery, SalesHistory;
@@ -24,7 +24,7 @@ class DocumentManagementSo extends DocumentManagement implements Module {
 	 * @return Documents[]|ObjectCollection
 	 */
 	public function get_documents($ordn) {
-		$docs_query = DocumentsQuery::create();
+		$docs_query = DocumentQuery::create();
 		$this->filter_sales($docs_query, $ordn);
 		return $docs_query->find();
 	}
@@ -36,7 +36,7 @@ class DocumentManagementSo extends DocumentManagement implements Module {
 	 * @return int          Number of Sales Order Documents found
 	 */
 	public function count_documents($ordn) {
-		$docs_query = DocumentsQuery::create();
+		$docs_query = DocumentQuery::create();
 		$this->filter_sales($docs_query, $ordn);
 		return $docs_query->count();
 	}
@@ -44,15 +44,15 @@ class DocumentManagementSo extends DocumentManagement implements Module {
 	/**
 	 * Adds Filter Conditions to the Documents Query
 	 * to find Documents associated with a Sales Order
-	 * @param  DocumentsQuery $docs_query Query to add filters to
+	 * @param  DocumentQuery $docs_query Query to add filters to
 	 * @param  string         $ordn             Sales Order #
 	 * @return void
 	 */
-	protected function filter_sales(DocumentsQuery $docs_query, $ordn) {
+	protected function filter_sales(DocumentQuery $docs_query, $ordn) {
 		$ordn = SalesOrder::get_paddedordernumber($ordn);
 		$this->columns = new WireData();
-		$this->columns->tag = Documents::get_aliasproperty('tag');
-		$this->columns->reference1 = Documents::get_aliasproperty('reference1');
+		$this->columns->tag = Document::get_aliasproperty('tag');
+		$this->columns->reference1 = Document::get_aliasproperty('reference1');
 
 		$conditions = array();
 
@@ -74,39 +74,39 @@ class DocumentManagementSo extends DocumentManagement implements Module {
 
 	/**
 	 * Filter the Query for Sales Order Documents
-	 * @param  DocumentsQuery $docs_query Query
+	 * @param  DocumentQuery $docs_query Query
 	 * @param  string         $ordn             Sales Order #
 	 * @return string
 	 */
-	protected function filter_sales_orders(DocumentsQuery $docs_query, $ordn) {
+	protected function filter_sales_orders(DocumentQuery $docs_query, $ordn) {
 		$name = 'cond_so';
-		$docs_query->condition('tag_so', "Documents.{$this->columns->tag} = ?", self::TAG_SALESORDER);
-		$docs_query->condition('reference1_so', "Documents.{$this->columns->reference1} = ?", $ordn);
+		$docs_query->condition('tag_so', "Document.{$this->columns->tag} = ?", self::TAG_SALESORDER);
+		$docs_query->condition('reference1_so', "Document.{$this->columns->reference1} = ?", $ordn);
 		$docs_query->combine(array('tag_so', 'reference1_so'), 'and', $name) ;
 		return $name;
 	}
 
 	/**
 	 * Filter the Query for Invoice Documents
-	 * @param  DocumentsQuery $docs_query Query
+	 * @param  DocumentQuery $docs_query Query
 	 * @param  string         $ordn             Sales Order #
 	 * @return string
 	 */
-	protected function filter_sales_invoices(DocumentsQuery $docs_query, $ordn) {
+	protected function filter_sales_invoices(DocumentQuery $docs_query, $ordn) {
 		$name = 'cond_invoices';
-		$docs_query->condition('tag_invoices', "Documents.{$this->columns->tag} = ?", self::TAG_ARINVOICE);
-		$docs_query->condition('reference1_invoices', "Documents.{$this->columns->reference1} = ?", $ordn);
+		$docs_query->condition('tag_invoices', "Document.{$this->columns->tag} = ?", self::TAG_ARINVOICE);
+		$docs_query->condition('reference1_invoices', "Document.{$this->columns->reference1} = ?", $ordn);
 		$docs_query->combine(array('tag_invoices', 'reference1_invoices'), 'and', $name);
 		return $name;
 	}
 
 	/**
 	 * Filter the Query for Vendor Purchase Order Documents
-	 * @param  DocumentsQuery $docs_query Query
+	 * @param  DocumentQuery $docs_query Query
 	 * @param  string         $ordn             Sales Order #
 	 * @return mixed
 	 */
-	protected function filter_sales_vendorpo(DocumentsQuery $docs_query, $ordn) {
+	protected function filter_sales_vendorpo(DocumentQuery $docs_query, $ordn) {
 		$name = 'cond_vendorpo';
 		$validate = new MsoValidator();
 
@@ -114,8 +114,8 @@ class DocumentManagementSo extends DocumentManagement implements Module {
 			if ($this->order_has_ponbrs($ordn)) {
 				$q = $this->get_detail_query($ordn);
 				$ponbrs = $q->find()->toArray();
-				$docs_query->condition('tag_vendorpo', "Documents.{$this->columns->tag} = ?", self::TAG_VENDORPO);
-				$docs_query->condition('reference1_vendorpo', "Documents.{$this->columns->reference1} IN ?", $ponbrs);
+				$docs_query->condition('tag_vendorpo', "Document.{$this->columns->tag} = ?", self::TAG_VENDORPO);
+				$docs_query->condition('reference1_vendorpo', "Document.{$this->columns->reference1} IN ?", $ponbrs);
 				$docs_query->combine(array('tag_vendorpo', 'reference1_vendorpo'), 'and', $name);
 				return $name;
 			}

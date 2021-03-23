@@ -3,8 +3,8 @@
 use Purl\Url;
 use Propel\Runtime\ActiveQuery\Criteria;
 
-use DocumentFoldersQuery, DocumentFolders;
-use DocumentsQuery, Documents;
+use DocumentFolderQuery, DocumentFolder;
+use DocumentQuery, Document;
 use SalesHistoryQuery, SalesHistory;
 use SalesOrderQuery, SalesOrder;
 use PurchaseOrderQuery, PurchaseOrder;
@@ -55,12 +55,12 @@ class DocumentManagement extends WireData implements Module {
 	 * @return string
 	 */
 	public function whereis_document($folder, $filename) {
-		$docs_query = DocumentsQuery::create();
+		$docs_query = DocumentQuery::create();
 		$docs_query->filterByFolder($folder);
 		$docs_query->filterByFilename($filename);
 		$document = $docs_query->findOne();
 
-		$folder = DocumentFoldersQuery::create()->findOneByFolder($folder);
+		$folder = DocumentFolderQuery::create()->findOneByFolder($folder);
 		return "$folder->directory/$filename";
 	}
 
@@ -86,12 +86,12 @@ class DocumentManagement extends WireData implements Module {
 	 * @return void
 	 */
 	public function move_document($folder, $filename, $destination = '') {
-		$docs_query = DocumentsQuery::create();
+		$docs_query = DocumentQuery::create();
 		$docs_query->filterByFolder($folder);
 		$docs_query->filterByFilename($filename);
 		$document = $docs_query->findOne();
 
-		$folder = DocumentFoldersQuery::create()->findOneByFolder($folder);
+		$folder = DocumentFolderQuery::create()->findOneByFolder($folder);
 		$this->move_file($folder->directory, $document->filename, $destination);
 	}
 

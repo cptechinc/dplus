@@ -1,8 +1,8 @@
 <?php namespace ProcessWire;
 
 use Purl\Url;
-use DocumentFoldersQuery, DocumentFolders;
-use DocumentsQuery, Documents;
+use DocumentFolderQuery, DocumentFolder;
+use DocumentQuery, Document;
 use SalesOrderQuery, SalesOrder;
 use SalesOrderDetailQuery, SalesOrderDetail;
 use SalesHistoryQuery, SalesHistory;
@@ -21,7 +21,7 @@ class DocumentManagementAr extends DocumentManagement implements Module {
 	 */
 	public function get_documents_invoice($invnbr) {
 		$invnbr = SalesOrder::get_paddedordernumber($invnbr);
-		$docs_query = DocumentsQuery::create();
+		$docs_query = DocumentQuery::create();
 		$docs_query->filterByTag(self::TAG_ARINVOICE);
 		$docs_query->filterByReference1($invnbr);
 		return $docs_query->find();
@@ -34,7 +34,7 @@ class DocumentManagementAr extends DocumentManagement implements Module {
 	 */
 	public function count_documents_invoice($invnbr) {
 		$invnbr = SalesOrder::get_paddedordernumber($invnbr);
-		$docs_query = DocumentsQuery::create();
+		$docs_query = DocumentQuery::create();
 		$docs_query->filterByTag(self::TAG_ARINVOICE);
 		$docs_query->filterByReference1($invnbr);
 		return $docs_query->count();
@@ -48,7 +48,7 @@ class DocumentManagementAr extends DocumentManagement implements Module {
 	 */
 	public function get_documents_payment($invnbr, $checknbr = '') {
 		$invnbr = SalesOrder::get_paddedordernumber($invnbr);
-		$docs_query = DocumentsQuery::create();
+		$docs_query = DocumentQuery::create();
 		$this->filter_conditions_payment($docs_query, $invnbr, $checknbr);
 		return $docs_query->find();
 	}
@@ -61,23 +61,23 @@ class DocumentManagementAr extends DocumentManagement implements Module {
 	 */
 	public function count_documents_payment($invnbr, $checknbr = '') {
 		$invnbr = SalesOrder::get_paddedordernumber($invnbr);
-		$docs_query = DocumentsQuery::create();
+		$docs_query = DocumentQuery::create();
 		$this->filter_conditions_payment($docs_query, $invnbr, $checknbr);
 		return $docs_query->count();
 	}
 
 	/**
 	 * Adds Filters to the Query for AR Payment
-	 * @param  DocumentsQuery $docs_query Query to apply filters to
+	 * @param  DocumentQuery $docs_query Query to apply filters to
 	 * @param  string         $invnbr           AP Invoice Number
 	 * @param  string         $checknbr         Check Number if provided
 	 * @return string
 	 */
-	public function filter_conditions_payment(DocumentsQuery $docs_query, $invnbr, $checknbr = '') {
+	public function filter_conditions_payment(DocumentQuery $docs_query, $invnbr, $checknbr = '') {
 		$this->columns = new WireData();
-		$this->columns->tag = Documents::get_aliasproperty('tag');
-		$this->columns->reference1 = Documents::get_aliasproperty('reference1');
-		$this->columns->reference2 = Documents::get_aliasproperty('reference2');
+		$this->columns->tag = Document::get_aliasproperty('tag');
+		$this->columns->reference1 = Document::get_aliasproperty('reference1');
+		$this->columns->reference2 = Document::get_aliasproperty('reference2');
 		$conditions = array();
 
 		if ($checknbr) {
@@ -106,63 +106,63 @@ class DocumentManagementAr extends DocumentManagement implements Module {
 
 	/**
 	 * Add Invoice Condition to Document Query
-	 * @param  DocumentsQuery $docs_query
+	 * @param  DocumentQuery $docs_query
 	 * @param  string         $invnbr     Invoice Number
 	 * @return string
 	 */
-	protected function conditions_payment_invoices(DocumentsQuery $docs_query, $invnbr) {
+	protected function conditions_payment_invoices(DocumentQuery $docs_query, $invnbr) {
 		$name = 'cond_invoices';
-		$docs_query->condition('tag_invoices', "Documents.{$this->columns->tag} = ?", self::TAG_ARINVOICE);
-		$docs_query->condition('reference1_invoices', "Documents.{$this->columns->reference1} = ?", $invnbr);
+		$docs_query->condition('tag_invoices', "Document.{$this->columns->tag} = ?", self::TAG_ARINVOICE);
+		$docs_query->condition('reference1_invoices', "Document.{$this->columns->reference1} = ?", $invnbr);
 		$docs_query->combine(array('tag_invoices', 'reference1_invoices'), 'and', $name);
 		return $name;
 	}
 
 	/**
 	 * Add Vendor Condition to Document Query
-	 * @param  DocumentsQuery $docs_query
+	 * @param  DocumentQuery $docs_query
 	 * @param  string         $invnbr     Invoice Number
 	 * @return string
 	 */
-	protected function conditions_payment_vendorpo(DocumentsQuery $docs_query, $invnbr) {
+	protected function conditions_payment_vendorpo(DocumentQuery $docs_query, $invnbr) {
 		$name = 'cond_vendorpo';
 		$q = $this->get_details_po_query($invnbr);
 		$ponbrs = $q->find()->toArray();
-		$docs_query->condition('tag_vendorpo', "Documents.{$this->columns->tag} = ?", self::TAG_VENDORPO);
-		$docs_query->condition('reference1_vendorpo', "Documents.{$this->columns->reference1} IN ?", $ponbrs);
+		$docs_query->condition('tag_vendorpo', "Document.{$this->columns->tag} = ?", self::TAG_VENDORPO);
+		$docs_query->condition('reference1_vendorpo', "Document.{$this->columns->reference1} IN ?", $ponbrs);
 		$docs_query->combine(array('tag_vendorpo', 'reference1_vendorpo'), 'and', $name);
 		return $name;
 	}
 
 	/**
 	 * Add Customer Condition to Document Query
-	 * @param  DocumentsQuery $docs_query
+	 * @param  DocumentQuery $docs_query
 	 * @param  string         $invnbr     Invoice Number
 	 * @return string
 	 */
-	protected function conditions_payment_customer(DocumentsQuery $docs_query, $invnbr) {
+	protected function conditions_payment_customer(DocumentQuery $docs_query, $invnbr) {
 		$name = 'cond_customer';
 		$custID = $this->get_invoice_custid($invnbr);
-		$docs_query->condition('tag_customer', "Documents.{$this->columns->tag} = ?", self::TAG_CUSTOMER);
-		$docs_query->condition('reference1_customer', "Documents.{$this->columns->reference1} = ?", $custID);
+		$docs_query->condition('tag_customer', "Document.{$this->columns->tag} = ?", self::TAG_CUSTOMER);
+		$docs_query->condition('reference1_customer', "Document.{$this->columns->reference1} = ?", $custID);
 		$docs_query->combine(array('tag_customer', 'reference1_customer'), 'and', $name);
 		return $name;
 	}
 
 	/**
 	 * Add Vendor Condition to Document Query
-	 * @param  DocumentsQuery $docs_query
+	 * @param  DocumentQuery $docs_query
 	 * @param  string         $invnbr     Invoice Number
 	 * @param  string         $checknbr   Check Number
 	 * @return string
 	 */
-	protected function conditions_payment_check(DocumentsQuery $docs_query, $invnbr, $checknbr) {
+	protected function conditions_payment_check(DocumentQuery $docs_query, $invnbr, $checknbr) {
 		$name = 'cond_checks';
 		$custID = $this->get_invoice_custid($invnbr);
-		$docs_query->condition('tag_customer_check', "Documents.{$this->columns->tag} = ?", self::TAG_CUSTOMER);
-		$docs_query->condition('reference1_customer_check', "Documents.{$this->columns->reference1} = ?", $custID);
-		$docs_query->condition('tag_checks', "Documents.{$this->columns->tag} = ?", self::TAG_AR_CHECKS);
-		$docs_query->condition('reference2_checks', "Documents.{$this->columns->reference2} = ?", $checknbr);
+		$docs_query->condition('tag_customer_check', "Document.{$this->columns->tag} = ?", self::TAG_CUSTOMER);
+		$docs_query->condition('reference1_customer_check', "Document.{$this->columns->reference1} = ?", $custID);
+		$docs_query->condition('tag_checks', "Document.{$this->columns->tag} = ?", self::TAG_AR_CHECKS);
+		$docs_query->condition('reference2_checks', "Document.{$this->columns->reference2} = ?", $checknbr);
 		$docs_query->combine(array('tag_customer_check', 'reference1_customer_check', 'tag_checks', 'reference2_checks'), 'and', $name);
 		return $name;
 	}
@@ -224,6 +224,6 @@ class DocumentManagementAr extends DocumentManagement implements Module {
 	}
 
 	public function init() {
-		
+
 	}
 }

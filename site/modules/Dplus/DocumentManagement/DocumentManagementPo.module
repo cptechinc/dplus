@@ -4,8 +4,8 @@ use Purl\Url;
 
 use Dplus\CodeValidators\Mpo as MpoValidator;
 
-use DocumentFoldersQuery, DocumentFolders;
-use DocumentsQuery, Documents;
+use DocumentFolderQuery, DocumentFolder;
+use DocumentQuery, Document;
 use PurchaseOrderQuery, PurchaseOrder;
 use ApInvoiceQuery, ApInvoice;
 
@@ -23,7 +23,7 @@ class DocumentManagementPo extends DocumentManagement implements Module {
 	 */
 	public function get_documents_po($ponbr) {
 		$ponbr = PurchaseOrder::get_paddedponumber($ponbr);
-		$docs_query = DocumentsQuery::create();
+		$docs_query = DocumentQuery::create();
 		$docs_query->filterByTag(self::TAG_VENDORPO);
 		$docs_query->filterByReference1($ponbr);
 		return $docs_query->find();
@@ -37,7 +37,7 @@ class DocumentManagementPo extends DocumentManagement implements Module {
 	 */
 	public function count_documents_po($ponbr) {
 		$ponbr = PurchaseOrder::get_paddedponumber($ponbr);
-		$docs_query = DocumentsQuery::create();
+		$docs_query = DocumentQuery::create();
 		$docs_query->filterByTag(self::TAG_VENDORPO);
 		$docs_query->filterByReference1($ponbr);
 		return $docs_query->count();
@@ -50,7 +50,7 @@ class DocumentManagementPo extends DocumentManagement implements Module {
 	 * @return Documents[]|Object Collection
 	 */
 	public function get_documents_invoice($invnbr) {
-		$docs_query = DocumentsQuery::create();
+		$docs_query = DocumentQuery::create();
 		$this->filter_invoice($docs_query, $invnbr);
 		return $docs_query->find();
 	}
@@ -64,7 +64,7 @@ class DocumentManagementPo extends DocumentManagement implements Module {
 	 * @return int            Number of Documents found associated with AP Invoice Number
 	 */
 	public function count_documents_invoice($invnbr) {
-		$docs_query = DocumentsQuery::create();
+		$docs_query = DocumentQuery::create();
 		$this->filter_invoice($docs_query, $invnbr);
 		return $docs_query->count();
 	}
@@ -73,17 +73,17 @@ class DocumentManagementPo extends DocumentManagement implements Module {
 	 * Adds Filter Conditions to the Documents Query
 	 * to find Documents associated with an AP Invoice Number
 	 *
-	 * @param  DocumentsQuery $docs_query  Query to add filters to
+	 * @param  DocumentQuery $docs_query  Query to add filters to
 	 * @param  string         $invnbr            AP Invoice Number
 	 * @return void
 	 */
-	protected function filter_invoice(DocumentsQuery $docs_query, $invnbr) {
+	protected function filter_invoice(DocumentQuery $docs_query, $invnbr) {
 		$invnbr = PurchaseOrder::get_paddedponumber($invnbr);
 		$validate_inv = new MpoValidator();
 
 		$this->columns = new WireData();
-		$this->columns->reference1 = Documents::get_aliasproperty('reference1');
-		$this->columns->reference2 = Documents::get_aliasproperty('reference2');
+		$this->columns->reference1 = Document::get_aliasproperty('reference1');
+		$this->columns->reference2 = Document::get_aliasproperty('reference2');
 
 		$conditions = array();
 
@@ -91,7 +91,7 @@ class DocumentManagementPo extends DocumentManagement implements Module {
 		 * Check if it's an Invoice #
 		 */
 		if ($validate_inv->invoice($invnbr)) {
-			$this->columns->tag = Documents::get_aliasproperty('tag');
+			$this->columns->tag = Document::get_aliasproperty('tag');
 
 			$conditions[] = filter_condition_invoice_reference1($docs_query, $invnbr);
 			$conditions[] = filter_condition_invoice_reference2($docs_query, $invnbr);
@@ -101,8 +101,8 @@ class DocumentManagementPo extends DocumentManagement implements Module {
 			$docs_query->filterByTag(self::TAG_VENDORPO);
 
 			// Create Vendor PO OR Filter
-			$docs_query->condition('reference1_invoices', "Documents.{$this->columns->reference1} = ?", $invnbr);
-			$docs_query->condition('reference2_invoices', "Documents.{$this->columns->reference2} = ?", $invnbr);
+			$docs_query->condition('reference1_invoices', "Document.{$this->columns->reference1} = ?", $invnbr);
+			$docs_query->condition('reference2_invoices', "Document.{$this->columns->reference2} = ?", $invnbr);
 			$docs_query->combine(array('reference1_invoices', 'reference2_invoices'), 'or', 'cond_invoices');
 			$docs_query->where(array('cond_invoices'));
 		}
@@ -110,44 +110,44 @@ class DocumentManagementPo extends DocumentManagement implements Module {
 
 	/**
 	 * Add AP Invoice Condition to Documents Query
-	 * @param  DocumentsQuery $docs_query Documents Query
+	 * @param  DocumentQuery $docs_query Documents Query
 	 * @param  string         $invnbr     AP Invoice Number
 	 * @return string
 	 */
-	protected function filter_condition_invoice_reference1(DocumentsQuery $docs_query, $invnbr) {
+	protected function filter_condition_invoice_reference1(DocumentQuery $docs_query, $invnbr) {
 		$name = 'cond_invoices';
-		$docs_query->condition('tag_invoices', "Documents.{$this->columns->tag} = ?", self::TAG_APINVOICE);
-		$docs_query->condition('reference1_invoices', "Documents.{$this->columns->reference1} = ?", $invnbr);
+		$docs_query->condition('tag_invoices', "Document.{$this->columns->tag} = ?", self::TAG_APINVOICE);
+		$docs_query->condition('reference1_invoices', "Document.{$this->columns->reference1} = ?", $invnbr);
 		$docs_query->combine(array('tag_invoices', 'reference1_invoices'), 'and', $name);
 		return $name;
 	}
 
 	/**
 	 * Add AP Invoice Condition to Documents Query
-	 * @param  DocumentsQuery $docs_query Documents Query
+	 * @param  DocumentQuery $docs_query Documents Query
 	 * @param  string         $invnbr     AP Invoice Number
 	 * @return string
 	 */
-	protected function filter_condition_invoice_reference2(DocumentsQuery $docs_query, $invnbr) {
+	protected function filter_condition_invoice_reference2(DocumentQuery $docs_query, $invnbr) {
 		$name = 'cond_invoices2';
-		$docs_query->condition('tag_invoices', "Documents.{$this->columns->tag} = ?", self::TAG_APINVOICE);
-		$docs_query->condition('reference2_invoices', "Documents.{$this->columns->reference2} = ?", $invnbr);
+		$docs_query->condition('tag_invoices', "Document.{$this->columns->tag} = ?", self::TAG_APINVOICE);
+		$docs_query->condition('reference2_invoices', "Document.{$this->columns->reference2} = ?", $invnbr);
 		$docs_query->combine(array('tag_invoices', 'reference2_invoices'), 'and', $name);
 		return $name;
 	}
 
 	/**
 	 * Add Vendor PO Condition to Documents Query
-	 * @param  DocumentsQuery $docs_query Documents Query
+	 * @param  DocumentQuery $docs_query Documents Query
 	 * @param  string         $invnbr     AP Invoice Number
 	 * @return string
 	 */
-	protected function filter_condition_invoice_po(DocumentsQuery $docs_query, $invnbr) {
+	protected function filter_condition_invoice_po(DocumentQuery $docs_query, $invnbr) {
 		$apinvoice = $this->get_invoice($invnbr);
 		$ponbr = $apinvoice->ponbr;
 		$name = 'cond_vendorpo';
-		$docs_query->condition('tag_vendorpo', "Documents.{$this->columns->tag} = ?", self::TAG_VENDORPO);
-		$docs_query->condition('reference1_vendorpo', "Documents.{$this->columns->reference1} = ?", $ponbr);
+		$docs_query->condition('tag_vendorpo', "Document.{$this->columns->tag} = ?", self::TAG_VENDORPO);
+		$docs_query->condition('reference1_vendorpo', "Document.{$this->columns->reference1} = ?", $ponbr);
 		$docs_query->combine(array('tag_vendorpo', 'reference1_vendorpo'), 'and', $name);
 		return $name;
 	}
