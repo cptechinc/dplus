@@ -1,22 +1,29 @@
-<nav aria-label="breadcrumb" class="rounded-0 mb-4">
-	<ol class="breadcrumb">
-		{% for parent in page.parents() %}
-			{% if parent.pw_template == 'ii-item' %}
-				<li class="breadcrumb-item">
-					<i class="fa fa-list" aria-hidden="true"></i>
-					<a href="{{ parent.url }}">{{ parent.title }}</a>
-				</li>
-				<li class="breadcrumb-item">
-					<i class="fa fa-cubes" aria-hidden="true"></i>
-					<a href="{{ page.get_itempageURL(item.itemid) }}">{{ item.itemid }}</a>
-				</li>
-			{% else %}
-				<li class="breadcrumb-item">
-					<i class="fa fa-list" aria-hidden="true"></i>
-					<a href="{{ parent.url }}">{{ parent.title }}</a>
-				</li>
-			{% endif %}
-		{% endfor %}
-		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
-	</ol>
-</nav>
+{% extends 'util/bread-crumbs.twig' %}
+{% set input = page.wire('input') %}
+
+{% block current_page %}
+	<li class="breadcrumb-item">
+		<a href="{{ page.url }}"><i class="fa fa-microchip" aria-hidden="true"></i> II</a>
+	</li>
+	<li class="breadcrumb-item">
+		<a href="{{ page.get_itemURL(input.get.text('itemID')) }}">{{ input.get.text('itemID') }}</a>
+	</li>
+	{% set segments = input.urlSegments() %}
+	{% if segments|length == 1 %}
+
+		{% if segments[1] == 'pricing' and input.get.offsetExists('custID') %}
+			<li class="breadcrumb-item">
+				<a href="{{ page.subfunctionURL(input.get.text('itemID'), 'pricing') }}">
+					{{ page.subfunctionTitle(segments[1])|capitalize }}
+				</a>
+			</li>
+			<li class="breadcrumb-item active">
+				{{ input.get.text('custID') }}
+			</li>
+		{% else %}
+			<li class="breadcrumb-item active">
+				{{ page.subfunctionTitle(segments[1])|capitalize }}
+			</li>
+		{% endif %}
+	{% endif %}
+{% endblock %}
