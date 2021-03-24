@@ -1,0 +1,24 @@
+{% extends 'items/ii/display.twig' %}
+
+{% block body %}
+	{% include 'items/ii/pricing/customer-item.twig' %}
+
+
+	<div class="card-body">
+		<div class="row">
+			<div class="col-sm-4 form-group">
+				{% include 'items/ii/pricing/standard-pricing.twig' %}
+			</div>
+			<div class="col-sm-4 form-group">
+				{% include 'items/ii/pricing/customer-pricing.twig' %}
+			</div>
+			<div class="col-sm-4 form-group">
+				{% include 'items/ii/pricing/derived-pricing.twig' %}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}

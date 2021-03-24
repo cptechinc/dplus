@@ -1,0 +1,39 @@
+<form action="{{ page.wire('input').url() }}" method="get" class="allow-enterkey-submit" id="pricing-customer-form">
+	<input type="hidden" name="itemID" value="{{ itemID }}">
+	<label for="custID">Customer ID</label>
+	<div class="row">
+		<div class="col-sm-9">
+			<div class="form-group">
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'prepend',
+							'input': {
+								'name': 'custID',
+								'id': 'custID',
+								'value': '',
+								'attributes': {
+									'placeholder': '',
+									'aria-label':  'Customer ID'
+								}
+							},
+							'button': {
+								'colorclass': 'btn-secondary',
+								'text': 'fa fa-search'|icon,
+								'attributes': {
+									'title': 'Search Customers',
+									'data-toggle': 'modal',
+									'data-target': '#ajax-modal',
+									'data-lookupurl': page.search_lookupURL('customers'),
+									'data-input': '#custID'
+								}
+							}
+						}
+					}
+				%}
+			</div>
+		</div>
+		<div class="col-sm-3">
+			<button type="submit" class="btn btn-success">Submit</button>
+		</div>
+	</div>
+</form>
