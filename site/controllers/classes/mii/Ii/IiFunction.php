@@ -31,6 +31,10 @@ abstract class IiFunction extends AbstractController {
 		return '';
 	}
 
+	protected static function breadCrumbs() {
+		return self::pw('config')->twig->render('items/ii/bread-crumbs.twig');
+	}
+
 	protected static function validateItemidPermission($data) {
 		$data = self::sanitizeParametersShort($data, ['itemID|text']);
 
