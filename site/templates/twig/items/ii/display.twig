@@ -1,6 +1,6 @@
 <div class="card">
 	{% block header %}
-		<div class="card-header bg-primary text-white">
+		<div class="card-header bg-light">
 			<div class="row">
 				<div class="col-sm-1">
 					<strong>Item ID:</strong>
@@ -13,7 +13,7 @@
 	{% endblock %}
 
 	{% block links %}
-		<div class="p-2 px-3 bg-light">
+		<div class="p-2 px-3 card-toolbar">
 			<div class="d-flex justify-content-between align-items-center">
 				{% if page.is_print() %}
 					<a href="{{ page.get_backURL() }}" class="btn btn-primary d-print-none">
