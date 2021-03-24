@@ -18,6 +18,7 @@ class Ii extends IiFunction {
 	const SUBFUNCTIONS = [
 		'stock'        => 'Stock',
 		'requirements' => 'Requirements',
+		'pricing'      => 'Pricing',
 	];
 
 	public static function index($data) {
@@ -60,6 +61,7 @@ class Ii extends IiFunction {
 		$stock   = self::itemStock($data->itemID);
 		$header  = self::itemHeader($data->itemID);
 
+		$html .= self::breadCrumbs();
 		$html .= "<div class='row'>";
 			$html .= $htmlwriter->div('class=col-sm-2 pl-0', $toolbar);
 			$html .= $htmlwriter->div('class=col-sm-10', $links.$header.$details.$stock);
@@ -148,7 +150,7 @@ class Ii extends IiFunction {
 		$pricingM->request_multiple(array_keys($items->toArray(ItemMasterItem::get_aliasproperty('itemid'))));
 
 		$page->searchURL = $page->url;
-		$html = '';
+		$html = self::breadCrumbs();
 		$html .= $config->twig->render('items/item-search.twig', ['items' => $items, 'pricing' => $pricingM]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
 		return $html;
@@ -172,6 +174,13 @@ class Ii extends IiFunction {
 			$url->path->add($event->arguments(1));
 			$url->query->set('itemID', $event->arguments(0));
 			$event->return = $url->getUrl();
+		});
+		$m->addHook('Page(pw_template=ii-item)::subfunctionTitle', function($event) {
+			$title = $event->arguments(0);
+			if (array_key_exists($event->arguments(0), self::SUBFUNCTIONS)) {
+				$title = self::SUBFUNCTIONS[$event->arguments(0)];
+			}
+			$event->return = $title;
 		});
 	}
 }
