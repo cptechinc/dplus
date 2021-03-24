@@ -22,13 +22,6 @@
 	*		IISELECT
 	*		ITEMID=$itemID
 	*		break;
-	*	case 'ii-pricing':
-	* 		Request II Pricing JSON file
-	* 		Response: Creates II Pricing JSON file
-	*		DBNAME=$dplusdb
-	*		IIPRICE
-	*		ITEMID=$itemID
-	*		break;
 	*	case 'ii-costing':
 	* 		Request II Costing JSON file
 	* 		Response: Creates II Costing JSON file
@@ -139,26 +132,6 @@
 				$session->loc = $url->getUrl();
 			} else {
 				$url = $pages->get('pw_template=ii-item')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-pricing':
-			$data = array("DBNAME=$dplusdb", 'IIPRICE', "ITEMID=$itemID");
-			$custID = $input->$requestmethod->text('custID');
-			$shipID = $input->$requestmethod->text('shipID');
-
-			if (!empty($custID)) {
-				$data['CUSTID'] = $custID;
-				if (!empty($shipID)) {
-					$data['SHIPID'] = $shipID;
-				}
-			}
-			if ($input->$requestmethod->page) {
-				$url = new Purl\Url($input->$requestmethod->text('page'));
-				$url->query->set('itemID', $itemID);
-				$session->loc = $url->getUrl();
-			} else {
-				$url = $pages->get('pw_template=ii-pricing')->httpUrl."?itemID=$itemID";
 				$session->loc = $url;
 			}
 			break;
