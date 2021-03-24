@@ -29,13 +29,6 @@
 	*		IICOST
 	*		ITEMID=$itemID
 	*		break;
-	*	case 'ii-usage':
-	* 		Request II Usage JSON file
-	* 		Response: Creates II Usage JSON file
-	*		DBNAME=$dplusdb
-	*		IIUSAGE
-	*		ITEMID=$itemID
-	*		break;
 	*	case 'ii-activity':
 	* 		Request II Activity JSON file
 	* 		Response: Creates II Activity JSON file
@@ -138,16 +131,6 @@
 		case 'ii-costing':
 			$data = array("DBNAME=$dplusdb", 'IICOST', "ITEMID=$itemID");
 			$session->loc = $input->$requestmethod->text('page');
-			break;
-		case 'ii-usage':
-			$data = array("DBNAME=$dplusdb", 'IIUSAGE', "ITEMID=$itemID");
-
-			if ($input->$requestmethod->page) {
-				$session->loc = $input->$requestmethod->text('page');
-			} else {
-				$url = $pages->get('pw_template=ii-where-used')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
 			break;
 		case 'ii-activity':
 			$data = array("DBNAME=$dplusdb", 'IIACTIVITY', "ITEMID=$itemID");
@@ -267,16 +250,6 @@
 		case 'ii-general':
 			// does not call ii-misc, ii-notes
 			$data = array("DBNAME=$dplusdb", 'IIGENERAL', "ITEMID=$itemID");
-
-			if ($input->$requestmethod->page) {
-				$session->loc = $input->$requestmethod->text('page');
-			} else {
-				$url = $pages->get('pw_template=ii-general')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-usage':
-			$data = array("DBNAME=$dplusdb", 'IIUSAGE', "ITEMID=$itemID");
 
 			if ($input->$requestmethod->page) {
 				$session->loc = $input->$requestmethod->text('page');
