@@ -38,7 +38,6 @@ class Ii extends AbstractController {
 		return Usage::index($data);
 	}
 
-
 	public static function init() {
 		$m = self::pw('modules')->get('DpagesMii');
 		$m->addHook('Page(pw_template=ii-item)::subfunctions2', function($event) {
