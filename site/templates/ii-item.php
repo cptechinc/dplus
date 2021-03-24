@@ -3,6 +3,7 @@
 	use Controllers\Mii\Ii;
 	use Controllers\Mii\Ii\Stock;
 	use Controllers\Mii\Ii\Requirements;
+	use Controllers\Mii\Ii\Pricing;
 
 	Ii::init();
 
@@ -11,11 +12,13 @@
 		['GET',  'page{nbr:\d+}/', Ii::class, 'list'],
 		['GET',  'stock', Stock::class, 'index'],
 		['GET',  'requirements', Requirements::class, 'index'],
+		['GET',  'pricing', Pricing::class, 'index'],
 	];
 
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
 	$page->body = $router->route();
+	$page->show_breadcrumbs = false;
 
 	include __DIR__ . "/basic-page.php";
