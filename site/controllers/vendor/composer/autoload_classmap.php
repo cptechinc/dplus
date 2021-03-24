@@ -32,6 +32,7 @@ return array(
     'Controllers\\Mci\\Ci' => $baseDir . '/classes/mci/Ci/Ci.php',
     'Controllers\\Mii\\Ii' => $baseDir . '/classes/mii/Ii/Ii.php',
     'Controllers\\Mii\\IiFunction' => $baseDir . '/classes/mii/Ii/IiFunction.php',
+    'Controllers\\Mii\\Ii\\Item' => $baseDir . '/classes/mii/Ii/Item.php',
     'Controllers\\Mii\\Ii\\Pricing' => $baseDir . '/classes/mii/Ii/Pricing.php',
     'Controllers\\Mii\\Ii\\Requirements' => $baseDir . '/classes/mii/Ii/Requirements.php',
     'Controllers\\Mii\\Ii\\Stock' => $baseDir . '/classes/mii/Ii/Stock.php',

@@ -22,7 +22,7 @@ abstract class IiFunction extends AbstractController {
 
 	protected static function alertInvalidItemPermissions($data) {
 		$data = self::sanitizeParametersShort($data, ['itemID|text']);
-		if (self::validateItemid($data->itemID) === false) {
+		if (empty($data->itemID) === false && self::validateItemid($data->itemID) === false) {
 			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item $data->itemID could not be found"]);
 		}
 		if (self::validateUserPermission($data) === false) {

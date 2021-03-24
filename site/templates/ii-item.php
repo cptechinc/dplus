@@ -1,6 +1,7 @@
 <?php
 	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Mii\Ii;
+	use Controllers\Mii\Ii\Item;
 	use Controllers\Mii\Ii\Stock;
 	use Controllers\Mii\Ii\Requirements;
 	use Controllers\Mii\Ii\Pricing;
@@ -9,12 +10,12 @@
 	Ii::init();
 
 	$routes = [
-		['GET',  '', Ii::class, 'index'],
-		['GET',  'page{nbr:\d+}/', Ii::class, 'list'],
-		['GET',  'stock', Stock::class, 'index'],
-		['GET',  'requirements', Requirements::class, 'index'],
-		['GET',  'pricing', Pricing::class, 'index'],
-		['GET',  'usage', Usage::class, 'index'],
+		['GET',  '', Ii::class, 'item'],
+		['GET',  'page{nbr:\d+}/', Ii::class, 'item'],
+		['GET',  'stock', Ii::class, 'stock'],
+		['GET',  'requirements', Ii::class, 'requirements'],
+		['GET',  'pricing', Ii::class, 'pricing'],
+		['GET',  'usage', Ii::class, 'usage'],
 	];
 
 	$router = new Mvc\Router();
