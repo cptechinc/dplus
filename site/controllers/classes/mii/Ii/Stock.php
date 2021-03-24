@@ -8,6 +8,7 @@ use Controllers\Mii\IiFunction;
 
 class Stock extends IiFunction {
 	const JSONCODE = 'ii-stock_whse';
+	const PERMISSION_IIO = 'stock';
 
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool'];
@@ -63,6 +64,7 @@ class Stock extends IiFunction {
 		$jsonM      = $modules->get('JsonDataFiles');
 
 		$page->headline = "$data->itemID Stock";
+		$html .= self::breadCrumbs();
 		$html .= self::stockData($data);
 		return $html;
 	}

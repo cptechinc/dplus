@@ -10,6 +10,7 @@ use Controllers\Mii\IiFunction;
 
 class Requirements extends IiFunction {
 	const JSONCODE = 'ii-requirements';
+	const PERMISSION_IIO = 'requirements';
 
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool'];
@@ -71,11 +72,12 @@ class Requirements extends IiFunction {
 		$jsonM      = $modules->get('JsonDataFiles');
 
 		$page->headline = "$data->itemID Requirements";
-		$html .= self::stockData($data);
+		$html .= self::breadCrumbs();
+		$html .= self::requirementsData($data);
 		return $html;
 	}
 
-	private static function stockData($data) {
+	private static function requirementsData($data) {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
