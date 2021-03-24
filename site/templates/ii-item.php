@@ -4,6 +4,7 @@
 	use Controllers\Mii\Ii\Stock;
 	use Controllers\Mii\Ii\Requirements;
 	use Controllers\Mii\Ii\Pricing;
+	use Controllers\Mii\Ii\Usage;
 
 	Ii::init();
 
@@ -13,6 +14,7 @@
 		['GET',  'stock', Stock::class, 'index'],
 		['GET',  'requirements', Requirements::class, 'index'],
 		['GET',  'pricing', Pricing::class, 'index'],
+		['GET',  'usage', Usage::class, 'index'],
 	];
 
 	$router = new Mvc\Router();

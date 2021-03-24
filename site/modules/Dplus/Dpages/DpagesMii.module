@@ -145,16 +145,6 @@ class DpagesMii extends Dpages implements Module {
 			'pw_template'    => 'ii-costing',
 			'jsoncode'       => 'ii-costing'
 		),
-		'ii-usage' => array(
-			'template'       => 'ii-function',
-			'name'           => 'usage',
-			'title'          => 'Usage',
-			'summary'        => 'View Item Usage',
-			'parent'         => '/mii/ii/',
-			'dplus_function' => 'ii-usg',
-			'pw_template'    => 'ii-usage',
-			'jsoncode'       => 'ii-usage'
-		),
 		'ii-activity' => array(
 			'template'       => 'ii-function',
 			'name'           => 'activity',
@@ -382,8 +372,8 @@ class DpagesMii extends Dpages implements Module {
 		$this->addHook('Page::get_itemusageURL', function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
-			$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-			$url->query->set('action','ii-usage');
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->path->add('usage');
 			$url->query->set('itemID', $itemID);
 			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
