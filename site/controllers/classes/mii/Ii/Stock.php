@@ -95,7 +95,7 @@ class Stock extends IiFunction {
 			return $html;
 		} else {
 			$session->setFor('ii', 'stock', ($session->getFor('ii', 'stock') + 1));
-			$session->redirect($page->get_itemstockURL($data->itemID), $http301 = false);
+			$session->redirect(self::stockUrl($data->itemID, $refreshdata = true), $http301 = false);
 		}
 	}
 
