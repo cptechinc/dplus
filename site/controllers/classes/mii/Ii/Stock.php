@@ -114,7 +114,7 @@ class Stock extends IiFunction {
 		$page = self::pw('page');
 		$page->refreshurl = self::stockUrl($data->itemID, $refreshdata = true);
 		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
-		return $config->twig->render('items/ii/stock-whse/display.twig', ['item' => self::getItmItem($data->itemID), 'module_ii' => $iim, 'company' => $config->companys, 'json' => $json, 'module_json' => $jsonm->jsonm]);
+		return $config->twig->render('items/ii/stock-whse/display.twig', ['item' => self::getItmItem($data->itemID), 'module_ii' => $iim, 'company' => $config->company, 'json' => $json, 'module_json' => $jsonm->jsonm]);
 	}
 
 }
