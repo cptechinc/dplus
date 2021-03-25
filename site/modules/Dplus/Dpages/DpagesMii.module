@@ -38,10 +38,6 @@ class DpagesMii extends Dpages implements Module {
 			'name'   => 'ii-item',
 			'fields' => array(),
 		),
-		'ii-activity' => array(
-			'name'   => 'ii-activity',
-			'fields' => array(),
-		),
 		'ii-kit' => array(
 			'name'   => 'ii-kit',
 			'fields' => array(),
@@ -130,16 +126,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/',
 			'dplus_function' => 'ii',
 			'pw_template'    => 'ii-item'
-		),
-		'ii-activity' => array(
-			'template'       => 'ii-function',
-			'name'           => 'activity',
-			'title'          => 'Activity',
-			'summary'        => 'View Item Activity',
-			'parent'         => '/mii/ii/',
-			'dplus_function' => 'ii-act',
-			'pw_template'    => 'ii-activity',
-			'jsoncode'       => 'ii-activity'
 		),
 		'ii-components' => array(
 			'template'       => 'ii-function',
@@ -368,10 +354,9 @@ class DpagesMii extends Dpages implements Module {
 		$this->addHook('Page::get_itemactivityURL', function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
-			$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-			$url->query->set('action','ii-activity');
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->path->add('activity');
 			$url->query->set('itemID', $itemID);
-			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
 		});
 
