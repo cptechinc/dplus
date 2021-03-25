@@ -22,13 +22,6 @@
 	*		IISELECT
 	*		ITEMID=$itemID
 	*		break;
-	*	case 'ii-costing':
-	* 		Request II Costing JSON file
-	* 		Response: Creates II Costing JSON file
-	*		DBNAME=$dplusdb
-	*		IICOST
-	*		ITEMID=$itemID
-	*		break;
 	*	case 'ii-activity':
 	* 		Request II Activity JSON file
 	* 		Response: Creates II Activity JSON file
@@ -127,10 +120,6 @@
 				$url = $pages->get('pw_template=ii-item')->httpUrl."?itemID=$itemID";
 				$session->loc = $url;
 			}
-			break;
-		case 'ii-costing':
-			$data = array("DBNAME=$dplusdb", 'IICOST', "ITEMID=$itemID");
-			$session->loc = $input->$requestmethod->text('page');
 			break;
 		case 'ii-activity':
 			$data = array("DBNAME=$dplusdb", 'IIACTIVITY', "ITEMID=$itemID");

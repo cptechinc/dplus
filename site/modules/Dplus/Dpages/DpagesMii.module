@@ -38,10 +38,6 @@ class DpagesMii extends Dpages implements Module {
 			'name'   => 'ii-item',
 			'fields' => array(),
 		),
-		'ii-costing' => array(
-			'name'   => 'ii-costing',
-			'fields' => array(),
-		),
 		'ii-activity' => array(
 			'name'   => 'ii-activity',
 			'fields' => array(),
@@ -134,16 +130,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/',
 			'dplus_function' => 'ii',
 			'pw_template'    => 'ii-item'
-		),
-		'ii-costing' => array(
-			'template'       => 'ii-function',
-			'name'           => 'costing',
-			'title'          => 'Costing',
-			'summary'        => 'View Item Costing',
-			'parent'         => '/mii/ii/',
-			'dplus_function' => 'ii-cst',
-			'pw_template'    => 'ii-costing',
-			'jsoncode'       => 'ii-costing'
 		),
 		'ii-activity' => array(
 			'template'       => 'ii-function',
