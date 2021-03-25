@@ -362,8 +362,8 @@ class DpagesMii extends Dpages implements Module {
 		$this->addHook('Page::get_itemcostingURL', function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
-			$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-			$url->query->set('action','ii-costing');
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->path->add('costing');
 			$url->query->set('itemID', $itemID);
 			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
