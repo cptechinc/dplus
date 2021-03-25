@@ -7,7 +7,7 @@ use Dplus\CodeValidators\Min as MinValidator;
 use Controllers\Mii\IiFunction;
 
 class Stock extends IiFunction {
-	const JSONCODE = 'ii-stock_whse';
+	const JSONCODE       = 'ii-stock_whse';
 	const PERMISSION_IIO = 'stock';
 
 	public static function index($data) {

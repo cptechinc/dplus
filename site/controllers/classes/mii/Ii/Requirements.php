@@ -9,7 +9,7 @@ use Dplus\CodeValidators\Min as MinValidator;
 use Controllers\Mii\IiFunction;
 
 class Requirements extends IiFunction {
-	const JSONCODE = 'ii-requirements';
+	const JSONCODE       = 'ii-requirements';
 	const PERMISSION_IIO = 'requirements';
 
 	public static function index($data) {

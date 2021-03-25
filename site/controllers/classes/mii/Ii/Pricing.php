@@ -9,7 +9,7 @@ use Dplus\CodeValidators\Min as MinValidator;
 use Controllers\Mii\IiFunction;
 
 class Pricing extends IiFunction {
-	const JSONCODE = 'ii-pricing';
+	const JSONCODE       = 'ii-pricing';
 	const PERMISSION_IIO = 'pricing';
 
 	public static function index($data) {
