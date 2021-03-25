@@ -228,6 +228,10 @@ class Lookup extends AbstractController {
 		$filter->init();
 		$filter->user(self::pw('user'));
 		$page->headline = "Customers";
+		if ($data->q) {
+			$filter->search($data->q);
+			$page->headline = "Searching for $data->q";
+		}
 		self::filterResults($filter, $wire, $data);
 	}
 

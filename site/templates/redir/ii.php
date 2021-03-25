@@ -22,43 +22,6 @@
 	*		IISELECT
 	*		ITEMID=$itemID
 	*		break;
-	*	case 'ii-stock':
-	* 		Request II Stock JSON file
-	* 		Response: Creates II Stock JSON file
-	*		DBNAME=$dplusdb
-	*		IISTKBYWHSE
-	*		ITEMID=$itemID
-	*		break;
-	*	case 'ii-requirements':
-	* 		Request II Requirements JSON file
-	* 		Response: Creates II Requirements JSON file
-	*		DBNAME=$dplusdb
-	*		IIREQUIRE
-	*		ITEMID=$itemID
-	*		WHSE=$whse
-	*		REQAVL=$view
-	*		break;
-	*	case 'ii-pricing':
-	* 		Request II Pricing JSON file
-	* 		Response: Creates II Pricing JSON file
-	*		DBNAME=$dplusdb
-	*		IIPRICE
-	*		ITEMID=$itemID
-	*		break;
-	*	case 'ii-costing':
-	* 		Request II Costing JSON file
-	* 		Response: Creates II Costing JSON file
-	*		DBNAME=$dplusdb
-	*		IICOST
-	*		ITEMID=$itemID
-	*		break;
-	*	case 'ii-usage':
-	* 		Request II Usage JSON file
-	* 		Response: Creates II Usage JSON file
-	*		DBNAME=$dplusdb
-	*		IIUSAGE
-	*		ITEMID=$itemID
-	*		break;
 	*	case 'ii-activity':
 	* 		Request II Activity JSON file
 	* 		Response: Creates II Activity JSON file
@@ -155,79 +118,6 @@
 				$session->loc = $url->getUrl();
 			} else {
 				$url = $pages->get('pw_template=ii-item')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-stock':
-			$data = array("DBNAME=$dplusdb", 'IISTKBYWHSE', "ITEMID=$itemID");
-
-			if ($input->$requestmethod->page) {
-				$url = new Purl\Url($input->$requestmethod->text('page'));
-				$url->query->remove('q');
-				$url->query->set('itemID', $itemID);
-				$session->loc = $url->getUrl();
-			} else {
-				$url = $pages->get('pw_template=ii-stock')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-requirements':
-			$whse = $input->$requestmethod->text('whseID');
-			$view = $input->$requestmethod->text('view');
-			if ($view == '') {
-				$q = OptionsIiQuery::create();
-				$q->filterByUserid(OptionsIi::USER_SYSTEM);
-				$config_ii = $q->findOne();
-				$view = OptionsIi::VIEW_REQUIREMENTS_OPTIONS_JSON[$config_ii->view_requirements];
-			}
-			//screen type would be REQ or AVL
-			$data = array("DBNAME=$dplusdb", 'IIREQUIRE', "ITEMID=$itemID", "WHSE=$whse", "REQAVL=$view");
-
-			if ($input->$requestmethod->page) {
-				$url = new Purl\Url($input->$requestmethod->text('page'));
-				$url->query->set('itemID', $itemID);
-
-				if (isset($input->$requestmethod->whse)) {
-					$url->query->set('whseID', $whse);
-					$url->query->set('view', $view);
-				}
-				$session->loc = $url->getUrl();
-			} else {
-				$url = $pages->get('pw_template=ii-requirements')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-pricing':
-			$data = array("DBNAME=$dplusdb", 'IIPRICE', "ITEMID=$itemID");
-			$custID = $input->$requestmethod->text('custID');
-			$shipID = $input->$requestmethod->text('shipID');
-
-			if (!empty($custID)) {
-				$data['CUSTID'] = $custID;
-				if (!empty($shipID)) {
-					$data['SHIPID'] = $shipID;
-				}
-			}
-			if ($input->$requestmethod->page) {
-				$url = new Purl\Url($input->$requestmethod->text('page'));
-				$url->query->set('itemID', $itemID);
-				$session->loc = $url->getUrl();
-			} else {
-				$url = $pages->get('pw_template=ii-pricing')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-costing':
-			$data = array("DBNAME=$dplusdb", 'IICOST', "ITEMID=$itemID");
-			$session->loc = $input->$requestmethod->text('page');
-			break;
-		case 'ii-usage':
-			$data = array("DBNAME=$dplusdb", 'IIUSAGE', "ITEMID=$itemID");
-
-			if ($input->$requestmethod->page) {
-				$session->loc = $input->$requestmethod->text('page');
-			} else {
-				$url = $pages->get('pw_template=ii-where-used')->httpUrl."?itemID=$itemID";
 				$session->loc = $url;
 			}
 			break;
@@ -349,16 +239,6 @@
 		case 'ii-general':
 			// does not call ii-misc, ii-notes
 			$data = array("DBNAME=$dplusdb", 'IIGENERAL', "ITEMID=$itemID");
-
-			if ($input->$requestmethod->page) {
-				$session->loc = $input->$requestmethod->text('page');
-			} else {
-				$url = $pages->get('pw_template=ii-general')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-usage':
-			$data = array("DBNAME=$dplusdb", 'IIUSAGE', "ITEMID=$itemID");
 
 			if ($input->$requestmethod->page) {
 				$session->loc = $input->$requestmethod->text('page');

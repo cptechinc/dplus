@@ -207,7 +207,6 @@ a.image-link:hover {
 .table-striped.blue-stripes tbody tr:nth-of-type(2n+1) {
 	background-color: rgba(176, 198, 206, .5);
 	background-color: rgba(56, 163, 162, .15);
-
 }
 
 
@@ -300,7 +299,6 @@ textarea.qnotes {
 	width: 100%;
 }
 
-
 .screen-overlay {
 	height: 100%;
 	z-index: 30;
@@ -346,4 +344,11 @@ textarea.qnotes {
 .offcanvas .nav-actions {
 	position: fixed;
 	bottom: 1rem;
+}
+
+/*==============================================================
+	Bootstrap Card Styles
+==============================================================*/
+.card .card-toolbar {
+	background-color: rgba(56, 163, 162, .45);
 }

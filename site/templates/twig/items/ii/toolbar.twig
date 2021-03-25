@@ -1,5 +1,12 @@
 <nav class="toolbar-sidebar">
 	<ul class="nav">
+		{% for function, title in page.subfunctions2() %}
+			<li>
+				<a href="{{ page.subfunctionURL(item.itemid, function) }}">
+					{{ title }}
+				</a>
+			</li>
+		{% endfor %}
 		{% for child in page.subfunctions() %}
 			<li>
 				<a href="{{ child.url_itemID(item.itemid) }}">

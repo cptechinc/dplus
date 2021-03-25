@@ -1,5 +1,4 @@
 <?php namespace ProcessWire;
-
 use Purl\Url;
 
 /**
@@ -37,18 +36,6 @@ class DpagesMii extends Dpages implements Module {
 		),
 		'ii-item' => array(
 			'name'   => 'ii-item',
-			'fields' => array(),
-		),
-		'ii-requirements' => array(
-			'name'   => 'ii-requirements',
-			'fields' => array(),
-		),
-		'ii-pricing' => array(
-			'name'   => 'ii-pricing',
-			'fields' => array(),
-		),
-		'ii-costing' => array(
-			'name'   => 'ii-costing',
 			'fields' => array(),
 		),
 		'ii-activity' => array(
@@ -143,56 +130,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/',
 			'dplus_function' => 'ii',
 			'pw_template'    => 'ii-item'
-		),
-		'ii-stock' => array(
-			'template'       => 'ii-function',
-			'name'           => 'stock',
-			'title'          => 'Stock',
-			'summary'        => 'View Item Stock',
-			'parent'         => '/mii/ii/',
-			'dplus_function' => 'ii-sst',
-			'pw_template'    => 'ii-stock',
-			'jsoncode'       => 'ii-stock_whse',
-		),
-		'ii-requirements' => array(
-			'template'       => 'ii-function',
-			'name'           => 'requirements',
-			'title'          => 'Requirements',
-			'summary'        => 'View Item Requirements',
-			'parent'         => '/mii/ii/',
-			'dplus_function' => 'ii-req',
-			'pw_template'    => 'ii-requirements',
-			'jsoncode'       => 'ii-requirements',
-		),
-		'ii-pricing' => array(
-			'template'       => 'ii-function',
-			'name'           => 'pricing',
-			'title'          => 'Pricing',
-			'summary'        => 'View Item Pricing',
-			'parent'         => '/mii/ii/',
-			'dplus_function' => 'ii-prc',
-			'pw_template'    => 'ii-pricing',
-			'jsoncode'       => 'ii-pricing'
-		),
-		'ii-costing' => array(
-			'template'       => 'ii-function',
-			'name'           => 'costing',
-			'title'          => 'Costing',
-			'summary'        => 'View Item Costing',
-			'parent'         => '/mii/ii/',
-			'dplus_function' => 'ii-cst',
-			'pw_template'    => 'ii-costing',
-			'jsoncode'       => 'ii-costing'
-		),
-		'ii-usage' => array(
-			'template'       => 'ii-function',
-			'name'           => 'usage',
-			'title'          => 'Usage',
-			'summary'        => 'View Item Usage',
-			'parent'         => '/mii/ii/',
-			'dplus_function' => 'ii-usg',
-			'pw_template'    => 'ii-usage',
-			'jsoncode'       => 'ii-usage'
 		),
 		'ii-activity' => array(
 			'template'       => 'ii-function',
@@ -373,27 +310,25 @@ class DpagesMii extends Dpages implements Module {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
 			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
-			$url->query->set('itemID', $this->itemID);
+			$url->query->set('itemID', $itemID);
 			$event->return = $url->getUrl();
 		});
 
 		$this->addHook('Page::get_itemstockURL', function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
-			$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-			$url->query->set('action','ii-stock');
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->path->add('stock');
 			$url->query->set('itemID', $itemID);
-			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
 		});
 
 		$this->addHook('Page::get_itemrequirementsURL', function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
-			$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-			$url->query->set('action','ii-requirements');
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->path->add('requirements');
 			$url->query->set('itemID', $itemID);
-			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
 		});
 
@@ -401,19 +336,20 @@ class DpagesMii extends Dpages implements Module {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
 			$custID = $event->arguments(1);
-			$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-			$url->query->set('action','ii-pricing');
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->path->add('requirements');
 			$url->query->set('itemID', $itemID);
-			$url->query->set('custID', $custID);
-			$url->query->set('page', $p->fullURL->getUrl());
+			if ($custID) {
+				$url->query->set('custID', $custID);
+			}
 			$event->return = $url->getUrl();
 		});
 
 		$this->addHook('Page::get_itemcostingURL', function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
-			$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-			$url->query->set('action','ii-costing');
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->path->add('costing');
 			$url->query->set('itemID', $itemID);
 			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
@@ -422,8 +358,8 @@ class DpagesMii extends Dpages implements Module {
 		$this->addHook('Page::get_itemusageURL', function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
-			$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-			$url->query->set('action','ii-usage');
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->path->add('usage');
 			$url->query->set('itemID', $itemID);
 			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
