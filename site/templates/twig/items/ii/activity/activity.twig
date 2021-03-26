@@ -1,9 +1,9 @@
 {% if json['data'] %}
 	{% for id, warehouse in json['data'] %}
 		<div class="mb-3">
-			<h3>
+			<h4>
 				<a data-toggle="collapse" href="#{{ id|attrJS }}" class="link" role="button" aria-expanded="false" aria-controls="{{ id|attrJS }}">{{ warehouse['Whse Name'] }}</a>
-			</h3>
+			</h4>
 			<div class="collapse show" id="{{ id|attrJS }}">
 				{% include 'items/ii/activity/whse-table.twig' %}
 			</div>
