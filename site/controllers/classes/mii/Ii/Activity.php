@@ -24,6 +24,9 @@ class Activity extends IiFunction {
 
 		if ($data->refresh) {
 			self::requestJson($data, session_id());
+			if ($data->date) {
+				$data->date = date(self::DATE_FORMAT, $data->date);
+			}
 			self::pw('session')->redirect(self::activityUrl($data->itemID, $data->date), $http301 = false);
 		}
 		self::pw('modules')->get('DpagesMii')->init_iipage();
@@ -35,13 +38,13 @@ class Activity extends IiFunction {
 	}
 
 	public static function requestJson($vars) {
-		$fields = ['itemID|text', 'date|data', 'sessionID|text'];
+		$fields = ['itemID|text', 'date|date', 'sessionID|text'];
 		$vars = self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
 		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
 		$data = ["DBNAME=$db", 'IIACTIVITY', "ITEMID=$vars->itemID"];
 		if ($vars->date) {
-			$dateYmd = date(self::DATE_FORMAT_DPLUS, strtotime($vars->date));
+			$dateYmd = date(self::DATE_FORMAT_DPLUS, $vars->date);
 			$data[] = "DATE=$dateYmd";
 		}
 		$requestor = self::pw('modules')->get('DplusRequest');
@@ -87,6 +90,10 @@ class Activity extends IiFunction {
 
 	private static function activityData($data) {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text', 'date|date']);
+		if ($data->date) {
+			$data->timestamp = $data->date;
+			$data->date = date(self::DATE_FORMAT, $data->date);
+		}
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
 		$page    = self::pw('page');
@@ -95,7 +102,7 @@ class Activity extends IiFunction {
 		$html = '';
 
 		if ($jsonm->exists(self::JSONCODE)) {
-			if ($json['itemid'] != $data->itemID || date(self::DATE_FORMAT, $json['date']) != $data->date) {
+			if ($json['itemid'] != $data->itemID || $json['date'] != date(self::DATE_FORMAT_DPLUS, $data->timestamp)) {
 				$jsonm->delete(self::JSONCODE);
 				$session->redirect(self::activityUrl($data->itemID, $data->date, $refresh = true), $http301 = false);
 			}
