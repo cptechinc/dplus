@@ -33,6 +33,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mci\\Ci' => __DIR__ . '/../..' . '/classes/mci/Ci/Ci.php',
         'Controllers\\Mii\\Ii' => __DIR__ . '/../..' . '/classes/mii/Ii/Ii.php',
         'Controllers\\Mii\\IiFunction' => __DIR__ . '/../..' . '/classes/mii/Ii/IiFunction.php',
+        'Controllers\\Mii\\Ii\\Activity' => __DIR__ . '/../..' . '/classes/mii/Ii/Activity.php',
         'Controllers\\Mii\\Ii\\Costing' => __DIR__ . '/../..' . '/classes/mii/Ii/Costing.php',
         'Controllers\\Mii\\Ii\\Item' => __DIR__ . '/../..' . '/classes/mii/Ii/Item.php',
         'Controllers\\Mii\\Ii\\Pricing' => __DIR__ . '/../..' . '/classes/mii/Ii/Pricing.php',
@@ -60,6 +61,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mso\\SalesOrder' => __DIR__ . '/../..' . '/classes/mso/SalesOrder.php',
         'Controllers\\Mso\\SalesOrder\\Documents' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Documents.php',
         'Controllers\\Mwm\\Menu' => __DIR__ . '/../..' . '/classes/Mwm/Menu.php',
+        'Controllers\\Wm\\Binr' => __DIR__ . '/../..' . '/classes/Mwm/binr/Binr.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
