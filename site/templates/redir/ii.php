@@ -22,13 +22,6 @@
 	*		IISELECT
 	*		ITEMID=$itemID
 	*		break;
-	*	case 'ii-activity':
-	* 		Request II Activity JSON file
-	* 		Response: Creates II Activity JSON file
-	*		DBNAME=$dplusdb
-	*		IIACTIVITY
-	*		ITEMID=$itemID
-	*		break;
 	*	case 'ii-components':
 	* 		Request II Components JSON file
 	* 		Response: Creates II Components JSON file
@@ -118,23 +111,6 @@
 				$session->loc = $url->getUrl();
 			} else {
 				$url = $pages->get('pw_template=ii-item')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-activity':
-			$data = array("DBNAME=$dplusdb", 'IIACTIVITY', "ITEMID=$itemID");
-			$date = $input->$requestmethod->text('date');
-
-			if (!empty($date)) {
-				$date_ymd = date('Ymd', strtotime($date));
-				$data[] = "DATE=$date_ymd";
-			}
-			if ($input->$requestmethod->page) {
-				$url = new Purl\Url($input->$requestmethod->text('page'));
-				$url->query->set('date', $date);
-				$session->loc = $url->getUrl();
-			} else {
-				$url = $pages->get('pw_template=ii-activity')->httpUrl."?itemID=$itemID&date=$date";
 				$session->loc = $url;
 			}
 			break;
