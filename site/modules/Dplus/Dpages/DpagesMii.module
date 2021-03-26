@@ -38,10 +38,6 @@ class DpagesMii extends Dpages implements Module {
 			'name'   => 'ii-item',
 			'fields' => array(),
 		),
-		'ii-kit' => array(
-			'name'   => 'ii-kit',
-			'fields' => array(),
-		),
 		'ii-bom' => array(
 			'name'   => 'ii-bom',
 			'fields' => array(),
@@ -135,16 +131,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/ii/',
 			'dplus_function' => 'ii-bom',
 			'pw_template'    => 'ii-components',
-			'jsoncode'       => 'ii-components'
-		),
-		'ii-kit' => array(
-			'template'       => 'ii-function',
-			'name'           => 'kit',
-			'title'          => 'Kit',
-			'summary'        => 'View Item Kit',
-			'parent'         => '/mii/ii/',
-			'dplus_function' => 'ii-kit',
-			'pw_template'    => 'ii-kit',
 			'jsoncode'       => 'ii-components'
 		),
 		'ii-bom' => array(
@@ -373,8 +359,8 @@ class DpagesMii extends Dpages implements Module {
 		$this->addHook('Page::get_itemkitURL', function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
-			$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-			$url->query->set('action','ii-kit');
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->path->add('kit');
 			$url->query->set('itemID', $itemID);
 			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
