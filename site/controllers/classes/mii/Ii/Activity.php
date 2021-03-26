@@ -1,8 +1,6 @@
 <?php namespace Controllers\Mii\Ii;
 // Purl\Url
 use Purl\Url as Purl;
-// Dplus Model
-use CustomerQuery, Customer;
 // Dplus Validators
 use Dplus\CodeValidators\Min as MinValidator;
 // Mvc Controllers
@@ -113,7 +111,7 @@ class Activity extends IiFunction {
 		}
 
 		if ($session->getFor('ii', 'activity') > 3) {
-			$page->headline = "Pricing File could not be loaded";
+			$page->headline = "Activity File could not be loaded";
 			$html .= self::activityDataDisplay($data, $json);
 			return $html;
 		} else {
@@ -127,7 +125,7 @@ class Activity extends IiFunction {
 		$config = self::pw('config');
 
 		if ($jsonm->exists(self::JSONCODE) === false) {
-			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'Pricing File Not Found']);
+			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'Activity File Not Found']);
 		}
 
 		if ($json['error']) {
@@ -162,7 +160,6 @@ class Activity extends IiFunction {
 		$html = self::breadCrumbs();
 		$html .= '<h3> Enter Starting Activity Date</h3>';
 		$html .= $config->twig->render('items/ii/activity/date-form.twig', ['itemID' => $data->itemID, 'startdate' => $startdate]);
-		$page->js = $config->twig->render('items/ii/pricing/customer/form.js.twig');
 		$config->scripts->append(self::pw('modules')->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
 		return $html;
 	}

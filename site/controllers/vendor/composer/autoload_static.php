@@ -36,6 +36,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mii\\Ii\\Activity' => __DIR__ . '/../..' . '/classes/mii/Ii/Activity.php',
         'Controllers\\Mii\\Ii\\Costing' => __DIR__ . '/../..' . '/classes/mii/Ii/Costing.php',
         'Controllers\\Mii\\Ii\\Item' => __DIR__ . '/../..' . '/classes/mii/Ii/Item.php',
+        'Controllers\\Mii\\Ii\\Kit' => __DIR__ . '/../..' . '/classes/mii/Ii/Kit.php',
         'Controllers\\Mii\\Ii\\Pricing' => __DIR__ . '/../..' . '/classes/mii/Ii/Pricing.php',
         'Controllers\\Mii\\Ii\\Requirements' => __DIR__ . '/../..' . '/classes/mii/Ii/Requirements.php',
         'Controllers\\Mii\\Ii\\Stock' => __DIR__ . '/../..' . '/classes/mii/Ii/Stock.php',

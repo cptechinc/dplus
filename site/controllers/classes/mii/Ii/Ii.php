@@ -10,6 +10,7 @@ use Controllers\Mii\Ii\Pricing;
 use Controllers\Mii\Ii\Usage;
 use Controllers\Mii\Ii\Costing;
 use Controllers\Mii\Ii\Activity;
+use Controllers\Mii\Ii\Kit;
 
 class Ii extends AbstractController {
 	const SUBFUNCTIONS = [
@@ -18,7 +19,8 @@ class Ii extends AbstractController {
 		'costing'      => 'Costing',
 		'pricing'      => 'Pricing',
 		'usage'        => 'Usage',
-		'activity'      => 'Activity'
+		'activity'     => 'Activity',
+		'kit'          => 'Kit'
 	];
 
 	public static function item($data) {
@@ -47,6 +49,10 @@ class Ii extends AbstractController {
 
 	public static function activity($data) {
 		return Activity::index($data);
+	}
+
+	public static function kit($data) {
+		return Kit::index($data);
 	}
 
 	public static function init() {
