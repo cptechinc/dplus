@@ -13,6 +13,7 @@ use Controllers\Mii\Ii\Activity;
 use Controllers\Mii\Ii\Kit;
 use Controllers\Mii\Ii\Bom;
 use Controllers\Mii\Ii\WhereUsed;
+use Controllers\Mii\Ii\Lotserial;
 
 class Ii extends AbstractController {
 	const SUBFUNCTIONS = [
@@ -25,6 +26,7 @@ class Ii extends AbstractController {
 		'kit'          => 'Kit',
 		'bom'          => 'BoM',
 		'where-used'   => 'Where Used',
+		'lotserial'    => 'Lot / Serial'
 	];
 
 	public static function item($data) {
@@ -65,6 +67,10 @@ class Ii extends AbstractController {
 
 	public static function whereUsed($data) {
 		return WhereUsed::index($data);
+	}
+
+	public static function lotserial($data) {
+		return Lotserial::index($data);
 	}
 
 	public static function init() {

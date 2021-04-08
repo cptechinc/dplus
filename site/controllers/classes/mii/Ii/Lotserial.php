@@ -3,11 +3,13 @@
 use Purl\Url as Purl;
 // Dplus Validators
 use Dplus\CodeValidators\Min as MinValidator;
+// Dplus Screen Formatters
+use Dplus\ScreenFormatters\Ii\Lotserial as Formatter;
 // Mvc Controllers
 use Controllers\Mii\IiFunction;
 
-class WhereUsed extends IiFunction {
-	const JSONCODE          = 'ii-whereused';
+class Lotserial extends IiFunction {
+	const JSONCODE          = 'ii-lotserial';
 	const PERMISSION_IIO    = '';
 
 	public static function index($data) {
@@ -20,24 +22,24 @@ class WhereUsed extends IiFunction {
 
 		if ($data->refresh) {
 			self::requestJson($data);
-			self::pw('session')->redirect(self::whereUsedUrl($data->itemID), $http301 = false);
+			self::pw('session')->redirect(self::lotserialUrl($data->itemID), $http301 = false);
 		}
 		self::pw('modules')->get('DpagesMii')->init_iipage();
 
-		return self::whereUsed($data);
+		return self::lotserial($data);
 	}
 
 	public static function requestJson($vars) {
 		$fields = ['itemID|text', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
-		$data = ['IIWHEREUSED', "ITEMID=$vars->itemID"];
+		$data = ['IILOTSER', "ITEMID=$vars->itemID"];
 		self::sendRequest($data, $vars->sessionID);
 	}
 
-	public static function whereUsedUrl($itemID, $refreshdata = false) {
+	public static function lotserialUrl($itemID, $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
-		$url->path->add('where-used');
+		$url->path->add('lotserial');
 		$url->query->set('itemID', $itemID);
 
 		if ($refreshdata) {
@@ -46,7 +48,7 @@ class WhereUsed extends IiFunction {
 		return $url->getUrl();
 	}
 
-	public static function whereUsed($data) {
+	public static function lotserial($data) {
 		if (self::validateItemidPermission($data) === false) {
 			return self::alertInvalidItemPermissions($data);
 		}
@@ -61,13 +63,13 @@ class WhereUsed extends IiFunction {
 		$htmlwriter = $modules->get('HtmlWriter');
 		$jsonM      = $modules->get('JsonDataFiles');
 
-		$page->headline = "II: $data->itemID Where Used";
+		$page->headline = "II: $data->itemID Lot / Serial";
 		$html .= self::breadCrumbs();;
-		$html .= self::whereUsedData($data);
+		$html .= self::lotserialData($data);
 		return $html;
 	}
 
-	private static function whereUsedData($data) {
+	private static function lotserialData($data) {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
@@ -79,40 +81,42 @@ class WhereUsed extends IiFunction {
 		if ($jsonm->exists(self::JSONCODE)) {
 			if ($json['itemid'] != $data->itemID) {
 				$jsonm->delete(self::JSONCODE);
-				$session->redirect(self::whereUsedUrl($data->itemID, $refresh = true), $http301 = false);
+				$session->redirect(self::lotserialUrl($data->itemID, $refresh = true), $http301 = false);
 			}
-			$session->setFor('ii', 'where-used', 0);
-			$refreshurl = self::whereUsedUrl($data->itemID, $refresh = true);
-			$html .= self::whereUsedDisplay($data, $json);
+			$session->setFor('ii', 'lotserial', 0);
+			$refreshurl = self::lotserialUrl($data->itemID, $refresh = true);
+			$html .= self::lotserialDisplay($data, $json);
 			return $html;
 		}
 
-		if ($session->getFor('ii', 'where-used') > 3) {
-			$page->headline = "Where Used File could not be loaded";
-			$html .= self::whereUsedDisplay($data, $json);
+		if ($session->getFor('ii', 'lotserial') > 3) {
+			$page->headline = "Lot / Serial File could not be loaded";
+			$html .= self::lotserialDisplay($data, $json);
 			return $html;
 		} else {
-			$session->setFor('ii', 'where-used', ($session->getFor('ii', 'where-used') + 1));
-			$session->redirect(self::whereUsedUrl($data->itemID, $refresh = true), $http301 = false);
+			$session->setFor('ii', 'lotserial', ($session->getFor('ii', 'lotserial') + 1));
+			$session->redirect(self::lotserialUrl($data->itemID, $refresh = true), $http301 = false);
 		}
 	}
 
-	protected static function whereUsedDisplay($data, $json) {
+	protected static function lotserialDisplay($data, $json) {
 		$jsonm  = self::getJsonModule();
 		$config = self::pw('config');
 
 		if ($jsonm->exists(self::JSONCODE) === false) {
-			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'Where Used File Not Found']);
+			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'Lot / Serial File Not Found']);
 		}
 
 		if ($json['error']) {
 			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 		}
 		$page = self::pw('page');
-		$page->refreshurl = self::whereUsedUrl($data->itemID, $refresh = true);
+		$page->refreshurl = self::lotserialUrl($data->itemID, $refresh = true);
 		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
+		$formatter = new Formatter();
+		$formatter->init_formatter();
 		$html =  '';
-		$html .= $config->twig->render('items/ii/where-used/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'module_json' => $jsonm->jsonm]);
+		$html .= $config->twig->render('items/ii/lotserial/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'module_json' => $jsonm->jsonm]);
 		return $html;
 	}
 }
