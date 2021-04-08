@@ -95,7 +95,14 @@ abstract class IiFunction extends AbstractController {
 	public static function requestIiItem($itemID, $sessionID = '') {
 		$sessionID = $sessionID ? $sessionID : session_id();
 		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
-		$data = array("DBNAME=$db", 'IISELECT', "ITEMID=$itemID");
+		$data = array('IISELECT', "ITEMID=$itemID");
+		self::sendRequest($data, $sessionID);
+	}
+
+	protected static function sendRequest(array $data, $sessionID = '') {
+		$sessionID = $sessionID ? $sessionID : session_id();
+		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array_merge(["DBNAME=$db"], $data);
 		$requestor = self::pw('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $sessionID);
 		$requestor->cgi_request(self::pw('config')->cgis['default'], $sessionID);
