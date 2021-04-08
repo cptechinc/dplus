@@ -14,7 +14,7 @@
 		{% if segments[1] == 'pricing' and input.get.offsetExists('custID') %}
 			<li class="breadcrumb-item">
 				<a href="{{ page.subfunctionURL(input.get.text('itemID'), 'pricing') }}">
-					{{ page.subfunctionTitle(segments[1])|capitalize }}
+					{{ page.subfunctionTitle(segments[1])|title }}
 				</a>
 			</li>
 			<li class="breadcrumb-item active">
@@ -22,7 +22,7 @@
 			</li>
 		{% else %}
 			<li class="breadcrumb-item active">
-				{{ page.subfunctionTitle(segments[1])|capitalize }}
+				{{ page.subfunctionTitle(segments[1])|title }}
 			</li>
 		{% endif %}
 	{% endif %}
