@@ -23,7 +23,6 @@ class Kit extends IiFunction {
 			return self::alertInvalidItemPermissions($data);
 		}
 
-
 		if ($data->refresh) {
 			self::requestJson($data, session_id());
 			self::pw('session')->redirect(self::kitUrl($data->itemID, $data->qty), $http301 = false);
