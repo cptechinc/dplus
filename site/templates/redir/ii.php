@@ -22,13 +22,6 @@
 	*		IISELECT
 	*		ITEMID=$itemID
 	*		break;
-	*	case 'ii-lotserial':
-	* 		Request II Lot / Serial JSON file
-	* 		Response: Creates II Lot / Serial JSON file
-	*		DBNAME=$dplusdb
-	*		IILOTSER
-	*		ITEMID=$itemID
-	*		break;
 	*	case 'ii-general':
 	* 		Request II General JSON file
 	* 		Response: Creates II General JSON file
@@ -94,16 +87,6 @@
 				$session->loc = $url->getUrl();
 			} else {
 				$url = $pages->get('pw_template=ii-item')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-lotserial':
-			$data = array("DBNAME=$dplusdb", 'IILOTSER', "ITEMID=$itemID");
-
-			if ($input->$requestmethod->page) {
-				$session->loc = $input->$requestmethod->text('page');
-			} else {
-				$url = $pages->get('pw_template=ii-lotserial')->httpUrl."?itemID=$itemID";
 				$session->loc = $url;
 			}
 			break;
