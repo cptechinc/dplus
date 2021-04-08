@@ -136,7 +136,7 @@ class Activity extends IiFunction {
 		$page->refreshurl = self::activityUrl($data->itemID, $data->date, $refresh = true);
 		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
 		$html =  '';
-		$html .= $config->twig->render('items/ii/activity/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'module_json' => $jsonm->$jsonm, 'docm' => $docm, 'date' => $data->date]);
+		$html .= $config->twig->render('items/ii/activity/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'module_json' => $jsonm->jsonm, 'docm' => $docm, 'date' => $data->date]);
 		return $html;
 	}
 
