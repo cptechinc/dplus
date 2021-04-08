@@ -38,10 +38,6 @@ class DpagesMii extends Dpages implements Module {
 			'name'   => 'ii-item',
 			'fields' => array(),
 		),
-		'ii-where-used' => array(
-			'name'   => 'ii-where-used',
-			'fields' => array(),
-		),
 		'ii-lotserial' => array(
 			'name'   => 'ii-lotserial',
 			'fields' => array(),
@@ -118,16 +114,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/',
 			'dplus_function' => 'ii',
 			'pw_template'    => 'ii-item'
-		),
-		'ii-where-used' => array(
-			'template'       => 'ii-function',
-			'name'           => 'where-used',
-			'title'          => 'Where Used',
-			'summary'        => 'View Item Where Used',
-			'parent'         => '/mii/ii/',
-			'dplus_function' => 'ii-use',
-			'pw_template'    => 'ii-where-used',
-			'jsoncode'       => 'ii-whereused'
 		),
 		'ii-lotserial' => array(
 			'template'       => 'ii-function',
@@ -321,7 +307,7 @@ class DpagesMii extends Dpages implements Module {
 			$url->query->set('itemID', $itemID);
 			$event->return = $url->getUrl();
 		});
-		
+
 		$this->addHook('Page::get_itemkitURL', function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
@@ -343,10 +329,9 @@ class DpagesMii extends Dpages implements Module {
 		$this->addHook('Page::get_itemwhereusedURL', function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
-			$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-			$url->query->set('action','ii-where-used');
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->path->add('where-used');
 			$url->query->set('itemID', $itemID);
-			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
 		});
 
