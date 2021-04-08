@@ -22,13 +22,6 @@
 	*		IISELECT
 	*		ITEMID=$itemID
 	*		break;
-	*	case 'ii-where-used':
-	* 		Request II Where Used JSON file
-	* 		Response: Creates II Where Used JSON file
-	*		DBNAME=$dplusdb
-	*		IIWHEREUSED
-	*		ITEMID=$itemID
-	*		break;
 	*	case 'ii-lotserial':
 	* 		Request II Lot / Serial JSON file
 	* 		Response: Creates II Lot / Serial JSON file
@@ -101,16 +94,6 @@
 				$session->loc = $url->getUrl();
 			} else {
 				$url = $pages->get('pw_template=ii-item')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-where-used':
-			$data = array("DBNAME=$dplusdb", 'IIWHEREUSED', "ITEMID=$itemID");
-
-			if ($input->$requestmethod->page) {
-				$session->loc = $input->$requestmethod->text('page');
-			} else {
-				$url = $pages->get('pw_template=ii-where-used')->httpUrl."?itemID=$itemID";
 				$session->loc = $url;
 			}
 			break;
