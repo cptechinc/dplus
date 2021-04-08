@@ -22,16 +22,6 @@
 	*		IISELECT
 	*		ITEMID=$itemID
 	*		break;
-	*	case 'ii-components':
-	* 		Request II Components JSON file
-	* 		Response: Creates II Components JSON file
-	*		DBNAME=$dplusdb
-	*		IIKIT
-	*		IIBOMSINGLE
-	*	    IIBOMCONS
-	*		ITEMID=$itemID
-	*		QTYNEEDED=$qty
-	*		break;
 	*	case 'ii-where-used':
 	* 		Request II Where Used JSON file
 	* 		Response: Creates II Where Used JSON file
@@ -111,84 +101,6 @@
 				$session->loc = $url->getUrl();
 			} else {
 				$url = $pages->get('pw_template=ii-item')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-components':
-			$config_ii = $modules->get('ConfigsIi');
-			$data = array("DBNAME=$dplusdb");
-			$qty = $input->$requestmethod->int('qty');
-
-			if ($config_ii->option_components == 'kit') {
-				$data[] = 'IIKIT';
-			} elseif ($config_ii->option_components == 'bom') {
-				$bomtype = $input->$requestmethod->text('bomtype');
-				if ($bomtype == 'single') {
-					$data[] = 'IIBOMSINGLE';
-				} else {
-					$data[] = 'IIBOMCONS';
-				}
-			}
-
-			$data[] = "ITEMID=$itemID";
-			$data[] = "QTYNEEDED=$qty";
-
-			if ($input->$requestmethod->page) {
-				$url = new Purl\Url($input->$requestmethod->text('page'));
-				$url->query->set('qty', $qty);
-				if ($config_ii->option_components == 'bom') {
-					$url->query->set('bomtype', $bomtype);
-				}
-				$session->loc = $url->getUrl();
-			} else {
-				$url = $pages->get('pw_template=ii-components')->httpUrl."?itemID=$itemID&qty=$qty";
-				if ($config_ii->option_components == 'bom') {
-					$url .= "&bomtype=$bomtype";
-				}
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-kit':
-			$config_ii = $modules->get('ConfigsIi');
-			$data = array("DBNAME=$dplusdb");
-			$qty = $input->$requestmethod->int('qty');
-
-			$data[] = 'IIKIT';
-			$data[] = "ITEMID=$itemID";
-			$data[] = "QTYNEEDED=$qty";
-
-			if ($input->$requestmethod->page) {
-				$url = new Purl\Url($input->$requestmethod->text('page'));
-				$url->query->set('qty', $qty);
-				$session->loc = $url->getUrl();
-			} else {
-				$url = $pages->get('pw_template=ii-kit')->httpUrl."?itemID=$itemID&qty=$qty";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-bom':
-			$config_ii = $modules->get('ConfigsIi');
-			$data = array("DBNAME=$dplusdb");
-			$qty = $input->$requestmethod->int('qty');
-
-			$bomtype = $input->$requestmethod->text('bomtype');
-			if ($bomtype == 'single') {
-				$data[] = 'IIBOMSINGLE';
-			} else {
-				$data[] = 'IIBOMCONS';
-			}
-
-			$data[] = "ITEMID=$itemID";
-			$data[] = "QTYNEEDED=$qty";
-
-			if ($input->$requestmethod->page) {
-				$url = new Purl\Url($input->$requestmethod->text('page'));
-				$url->query->set('qty', $qty);
-				$url->query->set('bomtype', $bomtype);
-				$session->loc = $url->getUrl();
-			} else {
-				$url = $pages->get('pw_template=ii-bom')->httpUrl."?itemID=$itemID&qty=$qty";
-				$url .= "&bomtype=$bomtype";
 				$session->loc = $url;
 			}
 			break;
