@@ -38,10 +38,6 @@ class DpagesMii extends Dpages implements Module {
 			'name'   => 'ii-item',
 			'fields' => array(),
 		),
-		'ii-bom' => array(
-			'name'   => 'ii-bom',
-			'fields' => array(),
-		),
 		'ii-where-used' => array(
 			'name'   => 'ii-where-used',
 			'fields' => array(),
@@ -122,26 +118,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/',
 			'dplus_function' => 'ii',
 			'pw_template'    => 'ii-item'
-		),
-		'ii-components' => array(
-			'template'       => 'ii-function',
-			'name'           => 'components',
-			'title'          => 'Components',
-			'summary'        => 'View Item Components',
-			'parent'         => '/mii/ii/',
-			'dplus_function' => 'ii-bom',
-			'pw_template'    => 'ii-components',
-			'jsoncode'       => 'ii-components'
-		),
-		'ii-bom' => array(
-			'template'       => 'ii-function',
-			'name'           => 'bom',
-			'title'          => 'BOM',
-			'summary'        => 'View Item BOM',
-			'parent'         => '/mii/ii/',
-			'dplus_function' => 'ii-bom',
-			'pw_template'    => 'ii-bom',
-			'jsoncode'       => 'ii-components'
 		),
 		'ii-where-used' => array(
 			'template'       => 'ii-function',
@@ -345,34 +321,22 @@ class DpagesMii extends Dpages implements Module {
 			$url->query->set('itemID', $itemID);
 			$event->return = $url->getUrl();
 		});
-
-		$this->addHook('Page::get_itemcomponentsURL', function($event) {
-			$p = $event->object;
-			$itemID = $event->arguments(0);
-			$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-			$url->query->set('action','ii-components');
-			$url->query->set('itemID', $itemID);
-			$url->query->set('page', $p->fullURL->getUrl());
-			$event->return = $url->getUrl();
-		});
-
+		
 		$this->addHook('Page::get_itemkitURL', function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
 			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
 			$url->path->add('kit');
 			$url->query->set('itemID', $itemID);
-			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
 		});
 
 		$this->addHook('Page::get_itembomURL', function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
-			$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-			$url->query->set('action','ii-bom');
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->path->add('bom');
 			$url->query->set('itemID', $itemID);
-			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
 		});
 

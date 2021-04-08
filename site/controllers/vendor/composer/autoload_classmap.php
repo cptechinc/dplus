@@ -33,6 +33,7 @@ return array(
     'Controllers\\Mii\\Ii' => $baseDir . '/classes/mii/Ii/Ii.php',
     'Controllers\\Mii\\IiFunction' => $baseDir . '/classes/mii/Ii/IiFunction.php',
     'Controllers\\Mii\\Ii\\Activity' => $baseDir . '/classes/mii/Ii/Activity.php',
+    'Controllers\\Mii\\Ii\\Bom' => $baseDir . '/classes/mii/Ii/Bom.php',
     'Controllers\\Mii\\Ii\\Costing' => $baseDir . '/classes/mii/Ii/Costing.php',
     'Controllers\\Mii\\Ii\\Item' => $baseDir . '/classes/mii/Ii/Item.php',
     'Controllers\\Mii\\Ii\\Kit' => $baseDir . '/classes/mii/Ii/Kit.php',

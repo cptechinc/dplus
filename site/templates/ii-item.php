@@ -13,6 +13,7 @@
 		['GET',  'costing', Ii::class, 'costing'],
 		['GET',  'activity', Ii::class, 'activity'],
 		['GET',  'kit', Ii::class, 'kit'],
+		['GET',  'bom', Ii::class, 'bom'],
 	];
 
 	$router = new Mvc\Router();
