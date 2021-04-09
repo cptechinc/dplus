@@ -42,6 +42,7 @@ return array(
     'Controllers\\Mii\\Ii\\Pricing' => $baseDir . '/classes/mii/Ii/Pricing.php',
     'Controllers\\Mii\\Ii\\Requirements' => $baseDir . '/classes/mii/Ii/Requirements.php',
     'Controllers\\Mii\\Ii\\Stock' => $baseDir . '/classes/mii/Ii/Stock.php',
+    'Controllers\\Mii\\Ii\\Substitutes' => $baseDir . '/classes/mii/Ii/Substitutes.php',
     'Controllers\\Mii\\Ii\\Usage' => $baseDir . '/classes/mii/Ii/Usage.php',
     'Controllers\\Mii\\Ii\\WhereUsed' => $baseDir . '/classes/mii/Ii/WhereUsed.php',
     'Controllers\\Min\\Itm\\Costing' => $baseDir . '/classes/min/itm/Costing.php',

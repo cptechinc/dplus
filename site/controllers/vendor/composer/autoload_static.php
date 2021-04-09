@@ -43,6 +43,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mii\\Ii\\Pricing' => __DIR__ . '/../..' . '/classes/mii/Ii/Pricing.php',
         'Controllers\\Mii\\Ii\\Requirements' => __DIR__ . '/../..' . '/classes/mii/Ii/Requirements.php',
         'Controllers\\Mii\\Ii\\Stock' => __DIR__ . '/../..' . '/classes/mii/Ii/Stock.php',
+        'Controllers\\Mii\\Ii\\Substitutes' => __DIR__ . '/../..' . '/classes/mii/Ii/Substitutes.php',
         'Controllers\\Mii\\Ii\\Usage' => __DIR__ . '/../..' . '/classes/mii/Ii/Usage.php',
         'Controllers\\Mii\\Ii\\WhereUsed' => __DIR__ . '/../..' . '/classes/mii/Ii/WhereUsed.php',
         'Controllers\\Min\\Itm\\Costing' => __DIR__ . '/../..' . '/classes/min/itm/Costing.php',

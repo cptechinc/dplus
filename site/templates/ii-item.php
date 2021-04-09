@@ -17,6 +17,7 @@
 		['GET',  'where-used', Ii::class, 'whereUsed'],
 		['GET',  'lotserial', Ii::class, 'lotserial'],
 		['GET',  'general', Ii::class, 'general'],
+		['GET',  'substitutes', Ii::class, 'substitutes'],
 	];
 
 	$router = new Mvc\Router();
