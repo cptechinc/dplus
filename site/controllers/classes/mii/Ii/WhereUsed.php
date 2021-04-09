@@ -10,6 +10,9 @@ class WhereUsed extends IiFunction {
 	const JSONCODE          = 'ii-whereused';
 	const PERMISSION_IIO    = '';
 
+/* =============================================================
+	1. Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
@@ -27,6 +30,25 @@ class WhereUsed extends IiFunction {
 		return self::whereUsed($data);
 	}
 
+	public static function whereUsed($data) {
+		if (self::validateItemidPermission($data) === false) {
+			return self::alertInvalidItemPermissions($data);
+		}
+		self::pw('modules')->get('DpagesMii')->init_iipage();
+		self::sanitizeParametersShort($data, ['itemID|text']);
+
+		self::getData($data);
+		$page = self::pw('page');
+		$page->headline = "II: $data->itemID Where Used";
+		$html = '';
+		$html .= self::breadCrumbs();;
+		$html .= self::display($data);
+		return $html;
+	}
+
+/* =============================================================
+	2. Data Requests
+============================================================= */
 	public static function requestJson($vars) {
 		$fields = ['itemID|text', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
@@ -35,6 +57,9 @@ class WhereUsed extends IiFunction {
 		self::sendRequest($data, $vars->sessionID);
 	}
 
+/* =============================================================
+	3. URLs
+============================================================= */
 	public static function whereUsedUrl($itemID, $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
 		$url->path->add('where-used');
@@ -46,35 +71,14 @@ class WhereUsed extends IiFunction {
 		return $url->getUrl();
 	}
 
-	public static function whereUsed($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
-		self::sanitizeParametersShort($data, ['itemID|text']);
-		$html = '';
-
-		$page    = self::pw('page');
-		$config  = self::pw('config');
-		$pages   = self::pw('pages');
-		$modules = self::pw('modules');
-		$htmlwriter = $modules->get('HtmlWriter');
-		$jsonM      = $modules->get('JsonDataFiles');
-
-		$page->headline = "II: $data->itemID Where Used";
-		$html .= self::breadCrumbs();;
-		$html .= self::whereUsedData($data);
-		return $html;
-	}
-
-	private static function whereUsedData($data) {
+/* =============================================================
+	4. Data Retrieval
+============================================================= */
+	private static function getData($data) {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
-		$page    = self::pw('page');
-		$config  = self::pw('config');
 		$session = self::pw('session');
-		$html = '';
 
 		if ($jsonm->exists(self::JSONCODE)) {
 			if ($json['itemid'] != $data->itemID) {
@@ -82,23 +86,22 @@ class WhereUsed extends IiFunction {
 				$session->redirect(self::whereUsedUrl($data->itemID, $refresh = true), $http301 = false);
 			}
 			$session->setFor('ii', 'where-used', 0);
-			$refreshurl = self::whereUsedUrl($data->itemID, $refresh = true);
-			$html .= self::whereUsedDisplay($data, $json);
-			return $html;
+			return true;
 		}
 
 		if ($session->getFor('ii', 'where-used') > 3) {
-			$page->headline = "Where Used File could not be loaded";
-			$html .= self::whereUsedDisplay($data, $json);
-			return $html;
-		} else {
-			$session->setFor('ii', 'where-used', ($session->getFor('ii', 'where-used') + 1));
-			$session->redirect(self::whereUsedUrl($data->itemID, $refresh = true), $http301 = false);
+			return false;
 		}
+		$session->setFor('ii', 'where-used', ($session->getFor('ii', 'where-used') + 1));
+		$session->redirect(self::whereUsedUrl($data->itemID, $refresh = true), $http301 = false);
 	}
 
-	protected static function whereUsedDisplay($data, $json) {
+/* =============================================================
+	5. Displays
+============================================================= */
+	private static function display($data) {
 		$jsonm  = self::getJsonModule();
+		$json   = $jsonm->getFile(self::JSONCODE);
 		$config = self::pw('config');
 
 		if ($jsonm->exists(self::JSONCODE) === false) {
@@ -111,8 +114,6 @@ class WhereUsed extends IiFunction {
 		$page = self::pw('page');
 		$page->refreshurl = self::whereUsedUrl($data->itemID, $refresh = true);
 		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
-		$html =  '';
-		$html .= $config->twig->render('items/ii/where-used/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'module_json' => $jsonm->jsonm]);
-		return $html;
+		return $config->twig->render('items/ii/where-used/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'module_json' => $jsonm->jsonm]);
 	}
 }
