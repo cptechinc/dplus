@@ -34,10 +34,10 @@ class Bom extends IiFunction {
 
 	public static function requestJson($vars) {
 		$fields = ['itemID|text', 'qty|int', 'sessionID|text', 'type|text'];
-		$vars   = self::sanitizeParametersShort($vars, $fields);
+		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
 		$type = $data->type == 'consolidated' ? 'IIBOMCONS' : 'IIBOMSINGLE';
-		$data = [$type,"ITEMID=$vars->itemID","QTYNEEDED=$vars->qty"];
+		$data = [$type, "ITEMID=$vars->itemID","QTYNEEDED=$vars->qty"];
 		self::sendRequest($data, $vars->sessionID);
 	}
 

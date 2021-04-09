@@ -28,11 +28,8 @@ class Costing extends IiFunction {
 
 	public static function requestJson($itemID, $sessionID) {
 		$sessionID = $sessionID ? $sessionID : session_id();
-		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
-		$data = array("DBNAME=$db", 'IICOST', "ITEMID=$itemID");
-		$requestor = self::pw('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, $sessionID);
-		$requestor->cgi_request(self::pw('config')->cgis['default'], $sessionID);
+		$data = array('IICOST', "ITEMID=$itemID");
+		self::sendRequest($data, $vars->sessionID);
 	}
 
 	public static function costingUrl($itemID = '', $refreshdata = false) {

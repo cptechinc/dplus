@@ -36,14 +36,11 @@ class Pricing extends IiFunction {
 		$fields = ['itemID|text', 'custID|text', 'sessionID|text'];
 		$vars = self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
-		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
-		$data = ["DBNAME=$db", 'IIPRICE', "ITEMID=$vars->itemID"];
+		$data = ['IIPRICE', "ITEMID=$vars->itemID"];
 		if ($vars->custID) {
 			$data[] = "CUSTID=$vars->custID";
 		}
-		$requestor = self::pw('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, $vars->sessionID);
-		$requestor->cgi_request(self::pw('config')->cgis['default'], $vars->sessionID);
+		self::sendRequest($data, $vars->sessionID);
 	}
 
 	public static function pricingUrl($itemID, $custID = '', $refreshdata = false) {

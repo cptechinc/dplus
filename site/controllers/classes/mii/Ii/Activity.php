@@ -37,17 +37,14 @@ class Activity extends IiFunction {
 
 	public static function requestJson($vars) {
 		$fields = ['itemID|text', 'date|date', 'sessionID|text'];
-		$vars = self::sanitizeParametersShort($vars, $fields);
+		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
-		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
-		$data = ["DBNAME=$db", 'IIACTIVITY', "ITEMID=$vars->itemID"];
+		$data = ['IIACTIVITY', "ITEMID=$vars->itemID"];
 		if ($vars->date) {
 			$dateYmd = date(self::DATE_FORMAT_DPLUS, $vars->date);
 			$data[] = "DATE=$dateYmd";
 		}
-		$requestor = self::pw('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, $vars->sessionID);
-		$requestor->cgi_request(self::pw('config')->cgis['default'], $vars->sessionID);
+		self::sendRequest($data, $vars->sessionID);
 	}
 
 	public static function activityUrl($itemID, $date = '', $refreshdata = false) {

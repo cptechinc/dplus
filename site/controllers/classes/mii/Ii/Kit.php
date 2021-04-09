@@ -39,11 +39,8 @@ class Kit extends IiFunction {
 		$fields = ['itemID|text', 'qty|int', 'sessionID|text'];
 		$vars   = self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
-		$db     = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
-		$data   = ["DBNAME=$db", 'IIKIT', "ITEMID=$vars->itemID", "QTYNEEDED=$vars->qty"];
-		$requestor = self::pw('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, $vars->sessionID);
-		$requestor->cgi_request(self::pw('config')->cgis['default'], $vars->sessionID);
+		$data   = ['IIKIT', "ITEMID=$vars->itemID", "QTYNEEDED=$vars->qty"];
+		self::sendRequest($data, $vars->sessionID);
 	}
 
 	public static function kitUrl($itemID, $qty = 0, $refreshdata = false) {

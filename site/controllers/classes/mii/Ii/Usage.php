@@ -19,20 +19,19 @@ class Usage extends IiFunction {
 		}
 
 		if ($data->refresh) {
-			self::requestJson($data->itemID, session_id());
+			self::requestJson($data);
 			self::pw('session')->redirect($refreshurl = self::usageUrl($data->itemID), $http301 = false);
 		}
 		self::pw('modules')->get('DpagesMii')->init_iipage();
 		return self::usage($data);
 	}
 
-	public static function requestJson($itemID, $sessionID) {
-		$sessionID = $sessionID ? $sessionID : session_id();
-		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
-		$data = array("DBNAME=$db", 'IIUSAGE', "ITEMID=$itemID");
-		$requestor = self::pw('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, $sessionID);
-		$requestor->cgi_request(self::pw('config')->cgis['default'], $sessionID);
+	public static function requestJson($vars) {
+		$fields = ['itemID|text', 'whseID|text', 'view|text', 'sessionID|text'];
+		self::sanitizeParametersShort($vars, $fields);
+		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
+		$data = array('IIUSAGE', "ITEMID=$itemID");
+		self::sendRequest($data, $vars->sessionID);
 	}
 
 	public static function usageUrl($itemID = '', $refreshdata = false) {

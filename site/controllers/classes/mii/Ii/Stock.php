@@ -19,20 +19,19 @@ class Stock extends IiFunction {
 		}
 
 		if ($data->refresh) {
-			self::requestStockJson($data->itemID, session_id());
+			self::requestJson($data);
 			self::pw('session')->redirect($refreshurl = self::stockUrl($data->itemID), $http301 = false);
 		}
 		self::pw('modules')->get('DpagesMii')->init_iipage();
 		return self::stock($data);
 	}
 
-	public static function requestStockJson($itemID, $sessionID) {
-		$sessionID = $sessionID ? $sessionID : session_id();
-		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
-		$data = array("DBNAME=$db", 'IISTKBYWHSE', "ITEMID=$itemID");
-		$requestor = self::pw('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, $sessionID);
-		$requestor->cgi_request(self::pw('config')->cgis['default'], $sessionID);
+	public static function requestJson($vars) {
+		$fields = ['itemID|text','sessionID|text'];
+		self::sanitizeParametersShort($vars, $fields);
+		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
+		$data = array('IISTKBYWHSE', "ITEMID=$data->itemID");
+		self::sendRequest($data, $vars->sessionID);
 	}
 
 	public static function stockUrl($itemID = '', $refreshdata = false) {

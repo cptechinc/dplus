@@ -30,7 +30,9 @@ class Requirements extends IiFunction {
 
 	public static function requestJson($vars) {
 		$fields = ['itemID|text', 'whseID|text', 'view|text', 'sessionID|text'];
+		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
+
 		if (empty($view)) {
 			$user = self::pw('user');
 			$iio  = self::getIio();
@@ -38,11 +40,8 @@ class Requirements extends IiFunction {
 			$vars->view = $options::VIEW_REQUIREMENTS_OPTIONS_JSON[$options->view_requirements];
 		}
 
-		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
-		$data = ["DBNAME=$db", 'IIREQUIRE', "ITEMID=$vars->itemID", "WHSE=$vars->whseID", "REQAVL=$vars->view"];
-		$requestor = self::pw('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, $vars->sessionID);
-		$requestor->cgi_request(self::pw('config')->cgis['default'], $vars->sessionID);
+		$data = ['IIREQUIRE', "ITEMID=$vars->itemID", "WHSE=$vars->whseID", "REQAVL=$vars->view"];
+		self::sendRequest($data, $vars->sessionID);
 	}
 
 	public static function requirementsUrl($itemID = '', $refreshdata = false) {
