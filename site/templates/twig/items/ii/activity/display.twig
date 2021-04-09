@@ -2,7 +2,7 @@
 
 {% block body %}
 	<div class="mt-3">
-		<h2>Activity since {{ date }}</h2>
+		<h2>Activity since {{ date|convertdate }}</h2>
 		{% include 'items/ii/activity/activity.twig' %}
 	</div>
 {% endblock %}
