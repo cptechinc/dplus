@@ -47,7 +47,7 @@ class Pricing extends IiFunction {
 		$page->headline = "$data->itemID Pricing";
 		$html = '';
 		$html .= self::breadCrumbs();;
-		$html .= self::getData($data);
+		$html .= self::display($data);
 		return $html;
 	}
 
