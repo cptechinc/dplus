@@ -15,6 +15,9 @@ class Kit extends IiFunction {
 	const DATE_FORMAT       = 'm/d/Y';
 	const DATE_FORMAT_DPLUS = 'Ymd';
 
+/* =============================================================
+	1. Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool', 'qty|int'];
 		self::sanitizeParametersShort($data, $fields);
@@ -35,6 +38,25 @@ class Kit extends IiFunction {
 		return self::qtyForm($data);
 	}
 
+	public static function kit($data) {
+		if (self::validateItemidPermission($data) === false) {
+			return self::alertInvalidItemPermissions($data);
+		}
+		self::pw('modules')->get('DpagesMii')->init_iipage();
+		self::sanitizeParametersShort($data, ['itemID|text']);
+
+		self::getData($data);
+		$page    = self::pw('page');
+		$page->headline = "II: $data->itemID Kit";
+		$html = '';
+		$html .= self::breadCrumbs();;
+		$html .= self::display($data);
+		return $html;
+	}
+
+/* =============================================================
+	2. Data Requests
+============================================================= */
 	public static function requestJson($vars) {
 		$fields = ['itemID|text', 'qty|int', 'sessionID|text'];
 		$vars   = self::sanitizeParametersShort($vars, $fields);
@@ -43,6 +65,9 @@ class Kit extends IiFunction {
 		self::sendRequest($data, $vars->sessionID);
 	}
 
+/* =============================================================
+	3. URLs
+============================================================= */
 	public static function kitUrl($itemID, $qty = 0, $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
 		$url->path->add('kit');
@@ -58,35 +83,14 @@ class Kit extends IiFunction {
 		return $url->getUrl();
 	}
 
-	public static function kit($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
-		self::sanitizeParametersShort($data, ['itemID|text']);
-		$html = '';
-
-		$page    = self::pw('page');
-		$config  = self::pw('config');
-		$pages   = self::pw('pages');
-		$modules = self::pw('modules');
-		$htmlwriter = $modules->get('HtmlWriter');
-		$jsonM      = $modules->get('JsonDataFiles');
-
-		$page->headline = "II: $data->itemID Kit";
-		$html .= self::breadCrumbs();;
-		$html .= self::kitData($data);
-		return $html;
-	}
-
-	private static function kitData($data) {
+/* =============================================================
+	4. Data Retrieval
+============================================================= */
+	private static function getData($data) {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text', 'qty|int']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
-		$page    = self::pw('page');
-		$config  = self::pw('config');
 		$session = self::pw('session');
-		$html = '';
 
 		if ($jsonm->exists(self::JSONCODE)) {
 			if ($json['itemid'] != $data->itemID) {
@@ -94,23 +98,21 @@ class Kit extends IiFunction {
 				$session->redirect(self::kitUrl($data->itemID, $data->qty, $refresh = true), $http301 = false);
 			}
 			$session->setFor('ii', 'kit', 0);
-			$refreshurl = self::kitUrl($data->itemID, $data->qty, $refresh = true);
-			$html .= self::kitDataDisplay($data, $json);
-			return $html;
+			return true;
 		}
 
 		if ($session->getFor('ii', 'kit') > 3) {
-			$page->headline = "Kit File could not be loaded";
-			$html .= self::kitDataDisplay($data, $json);
-			return $html;
-		} else {
-			$session->setFor('ii', 'kit', ($session->getFor('ii', 'kit') + 1));
-			$session->redirect(self::kitUrl($data->itemID, $data->qty, $refresh = true), $http301 = false);
+			return false;
 		}
+		$session->setFor('ii', 'kit', ($session->getFor('ii', 'kit') + 1));
+		$session->redirect(self::kitUrl($data->itemID, $data->qty, $refresh = true), $http301 = false);
 	}
-
-	protected static function kitDataDisplay($data, $json) {
+/* =============================================================
+	5. Displays
+============================================================= */
+	protected static function display($data) {
 		$jsonm  = self::getJsonModule();
+		$json   = $jsonm->getFile(self::JSONCODE);
 		$config = self::pw('config');
 
 		if ($jsonm->exists(self::JSONCODE) === false) {
@@ -123,8 +125,8 @@ class Kit extends IiFunction {
 		$page = self::pw('page');
 		$page->refreshurl = self::kitUrl($data->itemID, $data->qty, $refresh = true);
 		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
-		$html =  '';
 		$components = InvKitComponentQuery::create()->filterByKitid($data->itemID)->find();
+		$html =  '';
 		$html .= $config->twig->render('items/ii/components/kit/display.twig', ['item' => self::getItmItem($data->itemID),  'components' => $components, 'json' => $json, 'module_json' => $jsonm->jsonm,]);
 		return $html;
 	}
@@ -132,13 +134,12 @@ class Kit extends IiFunction {
 	private static function qtyForm($data) {
 		self::sanitizeParametersShort($data, ['itemID|text']);
 		$config = self::pw('config');
-		$page = self::pw('page');
+		$page   = self::pw('page');
 
 		$page->headline = "II: $data->itemID Kit";
+		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
 		$html = self::breadCrumbs();
 		$html .= $config->twig->render('items/ii/components/kit/qty-form.twig', ['itemID' => $data->itemID]);
-		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
 		return $html;
 	}
-
 }
