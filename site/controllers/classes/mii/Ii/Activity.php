@@ -25,7 +25,7 @@ class Activity extends IiFunction {
 
 		if ($data->refresh) {
 			if ($data->date) {
-				self::requestJson($data, session_id());
+				self::requestJson($data);
 				$data->date = date(self::DATE_FORMAT, $data->date);
 			}
 			self::pw('session')->redirect(self::activityUrl($data->itemID, $data->date), $http301 = false);
