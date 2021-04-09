@@ -38,7 +38,7 @@ class Costing extends IiFunction {
 
 		self::getData($data);
 		$page    = self::pw('page');
-		$page->headline = "$data->itemID Costing";
+		$page->headline = "II: $data->itemID Costing";
 		$html = '';
 		$html .= self::breadCrumbs();
 		$html .= self::display($data);
