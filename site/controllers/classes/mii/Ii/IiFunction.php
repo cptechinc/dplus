@@ -19,6 +19,7 @@ abstract class IiFunction extends AbstractController {
 	private static $validator;
 	private static $iio;
 	private static $jsonm;
+	private static $filehasher;
 
 	protected static function alertInvalidItemPermissions($data) {
 		$data = self::sanitizeParametersShort($data, ['itemID|text']);
@@ -106,5 +107,12 @@ abstract class IiFunction extends AbstractController {
 		$requestor = self::pw('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $sessionID);
 		$requestor->cgi_request(self::pw('config')->cgis['default'], $sessionID);
+	}
+
+	protected static function getFileHasher() {
+		if (empty(self::$filehasher)) {
+			self::$filehasher = self::pw('modules')->get('FileHasher');
+		}
+		return self::$filehasher;
 	}
 }
