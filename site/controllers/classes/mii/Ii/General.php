@@ -15,6 +15,9 @@ class General extends IiFunction {
 	const JSONCODE_USAGE    = 'ii-usage';
 	const PERMISSION_IIO    = '';
 
+/* =============================================================
+	1. Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
@@ -32,6 +35,24 @@ class General extends IiFunction {
 		return self::general($data);
 	}
 
+	public static function general($data) {
+		if (self::validateItemidPermission($data) === false) {
+			return self::alertInvalidItemPermissions($data);
+		}
+		self::pw('modules')->get('DpagesMii')->init_iipage();
+		self::sanitizeParametersShort($data, ['itemID|text']);
+		self::getData($data);
+		$page = self::pw('page');
+		$page->headline = "II: $data->itemID General";
+		$html = '';
+		$html .= self::breadCrumbs();
+		$html .= self::display($data);
+		return $html;
+	}
+
+/* =============================================================
+	2. Data Requests
+============================================================= */
 	public static function requestJson($vars) {
 		$fields = ['itemID|text', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
@@ -40,6 +61,9 @@ class General extends IiFunction {
 		self::sendRequest($data, $vars->sessionID);
 	}
 
+/* =============================================================
+	3. URLs
+============================================================= */
 	public static function generalUrl($itemID, $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
 		$url->path->add('general');
@@ -51,38 +75,17 @@ class General extends IiFunction {
 		return $url->getUrl();
 	}
 
-	public static function general($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
+/* =============================================================
+	4. Data Retrieval
+============================================================= */
+	private static function getData($data) {
 		self::sanitizeParametersShort($data, ['itemID|text']);
-		self::generalData($data);
-		$page = self::pw('page');
-		$page->headline = "II: $data->itemID General";
-		$html = '';
-		$html .= self::breadCrumbs();
-		$html .= self::generalDisplay($data);
-		return $html;
+		self::getDataSection($data, self::JSONCODE_MISC);
+		self::getDataSection($data, self::JSONCODE_NOTES);
+		self::getDataSection($data, self::JSONCODE_USAGE);
 	}
 
-	private static function generalData($data) {
-		self::sanitizeParametersShort($data, ['itemID|text']);
-		self::sectionData($data, self::JSONCODE_MISC);
-		self::sectionData($data, self::JSONCODE_NOTES);
-		self::sectionData($data, self::JSONCODE_USAGE);
-	}
-
-	private static function generalDisplay($data) {
-		self::sanitizeParametersShort($data, ['itemID|text']);
-		$html = new WireData();
-		$html->misc  = self::sectionDisplay($data, self::JSONCODE_MISC);
-		$html->notes = self::sectionDisplay($data, self::JSONCODE_NOTES);
-		$html->usage = self::usageDisplay($data);
-		return self::pw('config')->twig->render('items/ii/general/display.twig', ['item' => self::getItmItem($data->itemID), 'html' => $html]);
-	}
-
-	private static function sectionData($data, $jsoncode) {
+	private static function getDataSection($data, $jsoncode) {
 		self::sanitizeParametersShort($data, ['itemID|text']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile($jsoncode);
@@ -104,7 +107,19 @@ class General extends IiFunction {
 		$session->redirect(self::generalUrl($data->itemID, $refresh = true), $http301 = false);
 	}
 
-	protected static function sectionDisplay($data, $jsoncode) {
+/* =============================================================
+	5. Displays
+============================================================= */
+	private static function display($data) {
+		self::sanitizeParametersShort($data, ['itemID|text']);
+		$html = new WireData();
+		$html->misc  = self::displaySection($data, self::JSONCODE_MISC);
+		$html->notes = self::displaySection($data, self::JSONCODE_NOTES);
+		$html->usage = self::usageDisplay($data);
+		return self::pw('config')->twig->render('items/ii/general/display.twig', ['item' => self::getItmItem($data->itemID), 'html' => $html]);
+	}
+
+	protected static function displaySection($data, $jsoncode) {
 		$code    = str_replace('ii-', '', $jsoncode);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile($jsoncode);
@@ -137,7 +152,7 @@ class General extends IiFunction {
 		}
 		$usagem = self::pw('modules')->get('IiUsage');
 		$page   = self::pw('page');
-		$page->refreshurl = self::generalUrl($data->itemID, $refresh = true);
+		$page->refreshurl   = self::generalUrl($data->itemID, $refresh = true);
 		$page->lastmodified = $jsonm->lastModified(Usage::JSONCODE);
 		$config->styles->append('//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css');
 		$config->scripts->append('//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js');
