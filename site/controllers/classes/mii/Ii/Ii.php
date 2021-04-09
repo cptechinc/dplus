@@ -14,6 +14,7 @@ use Controllers\Mii\Ii\Kit;
 use Controllers\Mii\Ii\Bom;
 use Controllers\Mii\Ii\WhereUsed;
 use Controllers\Mii\Ii\Lotserial;
+use Controllers\Mii\Ii\General;
 
 class Ii extends AbstractController {
 	const SUBFUNCTIONS = [
@@ -26,7 +27,8 @@ class Ii extends AbstractController {
 		'kit'          => 'Kit',
 		'bom'          => 'BoM',
 		'where-used'   => 'Where Used',
-		'lotserial'    => 'Lot / Serial'
+		'lotserial'    => 'Lot / Serial',
+		'general'      => 'General',
 	];
 
 	public static function item($data) {
@@ -71,6 +73,10 @@ class Ii extends AbstractController {
 
 	public static function lotserial($data) {
 		return Lotserial::index($data);
+	}
+
+	public static function general($data) {
+		return General::index($data);
 	}
 
 	public static function init() {
