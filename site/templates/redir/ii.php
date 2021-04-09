@@ -22,13 +22,6 @@
 	*		IISELECT
 	*		ITEMID=$itemID
 	*		break;
-	*	case 'ii-substitutes':
-	* 		Request II Substitutes JSON file
-	* 		Response: Creates II Substitutes JSON file
-	*		DBNAME=$dplusdb
-	*		IISUB
-	*		ITEMID=$itemID
-	*		break;
 	*	case 'ii-documents':
 	* 		Request II Documents JSON file
 	* 		Response: Creates II Documents JSON file
@@ -66,16 +59,6 @@
 				$session->loc = $url->getUrl();
 			} else {
 				$url = $pages->get('pw_template=ii-item')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-substitutes':
-			$data = array("DBNAME=$dplusdb", 'IISUB', "ITEMID=$itemID");
-
-			if ($input->$requestmethod->page) {
-				$session->loc = $input->$requestmethod->text('page');
-			} else {
-				$url = $pages->get('pw_template=ii-substitutes')->httpUrl."?itemID=$itemID";
 				$session->loc = $url;
 			}
 			break;
