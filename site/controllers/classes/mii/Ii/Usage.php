@@ -124,5 +124,4 @@ class Usage extends IiFunction {
 		$page->js    = $config->twig->render('items/ii/usage/warehouses.js.twig', ['json' => $json, 'module_json' => $jsonm->jsonm, 'module_usage' => $usagem]);
 		return $html;
 	}
-
 }
