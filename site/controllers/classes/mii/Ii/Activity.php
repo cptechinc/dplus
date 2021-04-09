@@ -12,6 +12,9 @@ class Activity extends IiFunction {
 	const DATE_FORMAT       = 'm/d/Y';
 	const DATE_FORMAT_DPLUS = 'Ymd';
 
+/* =============================================================
+	1. Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool', 'date|date'];
 		self::sanitizeParametersShort($data, $fields);
@@ -21,8 +24,8 @@ class Activity extends IiFunction {
 		}
 
 		if ($data->refresh) {
-			self::requestJson($data, session_id());
 			if ($data->date) {
+				self::requestJson($data, session_id());
 				$data->date = date(self::DATE_FORMAT, $data->date);
 			}
 			self::pw('session')->redirect(self::activityUrl($data->itemID, $data->date), $http301 = false);
@@ -35,6 +38,25 @@ class Activity extends IiFunction {
 		return self::dateForm($data);
 	}
 
+	public static function activity($data) {
+		if (self::validateItemidPermission($data) === false) {
+			return self::alertInvalidItemPermissions($data);
+		}
+		self::pw('modules')->get('DpagesMii')->init_iipage();
+		self::sanitizeParametersShort($data, ['itemID|text']);
+
+		self::getData($data);
+		$page    = self::pw('page');
+		$page->headline = "II: $data->itemID Activity";
+		$html = '';
+		$html .= self::breadCrumbs();;
+		$html .= self::display($data);
+		return $html;
+	}
+
+/* =============================================================
+	2. Data Requests
+============================================================= */
 	public static function requestJson($vars) {
 		$fields = ['itemID|text', 'date|date', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
@@ -47,6 +69,9 @@ class Activity extends IiFunction {
 		self::sendRequest($data, $vars->sessionID);
 	}
 
+/* =============================================================
+	3. URLs
+============================================================= */
 	public static function activityUrl($itemID, $date = '', $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
 		$url->path->add('activity');
@@ -62,28 +87,10 @@ class Activity extends IiFunction {
 		return $url->getUrl();
 	}
 
-	public static function activity($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
-		self::sanitizeParametersShort($data, ['itemID|text']);
-		$html = '';
-
-		$page    = self::pw('page');
-		$config  = self::pw('config');
-		$pages   = self::pw('pages');
-		$modules = self::pw('modules');
-		$htmlwriter = $modules->get('HtmlWriter');
-		$jsonM      = $modules->get('JsonDataFiles');
-
-		$page->headline = "II: $data->itemID Activity";
-		$html .= self::breadCrumbs();;
-		$html .= self::activityData($data);
-		return $html;
-	}
-
-	private static function activityData($data) {
+/* =============================================================
+	4. Data Retrieval
+============================================================= */
+	private static function getData($data) {
 		self::sanitizeParametersShort($data, ['itemID|text', 'date|date']);
 		if ($data->date) {
 			$data->timestamp = $data->date;
@@ -91,10 +98,7 @@ class Activity extends IiFunction {
 		}
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
-		$page    = self::pw('page');
-		$config  = self::pw('config');
 		$session = self::pw('session');
-		$html = '';
 
 		if ($jsonm->exists(self::JSONCODE)) {
 			if ($json['itemid'] != $data->itemID || $json['date'] != date(self::DATE_FORMAT_DPLUS, $data->timestamp)) {
@@ -102,24 +106,24 @@ class Activity extends IiFunction {
 				$session->redirect(self::activityUrl($data->itemID, $data->date, $refresh = true), $http301 = false);
 			}
 			$session->setFor('ii', 'activity', 0);
-			$refreshurl = self::activityUrl($data->itemID, $data->date, $refresh = true);
-			$html .= self::activityDataDisplay($data, $json);
-			return $html;
+			return true;
 		}
 
 		if ($session->getFor('ii', 'activity') > 3) {
-			$page->headline = "Activity File could not be loaded";
-			$html .= self::activityDataDisplay($data, $json);
-			return $html;
-		} else {
-			$session->setFor('ii', 'activity', ($session->getFor('ii', 'activity') + 1));
-			$session->redirect(self::activityUrl($data->itemID, $data->date, $refresh = true), $http301 = false);
+			return false;
 		}
+		$session->setFor('ii', 'activity', ($session->getFor('ii', 'activity') + 1));
+		$session->redirect(self::activityUrl($data->itemID, $data->date, $refresh = true), $http301 = false);
 	}
 
-	protected static function activityDataDisplay($data, $json) {
+/* =============================================================
+	5. Displays
+============================================================= */
+	protected static function display($data) {
+		self::sanitizeParametersShort($data, ['itemID|text', 'date|text']);
 		$jsonm  = self::getJsonModule();
 		$config = self::pw('config');
+		$json   = $jsonm->getFile(self::JSONCODE);
 
 		if ($jsonm->exists(self::JSONCODE) === false) {
 			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'Activity File Not Found']);
@@ -130,11 +134,9 @@ class Activity extends IiFunction {
 		}
 		$page = self::pw('page');
 		$docm = self::pw('modules')->get('DocumentManagementIi');
-		$page->refreshurl = self::activityUrl($data->itemID, $data->date, $refresh = true);
+		$page->refreshurl   = self::activityUrl($data->itemID, $data->date, $refresh = true);
 		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
-		$html =  '';
-		$html .= $config->twig->render('items/ii/activity/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'module_json' => $jsonm->jsonm, 'docm' => $docm, 'date' => $data->date]);
-		return $html;
+		return $config->twig->render('items/ii/activity/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'module_json' => $jsonm->jsonm, 'docm' => $docm, 'date' => $data->date]);
 	}
 
 	private static function dateForm($data) {
