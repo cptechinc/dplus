@@ -120,6 +120,7 @@ class Activity extends IiFunction {
 	5. Displays
 ============================================================= */
 	protected static function display($data) {
+		self::init();
 		self::sanitizeParametersShort($data, ['itemID|text', 'date|text']);
 		$jsonm  = self::getJsonModule();
 		$json   = $jsonm->getFile(self::JSONCODE);
@@ -163,5 +164,20 @@ class Activity extends IiFunction {
 		$html .= $config->twig->render('items/ii/activity/date-form.twig', ['itemID' => $data->itemID, 'startdate' => $startdate]);
 		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
 		return $html;
+	}
+
+	public static function init() {
+		$m = self::pw('modules')->get('DpagesMii');
+		$m->addHook('Page(pw_template=ii-item)::documentListUrl', function($event) {
+			$page      = $event->object;
+			$itemID    = $event->arguments(0);
+			$type      = $event->arguments(1);
+			$reference = $event->arguments(2);
+
+			$url = new Purl(Documents::documentsUrl($itemID, 'ACT'));
+			$url->query->set('type', $type);
+			$url->query->set('reference', $reference);
+			$event->return = $url->getUrl();
+		});
 	}
 }
