@@ -122,8 +122,9 @@ class Activity extends IiFunction {
 	protected static function display($data) {
 		self::sanitizeParametersShort($data, ['itemID|text', 'date|text']);
 		$jsonm  = self::getJsonModule();
-		$config = self::pw('config');
 		$json   = $jsonm->getFile(self::JSONCODE);
+		$config = self::pw('config');
+
 
 		if ($jsonm->exists(self::JSONCODE) === false) {
 			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'Activity File Not Found']);
