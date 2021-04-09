@@ -22,27 +22,6 @@
 	*		IISELECT
 	*		ITEMID=$itemID
 	*		break;
-	*	case 'ii-general':
-	* 		Request II General JSON file
-	* 		Response: Creates II General JSON file
-	*		DBNAME=$dplusdb
-	*		IIGENERAL
-	*		ITEMID=$itemID
-	*		break;
-	*	case 'ii-notes':
-	* 		Request II Notes JSON file
-	* 		Response: Creates II Notes JSON file
-	*		DBNAME=$dplusdb
-	*		IINOTES
-	*		ITEMID=$itemID
-	*		break;
-	*	case 'ii-misc':
-	* 		Request II Misc JSON file
-	* 		Response: Creates II Misc JSON file
-	*		DBNAME=$dplusdb
-	*		IIMISC
-	*		ITEMID=$itemID
-	*		break;
 	*	case 'ii-substitutes':
 	* 		Request II Substitutes JSON file
 	* 		Response: Creates II Substitutes JSON file
@@ -87,37 +66,6 @@
 				$session->loc = $url->getUrl();
 			} else {
 				$url = $pages->get('pw_template=ii-item')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-general':
-			// does not call ii-misc, ii-notes
-			$data = array("DBNAME=$dplusdb", 'IIGENERAL', "ITEMID=$itemID");
-
-			if ($input->$requestmethod->page) {
-				$session->loc = $input->$requestmethod->text('page');
-			} else {
-				$url = $pages->get('pw_template=ii-general')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-notes':
-			$data = array("DBNAME=$dplusdb", 'IINOTES', "ITEMID=$itemID");
-
-			if ($input->$requestmethod->page) {
-				$session->loc = $input->$requestmethod->text('page');
-			} else {
-				$url = $pages->get('pw_template=ii-general')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-misc':
-			$data = array("DBNAME=$dplusdb", 'IIMISC', "ITEMID=$itemID");
-
-			if ($input->$requestmethod->page) {
-				$session->loc = $input->$requestmethod->text('page');
-			} else {
-				$url = $pages->get('pw_template=ii-general')->httpUrl."?itemID=$itemID";
 				$session->loc = $url;
 			}
 			break;

@@ -111,16 +111,6 @@ class DpagesMii extends Dpages implements Module {
 			'dplus_function' => 'ii',
 			'pw_template'    => 'ii-item'
 		),
-		'ii-general' => array(
-			'template'       => 'ii-function',
-			'name'           => 'general',
-			'title'          => 'General',
-			'summary'        => 'View Item General Info',
-			'parent'         => '/mii/ii/',
-			'dplus_function' => 'ii-gen',
-			'pw_template'    => 'ii-general',
-			'jsoncode'       => ''
-		),
 		'ii-substitutes' => array(
 			'template'       => 'ii-function',
 			'name'           => 'substitutes',
@@ -333,10 +323,9 @@ class DpagesMii extends Dpages implements Module {
 		$this->addHook('Page::get_itemgeneralURL', function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
-			$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-			$url->query->set('action','ii-general');
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->path->add('general');
 			$url->query->set('itemID', $itemID);
-			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
 		});
 
