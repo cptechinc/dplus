@@ -14,7 +14,7 @@ class Pricing extends IiFunction {
 
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool', 'custID|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidPermission($data) === false) {
 			return self::alertInvalidItemPermissions($data);
@@ -63,7 +63,7 @@ class Pricing extends IiFunction {
 			return self::alertInvalidItemPermissions($data);
 		}
 		self::pw('modules')->get('DpagesMii')->init_iipage();
-		$data = self::sanitizeParametersShort($data, ['itemID|text']);
+		self::sanitizeParametersShort($data, ['itemID|text']);
 		$html = '';
 
 		$page    = self::pw('page');
@@ -131,7 +131,7 @@ class Pricing extends IiFunction {
 	}
 
 	private static function customerForm($data) {
-		$data = self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
+		self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
 		$config = self::pw('config');
 		$page = self::pw('page');
 

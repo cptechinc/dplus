@@ -14,7 +14,7 @@ class Bom extends IiFunction {
 
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool', 'qty|int', 'type|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidPermission($data) === false) {
 			return self::alertInvalidItemPermissions($data);

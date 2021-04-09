@@ -14,7 +14,7 @@ class Activity extends IiFunction {
 
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool', 'date|date'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidPermission($data) === false) {
 			return self::alertInvalidItemPermissions($data);
@@ -67,7 +67,7 @@ class Activity extends IiFunction {
 			return self::alertInvalidItemPermissions($data);
 		}
 		self::pw('modules')->get('DpagesMii')->init_iipage();
-		$data = self::sanitizeParametersShort($data, ['itemID|text']);
+		self::sanitizeParametersShort($data, ['itemID|text']);
 		$html = '';
 
 		$page    = self::pw('page');
@@ -84,7 +84,7 @@ class Activity extends IiFunction {
 	}
 
 	private static function activityData($data) {
-		$data    = self::sanitizeParametersShort($data, ['itemID|text', 'date|date']);
+		self::sanitizeParametersShort($data, ['itemID|text', 'date|date']);
 		if ($data->date) {
 			$data->timestamp = $data->date;
 			$data->date = date(self::DATE_FORMAT, $data->date);
@@ -138,13 +138,14 @@ class Activity extends IiFunction {
 	}
 
 	private static function dateForm($data) {
-		$data = self::sanitizeParametersShort($data, ['itemID|text']);
+		self::sanitizeParametersShort($data, ['itemID|text']);
 		$config = self::pw('config');
-		$page = self::pw('page');
+		$page   = self::pw('page');
+		$iio    = self::getIio();
 
-		$iio = self::getIio();
 		$options = $iio->useriio(self::pw('user')->loginid);
 		$startdate = date(self::DATE_FORMAT);
+
 		if ($options->daysactivity > 0) {
 			$startdate = date(self::DATE_FORMAT, strtotime("-$options->daysactivity days"));
 		}
@@ -160,5 +161,4 @@ class Activity extends IiFunction {
 		$config->scripts->append(self::pw('modules')->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
 		return $html;
 	}
-
 }

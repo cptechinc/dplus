@@ -15,7 +15,7 @@ use Controllers\Mii\IiFunction;
 class Item extends IiFunction {
 	public static function index($data) {
 		$fields = ['itemID|text', 'q|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateUserPermission($data) === false) {
 			return self::alertInvalidItemPermissions($data);
@@ -32,8 +32,7 @@ class Item extends IiFunction {
 			return self::alertInvalidItemPermissions($data);
 		}
 		self::pw('modules')->get('DpagesMii')->init_iipage();
-		$fields = ['itemID|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, ['itemID|text']);
 		$html = '';
 
 		$page    = self::pw('page');
@@ -120,7 +119,7 @@ class Item extends IiFunction {
 			return self::alertInvalidItemPermissions($data);
 		}
 		self::pw('modules')->get('DpagesMii')->init_iipage();
-		$data = self::sanitizeParametersShort($data, ['q|text']);
+		self::sanitizeParametersShort($data, ['q|text']);
 		$page = self::pw('page');
 		$pricingM = self::pw('modules')->get('ItemPricing');
 		$filter = new ItemMasterFilter();

@@ -14,7 +14,7 @@ class Requirements extends IiFunction {
 
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidPermission($data) === false) {
 			return self::alertInvalidItemPermissions($data);
@@ -60,7 +60,7 @@ class Requirements extends IiFunction {
 			return self::alertInvalidItemPermissions($data);
 		}
 		self::pw('modules')->get('DpagesMii')->init_iipage();
-		$data = self::sanitizeParametersShort($data, ['itemID|text']);
+		self::sanitizeParametersShort($data, ['itemID|text']);
 		$html = '';
 
 		$page    = self::pw('page');
