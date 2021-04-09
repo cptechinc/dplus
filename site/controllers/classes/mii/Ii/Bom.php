@@ -12,6 +12,9 @@ class Bom extends IiFunction {
 	const DATE_FORMAT       = 'm/d/Y';
 	const DATE_FORMAT_DPLUS = 'Ymd';
 
+/* =============================================================
+	1. Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool', 'qty|int', 'type|text'];
 		self::sanitizeParametersShort($data, $fields);
@@ -32,6 +35,25 @@ class Bom extends IiFunction {
 		return self::qtyForm($data);
 	}
 
+	public static function bom($data) {
+		if (self::validateItemidPermission($data) === false) {
+			return self::alertInvalidItemPermissions($data);
+		}
+		self::pw('modules')->get('DpagesMii')->init_iipage();
+		$data = self::sanitizeParametersShort($data, ['itemID|text', 'qty|int', 'type|text']);
+
+		self::getData($data);
+		$page    = self::pw('page');
+		$page->headline = "II: $data->itemID BoM";
+		$html = '';
+		$html .= self::breadCrumbs();;
+		$html .= self::display($data);
+		return $html;
+	}
+
+/* =============================================================
+	2. Data Requests
+============================================================= */
 	public static function requestJson($vars) {
 		$fields = ['itemID|text', 'qty|int', 'sessionID|text', 'type|text'];
 		self::sanitizeParametersShort($vars, $fields);
@@ -41,6 +63,9 @@ class Bom extends IiFunction {
 		self::sendRequest($data, $vars->sessionID);
 	}
 
+/* =============================================================
+	3. URLs
+============================================================= */
 	public static function bomUrl($itemID, $qty = 0, $type = '', $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
 		$url->path->add('bom');
@@ -60,36 +85,15 @@ class Bom extends IiFunction {
 		return $url->getUrl();
 	}
 
-	public static function bom($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
-		$data = self::sanitizeParametersShort($data, ['itemID|text', 'qty|int', 'type|text']);
-		$html = '';
-
-		$page    = self::pw('page');
-		$config  = self::pw('config');
-		$pages   = self::pw('pages');
-		$modules = self::pw('modules');
-		$htmlwriter = $modules->get('HtmlWriter');
-		$jsonM      = $modules->get('JsonDataFiles');
-
-		$page->headline = "II: $data->itemID BoM";
-		$html .= self::breadCrumbs();;
-		$html .= self::bomData($data);
-		return $html;
-	}
-
-	private static function bomData($data) {
-		$data    = self::sanitizeParametersShort($data, ['itemID|text', 'qty|int', 'type|text']);
-		$jsonm   = self::getJsonModule();
+/* =============================================================
+	4. Data Retrieval
+============================================================= */
+	private static function getData($data) {
+		self::sanitizeParametersShort($data, ['itemID|text', 'qty|int', 'type|text']);
+		$jsonm    = self::getJsonModule();
 		$jsoncode = self::JSONCODE . "-$data->type";
-		$json    = $jsonm->getFile($jsoncode);
-		$page    = self::pw('page');
-		$config  = self::pw('config');
-		$session = self::pw('session');
-		$html = '';
+		$json     = $jsonm->getFile($jsoncode);
+		$session  = self::pw('session');
 
 		if ($jsonm->exists($jsoncode)) {
 			if ($json['itemid'] != $data->itemID) {
@@ -97,25 +101,21 @@ class Bom extends IiFunction {
 				$session->redirect(self::bomUrl($data->itemID, $data->qty, $data->type, $refresh = true), $http301 = false);
 			}
 			$session->setFor('ii', 'bom', 0);
-			$refreshurl = self::bomUrl($data->itemID, $data->qty, $data->type, $refresh = true);
-			$html .= self::bomDataDisplay($data, $json);
-			return $html;
+			return true;
 		}
 
 		if ($session->getFor('ii', 'bom') > 3) {
-			$page->headline = "BoM File could not be loaded";
-			$html .= self::bomDataDisplay($data, $json);
-			return $html;
-		} else {
-			$session->setFor('ii', 'bom', ($session->getFor('ii', 'bom') + 1));
-			$session->redirect(self::bomUrl($data->itemID, $data->qty, $data->type, $refresh = true), $http301 = false);
+			return false;
 		}
+		$session->setFor('ii', 'bom', ($session->getFor('ii', 'bom') + 1));
+		$session->redirect(self::bomUrl($data->itemID, $data->qty, $data->type, $refresh = true), $http301 = false);
 	}
 
-	protected static function bomDataDisplay($data, $json) {
-		$jsonm  = self::getJsonModule();
-		$config = self::pw('config');
+	protected static function display($data) {
+		$jsonm    = self::getJsonModule();
+		$config   = self::pw('config');
 		$jsoncode = self::JSONCODE . "-$data->type";
+		$json     = $jsonm->getFile($jsoncode);
 
 		if ($jsonm->exists($jsoncode) === false) {
 			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'BoM File Not Found']);
@@ -127,21 +127,18 @@ class Bom extends IiFunction {
 		$page = self::pw('page');
 		$page->refreshurl = self::bomUrl($data->itemID, $data->qty, $data->type, $refresh = true);
 		$page->lastmodified = $jsonm->lastModified($jsoncode);
-		$html =  '';
-		$html .= $config->twig->render('items/ii/components/bom/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'module_json' => $jsonm->jsonm, 'type' => $data->type]);
-		return $html;
+		return $config->twig->render('items/ii/components/bom/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'module_json' => $jsonm->jsonm, 'type' => $data->type]);
 	}
 
 	private static function qtyForm($data) {
-		$data = self::sanitizeParametersShort($data, ['itemID|text']);
+		self::sanitizeParametersShort($data, ['itemID|text']);
 		$config = self::pw('config');
-		$page = self::pw('page');
+		$page   = self::pw('page');
 
 		$page->headline = "II: $data->itemID BoM";
+		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
 		$html = self::breadCrumbs();
 		$html .= $config->twig->render('items/ii/components/bom/qty-form.twig', ['itemID' => $data->itemID]);
-		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
 		return $html;
 	}
-
 }
