@@ -12,6 +12,9 @@ class Lotserial extends IiFunction {
 	const JSONCODE          = 'ii-lotserial';
 	const PERMISSION_IIO    = '';
 
+/* =============================================================
+	1. Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
@@ -29,6 +32,25 @@ class Lotserial extends IiFunction {
 		return self::lotserial($data);
 	}
 
+	public static function lotserial($data) {
+		if (self::validateItemidPermission($data) === false) {
+			return self::alertInvalidItemPermissions($data);
+		}
+		self::pw('modules')->get('DpagesMii')->init_iipage();
+		self::sanitizeParametersShort($data, ['itemID|text']);
+		self::getData($data);
+
+		$page    = self::pw('page');
+		$page->headline = "II: $data->itemID Lot / Serial";
+		$html = '';
+		$html .= self::breadCrumbs();;
+		$html .= self::display($data);
+		return $html;
+	}
+
+/* =============================================================
+	2. Data Requests
+============================================================= */
 	public static function requestJson($vars) {
 		$fields = ['itemID|text', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
@@ -37,6 +59,9 @@ class Lotserial extends IiFunction {
 		self::sendRequest($data, $vars->sessionID);
 	}
 
+/* =============================================================
+	3. URLs
+============================================================= */
 	public static function lotserialUrl($itemID, $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
 		$url->path->add('lotserial');
@@ -48,28 +73,10 @@ class Lotserial extends IiFunction {
 		return $url->getUrl();
 	}
 
-	public static function lotserial($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
-		self::sanitizeParametersShort($data, ['itemID|text']);
-		$html = '';
-
-		$page    = self::pw('page');
-		$config  = self::pw('config');
-		$pages   = self::pw('pages');
-		$modules = self::pw('modules');
-		$htmlwriter = $modules->get('HtmlWriter');
-		$jsonM      = $modules->get('JsonDataFiles');
-
-		$page->headline = "II: $data->itemID Lot / Serial";
-		$html .= self::breadCrumbs();;
-		$html .= self::lotserialData($data);
-		return $html;
-	}
-
-	private static function lotserialData($data) {
+/* =============================================================
+	4. Data Retrieval
+============================================================= */
+	private static function getData($data) {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
@@ -83,24 +90,20 @@ class Lotserial extends IiFunction {
 				$jsonm->delete(self::JSONCODE);
 				$session->redirect(self::lotserialUrl($data->itemID, $refresh = true), $http301 = false);
 			}
-			$session->setFor('ii', 'lotserial', 0);
-			$refreshurl = self::lotserialUrl($data->itemID, $refresh = true);
-			$html .= self::lotserialDisplay($data, $json);
-			return $html;
+			return true;
 		}
 
 		if ($session->getFor('ii', 'lotserial') > 3) {
-			$page->headline = "Lot / Serial File could not be loaded";
-			$html .= self::lotserialDisplay($data, $json);
-			return $html;
+			return false;
 		} else {
 			$session->setFor('ii', 'lotserial', ($session->getFor('ii', 'lotserial') + 1));
 			$session->redirect(self::lotserialUrl($data->itemID, $refresh = true), $http301 = false);
 		}
 	}
 
-	protected static function lotserialDisplay($data, $json) {
+	protected static function display($data) {
 		$jsonm  = self::getJsonModule();
+		$json    = $jsonm->getFile(self::JSONCODE);
 		$config = self::pw('config');
 
 		if ($jsonm->exists(self::JSONCODE) === false) {
@@ -115,8 +118,6 @@ class Lotserial extends IiFunction {
 		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
 		$formatter = new Formatter();
 		$formatter->init_formatter();
-		$html =  '';
-		$html .= $config->twig->render('items/ii/lotserial/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'module_json' => $jsonm->jsonm]);
-		return $html;
+		return $config->twig->render('items/ii/lotserial/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'module_json' => $jsonm->jsonm]);
 	}
 }
