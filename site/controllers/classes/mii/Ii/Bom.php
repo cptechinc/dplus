@@ -140,7 +140,7 @@ class Bom extends IiFunction {
 		$page->headline = "II: $data->itemID BoM";
 		$html = self::breadCrumbs();
 		$html .= $config->twig->render('items/ii/components/bom/qty-form.twig', ['itemID' => $data->itemID]);
-		$config->scripts->append(self::pw('modules')->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
+		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
 		return $html;
 	}
 

@@ -139,7 +139,7 @@ class Pricing extends IiFunction {
 		$html = self::breadCrumbs();
 		$html .= $config->twig->render('items/ii/pricing/customer/form.twig', ['itemID' => $data->itemID]);
 		$page->js = $config->twig->render('items/ii/pricing/customer/form.js.twig');
-		$config->scripts->append(self::pw('modules')->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
+		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
 		return $html;
 	}
 

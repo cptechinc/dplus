@@ -116,7 +116,7 @@ class Usage extends IiFunction {
 		$config->styles->append('//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css');
 		$config->scripts->append('//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js');
 		$config->scripts->append('//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js');
-		$config->scripts->append(self::pw('modules')->get('FileHasher')->getHashUrl('scripts/lib/moment.js'));
+		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/moment.js'));
 
 		$html = '';
 		$html .= $config->twig->render('items/ii/usage/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'module_json' => $jsonm->jsonm]);

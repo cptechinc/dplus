@@ -158,7 +158,7 @@ class Activity extends IiFunction {
 		$html = self::breadCrumbs();
 		$html .= '<h3> Enter Starting Activity Date</h3>';
 		$html .= $config->twig->render('items/ii/activity/date-form.twig', ['itemID' => $data->itemID, 'startdate' => $startdate]);
-		$config->scripts->append(self::pw('modules')->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
+		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
 		return $html;
 	}
 }
