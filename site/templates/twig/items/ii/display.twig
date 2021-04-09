@@ -28,14 +28,16 @@
 					{% endif %}
 				</div>
 				<div class="col-4 col-sm-3">
-					{% if page.is_print() == false and page.refreshurl %}
+					{% if page.is_print() == false and page.has('refreshurl') %}
 						<a href="{{ page.refreshurl }}" class="btn btn-primary">
 							<i class="fa fa-refresh" aria-hidden="true"></i> Refresh
 						</a>
 					{% endif %}
 				</div>
 				<div class="col-sm-3 text-center pt-2">
-					Data Timestamp: {{ page.lastmodified|date('m/d/Y h:i A') }}
+					{% if page.has('lastmodified') %}
+						Data Timestamp: {{ page.lastmodified|date('m/d/Y h:i A') }}
+					{% endif %}
 				</div>
 			</div>
 		</div>
