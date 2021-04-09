@@ -16,6 +16,7 @@ use Controllers\Mii\Ii\WhereUsed;
 use Controllers\Mii\Ii\Lotserial;
 use Controllers\Mii\Ii\General;
 use Controllers\Mii\Ii\Substitutes;
+use Controllers\Mii\Ii\Documents;
 
 class Ii extends AbstractController {
 	const SUBFUNCTIONS = [
@@ -31,6 +32,7 @@ class Ii extends AbstractController {
 		'lotserial'    => 'Lot / Serial',
 		'general'      => 'General',
 		'substitutes'  => 'Substitutes',
+		'documents'    => 'Documents',
 	];
 
 	public static function item($data) {
@@ -83,6 +85,10 @@ class Ii extends AbstractController {
 
 	public static function substitutes($data) {
 		return Substitutes::index($data);
+	}
+	
+	public static function documents($data) {
+		return Documents::index($data);
 	}
 
 	public static function init() {

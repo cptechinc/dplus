@@ -18,6 +18,7 @@
 		['GET',  'lotserial', Ii::class, 'lotserial'],
 		['GET',  'general', Ii::class, 'general'],
 		['GET',  'substitutes', Ii::class, 'substitutes'],
+		['GET',  'documents', Ii::class, 'documents'],
 	];
 
 	$router = new Mvc\Router();

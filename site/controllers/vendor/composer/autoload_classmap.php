@@ -35,6 +35,7 @@ return array(
     'Controllers\\Mii\\Ii\\Activity' => $baseDir . '/classes/mii/Ii/Activity.php',
     'Controllers\\Mii\\Ii\\Bom' => $baseDir . '/classes/mii/Ii/Bom.php',
     'Controllers\\Mii\\Ii\\Costing' => $baseDir . '/classes/mii/Ii/Costing.php',
+    'Controllers\\Mii\\Ii\\Documents' => $baseDir . '/classes/mii/Ii/Documents.php',
     'Controllers\\Mii\\Ii\\General' => $baseDir . '/classes/mii/Ii/General.php',
     'Controllers\\Mii\\Ii\\Item' => $baseDir . '/classes/mii/Ii/Item.php',
     'Controllers\\Mii\\Ii\\Kit' => $baseDir . '/classes/mii/Ii/Kit.php',

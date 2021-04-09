@@ -105,9 +105,9 @@ class DocumentManagementIi extends DocumentManagement implements Module {
 
 			if (in_array($type, self::ACTIVITY_TYPES_SO)) {
 				$ref = $this->determine_reference($reference, self::PREFIX_REF_SO);
-				$docs_query->filterByTag(self::TAG_SALESORDER);
 				$ref = SalesOrder::get_paddedordernumber($ref);
-				$docs_query->filterByReference1($ref);
+				$docm = $this->wire('modules')->get('DocumentManagementSo');
+				$docm->filter_sales($docs_query, $ref);
 			} elseif (in_array($type, self::ACTIVITY_TYPES_PO)) {
 				$ref = $this->determine_reference($reference, self::PREFIX_REF_PO);
 				$docs_query->filterByTag(self::TAG_VENDORPO);
@@ -297,18 +297,6 @@ class DocumentManagementIi extends DocumentManagement implements Module {
 			$ponbr     = $event->arguments(1);
 			$url = new Url($this->get_ii_docs_folderURL($itemID, self::TAG_VENDORPO));
 			$url->query->set('ponbr', $ponbr);
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page(pw_template=ii-activity)::documentsview_activity', function($event) {
-			$page      = $event->object;
-			$itemID    = $event->arguments(0);
-			$type      = $event->arguments(1);
-			$reference = $event->arguments(2);
-
-			$url = new Url($this->get_ii_docs_folderURL($itemID, 'ACT'));
-			$url->query->set('type', $type);
-			$url->query->set('reference', $reference);
 			$event->return = $url->getUrl();
 		});
 

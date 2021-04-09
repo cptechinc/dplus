@@ -48,7 +48,7 @@ class DocumentManagementSo extends DocumentManagement implements Module {
 	 * @param  string         $ordn             Sales Order #
 	 * @return void
 	 */
-	protected function filter_sales(DocumentQuery $docs_query, $ordn) {
+	public function filter_sales(DocumentQuery $docs_query, $ordn) {
 		$ordn = SalesOrder::get_paddedordernumber($ordn);
 		$this->columns = new WireData();
 		$this->columns->tag = Document::get_aliasproperty('tag');
