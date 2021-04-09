@@ -79,10 +79,7 @@ class Usage extends IiFunction {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
-		$page    = self::pw('page');
-		$config  = self::pw('config');
-		$session = self::pw('session');
-		$html = '';
+		$session = self::pw('session');;
 
 		if ($jsonm->exists(self::JSONCODE)) {
 			if ($json['itemid'] != $data->itemID) {
