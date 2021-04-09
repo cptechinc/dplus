@@ -12,6 +12,9 @@ class Requirements extends IiFunction {
 	const JSONCODE       = 'ii-requirements';
 	const PERMISSION_IIO = 'requirements';
 
+/* =============================================================
+	1. Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool'];
 		self::sanitizeParametersShort($data, $fields);
@@ -28,6 +31,25 @@ class Requirements extends IiFunction {
 		return self::requirements($data);
 	}
 
+	public static function requirements($data) {
+		if (self::validateItemidPermission($data) === false) {
+			return self::alertInvalidItemPermissions($data);
+		}
+		self::pw('modules')->get('DpagesMii')->init_iipage();
+		self::sanitizeParametersShort($data, ['itemID|text']);
+
+		self::getData($data);
+		$page    = self::pw('page');
+		$page->headline = "$data->itemID Requirements";
+		$html = '';
+		$html .= self::breadCrumbs();
+		$html .= self::display($data);
+		return $html;
+	}
+
+/* =============================================================
+	2. Data Requests
+============================================================= */
 	public static function requestJson($vars) {
 		$fields = ['itemID|text', 'whseID|text', 'view|text', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
@@ -44,6 +66,9 @@ class Requirements extends IiFunction {
 		self::sendRequest($data, $vars->sessionID);
 	}
 
+/* =============================================================
+	3. URLs
+============================================================= */
 	public static function requirementsUrl($itemID = '', $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
 		$url->path->add('requirements');
@@ -55,28 +80,10 @@ class Requirements extends IiFunction {
 		return $url->getUrl();
 	}
 
-	public static function requirements($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
-		self::sanitizeParametersShort($data, ['itemID|text']);
-		$html = '';
-
-		$page    = self::pw('page');
-		$config  = self::pw('config');
-		$pages   = self::pw('pages');
-		$modules = self::pw('modules');
-		$htmlwriter = $modules->get('HtmlWriter');
-		$jsonM      = $modules->get('JsonDataFiles');
-
-		$page->headline = "$data->itemID Requirements";
-		$html .= self::breadCrumbs();
-		$html .= self::requirementsData($data);
-		return $html;
-	}
-
-	private static function requirementsData($data) {
+/* =============================================================
+	4. Data Retrieval
+============================================================= */
+	private static function getData($data) {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
@@ -90,23 +97,19 @@ class Requirements extends IiFunction {
 				$jsonm->delete(self::JSONCODE);
 				$session->redirect(self::requirementsUrl($data->itemID, $refreshdata = true), $http301 = false);
 			}
-			$session->setFor('ii', 'requirements', 0);
-			$html .= self::requirementsDataDisplay($data, $json);
-			return $html;
+			return true;
 		}
 
 		if ($session->getFor('ii', 'requirements') > 3) {
-			$page->headline = "Requirements File could not be loaded";
-			$html .= self::requirementsDataDisplay($data, $json);
-			return $html;
-		} else {
-			$session->setFor('ii', 'requirements', ($session->getFor('ii', 'requirements') + 1));
-			$session->redirect(self::requirementsUrl($data->itemID, $refresh= true), $http301 = false);
+			return false;
 		}
+		$session->setFor('ii', 'requirements', ($session->getFor('ii', 'requirements') + 1));
+		$session->redirect(self::requirementsUrl($data->itemID, $refresh= true), $http301 = false);
 	}
 
-	protected static function requirementsDataDisplay($data, $json) {
+	protected static function display($data) {
 		$jsonm  = self::getJsonModule();
+		$json   = $jsonm->getFile(self::JSONCODE);
 		$config = self::pw('config');
 
 		if ($jsonm->exists(self::JSONCODE) === false) {
@@ -125,5 +128,4 @@ class Requirements extends IiFunction {
 		$html = $config->twig->render('items/ii/requirements/display.twig', ['item' => self::getItmItem($data->itemID), 'module_ii' => $iim, 'warehouses' => $warehouses, 'json' => $json, 'module_json' => $jsonm->jsonm]);
 		return $html;
 	}
-
 }
