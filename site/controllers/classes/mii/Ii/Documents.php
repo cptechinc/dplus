@@ -103,51 +103,7 @@ class Documents extends IiFunction {
 /* =============================================================
 	5. Displays
 ============================================================= */
-	public static function init() {
-		$m = self::pw('modules')->get('DpagesMii');
-
-		$m->addHook('Page(pw_template=ii-item)::documentUrl', function($event) {
-			$page     = $event->object;
-			$itemID   = $event->arguments(0);
-			$folder   = $event->arguments(1);
-			$document = $event->arguments(2);
-			$event->return = self::documentsUrl($itemID, $folder, $document);
-		});
-
-		$m->addHook('Page(pw_template=ii-item|ii-quotes)::documentsUrlQuote', function($event) {
-			$page     = $event->object;
-			$itemID   = $event->arguments(0);
-			$qnbr     = $event->arguments(1);
-			$event->return = self::documentsUrlQuote($itemID, $qnbr);
-		});
-
-		$m->addHook('Page(pw_template=ii-item)::documentsUrlApInvoice', function($event) {
-			$page     = $event->object;
-			$itemID   = $event->arguments(0);
-			$invnbr   = $event->arguments(1);
-			$event->return = self::documentsUrlApInvoice($itemID, $invnbr);
-		});
-
-		$m->addHook('Page(pw_template=ii-item)::documentsUrlSalesorder', function($event) {
-			$page     = $event->object;
-			$itemID   = $event->arguments(0);
-			$ordn     = $event->arguments(1);
-			$date     = $event->arguments(2);
-			$event->return = self::documentsUrlSalesorder($itemID, $ordn, $date);
-		});
-	}
-
-	private static function createList($itemID) {
-		$list = new WireData();
-		$list->itemid = $itemID;
-		$list->title = '';
-		$list->documents = [];
-		$list->returnUrl = '';
-		$list->returnTitle = '';
-		return $list;
-	}
-
-	protected static function display($data) {
+	private static function display($data) {
 		self::init();
 		self::sanitizeParametersShort($data, ['itemID|text', 'folder|text']);
 		$list = self::createList($data->itemID);
@@ -170,7 +126,7 @@ class Documents extends IiFunction {
 
 				if ($validate->invoice($data->ordn)) {
 					$list->returnTitle = "Sales History";
-					$list->returnUrl = self::pw('pages')->get('pw_template=ii-sales-history')->url."?itemID=$data->itemID";
+					$list->returnUrl = SalesHistory::historyUrl($data->itemID, $data->date);
 				}
 
 				$list->documents = $docm->count_documents($data->ordn) ? $docm->get_documents($data->ordn) : [];
@@ -217,5 +173,44 @@ class Documents extends IiFunction {
 		}
 
 		return self::pw('config')->twig->render('items/ii/documents/display.twig', ['item' => self::getItmItem($data->itemID), 'list' => $list]);
+	}
+
+/* =============================================================
+	6. Supplements
+============================================================= */
+	public static function init() {
+		$m = self::pw('modules')->get('DpagesMii');
+
+		$m->addHook('Page(pw_template=ii-item)::documentUrl', function($event) {
+			$page     = $event->object;
+			$itemID   = $event->arguments(0);
+			$folder   = $event->arguments(1);
+			$document = $event->arguments(2);
+			$event->return = self::documentsUrl($itemID, $folder, $document);
+		});
+
+		$m->addHook('Page(pw_template=ii-item)::documentsUrlQuote', function($event) {
+			$page     = $event->object;
+			$itemID   = $event->arguments(0);
+			$qnbr     = $event->arguments(1);
+			$event->return = self::documentsUrlQuote($itemID, $qnbr);
+		});
+
+		$m->addHook('Page(pw_template=ii-item)::documentsUrlApInvoice', function($event) {
+			$page     = $event->object;
+			$itemID   = $event->arguments(0);
+			$invnbr   = $event->arguments(1);
+			$event->return = self::documentsUrlApInvoice($itemID, $invnbr);
+		});
+	}
+
+	private static function createList($itemID) {
+		$list = new WireData();
+		$list->itemid = $itemID;
+		$list->title = '';
+		$list->documents = [];
+		$list->returnUrl = '';
+		$list->returnTitle = '';
+		return $list;
 	}
 }
