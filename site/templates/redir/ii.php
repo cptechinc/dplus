@@ -22,13 +22,6 @@
 	*		IISELECT
 	*		ITEMID=$itemID
 	*		break;
-	*	case 'ii-sales-orders':
-	* 		Request II Sales Orders JSON file
-	* 		Response: Creates II Sales Orders JSON file
-	*		DBNAME=$dplusdb
-	*		IISALESORDR
-	*		ITEMID=$itemID
-	*		break;
 	*	case 'ii-sales-history':
 	* 		Request II Sales History JSON file
 	* 		Response: Creates II Sales History JSON file
@@ -50,16 +43,6 @@
 				$session->loc = $url->getUrl();
 			} else {
 				$url = $pages->get('pw_template=ii-item')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-sales-orders':
-			$data = array("DBNAME=$dplusdb", 'IISALESORDR', "ITEMID=$itemID");
-
-			if ($input->$requestmethod->page) {
-				$session->loc = $input->$requestmethod->text('page');
-			} else {
-				$url = $pages->get('pw_template=ii-sales-orders')->httpUrl."?itemID=$itemID";
 				$session->loc = $url;
 			}
 			break;
