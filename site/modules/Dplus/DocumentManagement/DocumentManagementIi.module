@@ -201,7 +201,8 @@ class DocumentManagementIi extends DocumentManagement implements Module {
 	 * @return string
 	 */
 	public function get_ii_docs_folderURL($itemID, $folder) {
-		$url = new Url($this->wire('pages')->get('pw_template=ii-documents')->url);
+		$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+		$url->path->add('documents');
 		$url->query->set('itemID', $itemID);
 		$url->query->set('folder', $folder);
 		return $url->getUrl();
@@ -273,16 +274,7 @@ class DocumentManagementIi extends DocumentManagement implements Module {
 			$event->return = $url->getUrl();
 		});
 
-		$this->addHook('Page(pw_template=ii-quotes)::documentsview_quote', function($event) {
-			$page      = $event->object;
-			$itemID    = $event->arguments(0);
-			$qnbr      = $event->arguments(1);
-			$url = new Url($this->get_ii_docs_folderURL($itemID, self::TAG_QUOTE));
-			$url->query->set('qnbr', $qnbr);
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page(pw_template=ii-purchase-history)::documentsview_apinvoice', function($event) {
+		$this->addHook('Page(pw_template=ii-purchase-history)::documentsUrlApInvoice', function($event) {
 			$page      = $event->object;
 			$itemID    = $event->arguments(0);
 			$invnbr    = $event->arguments(1);
