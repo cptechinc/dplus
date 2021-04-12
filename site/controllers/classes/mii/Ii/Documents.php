@@ -5,6 +5,7 @@ use Purl\Url as Purl;
 use ProcessWire\WireData;
 // Dplus Validators
 use Dplus\CodeValidators\Min as MinValidator;
+use Dplus\CodeValidators\Mso as MsoValidator;
 // Mvc Controllers
 use Controllers\Mii\IiFunction;
 
@@ -80,9 +81,18 @@ class Documents extends IiFunction {
 		return $url->getUrl();
 	}
 
-	public static function documentsUrlQuote($itemID, $invnbr) {
+	public static function documentsUrlApInvoice($itemID, $invnbr) {
 		$url = new Purl(self::documentsUrl($itemID, 'AP'));
 		$url->query->set('invnbr', $invnbr);
+		return $url->getUrl();
+	}
+
+	public static function documentsUrlSalesorder($itemID, $ordn, $date = '') {
+		$url = new Purl(self::documentsUrl($itemID, 'AR'));
+		$url->query->set('ordn', $ordn);
+		if ($date) {
+			$url->query->set('date', $date);
+		}
 		return $url->getUrl();
 	}
 
@@ -117,6 +127,14 @@ class Documents extends IiFunction {
 			$invnbr   = $event->arguments(1);
 			$event->return = self::documentsUrlApInvoice($itemID, $invnbr);
 		});
+
+		$m->addHook('Page(pw_template=ii-item)::documentsUrlSalesorder', function($event) {
+			$page     = $event->object;
+			$itemID   = $event->arguments(0);
+			$ordn     = $event->arguments(1);
+			$date     = $event->arguments(2);
+			$event->return = self::documentsUrlApSalesorder($itemID, $ordn, $date);
+		});
 	}
 
 	private static function createList($itemID) {
@@ -139,12 +157,22 @@ class Documents extends IiFunction {
 		switch ($data->folder) {
 			case 'SO':
 			case 'AR':
-				self::sanitizeParametersShort($data, ['ordn|ordn']);
+				self::sanitizeParametersShort($data, ['ordn|ordn', 'date|text']);
 				$docm = self::pw('modules')->get('DocumentManagementSo');
 				$list->title = "Sales Order #$data->ordn Documents";
-				$list->returnTitle = "Sales Orders";
+
 				// TODO: ii sales orders url
-				$list->returnUrl = self::pw('pages')->get('pw_template=ii-sales-orders')->url."?itemID=$data->itemID";
+				$validate = new MsoValidator();
+				if ($validate->order($data->ordn)) {
+					$list->returnTitle = "Sales Orders";
+					$list->returnUrl = self::pw('pages')->get('pw_template=ii-sales-orders')->url."?itemID=$data->itemID";
+				}
+
+				if ($validate->invoice($data->ordn)) {
+					$list->returnTitle = "Sales History";
+					$list->returnUrl = self::pw('pages')->get('pw_template=ii-sales-history')->url."?itemID=$data->itemID";
+				}
+
 				$list->documents = $docm->count_documents($data->ordn) ? $docm->get_documents($data->ordn) : [];
 				break;
 			case 'ACT': // Item Activity
@@ -169,10 +197,22 @@ class Documents extends IiFunction {
 				$list->title = "AP Invoice #$data->invnbr Documents";
 				$list->returnTitle = "AP Invoices";
 				$list->documents = $docm->get_documents_invoice($data->invnbr);
+				// TODO: ii purchase history
 				$list->returnUrl = self::pw('pages')->get('pw_template=ii-purchase-history')->url."?itemID=$data->itemID";
 				break;
 			case 'PO':
-
+				self::sanitizeParametersShort($data, ['ponbr|ponbr']);
+				$docm = self::pw('modules')->get('DocumentManagementPo');
+				$list->title = "Purchase Order #$data->invnbr Documents";
+				$list->returnTitle = "Purchase Orders";
+				$list->documents = $docm->get_documents_po($data->ponbr);
+				// TODO: ii purchase orders
+				$list->returnUrl = self::pw('pages')->get('pw_template=ii-purchase-history')->url."?itemID=$data->itemID";
+				break;
+			default:
+				$list->title = "";
+				$list->returnTitle = "";
+				$list->documents = $docm->get_documents_item($data->itemID);
 				break;
 		}
 
