@@ -42,6 +42,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mii\\Ii\\Kit' => __DIR__ . '/../..' . '/classes/mii/Ii/Kit.php',
         'Controllers\\Mii\\Ii\\Lotserial' => __DIR__ . '/../..' . '/classes/mii/Ii/Lotserial.php',
         'Controllers\\Mii\\Ii\\Pricing' => __DIR__ . '/../..' . '/classes/mii/Ii/Pricing.php',
+        'Controllers\\Mii\\Ii\\PurchaseHistory' => __DIR__ . '/../..' . '/classes/mii/Ii/PurchaseHistory.php',
         'Controllers\\Mii\\Ii\\PurchaseOrders' => __DIR__ . '/../..' . '/classes/mii/Ii/PurchaseOrders.php',
         'Controllers\\Mii\\Ii\\Quotes' => __DIR__ . '/../..' . '/classes/mii/Ii/Quotes.php',
         'Controllers\\Mii\\Ii\\Requirements' => __DIR__ . '/../..' . '/classes/mii/Ii/Requirements.php',

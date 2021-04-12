@@ -49,7 +49,7 @@ class PurchaseHistory extends IiFunction {
 		self::getData($data);
 
 		$page    = self::pw('page');
-		$page->headline = "II: $data->itemID Sales History";
+		$page->headline = "II: $data->itemID Purchase History";
 		$html = '';
 		$html .= self::breadCrumbs();;
 		$html .= self::display($data);
@@ -63,7 +63,7 @@ class PurchaseHistory extends IiFunction {
 		$fields = ['itemID|text', 'sessionID|text', 'date|date'];
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
-		$data = ['IISALESHIST', "ITEMID=$vars->itemID"];
+		$data = ['IIPURCHHIST', "ITEMID=$vars->itemID"];
 		if ($vars->date) {
 			$dateYmd = date(self::DATE_FORMAT_DPLUS, $vars->date);
 			$data[] = "DATE=$dateYmd";
@@ -76,7 +76,7 @@ class PurchaseHistory extends IiFunction {
 ============================================================= */
 	public static function historyUrl($itemID, $date, $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
-		$url->path->add('sales-history');
+		$url->path->add('purchase-history');
 		$url->query->set('itemID', $itemID);
 
 		if ($date) {
@@ -113,10 +113,10 @@ class PurchaseHistory extends IiFunction {
 			return true;
 		}
 
-		if ($session->getFor('ii', 'sales-history') > 3) {
+		if ($session->getFor('ii', 'purchase-history') > 3) {
 			return false;
 		} else {
-			$session->setFor('ii', 'sales-history', ($session->getFor('ii', 'sales-history') + 1));
+			$session->setFor('ii', 'purchase-history', ($session->getFor('ii', 'purchase-history') + 1));
 			$session->redirect(self::historyUrl($data->itemID, $data->date, $refresh = true), $http301 = false);
 		}
 	}
@@ -142,8 +142,8 @@ class PurchaseHistory extends IiFunction {
 		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
 		$formatter = new Formatter();
 		$formatter->init_formatter();
-		$docm = self::pw('modules')->get('DocumentManagementSo');
-		return $config->twig->render('items/ii/sales-history/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'module_json' => $jsonm->jsonm, 'docm' => $docm]);
+		$docm = self::pw('modules')->get('DocumentManagementPo');
+		return $config->twig->render('items/ii/purchase-history/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'module_json' => $jsonm->jsonm, 'docm' => $docm]);
 	}
 
 	private static function dateForm($data) {
@@ -155,18 +155,18 @@ class PurchaseHistory extends IiFunction {
 		$options = $iio->useriio(self::pw('user')->loginid);
 		$startdate = date(self::DATE_FORMAT);
 
-		if ($options->dayssaleshistory > 0) {
-			$startdate = date(self::DATE_FORMAT, strtotime("-$options->dayssaleshistory days"));
+		if ($options->dayspurchasehistory > 0) {
+			$startdate = date(self::DATE_FORMAT, strtotime("-$options->dayspurchasehistory days"));
 		}
 
-		if (intval($options->datesaleshistory) > 0) {
-			$startdate = date(self::DATE_FORMAT, strtotime($options->datesaleshistory));
+		if (intval($options->datepurchasehistory) > 0) {
+			$startdate = date(self::DATE_FORMAT, strtotime($options->datepurchasehistory));
 		}
 
-		$page->headline = "II: $data->itemID Sales History";
+		$page->headline = "II: $data->itemID Purchase History";
 		$html = self::breadCrumbs();
 		$html .= '<h3> Enter Starting History Date</h3>';
-		$html .= $config->twig->render('items/ii/sales-history/date-form.twig', ['itemID' => $data->itemID, 'startdate' => $startdate]);
+		$html .= $config->twig->render('items/ii/purchase-history/date-form.twig', ['itemID' => $data->itemID, 'startdate' => $startdate]);
 		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
 		return $html;
 	}
@@ -181,7 +181,7 @@ class PurchaseHistory extends IiFunction {
 			$itemID   = $event->arguments(0);
 			$ordn     = $event->arguments(1);
 			$date     = $event->arguments(2);
-			$event->return = Documents::documentsUrlSalesorder($itemID, $ordn, $date);
+			$event->return = Documents::documentsUrlApInvoice($itemID, $ordn, $date);
 		});
 	}
 }

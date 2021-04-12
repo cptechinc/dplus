@@ -40,6 +40,7 @@ class Ii extends AbstractController {
 		'sales-history' => 'Sales History',
 		'quotes'        => 'Quotes',
 		'purchase-orders' => 'Purchase Orders',
+		'purchase-history' => 'Purchase History',
 	];
 
 	public static function item($data) {
@@ -112,6 +113,10 @@ class Ii extends AbstractController {
 
 	public static function purchaseOrders($data) {
 		return Sub\PurchaseOrders::index($data);
+	}
+
+	public static function purchaseHistory($data) {
+		return Sub\PurchaseHistory::index($data);
 	}
 
 	public static function init() {
