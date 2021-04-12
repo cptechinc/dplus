@@ -1,10 +1,10 @@
 <div class="form-group">
 	{% if page.is_print() %}
-		<a href="{{ page.get_backURL() }}" class="btn btn-primary d-print-none">
+		<a href="{{ page.itemUrl(item.itemid) }}" class="btn btn-primary d-print-none">
 			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Item
 		</a>
 	{% else %}
-		<a href="{{ page.get_backURL() }}" class="btn btn-primary">
+		<a href="{{ page.itemUrl(item.itemid) }}" class="btn btn-primary">
 			<i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Item
 		</a>
 		&nbsp;

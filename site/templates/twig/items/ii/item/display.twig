@@ -3,7 +3,7 @@
 		{% include 'items/ii/toolbar.twig' %}
 	</div>
 	<div class="col-sm-10">
-		{% include 'items/ii/item/ii-links.twig' with {'itemID': item.itemid, 'lastmodified': page.lastmodified, 'refreshurl': page.get_itemURL(item.itemid)} %}
+		{% include 'items/ii/item/ii-links.twig' with {'itemID': item.itemid, 'lastmodified': page.lastmodified, 'refreshurl': page.itemURL(item.itemid)} %}
 		{{ html.item|raw }}
 		{% include 'items/ii/item/item-data.twig' %}
 		{{ html.stock|raw }}

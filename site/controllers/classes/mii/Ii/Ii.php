@@ -123,7 +123,7 @@ class Ii extends AbstractController {
 		Documents::init();
 
 		$m = self::pw('modules')->get('DpagesMii');
-		$m->addHook('Page(pw_template=ii-item)::subfunctions2', function($event) {
+		$m->addHook('Page(pw_template=ii-item)::subfunctions', function($event) {
 			$user = self::pw('user');
 			$allowed = [];
 			$iio = Item::getIio();
@@ -134,18 +134,26 @@ class Ii extends AbstractController {
 			}
 			$event->return = $allowed;
 		});
+
 		$m->addHook('Page(pw_template=ii-item)::subfunctionURL', function($event) {
 			$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
 			$url->path->add($event->arguments(1));
 			$url->query->set('itemID', $event->arguments(0));
 			$event->return = $url->getUrl();
 		});
+
 		$m->addHook('Page(pw_template=ii-item)::subfunctionTitle', function($event) {
 			$title = $event->arguments(0);
 			if (array_key_exists($event->arguments(0), self::SUBFUNCTIONS)) {
 				$title = self::SUBFUNCTIONS[$event->arguments(0)];
 			}
 			$event->return = $title;
+		});
+
+		$m->addHook('Page(pw_template=ii-item)::itemUrl', function($event) {
+			$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
+			$url->query->set('itemID', $event->arguments(0));
+			$event->return = $url->getUrl();
 		});
 	}
 }

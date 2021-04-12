@@ -11,16 +11,10 @@
 <table id="item-index" class="table table-bordered">
 	<thead>
 		<tr>
-			<th scope="col">
-				Item ID
-			</th>
-			<th scope="col">
-				Description
-			</th>
+			<th scope="col">Item ID</th>
+			<th scope="col">Description</th>
 			{% if pricing %}
-				<th scope="col">
-					Available
-				</th>
+				<th scope="col">Available</th>
 			{% endif %}
 		</tr>
 	</thead>
@@ -29,7 +23,7 @@
 			{% for item in items %}
 				<tr data-itemid="{{ item.itemid }}">
 					<td>
-						<a href="{{ page.get_itemURL(item.itemid) }}" class="link ii-item item-link" data-itemid="{{ item.itemid }}" data-description="{{ item.description }}" data-description2="{{ item.description2 }}">
+						<a href="{{ page.itemUrl(item.itemid) }}" class="link ii-item item-link" data-itemid="{{ item.itemid }}" data-description="{{ item.description }}" data-description2="{{ item.description2 }}">
 							<strong>{{ item.itemid }}</strong>
 						</a>
 					</td>

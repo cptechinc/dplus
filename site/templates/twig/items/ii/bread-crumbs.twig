@@ -6,7 +6,7 @@
 		<a href="{{ page.url }}"><i class="fa fa-microchip" aria-hidden="true"></i> II</a>
 	</li>
 	<li class="breadcrumb-item">
-		<a href="{{ page.get_itemURL(input.get.text('itemID')) }}">{{ input.get.text('itemID') }}</a>
+		<a href="{{ page.itemUrl(input.get.text('itemID')) }}">{{ input.get.text('itemID') }}</a>
 	</li>
 	{% set segments = input.urlSegments() %}
 	{% if segments|length == 1 %}
