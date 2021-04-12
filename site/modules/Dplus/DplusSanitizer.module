@@ -1,6 +1,6 @@
 <?php namespace ProcessWire;
 
-use PurchaseOrder, SalesOrder;
+use PurchaseOrder, SalesOrder, Quote;
 
 /**
  * DplusSanitizer
@@ -41,6 +41,13 @@ class DplusSanitizer extends WireData implements Module {
 			$value = $event->arguments(0);
 			$ponbr = str_pad($value, SalesOrder::LENGTH , "0", STR_PAD_LEFT);
 			$event->return = $ponbr;
+		});
+
+		$this->addHook('Sanitizer::qnbr', function(HookEvent $event) {
+			$sanitizer = $event->object;
+			$value = $event->arguments(0);
+			$qnbr = str_pad($value, Quote::LENGTH , "0", STR_PAD_LEFT);
+			$event->return = $qnbr;
 		});
 	}
 
