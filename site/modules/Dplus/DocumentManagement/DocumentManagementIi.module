@@ -249,23 +249,6 @@ class DocumentManagementIi extends DocumentManagement implements Module {
 	}
 
 	public function init() {
-		$this->addHook('Page(pw_template=ii-purchase-history)::documentsUrlApInvoice', function($event) {
-			$page      = $event->object;
-			$itemID    = $event->arguments(0);
-			$invnbr    = $event->arguments(1);
-			$url = new Url($this->get_ii_docs_folderURL($itemID, self::TAG_APINVOICE));
-			$url->query->set('invnbr', $invnbr);
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page(pw_template=ii-purchase-orders)::documentsview_purchaseorder', function($event) {
-			$page      = $event->object;
-			$itemID    = $event->arguments(0);
-			$ponbr     = $event->arguments(1);
-			$url = new Url($this->get_ii_docs_folderURL($itemID, self::TAG_VENDORPO));
-			$url->query->set('ponbr', $ponbr);
-			$event->return = $url->getUrl();
-		});
 
 		$this->addHook('Page(pw_template=ii-item)::item_image_exists', function($event) {
 			$page     = $event->object;
