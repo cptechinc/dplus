@@ -86,12 +86,14 @@ class Ii extends AbstractController {
 	public static function substitutes($data) {
 		return Substitutes::index($data);
 	}
-	
+
 	public static function documents($data) {
 		return Documents::index($data);
 	}
 
 	public static function init() {
+		Documents::init();
+
 		$m = self::pw('modules')->get('DpagesMii');
 		$m->addHook('Page(pw_template=ii-item)::subfunctions2', function($event) {
 			$user = self::pw('user');
