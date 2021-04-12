@@ -42,10 +42,6 @@ class DpagesMii extends Dpages implements Module {
 			'name'   => 'ii-sales-history',
 			'fields' => array(),
 		),
-		'ii-purchase-orders' => array(
-			'name'   => 'ii-purchase-orders',
-			'fields' => array(),
-		),
 		'ii-purchase-history' => array(
 			'name'   => 'ii-purchase-history',
 			'fields' => array(),
@@ -94,16 +90,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/',
 			'dplus_function' => 'ii',
 			'pw_template'    => 'ii-item'
-		),
-		'ii-purchase-orders' => array(
-			'template'       => 'ii-function',
-			'name'           => 'purchase-orders',
-			'title'          => 'Purchase Orders',
-			'summary'        => 'View Item Purchase Orders',
-			'parent'         => '/mii/ii/',
-			'dplus_function' => 'ii-pur',
-			'pw_template'    => 'ii-purchase-orders',
-			'jsoncode'       => 'ii-purchase-orders'
 		),
 		'ii-purchase-history' => array(
 			'template'       => 'ii-function',
@@ -313,11 +299,9 @@ class DpagesMii extends Dpages implements Module {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
 			$date = $event->arguments(1);
-			$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-			$url->query->set('action','ii-purchase-orders');
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->path->add('purchase-orders');
 			$url->query->set('itemID', $itemID);
-			$url->query->set('date', $date);
-			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
 		});
 
