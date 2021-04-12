@@ -133,7 +133,7 @@ class Documents extends IiFunction {
 			$itemID   = $event->arguments(0);
 			$ordn     = $event->arguments(1);
 			$date     = $event->arguments(2);
-			$event->return = self::documentsUrlApSalesorder($itemID, $ordn, $date);
+			$event->return = self::documentsUrlSalesorder($itemID, $ordn, $date);
 		});
 	}
 
@@ -165,7 +165,7 @@ class Documents extends IiFunction {
 				$validate = new MsoValidator();
 				if ($validate->order($data->ordn)) {
 					$list->returnTitle = "Sales Orders";
-					$list->returnUrl = self::pw('pages')->get('pw_template=ii-sales-orders')->url."?itemID=$data->itemID";
+					$list->returnUrl = SalesOrders::ordersUrl($data->itemID);
 				}
 
 				if ($validate->invoice($data->ordn)) {
