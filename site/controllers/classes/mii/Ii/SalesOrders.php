@@ -101,7 +101,11 @@ class SalesOrders extends IiFunction {
 		}
 	}
 
-	protected static function display($data) {
+/* =============================================================
+	5. Displays
+============================================================= */
+	private static function display($data) {
+		self::init();
 		$jsonm  = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
 		$config = self::pw('config');
@@ -120,5 +124,18 @@ class SalesOrders extends IiFunction {
 		$formatter->init_formatter();
 		$docm = self::pw('modules')->get('DocumentManagementSo');
 		return $config->twig->render('items/ii/sales-orders/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'module_json' => $jsonm->jsonm, 'docm' => $docm]);
+	}
+
+/* =============================================================
+	6. Supplements
+============================================================= */
+	public static function init() {
+		$m = self::pw('modules')->get('DpagesMii');
+
+		$m->addHook('Page(pw_template=ii-item)::documentListUrl', function($event) {
+			$itemID   = $event->arguments(0);
+			$ordn     = $event->arguments(1);
+			$event->return = Documents::documentsUrlSalesorder($itemID, $ordn);
+		});
 	}
 }
