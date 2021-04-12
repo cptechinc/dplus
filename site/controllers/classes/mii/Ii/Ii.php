@@ -3,6 +3,7 @@
 use Purl\Url as Purl;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+use Controllers\Mii\Ii as Sub;
 use Controllers\Mii\Ii\Item;
 use Controllers\Mii\Ii\Stock;
 use Controllers\Mii\Ii\Requirements;
@@ -101,6 +102,10 @@ class Ii extends AbstractController {
 
 	public static function salesHistory($data) {
 		return SalesHistory::index($data);
+	}
+
+	public static function quotes($data) {
+		return Sub\Quotes::index($data);
 	}
 
 	public static function init() {

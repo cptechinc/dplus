@@ -117,7 +117,6 @@ class Documents extends IiFunction {
 				$docm = self::pw('modules')->get('DocumentManagementSo');
 				$list->title = "Sales Order #$data->ordn Documents";
 
-				// TODO: ii sales orders url
 				$validate = new MsoValidator();
 				if ($validate->order($data->ordn)) {
 					$list->returnTitle = "Sales Orders";
@@ -144,8 +143,7 @@ class Documents extends IiFunction {
 				$list->title = "Quote #$data->qnbr Documents";
 				$list->returnTitle = "Quotes";
 				$list->documents = $docm->get_documents($data->qnbr);
-				// TODO: ii quotes
-				$list->returnUrl = self::pw('pages')->get('pw_template=ii-quotes')->url."?itemID=$data->itemID";
+				$list->returnUrl = Quotes::quotesUrl($data->itemID);
 				break;
 			case 'AP':
 				self::sanitizeParametersShort($data, ['invnbr|ponbr']);

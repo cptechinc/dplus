@@ -41,6 +41,7 @@ return array(
     'Controllers\\Mii\\Ii\\Kit' => $baseDir . '/classes/mii/Ii/Kit.php',
     'Controllers\\Mii\\Ii\\Lotserial' => $baseDir . '/classes/mii/Ii/Lotserial.php',
     'Controllers\\Mii\\Ii\\Pricing' => $baseDir . '/classes/mii/Ii/Pricing.php',
+    'Controllers\\Mii\\Ii\\Quotes' => $baseDir . '/classes/mii/Ii/Quotes.php',
     'Controllers\\Mii\\Ii\\Requirements' => $baseDir . '/classes/mii/Ii/Requirements.php',
     'Controllers\\Mii\\Ii\\SalesHistory' => $baseDir . '/classes/mii/Ii/SalesHistory.php',
     'Controllers\\Mii\\Ii\\SalesOrders' => $baseDir . '/classes/mii/Ii/SalesOrders.php',
