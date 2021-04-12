@@ -249,30 +249,6 @@ class DocumentManagementIi extends DocumentManagement implements Module {
 	}
 
 	public function init() {
-		$this->addHook('Page(pw_template=ii-documents)::documentload', function($event) {
-			$page     = $event->object;
-			$folder   = $event->arguments(0);
-			$document = $event->arguments(1);
-			$itemID   = $event->arguments(2);
-			$event->return = $this->get_ii_documentURL($itemID, $folder, $document);
-		});
-
-		$this->addHook('Page(pw_template=ii-sales-orders|ii-sales-history)::documentsUrlSalesorder', function($event) {
-			$page      = $event->object;
-			$itemID    = $event->arguments(0);
-			$ordn      = $event->arguments(1);
-			$url = new Url($this->get_ii_docs_folderURL($itemID, self::TAG_SALESORDER));
-			$url->query->set('ordn', $ordn);
-
-			if (SalesHistoryQuery::create()->filterByOrdernumber(SalesOrder::get_paddedordernumber($ordn))->count()) {
-				$date = $page->fullURL->query->get('date');
-				$url->query->set('date', $date);
-				$url->query->set('folder', self::TAG_ARINVOICE);
-			}
-
-			$event->return = $url->getUrl();
-		});
-
 		$this->addHook('Page(pw_template=ii-purchase-history)::documentsUrlApInvoice', function($event) {
 			$page      = $event->object;
 			$itemID    = $event->arguments(0);

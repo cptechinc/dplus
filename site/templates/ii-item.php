@@ -22,6 +22,7 @@
 		['GET',  'sales-orders', Ii::class, 'salesOrders'],
 		['GET',  'sales-history', Ii::class, 'salesHistory'],
 		['GET',  'quotes', Ii::class, 'quotes'],
+		['GET',  'purchase-orders', Ii::class, 'purchaseOrders'],
 	];
 
 	$router = new Mvc\Router();
