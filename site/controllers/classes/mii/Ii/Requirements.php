@@ -27,7 +27,6 @@ class Requirements extends IiFunction {
 			self::requestJson($data, session_id());
 			self::pw('session')->redirect($refreshurl = self::requirementsUrl($data->itemID), $http301 = false);
 		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
 		return self::requirements($data);
 	}
 
@@ -35,7 +34,6 @@ class Requirements extends IiFunction {
 		if (self::validateItemidPermission($data) === false) {
 			return self::alertInvalidItemPermissions($data);
 		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
 		self::sanitizeParametersShort($data, ['itemID|text']);
 
 		self::getData($data);

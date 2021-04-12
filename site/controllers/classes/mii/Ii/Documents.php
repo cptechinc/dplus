@@ -32,8 +32,6 @@ class Documents extends IiFunction {
 				self::pw('session')->redirect(self::pw('config')->url_webdocs.$data->document, $http301 = false);
 			}
 		}
-
-		self::pw('modules')->get('DpagesMii')->init_iipage();
 		return self::documents($data);
 	}
 
@@ -41,7 +39,6 @@ class Documents extends IiFunction {
 		if (self::validateItemidPermission($data) === false) {
 			return self::alertInvalidItemPermissions($data);
 		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
 		$fields = ['itemID|text'];
 		self::sanitizeParametersShort($data, $fields);
 

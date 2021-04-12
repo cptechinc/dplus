@@ -25,7 +25,6 @@ class Substitutes extends IiFunction {
 			self::requestJson($data);
 			self::pw('session')->redirect($refreshurl = self::substitutesUrl($data->itemID), $http301 = false);
 		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
 		return self::substitutes($data);
 	}
 
@@ -33,7 +32,6 @@ class Substitutes extends IiFunction {
 		if (self::validateItemidPermission($data) === false) {
 			return self::alertInvalidItemPermissions($data);
 		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
 		$data = self::sanitizeParametersShort($data, ['itemID|text']);
 
 		self::getData($data);

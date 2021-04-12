@@ -32,7 +32,6 @@ class PurchaseHistory extends IiFunction {
 			}
 			self::pw('session')->redirect(self::historyUrl($data->itemID, $data->date), $http301 = false);
 		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
 
 		if (empty($data->date) === false) {
 			return self::history($data);
@@ -44,7 +43,6 @@ class PurchaseHistory extends IiFunction {
 		if (self::validateItemidPermission($data) === false) {
 			return self::alertInvalidItemPermissions($data);
 		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
 		self::sanitizeParametersShort($data, ['itemID|text', 'date|text']);
 		self::getData($data);
 

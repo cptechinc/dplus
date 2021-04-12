@@ -25,7 +25,6 @@ class Stock extends IiFunction {
 			self::requestJson($data);
 			self::pw('session')->redirect(self::stockUrl($data->itemID), $http301 = false);
 		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
 		return self::stock($data);
 	}
 
@@ -33,7 +32,6 @@ class Stock extends IiFunction {
 		if (self::validateItemidPermission($data) === false) {
 			return self::alertInvalidItemPermissions($data);
 		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
 		self::sanitizeParametersShort($data, ['itemID|text']);
 
 		self::getData($data);

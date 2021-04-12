@@ -27,7 +27,6 @@ class Bom extends IiFunction {
 			self::requestJson($data, session_id());
 			self::pw('session')->redirect(self::bomUrl($data->itemID, $data->qty, $data->type), $http301 = false);
 		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
 
 		if (empty($data->qty) === false || empty($data->type) === false) {
 			return self::bom($data);
@@ -39,7 +38,6 @@ class Bom extends IiFunction {
 		if (self::validateItemidPermission($data) === false) {
 			return self::alertInvalidItemPermissions($data);
 		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
 		$data = self::sanitizeParametersShort($data, ['itemID|text', 'qty|int', 'type|text']);
 
 		self::getData($data);

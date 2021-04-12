@@ -38,7 +38,7 @@ class Item extends IiFunction {
 		if (self::validateUserPermission($data) === false) {
 			return self::alertInvalidItemPermissions($data);
 		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
+
 		if (empty($data->itemID) === false) {
 			if ($data->refresh) {
 				self::requestIiItem($data->itemID);
@@ -53,7 +53,6 @@ class Item extends IiFunction {
 		if (self::validateItemidPermission($data) === false) {
 			return self::alertInvalidItemPermissions($data);
 		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
 		self::sanitizeParametersShort($data, ['itemID|text']);
 
 		self::getData($data);
@@ -122,7 +121,6 @@ class Item extends IiFunction {
 		if (self::validateUserPermission($data) === false) {
 			return self::alertInvalidItemPermissions($data);
 		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
 		self::sanitizeParametersShort($data, ['q|text']);
 		$page = self::pw('page');
 		$pricingM = self::pw('modules')->get('ItemPricing');

@@ -30,8 +30,6 @@ class General extends IiFunction {
 			self::requestJson($data);
 			self::pw('session')->redirect(self::generalUrl($data->itemID), $http301 = false);
 		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
-
 		return self::general($data);
 	}
 
@@ -39,7 +37,6 @@ class General extends IiFunction {
 		if (self::validateItemidPermission($data) === false) {
 			return self::alertInvalidItemPermissions($data);
 		}
-		self::pw('modules')->get('DpagesMii')->init_iipage();
 		self::sanitizeParametersShort($data, ['itemID|text']);
 		self::getData($data);
 		$page = self::pw('page');
