@@ -74,6 +74,18 @@ class Documents extends IiFunction {
 		return $url->getUrl();
 	}
 
+	public static function documentsUrlQuote($itemID, $qnbr) {
+		$url = new Purl(self::documentsUrl($itemID, 'QT'));
+		$url->query->set('qnbr', $qnbr);
+		return $url->getUrl();
+	}
+
+	public static function documentsUrlQuote($itemID, $invnbr) {
+		$url = new Purl(self::documentsUrl($itemID, 'AP'));
+		$url->query->set('invnbr', $invnbr);
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	4. Data Retrieval
 ============================================================= */
@@ -83,6 +95,7 @@ class Documents extends IiFunction {
 ============================================================= */
 	public static function init() {
 		$m = self::pw('modules')->get('DpagesMii');
+
 		$m->addHook('Page(pw_template=ii-item)::documentUrl', function($event) {
 			$page     = $event->object;
 			$itemID   = $event->arguments(0);
@@ -90,7 +103,22 @@ class Documents extends IiFunction {
 			$document = $event->arguments(2);
 			$event->return = self::documentsUrl($itemID, $folder, $document);
 		});
+
+		$m->addHook('Page(pw_template=ii-item|ii-quotes)::documentsUrlQuote', function($event) {
+			$page     = $event->object;
+			$itemID   = $event->arguments(0);
+			$qnbr     = $event->arguments(1);
+			$event->return = self::documentsUrlQuote($itemID, $qnbr);
+		});
+
+		$m->addHook('Page(pw_template=ii-item)::documentsUrlApInvoice', function($event) {
+			$page     = $event->object;
+			$itemID   = $event->arguments(0);
+			$invnbr   = $event->arguments(1);
+			$event->return = self::documentsUrlApInvoice($itemID, $invnbr);
+		});
 	}
+
 	private static function createList($itemID) {
 		$list = new WireData();
 		$list->itemid = $itemID;
@@ -100,6 +128,7 @@ class Documents extends IiFunction {
 		$list->returnTitle = '';
 		return $list;
 	}
+
 	protected static function display($data) {
 		self::init();
 		self::sanitizeParametersShort($data, ['itemID|text', 'folder|text']);
@@ -114,21 +143,33 @@ class Documents extends IiFunction {
 				$docm = self::pw('modules')->get('DocumentManagementSo');
 				$list->title = "Sales Order #$data->ordn Documents";
 				$list->returnTitle = "Sales Orders";
+				// TODO: ii sales orders url
 				$list->returnUrl = self::pw('pages')->get('pw_template=ii-sales-orders')->url."?itemID=$data->itemID";
 				$list->documents = $docm->count_documents($data->ordn) ? $docm->get_documents($data->ordn) : [];
 				break;
 			case 'ACT': // Item Activity
 				self::sanitizeParametersShort($data, ['type|text', 'reference|text']);
 				$list->title = "$data->type $data->reference Documents";
+				$list->returnTitle = "Activity";
 				$list->documents = $docm->get_documents_activity($data->type, $data->reference);
-
 				$list->returnUrl = Activity::activityUrl($data->itemID);
 				break;
 			case 'QT':
-
+				self::sanitizeParametersShort($data, ['qnbr|qnbr']);
+				$docm = self::pw('modules')->get('DocumentManagementQt');
+				$list->title = "Quote #$data->qnbr Documents";
+				$list->returnTitle = "Quotes";
+				$list->documents = $docm->get_documents($data->qnbr);
+				// TODO: ii quotes
+				$list->returnUrl = self::pw('pages')->get('pw_template=ii-quotes')->url."?itemID=$data->itemID";
 				break;
 			case 'AP':
-
+				self::sanitizeParametersShort($data, ['invnbr|ponbr']);
+				$docm = self::pw('modules')->get('DocumentManagementPo');
+				$list->title = "AP Invoice #$data->invnbr Documents";
+				$list->returnTitle = "AP Invoices";
+				$list->documents = $docm->get_documents_invoice($data->invnbr);
+				$list->returnUrl = self::pw('pages')->get('pw_template=ii-purchase-history')->url."?itemID=$data->itemID";
 				break;
 			case 'PO':
 
