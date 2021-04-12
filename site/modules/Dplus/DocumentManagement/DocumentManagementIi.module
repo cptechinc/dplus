@@ -257,11 +257,10 @@ class DocumentManagementIi extends DocumentManagement implements Module {
 			$event->return = $this->get_ii_documentURL($itemID, $folder, $document);
 		});
 
-		$this->addHook('Page(pw_template=ii-sales-orders|ii-sales-history)::documentsview_salesorder', function($event) {
+		$this->addHook('Page(pw_template=ii-sales-orders|ii-sales-history)::documentsUrlSalesorder', function($event) {
 			$page      = $event->object;
 			$itemID    = $event->arguments(0);
 			$ordn      = $event->arguments(1);
-			$lotserial = $event->arguments(2);
 			$url = new Url($this->get_ii_docs_folderURL($itemID, self::TAG_SALESORDER));
 			$url->query->set('ordn', $ordn);
 
