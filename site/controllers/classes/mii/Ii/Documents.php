@@ -96,6 +96,13 @@ class Documents extends IiFunction {
 		return $url->getUrl();
 	}
 
+	public static function documentsUrlPurchaseorder($itemID, $ponbr) {
+		$url = new Purl(self::documentsUrl($itemID, 'PO'));
+		$url->query->set('ponbr', $ponbr);
+		return $url->getUrl();
+	}
+
+
 /* =============================================================
 	4. Data Retrieval
 ============================================================= */
@@ -157,11 +164,10 @@ class Documents extends IiFunction {
 			case 'PO':
 				self::sanitizeParametersShort($data, ['ponbr|ponbr']);
 				$docm = self::pw('modules')->get('DocumentManagementPo');
-				$list->title = "Purchase Order #$data->invnbr Documents";
+				$list->title = "Purchase Order #$data->ponbr Documents";
 				$list->returnTitle = "Purchase Orders";
 				$list->documents = $docm->get_documents_po($data->ponbr);
-				// TODO: ii purchase orders
-				$list->returnUrl = self::pw('pages')->get('pw_template=ii-purchase-history')->url."?itemID=$data->itemID";
+				$list->returnUrl = PurchaseOrders::ordersUrl($data->itemID);
 				break;
 			default:
 				$list->title = "";
@@ -185,13 +191,6 @@ class Documents extends IiFunction {
 			$folder   = $event->arguments(1);
 			$document = $event->arguments(2);
 			$event->return = self::documentsUrl($itemID, $folder, $document);
-		});
-
-		$m->addHook('Page(pw_template=ii-item)::documentsUrlQuote', function($event) {
-			$page     = $event->object;
-			$itemID   = $event->arguments(0);
-			$qnbr     = $event->arguments(1);
-			$event->return = self::documentsUrlQuote($itemID, $qnbr);
 		});
 
 		$m->addHook('Page(pw_template=ii-item)::documentsUrlApInvoice', function($event) {
