@@ -20,6 +20,7 @@
 		['GET',  'substitutes', Ii::class, 'substitutes'],
 		['GET',  'documents', Ii::class, 'documents'],
 		['GET',  'sales-orders', Ii::class, 'salesOrders'],
+		['GET',  'sales-history', Ii::class, 'salesHistory'],
 	];
 
 	$router = new Mvc\Router();

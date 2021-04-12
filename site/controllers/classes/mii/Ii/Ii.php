@@ -18,6 +18,7 @@ use Controllers\Mii\Ii\General;
 use Controllers\Mii\Ii\Substitutes;
 use Controllers\Mii\Ii\Documents;
 use Controllers\Mii\Ii\SalesOrders;
+use Controllers\Mii\Ii\SalesHistory;
 
 class Ii extends AbstractController {
 	const SUBFUNCTIONS = [
@@ -35,6 +36,7 @@ class Ii extends AbstractController {
 		'substitutes'  => 'Substitutes',
 		'documents'    => 'Documents',
 		'sales-orders' => 'Sales Orders',
+		'sales-history' => 'Sales History',
 	];
 
 	public static function item($data) {
@@ -95,6 +97,10 @@ class Ii extends AbstractController {
 
 	public static function salesOrders($data) {
 		return SalesOrders::index($data);
+	}
+
+	public static function salesHistory($data) {
+		return SalesHistory::index($data);
 	}
 
 	public static function init() {
