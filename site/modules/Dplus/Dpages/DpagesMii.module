@@ -38,10 +38,6 @@ class DpagesMii extends Dpages implements Module {
 			'name'   => 'ii-item',
 			'fields' => array(),
 		),
-		'ii-documents' => array(
-			'name'   => 'ii-documents',
-			'fields' => array(),
-		),
 		'ii-sales-orders' => array(
 			'name'   => 'ii-sales-orders',
 			'fields' => array(),
@@ -106,16 +102,6 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/',
 			'dplus_function' => 'ii',
 			'pw_template'    => 'ii-item'
-		),
-		'ii-documents' => array(
-			'template'       => 'ii-function',
-			'name'           => 'documents',
-			'title'          => 'Documents',
-			'summary'        => 'View Item Substitutes',
-			'parent'         => '/mii/ii/',
-			'dplus_function' => 'ii-doc',
-			'pw_template'    => 'ii-documents',
-			'jsoncode'       => 'ii-documents'
 		),
 		'ii-sales-orders' => array(
 			'template'       => 'ii-function',
@@ -327,10 +313,9 @@ class DpagesMii extends Dpages implements Module {
 		$this->addHook('Page::get_itemdocumentsURL', function($event) {
 			$p = $event->object;
 			$itemID = $event->arguments(0);
-			$url = new Url($p->parent('template=dplus-menu')->child('template=redir')->url);
-			$url->query->set('action','ii-documents');
+			$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+			$url->path->add('documents');
 			$url->query->set('itemID', $itemID);
-			$url->query->set('page', $p->fullURL->getUrl());
 			$event->return = $url->getUrl();
 		});
 

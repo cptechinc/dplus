@@ -22,15 +22,6 @@
 	*		IISELECT
 	*		ITEMID=$itemID
 	*		break;
-	*	case 'ii-documents':
-	* 		Request II Documents JSON file
-	* 		Response: Creates II Documents JSON file
-	*		DBNAME=$dplusdb
-	*		DOCVIEW
-	*		FLD1CD=IT
-	*		FLD1DATA=$itemID
-	*		FLD1DESC=$desc
-	*		break;
 	*	case 'ii-sales-orders':
 	* 		Request II Sales Orders JSON file
 	* 		Response: Creates II Sales Orders JSON file
@@ -59,17 +50,6 @@
 				$session->loc = $url->getUrl();
 			} else {
 				$url = $pages->get('pw_template=ii-item')->httpUrl."?itemID=$itemID";
-				$session->loc = $url;
-			}
-			break;
-		case 'ii-documents':
-			$desc = ItemMasterItemQuery::create()->select(ItemMasterItem::get_aliasproperty('desc'))->findOneByItemid($itemID);
-			$data = array("DBNAME=$dplusdb", 'DOCVIEW', "FLD1CD=IT", "FLD1DATA=$itemID", "FLD1DESC=$desc");
-
-			if ($input->$requestmethod->page) {
-				$session->loc = $input->$requestmethod->text('page');
-			} else {
-				$url = $pages->get('pw_template=ii-documents')->httpUrl."?itemID=$itemID";
 				$session->loc = $url;
 			}
 			break;
