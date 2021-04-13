@@ -6,9 +6,12 @@ use Propel\Runtime\ActiveQuery\Criteria;
 // Dplus Model
 use DocumentFolderQuery, DocumentFolder;
 use DocumentQuery, Document;
-use SalesOrderQuery, SalesOrder;
+use SalesOrderQuery, SalesOrder as SoModel;
+use PurchaseOrderQuery, PurchaseOrder as PoModel;
 // ProcessWire
 use ProcessWire\WireData;
+// Alias Doc Finders
+use Dplus\DocManagement\Finders as DocFinders;
 
 /**
  * Item Information Document Finder
@@ -167,12 +170,12 @@ class Ii extends Finder {
 
 		if (in_array($type, self::ACTIVITY_TYPES_SO)) {
 			$ref = $this->determine_reference($reference, self::PREFIX_REF_SO);
-			$ref = SalesOrder::get_paddedordernumber($ref);
+			$ref = SoModel::get_paddedordernumber($ref);
 			$finderSo = new DocFinders\SalesOrder();
 			$finderSo->filterSales($q, $ref);
 		} elseif (in_array($type, self::ACTIVITY_TYPES_PO)) {
 			$ref = $this->determine_reference($reference, self::PREFIX_REF_PO);
-			$ref = PurchaseOrder::get_paddedponumber($ref);
+			$ref = PoModel::get_paddedponumber($ref);
 			$finderPo = new DocFinders\PurchaseOrder();
 			$finderPo->filterInvoice($q, $ref);
 		} elseif (in_array($type, self::ACTIVITY_TYPES_WIP)) {
