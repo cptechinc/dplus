@@ -105,9 +105,9 @@ class DocumentManagementIi extends DocumentManagement implements Module {
 
 			if (in_array($type, self::ACTIVITY_TYPES_SO)) {
 				$ref = $this->determine_reference($reference, self::PREFIX_REF_SO);
-				$docs_query->filterByTag(self::TAG_SALESORDER);
 				$ref = SalesOrder::get_paddedordernumber($ref);
-				$docs_query->filterByReference1($ref);
+				$docm = $this->wire('modules')->get('DocumentManagementSo');
+				$docm->filter_sales($docs_query, $ref);
 			} elseif (in_array($type, self::ACTIVITY_TYPES_PO)) {
 				$ref = $this->determine_reference($reference, self::PREFIX_REF_PO);
 				$docs_query->filterByTag(self::TAG_VENDORPO);
@@ -201,7 +201,8 @@ class DocumentManagementIi extends DocumentManagement implements Module {
 	 * @return string
 	 */
 	public function get_ii_docs_folderURL($itemID, $folder) {
-		$url = new Url($this->wire('pages')->get('pw_template=ii-documents')->url);
+		$url = new Url($this->wire('pages')->get('pw_template=ii-item')->url);
+		$url->path->add('documents');
 		$url->query->set('itemID', $itemID);
 		$url->query->set('folder', $folder);
 		return $url->getUrl();
@@ -248,69 +249,6 @@ class DocumentManagementIi extends DocumentManagement implements Module {
 	}
 
 	public function init() {
-		$this->addHook('Page(pw_template=ii-documents)::documentload', function($event) {
-			$page     = $event->object;
-			$folder   = $event->arguments(0);
-			$document = $event->arguments(1);
-			$itemID   = $event->arguments(2);
-			$event->return = $this->get_ii_documentURL($itemID, $folder, $document);
-		});
-
-		$this->addHook('Page(pw_template=ii-sales-orders|ii-sales-history)::documentsview_salesorder', function($event) {
-			$page      = $event->object;
-			$itemID    = $event->arguments(0);
-			$ordn      = $event->arguments(1);
-			$lotserial = $event->arguments(2);
-			$url = new Url($this->get_ii_docs_folderURL($itemID, self::TAG_SALESORDER));
-			$url->query->set('ordn', $ordn);
-
-			if (SalesHistoryQuery::create()->filterByOrdernumber(SalesOrder::get_paddedordernumber($ordn))->count()) {
-				$date = $page->fullURL->query->get('date');
-				$url->query->set('date', $date);
-				$url->query->set('folder', self::TAG_ARINVOICE);
-			}
-
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page(pw_template=ii-quotes)::documentsview_quote', function($event) {
-			$page      = $event->object;
-			$itemID    = $event->arguments(0);
-			$qnbr      = $event->arguments(1);
-			$url = new Url($this->get_ii_docs_folderURL($itemID, self::TAG_QUOTE));
-			$url->query->set('qnbr', $qnbr);
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page(pw_template=ii-purchase-history)::documentsview_apinvoice', function($event) {
-			$page      = $event->object;
-			$itemID    = $event->arguments(0);
-			$invnbr    = $event->arguments(1);
-			$url = new Url($this->get_ii_docs_folderURL($itemID, self::TAG_APINVOICE));
-			$url->query->set('invnbr', $invnbr);
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page(pw_template=ii-purchase-orders)::documentsview_purchaseorder', function($event) {
-			$page      = $event->object;
-			$itemID    = $event->arguments(0);
-			$ponbr     = $event->arguments(1);
-			$url = new Url($this->get_ii_docs_folderURL($itemID, self::TAG_VENDORPO));
-			$url->query->set('ponbr', $ponbr);
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page(pw_template=ii-activity)::documentsview_activity', function($event) {
-			$page      = $event->object;
-			$itemID    = $event->arguments(0);
-			$type      = $event->arguments(1);
-			$reference = $event->arguments(2);
-
-			$url = new Url($this->get_ii_docs_folderURL($itemID, 'ACT'));
-			$url->query->set('type', $type);
-			$url->query->set('reference', $reference);
-			$event->return = $url->getUrl();
-		});
 
 		$this->addHook('Page(pw_template=ii-item)::item_image_exists', function($event) {
 			$page     = $event->object;

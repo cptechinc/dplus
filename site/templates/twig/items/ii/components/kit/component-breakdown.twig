@@ -1,0 +1,15 @@
+<h4> Components </h4>
+<table class="table table-sm">
+	<thead>
+		<th>Component</th>
+		<th>Description</th>
+		<th>Usage Rate</th>
+	</thead>
+	{% for component in components %}
+		<tr class="{{ component.has_usage() ? '' : 'bg-danger text-white' }}">
+			<td>{{ component.itemid }}</td>
+			<td>{{ component.item.description }}</td>
+			<td class="text-right">{{ component.usage }}</td>
+		</tr>
+	{% endfor %}
+</table>

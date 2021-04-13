@@ -20,7 +20,7 @@
 							{% if blueprint['detail']['rows'][x]['columns'][i] %}
 								{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 								{% set colspan = column['col-length'] %}
-								<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(properties['headingjustify']) }}">
+								<th colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(properties['headingjustify']) }}">
 									{{ column['label'] }}
 								</th>
 							{% else %}
@@ -44,12 +44,12 @@
 								{% if blueprint['detail']['rows'][x]['columns'][i] %}
 									{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 									{% set colspan = column['col-length'] %}
-									<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-										{{ module_formatter.format_celldata(order, column) }} &nbsp;
+									<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+										{{ formatter.format_celldata(order, column) }} &nbsp;
 
 										{% if order['Order Number'] and column['id'] == 'Order Number' %}
 											{% if docm.count_documents_po(order['Order Number']) %}
-												<a href="{{ page.documentsview_purchaseorder(itemID, order['Order Number'])}}" class="text-success" title="View Documents for PO # {{ order['Order Number'] }}">
+												<a href="{{ page.documentListUrl(item.itemid, order['Order Number'])}}" class="text-success" title="View Documents for PO # {{ order['Order Number'] }}">
 													<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for PO # {{ order['Order Number'] }}</span>
 												</a>
 											{% endif %}
@@ -77,8 +77,8 @@
 							{% if blueprint['detail']['rows'][x]['columns'][i] %}
 								{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 								{% set colspan = column['col-length'] %}
-								<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-									{{ module_formatter.format_celldata(order, column) }}
+								<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+									{{ formatter.format_celldata(order, column) }}
 								</td>
 							{% else %}
 								{% if columncount < blueprint['cols'] %}

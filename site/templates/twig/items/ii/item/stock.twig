@@ -36,7 +36,7 @@
 							<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
 								{% if json['columns']['Item ID'] %}
 									{% if column['id']|lower == 'item id' and item[column['id']] != json['itemid'] %}
-										<a href="{{ page.get_itempageURL(item[column['id']]) }}" class="link">
+										<a href="{{ page.itemUrl(item[column['id']]) }}" class="link">
 											{{ module_formatter.format_celldata(item, column) }}
 										</a>
 									{% else %}

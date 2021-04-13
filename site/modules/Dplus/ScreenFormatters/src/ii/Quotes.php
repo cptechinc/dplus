@@ -4,8 +4,8 @@ use Dplus\ScreenFormatters\ScreenFormatter;
 
 class Quotes extends ScreenFormatter {
 	const URI = 'ii:quotes';
-	
-	protected $code = 'ii-purchase-orders';
+
+	protected $code = 'ii-quotes';
 
 	/**
 	 * Key Value array of Sections that exist I.E. header => Header, detail => Detail
