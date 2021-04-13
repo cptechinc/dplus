@@ -142,6 +142,13 @@ class Ii extends AbstractController {
 			$event->return = $url->getUrl();
 		});
 
+		$m->addHook('Page(pw_template=ii-item)::subfunctionUrl', function($event) {
+			$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
+			$url->path->add($event->arguments(1));
+			$url->query->set('itemID', $event->arguments(0));
+			$event->return = $url->getUrl();
+		});
+
 		$m->addHook('Page(pw_template=ii-item)::subfunctionTitle', function($event) {
 			$title = $event->arguments(0);
 			if (array_key_exists($event->arguments(0), self::SUBFUNCTIONS)) {
