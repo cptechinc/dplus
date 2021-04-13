@@ -62,7 +62,7 @@ class Upcx extends AbstractController {
 		$html .= self::lockXref($page, $upcx, $xref);
 		$html .= $config->twig->render('items/upcx/form/page.twig', ['upcx' => $upcx, 'upc' => $xref]);
 		$page->js   .= $config->twig->render('items/upcx/form/js.twig', ['upc' => $xref]);
-		return $$html;
+		return $html;
 	}
 
 	public static function lockXref(Page $page, UpcCRUD $upcx, ItemXrefUpc $xref) {
