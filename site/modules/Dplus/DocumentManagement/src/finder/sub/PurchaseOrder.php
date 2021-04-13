@@ -85,23 +85,24 @@ class PurchaseOrder extends Finder {
 	 * @param  string         $invnbr  AP Invoice Number
 	 * @return DocumentQuery
 	 */
-	private function filterInvoice(DocumentQuery $q, $invnbr) {
+	public function filterInvoice(DocumentQuery $q, $invnbr) {
 		$this->initColumns();
 		$invnbr = PoModel::get_paddedponumber($invnbr);
 		$validate = new MpoValidator();
 		$conditions = array();
 
 		if ($validate->invoice($invnbr) === false) {
-			$conditons[] = $this->addConditionPo($q, $invnbr);
+			$this->addConditionPo($q, $invnbr);
 		}
 
 		if ($validate->invoice($invnbr)) {
 			$conditions[] = $this->addConditionInvoiceReference1($q, $invnbr);
 			$conditions[] = $this->addConditionInvoiceReference2($q, $invnbr);
 			$conditions[] = $this->addConditionInvoicePo($q, $invnbr);
+			$q->where($conditions, 'or');
 		}
 
-		$q->where($conditions, 'or');
+
 		return $q;
 	}
 
