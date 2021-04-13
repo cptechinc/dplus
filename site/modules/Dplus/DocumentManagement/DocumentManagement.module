@@ -9,6 +9,8 @@ use SalesHistoryQuery, SalesHistory;
 use SalesOrderQuery, SalesOrder;
 use PurchaseOrderQuery, PurchaseOrder;
 
+include_once(__DIR__.'/vendor/autoload.php');
+
 /**
  * Document Management
  *

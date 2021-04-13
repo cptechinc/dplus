@@ -247,19 +247,4 @@ class DocumentManagementIi extends DocumentManagement implements Module {
 			'requires' => 'DocumentManagement'
 		);
 	}
-
-	public function init() {
-
-		$this->addHook('Page(pw_template=ii-item)::item_image_exists', function($event) {
-			$page     = $event->object;
-			$itemID   = $event->arguments(0);
-			$event->return = $this->item_image_exists($itemID);
-		});
-
-		$this->addHook('Page(pw_template=ii-item)::item_imageURL', function($event) {
-			$page     = $event->object;
-			$itemID   = $event->arguments(0);
-			$event->return = $this->item_imageURL($itemID);
-		});
-	}
 }
