@@ -30,10 +30,10 @@ class Documents extends IiFunction {
 		}
 
 		if ($data->folder && $data->document) {
-			$docm = self::pw('modules')->get('DocumentManagementIi');
-			$docm->move_document($data->folder, $data->document);
+			$docm = self::getDocFinderIi();
+			$docm->moveDocument($data->folder, $data->document);
 
-			if ($docm->is_filewebaccessible($data->document)) {
+			if ($docm->isInWebDirectory($data->document)) {
 				self::pw('session')->redirect(self::pw('config')->url_webdocs.$data->document, $http301 = false);
 			}
 		}

@@ -133,7 +133,7 @@ class Activity extends IiFunction {
 			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['errormsg']]);
 		}
 		$page = self::pw('page');
-		$docm = self::pw('modules')->get('DocumentManagementIi');
+		$docm = Documents::getDocFinderIi();
 		$page->refreshurl   = self::activityUrl($data->itemID, $data->date, $refresh = true);
 		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
 		return $config->twig->render('items/ii/activity/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'module_json' => $jsonm->jsonm, 'docm' => $docm, 'date' => $data->date]);
