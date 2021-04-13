@@ -5,6 +5,8 @@ use Purl\Url as Purl;
 use Dplus\CodeValidators\Min as MinValidator;
 // Dplus Screen Formatters
 use Dplus\ScreenFormatters\Ii\SalesOrders as Formatter;
+// Alias Document Finders
+use Dplus\DocManagement\Finders as DocFinders;
 // Mvc Controllers
 use Controllers\Mii\IiFunction;
 
@@ -119,7 +121,7 @@ class SalesOrders extends IiFunction {
 		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
 		$formatter = new Formatter();
 		$formatter->init_formatter();
-		$docm = self::pw('modules')->get('DocumentManagementSo');
+		$docm = new DocFinders\SalesOrder;
 		return $config->twig->render('items/ii/sales-orders/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'module_json' => $jsonm->jsonm, 'docm' => $docm]);
 	}
 
