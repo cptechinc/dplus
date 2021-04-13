@@ -8,10 +8,14 @@ use Dplus\CodeValidators\Min as MinValidator;
 use Dplus\CodeValidators\Mso as MsoValidator;
 // Mvc Controllers
 use Controllers\Mii\IiFunction;
+// Alias Document Finders
+use Dplus\DocManagement\Finders as DocFinders;
 
 class Documents extends IiFunction {
 	const JSONCODE       = '';
 	const PERMISSION_IIO = '';
+
+	private static $docfinder;
 
 /* =============================================================
 	1. Indexes
@@ -102,6 +106,18 @@ class Documents extends IiFunction {
 		return $url->getUrl();
 	}
 
+	/**
+	 * Returns URL to Item Image
+	 * @param  string $itemID  Item ID
+	 * @return string
+	 */
+	public function itemImageUrl($itemID) {
+		$finderIi = self::getDocFinderIi();
+		$img = $finderIi->getItemImage($itemID);
+		$url = $this->wire('config')->url_images.$img;
+		return $url;
+	}
+
 
 /* =============================================================
 	4. Data Retrieval
@@ -114,14 +130,13 @@ class Documents extends IiFunction {
 		self::init();
 		self::sanitizeParametersShort($data, ['itemID|text', 'folder|text']);
 		$list = self::createList($data->itemID);
-
-		$docm = self::pw('modules')->get('DocumentManagementIi');
+		$docm = self::getDocFinderIi();
 
 		switch ($data->folder) {
 			case 'SO':
 			case 'AR':
 				self::sanitizeParametersShort($data, ['ordn|ordn', 'date|text']);
-				$docm = self::pw('modules')->get('DocumentManagementSo');
+				$docm = new DocFinders\SalesOrder();
 				$list->title = "Sales Order #$data->ordn Documents";
 
 				$validate = new MsoValidator();
@@ -135,13 +150,13 @@ class Documents extends IiFunction {
 					$list->returnUrl = SalesHistory::historyUrl($data->itemID, $data->date);
 				}
 
-				$list->documents = $docm->count_documents($data->ordn) ? $docm->get_documents($data->ordn) : [];
+				$list->documents = $docm->countDocuments($data->ordn) ? $docm->getDocuments($data->ordn) : [];
 				break;
 			case 'ACT': // Item Activity
 				self::sanitizeParametersShort($data, ['type|text', 'reference|text']);
 				$list->title = "$data->type $data->reference Documents";
 				$list->returnTitle = "Activity";
-				$list->documents = $docm->get_documents_activity($data->type, $data->reference);
+				$list->documents = $docm->getDocumentsActivity($data->type, $data->reference);
 				$list->returnUrl = Activity::activityUrl($data->itemID);
 				break;
 			case 'QT':
@@ -162,16 +177,16 @@ class Documents extends IiFunction {
 				break;
 			case 'PO':
 				self::sanitizeParametersShort($data, ['ponbr|ponbr']);
-				$docm = self::pw('modules')->get('DocumentManagementPo');
+				$docm = new DocFinders\PurchaseOrder();
 				$list->title = "Purchase Order #$data->ponbr Documents";
 				$list->returnTitle = "Purchase Orders";
-				$list->documents = $docm->get_documents_po($data->ponbr);
+				$list->documents = $docm->getDocumentsPo($data->ponbr);
 				$list->returnUrl = PurchaseOrders::ordersUrl($data->itemID);
 				break;
 			default:
 				$list->title = "";
 				$list->returnTitle = "";
-				$list->documents = $docm->get_documents_item($data->itemID);
+				$list->documents = $docm->getDocuments($data->itemID);
 				break;
 		}
 
@@ -191,6 +206,26 @@ class Documents extends IiFunction {
 			$document = $event->arguments(2);
 			$event->return = self::documentsUrl($itemID, $folder, $document);
 		});
+
+		$m->addHook('Page(pw_template=ii-item)::itemImageExists', function($event) {
+			$page     = $event->object;
+			$itemID   = $event->arguments(0);
+			$finderIi = self::getDocFinderIi();
+			$event->return = $finderIi->imageExists($itemID);
+		});
+
+		$m->addHook('Page(pw_template=ii-item)::itemImageUrl', function($event) {
+			$page     = $event->object;
+			$itemID   = $event->arguments(0);
+			$event->return = self::itemImageUrl($itemID);
+		});
+	}
+
+	public static function getDocFinderIi() {
+		if (empty(self::$docfinder)) {
+			self::$docfinder = new DocFinders\Ii();
+		}
+		return self::$docfinder;
 	}
 
 	private static function createList($itemID) {
