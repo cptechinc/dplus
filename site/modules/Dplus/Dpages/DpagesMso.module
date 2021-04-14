@@ -235,44 +235,6 @@ class DpagesMso extends Dpages implements Module {
 	);
 
 	public function init_salesorder_hooks() {
-
-		$this->addHook('Page::view_notesURL', function($event) {
-			$p = $event->object;
-			$ordn = $event->arguments(0);
-			$linenbr = $event->arguments(1);
-			$url = new Url($this->wire('pages')->get('pw_template=sales-order-notes')->url);
-			$url->query->set('ordn', $ordn);
-			$hash = $linenbr > 0 ? "#line-$linenbr" : '';
-			$event->return = $url->getUrl()."$hash";
-		});
-
-		$this->addHook('Page::edit_orderURL', function($event) {
-			$p = $event->object;
-			$ordn = $event->arguments(0);
-			$url = new Url($this->wire('pages')->get('pw_template=sales-order-edit')->url);
-			$url->query->set('ordn', $ordn);
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page::view_orderURL', function($event) {
-			$ordn = $event->arguments(0);
-			$event->return = $this->get_salesorder_viewURL($ordn);
-		});
-
-		$this->addHook('Page::unlock_orderURL', function($event) {
-			$ordn = $event->arguments(0);
-			$url = new Url($this->wire('pages')->get('pw_template=sales-order-edit')->url);
-			$url->query->set('action', 'unlock-order');
-			$url->query->set('ordn', $ordn);
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page::ii_itemURL', function($event) {
-			$p = $event->object;
-			$itemID = $event->arguments(0);
-			$event->return = $this->wire('modules')->get('DpagesMii')->get_ii_itemURL($itemID);
-		});
-
 		$this->addHook('Page::ci_customerURL', function($event) {
 			$p = $event->object;
 			$custID = $event->arguments(0);

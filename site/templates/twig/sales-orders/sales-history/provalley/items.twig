@@ -14,7 +14,7 @@
 		{% for detail in order.getSalesHistoryDetails() %}
 			<tr>
 				<td>
-					<a href="{{ page.ii_itemURL(detail.itemid)}}" class="link" target="_blank" aria-label="View item in II" title="View item in II">
+					<a href="{{ page.iiUrl(detail.itemid)}}" class="link" target="_blank" aria-label="View item in II" title="View item in II">
 						{{ detail.itemid }}
 					</a>
 					<br>
@@ -28,7 +28,7 @@
 				<td class="text-right">$ {{ detail.price|number_format(config.decimal_places_price) }}</td>
 				<td class="text-right">$ {{ detail.total_price|number_format(config.decimal_places_price) }}</td>
 				<td class="text-right">
-					<a href="{{ page.view_notesURL(order.ordernumber, detail.linenbr) }}" class="h4 {{ detail.has_notes() ? 'text-success' : 'text-muted'}}">
+					<a href="{{ page.orderNotesUrl(order.ordernumber, detail.linenbr) }}" class="h4 {{ detail.has_notes() ? 'text-success' : 'text-muted'}}">
 						<i class="fa fa-sticky-note" aria-hidden="true"></i>
 					</a>
 				</td>
