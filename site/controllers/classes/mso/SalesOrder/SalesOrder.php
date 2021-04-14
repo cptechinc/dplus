@@ -37,7 +37,7 @@ class SalesOrder extends Base {
 	}
 
 	public static function so($data) {
-		$data = self::sanitizeParametersShort($data, ['ordn|ordn']);
+		$data = self::sanitizeParametersShort($data, ['ordn|ordn', 'print|bool']);
 		$page = self::pw('page');
 		$config   = self::pw('config');
 		$validate = self::validator();
@@ -49,8 +49,8 @@ class SalesOrder extends Base {
 		if ($validate->orderAccess($data->ordn, self::pw('user')) === false) {
 			return self::soAccessDenied($data);
 		}
-		if ($page->print) {
-			self::pw('session')->redirect(self::pw('pages')->get('pw_template=sales-order-print')->url."?ordn=$data->ordn");
+		if ($data->print) {
+			self::pw('session')->redirect(self::orderPrintUrl($data->ordn), $http301 = false);
 		}
 		$page->headline = "Sales Order #$data->ordn";
 
@@ -165,6 +165,10 @@ class SalesOrder extends Base {
 
 		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderUrl', function($event) {
 			$event->return = self::orderUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderPrintUrl', function($event) {
+			$event->return = self::orderPrintUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderEditUrl', function($event) {
