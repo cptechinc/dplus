@@ -1,5 +1,6 @@
 <?php namespace Controllers\Mso\SalesOrder;
-
+// Purl URI Library
+use Purl\Url as Purl;
 // Dplus Model
 use ConfigSalesOrderQuery, ConfigSalesOrder as ConfigSo;
 // Alias Document Finders
@@ -53,6 +54,12 @@ abstract class Base extends AbstractController {
 		if ($ordn) {
 			$url->query->set('ordn', $ordn);
 		}
+		return $url->getUrl();
+	}
+
+	public static function orderPrintUrl($ordn) {
+		$url = new Purl(self::orderUrl($ordn));
+		$url->path->add('print');
 		return $url->getUrl();
 	}
 
