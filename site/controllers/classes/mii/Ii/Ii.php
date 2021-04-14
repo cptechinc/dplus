@@ -119,6 +119,14 @@ class Ii extends AbstractController {
 		return Sub\PurchaseHistory::index($data);
 	}
 
+	public static function iiUrl($itemID = '') {
+		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
+		if ($itemID) {
+			$url->query->set('itemID', $itemID);
+		}
+		return $url->getUrl();
+	}
+
 	public static function init() {
 		Documents::init();
 
@@ -158,9 +166,7 @@ class Ii extends AbstractController {
 		});
 
 		$m->addHook('Page(pw_template=ii-item)::itemUrl', function($event) {
-			$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
-			$url->query->set('itemID', $event->arguments(0));
-			$event->return = $url->getUrl();
+			$event->return = self::iiUrl($event->arguments(0));
 		});
 	}
 }

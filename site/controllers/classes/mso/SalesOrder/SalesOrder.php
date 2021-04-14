@@ -1,14 +1,13 @@
-<?php namespace Controllers\Mso;
+<?php namespace Controllers\Mso\SalesOrder;
 
 use stdClass;
+// Purl URI Library
+use Purl\Url as Purl;
 // Propel Query
-use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 // Dplus Model
-use SalesOrderQuery, SalesOrder as SalesOrderModel;
+use SalesOrderQuery, SalesOrder as SoModel;
 use SalesHistoryQuery, SalesHistory;
-use SalesOrderDetailQuery, SalesOrderDetail;
-use CustomerQuery, Customer;
 use ConfigSalesOrderQuery, ConfigSalesOrder as ConfigSo;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module;
@@ -18,12 +17,16 @@ use Dplus\DocManagement\Finders as DocFinders;
 use Dplus\CodeValidators\Mso as MsoValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+use Controllers\Mii\Ii;
 
-class SalesOrder extends AbstractController {
+class SalesOrder extends Base {
 	static $validate;
 	static $docm;
 	static $configSo;
 
+/* =============================================================
+	Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['ordn|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -33,13 +36,8 @@ class SalesOrder extends AbstractController {
 		}
 	}
 
-	public static function handleCRUD($data) {
-		$data = self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn']);
-		self::pw('session')->redirect(self::pw('input')->url(), $http301 = false);
-	}
-
 	public static function so($data) {
-		$data = self::sanitizeParametersShort($data, ['ordn|ordn']);
+		$data = self::sanitizeParametersShort($data, ['ordn|ordn', 'print|bool']);
 		$page = self::pw('page');
 		$config   = self::pw('config');
 		$validate = self::validator();
@@ -51,8 +49,8 @@ class SalesOrder extends AbstractController {
 		if ($validate->orderAccess($data->ordn, self::pw('user')) === false) {
 			return self::soAccessDenied($data);
 		}
-		if ($page->print) {
-			self::pw('session')->redirect(self::pw('pages')->get('pw_template=sales-order-print')->url."?ordn=$data->ordn");
+		if ($data->print) {
+			self::pw('session')->redirect(self::orderPrintUrl($data->ordn), $http301 = false);
 		}
 		$page->headline = "Sales Order #$data->ordn";
 
@@ -63,11 +61,12 @@ class SalesOrder extends AbstractController {
 			return self::saleshistory($data);
 		}
 
-		if ($validate->order($data->ordn)) {
-			return self::salesorder($data);
-		}
+		return self::salesorder($data);
 	}
 
+/* =============================================================
+	Displays
+============================================================= */
 	public static function saleshistory($data) {
 		$data = self::sanitizeParametersShort($data, ['ordn|ordn']);
 		$validate = self::validator();
@@ -127,7 +126,7 @@ class SalesOrder extends AbstractController {
 	/**
 	 * Render Twig Elements fo Sales Order
 	 * @param  ActiveRecordInterface|SalesOrder|SalesHistory $order  [description]
-	 * @param  stdClass              $data   [description]
+	 * @param  stdClass              $data
 	 * @param  Module                $qnotes
 	 * @param  array                 $twig   Twig array to append to
 	 * @return array
@@ -158,50 +157,34 @@ class SalesOrder extends AbstractController {
 		return $twig;
 	}
 
-	private static function invalidSo($data) {
-		$page   = self::pw('page');
-		$config = self::pw('config');
-		$page->headline = "Sales Order #$data->ordn not found";
-		$html = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Sales Order Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Order # $data->ordn can not be found"]);
-		$html .= '<div class="mb-3"></div>';
-		$html .= self::lookupForm();
-		return $html;
-	}
+/* =============================================================
+	Supplemental
+============================================================= */
+	public static function initHooks() { // TODO HOOKS for CI
+		$m = self::pw('modules')->get('DpagesMso');
 
-	private static function soAccessDenied($data) {
-		$page   = self::pw('page');
-		$config = self::pw('config');
-		$page->headline = "Access Denied";
-		$html = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Sales Order Access Denied', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You don't have access to Order # $data->ordn"]);
-		$html .= '<div class="mb-3"></div>';
-		$html .= self::lookupForm();
-		return $html;
-	}
+		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderUrl', function($event) {
+			$event->return = self::orderUrl($event->arguments(0));
+		});
 
-	private static function lookupForm() {
-		$config = self::pw('config');
-		$html = $config->twig->render('sales-orders/sales-order/lookup-form.twig');
-		return $html;
-	}
+		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderPrintUrl', function($event) {
+			$event->return = self::orderPrintUrl($event->arguments(0));
+		});
 
-	private static function validator() {
-		if (empty(self::$validate)) {
-			self::$validate = new MsoValidator();
-		}
-		return self::$validate;
-	}
+		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderEditUrl', function($event) {
+			$event->return = self::orderEditUrl($event->arguments(0));
+		});
 
-	public static function docm() {
-		if (empty(self::$docm)) {
-			self::$docm = new DocFinders\SalesOrder();
-		}
-		return self::$docm;
-	}
+		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderEditUnlockUrl', function($event) {
+			$event->return = self::orderEditUnlockUrl($event->arguments(0));
+		});
 
-	private static function configSo() {
-		if (empty(self::$configSo)) {
-			self::$configSo = self::pw('modules')->get('ConfigureSo')->config();
-		}
-		return self::$configSo;
+		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderNotesUrl', function($event) {
+			$event->return = self::orderNotesUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::iiUrl', function($event) {
+			$event->return = Ii::iiUrl($event->arguments(0));
+		});
 	}
 }

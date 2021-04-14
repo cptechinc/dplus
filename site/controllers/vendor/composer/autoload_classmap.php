@@ -69,8 +69,11 @@ return array(
     'Controllers\\Mpo\\EpoCreate' => $baseDir . '/classes/mpo/EpoCreate.php',
     'Controllers\\Mso\\Cxm' => $baseDir . '/classes/mso/Cxm.php',
     'Controllers\\Mso\\Eso' => $baseDir . '/classes/mso/Eso.php',
-    'Controllers\\Mso\\SalesOrder' => $baseDir . '/classes/mso/SalesOrder.php',
+    'Controllers\\Mso\\SalesOrder\\Base' => $baseDir . '/classes/mso/SalesOrder/Base.php',
     'Controllers\\Mso\\SalesOrder\\Documents' => $baseDir . '/classes/mso/SalesOrder/Documents.php',
+    'Controllers\\Mso\\SalesOrder\\Notes' => $baseDir . '/classes/mso/SalesOrder/Notes.php',
+    'Controllers\\Mso\\SalesOrder\\PrintSo' => $baseDir . '/classes/mso/SalesOrder/PrintSo.php',
+    'Controllers\\Mso\\SalesOrder\\SalesOrder' => $baseDir . '/classes/mso/SalesOrder/SalesOrder.php',
     'Controllers\\Mwm\\Menu' => $baseDir . '/classes/Mwm/Menu.php',
     'Controllers\\Wm\\Binr' => $baseDir . '/classes/Mwm/binr/Binr.php',
 );
