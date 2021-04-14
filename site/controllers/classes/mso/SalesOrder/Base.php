@@ -8,6 +8,7 @@ use Dplus\DocManagement\Finders as DocFinders;
 use Dplus\CodeValidators\Mso as MsoValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+use Controllers\Mii\Ii;
 
 abstract class Base extends AbstractController {
 	private static $validate;
