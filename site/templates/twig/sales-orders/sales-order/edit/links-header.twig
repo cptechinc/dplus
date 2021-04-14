@@ -7,7 +7,7 @@
 			<a href="{{ page.listpage.url }}" class="btn btn-light">
 				<i class="fa fa-list" aria-hidden="true"></i> View Sales Orders List
 			</a>
-			<a href="{{ page.unlock_orderURL(order.ordernumber) }}" class="btn btn-secondary" aria-label="View Order #{{ order.ordernumber }}">
+			<a href="{{ page.orderEditUnlockUrl(order.ordernumber) }}" class="btn btn-secondary" aria-label="View Order #{{ order.ordernumber }}">
 				View Order #{{ order.ordernumber }}
 			</a>
 		</div>
