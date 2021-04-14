@@ -2,10 +2,14 @@
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Mso\SalesOrder\SalesOrder as SalesOrderController;
 	use Controllers\Mso\SalesOrder\Documents;
+	use Controllers\Mso\SalesOrder\Notes;
+
+	SalesOrderController::initHooks();
 
 	$routes = [
 		['GET',  '', SalesOrderController::class, 'index'],
 		['GET',  'documents/', Documents::class, 'index'],
+		['GET',  'notes/', Notes::class, 'index'],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
