@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card mb-5">
 	{% block header %}
 		<div class="card-header">
 			<div class="row">
@@ -6,12 +6,12 @@
 					<strong>Item ID:</strong>
 				</div>
 				<div class="col-sm-6">
-					{{ item.itemid }} - {{ item.description }}
+					{{ item.itemid }} - {{ item.description }} - {{ item.description2 }}
 				</div>
 			</div>
 		</div>
 	{% endblock %}
-	
+
 	{% block body %}
 	{% endblock %}
 
