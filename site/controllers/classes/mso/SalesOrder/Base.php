@@ -45,6 +45,36 @@ abstract class Base extends AbstractController {
 	}
 
 /* =============================================================
+	URLs
+============================================================= */
+	public static function orderUrl($ordn = '') {
+		$url = new Purl(self::pw('pages')->get('pw_template=sales-order-view')->url);
+		if ($ordn) {
+			$url->query->set('ordn', $ordn);
+		}
+		return $url->getUrl();
+	}
+
+	public static function orderEditUrl($ordn) {
+		$url = new Purl(self::orderUrl($ordn));
+		$url->path->add('edit');
+		return $url->getUrl();
+	}
+
+	public static function orderEditUnlockUrl($ordn) {
+		$url = new Purl(self::orderEditUrl($ordn));
+		$url->query->set('action', 'unlock-order');
+		return $url->getUrl();
+	}
+
+	public static function orderNotesUrl($ordn, $linenbr = '') {
+		$url = new Purl(self::orderUrl($ordn));
+		$url->path->add('notes');
+		$hash = $linenbr > 0 ? "#line-$linenbr" : '';
+		return $url->getUrl().$hash;
+	}
+
+/* =============================================================
 	Supplemental
 ============================================================= */
 	/**
