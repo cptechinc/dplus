@@ -70,8 +70,9 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mpo\\EpoCreate' => __DIR__ . '/../..' . '/classes/mpo/EpoCreate.php',
         'Controllers\\Mso\\Cxm' => __DIR__ . '/../..' . '/classes/mso/Cxm.php',
         'Controllers\\Mso\\Eso' => __DIR__ . '/../..' . '/classes/mso/Eso.php',
-        'Controllers\\Mso\\SalesOrder' => __DIR__ . '/../..' . '/classes/mso/SalesOrder.php',
+        'Controllers\\Mso\\SalesOrder\\Base' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Base.php',
         'Controllers\\Mso\\SalesOrder\\Documents' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/Documents.php',
+        'Controllers\\Mso\\SalesOrder\\SalesOrder' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/SalesOrder.php',
         'Controllers\\Mwm\\Menu' => __DIR__ . '/../..' . '/classes/Mwm/Menu.php',
         'Controllers\\Wm\\Binr' => __DIR__ . '/../..' . '/classes/Mwm/binr/Binr.php',
     );
