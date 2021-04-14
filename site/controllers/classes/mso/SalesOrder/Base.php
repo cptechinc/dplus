@@ -13,6 +13,7 @@ abstract class Base extends AbstractController {
 	private static $validate;
 	private static $docm;
 	private static $configSo;
+	private static $filehasher;
 
 /* =============================================================
 	Displays
@@ -77,5 +78,16 @@ abstract class Base extends AbstractController {
 			self::$configSo = self::pw('modules')->get('ConfigureSo')->config();
 		}
 		return self::$configSo;
+	}
+
+	/**
+	 * Return Sales Order Config
+	 * @return ProcessWire\FileHasher
+	 */
+	protected static function getFileHasher() {
+		if (empty(self::$filehasher)) {
+			self::$filehasher = self::pw('modules')->get('FileHasher');
+		}
+		return self::$filehasher;
 	}
 }
