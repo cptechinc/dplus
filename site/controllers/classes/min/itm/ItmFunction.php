@@ -1,4 +1,6 @@
 <?php namespace Controllers\Min\Itm;
+// Purl URI Library
+use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Itm as ItmModel;
 // Validators
@@ -7,8 +9,13 @@ use Dplus\CodeValidators\Min as MinValidator;
 use Mvc\Controllers\AbstractController;
 
 class ItmFunction extends AbstractController {
+	const PERMISSION_ITMP = '';
+
 	private static $minvalidator;
 
+/* =============================================================
+	Validations
+============================================================= */
 	protected static function validateItemid($data) {
 		$data = self::sanitizeParametersShort($data, ['itemID|text']);
 		$wire = self::pw();
@@ -28,6 +35,9 @@ class ItmFunction extends AbstractController {
 		if ($user->has_function('itm') === false) {
 			return false;
 		}
+		if (static::PERMISSION_ITMP != '') {
+			return $itmp->isUserAllowed($user, static::PERMISSION_ITMP);
+		}
 		return $itmp->is_user_allowed_template($user, $page->pw_template);
 	}
 
@@ -45,10 +55,37 @@ class ItmFunction extends AbstractController {
 		return true;
 	}
 
+/* =============================================================
+	Display
+============================================================= */
 	protected static function breadCrumbs() {
 		return self::pw('config')->twig->render('items/itm/bread-crumbs.twig');
 	}
 
+/* =============================================================
+	URLs
+============================================================= */
+	public static function itmUrl($itemID = '') {
+		$url = new Purl(self::pw('pages')->get('pw_template=itm')->url);
+		if ($itemID) {
+			$url->query->set('itemID', $itemID);
+		}
+		return $url->getUrl();
+	}
+
+	public function itmUrlFunction($itemID, $function) {
+		$url = new Purl(self::itmUrl($itemID));
+		$url->path->add($function);
+		return $url->getUrl();
+	}
+
+	public function itmUrlCosting($itemID) {
+		return self::itmUrlFunction($itemID, 'costing');
+	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
 	/**
 	 * Return Itm
 	 * @return ItmModel
@@ -66,5 +103,21 @@ class ItmFunction extends AbstractController {
 			self::$minvalidator = new MinValidator();
 		}
 		return self::$minvalidator;
+	}
+
+	public static function initHooks() {
+		$m = self::pw('modules')->get('Itm');
+
+		$m->addHook('Page(pw_template=itm)::itemUrl', function($event) {
+			$event->return = self::itmUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=itm)::itmUrl', function($event) {
+			$event->return = self::itmUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=itm)::itmCostingUrl', function($event) {
+			$event->return = self::itmCostingUrl($event->arguments(0));
+		});
 	}
 }
