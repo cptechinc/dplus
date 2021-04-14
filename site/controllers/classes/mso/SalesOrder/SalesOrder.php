@@ -1,6 +1,8 @@
 <?php namespace Controllers\Mso\SalesOrder;
 
 use stdClass;
+// Purl URI Library
+use Purl\Url as Purl;
 // Propel Query
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 // Dplus Model
@@ -15,12 +17,16 @@ use Dplus\DocManagement\Finders as DocFinders;
 use Dplus\CodeValidators\Mso as MsoValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+use Controllers\Mii\Ii;
 
 class SalesOrder extends Base {
 	static $validate;
 	static $docm;
 	static $configSo;
 
+/* =============================================================
+	Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['ordn|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -55,11 +61,12 @@ class SalesOrder extends Base {
 			return self::saleshistory($data);
 		}
 
-		if ($validate->order($data->ordn)) {
-			return self::salesorder($data);
-		}
+		return self::salesorder($data);
 	}
 
+/* =============================================================
+	Displays
+============================================================= */
 	public static function saleshistory($data) {
 		$data = self::sanitizeParametersShort($data, ['ordn|ordn']);
 		$validate = self::validator();
@@ -148,5 +155,32 @@ class SalesOrder extends Base {
 		$twig['modals']      = $config->twig->render('sales-orders/sales-order/specialorder-modal.twig', ['ordn' => $data->ordn]);
 		$page->js   .= $config->twig->render('sales-orders/sales-order/specialorder-modal.js.twig', ['ordn' => $data->ordn]);
 		return $twig;
+	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	public static function initHooks() { // TODO HOOKS for CI
+		$m = self::pw('modules')->get('DpagesMso');
+
+		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderUrl', function($event) {
+			$event->return = self::orderUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderEditUrl', function($event) {
+			$event->return = self::orderEditUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderEditUnlockUrl', function($event) {
+			$event->return = self::orderEditUnlockUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderNotesUrl', function($event) {
+			$event->return = self::orderNotesUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::iiUrl', function($event) {
+			$event->return = Ii::iiUrl($event->arguments(0));
+		});
 	}
 }
