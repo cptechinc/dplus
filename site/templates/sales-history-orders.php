@@ -10,7 +10,7 @@
 		$filter->query->orderByDate_ordered('DESC');
 	}
 
-	$orders = $this->query->paginate($input->pageNum, 10);
+	$orders = $filter->query->paginate($input->pageNum, 10);
 
 	$page->body = $config->twig->render('sales-orders/sales-history/search-form.twig', ['page' => $page, 'input' => $input]);
 	$page->body .= $config->twig->render('sales-orders/sales-history/sales-history-list-links.twig', ['page' => $page, 'orders' => $orders, 'orderpage' => $pages->get('pw_template=sales-order-view')->url]);

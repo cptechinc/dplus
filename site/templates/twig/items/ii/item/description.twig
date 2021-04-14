@@ -27,10 +27,10 @@
 		{% endif %}
 	</div>
 
-	{% if page.item_image_exists(item.itemid) %}
+	{% if page.itemImageExists(item.itemid) %}
 		<div class="col-sm-4">
-			<a href="{{ page.item_imageURL(item.itemid) }}" class="image-link" target="_blank">
-				<img src="{{ page.item_imageURL(item.itemid) }}" alt="image of {{ item.itemid }}" height="200">
+			<a href="{{ page.itemImageUrl(item.itemid) }}" class="image-link" target="_blank">
+				<img src="{{ page.itemImageUrl(item.itemid) }}" alt="image of {{ item.itemid }}" height="200">
 			</a>
 		</div>
 	{% endif %}

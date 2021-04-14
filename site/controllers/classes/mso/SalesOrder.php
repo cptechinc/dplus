@@ -12,6 +12,8 @@ use CustomerQuery, Customer;
 use ConfigSalesOrderQuery, ConfigSalesOrder as ConfigSo;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module;
+// Alias Document Finders
+use Dplus\DocManagement\Finders as DocFinders;
 // Dplus Classes
 use Dplus\CodeValidators\Mso as MsoValidator;
 // Mvc Controllers
@@ -84,9 +86,9 @@ class SalesOrder extends AbstractController {
 		$twigloader = $config->twig->getLoader();
 
 		if ($twigloader->exists("sales-orders/sales-history/$config->company/items.twig")) {
-			$twig['items'] = $config->twig->render("sales-orders/sales-history/$config->company/items.twig", ['config' => self::configSo(), 'order' => $order, 'docm' => $docm]);
+			$twig['items'] = $config->twig->render("sales-orders/sales-history/$config->company/items.twig", ['config' => self::configSo(), 'order' => $order]);
 		} else {
-			$twig['items'] = $config->twig->render("sales-orders/sales-history/items.twig", ['config' => self::configSo(), 'order' => $order, 'docm' => $docm]);
+			$twig['items'] = $config->twig->render("sales-orders/sales-history/items.twig", ['config' => self::configSo(), 'order' => $order]);
 		}
 
 		$qnotes = self::pw('modules')->get('QnotesSalesHistory');
@@ -106,14 +108,14 @@ class SalesOrder extends AbstractController {
 		$order = SalesOrderQuery::create()->findOneByOrdernumber($data->ordn);
 		self::pw('page')->listpage = self::pw('pages')->get('pw_template=sales-orders');
 		$twig = [
-			'header' => $config->twig->render("sales-orders/sales-order/header-display.twig", ['config' => self::configSo(), 'order' => $order, 'docm' => self::docm()])
+			'header' => $config->twig->render("sales-orders/sales-order/header-display.twig", ['config' => self::configSo(), 'order' => $order])
 		];
 		$twigloader = $config->twig->getLoader();
 
 		if ($twigloader->exists("sales-orders/sales-order/$config->company/items.twig")) {
-			$twig['items'] = $config->twig->render("sales-orders/sales-order/$config->company/items.twig", ['config' => self::configSo(), 'order' => $order, 'docm' => self::docm()]);
+			$twig['items'] = $config->twig->render("sales-orders/sales-order/$config->company/items.twig", ['config' => self::configSo(), 'order' => $order]);
 		} else {
-			$twig['items'] = $config->twig->render("sales-orders/sales-order/items.twig", ['config' => self::configSo(), 'order' => $order, 'docm' => self::docm()]);
+			$twig['items'] = $config->twig->render("sales-orders/sales-order/items.twig", ['config' => self::configSo(), 'order' => $order]);
 		}
 
 		$qnotes = self::pw('modules')->get('QnotesSalesOrder');
@@ -139,9 +141,9 @@ class SalesOrder extends AbstractController {
 		}
 		$modules = self::pw('modules');
 		$config  = self::pw('config');
-		$page  = self::pw('page');
+		$page    = self::pw('page');
 		$docm    = self::docm();
-		$documents = $docm->get_documents($data->ordn);
+		$documents = $docm->getDocuments($data->ordn);
 
 		$module_useractions = $modules->get('FilterUserActions');
 		$query_useractions = $module_useractions->get_actionsquery(self::pw('input'));
@@ -189,9 +191,9 @@ class SalesOrder extends AbstractController {
 		return self::$validate;
 	}
 
-	private static function docm() {
+	public static function docm() {
 		if (empty(self::$docm)) {
-			self::$docm = self::pw('modules')->get('DocumentManagementSo');
+			self::$docm = new DocFinders\SalesOrder();
 		}
 		return self::$docm;
 	}
