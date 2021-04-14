@@ -15,12 +15,6 @@ class Notes extends Base {
 		if (empty($data->ordn)) {
 			return self::invalidSo($data);
 		}
-
-		if ($data->document && $data->folder) {
-			$docm = self::docm();
-			$docm->moveDocument($data->folder, $data->document);
-			self::pw('session')->redirect(self::pw('config')->url_webdocs.$data->document, $http301 = false);
-		}
 		return self::so($data);
 	}
 
