@@ -11,6 +11,7 @@ use ProcessWire\Page, ProcessWire\Module;
 use Dplus\CodeValidators\Mso as MsoValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+use Controllers\Mso\SalesOrder as SalesOrderController;
 
 class Documents extends AbstractController {
 	static $validate;
@@ -26,7 +27,8 @@ class Documents extends AbstractController {
 		}
 
 		if ($data->document && $data->folder) {
-			$docm->move_document($data->folder, $data->document);
+			$docm = self::docm();
+			$docm->moveDocument($data->folder, $data->document);
 			self::pw('session')->redirect(self::pw('config')->url_webdocs.$data->document, $http301 = false);
 		}
 		return self::so($data);
@@ -62,7 +64,7 @@ class Documents extends AbstractController {
 			return self::invalidSo($data);
 		}
 		$docm      = self::docm();
-		$documents = $docm->get_documents($data->ordn);
+		$documents = $docm->getDocuments($data->ordn);
 		$html      = $config->twig->render('sales-orders/sales-order/documents.twig', ['documents' => $documents]);
 		return $html;
 	}
@@ -103,7 +105,7 @@ class Documents extends AbstractController {
 
 	private static function docm() {
 		if (empty(self::$docm)) {
-			self::$docm = self::pw('modules')->get('DocumentManagementSo');
+			self::$docm = SalesOrderController::docm();
 		}
 		return self::$docm;
 	}
