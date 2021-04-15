@@ -4,87 +4,41 @@
 	page                   ProcessWire\Page
 	input                  ProcessWire\WireInput
 #}
+{% extends 'util/bread-crumbs.twig' %}
+
 {% set input = page.wire('input') %}
-<nav aria-label="breadcrumb" class="rounded-0 mb-4">
-	<ol class="breadcrumb">
-		{% for parent in page.parents() %}
-			{% if parent.pw_template == 'itm' %}
-				<li class="breadcrumb-item">
-					<i class="fa fa-list" aria-hidden="true"></i>
-					<a href="{{ parent.url }}">{{ parent.title }}</a>
-				</li>
-				<li class="breadcrumb-item">
-					<i class="fa fa-cubes" aria-hidden="true"></i>
-					<a href="{{ page.itmURL(input.get.text('itemID')) }}">{{ input.get.text('itemID') }}</a>
-				</li>
-			{% else %}
-				{% if parent.pw_template == 'itm-xrefs' %}
-					<li class="breadcrumb-item">
-						<i class="fa fa-arrows" aria-hidden="true"></i>
-						<a href="{{ page.itm_xrefsURL(input.get.text('itemID')) }}">{{ parent.title }}</a>
-					</li>
-				{% else %}
-					<li class="breadcrumb-item">
-						<i class="fa fa-list" aria-hidden="true"></i>
-						<a href="{{ parent.url }}">
-							{{ parent.has('dplus_function') ? parent.dplus_function|upper : parent.title }}
-						</a>
-					</li>
-				{% endif %}
-			{% endif %}
-		{% endfor %}
-		{% if page.pw_template == 'itm-whse' and input.get.text('whseID') %}
-			<li class="breadcrumb-item" aria-current="page">
-				<a href="{{ page.itm_warehouseURL(input.get.text('itemID')) }}">
-					{{ page.title }}
+{% set segments = input.urlSegments() %}
+{% set lastsegment = segments[segments|length] %}
+
+{% block current_page %}
+	<li class="breadcrumb-item">
+		<a href="{{ page.url }}">
+			<i class="fa fa-microchip" aria-hidden="true"></i> ITM
+		</a>
+	</li>
+	<li class="breadcrumb-item">
+		<a href="{{ page.itemUrl(input.get.text('itemID')) }}">
+			<i class="fa fa-cubes" aria-hidden="true"></i> {{ input.get.text('itemID') }}
+		</a>
+	</li>
+
+	{% if (segments|length == 1) %}
+		{% if lastsegment == 'warehouses' and input.get.text('whseID') %}
+			<li class="breadcrumb-item">
+				<a href="{{ page.itmUrlFunction(input.get.text('itemID'), lastsegment) }}">
+					{{ lastsegment|title }}
 				</a>
 			</li>
 			<li class="breadcrumb-item active" aria-current="page">
 				{{ input.get.text('whseID') }}
 			</li>
-		{% elseif page.pw_template == 'itm-xrefs-vxm' and input.get.text('vendoritemID') %}
-			<li class="breadcrumb-item" aria-current="page">
-				<a href="{{ page.itm_xrefs_vxmURL(input.get.text('itemID')) }}">
-					{{ page.title }}
-				</a>
-			</li>
-			<li class="breadcrumb-item active" aria-current="page">
-				{{ input.get.text('vendorID') }}: {{ input.get.text('vendoritemID') }}
-			</li>
-		{% elseif page.pw_template == 'itm-xrefs-cxm' and input.get.text('custitemID') %}
-			<li class="breadcrumb-item" aria-current="page">
-				<a href="{{ page.itm_xrefs_cxmURL(input.get.text('itemID')) }}">
-					CXM
-				</a>
-			</li>
-			{% if input.get.text('custitemID') == 'new' %}
-				<li class="breadcrumb-item active" aria-current="page">
-					Creating X-ref
-				</li>
-			{% else %}
-				<li class="breadcrumb-item active" aria-current="page">
-					{{ input.get.text('custID') }}: {{ input.get.text('custitemID') }}
-				</li>
-			{% endif %}
-		{% elseif page.pw_template == 'itm-xrefs' %}
-			<li class="breadcrumb-item active" aria-current="page">
-				<i class="fa fa-arrows" aria-hidden="true"></i>
-				{{ page.dplus_function ? page.dplus_function|upper : page.title }}
-			</li>
 		{% else %}
-			{% if input.get.offsetExists('itemID') and page.parent.pw_template != 'itm-xrefs' %}
-				<li class="breadcrumb-item" aria-current="page">
-					{{ page.dplus_function ? page.dplus_function|upper : page.title }}
-				</li>
-				<li class="breadcrumb-item active">
-					<i class="fa fa-cubes" aria-hidden="true"></i>
-					{{ input.get.text('itemID') }}
-				</li>
-			{% else %}
-				<li class="breadcrumb-item active" aria-current="page">
-					{{ page.dplus_function ? page.dplus_function|upper : page.title }}
-				</li>
-			{% endif %}
+			<li class="breadcrumb-item active" aria-current="page">
+				{{ lastsegment|title }}
+			</li>
 		{% endif %}
-	</ol>
-</nav>
+	{% endif %}
+
+
+
+{% endblock %}
