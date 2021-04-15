@@ -23,7 +23,6 @@ class Itmp extends WireData implements Module {
 		'itm-xrefs-vxm',
 		'itm-xrefs-cxm',
 		'itm-xrefs-mxrfe',
-		'itm-misc',
 		'itm-components',
 		'itm-kit',
 	];
@@ -34,7 +33,6 @@ class Itmp extends WireData implements Module {
 		'itm-xrefs-vxm'   => 'xrefs',
 		'itm-xrefs-cxm'   => 'xrefs',
 		'itm-xrefs-mxrfe' => 'xrefs',
-		'itm-misc'        => 'misc',
 		'itm-kit'         => 'xrefs',
 	];
 

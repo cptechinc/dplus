@@ -68,10 +68,6 @@ class DpagesMin extends Dpages implements Module {
 			'name'   => 'itm-validate',
 			'fields' => array()
 		),
-		'itm-misc' => array(
-			'name'   => 'itm-misc',
-			'fields' => array()
-		),
 		'itm-kit' => array(
 			'name'   => 'itm-kit',
 			'fields' => array()
@@ -320,15 +316,6 @@ class DpagesMin extends Dpages implements Module {
 			'name'           => 'search',
 			'title'          => 'Search',
 			'summary'        => 'Search ITM Items',
-			'parent'         => '/min/inmain/itm/',
-			'dplus_function' => ''
-		),
-		'itm-misc' => array(
-			'template'       => 'itm-function',
-			'pw_template'    => 'itm-misc',
-			'name'           => 'misc',
-			'title'          => 'Misc',
-			'summary'        => 'ITM Misc',
 			'parent'         => '/min/inmain/itm/',
 			'dplus_function' => ''
 		),

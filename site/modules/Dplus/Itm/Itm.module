@@ -33,7 +33,6 @@ class Itm extends WireData implements Module {
 		'itm-xrefs-vxm',
 		'itm-xrefs-cxm',
 		'itm-xrefs-mxrfe',
-		'itm-misc',
 		'itm-components',
 		'itm-kit',
 		'itm-function',
@@ -608,17 +607,6 @@ class Itm extends WireData implements Module {
 	public function get_itm_deleteURL($itemID) {
 		$url = new Url($this->wire('pages')->get("pw_template=itm")->url);
 		$url->query->set('action', 'delete-itm-item');
-		$url->query->set('itemID', $itemID);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to view / edit Item Misc
-	 * @param  string $itemID
-	 * @return string
-	 */
-	public function get_itm_miscURL($itemID) {
-		$url = new Url($this->wire('pages')->get("pw_template=itm-misc")->url);
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
