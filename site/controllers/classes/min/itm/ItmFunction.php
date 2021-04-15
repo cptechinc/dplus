@@ -73,18 +73,24 @@ class ItmFunction extends AbstractController {
 		return $url->getUrl();
 	}
 
-	public function itmUrlFunction($itemID, $function) {
+	public static function itmUrlFunction($itemID, $function) {
 		$url = new Purl(self::itmUrl($itemID));
 		$url->path->add($function);
 		return $url->getUrl();
 	}
 
-	public function itmUrlCosting($itemID) {
+	public static function itmUrlCosting($itemID) {
 		return self::itmUrlFunction($itemID, 'costing');
 	}
 
-	public function itmUrlPricing($itemID) {
+	public static function itmUrlPricing($itemID) {
 		return self::itmUrlFunction($itemID, 'pricing');
+	}
+
+	public static function itmUrlWhse($itemID, $whseID = '') {
+		$url = new Purl(self::itmUrlFunction($itemID, 'warehouses'));
+		$url->query->set('whseID', $whseID);
+		return $url->getUrl();
 	}
 
 /* =============================================================
@@ -126,6 +132,10 @@ class ItmFunction extends AbstractController {
 
 		$m->addHook('Page(pw_template=itm)::itmUrlPricing', function($event) {
 			$event->return = self::itmUrlPricing($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=itm)::itmUrlWhse', function($event) {
+			$event->return = self::itmUrlWhse($event->arguments(0), $event->arguments(1));
 		});
 	}
 }
