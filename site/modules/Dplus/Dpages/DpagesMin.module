@@ -40,10 +40,6 @@ class DpagesMin extends Dpages implements Module {
 			'name'   => 'itm',
 			'fields' => array()
 		),
-		'itm-pricing' => array(
-			'name'   => 'itm-pricing',
-			'fields' => array()
-		),
 		'itm-whse' => array(
 			'name'   => 'itm-whse',
 			'fields' => array()
@@ -267,15 +263,6 @@ class DpagesMin extends Dpages implements Module {
 			'summary'        => 'View / Edit Item',
 			'parent'         => '/min/inmain/',
 			'dplus_function' => 'itm'
-		),
-		'itm-pricing' => array(
-			'template'       => 'itm-function',
-			'pw_template'    => 'itm-pricing',
-			'name'           => 'pricing',
-			'title'          => 'Pricing',
-			'summary'        => 'View / Edit Item Pricing',
-			'parent'         => '/min/inmain/itm/',
-			'dplus_function' => ''
 		),
 		'itm-warehouse' => array(
 			'template'       => 'itm-function',
