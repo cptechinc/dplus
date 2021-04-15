@@ -83,6 +83,10 @@ class ItmFunction extends AbstractController {
 		return self::itmUrlFunction($itemID, 'costing');
 	}
 
+	public function itmUrlPricing($itemID) {
+		return self::itmUrlFunction($itemID, 'pricing');
+	}
+
 /* =============================================================
 	Supplemental
 ============================================================= */
@@ -116,8 +120,12 @@ class ItmFunction extends AbstractController {
 			$event->return = self::itmUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=itm)::itmCostingUrl', function($event) {
-			$event->return = self::itmCostingUrl($event->arguments(0));
+		$m->addHook('Page(pw_template=itm)::itmUrlCosting', function($event) {
+			$event->return = self::itmUrlCosting($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=itm)::itmUrlPricing', function($event) {
+			$event->return = self::itmUrlPricing($event->arguments(0));
 		});
 	}
 }

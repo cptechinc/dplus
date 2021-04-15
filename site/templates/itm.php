@@ -2,6 +2,7 @@
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Min\Itm\Itm as ItmController;
 	use Controllers\Min\Itm\Costing as CostingController;
+	use Controllers\Min\Itm\Pricing as PricingController;
 
 	ItmController::initHooks();
 
@@ -12,6 +13,10 @@
 		'costing' => [
 			['GET',  '', CostingController::class, 'index'],
 			['POST', '', CostingController::class, 'handleCRUD'],
+		],
+		'pricing' => [
+			['GET',  '', PricingController::class, 'index'],
+			['POST', '', PricingController::class, 'handleCRUD'],
 		]
 	];
 	$router = new Mvc\Router();
