@@ -248,6 +248,10 @@ class Lookup extends AbstractController {
 		$filter = new CountryCodeFilter();
 		$filter->init();
 		$page->headline = "Country Codes";
+		if ($data->q) {
+			$filter->search($data->q);
+			$page->headline = "Searching for $data->q";
+		}
 		self::filterResults($filter, $wire, $data);
 	}
 
