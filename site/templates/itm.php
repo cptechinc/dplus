@@ -4,6 +4,7 @@
 	use Controllers\Min\Itm\Costing as CostingController;
 	use Controllers\Min\Itm\Pricing as PricingController;
 	use Controllers\Min\Itm\Warehouse as WarehouseController;
+	use Controllers\Min\Itm\Misc as MiscController;
 
 	ItmController::initHooks();
 
@@ -23,6 +24,10 @@
 			['GET',  '', WarehouseController::class, 'index'],
 			['GET',  'page{d:\d+}', WarehouseController::class, 'list'],
 			['POST', '', WarehouseController::class, 'handleCRUD'],
+		],
+		'misc' => [
+			['GET',  '', MiscController::class, 'index'],
+			['POST', '', MiscController::class, 'handleCRUD'],
 		],
 	];
 	$router = new Mvc\Router();

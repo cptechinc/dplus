@@ -5,7 +5,7 @@
 	item                   ItemMasterItem
 	itm                    module ItmMisc
 #}
-<form action="{{ page.itm_miscURL(item.itemid) }}" class="mb-3" id="item-misc-form" method="post">
+<form action="{{ page.wire('input').url() }}" class="mb-3" id="item-misc-form" method="post">
 	<input type="hidden" name="action" value="update-itm-misc">
 	<input type="hidden" name="itemID" value="{{ item.itemid }}">
 
@@ -30,7 +30,7 @@
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 		{% endif %}
-		<a href="{{ page.itmURL(item.itemid) }}" class="btn btn-warning">
+		<a href="{{ page.itmUrl(item.itemid) }}" class="btn btn-warning">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
 		</a>
 	</div>

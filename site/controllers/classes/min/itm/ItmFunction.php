@@ -93,6 +93,10 @@ class ItmFunction extends AbstractController {
 		return $url->getUrl();
 	}
 
+	public static function itmUrlMisc($itemID) {
+		return self::itmUrlFunction($itemID, 'misc');
+	}
+
 /* =============================================================
 	Supplemental
 ============================================================= */
@@ -140,6 +144,10 @@ class ItmFunction extends AbstractController {
 
 		$m->addHook('Page(pw_template=itm)::itmUrlWhse', function($event) {
 			$event->return = self::itmUrlWhse($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=itm)::itmUrlMisc', function($event) {
+			$event->return = self::itmUrlPricing($event->arguments(0));
 		});
 	}
 }
