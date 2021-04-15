@@ -126,6 +126,10 @@ class ItmFunction extends AbstractController {
 			$event->return = self::itmUrl($event->arguments(0));
 		});
 
+		$m->addHook('Page(pw_template=itm)::itmUrlFunction', function($event) {
+			$event->return = self::itmUrlFunction($event->arguments(0), $event->arguments(1));
+		});
+
 		$m->addHook('Page(pw_template=itm)::itmUrlCosting', function($event) {
 			$event->return = self::itmUrlCosting($event->arguments(0));
 		});
