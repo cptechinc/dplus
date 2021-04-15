@@ -18,7 +18,6 @@ class Itmp extends WireData implements Module {
 
 	const TEMPLATES_ITM = [
 		'itm',
-		'itm-whse',
 		'itm-xrefs',
 		'itm-xrefs-upcx',
 		'itm-xrefs-vxm',
@@ -30,7 +29,6 @@ class Itmp extends WireData implements Module {
 	];
 
 	const TEMPLATES_PERMISSIONS = [
-		'itm-whse'        => 'whse',
 		'itm-xrefs'       => 'xrefs',
 		'itm-xrefs-upcx'  => 'xrefs',
 		'itm-xrefs-vxm'   => 'xrefs',
