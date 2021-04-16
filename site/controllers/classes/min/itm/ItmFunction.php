@@ -97,6 +97,10 @@ class ItmFunction extends AbstractController {
 		return self::itmUrlFunction($itemID, 'misc');
 	}
 
+	public static function itmUrlXrefs($itemID) {
+		return self::itmUrlFunction($itemID, 'xrefs');
+	}
+
 /* =============================================================
 	Supplemental
 ============================================================= */
@@ -148,6 +152,10 @@ class ItmFunction extends AbstractController {
 
 		$m->addHook('Page(pw_template=itm)::itmUrlMisc', function($event) {
 			$event->return = self::itmUrlPricing($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=itm)::itmUrlXrefs', function($event) {
+			$event->return = self::itmUrlXref($event->arguments(0));
 		});
 	}
 }

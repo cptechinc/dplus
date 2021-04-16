@@ -5,6 +5,7 @@
 	use Controllers\Min\Itm\Pricing as PricingController;
 	use Controllers\Min\Itm\Warehouse as WarehouseController;
 	use Controllers\Min\Itm\Misc as MiscController;
+	use Controllers\Min\Itm\Xrefs as XrefsController;
 
 	ItmController::initHooks();
 
@@ -28,6 +29,10 @@
 		'misc' => [
 			['GET',  '', MiscController::class, 'index'],
 			['POST', '', MiscController::class, 'handleCRUD'],
+		],
+		'xrefs' => [
+			['GET',  '', XrefsController::class, 'index'],
+			['POST', '', XrefsController::class, 'handleCRUD'],
 		],
 	];
 	$router = new Mvc\Router();
