@@ -302,8 +302,10 @@ class XrefCxm extends WireData implements Module {
 			$response = XrefResponse::response_error($record->itemid, $message);
 		} else {
 			$record = $this->get_create_xref_shortitem($itemID, $custitemID);
+			$record->setCustitemid($custitemID);
+			
 			if ($record->isNew() === false) {
-				$record->delete_recreate_record($record);
+				$this->delete_recreate_record($record);
 			}
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
