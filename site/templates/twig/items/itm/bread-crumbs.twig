@@ -17,7 +17,7 @@
 		</a>
 	</li>
 	<li class="breadcrumb-item">
-		<a href="{{ page.itemUrl(input.get.text('itemID')) }}">
+		<a href="{{ page.itmUrl(input.get.text('itemID')) }}">
 			<i class="fa fa-cubes" aria-hidden="true"></i> {{ input.get.text('itemID') }}
 		</a>
 	</li>
@@ -34,6 +34,9 @@
 			</li>
 		{% else %}
 			<li class="breadcrumb-item active" aria-current="page">
+				{% if lastsegment == 'xrefs' %}
+					<i class="fa fa-arrows" aria-hidden="true"></i>
+				{% endif %}
 				{{ lastsegment|title }}
 			</li>
 		{% endif %}
