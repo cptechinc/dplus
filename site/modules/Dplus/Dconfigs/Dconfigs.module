@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+include_once(__DIR__.'/vendor/autoload.php');
+
 /**
  * Class for Hosting, Installing Dplus Configure Modules
  * NOTE: These configs handle Distribution Plus Config records which

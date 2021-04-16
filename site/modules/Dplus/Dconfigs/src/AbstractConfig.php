@@ -1,8 +1,11 @@
 <?php namespace Dplus\Configs;
 
+use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
+use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Model;
 
-Abstract class AbstractConfig {
-	const MODEL = 'ConfigCi';
+
+abstract class AbstractConfig {
+	const MODEL = '';
 
 	/**
 	 * Return New Query Class
@@ -15,10 +18,10 @@ Abstract class AbstractConfig {
 
 	/**
 	 * Return Config Record
-	 * @return ConfigCi
+	 * @return Model
 	 */
 	public static function config() {
-		return $this->query()->findOne();
+		return static::query()->findOne();
 	}
 
 	/**
