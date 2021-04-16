@@ -185,10 +185,10 @@ class ItmWarehouse extends WireData implements Module {
 			case 'update-notes':
 				$this->wire('modules')->get('QnotesItemWhseOrder')->process_input($input);
 				break;
-			case 'delete-itm-whse':
+			case 'delete-whse':
 				$this->input_delete($input);
 				break;
-			case 'update-itm-whse':
+			case 'update-whse':
 				$this->input_update($input);
 				break;
 		}

@@ -1,6 +1,6 @@
 <?php namespace Controllers\Min\Itm;
 // External Libraries, classes
-Use Purl\Url;
+Use Purl\Url as Purl;
 // ProcessWire classes, modules
 use ProcessWire\Page, ProcessWire\Itm as ItmModel;
 // Validators
@@ -42,7 +42,7 @@ class Itm extends ItmFunction {
 		}
 		$fields = ['itemID|text', 'action|text'];
 		$data  = self::sanitizeParameters($data, $fields);
-		$url   = new Url($input->url($withQueryString = true));
+		$url   = new Purl($input->url($withQueryString = true));
 		$url->query->set('itemID', $data->itemID);
 		$url->query->remove('action');
 

@@ -1,16 +1,11 @@
-<div class="card">
-	<div class="card-header">
-		<div class="row">
-			<div class="col-sm-2">
-				<strong>Item ID:</strong>
-			</div>
-			<div class="col-sm-6">
-				{{ item.itemid ? item.itemid : 'NEW' }}
-			</div>
-		</div>
-	</div>
+{% extends 'items/itm/display.twig' %}
+
+{% block body %}
 	<div class="card-body">
 		{% include 'items/itm/form/form.twig' %}
 	</div>
-</div>
-<hr>
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}

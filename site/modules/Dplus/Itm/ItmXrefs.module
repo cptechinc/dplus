@@ -54,7 +54,7 @@ class ItmXrefs extends WireData implements Module {
 		} else {
 			$response = ItmResponse::response_error($itemID, "No Action was specified");
 		}
-		$this->wire('session')->response_itm = $response;
+		$this->wire('session')->setFor('response', 'itm', $response);
 	}
 
 	/**
@@ -76,15 +76,16 @@ class ItmXrefs extends WireData implements Module {
 			$itm->lockrecord($itemID);
 		}
 
-
 		if ($record->isNew() || $itm->recordlocker->function_locked_by_user($itemID)) {
 			if ($values->text('action') == 'update-itm-xrefs') {
 				$record->setSupercededby(strtoupper($values->text('supercededby')));
 
-				if ($itm->item_exists($values->text('supercededby'))) {
-					$response_itm = $itm->save_and_respond($record);
-				} else {
-					$response_itm = ItmResponse::response_error($record->itemid, "Supercede Item $record->supercededby does not exist");
+				if (strlen($values->text('supercededby'))) {
+					if ($itm->item_exists($values->text('supercededby'))) {
+						$response_itm = $itm->save_and_respond($record);
+					} else {
+						$response_itm = ItmResponse::response_error($record->itemid, "Supercede Item $record->supercededby does not exist");
+					}
 				}
 
 				$this->send_cxm_update($input);
@@ -113,10 +114,10 @@ class ItmXrefs extends WireData implements Module {
 		$values = $input->$rm;
 		$itemID = strtoupper($values->text('itemID'));
 
-		if (!$cxm->xref_shortitem_exists($itemID) ||$cxm->xref_shortitem($itemID)->custitemid != $values->text('cxm_custitemid')) {
-			$data_cxm = array('action' => 'update-cxm-shortitem', 'itemID' => $itemID, 'custitemid' => $values->text('cxm_custitemid'));
+		if (!$cxm->xref_shortitem_exists($itemID) || $cxm->xref_shortitem($itemID)->custitemid != $values->text('cxm_custitemid')) {
+			$data = array('action' => 'update-cxm-shortitem', 'itemID' => $itemID, 'custitemid' => $values->text('cxm_custitemid'));
 			$input_cxm = new WireInput();
-			$input_cxm->$rm->setArray($data_cxm);
+			$input_cxm->$rm->setArray($data);
 			$cxm->process_input($input_cxm);
 		}
 	}

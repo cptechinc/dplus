@@ -5,6 +5,8 @@ use ProcessWire\WireData, ProcessWire\Page;
 use Controllers\Min\Itm\ItmFunction;
 
 class Xrefs extends ItmFunction {
+	const PERMISSION_ITMP = 'xrefs';
+
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -31,11 +33,12 @@ class Xrefs extends ItmFunction {
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParameters($data, $fields);
 		$input = self::pw('input');
+
 		if ($data->action) {
 			$itmXrefs = self::pw('modules')->get('ItmXrefs');
 			$itmXrefs->process_input($input);
 		}
-		self::pw('session')->redirect(self::pw('page')->itm_xrefsURL($data->itemID), $http301 = false);
+		self::pw('session')->redirect(self::itmUrlXrefs($data->itemID), $http301 = false);
 	}
 
 	public static function itmXrefs($data) {
@@ -60,8 +63,11 @@ class Xrefs extends ItmFunction {
 		}
 		$page->headline = "ITM: $data->itemID X-refs";
 		$html .= self::breadCrumbs();
+		if ($session->getFor('response', 'itm')) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
+		}
 		$html .= Itm::lockItem($data->itemID);
-		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page->parent]);
+		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page]);
 		$html .= $config->twig->render('items/itm/xrefs/page.twig', ['itm' => $itm, 'item' => $item, 'xrefs' => $xrefs]);
 		$page->js   .= $config->twig->render('items/itm/xrefs/js.twig');
 		return $html;

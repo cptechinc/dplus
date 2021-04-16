@@ -4,7 +4,7 @@
 	warehouse              WarehouseInventory
 	m_whse                 module ItmWarehouse
 #}
-<form action="{{ page.url }}" method="post" id="item-whse-form">
+<form action="{{ page.wire('input').url() }}" method="post" id="item-whse-form">
 	<input type="hidden" name="itemID" value="{{ warehouse.itemid }}">
 	<div class="row mb-3">
 		<div class="col-sm-8">
@@ -157,17 +157,17 @@
 			NOTE: Only show delete if warehouse already exists.
 		#}
 		{% if m_whse.recordlocker.function_locked_by_user(m_whse.get_warehouseitem_lockkey(warehouse)) or warehouse.isNew() %}
-			<button type="submit" class="btn btn-success form_button" name="action" value="update-itm-whse">
+			<button type="submit" class="btn btn-success form_button" name="action" value="update-whse">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 			{% if warehouse.isNew() == false %}
-				<a href="{{ page.itm_warehouse_deleteURL(warehouse.itemid, warehouse.warehouseid) }}" class="btn btn-danger form_button delete_button">
+				<a href="{{ page.itmUrlWhseDelete(warehouse.itemid, warehouse.warehouseid) }}" class="btn btn-danger form_button delete_button">
 					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}
 		{% endif %}
 
-		<a href="{{ page.itm_warehouseURL(warehouse.itemid) }}" class="btn btn-warning">
+		<a href="{{ page.itmUrlWhse(warehouse.itemid) }}" class="btn btn-warning">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
 		</a>
 	</div>

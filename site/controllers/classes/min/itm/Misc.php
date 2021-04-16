@@ -7,6 +7,8 @@ use ProcessWire\Page, ProcessWire\ItmMisc as MiscCRUD;
 use Controllers\Min\Itm\ItmFunction;
 
 class Misc extends ItmFunction {
+	const PERMISSION_ITMP = 'misc';
+	
 	private static $misc;
 
 	public static function index($data) {
@@ -45,7 +47,7 @@ class Misc extends ItmFunction {
 			$itmMiscisc->process_input($input);
 		}
 
-		self::pw('session')->redirect(self::pw('page')->itm_miscURL($data->itemID), $http301 = false);
+		self::pw('session')->redirect(self::itmUrlMisc($data->itemID), $http301 = false);
 	}
 
 	public static function misc($data) {
@@ -71,7 +73,7 @@ class Misc extends ItmFunction {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
 		}
 		$html .= Itm::lockItem($data->itemID);
-		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page->parent]);
+		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page]);
 		$html .= $config->twig->render('items/itm/misc/page.twig', ['itm' => $itmMisc, 'item' => $item, 'recordlocker' => $itm->recordlocker]);
 		$page->js   .= $config->twig->render('items/itm/misc/js.twig', ['itm' => $itmMisc]);
 		return $html;
