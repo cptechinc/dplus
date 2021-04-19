@@ -127,7 +127,7 @@ class PoAmendItems extends WireData {
 		$values = $input->$rm;
 		$q = $this->query($values->text('ponbr'));
 		$count_before = $q->count();
-		$this->request_add_item($values->text('ponbr'), $values->text('itemID'), $values->int('qty'));
+		$this->request_add_item($values->text('ponbr'), $values->text('itemID'), $values->int('qty'), $values->float('cost'));
 		$count_after = $q->count();
 
 		if ($count_after > $count_before) {
@@ -187,14 +187,14 @@ class PoAmendItems extends WireData {
 	 * @param string $ponbr  Purchase Order Number
 	 * @param string $itemID Item ID
 	 * @param int    $qty    Qty
+	 * @param float  $cost   Cost
 	 */
-	public function request_add_item($ponbr, $itemID, int $qty = 1) {
-		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
-		$data = array("DBNAME=$dplusdb", 'ADDPURCHASEORDERLINE', "PONBR=$ponbr", "ITEMID=$itemID", "QTY=$qty");
-		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
+	public function request_add_item($ponbr, $itemID, int $qty = 1, $cost = 0.0) {
+		$data = array('ADDPURCHASEORDERLINE', "PONBR=$ponbr", "ITEMID=$itemID", "QTY=$qty");
+		if ($cost) {
+			$data[] = "COST=$cost";
+		}
+		$this->request_dplus($data);
 	}
 
 	/**
@@ -204,11 +204,16 @@ class PoAmendItems extends WireData {
 	 * @return void
 	 */
 	public function request_update_item($ponbr, int $linenbr = 0) {
+		$data = array('SAVEPURCHASEORDERLINE', "PONBR=$ponbr", "LINE=$linenbr");
+		$this->request_dplus($data);
+	}
+
+	protected function request_dplus(array $data) {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
-		$data = array("DBNAME=$dplusdb", 'SAVEPURCHASEORDERLINE', "PONBR=$ponbr", "LINE=$linenbr");
+		$data = array_merge(["DBNAME=$dplusdb"], $data);
 		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, session_id());
+		$requestor->write_dplusfile($data, $this->sessionID);
 		$requestor->cgi_request($config->cgis['default'], $this->sessionID);
 	}
 

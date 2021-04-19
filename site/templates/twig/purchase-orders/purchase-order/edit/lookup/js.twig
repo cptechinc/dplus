@@ -66,6 +66,11 @@ $(function() {
 				}
 				$('.descriptions').addClass('show');
 				form_additem.find('.uom').text(item.uom_purchase);
+				var cost = item.standardcost;
+				if (item.lastcost) {
+					cost = item.lastcost;
+				}
+				form_additem.find('input[name=cost]').val(cost);
 				callback(true);
 			} else {
 				callback(false);
@@ -137,7 +142,7 @@ $(function() {
 	 */
 	function get_itm_item(itemID, callback) {
 		var url = new URI('{{ page.jsonapiURL('inv/item/') }}');
-		url.addQuery('itemID', itemID).addQuery('fields', 'uom_purchase,weight');
+		url.addQuery('itemID', itemID).addQuery('fields', 'uom_purchase,weight,lastcost,standardcost');
 
 		$.getJSON(url.toString(), function(item) {
 			callback(item);
