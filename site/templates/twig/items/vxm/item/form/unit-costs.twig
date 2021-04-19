@@ -23,7 +23,7 @@
 			</td>
 			<td>
 				{% include 'util/form/input.twig' with {
-						'name': 'unitcost_base', 'value': item.unitcost_base|number_format(vxm.field_attribute('unit_cost', 'precision')),
+						'name': 'unitcost_base', 'value': (item.unitcost_base * item.uompurchase.conversion)|number_format(vxm.field_attribute('unit_cost', 'precision')),
 						'type': 'number',
 						'class_add': [
 							'unit-cost',
@@ -79,7 +79,7 @@
 				</td>
 				<td>
 					{% include 'util/form/input.twig' with {
-							'name': 'unit_cost' ~ i, 'value': item.get_unitcost(i)|number_format(vxm.field_attribute('unit_cost', 'precision')),
+							'name': 'unit_cost' ~ i, 'value': (item.get_unitcost(i) * item.uompurchase.conversion)|number_format(vxm.field_attribute('unit_cost', 'precision')),
 							'type': 'number',
 							'class_add': [
 								'unit-cost',
