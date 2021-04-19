@@ -1,8 +1,11 @@
 <?php namespace ProcessWire;
-
+// Propel ORM Library
 use Propel\Runtime\ActiveQuery\Criteria;
-
+// Dplus Models
 use ItemMasterItemQuery, ItemMasterItem;
+// Dplus Validators
+use Dplus\CodeValidators\Min as MinValidator;
+
 
 /**
  * Load
@@ -29,9 +32,9 @@ class LoadItem extends WireData implements Module {
 	 */
 	public function get_item($itemID) {
 		$this->itemID = $itemID;
-		$validator = $this->wire('modules')->get('LookupItem');
+		$validate = new MinValidator();
 
-		if ($validator->lookup_itm($itemID)) {
+		if ($validate->itemid($itemID)) {
 			return ItemMasterItemQuery::create()->findOneByItemid($itemID);
 		}
 	}
@@ -44,9 +47,9 @@ class LoadItem extends WireData implements Module {
 	 */
 	public function get_item_array($itemID, array $fields) {
 		$this->itemID = $itemID;
-		$validator = $this->wire('modules')->get('LookupItem');
+		$validate = new MinValidator();
 
-		if ($validator->lookup_itm($itemID)) {
+		if ($validator->itemid($itemID)) {
 			$item = $this->get_item($itemID);
 			$this->generate_item_array($item, $fields);
 		}
@@ -113,7 +116,7 @@ class LoadItem extends WireData implements Module {
 			'singular' => true,
 			'autoload' => true,
 			'installs' => array(),
-			'requires' => array('LookupItem')
+			'requires' => array()
 		);
 	}
 }

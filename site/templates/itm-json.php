@@ -1,11 +1,12 @@
 <?php
-	$lookup_item = $modules->get('LookupItem');
+	use Dplus\CodeValidators\Min as MinValidator;
+	$validate = new MinValidator();
 	$itemID = strtoupper($input->get->text('itemID'));
 
 	$response = array('error' => false);
 
 	if ($input->get->itemID) {
-		if ($lookup_item->lookup_itm($itemID)) {
+		if ($validate->itemid($itemID)) {
 			$response['exists'] = true;
 
 			if ($input->get->json) {
