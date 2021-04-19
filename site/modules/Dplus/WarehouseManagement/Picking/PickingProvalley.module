@@ -1,18 +1,17 @@
 <?php namespace ProcessWire;
 
 use Purl\Url;
+// Dplus Models
+use WarehouseQuery, Warehouse;
 
+// Dplus Online Models
 use InvsearchQuery, Invsearch;
 use WhseitempickQuery, Whseitempick;
 use PickSalesOrderDetailQuery, PickSalesOrderDetail;
-use BarcodesQuery, Barcodes;
 use WhsesessionQuery, Whsesession;
-use WarehouseQuery, Warehouse;
-use WarehouseInventoryQuery, WarehouseInventory;
 use WhseitemphysicalcountQuery, Whseitemphysicalcount;
-
-use Map\QnoteTableMap;
-use Propel\Runtime\Propel;
+// Dplus Validators
+use Dplus\CodeValidators\Min as MinValidator;
 
 /**
  * Picking
@@ -392,9 +391,9 @@ class PickingProvalley extends WireData implements Module {
 	 * @return bool
 	 */
 	public function validate_autosubmit(Whseitemphysicalcount $item) {
-		$validate_item = $this->wire('modules')->get('LookupItem');
+		$validate = new MinValidator();
 
-		if (!$validate_item->lookup_itm($item->itemid)) {
+		if ($validate->itemid($item->itemid) === false) {
 			return false;
 		}
 
@@ -405,8 +404,6 @@ class PickingProvalley extends WireData implements Module {
 		if (empty($item->lotserial) || empty($item->lotserialref) || empty($item->qty)) {
 			return false;
 		}
-
-
 
 		return true;
 	}

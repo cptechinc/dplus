@@ -1,14 +1,18 @@
 <?php namespace ProcessWire;
 
 use Purl\Url;
+// Dplus Models
 use PurchaseOrderQuery, PurchaseOrder;
 use PurchaseOrderDetailReceivingQuery, PurchaseOrderDetailReceiving;
 use WarehouseQuery, Warehouse;
 use ConfigSalesOrderQuery, ConfigSalesOrder;
 use ItemMasterItemQuery, ItemMasterItem;
-
+// Dplus Online Models
 use WhsesessionQuery, Whsesession;
 use WhseitemphysicalcountQuery, Whseitemphysicalcount;
+
+// Dplus Validators
+use Dplus\CodeValidators\Min as MinValidator;
 
 class ReceivingUgm extends WireData implements Module {
 	/**
@@ -42,12 +46,14 @@ class ReceivingUgm extends WireData implements Module {
 
 
 	public function validate_autosubmit(Whseitemphysicalcount $item) {
-		$validate_item = $this->wire('modules')->get('LookupItem');
-		$warehouse = $this->get_warehouse();
+		$validate = new MinValidator();
 
-		if (!$validate_item->lookup_itm($item->itemid)) {
+
+		if ($validate->itemid($item->itemid) === false) {
 			return false;
 		}
+
+		$warehouse = $this->get_warehouse();
 
 		if (!$warehouse->validate_bin($item->bin)) {
 			return false;
