@@ -10,7 +10,7 @@
 		</div>
 	</div>
 	{% for item in items %}
-		<div class="list-group-item first-txn-row">
+		<div class="list-group-item first-txn-row {{ item.count_receivedlots() > item.qty_ordered ? 'bg-warning text-white' : ''}}">
 			<div class="row">
 				<div class="col">
 					<button type="button" class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#{{ (item.linenbr ~ '-lotserial')|attrJS }}" aria-expanded="false" aria-controls="{{ (item.linenbr ~ '-lotserial')|attrJS }}">
@@ -20,6 +20,10 @@
 				<div class="col-4">
 					<b>{{ item.itemid }}</b> <br>
 					<small>{{ item.description }}</small>
+					{% if item.count_receivedlots() > item.qty_ordered %}
+						<br>
+						<b>Qty Received is more than Qty Ordered.</b>
+					{% endif %}
 				</div>
 				<div class="col">{{ item.vendoritemid }}</div>
 				<div class="col text-right">{{ item.qty_ordered|number_format(m_receiving.decimal_places()) }}</div>
