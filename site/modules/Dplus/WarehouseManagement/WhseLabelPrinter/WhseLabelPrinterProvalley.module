@@ -79,10 +79,6 @@ class WhseLabelPrinterProvalley extends WhseLabelPrinter implements Module {
 
 			$event->return = $url->getUrl();
 		});
-
-		$this->addHook("Page(pw_template=whse-print-item-label)::ii_lookupURL", function($event) {
-			$event->return = $this->wire('pages')->get("pw_template=ii-item-lookup")->httpUrl;
-		});
 	}
 
 	public static function getModuleInfo() {

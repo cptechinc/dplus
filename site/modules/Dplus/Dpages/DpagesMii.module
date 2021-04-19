@@ -42,10 +42,6 @@ class DpagesMii extends Dpages implements Module {
 			'name'   => 'ii-sales-history',
 			'fields' => array(),
 		),
-		'ii-item-lookup' => array(
-			'name'   => 'ii-item-lookup',
-			'fields' => array(),
-		),
 		'iio' => array(
 			'name'   => 'iio',
 			'fields' => array(),
@@ -87,15 +83,6 @@ class DpagesMii extends Dpages implements Module {
 			'dplus_function' => 'ii',
 			'pw_template'    => 'ii-item'
 		),
-		'ii-item-lookup'     => array(
-			'template'       => 'dplus-json',
-			'name'           => 'Item Lookup',
-			'title'          => 'Item Lookup',
-			'summary'        => 'Look up Items',
-			'parent'         => '/mii/',
-			'dplus_function' => '',
-			'pw_template'    => 'ii-item-lookup',
-		)
 	);
 
 /* =============================================================
