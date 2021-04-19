@@ -44,9 +44,20 @@ $(function() {
 	function validate_get_item() {
 		validate_itemid_entry(input_itemid.val(), $('input#vendorID').val(), function(response) {
 			if (response.exists) {
-				input_itemid.val(response.itemID);
+				input_itemid.val(response.itemid);
 				input_itemid.addClass('is-valid');
 				get_item_data(function(exists) {});
+			} else if (response.matches.itm > 0) {
+				var q = input_itemid.val();
+				input_itemid.val('');
+				var url = input_itemid.closest('.input-group').find('button').data('lookupurl');
+				url = URI(url);
+				url.addQuery('q', q);
+				var modal_ajax = $('#ajax-modal');
+				modal_ajax.find('.modal-title').text('Searching for ' + q);
+				modal_ajax.resizeModal('xl');
+				modal_ajax.modal('show');
+				modal_ajax.find('.modal-body').loadin(url.toString(), function() {});
 			} else {
 				input_itemid.addClass('is-invalid');
 				swal_notfound();
@@ -172,12 +183,12 @@ $(function() {
 	 * @return {object}             {exists: (bool), itemID: xxx, message: xxx, source: xxx }
 	 */
 	function validate_itemid_entry(itemID, vendorID, callback) {
-		var ii_url = URI("{{ page.ii_lookupURL() }}");
-		ii_url.addQuery('entry', 'po');
-		ii_url.addQuery('itemID', itemID);
-		ii_url.addQuery('vendorID', vendorID);
+		var url = URI("{{ page.jsonapiURL('item-lookup') }}");
+		url.addQuery('entry', 'po');
+		url.addQuery('itemID', itemID);
+		url.addQuery('vendorID', vendorID);
 
-		$.getJSON(ii_url.toString(), function( response ) {
+		$.getJSON(url.toString(), function( response ) {
 			return callback(response);
 		});
 	}

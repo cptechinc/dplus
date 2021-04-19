@@ -91,6 +91,17 @@ $(function() {
 						$('small.desc2').text(item.description2);
 					}
 				});
+			} else if (response.matches.itm > 0) {
+				var q = input_itemid.val();
+				input_itemid.val('');
+				var url = input_itemid.closest('.input-group').find('button').data('lookupurl');
+				url = URI(url);
+				url.addQuery('q', q);
+				var modal_ajax = $('#ajax-modal');
+				modal_ajax.find('.modal-title').text('Searching for ' + q);
+				modal_ajax.resizeModal('xl');
+				modal_ajax.modal('show');
+				modal_ajax.find('.modal-body').loadin(url.toString(), function() {});
 			} else {
 				swal_notfound();
 			}
@@ -139,12 +150,12 @@ $(function() {
 	 * @return {object}             {exists: (bool), itemID: xxx, message: xxx, source: xxx }
 	 */
 	function validate_itemid_entry(itemID, custID, shiptoID, callback) {
-		var url = URI("{{ page.ii_lookupURL() }}");
+		var url = URI("{{ page.jsonapiURL('item-lookup') }}");
 		url.addQuery('itemID', itemID);
 		url.addQuery('custID', custID);
 		url.addQuery('shiptoID', shiptoID);
 
-		$.getJSON(url.toString(), function( response ) {
+		$.getJSON(url.toString(), function(response) {
 			return callback(response);
 		});
 	}
