@@ -1,0 +1,17 @@
+{
+	"name": "dplus/filters",
+	"description": "Filters",
+	"type": "library",
+	"keywords": [ "processwire", "module" ],
+	"homepage": "http://modules.processwire.com",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Paul Gomez",
+			"email": "pauldro952@hotmail.com"
+		}
+	],
+	"autoload": {
+		"classmap": ["src/"]
+	}
+}

@@ -9,7 +9,7 @@
 	item                   ItemMasterItem
 	recordlocker           module RecordLockerUser
 #}
-<form action="{{ page.fullURL.getURL() }}" method="POST" id="itm-xrefs-form">
+<form action="{{ page.wire('input').url() }}" method="POST" id="itm-xrefs-form">
 	<input type="hidden" name="action" value="update-itm-xrefs">
 	<input type="hidden" name="itemID" value="{{ item.itemid }}">
 	<div class="form-group row">
@@ -63,7 +63,7 @@
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 		{% endif %}
-		<a href="{{ page.itmURL() }}" class="btn btn-warning">
+		<a href="{{ page.itmUrl(item.itemid) }}" class="btn btn-warning">
 			<i aria-hidden="true" class="fa fa-times"></i> Close
 		</a>
 	</div>

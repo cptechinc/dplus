@@ -40,18 +40,6 @@ class DpagesMin extends Dpages implements Module {
 			'name'   => 'itm',
 			'fields' => array()
 		),
-		'itm-pricing' => array(
-			'name'   => 'itm-pricing',
-			'fields' => array()
-		),
-		'itm-whse' => array(
-			'name'   => 'itm-whse',
-			'fields' => array()
-		),
-		'itm-costing' => array(
-			'name'   => 'itm-costing',
-			'fields' => array()
-		),
 		'itm-xrefs' => array(
 			'name'   => 'itm-xrefs',
 			'fields' => array()
@@ -78,10 +66,6 @@ class DpagesMin extends Dpages implements Module {
 		),
 		'itm-validate' => array(
 			'name'   => 'itm-validate',
-			'fields' => array()
-		),
-		'itm-misc' => array(
-			'name'   => 'itm-misc',
 			'fields' => array()
 		),
 		'itm-kit' => array(
@@ -272,33 +256,6 @@ class DpagesMin extends Dpages implements Module {
 			'parent'         => '/min/inmain/',
 			'dplus_function' => 'itm'
 		),
-		'itm-pricing' => array(
-			'template'       => 'itm-function',
-			'pw_template'    => 'itm-pricing',
-			'name'           => 'pricing',
-			'title'          => 'Pricing',
-			'summary'        => 'View / Edit Item Pricing',
-			'parent'         => '/min/inmain/itm/',
-			'dplus_function' => ''
-		),
-		'itm-warehouse' => array(
-			'template'       => 'itm-function',
-			'pw_template'    => 'itm-whse',
-			'name'           => 'warehouses',
-			'title'          => 'Warehouses',
-			'summary'        => 'View / Edit Item Warehouses',
-			'parent'         => '/min/inmain/itm/',
-			'dplus_function' => ''
-		),
-		'itm-costing' => array(
-			'template'       => 'itm-function',
-			'pw_template'    => 'itm-costing',
-			'name'           => 'costing',
-			'title'          => 'Costing',
-			'summary'        => 'View / Edit Item Costing',
-			'parent'         => '/min/inmain/itm/',
-			'dplus_function' => ''
-		),
 		'itm-xrefs' => array(
 			'template'       => 'itm-function',
 			'pw_template'    => 'itm-xrefs',
@@ -359,15 +316,6 @@ class DpagesMin extends Dpages implements Module {
 			'name'           => 'search',
 			'title'          => 'Search',
 			'summary'        => 'Search ITM Items',
-			'parent'         => '/min/inmain/itm/',
-			'dplus_function' => ''
-		),
-		'itm-misc' => array(
-			'template'       => 'itm-function',
-			'pw_template'    => 'itm-misc',
-			'name'           => 'misc',
-			'title'          => 'Misc',
-			'summary'        => 'ITM Misc',
 			'parent'         => '/min/inmain/itm/',
 			'dplus_function' => ''
 		),

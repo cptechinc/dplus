@@ -8,6 +8,8 @@ use ProcessWire\Page, ProcessWire\ItmPricing as PricingCRUD;
 use Controllers\Min\Itm\ItmFunction;
 
 class Pricing extends ItmFunction {
+	const PERMISSION_ITMP = 'pricing';
+
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -32,7 +34,6 @@ class Pricing extends ItmFunction {
 	}
 
 	public static function handleCRUD($data) {
-
 		$page = self::pw('page');
 		if (self::validateItemidAndPermission($data) === false) {
 			return $page->body;
@@ -48,7 +49,7 @@ class Pricing extends ItmFunction {
 			$itmPricing->process_input($input);
 		}
 
-		self::pw('session')->redirect($page->itm_pricingURL($data->itemID), $http301 = false);
+		self::pw('session')->redirect(self::itmUrlPricing($data->itemID), $http301 = false);
 	}
 
 	public static function pricing($data) {
@@ -75,7 +76,7 @@ class Pricing extends ItmFunction {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
 		}
 		$html .= Itm::lockItem($data->itemID);
-		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page->parent]);
+		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page]);
 		$html .= $config->twig->render('items/itm/pricing/display.twig', ['item' => $item, 'pricingm' => $itmPricing, 'item_pricing' => $pricing, 'itm' => $itm]);
 		$page->js .= $config->twig->render('items/itm/pricing/js.twig', ['item_pricing' => $pricing]);
 		self::pw('session')->remove('response_itm');

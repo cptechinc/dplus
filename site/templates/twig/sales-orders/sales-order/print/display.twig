@@ -1,0 +1,15 @@
+{% if page.is_pdf() == false %}
+	<div class="clearfix mb-3">
+		{% include 'sales-orders/sales-order/print/print-actions.twig' %}
+	</div>
+{% endif %}
+
+<div class="clearfix mb-3">
+	{{ html.header|raw }}
+</div>
+
+<div class="clearfix mb-3">
+	{{ html.items|raw }}
+</div>
+
+{{ html.totals|raw }}

@@ -1,5 +1,18 @@
-{% extends 'items/itm/pricing/display.twig' %}
+{% extends 'items/itm/display.twig' %}
 
 {% block body %}
 	{% include 'items/itm/warehouse/list.twig' %}
+{% endblock %}
+
+{% block footer %}
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<span></span>
+			<span></span>
+
+			<a href="{{ page.itmUrl(item.itemid) }}" class="btn btn-warning btn-sm">
+				<i class="fa fa-times" aria-hidden="true"></i> Close
+			</a>
+		</div>
+	</div>
 {% endblock %}

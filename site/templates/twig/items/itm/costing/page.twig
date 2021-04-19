@@ -6,7 +6,7 @@
 	m_costing              module ItmCosting
 	itm                    module Itm
 #}
-{% extends 'items/itm/pricing/display.twig' %}
+{% extends 'items/itm/display.twig' %}
 
 {% block body %}
 	<div class="card-body">
@@ -21,4 +21,7 @@
 			</div>
 		</div>
 	</div>
+{% endblock %}
+
+{% block footer %}
 {% endblock %}

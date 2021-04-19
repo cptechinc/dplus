@@ -110,7 +110,7 @@ class Vxm extends AbstractController {
 		if (!$xref->isNew()) {
 			if (!$vxm->lockrecord($xref)) {
 				$msg = "VXM ". $vxm->get_recordlocker_key($xref) ." is being locked by " . $vxm->recordlocker->get_locked_user($vxm->get_recordlocker_key($xref));
-				$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "VXM ".$vxm->get_recordlocker_key($xref)." is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+				$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "VXM ".$vxm->get_recordlocker_key($xref)." is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 			}
 		}
 		return $html;

@@ -9,7 +9,7 @@
 {{ html.items|raw }}
 
 {% if user.can_editorder(order.ordernumber) %}
-	<a href="{{ page.edit_orderURL(order.ordernumber) }}" class="btn btn-warning btn-block mb-5">
+	<a href="{{ page.orderEditUrl(order.ordernumber) }}" class="btn btn-warning btn-block mb-5">
 		Edit Order&ensp;<i class="fa fa-pencil" aria-hidden="true"></i>
 	</a>
 {% endif %}

@@ -1,5 +1,5 @@
 <div class="mb-3">
-	<a href="{{ user.is_editingorder(ordn) ? page.edit_orderURL(ordn) : page.view_orderURL(ordn) }}" class="btn btn-primary">
+	<a href="{{ user.is_editingorder(ordn) ? page.orderEditUrl(ordn) : page.orderUrl(ordn) }}" class="btn btn-primary">
 		<i class="fa fa-arrow-left" aria-hidden="true"></i> Go back to Sales Order
 	</a>
 </div>

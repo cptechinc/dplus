@@ -21,7 +21,7 @@ $(function() {
 				cancelButtonText: 'No',
 			}).then((result) => {
 				if (result.value) {
-					form.find('button[type=submit][name=update-itm-whse]').click();
+					form.find('button[type=submit][name=update-itm-costing]').click();
 				} else if (result.dismiss === Swal.DismissReason.cancel) {
 					// Send HTTP GET Request to remove Record Lock
 					$.get('{{ page.url }}', function() {
