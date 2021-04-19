@@ -47,6 +47,21 @@ class PoAmendItems extends WireData {
 		return $this->query($ponbr)->find();
 	}
 
+	public function can_edit($ponbr, $linenbr = 1) {
+		if ($this->is_closed($ponbr, $linenbr)) {
+			return false;
+		}
+
+		if ($this->has_received($ponbr, $linenbr)) {
+			return false;
+		}
+
+		if ($this->has_receipt($ponbr, $linenbr)) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Return if Detail Line is Closed
 	 * @param  string $ponbr   Purchase Order Number
