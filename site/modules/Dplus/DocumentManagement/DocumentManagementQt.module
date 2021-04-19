@@ -3,10 +3,6 @@
 use Purl\Url;
 use DocumentFolderQuery, DocumentFolder;
 use DocumentQuery, Document;
-use SalesOrderQuery, SalesOrder;
-use SalesOrderDetailQuery, SalesOrderDetail;
-use SalesHistoryQuery, SalesHistory;
-use SalesHistoryDetailQuery, SalesHistoryDetail;
 
 /**
  * Document Management Quotes
@@ -23,7 +19,7 @@ class DocumentManagementQt extends DocumentManagement implements Module {
 	public function get_documents($qnbr) {
 		$docs_query = DocumentQuery::create();
 		$docs_query->filterByTag(self::TAG_QUOTE);
-		$docs_query->filterByReference1($qnbr);
+		$docs_query->filterByReference1($this->qnbr($qnbr));
 		return $docs_query->find();
 	}
 
@@ -36,8 +32,12 @@ class DocumentManagementQt extends DocumentManagement implements Module {
 	public function count_documents($qnbr) {
 		$docs_query = DocumentQuery::create();
 		$docs_query->filterByTag(self::TAG_QUOTE);
-		$docs_query->filterByReference1($qnbr);
+		$docs_query->filterByReference1($this->qnbr($qnbr));
 		return $docs_query->count();
+	}
+
+	public function qnbr($qnbr) {
+		return substr($qnbr, -4);
 	}
 
 /* =============================================================

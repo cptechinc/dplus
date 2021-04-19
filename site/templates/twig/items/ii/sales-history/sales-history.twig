@@ -23,7 +23,7 @@
 								{% if blueprint['detail']['rows'][x]['columns'][i] %}
 									{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 									{% set colspan = column['col-length'] %}
-									<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['label-justify']) }}">
+									<th colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['label-justify']) }}">
 										{{ column['label'] }}
 									</th>
 								{% else %}
@@ -47,11 +47,11 @@
 									{% if blueprint['detail']['rows'][x]['columns'][i] %}
 										{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 										{% set colspan = column['col-length'] %}
-										<td colspan="{{ colspan }}" class="border-top border-primary {{ module_formatter.get_justifyclass(column['data-justify']) }}">
-											{{ module_formatter.format_celldata(invoice, column) }} &nbsp;
+										<td colspan="{{ colspan }}" class="border-top border-primary {{ formatter.get_justifyclass(column['data-justify']) }}">
+											{{ formatter.format_celldata(invoice, column) }} &nbsp;
 											{% if i == 1 and invoice['Invoice Number'] %}
-												{% if document_management.count_documents(invoice['Invoice Number']) == 0 %}
-													<a href="{{ page.documentsview_salesorder(itemID, invoice['Invoice Number'])}}" class="text-success" title="View Documents for Order # {{ invoice['Invoice Number'] }}">
+												{% if document_management.countDocuments(invoice['Invoice Number']) == 0 %}
+													<a href="{{ page.documentListUrl(item.itemid, invoice['Invoice Number'], page.wire('input').get.text('date'))}}" class="text-success" title="View Documents for Order # {{ invoice['Invoice Number'] }}">
 														<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Order # {{ invoice['Invoice Number'] }}</span>
 													</a>
 												{% endif %}
@@ -77,7 +77,7 @@
 										{% if blueprint['lotserial']['rows'][x]['columns'][i] %}
 											{% set column = blueprint['lotserial']['rows'][x]['columns'][i] %}
 											{% set colspan = column['col-length'] %}
-											<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['label-justify']) }}">
+											<th colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['label-justify']) }}">
 												{{ column['label'] }}
 											</th>
 										{% else %}
@@ -100,8 +100,8 @@
 											{% if blueprint['lotserial']['rows'][x]['columns'][i] %}
 												{% set column = blueprint['lotserial']['rows'][x]['columns'][i] %}
 												{% set colspan = column['col-length'] %}
-												<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-													{{ module_formatter.format_celldata(lot, column) }}
+												<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+													{{ formatter.format_celldata(lot, column) }}
 												</td>
 											{% else %}
 												{% if columncount < blueprint['cols'] %}
@@ -127,8 +127,8 @@
 								{% if blueprint['detail']['rows'][x]['columns'][i] %}
 									{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 									{% set colspan = column['col-length'] %}
-									<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-										{{ module_formatter.format_celldata(invoice, column) }}
+									<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+										{{ formatter.format_celldata(invoice, column) }}
 									</td>
 								{% else %}
 									{% if columncount < blueprint['cols'] %}

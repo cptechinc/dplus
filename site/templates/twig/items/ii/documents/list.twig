@@ -1,0 +1,24 @@
+<div id="documents">
+	<table class="table table-striped">
+		<tr class="bg-dark text-white">
+			<th>Title</th>
+			<th>Filename</th>
+			<th>Folder</th>
+			<th>Date</th>
+			<th>Time</th>
+		</tr>
+		{% for document in list.documents %}
+			<tr id="doc-{{ document.filename }}">
+				<td>{{ document.title }}</td>
+				<td>
+					<a href="{{ page.documentUrl(list.itemid, document.folder, document.filename) }}" class="link" target="_blank">
+						{{ document.filename }}
+					</a>
+				</td>
+				<td>{{ document.get_folderdescription() }}</td>
+				<td>{{ document.date|convertdate("m/d/Y") }}</td>
+				<td>{{ (document.date ~ document.time[:4])|convertdate("h:i A") }}</td>
+			</tr>
+		{% endfor %}
+	</table>
+</div>

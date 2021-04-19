@@ -1,4 +1,6 @@
 <?php namespace Controllers\Min\Itm;
+// Purl URI Library
+use Purl\Url as Purl;
 // Dplus Model
 use WarehouseInventoryQuery, WarehouseInventory;
 // ProcessWire classes, modules
@@ -7,6 +9,8 @@ use ProcessWire\Page, ProcessWire\ItmWarehouse as WarehouseCRUD;
 use Controllers\Min\Itm\ItmFunction;
 
 class Warehouse extends ItmFunction {
+	const PERMISSION_ITMP = 'whse';
+
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -42,10 +46,10 @@ class Warehouse extends ItmFunction {
 
 		if ($data->action) {
 			$itmW->process_input($input);
-			$data->whseID = $data->action == 'remove-itm-whse' ? '' : $data->whseID;
+			$data->whseID = $data->action == 'remove-whse' ? '' : $data->whseID;
 		}
 
-		self::pw('session')->redirect($page->itm_warehouseURL($data->itemID, $data->whseID), $http301 = false);
+		self::pw('session')->redirect(self::itmUrlWhse($data->itemID, $data->whseID), $http301 = false);
 	}
 
 	public static function warehouse($data) {
@@ -58,12 +62,13 @@ class Warehouse extends ItmFunction {
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
+		self::initHooks();
 		$html = '';
 		$config  = self::pw('config');
 		$page    = self::pw('page');
 		$page->headline = "ITM: $data->itemID Warehouse $data->whseID";
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
-		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page->parent]);
+		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page]);
 		$html .= Itm::lockItem($data->itemID);
 		$validate = self::getMinValidator();
 
@@ -130,6 +135,7 @@ class Warehouse extends ItmFunction {
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
+		self::initHooks();
 		$html = '';
 		$config  = self::pw('config');
 		$page    = self::pw('page');
@@ -138,13 +144,26 @@ class Warehouse extends ItmFunction {
 		$itmw->recordlocker->remove_lock($page->lockcode);
 		$page->headline = "ITM: $data->itemID Warehouses";
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
-		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page->parent]);
+		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page]);
 		$html .= $config->twig->render('items/itm/warehouse/list-display.twig', ['itmw' => $itmw, 'itemID' => $data->itemID, 'item' => $itm->item($data->itemID), 'warehouses' => $itmw->get_itemwarehouses($data->itemID)]);
 		return $html;
 	}
 
 	public static function getItmWarehouse() {
 		return self::pw('modules')->get('ItmWarehouse');
+	}
+
+	public static function itmUrlWhseDelete($itemID, $whseID) {
+		$url = new Purl(self::itmUrlWhse($itemID, $whseID));
+		$url->query->set('action', 'delete-whse');
+		return $url->getUrl();
+	}
+
+	public static function initHooks() {
+		$m = self::pw('modules')->get('Itm');
+		$m->addHook('Page(pw_template=itm)::itmUrlWhseDelete', function($event) {
+			$event->return = self::itmUrlWhseDelete($event->arguments(0), $event->arguments(1));
+		});
 	}
 
 }

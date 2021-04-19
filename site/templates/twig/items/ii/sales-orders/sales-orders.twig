@@ -1,12 +1,14 @@
 {% for id, warehouse in json['data'] %}
-	<div class="row">
-		<div class="col-sm-6 form-group">
-			<h4>{{ warehouse['Whse Name'] }}</h4>
-		</div>
-		<div class="col-sm-6 form-group">
-			<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#{{ id|attrJS }}" aria-expanded="false" aria-controls="{{ id|attrJS }}">
-				Show / Hide
-			</button>
+	<div class="px-3">
+		<div class="row">
+			<div class="col-sm-6 form-group">
+				<h4>{{ warehouse['Whse Name'] }}</h4>
+			</div>
+			<div class="col-sm-6 form-group">
+				<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#{{ id|attrJS }}" aria-expanded="false" aria-controls="{{ id|attrJS }}">
+					Show / Hide
+				</button>
+			</div>
 		</div>
 	</div>
 	<div class="collapse show" id="{{ id|attrJS }}">
@@ -20,7 +22,7 @@
 							{% if blueprint['detail']['rows'][x]['columns'][i] %}
 								{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 								{% set colspan = column['col-length'] %}
-								<th colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['headingjustify']) }}">
+								<th colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['headingjustify']) }}">
 									{{ column['label'] }}
 								</th>
 							{% else %}
@@ -44,11 +46,11 @@
 								{% if blueprint['detail']['rows'][x]['columns'][i] %}
 									{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 									{% set colspan = column['col-length'] %}
-									<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-										{{ module_formatter.format_celldata(order, column) }} &nbsp;
+									<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+										{{ formatter.format_celldata(order, column) }} &nbsp;
 										{% if i == 1 and order['Sales Order Number'] %}
-											{% if docm.count_documents(order['Sales Order Number']) %}
-												<a href="{{ page.documentsview_salesorder(itemID, order['Sales Order Number'])}}" class="text-success" title="View Documents for Order # {{ order['Sales Order Number'] }}">
+											{% if docm.countDocuments(order['Sales Order Number']) %}
+												<a href="{{ page.documentListUrl(item.itemid, order['Sales Order Number'])}}" class="text-success" title="View Documents for Order # {{ order['Sales Order Number'] }}">
 													<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Order # {{ order['Sales Order Number'] }}</span>
 												</a>
 											{% endif %}
@@ -76,8 +78,8 @@
 							{% if blueprint['detail']['rows'][x]['columns'][i] %}
 								{% set column = blueprint['detail']['rows'][x]['columns'][i] %}
 								{% set colspan = column['col-length'] %}
-								<td colspan="{{ colspan }}" class="{{ module_formatter.get_justifyclass(column['data-justify']) }}">
-									{{ module_formatter.format_celldata(order, column) }}
+								<td colspan="{{ colspan }}" class="{{ formatter.get_justifyclass(column['data-justify']) }}">
+									{{ formatter.format_celldata(order, column) }}
 								</td>
 							{% else %}
 								{% if columncount < blueprint['cols'] %}

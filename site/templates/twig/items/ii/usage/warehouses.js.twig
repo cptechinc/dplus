@@ -8,6 +8,9 @@ $(function() {
 					return  moment(x).format('MMM YYYY');
 				},
 				yLabelFormat: function (y) {
+					if (!y) {
+						y = 0.0;
+					}
 					return '$ '+y.formatMoney()+ ' dollars';
 				},
 				xkey: 'month',

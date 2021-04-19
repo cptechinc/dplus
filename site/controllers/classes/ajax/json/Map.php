@@ -138,7 +138,7 @@ class Map extends AbstractController {
 		return $response;
 	}
 
-	public function validateVxmUpdateItmCost($data) {
+	public static function validateVxmUpdateItmCost($data) {
 		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text', 'ordercode|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$response = ['allow' => false, 'confirm' => false];
@@ -149,8 +149,8 @@ class Map extends AbstractController {
 		$vxm = self::pw('modules')->get('XrefVxm');
 		$vxm->init_configs();
 		$xref = $vxm->xref($data->vendorID, $data->vendoritemID, $data->itemID);
-		if (array_key_exists($ordercode, ItemXrefVendor::OPTIONS_POORDERCODE)) {
-			$xref->setPo_ordercode($ordercode);
+		if (array_key_exists($data->ordercode, ItemXrefVendor::OPTIONS_POORDERCODE)) {
+			$xref->setPo_ordercode($data->ordercode);
 		}
 		$response['allow'] = $vxm->allow_itm_cost_update_xref($xref);
 		if ($response['allow']) {

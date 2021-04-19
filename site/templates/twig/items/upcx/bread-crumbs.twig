@@ -1,29 +1,21 @@
-<nav aria-label="breadcrumb rounded-0">
-	<ol class="breadcrumb">
-		{% for parent in page.parents() %}
-			<li class="breadcrumb-item">
-				<i class="fa fa-list" aria-hidden="true"></i>
-				<a href="{{ parent.url }}">{{ parent.title }}</a>
-			</li>
-		{% endfor %}
+{% extends 'util/bread-crumbs.twig' %}
+{% block current_page %}
+	{% if page.wire('input').get.offsetExists('itemID') %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.url }}">{{ page.title }}</a>
+		</li>
+		<li class="breadcrumb-item active" aria-current="page">Item: {{ page.itemID }}</li>
+	{% endif %}
 
-		{% if page.wire('input').get.offsetExists('itemID') %}
+	{% if page.wire('input').get.offsetExists('upc') %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.url }}">UPCX</a>
+		</li>
+		{% if input.get('itemID') %}
 			<li class="breadcrumb-item">
-				<a href="{{ page.url }}">{{ page.title }}</a>
+				<a href="{{ page.item_upcsURL(page.itemID) }}">Item: {{ page.itemID }}</a>
 			</li>
-			<li class="breadcrumb-item active" aria-current="page">Item: {{ page.itemID }}</li>
 		{% endif %}
-
-		{% if page.wire('input').get.offsetExists('upc') %}
-			<li class="breadcrumb-item">
-				<a href="{{ page.url }}">{{ page.title }}</a>
-			</li>
-			{% if input.get('itemID') %}
-				<li class="breadcrumb-item">
-					<a href="{{ page.item_upcsURL(page.itemID) }}">Item: {{ page.itemID }}</a>
-				</li>
-			{% endif %}
-			<li class="breadcrumb-item active" aria-current="page">{{ page.upc }}</li>
-		{% endif %}
-	</ol>
-</nav>
+		<li class="breadcrumb-item active" aria-current="page">{{ page.upc }}</li>
+	{% endif %}
+{% endblock %}

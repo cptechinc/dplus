@@ -1,0 +1,31 @@
+{% extends 'items/ii/display.twig' %}
+
+{% block body %}
+	<div class="px-3 py-2">
+		<div class="row">
+			<div class="col-6 col-sm-4">
+				BoM Type: {{ type|capitalize }}
+			</div>
+			<div class="col-6 col-sm-4">
+				Qty: {{ json['qtyneeded'] }}
+			</div>
+			<div class="col col-sm-4">
+				<a href="{{ page.get_itembomURL(item.itemid) }}" class="btn btn-primary">
+					<i class="fa fa-undo" aria-hidden="true"></i> Reset
+				</a>
+			</div>
+		</div>
+	</div>
+
+	{% include 'items/ii/components/bom/supply.twig' %}
+{% endblock %}
+
+{% block footer %}
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<a href="{{ page.subfunctionUrl(item.itemid, 'bom') }}" class="btn btn-primary">
+				<i class="fa fa-undo" aria-hidden="true"></i> Bom
+			</a>
+		</div>
+	</div>
+{% endblock %}

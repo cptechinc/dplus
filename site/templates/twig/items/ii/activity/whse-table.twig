@@ -1,0 +1,29 @@
+<table class="table table-striped table-sm">
+	<thead>
+		<th>Docs</th>
+		{% for column in json['columns'] %}
+			<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
+				{{ column['heading'] }}
+			</th>
+		{% endfor %}
+	</thead>
+	<tbody>
+		{% for order in warehouse['orders'] %}
+			<tr>
+				<td>
+					{% if docm.countDocumentsActivity(order['tran type'], order['tran reference']) %}
+						<a href="{{ page.documentListUrl(item.itemid, order['tran type'], order['tran reference']) }}" class="text-success" title="View Documents for Order # {{ order['Sales Order Number'] }}">
+							<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for {{ order['tran type'] ~ ' ' ~  order['tran reference']}}</span>
+						</a>
+					{% endif %}
+				</td>
+
+				{% for column, properties in json['columns'] %}
+					<td class="{{ module_json.get_justifyclass(properties['datajustify']) }}">
+						{{ order[column] }}
+					</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

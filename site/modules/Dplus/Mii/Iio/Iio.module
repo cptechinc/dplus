@@ -14,29 +14,6 @@ class Iio extends WireData implements Module {
 	const RESPONSE_TEMPLATE  = 'User {key} permissions were {not} {crud}';
 	const RECORDLOCKER_FUNCTION  = 'iio';
 
-	const TEMPLATES_II = [
-		'ii-pricing',
-		'ii-activity',
-		'ii-bom',
-		'ii-kit',
-		'ii-components',
-		'ii-costing',
-		'ii-documents',
-		'ii-general',
-		'ii-lotserial',
-		'ii-pricing',
-		'ii-purchase-history',
-		'ii-purchase-orders',
-		'ii-quotes',
-		'ii-requirements',
-		'ii-sales-history',
-		'ii-sales-orders',
-		'ii-stock',
-		'ii-substitutes',
-		'ii-usage',
-		'ii-where-used',
-	];
-
 	const TEMPLATES_PERMISSIONS = [
 		'ii-pricing'          => 'pricing',
 		'ii-activity'         => 'activity',
@@ -255,7 +232,7 @@ class Iio extends WireData implements Module {
 			return $this->user(self::USER_DEFAULT);
 		}
 
-		return OptionsCi::new();
+		return OptionsIi::new();
 	}
 
 	/**
@@ -577,11 +554,9 @@ class Iio extends WireData implements Module {
 	public function ii_subfunctions(User $user) {
 		$permitted = $user->permitted_ii();
 		if (empty($permitted)) {
-			return new PageArray();
+			return [];
 		}
-		$p = $this->wire('pages')->get('pw_template=ii-item');
-		$templates = implode('|', $this->permissions_to_templates($permitted));
-		return $p->children("pw_template=$templates");
+		return $user->permitted_ii();
 	}
 
 	/**
@@ -679,11 +654,6 @@ class Iio extends WireData implements Module {
 			$user = $event->object;
 			$permission = $this->useriio($user->loginid);
 			$event->return = $permission->permitted();
-		});
-
-		$this->addHook("Page(pw_template=ii-item)::subfunctions", function($event) {
-			$user = $this->wire('user');
-			$event->return = $this->ii_subfunctions($user);
 		});
 
 		$this->addHook("Page(pw_template=iio)::iioURL", function($event) {

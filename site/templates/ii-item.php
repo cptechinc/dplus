@@ -11,6 +11,19 @@
 		['GET',  'pricing', Ii::class, 'pricing'],
 		['GET',  'usage', Ii::class, 'usage'],
 		['GET',  'costing', Ii::class, 'costing'],
+		['GET',  'activity', Ii::class, 'activity'],
+		['GET',  'kit', Ii::class, 'kit'],
+		['GET',  'bom', Ii::class, 'bom'],
+		['GET',  'where-used', Ii::class, 'whereUsed'],
+		['GET',  'lotserial', Ii::class, 'lotserial'],
+		['GET',  'general', Ii::class, 'general'],
+		['GET',  'substitutes', Ii::class, 'substitutes'],
+		['GET',  'documents', Ii::class, 'documents'],
+		['GET',  'sales-orders', Ii::class, 'salesOrders'],
+		['GET',  'sales-history', Ii::class, 'salesHistory'],
+		['GET',  'quotes', Ii::class, 'quotes'],
+		['GET',  'purchase-orders', Ii::class, 'purchaseOrders'],
+		['GET',  'purchase-history', Ii::class, 'purchaseHistory'],
 	];
 
 	$router = new Mvc\Router();

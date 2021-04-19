@@ -12,8 +12,8 @@ class ConfigsIi extends Process implements ConfigurableModule {
 		'option_components' => array(
 			'type'        => 'select',
 			'label'       => 'Kit or BOM',
-			'description' => 'Break Down Compnenents as Kit or BOM',
-			'notes'       => "Break Down Compnenents as Kit or BOM",
+			'description' => 'Break Down Components as Kit or BOM',
+			'notes'       => "Break Down Components as Kit or BOM",
 			'options' => array('kit' => 'Kit', 'bom' => 'BOM')
 		)
 	);

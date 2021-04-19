@@ -1,0 +1,58 @@
+<div class="list-group list-group-flush mb-3">
+	{% for component in json['data']['component'] %}
+		<div class="list-group-item bg-primary text-white">
+			<div class="d-flex justify-content-between align-items-center">
+				<h5>{{ component['component item'] }}</h5>
+
+				<button class="btn btn-light btn-sm" type="button" data-toggle="collapse" data-target="[data-component='{{ component['component item'] }}']" aria-expanded="false" aria-controls="{{ component['component item']|attrJS }}">
+					Show / Hide
+				</button>
+			</div>
+		</div>
+		<div class="list-group-item px-0 collapse show" id="{{ component['component item']|attrJS }}" data-component="{{ component['component item'] }}">
+			<table class="table table-striped table-sm mb-3">
+				<thead>
+					{% for column in json['columns']['component'] %}
+						<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
+							{{ column['heading'] }}
+						</th>
+					{% endfor %}
+				</thead>
+				<tbody>
+					<tr>
+						{% for column, properties in json['columns']['component'] %}
+							<td class="{{ module_json.get_justifyclass(properties['datajustify']) }}">
+								{{ component[column] }}
+							</td>
+						{% endfor %}
+					</tr>
+				</tbody>
+			</table>
+
+			<table class="table table-striped table-sm mb-3">
+				<thead>
+					{% for column in json['columns']['warehouse'] %}
+						<th class="{{ module_json.get_justifyclass(column['headingjustify']) }}">
+							{{ column['heading'] }}
+						</th>
+					{% endfor %}
+				</thead>
+				<tbody>
+					{% for warehouse in component['warehouse'] %}
+						<tr>
+							{% for column, properties in json['columns']['warehouse'] %}
+								<td class="{{ module_json.get_justifyclass(properties['datajustify']) }}">
+									{{ warehouse[column] }}
+								</td>
+							{% endfor %}
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	{% endfor %}
+</div>
+
+<div class="px-3">
+	<h5>Warehouses that meet the Requirement: {{ json['data']['whse meeting req']|join(', ') }}</h5>
+</div>

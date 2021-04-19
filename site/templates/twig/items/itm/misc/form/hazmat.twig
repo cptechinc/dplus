@@ -11,7 +11,7 @@
 </div>
 <div class="row">
 	<div class="col-sm-6">
-		<form action="{{ page.itm_miscURL(item.itemid) }}" class="mb-3" id="item-hazmat-form" method="post">
+		<form action="{{ page.wire('input').url() }}" class="mb-3" id="item-hazmat-form" method="post">
 			<input type="hidden" name="action" value="update-itm-hazmat">
 			<input type="hidden" name="itemID" value="{{ item.itemid }}">
 

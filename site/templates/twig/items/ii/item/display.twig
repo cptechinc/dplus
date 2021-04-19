@@ -1,0 +1,11 @@
+<div class="row">
+	<div class="col-sm-2 pl-0">
+		{% include 'items/ii/toolbar.twig' %}
+	</div>
+	<div class="col-sm-10">
+		{% include 'items/ii/item/ii-links.twig' with {'itemID': item.itemid, 'lastmodified': page.lastmodified, 'refreshurl': page.itemURL(item.itemid)} %}
+		{{ html.item|raw }}
+		{% include 'items/ii/item/item-data.twig' %}
+		{{ html.stock|raw }}
+	</div>
+</div>

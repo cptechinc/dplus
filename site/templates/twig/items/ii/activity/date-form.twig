@@ -1,9 +1,13 @@
-<form action="{{ page.get_redirURL() }}" method="post">
-	<input type="hidden" name="action" value="ii-activity">
-	<input type="hidden" name="itemID" value="{{ itemID }}">
-	<div class="form-group">
-		<label for="datepicker">Date</label>
-		{% include 'util/date-picker.twig' with {'name': 'date', 'value': "now"|date_modify("-1 year")|date("m/d/Y") } %}
+<div class="row">
+	<div class="col-sm-6">
+		<form action="{{ page.wire('input').url() }}" method="get">
+			<input type="hidden" name="itemID" value="{{ itemID }}">
+
+			<div class="form-group">
+				<label for="date">Date</label>
+				{% include 'util/date-picker.twig' with {'name': 'date', 'value': startdate } %}
+			</div>
+			<button type="submit" class="btn btn-success">Submit</button>
+		</form>
 	</div>
-	<button type="submit" class="btn btn-secondary">Submit</button>
-</form>
+</div>

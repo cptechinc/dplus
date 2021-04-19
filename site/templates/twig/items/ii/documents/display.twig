@@ -1,0 +1,27 @@
+{% extends 'items/ii/display.twig' %}
+
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	list                   WireData
+	list.title             string(HTML)
+	list.documents         Document[]
+	list.returnUrl         string(HTML)
+	list.returnTitle       string(HTML)
+#}
+
+{% block body %}
+	<div class="card-body">
+		<div class="d-flex w-100 justify-content-between">
+			<h3>{{ list.title }}</h3>
+			<a href="{{ list.returnUrl }}" class="btn btn-secondary">
+				<i class="fa fa-undo"></i> Item {{ list.returnTitle }}
+			</a>
+		</div>
+	</div>
+	{% include 'items/ii/documents/list.twig' %}
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}
