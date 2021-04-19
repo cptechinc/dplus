@@ -90,6 +90,17 @@ class Input extends WireData {
 	 * Return Value for itemid, use other fields if empty
 	 * @return string
 	 */
+	public function custitemid() {
+		if ($this->custitemid) {
+			return $this->custitemid;
+		}
+		return $this->itemid();
+	}
+
+	/**
+	 * Return Value for itemid, use other fields if empty
+	 * @return string
+	 */
 	public function mnfritemid() {
 		if ($this->mnfritemid) {
 			return $this->mnfritemid;
