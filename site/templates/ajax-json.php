@@ -3,6 +3,7 @@
 	use Controllers\Ajax\Json as Json;
 
 	$routes  = [
+		['GET', 'item-lookup/', Json\ItemLookup::class, 'lookup'],
 		'inv' => [
 			'validate' => [
 				['GET', 'tariff-code/', Json\Min::class, 'validateTariffCode'],
@@ -89,7 +90,7 @@
 			'sales-order' => [
 				['GET', 'line/', Json\Mso::class, 'getSalesOrderDetail'],
 			],
-		]
+		],
 	];
 
 	$router = new Mvc\JsonRouter();
