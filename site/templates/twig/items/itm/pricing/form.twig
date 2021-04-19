@@ -8,7 +8,7 @@
 	pricingm.configs       WireData
 	pricingm.configs.so    ConfigSalesOrder
 #}
-<form action="{{ page.fullURL.getUrl() }}" method="POST">
+<form action="{{ page.wire('input').url() }}" method="POST">
 	<input type="hidden" name="action" value="update-itm-pricing">
 	<input type="hidden" name="itemID" value="{{ item_pricing.itemid }}">
 
@@ -32,7 +32,7 @@
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 		{% endif %}
-		<a href="{{ page.itmURL(item.itemid) }}" class="btn btn-warning">
+		<a href="{{ page.itmUrl(item.itemid) }}" class="btn btn-warning">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
 		</a>
 	</div>

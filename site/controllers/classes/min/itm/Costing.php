@@ -7,6 +7,8 @@ use ProcessWire\Page, ProcessWire\ItmCosting as CostingCRUD;
 use Controllers\Min\Itm\ItmFunction;
 
 class Costing extends ItmFunction {
+	const PERMISSION_ITMP = 'costing';
+
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -43,7 +45,7 @@ class Costing extends ItmFunction {
 			$itmCosting->process_input($input);
 		}
 
-		self::pw('session')->redirect(self::pw('page')->itm_pricingURL($data->itemID), $http301 = false);
+		self::pw('session')->redirect(self::itmUrlCosting($data->itemID), $http301 = false);
 	}
 
 	public static function costing($data) {
@@ -69,7 +71,7 @@ class Costing extends ItmFunction {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
 		}
 		$html .= Itm::lockItem($data->itemID);
-		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page->parent]);
+		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page]);
 		$html .= $config->twig->render('items/itm/costing/page.twig', ['itm' => $itm, 'item' => $item, 'm_costing' => $itmC, 'recordlocker' => $itm->recordlocker]);
 		$page->js .= $config->twig->render('items/itm/costing/js.twig', []);
 		return $html;

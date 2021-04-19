@@ -17,10 +17,10 @@ class CountryCode extends AbstractFilter {
 ============================================================= */
 	public function _search($q) {
 		$columns = [
-			CountryCode::aliasproperty('iso3'),
-			CountryCode::aliasproperty('iso2'),
-			CountryCode::aliasproperty('numeric'),
-			CountryCode::aliasproperty('description'),
+			Model::aliasproperty('iso3'),
+			Model::aliasproperty('iso2'),
+			Model::aliasproperty('numeric'),
+			Model::aliasproperty('description'),
 		];
 		$this->query->search_filter($columns, strtoupper($q));
 	}

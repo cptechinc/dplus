@@ -36,7 +36,7 @@
 					<td>{{ item.vendoritemID }}</td>
 					<td>{{ item.ouritemid }}</td>
 					<td>{{ item.imitem.description }}</td>
-					<td class="text-right">$ {{ item.unitcost_base|currency }}</td>
+					<td class="text-right">$ {{ (item.unitcost_base * item.uompurchase.conversion)|number_format(vxm.field_attribute('unit_cost', 'precision')) }}</td>
 					<td class="text-right">{{ item.date_changed|convertdate }}</td>
 					<td class="text-center">
 						{% if vxm.recordlocker.function_locked(vxm.get_recordlocker_key(item)) == false or vxm.recordlocker.function_locked_by_user(vxm.get_recordlocker_key(item)) %}

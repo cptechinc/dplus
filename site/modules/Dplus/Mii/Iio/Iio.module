@@ -232,7 +232,7 @@ class Iio extends WireData implements Module {
 			return $this->user(self::USER_DEFAULT);
 		}
 
-		return OptionsCi::new();
+		return OptionsIi::new();
 	}
 
 	/**

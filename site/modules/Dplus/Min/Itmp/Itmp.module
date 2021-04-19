@@ -14,31 +14,25 @@ class Itmp extends WireData implements Module {
 	const RESPONSE_TEMPLATE  = 'User {key} permissions were {not} {crud}';
 	const RECORDLOCKER_FUNCTION  = 'itmp';
 
+	const USER_DEFAULT = 'system';
+
 	const TEMPLATES_ITM = [
 		'itm',
-		'itm-pricing',
-		'itm-whse',
-		'itm-costing',
 		'itm-xrefs',
 		'itm-xrefs-upcx',
 		'itm-xrefs-vxm',
 		'itm-xrefs-cxm',
 		'itm-xrefs-mxrfe',
-		'itm-misc',
 		'itm-components',
 		'itm-kit',
 	];
 
 	const TEMPLATES_PERMISSIONS = [
-		'itm-pricing'     => 'pricing',
-		'itm-whse'        => 'whse',
-		'itm-costing'     => 'costing',
 		'itm-xrefs'       => 'xrefs',
 		'itm-xrefs-upcx'  => 'xrefs',
 		'itm-xrefs-vxm'   => 'xrefs',
 		'itm-xrefs-cxm'   => 'xrefs',
 		'itm-xrefs-mxrfe' => 'xrefs',
-		'itm-misc'        => 'misc',
 		'itm-kit'         => 'xrefs',
 	];
 
@@ -154,6 +148,23 @@ class Itmp extends WireData implements Module {
 		if ($this->exists($loginID)) {
 			return $this->user($loginID);
 		}
+		return $this->new($loginID);
+	}
+
+	/**
+	 * Return OptionsIi
+	 * @param  string $userID Login ID
+	 * @return OptionsIi
+	 */
+	public function useritmp($userID) {
+		if ($this->exists($userID)) {
+			return $this->user($userID);
+		}
+
+		if ($this->exists(self::USER_DEFAULT)) {
+			return $this->user(self::USER_DEFAULT);
+		}
+
 		return $this->new($loginID);
 	}
 
@@ -370,6 +381,14 @@ class Itmp extends WireData implements Module {
 		$permissions = $this->user($user->loginid);
 		$needed = self::TEMPLATES_PERMISSIONS[$template];
 		return $permissions->is_true($needed);
+	}
+
+	public function isUserAllowed(User $user, $permission) {
+		if (in_array($permission, UserPermissionsItm::PERMISSIONS) === false) {
+			return true;
+		}
+		$permissions = $this->user($user->loginid);
+		return $permissions->is_true($permission);
 	}
 
 	/**
