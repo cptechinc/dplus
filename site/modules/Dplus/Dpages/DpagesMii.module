@@ -29,11 +29,6 @@ class DpagesMii extends Dpages implements Module {
 	);
 
 	const TEMPLATES = array(
-		'ii-function' => array(
-			'name'   => 'dplus-menu',
-			'fields' => array('title', 'dplus_function', 'pw_template', 'jsoncode', 'is_formattable', 'summary'),
-			'paginated' => true
-		),
 		'ii-item' => array(
 			'name'   => 'ii-item',
 			'fields' => array(),
