@@ -77,7 +77,9 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mso\\SalesOrder\\PrintSo' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/PrintSo.php',
         'Controllers\\Mso\\SalesOrder\\SalesOrder' => __DIR__ . '/../..' . '/classes/mso/SalesOrder/SalesOrder.php',
         'Controllers\\Mwm\\Menu' => __DIR__ . '/../..' . '/classes/Mwm/Menu.php',
+        'Controllers\\Wm\\Base' => __DIR__ . '/../..' . '/classes/Mwm/Base.php',
         'Controllers\\Wm\\Binr' => __DIR__ . '/../..' . '/classes/Mwm/binr/Binr.php',
+        'Controllers\\Wm\\Receiving\\Receiving' => __DIR__ . '/../..' . '/classes/Mwm/inventory/Receiving/Receiving.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

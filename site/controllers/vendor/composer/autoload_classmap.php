@@ -76,5 +76,7 @@ return array(
     'Controllers\\Mso\\SalesOrder\\PrintSo' => $baseDir . '/classes/mso/SalesOrder/PrintSo.php',
     'Controllers\\Mso\\SalesOrder\\SalesOrder' => $baseDir . '/classes/mso/SalesOrder/SalesOrder.php',
     'Controllers\\Mwm\\Menu' => $baseDir . '/classes/Mwm/Menu.php',
+    'Controllers\\Wm\\Base' => $baseDir . '/classes/Mwm/Base.php',
     'Controllers\\Wm\\Binr' => $baseDir . '/classes/Mwm/binr/Binr.php',
+    'Controllers\\Wm\\Receiving\\Receiving' => $baseDir . '/classes/Mwm/inventory/Receiving/Receiving.php',
 );
