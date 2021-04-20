@@ -246,40 +246,6 @@
 			}
 			$session->loc = $url->getUrl();
 			break;
-		case 'init-receive':
-			// Requests PO to receive
-			// Response: po_tran_det & po_tran_lot_det records are loaded with detail information
-			$ponbr = $input->$rm->text('ponbr');
-			$data = array("DBNAME=$dplusdb", 'STARTRECEIVE', "PONBR=$ponbr");
-
-			if ($input->$rm->page) {
-				$url = new Purl\Url($input->$rm->text('page'));
-				$url->query->set('ponbr', $ponbr);
-			} else {
-				$url = new Purl\Url($pages->get('pw_template=whse-receiving')->url);
-				$url->query->set('ponbr', $ponbr);
-			}
-			$session->loc = $url->getUrl();
-			break;
-		case 'receiving-search':
-			// Requests Item / Lot/Serial Details for Receiving
-			// Response: Creates whseitemphysicalcount record(s)
-			$ponbr = $input->$rm->text('ponbr');
-			$q = strtoupper($input->$rm->text('scan'));
-			$binID = $input->$rm->text('binID');
-			$data = array("DBNAME=$dplusdb", 'RECEIVINGSEARCH', "PONBR=$ponbr", "QUERY=$q", "BIN=$binID");
-
-			if ($input->$rm->page) {
-				$url = new Purl\Url($input->$rm->text('page'));
-			} else {
-				$url = new Purl\Url($pages->get('pw_template=whse-receiving'));
-			}
-			$url->query->set('ponbr', $ponbr);
-			$url->query->set('scan', $q);
-			$url->query->set('binID', $binID);
-
-			$session->loc = $url->getUrl();
-			break;
 		case 'receiving-submit':
 			// Request:  Save Received Item to PO DETAIL Line
 			// Response: Updates po_tran_lot_det & po_tran_det records
