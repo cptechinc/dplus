@@ -318,8 +318,8 @@ $(function() {
 
 	function confirm_cost(callback) {
 		var costbase = form_vxm.find('input[name=unitcost_base]');
-		var changedcost = costbase.data('cost') != costbase.val();
-		var itmdifferent = costbase.data('itmcost') != costbase.val();
+		var costperuom  = costbase.val() / input_uom.find('option:selected').data('conversion');
+		var changedcost  = parseFloat(costbase.data('cost')) != costperuom;
 		var itmdifferent = parseFloat(costbase.data('itmcost')) != costbase.val();
 		var changedordercode = input_ordercode.val() != input_ordercode.data('ordercode');
 		var costorordercode = (itmdifferent || changedordercode);
