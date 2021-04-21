@@ -354,9 +354,14 @@ class Receiving extends Base {
 		return $config->receive_lotserial_as_single ? new Strategies\ReadQty\LotserialSingle() : new Strategies\ReadQty\LotserialQty();
 	}
 
-	public function getEnforiceQtyStrategy() {
+	public function getEnforceQtyStrategy() {
 		$config = self::pw('config');
 		return $config->company == 'ugm' ? new Strategies\EnforceQty\Relaxed() : new Strategies\EnforceQty\Warn();
+	}
+
+	public function getEnforceItemidsStrategy() {
+		$config = self::pw('config');
+		return $config->company == 'ugm' ? new Strategies\EnforcePoItemids\Relaxed() : new Strategies\EnforcePoItemids\Enforced();
 	}
 
 /* =============================================================
@@ -365,8 +370,10 @@ class Receiving extends Base {
 
 	public function init() {
 		$this->strategies = new WireData();
-		$this->strategies->readQty    = $this->getReadQtyStrategy();
-		$this->strategies->enforceQty = $this->getEnforceQtyStrategy();
+		$this->strategies->readQty        = $this->getReadQtyStrategy();
+		$this->strategies->enforceQty     = $this->getEnforceQtyStrategy();
+		$this->strategies->enforceItemids = $this->getEnforceItemidsStrategy();
 		$this->items->setReadQtyStrategy($this->strategies->readQty);
+		$this->items->setEnforceItemidsStrategy($this->strategies->enforceItemids);
 	}
 }

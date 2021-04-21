@@ -14,6 +14,7 @@ use Dplus\CodeValidators\Min as MinValidator;
 
 use Dplus\Wm\Base;
 use Dplus\Wm\Receiving\Strategies\ReadQty\ReadStrategy;
+use Dplus\Wm\Receiving\Strategies\EnforcePoItemids\EnforcePoItemids;
 
 /**
  * Items
@@ -29,6 +30,9 @@ class Items extends Base {
 
 	/** @var ReadStrategy */
 	protected $readQtyStrategy;
+
+	/** @var EnforcePoItemids */
+	protected $enforceItemidsStrategy;
 
 	/**
 	 * Sets Purchase Order Number
@@ -54,6 +58,44 @@ class Items extends Base {
 		$this->readQtyStrategy = $strategy;
 	}
 
+	/**
+	 * Sets Purchase Order Number
+	 * @param ReadStrategy $readQtyStrategy
+	 */
+	public function setEnforceItemidsStrategy(EnforcePoItemids $strategy) {
+		$this->enforceItemidsStrategy = $strategy;
+	}
+
+/* =============================================================
+	Strategy-Based Functions
+============================================================= */
+	/**
+	 * Return Qty Recieved based on Qty Strategy
+	 * @param  string $itemID Item ID
+	 * @return float
+	 */
+	public function getQtyReceivedItemid($itemID) {
+		if ($this->readQtyStrategy::TYPE == 'single') {
+			return $this->countLotSerialsItemid($itemID);
+		}
+		return $this->sumQtyReceivedItemid($itemID);
+	}
+
+	/**
+	 * Return if Item ID is allowed to Receive
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function allowItemid($itemID) {
+		if ($this->enforceItemidsStrategy->allowItemsNotListed()) {
+			return true;
+		}
+		return $this->isItemOnOrder($itemID);
+	}
+
+/* =============================================================
+	ITM Functions
+============================================================= */
 	/**
 	 * Returns if Item is Lot Serial
 	 * @param  string $itemID Item ID
@@ -94,28 +136,19 @@ class Items extends Base {
 		return $v->itemIsNormal($itemID);
 	}
 
+/* =============================================================
+	Purchaase Order Receiving Items
+============================================================= */
 	/**
-	 * Return Qty Recieved based on Qty Strategy
+	 * Return if Purchase Order Receiving has Item ID
 	 * @param  string $itemID Item ID
-	 * @return float
+	 * @return bool
 	 */
-	public function getQtyReceivedItemid($itemID) {
-		if ($this->strategy::TYPE == 'single') {
-			return $this->countLotSerialsItemid($itemID);
-		}
-		return $this->sumQtyReceivedItemid($itemID);
-	}
-
-	/**
-	 * Return the number of records for this PO and Item ID
-	 * @param  string $itemID Item ID
-	 * @return int
-	 */
-	public function countLotSerialsItemid($itemID) {
-		$q = PurchaseOrderDetailLotReceivingQuery::create();
+	public function isItemOnOrder($itemID) {
+		$q = PurchaseOrderDetailReceiving::create();
 		$q->filterByPonbr($this->ponbr);
 		$q->filterByItemid($itemID);
-		return $q->count();
+		return boolval($q->count());
 	}
 
 	/**
@@ -131,6 +164,21 @@ class Items extends Base {
 		$q->filterByPonbr($this->ponbr);
 		$q->filterByItemid($itemID);
 		return $q->findOne();
+	}
+
+/* =============================================================
+	Purchaase Order Receiving Items - Lotserials
+============================================================= */
+	/**
+	 * Return the number of records for this PO and Item ID
+	 * @param  string $itemID Item ID
+	 * @return int
+	 */
+	public function countLotSerialsItemid($itemID) {
+		$q = PurchaseOrderDetailLotReceivingQuery::create();
+		$q->filterByPonbr($this->ponbr);
+		$q->filterByItemid($itemID);
+		return $q->count();
 	}
 
 	/**
