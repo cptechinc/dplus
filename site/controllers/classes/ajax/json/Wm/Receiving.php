@@ -34,8 +34,16 @@ class Receiving extends AbstractController {
 		return $data->jqv ? true : false;
 	}
 
+	public function allowItemOnOrder($data) {
+		self::sanitizeParametersShort($data, ['itemID|text', 'ponbr|ponbr']);
+		$r = new ReceivingCRUD();
+		$r->setPonbr($data->ponbr);
+		$r->init();
+		return $r->items->allowItemid($data->itemID);
+	}
+
 	public function doesQtyAddNeedWarning($data) {
-		$fields = ['itemID|text', 'jqv|bool', 'qty|float'];
+		$fields = ['itemID|text', 'qty|float'];
 		self::sanitizeParametersShort($data, $fields);
 		$validate = self::validatorMin();
 
@@ -51,7 +59,6 @@ class Receiving extends AbstractController {
 		$qtyOrdered  = $r->items->getQtyOrderedItemid($data->itemID);
 		$qtyReceived = $r->items->getQtyReceivedItemid($data->itemID) + $data->qty;
 		return $qtyReceived > $qtyOrdered;
-
 	}
 
 	private static function validatorMin() {
