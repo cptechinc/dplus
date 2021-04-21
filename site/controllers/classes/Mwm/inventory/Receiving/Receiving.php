@@ -59,6 +59,7 @@ class Receiving extends Base {
 		}
 
 		$m = self::getReceiving($data->ponbr);
+		$m->processInput(self::pw('input'));
 
 		// REDIRECT
 		switch ($data->action) {
@@ -100,6 +101,7 @@ class Receiving extends Base {
 		if ($validate->po($data->ponbr) === false) {
 			return self::invalidPo($data);
 		}
+		self::pw('page')->headline = "Receiving: PO # $data->ponbr";
 		$receiving = self::getReceiving();
 		$receiving->setPonbr($data->ponbr);
 		$po = $receiving->getPurchaseorder();
@@ -125,7 +127,7 @@ class Receiving extends Base {
 		$html->items     = self::purchaseOrderItems($data, $po);
 		$html->scan      = self::scanForm($data);
 		$html->modalbins = $config->twig->render('warehouse/inventory/bins-modal.twig', ['warehouse' => $warehouse]);
-		$jsconfig = array('warehouse' => array('id' => $whsesession->whseid, 'binarrangement' => $warehouse->get_binarrangementdescription(), 'bins' => $warehouse->get_bins()->toArray()), 'items' => $receiving->get_purchaseorder_recevingdetails_js(), 'config_receive' => $receiving->get_jsconfig());
+		$jsconfig = array('warehouse' => array('id' => $whsesession->whseid, 'items' => $receiving->get_purchaseorder_recevingdetails_js(), 'config_receive' => $receiving->get_jsconfig()));
 		$html->js = $config->twig->render('util/js-variables.twig', ['variables' => $jsconfig]);
 		self::pw('page')->js .= $config->twig->render('warehouse/inventory/receiving/js.twig', ['ponbr' => $data->ponbr, 'linenbr' => self::pw('session')->getFor('receiving', 'removed-line')]);
 		return $config->twig->render('warehouse/inventory/receiving/display.twig', ['html' => $html]);
@@ -151,7 +153,6 @@ class Receiving extends Base {
 
 			self::redirect(self::receivingScanUrl($data->ponbr, $data->scan), $http301 = false);
 		}
-
 	}
 
 	static protected function processScanSingle($data) {
@@ -224,6 +225,22 @@ class Receiving extends Base {
 	static public function receivingSubmitVerifyUrl($ponbr, $scan) {
 		$url = new Purl(self::receivingScanUrl($ponbr, $scan));
 		$url->query->set('action', 'verify-submit');
+		return $url->getUrl();
+	}
+
+	static public function deleteReceivedLotserialUrl(PurchaseOrderDetailLotReceiving $lot) {
+		$url = new Purl(self::receivingUrl($ponbr));
+		$url->query->set('action', 'delete-lotserial');
+		$url->query->set('ponbr', $lot->ponbr);
+		$url->query->set('linenbr', $lot->linenbr);
+		$url->query->set('lotserial', $lot->lotserial);
+		$url->query->set('binID', $lot->bin);
+		return $url->getUrl();
+	}
+
+	static public function postReceivingUrl($ponbr, $scan) {
+		$url = new Purl(self::receivingUrl($ponbr));
+		$url->query->set('action', 'post-received');
 		return $url->getUrl();
 	}
 
@@ -380,6 +397,7 @@ class Receiving extends Base {
 		if ($ponbr) {
 			self::$receiving->setPonbr($ponbr);
 		}
+		self::$receiving->init();
 		return self::$receiving;
 	}
 
@@ -398,6 +416,16 @@ class Receiving extends Base {
 
 		$m->addHook('Page(pw_template=whse-receiving)::receivingUrl', function($event) {
 			$event->return = self::receivingUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=whse-receiving)::deleteReceivedLotserialUrl', function($event) {
+			$lot     = $event->arguments(0); // Instance of PurchaseOrderDetailLotReceiving
+			$event->return = self::deleteReceivedLotserialUrl($lot);
+		});
+
+		$m->addHook('Page(pw_template=whse-receiving)::postReceivingUrl', function($event) {
+			$lot     = $event->arguments(0); // Instance of PurchaseOrderDetailLotReceiving
+			$event->return = self::postReceivingUrl($lot);
 		});
 
 	}
