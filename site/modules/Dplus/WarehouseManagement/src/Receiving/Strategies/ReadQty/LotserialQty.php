@@ -6,7 +6,7 @@ use Dplus\Configs as Configs;
  * LotserialQty
  * Strategy for Receiving Lotserials with the Qty provided
  */
-class Qty extends ReadStrategy {
+class LotserialQty extends ReadStrategy {
 	const TYPE = 'qty';
 
 	public function getQty(float $qty) {
