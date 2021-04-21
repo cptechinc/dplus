@@ -16,7 +16,7 @@ return array(
     'Dplus\\Wm\\Receiving\\Strategies\\EnforceQty\\Enforced' => $baseDir . '/src/Receiving/Strategies/EnforceQty/Enforced.php',
     'Dplus\\Wm\\Receiving\\Strategies\\EnforceQty\\Relaxed' => $baseDir . '/src/Receiving/Strategies/EnforceQty/Relaxed.php',
     'Dplus\\Wm\\Receiving\\Strategies\\EnforceQty\\Warn' => $baseDir . '/src/Receiving/Strategies/EnforceQty/Warn.php',
+    'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\LotserialQty' => $baseDir . '/src/Receiving/Strategies/ReadQty/LotserialQty.php',
     'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\LotserialSingle' => $baseDir . '/src/Receiving/Strategies/ReadQty/LotserialSingle.php',
-    'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\Qty' => $baseDir . '/src/Receiving/Strategies/ReadQty/LotserialQty.php',
     'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\ReadStrategy' => $baseDir . '/src/Receiving/Strategies/ReadQty/Base.php',
 );

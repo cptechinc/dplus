@@ -17,8 +17,8 @@ class ComposerStaticInitbe01d8a824371fa061fc4d032387886e
         'Dplus\\Wm\\Receiving\\Strategies\\EnforceQty\\Enforced' => __DIR__ . '/../..' . '/src/Receiving/Strategies/EnforceQty/Enforced.php',
         'Dplus\\Wm\\Receiving\\Strategies\\EnforceQty\\Relaxed' => __DIR__ . '/../..' . '/src/Receiving/Strategies/EnforceQty/Relaxed.php',
         'Dplus\\Wm\\Receiving\\Strategies\\EnforceQty\\Warn' => __DIR__ . '/../..' . '/src/Receiving/Strategies/EnforceQty/Warn.php',
+        'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\LotserialQty' => __DIR__ . '/../..' . '/src/Receiving/Strategies/ReadQty/LotserialQty.php',
         'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\LotserialSingle' => __DIR__ . '/../..' . '/src/Receiving/Strategies/ReadQty/LotserialSingle.php',
-        'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\Qty' => __DIR__ . '/../..' . '/src/Receiving/Strategies/ReadQty/LotserialQty.php',
         'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\ReadStrategy' => __DIR__ . '/../..' . '/src/Receiving/Strategies/ReadQty/Base.php',
     );
 
