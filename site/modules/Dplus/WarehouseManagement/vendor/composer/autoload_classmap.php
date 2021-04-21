@@ -8,5 +8,9 @@ $baseDir = dirname($vendorDir);
 return array(
     'Dplus\\Wm\\Base' => $baseDir . '/src/Base.php',
     'Dplus\\Wm\\Binr' => $baseDir . '/src/Binr/Binr.php',
+    'Dplus\\Wm\\Receiving\\Items' => $baseDir . '/src/Receiving/Items.php',
     'Dplus\\Wm\\Receiving\\Receiving' => $baseDir . '/src/Receiving/Receiving.php',
+    'Dplus\\Wm\\Receiving\\Strategies\\ReceiveQty\\LotserialQty' => $baseDir . '/src/Receiving/Strategies/ReceiveQty/LotserialQty.php',
+    'Dplus\\Wm\\Receiving\\Strategies\\ReceiveQty\\LotserialSingle' => $baseDir . '/src/Receiving/Strategies/ReceiveQty/LotserialSingle.php',
+    'Dplus\\Wm\\Receiving\\Strategies\\ReceiveQty\\QtyStrategy' => $baseDir . '/src/Receiving/Strategies/ReceiveQty/Base.php',
 );
