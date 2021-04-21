@@ -16,8 +16,9 @@ use WhseitemphysicalcountQuery, Whseitemphysicalcount;
 
 // Dplus Validators
 use Dplus\CodeValidators\Min as MinValidator;
-
+// Dplus Wm
 use Dplus\Wm\Base;
+use Dplus\Wm\Receiving\Strategies as Strategies;
 
 class Receiving extends Base {
 	/**
@@ -26,16 +27,28 @@ class Receiving extends Base {
 	 */
 	protected $ponbr;
 
+	/** @var Items */
+	public $items;
+
 	/**
 	 * Sets Purchase Order Number
 	 * @param string $sessionID
 	 */
 	public function setPonbr($ponbr) {
 		$this->ponbr = $ponbr;
+		$this->items->setPonbr($ponbr);
 	}
 
+	/**
+	 * Return Purchase Order Number
+	 * @return string
+	 */
 	public function getPonbr() {
 		return $this->ponbr;
+	}
+
+	public function __construct() {
+		$this->items = new Items();
 	}
 
 	public function processInput(WireInput $input) {
@@ -92,8 +105,6 @@ class Receiving extends Base {
 		return true;
 	}
 
-
-
 	public function canAutoSubmit(Whseitemphysicalcount $item) {
 		$validate = new MinValidator();
 
@@ -146,8 +157,6 @@ class Receiving extends Base {
 		}
 		return $this->wire('session')->getFor('receiving', 'received');
 	}
-
-
 
 /* =============================================================
 	Dplus Cobol Request Functions
@@ -339,48 +348,25 @@ class Receiving extends Base {
 		$q = ItemMasterItemQuery::create();
 		return $q->is_item_normal($itemID);
 	}
-/* =============================================================
-	URL Functions
-============================================================= */
+
+	public function getReadQtyStrategy() {
+		$config = $this->wire('modules')->get('ConfigsWarehouseInventory');
+		return $config->receive_lotserial_as_single ? new Strategies\ReadQty\LotserialSingle() : new Strategies\ReadQty\LotserialQty();
+	}
+
+	public function getEnforiceQtyStrategy() {
+		$config = self::pw('config');
+		return $config->company == 'ugm' ? new Strategies\EnforceQty\Relaxed() : new Strategies\EnforceQty\Warn();
+	}
 
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
 
 	public function init() {
-		$this->addHook('Page(pw_template=whse-receiving)::linenbrURL', function($event) {
-			$p = $event->object;
-			$linenbr = $event->arguments(0);
-			$url = new Url($p->fullURL->getUrl());
-			$url->query->set('linenbr', $linenbr);
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page(pw_template=whse-receiving)::ponbrURL', function($event) {
-			$p = $event->object;
-			$url = new Url($p->fullURL->getUrl());
-			$url->query = '';
-			$url->query->set('ponbr', $this->ponbr);
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page(pw_template=whse-receiving)::delete_received_itemURL', function($event) {
-			$url = new Url($this->wire('pages')->get('template=redir, redir_file=inventory')->url);
-			$lot     = $event->arguments(0); // Instance of PurchaseOrderDetailLotReceiving
-			$url->query->set('action', 'remove-received-item');
-			$url->query->set('ponbr', $lot->ponbr);
-			$url->query->set('linenbr', $lot->linenbr);
-			$url->query->set('lotserial', $lot->lotserial);
-			$url->query->set('binID', $lot->bin);
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page(pw_template=whse-receiving)::submit_receiptURL', function($event) {
-			$url = new Url($this->wire('pages')->get('template=redir, redir_file=inventory')->url);
-			$ponbr    = $event->arguments(0);
-			$url->query->set('action', 'submit-receipt');
-			$url->query->set('ponbr', $ponbr);
-			$event->return = $url->getUrl();
-		});
+		$this->strategies = new WireData();
+		$this->strategies->readQty    = $this->getReadQtyStrategy();
+		$this->strategies->enforceQty = $this->getEnforceQtyStrategy();
+		$this->items->setReadQtyStrategy($this->strategies->readQty);
 	}
 }
