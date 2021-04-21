@@ -11,9 +11,15 @@ class ComposerStaticInitbe01d8a824371fa061fc4d032387886e
         'Dplus\\Wm\\Binr' => __DIR__ . '/../..' . '/src/Binr/Binr.php',
         'Dplus\\Wm\\Receiving\\Items' => __DIR__ . '/../..' . '/src/Receiving/Items.php',
         'Dplus\\Wm\\Receiving\\Receiving' => __DIR__ . '/../..' . '/src/Receiving/Receiving.php',
-        'Dplus\\Wm\\Receiving\\Strategies\\ReceiveQty\\LotserialQty' => __DIR__ . '/../..' . '/src/Receiving/Strategies/ReceiveQty/LotserialQty.php',
-        'Dplus\\Wm\\Receiving\\Strategies\\ReceiveQty\\LotserialSingle' => __DIR__ . '/../..' . '/src/Receiving/Strategies/ReceiveQty/LotserialSingle.php',
-        'Dplus\\Wm\\Receiving\\Strategies\\ReceiveQty\\QtyStrategy' => __DIR__ . '/../..' . '/src/Receiving/Strategies/ReceiveQty/Base.php',
+        'Dplus\\Wm\\Receiving\\Strategies\\EnforcePoItemids\\EnforcePoItemids' => __DIR__ . '/../..' . '/src/Receiving/Strategies/EnforcePoItemids/Enforce.interface.php',
+        'Dplus\\Wm\\Receiving\\Strategies\\EnforcePoItemids\\Enforced' => __DIR__ . '/../..' . '/src/Receiving/Strategies/EnforcePoItemids/Enforced.php',
+        'Dplus\\Wm\\Receiving\\Strategies\\EnforcePoItemids\\Relaxed' => __DIR__ . '/../..' . '/src/Receiving/Strategies/EnforcePoItemids/Relaxed.php',
+        'Dplus\\Wm\\Receiving\\Strategies\\EnforceQty\\Enforced' => __DIR__ . '/../..' . '/src/Receiving/Strategies/EnforceQty/Enforced.php',
+        'Dplus\\Wm\\Receiving\\Strategies\\EnforceQty\\Relaxed' => __DIR__ . '/../..' . '/src/Receiving/Strategies/EnforceQty/Relaxed.php',
+        'Dplus\\Wm\\Receiving\\Strategies\\EnforceQty\\Warn' => __DIR__ . '/../..' . '/src/Receiving/Strategies/EnforceQty/Warn.php',
+        'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\LotserialSingle' => __DIR__ . '/../..' . '/src/Receiving/Strategies/ReadQty/LotserialSingle.php',
+        'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\Qty' => __DIR__ . '/../..' . '/src/Receiving/Strategies/ReadQty/LotserialQty.php',
+        'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\ReadStrategy' => __DIR__ . '/../..' . '/src/Receiving/Strategies/ReadQty/Base.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
