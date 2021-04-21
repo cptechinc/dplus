@@ -8,6 +8,6 @@ use ProcessWire\WireData;
  * Enforced
  * Interface for
  */
-interface EnforcePoItemids extends WireData {
+interface EnforcePoItemids {
 	public function allowItemsNotListed();
 }
