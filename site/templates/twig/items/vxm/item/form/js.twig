@@ -320,10 +320,11 @@ $(function() {
 		var costbase = form_vxm.find('input[name=unitcost_base]');
 		var changedcost = costbase.data('cost') != costbase.val();
 		var itmdifferent = costbase.data('itmcost') != costbase.val();
+		var itmdifferent = parseFloat(costbase.data('itmcost')) != costbase.val();
 		var changedordercode = input_ordercode.val() != input_ordercode.data('ordercode');
 		var costorordercode = (itmdifferent || changedordercode);
 
-		if (itmdifferent && (changedcost || changedordercode)) {
+		if (changedcost || changedordercode) {
 			request_can_update_itm_cost(input_vendorID.val(), input_vendoritemID.val(), input_itemID.val(), function (response) {
 				if (response.allow) {
 					if (response.confirm) {
