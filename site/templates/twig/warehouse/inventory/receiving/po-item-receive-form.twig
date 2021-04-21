@@ -4,14 +4,11 @@
 	page                   ProcessWire\Page
 	item                   Whseitemphysicalcount
 	m_receiving            module Receiving or Custom module Receiving
-	config                 ProcessWire\Config
-	config.inventory       module ConfigsWarehouseInventory
 #}
-<form action="{{ page.formurl }}" method="get" class="form-reset allow-enterkey-submit mb-4" id="po-item-receive-form">
-	<input type="hidden" name="action" value="receiving-submit">
-	<input type="hidden" name="ponbr" value="{{ page.ponbr }}">
+<form action="{{ page.url }}" method="get" class="form-reset allow-enterkey-submit mb-4" id="po-item-receive-form">
+	<input type="hidden" name="action" value="submit-item">
+	<input type="hidden" name="ponbr" value="{{ m_receiving.getPonbr() }}">
 	<input type="hidden" name="scan" value="{{ item.scan }}">
-	<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
 
 	<h3>Scanned Item Details</h3>
 
@@ -22,54 +19,58 @@
 		</div>
 	</div>
 
-	{% if (m_receiving.is_item_lotserialized(item.itemid)) %}
-		<div class="row">
-			<div class="col-sm-6">
-				<div class="form-group">
-					<label for="lotserial">Lot / Serial</label>
-					<div class="input-group">
-						<input type="text" class="form-control" id="lotserial" name="lotserial" value="{{ item.lotserial }}">
-					</div>
-					{% if (m_receiving.is_item_lotted(item.itemid)) %}
-						<small class="form-text text-muted">If blank, Lot Number will be created and assigned</small>
-					{% endif %}
+	<div class="row {{ m_receiving.is_item_lotserialized(item.itemid) == false ? 'collapse' : ''}}">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label for="lotserial">Lot / Serial</label>
+				<div class="input-group">
+					<input type="text" class="form-control" id="lotserial" name="lotserial" value="{{ item.lotserial }}">
 				</div>
+				{% if (m_receiving.is_item_lotted(item.itemid)) %}
+					<small class="form-text text-muted">If blank, Lot Number will be created and assigned</small>
+				{% endif %}
 			</div>
-			<div class="col-sm-6">
-				<div class="form-group">
-					<label for="lotserialref">Lot/Serial Ref</label>
-					<div class="input-group">
-						<input type="text" class="form-control" id="lotserialref" name="lotserialref" value="{{ item.lotserialref }}">
-					</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label for="lotserialref">Lot/Serial Ref</label>
+				<div class="input-group">
+					<input type="text" class="form-control" id="lotserialref" name="lotserialref" value="{{ item.lotserialref }}">
 				</div>
 			</div>
 		</div>
-	{% else %}
-		<input type="hidden" name="lotserial" value="">
-		<input type="hidden" name="lotserialref" value="">
-	{% endif %}
+	</div>
 
-	{% if config.inventory.receive_disregard_bin == true %}
-		<div class="form-group">
-			<label>Bin ID</label>
-			<div class="input-group">
-				<input type="text" class="form-control" placeholder="Bin ID" value="{{ item.bin }}" readonly>
-			</div>
-		</div>
-		<input type="hidden" class="form-control" id="binID" name="binID" value="{{ item.bin }}">
-	{% else %}
-		<div class="form-group">
-			<label for="binID">Bin ID</label>
-			<div class="input-group">
-				<span class="input-group-prepend">
-					<button type="button" class="btn btn-secondary show-possible-bins" data-toggle="modal" data-target="#bins-modal" data-input="binID" title="Show Warehouse Bins" aria-label="Show Warehouse Bins">
-						<span class="fa fa-list" aria-hidden="true"></span> <span class="sr-only">Show Warehouse Bins</span>
-					</button>
-				</span>
-				<input type="text" class="form-control" id="binID" name="binID" placeholder="Bin ID" value="{{ item.bin }}">
-			</div>
-		</div>
-	{% endif %}
+	<div class="form-group">
+		<label for="binID">Bin ID</label>
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'attributes': {
+						'readonly': settings.skipBin,
+					},
+					'input': {
+						'name': 'binID',
+						'value': item.bin,
+						'attributes': {
+							'placeholder': 'Bin ID',
+							'aria-label':  'binID'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-list'|icon,
+						'attributes': {
+							'title': 'Show Warehouse Bins',
+							'data-toggle': 'modal',
+							'data-target': '#bins-modal',
+							'aria-label': 'Show Warehouse Bins'
+						}
+					}
+				}
+			}
+		%}
+	</div>
 
 	<div class="row">
 		<div class="col-sm-6">
@@ -84,7 +85,7 @@
 				<span class="text-secondary pull-right">
 					<b>Previous Receipt: {{ m_receiving.get_received_total(item.itemid)|number_format(m_receiving.decimal_places()) }}</b>
 				</span>
-				<input type="text" class="form-control text-right qty-input" id="qty" name="qty" value="{{ item.qty|number_format(m_receiving.decimal_places()) }}" data-validated="false">
+				<input type="number" class="form-control text-right qty-input" id="qty" name="qty" value="{{ item.qty|number_format(m_receiving.decimal_places()) }}" data-validated="false">
 			</div>
 		</div>
 	</div>
@@ -92,7 +93,7 @@
 		<button type="submit" class="btn btn-success btn-lg">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Submit
 		</button>
-		<a href="{{ page.ponbrURL(page.ponbr) }}" class="btn-clear btn btn-danger btn-lg">
+		<a href="{{ page.receivingUrl(m_receiving.getPonbr()) }}" class="btn-clear btn btn-danger btn-lg">
 			<i class="fa fa-window-close" aria-hidden="true"></i> Cancel
 		</a>
 	</div>
