@@ -3,7 +3,7 @@
 // ProcessWire
 use ProcessWire\WireData;
 
-use EnforcePoItemids as EnforceInterface;
+use Dplus\Wm\Receiving\Strategies\EnforcePoItemids\EnforcePoItemids as EnforceInterface;
 
 /**
  * Enforced
