@@ -2,7 +2,7 @@
 
 use Purl\Url;
 // ProcessWire
-use ProcessWire\WireData;
+use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Online Models
 use PurchaseOrderQuery, PurchaseOrder;
 use PurchaseOrderDetailReceivingQuery, PurchaseOrderDetailReceiving;
@@ -57,7 +57,7 @@ class Receiving extends Base {
 
 		switch ($values->text('action')) {
 			case 'init-receive':
-				$m->requestPoInit();
+				$this->requestPoInit();
 				break;
 			case 'search-inventory':
 				$this->searchInventory($input);
@@ -74,7 +74,7 @@ class Receiving extends Base {
 	protected function searchInventory(WireInput $input) {
 		$rm     = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$m->requestSearch($values->text('scan'), $values->text('binID'));
+		$this->requestSearch($values->text('scan'), $values->text('binID'));
 	}
 
 	public function submitItemReceived(WireInput $input) {
@@ -355,12 +355,12 @@ class Receiving extends Base {
 	}
 
 	public function getEnforceQtyStrategy() {
-		$config = self::pw('config');
+		$config = $this->wire('config');
 		return $config->company == 'ugm' ? new Strategies\EnforceQty\Relaxed() : new Strategies\EnforceQty\Warn();
 	}
 
 	public function getEnforceItemidsStrategy() {
-		$config = self::pw('config');
+		$config = $this->wire('config');
 		return $config->company == 'ugm' ? new Strategies\EnforcePoItemids\Relaxed() : new Strategies\EnforcePoItemids\Enforced();
 	}
 
