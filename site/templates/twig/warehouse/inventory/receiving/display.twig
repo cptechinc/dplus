@@ -1,0 +1,19 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	html                   ProcessWire\WireData
+	html.header            string HTML for PO header
+	html.items             string HTML for PO Items
+#}
+
+{{ html.header|raw }}
+
+{{ html.scan|raw }}
+
+<h3>Items</h3>
+{{ html.items|raw }}
+
+{{ html.modalbins|raw }}
+
+{{ html.js|raw }}
