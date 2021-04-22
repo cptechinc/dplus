@@ -94,11 +94,23 @@ class Items extends Base {
 	}
 
 	/**
+	 * Return Qty Received for the Line
+	 * @param  int    $linenbr Line Number
+	 * @return float
+	 */
+	public function getQtyRecievedLine(int $linenbr) {
+		if ($this->readQtyStrategy::TYPE == 'single') {
+			return $this->countLotSerialsLine($linenbr);
+		}
+		return $this->sumQtyReceivedLine($linenbr);
+	}
+
+	/**
 	 * Return Qty Received with Lotserial  and Bin
 	 * @param  int    $linenbr   Line Number
 	 * @param  string $lotserial Lot / Serial #
 	 * @param  string $binID     Bin ID
-	 * @return int
+	 * @return float
 	 */
 	public function getQtyReceivedLineLotserial(int $linenbr, $lotserial, $binID) {
 		if ($this->readQtyStrategy::TYPE == 'single') {
@@ -219,6 +231,45 @@ class Items extends Base {
 		$q->select('qty');
 		$q->filterByPonbr($this->ponbr);
 		$q->filterByItemid($itemID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return the number of records for this PO and Item ID
+	 * @param  int    $linenbr Line Number
+	 * @return int
+	 */
+	public function countLotSerialsLine(int $linenbr) {
+		$q = PurchaseOrderDetailLotReceivingQuery::create();
+		$q->filterByPonbr($this->ponbr);
+		$q->filterByLinenbr($linenbr);
+		return $q->count();
+	}
+
+	/**
+	 * Return the number of records for this PO and Item ID
+	 * @param  int    $linenbr Line Number
+	 * @return float
+	 */
+	public function sumQtyReceivedLine(int $linenbr) {
+		$col = PurchaseOrderDetailLotReceiving::aliasproperty('qty_received');
+		$q = PurchaseOrderDetailLotReceivingQuery::create();
+		$q->withColumn("SUM($col)", 'qty');
+		$q->select('qty');
+		$q->filterByPonbr($this->ponbr);
+		$q->filterByLinenbr($linenbr);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return First Received Lot
+	 * @param  string $linenbr   Line Number
+	 * @return PurchaseOrderDetailLotReceiving
+	 */
+	public function getFirstLineLotserial(int $linenbr) {
+		$q = PurchaseOrderDetailLotReceivingQuery::create();
+		$q->filterByPonbr($this->ponbr);
+		$q->filterByLinenbr($linenbr);
 		return $q->findOne();
 	}
 
