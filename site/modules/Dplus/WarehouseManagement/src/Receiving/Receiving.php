@@ -131,18 +131,20 @@ class Receiving extends Base {
 		$rm     = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		$ponbr     = $values->text('ponbr');
-		$linenbr   = $values->int('linenbr');
-		$lotserial = $values->text('lotserial');
-		$binID     = $values->text('binID');
+		$ponbr         = $values->text('ponbr');
+		$linenbr       = $values->int('linenbr');
+		$lotserial     = $values->text('lotserial');
+		$binID = $values->text('originalbinID');
+		$newbinID     = $values->text('binID');
 
 		if ($this->items->lineLotserialExists($linenbr, $lotserial, $binID) === false) {
 			return false;
 		}
 		$lot = $this->items->getLineLotserial($linenbr, $lotserial, $binID);
+		$lot->setBinid($newbinID);
 		$lot->setLotdate($values->text('productiondate'));
 		$lot->setQty_received($values->text('qty'));
-		$this->requestUpdateLotserialQty($lot);
+		$this->requestUpdateLotserial($lot);
 		return true;
 	}
 
@@ -240,8 +242,10 @@ class Receiving extends Base {
 	 * Sends HTTP GET request to Redir to make Dplus Request to load Purchase Order Working files
 	 * @return void
 	 */
-	public function requestUpdateLotserialQty(PurchaseOrderDetailLotReceiving $lot) {
-		$data = ['EDITRECEIVEDQTY', "PONBR=$lot->ponbr", "LINENBR=$lot->linenbr", "LOTSERIAL=$lot->lotserial", "BIN=$lot->bin", "QTY=$lot->qty_received", "DATE=$lot->lotdate"];
+	public function requestUpdateLotserial(PurchaseOrderDetailLotReceiving $lot) {
+		$oldbin = array_key_exists($lot::aliasproperty('binid'), $lot->originalvalues) ? $lot->originalvalues[$lot::aliasproperty('binid')] : $lot->binid;
+		$data = ['EDITRECEIVEDQTY', "PONBR=$lot->ponbr", "LINENBR=$lot->linenbr", "LOTSERIAL=$lot->lotserial", "BIN=$oldbin", "QTY=$lot->qty_received", "DATE=$lot->lotdate"];
+		$data[] = "NEWBIN=$lot->bin";
 		$this->sendDplusRequest($data);
 	}
 
