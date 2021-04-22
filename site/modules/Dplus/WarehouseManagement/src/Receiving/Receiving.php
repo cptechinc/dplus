@@ -332,42 +332,6 @@ class Receiving extends Base {
 		return $q->findOne();
 	}
 
-	/**
-	 * Returns an Array that contains each Purchase Order Detail and the properties needed
-	 * for JavaScript Validation
-	 * @return array
-	 */
-	public function get_purchaseorder_recevingdetails_js() {
-		$config = $this->wire('config');
-		$po = $this->getPurchaseorder();
-		$items = $po->get_receivingitems();
-		$js = array();
-
-		foreach ($items as $item) {
-			$js[$item->itemid] = array(
-				'itemid'         => $item->itemid,
-				'qty_ordered'    => intval($item->qty_ordered),
-				'qty_received'   => $config->company == 'provalley' ? $item->count_receivedlots() : $item->qty_received,
-				'lotserialcount' => $item->count_receivedlots()
-			);
-		}
-		return $js;
-	}
-
-	/**
-	 * Returns array that contains configuration values
-	 * NOTE: used for JavaScript
-	 * @return array
-	 */
-	public function get_jsconfig() {
-		$config = $this->wire('modules')->get('ConfigsWarehouseInventory');
-		$js = array(
-			'receive_lotserial_as_single' => $config->receive_lotserial_as_single,
-			//'receive_qty_label'           => $config->receive_qty_label
-		);
-		return $js;
-	}
-
 	public function getReadQtyStrategy() {
 		$config = $this->wire('modules')->get('ConfigsWarehouseInventory');
 		return $config->receive_lotserial_as_single ? new Strategies\ReadQty\LotserialSingle() : new Strategies\ReadQty\LotserialQty();

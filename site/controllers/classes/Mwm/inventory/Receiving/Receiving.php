@@ -27,6 +27,8 @@ use Dplus\Wm as Wm;
 use Controllers\Wm\Base;
 
 class Receiving extends Base {
+	const DPLUSPERMISSION = 'er';
+
 	/** @var ReceivingCRUD */
 	static private $receiving;
 
@@ -129,7 +131,7 @@ class Receiving extends Base {
 		$html->items     = self::purchaseOrderItems($data, $po);
 		$html->scan      = self::scanForm($data);
 		$html->modalbins = $config->twig->render('warehouse/inventory/bins-modal.twig', ['warehouse' => $warehouse]);
-		$jsconfig = array('warehouse' => array('id' => $whsesession->whseid, 'items' => $receiving->get_purchaseorder_recevingdetails_js(), 'config_receive' => $receiving->get_jsconfig()));
+		$jsconfig = ['warehouse' => ['id' => $whsesession->whseid]];
 		$html->js = $config->twig->render('util/js-variables.twig', ['variables' => $jsconfig]);
 		self::pw('page')->js .= $config->twig->render('warehouse/inventory/receiving/js.twig', ['ponbr' => $data->ponbr, 'linenbr' => self::pw('session')->getFor('receiving', 'removed-line')]);
 		return $config->twig->render('warehouse/inventory/receiving/display.twig', ['html' => $html]);
@@ -391,6 +393,13 @@ class Receiving extends Base {
 /* =============================================================
 	Validator, Module Getters
 ============================================================= */
+	static public function validateUserPermission(user $user = nul) {
+		if (empty($user)) {
+			$user = self::pw('user');
+		}
+		return $user->has_function(self::DPLUSPERMISSION);
+	}
+
 	static public function getReceiving($ponbr = '') {
 		self::pw('modules')->get('WarehouseManagement');
 
