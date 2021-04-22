@@ -153,9 +153,7 @@ class Receiving extends Base {
 			return false;
 		}
 
-		$warehouse = $this->getWarehouse();
-
-		if (!$warehouse->validate_bin($item->bin)) {
+		if ($validate->whsebin($this->wire('user')->whseid, $item->bin) === false) {
 			return false;
 		}
 
@@ -243,21 +241,13 @@ class Receiving extends Base {
 	 * @return void
 	 */
 	public function requestUpdateLotserialQty(PurchaseOrderDetailLotReceiving $lot) {
-		$data = ['EDITRECEIVEDQTY', "PONBR=$lot->ponbr", "LINENBR=$lot->linenbr", "LOTSERIAL=$lot->lotserial", "BIN=$lot->bin", "QTY=$lot->qty_reeived", "DATE=$lot->lotdate"];
+		$data = ['EDITRECEIVEDQTY', "PONBR=$lot->ponbr", "LINENBR=$lot->linenbr", "LOTSERIAL=$lot->lotserial", "BIN=$lot->bin", "QTY=$lot->qty_received", "DATE=$lot->lotdate"];
 		$this->sendDplusRequest($data);
 	}
 
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
-	/**
-	 * Returns if Purchase Order exists in the Database
-	 * @return PurchaseOrder
-	 */
-	public function purchaseorder_exists() {
-		return PurchaseOrderQuery::create()->filterByPonbr($this->ponbr)->count();
-	}
-
 	/**
 	 * Returns Purchase Order from Database
 	 * @return PurchaseOrder
@@ -267,69 +257,11 @@ class Receiving extends Base {
 	}
 
 	/**
-	 * Returns Purchase Order from Database
-	 * @return Whsesession
-	 */
-	public function getWhsession() {
-		return WhsesessionQuery::create()->findOneBySessionid($this->sessionID);
-	}
-
-	/**
-	 * Return Warehouse
-	 * @return Warehouse
-	 */
-	public function getWarehouse() {
-		$whsesession = $this->getWhsession();
-		return WarehouseQuery::create()->findOneById($whsesession->whseid);
-	}
-
-	/**
 	 * Return the number of decimal places for qty values
 	 * @return int
 	 */
 	public function decimal_places() {
 		return ConfigSalesOrderQuery::create()->findOne()->decimal_places;
-	}
-
-	/**
-	 * Return the Sum of Qty Received for Item ID
-	 * @param  string $itemID Item ID
-	 * @return float
-	 */
-	public function get_received_total($itemID) {
-		$col_received = PurchaseOrderDetailReceiving::get_aliasproperty('qty_received');
-		$q = PurchaseOrderDetailReceivingQuery::create();
-		$q->withColumn("SUM($col_received)", 'total');
-		$q->select("total");
-		$q->filterByPonbr($this->ponbr);
-		$q->filterByItemid($itemID);
-		return $q->findOne();
-	}
-
-	/**
-	 * Return Receiving Item
-	 * @param  int    $linenbr      Line Number
-	 * @param  string $lotserial Lot / Serial Number
-	 * @param  string $binID     Bin ID
-	 * @return PurchaseOrderDetailLotReceiving
-	 */
-	public function get_receiving_item($linenbr, $lotserial = '', $binID = null) {
-		$q = PurchaseOrderDetailLotReceivingQuery::create();
-		$q->filterByPonbr($this->ponbr);
-		$q->filterByLinenbr($linenbr);
-
-		if ($lotserial)  {
-			if ($lotserial != 'all') {
-				$q->filterByLotserial($lotserial);
-			}
-		}
-
-		if ($binID) {
-			if ($lotserial != 'all') {
-				$q->filterByBin($binID);
-			}
-		}
-		return $q->findOne();
 	}
 
 	public function getReadQtyStrategy() {
