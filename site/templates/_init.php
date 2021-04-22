@@ -93,6 +93,7 @@ if (!$values->action || $page->template == 'dplus-screen-formatter') {
 	$config->styles->append(hash_templatefile('styles/theme.css'));
 	$config->styles->append('//fonts.googleapis.com/css?family=Lusitana:400,700|Quattrocento:400,700');
 	$config->styles->append('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+	$config->styles->append('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css');
 	$config->styles->append(hash_templatefile('styles/lib/fuelux.css'));
 	//$config->styles->append(hash_templatefile('styles/lib/sweetalert.css'));
 	$config->styles->append(hash_templatefile('styles/lib/sweetalert2.css'));
