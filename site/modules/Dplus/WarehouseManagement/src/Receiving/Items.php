@@ -145,7 +145,7 @@ class Items extends Base {
 	 * @return bool
 	 */
 	public function isItemOnOrder($itemID) {
-		$q = PurchaseOrderDetailReceiving::create();
+		$q = PurchaseOrderDetailReceivingQuery::create();
 		$q->filterByPonbr($this->ponbr);
 		$q->filterByItemid($itemID);
 		return boolval($q->count());
