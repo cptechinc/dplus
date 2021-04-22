@@ -96,6 +96,8 @@
 			'receiving' => [
 				'validate' => [
 					['GET', 'require-lotserial/', Json\Wm\Receiving::class, 'requireLotserial'],
+					['GET', 'allow-itemid/', Json\Wm\Receiving::class, 'allowItemOnOrder'],
+					['GET', 'add-qty-warning/', Json\Wm\Receiving::class, 'doesQtyAddNeedWarning'],
 				],
 			],
 		],
