@@ -309,46 +309,6 @@ class Receiving extends Base {
 		return $js;
 	}
 
-	/**
-	 * Returns if Item is Lot Serial
-	 * @param  string $itemID Item ID
-	 * @return bool
-	 */
-	public function is_item_lotserialized($itemID) {
-		$q = ItemMasterItemQuery::create();
-		return ($q->is_item_serialized($itemID) || $q->is_item_lotted($itemID));
-	}
-
-	/**
-	 * Returns if Item is Lot Serial
-	 * @param  string $itemID Item ID
-	 * @return bool
-	 */
-	public function is_item_serialized($itemID) {
-		$q = ItemMasterItemQuery::create();
-		return $q->is_item_serialized($itemID);
-	}
-
-	/**
-	 * Returns if Item is Lot Serial
-	 * @param  string $itemID Item ID
-	 * @return bool
-	 */
-	public function is_item_lotted($itemID) {
-		$q = ItemMasterItemQuery::create();
-		return $q->is_item_lotted($itemID);
-	}
-
-	/**
-	 * Returns if Item is Lot Serial
-	 * @param  string $itemID Item ID
-	 * @return bool
-	 */
-	public function is_item_normal($itemID) {
-		$q = ItemMasterItemQuery::create();
-		return $q->is_item_normal($itemID);
-	}
-
 	public function getReadQtyStrategy() {
 		$config = $this->wire('modules')->get('ConfigsWarehouseInventory');
 		return $config->receive_lotserial_as_single ? new Strategies\ReadQty\LotserialSingle() : new Strategies\ReadQty\LotserialQty();
