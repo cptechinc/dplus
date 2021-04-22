@@ -51,7 +51,7 @@ class Min extends WireData {
 	 * @return bool
 	 */
 	public function itemIsSerialized($itemID) {
-		return $this->itemIsType($itemID, ItemMasterItem::ITEMTYPE_SERIAL);
+		return $this->itemIsType($itemID, ItemMasterItem::ITEMTYPE_SERIALIZED);
 	}
 
 	/**
