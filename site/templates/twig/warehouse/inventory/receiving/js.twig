@@ -57,6 +57,19 @@ $(function() {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		rules: {
+			itemID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('wm/receiving/validate/allow-itemid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						ponbr: function() {
+							return $('#po-item-receive-form').find('input[name=ponbr]').val();
+						}
+					}
+				}
+			},
 			binID: {
 				required: true,
 				remote: {
@@ -83,7 +96,16 @@ $(function() {
 			qty: {
 				required: true,
 				number: true,
-				min: 0.01
+				min: 0.01,
+				remote: {
+					url: '{{ page.jsonapiURL('wm/receiving/validate/require-lotserial/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						itemID: $('#itemID').val(),
+						lotserial: $('#lotserial').val()
+					}
+				}
 			},
 
 		},
