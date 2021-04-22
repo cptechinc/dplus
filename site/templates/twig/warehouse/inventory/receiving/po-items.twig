@@ -40,7 +40,7 @@
 				<div class="col-sm-1">
 					{% if m_receiving.items.isItemNormal(item.itemid) %}
 						{% set receiveditem = item.get_receivedlot() %}
-						<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#item-edit-modal" data-linenbr="{{ item.linenbr }}" data-itemid="{{ item.itemid }}" data-qty="{{ item.qty_received|number_format() }}" data-bin="{{ receiveditem.bin }}">
+						<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#item-edit-modal" data-linenbr="{{ item.linenbr }}" data-itemid="{{ item.itemid }}" data-binid="{{ receiveditem.bin }}">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</button>
 					{% endif %}
@@ -74,7 +74,7 @@
 									<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 								</a>
 								&nbsp; &nbsp;
-								<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#item-edit-modal" data-linenbr="{{ item.linenbr }}" data-itemid="{{ item.itemid }}" data-lotserial="{{ lot.lotserial }}" data-lotserialref="{{ lot.lotreference }}" data-qty="{{ lot.qty_received|number_format(4) }}" data-bin="{{ lot.bin }}">
+								<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#item-edit-modal" data-linenbr="{{ item.linenbr }}" data-itemid="{{ item.itemid }}" data-lotserial="{{ lot.lotserial }}" data-binid="{{ lot.bin }}">
 									<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 								</button>
 							</div>

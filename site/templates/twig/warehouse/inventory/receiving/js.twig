@@ -26,19 +26,26 @@ $(function() {
 	modal_itemedit.on('show.bs.modal', function (event) {
 		var modal = $(this);
 		var button = $(event.relatedTarget); // Button that triggered the modal
-		var record = button.closest('.lotserial-record');
-		var item = record.find('.item');
-
-		var linenbr = item.data('linenbr');
+		var linenbr = button.data('linenbr');
 		modal.find('.modal-title .linenbr').text(linenbr);
-		modal.find('input[name=linenbr]').val(linenbr);
-		modal.find('input[name=itemID]').val(item.data('itemid'));
-		modal.find('input[name=qty]').val(record.find('[data-qty]').data('qty'));
-		modal.find('input[name=uom]').val(record.find('[data-uom]').data('uom'));
-		modal.find('input[name=binID]').val(record.find('[data-bin]').data('bin'));
-		modal.find('input[name=productiondate]').val(record.find('[data-date]').data('date'));
-		modal.find('input[name=lotserialref]').val(record.find('[data-lotserialref]').data('lotserialref'));
-		modal.find('input[name=lotserial]').val(record.find('[data-lotserial]').data('lotserial'));
+
+		var url = URI('{{ page.jsonapiURL('wm/receiving/items/lotserial/') }}');
+		url.addQuery('ponbr', modal.find('input[name=ponbr]').val());
+		url.addQuery('linenbr', linenbr);
+		url.addQuery('lotserial', button.data('lotserial'));
+		url.addQuery('binID', button.data('binid'));
+
+		console.log(url.toString());
+		$.getJSON(url.toString(), function(data) {
+			modal.find('input[name=linenbr]').val(data.linenbr);
+			modal.find('input[name=itemID]').val(data.itemid);
+			modal.find('input[name=qty]').val(data.qty.received);
+			modal.find('input[name=uom]').val(data.uom.code);
+			modal.find('input[name=binID]').val(data.binid);
+			modal.find('input[name=productiondate]').val(data.lotdate);
+			modal.find('input[name=lotserialref]').val(data.lotref);
+			modal.find('input[name=lotserial]').val(data.lotserial);
+		});
 	});
 
 	modal_itemedit.on('shown.bs.modal', function (event) {
