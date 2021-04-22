@@ -47,8 +47,9 @@ class Receiving extends Base {
 		if (empty($data->ponbr) === false) {
 			return self::receiving($data);
 		}
-
-		return self::poForm($data);
+		$html =  self::pw('config')->twig->render('warehouse/inventory/receiving/bread-crumbs.twig');
+		$html .= self::poForm($data);
+		return $html;
 	}
 
 	static public function handleCRUD($data) {
@@ -257,7 +258,8 @@ class Receiving extends Base {
 		$page   = self::pw('page');
 		$config = self::pw('config');
 		$page->headline = "Sales Order #$data->ponbr not found";
-		$html = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Purchase Order Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Order # $data->ponbr can not be found"]);
+		$html =  $config->twig->render('warehouse/inventory/receiving/bread-crumbs.twig');
+		$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Purchase Order Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Order # $data->ponbr can not be found"]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= self::poForm($data);
 		return $html;
