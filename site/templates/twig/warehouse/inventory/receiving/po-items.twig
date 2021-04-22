@@ -18,7 +18,7 @@
 		</div>
 	</div>
 	{% for item in items %}
-		<div class="list-group-item first-txn-row {{ item.qty_received() > item.qty_ordered ? 'bg-warning text-white' : ''}}">
+		<div class="list-group-item first-txn-row {{ m_receiving.items.getQtyRecievedLine(item.linenbr) > item.qty_ordered ? 'bg-warning text-white' : ''}}">
 			<div class="row">
 				<div class="col-sm-1">
 					<button type="button" class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#{{ (item.linenbr ~ '-lotserial')|attrJS }}" aria-expanded="false" aria-controls="{{ (item.linenbr ~ '-lotserial')|attrJS }}">
@@ -39,8 +39,8 @@
 				<div class="col-sm-1 text-right">{{ item.qty_remaining()|number_format(m_receiving.decimal_places()) }}</div>
 				<div class="col-sm-1">
 					{% if m_receiving.items.isItemNormal(item.itemid) %}
-						{% set receiveditem = item.get_receivedlot() %}
-						<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#item-edit-modal" data-linenbr="{{ item.linenbr }}" data-itemid="{{ item.itemid }}" data-binid="{{ receiveditem.bin }}">
+						{% set receiveditem = m_receiving.items.getFirstLineLotserial(item.linenbr) %}
+						<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#item-edit-modal" data-linenbr="{{ item.linenbr }}" data-lotserial="{{ receiveditem.lotserial }}" data-binid="{{ receiveditem.bin }}">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</button>
 					{% endif %}
