@@ -167,34 +167,4 @@ $(function() {
 			form.submit();
 		}
 	});
-
-	function validate_qty_exceeds() {
-		var error = false;
-		var title = '';
-		var msg = '';
-		var html = false;
-		var itemID = form_receive.find('input[name=itemID]').val();
-		var item = items[itemID];
-		var qty = 0;
-		var company = "{{ config.company }}";
-
-		if (company != 'ugm') {
-			if (config_receive['receive_lotserial_as_single']) {
-				qty = item.lotserialcount;
-				qty += 1;
-			} else {
-				qty = parseFloat(item.qty_received);
-				qty += parseFloat(input_qty.val());
-			}
-
-			if (qty > item.qty_ordered && input_qty.attr('data-validated') != 'true') {
-				error = true;
-				title = 'Warning';
-				msg   = 'Quantity Received will exceed Quantity Ordered';
-
-				input_qty.attr('data-validated', 'true');
-			}
-		}
-		return new SwalError(error, title, msg, html);
-	}
 });
