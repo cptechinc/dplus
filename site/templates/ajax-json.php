@@ -99,6 +99,11 @@
 					['GET', 'allow-itemid/', Json\Wm\Receiving::class, 'allowItemOnOrder'],
 					['GET', 'add-qty-warning/', Json\Wm\Receiving::class, 'doesQtyAddNeedWarning'],
 				],
+				'items' => [
+					['GET', '', Json\Wm\Receiving::class, 'test'],
+					['GET', 'line/', Json\Wm\Receiving::class, 'getLine'],
+					['GET', 'lotserial/', Json\Wm\Receiving::class, 'getLineLotserial'],
+				]
 			],
 		],
 	];

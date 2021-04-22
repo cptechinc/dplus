@@ -7,6 +7,7 @@ use ProcessWire\Module, ProcessWire\ProcessWire;
 use Dplus\Filters\Min\ItemMaster as ItemMasterFilter;
 // Dplus Validators
 use Dplus\CodeValidators\Min as MinValidator;
+use Dplus\CodeValidators\Mpo as MpoValidator;
 // Dplus Wm
 use Dplus\Wm\Receiving\Receiving as ReceivingCRUD;
 // Mvc Controllers
@@ -66,7 +67,52 @@ class Receiving extends AbstractController {
 		return $qtyReceived > $qtyOrdered;
 	}
 
+	static public function getLineLotserial($data) {
+		$fields = ['ponbr|ponbr', 'linenbr|int', 'lotserial|text', 'binID|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$validate = self::validatorMpo();
+
+		if ($validate->po($data->ponbr) === false) {
+			return true;
+		}
+
+		$r = new ReceivingCRUD();
+		$r->setPonbr($data->ponbr);
+		$r->init();
+		if ($r->items->lineLotserialExists($data->linenbr, $data->lotserial, $data->binID) === false) {
+			return false;
+		}
+
+		$lot = $r->items->getLineLotserial($data->linenbr, $data->lotserial, $data->binID);
+		$item = $lot->item;
+		$data = [
+			'linenbr'   => $lot->linenbr,
+			'itemid'    => $lot->itemid,
+			'lotserial' => $lot->lotserial,
+			'binid'     => $lot->binid,
+			'lotref'    => $lot->lotref,
+			'date'      => $lot->lotdate,
+			'item' => [
+				'itemid'      => $lot->itemid,
+				'description' => $item->description,
+				'description2' => $item->description2,
+			],
+			'uom' => [
+				'code'        => $item->unitofmpurchase->code,
+				'description' => $item->unitofmpurchase->description
+			],
+			'qty' => [
+				'received'    => $r->items->getQtyReceivedLineLotserial($lot->linenbr, $lot->lotserial, $lot->binid),
+			],
+		];
+		return $data;
+	}
+
 	private static function validatorMin() {
 		return new MinValidator();
+	}
+
+	private static function validatorMpo() {
+		return new MpoValidator();
 	}
 }
