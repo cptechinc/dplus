@@ -19,14 +19,14 @@
 		</div>
 	</div>
 
-	<div class="row {{ m_receiving.is_item_lotserialized(item.itemid) == false ? 'collapse' : ''}}">
+	<div class="row {{ m_receiving.items.isItemLotserialized(item.itemid) == false ? 'collapse' : ''}}">
 		<div class="col-sm-6">
 			<div class="form-group">
 				<label for="lotserial">Lot / Serial</label>
 				<div class="input-group">
 					<input type="text" class="form-control" id="lotserial" name="lotserial" value="{{ item.lotserial }}">
 				</div>
-				{% if (m_receiving.is_item_lotted(item.itemid)) %}
+				{% if (m_receiving.items.isItemLotted(item.itemid)) %}
 					<small class="form-text text-muted">If blank, Lot Number will be created and assigned</small>
 				{% endif %}
 			</div>
@@ -76,7 +76,7 @@
 		<div class="col-sm-6">
 			<div class="form-group">
 				<label for="productiondate">Expire Date</label>
-				{% include 'util/date-picker.twig' with {'name': 'productiondate', 'id': 'productiondate', 'value': item.productiondate ? item.productiondate|convertdate('m/d/Y') : '', 'disabled': item.is_item_normal()} %}
+				{% include 'util/date-picker.twig' with {'name': 'productiondate', 'id': 'productiondate', 'value': item.productiondate ? item.productiondate|convertdate('m/d/Y') : '', 'disabled': item.items.isItemNormal()} %}
 			</div>
 		</div>
 		<div class="col-sm-6">
