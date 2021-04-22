@@ -68,6 +68,9 @@ class Receiving extends Base {
 			case 'submit-item':
 				$this->submitItemReceived($input);
 				break;
+			case 'delete-lotserial':
+				$this->deleteLotserial($input);
+				break;
 		}
 	}
 
@@ -77,7 +80,7 @@ class Receiving extends Base {
 		$this->requestSearch($values->text('scan'), $values->text('binID'));
 	}
 
-	public function submitItemReceived(WireInput $input) {
+	protected function submitItemReceived(WireInput $input) {
 		$rm     = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$scan   = $values->text('scan');
@@ -102,6 +105,28 @@ class Receiving extends Base {
 		$recieved->binid  = $item->bin;
 
 		$this->requestAutoSubmitScan();
+		return true;
+	}
+
+	protected function deleteLotserial(WireInput $input) {
+		$rm     = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$ponbr     = $values->text('ponbr');
+		$linenbr   = $values->int('linenbr');
+		$lotserial = $values->text('lotserial');
+		$binID     = $values->text('binID');
+
+		$q = PurchaseOrderDetailLotReceivingQuery::create();
+		$q->filterByPonbr($ponbr);
+		$q->filterByLinenbr($linenbr);
+		$q->filterByLotserial($lotserial);
+		$q->filterByBin($binID);
+		if (boolval($q->count()) === false) {
+			return false;
+		}
+		$lot = $q->findOne();
+		$this->requestRemoveLotserial($lot);
 		return true;
 	}
 
@@ -185,6 +210,15 @@ class Receiving extends Base {
 	 */
 	public function requestSearch($q, $binID) {
 		$data = array('RECEIVINGSEARCH', "PONBR=$this->ponbr", "QUERY=$q", "BIN=$binID");
+		$this->sendDplusRequest($data);
+	}
+
+	/**
+	 * Sends HTTP GET request to Redir to make Dplus Request to load Purchase Order Working files
+	 * @return void
+	 */
+	public function requestRemoveLotserial(PurchaseOrderDetailLotReceiving $lot) {
+		$data = array('RECEIVEREMOVELOT', "PONBR=$lot->ponbr", "LINENBR=$lot->linenbr", "LOTSERIAL=$lot->lotserial", "BIN=$lot->bin");
 		$this->sendDplusRequest($data);
 	}
 
