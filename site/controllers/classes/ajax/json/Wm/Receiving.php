@@ -59,10 +59,10 @@ class Receiving extends AbstractController {
 		$r = new ReceivingCRUD();
 		$r->setPonbr($data->ponbr);
 		$r->init();
-		if ($r->enforceQty->warn() === false) {
+		if ($r->strategies->enforceQty->warn() === false) {
 			return false;
 		}
-		$qtyOrdered  = $r->items->getQtyOrderedItemid($data->itemID);
+		$qtyOrdered  = $r->items->sumQtyOrderedItemid($data->itemID);
 		$qtyReceived = $r->items->getQtyReceivedItemid($data->itemID) + $data->qty;
 		return $qtyReceived > $qtyOrdered;
 	}
