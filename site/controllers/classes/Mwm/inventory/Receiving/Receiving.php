@@ -8,6 +8,7 @@ use Propel\Runtime\ActiveQuery\Criteria;
 // Dplus Model
 use WarehouseQuery, Warehouse;
 use PurchaseOrder;
+use PurchaseOrderDetailLotReceiving;
 // Dpluso Model
 use BininfoQuery, Bininfo;
 use WhsesessionQuery, Whsesession;
@@ -156,6 +157,7 @@ class Receiving extends Base {
 	}
 
 	static protected function processScanSingle($data) {
+		self::sanitizeParametersShort($data, ['binID|text']);
 		$q = WhseitemphysicalcountQuery::create();
 		$q->filterBySessionid(self::getSessionid());
 		$q->filterByScan($data->scan);
@@ -229,7 +231,7 @@ class Receiving extends Base {
 	}
 
 	static public function deleteReceivedLotserialUrl(PurchaseOrderDetailLotReceiving $lot) {
-		$url = new Purl(self::receivingUrl($ponbr));
+		$url = new Purl(self::receivingUrl($lot->ponbr));
 		$url->query->set('action', 'delete-lotserial');
 		$url->query->set('ponbr', $lot->ponbr);
 		$url->query->set('linenbr', $lot->linenbr);
