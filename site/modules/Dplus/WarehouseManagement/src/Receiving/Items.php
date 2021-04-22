@@ -93,6 +93,20 @@ class Items extends Base {
 		return $this->isItemOnOrder($itemID);
 	}
 
+	/**
+	 * Return Qty Received with Lotserial  and Bin
+	 * @param  int    $linenbr   Line Number
+	 * @param  string $lotserial Lot / Serial #
+	 * @param  string $binID     Bin ID
+	 * @return int
+	 */
+	public function getQtyReceivedLineLotserial(int $linenbr, $lotserial, $binID) {
+		if ($this->readQtyStrategy::TYPE == 'single') {
+			return $this->countLineLotserial($linenbr, $lotserial, $binID);
+		}
+		return $this->getLineLotserialQty($linenbr, $lotserial, $binID);
+	}
+
 /* =============================================================
 	ITM Functions
 ============================================================= */
@@ -152,6 +166,18 @@ class Items extends Base {
 	}
 
 	/**
+	 * Return if PO Receiving Line Exists
+	 * @param  int    $linenbr Line Number
+	 * @return bool
+	 */
+	public function lineExists(int $linenbr) {
+		$q = PurchaseOrderDetailReceivingQuery::create();
+		$q->filterByPonbr($this->ponbr);
+		$q->filterByLinenbr($linenbr);
+		return boolval($q->count());
+	}
+
+	/**
 	 * Return the number of records for this PO and Item ID
 	 * @param  string $itemID Item ID
 	 * @return float
@@ -191,8 +217,75 @@ class Items extends Base {
 		$q = PurchaseOrderDetailLotReceivingQuery::create();
 		$q->withColumn("SUM($col)", 'qty');
 		$q->select('qty');
-		$q->filterByPonbr($ponbr);
+		$q->filterByPonbr($this->ponbr);
 		$q->filterByItemid($itemID);
 		return $q->findOne();
+	}
+
+	/**
+	 * Return Received Lot from Bin
+	 * @param  string $linenbr   Line Number
+	 * @param  string $lotserial Lotserial
+	 * @param  string $binID     Bin ID
+	 * @return PurchaseOrderDetailLotReceiving
+	 */
+	public function getLineLotserial(int $linenbr, $lotserial, $binID) {
+		$q = PurchaseOrderDetailLotReceivingQuery::create();
+		$q->filterByPonbr($this->ponbr);
+		$q->filterByLinenbr($linenbr);
+		$q->filterByLotserial($lotserial);
+		$q->filterByBinid($binID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return Qty Received for Lotserial at Bin
+	 * @param  string $linenbr   Line Number
+	 * @param  string $lotserial Lotserial
+	 * @param  string $binID     Bin ID
+	 * @return PurchaseOrderDetailLotReceiving
+	 */
+	public function getLineLotserialQty(int $linenbr, $lotserial, $binID) {
+		$col = PurchaseOrderDetailLotReceiving::aliasproperty('qty_received');
+		$q = PurchaseOrderDetailLotReceivingQuery::create();
+		$q->withColumn("SUM($col)", 'qty');
+		$q->select('qty');
+		$q->filterByPonbr($this->ponbr);
+		$q->filterByLinenbr($linenbr);
+		$q->filterByLotserial($lotserial);
+		$q->filterByBinid($binID);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return Received Lot from Bin
+	 * @param  string $linenbr   Line Number
+	 * @param  string $lotserial Lotserial
+	 * @param  string $binID     Bin ID
+	 * @return PurchaseOrderDetailLotReceiving
+	 */
+	public function countLineLotserial(int $linenbr, $lotserial, $binID) {
+		$q = PurchaseOrderDetailLotReceivingQuery::create();
+		$q->filterByPonbr($this->ponbr);
+		$q->filterByLinenbr($linenbr);
+		$q->filterByLotserial($lotserial);
+		$q->filterByBinid($binID);
+		return $q->count();
+	}
+
+	/**
+	 * Return if Lotserial has is Received
+	 * @param  string $linenbr   Line Number
+	 * @param  string $lotserial Lotserial
+	 * @param  string $binID     Bin ID
+	 * @return bool
+	 */
+	public function lineLotserialExists(int $linenbr, $lotserial, $binID) {
+		$q = PurchaseOrderDetailLotReceivingQuery::create();
+		$q->filterByPonbr($this->ponbr);
+		$q->filterByLinenbr($linenbr);
+		$q->filterByLotserial($lotserial);
+		$q->filterByBinid($binID);
+		return boolval($q->count());
 	}
 }
