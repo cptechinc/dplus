@@ -34,16 +34,20 @@ class Receiving extends AbstractController {
 		return $data->jqv ? true : false;
 	}
 
-	public function allowItemOnOrder($data) {
-		self::sanitizeParametersShort($data, ['itemID|text', 'ponbr|ponbr']);
+	static public function allowItemOnOrder($data) {
+		self::sanitizeParametersShort($data, ['itemID|text', 'ponbr|ponbr', 'jqv|bool']);
 		$r = new ReceivingCRUD();
 		$r->setPonbr($data->ponbr);
 		$r->init();
-		return $r->items->allowItemid($data->itemID);
+
+		if ($r->items->allowItemid($data->itemID)) {
+			return true;
+		}
+		return $data->jqv ? "Item Not Allowed on PO" : false;
 	}
 
-	public function doesQtyAddNeedWarning($data) {
-		$fields = ['itemID|text', 'qty|float'];
+	static public function doesQtyAddNeedWarning($data) {
+		$fields = ['itemID|text', 'qty|float', 'ponbr|ponbr'];
 		self::sanitizeParametersShort($data, $fields);
 		$validate = self::validatorMin();
 
@@ -52,6 +56,7 @@ class Receiving extends AbstractController {
 		}
 
 		$r = new ReceivingCRUD();
+		$r->setPonbr($data->ponbr);
 		$r->init();
 		if ($r->enforceQty->warn() === false) {
 			return false;
