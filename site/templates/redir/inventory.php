@@ -13,7 +13,6 @@
 	* Inventory Redirect
 	* NOTE Uses whseman.log
 	**/
-
 	switch ($action) {
 		case 'inventory-search':
 			// Requests Inventory records for Query (itemid, lotnbr, lotserial)
