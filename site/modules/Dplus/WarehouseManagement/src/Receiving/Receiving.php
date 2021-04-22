@@ -71,6 +71,9 @@ class Receiving extends Base {
 			case 'delete-lotserial':
 				$this->deleteLotserial($input);
 				break;
+			case 'update-lotserial-qty':
+				$this->updateLotserialQty($input);
+				break;
 		}
 	}
 
@@ -111,22 +114,35 @@ class Receiving extends Base {
 	protected function deleteLotserial(WireInput $input) {
 		$rm     = strtolower($input->requestMethod());
 		$values = $input->$rm;
+		$ponbr     = $values->text('ponbr');
+		$linenbr   = $values->int('linenbr');
+		$lotserial = $values->text('lotserial');
+		$binID     = $values->text('binID');
+
+		if ($this->items->lineLotserialExists($linenbr, $lotserial, $binID) === false) {
+			return false;
+		}
+		$lot = $this->items->getLineLotserial($linenbr, $lotserial, $binID);
+		$this->requestRemoveLotserial($lot);
+		return true;
+	}
+
+	protected function updateLotserialQty(WireInput $input) {
+		$rm     = strtolower($input->requestMethod());
+		$values = $input->$rm;
 
 		$ponbr     = $values->text('ponbr');
 		$linenbr   = $values->int('linenbr');
 		$lotserial = $values->text('lotserial');
 		$binID     = $values->text('binID');
 
-		$q = PurchaseOrderDetailLotReceivingQuery::create();
-		$q->filterByPonbr($ponbr);
-		$q->filterByLinenbr($linenbr);
-		$q->filterByLotserial($lotserial);
-		$q->filterByBin($binID);
-		if (boolval($q->count()) === false) {
+		if ($this->items->lineLotserialExists($linenbr, $lotserial, $binID) === false) {
 			return false;
 		}
-		$lot = $q->findOne();
-		$this->requestRemoveLotserial($lot);
+		$lot = $this->items->getLineLotserial($linenbr, $lotserial, $binID);
+		$lot->setLotdate($values->text('productiondate'));
+		$lot->setQty_received($values->text('qty'));
+		$this->requestUpdateLotserialQty($lot);
 		return true;
 	}
 
@@ -219,6 +235,15 @@ class Receiving extends Base {
 	 */
 	public function requestRemoveLotserial(PurchaseOrderDetailLotReceiving $lot) {
 		$data = array('RECEIVEREMOVELOT', "PONBR=$lot->ponbr", "LINENBR=$lot->linenbr", "LOTSERIAL=$lot->lotserial", "BIN=$lot->bin");
+		$this->sendDplusRequest($data);
+	}
+
+	/**
+	 * Sends HTTP GET request to Redir to make Dplus Request to load Purchase Order Working files
+	 * @return void
+	 */
+	public function requestUpdateLotserialQty(PurchaseOrderDetailLotReceiving $lot) {
+		$data = ['EDITRECEIVEDQTY', "PONBR=$lot->ponbr", "LINENBR=$lot->linenbr", "LOTSERIAL=$lot->lotserial", "BIN=$lot->bin", "QTY=$lot->qty_reeived", "DATE=$lot->lotdate"];
 		$this->sendDplusRequest($data);
 	}
 
