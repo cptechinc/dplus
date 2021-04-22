@@ -35,7 +35,6 @@ $(function() {
 		url.addQuery('lotserial', button.data('lotserial'));
 		url.addQuery('binID', button.data('binid'));
 
-		console.log(url.toString());
 		$.getJSON(url.toString(), function(data) {
 			modal.find('input[name=linenbr]').val(data.linenbr);
 			modal.find('input[name=itemID]').val(data.itemid);
@@ -103,46 +102,39 @@ $(function() {
 			qty: {
 				required: true,
 				number: true,
-				min: 0.01,
-				remote: {
-					url: '{{ page.jsonapiURL('wm/receiving/validate/require-lotserial/') }}',
-					type: "get",
-					data: {
-						jqv: 'true',
-						itemID: $('#itemID').val(),
-						lotserial: $('#lotserial').val()
-					}
-				}
+				min: 0.01
 			},
-
 		},
-		submitHandler : function(form) {
-			var valid_form = new SwalError(false, '', '', false);
-			var valid_qty_exceeds  = validate_qty_exceeds();
-
-			if (valid_itemid.error) {
-				valid_form = valid_itemid;
-			}
-
-			if (valid_form.error) {
-				swal2.fire({
-					icon: 'error',
-					title: valid_form.title,
-					text: valid_form.msg,
-					html: valid_form.html
-				});
-			} else if (valid_qty_exceeds.error) {
-				swal2.fire({
-					icon: 'warning',
-					title: valid_qty_exceeds.title,
-					text: valid_qty_exceeds.msg,
-					html: valid_qty_exceeds.html
-				});
-			} else {
+		submitHandler: function(form) {
+			var jForm = $(form);
+			if (jForm.find('input[name=qty]').attr('data-validated') == 'true') {
 				form.submit();
+			} else {
+				validate_exceeds_qty(jForm)
 			}
 		}
 	});
+
+	function validate_exceeds_qty(jForm) {
+		var url = URI('{{ page.jsonapiURL('wm/receiving/validate/add-qty-warning/') }}');
+		url.addQuery('itemID', jForm.find('input[name=itemID]').val());
+		url.addQuery('qty', jForm.find('input[name=qty]').val());
+
+		$.getJSON(url.toString(), function(needswarning) {
+			if (needswarning) {
+				swal2.fire({
+					icon: 'warning',
+					title: "Are You Sure?",
+					text: "Received Qty will be more than Qty Ordered",
+				}).then((result) => {
+					if (result.value) {
+						jForm.find('input[name=qty]').attr('data-validated', 'true');
+						jForm.submit();
+					}
+				});
+			}
+		});
+	}
 
 	form_itemsearch.validate({
 		errorClass: "is-invalid",
