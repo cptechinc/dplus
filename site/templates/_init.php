@@ -54,7 +54,7 @@ if ($page->id != $config->errorpage_dplusdb) {
 		}
 	}
 
-	$templates_nosignin = array('login', 'redir');
+	$templates_nosignin = array('login', 'redir', 'quote-print');
 
 	if ($input->get->pdf || $input->get->print) {
 
@@ -62,8 +62,8 @@ if ($page->id != $config->errorpage_dplusdb) {
 		$session->returnurl = $page->fullURL->getUrl();
 		$session->redirect($pages->get('template=login')->url, $http301 = false);
 	}
+	$user->setup($input->get->sessionID ? $input->get->text('sessionID') : session_id());
 
-	$user->setup(session_id());
 	$modules->get('RecordLocker')->remove_locks_olderthan('all', 3);
 } else {
 	if (!$input->get->retry) {
