@@ -100,7 +100,7 @@ $(function() {
 		validate_itemid_entry(input_itemid.val(), '{{ order.custid }}', '{{ order.shiptoid }}', function(response) {
 			if (response.exists) {
 				var original = input_itemid.val();
-				input_itemid.val(response.itemID);
+				input_itemid.val(response.itemid);
 				validator.element('#additemID');
 
 				get_itm_item(input_itemid.val(), function(item) {
