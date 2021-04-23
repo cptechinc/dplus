@@ -6,15 +6,18 @@
 	html.header            string HTML for PO header
 	html.items             string HTML for PO Items
 #}
+<div class="receiving">
+	{% include 'warehouse/inventory/receiving/bread-crumbs.twig' %}
 
-{% include 'warehouse/inventory/receiving/bread-crumbs.twig' %}
+	{{ html.header|raw }}
 
-{{ html.header|raw }}
+	{{ html.scan|raw }}
 
-{{ html.scan|raw }}
+	<h3>Items</h3>
+	{{ html.items|raw }}
+</div>
 
-<h3>Items</h3>
-{{ html.items|raw }}
+{% include 'warehouse/inventory/receiving/po-actions.twig' %}
 
 {{ html.modalbins|raw }}
 
