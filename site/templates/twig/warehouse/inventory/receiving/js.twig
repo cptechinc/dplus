@@ -23,6 +23,24 @@ $(function() {
 		button.closest('.modal').modal('hide');
 	});
 
+	$("body").on("click", "a:not([href^=#], .receiving a, .modal a, a.post-po)", function(e) {
+		e.preventDefault();
+		var a = $(this);
+
+		swal2.fire({
+			title: 'Warning',
+			text: "Are you sure you want to leave?, unposted items will not be saved",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Leave',
+			cancelButtonText: 'Stay'
+		}).then(function (result) {
+			if (result.value) {
+				window.location.href = a.attr('href');
+			}
+		});
+	});
+
 	modal_itemedit.on('show.bs.modal', function (event) {
 		var modal = $(this);
 		var button = $(event.relatedTarget); // Button that triggered the modal
