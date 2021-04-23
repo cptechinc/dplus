@@ -243,7 +243,7 @@ class Receiving extends Base {
 		return $url->getUrl();
 	}
 
-	static public function postReceivingUrl($ponbr, $scan) {
+	static public function postReceivingUrl($ponbr) {
 		$url = new Purl(self::receivingUrl($ponbr));
 		$url->query->set('action', 'post-received');
 		return $url->getUrl();
