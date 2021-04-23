@@ -93,6 +93,7 @@ class PdfMaker extends WireData implements Module {
 			$query = $page->fullURL->query->getData();
 			$query['print'] = 'true';
 			$query['pdf'] = 'true';
+			$query['sessionID'] = session_id();
 
 			$url = new Url($requestor->get_self_path($page->path));
 			$url->query->setData($query);
