@@ -4,12 +4,14 @@
 
 	if ($input->get->qnbr) {
 		$qnbr = $input->get->text('qnbr');
-		$module_edit = $modules->get('QuoteEdit');
+		$module_edit = $modules->get('Eqo');
 		$module_edit->set_qnbr($qnbr);
 
 		if (QuoteQuery::create()->filterByQuoteid($qnbr)->count()) {
 			if (!QuothedQuery::create()->filterBySessionidQuote(session_id(), $qnbr)->count()) {
-				$modules->get('DplusRequest')->self_request($page->edit_quoteURL($qnbr));
+				$url = new Purl\Url($page->edit_quoteURL($qnbr));
+				$url->query->set('sessionID', session_id());
+				$modules->get('DplusRequest')->self_request($url->getUrl());
 			}
 
 			$page->title = "Push Quote #$qnbr to Order";
