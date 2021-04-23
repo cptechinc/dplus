@@ -74,6 +74,9 @@ class Receiving extends Base {
 			case 'update-lotserial-qty':
 				$this->updateLotserialQty($input);
 				break;
+			case 'post-received':
+				$this->requestPoPost();
+				break;
 		}
 	}
 
@@ -107,7 +110,7 @@ class Receiving extends Base {
 		$received->itemid = $item->itemid;
 		$recieved->binid  = $item->bin;
 
-		$this->requestAutoSubmitScan();
+		$this->requestItemReceive();
 		return true;
 	}
 
@@ -179,7 +182,7 @@ class Receiving extends Base {
 		$received = $this->getSessionLastReceived();
 		$received->itemid = $item->itemid;
 		$received->binid  = $item->bin;
-		$this->requestAutoSubmitScan();
+		$this->requestItemReceive();
 	}
 
 	public function getInventoryQuery($scan = '') {
@@ -203,7 +206,7 @@ class Receiving extends Base {
 	Dplus Cobol Request Functions
 ============================================================= */
 	/**
-	 * Sends HTTP GET request to Redir to make Dplus Request to load Purchase Order Working files
+	 * Send Request to Start Receiving
 	 * @return void
 	 */
 	public function requestPoInit() {
@@ -212,16 +215,16 @@ class Receiving extends Base {
 	}
 
 	/**
-	 * Sends HTTP GET request to Redir to make Dplus Request to load Purchase Order Working files
+	 * Send request to Receive Item
 	 * @return void
 	 */
-	public function requestAutoSubmitScan() {
+	public function requestItemReceive() {
 		$data = array('ACCEPTRECEIVING', "PONBR=$this->ponbr");
 		$this->sendDplusRequest($data);
 	}
 
 	/**
-	 * Sends HTTP GET request to Redir to make Dplus Request to load Purchase Order Working files
+	 * Send request to Search Inventory
 	 * @return void
 	 */
 	public function requestSearch($q, $binID) {
@@ -230,7 +233,7 @@ class Receiving extends Base {
 	}
 
 	/**
-	 * Sends HTTP GET request to Redir to make Dplus Request to load Purchase Order Working files
+	 * Send request to Remove Lotserial
 	 * @return void
 	 */
 	public function requestRemoveLotserial(PurchaseOrderDetailLotReceiving $lot) {
@@ -239,13 +242,22 @@ class Receiving extends Base {
 	}
 
 	/**
-	 * Sends HTTP GET request to Redir to make Dplus Request to load Purchase Order Working files
+	 * Send request to Update Received Lotserial
 	 * @return void
 	 */
 	public function requestUpdateLotserial(PurchaseOrderDetailLotReceiving $lot) {
 		$oldbin = array_key_exists($lot::aliasproperty('binid'), $lot->originalvalues) ? $lot->originalvalues[$lot::aliasproperty('binid')] : $lot->binid;
 		$data = ['EDITRECEIVEDQTY', "PONBR=$lot->ponbr", "LINENBR=$lot->linenbr", "LOTSERIAL=$lot->lotserial", "BIN=$oldbin", "QTY=$lot->qty_received", "DATE=$lot->lotdate"];
 		$data[] = "NEWBIN=$lot->bin";
+		$this->sendDplusRequest($data);
+	}
+
+	/**
+	 * Send Request to Start Receiving
+	 * @return void
+	 */
+	public function requestPoPost() {
+		$data = array('FINISHRECEIPT', "PONBR=$this->ponbr");
 		$this->sendDplusRequest($data);
 	}
 
