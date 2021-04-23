@@ -56,6 +56,8 @@ class Ci extends AbstractController {
 		$modules->get('DpagesMci')->init_customer_hooks();
 		$modules->get('DpagesMci')->init_cipage();
 		$customer = CustomerQuery::create()->findOneById($data->custID);
+		$loader = $modules->get('CiLoadCustomerShipto');
+		$loader->set_custID($data->custID);
 		$page->show_breadcrumbs = false;
 
 		$page->body .= $config->twig->render('customers/ci/bread-crumbs.twig', ['customer' => $customer]);
