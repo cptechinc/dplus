@@ -269,9 +269,9 @@ class Receiving extends Base {
 
 	static public function noItemsToReceive($data) {
 		$writer = self::getHtmlWriter();
-		$html   = self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'There are no Items to Receive']);
+		$html   = self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => 'Warning!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => 'No Items Left To Receive']);
 		$html   .= $writer->div('class=mb-3');
-		$html   .= $writer->a("href=". self::receivingUrl() ."|class=btn btn-primary", "Exit");
+		$html   .= self::poForm($data);
 		return $html;
 	}
 
