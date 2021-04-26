@@ -75,7 +75,7 @@
 							<div class="col text-right qty" data-uom="{{ item.uom }}" data-qty="{{ lot.qty_received|number_format(m_receiving.decimal_places()) }}">{{ lot.qty_received|number_format(m_receiving.decimal_places()) }}</div>
 							<div class="col" data-bin="{{ lot.bin }}">{{ lot.bin }}</div>
 							<div class="col-3">
-								<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#item-edit-modal">
+								<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#item-edit-modal" data-linenbr="{{ lot.linenbr }}" data-lotserial="{{ lot.lotserial }}" data-binid="{{ lot.bin }}">
 									<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 								</button>
 								&nbsp; &nbsp;
