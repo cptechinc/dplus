@@ -245,20 +245,6 @@
 			}
 			$session->loc = $url->getUrl();
 			break;
-		case 'receving-create-ilookup-item':
-			// Request:  Remove one of the received lots / items
-			// Response: Removes the requested records
-			$ponbr     = $values->text('ponbr');
-			$scan      = $values->text('scan');
-			$ref       = $values->text('reference');
-			$itemID    = $values->text('itemID');
-			$data = array("DBNAME=$dplusdb", 'RECEIVINGCREATEILOOKUP', "PONBR=$ponbr", "ITEMID=$itemID", "REFERENCE=$ref");
-
-			$url = new Purl\Url($pages->get('pw_template=whse-receiving')->url);
-			$url->query->set('ponbr', $ponbr);
-			$url->query->set('scan', $ref);
-			$session->loc = $url->getUrl();
-			break;
 		case 'submit-receipt':
 			// Request:  Sends Receipt to be posted
 			// Response: POSTS receipt

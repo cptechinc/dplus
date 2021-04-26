@@ -309,7 +309,7 @@ class Receiving extends Base {
 			return self::scannedForm($data);
 		}
 
-		$html = '<h3>Scan item to add</h3>';
+		$html = '<h3>Scan Item to Receive</h3>';
 		$html .= '<div class="mb-3">';
 			$html .= self::poItemScanForm($data);
 		$html .= '</div>';
@@ -340,14 +340,26 @@ class Receiving extends Base {
 	}
 
 	static protected function scannedFormSingleItem($data, Whseitemphysicalcount $physicalitem) {
+		if ($physicalitem->has_error() === false) {
+			return self::poItemScanReceiveForm($data, $physicalitem);
+		}
+
 		$html = '';
 
 		if ($physicalitem->has_error()) {
-			$html .= self::scannFormSingleItemError($data, $physicalitem);
-		}
+			$config = self::pw('config');
+			$receiving = self::getReceiving($data->ponbr);
 
-		$config = self::pw('config');
-		$html  .= self::poItemScanReceiveForm($data, $physicalitem);
+			if (trim($physicalitem->get_error()) == 'invalid item id' && $receiving->strategies->enforceItemids->allowItemsNotListed()) {
+				$html .= $config->twig->render('warehouse/inventory/receiving/ugm/create-ilookup-item-form.twig', ['item' => $physicalitem, 'm_receiving' => $receiving]);
+				self::pw('page')->js .= $config->twig->render('warehouse/inventory/receiving/ugm/ilookup.js.twig');
+			}
+
+			if ($receiving->strategies->enforceItemids->allowItemsNotListed() == false) {
+				$html .= self::scannFormSingleItemError($data, $physicalitem);
+				$html  .= self::poItemScanReceiveForm($data, $physicalitem);
+			}
+		}
 		return $html;
 	}
 

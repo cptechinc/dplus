@@ -51,6 +51,9 @@ class Receiving extends Base {
 		$this->items = new Items();
 	}
 
+/* =============================================================
+	CRUD Functions
+============================================================= */
 	public function processInput(WireInput $input) {
 		$rm     = strtolower($input->requestMethod());
 		$values = $input->$rm;
@@ -76,6 +79,9 @@ class Receiving extends Base {
 				break;
 			case 'post-received':
 				$this->requestPoPost();
+				break;
+			case 'create-ilookup':
+				$this->createIlookup($input);
 				break;
 		}
 	}
@@ -151,21 +157,20 @@ class Receiving extends Base {
 		return true;
 	}
 
-	public function canAutoSubmit(Whseitemphysicalcount $item) {
+	protected function createIlookup(WireInput $input) {
+		$rm     = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$ponbr      = $values->text('ponbr');
+		$scan       = $values->text('scan');
+		$ref        = $values->text('reference');
+		$itemID     = $values->text('itemID');
 		$validate = new MinValidator();
 
-		if ($validate->itemid($item->itemid) === false) {
+		if ($validate->itemid($itemID) === false) {
 			return false;
 		}
-
-		if ($validate->whsebin($this->wire('user')->whseid, $item->bin) === false) {
-			return false;
-		}
-
-		if (empty($item->productiondate) || empty($item->lotserialref) || empty($item->qty)) {
-			return false;
-		}
-
+		$this->requestCreateIlookup($itemID, $ref);
 		return true;
 	}
 
@@ -183,23 +188,6 @@ class Receiving extends Base {
 		$received->itemid = $item->itemid;
 		$received->binid  = $item->bin;
 		$this->requestItemReceive();
-	}
-
-	public function getInventoryQuery($scan = '') {
-		$q = WhseitemphysicalcountQuery::create();
-		$q->filterBySessionid($this->sessionID);
-		if ($scan) {
-			$q->filterByScan($scan);
-		}
-		return $q;
-	}
-
-	public function getSessionLastReceived() {
-		if (empty($this->wire('session')->getFor('receiving', 'received'))) {
-			$received = new WireData();
-			$this->wire('session')->setFor('receiving', 'received', $received);
-		}
-		return $this->wire('session')->getFor('receiving', 'received');
 	}
 
 /* =============================================================
@@ -261,6 +249,15 @@ class Receiving extends Base {
 		$this->sendDplusRequest($data);
 	}
 
+	/**
+	 * Send request to Create Ilookup Reference for Item ID
+	 * @return void
+	 */
+	public function requestCreateIlookup($itemID, $ref) {
+		$data = array('RECEIVINGCREATEILOOKUP', "PONBR=$this->ponbr", "ITEMID=$itemID", "REFERENCE=$ref");
+		$this->sendDplusRequest($data);
+	}
+
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
@@ -280,6 +277,41 @@ class Receiving extends Base {
 		return ConfigSalesOrderQuery::create()->findOne()->decimal_places;
 	}
 
+	public function canAutoSubmit(Whseitemphysicalcount $item) {
+		$validate = new MinValidator();
+
+		if ($validate->itemid($item->itemid) === false) {
+			return false;
+		}
+
+		if ($validate->whsebin($this->wire('user')->whseid, $item->bin) === false) {
+			return false;
+		}
+
+		if (empty($item->productiondate) || empty($item->lotserialref) || empty($item->qty)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public function getInventoryQuery($scan = '') {
+		$q = WhseitemphysicalcountQuery::create();
+		$q->filterBySessionid($this->sessionID);
+		if ($scan) {
+			$q->filterByScan($scan);
+		}
+		return $q;
+	}
+
+	public function getSessionLastReceived() {
+		if (empty($this->wire('session')->getFor('receiving', 'received'))) {
+			$received = new WireData();
+			$this->wire('session')->setFor('receiving', 'received', $received);
+		}
+		return $this->wire('session')->getFor('receiving', 'received');
+	}
+
 	public function getReadQtyStrategy() {
 		$config = $this->wire('modules')->get('ConfigsWarehouseInventory');
 		return $config->receive_lotserial_as_single ? new Strategies\ReadQty\LotserialSingle() : new Strategies\ReadQty\LotserialQty();
@@ -294,10 +326,6 @@ class Receiving extends Base {
 		$config = $this->wire('config');
 		return $config->company == 'ugm' ? new Strategies\EnforcePoItemids\Relaxed() : new Strategies\EnforcePoItemids\Enforced();
 	}
-
-/* =============================================================
-	ProcessWire Module Functions
-============================================================= */
 
 	public function init() {
 		$this->strategies = new WireData();
