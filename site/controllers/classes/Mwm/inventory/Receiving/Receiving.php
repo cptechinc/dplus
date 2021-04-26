@@ -9,6 +9,7 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use WarehouseQuery, Warehouse;
 use PurchaseOrder;
 use PurchaseOrderDetailLotReceiving;
+use PurchaseOrderDetailReceiving;
 // Dpluso Model
 use BininfoQuery, Bininfo;
 use WhsesessionQuery, Whsesession;
@@ -249,6 +250,14 @@ class Receiving extends Base {
 		return $url->getUrl();
 	}
 
+	static public function printReceivingLineUrl(PurchaseOrderDetailReceiving $item) {
+		$url = new Purl(self::receivingUrl($ponbr));
+		$url->path = self::pw('pages')->get('pw_template=whse-print-received-item-label')->url;
+		$url->query->set('ponbr', $item->ponbr);
+		$url->query->set('linenbr', $item->linenbr);
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Displays
 ============================================================= */
@@ -439,6 +448,11 @@ class Receiving extends Base {
 		$m->addHook('Page(pw_template=whse-receiving)::postReceivingUrl', function($event) {
 			$lot     = $event->arguments(0); // Instance of PurchaseOrderDetailLotReceiving
 			$event->return = self::postReceivingUrl($lot);
+		});
+
+		$m->addHook('Page(pw_template=whse-receiving)::printReceivingLineUrl', function($event) {
+			$item     = $event->arguments(0); // Instance of PurchaseOrderDetailReceiving
+			$event->return = self::printReceivingLineUrl($item);
 		});
 
 	}

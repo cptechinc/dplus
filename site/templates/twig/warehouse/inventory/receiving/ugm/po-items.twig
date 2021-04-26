@@ -42,7 +42,7 @@
 				<div class="col text-right">{{ item.cost_total|number_format(2) }}</div>
 				<div class="col text-center">
 					{% if item.qty_received > 0 %}
-						<a href="{{ page.print_receivedlineURL(item) }}" class="btn btn-info btn-sm">
+						<a href="{{ page.printReceivingLineUrl(item) }}" class="btn btn-info btn-sm">
 							<i class="fa fa-print" aria-hidden="true"></i> Print
 						</a>
 					{% endif %}
@@ -83,7 +83,7 @@
 									<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 								</a>
 								&nbsp; &nbsp;
-								<a href="{{ page.print_receiveditemURL(lot) }}" class="btn btn-info btn-sm">
+								<a href="{{ page.printReceivingLineUrl(item) }}" class="btn btn-info btn-sm">
 									<i class="fa fa-print" aria-hidden="true"></i> Print
 								</a>
 							</div>
