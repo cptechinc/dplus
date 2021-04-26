@@ -13,7 +13,8 @@ use ItemMasterItemQuery, ItemMasterItem;
 // Dplus Online Models
 use WhsesessionQuery, Whsesession;
 use WhseitemphysicalcountQuery, Whseitemphysicalcount;
-
+// Dplus Configs
+use Dplus\Configs as Configs;
 // Dplus Validators
 use Dplus\CodeValidators\Min as MinValidator;
 // Dplus Wm
@@ -29,6 +30,9 @@ class Receiving extends Base {
 
 	/** @var Items */
 	public $items;
+
+	private $decimalPlacesQty;
+	private $decimalPlacesCost;
 
 	/**
 	 * Sets Purchase Order Number
@@ -140,19 +144,21 @@ class Receiving extends Base {
 		$rm     = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		$ponbr         = $values->text('ponbr');
-		$linenbr       = $values->int('linenbr');
-		$lotserial     = $values->text('lotserial');
-		$binID = $values->text('originalbinID');
-		$newbinID     = $values->text('binID');
+		$ponbr      = $values->text('ponbr');
+		$linenbr    = $values->int('linenbr');
+		$lotserial  = $values->text('lotserial');
+		$binID      = $values->text('originalbinID');
+		$newbinID   = $values->text('binID');
+		$date       = $values->text('productiondate');
+		$date       = $date ? date('Ymd', strtotime($date)) : 0;
 
 		if ($this->items->lineLotserialExists($linenbr, $lotserial, $binID) === false) {
 			return false;
 		}
 		$lot = $this->items->getLineLotserial($linenbr, $lotserial, $binID);
 		$lot->setBinid($newbinID);
-		$lot->setLotdate($values->text('productiondate'));
-		$lot->setQty_received($values->text('qty'));
+		$lot->setLotdate($date);
+		$lot->setQty_received($values->float('qty', ['precision' => $this->decimalPlacesQty()]));
 		$this->requestUpdateLotserial($lot);
 		return true;
 	}
@@ -273,8 +279,24 @@ class Receiving extends Base {
 	 * Return the number of decimal places for qty values
 	 * @return int
 	 */
-	public function decimal_places() {
-		return ConfigSalesOrderQuery::create()->findOne()->decimal_places;
+	public function decimalPlacesQty() {
+		if (empty($this->decimalPlacesQty)) {
+			$config = Configs\So::config();
+			$this->decimalPlacesQty = $config->decimal_places;
+		}
+		return $this->decimalPlacesQty;
+	}
+
+	/**
+	 * Return the number of decimal places for Cost values
+	 * @return int
+	 */
+	public function decimalPlacesCost() {
+		if (empty($this->decimalPlacesCost)) {
+			$config = Configs\Po::config();
+			$this->decimalPlacesCost = $config->decimal_places_cost;
+		}
+		return $this->decimalPlacesCost;
 	}
 
 	public function canAutoSubmit(Whseitemphysicalcount $item) {
