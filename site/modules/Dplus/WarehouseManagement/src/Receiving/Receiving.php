@@ -349,11 +349,17 @@ class Receiving extends Base {
 		return $config->company == 'ugm' ? new Strategies\EnforcePoItemids\Relaxed() : new Strategies\EnforcePoItemids\Enforced();
 	}
 
+	public function getCreatePoStrategy() {
+		$config = $this->wire('modules')->get('ConfigsWarehouseInventory');
+		return $config->company == 'ugm' ? new Strategies\EnforcePoItemids\Relaxed() : new Strategies\EnforcePoItemids\Enforced();
+	}
+
 	public function init() {
 		$this->strategies = new WireData();
 		$this->strategies->readQty        = $this->getReadQtyStrategy();
 		$this->strategies->enforceQty     = $this->getEnforceQtyStrategy();
 		$this->strategies->enforceItemids = $this->getEnforceItemidsStrategy();
+		$this->strategies->createPo       = $this->getCreatePoStrategy();
 		$this->items->setReadQtyStrategy($this->strategies->readQty);
 		$this->items->setEnforceItemidsStrategy($this->strategies->enforceItemids);
 	}
