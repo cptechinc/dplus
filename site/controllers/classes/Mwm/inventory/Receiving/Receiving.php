@@ -52,6 +52,13 @@ class Receiving extends Base {
 		}
 		$html =  self::pw('config')->twig->render('warehouse/inventory/receiving/bread-crumbs.twig');
 		$html .= self::poForm($data);
+		$receiving = self::getReceiving();
+		$createStrategy = $receiving->getCreatePoStrategy();
+		if ($createStrategy->allowCreatePo()) {
+			$url = self::receivingCreatePoUrl();
+			$writer = self::pw('modules')->get('HtmlWriter');
+			$html .= $writer->a("class=btn btn-primary|href=$url", $writer->icon('fa fa-plus') . " Create PO");
+		}
 		return $html;
 	}
 
@@ -258,6 +265,12 @@ class Receiving extends Base {
 		return $url->getUrl();
 	}
 
+	static public function receivingCreatePoUrl() {
+		$url = new Purl(self::receivingUrl());
+		$url->path->add('create');
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Displays
 ============================================================= */
@@ -273,6 +286,7 @@ class Receiving extends Base {
 		$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Purchase Order Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Order # $data->ponbr can not be found"]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= self::poForm($data);
+
 		return $html;
 	}
 
