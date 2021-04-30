@@ -232,7 +232,7 @@ class Receiving extends Base {
 	 * @return void
 	 */
 	public function requestRemoveLotserial(PurchaseOrderDetailLotReceiving $lot) {
-		$lot->setBin($this->wire('sanitizer')->binID($lot->bin))
+		$lot->setBin($this->wire('sanitizer')->binID($lot->bin));
 		$data = array('RECEIVEREMOVELOT', "PONBR=$lot->ponbr", "LINENBR=$lot->linenbr", "LOTSERIAL=$lot->lotserial", "BIN=$lot->bin");
 		$this->sendDplusRequest($data);
 	}
@@ -244,7 +244,7 @@ class Receiving extends Base {
 	public function requestUpdateLotserial(PurchaseOrderDetailLotReceiving $lot) {
 		$oldbin = array_key_exists($lot::aliasproperty('binid'), $lot->originalvalues) ? $lot->originalvalues[$lot::aliasproperty('binid')] : $lot->binid;
 		$oldbin = $this->wire('sanitizer')->binID($oldbin);
-		$lot->setBin($this->wire('sanitizer')->binID($lot->bin))
+		$lot->setBin($this->wire('sanitizer')->binID($lot->bin));
 		$data = ['EDITRECEIVEDQTY', "PONBR=$lot->ponbr", "LINENBR=$lot->linenbr", "LOTSERIAL=$lot->lotserial", "BIN=$oldbin", "QTY=$lot->qty_received", "DATE=$lot->lotdate"];
 		$data[] = "NEWBIN=$lot->bin";
 		$this->sendDplusRequest($data);
