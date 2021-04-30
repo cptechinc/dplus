@@ -355,7 +355,7 @@ class Receiving extends Base {
 
 	public function getCreatePoStrategy() {
 		$config = $this->wire('modules')->get('ConfigsWarehouseInventory');
-		return $config->company == 'ugm' ? new Strategies\EnforcePoItemids\Relaxed() : new Strategies\EnforcePoItemids\Enforced();
+		return $config->receive_create_po === true ? new Strategies\CreatePo\Allow() : new Strategies\CreatePo\Forbid();
 	}
 
 	public function init() {
