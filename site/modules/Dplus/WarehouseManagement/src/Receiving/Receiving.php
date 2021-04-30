@@ -93,7 +93,7 @@ class Receiving extends Base {
 	protected function searchInventory(WireInput $input) {
 		$rm     = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$this->requestSearch($values->text('scan'), $values->text('binID'));
+		$this->requestSearch($values->text('scan'), $values->binID('binID'));
 	}
 
 	protected function submitItemReceived(WireInput $input) {
@@ -109,7 +109,7 @@ class Receiving extends Base {
 		$item->setItemid($values->text('itemID'));
 		$item->setLotserial($values->text('lotserial'));
 		$item->setLotserialref($values->text('lotserialref'));
-		$item->setBin($values->text('binID'));
+		$item->setBin($values->binID('binID'));
 		$item->setQty($values->float('qty'));
 		$item->setProductiondate($date);
 		$saved = $item->save();
@@ -125,12 +125,12 @@ class Receiving extends Base {
 	}
 
 	protected function deleteLotserial(WireInput $input) {
-		$rm     = strtolower($input->requestMethod());
-		$values = $input->$rm;
+		$rm        = strtolower($input->requestMethod());
+		$values    = $input->$rm;
 		$ponbr     = $values->text('ponbr');
 		$linenbr   = $values->int('linenbr');
 		$lotserial = $values->text('lotserial');
-		$binID     = $values->text('binID');
+		$binID     = $values->binID('binID');
 
 		if ($this->items->lineLotserialExists($linenbr, $lotserial, $binID) === false) {
 			return false;
@@ -147,8 +147,8 @@ class Receiving extends Base {
 		$ponbr      = $values->text('ponbr');
 		$linenbr    = $values->int('linenbr');
 		$lotserial  = $values->text('lotserial');
-		$binID      = $values->text('originalbinID');
-		$newbinID   = $values->text('binID');
+		$binID      = $values->binID('originalbinID');
+		$newbinID   = $values->binID('binID');
 		$date       = $values->text('productiondate');
 		$date       = $date ? date('Ymd', strtotime($date)) : 0;
 
@@ -222,7 +222,8 @@ class Receiving extends Base {
 	 * @return void
 	 */
 	public function requestSearch($q, $binID) {
-		$data = array('RECEIVINGSEARCH', "PONBR=$this->ponbr", "QUERY=$q", "BIN=$binID");
+		$binID = $this->wire('sanitizer')->binID($binID);
+		$data  = array('RECEIVINGSEARCH', "PONBR=$this->ponbr", "QUERY=$q", "BIN=$binID");
 		$this->sendDplusRequest($data);
 	}
 
@@ -231,6 +232,7 @@ class Receiving extends Base {
 	 * @return void
 	 */
 	public function requestRemoveLotserial(PurchaseOrderDetailLotReceiving $lot) {
+		$lot->setBin($this->wire('sanitizer')->binID($lot->bin))
 		$data = array('RECEIVEREMOVELOT', "PONBR=$lot->ponbr", "LINENBR=$lot->linenbr", "LOTSERIAL=$lot->lotserial", "BIN=$lot->bin");
 		$this->sendDplusRequest($data);
 	}
@@ -241,6 +243,8 @@ class Receiving extends Base {
 	 */
 	public function requestUpdateLotserial(PurchaseOrderDetailLotReceiving $lot) {
 		$oldbin = array_key_exists($lot::aliasproperty('binid'), $lot->originalvalues) ? $lot->originalvalues[$lot::aliasproperty('binid')] : $lot->binid;
+		$oldbin = $this->wire('sanitizer')->binID($oldbin);
+		$lot->setBin($this->wire('sanitizer')->binID($lot->bin))
 		$data = ['EDITRECEIVEDQTY', "PONBR=$lot->ponbr", "LINENBR=$lot->linenbr", "LOTSERIAL=$lot->lotserial", "BIN=$oldbin", "QTY=$lot->qty_received", "DATE=$lot->lotdate"];
 		$data[] = "NEWBIN=$lot->bin";
 		$this->sendDplusRequest($data);
@@ -306,7 +310,7 @@ class Receiving extends Base {
 			return false;
 		}
 
-		if ($validate->whsebin($this->wire('user')->whseid, $item->bin) === false) {
+		if ($validate->whsebin($this->wire('user')->whseid, $this->wire('sanitizer')->binID($item->bin)) === false) {
 			return false;
 		}
 

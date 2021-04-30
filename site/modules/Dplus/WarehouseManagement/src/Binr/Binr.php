@@ -2,6 +2,9 @@
 
 class Binr extends Base {
 	public function requestBinReassignment($vars, $debug = false) {
+		$vars->frombin = strtoupper($vars->frombin);
+		$vars->tobin   = strtoupper($vars->tobin);
+
 		$data = ['BINR', "ITEMID=$vars->itemID"];
 		if ($data->lotnbr) {
 			$data[] = "LOTNBR=$vars->lotnbr";
