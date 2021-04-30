@@ -203,6 +203,7 @@ class Receiving extends Base {
 			}
 		}
 	}
+
 /* =============================================================
 	URLs
 ============================================================= */
@@ -423,6 +424,20 @@ class Receiving extends Base {
 		}
 
 		return self::pw('config')->twig->render('warehouse/inventory/receiving/po-item-receive-form.twig', ['item' => $physicalitem, 'm_receiving' => self::getReceiving($data->ponbr)]);
+	}
+
+	static public function createPo($data) {
+		$fields = ['action|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		if (empty($data->action) === false) {
+			return self::handleCRUD($data);
+		}
+
+		self::pw('page')->headline = "Create PO to Receive";
+
+		return 'sf';
+		return $config->twig->render('warehouse/inventory/receiving/display.twig', ['html' => $html]);
 	}
 
 /* =============================================================
