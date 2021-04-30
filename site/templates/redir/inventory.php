@@ -19,7 +19,7 @@
 			// Requests Inventory records for Query (itemid, lotnbr, lotserial)
 			// Response: fills Invsearch table with records
 			$q = strtoupper($input->$rm->text('scan'));
-			$binID = $input->$rm->text('binID');
+			$binID = strtoupper($input->$rm->text('binID'));
 			$data = array("DBNAME=$dplusdb", 'INVSEARCH', "QUERY=$q");
 
 			if ($input->$rm->page) {
@@ -32,7 +32,7 @@
 		case 'bin-inquiry':
 			// Requests Contents of bin
 			// Response: fills Invsearch table with records
-			$binID = $input->$rm->text('binID');
+			$binID = strtoupper(($input->$rm->text('binID'));
 			$data = array("DBNAME=$dplusdb", 'BININQUIRY', "BINID=$binID");
 
 			if ($input->$rm->page) {
@@ -81,7 +81,7 @@
 			// Requests label print defaults for Item
 			// Response: return itemcartonlabel record to fill out
 			$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
-			$binID = $input->$rm->text('binID');
+			$binID = strtoupper($input->$rm->text('binID'));
 			$itemID = $input->$rm->text('itemID');
 			$url = new Purl\Url($pages->get('/warehouse/inventory/print-item-label/')->httpUrl);
 			$url->query->set('binID', $binID);
@@ -119,7 +119,7 @@
 		case 'print-thermal-label':
 			// Requests label to be printed
 			// Response: Takes itemcartonlabel and prints label
-			$binID     = $input->$rm->text('binID');
+			$binID     = strtoupper(($input->$rm->text('binID'));
 			$itemID    = $input->$rm->text('itemID');
 			$lotserial = $input->$rm->text('lotserial');
 			$whseID    = $input->$rm->text('whseID');
@@ -201,7 +201,7 @@
 
 			// Lot Serial Ref is Read-Only currently 8/23
 			// $item->setLotserialref($input->$rm->text('lotserialref'));
-			$item->setBin($input->$rm->text('binID'));
+			$item->setBin(strtoupper($input->$rm->text('binID')));
 			$item->setQty($input->$rm->text('qty'));
 			$item->setProductiondate(date('Ymd', strtotime($input->$rm->text('productiondate'))));
 			$item->save();
@@ -266,7 +266,7 @@
 			// Response: Creates whseitemphysicalcount record(s)
 			$ponbr = $input->$rm->text('ponbr');
 			$q = strtoupper($input->$rm->text('scan'));
-			$binID = $input->$rm->text('binID');
+			$binID = strtoupper(($input->$rm->text('binID'));
 			$data = array("DBNAME=$dplusdb", 'RECEIVINGSEARCH', "PONBR=$ponbr", "QUERY=$q", "BIN=$binID");
 
 			if ($input->$rm->page) {
@@ -295,7 +295,7 @@
 			$item->setItemid($input->$rm->text('itemID'));
 			$item->setLotserial($input->$rm->text('lotserial'));
 			$item->setLotserialref($input->$rm->text('lotserialref'));
-			$item->setBin($input->$rm->text('binID'));
+			$item->setBin(strtoupper($input->$rm->text('binID')));
 			$item->setQty($input->$rm->text('qty'));
 			$item->setProductiondate($date);
 			$item->save();
@@ -368,7 +368,7 @@
 			$ponbr     = $values->text('ponbr');
 			$linenbr   = $values->int('linenbr');
 			$lotserial = $values->text('lotserial');
-			$binID     = $values->text('binID');
+			$binID     = strtoupper(($values->text('binID'));
 
 			$q = PurchaseOrderDetailLotReceivingQuery::create();
 			$q->filterByPonbr($ponbr);
@@ -390,7 +390,7 @@
 			$ponbr     = $values->text('ponbr');
 			$linenbr   = $values->int('linenbr');
 			$lotserial = $values->text('lotserial');
-			$binID     = $values->text('binID');
+			$binID     = strtoupper($values->text('binID'));
 			$qty       = $values->text('qty');
 			$date      = $values->text('productiondate');
 			$date = $date ? date('Ymd', strtotime($date)) : 0;

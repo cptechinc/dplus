@@ -42,7 +42,7 @@ class PrintLabelItemReceiving extends PrintLabelItem implements Module {
 
 		$labelsession->setItemid($values->text('itemID'));
 		$labelsession->setLotserial($values->text('lotserial'));
-		$labelsession->setBin($values->text('binID'));
+		$labelsession->setBin(strtoupper($values->text('binID')));
 		$labelsession->setWhse($values->text('whseID'));
 
 		$labelsession->setLabelBox($values->text('box-label'));
@@ -89,7 +89,7 @@ class PrintLabelItemReceiving extends PrintLabelItem implements Module {
 		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
 		$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
 
-		$data = array("DBNAME=$dplusdb", "RECEIVELABELINIT", "PONBR=$item->ponbr", "ITEMID=$item->itemid", "WHSE=$whsesession->whseid", "BIN=$item->bin");
+		$data = array("DBNAME=$dplusdb", "RECEIVELABELINIT", "PONBR=$item->ponbr", "ITEMID=$item->itemid", "WHSE=$whsesession->whseid", "BIN=".strtoupper($item->bin));
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());
 		return $requestor->cgi_request($config->cgis['warehouse'], session_id());
@@ -109,7 +109,7 @@ class PrintLabelItemReceiving extends PrintLabelItem implements Module {
 		$data = array("DBNAME=$dplusdb", "RECEIVELABELPRINT", "PONBR=$ponbr", "LINENBR=$linenbr");
 		if ($labelsession->lotserial != 'all') {
 			$data[] = "LOTSERIAL=$labelsession->lotserial";
-			$data[] = "BIN=$labelsession->bin";
+			$data[] = "BIN=".strtoupper($labelsession->bin);
 		} else {
 			$data[] = "LOTSERIAL=ALL";
 		}
