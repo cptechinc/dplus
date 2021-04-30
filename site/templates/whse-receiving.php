@@ -5,7 +5,8 @@
 
 	$routes = [
 		['GET',  '', Controller::class, 'index'],
-		['POST', '', Controller::class, 'handleCRUD']
+		['POST', '', Controller::class, 'handleCRUD'],
+		['GET',  'create/', Controller::class, 'createPo'],
 	];
 
 	$router = new Mvc\Router();
