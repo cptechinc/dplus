@@ -58,7 +58,17 @@ $(function() {
 
 	$("body").on("change", ".unit-margin", function(e) {
 		var unitrow = $(this).closest('.unit-row');
-		update_unitrow_cost(unitrow);
+		var computeListpriceOrCost = '{{ vxm.get_config_ap().computelistpriceorcost }}';
+		if (parseInt(unitrow.data('break')) == 0) {
+			if (computeListpriceOrCost == 'L') {
+				update_listprice_from_basemargin();
+			} else {
+				update_unitrow_cost(unitrow);
+			}
+		} else  {
+			update_unitrow_cost(unitrow);
+		}
+
 
 		if (parseInt(unitrow.data('break')) > 0) {
 			var step = parseInt(unitrow.data('break'));
@@ -615,13 +625,23 @@ $(function() {
 		var input_unitcost = unitrow.find('.unit-cost');
 		var input_margin   = unitrow.find('.unit-margin');
 		var margin = parseFloat(input_margin.val()).truncate({{ vxm.field_attribute('unit_margin', 'precision') }});
-
+		margin =  parseFloat(margin).toFixed({{ vxm.field_attribute('unit_margin', 'precision') }});
 		input_margin.val(margin);
 
 		if (parseFloat(input_margin.val())) {
 			var cost = parseFloat(determine_unitcost(margin)).toFixed({{ vxm.field_attribute('unit_cost', 'precision') }});
 			input_unitcost.val(cost);
 		}
+	}
+
+	function update_listprice_from_basemargin() {
+		var conversion = parseFloat(input_uom.find('option:selected').data('conversion'));
+		var basecost   = parseFloat($('input[name=unitcost_base]').val());
+		var basemargin = parseFloat($('input[name=unitmargin_base]').val());
+		var listprice = basecost / (1 - (basemargin / 100));
+		listprice = listprice.toFixed({{ vxm.field_attribute('listprice', 'precision') }});
+		$('input[name=unitmargin_base]').val(basemargin.toFixed({{ vxm.field_attribute('unit_margin', 'precision') }}))
+		input_listprice.val(listprice);
 	}
 
 	/**
