@@ -90,6 +90,10 @@ class Receiving extends Base {
 				}
 				self::redirect($url, $http301 = false);
 				break;
+			case 'create-po':
+				$url = self::receivingLoadPoUrl();
+				self::redirect($url, $http301 = false);
+				break;
 			default:
 				self::redirect(self::receivingUrl($data->ponbr), $http301 = false);
 				break;
@@ -272,6 +276,15 @@ class Receiving extends Base {
 		return $url->getUrl();
 	}
 
+	static public function receivingLoadPoUrl($ponbr = '') {
+		$url = new Purl(self::receivingUrl());
+		$url->path->add('load');
+		if ($ponbr) {
+			$url->query->set('ponbr', $ponbr);
+		}
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Displays
 ============================================================= */
@@ -435,9 +448,8 @@ class Receiving extends Base {
 		}
 
 		self::pw('page')->headline = "Create PO to Receive";
-
-		return 'sf';
-		return $config->twig->render('warehouse/inventory/receiving/display.twig', ['html' => $html]);
+		self::pw('page')->js .= self::pw('config')->twig->render('warehouse/inventory/receiving/create-po/js.twig');
+		return self::pw('config')->twig->render('warehouse/inventory/receiving/create-po/form.twig');
 	}
 
 /* =============================================================

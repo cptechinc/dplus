@@ -17,6 +17,7 @@ use WhseitemphysicalcountQuery, Whseitemphysicalcount;
 use Dplus\Configs as Configs;
 // Dplus Validators
 use Dplus\CodeValidators\Min as MinValidator;
+use Dplus\CodeValidators\Map as MapValidator;
 // Dplus Wm
 use Dplus\Wm\Base;
 use Dplus\Wm\Receiving\Strategies as Strategies;
@@ -86,6 +87,9 @@ class Receiving extends Base {
 				break;
 			case 'create-ilookup':
 				$this->createIlookup($input);
+				break;
+			case 'create-po':
+				$this->createPo($input);
 				break;
 		}
 	}
@@ -180,6 +184,20 @@ class Receiving extends Base {
 		return true;
 	}
 
+	protected function createPo(WireInput $input) {
+		$rm     = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$vendorID = $values->text('vendorID');
+		$validate = new MapValidator();
+
+		if ($validate->vendorid($vendorID) === false) {
+			return false;
+		}
+		$this->requestCreatePo($vendorID);
+		return true;
+	}
+
 	public function autoSubmitScan($scan) {
 		$q = WhseitemphysicalcountQuery::create();
 		$q->filterBySessionid($this->sessionID);
@@ -265,6 +283,15 @@ class Receiving extends Base {
 	 */
 	public function requestCreateIlookup($itemID, $ref) {
 		$data = array('RECEIVINGCREATEILOOKUP', "PONBR=$this->ponbr", "ITEMID=$itemID", "REFERENCE=$ref");
+		$this->sendDplusRequest($data);
+	}
+
+	/**
+	 * Send request to Create PO for Vendor
+	 * @return void
+	 */
+	public function requestCreatePo($vendorID) {
+		$data = array('CREATERECEIVEPO', "VENDORID=$vendorID");
 		$this->sendDplusRequest($data);
 	}
 
