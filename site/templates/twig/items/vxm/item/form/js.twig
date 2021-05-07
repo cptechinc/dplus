@@ -59,9 +59,14 @@ $(function() {
 	$("body").on("change", ".unit-margin", function(e) {
 		var unitrow = $(this).closest('.unit-row');
 		var computeListpriceOrCost = '{{ vxm.get_config_ap().computelistpriceorcost }}';
+
 		if (parseInt(unitrow.data('break')) == 0) {
 			if (computeListpriceOrCost == 'L') {
-				update_listprice_from_basemargin();
+				update_listprice_from_basemargin(function() {
+					$('.unit-row').each(function(index) {
+						update_unitrow_margin($(this));
+					});
+				});
 			} else {
 				update_unitrow_cost(unitrow);
 			}
@@ -634,7 +639,7 @@ $(function() {
 		}
 	}
 
-	function update_listprice_from_basemargin() {
+	function update_listprice_from_basemargin(callback) {
 		var conversion = parseFloat(input_uom.find('option:selected').data('conversion'));
 		var basecost   = parseFloat($('input[name=unitcost_base]').val());
 		var basemargin = parseFloat($('input[name=unitmargin_base]').val());
@@ -642,6 +647,8 @@ $(function() {
 		listprice = listprice.toFixed({{ vxm.field_attribute('listprice', 'precision') }});
 		$('input[name=unitmargin_base]').val(basemargin.toFixed({{ vxm.field_attribute('unit_margin', 'precision') }}))
 		input_listprice.val(listprice);
+
+		callback();
 	}
 
 	/**
