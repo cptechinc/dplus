@@ -205,13 +205,13 @@ $.fn.extend({
 		parent.html('<div></div>');
 
 		var element = parent.find('div');
-		console.log('loading ' + href + " into " +  parent.returnelementdescription());
+		console.log('loading ' + href + " into " +  parent.returnElementDescription());
 		element.load(href, function() {
 			init_datepicker();
 			callback();
 		});
 	},
-	returnelementdescription: function() {
+	returnElementDescription: function() {
 		var element = $(this);
 		var tag = element[0].tagName.toLowerCase();
 		var classes = '';
