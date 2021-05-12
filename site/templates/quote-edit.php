@@ -9,7 +9,9 @@
 
 		if (QuoteQuery::create()->filterByQuoteid($qnbr)->count()) {
 			if (!QuothedQuery::create()->filterBySessionidQuote(session_id(), $qnbr)->count()) {
-				$modules->get('DplusRequest')->self_request($page->edit_quoteURL($qnbr));
+				$url = new Purl\Url($page->edit_quoteURL($qnbr));
+				$url->query->set('sessionID', session_id());
+				$modules->get('DplusRequest')->self_request($url->getUrl());
 			}
 			$page->title = "Editing Quote #$qnbr";
 			$quote_readonly = $module_edit->get_quote_static();
@@ -25,7 +27,6 @@
 
 			//if ($user->is_editingquote($quote_readonly->quotenumber)) {
 				$page->formurl = $pages->get('template=dplus-menu, name=mqo')->child('template=redir')->url;
-				$page->lookupURL = $pages->get('pw_template=ii-item-lookup')->httpUrl;
 				//$page->js .= $config->twig->render('quotes/quote/edit/shiptos.js.twig', ['varshiptos' => $module_edit->get_shiptos_json_array()]);
 
 				$page->body .= $config->twig->render('quotes/quote/edit/edit-form.twig', ['page' => $page, 'quote' => $quote_edit, 'states' => $module_edit->get_states(), 'shipvias' => $module_edit->get_shipvias(), 'warehouses' => $module_edit->get_warehouses(), 'shiptos' => $customer->get_shiptos()]);

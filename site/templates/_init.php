@@ -54,7 +54,7 @@ if ($page->id != $config->errorpage_dplusdb) {
 		}
 	}
 
-	$templates_nosignin = array('login', 'redir');
+	$templates_nosignin = array('login', 'redir', 'quote-print');
 
 	if ($input->get->pdf || $input->get->print) {
 
@@ -62,8 +62,8 @@ if ($page->id != $config->errorpage_dplusdb) {
 		$session->returnurl = $page->fullURL->getUrl();
 		$session->redirect($pages->get('template=login')->url, $http301 = false);
 	}
+	$user->setup($input->get->sessionID ? $input->get->text('sessionID') : session_id());
 
-	$user->setup(session_id());
 	$modules->get('RecordLocker')->remove_locks_olderthan('all', 3);
 } else {
 	if (!$input->get->retry) {
@@ -88,26 +88,29 @@ $rm = strtolower($input->requestMethod());
 $values = $input->$rm;
 
 if (!$values->action || $page->template == 'dplus-screen-formatter') {
+	$hasher = $modules->get('FileHasher');;
+
 	// ADD JS AND CSS
-	$config->styles->append(hash_templatefile('styles/bootstrap-grid.min.css'));
-	$config->styles->append(hash_templatefile('styles/theme.css'));
+	$config->styles->append($hasher->getHashUrl('styles/bootstrap-grid.min.css'));
+	$config->styles->append($hasher->getHashUrl('styles/theme.css'));
 	$config->styles->append('//fonts.googleapis.com/css?family=Lusitana:400,700|Quattrocento:400,700');
 	$config->styles->append('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
-	$config->styles->append(hash_templatefile('styles/lib/fuelux.css'));
-	//$config->styles->append(hash_templatefile('styles/lib/sweetalert.css'));
-	$config->styles->append(hash_templatefile('styles/lib/sweetalert2.css'));
-	$config->styles->append(hash_templatefile('styles/main.css'));
+	$config->styles->append('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css');
+	$config->styles->append($hasher->getHashUrl('styles/lib/fuelux.css'));
+	//$config->styles->append($hasher->getHashUrl('styles/lib/sweetalert.css'));
+	$config->styles->append($hasher->getHashUrl('styles/lib/sweetalert2.css'));
+	$config->styles->append($hasher->getHashUrl('styles/main.css'));
 
-	$config->scripts->append(hash_templatefile('scripts/lib/jquery.js'));
-	$config->scripts->append(hash_templatefile('scripts/popper.js'));
-	$config->scripts->append(hash_templatefile('scripts/bootstrap.min.js'));
-	$config->scripts->append(hash_templatefile('scripts/lib/fuelux.js'));
-	$config->scripts->append(hash_templatefile('scripts/lib/moment.js'));
-	$config->scripts->append(hash_templatefile('scripts/lib/bootstrap-notify.js'));
-	$config->scripts->append(hash_templatefile('scripts/uri.js'));
-	$config->scripts->append(hash_templatefile('scripts/lib/sweetalert2.js'));
-	$config->scripts->append(hash_templatefile('scripts/classes.js'));
-	$config->scripts->append(hash_templatefile('scripts/main.js'));
+	$config->scripts->append($hasher->getHashUrl('scripts/lib/jquery.js'));
+	$config->scripts->append($hasher->getHashUrl('scripts/popper.js'));
+	$config->scripts->append($hasher->getHashUrl('scripts/bootstrap.min.js'));
+	$config->scripts->append($hasher->getHashUrl('scripts/lib/fuelux.js'));
+	$config->scripts->append($hasher->getHashUrl('scripts/lib/moment.js'));
+	$config->scripts->append($hasher->getHashUrl('scripts/lib/bootstrap-notify.js'));
+	$config->scripts->append($hasher->getHashUrl('scripts/uri.js'));
+	$config->scripts->append($hasher->getHashUrl('scripts/lib/sweetalert2.js'));
+	$config->scripts->append($hasher->getHashUrl('scripts/classes.js'));
+	$config->scripts->append($hasher->getHashUrl('scripts/main.js'));
 }
 
 // SET CONFIG PROPERTIES

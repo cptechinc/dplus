@@ -125,7 +125,7 @@ $(function() {
 	 * @return {object}             {exists: (bool), itemID: xxx, message: xxx, source: xxx }
 	 */
 	function validate_itemid_entry(itemID, callback) {
-		var url = URI("{{ page.ii_lookupURL() }}");
+		var url = URI("{{ page.jsonapiURL('item-lookup') }}");
 		url.addQuery('itemID', itemID);
 		url.addQuery('custID', '');
 		url.addQuery('shiptoID', '');

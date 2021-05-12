@@ -10,7 +10,7 @@ use ProcessWire\WireData, ProcessWire\WireInput;
  */
 class Vxm extends Source  {
 	const MODEL = 'ItemXrefVendor';
-	const REQUIREDFIELDS = ['vendorid', 'vendoritemid'];
+	const REQUIREDFIELDS = ['vendorid'];
 	const SOURCE = 'vxm';
 
 	protected function filterQuery(Query $q) {

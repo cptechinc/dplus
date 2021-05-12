@@ -1,0 +1,35 @@
+<form action="{{ page.url }}" method="post" class="allow-enterkey-submit" id="create-po-form">
+	<input type="hidden" name="action" value="create-po">
+	<div class="form-group">
+		<label for="ponbr">Vendor ID</label>
+
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'input': {
+						'name': 'vendorID',
+						'value': '',
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Vendor ID'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Vendors',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('vendors'),
+							'data-input': '#vendorID'
+						}
+					}
+				}
+			}
+		%}
+	</div>
+	<button type="submit" class="btn btn-success">
+		Create
+	</button>
+</form>

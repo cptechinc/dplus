@@ -17,9 +17,8 @@ class CxmShortItem extends Source  {
 
 	protected function filterQuery(Query $q) {
 		$config = SysConfig::config();
-		$this->inputdata->custid = $config->custid;
 
-		$q->filterByCustid($this->inputdata->custid);
+		$q->filterByCustid($config->custid);
 		$q->filterByCustitemid($this->inputdata->itemid());
 	}
 }

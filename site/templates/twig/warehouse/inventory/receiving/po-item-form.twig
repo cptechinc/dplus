@@ -1,20 +1,21 @@
 {#
 	var                    Description / Instance of
 	-------------------------------------------------
-	page                   ProcessWire\Page
-	item                   Whseitemphysicalcount
-	m_receiving            module Receiving or Custom module Receiving
-	config                 ProcessWire\Config
-	config.inventory       module ConfigsWarehouseInventory
-	ponbr                  Purchase Order Number
+	page                         ProcessWire\Page
+	config                       ProcessWire\Config
+	config.inventory             module ConfigsWarehouseInventory
+	ponbr                        Purchase Order Number
+	settings                     ProcessWire\WireData (Environment Variables)
+	settings.binid               string Bin ID
+	settings.forceItemLookupBin  bool force bin when searching inventory?
+	settings.skipBin             bool Skip bin?
 #}
 
-<form action="{{ page.formurl }}" method="post" class="allow-enterkey-submit" id="item-search-form" data-forcebin="{{ page.force_bin_itemlookup ? 'true' : 'false'}}">
-	<input type="hidden" name="action" value="receiving-search">
+<form action="{{ page.url }}" method="post" class="allow-enterkey-submit" id="item-search-form" data-forcebin="{{ settings.forceItemLookupBin ? 'true' : 'false'}}">
+	<input type="hidden" name="action" value="search-inventory">
 	<input type="hidden" name="ponbr" value="{{ ponbr }}">
-	<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
 
-	{% if config.inventory.receive_disregard_bin == true %}
+	{% if settings.skipBin == true %}
 		<input type="hidden" class="form-control" id="binID" name="binID" value="">
 	{% else %}
 		<div class="form-group">
@@ -25,7 +26,7 @@
 						<span class="fa fa-list" aria-hidden="true"></span> <span class="sr-only">Show Warehouse Bins</span>
 					</button>
 				</span>
-				<input type="text" class="form-control" id="binID" name="binID" placeholder="Bin ID" value="{{ page.has('bin') ? page.bin : '' }}" {{ page.force_bin_itemlookup ? 'autofocus' : ''}}>
+				<input type="text" class="form-control" id="binID" name="binID" placeholder="Bin ID" value="{{ settings.binid }}" {{ settings.forceItemLookupBin ? 'autofocus' : ''}}>
 			</div>
 		</div>
 	{% endif %}

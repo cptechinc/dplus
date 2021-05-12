@@ -203,12 +203,6 @@ class DpagesMqo extends Dpages implements Module {
 			$shiptoID = $event->arguments(1);
 			$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customershiptoURL($custID, $shiptoID);
 		});
-
-		$this->addHook('Page::ii_lookupURL', function($event) {
-			$p = $event->object;
-			$itemID = $event->arguments(0);
-			$event->return = $this->wire('modules')->get('DpagesMii')->get_ii_itemURL($itemID);
-		});
 	}
 
 /* =============================================================

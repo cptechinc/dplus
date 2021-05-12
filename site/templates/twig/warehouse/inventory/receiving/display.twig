@@ -1,0 +1,26 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	html                   ProcessWire\WireData
+	html.header            string HTML for PO header
+	html.items             string HTML for PO Items
+#}
+<div class="receiving">
+	{% include 'warehouse/inventory/receiving/bread-crumbs.twig' %}
+
+	{{ html.header|raw }}
+
+	{{ html.scan|raw }}
+
+	<h3>Items</h3>
+	{{ html.items|raw }}
+</div>
+
+{% include 'warehouse/inventory/receiving/po-actions.twig' %}
+
+{{ html.modalbins|raw }}
+
+{% include 'warehouse/inventory/receiving/item-edit-modal.twig' %}
+
+{{ html.js|raw }}

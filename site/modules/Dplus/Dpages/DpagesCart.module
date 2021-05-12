@@ -35,7 +35,6 @@ class DpagesCart extends Dpages implements Module {
 
 	const HOOK_FUNCTIONS_LOOKUPS = array(
 		// Hook     =>  PW Template
-		'ii_lookup'   => 'ii-item-lookup',
 		'itm_json'    => 'itm-json',
 		'itm_lookup'  => 'itm-lookup',
 		'search_items'     => 'itm-search',

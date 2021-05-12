@@ -10,11 +10,11 @@ use ProcessWire\WireData, ProcessWire\WireInput;
  */
 class Cxm extends Source  {
 	const MODEL = 'ItemXrefCustomer';
-	const REQUIREDFIELDS = ['custid', 'custitemid'];
+	const REQUIREDFIELDS = ['custid'];
 	const SOURCE = 'cxm';
 
 	protected function filterQuery(Query $q) {
 		$q->filterByCustid($this->inputdata->custid);
-		$q->filterByCustitemid($this->inputdata->custitemid);
+		$q->filterByCustitemid($this->inputdata->custitemid());
 	}
 }

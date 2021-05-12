@@ -49,6 +49,12 @@ class DplusSanitizer extends WireData implements Module {
 			$qnbr = str_pad($value, Quote::LENGTH , "0", STR_PAD_LEFT);
 			$event->return = $qnbr;
 		});
+
+		$this->addHook('Sanitizer::binID', function(HookEvent $event) {
+			$sanitizer = $event->object;
+			$value = $event->arguments(0);
+			$event->return = strtoupper($value);
+		});
 	}
 
 	public static function getModuleInfo() {
