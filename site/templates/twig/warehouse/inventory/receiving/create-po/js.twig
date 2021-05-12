@@ -1,0 +1,65 @@
+$(function() {
+	/* =============================================================
+		AJAX Lookup Modal Functions
+	============================================================= */
+		$('#ajax-modal').on('show.bs.modal', function (event) {
+			var button = $(event.relatedTarget); // Button that triggered the modal
+			var modal = $(this);
+			var url = button.data('lookupurl');
+
+			modal.find('.modal-title').text(button.attr('title'));
+			modal.attr('data-input', button.data('input'));
+			modal.resizeModal('xl');
+			modal.find('.modal-body').loadin(url, function() {});
+		});
+
+		$("body").on('click', '#ajax-modal .vendor-link', function(e) {
+			e.preventDefault();
+			var button = $(this);
+			var vendorID = button.data('vendorid');
+			var name = button.data('name');
+			var input = $('#ajax-modal').attr('data-input');
+			$(input).val(vendorID);
+			$('#ajax-modal').modal('hide');
+		});
+
+		$("body").on('submit', '#ajax-modal form', function(e) {
+			e.preventDefault();
+			var form = $(this);
+			var query = form.serialize();
+			var action = form.attr('action');
+			var search = form.find('input[name=q]').val();
+			var url = action + '?' + query;
+			form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+			form.closest('.modal').find('.modal-body').loadin(url, function() {});
+		});
+
+		$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+			e.preventDefault();
+			var href = $(this).attr('href');
+			$('#ajax-modal').find('.modal-body').load(href);
+		});
+/* =============================================================
+	Valdation Methods
+============================================================= */
+	$('#create-po-form').validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			vendorID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('map/validate/vendorid/') }}',
+					type: "get",
+					data: {jqv: 'true'}
+				}
+			},
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+});

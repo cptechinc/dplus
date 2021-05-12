@@ -18,6 +18,7 @@ return array(
     'Controllers\\Ajax\\Json\\Mpo' => $baseDir . '/classes/ajax/json/Mpo.php',
     'Controllers\\Ajax\\Json\\Msa' => $baseDir . '/classes/ajax/json/Msa.php',
     'Controllers\\Ajax\\Json\\Mso' => $baseDir . '/classes/ajax/json/Mso.php',
+    'Controllers\\Ajax\\Json\\Wm\\Receiving' => $baseDir . '/classes/ajax/json/Wm/Receiving.php',
     'Controllers\\Ajax\\Lookup' => $baseDir . '/classes/ajax/Lookup.php',
     'Controllers\\Dplus\\Dashboard' => $baseDir . '/classes/dplus/Dashboard.php',
     'Controllers\\Dplus\\Dashboard\\Common' => $baseDir . '/classes/dplus/Dashboard/Common.php',
@@ -76,5 +77,7 @@ return array(
     'Controllers\\Mso\\SalesOrder\\PrintSo' => $baseDir . '/classes/mso/SalesOrder/PrintSo.php',
     'Controllers\\Mso\\SalesOrder\\SalesOrder' => $baseDir . '/classes/mso/SalesOrder/SalesOrder.php',
     'Controllers\\Mwm\\Menu' => $baseDir . '/classes/Mwm/Menu.php',
+    'Controllers\\Wm\\Base' => $baseDir . '/classes/Mwm/Base.php',
     'Controllers\\Wm\\Binr' => $baseDir . '/classes/Mwm/binr/Binr.php',
+    'Controllers\\Wm\\Receiving\\Receiving' => $baseDir . '/classes/Mwm/inventory/Receiving/Receiving.php',
 );

@@ -12,7 +12,7 @@ abstract class AbstractConfig {
 	 * @return Query
 	 */
 	public static function query() {
-		$class = self::queryClassName();
+		$class = static::queryClassName();
 		return $class::create();
 	}
 

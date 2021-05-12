@@ -1,10 +1,21 @@
 <?php
-	if (file_exists(__DIR__."/whse-receiving-$config->company.php")) {
-		$template = "whse-receiving-$config->company";
-	} else {
-		$template = 'whse-receiving-default';
-	}
+	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
+	use Controllers\Wm\Receiving\Receiving as Controller;
+	Controller::initHooks();
 
-	$config->scripts->append(hash_templatefile('scripts/warehouse/receiving.js'));
+	$routes = [
+		['GET',  '', Controller::class, 'index'],
+		['POST', '', Controller::class, 'handleCRUD'],
+		['GET',  'create/', Controller::class, 'createPo'],
+		['GET',  'load/', Controller::class, 'loadPo'],
+	];
 
-	include __DIR__ . "/$template.php";
+	$router = new Mvc\Router();
+	$router->setRoutes($routes);
+	$router->setRoutePrefix($page->url);
+	$page->body = $router->route();
+	$page->show_breadcrumbs = false;
+
+	$config->scripts->append($modules->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
+
+	include __DIR__ . "/basic-page.php";

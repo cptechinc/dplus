@@ -49,7 +49,7 @@ class LoadItem extends WireData implements Module {
 		$this->itemID = $itemID;
 		$validate = new MinValidator();
 
-		if ($validator->itemid($itemID)) {
+		if ($validate->itemid($itemID)) {
 			$item = $this->get_item($itemID);
 			$this->generate_item_array($item, $fields);
 		}
