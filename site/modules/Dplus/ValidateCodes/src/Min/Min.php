@@ -33,7 +33,59 @@ class Min extends WireData {
 	 * @return bool
 	 */
 	public function itemtype($type) {
-		return in_array($type, array_keys(ItemMasterItem::ITEMTYPE_DESCRIPTIONS));
+		return array_key_exists($type, ItemMasterItem::ITEMTYPE_DESCRIPTIONS);
+	}
+
+	/**
+	 * Return if Item Is Lotted
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function itemIsLotted($itemID) {
+		return $this->itemIsType($itemID, ItemMasterItem::ITEMTYPE_LOTTED);
+	}
+
+	/**
+	 * Return if Item Is Serialized
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function itemIsSerialized($itemID) {
+		return $this->itemIsType($itemID, ItemMasterItem::ITEMTYPE_SERIALIZED);
+	}
+
+	/**
+	 * Return if Item is Lotted or Serialized
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function itemIsLotSerialized($itemID) {
+		return $this->itemIsLotted($itemID) || $this->itemIsSerialized($itemID);
+	}
+
+	/**
+	 * Return if Item Is Normal
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function itemIsNormal($itemID) {
+		return $this->itemIsType($itemID, ItemMasterItem::ITEMTYPE_NORMAL);
+	}
+
+	/**
+	 * Return if Item ID is of a Type
+	 * @param  string $itemID Item ID
+	 * @param  string $type   Item Type (L: lotted | S: serialized | N: normal)
+	 * @return bool
+	 */
+	private function itemIsType($itemID, $type) {
+		if ($this->itemtype($type) === false) {
+			return false;
+		}
+		$q = ItemMasterItemQuery::create();
+		$q->filterByItemid($itemID);
+		$q->filterByItemtype($type);
+		return boolval($q->count());
 	}
 
 	/**

@@ -23,22 +23,55 @@ $(function() {
 		button.closest('.modal').modal('hide');
 	});
 
+	$("body").on("change", "#item-edit-modal input[name=qty]", function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var qty = parseFloat(input.val());
+		input.val(qty.toFixed(m_receiving.decimalPlacesQty()));
+	});
+
+	$("body").on("click", "a:not([href^=#], .receiving a, .modal a, a.post-po)", function(e) {
+		e.preventDefault();
+		var a = $(this);
+
+		swal2.fire({
+			title: 'Warning',
+			text: "Are you sure you want to leave?, unposted items will not be saved",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Leave',
+			cancelButtonText: 'Stay'
+		}).then(function (result) {
+			if (result.value) {
+				window.location.href = a.attr('href');
+			}
+		});
+	});
+
 	modal_itemedit.on('show.bs.modal', function (event) {
 		var modal = $(this);
 		var button = $(event.relatedTarget); // Button that triggered the modal
-		var record = button.closest('.lotserial-record');
-		var item = record.find('.item');
-
-		var linenbr = item.data('linenbr');
+		var linenbr = button.data('linenbr');
 		modal.find('.modal-title .linenbr').text(linenbr);
-		modal.find('input[name=linenbr]').val(linenbr);
-		modal.find('input[name=itemID]').val(item.data('itemid'));
-		modal.find('input[name=qty]').val(record.find('[data-qty]').data('qty'));
-		modal.find('input[name=uom]').val(record.find('[data-uom]').data('uom'));
-		modal.find('input[name=binID]').val(record.find('[data-bin]').data('bin'));
-		modal.find('input[name=productiondate]').val(record.find('[data-date]').data('date'));
-		modal.find('input[name=lotserialref]').val(record.find('[data-lotserialref]').data('lotserialref'));
-		modal.find('input[name=lotserial]').val(record.find('[data-lotserial]').data('lotserial'));
+
+		var url = URI('{{ page.jsonapiURL('wm/receiving/items/lotserial/') }}');
+		url.addQuery('ponbr', modal.find('input[name=ponbr]').val());
+		url.addQuery('linenbr', linenbr);
+		url.addQuery('lotserial', button.data('lotserial'));
+		url.addQuery('binID', button.data('binid'));
+
+		$.getJSON(url.toString(), function(data) {
+			var qty_received = parseFloat(data.qty.received);
+			modal.find('input[name=linenbr]').val(data.linenbr);
+			modal.find('input[name=itemID]').val(data.itemid);
+			modal.find('input[name=qty]').val(qty_received.toFixed(m_receiving.decimalPlacesQty()));
+			modal.find('input[name=uom]').val(data.uom.code);
+			modal.find('input[name=binID]').val(data.binid);
+			modal.find('input[name=originalbinID]').val(data.binid);
+			modal.find('input[name=productiondate]').val(data.lotdate);
+			modal.find('input[name=lotserialref]').val(data.lotref);
+			modal.find('input[name=lotserial]').val(data.lotserial);
+		});
 	});
 
 	modal_itemedit.on('shown.bs.modal', function (event) {
@@ -48,206 +81,160 @@ $(function() {
 	});
 
 /* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	$('#ajax-modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = button.data('lookupurl');
+
+		modal.attr('data-input', button.data('input'));
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		var modal  = button.closest('.modal');
+		var description  = button.data('description');
+		var description2 = button.data('description2');
+		$(modal.attr('data-input')).val(itemID).change();
+		modal.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+
+/* =============================================================
 	Valdation Methods
 ============================================================= */
 	form_receive.validate({
-		submitHandler : function(form) {
-			var valid_form = new SwalError(false, '', '', false);
-			var valid_itemid       = validate_itemid();
-			var valid_qty          = validate_qty();
-			var valid_lotserialref = validate_lotserialref();
-			var valid_bin          = validate_bin(form_receive);
-			var valid_qty_exceeds  = validate_qty_exceeds();
-
-			if (valid_itemid.error) {
-				valid_form = valid_itemid;
-			} else if (valid_qty.error) {
-				valid_form = valid_qty;
-			} else if (valid_lotserialref.error) {
-				valid_form = valid_lotserialref;
-			} else if (valid_bin.error) {
-				valid_form = valid_bin;
-			}
-
-			if (valid_form.error) {
-				swal2.fire({
-					icon: 'error',
-					title: valid_form.title,
-					text: valid_form.msg,
-					html: valid_form.html
-				});
-			} else if (valid_qty_exceeds.error) {
-				swal2.fire({
-					icon: 'warning',
-					title: valid_qty_exceeds.title,
-					text: valid_qty_exceeds.msg,
-					html: valid_qty_exceeds.html
-				});
-			} else {
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			itemID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('wm/receiving/validate/allow-itemid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						ponbr: function() {
+							return $('#po-item-receive-form').find('input[name=ponbr]').val();
+						}
+					}
+				}
+			},
+			binID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/warehouse/bins/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						whseID: warehouse.id
+					}
+				}
+			},
+			lotserial: {
+				required: false,
+				remote: {
+					url: '{{ page.jsonapiURL('wm/receiving/validate/require-lotserial/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						itemID: $('#itemID').val(),
+						lotserial: $('#lotserial').val()
+					}
+				}
+			},
+			qty: {
+				required: true,
+				number: true,
+				min: 0.01
+			},
+		},
+		submitHandler: function(form) {
+			var jForm = $(form);
+			if (jForm.find('input[name=qty]').attr('data-validated') == 'true') {
 				form.submit();
+			} else {
+				validate_exceeds_qty(jForm)
 			}
 		}
 	});
 
+	function validate_exceeds_qty(jForm) {
+		var url = URI('{{ page.jsonapiURL('wm/receiving/validate/add-qty-warning/') }}');
+		url.addQuery('itemID', jForm.find('input[name=itemID]').val());
+		url.addQuery('qty', jForm.find('input[name=qty]').val());
+
+		$.getJSON(url.toString(), function(needswarning) {
+			if (needswarning) {
+				swal2.fire({
+					icon: 'warning',
+					title: "Are You Sure?",
+					text: "Received Qty will be more than Qty Ordered",
+				}).then((result) => {
+					if (result.value) {
+						jForm.find('input[name=qty]').attr('data-validated', 'true');
+						jForm.submit();
+					}
+				});
+			}
+		});
+	}
+
 	form_itemsearch.validate({
 		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
 		rules: {
-			scan: 'required'
+			scan: {
+				required: true
+			},
+			binID: {
+				required: function() {
+					return $('#item-search-form').data('forcebin') == true;
+				},
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/warehouse/bins/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						whseID: warehouse.id
+					}
+				}
+			}
 		},
 		messages: {
 			scan: "Please scan an itemID, Lot/Serial #, etc.",
 		},
 		submitHandler : function(form) {
-			var valid_form = new SwalError(false, '', '', false);
-
-			if (form_itemsearch.data('forcebin') == true) {
-				var valid_bin  = validate_bin(form_itemsearch);
-			} else {
-				var valid_bin = valid_form;
-			}
-
-			if (valid_bin.error) {
-				valid_form = valid_bin;
-			}
-
-			if (valid_form.error) {
-				swal({
-					type: 'error',
-					title: valid_form.title,
-					text: valid_form.msg,
-					html: valid_form.html
-				});
-			} else {
-				form.submit();
-			}
+			form.submit();
 		}
 	});
-
-	function validate_itemid() {
-		var error = false;
-		var title = '';
-		var msg = '';
-		var html = false;
-
-		if (form_receive.find('input[name=itemID]').val() == '') {
-			error = true;
-			title = 'Error';
-			msg   = 'Please enter an Item ID';
-			form_receive.find('input[name=itemID]').addClass('is-invalid');
-		}
-		return new SwalError(error, title, msg, html);
-	}
-
-	function validate_lotserialref() {
-		var error = false;
-		var title = '';
-		var msg = '';
-		var html = false;
-		var itemID = input_itemID.val();
-
-		if (input_lotref.val() == '' && items[itemID]['type'] != 'N' && items.length) {
-			error = true;
-			title = 'Error';
-			msg   = 'Please enter a Lot Serial Reference';
-			input_lotref.addClass('is-invalid');
-		}
-		return new SwalError(error, title, msg, html);
-	}
-
-	function validate_qty() {
-		var error = false;
-		var title = '';
-		var msg = '';
-		var html = false;
-
-		if (input_qty.val() == '0.00' || input_qty.val() == 0.00) {
-			error = true;
-			title = 'Error';
-			msg   = 'Please enter a Quantity greater than 0';
-			input_qty.addClass('is-invalid');
-		}
-
-		return new SwalError(error, title, msg, html);
-	}
-
-	function validate_qty_exceeds() {
-		var error = false;
-		var title = '';
-		var msg = '';
-		var html = false;
-		var itemID = form_receive.find('input[name=itemID]').val();
-		var item = items[itemID];
-		var qty = 0;
-		var company = "{{ config.company }}";
-
-		if (company != 'ugm') {
-			if (config_receive['receive_lotserial_as_single']) {
-				qty = item.lotserialcount;
-				qty += 1;
-			} else {
-				qty = parseFloat(item.qty_received);
-				qty += parseFloat(input_qty.val());
-			}
-
-			if (qty > item.qty_ordered && input_qty.attr('data-validated') != 'true') {
-				error = true;
-				title = 'Warning';
-				msg   = 'Quantity Received will exceed Quantity Ordered';
-
-				input_qty.attr('data-validated', 'true');
-			}
-		}
-		return new SwalError(error, title, msg, html);
-	}
-
-	function validate_bin(form) {
-		var error = false;
-		var title = '';
-		var msg = '';
-		var html = false;
-		var input_bin     = form.find('input[name=binID]');
-		var lowercase_bin = input_bin.val();
-		input_bin.val(lowercase_bin.toUpperCase());
-
-		if (input_bin.val() == '') {
-			error = true;
-			title = 'Error';
-			msg = 'Please Enter a Bin';
-			input_bin.addClass('is-invalid');
-		} else if (warehouse.binarrangement == 'list' && !warehouse.bins.contains(input_bin.val())) {
-			error = true;
-			title = 'Invalid Bin ID';
-			msg = 'Please use a valid bin';
-			input_bin.addClass('is-invalid');
-		} else if (warehouse.binarrangement == 'range') {
-			error = true;
-
-			warehouse.bins.bins.forEach(function(bin) {
-				if (input_bin.val() >= bin.from && input_bin.val() <= bin.through) {
-					error = false;
-				}
-			});
-
-			if (error) {
-				title = 'Invalid Bin ID';
-				msg = 'Your Bin ID must between these ranges';
-				html = "<h4>Valid Bin Ranges<h4>" + create_binrangetable();
-				input_bin.addClass('is-invalid');
-			}
-		}
-		return new SwalError(error, title, msg, html);
-	}
-
-	function create_binrangetable() {
-		var bootstrap = new JsContento();
-		var table = bootstrap.open('table', 'class=table table-striped table-condensed');
-			whsesession.whse.bins.bins.forEach(function(bin) {
-				table += bootstrap.open('tr', '');
-					table += bootstrap.openandclose('td', '', bin.from);
-					table += bootstrap.openandclose('td', '', bin.through);
-				table += bootstrap.close('tr');
-			});
-		table += bootstrap.close('table');
-		return table;
-	}
 });

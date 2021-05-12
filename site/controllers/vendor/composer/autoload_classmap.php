@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Controllers\\Ajax\\Json\\Inv' => $baseDir . '/classes/ajax/json/Inv.php',
+    'Controllers\\Ajax\\Json\\ItemLookup' => $baseDir . '/classes/ajax/json/ItemLookup.php',
     'Controllers\\Ajax\\Json\\Map' => $baseDir . '/classes/ajax/json/Map.php',
     'Controllers\\Ajax\\Json\\Mar' => $baseDir . '/classes/ajax/json/Mar.php',
     'Controllers\\Ajax\\Json\\Mci' => $baseDir . '/classes/ajax/json/Mci.php',
@@ -17,6 +18,7 @@ return array(
     'Controllers\\Ajax\\Json\\Mpo' => $baseDir . '/classes/ajax/json/Mpo.php',
     'Controllers\\Ajax\\Json\\Msa' => $baseDir . '/classes/ajax/json/Msa.php',
     'Controllers\\Ajax\\Json\\Mso' => $baseDir . '/classes/ajax/json/Mso.php',
+    'Controllers\\Ajax\\Json\\Wm\\Receiving' => $baseDir . '/classes/ajax/json/Wm/Receiving.php',
     'Controllers\\Ajax\\Lookup' => $baseDir . '/classes/ajax/Lookup.php',
     'Controllers\\Dplus\\Dashboard' => $baseDir . '/classes/dplus/Dashboard.php',
     'Controllers\\Dplus\\Dashboard\\Common' => $baseDir . '/classes/dplus/Dashboard/Common.php',
@@ -75,5 +77,7 @@ return array(
     'Controllers\\Mso\\SalesOrder\\PrintSo' => $baseDir . '/classes/mso/SalesOrder/PrintSo.php',
     'Controllers\\Mso\\SalesOrder\\SalesOrder' => $baseDir . '/classes/mso/SalesOrder/SalesOrder.php',
     'Controllers\\Mwm\\Menu' => $baseDir . '/classes/Mwm/Menu.php',
+    'Controllers\\Wm\\Base' => $baseDir . '/classes/Mwm/Base.php',
     'Controllers\\Wm\\Binr' => $baseDir . '/classes/Mwm/binr/Binr.php',
+    'Controllers\\Wm\\Receiving\\Receiving' => $baseDir . '/classes/Mwm/inventory/Receiving/Receiving.php',
 );

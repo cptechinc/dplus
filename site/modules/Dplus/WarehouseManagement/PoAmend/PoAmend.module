@@ -11,7 +11,6 @@ class PoAmend extends WireData implements Module {
 
 	const HOOK_FUNCTIONS_LOOKUPS = array(
 		// Hook     =>  PW Template
-		'ii_lookup' => 'ii-item-lookup',
 	);
 
 	public function query($ponbr = '') {

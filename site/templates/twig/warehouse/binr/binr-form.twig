@@ -23,7 +23,7 @@
 			{% endif %}
 		{% endif %}
 
-		<form action="{{ page.formurl }}" method="POST" class="binr-form" id="binr-form" tab-inputs="true">
+		<form action="{{ page.url }}" method="POST" class="binr-form" id="binr-form" tab-inputs="true">
 			<input type="hidden" name="action" value="bin-reassign">
 			<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
 			<input type="hidden" name="itemID" value="{{ item.itemid }}">
@@ -40,7 +40,7 @@
 									<span class="fa fa-list" aria-hidden="true"></span> <span class="sr-only">Show Warehouse Bins</span>
 								</button>
 							</span>
-							<input type="text" class="form-control input-sm" name="from-bin" value="{{ item.bin }}" data-bin="{{ item.bin }}">
+							<input type="text" class="form-control input-sm" name="frombin" value="{{ item.bin }}" data-bin="{{ item.bin }}">
 						</div>
 					</div>
 				</div>
@@ -56,7 +56,7 @@
 									<span class="fa fa-list" aria-hidden="true"></span> <span class="sr-only">Show Warehouse Bins</span>
 								</button>
 							</span>
-							<input type="text" class="form-control input-sm" name="to-bin" value="{{ page.tobin }}">
+							<input type="text" class="form-control input-sm" name="tobin" value="{{ page.tobin }}">
 						</div>
 					</div>
 				</div>

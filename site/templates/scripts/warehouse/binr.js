@@ -1,7 +1,7 @@
 $(function() {
 	// BINR FORM INPUTS
-	var input_frombin = $('.binr-form').find('input[name=from-bin]');
-	var input_tobin   = $('.binr-form').find('input[name=to-bin]');
+	var input_frombin = $('.binr-form').find('input[name=frombin]');
+	var input_tobin   = $('.binr-form').find('input[name=tobin]');
 	var input_qty     = $('.binr-form').find('input[name=qty]');
 
 	/**
@@ -68,7 +68,7 @@ $(function() {
 	$("body").on("click", ".use-bin-qty", function(e) {
 		e.preventDefault();
 		var button = $(this);
-		var binID = $('.binr-form').find('input[name=from-bin]').val();
+		var binID = $('.binr-form').find('input[name=frombin]').val();
 		var binqty = $('.choose-from-bins').find('[data-binid="'+binID+'"]').data('qty');
 		$('.binr-form').find('.qty-available').text(binqty);
 		input_qty.val(binqty);
@@ -187,7 +187,7 @@ $(function() {
 		}
 		return new SwalError(error, title, msg, html);
 	}
-	
+
 /* =============================================================
 	Lookup Modal Functions
 ============================================================= */

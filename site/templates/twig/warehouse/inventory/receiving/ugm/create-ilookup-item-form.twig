@@ -6,18 +6,17 @@
 	m_receiving            module Receiving or Custom module Receiving
 #}
 <h3>Add Reference for Item ID</h3>
-<form action="{{ page.formurl }}" method="get" class="form-reset allow-enterkey-submit mb-4" id="ilookup-create-form">
-	<input type="hidden" name="action" value="receving-create-ilookup-item">
-	<input type="hidden" name="ponbr" value="{{ page.ponbr }}">
+<form action="{{ page.url }}" method="post" class="form-reset allow-enterkey-submit mb-4" id="ilookup-create-form">
+	<input type="hidden" name="action" value="create-ilookup">
+	<input type="hidden" name="ponbr" value="{{ m_receiving.getPonbr() }}">
 	<input type="hidden" name="scan" value="{{ item.scan }}">
-	<input type="hidden" name="page" value="{{ page.fullURL.getUrl() }}">
 
 	<div class="form-row">
 		<div class="col-sm-6">
 			<div class="form-group">
 				<label for="reference">Cross Reference ID</label>
 				<div class="input-group">
-					<input type="text" class="form-control" id="reference" name="reference" value="{{ page.scan }}">
+					<input type="text" class="form-control" id="reference" name="reference" value="{{ item.scan }}">
 				</div>
 			</div>
 		</div>
@@ -43,7 +42,7 @@
 		<button type="submit" class="btn btn-success btn-lg">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Submit
 		</button>
-		<a href="{{ page.ponbrURL(page.ponbr) }}" class="btn-clear btn btn-danger btn-lg">
+		<a href="{{ page.receivingUrl(m_receiving.getPonbr()) }}" class="btn-clear btn btn-danger btn-lg">
 			<i class="fa fa-window-close" aria-hidden="true"></i> Cancel
 		</a>
 	</div>
