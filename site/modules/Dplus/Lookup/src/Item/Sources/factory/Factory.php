@@ -10,12 +10,13 @@ use Dplus\Lookup\Item\Input;
  */
 class Factory extends WireData {
 	const SOURCES = [
-		'itm'           => 'Itm',
-		'cxm'           => 'Cxm',
-		'cxm-shortitem' => 'CxmShortItem',
-		'mxrfe'         => 'Mxrfe',
-		'vxm'           => 'Vxm',
-		'upcx'          => 'Upcx',
+		'itm'              => 'Itm',
+		'cxm'              => 'Cxm',
+		'cxm-shortitem'    => 'CxmShortItem',
+		'mxrfe'            => 'Mxrfe',
+		'mxrfe-shortitem'  => 'MxrfeShortItem',
+		'vxm'              => 'Vxm',
+		'upcx'             => 'Upcx',
 	];
 
 	/** @var Input */

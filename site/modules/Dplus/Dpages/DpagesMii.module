@@ -29,21 +29,12 @@ class DpagesMii extends Dpages implements Module {
 	);
 
 	const TEMPLATES = array(
-		'ii-function' => array(
-			'name'   => 'dplus-menu',
-			'fields' => array('title', 'dplus_function', 'pw_template', 'jsoncode', 'is_formattable', 'summary'),
-			'paginated' => true
-		),
 		'ii-item' => array(
 			'name'   => 'ii-item',
 			'fields' => array(),
 		),
 		'ii-sales-history' => array(
 			'name'   => 'ii-sales-history',
-			'fields' => array(),
-		),
-		'ii-item-lookup' => array(
-			'name'   => 'ii-item-lookup',
 			'fields' => array(),
 		),
 		'iio' => array(
@@ -87,15 +78,6 @@ class DpagesMii extends Dpages implements Module {
 			'dplus_function' => 'ii',
 			'pw_template'    => 'ii-item'
 		),
-		'ii-item-lookup'     => array(
-			'template'       => 'dplus-json',
-			'name'           => 'Item Lookup',
-			'title'          => 'Item Lookup',
-			'summary'        => 'Look up Items',
-			'parent'         => '/mii/',
-			'dplus_function' => '',
-			'pw_template'    => 'ii-item-lookup',
-		)
 	);
 
 /* =============================================================

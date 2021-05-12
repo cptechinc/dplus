@@ -20,7 +20,7 @@ class Map extends AbstractController {
 	}
 
 	public static function validateVendorid($data) {
-		$fields = ['vendorID|text'];
+		$fields = ['vendorID|text', 'jqv|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = new MapValidator();
 

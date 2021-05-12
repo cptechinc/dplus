@@ -9,7 +9,7 @@
 
 	$segments = $input->urlSegments();
 
-	if ($segments[sizeof($segments)] == 'print') {
+	if (empty($segments) === false && $segments[sizeof($segments)] == 'print') {
 		PrintSo::initHooks();
 	}
 

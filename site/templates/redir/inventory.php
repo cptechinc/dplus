@@ -13,13 +13,12 @@
 	* Inventory Redirect
 	* NOTE Uses whseman.log
 	**/
-
 	switch ($action) {
 		case 'inventory-search':
 			// Requests Inventory records for Query (itemid, lotnbr, lotserial)
 			// Response: fills Invsearch table with records
 			$q = strtoupper($input->$rm->text('scan'));
-			$binID = $input->$rm->text('binID');
+			$binID = strtoupper($input->$rm->text('binID'));
 			$data = array("DBNAME=$dplusdb", 'INVSEARCH', "QUERY=$q");
 
 			if ($input->$rm->page) {
@@ -32,7 +31,7 @@
 		case 'bin-inquiry':
 			// Requests Contents of bin
 			// Response: fills Invsearch table with records
-			$binID = $input->$rm->text('binID');
+			$binID = strtoupper(($input->$rm->text('binID'));
 			$data = array("DBNAME=$dplusdb", 'BININQUIRY', "BINID=$binID");
 
 			if ($input->$rm->page) {
@@ -81,7 +80,7 @@
 			// Requests label print defaults for Item
 			// Response: return itemcartonlabel record to fill out
 			$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
-			$binID = $input->$rm->text('binID');
+			$binID = strtoupper($input->$rm->text('binID'));
 			$itemID = $input->$rm->text('itemID');
 			$url = new Purl\Url($pages->get('/warehouse/inventory/print-item-label/')->httpUrl);
 			$url->query->set('binID', $binID);
@@ -119,7 +118,7 @@
 		case 'print-thermal-label':
 			// Requests label to be printed
 			// Response: Takes itemcartonlabel and prints label
-			$binID     = $input->$rm->text('binID');
+			$binID     = strtoupper(($input->$rm->text('binID'));
 			$itemID    = $input->$rm->text('itemID');
 			$lotserial = $input->$rm->text('lotserial');
 			$whseID    = $input->$rm->text('whseID');
@@ -201,7 +200,7 @@
 
 			// Lot Serial Ref is Read-Only currently 8/23
 			// $item->setLotserialref($input->$rm->text('lotserialref'));
-			$item->setBin($input->$rm->text('binID'));
+			$item->setBin(strtoupper($input->$rm->text('binID')));
 			$item->setQty($input->$rm->text('qty'));
 			$item->setProductiondate(date('Ymd', strtotime($input->$rm->text('productiondate'))));
 			$item->save();
@@ -244,183 +243,6 @@
 				$url = new Purl\Url($pages->get('pw_template=whse-receiving')->url);
 				$url->query->set('ponbr', $ponbr);
 			}
-			$session->loc = $url->getUrl();
-			break;
-		case 'init-receive':
-			// Requests PO to receive
-			// Response: po_tran_det & po_tran_lot_det records are loaded with detail information
-			$ponbr = $input->$rm->text('ponbr');
-			$data = array("DBNAME=$dplusdb", 'STARTRECEIVE', "PONBR=$ponbr");
-
-			if ($input->$rm->page) {
-				$url = new Purl\Url($input->$rm->text('page'));
-				$url->query->set('ponbr', $ponbr);
-			} else {
-				$url = new Purl\Url($pages->get('pw_template=whse-receiving')->url);
-				$url->query->set('ponbr', $ponbr);
-			}
-			$session->loc = $url->getUrl();
-			break;
-		case 'receiving-search':
-			// Requests Item / Lot/Serial Details for Receiving
-			// Response: Creates whseitemphysicalcount record(s)
-			$ponbr = $input->$rm->text('ponbr');
-			$q = strtoupper($input->$rm->text('scan'));
-			$binID = $input->$rm->text('binID');
-			$data = array("DBNAME=$dplusdb", 'RECEIVINGSEARCH', "PONBR=$ponbr", "QUERY=$q", "BIN=$binID");
-
-			if ($input->$rm->page) {
-				$url = new Purl\Url($input->$rm->text('page'));
-			} else {
-				$url = new Purl\Url($pages->get('pw_template=whse-receiving'));
-			}
-			$url->query->set('ponbr', $ponbr);
-			$url->query->set('scan', $q);
-			$url->query->set('binID', $binID);
-
-			$session->loc = $url->getUrl();
-			break;
-		case 'receiving-submit':
-			// Request:  Save Received Item to PO DETAIL Line
-			// Response: Updates po_tran_lot_det & po_tran_det records
-			$scan = $input->$rm->text('scan');
-			$ponbr = $input->$rm->text('ponbr');
-			$date = $input->$rm->text('productiondate');
-			$date = $date ? date('Ymd', strtotime($date)) : 0;
-			$query_phys = WhseitemphysicalcountQuery::create();
-			$query_phys->filterBySessionid(session_id());
-			$query_phys->filterByScan($scan);
-
-			$item = $query_phys->findOne();
-			$item->setItemid($input->$rm->text('itemID'));
-			$item->setLotserial($input->$rm->text('lotserial'));
-			$item->setLotserialref($input->$rm->text('lotserialref'));
-			$item->setBin($input->$rm->text('binID'));
-			$item->setQty($input->$rm->text('qty'));
-			$item->setProductiondate($date);
-			$item->save();
-
-			$session->receiving_itemid = $item->itemid;
-			$session->receiving_bin = $item->bin;
-
-			$data = array("DBNAME=$dplusdb", 'ACCEPTRECEIVING', "PONBR=$ponbr");
-
-			$url = new Purl\Url($page->url);
-			$url->query->set('action', 'verify-receiving-submit');
-			$url->query->set('ponbr', $ponbr);
-			$url->query->set('scan', $scan);
-			$url->query->set('page', $input->$rm->text('page'));
-			$session->loc = $url->getUrl();
-			break;
-		case 'receiving-autosubmit':
-			// Request:  Save Received Item to PO DETAIL Line
-			// Response: Updates po_tran_lot_det & po_tran_det records
-			$scan = $input->$rm->text('scan');
-			$ponbr = $input->$rm->text('ponbr');
-			$query_phys = WhseitemphysicalcountQuery::create();
-			$query_phys->filterBySessionid(session_id());
-			$query_phys->filterByScan($scan);
-
-			$item = $query_phys->findOne();
-
-			$session->receiving_itemid = $item->itemid;
-			$session->receiving_bin = $item->bin;
-
-			$data = array("DBNAME=$dplusdb", 'ACCEPTRECEIVING', "PONBR=$ponbr");
-
-			$url = new Purl\Url($page->url);
-			$url->query->set('action', 'verify-receiving-submit');
-			$url->query->set('ponbr', $ponbr);
-			$url->query->set('scan', $scan);
-			$url->query->set('page', $input->$rm->text('page'));
-			$session->loc = $url->getUrl();
-			break;
-		case 'verify-receiving-submit':
-			// Verifies if whseitemphysical count record has an error if it does, returns
-			// to receiving page for that scanned item for the user
-			$scan = $input->$rm->text('scan');
-			$ponbr = $input->$rm->text('ponbr');
-
-			$query_phys = WhseitemphysicalcountQuery::create();
-			$query_phys->filterBySessionid(session_id());
-			$query_phys->filterByScan($scan);
-			$query_phys->findOne();
-
-			$item = $query_phys->findOne();
-
-			if ($input->$rm->page) {
-				$url = new Purl\Url($input->$rm->text('page'));
-			} else {
-				$url = new Purl\Url($pages->get('pw_template=whse-receiving')->url);
-				$url->query->set('ponbr', $ponbr);
-			}
-
-			if ($item->has_error()) {
-				$url->query->set('scan', $scan);
-			} else {
-				$url->query->remove('scan');
-			}
-			$session->loc = $url->getUrl();
-			break;
-		case 'remove-received-item':
-			// Request:  Remove one of the received lots / items
-			// Response: Removes the requested records
-			$ponbr     = $values->text('ponbr');
-			$linenbr   = $values->int('linenbr');
-			$lotserial = $values->text('lotserial');
-			$binID     = $values->text('binID');
-
-			$q = PurchaseOrderDetailLotReceivingQuery::create();
-			$q->filterByPonbr($ponbr);
-			$q->filterByLinenbr($linenbr);
-			$q->filterByLotserial($lotserial);
-			$q->filterByBin($binID);
-			$item = $q->findOne();
-
-			$data = array("DBNAME=$dplusdb", 'RECEIVEREMOVELOT', "PONBR=$ponbr", "LINENBR=$linenbr", "LOTSERIAL=$item->lotserial", "BIN=$item->bin");
-
-			$url = new Purl\Url($pages->get('pw_template=whse-receiving')->url);
-			$url->query->set('ponbr', $ponbr);
-			$session->loc = $url->getUrl();
-			$session->removefromline = $linenbr;
-			break;
-		case 'receiving-edit-line-item':
-			// Request:  Remove one of the received lots / items
-			// Response: Removes the requested records
-			$ponbr     = $values->text('ponbr');
-			$linenbr   = $values->int('linenbr');
-			$lotserial = $values->text('lotserial');
-			$binID     = $values->text('binID');
-			$qty       = $values->text('qty');
-			$date      = $values->text('productiondate');
-			$date = $date ? date('Ymd', strtotime($date)) : 0;
-
-			$q = PurchaseOrderDetailLotReceivingQuery::create();
-			$q->filterByPonbr($ponbr);
-			$q->filterByLinenbr($linenbr);
-			$q->filterByLotserial($lotserial);
-			$q->filterByBin($binID);
-			$item = $q->findOne();
-
-			$data = array("DBNAME=$dplusdb", 'EDITRECEIVEDQTY', "PONBR=$ponbr", "LINENBR=$linenbr", "LOTSERIAL=$item->lotserial", "BIN=$binID", "QTY=$qty", "DATE=$date");
-
-			$url = new Purl\Url($pages->get('pw_template=whse-receiving')->url);
-			$url->query->set('ponbr', $ponbr);
-			$session->removefromline = $linenbr;
-			$session->loc = $url->getUrl();
-			break;
-		case 'receving-create-ilookup-item':
-			// Request:  Remove one of the received lots / items
-			// Response: Removes the requested records
-			$ponbr     = $values->text('ponbr');
-			$scan      = $values->text('scan');
-			$ref       = $values->text('reference');
-			$itemID    = $values->text('itemID');
-			$data = array("DBNAME=$dplusdb", 'RECEIVINGCREATEILOOKUP', "PONBR=$ponbr", "ITEMID=$itemID", "REFERENCE=$ref");
-
-			$url = new Purl\Url($pages->get('pw_template=whse-receiving')->url);
-			$url->query->set('ponbr', $ponbr);
-			$url->query->set('scan', $ref);
 			$session->loc = $url->getUrl();
 			break;
 		case 'submit-receipt':

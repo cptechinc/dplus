@@ -1,6 +1,6 @@
 <?php namespace Dplus\Lookup\Item\Lookups;
 // Dplus Model
-use SalesOrderQuery;
+use SalesOrderQuery, SalesOrder;
 
 use Dplus\Filters\Mso\SalesOrder as SalesOrderFilter;
 /**
@@ -9,7 +9,7 @@ use Dplus\Filters\Mso\SalesOrder as SalesOrderFilter;
  * FOR: [SalesOrder|Cart|Quote] Item Entry
  */
 class ArEntry extends Base {
-	const SOURCES = ['itm', 'cxm-shortitem', 'upcx', 'cxm'];
+	const SOURCES = ['itm', 'cxm', 'cxm-shortitem', 'upcx'];
 
 	/**
 	 * Prepare InputData
@@ -18,9 +18,9 @@ class ArEntry extends Base {
 		if ($this->inputdata->doesFieldHaveValue('ordn') && $this->inputdata->doesFieldHaveValue('custid') === false) {
 			$ordn = $this->wire('sanitizer')->ordn($this->inputdata->ordn);
 			$filter = new SalesOrderFilter();
-			$filter->query->select(SalesOrder::aliasproperty('ordn'));
+			$filter->query->select(SalesOrder::aliasproperty('custid'));
 			$filter->query->filterByOrdernumber($ordn);
-			
+
 			if ($filter->query->count()) {
 				$this->inputdata->custid = $filter->query->findOne();
 			}

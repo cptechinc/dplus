@@ -20,24 +20,6 @@
 	*		INVSEARCH
 	*		QUERY=$q
 	*		break;
-	*	case 'search-item-bins':
-	*		Request Bins that Item is in
-	*		Response: Bininfo Records with Bins that contain this item
-	*		DBNAME=$dplusdb
-	*		BININFO
-	*		ITEMID=$itemID
-	*		break;
-	*	case 'bin-reassign':
-	*		Request Item Bin Reassignment
-	*		Response: Whsesession Record has status of BINR
-	*		DBNAME=$dplusdb
-	*		BINR
-	*		ITEMID=$itemID
-	*		** SERIALNBR=$serialnbr | LOTNBR=$lotnbr
-	*		QTY=$qty
-	*		FROMBIN=$frombin
-	*		TOBIN=$tobin
-	*		break;
 	*	case 'move-contents':
 	*		Request Bin Contents to be Reassigned to another Bin
 	*		Response: Whsesession Record has status of BINR
@@ -57,62 +39,9 @@
 			$url->query->set('scan', $q);
 			$session->loc = $url->getUrl();
 			break;
-		case 'search-item-bins':
-			$itemID = $input->$requestmethod->text('itemID');
-			$binID = $input->$requestmethod->text('binID');
-			$data = array("DBNAME=$dplusdb", 'BININFO', "ITEMID=$itemID");
-			$returnurl = new Purl\Url($input->$requestmethod->text('page'));
-			$returnurl->query->remove('scan');
-
-			if ($input->$requestmethod->serialnbr || $input->$requestmethod->lotnbr) {
-				if ($input->$requestmethod->serialnbr) {
-					$lotserial = $input->$requestmethod->text('serialnbr');
-					$returnurl->query->set('serialnbr', $lotserial);
-				} else {
-					$lotserial = $input->$requestmethod->text('lotnbr');
-					$returnurl->query->set('lotnbr', $lotserial);
-				}
-				$data[] = "LOTSERIAL=$lotserial";
-			} else {
-				$returnurl->query->set('itemID', $itemID);
-			}
-
-			if (!empty($binID)) {
-				$returnurl->query->set('binID', $binID);
-			}
-			$session->loc = $returnurl->getUrl();
-			break;
-		case 'bin-reassign':
-			$itemID = $input->$requestmethod->text('itemID');
-			$frombin = $input->$requestmethod->text('from-bin');
-			$qty = $input->$requestmethod->text('qty');
-			$tobin = $input->$requestmethod->text('to-bin');
-			$data = array("DBNAME=$dplusdb", 'BINR', "ITEMID=$itemID");
-
-			if ($input->$requestmethod->serialnbr) {
-				$serialnbr = $input->$requestmethod->text('serialnbr');
-				$data[] = "SERIALNBR=$serialnbr";
-			}
-			if ($input->$requestmethod->lotnbr) {
-				$lotnbr = $input->$requestmethod->text('lotnbr');
-				$data[] = "LOTNBR=$lotnbr";
-			}
-			$data[] = "QTY=$qty";
-			$data[] = "FROMBIN=$frombin";
-			$data[] = "TOBIN=$tobin";
-			$url = new Purl\Url($input->$requestmethod->text('page'));
-
-			if ($url->query->has('tobin')) {
-				$url->query->set('tobin', $tobin);
-			} elseif ($url->query->has('frombin')) {
-				$url->query->set('frombin', $frombin);
-			}
-			$session->loc = $input->$requestmethod->text('page');
-			$session->binr = array('frombin' => $frombin, 'tobin' => $tobin);
-			break;
 		case 'move-bin-contents';
-			$frombin = $input->$requestmethod->text('from-bin');
-			$tobin = $input->$requestmethod->text('to-bin');
+			$frombin = strtoupper($input->$requestmethod->text('from-bin'));
+			$tobin = strtoupper($input->$requestmethod->text('to-bin'));
 			$data = array("DBNAME=$dplusdb", 'MOVEBIN', "FROMBIN=$frombin", "TOBIN=$tobin");
 			$session->loc = $input->$requestmethod->text('page');
 			$session->bincm = array('tobin' => $tobin, 'frombin' => $frombin);

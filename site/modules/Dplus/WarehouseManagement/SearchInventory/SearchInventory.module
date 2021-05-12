@@ -7,6 +7,12 @@ use InvsearchQuery, Invsearch;
  * Class for filtering Inventory using InvsearchQuery
  */
 class SearchInventory extends WireData implements Module {
+	public function query() {
+		$q = InvsearchQuery::create();
+		$q->filterBySessionid($this->sessionID);
+		return $q;
+	}
+	
 	public function get_query() {
 		$q = InvsearchQuery::create();
 		$q->filterBySessionid($this->sessionID);

@@ -72,7 +72,7 @@ class Base extends WireData {
 
 		$factory = new Factory();
 		$factory->setInputData($this->inputdata);
-		$sources = $factory->getSources(self::SOURCES);
+		$sources = $factory->getSources(static::SOURCES);
 
 		foreach ($sources as $key => $source) {
 			$this->results->addSearched($key);

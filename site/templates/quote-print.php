@@ -37,8 +37,6 @@
 	$pdfmaker->set_fileID("quote-$quote->quotenumber");
 	$pdfmaker->set_filetype('quote');
 
-
-
 	if ($input->get->download) {
 		header("Content-type:application/pdf");
 		// It will be called downloaded.pdf

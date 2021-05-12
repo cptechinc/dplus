@@ -35,7 +35,6 @@ class PurchaseOrderEdit extends WireData implements Module {
 
 	const HOOK_FUNCTIONS_LOOKUPS = array(
 		// Hook     =>  PW Template
-		'ii_lookup' => 'ii-item-lookup',
 		'itm_json'  => 'itm-json',
 		'vi_json'   => 'vi-json',
 		'search_items'     => 'itm-search',

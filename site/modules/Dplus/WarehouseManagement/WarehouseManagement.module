@@ -1,10 +1,38 @@
 <?php namespace ProcessWire;
 
+include_once(__DIR__.'/vendor/autoload.php');
+
 class WarehouseManagement extends WireData implements Module {
+
+	public function requestItemBins($itemID, $debug = false) {
+		$data = ['BININFO', "ITEMID=$itemID"];
+		return $this->sendDplusRequest($data, $debug);
+	}
+
+	public function requestLotserialBins($itemID, $lotserial, $debug = false) {
+		$data = ['BININFO', "ITEMID=$itemID", "LOTSERIAL=$lotserial"];
+		return $this->sendDplusRequest($data, $debug);
+	}
+
+	public function requestInventorySearch($q, $debug = false) {
+		$data = ['INVSEARCH', "QUERY=$q"];
+		return $this->sendDplusRequest($data, $debug);
+	}
+
+	public function sendDplusRequest(array $data, $debug = false) {
+		$db = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array_merge(["DBNAME=$db"], $data);
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($this->wire('config')->cgis['warehouse'], $this->sessionID);
+	}
 
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
+	public function init() {
+		$this->sessionID = session_id();
+	}
 	public function update() {
 		$modules = $this->wire('modules');
 		$modules->refresh();
@@ -15,18 +43,13 @@ class WarehouseManagement extends WireData implements Module {
 		}
 	}
 
-	/**
-	 * ProcessWire Module Info
-	 *
-	 * @return void
-	 */
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dpluso Warehouse Management',
 			'version' => 101,
 			'summary' => 'Handles Loading Warehouse Management Functions',
 			'singular' => true,
-			'autoload' => false,
+			'autoload' => true,
 			'installs' => array(
 				'Picking',
 				'PickingInventoryManager',

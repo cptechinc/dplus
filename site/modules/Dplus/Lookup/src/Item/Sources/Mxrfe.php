@@ -10,8 +10,8 @@ use ProcessWire\WireData, ProcessWire\WireInput;
  */
 class Mxrfe extends Source  {
 	const MODEL = 'ItemXrefManufacturer';
-	const REQUIREDFIELDS = ['mnfrid', 'mnfritemid'];
-	const SOURCE = 'cxm';
+	const REQUIREDFIELDS = ['mnfrid'];
+	const SOURCE = 'mxrfe';
 
 	protected function filterQuery(Query $q) {
 		$q->filterByMnfrid($this->inputdata->mnfrid);

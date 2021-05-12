@@ -3,13 +3,15 @@
 	use Controllers\Ajax\Json as Json;
 
 	$routes  = [
+		['GET', 'item-lookup/', Json\ItemLookup::class, 'lookup'],
 		'inv' => [
 			'validate' => [
 				['GET', 'tariff-code/', Json\Min::class, 'validateTariffCode'],
 				['GET', 'country-code/', Json\Min::class, 'validateCountryCode'],
 				['GET', 'msds-code/', Json\Min::class, 'validateMsdsCode'],
 				['GET', 'itemid/', Json\Min::class, 'validateItemid'],
-				['GET', 'warehouse/', Json\Min::class, 'validateWarehouseId'],
+				['GET', 'warehouse/', Json\Min::class, 'validateWarehouseid'],
+				['GET', 'warehouse/bins/', Json\Min::class, 'validateWarehouseBinid'],
 				['GET', 'itmp/exists/', Json\Min::class, 'validateItmpExists'],
 				['GET', 'item-group/', Json\Min::class, 'validateInvGroupCode'],
 			],
@@ -89,7 +91,21 @@
 			'sales-order' => [
 				['GET', 'line/', Json\Mso::class, 'getSalesOrderDetail'],
 			],
-		]
+		],
+		'wm' => [
+			'receiving' => [
+				'validate' => [
+					['GET', 'require-lotserial/', Json\Wm\Receiving::class, 'requireLotserial'],
+					['GET', 'allow-itemid/', Json\Wm\Receiving::class, 'allowItemOnOrder'],
+					['GET', 'add-qty-warning/', Json\Wm\Receiving::class, 'doesQtyAddNeedWarning'],
+				],
+				'items' => [
+					['GET', '', Json\Wm\Receiving::class, 'test'],
+					['GET', 'line/', Json\Wm\Receiving::class, 'getLine'],
+					['GET', 'lotserial/', Json\Wm\Receiving::class, 'getLineLotserial'],
+				]
+			],
+		],
 	];
 
 	$router = new Mvc\JsonRouter();

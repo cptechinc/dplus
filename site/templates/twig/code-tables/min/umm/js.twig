@@ -94,8 +94,8 @@ $(function() {
 			},
 			conversion: {
 				required: true,
-			    minValue: 0,
-			    number: true
+				minValue: 0,
+				number: true
 			},
 			pricebyweight: 'required'
 		},
@@ -172,10 +172,12 @@ $(function() {
 	 * @return void
 	 */
 	function populate_edit_from_button(button, modal) {
+		console.log(button);
 		var code = button.data('code').toString();
 		var description = button.data('description').toString();
 		var conversion = button.data('conversion'); // Extract info from data-* attributes
 		var pricebyweight = button.data('pricebyweight'); // Extract info from data-* attributes
+		var stockbycase = button.data('stockbycase'); // Extract info from data-* attributes
 		var form = modal.find('form');
 
 		form.attr('data-code', code);
@@ -183,6 +185,9 @@ $(function() {
 		modal.find('input[name=description]').val(description);
 		modal.find('input[name=conversion]').val(conversion);
 		modal.find('select[name=pricebyweight]').val(pricebyweight);
+
+		modal.find('select[name=stockbycase]').val(stockbycase);
+
 
 		if (code.length) {
 			modal.find('.modal-title').text('Editing Code ' + code);
@@ -194,16 +199,17 @@ $(function() {
 			modal.find('input[name=code]').focus();
 			modal.find('input[name=conversion]').val(1);
 			modal.find('select[name=pricebyweight]').val('N');
+			modal.find('select[name=stockbycase]').val('N');
 		}
 		form.find('input[name=serialized]').val(form.serialize());
 	}
 
 	$("#edit-code-modal").on('hidden.bs.modal', function (e) {
 		form.validate().resetForm();
-	    form.find('.is-invalid').removeClass("is-invalid");
-	    form.find('.is-valid').removeClass("is-valid");
-	    form.find('.invalid-feedback').remove();
-	    form.find('.valid-feedback').remove();
+		form.find('.is-invalid').removeClass("is-invalid");
+		form.find('.is-valid').removeClass("is-valid");
+		form.find('.invalid-feedback').remove();
+		form.find('.valid-feedback').remove();
 	});
 
 });
