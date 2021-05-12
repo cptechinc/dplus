@@ -503,7 +503,7 @@ class PickingProvalley extends WireData implements Module {
 	 */
 	public function send_finish_order_request($ordn, $debug = false) {
 		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
-		$data = array("DBNAME=$dplusdb", 'COMPLETEORDER', "ORDERNBR=$ordn");
+		$data = array("DBNAME=$dplusdb", 'FINISHORDER', "ORDERNBR=$ordn");
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());
 		if ($debug == false) {

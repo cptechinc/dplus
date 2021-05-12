@@ -49,7 +49,7 @@ class WarehouseManagement extends WireData implements Module {
 			'version' => 101,
 			'summary' => 'Handles Loading Warehouse Management Functions',
 			'singular' => true,
-			'autoload' => false,
+			'autoload' => true,
 			'installs' => array(
 				'Picking',
 				'PickingInventoryManager',

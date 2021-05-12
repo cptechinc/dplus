@@ -103,9 +103,12 @@ class CodeTablesUmm extends WireData implements Module {
 			$description = $input->$rm->text('description');
 			$conversion = $input->$rm->text('conversion');
 			$pricebyweight = $input->$rm->text('pricebyweight');
+			$stockbycase = $input->$rm->yn('stockbycase');
+			
 			$record->setDescription($description);
 			$record->setConversion($conversion);
 			$record->setPricebyweight($pricebyweight);
+			$record->setStockbycase($stockbycase);
 			$record->setDate(date('Ymd'));
 			$record->setTime(date('His'));
 			$record->setDummy('P');

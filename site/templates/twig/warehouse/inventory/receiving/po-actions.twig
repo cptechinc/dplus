@@ -1,8 +1,8 @@
 <div class="d-flex justify-content-between align-items-center">
-	<a href="{{ page.submit_receiptURL(ponbr) }}" class="btn btn-success">
+	<a href="{{ page.postReceivingUrl(page.wire('input').get.text('ponbr')) }}" class="btn btn-success post-po">
 		<i class="fa fa-floppy-o" aria-hidden="true"></i> Post
 	</a>
-	<a href="{{ page.url }}" class="btn btn-danger">
-		Exit
+	<a href="{{ page.url }}" class="btn btn-warning">
+		<i class="fa fa-times" aria-hidden="true"></i> Exit
 	</a>
 </div>

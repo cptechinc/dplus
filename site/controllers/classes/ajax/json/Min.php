@@ -2,6 +2,7 @@
 // Dplus Model
 use TariffCodeQuery, TariffCode;
 use CountryCodeQuery, CountryCode;
+use WarehouseBinQuery, WarehouseBin;
 // ProcessWire Classes, Modules
 use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Validators
@@ -10,7 +11,7 @@ use Dplus\CodeValidators\Min as MinValidator;
 use Mvc\Controllers\AbstractController;
 
 class Min extends AbstractController {
-	public static function test() {
+	public static function test($data) {
 		return 'test';
 	}
 
@@ -110,7 +111,6 @@ class Min extends AbstractController {
 	public static function getItm($data) {
 		$fields = ['itemID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
-
 		$validate = self::validator();
 
 		if ($validate->itemid($data->itemID) === false) {
@@ -141,6 +141,21 @@ class Min extends AbstractController {
 
 		if ($validate->whseid($data->whseID) === false && $data->whseID != '**') {
 			return "Warehouse ID $data->whseID not found";
+		}
+		return true;
+	}
+
+	public static function validateWarehouseBinid($data) {
+		$fields = ['whseID|text', 'binID|text', 'jqv|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$validate = self::validator();
+
+		if ($validate->whseid($data->whseID) === false) {
+			return $data->jqv ? "Warehouse ID '$data->whseID' not found" : false;
+		}
+
+		if ($validate->whsebin($data->whseID, $data->binID) === false) {
+			return $data->jqv ? "Warehouse '$data->whseID' Bin '$data->binID' not found" : false;
 		}
 		return true;
 	}

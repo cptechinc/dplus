@@ -1,0 +1,20 @@
+{% extends 'util/bread-crumbs.twig' %}
+
+{% block current_page %}
+	{% set values = page.wire('input').get %}
+
+	{% if values.offsetExists('ponbr') %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.url }}">
+				<i class="bi bi-inboxes" aria-hidden="true"></i> {{ page.has('dplus_function') ? page.dplus_function|upper : page.title }}
+			</a>
+		</li>
+		<li class="breadcrumb-item active" aria-current="page">
+			{{ values.text('ponbr') }}
+		</li>
+	{% else %}
+		<li class="breadcrumb-item active" aria-current="page">
+			{{ page.has('dplus_function') ? page.dplus_function|upper : page.title }}
+		</li>
+	{% endif %}
+{% endblock %}

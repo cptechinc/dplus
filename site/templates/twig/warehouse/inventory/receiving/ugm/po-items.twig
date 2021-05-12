@@ -36,13 +36,13 @@
 					<small>{{ item.description }}</small>
 				</div>
 				<div class="col">{{ item.uom }}</div>
-				<div class="col text-right">{{ item.qty_ordered|number_format(m_receiving.decimal_places()) }}</div>
-				<div class="col text-right">{{ item.qty_received|number_format(m_receiving.decimal_places()) }}</div>
-				<div class="col text-right">{{ item.cost|number_format(4) }}</div>
-				<div class="col text-right">{{ item.cost_total|number_format(2) }}</div>
+				<div class="col text-right">{{ item.qty_ordered|number_format(m_receiving.decimalPlacesQty()) }}</div>
+				<div class="col text-right">{{ item.qty_received|number_format(m_receiving.decimalPlacesQty()) }}</div>
+				<div class="col text-right">{{ item.cost|number_format(m_receiving.decimalPlacesCost()) }}</div>
+				<div class="col text-right">{{ item.cost_total|number_format(m_receiving.decimalPlacesCost()) }}</div>
 				<div class="col text-center">
 					{% if item.qty_received > 0 %}
-						<a href="{{ page.print_receivedlineURL(item) }}" class="btn btn-info btn-sm">
+						<a href="{{ page.printReceivingLineUrl(item) }}" class="btn btn-info btn-sm">
 							<i class="fa fa-print" aria-hidden="true"></i> Print
 						</a>
 					{% endif %}
@@ -72,18 +72,18 @@
 							</div>
 							<div class="col" data-lotserialref="{{ lot.lotreference }}">{{ lot.lotreference }}</div>
 							<div class="col date" data-date="{{ lot.date_production ? lot.date_production|convertdate : '' }}">{{ lot.date_production ? lot.date_production|convertdate : '' }}</div>
-							<div class="col text-right qty" data-uom="{{ item.uom }}" data-qty="{{ lot.qty_received|number_format(m_receiving.decimal_places()) }}">{{ lot.qty_received|number_format(m_receiving.decimal_places()) }}</div>
+							<div class="col text-right qty" data-uom="{{ item.uom }}" data-qty="{{ lot.qty_received|number_format(m_receiving.decimalPlacesQty()) }}">{{ lot.qty_received|number_format(m_receiving.decimalPlacesQty()) }}</div>
 							<div class="col" data-bin="{{ lot.bin }}">{{ lot.bin }}</div>
 							<div class="col-3">
-								<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#item-edit-modal">
+								<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#item-edit-modal" data-linenbr="{{ lot.linenbr }}" data-lotserial="{{ lot.lotserial }}" data-binid="{{ lot.bin }}">
 									<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 								</button>
 								&nbsp; &nbsp;
-								<a href="{{ page.delete_received_itemURL(lot) }}" class="btn btn-danger btn-sm">
+								<a href="{{ page.deleteReceivedLotserialUrl(lot) }}" class="btn btn-danger btn-sm">
 									<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 								</a>
 								&nbsp; &nbsp;
-								<a href="{{ page.print_receiveditemURL(lot) }}" class="btn btn-info btn-sm">
+								<a href="{{ page.printReceivingLineUrl(item) }}" class="btn btn-info btn-sm">
 									<i class="fa fa-print" aria-hidden="true"></i> Print
 								</a>
 							</div>
