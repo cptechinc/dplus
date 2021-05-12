@@ -38,20 +38,8 @@ class DpagesMso extends Dpages implements Module {
 			'name'   => 'sales-order-view',
 			'fields' => array()
 		),
-		'sales-order-print' => array(
-			'name'   => 'sales-order-print',
-			'fields' => array()
-		),
 		'sales-order-edit' => array(
 			'name'   => 'sales-order-edit',
-			'fields' => array()
-		),
-		'sales-order-documents' => array(
-			'name'   => 'sales-order-documents',
-			'fields' => array()
-		),
-		'sales-order-notes' => array(
-			'name'   => 'sales-order-notes',
 			'fields' => array()
 		),
 		'so-code-table' => array(
@@ -172,45 +160,6 @@ class DpagesMso extends Dpages implements Module {
 			'dplus_function'   => '',
 			'dplus_permission' => 'mso',
 			'pw_template'      => 'sales-order-view'
-		),
-		'sales-order-print' => array(
-			'template'         => 'dplus-function',
-			'name'             => 'print',
-			'title'            => 'Print Sales Order',
-			'summary'          => 'Print Sales Order',
-			'parent'           => '/mso/sales-order/',
-			'dplus_function'   => '',
-			'dplus_permission' => 'mso',
-			'pw_template'      => 'sales-order-print'
-		),
-		'sales-order-edit' => array(
-			'template'       => 'dplus-function',
-			'name'           => 'edit',
-			'title'          => 'Edit Sales Order',
-			'summary'        => 'Edit Sales Order',
-			'parent'         => '/mso/sales-order/',
-			'dplus_function' => 'eso',
-			'pw_template'    => 'sales-order-edit'
-		),
-		'sales-order-documents' => array(
-			'template'         => 'dplus-function',
-			'name'             => 'documents',
-			'title'            => 'Sales Order Documents',
-			'summary'          => 'View Sales Order Documents',
-			'parent'           => '/mso/sales-order/',
-			'dplus_function'   => '',
-			'dplus_permission' => 'mso',
-			'pw_template'      => 'sales-order-documents'
-		),
-		'sales-order-notes' => array(
-			'template'         => 'dplus-function',
-			'name'             => 'notes',
-			'title'            => 'Sales Order Notes',
-			'summary'          => 'View Sales Order Notes',
-			'parent'           => '/mso/sales-order/',
-			'dplus_function'   => '',
-			'dplus_permission' => 'mso',
-			'pw_template'      => 'sales-order-notes'
 		),
 		'sales-history' => array(
 			'template'         => 'dplus-function',
