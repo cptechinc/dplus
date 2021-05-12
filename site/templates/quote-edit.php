@@ -9,7 +9,9 @@
 
 		if (QuoteQuery::create()->filterByQuoteid($qnbr)->count()) {
 			if (!QuothedQuery::create()->filterBySessionidQuote(session_id(), $qnbr)->count()) {
-				$modules->get('DplusRequest')->self_request($page->edit_quoteURL($qnbr));
+				$url = new Purl\Url($page->edit_quoteURL($qnbr));
+				$url->query->set('sessionID', session_id());
+				$modules->get('DplusRequest')->self_request($url->getUrl());
 			}
 			$page->title = "Editing Quote #$qnbr";
 			$quote_readonly = $module_edit->get_quote_static();

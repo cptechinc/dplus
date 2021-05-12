@@ -82,7 +82,7 @@ $(function() {
 	function validate_get_item() {
 		validate_itemid_entry(input_itemid.val(), '{{ quote.custid }}', '{{ quote.shiptoid }}', function(response) {
 			if (response.exists) {
-				input_itemid.val(response.itemID).change();
+				input_itemid.val(response.itemid).change();
 				input_itemid.addClass('is-valid');
 
 				get_itm_item(input_itemid.val(), function(item) {

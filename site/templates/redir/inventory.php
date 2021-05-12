@@ -18,7 +18,7 @@
 			// Requests Inventory records for Query (itemid, lotnbr, lotserial)
 			// Response: fills Invsearch table with records
 			$q = strtoupper($input->$rm->text('scan'));
-			$binID = $input->$rm->text('binID');
+			$binID = strtoupper($input->$rm->text('binID'));
 			$data = array("DBNAME=$dplusdb", 'INVSEARCH', "QUERY=$q");
 
 			if ($input->$rm->page) {
@@ -31,7 +31,7 @@
 		case 'bin-inquiry':
 			// Requests Contents of bin
 			// Response: fills Invsearch table with records
-			$binID = $input->$rm->text('binID');
+			$binID = strtoupper(($input->$rm->text('binID'));
 			$data = array("DBNAME=$dplusdb", 'BININQUIRY', "BINID=$binID");
 
 			if ($input->$rm->page) {
@@ -80,7 +80,7 @@
 			// Requests label print defaults for Item
 			// Response: return itemcartonlabel record to fill out
 			$whsesession = WhsesessionQuery::create()->findOneBySessionid(session_id());
-			$binID = $input->$rm->text('binID');
+			$binID = strtoupper($input->$rm->text('binID'));
 			$itemID = $input->$rm->text('itemID');
 			$url = new Purl\Url($pages->get('/warehouse/inventory/print-item-label/')->httpUrl);
 			$url->query->set('binID', $binID);
@@ -118,7 +118,7 @@
 		case 'print-thermal-label':
 			// Requests label to be printed
 			// Response: Takes itemcartonlabel and prints label
-			$binID     = $input->$rm->text('binID');
+			$binID     = strtoupper(($input->$rm->text('binID'));
 			$itemID    = $input->$rm->text('itemID');
 			$lotserial = $input->$rm->text('lotserial');
 			$whseID    = $input->$rm->text('whseID');
@@ -200,7 +200,7 @@
 
 			// Lot Serial Ref is Read-Only currently 8/23
 			// $item->setLotserialref($input->$rm->text('lotserialref'));
-			$item->setBin($input->$rm->text('binID'));
+			$item->setBin(strtoupper($input->$rm->text('binID')));
 			$item->setQty($input->$rm->text('qty'));
 			$item->setProductiondate(date('Ymd', strtotime($input->$rm->text('productiondate'))));
 			$item->save();

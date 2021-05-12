@@ -40,8 +40,8 @@
 			$session->loc = $url->getUrl();
 			break;
 		case 'move-bin-contents';
-			$frombin = $input->$requestmethod->text('from-bin');
-			$tobin = $input->$requestmethod->text('to-bin');
+			$frombin = strtoupper($input->$requestmethod->text('from-bin'));
+			$tobin = strtoupper($input->$requestmethod->text('to-bin'));
 			$data = array("DBNAME=$dplusdb", 'MOVEBIN', "FROMBIN=$frombin", "TOBIN=$tobin");
 			$session->loc = $input->$requestmethod->text('page');
 			$session->bincm = array('tobin' => $tobin, 'frombin' => $frombin);

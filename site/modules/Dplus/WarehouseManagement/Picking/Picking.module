@@ -395,6 +395,7 @@ class Picking extends WireData implements Module {
 	public function send_removepickeditem_request($recordnumber, $debug = false) {
 		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
 		$whseitempick = WhseitempickQuery::create()->filterBySessionid($this->sessionID)->filterByOrdn($this->ordn)->filterByRecordnumber($recordnumber)->findOne();
+		$whseitempick->setBin(strtoupper($whseitempick->bin));
 		$data = array("DBNAME=$dplusdb", 'PICKITEMREMOVE', "ORDERNBR=$this->ordn", "LINENBR=$whseitempick->linenbr", "ITEMID=$whseitempick->itemid");
 		$data[] = "BIN=$whseitempick->bin|LOTSERIAL=$whseitempick->lotserial|QTY=$whseitempick->qty";
 
@@ -435,14 +436,15 @@ class Picking extends WireData implements Module {
 			$barcodes = $orderitem->get_userpickedtotalsbylotserial();
 
 			foreach ($barcodes as $barcode) {
-				$data[] = "BIN=$barcode->bin|LOTSERIAL=$barcode->lotserial|QTY=$barcode->qty";
+				$binID = strtoupper($barcode->bin);
+				$data[] = "BIN=$binID|LOTSERIAL=$barcode->lotserial|QTY=$barcode->qty";
 			}
 		} else {
 			$barcodes = $this->get_picked_sum_by_bin($orderitem);
 
 			foreach ($barcodes as $barcode) {
 				$qty = $barcode['qty'];
-				$binID     = str_pad($barcode['bin'], 8, ' ');
+				$binID     = strtoupper(str_pad($barcode['bin'], 8, ' '));
 				$lotserial = str_pad('', 20, ' ');
 				$data[]    = "BIN=$binID|LOTSERIAL=$lotserial|QTY=$qty";
 			}
