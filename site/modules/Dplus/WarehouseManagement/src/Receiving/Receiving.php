@@ -194,6 +194,7 @@ class Receiving extends Base {
 		if ($validate->vendorid($vendorID) === false) {
 			return false;
 		}
+
 		$this->requestCreatePo($vendorID);
 		return true;
 	}

@@ -11,8 +11,6 @@ use PurchaseOrder;
 use PurchaseOrderDetailLotReceiving;
 use PurchaseOrderDetailReceiving;
 // Dpluso Model
-use BininfoQuery, Bininfo;
-use WhsesessionQuery, Whsesession;
 use WhseitemphysicalcountQuery, Whseitemphysicalcount;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
@@ -66,7 +64,7 @@ class Receiving extends Base {
 		self::sanitizeParametersShort($data, ['action|text', 'ponbr|ponbr', 'scan|text']);
 
 		$validate = self::getValidatorMpo();
-		if ($validate->po($data->ponbr) === false) {
+		if (empty($data->ponbr) === false && $validate->po($data->ponbr) === false) {
 			self::redirect(self::receivingUrl($data->ponbr), $http301 = false);
 		}
 
@@ -100,6 +98,15 @@ class Receiving extends Base {
 		}
 	}
 
+	static public function loadPo($data) {
+		$user  = self::pw('user');
+		$ponbr = $user->editing;
+		if (intval($ponbr) === 0) {
+
+		}
+		self::redirect(self::receivingUrl($ponbr), $http301 = false);
+	}
+
 	static public function receiving($data) {
 		$fields = ['action|text', 'ponbr|ponbr'];
 		self::sanitizeParametersShort($data, $fields);
@@ -127,7 +134,11 @@ class Receiving extends Base {
 		}
 
 		if ($po->count_receivingitems() === 0) {
-			return self::noItemsToReceive($data);
+			$allowAdd = $receiving->getEnforceItemidsStrategy();
+			
+			if ($allowAdd->allowItemsNotListed() === false) {
+				return self::noItemsToReceive($data);
+			}
 		}
 
 		if ($data->scan) {
