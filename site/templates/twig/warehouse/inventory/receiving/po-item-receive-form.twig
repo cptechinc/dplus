@@ -83,9 +83,9 @@
 			<div class="form-group">
 				<label for="qty">Qty</label>
 				<span class="text-secondary pull-right">
-					<b>Previous Receipt: {{ m_receiving.items.getQtyReceivedItemid(item.itemid)|number_format(m_receiving.decimal_places()) }}</b>
+					<b>Previous Receipt: {{ m_receiving.items.getQtyReceivedItemid(item.itemid)|number_format(m_receiving.decimalPlacesQty()) }}</b>
 				</span>
-				<input type="number" class="form-control text-right qty-input" id="qty" name="qty" value="{{ item.qty|number_format(m_receiving.decimal_places()) }}" data-validated="false">
+				<input type="number" class="form-control text-right qty-input" id="qty" name="qty" value="{{ item.qty|number_format(m_receiving.decimalPlacesQty()) }}" data-validated="false">
 			</div>
 		</div>
 	</div>
