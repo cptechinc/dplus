@@ -7,7 +7,6 @@ namespace Composer\Autoload;
 class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
 {
     public static $classMap = array (
-        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Controllers\\Ajax\\Json\\Inv' => __DIR__ . '/../..' . '/classes/ajax/json/Inv.php',
         'Controllers\\Ajax\\Json\\ItemLookup' => __DIR__ . '/../..' . '/classes/ajax/json/ItemLookup.php',
         'Controllers\\Ajax\\Json\\Map' => __DIR__ . '/../..' . '/classes/ajax/json/Map.php',
@@ -81,6 +80,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Wm\\Base' => __DIR__ . '/../..' . '/classes/Mwm/Base.php',
         'Controllers\\Wm\\Binr' => __DIR__ . '/../..' . '/classes/Mwm/binr/Binr.php',
         'Controllers\\Wm\\Receiving\\Receiving' => __DIR__ . '/../..' . '/classes/Mwm/inventory/Receiving/Receiving.php',
+        'Controllers\\Wm\\Sop\\Picking\\Picking' => __DIR__ . '/../..' . '/classes/Mwm/sop/Picking.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
