@@ -17,11 +17,11 @@ use Dplus\Wm\Base;
  * Class that Handles the link to the Inventory for Picking
  */
 class Inventory extends Base {
-	protected $invLookup;
+	public $lookup;
 
 	public function __construct() {
 		parent::__construct();
-		$this->invLookup = new InventoryLookups\ExcludePackBin();
+		$this->lookup = new InventoryLookups\ExcludePackBin();
 	}
 
 	/**
@@ -30,7 +30,7 @@ class Inventory extends Base {
 	 */
 	public function setSessionID($sessionID = '') {
 		parent::setSessionID($sessionID);
-		$this->invLookup->setSessionId($this->sessionID);
+		$this->lookup->setSessionId($this->sessionID);
 	}
 
 	/**
@@ -40,7 +40,7 @@ class Inventory extends Base {
 	 * @return Whseitemphysicalcount[]|ObjectCollection
 	 */
 	public function getResults($scan) {
-		return $this->invLookup->getResults($scan);
+		return $this->lookup->getResults($scan);
 	}
 
 	/**
@@ -92,7 +92,7 @@ class Inventory extends Base {
 	 * Send request to Create Ilookup Reference for Item ID
 	 * @return void
 	 */
-	public function requestSearchInventory($ordn, $q) {
+	public function requestSearch($ordn, $q) {
 		$data = ['PICKSEARCH', "QUERY=$q", "ORDERNBR=$ordn"];
 		$this->sendDplusRequest($data);
 	}
