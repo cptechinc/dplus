@@ -5,10 +5,12 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 use Dplus\Wm\Base;
 use Dplus\Wm\Sop\Picking\Items;
 
+use Dplus\Configs as Configs;
+
 
 /**
  * Picking
- * 
+ *
  * Handles the picking functionality
  * 1. Retrieves Order Items
  * 2. Adds items to be picked for order in a working file
@@ -32,6 +34,8 @@ class Picking extends Base {
 	private $configPicking;
 	/** @var ConfigsWarehouseInventory */
 	private $configInventory;
+	/** @var int*/
+	private $decimalPlacesQty;
 
 	public function __construct() {
 		$this->items = new Items();
@@ -88,6 +92,18 @@ class Picking extends Base {
 		return $this->configInventory;
 	}
 
+	/**
+	 * Return Inventory Config
+	 * @return ConfigsWarehouseInventory
+	 */
+	public function getDecimalPlacesQty() {
+		if (empty($this->decimalPlacesQty)) {
+			$config = Configs\So::config();
+			$this->decimalPlacesQty = $config->decimal_places;
+		}
+		return $this->decimalPlacesQty;
+	}
+
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
@@ -106,6 +122,9 @@ class Picking extends Base {
 				case 'start-order':
 					$this->requestStartOrder($values->text('ordn'));
 					break;
+				case 'scan-pick-item':
+					$this->inventory->requestSearch($values->text('ordn'), $values->text('scan'));
+					break;
 				// case 'add-lotserials':
 				// 	$this->addLotserials($input);
 				// 	break;
@@ -118,9 +137,7 @@ class Picking extends Base {
 				// case 'verify-whseitempicks':
 				// 	$this->verifyWhseitempicks($input);
 				// 	break;
-				// case 'scan-pick-item':
-				// 	$this->inventory->sendScanRequest($values->text('ordn'), $values->text('scan'));
-				// 	break;
+				//
 				// case 'exit-order':
 				// 	$this->requestExitOrder($values->text('ordn'));
 				// 	break;
@@ -133,6 +150,24 @@ class Picking extends Base {
 			}
 		}
 	}
+
+	/**
+	 * Return WhseitempickQuery
+	 * @param  array  $filters Column or aliases to filter on ex. array('linenbr' => 2)
+	 * @return WhseitempickQuery
+	 */
+	public function getWhseitempickQuery($filters = []) {
+		$q = WhseitempickQuery::create();
+		$q->filterBySessionid($this->sessionID);
+		$q->filterByOrdn($this->ordn);
+
+		foreach ($filters as $filter => $value) {
+			$function = 'filterBy' . ucfirst($filter);
+			$q->$function($value);
+		}
+		return $q;
+	}
+
 
 /* =============================================================
 	Dplus Request Functions
