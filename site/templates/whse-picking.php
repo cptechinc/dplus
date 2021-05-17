@@ -1,6 +1,7 @@
 <?php
 	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Wm\Sop\Picking\Picking as Controller;
+	Controller::init();
 
 	$routes = [
 		['GET',  '', Controller::class, 'index'],
