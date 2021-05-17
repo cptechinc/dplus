@@ -1,4 +1,6 @@
 <?php namespace Dplus\Wm\Sop\Picking;
+// Propel ORM Library
+use Propel\Runtime\ActiveQuery\Criteria;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dpluso Model
@@ -33,8 +35,31 @@ class Items extends Base {
 		return $this->ordn;
 	}
 
+	/**
+	 * Return Query
+	 * @return PickSalesOrderDetailQuery
+	 */
 	public function query() {
 		return PickSalesOrderDetailQuery::create();
+	}
+
+	/**
+	 * Return Query Filtered by Session ID, Order Number
+	 * @return PickSalesOrderDetailQuery
+	 */
+	public function queryOrdn() {
+		$q = $this->query();
+		$q->filterBySessionidOrder($this->sessionID, $this->ordn);
+		return $q;
+	}
+
+	/**
+	 * Return Pick Order Items
+	 * @return PickSalesOrderDetail[]|ObjectCollection
+	 */
+	public function getItems() {
+		$q = $this->queryOrdn();
+		return $q->find();
 	}
 
 	/**
@@ -43,8 +68,7 @@ class Items extends Base {
 	 * @return PickSalesOrderDetail[]|ObjectCollection
 	 */
 	public function getItemsFiltered($picked = false) {
-		$q = $this->query();
-		$q->filterBySessionidOrder($this->sessionID, $this->ordn);
+		$q = $this->queryOrdn();
 
 		if ($picked) {
 			$q->filterByQtyremaining(0);
