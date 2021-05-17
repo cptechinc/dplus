@@ -23,6 +23,12 @@ class ComposerStaticInitbe01d8a824371fa061fc4d032387886e
         'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\LotserialQty' => __DIR__ . '/../..' . '/src/Receiving/Strategies/ReadQty/LotserialQty.php',
         'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\LotserialSingle' => __DIR__ . '/../..' . '/src/Receiving/Strategies/ReadQty/LotserialSingle.php',
         'Dplus\\Wm\\Receiving\\Strategies\\ReadQty\\ReadStrategy' => __DIR__ . '/../..' . '/src/Receiving/Strategies/ReadQty/Base.php',
+        'Dplus\\Wm\\Sop\\Picking\\Inventory' => __DIR__ . '/../..' . '/src/Sop/Picking/Inventory.php',
+        'Dplus\\Wm\\Sop\\Picking\\Items' => __DIR__ . '/../..' . '/src/Sop/Picking/Items.php',
+        'Dplus\\Wm\\Sop\\Picking\\Picking' => __DIR__ . '/../..' . '/src/Sop/Picking/Picking.php',
+        'Dplus\\Wm\\Sop\\Picking\\Strategies\\Inventory\\Lookup\\ExcludePackBin' => __DIR__ . '/../..' . '/src/Sop/Picking/Strategies/Inventory/Lookup/ExcludePackBin.php',
+        'Dplus\\Wm\\Sop\\Picking\\Strategies\\Inventory\\Lookup\\IncludePackBin' => __DIR__ . '/../..' . '/src/Sop/Picking/Strategies/Inventory/Lookup/IncludePackBin.php',
+        'Dplus\\Wm\\Sop\\Picking\\Strategies\\Inventory\\Lookup\\Lookup' => __DIR__ . '/../..' . '/src/Sop/Picking/Strategies/Inventory/Lookup/Lookup.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
