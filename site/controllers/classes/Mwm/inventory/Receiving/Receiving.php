@@ -135,7 +135,7 @@ class Receiving extends Base {
 
 		if ($po->count_receivingitems() === 0) {
 			$allowAdd = $receiving->getEnforceItemidsStrategy();
-			
+
 			if ($allowAdd->allowItemsNotListed() === false) {
 				return self::noItemsToReceive($data);
 			}
@@ -518,6 +518,5 @@ class Receiving extends Base {
 			$item     = $event->arguments(0); // Instance of PurchaseOrderDetailReceiving
 			$event->return = self::printReceivingLineUrl($item);
 		});
-
 	}
 }
