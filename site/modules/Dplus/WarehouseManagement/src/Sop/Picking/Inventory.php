@@ -54,6 +54,26 @@ class Inventory extends Base {
 	}
 
 	/**
+	 * Returns if Item is Lotted
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function isItemLotted($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return $q->is_item_lotted($itemID);
+	}
+
+	/**
+	 * Returns if Item is Serialized
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function isItemLotSerialized($itemID) {
+		$q = ItemMasterItemQuery::create();
+		return $q->is_item_serialized($itemID) || $q->is_item_lotted($itemID);
+	}
+
+	/**
 	 * Returns if Item is Lot Serial
 	 * @param  string $itemID Item ID
 	 * @return bool
