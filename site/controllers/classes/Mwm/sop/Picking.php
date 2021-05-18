@@ -90,6 +90,8 @@ class Picking extends Base {
 			return $html;
 		}
 
+		self::pw('page')->headline = "Picking Order # $data->ordn";
+
 		$picking = self::getPicking($data->ordn);
 		$configInventory = $picking->getConfigInventory();
 
