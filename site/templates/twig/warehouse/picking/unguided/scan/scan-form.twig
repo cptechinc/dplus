@@ -1,6 +1,6 @@
 <form action="{{ page.fullURL.getUrl() }}" method="POST" class="allow-enterkey-submit" id="barcode-form">
 	<input type="hidden" name="action" value="scan-pick-item">
-	<input type="hidden" name="ordn" value="{{ page.fullURL.query.get.text('ordn') }}">
+	<input type="hidden" name="ordn" value="{{ page.wire('input').get.text('ordn') }}">
 
 	<div class="form-group">
 		<label for="scan">Add Item</label>

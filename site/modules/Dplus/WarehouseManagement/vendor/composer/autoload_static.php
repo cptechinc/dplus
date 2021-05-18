@@ -29,6 +29,9 @@ class ComposerStaticInitbe01d8a824371fa061fc4d032387886e
         'Dplus\\Wm\\Sop\\Picking\\Strategies\\Inventory\\Lookup\\ExcludePackBin' => __DIR__ . '/../..' . '/src/Sop/Picking/Strategies/Inventory/Lookup/ExcludePackBin.php',
         'Dplus\\Wm\\Sop\\Picking\\Strategies\\Inventory\\Lookup\\IncludePackBin' => __DIR__ . '/../..' . '/src/Sop/Picking/Strategies/Inventory/Lookup/IncludePackBin.php',
         'Dplus\\Wm\\Sop\\Picking\\Strategies\\Inventory\\Lookup\\Lookup' => __DIR__ . '/../..' . '/src/Sop/Picking/Strategies/Inventory/Lookup/Lookup.php',
+        'Dplus\\Wm\\Sop\\Picking\\Strategies\\PackBin\\Excluded' => __DIR__ . '/../..' . '/src/Sop/Picking/Strategies/PackBin/Excluded.php',
+        'Dplus\\Wm\\Sop\\Picking\\Strategies\\PackBin\\Included' => __DIR__ . '/../..' . '/src/Sop/Picking/Strategies/PackBin/Included.php',
+        'Dplus\\Wm\\Sop\\Picking\\Strategies\\PackBin\\PackBin' => __DIR__ . '/../..' . '/src/Sop/Picking/Strategies/PackBin/PackBin.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

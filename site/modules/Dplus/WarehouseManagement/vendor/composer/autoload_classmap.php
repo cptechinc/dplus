@@ -28,4 +28,7 @@ return array(
     'Dplus\\Wm\\Sop\\Picking\\Strategies\\Inventory\\Lookup\\ExcludePackBin' => $baseDir . '/src/Sop/Picking/Strategies/Inventory/Lookup/ExcludePackBin.php',
     'Dplus\\Wm\\Sop\\Picking\\Strategies\\Inventory\\Lookup\\IncludePackBin' => $baseDir . '/src/Sop/Picking/Strategies/Inventory/Lookup/IncludePackBin.php',
     'Dplus\\Wm\\Sop\\Picking\\Strategies\\Inventory\\Lookup\\Lookup' => $baseDir . '/src/Sop/Picking/Strategies/Inventory/Lookup/Lookup.php',
+    'Dplus\\Wm\\Sop\\Picking\\Strategies\\PackBin\\Excluded' => $baseDir . '/src/Sop/Picking/Strategies/PackBin/Excluded.php',
+    'Dplus\\Wm\\Sop\\Picking\\Strategies\\PackBin\\Included' => $baseDir . '/src/Sop/Picking/Strategies/PackBin/Included.php',
+    'Dplus\\Wm\\Sop\\Picking\\Strategies\\PackBin\\PackBin' => $baseDir . '/src/Sop/Picking/Strategies/PackBin/PackBin.php',
 );

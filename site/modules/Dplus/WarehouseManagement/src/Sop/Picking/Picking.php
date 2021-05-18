@@ -1,12 +1,16 @@
 <?php namespace Dplus\Wm\Sop\Picking;
+// Dpluso Model
+use PickSalesOrderDetailQuery, PickSalesOrderDetail;
+use WhseitempickQuery, Whseitempick;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
-
+// Dplus Configs
+use Dplus\Configs as Configs;
+// Dplus Wm
 use Dplus\Wm\Base;
 use Dplus\Wm\Sop\Picking\Items;
-
-use Dplus\Configs as Configs;
-
+use Dplus\Wm\Sop\Picking\Strategies\PackBin as PackBinStrategies;
+use Dplus\Wm\Sop\Picking\Strategies\PackBin\PackBin as PackBinStrategy;
 
 /**
  * Picking
@@ -36,6 +40,8 @@ class Picking extends Base {
 	private $configInventory;
 	/** @var int*/
 	private $decimalPlacesQty;
+	/** @var PackBinStrategy **/
+	private $packBinStrategy;
 
 	public function __construct() {
 		$this->items = new Items();
@@ -125,11 +131,11 @@ class Picking extends Base {
 				case 'scan-pick-item':
 					$this->inventory->requestSearch($values->text('ordn'), $values->text('scan'));
 					break;
+				case 'add-lotserial':
+					$this->addLotserial($input);
+					break;
 				// case 'add-lotserials':
 				// 	$this->addLotserials($input);
-				// 	break;
-				// case 'add-lotserial':
-				// 	$this->addLotserial($input);
 				// 	break;
 				// case 'delete-lotserial':
 				// 	$this->deleteLotserial($input);
@@ -152,6 +158,46 @@ class Picking extends Base {
 	}
 
 	/**
+	 * Adds Whseitempick records for one lotserial
+	 * @param WireInput $input
+	 */
+	public function addLotserial(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID    = $values->text('itemID');
+		$lotserial = $values->text('lotserial');
+		$binID     = $values->text('binID');
+		$scan      = $values->text('scan');
+		$orderitem = $this->items->getItemByItemid($itemID);
+
+		if ($this->doesWhseitempickExist($orderitem, $lotserial, $binID)) {
+			$filters = ['linenbr' => $orderitem->linenbr, 'sublinenbr' => $orderitem->sublinenbr, 'lotserial' => $lotserial, 'bin' => $binID];
+			$q = $this->getWhseitempickQuery($filters);
+
+			$exists_fororderitem = boolval($q->count());
+
+			if ($exists_fororderitem) {
+				$qty         = $values->text('qty');
+				$pickingitem = $q->findOne();
+				$pickingitem->setQty($pickingitem->qty + $qty);
+				$pickingitem->save();
+				$recordnumbers[] = $pickingitem->recordnumber;
+				$this->requestLineUpdate($orderitem->linenbr);
+				return true;
+			}
+			self::pw('session')->setFor('picking', 'error', "$scan has been added to another line already");
+			return false;
+		}
+		$pickingitem = $this->createWhseitempickInput($orderitem, $input);
+		$pickingitem->save();
+		return true;
+
+	}
+
+/* =============================================================
+	Whseitempick Functions
+============================================================= */
+	/**
 	 * Return WhseitempickQuery
 	 * @param  array  $filters Column or aliases to filter on ex. array('linenbr' => 2)
 	 * @return WhseitempickQuery
@@ -166,6 +212,73 @@ class Picking extends Base {
 			$q->$function($value);
 		}
 		return $q;
+	}
+
+	/**
+	 * Returns if we have picked this item already for this order
+	 * @param  PickSalesOrderDetail $orderitem Order Item to pick
+	 * @param  string               $lotserial Lot / Serial Number
+	 * @return bool
+	 */
+	public function doesWhseitempickExist(PickSalesOrderDetail $orderitem, $lotserial, $binID = '') {
+		$q = $this->getWhseitempickQuery();
+		$q->filterByItemid($orderitem->itemnbr);
+		$q->filterByLotserial($lotserial);
+
+		if ($binID) {
+			$q->filterByBin($binID);
+		}
+		return boolval($q->count());
+	}
+
+	/**
+	 * Return Pick Item Sum
+	 * @param  PickSalesOrderDetail $orderitem
+	 * @return float
+	 */
+	protected function getItemPickedLotserials(PickSalesOrderDetail $orderitem) {
+		$q = $this->getWhseitempickQuery();
+		$q->withColumn('SUM(qty)', 'qty');
+		$q->select(array('qty', 'bin', 'lotserial'));
+		$q->filterBySessionid($orderitem->sessionID);
+		$q->filterByOrdn($orderitem->ordernbr);
+		$q->filterByLinenbr($orderitem->linenbr);
+		$q->filterBySublinenbr($orderitem->sublinenbr);
+		$q->groupBy(['bin', 'lotserial']);
+		return $q->find();
+	}
+
+	/**
+	 * Return Whseitempick with values set from the Sales Order Item and Input
+	 * @param  PickSalesOrderDetail $orderitem Order Item to pick
+	 * @param  WireInput            $input
+	 * @return Whseitempick
+	 */
+	public function createWhseitempickInput(PickSalesOrderDetail $orderitem, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$q = $this->getWhseitempickQuery();
+
+		$item = new Whseitempick();
+		$item->setSessionid($orderitem->sessionid);
+		$item->setOrdn($orderitem->ordernbr);
+		$item->setItemid($orderitem->itemnbr);
+		$item->setRecordnumber($q->get_max_order_subline_recordnumber($orderitem->sessionid, $orderitem->ordernbr, $orderitem->linenbr, $orderitem->sublinenbr) + 1);
+		$item->setPalletnbr($values->palletnbr ? $values->text('palletnbr') : 1);
+		$item->setLinenbr($orderitem->linenbr);
+		$item->setSublinenbr($orderitem->sublinenbr);
+		$item->setBarcode($values->text('scan'));
+		$item->setBin($values->binID('binID'));
+		$item->setLotserialref($values->text('lotserialref'));
+		$item->setLotserial($values->text('lotserial'));
+
+		if ($this->inventory->isItemSerialized($orderitem->itemnbr)) {
+			$item->setQty(1);
+		} else {
+			$item->setQty($values->float('qty'));
+		}
+		return $item;
 	}
 
 
@@ -190,6 +303,37 @@ class Picking extends Base {
 	public function requestStartPicking() {
 		$data = ['PICKUNGUIDED'];
 		$this->sendDplusRequest($data);
+	}
+
+	/**
+	 * Send Request to Save Picked Line Items
+	 * @param  int   $linenbr Line Number
+	 * @param  bool  $debug   Is this for Debug
+	 * @return bool
+	 */
+	public function requestLineUpdate(int $linenbr, $debug = false) {
+		$orderitem = $this->items->getItemByLinenbr($linenbr);
+		$data = ['ACCEPTITEM', "ORDERNBR=$this->ordn", "LINENBR=$linenbr", "ITEMID=$orderitem->itemnbr"];
+		$data = $this->writeAcceptitemData($data, $orderitem);
+		$this->sendDplusRequest($data);
+	}
+
+	/**
+	 * Appends Picked Line Item data to array
+	 * @param  array                $data      Dplus Request array
+	 * @param  PickSalesOrderDetail $orderitem Sales Order Item
+	 * @return array
+	 */
+	public function writeAcceptitemData(array $data, PickSalesOrderDetail $orderitem) {
+		$barcodes = $this->getItemPickedLotserials($orderitem);
+
+		foreach ($barcodes as $barcode) {
+			$qty       = $barcode['qty'];
+			$binID     = $this->wire('sanitizer')->binID($barcode['bin']);
+			$lotserial = $barcode['lotserial'];
+			$data[]    = "BIN=$binID|LOTSERIAL=$lotserial|QTY=$qty";
+		}
+		return $data;
 	}
 
 /* =============================================================
