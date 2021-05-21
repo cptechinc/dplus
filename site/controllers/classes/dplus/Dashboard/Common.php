@@ -58,15 +58,15 @@ class Common extends AbstractController {
 		$config = self::pw('config');
 		$filter = new SalesHistoryFilter();
 		$filter->user(self::pw('user'));
-		$filter->filterInput($input);
+		//$filter->filterInput($input);
 		$filter->query->orderByDate_ordered('DESC');
 		$orders = $filter->query->paginate($input->pageNum, 10);
 
 		$params = [
-			'orders'         => $orders,
+			'invoices'       => $orders,
 			'count'          => $orders->getNbResults(),
-			'url_order'      => $pages->get('pw_template=sales-order-view')->url,
-			'url_order_list' => $pages->get('pw_template=sales-history-orders')->url
+			'url_invoice'      => $pages->get('pw_template=sales-order-view')->url,
+			'url_invoice_list' => $pages->get('pw_template=sales-history-orders')->url
 		];
 		$html = '';
 		$html .= $config->twig->render("dashboard/components/sales-history.twig", $params);
@@ -87,8 +87,8 @@ class Common extends AbstractController {
 		$params = [
 			'quotes'         => $quotes,
 			'count'          => $quotes->getNbResults(),
-			'url_order'      => $pages->get('pw_template=quotes-view')->url,
-			'url_order_list' => $pages->get('pw_template=quotes')->url
+			'url_quote'      => $pages->get('pw_template=quote-view')->url,
+			'url_quote_list' => $pages->get('pw_template=quotes')->url
 		];
 		$html = '';
 		$html .= $config->twig->render("dashboard/components/quotes.twig", $params);
