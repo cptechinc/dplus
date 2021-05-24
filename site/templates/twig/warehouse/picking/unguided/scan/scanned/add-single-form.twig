@@ -41,10 +41,10 @@
 			<div class="form-group">
 				<div class="d-flex justify-content-between align-items-center">
 					<label for="qty">Qty </label>
-					<span class="pull-right">Ordered: {{ orderitem.qtyordered|number_format(m_picking.decimal_places()) }}</span>
+					<span class="pull-right">Ordered: {{ orderitem.qtyordered|number_format(m_picking.getDecimalPlacesQty()) }}</span>
 				</div>
 				<input type="number" class="form-control" name="qty" id="qty" {% if m_picking.allow_pick_more_than_available() == false  %} max="{{ item.qty }}" {% endif %} value="">
-				<small class="form-text text-muted">Bin Qty: {{ item.qty|number_format(m_picking.decimal_places()) }}</small>
+				<small class="form-text text-muted">Bin Qty: {{ item.qty|number_format(m_picking.getDecimalPlacesQty()) }}</small>
 			</div>
 		</div>
 	</div>
