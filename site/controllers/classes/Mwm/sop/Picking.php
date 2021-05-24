@@ -106,7 +106,7 @@ class Picking extends Base {
 	}
 
 	static protected function pickOrder($data) {
-		self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn']);
+		self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn', 'data|text']);
 		$config   = self::pw('config');
 		$session  = self::pw('session');
 		$wSession = self::getWhsesession();
@@ -187,6 +187,7 @@ class Picking extends Base {
 		}
 
 		if (empty($data->scan) === false) {
+			self::pw('page')->scan = $data->scan;
 			$html .= self::scanResults($data);
 		}
 
@@ -241,9 +242,9 @@ class Picking extends Base {
 		}
 
 		if ($q->count() == 1) {
-			return self::scanResultsSingle($data, $picking->inventory->lookup);
+			return self::scanResultsSingle($data, $picking);
 		}
-		return self::scanResultsMultiple($data, $picking->inventory->lookup);
+		return self::scanResultsMultiple($data, $picking);
 	}
 
 	static private function scanVerifyPicked($data, PickingCRUD $picking) {
@@ -260,19 +261,23 @@ class Picking extends Base {
 		return $html;
 	}
 
-	static private function scanResultsMultiple($data, InvLookup $lookup) {
+	static private function scanResultsMultiple($data, PickingCRUD $picking) {
+		/** @var InvLookup */
+		$lookup  = $picking->inventory->lookup;
 		$q       = $lookup->getScanQuery($data->scan);
 		$writer  = self::getHtmlWriter();
 		$html    = '';
 
 		$itemsDistinct = $q->groupBy('itemid')->find();
-		self::pw('page')->js   .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/select-multiple-list.js.twig');
+		self::pw('page')->js   .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/scanned/select-multiple-list.js.twig');
 		$html = $writer->h3('', 'Select Items to Pick');
-		$html .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/select-multiple-list.twig', ['items' => $itemsDistinct, 'm_picking' => $picking]);
+		$html .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/scanned/select-multiple-list.twig', ['items' => $itemsDistinct, 'm_picking' => $picking]);
 		return $html;
 	}
 
-	static private function scanResultsSingle($data, InvLookup $lookup) {
+	static private function scanResultsSingle($data, PickingCRUD $picking) {
+		/** @var InvLookup */
+		$lookup  = $picking->inventory->lookup;
 		$config  = self::pw('config');
 		$q       = $lookup->getScanQuery($data->scan);
 		$writer  = self::getHtmlWriter();
