@@ -52,7 +52,7 @@ class Picking extends Base {
 		if ($wSession->is_pickingunguided() === false) {
 			$picking->requestStartPicking();
 		}
-		$html = self::pw('config')->twig->render('warehouse/picking/sales-order-form.twig');
+		$html = self::pw('config')->twig->render('warehouse/picking/order/form.twig');
 		return $html;
 	}
 
@@ -86,7 +86,7 @@ class Picking extends Base {
 		if ((empty($data->ordn) === false && $validate->order($data->ordn) === false) || $wSession->is_orderinvalid()) {
 			$html =  self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Order Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Order # $data->ordn can not be found"]);
 			$html .= '<div class="mb-3"></div>';
-			$html .= self::pw('config')->twig->render('warehouse/picking/sales-order-form.twig');
+			$html .= self::pw('config')->twig->render('warehouse/picking/order/form.twig');
 			return $html;
 		}
 
@@ -96,7 +96,7 @@ class Picking extends Base {
 		$configInventory = $picking->getConfigInventory();
 
 		if ($wSession->is_orderonhold() || $wSession->is_orderverified() || $wSession->is_orderinvoiced() || $wSession->is_ordernotfound() || (!$configInventory->allow_negativeinventory && $wSession->is_ordershortstocked())) {
-			return self::pw('config')->twig->render('warehouse/picking/status.twig', ['whsesession' => $wSession]);
+			return self::pw('config')->twig->render('warehouse/picking/order/status.twig', ['whsesession' => $wSession]);
 		}
 		self::pw('config')->scripts->append(self::pw('modules')->get('FileHasher')->getHashUrl('scripts/warehouse/pick-order.js'));
 		return self::pickOrder($data);
@@ -110,7 +110,7 @@ class Picking extends Base {
 		$picking  = self::getPicking($data->ordn);
 
 		if ($wSession->is_orderfinished()) {
-			return $config->twig->render('warehouse/picking/finished-order.twig', ['ordn' => $data->ordn]);
+			return $config->twig->render('warehouse/picking/order/finished.twig', ['ordn' => $data->ordn]);
 		}
 
 		$html = '';
@@ -125,7 +125,7 @@ class Picking extends Base {
 			}
 			$html = self::pw('config')->twig->render('warehouse/picking/status.twig', ['whsesession' => $wSession]);
 			$html .= '<div class="mb-3"></div>';
-			$html .= self::pw('config')->twig->render('warehouse/picking/sales-order-form.twig');
+			$html .= self::pw('config')->twig->render('warehouse/picking/order/form.twig');
 			return $html;
 		}
 
@@ -186,7 +186,7 @@ class Picking extends Base {
 	static private function orderHeader($data) {
 		$wSession = self::getWhsesession();
 		$order = SalesOrderQuery::create()->findOneByOrdernumber($data->ordn);
-		return self::pw('config')->twig->render('warehouse/picking/order-info.twig', ['order' => $order, 'whsesession' => $wSession]);
+		return self::pw('config')->twig->render('warehouse/picking/order/header-info.twig', ['order' => $order, 'whsesession' => $wSession]);
 	}
 
 	static private function orderItems($data) {
@@ -196,13 +196,13 @@ class Picking extends Base {
 		$items    = $picking->items->getItems();
 
 		if ($picking->items->hasSublines()) {
-			return $config->twig->render('warehouse/picking/unguided/order-items-sublined.twig', ['lineitems' => $items, 'm_picking' => $picking]);
+			return $config->twig->render('warehouse/picking/unguided/order/items-sublined.twig', ['lineitems' => $items, 'm_picking' => $picking]);
 		}
 
-		if ($config->twigloader->exists("warehouse/picking/unguided/$config->company/order-items.twig")) {
-			return $config->twig->render("warehouse/picking/unguided/$config->company/order-items.twig", ['lineitems' => $items, 'm_picking' => $picking]);
+		if ($config->twigloader->exists("warehouse/picking/unguided/$config->company/order/items.twig")) {
+			return $config->twig->render("warehouse/picking/unguided/$config->company/order/items.twig", ['lineitems' => $items, 'm_picking' => $picking]);
 		} else {
-			return $config->twig->render('warehouse/picking/unguided/order-items.twig', ['lineitems' => $items, 'm_picking' => $picking]);
+			return $config->twig->render('warehouse/picking/unguided/order/items.twig', ['lineitems' => $items, 'm_picking' => $picking]);
 		}
 	}
 
