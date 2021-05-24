@@ -154,12 +154,12 @@ class Picking extends Base {
 				case 'add-lotserial':
 					$this->addLotserial($input);
 					break;
+				case 'add-lotserials':
+					$this->addLotserials($input);
+					break;
 				case 'delete-lotserial':
 					$this->deleteLotserial($input);
 					break;
-				// case 'add-lotserials':
-				// 	$this->addLotserials($input);
-				// 	break;
 				// case 'verify-whseitempicks':
 				// 	$this->verifyWhseitempicks($input);
 				// 	break;
@@ -174,7 +174,7 @@ class Picking extends Base {
 	}
 
 	/**
-	 * Adds Whseitempick records for one lotserial
+	 * Adds Whseitempick record for one lotserial
 	 * @param WireInput $input
 	 */
 	public function addLotserial(WireInput $input) {
@@ -187,7 +187,11 @@ class Picking extends Base {
 		$orderitem = $this->items->getItemByItemid($itemID);
 
 		if ($this->doesWhseitempickExist($orderitem, $lotserial, $binID)) {
-			return $this->addLotserialAlreadyPicked($orderitem, $values);
+			$added = boolval($this->addLotserialAlreadyPicked($orderitem, $values));
+			if ($added) {
+				$this->requestLineUpdate($orderitem->linenbr);
+			}
+			return $added;
 		}
 		$pickingitem = $this->createWhseitempickInput($orderitem, $input);
 		$pickingitem->save();
@@ -211,13 +215,11 @@ class Picking extends Base {
 		$existsForOrderItem = boolval($q->count());
 
 		if ($existsForOrderItem) {
-			$qty         = $values->text('qty');
+			$qty         = $values->float('qty');
 			$pickingitem = $q->findOne();
 			$pickingitem->setQty($pickingitem->qty + $qty);
 			$pickingitem->save();
-			$recordnumbers[] = $pickingitem->recordnumber;
-			$this->requestLineUpdate($orderitem->linenbr);
-			return true;
+			return $pickingitem->recordnumber;
 		}
 		self::pw('session')->setFor('picking', 'error', "$scan has been added to another line already");
 		return false;
@@ -226,7 +228,7 @@ class Picking extends Base {
 	/**
 	 * Delete Lotserial that has been picked for a line
 	 * @param  WireInput $input Input Data
-	 * @return void
+	 * @return bool
 	 */
 	private function deleteLotserial(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
@@ -234,8 +236,81 @@ class Picking extends Base {
 		$recordnumber = $values->int('recordnumber');
 		$linenbr      = $values->int('linenbr');
 		$sublinenbr   = $values->int('sublinenbr');
+		$q = $this->getWhseitempickQuery(['recordnumber' => $recordnumber, 'linenbr' => $linenbr, 'sublinenbr' => $sublinenbr]);
+		if ($q->count() == 0) {
+			return false;
+		}
 		$this->requestDeletePicked($recordnumber);
 		$this->wire('session')->setFor('picking', 'removed-from-line', $linenbr);
+		return true;
+	}
+
+	/**
+	 * Adds Whseitempick records for one lotserial
+	 * @param WireInput $input
+	 */
+	public function addLotserials(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID    = $values->text('itemID');
+		$lotserialbins = $values->array('lotserialbins');
+		$orderitem     = $this->items->getItemByItemid($itemID);
+		$recordnumbers = [];
+
+
+		foreach ($lotserialbins as $lotserialbin) {
+			echo $lotserialbin;
+			echo '<br /> <br />';
+			$data = new WireData();
+			$data->qty       = $values->text("$lotserialbin-qty");
+			$data->binID     = $values->text("$lotserialbin-bin");
+			$data->lotref    = $values->text("$lotserialbin-lotserialref");
+			$data->lotserial = $values->text("$lotserialbin-lotserial");
+
+			$recnbr = $this->addLotserialsSingle($orderitem, $input, $data);
+
+			if ($recnbr) {
+				$recordnumbers[] = $recnbr;
+			}
+		}
+
+		if ($this->getConfigPicking()->verify_whseitempicks) {
+			$session = $this->wire('session');
+			$session->setFor('picking', 'verify-picked-itemid', $itemID);
+			$session->setFor('picking', 'verify-picked-linenbr', $orderitem->linenbr);
+			$session->setFor('picking', 'verify-picked-items', $recordnumbers);
+			return true;
+		}
+		$this->requestLineUpdate($orderitem->linenbr);
+		return true;
+	}
+
+	private function addLotserialsSingle(PickSalesOrderDetail $orderitem, WireInput $input, WireData $data) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		// CHECKS if ITEM EXISTS ON ORDER
+		$hasBeenPicked = $this->doesWhseitempickExist($orderitem, $data->lotserial, $data->binID);
+
+		if ($hasBeenPicked) {
+			$values->qty       = $data->qty;
+			$values->lotserial = $data->lotserial;
+			$values->binID     = $data->binID;
+			$recnbr = $this->addLotserialAlreadyPicked($orderitem, $values);
+			return $recnbr;
+		}
+
+		if ($data->qty + 0 > 0) {
+			$values->qty          = $data->qty;
+			$values->lotserial    = $data->lotserial;
+			$values->lotserialref = $data->lotref;
+			$values->binID        = $data->binID;
+
+			$pickingitem = $this->createWhseitempickInput($orderitem, $input);
+			$pickingitem->save();
+			return $pickingitem->recordnumber;
+		}
+		return false;
 	}
 
 /* =============================================================
@@ -319,6 +394,7 @@ class Picking extends Base {
 
 		$qty = $this->inventory->isItemSerialized($orderitem->itemnbr) ? 1 : $values->float('qty');
 		$item->setQty($qty);
+		echo var_dump($item);
 		return $item;
 	}
 
