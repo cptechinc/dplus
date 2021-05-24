@@ -75,6 +75,12 @@ class Picking extends Base {
 			case 'exit-order':
 				self::redirect(self::pickingUrl(), $http301 = false);
 				break;
+			case 'add-lotserials':
+				if ($session->getFor('picking', 'verify-picked-items')) {
+					self::redirect(self::pickScanUrl($data->ordn, $data->scan), $http301 = false);
+				}
+				self::redirect(self::pickingUrl($data->ordn), $http301 = false);
+				break;
 			default:
 				self::redirect(self::pickingUrl($data->ordn), $http301 = false);
 				break;
@@ -230,7 +236,7 @@ class Picking extends Base {
 		$inv     = $picking->inventory->lookup;
 		$q       = $inv->getScanQuery($data->scan);
 
-		if ($session->getFor('picking', 'verify-picked')) {
+		if ($session->getFor('picking', 'verify-picked-items')) {
 			return self::scanVerifyPicked($data, $picking);
 		}
 
@@ -249,12 +255,12 @@ class Picking extends Base {
 
 	static private function scanVerifyPicked($data, PickingCRUD $picking) {
 		$session = self::pw('session');
-		$query = $picking->getWhseitempickQuery(['barcode' => $data->scan, 'recordnumber' => $session->getFor('picking', 'verify-picked')]);
+		$query = $picking->getWhseitempickQuery(['barcode' => $data->scan, 'recordnumber' => $session->getFor('picking', 'verify-picked-items')]);
 
 		if ($query->count()) {
 			return self::pw('config')->twig->render('warehouse/picking/unguided/scan/verify-picked.twig', ['scan' => $data->scan, 'm_picking' => $picking, 'items' => $query->find()]);
 		}
-		$session->removeFor('picking', 'verify-picked');
+		$session->removeFor('picking', 'verify-picked-items');
 		$writer  = self::getHtmlWriter();
 		$html .= $writer->div('class=mb-3');
 		$html .= $config->twig->render('warehouse/picking/unguided/scan/form.twig');
