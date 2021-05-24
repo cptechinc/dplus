@@ -310,10 +310,11 @@ class Picking extends Base {
 		$html .= $writer->hr();
 		return $html;
 	}
+
 /* =============================================================
 	Validator, Module Getters
 ============================================================= */
-	static public function validateUserPermission(user $user = nul) {
+	static public function validateUserPermission(user $user = null) {
 		if (empty($user)) {
 			$user = self::pw('user');
 		}
