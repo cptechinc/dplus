@@ -3,7 +3,7 @@
 use PickSalesOrderDetailQuery, PickSalesOrderDetail;
 use WhseitempickQuery, Whseitempick;
 // ProcessWire
-use ProcessWire\WireData, ProcessWire\WireInput;
+use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\WireInputData;
 // Dplus Configs
 use Dplus\Configs as Configs;
 // Dplus Wm
@@ -170,27 +170,35 @@ class Picking extends Base {
 		$orderitem = $this->items->getItemByItemid($itemID);
 
 		if ($this->doesWhseitempickExist($orderitem, $lotserial, $binID)) {
-			$filters = ['linenbr' => $orderitem->linenbr, 'sublinenbr' => $orderitem->sublinenbr, 'lotserial' => $lotserial, 'bin' => $binID];
-			$q = $this->getWhseitempickQuery($filters);
-
-			$exists_fororderitem = boolval($q->count());
-
-			if ($exists_fororderitem) {
-				$qty         = $values->text('qty');
-				$pickingitem = $q->findOne();
-				$pickingitem->setQty($pickingitem->qty + $qty);
-				$pickingitem->save();
-				$recordnumbers[] = $pickingitem->recordnumber;
-				$this->requestLineUpdate($orderitem->linenbr);
-				return true;
-			}
-			self::pw('session')->setFor('picking', 'error', "$scan has been added to another line already");
-			return false;
+			return $this->addLotserialAlreadyPicked($orderitem, $values);
 		}
 		$pickingitem = $this->createWhseitempickInput($orderitem, $input);
 		$pickingitem->save();
 		return true;
+	}
 
+	private function addLotserialAlreadyPicked(PickSalesOrderDetail $orderitem, WireInputData $values) {
+		$itemID    = $values->text('itemID');
+		$lotserial = $values->text('lotserial');
+		$binID     = $values->text('binID');
+		$scan      = $values->text('scan');
+
+		$filters = ['linenbr' => $orderitem->linenbr, 'sublinenbr' => $orderitem->sublinenbr, 'lotserial' => $lotserial, 'bin' => $binID];
+		$q = $this->getWhseitempickQuery($filters);
+
+		$existsForOrderItem = boolval($q->count());
+
+		if ($existsForOrderItem) {
+			$qty         = $values->text('qty');
+			$pickingitem = $q->findOne();
+			$pickingitem->setQty($pickingitem->qty + $qty);
+			$pickingitem->save();
+			$recordnumbers[] = $pickingitem->recordnumber;
+			$this->requestLineUpdate($orderitem->linenbr);
+			return true;
+		}
+		self::pw('session')->setFor('picking', 'error', "$scan has been added to another line already");
+		return false;
 	}
 
 /* =============================================================
@@ -272,11 +280,8 @@ class Picking extends Base {
 		$item->setLotserialref($values->text('lotserialref'));
 		$item->setLotserial($values->text('lotserial'));
 
-		if ($this->inventory->isItemSerialized($orderitem->itemnbr)) {
-			$item->setQty(1);
-		} else {
-			$item->setQty($values->float('qty'));
-		}
+		$qty = $this->inventory->isItemSerialized($orderitem->itemnbr) ? 1 : $values->float('qty');
+		$item->setQty($qty);
 		return $item;
 	}
 
