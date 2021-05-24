@@ -177,6 +177,11 @@ class Picking extends Base {
 		return true;
 	}
 
+	/**
+	 * Add Previously Picked Lotserial
+	 * @param PickSalesOrderDetail $orderitem Order Line Item
+	 * @param WireInputData        $values
+	 */
 	private function addLotserialAlreadyPicked(PickSalesOrderDetail $orderitem, WireInputData $values) {
 		$itemID    = $values->text('itemID');
 		$lotserial = $values->text('lotserial');
