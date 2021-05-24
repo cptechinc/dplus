@@ -214,9 +214,9 @@ class Picking extends Base {
 
 		if ($config->twigloader->exists("warehouse/picking/unguided/$config->company/order/items.twig")) {
 			return $config->twig->render("warehouse/picking/unguided/$config->company/order/items.twig", ['lineitems' => $items, 'm_picking' => $picking]);
-		} else {
-			return $config->twig->render('warehouse/picking/unguided/order/items.twig', ['lineitems' => $items, 'm_picking' => $picking]);
 		}
+
+		return $config->twig->render('warehouse/picking/unguided/order/items.twig', ['lineitems' => $items, 'm_picking' => $picking]);
 	}
 
 	static private function orderActions($data) {

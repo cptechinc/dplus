@@ -137,11 +137,11 @@ class Picking extends Base {
 				case 'add-lotserial':
 					$this->addLotserial($input);
 					break;
+				case 'delete-lotserial':
+					$this->deleteLotserial($input);
+					break;
 				// case 'add-lotserials':
 				// 	$this->addLotserials($input);
-				// 	break;
-				// case 'delete-lotserial':
-				// 	$this->deleteLotserial($input);
 				// 	break;
 				// case 'verify-whseitempicks':
 				// 	$this->verifyWhseitempicks($input);
@@ -290,6 +290,16 @@ class Picking extends Base {
 		return $item;
 	}
 
+	private function deleteLotserial(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$recordnumber = $values->int('recordnumber');
+		$linenbr      = $values->int('linenbr');
+		$sublinenbr   = $values->int('sublinenbr');
+		$this->requestDeletePicked($recordnumber);
+		$this->wire('session')->setFor('picking', 'removed-from-line', $linenbr);
+	}
+
 /* =============================================================
 	Dplus Request Functions
 ============================================================= */
@@ -352,6 +362,21 @@ class Picking extends Base {
 			$data[]    = "BIN=$binID|LOTSERIAL=$lotserial|QTY=$qty";
 		}
 		return $data;
+	}
+
+	/**
+	 * Send Request to Save Picked Line Items
+	 * @param  int   $recnbr  Record Number
+	 * @param  bool  $debug   Is this for Debug
+	 * @return bool
+	 */
+	public function requestDeletePicked(int $recnbr, $debug = false) {
+		$whseitempick = $this->getWhseitempickQuery($filters = ['recordnumber' => $recnbr])->findOne();
+		$whseitempick->setBin(strtoupper($whseitempick->bin));
+
+		$data = ['PICKITEMREMOVE', "ORDERNBR=$this->ordn", "LINENBR=$whseitempick->linenbr", "ITEMID=$whseitempick->itemid"];
+		$data[] = "BIN=$whseitempick->bin|LOTSERIAL=$whseitempick->lotserial|QTY=$whseitempick->qty";
+		$this->sendDplusRequest($data);
 	}
 
 /* =============================================================

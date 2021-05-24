@@ -80,16 +80,7 @@
 						<div class="col-sm-1 text-right">{{ lotserial.qty|number_format(m_picking.getDecimalPlacesQty()) }}</div>
 						<div class="col-sm-1 text-right">{{ invlot.date_expire ? invlot.date_expire|convertdate : 'N/A' }}</div>
 						<div class="col-sm-2">
-							<form action="{{ page.fullURL.getUrl() }}" method="post">
-								<input type="hidden" name="action" value="remove-lotserial">
-								<input type="hidden" name="linenbr" value="{{ lotserial.linenbr }}">
-								<input type="hidden" name="sublinenbr" value="{{ lotserial.sublinenbr }}">
-								<input type="hidden" name="recordnumber" value="{{ lotserial.recordnumber }}">
-								<input type="hidden" name="barcode" value="{{ lotserial.barcode }}">
-								<button type="submit" class="btn btn-danger btn-sm" type="button">
-									<i class="fa fa-trash" aria-hidden="true"></i> Delete
-								</button>
-							</form>
+							{% include 'warehouse/picking/unguided/order/remove-picked.twig' %}
 						</div>
 					</div>
 				</div>
