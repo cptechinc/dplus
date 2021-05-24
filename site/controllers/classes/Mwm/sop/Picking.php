@@ -236,7 +236,7 @@ class Picking extends Base {
 		if ($q->count() == 0) {
 			$writer  = self::getHtmlWriter();
 			$html .= $writer->div('class=mb-3', $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => '0 items found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "No items found for '$data->scan'"]));
-			$html .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/scan-form.twig');
+			$html .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/form.twig');
 			return $html;
 		}
 
@@ -251,12 +251,12 @@ class Picking extends Base {
 		$query = $picking->getWhseitempickQuery(['barcode' => $data->scan, 'recordnumber' => $session->getFor('picking', 'verify-picked')]);
 
 		if ($query->count()) {
-			return self::pw('config')->twig->render('warehouse/picking/unguided/scan/verify-whseitempick-lotserials.twig', ['scan' => $data->scan, 'm_picking' => $picking, 'items' => $query->find()]);
+			return self::pw('config')->twig->render('warehouse/picking/unguided/scan/verify-picked.twig', ['scan' => $data->scan, 'm_picking' => $picking, 'items' => $query->find()]);
 		}
 		$session->removeFor('picking', 'verify-picked');
 		$writer  = self::getHtmlWriter();
 		$html .= $writer->div('class=mb-3');
-		$html .= $config->twig->render('warehouse/picking/unguided/scan/scan-form.twig');
+		$html .= $config->twig->render('warehouse/picking/unguided/scan/form.twig');
 		return $html;
 	}
 
@@ -266,9 +266,9 @@ class Picking extends Base {
 		$html    = '';
 
 		$itemsDistinct = $q->groupBy('itemid')->find();
-		self::pw('page')->js   .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/select-item-list.js.twig');
+		self::pw('page')->js   .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/select-multiple-list.js.twig');
 		$html = $writer->h3('', 'Select Items to Pick');
-		$html .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/select-item-list.twig', ['items' => $itemsDistinct, 'm_picking' => $picking]);
+		$html .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/select-multiple-list.twig', ['items' => $itemsDistinct, 'm_picking' => $picking]);
 		return $html;
 	}
 
@@ -284,7 +284,7 @@ class Picking extends Base {
 			if ($item->has_error()) {
 				$html .= $writer->div('class=mb-3', $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error searching '$data->scan'", 'iconclass' => 'fa fa-warning fa-2x', 'message' => $item->get_error()]));
 				$html .= $writer->h3('', 'Scan item to add');
-				$html .= $config->twig->render('warehouse/picking/unguided/scan/scan-form.twig');
+				$html .= $config->twig->render('warehouse/picking/unguided/scan/form.twig');
 				return $html;
 			}
 			$picking = self::getPicking($data->ordn);
@@ -292,13 +292,13 @@ class Picking extends Base {
 			if ($picking->items->hasItemid($item->itemid)) {
 				$orderitem  = $picking->items->getItemByItemid($item->itemid);
 				$html .= $writer->h3('', 'Enter Item Details');
-				$html .= $config->twig->render('warehouse/picking/unguided/scan/add-scanned-item-form.twig', ['item' => $item, 'orderitem' => $orderitem, 'scan' => $data->scan]);
+				$html .= $config->twig->render('warehouse/picking/unguided/scan/scanned/add-single-form.twig', ['item' => $item, 'orderitem' => $orderitem, 'scan' => $data->scan]);
 				self::pw('page')->js   .= $config->twig->render('warehouse/picking/unguided/scan/scan.js.twig');
 				return $html;
 			}
 
 			$html .= $writer->div('class=mb-3', $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Item Not on Order', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item $item->itemid is not on this order"]));
-			$html .= $config->twig->render('warehouse/picking/unguided/scan/scan-form.twig');
+			$html .= $config->twig->render('warehouse/picking/unguided/scan/form.twig');
 			return $html;
 		}
 	}
@@ -306,7 +306,7 @@ class Picking extends Base {
 	static private function scanform($data) {
 		$writer = self::getHtmlWriter();
 		$html = $writer->h3('', 'Scan item to pick');
-		$html .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/scan-form.twig');
+		$html .= self::pw('config')->twig->render('warehouse/picking/unguided/scan/form.twig');
 		$html .= $writer->hr();
 		return $html;
 	}
