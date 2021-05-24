@@ -38,9 +38,9 @@ class Picking extends Base {
 	private $configPicking;
 	/** @var ConfigsWarehouseInventory */
 	private $configInventory;
-	/** @var int*/
+	/** @var int */
 	private $decimalPlacesQty;
-	/** @var PackBinStrategy **/
+	/** @var PackBinStrategy */
 	private $packBinStrategy;
 
 	public function __construct() {
@@ -97,6 +97,23 @@ class Picking extends Base {
 		}
 		return $this->configInventory;
 	}
+
+	/**
+	 * Return Inventory Config
+	 * @return Configs\So
+	 */
+	public function getConfigSo() {
+		return Configs\So::config();
+	}
+
+	/**
+	 * Return If Picking More than Ordered is allowed
+	 * @return bool
+	 */
+	public function allowOverPick() {
+		return $this->getConfigSo()->allow_overpick == 'Y';
+	}
+
 
 	/**
 	 * Return Inventory Config
@@ -206,6 +223,21 @@ class Picking extends Base {
 		return false;
 	}
 
+	/**
+	 * Delete Lotserial that has been picked for a line
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	private function deleteLotserial(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$recordnumber = $values->int('recordnumber');
+		$linenbr      = $values->int('linenbr');
+		$sublinenbr   = $values->int('sublinenbr');
+		$this->requestDeletePicked($recordnumber);
+		$this->wire('session')->setFor('picking', 'removed-from-line', $linenbr);
+	}
+
 /* =============================================================
 	Whseitempick Functions
 ============================================================= */
@@ -266,7 +298,7 @@ class Picking extends Base {
 	 * @param  WireInput            $input
 	 * @return Whseitempick
 	 */
-	public function createWhseitempickInput(PickSalesOrderDetail $orderitem, WireInput $input) {
+	private function createWhseitempickInput(PickSalesOrderDetail $orderitem, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
@@ -288,16 +320,6 @@ class Picking extends Base {
 		$qty = $this->inventory->isItemSerialized($orderitem->itemnbr) ? 1 : $values->float('qty');
 		$item->setQty($qty);
 		return $item;
-	}
-
-	private function deleteLotserial(WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-		$recordnumber = $values->int('recordnumber');
-		$linenbr      = $values->int('linenbr');
-		$sublinenbr   = $values->int('sublinenbr');
-		$this->requestDeletePicked($recordnumber);
-		$this->wire('session')->setFor('picking', 'removed-from-line', $linenbr);
 	}
 
 /* =============================================================
