@@ -128,6 +128,9 @@ class Picking extends Base {
 				case 'start-order':
 					$this->requestStartOrder($values->text('ordn'));
 					break;
+				case 'exit-order':
+					$this->requestExitOrder($values->text('ordn'));
+					break;
 				case 'scan-pick-item':
 					$this->inventory->requestSearch($values->text('ordn'), $values->text('scan'));
 					break;
@@ -142,10 +145,6 @@ class Picking extends Base {
 				// 	break;
 				// case 'verify-whseitempicks':
 				// 	$this->verifyWhseitempicks($input);
-				// 	break;
-				//
-				// case 'exit-order':
-				// 	$this->requestExitOrder($values->text('ordn'));
 				// 	break;
 				// case 'finish-order':
 				// 	$this->requestFinishOrder($values->text('ordn'));
@@ -281,7 +280,6 @@ class Picking extends Base {
 		return $item;
 	}
 
-
 /* =============================================================
 	Dplus Request Functions
 ============================================================= */
@@ -292,6 +290,16 @@ class Picking extends Base {
 	 */
 	public function requestStartOrder($ordn) {
 		$data = ['STARTORDER', "ORDERNBR=$ordn"];
+		$this->sendDplusRequest($data);
+	}
+
+	/**
+	 * Send Request to Start & Load Order
+	 * @param  string $ordn   Order Number
+	 * @return bool
+	 */
+	public function requestExitOrder($ordn) {
+		$data = ['STOPORDER', "ORDERNBR=$ordn"];
 		$this->sendDplusRequest($data);
 	}
 

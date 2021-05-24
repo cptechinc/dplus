@@ -72,6 +72,9 @@ class Picking extends Base {
 			case 'scan-pick-item':
 				self::redirect(self::pickScanUrl($data->ordn, $data->scan), $http301 = false);
 				break;
+			case 'exit-order':
+				self::redirect(self::pickingUrl(), $http301 = false);
+				break;
 			default:
 				self::redirect(self::pickingUrl($data->ordn), $http301 = false);
 				break;
@@ -165,10 +168,18 @@ class Picking extends Base {
 		return $url->getUrl();
 	}
 
+	static public function pickingExitUrl($ordn) {
+		$url = new Purl(self::pickingUrl($ordn));
+		$url->query->set('action', 'exit-order');
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Displays
 ============================================================= */
 	static private function orderDisplay($data) {
+		$writer  = self::getHtmlWriter();
+
 		$html =  self::orderHeader($data);
 
 		if (empty($data->scan)) {
@@ -180,6 +191,8 @@ class Picking extends Base {
 		}
 
 		$html .= self::orderItems($data);
+		$html .= $writer->div('class=mb-3');
+		$html .= self::orderActions($data);
 		return $html;
 	}
 
@@ -204,6 +217,10 @@ class Picking extends Base {
 		} else {
 			return $config->twig->render('warehouse/picking/unguided/order/items.twig', ['lineitems' => $items, 'm_picking' => $picking]);
 		}
+	}
+
+	static private function orderActions($data) {
+		return self::pw('config')->twig->render('warehouse/picking/unguided/order/actions.twig', ['ordn' => $data->ordn]);
 	}
 
 	static private function scanResults($data) {
@@ -334,6 +351,12 @@ class Picking extends Base {
 			$p   = $event->object;
 			$url = $p->fullURL;
 			$event->return = self::pickingUrl($url->query->get('ordn'));
+		});
+
+		$m->addHook('Page::exitOrderUrl', function($event) {
+			$p   = $event->object;
+			$url = $p->fullURL;
+			$event->return = self::pickingExitUrl($url->query->get('ordn'));
 		});
 	}
 }
