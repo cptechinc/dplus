@@ -1,0 +1,4 @@
+<div class="form-group">
+	{% include 'util/alert.twig' with {'type': 'warning','iconclass': 'fa fa-warning fa-2x', 'title': 'Attention!', 'message': whsesession.get_statusmessage() is not empty ? whsesession.get_statusmessage() : whsesession.status } %}
+</div>
+<a href="{{ page.url }}" class="btn btn-primary">Continue</a>
