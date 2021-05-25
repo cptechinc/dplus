@@ -74,7 +74,7 @@
 					<select name="uom" class="form-control form-control-sm" id="uom">
 						<option value=""></option>
 						{% for uom in upcx.get_unitsofm_purchase() %}
-							<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == upc.uom ? 'selected' : ''}}>{{ uom.description }}</option>
+							<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == upc.uom ? 'selected' : ''}}>{{ uom.code }} - {{ uom.description }}</option>
 						{% endfor %}
 					</select>
 				</div>
@@ -109,7 +109,7 @@
 					2. Is a new Item
 					NOTE: Only show delete if item already exists.
 				#}
-				{% if upcx.recordlocker.function_locked_by_user( upc.upc) or upc.isNew() %}
+				{% if upcx.recordlocker.function_locked_by_user(upc.upc) or upc.isNew() %}
 					<button type="submit" class="btn btn-success" name="action" value="update-upcx">
 						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 					</button>
