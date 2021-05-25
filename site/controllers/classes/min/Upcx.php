@@ -1,4 +1,6 @@
 <?php namespace Controllers\Min;
+// Purl URL Library
+use Purl\Url as Purl;
 // Dplus Model
 use ItemXrefUpcQuery, ItemXrefUpc;
 // ProcessWire Classes, Modules
@@ -32,11 +34,20 @@ class Upcx extends AbstractController {
 		$data  = self::sanitizeParameters($data, $fields);
 		$input = self::pw('input');
 
-		if ($data->action) {
+		if (empty($data->action) === false) {
 			$upcx = self::getUpcx();
 			$upcx->process_input($input);
+
+			switch($data->action) {
+				case 'delete-upcx':
+					self::pw('session')->redirect(self::upcListUrl(), $http301 = false);
+					break;
+				default:
+					self::pw('session')->redirect(self::upcUrl($data->upc), $http301 = false);
+					break;
+			}
 		}
-		self::pw('session')->redirect(self::pw('page')->upcURL($data->upc), $http301 = false);
+		self::pw('session')->redirect(self::upcUrl($data->upc), $http301 = false);
 	}
 
 	public static function upc($data) {
@@ -107,10 +118,119 @@ class Upcx extends AbstractController {
 		return $html;
 	}
 
+/* =============================================================
+	URL Functions
+============================================================= */
+	/**
+	 * Return URL to view / edit UPC
+	 * @param  string $upc    UPC Code
+	 * @param  string $itemID ** Optional
+	 * @return string
+	 */
+	public static function upcUrl($upc, $itemID = '') {
+		$url = new Purl(self::pw('pages')->get("pw_template=upcx")->url);
+		$url->query->set('upc', $upc);
+
+		if ($itemID) {
+			$url->query->set('itemID', $itemID);
+		}
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to List the UPCs associated with the ItemID
+	 * @param  string $itemID Item ID
+	 * @return string
+	 */
+	public static function upcListUrl($focus = '') {
+		if ($focus == '') {
+			return self::pw('pages')->get("pw_template=upcx")->url;
+		}
+		return self::upcListFocusUrl($focus);
+	}
+
+	/**
+	 * Return UPCX List Url
+	 * @param  string $focus UPC to focus on
+	 * @return string
+	 */
+	public static function upcListFocusUrl($focus = '') {
+		$upcx = self::getUpcx();
+		$page = self::pw('pages')->get("pw_template=upcx");
+
+		if ($focus == '' || $upcx->xref_exists($focus) === false) {
+			return $page->url;
+		}
+
+		$xref   = $upcx->xref($focus);
+		$filter = new UpcxFilter();
+		$offset = $filter->position($xref);
+		$pagenbr = ceil($offset / self::pw('session')->display);
+		$url = new Purl($page->url);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
+		$url->query->set('focus', $focus);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to delete UPC
+	 * @return string
+	 */
+	public static function upcDeleteUrl($upc) {
+		$url = new Purl(self::pw('pages')->get("pw_template=upcx")->url);
+		$url->query->set('action', 'delete-upcx');
+		$url->query->set('upc', $upc);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to List the UPCs associated with the ItemID
+	 * @param  string $itemID Item ID
+	 * @return string
+	 */
+	public static function itemUpcsUrl($itemID) {
+		$url = new Url(self::pw('pages')->get("pw_template=upcx")->url);
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
 	public static function getUpcx() {
 		if (empty(self::$upcx)) {
 			self::$upcx = self::pw('modules')->get('XrefUpc');
 		}
 		return self::$upcx;
+	}
+
+	public static function init() {
+		$m = self::pw('modules')->get('XrefUpc');
+
+		$m->addHook('Page(pw_template=upcx)::upcUrl', function($event) {
+			$upc = $event->arguments(0);
+			$event->return = self::upcUrl($upc);
+		});
+
+		$m->addHook('Page(pw_template=upcx)::upcListUrl', function($event) {
+			$focus = $event->arguments(0);
+			$event->return = self::upcListUrl($focus);
+		});
+
+		$m->addHook('Page(pw_template=upcx)::itemUpcsUrl', function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = self::itemUpcsUrl($itemID);
+		});
+
+		$m->addHook('Page(pw_template=upcx)::upcCreateUrl', function($event) {
+			$event->return = self::upcUrl('new');
+		});
+
+		$m->addHook('Page(pw_template=upcx)::upcDeleteUrl', function($event) {
+			$upc = $event->arguments(0);
+			$event->return = self::upcDeleteUrl($upc);
+		});
+
+		$m->addHook('Page(pw_template=upcx)::upcCreateItemidUrl', function($event) {
+			$itemID = $event->arguments(0);
+			$event->return = self::upcUrl('new', $itemID);
+		});
 	}
 }
