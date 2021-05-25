@@ -3,6 +3,7 @@
 use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Validators
 use Dplus\CodeValidators\In as InValidator;
+use Dplus\CodeValidators\Min\Upcx as UpcxValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
@@ -90,7 +91,7 @@ class Inv extends AbstractController {
 		return true;
 	}
 
-	public static function validateMsdsCode($data) {
+	public static function getMsdsCode($data) {
 		$fields = ['code|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
@@ -132,7 +133,7 @@ class Inv extends AbstractController {
 		return $loader->get_item_array($itemID, $fields);
 	}
 
-	public static function validateItemid($data) {
+	public static function validateWarehouseid($data) {
 		$fields = ['whseID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
@@ -141,6 +142,17 @@ class Inv extends AbstractController {
 			return "Warehouse ID $data->whseID not found";
 		}
 		return true;
+	}
+
+	public static function validateWarehouseBinid($data) {
+		$fields = ['whseID|text', 'binID|text'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$validate = self::validator();
+
+		if ($this->validateWarehouseid($data) !== true) {
+			return false
+		}
+		return $validate->whsebin($data->whseID, $data->binID);
 	}
 
 	public static function validateItmpExists($data) {
@@ -153,6 +165,44 @@ class Inv extends AbstractController {
 			return "ITMP for $loginID not found";
 		}
 		return true;
+	}
+
+	public static function validateUpc($data) {
+		$fields = ['upc|text', 'jqv|bool'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$validate = new UpcxValidator();
+
+		$valid = $validate->upc($data->upc);
+		if ($data->jqv === true && $valid === false) {
+			return "UPC $data->upc not found";
+		}
+		return $valid;
+	}
+
+	public static function validateUpcPrimary($data) {
+		$fields = ['upc|text', 'itemID|text', 'data|jqv'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$validate = new UpcxValidator();
+
+		if ($validate->exists($data->upc) === false) {
+			return false;
+		}
+
+		if ($validate->primaryExistsForItemid($data->itemID) === false) {
+			return true;
+		}
+
+		if ($validate->primaryExistsForItemid($data->itemID)) {
+			$upcx = self::pw('modules')->get('XrefUpc');
+			$xref = $upcx->xref_primary_by_itemid($data->itemID);
+			$matches = $xref->upc == $data->upc;
+
+			if ($matches === false && $data->jqv === true) {
+				return "$xref->upc is the Primary for $data->itemID";
+			}
+
+			return $matches;
+		}
 	}
 
 
