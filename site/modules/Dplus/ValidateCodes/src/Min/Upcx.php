@@ -20,8 +20,25 @@ class Upcx extends Min {
 	 * @return bool
 	 */
 	public function exists($upc) {
-		$q = ItemXrefUpcQuery::create();
+		$this->query();
 		$q->filterByUpc($upc);
 		return boolval($q->count());
 	}
+
+	/**
+	 * Return if Primary UPC for itemID exists
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	public function primaryExistsForItemid($itemID) {
+		$q = $this->query();
+		$q->filterByItemid($itemID);
+		$q->filterByPrimary(ItemXrefUpc::PRIMARY_TRUE);
+		return boolval($q->count());
+	}
+
+	public function query() {
+		return ItemXrefUpcQuery::create();
+	}
+
 }
