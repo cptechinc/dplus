@@ -20,7 +20,7 @@ class Upcx extends Min {
 	 * @return bool
 	 */
 	public function exists($upc) {
-		$this->query();
+		$q = $this->query();
 		$q->filterByUpc($upc);
 		return boolval($q->count());
 	}
