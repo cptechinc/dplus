@@ -14,6 +14,10 @@
 				['GET', 'warehouse/bins/', Json\Min::class, 'validateWarehouseBinid'],
 				['GET', 'itmp/exists/', Json\Min::class, 'validateItmpExists'],
 				['GET', 'item-group/', Json\Min::class, 'validateInvGroupCode'],
+				'upcx' => [
+					['GET', 'upc/', Json\Min::class, 'validateUpc'],
+					['GET', 'upc/primary/', Json\Min::class, 'validateUpcPrimary'],
+				]
 			],
 			['GET', 'tariff-code/', Json\Min::class, 'getTariffCode'],
 			['GET', 'country-code/', Json\Min::class, 'getCountryCode'],
