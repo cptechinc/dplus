@@ -56,11 +56,8 @@ $(function() {
 	modal_ajax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
-		var url = '{{ page.search_itemsURL }}';
+		var url = button.data('lookupurl');
 
-		if (button.data('search') == 'item') {
-			url = '{{ page.search_itemsURL }}';
-		}
 		modal.find('.modal-title').text(button.attr('title'));
 		modal.resizeModal('xl');
 		modal.find('.modal-body').loadin(url, function() {});
@@ -213,9 +210,9 @@ $(function() {
 	}
 
 	function get_item(itemID, callback) {
-		var url = new URI('{{ page.jsonapiURL('inv/validate/item/') }}');
+		var url = new URI('{{ page.jsonapiURL('inv/item/') }}');
 		url.addQuery('itemID', itemID);
-
+		console.log(url.toString());
 		$.getJSON(url.toString(), function(item) {
 			callback(item);
 		});
