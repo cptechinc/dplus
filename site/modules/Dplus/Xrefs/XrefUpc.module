@@ -414,51 +414,5 @@ class XrefUpc extends WireData implements Module {
 	public function init() {
 		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
 		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
-
-		$this->addHook('Page(pw_template=upcx)::upcURL', function($event) {
-			$upc = $event->arguments(0);
-			$event->return = $this->get_upcURL($upc);
-		});
-
-		$this->addHook('Page(pw_template=upcx)::upc_listURL', function($event) {
-			$focus = $event->arguments(0);
-			$event->return = $this->get_upc_listURL($focus);
-		});
-
-		$this->addHook('Page(pw_template=upcx)::item_upcsURL', function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_item_upcsURL($itemID);
-		});
-
-		$this->addHook('Page(pw_template=upcx)::upc_createURL', function($event) {
-			$event->return = $this->get_upcURL('new');
-		});
-
-		$this->addHook('Page(pw_template=upcx)::upc_deleteURL', function($event) {
-			$upc = $event->arguments(0);
-			$event->return = $this->get_upc_deleteURL($upc);
-		});
-
-		$this->addHook('Page(pw_template=upcx)::upc_create_itemidURL', function($event) {
-			$event->return = $this->get_upcURL('new', $itemID);
-		});
-
-		$this->addHookProperty('Page(pw_template=upcx)::upc', function($event) {
-			$p = $event->object;
-			$event->return = $p->fullURL->query->get('upc');
-		});
-
-		$this->addHookProperty('Page(pw_template=upcx)::itemID', function($event) {
-			$p = $event->object;
-			$event->return = $p->fullURL->query->get('itemID');
-		});
-
-		$this->addHookProperty('Page(pw_template=upcx|itm-xrefs-upcx)::search_itemsURL', function($event) {
-			$event->return = $this->wire('pages')->get('pw_template=itm-search')->url;
-		});
-
-		$this->addHookProperty('Page(pw_template=upcx|itm-xrefs-upcx)::validateURL', function($event) {
-			$event->return = $this->wire('pages')->get('pw_template=upcx-validate')->httpUrl;
-		});
 	}
 }
