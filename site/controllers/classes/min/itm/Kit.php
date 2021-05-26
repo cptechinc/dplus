@@ -8,6 +8,8 @@ use Controllers\Min\Itm\ItmFunction;
 use Controllers\Mki\Kim as KimController;
 
 class Kit extends ItmFunction {
+	const PERMISSION_ITMP = 'xrefs';
+
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -94,7 +96,7 @@ class Kit extends ItmFunction {
 		$page->headline = $component->isNew() ? "ITM: Kit $data->itemID" : "ITM: Kit $data->itemID - $data->component";
 
 		$html .= self::kitHeaders();
-		$html .= Itm::lockItem($data->itemID);
+		$html .= self::lockItem($data->itemID);
 		$html .= KimController::lockKit($kit);
 		$html .= $config->twig->render('items/itm/kit/component/display.twig', ['item' => $item, 'kim' => $kim, 'kit' => $kit, 'component' => $component]);
 		$page->js   .= $config->twig->render('mki/kim/kit/component/js.twig', ['kim' => $kim]);
