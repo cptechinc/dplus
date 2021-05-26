@@ -6,10 +6,11 @@ use ProcessWire\Page, ProcessWire\XrefUpc as UpcCRUD;
 // Dplus Filters
 use Dplus\Filters\Min\Upcx as UpcxFilter;
 // Mvc Controllers
-use Controllers\Min\Itm\ItmFunction;
+use Controllers\Min\Itm\Xrefs\XrefFunction;
 use Controllers\Min\Upcx as UpcxController;
 
-class Upcx extends ItmFunction {
+class Upcx extends XrefFunction {
+
 	public static function index($data) {
 		$fields = ['itemID|text', 'upc|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);

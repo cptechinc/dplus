@@ -6,10 +6,11 @@ use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeCRUD;
 // Dplus Filters
 use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
 // Mvc Controllers
-use Controllers\Min\Itm\ItmFunction;
+use Controllers\Min\Itm\Xrefs\XrefFunction;
 use Controllers\Map\Mxrfe as BaseMxrfe;
 
-class Mxrfe extends ItmFunction {
+class Mxrfe extends XrefFunction {
+
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);

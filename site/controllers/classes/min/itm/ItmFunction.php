@@ -40,7 +40,7 @@ class ItmFunction extends AbstractController {
 		if (static::PERMISSION_ITMP != '') {
 			return $itmp->isUserAllowed($user, static::PERMISSION_ITMP);
 		}
-		return $itmp->is_user_allowed_template($user, $page->pw_template);
+		return true;
 	}
 
 	protected static function validateItemidAndPermission($data) {
@@ -184,7 +184,7 @@ class ItmFunction extends AbstractController {
 		});
 
 		$m->addHook('Page(pw_template=itm)::itmUrlXrefs', function($event) {
-			$event->return = self::itmUrlXref($event->arguments(0));
+			$event->return = self::itmUrlXrefs($event->arguments(0));
 		});
 	}
 }

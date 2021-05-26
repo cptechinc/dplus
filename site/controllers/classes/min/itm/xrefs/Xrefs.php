@@ -1,10 +1,12 @@
 <?php namespace Controllers\Min\Itm;
+use Purl\Url as Purl;
+
 // ProcessWire Classes, Modules
 use ProcessWire\WireData, ProcessWire\Page;
 // Mvc Controllers
-use Controllers\Min\Itm\ItmFunction;
+use Controllers\Min\Itm\Xrefs\XrefFunction;
 
-class Xrefs extends ItmFunction {
+class Xrefs extends XrefFunction {
 	const PERMISSION_ITMP = 'xrefs';
 
 	public static function index($data) {
@@ -45,6 +47,7 @@ class Xrefs extends ItmFunction {
 		if (self::validateItemidAndPermission($data) === false) {
 			return $page->body;
 		}
+		self::initHooks();
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		if ($data->action) {
@@ -79,5 +82,64 @@ class Xrefs extends ItmFunction {
 		$xrefs->cxm  = $modules->get('XrefCxm');
 		$xrefs->upcx = $modules->get('XrefUpc');
 		return $xrefs;
+	}
+/* =============================================================
+	URLs
+============================================================= */
+	public static function xrefsUrl($itemID) {
+		return self::itmUrlFunction($itemID, 'xrefs');
+	}
+
+	public static function xrefUrlFunction($itemID, $function) {
+		$url = new Purl(self::xrefsUrl($itemID));
+		$url->path->add($function);
+		return $url->getUrl();
+	}
+
+	public static function xrefUrlUpcx($itemID) {
+		return self::xrefUrlFunction($itemID, 'upcx');
+	}
+
+	public static function xrefUrlVxm($itemID) {
+		return self::xrefUrlFunction($itemID, 'vxm');
+	}
+
+	public static function xrefUrlCxm($itemID) {
+		return self::xrefUrlFunction($itemID, 'cxm');
+	}
+
+	public static function xrefUrlKit($itemID) {
+		return self::xrefUrlFunction($itemID, 'kit');
+	}
+
+	public static function xrefUrlMxrfe($itemID) {
+		return self::xrefUrlFunction($itemID, 'mxrfe');
+	}
+
+/* =============================================================
+	Hooks
+============================================================= */
+	public static function initHooks() {
+		$m = self::pw('modules')->get('ItmXrefs');
+
+		$m->addHook('Page(pw_template=itm)::xrefUrlUpcx', function($event) {
+			$event->return = self::xrefUrlUpcx($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefUrlVxm', function($event) {
+			$event->return = self::xrefUrlVxm($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefUrlCxm', function($event) {
+			$event->return = self::xrefUrlVxm($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefUrlKit', function($event) {
+			$event->return = self::xrefUrlKit($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefUrlMxrfe', function($event) {
+			$event->return = self::xrefUrlMxrfe($event->arguments(0));
+		});
 	}
 }

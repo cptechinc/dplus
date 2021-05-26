@@ -6,10 +6,12 @@ use ProcessWire\Page, ProcessWire\XrefVxm as VxmCRUD;
 // DplusFilters
 use Dplus\Filters\Map\Vxm as VxmFilter;
 // Mvc Controllers
-use Controllers\Min\Itm\ItmFunction;
+use Controllers\Min\Itm\Xrefs\XrefFunction;;
 use Controllers\Map\Vxm as VxmController;
 
-class Vxm extends ItmFunction {
+class Vxm extends XrefFunction {
+	const PERMISSION_ITMP = 'xrefs';
+
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
