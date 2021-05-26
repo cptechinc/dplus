@@ -13,7 +13,7 @@
 			<th class="pt-3 pb-3 align-middle">Mnfr / Comp Name</th>
 			<th class="pt-3 pb-3 align-middle">Mnfr/Comp Item ID</th>
 			<th class="pt-3 pb-3 text-center">
-				<a href="{{ page.xrefURL('', 'new', item.itemid) }}" class="btn btn-light btn-sm">
+				<a href="{{ page.xrefUrl('', 'new', item.itemid) }}" class="btn btn-light btn-sm">
 					<i class="fa fa-plus" aria-hidden="true"></i> Add New
 				</a>
 			</th>
@@ -37,11 +37,11 @@
 					<td>{{ xref.mnfritemid }}</td>
 					<td class="text-center">
 						{% if mxrfe.recordlocker.function_locked(mxrfe.get_recordlocker_key(xref)) == false or mxrfe.recordlocker.function_locked_by_user(mxrfe.get_recordlocker_key(xref)) %}
-							<a href="{{ page.xrefURL(xref.vendorid, xref.vendoritemid, xref.itemid) }}" class="btn btn-warning btn-sm">
+							<a href="{{ page.xrefUrl(xref.vendorid, xref.vendoritemid, xref.itemid) }}" class="btn btn-warning btn-sm">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
 							&nbsp;
-							<a href="{{ page.xref_deleteURL(xref.vendorid, xref.vendoritemid, xref.itemid) }}" class="btn btn-danger btn-sm delete_button">
+							<a href="{{ page.xrefDeleteUrl(xref.vendorid, xref.vendoritemid, xref.itemid) }}" class="btn btn-danger btn-sm delete_button">
 								<i class="fa fa-trash" aria-hidden="true"></i> Delete
 							</a>
 						{% else %}

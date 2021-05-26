@@ -1,4 +1,5 @@
 <?php namespace Controllers\Min\Itm\Xrefs;
+use Purl\Url as Purl;
 // Dplus Model
 use ItemXrefUpcQuery, ItemXrefUpc;
 // ProcessWire Classes, Modules
@@ -6,6 +7,7 @@ use ProcessWire\Page, ProcessWire\XrefUpc as UpcCRUD;
 // Dplus Filters
 use Dplus\Filters\Min\Upcx as UpcxFilter;
 // Mvc Controllers
+use Controllers\Min\Itm\Xrefs;
 use Controllers\Min\Itm\Xrefs\XrefFunction;
 use Controllers\Min\Upcx as UpcxController;
 
@@ -66,6 +68,7 @@ class Upcx extends XrefFunction {
 		if (self::validateItemidAndPermission($data) === false) {
 			return $page->body;
 		}
+		self::initHooks();
 		$fields = ['itemID|text', 'upc|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		if ($data->action) {
@@ -98,6 +101,7 @@ class Upcx extends XrefFunction {
 		if (self::validateItemidAndPermission($data) === false) {
 			return $page->body;
 		}
+		self::initHooks();
 		$fields = ['itemID|text', 'q|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$input  = self::pw('input');
@@ -118,5 +122,63 @@ class Upcx extends XrefFunction {
 		$html .= $config->twig->render('items/itm/xrefs/upcx/list/display.twig', ['upcs' => $upcs, 'item' => $item, 'upcx' => $upcx]);
 		$page->js   .= $config->twig->render('items/upcx/list/.js.twig');
 		return $html;
+	}
+
+/* =============================================================
+	Url Functions
+============================================================= */
+	/**
+	 * Return Url to X-ref
+	 * @param  string $itemID  Item ID
+	 * @param  string $upc     UPC
+	 * @return string
+	 */
+	public static function xrefUrl($itemID, $upc) {
+		$url = new Purl(Xrefs::xrefUrlUpcx($itemID));
+		$url->query->set('upc', $upc);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Url to Delete X-ref
+	 * @param  string $itemID  Item ID
+	 * @param  string $upc     UPC
+	 * @return string
+	 */
+	public static function xrefDeleteUrl($itemID, $upc) {
+		$url = new Purl(self::xrefUrl($itemID, $upc));
+		$url->query->set('action', 'delete-upcx');
+		return $url->getUrl();
+	}
+/* =============================================================
+	Hook Functions
+============================================================= */
+	public static function initHooks() {
+		$m = UpcxController::getUpcx();
+
+		$m->addHook('Page(pw_template=itm)::upcUrl', function($event) {
+			$p = $event->object;
+			$itemID  = self::pw('input')->get->text('itemID');
+			$upc     = $event->arguments(0);
+			$event->return = self::xrefUrl($itemID, $upc);
+		});
+
+		$m->addHook('Page(pw_template=itm)::upcDeleteUrl', function($event) {
+			$p = $event->object;
+			$itemID  = self::pw('input')->get->text('itemID');
+			$upc     = $event->arguments(0);
+			$event->return = self::xrefDeleteUrl($itemID, $upc);
+		});
+
+		$m->addHook('Page(pw_template=itm)::upcListUrl', function($event) {
+			$p = $event->object;
+			$itemID  = self::pw('input')->get->text('itemID');
+			$event->return = Xrefs::xrefUrlUpcx($itemID);
+		});
+
+		$m->addHook('Page(pw_template=itm)::upcCreateUrl', function($event) {
+			$itemID  = self::pw('input')->get->text('itemID');
+			$event->return = self::xrefUrl($itemID, 'new');
+		});
 	}
 }

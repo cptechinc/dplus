@@ -1,4 +1,5 @@
 <?php namespace Controllers\Min\Itm\Xrefs;
+use Purl\Url as Purl;
 // Dplus Model
 use ItemXrefManufacturerQuery, ItemXrefManufacturer;
 // ProcessWire Classes, Modules
@@ -6,6 +7,7 @@ use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeCRUD;
 // Dplus Filters
 use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
 // Mvc Controllers
+use Controllers\Min\Itm\Xrefs;
 use Controllers\Min\Itm\Xrefs\XrefFunction;
 use Controllers\Map\Mxrfe as BaseMxrfe;
 
@@ -54,6 +56,7 @@ class Mxrfe extends XrefFunction {
 		if (self::validateItemidAndPermission($data) === false) {
 			return $page->body;
 		}
+		self::initHooks();
 		$fields = ['itemID|text', 'mnfrID|text', 'mnfritemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		if ($data->action) {
@@ -106,6 +109,7 @@ class Mxrfe extends XrefFunction {
 		if (self::validateItemidAndPermission($data) === false) {
 			return $page->body;
 		}
+		self::initHooks();
 		$fields = ['itemID|text', 'q|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$page    = self::pw('page');
@@ -126,5 +130,64 @@ class Mxrfe extends XrefFunction {
 		$html .= self::mxrfeHeaders();
 		$html .= $config->twig->render('items/itm/xrefs/mxrfe/list/display.twig', ['item' => $item, 'xrefs' => $xrefs, 'mxrfe' => $mxrfe]);
 		return $html;
+	}
+	
+/* =============================================================
+	Url Functions
+============================================================= */
+	/**
+	 * Return Url to X-ref
+	 * @param  string $mnfrID     Vendor ID
+	 * @param  string $mnfritemID Vendor Item ID
+	 * @param  string $itemID       Item ID
+	 * @return string
+	 */
+	public static function xrefUrl($mnfrID, $mnfritemID, $itemID) {
+		$url = new Purl(Xrefs::xrefUrlMxrfe($itemID));
+		$url->query->set('mnfrID', $mnfrID);
+		$url->query->set('mnfritemID', $mnfritemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Url to Delete X-ref
+	 * @param  string $mnfrID     Vendor ID
+	 * @param  string $mnfritemID Vendor Item ID
+	 * @param  string $itemID       Item ID
+	 * @return string
+	 */
+	public static function xrefDeleteUrl($mnfrID, $mnfritemID, $itemID) {
+		$url = new Purl(self::xrefUrl($mnfrID, $mnfritemID, $itemID));
+		$url->query->set('action', 'delete-xref');
+		return $url->getUrl();
+	}
+
+/* =============================================================
+	Hook Functions
+============================================================= */
+	public static function initHooks() {
+		$m = BaseMxrfe::mxrfeMaster();
+
+		$m->addHook('Page(pw_template=itm)::xrefUrl', function($event) {
+			$p = $event->object;
+			$mnfrID     = $event->arguments(0);
+			$mnfritemID = $event->arguments(1);
+			$itemID       = $event->arguments(2);
+			$event->return = self::xrefUrl($mnfrID, $mnfritemID, $itemID);
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefDeleteUrl', function($event) {
+			$p = $event->object;
+			$mnfrID     = $event->arguments(0);
+			$mnfritemID = $event->arguments(1);
+			$itemID       = $event->arguments(2);
+			$event->return = self::xrefDeleteUrl($mnfrID, $mnfritemID, $itemID);
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefExitUrl', function($event) {
+			$p = $event->object;
+			$xref = $event->arguments(0); // Xref
+			$event->return = Xrefs::xrefUrlMxrfe($xref->itemid);
+		});
 	}
 }

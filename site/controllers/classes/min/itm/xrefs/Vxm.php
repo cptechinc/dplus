@@ -1,4 +1,5 @@
 <?php namespace Controllers\Min\Itm\Xrefs;
+use Purl\Url as Purl;
 // Dplus Model
 use ItemXrefVendorQuery, ItemXrefVendor;
 // ProcessWire Classes, Modules
@@ -6,7 +7,8 @@ use ProcessWire\Page, ProcessWire\XrefVxm as VxmCRUD;
 // DplusFilters
 use Dplus\Filters\Map\Vxm as VxmFilter;
 // Mvc Controllers
-use Controllers\Min\Itm\Xrefs\XrefFunction;;
+use Controllers\Min\Itm\Xrefs;
+use Controllers\Min\Itm\Xrefs\XrefFunction;
 use Controllers\Map\Vxm as VxmController;
 
 class Vxm extends XrefFunction {
@@ -66,6 +68,7 @@ class Vxm extends XrefFunction {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::pw('page')->body;
 		}
+		self::initHooks();
 		$fields = ['itemID|text', 'vendorID|text', 'vendoritemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		if ($data->action) {
@@ -118,6 +121,7 @@ class Vxm extends XrefFunction {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::pw('page')->body;
 		}
+		self::initHooks();
 		$fields  = ['itemID|text', 'q|text'];
 		$data    = self::sanitizeParametersShort($data, $fields);
 		$input   = self::pw('input');
@@ -140,5 +144,64 @@ class Vxm extends XrefFunction {
 		$html .= $config->twig->render('items/itm/xrefs/vxm/list/display.twig', ['item' => $item, 'items' => $xrefs, 'vxm' => $vxm]);
 		$page->js .= $config->twig->render('items/vxm/list/item/js.twig');
 		return $html;
+	}
+
+/* =============================================================
+	Url Functions
+============================================================= */
+	/**
+	 * Return Url to X-ref
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor Item ID
+	 * @param  string $itemID       Item ID
+	 * @return string
+	 */
+	public static function xrefUrl($vendorID, $vendoritemID, $itemID) {
+		$url = new Purl(Xrefs::xrefUrlVxm($itemID));
+		$url->query->set('vendorID', $vendorID);
+		$url->query->set('vendoritemID', $vendoritemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return Url to Delete X-ref 
+	 * @param  string $vendorID     Vendor ID
+	 * @param  string $vendoritemID Vendor Item ID
+	 * @param  string $itemID       Item ID
+	 * @return string
+	 */
+	public static function xrefDeleteUrl($vendorID, $vendoritemID, $itemID) {
+		$url = new Purl(self::xrefUrl($vendorID, $vendoritemID, $itemID));
+		$url->query->set('action', 'delete-xref');
+		return $url->getUrl();
+	}
+
+/* =============================================================
+	Hook Functions
+============================================================= */
+	public static function initHooks() {
+		$m = VxmController::vxmMaster();
+
+		$m->addHook('Page(pw_template=itm)::xrefUrl', function($event) {
+			$p = $event->object;
+			$vendorID     = $event->arguments(0);
+			$vendoritemID = $event->arguments(1);
+			$itemID       = $event->arguments(2);
+			$event->return = self::xrefUrl($vendorID, $vendoritemID, $itemID);
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefDeleteUrl', function($event) {
+			$p = $event->object;
+			$vendorID     = $event->arguments(0);
+			$vendoritemID = $event->arguments(1);
+			$itemID       = $event->arguments(2);
+			$event->return = self::xrefDeleteUrl($vendorID, $vendoritemID, $itemID);
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefExitUrl', function($event) {
+			$p = $event->object;
+			$xref = $event->arguments(0); // Xref
+			$event->return = Xrefs::xrefUrlVxm($xref->itemid);
+		});
 	}
 }
