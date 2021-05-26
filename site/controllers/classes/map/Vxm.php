@@ -1,4 +1,5 @@
 <?php namespace Controllers\Map;
+use Purl\Url as Purl;
 // Dplus Model
 use ItemXrefVendor;
 // ProcessWire Classes, Modules
@@ -42,15 +43,15 @@ class Vxm extends AbstractController {
 		}
 		$session = self::pw('session');
 		$page    = self::pw('page');
-		$url = $page->vxm_vendorURL($data->vendorID);
+		$url     = self::vendorUrl($data->vendorID);
 
 		if ($vxm->xref_exists($data->vendorID, $data->vendoritemID, $data->itemID)) {
-			$response = $session->getFor('response', 'vxm');
+			$response = $vxm->response();
 
 			if ($response && $response->has_success()) {
-				$url = $page->vxm_vendorURL($data->vendorID, $response->key);
+				$url = self::vendorFocusUrl($data->vendorID, $response->key);
 			}
-			$url = $page->vxm_itemURL($data->vendorID, $data->vendoritemID, $data->itemID);
+			$url = self::xrefUrl($data->vendorID, $data->vendoritemID, $data->itemID);
 		}
 		$session->redirect($url, $http301 = false);
 	}
@@ -133,6 +134,7 @@ class Vxm extends AbstractController {
 		$filter = new VendorFilter();
 		$filter->init();
 		$filter->vendorid($vxm->vendorids());
+
 		if ($data->q) {
 			$page->headline = "Searching Vendors for '$data->q'";
 			$filter->search($data->q);
@@ -160,16 +162,124 @@ class Vxm extends AbstractController {
 		$filter->vendorid($data->vendorID);
 		$filter->sortby($page);
 		$page->headline = "VXM: Vendor $data->vendorID";
+		$page->show_breadcrumbs = false;
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+
 		$html = $config->twig->render('items/vxm/list/item/vendor/display.twig', ['vxm' => $vxm, 'items' => $xrefs, 'vendor' => $vendor]);
 		$page->js .= $config->twig->render('items/vxm/list/item/js.twig');
 		return $html;
 	}
 
+/* =============================================================
+	Masters
+============================================================= */
 	public static function vxmMaster() {
 		if (empty(self::$vxm)) {
 			self::$vxm = self::pw('modules')->get('XrefVxm');
 		}
 		return self::$vxm;
 	}
+
+/* =============================================================
+	URL Functions
+============================================================= */
+	/**
+	 * Return URL for Vxm Vendor
+	 * @param  string $vendorID  Vendor ID
+	 * @return string
+	 */
+	public static function vendorUrl($vendorID) {
+		$url = new Purl(self::pw('pages')->get('pw_template=vxm')->url);
+		$url->query->set('vendorID', $vendorID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL for Vxm Vendor with focus on an x-ref
+	 * @param  string $vendorID  Vendor ID
+	 * @param  string $focus     X-ref Key
+	 * @return string
+	 */
+	public static function vendorFocusUrl($vendorID, $focus = '') {
+		if (empty($focus)) {
+			return self::vendorUrl($vendorID);
+		}
+		$url = new Purl(self::vendorUrl($vendorID));
+		$vxm = self::vxmMaster();
+		$xref = $vxm->xref_by_recordlocker_key($focus);
+		if ($xref) {
+			$url->query->set('focus', $focus);
+			$filter = new VxmFilter();
+			$filter->vendorid($vendorID);
+			$position = $filter->position($item);
+			$pagenbr = ceil($position / self::pw('session')->display);
+			$url = self::pw('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
+		}
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL for VXM and add focus if provided
+	 * @param  string $vendorID  Vendor ID to highlight / focus
+	 * @return string
+	 */
+	public static function vendorListUrl($vendorID = '') {
+		$page = self::pw('pages')->get('pw_template=vxm');
+		if (empty($vendorID)) {
+			return $page->url;
+		}
+		$url = new Purl($page->url);
+		$vxm = self::vxmMaster();
+		$filter = new VendorFilter();
+		$filter->init();
+
+		if ($filter->exists($vendorID)) {
+			$url->query->set('focus', $vendorID);
+			$filter->vendorid($vxm->vendorids());
+			$position = $filter->positionById($vendorID);
+			$pagenbr = ceil($position / (self::pw('session')->display - 1));
+			$url = self::pw('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
+		}
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return X-ref List Url for Item ID
+	 * @param  string $itemID        Item ID
+	 * @return string
+	 */
+	public static function xrefsByItemidUrl($vendorID, $vendoritemID, $itemID) {
+		$url = new Purl(self::pw('pages')->get('pw_template=vxm')->url);
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL for Vxm X-ref
+	 * @param  string $vendorID      Vendor ID
+	 * @param  string $vendoritemID  Vendor Item ID
+	 * @param  string $itemID        Item ID
+	 * @return string
+	 */
+	public static function xrefUrl($vendorID, $vendoritemID, $itemID) {
+		$url = new Purl(self::pw('pages')->get('pw_template=vxm')->url);
+		$url->query->set('vendorID', $vendorID);
+		$url->query->set('vendoritemID', $vendoritemID);
+		$url->query->set('itemID', $itemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL for Vxm X-ref Deletion
+	 * @param  string $vendorID      Vendor ID
+	 * @param  string $vendoritemID  Vendor Item ID
+	 * @param  string $itemID        Item ID
+	 * @return string
+	 */
+	public static function xrefDeleteUrl($vendorID, $vendoritemID, $itemID) {
+		$url = new Purl(self::xrefUrl($vendorID, $vendoritemID, $itemID));
+		$url->query->set('action', 'delete-xref');
+		return $url->getUrl();
+	}
+
 }
