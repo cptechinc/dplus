@@ -67,7 +67,7 @@ class Kit extends ItmFunction {
 
 		$page->headline = "ITM: Kit $data->itemID";
 		$html .= self::kitHeaders();
-		$html .= Itm::lockItem($data->itemID);
+		$html .= self::lockItem($data->itemID);
 		$html .= KimController::lockKit($kit);
 		$html .= $config->twig->render('items/itm/kit/kit/display.twig', ['item' => $item, 'kim' => $kim, 'kit' => $kit]);
 		return $html;

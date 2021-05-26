@@ -12,6 +12,8 @@ class ItmFunction extends AbstractController {
 	const PERMISSION_ITMP = '';
 
 	private static $minvalidator;
+	private static $itm;
+	private static $itmp;
 
 /* =============================================================
 	Validations
@@ -104,12 +106,39 @@ class ItmFunction extends AbstractController {
 /* =============================================================
 	Supplemental
 ============================================================= */
+	public static function lockItem($itemID) {
+		$itm  = self::getItm();
+		$html = '';
+		if ($itm->recordlocker->function_locked($itemID) && !$itm->recordlocker->function_locked_by_user($itemID)) {
+			$config = self::pw('config');
+			$msg = "ITM Item $itemID is being locked by " . $itm->recordlocker->get_locked_user($itemID);
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "ITM Item $itemID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+			$html .= $html->div('class=mb-3');
+		} elseif (!$itm->recordlocker->function_locked($itemID)) {
+			$itm->recordlocker->create_lock($itemID);
+		}
+		return $html;
+	}
 	/**
 	 * Return Itm
 	 * @return ItmModel
 	 */
 	protected static function getItm() {
-		return self::pw('modules')->get('Itm');
+		if (empty(self::$itm)) {
+			self::$itm = self::pw('modules')->get('Itm');
+		}
+		return self::$itm;
+	}
+
+	/**
+	 * Return Itm
+	 * @return Itmp
+	 */
+	public static function getItmp() {
+		if (empty(self::$itmp)) {
+			self::$itmp = self::pw('modules')->get('Itmp');
+		}
+		return self::$itmp;
 	}
 
 	/**

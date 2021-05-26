@@ -68,8 +68,8 @@ class Warehouse extends ItmFunction {
 		$page    = self::pw('page');
 		$page->headline = "ITM: $data->itemID Warehouse $data->whseID";
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
-		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page]);
-		$html .= Itm::lockItem($data->itemID);
+		$html .= $config->twig->render('items/itm/itm-links.twig');
+		$html .= self::lockItem($data->itemID);
 		$validate = self::getMinValidator();
 
 		if ($validate->whseid($data->whseID) === false) {
@@ -144,7 +144,7 @@ class Warehouse extends ItmFunction {
 		$itmw->recordlocker->remove_lock($page->lockcode);
 		$page->headline = "ITM: $data->itemID Warehouses";
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
-		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page]);
+		$html .= $config->twig->render('items/itm/itm-links.twig');
 		$html .= $config->twig->render('items/itm/warehouse/list-display.twig', ['itmw' => $itmw, 'itemID' => $data->itemID, 'item' => $itm->item($data->itemID), 'warehouses' => $itmw->get_itemwarehouses($data->itemID)]);
 		return $html;
 	}
