@@ -3,6 +3,7 @@
 
 	use Controllers\Min\Itm\Itm as ItmController;
 	use Controllers\Min\Itm\Item;
+	use Controllers\Min\Itm\Xrefs\Controller as XrefsController;
 
 	ItmController::init();
 	Item::initHooks();
@@ -29,8 +30,28 @@
 			['POST', '', ItmController::class, 'miscHandleCRUD'],
 		],
 		'xrefs' => [
-			['GET',  '', ItmController::class, 'xrefs'],
-			['POST', '', ItmController::class, 'xrefsHandleCRUD'],
+			['GET',  '', XrefsController::class, 'xrefs'],
+			['POST', '', XrefsController::class, 'xrefsHandleCRUD'],
+			'cxm' => [
+				['GET',  '', XrefsController::class, 'cxm'],
+				['POST', '', XrefsController::class, 'cxmHandleCRUD'],
+			],
+			'vxm' => [
+				['GET',  '', XrefsController::class, 'vxm'],
+				['POST', '', XrefsController::class, 'vxmHandleCRUD'],
+			],
+			'mxrfe' => [
+				['GET',  '', XrefsController::class, 'mxrfe'],
+				['POST', '', XrefsController::class, 'mxrfeHandleCRUD'],
+			],
+			'upcx' => [
+				['GET',  '', XrefsController::class, 'upcx'],
+				['POST', '', XrefsController::class, 'upcxHandleCRUD'],
+			],
+			'kit' => [
+				['GET',  '', XrefsController::class, 'kit'],
+				['POST', '', XrefsController::class, 'kitHandleCRUD'],
+			],
 		],
 	];
 	$router = new Mvc\Router();
