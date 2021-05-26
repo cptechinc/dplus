@@ -282,4 +282,51 @@ class Vxm extends AbstractController {
 		return $url->getUrl();
 	}
 
+/* =============================================================
+	Hook Functions
+============================================================= */
+	public static function init() {
+		$m = self::vxmMaster();
+
+		$m->addHook("Page(pw_template=vxm)::vendorUrl", function($event) {
+			$p = $event->object;
+			$vendorID = $event->arguments(0); // To focus on
+			$event->return = self::vendorUrl($vendorID);
+		});
+
+		$m->addHook("Page(pw_template=vxm)::vendorListUrl", function($event) {
+			$p = $event->object;
+			$vendorID = $event->arguments(0); // To focus on
+			$event->return = self::vendorListUrl($vendorID);
+		});
+
+		$m->addHook('Page(pw_template=vxm)::xrefExitUrl', function($event) {
+			$p = $event->object;
+			$xref = $event->arguments(0); // Xref
+			$vxm  = self::vxmMaster();
+			$event->return = self::vendorFocusUrl($xref->vendorid, $vxm->get_recordlocker_key($xref));
+		});
+
+		$m->addHook('Page(pw_template=vxm)::xrefUrl', function($event) {
+			$p = $event->object;
+			$vendorID     = $event->arguments(0);
+			$vendoritemID = $event->arguments(1);
+			$itemID       = $event->arguments(2);
+			$event->return = self::xrefUrl($vendorID, $vendoritemID, $itemID);
+		});
+
+		$m->addHook('Page(pw_template=vxm)::xrefsByItemidUrl', function($event) {
+			$p = $event->object;
+			$itemID       = $event->arguments(0);
+			$event->return = self::xrefsByItemidUrl($itemID);
+		});
+
+		$m->addHook('Page(pw_template=vxm)::xrefDeleteUrl', function($event) {
+			$p = $event->object;
+			$vendorID     = $event->arguments(0);
+			$vendoritemID = $event->arguments(1);
+			$itemID       = $event->arguments(2);
+			$event->return = self::xrefDeleteUrl($vendorID, $vendoritemID, $itemID);
+		});
+	}
 }
