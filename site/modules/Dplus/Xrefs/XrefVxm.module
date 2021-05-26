@@ -219,7 +219,7 @@ class XrefVxm extends WireData implements Module {
 
 		if ($values->action) {
 			switch ($values->text('action')) {
-				case 'delete-vxm-item':
+				case 'delete-xref':
 					$this->input_delete($input);
 					break;
 				case 'update-vxm':

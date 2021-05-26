@@ -6,6 +6,7 @@
 	items                  ItemXrefVxm[]|ObjectCollection
 #}
 {% set response = vxm.response() %}
+
 <table class="table table-sm">
 	<thead>
 		<tr class="bg-dark text-white p-3">
@@ -20,7 +21,7 @@
 			<th class="pt-3 pb-3 align-middle text-right">Base Cost</th>
 			<th class="pt-3 pb-3 align-middle text-right">Changed Date</th>
 			<th class="pt-3 pb-3 align-middle text-center">
-				<a href="{{ page.vxm_itemURL(page.vendorID, 'new') }}" class="btn btn-light btn-sm">
+				<a href="{{ page.xrefUrl(page.wire('input').get.text('vendorID'), 'new') }}" class="btn btn-light btn-sm">
 					<i class="fa fa-plus" aria-hidden="true"></i> Add Item
 				</a>
 			</th>
@@ -40,11 +41,11 @@
 					<td class="text-right">{{ item.date_changed|convertdate }}</td>
 					<td class="text-center">
 						{% if vxm.recordlocker.function_locked(vxm.get_recordlocker_key(item)) == false or vxm.recordlocker.function_locked_by_user(vxm.get_recordlocker_key(item)) %}
-							<a href="{{ page.vxm_itemURL(item.vendorID, item.vendoritemID, item.itemid) }}" class="btn btn-sm btn-warning">
+							<a href="{{ page.xrefUrl(item.vendorID, item.vendoritemID, item.itemid) }}" class="btn btn-sm btn-warning">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
 							&nbsp;
-							<a href="{{ page.vxm_item_deleteURL(item.vendorid, item.vendoritemid, item.ouritemid) }}" class="btn btn-sm btn-danger delete_button">
+							<a href="{{ page.xrefDeleteUrl(item.vendorid, item.vendoritemid, item.ouritemid) }}" class="btn btn-sm btn-danger delete_button">
 								<i class="fa fa-trash" aria-hidden="true"></i> Delete
 							</a>
 						{% else %}

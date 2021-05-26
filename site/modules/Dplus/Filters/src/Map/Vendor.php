@@ -64,4 +64,17 @@ class Vendor extends AbstractFilter {
 	public function exists($vendorID) {
 		return boolval(VendorQuery::create()->filterByVendorid($vendorID)->count());
 	}
+
+	/**
+	 * Return Position of Record in results
+	 * @param  string Vendor ID
+	 * @return int
+	 */
+	public function positionById($vendorID) {
+		if ($this->exists($vendorID) === false) {
+			return 0;
+		}
+		$v = $this->getVendor($vendorID);
+		return $this->position($v);
+	}
 }
