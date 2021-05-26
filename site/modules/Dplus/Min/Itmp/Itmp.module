@@ -16,26 +16,6 @@ class Itmp extends WireData implements Module {
 
 	const USER_DEFAULT = 'system';
 
-	const TEMPLATES_ITM = [
-		'itm',
-		'itm-xrefs',
-		'itm-xrefs-upcx',
-		'itm-xrefs-vxm',
-		'itm-xrefs-cxm',
-		'itm-xrefs-mxrfe',
-		'itm-components',
-		'itm-kit',
-	];
-
-	const TEMPLATES_PERMISSIONS = [
-		'itm-xrefs'       => 'xrefs',
-		'itm-xrefs-upcx'  => 'xrefs',
-		'itm-xrefs-vxm'   => 'xrefs',
-		'itm-xrefs-cxm'   => 'xrefs',
-		'itm-xrefs-mxrfe' => 'xrefs',
-		'itm-kit'         => 'xrefs',
-	];
-
 	const PERMISSIONS_LABELS = [
 		'whse'      => 'whse',
 		'costing'   => 'costs',
@@ -168,6 +148,18 @@ class Itmp extends WireData implements Module {
 		return $this->new($loginID);
 	}
 
+	/**
+	 * Return if User is allowed to II subfunction
+	 * @param  User   $user
+	 * @param  string $option II subfunction
+	 * @return bool
+	 */
+	public function allowUser(User $user, $option = '') {
+		$permissions = $this->useritmp($user->loginid);
+		$exists = array_key_exists($option, self::PERMISSIONS_DEFAULT);
+		return $exists ? $permissions->is_true($option) : true;
+	}
+
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
@@ -215,25 +207,25 @@ class Itmp extends WireData implements Module {
 
 
 	/**
-		 * Updates CXM Item Record
-		 * @param  UserPermissionsItm $record CXM Item Record
-		 * @param  WireInput        $input  Input Data
-		 * @return MsaResponse
-		 */
-		public function update_record_input(UserPermissionsItm $record, WireInput $input) {
-			$rm = strtolower($input->requestMethod());
-			$values = $input->$rm;
-			$invalidfields = array();
-			$invalidfields = $this->update_record_input_validated($record, $input);
-			foreach (self::PERMISSIONS_DEFAULT as $key => $default) {
-				$setFunction = "set".ucfirst($key);
-				$record->$setFunction($values->$key ? $values->yn($key) : $default);
-			}
-
-			$record->setDate(date('Ymd'));
-			$record->setTime(date('His'));
-			return $invalidfields;
+	 * Updates CXM Item Record
+	 * @param  UserPermissionsItm $record CXM Item Record
+	 * @param  WireInput        $input  Input Data
+	 * @return MsaResponse
+	 */
+	public function update_record_input(UserPermissionsItm $record, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$invalidfields = array();
+		$invalidfields = $this->update_record_input_validated($record, $input);
+		foreach (self::PERMISSIONS_DEFAULT as $key => $default) {
+			$setFunction = "set".ucfirst($key);
+			$record->$setFunction($values->$key ? $values->yn($key) : $default);
 		}
+
+		$record->setDate(date('Ymd'));
+		$record->setTime(date('His'));
+		return $invalidfields;
+	}
 
 		/**
 	 * Updates CXM Item Record's UoM Pricing, UoM Customer, Item ID, CustID
@@ -341,47 +333,6 @@ class Itmp extends WireData implements Module {
 		return ($response) ? array_key_exists($inputname, $response->fields) : false;
 	}
 
-	/**
-	 * Return Itm Subfunctions that the user has permissions to
-	 * @param  User   $user
-	 * @return PageArray
-	 */
-	public function itm_subfunctions(User $user) {
-		$permitted = $user->permitted_itm();
-		if (empty($permitted)) {
-			return new PageArray();
-		}
-		$p = $this->wire('pages')->get('pw_template=itm');
-		$templates = implode('|', $this->permissions_to_templates($permitted));
-		return $p->children("pw_template=$templates");
-	}
-
-	/**
-	 * Return Templates that the user has permissions to
-	 * @param  array  $permitted e.g ['pricing', 'xrefs']
-	 * @return array
-	 */
-	public function permissions_to_templates(array $permitted) {
-		$templates = [];
-		foreach (self::TEMPLATES_PERMISSIONS as $template => $permission) {
-			if (in_array($permission, $permitted)) {
-				$templates[] = $template;
-			}
-		}
-		return $templates;
-	}
-
-	/**
-	 * Return if User is allowed to view Template
-	 * @param  User   $user     Dplus User
-	 * @param  string $template Template name
-	 * @return bool
-	 */
-	public function is_user_allowed_template(User $user, $template) {
-		$permissions = $this->user($user->loginid);
-		$needed = self::TEMPLATES_PERMISSIONS[$template];
-		return $permissions->is_true($needed);
-	}
 
 	public function isUserAllowed(User $user, $permission) {
 		if (in_array($permission, UserPermissionsItm::PERMISSIONS) === false) {
@@ -440,16 +391,6 @@ class Itmp extends WireData implements Module {
 		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
 		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
 
-		$this->addHook("User::permitted_itm", function($event) {
-			$user = $event->object;
-			$permission = $this->user($user->loginid);
-			$event->return = $permission->permitted();
-		});
-
-		$this->addHook("Page(pw_template=itm)::subfunctions", function($event) {
-			$user = $this->wire('user');
-			$event->return = $this->itm_subfunctions($user);
-		});
 
 		$this->addHook("Page(pw_template=itmp)::itmpURL", function($event) {
 			$loginID = $event->arguments(0);
