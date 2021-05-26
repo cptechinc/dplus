@@ -1,38 +1,36 @@
 <?php
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
-	use Controllers\Min\Itm\Itm as ItmController;
-	use Controllers\Min\Itm\Costing as CostingController;
-	use Controllers\Min\Itm\Pricing as PricingController;
-	use Controllers\Min\Itm\Warehouse as WarehouseController;
-	use Controllers\Min\Itm\Misc as MiscController;
-	use Controllers\Min\Itm\Xrefs as XrefsController;
 
-	ItmController::initHooks();
+	use Controllers\Min\Itm\Itm as ItmController;
+	use Controllers\Min\Itm\Item;
+
+	ItmController::init();
+	Item::initHooks();
 
 	$routes = [
-		['GET',  '', ItmController::class, 'index'],
-		['GET',  'page{d:\d+}', ItmController::class, 'list'],
-		['POST', '', ItmController::class, 'handleCRUD'],
+		['GET',  '', ItmController::class, 'item'],
+		['GET',  'page{d:\d+}', ItmController::class, 'itemList'],
+		['POST', '', ItmController::class, 'itemHandleCRUD'],
 		'costing' => [
-			['GET',  '', CostingController::class, 'index'],
-			['POST', '', CostingController::class, 'handleCRUD'],
+			['GET',  '', ItmController::class, 'costing'],
+			['POST', '', ItmController::class, 'CostingHandleCRUD'],
 		],
 		'pricing' => [
-			['GET',  '', PricingController::class, 'index'],
-			['POST', '', PricingController::class, 'handleCRUD'],
+			['GET',  '', ItmController::class, 'pricing'],
+			['POST', '', ItmController::class, 'priciingHandleCRUD'],
 		],
 		'warehouses' => [
-			['GET',  '', WarehouseController::class, 'index'],
-			['GET',  'page{d:\d+}', WarehouseController::class, 'list'],
-			['POST', '', WarehouseController::class, 'handleCRUD'],
+			['GET',  '', ItmController::class, 'warehouse'],
+			['GET',  'page{d:\d+}', ItmController::class, 'warehouseList'],
+			['POST', '', ItmController::class, 'warehouseHandleCRUD'],
 		],
 		'misc' => [
-			['GET',  '', MiscController::class, 'index'],
-			['POST', '', MiscController::class, 'handleCRUD'],
+			['GET',  '', ItmController::class, 'misc'],
+			['POST', '', ItmController::class, 'miscHandleCRUD'],
 		],
 		'xrefs' => [
-			['GET',  '', XrefsController::class, 'index'],
-			['POST', '', XrefsController::class, 'handleCRUD'],
+			['GET',  '', ItmController::class, 'xrefs'],
+			['POST', '', ItmController::class, 'xrefsHandleCRUD'],
 		],
 	];
 	$router = new Mvc\Router();
