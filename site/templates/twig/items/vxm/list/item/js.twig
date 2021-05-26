@@ -50,7 +50,7 @@ $(function() {
 	});
 
 	function vxm_vendorURL(vendorID) {
-		var uri = new URI('{{ page.fullURL.getUrl() }}');
+		var uri = new URI('{{ page.url }}');
 		uri.addQuery('vendorID', vendorID);
 		uri.addQuery('vendoritemID', 'new');
 		return uri.toString()
