@@ -211,7 +211,7 @@ class Vxm extends AbstractController {
 			$url->query->set('focus', $focus);
 			$filter = new VxmFilter();
 			$filter->vendorid($vendorID);
-			$position = $filter->position($item);
+			$position = $filter->position($xref);
 			$pagenbr = ceil($position / self::pw('session')->display);
 			$url = self::pw('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		}
