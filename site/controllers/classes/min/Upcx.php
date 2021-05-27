@@ -1,6 +1,8 @@
 <?php namespace Controllers\Min;
-// Purl URL Library
+// Purl URI Library
 use Purl\Url as Purl;
+// Propel ORM Ljbrary
+use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use ItemXrefUpcQuery, ItemXrefUpc;
 // ProcessWire Classes, Modules
@@ -51,33 +53,38 @@ class Upcx extends AbstractController {
 	}
 
 	public static function upc($data) {
-		$fields = ['upc|text','action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		$data = self::sanitizeParametersShort($data, ['upc|text', 'action|text']);
+
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
-		$config = self::pw('config');
-		$page   = self::pw('page');
-		$upcx   = self::getUpcx();
+
+		$upcx = self::getUpcx();
 		$xref = $upcx->get_create_xref($data->upc);
+		$page = self::pw('page');
+		$page->headline = "UPCX: $xref->upc";
 
 		if ($xref->isNew()) {
 			$page->headline = "UPCX: Create X-ref";
 		}
 
-		if ($xref->isNew() == false) {
-			$page->headline = "UPCX: $xref->upc";
-		}
-
-		$html = '';
-		$html .= self::lockXref($page, $upcx, $xref);
-		$html .= $config->twig->render('items/upcx/form/page.twig', ['upcx' => $upcx, 'upc' => $xref]);
-		$page->js   .= $config->twig->render('items/upcx/form/js.twig', ['upc' => $xref]);
+		$page->js   .= self::pw('config')->twig->render('items/upcx/form/js.twig', ['upc' => $xref]);
+		$html = self::upcDisplay($data, $xref);
 		return $html;
 	}
 
-	public static function lockXref(Page $page, UpcCRUD $upcx, ItemXrefUpc $xref) {
-		$config = $page->wire('config');
+	private static function upcDisplay($data, ItemXrefUpc $xref) {
+		$config = self::pw('config');
+
+		$html = '';
+		$html .= self::lockXref($xref);
+		$html .= self::pw('config')->twig->render('items/upcx/form/page.twig', ['upcx' => self::getUpcx(), 'upc' => $xref]);
+		return $html;
+	}
+
+	public static function lockXref(ItemXrefUpc $xref) {
+		$config = self::pw('config');
+		$upcx = self::getUpcx();
 		$html = '';
 
 		if ($upcx->recordlocker->function_locked($xref->upc) && !$upcx->recordlocker->function_locked_by_user($xref->upc)) {
@@ -109,12 +116,19 @@ class Upcx extends AbstractController {
 		}
 		$filter->sortby($page);
 		$upcs = $filter->query->paginate(self::pw('input')->pageNum, 10);
+
+		$page->js   .= self::pw('config')->twig->render('items/upcx/list/.js.twig');
+		$html = self::listDisplay($data, $upcs);
+		return $html;
+	}
+
+	private static function listDisplay($data, PropelModelPager $xrefs) {
+		$upcx = self::getUpcx();
 		$config = self::pw('config');
 
 		$html = '';
-		$html .= $config->twig->render('items/upcx/list/page.twig', ['upcx' => $upcx, 'upcs' => $upcs]);
-		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $upcs]);
-		$page->js   .= $config->twig->render('items/upcx/list/.js.twig');
+		$html .= $config->twig->render('items/upcx/list/page.twig', ['upcx' => $upcx, 'upcs' => $xrefs]);
+		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $xrefs]);
 		return $html;
 	}
 
