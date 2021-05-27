@@ -90,7 +90,7 @@ $(function() {
 					form_cxm.find('button[type=submit]').click();
 				} else if (result.dismiss === Swal.DismissReason.cancel) {
 					// Send HTTP GET Request to remove Record Lock
-					$.get('{{ page.cxm_itemURL(item.ouritemid) }}', function() {
+					$.get('{{ page.xrefExitUrl(xref) }}', function() {
 						window.location.href = href;
 					});
 				}
