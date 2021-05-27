@@ -281,108 +281,6 @@ class ItmXrefs extends WireData implements Module {
 	}
 
 	/**
-	 * Return URL to Delete VXM Item
-	 * @param  string  $itemID       Item ID
-	 * @param  string  $vendorID     Vendor ID
-	 * @param  string  $vendoritemID Vendor's Item ID
-	 * @return string
-	 */
-	public function get_vxm_item_deleteURL($itemID, $vendorID, $vendoritemID) {
-		$url = new Url($this->wire('pages')->get('pw_template=itm-xrefs-vxm')->url);
-		$url->query->set('action', 'delete-vxm-item');
-		$url->query->set('itemID', $itemID);
-		$url->query->set('vendorID', $vendorID);
-		$url->query->set('vendoritemID', $vendoritemID);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to view / edit Item Xrefs
-	 * @param  string $itemID
-	 * @return string
-	 */
-	public function get_itm_xrefs_cxmURL($itemID, $focus = '') {
-		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-cxm")->url);
-		$url->query->set('itemID', $itemID);
-		if ($focus) {
-			return $this->get_cxm_customer_focusURL($itemID, $focus);
-		}
-		return $url->getUrl();
-	}
-
-	/**
-	 * REturn Paginated URL to CXM Item Page
-	 * @param  string $itemID Item ID
-	 * @param  string $focus  Record Locker Key for Item
-	 * @return string
-	 */
-	public function get_cxm_customer_focusURL($itemID, $focus) {
-		$page = $this->wire('pages')->get('pw_template=itm-xrefs-cxm');
-		$url = new Url($page->url);
-		$url->query->set('itemID', $itemID);
-
-		if ($this->wire('session')->response_xref) {
-			if ($this->wire('session')->response_xref->key != $focus) {
-				$url->query->set('focus', $focus);
-			}
-		} else {
-			$url->query->set('focus', $focus);
-		}
-
-		$cxm = $this->wire('modules')->get('XrefCxm');
-		$item = $cxm->xref_by_recordlocker_key($focus);
-
-		if ($item) {
-			$filter = new CxmFilter();
-			$filter->itemid($itemID);
-			$position = $filter->position($item);
-
-			$pagenbr = ceil($position / ($this->wire('session')->display - 1));
-			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
-		}
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to view CXM Item
-	 * @param  string  $itemID      Item ID
-	 * @param  string  $custID      Customer ID
-	 * @param  string  $custitemID  Customer's Item ID
-	 * @return string
-	 */
-	public function get_cxm_itemURL($itemID, $custID = '', $custitemID) {
-		$url = new Url($this->wire('pages')->get('pw_template=itm-xrefs-cxm')->url);
-		$url->query->set('itemID', $itemID);
-
-		if ($custID) {
-			$url->query->set('custID', $custID);
-		}
-
-		$url->query->set('custitemID', $custitemID);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to Delete CXM Item
-	 * @param  string  $itemID     Item ID
-	 * @param  string  $custID     Customer ID
-	 * @param  string  $custitemID Customer's Item ID
-	 * @return string
-	 */
-	public function get_cxm_item_deleteURL($itemID, $custID, $custitemID) {
-		$url = new Url($this->wire('pages')->get('pw_template=itm-xrefs-cxm')->url);
-		$url->query->set('action', 'delete-cxm-item');
-		$url->query->set('itemID', $itemID);
-
-		if ($custID) {
-			$url->query->set('custID', $custID);
-		}
-
-		$url->query->set('custitemID', $custitemID);
-		return $url->getUrl();
-	}
-
-	/**
 	 * Return URL to view Kit
 	 * @param  string  $itemID      Item ID / Kit ID
 	 * @return string
@@ -561,7 +459,6 @@ class ItmXrefs extends WireData implements Module {
 
 		$this->add_pagehooks_upcx();
 		$this->add_pagehooks_vxm();
-		$this->add_pagehooks_cxm();
 		$this->add_pagehooks_kim();
 		$this->add_pagehooks_mxrfe();
 	}
@@ -651,46 +548,6 @@ class ItmXrefs extends WireData implements Module {
 			$item = $event->arguments(0);
 			$vxm = $this->wire('modules')->get('XrefVxm');
 			$event->return = $this->get_itm_xrefs_vxmURL($item->itemid, $vxm->get_recordlocker_key($item));
-		});
-	}
-
-	public function add_pagehooks_cxm() {
-		$itm = $this->wire('modules')->get('Itm');
-		$templates = implode('|', $itm::TEMPLATES_ITM);
-
-		$this->addHook("Page(pw_template=$templates)::itm_xrefs_cxmURL", function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_itm_xrefs_cxmURL($itemID);
-		});
-
-		$this->addHook("Page(pw_template=$templates)::cxm_itemURL", function($event) {
-			$p = $event->object;
-			$custID = $event->arguments(0);
-			$custitemID = $event->arguments(1);
-			$itemID = $p->itemID;
-			$event->return = $this->get_cxm_itemURL($itemID, $custID, $custitemID);
-		});
-
-		$this->addHook("Page(pw_template=$templates)::cxm_item_deleteURL", function($event) {
-			$p = $event->object;
-			$itemID = $event->arguments(0);
-			$custID = $event->arguments(1);
-			$custitemID = $event->arguments(2);
-			$event->return = $this->get_cxm_item_deleteURL($itemID, $custID, $custitemID);
-		});
-
-		$this->addHook("Page(pw_template=$templates)::cxm_item_newURL", function($event) {
-			$p = $event->object;
-			$itemID = $p->itemID;
-			$event->return = $this->get_cxm_itemURL($itemID, '','new');
-		});
-
-		$this->addHook("Page(pw_template=$templates)::cxm_item_exitURL", function($event) {
-			$item = $event->arguments(0);
-			$custID = $item->custid;
-			$custitemID = $item->custitemid;
-			$cxm = $this->wire('modules')->get('XrefCxm');
-			$event->return = $this->get_itm_xrefs_cxmURL($item->itemid, $cxm->get_recordlocker_key($item));
 		});
 	}
 
