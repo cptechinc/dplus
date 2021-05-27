@@ -35,7 +35,7 @@
 					<td>{{ xref.itemid }}</td>
 					<td>{{ xref.item.description }}</td>
 					<td class="text-center">
-						{% if mxrfe.recordlocker.function_locked(mxrfe.get_recordlocker_key(xref)) == false or mxrfe.recordlocker.function_locked_by_user(mxrfe.get_recordlocker_key(xref)) %}
+						{% if mxrfe.recordlocker.isLocked(mxrfe.get_recordlocker_key(xref)) == false or mxrfe.recordlocker.userHasLocked(mxrfe.get_recordlocker_key(xref)) %}
 							<a href="{{ page.xrefUrl(xref.vendorid, xref.vendoritemid, xref.itemid) }}" class="btn btn-warning btn-sm">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
@@ -45,7 +45,7 @@
 							</a>
 						{% else %}
 							<span class="badge badge-secondary">
-								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ mxrfe.recordlocker.get_locked_user(mxrfe.get_recordlocker_key(xref)) }}
+								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ mxrfe.recordlocker.getLockingUser(mxrfe.get_recordlocker_key(xref)) }}
 							</span>
 						{% endif %}
 					</td>

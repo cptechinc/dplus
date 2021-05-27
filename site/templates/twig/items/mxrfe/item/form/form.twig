@@ -24,7 +24,7 @@
 			2. Is a new Item
 			NOTE: Only show delete if xref already exists.
 		#}
-		{% if mxrfe.recordlocker.function_locked_by_user(mxrfe.get_recordlocker_key(xref)) or xref.isNew() %}
+		{% if mxrfe.recordlocker.userHasLocked(mxrfe.get_recordlocker_key(xref)) or xref.isNew() %}
 			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>

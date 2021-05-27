@@ -1,4 +1,6 @@
-{% if item.isNew() and page.has('vendorID') == false %}
+{% set values = page.wire('input').get %}
+
+{% if item.isNew() and values.text('vendorID') == '' %}
 	<div class="row form-group">
 		<div class="col-sm-3">
 			<label for="vendorID">Vendor ID</label>
@@ -39,7 +41,7 @@
 {% else %}
 	<input type="hidden" name="vendorID" value="{{ item.vendorid }}">
 
-	{% if (page.pw_template == 'itm-xrefs-vxm') %}
+	{% if (page.pw_template == 'itm') %}
 		<div class="row form-group">
 			<div class="col-sm-3">
 				<label for="vendorID">Vendor ID</label>
