@@ -51,11 +51,11 @@ $(function() {
 			e.preventDefault();
 			var a = $(this);
 			var href = a.attr('href');
-			swal_unsaved_changes();
+			swal_unsaved_changes(href);
 		}
 	});
 
-	function swal_unsaved_changes() {
+	function swal_unsaved_changes(href) {
 		swal2.fire({
 			title: 'Changes have occurred!',
 			text: 'Do you want to save?',
@@ -68,7 +68,7 @@ $(function() {
 				form_mxrfe.find('button[type=submit]').click();
 			} else if (result.dismiss === Swal.DismissReason.cancel) {
 				// Send HTTP GET Request to remove Record Lock
-				$.get('{{ page.httpUrl }}', function() {
+				$.get('{{ page.xrefExitUrl(xref) }}', function() {
 					window.location.href = href;
 				});
 			}

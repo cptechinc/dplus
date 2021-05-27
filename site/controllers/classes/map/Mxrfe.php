@@ -67,7 +67,7 @@ class Mxrfe extends AbstractController {
 		$html .= self::mxrfeHeaders();
 		$html .= self::lockXref($xref);
 		$html .= $config->twig->render('items/mxrfe/item/form/display.twig', ['mxrfe' => $mxrfe, 'vendor' => $vendor, 'xref' => $xref, 'qnotes' => $qnotes]);
-		$page->js   .= $config->twig->render('items/mxrfe/item/form/js.twig', ['mxrfe' => $mxrfe]);
+		$page->js   .= $config->twig->render('items/mxrfe/item/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
 
 		if (!$xref->isNew()) {
 			$html .= self::qnotesDisplay($xref);
@@ -81,8 +81,9 @@ class Mxrfe extends AbstractController {
 
 		if (!$xref->isNew()) {
 			if (!$mxrfe->lockrecord($xref)) {
-				$msg = "MXRFE ". $mxrfe->get_recordlocker_key($xref) ." is being locked by " . $mxrfe->recordlocker->get_locked_user($mxrfe->get_recordlocker_key($xref));
-				$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "MXRFE ".$mxrfe->get_recordlocker_key($xref)." is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+				$msg = "MXRFE ". $mxrfe->get_recordlocker_key($xref) ." is being locked by " . $mxrfe->recordlocker->getLockingUser($mxrfe->get_recordlocker_key($xref));
+				$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "MXRFE ".$mxrfe->get_recordlocker_key($xref)." is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+				$html .= '<div class="mb-3"></div>';
 			}
 		}
 		return $html;
@@ -126,7 +127,7 @@ class Mxrfe extends AbstractController {
 		$page   = self::pw('page');
 		$page->show_breadcrumbs = false;
 		$mxrfe  = self::mxrfeMaster();
-		$mxrfe->recordlocker->remove_lock();
+		$mxrfe->recordlocker->deleteLock();
 		$filter = self::pw('modules')->get('FilterVendors');
 		$filter->init_query(self::pw('user'));
 		$filter->vendorid($mxrfe->vendorids());
@@ -149,7 +150,7 @@ class Mxrfe extends AbstractController {
 		$config = self::pw('config');
 		$page   = self::pw('page');
 		$mxrfe  = self::mxrfeMaster();
-		$mxrfe->recordlocker->remove_lock();
+		$mxrfe->recordlocker->deleteLock();
 		$vendor = $mxrfe->vendor($data->mnfrID);
 		$filter = new MxrfeFilter();
 		$filter->vendorid($data->mnfrID);
@@ -288,6 +289,7 @@ class Mxrfe extends AbstractController {
 				break;
 		}
 	}
+
 	public static function init() {
 		$m = self::pw('modules')->get('XrefMxrfe');
 
