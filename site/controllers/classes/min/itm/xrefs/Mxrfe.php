@@ -44,51 +44,61 @@ class Mxrfe extends XrefFunction {
 		$input = self::pw('input');
 		$mxrfe = BaseMxrfe::mxrfeMaster();
 
+		$url = self::xrefUrl($data->mnfrID, $data->mnfritemID, $data->itemID);
+
 		if ($data->action) {
 			$mxrfe->process_input($input);
+			switch ($data->action) {
+				case 'delete-upcx':
+					$url = Xrefs::xrefUrlMxrfe($data->itemID);
+					break;
+			}
 		}
-		$session = self::pw('session');
-		$page    = self::pw('page');
-		$session->redirect($page->redirectURL($input), $http301 = false);
+		self::pw('session')->redirect($url, $http301 = false);
 	}
 
 	public static function xref($data) {
 		if (self::validateItemidAndPermission($data) === false) {
 			return $page->body;
 		}
-		self::initHooks();
 		$fields = ['itemID|text', 'mnfrID|text', 'mnfritemID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
+
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
-		$config  = self::pw('config');
-		$page    = self::pw('page');
-		$pages   = self::pw('pages');
-		$itm     = self::getItm();
-		$modules = self::pw('modules');
-		$qnotes  = $modules->get('QnotesItemMxrfe');
+		self::initHooks();
+
 		$mxrfe  = BaseMxrfe::mxrfeMaster();
 		$xref   = $mxrfe->get_create_xref($data->mnfrID, $data->mnfritemID, $data->itemID);
-		$item   = $itm->get_item($data->itemID);
-
-		$page->headline = "ITM: $item->itemid MXRFE $xref->mnfrid-$xref->mnfritemid";
+		$page   = self::pw('page');
+		$page->headline = "ITM: $data->itemID MXRFE $xref->mnfrid-$xref->mnfritemid";
 
 		if ($xref->isNew()) {
 			$xref->setItemid($data->itemID);
-			$page->headline = "ITM: $item->itemid MXRFE Create X-ref";
+			$page->headline = "ITM: $data->itemID MXRFE Create X-ref";
 		}
+		$page->js .= self::pw('config')->twig->render('items/mxrfe/item/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
+		return self::xrefDisplay($data, $xref);
+	}
+
+/* =============================================================
+	Display Functions
+============================================================= */
+	private static function xrefDisplay($data, $xref) {
+		$mxrfe  = BaseMxrfe::mxrfeMaster();
+		$qnotes = self::pw('modules')->get('QnotesItemMxrfe');
+		$item   = self::getItm()->get_item($data->itemID);
+		$config = self::pw('config');
 
 		$html = '';
 		$html .= self::mxrfeHeaders();
 		$html .= BaseMxrfe::lockXref($xref);
-		$html .= $config->twig->render('items/itm/xrefs/mxrfe/form/display.twig', ['xref' => $xref, 'item' => $item, 'mxrfe' => $mxrfe, 'qnotes' => $qnotes, 'customer' => $mxrfe->vendor($data->mnfrID)]);
+		$html .= $config->twig->render('items/itm/xrefs/mxrfe/form/display.twig', ['xref' => $xref, 'item' => $item, 'mxrfe' => $mxrfe, 'qnotes' => $qnotes]);
 
 		if (!$xref->isNew()) {
 			$html .= BaseMxrfe::qnotesDisplay($xref);
 		}
-
-		$page->js .= $config->twig->render('items/mxrfe/item/form/js.twig', ['mxrfe' => $mxrfe]);
 		return $html;
 	}
 
@@ -109,29 +119,31 @@ class Mxrfe extends XrefFunction {
 		if (self::validateItemidAndPermission($data) === false) {
 			return $page->body;
 		}
+		$data = self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
 		self::initHooks();
-		$fields = ['itemID|text', 'q|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$page    = self::pw('page');
-		$config  = self::pw('config');
-		$modules = self::pw('modules');
-		$itm     = self::getItm();
-		$item = $itm->get_item($data->itemID);
+
 		$mxrfe = BaseMxrfe::mxrfeMaster();
-		$mxrfe->recordlocker->remove_lock();
+		$mxrfe->recordlocker->deleteLock();
+
+		$page  = self::pw('page');
+		$page->title = "MXRFE";
+		$page->headline = "ITM: $data->itemID MXRFE";
+
 		$filter = new MxrfeFilter();
 		$filter->itemid($data->itemID);
 		$filter->sortby($page);
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 10);
-		$page->title = "MXRFE";
-		$page->headline = "ITM: $data->itemID MXRFE";
+		return self::listDisplay($data, $xrefs);
+	}
 
+	private static function listDisplay($data, $xrefs) {
+		$item = self::getItm()->get_item($data->itemID);
 		$html = '';
 		$html .= self::mxrfeHeaders();
-		$html .= $config->twig->render('items/itm/xrefs/mxrfe/list/display.twig', ['item' => $item, 'xrefs' => $xrefs, 'mxrfe' => $mxrfe]);
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/mxrfe/list/display.twig', ['item' => $item, 'xrefs' => $xrefs, 'mxrfe' => BaseMxrfe::mxrfeMaster()]);
 		return $html;
 	}
-	
+
 /* =============================================================
 	Url Functions
 ============================================================= */
