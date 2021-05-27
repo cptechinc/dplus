@@ -137,74 +137,6 @@ class ItmXrefs extends WireData implements Module {
 	}
 
 	/**
-	 * Return URL to view / edit Item Xrefs
-	 * @param  string $itemID
-	 * @return string
-	 */
-	public function get_itm_xrefs_upcxURL($itemID) {
-		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-upcx")->url);
-		$url->query->set('itemID', $itemID);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to view / edit UPC for Item
-	 * @param  string $itemID Item ID
-	 * @param  string $upc    UPC Code
-	 * @return string
-	 */
-	public function get_upcURL($itemID, $upc = '') {
-		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-upcx")->url);
-		$url->query->set('itemID', $itemID);
-
-		if ($upc) {
-			$url->query->set('upc', $upc);
-		}
-		return $url->getUrl();
-	}
-
-	public function get_upc_listURL($itemID, $focus = '') {
-		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-upcx")->url);
-		$url->query->set('itemID', $itemID);
-		if ($focus == '') {
-			return $url->getUrl();
-		}
-		return $this->get_upc_list_focusURL($itemID, $focus);
-	}
-
-	public function get_upc_list_focusURL($itemID, $focus = '') {
-		$page = $this->wire('pages')->get("pw_template=itm-xrefs-upcx");
-		$upcx = $this->wire('modules')->get('XrefUpc');
-		if ($focus == '' || $upcx->xref_exists($focus) === false) {
-			return $this->get_upc_listURL($itemID);
-		}
-
-		$url = new Url($this->get_upc_listURL($itemID));
-		$xref = $upcx->xref($focus);
-		$filter = new UpcxFilter();
-		$filter->itemid($itemID);
-		$offset = $filter->position($xref);
-		$pagenbr = ceil($offset / $this->wire('session')->display);
-		$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
-		$url->query->set('focus', $focus);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to delete UPC for Item
-	 * @param  string $itemID Item ID
-	 * @param  string $upc    UPC Code
-	 * @return string
-	 */
-	public function get_upc_deleteURL($itemID, $upc) {
-		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs-upcx")->url);
-		$url->query->set('action', 'delete-upcx');
-		$url->query->set('itemID', $itemID);
-		$url->query->set('upc', $upc);
-		return $url->getUrl();
-	}
-
-	/**
 	 * Return URL to view Kit
 	 * @param  string  $itemID      Item ID / Kit ID
 	 * @return string
@@ -272,51 +204,7 @@ class ItmXrefs extends WireData implements Module {
 			$event->return = $this->get_itm_xrefsURL($itemID);
 		});
 
-		$this->add_pagehooks_upcx();
 		$this->add_pagehooks_kim();
-	}
-
-	public function add_pagehooks_upcx() {
-		$itm = $this->wire('modules')->get('Itm');
-		$templates = implode('|', $itm::TEMPLATES_ITM);
-
-		$this->addHook("Page(pw_template=$templates)::itm_xrefs_upcxURL", function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_itm_xrefs_upcxURL($itemID);
-		});
-
-		$this->addHook("Page(pw_template=$templates)::upc_create_itemidURL", function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_upcURL($itemID, 'new');
-		});
-
-		$this->addHook("Page(pw_template=$templates)::upc_deleteURL", function($event) {
-			$p = $event->object;
-			$upc    = $event->arguments(0);
-			$event->return = $this->get_upc_deleteURL($p->itemID, $upc);
-		});
-
-		$this->addHook("Page(pw_template=$templates)::upcURL", function($event) {
-			$p = $event->object;
-			$upc    = $event->arguments(0);
-			$event->return = $this->get_upcURL($p->itemID, $upc);
-		});
-
-		$this->addHook("Page(pw_template=$templates)::upc_listURL", function($event) {
-			$p = $event->object;
-			$focus = $event->arguments(0);
-			$event->return = $this->get_upc_listURL($p->itemID, $focus);
-		});
-
-		$this->addHookProperty('Page(pw_template=itm-xrefs-upcx)::upc', function($event) {
-			$p = $event->object;
-			$event->return = $p->fullURL->query->get('upc');
-		});
-
-		$this->addHookProperty('Page(pw_template=itm-xrefs-upcx)::itemID', function($event) {
-			$p = $event->object;
-			$event->return = $p->fullURL->query->get('itemID');
-		});
 	}
 
 	public function add_pagehooks_kim() {
