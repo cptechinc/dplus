@@ -131,7 +131,7 @@ class Xrefs extends XrefFunction {
 		});
 
 		$m->addHook('Page(pw_template=itm)::xrefUrlCxm', function($event) {
-			$event->return = self::xrefUrlVxm($event->arguments(0));
+			$event->return = self::xrefUrlCxm($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=itm)::xrefUrlKit', function($event) {

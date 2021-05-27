@@ -1,16 +1,20 @@
 <?php namespace ProcessWire;
 
 include_once(__DIR__.'/XrefResponse.php');
-
+// Purl URI
 use Purl\Url;
+// Propel ORM
 use Propel\Runtime\Map\TableMap as PropelTableMap;
-
-use Dplus\CodeValidators\Mso\Cxm as CxmValidator;
+// Dplus Model
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemXrefCustomerQuery, ItemXrefCustomer;
 use ConfigSysQuery, ConfigSys;
 use UnitofMeasureSaleQuery, UnitofMeasureSale;
 use CustomerQuery, Customer;
+// Dplus Record Locker
+use Dplus\RecordLocker\UserFunction as FunctionLocker;
+// Dplus Code Validators
+use Dplus\CodeValidators\Mso\Cxm as CxmValidator;
 
 /**
  * Module that handles the editing of the CXM item Xref
@@ -274,7 +278,7 @@ class XrefCxm extends WireData implements Module {
 				case 'update-cxm-shortitem':
 					$this->process_input_cxm_shortitem($input);
 					break;
-				case 'delete-cxm-item':
+				case 'delete-xref':
 					$this->input_delete($input);
 					break;
 				case 'update-cxm':
@@ -303,7 +307,7 @@ class XrefCxm extends WireData implements Module {
 		} else {
 			$record = $this->get_create_xref_shortitem($itemID, $custitemID);
 			$record->setCustitemid($custitemID);
-			
+
 			if ($record->isNew() === false) {
 				$this->delete_recreate_record($record);
 			}
@@ -330,7 +334,7 @@ class XrefCxm extends WireData implements Module {
 			$record = $this->xref($custID, $custitemID);
 
 			if (!$this->lockrecord($record)) {
-				$message = self::DESCRIPTION_RECORD . " ($custID-$custitemID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
+				$message = self::DESCRIPTION_RECORD . " ($custID-$custitemID)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($record);
 				$this->wire('session')->setFor('response', 'cxm', XrefResponse::response_error("$custID-$custitemID", $message));
 				return false;
 			}
@@ -357,7 +361,7 @@ class XrefCxm extends WireData implements Module {
 
 		if (!$record->isNew()) {
 			if (!$this->lockrecord($record)) {
-				$message = self::DESCRIPTION_RECORD . " ($custID-$custitemID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
+				$message = self::DESCRIPTION_RECORD . " ($custID-$custitemID)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($record);
 				$this->wire('session')->setFor('response', 'cxm', XrefResponse::response_error("$custID-$custitemID", $message));
 				return false;
 			}
@@ -591,10 +595,10 @@ class XrefCxm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function lockrecord(ItemXrefCustomer $item) {
-		if (!$this->recordlocker->function_locked($this->get_recordlocker_key($item))) {
-			$this->recordlocker->create_lock($this->get_recordlocker_key($item));
+		if ($this->recordlocker->isLocked($this->get_recordlocker_key($item)) === false) {
+			$this->recordlocker->lock($this->get_recordlocker_key($item));
 		}
-		return $this->recordlocker->function_locked_by_user($this->get_recordlocker_key($item));
+		return $this->recordlocker->userHasLocked($this->get_recordlocker_key($item));
 	}
 
 	/**
@@ -723,8 +727,9 @@ class XrefCxm extends WireData implements Module {
 	}
 
 	public function init() {
-		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
-		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker = new FunctionLocker();
+		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker->setUser($this->wire('user'));
 
 		$this->addHook('Page(pw_template=cxm|itm-xrefs-cxm)::search_notesURL', function($event) {
 			$event->return = $this->wire('pages')->get('pw_template=msa-noce-ajax')->url;

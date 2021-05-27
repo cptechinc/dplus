@@ -47,7 +47,7 @@ class Customer extends AbstractFilter {
 	 */
 	public function custid($custID) {
 		$this->query->filterByCustid($custID);
-		return $thius;
+		return $this;
 	}
 
 	/**
@@ -63,7 +63,7 @@ class Customer extends AbstractFilter {
 	}
 
 /* =============================================================
-	3. Misc Query Functions
+	3. Input Query Functions
 ============================================================= */
 
 /* =============================================================
@@ -76,5 +76,27 @@ class Customer extends AbstractFilter {
 	 */
 	public function exists($custID) {
 		return boolval($this->getQueryClass()->filterByCustid($custID)->count());
+	}
+
+	/**
+	 * Return Customer
+	 * @param  string $custID Customer ID
+	 * @return Customer
+	 */
+	public function getCustomer($custID) {
+		return CustomerQuery::create()->findOneByCustid($custID);
+	}
+
+	/**
+	 * Return Position of Record in results
+	 * @param  string $custID Customer ID
+	 * @return int
+	 */
+	public function positionById($custID) {
+		if ($this->exists($custID) === false) {
+			return 0;
+		}
+		$v = $this->getCustomer($custID);
+		return $this->position($v);
 	}
 }
