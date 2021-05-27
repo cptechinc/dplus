@@ -7,6 +7,8 @@ use Purl\Url;
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemXrefUpcQuery, ItemXrefUpc;
 use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
+// Dplus Record Locker
+use Dplus\RecordLocker\UserFunction as FunctionLocker;
 // Dplus Filters
 use Dplus\Filters\Min\Upcx as UpcxFilter;
 
@@ -163,8 +165,8 @@ class XrefUpc extends WireData implements Module {
 		$upc = $values->text('upc');
 
 		if ($this->xref_exists($upc)) {
-			if (!$this->lockrecord($upc)) {
-				$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($upc);
+			if ($this->lockrecord($upc) === false) {
+				$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($upc);
 				$this->wire('session')->setFor('response', 'upcx', XrefResponse::response_error($upc, $message));
 				return false;
 			}
@@ -188,7 +190,7 @@ class XrefUpc extends WireData implements Module {
 		$record = $this->get_create_xref($upc);
 
 		if (!$this->lockrecord($upc) && !$record->isNew()) {
-			$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($upc);
+			$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($upc);
 			$this->wire('session')->setFor('response', 'upcx', XrefResponse::response_error($upc, $message));
 			return false;
 		}
@@ -308,10 +310,10 @@ class XrefUpc extends WireData implements Module {
 	 * @return bool
 	 */
 	public function lockrecord($upc) {
-		if (!$this->recordlocker->function_locked($upc)) {
-			$this->recordlocker->create_lock($upc);
+		if ($this->recordlocker->isLocked($upc) === false) {
+			$this->recordlocker->lock($upc);
 		}
-		return $this->recordlocker->function_locked_by_user($upc);
+		return $this->recordlocker->userHasLocked($upc);
 	}
 
 	public function validate_itemID($itemID) {
@@ -342,7 +344,8 @@ class XrefUpc extends WireData implements Module {
 	}
 
 	public function init() {
-		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
-		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker = new FunctionLocker();
+		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker->setUser($this->wire('user'));
 	}
 }

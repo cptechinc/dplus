@@ -85,7 +85,7 @@
 				<td>{{ upc.mastercarton|yesorno|capitalize }}</td>
 				<td>{{ upc.needslabel|yesorno|capitalize }}</td>
 				<td class="text-center">
-					{% if upcx.recordlocker.function_locked(upc.upc) == false or upcx.recordlocker.function_locked_by_user( upc.upc) %}
+					{% if upcx.recordlocker.isLocked(upc.upc) == false or upcx.recordlocker.userHasLocked( upc.upc) %}
 						<a href="{{ page.upcUrl(upc.upc) }}" class="btn btn-warning btn-sm">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</a>
@@ -95,7 +95,7 @@
 						</a>
 					{% else %}
 						<span class="badge badge-secondary">
-							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ upcx.recordlocker.get_locked_user(upc.upc) }}
+							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ upcx.recordlocker.getLockingUser(upc.upc) }}
 						</span>
 					{% endif %}
 				</td>

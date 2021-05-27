@@ -112,7 +112,7 @@ class Upcx extends XrefFunction {
 		self::initHooks();
 		$data = self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
 		$upcx = UpcxController::getUpcx();
-		$upcx->recordlocker->remove_lock();
+		$upcx->recordlocker->deleteLock();
 		$page   = self::pw('page');
 		$page->title    = "UPCs";
 		$page->headline = "ITM: $data->itemID UPCX";

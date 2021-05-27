@@ -127,7 +127,7 @@
 					2. Is a new Item
 					NOTE: Only show delete if item already exists.
 				#}
-				{% if upcx.recordlocker.function_locked_by_user(upc.upc) or upc.isNew() %}
+				{% if upcx.recordlocker.userHasLocked(upc.upc) or upc.isNew() %}
 					<button type="submit" class="btn btn-success" name="action" value="update-upcx">
 						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 					</button>

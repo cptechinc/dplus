@@ -87,11 +87,11 @@ class Upcx extends AbstractController {
 		$upcx = self::getUpcx();
 		$html = '';
 
-		if ($upcx->recordlocker->function_locked($xref->upc) && !$upcx->recordlocker->function_locked_by_user($xref->upc)) {
-			$msg = "UPC $code is being locked by " . $upcx->recordlocker->get_locked_user($xref->upc);
+		if ($upcx->recordlocker->isLocked($xref->upc) && !$upcx->recordlocker->userHasLocked($xref->upc)) {
+			$msg = "UPC $code is being locked by " . $upcx->recordlocker->getLockingUser($xref->upc);
 			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "UPC $xref->upc is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
-		} elseif (!$upcx->recordlocker->function_locked($xref->upc)) {
-			$upcx->recordlocker->create_lock($xref->upc);
+		} elseif ($upcx->recordlocker->isLocked($xref->upc) === false) {
+			$upcx->recordlocker->lock($xref->upc);
 		}
 
 		if ($xref->isNew()) {
@@ -107,7 +107,7 @@ class Upcx extends AbstractController {
 		$data = self::sanitizeParametersShort($data, ['q|text']);
 		$page = self::pw('page');
 		$upcx = self::getUpcx();
-		$upcx->recordlocker->remove_lock();
+		$upcx->recordlocker->deleteLock();
 		$filter = new UpcxFilter();
 
 		if ($data->q) {
