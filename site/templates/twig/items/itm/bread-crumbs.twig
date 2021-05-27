@@ -40,8 +40,14 @@
 				{{ lastsegment|title }}
 			</li>
 		{% endif %}
+	{% elseif segments[1] == 'xrefs' %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.itmUrlFunction(input.get.text('itemID'), 'xrefs') }}">
+				<i class="fa fa-arrows" aria-hidden="true"></i> {{ 'X-refs'|title }}
+			</a>
+		</li>
+		<li class="breadcrumb-item active" aria-current="page">
+			{{ lastsegment|upper }}
+		</li>
 	{% endif %}
-
-
-
 {% endblock %}
