@@ -7,7 +7,7 @@ use Propel\Runtime\Util\PropelModelPager;
 use ItemXrefVendor;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\XrefVxm as VxmCRUD;
-// DplusFilters
+// Dplus Filters
 use Dplus\Filters\Map\Vendor as VendorFilter;
 use Dplus\Filters\Map\Vxm    as VxmFilter;
 // Mvc Controllers
