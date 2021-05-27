@@ -1,5 +1,8 @@
 <?php namespace Controllers\Map;
+// Purl URI Library
 use Purl\Url as Purl;
+// Propel ORM Ljbrary
+use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use ItemXrefVendor;
 // ProcessWire Classes, Modules
@@ -59,17 +62,15 @@ class Vxm extends AbstractController {
 	public static function xref($data) {
 		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
+
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
-		$config = self::pw('config');
-		$page   = self::pw('page');
+
 		$vxm    = self::vxmMaster();
 		$vxm->init_field_attributes_config();
-		$vendor = $vxm->get_vendor($data->vendorID);
-		$xref = $vxm->get_create_xref($data->vendorID, $data->vendoritemID, $data->itemID);
-		$qnotes = self::pw('modules')->get('QnotesItemVxm');
-		$html = '';
+		$xref   = $vxm->get_create_xref($data->vendorID, $data->vendoritemID, $data->itemID);
+		$page   = self::pw('page');
 
 		if ($xref->isNew()) {
 			$page->headline = "VXM: New X-ref";
@@ -78,10 +79,21 @@ class Vxm extends AbstractController {
 			$page->headline = "VXM: " . $vxm->get_recordlocker_key($xref);
 		}
 
+		$page->js .= self::pw('config')->twig->render('items/vxm/item/form/js.twig', ['page' => $page, 'vxm' => $vxm, 'item' => $xref]);
+		$html = self::xrefDisplay($data, $xref);
+		return $html;
+	}
+
+	private static function xrefDisplay($data, ItemXrefVendor $xref) {
+		$config = self::pw('config');
+		$qnotes = self::pw('modules')->get('QnotesItemVxm');
+		$vxm    = self::vxmMaster();
+		$vendor = $vxm->get_vendor($data->vendorID);
+
+		$html = '';
 		$html .= $config->twig->render('items/vxm/bread-crumbs.twig');
 		$html .= self::lockXref($xref);
-		$html .= $config->twig->render('items/vxm/item/form/display.twig', ['mxrfe' => $vxm, 'vendor' => $vendor, 'item' => $xref, 'vxm' => $vxm, 'qnotes' => $qnotes]);
-		$page->js .= $config->twig->render('items/vxm/item/form/js.twig', ['page' => $page, 'vxm' => $vxm, 'item' => $xref]);
+		$html .= $config->twig->render('items/vxm/item/form/display.twig', ['vendor' => $vendor, 'item' => $xref, 'vxm' => $vxm, 'qnotes' => $qnotes]);
 
 		if (!$xref->isNew()) {
 			$html .= self::qnotesDisplay($xref);
@@ -89,7 +101,7 @@ class Vxm extends AbstractController {
 		return $html;
 	}
 
-	public static function qnotesDisplay(ItemXrefVendor $xref) {
+	private static function qnotesDisplay(ItemXrefVendor $xref) {
 		$page   = self::pw('page');
 		$config = self::pw('config');
 		$qnotes = self::pw('modules')->get('QnotesItemVxm');
@@ -127,7 +139,6 @@ class Vxm extends AbstractController {
 
 	public static function listVendors($data) {
 		$data = self::sanitizeParametersShort($data, ['q|text']);
-		$config = self::pw('config');
 		$page   = self::pw('page');
 		$vxm    = self::vxmMaster();
 		$vxm->recordlocker->deleteLock();
@@ -141,32 +152,43 @@ class Vxm extends AbstractController {
 		}
 		$filter->sortby($page);
 		$vendors = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+		$page->js .= self::pw('config')->twig->render('items/vxm/search/vendor/js.twig');
+		$html = self::listVendorsDisplay($data, $vendors);
+		return $html;
+	}
+
+	private static function listVendorsDisplay($data, PropelModelPager $vendors) {
+		$config = self::pw('config');
 
 		$html = '';
 		$html .= $config->twig->render('items/vxm/search/vendor/page.twig', ['vendors' => $vendors]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $vendors]);
 		$html .= $config->twig->render('items/vxm/new-xref-modal.twig');
-
-		$page->js .= $config->twig->render('items/vxm/search/vendor/js.twig');
 		return $html;
 	}
 
 	public static function vendorXrefs($data) {
 		$data = self::sanitizeParametersShort($data, ['vendorID|text']);
-		$config = self::pw('config');
 		$page   = self::pw('page');
 		$vxm    = self::vxmMaster();
 		$vxm->recordlocker->deleteLock();
-		$vendor = $vxm->get_vendor($data->vendorID);
+
 		$filter = new VxmFilter();
 		$filter->vendorid($data->vendorID);
 		$filter->sortby($page);
+		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		$page->headline = "VXM: Vendor $data->vendorID";
 		$page->show_breadcrumbs = false;
-		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+		$page->js .= self::pw('config')->twig->render('items/vxm/list/item/js.twig');
+		$html = self::vendorXrefsDisplay($data, $xrefs);
+		return $html;
+	}
 
-		$html = $config->twig->render('items/vxm/list/item/vendor/display.twig', ['vxm' => $vxm, 'items' => $xrefs, 'vendor' => $vendor]);
-		$page->js .= $config->twig->render('items/vxm/list/item/js.twig');
+	private static function vendorXrefsDisplay($data, PropelModelPager $xrefs) {
+		$vxm    = self::vxmMaster();
+		$vendor = $vxm->get_vendor($data->vendorID);
+
+		$html = self::pw('config')->twig->render('items/vxm/list/item/vendor/display.twig', ['vxm' => $vxm, 'items' => $xrefs, 'vendor' => $vendor]);
 		return $html;
 	}
 

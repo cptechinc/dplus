@@ -1,5 +1,8 @@
 <?php namespace Controllers\Min\Itm\Xrefs;
+// Purl URI Library
 use Purl\Url as Purl;
+// Propel ORM Ljbrary
+use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use ItemXrefVendorQuery, ItemXrefVendor;
 // ProcessWire Classes, Modules
@@ -91,10 +94,11 @@ class Vxm extends XrefFunction {
 		return self::xrefDisplay($data, $xref);
 	}
 
-	private static function xrefDisplay($data, $xref) {
+	private static function xrefDisplay($data, ItemXrefVendor $xref) {
 		$qnotes = self::pw('modules')->get('QnotesItemVxm');
 		$itm    = self::getItm();
 		$item   = $itm->get_item($data->itemID);
+
 		$html = '';
 		$html .= self::vxmHeaders();
 		$html .= VxmController::lockXref($xref);
@@ -124,27 +128,28 @@ class Vxm extends XrefFunction {
 			return self::pw('page')->body;
 		}
 		self::initHooks();
-		$fields  = ['itemID|text', 'q|text'];
-		$data    = self::sanitizeParametersShort($data, $fields);
-		$input   = self::pw('input');
+		$data    = self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
+		VxmController::vxmMaster()->recordlocker->deleteLock();
+
 		$page    = self::pw('page');
-		$config  = self::pw('config');
-		$modules = self::pw('modules');
-		$itm     = self::getItm();
-		$item = $itm->get_item($data->itemID);
-		$vxm = VxmController::vxmMaster();
-		$vxm->recordlocker->deleteLock();
 		$filter = new VxmFilter();
 		$filter->itemid($data->itemID);
 		$filter->sortby($page);
-		$xrefs = $filter->query->paginate($input->pageNum, 10);
+		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 10);
 		$page->title = "VXM";
 		$page->headline = "ITM: $data->itemID VXM";
+		$page->js .= self::pw('config')->twig->render('items/vxm/list/item/js.twig');
+		$html = self::listDisplay($data, $xrefs);
+		return $html;
+	}
+
+	private static function listDisplay($data, PropelModelPager $xrefs) {
+		$itm     = self::getItm();
+		$item = $itm->get_item($data->itemID);
 
 		$html = '';
 		$html .= self::vxmHeaders();
-		$html .= $config->twig->render('items/itm/xrefs/vxm/list/display.twig', ['item' => $item, 'items' => $xrefs, 'vxm' => $vxm]);
-		$page->js .= $config->twig->render('items/vxm/list/item/js.twig');
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/vxm/list/display.twig', ['item' => $item, 'items' => $xrefs, 'vxm' => VxmController::vxmMaster()]);
 		return $html;
 	}
 
