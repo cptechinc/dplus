@@ -162,12 +162,12 @@ class Cxm extends AbstractController {
 		$filter = new CustomerFilter();
 		$filter->init();
 		$filter->custid($cxm->custids());
-		
+
 		if ($data->q) {
 			$page->headline = "Searching Customers for '$data->q'";
 			$filter->search($data->q);
 		}
-		$filter->apply_sortby($page);
+		$filter->sortby($page);
 		$customers = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
 		$page->js   .= self::pw('config')->twig->render('items/cxm/search/customer/js.twig');
