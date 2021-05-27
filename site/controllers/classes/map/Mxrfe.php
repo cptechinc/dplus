@@ -1,12 +1,15 @@
 <?php namespace Controllers\Map;
-// Purl URL Library
+// Purl URI Library
 use Purl\Url as Purl;
+// Propel ORM Ljbrary
+use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use ItemXrefManufacturer;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeCRUD;
 // Dplus Filters
-use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
+use Dplus\Filters\Map\Mxrfe  as MxrfeFilter;
+use Dplus\Filters\Map\Vendor as VendorFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
@@ -46,28 +49,38 @@ class Mxrfe extends AbstractController {
 
 	public static function xref($data) {
 		$fields = ['mnfrID|text', 'mnfritemID|text', 'itemID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
+
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
-		$config = self::pw('config');
-		$page   = self::pw('page');
+
 		$mxrfe  = self::mxrfeMaster();
-		$mxrfe->init_field_attributes_config();
-		$vendor = $mxrfe->vendor($data->mnfrID);
 		$xref   = $mxrfe->get_create_xref($data->mnfrID, $data->mnfritemID, $data->itemID);
-		$qnotes = self::pw('modules')->get('QnotesItemMxrfe');
-		$html = '';
+		$page   = self::pw('page');
+
 		if ($xref->isNew()) {
 			$page->headline = "MXRFE: New X-ref";
 		}
 		if ($xref->isNew() === false) {
 			$page->headline = "MXRFE: " . $mxrfe->get_recordlocker_key($xref);
 		}
+		$page->js   .= self::pw('config')->twig->render('items/mxrfe/item/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
+		$html = self::xrefDisplay($data, $xref);
+		return $html;
+	}
+
+	private static function xrefDisplay($data, ItemXrefManufacturer $xref) {
+		$config = self::pw('config');
+		$mxrfe  = self::mxrfeMaster();
+		$mxrfe->init_field_attributes_config();
+		$vendor = $mxrfe->vendor($data->mnfrID);
+		$qnotes = self::pw('modules')->get('QnotesItemMxrfe');
+
+		$html = '';
 		$html .= self::mxrfeHeaders();
 		$html .= self::lockXref($xref);
 		$html .= $config->twig->render('items/mxrfe/item/form/display.twig', ['mxrfe' => $mxrfe, 'vendor' => $vendor, 'xref' => $xref, 'qnotes' => $qnotes]);
-		$page->js   .= $config->twig->render('items/mxrfe/item/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
 
 		if (!$xref->isNew()) {
 			$html .= self::qnotesDisplay($xref);
@@ -123,20 +136,26 @@ class Mxrfe extends AbstractController {
 
 	public static function listMnfrs($data) {
 		$data   = self::sanitizeParametersShort($data, ['q|text']);
-		$config = self::pw('config');
 		$page   = self::pw('page');
 		$page->show_breadcrumbs = false;
 		$mxrfe  = self::mxrfeMaster();
 		$mxrfe->recordlocker->deleteLock();
-		$filter = self::pw('modules')->get('FilterVendors');
-		$filter->init_query(self::pw('user'));
+		$filter = new VendorFilter();
+		$filter->init();
 		$filter->vendorid($mxrfe->vendorids());
 		if ($data->q) {
 			$page->headline = "Searching Mnfrs for '$data->q'";
 			$filter->search($data->q);
 		}
-		$filter->apply_sortby($page);
+		$filter->sortby($page);
 		$vendors = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+
+		$html = self::listMnfrsDisplay($data, $vendors);
+		return $html;
+	}
+
+	private static function listMnfrsDisplay($data, PropelModelPager $vendors) {
+		$config = self::pw('config');
 
 		$html = '';
 		$html .= self::mxrfeHeaders();
@@ -147,19 +166,26 @@ class Mxrfe extends AbstractController {
 
 	public static function mnfrXrefs($data) {
 		$data = self::sanitizeParametersShort($data, ['mnfrID|text']);
-		$config = self::pw('config');
 		$page   = self::pw('page');
 		$mxrfe  = self::mxrfeMaster();
 		$mxrfe->recordlocker->deleteLock();
-		$vendor = $mxrfe->vendor($data->mnfrID);
+
 		$filter = new MxrfeFilter();
 		$filter->vendorid($data->mnfrID);
 		$filter->sortby($page);
 		$page->headline = "MXRFE: Mnfr $data->mnfrID";
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+		$html  = self::mnfrXrefsDisplay($data, $xrefs);
+		return $html;
+	}
+
+	private static function mnfrXrefsDisplay($data, $xrefs) {
+		$mxrfe  = self::mxrfeMaster();
+		$vendor = $mxrfe->vendor($data->mnfrID);
+
 		$html = '';
 		$html .= self::mxrfeHeaders();
-		$html .= $config->twig->render('items/mxrfe/list/vendor/display.twig', ['mxrfe' => $mxrfe, 'xrefs' => $xrefs, 'vendor' => $vendor]);
+		$html .= self::pw('config')->twig->render('items/mxrfe/list/vendor/display.twig', ['mxrfe' => $mxrfe, 'xrefs' => $xrefs, 'vendor' => $vendor]);
 		return $html;
 	}
 

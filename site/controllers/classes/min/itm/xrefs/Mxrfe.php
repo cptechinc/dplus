@@ -1,5 +1,8 @@
 <?php namespace Controllers\Min\Itm\Xrefs;
+// Purl URI Library
 use Purl\Url as Purl;
+// Propel ORM Ljbrary
+use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use ItemXrefManufacturerQuery, ItemXrefManufacturer;
 // ProcessWire Classes, Modules
@@ -85,7 +88,7 @@ class Mxrfe extends XrefFunction {
 /* =============================================================
 	Display Functions
 ============================================================= */
-	private static function xrefDisplay($data, $xref) {
+	private static function xrefDisplay($data, ItemXrefManufacturer $xref) {
 		$mxrfe  = BaseMxrfe::mxrfeMaster();
 		$qnotes = self::pw('modules')->get('QnotesItemMxrfe');
 		$item   = self::getItm()->get_item($data->itemID);
@@ -136,7 +139,7 @@ class Mxrfe extends XrefFunction {
 		return self::listDisplay($data, $xrefs);
 	}
 
-	private static function listDisplay($data, $xrefs) {
+	private static function listDisplay($data, PropelModelPager $xrefs) {
 		$item = self::getItm()->get_item($data->itemID);
 		$html = '';
 		$html .= self::mxrfeHeaders();
