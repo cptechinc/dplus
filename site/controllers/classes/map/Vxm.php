@@ -78,8 +78,8 @@ class Vxm extends AbstractController {
 			$page->headline = "VXM: " . $vxm->get_recordlocker_key($xref);
 		}
 
+		$html .= $config->twig->render('items/vxm/bread-crumbs.twig');
 		$html .= self::lockXref($xref);
-
 		$html .= $config->twig->render('items/vxm/item/form/display.twig', ['mxrfe' => $vxm, 'vendor' => $vendor, 'item' => $xref, 'vxm' => $vxm, 'qnotes' => $qnotes]);
 		$page->js .= $config->twig->render('items/vxm/item/form/js.twig', ['page' => $page, 'vxm' => $vxm, 'item' => $xref]);
 
@@ -107,11 +107,11 @@ class Vxm extends AbstractController {
 	public static function lockXref(ItemXrefVendor $xref) {
 		$html = '';
 		$vxm = self::vxmMaster();
-
-		if (!$xref->isNew()) {
-			if (!$vxm->lockrecord($xref)) {
-				$msg = "VXM ". $vxm->get_recordlocker_key($xref) ." is being locked by " . $vxm->recordlocker->get_locked_user($vxm->get_recordlocker_key($xref));
+		if ($xref->isNew() === false) {
+			if ($vxm->lockrecord($xref) === false) {
+				$msg = "VXM ". $vxm->get_recordlocker_key($xref) ." is being locked by " . $vxm->recordlocker->getLockingUser($vxm->get_recordlocker_key($xref));
 				$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "VXM ".$vxm->get_recordlocker_key($xref)." is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+				$html .= '<div class="mb-3"></div>';
 			}
 		}
 		return $html;
@@ -130,7 +130,7 @@ class Vxm extends AbstractController {
 		$config = self::pw('config');
 		$page   = self::pw('page');
 		$vxm    = self::vxmMaster();
-		$vxm->recordlocker->remove_lock();
+		$vxm->recordlocker->deleteLock();
 		$filter = new VendorFilter();
 		$filter->init();
 		$filter->vendorid($vxm->vendorids());
@@ -156,7 +156,7 @@ class Vxm extends AbstractController {
 		$config = self::pw('config');
 		$page   = self::pw('page');
 		$vxm    = self::vxmMaster();
-		$vxm->recordlocker->remove_lock();
+		$vxm->recordlocker->deleteLock();
 		$vendor = $vxm->get_vendor($data->vendorID);
 		$filter = new VxmFilter();
 		$filter->vendorid($data->vendorID);

@@ -54,11 +54,11 @@ class Vxm extends XrefFunction {
 		$url = $page->itm_xrefs_vxmURL($data->itemID);
 
 		if ($vxm->xref_exists($data->vendorID, $data->vendoritemID, $data->itemID)) {
-			$url = $page->vxm_itemURL($data->vendorID, $data->vendoritemID);
+			$url = self::xrefUrl($data->vendorID, $data->vendoritemID, $data->itemID);
 
 			if ($response && $response->has_success()) {
 				$xref = $vxm->xref($data->vendorID, $data->vendoritemID, $data->itemID);
-				$url = $page->vxm_item_exitURL($xref, $response->key);
+				$url  = Xrefs::xrefUrlVxm($itemID);
 			}
 		}
 		$session->redirect($url, $http301 = false);
@@ -68,39 +68,41 @@ class Vxm extends XrefFunction {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::pw('page')->body;
 		}
-		self::initHooks();
+
 		$fields = ['itemID|text', 'vendorID|text', 'vendoritemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
+
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
-		$config  = self::pw('config');
-		$page    = self::pw('page');
-		$pages   = self::pw('pages');
-		$itm     = self::getItm();
-		$modules = self::pw('modules');
-		$qnotes  = $modules->get('QnotesItemVxm');
+		self::initHooks();
+
 		$vxm     = VxmController::vxmMaster();
 		$xref = $vxm->get_create_xref($data->vendorID, $data->vendoritemID, $data->itemID);
-		$item = $itm->get_item($data->itemID);
 
-		$page->headline = "ITM: $item->itemid VXM $xref->vendorid-$xref->vendoritemid";
+		$page    = self::pw('page');
+		$page->headline = "ITM: $data->itemID VXM $xref->vendorid-$xref->vendoritemid";
+		$page->js .= self::pw('config')->twig->render('items/vxm/item/form/js.twig', ['vxm' => $vxm]);
 
 		if ($xref->isNew()) {
 			$xref->setItemid($data->itemID);
-			$page->headline = "ITM: $item->itemid VXM Create X-ref";
+			$page->headline = "ITM: $data->itemID VXM Create X-ref";
 		}
+		return self::xrefDisplay($data, $xref);
+	}
 
+	private static function xrefDisplay($data, $xref) {
+		$qnotes = self::pw('modules')->get('QnotesItemVxm');
+		$itm    = self::getItm();
+		$item   = $itm->get_item($data->itemID);
 		$html = '';
 		$html .= self::vxmHeaders();
 		$html .= VxmController::lockXref($xref);
-		$html .= $config->twig->render('items/itm/xrefs/vxm/form/display.twig', ['xref' => $xref, 'item' => $item, 'vxm' => $vxm, 'qnotes' => $qnotes, 'customer' => $vxm->get_vendor($data->vendorID)]);
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/vxm/form/display.twig', ['xref' => $xref, 'item' => $item, 'vxm' => VxmController::vxmMaster(), 'qnotes' => $qnotes]);
 
 		if (!$xref->isNew()) {
 			$html .= VxmController::qnotesDisplay($xref);
 		}
-
-		$page->js .= $config->twig->render('items/vxm/item/form/js.twig', ['vxm' => $vxm]);
 		return $html;
 	}
 
@@ -131,7 +133,7 @@ class Vxm extends XrefFunction {
 		$itm     = self::getItm();
 		$item = $itm->get_item($data->itemID);
 		$vxm = VxmController::vxmMaster();
-		$vxm->recordlocker->remove_lock();
+		$vxm->recordlocker->deleteLock();
 		$filter = new VxmFilter();
 		$filter->itemid($data->itemID);
 		$filter->sortby($page);
@@ -164,7 +166,7 @@ class Vxm extends XrefFunction {
 	}
 
 	/**
-	 * Return Url to Delete X-ref 
+	 * Return Url to Delete X-ref
 	 * @param  string $vendorID     Vendor ID
 	 * @param  string $vendoritemID Vendor Item ID
 	 * @param  string $itemID       Item ID
