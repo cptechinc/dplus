@@ -1,19 +1,25 @@
-<?php namespace ProcessWire;
+<?php namespace Dplus\RecordLocker;
 
 use Propel\Runtime\ActiveQuery\Criteria;
-
 use LockRecordQuery, LockRecord;
 
-include_once(__DIR__.'/vendor/autoload.php');
+use ProcessWire\WireData;
 
 /**
- * RecordLocker
+ * Locker
  *
  * Class for Creating, Reading LockRecord for the purposes of Dplus
  *
  * NOTE: Examples provided will be for IWHM
  */
-class RecordLocker extends WireData implements Module {
+class Locker extends WireData {
+	/**
+	 * Return LockRecordQuery
+	 * @return LockRecordQuery
+	 */
+	public function query() {
+		return LockRecordQuery::create();
+	}
 
 	/**
 	 * Returns if Function is being locked by User ID
@@ -22,9 +28,9 @@ class RecordLocker extends WireData implements Module {
 	 * @param  string $userID    User Login ID
 	 * @return bool
 	 */
-	public function function_locked_by_user($function, $key, $userID) {
+	public function userHasRecordLocked($function, $key, $userID) {
 		$key = is_array($key) ? implode('-', $key) : $key;
-		$q = $this->get_query();
+		$q = $this->query();
 		$q->filterByUserid($userID);
 		$q->filterByFunction($function);
 		$q->filterByKey($key);
@@ -37,9 +43,9 @@ class RecordLocker extends WireData implements Module {
 	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
 	 * @return bool
 	 */
-	public function function_locked($function, $key) {
+	public function isRecordLocked($function, $key) {
 		$key = is_array($key) ? implode('-', $key) : $key;
-		$q = $this->get_query();
+		$q = $this->query();
 		$q->filterByFunction($function);
 		$q->filterByKey($key);
 		return boolval($q->count());
@@ -49,9 +55,9 @@ class RecordLocker extends WireData implements Module {
 	 * Return LoginID of User who has locked function record
 	 * @return string
 	 */
-	public function get_locked_user($function, $key) {
+	public function getLockingUser($function, $key) {
 		$key = is_array($key) ? implode('-', $key) : $key;
-		$q = $this->get_query();
+		$q = $this->query();
 		$q->select('userid');
 		$q->filterByFunction($function);
 		$q->filterByKey($key);
@@ -66,7 +72,7 @@ class RecordLocker extends WireData implements Module {
 	 * @param  string $userID     User Login ID
 	 * @return bool
 	 */
-	public function create_lock($function, $key, $userID) {
+	public function lock($function, $key, $userID) {
 		$key = is_array($key) ? implode('-', $key) : $key;
 		$lock = new LockRecord();
 		$lock->setFunction($function);
@@ -83,9 +89,9 @@ class RecordLocker extends WireData implements Module {
 	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
 	 * @return bool
 	 */
-	public function remove_lock($userID, $function, $key = false) {
+	public function deleteLock($userID, $function, $key = false) {
 		$key = is_array($key) ? implode('-', $key) : $key;
-		$q = LockRecordQuery::create();
+		$q = $this->query();
 		$q->filterByUserid($userID);
 		$q->filterByFunction($function);
 
@@ -101,33 +107,14 @@ class RecordLocker extends WireData implements Module {
 	 * @param  int    $hours  Number of Hours to go back
 	 * @return bool
 	 */
-	public function remove_locks_olderthan($userID = 'all', int $hours) {
+	public function deleteLocksOlderThan($userID = 'all', int $hours) {
 		$datetime = date(LockRecord::DATE_FORMAT, strtotime("-$hours hours"));
-		$q = LockRecordQuery::create();
+		$q = $this->query();
 
 		if ($userID != 'all') {
 			$q->filterByUserid($userID);
 		}
 		$q->filterByDate($datetime, Criteria::LESS_THAN);
 		return $q->delete();
-	}
-
-	/**
-	 * Return LockRecordQuery
-	 * @return LockRecordQuery
-	 */
-	protected function get_query() {
-		return LockRecordQuery::create();
-	}
-
-	public static function getModuleInfo() {
-		return array(
-			'title' => 'Dplus RecordLocker',
-			'version' => 101,
-			'summary' => 'Dplus RecordLocker',
-			'singular' => true,
-			'autoload' => true,
-			'installs' => array('RecordLockerUser')
-		);
 	}
 }
