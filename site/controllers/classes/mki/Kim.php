@@ -1,4 +1,8 @@
 <?php namespace Controllers\Mki;
+// Purl URI Library
+use Purl\Url as Purl;
+// Propel ORM Ljbrary
+use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use Invkit;
 // ProcessWire Classes, Modules
@@ -36,8 +40,7 @@ class Kim extends AbstractController {
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['action' => ['sanitizer' => 'text'], 'kitID' => ['sanitizer' => 'text']];
-		$data = self::sanitizeParameters($data, $fields);
+		self::sanitizeParametersShort($data, ['action|text', 'kitID|text', 'component|text']);
 
 		if ($data->action) {
 			$kim = self::pw('modules')->get('Kim');
@@ -47,12 +50,20 @@ class Kim extends AbstractController {
 	}
 
 	public static function kit($data) {
-		$config = self::pw('config');
-		$page   = self::pw('page');
 		$kim    = self::getKim();
 		$kim->init_configs();
 		$kit = $kim->getCreateKit($data->kitID);
+		$page           = self::pw('page');
 		$page->headline = "Kit Master: $kit->itemid";
+		$page->js       .= self::pw('config')->twig->render('mki/kim/kit/js.twig', ['kim' => $kim]);
+		$html = self::kitDisplay($data, $kit);
+		return $html;
+	}
+
+	private static function kitDisplay($data, Invkit $kit) {
+		$config = self::pw('config');
+		$kim    = self::getKim();
+		$kim->init_configs();
 
 		$html = '';
 		$html .= self::kimHeader();
@@ -61,24 +72,30 @@ class Kim extends AbstractController {
 			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Kit $kit->itemid does not exist", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You will be able to create this kit"]);
 		}
 		$html .= $config->twig->render('mki/kim/kit/page.twig', ['kim' => $kim, 'kit' => $kit]);
-		$page->js   .= $config->twig->render('mki/kim/kit/js.twig', ['kim' => $kim]);
 		return $html;
 	}
 
 	public static function kitComponent($data) {
-		$config = self::pw('config');
-		$page   = self::pw('page');
+		self::sanitizeParametersShort($data, ['action|text', 'kitID|text', 'component|text']);
+		$kim    = self::getKim();
+		$kim->init_configs();
+		$page = self::pw('page');
+		$page->headline = $data->component == 'new' ? "Kit Master: $data->kitID" : "Kit Master: $data->kitID - $data->component";
+		$page->js       .= self::pw('config')->twig->render('mki/kim/kit/component/js.twig', ['kim' => $kim]);
+		$html = self::kitComponentDisplay($data);
+		return $html;
+	}
+
+	private static function kitComponentDisplay($data) {
 		$kim    = self::getKim();
 		$kim->init_configs();
 		$kit = $kim->kit($data->kitID);
 		$component = $kim->component->getCreateComponent($data->kitID, $data->component);
-		$page->headline = $data->component == 'new' ? "Kit Master: $data->kitID" : "Kit Master: $data->kitID - $data->component";
 
 		$html = '';
 		$html .= self::kimHeader();
 		$html .= self::lockKit($kit);
-		$html .= $config->twig->render('mki/kim/kit/component/page.twig', ['kim' => $kim, 'kit' => $kit, 'component' => $component]);
-		$page->js   .= $config->twig->render('mki/kim/kit/component/js.twig', ['kim' => $kim]);
+		$html .= self::pw('config')->twig->render('mki/kim/kit/component/page.twig', ['kim' => $kim, 'kit' => $kit, 'component' => $component]);
 		return $html;
 	}
 
@@ -97,10 +114,7 @@ class Kim extends AbstractController {
 	}
 
 	public static function listKits($data) {
-		$fields = ['q' => ['sanitizer' => 'text']];
-		$data = self::sanitizeParameters($data, $fields);
-		$config = self::pw('config');
-		$page   = self::pw('page');
+		self::sanitizeParametersShort($data, ['q|text']);
 		$kim    = self::getKim();
 		$filter = new FilterKim();
 		$filter->init();
@@ -109,12 +123,19 @@ class Kim extends AbstractController {
 			$filter->search($data->q);
 		}
 		$kits = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+		self::pw('page')->js   .= self::pw('config')->twig->render('mki/kim/list.js.twig', ['kim' => $kim]);
+		$html = self::listKitsDisplay($data, $kits);
+		return $html;
+	}
+
+	private static function listKitsDisplay($data, $kits) {
+		$config = self::pw('config');
+		$kim    = self::getKim();
 
 		$html = '';
 		$html .= self::kimHeader();
 		$html .= $config->twig->render('mki/kim/search-form.twig', ['q' => $data->q]);
 		$html .= $config->twig->render('mki/kim/page.twig', ['kim' => $kim, 'kits' => $kits]);
-		$page->js   .= $config->twig->render('mki/kim/list.js.twig', ['kim' => $kim]);
 		return $html;
 	}
 

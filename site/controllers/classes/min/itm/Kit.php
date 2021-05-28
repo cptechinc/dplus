@@ -11,8 +11,7 @@ class Kit extends ItmFunction {
 	const PERMISSION_ITMP = 'xrefs';
 
 	public static function index($data) {
-		$fields = ['itemID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, ['itemID|text', 'action|text']);
 		$page = self::pw('page');
 
 		if (self::validateItemidAndPermission($data) === false) {
@@ -37,9 +36,7 @@ class Kit extends ItmFunction {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::pw('page')->body;
 		}
-
-		$fields = ['itemID|text', 'action|text'];
-		$data = self::sanitizeParameters($data, $fields);
+		self::sanitizeParametersShort($data, ['itemID|text', 'action|text']);
 		$kim = KimController::getKim();
 		$kim->init_configs();
 
@@ -53,25 +50,28 @@ class Kit extends ItmFunction {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::pw('page')->body;
 		}
+		self::sanitizeParametersShort($data, ['itemID|text', 'action|text']);
 
-		$fields = ['itemID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
-		$html = '';
-		$config  = self::pw('config');
-		$page    = self::pw('page');
-		$kim     = KimController::getKim();
-		$itm     = self::getItm();
+
+		self::pw('page')->headline = "ITM: Kit $data->itemID";
+		$html = self::kitDisplay($data);
+		return $html;
+	}
+
+	private static function kitDisplay($data) {
+		$kim  = KimController::getKim();
+		$itm  = self::getItm();
 		$item = $itm->get_item($data->itemID);
 		$kit  = $kim->kit($data->itemID);
 
-		$page->headline = "ITM: Kit $data->itemID";
+		$html = '';
 		$html .= self::kitHeaders();
 		$html .= self::lockItem($data->itemID);
 		$html .= KimController::lockKit($kit);
-		$html .= $config->twig->render('items/itm/kit/kit/display.twig', ['item' => $item, 'kim' => $kim, 'kit' => $kit]);
+		$html .= self::pw('config')->twig->render('items/itm/kit/kit/display.twig', ['item' => $item, 'kim' => $kim, 'kit' => $kit]);
 		return $html;
 	}
 
@@ -82,25 +82,29 @@ class Kit extends ItmFunction {
 
 		$fields = ['itemID|text', 'component|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
+
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
-		$html = '';
-		$config  = self::pw('config');
-		$page    = self::pw('page');
+
+		$page           = self::pw('page');
+		$page->headline = $component->isNew() ? "ITM: Kit $data->itemID" : "ITM: Kit $data->itemID - $data->component";
+		$page->js       .= self::pw('config')->twig->render('mki/kim/kit/component/js.twig', ['kim' => $kim]);
+		$html = self::kitComponentDisplay($data);
+		return $html;
+	}
+
+	private static function kitComponentDisplay($data) {
 		$kim     = KimController::getKim();
 		$itm     = self::getItm();
 		$item = $itm->get_item($data->itemID);
 		$kit  = $kim->kit($data->itemID);
 		$component = $kim->component->getCreateComponent($data->itemID, $data->component);
-		$page->headline = $component->isNew() ? "ITM: Kit $data->itemID" : "ITM: Kit $data->itemID - $data->component";
 
 		$html .= self::kitHeaders();
 		$html .= self::lockItem($data->itemID);
 		$html .= KimController::lockKit($kit);
-		$html .= $config->twig->render('items/itm/kit/component/display.twig', ['item' => $item, 'kim' => $kim, 'kit' => $kit, 'component' => $component]);
-		$page->js   .= $config->twig->render('mki/kim/kit/component/js.twig', ['kim' => $kim]);
-		return $html;
+		$html .= self::pw('config')->twig->render('items/itm/kit/component/display.twig', ['item' => $item, 'kim' => $kim, 'kit' => $kit, 'component' => $component]);
 	}
 
 	private static function kitHeaders() {
