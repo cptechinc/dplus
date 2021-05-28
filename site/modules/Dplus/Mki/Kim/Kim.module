@@ -1,14 +1,17 @@
 <?php namespace ProcessWire;
 
+include_once(__DIR__.'/KimResponse.php');
+
+// Purl URI Library
 use Purl\Url;
-
-use Dplus\CodeValidators\Mki\Kim as KimValidator;
-
+// Dplus Record Locker
+use Dplus\RecordLocker\UserFunction as FunctionLocker;
+// Dplus Model
 use InvKitQuery, InvKit;
 use InvKitComponentQuery, InvKitComponent;
 use ItemMasterItemQuery, ItemMasterItem;
-
-include_once(__DIR__.'/KimResponse.php');
+// Dplus Code Validators
+use Dplus\CodeValidators\Mki\Kim as KimValidator;
 
 /**
  * Kim
@@ -288,10 +291,10 @@ class Kim extends WireData implements Module {
 	 * @return bool
 	 */
 	public function lockrecord($kitID) {
-		if (!$this->recordlocker->function_locked($kitID)) {
-			$this->recordlocker->create_lock($kitID);
+		if (!$this->recordlocker->isLocked($kitID)) {
+			$this->recordlocker->lock($kitID);
 		}
-		return $this->recordlocker->function_locked_by_user($kitID);
+		return $this->recordlocker->userHasLocked($kitID);
 	}
 
 /* =============================================================
@@ -367,8 +370,9 @@ class Kim extends WireData implements Module {
 	}
 
 	public function init() {
-		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
-		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker = new FunctionLocker();
+		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker->setUser($this->wire('user'));
 		$this->component = $this->wire('modules')->get('KimComponent');
 
 		$this->addHook('Page(pw_template=kim)::kitURL', function($event) {

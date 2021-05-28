@@ -117,7 +117,7 @@
 			2. Is a new Item
 			NOTE: Only show delete if item already exists.
 		#}
-		{% if kim.recordlocker.function_locked_by_user(kit.itemid) or component.isNew() %}
+		{% if kim.recordlocker.userHasLocked(kit.itemid) or component.isNew() %}
 			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>

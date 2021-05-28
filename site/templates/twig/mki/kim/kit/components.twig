@@ -32,7 +32,7 @@
 					{{ kim.configs.kt.usageorfreeusage() ? component.usage()|number_format : '' }}
 				</td>
 				<td class="text-center">
-					{% if kim.recordlocker.function_locked(kit.itemid) == false or kim.recordlocker.function_locked_by_user(kit.itemid) %}
+					{% if kim.recordlocker.isLocked(kit.itemid) == false or kim.recordlocker.userHasLocked(kit.itemid) %}
 						<a href="{{ page.kit_componentURL(kit.itemid, component.itemid) }}" class="btn btn-sm btn-warning">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</a>
@@ -42,7 +42,7 @@
 						</a>
 					{% else %}
 						<span class="badge badge-secondary">
-							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ recordlocker.get_locked_user('vxm', vxm.get_recordlocker_key(item)) }}
+							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ recordlocker.getLockingUser('vxm', vxm.get_recordlocker_key(item)) }}
 						</span>
 					{% endif %}
 				</td>

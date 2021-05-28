@@ -104,10 +104,11 @@ class Kim extends AbstractController {
 		$kim    = self::getKim();
 		$html = '';
 
-		if (!$kit->isNew()) {
-			if (!$kim->lockrecord($kit->itemid)) {
-				$msg = "Kit $kit->itemid is being locked by " . $kim->recordlocker->get_locked_user($kit->itemid);
+		if ($kit->isNew() === false) {
+			if ($kim->lockrecord($kit->itemid) === false) {
+				$msg = "Kit $kit->itemid is being locked by " . $kim->recordlocker->getLockingUser($kit->itemid);
 				$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Kit $kit->itemid is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+				$html .= '<div class="mb-3"></div>';
 			}
 		}
 		return $html;

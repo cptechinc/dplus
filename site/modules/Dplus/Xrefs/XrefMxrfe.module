@@ -2,7 +2,7 @@
 
 include_once(__DIR__.'/XrefResponse.php');
 
-// Purl
+// Purl URI Library
 use Purl\Url;
 // Dplus Model
 use ItemMasterItemQuery, ItemMasterItem;

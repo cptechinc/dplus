@@ -23,12 +23,12 @@
 			{% for kit in kits %}
 				{% set class = kit.itemid == page.focus ? 'highlight' : '' %}
 				{# set class = (response.key == kit.itemid and response.has_success()) ? 'bg-success text-white' : class #}
-				<tr class="{{ class }}" data-kit="{# kit.itemid #}">
+				<tr class="{{ class }}" data-kit="{{ kit.itemid }}">
 					<td>{{ kit.itemid }}</td>
 					<td>{{ kit.item.description }}</td>
 					<td class="text-center">{{ kit.countInvKitComponents() }}</td>
 					<td class="text-center">
-						{% if kim.recordlocker.function_locked(kit.itemid) == false or kim.recordlocker.function_locked_by_user(kit.itemid) %}
+						{% if kim.recordlocker.isLocked(kit.itemid) == false or kim.recordlocker.userHasLocked(kit.itemid) %}
 							<a href="{{ page.kitURL(kit.itemid) }}" class="btn btn-warning btn-sm">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
@@ -38,7 +38,7 @@
 							</a>
 						{% else %}
 							<span class="badge badge-secondary">
-								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ kim.recordlocker.get_locked_user(kit.itemid) }}
+								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ kim.recordlocker.getLockingUser(kit.itemid) }}
 							</span>
 						{% endif %}
 					</td>
