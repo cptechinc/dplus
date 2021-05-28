@@ -128,7 +128,7 @@ class Kim extends AbstractController {
 		return $html;
 	}
 
-	private static function listKitsDisplay($data, $kits) {
+	private static function listKitsDisplay($data, PropelModelPager $kits) {
 		$config = self::pw('config');
 		$kim    = self::getKim();
 
@@ -157,5 +157,9 @@ class Kim extends AbstractController {
 			self::$kim = self::pw('modules')->get('Kim');
 		}
 		return self::$kim;
+	}
+
+	public static function init() {
+
 	}
 }
