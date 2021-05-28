@@ -79,7 +79,7 @@ class KimComponent extends WireData implements Module {
 
 		$validator = new MinValidator();
 
-		if ($validator->itemid_exists($itemID)) {
+		if ($validator->itemid($itemID)) {
 			$c->setItemid($itemID);
 		}
 		return $c;
