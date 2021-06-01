@@ -159,8 +159,81 @@ class Kim extends AbstractController {
 		}
 		return self::$kim;
 	}
+/* =============================================================
+	URL Functions
+============================================================= */
+	public static function kitListUrl($focus = '') {
+		$url = new Purl(self::pw('pages')->get('pw_template=kim')->url);
+		if ($focus) {
+			$url->query->set('focus', $focus);
+		}
+		return $url->getUrl();
+	}
 
+	public static function kitUrl($kitID, $focus = '') {
+		$url = new Purl(self::pw('pages')->get('pw_template=kim')->url);
+		$url->query->set('kitID', $kitID);
+		if ($focus) {
+			$url->query->set('focus', $focus);
+		}
+		return $url->getUrl();
+	}
+
+	public static function kitDeleteUrl($kitID) {
+		$url = new Purl(self::kitUrl($kitID));
+		$url->query->set('action', 'delete-kit');
+		return $url->getUrl();
+	}
+
+	public static function kitComponentUrl($kitID, $component) {
+		$url = new Purl(self::kitUrl($kitID));
+		$url->query->set('component', $component);
+		return $url->getUrl();
+	}
+
+	public static function kitComponentDeleteUrl($kitID, $component) {
+		$url = new Purl(self::kitComponentUrl($kitID, $component));
+		$url->query->set('action', 'delete-component');
+		return $url->getUrl();
+	}
+
+/* =============================================================
+	Hook Functions
+============================================================= */
 	public static function init() {
+		$m = self::getKim();
 
+		$m->addHook('Page(pw_template=kim)::kitUrl', function($event) {
+			$kitID = $event->arguments(0);
+			$focus = $event->arguments(1);
+			$event->return = self::kitUrl($kitID, $focus);
+		});
+
+		$m->addHook('Page(pw_template=kim)::kitListUrl', function($event) {
+			$focus = $event->arguments(0);
+			$event->return = self::kitListUrl($focus);
+		});
+
+		$m->addHook('Page(pw_template=kim)::kitExitUrl', function($event) {
+			$focus = $event->arguments(0);
+			$event->return = self::kitListUrl($focus);
+		});
+
+		$m->addHook('Page(pw_template=kim)::kitDeleteUrl', function($event) {
+			$focus = $event->arguments(0);
+			$event->return = self::kitListUrl($focus);
+		});
+
+		$m->addHook('Page(pw_template=kim)::kitComponentUrl', function($event) {
+			$kitID = $event->arguments(0);
+			$component = $event->arguments(1);
+			$event->return = self::kitComponentUrl($kitID, $component);
+		});
+
+		$m->addHook('Page(pw_template=kim)::kitComponentDeleteUrl', function($event) {
+			$kitID = $event->arguments(0);
+			$component = $event->arguments(1);
+			$event->return = self::kitComponentDeleteUrl($kitID, $component);
+		});
 	}
 }
