@@ -18,19 +18,40 @@
 			<label for="component">Component Item ID</label>
 		</div>
 		<div class="col-sm-8">
-			{% if component.itemid == '' %}
-				{% include 'util/form/input-with-modal-lookup.twig' with {
-						'name': 'component', 'value': component.itemid,
-						'modaltarget': '#ajax-modal',
-						'modaldescription': 'Search for / Choose Item',
-						'attributes_button': {'data-search': 'item', 'data-lookupurl': page.itemlookupURL },
-						'class_add': 'ajax-lookup',
-						'attributes': {'data-api': 'itm', 'data-validate': 'tariffcode', 'data-ajaxfields': 'description'}
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'attributes': {
+							'readonly': component.itemid ? true : false,
+							'tabindex': component.itemid ? '-1' : '',
+						},
+						'input': {
+							'name': 'itemID',
+							'value': component.itemid,
+							'addclasses': ['ajax-lookup'],
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Item ID',
+								'tabindex': component.itemid ? '-1' : '',
+								'data-itemid': component.itemid,
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search Items',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.search_lookupURL('items'),
+								'data-input': '#itemID',
+								'data-ajaxfields': 'description'
+							}
+						}
 					}
-				%}
-			{% else %}
-				<input type="text" class="form-control-plaintext form-control-sm" name="component" id="component" value="{{ component.itemid }}" readonly>
-			{% endif %}
+				}
+			%}
+
 			<small class="form-text text-muted component-description">{{ component.item.description }}</small>
 		</div>
 	</div>
@@ -122,12 +143,12 @@
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 			{% if component.isNew() == false %}
-				<a href="{{ page.kit_component_deleteURL(kit.itemid, component.itemid) }}" class="btn btn-danger form-link delete_button" data-component="{{ component.itemid }}">
+				<a href="{{ page.kitComponentDeleteUrl(kit.itemid, component.itemid) }}" class="btn btn-danger form-link delete_button" data-component="{{ component.itemid }}">
 					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}
 		{% endif %}
-		<a href="{{ page.kitURL(component.kitid, component.itemid) }}" class="btn btn-warning">
+		<a href="{{ page.kitUrl(component.kitid, component.itemid) }}" class="btn btn-warning">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
 		</a>
 	</div>
