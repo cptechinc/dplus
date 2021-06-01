@@ -29,11 +29,11 @@
 					<td class="text-center">{{ kit.countInvKitComponents() }}</td>
 					<td class="text-center">
 						{% if kim.recordlocker.isLocked(kit.itemid) == false or kim.recordlocker.userHasLocked(kit.itemid) %}
-							<a href="{{ page.kitURL(kit.itemid) }}" class="btn btn-warning btn-sm">
+							<a href="{{ page.kitUrl(kit.itemid) }}" class="btn btn-warning btn-sm">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
 							&nbsp; &nbsp;
-							<a href="{{ page.kit_deleteURL(kit.itemid) }}" class="btn btn-danger btn-sm delete-kit" data-kitid="{{ kit.itemid }}">
+							<a href="{{ page.kitDeleteUrl(kit.itemid) }}" class="btn btn-danger btn-sm delete-kit" data-kitid="{{ kit.itemid }}">
 								<i class="fa fa-trash" aria-hidden="true"></i> Delete
 							</a>
 						{% else %}

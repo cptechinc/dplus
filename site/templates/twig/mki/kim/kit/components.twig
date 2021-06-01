@@ -14,7 +14,7 @@
 			<th>Description</th>
 			<th class="text-right">Rate</th>
 			<th class="text-center">
-				<a href="{{ page.kit_componentURL(kit.itemid, 'new') }}" class="btn btn-sm btn-light">
+				<a href="{{ page.kitComponentUrl(kit.itemid, 'new') }}" class="btn btn-sm btn-light">
 					<i class="fa fa-plus" aria-hidden="true"></i> Add
 				</a>
 			</th>
@@ -33,11 +33,11 @@
 				</td>
 				<td class="text-center">
 					{% if kim.recordlocker.isLocked(kit.itemid) == false or kim.recordlocker.userHasLocked(kit.itemid) %}
-						<a href="{{ page.kit_componentURL(kit.itemid, component.itemid) }}" class="btn btn-sm btn-warning">
+						<a href="{{ page.kitComponentUrl(kit.itemid, component.itemid) }}" class="btn btn-sm btn-warning">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</a>
 						&nbsp;
-						<a href="{{ page.kit_component_deleteURL(kit.itemid, component.itemid) }}" class="btn btn-sm btn-danger delete_button" data-component="{{ component.itemid }}">
+						<a href="{{ page.kitComponentDeleteUrl(kit.itemid, component.itemid) }}" class="btn btn-sm btn-danger delete_button" data-component="{{ component.itemid }}">
 							<i class="fa fa-trash" aria-hidden="true"></i> Delete
 						</a>
 					{% else %}
