@@ -11,4 +11,18 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Model;
  */
 class Ci extends AbstractConfig {
 	const MODEL = 'ConfigCi';
+
+	/** @var Model */
+	protected static $config;
+
+	/**
+	 * Return Config from Memory
+	 * @return Model
+	 */
+	public static function config() {
+		if (empty(static::$config)) {
+			static::$config = static::getConfig();
+		}
+		return static::$config;
+	}
 }

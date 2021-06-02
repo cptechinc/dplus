@@ -6,9 +6,10 @@ use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Model;
 
 /**
- * ConfigAp
+ * ConfigKt
  * Class for getting AP config
  */
 class Kt extends AbstractConfig {
 	const MODEL = 'ConfigKt';
+	use ConfigTraits;
 }
