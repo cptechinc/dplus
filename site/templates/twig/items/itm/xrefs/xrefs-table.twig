@@ -48,12 +48,12 @@
 	</tr>
 	<tr>
 		<td>
-			<a href="{{ page.xrefUrlKit(item.itemid) }}" class="link">Kit</a>
+			<a href="{{ page.xrefUrlKim(item.itemid) }}" class="link">Kit</a>
 		</td>
 		<td>
 			<div class="custom-control custom-checkbox">
 				<input type="checkbox" class="custom-control-input" id="is-kit" {{ item.is_kit() ? 'checked' : '' }}>
-				<label class="custom-control-label" for="is-kit"></label>
+				<label class="custom-control-label" for="is-kit">{{ item.countKitcomponents() }} Components</label>
 			</div>
 		</td>
 	</tr>
