@@ -9,6 +9,7 @@ return array(
     'Dplus\\Configs\\AbstractConfig' => $baseDir . '/src/AbstractConfig.php',
     'Dplus\\Configs\\Ap' => $baseDir . '/src/configs/Ap.php',
     'Dplus\\Configs\\Ci' => $baseDir . '/src/configs/Ci.php',
+    'Dplus\\Configs\\ConfigTraits' => $baseDir . '/src/ConfigTraits.php',
     'Dplus\\Configs\\In' => $baseDir . '/src/configs/In.php',
     'Dplus\\Configs\\Kt' => $baseDir . '/src/configs/Kt.php',
     'Dplus\\Configs\\Po' => $baseDir . '/src/configs/Po.php',

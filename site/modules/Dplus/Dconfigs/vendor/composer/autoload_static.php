@@ -10,6 +10,7 @@ class ComposerStaticInit4ed415e031ba38684c0dc56114a11d32
         'Dplus\\Configs\\AbstractConfig' => __DIR__ . '/../..' . '/src/AbstractConfig.php',
         'Dplus\\Configs\\Ap' => __DIR__ . '/../..' . '/src/configs/Ap.php',
         'Dplus\\Configs\\Ci' => __DIR__ . '/../..' . '/src/configs/Ci.php',
+        'Dplus\\Configs\\ConfigTraits' => __DIR__ . '/../..' . '/src/ConfigTraits.php',
         'Dplus\\Configs\\In' => __DIR__ . '/../..' . '/src/configs/In.php',
         'Dplus\\Configs\\Kt' => __DIR__ . '/../..' . '/src/configs/Kt.php',
         'Dplus\\Configs\\Po' => __DIR__ . '/../..' . '/src/configs/Po.php',
