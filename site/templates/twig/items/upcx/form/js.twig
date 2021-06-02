@@ -15,8 +15,8 @@ $(function() {
 ============================================================= */
 	$("body").on("change", "input[name=upc]", function(e) {
 		var input = $(this);
-		request_validate_upc(input.val(), function(valid) {
-			if (!valid) {
+		request_validate_upc(input.val(), function(exists) {
+			if (exists) {
 				swal2.fire({
 					title: 'UPC Exists',
 					text: 'Edit UPC ' + input.val() + '?',
@@ -102,6 +102,13 @@ $(function() {
 				remote: {
 					url: '{{ page.jsonapiURL('inv/validate/upcx/upc/') }}',
 					type: "get",
+					data: {
+						jqv: 'true',
+						new: function() {
+							var isNew = $('input[name=upc]').data('new');
+							return isNew;
+						}
+					}
 				}
 			},
 			itemID: {
@@ -121,6 +128,8 @@ $(function() {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		submitHandler: function(form) {
+			$('#loading-modal').modal('show');
+
 			var formdata = form_upc.serializeArray().reduce(function(obj, item) {
 				obj[item.name] = item.value;
 				return obj;
@@ -129,6 +138,7 @@ $(function() {
 			if (formdata['action'] == 'update-upcx') {
 				validate_primary(function(canSubmit) {
 					if (canSubmit) {
+						$('<input type="hidden" name="action" value="update-upcx">').appendTo($(form));
 						form.submit();
 					}
 				});
@@ -145,11 +155,17 @@ $(function() {
 
 		if (input_primary.prop("checked") === true && input_primary.data("primary") == false) {
 			request_validate_upc_primary(input_upc.val(), input_itemid.val(), function(isPrimary) {
+				if (isPrimary === true) {
+					$('input[name=valid_primary]').val('true');
+					callback(true);
+					return true;
+				}
 				if (isPrimary === false) {
 					swal_change_primary_upc(function(canContinue) {
 						callback(canContinue);
 					});
 				}
+
 			});
 		}
 	}
@@ -168,8 +184,10 @@ $(function() {
 				confirmButtonText: 'Yes!'
 			}).then(function (result) {
 				if (result.value) {
+					$('input[name=valid_primary]').val('true');
 					callback(true);
 				} else {
+					$('input[name=valid_primary]').val('false');
 					callback(false);
 				}
 			});
