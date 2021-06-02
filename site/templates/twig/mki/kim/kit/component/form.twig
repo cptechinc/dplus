@@ -8,7 +8,7 @@
 	component              InvKitComponent
 	kim.recordlocker       module RecordLockerUserFunction
 #}
-<form action="{{ page.url }}" method="post" id="kit-component-form">
+<form action="{{ page.wire('input').url() }}" method="post" id="kit-component-form">
 	<input type="hidden" name="action" value="update-component">
 	<input type="hidden" name="itemID" value="{{ kit.itemid }}">
 	<input type="hidden" name="kitID" value="{{ kit.itemid }}">
