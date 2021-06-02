@@ -51,7 +51,7 @@ class Upcx extends XrefFunction {
 			$upcx->process_input($input);
 		}
 		$upc = $data->action == 'delete-upcx' ? '' : $data->upc;
-		self::pw('session')->redirect(self::pw('page')->upcURL($upc), $http301 = false);
+		self::pw('session')->redirect(self::xrefUrl($data->itemID, $upc), $http301 = false);
 	}
 
 	private static function upcxHeaders() {
@@ -146,9 +146,11 @@ class Upcx extends XrefFunction {
 	 * @param  string $upc     UPC
 	 * @return string
 	 */
-	public static function xrefUrl($itemID, $upc) {
+	public static function xrefUrl($itemID, $upc = '') {
 		$url = new Purl(Xrefs::xrefUrlUpcx($itemID));
-		$url->query->set('upc', $upc);
+		if ($upc) {
+			$url->query->set('upc', $upc);
+		}
 		return $url->getUrl();
 	}
 
@@ -163,6 +165,7 @@ class Upcx extends XrefFunction {
 		$url->query->set('action', 'delete-upcx');
 		return $url->getUrl();
 	}
+
 /* =============================================================
 	Hook Functions
 ============================================================= */
