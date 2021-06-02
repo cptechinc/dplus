@@ -90,9 +90,11 @@ class Xrefs extends XrefFunction {
 		return self::itmUrlFunction($itemID, 'xrefs');
 	}
 
-	public static function xrefUrlFunction($itemID, $function) {
+	public static function xrefUrlFunction($itemID, $function = '') {
 		$url = new Purl(self::xrefsUrl($itemID));
-		$url->path->add($function);
+		if ($function) {
+			$url->path->add($function);
+		}
 		return $url->getUrl();
 	}
 
@@ -108,8 +110,8 @@ class Xrefs extends XrefFunction {
 		return self::xrefUrlFunction($itemID, 'cxm');
 	}
 
-	public static function xrefUrlKit($itemID) {
-		return self::xrefUrlFunction($itemID, 'kit');
+	public static function xrefUrlKim($itemID) {
+		return self::xrefUrlFunction($itemID, 'kim');
 	}
 
 	public static function xrefUrlMxrfe($itemID) {
@@ -134,8 +136,8 @@ class Xrefs extends XrefFunction {
 			$event->return = self::xrefUrlCxm($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=itm)::xrefUrlKit', function($event) {
-			$event->return = self::xrefUrlKit($event->arguments(0));
+		$m->addHook('Page(pw_template=itm)::xrefUrlKim', function($event) {
+			$event->return = self::xrefUrlKim($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=itm)::xrefUrlMxrfe', function($event) {
