@@ -221,7 +221,7 @@ class XrefUpc extends WireData implements Module {
 		$record->setNeedslabel($values->yn('needslabel'));
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));
-
+		
 		if ($values->text('primary') == ItemXrefUpc::PRIMARY_TRUE) {
 			if ($values->text('valid_primary') == 'true') {
 				$record->setPrimary(ItemXrefUpc::PRIMARY_TRUE);
