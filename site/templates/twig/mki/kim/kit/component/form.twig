@@ -26,7 +26,7 @@
 							'tabindex': component.itemid ? '-1' : '',
 						},
 						'input': {
-							'name': 'itemID',
+							'name': 'component',
 							'value': component.itemid,
 							'addclasses': ['ajax-lookup'],
 							'attributes': {
@@ -34,6 +34,7 @@
 								'aria-label':  'Item ID',
 								'tabindex': component.itemid ? '-1' : '',
 								'data-itemid': component.itemid,
+								'data-ajaxfields': 'description'
 							}
 						},
 						'button': {
@@ -44,7 +45,7 @@
 								'data-toggle': 'modal',
 								'data-target': '#ajax-modal',
 								'data-lookupurl': page.search_lookupURL('items'),
-								'data-input': '#itemID',
+								'data-input': '#component',
 								'data-ajaxfields': 'description'
 							}
 						}
