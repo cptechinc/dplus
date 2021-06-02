@@ -14,7 +14,7 @@ use Controllers\Min\Itm\Xrefs\Cxm;
 use Controllers\Min\Itm\Xrefs\Vxm;
 use Controllers\Min\Itm\Xrefs\Mxrfe;
 use Controllers\Min\Itm\Xrefs\Upcx;
-use Controllers\Min\Itm\Kit;
+use Controllers\Min\Itm\Xrefs\Kim;
 
 class Controller extends AbstractController {
 
@@ -58,11 +58,11 @@ class Controller extends AbstractController {
 		return Upcx::handleCRUD($data);
 	}
 
-	public static function kit($data) {
-		return Kit::index($data);
+	public static function kim($data) {
+		return Kim::index($data);
 	}
 
-	public static function kitHandleCRUD($data) {
-		return Kit::handleCRUD($data);
+	public static function kimHandleCRUD($data) {
+		return Kim::handleCRUD($data);
 	}
 }

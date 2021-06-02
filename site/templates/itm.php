@@ -48,9 +48,9 @@
 				['GET',  '', XrefsController::class, 'upcx'],
 				['POST', '', XrefsController::class, 'upcxHandleCRUD'],
 			],
-			'kit' => [
-				['GET',  '', XrefsController::class, 'kit'],
-				['POST', '', XrefsController::class, 'kitHandleCRUD'],
+			'kim' => [
+				['GET',  '', XrefsController::class, 'kim'],
+				['POST', '', XrefsController::class, 'kimHandleCRUD'],
 			],
 		],
 	];
