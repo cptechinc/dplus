@@ -1,8 +1,9 @@
 <?php
-	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
+	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
+	
 	use Controllers\Min\Upcx;
 	Upcx::init();
-	
+
 	$routes = [
 		['GET',  '', Upcx::class, 'index'],
 		['GET',  'page{d:\d+}', Upcx::class, 'list'],
