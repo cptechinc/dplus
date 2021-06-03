@@ -54,7 +54,7 @@ class Vxm extends XrefFunction {
 		$session = self::pw('session');
 		$page    = self::pw('page');
 		$response = $session->getFor('response', 'vxm');
-		$url = $page->itm_xrefs_vxmURL($data->itemID);
+		$url = Xrefs::xrefUrlVxm($itemID);
 
 		if ($vxm->xref_exists($data->vendorID, $data->vendoritemID, $data->itemID)) {
 			$url = self::xrefUrl($data->vendorID, $data->vendoritemID, $data->itemID);
