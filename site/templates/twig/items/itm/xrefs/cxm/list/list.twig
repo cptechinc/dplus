@@ -14,13 +14,19 @@
 			<th class="pt-3 pb-3 align-middle">Description</th>
 			<th class="pt-3 pb-3 align-middle">UoM</th>
 			<th class="pt-3 pb-3 align-middle text-center">
-				<a href="{{ page.cxm_item_newURL(itemid) }}" class="btn btn-light btn-sm">
+				<a href="{{ page.xrefNewUrl(item.itemid) }}" class="btn btn-light btn-sm">
 					<i class="fa fa-plus" aria-hidden="true"></i> Add New
 				</a>
 			</th>
 		</tr>
 	</thead>
 	<tbody>
+		{% if items.count() == 0 %}
+			<tr>
+				<td colspan="5" class="bg-gray text-center">No X-refs Found</td>
+			</tr>
+		{% endif %}
+
 		{% if items.count() %}
 			{% for item in items %}
 				<tr data-cxm="{{ item.custid ~ '-' ~ item.custitemID }}">
