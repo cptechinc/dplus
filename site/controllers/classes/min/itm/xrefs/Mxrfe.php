@@ -52,7 +52,7 @@ class Mxrfe extends XrefFunction {
 		if ($data->action) {
 			$mxrfe->process_input($input);
 			switch ($data->action) {
-				case 'delete-upcx':
+				case 'delete-xref':
 					$url = Xrefs::xrefUrlMxrfe($data->itemID);
 					break;
 			}
@@ -82,6 +82,7 @@ class Mxrfe extends XrefFunction {
 			$page->headline = "ITM: $data->itemID MXRFE Create X-ref";
 		}
 		$page->js .= self::pw('config')->twig->render('items/mxrfe/item/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
+		self::pw('session')->removeFor('response', 'mxrfe');
 		return self::xrefDisplay($data, $xref);
 	}
 
@@ -136,6 +137,7 @@ class Mxrfe extends XrefFunction {
 		$filter->itemid($data->itemID);
 		$filter->sortby($page);
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 10);
+		self::pw('session')->removeFor('response', 'mxrfe');
 		return self::listDisplay($data, $xrefs);
 	}
 

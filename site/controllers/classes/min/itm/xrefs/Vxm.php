@@ -91,7 +91,9 @@ class Vxm extends XrefFunction {
 			$xref->setItemid($data->itemID);
 			$page->headline = "ITM: $data->itemID VXM Create X-ref";
 		}
-		return self::xrefDisplay($data, $xref);
+		$html = self::xrefDisplay($data, $xref);
+		self::pw('session')->removeFor('response', 'vxm');
+		return $html;
 	}
 
 	private static function xrefDisplay($data, ItemXrefVendor $xref) {
@@ -140,6 +142,7 @@ class Vxm extends XrefFunction {
 		$page->headline = "ITM: $data->itemID VXM";
 		$page->js .= self::pw('config')->twig->render('items/vxm/list/item/js.twig');
 		$html = self::listDisplay($data, $xrefs);
+		self::pw('session')->removeFor('response', 'vxm');
 		return $html;
 	}
 

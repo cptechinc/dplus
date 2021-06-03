@@ -87,6 +87,7 @@ class Cxm extends XrefFunction {
 		}
 		$page->js .= self::pw('config')->twig->render('items/cxm/item/form/js.twig', ['cxm' => $cxm]);
 		$html = self::xrefDisplay($data, $xref);
+		self::pw('session')->removeFor('response', 'cxm');
 		return $html;
 	}
 
@@ -146,6 +147,7 @@ class Cxm extends XrefFunction {
 
 		$page->js .= self::pw('config')->twig->render('items/itm/xrefs/cxm/list/js.twig');
 		$html = self::listDisplay($data, $xrefs);
+		self::pw('session')->removeFor('response', 'cxm');
 		return $html;
 	}
 

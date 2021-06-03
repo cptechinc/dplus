@@ -61,6 +61,7 @@ class Kim extends ItmFunction {
 
 		self::pw('page')->headline = "ITM: Kit $data->itemID";
 		$html = self::kitDisplay($data);
+		self::pw('session')->removeFor('response', 'kim');
 		return $html;
 	}
 
@@ -97,6 +98,7 @@ class Kim extends ItmFunction {
 		$page->headline = $component->isNew() ? "ITM: Kit $data->itemID" : "ITM: Kit $data->itemID - $data->component";
 		$page->js       .= self::pw('config')->twig->render('mki/kim/kit/component/js.twig', ['kim' => $kim]);
 		$html = self::kitComponentDisplay($data, $component);
+		self::pw('session')->removeFor('response', 'kim');
 		return $html;
 	}
 

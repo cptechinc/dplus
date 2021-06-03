@@ -91,6 +91,7 @@ class Upcx extends XrefFunction {
 
 		$page->js .= self::pw('config')->twig->render('items/upcx/form/js.twig', ['upc' => $xref]);
 		$html = self::xrefDisplay($data, $xref);
+		self::pw('session')->removeFor('response', 'upcx');
 		return $html;
 	}
 
@@ -124,6 +125,7 @@ class Upcx extends XrefFunction {
 		$upcs = $filter->query->paginate(self::pw('input')->pageNum, 10);
 
 		$html = self::listDisplay($data, $upcs);
+		self::pw('session')->removeFor('response', 'upcx');
 		return $html;
 	}
 
