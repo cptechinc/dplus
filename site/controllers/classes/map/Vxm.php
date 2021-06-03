@@ -101,7 +101,7 @@ class Vxm extends AbstractController {
 		return $html;
 	}
 
-	private static function qnotesDisplay(ItemXrefVendor $xref) {
+	public static function qnotesDisplay(ItemXrefVendor $xref) {
 		$page   = self::pw('page');
 		$config = self::pw('config');
 		$qnotes = self::pw('modules')->get('QnotesItemVxm');
@@ -229,7 +229,9 @@ class Vxm extends AbstractController {
 		$url = new Purl(self::vendorUrl($vendorID));
 		$vxm = self::vxmMaster();
 		$xref = $vxm->xref_by_recordlocker_key($focus);
+
 		if ($xref) {
+			$page = self::pw('pages')->get('template=vxm');
 			$url->query->set('focus', $focus);
 			$filter = new VxmFilter();
 			$filter->vendorid($vendorID);
