@@ -54,7 +54,8 @@ class Cxm extends XrefFunction {
 		$session  = self::pw('session');
 
 		$response = $session->getFor('response', 'cxm');
-		$url = $page->itm_xrefs_cxmURL($data->itemID);
+		$url = self::xrefListUrl($data->itemID);
+
 
 		if ($cxm->xref_exists($data->custID, $data->custitemID)) {
 			$url = self::xrefUrl($data->custID, $data->custitemID, $data->itemID);
@@ -85,7 +86,7 @@ class Cxm extends XrefFunction {
 			$xref->setItemid($data->itemID);
 			$page->headline = "ITM: $xref->itemid CXM Create X-ref";
 		}
-		$page->js .= self::pw('config')->twig->render('items/cxm/item/form/js.twig', ['cxm' => $cxm]);
+		$page->js .= self::pw('config')->twig->render('items/cxm/item/form/js.twig', ['cxm' => $cxm, 'xref' => $xref]);
 		$html = self::xrefDisplay($data, $xref);
 		self::pw('session')->removeFor('response', 'cxm');
 		return $html;
@@ -170,9 +171,11 @@ class Cxm extends XrefFunction {
 	 * @param  string $focus
 	 * @return string
 	 */
-	public static function xrefListUrl($itemID, $focus) {
+	public static function xrefListUrl($itemID, $focus = '') {
 		$url = new Purl(Xrefs::xrefUrlCxm($itemID));
-		$url->query->set('focus', $focus);
+		if ($focus) {
+			$url->query->set('focus', $focus);
+		}
 		return $url->getUrl();
 	}
 
@@ -213,6 +216,12 @@ class Cxm extends XrefFunction {
 			$custitemID = $event->arguments(1);
 			$itemID     = $event->arguments(2);
 			$event->return = self::xrefUrl($custID, $custitemID, $itemID);
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefNewUrl', function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$event->return = self::xrefUrl($custID = '', $custitemID = 'new', $itemID);
 		});
 
 		$m->addHook('Page(pw_template=itm)::xrefDeleteUrl', function($event) {
