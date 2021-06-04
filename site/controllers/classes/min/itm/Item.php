@@ -129,7 +129,7 @@ class Item extends ItmFunction {
 		$validate = new MinValidator();
 
 		if ($validate->itemid($data->q)) {
-			self::pw('session')->redirect($page->itmURL($data->q), $http301 = false);
+			self::pw('session')->redirect(self::itmUrl($data->q), $http301 = false);
 		}
 
 		$filter = new ItemMasterFilter();
