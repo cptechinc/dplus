@@ -21,7 +21,6 @@ class Itm extends AbstractController {
 		'pricing'      => ['title' => 'Pricing', 'permission' => 'costing'],
 		'warehouses'   => ['title' => 'Warehouses', 'permission' => 'whse'],
 		'misc'         => ['title' => 'Misc', 'permission' => 'misc'],
-		'kit'          => ['title' => 'Kit', 'permission' => 'xref'],
 		'xrefs'        => ['title' => 'X-Refs', 'permission' => 'xrefs'],
 	];
 
