@@ -8,53 +8,43 @@
 	item                   ItemXrefCustomer
 	item.item              ItemMasterItem
 #}
-{% if item.isNew() and page.has('custID') == false %}
-	<div class="row form-group">
-		<div class="col-sm-4">
-			<label for="custID">Customer ID</label>
-		</div>
-		<div class="col-sm-8">
-			{% include 'util/bootstrap/form/input-group.twig' with {
-					'inputgroup': {
-						'type': 'prepend',
-						'input': {
-							'name': 'custID',
-							'id': 'custID',
-							'value': item.custID,
-							'attributes': {
-								'placeholder': '',
-								'aria-label':  'Customer ID'
-							}
-						},
-						'button': {
-							'colorclass': 'btn-secondary',
-							'text': 'fa fa-search'|icon,
-							'attributes': {
-								'title': 'Search Customers',
-								'data-toggle': 'modal',
-								'data-target': '#ajax-modal',
-								'data-lookupurl': page.search_lookupURL('customers'),
-								'data-input': '#custID'
-							}
+<div class="row form-group {{ item.isNew() == false and page.pw_template == 'cxm' ? 'collapse' : ''}}">
+	<div class="col-sm-4">
+		<label for="custID">Customer ID</label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'input': {
+						'name': 'custID',
+						'id': 'custID',
+						'value': item.custid,
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Customer ID',
+							'readonly': item.isNew() ? false : true
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Customers',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('customers'),
+							'data-input': '#custID'
 						}
 					}
 				}
-			%}
-		</div>
+			}
+		%}
+		<small class="form-text text-muted customer-name">{{ item.customer.name }}</small>
 	</div>
-{% else %}
-	<input type="hidden" name="custID" value="{{ item.custid }}">
-	{% if (page.pw_template == 'itm-xrefs-cxm') %}
-		<div class="row form-group">
-			<div class="col-sm-4">
-				<label for="custID">Customer ID</label>
-			</div>
-			<div class="col-sm-8">
-				<p class="form-control-plaintext form-control-sm">{{ item.custid }} - {{ item.customer.name }}</p>
-			</div>
-		</div>
-	{% endif %}
-{% endif %}
+</div>
+
+
 <div class="row form-group">
 	<div class="col-sm-4">
 		<label for="custitemID">Customer Item ID</label>
