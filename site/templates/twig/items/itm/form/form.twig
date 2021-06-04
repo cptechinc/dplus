@@ -25,7 +25,7 @@
 			2. Is a new Item
 			NOTE: Only show delete if item already exists.
 		#}
-		{% if itm.recordlocker.function_locked_by_user(item.itemid) or item.isNew() %}
+		{% if itm.recordlocker.userHasLocked(item.itemid) or item.isNew() %}
 			<button type="submit" class="btn btn-success" name="action" value="update-itm">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
