@@ -120,20 +120,6 @@ class Item extends ItmFunction {
 		return $html;
 	}
 
-	public static function lockItem($itemID) {
-		$itm  = self::getItm();
-		$html = '';
-		if ($itm->recordlocker->function_locked($itemID) && !$itm->recordlocker->function_locked_by_user($itemID)) {
-			$config = self::pw('config');
-			$msg = "ITM Item $itemID is being locked by " . $itm->recordlocker->get_locked_user($itemID);
-			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "ITM Item $itemID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
-			$html .= $html->div('class=mb-3');
-		} elseif (!$itm->recordlocker->function_locked($itemID)) {
-			$itm->recordlocker->create_lock($itemID);
-		}
-		return $html;
-	}
-
 	public static function list($data) {
 		$fields = ['itemID|text', 'q|text'];
 		$data   = self::sanitizeParametersShort($data, $fields);
