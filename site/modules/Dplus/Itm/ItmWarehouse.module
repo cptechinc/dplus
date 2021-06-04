@@ -2,14 +2,20 @@
 
 include_once(__DIR__.'/ItmResponse.php');
 
+// Purl URI
 use Purl\Url;
-
-use Dplus\CodeValidators\Itm\Warehouse as ItmwValidator;
+// Dplus Mdoels
 use WarehouseInventoryQuery, WarehouseInventory;
 use WarehouseQuery, Warehouse;
 use WarehouseBinQuery, WarehouseBin;
 use ConfigInQuery, ConfigIn;
 use ConfigSalesOrderQuery, ConfigSalesOrder;
+// Dplus Record Locker
+use Dplus\RecordLocker\UserFunction as FunctionLocker;
+// Dplus Code Validators
+use Dplus\CodeValidators\Itm\Warehouse as ItmwValidator;
+// Dplus Configs
+use Dplus\Configs;
 
 /**
  * Module that handles the editing of the Itm Warehouse Items
@@ -412,7 +418,7 @@ class ItmWarehouse extends WireData implements Module {
 	 * @return ConfigIn
 	 */
 	public function get_config_in() {
-		return ConfigInQuery::create()->findOne();
+		return Configs\In::config();
 	}
 
 	/**
@@ -420,7 +426,7 @@ class ItmWarehouse extends WireData implements Module {
 	 * @return ConfigSalesOrder
 	 */
 	public function get_config_so() {
-		return ConfigSalesOrderQuery::create()->findOne();
+		return Configs\So::config();
 	}
 
 	/**
@@ -507,7 +513,8 @@ class ItmWarehouse extends WireData implements Module {
 	}
 
 	public function init() {
-		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
-		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker = new FunctionLocker();
+		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker->setUser($this->wire('user'));
 	}
 }
