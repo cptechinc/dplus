@@ -12,12 +12,12 @@ class Mci extends AbstractController {
 	}
 
 	public static function validateCustid($data) {
-		$fields = ['custID|text'];
+		$fields = ['custID|text', 'jqv|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
 		if ($validate->custid($data->custID) === false) {
-			return "Customer $data->custID not found";
+			return $data->jqv ? "Customer $data->custID not found" : false;
 		}
 		return true;
 	}
