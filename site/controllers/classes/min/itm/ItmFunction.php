@@ -3,10 +3,13 @@
 use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Itm as ItmModel;
+// Dplus Filters
+use Dplus\Filters;
 // Validators
 use Dplus\CodeValidators\Min as MinValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+
 
 class ItmFunction extends AbstractController {
 	const PERMISSION_ITMP = '';
@@ -72,6 +75,28 @@ class ItmFunction extends AbstractController {
 		if ($itemID) {
 			$url->query->set('itemID', $itemID);
 		}
+		return $url->getUrl();
+	}
+
+	public static function itmListUrl($focus = '') {
+		if (empty($focus)) {
+			return self::itmUrl();
+		}
+		return self::itmListFocus($focus);
+	}
+
+	public static function itmListFocus($itemID) {
+		$itm = self::getItm();
+
+		if ($itm->exists($itemID) === false) {
+			return self::itmUrl();
+		}
+		$page = self::pw('pages')->get("pw_template=itm");
+		$filter = new Filters\Min\ItemMaster();
+		$offset = $filter->positionQuick($itemID);
+		$pagenbr = ceil($offset / self::pw('session')->display);
+		$url = self::pw('modules')->get('Dpurl')->paginate(new Purl($page->url), $page->name, $pagenbr);
+		$url->query->set('focus', $itemID);
 		return $url->getUrl();
 	}
 
@@ -161,6 +186,10 @@ class ItmFunction extends AbstractController {
 
 		$m->addHook('Page(pw_template=itm)::itmUrl', function($event) {
 			$event->return = self::itmUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=itm)::itmListUrl', function($event) {
+			$event->return = self::itmListUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=itm)::itmUrlFunction', function($event) {

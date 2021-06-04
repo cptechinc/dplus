@@ -144,4 +144,23 @@ class Item extends ItmFunction {
 		$page->js = $config->twig->render('items/item-list.js.twig');
 		return $html;
 	}
+
+/* =============================================================
+	URLs
+============================================================= */
+	public static function itmDeleteUrl($itemID) {
+		$url = new Purl(self::itmUrl($itemID));
+		$url->query->set('action', 'delete-itm');
+		return $url->getUrl();
+	}
+
+	public static function initHooks() {
+		parent::initHooks();
+		$m = self::pw('modules')->get('Itm');
+
+
+		$m->addHook('Page(pw_template=itm)::itmDeleteUrl', function($event) {
+			$event->return = self::itmUrl($event->arguments(0));
+		});
+	}
 }

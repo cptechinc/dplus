@@ -30,12 +30,12 @@
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 			{% if item.isNew() == false %}
-				<a href="{{ page.itm_deleteURL(item.itemid) }}" class="btn btn-danger form_button delete_button">
+				<a href="{{ page.itmDeleteUrl(item.itemid) }}" class="btn btn-danger form_button delete_button">
 					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}
 		{% endif %}
-		<a href="{{ page.itmListURL(item.itemid) }}" class="btn btn-warning">
+		<a href="{{ page.itmListUrl(item.itemid) }}" class="btn btn-warning">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
 		</a>
 	</div>
