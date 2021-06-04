@@ -153,7 +153,7 @@ class Item extends ItmFunction {
 
 		$page->searchURL = $page->url;
 		$html  = $config->twig->render('items/itm/bread-crumbs.twig');
-		$html  .= $config->twig->render('items/item-search.twig', ['items' => $items]);
+		$html  .= $config->twig->render('items/itm/itm/search.twig', ['items' => $items, 'itm' => self::getItm()]);
 		$html  .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
 		$page->js = $config->twig->render('items/item-list.js.twig');
 		return $html;
