@@ -16,6 +16,26 @@ class Min extends AbstractController {
 		return 'test';
 	}
 
+	public static function validateStockCode($data) {
+		self::sanitizeParametersShort($data, ['code|text', 'jqv|bool']);
+		$validate = self::validator();
+
+		if ($validate->stockcode($data->code) === false) {
+			return $data->jqv "Tariff Code $code not found" : false;
+		}
+		return true;
+	}
+
+	public static function validateSpecialItemCode($data) {
+		self::sanitizeParametersShort($data, ['code|text', 'jqv|bool']);
+		$validate = self::validator();
+
+		if ($validate->specialitem($data->code) === false) {
+			return $data->jqv "Special Item Code $code not found" : false;
+		}
+		return true;
+	}
+
 	public static function validateTariffCode($data) {
 		$fields = ['code|text', 'tariffcode|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
