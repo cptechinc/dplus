@@ -123,62 +123,6 @@ class ItmXrefs extends WireData implements Module {
 	}
 
 /* =============================================================
-	URL Functions
-============================================================= */
-	/**
-	 * Return URL to view / edit Item Xrefs
-	 * @param  string $itemID
-	 * @return string
-	 */
-	public function get_itm_xrefsURL($itemID) {
-		$url = new Url($this->wire('pages')->get("pw_template=itm-xrefs")->url);
-		$url->query->set('itemID', $itemID);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to view Kit
-	 * @param  string  $itemID      Item ID / Kit ID
-	 * @return string
-	 */
-	public function get_kitURL($itemID, $focus = '') {
-		$url = new Url($this->wire('pages')->get('pw_template=itm-kit')->url);
-		$url->query->set('itemID', $itemID);
-		if ($focus) {
-			$url->query->set('focus', $focus);
-		}
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to view Kit Component
-	 * @param  string  $itemID      Item ID / Kit ID
-	 * @param  string  $component   Component Item ID
-	 * @return string
-	 */
-	public function get_kit_componentURL($itemID, $component = '') {
-		$url = new Url($this->wire('pages')->get('pw_template=itm-kit')->url);
-		$url->query->set('itemID', $itemID);
-		$url->query->set('component', $component);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to view Kit Component
-	 * @param  string  $itemID      Item ID / Kit ID
-	 * @param  string  $component   Component Item ID
-	 * @return string
-	 */
-	public function get_kit_component_deleteURL($itemID, $component) {
-		$url = new Url($this->wire('pages')->get('pw_template=itm-kit')->url);
-		$url->query->set('action', 'delete-component');
-		$url->query->set('itemID', $itemID);
-		$url->query->set('kitID', $itemID);
-		$url->query->set('component', $component);
-		return $url->getUrl();
-	}
-
-/* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
 	public static function getModuleInfo() {
@@ -189,50 +133,5 @@ class ItmXrefs extends WireData implements Module {
 			'singular' => true,
 			'autoload' => true,
 		);
-	}
-
-	/**
-	 * Sets up Hook Functions for pages that have itm-xrefs as a parent
-	 * @return void
-	 */
-	public function init() {
-		$itm = $this->wire('modules')->get('Itm');
-		$templates = implode('|', $itm::TEMPLATES_ITM);
-
-		$this->addHook("Page(pw_template=$templates)::itm_xrefsURL", function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_itm_xrefsURL($itemID);
-		});
-
-		$this->add_pagehooks_kim();
-	}
-
-	public function add_pagehooks_kim() {
-		$itm = $this->wire('modules')->get('Itm');
-		$templates = implode('|', $itm::TEMPLATES_ITM);
-
-		$this->addHook("Page(pw_template=$templates)::kitURL", function($event) {
-			$itemID = $event->arguments(0);
-			$focus  = $event->arguments(1);
-			$event->return = $this->get_kitURL($itemID);
-		});
-
-		$this->addHook("Page(pw_template=$templates)::kit_exitURL", function($event) {
-			$p = $event->object;
-			$itemID = $event->arguments(0);
-			$event->return = $p->itm_xrefsURL($itemID);
-		});
-
-		$this->addHook("Page(pw_template=$templates)::kit_componentURL", function($event) {
-			$itemID = $event->arguments(0);
-			$component = $event->arguments(1);
-			$event->return = $this->get_kit_componentURL($itemID, $component);
-		});
-
-		$this->addHook("Page(pw_template=$templates)::kit_component_deleteURL", function($event) {
-			$itemID = $event->arguments(0);
-			$component = $event->arguments(1);
-			$event->return = $this->get_kit_component_deleteURL($itemID, $component);
-		});
 	}
 }
