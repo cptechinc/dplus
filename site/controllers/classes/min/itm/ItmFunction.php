@@ -22,21 +22,20 @@ class ItmFunction extends AbstractController {
 	Validations
 ============================================================= */
 	protected static function validateItemid($data) {
-		$data = self::sanitizeParametersShort($data, ['itemID|text']);
-		$wire = self::pw();
+		self::sanitizeParametersShort($data, ['itemID|text']);
 		$validate = self::getMinValidator();
 
 		if ($validate->itemid($data->itemID) === false) {
-			$wire->wire('session')->redirect($wire->wire('page')->itmURL($data->itemID), $http301 = false);
+			self::pw('session')->redirect(self::itmUrl($data->itemID), $http301 = false);
 		}
 		return true;
 	}
 
 	protected static function validateUserPermission() {
-		$wire = self::pw();
-		$user = $wire->wire('user');
-		$itmp = $wire->wire('modules')->get('Itmp');
-		$page = $wire->wire('page');
+		$user = self::pw('user');
+		$itmp = self::pw('modules')->get('Itmp');
+		$page = self::pw('page');
+
 		if ($user->has_function('itm') === false) {
 			return false;
 		}
