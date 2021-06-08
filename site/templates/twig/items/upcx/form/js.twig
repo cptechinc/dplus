@@ -15,8 +15,8 @@ $(function() {
 ============================================================= */
 	$("body").on("change", "input[name=upc]", function(e) {
 		var input = $(this);
-		request_validate_upc(input.val(), function(valid) {
-			if (!valid) {
+		request_validate_upc(input.val(), function(exists) {
+			if (exists) {
 				swal2.fire({
 					title: 'UPC Exists',
 					text: 'Edit UPC ' + input.val() + '?',
@@ -46,7 +46,6 @@ $(function() {
 		});
 	});
 
-
 	$("body").on("change", "input[name=primary]", function(e) {
 		input_validatedprimary.val('false');
 	});
@@ -57,11 +56,8 @@ $(function() {
 	modal_ajax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
-		var url = '{{ page.search_itemsURL }}';
+		var url = button.data('lookupurl');
 
-		if (button.data('search') == 'item') {
-			url = '{{ page.search_itemsURL }}';
-		}
 		modal.find('.modal-title').text(button.attr('title'));
 		modal.resizeModal('xl');
 		modal.find('.modal-body').loadin(url, function() {});
@@ -104,22 +100,23 @@ $(function() {
 			upc: {
 				required: true,
 				remote: {
-					url: '{{ page.validateURL }}',
+					url: '{{ page.jsonapiURL('inv/validate/upcx/upc/') }}',
 					type: "get",
 					data: {
-						action: 'validate-upc',
-						itemID: $( "input[name=itemID]" ).val()
+						jqv: 'true',
+						new: function() {
+							var isNew = $('input[name=upc]').data('new');
+							return isNew;
+						}
 					}
 				}
 			},
 			itemID: {
 				required: true,
 				remote: {
-					url: '{{ page.validateURL }}',
+					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
 					type: "get",
-					data: {
-						action: 'validate-itemid',
-					}
+					data: {}
 				}
 			},
 		},
@@ -131,6 +128,8 @@ $(function() {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		submitHandler: function(form) {
+			$('#loading-modal').modal('show');
+
 			var formdata = form_upc.serializeArray().reduce(function(obj, item) {
 				obj[item.name] = item.value;
 				return obj;
@@ -139,6 +138,7 @@ $(function() {
 			if (formdata['action'] == 'update-upcx') {
 				validate_primary(function(canSubmit) {
 					if (canSubmit) {
+						$('<input type="hidden" name="action" value="update-upcx">').appendTo($(form));
 						form.submit();
 					}
 				});
@@ -155,11 +155,17 @@ $(function() {
 
 		if (input_primary.prop("checked") === true && input_primary.data("primary") == false) {
 			request_validate_upc_primary(input_upc.val(), input_itemid.val(), function(isPrimary) {
+				if (isPrimary === true) {
+					$('input[name=valid_primary]').val('true');
+					callback(true);
+					return true;
+				}
 				if (isPrimary === false) {
 					swal_change_primary_upc(function(canContinue) {
 						callback(canContinue);
 					});
 				}
+
 			});
 		}
 	}
@@ -178,8 +184,10 @@ $(function() {
 				confirmButtonText: 'Yes!'
 			}).then(function (result) {
 				if (result.value) {
+					$('input[name=valid_primary]').val('true');
 					callback(true);
 				} else {
+					$('input[name=valid_primary]').val('false');
 					callback(false);
 				}
 			});
@@ -190,8 +198,8 @@ $(function() {
 	AJAX Request Functions
 ============================================================= */
 	function request_validate_upc(upc, callback) {
-		var url = new URI('{{ page.validateURL }}');
-		url.addQuery('action', 'validate-upc').addQuery('upc', upc);
+		var url = new URI('{{ page.jsonapiURL('inv/validate/upcx/upc/') }}');
+		url.addQuery('upc', upc);
 
 		$.getJSON(url.toString(), function(response) {
 			var valid = typeof response == 'boolean' && response === true;
@@ -200,8 +208,8 @@ $(function() {
 	}
 
 	function request_validate_upc_primary(upc, itemID, callback) {
-		var url = new URI('{{ page.validateURL }}');
-		url.addQuery('action', 'validate-primary-upc').addQuery('upc', upc).addQuery('itemID', itemID);
+		var url = new URI('{{ page.jsonapiURL('inv/validate/upcx/upc/primary/') }}');
+		url.addQuery('upc', upc).addQuery('itemID', itemID);
 
 		$.getJSON(url.toString(), function(response) {
 			var valid = typeof response == 'boolean' && response === true;
@@ -210,9 +218,9 @@ $(function() {
 	}
 
 	function request_validate_itemid(itemID, callback) {
-		var url = new URI('{{ page.validateURL }}');
-		url.addQuery('action', 'validate-itemid').addQuery('itemID', itemID);
-		console.log(url.toString());
+		var url = new URI('{{ page.jsonapiURL('inv/validate/itemid/')  }}');
+		url.addQuery('itemID', itemID);
+
 		$.getJSON(url.toString(), function(response) {
 			var valid = typeof response == 'boolean' && response === true;
 			callback(valid);
@@ -220,9 +228,9 @@ $(function() {
 	}
 
 	function get_item(itemID, callback) {
-		var url = new URI('{{ page.validateURL }}');
-		url.addQuery('action', 'get-item').addQuery('itemID', itemID);
-
+		var url = new URI('{{ page.jsonapiURL('inv/item/') }}');
+		url.addQuery('itemID', itemID);
+		console.log(url.toString());
 		$.getJSON(url.toString(), function(item) {
 			callback(item);
 		});

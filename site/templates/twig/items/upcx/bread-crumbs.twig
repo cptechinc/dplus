@@ -1,21 +1,28 @@
 {% extends 'util/bread-crumbs.twig' %}
+
+{% set values = page.wire('input').get %}
+
 {% block current_page %}
-	{% if page.wire('input').get.offsetExists('itemID') %}
+	{% if values.offsetExists('upc') == false and values.offsetExists('itemID') == false  %}
+	<li class="breadcrumb-item active" aria-current="page">UPCX</li>
+	{% endif %}
+
+	{% if values.offsetExists('itemID') %}
 		<li class="breadcrumb-item">
 			<a href="{{ page.url }}">{{ page.title }}</a>
 		</li>
-		<li class="breadcrumb-item active" aria-current="page">Item: {{ page.itemID }}</li>
+		<li class="breadcrumb-item active" aria-current="page">Item: {{ values.text('itemID') }}</li>
 	{% endif %}
 
-	{% if page.wire('input').get.offsetExists('upc') %}
+	{% if values.offsetExists('upc') %}
 		<li class="breadcrumb-item">
 			<a href="{{ page.url }}">UPCX</a>
 		</li>
-		{% if input.get('itemID') %}
+		{% if values.offsetExists('itemID') %}
 			<li class="breadcrumb-item">
-				<a href="{{ page.item_upcsURL(page.itemID) }}">Item: {{ page.itemID }}</a>
+				<a href="{{ page.itemUpcsUrl(values.text('itemID')) }}">Item: {{ values.text('itemID') }}</a>
 			</li>
 		{% endif %}
-		<li class="breadcrumb-item active" aria-current="page">{{ page.upc }}</li>
+		<li class="breadcrumb-item active" aria-current="page">{{ values.text('upc') }}</li>
 	{% endif %}
 {% endblock %}

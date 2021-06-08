@@ -1,0 +1,55 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	items                  ItemMasterItem[]|ObjectCollectiion
+	datamatcher            module RegexData
+	q                      Search
+	pricing                module ItemPricing
+#}
+
+<table id="item-index" class="table table-bordered">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th scope="col">Item / Desc</th>
+			<th scope="col">Group</th>
+			<th scope="col"></th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if items.count() == 0 %}
+			<tr>
+				<td colspan="3" class="bg-gray text-white text-center">
+					No Results found
+				</td>
+			</tr>
+		{% endif %}
+
+		{% if items.count() %}
+			{% for item in items %}
+				<tr data-itemid="{{ item.itemid }}">
+					<td>
+						<strong>{{ item.itemid }}</strong> <br>
+						<small class="smaller">
+							{{ item.desc }} ; {{ item.desc2 }}
+						</small>
+					</td>
+					<td>
+						{{ item.itemgroup }}
+					</td>
+					<td class="text-center">
+						{% if itm.recordlocker.isLocked(item.itemid) == false or itm.recordlocker.userHasLocked(item.itemid) %}
+							<a href="{{ page.itmUrl(item.itemid) }}" class="btn btn-warning btn-sm">
+								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+							</a>
+						{% else %}
+							<span class="badge badge-secondary">
+								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ itm.recordlocker.getLockingUser(item.itemid) }}
+							</span>
+						{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+		{% endif %}
+	</tbody>
+</table>

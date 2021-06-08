@@ -4,6 +4,8 @@ use Propel\Runtime\ActiveQuery\Criteria;
 
 use LockRecordQuery, LockRecord;
 
+include_once(__DIR__.'/vendor/autoload.php');
+
 /**
  * RecordLocker
  *

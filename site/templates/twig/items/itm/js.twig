@@ -9,6 +9,20 @@ $(function() {
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
+	$("body").on("change", "input[name=custID]", function(e) {
+		var input = $(this);
+		customerJson(input.val(), function(customer) {
+			$('.customer-name').text('');
+
+			if (customer) {
+				$('.customer-name').text(customer.name);
+			}
+		});
+	});
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
 	origForm = form.serialize();
 
 	$("body").on("click", "a:not(#itm-form a, #ajax-modal a)", function(e) {
@@ -38,27 +52,32 @@ $(function() {
 	});
 
 /* =============================================================
-	Customer Lookup Modal Functions
+	Lookup Modal Functions
 ============================================================= */
 	modal_ajax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
-		var url = '{{ page.customerlookupURL }}';
+		var url = button.data('lookupurl');
+
+		modal.attr('data-input', button.data('input'));
 		modal.find('.modal-title').text('Search for a Customer');
 		modal.resizeModal('xl');
-		modal.find('.modal-body').loadin(url, function() {});
+		modal.find('.modal-body').loadin(url, function() {
+			modal.find('input[name=q]').focus();
+		});
 	});
 
-	$("body").on('click', '.ci-customer', function(e) {
+	$("body").on('click', '.customer-link', function(e) {
 		e.preventDefault();
 		var custid = $(this).data('custid');
-		var cust_name = $(this).data('cust_name');
-		input_customer.val(custid);
-		input_custname.val(cust_name);
+		var modal  = $(this).closest('.modal');
+		var input  = $(modal.attr('data-input'));
+
+		input.val(custid);
 		modal_ajax.modal('hide');
 	});
 
-	$("body").on('submit', '#lookup form', function(e) {
+	$("body").on('submit', '#ajax-modal form', function(e) {
 		e.preventDefault();
 		var form = $(this);
 		var query = form.serialize();
@@ -72,19 +91,6 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-
-	jQuery.validator.addMethod("custid", function(value, element) {
-		return validate_custid(value);
-	}, "Cust ID not found in the Customer Master");
-
-	jQuery.validator.addMethod("stockcode", function(value, element) {
-		return validate_stockcode(value);
-	}, "Stock Code is invalid");
-
-	jQuery.validator.addMethod("specialitemcode", function(value, element) {
-		return validate_specialitemcode(value);
-	}, "Special Item Code is invalid");
-
 	form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
@@ -104,14 +110,38 @@ $(function() {
 				minlength: 3,
 				maxlength: {{ item.get_length_itemid() }},
 			},
-			custid: {
-				custid: true
+			custID: {
+				remote: {
+					url: '{{ page.jsonapiURL('mar/validate/custid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true'
+					}
+				}
 			},
 			stockcode: {
-				stockcode: true
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/code/stock/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							$('#stockcode').val();
+						}
+					}
+				}
 			},
 			specialitemcode: {
-				specialitemcode: true
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/code/special-item/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						code: function() {
+							$('#specialitemcode').val();
+						}
+					}
+				}
 			},
 		},
 		messages: {
@@ -137,52 +167,21 @@ $(function() {
 		}
 	});
 
-	function validate_custid(custID, callback) {
-		if (custID.length) {
-			var url = URI('{{ page.itm_validateURL() }}');
-			url.addQuery('action', 'validate-custid');
-
-			$.getJSON(url.toString(), function( valid ) {
-				return valid;
-			});
-		}
-		return true;
-	}
-
-	function validate_stockcode(code, callback) {
-		if (code.length) {
-			var url = URI('{{ page.itm_validateURL() }}');
-			url.addQuery('action', 'validate-stockcode');
-			url.addQuery('code', code);
-
-			$.getJSON(url.toString(), function( valid ) {
-				return valid;
-			});
-		}
-		return true;
-	}
-
-	function validate_specialitemcode(code, callback) {
-		if (code.length) {
-			var url = URI('{{ page.itm_validateURL() }}');
-			url.addQuery('action', 'validate-specialitemcode');
-			url.addQuery('code', code);
-
-			$.getJSON(url.toString(), function( valid ) {
-				return valid;
-			});
-		}
-		return true;
-	}
-
 	function request_item_json(itemID, callback) {
-		var url = URI('{{ page.itm_validateURL() }}');
-		url.addQuery('action', 'validate-itemid-exists');
-		url.addQuery('return', 'bool');
+		var url = URI('{{ page.jsonapiURL('inv/validate/itemid/') }}');
 		url.addQuery('itemID', itemID);
 
 		$.getJSON(url.toString(), function(exists) {
 			callback(exists);
+		});
+	}
+
+	function customerJson(custID, callback) {
+		var url = URI('{{ page.jsonapiURL('mar/customer/') }}');
+		url.addQuery('custID', custID);
+
+		$.getJSON(url.toString(), function(customer) {
+			callback(customer);
 		});
 	}
 

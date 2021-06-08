@@ -68,11 +68,11 @@ class Warehouse extends ItmFunction {
 		$page    = self::pw('page');
 		$page->headline = "ITM: $data->itemID Warehouse $data->whseID";
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
-		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page]);
-		$html .= Itm::lockItem($data->itemID);
+		$html .= $config->twig->render('items/itm/itm-links.twig');
+		$html .= self::lockItem($data->itemID);
 		$validate = self::getMinValidator();
 
-		if ($validate->whseid($data->whseID) === false) {
+		if ($validate->whseid($data->whseID) === false && $data->whseID != 'new') {
 			return self::invalidWhse($data);
 		}
 		$itm  = self::getItm();
@@ -103,9 +103,9 @@ class Warehouse extends ItmFunction {
 		$validate = self::getMinValidator();
 		$html = '';
 		if ($validate->whseid($data->whseID) === false) {
-			$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Warehouse Not Found", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Warehouse '$data->whseID' not found "]);
+			$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Warehouse Not Found", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Warehouse '$data->whseID' not found "]);
 			$htmlwriter = self::pw('modules')->get('HtmlWriter');
-			$url = $page->itm_warehouseURL($data->itemID);
+			$url = self::itmUrlWhse($data->itemID);
 			$html .= $htmlwriter->a("class=btn btn-primary mt-3|href=$url", $htmlwriter->icon('fa fa-undo')." Warehouses");
 		}
 		return $html;
@@ -116,10 +116,9 @@ class Warehouse extends ItmFunction {
 		$html = '';
 		$itmW->lockrecord($whse);
 
-		if ($itmW->recordlocker->function_locked($whse->itemid) && !$itmW->recordlocker->function_locked_by_user($itmW->lockerkey($whse))) {
-			$config = self::pw('config');
-			$msg = "Warehouse $whse->whseid for $whse->itemid is being locked by " . $itmW->recordlocker->get_locked_user($itmW->lockerkey($whse));
-			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Warehouse $whse->whseid is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		if ($itmW->recordlocker->isLocked($whse->itemid) && $itmW->recordlocker->userHasLocked($itmW->lockerkey($whse)) === false) {
+			$msg = "Warehouse $whse->whseid for $whse->itemid is being locked by " . $itmW->recordlocker->getLockingUser($itmW->lockerkey($whse));
+			$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Warehouse $whse->whseid is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 			$html .= '<div class="mb-3"></div>';
 		}
 		return $html;
@@ -141,10 +140,10 @@ class Warehouse extends ItmFunction {
 		$page    = self::pw('page');
 		$itm     = self::getItm();
 		$itmw    = self::getItmWarehouse();
-		$itmw->recordlocker->remove_lock($page->lockcode);
+		$itmw->recordlocker->deleteLock($page->lockcode);
 		$page->headline = "ITM: $data->itemID Warehouses";
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
-		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page]);
+		$html .= $config->twig->render('items/itm/itm-links.twig');
 		$html .= $config->twig->render('items/itm/warehouse/list-display.twig', ['itmw' => $itmw, 'itemID' => $data->itemID, 'item' => $itm->item($data->itemID), 'warehouses' => $itmw->get_itemwarehouses($data->itemID)]);
 		return $html;
 	}

@@ -59,10 +59,9 @@ $(function() {
 			component: {
 				required: true,
 				remote: {
-					url: '{{ page.itm_validateURL() }}',
+					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
 					type: "get",
 					data: {
-						action: 'validate-itemid-exists',
 						itemID: function() {
 							return $('input[name=component]').val()
 						}
@@ -143,7 +142,7 @@ $(function() {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
 		var url = button.data('lookupurl');
-		console.log(url);
+		modal.attr('data-input', button.data('input'));
 
 		modal.find('.modal-title').text(button.attr('title'));
 		modal.resizeModal('xl');

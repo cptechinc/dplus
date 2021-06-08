@@ -7,6 +7,9 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Model;
 abstract class AbstractConfig {
 	const MODEL = '';
 
+	/** @var Model */
+	protected static $config;
+
 	/**
 	 * Return New Query Class
 	 * @return Query
@@ -17,11 +20,19 @@ abstract class AbstractConfig {
 	}
 
 	/**
-	 * Return Config Record
+	 * Return Config from Database
+	 * @return Model
+	 */
+	public static function getConfig() {
+		return static::query()->findOne();
+	}
+
+	/**
+	 * Return Config from Memory
 	 * @return Model
 	 */
 	public static function config() {
-		return static::query()->findOne();
+		return static::getConfig();
 	}
 
 	/**

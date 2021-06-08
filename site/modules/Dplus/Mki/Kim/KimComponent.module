@@ -30,6 +30,10 @@ class KimComponent extends WireData implements Module {
 		return InvKitComponent::OPTIONS_USAGETAG;
 	}
 
+	public function componentUsageOptions() {
+		return InvKitComponent::OPTIONS_USAGETAG;
+	}
+
 	/**
 	 * Return Kit Component Query
 	 * @return InvKitComponentQuery
@@ -79,7 +83,7 @@ class KimComponent extends WireData implements Module {
 
 		$validator = new MinValidator();
 
-		if ($validator->itemid_exists($itemID)) {
+		if ($validator->itemid($itemID)) {
 			$c->setItemid($itemID);
 		}
 		return $c;
@@ -227,14 +231,14 @@ class KimComponent extends WireData implements Module {
 			)
 		);
 
-		if ($this->configs->kt->usageorfreeusage()) {
+		if ($this->configs->kt->isUsageTag()) {
 			$fields['usagetag'] = array(
 				'description' => 'Usage Tag Code',
 				'allow_blank' => false,
 				'function'    => 'component_usagetag'
 			);
 		}
-		if ($this->configs->kt->usageorfreefree()) {
+		if ($this->configs->kt->isFreeUsage()) {
 			$fields['freegoods'] = array(
 				'description' => 'Free Goods',
 				'allow_blank' => false,
@@ -257,7 +261,7 @@ class KimComponent extends WireData implements Module {
 	 * @param  array           $invalidfields Input fields that require attention
 	 * @return KimResponse
 	 */
-	protected function save_and_respond(InvKitComponent $record, array $invalidfields = null) {
+	protected function save_and_respond(InvKitComponent $record, array $invalidfields = []) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 

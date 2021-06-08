@@ -2,6 +2,8 @@
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Mso\Cxm;
 
+	Cxm::init();
+
 	$routes = [
 		['GET',  '', Cxm::class, 'index'],
 		['GET',  'page{d:\d+}', Cxm::class, 'list'],

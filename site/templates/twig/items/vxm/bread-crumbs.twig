@@ -1,28 +1,31 @@
 {% extends 'util/bread-crumbs.twig' %}
+
+{% set values = page.wire('input').get %}
+
 {% block current_page %}
-	{% if page.has('vendorID') %}
+	{% if values.offsetExists('vendorID') %}
 		<li class="breadcrumb-item">
-			<a href="{{ page.vxmURL(page.vendorID) }}">
+			<a href="{{ page.vendorListUrl(values.text('vendorID')) }}">
 				<i class="fa fa-arrows" aria-hidden="true"></i> {{ page.has('dplus_function') ? page.dplus_function|upper : page.title }}
 			</a>
 		</li>
-		{% if (page.has('vendoritemID')) %}
+		{% if (values.offsetExists('vendoritemID')) %}
 			<li class="breadcrumb-item">
-				<a href="{{ page.vxm_vendorURL(page.vendorID) }}">Vendor: {{ page.vendorID }}</a>
+				<a href="{{ page.vendorUrl(values.text('vendorID')) }}">Vendor: {{ values.text('vendorID') }}</a>
 			</li>
-			{% if page.vendoritemID == 'new' %}
+			{% if values.text('vendoritemID') == 'new' %}
 				<li class="breadcrumb-item active" aria-current="page">New Item X-Ref</li>
 			{% else %}
-				<li class="breadcrumb-item active" aria-current="page">X-Ref Item: {{ page.vendoritemID }}</li>
+				<li class="breadcrumb-item active" aria-current="page">X-Ref Item: {{ values.text('vendoritemID') }}</li>
 			{% endif %}
 		{% else %}
-			<li class="breadcrumb-item active" aria-current="page">Vendor: {{ page.vendorID }}</li>
+			<li class="breadcrumb-item active" aria-current="page">Vendor: {{ values.text('vendorID') }}</li>
 		{% endif %}
-	{% elseif page.has('itemID') %}
+	{% elseif values.offsetExists('itemID') %}
 		<li class="breadcrumb-item">
 			<a href="{{ page.url }}">{{ page.title }}</a>
 		</li>
-		<li class="breadcrumb-item active" aria-current="page">Item: {{ page.itemID }}</li>
+		<li class="breadcrumb-item active" aria-current="page">Item: {{ values.text('itemID') }}</li>
 	{% else %}
 		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
 	{% endif %}

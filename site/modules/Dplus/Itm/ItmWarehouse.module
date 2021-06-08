@@ -2,14 +2,20 @@
 
 include_once(__DIR__.'/ItmResponse.php');
 
+// Purl URI
 use Purl\Url;
-
-use Dplus\CodeValidators\Itm\Warehouse as ItmwValidator;
+// Dplus Mdoels
 use WarehouseInventoryQuery, WarehouseInventory;
 use WarehouseQuery, Warehouse;
 use WarehouseBinQuery, WarehouseBin;
 use ConfigInQuery, ConfigIn;
 use ConfigSalesOrderQuery, ConfigSalesOrder;
+// Dplus Record Locker
+use Dplus\RecordLocker\UserFunction as FunctionLocker;
+// Dplus Code Validators
+use Dplus\CodeValidators\Itm\Warehouse as ItmwValidator;
+// Dplus Configs
+use Dplus\Configs;
 
 /**
  * Module that handles the editing of the Itm Warehouse Items
@@ -212,7 +218,7 @@ class ItmWarehouse extends WireData implements Module {
 		}
 
 		if (!$this->lockrecord($record) && !$record->isNew()) {
-			$message = self::DESCRIPTION_RECORD . " ($itemID-$whseID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($this->lockerkey($record));
+			$message = self::DESCRIPTION_RECORD . " ($itemID-$whseID)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($this->lockerkey($record));
 			$response = ItmResponse::response_error($itemID, $message);
 			$response->set_whseID($whseID);
 			$this->wire('session')->setFor('response', 'itm', $response);
@@ -239,7 +245,7 @@ class ItmWarehouse extends WireData implements Module {
 		$record = $this->getOrCreate($itemID, $whseID);
 
 		if (!$this->lockrecord($record) && !$record->isNew()) {
-			$message = self::DESCRIPTION_RECORD . " ($itemID-$whseID)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($this->lockerkey($record));
+			$message = self::DESCRIPTION_RECORD . " ($itemID-$whseID)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($this->lockerkey($record));
 			$session->response_itm = ItmResponse::response_error($itemID, $message);
 			$session->response_itm->set_whseID($whseID);
 			return false;
@@ -385,10 +391,10 @@ class ItmWarehouse extends WireData implements Module {
 	 * @return bool
 	 */
 	public function lockrecord(WarehouseInventory $record) {
-		if (!$this->recordlocker->function_locked($this->lockerkey($record))) {
-			$this->recordlocker->create_lock($this->lockerkey($record));
+		if (!$this->recordlocker->isLocked($this->lockerkey($record))) {
+			$this->recordlocker->lock($this->lockerkey($record));
 		}
-		return $this->recordlocker->function_locked_by_user($this->lockerkey($record));
+		return $this->recordlocker->userHasLocked($this->lockerkey($record));
 	}
 
 	/**
@@ -412,7 +418,7 @@ class ItmWarehouse extends WireData implements Module {
 	 * @return ConfigIn
 	 */
 	public function get_config_in() {
-		return ConfigInQuery::create()->findOne();
+		return Configs\In::config();
 	}
 
 	/**
@@ -420,7 +426,7 @@ class ItmWarehouse extends WireData implements Module {
 	 * @return ConfigSalesOrder
 	 */
 	public function get_config_so() {
-		return ConfigSalesOrderQuery::create()->findOne();
+		return Configs\So::config();
 	}
 
 	/**
@@ -507,7 +513,8 @@ class ItmWarehouse extends WireData implements Module {
 	}
 
 	public function init() {
-		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
-		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker = new FunctionLocker();
+		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker->setUser($this->wire('user'));
 	}
 }

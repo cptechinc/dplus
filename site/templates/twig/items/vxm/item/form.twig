@@ -34,13 +34,13 @@
 			</button>
 
 			{% if item.isNew() == false %}
-				<a href="{{ page.vxm_item_deleteURL(item.ouritemid, item.vendorid, item.vendoritemid) }}" class="btn btn-danger delete_button">
+				<a href="{{ page.xrefDeleteUrl(item.ouritemid, item.vendorid, item.vendoritemid) }}" class="btn btn-danger delete_button">
 					<i class="fa fa-trash" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}
 		{% endif %}
 
-		<a href="{{ page.vxm_item_exitURL(item) }}" class="btn btn-warning">
+		<a href="{{ page.xrefExitUrl(item) }}" class="btn btn-warning">
 			<i class="fa fa-times" aria-hidden="true"></i> Close
 		</a>
 	</div>

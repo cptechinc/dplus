@@ -27,7 +27,7 @@
 		</div>
 	</div>
 	<div class="d-flex justify-content-between align-items-center">
-		{% if itm.recordlocker.function_locked_by_user(item.itemid) %}
+		{% if itm.recordlocker.userHasLocked(item.itemid) %}
 			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>

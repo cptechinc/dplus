@@ -165,12 +165,12 @@
 					Only show Edit Actions if the Item is
 					1. Locked for editing by the User
 				#}
-				{% if itm.recordlocker.function_locked_by_user(item.itemid) %}
+				{% if itm.recordlocker.userHasLocked(item.itemid) %}
 					<button type="submit" class="btn btn-success" name="action" value="update-itm-hazmat">
 						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 					</button>
 				{% endif %}
-				<a href="{{ page.itmURL(item.itemid) }}" class="btn btn-warning">
+				<a href="{{ page.itmUrl(item.itemid) }}" class="btn btn-warning">
 					<i class="fa fa-times" aria-hidden="true"></i> Close
 				</a>
 			</div>

@@ -8,7 +8,7 @@ use Controllers\Min\Itm\ItmFunction;
 
 class Misc extends ItmFunction {
 	const PERMISSION_ITMP = 'misc';
-	
+
 	private static $misc;
 
 	public static function index($data) {
@@ -72,8 +72,8 @@ class Misc extends ItmFunction {
 		if ($session->getFor('response', 'itm')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
 		}
-		$html .= Itm::lockItem($data->itemID);
-		$html .= $config->twig->render('items/itm/itm-links.twig', ['page_itm' => $page]);
+		$html .= self::lockItem($data->itemID);
+		$html .= $config->twig->render('items/itm/itm-links.twig');
 		$html .= $config->twig->render('items/itm/misc/page.twig', ['itm' => $itmMisc, 'item' => $item, 'recordlocker' => $itm->recordlocker]);
 		$page->js   .= $config->twig->render('items/itm/misc/js.twig', ['itm' => $itmMisc]);
 		return $html;
