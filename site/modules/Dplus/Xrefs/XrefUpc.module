@@ -7,6 +7,8 @@ use Purl\Url;
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemXrefUpcQuery, ItemXrefUpc;
 use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
+// Dplus Record Locker
+use Dplus\RecordLocker\UserFunction as FunctionLocker;
 // Dplus Filters
 use Dplus\Filters\Min\Upcx as UpcxFilter;
 
@@ -163,8 +165,8 @@ class XrefUpc extends WireData implements Module {
 		$upc = $values->text('upc');
 
 		if ($this->xref_exists($upc)) {
-			if (!$this->lockrecord($upc)) {
-				$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($upc);
+			if ($this->lockrecord($upc) === false) {
+				$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($upc);
 				$this->wire('session')->setFor('response', 'upcx', XrefResponse::response_error($upc, $message));
 				return false;
 			}
@@ -188,7 +190,7 @@ class XrefUpc extends WireData implements Module {
 		$record = $this->get_create_xref($upc);
 
 		if (!$this->lockrecord($upc) && !$record->isNew()) {
-			$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($upc);
+			$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($upc);
 			$this->wire('session')->setFor('response', 'upcx', XrefResponse::response_error($upc, $message));
 			return false;
 		}
@@ -219,7 +221,7 @@ class XrefUpc extends WireData implements Module {
 		$record->setNeedslabel($values->yn('needslabel'));
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));
-
+		
 		if ($values->text('primary') == ItemXrefUpc::PRIMARY_TRUE) {
 			if ($values->text('valid_primary') == 'true') {
 				$record->setPrimary(ItemXrefUpc::PRIMARY_TRUE);
@@ -308,10 +310,10 @@ class XrefUpc extends WireData implements Module {
 	 * @return bool
 	 */
 	public function lockrecord($upc) {
-		if (!$this->recordlocker->function_locked($upc)) {
-			$this->recordlocker->create_lock($upc);
+		if ($this->recordlocker->isLocked($upc) === false) {
+			$this->recordlocker->lock($upc);
 		}
-		return $this->recordlocker->function_locked_by_user($upc);
+		return $this->recordlocker->userHasLocked($upc);
 	}
 
 	public function validate_itemID($itemID) {
@@ -329,76 +331,6 @@ class XrefUpc extends WireData implements Module {
 	}
 
 /* =============================================================
-	URL Functions
-============================================================= */
-	/**
-	 * Return URL to view / edit UPC
-	 * @param  string $upc    UPC Code
-	 * @param  string $itemID ** Optional
-	 * @return string
-	 */
-	public function get_upcURL($upc, $itemID = '') {
-		$url = new Url($this->wire('pages')->get("pw_template=upcx")->url);
-		$url->query->set('upc', $upc);
-
-		if ($itemID) {
-			$url->query->set('itemID', $itemID);
-		}
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to List the UPCs associated with the ItemID
-	 * @param  string $itemID Item ID
-	 * @return string
-	 */
-	public function get_item_upcsURL($itemID) {
-		$url = new Url($this->wire('pages')->get("pw_template=upcx")->url);
-		$url->query->set('itemID', $itemID);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to List the UPCs associated with the ItemID
-	 * @param  string $itemID Item ID
-	 * @return string
-	 */
-	public function get_upc_listURL($focus = '') {
-		if ($focus == '') {
-			return $this->wire('pages')->get("pw_template=upcx")->url;
-		}
-		return $this->get_upc_list_focusURL($focus);
-	}
-
-	public function get_upc_list_focusURL($focus = '') {
-		$page = $this->wire('pages')->get("pw_template=upcx");
-
-		if ($focus == '' || $this->xref_exists($focus) === false) {
-			return $page->url;
-		}
-
-		$url = new Url($page->url);
-		$xref   = $this->xref($focus);
-		$filter = new UpcxFilter();
-		$offset = $filter->position($xref);
-		$pagenbr = ceil($offset / $this->wire('session')->display);
-		$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
-		$url->query->set('focus', $focus);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to delete UPC
-	 * @return string
-	 */
-	public function get_upc_deleteURL($upc) {
-		$url = new Url($this->wire('pages')->get("pw_template=upcx")->url);
-		$url->query->set('action', 'delete-upcx');
-		$url->query->set('upc', $upc);
-		return $url->getUrl();
-	}
-
-/* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
 	public static function getModuleInfo() {
@@ -412,53 +344,8 @@ class XrefUpc extends WireData implements Module {
 	}
 
 	public function init() {
-		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
-		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
-
-		$this->addHook('Page(pw_template=upcx)::upcURL', function($event) {
-			$upc = $event->arguments(0);
-			$event->return = $this->get_upcURL($upc);
-		});
-
-		$this->addHook('Page(pw_template=upcx)::upc_listURL', function($event) {
-			$focus = $event->arguments(0);
-			$event->return = $this->get_upc_listURL($focus);
-		});
-
-		$this->addHook('Page(pw_template=upcx)::item_upcsURL', function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = $this->get_item_upcsURL($itemID);
-		});
-
-		$this->addHook('Page(pw_template=upcx)::upc_createURL', function($event) {
-			$event->return = $this->get_upcURL('new');
-		});
-
-		$this->addHook('Page(pw_template=upcx)::upc_deleteURL', function($event) {
-			$upc = $event->arguments(0);
-			$event->return = $this->get_upc_deleteURL($upc);
-		});
-
-		$this->addHook('Page(pw_template=upcx)::upc_create_itemidURL', function($event) {
-			$event->return = $this->get_upcURL('new', $itemID);
-		});
-
-		$this->addHookProperty('Page(pw_template=upcx)::upc', function($event) {
-			$p = $event->object;
-			$event->return = $p->fullURL->query->get('upc');
-		});
-
-		$this->addHookProperty('Page(pw_template=upcx)::itemID', function($event) {
-			$p = $event->object;
-			$event->return = $p->fullURL->query->get('itemID');
-		});
-
-		$this->addHookProperty('Page(pw_template=upcx|itm-xrefs-upcx)::search_itemsURL', function($event) {
-			$event->return = $this->wire('pages')->get('pw_template=itm-search')->url;
-		});
-
-		$this->addHookProperty('Page(pw_template=upcx|itm-xrefs-upcx)::validateURL', function($event) {
-			$event->return = $this->wire('pages')->get('pw_template=upcx-validate')->httpUrl;
-		});
+		$this->recordlocker = new FunctionLocker();
+		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker->setUser($this->wire('user'));
 	}
 }

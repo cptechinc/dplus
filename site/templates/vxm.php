@@ -2,6 +2,8 @@
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Map\Vxm;
 
+	Vxm::init();
+
 	$routes = [
 		['GET',  '', Vxm::class, 'index'],
 		['GET',  'page{d:\d+}', Vxm::class, 'list'],

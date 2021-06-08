@@ -14,6 +14,14 @@
 				['GET', 'warehouse/bins/', Json\Min::class, 'validateWarehouseBinid'],
 				['GET', 'itmp/exists/', Json\Min::class, 'validateItmpExists'],
 				['GET', 'item-group/', Json\Min::class, 'validateInvGroupCode'],
+				'upcx' => [
+					['GET', 'upc/', Json\Min::class, 'validateUpc'],
+					['GET', 'upc/primary/', Json\Min::class, 'validateUpcPrimary'],
+				],
+				'code' => [
+					['GET', 'stock/', Json\Min::class, 'validateStockCode'],
+					['GET', 'special-item/', Json\Min::class, 'validateSpecialItemCode'],
+				]
 			],
 			['GET', 'tariff-code/', Json\Min::class, 'getTariffCode'],
 			['GET', 'country-code/', Json\Min::class, 'getCountryCode'],
@@ -47,6 +55,7 @@
 				['GET', 'salesgroupid/', Json\Mar::class, 'validateSalesGroupid'],
 				['GET', 'custid/', Json\Mar::class, 'validateCustid'],
 			],
+			['GET', 'customer/', Json\Mar::class, 'getCustomer'],
 		],
 		'mci' => [
 			'validate' => [

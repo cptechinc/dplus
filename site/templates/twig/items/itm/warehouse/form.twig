@@ -156,7 +156,7 @@
 			2. Is a new Warehouse
 			NOTE: Only show delete if warehouse already exists.
 		#}
-		{% if m_whse.recordlocker.function_locked_by_user(m_whse.get_warehouseitem_lockkey(warehouse)) or warehouse.isNew() %}
+		{% if m_whse.recordlocker.userHasLocked(m_whse.get_warehouseitem_lockkey(warehouse)) or warehouse.isNew() %}
 			<button type="submit" class="btn btn-success form_button" name="action" value="update-whse">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>

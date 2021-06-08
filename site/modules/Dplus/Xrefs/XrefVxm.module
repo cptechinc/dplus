@@ -2,16 +2,20 @@
 
 include_once(__DIR__.'/XrefResponse.php');
 
+// Purl URI
 use Purl\Url;
+// Propel ORM
 use Propel\Runtime\Map\TableMap as PropelTableMap;
-
-use Dplus\CodeValidators\Map\Vxm as VxmValidator;
-
+// Dplus Model
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemXrefVendorQuery, ItemXrefVendor;
 use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
 use VendorQuery, Vendor;
 use ConfigInQuery, ConfigIn;
+// Dplus Record Locker
+use Dplus\RecordLocker\UserFunction as FunctionLocker;
+// Dplus Validators
+use Dplus\CodeValidators\Map\Vxm as VxmValidator;
 
 /**
  * Module that handles the editing of the VXM item Xref
@@ -219,7 +223,7 @@ class XrefVxm extends WireData implements Module {
 
 		if ($values->action) {
 			switch ($values->text('action')) {
-				case 'delete-vxm-item':
+				case 'delete-xref':
 					$this->input_delete($input);
 					break;
 				case 'update-vxm':
@@ -253,7 +257,7 @@ class XrefVxm extends WireData implements Module {
 
 			if (!$this->lockrecord($record)) {
 				$key = $this->get_recordlocker_key($record);
-				$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
+				$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($record);
 				$this->wire('session')->setFor('response', 'vxm', XrefResponse::response_error($key, $message));
 				return false;
 			}
@@ -283,7 +287,7 @@ class XrefVxm extends WireData implements Module {
 		if (!$record->isNew()) {
 			if (!$this->lockrecord($record)) {
 				$key = $this->get_recordlocker_key($record);
-				$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($record);
+				$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($record);
 				$this->wire('session')->setFor('response', 'vxm', XrefResponse::response_error("$key", $message));
 				return false;
 			}
@@ -575,10 +579,10 @@ class XrefVxm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function lockrecord(ItemXrefVendor $item) {
-		if (!$this->recordlocker->function_locked($this->get_recordlocker_key($item))) {
-			$this->recordlocker->create_lock($this->get_recordlocker_key($item));
+		if (!$this->recordlocker->isLocked($this->get_recordlocker_key($item))) {
+			$this->recordlocker->lock($this->get_recordlocker_key($item));
 		}
-		return $this->recordlocker->function_locked_by_user($this->get_recordlocker_key($item));
+		return $this->recordlocker->userHasLocked($this->get_recordlocker_key($item));
 	}
 
 	/**
@@ -766,8 +770,9 @@ class XrefVxm extends WireData implements Module {
 	}
 
 	public function init() {
-		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
-		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker = new FunctionLocker();
+		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker->setUser($this->wire('user'));
 		$this->field_attributes = self::FIELD_ATTRIBUTES;
 	}
 }

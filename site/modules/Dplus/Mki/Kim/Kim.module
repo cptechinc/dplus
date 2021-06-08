@@ -1,14 +1,20 @@
 <?php namespace ProcessWire;
 
+include_once(__DIR__.'/KimResponse.php');
+
+// Purl URI Library
 use Purl\Url;
-
-use Dplus\CodeValidators\Mki\Kim as KimValidator;
-
+// Dplus Record Locker
+use Dplus\RecordLocker\UserFunction as FunctionLocker;
+// Dplus Model
 use InvKitQuery, InvKit;
 use InvKitComponentQuery, InvKitComponent;
 use ItemMasterItemQuery, ItemMasterItem;
-
-include_once(__DIR__.'/KimResponse.php');
+use ConfigSalesOrder, ConfigKt;
+// Dplus Configs
+use Dplus\Configs;
+// Dplus Code Validators
+use Dplus\CodeValidators\Mki\Kim as KimValidator;
 
 /**
  * Kim
@@ -261,7 +267,7 @@ class Kim extends WireData implements Module {
 	 * @return ConfigSalesOrder
 	 */
 	public function get_config_so() {
-		return $this->wire('modules')->get('ConfigureSo')->config();
+		return Configs\So::config();
 	}
 
 	/**
@@ -269,7 +275,15 @@ class Kim extends WireData implements Module {
 	 * @return ConfigKt
 	 */
 	public function get_config_kt() {
-		return $this->wire('modules')->get('ConfigureKt')->config();
+		return Configs\Kt::config();
+	}
+
+	/**
+	 * Return Config kt
+	 * @return ConfigKt
+	 */
+	public function getConfigKt() {
+		return Configs\Kt::config();
 	}
 
 	/**
@@ -288,68 +302,10 @@ class Kim extends WireData implements Module {
 	 * @return bool
 	 */
 	public function lockrecord($kitID) {
-		if (!$this->recordlocker->function_locked($kitID)) {
-			$this->recordlocker->create_lock($kitID);
+		if (!$this->recordlocker->isLocked($kitID)) {
+			$this->recordlocker->lock($kitID);
 		}
-		return $this->recordlocker->function_locked_by_user($kitID);
-	}
-
-/* =============================================================
-	URL Functions
-============================================================= */
-	/**
-	 * Return URL to Kit Page
-	 * @param  string $kitID *** Optional *** Kit ID
-	 * @param  string $focus *** Optional *** Kit ID to highlight
-	 * @return string
-	 */
-	public function kitURL($kitID = '', $focus = '') {
-		$url = new Url($this->wire('pages')->get('pw_template=kim')->url);
-		if ($kitID) {
-			$url->query->set('kitID', $kitID);
-		}
-
-		if ($focus) {
-			$url->query->set('focus', $focus);
-		}
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to delete Kit
-	 * @param  string $kitID Kit ID
-	 * @return string
-	 */
-	public function kit_deleteURL($kitID) {
-		$url = new Url($this->wire('pages')->get('pw_template=kim')->url);
-		$url->query->set('action', 'delete-kit');
-		$url->query->set('kitID', $kitID);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to view Kit Component
-	 * @param  string $kitID     Kit ID
-	 * @param  string $component Component Item ID
-	 * @return string
-	 */
-	public function kit_componentURL($kitID, $component) {
-		$url = new Url($this->kitURL($kitID));
-		$url->query->set('component', $component);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to delete Kit Component
-	 * @param  string $kitID     Kit ID
-	 * @param  string $component Component Item ID
-	 * @return string
-	 */
-	public function kit_component_deleteURL($kitID, $component) {
-		$url = new Url($this->kitURL($kitID));
-		$url->query->set('action', 'delete-component');
-		$url->query->set('component', $component);
-		return $url->getUrl();
+		return $this->recordlocker->userHasLocked($kitID);
 	}
 
 /* =============================================================
@@ -367,46 +323,10 @@ class Kim extends WireData implements Module {
 	}
 
 	public function init() {
-		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
-		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker = new FunctionLocker();
+		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker->setUser($this->wire('user'));
 		$this->component = $this->wire('modules')->get('KimComponent');
-
-		$this->addHook('Page(pw_template=kim)::kitURL', function($event) {
-			$page = $event->object;
-			$kitID = $event->arguments(0);
-			$focus = $event->arguments(1);
-			$event->return = $this->kitURL($kitID, $focus);
-		});
-
-		$this->addHook('Page(pw_template=kim)::kit_exitURL', function($event) {
-			$page = $event->object;
-			$kitID = $event->arguments(0);
-			$event->return = $this->kitURL('', $kitID);
-		});
-
-		$this->addHook('Page(pw_template=kim)::kit_deleteURL', function($event) {
-			$page = $event->object;
-			$kitID = $event->arguments(0);
-			$event->return = $this->kit_deleteURL($kitID);
-		});
-
-		$this->addHook('Page(pw_template=kim)::kit_componentURL', function($event) {
-			$page = $event->object;
-			$kitID = $event->arguments(0);
-			$component = $event->arguments(1);
-			$event->return = $this->kit_componentURL($kitID, $component);
-		});
-
-		$this->addHook('Page(pw_template=kim)::kit_component_deleteURL', function($event) {
-			$page = $event->object;
-			$kitID = $event->arguments(0);
-			$component = $event->arguments(1);
-			$event->return = $this->kit_component_deleteURL($kitID, $component);
-		});
-
-		$this->addHook("Page(pw_template=kim)::itm_validateURL", function($event) {
-			$event->return = $this->wire('modules')->get('Itm')->get_itm_validateURL();
-		});
 
 		$this->addHook("Page(pw_template=kim)::itemlookupURL", function($event) {
 			$event->return = $this->wire('pages')->get('pw_template=itm-search')->url;

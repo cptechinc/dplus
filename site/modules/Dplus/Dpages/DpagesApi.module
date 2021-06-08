@@ -76,5 +76,15 @@ class DpagesApi extends Dpages implements Module {
 			$ajaxcode = $event->arguments(0);
 			$event->return = $this->lookupURL($ajaxcode);
 		});
+
+		$this->addHook("Page::searchLookupUrl", function($event) {
+			$ajaxcode = $event->arguments(0);
+			$event->return = $this->lookupURL($ajaxcode);
+		});
+
+		$this->addHook("Page::jsonApiUrl", function($event) {
+			$api = $event->arguments(0);
+			$event->return = $this->jsonapiURL($api);
+		});
 	}
 }

@@ -9,7 +9,7 @@
 
 		{% if input.get.offsetExists('component') %}
 			<li class="breadcrumb-item">
-				<i class="fa fa-cubes" aria-hidden="true"></i> <a href="{{ page.kitURL(input.get.text('kitID')) }}">{{ input.get.text('kitID') }}</a>
+				<i class="fa fa-cubes" aria-hidden="true"></i> <a href="{{ page.kitUrl(input.get.text('kitID')) }}">{{ input.get.text('kitID') }}</a>
 			</li>
 			<li class="breadcrumb-item active" aria-current="page">
 				<i class="fa fa-cube" aria-hidden="true"></i> {{ input.get.text('component') }}

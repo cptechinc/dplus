@@ -1,4 +1,6 @@
 <?php namespace Controllers\Ajax\Json;
+// Dplus Models
+use CustomerQuery;
 // ProcessWire Mlasses, Modules
 use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Validators
@@ -97,5 +99,19 @@ class Mar extends AbstractController {
 			return "$data->custID not found";
 		}
 		return $exists;
+	}
+
+	public static function getCustomer($data) {
+		self::sanitizeParametersShort($data, ['custID|text']);
+		$validate = new MarValidator();
+		
+		if ($validate->custid($data->custID) === false) {
+			return false;
+		}
+		$customer = CustomerQuery::create()->findOneByCustid($data->custID);
+		return [
+			'id'   => $customer->id,
+			'name' => $customer->name
+		];
 	}
 }

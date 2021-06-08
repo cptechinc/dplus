@@ -60,6 +60,18 @@ $(function() {
 		populate_item_data(input.val());
 	});
 
+	$("body").on("change", "input[name=custID]", function(e) {
+		var input = $(this);
+		
+		customerJson(input.val(), function(customer) {
+			$('.customer-name').text('');
+
+			if (customer) {
+				$('.customer-name').text(customer.name);
+			}
+		});
+	});
+
 	$("body").on("change", "input[name=convert]", function(e) {
 		var input = $(this);
 		var conversion = parseFloat(input.val());
@@ -90,7 +102,7 @@ $(function() {
 					form_cxm.find('button[type=submit]').click();
 				} else if (result.dismiss === Swal.DismissReason.cancel) {
 					// Send HTTP GET Request to remove Record Lock
-					$.get('{{ page.cxm_itemURL(item.ouritemid) }}', function() {
+					$.get('{{ page.xrefExitUrl(xref) }}', function() {
 						window.location.href = href;
 					});
 				}
@@ -163,7 +175,9 @@ $(function() {
 				remote: {
 					url: '{{ page.jsonapiURL('mar/validate/custid/') }}',
 					type: "get",
-					data: {}
+					data: {
+						jqv: 'true'
+					}
 				}
 			},
 			custitemID: {
@@ -313,6 +327,15 @@ $(function() {
 		url.addQuery('itemID', itemID).addQuery('fields', 'uom_sale,qtypercase');
 		$.getJSON(url.toString(), function(item) {
 			callback(item);
+		});
+	}
+
+	function customerJson(custID, callback) {
+		var url = URI('{{ page.jsonapiURL('mar/customer/') }}');
+		url.addQuery('custID', custID);
+
+		$.getJSON(url.toString(), function(customer) {
+			callback(customer);
 		});
 	}
 

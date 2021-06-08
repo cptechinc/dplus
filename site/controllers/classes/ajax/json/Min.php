@@ -7,12 +7,33 @@ use WarehouseBinQuery, WarehouseBin;
 use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Validators
 use Dplus\CodeValidators\Min as MinValidator;
+use Dplus\CodeValidators\Min\Upcx as UpcxValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
 class Min extends AbstractController {
 	public static function test($data) {
 		return 'test';
+	}
+
+	public static function validateStockCode($data) {
+		self::sanitizeParametersShort($data, ['code|text', 'jqv|bool']);
+		$validate = self::validator();
+
+		if ($validate->stockcode($data->code) === false) {
+			return $data->jqv "Tariff Code $code not found" : false;
+		}
+		return true;
+	}
+
+	public static function validateSpecialItemCode($data) {
+		self::sanitizeParametersShort($data, ['code|text', 'jqv|bool']);
+		$validate = self::validator();
+
+		if ($validate->specialitem($data->code) === false) {
+			return $data->jqv "Special Item Code $code not found" : false;
+		}
+		return true;
 	}
 
 	public static function validateTariffCode($data) {
@@ -170,6 +191,51 @@ class Min extends AbstractController {
 			return "ITMP for $loginID not found";
 		}
 		return true;
+	}
+
+	public static function validateUpc($data) {
+		$fields = ['upc|text', 'jqv|bool', 'new|bool'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$validate = new UpcxValidator();
+
+		$exists = $validate->exists($data->upc);
+
+		if ($data->jqv === false) {
+			return $exists;
+		}
+
+		// JQuery Validate
+		if ($data->new) { // If new, check that upc doesn't already exist.
+			return $exists ? "UPC $data->upc Already Exists" : true;
+		}
+
+		return $exists ? true : "UPC $data->upc not found";
+	}
+
+	public static function validateUpcPrimary($data) {
+		$fields = ['upc|text', 'itemID|text', 'jqv|bool'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$validate = new UpcxValidator();
+
+		if ($validate->exists($data->upc) === false) {
+			return false;
+		}
+
+		if ($validate->primaryExistsForItemid($data->itemID) === false) {
+			return true;
+		}
+
+		if ($validate->primaryExistsForItemid($data->itemID)) {
+			$upcx = self::pw('modules')->get('XrefUpc');
+			$xref = $upcx->xref_primary_by_itemid($data->itemID);
+			$matches = $xref->upc == $data->upc;
+
+			if ($matches === false && $data->jqv === true) {
+				return "$xref->upc is the Primary for $data->itemID";
+			}
+
+			return $matches;
+		}
 	}
 
 

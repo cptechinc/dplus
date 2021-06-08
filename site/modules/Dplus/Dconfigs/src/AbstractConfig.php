@@ -32,10 +32,7 @@ abstract class AbstractConfig {
 	 * @return Model
 	 */
 	public static function config() {
-		if (empty(static::$config)) {
-			static::$config = static::getConfig();
-		}
-		return static::$config;
+		return static::getConfig();
 	}
 
 	/**

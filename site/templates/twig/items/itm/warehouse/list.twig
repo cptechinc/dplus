@@ -23,6 +23,10 @@
 		</th>
 	</tr>
 	<tbody>
+		{% if warehouses.count() == 0 %}
+			<td colspan="11" class="bg-gray text-center">No Warehouses found for {{ itemID }}</td>
+		{% endif %}
+
 		{% for warehouse in warehouses %}
 			<tr>
 				<td>{{ warehouse.warehouseid }}</td>
@@ -36,13 +40,13 @@
 				<td class="text-right">{{ warehouse.countdate ? warehouse.countdate|convertdate : '' }}</td>
 				<td></td>
 				<td>
-					{% if itmw.recordlocker.function_locked(itmw.get_warehouseitem_lockkey(warehouse)) == false or itmw.recordlocker.function_locked_by_user( itmw.get_warehouseitem_lockkey(warehouse)) %}
+					{% if itmw.recordlocker.isLocked(itmw.get_warehouseitem_lockkey(warehouse)) == false or itmw.recordlocker.userHasLocked(itmw.get_warehouseitem_lockkey(warehouse)) %}
 						<a href="{{ page.itmUrlWhse(warehouse.itemid, warehouse.warehouseid) }}" class="btn btn-warning btn-sm">
 							<i aria-hidden="true" class="fa fa-pencil"></i> Edit
 						</a>
 					{% else %}
 						<span class="badge badge-secondary">
-							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ itmw.recordlocker.get_locked_user(itmw.get_warehouseitem_lockkey(warehouse)) }}
+							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ itmw.recordlocker.getLockingUser(itmw.get_warehouseitem_lockkey(warehouse)) }}
 						</span>
 					{% endif %}
 				</td>

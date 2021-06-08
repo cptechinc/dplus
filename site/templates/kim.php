@@ -1,6 +1,8 @@
 <?php
-	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
+	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Mki\Kim as KimController;
+
+	KimController::init();
 
 	$routes = [
 		['GET', '', KimController::class, 'index'],

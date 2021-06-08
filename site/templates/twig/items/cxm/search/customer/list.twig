@@ -29,7 +29,7 @@
 			{% for customer in customers %}
 				<tr data-custid="{{ customer.id }}">
 					<td scope="row">
-						<a href="{{ page.cxm_customerURL(customer.id) }}" class="link">
+						<a href="{{ page.custUrl(customer.id) }}" class="link">
 							<strong>{{ customer.id }}</strong>
 						</a>
 					</td>

@@ -1,4 +1,8 @@
 <?php namespace Controllers\Min\Itm\Xrefs;
+// Purl URI Library
+use Purl\Url as Purl;
+// Propel ORM Ljbrary
+use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use ItemXrefCustomerQuery, ItemXrefCustomer;
 // ProcessWire Classes, Modules
@@ -6,10 +10,13 @@ use ProcessWire\Page, ProcessWire\XrefCxm as CxmCRUD;
 // Dplus Filters
 use Dplus\Filters\Mso\Cxm as CxmFilter;
 // Mvc Controllers
-use Controllers\Min\Itm\ItmFunction;
+use Controllers\Min\Itm\Xrefs;
+use Controllers\Min\Itm\Xrefs\XrefFunction;
 use Controllers\Mso\Cxm as CxmController;
 
-class Cxm extends ItmFunction {
+class Cxm extends XrefFunction {
+	const PERMISSION_ITMP = 'xrefs';
+
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -47,13 +54,14 @@ class Cxm extends ItmFunction {
 		$session  = self::pw('session');
 
 		$response = $session->getFor('response', 'cxm');
-		$url = $page->itm_xrefs_cxmURL($data->itemID);
+		$url = self::xrefListUrl($data->itemID);
+
 
 		if ($cxm->xref_exists($data->custID, $data->custitemID)) {
-			$url = $page->cxm_itemURL($data->custID, $data->custitemID);
+			$url = self::xrefUrl($data->custID, $data->custitemID, $data->itemID);
 
 			if ($response && $response->has_success()) {
-				$url = $page->itm_xrefs_cxmURL($data->itemID, $response->key);
+				$url = self::xrefListUrl($data->itemID, $response->key);
 			}
 		}
 		$session->redirect($url, $http301 = false);
@@ -68,33 +76,34 @@ class Cxm extends ItmFunction {
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
-		$config  = self::pw('config');
+		self::initHooks();
 		$page    = self::pw('page');
-		$pages   = self::pw('pages');
-		$itm     = self::getItm();
-		$modules = self::pw('modules');
-		$qnotes = $modules->get('QnotesItemCxm');
 		$cxm    = CxmController::getCxm();
 		$xref = $cxm->get_create_xref($data->custID, $data->custitemID);
-		$item = $itm->get_item($data->itemID);
-
-		$page->headline = "ITM: $item->itemid CXM $xref->custid-$xref->custitemid";
+		$page->headline = "ITM: $xref->itemid CXM $xref->custid-$xref->custitemid";
 
 		if ($xref->isNew()) {
 			$xref->setItemid($data->itemID);
-			$page->headline = "ITM: $item->itemid CXM Create X-ref";
+			$page->headline = "ITM: $xref->itemid CXM Create X-ref";
 		}
+		$page->js .= self::pw('config')->twig->render('items/cxm/item/form/js.twig', ['cxm' => $cxm, 'xref' => $xref]);
+		$html = self::xrefDisplay($data, $xref);
+		self::pw('session')->removeFor('response', 'cxm');
+		return $html;
+	}
 
+	private static function xrefDisplay($data, ItemXrefCustomer $xref) {
+		$itm     = self::getItm();
+		$item = $itm->get_item($data->itemID);
+		$cxm  = CxmController::getCxm();
 		$html = '';
 		$html .= self::cxmHeaders();
-		$html .= CxmController::lockXref($page, $cxm, $xref);
-		$html .= $config->twig->render('items/itm/xrefs/cxm/form/display.twig', ['xref' => $xref, 'item' => $item, 'cxm' => $cxm, 'qnotes' => $qnotes, 'customer' => $cxm->get_customer($data->custID)]);
+		$html .= CxmController::lockXref($xref);
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/cxm/form/display.twig', ['xref' => $xref, 'item' => $item, 'cxm' => $cxm, 'qnotes' => self::pw('modules')->get('QnotesItemCxm'), 'customer' => $cxm->get_customer($data->custID)]);
 
 		if (!$xref->isNew()) {
 			$html .= CxmController::qnotesDisplay($xref);
 		}
-
-		$page->js .= $config->twig->render('items/cxm/item/form/js.twig', ['cxm' => $cxm]);
 		return $html;
 	}
 
@@ -124,14 +133,12 @@ class Cxm extends ItmFunction {
 		}
 		$fields = ['itemID|text', 'q|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
+		self::initHooks();
 		$input   = self::pw('input');
 		$page    = self::pw('page');
-		$config  = self::pw('config');
-		$modules = self::pw('modules');
-		$itm     = self::getItm();
-		$item = $itm->get_item($data->itemID);
+
 		$cxm  = CxmController::getCxm();
-		$cxm->recordlocker->remove_lock();
+		$cxm->recordlocker->deleteLock();
 		$filter = new CxmFilter();
 		$filter->filterInput($input);
 		$filter->sortby($page);
@@ -139,10 +146,97 @@ class Cxm extends ItmFunction {
 		$page->title = "CXM";
 		$page->headline = "ITM: $data->itemID CXM";
 
-		$html = '';
-		$html .= self::cxmHeaders();
-		$html .= $config->twig->render('items/itm/xrefs/cxm/list/display.twig', ['item' => $item, 'cxm' => $cxm, 'items' => $xrefs]);
-		$page->js .= $config->twig->render('items/itm/xrefs/cxm/list/js.twig');
+		$page->js .= self::pw('config')->twig->render('items/itm/xrefs/cxm/list/js.twig');
+		$html = self::listDisplay($data, $xrefs);
+		self::pw('session')->removeFor('response', 'cxm');
 		return $html;
 	}
+
+	private static function listDisplay($data, PropelModelPager $xrefs) {
+		$itm     = self::getItm();
+		$item = $itm->get_item($data->itemID);
+
+		$html = '';
+		$html .= self::cxmHeaders();
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/cxm/list/display.twig', ['item' => $item, 'cxm' => CxmController::getCxm(), 'items' => $xrefs]);
+		return $html;
+	}
+
+/* =============================================================
+	URL Functions
+============================================================= */
+	/**
+	 * Return URL for X-ref List
+	 * @param  string $itemID      Item ID
+	 * @param  string $focus
+	 * @return string
+	 */
+	public static function xrefListUrl($itemID, $focus = '') {
+		$url = new Purl(Xrefs::xrefUrlCxm($itemID));
+		if ($focus) {
+			$url->query->set('focus', $focus);
+		}
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL for Vxm X-ref
+	 * @param  string $custID      Customer ID
+	 * @param  string $custitemID  Customer Item ID
+	 * @return string
+	 */
+	public static function xrefUrl($custID, $custitemID, $itemID) {
+		$url = new Purl(Xrefs::xrefUrlCxm($itemID));
+		$url->query->set('custID', $custID);
+		$url->query->set('custitemID', $custitemID);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL for Vxm X-ref Deletion
+	 * @param  string $custID      Customer ID
+	 * @param  string $custitemID  Customer Item ID
+	 * @return string
+	 */
+	public static function xrefDeleteUrl($custID, $custitemID, $itemID = '') {
+		$url = new Purl(self::xrefUrl($custID, $custitemID, $itemID));
+		$url->query->set('action', 'delete-xref');
+		return $url->getUrl();
+	}
+
+/* =============================================================
+	Hook Functions
+============================================================= */
+	public static function initHooks() {
+		$m = CxmController::getCxm();
+
+		$m->addHook('Page(pw_template=itm)::xrefUrl', function($event) {
+			$p = $event->object;
+			$custID     = $event->arguments(0);
+			$custitemID = $event->arguments(1);
+			$itemID     = $event->arguments(2);
+			$event->return = self::xrefUrl($custID, $custitemID, $itemID);
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefNewUrl', function($event) {
+			$p = $event->object;
+			$itemID = $event->arguments(0);
+			$event->return = self::xrefUrl($custID = '', $custitemID = 'new', $itemID);
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefDeleteUrl', function($event) {
+			$p = $event->object;
+			$custID     = $event->arguments(0);
+			$custitemID = $event->arguments(1);
+			$itemID      = $event->arguments(2);
+			$event->return = self::xrefDeleteUrl($custID, $custitemID, $itemID);
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefExitUrl', function($event) {
+			$p = $event->object;
+			$xref = $event->arguments(0); // Xref
+			$event->return = Xrefs::xrefUrlCxm($xref->itemid);
+		});
+	}
+
 }

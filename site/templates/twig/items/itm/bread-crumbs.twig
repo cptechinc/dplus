@@ -7,30 +7,48 @@
 {% extends 'util/bread-crumbs.twig' %}
 
 {% set input = page.wire('input') %}
+{% set values = input.get %}
 {% set segments = input.urlSegments() %}
 {% set lastsegment = segments[segments|length] %}
 
 {% block current_page %}
-	<li class="breadcrumb-item">
-		<a href="{{ page.url }}">
+	{% if segments|length == 0 and values.offsetExists('itemID') == false %}
+		<li class="breadcrumb-item active" aria-current="page">
 			<i class="fa fa-microchip" aria-hidden="true"></i> ITM
-		</a>
-	</li>
-	<li class="breadcrumb-item">
-		<a href="{{ page.itmUrl(input.get.text('itemID')) }}">
-			<i class="fa fa-cubes" aria-hidden="true"></i> {{ input.get.text('itemID') }}
-		</a>
-	</li>
+		</li>
+	{% endif %}
+
+	{% if values.offsetExists('itemID') %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.url }}">
+				<i class="fa fa-microchip" aria-hidden="true"></i> ITM
+			</a>
+		</li>
+	{% endif %}
+
+	{% if segments|length == 0 %}
+		<li class="breadcrumb-item active">
+			<i class="fa fa-cubes" aria-hidden="true"></i> {{ values.text('itemID') }}
+		</li>
+	{% endif %}
+
+	{% if segments|length %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.itmUrl(values.text('itemID')) }}">
+				<i class="fa fa-cubes" aria-hidden="true"></i> {{ values.text('itemID') }}
+			</a>
+		</li>
+	{% endif %}
 
 	{% if (segments|length == 1) %}
-		{% if lastsegment == 'warehouses' and input.get.text('whseID') %}
+		{% if lastsegment == 'warehouses' and values.text('whseID') %}
 			<li class="breadcrumb-item">
-				<a href="{{ page.itmUrlFunction(input.get.text('itemID'), lastsegment) }}">
+				<a href="{{ page.itmUrlFunction(values.text('itemID'), lastsegment) }}">
 					{{ lastsegment|title }}
 				</a>
 			</li>
 			<li class="breadcrumb-item active" aria-current="page">
-				{{ input.get.text('whseID') }}
+				{{ values.text('whseID') }}
 			</li>
 		{% else %}
 			<li class="breadcrumb-item active" aria-current="page">
@@ -40,8 +58,14 @@
 				{{ lastsegment|title }}
 			</li>
 		{% endif %}
+	{% elseif segments[1] == 'xrefs' %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.itmUrlFunction(values.text('itemID'), 'xrefs') }}">
+				<i class="fa fa-arrows" aria-hidden="true"></i> {{ 'X-refs'|title }}
+			</a>
+		</li>
+		<li class="breadcrumb-item active" aria-current="page">
+			{{ lastsegment|upper }}
+		</li>
 	{% endif %}
-
-
-
 {% endblock %}

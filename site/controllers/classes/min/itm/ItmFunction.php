@@ -3,42 +3,46 @@
 use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Itm as ItmModel;
+// Dplus Filters
+use Dplus\Filters;
 // Validators
 use Dplus\CodeValidators\Min as MinValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
+
 class ItmFunction extends AbstractController {
 	const PERMISSION_ITMP = '';
 
 	private static $minvalidator;
+	private static $itm;
+	private static $itmp;
 
 /* =============================================================
 	Validations
 ============================================================= */
 	protected static function validateItemid($data) {
-		$data = self::sanitizeParametersShort($data, ['itemID|text']);
-		$wire = self::pw();
+		self::sanitizeParametersShort($data, ['itemID|text']);
 		$validate = self::getMinValidator();
 
 		if ($validate->itemid($data->itemID) === false) {
-			$wire->wire('session')->redirect($wire->wire('page')->itmURL($data->itemID), $http301 = false);
+			self::pw('session')->redirect(self::itmUrl($data->itemID), $http301 = false);
 		}
 		return true;
 	}
 
 	protected static function validateUserPermission() {
-		$wire = self::pw();
-		$user = $wire->wire('user');
-		$itmp = $wire->wire('modules')->get('Itmp');
-		$page = $wire->wire('page');
+		$user = self::pw('user');
+		$itmp = self::pw('modules')->get('Itmp');
+		$page = self::pw('page');
+
 		if ($user->has_function('itm') === false) {
 			return false;
 		}
 		if (static::PERMISSION_ITMP != '') {
 			return $itmp->isUserAllowed($user, static::PERMISSION_ITMP);
 		}
-		return $itmp->is_user_allowed_template($user, $page->pw_template);
+		return true;
 	}
 
 	protected static function validateItemidAndPermission($data) {
@@ -73,6 +77,28 @@ class ItmFunction extends AbstractController {
 		return $url->getUrl();
 	}
 
+	public static function itmListUrl($focus = '') {
+		if (empty($focus)) {
+			return self::itmUrl();
+		}
+		return self::itmListFocus($focus);
+	}
+
+	public static function itmListFocus($itemID) {
+		$itm = self::getItm();
+
+		if ($itm->exists($itemID) === false) {
+			return self::itmUrl();
+		}
+		$page = self::pw('pages')->get("pw_template=itm");
+		$filter = new Filters\Min\ItemMaster();
+		$offset = $filter->positionQuick($itemID);
+		$pagenbr = ceil($offset / self::pw('session')->display);
+		$url = self::pw('modules')->get('Dpurl')->paginate(new Purl($page->url), $page->name, $pagenbr);
+		$url->query->set('focus', $itemID);
+		return $url->getUrl();
+	}
+
 	public static function itmUrlFunction($itemID, $function) {
 		$url = new Purl(self::itmUrl($itemID));
 		$url->path->add($function);
@@ -104,12 +130,39 @@ class ItmFunction extends AbstractController {
 /* =============================================================
 	Supplemental
 ============================================================= */
+	public static function lockItem($itemID) {
+		$itm  = self::getItm();
+		$html = '';
+		if ($itm->recordlocker->isLocked($itemID) && $itm->recordlocker->userHasLocked($itemID) === false) {
+			$config = self::pw('config');
+			$msg = "ITM Item $itemID is being locked by " . $itm->recordlocker->getLockingUser($itemID);
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "ITM Item $itemID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+			$html .= $html->div('class=mb-3');
+		} elseif ($itm->recordlocker->isLocked($itemID) === false) {
+			$itm->recordlocker->lock($itemID);
+		}
+		return $html;
+	}
 	/**
 	 * Return Itm
 	 * @return ItmModel
 	 */
 	protected static function getItm() {
-		return self::pw('modules')->get('Itm');
+		if (empty(self::$itm)) {
+			self::$itm = self::pw('modules')->get('Itm');
+		}
+		return self::$itm;
+	}
+
+	/**
+	 * Return Itm
+	 * @return Itmp
+	 */
+	public static function getItmp() {
+		if (empty(self::$itmp)) {
+			self::$itmp = self::pw('modules')->get('Itmp');
+		}
+		return self::$itmp;
 	}
 
 	/**
@@ -134,6 +187,10 @@ class ItmFunction extends AbstractController {
 			$event->return = self::itmUrl($event->arguments(0));
 		});
 
+		$m->addHook('Page(pw_template=itm)::itmListUrl', function($event) {
+			$event->return = self::itmListUrl($event->arguments(0));
+		});
+
 		$m->addHook('Page(pw_template=itm)::itmUrlFunction', function($event) {
 			$event->return = self::itmUrlFunction($event->arguments(0), $event->arguments(1));
 		});
@@ -155,7 +212,7 @@ class ItmFunction extends AbstractController {
 		});
 
 		$m->addHook('Page(pw_template=itm)::itmUrlXrefs', function($event) {
-			$event->return = self::itmUrlXref($event->arguments(0));
+			$event->return = self::itmUrlXrefs($event->arguments(0));
 		});
 	}
 }
