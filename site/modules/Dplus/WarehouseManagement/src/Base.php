@@ -3,6 +3,8 @@
 // ProcessWire Classes, Modules
 use ProcessWire\WireData;
 
+use WhsesessionQuery, Whsesession;
+
 class Base extends WireData {
 	public function __construct() {
 		$this->sessionID = session_id();
@@ -14,6 +16,14 @@ class Base extends WireData {
 	 */
 	public function setSessionID($sessionID = '') {
 		$this->sessionID = $sessionID ? $sessionID : session_id();
+	}
+
+	/**
+	 * Return Whsesession
+	 * @return Whsesession
+	 */
+	public function getWhsesession() {
+		return WhsesessionQuery::create()->findOneBySessionid($this->sessionID);
 	}
 
 	protected function sendDplusRequest(array $data, $debug = false) {

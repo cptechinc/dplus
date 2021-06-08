@@ -81,4 +81,5 @@ return array(
     'Controllers\\Wm\\Base' => $baseDir . '/classes/Mwm/Base.php',
     'Controllers\\Wm\\Binr' => $baseDir . '/classes/Mwm/binr/Binr.php',
     'Controllers\\Wm\\Receiving\\Receiving' => $baseDir . '/classes/Mwm/inventory/Receiving/Receiving.php',
+    'Controllers\\Wm\\Sop\\Picking\\Picking' => $baseDir . '/classes/Mwm/sop/Picking.php',
 );
