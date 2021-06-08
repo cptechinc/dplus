@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Controllers\\Ajax\\Json\\ItemLookup' => $baseDir . '/classes/ajax/json/ItemLookup.php',
     'Controllers\\Ajax\\Json\\Map' => $baseDir . '/classes/ajax/json/Map.php',
     'Controllers\\Ajax\\Json\\Mar' => $baseDir . '/classes/ajax/json/Mar.php',
