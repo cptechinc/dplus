@@ -68,7 +68,7 @@ if ($page->id != $config->errorpage_dplusdb) {
 } else {
 	if (!$input->get->retry) {
 		$configimporter = $modules->get('Configs');
-		if ($configimporter->export_datafile_exists()) {
+		if ($configimporter->importJsonExists()) {
 			$configimporter->import();
 			$page->fullURL->query->set('retry', 'true');
 			$session->redirect($page->fullURL->getUrl());

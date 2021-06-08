@@ -437,7 +437,7 @@ class Configs extends Process {
 	 * Returns Exported configs.json file
 	 * @return array
 	 */
-	public function getImportJsonExist() {
+	public function importJsonExists() {
 		$dir = $this->getImportDirectory();
 		$configfile = $dir . self::CONFIG_FILE;
 		return file_exists($configfile);
