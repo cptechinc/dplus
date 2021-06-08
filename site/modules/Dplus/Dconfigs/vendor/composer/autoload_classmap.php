@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Dplus\\Configs\\AbstractConfig' => $baseDir . '/src/AbstractConfig.php',
     'Dplus\\Configs\\Ap' => $baseDir . '/src/configs/Ap.php',
     'Dplus\\Configs\\Ci' => $baseDir . '/src/configs/Ci.php',
