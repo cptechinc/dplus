@@ -1,0 +1,92 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	items                  Whseitemphysicalcount[]
+	m_picking              module Picking
+	m_picking.items        module PickingOrderItems
+#}
+<div class="row">
+	<div class="col">
+		<h4>Select your items</h4>
+	</div>
+	<div class="col">
+		<div class="form-group">
+			<a href="{{ page.removeScanUrl() }}" class="btn btn-warning">Retry Search</a>
+		</div>
+	</div>
+</div>
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row">
+			<div class="col-sm-2">Expand</div>
+			<div class="col-sm-6">Item ID</div>
+			<div class="col-sm-2 text-right">Available Qty</div>
+			<div class="col-sm-2 text-right">Ordered Qty</div>
+		</div>
+	</div>
+	{% for item in items %}
+		<div class="list-group-item">
+			<div class="row">
+				<div class="col-sm-2">
+					<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#{{ item.itemid|attrJS }}" aria-expanded="false" aria-controls="{{ item.linenbr|attrJS }}">
+						<i class="fa fa-plus-circle" aria-hidden="true"></i>
+					</button>
+				</div>
+				<div class="col-sm-6">{{ item.itemid }}</div>
+				<div class="col-sm-2 text-right">{{ item.get_total_qty()|number_format(m_picking.getDecimalPlacesQty()) }}</div>
+				<div class="col-sm-2 text-right">
+					{{ m_picking.items.hasItemid(item.itemid) ? m_picking.items.getItemByItemid(item.itemid).qtyordered|number_format(m_picking.getDecimalPlacesQty()) : '' }}
+				</div>
+			</div>
+		</div>
+
+		<div class="{{ item.itemid != page.scan ? 'collapse' : '' }}" id="{{ item.itemid|attrJS }}">
+			<div class="list-group-item bg-gray">
+				<div class="row">
+					<div class="col-sm-2"></div>
+					<div class="col-sm-2">Bin</div>
+					<div class="col-sm-2">Lot/Serial #</div>
+					<div class="col-sm-2">Lot Reference</div>
+					<div class="col-sm-2">Qty</div>
+				</div>
+			</div>
+			<form action="{{ page.fullURL.getUrl() }}" method="post">
+				<input type="hidden" name="action" value="add-lotserials">
+				<input type="hidden" name="scan" value="{{ item.scan }}">
+				<input type="hidden" name="itemID" value="{{ item.itemid }}">
+				<div class="scroll-300 form-group">
+					{% for lotserial in item.get_lotserials() %}
+						<input type="hidden" name="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin) }}-bin" value="{{ lotserial.bin }}">
+						<input type="hidden" name="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin) }}-lotserialref" value="{{ lotserial.lotserialref }}">
+						<input type="hidden" name="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin) }}-lotserial" value="{{ lotserial.lotserial }}">
+
+						<div class="list-group-item lotserial-bin-record">
+							<div class="row">
+								<div class="col-sm-2">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" name="lotserialbins[]" value="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin) }}" id="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin)|attrJS }}">
+									</div>
+								</div>
+								<div class="col-sm-2">{{ lotserial.bin }}</div>
+								<div class="col-sm-2" for="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin)|attrJS }}">{{ lotserial.lotserial }}</div>
+								<div class="col-sm-2">{{ lotserial.lotserialref }}</div>
+								<div class="col-sm-2">
+									<input type="number" class="form-control lotserial-qty" {% if m_picking.allowOverPick() == false  %} max="{{ lotserial.qty|number_format(m_picking.getDecimalPlacesQty()) }}" {% endif %} name="{{ (lotserial.lotserial ~ '-' ~ lotserial.bin) }}-qty" value="">
+								</div>
+								<div class="col-sm-2">
+									<small class="form-text text-muted">Bin Qty: {{ lotserial.qty|number_format(m_picking.getDecimalPlacesQty()) }}</small>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-success">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add Items
+					</button>
+				</div>
+			</form>
+		</div>
+	{% endfor %}
+</div>

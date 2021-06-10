@@ -1,0 +1,21 @@
+<form action="{{ page.fullURL.getUrl() }}" method="POST" class="allow-enterkey-submit" id="barcode-form">
+	<input type="hidden" name="action" value="scan-pick-item">
+	<input type="hidden" name="ordn" value="{{ page.wire('input').get.text('ordn') }}">
+
+	<div class="form-group">
+		<label for="scan">Add Item</label>
+		<div class="input-group">
+			<span class="input-group-btn">
+				<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ajax-modal" title="Seacrh Items" data-lookupurl="{{ page.search_lookupURL('items') }}" data-input="#scan">
+					<i class="fa fa-search"></i>
+				</button>
+			</span>
+			<input type="text" name="scan" class="form-control" id="scan" placeholder="Barcode, ItemID, Lot/Serial #">
+			<span class="input-group-btn">
+				<button type="submit" class="btn btn-light">
+					<i class="fa fa-arrow-circle-right"></i> <span class="sr-only">Search</span>
+				</button>
+			</span>
+		</div>
+	</div>
+</form>

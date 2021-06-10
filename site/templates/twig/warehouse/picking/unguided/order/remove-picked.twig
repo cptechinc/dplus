@@ -1,0 +1,11 @@
+<form action="{{ page.fullURL.getUrl() }}" method="post">
+	<input type="hidden" name="action" value="delete-lotserial">
+	<input type="hidden" name="ordn" value="{{ item.ordernbr }}">
+	<input type="hidden" name="linenbr" value="{{ lotserial.linenbr }}">
+	<input type="hidden" name="sublinenbr" value="{{ lotserial.sublinenbr }}">
+	<input type="hidden" name="recordnumber" value="{{ lotserial.recordnumber }}">
+	<input type="hidden" name="barcode" value="{{ lotserial.barcode }}">
+	<button type="submit" class="btn btn-danger btn-sm" type="button">
+		<i class="fa fa-trash" aria-hidden="true"></i> Delete
+	</button>
+</form>

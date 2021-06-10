@@ -1,0 +1,90 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	m_picking              module Picking
+	lineitems              PickSalesOrderDetail[]|ObjectCollection
+#}
+<div class="list-group">
+	<div class="list-group-item bg-dark text-white">
+		<div class="row">
+			<div class="col-sm-1">Line</div>
+			<div class="col-sm-1">Subline</div>
+			<div class="col-sm-3">Item ID / Description</div>
+			<div class="col-sm-1 text-right">Ordered</div>
+			<div class="col-sm-1 text-right">Pulled</div>
+			<div class="col-sm-1 text-right">Remaining</div>
+			<div class="col-sm-3"></div>
+		</div>
+	</div>
+	{% for item in lineitems %}
+		<div class="list-group-item first-txn-row {{ item.count_pickeditems() > item.qtyordered ? 'bg-warning text-white'}}">
+			<div class="row">
+				<div class="col-sm-1">
+					{{ item.linenbr }}
+				</div>
+				<div class="col-sm-1">
+					{% if item.count_pickeditems() %}
+						<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#{{ item.linenbr|attrJS }}" aria-expanded="false" aria-controls="{{ item.linenbr|attrJS }}">
+							{{ item.sublinenbr() }}
+						</button>
+					{% else %}
+						{{ item.sublinenbr() }}
+					{% endif %}
+				</div>
+				<div class="col-sm-3">
+					{{ item.itemid }}
+					{% if item.description %}
+						<br>
+						<small>{{ item.description }}</small>
+					{% endif %}
+
+					{% if item.qtypulled > item.qtyordered %}
+						<br>
+						<span class="badge badge-warning"> You are Picking more qty than what was ordered </span>
+					{% endif %}
+				</div>
+				<div class="col-sm-1 text-right">{{ item.qtyordered|number_format(m_picking.decimal_places()) }}</div>
+				<div class="col-sm-1 text-right">{{ item.qtypulled|number_format(m_picking.decimal_places()) }}</div>
+				<div class="col-sm-1 text-right">{{ item.qtyremaining|number_format(m_picking.decimal_places()) }}</div>
+				<div class="col-sm-3 text-right">
+					{% if pickingsession.is_subline_being_picked(item) %}
+						{% if pickingsession.is_currentuser_picking(item) %}
+							<span class="badge badge-info">You are picking</span>
+						{% else %}
+							<span class="badge badge-warning">Is being picked</span>
+						{% endif %}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		<div class="collapse" id="{{ item.linenbr|attrJS }}">
+			<div class="list-group-item bg-light">
+				<div class="row">
+					<div class="col-sm-1"></div>
+					<div class="col-sm-1">Carton</div>
+					<div class="col-sm-1">Bin</div>
+					<div class="col-sm-2">Lotserial</div>
+					<div class="col-sm-2">Lot Reference</div>
+					<div class="col-sm-2 text-right">Qty</div>
+					<div class="col-sm-2">Actions</div>
+				</div>
+			</div>
+			{% for lotserial in item.get_pickeditems() %}
+				<div class="list-group-item">
+					<div class="row">
+						<div class="col-sm-1"></div>
+						<div class="col-sm-1">{{ lotserial.palletnbr }}</div>
+						<div class="col-sm-1">{{ lotserial.bin }}</div>
+						<div class="col-sm-2">{{ lotserial.lotserial }}</div>
+						<div class="col-sm-2">{{ lotserial.lotserialref }}</div>
+						<div class="col-sm-2 text-right">{{ lotserial.qty|number_format(m_picking.decimal_places()) }}</div>
+						<div class="col-sm-2">
+							{% include 'warehouse/picking/unguided/order/remove-picked.twig' %}
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	{% endfor %}
+</div>
