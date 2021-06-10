@@ -21,7 +21,7 @@ class Min extends AbstractController {
 		$validate = self::validator();
 
 		if ($validate->stockcode($data->code) === false) {
-			return $data->jqv "Tariff Code $code not found" : false;
+			return $data->jqv ? "Tariff Code $code not found" : false;
 		}
 		return true;
 	}
@@ -31,7 +31,7 @@ class Min extends AbstractController {
 		$validate = self::validator();
 
 		if ($validate->specialitem($data->code) === false) {
-			return $data->jqv "Special Item Code $code not found" : false;
+			return $data->jqv ? "Special Item Code $code not found" : false;
 		}
 		return true;
 	}
