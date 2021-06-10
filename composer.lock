@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b7aa14578c755151cb1c16c398ce1bb",
+    "content-hash": "b6d7da46f28a2771b88fb2f9037bbdc6",
     "packages": [
         {
             "name": "cptechinc/dplus-model",
@@ -823,12 +823,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/propelorm/Propel2.git",
-                "reference": "294de327e6737d1dca541e035e0f8615750ab9a8"
+                "reference": "3087361bd27f3598f3ecd70e9fd272a5c2575b88"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/propelorm/Propel2/zipball/294de327e6737d1dca541e035e0f8615750ab9a8",
-                "reference": "294de327e6737d1dca541e035e0f8615750ab9a8",
+                "url": "https://api.github.com/repos/propelorm/Propel2/zipball/3087361bd27f3598f3ecd70e9fd272a5c2575b88",
+                "reference": "3087361bd27f3598f3ecd70e9fd272a5c2575b88",
                 "shasum": ""
             },
             "require": {
