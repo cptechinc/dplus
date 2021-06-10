@@ -284,6 +284,7 @@ class XrefVxm extends WireData implements Module {
 
 		$record = $this->get_create_xref($vendorID, $vendoritemID, $itemID);
 
+
 		if (!$record->isNew()) {
 			if (!$this->lockrecord($record)) {
 				$key = $this->get_recordlocker_key($record);
@@ -304,6 +305,8 @@ class XrefVxm extends WireData implements Module {
 			if ($values->text('update_itm_cost') == 'true') {
 				$this->update_itm_cost($record);
 			}
+
+			$this->update_itm_pricing($record);
 		}
 		$this->wire('session')->setFor('response', 'vxm', $response);
 		return $response->has_success();
@@ -512,6 +515,19 @@ class XrefVxm extends WireData implements Module {
 		}
 		$itm = $this->wire('modules')->get('ItmCosting');
 		return $itm->update_cost_from_vxm($record);
+	}
+
+	protected function update_itm_pricing(ItemXrefVendor $xref) {
+		$config = $this->get_config_ap();
+
+		if ($config->update_itm_pricing() && $xref->is_primary_vxmitem()){
+			if ($xref->imitem->pricing->baseprice != $xref->get_listprice_uom_sale()) {
+				$pricing = $this->wire('modules')->get('ItmPricing');
+				$item = $pricing->get_pricing($xref->itemid);
+				$item->setBaseprice($xref->get_listprice_uom_sale());
+				$pricing->save_and_respond($item);
+			}
+		}
 	}
 
 /* =============================================================
