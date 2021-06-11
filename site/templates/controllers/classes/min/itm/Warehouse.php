@@ -46,10 +46,16 @@ class Warehouse extends ItmFunction {
 
 		if ($data->action) {
 			$itmW->process_input($input);
-			$data->whseID = $data->action == 'remove-whse' ? '' : $data->whseID;
-		}
+			$url = self::itmUrlWhse($data->itemID, $data->whseID);
 
-		self::pw('session')->redirect(self::itmUrlWhse($data->itemID, $data->whseID), $http301 = false);
+			switch ($data->action) {
+				case 'delete-whse':
+				case 'update-whse':
+					$url = self::itmUrlWhse($data->itemID);
+					break;
+			}
+		}
+		self::pw('session')->redirect($url, $http301 = false);
 	}
 
 	public static function warehouse($data) {
@@ -63,34 +69,40 @@ class Warehouse extends ItmFunction {
 			return self::handleCRUD($data);
 		}
 		self::initHooks();
-		$html = '';
 		$config  = self::pw('config');
 		$page    = self::pw('page');
 		$page->headline = "ITM: $data->itemID Warehouse $data->whseID";
-		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
-		$html .= $config->twig->render('items/itm/itm-links.twig');
-		$html .= self::lockItem($data->itemID);
 		$validate = self::getMinValidator();
 
 		if ($validate->whseid($data->whseID) === false && $data->whseID != 'new') {
 			return self::invalidWhse($data);
 		}
+
+		if (self::getItmWarehouse()->exists($data->itemID, $data->whseID)) {
+			$page->headline = "ITM: $data->itemID Warehouse Add";
+		}
+		return self::whseDisplay($data);
+	}
+
+	private static function whseDisplay($data) {
 		$itm  = self::getItm();
 		$itmW = self::getItmWarehouse();
 		$itmW->init_configs();
 		$item = $itm->get_item($data->itemID);
 		$whse = $itmW->getOrCreate($data->itemID, $data->whseID);
+		$config = self::pw('config');
 
-		if ($whse->isNew()) {
-			$page->headline = "ITM: $data->itemID Warehouse Add";
-		}
+		$html   = '';
+		$html   .= $config->twig->render('items/itm/bread-crumbs.twig');
+		$html   .= $config->twig->render('items/itm/itm-links.twig');
+		$html   .= self::lockItem($data->itemID);
 
 		if (self::pw('session')->getFor('response', 'itm')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => self::pw('session')->getFor('response', 'itm')]);
 		}
 
 		if ($whse->isNew() === false) {
-			self::lockItemWarehouse($whse);
+			$html .= self::lockItemWarehouse($whse);
 		}
 
 		$html .= $config->twig->render('items/itm/warehouse/display.twig', ['item' => $item, 'warehouse' => $whse, 'm_whse' => $itmW, 'recordlocker' => $itmW->recordlocker]);
@@ -99,7 +111,6 @@ class Warehouse extends ItmFunction {
 	}
 
 	private static function invalidWhse($data) {
-		$fields = ['whseID|text'];
 		$validate = self::getMinValidator();
 		$html = '';
 		if ($validate->whseid($data->whseID) === false) {
@@ -135,16 +146,23 @@ class Warehouse extends ItmFunction {
 			return self::handleCRUD($data);
 		}
 		self::initHooks();
-		$html = '';
-		$config  = self::pw('config');
-		$page    = self::pw('page');
-		$itm     = self::getItm();
 		$itmw    = self::getItmWarehouse();
-		$itmw->recordlocker->deleteLock($page->lockcode);
+		$itmw->recordlocker->deleteLock();
+		$page    = self::pw('page');
 		$page->headline = "ITM: $data->itemID Warehouses";
+
+		return self::listDisplay($data);
+	}
+
+	private static function listDisplay($data) {
+		$config  = self::pw('config');
+		$item    = self::getItm()->item($data->itemID);
+		$itmw    = self::getItmWarehouse();
+
+		$html = '';
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 		$html .= $config->twig->render('items/itm/itm-links.twig');
-		$html .= $config->twig->render('items/itm/warehouse/list-display.twig', ['itmw' => $itmw, 'itemID' => $data->itemID, 'item' => $itm->item($data->itemID), 'warehouses' => $itmw->get_itemwarehouses($data->itemID)]);
+		$html .= $config->twig->render('items/itm/warehouse/list-display.twig', ['itmw' => $itmw, 'itemID' => $data->itemID, 'item' => $item, 'warehouses' => $itmw->get_itemwarehouses($data->itemID)]);
 		return $html;
 	}
 
@@ -158,10 +176,21 @@ class Warehouse extends ItmFunction {
 		return $url->getUrl();
 	}
 
+	public static function itmUrlWhseFocus($itemID, $whseID) {
+		$url = new Purl(self::itmUrlWhse($itemID));
+		$url->query->set('focus', $whseID);
+		return $url->getUrl();
+	}
+
 	public static function initHooks() {
 		$m = self::pw('modules')->get('Itm');
+
 		$m->addHook('Page(pw_template=itm)::itmUrlWhseDelete', function($event) {
 			$event->return = self::itmUrlWhseDelete($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=itm)::itmUrlWhseExit', function($event) {
+			$event->return = self::itmUrlWhseFocus($event->arguments(0), $event->arguments(1));
 		});
 	}
 
