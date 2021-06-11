@@ -50,6 +50,12 @@ class UserFunction extends WireData {
 		return self::$locker;
 	}
 
+
+	public static function glue() {
+		$locker = self::locker();
+		return $locker::GLUE;
+	}
+
 	/**
 	 * Returns if Function is being locked by User ID
 	 * @param  mixed  $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
