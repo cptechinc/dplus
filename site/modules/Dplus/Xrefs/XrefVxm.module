@@ -132,7 +132,7 @@ class XrefVxm extends WireData implements Module {
 	 * @return ItemXrefVendor
 	 */
 	public function xref_by_recordlocker_key($key) {
-		$keys = explode('-', $key);
+		$keys = explode(FunctionLocker::glue(), $key);
 		$vendorID = $keys[0];
 		$vendoritemID = $keys[1];
 		$itemID = $keys[2];
@@ -284,6 +284,7 @@ class XrefVxm extends WireData implements Module {
 
 		$record = $this->get_create_xref($vendorID, $vendoritemID, $itemID);
 
+
 		if (!$record->isNew()) {
 			if (!$this->lockrecord($record)) {
 				$key = $this->get_recordlocker_key($record);
@@ -304,6 +305,8 @@ class XrefVxm extends WireData implements Module {
 			if ($values->text('update_itm_cost') == 'true') {
 				$this->update_itm_cost($record);
 			}
+
+			$this->update_itm_pricing($record);
 		}
 		$this->wire('session')->setFor('response', 'vxm', $response);
 		return $response->has_success();
@@ -514,6 +517,19 @@ class XrefVxm extends WireData implements Module {
 		return $itm->update_cost_from_vxm($record);
 	}
 
+	protected function update_itm_pricing(ItemXrefVendor $xref) {
+		$config = $this->get_config_ap();
+
+		if ($config->update_itm_pricing() && $xref->is_primary_vxmitem()){
+			if ($xref->imitem->pricing->baseprice != $xref->get_listprice_uom_sale()) {
+				$pricing = $this->wire('modules')->get('ItmPricing');
+				$item = $pricing->get_pricing($xref->itemid);
+				$item->setBaseprice($xref->get_listprice_uom_sale());
+				$pricing->save_and_respond($item);
+			}
+		}
+	}
+
 /* =============================================================
 	CRUD Response Functions
 ============================================================= */
@@ -591,7 +607,7 @@ class XrefVxm extends WireData implements Module {
 	 * @return string
 	 */
 	public function get_recordlocker_key(ItemXrefVendor $item) {
-		return "$item->vendorID-$item->vendoritemID-$item->ouritemID";
+		return implode(FunctionLocker::glue(), [$item->vendorid, $item->vendoritemid, $item->ouritemid]);
 	}
 
 	/**

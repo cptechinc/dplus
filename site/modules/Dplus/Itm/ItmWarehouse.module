@@ -496,7 +496,7 @@ class ItmWarehouse extends WireData implements Module {
 	}
 
 	public function lockerkey(WarehouseInventory $warehouse) {
-		return "$warehouse->itemid-$warehouse->warehouseid";
+		return implode(FunctionLocker::glue(), [$warehouse->itemid, $warehouse->warehouseid]);
 	}
 
 /* =============================================================

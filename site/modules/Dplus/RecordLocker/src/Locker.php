@@ -13,6 +13,8 @@ use ProcessWire\WireData;
  * NOTE: Examples provided will be for IWHM
  */
 class Locker extends WireData {
+	const GLUE = '|';
+
 	/**
 	 * Return LockRecordQuery
 	 * @return LockRecordQuery
@@ -29,7 +31,7 @@ class Locker extends WireData {
 	 * @return bool
 	 */
 	public function userHasRecordLocked($function, $key, $userID) {
-		$key = is_array($key) ? implode('-', $key) : $key;
+		$key = is_array($key) ? implode(self::GLUE, $key) : $key;
 		$q = $this->query();
 		$q->filterByUserid($userID);
 		$q->filterByFunction($function);
@@ -44,7 +46,7 @@ class Locker extends WireData {
 	 * @return bool
 	 */
 	public function isRecordLocked($function, $key) {
-		$key = is_array($key) ? implode('-', $key) : $key;
+		$key = is_array($key) ? implode(self::GLUE, $key) : $key;
 		$q = $this->query();
 		$q->filterByFunction($function);
 		$q->filterByKey($key);
@@ -56,7 +58,7 @@ class Locker extends WireData {
 	 * @return string
 	 */
 	public function getLockingUser($function, $key) {
-		$key = is_array($key) ? implode('-', $key) : $key;
+		$key = is_array($key) ? implode(self::GLUE, $key) : $key;
 		$q = $this->query();
 		$q->select('userid');
 		$q->filterByFunction($function);
@@ -73,7 +75,7 @@ class Locker extends WireData {
 	 * @return bool
 	 */
 	public function lock($function, $key, $userID) {
-		$key = is_array($key) ? implode('-', $key) : $key;
+		$key = is_array($key) ? implode(self::GLUE, $key) : $key;
 		$lock = new LockRecord();
 		$lock->setFunction($function);
 		$lock->setKey($key);
@@ -90,7 +92,7 @@ class Locker extends WireData {
 	 * @return bool
 	 */
 	public function deleteLock($userID, $function, $key = false) {
-		$key = is_array($key) ? implode('-', $key) : $key;
+		$key = is_array($key) ? implode(self::GLUE, $key) : $key;
 		$q = $this->query();
 		$q->filterByUserid($userID);
 		$q->filterByFunction($function);

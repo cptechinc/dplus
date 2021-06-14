@@ -115,7 +115,9 @@ class ItmFunction extends AbstractController {
 
 	public static function itmUrlWhse($itemID, $whseID = '') {
 		$url = new Purl(self::itmUrlFunction($itemID, 'warehouses'));
-		$url->query->set('whseID', $whseID);
+		if ($whseID) {
+			$url->query->set('whseID', $whseID);
+		}
 		return $url->getUrl();
 	}
 

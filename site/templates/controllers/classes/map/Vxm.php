@@ -51,10 +51,11 @@ class Vxm extends AbstractController {
 		if ($vxm->xref_exists($data->vendorID, $data->vendoritemID, $data->itemID)) {
 			$response = $vxm->response();
 
+			$url = self::xrefUrl($data->vendorID, $data->vendoritemID, $data->itemID);
+
 			if ($response && $response->has_success()) {
 				$url = self::vendorFocusUrl($data->vendorID, $response->key);
 			}
-			$url = self::xrefUrl($data->vendorID, $data->vendoritemID, $data->itemID);
 		}
 		$session->redirect($url, $http301 = false);
 	}

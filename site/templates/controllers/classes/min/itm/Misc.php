@@ -60,22 +60,27 @@ class Misc extends ItmFunction {
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
-		$html = '';
+
+		$page = self::pw('page');
+		$page->headline = "ITM: $data->itemID Misc";
+		$page->js .= self::pw('config')->twig->render('items/itm/misc/js.twig', ['itm' => self::getItmMisc()]);
+		return self::miscDisplay($data);
+	}
+
+	private static function miscDisplay($data) {
 		$config  = self::pw('config');
-		$page    = self::pw('page');
 		$session = self::pw('session');
 		$itm     = self::getItm();
-		$itmMisc    = self::getItmMisc();
 		$item = $itm->get_item($data->itemID);
-		$page->headline = "ITM: $data->itemID Misc";
+
+		$html = '';
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 		if ($session->getFor('response', 'itm')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
 		}
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
-		$html .= $config->twig->render('items/itm/misc/page.twig', ['itm' => $itmMisc, 'item' => $item, 'recordlocker' => $itm->recordlocker]);
-		$page->js   .= $config->twig->render('items/itm/misc/js.twig', ['itm' => $itmMisc]);
+		$html .= $config->twig->render('items/itm/misc/page.twig', ['itm' => self::getItmMisc(), 'item' => $item, 'recordlocker' => $itm->recordlocker]);
 		return $html;
 	}
 

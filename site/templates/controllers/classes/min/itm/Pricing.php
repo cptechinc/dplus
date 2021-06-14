@@ -62,15 +62,21 @@ class Pricing extends ItmFunction {
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
-		$html = '';
-		$config  = self::pw('config');
 		$page    = self::pw('page');
+		$page->headline = "ITM: $data->itemID Pricing";
+		$page->js .= self::pw('config')->twig->render('items/itm/pricing/js.twig');
+		return self::pricingDisplay($data);
+	}
+
+	private static function pricingDisplay($data) {
+		$config  = self::pw('config');
 		$session = self::pw('session');
 		$itm     = self::getItm();
 		$itmPricing = self::getItmPricing();
 		$item = $itm->get_item($data->itemID);
 		$pricing = $itmPricing->get_pricing($data->itemID);
-		$page->headline = "ITM: $data->itemID Pricing";
+
+		$html = '';
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 		if ($session->getFor('response', 'itm')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
@@ -78,8 +84,6 @@ class Pricing extends ItmFunction {
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
 		$html .= $config->twig->render('items/itm/pricing/display.twig', ['item' => $item, 'pricingm' => $itmPricing, 'item_pricing' => $pricing, 'itm' => $itm]);
-		$page->js .= $config->twig->render('items/itm/pricing/js.twig', ['item_pricing' => $pricing]);
-		self::pw('session')->remove('response_itm');
 		return $html;
 	}
 

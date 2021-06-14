@@ -2,16 +2,8 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
-	item                   ItemMasterItem
-	item_pricing           ItemMasterItem
-	pricingm               module ItmPricing
-	pricingm.configs       WireData
 #}
 $(function() {
-	var eachlistprice = {{ item_pricing.baseprice }};
-	var standardcost = {{ item_pricing.item.standardcost }};
-	var itemID = '{{ item_pricing.itemid }}';
-
 	var form_vxm = $('#itm-pricing-form');
 	var input_listprice = form_vxm.find('input[name=listprice]');
 	var input_uom       = form_vxm.find('select[name=uom_sale]');
@@ -70,8 +62,6 @@ $(function() {
 		var input_unitcost = unitrow.find('.pricebreak-price');
 		var ele_margin = unitrow.find('.unit-margin');
 		var margin = determine_unitmargin(input_unitcost.val());
-		console.log(input_unitcost.val());
-		console.log(margin);
 		ele_margin.text(margin);
 	}
 
@@ -81,6 +71,8 @@ $(function() {
 	 * @return float
 	 */
 	function determine_unitmargin(eachlistprice) {
+		var standardcost = parseFloat($('input[name=standardcost]').val());
+
 		if (eachlistprice == 0 || standardcost == 0) {
 			return 100;
 		} else {
