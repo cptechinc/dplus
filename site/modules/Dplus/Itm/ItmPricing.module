@@ -198,8 +198,7 @@ class ItmPricing extends WireData implements Module {
 	 * @param  ItemPricing $record Record to record response of database save
 	 * @return ItmResponse
 	 */
-	protected function save_and_respond(ItemPricing $record) {
-
+	public function save_and_respond(ItemPricing $record) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 		$response = new ItmResponse();

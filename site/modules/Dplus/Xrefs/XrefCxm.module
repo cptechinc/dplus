@@ -127,7 +127,7 @@ class XrefCxm extends WireData implements Module {
 	 * @return ItemXrefCustomer
 	 */
 	public function xref_by_recordlocker_key($key) {
-		$keys = explode('-', $key);
+		$keys = explode(FunctionLocker::glue(), $key);
 		$custID = $keys[0];
 		$custitemID = $keys[1];
 		return $this->xref($custID, $custitemID);
@@ -607,7 +607,7 @@ class XrefCxm extends WireData implements Module {
 	 * @return string
 	 */
 	public function get_recordlocker_key(ItemXrefCustomer $item) {
-		return "$item->custid-$item->custitemid-$item->itemid";
+		return implode(FunctionLocker::glue(), [$item->custid, $item->custitemid, $item->itemid]);
 	}
 
 	/**

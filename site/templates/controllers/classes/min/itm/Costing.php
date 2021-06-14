@@ -58,22 +58,27 @@ class Costing extends ItmFunction {
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
-		$html = '';
-		$config  = self::pw('config');
-		$page    = self::pw('page');
+		$page = self::pw('page');
+		$page->headline = "ITM: $data->itemID Costing";
+		$page->js .= self::pw('config')->twig->render('items/itm/costing/js.twig');
+		return self::costingDisplay($data);
+	}
+
+	private static function costingDisplay($data) {
 		$session = self::pw('session');
+		$config  = self::pw('config');
 		$itm     = self::getItm();
 		$itmC    = self::getItmCosting();
 		$item = $itm->get_item($data->itemID);
-		$page->headline = "ITM: $data->itemID Costing";
+		$html = '';
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
+
 		if ($session->getFor('response', 'itm')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
 		}
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
 		$html .= $config->twig->render('items/itm/costing/page.twig', ['itm' => $itm, 'item' => $item, 'm_costing' => $itmC, 'recordlocker' => $itm->recordlocker]);
-		$page->js .= $config->twig->render('items/itm/costing/js.twig', []);
 		return $html;
 	}
 

@@ -105,7 +105,7 @@ class XrefMxrfe extends WireData implements Module {
 	 * @return ItemXrefVendor
 	 */
 	public function xref_by_recordlocker_key($key) {
-		$keys = explode('-', $key);
+		$keys = explode(FunctionLocker::glue(), $key);
 		$mnfrID     = $keys[0];
 		$mnfritemID = $keys[1];
 		$itemID     = $keys[2];
@@ -385,7 +385,7 @@ class XrefMxrfe extends WireData implements Module {
 	 * @return string
 	 */
 	public function get_recordlocker_key(ItemXrefManufacturer $item) {
-		return "{$item->vendorid}-{$item->vendoritemid}-{$item->itemid}";
+		return implode(FunctionLocker::glue(), [$item->mnfrid, $item->mnfritemid, $item->itemid]);
 	}
 
 	/**

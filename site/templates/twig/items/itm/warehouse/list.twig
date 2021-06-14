@@ -28,7 +28,10 @@
 		{% endif %}
 
 		{% for warehouse in warehouses %}
-			<tr>
+			{% set class = warehouse.warehouseid == session.getFor('response', 'itm').whseID  ? 'bg-success text-white' : '' %}
+			{% set class = warehouse.warehouseid == page.wire('input').get.text('focus') ? 'highlight' : class %}
+
+			<tr class="{{ class }}">
 				<td>{{ warehouse.warehouseid }}</td>
 				<td>{{ warehouse.bin_default }}</td>
 				<td>{{ warehouse.status }}</td>
