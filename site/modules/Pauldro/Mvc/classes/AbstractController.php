@@ -64,4 +64,17 @@ abstract class AbstractController extends WireData {
 		}
 		return $sanitizer->$method($subject);
 	}
+
+	public static function getPagenbrFromOffset(int $offset, int $showOnPage = null) {
+		if (empty($showOnPage)) {
+			$showOnPage = self::pw('session')->display;
+		}
+
+		$pagenbr = ceil($offset / $showOnPage);
+		if (($offset % $showOnPage) == 0) {
+			$pagenbr++;
+		}
+
+		return $pagenbr;
+	}
 }
