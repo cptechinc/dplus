@@ -61,6 +61,7 @@ abstract class Base extends AbstractController {
 		$url = new Purl(self::pw('pages')->get('pw_template=sales-orders')->url);
 		if ($ordn) {
 			$url->query->set('focus', $ordn);
+
 		}
 		return $url->getUrl();
 	}

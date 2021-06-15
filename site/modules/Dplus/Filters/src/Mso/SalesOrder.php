@@ -306,4 +306,35 @@ class SalesOrder extends AbstractFilter {
 			$this->shiptoid($shiptoID);
 		}
 	}
+
+/* =============================================================
+	Misc Query Functions
+============================================================= */
+	/**
+	 * Return if Item Exists
+	 * @param  string $ordn Order Number
+	 * @return bool
+	 */
+	public function exists($ordn) {
+		return boolval(SalesOrderQuery::create()->filterByOrdernumber($ordn)->count());
+	}
+
+	/**
+	 * Return Position of Item in results
+	 * @param  Model|string $order Sales Order | Sales Order Number
+	 * @return int
+	 */
+	public function positionQuick($order) {
+		$ordn = $order;
+		if (is_object($order)) {
+			$ordn = $order->ordernumber;
+		}
+		$q = $this->getQueryClass();
+		$q->execute_query('SET @rownum = 0');
+		$table = $q->getTableMap()::TABLE_NAME;
+		$sql = "SELECT x.position FROM (SELECT OehdNbr, @rownum := @rownum + 1 AS position FROM $table) x WHERE OehdNbr = :ordn";
+		$params = [':ordn' => $ordn];
+		$stmt = $q->execute_query($sql, $params);
+		return $stmt->fetchColumn();
+	}
 }
