@@ -263,7 +263,6 @@ class Vxm extends AbstractController {
 			$filter->vendorid($vxm->vendorids());
 			$position = $filter->positionById($vendorID);
 			$pagenbr = self::getPagenbrFromOffset($position);
-			self::pw('session')->display = 10;
 			$url = self::pw('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		}
 		return $url->getUrl();
