@@ -99,7 +99,6 @@ class Cxm extends AbstractController {
 		return $html;
 	}
 
-
 	public static function qnotesDisplay(ItemXrefCustomer $xref) {
 		$page   = self::pw('page');
 		$config = self::pw('config');
@@ -257,7 +256,7 @@ class Cxm extends AbstractController {
 			$filter = new CxmFilter();
 			$filter->custid($custID);
 			$position = $filter->position($xref);
-			$pagenbr = ceil($position / self::pw('session')->display);
+			$pagenbr = self::getPagenbrFromOffset($position);
 			$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get('pw_template=cxm')->name, $pagenbr);
 		}
 		return $url->getUrl();
@@ -283,6 +282,9 @@ class Cxm extends AbstractController {
 			$filter->custid($cxm->custids());
 			$position = $filter->positionById($custID);
 			$pagenbr = ceil($position / (self::pw('session')->display - 1));
+			if (($position % self::pw('session')->display) == 0) {
+				$pagenbr++;
+			}
 			$url = self::pw('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		}
 		return $url->getUrl();

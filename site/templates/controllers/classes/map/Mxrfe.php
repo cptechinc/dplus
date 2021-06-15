@@ -270,7 +270,7 @@ class Mxrfe extends AbstractController {
 		$filter = new MxrfeFilter();
 		$filter->vendorid($mnfrID);
 		$position = $filter->position($xref);
-		$pagenbr = ceil($position / self::pw('session')->display);
+		$pagenbr = self::getPagenbrFromOffset($position);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get('pw_template=mxrfe')->name, $pagenbr);
 		return $url->getUrl();
 	}
