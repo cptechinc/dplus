@@ -21,6 +21,11 @@ $(function() {
 
 	var modal_ajax = $('#ajax-modal');
 
+	var uri = URI();
+	if (uri.query(true)['vendoritemID'] != 'new') {
+		$('select[name=uom_purchase]').focus();
+	}
+
 /* =============================================================
 	Event Functions
 ============================================================= */
@@ -59,7 +64,6 @@ $(function() {
 	$("body").on("change", ".unit-margin", function(e) {
 		var unitrow = $(this).closest('.unit-row');
 		var computeListpriceOrCost = '{{ vxm.get_config_ap().computelistpriceorcost }}';
-
 
 		if (parseInt(unitrow.data('break')) == 0) {
 			if (computeListpriceOrCost == 'L') {
@@ -107,7 +111,7 @@ $(function() {
 		var itmcost_ordercodes = {{ constant('ORDERCODES_ITM_COST', vxm)|json_encode()|raw }};
 		var iscostcode = itmcost_ordercodes.contains($('select[name=po_ordercode]').val());
 
-		if ((iscostcode && allowlistpriceupdate) || input.closest('form').data('new') == true) {
+		if (($('select[name=po_ordercode]').val() == 'P' && allowlistpriceupdate) || input.closest('form').data('new') == true) {
 			changeEachListPrice();
 		}
 
