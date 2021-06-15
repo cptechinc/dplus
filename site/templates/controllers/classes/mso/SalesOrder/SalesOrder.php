@@ -167,6 +167,10 @@ class SalesOrder extends Base {
 			$event->return = self::orderUrl($event->arguments(0));
 		});
 
+		$m->addHook('Page(pw_template=sales-order-view)::orderListUrl', function($event) {
+			$event->return = self::orderListUrl($event->arguments(0));
+		});
+
 		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderPrintUrl', function($event) {
 			$event->return = self::orderPrintUrl($event->arguments(0));
 		});
