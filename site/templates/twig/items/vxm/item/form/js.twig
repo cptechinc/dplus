@@ -28,9 +28,9 @@ $(function() {
 		$('select[name=uom_purchase]').focus();
 	}
 
-	var formVxm   = new VxmForm();
-	var alert  = new VxmAlerts();
-	var server = new VxmRequests();
+	var formVxm = VxmForm.getInstance();
+	var alert   = VxmAlerts.getInstance();
+	var server  = VxmRequests.getInstance();
 
 /* =============================================================
 	Event Functions
@@ -316,7 +316,7 @@ $(function() {
 				alert.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), formVxm.inputs.itemid.val());
 			} else {
 				formVxm.validateOrderCode(function(validated) {
-					confirm_cost(function(confirmed) {
+					formVxm.confirmCost(function(confirmed) {
 						input_update_itm_cost.val(confirmed ? 'true' : 'false');
 						console.log('submit');
 						// TODO testing
@@ -327,132 +327,9 @@ $(function() {
 		});
 	}
 
-	function confirm_cost(callback) {
-		var costbase = form_vxm.find('input[name=unitcost_base]');
-		var costperuom  = costbase.val() / input_uom.find('option:selected').data('conversion');
-		var changedcost  = floatParse(costbase.data('cost')) != costperuom;
-		var itmdifferent = floatParse(costbase.data('itmcost')) != costbase.val();
-		var changedordercode = input_ordercode.val() != input_ordercode.data('ordercode');
-		var costorordercode = (itmdifferent || changedordercode);
-
-		if (changedcost || changedordercode) {
-			request_can_update_itm_cost(input_vendorID.val(), input_vendoritemID.val(), input_itemID.val(), function (response) {
-				if (response.allow) {
-					if (response.confirm) {
-						swal_confirm_cost(function(confirmed) {
-							callback(confirmed);
-						});
-					} else {
-						callback(true);
-					}
-				} else {
-					callback(false);
-				}
-			});
-		} else {
-			var ordercode = form_vxm.find('select[name=po_ordercode]').val();
-			callback(ordercode == 'P');
-		}
-	}
-
-	function swal_confirm_cost(callback) {
-		var ordercode = form_vxm.find('select[name=po_ordercode]').val();
-		var codes = {{ constant('ItemXrefVendor::OPTIONS_POORDERCODE')|json_encode()|raw }};
-		var type = codes[ordercode];
-		var costbase = form_vxm.find('input[name=itemID]').attr('data-standardcostbase');
-
-		swal2.fire({
-			title: 'Confirmation',
-			html: 'This is the <b>' + type + '</b> Vendor for this item and the Standard Cost Base code is <b>'+costbase+'</b>, do you want to update the <b>Standard Cost</b> on the Item Master?',
-			icon: 'question',
-			showCancelButton: true,
-			confirmButtonText: 'Yes',
-			cancelButtonText: 'No',
-		}).then((result) => {
-			callback(result.value);
-		});
-	}
-
-	function validate_form_poordercode(callback) {
-		var select_poordercode = form_vxm.find('select[name=po_ordercode]');
-		var inputs = formVxm.inputs;
-
-		if (inputs.ordercodevalidated.val() == 'false') {
-			if (inputs.ordercode.val() == primarypoordercode) {
-				server.validatePrimaryPoOrderCode(inputs.vendorid.val(), inputs.vendoritemid.val(), inputs.itemid.val(), function(isAllowed) {
-					if (isAllowed) {
-						inputs.ordercodevalidated.val('true');
-						callback(true);
-					} else {
-						swal_overwrite_poordercode(function(overwrite) {
-							callback(overwrite);
-						});
-					}
-				});
-			} else {
-				input_validatedpoordercode.val('true');
-				callback(true);
-			}
-		} else {
-			callback(true);
-		}
-	}
-
-	function swal_overwrite_poordercode(callback) {
-		msg = input_itemID.val() + " already has a primary";
-		swal2.fire({
-			title: "Overwrite Primary PO Ordercode?",
-			text: msg,
-			icon: 'warning',
-			showCancelButton: true,
-			buttonsStyling: false,
-			confirmButtonText: 'Yes!'
-		}).then(function (result) {
-			if (result.value) {
-				var input_validatedpoordercode = form_vxm.find('input[name=po_ordercode_validated]');
-				input_validatedpoordercode.val('true');
-				callback(true);
-			} else {
-				callback(false);
-			}
-		});
-	}
-
 /* =============================================================
 	AJAX Request Functions
 ============================================================= */
-	/**
-	 * Gets boolean value if VXM item can be Primary PO Ordercode then calls callback function
-	 * @param  {Function} callback
-	 * @return bool       Can VXM item be used as Primary PO Order Code?
-	 */
-	function request_validate_poordercode(callback) {
-		var url = new URI('{{ page.jsonapiURL('map/vxm/primary-ordercode') }}');
-		url.addQuery('vendorID', input_vendorID.val());
-		url.addQuery('vendoritemID', input_vendoritemID.val());
-		url.addQuery('ouritemID', input_itemID.val());
-
-		// URL RETURNS boolean true or string UPC code for false
-		$.getJSON(url.toString(), function(valid) {
-			callback(valid);
-		});
-	}
-
-	/**
-	 * Gets boolean value if VXM item exists then calls callback function
-	 * @param  {Function} callback
-	 * @return json                [allow: {bool}, confirm: {bool}];
-	 */
-	function request_can_update_itm_cost(vendorID, vendoritemID, itemID, callback) {
-		var url = new URI('{{ page.jsonapiURL('map/validate/vxm/update-itm-cost') }}');
-		url.addQuery('vendorID', vendorID);
-		url.addQuery('vendoritemID', vendoritemID);
-		url.addQuery('itemID', itemID);
-		url.addQuery('ordercode', input_ordercode.val())
-		$.getJSON(url.toString(), function( response ) {
-			callback(response);
-		});
-	}
 
 /* =============================================================
 	Margin Calculation Functions
