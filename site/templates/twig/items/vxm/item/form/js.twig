@@ -106,7 +106,26 @@ $(function() {
 
 	$("body").on("change", "input[name=itemID]", function(e) {
 		var input = $(this);
-		populate_item_data(input.val());
+		var server = new VxmRequests();
+
+		form.populateItemData(input.val());
+
+		server.xrefExists(form.inputs.vendorid.val(), form.inputs.vendoritemid.val(), input.val(), function(exists) {
+			if (exists) {
+				alert.xrefExists(form.inputs.vendorid.val(), form.inputs.vendoritemid.val(), input.val());
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=vendoritemID]", function(e) {
+		var input = $(this);
+		var server = new VxmRequests();
+
+		server.xrefExists(form.inputs.vendorid.val(), input.val(), form.inputs.itemid.val(), function(exists) {
+			if (exists && input.data('new') != 'true') {
+				alert.xrefExists(form.inputs.vendorid.val(), input.val(), form.inputs.itemid.val());
+			}
+		});
 	});
 
 	$("body").on("change", "input[name=listprice]", function(e) {
@@ -133,30 +152,6 @@ $(function() {
 			$('input[name=listprice]').change();
 		}
 	});
-
-	function populate_item_data(itemID) {
-		request_item(itemID, function(item) {
-			if (item) {
-				var itemcol = $('.item-col');
-				input_itemID.attr('data-iskit',  item.iskit ? 'true' : 'false');
-				input_itemID.attr('data-itemid', item.itemid);
-				input_itemID.attr('data-standardcostbase', item.standardcostbasedon.base);
-				itemcol.find('.description').text(item.description);
-				itemcol.find('.description2').text(item.description2);
-				itemcol.find('.uom-sale').text(item.uom.sale.description);
-				$('.uom-sale-code').attr('data-conversion', item.uom.sale.conversion);
-				$('.uom-sale-code').text(item.uom.sale.code);
-				input_listprice.val(item.pricing.base).change();
-				input_uom.val(item.uom.sale.code).change();
-
-				enable_disable_kit();
-			} else {
-				input_itemID.attr('data-iskit', 'false');
-				input_itemID.attr('data-itemid', '');
-				enable_disable_kit();
-			}
-		});
-	}
 
 	function enable_disable_kit() {
 		var input_iskit = $('select[name=iskit]');
@@ -510,15 +505,6 @@ $(function() {
 		url.addQuery('ordercode', input_ordercode.val())
 		$.getJSON(url.toString(), function( response ) {
 			callback(response);
-		});
-	}
-
-	function request_item(itemID, callback) {
-		var url = new URI('{{ page.jsonapiURL('inv/item') }}');
-		url.addQuery('itemID', itemID).addQuery('fields', 'uom,iskit,pricing,standardcostbasedon');
-
-		$.getJSON(url.toString(), function( item ) {
-			callback(item);
 		});
 	}
 
