@@ -61,9 +61,6 @@ function VxmAlerts() {
 			confirmButtonText: 'Yes!'
 		}).then(function (result) {
 			if (result.value) {
-				// TODO change input validated in callback function
-				// var input_validatedpoordercode = form_vxm.find('input[name=po_ordercode_validated]');
-				// input_validatedpoordercode.val('true');
 				callback(true);
 			} else {
 				callback(false);
@@ -140,6 +137,8 @@ function VxmForm() {
 		kit:          this.form.find('select[name=iskit]'),
 		listprice:    this.form.find('input[name=listprice]'),
 		uom:          this.form.find('input[name=uom]'),
+		ordercode:    this.form.find('select[name=po_ordercode]'),
+		ordercodevalidated: this.form.find('input[name=po_ordercode_validated]'),
 	},
 	this.getListPrice = function() {
 		return this.inputs.listprice.val();
@@ -216,10 +215,42 @@ function VxmForm() {
 			var cost = floatParse(this.calculator.cost(this.getListPrice(), margin)).toFixed(this.config.fields.unit_cost.precision);
 			input_unitcost.val(cost);
 		}
+	},
+	this.validateOrderCode = function(callback) {
+		var inputs = this.inputs;
+
+		if (inputs.ordercodevalidated.val() == 'false') { // If Order code has not been validated
+			if (inputs.ordercode.val() == this.config.ordercodes.primary) { // Validate if Order code is pimary
+				var server = new VxmRequests();
+				server.validatePrimaryPoOrderCode(inputs.vendorid.val(), inputs.vendoritemid.val(), inputs.itemid.val(), function(isAllowed) {
+					if (isAllowed) {
+						inputs.ordercodevalidated.val('true');
+						callback(true);
+					} else {
+						var alerts = new VxmAlerts();
+						alerts.changePrimaryPoOrderCode(this.inputs.itemid.val(), function(overwrite) {
+							if (overwrite) { // If we want to overwrite
+								this.inputs.Ordercodevalidated.val('true');
+							}
+							callback(overwrite);
+						});
+					}
+				});
+			} else {
+				inputs.ordercodevalidated.val('true');
+				callback(true);
+			}
+		} else {
+			callback(true);
+		}
 	}
 }
 
 function VxmConfigs() {
+	this.ordercodes = {
+		primary: 'P',
+		costing: 'C'
+	},
 	this.allowListPriceUpdate = {{ vxm.getConfigAp().update_itm_pricing() ? 'true' : 'false' }},
 
 	this.fields = {

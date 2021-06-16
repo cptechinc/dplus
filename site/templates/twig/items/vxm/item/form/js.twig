@@ -311,13 +311,16 @@ $(function() {
 	}
 
 	function update_vxm(form) {
-		validate_xref(function(valid) {
-			if (valid) {
-				validate_form_poordercode(function(validated) {
+		server.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), formVxm.inputs.itemid.val(), function(exists) {
+			if (exists === true && formVxm.inputs.vendoritemid.val() != formVxm.inputs.vendoritemid.data('vendoritemid')) {
+				alert.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), formVxm.inputs.itemid.val());
+			} else {
+				formVxm.validateOrderCode(function(validated) {
 					confirm_cost(function(confirmed) {
 						input_update_itm_cost.val(confirmed ? 'true' : 'false');
+						console.log('submit');
 						// TODO testing
-						// form.submit();
+						// formObject.submit();
 					});
 				});
 			}
@@ -372,13 +375,13 @@ $(function() {
 
 	function validate_form_poordercode(callback) {
 		var select_poordercode = form_vxm.find('select[name=po_ordercode]');
-		var input_validatedpoordercode = form_vxm.find('input[name=po_ordercode_validated]');
+		var inputs = formVxm.inputs;
 
-		if (input_validatedpoordercode.val() == 'false') {
-			if (select_poordercode.val() == primarypoordercode) {
-				request_validate_poordercode(function(valid) {
-					if (valid) {
-						input_validatedpoordercode.val('true');
+		if (inputs.ordercodevalidated.val() == 'false') {
+			if (inputs.ordercode.val() == primarypoordercode) {
+				server.validatePrimaryPoOrderCode(inputs.vendorid.val(), inputs.vendoritemid.val(), inputs.itemid.val(), function(isAllowed) {
+					if (isAllowed) {
+						inputs.ordercodevalidated.val('true');
 						callback(true);
 					} else {
 						swal_overwrite_poordercode(function(overwrite) {
