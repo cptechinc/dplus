@@ -28,7 +28,7 @@ $(function() {
 		$('select[name=uom_purchase]').focus();
 	}
 
-	var form   = new VxmForm();
+	var formVxm   = new VxmForm();
 	var alert  = new VxmAlerts();
 	var server = new VxmRequests();
 
@@ -111,9 +111,9 @@ $(function() {
 
 		form.populateItemData(input.val());
 
-		server.xrefExists(form.inputs.vendorid.val(), form.inputs.vendoritemid.val(), input.val(), function(exists) {
+		server.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), input.val(), function(exists) {
 			if (exists) {
-				alert.xrefExists(form.inputs.vendorid.val(), form.inputs.vendoritemid.val(), input.val());
+				alert.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), input.val());
 			}
 		});
 	});
@@ -122,9 +122,9 @@ $(function() {
 		var input = $(this);
 		var server = new VxmRequests();
 
-		server.xrefExists(form.inputs.vendorid.val(), input.val(), form.inputs.itemid.val(), function(exists) {
+		server.xrefExists(formVxm.inputs.vendorid.val(), input.val(), formVxm.inputs.itemid.val(), function(exists) {
 			if (exists && input.data('new') != 'true') {
-				alert.xrefExists(form.inputs.vendorid.val(), input.val(), form.inputs.itemid.val());
+				alert.xrefExists(formVxm.inputs.vendorid.val(), input.val(), formVxm.inputs.itemid.val());
 			}
 		});
 	});
@@ -370,17 +370,6 @@ $(function() {
 		});
 	}
 
-	function validate_xref(callback) {
-		server.xrefExists(form.inputs.vendorid.val(), form.inputs.vendoritemid.val(), input.val(), function(exists) {
-			if (exists === true && form.inputs.vendoritemid.val() != input_vendoritemID.data('vendoritemid')) {
-				alert.xrefExists(form.inputs.vendorid.val(), form.inputs.vendoritemid.val(), input.val());
-				callback(false);
-			} else {
-				callback(true);
-			}
-		});
-	}
-
 	function validate_form_poordercode(callback) {
 		var select_poordercode = form_vxm.find('select[name=po_ordercode]');
 		var input_validatedpoordercode = form_vxm.find('input[name=po_ordercode_validated]');
@@ -404,25 +393,6 @@ $(function() {
 		} else {
 			callback(true);
 		}
-	}
-
-	function swal_xref_exists() {
-		swal2.fire({
-			title: "Vendor Item " + input_vendoritemID.val() + " exists",
-			text: 'Would you like to go edit this item?',
-			icon: 'error',
-			showCancelButton: true,
-			confirmButtonText: 'Yes',
-			cancelButtonText: 'No',
-		}).then((result) => {
-			if (result.value) {
-				var uri = new URI();
-				uri.removeQuery('vendoritemID');
-				uri.setQuery('vendorID', input_vendorID.val());
-				uri.setQuery('vendoritemID', input_vendoritemID.val());
-				window.location.href = uri.toString();
-			}
-		});
 	}
 
 	function swal_overwrite_poordercode(callback) {
