@@ -35,7 +35,7 @@
 				<select name="state" class="form-control validate-ignore" id="state">
 						<option value=""></option>
 					{% for state in m_iwhm.get_states() %}
-						<option value="{{ state.abbreviation }}" {{ state.abbreviation == warehouse.state ? 'selected' : ''}}>{{ state.abbreviation }}&emsp;-&ensp;{{ state.name }}</option>
+						<option value="{{ state.abbreviation }}" {{ state.abbreviation == warehouse.state ? 'selected' : ''}}>{{ state.abbreviation }}</option>
 					{% endfor %}
 				</select>
 			</div>
