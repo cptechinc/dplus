@@ -472,7 +472,7 @@ $(function() {
 		url.addQuery('ouritemID', input_itemID.val());
 
 		// URL RETURNS boolean true or string UPC code for false
-		$.getJSON(url.toString(), function( valid ) {
+		$.getJSON(url.toString(), function(valid) {
 			callback(valid);
 		});
 	}
@@ -577,7 +577,6 @@ $(function() {
 	 * Recalculates Each List Price based on the Unit of Measure Purchase Conversion
 	 */
 	function calculate_eachlistprice() {
-		console.log('listprice');
 		var updateitmpricing = {{ vxm.getConfigAp().update_itm_pricing() ? 'true' : 'false' }};
 
 		var ordercode = form_vxm.find('select[name=po_ordercode]').val();
