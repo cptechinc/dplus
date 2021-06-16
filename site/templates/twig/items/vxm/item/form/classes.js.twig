@@ -21,7 +21,7 @@ function VxmRequests() {
 		});
 	},
 	this.getItm = function(itemID, itmfields, callback) {
-		var fields = Array.isArray(itemfields) ? itemfields.join(',') : itemfields;
+		var fields = Array.isArray(itmfields) ? itmfields.join(',') : itmfields;
 		var ajax = new AjaxRequest('{{ page.jsonapiURL('inv/item') }}');
 
 		ajax.setData({itemID: itemID, fields: fields});
@@ -54,7 +54,7 @@ function VxmAlerts() {
 	this.changePrimaryPoOrderCode = function(itemID) {
 		swal2.fire({
 			title: "Overwrite Primary PO Ordercode?",
-			text: itemID + " already has a primary";,
+			text: itemID + " already has a primary",
 			icon: 'warning',
 			showCancelButton: true,
 			buttonsStyling: false,
@@ -134,12 +134,14 @@ function VxmForm() {
 	this.config = new VxmConfigs(),
 	this.calculator = new VxmCalculator(),
 	this.inputs = {
-		itemid:    this.form.find('input[name=itemID]'),
-		kit:       this.form.find('select[name=iskit]'),
-		listprice: this.form.find('input[name=listprice]'),
-		uom:       this.form.find('input[name=uom]'),
+		vendorid:     this.form.find('input[name=vendorID]'),
+		vendoritemid: this.form.find('input[name=vendoritemID]'),
+		itemid:       this.form.find('input[name=itemID]'),
+		kit:          this.form.find('select[name=iskit]'),
+		listprice:    this.form.find('input[name=listprice]'),
+		uom:          this.form.find('input[name=uom]'),
 	},
-	this.getListPrice() {
+	this.getListPrice = function() {
 		return this.inputs.listprice.val();
 	},
 	this.enableDisableKit = function() {
@@ -149,14 +151,14 @@ function VxmForm() {
 			this.inputs.kit.attr('tabindex', '-1');
 		}
 
-		if (inputs.itemid.attr('data-iskit') == 'true') {
+		if (this.inputs.itemid.attr('data-iskit') == 'true') {
 			this.inputs.kit.val('Y');
 			this.inputs.kit.removeAttr('disabled');
 			this.inputs.kit.attr('tabindex', '');
 		}
 	},
-	this.populateItemData() = function(itemID) {
-		var request = new VxmRequests();
+	this.populateItemData = function(itemID) {
+		var requests = new VxmRequests();
 
 		requests.getItm(itemID, ['uom','iskit','pricing','standardcostbasedon'], function(item) {
 			var form = new VxmForm();
@@ -172,7 +174,7 @@ function VxmForm() {
 				$('.uom-sale-code').attr('data-conversion', item.uom.sale.conversion);
 				$('.uom-sale-code').text(item.uom.sale.code);
 				form.inputs.listprice.val(item.pricing.base).change();
-				input_uom.val(item.uom.sale.code).change();
+				form.inputs.uom.val(item.uom.sale.code).change();
 				form.enableDisableKit();
 			} else {
 				form.inputs.itemid.attr('data-iskit', 'false');
