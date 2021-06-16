@@ -30,6 +30,7 @@ $(function() {
 
 	var form   = new VxmForm();
 	var alert  = new VxmAlerts();
+	var server = new VxmRequests();
 
 /* =============================================================
 	Event Functions
@@ -152,20 +153,6 @@ $(function() {
 			$('input[name=listprice]').change();
 		}
 	});
-
-	function enable_disable_kit() {
-		var input_iskit = $('select[name=iskit]');
-
-		if (input_itemID.attr('data-iskit') == 'false') {
-			input_iskit.val('N');
-			input_iskit.attr('disabled', 'disabled');
-			input_iskit.attr('tabindex', '-1');
-		} else {
-			input_iskit.val('Y');
-			input_iskit.removeAttr('disabled');
-			input_iskit.attr('tabindex', '');
-		}
-	}
 
 /* =============================================================
 	Unsaved Fields Alert
@@ -329,7 +316,8 @@ $(function() {
 				validate_form_poordercode(function(validated) {
 					confirm_cost(function(confirmed) {
 						input_update_itm_cost.val(confirmed ? 'true' : 'false');
-						form.submit();
+						// TODO testing
+						// form.submit();
 					});
 				});
 			}
@@ -383,10 +371,10 @@ $(function() {
 	}
 
 	function validate_xref(callback) {
-		request_validate_xref(function(exists) {
-			if (exists === true && input_vendoritemID.val() != input_vendoritemID.data('vendoritemid')) {
-				swal_xref_exists();
-				callback(false)
+		server.xrefExists(form.inputs.vendorid.val(), form.inputs.vendoritemid.val(), input.val(), function(exists) {
+			if (exists === true && form.inputs.vendoritemid.val() != input_vendoritemID.data('vendoritemid')) {
+				alert.xrefExists(form.inputs.vendorid.val(), form.inputs.vendoritemid.val(), input.val());
+				callback(false);
 			} else {
 				callback(true);
 			}
@@ -472,21 +460,6 @@ $(function() {
 		url.addQuery('ouritemID', input_itemID.val());
 
 		// URL RETURNS boolean true or string UPC code for false
-		$.getJSON(url.toString(), function(valid) {
-			callback(valid);
-		});
-	}
-
-	/**
-	 * Gets boolean value if VXM item exists then calls callback function
-	 * @param  {Function} callback
-	 * @return bool       Does VXM item exist?
-	 */
-	function request_validate_xref(callback) {
-		var url = new URI('{{ page.jsonapiURL('map/validate/vxm') }}');
-		url.addQuery('vendorID', input_vendorID.val());
-		url.addQuery('vendoritemID', input_vendoritemID.val());
-		url.addQuery('itemID', input_itemID.val());
 		$.getJSON(url.toString(), function(valid) {
 			callback(valid);
 		});
