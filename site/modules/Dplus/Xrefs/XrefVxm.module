@@ -14,6 +14,8 @@ use VendorQuery, Vendor;
 use ConfigInQuery, ConfigIn;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
+// Dplus Configs
+use Dplus\Configs;
 // Dplus Validators
 use Dplus\CodeValidators\Map\Vxm as VxmValidator;
 
@@ -674,7 +676,11 @@ class XrefVxm extends WireData implements Module {
 	 * @return ConfigAp
 	 */
 	public function get_config_ap() {
-		return $this->wire('modules')->get('ConfigureAp')->config();
+		return $this->getConfigAp();
+	}
+
+	public function getConfigAp() {
+		return Configs\Ap::config();
 	}
 
 	/**
