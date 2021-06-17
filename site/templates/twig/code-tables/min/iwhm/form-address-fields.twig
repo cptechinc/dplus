@@ -32,10 +32,12 @@
 				<input type="text" name="city" class="form-control" maxlength="16" value="{{ warehouse.city }}" id="city">
 			</div>
 			<div class="col-2">
-				<select name="state" class="form-control validate-ignore" id="state">
-						<option value=""></option>
+				<select name="state" class="form-control validate-ignore selectpicker" data-style="" data-styleBase="form-control" id="state">
+					<option value=""></option>
 					{% for state in m_iwhm.get_states() %}
-						<option value="{{ state.abbreviation }}" {{ state.abbreviation == warehouse.state ? 'selected' : ''}}>{{ state.abbreviation }}</option>
+						<option value="{{ state.abbreviation }}" title="{{ state.abbreviation }}" {{ state.abbreviation == warehouse.state ? 'selected' : ''}}>
+							{{ state.abbreviation }} - {{ state.name }}
+						</option>
 					{% endfor %}
 				</select>
 			</div>
