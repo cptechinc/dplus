@@ -143,8 +143,8 @@ $(function() {
 		if (($('select[name=po_ordercode]').val() == 'P' && allowlistpriceupdate) || input.closest('form').data('new') == true) {
 			changeEachListPrice();
 		}
-
-		recalculate_margins_costs();
+		
+		formVxm.inputs.updateMarginsOrCostsAfterListprice();
 	});
 
 	$("body").on("change", "select[name=po_ordercode]", function(e) {
@@ -330,41 +330,6 @@ $(function() {
 /* =============================================================
 	Margin Calculation Functions
 ============================================================= */
-	/**
-	 * Recalculate Margin or Costs
-	 * NOTE: USED when list price changes
-	 * @return {[type]} [description]
-	 */
-	function recalculate_margins_costs() {
-		var update = '{{ vxm.getConfigAp().computepercentageorcost }}';
-
-		if (parseInt($('input[name=listprice]').val()) == 0) {
-			$(".unit-row").each(function(index) {
-				if (update == 'C') {
-					$(this).find('input').val('');
-				} else {
-					$(this).find('input.unit-margin').val('');
-				}
-
-				if (parseInt($(this).data('break')) > 0) {
-					if (floatParse($(this).find('input.unit-qty').val()) == 0) {
-						$(this).find('input.unit-cost,input.unit-margin').attr('readonly', 'readonly');
-						if (parseInt($(this).data('break')) > 1) {
-							$(this).find('input.unit-qty').attr('readonly', 'readonly');
-						}
-					}
-				}
-			});
-			return true;
-		}
-
-		if (update == 'P') { // Update Margins
-			formVxm.inputs.updateAllUnitMargins();
-		} else if (update == 'C') { // Update Costs
-			formVxm.inputs.updateAllUnitCosts()
-		}
-	}
-
 	/**
 	 * Recalculates Each List Price based on the Unit of Measure Purchase Conversion
 	 */

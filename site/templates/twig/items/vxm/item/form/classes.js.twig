@@ -331,10 +331,19 @@ class VxmConfigs {
 					listprice: 'L',
 					percent:   'P'
 				}
+			},
+			listpricechange: {
+				computePercentOrCost: {
+					percent: 'P',
+					cost:    'C'
+				}
 			}
 		};
 		this.basecostchange = {
 			computeListpriceOrPercent: '{{ vxm.getConfigAp().computelistpriceorpercent }}'
+		};
+		this.listpricechange = {
+			computePercentOrCost: '{{ vxm.getConfigAp().computepercentageorcost }}'
 		};
 		this.fields = {
 			unit_cost: {
@@ -465,6 +474,37 @@ class VxmInputs {
 			var costbase = this.cost.base.val();
 			var listprice = costbase /  (1 - (unitrow.find('input.unit-margin').val() / 100));
 			this.listprice.val(listprice).change();
+		}
+	}
+
+	updateMarginsOrCostsAfterListprice() {
+		var config = VxmConfigs.getInstance();
+
+		if (floatParse(this.listprice.val()) == 0) {
+			$(".unit-row").each(function(index) {
+				// If Compute = COST
+				if (config.listpricechange.computePercentOrCost == config.options.listpricechange.computePercentOrCost.cost) {
+					$(this).find('input').val('');
+				} else {
+					$(this).find('input.unit-margin').val('');
+				}
+
+				if (parseInt($(this).data('break')) > 0) {
+					if (floatParse($(this).find('input.unit-qty').val()) == 0) {
+						$(this).find('input.unit-cost,input.unit-margin').attr('readonly', 'readonly');
+						if (parseInt($(this).data('break')) > 1) {
+							$(this).find('input.unit-qty').attr('readonly', 'readonly');
+						}
+					}
+				}
+			});
+			return true;
+		}
+
+		if (config.listpricechange.computePercentOrCost == config.options.listpricechange.computePercentOrCost.percent) { // Update Margins
+			this.updateAllUnitMargins();
+		} else if (config.listpricechange.computePercentOrCost == config.options.listpricechange.computePercentOrCost.cost) { // Update Costs
+			this.updateAllUnitCosts()
 		}
 	}
 
