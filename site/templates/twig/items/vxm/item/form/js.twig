@@ -42,7 +42,7 @@ $(function() {
 	$("body").on("change", ".unit-cost, .unit-qty", function(e) {
 		var input = $(this);
 		var unitrow = input.closest('.unit-row');
-		update_unitrow_margin(unitrow);
+		formVxm.inputs.updateUnitMargin(unitrow);
 
 		//if (input.hasClass('unit-qty')) {
 			update_input_availability(unitrow);
@@ -76,7 +76,8 @@ $(function() {
 			if (computeListpriceOrCost == 'L') {
 				update_listprice_from_basemargin(function() {
 					$('.unit-row').each(function(index) {
-						update_unitrow_margin($(this));
+						var vxmInputs = VxmInputs.getInstance();
+						vxmInputs.updateUnitMargin($(this));
 					});
 				});
 			} else {
@@ -381,7 +382,7 @@ $(function() {
 		}
 
 		if (update == 'P') { // Update Margins
-			calculate_margins();
+			formVxm.inputs.updateAllMargins();
 		} else if (update == 'C') { // Update Costs
 			calculate_costs();
 		}
@@ -400,7 +401,7 @@ $(function() {
 			var eachlistprice = floatParse(get_eachlistprice());
 			input_eachlistprice.val(eachlistprice.toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
 		}
-		calculate_margins();
+		formVxm.inputs.updateAllMargins();
 	}
 
 	function get_eachlistprice() {
@@ -415,40 +416,12 @@ $(function() {
 	/**
 	 * Calculates Margin for each Unit Cost
 	 */
-	function calculate_margins() {
-		$(".unit-row").each(function(index ) {
-			update_unitrow_margin($(this));
-		});
-	}
-
-	/**
-	 * Calculates Margin for each Unit Cost
-	 */
 	function calculate_costs() {
 		$(".unit-row").each(function(index ) {
 			update_unitrow_cost($(this));
 		});
 	}
 
-	/**
-	 * Calculates Margin for one Unit Cost
-	 * @param  JqueryElement unitrow
-	 */
-	function update_unitrow_margin(unitrow) {
-		var input_unitqty = unitrow.find('.unit-qty');
-		var input_unitcost = unitrow.find('.unit-cost');
-		input_unitcost.val(floatParse(input_unitcost.val()).toFixed({{ vxm.field_attribute('unit_cost', 'precision') }}));
-
-		if (floatParse(input_unitcost.val())) {
-			var input_margin = unitrow.find('.unit-margin');
-			var margin = determine_unitmargin(floatParse(input_unitcost.val()));
-			var displaymargin = '';
-
-			if (margin != 0) {
-				displaymargin = floatParse(margin).toFixed({{ vxm.field_attribute('unit_margin', 'precision') }});
-			}
-
-			input_margin.val(displaymargin);
 		}
 	}
 

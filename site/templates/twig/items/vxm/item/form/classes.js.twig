@@ -326,7 +326,17 @@ class VxmConfigs {
 		};
 		this.ordercodesDescriptions = {{ constant('ItemXrefVendor::OPTIONS_POORDERCODE')|json_encode()|raw }};
 		this.allowListPriceUpdate = {{ vxm.getConfigAp().update_itm_pricing() ? 'true' : 'false' }};
-
+		this.options = {
+			basecostchange: {
+				computeListpriceOrPercent: {
+					listprice: 'L',
+					percent:   'P'
+				}
+			}
+		};
+		this.basecostchange = {
+			computeListpriceOrPercent: '{{ vxm.getConfigAp().computelistpriceorpercent }}'
+		};
 		this.fields = {
 			unit_cost: {
 				precision: {{ vxm.field_attribute('unit_cost', 'precision') }}
@@ -348,6 +358,13 @@ class VxmConfigs {
 class VxmInputs {
 	static instance = null;
 
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new VxmInputs();
+		}
+		return this.instance;
+	}
+
 	constructor() {
 		this.id = 'vxm-item-form',
 		this.form = $('#' + this.id),
@@ -364,11 +381,36 @@ class VxmInputs {
 		}
 	}
 
+	updateUnitMargin(unitrow) {
+		var calculator = VxmCalculator.getInstance();
+		var form = VxmForm.getInstance();
+		var config = VxmConfigs.getInstance();
+		var inputs = {
+			qty:    unitrow.find('.unit-qty'),
+			cost:   unitrow.find('.unit-cost'),
+			margin: unitrow.find('.unit-margin'),
+		};
+		inputs.cost.val(floatParse(inputs.cost.val()).toFixed(config.fields.unit_cost.precision));
 
-	static getInstance() {
-		if (this.instance === null) {
-			this.instance = new VxmInputs();
+		if (floatParse(inputs.cost.val())) {
+			var margin = calculator.margin(form.getListPrice(), floatParse(inputs.cost.val()));
+			var displaymargin = '';
+
+			if (margin != 0) {
+				displaymargin = floatParse(margin).toFixed(config.fields.unit_margin.precision);
+			}
+
+			inputs.margin.val(displaymargin);
 		}
-		return this.instance;
 	}
+
+	updateAllMargins() {
+		var inputs = VxmInputs.getInstance();
+
+		$(".unit-row").each(function(index) {
+			$(this).addClass('bg-secondary');
+			inputs.updateUnitMargin($(this));
+		});
+	}
+
 }
