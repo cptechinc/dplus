@@ -319,6 +319,13 @@ class VxmForm {
 class VxmConfigs {
 	static instance = null;
 
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new VxmConfigs();
+		}
+		return this.instance;
+	}
+
 	constructor() {
 		this.ordercodes = {
 			primary: 'P',
@@ -345,13 +352,6 @@ class VxmConfigs {
 				precision: {{ vxm.field_attribute('unit_margin', 'precision') }}
 			}
 		};
-	}
-
-	static getInstance() {
-		if (this.instance === null) {
-			this.instance = new VxmConfigs();
-		}
-		return this.instance;
 	}
 }
 
