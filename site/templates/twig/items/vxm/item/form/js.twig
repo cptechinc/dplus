@@ -45,7 +45,8 @@ $(function() {
 		formVxm.inputs.updateUnitMargin(unitrow);
 
 		//if (input.hasClass('unit-qty')) {
-			update_input_availability(unitrow);
+			formVxm.inputs.updateUnitMargin(unitrow);
+			formVxm.inputs.updateUnitRowReadonly(unitrow);
 		//}
 
 	});
@@ -65,7 +66,7 @@ $(function() {
 	$("body").on("keydown", ".unit-qty", function(e) {
 		var input = $(this);
 		var unitrow = input.closest('.unit-row');
-		update_input_availability(unitrow);
+		formVxm.inputs.updateUnitRowReadonly(unitrow);
 	});
 
 	$("body").on("change", ".unit-margin", function(e) {
@@ -431,30 +432,6 @@ $(function() {
 
 		callback();
 	}
-
-	/**
-	 * Calculates Margin for one Unit Cost
-	 * @param  JqueryElement unitrow
-	 */
-	function update_input_availability(unitrow) {
-		var input_unitqty = unitrow.find('.unit-qty');
-		var inputs = unitrow.find('.unit-cost, .unit-margin');
-
-		if (floatParse(input_unitqty.val()) > 0) {
-			inputs.removeAttr('readonly');
-			inputs.removeAttr('tabindex');
-
-			var cost = floatParse(unitrow.find('.unit-cost').val());
-			if (cost > 0) {
-				var index = parseInt(unitrow.data('break')) + 1;
-				$('.unit-row[data-break='+ index +'] .unit-qty').removeAttr('tabindex').removeAttr('readonly');
-			}
-		} else {
-			inputs.attr('readonly', 'readonly');
-			inputs.attr('tabindex', '-1');
-		}
-	}
-
 
 	function changeEachListPrice() {
 		var allowlistpriceupdate = {{ vxm.getConfigAp().update_itm_pricing() ? 'true' : 'false' }};
