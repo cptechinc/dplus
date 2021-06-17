@@ -9,17 +9,10 @@
 {% include 'items/vxm/item/form/classes.js.twig' %}
 
 $(function() {
-	var primarypoordercode = '{{ item.getOptionpoordercodePrimary() }}';
-
 	var form_vxm = $('#vxm-item-form');
-	var input_listprice = form_vxm.find('input[name=listprice]');
-	var input_uom       = form_vxm.find('select[name=uom_purchase]');
-	var input_eachlistprice = form_vxm.find('input[name=eachlistprice]');
 	var input_itemID = form_vxm.find('input[name=itemID]');
 	var input_vendoritemID = form_vxm.find('input[name=vendoritemID]');
 	var input_vendorID = form_vxm.find('input[name=vendorID]');
-	var input_update_itm_cost = form_vxm.find('input[name=update_itm_cost]');
-	var input_ordercode = form_vxm.find('select[name=po_ordercode]');
 
 	var modal_ajax = $('#ajax-modal');
 
@@ -76,12 +69,10 @@ $(function() {
 		var config = VxmConfigs.getInstance();
 
 		if (parseInt(unitrow.data('break')) == 0) {
-			if (config.basecostchange.computeListpriceOrPercent == config.options.basecostchange.computeListpriceOrPercent.listprice) {
-				update_listprice_from_basemargin(function() {
-					$('.unit-row').each(function(index) {
-						var vxmInputs = VxmInputs.getInstance();
-						vxmInputs.updateUnitMargin($(this));
-					});
+			if (config.basemarginchange.computeListpriceOrCost == config.options.basemarginchange.computeListpriceOrCost.listprice) {
+				formVxm.inputs.updateListPriceFromBaseMargin(function() {
+					var vxmInputs = VxmInputs.getInstance();
+					vxmInputs.updateAllUnitMargins();
 				});
 			} else {
 				vxmInputs.updateUnitCost(unitrow);
@@ -315,7 +306,7 @@ $(function() {
 			} else {
 				formVxm.validateOrderCode(function(validated) {
 					formVxm.confirmCost(function(confirmed) {
-						input_update_itm_cost.val(confirmed ? 'true' : 'false');
+						formVxm.inputs.updateitmcost.val(confirmed ? 'true' : 'false');
 						console.log('submit');
 						// TODO testing
 						// form.submit();
@@ -325,39 +316,4 @@ $(function() {
 		});
 	}
 
-/* =============================================================
-	AJAX Request Functions
-============================================================= */
-
-/* =============================================================
-	Margin Calculation Functions
-============================================================= */
-	/**
-	 * Recalculates Each List Price based on the Unit of Measure Purchase Conversion
-	 */
-	function calculate_eachlistprice() {
-		var updateitmpricing = {{ vxm.getConfigAp().update_itm_pricing() ? 'true' : 'false' }};
-
-		var ordercode = form_vxm.find('select[name=po_ordercode]').val();
-		var isprimary = ordercode == 'P';
-
-		if (updateitmpricing === true && isprimary === true) {
-			var eachlistprice = floatParse(formVxm.getListPriceEach());
-			input_eachlistprice.val(eachlistprice.toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
-		}
-		formVxm.inputs.updateAllUnitMargins();
-	}
-
-	function update_listprice_from_basemargin(callback) {
-		var conversion = floatParse(input_uom.find('option:selected').data('conversion'));
-		var basecost   = floatParse($('input[name=unitcost_base]').val());
-		var basemargin = floatParse($('input[name=unitmargin_base]').val());
-		var listprice = basecost / (1 - (basemargin / 100));
-		listprice = listprice.toFixed({{ vxm.field_attribute('listprice', 'precision') }});
-		$('input[name=unitmargin_base]').val(basemargin.toFixed({{ vxm.field_attribute('unit_margin', 'precision') }}))
-		input_listprice.val(listprice);
-		formVxm.updateEachListPriceUsingOrdercodeCosting();
-
-		callback();
-	}
 });

@@ -153,6 +153,10 @@ class VxmCalculator {
 	eachlistprice(listprice, uomconversion) {
 		return floatParse(listprice) / floatParse(uomconversion);
 	}
+
+	priceFromCostMargin(cost, margin) {
+		return cost / (1 - (margin / 100));
+	}
 }
 
 class VxmForm {
@@ -368,6 +372,12 @@ class VxmConfigs {
 					percent: 'P',
 					cost:    'C'
 				}
+			},
+			basemarginchange: {
+				computeListpriceOrCost: {
+					listprice: 'L',
+					cost:    'C'
+				}
 			}
 		};
 		this.basecostchange = {
@@ -375,6 +385,9 @@ class VxmConfigs {
 		};
 		this.listpricechange = {
 			computePercentOrCost: '{{ vxm.getConfigAp().computepercentageorcost }}'
+		};
+		this.basemarginchange = {
+			computeListpriceOrCost: '{{ vxm.getConfigAp().computelistpriceorcost }}'
 		};
 		this.fields = {
 			unit_cost: {
@@ -415,6 +428,10 @@ class VxmInputs {
 		this.cost = {
 			base: this.form.find('input[name=unitcost_base]'),
 		}
+		this.margin = {
+			base: this.form.find('input[name=unitmargin_base]'),
+		},
+		this.updateitmcost = this.form.find('input[name=update_itm_cost]')
 	}
 
 	updateUnitMargin(unitrow) {
@@ -568,5 +585,22 @@ class VxmInputs {
 		} else if (config.listpricechange.computePercentOrCost == config.options.listpricechange.computePercentOrCost.cost) { // Update Costs
 			this.updateAllUnitCosts()
 		}
+	}
+
+	updateListPriceFromBaseMargin(callback) {
+		var config = VxmConfigs.getInstance();
+		var calculator = VxmCalculator.getInstance();
+		var form       = VxmForm.getInstance();
+		var conversion = floatParse(this.uom.find('option:selected').data('conversion'));
+		var basecost   = floatParse(this.cost.base.val());
+		var basemargin = floatParse(this.margin.base.val());
+		var listprice = calculator.priceFromCostMargin(basecost, basemargin);
+
+		listprice = listprice.toFixed(config.fields.listprice.precision);
+		this.margin.base.val(basemargin.toFixed(config.fields.unit_margin.precision));
+		this.listprice.val(listprice);
+		form.updateEachListPriceUsingOrdercodeCosting();
+
+		callback();
 	}
 }
