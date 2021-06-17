@@ -106,6 +106,7 @@ class VxmAlerts {
 			}
 		});
 	}
+
 	confirmCost(type, costbase, callback) {
 		var msg = 'This is the <b>' + type + '</b> Vendor for this item and ' +
 		'the Standard Cost Base code is <b>'+costbase+'</b>, '+
@@ -148,6 +149,10 @@ class VxmCalculator {
 		}
 		return (1 - (margin / 100)) * listprice;
 	}
+
+	eachlistprice(listprice, uomconversion) {
+		return floatParse(listprice) / floatParse(uomconversion);
+	}
 }
 
 class VxmForm {
@@ -169,6 +174,10 @@ class VxmForm {
 
 	getListPrice() {
 		return this.inputs.listprice.val();
+	}
+
+	getListPriceEach() {
+		return this.calculator.eachlistprice(this.getListPrice(), this.inputs.uom.find('option:selected').data('conversion'))
 	}
 
 	enableDisableKit() {
@@ -231,6 +240,7 @@ class VxmForm {
 			inputs.margin.val(displaymargin);
 		}
 	}
+
 	updateUnitRowCost(unitrow) {
 		var inputs = {
 			qty:    unitrow.find('.unit-qty'),
@@ -246,6 +256,7 @@ class VxmForm {
 			input_unitcost.val(cost);
 		}
 	}
+
 	validateOrderCode(callback) { // returns true or false
 		var inputs = this.inputs;
 
@@ -276,7 +287,6 @@ class VxmForm {
 	}
 
 	confirmCost(callback) { // returns true or false
-		console.log('confirming costs');
 		var costbase = this.inputs.cost.base;
 		var costperuom  = floatParse(costbase.val()) / this.inputs.uom.find('option:selected').data('conversion');
 		var changedcost  = floatParse(costbase.data('cost')) != costperuom;
@@ -306,6 +316,26 @@ class VxmForm {
 			callback(this.inputs.ordercode.val() == this.config.ordercodes.primary);
 		}
 	}
+
+	updateEachListPriceUsingOrdercodeCosting() {
+		var config = VxmConfigs.getInstance();
+		var changeItmCost = config.ordercodesForChangingItmCost.contains(this.inputs.ordercode.val());
+		if (changeItmCost && config.allowListPriceUpdate) {
+			this.inputs.eachlistprice.val(floatParse(this.getListPriceEach()).toFixed(config.fields.listprice.precision));
+		}
+	}
+
+	updateEachListPriceForPrimaryOrdercode(callback) {
+		var config = VxmConfigs.getInstance();
+		var changeItmCost = config.ordercodesForChangingItmCost.contains(this.inputs.ordercode.val());
+		var isPrimary = this.inputs.ordercode.val() == config.ordercodes.primary;
+
+		if (changeItmCost === true && isPrimary === true) {
+			var eachlistprice = floatParse(this.getListPriceEach());
+			this.inputs.eachlistprice.val(eachlistprice.toFixed(config.fields.listprice.precision));
+		}
+		callback(this);
+	}
 }
 
 class VxmConfigs {
@@ -323,6 +353,7 @@ class VxmConfigs {
 			primary: 'P',
 			costing: 'C'
 		};
+		this.ordercodesForChangingItmCost = {{ constant('ORDERCODES_ITM_COST', vxm)|json_encode()|raw }};
 		this.ordercodesDescriptions = {{ constant('ItemXrefVendor::OPTIONS_POORDERCODE')|json_encode()|raw }};
 		this.allowListPriceUpdate = {{ vxm.getConfigAp().update_itm_pricing() ? 'true' : 'false' }};
 		this.options = {
@@ -351,6 +382,9 @@ class VxmConfigs {
 			},
 			unit_margin: {
 				precision: {{ vxm.field_attribute('unit_margin', 'precision') }}
+			},
+			listprice: {
+				precision: {{ vxm.field_attribute('listprice', 'precision') }}
 			}
 		};
 	}
@@ -369,13 +403,14 @@ class VxmInputs {
 	constructor() {
 		this.id = 'vxm-item-form',
 		this.form = $('#' + this.id),
-		this.vendorid     = this.form.find('input[name=vendorID]'),
-		this.vendoritemid = this.form.find('input[name=vendoritemID]'),
-		this.itemid       = this.form.find('input[name=itemID]'),
-		this.kit          = this.form.find('select[name=iskit]'),
-		this.listprice    = this.form.find('input[name=listprice]'),
-		this.uom          = this.form.find('input[name=uom]'),
-		this.ordercode    = this.form.find('select[name=po_ordercode]'),
+		this.vendorid      = this.form.find('input[name=vendorID]'),
+		this.vendoritemid  = this.form.find('input[name=vendoritemID]'),
+		this.itemid        = this.form.find('input[name=itemID]'),
+		this.kit           = this.form.find('select[name=iskit]'),
+		this.listprice     = this.form.find('input[name=listprice]'),
+		this.eachlistprice = this.form.find('input[name=eachlistprice]'),
+		this.uom           = this.form.find('select[name=uom_purchase]'),
+		this.ordercode     = this.form.find('select[name=po_ordercode]'),
 		this.ordercodevalidated = this.form.find('input[name=po_ordercode_validated]'),
 		this.cost = {
 			base: this.form.find('input[name=unitcost_base]'),
@@ -400,6 +435,7 @@ class VxmInputs {
 			if (margin != 0) {
 				displaymargin = floatParse(margin).toFixed(config.fields.unit_margin.precision);
 			}
+			console.log(unitrow.data('break') + ' ' + displaymargin);
 
 			inputs.margin.val(displaymargin);
 		}
@@ -440,6 +476,32 @@ class VxmInputs {
 		});
 	}
 
+	updateUnitCostUom(unitrow) {
+		var calculator = VxmCalculator.getInstance();
+		var form = VxmForm.getInstance();
+		var config = VxmConfigs.getInstance();
+		var inputs = {
+			qty:    unitrow.find('.unit-qty'),
+			cost:   unitrow.find('.unit-cost'),
+			margin: unitrow.find('.unit-margin'),
+		};
+
+		var cost = floatParse(inputs.cost.val()).toFixed(config.fields.unit_cost.precision);
+		var originalUomConversion = floatParse(this.uom.attr('data-conversion'));
+		var costConverted = cost / floatParse(originalUomConversion);
+		inputs.cost.val(costConverted.toFixed(config.fields.unit_cost.precision)).change();
+	}
+
+	updateAllUnitCostsUom(callback) {
+		var inputs = VxmInputs.getInstance();
+
+		$(".unit-row").each(function(index) {
+			inputs.updateUnitCostUom($(this));
+		});
+
+		callback();
+	}
+
 	updateUnitRowReadonly(unitrow) {
 		var inputs = {
 			qty: unitrow.find('.unit-qty'),
@@ -472,7 +534,7 @@ class VxmInputs {
 			this.updateAllUnitMargins();
 		} else if (update == config.options.basecostchange.computeListpriceOrPercent.listprice) { // Update List Price
 			var costbase = this.cost.base.val();
-			var listprice = costbase /  (1 - (unitrow.find('input.unit-margin').val() / 100));
+			var listprice = costbase / (1 - (unitrow.find('input.unit-margin').val() / 100));
 			this.listprice.val(listprice).change();
 		}
 	}
@@ -507,5 +569,4 @@ class VxmInputs {
 			this.updateAllUnitCosts()
 		}
 	}
-
 }

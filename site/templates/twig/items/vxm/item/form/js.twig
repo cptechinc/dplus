@@ -103,10 +103,15 @@ $(function() {
 	$("body").on("change", "#uom_purchase", function(e) {
 		var input = $(this);
 		var conversion = input.find('option:selected').data('conversion');
-		var ele_description = input.siblings('p').find('.conversion-description');
+		input.siblings('p').find('.conversion-description').text(conversion);
 		$('.uom-purchase-code').text(input.val());
-		ele_description.text(conversion);
-		calculate_eachlistprice();
+
+		formVxm.updateEachListPriceForPrimaryOrdercode(function() {
+			formVxm.inputs.updateAllUnitCostsUom(function() {
+				input.attr('data-uom', input.val());
+				input.attr('data-conversion', input.find('option:selected').data('conversion'));
+			});
+		});
 	});
 
 	$("body").on("change", "input[name=itemID]", function(e) {
@@ -139,11 +144,11 @@ $(function() {
 		var allowlistpriceupdate = {{ vxm.getConfigAp().update_itm_pricing() ? 'true' : 'false' }};
 		var itmcost_ordercodes = {{ constant('ORDERCODES_ITM_COST', vxm)|json_encode()|raw }};
 		var iscostcode = itmcost_ordercodes.contains($('select[name=po_ordercode]').val());
-
+		console.log(allowlistpriceupdate ? 'allowed' : 'not');
 		if (($('select[name=po_ordercode]').val() == 'P' && allowlistpriceupdate) || input.closest('form').data('new') == true) {
-			changeEachListPrice();
+			formVxm.updateEachListPriceUsingOrdercodeCosting();
 		}
-		
+
 		formVxm.inputs.updateMarginsOrCostsAfterListprice();
 	});
 
@@ -340,15 +345,10 @@ $(function() {
 		var isprimary = ordercode == 'P';
 
 		if (updateitmpricing === true && isprimary === true) {
-			var eachlistprice = floatParse(get_eachlistprice());
+			var eachlistprice = floatParse(formVxm.getListPriceEach());
 			input_eachlistprice.val(eachlistprice.toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
 		}
 		formVxm.inputs.updateAllUnitMargins();
-	}
-
-	function get_eachlistprice() {
-		var conversion = input_uom.find('option:selected').data('conversion');
-		return eachlistprice = input_listprice.val() / floatParse(conversion);
 	}
 
 	function update_listprice_from_basemargin(callback) {
@@ -359,19 +359,8 @@ $(function() {
 		listprice = listprice.toFixed({{ vxm.field_attribute('listprice', 'precision') }});
 		$('input[name=unitmargin_base]').val(basemargin.toFixed({{ vxm.field_attribute('unit_margin', 'precision') }}))
 		input_listprice.val(listprice);
-		changeEachListPrice();
+		formVxm.updateEachListPriceUsingOrdercodeCosting();
 
 		callback();
 	}
-
-	function changeEachListPrice() {
-		var allowlistpriceupdate = {{ vxm.getConfigAp().update_itm_pricing() ? 'true' : 'false' }};
-		var itmcost_ordercodes = {{ constant('ORDERCODES_ITM_COST', vxm)|json_encode()|raw }};
-		var iscostcode = itmcost_ordercodes.contains($('select[name=po_ordercode]').val());
-
-		if ((iscostcode && allowlistpriceupdate)) {
-			$('input[name=eachlistprice]').val(floatParse(get_eachlistprice()).toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
-		}
-	}
-
 });
