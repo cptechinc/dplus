@@ -71,9 +71,11 @@ $(function() {
 	$("body").on("change", ".unit-margin", function(e) {
 		var unitrow = $(this).closest('.unit-row');
 		var computeListpriceOrCost = '{{ vxm.getConfigAp().computelistpriceorcost }}';
+		var vxmInputs = VxmInputs.getInstance();
+		var config = VxmConfigs.getInstance();
 
 		if (parseInt(unitrow.data('break')) == 0) {
-			if (computeListpriceOrCost == 'L') {
+			if (config.basecostchange.computeListpriceOrPercent == config.options.basecostchange.computeListpriceOrPercent.listprice) {
 				update_listprice_from_basemargin(function() {
 					$('.unit-row').each(function(index) {
 						var vxmInputs = VxmInputs.getInstance();
@@ -81,10 +83,10 @@ $(function() {
 					});
 				});
 			} else {
-				update_unitrow_cost(unitrow);
+				vxmInputs.updateUnitCost(unitrow);
 			}
 		} else  {
-			update_unitrow_cost(unitrow);
+			vxmInputs.updateUnitCost(unitrow);
 		}
 
 		if (parseInt(unitrow.data('break')) > 0) {
@@ -341,16 +343,24 @@ $(function() {
 	 * @return {[type]} [description]
 	 */
 	function recalculate_margins_listprice() {
-		var input_costbase = $('input[name=unitcost_base]');
-		var unitrow = input_costbase.closest('.unit-row');
-		var update = '{{ vxm.getConfigAp().computelistpriceorpercent }}';
+		var config = VxmConfigs.getInstance();
+		var inputs = {
+			cost: {
+				base: formVxm.inputs.cost.base
+			},
+			listprice: formVxm.inputs.listprice
+		};
+		var unitrow = inputs.cost.base.closest('.unit-row');
+		var update = config.basecostchange.computeListpriceOrPercent;
 
-		if (update == 'P') { // Update Margins
-			calculate_margins();
-		} else if (update == 'L') { // Update Costs
-			var costbase = input_costbase.val();
+
+		if (update == config.options.basecostchange.computeListpriceOrPercent.percent) { // Update Margins
+			formVxm.inputs.updateAllUnitMargins();
+
+		} else if (update == config.options.basecostchange.computeListpriceOrPercent.listprice) { // Update List Price
+			var costbase = inputs.cost.base.val();
 			var listprice = costbase /  (1 - (unitrow.find('input.unit-margin').val() / 100));
-			$('input[name=listprice]').val(listprice).change();
+			inputs.listprice.val(listprice).change();
 		}
 	}
 	/**
@@ -382,9 +392,9 @@ $(function() {
 		}
 
 		if (update == 'P') { // Update Margins
-			formVxm.inputs.updateAllMargins();
+			formVxm.inputs.updateAllUnitMargins();
 		} else if (update == 'C') { // Update Costs
-			calculate_costs();
+			formVxm.inputs.updateAllUnitCosts()
 		}
 	}
 
@@ -401,46 +411,12 @@ $(function() {
 			var eachlistprice = floatParse(get_eachlistprice());
 			input_eachlistprice.val(eachlistprice.toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
 		}
-		formVxm.inputs.updateAllMargins();
+		formVxm.inputs.updateAllUnitMargins();
 	}
 
 	function get_eachlistprice() {
 		var conversion = input_uom.find('option:selected').data('conversion');
 		return eachlistprice = input_listprice.val() / floatParse(conversion);
-	}
-
-	function get_listprice() {
-		return input_listprice.val();
-	}
-
-	/**
-	 * Calculates Margin for each Unit Cost
-	 */
-	function calculate_costs() {
-		$(".unit-row").each(function(index ) {
-			update_unitrow_cost($(this));
-		});
-	}
-
-		}
-	}
-
-	/**
-	 * Calculates Margin for one Unit Cost
-	 * @param JqueryElement unitrow
-	 */
-	function update_unitrow_cost(unitrow) {
-		var input_unitqty  = unitrow.find('.unit-qty');
-		var input_unitcost = unitrow.find('.unit-cost');
-		var input_margin   = unitrow.find('.unit-margin');
-		var margin = floatParse(input_margin.val()).truncate({{ vxm.field_attribute('unit_margin', 'precision') }});
-		margin =  floatParse(margin).toFixed({{ vxm.field_attribute('unit_margin', 'precision') }});
-		input_margin.val(margin);
-
-		if (floatParse(input_margin.val())) {
-			var cost = floatParse(determine_unitcost(margin)).toFixed({{ vxm.field_attribute('unit_cost', 'precision') }});
-			input_unitcost.val(cost);
-		}
 	}
 
 	function update_listprice_from_basemargin(callback) {
@@ -479,39 +455,6 @@ $(function() {
 		}
 	}
 
-	/**
-	 * Returns Margin for cost
-	 * @param  float   cost Unit Cost
-	 * @return float
-	 */
-	function determine_unitmargin(cost) {
-		var listprice = get_listprice();
-
-		if (listprice == 0 || cost == 0) {
-			return 0;
-		} else {
-			if (listprice == 0) {
-				return 0;
-			}
-			var markup = listprice - cost;
-			return markup / listprice * 100;
-		}
-	}
-
-	/**
-	 * Returns Cost for Margin
-	 * @param  float    margin Margin Percent
-	 * @return float
-	 */
-	function determine_unitcost(margin) {
-		var listprice = get_listprice();
-
-		if (listprice == 0 || margin == 0) {
-			return '';
-		} else {
-			return (1 - (margin / 100)) * listprice;
-		}
-	}
 
 	function changeEachListPrice() {
 		var allowlistpriceupdate = {{ vxm.getConfigAp().update_itm_pricing() ? 'true' : 'false' }};

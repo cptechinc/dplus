@@ -404,12 +404,38 @@ class VxmInputs {
 		}
 	}
 
-	updateAllMargins() {
+	updateAllUnitMargins() {
 		var inputs = VxmInputs.getInstance();
 
 		$(".unit-row").each(function(index) {
-			$(this).addClass('bg-secondary');
 			inputs.updateUnitMargin($(this));
+		});
+	}
+
+	updateUnitCost(unitrow) {
+		var calculator = VxmCalculator.getInstance();
+		var form = VxmForm.getInstance();
+		var config = VxmConfigs.getInstance();
+		var inputs = {
+			qty:    unitrow.find('.unit-qty'),
+			cost:   unitrow.find('.unit-cost'),
+			margin: unitrow.find('.unit-margin'),
+		};
+		var margin = floatParse(inputs.margin.val()).truncate(config.fields.unit_margin.precision);
+		margin =  floatParse(margin).toFixed(config.fields.unit_margin.precision);
+		inputs.margin.val(margin);
+
+		if (floatParse(inputs.margin.val())) {
+			var cost = floatParse(calculator.cost(form.getListPrice(), margin)).toFixed(config.fields.unit_cost.precision);
+			inputs.cost.val(cost);
+		}
+	}
+
+	updateAllUnitCosts() {
+		var inputs = VxmInputs.getInstance();
+
+		$(".unit-row").each(function(index) {
+			inputs.updateUnitCost($(this));
 		});
 	}
 
