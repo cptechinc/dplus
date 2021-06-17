@@ -99,14 +99,6 @@ class VxmAlerts {
 			confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
 			cancelButtonText: 'No',
 		}).then((result) => { // Return True for save, false for dismiss
-			// if (result.value) {
-			// 	form_vxm.find('button[type=submit]').click();
-			// } else if (result.dismiss === Swal.DismissReason.cancel) {
-			// 	// Send HTTP GET Request to remove Record Lock
-			// 	$.get('{{ page.url }}', function() {
-			// 		window.location.href = href;
-			// 	});
-			// }
 			if (result.value) {
 				callback(true)
 			} else if (result.dismiss === Swal.DismissReason.cancel) {
