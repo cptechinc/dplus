@@ -140,12 +140,10 @@ $(function() {
 
 	$("body").on("change", "input[name=listprice]", function(e) {
 		var input = $(this);
-		input.val(floatParse(input.val()).toFixed({{ vxm.field_attribute('listprice', 'precision') }}));
-		var allowlistpriceupdate = {{ vxm.getConfigAp().update_itm_pricing() ? 'true' : 'false' }};
-		var itmcost_ordercodes = {{ constant('ORDERCODES_ITM_COST', vxm)|json_encode()|raw }};
-		var iscostcode = itmcost_ordercodes.contains($('select[name=po_ordercode]').val());
-		console.log(allowlistpriceupdate ? 'allowed' : 'not');
-		if (($('select[name=po_ordercode]').val() == 'P' && allowlistpriceupdate) || input.closest('form').data('new') == true) {
+		var config = VxmConfigs.getInstance();
+		input.val(floatParse(input.val()).toFixed(config.fields.listprice.precision));
+
+		if ((formVxm.inputs.ordercode.val() == config.ordercodes.primary && config.allowListPriceUpdate) || input.closest('form').data('new') == true) {
 			formVxm.updateEachListPriceUsingOrdercodeCosting();
 		}
 
@@ -154,11 +152,10 @@ $(function() {
 
 	$("body").on("change", "select[name=po_ordercode]", function(e) {
 		var input = $(this);
-		var input_validatedpoordercode = form_vxm.find('input[name=po_ordercode_validated]');
-		input_validatedpoordercode.val('false');
-		var itmcost_ordercodes = {{ constant('ORDERCODES_ITM_COST', vxm)|json_encode()|raw }};
+		var config = VxmConfigs.getInstance();
+		formVxm.inputs.ordercodevalidated.val('false');
 
-		if (itmcost_ordercodes.contains(input.val())) {
+		if (config.ordercodesForChangingItmCost.contains(input.val())) {
 			$('input[name=listprice]').change();
 		}
 	});
