@@ -462,4 +462,18 @@ class VxmInputs {
 		}
 	}
 
+	updateMarginsOrListpriceAfterBasecost() {
+		var config = VxmConfigs.getInstance();
+		var unitrow = this.cost.base.closest('.unit-row');
+		var update  = config.basecostchange.computeListpriceOrPercent;
+
+		if (update == config.options.basecostchange.computeListpriceOrPercent.percent) { // Update Margins
+			this.updateAllUnitMargins();
+		} else if (update == config.options.basecostchange.computeListpriceOrPercent.listprice) { // Update List Price
+			var costbase = this.cost.base.val();
+			var listprice = costbase /  (1 - (unitrow.find('input.unit-margin').val() / 100));
+			this.listprice.val(listprice).change();
+		}
+	}
+
 }

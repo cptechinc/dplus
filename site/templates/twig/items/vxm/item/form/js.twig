@@ -36,7 +36,7 @@ $(function() {
 	Event Functions
 ============================================================= */
 	$("body").on("change", "input[name=unitcost_base]", function(e) {
-		recalculate_margins_listprice();
+		formVxm.inputs.updateMarginsOrListpriceAfterBasecost();
 	});
 
 	$("body").on("change", ".unit-cost, .unit-qty", function(e) {
@@ -338,32 +338,6 @@ $(function() {
 /* =============================================================
 	Margin Calculation Functions
 ============================================================= */
-	/**
-	 * Recalculate Margin or Costs
-	 * NOTE: USED when list price changes
-	 * @return {[type]} [description]
-	 */
-	function recalculate_margins_listprice() {
-		var config = VxmConfigs.getInstance();
-		var inputs = {
-			cost: {
-				base: formVxm.inputs.cost.base
-			},
-			listprice: formVxm.inputs.listprice
-		};
-		var unitrow = inputs.cost.base.closest('.unit-row');
-		var update = config.basecostchange.computeListpriceOrPercent;
-
-
-		if (update == config.options.basecostchange.computeListpriceOrPercent.percent) { // Update Margins
-			formVxm.inputs.updateAllUnitMargins();
-
-		} else if (update == config.options.basecostchange.computeListpriceOrPercent.listprice) { // Update List Price
-			var costbase = inputs.cost.base.val();
-			var listprice = costbase /  (1 - (unitrow.find('input.unit-margin').val() / 100));
-			inputs.listprice.val(listprice).change();
-		}
-	}
 	/**
 	 * Recalculate Margin or Costs
 	 * NOTE: USED when list price changes
