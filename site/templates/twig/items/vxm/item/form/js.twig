@@ -10,7 +10,6 @@
 
 $(function() {
 	var form_vxm = $('#vxm-item-form');
-	var input_itemID = form_vxm.find('input[name=itemID]');
 	var input_vendoritemID = form_vxm.find('input[name=vendoritemID]');
 	var input_vendorID = form_vxm.find('input[name=vendorID]');
 
@@ -109,7 +108,7 @@ $(function() {
 		var input = $(this);
 		var server = new VxmRequests();
 
-		form.populateItemData(input.val());
+		formVxm.populateItemData(input.val());
 
 		server.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), input.val(), function(exists) {
 			if (exists) {
@@ -202,7 +201,7 @@ $(function() {
 		var button = $(this);
 		var itemID = button.data('itemid');
 		var description = button.data('description');
-		input_itemID.val(itemID).change();
+		formVxm.inputs.itemid.val(itemID).change();
 		modal_ajax.modal('hide');
 	});
 
