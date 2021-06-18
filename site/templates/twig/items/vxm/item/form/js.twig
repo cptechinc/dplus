@@ -142,7 +142,7 @@ $(function() {
 		formVxm.inputs.ordercodevalidated.val('false');
 
 		if (config.ordercodesForChangingItmCost.contains(input.val())) {
-			$('input[name=listprice]').change();
+			formVxm.inputs.listprice.change();
 		}
 	});
 
@@ -241,7 +241,7 @@ $(function() {
 			vendoritemID: {
 				required: true,
 				remote: function() {
-					validate_xref_remote_obj();
+					validateRemoteXrefObj();
 				}
 			},
 			itemID: {
@@ -271,9 +271,9 @@ $(function() {
 		}
 	});
 
-	function validate_xref_remote_obj() {
-		var input = $('input[name=vendoritemID]');
-		var url = '{{ page.jsonapiURL('map/validate/vxm/') }}';
+	function validateRemoteXrefObj() {
+		var input = formVxm.inputs.vendoritemid;
+		var url = VxmRequests.getInstance.xrefExistsUrl();
 
 		return {
 			url: url,
@@ -291,7 +291,6 @@ $(function() {
 				},
 			}
 		}
-
 	}
 
 	function update_vxm(form) {

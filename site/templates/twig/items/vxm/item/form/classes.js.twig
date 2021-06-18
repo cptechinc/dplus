@@ -17,11 +17,15 @@ class VxmRequests {
 	}
 
 	xrefExists(vendorID, vendoritemID, itemID, callback) {
-		var ajax = new AjaxRequest('{{ page.jsonapiURL('map/validate/vxm') }}');
+		var ajax = new AjaxRequest(this.xrefExistsUrl());
 		ajax.setData({vendorID: vendorID, vendoritemID: vendoritemID, itemID: itemID});
 		ajax.request(function(response) {
 			callback(response)
 		});
+	}
+
+	xrefExistsUrl() {
+		return '{{ page.jsonapiURL('map/validate/vxm') }}';
 	}
 
 	canUpdateItmCost(vendorID, vendoritemID, itemID, ordercode, callback) {
