@@ -9,10 +9,6 @@
 {% include 'items/vxm/item/form/classes.js.twig' %}
 
 $(function() {
-	var form_vxm = $('#vxm-item-form');
-	var input_vendoritemID = form_vxm.find('input[name=vendoritemID]');
-	var input_vendorID = form_vxm.find('input[name=vendorID]');
-
 	var modal_ajax = $('#ajax-modal');
 
 	var uri = URI();
@@ -153,17 +149,17 @@ $(function() {
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
-	origForm = form_vxm.serialize();
+	origForm = formVxm.inputs.form.serialize();
 
 	$("body").on("click", "a:not(#itm-xrefs-form.form_button, #ajax-modal a)", function(e) {
-		if (form_vxm.serialize() !== origForm) {
+		if (formVxm.inputs.form.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);
 			var href = a.attr('href');
 
 			alert.unsavedChanges(function(save) {
 				if (save === true) {
-					form_vxm.find('button[type=submit]').click();
+					formVxm.inputs.form.find('button[type=submit]').click();
 				} else {
 					$.get('{{ page.url }}', function() {
 						window.location.href = href;
@@ -191,8 +187,8 @@ $(function() {
 		var button = $(this);
 		var vendorID = button.data('vendorid');
 		var name = button.data('name');
-		input_vendorID.val(vendorID);
-		input_vendorID.closest('.vendor-col').find('.name').text(name);
+		formVxm.inputs.vendorid.val(vendorID);
+		formVxm.inputs.vendorid.closest('.vendor-col').find('.name').text(name);
 		modal_ajax.modal('hide');
 	});
 
@@ -225,7 +221,7 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	form_vxm.validate({
+	formVxm.inputs.form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
