@@ -1,0 +1,201 @@
+class VxmForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new VxmForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'vxm-item-form';
+		this.inputs = VxmInputs.getInstance();
+		this.config = VxmConfigs.getInstance();
+		this.calculator = VxmCalculator.getInstance();
+	}
+
+	getListPrice() {
+		return this.inputs.listprice.val();
+	}
+
+	getListPriceEach() {
+		return this.calculator.eachlistprice(this.getListPrice(), this.inputs.uom.find('option:selected').data('conversion'))
+	}
+
+	enableDisableKit() {
+		if (this.inputs.itemid.attr('data-iskit') == 'false') {
+			this.inputs.kit.val('N');
+			this.inputs.kit.attr('disabled', 'disabled');
+			this.inputs.kit.attr('tabindex', '-1');
+		}
+
+		if (this.inputs.itemid.attr('data-iskit') == 'true') {
+			this.inputs.kit.val('Y');
+			this.inputs.kit.removeAttr('disabled');
+			this.inputs.kit.attr('tabindex', '');
+		}
+	}
+
+	populateItemData(itemID) {
+		var requests = VxmRequests.getInstance();
+
+		requests.getItm(itemID, ['uom','iskit','pricing','standardcostbasedon'], function(item) {
+			var form = new VxmForm();
+
+			if (item) {
+				var itemcol = $('.item-col');
+				form.inputs.itemid.attr('data-iskit',  item.iskit ? 'true' : 'false');
+				form.inputs.itemid.attr('data-itemid', item.itemid);
+				form.inputs.itemid.attr('data-standardcostbase', item.standardcostbasedon.base);
+				itemcol.find('.description').text(item.description);
+				itemcol.find('.description2').text(item.description2);
+				itemcol.find('.uom-sale').text(item.uom.sale.description);
+				$('.uom-sale-code').attr('data-conversion', item.uom.sale.conversion);
+				$('.uom-sale-code').text(item.uom.sale.code);
+				form.inputs.listprice.val(item.pricing.base).change();
+				form.inputs.uom.val(item.uom.sale.code).change();
+				form.enableDisableKit();
+			} else {
+				form.inputs.itemid.attr('data-iskit', 'false');
+				form.inputs.itemid.attr('data-itemid', '');
+				form.enableDisableKit();
+			}
+		});
+	}
+
+	updateUnitRowMargin(unitrow) {
+		var inputs = {
+			qty:    unitrow.find('.unit-qty'),
+			cost:   unitrow.find('.cost'),
+			margin: unitrow.find('.margin')
+		};
+		inputs.cost.val(floatParse(inputs.cost.val()).toFixed(this.config.fields.unit_cost.precision));
+
+		if (floatParse(inputs.cost.val())) {
+			var margin = this.calculator.margin(this.getListPrice(), floatParse(inputs.margin.val()));
+			var displaymargin = '';
+
+			if (margin != 0) {
+				displaymargin = floatParse(margin).toFixed(this.config.fields.unit_margin.precision);
+			}
+
+			inputs.margin.val(displaymargin);
+		}
+	}
+
+	updateUnitRowCost(unitrow) {
+		var inputs = {
+			qty:    unitrow.find('.unit-qty'),
+			cost:   unitrow.find('.cost'),
+			margin: unitrow.find('.margin')
+		};
+		var margin = floatParse(inputs.margin.val()).truncate(this.config.fields.unit_margin.precision);
+		margin =  floatParse(margin).toFixed(this.config.fields.unit_margin.precision);
+		inputs.margin.val(margin);
+
+		if (floatParse(inputs.margin.val())) {
+			var cost = floatParse(this.calculator.cost(this.getListPrice(), margin)).toFixed(this.config.fields.unit_cost.precision);
+			input_unitcost.val(cost);
+		}
+	}
+
+	validateOrderCode(callback) { // returns true or false
+		var inputs = this.inputs;
+
+		if (inputs.ordercodevalidated.val() == 'false') { // If Order code has not been validated
+			if (inputs.ordercode.val() == this.config.ordercodes.primary) { // Validate if Order code is pimary
+				var server = VxmRequests.getInstance();
+				server.validatePrimaryPoOrderCode(inputs.vendorid.val(), inputs.vendoritemid.val(), inputs.itemid.val(), function(isAllowed) {
+					if (isAllowed) {
+						inputs.ordercodevalidated.val('true');
+						callback(true);
+					} else {
+						var alerts = VxmAlerts.getInstance();
+						alerts.changePrimaryPoOrderCode(this.inputs.itemid.val(), function(overwrite) {
+							if (overwrite) { // If we want to overwrite
+								this.inputs.Ordercodevalidated.val('true');
+							}
+							callback(overwrite);
+						});
+					}
+				});
+			} else {
+				inputs.ordercodevalidated.val('true');
+				callback(true);
+			}
+		} else {
+			callback(true);
+		}
+	}
+
+	confirmCost(callback) { // returns true or false
+		var costbase = this.inputs.cost.base;
+		var costperuom  = floatParse(costbase.val()) / this.inputs.uom.find('option:selected').data('conversion');
+		var changedcost  = floatParse(costbase.data('cost')) != costperuom;
+		var itmdifferent = floatParse(costbase.data('itmcost')) != costbase.val();
+		var changedordercode = this.inputs.ordercode.val() != this.inputs.ordercode.data('ordercode');
+
+		if (changedcost || changedordercode) {
+			var server = VxmRequests.getInstance();
+			var inputs = VxmInputs.getInstance();
+			server.canUpdateItmCost(inputs.vendorid.val(), inputs.vendoritemid.val(), inputs.itemid.val(), inputs.ordercode.val(), function(response) {
+				if (response.allow) {
+					if (response.confirm) {
+						var alerts = VxmAlerts.getInstance();
+						var config = VxmConfigs.getInstance();
+						var inputs = VxmInputs.getInstance();
+						alerts.confirmCost(config.ordercodesDescriptions[inputs.ordercode.val()], inputs.cost.base.val(), function(confirmed) {
+							callback(confirmed);
+						});
+					} else {
+						callback(true);
+					}
+				} else {
+					callback(false);
+				}
+			});
+		} else {
+			callback(this.inputs.ordercode.val() == this.config.ordercodes.primary);
+		}
+	}
+
+	updateEachListPriceUsingOrdercodeCosting() {
+		var config = VxmConfigs.getInstance();
+		var changeItmCost = config.ordercodesForChangingItmCost.contains(this.inputs.ordercode.val());
+		if (changeItmCost && config.allowListPriceUpdate) {
+			this.inputs.eachlistprice.val(floatParse(this.getListPriceEach()).toFixed(config.fields.listprice.precision));
+		}
+	}
+
+	updateEachListPriceForPrimaryOrdercode(callback) {
+		var config = VxmConfigs.getInstance();
+		var changeItmCost = config.ordercodesForChangingItmCost.contains(this.inputs.ordercode.val());
+		var isPrimary = this.inputs.ordercode.val() == config.ordercodes.primary;
+
+		if (changeItmCost === true && isPrimary === true) {
+			var eachlistprice = floatParse(this.getListPriceEach());
+			this.inputs.eachlistprice.val(eachlistprice.toFixed(config.fields.listprice.precision));
+		}
+		callback(this);
+	}
+
+	submitVxmFormAfterValidation(form) {
+		var server = VxmRequests.getInstance();
+		var formVxm = this;
+
+		server.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), formVxm.inputs.itemid.val(), function(exists) {
+			if (exists === true && formVxm.inputs.vendoritemid.val() != formVxm.inputs.vendoritemid.data('vendoritemid')) {
+				alert.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), formVxm.inputs.itemid.val());
+			} else {
+				formVxm.validateOrderCode(function(validated) {
+					formVxm.confirmCost(function(confirmed) {
+						formVxm.inputs.updateitmcost.val(confirmed ? 'true' : 'false');
+						console.log('submit');
+						form.submit();
+					});
+				});
+			}
+		});
+	}
+}

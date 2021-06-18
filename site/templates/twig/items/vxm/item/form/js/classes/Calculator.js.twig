@@ -1,0 +1,33 @@
+class VxmCalculator {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new VxmCalculator();
+		}
+		return this.instance;
+	}
+
+	margin(listprice, cost) {
+		if (floatParse(listprice) == 0 || floatParse(cost) == 0) {
+			return 0;
+		}
+		var markup = listprice - cost;
+		return markup / listprice * 100;
+	}
+
+	cost(listprice, margin) {
+		if (floatParse(listprice) == 0 || floatParse(margin) == 0) {
+			return 0;
+		}
+		return (1 - (margin / 100)) * listprice;
+	}
+
+	eachlistprice(listprice, uomconversion) {
+		return floatParse(listprice) / floatParse(uomconversion);
+	}
+
+	priceFromCostMargin(cost, margin) {
+		return cost / (1 - (margin / 100));
+	}
+}

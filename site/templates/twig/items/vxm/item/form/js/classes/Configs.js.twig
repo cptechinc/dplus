@@ -1,0 +1,60 @@
+class VxmConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new VxmConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.ordercodes = {
+			primary: 'P',
+			costing: 'C'
+		};
+		this.ordercodesForChangingItmCost = {{ constant('ORDERCODES_ITM_COST', vxm)|json_encode()|raw }};
+		this.ordercodesDescriptions = {{ constant('ItemXrefVendor::OPTIONS_POORDERCODE')|json_encode()|raw }};
+		this.allowListPriceUpdate = {{ vxm.getConfigAp().update_itm_pricing() ? 'true' : 'false' }};
+		this.options = {
+			basecostchange: {
+				computeListpriceOrPercent: {
+					listprice: 'L',
+					percent:   'P'
+				}
+			},
+			listpricechange: {
+				computePercentOrCost: {
+					percent: 'P',
+					cost:    'C'
+				}
+			},
+			basemarginchange: {
+				computeListpriceOrCost: {
+					listprice: 'L',
+					cost:    'C'
+				}
+			}
+		};
+		this.basecostchange = {
+			computeListpriceOrPercent: '{{ vxm.getConfigAp().computelistpriceorpercent }}'
+		};
+		this.listpricechange = {
+			computePercentOrCost: '{{ vxm.getConfigAp().computepercentageorcost }}'
+		};
+		this.basemarginchange = {
+			computeListpriceOrCost: '{{ vxm.getConfigAp().computelistpriceorcost }}'
+		};
+		this.fields = {
+			unit_cost: {
+				precision: {{ vxm.field_attribute('unit_cost', 'precision') }}
+			},
+			unit_margin: {
+				precision: {{ vxm.field_attribute('unit_margin', 'precision') }}
+			},
+			listprice: {
+				precision: {{ vxm.field_attribute('listprice', 'precision') }}
+			}
+		};
+	}
+}

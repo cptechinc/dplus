@@ -6,7 +6,7 @@
 	item                   ItemXrefVendor
 #}
 
-{% include 'items/vxm/item/form/classes.js.twig' %}
+{% include 'items/vxm/item/form/js/classes.js.twig' %}
 
 $(function() {
 	var modal_ajax = $('#ajax-modal');
@@ -267,13 +267,14 @@ $(function() {
 		},
 		submitHandler: function(form) {
 			$('#loading-modal').modal('show');
-			update_vxm(form);
+			var formVxm = VxmForm.getInstance();
+			formVxm.submitVxmFormAfterValidation(form);
 		}
 	});
 
 	function validateRemoteXrefObj() {
 		var input = formVxm.inputs.vendoritemid;
-		var url = VxmRequests.getInstance.xrefExistsUrl();
+		var url = VxmRequests.getInstance().xrefExistsUrl();
 
 		return {
 			url: url,
@@ -292,22 +293,4 @@ $(function() {
 			}
 		}
 	}
-
-	function update_vxm(form) {
-		server.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), formVxm.inputs.itemid.val(), function(exists) {
-			if (exists === true && formVxm.inputs.vendoritemid.val() != formVxm.inputs.vendoritemid.data('vendoritemid')) {
-				alert.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), formVxm.inputs.itemid.val());
-			} else {
-				formVxm.validateOrderCode(function(validated) {
-					formVxm.confirmCost(function(confirmed) {
-						formVxm.inputs.updateitmcost.val(confirmed ? 'true' : 'false');
-						console.log('submit');
-						// TODO testing
-						// form.submit();
-					});
-				});
-			}
-		});
-	}
-
 });

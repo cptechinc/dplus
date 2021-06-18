@@ -1,0 +1,81 @@
+class VxmAlerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new VxmAlerts();
+		}
+		return this.instance;
+	}
+
+	xrefExists(vendorID, vendoritemID, itemID) {
+		swal2.fire({
+			title: "Vendor Item " + vendoritemID + " exists",
+			text: 'Would you like to go edit this item?',
+			icon: 'error',
+			showCancelButton: true,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			if (result.value) {
+				var uri = new URI();
+				uri.removeQuery('vendoritemID');
+				uri.setQuery('vendorID', vendorID);
+				uri.setQuery('vendoritemID', vendoritemID);
+				uri.setQuery('itemID', itemID);
+				window.location.href = uri.toString();
+			}
+		});
+	}
+
+	changePrimaryPoOrderCode(itemID) {
+		swal2.fire({
+			title: "Overwrite Primary PO Ordercode?",
+			text: itemID + " already has a primary",
+			icon: 'warning',
+			showCancelButton: true,
+			buttonsStyling: false,
+			confirmButtonText: 'Yes!'
+		}).then(function(result) {
+			if (result.value) {
+				callback(true);
+			} else {
+				callback(false);
+			}
+		});
+	}
+
+	unsavedChanges(callback) {
+		swal2.fire({
+			title: 'Changes have occurred!',
+			text: 'Do you want to save?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+			cancelButtonText: 'No',
+		}).then((result) => { // Return True for save, false for dismiss
+			if (result.value) {
+				callback(true)
+			} else if (result.dismiss === Swal.DismissReason.cancel) {
+				callback(false);
+			}
+		});
+	}
+
+	confirmCost(type, costbase, callback) {
+		var msg = 'This is the <b>' + type + '</b> Vendor for this item and ' +
+		'the Standard Cost Base code is <b>'+costbase+'</b>, '+
+		'do you want to update the <b>Standard Cost</b> on the Item Master?';
+
+		swal2.fire({
+			title: 'Confirm Update',
+			html: msg,
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			callback(result.value);
+		});
+	}
+}
