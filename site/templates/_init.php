@@ -97,9 +97,9 @@ if (!$values->action || $page->template == 'dplus-screen-formatter') {
 	$config->styles->append('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 	$config->styles->append('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css');
 	$config->styles->append($hasher->getHashUrl('styles/lib/fuelux.css'));
-	//$config->styles->append($hasher->getHashUrl('styles/lib/sweetalert.css'));
 	$config->styles->append($hasher->getHashUrl('styles/lib/sweetalert2.css'));
 	$config->styles->append($hasher->getHashUrl('styles/main.css'));
+	$config->styles->append('https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css');
 
 	$config->scripts->append($hasher->getHashUrl('scripts/lib/jquery.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/popper.js'));
@@ -107,6 +107,7 @@ if (!$values->action || $page->template == 'dplus-screen-formatter') {
 	$config->scripts->append($hasher->getHashUrl('scripts/lib/fuelux.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/lib/moment.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/lib/bootstrap-notify.js'));
+	$config->scripts->append('https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js');
 	$config->scripts->append($hasher->getHashUrl('scripts/uri.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/lib/sweetalert2.js'));
 	$config->scripts->append($hasher->getHashUrl('scripts/classes.js'));

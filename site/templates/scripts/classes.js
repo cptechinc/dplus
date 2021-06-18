@@ -39,13 +39,36 @@ function JsContento() {
 				if (attribute.length > 2) {
 					attribute = [array[i].slice(0, index),array[i].slice(index + 1)];
 				}
-
-
 				attributes += attribute[0] + '="' + attribute[1] + '" ';
 			}
 			return attributes.trim();
 		} else {
 			return '';
 		}
+	}
+}
+
+function AjaxRequest(url) {
+	this.url = url;
+	this.method = 'GET';
+	this.data = {};
+	this.setData = function(data) {
+		this.data = data;
+	},
+	this.setMethod = function(method) {
+		this.method = method;
+	},
+	this.request = function(callback) {
+		$.ajax({
+			url: this.url,
+			method: this.method,
+			beforeSend: function(xhr) {},
+			data: this.data,
+			success: function(json) {
+				callback(json);
+			},
+			error: function(xhr){
+			},
+		});
 	}
 }

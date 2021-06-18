@@ -1,0 +1,201 @@
+class VxmInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new VxmInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'vxm-item-form',
+		this.form = $('#' + this.id),
+		this.vendorid      = this.form.find('input[name=vendorID]'),
+		this.vendoritemid  = this.form.find('input[name=vendoritemID]'),
+		this.itemid        = this.form.find('input[name=itemID]'),
+		this.kit           = this.form.find('select[name=iskit]'),
+		this.listprice     = this.form.find('input[name=listprice]'),
+		this.eachlistprice = this.form.find('input[name=eachlistprice]'),
+		this.uom           = this.form.find('select[name=uom_purchase]'),
+		this.ordercode     = this.form.find('select[name=po_ordercode]'),
+		this.ordercodevalidated = this.form.find('input[name=po_ordercode_validated]'),
+		this.cost = {
+			base: this.form.find('input[name=unitcost_base]'),
+		}
+		this.margin = {
+			base: this.form.find('input[name=unitmargin_base]'),
+		},
+		this.updateitmcost = this.form.find('input[name=update_itm_cost]')
+	}
+
+	updateUnitMargin(unitrow) {
+		var calculator = VxmCalculator.getInstance();
+		var form = VxmForm.getInstance();
+		var config = VxmConfigs.getInstance();
+		var inputs = {
+			qty:    unitrow.find('.unit-qty'),
+			cost:   unitrow.find('.unit-cost'),
+			margin: unitrow.find('.unit-margin'),
+		};
+		inputs.cost.val(floatParse(inputs.cost.val()).toFixed(config.fields.unit_cost.precision));
+
+		if (floatParse(inputs.cost.val())) {
+			var margin = calculator.margin(form.getListPrice(), floatParse(inputs.cost.val()));
+			var displaymargin = '';
+
+			if (margin != 0) {
+				displaymargin = floatParse(margin).toFixed(config.fields.unit_margin.precision);
+			}
+			console.log(unitrow.data('break') + ' ' + displaymargin);
+
+			inputs.margin.val(displaymargin);
+		}
+	}
+
+	updateAllUnitMargins() {
+		var inputs = VxmInputs.getInstance();
+
+		$(".unit-row").each(function(index) {
+			inputs.updateUnitMargin($(this));
+		});
+	}
+
+	updateUnitCost(unitrow) {
+		var calculator = VxmCalculator.getInstance();
+		var form = VxmForm.getInstance();
+		var config = VxmConfigs.getInstance();
+		var inputs = {
+			qty:    unitrow.find('.unit-qty'),
+			cost:   unitrow.find('.unit-cost'),
+			margin: unitrow.find('.unit-margin'),
+		};
+		var margin = floatParse(inputs.margin.val()).truncate(config.fields.unit_margin.precision);
+		margin =  floatParse(margin).toFixed(config.fields.unit_margin.precision);
+		inputs.margin.val(margin);
+
+		if (floatParse(inputs.margin.val())) {
+			var cost = floatParse(calculator.cost(form.getListPrice(), margin)).toFixed(config.fields.unit_cost.precision);
+			inputs.cost.val(cost);
+		}
+	}
+
+	updateAllUnitCosts() {
+		var inputs = VxmInputs.getInstance();
+
+		$(".unit-row").each(function(index) {
+			inputs.updateUnitCost($(this));
+		});
+	}
+
+	updateUnitCostUom(unitrow) {
+		var calculator = VxmCalculator.getInstance();
+		var form = VxmForm.getInstance();
+		var config = VxmConfigs.getInstance();
+		var inputs = {
+			qty:    unitrow.find('.unit-qty'),
+			cost:   unitrow.find('.unit-cost'),
+			margin: unitrow.find('.unit-margin'),
+		};
+
+		var cost = floatParse(inputs.cost.val()).toFixed(config.fields.unit_cost.precision);
+		var originalUomConversion = floatParse(this.uom.attr('data-conversion'));
+		var costConverted = cost / floatParse(originalUomConversion);
+		inputs.cost.val(costConverted.toFixed(config.fields.unit_cost.precision)).change();
+	}
+
+	updateAllUnitCostsUom(callback) {
+		var inputs = VxmInputs.getInstance();
+
+		$(".unit-row").each(function(index) {
+			inputs.updateUnitCostUom($(this));
+		});
+
+		callback();
+	}
+
+	updateUnitRowReadonly(unitrow) {
+		var inputs = {
+			qty: unitrow.find('.unit-qty'),
+			cost: unitrow.find('.unit-cost'),
+			others: unitrow.find('.unit-cost, .unit-margin')
+		}
+		var input_unitqty = unitrow.find('.unit-qty');
+
+		if (floatParse(inputs.qty.val()) > 0) {
+			inputs.others.removeAttr('readonly');
+			inputs.others.removeAttr('tabindex');
+
+			var cost = floatParse(inputs.cost.val());
+			if (cost > 0) {
+				var index = parseInt(unitrow.data('break')) + 1;
+				$('.unit-row[data-break='+ index +'] .unit-qty').removeAttr('tabindex').removeAttr('readonly');
+			}
+		} else {
+			inputs.others.attr('readonly', 'readonly');
+			inputs.others.attr('tabindex', '-1');
+		}
+	}
+
+	updateMarginsOrListpriceAfterBasecost() {
+		var config = VxmConfigs.getInstance();
+		var unitrow = this.cost.base.closest('.unit-row');
+		var update  = config.basecostchange.computeListpriceOrPercent;
+
+		if (update == config.options.basecostchange.computeListpriceOrPercent.percent) { // Update Margins
+			this.updateAllUnitMargins();
+		} else if (update == config.options.basecostchange.computeListpriceOrPercent.listprice) { // Update List Price
+			var costbase = this.cost.base.val();
+			var listprice = costbase / (1 - (unitrow.find('input.unit-margin').val() / 100));
+			this.listprice.val(listprice).change();
+		}
+	}
+
+	updateMarginsOrCostsAfterListprice() {
+		var config = VxmConfigs.getInstance();
+
+		if (floatParse(this.listprice.val()) == 0) {
+			$(".unit-row").each(function(index) {
+				// If Compute = COST
+				if (config.listpricechange.computePercentOrCost == config.options.listpricechange.computePercentOrCost.cost) {
+					$(this).find('input').val('');
+				} else {
+					$(this).find('input.unit-margin').val('');
+				}
+
+				if (parseInt($(this).data('break')) > 0) {
+					if (floatParse($(this).find('input.unit-qty').val()) == 0) {
+						$(this).find('input.unit-cost,input.unit-margin').attr('readonly', 'readonly');
+						if (parseInt($(this).data('break')) > 1) {
+							$(this).find('input.unit-qty').attr('readonly', 'readonly');
+						}
+					}
+				}
+			});
+			return true;
+		}
+
+		if (config.listpricechange.computePercentOrCost == config.options.listpricechange.computePercentOrCost.percent) { // Update Margins
+			this.updateAllUnitMargins();
+		} else if (config.listpricechange.computePercentOrCost == config.options.listpricechange.computePercentOrCost.cost) { // Update Costs
+			this.updateAllUnitCosts()
+		}
+	}
+
+	updateListPriceFromBaseMargin(callback) {
+		var config = VxmConfigs.getInstance();
+		var calculator = VxmCalculator.getInstance();
+		var form       = VxmForm.getInstance();
+		var conversion = floatParse(this.uom.find('option:selected').data('conversion'));
+		var basecost   = floatParse(this.cost.base.val());
+		var basemargin = floatParse(this.margin.base.val());
+		var listprice = calculator.priceFromCostMargin(basecost, basemargin);
+
+		listprice = listprice.toFixed(config.fields.listprice.precision);
+		this.margin.base.val(basemargin.toFixed(config.fields.unit_margin.precision));
+		this.listprice.val(listprice);
+		form.updateEachListPriceUsingOrdercodeCosting();
+
+		callback();
+	}
+}

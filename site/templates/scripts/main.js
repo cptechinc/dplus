@@ -392,12 +392,18 @@ function floatParse(num) {
 	if (typeof num != 'number' && num.indexOf(',')) {
 		num = num.replace(",", '');
 	}
+	if (num === '') {
+		num = 0;
+	}
 	return parseFloat(num);
 }
 
 function intParse(num) {
 	if (typeof num != 'number' && num.indexOf(',')) {
 		num = num.replace(",", '');
+	}
+	if (num === '') {
+		num = 0;
 	}
 	return parseInt(num);
 }

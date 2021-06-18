@@ -1,0 +1,48 @@
+class VxmRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new VxmRequests();
+		}
+		return this.instance;
+	}
+
+	validatePrimaryPoOrderCode(vendorID, vendoritemID, itemID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('map/vxm/primary-ordercode') }}');
+		ajax.setData({vendorID: vendorID, vendoritemID: vendoritemID, itemID: itemID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	xrefExists(vendorID, vendoritemID, itemID, callback) {
+		var ajax = new AjaxRequest(this.xrefExistsUrl());
+		ajax.setData({vendorID: vendorID, vendoritemID: vendoritemID, itemID: itemID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	xrefExistsUrl() {
+		return '{{ page.jsonapiURL('map/validate/vxm') }}';
+	}
+
+	canUpdateItmCost(vendorID, vendoritemID, itemID, ordercode, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('map/validate/vxm/update-itm-cost') }}');
+		ajax.setData({vendorID: vendorID, vendoritemID: vendoritemID, itemID: itemID, ordercode: ordercode});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getItm(itemID, itmfields, callback) {
+		var fields = Array.isArray(itmfields) ? itmfields.join(',') : itmfields;
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('inv/item') }}');
+
+		ajax.setData({itemID: itemID, fields: fields});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+}

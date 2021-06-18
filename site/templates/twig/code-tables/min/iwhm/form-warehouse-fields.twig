@@ -8,8 +8,8 @@
 #}
 {% set config_in = m_iwhm.get_config_in() %}
 <div class="form-row form-group">
-	<div class="col"><label for="custID">Cash Customer</label></div>
-	<div class="col">
+	<div class="col-sm-4"><label for="custID">Cash Customer</label></div>
+	<div class="col-sm-8">
 		<div class="input-group">
 			<span class="input-group-prepend">
 				<button type="button" class="btn btn-secondary form_button customer_button" data-toggle="modal" data-target="#ajax-modal" {{ warehouse.whseid ? '' : 'disabled' }}>
@@ -22,10 +22,10 @@
 	</div>
 </div>
 <div class="form-row form-group">
-	<div class="col">
+	<div class="col-sm-4">
 		<label for="pickdetail">Pick Detail</label>
 	</div>
-	<div class="col">
+	<div class="col-sm-8">
 		<select name="pickdetail" class="form-control" id="pickdetail" required>
 			<option value="A" {{ (warehouse.pickdetail == 'A') ? 'selected' : '' }}>Available</option>
 			<option value="S" {{ (warehouse.pickdetail == 'S') ? 'selected' : '' }}>Selected</option>
@@ -36,28 +36,28 @@
 
 {% if config_in.use_controlbin() %}
 	<div class="form-row form-group">
-		<div class="col">
+		<div class="col-sm-4">
 			<label for="bin_production">Production Bin</label>
 		</div>
-		<div class="col">
+		<div class="col-sm-8">
 			<input type="text" name="bin_production" class="form-control" value="{{ warehouse.bin_production }}" id="bin_production">
 		</div>
 	</div>
 {% endif %}
 
 <div class="form-row form-group">
-	<div class="col">
+	<div class="col-sm-4">
 		<label for="bin_qcrga">QC / RGA Bin</label>
 	</div>
-	<div class="col">
+	<div class="col-sm-8">
 		<input type="text" name="bin_qcrga" class="form-control" maxlength="8" value="{{ warehouse.bin_qcrga }}" id="bin_qcrga">
 	</div>
 </div>
 <div class="form-row form-group">
-	<div class="col">
+	<div class="col-sm-4">
 		<label for="consignment">Consignment</label>
 	</div>
-	<div class="col">
+	<div class="col-sm-8">
 		<select name="consignment" class="form-control" id="C" required>
 			<option value="Y" {{ (warehouse.consignment == 'Y') ? 'selected' : '' }}>Yes</option>
 			<option value="N" {{ (warehouse.consignment == 'N') ? 'selected' : '' }}>No</option>
@@ -70,10 +70,10 @@
 {% include 'code-tables/min/iwhm/select-whse.twig' with {'name': 'whse_supply', 'label': 'Supply Whse', 'value': warehouse.whse_supply, 'warehouses': m_iwhm.get_codes()} %}
 
 <div class="form-row form-group">
-	<div class="col">
+	<div class="col-sm-4">
 		<label for="arrangement">Bin Arrangement</label>
 	</div>
-	<div class="col">
+	<div class="col-sm-8">
 		{% include 'util/select.twig' with {'name': 'arranged', 'id': 'arranged', 'hideblankoption' : 'true', 'selectedvalue': (warehouse.arranged ? warehouse.arranged : 'R'), 'options': warehouse.get_arrangement_options()} %}
 	</div>
 </div>

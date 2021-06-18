@@ -15,7 +15,7 @@
 			<label for="uom_purchase"><b>Purchase UoM</b></label>
 		</div>
 		<div class="col-sm-6">
-			<select name="uom_purchase" class="form-control form-control-sm mb-1" id="uom_purchase">
+			<select name="uom_purchase" class="form-control form-control-sm mb-1" id="uom_purchase" data-uom="{{ item.uom_purchase }}" data-conversion="{{ item.uompurchase.conversion }}">
 				{% for uom in vxm.get_unitsofm_purchases() %}
 					<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_purchase ? 'selected' : ''}}>
 						{{ uom.code }} - {{ uom.description }}

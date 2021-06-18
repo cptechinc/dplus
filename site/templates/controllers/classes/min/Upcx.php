@@ -179,7 +179,7 @@ class Upcx extends AbstractController {
 		$xref   = $upcx->xref($focus);
 		$filter = new UpcxFilter();
 		$offset = $filter->position($xref);
-		$pagenbr = ceil($offset / self::pw('session')->display);
+		$pagenbr = self::getPagenbrFromOffset($offset);
 		$url = new Purl($page->url);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		$url->query->set('focus', $focus);

@@ -347,6 +347,22 @@ textarea.qnotes {
 }
 
 /*==============================================================
+	Bootstrap Select Styles
+==============================================================*/
+.bootstrap-select .btn.dropdown-toggle {
+	color: #495057;
+	background-color: #fff;
+	background-clip: padding-box;
+	border: 1px solid #ced4da;
+	border-top-color: rgb(206, 212, 218);
+	border-right-color: rgb(206, 212, 218);
+	border-bottom-color: rgb(206, 212, 218);
+	border-left-color: rgb(206, 212, 218);
+	border-radius: .25rem;
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/*==============================================================
 	Bootstrap Card Styles
 ==============================================================*/
 .card .card-toolbar {

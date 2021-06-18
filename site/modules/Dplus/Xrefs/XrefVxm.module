@@ -14,6 +14,8 @@ use VendorQuery, Vendor;
 use ConfigInQuery, ConfigIn;
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
+// Dplus Configs
+use Dplus\Configs;
 // Dplus Validators
 use Dplus\CodeValidators\Map\Vxm as VxmValidator;
 
@@ -72,7 +74,7 @@ class XrefVxm extends WireData implements Module {
 		$configs = $this->configs;
 		$attributes = self::FIELD_ATTRIBUTES;
 		$attributes['listprice']   = ['type' => 'number', 'precision' => $configs->so->decimal_places_price, 'max' => 99999999.9999];
-		$attributes['unit_cost']   = ['type' => 'number', 'precision' => $configs->po->decimal_places_cost, 'max' => 9999999.9999];
+		$attributes['unit_cost']   = ['type' => 'number', 'precision' => $configs->po->decimal_places_cost, 'max' => 99999999.9999];
 		$attributes['unit_qty']    = ['type' => 'number', 'precision' => 0, 'max' => 9999999];
 		$attributes['unit_margin'] = ['type' => 'number', 'precision' => 3, 'max' => 99.999];
 		$attributes['optioncode']  = ['type' => 'text', 'label' => $configs->ap->vxm_optioncode1_label, 'disabled' => $configs->ap->vxm_optioncode1_label == '', 'maxlength' => 8];
@@ -674,7 +676,11 @@ class XrefVxm extends WireData implements Module {
 	 * @return ConfigAp
 	 */
 	public function get_config_ap() {
-		return $this->wire('modules')->get('ConfigureAp')->config();
+		return $this->getConfigAp();
+	}
+
+	public function getConfigAp() {
+		return Configs\Ap::config();
 	}
 
 	/**
