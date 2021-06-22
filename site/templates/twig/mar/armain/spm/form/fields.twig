@@ -8,8 +8,8 @@
 					'name': 'id', 'value': person.id,
 					'size': 'sm',
 					'attributes': {
-						'readonly': person.id ? 'true' : 'false',
-						'tabindex': person.id ? 'true' : 'false',
+						'readonly': person.id != '',
+						'tabindex': person.id != '',
 					}
 				}
 			}
@@ -40,7 +40,7 @@
 	<div class="col-sm-6">
 		<select name="groupid" id="groupid" class="form-control form-control-sm">
 			<option value="" {{ person.groupid == '' ? 'selected' : '' }}></option>
-			
+
 			{% for group in spm.salesgroups() %}
 				<option value="{{ group.id }}" {{ group.id == person.groupid ? 'selected' : '' }}>
 					{{ group.id }} - {{ group.description }}
