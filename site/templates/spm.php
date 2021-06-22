@@ -1,6 +1,8 @@
 <?php
-	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
+	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Mar\Spm as Controller;
+
+	Controller::init();
 
 	$routes = [
 		['GET',  '', Controller::class, 'index'],

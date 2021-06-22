@@ -37,7 +37,7 @@
 				</a>
 			</th>
 			<th class="pt-3 pb-3 text-center">
-				<a href="{{ page.add_salespersonURL() }}" class="btn btn-light btn-sm">
+				<a href="{{ page.repAddUrl() }}" class="btn btn-light btn-sm">
 					<i class="fa fa-plus" aria-hidden="true"></i> Add
 				</a>
 			</th>
@@ -71,11 +71,11 @@
 				</td>
 				<td class="text-center">
 					{% if spm.recordlocker.function_locked(person.id) == false or spm.recordlocker.function_locked_by_user(person.id) %}
-						<a href="{{ page.edit_salespersonURL(person.id) }}" class="btn btn-warning btn-sm">
+						<a href="{{ page.repEditUrl(person.id) }}" class="btn btn-warning btn-sm">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</a>
 						&nbsp; &nbsp;
-						<a href="{{ page.delete_salespersonURL(person.id) }}" class="btn btn-danger btn-sm delete_button" data-delete="UPC {{ person.id }}">
+						<a href="{{ page.repDeleteUrl(person.id) }}" class="btn btn-danger btn-sm delete_button" data-delete="Sales Rep {{ person.id }}">
 							<i class="fa fa-trash" aria-hidden="true"></i> Delete
 						</a>
 					{% else %}
