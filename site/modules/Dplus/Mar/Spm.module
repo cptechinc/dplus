@@ -214,7 +214,10 @@ class Spm extends WireData implements Module {
 		$record->setEmail($values->email('email'));
 		$record->setCycle($values->text('cycle', ['maxLength' => $this->field_attribute('cycle', 'maxlength')]));
 		$record->setManager($values->yn('manager'));
-		$record->setLastsaledate(date('Ymd', strtotime($values->text('lastsaledate'))));
+
+		if (empty($values->text('lastsaledate')) === false) {
+			$record->setLastsaledate(date('Ymd', strtotime($values->text('lastsaledate'))));
+		}
 
 		$this->update_record_sales($record, $input);
 		$record->setDate(date('Ymd'));
