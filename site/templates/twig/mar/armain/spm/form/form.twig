@@ -14,7 +14,7 @@
 			2. Is a new Item
 			NOTE: Only show delete if item already exists.
 		#}
-		{% if spm.recordlocker.function_locked_by_user(person.id) or person.isNew() %}
+		{% if spm.recordlocker.userHasLocked(person.id) or person.isNew() %}
 			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>

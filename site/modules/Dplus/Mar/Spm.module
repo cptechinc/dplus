@@ -1,12 +1,15 @@
 <?php namespace ProcessWire;
-
+// Purl URI Library
 use Purl\Url;
-
-use Dplus\Filters\Mar\SalesPerson as FilterSalesPerson;
+// Dplus Model
 use SalesPersonQuery, SalesPerson;
-
 use SalespersonGroupCodeQuery, SalespersonGroupCode;
+// Dplus Filters
+use Dplus\Filters\Mar\SalesPerson as FilterSalesPerson;
+// Dplus Filters
 use Dplus\CodeValidators\Mar\Spm as SpmValidator;
+// Dplus Code Validators
+use Dplus\RecordLocker\UserFunction as FunctionLocker;
 
 /**
  * Spm
@@ -161,7 +164,7 @@ class Spm extends WireData implements Module {
 		}
 		$record = $this->salesperson($id);
 		if (!$this->lockrecord($id) && !$record->isNew()) {
-			$message = self::DESCRIPTION_RECORD . " ($id)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($id);
+			$message = self::DESCRIPTION_RECORD . " ($id)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($id);
 			$this->wire('session')->setFor('response', 'spm', XrefResponse::response_error($id, $message));
 			return false;
 		}
@@ -183,7 +186,7 @@ class Spm extends WireData implements Module {
 		$record = $this->get_create($id);
 
 		if (!$this->lockrecord($id) && !$record->isNew()) {
-			$message = self::DESCRIPTION_RECORD . " ($id)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($id);
+			$message = self::DESCRIPTION_RECORD . " ($id)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($id);
 			$this->wire('session')->setFor('response', 'spm', XrefResponse::response_error($id, $message));
 			return false;
 		}
@@ -325,10 +328,10 @@ class Spm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function lockrecord($id) {
-		if (!$this->recordlocker->function_locked($id)) {
-			$this->recordlocker->create_lock($id);
+		if ($this->recordlocker->isLocked($id) === false) {
+			$this->recordlocker->lock($id);
 		}
-		return $this->recordlocker->function_locked_by_user($id);
+		return $this->recordlocker->userHasLocked($id);
 	}
 
 	/**
@@ -338,6 +341,7 @@ class Spm extends WireData implements Module {
 	public function salesgroups() {
 		return SalespersonGroupCodeQuery::create()->find();
 	}
+
 /* =============================================================
 	Dplus Request Functions
 ============================================================= */
@@ -354,8 +358,9 @@ class Spm extends WireData implements Module {
 	ProcessWire Module Functions
 ============================================================= */
 	public function init() {
-		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
-		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker = new FunctionLocker();
+		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker->setUser($this->wire('user'));
 	}
 
 	public static function getModuleInfo() {

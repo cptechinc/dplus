@@ -47,7 +47,7 @@ class Spm extends AbstractController {
 		$data = self::sanitizeParametersShort($data, ['q|text']);
 		$page = self::pw('page');
 		$spm  = self::getSpm();
-		$spm->recordlocker->remove_lock();
+		$spm->recordlocker->deleteLock();
 
 		$filter = new FilterSalesPerson();
 		$filter->init();
@@ -91,12 +91,12 @@ class Spm extends AbstractController {
 		$spm = self::getSpm();
 		$html = '';
 
-		if ($spm->recordlocker->function_locked($person->id) && !$spm->recordlocker->function_locked_by_user($person->id)) {
-			$msg = "Sales Person $person->id is being locked by " . $spm->recordlocker->get_locked_user($person->id);
+		if ($spm->recordlocker->isLocked($person->id) && $spm->recordlocker->userHasLocked($person->id) === false) {
+			$msg = "Sales Person $person->id is being locked by " . $spm->recordlocker->getLockingUser($person->id);
 			$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Saless Person $person->id is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 			$html .= '<div class="mb-3"></div>';
-		} elseif (!$spm->recordlocker->function_locked($person->id)) {
-			$spm->recordlocker->create_lock($person->id);
+		} elseif ($spm->recordlocker->isLocked($person->id) === false) {
+			$spm->recordlocker->lock($person->id);
 		}
 		return $html;
 	}

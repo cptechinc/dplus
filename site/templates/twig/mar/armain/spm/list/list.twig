@@ -70,7 +70,7 @@
 					{{ person.userid }}
 				</td>
 				<td class="text-center">
-					{% if spm.recordlocker.function_locked(person.id) == false or spm.recordlocker.function_locked_by_user(person.id) %}
+					{% if spm.recordlocker.isLocked(person.id) == false or spm.recordlocker.userHasLocked(person.id) %}
 						<a href="{{ page.repEditUrl(person.id) }}" class="btn btn-warning btn-sm">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</a>
@@ -80,7 +80,7 @@
 						</a>
 					{% else %}
 						<span class="badge badge-secondary">
-							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ spm.recordlocker.get_locked_user(person.id) }}
+							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ spm.recordlocker.getLockingUser(person.id) }}
 						</span>
 					{% endif %}
 				</td>
