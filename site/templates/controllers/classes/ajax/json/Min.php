@@ -137,11 +137,30 @@ class Min extends AbstractController {
 		if ($validate->itemid($data->itemID) === false) {
 			return false;
 		}
-		$wire = self::pw();
-		$sanitizer = $wire->wire('sanitizer');
+		$sanitizer = self::pw('sanitizer');
 		$fields = isset($data->fields) ? $sanitizer->array($data->fields, 'text', ['delimiter' => ',']) : [];
-		$loader = $wire->wire('modules')->get('LoadItem');
+		$loader = self::pw('modules')->get('LoadItem');
 		return $loader->get_item_array($data->itemID, $fields);
+	}
+
+	public static function getItemAvailable($data) {
+		self::sanitizeParametersShort($data, ['itemID|text']);
+		$validate = self::validator();
+
+		if ($validate->itemid($data->itemID) === false) {
+			return false;
+		}
+		$m = self::pw('modules')->get('ItemPricing');
+		$m->request_search($data->itemID);
+		if ($m->has_pricing($data->itemID) === false) {
+			return false;
+		}
+		$pricing = $m->get_pricing($data->itemID);
+		$response = [
+			'itemid' => $data->itemID,
+			'qty'    => $pricing->qty
+		];
+		return $response;
 	}
 
 	public static function validateInvGroupCode($data) {
