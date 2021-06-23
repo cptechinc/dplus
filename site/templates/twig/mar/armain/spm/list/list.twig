@@ -64,7 +64,7 @@
 					{{ person.groupid }}
 				</td>
 				<td>
-					{{ person.lastsaledate|convertdate }}
+					{{ person.lastsaledate ? person.lastsaledate|convertdate : '' }}
 				</td>
 				<td>
 					{{ person.userid }}
