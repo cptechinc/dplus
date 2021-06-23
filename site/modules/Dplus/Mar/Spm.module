@@ -1,12 +1,15 @@
 <?php namespace ProcessWire;
-
+// Purl URI Library
 use Purl\Url;
-
-use Dplus\Filters\Mar\SalesPerson as FilterSalesPerson;
+// Dplus Model
 use SalesPersonQuery, SalesPerson;
-
 use SalespersonGroupCodeQuery, SalespersonGroupCode;
+// Dplus Filters
+use Dplus\Filters\Mar\SalesPerson as FilterSalesPerson;
+// Dplus Filters
 use Dplus\CodeValidators\Mar\Spm as SpmValidator;
+// Dplus Code Validators
+use Dplus\RecordLocker\UserFunction as FunctionLocker;
 
 /**
  * Spm
@@ -161,7 +164,7 @@ class Spm extends WireData implements Module {
 		}
 		$record = $this->salesperson($id);
 		if (!$this->lockrecord($id) && !$record->isNew()) {
-			$message = self::DESCRIPTION_RECORD . " ($id)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($id);
+			$message = self::DESCRIPTION_RECORD . " ($id)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($id);
 			$this->wire('session')->setFor('response', 'spm', XrefResponse::response_error($id, $message));
 			return false;
 		}
@@ -183,7 +186,7 @@ class Spm extends WireData implements Module {
 		$record = $this->get_create($id);
 
 		if (!$this->lockrecord($id) && !$record->isNew()) {
-			$message = self::DESCRIPTION_RECORD . " ($id)  was not saved, it is locked by " . $this->recordlocker->get_locked_user($id);
+			$message = self::DESCRIPTION_RECORD . " ($id)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($id);
 			$this->wire('session')->setFor('response', 'spm', XrefResponse::response_error($id, $message));
 			return false;
 		}
@@ -211,7 +214,10 @@ class Spm extends WireData implements Module {
 		$record->setEmail($values->email('email'));
 		$record->setCycle($values->text('cycle', ['maxLength' => $this->field_attribute('cycle', 'maxlength')]));
 		$record->setManager($values->yn('manager'));
-		$record->setLastsaledate(date('Ymd', strtotime($values->text('lastsaledate'))));
+
+		if (empty($values->text('lastsaledate')) === false) {
+			$record->setLastsaledate(date('Ymd', strtotime($values->text('lastsaledate'))));
+		}
 
 		$this->update_record_sales($record, $input);
 		$record->setDate(date('Ymd'));
@@ -325,10 +331,10 @@ class Spm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function lockrecord($id) {
-		if (!$this->recordlocker->function_locked($id)) {
-			$this->recordlocker->create_lock($id);
+		if ($this->recordlocker->isLocked($id) === false) {
+			$this->recordlocker->lock($id);
 		}
-		return $this->recordlocker->function_locked_by_user($id);
+		return $this->recordlocker->userHasLocked($id);
 	}
 
 	/**
@@ -338,6 +344,7 @@ class Spm extends WireData implements Module {
 	public function salesgroups() {
 		return SalespersonGroupCodeQuery::create()->find();
 	}
+
 /* =============================================================
 	Dplus Request Functions
 ============================================================= */
@@ -349,106 +356,14 @@ class Spm extends WireData implements Module {
 	public function update_dplus_cobol(SalesPerson $sp) {
 		$this->wire('modules')->get('CodeTables')->update_dplus_cobol('SPM', $sp->id);
 	}
-/* =============================================================
-	URL Functions
-============================================================= */
-	/**
-	 * Return Edit Sales Person URL
-	 * @param  string $id  Sales Person ID
-	 * @return string
-	 */
-	public function edit_salespersonURL($id) {
-		$url = new Url($this->wire('pages')->get('pw_template=spm')->url);
-		$url->query->set('id', $id);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return Delete Sales Person URL
-	 * @param  string $id  Sales Person ID
-	 * @return string
-	 */
-	public function delete_salespersonURL($id) {
-		$url = new Url($this->wire('pages')->get('pw_template=spm')->url);
-		$url->query->set('action', 'delete');
-		$url->query->set('id', $id);
-		return $url->getUrl();
-	}
-
-	public function spmURL($focus = '') {
-		if ($focus) {
-			return $this->spm_focusURL($focus);
-		}
-		return $this->wire('pages')->get('pw_template=spm')->url;
-	}
-
-	public function spm_focusURL($focus = '') {
-		$page = $this->wire('pages')->get('pw_template=spm');
-
-		if ($focus == '') {
-			return $page->url;
-		}
-		$url = new Url($page->url);
-		$spm = $this->wire('modules')->get('Spm');
-		$person = $this->salesperson($focus);
-
-		if ($person) {
-			$filter = new FilterSalesPerson();
-			$filter->init();
-			$position = $filter->position($person);
-			$pagenbr = ceil($position / $this->wire('session')->display);
-			$url = $this->wire('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
-			$url->query->set('focus', $focus);
-		}
-		return $url->getUrl();
-	}
-
-	public function redirectURL() {
-		$input = $this->wire('input');
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-
-		$this->wire('pages')->get('pw_template=spm')->url;
-
-		if ($values->text('action') == 'update') {
-			$response = $this->wire('session')->getFor('response', 'spm');
-
-			if ($response) {
-				if ($response->has_success()) {
-					return $this->spmURL($values->text('id'));
-				}
-				return $this->edit_salespersonURL($values->text('id'));
-			}
-		}
-		return $this->spmURL();
-	}
 
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
 	public function init() {
-		$this->recordlocker = $this->wire('modules')->get('RecordLockerUserFunction');
-		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
-
-		$this->addHook('Page(pw_template=spm)::add_salespersonURL', function($event) {
-			$event->return = $this->edit_salespersonURL('new');
-		});
-
-		$this->addHook('Page(pw_template=spm)::edit_salespersonURL', function($event) {
-			$event->return = $this->edit_salespersonURL($event->arguments(0));
-		});
-
-		$this->addHook('Page(pw_template=spm)::delete_salespersonURL', function($event) {
-			$event->return = $this->delete_salespersonURL($event->arguments(0));
-		});
-
-		$this->addHook('Page(pw_template=spm)::spmURL', function($event) {
-			$event->return = $this->spmURL($event->arguments(0));
-		});
-
-		$this->addHook('Page(pw_template=spm)::redirectURL', function($event) {
-			$event->return = $this->redirectURL();
-		});
+		$this->recordlocker = new FunctionLocker();
+		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
+		$this->recordlocker->setUser($this->wire('user'));
 	}
 
 	public static function getModuleInfo() {

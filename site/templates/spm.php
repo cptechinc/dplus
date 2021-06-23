@@ -1,6 +1,8 @@
 <?php
-	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
+	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Mar\Spm as Controller;
+
+	Controller::init();
 
 	$routes = [
 		['GET',  '', Controller::class, 'index'],
@@ -10,11 +12,7 @@
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
-	$response = $router->route();
-
-	if ($router->hasError()) {
-		$page->body = $response;
-	}
+	$page->body = $router->route();
 
 	if ($router->hasError() === false) {
 		$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
