@@ -58,7 +58,7 @@ class UserFunction extends WireData {
 
 	/**
 	 * Returns if Function is being locked by User ID
-	 * @param  mixed  $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @param  mixed  $key  ID / Key of what is being locked in Function e.g. IWHM warehouse ID
 	 * @return bool
 	 */
 	public function userHasLocked($key) {
@@ -67,7 +67,7 @@ class UserFunction extends WireData {
 
 	/**
 	 * Returns if Function is being locked
-	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @param  string $key  ID / Key of what is being locked in Function e.g. IWHM warehouse ID
 	 * @return bool
 	 */
 	public function isLocked($key) {
@@ -76,7 +76,7 @@ class UserFunction extends WireData {
 
 	/**
 	 * Return LoginID of User who has locked function record
-	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @param  string $key  ID / Key of what is being locked in Function e.g. IWHM warehouse ID
 	 * @return string
 	 */
 	public function getLockingUser($key) {
@@ -85,7 +85,7 @@ class UserFunction extends WireData {
 
 	/**
 	 * Creates Function Lock
-	 * @param  string $key        ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @param  string $key  ID / Key of what is being locked in Function e.g. IWHM warehouse ID
 	 * @return bool
 	 */
 	public function lock($key) {
@@ -94,12 +94,10 @@ class UserFunction extends WireData {
 
 	/**
 	 * Removes Lock(s)
-	 * @param  string $key       ID / Key of what is being locked in Function e.g. IWHM warehouse ID
+	 * @param  string $key  ID / Key of what is being locked in Function e.g. IWHM warehouse ID
 	 * @return bool
 	 */
 	public function deleteLock($key = false) {
 		return self::locker()->deleteLock($this->user->loginid, $this->function, $key);
 	}
-
-
 }
