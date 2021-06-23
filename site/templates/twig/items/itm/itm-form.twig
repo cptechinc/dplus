@@ -1,0 +1,43 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemMasterItem
+	itm                    module Itm
+	recordlocker           module RecordLockerUser
+#}
+
+<form action="{{ page.fullURL.getURL() }}" method="POST" id="itm-form" data-itemID="{{ item.itemid }}">
+	<input type="hidden" name="action" value="update-itm">
+	<div class="row">
+		<div class="col-sm-8">
+			{% include 'items/itm/form/form-left.twig' %}
+		</div>
+
+		<div class="col-sm-4">
+			{% include 'items/itm/form/form-right.twig' %}
+		</div>
+	</div>
+	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the Item is
+			1. Locked for editing by the User
+			2. Is a new Item
+			NOTE: Only show delete if item already exists.
+		#}
+		{% if itm.recordlocker.function_locked_by_user(item.itemid) or item.isNew() %}
+			<button type="submit" class="btn btn-success" name="action" value="update-itm">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			{% if item.isNew() == false %}
+				<a href="{{ page.itm_deleteURL(item.itemid) }}" class="btn btn-danger form_button delete_button">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+		<a href="{{ page.itmListURL(item.itemid) }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
+	</div>
+</form>
+<hr>

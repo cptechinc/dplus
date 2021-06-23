@@ -1,0 +1,139 @@
+{% block return_links %}
+	<div class="mb-3">
+		<a href="{{ page.upc_listURL() }}" class="btn btn-primary">
+			<i class="fa fa-undo" aria-hidden="true"></i> &nbsp;
+			Back to List
+		</a>
+		&nbsp; &nbsp;
+		<a href="{{ page.parent.url }}" class="btn btn-primary">
+			<i class="fa fa-undo" aria-hidden="true"></i> &nbsp;
+			Back to {{ page.parent.title }}
+		</a>
+	</div>
+{% endblock %}
+<form action="{{ page.fullURL.getURL() }}" method="POST" id="upc-item-form">
+	<div class="row">
+		<div class="col-sm-8">
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="upc">UPC Code</label>
+				</div>
+				<div class="col-sm-6">
+					{% include 'util/form/input.twig' with {
+							'name': 'upc', 'value': upc.upc,
+							'class_add': [],
+							'attributes': {
+								'readonly': upc.isNew() == false,
+							}
+						}
+					%}
+				</div>
+			</div>
+			{% block form_input_itemid %}
+				<div class="form-group row">
+					<div class="col-sm-6">
+						<label for="itemID">Item ID</label>
+					</div>
+					<div class="col-sm-6">
+						{% include 'util/form/input-with-modal-lookup.twig' with {
+								'name': 'itemID', 'value': upc.itemid,
+								'attributes': {
+									'readonly': upc.itemid ? true : false
+								},
+								'modaltarget': '#ajax-modal',
+								'modaldescription': 'Search for / Choose Item',
+								'attributes_button': {
+									'data-search': 'item'
+								}
+							}
+						%}
+						<small class="text-muted help-text item-description">{{ upc.ItemMasterItem.description }}</small>
+					</div>
+				</div>
+			{% endblock %}
+
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="primary">Primary?</label>
+				</div>
+				<div class="col-sm-6">
+					<div class="custom-control custom-checkbox">
+						<input type="checkbox" class="custom-control-input" name="primary" id="primary" value="Y" {{ upc.is_primary() ? 'checked' : ''}}>
+						<label class="custom-control-label" for="primary">&nbsp;</label>
+					</div>
+					{% if upc.get_primary_upc_code() != '' %}
+						<a href="{{ page.upcURL(upc.get_primary_upc_code()) }}" class="link">
+							View Primary ({{ upc.get_primary_upc_code() }})
+						</a>
+					{% endif %}
+					<input type="hidden" name="valid_primary" id="valid_primary" value="false">
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="qty">Eaches per UPC</label>
+				</div>
+				<div class="col-sm-6">
+					<input type="number" class="form-control form-control-sm w-50 text-right" name="qty" id="qty" value="{{ upc.qty }}">
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="uom">Unit of Measure</label>
+				</div>
+				<div class="col-sm-6">
+					<select name="uom" class="form-control form-control-sm" id="uom">
+						<option value=""></option>
+						{% for uom in upcx.get_unitsofm_purchase() %}
+							<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == upc.uom ? 'selected' : ''}}>{{ uom.description }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="mastercase">Master Carton?</label>
+				</div>
+				<div class="col-sm-6">
+					<div class="custom-control custom-checkbox">
+						<input type="checkbox" class="custom-control-input" name="mastercase" id="mastercase" value="Y" {{ upc.is_mastercase() ? 'checked' : ''}}>
+						<label class="custom-control-label" for="mastercase">&nbsp;</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<div class="col-sm-6">
+					<label for="needslabel">Need Label?</label>
+				</div>
+				<div class="col-sm-6">
+					<div class="custom-control custom-checkbox">
+						<input type="checkbox" class="custom-control-input" name="needslabel" id="needslabel" value="Y" {{ upc.is_needslabel() ? 'checked' : ''}}>
+						<label class="custom-control-label" for="needslabel">&nbsp;</label>
+					</div>
+				</div>
+			</div>
+			<div class="d-flex justify-content-between align-items-center">
+				{#
+					Only show Edit Actions if the Item is
+					1. Locked for editing by the User
+					2. Is a new Item
+					NOTE: Only show delete if item already exists.
+				#}
+				{% if upcx.recordlocker.function_locked_by_user( upc.upc) or upc.isNew() %}
+					<button type="submit" class="btn btn-success" name="action" value="update-upcx">
+						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+					</button>
+					{% if upc.isNew() == false %}
+						<a href="{{ page.upc_deleteURL(upc.upc)}}" class="btn btn-danger delete_button" data-delete="UPC {{ upc.upc }}">
+							<i class="fa fa-trash" aria-hidden="true"></i> Delete
+						</a>
+					{% endif %}
+				{% endif %}
+				<a href="{{ page.upc_listURL() }}" class="btn btn-warning">
+					<i class="fa fa-times" aria-hidden="true"></i> Close
+				</a>
+			</div>
+		</div>
+	</div>
+</form>

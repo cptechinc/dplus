@@ -1,0 +1,14 @@
+{% extends 'items/itm/xrefs/xrefs-display.twig' %}
+
+{% block response %}
+	{% if session.getFor('response', 'vxm') %}
+		{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'vxm')} %}
+	{% endif %}
+{% endblock %}
+
+
+{% block body %}
+	{% include 'items/itm/xrefs/vxm/list.twig' %}
+
+	{% include 'util/paginator/propel.twig' with {'pager': items} %}
+{% endblock %}

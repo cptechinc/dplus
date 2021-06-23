@@ -1,0 +1,56 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	vxm                    module XrefVxm
+	recordlocker           module RecordLockerUser
+	items                  ItemXrefVxm[]|ObjectCollection
+#}
+{% set response = vxm.response() %}
+<table class="table table-sm">
+	<thead>
+		<tr class="bg-dark text-white p-3">
+			<th class="pt-3 pb-3 align-middle">Vendor ID</th>
+			<th class="pt-3 pb-3 align-middle">Vendor Item ID</th>
+			<th class="pt-3 pb-3 align-middle text-right">Base Cost</th>
+			<th class="pt-3 pb-3 align-middle text-right">Changed Date</th>
+			<th class="pt-3 pb-3 align-middle text-center">
+				{% if page.has('vendorID') and page.vendorID %}
+					<a href="{{ page.vxm_itemURL(page.vendorID, 'new') }}" class="btn btn-light btn-sm">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add Item
+					</a>
+				{% else %}
+					<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#ajax-modal" title="Choose Vendor to Add VXM" aria-label="Choose Vendor to Add VXM" data-vendorid="{{ page.has('vendorID') ? page.vendorID : '' }}" data-search="vendor">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add Item
+					</button>
+				{% endif %}
+			</th>
+		</tr>
+	</thead>
+	<tbody class="small">
+		{% if items.count() %}
+			{% for item in items %}
+				<tr data-vxm="{{ vxm.get_recordlocker_key(item) }}" class="{{ (response.key == vxm.get_recordlocker_key(item) and response.has_success()) ? 'bg-success text-white' : ''}}">
+					<td>{{ item.vendorID }}</td>
+					<td>{{ item.vendoritemID }}</td>
+					<td class="text-right">$ {{ item.unitcost_base|currency }}</td>
+					<td class="text-right">{{ item.date_changed|convertdate }}</td>
+					<td class="text-center">
+						{% if vxm.recordlocker.function_locked(vxm.get_recordlocker_key(item)) == false or vxm.recordlocker.function_locked_by_user(vxm.get_recordlocker_key(item)) %}
+							<a href="{{ page.vxm_itemURL(item.vendorID, item.vendoritemID, item.itemid) }}" class="btn btn-sm btn-warning">
+								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+							</a>
+							&nbsp;
+							<a href="{{ page.vxm_item_deleteURL(item.vendorid, item.vendoritemid, item.itemid) }}" class="btn btn-sm btn-danger delete_button">
+								<i class="fa fa-trash" aria-hidden="true"></i> Delete
+							</a>
+						{% else %}
+							<span class="badge badge-secondary">
+								<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ vxm.recordlocker.get_locked_user(vxm.get_recordlocker_key(item)) }}
+							</span>
+						{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+		{% endif %}
+	</tbody>
+</table>
