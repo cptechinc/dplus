@@ -310,6 +310,7 @@ textarea.qnotes {
 	background-color: rgba(34, 34, 34, 0.6);
 	transition:opacity .2s linear, visibility .1s, width 1s ease-in;
 }
+
 .screen-overlay.show {
 	transition:opacity .5s ease, width 0s;
 	opacity:1;
@@ -344,6 +345,10 @@ textarea.qnotes {
 .offcanvas .nav-actions {
 	position: fixed;
 	bottom: 1rem;
+}
+
+form label {
+	font-weight: bold;
 }
 
 /*==============================================================
