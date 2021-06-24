@@ -1,6 +1,7 @@
 <?php namespace ProcessWire;
 
 include_once(__DIR__.'/ItmResponse.php');
+include_once(__DIR__.'/vendor/autoload.php');
 
 // Purl URI
 use Purl\Url;
