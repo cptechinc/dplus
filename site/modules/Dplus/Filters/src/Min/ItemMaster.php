@@ -67,11 +67,10 @@ class ItemMaster extends AbstractFilter {
 			$itemID = $item->itemid;
 		}
 		$q = $this->getQueryClass();
-		$q->execute_query('SET @rownum = 0');
+		$q->executeQuery('SET @rownum = 0');
 		$table = $q->getTableMap()::TABLE_NAME;
 		$sql = "SELECT x.position FROM (SELECT InitItemNbr, @rownum := @rownum + 1 AS position FROM $table) x WHERE InitItemNbr = :itemid";
-		$params = [':itemid' => $itemID];
-		$stmt = $q->execute_query($sql, $params);
+		$stmt = $q->executeQuery($sql, [':itemid' => $itemID]);
 		return $stmt->fetchColumn();
 	}
 }
