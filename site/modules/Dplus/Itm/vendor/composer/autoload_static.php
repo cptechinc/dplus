@@ -8,6 +8,7 @@ class ComposerStaticInitdbc64365eb6e12b523add8142a5fb6dd
 {
     public static $classMap = array (
         'Dplus\\Min\\Inmain\\Itm\\Dimensions' => __DIR__ . '/../..' . '/src/Dimensions.php',
+        'Dplus\\Min\\Inmain\\Itm\\Response' => __DIR__ . '/../..' . '/src/Response.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

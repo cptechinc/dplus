@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Dplus\\Min\\Inmain\\Itm\\Dimensions' => $baseDir . '/src/Dimensions.php',
+    'Dplus\\Min\\Inmain\\Itm\\Response' => $baseDir . '/src/Response.php',
 );
