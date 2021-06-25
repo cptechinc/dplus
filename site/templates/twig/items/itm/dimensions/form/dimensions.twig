@@ -10,7 +10,10 @@
 					'type': 'number',
 					'name': 'length', 'value': dimensions.length,
 					'size': 'sm',
-					'addclasses': ['text-right']
+					'addclasses': ['text-right'],
+					'attributes': {
+						'step': 'any'
+					}
 				}
 			}
 		%}
@@ -24,9 +27,12 @@
 		{% include 'util/bootstrap/form/input.twig' with {
 				'input': {
 					'type': 'number',
-					'name': 'width', 'value': dimensions.length,
+					'name': 'width', 'value': dimensions.width,
 					'size': 'sm',
-					'addclasses': ['text-right']
+					'addclasses': ['text-right'],
+					'attributes': {
+						'step': 'any'
+					}
 				}
 			}
 		%}
@@ -42,7 +48,10 @@
 					'type': 'number',
 					'name': 'thickness', 'value': dimensions.thickness,
 					'size': 'sm',
-					'addclasses': ['text-right']
+					'addclasses': ['text-right'],
+					'attributes': {
+						'step': 'any'
+					}
 				}
 			}
 		%}
@@ -58,7 +67,10 @@
 					'type': 'number',
 					'name': 'sqft', 'value': dimensions.sqft,
 					'size': 'sm',
-					'addclasses': ['text-right']
+					'addclasses': ['text-right'],
+					'attributes': {
+						'step': 'any'
+					}
 				}
 			}
 		%}
