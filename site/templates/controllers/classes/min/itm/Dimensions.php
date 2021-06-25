@@ -38,14 +38,13 @@ class Dimensions extends ItmFunction {
 
 		$fields   = ['itemID|text', 'action|text'];
 		$data    = self::sanitizeParameters($data, $fields);
-		$input   = self::pw('input');
 		$itmDim = self::getItmDim();
 
 		if ($data->action) {
-			$itmDim->process_input($input);
+			$itmDim->processInput(self::pw('input'));
 		}
 
-		self::pw('session')->redirect(self::itmUrlMisc($data->itemID), $http301 = false);
+		self::pw('session')->redirect(self::itmUrlDimensions($data->itemID), $http301 = false);
 	}
 
 	public static function dim($data) {
@@ -74,11 +73,14 @@ class Dimensions extends ItmFunction {
 
 		$html = '';
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
+		$html .= self::lockItem($data->itemID);
+		$html .= $config->twig->render('items/itm/itm-links.twig');
 		if ($session->getFor('response', 'itm')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
 		}
-		$html .= self::lockItem($data->itemID);
-		$html .= $config->twig->render('items/itm/itm-links.twig');
+		if ($session->getFor('response', 'itm-dim')) {
+			$html .= $config->twig->render('items/itm/response-alert-new.twig', ['response' => $session->getFor('response', 'itm-dim')]);
+		}
 		$html .= $config->twig->render('items/itm/dimensions/display.twig', ['itmDimensions' => self::getItmDim(), 'dimensions' => $dim, 'item' => $item]);
 		return $html;
 	}
