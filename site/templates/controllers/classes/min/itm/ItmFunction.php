@@ -129,6 +129,10 @@ class ItmFunction extends AbstractController {
 		return self::itmUrlFunction($itemID, 'xrefs');
 	}
 
+	public static function itmUrlDimensions($itemID) {
+		return self::itmUrlFunction($itemID, 'dimensions');
+	}
+
 /* =============================================================
 	Supplemental
 ============================================================= */
@@ -215,6 +219,10 @@ class ItmFunction extends AbstractController {
 
 		$m->addHook('Page(pw_template=itm)::itmUrlXrefs', function($event) {
 			$event->return = self::itmUrlXrefs($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=itm)::itmUrlDimensions', function($event) {
+			$event->return = self::itmUrlDimensions($event->arguments(0));
 		});
 	}
 }
