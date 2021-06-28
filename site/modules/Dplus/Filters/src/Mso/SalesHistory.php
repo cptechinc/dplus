@@ -1,4 +1,6 @@
 <?php namespace Dplus\Filters\Mso;
+// Propel Classes
+use Propel\Runtime\ActiveQuery\Criteria;
 // Dplus Model
 use SalesHistoryQuery, SalesHistory as Model;
 // ProcessWire Classes
