@@ -29,10 +29,10 @@
 			['GET',  '', ItmController::class, 'misc'],
 			['POST', '', ItmController::class, 'miscHandleCRUD'],
 		],
-		'dimensions' => [
-			['GET',  '', ItmController::class, 'dimensions'],
-			['POST', '', ItmController::class, 'dimensionsHandleCRUD'],
-		],
+		// 'dimensions' => [
+		// 	['GET',  '', ItmController::class, 'dimensions'],
+		// 	['POST', '', ItmController::class, 'dimensionsHandleCRUD'],
+		// ],
 		'xrefs' => [
 			['GET',  '', XrefsController::class, 'xrefs'],
 			['POST', '', XrefsController::class, 'xrefsHandleCRUD'],
