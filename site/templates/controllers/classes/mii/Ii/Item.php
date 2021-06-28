@@ -99,7 +99,7 @@ class Item extends IiFunction {
 		$session = self::pw('session');
 
 		if ($jsonm->exists($jsonInfo['code'])) {
-			if ($json['itemid'] != $data->itemID) {
+			if (self::jsonItemidMatches($json['itemid'], $data->itemID) === false) {
 				$jsonm->delete($jsonInfo['code']);
 				$session->redirect(self::itemUrl($data->itemID, $refresh = true), $http301 = false);
 			}

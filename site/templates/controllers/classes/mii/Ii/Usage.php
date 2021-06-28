@@ -80,7 +80,7 @@ class Usage extends IiFunction {
 		$session = self::pw('session');;
 
 		if ($jsonm->exists(self::JSONCODE)) {
-			if ($json['itemid'] != $data->itemID) {
+			if (self::jsonItemidMatches($json['itemid'], $data->itemID) === false) {
 				$jsonm->delete(self::JSONCODE);
 				$session->redirect(self::usageUrl($data->itemID, $refreshdata = true), $http301 = false);
 			}
