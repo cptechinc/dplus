@@ -1,3 +1,4 @@
+{% set input = page.wire('input') %}
 <div class="mb-4 row">
 	<div class="col-sm-6">
 		<a href="{{ page.parent.url }}" class="btn btn-info"><i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i>&ensp;Back to Quotes Menu</a>
@@ -53,10 +54,10 @@
 					<div class="col-sm-3">
 						<h5>Status</h5>
 						<label>New</label>
-						<input class="pull-right" type="checkbox" name="status[]" value="N" {{ 'N' in input.get.status ? 'checked' : '' }} ></br>
+						<input class="pull-right" type="checkbox" name="status[]" value="N" {{ 'N' in input.get.text('status') ? 'checked' : '' }} ></br>
 
 						<label>Printed</label>
-						<input class="pull-right" type="checkbox" name="status[]" value="P" {{ 'P' in input.get.status ? 'checked' : '' }} ></br>
+						<input class="pull-right" type="checkbox" name="status[]" value="P" {{ 'P' in input.get.text('status') ? 'checked' : '' }} ></br>
 					</div>
 				</div>
 				<hr>
