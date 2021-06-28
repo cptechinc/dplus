@@ -84,7 +84,7 @@ class Lotserial extends IiFunction {
 		$html = '';
 
 		if ($jsonm->exists(self::JSONCODE)) {
-			if ($json['itemid'] != $data->itemID) {
+			if (self::jsonItemidMatches($json['itemid'], $data->itemID) === false) {
 				$jsonm->delete(self::JSONCODE);
 				$session->redirect(self::lotserialUrl($data->itemID, $refresh = true), $http301 = false);
 			}

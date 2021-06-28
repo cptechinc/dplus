@@ -106,7 +106,7 @@ class SalesHistory extends IiFunction {
 		$html = '';
 
 		if ($jsonm->exists(self::JSONCODE)) {
-			if ($json['itemid'] != $data->itemID || $json['date'] != date(self::DATE_FORMAT_DPLUS, $data->timestamp)) {
+			if (self::jsonItemidMatches($json['itemid'], $data->itemID) === false || $json['date'] != date(self::DATE_FORMAT_DPLUS, $data->timestamp)) {
 				$jsonm->delete(self::JSONCODE);
 				$session->redirect(self::historyUrl($data->itemID, $data->date, $refresh = true), $http301 = false);
 			}
