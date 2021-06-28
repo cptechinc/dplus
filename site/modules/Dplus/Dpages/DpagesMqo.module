@@ -18,10 +18,6 @@ class DpagesMqo extends Dpages implements Module {
 			'name'   => 'quotes',
 			'fields' => array()
 		),
-		'quotes-customer' => array(
-			'name'   => 'quotes-customer',
-			'fields' => array()
-		),
 		'quote-view' => array(
 			'name'   => 'quote-view',
 			'fields' => array()
@@ -66,16 +62,6 @@ class DpagesMqo extends Dpages implements Module {
 			'dplus_function'   => '',
 			'dplus_permission' => 'mqo',
 			'pw_template'      => 'quotes'
-		),
-		'quotes-customer' => array(
-			'template'         => 'dplus-function',
-			'name'             => 'customer',
-			'title'            => 'Customer Quotes',
-			'summary'          => 'View / Search through Customer Quotes',
-			'parent'           => '/mqo/quotes/',
-			'dplus_function'   => '',
-			'dplus_permission' => 'mqo',
-			'pw_template'      => 'quotes-customer'
 		),
 		'quote-view' => array(
 			'template'         => 'dplus-function',

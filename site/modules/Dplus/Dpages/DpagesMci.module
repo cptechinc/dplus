@@ -654,7 +654,8 @@ class DpagesMci extends Dpages implements Module {
 		 */
 		$this->addHook('Page::cust_quotesURL', function($event) {
 			$custID = $event->arguments(0);
-			$url = new Url($this->wire('pages')->get('pw_template=quotes-customer')->url);
+			$url = new Url($this->wire('pages')->get('pw_template=quotes')->url);
+			$url->path->add('customer');
 			$url->query->set('custID', $custID);
 			$event->return = $url->getUrl();
 		});
