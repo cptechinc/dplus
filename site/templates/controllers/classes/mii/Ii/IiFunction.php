@@ -57,6 +57,10 @@ abstract class IiFunction extends AbstractController {
 		return true;
 	}
 
+	protected static function jsonItemidMatches($jsonItemID, $itemID) {
+		return stripslashes($jsonItemID) == $itemID;
+	}
+
 /* =============================================================
 	Data Requests
 ============================================================= */

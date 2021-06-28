@@ -91,7 +91,7 @@ class Pricing extends IiFunction {
 		$session = self::pw('session');
 
 		if ($jsonm->exists(self::JSONCODE)) {
-			if ($json['itemid'] != $data->itemID || $json['custid'] != $data->custID) {
+			if (self::jsonItemidMatches($json['itemid'], $data->itemID) === false || $json['custid'] != $data->custID) {
 				$jsonm->delete(self::JSONCODE);
 				$session->redirect(self::pricingUrl($data->itemID, $data->custID, $refresh = true), $http301 = false);
 			}
