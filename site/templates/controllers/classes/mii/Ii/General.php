@@ -89,7 +89,7 @@ class General extends IiFunction {
 		$session = self::pw('session');
 
 		if ($jsonm->exists($jsoncode)) {
-			if ($json['itemid'] != $data->itemID) {
+			if (self::jsonItemidMatches($json['itemid'], $data->itemID) === false) {
 				$jsonm->delete($jsoncode);
 				$session->redirect(self::generalUrl($data->itemID, $refresh = true), $http301 = false);
 			}

@@ -77,10 +77,12 @@ class Twig extends WireData implements Module {
 
 		$filter = new TwigFilter('attrJS', function ($string, $jsprepend = true) {
 			$replace = array(
-				' ' => '+',
+				' ' => '_',
 				'=' => 'eq',
 				'%' => 'per',
-				'+' => 'plus'
+				'+' => 'plus',
+				'&' => 'amp',
+				"'" => 'apos',
 			);
 			$string = str_replace(array_keys($replace), array_values($replace), $string);
 			return $jsprepend ? "js-$string" : $string;
@@ -238,7 +240,7 @@ class Twig extends WireData implements Module {
 			return $input;
 		});
 		$twig->addFunction($function);
-		
+
 		$function = new TwigFunction('twigdatepicker', function (array $array) {
 			$input = new TwigDatePicker();
 			$input->setFromArray($array);

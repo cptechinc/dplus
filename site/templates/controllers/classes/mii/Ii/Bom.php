@@ -94,7 +94,7 @@ class Bom extends IiFunction {
 		$session  = self::pw('session');
 
 		if ($jsonm->exists($jsoncode)) {
-			if ($json['itemid'] != $data->itemID) {
+			if (self::jsonItemidMatches($json['itemid'], $data->itemID) === false) {
 				$jsonm->delete($jsoncode);
 				$session->redirect(self::bomUrl($data->itemID, $data->qty, $data->type, $refresh = true), $http301 = false);
 			}
