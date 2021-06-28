@@ -231,7 +231,7 @@ class Dimensions extends WireData {
 	 * @return void
 	 */
 	private function requestUpdate($itemID) {
-		$data = array('UPDATEITMDIMEN', "ITEMID=$itemID");
+		$data = ['UPDATEITMDIMEN', "ITEMID=$itemID"];
 		$this->requestDplus($data);
 	}
 
@@ -245,8 +245,7 @@ class Dimensions extends WireData {
 		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
 		$data = array_merge(["DBNAME=$dplusdb"], $data);
 		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, session_id());
+		$requestor->write_dplusfile($data, $this->sessionID);
 		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
 	}
-
 }
