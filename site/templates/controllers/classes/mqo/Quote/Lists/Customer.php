@@ -24,7 +24,6 @@ class Customer extends Base {
 	public static function index($data) {
 		self::sanitizeParametersShort($data, ['custID|text']);
 
-
 		if (empty($data->custID)) {
 			self::pw('page')->js .= self::pw('config')->twig->render('quotes/customer/customer-form.js.twig');
 			return self::customerForm($data);
@@ -33,7 +32,9 @@ class Customer extends Base {
 		$validate = new MarValidator();
 		if ($validate->custid($data->custID) === false) {
 			self::pw('page')->headline = "Customer $data->custID not found";
-			$html =  self::invalidCustid($data);
+			$html  = self::invalidCustid($data);
+			$html .= self::customerForm($data);
+			return $html;
 		}
 
 		return self::listQuotes($data);
@@ -46,6 +47,7 @@ class Customer extends Base {
 		$filter->filterInput(self::pw('input'));
 		$filter->sortby(self::pw('page'));
 		$quotes = $filter->query->paginate(self::pw('input')->pageNum, 10);
+		self::initHooks();
 		return self::displayList($quotes);
 	}
 
@@ -65,8 +67,8 @@ class Customer extends Base {
 	public static function displayList(ModelPager $quotes) {
 		$config = self::pw('config');
 		$html = '';
-		$html .= $config->twig->render('quotes/search-form.twig', ['input' => self::pw('input')]);
-		$html .= $config->twig->render('quotes/quotes-list-links.twig', ['quotes' => $quotes, 'quotepage' => self::pw('pages')->get('pw_template=quote-view')->url]);
+		$html .= $config->twig->render('quotes/customer/search-form.twig', ['input' => self::pw('input')]);
+		$html .= $config->twig->render('quotes/customer/quotes-list-links.twig', ['quotes' => $quotes, 'quotepage' => self::pw('pages')->get('pw_template=quote-view')->url]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $quotes]);
 		return $html;
@@ -75,10 +77,13 @@ class Customer extends Base {
 /* =============================================================
 	Url Functions
 ============================================================= */
-	public static function listUrl($custID, $qnbr = '') {
+	public static function listUrl($custID, $shiptoID = '', $qnbr = '') {
 		$url = new Purl(self::pw('pages')->get('pw_template=quotes')->url);
 		$url->path->add('customer');
 		$url->query->set('custID', $custID);
+		if ($shiptoID) {
+			$url->query->set('shiptoID', $shiptoID);
+		}
 
 		if ($qnbr) {
 			$filter = new FilterQuotes();
@@ -93,10 +98,38 @@ class Customer extends Base {
 		return $url->getUrl();
 	}
 
+	public static function ciUrl($custID) {
+		$url = new Purl(self::pw('pages')->get('pw_template=ci-customer')->url);
+		$url->query->set('custID', $custID);
+		return $url->getUrl();
+	}
+
+	public static function ciShiptoUrl($custID, $shiptoID = '') {
+		if (empty($shiptoID)) {
+			return self::ciUrl($custID);
+		}
+		$url = new Purl(self::pw('pages')->get('pw_template=ci-shipto')->url);
+		$url->query->set('custID', $custID);
+		$url->query->set('shiptoID', $shiptoID);
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Supplemental
 ============================================================= */
-	public static function initHooks() { // TODO HOOKS for CI
-		$m = self::pw('modules')->get('DpagesMso');
+	public static function initHooks() {
+		$m = self::pw('modules')->get('DpagesMqo');
+
+		$m->addHook('Page(pw_template=quotes)::ciUrl', function($event) {
+			$event->return = self::ciUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=quotes)::ciShiptoUrl', function($event) {
+			$event->return = self::ciShiptoUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=quotes)::custQuotesUrl', function($event) {
+			$event->return = self::listUrl($event->arguments(0), $event->arguments(1), $event->arguments(2));
+		});
 	}
 }

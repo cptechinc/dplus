@@ -1,8 +1,10 @@
+{% set values = input.get %}
+
 <div class="mb-4 row">
 	<div class="col-sm-6">
-		<a href="{{ page.customer_or_shiptoURL() }}" class="btn btn-info">
-			<i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i>
-			Back to {{ page.has('shiptoID') ? 'Ship-to' : 'Customer' }} Page
+		<a href="{{ page.ciShiptoUrl(input.get.text('custID'), input.get.text('shiptoID')) }}" class="btn btn-primary">
+			<i class="fa fa-user-circle-o text-white" aria-hidden="true"></i>
+			View {{ values.offsetExists('shiptoID') ? values.text('shiptoID') : values.text('custID') }}
 		</a>
 	</div>
 	<div class="col-sm-6">
@@ -13,10 +15,10 @@
 <div id="quotes-search-div" class="{{ input.get.text('filter') is empty ? 'collapse' : ''}}">
 	<div class="card mb-3">
 		<div class="card-body">
-			<form action="" method="get" class="remove-empty-fields" submit-empty="false">
+			<form action="{{ input.url() }}" method="get" class="remove-empty-fields" submit-empty="false">
 				<input type="hidden" name="filter" value="filter">
-				<input type="hidden" name="custID" value="{{ custID }}">
-				<input type="hidden" name="shiptoID" value="{{ shiptoID }}">
+				<input type="hidden" name="custID" value="{{ values.text('custID') }}">
+				<input type="hidden" name="shiptoID" value="{{ values.text('shiptoID') }}">
 
 				<div class="row mt-3">
 					<div class="col-sm-4">
@@ -95,7 +97,7 @@
 					{% if input.get.text('filter') %}
 						<div class="col-sm-12 form-group">
 							<div>
-								<a href="{{ page.url }}" class="btn btn-warning btn-block">
+								<a href="{{ page.custQuotesUrl(values.text('custID'), values.text('shiptoID')) }}" class="btn btn-warning btn-block">
 									Clear Search <i class="fa fa-search-minus" aria-hidden="true"></i>
 								</a>
 							</div>
