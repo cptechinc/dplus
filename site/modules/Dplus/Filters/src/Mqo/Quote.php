@@ -1,4 +1,6 @@
 <?php namespace Dplus\Filters\Mqo;
+// Propel Classes
+use Propel\Runtime\ActiveQuery\Criteria;
 // Dplus Model
 use QuoteQuery, Quote as Model;
 // ProcessWire Classes
