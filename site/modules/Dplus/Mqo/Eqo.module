@@ -7,6 +7,7 @@ use StatesQuery, States;
 use ShipviaQuery, Shipvia;
 use CustomerShiptoQuery, CustomerShipto;
 use WarehouseQuery, Warehouse;
+use LogpermQuery;
 
 class Eqo extends WireData implements Module {
 	protected $qnbr;
