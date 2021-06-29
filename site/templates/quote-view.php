@@ -16,7 +16,10 @@
 	$routes = [
 		['GET',  '', QtController::class, 'index'],
 		['GET',  'documents/', Documents::class, 'index'],
-		['GET',  'notes/', Notes::class, 'index'],
+		'notes' => [
+			['GET',   '', Notes::class, 'index'],
+			['POST',  '', Notes::class, 'handleCRUD'],
+		],
 		['GET',  'print/', PrintQt::class, 'index'],
 	];
 	$router = new Mvc\Router();
