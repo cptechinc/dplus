@@ -26,10 +26,6 @@ class DpagesMqo extends Dpages implements Module {
 			'name'   => 'quote-print',
 			'fields' => array()
 		),
-		'quote-notes' => array(
-			'name'   => 'quotes-notes',
-			'fields' => array()
-		),
 		'quote-edit' => array(
 			'name'   => 'quote-edit',
 			'fields' => array()
@@ -78,16 +74,6 @@ class DpagesMqo extends Dpages implements Module {
 			'dplus_function'   => '',
 			'dplus_permission' => 'mqo',
 			'pw_template'      => 'quote-print'
-		),
-		'quote-notes' => array(
-			'template'         => 'dplus-function',
-			'name'             => 'notes',
-			'title'            => 'Quote Notes',
-			'summary'          => 'View Quote Notes',
-			'parent'           => '/mqo/quote/',
-			'dplus_function'   => '',
-			'dplus_permission' => 'mqo',
-			'pw_template'      => 'quote-notes'
 		),
 		'quote-edit' => array(
 			'template'       => 'dplus-function',
