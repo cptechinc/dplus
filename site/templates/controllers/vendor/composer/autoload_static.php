@@ -73,6 +73,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mpo\\Epo' => __DIR__ . '/../..' . '/classes/mpo/Epo.php',
         'Controllers\\Mpo\\EpoCreate' => __DIR__ . '/../..' . '/classes/mpo/EpoCreate.php',
         'Controllers\\Mqo\\Quote\\Base' => __DIR__ . '/../..' . '/classes/mqo/Quote/Base.php',
+        'Controllers\\Mqo\\Quote\\Documents' => __DIR__ . '/../..' . '/classes/mqo/Quote/Documents.php',
         'Controllers\\Mqo\\Quote\\Lists\\Customer' => __DIR__ . '/../..' . '/classes/mqo/Quote/Lists/Customer.php',
         'Controllers\\Mqo\\Quote\\Lists\\Quote' => __DIR__ . '/../..' . '/classes/mqo/Quote/Lists/Quote.php',
         'Controllers\\Mqo\\Quote\\Quote' => __DIR__ . '/../..' . '/classes/mqo/Quote/Quote.php',

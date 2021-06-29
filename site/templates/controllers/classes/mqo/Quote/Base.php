@@ -106,6 +106,20 @@ abstract class Base extends AbstractController {
 		return $url->getUrl();
 	}
 
+	public static function documentsUrl($qnbr) {
+		$url = new Purl(self::quoteUrl($qnbr));
+		$url->path->add('documents');
+		return $url->getUrl();
+	}
+
+	public static function documentUrl($qnbr, $folder, $document = '') {
+		$url = new Purl(self::quoteUrl($qnbr));
+		$url->path->add('documents');
+		$url->query->set('folder', $folder);
+		$url->query->set('document', $document);
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Supplemental
 ============================================================= */

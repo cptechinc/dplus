@@ -72,6 +72,7 @@ return array(
     'Controllers\\Mpo\\Epo' => $baseDir . '/classes/mpo/Epo.php',
     'Controllers\\Mpo\\EpoCreate' => $baseDir . '/classes/mpo/EpoCreate.php',
     'Controllers\\Mqo\\Quote\\Base' => $baseDir . '/classes/mqo/Quote/Base.php',
+    'Controllers\\Mqo\\Quote\\Documents' => $baseDir . '/classes/mqo/Quote/Documents.php',
     'Controllers\\Mqo\\Quote\\Lists\\Customer' => $baseDir . '/classes/mqo/Quote/Lists/Customer.php',
     'Controllers\\Mqo\\Quote\\Lists\\Quote' => $baseDir . '/classes/mqo/Quote/Lists/Quote.php',
     'Controllers\\Mqo\\Quote\\Quote' => $baseDir . '/classes/mqo/Quote/Quote.php',
