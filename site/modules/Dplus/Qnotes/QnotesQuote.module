@@ -113,10 +113,10 @@ class QnotesQuote extends WireData implements Module {
 		$qnbr = $input->$rm->text('qnbr');
 
 		switch ($input->$rm->text('action')) {
-			case 'update-notes':
+			case 'update':
 				$this->update_notes_input($input);
 				break;
-			case 'delete-notes':
+			case 'delete':
 				$this->delete_notes_input($input);
 				break;
 		}
