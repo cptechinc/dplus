@@ -30,10 +30,6 @@ class DpagesMqo extends Dpages implements Module {
 			'name'   => 'quotes-notes',
 			'fields' => array()
 		),
-		'quote-documents' => array(
-			'name'   => 'quote-documents',
-			'fields' => array()
-		),
 		'quote-edit' => array(
 			'name'   => 'quote-edit',
 			'fields' => array()
@@ -93,16 +89,6 @@ class DpagesMqo extends Dpages implements Module {
 			'dplus_permission' => 'mqo',
 			'pw_template'      => 'quote-notes'
 		),
-		'quote-documents' => array(
-			'template'         => 'dplus-function',
-			'name'             => 'documents',
-			'title'            => 'Quote Documents',
-			'summary'          => 'View Quote Documents',
-			'parent'           => '/mqo/quote/',
-			'dplus_function'   => '',
-			'dplus_permission' => 'mqo',
-			'pw_template'      => 'quote-documents'
-		),
 		'quote-edit' => array(
 			'template'       => 'dplus-function',
 			'name'           => 'edit',
@@ -128,38 +114,6 @@ class DpagesMqo extends Dpages implements Module {
 			$p = $event->object;
 			$event->return = $p->parent('template=dplus-menu')->child('template=redir')->url;
 		});
-
-		$this->addHook('User::is_editingquote', function($event) {
-			$user = $event->object;
-			$qnbr = $event->arguments(0);
-			$event->return = $this->is_user_editingquote($user, $qnbr);
-		});
-	}
-
-/* =============================================================
-	Supplemental Functions
-============================================================= */
-	/**
-	 * Return if User can edit Quote
-	 * @param  User   $user  User
-	 * @param  string  $qnbr Quote Number
-	 * @return bool
-	 */
-	public function can_user_editquote(User $user, $qnr) {
-		// TODO: add quote edit logic
-		return true;
-	}
-
-	/**
-	 * Return if User is editing Quote
-	 * @param  User              $user  User
-	 * @param  SalesOrder|string $quote Sales Order
-	 * @return bool                     IS User is editing Quote?
-	 */
-	public function is_user_editingquote(User $user, $qnbr) {
-		$q = LogpermQuery::create();
-		$logperm = $q->findOneBySessionid($user->sessionID);
-		return $qnbr == $logperm->ordernbr;
 	}
 
 /* =============================================================
@@ -176,11 +130,4 @@ class DpagesMqo extends Dpages implements Module {
 		);
 	}
 
-	public function init() {
-		$this->addHook('User::can_editquote', function($event) {
-			$user = $event->object;
-			$qnbr = $event->arguments(0);
-			$event->return = $this->can_user_editquote($user, $qnbr);
-		});
-	}
 }
