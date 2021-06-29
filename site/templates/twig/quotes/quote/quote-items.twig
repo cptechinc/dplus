@@ -2,8 +2,7 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
-	config                 ProcessWire\Config
-	config.so              ConfigSalesOrder
+	configSo               ConfigSalesOrder
 	quote                  Quote
 	order.items            QuoteDetail[]|ObjectCollection
 #}
@@ -21,17 +20,17 @@
 		{% for detail in quote.items %}
 			<tr>
 				<td>
-					<a href="{{ page.ii_itemURL(detail.itemid)}}" class="link" target="_blank" aria-label="View item in II" title="View item in II">
+					<a href="{{ page.iiUrl(detail.itemid)}}" class="link" target="_blank" aria-label="View item in II" title="View item in II">
 						{{ detail.itemid }}
 					</a>
 					</br>
 					<small>{{ detail.description }}</small>
 				</td>
-				<td class="text-right">{{ detail.qty|number_format(config.so.decimal_places) }}</td>
+				<td class="text-right">{{ detail.qty|number_format(configSo.decimal_places) }}</td>
 				<td class="text-right">$ {{ detail.price|currency }}</td>
 				<td class="text-right">$ {{ detail.price_total|currency }}</td>
 				<td class="text-right">
-					<a href="{{ page.view_notesURL(quote.quotenumber, detail.linenumber) }}" class="h4 {{ detail.count_notes() ? 'text-success' : 'text-muted'}}">
+					<a href="{{ page.qnotesUrl(quote.quotenumber, detail.linenumber) }}" class="h4 {{ detail.count_notes() ? 'text-success' : 'text-muted'}}">
 						<i class="fa fa-sticky-note" aria-hidden="true"></i>
 					</a>
 				</td>

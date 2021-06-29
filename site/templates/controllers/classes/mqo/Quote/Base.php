@@ -99,6 +99,13 @@ abstract class Base extends AbstractController {
 		return $url->getUrl().$hash;
 	}
 
+	public static function orderQuoteUrl($qnbr) {
+		$url = new Purl(self::quoteUrl($qnbr));
+		$url->path->add('edit');
+		$url->path->add('order');
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Supplemental
 ============================================================= */
