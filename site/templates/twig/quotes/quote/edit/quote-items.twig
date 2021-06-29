@@ -11,7 +11,7 @@
 </div>
 
 {% for detail in quote.get_items() %}
-	{# if user.is_editingquote(quote.quotenumber) #}
+	{# if user.isEditingQuote(quote.quotenumber) #}
 		{% include 'quotes/quote/edit/quote-item-form.twig' %}
 	{# else #}
 		{# include 'quotes/quote/edit/quote-item-readonly.twig' #}
