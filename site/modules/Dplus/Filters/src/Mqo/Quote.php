@@ -1,4 +1,6 @@
 <?php namespace Dplus\Filters\Mqo;
+// Propel Classes
+use Propel\Runtime\ActiveQuery\Criteria;
 // Dplus Model
 use QuoteQuery, Quote as Model;
 // ProcessWire Classes
@@ -169,6 +171,22 @@ class Quote extends AbstractFilter {
 	3. Input Filter Functions
 ============================================================= */
 	/**
+	 * Filter Query with Input Data
+	 * @param  WireInput $input Input Data
+	 * @return self
+	 */
+	public function _filterInput(WireInput $input) {
+		$this->quotestatusInput($input);
+		$this->quotenumberInput($input);
+		$this->quotetotalInput($input);
+		$this->quotedateInput($input);
+		$this->reviewdateInput($input);
+		$this->expiredateInput($input);
+		$this->custidInput($input);
+		$this->shiptoidInput($input);
+	}
+
+	/**
 	 * Filters Query by Quote Status
 	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
 	 * @return self
@@ -330,5 +348,36 @@ class Quote extends AbstractFilter {
 			$shiptoID = is_array($values->shiptoID) ? $values->array('shiptoID') : $values->text('shiptoID');
 			$this->shiptoid($shiptoID);
 		}
+	}
+
+/* =============================================================
+	Misc Query Functions
+============================================================= */
+	/**
+	 * Return if Quote Exists
+	 * @param  string $qnbr Quote Number
+	 * @return bool
+	 */
+	public function exists($qnbr) {
+		return boolval(QuoteQuery::create()->filterByQuotenumber($qnbr)->count());
+	}
+
+	/**
+	 * Return Position of Item in results
+	 * @param  Model|string $quote Sales Order | Sales Order Number
+	 * @return int
+	 */
+	public function positionQuick($quote) {
+		$qnbr = $quote;
+		if (is_object($quote)) {
+			$qnbr = $quote->quotenumber;
+		}
+		$q = $this->getQueryClass();
+		$q->execute_query('SET @rownum = 0');
+		$table = $q->getTableMap()::TABLE_NAME;
+		$sql = "SELECT x.position FROM (SELECT QthdId, @rownum := @rownum + 1 AS position FROM $table) x WHERE QthdId = :qnbr";
+		$params = [':qnbr' => $qnbr];
+		$stmt = $q->execute_query($sql, $params);
+		return $stmt->fetchColumn();
 	}
 }
