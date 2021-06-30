@@ -76,6 +76,7 @@ return array(
     'Controllers\\Mqo\\Quote\\Lists\\Customer' => $baseDir . '/classes/mqo/Quote/Lists/Customer.php',
     'Controllers\\Mqo\\Quote\\Lists\\Quote' => $baseDir . '/classes/mqo/Quote/Lists/Quote.php',
     'Controllers\\Mqo\\Quote\\Notes' => $baseDir . '/classes/mqo/Quote/Notes.php',
+    'Controllers\\Mqo\\Quote\\PrintQt' => $baseDir . '/classes/mqo/Quote/PrintQt.php',
     'Controllers\\Mqo\\Quote\\Quote' => $baseDir . '/classes/mqo/Quote/Quote.php',
     'Controllers\\Mso\\Cxm' => $baseDir . '/classes/mso/Cxm.php',
     'Controllers\\Mso\\Eso' => $baseDir . '/classes/mso/Eso.php',
