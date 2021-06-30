@@ -19,7 +19,8 @@ class DplusInput extends WireData implements Module {
 		$this->addHook('WireInput::lastSegment', function(HookEvent $event) {
 			$input = $event->object;
 			$segments = $input->urlSegments();
-			$event->return = $segments[count($segments)];
+			$segmentCount = count($segments);
+			$event->return = $segmentCount ? $segments[$segmentCount] : $this->wire('page')->name;
 		});
 
 		$this->addHook('WireInput::countSegments', function(HookEvent $event) {
