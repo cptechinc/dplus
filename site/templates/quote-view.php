@@ -4,6 +4,7 @@
 	use Controllers\Mqo\Quote\Documents;
 	use Controllers\Mqo\Quote\Notes;
 	use Controllers\Mqo\Quote\PrintQt;
+	use Controllers\Mqo\Quote\Edit;
 
 	QtController::initHooks();
 
@@ -19,6 +20,7 @@
 			['POST',  '', Notes::class, 'handleCRUD'],
 		],
 		['GET',  'print/', PrintQt::class, 'index'],
+		['GET',  'edit/',  Edit::class, 'index'],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);

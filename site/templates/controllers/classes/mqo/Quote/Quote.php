@@ -49,9 +49,6 @@ class Quote extends Base {
 			return self::qtAccessDenied($data);
 		}
 
-		if ($data->print) {
-			// self::pw('session')->redirect(self::orderPrintUrl($data->qnbr), $http301 = false);
-		}
 		self::pw('page')->headline = "Quote #$data->qnbr";
 		self::pw('page')->listpage = self::pw('pages')->get('pw_template=quotes');
 
