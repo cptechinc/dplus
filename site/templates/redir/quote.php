@@ -15,12 +15,6 @@
 	*
 	*
 	* switch ($action) {
-	* 	case 'get-quote-edit':
-	*		- Loads Quote for editing
-	*		DBNAME=$dplusdb
-	*		EDITQUOTE
-	*		QUOTENO=$qnbr
-	*		break;
 	*	case 'edit-new-quote':
 	*		- Loads Quote for editing
 	*		DBNAME=$dplusdb
@@ -67,11 +61,6 @@
 	**/
 
 	switch ($action) {
-		case 'get-quote-edit':
-			$qnbr = $input->$requestmethod->text('qnbr');
-			$data = array("DBNAME=$dplusdb", 'EDITQUOTE', "QUOTENO=$qnbr");
-			$session->loc = $pages->get('pw_template=quote-edit')->url."?qnbr=$qnbr";
-			break;
 		case 'edit-new-quote':
 			$qnbr = $user->get_lockedID();
 			$data = array("DBNAME=$dplusdb", 'EDITQUOTE', "QUOTENO=$qnbr");
