@@ -3,18 +3,12 @@
 use stdClass;
 // Purl URI Library
 use Purl\Url as Purl;
-// Propel Query
-use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 // Dplus Model
 use QuoteQuery, Quote as QtModel;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\Module;
-// Dplus Document Finders
-use Dplus\DocManagement\Finders as DocFinders;
+use ProcessWire\Page, ProcessWire\Module, ProcessWire\PdfMaker;
 // Dplus Configs
 use Dplus\Configs;
-// Dplus Classes
-use Dplus\CodeValidators\Mqo as MqoValidator;
 
 class PrintQt extends Base {
 	public static function index($data) {
@@ -28,9 +22,7 @@ class PrintQt extends Base {
 	}
 
 	public static function quote($data) {
-		$data = self::sanitizeParametersShort($data, ['qnbr|text', 'download|text']);
-		$page = self::pw('page');
-		$config   = self::pw('config');
+		self::sanitizeParametersShort($data, ['qnbr|text', 'download|text', 'pdf|bool', 'sessionID|sessionID']);
 		$validate = self::validator();
 
 		if ($validate->quote($data->qnbr) === false) {
@@ -40,28 +32,37 @@ class PrintQt extends Base {
 		if ($validate->quoteAccess($data->qnbr, self::pw('user')) === false) {
 			return self::qtAccessDenied($data);
 		}
-		$page->headline = "Quote #$data->qnbr";
 
-		$pdfmaker = self::pw('modules')->get('PdfMaker');
-		$pdfmaker->set_fileID("quote-$data->qnbr");
-		$pdfmaker->set_filetype('quote');
-		if ($data->download) {
-			header("Content-type:application/pdf");
-			// It will be called downloaded.pdf
-			header("Content-Disposition:attachment;filename=".$pdfmaker->get_filename());
-			// The PDF source is in original.pdf
-			readfile($config->directory_webdocs.$pdfmaker->get_filename());
+		$pdfmaker = self::getPdfMaker($data->qnbr);
+
+		if (empty($data->download) === false) {
+			self::downloadPdf($data, $pdfmaker);
 		}
-		if (empty($data->download) && !$page->is_pdf()) {
-			$page->show_title = false;
-			$pdfmaker->set_url(self::pdfUrl($data->qnbr));
-			$pdfmaker->generate_pdf();
+
+		if (empty($data->download) && empty($data->pdf)) {
+			self::generatePdf($data, $pdfmaker);
 		}
-		return self::print($data);
+
+		self::pw('page')->headline = "Quote #$data->qnbr";
+		return self::printable($data);
 	}
 
-	public static function print($data) {
-		$data = self::sanitizeParametersShort($data, ['qnbr|text', 'download|text']);
+	private static function downloadPdf($data, PdfMaker $pdfmaker) {
+		header("Content-type:application/pdf");
+		// It will be called downloaded.pdf
+		header("Content-Disposition:attachment;filename=".$pdfmaker->get_filename());
+		// The PDF source is in original.pdf
+		readfile(self::pw('config')->directory_webdocs.$pdfmaker->get_filename());
+	}
+
+	private static function generatePdf($data, PdfMaker $pdfmaker) {
+		self::pw('page')->show_title = false;
+		$pdfmaker->set_url(self::pdfUrl($data->qnbr, $data->sessionID));
+		$pdfmaker->generate_pdf();
+	}
+
+	private static function printable($data) {
+		$data = self::sanitizeParametersShort($data, ['qnbr|text', 'download|text', 'pdf|bool']);
 		$page = self::pw('page');
 		$config   = self::pw('config');
 		$validate = self::validator();
@@ -77,7 +78,7 @@ class PrintQt extends Base {
 		$htmlwriter = self::pw('modules')->get('HtmlWriter');
 		$html = '';
 
-		if ($page->is_pdf() === false) {
+		if ($data->pdf === false) {
 			$html .= $config->twig->render("quotes/quote/print/print-actions.twig", ['qnbr' => $data->qnbr]);
 			$html .= $htmlwriter->div('class=clearfix mb-3');
 		}
@@ -92,20 +93,27 @@ class PrintQt extends Base {
 	public static function downloadPdfUrl($qnbr) {
 		$url = new Purl(self::quotePrintUrl($qnbr));
 		$url->query->set('download', 'pdf');
-		$url->query->set('print', 'true');
+		$url->query->set('sessionID', session_id());
 		return $url->getUrl();
 	}
 
-	public static function pdfUrl($qnbr) {
+	public static function pdfUrl($qnbr, $sessionID = '') {
 		$requestor = self::pw('modules')->get('DplusRequest');
 		$printurl = new Purl(self::quotePrintUrl($qnbr));
 		$url = new Purl($requestor->get_self_path($printurl->path));
 		$url->set('host', '127.0.0.1');
 		$url->set('scheme', 'http');
 		$url->query->set('qnbr', $qnbr);
-		$url->query->set('print', 'true');
 		$url->query->set('pdf', 'true');
+		$url->query->set('sessionID', $sessionID ? $sessionID : session_id());
 		return $url->getUrl();
+	}
+
+	protected static function getPdfMaker($qnbr = '') {
+		$pdfmaker = self::pw('modules')->get('PdfMaker');
+		$pdfmaker->set_fileID("quote-$qnbr");
+		$pdfmaker->set_filetype('quote');
+		return $pdfmaker;
 	}
 
 	public static function initHooks() {
@@ -116,7 +124,7 @@ class PrintQt extends Base {
 		});
 
 		$m->addHook('Page(pw_template=quote-view)::pdfUrl', function($event) {
-			$event->return = self::pdfUrl($event->arguments(0));
+			$event->return = self::pdfUrl($event->arguments(0), session_id());
 		});
 	}
 }

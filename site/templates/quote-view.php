@@ -7,11 +7,7 @@
 
 	QtController::initHooks();
 
-	$segments = $input->urlSegments();
-	$segment  = $segments[sizeof($segments)];
-	$values   = $input->get;
-
-	if (empty($segments) === false && $segment == 'print') {
+	if (empty($input->urlSegments()) === false && $input->lastSegment()== 'print') {
 		PrintQt::initHooks();
 	}
 
@@ -32,10 +28,10 @@
 	if ($config->ajax) {
 		echo $page->body;
 	} else {
-		if ($segment == 'print') {
+		if ($input->lastSegment() == 'print') {
 			$page->show_title = true;
 
-			if ($values->offsetExists('pdf')) {
+			if ($input->get->offsetExists('pdf')) {
 				$page->show_title = false;
 			}
 			include __DIR__ . "/blank-page.php";
