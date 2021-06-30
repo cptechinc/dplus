@@ -23,7 +23,7 @@ class Itm extends AbstractController {
 		'warehouses'   => ['title' => 'Warehouses', 'permission' => 'whse'],
 		'misc'         => ['title' => 'Misc', 'permission' => 'misc'],
 		'xrefs'        => ['title' => 'X-Refs', 'permission' => 'xrefs'],
-		'dimensions'   => ['title' => 'Packaging', 'permission' => ''],
+		// 'dimensions'   => ['title' => 'Packaging', 'permission' => ''],
 	];
 
 	public static function item($data) {

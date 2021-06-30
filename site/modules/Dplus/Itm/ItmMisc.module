@@ -174,7 +174,7 @@ class ItmMisc extends Itm implements Module {
 	 * @param  array          $invalidfields Input fields that require attention
 	 * @return ItmResponse
 	 */
-	public function save_and_respond(ItemMasterItem $record, array $invalidfields) {
+	public function save_and_respond(ItemMasterItem $record, array $invalidfields = []) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 

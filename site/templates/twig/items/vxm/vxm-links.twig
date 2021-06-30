@@ -1,0 +1,9 @@
+<div class="mb-3">
+	<a href="{{ page.vendorListUrl(page.vendorID) }}" class="btn btn-primary">
+		<i class="fa fa-arrows" aria-hidden="true"></i> VXM
+	</a>
+	&nbsp;
+	{% if page.has('vendoritemID') %}
+		<a href="{{ page.vendorUrl(page.vendorID) }}" class="btn btn-primary"> View Vendor {{ page.vendorID }}</a>
+	{% endif %}
+</div>

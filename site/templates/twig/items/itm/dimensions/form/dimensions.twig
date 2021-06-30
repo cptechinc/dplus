@@ -1,0 +1,78 @@
+<legend class="text-center">Dimensions</legend>
+
+<div class="row mb-3">
+	<div class="col-sm-6">
+		<label for="length">Length</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'type': 'number',
+					'name': 'length', 'value': dimensions.length,
+					'size': 'sm',
+					'addclasses': ['text-right'],
+					'attributes': {
+						'step': 'any'
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row mb-3">
+	<div class="col-sm-6">
+		<label for="width">Width</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'type': 'number',
+					'name': 'width', 'value': dimensions.width,
+					'size': 'sm',
+					'addclasses': ['text-right'],
+					'attributes': {
+						'step': 'any'
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row mb-3">
+	<div class="col-sm-6">
+		<label for="thickness">Thickness</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'type': 'number',
+					'name': 'thickness', 'value': dimensions.thickness,
+					'size': 'sm',
+					'addclasses': ['text-right'],
+					'attributes': {
+						'step': 'any'
+					}
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row mb-3">
+	<div class="col-sm-6">
+		<label for="sqft">Square Feet</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'type': 'number',
+					'name': 'sqft', 'value': dimensions.sqft,
+					'size': 'sm',
+					'addclasses': ['text-right'],
+					'attributes': {
+						'step': 'any'
+					}
+				}
+			}
+		%}
+	</div>
+</div>

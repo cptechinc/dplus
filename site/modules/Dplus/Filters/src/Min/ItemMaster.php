@@ -1,6 +1,7 @@
 <?php namespace Dplus\Filters\Min;
 // Dplus Model
 use ItemMasterItemQuery, ItemMasterItem as Model;
+use WarehouseInventoryQuery, WarehouseInventory;
 // ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Filters
@@ -25,6 +26,25 @@ class ItemMaster extends AbstractFilter {
 	}
 
 /* =============================================================
+	Base Filter Functions
+============================================================= */
+	/**
+	 * Filter ItemIDs by Item's active in X Warehouse
+	 * @param  string $whseID Warehouse ID
+	 * @return void
+	 */
+	 public function active($whseID = '') {
+ 		if (empty($whseID)) {
+ 			$whseID = $this->wire('user')->whseid;
+ 		}
+ 		$this->query
+ 		->useWarehouseInventoryQuery()
+ 			->filterByWarehouseid($whseID)
+ 			->filterByStatus(WarehouseInventory::STATUS_ACTIVE)
+ 		->endUse();
+ 	}
+
+/* =============================================================
 	Misc Query Functions
 ============================================================= */
 	/**
@@ -47,11 +67,10 @@ class ItemMaster extends AbstractFilter {
 			$itemID = $item->itemid;
 		}
 		$q = $this->getQueryClass();
-		$q->execute_query('SET @rownum = 0');
+		$q->executeQuery('SET @rownum = 0');
 		$table = $q->getTableMap()::TABLE_NAME;
 		$sql = "SELECT x.position FROM (SELECT InitItemNbr, @rownum := @rownum + 1 AS position FROM $table) x WHERE InitItemNbr = :itemid";
-		$params = [':itemid' => $itemID];
-		$stmt = $q->execute_query($sql, $params);
+		$stmt = $q->executeQuery($sql, [':itemid' => $itemID]);
 		return $stmt->fetchColumn();
 	}
 }
