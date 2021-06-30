@@ -1,6 +1,7 @@
 <?php namespace ProcessWire;
 
 include_once(__DIR__.'/ItmResponse.php');
+include_once(__DIR__.'/vendor/autoload.php');
 
 // Purl URI
 use Purl\Url;
@@ -322,7 +323,7 @@ class Itm extends WireData implements Module {
 	 * @param  array          $invalidfields Input fields that require attention
 	 * @return ItmResponse
 	 */
-	protected function save_and_respond(ItemMasterItem $record, array $invalidfields) {
+	public function save_and_respond(ItemMasterItem $record, array $invalidfields = []) {
 		$is_new = $record->isDeleted() ? false : $record->isNew();
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
@@ -372,6 +373,7 @@ class Itm extends WireData implements Module {
 		$requestor->write_dplusfile($data, session_id());
 		$requestor->cgi_request($config->cgis['database'], session_id());
 	}
+
 	/**
 	 * Writes File for Dplus to update the ITM file for this ITEM
 	 * @param  string $itemID Item ID
@@ -438,7 +440,7 @@ class Itm extends WireData implements Module {
 	 */
 	public function lockrecord($itemID) {
 		if ($this->recordlocker->isLocked($itemID) === false) {
-			$this->recordlocker->create_lock($itemID);
+			$this->recordlocker->lock($itemID);
 		}
 		return $this->recordlocker->userHasLocked($itemID);
 	}

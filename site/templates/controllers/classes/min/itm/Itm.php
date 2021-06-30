@@ -13,6 +13,7 @@ use Controllers\Min\Itm\Pricing;
 use Controllers\Min\Itm\Warehouse;
 use Controllers\Min\Itm\Misc;
 use Controllers\Min\Itm\Xrefs;
+use Controllers\Min\Itm\Dimensions;
 
 class Itm extends AbstractController {
 
@@ -22,6 +23,7 @@ class Itm extends AbstractController {
 		'warehouses'   => ['title' => 'Warehouses', 'permission' => 'whse'],
 		'misc'         => ['title' => 'Misc', 'permission' => 'misc'],
 		'xrefs'        => ['title' => 'X-Refs', 'permission' => 'xrefs'],
+		// 'dimensions'   => ['title' => 'Packaging', 'permission' => ''],
 	];
 
 	public static function item($data) {
@@ -78,6 +80,14 @@ class Itm extends AbstractController {
 
 	public static function xrefs($data) {
 		return Xrefs::index($data);
+	}
+
+	public static function dimensions($data) {
+		return Dimensions::index($data);
+	}
+
+	public static function dimensionsHandleCRUD($data) {
+		return Dimensions::handleCRUD($data);
 	}
 
 	public static function itmUrl($itemID = '') {
