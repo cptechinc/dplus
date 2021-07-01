@@ -109,9 +109,7 @@ class Edit extends Base {
 	private static function headerForm($data) {
 		$eqo = self::getEqo($data->qnbr);
 		$quote = $eqo->getEditableQuote();
-		$quote = new Quothed();
-		$quoteReadonly      = QuoteQuery::create()->findOneByQuoteid($data->qnbr);
-		$customer = CustomerQuery::create()->findOneByCustid($quoteReadonly->custid);
+		$customer = CustomerQuery::create()->findOneByCustid($quote->custid);
 		return self::pw('config')->twig->render('quotes/quote/edit/edit-form.twig', ['quote' => $quote, 'states' => $eqo->getStates(), 'shipvias' => $eqo->getShipvias(), 'warehouses' => $eqo->getWarehouses(), 'shiptos' => $customer->get_shiptos()]);
 	}
 

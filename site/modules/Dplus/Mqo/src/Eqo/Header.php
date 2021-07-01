@@ -61,7 +61,7 @@ class Header extends WireData  {
 ============================================================= */
 	private function requestDplus(array $data) {
 		$config = $this->wire('config');
-		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
 		$data = array_merge(["DBNAME=$dplusdb"], $data);
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $this->sessionID);
