@@ -1,0 +1,63 @@
+<div class="form-group">
+	<div class="row">
+		<div class="col-sm-4">
+			<label for="shiptoid">ShiptoID</label>
+		</div>
+		<div class="col-sm-8">
+			<select name="shiptoid" id="shiptoid" class="form-control form-control-sm">
+				<option value="n/a">Drop Ship</option>
+				{% for shipto in shiptos %}
+					<option value="{{ shipto.id }}" {{ shipto.id == quote.shiptoid ? 'selected' : ''}}>{{ shipto.id ~ ' - ' ~ shipto.name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+</div>
+<div class="form-group">
+	<div class="row">
+		<div class="col-sm-4">
+			<label for="shipname">Name</label>
+		</div>
+		<div class="col-sm-8">
+			<input type="text" class="form-control form-control-sm" name="shipto_name" value="{{ quote.shipto_name }}">
+		</div>
+	</div>
+</div>
+<div class="form-group">
+	<div class="row">
+		<div class="col-sm-4">
+			<label for="shipaddress">Address</label>
+		</div>
+		<div class="col-sm-8">
+			<input type="text" class="form-control form-control-sm" name="shipto_address" value="{{ quote.shipto_address }}">
+		</div>
+	</div>
+</div>
+<div class="form-group">
+	<div class="row">
+		<div class="col-sm-4">
+			<label for="shipaddress2">Address 2</label>
+		</div>
+		<div class="col-sm-8">
+			<input type="text" class="form-control form-control-sm" name="shipto_address2" value="{{ quote.shipto_address2 }}">
+		</div>
+	</div>
+</div>
+<div class="form-row">
+	<div class="form-group col-md-6">
+		<label for="shipcity">City</label>
+		<input type="text" class="form-control form-control-sm" name="shipto_city" value="{{ quote.shipto_city }}">
+	</div>
+	<div class="form-group col-md-4">
+		<label for="shipto_state">State</label>
+		<select name="shipto_state" id="shipto_state" class="form-control form-control-sm">
+			{% for state in states %}
+				<option value="{{ state.abbreviation }}" {{ state.abbreviation == quote.shipto_state ? 'selected' : ''}}>{{ state.name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+	<div class="form-group col-md-2">
+		<label for="shipto_zip">Zip</label>
+		<input type="text" class="form-control form-control-sm" name="shipto_zip" value="{{ quote.shipto_zip }}">
+	</div>
+</div>

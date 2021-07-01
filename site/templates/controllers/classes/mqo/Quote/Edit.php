@@ -98,7 +98,7 @@ class Edit extends Base {
 
 
 		$links = $twig->render('quotes/quote/edit/links-header.twig', ['user' => self::pw('user'), 'quote' => $quote]);
-		$header = $twig->render('quotes/quote/edit/quote-header.twig', ['customer' => $customer, 'quote' => $quote]);
+		$header = $twig->render('quotes/quote/edit/header.twig', ['customer' => $customer, 'quote' => $quote]);
 
 		$html = '';
 		$html .= $htmlWriter->div('class=mb-3', $links);
@@ -110,7 +110,7 @@ class Edit extends Base {
 		$eqo = self::getEqo($data->qnbr);
 		$quote = $eqo->getEditableQuote();
 		$customer = CustomerQuery::create()->findOneByCustid($quote->custid);
-		return self::pw('config')->twig->render('quotes/quote/edit/edit-form.twig', ['quote' => $quote, 'states' => $eqo->getStates(), 'shipvias' => $eqo->getShipvias(), 'warehouses' => $eqo->getWarehouses(), 'shiptos' => $customer->get_shiptos()]);
+		return self::pw('config')->twig->render('quotes/quote/edit/header/form.twig', ['quote' => $quote, 'states' => $eqo->getStates(), 'shipvias' => $eqo->getShipvias(), 'warehouses' => $eqo->getWarehouses(), 'shiptos' => $customer->get_shiptos()]);
 	}
 
 /* =============================================================
