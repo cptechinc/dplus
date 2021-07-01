@@ -1,10 +1,10 @@
 <div class="form-group">
 	<label for="custpo">Customer PO</label>
-	<input type="text" class="form-control" name="custpo" id="custpo" value="{{ quote.custpo }}">
+	<input type="text" class="form-control form-control-sm" name="custpo" id="custpo" value="{{ quote.custpo }}">
 </div>
 <div class="form-group">
 	<label for="shipvia">Shipvia</label>
-	<select name="shipvia" id="shipvia" class="form-control">
+	<select name="shipvia" id="shipvia" class="form-control form-control-sm">
 		{% for shipvia in shipvias %}
 			<option value="{{ shipvia.code }}" {{ shipvia.code == quote.shipvia ? 'selected' : ''}}>{{ shipvia.description }}</option>
 		{% endfor %}
@@ -16,11 +16,11 @@
 </div>
 <div class="form-group">
 	<label for="delivery">Delivery</label>
-	<input type="text" class="form-control" name="delivery" id="delivery" value="{{ quote.delivery }}">
+	<input type="text" class="form-control form-control-sm" name="delivery" id="delivery" value="{{ quote.delivery }}">
 </div>
 <div class="form-group">
 	<label for="warehouse">Warehouse</label>
-	<select name="warehouse" id="shipvia" class="form-control">
+	<select name="warehouse" id="warehouse" class="form-control form-control-sm">
 		{% for warehouse in warehouses %}
 			<option value="{{ warehouse.id }}" {{ warehouse.id == quote.warehouse ? 'selected' : ''}}>{{ warehouse.id ~ ' - ' ~ warehouse.name }}</option>
 		{% endfor %}
@@ -28,7 +28,7 @@
 </div>
 <div class="form-group">
 	<label for="careof">Care of</label>
-	<input type="text" class="form-control" name="careof" id="careof" value="{{ quote.careof }}">
+	<input type="text" class="form-control form-control-sm" name="careof" id="careof" value="{{ quote.careof }}">
 </div>
 
 <div class="form-group">
@@ -39,7 +39,7 @@
 				<i class="fa fa-calendar" aria-hidden="true"></i>
 			</div>
 		</div>
-		<input type="text" readonly class="form-control text-right" id="date_quoted" value="{{ quote.date_quoted }}">
+		<input type="text" readonly class="form-control form-control-sm text-right" id="date_quoted" value="{{ quote.date_quoted }}">
 	</div>
 </div>
 <div class="form-group">
@@ -50,7 +50,7 @@
 				<i class="fa fa-calendar" aria-hidden="true"></i>
 			</div>
 		</div>
-		<input type="text" readonly class="form-control text-right" id="date_review" value="{{ quote.date_review }}">
+		<input type="text" readonly class="form-control form-control-sm text-right" id="date_review" value="{{ quote.date_review }}">
 	</div>
 </div>
 <div class="form-group">
@@ -61,6 +61,6 @@
 				<i class="fa fa-calendar" aria-hidden="true"></i>
 			</div>
 		</div>
-		<input type="text" readonly class="form-control text-right" id="date_expires" value="{{ quote.date_expires }}">
+		<input type="text" readonly class="form-control form-control-sm text-right" id="date_expires" value="{{ quote.date_expires }}">
 	</div>
 </div>

@@ -79,7 +79,7 @@ class Eqo extends WireData implements Module {
 	 * Return US States
 	 * @return States|ObjectCollection
 	 */
-	public function get_states() {
+	public function getStates() {
 		return StatesQuery::create()->select(['name', 'abbreviation'])->find();
 	}
 
@@ -87,7 +87,7 @@ class Eqo extends WireData implements Module {
 	 * Return Shipvias
 	 * @return Shipvia[]|ObjectCollection
 	 */
-	public function get_shipvias() {
+	public function getShipvias() {
 		return ShipviaQuery::create()->find();
 	}
 
@@ -95,7 +95,7 @@ class Eqo extends WireData implements Module {
 	 * Return Warehouses
 	 * @return Warehouse[]|ObjectCollection
 	 */
-	public function get_warehouses() {
+	public function getWarehouses() {
 		return WarehouseQuery::create()->find();
 	}
 

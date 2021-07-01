@@ -8,6 +8,7 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 // Dplus Model
 use QuoteQuery, Quote as QtModel;
 use CustomerQuery, Customer;
+use Quothed;
 // Dplus Configs
 use Dplus\Configs;
 // Mvc Controllers
@@ -86,6 +87,7 @@ class Edit extends Base {
 		$html  = '';
 		$html .= self::displayHeader($data);
 		$html .= self::headerForm($data);
+		return $html;
 	}
 
 	private static function displayHeader($data) {
@@ -107,8 +109,10 @@ class Edit extends Base {
 	private static function headerForm($data) {
 		$eqo = self::getEqo($data->qnbr);
 		$quote = $eqo->getEditableQuote();
-		$customer = CustomerQuery::create()->findOneByCustid($quote->custid);
-		return self::pw('config')->twig->render('quotes/quote/edit/edit-form.twig', ['quote' => $quote, 'states' => $eqo->get_states(), 'shipvias' => $eqo->get_shipvias(), 'warehouses' => $eqo->get_warehouses(), 'shiptos' => $customer->get_shiptos()]);
+		$quote = new Quothed();
+		$quoteReadonly      = QuoteQuery::create()->findOneByQuoteid($data->qnbr);
+		$customer = CustomerQuery::create()->findOneByCustid($quoteReadonly->custid);
+		return self::pw('config')->twig->render('quotes/quote/edit/edit-form.twig', ['quote' => $quote, 'states' => $eqo->getStates(), 'shipvias' => $eqo->getShipvias(), 'warehouses' => $eqo->getWarehouses(), 'shiptos' => $customer->get_shiptos()]);
 	}
 
 /* =============================================================
