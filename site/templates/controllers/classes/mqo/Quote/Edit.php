@@ -87,6 +87,8 @@ class Edit extends Base {
 		$html  = '';
 		$html .= self::displayHeader($data);
 		$html .= self::headerForm($data);
+
+		self::pw('page')->js .= self::pw('config')->twig->render('quotes/quote/edit/shiptos.js.twig');
 		return $html;
 	}
 
