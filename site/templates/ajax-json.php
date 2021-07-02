@@ -56,6 +56,7 @@
 				['GET', 'custid/', Json\Mar::class, 'validateCustid'],
 			],
 			['GET', 'customer/', Json\Mar::class, 'getCustomer'],
+			['GET', 'customer/shipto/', Json\Mar::class, 'getCustomerShipto'],
 		],
 		'mci' => [
 			'validate' => [
