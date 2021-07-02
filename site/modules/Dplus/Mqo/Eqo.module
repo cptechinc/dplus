@@ -100,34 +100,6 @@ class Eqo extends WireData implements Module {
 	}
 
 	/**
-	 * Gets the Shipto address in an array format to be easily converted to JSON
-	 * NOTE: used for JS
-	 * @return array
-	 */
-	public function get_shiptos_json_array() {
-		$custID = $this->get_custid();
-		$columns = array('id', 'name', 'address', 'address2', 'city', 'state', 'zip');
-
-		$query = CustomerShiptoQuery::create();
-
-		foreach ($columns as $column) {
-			$query->addAsColumn($column, CustomerShipto::get_aliasproperty($column));
-		}
-		$query->select($columns);
-		$query->filterByCustid($custID);
-		$shiptos = $query->find();
-		return $shiptos->toArray('id');
-	}
-
-	/**
-	 * Return Customer ID from Quote
-	 * @return string Customer ID
-	 */
-	public function get_custid() {
-		return QuoteQuery::create()->select(Quote::get_aliasproperty('custid'))->findOneByQuotenumber($this->qnbr);
-	}
-
-	/**
 	 * Sends HTTP GET request to send Dplus Item Search Request
 	 * @param  string $q Query or Item ID
 	 * @return void
@@ -153,6 +125,17 @@ class Eqo extends WireData implements Module {
 		$q = LogpermQuery::create();
 		$logperm = $q->findOneBySessionid($user->sessionID);
 		return $qnbr == $logperm->ordernbr;
+	}
+
+	public function processInput(WireInput $input) {
+		$values = $input->values();
+
+		switch ($values->text('action')) {
+			case 'edit-quote':
+				$m = new QtHeader();
+				$m->processInput($input);
+				break;
+		}
 	}
 
 /* =============================================================

@@ -21,7 +21,7 @@ class Edit extends Base {
 ============================================================= */
 	public static function index($data) {
 		$fields = ['qnbr|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -35,7 +35,7 @@ class Edit extends Base {
 	}
 
 	public static function handleCRUD($data) {
-		$data = self::sanitizeParametersShort($data, ['action|text', 'qnbr|text']);
+		self::sanitizeParametersShort($data, ['action|text', 'qnbr|text']);
 
 		if (empty($data->action) === true) {
 			self::pw('session')->redirect(self::quoteEditUrl($data->qnbr), $http301 = false);
@@ -44,7 +44,7 @@ class Edit extends Base {
 		if ($data->action) {
 			$page = self::pw('page');
 			$eqo  = self::getEqo($data->qnbr);
-			$eqo->process_input(self::pw('input'));
+			$eqo->processInput(self::pw('input'));
 
 			$url = self::quoteEditUrl($data->qnbr);
 			if (in_array($data->action, ['exit']) || isset($data->exit)) {
@@ -112,7 +112,13 @@ class Edit extends Base {
 		$eqo = self::getEqo($data->qnbr);
 		$quote = $eqo->getEditableQuote();
 		$customer = CustomerQuery::create()->findOneByCustid($quote->custid);
-		return self::pw('config')->twig->render('quotes/quote/edit/header/form.twig', ['quote' => $quote, 'states' => $eqo->getStates(), 'shipvias' => $eqo->getShipvias(), 'warehouses' => $eqo->getWarehouses(), 'shiptos' => $customer->get_shiptos()]);
+		$html = '';
+
+		if (empty($quote->errormsg) === false) {
+			$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $quote->errormsg]);
+		}
+		$html .=self::pw('config')->twig->render('quotes/quote/edit/header/form.twig', ['quote' => $quote, 'states' => $eqo->getStates(), 'shipvias' => $eqo->getShipvias(), 'warehouses' => $eqo->getWarehouses(), 'shiptos' => $customer->get_shiptos()]);
+		return $html;
 	}
 
 /* =============================================================

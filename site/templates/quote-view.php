@@ -19,8 +19,11 @@
 			['GET',   '', Notes::class, 'index'],
 			['POST',  '', Notes::class, 'handleCRUD'],
 		],
-		['GET',  'print/', PrintQt::class, 'index'],
-		['GET',  'edit/',  Edit::class, 'index'],
+		['GET', 'print/', PrintQt::class, 'index'],
+		'edit' => [
+			['GET',   '', Edit::class, 'index'],
+			['POST',  '', Edit::class, 'handleCRUD'],
+		],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);

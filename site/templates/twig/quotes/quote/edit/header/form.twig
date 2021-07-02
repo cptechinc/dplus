@@ -1,6 +1,6 @@
 <hr>
 
-<form id="edit-quote-form" action="{{ page.wire('input').url() }}">
+<form id="edit-quote-form" action="{{ page.wire('input').url() }}" method="post">
 	<input type="hidden" name="action" value="edit-quote">
 	<input type="hidden" name="qnbr" value="{{ quote.quotenumber }}">
 	<input type="hidden" name="custID" value="{{ quote.custid }}">

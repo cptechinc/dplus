@@ -2,7 +2,7 @@
 
 use QuothedQuery, Quothed;
 
-use ProcessWire\WireData;
+use ProcessWire\WireData, ProcessWire\WireInput;
 
 /**
  * Header
@@ -50,11 +50,41 @@ class Header extends WireData  {
 			case 'load-quote':
 				$this->requestEditableQuote($values->text('qnbr'));
 				break;
+			case 'edit-quote':
+				$this->updateQuote($input);
+				break;
 			default:
 				$this->process_input_itm($input);
 				break;
 		}
 	}
+
+	public function updateQuote(WireInput $input) {
+		$values = $input->values();
+		$quote = $this->quote($values->text('qnbr'));
+		$quote->setShipto_name($values->text('shipto_name'));
+		$quote->setShipto_address($values->text('shipto_address'));
+		$quote->setShipto_address2($values->text('shipto_address2'));
+		$quote->setShipto_city($values->text('shipto_city'));
+		$quote->setShipto_state($values->text('shipto_state'));
+		$quote->setShipto_zip($values->text('shipto_zip'));
+		$quote->setContact($values->text('contact'));
+		$quote->setPhone(str_replace('-', '', $values->text('phone')));
+		$quote->setFaxnbr(str_replace('-', '', $values->text('fax')));
+		$quote->setEmail($values->text('email'));
+		$quote->setCustpo($values->text('custpo'));
+		$quote->setShipviacd($values->text('shipvia'));
+		$quote->setFob($values->text('fob'));
+		$quote->setDelivery($values->text('delivery'));
+		$quote->setCareof($values->text('careof'));
+		$quote->setWarehouse($values->text('warehouse'));
+		$saved = $quote->save();
+		if ($saved) {
+			$this->requestUpdateQuote($quote->quotenumber);
+		}
+	}
+
+
 
 /* =============================================================
 	Dplus Cobol Request Functions
@@ -75,6 +105,16 @@ class Header extends WireData  {
 	 */
 	public function requestEditableQuote($qnbr) {
 		$data = ['EDITQUOTE', "QUOTENO=$qnbr"];
+		$this->requestDplus($data);
+	}
+
+	/**
+	 * Request Update Quote header
+	 * @param  string $qnbr Quote Number
+	 * @return void
+	 */
+	public function requestUpdateQuote($qnbr) {
+		$data = ['UPDATEQUOTEHEAD', "QUOTENO=$qnbr"];
 		$this->requestDplus($data);
 	}
 }
