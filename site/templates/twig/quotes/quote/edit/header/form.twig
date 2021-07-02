@@ -3,6 +3,7 @@
 <form id="edit-quote-form" action="{{ page.wire('input').url() }}">
 	<input type="hidden" name="action" value="edit-quote">
 	<input type="hidden" name="qnbr" value="{{ quote.quotenumber }}">
+	<input type="hidden" name="custID" value="{{ quote.custid }}">
 
 	<div class="row">
 		<div class="col-sm-6">
