@@ -1,0 +1,33 @@
+$(function() {
+	var formHeader = new HeaderForm();
+
+	$("body").on("change", 'select[name=shiptoid]', function () {
+		var select   = $(this);
+		var shiptoid = select.val();
+		var custID   = formHeader.fields.custid.val();
+
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('mar/customer/shipto/') }}');
+		ajax.setData({custID: custID, shiptoID: shiptoid});
+		ajax.request(function(shipto) {
+			if (shipto === false) {
+				shipto = {
+					name: '',
+					address: {
+						address1: '',
+						address2: '',
+						city: '',
+						state: '',
+						zip: '',
+					}
+				}
+			}
+			var form = new Headerform();
+			form.fields.shipto.name.val(shipto.name);
+			form.fields.shipto.address1.val(shipto.address.address1);
+			form.fields.shipto.address2.val(shipto.address.address2);
+			form.fields.shipto.city.val(shipto.address.city);
+			form.fields.shipto.state.val(shipto.address.state);
+			form.fields.shipto.zip.val(shipto.address.zip);
+		});
+	});
+});
