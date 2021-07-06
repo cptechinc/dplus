@@ -1,7 +1,9 @@
 <?php namespace Dplus\Mqo\Eqo;
-
+// Dplus Models
+use QuoteQuery, Quote;
+// Dpluso Models
 use QuothedQuery, Quothed;
-
+// ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
 
 /**
@@ -14,12 +16,17 @@ class Header extends WireData  {
 		$this->sessionID = session_id();
 	}
 
+	/**
+	 * Return Query
+	 * @return QuothedQuery
+	 */
 	public function query() {
 		return QuothedQuery::create();
 	}
 
 	/**
 	 * Returns Editable Quote
+	 * @param  string $qnbr Quote Number
 	 * @return Quothed
 	 */
 	public function quote($qnbr) {
@@ -28,10 +35,20 @@ class Header extends WireData  {
 
 	/**
 	 * Return if Editable Quote Header exists
+	 * @param  string $qnbr Quote Number
 	 * @return bool
 	 */
 	public function exists($qnbr) {
 		return boolval($this->query()->filterBySessionidQuote($this->sessionID, $qnbr)->count());
+	}
+
+	/**
+	 * Return CustID from Quote
+	 * @param  string $qnbr Quote Number
+	 * @return string
+	 */
+	public function getCustid($qnbr) {
+		return QuoteQuery::create()->select(Quote::aliasproperty('custid'))->findOne();
 	}
 
 /* =============================================================
