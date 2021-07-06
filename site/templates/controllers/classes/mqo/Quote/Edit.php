@@ -59,7 +59,7 @@ class Edit extends Base {
 	Displays
 ============================================================= */
 	public static function quote($data) {
-		$data = self::sanitizeParametersShort($data, ['qnbr|text', 'print|bool']);
+		$data = self::sanitizeParametersShort($data, ['qnbr|text', 'print|bool', 'q|text']);
 		$validate = self::validator();
 
 		if ($validate->quote($data->qnbr) === false) {
@@ -145,7 +145,14 @@ class Edit extends Base {
 
 		$html = '';
 		$html .= $twig->render('quotes/quote/edit/lookup/form.twig');
-		$html .= $twig->render('quotes/quote/edit/lookup/results.twig');
+
+		if ($data->q) {
+			$custID = QuoteQuery::create()->select(QtModel::aliasproperty('custid'))->findOneByQuoteid($data->qnbr);
+			$pricing = self::pw('modules')->get('ItemPricing');
+			$pricing->request_search($data->q, $custID = '')
+			$html .= $twig->render('quotes/quote/edit/lookup/results.twig');
+		}
+
 		return $html;
 	}
 

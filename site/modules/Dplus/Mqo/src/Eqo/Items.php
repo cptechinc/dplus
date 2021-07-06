@@ -115,6 +115,20 @@ class Items extends WireData  {
 		$this->requestAddItem($qnbr, $itemID, $qty);
 	}
 
+	private function addItems(WireInput $input) {
+		$values = $input->values();
+		$qtys   = $values->array('qty');
+		$itemID = $values->array('itemID');
+		$items  = [];
+
+		for ($i = 0; $i < sizeof($qtys); $i++) {
+			if (!empty($qtys[$i])) {
+				$items[$itemID] = $qty;
+			}
+		}
+		$this->requestAddItems($values->text('qnbr'), $items);
+	}
+
 	/**
 	 * Delete Item from Quote
 	 * @param  WireInput $input Input Data
@@ -165,11 +179,15 @@ class Items extends WireData  {
 	/**
 	 * Request Item Delete
 	 * @param  string $qnbr    Quote Number
-	 * @param  int    $linenbr Quote Line Number
+	 * @param  array  $items   Items
 	 * @return void
 	 */
-	private function requestDeleteItem($qnbr, int $linenbr) {
-		$data = ['UPDATEQUOTEDETAIL', "QUOTENO=$qnbr", "LINENO=$linenbr", "QTY=0",];
+	private function requestAddItems($qnbr, array $items) {
+		$data = ['QUOTEADDMULTIPLE', "QUOTENO=$qnbr"];
+		foreach ($items as $itemID => $qty) {
+			$itemID = str_pad($itemID, 30, ' ');
+			$data[] = "ITEMID={$itemID}QTY=$qty";
+		}
 		$this->requestDplus($data);
 	}
 
