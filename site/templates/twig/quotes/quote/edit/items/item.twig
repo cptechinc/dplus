@@ -1,5 +1,12 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	quote                  Quotehed
+	eqo                    modules\Eqo
+#}
+{% set configSo = eqo.getConfigSo() %}
 <form action="{{ input.url() }}" class="pt-3 px-3 detail-line-form allow-enterkey-submit" method="post">
-	<input type="hidden" name="action" value="quick-update-item">
+	<input type="hidden" name="action" value="update-item-quick">
 	<input type="hidden" name="qnbr" value="{{ quote.quotenumber }}">
 	<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
 	<div class="form-row">
@@ -11,14 +18,19 @@
 			<input type="text" class="form-control form-control-sm text-right underlined" size="4" name="qty" value="{{ detail.qty|number_format() }}">
 		</div>
 		<div class="col-sm-2 text-right">
-			<input type="text" class="form-control form-control-sm text-right underlined" name="price" value="{{ detail.price|currency }}">
+			<div class="input-group input-group-sm">
+				<div class="input-group-prepend">
+					<span class="input-group-text">$</span>
+				</div>
+				<input type="text" name="price" id="price" class="form-control form-control-sm text-right qty-input" value="{{ detail.price|number_format(3) }}" data-value="{{ detail.price|number_format(3) }}">
+			</div>
 		</div>
 		<div class="col-sm-1 text-right">
-			<p class="form-control-plaintext">$ {{ detail.price_total|currency }}</p>
+			<p class="form-control-plaintext">$ {{ detail.price_total|number_format(3) }}</p>
 		</div>
 		<div class="col-sm-2 text-right">
 			<div class="pull-right">
-				{% include 'util/date-picker-underlined.twig' with {'name': 'date_requested', 'id': 'date_requested', 'value': detail.date_requested} %}
+				{% include 'util/date-picker.twig' with {'name': 'date_requested', 'id': 'date_requested', 'value': detail.date_requested} %}
 			</div>
 		</div>
 		<div class="col-sm-2 text-right">
