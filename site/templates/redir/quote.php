@@ -21,14 +21,6 @@
 	*		EDITQUOTE
 	*		QUOTENO=$qnbr
 	*		break;
-	* 	case 'remove-line':
-	*		- Removes Detail Line
-	*		DBNAME=$dplusdb
-	*		UPDATEQUOTEDETAIL
-	*		QUOTENO=$qnbr
-	*		LINENO=$linenbr
-	*		QTY=0
-	*		break;
 	* }
 	**/
 
@@ -37,10 +29,6 @@
 			$qnbr = $user->get_lockedID();
 			$data = array("DBNAME=$dplusdb", 'EDITQUOTE', "QUOTENO=$qnbr");
 			$session->loc = $pages->get('pw_template=quote-edit')->url."?qnbr=$qnbr";
-			break;
-		case 'unlock-quote':
-			$qnbr = $input->$requestmethod->text('qnbr');
-			$session->loc = $pages->get('pw_template=quote-view')->url."?qnbr=$qnbr";
 			break;
 		case 'order-quote':
 			$qnbr = $input->$requestmethod->text('qnbr');
@@ -66,21 +54,6 @@
 				$session->loc = $url->getUrl();
 			} else {
 				$session->loc = $pages->get('pw_template=quote-edit')->url."?ordn=$ordn";
-			}
-			break;
-		case 'remove-line':
-			$qnbr = $input->$requestmethod->text('qnbr');
-			$linenbr = $input->$requestmethod->int('linenbr');
-			$custID = QuoteQuery::create()->select(Quote::get_aliasproperty('custid'))->filterByQuoteid($qnbr)->findOne();
-			$detail = QuotdetQuery::create()->filterBySessionidQuote(session_id(), $qnbr)->filterByLinenbr($linenbr)->findOne();
-			$detail->setQuotqty(0);
-			$detail->setOrdrqty(0);
-			$detail->save();
-			$data = array("DBNAME=$dplusdb", 'UPDATEQUOTEDETAIL', "QUOTENO=$qnbr", "LINENO=$linenbr", "QTY=0", "CUSTID=$custID");
-			if ($input->$requestmethod->page) {
-				$session->loc = $input->$requestmethod->text('page');
-			} else {
-				$session->loc = $pages->get('pw_template=quote-edit')->url."?qnbr=$qnbr";
 			}
 			break;
 	}

@@ -157,7 +157,7 @@ class Edit extends Base {
 	}
 
 	public static function removeItemUrl($qnbr, int $linenbr = 0) {
-		$url = new Purl(self::quoteUrl($qnbr));
+		$url = new Purl(self::quoteEditUrl($qnbr));
 		$url->query->set('action', 'delete-item');
 		$url->query->set('linenbr', $linenbr);
 		return $url->getUrl();

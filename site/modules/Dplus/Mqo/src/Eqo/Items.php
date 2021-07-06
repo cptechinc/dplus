@@ -71,9 +71,17 @@ class Items extends WireData  {
 			case 'add-item':
 				$this->addItem($input);
 				break;
+			case 'delete-item':
+				$this->deleteItem($input);
+				break;
 		}
 	}
 
+	/**
+	 * Update Qty, Price, Date Requested on Quote Item
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
 	private function updateItemQuick(WireInput $input) {
 		$values = $input->values();
 
@@ -94,6 +102,11 @@ class Items extends WireData  {
 		$this->requestEditItem($item->quotenumber, $item->linenbr);
 	}
 
+	/**
+	 * Add Item to Quote
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
 	private function addItem(WireInput $input) {
 		$values = $input->values();
 		$qnbr   = $values->text('qnbr');
@@ -102,6 +115,10 @@ class Items extends WireData  {
 		$this->requestAddItem($qnbr, $itemID, $qty);
 	}
 
+	private function deleteItem(WireInput $input) {
+		$values = $input->values();
+		$this->requestDeleteItem($values->text('qnbr'), $values->int('linenbr'));
+	}
 
 /* =============================================================
 	Dplus Cobol Request Functions
@@ -137,6 +154,17 @@ class Items extends WireData  {
 	 */
 	public function requestAddItem($qnbr, $itemID, $qty) {
 		$data = ['UPDATEQUOTEDETAIL', "QUOTENO=$qnbr", "ITEMID=$itemID", "QTY=$qty"];
+		$this->requestDplus($data);
+	}
+
+	/**
+	 * Request Item Delete
+	 * @param  string $qnbr    Quote Number
+	 * @param  int    $linenbr Quote Line Number
+	 * @return void
+	 */
+	public function requestDeleteItem($qnbr, int $linenbr) {
+		$data = ['UPDATEQUOTEDETAIL', "QUOTENO=$qnbr", "LINENO=$linenbr", "QTY=0",];
 		$this->requestDplus($data);
 	}
 
