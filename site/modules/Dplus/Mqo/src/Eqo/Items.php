@@ -115,6 +115,11 @@ class Items extends WireData  {
 		$this->requestAddItem($qnbr, $itemID, $qty);
 	}
 
+	/**
+	 * Delete Item from Quote
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
 	private function deleteItem(WireInput $input) {
 		$values = $input->values();
 		$this->requestDeleteItem($values->text('qnbr'), $values->int('linenbr'));
@@ -138,7 +143,7 @@ class Items extends WireData  {
 	 * @param  int    $linenbr Quote Line Number
 	 * @return void
 	 */
-	public function requestEditItem($qnbr, int $linenbr) {
+	private function requestEditItem($qnbr, int $linenbr) {
 		$header = new Header();
 		$custID = $header->getCustid($qnbr);
 		$data = ['UPDATEQUOTEDETAIL', "QUOTENO=$qnbr", "LINENO=$linenbr", "CUSTID=$custID"];
@@ -152,7 +157,7 @@ class Items extends WireData  {
 	 * @param  float  $qty     Qty to Add
 	 * @return void
 	 */
-	public function requestAddItem($qnbr, $itemID, $qty) {
+	private function requestAddItem($qnbr, $itemID, $qty) {
 		$data = ['UPDATEQUOTEDETAIL', "QUOTENO=$qnbr", "ITEMID=$itemID", "QTY=$qty"];
 		$this->requestDplus($data);
 	}
@@ -163,7 +168,7 @@ class Items extends WireData  {
 	 * @param  int    $linenbr Quote Line Number
 	 * @return void
 	 */
-	public function requestDeleteItem($qnbr, int $linenbr) {
+	private function requestDeleteItem($qnbr, int $linenbr) {
 		$data = ['UPDATEQUOTEDETAIL', "QUOTENO=$qnbr", "LINENO=$linenbr", "QTY=0",];
 		$this->requestDplus($data);
 	}
