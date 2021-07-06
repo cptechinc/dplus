@@ -68,12 +68,15 @@ class Items extends WireData  {
 			case 'update-item-quick':
 				$this->updateItemQuick($input);
 				break;
+			case 'add-item':
+				$this->addItem($input);
+				break;
 		}
 	}
 
-	public function updateItemQuick(WireInput $input) {
+	private function updateItemQuick(WireInput $input) {
 		$values = $input->values();
-		
+
 		$item = $this->item($values->text('qnbr'), $values->int('linenbr'));
 		$item->setQuotqty($values->float('qty'));
 		$item->setQuotprice($values->text('price'));
@@ -89,6 +92,14 @@ class Items extends WireData  {
 
 		$saved = $item->save();
 		$this->requestEditItem($item->quotenumber, $item->linenbr);
+	}
+
+	private function addItem(WireInput $input) {
+		$values = $input->values();
+		$qnbr   = $values->text('qnbr');
+		$itemID = $values->text('itemID');
+		$qty    = $values->int('qty');
+		$this->requestAddItem($qnbr, $itemID, $qty);
 	}
 
 
@@ -114,6 +125,18 @@ class Items extends WireData  {
 		$header = new Header();
 		$custID = $header->getCustid($qnbr);
 		$data = ['UPDATEQUOTEDETAIL', "QUOTENO=$qnbr", "LINENO=$linenbr", "CUSTID=$custID"];
+		$this->requestDplus($data);
+	}
+
+	/**
+	 * Request Item Edit
+	 * @param  string $qnbr    Quote Number
+	 * @param  string $itemID  Item ID
+	 * @param  float  $qty     Qty to Add
+	 * @return void
+	 */
+	public function requestAddItem($qnbr, $itemID, $qty) {
+		$data = ['UPDATEQUOTEDETAIL', "QUOTENO=$qnbr", "ITEMID=$itemID", "QTY=$qty"];
 		$this->requestDplus($data);
 	}
 

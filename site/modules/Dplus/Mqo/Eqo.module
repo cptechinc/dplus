@@ -142,6 +142,7 @@ class Eqo extends WireData implements Module {
 				$m = new QtHeader();
 				$m->processInput($input);
 				break;
+			case 'add-item':
 			case 'update-item-quick':
 				$m = new QtItems();
 				$m->processInput($input);
