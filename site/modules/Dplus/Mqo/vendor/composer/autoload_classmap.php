@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Dplus\\Mqo\\Eqo\\Header' => $baseDir . '/src/Eqo/Header.php',
+    'Dplus\\Mqo\\Eqo\\Items' => $baseDir . '/src/Eqo/Items.php',
 );

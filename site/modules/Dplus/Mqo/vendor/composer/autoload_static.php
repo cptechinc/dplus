@@ -8,6 +8,7 @@ class ComposerStaticInitd88d71cb40d348caec7b5e500eca7c32
 {
     public static $classMap = array (
         'Dplus\\Mqo\\Eqo\\Header' => __DIR__ . '/../..' . '/src/Eqo/Header.php',
+        'Dplus\\Mqo\\Eqo\\Items' => __DIR__ . '/../..' . '/src/Eqo/Items.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
