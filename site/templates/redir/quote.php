@@ -27,28 +27,6 @@
 	*		UPDATEQUOTEHEAD
 	*		QUOTENO=$qnbr
 	*		break;
-	*	case 'quick-update-line':
-	* 		- Updates Detail Line
-	*		DBNAME=$dplusdb
-	*		SALEDET
-	*		ORDERNO=$ordn
-	*		LINENO=$linenbr
-	* 		break;
-	* 	case 'quick-update-line':
-	* 		- Updates Detail Line
-	*		DBNAME=$dplusdb
-	*		UPDATEQUOTEDETAIL
-	*		QUOTENO=$qnbr
-	*		LINENO=$linenbr
-	* 		break;
-	* 	case 'add-item':
-	* 		- Adds an Item to the Sales Order
-	* 		DBNAME=$dplusdb
-	* 		UPDATEQUOTEDETAIL
-	*		QUOTENO=$qnbr
-	*		ITEMID=$itemID
-	*		QTY=$qty
-	* 		break;
 	* 	case 'remove-line':
 	*		- Removes Detail Line
 	*		DBNAME=$dplusdb
@@ -102,46 +80,6 @@
 			$qnbr = $input->$requestmethod->text('qnbr');
 			$data = array("DBNAME=$dplusdb", 'QUOTETOORDER', "QUOTENO=$qnbr", "LINENO=ALL");
 			$session->loc = $pages->get('template=dplus-menu,name=mso')->child('template=redir')->url."?action=edit-new-order";
-			break;
-		case 'quick-update-line':
-			$qnbr = $input->$requestmethod->text('qnbr');
-			$linenbr = $input->$requestmethod->int('linenbr');
-			$custID = QuoteQuery::create()->select(Quote::get_aliasproperty('custid'))->filterByQuoteid($qnbr)->findOne();
-			$detail = QuotdetQuery::create()->filterBySessionidQuote(session_id(), $qnbr)->filterByLinenbr($linenbr)->findOne();
-			$detail->setQuotqty($input->$requestmethod->int('qty'));
-
-			if ($input->$requestmethod->orderquote) {
-				$qty = ($input->$requestmethod->checkorder) ? $input->$requestmethod->int('qty') : 0;
-				$detail->setOrdrqty($qty);
-			} else {
-				$detail->setOrdrqty($input->$requestmethod->int('qty'));
-			}
-
-			$detail->setQuotprice($input->$requestmethod->text('price'));
-			$detail->setOrdrprice($input->$requestmethod->text('price'));
-			$detail->setRshipdate($input->$requestmethod->text('date_requested'));
-			$detail->save();
-
-			$data = array("DBNAME=$dplusdb", 'UPDATEQUOTEDETAIL', "QUOTENO=$qnbr", "LINENO=$linenbr", "CUSTID=$custID");
-
-			if ($input->$requestmethod->page) {
-				$session->loc = $input->$requestmethod->text('page');
-			} else {
-				$session->loc = $pages->get('pw_template=quote-edit')->url."?qnbr=$qnbr";
-			}
-			$session->editdetail = true;
-			break;
-		case 'add-item':
-			$qnbr   = $input->$requestmethod->text('qnbr');
-			$itemID = $input->$requestmethod->text('itemID');
-			$qty    = $input->$requestmethod->int('qty');
-			$data = array("DBNAME=$dplusdb", 'UPDATEQUOTEDETAIL', "QUOTENO=$qnbr", "ITEMID=$itemID", "QTY=$qty");
-
-			if ($input->$requestmethod->page) {
-				$session->loc = $input->$requestmethod->text('page');
-			} else {
-				$session->loc = $pages->get('pw_template=quote-edit')->url."?qnbr=$qnbr";
-			}
 			break;
 		case 'add-popular-items':
 			$qnbr = $input->$requestmethod->text('qnbr');
