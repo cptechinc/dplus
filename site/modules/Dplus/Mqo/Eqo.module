@@ -1,15 +1,20 @@
 <?php namespace ProcessWire;
-
+// Purl URI manipulation Library
 use Purl\Url;
+// Dplus Models
 use QuoteQuery, Quote;
-use QuothedQuery, Quothed;
-use StatesQuery, States;
-use ShipviaQuery, Shipvia;
 use CustomerShiptoQuery, CustomerShipto;
 use WarehouseQuery, Warehouse;
+use ShipviaQuery, Shipvia;
+// Dpluso Models
+use QuothedQuery, Quothed;
+use StatesQuery, States;
 use LogpermQuery;
-
+// Dplus Configs
+use Dplus\Configs;
+// Dplus Eqo
 use Dplus\Mqo\Eqo\Header as QtHeader;
+use Dplus\Mqo\Eqo\Items  as QtItems;
 
 class Eqo extends WireData implements Module {
 	protected $qnbr;
@@ -62,7 +67,6 @@ class Eqo extends WireData implements Module {
 
 	/**
 	 * Sets Quote Number
-	 *
 	 * @return string
 	 */
 	public function setQnbr($qnbr) {
@@ -73,7 +77,6 @@ class Eqo extends WireData implements Module {
 		$m = new QtHeader();
 		$m->requestEditableQuote($this->qnbr);
 	}
-
 
 	/**
 	 * Return US States
@@ -97,6 +100,10 @@ class Eqo extends WireData implements Module {
 	 */
 	public function getWarehouses() {
 		return WarehouseQuery::create()->find();
+	}
+
+	public function getConfigSo() {
+		return Configs\So::config();
 	}
 
 	/**
@@ -131,8 +138,12 @@ class Eqo extends WireData implements Module {
 		$values = $input->values();
 
 		switch ($values->text('action')) {
-			case 'edit-quote':
+			case 'update-quote':
 				$m = new QtHeader();
+				$m->processInput($input);
+				break;
+			case 'update-item-quick':
+				$m = new QtItems();
 				$m->processInput($input);
 				break;
 		}
