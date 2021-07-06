@@ -182,7 +182,7 @@ class Eso extends AbstractController {
 		if (self::pw('user')->is_editingorder($ordn)) {
 			$html .= $config->twig->render('util/js-variables.twig', ['variables' => array('shiptos' => $eso->get_shiptos_json_array())]);
 			$page->js   .= $config->twig->render('sales-orders/sales-order/edit/js/js.twig', ['eso' => $eso]);
-			$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+			$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
 		}
 		return $html;
 	}
