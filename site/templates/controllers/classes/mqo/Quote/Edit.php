@@ -8,7 +8,7 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 // Dplus Model
 use QuoteQuery, Quote as QtModel;
 use CustomerQuery, Customer;
-use Quothed;
+use Quothed as EditableQuote;
 // Dplus Configs
 use Dplus\Configs;
 // Mvc Controllers
@@ -83,10 +83,12 @@ class Edit extends Base {
 
 	private static function display($data) {
 		$eqo = self::getEqo($data->qnbr);
+		$quote = $eqo->getEditableQuote();
 
 		$html  = '';
 		$html .= self::displayHeader($data);
-		$html .= self::headerForm($data);
+		$html .= self::headerForm($data, $quote);
+		$html .= self::items($data, $quote);
 
 		self::pw('page')->js .= self::pw('config')->twig->render('quotes/quote/edit/shiptos.js.twig');
 		return $html;
@@ -98,7 +100,6 @@ class Edit extends Base {
 		$customer   = CustomerQuery::create()->findOneByCustid($quote->custid);
 		$twig = self::pw('config')->twig;
 
-
 		$links = $twig->render('quotes/quote/edit/links-header.twig', ['user' => self::pw('user'), 'quote' => $quote]);
 		$header = $twig->render('quotes/quote/edit/header.twig', ['customer' => $customer, 'quote' => $quote]);
 
@@ -108,16 +109,25 @@ class Edit extends Base {
 		return $html;
 	}
 
-	private static function headerForm($data) {
+	private static function headerForm($data, EditableQuote $quote) {
 		$eqo = self::getEqo($data->qnbr);
-		$quote = $eqo->getEditableQuote();
 		$customer = CustomerQuery::create()->findOneByCustid($quote->custid);
 		$html = '';
 
 		if (empty($quote->errormsg) === false) {
 			$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $quote->errormsg]);
 		}
-		$html .=self::pw('config')->twig->render('quotes/quote/edit/header/form.twig', ['quote' => $quote, 'states' => $eqo->getStates(), 'shipvias' => $eqo->getShipvias(), 'warehouses' => $eqo->getWarehouses(), 'shiptos' => $customer->get_shiptos()]);
+		$html .= self::pw('config')->twig->render('quotes/quote/edit/header/form.twig', ['quote' => $quote, 'states' => $eqo->getStates(), 'shipvias' => $eqo->getShipvias(), 'warehouses' => $eqo->getWarehouses(), 'shiptos' => $customer->get_shiptos()]);
+		return $html;
+	}
+
+	private static function items($data, EditableQuote $quote) {
+		$eqo = self::getEqo($data->qnbr);
+		$htmlWriter = self::pw('modules')->get('HtmlWriter');
+
+		$html = '';
+		$html .= self::pw('config')->twig->render('quotes/quote/edit/items.twig', ['quote' => $quote]);
+		$html .= $htmlWriter->div('class=mt-3', $htmlWriter->h3('class=text-secondary', 'Add Item'));
 		return $html;
 	}
 
@@ -126,6 +136,13 @@ class Edit extends Base {
 ============================================================= */
 	public static function quoteUnlockUrl($qnbr) {
 		return self::quoteUrl($qnbr);
+	}
+
+	public static function removeItemUrl($qnbr, int $linenbr = 0) {
+		$url = new Purl(self::quoteUrl($qnbr));
+		$url->query->set('action', 'delete-item');
+		$url->query->set('linenbr', $linenbr);
+		return $url->getUrl();
 	}
 
 /* =============================================================
@@ -144,7 +161,11 @@ class Edit extends Base {
 		$m = self::pw('modules')->get('DpagesMqo');
 
 		$m->addHook('Page(pw_template=quote-view)::quoteUnlockUrl', function($event) {
-			$event->return = self::quotePrintUrl($event->arguments(0));
+			$event->return = self::quoteUnlockUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=quote-view)::deleteItemUrl', function($event) {
+			$event->return = self::removeItemUrl($event->arguments(0), $event->arguments(1));
 		});
 	}
 }
