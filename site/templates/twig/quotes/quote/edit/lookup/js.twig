@@ -2,9 +2,10 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
-	quote                  Quote
 #}
 $(function() {
+	var formHeader  = new HeaderForm();
+	var formAddItem = new AddItemForm();
 	var form_additem = $('#add-item-form');
 	var input_itemid = form_additem.find('input[name=itemID]');
 	var input_qty    = form_additem.find('input[name=qty]');
@@ -14,7 +15,7 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	var validator = form_additem.validate({
+	var validator = formAddItem.form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -39,9 +40,9 @@ $(function() {
 			}
 		},
 		submitHandler: function(form) {
-			validate_itm_item(input_itemid.val(), function(exists) {
+			validate_itm_item(formAddItem.fields.itemid.val(), function(exists) {
 				if (exists) {
-					if (validator.element('#'+input_itemid.attr('id'))) {
+					if (validator.element('#'+formAddItem.fields.itemid.attr('id'))) {
 						if (validator.element('#'+input_qty.attr('id'))) {
 							form.submit();
 						} else {
@@ -63,7 +64,7 @@ $(function() {
 
 		var button = $(this);
 		var itemID = button.data('itemid');
-		input_itemid.val(itemID);
+		formAddItem.fields.itemid.val(itemID);
 		input_qty.focus();
 	});
 
@@ -80,21 +81,22 @@ $(function() {
 	});
 
 	function validate_get_item() {
-		validate_itemid_entry(input_itemid.val(), '{{ quote.custid }}', '{{ quote.shiptoid }}', function(response) {
-			if (response.exists) {
-				input_itemid.val(response.itemid).change();
-				input_itemid.addClass('is-valid');
 
-				get_itm_item(input_itemid.val(), function(item) {
+		validate_itemid_entry(formAddItem.fields.itemid.val(), formHeader.fields.custid.val(), formHeader.fields.shiptoid.val(), function(response) {
+			if (response.exists) {
+				// formAddItem.fields.itemid.val(response.itemid).change();
+				formAddItem.fields.itemid.addClass('is-valid');
+
+				get_itm_item(formAddItem.fields.itemid.val(), function(item) {
 					if (item) {
 						$('small.desc1').text(item.description);
 						$('small.desc2').text(item.description2);
 					}
 				});
 			} else if (response.matches.itm > 0) {
-				var q = input_itemid.val();
-				input_itemid.val('');
-				var url = input_itemid.closest('.input-group').find('button').data('lookupurl');
+				var q = formAddItem.fields.itemid.val();
+				formAddItem.fields.itemid.val('');
+				var url = formAddItem.fields.itemid.closest('.input-group').find('button').data('lookupurl');
 				url = URI(url);
 				url.addQuery('q', q);
 				var modal_ajax = $('#ajax-modal');
@@ -111,7 +113,7 @@ $(function() {
 	function swal_notfound() {
 		swal2.fire({
 			title: 'Item not found.',
-			text: input_itemid.val() + ' cannot be found.',
+			text: formAddItem.fields.itemid.val() + ' cannot be found.',
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonText: 'Make advanced search?',
@@ -119,7 +121,7 @@ $(function() {
 		}).then(function (result) {
 			if (result.value) {
 				var url = URI("{{ page.fullURL.getUrl() }}");
-				url.setQuery('q', input_itemid.val());
+				url.setQuery('q', formAddItem.fields.itemid.val());
 				window.location.replace(url.toString());
 			}
 		});
