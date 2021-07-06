@@ -1,0 +1,23 @@
+function HeaderForm() {
+	this.form = $('#edit-quote-form');
+	this.fields = {
+		custid: this.form.find('input[name=custID]'),
+		shiptoid: this.form.find('input[name=shiptoID]'),
+		shipto: {
+			name: this.form.find('input[name=shipto_name]'),
+			address1: this.form.find('input[name=shipto_address]'),
+			address2: this.form.find('input[name=shipto_address2]'),
+			city: this.form.find('input[name=shipto_city]'),
+			state: this.form.find('input[name=shipto_state]'),
+			zip: this.form.find('input[name=shipto_zip]'),
+		}
+	}
+}
+
+function AddItemForm() {
+	this.form = $('#add-item-form');
+	this.fields = {
+		itemid: this.form.find('input[name=itemID]'),
+		qty: this.form.find('input[name=qty]'),
+	}
+}
