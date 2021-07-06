@@ -1,9 +1,10 @@
 <hr>
 
 <form id="edit-quote-form" action="{{ page.wire('input').url() }}" method="post">
-	<input type="hidden" name="action" value="edit-quote">
+	<input type="hidden" name="action" value="update-quote">
 	<input type="hidden" name="qnbr" value="{{ quote.quotenumber }}">
 	<input type="hidden" name="custID" value="{{ quote.custid }}">
+	<input type="hidden" name="shiptoID" value="{{ quote.shiptoid }}">
 
 	<div class="row">
 		<div class="col-sm-6">
