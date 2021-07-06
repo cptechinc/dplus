@@ -1,5 +1,5 @@
-<form action="{{ page.formurl }}" class="pt-3 px-3 detail-line-form allow-enterkey-submit" method="post">
-	<input type="hidden" name="action" value="quick-update-line">
+<form action="{{ input.url() }}" class="pt-3 px-3 detail-line-form allow-enterkey-submit" method="post">
+	<input type="hidden" name="action" value="quick-update-item">
 	<input type="hidden" name="qnbr" value="{{ quote.quotenumber }}">
 	<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
 	<div class="form-row">
@@ -25,8 +25,8 @@
 			<button type="submit" class="btn btn-warning" aria-label="Save Line" title="Save Line">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i>
 			</button>
-			<a href="{{ page.remove_itemURL(quote.quotenumber, detail.linenbr) }}" class="btn btn-danger exclude" aria-label="Remove Line" title="Remove Line">
-				<i class="fa fa-times" aria-hidden="true"></i>
+			<a href="{{ page.deleteItemUrl(quote.quotenumber, detail.linenbr) }}" class="btn btn-danger exclude" aria-label="Remove Line" title="Remove Line">
+				<i class="fa fa-trash-o" aria-hidden="true"></i>
 			</a>
 		</div>
 	</div>

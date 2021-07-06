@@ -11,10 +11,5 @@
 </div>
 
 {% for detail in quote.get_items() %}
-	{# if user.isEditingQuote(quote.quotenumber) #}
-		{% include 'quotes/quote/edit/quote-item-form.twig' %}
-	{# else #}
-		{# include 'quotes/quote/edit/quote-item-readonly.twig' #}
-	{# endif #}
-	<hr>
+	{% include 'quotes/quote/edit/items/item.twig' %}
 {% endfor %}
