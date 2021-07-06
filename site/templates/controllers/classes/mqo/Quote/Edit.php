@@ -149,7 +149,7 @@ class Edit extends Base {
 		if ($data->q) {
 			$custID = QuoteQuery::create()->select(QtModel::aliasproperty('custid'))->findOneByQuoteid($data->qnbr);
 			$pricing = self::pw('modules')->get('ItemPricing');
-			$pricing->request_search($data->q, $custID = '')
+			$pricing->request_search($data->q, $custID);
 			$html .= $twig->render('quotes/quote/edit/lookup/results.twig');
 		}
 
