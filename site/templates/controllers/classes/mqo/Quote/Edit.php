@@ -78,7 +78,15 @@ class Edit extends Base {
 			$eqo->requestEditableQuote();
 		}
 		self::initHooks();
+		self::quoteJs($data);
 		return self::display($data);
+	}
+
+	private static function quoteJs($data) {
+		$config = self::pw('config');
+		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
+		self::pw('page')->js .= $config->twig->render('quotes/quote/edit/classes.js.twig');
+		self::pw('page')->js .= $config->twig->render('quotes/quote/edit/.js.twig');
 	}
 
 	private static function display($data) {
@@ -89,8 +97,7 @@ class Edit extends Base {
 		$html .= self::displayHeader($data);
 		$html .= self::headerForm($data, $quote);
 		$html .= self::items($data, $quote);
-
-		self::pw('page')->js .= self::pw('config')->twig->render('quotes/quote/edit/shiptos.js.twig');
+		$html .= self::addItemForm($data);
 		return $html;
 	}
 
@@ -126,8 +133,19 @@ class Edit extends Base {
 		$htmlWriter = self::pw('modules')->get('HtmlWriter');
 
 		$html = '';
-		$html .= self::pw('config')->twig->render('quotes/quote/edit/items.twig', ['quote' => $quote]);
-		$html .= $htmlWriter->div('class=mt-3', $htmlWriter->h3('class=text-secondary', 'Add Item'));
+		$html .= self::pw('config')->twig->render('quotes/quote/edit/items.twig', ['quote' => $quote, 'eqo' => $eqo]);
+		return $html;
+	}
+
+	private static function addItemForm($data) {
+		$htmlWriter = self::pw('modules')->get('HtmlWriter');
+		$twig = self::pw('config')->twig;
+
+		self::pw('page')->js .= $twig->render('quotes/quote/edit/lookup/js.twig');
+
+		$html = '';
+		$html .= $twig->render('quotes/quote/edit/lookup/form.twig');
+		$html .= $twig->render('quotes/quote/edit/lookup/results.twig');
 		return $html;
 	}
 
