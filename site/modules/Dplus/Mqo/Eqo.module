@@ -114,6 +114,11 @@ class Eqo extends WireData implements Module {
 		return $qnbr == $logperm->ordernbr;
 	}
 
+	/**
+	 * Process Input Data and perform CRUD operations
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
 	public function processInput(WireInput $input) {
 		$values = $input->values();
 
@@ -141,7 +146,7 @@ class Eqo extends WireData implements Module {
 			$event->return = $this->isUserEditingQuote($user, $qnbr);
 		});
 	}
-	
+
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus EQO Module',
