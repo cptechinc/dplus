@@ -19,26 +19,6 @@ use Dplus\Mqo\Eqo\Items  as QtItems;
 class Eqo extends WireData implements Module {
 	protected $qnbr;
 
-	public function init() {
-
-		$this->addHook('Page(pw_template=quote-edit|quote-order)::remove_itemURL', function($event) {
-			$p = $event->object;
-			$qnbr = $event->arguments(0);
-			$linenbr = $event->arguments(1);
-			$url = new Url($this->wire('pages')->get('template=dplus-menu,name=mqo')->child('template=redir')->url);
-			$url->query->set('action', 'remove-line');
-			$url->query->set('qnbr', $qnbr);
-			$url->query->set('linenbr', $linenbr);
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('User::isEditingQuote', function($event) {
-			$user = $event->object;
-			$qnbr = $event->arguments(0);
-			$event->return = $this->isUserEditingQuote($user, $qnbr);
-		});
-	}
-
 	/**
 	 * Returns if Quote Number has been defined
 	 * @return bool
@@ -154,6 +134,14 @@ class Eqo extends WireData implements Module {
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
+	public function init() {
+		$this->addHook('User::isEditingQuote', function($event) {
+			$user = $event->object;
+			$qnbr = $event->arguments(0);
+			$event->return = $this->isUserEditingQuote($user, $qnbr);
+		});
+	}
+	
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus EQO Module',
