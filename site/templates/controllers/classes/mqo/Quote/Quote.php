@@ -106,15 +106,15 @@ class Quote extends Base {
 			$event->return = self::quoteEditUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=quote-view|quote-edit)::orderQuoteUrl', function($event) {
+		$m->addHook('Page(pw_template=quote-view)::orderQuoteUrl', function($event) {
 			$event->return = self::orderQuoteUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=quote-view|quote-edit)::documentsUrl', function($event) {
+		$m->addHook('Page(pw_template=quote-view)::documentsUrl', function($event) {
 			$event->return = self::documentsUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=quote-view|quote-edit)::documentUrl', function($event) {
+		$m->addHook('Page(pw_template=quote-view)::documentUrl', function($event) {
 			$event->return = self::documentUrl($event->arguments(0), $event->arguments(1), $event->arguments(2));
 		});
 
