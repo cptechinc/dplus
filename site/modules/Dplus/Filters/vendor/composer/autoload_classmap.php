@@ -6,7 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Dplus\\Filters\\AbstractFilter' => $baseDir . '/src/AbstractFilter.php',
     'Dplus\\Filters\\Map\\ApContact' => $baseDir . '/src/Map/ApContact.php',
     'Dplus\\Filters\\Map\\Mxrfe' => $baseDir . '/src/Map/Mxrfe.php',
@@ -17,6 +16,7 @@ return array(
     'Dplus\\Filters\\Mgl\\GlCode' => $baseDir . '/src/Mgl/GlCode.php',
     'Dplus\\Filters\\Min\\ItemGroup' => $baseDir . '/src/Min/ItemGroup.php',
     'Dplus\\Filters\\Min\\ItemMaster' => $baseDir . '/src/Min/ItemMaster.php',
+    'Dplus\\Filters\\Min\\LotMaster' => $baseDir . '/src/Min/LotMaster.php',
     'Dplus\\Filters\\Min\\Upcx' => $baseDir . '/src/Min/Upcx.php',
     'Dplus\\Filters\\Misc\\CountryCode' => $baseDir . '/src/Misc/CountryCode.php',
     'Dplus\\Filters\\Misc\\PhoneBook' => $baseDir . '/src/Misc/PhoneBook.php',

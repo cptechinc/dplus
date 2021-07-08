@@ -7,7 +7,6 @@ namespace Composer\Autoload;
 class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
 {
     public static $classMap = array (
-        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Dplus\\Filters\\AbstractFilter' => __DIR__ . '/../..' . '/src/AbstractFilter.php',
         'Dplus\\Filters\\Map\\ApContact' => __DIR__ . '/../..' . '/src/Map/ApContact.php',
         'Dplus\\Filters\\Map\\Mxrfe' => __DIR__ . '/../..' . '/src/Map/Mxrfe.php',
@@ -18,6 +17,7 @@ class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
         'Dplus\\Filters\\Mgl\\GlCode' => __DIR__ . '/../..' . '/src/Mgl/GlCode.php',
         'Dplus\\Filters\\Min\\ItemGroup' => __DIR__ . '/../..' . '/src/Min/ItemGroup.php',
         'Dplus\\Filters\\Min\\ItemMaster' => __DIR__ . '/../..' . '/src/Min/ItemMaster.php',
+        'Dplus\\Filters\\Min\\LotMaster' => __DIR__ . '/../..' . '/src/Min/LotMaster.php',
         'Dplus\\Filters\\Min\\Upcx' => __DIR__ . '/../..' . '/src/Min/Upcx.php',
         'Dplus\\Filters\\Misc\\CountryCode' => __DIR__ . '/../..' . '/src/Misc/CountryCode.php',
         'Dplus\\Filters\\Misc\\PhoneBook' => __DIR__ . '/../..' . '/src/Misc/PhoneBook.php',
