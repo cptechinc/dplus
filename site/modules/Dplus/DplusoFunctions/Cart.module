@@ -584,7 +584,9 @@ class Cart extends WireData implements Module {
 				if ($action == 'create-order' || $action == 'create-blank-order') {
 					$url = $this->wire('pages')->get('pw_template=sales-order-edit')->url."?action=edit-order-new";
 				} elseif($action == 'create-quote') {
-					$url = $this->wire('pages')->get('template=redir,redir_file=quote')->url.'?action=edit-new-quote';
+					$purl = new Url($this->wire('pages')->get('pw_template=quote-view')->url);
+					$purl->query->set('action', 'edit-new-quote');
+					$url = $url->getUrl();
 				}
 			}
 			$event->return = $url;
