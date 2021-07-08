@@ -7,16 +7,21 @@ use InvsearchQuery, Invsearch;
  * Class for filtering Inventory using InvsearchQuery
  */
 class SearchInventory extends WireData implements Module {
+	/**
+	 * Return Query filtered By Sessionid
+	 * @return InvsearchQuery
+	 */
 	public function query() {
 		$q = InvsearchQuery::create();
 		$q->filterBySessionid($this->sessionID);
 		return $q;
 	}
-	
+
+	/**
+	 * @see self::query()
+	 */
 	public function get_query() {
-		$q = InvsearchQuery::create();
-		$q->filterBySessionid($this->sessionID);
-		return $q;
+		return $this->query();
 	}
 
 /* =============================================================
@@ -273,6 +278,20 @@ class SearchInventory extends WireData implements Module {
 		$q->withColumn('SUM(qty)', 'qty');
 		$q->groupBy('Bin');
 		return $q->find();
+	}
+
+	/**
+	 * Request Search
+	 * @param  string $q Query
+	 * @return void
+	 */
+	public function requestSearch($q) {
+		$dplusdb = $this->wire('modules')->get('DplusOnlineDatabase')->db_name;
+		$q = strtoupper($q);
+		$data = array("DBNAME=$dplusdb", 'INVSEARCH', "QUERY=$q");
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($this->wire('config')->cgis['warehouse'], $this->sessionID);
 	}
 
 /* =============================================================
