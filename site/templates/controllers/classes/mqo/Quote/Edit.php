@@ -44,6 +44,11 @@ class Edit extends Base {
 		if ($data->action) {
 			$page = self::pw('page');
 			$eqo  = self::getEqo($data->qnbr);
+
+			if ($data->action == 'edit-new-quote') {
+				$qnbr = self::pw('user')->get_lockedID();
+				self::pw('session')->redirect(self::quoteEditUrl($qnbr), $http301 = false);
+			}
 			$eqo->processInput(self::pw('input'));
 
 			$url = self::quoteEditUrl($data->qnbr);

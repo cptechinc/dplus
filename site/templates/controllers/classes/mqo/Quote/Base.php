@@ -80,9 +80,15 @@ abstract class Base extends AbstractController {
 		return $url->getUrl();
 	}
 
-	public static function quoteEditUrl($qnbr) {
+	public static function quoteEditUrl($qnbr = '') {
 		$url = new Purl(self::quoteUrl($qnbr));
 		$url->path->add('edit');
+		return $url->getUrl();
+	}
+
+	public static function quoteEditNewUrl() {
+		$url = new Purl(self::quoteEditUrl($qnbr));
+		$url->query->set('action', 'edit-new-quote');
 		return $url->getUrl();
 	}
 
