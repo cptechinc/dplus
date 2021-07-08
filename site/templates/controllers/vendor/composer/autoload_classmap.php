@@ -51,6 +51,8 @@ return array(
     'Controllers\\Mii\\Ii\\Substitutes' => $baseDir . '/classes/mii/Ii/Substitutes.php',
     'Controllers\\Mii\\Ii\\Usage' => $baseDir . '/classes/mii/Ii/Usage.php',
     'Controllers\\Mii\\Ii\\WhereUsed' => $baseDir . '/classes/mii/Ii/WhereUsed.php',
+    'Controllers\\Mii\\Loti\\Activity' => $baseDir . '/classes/mii/Loti/Activity.php',
+    'Controllers\\Mii\\Loti\\Loti' => $baseDir . '/classes/mii/Loti/Loti.php',
     'Controllers\\Min\\Itm\\Costing' => $baseDir . '/classes/min/itm/Costing.php',
     'Controllers\\Min\\Itm\\Dimensions' => $baseDir . '/classes/min/itm/Dimensions.php',
     'Controllers\\Min\\Itm\\Item' => $baseDir . '/classes/min/itm/Item.php',
