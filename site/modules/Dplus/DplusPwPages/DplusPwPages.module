@@ -256,8 +256,9 @@ class DplusPwPages extends WireData implements Module {
 		$t->save();
 		$this->update_fieldgroup($template);
 		$t->fieldgroup = $this->wire('fieldgroups')->get($template);
-		$this->allowPageNum = $allow_pagination ? 1 : 0;
-		$this->slashPageNum = 1;
+		$t->allowPageNum = $allow_pagination ? 1 : 0;
+		$t->slashPageNum = 1;
+		$t->urlSegments = 1;
 		$t->save();
 	}
 
@@ -278,6 +279,7 @@ class DplusPwPages extends WireData implements Module {
 		$t->fieldgroup = wire('templates')->get($template)->fieldgroup;
 		$t->allowPageNum = $allow_pagination;
 		$t->slashPageNum = 1;
+		$t->urlSegments = 1;
 		$t->save();
 	}
 
