@@ -14,8 +14,9 @@ use Mvc\Controllers\AbstractController;
 use Controllers\Mii\Ii\Activity as IiActivity;
 use Controllers\Mii\Ii\Documents as IiDocuments;
 
-class Activity extends AbstractController {
-	private static $upcx;
+use Controllers\Mii\Loti\Base;
+
+class Activity extends Base {
 
 	public static function index($data) {
 		$fields = ['lotnbr|text', 'startdate|date', 'refresh|bool'];
@@ -25,20 +26,14 @@ class Activity extends AbstractController {
 			// TODO redirect
 		}
 
-		$filter = new LotFilter();
+		$filter = self::getFilter();
 
 		if ($filter->query->filterByLotnbr($data->lotnbr)->count() === 0) {
 			return self::invalidLotDisplay($data);
 		}
 
-		if (empty($data->startdate) === false) {
-			if ($data->refresh) {
-				self::requestJson($data);
-				self::pw('session')->redirect(self::activityUrl($data->lotnbr, $data->date), $http301 = false);
-			}
-			return self::activity($data);
-		}
-		return self::dateForm($data);
+		self::requestJson($data);
+		return self::activity($data);
 	}
 
 	private static function activity($data) {
@@ -56,14 +51,8 @@ class Activity extends AbstractController {
 /* =============================================================
 	Data Retrieval
 ============================================================= */
-	private static function getLot($lotnbr) {
-		$filter = new LotFilter();
-		$filter->query->filterByLotnbr($lotnbr);
-		return $filter->query->findOne();
-	}
-
 	private static function getLotItemid($lotnbr) {
-		$filter = new LotFilter();
+		$filter = self::getFilter();
 		$filter->query->select(InvLot::aliasproperty('itemid'));
 		$filter->query->filterByLotnbr($lotnbr);
 		return $filter->query->findOne();
@@ -72,7 +61,7 @@ class Activity extends AbstractController {
 	private static function setupData($data) {
 		$data->itemID    = self::getLotItemid($data->lotnbr);
 		$data->lotserial = $data->lotnbr;
-		$data->date = $data->startdate;
+		$data->date      = 0;
 	}
 
 	private static function requestJson($data) {
@@ -84,22 +73,18 @@ class Activity extends AbstractController {
 		self::sanitizeParametersShort($data, ['lotnbr|text', 'startdate|date']);
 		self::setupData($data);
 
-		if ($data->startdate) {
-			$data->timestamp = $data->startdate;
-			$data->startdate = date(IIActivity::DATE_FORMAT, $data->timestamp);
-		}
 		$jsonm = IIActivity::getJsonModule();
 		$json   = $jsonm->getFile(IIActivity::JSONCODE);
 		$session = self::pw('session');
 
 		if ($jsonm->exists(IIActivity::JSONCODE) === false) {
-			$session->redirect(self::activityUrl($data->lotnbr, $data->startdate, $refresh = true));
+			$session->redirect(self::activityUrl($data->lotnbr, $refresh = true));
 		}
 
 		if ($jsonm->exists(IIActivity::JSONCODE)) {
-			if (IIActivity::jsonItemidMatches($json['itemid'], $data->itemID) === false || $json['date'] != date(IIActivity::DATE_FORMAT_DPLUS, $data->timestamp)) {
+			if (IIActivity::jsonItemidMatches($json['itemid'], $data->itemID) === false) {
 				$jsonm->delete(IIActivity::JSONCODE);
-				$session->redirect(self::activityUrl($data->itemID, $data->startdate, $refresh = true), $http301 = false);
+				$session->redirect(self::activityUrl($data->lotnbr, $refresh = true), $http301 = false);
 			}
 			$session->setFor('loti', 'activity', 0);
 			return true;
@@ -109,14 +94,14 @@ class Activity extends AbstractController {
 			return false;
 		}
 		$session->setFor('loti', 'activity', ($session->getFor('loti', 'activity') + 1));
-		$session->redirect(self::activityUrl($data->itemID, $data->startdate, $refresh = true), $http301 = false);
+		$session->redirect(self::activityUrl($data->lotnbr, $refresh = true), $http301 = false);
 	}
 
 /* =============================================================
 	URLs
 ============================================================= */
-	public static function activityUrl($lotnbr, $startdate = '', $refreshdata = false) {
-		$url = new Purl(Loti::lotActivityUrl($lotnbr, $startdate));
+	public static function activityUrl($lotnbr, $refreshdata = false) {
+		$url = new Purl(Loti::lotActivityUrl($lotnbr));
 		if ($refreshdata) {
 			$url->query->set('refresh', 'true');
 		}
@@ -140,10 +125,13 @@ class Activity extends AbstractController {
 		}
 		$page = self::pw('page');
 		$docm = IiDocuments::getDocFinderIi();
-		$page->refreshurl   = self::activityUrl($data->lotnbr, $data->startdate, $refresh = true);
+		$page->refreshurl   = self::activityUrl($data->lotnbr, $refresh = true);
 		$page->lastmodified = $jsonm->lastModified(IIActivity::JSONCODE);
+
+		$lot = self::getLot($data->lotnbr);
+
 		$html  = self::breadcrumbs($data);
-		$html .= $config->twig->render('mii/loti/activity/display.twig', ['json' => $json, 'module_json' => $jsonm->jsonm, 'docm' => $docm, 'date' => $data->date]);
+		$html .= $config->twig->render('mii/loti/activity/display.twig', ['json' => $json, 'module_json' => $jsonm->jsonm, 'docm' => $docm, 'lot' => $lot]);
 		return $html;
 	}
 
@@ -173,10 +161,6 @@ class Activity extends AbstractController {
 		$html .= '<h3> Enter Starting Activity Date</h3>';
 		$html .= self::pw('config')->twig->render('mii/loti/activity/date-form.twig', ['lotnbr' => $data->lotnbr, 'startdate' => $startdate]);
 		return $html;
-	}
-
-	private static function breadcrumbs($data) {
-		return self::pw('config')->twig->render('mii/loti/bread-crumbs.twig');
 	}
 
 /* =============================================================

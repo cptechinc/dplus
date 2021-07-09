@@ -13,8 +13,9 @@ use ProcessWire\Page, ProcessWire\SearchInventory, ProcessWire\DpagesMii;
 use Dplus\Filters\Min\LotMaster as LotFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+use Controllers\Mii\Loti\Base;
 
-class Loti extends AbstractController {
+class Loti extends Base {
 /* =============================================================
 	Index, Logic Functions
 ============================================================= */
@@ -46,7 +47,7 @@ class Loti extends AbstractController {
 	}
 
 	private static function scanRedirectIfLotFound($data) {
-		$filter = new LotFilter();
+		$filter = self::getFilter();
 
 		if ($filter->exists($data->scan)) {
 			self::pw('session')->redirect(self::lotActivityUrl($data->scan), $http301 = false);
@@ -61,7 +62,7 @@ class Loti extends AbstractController {
 
 	private static function scanResults($data, SearchInventory $inventory) {
 		$lotnbrs = $inventory->query()->select(Invsearch::get_aliasproperty('lotserial'))->find()->toArray();
-		$filter = new LotFilter();
+		$filter = self::getFilter();
 		$filter->query->filterByLotnbr($lotnbrs);
 		$lots = $filter->query->paginate(self::pw('input')->pageNum, sizeof($lotnbrs));
 		$html  = self::breadcrumbs($data);
@@ -72,7 +73,7 @@ class Loti extends AbstractController {
 	private static function list($data) {
 		$data = self::sanitizeParametersShort($data, ['q|text']);
 		$page = self::pw('page');
-		$filter = new LotFilter();
+		$filter = self::getFilter();
 		$filter->inStock();
 
 		if ($data->q) {
@@ -139,10 +140,6 @@ class Loti extends AbstractController {
 
 	private static function scanForm($data) {
 		return self::pw('config')->twig->render('mii/loti/forms/scan.twig');
-	}
-
-	private static function breadcrumbs($data) {
-		return self::pw('config')->twig->render('mii/loti/bread-crumbs.twig');
 	}
 
 /* =============================================================

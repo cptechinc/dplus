@@ -3,7 +3,7 @@
 
 	use Controllers\Mii\Loti;
 
-	Loti\Loti::initHooks();
+	Loti\Base::initHooks();
 
 	$routes = [
 		['GET',  '', Loti\Loti::class, 'index'],
