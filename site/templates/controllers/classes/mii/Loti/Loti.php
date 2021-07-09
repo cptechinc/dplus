@@ -5,16 +5,19 @@ use Purl\Url as Purl;
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use InvLotQuery, InvLot;
+// Dpluso Model
+use InvsearchQuery, Invsearch;
 // ProcessWire Classes, Modules
-use ProcessWire\Page;
+use ProcessWire\Page, ProcessWire\SearchInventory, ProcessWire\DpagesMii;
 // Dplus Filters
 use Dplus\Filters\Min\LotMaster as LotFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
 class Loti extends AbstractController {
-	private static $upcx;
-
+/* =============================================================
+	Index, Logic Functions
+============================================================= */
 	public static function index($data) {
 		$fields = ['scan|text'];
 		self::sanitizeParametersShort($data, $fields);
@@ -29,13 +32,40 @@ class Loti extends AbstractController {
 		self::sanitizeParametersShort($data, ['scan|text']);
 		$inventory = self::pw('modules')->get('SearchInventory');
 		$inventory->requestSearch($data->scan);
+		$count = $inventory->count_lotserials_distinct();
 
-		if ($inventory->count_itemids_distinct() == 1) {
+		if ($count == 1) {
 			$result = $inventory->query()->findOne();
 			self::pw('session')->redirect(self::lotActivityUrl($result->lotserial), $http301 = false);
 		}
+
+		if ($count == 0) {
+			self::scanRedirectIfLotFound($data)
+		}
+		return self::scanResults($data, $inventory);
 	}
 
+	private static function scanRedirectIfLotFound($data) {
+		$filter = new LotFilter();
+
+		if ($filter->exists($data->scan)) {
+			self::pw('session')->redirect(self::lotActivityUrl($data->scan), $http301 = false);
+		}
+
+		if ($filter->existsLotRef($data->scan)) {
+			$filter->filterByLotRef($data->scan);
+			$lot = $filter->findOne();
+			self::pw('session')->redirect(self::lotActivityUrl($lot->lotnbr), $http301 = false);
+		}
+	}
+
+	private static function scanResults($data, SearchInventory $inventory) {
+		$lotnbrs = $inventory->query()->select(Invsearch::get_aliasproperty('lotserial'))->find()->toArray();
+		$filter = new LotFilter();
+		$filter->query->filterByLotnbr($lotnbrs);
+		$lots = $filter->query->paginate(self::pw('input')->pageNum, sizeof($lotnbrs));
+		return self::formAndlistDisplay($data, $lots);
+	}
 
 	private static function list($data) {
 		$data = self::sanitizeParametersShort($data, ['q|text']);
@@ -47,16 +77,9 @@ class Loti extends AbstractController {
 			$filter->search(strtoupper($data->q));
 		}
 
-
 		$lots = $filter->query->paginate(self::pw('input')->pageNum, 10);
-
-		$html = '';
-		$html .= self::scanForm($data);
-		$html .= self::listDisplay($data, $lots);
-		return $html;
+		return self::formAndlistDisplay($data, $lots);
 	}
-
-
 
 /* =============================================================
 	URL Functions
@@ -78,17 +101,15 @@ class Loti extends AbstractController {
 		return $url->getUrl();
 	}
 
-	public static function initHooks() {
-		$m = self::pw('modules')->get('DpagesMii');
-
-		$m->addHook('Page(pw_template=loti)::lotActivityUrl', function($event) {
-			$event->return = self::lotActivityUrl($event->arguments(0));
-		});
-	}
-
 /* =============================================================
 	Display Functions
 ============================================================= */
+	/**
+	 * Return Lot List
+	 * @param  object           $data
+	 * @param  PropelModelPager $lots InvLot[]
+	 * @return string           HTML
+	 */
 	private static function listDisplay($data, PropelModelPager $lots) {
 		$config = self::pw('config');
 
@@ -98,7 +119,31 @@ class Loti extends AbstractController {
 		return $html;
 	}
 
+	/**
+	 * Return Scan form and Lot List Combined
+	 * @param  object           $data
+	 * @param  PropelModelPager $lots InvLot[]
+	 * @return string           HTML
+	 */
+	private static function formAndlistDisplay($data, PropelModelPager $lots) {
+		$html = '';
+		$html .= self::scanForm($data);
+		$html .= self::listDisplay($data, $lots);
+		return $html;
+	}
+
 	private static function scanForm($data) {
 		return self::pw('config')->twig->render('mii/loti/forms/scan.twig');
+	}
+
+/* =============================================================
+	Hooks
+============================================================= */
+	public static function initHooks() {
+		$m = self::pw('modules')->get('DpagesMii');
+
+		$m->addHook('Page(pw_template=loti)::lotActivityUrl', function($event) {
+			$event->return = self::lotActivityUrl($event->arguments(0));
+		});
 	}
 }
