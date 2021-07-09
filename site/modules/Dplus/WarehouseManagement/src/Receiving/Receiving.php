@@ -83,7 +83,8 @@ class Receiving extends Base {
 				$this->updateLotserialQty($input);
 				break;
 			case 'post-received':
-				$this->requestPoPost();
+				$closePo = $values->bool('close');
+				$this->requestPoPost($closePo);
 				break;
 			case 'create-ilookup':
 				$this->createIlookup($input);
@@ -273,8 +274,11 @@ class Receiving extends Base {
 	 * Send Request to Start Receiving
 	 * @return void
 	 */
-	public function requestPoPost() {
+	public function requestPoPost($closePo = false) {
 		$data = array('FINISHRECEIPT', "PONBR=$this->ponbr");
+		if ($closePo) {
+			$data[] = 'CLOSE';
+		}
 		$this->sendDplusRequest($data);
 	}
 
