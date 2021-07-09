@@ -52,6 +52,21 @@ class SearchInventory extends WireData implements Module {
 	}
 
 	/**
+	 * Return the Number of Distinct Lotserials
+	 * @param  string $binID ** Optional, Bin ID to narrow down
+	 * @return int
+	 */
+	public function count_lotserials_distinct($binID = '') {
+		$q = $this->get_query();
+		$q->addAsColumn('count', 'COUNT(DISTINCT(lotserial))');
+		$q->select('count');
+		if (!empty($binID)) {
+			$q->filterByBin($binID);
+		}
+		return intval($q->findOne());
+	}
+
+	/**
 	 * Return the number of Invsearch records for this Item ID, Bin
 	 * @param  string $itemID Item ID
 	 * @param  string $binID  ** Optional ***, Bin ID to narrow down
@@ -152,6 +167,7 @@ class SearchInventory extends WireData implements Module {
 /* =============================================================
 	GET Functions
 ============================================================= */
+
 	/**
 	 * Return Inventory Items that are distinct itemids
 	 * @param  string $binID *** Optional ***l, Bin ID to narrow down
