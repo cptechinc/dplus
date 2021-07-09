@@ -1,7 +1,8 @@
 <?php namespace Dplus\Filters\Min;
 // Dplus Model
 use ItemMasterItemQuery, ItemMasterItem as Model;
-use WarehouseInventoryQuery, WarehouseInventory;
+use WarehouseInventoryQuery, WarehouseInventory; // WAREHOUSE ITEM MASTER
+use WhseLotserialQuery, WhseLotserial;
 // ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Filters
@@ -29,20 +30,32 @@ class ItemMaster extends AbstractFilter {
 	Base Filter Functions
 ============================================================= */
 	/**
-	 * Filter ItemIDs by Item's active in X Warehouse
+	 * Filter ItemIDs by Items active in X Warehouse
 	 * @param  string $whseID Warehouse ID
-	 * @return void
+	 * @return self
 	 */
 	 public function active($whseID = '') {
- 		if (empty($whseID)) {
- 			$whseID = $this->wire('user')->whseid;
- 		}
- 		$this->query
- 		->useWarehouseInventoryQuery()
- 			->filterByWarehouseid($whseID)
- 			->filterByStatus(WarehouseInventory::STATUS_ACTIVE)
- 		->endUse();
- 	}
+		if (empty($whseID)) {
+			$whseID = $this->wire('user')->whseid;
+		}
+		$this->query
+		->useWarehouseInventoryQuery()
+			->filterByWarehouseid($whseID)
+			->filterByStatus(WarehouseInventory::STATUS_ACTIVE)
+		->endUse();
+		return $this;
+	}
+
+	/**
+	 * Filter ItemIDs By Items in the Warehouse Lotserial Table
+	 * @return self
+	 */
+	public function inStock() {
+		$q = WhseLotserialQuery::create()->select(WhseLotserial::aliasproperty('itemid'));
+		$q->distinct();
+		$this->query->filterByItemid($q->find()->toArray());
+		return $this;
+	}
 
 /* =============================================================
 	Misc Query Functions
