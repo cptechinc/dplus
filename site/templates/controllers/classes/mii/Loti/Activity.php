@@ -142,7 +142,9 @@ class Activity extends AbstractController {
 		$docm = IiDocuments::getDocFinderIi();
 		$page->refreshurl   = self::activityUrl($data->lotnbr, $data->startdate, $refresh = true);
 		$page->lastmodified = $jsonm->lastModified(IIActivity::JSONCODE);
-		return $config->twig->render('mii/loti/activity/display.twig', ['json' => $json, 'module_json' => $jsonm->jsonm, 'docm' => $docm, 'date' => $data->date]);
+		$html  = self::breadcrumbs($data);
+		$html .= $config->twig->render('mii/loti/activity/display.twig', ['json' => $json, 'module_json' => $jsonm->jsonm, 'docm' => $docm, 'date' => $data->date]);
+		return $html;
 	}
 
 	private static function invalidLotDisplay($data) {
@@ -167,10 +169,14 @@ class Activity extends AbstractController {
 		}
 
 		$page->headline = "Lot $data->lotnbr Activity";
-		$html = '';
+		$html  = self::breadcrumbs($data);
 		$html .= '<h3> Enter Starting Activity Date</h3>';
 		$html .= self::pw('config')->twig->render('mii/loti/activity/date-form.twig', ['lotnbr' => $data->lotnbr, 'startdate' => $startdate]);
 		return $html;
+	}
+
+	private static function breadcrumbs($data) {
+		return self::pw('config')->twig->render('mii/loti/bread-crumbs.twig');
 	}
 
 /* =============================================================

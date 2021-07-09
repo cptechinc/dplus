@@ -14,5 +14,6 @@
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
+	$page->show_breadcrumbs = false;
 	$page->body = $router->route();
 	include __DIR__ . "/basic-page.php";

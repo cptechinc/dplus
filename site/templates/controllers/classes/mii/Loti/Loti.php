@@ -40,7 +40,7 @@ class Loti extends AbstractController {
 		}
 
 		if ($count == 0) {
-			self::scanRedirectIfLotFound($data)
+			self::scanRedirectIfLotFound($data);
 		}
 		return self::scanResults($data, $inventory);
 	}
@@ -64,7 +64,9 @@ class Loti extends AbstractController {
 		$filter = new LotFilter();
 		$filter->query->filterByLotnbr($lotnbrs);
 		$lots = $filter->query->paginate(self::pw('input')->pageNum, sizeof($lotnbrs));
-		return self::formAndlistDisplay($data, $lots);
+		$html  = self::breadcrumbs($data);
+		$html .= self::formAndlistDisplay($data, $lots);
+		return $html;
 	}
 
 	private static function list($data) {
@@ -78,7 +80,10 @@ class Loti extends AbstractController {
 		}
 
 		$lots = $filter->query->paginate(self::pw('input')->pageNum, 10);
-		return self::formAndlistDisplay($data, $lots);
+
+		$html  = self::breadcrumbs($data);
+		$html .= self::formAndlistDisplay($data, $lots);
+		return $html;
 	}
 
 /* =============================================================
@@ -134,6 +139,10 @@ class Loti extends AbstractController {
 
 	private static function scanForm($data) {
 		return self::pw('config')->twig->render('mii/loti/forms/scan.twig');
+	}
+
+	private static function breadcrumbs($data) {
+		return self::pw('config')->twig->render('mii/loti/bread-crumbs.twig');
 	}
 
 /* =============================================================
