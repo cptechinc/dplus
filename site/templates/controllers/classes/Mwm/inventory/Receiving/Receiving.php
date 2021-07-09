@@ -312,7 +312,7 @@ class Receiving extends Base {
 	static public function invalidPo($data) {
 		$page   = self::pw('page');
 		$config = self::pw('config');
-		$page->headline = "Sales Order #$data->ponbr not found";
+		$page->headline = "Purchase Order #$data->ponbr not found";
 		$html =  $config->twig->render('warehouse/inventory/receiving/bread-crumbs.twig');
 		$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Purchase Order Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Order # $data->ponbr can not be found"]);
 		$html .= '<div class="mb-3"></div>';
