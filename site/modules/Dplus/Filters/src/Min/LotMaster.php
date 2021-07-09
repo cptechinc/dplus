@@ -14,7 +14,7 @@ class LotMaster extends AbstractFilter {
 	const MODEL = 'InvLot';
 
 /* =============================================================
-	1. Abstract Contract / Extensible Functions
+	Abstract Contract / Extensible Functions
 ============================================================= */
 	public function _search($q) {
 		$columns = [
@@ -37,9 +37,28 @@ class LotMaster extends AbstractFilter {
 		$this->query->filterByLotnbr($lotnbrs);
 	}
 
-
 /* =============================================================
 	Misc Query Functions
 ============================================================= */
+	/**
+	 * Return if Lot Number Exists
+	 * @param  string $lotnbr Lot Number
+	 * @return bool
+	 */
+	public function exists($lotnbr) {
+		$q = $this->query();
+		$q->filterByLotnbr($lotnbr);
+		return boolval($q->count());
+	}
 
+	/**
+	 * Return if Lot with Lot Refernce
+	 * @param  string $lotref Lot Refernce
+	 * @return bool
+	 */
+	public function existsLotRef($lotref) {
+		$q = $this->query();
+		$q->filterByLotref($lotref);
+		return boolval($q->count());
+	}
 }
