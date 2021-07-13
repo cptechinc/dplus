@@ -180,12 +180,13 @@ class Mxrfe extends AbstractController {
 	}
 
 	private static function mnfrXrefsDisplay($data, $xrefs) {
+		$qnotes = self::pw('modules')->get('QnotesItemMxrfe');
 		$mxrfe  = self::mxrfeMaster();
 		$vendor = $mxrfe->vendor($data->mnfrID);
 
 		$html = '';
 		$html .= self::mxrfeHeaders();
-		$html .= self::pw('config')->twig->render('items/mxrfe/list/vendor/display.twig', ['mxrfe' => $mxrfe, 'xrefs' => $xrefs, 'vendor' => $vendor]);
+		$html .= self::pw('config')->twig->render('items/mxrfe/list/vendor/display.twig', ['mxrfe' => $mxrfe, 'xrefs' => $xrefs, 'vendor' => $vendor, 'qnotes' => $qnotes]);
 		return $html;
 	}
 
