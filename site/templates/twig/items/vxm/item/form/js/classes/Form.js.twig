@@ -190,6 +190,7 @@ class VxmForm {
 				alert.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), formVxm.inputs.itemid.val(), function(editXref) {
 					if (editXref === false) {
 						$('#loading-modal').modal('hide');
+						formVxm.inputs.vendoritemid.val('').focus();
 					}
 				});
 			} else {
