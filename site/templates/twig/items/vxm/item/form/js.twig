@@ -137,6 +137,9 @@ $(function() {
 						uri.setQuery('itemID', formVxm.inputs.itemid.val());
 						window.location.href = uri.toString();
 					}
+					if (editXref === false) {
+						formVxm.inputs.vendoritemid.val('').val();
+					}
 				});
 			}
 		});
