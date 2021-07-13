@@ -18,8 +18,8 @@
 			</th>
 			<th class="pt-3 pb-3 align-middle">Description</th>
 			<th class="pt-3 pb-3 text-center">
-				{% if page.has('custID') and page.custID %}
-					<a href="{{ page.cxm_item_newURL(page.custID) }}" class="btn btn-light">
+				{% if input.get.offsetExists('custID') %}
+					<a href="{{ page.xrefNewUrl(input.get.text('custID')) }}" class="btn btn-light">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add Item
 					</a>
 				{% else %}

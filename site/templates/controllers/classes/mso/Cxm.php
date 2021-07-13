@@ -347,6 +347,12 @@ class Cxm extends AbstractController {
 			$event->return = self::xrefUrl($custID, $custitemID);
 		});
 
+		$m->addHook('Page(pw_template=cxm)::xrefNewUrl', function($event) {
+			$p = $event->object;
+			$custID     = $event->arguments(0);
+			$event->return = self::xrefUrl($custID, 'new');
+		});
+
 		$m->addHook('Page(pw_template=cxm)::xrefDeleteUrl', function($event) {
 			$p = $event->object;
 			$custID     = $event->arguments(0);
