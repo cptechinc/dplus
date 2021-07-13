@@ -84,6 +84,12 @@ class VxmInputs {
 		var inputs = VxmInputs.getInstance();
 
 		$(".unit-row").each(function(index) {
+			var unitcost = $(this).find('.unit-cost');
+			if (unitcost.attr('name') == 'unitcost_base') { // SET BASE COST = LIST PRICE IF BASE COST IS 0
+				if (floatParse(unitcost.val()) == 0) {
+					unitcost.val(inputs.listprice.val());
+				}
+			}
 			inputs.updateUnitCost($(this));
 		});
 	}
