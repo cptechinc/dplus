@@ -15,6 +15,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Ajax\\Json\\Min' => __DIR__ . '/../..' . '/classes/ajax/json/Min.php',
         'Controllers\\Ajax\\Json\\Mki' => __DIR__ . '/../..' . '/classes/ajax/json/Mki.php',
         'Controllers\\Ajax\\Json\\Mpo' => __DIR__ . '/../..' . '/classes/ajax/json/Mpo.php',
+        'Controllers\\Ajax\\Json\\Mqo' => __DIR__ . '/../..' . '/classes/ajax/json/Mqo.php',
         'Controllers\\Ajax\\Json\\Msa' => __DIR__ . '/../..' . '/classes/ajax/json/Msa.php',
         'Controllers\\Ajax\\Json\\Mso' => __DIR__ . '/../..' . '/classes/ajax/json/Mso.php',
         'Controllers\\Ajax\\Json\\Wm\\Receiving' => __DIR__ . '/../..' . '/classes/ajax/json/Wm/Receiving.php',
