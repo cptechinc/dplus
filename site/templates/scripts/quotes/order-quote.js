@@ -1,22 +1,13 @@
 $(function() {
-	$.fn.extend({
-		http_post: function(callback) {
-			var form = $(this);
-			var action = form.attr('action');
-			var values = form.serialize();
-			$.post(action, values, function() {
-				callback();
-			});
-		}
-	});
-
-	$('input[type=checkbox]').on('change', function (event) {
+	$("body").on('change', 'input[type=checkbox][name=checkorder]', function(e) {
 		var checkbox = $(this);
 		var form = checkbox.closest('form');
 		var linenbr = form.find('input[name=linenbr]').val();
-		
-		form.http_post(function() {
 
+		var ajax = new AjaxRequest(form.attr('action'));
+		ajax.setMethod('POST');
+		ajax.setData(form.serialize());
+		ajax.request(function(response) {
 			var title   = "Changes Saved";
 			var icon    = "fa fa-floppy-o fa-2x";
 			var type    = "success";
