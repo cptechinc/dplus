@@ -149,7 +149,7 @@ class Mxrfe extends AbstractController {
 		}
 		$filter->sortby($page);
 		$vendors = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
-
+		$page->js .= self::pw('config')->twig->render('items/mxrfe/search/vendor/js.twig');
 		$html = self::listMnfrsDisplay($data, $vendors);
 		return $html;
 	}
@@ -205,7 +205,7 @@ class Mxrfe extends AbstractController {
 ============================================================= */
 	/**
 	 * Return URL to MXRFE X-ref
-	 * @param  string $mnfrID      Vendor ID
+	 * @param  string $mnfrID      Manufacturer ID
 	 * @param  string $mnfritemID  Vendor Item ID
 	 * @param  string $itemID        ITM Item ID
 	 * @return string
@@ -220,9 +220,9 @@ class Mxrfe extends AbstractController {
 
 	/**
 	 * Return URL to DELETE MXRFE X-ref
-	 * @param  string $mnfrID      Vendor ID
+	 * @param  string $mnfrID      Manufacturer ID
 	 * @param  string $mnfritemID  Vendor Item ID
-	 * @param  string $itemID        ITM Item ID
+	 * @param  string $itemID      ITM Item ID
 	 * @return string
 	 */
 	public function xrefDeleteUrl($mnfrID, $mnfritemID, $itemID) {
@@ -232,8 +232,8 @@ class Mxrfe extends AbstractController {
 	}
 
 	/**
-	 * Return URL to MXRFRE vendor list
-	 * @param  string $mnfrID VendorID
+	 * Return URL to MXRFRE Manufacturer X-ref List
+	 * @param  string $mnfrID  Manufacturer ID
 	 * @return string
 	 */
 	public static function _mnfrUrl($mnfrID) {
@@ -243,8 +243,8 @@ class Mxrfe extends AbstractController {
 	}
 
 	/**
-	 * Return URL to MXRFRE vendor list
-	 * @param  string $mnfrID VendorID
+	 * Return URL to MXRFRE Manufacturer X-ref List
+	 * @param  string $mnfrID Manufacturer ID
 	 * @return string
 	 */
 	public static function mnfrUrl($mnfrID, $focus = '') {
@@ -277,8 +277,49 @@ class Mxrfe extends AbstractController {
 	}
 
 	/**
+	 * Return URL to MXRFE Manufacturer list
+	 * @param  string $mnfrID Manufacturer ID to focus
+	 * @return string
+	 */
+	public static function mnfrListUrl($mnfrID = '') {
+		if (empty($mnfrID)) {
+			return self::_mnfrListUrl();
+		}
+		return self::mnfrListFocusUrl($mnfrID);
+	}
+
+	/**
+	 * Return URL to MXRFE Manufacturer list
+	 * @param  string $mnfrID Manufacturer ID to focus
+	 * @return string
+	 */
+	public static function mnfrListFocusUrl($mnfrID) {
+		$filter = new VendorFilter();
+		$filter->init();
+		if ($filter->exists($mnfrID) === false) {
+			return self::_mnfrListUrl();
+		}
+		$filter->vendorid(self::mxrfeMaster()->vendorids());
+		$position = $filter->positionById($mnfrID);
+		$pagenbr = self::getPagenbrFromOffset($position);
+
+		$url = new Purl(self::_mnfrListUrl());
+		$url->query->set('focus', $mnfrID);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get('pw_template=mxrfe')->name, $pagenbr);
+		return $url->getUrl();
+	}
+
+	/**
+	 * Return URL to MXRFRE Manufacturer list
+	 * @return string
+	 */
+	public static function _mnfrListUrl() {
+		return self::pw('pages')->get('pw_template=mxrfe')->url;
+	}
+
+	/**
 	 * Return URL to MXRFE X-ref
-	 * @param  string $mnfrID      Vendor ID
+	 * @param  string $mnfrID      Manufacturer ID
 	 * @param  string $mnfritemID  Vendor Item ID
 	 * @param  string $itemID      ITM Item ID
 	 * @return string
@@ -325,8 +366,7 @@ class Mxrfe extends AbstractController {
 		$m = self::pw('modules')->get('XrefMxrfe');
 
 		$m->addHook('Page(pw_template=mxrfe)::mnfrUrl', function($event) {
-			$mnfrID        = $event->arguments(0);
-			$event->return = self::mnfrUrl($mnfrID);
+			$event->return = self::mnfrUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=mxrfe)::xrefUrl', function($event) {
@@ -347,6 +387,10 @@ class Mxrfe extends AbstractController {
 			$mnfritemID    = $event->arguments(1);
 			$itemID        = $event->arguments(2);
 			$event->return = self::xrefDeleteUrl($mnfrID, $mnfritemID, $itemID);
+		});
+
+		$m->addHook('Page(pw_template=mxrfe)::mnfrListUrl', function($event) {
+			$event->return = self::mnfrListUrl($event->arguments(0));
 		});
 	}
 }
