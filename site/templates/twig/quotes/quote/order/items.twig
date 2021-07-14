@@ -12,14 +12,14 @@
 </div>
 
 {% for detail in quote.get_items() %}
-	{% include 'quotes/quote/order/quote-item-form.twig' %}
+	{% include 'quotes/quote/order/item-form.twig' %}
 	<hr>
 {% endfor %}
 
-<form action="{{ page.formurl }}" method="post">
+<form action="{{ input.url() }}" method="post">
 	<input type="hidden" name="action" value="order-quote">
 	<input type="hidden" name="qnbr" value="{{ quote.quotenumber }}">
-	
+
 	<button type="submit" class="btn btn-primary">
 		<i class="fa fa-shopping-cart" aria-hidden="true"></i> Create Order
 	</button>
