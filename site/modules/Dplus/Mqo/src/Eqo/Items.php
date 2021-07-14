@@ -84,17 +84,16 @@ class Items extends WireData  {
 	 */
 	private function updateItemQuick(WireInput $input) {
 		$values = $input->values();
-
 		$item = $this->item($values->text('qnbr'), $values->int('linenbr'));
-		$item->setQuotqty($values->float('qty'));
 		$item->setQuotprice($values->text('price'));
 		$item->setOrdrprice($values->text('price'));
 		$item->setRshipdate($values->text('date_requested'));
 
 		if ($values->offsetExists('orderquote')) {
-			$qty = ($values->offsetExists('checkorder')) ? $values->float('qty') : 0;
+			$qty = ($values->bool('checkorder')) ? $values->float('qty') : 0;
 			$item->setOrdrqty($qty);
 		}  else {
+			$item->setQuotqty($values->float('qty'));
 			$item->setOrdrqty($values->float('qty'));
 		}
 
