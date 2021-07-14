@@ -4,7 +4,7 @@
 			<div class="col-2">
 				Code
 			</div>
-            <div class="col-4">
+			<div class="col-4">
 				Description
 			</div>
 			<div class="col-1">
@@ -17,7 +17,7 @@
 				Competitor
 			</div>
 			<div class="col-3 text-center">
-                {% if page.is_print() == false %}
+				{% if page.is_print() == false %}
 					<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="" data-fabricator="N" data-production="N" data-competitor="N">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
 					</button>
@@ -45,11 +45,11 @@
 				</div>
 				<div class="col-3 text-center">
 					{% if page.is_print() == false %}
-						<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-fabricator="{{ code.fabricator }}" data-production="{{ code.production }}" data-competitor="{{ code.competitor }}">
+						<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-fabricator="{{ code.fabricator }}" data-production="{{ code.production }}" data-competitor="{{ code.competitor }}">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</button>
 						&nbsp;
-						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger delete_button">
+						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger btn-sm delete_button">
 							<i class="fa fa-trash" aria-hidden="true"></i> Delete
 						</a>
 					{% endif %}
