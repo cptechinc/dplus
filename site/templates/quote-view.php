@@ -5,6 +5,7 @@
 	use Controllers\Mqo\Quote\Notes;
 	use Controllers\Mqo\Quote\PrintQt;
 	use Controllers\Mqo\Quote\Edit;
+	use Controllers\Mqo\Quote\OrderQuote;
 
 	QtController::initHooks();
 
@@ -23,6 +24,10 @@
 		'edit' => [
 			['GET',   '', Edit::class, 'index'],
 			['POST',  '', Edit::class, 'handleCRUD'],
+		],
+		'order' => [
+			['GET',   '', OrderQuote::class, 'index'],
+			['POST',  '', OrderQuote::class, 'handleCRUD'],
 		],
 	];
 	$router = new Mvc\Router();
