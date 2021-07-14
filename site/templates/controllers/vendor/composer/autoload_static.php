@@ -78,6 +78,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mqo\\Quote\\Lists\\Customer' => __DIR__ . '/../..' . '/classes/mqo/Quote/Lists/Customer.php',
         'Controllers\\Mqo\\Quote\\Lists\\Quote' => __DIR__ . '/../..' . '/classes/mqo/Quote/Lists/Quote.php',
         'Controllers\\Mqo\\Quote\\Notes' => __DIR__ . '/../..' . '/classes/mqo/Quote/Notes.php',
+        'Controllers\\Mqo\\Quote\\OrderQuote' => __DIR__ . '/../..' . '/classes/mqo/Quote/OrderQuote.php',
         'Controllers\\Mqo\\Quote\\PrintQt' => __DIR__ . '/../..' . '/classes/mqo/Quote/PrintQt.php',
         'Controllers\\Mqo\\Quote\\Quote' => __DIR__ . '/../..' . '/classes/mqo/Quote/Quote.php',
         'Controllers\\Mso\\Cxm' => __DIR__ . '/../..' . '/classes/mso/Cxm.php',

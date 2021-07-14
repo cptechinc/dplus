@@ -121,5 +121,9 @@ class Quote extends Base {
 		$m->addHook('Page(pw_template=quote-view)::quotePrintUrl', function($event) {
 			$event->return = self::quotePrintUrl($event->arguments(0));
 		});
+
+		$m->addHook('Page(pw_template=quote-view)::quoteListUrl', function($event) {
+			$event->return = self::quoteListUrl($event->arguments(0));
+		});
 	}
 }
