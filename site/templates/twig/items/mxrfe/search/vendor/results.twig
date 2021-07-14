@@ -6,6 +6,16 @@
 		}
 	%}
 </div>
+<div class="row">
+	<div class="col-sm-8">
+		<h4>{{ vendors.getNbResults() }} Manufacturers</h4>
+	</div>
+	<div class="col-sm-4 text-right">
+		<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#new-xref-modal">
+			<i class="fa fa-plus" aria-hidden="true"></i> Add X-Ref
+		</button>
+	</div>
+</div>
 <div>
 	{% include 'items/mxrfe/search/vendor/list.twig' %}
 </div>

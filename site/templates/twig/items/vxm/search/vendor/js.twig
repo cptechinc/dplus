@@ -8,6 +8,7 @@ $(function() {
 	Lookup Modal Functions
 ============================================================= */
 	var modal_ajax = $('#ajax-modal');
+
 	modal_ajax.on('show.bs.modal', function (event) {
 		var modal = $(this);
 		var button = $(event.relatedTarget); // Button that triggered the modal
@@ -46,7 +47,7 @@ $(function() {
 	});
 
 /* =============================================================
-	New CXM Modal Functions
+	New X-ref Modal Functions
 ============================================================= */
 	var modal_new = $('#new-xref-modal');
 
@@ -65,11 +66,9 @@ $(function() {
 			vendorID: {
 				required: true,
 				remote: {
-					url: '{{ page.child('pw_template=vxm-validate').httpUrl }}',
+					url: '{{ page.jsonApiUrl('map/validate/vendorid/') }}',
 					type: "get",
-					data: {
-						action: 'validate-vendorid'
-					}
+					data: {}
 				}
 			},
 		},
