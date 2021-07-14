@@ -36,7 +36,6 @@ $(function() {
 			formVxm.inputs.updateUnitMargin(unitrow);
 			formVxm.inputs.updateUnitRowReadonly(unitrow);
 		//}
-
 	});
 
 	$("body").on("change", "input[name=qty_percase]", function(e) {
@@ -118,7 +117,7 @@ $(function() {
 						window.location.href = uri.toString();
 					}
 					if (editXref === false) {
-						location.reload(); 
+						location.reload();
 					}
 				});
 			}
@@ -167,6 +166,13 @@ $(function() {
 
 		if (config.ordercodesForChangingItmCost.contains(input.val())) {
 			formVxm.inputs.listprice.change();
+		}
+	});
+
+	$("body").on("focus", "#" + formVxm.id + " select, #" + formVxm.id +" input", function(e) {
+		var input = $(this);
+		if (input != formVxm.inputs.itemid && formVxm.inputs.itemid.hasClass('is-invalid')) {
+			formVxm.inputs.itemid.focus();
 		}
 	});
 
