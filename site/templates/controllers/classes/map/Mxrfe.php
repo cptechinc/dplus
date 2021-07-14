@@ -6,7 +6,7 @@ use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use ItemXrefManufacturer;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeCRUD;
+use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeCRUD, ProcessWire\WireInput;
 // Dplus Filters
 use Dplus\Filters\Map\Mxrfe  as MxrfeFilter;
 use Dplus\Filters\Map\Vendor as VendorFilter;
@@ -287,7 +287,7 @@ class Mxrfe extends AbstractController {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
-		if (empty($values->text('mnfrID'))) {
+		if (empty($values->text('mnfrID')) && $values->text('action') != 'update-notes') {
 			return self::pw('pages')->get('pw_template=mxrfe')->url;
 		}
 
@@ -296,14 +296,13 @@ class Mxrfe extends AbstractController {
 		$itemID     = $values->text('itemID');
 		$mxrfe = self::mxrfeMaster();
 
-		if ($mxrfe->xref_exists($mnfrID, $mnfritemID, $itemID) === false) {
+		if ($mxrfe->xref_exists($mnfrID, $mnfritemID, $itemID) === false && $values->text('action') != 'update-notes') {
 			return self::pw('pages')->get('pw_template=mxrfe')->url;
 		}
 
-		$xref = $mxrfe->xref($mnfrID, $mnfritemID, $itemID);
-
 		switch ($values->text('action')) {
 			case 'update-xref':
+			$xref = $mxrfe->xref($mnfrID, $mnfritemID, $itemID);
 				$focus = $mxrfe->get_recordlocker_key($xref);
 				return self::mnfrFocusUrl($mnfrID, $focus);
 				break;
@@ -312,6 +311,11 @@ class Mxrfe extends AbstractController {
 				break;
 			case 'delete-notes':
 			case 'update-notes';
+				if (strtolower($values->text('type')) == 'intv') {
+					$mnfrID     = $values->text('vendorID');
+					$mnfritemID = $values->text('vendoritemID');
+				}
+
 				return self::xrefUrl($mnfrID, $mnfritemID, $itemID);
 				break;
 		}
