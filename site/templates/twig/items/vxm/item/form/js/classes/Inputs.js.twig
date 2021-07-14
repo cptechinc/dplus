@@ -85,8 +85,9 @@ class VxmInputs {
 
 		$(".unit-row").each(function(index) {
 			var unitcost = $(this).find('.unit-cost');
+			var margin   = $(this).find('.unit-margin');
 			if (unitcost.attr('name') == 'unitcost_base') { // SET BASE COST = LIST PRICE IF BASE COST IS 0
-				if (floatParse(unitcost.val()) == 0) {
+				if (floatParse(unitcost.val()) == 0 || floatParse(margin.val()) == 0) {
 					unitcost.val(inputs.listprice.val());
 				}
 			}
