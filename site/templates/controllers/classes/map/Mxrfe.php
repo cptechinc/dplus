@@ -60,7 +60,7 @@ class Mxrfe extends AbstractController {
 		$page   = self::pw('page');
 
 		if ($xref->isNew()) {
-			$page->headline = "MXRFE: New X-ref";
+			$page->headline = "MXRFE: New X-Ref";
 		}
 		if ($xref->isNew() === false) {
 			$page->headline = "MXRFE: " . $mxrfe->get_recordlocker_key($xref);
@@ -161,6 +161,7 @@ class Mxrfe extends AbstractController {
 		$html .= self::mxrfeHeaders();
 		$html .= $config->twig->render('items/mxrfe/search/vendor/page.twig', ['vendors' => $vendors]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $vendors]);
+		$html .= $config->twig->render('items/mxrfe/new-xref-modal.twig');
 		return $html;
 	}
 
@@ -204,7 +205,7 @@ class Mxrfe extends AbstractController {
 	URL Functions
 ============================================================= */
 	/**
-	 * Return URL to MXRFE X-ref
+	 * Return URL to MXRFE X-Ref
 	 * @param  string $mnfrID      Manufacturer ID
 	 * @param  string $mnfritemID  Vendor Item ID
 	 * @param  string $itemID        ITM Item ID
@@ -219,7 +220,7 @@ class Mxrfe extends AbstractController {
 	}
 
 	/**
-	 * Return URL to DELETE MXRFE X-ref
+	 * Return URL to DELETE MXRFE X-Ref
 	 * @param  string $mnfrID      Manufacturer ID
 	 * @param  string $mnfritemID  Vendor Item ID
 	 * @param  string $itemID      ITM Item ID
@@ -232,7 +233,7 @@ class Mxrfe extends AbstractController {
 	}
 
 	/**
-	 * Return URL to MXRFRE Manufacturer X-ref List
+	 * Return URL to MXRFRE Manufacturer X-Ref List
 	 * @param  string $mnfrID  Manufacturer ID
 	 * @return string
 	 */
@@ -243,7 +244,7 @@ class Mxrfe extends AbstractController {
 	}
 
 	/**
-	 * Return URL to MXRFRE Manufacturer X-ref List
+	 * Return URL to MXRFRE Manufacturer X-Ref List
 	 * @param  string $mnfrID Manufacturer ID
 	 * @return string
 	 */
@@ -318,7 +319,7 @@ class Mxrfe extends AbstractController {
 	}
 
 	/**
-	 * Return URL to MXRFE X-ref
+	 * Return URL to MXRFE X-Ref
 	 * @param  string $mnfrID      Manufacturer ID
 	 * @param  string $mnfritemID  Vendor Item ID
 	 * @param  string $itemID      ITM Item ID
