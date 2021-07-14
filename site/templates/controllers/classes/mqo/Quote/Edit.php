@@ -75,7 +75,7 @@ class Edit extends Base {
 			return self::qtAccessDenied($data);
 		}
 
-		self::pw('page')->headline = "Editing Quote #$data->qnbr";
+		static::setPageTitle($data);
 
 		$eqo = self::getEqo($data->qnbr);
 
@@ -83,18 +83,22 @@ class Edit extends Base {
 			$eqo->requestEditableQuote();
 		}
 		self::initHooks();
-		self::quoteJs($data);
-		return self::display($data);
+		static::quoteJs($data);
+		return static::display($data);
 	}
 
-	private static function quoteJs($data) {
+	protected static function quoteJs($data) {
 		$config = self::pw('config');
 		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
 		self::pw('page')->js .= $config->twig->render('quotes/quote/edit/classes.js.twig');
 		self::pw('page')->js .= $config->twig->render('quotes/quote/edit/.js.twig');
 	}
 
-	private static function display($data) {
+	protected static function setPageTitle($data) {
+		self::pw('page')->headline = "Editing Quote #$data->qnbr";
+	}
+
+	protected static function display($data) {
 		$eqo = self::getEqo($data->qnbr);
 		$quote = $eqo->getEditableQuote();
 
@@ -179,7 +183,7 @@ class Edit extends Base {
 /* =============================================================
 	Supplemental
 ============================================================= */
-	private static function getEqo($qnbr = '') {
+	protected static function getEqo($qnbr = '') {
 		$eqo = self::pw('modules')->get('Eqo');
 		if ($qnbr) {
 			$eqo->setQnbr($qnbr);
