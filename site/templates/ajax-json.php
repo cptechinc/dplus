@@ -102,6 +102,13 @@
 				['GET', 'line/', Json\Mso::class, 'getSalesOrderDetail'],
 			],
 		],
+		'mqo' => [
+			'quote' => [
+				'edit' => [
+					['POST', '', Json\Mqo::class, 'editQuote'],	
+				]
+			]
+		],
 		'wm' => [
 			'receiving' => [
 				'validate' => [
