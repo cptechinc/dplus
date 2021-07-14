@@ -58,7 +58,7 @@ $(function() {
 	$("body").on("change", "input[name=itemID]", function(e) {
 		var input = $(this);
 		populate_item_data(input.val(), function() {
-			
+
 		});
 	});
 
@@ -238,8 +238,7 @@ $(function() {
 						window.location.href = uri.toString();
 					}
 					if (editXref === false) {
-						input_custitemID.val('').focus();
-						$('#loading-modal').modal('hide');
+						location.reload();
 					}
 				});
 			} else {
@@ -268,8 +267,7 @@ $(function() {
 						window.location.href = uri.toString();
 					}
 					if (editXref === false) {
-						input_custitemID.val('').focus();
-						$('#loading-modal').modal('hide');
+						location.reload();
 					}
 				});
 			}
