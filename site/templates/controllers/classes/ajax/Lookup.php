@@ -99,6 +99,22 @@ class Lookup extends AbstractController {
 	}
 
 	/**
+	 * Search VXM
+	 * @param  object $data
+	 *                     whseID Warehouse ID
+	 *                     q        Search Term
+	 * @return void
+	 */
+	public static function warehouseBins($data) {
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, ['whseID|text']);
+		$page = self::pw('page');
+		$filter = new WarehouseBinFilter();
+		$page->headline = "Warehouse Bins";
+		self::filterResults($filter, $data);
+	}
+
+	/**
 	 * Search Users
 	 * @param  object $data
 	 *                     q   Search Term

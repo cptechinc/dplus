@@ -23,6 +23,9 @@
 		// Warehouse
 		['GET', 'warehouses/', AjaxLookup::class, 'warehouses'],
 		['GET', 'warehouses/page{nbr:\d+}/', AjaxLookup::class, 'warehouses'],
+		// Warehouse Bins
+		['GET', 'warehouse/bins/', AjaxLookup::class, 'warehouseBins'],
+		['GET', 'warehouse/bins/page{nbr:\d+}/', AjaxLookup::class, 'warehouseBins'],
 		// User
 		['GET', 'users/', AjaxLookup::class, 'users'],
 		['GET', 'users/page{nbr:\d+}/', AjaxLookup::class, 'users'],
