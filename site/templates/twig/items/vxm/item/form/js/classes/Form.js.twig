@@ -181,17 +181,22 @@ class VxmForm {
 	}
 
 	submitVxmFormAfterValidation(form) {
-		var server = VxmRequests.getInstance();
+		var server  = VxmRequests.getInstance();
 		var formVxm = this;
+		var alert   = VxmAlerts.getInstance();
 
 		server.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), formVxm.inputs.itemid.val(), function(exists) {
 			if (exists === true && formVxm.inputs.vendoritemid.val() != formVxm.inputs.vendoritemid.data('vendoritemid')) {
-				alert.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), formVxm.inputs.itemid.val());
+				alert.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), formVxm.inputs.itemid.val(), function(editXref) {
+					if (editXref === false) {
+						$('#loading-modal').modal('hide');
+						formVxm.inputs.vendoritemid.val('').focus();
+					}
+				});
 			} else {
 				formVxm.validateOrderCode(function(validated) {
 					formVxm.confirmCost(function(confirmed) {
 						formVxm.inputs.updateitmcost.val(confirmed ? 'true' : 'false');
-						console.log('submit');
 						form.submit();
 					});
 				});

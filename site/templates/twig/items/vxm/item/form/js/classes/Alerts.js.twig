@@ -8,7 +8,7 @@ class VxmAlerts {
 		return this.instance;
 	}
 
-	xrefExists(vendorID, vendoritemID, itemID) {
+	xrefExists(vendorID, vendoritemID, itemID, callback) {
 		swal2.fire({
 			title: "Vendor Item " + vendoritemID + " exists",
 			text: 'Would you like to go edit this item?',
@@ -17,14 +17,7 @@ class VxmAlerts {
 			confirmButtonText: 'Yes',
 			cancelButtonText: 'No',
 		}).then((result) => {
-			if (result.value) {
-				var uri = new URI();
-				uri.removeQuery('vendoritemID');
-				uri.setQuery('vendorID', vendorID);
-				uri.setQuery('vendoritemID', vendoritemID);
-				uri.setQuery('itemID', itemID);
-				window.location.href = uri.toString();
-			}
+			callback(result.value ? result.value : false);
 		});
 	}
 
@@ -37,11 +30,7 @@ class VxmAlerts {
 			buttonsStyling: false,
 			confirmButtonText: 'Yes!'
 		}).then(function(result) {
-			if (result.value) {
-				callback(true);
-			} else {
-				callback(false);
-			}
+			callback(result.value ? result.value : false);
 		});
 	}
 

@@ -5,7 +5,7 @@
 {% block current_page %}
 	{% if values.offsetExists('mnfrID') %}
 		<li class="breadcrumb-item">
-			<a href="{{ page.url }}">
+			<a href="{{ page.mnfrListUrl(input.get.text('mnfrID')) }}">
 				<i class="fa fa-arrows" aria-hidden="true"></i> {{ page.has('dplus_function') ? page.dplus_function|upper : page.title }}
 			</a>
 		</li>

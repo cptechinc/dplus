@@ -73,7 +73,7 @@ class Cxm extends AbstractController {
 		$xref    = $cxm->get_create_xref($data->custID, $data->custitemID, $data->itemID);
 
 		if ($xref->isNew()) {
-			$page->headline = "CXM: New X-ref";
+			$page->headline = "CXM: New X-Ref";
 		}
 		if ($xref->isNew() === false) {
 			$page->headline = "CXM: $xref->custid $xref->custitemid";
@@ -241,7 +241,7 @@ class Cxm extends AbstractController {
 	/**
 	 * Return URL for Vxm Customer with focus on an x-ref
 	 * @param  string $custID  Customer ID
-	 * @param  string $focus     X-ref Key
+	 * @param  string $focus     X-Ref Key
 	 * @return string
 	 */
 	public static function custFocusUrl($custID, $focus = '') {
@@ -291,7 +291,7 @@ class Cxm extends AbstractController {
 	}
 
 	/**
-	 * Return URL for Vxm X-ref
+	 * Return URL for Vxm X-Ref
 	 * @param  string $custID      Customer ID
 	 * @param  string $custitemID  Customer Item ID
 	 * @return string
@@ -304,7 +304,7 @@ class Cxm extends AbstractController {
 	}
 
 	/**
-	 * Return URL for Vxm X-ref Deletion
+	 * Return URL for Vxm X-Ref Deletion
 	 * @param  string $custID      Customer ID
 	 * @param  string $custitemID  Customer Item ID
 	 * @return string
@@ -345,6 +345,12 @@ class Cxm extends AbstractController {
 			$custID     = $event->arguments(0);
 			$custitemID = $event->arguments(1);
 			$event->return = self::xrefUrl($custID, $custitemID);
+		});
+
+		$m->addHook('Page(pw_template=cxm)::xrefNewUrl', function($event) {
+			$p = $event->object;
+			$custID     = $event->arguments(0);
+			$event->return = self::xrefUrl($custID, 'new');
 		});
 
 		$m->addHook('Page(pw_template=cxm)::xrefDeleteUrl', function($event) {

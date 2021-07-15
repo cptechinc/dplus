@@ -274,6 +274,7 @@ class XrefMxrfe extends WireData implements Module {
 		$record->setDateupdated(date('Ymd'));
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));
+		$record->setDummy('P');
 		return $invalidfields;
 	}
 

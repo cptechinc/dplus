@@ -222,6 +222,8 @@ $(function() {
 				uri.setQuery('mnfritemID', input_mnfritemID.val());
 				uri.setQuery('itemID', input_itemID.val());
 				window.location.href = uri.toString();
+			} else {
+				location.reload();
 			}
 		});
 	}

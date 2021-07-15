@@ -1,7 +1,7 @@
 $(function() {
-	{% if page.focus and page.focus != 'new' %}
-		$('tr[data-vendorid="{{ page.focus }}"]').addClass('highlight');
-		$('html, body').animate({scrollTop: $('tr[data-vendorid="{{ page.focus }}"]').offset().top,},700,'linear');
+	{% if input.get.offsetExists('focus') and input.get.text('focus') != 'new' %}
+		$('tr[data-vendorid="{{ input.get.text('focus') }}"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('[data-vendorid="{{ input.get.text('focus') }}"]').offset().top,},700,'linear');
 	{% endif %}
 
 /* =============================================================
@@ -20,7 +20,7 @@ $(function() {
 		modal.find('.modal-body').loadin(url, function() {});
 	});
 
-	$("body").on('click', '.vendor-link', function(e) {
+	$("body").on('click', '#ajax-modal .vendor-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
 		var vendorID = button.data('vendorid');
@@ -53,7 +53,7 @@ $(function() {
 
 	modal_new.on('shown.bs.modal', function (event) {
 		var modal = $(this);
-		modal.find('input[name=vendorID]').focus();
+		modal.find('input[name=mnfrID]').focus();
 	});
 
 	var validator = $('#new-xref-form').validate({
@@ -63,17 +63,21 @@ $(function() {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		rules: {
-			vendorID: {
+			mnfrID: {
 				required: true,
 				remote: {
 					url: '{{ page.jsonApiUrl('map/validate/vendorid/') }}',
 					type: "get",
-					data: {}
+					data: {
+						vendorID: function() {
+							return $('input[name=mnfrID]').val();
+						}
+					}
 				}
 			},
 		},
 		messages: {
-			vendorID: "Use a valid Vendor ID",
+			mnfrID: "Use a valid Manufacturer ID",
 		},
 		submitHandler: function(form) {
 			form.submit();

@@ -9,6 +9,9 @@
 		<div class="col-sm-2">
 			<strong>Weight:</strong> <span class="pull-right">{{ lotserial.qty|number_format(config.decimal_places()) }}</span>
 		</div>
+		<div class="col">
+			<strong>Production Date:</strong> {{ lotserial.expirationdate|convertdate }}
+		</div>
 		<div class="col-sm-2">
 			<strong>Lot #:</strong> {{ lotserial.get_itemidentifier() }}
 		</div>

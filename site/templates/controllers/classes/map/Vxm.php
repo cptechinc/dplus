@@ -74,7 +74,7 @@ class Vxm extends AbstractController {
 		$page   = self::pw('page');
 
 		if ($xref->isNew()) {
-			$page->headline = "VXM: New X-ref";
+			$page->headline = "VXM: New X-Ref";
 		}
 		if ($xref->isNew() === false) {
 			$page->headline = "VXM: " . $vxm->get_recordlocker_key($xref);
@@ -220,7 +220,7 @@ class Vxm extends AbstractController {
 	/**
 	 * Return URL for Vxm Vendor with focus on an x-ref
 	 * @param  string $vendorID  Vendor ID
-	 * @param  string $focus     X-ref Key
+	 * @param  string $focus     X-Ref Key
 	 * @return string
 	 */
 	public static function vendorFocusUrl($vendorID, $focus = '') {
@@ -269,7 +269,7 @@ class Vxm extends AbstractController {
 	}
 
 	/**
-	 * Return X-ref List Url for Item ID
+	 * Return X-Ref List Url for Item ID
 	 * @param  string $itemID        Item ID
 	 * @return string
 	 */
@@ -280,7 +280,7 @@ class Vxm extends AbstractController {
 	}
 
 	/**
-	 * Return URL for Vxm X-ref
+	 * Return URL for Vxm X-Ref
 	 * @param  string $vendorID      Vendor ID
 	 * @param  string $vendoritemID  Vendor Item ID
 	 * @param  string $itemID        Item ID
@@ -295,7 +295,7 @@ class Vxm extends AbstractController {
 	}
 
 	/**
-	 * Return URL for Vxm X-ref Deletion
+	 * Return URL for Vxm X-Ref Deletion
 	 * @param  string $vendorID      Vendor ID
 	 * @param  string $vendoritemID  Vendor Item ID
 	 * @param  string $itemID        Item ID
