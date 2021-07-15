@@ -31,10 +31,9 @@ class Lookup extends AbstractController {
 	 */
 	public static function tariffCodes($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		$page = self::pw('page');
+		self::pw('page')->headline = "Tariff Codes";
 		$filter = self::pw('modules')->get('FilterInvTariffCodes');
 		$filter->init_query();
-		$page->headline = "Tariff Codes";
 		return self::moduleFilterResults($filter, $data);
 	}
 
@@ -46,10 +45,9 @@ class Lookup extends AbstractController {
 	 */
 	public static function msdsCodes($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		$page = self::pw('page');
+		self::pw('page')->headline = "Msds Codes";
 		$filter = self::pw('modules')->get('FilterInvMsdsCodes');
 		$filter->init_query();
-		$page->headline = "Msds Codes";
 		return self::moduleFilterResults($filter, $data);
 	}
 
@@ -61,10 +59,9 @@ class Lookup extends AbstractController {
 	 */
 	public static function freightCodes($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		$page = self::pw('page');
+		self::pw('page')->headline = "Freight Codes";
 		$filter = self::pw('modules')->get('FilterMsoFreightCodes');
 		$filter->init_query();
-		$page->headline = "Freight Codes";
 		return self::moduleFilterResults($filter, $data);
 	}
 
@@ -77,9 +74,8 @@ class Lookup extends AbstractController {
 	 */
 	public static function vxm($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		$page = self::pw('page');
+		self::pw('page')->headline = "VXM";
 		$filter = new VxmFilter();
-		$page->headline = "VXM";
 		return self::filterResults($filter, $data);
 	}
 
@@ -91,10 +87,9 @@ class Lookup extends AbstractController {
 	 */
 	public static function warehouses($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		$page = self::pw('page');
+		self::pw('page')->headline = "Warehouses";
 		$filter = self::pw('modules')->get('FilterWarehouses');
 		$filter->init_query();
-		$page->headline = "Warehouses";
 		return self::moduleFilterResults($filter, $data);
 	}
 
@@ -108,9 +103,8 @@ class Lookup extends AbstractController {
 	public static function warehouseBins($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		self::sanitizeParametersShort($data, ['whseID|text']);
-		$page = self::pw('page');
+		self::pw('page')->headline = "Warehouse Bins";
 		$filter = new WarehouseBinFilter();
-		$page->headline = "Warehouse Bins";
 		return self::filterResults($filter, $data);
 	}
 
@@ -122,10 +116,9 @@ class Lookup extends AbstractController {
 	 */
 	public static function users($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		$page = self::pw('page');
+		self::pw('page')->headline = "Users";
 		$filter = self::pw('modules')->get('FilterDplusUsers');
 		$filter->init_query();
-		$page->headline = "Users";
 		return self::moduleFilterResults($filter, $data);
 	}
 
@@ -137,10 +130,9 @@ class Lookup extends AbstractController {
 	 */
 	public static function vendors($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		$page = self::pw('page');
+		self::pw('page')->headline = "Vendors";;
 		$filter = new VendorFilter();
 		$filter->init();
-		$page->headline = "Vendors";
 		return self::filterResults($filter, $data);
 	}
 
@@ -153,11 +145,10 @@ class Lookup extends AbstractController {
 	 */
 	public static function vendorContacts($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		$data = self::sanitizeParametersShort($data, ['vendorID|text']);
-		$page = self::pw('page');
+		self::sanitizeParametersShort($data, ['vendorID|text']);
+		self::pw('page')->headline = "Vendor Contacts";
 		$filter = new PhoneBookFilter();
 		$filter->init();
-		$page->headline = "Vendor Contacts";
 		return self::filterResults($filter, $data);
 	}
 
@@ -169,11 +160,10 @@ class Lookup extends AbstractController {
 	 */
 	public static function itemGroups($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
-		$data = self::sanitizeParametersShort($data, ['vendorID|text']);
-		$page = self::pw('page');
+		self::sanitizeParametersShort($data, ['vendorID|text']);
+		self::pw('page')->headline = "Item Groups";
 		$filter = new ItemGroupFilter();
 		$filter->init();
-		$page->headline = "Item Groups";
 		return self::filterResults($filter, $data);
 	}
 
@@ -185,9 +175,9 @@ class Lookup extends AbstractController {
 	 */
 	public static function itmItems($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		self::pw('page')->headline = "Item Master";
 		$filter = self::pw('modules')->get('FilterItemMaster');
 		$filter->init_query();
-		self::pw('page')->headline = "Item Master";
 		return self::moduleFilterResults($filter, $data);
 	}
 
@@ -199,9 +189,9 @@ class Lookup extends AbstractController {
 	 */
 	public static function purchaseOrders($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		self::pw('page')->headline = "Purchase Orders";
 		$filter = new PurchaseOrderFilter();
 		$filter->init();
-		self::pw('page')->headline = "Purchase Orders";
 		self::pw('config')->po = self::pw('modules')->get('ConfigurePo')->config();
 		return self::filterResults($filter, $data);
 	}
@@ -214,9 +204,9 @@ class Lookup extends AbstractController {
 	 */
 	public static function generalLedgerCodes($data) {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		self::pw('page')->headline = "General Ledger Codes";
 		$filter = new GlCodeFilter();
 		$filter->init();
-		self::pw('page')->headline = "General Ledger Codes";
 		return self::filterResults($filter, $data);
 	}
 
