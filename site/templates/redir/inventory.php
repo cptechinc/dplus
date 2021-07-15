@@ -31,7 +31,7 @@
 		case 'bin-inquiry':
 			// Requests Contents of bin
 			// Response: fills Invsearch table with records
-			$binID = strtoupper(($input->$rm->text('binID'));
+			$binID = strtoupper($input->$rm->text('binID'));
 			$data = array("DBNAME=$dplusdb", 'BININQUIRY', "BINID=$binID");
 
 			if ($input->$rm->page) {
@@ -118,7 +118,7 @@
 		case 'print-thermal-label':
 			// Requests label to be printed
 			// Response: Takes itemcartonlabel and prints label
-			$binID     = strtoupper(($input->$rm->text('binID'));
+			$binID     = strtoupper($input->$rm->text('binID'));
 			$itemID    = $input->$rm->text('itemID');
 			$lotserial = $input->$rm->text('lotserial');
 			$whseID    = $input->$rm->text('whseID');

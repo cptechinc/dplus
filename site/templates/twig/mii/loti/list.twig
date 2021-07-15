@@ -1,0 +1,31 @@
+<table id="cust-index" class="table table-bordered">
+	<thead>
+		<tr>
+			<th>
+				<a href="{{ page.get_sortURL('lotserial') }}" class="link">Lot Number</a>
+			</th>
+			<th>
+				<a href="{{ page.get_sortURL('lotserial') }}" class="link">Lot Reference</a>
+			</th>
+			<th>Country</th>
+			<th>
+				<a href="{{ page.get_sortURL('itemid') }}" class="link">Item</a>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for lot in lots %}
+			<tr>
+				<td>
+					<a href="{{ page.lotActivityUrl(lot.lotnbr) }}" class="link">{{ lot.lotnbr }}</a>
+				</td>
+				<td>{{ lot.lotref }}</td>
+				<td>{{ lot.country }}</td>
+				<td>
+					{{ lot.itemid }} <br>
+					{{ lot.item.description }}
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

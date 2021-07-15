@@ -17,7 +17,7 @@ use Dplus\Filters\Map\Vxm           as VxmFilter;
 use Mvc\Controllers\AbstractController;
 
 class Lookup extends AbstractController {
-	const FIELDS_LOOKUP = ['q' => ['sanitizer' => 'text']];
+	const FIELDS_LOOKUP = ['q|text'];
 
 	public static function test() {
 		return 'test';
@@ -30,10 +30,9 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function tariffCodes($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
-		$wire = self::pw();
-		$page = $wire->wire('page');
-		$filter = $wire->wire('modules')->get('FilterInvTariffCodes');
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		$page = self::pw('page');
+		$filter = self::pw('modules')->get('FilterInvTariffCodes');
 		$filter->init_query();
 		$page->headline = "Tariff Codes";
 		self::moduleFilterResults($filter, $wire, $data);
@@ -46,10 +45,9 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function msdsCodes($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
-		$wire = self::pw();
-		$page = $wire->wire('page');
-		$filter = $wire->wire('modules')->get('FilterInvMsdsCodes');
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		$page = self::pw('page');
+		$filter = self::pw('modules')->get('FilterInvMsdsCodes');
 		$filter->init_query();
 		$page->headline = "Msds Codes";
 		self::moduleFilterResults($filter, $wire, $data);
@@ -62,10 +60,9 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function freightCodes($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
-		$wire = self::pw();
-		$page = $wire->wire('page');
-		$filter = $wire->wire('modules')->get('FilterMsoFreightCodes');
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		$page = self::pw('page');
+		$filter = self::pw('modules')->get('FilterMsoFreightCodes');
 		$filter->init_query();
 		$page->headline = "Freight Codes";
 		self::moduleFilterResults($filter, $wire, $data);
@@ -79,12 +76,11 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function vxm($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
-		$wire = self::pw();
-		$page = $wire->wire('page');
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		$page = self::pw('page');
 		$filter = new VxmFilter();
 		$page->headline = "VXM";
-		self::filterResults($filter, $wire, $data);
+		self::filterResults($filter, $data);
 	}
 
 	/**
@@ -94,10 +90,9 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function warehouses($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
-		$wire = self::pw();
-		$page = $wire->wire('page');
-		$filter = $wire->wire('modules')->get('FilterWarehouses');
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		$page = self::pw('page');
+		$filter = self::pw('modules')->get('FilterWarehouses');
 		$filter->init_query();
 		$page->headline = "Warehouses";
 		self::moduleFilterResults($filter, $wire, $data);
@@ -110,10 +105,9 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function users($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
-		$wire = self::pw();
-		$page = $wire->wire('page');
-		$filter = $wire->wire('modules')->get('FilterDplusUsers');
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		$page = self::pw('page');
+		$filter = self::pw('modules')->get('FilterDplusUsers');
 		$filter->init_query();
 		$page->headline = "Users";
 		self::moduleFilterResults($filter, $wire, $data);
@@ -126,9 +120,8 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function vendors($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
-		$wire = self::pw();
-		$page = $wire->wire('page');
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		$page = self::pw('page');
 		$filter = new VendorFilter();
 		$filter->init();
 		$page->headline = "Vendors";
@@ -143,7 +136,7 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function vendorContacts($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$data = self::sanitizeParametersShort($data, ['vendorID|text']);
 		$page = self::pw('page');
 		$filter = new PhoneBookFilter();
@@ -159,7 +152,7 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function itemGroups($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$data = self::sanitizeParametersShort($data, ['vendorID|text']);
 		$page = self::pw('page');
 		$filter = new ItemGroupFilter();
@@ -175,11 +168,10 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function itmItems($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
-		$wire = self::pw();
-		$filter = $wire->wire('modules')->get('FilterItemMaster');
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		$filter = self::pw('modules')->get('FilterItemMaster');
 		$filter->init_query();
-		$wire->wire('page')->headline = "Item Master";
+		self::pw('page')->headline = "Item Master";
 		self::moduleFilterResults($filter, $wire, $data);
 	}
 
@@ -190,11 +182,10 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function purchaseOrders($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
-		$wire = self::pw();
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$filter = new PurchaseOrderFilter();
 		$filter->init();
-		$wire->wire('page')->headline = "Purchase Orders";
+		self::pw('page')->headline = "Purchase Orders";
 		self::pw('config')->po = self::pw('modules')->get('ConfigurePo')->config();
 		self::filterResults($filter, $data);
 	}
@@ -206,11 +197,10 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function generalLedgerCodes($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
-		$wire = self::pw();
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$filter = new GlCodeFilter();
 		$filter->init();
-		$wire->wire('page')->headline = "General Ledger Codes";
+		self::pw('page')->headline = "General Ledger Codes";
 		self::filterResults($filter, $data);
 	}
 
@@ -221,9 +211,8 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function customers($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
-		$wire = self::pw();
-		$page = $wire->wire('page');
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		$page = self::pw('page');
 		$filter = new CustomerFilter();
 		$filter->init();
 		$filter->user(self::pw('user'));
@@ -232,7 +221,7 @@ class Lookup extends AbstractController {
 			$filter->search($data->q);
 			$page->headline = "Searching for $data->q";
 		}
-		self::filterResults($filter, $wire, $data);
+		self::filterResults($filter, $data);
 	}
 
 	/**
@@ -242,9 +231,8 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function countryCodes($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
-		$wire = self::pw();
-		$page = $wire->wire('page');
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		$page = self::pw('page');
 		$filter = new CountryCodeFilter();
 		$filter->init();
 		$page->headline = "Country Codes";
@@ -252,13 +240,13 @@ class Lookup extends AbstractController {
 			$filter->search($data->q);
 			$page->headline = "Searching for $data->q";
 		}
-		self::filterResults($filter, $wire, $data);
+		self::filterResults($filter, $data);
 	}
 
 	private static function moduleFilterResults(Module $filter, ProcessWire $wire, $data) {
-		$input = $wire->wire('input');
-		$page = $wire->wire('page');
-		$filter->filter_input($wire->wire('input'));
+		$input = self::pw('input');
+		$page  = self::pw('page');
+		$filter->filter_input(self::pw('input'));
 
 		if ($data->q) {
 			$filter->search($data->q);

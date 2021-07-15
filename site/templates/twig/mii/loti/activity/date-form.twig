@@ -1,0 +1,8 @@
+<form action="{{ input.url() }}" method="get">
+	<input type="hidden" name="lotnbr" value="{{ lotnbr }}">
+	<div class="form-group">
+		<label for="datepicker">Date</label>
+		{% include 'util/date-picker.twig' with {'name': 'startdate', 'value': startdate } %}
+	</div>
+	<button type="submit" class="btn btn-secondary">Submit</button>
+</form>

@@ -40,6 +40,10 @@ class DpagesMii extends Dpages implements Module {
 		'iio' => array(
 			'name'   => 'iio',
 			'fields' => array(),
+		),
+		'loti' => array(
+			'name'   => 'loti',
+			'fields' => array(),
 		)
 	);
 
@@ -77,6 +81,15 @@ class DpagesMii extends Dpages implements Module {
 			'parent'         => '/mii/',
 			'dplus_function' => 'ii',
 			'pw_template'    => 'ii-item'
+		),
+		'loti' => array(
+			'template'       => 'dplus-function',
+			'name'           => 'loti',
+			'title'          => 'Lot Master Inquiry',
+			'summary'        => 'Lot Master Inquiry',
+			'parent'         => '/mii/',
+			'dplus_function' => '',
+			'pw_template'    => 'loti'
 		),
 	);
 

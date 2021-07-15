@@ -1,12 +1,13 @@
 <div class="mb-3">
 	<div class="row">
 		<div class="col">
-			<a href="#" class="btn btn-light" aria-label="Return to last page" onclick="window.history.back();">
-				<i class="fa fa-undo" aria-hidden="true"></i> Go back
-			</a>
 			&nbsp;
 			<a href="{{ page.orderListUrl(order.ordernumber) }}" class="btn btn-light">
-				<i class="fa fa-list" aria-hidden="true"></i> Back to Sales {{ list|capitalize }} List
+				<i class="fa fa-list" aria-hidden="true"></i> Sales {{ list|capitalize }} List
+			</a>
+			&nbsp;
+			<a href="{{ page.ci_customerURL(order.custid) }}" class="btn btn-primary">
+				<i class="fa fa-user" aria-hidden="true"></i> {{ order.customer.name }}
 			</a>
 			&nbsp;
 			<a href="{{ page.get_printURL() }}" class="btn btn-primary" target="_blank" aria-label="View Printable" title="View Printable">
