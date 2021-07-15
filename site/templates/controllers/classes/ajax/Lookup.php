@@ -17,7 +17,7 @@ use Dplus\Filters\Map\Vxm           as VxmFilter;
 use Mvc\Controllers\AbstractController;
 
 class Lookup extends AbstractController {
-	const FIELDS_LOOKUP = ['q' => ['sanitizer' => 'text']];
+	const FIELDS_LOOKUP = ['q|text'];
 
 	public static function test() {
 		return 'test';
@@ -30,7 +30,7 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function tariffCodes($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$wire = self::pw();
 		$page = $wire->wire('page');
 		$filter = $wire->wire('modules')->get('FilterInvTariffCodes');
@@ -46,7 +46,7 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function msdsCodes($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$wire = self::pw();
 		$page = $wire->wire('page');
 		$filter = $wire->wire('modules')->get('FilterInvMsdsCodes');
@@ -62,7 +62,7 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function freightCodes($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$wire = self::pw();
 		$page = $wire->wire('page');
 		$filter = $wire->wire('modules')->get('FilterMsoFreightCodes');
@@ -79,7 +79,7 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function vxm($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$wire = self::pw();
 		$page = $wire->wire('page');
 		$filter = new VxmFilter();
@@ -94,7 +94,7 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function warehouses($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$wire = self::pw();
 		$page = $wire->wire('page');
 		$filter = $wire->wire('modules')->get('FilterWarehouses');
@@ -110,7 +110,7 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function users($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$wire = self::pw();
 		$page = $wire->wire('page');
 		$filter = $wire->wire('modules')->get('FilterDplusUsers');
@@ -126,7 +126,7 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function vendors($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$wire = self::pw();
 		$page = $wire->wire('page');
 		$filter = new VendorFilter();
@@ -143,7 +143,7 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function vendorContacts($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$data = self::sanitizeParametersShort($data, ['vendorID|text']);
 		$page = self::pw('page');
 		$filter = new PhoneBookFilter();
@@ -159,7 +159,7 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function itemGroups($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$data = self::sanitizeParametersShort($data, ['vendorID|text']);
 		$page = self::pw('page');
 		$filter = new ItemGroupFilter();
@@ -175,7 +175,7 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function itmItems($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$wire = self::pw();
 		$filter = $wire->wire('modules')->get('FilterItemMaster');
 		$filter->init_query();
@@ -190,7 +190,7 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function purchaseOrders($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$wire = self::pw();
 		$filter = new PurchaseOrderFilter();
 		$filter->init();
@@ -206,7 +206,7 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function generalLedgerCodes($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$wire = self::pw();
 		$filter = new GlCodeFilter();
 		$filter->init();
@@ -221,7 +221,7 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function customers($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		$wire = self::pw();
 		$page = $wire->wire('page');
 		$filter = new CustomerFilter();
@@ -242,9 +242,8 @@ class Lookup extends AbstractController {
 	 * @return void
 	 */
 	public static function countryCodes($data) {
-		$data = self::sanitizeParameters($data, self::FIELDS_LOOKUP);
-		$wire = self::pw();
-		$page = $wire->wire('page');
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		$page = self::pw('page');
 		$filter = new CountryCodeFilter();
 		$filter->init();
 		$page->headline = "Country Codes";
