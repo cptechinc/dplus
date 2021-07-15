@@ -80,7 +80,7 @@ class Lookup extends AbstractController {
 		$page = self::pw('page');
 		$filter = new VxmFilter();
 		$page->headline = "VXM";
-		self::filterResults($filter, $wire, $data);
+		self::filterResults($filter, $data);
 	}
 
 	/**
@@ -221,7 +221,7 @@ class Lookup extends AbstractController {
 			$filter->search($data->q);
 			$page->headline = "Searching for $data->q";
 		}
-		self::filterResults($filter, $wire, $data);
+		self::filterResults($filter, $data);
 	}
 
 	/**
@@ -240,7 +240,7 @@ class Lookup extends AbstractController {
 			$filter->search($data->q);
 			$page->headline = "Searching for $data->q";
 		}
-		self::filterResults($filter, $wire, $data);
+		self::filterResults($filter, $data);
 	}
 
 	private static function moduleFilterResults(Module $filter, ProcessWire $wire, $data) {
