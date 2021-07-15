@@ -8,6 +8,7 @@ use ProcessWire\User;
 
 abstract class AbstractController extends WireData {
 	private static $pw;
+	private static $filehasher;
 
 	/**
 	 * Return the current ProcessWire Wire Instance
@@ -76,5 +77,16 @@ abstract class AbstractController extends WireData {
 		}
 
 		return $pagenbr;
+	}
+
+	/**
+	 * Return File Hasher
+	 * @return ProcessWire\FileHasher
+	 */
+	protected static function getFileHasher() {
+		if (empty(self::$filehasher)) {
+			self::$filehasher = self::pw('modules')->get('FileHasher');
+		}
+		return self::$filehasher;
 	}
 }

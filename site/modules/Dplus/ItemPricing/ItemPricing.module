@@ -37,6 +37,11 @@ class ItemPricing extends WireData implements Module {
 		return $q->findOne();
 	}
 
+	public function getAll() {
+		$q = $this->query();
+		return $q->find();
+	}
+
 /* =============================================================
 	Dplus Cobol Request Functions
 ============================================================= */

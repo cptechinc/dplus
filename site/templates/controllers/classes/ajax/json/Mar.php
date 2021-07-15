@@ -1,6 +1,6 @@
 <?php namespace Controllers\Ajax\Json;
 // Dplus Models
-use CustomerQuery;
+use CustomerQuery, CustomerShiptoQuery;
 // ProcessWire Mlasses, Modules
 use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Validators
@@ -104,7 +104,7 @@ class Mar extends AbstractController {
 	public static function getCustomer($data) {
 		self::sanitizeParametersShort($data, ['custID|text']);
 		$validate = new MarValidator();
-		
+
 		if ($validate->custid($data->custID) === false) {
 			return false;
 		}
@@ -112,6 +112,29 @@ class Mar extends AbstractController {
 		return [
 			'id'   => $customer->id,
 			'name' => $customer->name
+		];
+	}
+
+	public static function getCustomerShipto($data) {
+		self::sanitizeParametersShort($data, ['custID|text']);
+		$validate = new MarValidator();
+
+		if ($validate->custShiptoid($data->custID, $data->shiptoID) === false) {
+			return false;
+		}
+		$shipto = CustomerShiptoQuery::create()->filterByCustid($data->custID)->filterByShiptoid($data->shiptoID)->findOne();
+
+		return [
+			'custid' => $shipto->custid,
+			'id'     => $shipto->id,
+			'name'   => $shipto->name,
+			'address' => [
+				'address1' => $shipto->address,
+				'address2' => $shipto->address2,
+				'city'     => $shipto->city,
+				'state'    => $shipto->state,
+				'zip'      => $shipto->zip,
+			]
 		];
 	}
 }

@@ -57,12 +57,14 @@ $(function() {
 
 	$("body").on("change", "input[name=itemID]", function(e) {
 		var input = $(this);
-		populate_item_data(input.val());
+		populate_item_data(input.val(), function() {
+
+		});
 	});
 
 	$("body").on("change", "input[name=custID]", function(e) {
 		var input = $(this);
-		
+
 		customerJson(input.val(), function(customer) {
 			$('.customer-name').text('');
 
@@ -218,6 +220,7 @@ $(function() {
 			custitemID: "Use a valid Cust Item ID, (No more than {{ cxm.maxlength_custitemid() }} characters)",
 		},
 		submitHandler: function(form) {
+			$('#loading-modal').modal('show');
 			submit_cxm(form);
 		}
 	});
@@ -226,7 +229,18 @@ $(function() {
 	function submit_cxm(form) {
 		request_validate_custitemID(function(exists) {
 			if (exists === true && input_custitemID.val() != input_custitemID.data('custitemid')) {
-				swal_existing();
+				swal_existing(function(editXref) {
+					if (editXref === true) {
+						var uri = new URI();
+						uri.removeQuery('custitemID');
+						uri.setQuery('custID', input_custID.val());
+						uri.setQuery('custitemID', input_custitemID.val());
+						window.location.href = uri.toString();
+					}
+					if (editXref === false) {
+						location.reload();
+					}
+				});
 			} else {
 				var allow_pdm_change = {{ cxm.allow_pdm_update() }};
 
@@ -244,12 +258,23 @@ $(function() {
 
 		request_validate_custitemID(function(exists) {
 			if (exists === true && input_custitemID.val() != input_custitemID.data('custitemid')) {
-				swal_existing();
+				swal_existing(function(editXref) {
+					if (editXref === true) {
+						var uri = new URI();
+						uri.removeQuery('custitemID');
+						uri.setQuery('custID', input_custID.val());
+						uri.setQuery('custitemID', input_custitemID.val());
+						window.location.href = uri.toString();
+					}
+					if (editXref === false) {
+						location.reload();
+					}
+				});
 			}
 		});
 	});
 
-	function swal_existing() {
+	function swal_existing(callback) {
 		swal2.fire({
 			title: "Customer Item " + input_custitemID.val() + " exists",
 			text: 'Would you like to go edit this item?',
@@ -258,13 +283,7 @@ $(function() {
 			confirmButtonText: 'Yes',
 			cancelButtonText: 'No',
 		}).then((result) => {
-			if (result.value) {
-				var uri = new URI();
-				uri.removeQuery('custitemID');
-				uri.setQuery('custID', input_custID.val());
-				uri.setQuery('custitemID', input_custitemID.val());
-				window.location.href = uri.toString();
-			}
+			callback(result.value ? true : false)
 		});
 	}
 

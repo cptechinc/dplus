@@ -49,9 +49,6 @@ class Quote extends Base {
 			return self::qtAccessDenied($data);
 		}
 
-		if ($data->print) {
-			// self::pw('session')->redirect(self::orderPrintUrl($data->qnbr), $http301 = false);
-		}
 		self::pw('page')->headline = "Quote #$data->qnbr";
 		self::pw('page')->listpage = self::pw('pages')->get('pw_template=quotes');
 
@@ -109,16 +106,24 @@ class Quote extends Base {
 			$event->return = self::quoteEditUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=quote-view|quote-edit)::orderQuoteUrl', function($event) {
+		$m->addHook('Page(pw_template=quote-view)::orderQuoteUrl', function($event) {
 			$event->return = self::orderQuoteUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=quote-view|quote-edit)::documentsUrl', function($event) {
+		$m->addHook('Page(pw_template=quote-view)::documentsUrl', function($event) {
 			$event->return = self::documentsUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=quote-view|quote-edit)::documentUrl', function($event) {
+		$m->addHook('Page(pw_template=quote-view)::documentUrl', function($event) {
 			$event->return = self::documentUrl($event->arguments(0), $event->arguments(1), $event->arguments(2));
+		});
+
+		$m->addHook('Page(pw_template=quote-view)::quotePrintUrl', function($event) {
+			$event->return = self::quotePrintUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=quote-view)::quoteListUrl', function($event) {
+			$event->return = self::quoteListUrl($event->arguments(0));
 		});
 	}
 }

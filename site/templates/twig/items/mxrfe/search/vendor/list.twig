@@ -21,7 +21,7 @@
 	<tbody>
 		{% if vendors.count() %}
 			{% for vendor in vendors %}
-				<tr>
+				<tr data-vendorid="{{ vendor.id }}">
 					<td scope="row">
 						<a href="{{ page.mnfrUrl(vendor.id) }}" class="link vendor-link" data-vendorid="{{ vendor.id }}" data-name="{{ vendor.name }}">
 							<strong>{{ vendor.id }}</strong>

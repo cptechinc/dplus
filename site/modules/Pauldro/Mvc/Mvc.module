@@ -1,9 +1,23 @@
 <?php namespace ProcessWire;
 
+use Jenssegers\Agent\Agent;
+
 include(__DIR__.'/vendor/autoload.php');
 
 class Mvc extends Process implements Module {
 	public function controllersPath() {
 		return $this->config->paths->root . $this->controllers_path;
+	}
+
+	/**
+	 * Return Agent for Browser Detection
+	 * @return Agent
+	 */
+	public function getAgent() {
+		return new Agent();
+	}
+
+	public function init() {
+		$this->wire('browseragent', $this->getAgent());
 	}
 }
