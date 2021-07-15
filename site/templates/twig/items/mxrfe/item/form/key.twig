@@ -1,41 +1,47 @@
-<div class="row form-group">
-	<div class="col-sm-3">
-		<label for="mnfrID">Mnfr / Comp ID</label>
-	</div>
-	<div class="col-sm-8">
-		{% include 'util/bootstrap/form/input-group.twig' with {
-				'inputgroup': {
-					'type': 'prepend',
-					'attributes': {
-						'readonly': xref.mnfrid ? true : false,
-						'tabindex': xref.mnfrid ? '-1' : ''
-					},
-					'input': {
-						'name': 'mnfrID',
-						'value': xref.mnfrid,
+{% if page.pw_template == 'mxrfe' %}
+	<input type="hidden" name="mnfrID" value="{{ xref.mnfrid }}">
+{% endif %}
+
+{% if page.pw_template == 'itm' %}
+	<div class="row form-group">
+		<div class="col-sm-3">
+			<label for="mnfrID">Mnfr / Comp ID</label>
+		</div>
+		<div class="col-sm-8">
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
 						'attributes': {
-							'placeholder': '',
-							'aria-label':  'Vendor ID',
+							'readonly': xref.mnfrid ? true : false,
 							'tabindex': xref.mnfrid ? '-1' : ''
-						}
-					},
-					'button': {
-						'colorclass': 'btn-secondary',
-						'text': 'fa fa-search'|icon,
-						'attributes': {
-							'title': 'Search Vendors',
-							'data-toggle': 'modal',
-							'data-target': '#ajax-modal',
-							'data-lookupurl': page.search_lookupURL('vendors'),
-							'data-input': '#mnfrID'
+						},
+						'input': {
+							'name': 'mnfrID',
+							'value': xref.mnfrid,
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Vendor ID',
+								'tabindex': xref.mnfrid ? '-1' : ''
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search Vendors',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.search_lookupURL('vendors'),
+								'data-input': '#mnfrID'
+							}
 						}
 					}
 				}
-			}
-		%}
-		<small class="form-text text-muted mnfr-name">{{ xref.mnfr.name }}</small>
+			%}
+			<small class="form-text text-muted mnfr-name">{{ xref.mnfr.name }}</small>
+		</div>
 	</div>
-</div>
+{% endif %}
 
 <div class="row form-group">
 	<div class="col-sm-3">

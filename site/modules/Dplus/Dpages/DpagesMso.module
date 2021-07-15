@@ -126,7 +126,7 @@ class DpagesMso extends Dpages implements Module {
 			'template'       => 'dplus-function',
 			'pw_template'    => 'cxm',
 			'name'           => 'cxm',
-			'title'          => 'Customer Item X-Reference',
+			'title'          => 'Customer Item X-Ref',
 			'summary'        => 'View / Edit Customer Item X-Ref',
 			'parent'         => '/mso/somain/',
 			'dplus_function' => 'cxm'

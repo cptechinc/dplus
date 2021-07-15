@@ -8,41 +8,47 @@
 	item                   ItemXrefCustomer
 	item.item              ItemMasterItem
 #}
-<div class="row form-group {{ item.isNew() == false and page.pw_template == 'cxm' ? 'collapse' : ''}}">
-	<div class="col-sm-4">
-		<label for="custID">Customer ID</label>
-	</div>
-	<div class="col-sm-8">
-		{% include 'util/bootstrap/form/input-group.twig' with {
-				'inputgroup': {
-					'type': 'prepend',
-					'input': {
-						'name': 'custID',
-						'id': 'custID',
-						'value': item.custid,
-						'attributes': {
-							'placeholder': '',
-							'aria-label':  'Customer ID',
-							'readonly': item.isNew() ? false : true
-						}
-					},
-					'button': {
-						'colorclass': 'btn-secondary',
-						'text': 'fa fa-search'|icon,
-						'attributes': {
-							'title': 'Search Customers',
-							'data-toggle': 'modal',
-							'data-target': '#ajax-modal',
-							'data-lookupurl': page.search_lookupURL('customers'),
-							'data-input': '#custID'
+{% if page.pw_template == 'cxm' %}
+	<input type="hidden" name="custID" value="{{ item.custid }}">
+{% endif %}
+
+{% if page.pw_template == 'itm' %}
+	<div class="row form-group">
+		<div class="col-sm-4">
+			<label for="custID">Customer ID</label>
+		</div>
+		<div class="col-sm-8">
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'input': {
+							'name': 'custID',
+							'id': 'custID',
+							'value': item.custid,
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Customer ID',
+								'readonly': item.isNew() ? false : true
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search Customers',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.search_lookupURL('customers'),
+								'data-input': '#custID'
+							}
 						}
 					}
 				}
-			}
-		%}
-		<small class="form-text text-muted customer-name">{{ item.customer.name }}</small>
+			%}
+			<small class="form-text text-muted customer-name">{{ item.customer.name }}</small>
+		</div>
 	</div>
-</div>
+{% endif %}
 
 
 <div class="row form-group">

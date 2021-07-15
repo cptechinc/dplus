@@ -1,0 +1,49 @@
+<div class="modal fade" id="new-xref-modal" tabindex="-1" role="dialog" aria-labelledby="new-xref-modal-label" aria-hidden="true" data-input="">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="new-xref-modal-label">Insert X-Ref</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form action="{{ page.url }}" method="get" id="new-xref-form">
+					<div class="form-group">
+						<label for="newmnfrID">Manufacturer ID</label>
+						{% include 'util/bootstrap/form/input-group.twig' with {
+								'inputgroup': {
+									'type': 'prepend',
+									'input': {
+										'name': 'mnfrID',
+										'id': 'newmnfrID',
+										'value': '',
+										'attributes': {
+											'placeholder': '',
+											'aria-label':  'Vendor ID'
+										}
+									},
+									'button': {
+										'colorclass': 'btn-secondary',
+										'text': 'fa fa-search'|icon,
+										'attributes': {
+											'title': 'Search for Manufacturer',
+											'data-toggle': 'modal',
+											'data-target': '#ajax-modal',
+											'data-lookupurl': page.search_lookupURL('vendors'),
+											'data-input': '#newmnfrID'
+										}
+									}
+								}
+							}
+						%}
+					</div>
+					<input type="hidden" name="mnfritemID" value="new">
+					<button type="submit" class="btn btn-success">
+						Insert
+					</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

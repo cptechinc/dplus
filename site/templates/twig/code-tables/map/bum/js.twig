@@ -52,11 +52,10 @@ $(function() {
 	be put into a hidden input field for verification
 ============================================================= */
 
-	$("body").on("click", "#code-edit-form button:not(.form_button)", function(e) {
+	$("body").on("click", "button:not(#code-edit-form button[type=submit])", function(e) {
 		var origForm = form.find('input[name=serialized]').val();
 
 		if (form.serialize() !== origForm && input_codeID.val() != '') {
-
 			swal2.fire({
 				title: 'Changes have occurred!',
 				text: 'Do you want to save?',

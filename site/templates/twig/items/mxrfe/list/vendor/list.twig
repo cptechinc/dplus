@@ -5,6 +5,7 @@
 	mxrfe                  module XrefMxrfe
 	recordlocker           module RecordLockerUser
 	xrefs                  ItemXrefManufacturer[]|ObjectCollection
+	qnotes                 module QnotesItemMxrfe
 #}
 {% set response = mxrfe.response() %}
 {% set values = page.wire('input').get %}
@@ -31,7 +32,7 @@
 
 				<tr class="{{ class }}" data-mxrfe="{{ mxrfe.get_recordlocker_key(xref) }}">
 					<td>{{ xref.vendoritemid }}</td>
-					<td></td>
+					<td>{{ (qnotes.mnfr.exist(xref.mnfrid, xref.mnfritemid) or qnotes.intv.notes_exist_item(xref.itemid, xref.mnfrid) or qnotes.mmsc.exist(xref.mnfrid, xref.mnfritemid))|yesorno|capitalize }}</td>
 					<td>{{ xref.itemid }}</td>
 					<td>{{ xref.item.description }}</td>
 					<td class="text-center">

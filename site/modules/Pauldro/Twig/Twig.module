@@ -38,7 +38,7 @@ class Twig extends WireData implements Module {
 	}
 
 	public function setupTwigGlobals(Environment $twig) {
-		foreach (['page', 'pages', 'config', 'user', 'languages', 'sanitizer', 'session', 'browseragent'] as $variable) {
+		foreach (['page', 'pages', 'config', 'user', 'languages', 'sanitizer', 'session', 'input', 'browseragent'] as $variable) {
 			$twig->addGlobal($variable, $this->wire($variable));
 		};
 		$twig->addGlobal('homepage', $this->wire('pages')->get('/'));
@@ -70,10 +70,16 @@ class Twig extends WireData implements Module {
 			return stripslashes($str);
 		});
 		$twig->addFilter($filter);
+
 		$yesno = new TwigFilter('yesorno', function ($trueorfalse) {
 			return ($trueorfalse === true || strtoupper($trueorfalse) == 'Y') ? 'yes' : 'no';
 		});
 		$twig->addFilter($yesno);
+
+		$bool = new TwigFilter('bool', function ($val) {
+			return $val === true;
+		});
+		$twig->addFilter($bool);
 
 		$filter = new TwigFilter('attrJS', function ($string, $jsprepend = true) {
 			$replace = array(
