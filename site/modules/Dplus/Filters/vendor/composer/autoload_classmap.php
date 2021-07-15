@@ -18,6 +18,7 @@ return array(
     'Dplus\\Filters\\Min\\ItemMaster' => $baseDir . '/src/Min/ItemMaster.php',
     'Dplus\\Filters\\Min\\LotMaster' => $baseDir . '/src/Min/LotMaster.php',
     'Dplus\\Filters\\Min\\Upcx' => $baseDir . '/src/Min/Upcx.php',
+    'Dplus\\Filters\\Min\\WarehouseBin' => $baseDir . '/src/Min/WarehouseBin.php',
     'Dplus\\Filters\\Misc\\CountryCode' => $baseDir . '/src/Misc/CountryCode.php',
     'Dplus\\Filters\\Misc\\PhoneBook' => $baseDir . '/src/Misc/PhoneBook.php',
     'Dplus\\Filters\\Mki\\Kim' => $baseDir . '/src/Mki/Kim.php',
