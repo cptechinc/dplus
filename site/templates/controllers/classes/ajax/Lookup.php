@@ -35,7 +35,7 @@ class Lookup extends AbstractController {
 		$filter = self::pw('modules')->get('FilterInvTariffCodes');
 		$filter->init_query();
 		$page->headline = "Tariff Codes";
-		self::moduleFilterResults($filter, $wire, $data);
+		self::moduleFilterResults($filter, $data);
 	}
 
 	/**
@@ -50,7 +50,7 @@ class Lookup extends AbstractController {
 		$filter = self::pw('modules')->get('FilterInvMsdsCodes');
 		$filter->init_query();
 		$page->headline = "Msds Codes";
-		self::moduleFilterResults($filter, $wire, $data);
+		self::moduleFilterResults($filter, $data);
 	}
 
 	/**
@@ -65,7 +65,7 @@ class Lookup extends AbstractController {
 		$filter = self::pw('modules')->get('FilterMsoFreightCodes');
 		$filter->init_query();
 		$page->headline = "Freight Codes";
-		self::moduleFilterResults($filter, $wire, $data);
+		self::moduleFilterResults($filter, $data);
 	}
 
 	/**
@@ -95,7 +95,7 @@ class Lookup extends AbstractController {
 		$filter = self::pw('modules')->get('FilterWarehouses');
 		$filter->init_query();
 		$page->headline = "Warehouses";
-		self::moduleFilterResults($filter, $wire, $data);
+		self::moduleFilterResults($filter, $data);
 	}
 
 	/**
@@ -126,7 +126,7 @@ class Lookup extends AbstractController {
 		$filter = self::pw('modules')->get('FilterDplusUsers');
 		$filter->init_query();
 		$page->headline = "Users";
-		self::moduleFilterResults($filter, $wire, $data);
+		self::moduleFilterResults($filter, $data);
 	}
 
 	/**
@@ -188,7 +188,7 @@ class Lookup extends AbstractController {
 		$filter = self::pw('modules')->get('FilterItemMaster');
 		$filter->init_query();
 		self::pw('page')->headline = "Item Master";
-		self::moduleFilterResults($filter, $wire, $data);
+		self::moduleFilterResults($filter, $data);
 	}
 
 	/**
@@ -259,7 +259,7 @@ class Lookup extends AbstractController {
 		self::filterResults($filter, $data);
 	}
 
-	private static function moduleFilterResults(Module $filter, ProcessWire $wire, $data) {
+	private static function moduleFilterResults(Module $filter, $data) {
 		$input = self::pw('input');
 		$page  = self::pw('page');
 		$filter->filter_input(self::pw('input'));
