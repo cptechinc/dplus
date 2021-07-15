@@ -31,6 +31,10 @@ class SalesOrder extends Base {
 		$fields = ['ordn|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 
+		if (empty($data->action) === false) {
+			return self::handleCRUD($data);
+		}
+
 		if (empty($data->ordn) === false) {
 			return self::so($data);
 		}
@@ -62,6 +66,16 @@ class SalesOrder extends Base {
 		}
 
 		return self::salesorder($data);
+	}
+
+	public static function handleCRUD($data) {
+		self::sanitizeParametersShort($data, ['ordn|ordn', 'action|text']);
+		switch ($data->action) {
+			case 'print-invoice':
+				self::requestPrintInvoice($data);
+				break;
+		}
+		self::pw('session')->redirect(self::orderUrl($data->ordn));
 	}
 
 /* =============================================================
@@ -190,5 +204,23 @@ class SalesOrder extends Base {
 		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::iiUrl', function($event) {
 			$event->return = Ii::iiUrl($event->arguments(0));
 		});
+
+		$m->addHook('Page(pw_template=sales-order-view)::printInvoiceUrl', function($event) {
+			$event->return = self::orderPrintInvoiceUrl($event->arguments(0));
+		});
+	}
+
+	private static function requestPrintInvoice($data) {
+		$vars = ['PRINTARINVOICE', "ORDN=$data->ordn"];
+		self::sendRequest($vars);
+	}
+
+	protected static function sendRequest(array $data, $sessionID = '') {
+		$sessionID = $sessionID ? $sessionID : session_id();
+		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
+		$data = array_merge(["DBNAME=$db"], $data);
+		$requestor = self::pw('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, $sessionID);
+		$requestor->cgi_request(self::pw('config')->cgis['default'], $sessionID);
 	}
 }

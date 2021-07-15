@@ -84,6 +84,12 @@ abstract class Base extends AbstractController {
 		return $url->getUrl();
 	}
 
+	public static function orderPrintInvoiceUrl($ordn) {
+		$url = new Purl(self::orderUrl($ordn));
+		$url->query->set('action', 'print-invoice');
+		return $url->getUrl();
+	}
+
 	public static function orderNotesUrl($ordn, $linenbr = '') {
 		$url = new Purl(self::orderUrl($ordn));
 		$url->path->add('notes');
