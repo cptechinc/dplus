@@ -20,7 +20,7 @@ $(function() {
 		modal.find('.modal-body').loadin(url, function() {});
 	});
 
-	$("body").on('click', '.vendor-link', function(e) {
+	$("body").on('click', '#ajax-modal .vendor-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
 		var vendorID = button.data('vendorid');
