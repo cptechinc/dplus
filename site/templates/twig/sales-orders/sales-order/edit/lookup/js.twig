@@ -53,6 +53,9 @@ $(function() {
 		}
 	});
 
+	console.log('init ');
+	console.log(validator);
+
 /* =============================================================
 	Event Functions
 ============================================================= */
@@ -75,13 +78,14 @@ $(function() {
 			input.val('');
 		} else {
 			validate_get_item();
-			if (validator.element('#'+input.attr('id'))) {
-				if (validator.element('#'+input_qty.attr('id'))) {
-					form_additem.submit();
-				} else {
-					input_qty.focus();
-				}
-			}
+			var validator = $.data(form_additem[0], "validator");
+			// if (validator.element('#'+input.attr('id'))) {
+			// 	if (validator.element('#'+input_qty.attr('id'))) {
+			// 		form_additem.submit();
+			// 	} else {
+			// 		input_qty.focus();
+			// 	}
+			// }
 		}
 	});
 

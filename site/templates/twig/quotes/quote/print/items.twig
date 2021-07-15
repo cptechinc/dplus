@@ -25,7 +25,7 @@
 					{{ detail.itemid }}</br>
 					<small>{{ detail.description }}</small>
 				</td>
-				<td class="text-right">{{ detail.qty|number_format(config.so.decimal_places) }}</td>
+				<td class="text-right">{{ detail.qty|number_format(configSo.decimal_places) }}</td>
 				<td class="text-right">$ {{ detail.price|currency }}</td>
 				<td class="text-right">$ {{ detail.price_total|currency }}</td>
 			</tr>

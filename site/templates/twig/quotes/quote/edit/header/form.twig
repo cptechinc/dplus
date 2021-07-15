@@ -1,20 +1,22 @@
 <hr>
 
-<form id="edit-quote-form" action="{{ page.formurl }}">
-	<input type="hidden" name="action" value="edit-quote">
+<form id="edit-quote-form" action="{{ page.wire('input').url() }}" method="post">
+	<input type="hidden" name="action" value="update-quote">
 	<input type="hidden" name="qnbr" value="{{ quote.quotenumber }}">
+	<input type="hidden" name="custID" value="{{ quote.custid }}">
+	<input type="hidden" name="shiptoID" value="{{ quote.shiptoid }}">
 
 	<div class="row">
 		<div class="col-sm-6">
 			<h3 class="font-weight-bold text-secondary mt-4">Edit Shipping Information</h3>
-			{% include 'quotes/quote/edit/form-shipto.twig' %}
+			{% include 'quotes/quote/edit/header/form/shipto.twig' %}
 
 			<h3 class="font-weight-bold text-secondary mt-4">Edit Contact Information</h3>
-			{% include 'quotes/quote/edit/form-contact.twig' %}
+			{% include 'quotes/quote/edit/header/form/contact.twig' %}
 		</div>
 		<div class="col-sm-6">
 			<h3 class="font-weight-bold text-secondary mt-4">Edit Quote Information</h3>
-			{% include 'quotes/quote/edit/form-quote.twig' %}
+			{% include 'quotes/quote/edit/header/form/quote.twig' %}
 		</div>
 	</div>
 

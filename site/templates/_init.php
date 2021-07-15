@@ -56,7 +56,7 @@ if ($page->id != $config->errorpage_dplusdb) {
 
 	$templates_nosignin = array('login', 'redir', 'quote-print');
 
-	if ($input->get->pdf || $input->get->print) {
+	if ($input->get->pdf || $input->get->print || $input->lastSegment() == 'print') {
 
 	} elseif (!in_array($page->template, $templates_nosignin) && LogpermQuery::create()->is_loggedin(session_id()) == false) {
 		$session->returnurl = $page->fullURL->getUrl();
@@ -123,7 +123,7 @@ if ($input->get->json) {
 	$config->json = true;
 }
 
-if ($input->get->print) {
+if ($input->get->print || $input->lastSegment() == 'print') {
 	$page->print = true;
 }
 

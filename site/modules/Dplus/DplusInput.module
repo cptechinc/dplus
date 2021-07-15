@@ -1,0 +1,47 @@
+<?php namespace ProcessWire;
+
+use PurchaseOrder, SalesOrder, Quote;
+
+/**
+ * DplusSanitizer
+ *
+ * Module for Adding Hooks to the Sanitizer Class
+ */
+class DplusInput extends WireData implements Module {
+
+	public function init() {
+		$this->addHookProperty('WireInput::values', function(HookEvent $event) {
+			$input = $event->object;
+			$rm    = strtolower($input->requestMethod());
+			$event->return = $input->$rm;
+		});
+
+		$this->addHook('WireInput::values', function(HookEvent $event) {
+			$input = $event->object;
+			$rm    = strtolower($input->requestMethod());
+			$event->return = $input->$rm;
+		});
+
+		$this->addHook('WireInput::lastSegment', function(HookEvent $event) {
+			$input = $event->object;
+			$segments = $input->urlSegments();
+			$segmentCount = count($segments);
+			$event->return = $segmentCount ? $segments[$segmentCount] : $this->wire('page')->name;
+		});
+
+		$this->addHook('WireInput::countSegments', function(HookEvent $event) {
+			$input = $event->object;
+			$event->return = count($input->urlSegments());
+		});
+	}
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Dplus Input',
+			'version' => 101,
+			'summary' => 'Adds Hooks to the Input Class',
+			'singular' => true,
+			'autoload' => true,
+		);
+	}
+}

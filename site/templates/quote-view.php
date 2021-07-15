@@ -4,12 +4,12 @@
 	use Controllers\Mqo\Quote\Documents;
 	use Controllers\Mqo\Quote\Notes;
 	use Controllers\Mqo\Quote\PrintQt;
+	use Controllers\Mqo\Quote\Edit;
+	use Controllers\Mqo\Quote\OrderQuote;
 
 	QtController::initHooks();
 
-	$segments = $input->urlSegments();
-
-	if (empty($segments) === false && $segments[sizeof($segments)] == 'print') {
+	if (empty($input->urlSegments()) === false && $input->lastSegment()== 'print') {
 		PrintQt::initHooks();
 	}
 
@@ -20,7 +20,15 @@
 			['GET',   '', Notes::class, 'index'],
 			['POST',  '', Notes::class, 'handleCRUD'],
 		],
-		['GET',  'print/', PrintQt::class, 'index'],
+		['GET', 'print/', PrintQt::class, 'index'],
+		'edit' => [
+			['GET',   '', Edit::class, 'index'],
+			['POST',  '', Edit::class, 'handleCRUD'],
+		],
+		'order' => [
+			['GET',   '', OrderQuote::class, 'index'],
+			['POST',  '', OrderQuote::class, 'handleCRUD'],
+		],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
@@ -30,10 +38,10 @@
 	if ($config->ajax) {
 		echo $page->body;
 	} else {
-		if ($page->print) {
+		if ($input->lastSegment() == 'print') {
 			$page->show_title = true;
 
-			if ($page->is_pdf()) {
+			if ($input->get->offsetExists('pdf')) {
 				$page->show_title = false;
 			}
 			include __DIR__ . "/blank-page.php";

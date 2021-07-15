@@ -56,6 +56,7 @@
 				['GET', 'custid/', Json\Mar::class, 'validateCustid'],
 			],
 			['GET', 'customer/', Json\Mar::class, 'getCustomer'],
+			['GET', 'customer/shipto/', Json\Mar::class, 'getCustomerShipto'],
 		],
 		'mci' => [
 			'validate' => [
@@ -100,6 +101,13 @@
 			'sales-order' => [
 				['GET', 'line/', Json\Mso::class, 'getSalesOrderDetail'],
 			],
+		],
+		'mqo' => [
+			'quote' => [
+				'edit' => [
+					['POST', '', Json\Mqo::class, 'editQuote'],	
+				]
+			]
 		],
 		'wm' => [
 			'receiving' => [
