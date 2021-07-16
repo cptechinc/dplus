@@ -4,6 +4,7 @@ use Propel\Runtime\ActiveQuery\ModelCriteria as BaseQuery;
 // ProcessWire Classes, Modules
 use ProcessWire\Module, ProcessWire\ProcessWire;
 // Dplus Filters
+use Dplus\Filters;
 use Dplus\Filters\AbstractFilter    as Filter;
 use Dplus\Filters\Misc\PhoneBook    as PhoneBookFilter;
 use Dplus\Filters\Misc\CountryCode  as CountryCodeFilter;
@@ -104,7 +105,7 @@ class Lookup extends AbstractController {
 		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
 		self::sanitizeParametersShort($data, ['whseID|text']);
 		self::pw('page')->headline = "Warehouse Bins";
-		$filter = new WarehouseBinFilter();
+		$filter = new Filters\Min\WarehouseBin();
 		return self::filterResults($filter, $data);
 	}
 
