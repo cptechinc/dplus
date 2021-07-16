@@ -5,7 +5,9 @@
 
 {% block form %}
 	<div class="form-group">
-		<label for="{{ id }}">{{ label }}</label>
+		{% if label %}
+			<label for="{{ id }}">{{ label }}</label>
+		{% endif %}
 		<div class="input-group {{ small ? 'input-group+sm' : ''}}">
 			{% include 'util/form/input.twig' %}
 			<div class="input-group-append">

@@ -28,5 +28,7 @@
 			<a href="{{ page.url }}">{{ page.title }}</a>
 		</li>
 		<li class="breadcrumb-item active" aria-current="page">Item: {{ values.text('itemID')}}</li>
+	{% else %}
+		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
 	{% endif %}
 {% endblock %}
