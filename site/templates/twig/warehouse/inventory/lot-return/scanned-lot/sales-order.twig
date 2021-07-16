@@ -1,0 +1,16 @@
+<div class="collapse {{ browseragent.isMobile() == false ? 'show' : ''}}" id="so">
+	<table class="table table-sm">
+		<tr>
+			<td>Order #</td>
+			<td>{{ json['item']['salesorder']['ordernumber'] }}</td>
+		</tr>
+		<tr>
+			<td>Customer</td>
+			<td>{{ json['item']['salesorder']['custid'] }} - {{ json['item']['salesorder']['custname'] }}</td>
+		</tr>
+		<tr>
+			<td>Invoice Date</td>
+			<td>{{ json['item']['salesorder']['invoicedate'] }}</td>
+		</tr>
+	</table>
+</div>

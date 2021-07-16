@@ -1,0 +1,14 @@
+<table class="table table-striped" id="bins-table">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th>From</th>
+			<th>Through</th>
+		</tr>
+	</thead>
+	{% for bin in results %}
+		<tr>
+			<td>{{ bin.from }}</td>
+			<td>{{ bin.through }}</td>
+		</tr>
+	{% endfor %}
+</table>

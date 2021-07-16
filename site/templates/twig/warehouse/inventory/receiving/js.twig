@@ -149,7 +149,7 @@ $(function() {
 			binID: {
 				required: true,
 				remote: {
-					url: '{{ page.jsonapiURL('inv/validate/warehouse/bins/') }}',
+					url: '{{ page.jsonapiURL('inv/validate/warehouse/bin/') }}',
 					type: "get",
 					data: {
 						jqv: 'true',
@@ -221,7 +221,7 @@ $(function() {
 					return $('#item-search-form').data('forcebin') == true;
 				},
 				remote: {
-					url: '{{ page.jsonapiURL('inv/validate/warehouse/bins/') }}',
+					url: '{{ page.jsonapiURL('inv/validate/warehouse/bin/') }}',
 					type: "get",
 					data: {
 						jqv: 'true',

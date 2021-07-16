@@ -23,6 +23,9 @@
 		// Warehouse
 		['GET', 'warehouses/', AjaxLookup::class, 'warehouses'],
 		['GET', 'warehouses/page{nbr:\d+}/', AjaxLookup::class, 'warehouses'],
+		// Warehouse Bins
+		['GET', 'warehouse/bins/', AjaxLookup::class, 'warehouseBins'],
+		['GET', 'warehouse/bins/page{nbr:\d+}/', AjaxLookup::class, 'warehouseBins'],
 		// User
 		['GET', 'users/', AjaxLookup::class, 'users'],
 		['GET', 'users/page{nbr:\d+}/', AjaxLookup::class, 'users'],
@@ -52,11 +55,7 @@
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
-	$response = $router->route();
-
-	if ($router->hasError()) {
-		$page->body = $response;
-	}
+	$page->body = $router->route();
 
 	if ($config->ajax) {
 		echo $page->body;

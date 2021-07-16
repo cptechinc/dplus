@@ -95,6 +95,7 @@ return array(
     'Controllers\\Mwm\\Menu' => $baseDir . '/classes/Mwm/Menu.php',
     'Controllers\\Wm\\Base' => $baseDir . '/classes/Mwm/Base.php',
     'Controllers\\Wm\\Binr' => $baseDir . '/classes/Mwm/binr/Binr.php',
+    'Controllers\\Wm\\Inventory\\LotReturn' => $baseDir . '/classes/Mwm/inventory/LotReturn/LotReturn.php',
     'Controllers\\Wm\\Receiving\\Receiving' => $baseDir . '/classes/Mwm/inventory/Receiving/Receiving.php',
     'Controllers\\Wm\\Sop\\Picking\\Picking' => $baseDir . '/classes/Mwm/sop/Picking.php',
 );

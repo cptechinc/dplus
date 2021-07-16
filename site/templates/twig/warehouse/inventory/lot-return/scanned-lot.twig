@@ -1,0 +1,73 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	json                   JSON array
+#}
+<div class="card">
+	<div class="card-header">
+		<div class="row">
+			<div class="col-sm-3">
+				<strong>Lot Reference:</strong> {{ json['item']['lotref'] }}
+			</div>
+			<div class="col-sm-3">
+				<strong>Qty:</strong> {{ json['item']['qty'] }}
+			</div>
+		</div>
+	</div>
+
+	<div class="card-body">
+		<div class="row">
+			<div class="col-sm-4 mb-3">
+				<div class="d-flex justify-content-between align-items-center">
+					<h4>Lot</h4>
+					<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#lot" aria-expanded="true" aria-controls="lot">
+						<i class="fa fa-expand" aria-hidden="true"></i> Show / Hide
+					</button>
+				</div>
+				{% include 'warehouse/inventory/lot-return/scanned-lot/lot.twig' %}
+			</div>
+			<div class="col-sm-4 mb-3">
+				<div class="d-flex justify-content-between align-items-center">
+					<h4>Sales Order</h4>
+					<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#so" aria-expanded="true" aria-controls="so">
+						<i class="fa fa-expand" aria-hidden="true"></i> Show / Hide
+					</button>
+				</div>
+				{% include 'warehouse/inventory/lot-return/scanned-lot/sales-order.twig' %}
+			</div>
+			<div class="col-sm-4 mb-3">
+				<div class="d-flex justify-content-between align-items-center">
+					<h4>Purchase Order</h4>
+					<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#po" aria-expanded="true" aria-controls="po">
+						<i class="fa fa-expand" aria-hidden="true"></i> Show / Hide
+					</button>
+				</div>
+				{% include 'warehouse/inventory/lot-return/scanned-lot/purchase-order.twig' %}
+			</div>
+		</div>
+		<div>
+			<h4>Return to Stock?</h4>
+			<div class="d-flex justify-content-between align-items-center">
+				<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#restock-modal">
+					<i class="fa fa-check" aria-hidden="true"></i> Yes
+				</button>
+				<a href="{{ page.url }}" class="btn btn-warning btn-sm">
+					<i class="fa fa-times" aria-hidden="true"></i> No
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<div>
+				<a href="{{ page.url }}" class="btn btn-warning btn-sm">
+					<i class="fa fa-times" aria-hidden="true"></i> Close
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% include 'warehouse/inventory/lot-return/scanned-lot/restock-modal.twig' %}
