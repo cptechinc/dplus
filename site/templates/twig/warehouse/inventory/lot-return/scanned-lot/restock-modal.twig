@@ -1,0 +1,53 @@
+{% extends 'util/bootstrap/html/modal.twig' %}
+
+{% set title = 'Returning ' ~ json['item']['lotnbr'] ~ ' to stock' %}
+{% set id = 'restock-modal' %}
+
+
+{% block modal_body %}
+	<form action="{{ input.url() }}" id="restock-form">
+		<input type="hidden" name="action" value="return-lot">
+		<input type="hidden" name="lotnbr" value="{{ json['item']['lotnbr'] }}">
+		<input type="hidden" name="ordn" value="{{ json['item']['salesorder']['ordernumber'] }}">
+		<input type="hidden" name="ponbr" value="{{ json['item']['purchaseorder']['ponbr'] }}">
+		<input type="hidden" name="whseID" value="{{ user.whseid }}">
+		<input type="hidden" name="scan" value="{{ input.get.text('scan') }}">
+
+		<label for="binID">Bin ID</label>
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'attributes': {},
+					'input': {
+						'name': 'binID',
+						'value': '',
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Bin ID',
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Bins',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.searchLookupUrl('warehouse/bins/'),
+							'data-input': '#binID'
+						}
+					}
+				}
+			}
+		%}
+		<div class="mt-3 d-flex justify-content-between align-items-center">
+			<button type="submit" class="btn btn-success" name="restock" value="true">
+				Return To Stock
+			</button>
+		</div>
+	</form>
+{% endblock %}
+
+{% block modal_footer %}
+
+{% endblock %}

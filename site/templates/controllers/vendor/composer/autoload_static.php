@@ -96,6 +96,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mwm\\Menu' => __DIR__ . '/../..' . '/classes/Mwm/Menu.php',
         'Controllers\\Wm\\Base' => __DIR__ . '/../..' . '/classes/Mwm/Base.php',
         'Controllers\\Wm\\Binr' => __DIR__ . '/../..' . '/classes/Mwm/binr/Binr.php',
+        'Controllers\\Wm\\Inventory\\LotReturn' => __DIR__ . '/../..' . '/classes/Mwm/inventory/LotReturn/LotReturn.php',
         'Controllers\\Wm\\Receiving\\Receiving' => __DIR__ . '/../..' . '/classes/Mwm/inventory/Receiving/Receiving.php',
         'Controllers\\Wm\\Sop\\Picking\\Picking' => __DIR__ . '/../..' . '/classes/Mwm/sop/Picking.php',
     );

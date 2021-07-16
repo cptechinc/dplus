@@ -1,0 +1,20 @@
+<div class="collapse {{ browseragent.isMobile() == false ? 'show' : ''}}" id="lot">
+	<table class="table table-sm">
+		<tr>
+			<td>Lot #</td>
+			<td>{{ json['item']['lotnbr'] }}</td>
+		</tr>
+		<tr>
+			<td>Lot Ref</td>
+			<td>{{ json['item']['lotnbr'] }}</td>
+		</tr>
+		<tr>
+			<td>Item</td>
+			<td>{{ json['item']['itemid'] }} - {{ json['item']['description'] }}</td>
+		</tr>
+		<tr>
+			<td>Qty</td>
+			<td>{{ json['item']['qty'] }}</td>
+		</tr>
+	</table>
+</div>
