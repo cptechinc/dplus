@@ -134,7 +134,7 @@ $(function() {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
 		rules: {
-			mnfrIDID: {
+			mnfrID: {
 				required: true,
 				remote: {
 					url: '{{ page.jsonapiURL('map/validate/vendorid/') }}',
@@ -160,6 +160,9 @@ $(function() {
 					data: {}
 				}
 			},
+			unitofm: {
+				required: true,
+			}
 		},
 		messages: {
 			ouritemID: "Please enter the Your Item ID",
@@ -238,7 +241,10 @@ $(function() {
 			if (input_mnfritemID.val() != '') {
 				input_mnfritemID.change();
 			}
+		}
 
+		if (input.val() != input.attr('data-itemid')) {
+			input.attr('data-itemid', input.val());
 			populate_item_data(input.val());
 		}
 	});
@@ -255,8 +261,10 @@ $(function() {
 	function populate_item_data(itemID) {
 		request_item(itemID, function(item) {
 			if (item) {
+				console.log(item);
 				$('.item-description').text(item.description);
 				$('.item-description2').text(item.description2);
+				$('select[name=unitofm]').val(item.uom_purchase);
 			} else {
 				input_itemID.attr('data-itemid', '');
 			}
@@ -284,6 +292,7 @@ $(function() {
 	function request_item(itemID, callback) {
 		var url = new URI('{{ page.jsonapiURL('inv/item/') }}');
 		url.addQuery('itemID', itemID);
+		url.addQuery('fields', 'uom_purchase');
 
 		$.getJSON(url.toString(), function( item ) {
 			callback(item);
