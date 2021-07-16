@@ -226,7 +226,7 @@ class Mxrfe extends AbstractController {
 	 * @param  string $itemID      ITM Item ID
 	 * @return string
 	 */
-	public function xrefDeleteUrl($mnfrID, $mnfritemID, $itemID) {
+	public static function xrefDeleteUrl($mnfrID, $mnfritemID, $itemID) {
 		$url = new Purl(self::xrefUrl($mnfrID, $mnfritemID, $itemID));
 		$url->query->set('action', 'delete-xref');
 		return $url->getUrl();
@@ -338,13 +338,15 @@ class Mxrfe extends AbstractController {
 		$itemID     = $values->text('itemID');
 		$mxrfe = self::mxrfeMaster();
 
-		if ($mxrfe->xref_exists($mnfrID, $mnfritemID, $itemID) === false && $values->text('action') != 'update-notes') {
-			return self::pw('pages')->get('pw_template=mxrfe')->url;
+		if (in_array($values->text('action'), ['delete-xref', 'update-notes']) === false) {
+			if ($mxrfe->xref_exists($mnfrID, $mnfritemID, $itemID) === false) {
+				return self::pw('pages')->get('pw_template=mxrfe')->url;
+			}
 		}
 
 		switch ($values->text('action')) {
 			case 'update-xref':
-			$xref = $mxrfe->xref($mnfrID, $mnfritemID, $itemID);
+				$xref = $mxrfe->xref($mnfrID, $mnfritemID, $itemID);
 				$focus = $mxrfe->get_recordlocker_key($xref);
 				return self::mnfrFocusUrl($mnfrID, $focus);
 				break;
