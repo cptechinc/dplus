@@ -148,6 +148,7 @@ class XrefMxrfe extends WireData implements Module {
 		} else {
 			$mnfritemID = $mnfritemID == 'new' ? '' : $mnfritemID;
 			$record = $this->new_xref();
+			$record->setAvailable(0.0);
 			$record->setMnfrid($mnfrID);
 			$record->setMnfritemid($mnfritemID);
 
