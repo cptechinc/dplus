@@ -4,7 +4,6 @@
 	</div>
 	<div class="col-sm-8">
 		<select name="unitofm" class="form-control form-control-sm mb-1" id="unitofm">
-			<option value="" data-conversion=""></option>
 			{% for uom in mxrfe.unitsofm() %}
 				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == xref.unitofm ? 'selected' : ''}}>
 					{{ uom.code }} - {{ uom.description }}
