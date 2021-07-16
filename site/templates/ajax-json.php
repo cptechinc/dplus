@@ -11,7 +11,7 @@
 				['GET', 'msds-code/', Json\Min::class, 'validateMsdsCode'],
 				['GET', 'itemid/', Json\Min::class, 'validateItemid'],
 				['GET', 'warehouse/', Json\Min::class, 'validateWarehouseid'],
-				['GET', 'warehouse/bins/', Json\Min::class, 'validateWarehouseBinid'],
+				['GET', 'warehouse/bin/', Json\Min::class, 'validateWarehouseBinid'],
 				['GET', 'itmp/exists/', Json\Min::class, 'validateItmpExists'],
 				['GET', 'item-group/', Json\Min::class, 'validateInvGroupCode'],
 				'upcx' => [
@@ -105,7 +105,7 @@
 		'mqo' => [
 			'quote' => [
 				'edit' => [
-					['POST', '', Json\Mqo::class, 'editQuote'],	
+					['POST', '', Json\Mqo::class, 'editQuote'],
 				]
 			]
 		],
