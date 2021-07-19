@@ -4,7 +4,7 @@
 
 {% block current_page %}
 	{% if values.offsetExists('upc') == false and values.offsetExists('itemID') == false  %}
-	<li class="breadcrumb-item active" aria-current="page">UPCX</li>
+		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
 	{% endif %}
 
 	{% if values.offsetExists('itemID') %}

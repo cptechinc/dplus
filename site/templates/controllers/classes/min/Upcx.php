@@ -65,7 +65,7 @@ class Upcx extends AbstractController {
 		$page->headline = "UPCX: $xref->upc";
 
 		if ($xref->isNew()) {
-			$page->headline = "UPCX: Create X-ref";
+			$page->headline = "UPCX: Create X-Ref";
 		}
 
 		$page->js   .= self::pw('config')->twig->render('items/upcx/form/js.twig', ['upc' => $xref]);
