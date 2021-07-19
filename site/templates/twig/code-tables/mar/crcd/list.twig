@@ -35,7 +35,7 @@
 			</div>
 			<div class="col-3">
 				{% if page.is_print() == false %}
-					<a href="{{ page.url ~ '?code=new' }}" class="btn btn-light">
+					<a href="{{ page.url ~ '?code=new' }}" class="btn btn-light btn-sm">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
 					</a>
 				{% endif %}
@@ -73,11 +73,11 @@
 				<div class="col-3 text-center">
 					{% if recordlocker.function_locked(page.name, code.code) == false or recordlocker.function_locked_by_user(page.name, code.code) %}
 						{% if page.is_print() == false %}
-							<a href="{{ page.get_codetable_code_editURL(page.codetable, code.code) }}" class="btn btn-warning">
+							<a href="{{ page.get_codetable_code_editURL(page.codetable, code.code) }}" class="btn btn-warning btn-sm">
 								<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 							</a>
 							&nbsp;
-							<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger delete_button">
+							<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger btn-sm delete_button">
 								<i class="fa fa-trash" aria-hidden="true"></i> Delete
 							</a>
 						{% endif %}

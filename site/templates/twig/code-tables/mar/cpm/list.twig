@@ -15,7 +15,7 @@
 			</div>
 			<div class="col-3 text-center">
 				{% if page.is_print() == false %}
-					<button type="button" class="btn btn-light" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="" data-surcharge="N" data-percentage="0.00">
+					<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="" data-description="" data-surcharge="N" data-percentage="0.00">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add Code
 					</button>
 				{% endif %}
@@ -40,11 +40,11 @@
 				</div>
 				<div class="col-3 text-center">
 					{% if page.is_print() == false %}
-						<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-surcharge="{{ code.surcharge }}" data-percentage="{{ code.percentage }}">
+						<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-code-modal" data-code="{{ code.code }}" data-description="{{ code.description }}" data-surcharge="{{ code.surcharge }}" data-percentage="{{ code.percentage }}">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</button>
 						&nbsp;
-						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger delete_button">
+						<a href="{{ page.get_codetable_code_deleteURL(page.codetable, code.code) }}" class="btn btn-danger btn-sm delete_button">
 							<i class="fa fa-trash" aria-hidden="true"></i> Delete
 						</a>
 					{% endif %}
