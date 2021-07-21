@@ -80,7 +80,7 @@ class Vxm extends AbstractController {
 			$page->headline = "VXM: " . $vxm->get_recordlocker_key($xref);
 		}
 
-		$page->js .= self::pw('config')->twig->render('items/vxm/item/form/js.twig', ['page' => $page, 'vxm' => $vxm, 'item' => $xref]);
+		$page->js .= self::pw('config')->twig->render('items/vxm/xref/form/js.twig', ['page' => $page, 'vxm' => $vxm, 'item' => $xref]);
 		$html = self::xrefDisplay($data, $xref);
 		return $html;
 	}
@@ -94,7 +94,7 @@ class Vxm extends AbstractController {
 		$html = '';
 		$html .= $config->twig->render('items/vxm/bread-crumbs.twig');
 		$html .= self::lockXref($xref);
-		$html .= $config->twig->render('items/vxm/item/form/display.twig', ['vendor' => $vendor, 'item' => $xref, 'vxm' => $vxm, 'qnotes' => $qnotes]);
+		$html .= $config->twig->render('items/vxm/xref/form/display.twig', ['vendor' => $vendor, 'item' => $xref, 'vxm' => $vxm, 'qnotes' => $qnotes]);
 
 		if (!$xref->isNew()) {
 			$html .= self::qnotesDisplay($xref);
@@ -185,7 +185,7 @@ class Vxm extends AbstractController {
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 
 		$page->show_breadcrumbs = false;
-		$page->js .= self::pw('config')->twig->render('items/vxm/list/item/js.twig');
+		$page->js .= self::pw('config')->twig->render('items/vxm/list/xref/js.twig');
 		$html = self::vendorXrefsDisplay($data, $xrefs);
 		return $html;
 	}
@@ -194,7 +194,7 @@ class Vxm extends AbstractController {
 		$vxm    = self::vxmMaster();
 		$vendor = $vxm->get_vendor($data->vendorID);
 
-		$html = self::pw('config')->twig->render('items/vxm/list/item/vendor/display.twig', ['vxm' => $vxm, 'items' => $xrefs, 'vendor' => $vendor]);
+		$html = self::pw('config')->twig->render('items/vxm/list/xref/vendor/display.twig', ['vxm' => $vxm, 'items' => $xrefs, 'vendor' => $vendor]);
 		return $html;
 	}
 

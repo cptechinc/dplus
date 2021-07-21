@@ -85,7 +85,7 @@ class Vxm extends XrefFunction {
 
 		$page    = self::pw('page');
 		$page->headline = "ITM: $data->itemID VXM $xref->vendorid-$xref->vendoritemid";
-		$page->js .= self::pw('config')->twig->render('items/vxm/item/form/js.twig', ['vxm' => $vxm]);
+		$page->js .= self::pw('config')->twig->render('items/vxm/xref/form/js.twig', ['vxm' => $vxm]);
 
 		if ($xref->isNew()) {
 			$xref->setItemid($data->itemID);
@@ -140,7 +140,7 @@ class Vxm extends XrefFunction {
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 10);
 		$page->title = "VXM";
 		$page->headline = "ITM: $data->itemID VXM";
-		$page->js .= self::pw('config')->twig->render('items/vxm/list/item/js.twig');
+		$page->js .= self::pw('config')->twig->render('items/vxm/list/xref/js.twig');
 		$html = self::listDisplay($data, $xrefs);
 		self::pw('session')->removeFor('response', 'vxm');
 		return $html;
