@@ -175,6 +175,10 @@ class Mxrfe extends AbstractController {
 		$filter->vendorid($data->mnfrID);
 		$filter->sortby($page);
 		$page->headline = "MXRFE: Mnfr $data->mnfrID";
+		if ($data->q) {
+			$page->headline = "MXRFE: Searching $data->mnfrID X-Refs for '$data->q'";
+			$filter->search($data->q);
+		}
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		$html  = self::mnfrXrefsDisplay($data, $xrefs);
 		return $html;
