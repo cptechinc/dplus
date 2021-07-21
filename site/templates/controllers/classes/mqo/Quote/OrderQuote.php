@@ -13,6 +13,7 @@ use Quothed as EditableQuote;
 use Dplus\Configs;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+use Controllers\Mso\SalesOrder;
 
 class OrderQuote extends Edit {
 
@@ -43,10 +44,11 @@ class OrderQuote extends Edit {
 
 		if ($data->action) {
 			$eqo  = self::getEqo($data->qnbr);
-
 			$eqo->processInput(self::pw('input'));
-
 			$url = self::orderQuoteUrl($data->qnbr);
+			if ($data->action == 'create-order') {
+				$url = SalesOrder\SalesOrder::orderEditNewUrl();
+			}
 			self::pw('session')->redirect($url, $http301 = false);
 		}
 		self::pw('session')->redirect(self::pw('input')->url(), $http301 = false);

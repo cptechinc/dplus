@@ -124,6 +124,7 @@ class Eqo extends WireData implements Module {
 
 		switch ($values->text('action')) {
 			case 'update-quote':
+			case 'create-order':
 				$m = new QtHeader();
 				$m->processInput($input);
 				break;
