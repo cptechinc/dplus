@@ -30,11 +30,6 @@
 			$data = array("DBNAME=$dplusdb", 'EDITQUOTE', "QUOTENO=$qnbr");
 			$session->loc = $pages->get('pw_template=quote-edit')->url."?qnbr=$qnbr";
 			break;
-		case 'order-quote':
-			$qnbr = $input->$requestmethod->text('qnbr');
-			$data = array("DBNAME=$dplusdb", 'QUOTETOORDER', "QUOTENO=$qnbr", "LINENO=ALL");
-			$session->loc = $pages->get('template=dplus-menu,name=mso')->child('template=redir')->url."?action=edit-new-order";
-			break;
 	}
 
 	if (!empty($data)) {
