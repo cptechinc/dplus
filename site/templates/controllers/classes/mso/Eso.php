@@ -21,6 +21,7 @@ use Dplus\CodeValidators\Min as MinValidator;
 use Dplus\Filters\Mso\SalesHistory\Detail as SalesHistoryDetailFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+use Controllers\Mso\SalesOrder as SalesOrderControllers;
 
 class Eso extends AbstractController {
 	public static function index($data) {
@@ -48,13 +49,22 @@ class Eso extends AbstractController {
 			$page = self::pw('page');
 			$eso  = self::pw('modules')->get('SalesOrderEdit');
 			$eso->process_input(self::pw('input'));
-			$url = $page->so_editURL($data->ordn);
+			$url = SalesOrderControllers\SalesOrder::orderEditUrl($data->ordn);
 			if (in_array($data->action, ['unlock-order', 'exit']) || isset($data->exit)) {
-				$url = $page->so_viewURL($data->ordn);
+				$url = SalesOrderControllers\SalesOrder::orderUrl($data->ordn);
 			}
 			self::pw('session')->redirect($url, $http301 = false);
 		}
 		self::pw('session')->redirect(self::pw('input')->url(), $http301 = false);
+	}
+
+	public static function editNewOrder($data) {
+		$ordn = self::pw('user')->get_lockedID();
+
+		if (empty($ordn)) {
+			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "New Sales Order # not found"]);
+		}
+		self::pw('session')->redirect(SalesOrderControllers\SalesOrder::orderEditUrl($ordn), $http301 = false);
 	}
 
 	public static function so($data) {
@@ -77,8 +87,7 @@ class Eso extends AbstractController {
 
 		if ($eso->exists_editable($data->ordn) === false || $eso->can_order_be_edited($data->ordn)) {
 			if ($session->getFor('load-eso', $data->ordn) > 0) {
-				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "SO # $data->ordn can not be loaded for editing"]);
-				return $page->body;
+				return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "SO # $data->ordn can not be loaded for editing"]);
 			}
 			$eso->request_so_edit($data->ordn);
 			$session->setFor('load-eso', $data->ordn, 1);

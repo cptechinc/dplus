@@ -61,7 +61,6 @@ abstract class Base extends AbstractController {
 		$url = new Purl(self::pw('pages')->get('pw_template=sales-orders')->url);
 		if ($ordn) {
 			$url->query->set('focus', $ordn);
-
 		}
 		return $url->getUrl();
 	}
@@ -75,6 +74,13 @@ abstract class Base extends AbstractController {
 	public static function orderEditUrl($ordn) {
 		$url = new Purl(self::orderUrl($ordn));
 		$url->path->add('edit');
+		return $url->getUrl();
+	}
+
+	public static function orderEditNewUrl() {
+		$url = new Purl(self::orderUrl());
+		$url->path->add('edit');
+		$url->path->add('new');
 		return $url->getUrl();
 	}
 

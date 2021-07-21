@@ -3,11 +3,12 @@
 	use Controllers\Mso\SalesOrder\SalesOrder as SalesOrderController;
 	use Controllers\Mso\Eso;
 	SalesOrderController::initHooks();
-	
+
 	$routes = [
 		['GET',  '', Eso::class, 'index'],
-		['GET',  'line/', Eso::class, 'editItem'],
 		['POST', '', Eso::class, 'handleCRUD'],
+		['GET',  'line/', Eso::class, 'editItem'],
+		['GET',  'new/', Eso::class, 'editNewOrder'],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
