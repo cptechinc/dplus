@@ -177,8 +177,13 @@ class Vxm extends AbstractController {
 		$filter = new VxmFilter();
 		$filter->vendorid($data->vendorID);
 		$filter->sortby($page);
-		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		$page->headline = "VXM: Vendor $data->vendorID";
+		if ($data->q) {
+			$page->headline = "VXM: Searching $data->vendorID X-Refs for '$data->q'";
+			$filter->search($data->q);
+		}
+		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
+
 		$page->show_breadcrumbs = false;
 		$page->js .= self::pw('config')->twig->render('items/vxm/list/item/js.twig');
 		$html = self::vendorXrefsDisplay($data, $xrefs);
