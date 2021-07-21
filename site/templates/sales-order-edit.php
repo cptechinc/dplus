@@ -1,14 +1,13 @@
 <?php
-	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
-	use Controllers\Mso\SalesOrder\SalesOrder as SalesOrderController;
-	use Controllers\Mso\Eso;
-	SalesOrderController::initHooks();
+	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
+	use Controllers\Mso\SalesOrder;
+	SalesOrder\SalesOrder::initHooks();
 
 	$routes = [
-		['GET',  '', Eso::class, 'index'],
-		['POST', '', Eso::class, 'handleCRUD'],
-		['GET',  'line/', Eso::class, 'editItem'],
-		['GET',  'new/', Eso::class, 'editNewOrder'],
+		['GET',  '', SalesOrder\Edit::class, 'index'],
+		['POST', '', SalesOrder\Edit::class, 'handleCRUD'],
+		['GET',  'line/', SalesOrder\Edit::class, 'editItem'],
+		['GET',  'new/', SalesOrder\Edit::class, 'editNewOrder'],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);

@@ -1,4 +1,4 @@
-<?php namespace Controllers\Mso;
+<?php namespace Controllers\Mso\SalesOrder;
 
 use stdClass;
 // Propel Query
@@ -21,12 +21,12 @@ use Dplus\CodeValidators\Min as MinValidator;
 use Dplus\Filters\Mso\SalesHistory\Detail as SalesHistoryDetailFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
-use Controllers\Mso\SalesOrder as SalesOrderControllers;
+use Controllers\Mso\Base;
 
-class Eso extends AbstractController {
+class Edit extends Base {
 	public static function index($data) {
 		$fields = ['ordn|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -39,7 +39,7 @@ class Eso extends AbstractController {
 	}
 
 	public static function handleCRUD($data) {
-		$data = self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn']);
+		self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn']);
 
 		if (empty($data->action) === true) {
 			self::pw('session')->redirect(self::pw('page')->url."?ordn=$data->ordn", $http301 = false);
@@ -49,9 +49,9 @@ class Eso extends AbstractController {
 			$page = self::pw('page');
 			$eso  = self::pw('modules')->get('SalesOrderEdit');
 			$eso->process_input(self::pw('input'));
-			$url = SalesOrderControllers\SalesOrder::orderEditUrl($data->ordn);
+			$url = self::orderEditUrl($data->ordn);
 			if (in_array($data->action, ['unlock-order', 'exit']) || isset($data->exit)) {
-				$url = SalesOrderControllers\SalesOrder::orderUrl($data->ordn);
+				$url = self::orderUrl($data->ordn);
 			}
 			self::pw('session')->redirect($url, $http301 = false);
 		}
@@ -64,15 +64,15 @@ class Eso extends AbstractController {
 		if (empty($ordn)) {
 			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "New Sales Order # not found"]);
 		}
-		self::pw('session')->redirect(SalesOrderControllers\SalesOrder::orderEditUrl($ordn), $http301 = false);
+		self::pw('session')->redirect(self::orderEditUrl($ordn), $http301 = false);
 	}
 
 	public static function so($data) {
-		$data = self::sanitizeParametersShort($data, ['ordn|ordn']);
+		self::sanitizeParametersShort($data, ['ordn|ordn']);
 		$data->ordn = self::pw('sanitizer')->ordn($data->ordn);
-		$page = self::pw('page');
-		$config = self::pw('config');
-		$validate = new MsoValidator();
+		$page     = self::pw('page');
+		$config   = self::pw('config');
+		$validate = self::validator();
 
 		if ($validate->order($data->ordn) === false) {
 			if ($validate->invoice($data->ordn)) {
@@ -218,9 +218,8 @@ class Eso extends AbstractController {
 
 	private static function invalidSo($data) {
 		$page = self::pw('page');
-		$config = self::pw('config');
 		$page->headline = "Sales Order #$data->ordn not found";
-		$html = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Sales Order Not Found, check if it\'s in History', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "SO # $data->ordn can not be found"]);
+		$html = self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Sales Order Not Found, check if it\'s in History', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "SO # $data->ordn can not be found"]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= self::lookupForm();
 		return $html;
@@ -228,9 +227,8 @@ class Eso extends AbstractController {
 
 	private static function invalidHistory($data) {
 		$page = self::pw('page');
-		$config = self::pw('config');
 		$page->headline = "Sales Order #$data->ordn is not editable";
-		$html = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Order #$data->ordn is in Sales History", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "SO # $data->ordn is invoiced, and in history"]);
+		$html = self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Order #$data->ordn is in Sales History", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "SO # $data->ordn is invoiced, and in history"]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= self::lookupForm();
 		return $html;
@@ -243,13 +241,12 @@ class Eso extends AbstractController {
 	}
 
 	public static function editItem($data) {
+		self::sanitizeParametersShort($data, ['ordn|ordn', 'linenbr|int', 'itemID|text']);
 		$eso = self::pw('modules')->get('SalesOrderEdit');
-
-		$data = self::sanitizeParametersShort($data, ['ordn|ordn', 'linenbr|int', 'itemID|text']);
 		$data->ordn = self::pw('sanitizer')->ordn($data->ordn);
-		$page = self::pw('page');
-		$config = self::pw('config');
-		$validate = new MsoValidator();
+		$page     = self::pw('page');
+		$config   = self::pw('config');
+		$validate = self::validator();
 
 		if ($validate->order($data->ordn) === false) {
 			return self::invalidSo($data);
