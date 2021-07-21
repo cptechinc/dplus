@@ -24,6 +24,7 @@
 		'edit' => [
 			['GET',   '', Edit::class, 'index'],
 			['POST',  '', Edit::class, 'handleCRUD'],
+			['GET',  'new/', Edit::class, 'editNewQuote'],
 		],
 		'order' => [
 			['GET',   '', OrderQuote::class, 'index'],

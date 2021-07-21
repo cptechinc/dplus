@@ -579,14 +579,15 @@ class Cart extends WireData implements Module {
 			$url = $this->cartURL();
 
 			if (strpos($action, 'create') !== false) {
-				$q = LogpermQuery::create();
-				$logperm = $q->findOneBySessionid($this->sessionID);
 				if ($action == 'create-order' || $action == 'create-blank-order') {
-					$url = $this->wire('pages')->get('pw_template=sales-order-edit')->url."?action=edit-order-new";
+					$purl = new Url($this->wire('pages')->get('pw_template=sales-order-edit')->url);
+					$purl->path->add('new');
+					$url = $purl->getUrl();
 				} elseif($action == 'create-quote') {
 					$purl = new Url($this->wire('pages')->get('pw_template=quote-view')->url);
-					$purl->query->set('action', 'edit-new-quote');
-					$url = $url->getUrl();
+					$purl->path->add('edit');
+					$purl->path->add('new');
+					$url = $purl->getUrl();
 				}
 			}
 			$event->return = $url;
