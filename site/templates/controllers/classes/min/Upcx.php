@@ -111,7 +111,7 @@ class Upcx extends AbstractController {
 		$filter = new UpcxFilter();
 
 		if ($data->q) {
-			$page->headline = "UPCX: Results for '$data->q'";
+			$page->headline = "UPCX: Searching for '$data->q'";
 			$filter->search(strtoupper($data->q));
 		}
 		$filter->sortby($page);

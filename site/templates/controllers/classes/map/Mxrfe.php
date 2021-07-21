@@ -144,7 +144,7 @@ class Mxrfe extends AbstractController {
 		$filter->init();
 		$filter->vendorid($mxrfe->vendorids());
 		if ($data->q) {
-			$page->headline = "Searching Mnfrs for '$data->q'";
+			$page->headline = "MXRFE: Searching Mnfrs for '$data->q'";
 			$filter->search($data->q);
 		}
 		$filter->sortby($page);

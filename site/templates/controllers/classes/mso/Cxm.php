@@ -163,7 +163,7 @@ class Cxm extends AbstractController {
 		$filter->custid($cxm->custids());
 
 		if ($data->q) {
-			$page->headline = "Searching Customers for '$data->q'";
+			$page->headline = "CXM: Searching Customers for '$data->q'";
 			$filter->search($data->q);
 		}
 		$filter->sortby($page);
@@ -186,18 +186,20 @@ class Cxm extends AbstractController {
 
 	public static function custXrefs($data) {
 		$data = self::sanitizeParametersShort($data, ['custID|text', 'q|text']);
-		$page    = self::pw('page');
+		$page = self::pw('page');
 		$cxm  = self::getCxm();
 		$cxm->recordlocker->deleteLock();
 		$customer = $cxm->customer($data->custID);
 		$filter   = new CxmFilter();
 		$filter->custid($data->custID);
 		$filter->sortby($page);
+		$page->headline = "CXM: $customer->name";
+
 		if ($data->q) {
-			$page->headline = "CXM: $customer->name searching '$data->q'";
+			$page->headline = "CXM: searching X-Refs $customer->name '$data->q'";
 			$filter->search($data->q);
 		}
-		$page->headline           = "CXM: $customer->name";
+
 		$page->searchcustomersURL = self::pw('pages')->get('pw_template=mci-lookup')->url;
 		$page->js                 .= self::pw('config')->twig->render('items/cxm/list/js.twig');
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);

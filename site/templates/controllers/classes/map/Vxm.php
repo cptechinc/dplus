@@ -148,7 +148,7 @@ class Vxm extends AbstractController {
 		$filter->vendorid($vxm->vendorids());
 
 		if ($data->q) {
-			$page->headline = "Searching Vendors for '$data->q'";
+			$page->headline = "VXM: Searching Vendors for '$data->q'";
 			$filter->search($data->q);
 		}
 		$filter->sortby($page);
