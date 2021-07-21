@@ -82,7 +82,7 @@
 
 				<td>{{ upc.uom }}</td>
 				<td>{{ upc.primary|yesorno|capitalize }}</td>
-				<td>{{ upc.mastercarton|yesorno|capitalize }}</td>
+				<td>{{ upc.is_mastercase()|yesorno|capitalize }}</td>
 				<td>{{ upc.needslabel|yesorno|capitalize }}</td>
 				<td class="text-center">
 					{% if upcx.recordlocker.isLocked(upc.upc) == false or upcx.recordlocker.userHasLocked( upc.upc) %}
