@@ -65,7 +65,7 @@ class Mxrfe extends AbstractController {
 		if ($xref->isNew() === false) {
 			$page->headline = "MXRFE: " . $mxrfe->get_recordlocker_key($xref);
 		}
-		$page->js   .= self::pw('config')->twig->render('items/mxrfe/item/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
+		$page->js   .= self::pw('config')->twig->render('items/mxrfe/xref/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
 		$html = self::xrefDisplay($data, $xref);
 		return $html;
 	}
@@ -80,7 +80,7 @@ class Mxrfe extends AbstractController {
 		$html = '';
 		$html .= self::mxrfeHeaders();
 		$html .= self::lockXref($xref);
-		$html .= $config->twig->render('items/mxrfe/item/form/display.twig', ['mxrfe' => $mxrfe, 'vendor' => $vendor, 'xref' => $xref, 'qnotes' => $qnotes]);
+		$html .= $config->twig->render('items/mxrfe/xref/form/display.twig', ['mxrfe' => $mxrfe, 'vendor' => $vendor, 'xref' => $xref, 'qnotes' => $qnotes]);
 
 		if (!$xref->isNew()) {
 			$html .= self::qnotesDisplay($xref);
@@ -107,8 +107,8 @@ class Mxrfe extends AbstractController {
 		$config = self::pw('config');
 		$qnotes = self::pw('modules')->get('QnotesItemMxrfe');
 		$html = '<hr> <div class="mt-3"></div>';
-		$html .= $config->twig->render('items/mxrfe/item/notes/notes.twig', ['xref' => $xref, 'qnotes' => $qnotes]);
-		$page->js   .= $config->twig->render('items/mxrfe/item/notes/js.twig', ['xref' => $xref, 'qnotes' => $qnotes]);
+		$html .= $config->twig->render('items/mxrfe/xref/notes/notes.twig', ['xref' => $xref, 'qnotes' => $qnotes]);
+		$page->js   .= $config->twig->render('items/mxrfe/xref/notes/js.twig', ['xref' => $xref, 'qnotes' => $qnotes]);
 		self::pw('session')->remove('response_qnote');
 		return $html;
 	}
