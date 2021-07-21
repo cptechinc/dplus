@@ -21,7 +21,7 @@
 		</div>
 	</div>
 	<div class="card-body">
-		{% include 'items/cxm/search/item/customer/form.twig' with {'q': page.wire('input').get.text('q'), 'custID': customer.custid} %}
+		{% include 'items/cxm/search/xref/customer/form.twig' with {'q': page.wire('input').get.text('q'), 'custID': customer.custid} %}
 	</div>
 	{% include 'items/cxm/list/customer.twig' %}
 </div>
