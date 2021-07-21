@@ -116,7 +116,9 @@ $(function() {
 				remote: {
 					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
 					type: "get",
-					data: {}
+					data: {
+						jqv: 'true',
+					}
 				}
 			},
 		},
@@ -130,7 +132,7 @@ $(function() {
 		submitHandler: function(form) {
 			$('#loading-modal').modal('show');
 
-			var formdata = form_upc.serializeArray().reduce(function(obj, item) {
+			var formdata = $(form).serializeArray().reduce(function(obj, item) {
 				obj[item.name] = item.value;
 				return obj;
 			}, {});
@@ -153,6 +155,11 @@ $(function() {
 			callback(true);
 		}
 
+		if (input_primary.prop("checked") === true && input_primary.data("primary") == true) {
+			callback(true);
+			return true;
+		}
+
 		if (input_primary.prop("checked") === true && input_primary.data("primary") == false) {
 			request_validate_upc_primary(input_upc.val(), input_itemid.val(), function(isPrimary) {
 				if (isPrimary === true) {
@@ -165,7 +172,6 @@ $(function() {
 						callback(canContinue);
 					});
 				}
-
 			});
 		}
 	}
