@@ -4,8 +4,10 @@ use Propel\Runtime\Util\PropelModelPager as ModelPager;
 use Propel\Runtime\Collection\ObjectCollection;
 // Dplus Model
 use DocumentQuery, Document;
-// Dplus Classes
+// Dplus CodeValidators
 use Dplus\CodeValidators\Mso as MsoValidator;
+// Dplus Document Finders
+use Dplus\DocManagement\Finders\SalesOrder as DocumentsSo;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
@@ -22,7 +24,7 @@ class Documents extends Base {
 		}
 
 		if ($data->document && $data->folder) {
-			/** @var MsoValidator **/
+			/** @var DocumentsSo **/
 			$docm = self::docm();
 			$docm->moveDocument($data->folder, $data->document);
 			self::pw('session')->redirect(self::pw('config')->url_webdocs.$data->document, $http301 = false);
@@ -55,12 +57,13 @@ class Documents extends Base {
 		self::sanitizeParametersShort($data, ['ordn|ordn']);
 		$page = self::pw('page');
 		$config   = self::pw('config');
+		/** @var MsoValidator **/
 		$validate = self::validator();
 
 		if ($validate->order($data->ordn) === false && $validate->invoice($data->ordn) === false) {
 			return self::invalidSo($data);
 		}
-		/** @var MsoValidator **/
+		/** @var DocumentsSo **/
 		$docm      = self::docm();
 		$documents = $docm->getDocuments($data->ordn);
 		return self::documentsDisplay($data, $documents);
