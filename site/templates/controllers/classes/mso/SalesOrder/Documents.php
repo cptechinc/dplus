@@ -6,7 +6,9 @@ use Dplus\CodeValidators\Mso as MsoValidator;
 use Mvc\Controllers\AbstractController;
 
 class Documents extends Base {
-
+/* =============================================================
+	Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['ordn|text', 'document|text', 'folder|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -55,6 +57,9 @@ class Documents extends Base {
 		$docm      = self::docm();
 		$documents = $docm->getDocuments($data->ordn);
 		$html      = $config->twig->render('sales-orders/sales-order/documents.twig', ['documents' => $documents]);
+/* =============================================================
+	Displays
+============================================================= */
 		return $html;
 	}
 }
