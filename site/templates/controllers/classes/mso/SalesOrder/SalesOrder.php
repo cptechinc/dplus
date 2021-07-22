@@ -147,7 +147,7 @@ class SalesOrder extends Base {
 		if ($validate->order($data->ordn) === false && $validate->invoice($data->ordn) === false) {
 			return self::invalidSo($data);
 		}
-		
+
 		$config  = self::pw('config');
 		$page    = self::pw('page');
 
@@ -205,6 +205,14 @@ class SalesOrder extends Base {
 
 		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderNotesUrl', function($event) {
 			$event->return = self::orderNotesUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderDocumentsUrl', function($event) {
+			$event->return = self::orderDocumentsUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::documentUrl', function($event) {
+			$event->return = self::documentUrl($event->arguments(0), $event->arguments(1), $event->arguments(2));
 		});
 
 		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::iiUrl', function($event) {
