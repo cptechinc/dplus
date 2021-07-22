@@ -196,14 +196,13 @@ class Cxm extends AbstractController {
 		$page->headline = "CXM: $customer->name";
 
 		if ($data->q) {
-			$page->headline = "CXM: searching X-Refs $customer->name '$data->q'";
+			$page->headline = "CXM: searching $customer->name X-Refs '$data->q'";
 			$filter->search($data->q);
 		}
 
 		$page->searchcustomersURL = self::pw('pages')->get('pw_template=mci-lookup')->url;
 		$page->js                 .= self::pw('config')->twig->render('items/cxm/list/js.twig');
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
-
 		$html = self::customerXrefsDisplay($data, $xrefs);
 		return $html;
 	}
