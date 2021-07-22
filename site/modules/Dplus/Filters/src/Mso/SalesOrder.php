@@ -279,13 +279,14 @@ class SalesOrder extends AbstractFilter {
 
 		if ($values->custID) {
 			$custIDs = $values->array('custID');
+			$custIDs = array_unique($custIDs);
 
 			if (sizeof($custIDs) == 2) {
 				if (!empty($custIDs[0])) {
 					$this->custid($custIDs[0], Criteria::GREATER_EQUAL);
 				}
 
-				if (!empty($filter[1])) {
+				if (!empty($custIDs[1])) {
 					$this->custid($custIDs[1], Criteria::LESS_EQUAL);
 				}
 			} else {
