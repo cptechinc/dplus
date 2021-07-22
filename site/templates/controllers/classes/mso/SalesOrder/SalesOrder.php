@@ -147,23 +147,30 @@ class SalesOrder extends Base {
 		if ($validate->order($data->ordn) === false && $validate->invoice($data->ordn) === false) {
 			return self::invalidSo($data);
 		}
-		$modules = self::pw('modules');
+		
 		$config  = self::pw('config');
 		$page    = self::pw('page');
-		$docm    = self::docm();
-		$documents = $docm->getDocuments($data->ordn);
 
-		$module_useractions = $modules->get('FilterUserActions');
-		$query_useractions = $module_useractions->get_actionsquery(self::pw('input'));
-		$actions = $query_useractions->filterBySalesorderlink($data->ordn)->find();
-
-		$twig['tracking']    = $config->twig->render('sales-orders/sales-order/sales-order-tracking.twig', ['order' => $order, 'urlmaker' => $modules->get('DplusURLs')]);
-		$twig['documents']   = $config->twig->render('sales-orders/sales-order/documents.twig', ['documents' => $documents, 'docm' => $docm, 'ordn' => $data->ordn]);
+		$twig['tracking']    = $config->twig->render('sales-orders/sales-order/sales-order-tracking.twig', ['order' => $order, 'urlmaker' => self::pw('modules')->get('DplusURLs')]);
+		$twig['documents']   = self::documentsDisplay($data);
 		$twig['qnotes']      = $config->twig->render('sales-orders/sales-order/qnotes.twig', ['qnotes_so' => $qnotes, 'ordn' => $data->ordn]);
-		$twig['useractions'] = $config->twig->render('sales-orders/sales-order/user-actions.twig', ['module_useractions' => $module_useractions, 'actions' => $actions, 'ordn' => $data->ordn]);
+		$twig['useractions'] = self::userActionsDisplay($data);
 		$twig['modals']      = $config->twig->render('sales-orders/sales-order/specialorder-modal.twig', ['ordn' => $data->ordn]);
 		$page->js   .= $config->twig->render('sales-orders/sales-order/specialorder-modal.js.twig', ['ordn' => $data->ordn]);
 		return $twig;
+	}
+
+	private static function documentsDisplay($data) {
+		$docm     = self::docm();
+		$documents = $docm->getDocuments($data->ordn);
+		return self::pw('config')->twig->render('sales-orders/sales-order/documents.twig', ['documents' => $documents, 'docm' => $docm, 'ordn' => $data->ordn]);
+	}
+
+	private static function userActionsDisplay($data) {
+		$m       = self::pw('modules')->get('FilterUserActions');
+		$query   = $m->get_actionsquery(self::pw('input'));
+		$actions = $query->filterBySalesorderlink($data->ordn)->find();
+		return self::pw('config')->twig->render('sales-orders/sales-order/user-actions.twig', ['module_useractions' => $m, 'actions' => $actions, 'ordn' => $data->ordn]);
 	}
 
 /* =============================================================
