@@ -86,6 +86,7 @@ class Notes extends Base {
 			$session->remove('response_qnote');
 		}
 
+		$html .= self::breadCrumbs();
 		$html .= $config->twig->render('sales-orders/sales-order/notes/page.twig', ['user' => self::pw('user'), 'ordn' => $data->ordn, 'order' => $order, 'qnotes_so' => $qnotes]);
 		$html .= $config->twig->render('sales-orders/sales-order/notes/modal.twig', ['ordn' => $data->ordn, 'qnotes_so' => $qnotes]);
 		$html .= $config->twig->render('msa/noce/ajax/notes-modal.twig');
