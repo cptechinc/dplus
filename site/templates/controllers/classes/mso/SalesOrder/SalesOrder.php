@@ -87,7 +87,6 @@ class SalesOrder extends Base {
 		$page   = self::pw('page');
 		$config = self::pw('config');
 		$order = SalesHistoryQuery::create()->findOneByOrdernumber($data->ordn);
-		$page->listpage = self::pw('pages')->get('pw_template=sales-history-orders');
 		$docm = self::docm();
 		$twig = [
 			'header' => $config->twig->render("sales-orders/sales-history/header-display.twig", ['config' => self::configSo(), 'order' => $order, 'docm' => $docm])
@@ -179,6 +178,10 @@ class SalesOrder extends Base {
 
 		$m->addHook('Page(pw_template=sales-order-view)::orderListUrl', function($event) {
 			$event->return = self::orderListUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=sales-order-view)::orderHistoryListUrl', function($event) {
+			$event->return = self::orderHistoryListUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::orderPrintUrl', function($event) {

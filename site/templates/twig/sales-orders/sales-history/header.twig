@@ -2,12 +2,12 @@
 	<div class="col-sm-4">
 		<legend class="font-weight-bold text-danger">
 			Billing
-			<a href="{{ page.ci_customerURL(order.custid) }}" class="text-secondary link" target="_blank" aria-label="View Customer in CI" title="View Customer in CI">
+			<a href="{{ page.ciUrl(order.custid) }}" class="text-secondary link" target="_blank" aria-label="View Customer in CI" title="View Customer in CI">
 				({{ order.custid }})
 			</a>
 		</legend>
 		<address>
-			<a href="{{ page.ci_customerURL(order.custid) }}" class="link" target="_blank" aria-label="View Customer in CI" title="View Customer in CI">
+			<a href="{{ page.ciUrl(order.custid) }}" class="link" target="_blank" aria-label="View Customer in CI" title="View Customer in CI">
 				{{ order.customer.name }}
 			</a>
 			<br>
@@ -20,12 +20,12 @@
 
 		<legend class="font-weight-bold text-danger">
 			Shipping
-			<a href="{{ page.ci_customershiptoURL(order.custid, order.shiptoid) }}" class="text-secondary link" target="_blank" aria-label="View Customer Shipto in CI" title="View Customer Shipto in CI">
+			<a href="{{ page.ciShiptoUrl(order.custid, order.shiptoid) }}" class="text-secondary link" target="_blank" aria-label="View Customer Shipto in CI" title="View Customer Shipto in CI">
 				({{ order.shiptoid }})
 			</a>
 		</legend>
 		<address>
-			<a href="{{ page.ci_customershiptoURL(order.custid, order.shiptoid) }}" class="link" target="_blank" aria-label="View Customer Shipto in CI" title="View Customer Shipto in CI">
+			<a href="{{ page.ciShiptoUrl(order.custid, order.shiptoid) }}" class="link" target="_blank" aria-label="View Customer Shipto in CI" title="View Customer Shipto in CI">
 				{{ order.shipto_name }}
 			</a>
 			<br>
