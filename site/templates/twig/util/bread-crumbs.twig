@@ -4,8 +4,11 @@
 			{% for parent in page.parents() %}
 				<li class="breadcrumb-item">
 					<a href="{{ parent.url }}">
-						<i class="fa fa-list" aria-hidden="true"></i>
-						{{ parent.has('dplus_function') and parent.dplus_function|length ? parent.dplus_function|upper : parent.title }}
+						<i class="fa {{ parent.template == 'home' ? 'fa-home' : 'fa-list'}}" aria-hidden="true"></i>
+						{% if parent.template != 'home' %}
+							{{ parent.has('dplus_function') and parent.dplus_function|length ? parent.dplus_function|upper : parent.title }}
+						{% endif %}
+						<span class="sr-only">Home</span>
 					</a>
 				</li>
 			{% endfor %}
