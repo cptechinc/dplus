@@ -7,7 +7,9 @@ use Dplus\CodeValidators\Mso as MsoValidator;
 use Mvc\Controllers\AbstractController;
 
 class Notes extends Base {
-
+/* =============================================================
+	Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['ordn|text', 'document|text', 'folder|text'];
 		self::sanitizeParametersShort($data, $fields);
@@ -72,4 +74,8 @@ class Notes extends Base {
 		$page->js .= $config->twig->render('msa/noce/ajax/js.twig');
 		return $html;
 	}
+
+/* =============================================================
+	Displays
+============================================================= */
 }
