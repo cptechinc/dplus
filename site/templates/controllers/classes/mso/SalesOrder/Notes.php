@@ -10,7 +10,7 @@ class Notes extends Base {
 
 	public static function index($data) {
 		$fields = ['ordn|text', 'document|text', 'folder|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->ordn)) {
 			return self::invalidSo($data);
@@ -19,7 +19,7 @@ class Notes extends Base {
 	}
 
 	public static function so($data) {
-		$data = self::sanitizeParametersShort($data, ['ordn|ordn']);
+		self::sanitizeParametersShort($data, ['ordn|ordn']);
 		$page = self::pw('page');
 		$config   = self::pw('config');
 		$validate = self::validator();
@@ -39,7 +39,7 @@ class Notes extends Base {
 	}
 
 	public static function notes($data) {
-		$data = self::sanitizeParametersShort($data, ['ordn|ordn']);
+		self::sanitizeParametersShort($data, ['ordn|ordn']);
 		$page = self::pw('page');
 		$config   = self::pw('config');
 		$validate = self::validator();
