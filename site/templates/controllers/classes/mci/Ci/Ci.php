@@ -1,4 +1,4 @@
-<?php namespace Controllers\Mci;
+<?php namespace Controllers\Mci\Ci;
 // Dplus Model
 use CustomerQuery, Customer;
 // Dpluso Model
@@ -15,7 +15,7 @@ use Dplus\Filters\Mqo\Quote        as QuoteFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
-class Ci extends AbstractController {
+class Ci extends Base {
 	public static function index($data) {
 		$fields = ['custID|text', 'q|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
