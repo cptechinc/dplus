@@ -32,6 +32,7 @@ class Quote extends Base {
 		if (empty($data->qnbr) === false) {
 			return self::quote($data);
 		}
+		return self::lookupScreen($data);
 	}
 
 /* =============================================================
