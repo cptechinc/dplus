@@ -184,18 +184,7 @@ class DpagesMso extends Dpages implements Module {
 	);
 
 	public function init_salesorder_hooks() {
-		$this->addHook('Page::ci_customerURL', function($event) {
-			$p = $event->object;
-			$custID = $event->arguments(0);
-			$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customerURL($custID);
-		});
-
-		$this->addHook('Page::ci_customershiptoURL', function($event) {
-			$p = $event->object;
-			$custID = $event->arguments(0);
-			$shiptoID = $event->arguments(1);
-			$event->return = $this->wire('modules')->get('DpagesMci')->get_ci_customershiptoURL($custID, $shiptoID);
-		});
+		
 	}
 
 /* =============================================================

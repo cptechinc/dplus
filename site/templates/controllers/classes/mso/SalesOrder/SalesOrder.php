@@ -18,6 +18,7 @@ use Dplus\CodeValidators\Mso as MsoValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 use Controllers\Mii\Ii;
+use Controllers\Mci\Ci\Ci;
 
 class SalesOrder extends Base {
 /* =============================================================
@@ -54,8 +55,6 @@ class SalesOrder extends Base {
 			self::pw('session')->redirect(self::orderPrintUrl($data->ordn), $http301 = false);
 		}
 		$page->headline = "Sales Order #$data->ordn";
-
-		self::pw('modules')->get('DpagesMso')->init_salesorder_hooks();
 		self::pw('modules')->get('SalesOrderEdit')->init();
 
 		if ($validate->invoice($data->ordn)) {
@@ -204,6 +203,14 @@ class SalesOrder extends Base {
 
 		$m->addHook('Page(pw_template=sales-order-view)::printInvoiceUrl', function($event) {
 			$event->return = self::orderPrintInvoiceUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::ciUrl', function($event) {
+			$event->return = Ci::ciUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=sales-order-view|sales-order-edit)::ciShiptoUrl', function($event) {
+			$event->return = Ci::ciShiptoUrl($event->arguments(0), $event->arguments(1));
 		});
 	}
 

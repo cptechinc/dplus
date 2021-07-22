@@ -135,7 +135,6 @@ class Edit extends Base {
 	Displays
 ============================================================= */
 	private static function soEditForm($data, EsoCRUD $eso) {
-		self::pw('modules')->get('DpagesMso')->init_salesorder_hooks();
 		$page   = self::pw('page');
 		$config = self::pw('config');
 		$page->headline = "Editing Sales Order #$data->ordn";
