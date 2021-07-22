@@ -2,7 +2,8 @@
 	use Controllers\Mso\SalesOrder\Lists\SalesOrder as Orders;
 
 	$routes = [
-		['GET',  '', Orders::class, 'index'],
+		['GET', '', Orders::class, 'index'],
+		['GET', 'page{d:\d+}', Orders::class, 'index'],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
