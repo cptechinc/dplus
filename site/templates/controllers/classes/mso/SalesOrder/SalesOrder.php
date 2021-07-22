@@ -38,6 +38,7 @@ class SalesOrder extends Base {
 		if (empty($data->ordn) === false) {
 			return self::so($data);
 		}
+		return self::lookupScreen($data);
 	}
 
 	public static function so($data) {
