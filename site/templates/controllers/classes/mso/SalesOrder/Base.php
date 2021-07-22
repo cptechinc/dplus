@@ -10,6 +10,7 @@ use Dplus\CodeValidators\Mso as MsoValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 use Controllers\Mii\Ii;
+use Controllers\Mci\Ci\Ci;
 
 abstract class Base extends AbstractController {
 	private static $validate;
