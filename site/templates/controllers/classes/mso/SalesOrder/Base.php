@@ -3,7 +3,7 @@
 use Purl\Url as Purl;
 // Dplus Model
 use ConfigSalesOrderQuery, ConfigSalesOrder as ConfigSo;
-// Alias Document Finders
+// Dplus Document Finders
 use Dplus\DocManagement\Finders as DocFinders;
 // Dplus Classes
 use Dplus\CodeValidators\Mso as MsoValidator;
