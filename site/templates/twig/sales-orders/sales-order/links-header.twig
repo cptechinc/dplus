@@ -10,10 +10,6 @@
 				<i class="fa fa-user" aria-hidden="true"></i> {{ order.customer.name }}
 			</a>
 			&nbsp;
-			<a href="{{ page.orderPrintUrl(order.ordernumber) }}" class="btn btn-primary" target="_blank" aria-label="View Printable" title="View Printable">
-				<i class="fa fa-print" aria-hidden="true"></i> View Print
-			</a>
-			&nbsp;
 			<a href="{{ page.printInvoiceUrl(order.ordernumber) }}" class="btn btn-primary" aria-label="Print Invoice" title="Print Invoice">
 				<i class="fa fa-print" aria-hidden="true"></i> Print Invoice
 			</a>
