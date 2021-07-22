@@ -1,6 +1,10 @@
 <?php namespace Controllers\Mso\SalesOrder;
+// Propel ORM
+use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 // Dplus Model
 use SalesOrderQuery, SalesHistoryQuery;
+// ProcessWire
+use ProcessWire\Module as PwModule;
 // Dplus Validators
 use Dplus\CodeValidators\Mso as MsoValidator;
 // Mvc Controllers
@@ -42,37 +46,26 @@ class Notes extends Base {
 
 	public static function notes($data) {
 		self::sanitizeParametersShort($data, ['ordn|ordn']);
-		$page = self::pw('page');
+		$page     = self::pw('page');
 		$config   = self::pw('config');
 		$validate = self::validator();
 
 		if ($validate->order($data->ordn) === false && $validate->invoice($data->ordn) === false) {
 			return self::invalidSo($data);
 		}
-
-		$session = self::pw('session');
-		$html = '';
-
-		if ($session->response_qnote) {
-			$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
-			$session->remove('response_qnote');
-		}
-
+		/** @var ActiveRecordInterface **/
 		$order = SalesOrderQuery::create()->findOneByOrdernumber($data->ordn);
+		/** @var PwModule **/
 		$qnotes = self::pw('modules')->get('QnotesSalesOrder');
 
 		if ($validate->invoice($data->ordn)) {
+			/** @var ActiveRecordInterface **/
 			$order = SalesHistoryQuery::create()->findOneByOrdernumber($data->ordn);
+			/** @var PwModule **/
 			$qnotes = self::pw('modules')->get('QnotesSalesHistory');
 		}
-		$page->search_notesURL = self::pw('pages')->get('pw_template=msa-noce-ajax')->url;
-		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
-		$html .= $config->twig->render('sales-orders/sales-order/notes/qnotes-page.twig', ['user' => self::pw('user'), 'ordn' => $data->ordn, 'order' => $order, 'qnotes_so' => $qnotes]);
-		$html .= $config->twig->render('sales-orders/sales-order/notes/note-modal.twig', ['ordn' => $data->ordn, 'qnotes_so' => $qnotes]);
-		$html .= $config->twig->render('msa/noce/ajax/notes-modal.twig', []);
-		$page->js .= $config->twig->render('sales-orders/sales-order/notes/js.twig', ['ordn' => $data->ordn, 'qnotes' => $qnotes]);
-		$page->js .= $config->twig->render('msa/noce/ajax/js.twig');
-		return $html;
+		self::notesJs($data, $qnotes);
+		return self::notesDisplay($data, $order, $qnotes);
 	}
 
 /* =============================================================
@@ -81,5 +74,29 @@ class Notes extends Base {
 	protected static function lookupScreen($data) {
 		self::pw('page')->headline = "Sales Order Notes";
 		return parent::lookupScreen($data);
+	}
+
+	private static function notesDisplay($data, ActiveRecordInterface $order, PwModule $qnotes) {
+		$session = self::pw('session');
+		$config  = self::pw('config');
+		$html = '';
+
+		if ($session->response_qnote) {
+			$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
+			$session->remove('response_qnote');
+		}
+
+		$html .= $config->twig->render('sales-orders/sales-order/notes/qnotes-page.twig', ['user' => self::pw('user'), 'ordn' => $data->ordn, 'order' => $order, 'qnotes_so' => $qnotes]);
+		$html .= $config->twig->render('sales-orders/sales-order/notes/note-modal.twig', ['ordn' => $data->ordn, 'qnotes_so' => $qnotes]);
+		$html .= $config->twig->render('msa/noce/ajax/notes-modal.twig');
+		return $html;
+	}
+
+	private static function notesJs($data, PwModule $qnotes) {
+		$page    = self::pw('page');
+		$config  = self::pw('config');
+		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
+		$page->js .= $config->twig->render('sales-orders/sales-order/notes/js.twig', ['ordn' => $data->ordn, 'qnotes' => $qnotes]);
+		$page->js .= $config->twig->render('msa/noce/ajax/js.twig');
 	}
 }
