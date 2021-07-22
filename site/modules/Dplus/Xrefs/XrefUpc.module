@@ -216,12 +216,11 @@ class XrefUpc extends WireData implements Module {
 		$values = $input->$rm;
 		$record->setItemid($values->text('itemID'));
 		$record->setQty($values->int('qty'));
-		$record->setUom($values->text('uom'));
 		$record->setMastercase($values->yn('mastercase'));
 		$record->setNeedslabel($values->yn('needslabel'));
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));
-		
+
 		if ($values->text('primary') == ItemXrefUpc::PRIMARY_TRUE) {
 			if ($values->text('valid_primary') == 'true') {
 				$record->setPrimary(ItemXrefUpc::PRIMARY_TRUE);

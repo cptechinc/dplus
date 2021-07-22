@@ -87,19 +87,6 @@
 			</div>
 			<div class="form-group row">
 				<div class="col-sm-3">
-					<label for="uom">Unit of Measure</label>
-				</div>
-				<div class="col-sm-6">
-					<select name="uom" class="form-control form-control-sm" id="uom">
-						<option value=""></option>
-						{% for uom in upcx.get_unitsofm_purchase() %}
-							<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == upc.uom ? 'selected' : ''}}>{{ uom.code }} - {{ uom.description }}</option>
-						{% endfor %}
-					</select>
-				</div>
-			</div>
-			<div class="form-group row">
-				<div class="col-sm-3">
 					<label for="mastercase">Master Carton?</label>
 				</div>
 				<div class="col-sm-6">
