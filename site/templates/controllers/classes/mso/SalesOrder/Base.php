@@ -41,9 +41,11 @@ abstract class Base extends AbstractController {
 	}
 
 	protected static function lookupForm() {
-		$config = self::pw('config');
-		$html = $config->twig->render('sales-orders/sales-order/lookup-form.twig');
-		return $html;
+		return self::pw('config')->twig->render('sales-orders/sales-order/lookup-form.twig');
+	}
+
+	protected static function breadCrumbs() {
+		return self::pw('config')->twig->render('sales-orders/bread-crumbs.twig');
 	}
 
 /* =============================================================
