@@ -13,7 +13,7 @@ class Notes extends Base {
 		}
 
 		if (empty($data->qnbr)) {
-			return self::invalidQt($data);
+			return self::lookupScreen($data);
 		}
 		return self::qt($data);
 	}

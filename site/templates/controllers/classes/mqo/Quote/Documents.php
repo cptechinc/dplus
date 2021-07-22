@@ -8,7 +8,7 @@ class Documents extends Base {
 		$data = self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->qnbr)) {
-			return self::invalidQt($data);
+			return self::lookupScreen($data);
 		}
 
 		if ($data->document && $data->folder) {
