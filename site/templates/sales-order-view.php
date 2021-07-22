@@ -16,8 +16,11 @@
 	$routes = [
 		['GET',  '', SalesOrderController::class, 'index'],
 		['GET',  'documents/', Documents::class, 'index'],
-		['GET',  'notes/', Notes::class, 'index'],
 		['GET',  'print/', PrintSo::class, 'index'],
+		'notes' => [
+			['GET',   '', Notes::class, 'index'],
+			['POST',  '', Notes::class, 'handleCRUD'],
+		],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);

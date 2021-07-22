@@ -24,6 +24,12 @@ class Notes extends Base {
 		return self::so($data);
 	}
 
+	public static function handleCRUD($data) {
+		$qnotes = self::pw('modules')->get('QnotesSalesOrder');
+		$qnotes->process_input(self::pw('input'));
+		self::pw('session')->redirect(self::orderNotesUrl($data->ordn), $http301 = false);
+	}
+
 	public static function so($data) {
 		self::sanitizeParametersShort($data, ['ordn|ordn']);
 		$page = self::pw('page');
@@ -81,12 +87,13 @@ class Notes extends Base {
 		$config  = self::pw('config');
 		$html = '';
 
+
+		$html .= self::breadCrumbs();
+
 		if ($session->response_qnote) {
 			$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
 			$session->remove('response_qnote');
 		}
-
-		$html .= self::breadCrumbs();
 		$html .= $config->twig->render('sales-orders/sales-order/notes/page.twig', ['user' => self::pw('user'), 'ordn' => $data->ordn, 'order' => $order, 'qnotes_so' => $qnotes]);
 		$html .= $config->twig->render('sales-orders/sales-order/notes/modal.twig', ['ordn' => $data->ordn, 'qnotes_so' => $qnotes]);
 		$html .= $config->twig->render('msa/noce/ajax/notes-modal.twig');
