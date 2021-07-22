@@ -29,7 +29,7 @@
 					{% endif %}
 				</a>
 			</th>
-			<th class="pt-3 pb-3">Eaches</th>
+			<th class="pt-3 pb-3">Qty Per UPC</th>
 			{% if itemID == false %}
 				<th class="pt-3 pb-3">
 					<a href="{{ page.get_sortURL('itemid') }}" class="link">Item ID / Desription
@@ -39,7 +39,6 @@
 					</a>
 				</th>
 			{% endif %}
-			<th class="pt-3 pb-3">UoM</th>
 			<th class="pt-3 pb-3">
 				<a href="{{ page.get_sortURL('primary') }}" class="link">Primary
 					{% if page.orderby_column == 'primary' %}
@@ -48,16 +47,14 @@
 				</a>
 			</th>
 			<th class="pt-3 pb-3">
-				<a href="{{ page.get_sortURL('mastercase') }}" class="link">Master Carton
+				<a href="{{ page.get_sortURL('mastercase') }}" class="link">Master Case
 					{% if page.orderby_column == 'mastercase' %}
 						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
 					{% endif %}
 				</a>
 			</th>
 			<th class="pt-3 pb-3">Label</th>
-			<th class="pt-3 pb-3 text-center">
-
-			</th>
+			<th class="pt-3 pb-3 text-center"></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -79,8 +76,6 @@
 						<small>{{ upc.ItemMasterItem.desc }}</small>
 					</td>
 				{% endif %}
-
-				<td>{{ upc.uom }}</td>
 				<td>{{ upc.primary|yesorno|capitalize }}</td>
 				<td>{{ upc.is_mastercase()|yesorno|capitalize }}</td>
 				<td>{{ upc.needslabel|yesorno|capitalize }}</td>
