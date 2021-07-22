@@ -26,7 +26,7 @@ class SalesOrder extends Base {
 ============================================================= */
 	public static function index($data) {
 		$fields = ['ordn|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -39,7 +39,7 @@ class SalesOrder extends Base {
 	}
 
 	public static function so($data) {
-		$data = self::sanitizeParametersShort($data, ['ordn|ordn', 'print|bool']);
+		self::sanitizeParametersShort($data, ['ordn|ordn', 'print|bool']);
 		$page = self::pw('page');
 		$config   = self::pw('config');
 		$validate = self::validator();
@@ -78,7 +78,7 @@ class SalesOrder extends Base {
 	Displays
 ============================================================= */
 	public static function saleshistory($data) {
-		$data = self::sanitizeParametersShort($data, ['ordn|ordn']);
+		self::sanitizeParametersShort($data, ['ordn|ordn']);
 		$validate = self::validator();
 
 		if ($validate->invoice($data->ordn) === false) {
@@ -106,7 +106,7 @@ class SalesOrder extends Base {
 	}
 
 	public static function salesorder($data) {
-		$data = self::sanitizeParametersShort($data, ['ordn|ordn']);
+		self::sanitizeParametersShort($data, ['ordn|ordn']);
 		$validate = self::validator();
 
 		if ($validate->order($data->ordn) === false) {
@@ -141,7 +141,7 @@ class SalesOrder extends Base {
 	 * @return array
 	 */
 	private static function _orderDetails(ActiveRecordInterface $order, $data, Module $qnotes, array $twig) {
-		$data = self::sanitizeParametersShort($data, ['ordn|ordn']);
+		self::sanitizeParametersShort($data, ['ordn|ordn']);
 		$validate = self::validator();
 
 		if ($validate->order($data->ordn) === false && $validate->invoice($data->ordn) === false) {
