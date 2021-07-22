@@ -1,5 +1,8 @@
 {% extends 'items/mxrfe/display.twig' %}
 
+{% block header %}
+{% endblock %}
+
 {% block body %}
 	<div class="card-body">
 		{% include 'items/mxrfe/search/vendor/form.twig' with {'mnfrID': input.get.text('mnfrID')} %}
