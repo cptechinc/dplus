@@ -15,7 +15,7 @@
 		<li class="breadcrumb-item">
 			<a href="{{ page.quoteUrl() }}">Quote</a>
 		</li>
-		{% if values.offsetExists('ordn') %}
+		{% if values.offsetExists('qnbr') %}
 			<li class="breadcrumb-item">
 				<a href="{{ page.quoteUrl(values.text('qnbr')) }}">{{ values.text('qnbr') }}</a>
 			</li>
