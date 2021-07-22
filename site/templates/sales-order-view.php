@@ -24,6 +24,8 @@
 	$router->setRoutePrefix($page->url);
 	$page->body = $router->route();
 
+	$page->show_breadcrumbs = false;
+
 	if ($config->ajax) {
 		echo $page->body;
 	} else {
