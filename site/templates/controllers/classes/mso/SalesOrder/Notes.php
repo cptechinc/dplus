@@ -15,7 +15,7 @@ class Notes extends Base {
 		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->ordn)) {
-			return self::invalidSo($data);
+			return self::lookupScreen($data);
 		}
 		return self::so($data);
 	}
@@ -78,4 +78,8 @@ class Notes extends Base {
 /* =============================================================
 	Displays
 ============================================================= */
+	protected static function lookupScreen($data) {
+		self::pw('page')->headline = "Sales Order Notes";
+		return parent::lookupScreen($data);
+	}
 }
