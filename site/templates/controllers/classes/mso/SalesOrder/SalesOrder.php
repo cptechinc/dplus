@@ -13,17 +13,13 @@ use ConfigSalesOrderQuery, ConfigSalesOrder as ConfigSo;
 use ProcessWire\Page, ProcessWire\Module;
 // Alias Document Finders
 use Dplus\DocManagement\Finders as DocFinders;
-// Dplus Classes
+// Dplus Code Validators
 use Dplus\CodeValidators\Mso as MsoValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 use Controllers\Mii\Ii;
 
 class SalesOrder extends Base {
-	static $validate;
-	static $docm;
-	static $configSo;
-
 /* =============================================================
 	Indexes
 ============================================================= */
