@@ -46,6 +46,8 @@ class SalesOrder extends AbstractFilter {
 		if ($input->get->offsetExists('status') === false) {
 			$input->get->status = [];
 		}
+
+		$this->statusInput($input);
 	}
 
 /* =============================================================
@@ -152,6 +154,18 @@ class SalesOrder extends AbstractFilter {
 	public function user(User $user) {
 		if ($user->is_salesrep()) {
 			$this->salespersonid($user->roleid);
+		}
+		return $this;
+	}
+
+	/**
+	 * Filter By Order Status
+	 * @param  string|array $status Order Status
+	 * @return self
+	 */
+	public function status($status) {
+		if (empty($status) === false) {
+			$this->query->filterByStatus($status);
 		}
 		return $this;
 	}
@@ -308,6 +322,13 @@ class SalesOrder extends AbstractFilter {
 			$shiptoID = $values->array('shiptoID');
 			$this->shiptoid($shiptoID);
 		}
+	}
+
+	public function statusInput(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$this->status($values->array('status'));
+		return $this;
 	}
 
 /* =============================================================
