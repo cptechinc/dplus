@@ -60,7 +60,7 @@ class SalesOrder extends AbstractFilter {
 	 * @return self
 	 */
 	public function ordernumber($ordn, $comparison = null) {
-		$ordn = SalesOrder::get_paddedordernumber($ordn);
+		$ordn = Model::get_paddedordernumber($ordn);
 		$this->query->filterByOrdernumber($ordn, $comparison);
 		return $this;
 	}
