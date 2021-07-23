@@ -2,7 +2,7 @@ $(function() {
 	var form_upc = $('#upc-item-form');
 	var input_itemid = form_upc.find('input[name=itemID]');
 	var input_upc = form_upc.find('input[name=upc]');
-	var input_primary = form_upc.find('input[name=primary]');
+	var input_primary = form_upc.find('select[name=primary]');
 	var input_validatedprimary = form_upc.find('input[name=valid_primary]');
 	var modal_ajax = $('#ajax-modal');
 
@@ -24,9 +24,11 @@ $(function() {
 					showCancelButton: true,
 					confirmButtonText: 'Yes!'
 				}).then(function (result) {
+					var url = URI();
 					if (result.value) {
-						var url = URI();
 						url.setQuery('upc', input.val());
+						window.location.href = url.toString();
+					}  else if (result.dismiss === Swal.DismissReason.cancel) {
 						window.location.href = url.toString();
 					}
 				});
@@ -46,7 +48,7 @@ $(function() {
 		});
 	});
 
-	$("body").on("change", "input[name=primary]", function(e) {
+	$("body").on("change", "select[name=primary]", function(e) {
 		input_validatedprimary.val('false');
 	});
 
@@ -136,6 +138,7 @@ $(function() {
 				return obj;
 			}, {});
 
+
 			if (formdata['action'] == 'update-upcx') {
 				validate_primary(function(canSubmit) {
 					if (canSubmit) {
@@ -150,16 +153,17 @@ $(function() {
 	});
 
 	function validate_primary(callback) {
-		if (input_primary.prop("checked") === false) {
+		if (input_primary.val() == 'N') {
 			callback(true);
 		}
 
-		if (input_primary.prop("checked") === true && input_primary.data("primary") == true) {
+
+		if (input_primary.val() == 'Y' && input_primary.data("primary") === true) {
 			callback(true);
 			return true;
 		}
 
-		if (input_primary.prop("checked") === true && input_primary.data("primary") == false) {
+		if (input_primary.val() == 'Y' && input_primary.data("primary") === false) {
 			request_validate_upc_primary(input_upc.val(), input_itemid.val(), function(isPrimary) {
 				if (isPrimary === true) {
 					$('input[name=valid_primary]').val('true');
