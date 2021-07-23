@@ -118,11 +118,23 @@ class XrefUpc extends WireData implements Module {
 			$record = $this->xref($upc);
 		} else {
 			$upc = $upc == 'new' ? '' : $upc;
-			$record = new ItemXrefUpc();
+			$record = $this->newXref();
 			$record->setUpc($upc);
-			$record->setQty(1);
 		}
 		return $record;
+	}
+
+	/**
+	 * Return new X-Ref
+	 * @return ItemXrefUpc
+	 */
+	public function newXref() {
+		$r = new ItemXrefUpc();
+		$r->setQty(1);
+		$r->setPrimary('Y');
+		$r->setMastercase('N');
+		$r->setNeedslabel('N');
+		return $r;
 	}
 
 /* =============================================================
