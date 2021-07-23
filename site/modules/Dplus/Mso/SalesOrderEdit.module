@@ -160,7 +160,6 @@ class SalesOrderEdit extends WireData implements Module {
 				if ($this->exists_editable_header($ordn)) {
 					$order = $this->get_editable_header($ordn);
 					$order->delete();
-					$order->save();
 				}
 				break;
 			case 'edit-order-new':
