@@ -79,9 +79,8 @@ class SalesOrder extends Base {
 ============================================================= */
 	public static function saleshistory($data) {
 		self::sanitizeParametersShort($data, ['ordn|ordn']);
-		$validate = self::validator();
 
-		if ($validate->invoice($data->ordn) === false) {
+		if (self::validator()->invoice($data->ordn) === false) {
 			return self::invalidSo($data);
 		}
 		$page   = self::pw('page');
@@ -98,36 +97,24 @@ class SalesOrder extends Base {
 		} else {
 			$twig['items'] = $config->twig->render("sales-orders/sales-history/items.twig", ['config' => self::configSo(), 'order' => $order]);
 		}
-
-		$qnotes = self::pw('modules')->get('QnotesSalesHistory');
-		$twig = self::_orderDetails($order, $data, $qnotes, $twig);
+		$twig = self::_orderDetails($order, $data, $twig);
 		$html = $config->twig->render("sales-orders/sales-history/page.twig", ['html' => $twig, 'order' => $order]);
 		return $html;
 	}
 
 	public static function salesorder($data) {
 		self::sanitizeParametersShort($data, ['ordn|ordn']);
-		$validate = self::validator();
 
-		if ($validate->order($data->ordn) === false) {
+		if (self::validator()->order($data->ordn) === false) {
 			return self::invalidSo($data);
 		}
 		$config = self::pw('config');
 		$order = SalesOrderQuery::create()->findOneByOrdernumber($data->ordn);
-		self::pw('page')->listpage = self::pw('pages')->get('pw_template=sales-orders');
 		$twig = [
-			'header' => $config->twig->render("sales-orders/sales-order/header-display.twig", ['config' => self::configSo(), 'order' => $order])
+			'header' => $config->twig->render("sales-orders/sales-order/header-display.twig", ['config' => self::configSo(), 'order' => $order]),
+			'items'  => self::orderItemsDisplay($order, $data)
 		];
-		$twigloader = $config->twig->getLoader();
-
-		if ($twigloader->exists("sales-orders/sales-order/$config->company/items.twig")) {
-			$twig['items'] = $config->twig->render("sales-orders/sales-order/$config->company/items.twig", ['config' => self::configSo(), 'order' => $order]);
-		} else {
-			$twig['items'] = $config->twig->render("sales-orders/sales-order/items.twig", ['config' => self::configSo(), 'order' => $order]);
-		}
-
-		$qnotes = self::pw('modules')->get('QnotesSalesOrder');
-		$twig = self::_orderDetails($order, $data, $qnotes, $twig);
+		$twig = self::_orderDetails($order, $data, $twig);
 		$html = $config->twig->render("sales-orders/sales-order/page.twig", ['html' => $twig, 'order' => $order]);
 		return $html;
 	}
@@ -136,16 +123,17 @@ class SalesOrder extends Base {
 	 * Render Twig Elements fo Sales Order
 	 * @param  ActiveRecordInterface|SalesOrder|SalesHistory $order  [description]
 	 * @param  stdClass              $data
-	 * @param  Module                $qnotes
 	 * @param  array                 $twig   Twig array to append to
 	 * @return array
 	 */
-	private static function _orderDetails(ActiveRecordInterface $order, $data, Module $qnotes, array $twig) {
+	private static function _orderDetails(ActiveRecordInterface $order, $data, array $twig) {
 		self::sanitizeParametersShort($data, ['ordn|ordn']);
 		$validate = self::validator();
 
-		if ($validate->order($data->ordn) === false && $validate->invoice($data->ordn) === false) {
-			return self::invalidSo($data);
+		$qnotes = self::pw('modules')->get('QnotesSalesOrder');
+
+		if ($validate->invoice($data->ordn)) {
+			$qnotes = self::pw('modules')->get('QnotesSalesHistory');
 		}
 
 		$config  = self::pw('config');
@@ -158,6 +146,16 @@ class SalesOrder extends Base {
 		$twig['modals']      = $config->twig->render('sales-orders/sales-order/specialorder-modal.twig', ['ordn' => $data->ordn]);
 		$page->js   .= $config->twig->render('sales-orders/sales-order/specialorder-modal.js.twig', ['ordn' => $data->ordn]);
 		return $twig;
+	}
+
+	private static function orderItemsDisplay(ActiveRecordInterface $order, $data) {
+		$config = self::pw('config');
+		$twigloader = self::pw('config')->twig->getLoader();
+
+		if ($twigloader->exists("sales-orders/sales-order/$config->company/items.twig")) {
+			return $config->twig->render("sales-orders/sales-order/$config->company/items.twig", ['config' => self::configSo(), 'order' => $order]);
+		}
+		return $config->twig->render("sales-orders/sales-order/items.twig", ['config' => self::configSo(), 'order' => $order]);
 	}
 
 	private static function documentsDisplay($data) {
