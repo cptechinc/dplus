@@ -287,7 +287,7 @@ class SalesOrder extends AbstractFilter {
 	 * @param  WireInput $input
 	 * @return self
 	 */
-	public function custidInput($input) {
+	public function custidInput(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
@@ -314,7 +314,7 @@ class SalesOrder extends AbstractFilter {
 	 * Filter the Query by the Customer Shipto column
 	 * @param  WireInput $input
 	 */
-	public function shiptoidInput($input) {
+	public function shiptoidInput(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
@@ -324,6 +324,10 @@ class SalesOrder extends AbstractFilter {
 		}
 	}
 
+	/**
+	 * Filter the Query by Order Status
+	 * @param  WireInput $input
+	 */
 	public function statusInput(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
