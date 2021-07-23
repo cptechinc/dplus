@@ -88,15 +88,10 @@ class SalesOrder extends Base {
 		$order = SalesHistoryQuery::create()->findOneByOrdernumber($data->ordn);
 		$docm = self::docm();
 		$twig = [
-			'header' => $config->twig->render("sales-orders/sales-history/header-display.twig", ['config' => self::configSo(), 'order' => $order, 'docm' => $docm])
+			'header' => $config->twig->render("sales-orders/sales-history/header-display.twig", ['config' => self::configSo(), 'order' => $order, 'docm' => $docm]),
+			'items'  => self::historyItemsDisplay($order, $data)
 		];
-		$twigloader = $config->twig->getLoader();
 
-		if ($twigloader->exists("sales-orders/sales-history/$config->company/items.twig")) {
-			$twig['items'] = $config->twig->render("sales-orders/sales-history/$config->company/items.twig", ['config' => self::configSo(), 'order' => $order]);
-		} else {
-			$twig['items'] = $config->twig->render("sales-orders/sales-history/items.twig", ['config' => self::configSo(), 'order' => $order]);
-		}
 		$twig = self::_orderDetails($order, $data, $twig);
 		$html = $config->twig->render("sales-orders/sales-history/page.twig", ['html' => $twig, 'order' => $order]);
 		return $html;
@@ -128,20 +123,12 @@ class SalesOrder extends Base {
 	 */
 	private static function _orderDetails(ActiveRecordInterface $order, $data, array $twig) {
 		self::sanitizeParametersShort($data, ['ordn|ordn']);
-		$validate = self::validator();
-
-		$qnotes = self::pw('modules')->get('QnotesSalesOrder');
-
-		if ($validate->invoice($data->ordn)) {
-			$qnotes = self::pw('modules')->get('QnotesSalesHistory');
-		}
-
 		$config  = self::pw('config');
 		$page    = self::pw('page');
 
 		$twig['tracking']    = $config->twig->render('sales-orders/sales-order/sales-order-tracking.twig', ['order' => $order, 'urlmaker' => self::pw('modules')->get('DplusURLs')]);
 		$twig['documents']   = self::documentsDisplay($data);
-		$twig['qnotes']      = $config->twig->render('sales-orders/sales-order/qnotes.twig', ['qnotes_so' => $qnotes, 'ordn' => $data->ordn]);
+		$twig['qnotes']      = self::qnotesDisplay($data);
 		$twig['useractions'] = self::userActionsDisplay($data);
 		$twig['modals']      = $config->twig->render('sales-orders/sales-order/specialorder-modal.twig', ['ordn' => $data->ordn]);
 		$page->js   .= $config->twig->render('sales-orders/sales-order/specialorder-modal.js.twig', ['ordn' => $data->ordn]);
@@ -158,6 +145,16 @@ class SalesOrder extends Base {
 		return $config->twig->render("sales-orders/sales-order/items.twig", ['config' => self::configSo(), 'order' => $order]);
 	}
 
+	private static function historyItemsDisplay(ActiveRecordInterface $order, $data) {
+		$config = self::pw('config');
+		$twigloader = $config->twig->getLoader();
+
+		if ($twigloader->exists("sales-orders/sales-history/$config->company/items.twig")) {
+			return $config->twig->render("sales-orders/sales-history/$config->company/items.twig", ['config' => self::configSo(), 'order' => $order]);
+		}
+		return $config->twig->render("sales-orders/sales-history/items.twig", ['config' => self::configSo(), 'order' => $order]);
+	}
+
 	private static function documentsDisplay($data) {
 		$docm     = self::docm();
 		$documents = $docm->getDocuments($data->ordn);
@@ -169,6 +166,17 @@ class SalesOrder extends Base {
 		$query   = $m->get_actionsquery(self::pw('input'));
 		$actions = $query->filterBySalesorderlink($data->ordn)->find();
 		return self::pw('config')->twig->render('sales-orders/sales-order/user-actions.twig', ['module_useractions' => $m, 'actions' => $actions, 'ordn' => $data->ordn]);
+	}
+
+	private static function qnotesDisplay($data) {
+		$validate = self::validator();
+
+		$qnotes = self::pw('modules')->get('QnotesSalesOrder');
+
+		if ($validate->invoice($data->ordn)) {
+			$qnotes = self::pw('modules')->get('QnotesSalesHistory');
+		}
+		return self::pw('config')->twig->render('sales-orders/sales-order/qnotes.twig', ['qnotes_so' => $qnotes, 'ordn' => $data->ordn]);
 	}
 
 /* =============================================================
