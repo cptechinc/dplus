@@ -115,6 +115,7 @@ class Upcx extends AbstractController {
 			$filter->search(strtoupper($data->q));
 		}
 		$filter->sortby($page);
+		$filter->query->orderBy(ItemXrefUpc::aliasproperty('upc'), 'ASC');
 		$upcs = $filter->query->paginate(self::pw('input')->pageNum, 10);
 
 		$page->js   .= self::pw('config')->twig->render('items/upcx/list/.js.twig');
