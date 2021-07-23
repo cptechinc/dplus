@@ -21,7 +21,7 @@ use Dplus\CodeValidators\Min as MinValidator;
 use Dplus\Filters\Mso\SalesHistory\Detail as SalesHistoryDetailFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
-use Controllers\Mso\Base;
+use Controllers\Mso\SalesOrder\Base;
 
 class Edit extends Base {
 /* =============================================================
@@ -49,7 +49,6 @@ class Edit extends Base {
 		}
 
 		if ($data->action) {
-			$page = self::pw('page');
 			$eso  = self::getEso();
 			$eso->process_input(self::pw('input'));
 			$url = self::orderEditUrl($data->ordn);
@@ -250,27 +249,12 @@ class Edit extends Base {
 		return $html;
 	}
 
-	private static function invalidSo($data) {
-		$page = self::pw('page');
-		$page->headline = "Sales Order #$data->ordn not found";
-		$html = self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Sales Order Not Found, check if it\'s in History', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "SO # $data->ordn can not be found"]);
-		$html .= '<div class="mb-3"></div>';
-		$html .= self::lookupForm();
-		return $html;
-	}
-
 	private static function invalidHistory($data) {
 		$page = self::pw('page');
 		$page->headline = "Sales Order #$data->ordn is not editable";
 		$html = self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Order #$data->ordn is in Sales History", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "SO # $data->ordn is invoiced, and in history"]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= self::lookupForm();
-		return $html;
-	}
-
-	private static function lookupForm() {
-		$config = self::pw('config');
-		$html = $config->twig->render('sales-orders/sales-order/lookup-form.twig');
 		return $html;
 	}
 
