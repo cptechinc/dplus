@@ -1,17 +1,10 @@
 <div class="mb-3">
 	<div class="row">
 		<div class="col">
-			<a href="#" class="btn btn-light" aria-label="Return to last page" onclick="window.history.back();">
-				<i class="fa fa-undo" aria-hidden="true"></i> Go back
-			</a>
-			&nbsp;
 			<a href="{{ page.listpage.url }}" class="btn btn-light">
-				<i class="fa fa-list" aria-hidden="true"></i> Back to Quotes List
+				<i class="fa fa-list" aria-hidden="true"></i> Quotes List
 			</a>
 			&nbsp;
-			<a href="{{ page.quotePrintUrl(quote.quotenumber) }}" class="btn btn-primary" target="_blank" title="View Printable" aria-label="View Printable">
-				<i class="fa fa-print" aria-hidden="true"></i> View Print
-			</a>
 		</div>
 		<div class="col text-right">
 			<a href="#documents" title="View Documents" aria-label="View Documents" class="{{ docm.count_documents(quote.quotenumber) ? 'text-success' : 'text-muted'}}">

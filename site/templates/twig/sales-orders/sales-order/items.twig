@@ -51,7 +51,7 @@
 			</td>
 			<td></td>
 			<td class="text-right">
-				$ {{ order.subtotal_nontax|number_format(config.decimal_places_price) }}
+				$ {{ order.subtotal_tax|number_format(config.decimal_places_price) }}
 			</td>
 			<td></td>
 		</tr>

@@ -14,7 +14,7 @@
 					<td>{{ document.folderDescription() }}</td>
 					<td>{{ document.title }}</td>
 					<td>
-						<a href="{{ page.documentload(document.folder, document.filename, ordn) }}" class="link" target="_blank">
+						<a href="{{ page.documentUrl(ordn, document.folder, document.filename) }}" class="link" target="_blank">
 							{{ document.filename }}
 						</a>
 					</td>
@@ -23,7 +23,7 @@
 				</tr>
 			{% endfor %}
 		{% else %}
-			<td colspan="5" class="bg-warning text-white text-center">No Documents Found for Sales Order # {{ ordn }}</td>
+			<td colspan="5" class="bg-warning text-white text-center">No Documents Found for Sales Order # {{ input.get.text('ordn') }}</td>
 		{% endif %}
 	</table>
 </div>

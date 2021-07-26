@@ -220,6 +220,10 @@ class DplusDatabase extends Process implements ConfigurableModule {
 		return $conn;
 	}
 
+	public function getLastExecutedQuery() {
+		return $this->getDebugConnection()->getLastExecutedQuery();
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */

@@ -185,20 +185,6 @@ class DocumentManagementSo extends DocumentManagement implements Module {
 	}
 
 	public function init() {
-		$this->addHook('Page(pw_template=sales-order-view)::documentload', function($event) {
-			$page = $event->object;
-			$folder   = $event->arguments(0);
-			$document = $event->arguments(1);
-			$ordn     = $event->arguments(2);
-			$event->return = $this->get_docsURL($ordn, $folder, $document);
-		});
 
-		$this->addHook('Page(pw_template=sales-order-documents)::documentload', function($event) {
-			$page = $event->object;
-			$folder   = $event->arguments(0);
-			$document = $event->arguments(1);
-			$ordn     = $event->arguments(2);
-			$event->return = $this->get_docsURL($ordn, $folder, $document);
-		});
 	}
 }

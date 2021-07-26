@@ -47,6 +47,7 @@ class SalesOrder extends Base {
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $orders]);
 		return $html;
 	}
+
 /* =============================================================
 	Url Functions
 ============================================================= */

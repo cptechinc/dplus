@@ -1,4 +1,4 @@
-<?php namespace Controllers\Mso;
+<?php namespace Controllers\Mso\SalesOrder;
 
 use stdClass;
 // Propel Query
@@ -21,11 +21,15 @@ use Dplus\CodeValidators\Min as MinValidator;
 use Dplus\Filters\Mso\SalesHistory\Detail as SalesHistoryDetailFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+use Controllers\Mso\SalesOrder\Base;
 
-class Eso extends AbstractController {
+class Edit extends Base {
+/* =============================================================
+	Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['ordn|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -38,31 +42,39 @@ class Eso extends AbstractController {
 	}
 
 	public static function handleCRUD($data) {
-		$data = self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn']);
+		self::sanitizeParametersShort($data, ['action|text', 'ordn|ordn']);
 
 		if (empty($data->action) === true) {
 			self::pw('session')->redirect(self::pw('page')->url."?ordn=$data->ordn", $http301 = false);
 		}
 
 		if ($data->action) {
-			$page = self::pw('page');
-			$eso  = self::pw('modules')->get('SalesOrderEdit');
+			$eso  = self::getEso();
 			$eso->process_input(self::pw('input'));
-			$url = $page->so_editURL($data->ordn);
+			$url = self::orderEditUrl($data->ordn);
 			if (in_array($data->action, ['unlock-order', 'exit']) || isset($data->exit)) {
-				$url = $page->so_viewURL($data->ordn);
+				$url = self::orderUrl($data->ordn);
 			}
 			self::pw('session')->redirect($url, $http301 = false);
 		}
 		self::pw('session')->redirect(self::pw('input')->url(), $http301 = false);
 	}
 
+	public static function editNewOrder($data) {
+		$ordn = self::pw('user')->get_lockedID();
+
+		if (empty($ordn)) {
+			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "New Sales Order # not found"]);
+		}
+		self::pw('session')->redirect(self::orderEditUrl($ordn), $http301 = false);
+	}
+
 	public static function so($data) {
-		$data = self::sanitizeParametersShort($data, ['ordn|ordn']);
+		self::sanitizeParametersShort($data, ['ordn|ordn']);
 		$data->ordn = self::pw('sanitizer')->ordn($data->ordn);
-		$page = self::pw('page');
-		$config = self::pw('config');
-		$validate = new MsoValidator();
+		$page     = self::pw('page');
+		$config   = self::pw('config');
+		$validate = self::validator();
 
 		if ($validate->order($data->ordn) === false) {
 			if ($validate->invoice($data->ordn)) {
@@ -71,14 +83,12 @@ class Eso extends AbstractController {
 			return self::invalidSo($data);
 		}
 
-		$eso = self::pw('modules')->get('SalesOrderEdit');
-		$eso->set_ordn($data->ordn);
+		$eso = self::getEso($data->ordn);
 		$session = self::pw('session');
 
 		if ($eso->exists_editable($data->ordn) === false || $eso->can_order_be_edited($data->ordn)) {
 			if ($session->getFor('load-eso', $data->ordn) > 0) {
-				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "SO # $data->ordn can not be loaded for editing"]);
-				return $page->body;
+				return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "SO # $data->ordn can not be loaded for editing"]);
 			}
 			$eso->request_so_edit($data->ordn);
 			$session->setFor('load-eso', $data->ordn, 1);
@@ -88,8 +98,42 @@ class Eso extends AbstractController {
 		return self::soEditForm($data, $eso, $page, $config);
 	}
 
+	public static function editItem($data) {
+		self::sanitizeParametersShort($data, ['ordn|ordn', 'linenbr|int', 'itemID|text']);
+		$eso = self::getEso();
+		$data->ordn = self::pw('sanitizer')->ordn($data->ordn);
+		$page     = self::pw('page');
+		$config   = self::pw('config');
+		$validate = self::validator();
+
+		if ($validate->order($data->ordn) === false) {
+			return self::invalidSo($data);
+		}
+
+		if (self::pw('user')->is_editingorder($data->ordn) == false) {
+			return self::invalidHistory($data);
+		}
+		$eso->set_ordn($data->ordn);
+
+		// Validate Line Exists
+		$q = SalesOrderDetailQuery::create()->filterByOrdernumber($data->ordn)->filterByLinenbr($data->linenbr);
+
+		if ($data->linenbr !== 0 && $q->count() === 0) {
+			$html = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Invalid Line #", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Line # $data->linenbr does not exist on SO # $data->ordn"]);
+			return $html;
+		}
+
+		$orderitem = $q->findOneOrCreate();
+		self::_setupOrderItem($eso, $orderitem, $data);
+		$files = self::setupItemJsonFiles($eso, $orderitem);
+		$html  = $config->twig->render('sales-orders/sales-order/edit/edit-item/display.twig', ['eso' => $eso, 'orderitem' => $orderitem, 'data' => $files]);
+		return $html;
+	}
+
+/* =============================================================
+	Displays
+============================================================= */
 	private static function soEditForm($data, EsoCRUD $eso) {
-		self::pw('modules')->get('DpagesMso')->init_salesorder_hooks();
 		$page   = self::pw('page');
 		$config = self::pw('config');
 		$page->headline = "Editing Sales Order #$data->ordn";
@@ -156,9 +200,7 @@ class Eso extends AbstractController {
 
 		if ($input->get->q) {
 			$q = $input->get->text('q');
-			$eso = self::pw('modules')->get('SalesOrderEdit');
-			$eso->set_ordn($order->ordernumber);
-			$eso->request_itemsearch($q);
+			self::getItemPricing()->request_search($q, $order->custid);
 			$results = PricingQuery::create()->findBySessionid(session_id());
 			$html .= $config->twig->render('sales-orders/sales-order/edit/lookup/results.twig', ['q' => $q, 'results' => $results, 'soconfig' => $eso->config('so') ]);
 		}
@@ -207,62 +249,12 @@ class Eso extends AbstractController {
 		return $html;
 	}
 
-	private static function invalidSo($data) {
-		$page = self::pw('page');
-		$config = self::pw('config');
-		$page->headline = "Sales Order #$data->ordn not found";
-		$html = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Sales Order Not Found, check if it\'s in History', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "SO # $data->ordn can not be found"]);
-		$html .= '<div class="mb-3"></div>';
-		$html .= self::lookupForm();
-		return $html;
-	}
-
 	private static function invalidHistory($data) {
 		$page = self::pw('page');
-		$config = self::pw('config');
 		$page->headline = "Sales Order #$data->ordn is not editable";
-		$html = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Order #$data->ordn is in Sales History", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "SO # $data->ordn is invoiced, and in history"]);
+		$html = self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Order #$data->ordn is in Sales History", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "SO # $data->ordn is invoiced, and in history"]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= self::lookupForm();
-		return $html;
-	}
-
-	private static function lookupForm() {
-		$config = self::pw('config');
-		$html = $config->twig->render('sales-orders/sales-order/lookup-form.twig');
-		return $html;
-	}
-
-	public static function editItem($data) {
-		$eso = self::pw('modules')->get('SalesOrderEdit');
-
-		$data = self::sanitizeParametersShort($data, ['ordn|ordn', 'linenbr|int', 'itemID|text']);
-		$data->ordn = self::pw('sanitizer')->ordn($data->ordn);
-		$page = self::pw('page');
-		$config = self::pw('config');
-		$validate = new MsoValidator();
-
-		if ($validate->order($data->ordn) === false) {
-			return self::invalidSo($data);
-		}
-
-		if (self::pw('user')->is_editingorder($data->ordn) == false) {
-			return self::invalidHistory($data);
-		}
-		$eso->set_ordn($data->ordn);
-
-		// Validate Line Exists
-		$q = SalesOrderDetailQuery::create()->filterByOrdernumber($data->ordn)->filterByLinenbr($data->linenbr);
-
-		if ($data->linenbr !== 0 && $q->count() === 0) {
-			$html = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Invalid Line #", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Line # $data->linenbr does not exist on SO # $data->ordn"]);
-			return $html;
-		}
-
-		$orderitem = $q->findOneOrCreate();
-		self::_setupOrderItem($eso, $orderitem, $data);
-		$files = self::setupItemJsonFiles($eso, $orderitem);
-		$html  = $config->twig->render('sales-orders/sales-order/edit/edit-item/display.twig', ['eso' => $eso, 'orderitem' => $orderitem, 'data' => $files]);
 		return $html;
 	}
 
@@ -282,10 +274,10 @@ class Eso extends AbstractController {
 			$orderitem->setItemid($data->itemID);
 
 			if ($orderitem->itemid != ItemMasterItem::ITEMID_NONSTOCK) {
-				$eso = self::pw('modules')->get('SalesOrderEdit');
-				$eso->request_itemsearch($orderitem->itemid);
-
-				$pricing = PricingQuery::create()->filterBySessionid(session_id())->findOneByItemid($orderitem->itemid);
+				$eso = self::getEso();
+				$pricingM = self::getItemPricing();
+				$pricingM->request_search($orderitem->itemid, $eso->getOrderCustid($data->ordn));
+				$pricing = $pricingM->get_pricing($orderitem->itemid);
 				$orderitem->setPrice($pricing ? $pricing->price : 0.0);
 			}
 
@@ -339,7 +331,7 @@ class Eso extends AbstractController {
 			}
 
 			if ($request) {
-				$eso->request_itempricing($orderitem->itemid);
+				self::getItemPricing()->request_search($orderitem->itemid, $eso->getOrderCustid($orderitem->ordernumber));
 			}
 
 			foreach (array_keys($files) as $code) {
@@ -358,5 +350,20 @@ class Eso extends AbstractController {
 			$files['pricehistory'] = $filter->query->find();
 		}
 		return $files;
+	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	private static function getEso($ordn = '') {
+		$eso = self::pw('modules')->get('SalesOrderEdit');
+		if ($ordn) {
+			$eso->set_ordn($ordn);
+		}
+		return $eso;
+	}
+
+	private static function getItemPricing() {
+		return self::pw('modules')->get('ItemPricing');
 	}
 }
