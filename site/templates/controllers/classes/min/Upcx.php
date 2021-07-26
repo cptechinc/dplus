@@ -65,7 +65,7 @@ class Upcx extends AbstractController {
 		$page->headline = "UPCX: $xref->upc";
 
 		if ($xref->isNew()) {
-			$page->headline = "UPCX: Create X-ref";
+			$page->headline = "UPCX: Create X-Ref";
 		}
 
 		$page->js   .= self::pw('config')->twig->render('items/upcx/form/js.twig', ['upc' => $xref]);
@@ -111,10 +111,11 @@ class Upcx extends AbstractController {
 		$filter = new UpcxFilter();
 
 		if ($data->q) {
-			$page->headline = "UPCX: Results for '$data->q'";
+			$page->headline = "UPCX: Searching for '$data->q'";
 			$filter->search(strtoupper($data->q));
 		}
 		$filter->sortby($page);
+		$filter->query->orderBy(ItemXrefUpc::aliasproperty('upc'), 'ASC');
 		$upcs = $filter->query->paginate(self::pw('input')->pageNum, 10);
 
 		$page->js   .= self::pw('config')->twig->render('items/upcx/list/.js.twig');

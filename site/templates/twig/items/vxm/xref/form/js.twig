@@ -1,0 +1,326 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	vxm                    module XrefVxm
+	item                   ItemXrefVendor
+#}
+
+{% include 'items/vxm/xref/form/js/classes.js.twig' %}
+
+$(function() {
+	var modal_ajax = $('#ajax-modal');
+
+	var uri = URI();
+	if (uri.query(true)['vendoritemID'] != 'new') {
+		$('select[name=uom_purchase]').focus();
+	}
+
+	var formVxm = VxmForm.getInstance();
+	var alert   = VxmAlerts.getInstance();
+	var server  = VxmRequests.getInstance();
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on("change", "input[name=unitcost_base]", function(e) {
+		formVxm.inputs.updateMarginsOrListpriceAfterBasecost();
+	});
+
+	$("body").on("change", ".unit-cost, .unit-qty", function(e) {
+		var input = $(this);
+		var unitrow = input.closest('.unit-row');
+		formVxm.inputs.updateUnitMargin(unitrow);
+
+		//if (input.hasClass('unit-qty')) {
+			formVxm.inputs.updateUnitMargin(unitrow);
+			formVxm.inputs.updateUnitRowReadonly(unitrow);
+		//}
+	});
+
+	$("body").on("change", "input[name=qty_percase]", function(e) {
+		var input = $(this);
+		var qty = floatParse(input.val());
+		input.val(qty.toFixed({{ vxm.field_attribute('qty_percase', 'precision') }}));
+	});
+
+	$("body").on("change", "input[name=minbuyqty]", function(e) {
+		var input = $(this);
+		var qty = floatParse(input.val());
+		input.val(qty.toFixed({{ vxm.field_attribute('minbuyqty', 'precision') }}));
+	});
+
+	$("body").on("keydown", ".unit-qty", function(e) {
+		var input = $(this);
+		var unitrow = input.closest('.unit-row');
+		formVxm.inputs.updateUnitRowReadonly(unitrow);
+	});
+
+	$("body").on("change", ".unit-margin", function(e) {
+		var unitrow = $(this).closest('.unit-row');
+		var computeListpriceOrCost = '{{ vxm.getConfigAp().computelistpriceorcost }}';
+		var vxmInputs = VxmInputs.getInstance();
+		var config = VxmConfigs.getInstance();
+
+		if (parseInt(unitrow.data('break')) == 0) {
+			if (config.basemarginchange.computeListpriceOrCost == config.options.basemarginchange.computeListpriceOrCost.listprice) {
+				formVxm.inputs.updateListPriceFromBaseMargin(function() {
+					var vxmInputs = VxmInputs.getInstance();
+					vxmInputs.updateAllUnitMargins();
+				});
+			} else {
+				vxmInputs.updateUnitCost(unitrow);
+			}
+		} else  {
+			vxmInputs.updateUnitCost(unitrow);
+		}
+
+		if (parseInt(unitrow.data('break')) > 0) {
+			var step = parseInt(unitrow.data('break'));
+			var nextrow = $('.unit-row[data-break='+(step + 1)+']');
+			nextrow.find('.unit-qty').removeAttr('readonly');
+		}
+	});
+
+	/**
+	 * Change the Unit of Measure Description when the Unit of Measure is changed
+	 */
+	$("body").on("change", "#uom_purchase", function(e) {
+		var input = $(this);
+		var conversion = input.find('option:selected').data('conversion');
+		input.siblings('p').find('.conversion-description').text(conversion);
+		$('.uom-purchase-code').text(input.val());
+
+		formVxm.updateEachListPriceForPrimaryOrdercode(function() {
+			formVxm.inputs.updateAllUnitCostsUom(function() {
+				input.attr('data-uom', input.val());
+				input.attr('data-conversion', input.find('option:selected').data('conversion'));
+			});
+		});
+	});
+
+	$("body").on("change", "input[name=itemID]", function(e) {
+		var input = $(this);
+		var server = new VxmRequests();
+
+		formVxm.populateItemData(input.val());
+
+		server.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), input.val(), function(exists) {
+			if (exists) {
+				alert.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), input.val(), function(editXref) {
+					if (editXref === true) {
+						var uri = new URI();
+						uri.removeQuery('vendoritemID');
+						uri.setQuery('vendorID', formVxm.inputs.vendorid.val());
+						uri.setQuery('vendoritemID', formVxm.inputs.vendoritemid.val());
+						uri.setQuery('itemID', formVxm.inputs.itemid.val(),);
+						window.location.href = uri.toString();
+					}
+					if (editXref === false) {
+						location.reload();
+					}
+				});
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=vendoritemID]", function(e) {
+		var input = $(this);
+		var server = new VxmRequests();
+
+		server.xrefExists(formVxm.inputs.vendorid.val(), input.val(), formVxm.inputs.itemid.val(), function(exists) {
+			if (exists && input.data('new') != 'true') {
+				alert.xrefExists(formVxm.inputs.vendorid.val(), formVxm.inputs.vendoritemid.val(), input.val(), function(editXref) {
+					if (editXref === true) {
+						var uri = new URI();
+						uri.removeQuery('vendoritemID');
+						uri.setQuery('vendorID', formVxm.inputs.vendorid.val());
+						uri.setQuery('vendoritemID', formVxm.inputs.vendoritemid.val());
+						uri.setQuery('itemID', formVxm.inputs.itemid.val());
+						window.location.href = uri.toString();
+					}
+					if (editXref === false) {
+						location.reload();
+					}
+				});
+			}
+		});
+	});
+
+	$("body").on("change", "input[name=listprice]", function(e) {
+		var input = $(this);
+		var config = VxmConfigs.getInstance();
+		input.val(floatParse(input.val()).toFixed(config.fields.listprice.precision));
+
+		if ((formVxm.inputs.ordercode.val() == config.ordercodes.primary && config.allowListPriceUpdate) || input.closest('form').data('new') == true) {
+			formVxm.updateEachListPriceUsingOrdercodeCosting();
+		}
+
+		formVxm.inputs.updateMarginsOrCostsAfterListprice();
+	});
+
+	$("body").on("change", "select[name=po_ordercode]", function(e) {
+		var input = $(this);
+		var config = VxmConfigs.getInstance();
+		formVxm.inputs.ordercodevalidated.val('false');
+
+		if (config.ordercodesForChangingItmCost.contains(input.val())) {
+			formVxm.inputs.listprice.change();
+		}
+	});
+
+	$("body").on("focus", "#" + formVxm.id + " select, #" + formVxm.id +" input", function(e) {
+		var input = $(this);
+		if (input != formVxm.inputs.itemid && formVxm.inputs.itemid.hasClass('is-invalid')) {
+			formVxm.inputs.itemid.focus();
+		}
+	});
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = formVxm.inputs.form.serialize();
+
+	$("body").on("click", "a:not(#itm-xrefs-form.form_button, #ajax-modal a)", function(e) {
+		if (formVxm.inputs.form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			alert.unsavedChanges(function(save) {
+				if (save === true) {
+					formVxm.inputs.form.find('button[type=submit]').click();
+				} else {
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
+/* =============================================================
+	AJAX Lookup Modal Functions
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = button.data('lookupurl');
+
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.vendor-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var vendorID = button.data('vendorid');
+		var name = button.data('name');
+		formVxm.inputs.vendorid.val(vendorID);
+		formVxm.inputs.vendorid.closest('.vendor-col').find('.name').text(name);
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		var description = button.data('description');
+		formVxm.inputs.itemid.val(itemID).change();
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	formVxm.inputs.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			vendorID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('map/validate/vendorid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true'
+					}
+				}
+			},
+			vendoritemID: {
+				required: true,
+				remote: function() {
+					validateRemoteXrefObj();
+				}
+			},
+			itemID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true'
+					}
+				}
+			},
+			uom_purchase: {required: true},
+			qty_percase: {required: true},
+			optioncode: {
+				required: false,
+				maxlength: {{ vxm.field_attribute('optioncode', 'maxlength') }}
+			},
+		},
+		messages: {
+			ouritemID: "Please enter the Your Item ID",
+			uom_purchase: "Select a Purchase Unit of Measure",
+		},
+		submitHandler: function(form) {
+			$('#loading-modal').modal('show');
+			var formVxm = VxmForm.getInstance();
+			formVxm.submitVxmFormAfterValidation(form);
+		}
+	});
+
+	function validateRemoteXrefObj() {
+		var input = formVxm.inputs.vendoritemid;
+		var url = VxmRequests.getInstance().xrefExistsUrl();
+
+		return {
+			url: url,
+			type: "get",
+			data: {
+				jqv: 'true',
+				new: function() {
+					return (input.val() != input.data('vendoritemid') && input.data('new') === true) ? 'true' : 'false';
+				},
+				vendorID: function() {
+					return $('input[name=vendorID]').val();
+				},
+				itemID: function() {
+					return $('input[name=itemID]').val();
+				},
+			}
+		}
+	}
+});

@@ -1,0 +1,23 @@
+{#
+	This js.twig file is just for including the others necessary for vxm notes
+
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	mxrfe                  module XrefMxrfe
+	xref                   ItemXrefManufacturer
+	qnotes                 module QnotesItemMxrfe
+	qnotes.mnfr            module QnotesMnfr
+	qnotes.mmsc            module QnotesMmsc
+#}
+
+{% include 'items/mxrfe/xref/notes/mnfr/js.twig' %}
+{% include 'items/mxrfe/xref/notes/mmsc/js.twig' %}
+{% include 'items/mxrfe/xref/notes/intv/js.twig' %}
+{% include 'msa/noce/ajax/js.twig' %}
+
+$(function() {
+	{% if page.session.get('response_qnote') %}
+		$('html, body').animate({scrollTop: $('#notes-tab').offset().top - 60}, 1000);
+	{% endif %}
+});

@@ -81,7 +81,7 @@ class Mxrfe extends XrefFunction {
 			$xref->setItemid($data->itemID);
 			$page->headline = "ITM: $data->itemID MXRFE Create X-ref";
 		}
-		$page->js .= self::pw('config')->twig->render('items/mxrfe/item/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
+		$page->js .= self::pw('config')->twig->render('items/mxrfe/xref/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
 		self::pw('session')->removeFor('response', 'mxrfe');
 		return self::xrefDisplay($data, $xref);
 	}

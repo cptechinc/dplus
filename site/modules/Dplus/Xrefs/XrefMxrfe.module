@@ -148,6 +148,7 @@ class XrefMxrfe extends WireData implements Module {
 		} else {
 			$mnfritemID = $mnfritemID == 'new' ? '' : $mnfritemID;
 			$record = $this->new_xref();
+			$record->setAvailable(0.0);
 			$record->setMnfrid($mnfrID);
 			$record->setMnfritemid($mnfritemID);
 
@@ -216,6 +217,9 @@ class XrefMxrfe extends WireData implements Module {
 			}
 			$record->delete();
 			$this->wire('session')->setFor('response', 'mxrfe', $this->save_and_respond($record));
+			if ($this->wire('session')->getFor('response', 'mxrfe')->has_success()) {
+				$this->update_dplus_cobol($record);
+			}
 			return $this->wire('session')->getFor('response', 'mxrfe')->has_success();
 		}
 		return true;

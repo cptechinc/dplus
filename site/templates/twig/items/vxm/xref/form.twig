@@ -1,0 +1,47 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	vxm                    module XrefVxm
+	recordlocker           module RecordLockerUser
+	item                   ItemXrefVendor
+#}
+<form action="{{ page.fullURL.getURL() }}" method="POST" id="vxm-item-form">
+	<input type="hidden" name="action" value="update-vxm">
+	<input type="hidden" name="original_vendoritemID" value="{{ item.vendoritemID }}">
+
+	<div class="row mb-3">
+		{% include 'items/vxm/xref/form/header.twig' %}
+	</div>
+	<div class="form-row">
+		<div class="col-sm-5">
+			{% include 'items/vxm/xref/form/details.twig' %}
+		</div>
+		<div class="col-sm-7">
+			{% include 'items/vxm/xref/form/unit-costs.twig' %}
+		</div>
+	</div>
+	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the Item is
+			1. Locked for editing by the User
+			2. Is a new Item
+			NOTE: Only show delete if item already exists.
+		#}
+		{% if vxm.recordlocker.function_locked_by_user(vxm.get_recordlocker_key(item)) or item.isNew() %}
+			<button type="submit" class="btn btn-success">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+
+			{% if item.isNew() == false %}
+				<a href="{{ page.xrefDeleteUrl(item.ouritemid, item.vendorid, item.vendoritemid) }}" class="btn btn-danger delete_button">
+					<i class="fa fa-trash" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+
+		<a href="{{ page.xrefExitUrl(item) }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
+	</div>
+</form>

@@ -86,7 +86,7 @@ class Cxm extends XrefFunction {
 			$xref->setItemid($data->itemID);
 			$page->headline = "ITM: $xref->itemid CXM Create X-ref";
 		}
-		$page->js .= self::pw('config')->twig->render('items/cxm/item/form/js.twig', ['cxm' => $cxm, 'xref' => $xref]);
+		$page->js .= self::pw('config')->twig->render('items/cxm/xref/form/js.twig', ['cxm' => $cxm, 'xref' => $xref]);
 		$html = self::xrefDisplay($data, $xref);
 		self::pw('session')->removeFor('response', 'cxm');
 		return $html;

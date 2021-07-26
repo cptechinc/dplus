@@ -81,7 +81,7 @@ class Cxm extends AbstractController {
 		$pages = self::pw('pages');
 		$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;
 		$page->searchitemsURL     = $pages->get('pw_template=itm-search')->url;
-		$page->js .= $config->twig->render('items/cxm/item/form/js.twig', ['cxm' => $cxm, 'xref' => $xref]);
+		$page->js .= $config->twig->render('items/cxm/xref/form/js.twig', ['cxm' => $cxm, 'xref' => $xref]);
 
 		$html = self::xrefDisplay($data, $xref);
 		return $html;
@@ -92,7 +92,7 @@ class Cxm extends AbstractController {
 		$html = '';
 		$html .= self::cxmHeaders();
 		$html .= self::lockXref($xref);
-		$html .= $config->twig->render('items/cxm/item/form/display.twig', ['item' => $xref, 'cxm' => self::getCxm(), 'qnotes' => self::pw('modules')->get('QnotesItemCxm')]);
+		$html .= $config->twig->render('items/cxm/xref/form/display.twig', ['item' => $xref, 'cxm' => self::getCxm(), 'qnotes' => self::pw('modules')->get('QnotesItemCxm')]);
 		if (!$xref->isNew()) {
 			$html .= self::qnotesDisplay($xref);
 		}
@@ -105,8 +105,8 @@ class Cxm extends AbstractController {
 		$qnotes = self::pw('modules')->get('QnotesItemCxm');
 		$html = '';
 		$html .= '<div class="mt-3"><h3>Notes</h3></div>';
-		$html .= $config->twig->render('items/cxm/item/notes/qnotes.twig', ['item' => $xref, 'qnotes' => $qnotes]);
-		$page->js .= $config->twig->render('items/cxm/item/notes/js.twig', ['qnotes' => $qnotes]);
+		$html .= $config->twig->render('items/cxm/xref/notes/qnotes.twig', ['item' => $xref, 'qnotes' => $qnotes]);
+		$page->js .= $config->twig->render('items/cxm/xref/notes/js.twig', ['qnotes' => $qnotes]);
 		$page->js .= $config->twig->render('msa/noce/ajax/js.twig', ['qnotes' => $qnotes]);
 		return $html;
 	}
@@ -163,7 +163,7 @@ class Cxm extends AbstractController {
 		$filter->custid($cxm->custids());
 
 		if ($data->q) {
-			$page->headline = "Searching Customers for '$data->q'";
+			$page->headline = "CXM: Searching Customers for '$data->q'";
 			$filter->search($data->q);
 		}
 		$filter->sortby($page);
@@ -186,22 +186,23 @@ class Cxm extends AbstractController {
 
 	public static function custXrefs($data) {
 		$data = self::sanitizeParametersShort($data, ['custID|text', 'q|text']);
-		$page    = self::pw('page');
+		$page = self::pw('page');
 		$cxm  = self::getCxm();
 		$cxm->recordlocker->deleteLock();
 		$customer = $cxm->customer($data->custID);
 		$filter   = new CxmFilter();
 		$filter->custid($data->custID);
 		$filter->sortby($page);
+		$page->headline = "CXM: $customer->name";
+
 		if ($data->q) {
-			$page->headline = "CXM: $customer->name searching '$data->q'";
+			$page->headline = "CXM: searching $customer->name X-Refs '$data->q'";
 			$filter->search($data->q);
 		}
-		$page->headline           = "CXM: $customer->name";
+
 		$page->searchcustomersURL = self::pw('pages')->get('pw_template=mci-lookup')->url;
 		$page->js                 .= self::pw('config')->twig->render('items/cxm/list/js.twig');
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
-
 		$html = self::customerXrefsDisplay($data, $xrefs);
 		return $html;
 	}

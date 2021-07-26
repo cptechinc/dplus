@@ -1,0 +1,63 @@
+<div class="row form-group">
+	<div class="col-sm-3">
+		<label for="uom">UoM</label>
+	</div>
+	<div class="col-sm-8">
+		<select name="unitofm" class="form-control form-control-sm mb-1" id="unitofm">
+			{% for uom in mxrfe.unitsofm() %}
+				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == xref.unitofm ? 'selected' : ''}}>
+					{{ uom.code }} - {{ uom.description }}
+				</option>
+			{% endfor %}
+		</select>
+		<small class="text-muted">
+			Conversion: <span class="conversion-description">{{ xref.uom.conversion }}</span>
+		</small>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-3">
+		<label for="price">List Price</label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/form/input.twig' with {
+				'type': 'number',
+				'name': 'price', 'value': xref.price|number_format(mxrfe.field_attribute('price', 'precision')),
+				'class_add': [
+					'w-50',
+					'text-right'
+				],
+				'attributes': {
+					'max': mxrfe.field_attribute('price', 'max'),
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-3">
+		<label for="cost">Cost</label>
+	</div>
+	<div class="col-sm-8">
+		{% include 'util/form/input.twig' with {
+				'type': 'number',
+				'name': 'cost', 'value': xref.cost|number_format(mxrfe.field_attribute('cost', 'precision')),
+				'class_add': [
+					'w-50',
+					'text-right'
+				],
+				'attributes': {
+					'max': mxrfe.field_attribute('cost', 'max'),
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-3">
+		<strong>Change Date</strong>
+	</div>
+	<div class="col-sm-8">
+		<p class="form-control-plaintext form-control-sm">{{ xref.dateupdated ? xref.dateupdated|convertdate : '' }}</p>
+	</div>
+</div>

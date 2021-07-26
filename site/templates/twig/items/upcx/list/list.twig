@@ -10,14 +10,18 @@
 			</h3>
 		</div>
 		<div class="col-sm-6 text-right">
-
+			{% block add_upc_link %}
+				<a href="{{ page.upcCreateUrl() }}" class="btn btn-secondary">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add X-Ref
+				</a>
+			{% endblock %}
 		</div>
 	</div>
 {% endblock %}
 
 <table class="table table-sm">
 	<thead>
-		<tr class="bg-dark text-white p-3">
+		<tr class="bg-dark text-white">
 			<th class="pt-3 pb-3">
 				<a href="{{ page.get_sortURL('upc') }}" class="link">UPC
 					{% if page.orderby_column == 'upc' %}
@@ -25,7 +29,7 @@
 					{% endif %}
 				</a>
 			</th>
-			<th class="pt-3 pb-3">Eaches</th>
+			<th class="pt-3 pb-3">Qty Per UPC</th>
 			{% if itemID == false %}
 				<th class="pt-3 pb-3">
 					<a href="{{ page.get_sortURL('itemid') }}" class="link">Item ID / Desription
@@ -35,7 +39,6 @@
 					</a>
 				</th>
 			{% endif %}
-			<th class="pt-3 pb-3">UoM</th>
 			<th class="pt-3 pb-3">
 				<a href="{{ page.get_sortURL('primary') }}" class="link">Primary
 					{% if page.orderby_column == 'primary' %}
@@ -44,20 +47,14 @@
 				</a>
 			</th>
 			<th class="pt-3 pb-3">
-				<a href="{{ page.get_sortURL('mastercase') }}" class="link">Master Carton
+				<a href="{{ page.get_sortURL('mastercase') }}" class="link">Master Case
 					{% if page.orderby_column == 'mastercase' %}
 						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
 					{% endif %}
 				</a>
 			</th>
 			<th class="pt-3 pb-3">Label</th>
-			<th class="pt-3 pb-3 text-center">
-				{% block add_upc_link %}
-					<a href="{{ page.upcCreateUrl() }}" class="btn btn-secondary btn-sm">
-						<i class="fa fa-plus" aria-hidden="true"></i> Add UPC
-					</a>
-				{% endblock %}
-			</th>
+			<th class="pt-3 pb-3 text-center"></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -79,10 +76,8 @@
 						<small>{{ upc.ItemMasterItem.desc }}</small>
 					</td>
 				{% endif %}
-
-				<td>{{ upc.uom }}</td>
 				<td>{{ upc.primary|yesorno|capitalize }}</td>
-				<td>{{ upc.mastercarton|yesorno|capitalize }}</td>
+				<td>{{ upc.is_mastercase()|yesorno|capitalize }}</td>
 				<td>{{ upc.needslabel|yesorno|capitalize }}</td>
 				<td class="text-center">
 					{% if upcx.recordlocker.isLocked(upc.upc) == false or upcx.recordlocker.userHasLocked( upc.upc) %}

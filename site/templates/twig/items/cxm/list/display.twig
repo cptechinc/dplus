@@ -8,20 +8,8 @@
 	response               XrefResponse|null
 #}
 <div class="card mb-3">
-	<div class="card-header">
-		<div class="row">
-			<div class="col-sm-2">
-				<strong>Customer ID</strong>
-			</div>
-			<div class="col-sm-6">
-				<div>
-					{{ customer.custid }} - {{ customer.name }}
-				</div>
-			</div>
-		</div>
-	</div>
 	<div class="card-body">
-		{% include 'items/cxm/search/item/customer/form.twig' with {'q': page.wire('input').get.text('q'), 'custID': customer.custid} %}
+		{% include 'items/cxm/search/xref/customer/form.twig' with {'q': page.wire('input').get.text('q'), 'custID': customer.custid} %}
 	</div>
 	{% include 'items/cxm/list/customer.twig' %}
 </div>

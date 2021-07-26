@@ -118,11 +118,23 @@ class XrefUpc extends WireData implements Module {
 			$record = $this->xref($upc);
 		} else {
 			$upc = $upc == 'new' ? '' : $upc;
-			$record = new ItemXrefUpc();
+			$record = $this->newXref();
 			$record->setUpc($upc);
-			$record->setQty(1);
 		}
 		return $record;
+	}
+
+	/**
+	 * Return new X-Ref
+	 * @return ItemXrefUpc
+	 */
+	public function newXref() {
+		$r = new ItemXrefUpc();
+		$r->setQty(1);
+		$r->setPrimary('Y');
+		$r->setMastercase('N');
+		$r->setNeedslabel('N');
+		return $r;
 	}
 
 /* =============================================================
@@ -216,12 +228,11 @@ class XrefUpc extends WireData implements Module {
 		$values = $input->$rm;
 		$record->setItemid($values->text('itemID'));
 		$record->setQty($values->int('qty'));
-		$record->setUom($values->text('uom'));
 		$record->setMastercase($values->yn('mastercase'));
 		$record->setNeedslabel($values->yn('needslabel'));
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('His'));
-		
+
 		if ($values->text('primary') == ItemXrefUpc::PRIMARY_TRUE) {
 			if ($values->text('valid_primary') == 'true') {
 				$record->setPrimary(ItemXrefUpc::PRIMARY_TRUE);

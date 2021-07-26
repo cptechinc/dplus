@@ -65,7 +65,7 @@ class Mxrfe extends AbstractController {
 		if ($xref->isNew() === false) {
 			$page->headline = "MXRFE: " . $mxrfe->get_recordlocker_key($xref);
 		}
-		$page->js   .= self::pw('config')->twig->render('items/mxrfe/item/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
+		$page->js   .= self::pw('config')->twig->render('items/mxrfe/xref/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
 		$html = self::xrefDisplay($data, $xref);
 		return $html;
 	}
@@ -80,7 +80,7 @@ class Mxrfe extends AbstractController {
 		$html = '';
 		$html .= self::mxrfeHeaders();
 		$html .= self::lockXref($xref);
-		$html .= $config->twig->render('items/mxrfe/item/form/display.twig', ['mxrfe' => $mxrfe, 'vendor' => $vendor, 'xref' => $xref, 'qnotes' => $qnotes]);
+		$html .= $config->twig->render('items/mxrfe/xref/form/display.twig', ['mxrfe' => $mxrfe, 'vendor' => $vendor, 'xref' => $xref, 'qnotes' => $qnotes]);
 
 		if (!$xref->isNew()) {
 			$html .= self::qnotesDisplay($xref);
@@ -107,8 +107,8 @@ class Mxrfe extends AbstractController {
 		$config = self::pw('config');
 		$qnotes = self::pw('modules')->get('QnotesItemMxrfe');
 		$html = '<hr> <div class="mt-3"></div>';
-		$html .= $config->twig->render('items/mxrfe/item/notes/notes.twig', ['xref' => $xref, 'qnotes' => $qnotes]);
-		$page->js   .= $config->twig->render('items/mxrfe/item/notes/js.twig', ['xref' => $xref, 'qnotes' => $qnotes]);
+		$html .= $config->twig->render('items/mxrfe/xref/notes/notes.twig', ['xref' => $xref, 'qnotes' => $qnotes]);
+		$page->js   .= $config->twig->render('items/mxrfe/xref/notes/js.twig', ['xref' => $xref, 'qnotes' => $qnotes]);
 		self::pw('session')->remove('response_qnote');
 		return $html;
 	}
@@ -144,7 +144,7 @@ class Mxrfe extends AbstractController {
 		$filter->init();
 		$filter->vendorid($mxrfe->vendorids());
 		if ($data->q) {
-			$page->headline = "Searching Mnfrs for '$data->q'";
+			$page->headline = "MXRFE: Searching Mnfrs for '$data->q'";
 			$filter->search($data->q);
 		}
 		$filter->sortby($page);
@@ -175,6 +175,10 @@ class Mxrfe extends AbstractController {
 		$filter->vendorid($data->mnfrID);
 		$filter->sortby($page);
 		$page->headline = "MXRFE: Mnfr $data->mnfrID";
+		if ($data->q) {
+			$page->headline = "MXRFE: Searching $data->mnfrID X-Refs for '$data->q'";
+			$filter->search($data->q);
+		}
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		$html  = self::mnfrXrefsDisplay($data, $xrefs);
 		return $html;
@@ -226,7 +230,7 @@ class Mxrfe extends AbstractController {
 	 * @param  string $itemID      ITM Item ID
 	 * @return string
 	 */
-	public function xrefDeleteUrl($mnfrID, $mnfritemID, $itemID) {
+	public static function xrefDeleteUrl($mnfrID, $mnfritemID, $itemID) {
 		$url = new Purl(self::xrefUrl($mnfrID, $mnfritemID, $itemID));
 		$url->query->set('action', 'delete-xref');
 		return $url->getUrl();
@@ -338,13 +342,15 @@ class Mxrfe extends AbstractController {
 		$itemID     = $values->text('itemID');
 		$mxrfe = self::mxrfeMaster();
 
-		if ($mxrfe->xref_exists($mnfrID, $mnfritemID, $itemID) === false && $values->text('action') != 'update-notes') {
-			return self::pw('pages')->get('pw_template=mxrfe')->url;
+		if (in_array($values->text('action'), ['delete-xref', 'update-notes']) === false) {
+			if ($mxrfe->xref_exists($mnfrID, $mnfritemID, $itemID) === false) {
+				return self::pw('pages')->get('pw_template=mxrfe')->url;
+			}
 		}
 
 		switch ($values->text('action')) {
 			case 'update-xref':
-			$xref = $mxrfe->xref($mnfrID, $mnfritemID, $itemID);
+				$xref = $mxrfe->xref($mnfrID, $mnfritemID, $itemID);
 				$focus = $mxrfe->get_recordlocker_key($xref);
 				return self::mnfrFocusUrl($mnfrID, $focus);
 				break;

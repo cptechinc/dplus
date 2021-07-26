@@ -1,0 +1,301 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	vxm                    module XrefVxm
+	item                   ItemXrefVendor
+	url_validate           URL to validate form inputs
+#}
+
+$(function() {
+	var form_mxrfe = $('#mxrfe-xref-form');
+	var input_uom        = form_mxrfe.find('select[name=unitofm]');
+	var input_itemID     = form_mxrfe.find('input[name=itemID]');
+	var input_mnfritemID = form_mxrfe.find('input[name=mnfritemID]');
+	var input_mnfrID     = form_mxrfe.find('input[name=mnfrID]');
+
+	var modal_ajax = $('#ajax-modal');
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	/**
+	 * Change the Unit of Measure Description when the Unit of Measure is changed
+	 */
+	$("body").on("change", "select[name=unitofm]", function(e) {
+		var input = $(this);
+		var conversion = input.find('option:selected').data('conversion');
+		var ele_description = input.siblings('small').find('.conversion-description');
+		ele_description.text(conversion);
+	});
+
+	$("body").on("change", "input[name=price]", function(e) {
+		var input = $(this);
+		var price = parseFloat(input.val());
+		input.val(price.toFixed({{ mxrfe.field_attribute('price', 'precision') }}));
+	});
+
+	$("body").on("change", "input[name=cost]", function(e) {
+		var input = $(this);
+		var cost = parseFloat(input.val());
+		input.val(cost.toFixed({{ mxrfe.field_attribute('cost', 'precision') }}));
+	});
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = form_mxrfe.serialize();
+
+	$("body").on("click", "a:not(#itm-xrefs-form.form_button, #ajax-modal a)", function(e) {
+		if (form_mxrfe.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+			swal_unsaved_changes(href);
+		}
+	});
+
+	function swal_unsaved_changes(href) {
+		swal2.fire({
+			title: 'Changes have occurred!',
+			text: 'Do you want to save?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			if (result.value) {
+				form_mxrfe.find('button[type=submit]').click();
+			} else if (result.dismiss === Swal.DismissReason.cancel) {
+				// Send HTTP GET Request to remove Record Lock
+				$.get('{{ page.xrefExitUrl(xref) }}', function() {
+					window.location.href = href;
+				});
+			}
+		});
+	}
+
+/* =============================================================
+	AJAX Lookup Modal Functions
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = button.data('lookupurl');
+
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.vendor-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var vendorID = button.data('vendorid');
+		var name = button.data('name');
+		input_mnfrID.val(vendorID);
+		input_mnfrID.closest('.vendor-col').find('.name').text(name);
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		var description = button.data('description');
+		input_itemID.val(itemID).change();
+		modal_ajax.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = form_mxrfe.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			mnfrID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('map/validate/vendorid/') }}',
+					type: "get",
+					data: {
+						vendorID: function() {
+							return $('#mnfrID').val();
+						}
+					}
+				}
+			},
+			mnfritemID: {
+				required: true,
+				remote: function() {
+					return validate_xref_remote_obj();
+				}
+			},
+			itemID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
+					type: "get",
+					data: {}
+				}
+			},
+			unitofm: {
+				required: true,
+			}
+		},
+		messages: {
+			ouritemID: "Please enter the Your Item ID",
+			uom_purchase: "Select a Purchase Unit of Measure",
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+
+	function validate_xref_remote_obj() {
+		var input = $('input[name=mnfritemID]');
+		var url = '{{ page.jsonapiURL('map/validate/mxrfe/') }}';
+		url += (input.val() != input.data('mnfritemid') && input.data('new') == true) ? 'new/' : '';
+
+		return {
+			url: url,
+			type: "get",
+			data: {
+				action: function() {
+					var input = $('input[name=mnfritemID]');
+				},
+				mnfrID: function() {
+					return $('input[name=mnfrID]').val();
+				},
+				itemID: function() {
+					return $('input[name=itemID]').val();
+				},
+			}
+		}
+	}
+
+	function update_vxm(form) {
+		request_validate_vendoritemID(function(exists) {
+			if (exists === true) {
+				if (input_mnfritemID.val() != input_mnfritemID.data('vendoritemid')) {
+					swal_xref_exists();
+				} else {
+					validate_form_poordercode(form);
+				}
+			} else {
+				validate_form_poordercode(form);
+			}
+		});
+	}
+
+	function swal_xref_exists() {
+		swal2.fire({
+			title: "X-ref already exists",
+			text: 'Would you like to go edit this X-ref?',
+			icon: 'error',
+			showCancelButton: true,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			if (result.value) {
+				var uri = new URI();
+				uri.removeQuery('mnfritemID');
+				uri.setQuery('mnfrID', input_mnfrID.val());
+				uri.setQuery('mnfritemID', input_mnfritemID.val());
+				uri.setQuery('itemID', input_itemID.val());
+				window.location.href = uri.toString();
+			} else {
+				location.reload();
+			}
+		});
+	}
+
+/* =============================================================
+	Event Validation Functions
+============================================================= */
+	$("body").on("change", "input[name=itemID]", function(e) {
+		var input = $(this);
+
+		if (validator.element('#'+input.attr('id'))) {
+			if (input_mnfritemID.val() != '') {
+				input_mnfritemID.change();
+			}
+		}
+
+		if (input.val() != input.attr('data-itemid')) {
+			input.attr('data-itemid', input.val());
+			populate_item_data(input.val());
+		}
+	});
+
+	$("body").on("change", "input[name=mnfritemID]", function(e) {
+		var input = $(this);
+		request_validate_xref(function(exists) {
+			if (exists === true) {
+				swal_xref_exists();
+			}
+		});
+	});
+
+	function populate_item_data(itemID) {
+		request_item(itemID, function(item) {
+			if (item) {
+				console.log(item);
+				$('.item-description').text(item.description);
+				$('.item-description2').text(item.description2);
+				$('select[name=unitofm]').val(item.uom_purchase);
+			} else {
+				input_itemID.attr('data-itemid', '');
+			}
+		});
+	}
+
+/* =============================================================
+	AJAX Request Functions
+============================================================= */
+	/**
+	 * Gets boolean value if VXM item exists then calls callback function
+	 * @param  {Function} callback
+	 * @return bool       Does VXM item exist?
+	 */
+	function request_validate_xref(callback) {
+		var url = new URI('{{ page.jsonapiURL('map/validate/mxrfe/') }}');
+		url.addQuery('mnfrID', input_mnfrID.val());
+		url.addQuery('mnfritemID', input_mnfritemID.val());
+		url.addQuery('itemID', input_itemID.val());
+		$.getJSON(url.toString(), function( valid ) {
+			callback(valid);
+		});
+	}
+
+	function request_item(itemID, callback) {
+		var url = new URI('{{ page.jsonapiURL('inv/item/') }}');
+		url.addQuery('itemID', itemID);
+		url.addQuery('fields', 'uom_purchase');
+
+		$.getJSON(url.toString(), function( item ) {
+			callback(item);
+		});
+	}
+});

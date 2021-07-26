@@ -1,0 +1,17 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	mxrfe                  module XrefMxrfe
+	xref                   ItemXrefManufacturer
+#}
+{% extends 'items/mxrfe/display.twig' %}
+
+{% block body %}
+	<div class="card-body">
+		{% include 'items/mxrfe/xref/form/form.twig' %}
+	</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

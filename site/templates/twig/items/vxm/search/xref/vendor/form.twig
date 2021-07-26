@@ -1,0 +1,9 @@
+<form action="{{ page.url }}" method="get" class="allow-enterkey-submit">
+	<input type="hidden" name="vendorID" value="{{ input.get.text('vendorID') }}">
+	<div class="input-group">
+		<input class="form-control inline" type="text" name="q" value="" id="itemID" placeholder="Search By Vendor Item ID, Item ID" autofocus>
+		<span class="input-group-btn">
+			<button type="submit" class="btn btn-light"> <i class="fa fa-search"></i> <span class="sr-only">Search</span> </button>
+		</span>
+	</div>
+</form>

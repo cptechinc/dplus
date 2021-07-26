@@ -62,13 +62,25 @@
 
 			<div class="form-group row">
 				<div class="col-sm-3">
-					<label for="primary">Primary?</label>
+					<label for="primary">Primary</label>
 				</div>
 				<div class="col-sm-6">
-					<div class="custom-control custom-checkbox">
-						<input type="checkbox" class="custom-control-input" name="primary" id="primary" data-primary="{{ upc.is_primary() ? 'true' : 'false'}}" value="Y" {{ upc.is_primary() ? 'checked' : ''}}>
-						<label class="custom-control-label" for="primary">&nbsp;</label>
-					</div>
+
+					{% include 'util/bootstrap/form/select-simple.twig' with {
+							'select': {
+								'name': 'primary',
+								'value' : upc.is_primary() ? 'Y' : 'N',
+								'haskeys': true,
+								'options': {
+									'Y': 'Yes',
+									'N': 'No'
+								},
+								'attributes': {
+									'data-primary': upc.is_primary() ? 'true' : 'false'
+								}
+							}
+						}
+					%}
 					{% if upc.get_primary_upc_code() != '' %}
 						<a href="{{ page.upcUrl(upc.get_primary_upc_code()) }}" class="link">
 							View Primary ({{ upc.get_primary_upc_code() }})
@@ -79,7 +91,7 @@
 			</div>
 			<div class="form-group row">
 				<div class="col-sm-3">
-					<label for="qty">Eaches per UPC</label>
+					<label for="qty">Qty Per UPC</label>
 				</div>
 				<div class="col-sm-6">
 					<input type="number" class="form-control form-control-sm w-50 text-right" name="qty" id="qty" value="{{ upc.qty }}">
@@ -87,38 +99,41 @@
 			</div>
 			<div class="form-group row">
 				<div class="col-sm-3">
-					<label for="uom">Unit of Measure</label>
+					<label for="mastercase">Master Case</label>
 				</div>
 				<div class="col-sm-6">
-					<select name="uom" class="form-control form-control-sm" id="uom">
-						<option value=""></option>
-						{% for uom in upcx.get_unitsofm_purchase() %}
-							<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == upc.uom ? 'selected' : ''}}>{{ uom.code }} - {{ uom.description }}</option>
-						{% endfor %}
-					</select>
-				</div>
-			</div>
-			<div class="form-group row">
-				<div class="col-sm-3">
-					<label for="mastercase">Master Carton?</label>
-				</div>
-				<div class="col-sm-6">
-					<div class="custom-control custom-checkbox">
-						<input type="checkbox" class="custom-control-input" name="mastercase" id="mastercase" value="Y" {{ upc.is_mastercase() ? 'checked' : ''}}>
-						<label class="custom-control-label" for="mastercase">&nbsp;</label>
-					</div>
+					{% include 'util/bootstrap/form/select-simple.twig' with {
+							'select': {
+								'name': 'mastercase',
+								'value' : upc.is_mastercase() ? 'Y' : 'N',
+								'haskeys': true,
+								'options': {
+									'Y': 'Yes',
+									'N': 'No'
+								},
+							}
+						}
+					%}
 				</div>
 			</div>
 
 			<div class="form-group row">
 				<div class="col-sm-3">
-					<label for="needslabel">Need Label?</label>
+					<label for="needslabel">Need Label</label>
 				</div>
 				<div class="col-sm-6">
-					<div class="custom-control custom-checkbox">
-						<input type="checkbox" class="custom-control-input" name="needslabel" id="needslabel" value="Y" {{ upc.is_needslabel() ? 'checked' : ''}}>
-						<label class="custom-control-label" for="needslabel">&nbsp;</label>
-					</div>
+					{% include 'util/bootstrap/form/select-simple.twig' with {
+							'select': {
+								'name': 'needslabel',
+								'value' : upc.is_needslabel() ? 'Y' : 'N',
+								'haskeys': true,
+								'options': {
+									'Y': 'Yes',
+									'N': 'No'
+								},
+							}
+						}
+					%}
 				</div>
 			</div>
 			<div class="d-flex justify-content-between align-items-center">

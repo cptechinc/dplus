@@ -1,0 +1,65 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	cxm                    module XrefCxm
+	recordlocker           module RecordLockerUser
+	item                   ItemXrefCustomer
+#}
+<div class="card">
+	<div class="card-header">
+		<div class="row">
+			<div class="col-sm-3">
+				<strong> {{ page.pw_template == 'itm-xrefs-cxm' ? 'Item ID' : 'Customer ID' }}</strong>
+			</div>
+			<div class="col-sm-6">
+				<div>
+					{% if page.pw_template == 'itm-xrefs-cxm' %}
+						{{ item.itemid }} - {{ item.item.description }}
+					{% else %}
+						{{ item.custID }} - {{ item.customer.name }}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="card-body">
+		<form action="{{ page.fullURL.getURL() }}" method="POST" id="cxm-item-form">
+			<input type="hidden" name="action" value="update-cxm">
+			<input type="hidden" name="original_custitemID" value="{{ item.custitemID }}">
+
+			<div class="row">
+				<div class="col-sm-6">
+					{% include 'items/cxm/xref/form/key.twig' %}
+					{% include 'items/cxm/xref/form/details.twig' %}
+				</div>
+				<div class="col-sm-6">
+					{% include 'items/cxm/xref/form/header.twig' %}
+					{% include 'items/cxm/xref/form/packaging.twig' %}
+				</div>
+			</div>
+			<div class="d-flex justify-content-between align-items-center">
+				{#
+					Only show Edit Actions if the Item is
+					1. Locked for editing by the User
+					2. Is a new Item
+					NOTE: Only show delete if item already exists.
+				#}
+				{% if cxm.recordlocker.function_locked_by_user(cxm.get_recordlocker_key(item)) or item.isNew() %}
+					<button type="submit" class="btn btn-success">
+						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+					</button>
+
+					{% if item.isNew() == false %}
+						<a href="{{ page.cxm_item_deleteURL(item.itemid, item.custid, item.custitemid) }}" class="btn btn-danger delete_button">
+							<i class="fa fa-trash" aria-hidden="true"></i> Delete
+						</a>
+					{% endif %}
+				{% endif %}
+				<a href="{{ page.cxm_item_exitURL(item) }}" class="btn btn-warning">
+					<i class="fa fa-times" aria-hidden="true"></i> Close
+				</a>
+			</div>
+		</form>
+	</div>
+</div>
