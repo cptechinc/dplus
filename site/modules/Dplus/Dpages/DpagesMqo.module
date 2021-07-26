@@ -69,10 +69,10 @@ class DpagesMqo extends Dpages implements Module {
 	);
 
 	public function init_mqopage() {
-		$this->addHook('Page::get_redirURL', function($event) {
-			$p = $event->object;
-			$event->return = $p->parent('template=dplus-menu')->child('template=redir')->url;
-		});
+		// $this->addHook('Page::get_redirURL', function($event) {
+		// 	$p = $event->object;
+		// 	$event->return = $p->parent('template=dplus-menu')->child('template=redir')->url;
+		// });
 	}
 
 /* =============================================================

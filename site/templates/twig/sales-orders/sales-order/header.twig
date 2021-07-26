@@ -3,12 +3,12 @@
 	<div class="col-sm-4">
 		<legend class="font-weight-bold text-secondary">
 			Billing
-			<a href="{{ page.ci_customerURL(order.custid) }}" class="text-secondary link" target="_blank" aria-label="View Customer in CI" title="View Customer in CI">
+			<a href="{{ page.ciUrl(order.custid) }}" class="text-secondary link" target="_blank" aria-label="View Customer in CI" title="View Customer in CI">
 				({{ order.custid }})
 			</a>
 		</legend>
 		<address>
-			<a href="{{ page.ci_customerURL(order.custid) }}" class="link" target="_blank" aria-label="View Customer in CI" title="View Customer in CI">
+			<a href="{{ page.ciUrl(order.custid) }}" class="link" target="_blank" aria-label="View Customer in CI" title="View Customer in CI">
 				{{ order.customer.name }}
 			</a>
 			<br>
@@ -21,12 +21,12 @@
 
 		<legend class="font-weight-bold text-secondary">
 			Shipping
-			<a href="{{ page.ci_customershiptoURL(order.custid, order.shiptoid) }}" class="text-secondary link" target="_blank" aria-label="View Customer Shipto in CI" title="View Customer Shipto in CI">
+			<a href="{{ page.ciShiptoUrl(order.custid, order.shiptoid) }}" class="text-secondary link" target="_blank" aria-label="View Customer Shipto in CI" title="View Customer Shipto in CI">
 				({{ order.shiptoid }})
 			</a>
 		</legend>
 		<address>
-			<a href="{{ page.ci_customershiptoURL(order.custid, order.shiptoid) }}" class="link" target="_blank" aria-label="View Customer Shipto in CI" title="View Customer Shipto in CI">
+			<a href="{{ page.ciShiptoUrl(order.custid, order.shiptoid) }}" class="link" target="_blank" aria-label="View Customer Shipto in CI" title="View Customer Shipto in CI">
 				{{ order.shipto_name }}
 			</a>
 			<br>
@@ -66,22 +66,22 @@
 		<div class="row">
 			<div class="col-sm-6">
 				<div class="row">
-					<div class="col-sm-7">Items on Order</div>
+					<div class="col-sm-7">Items on Order:</div>
 					<div class="col-sm-5 text-right">{{ order.count_items() }}</div>
 				</div>
 				<div class="row">
-					<div class="col-sm-7">Has Tracking</div>
+					<div class="col-sm-7">Has Tracking:</div>
 					<div class="col-sm-5 text-right">{{ order.has_tracking() ? 'Yes' : 'No' }}</div>
 				</div>
 				{% if config.request_date_header() %}
 					<div class="row">
-						<div class="col-sm-7">Request Date</div>
+						<div class="col-sm-7">Request Date:</div>
 						<div class="col-sm-5 text-right">{{ order.date_requested ? order.date_requested|convertdate : '' }}</div>
 					</div>
 				{% endif %}
 				<div class="row">
 					<div class="col-sm-7">Subtotal:</div>
-					<div class="col-sm-5 text-right">$ {{ order.subtotal_nontax|currency }}</div>
+					<div class="col-sm-5 text-right">$ {{ order.subtotal_tax|currency }}</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-7">Shipping:</div>
@@ -98,23 +98,23 @@
 			</div>
 			<div class="col-sm-6">
 				<div class="row">
-					<div class="col-sm-7">Status</div>
+					<div class="col-sm-7">Status:</div>
 					<div class="col-sm-5 text-right">{{ order.status()|capitalize }}</div>
 				</div>
 				<div class="row">
-					<div class="col-sm-7">Cust PO</div>
+					<div class="col-sm-7">Cust PO:</div>
 					<div class="col-sm-5 text-right">{{ order.custpo }}</div>
 				</div>
 				<div class="row">
-					<div class="col-sm-7">Release #</div>
+					<div class="col-sm-7">Release #:</div>
 					<div class="col-sm-5 text-right">{{ order.releasenumber }}</div>
 				</div>
 				<div class="row">
-					<div class="col-sm-7">Shipvia</div>
+					<div class="col-sm-7">Shipvia:</div>
 					<div class="col-sm-5 text-right">{{ order.shipvia }}</div>
 				</div>
 				<div class="row">
-					<div class="col-sm-7">Terms Code</div>
+					<div class="col-sm-7">Terms Code:</div>
 					<div class="col-sm-5 text-right">{{ order.termscode }}</div>
 				</div>
 				<div class="row">

@@ -70,8 +70,10 @@ class Header extends WireData  {
 			case 'edit-quote':
 				$this->updateQuote($input);
 				break;
+			case 'create-order':
+				$this->requestCreateOrder($values->text('qnbr'));
+				break;
 			default:
-				$this->process_input_itm($input);
 				break;
 		}
 	}
@@ -132,6 +134,16 @@ class Header extends WireData  {
 	 */
 	public function requestUpdateQuote($qnbr) {
 		$data = ['UPDATEQUOTEHEAD', "QUOTENO=$qnbr"];
+		$this->requestDplus($data);
+	}
+
+	/**
+	 * Request Create Sales Order From Quote
+	 * @param  string $qnbr Quote Number
+	 * @return void
+	 */
+	public function requestCreateOrder($qnbr) {
+		$data = ['QUOTETOORDER', "QUOTENO=$qnbr", "LINENO=ALL"];
 		$this->requestDplus($data);
 	}
 }

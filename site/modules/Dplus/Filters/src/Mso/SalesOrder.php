@@ -46,6 +46,8 @@ class SalesOrder extends AbstractFilter {
 		if ($input->get->offsetExists('status') === false) {
 			$input->get->status = [];
 		}
+
+		$this->statusInput($input);
 	}
 
 /* =============================================================
@@ -58,7 +60,7 @@ class SalesOrder extends AbstractFilter {
 	 * @return self
 	 */
 	public function ordernumber($ordn, $comparison = null) {
-		$ordn = SalesOrder::get_paddedordernumber($ordn);
+		$ordn = Model::get_paddedordernumber($ordn);
 		$this->query->filterByOrdernumber($ordn, $comparison);
 		return $this;
 	}
@@ -152,6 +154,18 @@ class SalesOrder extends AbstractFilter {
 	public function user(User $user) {
 		if ($user->is_salesrep()) {
 			$this->salespersonid($user->roleid);
+		}
+		return $this;
+	}
+
+	/**
+	 * Filter By Order Status
+	 * @param  string|array $status Order Status
+	 * @return self
+	 */
+	public function status($status) {
+		if (empty($status) === false) {
+			$this->query->filterByStatus($status);
 		}
 		return $this;
 	}
@@ -273,19 +287,20 @@ class SalesOrder extends AbstractFilter {
 	 * @param  WireInput $input
 	 * @return self
 	 */
-	public function custidInput($input) {
+	public function custidInput(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
 		if ($values->custID) {
 			$custIDs = $values->array('custID');
+			$custIDs = array_unique($custIDs);
 
 			if (sizeof($custIDs) == 2) {
 				if (!empty($custIDs[0])) {
 					$this->custid($custIDs[0], Criteria::GREATER_EQUAL);
 				}
 
-				if (!empty($filter[1])) {
+				if (!empty($custIDs[1])) {
 					$this->custid($custIDs[1], Criteria::LESS_EQUAL);
 				}
 			} else {
@@ -299,7 +314,7 @@ class SalesOrder extends AbstractFilter {
 	 * Filter the Query by the Customer Shipto column
 	 * @param  WireInput $input
 	 */
-	public function shiptoidInput($input) {
+	public function shiptoidInput(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 
@@ -307,6 +322,17 @@ class SalesOrder extends AbstractFilter {
 			$shiptoID = $values->array('shiptoID');
 			$this->shiptoid($shiptoID);
 		}
+	}
+
+	/**
+	 * Filter the Query by Order Status
+	 * @param  WireInput $input
+	 */
+	public function statusInput(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$this->status($values->array('status'));
+		return $this;
 	}
 
 /* =============================================================

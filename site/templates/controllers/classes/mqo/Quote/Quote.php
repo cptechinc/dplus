@@ -32,6 +32,7 @@ class Quote extends Base {
 		if (empty($data->qnbr) === false) {
 			return self::quote($data);
 		}
+		return self::lookupScreen($data);
 	}
 
 /* =============================================================
@@ -124,6 +125,10 @@ class Quote extends Base {
 
 		$m->addHook('Page(pw_template=quote-view)::quoteListUrl', function($event) {
 			$event->return = self::quoteListUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=quote-view)::quoteUrl', function($event) {
+			$event->return = self::quoteUrl($event->arguments(0));
 		});
 	}
 }

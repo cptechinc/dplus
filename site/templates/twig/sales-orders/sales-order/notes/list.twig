@@ -5,7 +5,7 @@
 			<div class="col">Pack Ticket</div>
 			<div class="col">Invoice</div>
 			<div class="col">Acknowledgment</div>
-			<div class="col">Edit</div>
+			<div class="col"></div>
 		</div>
 	</div>
 	{% if notes.count > 0 %}
@@ -17,10 +17,11 @@
 					<div class="col check-invoice">{{ note.invoice }}</div>
 					<div class="col check-acknowledgement">{{ note.acknowledgement }}</div>
 					<div class="col">
-						<button type="button" class="btn btn-light" data-toggle="collapse" data-target="#notes-{{ note.line }}-{{ note.form }}" aria-controls="collapseExample">
+						<button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#notes-{{ note.line }}-{{ note.form }}" aria-controls="collapseExample">
 							<i class="fa fa-eye" aria-hidden="true"></i> Show
 						</button>
-						<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#note-modal" data-linenbr="{{ note.line }}" data-form="{{ note.form }}">
+						&nbsp; &nbsp;
+						<button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#note-modal" data-linenbr="{{ note.line }}" data-form="{{ note.form }}">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</button>
 					</div>

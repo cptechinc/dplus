@@ -24,6 +24,7 @@
 		'edit' => [
 			['GET',   '', Edit::class, 'index'],
 			['POST',  '', Edit::class, 'handleCRUD'],
+			['GET',  'new/', Edit::class, 'editNewQuote'],
 		],
 		'order' => [
 			['GET',   '', OrderQuote::class, 'index'],
@@ -34,6 +35,7 @@
 	$router->setRoutes($routes);
 	$router->setRoutePrefix($page->url);
 	$page->body = $router->route();
+	$page->show_breadcrumbs = false;
 
 	if ($config->ajax) {
 		echo $page->body;

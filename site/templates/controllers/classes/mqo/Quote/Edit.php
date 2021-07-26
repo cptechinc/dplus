@@ -34,6 +34,15 @@ class Edit extends Base {
 		return self::lookupForm();
 	}
 
+	public static function editNewQuote($data) {
+		$qnbr = self::pw('user')->get_lockedID();
+
+		if (empty($qnbr)) {
+			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "New Sales Order # not found"]);
+		}
+		self::pw('session')->redirect(self::quoteEditUrl($qnbr), $http301 = false);
+	}
+
 	public static function handleCRUD($data) {
 		self::sanitizeParametersShort($data, ['action|text', 'qnbr|text']);
 

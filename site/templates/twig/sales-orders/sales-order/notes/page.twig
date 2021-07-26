@@ -1,9 +1,3 @@
-<div class="mb-3">
-	<a href="{{ user.is_editingorder(ordn) ? page.orderEditUrl(ordn) : page.orderUrl(ordn) }}" class="btn btn-primary">
-		<i class="fa fa-arrow-left" aria-hidden="true"></i> Go back to Sales Order
-	</a>
-</div>
-
 <div class="mb-4">
 	<div class="row mb-1">
 		<div class="col">
@@ -17,7 +11,7 @@
 			{% endif %}
 		</div>
 	</div>
-	{% include 'sales-orders/sales-order/notes/qnotes-list.twig' with {'notes': qnotes_so.get_notes_summarized(ordn, 0)} %}
+	{% include 'sales-orders/sales-order/notes/list.twig' with {'notes': qnotes_so.get_notes_summarized(ordn, 0)} %}
 </div>
 
 {% for item in order.items %}
@@ -37,6 +31,6 @@
 		</div>
 	</div>
 	<div class="mb-3">
-		{% include 'sales-orders/sales-order/notes/qnotes-list.twig' with {'notes': qnotes_so.get_notes_summarized(ordn, item.linenbr) } %}
+		{% include 'sales-orders/sales-order/notes/list.twig' with {'notes': qnotes_so.get_notes_summarized(ordn, item.linenbr) } %}
 	</div>
 {% endfor %}

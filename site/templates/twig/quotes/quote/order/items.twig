@@ -17,7 +17,7 @@
 {% endfor %}
 
 <form action="{{ input.url() }}" method="post">
-	<input type="hidden" name="action" value="order-quote">
+	<input type="hidden" name="action" value="create-order">
 	<input type="hidden" name="qnbr" value="{{ quote.quotenumber }}">
 
 	<button type="submit" class="btn btn-primary">

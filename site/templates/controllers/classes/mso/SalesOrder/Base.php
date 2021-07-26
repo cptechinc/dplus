@@ -3,13 +3,14 @@
 use Purl\Url as Purl;
 // Dplus Model
 use ConfigSalesOrderQuery, ConfigSalesOrder as ConfigSo;
-// Alias Document Finders
+// Dplus Document Finders
 use Dplus\DocManagement\Finders as DocFinders;
 // Dplus Classes
 use Dplus\CodeValidators\Mso as MsoValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 use Controllers\Mii\Ii;
+use Controllers\Mci\Ci\Ci;
 
 abstract class Base extends AbstractController {
 	private static $validate;
@@ -41,8 +42,16 @@ abstract class Base extends AbstractController {
 	}
 
 	protected static function lookupForm() {
-		$config = self::pw('config');
-		$html = $config->twig->render('sales-orders/sales-order/lookup-form.twig');
+		return self::pw('config')->twig->render('sales-orders/sales-order/lookup-form.twig');
+	}
+
+	protected static function breadCrumbs() {
+		return self::pw('config')->twig->render('sales-orders/bread-crumbs.twig');
+	}
+
+	protected static function lookupScreen($data) {
+		$html  = self::breadCrumbs();
+		$html .= self::lookupForm($data);
 		return $html;
 	}
 
@@ -57,11 +66,18 @@ abstract class Base extends AbstractController {
 		return $url->getUrl();
 	}
 
+	public static function orderHistoryListUrl($ordn = '') {
+		$url = new Purl(self::pw('pages')->get('pw_template=sales-history-orders')->url);
+		if ($ordn) {
+			$url->query->set('focus', $ordn);
+		}
+		return $url->getUrl();
+	}
+
 	public static function orderListUrl($ordn = '') {
 		$url = new Purl(self::pw('pages')->get('pw_template=sales-orders')->url);
 		if ($ordn) {
 			$url->query->set('focus', $ordn);
-
 		}
 		return $url->getUrl();
 	}
@@ -75,6 +91,13 @@ abstract class Base extends AbstractController {
 	public static function orderEditUrl($ordn) {
 		$url = new Purl(self::orderUrl($ordn));
 		$url->path->add('edit');
+		return $url->getUrl();
+	}
+
+	public static function orderEditNewUrl() {
+		$url = new Purl(self::orderUrl());
+		$url->path->add('edit');
+		$url->path->add('new');
 		return $url->getUrl();
 	}
 
@@ -95,6 +118,20 @@ abstract class Base extends AbstractController {
 		$url->path->add('notes');
 		$hash = $linenbr > 0 ? "#line-$linenbr" : '';
 		return $url->getUrl().$hash;
+	}
+
+	public static function orderDocumentsUrl($ordn) {
+		$url = new Purl(self::orderUrl($ordn));
+		$url->path->add('documents');
+		return $url->getUrl();
+	}
+
+	public static function documentUrl($ordn, $folder, $doc) {
+		$url = new Purl(self::orderUrl($ordn));
+		$url->path->add('documents');
+		$url->query->set('folder', $folder);
+		$url->query->set('document', $doc);
+		return $url->getUrl();
 	}
 
 /* =============================================================

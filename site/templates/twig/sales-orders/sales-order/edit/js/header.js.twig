@@ -28,27 +28,34 @@ $(function() {
 		input_zip.val(shipto.zip);
 	});
 
+	var alert   = SoAlerts.getInstance();
+
+/* =============================================================
+	Unsaved Changes Alert
+============================================================= */
+	origForm = form.serialize();
+
 	$("body").on("click", "a:not([href^=#],.sales-order-notes, #ajax-modal a, .delete_button)", function(e) {
 		e.preventDefault();
 		var a = $(this);
 
-		swal2.fire({
-			title: 'Order not saved!',
-			text: "Are you sure you want to leave this page?",
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonText: 'Leave',
-			cancelButtonText: 'Stay'
-		}).then(function (result) {
-			if (result.value) {
+		if (form.serialize() !== origForm) {
+			alert.unsavedChanges(function(save) {
 				var form = $('#edit-sales-order-form');
-				var url = URI(form.attr('action'));
-				url.addQuery('action', 'unlock-order');
-				url.addQuery('ordn', form.find('input[name=ordn]').val());
-				$.get(url.toString(), function() {
-					window.location.href = a.attr('href');
-				});
-			}
-		});
+
+				if (save === true) {
+					form.find('button.save-header').click();
+				} else {
+					var url = URI(form.attr('action'));
+					url.addQuery('action', 'unlock-order');
+					url.addQuery('ordn', form.find('input[name=ordn]').val());
+					$.get(url.toString(), function() {
+						window.location.href = a.attr('href');
+					});
+				}
+			});
+		} else {
+			window.location.href = a.attr('href');
+		}
 	});
 });

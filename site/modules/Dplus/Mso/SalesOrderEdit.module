@@ -117,6 +117,18 @@ class SalesOrderEdit extends WireData implements Module {
 		return OrdrdetQuery::create()->filterBySessionidOrder(session_id(), $ordn)->find();
 	}
 
+	/**
+	 * Return Sales Order Custid
+	 * @param  string $ordn Sales Order Number
+	 * @return string
+	 */
+	public function getOrderCustid($ordn) {
+		$q = SalesOrderQuery::create();
+		$q->select(SalesOrder::aliasproperty('custid'));
+		$q->filterByOrdernumber($ordn);
+		return $q->findOne();
+	}
+
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
@@ -148,7 +160,6 @@ class SalesOrderEdit extends WireData implements Module {
 				if ($this->exists_editable_header($ordn)) {
 					$order = $this->get_editable_header($ordn);
 					$order->delete();
-					$order->save();
 				}
 				break;
 			case 'edit-order-new':
@@ -568,28 +579,6 @@ class SalesOrderEdit extends WireData implements Module {
 	 */
 	public function request_so_unlock($ordn) {
 		$data = array('UNLOCK', "ORDERNO=$ordn");
-		$this->request_dplus($data);
-	}
-
-	/**
-	 * Sends HTTP GET request to send Dplus Item Search Request
-	 * @param  string $q Query or Item ID
-	 * @return void
-	 */
-	public function request_itemsearch($q) {
-		$custID = SalesOrderQuery::create()->get_custid($this->ordn);
-		$data = array("ITNOSRCH=$q", "CUSTID=$custID");
-		$this->request_dplus($data);
-	}
-
-	/**
-	 * Sends HTTP GET request to send Dplus Item Search Request
-	 * @param  string $q Query or Item ID
-	 * @return void
-	 */
-	public function request_itempricing($q) {
-		$custID = SalesOrderQuery::create()->get_custid($this->ordn);
-		$data = array('IIPRICING', "ITEMID=$q", "CUSTID=$custID");
 		$this->request_dplus($data);
 	}
 
