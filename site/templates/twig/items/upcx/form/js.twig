@@ -1,3 +1,5 @@
+{% include 'items/upcx/js/classes/classes.js.twig' %}
+
 $(function() {
 	var form_upc = $('#upc-item-form');
 	var input_itemid = form_upc.find('input[name=itemID]');
@@ -9,6 +11,8 @@ $(function() {
 	var upc = {
 		is_primary: {{ upc.is_primary() ? 'true' : 'false' }}
 	}
+
+	var alert = UpcxAlerts.getInstance();
 
 /* =============================================================
 	Event Functions
@@ -171,36 +175,18 @@ $(function() {
 					return true;
 				}
 				if (isPrimary === false) {
-					swal_change_primary_upc(function(canContinue) {
+					changePrimary(input_itemid.val(), primaryupc function(canContinue) {
+						if (canContinue === true) {
+							$('input[name=valid_primary]').val('true');
+						}
+						if (canContinue === false) {
+							$('input[name=valid_primary]').val('false');
+						}
 						callback(canContinue);
 					});
 				}
 			});
 		}
-	}
-
-	function swal_change_primary_upc(callback) {
-		get_item(input_itemid.val(), function(item) {
-			var primaryupc = item.primaryupc;
-			var msg = input_itemid.val() + ' has the UPC code ' + primaryupc;
-			msg += ' defined as the primary UPC';
-
-			swal2.fire({
-				title: 'Change Primary UPC?',
-				text: msg,
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonText: 'Yes!'
-			}).then(function (result) {
-				if (result.value) {
-					$('input[name=valid_primary]').val('true');
-					callback(true);
-				} else {
-					$('input[name=valid_primary]').val('false');
-					callback(false);
-				}
-			});
-		});
 	}
 
 /* =============================================================
