@@ -14,7 +14,7 @@
 			{% for invoice in purchaseorder.getApInvoices() %}
 				<tr>
 					<td>
-						<a href="{{ page.view_apinvoiceURL(invoice.invoicenumber) }}" class="link">{{ invoice.invoicenumber }}</a>
+						<a href="{{ page.apInvoiceUrl(invoice.invoicenumber) }}" class="link">{{ invoice.invoicenumber }}</a>
 					</td>
 					<td>{{ invoice.vendor.name }} ({{ invoice.vendor.id }})</td>
 					<td class="text-right">{{ invoice.countApInvoiceDetails() }}</td>
