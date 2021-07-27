@@ -39,13 +39,27 @@ class XrefUpc extends WireData implements Module {
 ============================================================= */
 	/**
 	 * Return ItemXrefUpc
-	 * @param  string $upc UPC Code
+	 * @param  string $upc    UPC Code
+	 * @param  string $itemID Item ID
 	 * @return ItemXrefUpc
 	 */
-	public function xref($upc) {
+	public function xref($upc, $itemID = '') {
 		$q = $this->query();
 		$q->filterByUpc($upc);
+		if (empty($itemID) === false) {
+			$q->filterByItemid($itemID);
+		}
 		return $q->findOne();
+	}
+
+	/**
+	 * Return X-Ref
+	 * @param  string $key Record Locker Key FORMAT
+	 * @return ItemXrefUpc
+	 */
+	public function xrefByKey($key) {
+		$keys = explode(FunctionLocker::glue(), $key);
+		return $this->xref($keys[0], $keys[1]);
 	}
 
 	/**
@@ -78,9 +92,32 @@ class XrefUpc extends WireData implements Module {
 	 * @return bool
 	 */
 	public function xref_exists($upc) {
+		return $this->xrefExists($upc);
+	}
+
+	/**
+	 * Return if UPC X-Ref Exists
+	 * @param  string $upc     UPC Code
+	 * @param  string $itemID  Item ID
+	 * @return bool
+	 */
+	public function xrefExists($upc, $itemID = '') {
 		$q = $this->query();
 		$q->filterByUpc($upc);
+		if (empty($itemID) === false) {
+			$q->filterByItemid($itemID);
+		}
 		return boolval($q->count());
+	}
+
+	/**
+	 * Return if UPC Key Exists
+	 * @param  string $key Record Locker Key FORMAT
+	 * @return bool
+	 */
+	public function xrefExistsByKey($key) {
+		$keys = explode(FunctionLocker::glue(), $key);
+		return $this->xrefExists($keys[0], $keys[1]);
 	}
 
 	/**
@@ -315,6 +352,15 @@ class XrefUpc extends WireData implements Module {
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
+	/**
+	 * Return Key String for X-ref
+	 * @param  ItemXrefUpc $xref
+	 * @return string
+	 */
+	public function getXrefKey(ItemXrefUpc $xref) {
+		return implode(FunctionLocker::glue(), [$xref->upc, $xref->itemid]);
+	}
+
 	/**
 	 * Lock Record, validate User is locking Record
 	 * @param  string $upc  UPC Code

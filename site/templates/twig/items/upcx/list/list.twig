@@ -66,7 +66,7 @@
 			</tr>
 		{% endif %}
 		{% for upc in upcs %}
-			<tr class="{{ upc.is_primary() and upc.itemid == itemID ? 'bg-info text-white'  : '' }}" data-upc="{{ upc.upc }}">
+			<tr class="{{ upc.is_primary() and upc.itemid == itemID ? 'bg-info text-white'  : '' }}" data-upc="{{ upc.upc }}" data-key="{{ upcx.getXrefKey(upc) }}">
 				<td>{{ upc.upc }}</td>
 				<td>{{ upc.qty }}</td>
 
@@ -81,11 +81,11 @@
 				<td>{{ upc.needslabel|yesorno|capitalize }}</td>
 				<td class="text-center">
 					{% if upcx.recordlocker.isLocked(upc.upc) == false or upcx.recordlocker.userHasLocked( upc.upc) %}
-						<a href="{{ page.upcUrl(upc.upc) }}" class="btn btn-warning btn-sm">
+						<a href="{{ page.upcUrl(upc.upc, upc.itemid) }}" class="btn btn-warning btn-sm">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</a>
 						&nbsp; &nbsp;
-						<a href="{{ page.upcDeleteUrl(upc.upc)}}" class="btn btn-danger btn-sm delete_button" data-delete="UPC {{ upc.upc }}">
+						<a href="{{ page.upcDeleteUrl(upc.upc, upc.itemid)}}" class="btn btn-danger btn-sm delete_button" data-delete="UPC {{ upc.upc }}">
 							<i class="fa fa-trash" aria-hidden="true"></i> Delete
 						</a>
 					{% else %}
