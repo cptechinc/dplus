@@ -23,7 +23,7 @@ class Upcx extends Min {
 		$q = $this->query();
 		$q->filterByUpc($upc);
 		if (empty($itemID) === false) {
-			return $q->filterItemid($itemID);
+			$q->filterByItemid($itemID);
 		}
 		return boolval($q->count());
 	}
