@@ -91,7 +91,7 @@ class Upcx extends AbstractController {
 		$html = '';
 
 		if ($upcx->recordlocker->isLocked($xref->upc) && !$upcx->recordlocker->userHasLocked($xref->upc)) {
-			$msg = "UPC $code is being locked by " . $upcx->recordlocker->getLockingUser($xref->upc);
+			$msg = "UPC $xref->upc is being locked by " . $upcx->recordlocker->getLockingUser($xref->upc);
 			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "UPC $xref->upc is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 		} elseif ($upcx->recordlocker->isLocked($xref->upc) === false) {
 			$upcx->recordlocker->lock($xref->upc);
