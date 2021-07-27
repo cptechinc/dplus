@@ -3,15 +3,15 @@ class UpcxForm {
 
 	static getInstance() {
 		if (this.instance === null) {
-			this.instance = new VxmForm();
+			this.instance = new UpcxForm();
 		}
 		return this.instance;
 	}
 
 	constructor() {
 		this.id = 'vxm-item-form';
-		this.inputs = VxmInputs.getInstance();
-		this.config = VxmConfigs.getInstance();
+		this.inputs = UpcxInputs.getInstance();
+		this.config = UpcxConfigs.getInstance();
 	}
 
 	updateItmDescription() {
