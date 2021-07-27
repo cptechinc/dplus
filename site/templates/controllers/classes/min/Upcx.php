@@ -80,6 +80,7 @@ class Upcx extends AbstractController {
 		$config = self::pw('config');
 
 		$html = '';
+		$html .= self::pw('config')->twig->render('items/upcx/bread-crumbs.twig', ['upcx' => self::getUpcx(), 'upc' => $xref]);
 		$html .= self::lockXref($xref);
 		$html .= self::pw('config')->twig->render('items/upcx/form/page.twig', ['upcx' => self::getUpcx(), 'upc' => $xref]);
 		return $html;
