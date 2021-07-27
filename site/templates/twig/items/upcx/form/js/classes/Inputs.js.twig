@@ -1,0 +1,40 @@
+class UpcxInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new UpcxInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'vxm-item-form',
+		this.form = $('#' + this.id),
+		this.vendorid      = this.form.find('input[name=vendorID]'),
+		this.vendoritemid  = this.form.find('input[name=vendoritemID]'),
+		this.itemid        = this.form.find('input[name=itemID]'),
+		this.kit           = this.form.find('select[name=iskit]'),
+		this.listprice     = this.form.find('input[name=listprice]'),
+		this.eachlistprice = this.form.find('input[name=eachlistprice]'),
+		this.uom           = this.form.find('select[name=uom_purchase]'),
+		this.ordercode     = this.form.find('select[name=po_ordercode]'),
+		this.ordercodevalidated = this.form.find('input[name=po_ordercode_validated]'),
+		this.cost = {
+			base: this.form.find('input[name=unitcost_base]'),
+		}
+		this.margin = {
+			base: this.form.find('input[name=unitmargin_base]'),
+		},
+		this.updateitmcost = this.form.find('input[name=update_itm_cost]')
+	}
+
+	updateAllUnitMargins() {
+		var inputs = VxmInputs.getInstance();
+
+		$(".unit-row").each(function(index) {
+			inputs.updateUnitMargin($(this));
+		});
+	}
+
+}

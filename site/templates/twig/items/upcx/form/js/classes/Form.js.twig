@@ -1,0 +1,26 @@
+class UpcxForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new VxmForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'vxm-item-form';
+		this.inputs = VxmInputs.getInstance();
+		this.config = VxmConfigs.getInstance();
+	}
+
+	updateItmDescription() {
+		var server   = UpcxRequests.getInstance();
+		server.getItm(inputs.itemid.val(), function(item) {
+			if (item) {
+				$('.item-description').text(item.description);
+			}
+		});
+	}
+
+}
