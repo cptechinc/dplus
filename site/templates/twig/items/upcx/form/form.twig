@@ -82,8 +82,9 @@
 						}
 					%}
 					{% if upc.get_primary_upc_code() != '' %}
-						<a href="{{ page.upcUrl(upc.get_primary_upc_code()) }}" class="link">
-							View Primary ({{ upc.get_primary_upc_code() }})
+						{% set primary = upc.get_primary_upc() %}
+						<a href="{{ page.upcUrl(primary.upc, primary.itemid) }}" class="link">
+							View Primary ({{ primary.upc }}-{{ primary.itemid }})
 						</a>
 					{% endif %}
 					<input type="hidden" name="valid_primary" id="valid_primary" value="false">
@@ -143,7 +144,7 @@
 					2. Is a new Item
 					NOTE: Only show delete if item already exists.
 				#}
-				{% if upcx.recordlocker.userHasLocked(upc.upc) or upc.isNew() %}
+				{% if upcx.recordlocker.userHasLocked(upcx.getRecordlockerKey(upc)) or upc.isNew() %}
 					<button type="submit" class="btn btn-success" name="action" value="update-upcx">
 						<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 					</button>
@@ -153,7 +154,7 @@
 						</a>
 					{% endif %}
 				{% endif %}
-				<a href="{{ page.upcListUrl(upcx.getXrefKey(upc)) }}" class="btn btn-warning">
+				<a href="{{ page.upcListUrl(upcx.getRecordlockerKey(upc)) }}" class="btn btn-warning">
 					<i class="fa fa-times" aria-hidden="true"></i> Close
 				</a>
 			</div>
