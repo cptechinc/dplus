@@ -36,6 +36,15 @@ class UpcxRequests {
 		});
 	}
 
+	validateXref(upc, itemID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('inv/validate/upcx/upc/xref/') }}');
+
+		ajax.setData({upc: upc, itemID: itemID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
 	validatePrimaryUpc(itemID, upc, callback) {
 		var ajax = new AjaxRequest('{{ page.jsonApiUrl('inv/validate/upcx/upc/primary/') }}');
 
