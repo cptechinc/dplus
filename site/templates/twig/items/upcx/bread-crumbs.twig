@@ -7,22 +7,10 @@
 		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
 	{% endif %}
 
-	{% if values.offsetExists('itemID') %}
-		<li class="breadcrumb-item">
-			<a href="{{ page.url }}">{{ page.title }}</a>
-		</li>
-		<li class="breadcrumb-item active" aria-current="page">Item: {{ values.text('itemID') }}</li>
-	{% endif %}
-
 	{% if values.offsetExists('upc') %}
 		<li class="breadcrumb-item">
-			<a href="{{ page.url }}">UPCX</a>
+			<a href="{{ page.upcListUrl(upcx.getRecordlockerKey(upc)) }}">UPCX</a>
 		</li>
-		{% if values.offsetExists('itemID') %}
-			<li class="breadcrumb-item">
-				<a href="{{ page.itemUpcsUrl(values.text('itemID')) }}">Item: {{ values.text('itemID') }}</a>
-			</li>
-		{% endif %}
-		<li class="breadcrumb-item active" aria-current="page">{{ values.text('upc') }}</li>
+		<li class="breadcrumb-item active" aria-current="page">{{ values.text('upc') }} - {{ values.text('itemID') }}</li>
 	{% endif %}
 {% endblock %}
