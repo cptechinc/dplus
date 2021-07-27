@@ -18,7 +18,7 @@ class Upcx extends AbstractController {
 	private static $upcx;
 
 	public static function index($data) {
-		$fields = ['upc|text', 'action|text'];
+		$fields = ['upc|text', 'itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 		$page->show_breadcrumbs = false;
@@ -34,7 +34,7 @@ class Upcx extends AbstractController {
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['action|text', 'upc|text'];
+		$fields = ['action|text', 'upc|text', 'itemID|text',];
 		$data  = self::sanitizeParameters($data, $fields);
 		$input = self::pw('input');
 
@@ -55,7 +55,7 @@ class Upcx extends AbstractController {
 	}
 
 	public static function upc($data) {
-		$data = self::sanitizeParametersShort($data, ['upc|text', 'action|text']);
+		$data = self::sanitizeParametersShort($data, ['upc|text', 'itemID|text', 'action|text']);
 
 		if ($data->action) {
 			return self::handleCRUD($data);
@@ -64,7 +64,7 @@ class Upcx extends AbstractController {
 		$upcx = self::getUpcx();
 		$xref = $upcx->get_create_xref($data->upc);
 		$page = self::pw('page');
-		$page->headline = "UPCX: $xref->upc";
+		$page->headline = "UPCX: $xref->upc - $xref->itemid";
 
 		if ($xref->isNew()) {
 			$page->headline = "UPCX: Create X-Ref";
@@ -142,7 +142,7 @@ class Upcx extends AbstractController {
 	/**
 	 * Return URL to view / edit UPC
 	 * @param  string $upc    UPC Code
-	 * @param  string $itemID ** Optional
+	 * @param  string $itemID Item ID
 	 * @return string
 	 */
 	public static function upcUrl($upc, $itemID = '') {
@@ -176,11 +176,11 @@ class Upcx extends AbstractController {
 		$upcx = self::getUpcx();
 		$page = self::pw('pages')->get("pw_template=upcx");
 
-		if ($focus == '' || $upcx->xref_exists($focus) === false) {
+		if ($focus == '' || $upcx->xrefExistsByKey($focus) === false) {
 			return $page->url;
 		}
 
-		$xref   = $upcx->xref($focus);
+		$xref   = $upcx->xrefByKey($focus);
 		$filter = new UpcxFilter();
 		$offset = $filter->position($xref);
 		$pagenbr = self::getPagenbrFromOffset($offset);
@@ -192,12 +192,17 @@ class Upcx extends AbstractController {
 
 	/**
 	 * Return URL to delete UPC
+	 * @param  string $upc    UPC Code
+	 * @param  string $itemID Item ID
 	 * @return string
 	 */
-	public static function upcDeleteUrl($upc) {
+	public static function upcDeleteUrl($upc, $itemID) {
 		$url = new Purl(self::pw('pages')->get("pw_template=upcx")->url);
 		$url->query->set('action', 'delete-upcx');
 		$url->query->set('upc', $upc);
+		if ($itemID) {
+			$url->query->set('itemID', $itemID);
+		}
 		return $url->getUrl();
 	}
 
@@ -207,7 +212,7 @@ class Upcx extends AbstractController {
 	 * @return string
 	 */
 	public static function itemUpcsUrl($itemID) {
-		$url = new Url(self::pw('pages')->get("pw_template=upcx")->url);
+		$url = new Purl(self::pw('pages')->get("pw_template=upcx")->url);
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
@@ -223,13 +228,11 @@ class Upcx extends AbstractController {
 		$m = self::pw('modules')->get('XrefUpc');
 
 		$m->addHook('Page(pw_template=upcx)::upcUrl', function($event) {
-			$upc = $event->arguments(0);
-			$event->return = self::upcUrl($upc);
+			$event->return = self::upcUrl($event->arguments(0), $event->arguments(1));
 		});
 
 		$m->addHook('Page(pw_template=upcx)::upcListUrl', function($event) {
-			$focus = $event->arguments(0);
-			$event->return = self::upcListUrl($focus);
+			$event->return = self::upcListUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=upcx)::itemUpcsUrl', function($event) {
@@ -242,13 +245,11 @@ class Upcx extends AbstractController {
 		});
 
 		$m->addHook('Page(pw_template=upcx)::upcDeleteUrl', function($event) {
-			$upc = $event->arguments(0);
-			$event->return = self::upcDeleteUrl($upc);
+			$event->return = self::upcDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
 
 		$m->addHook('Page(pw_template=upcx)::upcCreateItemidUrl', function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = self::upcUrl('new', $itemID);
+			$event->return = self::upcUrl('new', $event->arguments(0));
 		});
 	}
 }
