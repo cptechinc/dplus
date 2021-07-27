@@ -1,0 +1,45 @@
+class UpcxAlerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new UpcxAlerts();
+		}
+		return this.instance;
+	}
+
+	changePrimary(itemID, primaryupc, callback) {
+		var msg = itemID + ' has the UPC code ' + primaryupc;
+		msg += ' defined as the primary UPC';
+
+		swal2.fire({
+			title: 'Change Primary UPC?',
+			text: msg,
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Yes!'
+		}).then(function (result) {
+			if (result.value) {
+				callback(true);
+			} else {
+				callback(false);
+			}
+		});
+	}
+
+	xrefExists(upc, callback) {
+		swal2.fire({
+			title: 'UPC Exists',
+			text: 'Edit UPC ' + upc + '?',
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: 'Yes!'
+		}).then(function (result) {
+			if (result.value) {
+				callback(true);
+			}
+			callback(false);
+		});
+	}
+
+}
