@@ -17,7 +17,7 @@ class UpcxAlerts {
 			text: msg,
 			icon: 'warning',
 			showCancelButton: true,
-			confirmButtonText: 'Yes!'
+			confirmButtonText: 'Yes'
 		}).then(function (result) {
 			if (result.value) {
 				callback(true);
@@ -27,13 +27,28 @@ class UpcxAlerts {
 		});
 	}
 
-	xrefExists(upc, callback) {
+	xrefExists(upc, itemID, callback) {
+		swal2.fire({
+			title: 'UPC X-Ref Exists',
+			text: 'Edit UPC ' + upc + ' for '+ itemID +'?',
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: 'Yes'
+		}).then(function (result) {
+			if (result.value) {
+				callback(true);
+			}
+			callback(false);
+		});
+	}
+
+	upcExists(upc, callback) {
 		swal2.fire({
 			title: 'UPC Exists',
 			text: 'Edit UPC ' + upc + '?',
 			icon: 'question',
 			showCancelButton: true,
-			confirmButtonText: 'Yes!'
+			confirmButtonText: 'Yes'
 		}).then(function (result) {
 			if (result.value) {
 				callback(true);
