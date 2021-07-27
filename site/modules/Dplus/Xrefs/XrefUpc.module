@@ -86,14 +86,6 @@ class XrefUpc extends WireData implements Module {
 		return boolval($q->count());
 	}
 
-	/**
-	 * Return if UPC exists
-	 * @param  string $upc UPC Code
-	 * @return bool
-	 */
-	public function xref_exists($upc) {
-		return $this->xrefExists($upc);
-	}
 
 	/**
 	 * Return if UPC X-Ref Exists
@@ -145,19 +137,14 @@ class XrefUpc extends WireData implements Module {
 		return boolval($q->count());
 	}
 
-	/**
-	 * Return Existing or New UPC X-ref
-	 * @param  string  $upc    UPC Code
-	 * @return ItemXrefUpc
-	 */
-	public function get_create_xref($upc) {
-		if ($this->xref_exists($upc)) {
-			$record = $this->xref($upc);
-		} else {
-			$upc = $upc == 'new' ? '' : $upc;
-			$record = $this->newXref();
-			$record->setUpc($upc);
+	public function getCreateXref($upc, $itemID = '') {
+		if ($this->xrefExists($upc, $itemID)) {
+			return $this->xref($upc, $itemID);
 		}
+		$upc = $upc == 'new' ? '' : $upc;
+		$record = $this->newXref();
+		$record->setUpc($upc);
+		$record->setItemid($itemID);
 		return $record;
 	}
 
@@ -211,17 +198,20 @@ class XrefUpc extends WireData implements Module {
 	public function input_delete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$upc = $values->text('upc');
+		$upc    = $values->text('upc');
+		$itemID = $values->text('itemID');
 
-		if ($this->xref_exists($upc)) {
-			if ($this->lockrecord($upc) === false) {
-				$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($upc);
+		if ($this->xrefExists($upc, $itemID)) {
+			$xref = $this->xref($upc, $itemID);
+
+			if ($this->lockrecord($xref) === false) {
+				$message = self::DESCRIPTION_RECORD . " ($upc-$itemID)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($this->getRecordlockerKey($xref));
 				$this->wire('session')->setFor('response', 'upcx', XrefResponse::response_error($upc, $message));
 				return false;
 			}
-			$record = $this->xref($upc);
-			$record->delete();
-			$this->wire('session')->setFor('response', 'upcx', $this->save_and_respond($record));
+
+			$xref->delete();
+			$this->wire('session')->setFor('response', 'upcx', $this->save_and_respond($xref));
 			return $this->wire('session')->getFor('response', 'upcx')->has_success();
 		}
 		return true;
@@ -236,11 +226,12 @@ class XrefUpc extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$upc = $values->text('upc');
-		$record = $this->get_create_xref($upc);
+		$itemID = $values->text('itemID');
+		$record = $this->getCreateXref($upc, $itemID);
 
-		if (!$this->lockrecord($upc) && !$record->isNew()) {
-			$message = self::DESCRIPTION_RECORD . " ($upc)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($upc);
-			$this->wire('session')->setFor('response', 'upcx', XrefResponse::response_error($upc, $message));
+		if ($this->lockrecord($record) === false && $record->isNew() === false) {
+			$message = self::DESCRIPTION_RECORD . " ($upc-$itemID)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($this->getRecordlockerKey($record));
+			$this->wire('session')->setFor('response', 'upcx', XrefResponse::response_error($this->getRecordlockerKey($record), $message));
 			return false;
 		}
 		$this->update_record_input($record, $input);
@@ -357,20 +348,21 @@ class XrefUpc extends WireData implements Module {
 	 * @param  ItemXrefUpc $xref
 	 * @return string
 	 */
-	public function getXrefKey(ItemXrefUpc $xref) {
+	public function getRecordlockerKey(ItemXrefUpc $xref) {
 		return implode(FunctionLocker::glue(), [$xref->upc, $xref->itemid]);
 	}
 
 	/**
 	 * Lock Record, validate User is locking Record
-	 * @param  string $upc  UPC Code
+	 * @param  ItemXrefUpc $xref
 	 * @return bool
 	 */
-	public function lockrecord($upc) {
-		if ($this->recordlocker->isLocked($upc) === false) {
-			$this->recordlocker->lock($upc);
+	public function lockrecord($xref) {
+		$key = $this->getRecordlockerKey($xref);
+		if ($this->recordlocker->isLocked($key) === false) {
+			$this->recordlocker->lock($key);
 		}
-		return $this->recordlocker->userHasLocked($upc);
+		return $this->recordlocker->userHasLocked($key);
 	}
 
 	public function validate_itemID($itemID) {
