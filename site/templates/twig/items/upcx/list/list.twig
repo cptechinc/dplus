@@ -66,7 +66,7 @@
 			</tr>
 		{% endif %}
 		{% for upc in upcs %}
-			<tr class="{{ upc.is_primary() and upc.itemid == itemID ? 'bg-info text-white'  : '' }}" data-upc="{{ upc.upc }}" data-key="{{ upcx.getXrefKey(upc) }}">
+			<tr class="{{ upc.is_primary() and upc.itemid == itemID ? 'bg-info text-white'  : '' }}" data-upc="{{ upc.upc }}" data-key="{{ upcx.getRecordlockerKey(upc) }}">
 				<td>{{ upc.upc }}</td>
 				<td>{{ upc.qty }}</td>
 
@@ -80,7 +80,7 @@
 				<td>{{ upc.is_mastercase()|yesorno|capitalize }}</td>
 				<td>{{ upc.needslabel|yesorno|capitalize }}</td>
 				<td class="text-center">
-					{% if upcx.recordlocker.isLocked(upc.upc) == false or upcx.recordlocker.userHasLocked( upc.upc) %}
+					{% if upcx.recordlocker.isLocked(upcx.getRecordlockerKey(upc)) == false or upcx.recordlocker.userHasLocked(upcx.getRecordlockerKey(upc)) %}
 						<a href="{{ page.upcUrl(upc.upc, upc.itemid) }}" class="btn btn-warning btn-sm">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</a>
@@ -90,7 +90,7 @@
 						</a>
 					{% else %}
 						<span class="badge badge-secondary">
-							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ upcx.recordlocker.getLockingUser(upc.upc) }}
+							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ upcx.recordlocker.getLockingUser(upcx.getRecordlockerKey(upc)) }}
 						</span>
 					{% endif %}
 				</td>
