@@ -47,11 +47,11 @@ class Upcx extends AbstractController {
 					self::pw('session')->redirect(self::upcListUrl(), $http301 = false);
 					break;
 				default:
-					self::pw('session')->redirect(self::upcUrl($data->upc), $http301 = false);
+					self::pw('session')->redirect(self::upcUrl($data->upc, $data->itemID), $http301 = false);
 					break;
 			}
 		}
-		self::pw('session')->redirect(self::upcUrl($data->upc), $http301 = false);
+		self::pw('session')->redirect(self::upcUrl($data->upc, $data->itemID), $http301 = false);
 	}
 
 	public static function upc($data) {
@@ -62,7 +62,7 @@ class Upcx extends AbstractController {
 		}
 
 		$upcx = self::getUpcx();
-		$xref = $upcx->get_create_xref($data->upc);
+		$xref = $upcx->getCreateXref($data->upc, $data->itemID);
 		$page = self::pw('page');
 		$page->headline = "UPCX: $xref->upc - $xref->itemid";
 
@@ -90,11 +90,13 @@ class Upcx extends AbstractController {
 		$upcx = self::getUpcx();
 		$html = '';
 
-		if ($upcx->recordlocker->isLocked($xref->upc) && !$upcx->recordlocker->userHasLocked($xref->upc)) {
-			$msg = "UPC $xref->upc is being locked by " . $upcx->recordlocker->getLockingUser($xref->upc);
-			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "UPC $xref->upc is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
-		} elseif ($upcx->recordlocker->isLocked($xref->upc) === false) {
-			$upcx->recordlocker->lock($xref->upc);
+		$key = $upcx->getRecordlockerKey($xref);
+
+		if ($upcx->recordlocker->isLocked($key) && $upcx->recordlocker->userHasLocked($key) === false) {
+			$msg = "UPC $xref->upc - $xref->itemid is being locked by " . $upcx->recordlocker->getLockingUser($key);
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "UPC $xref->upc - $xref->itemid is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		} elseif ($upcx->recordlocker->isLocked($key) === false) {
+			$upcx->recordlocker->lock($key);
 		}
 
 		if ($xref->isNew()) {
