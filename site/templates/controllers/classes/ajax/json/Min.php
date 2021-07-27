@@ -231,6 +231,25 @@ class Min extends AbstractController {
 		return $exists ? true : "UPC $data->upc not found";
 	}
 
+	public static function validateUpcXref($data) {
+		$fields = ['upc|text', 'itemID|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$validate = new UpcxValidator();
+
+		$exists = $validate->exists($data->upc, $data->itemID);
+
+		if (boolval($data->jqv) === false) {
+			return $exists;
+		}
+
+		// JQuery Validate
+		if ($data->new) { // If new, check that upc doesn't already exist.
+			return $exists ? "UPC X-Ref Already Exists" : true;
+		}
+
+		return $exists ? true : "UPC X-Ref not found";
+	}
+
 	public static function validateUpcPrimary($data) {
 		$fields = ['upc|text', 'itemID|text', 'jqv|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);

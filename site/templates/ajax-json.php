@@ -17,6 +17,7 @@
 				'upcx' => [
 					['GET', 'upc/', Json\Min::class, 'validateUpc'],
 					['GET', 'upc/primary/', Json\Min::class, 'validateUpcPrimary'],
+					['GET', 'upc/xref/', Json\Min::class, 'validateUpcXref'],
 				],
 				'code' => [
 					['GET', 'stock/', Json\Min::class, 'validateStockCode'],
@@ -27,6 +28,9 @@
 			['GET', 'country-code/', Json\Min::class, 'getCountryCode'],
 			['GET', 'msds-code/', Json\Min::class, 'getMsdsCode'],
 			['GET', 'item/', Json\Min::class, 'getItm'],
+			'upcx' => [
+				['GET', 'primary/', Json\Min::class, 'getPrimaryUpc'],
+			]
 		],
 		'map' => [
 			'validate' => [
