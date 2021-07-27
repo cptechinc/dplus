@@ -65,14 +65,18 @@ class PurchaseOrder extends Base {
 			return self::invalidPo($data);
 		}
 		$config = self::pw('config');
-		$order = PurchaseOrderQuery::create()->findOneByPonbr($data->ponbr);
+		$po = PurchaseOrderQuery::create()->findOneByPonbr($data->ponbr);
 		$qnotes = self::getQnotes();
+		$docm   = self::docm();
+
+		self::pw('page')->js .= $config->twig->render('purchase-orders/purchase-order/qnotes/js.twig', ['purchaseorder' => $po, 'docm' => $docm]);
+
 		$html = '';
-		$html  .= $config->twig->render('purchase-orders/purchase-order/links-header.twig', ['purchaseorder' => $purchaseorder]);
-		$html  .= $config->twig->render('purchase-orders/purchase-order/purchase-order.twig', ['config' => self::getConfigs(), 'user' => self::pw('user'), 'purchaseorder' => $purchaseorder, 'qnotes' => $qnotes]);
-		$html  .= $config->twig->render('purchase-orders/purchase-order/documents.twig', ['ponbr' => $data->ponbr, 'documents' => self::docm()->getDocumentsPo($data->ponbr)]);
+		$html  .= $config->twig->render('purchase-orders/purchase-order/links-header.twig', ['purchaseorder' => $po, 'docm' => $docm]);
+		$html  .= $config->twig->render('purchase-orders/purchase-order/purchase-order.twig', ['config' => self::getConfigs(), 'user' => self::pw('user'), 'purchaseorder' => $po, 'qnotes' => $qnotes]);
+		$html  .= $config->twig->render('purchase-orders/purchase-order/documents.twig', ['ponbr' => $data->ponbr, 'documents' => $docm->getDocumentsPo($data->ponbr)]);
 		$html  .= $config->twig->render('purchase-orders/purchase-order/qnotes.twig', ['ponbr' => $data->ponbr, 'qnotes' => $qnotes]);
-		$html  .= $config->twig->render('purchase-orders/purchase-order/invoices.twig', ['purchaseorder' => $purchaseorder]);
+		$html  .= $config->twig->render('purchase-orders/purchase-order/invoices.twig', ['purchaseorder' => $po]);
 		return $html;
 	}
 
