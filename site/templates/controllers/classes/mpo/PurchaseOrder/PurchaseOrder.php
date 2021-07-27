@@ -87,19 +87,18 @@ class PurchaseOrder extends Base {
 		});
 
 		$m->addHook('Page(pw_template=purchase-order-view)::poListUrl', function($event) {
-			$event->return = self::orderListUrl($event->arguments(0));
+			$event->return = self::poListUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=purchase-order-view)::orderHistoryListUrl', function($event) {
-			$event->return = self::orderHistoryListUrl($event->arguments(0));
+		$m->addHook('Page(pw_template=purchase-order-view)::apInvoiceUrl', function($event) {
+			$event->return = self::apInvoiceUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::orderPrintUrl', function($event) {
-			$event->return = self::orderPrintUrl($event->arguments(0));
-		});
 
-		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::orderEditUrl', function($event) {
-			$event->return = self::orderEditUrl($event->arguments(0));
+
+
+		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::poEditUrl', function($event) {
+			$event->return = self::poEditUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::orderEditUnlockUrl', function($event) {

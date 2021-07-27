@@ -19,6 +19,14 @@ abstract class Base extends AbstractController {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function poListUrl($ponbr = '') {
+		$url = new Purl(self::pw('pages')->get('pw_template=purchase-orders')->url);
+		if ($ponbr) {
+			$url->query->set('focus', $ponbr);
+		}
+		return $url->getUrl();
+	}
+
 	public static function poUrl($ponbr = '') {
 		$url = new Purl(self::pw('pages')->get('pw_template=purchase-order-view')->url);
 		if ($ponbr) {
@@ -30,6 +38,21 @@ abstract class Base extends AbstractController {
 	public static function receivedUrl($ponbr) {
 		$url = new Purl(self::poUrl($ponbr));
 		$url->path->add('received');
+		return $url->getUrl();
+	}
+
+	public static function apInvoiceUrl($invnb = '') {
+		$url = new Purl(self::poUrl());
+		$url->path->add('invoice');
+		if ($invnbr) {
+			$url->query->set('focus', $invnbr);
+		}
+		return $url->getUrl();
+	}
+
+	public static function poEditUrl($ponbr) {
+		$url = new Purl(self::poUrl($ponbr));
+		$url->path->add('edit');
 		return $url->getUrl();
 	}
 
