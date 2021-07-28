@@ -1,23 +1,18 @@
-{% block header %}
-	<div class="row">
-		<div class="col-sm-6">
-			<h3>
-				{% if itemID %}
-					{{ upcs.getNbResults() }} UPCs for {{ itemID }}
-				{% else %}
-					{{ upcs.getNbResults() }} UPCs
-				{% endif %}
-			</h3>
-		</div>
-		<div class="col-sm-6 text-right">
-			{% block add_upc_link %}
-				<a href="{{ page.upcCreateUrl() }}" class="btn btn-secondary">
-					<i class="fa fa-plus" aria-hidden="true"></i> Add X-Ref
-				</a>
-			{% endblock %}
-		</div>
+{% set response = session.getFor('response', 'upcx') %}
+
+<div class="row">
+	<div class="col-sm-6">
+		<h3>
+			{{ upcs.getNbResults() }} UPCs
+		</h3>
 	</div>
-{% endblock %}
+	<div class="col-sm-6 text-right">
+		<a href="{{ page.upcCreateUrl() }}" class="btn btn-secondary">
+			<i class="fa fa-plus" aria-hidden="true"></i> Add X-Ref
+		</a>
+	</div>
+</div>
+
 
 <table class="table table-sm">
 	<thead>
@@ -30,15 +25,13 @@
 				</a>
 			</th>
 			<th class="pt-3 pb-3">Qty Per UPC</th>
-			{% if itemID == false %}
-				<th class="pt-3 pb-3">
-					<a href="{{ page.get_sortURL('itemid') }}" class="link">Item ID / Desription
-						{% if page.orderby_column == 'itemid' %}
-							<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
-						{% endif %}
-					</a>
-				</th>
-			{% endif %}
+			<th class="pt-3 pb-3">
+				<a href="{{ page.get_sortURL('itemid') }}" class="link">Item ID / Desription
+					{% if page.orderby_column == 'itemid' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
+			</th>
 			<th class="pt-3 pb-3">
 				<a href="{{ page.get_sortURL('primary') }}" class="link">Primary
 					{% if page.orderby_column == 'primary' %}
@@ -66,16 +59,13 @@
 			</tr>
 		{% endif %}
 		{% for upc in upcs %}
-			<tr class="{{ upc.is_primary() and upc.itemid == itemID ? 'bg-info text-white'  : '' }}" data-upc="{{ upc.upc }}" data-key="{{ upcx.getRecordlockerKey(upc) }}">
+			<tr class="{{ response and response.key == upcx.getRecordlockerKey(upc) ? 'bg-success text-white' : '' }}" data-upc="{{ upc.upc }}" data-key="{{ upcx.getRecordlockerKey(upc) }}">
 				<td>{{ upc.upc }}</td>
 				<td>{{ upc.qty }}</td>
-
-				{% if itemID == false %}
-					<td>
-						{{ upc.itemid }} <br>
-						<small>{{ upc.ItemMasterItem.desc }}</small>
-					</td>
-				{% endif %}
+				<td>
+					{{ upc.itemid }} <br>
+					<small>{{ upc.ItemMasterItem.desc }}</small>
+				</td>
 				<td>{{ upc.primary|yesorno|capitalize }}</td>
 				<td>{{ upc.is_mastercase()|yesorno|capitalize }}</td>
 				<td>{{ upc.needslabel|yesorno|capitalize }}</td>
