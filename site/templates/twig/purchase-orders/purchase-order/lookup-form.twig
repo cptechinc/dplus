@@ -1,19 +1,34 @@
-<form action="{{ page.url }}" class="allow-enterkey-submit">
-	<label for="ponbr"><strong>Enter Purchase Order Number</strong></label> &nbsp; &nbsp;
+<form action="{{ input.url() }}" class="allow-enterkey-submit">
+	<label for="ponbr"><strong>Purchase Order Number</strong></label> &nbsp; &nbsp;
 
-	<div class="form-inline">
-		{% include 'util/form/input-with-modal-lookup.twig' with {
-				'name': 'ponbr', 'value': '',
-				'attributes': {},
-				'modaltarget': '#ajax-modal',
-				'modaldescription': 'Search for / Choose Purchase Order',
-				'attributes_button': {
-					'data-search': 'ponbr',
-					'data-lookupurl': page.search_lookupURL('purchase-orders'),
-					'data-input': '#ponbr'
+	<div class="form-inline form-group">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'input': {
+						'name': 'ponbr',
+						'value': '',
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Purchase Order Number'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search for / Choose Purchase Order',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('purchase-orders'),
+							'data-input': '#ponbr'
+						}
+					}
 				}
 			}
 		%}
-		<button type="submit" class="btn btn-success">Go</button>
 	</div>
+	<button type="submit" class="btn btn-success">
+		<i class="fa fa-search" aria-hidden="true"></i> Find
+	</button>
 </form>
