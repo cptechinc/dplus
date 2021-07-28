@@ -76,6 +76,7 @@ return array(
     'Controllers\\Mki\\Kim' => $baseDir . '/classes/mki/Kim.php',
     'Controllers\\Mpo\\Epo' => $baseDir . '/classes/mpo/Epo.php',
     'Controllers\\Mpo\\EpoCreate' => $baseDir . '/classes/mpo/EpoCreate.php',
+    'Controllers\\Mpo\\PurchaseOrder\\ApInvoice' => $baseDir . '/classes/mpo/PurchaseOrder/ApInvoice.php',
     'Controllers\\Mpo\\PurchaseOrder\\Base' => $baseDir . '/classes/mpo/PurchaseOrder/Base.php',
     'Controllers\\Mpo\\PurchaseOrder\\PurchaseOrder' => $baseDir . '/classes/mpo/PurchaseOrder/PurchaseOrder.php',
     'Controllers\\Mpo\\PurchaseOrder\\Received' => $baseDir . '/classes/mpo/PurchaseOrder/Received.php',

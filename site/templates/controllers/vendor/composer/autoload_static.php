@@ -77,6 +77,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mki\\Kim' => __DIR__ . '/../..' . '/classes/mki/Kim.php',
         'Controllers\\Mpo\\Epo' => __DIR__ . '/../..' . '/classes/mpo/Epo.php',
         'Controllers\\Mpo\\EpoCreate' => __DIR__ . '/../..' . '/classes/mpo/EpoCreate.php',
+        'Controllers\\Mpo\\PurchaseOrder\\ApInvoice' => __DIR__ . '/../..' . '/classes/mpo/PurchaseOrder/ApInvoice.php',
         'Controllers\\Mpo\\PurchaseOrder\\Base' => __DIR__ . '/../..' . '/classes/mpo/PurchaseOrder/Base.php',
         'Controllers\\Mpo\\PurchaseOrder\\PurchaseOrder' => __DIR__ . '/../..' . '/classes/mpo/PurchaseOrder/PurchaseOrder.php',
         'Controllers\\Mpo\\PurchaseOrder\\Received' => __DIR__ . '/../..' . '/classes/mpo/PurchaseOrder/Received.php',

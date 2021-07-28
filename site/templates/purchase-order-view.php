@@ -1,6 +1,8 @@
 <?php
 	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Mpo\PurchaseOrder\PurchaseOrder as Main;
+
+
 	//use Controllers\Mpo\PurchaseOrder\Documents;
 //	use Controllers\Mpo\PurchaseOrder\Notes;
 
@@ -20,6 +22,10 @@
 	$page->body = $router->route();
 
 	$page->show_breadcrumbs = false;
+
+	if ($router->hasError() === false) {
+		$config->scripts->append($modules->get('FileHasher')->getHashUrl('scripts/lib/jquery-validate.js'));
+	}
 
 	if ($config->ajax) {
 		echo $page->body;

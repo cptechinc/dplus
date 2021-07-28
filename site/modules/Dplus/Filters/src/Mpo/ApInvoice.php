@@ -2,18 +2,18 @@
 // Propel Classes
 use Propel\Runtime\ActiveQuery\Criteria;
 // Dplus Model
-use PurchaseOrderQuery, PurchaseOrder as Model;
-use PurchaseOrderDetailQuery, PurchaseOrderDetail;
+use ApInvoiceQuery, ApInvoice as Model;
+use ApInvoiceDetailQuery, ApInvoiceDetail;
 // ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page;
 // Dplus Filters
 use Dplus\Filters\AbstractFilter;
 
 /**
-* Wrapper Class for PurchaseOrderQuery
+* Wrapper Class for ApInvoiceQuery
 */
-class PurchaseOrder extends AbstractFilter {
-	const MODEL = 'PurchaseOrder';
+class ApInvoice extends AbstractFilter {
+	const MODEL = 'ApInvoice';
 
 /* =============================================================
 	1. Abstract Contract Functions
@@ -23,8 +23,9 @@ class PurchaseOrder extends AbstractFilter {
 			Model::aliasproperty('ponbr'),
 			Model::aliasproperty('poref'),
 			Model::aliasproperty('vendorid'),
+			Model::aliasproperty('invnbr'),
 		];
-		$this->query->search_filter($columns, strtoupper($q));
+		$this->query->searchFilter($columns, strtoupper($q));
 	}
 
 /* =============================================================
@@ -108,17 +109,9 @@ class PurchaseOrder extends AbstractFilter {
 	 */
 	public function filterInput(WireInput $input) {
 		$this->vendoridInput($input);
-		$this->shipfromidInput($input);
 
 		if ($input->get->filter) {
 			$this->ponbrInput($input);
-			$this->orderdateInput($input);
-			$this->expecteddateInput($input);
-			$this->statusInput($input);
-		}
-
-		if (!$input->get->status) {
-			$input->get->status = array();
 		}
 	}
 
@@ -154,22 +147,6 @@ class PurchaseOrder extends AbstractFilter {
 	}
 
 	/**
-	 * Filters Query by Vendor ShipfromID from Input Data
-	 * @param  WireInput $input Object that Contains the $_GET array for values to filter on
-	 * @return self
-	 */
-	public function shipfromidInput(WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-
-		if ($values->shipfromID && $values->vendorID) {
-			$shipfromID = is_array($values->shipfromID) ? $values->array('shipfromID') : $values->text('shipfromID');
-			$this->shipfromid($shipfromID);
-		}
-		return $this;
-	}
-
-	/**
 	 * Filter By PO Number from Input Data
 	 * @param  WireInput $input Input Data
 	 * @return self
@@ -183,85 +160,6 @@ class PurchaseOrder extends AbstractFilter {
 		}
 		if ($values->text('ponbr_through')) {
 			$this->ponbr($values->text('ponbr_through'), Criteria::LESS_EQUAL);
-		}
-		return $this;
-	}
-
-	/**
-	 * Filter By Ordered Date from Input Data
-	 * @param  WireInput $input Input Data
-	 * @return self
-	 */
-	public function orderdateInput(WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-
-		if ($values->text('date_ordered_from') || $values->text('date_ordered_through')) {
-			$date_ordered_from = date("Ymd", strtotime($values->text('date_ordered_from')));
-
-			if (empty($values->text('date_ordered_through'))) {
-				$date_ordered_through = date('Ymd');
-			} else {
-				$date_ordered_through = date("Ymd", strtotime($values->text('date_ordered_through')));
-			}
-
-			if ($date_ordered_from) {
-				$this->orderdate($date_ordered_from, Criteria::GREATER_EQUAL);
-			}
-
-			if ($date_ordered_through) {
-				$this->orderdate($date_ordered_through, Criteria::LESS_EQUAL);
-			}
-		}
-		return $this;
-	}
-
-	/**
-	 * Filters Query by Expected Date
-	 * @param  WireInput $input Input Datan
-	 * @return self
-	 */
-	public function expecteddateInput(WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-
-		if ($values->text('date_expected_from') || $values->text('date_expected_through')) {
-			$date_expected_from = date("Ymd", strtotime($values->text('date_expected_from')));
-
-			if (empty($values->text('date_expected_through'))) {
-				$date_expected_through = date('Ymd');
-			} else {
-				$date_expected_through = date("Ymd", strtotime($values>text('date_expected_through')));
-			}
-
-			if ($date_expected_from) {
-				$this->expecteddate($date_expected_from, Criteria::GREATER_EQUAL);
-			} elseif ($date_expected_through) {
-				$this->expecteddate($date_expected_through, Criteria::LESS_EQUAL);
-			}
-		}
-		return $this;
-	}
-
-	/**
-	 * Filters Query by Order Status from Input Data
-	 * @param  WireInput $input Input Data
-	 * @return self
-	 */
-	public function statusInput(WireInput $input) {
-		$rm = strtolower($input->requestMethod());
-		$values = $input->$rm;
-
-		if ($values->status) {
-			$statusesinput = $values->array('status');
-			$statuses = array();
-
-			foreach ($statusesinput as $status) {
-				if (array_key_exists($status, Model::STATUS_DESCRIPTIONS)) {
-					$statuses[] = $status;
-				}
-			}
-			$this->status($statuses);
 		}
 		return $this;
 	}
@@ -280,10 +178,10 @@ class PurchaseOrder extends AbstractFilter {
 			$sort = $page->orderby_sort;
 
 			if ($orderbycolumn == 'total_total') {
-				$this->query->join('PurchaseOrderDetail');
-				$tablecolumn = PurchaseOrderDetail::aliasproperty('cost_total');
-				$this->query->withColumn("SUM(PurchaseOrderDetail.$tablecolumn)", 'total_total');
-				$this->query->groupBy('PurchaseOrder.pohdnbr');
+				$this->query->join('ApInvoiceDetail');
+				$tablecolumn = ApInvoiceDetail::aliasproperty('cost_total');
+				$this->query->withColumn("SUM(ApInvoiceDetail.$tablecolumn)", 'total_total');
+				$this->query->groupBy('ApInvoice.pohdnbr');
 				$this->query->orderBy("total_total", $sort);
 			} else {
 				$tablecolumn = Model::get_aliasproperty($orderbycolumn);
