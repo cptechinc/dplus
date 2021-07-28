@@ -7,6 +7,8 @@ use Propel\Runtime\Util\PropelModelPager;
 use ItemXrefUpcQuery, ItemXrefUpc;
 // ProcessWire Classes, Modules
 use ProcessWire\WireData, ProcessWire\Page, ProcessWire\XrefUpc as UpcCRUD;
+// Dplus Record Locker
+use Dplus\RecordLocker\UserFunction as Locker;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Filters
@@ -45,6 +47,9 @@ class Upcx extends AbstractController {
 			switch($data->action) {
 				case 'delete-upcx':
 					self::pw('session')->redirect(self::upcListUrl(), $http301 = false);
+					break;
+				case 'update-upcx':
+					self::pw('session')->redirect(self::upcListUrl(implode(Locker::glue(), [$data->upc, $data->itemID])), $http301 = false);
 					break;
 				default:
 					self::pw('session')->redirect(self::upcUrl($data->upc, $data->itemID), $http301 = false);

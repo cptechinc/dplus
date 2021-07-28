@@ -297,7 +297,7 @@ class XrefUpc extends WireData implements Module {
 		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
 
 		$response = new XrefResponse();
-		$response->set_key($record->upc);
+		$response->set_key($this->getRecordLockerKey($record));
 
 		if ($saved) {
 			$response->set_success(true);
