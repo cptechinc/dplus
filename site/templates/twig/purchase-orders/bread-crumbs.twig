@@ -1,0 +1,27 @@
+{% extends 'util/bread-crumbs.twig' %}
+
+{% set values = input.get %}
+{% set segments = input.urlSegments() %}
+{% set lastsegment = segments[segments|length] %}
+
+{% block current_page %}
+	{% if segments|length == 0 %}
+		<li class="breadcrumb-item active">
+			Sales Order
+		</li>
+	{% endif %}
+
+	{% if segments|length > 0 %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.poUrl() }}">Purchase Order</a>
+		</li>
+		{% if values.offsetExists('ponbr') %}
+			<li class="breadcrumb-item">
+				<a href="{{ page.poUrl(values.text('ponbr')) }}">{{ values.text('ponbr') }}</a>
+			</li>
+		{% endif %}
+		<li class="breadcrumb-item active">
+			{{ lastsegment|capitalize }}
+		</li>
+	{% endif %}
+{% endblock %}
