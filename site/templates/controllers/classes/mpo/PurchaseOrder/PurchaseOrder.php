@@ -42,9 +42,6 @@ class PurchaseOrder extends Base {
 		return self::purchaseorder($data);
 	}
 
-
-
-
 	public static function handleCRUD($data) {
 		self::sanitizeParametersShort($data, ['ponbr|ponbr', 'action|text']);
 		switch ($data->action) {
@@ -58,6 +55,11 @@ class PurchaseOrder extends Base {
 /* =============================================================
 	Displays
 ============================================================= */
+	private static function lookupScreen($data) {
+		self::pw('page')->js .= self::pw('config')->twig->render('purchase-orders/purchase-order/lookup-form.js.twig');
+		return self::lookupForm();
+	}
+
 	private static function purchaseorder($data) {
 		self::sanitizeParametersShort($data, ['ponbr|ponbr']);
 
