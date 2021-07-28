@@ -12,7 +12,7 @@
 				<tr id="doc-{{ document.filename }}">
 					<td>{{ document.title }}</td>
 					<td>
-						<a href="{{ page.documentload(document.folder, document.filename, ponbr) }}" class="link" target="_blank">
+						<a href="{{ page.documentUrl(ponbr, document.folder, document.filename) }}" class="link" target="_blank">
 							{{ document.filename }}
 						</a>
 					</td>

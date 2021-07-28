@@ -13,9 +13,8 @@ use ProcessWire\WireData;
 use Dplus\CodeValidators\Mpo as MpoValidator;
 
 /**
- * Sales Order Document Finder
- *
- * Decorator for DocumentQuery to find Sales Order Related Documents in Database
+ * Purchase Order Document Finder
+ * Decorator for DocumentQuery to find Purchase Order Related Documents in Database
  */
 class PurchaseOrder extends Finder {
 /* =============================================================

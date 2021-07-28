@@ -89,7 +89,7 @@ class PurchaseOrder extends Base {
 		$m = self::pw('modules')->get('DpagesMso');
 
 		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::poUrl', function($event) {
-			$event->return = self::orderUrl($event->arguments(0));
+			$event->return = self::poUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=purchase-order-view)::poListUrl', function($event) {
@@ -98,6 +98,14 @@ class PurchaseOrder extends Base {
 
 		$m->addHook('Page(pw_template=purchase-order-view)::apInvoiceUrl', function($event) {
 			$event->return = self::apInvoiceUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=purchase-order-view)::poDocumentsUrl', function($event) {
+			$event->return = self::poDocumentsUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=purchase-order-view)::documentUrl', function($event) {
+			$event->return = self::documentUrl($event->arguments(0), $event->arguments(1), $event->arguments(2));
 		});
 
 
@@ -115,13 +123,7 @@ class PurchaseOrder extends Base {
 			$event->return = self::orderNotesUrl($event->arguments(0), $event->arguments(1));
 		});
 
-		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::orderDocumentsUrl', function($event) {
-			$event->return = self::orderDocumentsUrl($event->arguments(0));
-		});
 
-		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::documentUrl', function($event) {
-			$event->return = self::documentUrl($event->arguments(0), $event->arguments(1), $event->arguments(2));
-		});
 
 		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::iiUrl', function($event) {
 			$event->return = Ii::iiUrl($event->arguments(0));

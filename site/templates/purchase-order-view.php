@@ -1,16 +1,16 @@
 <?php
 	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
+	use Controllers\Mpo\PurchaseOrder as App;
 	use Controllers\Mpo\PurchaseOrder\PurchaseOrder as Main;
 
 
-	//use Controllers\Mpo\PurchaseOrder\Documents;
 //	use Controllers\Mpo\PurchaseOrder\Notes;
 
 	Main::initHooks();
 
 	$routes = [
 		['GET',  '', Main::class, 'index'],
-	//	['GET',  'documents/', Documents::class, 'index'],
+		['GET',  'documents/', App\Documents::class, 'index'],
 		// 'notes' => [
 		// 	['GET',   '', Notes::class, 'index'],
 		// 	['POST',  '', Notes::class, 'handleCRUD'],

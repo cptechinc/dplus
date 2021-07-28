@@ -41,7 +41,7 @@ abstract class Base extends AbstractController {
 		return $url->getUrl();
 	}
 
-	public static function apInvoiceUrl($invnb = '') {
+	public static function apInvoiceUrl($invnbr = '') {
 		$url = new Purl(self::poUrl());
 		$url->path->add('invoice');
 		if ($invnbr) {
@@ -53,6 +53,19 @@ abstract class Base extends AbstractController {
 	public static function poEditUrl($ponbr) {
 		$url = new Purl(self::poUrl($ponbr));
 		$url->path->add('edit');
+		return $url->getUrl();
+	}
+
+	public static function poDocumentsUrl($ponbr) {
+		$url = new Purl(self::poUrl($ponbr));
+		$url->path->add('documents');
+		return $url->getUrl();
+	}
+
+	public static function documentUrl($ponbr, $folder, $doc) {
+		$url = new Purl(self::poDocumentsUrl($ponbr));
+		$url->query->set('folder', $folder);
+		$url->query->set('document', $doc);
 		return $url->getUrl();
 	}
 
@@ -69,6 +82,10 @@ abstract class Base extends AbstractController {
 
 	protected static function lookupForm() {
 		return self::pw('config')->twig->render('purchase-orders/purchase-order/lookup-form.twig');
+	}
+
+	protected static function breadCrumbs() {
+		return self::pw('config')->twig->render('purchase-orders/bread-crumbs.twig');
 	}
 
 /* =============================================================
@@ -95,5 +112,4 @@ abstract class Base extends AbstractController {
 		}
 		return self::$docm;
 	}
-
 }
