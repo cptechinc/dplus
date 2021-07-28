@@ -142,10 +142,6 @@ class PurchaseOrder extends Base {
 		});
 	}
 
-	public static function getQnotes() {
-		return self::pw('modules')->get('QnotesPo');
-	}
-
 	public static function getConfigs() {
 		$configs = new WireData();
 		$configs->so = Configs\So::config();
