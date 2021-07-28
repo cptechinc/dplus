@@ -60,19 +60,15 @@ abstract class Base extends AbstractController {
 	Displays
 ============================================================= */
 	protected static function invalidPo($data) {
-		$config = self::pw('config');
 		$html = '';
-		$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Purchase Order Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "PO # $data->ponbr can not be found"]);
+		$html .= self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Purchase Order Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "PO # $data->ponbr can not be found"]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= self::lookupForm();
 		return $html;
 	}
 
 	protected static function lookupForm() {
-		$page = self::pw('page');
-		$config = self::pw('config');
-		$page->body .= $config->twig->render('purchase-orders/purchase-order/lookup-form.twig');
-		return $page->body;
+		return self::pw('config')->twig->render('purchase-orders/purchase-order/lookup-form.twig');
 	}
 
 /* =============================================================
