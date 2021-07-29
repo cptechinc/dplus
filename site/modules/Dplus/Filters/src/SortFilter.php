@@ -38,14 +38,16 @@ class SortFilter extends WireData {
 
 	/**
 	 * Save Sort Filter to Session
-	 * @param  string $ns Namespace
+	 * @param  string $ns  Namespace
+	 * @param  string $key Key
 	 * @return void
 	 */
-	public function saveToSession($ns = '') {
+	public function saveToSession( $ns = '', $key = '') {
+		$key = self::getSessionKey($key);
 		if (empty($ns) === false) {
-			return self::pw('session')->setFor($ns, self::SESSION_KEY);
+			return self::pw('session')->setFor($ns, $key, $this);
 		}
-		return self::pw('session')->set(self::SESSION_KEY);
+		return self::pw('session')->set($key, $this);
 	}
 
 	/**
@@ -61,15 +63,42 @@ class SortFilter extends WireData {
 
 	/**
 	 * Return SortFilter from Session if it exists
-	 * @param  string $key  Key
 	 * @param  string $ns   Namespace
+	 * @param  string $key  Key
 	 * @return SortFilter|null
 	 */
-	public static function getFromSession($ns = '') {
+	public static function getFromSession($ns = '', $key = '') {
+		$key = self::getSessionKey($key);
 		if (empty($ns) === false) {
-			return self::pw('session')->getFor($ns, self::SESSION_KEY);
+			return self::pw('session')->getFor($ns, $key);
 		}
-		return self::pw('session')->get(self::SESSION_KEY);
+		return self::pw('session')->get($key);
+	}
+
+	/**
+	 * Delete Sort Filter From Session
+	 * @param  string $ns   Namespace
+	 * @param  string $key  Key
+	 * @return void
+	 */
+	public function removeFromSession($ns = '', $key = '') {
+		$key = self::getSessionKey($key);
+		if (empty($ns) === false) {
+			return self::pw('session')->removeFor($ns, $key);
+		}
+		return self::pw('session')->remove($key);
+	}
+
+	/**
+	 * Return Session Key
+	 * @param  string $key
+	 * @return string
+	 */
+	public static function getSessionKey($key = '') {
+		if (empty($key)) {
+			return self::SESSION_KEY;
+		}
+		return self::SESSION_KEY . "-$key";
 	}
 
 	/**
