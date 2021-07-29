@@ -158,6 +158,7 @@ class XrefUpc extends WireData implements Module {
 		$r->setPrimary('Y');
 		$r->setMastercase('N');
 		$r->setNeedslabel('N');
+		$r->setDummy('P');
 		return $r;
 	}
 
