@@ -4,10 +4,12 @@ use Purl\Url as Purl;
 // Propel ORM Ljbrary
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
+use CustomerQuery;
 use ItemXrefCustomer;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\XrefCxm as CxmCRUD;
 // Dplus Filters
+use Dplus\Filters;
 use Dplus\Filters\Mso\Cxm as CxmFilter;
 use Dplus\Filters\Mar\Customer as CustomerFilter;
 
@@ -151,6 +153,8 @@ class Cxm extends AbstractController {
 
 	public static function listCustomers($data) {
 		self::sanitizeParametersShort($data, ['q|text']);
+		Filters\SortFilter::removeFromSession('customer', 'cxm');
+		
 		$page    = self::pw('page');
 		$cxm     = self::getCxm();
 		$cxm->recordlocker->deleteLock();
@@ -162,6 +166,11 @@ class Cxm extends AbstractController {
 		if ($data->q) {
 			$page->headline = "CXM: Searching Customers for '$data->q'";
 			$filter->search($data->q);
+		}
+
+		if (empty($data->q) === false || empty($data->orderby) === false) {
+			$sortFilter = Filters\SortFilter::fromArray(['q' => $data->q, 'orderby' => $data->orderby]);
+			$sortFilter->saveToSession('customer', 'cxm');
 		}
 		$filter->sortby($page);
 		$customers = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
@@ -197,8 +206,7 @@ class Cxm extends AbstractController {
 			$filter->search($data->q);
 		}
 
-		$page->searchcustomersURL = self::pw('pages')->get('pw_template=mci-lookup')->url;
-		$page->js                 .= self::pw('config')->twig->render('items/cxm/list/js.twig');
+		$page->js .= self::pw('config')->twig->render('items/cxm/list/js.twig');
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, self::pw('session')->display);
 		$html = self::customerXrefsDisplay($data, $xrefs);
 		return $html;
@@ -268,7 +276,7 @@ class Cxm extends AbstractController {
 	public static function custListUrl($custID = '') {
 		$page = self::pw('pages')->get('pw_template=cxm');
 		if (empty($custID)) {
-			return $page->url;
+			return self::_custListUrl();
 		}
 		$url = new Purl($page->url);
 		$cxm = self::getCxm();
@@ -284,6 +292,43 @@ class Cxm extends AbstractController {
 				$pagenbr++;
 			}
 			$url = self::pw('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
+		}
+		return $url->getUrl();
+	}
+
+	public static function _custListUrl() {
+		return self::pw('pages')->get('pw_template=cxm')->url;
+	}
+
+	public static function custListFocusUrl($custID) {
+		$url = new Purl(self::_custListUrl());
+		$cxm = self::getCxm();
+		$filter = new CustomerFilter();
+		$filter->init();
+
+		if ($filter->exists($custID) === false) {
+			return $url->getUrl();
+		}
+
+		$sortFilter = Filters\SortFilter::getFromSession('customer', 'cxm');
+		$filter->custid($cxm->custids());
+
+		if ($sortFilter) {
+			$filter->applySortFilter($sortFilter);
+		}
+
+		$position = $filter->position(CustomerQuery::create()->findOneByCustid($custID));
+		$pagenbr = self::getPagenbrFromOffset($offset);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get(self::_custListUrl())->name, $pagenbr);
+		$url->query->set('focus', $custID);
+
+		if ($sortFilter) {
+			if ($sortFilter->q) {
+				$url->query->set('q', $sortFilter->q);
+			}
+			if ($sortFilter->orderby) {
+				$url->query->set('orderby', $sortFilter->orderby);
+			}
 		}
 		return $url->getUrl();
 	}
