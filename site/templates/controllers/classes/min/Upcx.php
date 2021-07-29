@@ -22,7 +22,7 @@ class Upcx extends AbstractController {
 
 	public static function index($data) {
 		$fields = ['upc|text', 'itemID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 		$page->show_breadcrumbs = false;
 
@@ -61,7 +61,7 @@ class Upcx extends AbstractController {
 	}
 
 	public static function upc($data) {
-		$data = self::sanitizeParametersShort($data, ['upc|text', 'itemID|text', 'action|text']);
+		self::sanitizeParametersShort($data, ['upc|text', 'itemID|text', 'action|text']);
 
 		if ($data->action) {
 			return self::handleCRUD($data);
