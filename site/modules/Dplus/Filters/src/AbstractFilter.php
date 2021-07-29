@@ -132,6 +132,18 @@ abstract class AbstractFilter extends WireData {
 	}
 
 	/**
+	 * Add Sort By to the Query
+	 * @param  string $col   Column
+	 * @param  string $sort  Sort By
+	 * @return void
+	 */
+	public function orderBy($col, $sort) {
+		$model = $this::MODEL;
+		$tablecolumn = $model::aliasproperty($col);
+		$this->query->sortBy($tablecolumn, $sort);
+	}
+
+	/**
 	 * Return Position of Record in results
 	 * @param  Model $record (Record Class)
 	 * @return int
@@ -139,5 +151,22 @@ abstract class AbstractFilter extends WireData {
 	public function position(Model $record) {
 		$results = $this->query->find();
 		return $results->search($record);
+	}
+
+	/**
+	 * Apply Sort and Searches to the Query
+	 * @param  SortFilter $sortFilter
+	 * @return void
+	 */
+	public function applySortFilter(SortFilter $sortFilter = null) {
+		if ($sortFilter) {
+			if ($sortFilter->q) {
+				$this->search(strtoupper($sortFilter->q));
+			}
+			if ($sortFilter->orderby) {
+				$data = explode('-', $sortFilter->orderby);
+				$this->orderBy($data[0], $data[1]);
+			}
+		}
 	}
 }
