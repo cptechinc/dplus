@@ -150,7 +150,9 @@ abstract class AbstractFilter extends WireData {
 	 */
 	public function position(Model $record) {
 		$results = $this->query->find();
-		return $results->search($record);
+		$position = $results->search($record);
+		unset($results);
+		return $position;
 	}
 
 	/**
