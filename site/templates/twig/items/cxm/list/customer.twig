@@ -19,11 +19,11 @@
 			<th class="pt-3 pb-3 align-middle">Description</th>
 			<th class="pt-3 pb-3 text-center">
 				{% if input.get.offsetExists('custID') %}
-					<a href="{{ page.xrefNewUrl(input.get.text('custID')) }}" class="btn btn-light">
+					<a href="{{ page.xrefNewUrl(input.get.text('custID')) }}" class="btn btn-sm btn-light">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add Item
 					</a>
 				{% else %}
-					<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#ajax-modal" title="Choose Customer to Add CXM" aria-label="Choose Customer to Add CXM" data-custid="{{ page.has('custID') ? page.custID : '' }}" data-search="customers">
+					<button type="button" class="btn btn-sm btn-light" data-toggle="modal" data-target="#ajax-modal" title="Choose Customer to Add CXM" aria-label="Choose Customer to Add CXM" data-custid="{{ page.has('custID') ? page.custID : '' }}" data-search="customers">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add Item
 					</button>
 				{% endif %}
