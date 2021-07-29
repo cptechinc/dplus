@@ -12,6 +12,7 @@ use Dplus\RecordLocker\UserFunction as Locker;
 // Dplus Configs
 use Dplus\Configs;
 // Dplus Filters
+use Dplus\Filters;
 use Dplus\Filters\Min\Upcx as UpcxFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
@@ -82,8 +83,6 @@ class Upcx extends AbstractController {
 	}
 
 	private static function upcDisplay($data, ItemXrefUpc $xref) {
-		$config = self::pw('config');
-
 		$html = '';
 		$html .= self::pw('config')->twig->render('items/upcx/bread-crumbs.twig', ['upcx' => self::getUpcx(), 'upc' => $xref]);
 		$html .= self::lockXref($xref);
@@ -115,21 +114,28 @@ class Upcx extends AbstractController {
 	}
 
 	public static function list($data) {
-		$data = self::sanitizeParametersShort($data, ['q|text']);
-		$page = self::pw('page');
+		self::sanitizeParametersShort($data, ['q|text', 'orderby|text']);
+		self::pw('session')->removeFor('upcx', 'sortfilter');
+
 		$upcx = self::getUpcx();
 		$upcx->recordlocker->deleteLock();
 		$filter = new UpcxFilter();
 
 		if ($data->q) {
-			$page->headline = "UPCX: Searching for '$data->q'";
+			self::pw('page')->headline = "UPCX: Searching for '$data->q'";
 			$filter->search(strtoupper($data->q));
 		}
-		$filter->sortby($page);
+		$filter->sortby(self::pw('page'));
+
+		if (empty($data->q) === false || empty($data->orderby) === false) {
+			$sortFilter = Filters\SortFilter::fromArray(['q' => $data->q, 'orderby' => $data->orderby]);
+			$sortFilter->saveToSession('upcx');
+		}
+
 		$filter->query->orderBy(ItemXrefUpc::aliasproperty('upc'), 'ASC');
 		$upcs = $filter->query->paginate(self::pw('input')->pageNum, 10);
 
-		$page->js   .= self::pw('config')->twig->render('items/upcx/list/.js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('items/upcx/list/.js.twig');
 		$html = self::listDisplay($data, $upcs);
 		return $html;
 	}
@@ -188,13 +194,30 @@ class Upcx extends AbstractController {
 			return $page->url;
 		}
 
+		$sortFilter = Filters\SortFilter::getFromSession('upcx');
 		$xref   = $upcx->xrefByKey($focus);
 		$filter = new UpcxFilter();
+
+		if ($sortFilter) {
+			$filter->applySortFilter($sortFilter);
+		}
+
+		$filter->query->orderBy(ItemXrefUpc::aliasproperty('upc'), 'ASC');
 		$offset = $filter->position($xref);
 		$pagenbr = self::getPagenbrFromOffset($offset);
+
 		$url = new Purl($page->url);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		$url->query->set('focus', $focus);
+
+		if ($sortFilter) {
+			if ($sortFilter->q) {
+				$url->query->set('q', $sortFilter->q);
+			}
+			if ($sortFilter->orderby) {
+				$url->query->set('orderby', $sortFilter->orderby);
+			}
+		}
 		return $url->getUrl();
 	}
 
