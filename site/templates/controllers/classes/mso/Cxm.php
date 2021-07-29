@@ -19,9 +19,8 @@ class Cxm extends AbstractController {
 
 	public static function index($data) {
 		$fields = ['custID|text', 'custitemID|text', 'q|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$page = self::pw('page');
-		$page->show_breadcrumbs = false;
+		self::sanitizeParametersShort($data, $fields);
+		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -38,15 +37,13 @@ class Cxm extends AbstractController {
 
 	public static function handleCRUD($data) {
 		$fields = ['action|text', 'custID|text', 'custitemID|text'];
-		$data = self::sanitizeParameters($data, $fields);
-		$input   = self::pw('input');
+		self::sanitizeParametersShort($data, $fields);
 
 		if ($data->action) {
 			$cxm = self::getCxm();
-			$cxm->process_input($input);
+			$cxm->process_input(self::pw('input'));
 		}
 		$session = self::pw('session');
-		$page    = self::pw('page');
 
 		$response = $session->getFor('response', 'cxm');
 		$url      = self::custUrl($data->custID);
@@ -63,7 +60,7 @@ class Cxm extends AbstractController {
 
 	public static function xref($data) {
 		$fields = ['custID|text', 'custitemID|text', 'itemID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
@@ -145,7 +142,7 @@ class Cxm extends AbstractController {
 	}
 
 	public static function list($data) {
-		$data = self::sanitizeParametersShort($data, ['custID|text']);
+		self::sanitizeParametersShort($data, ['custID|text']);
 		if ($data->custID) {
 			return self::custXrefs($data);
 		}
@@ -153,7 +150,7 @@ class Cxm extends AbstractController {
 	}
 
 	public static function listCustomers($data) {
-		$data = self::sanitizeParametersShort($data, ['q|text']);
+		self::sanitizeParametersShort($data, ['q|text']);
 		$page    = self::pw('page');
 		$cxm     = self::getCxm();
 		$cxm->recordlocker->deleteLock();
@@ -185,7 +182,7 @@ class Cxm extends AbstractController {
 	}
 
 	public static function custXrefs($data) {
-		$data = self::sanitizeParametersShort($data, ['custID|text', 'q|text']);
+		self::sanitizeParametersShort($data, ['custID|text', 'q|text']);
 		$page = self::pw('page');
 		$cxm  = self::getCxm();
 		$cxm->recordlocker->deleteLock();
