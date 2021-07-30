@@ -1,5 +1,9 @@
 <?php namespace Dplus\Filters;
+use PDO;
 // Propel Classes
+use Propel\Runtime\Propel;
+use Propel\Runtime\Connection\StatementWrapper;
+use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\ActiveQuery\ModelCriteria as Query;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Model;
 //  ProcessWire Classes
@@ -170,5 +174,99 @@ abstract class AbstractFilter extends WireData {
 				$this->orderBy($data[0], $data[1]);
 			}
 		}
+	}
+
+/* =============================================================
+	Functions
+============================================================= */
+	/**
+	 * Return Where Clause
+	 * @return array
+	 */
+	protected function getWhereClause() {
+		$params = $this->query->getParams();
+		$whereClause = [];
+
+		$dbMap = Propel::getServiceContainer()->getDatabaseMap($this->query->getDbName());
+		$adapter = Propel::getServiceContainer()->getAdapter($this->query->getDbName());
+
+		foreach ($this->query->keys() as $key) {
+			$criterion = $this->query->getCriterion($key);
+			$table = null;
+
+			foreach ($criterion->getAttachedCriterion() as $attachedCriterion) {
+				$tableName = $attachedCriterion->getTable();
+
+				$table = $this->query->getTableForAlias($tableName);
+				if ($table !== null) {
+					$fromClause[] = $table . ' ' . $tableName;
+				} else {
+					$fromClause[] = $tableName;
+					$table = $tableName;
+				}
+
+				if (
+					$this->query->isIgnoreCase() && method_exists($attachedCriterion, 'setIgnoreCase')
+					&& $dbMap->getTable($table)->getColumn($attachedCriterion->getColumn())->isText()
+				) {
+					$attachedCriterion->setIgnoreCase(true);
+				}
+			}
+
+			$criterion->setAdapter($adapter);
+
+			$sb = '';
+			$criterion->appendPsTo($sb, $params);
+			$this->query->replaceNames($sb);
+			$whereClause[] = $sb;
+		}
+		return $whereClause;
+	}
+
+	/**
+	 * Bind Query Parameters to Statement
+	 * @param  StatementWrapper $stmt
+	 * @param  int              $position
+	 * @return void
+	 */
+	protected function bindQueryParamsToStmt(StatementWrapper $stmt) {
+		$position = $this->countParams();
+
+		foreach ($this->query->getParams() as $key => $param) {
+			$position++;
+			$parameter = ':p' . $position;
+			$value = $param['value'];
+				$stmt->bindValue($parameter, null, PDO::PARAM_NULL);
+				continue;
+			}
+			$tableName = $param['table'];
+			$type = isset($param['type']) ? $param['type'] : PDO::PARAM_STR;
+			$stmt->bindValue($parameter, $value, $type);
+		}
+	}
+
+	/**
+	 * Return the number of parameters
+	 * @return int
+	 */
+	protected function countParams() {
+		$whereClause = implode(' ', $this->getWhereClause());
+		return substr_count($whereClause, ':p');
+	}
+
+	/**
+	 * Return Propel Write Connection
+	 * @return ConnectionInterface;
+	 */
+	protected function getWriteConnection() {
+		return Propel::getWriteConnection($this->query->getDbName());
+	}
+
+	/**
+	 * Return Propel Statement Wrapper
+	 * @return StatementWrapper
+	 */
+	protected function getPreparedStatementWrapper($sql) {
+		return $this->getWriteConnection()->prepare($sql);
 	}
 }
