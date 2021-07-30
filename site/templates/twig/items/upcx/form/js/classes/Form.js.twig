@@ -16,7 +16,7 @@ class UpcxForm {
 
 	updateItmDescription() {
 		var server   = UpcxRequests.getInstance();
-		server.getItm(inputs.itemid.val(), function(item) {
+		server.getItm(this.inputs.itemid.val(), [], function(item) {
 			if (item) {
 				$('.item-description').text(item.description);
 			}
