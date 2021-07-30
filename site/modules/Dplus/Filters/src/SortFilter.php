@@ -81,7 +81,7 @@ class SortFilter extends WireData {
 	 * @param  string $key  Key
 	 * @return void
 	 */
-	public function removeFromSession($ns = '', $key = '') {
+	public static function removeFromSession($ns = '', $key = '') {
 		$key = self::getSessionKey($key);
 		if (empty($ns) === false) {
 			return self::pw('session')->removeFor($ns, $key);
