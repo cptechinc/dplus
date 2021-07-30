@@ -106,12 +106,11 @@ class Customer extends AbstractFilter {
 	 */
 	public function positionQuick($custID) {
 		$q = $this->getQueryClass()->executeQuery('SET @rownum = 0');
-
 		$table = $this->getPositionSubSql();
+
 		$sql = "SELECT x.position FROM ($table) x WHERE arcucustid = :custid";
 		$stmt = $this->getPreparedStatementWrapper($sql);
 		$stmt->bindValue(':custid', $custID, PDO::PARAM_STR);
-		$this->bindQueryParamsToStmt($stmt);
 		$stmt->execute();
 		return $stmt->fetchColumn();
 	}
@@ -123,9 +122,9 @@ class Customer extends AbstractFilter {
 	private function getPositionSubSql() {
 		$table = $this->query->getTableMap()::TABLE_NAME;
 		$sql = "SELECT Arcucustid, @rownum := @rownum + 1 AS position FROM $table";
-		$whereClause = $this->getWhereClause();
+		$whereClause = $this->getWhereClauseString();
 		if (empty($whereClause) === false) {
-			$sql .= ' WHERE ' . implode(' AND ', $whereClause);
+			$sql .= ' WHERE ' . $whereClause;
 		}
 		return $sql;
 	}

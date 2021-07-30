@@ -1,4 +1,5 @@
 <?php namespace Dplus\Filters\Mso;
+use PDO;
 // Propel Classes
 use Propel\Runtime\ActiveQuery\Criteria;
 // Dplus Model
@@ -93,5 +94,42 @@ class Cxm extends AbstractFilter {
 
 		$itemID = $values->ouritemID ? $values->array('ouritemID') : $values->array('itemID');
 		return $this->itemid($itemID);
+	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	/**
+	 * Return Position of X-ref in result set
+	 * @param  string $custID      Customer ID
+	 * @param  string $custitemID  Customer Item ID
+	 * @param  string $itemID      Item ID
+	 * @return int
+	 */
+	public function positionQuick($custID, $custitemID, $itemID) {
+		$q = $this->getQueryClass()->executeQuery('SET @rownum = 0');
+
+		$table = $this->getPositionSubSql();
+		$sql = "SELECT x.position FROM ($table) x WHERE ArcuCustId = :custid AND OexrCustItemNbr = :custitemid AND InitItemNbr = :ouritemid";
+		$stmt = $this->getPreparedStatementWrapper($sql);
+		$stmt->bindValue(':custid', $custID, PDO::PARAM_STR);
+		$stmt->bindValue(':custitemid', $custitemID, PDO::PARAM_STR);
+		$stmt->bindValue(':ouritemid', $itemID, PDO::PARAM_STR);
+		$stmt->execute();
+		return $stmt->fetchColumn();
+	}
+
+	/**
+	 * Return Sub Query for getting result set with custid and position
+	 * @return string
+	 */
+	private function getPositionSubSql() {
+		$table = $this->query->getTableMap()::TABLE_NAME;
+		$sql = "SELECT ArcuCustId, OexrCustItemNbr, InitItemNbr,  @rownum := @rownum + 1 AS position FROM $table";
+		$whereClause = $this->getWhereClauseString();
+		if (empty($whereClause) === false) {
+			$sql .= ' WHERE ' . $whereClause;
+		}
+		return $sql;
 	}
 }
