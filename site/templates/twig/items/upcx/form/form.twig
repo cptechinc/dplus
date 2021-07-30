@@ -65,7 +65,6 @@
 					<label for="primary">Primary</label>
 				</div>
 				<div class="col-sm-6">
-
 					{% include 'util/bootstrap/form/select-simple.twig' with {
 							'select': {
 								'name': 'primary',
@@ -126,7 +125,7 @@
 					{% include 'util/bootstrap/form/select-simple.twig' with {
 							'select': {
 								'name': 'needslabel',
-								'value' : upc.is_needslabel() ? 'Y' : 'N',
+								'value' : upc.needslabel() ? 'Y' : 'N',
 								'haskeys': true,
 								'options': {
 									'Y': 'Yes',
