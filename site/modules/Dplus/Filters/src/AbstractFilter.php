@@ -236,6 +236,7 @@ abstract class AbstractFilter extends WireData {
 			$position++;
 			$parameter = ':p' . $position;
 			$value = $param['value'];
+			if ($value === null) {
 				$stmt->bindValue($parameter, null, PDO::PARAM_NULL);
 				continue;
 			}
