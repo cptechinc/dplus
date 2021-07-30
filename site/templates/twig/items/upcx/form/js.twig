@@ -58,6 +58,29 @@ $(function() {
 	});
 
 /* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = formUpcx.inputs.form.serialize();
+
+	$("body").on("click", "a:not(#upc-xref-form.form_button, #ajax-modal a)", function(e) {
+		if (formUpcx.inputs.form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			alert.unsavedChanges(function(save) {
+				if (save === true) {
+					formUpcx.inputs.form.find('button[type=submit]').click();
+				} else {
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
+/* =============================================================
 	AJAX Lookup Modal Functions
 ============================================================= */
 	modal_ajax.on('show.bs.modal', function (event) {
