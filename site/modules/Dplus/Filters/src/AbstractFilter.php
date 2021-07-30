@@ -169,6 +169,7 @@ abstract class AbstractFilter extends WireData {
 			if ($sortFilter->q) {
 				$this->search(strtoupper($sortFilter->q));
 			}
+
 			if ($sortFilter->orderby) {
 				$data = explode('-', $sortFilter->orderby);
 				$this->orderBy($data[0], $data[1]);
@@ -180,14 +181,28 @@ abstract class AbstractFilter extends WireData {
 	Functions
 ============================================================= */
 	/**
+	 * Return Where clause as a string by executing $this->query->count();
+	 * @return string
+	 */
+	public function getWhereClauseString()  {
+		$this->query->count();
+		$con = Propel::getWriteConnection($this->query->getDbName());
+		$sql = $con->getLastExecutedQuery();
+		$parts = explode(' WHERE ', $sql);
+		return $parts[1];
+	}
+
+	/**
 	 * Return Where Clause
 	 * @return array
 	 */
 	protected function getWhereClause() {
+		return [];
+
 		$params = $this->query->getParams();
 		$whereClause = [];
 
-		$dbMap = Propel::getServiceContainer()->getDatabaseMap($this->query->getDbName());
+		$dbMap   = Propel::getServiceContainer()->getDatabaseMap($this->query->getDbName());
 		$adapter = Propel::getServiceContainer()->getAdapter($this->query->getDbName());
 
 		foreach ($this->query->keys() as $key) {
@@ -199,16 +214,11 @@ abstract class AbstractFilter extends WireData {
 
 				$table = $this->query->getTableForAlias($tableName);
 				if ($table !== null) {
-					$fromClause[] = $table . ' ' . $tableName;
 				} else {
-					$fromClause[] = $tableName;
 					$table = $tableName;
 				}
 
-				if (
-					$this->query->isIgnoreCase() && method_exists($attachedCriterion, 'setIgnoreCase')
-					&& $dbMap->getTable($table)->getColumn($attachedCriterion->getColumn())->isText()
-				) {
+				if ($this->query->isIgnoreCase() && method_exists($attachedCriterion, 'setIgnoreCase') && $dbMap->getTable($table)->getColumn($attachedCriterion->getColumn())->isText()) {
 					$attachedCriterion->setIgnoreCase(true);
 				}
 			}
@@ -224,13 +234,79 @@ abstract class AbstractFilter extends WireData {
 	}
 
 	/**
+	 * Return Order By Clause
+	 * @return string
+	 */
+	protected function getOrderByClause() {
+		$dbMap   = Propel::getServiceContainer()->getDatabaseMap($this->query->getDbName());
+		$adapter = Propel::getServiceContainer()->getAdapter($this->query->getDbName());
+		$orderByClause = [];
+		$orderBy = $this->query->getOrderByColumns();
+
+		if (!empty($orderBy)) {
+			foreach ($orderBy as $orderByColumn) {
+				// Add function expression as-is.
+				if (strpos($orderByColumn, '(') !== false) {
+					$orderByClause[] = $orderByColumn;
+					continue;
+				}
+
+				// Split orderByColumn (i.e. "table.column DESC")
+				$dotPos = strrpos($orderByColumn, '.');
+
+				if ($dotPos !== false) {
+					$tableName = substr($orderByColumn, 0, $dotPos);
+					$columnName = substr($orderByColumn, $dotPos + 1);
+				} else {
+					$tableName = '';
+					$columnName = $orderByColumn;
+				}
+
+				$spacePos = strpos($columnName, ' ');
+
+				if ($spacePos !== false) {
+					$direction = substr($columnName, $spacePos);
+					$columnName = substr($columnName, 0, $spacePos);
+				} else {
+					$direction = '';
+				}
+
+				$tableAlias = $tableName;
+				$aliasTableName = $this->query->getTableForAlias($tableName);
+				if ($aliasTableName) {
+					$tableName = $aliasTableName;
+				}
+
+				$columnAlias = $columnName;
+				$asColumnName = $this->query->getColumnForAs($columnName);
+				if ($asColumnName) {
+					$columnName = $asColumnName;
+				}
+
+				$column = $tableName ? $dbMap->getTable($tableName)->getColumn($columnName) : null;
+
+				if ($this->query->isIgnoreCase() && $column && $column->isText()) {
+					$ignoreCaseColumn = $adapter->ignoreCaseInOrderBy("$tableAlias.$columnAlias");
+					$this->query->replaceNames($ignoreCaseColumn);
+					$orderByClause[] = $ignoreCaseColumn . $direction;
+					$selectSql .= ', ' . $ignoreCaseColumn;
+				} else {
+					$this->query->replaceNames($orderByColumn);
+					$orderByClause[] = $orderByColumn;
+				}
+			}
+		}
+		return $orderByClause;
+	}
+
+	/**
 	 * Bind Query Parameters to Statement
 	 * @param  StatementWrapper $stmt
 	 * @param  int              $position
 	 * @return void
 	 */
-	protected function bindQueryParamsToStmt(StatementWrapper $stmt) {
-		$position = $this->countParams();
+	protected function bindQueryParamsToStmt(StatementWrapper $stmt, int $params = 0) {
+		$position = $params ? $params : $this->countParams();
 
 		foreach ($this->query->getParams() as $key => $param) {
 			$position++;
