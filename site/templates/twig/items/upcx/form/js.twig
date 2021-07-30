@@ -128,9 +128,13 @@ $(function() {
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		rules: {
-			qty: {required: true},
+			qty: {
+				required: true,
+				min: 1,
+			},
 			upc: {
 				required: true,
+				maxlength: 20,
 				remote: {
 					url: '{{ page.jsonapiURL('inv/validate/upcx/upc/xref/') }}',
 					type: "get",
@@ -163,7 +167,6 @@ $(function() {
 		},
 		messages: {
 			uom: "Please choose a Unit of Measure",
-			qty: "Please Enter Qty of Eaches for this UPC",
 		},
 		errorPlacement: function(error, element) {
 			error.insertAfter(element).addClass('invalid-feedback');
