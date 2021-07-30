@@ -154,7 +154,7 @@ class Cxm extends AbstractController {
 	public static function listCustomers($data) {
 		self::sanitizeParametersShort($data, ['q|text']);
 		Filters\SortFilter::removeFromSession('customer', 'cxm');
-		
+
 		$page    = self::pw('page');
 		$cxm     = self::getCxm();
 		$cxm->recordlocker->deleteLock();
@@ -278,22 +278,7 @@ class Cxm extends AbstractController {
 		if (empty($custID)) {
 			return self::_custListUrl();
 		}
-		$url = new Purl($page->url);
-		$cxm = self::getCxm();
-		$filter = new CustomerFilter();
-		$filter->init();
-
-		if ($filter->exists($custID)) {
-			$url->query->set('focus', $custID);
-			$filter->custid($cxm->custids());
-			$position = $filter->positionById($custID);
-			$pagenbr = ceil($position / (self::pw('session')->display - 1));
-			if (($position % self::pw('session')->display) == 0) {
-				$pagenbr++;
-			}
-			$url = self::pw('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
-		}
-		return $url->getUrl();
+		return self::custListFocusUrl($custID);
 	}
 
 	public static function _custListUrl() {
@@ -317,7 +302,7 @@ class Cxm extends AbstractController {
 			$filter->applySortFilter($sortFilter);
 		}
 
-		$position = $filter->position(CustomerQuery::create()->findOneByCustid($custID));
+		$offset = $filter->positionQuick($custID);
 		$pagenbr = self::getPagenbrFromOffset($offset);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get(self::_custListUrl())->name, $pagenbr);
 		$url->query->set('focus', $custID);
