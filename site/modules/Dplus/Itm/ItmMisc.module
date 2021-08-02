@@ -9,6 +9,8 @@ use Dplus\CodeValidators\Min\Itm as ItmValidator;
 use ItemMasterItemQuery, ItemMasterItem;
 use ConfigSalesOrderQuery, ConfigSalesOrder;
 
+use Dplus\Configs;
+
 /**
  * Module that handles the editing of the UPC item Itm
  */
@@ -20,12 +22,6 @@ class ItmMisc extends Itm implements Module {
 
 	public function __construct() {
 		parent::__construct();
-		$this->configs->so = false;
-	}
-
-	public function init_configs() {
-		parent::init_configs();
-		$this->configs->so = $this->get_config_so();
 	}
 
 	/**
@@ -33,7 +29,7 @@ class ItmMisc extends Itm implements Module {
 	 * @return bool
 	 */
 	public function use_core_items() {
-		return $this->configs->so->use_core_items();
+		return $this->configSo->use_core_items();
 	}
 
 /* =============================================================
@@ -220,8 +216,8 @@ class ItmMisc extends Itm implements Module {
 	 * Returns IN config
 	 * @return ConfigSalesOrder
 	 */
-	public function get_config_so() {
-		return $this->modules('ConfigureSo')->config();
+	public function configSo() {
+		return Configs\So::config();
 	}
 
 /* =============================================================
