@@ -16,7 +16,6 @@
 	</div>
 	<div class="col-sm-6">
 		<select name="itemgroup" class="custom-select custom-select-sm {{ itm.field_has_error('itemgroup') ? 'is-invalid' : ''}}" id="itemgroup">
-			<option value="">-- Choose --</option>
 			{% for itemgroup in itm.get_itemgroups() %}
 				<option value="{{ itemgroup.code }}" {{ itemgroup.code == item.itemgroup ? 'selected' : ''}}>{{ itemgroup.code }} - {{ itemgroup.description }}</option>
 			{% endfor %}
@@ -28,8 +27,7 @@
 		<label for="pricecode">Price Group</label>
 	</div>
 	<div class="col-sm-6">
-		<select name="pricecode" class="custom-select custom-select-sm {{ itm.field_has_error('pricecode') ? 'is-invalid' : ''}}" id="pricecode" {{ itm.configs.inv.use_pricegroup() ? '' : 'disabled' }}>
-			<option value="">-- Choose --</option>
+		<select name="pricecode" class="custom-select custom-select-sm {{ itm.field_has_error('pricecode') ? 'is-invalid' : ''}}" id="pricecode" {{ itm.configIn().use_pricegroup() ? '' : 'disabled' }}>
 			{% for pricecode in itm.get_pricecodes() %}
 				<option value="{{ pricecode.code }}" {{ pricecode.code == item.pricecode ? 'selected' : ''}}>{{ pricecode.code }} - {{ pricecode.description }}</option>
 			{% endfor %}
@@ -41,8 +39,7 @@
 		<label for="commissiongroup">Comm Group</label>
 	</div>
 	<div class="col-sm-6">
-		<select name="commissiongroup" class="custom-select custom-select-sm {{ itm.field_has_error('commissiongroup') ? 'is-invalid' : ''}}" id="commissiongroup" {{ itm.configs.inv.use_commgroup() ? '' : 'disabled' }}>
-			<option value="">-- Choose --</option>
+		<select name="commissiongroup" class="custom-select custom-select-sm {{ itm.field_has_error('commissiongroup') ? 'is-invalid' : ''}}" id="commissiongroup" {{ itm.configIn().use_commgroup() ? '' : 'disabled' }}>
 			{% for code in itm.get_commissoncodes() %}
 				<option value="{{ code.code }}" {{ code.code == item.commissiongroup ? 'selected' : ''}}>{{ code.code }} - {{ code.description }}</option>
 			{% endfor %}
