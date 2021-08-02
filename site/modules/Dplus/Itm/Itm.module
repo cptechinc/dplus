@@ -41,7 +41,6 @@ class Itm extends WireData implements Module {
 	 * Returns ItemMasterItemQuery
 	 * @return ItemMasterItemQuery
 	 */
-	public function get_query() {
 	public function query() {
 		return ItemMasterItemQuery::create();
 	}
@@ -116,9 +115,9 @@ class Itm extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return ItemMasterItem
 	 */
-	public function get_create_item($itemID) {
-		if ($this->item_exists($itemID)) {
-			return $this->get_item($itemID);
+	public function getCreateItem($itemID) {
+		if ($this->exists($itemID)) {
+			return $this->item($itemID);
 		}
 		$configIn = $this->configIn();
 		$itemID = substr($itemID, 0, ItemMasterItem::LENGTH_ITEMID);
