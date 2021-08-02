@@ -113,7 +113,7 @@ abstract class Base extends AbstractController {
 		return self::$docm;
 	}
 
-	public static function getQnotes() {
+	public static function qnotes() {
 		return self::pw('modules')->get('QnotesPo');
 	}
 }
