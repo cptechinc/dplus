@@ -11,10 +11,10 @@
 	$routes = [
 		['GET',  '', Main::class, 'index'],
 		['GET',  'documents/', App\Documents::class, 'index'],
-		// 'notes' => [
-		// 	['GET',   '', Notes::class, 'index'],
-		// 	['POST',  '', Notes::class, 'handleCRUD'],
-		// ],
+		'notes' => [
+			['GET',   '', App\Notes::class, 'index'],
+			['POST',  '', App\Notes::class, 'handleCRUD'],
+		],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
