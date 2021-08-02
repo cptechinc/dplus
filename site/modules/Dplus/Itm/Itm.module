@@ -17,6 +17,9 @@ use InvCommissionCodeQuery, InvCommissionCode;
 use InvStockCodeQuery, InvStockCode;
 use InvSpecialCodeQuery, InvSpecialCode;
 
+// Dplus Configs
+use Dplus\Configs;
+
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 
@@ -36,8 +39,8 @@ class Itm extends WireData implements Module {
 		$this->configs->inv = false;
 	}
 
-	public function init_configs() {
-		$this->configs->inv = $this->get_config_in();
+	public function initConfigs() {
+		$this->configs->inv = $this->configIn();
 	}
 
 	/**
@@ -120,21 +123,21 @@ class Itm extends WireData implements Module {
 	 * Returns Item with Defaults Set
 	 * @return ItemMasterItem
 	 */
-	public function get_new_item() {
+	public function newItem() {
+		$configIn = $this->configIn();
 		$item = new ItemMasterItem();
-		$this->init_configs();
 
-		$item->setItemgroup($this->configs->inv->default_itemgroup);
+		$item->setItemgroup($configIn->default_itemgroup);
 
-		if ($this->configs->inv->use_pricegroup()) {
-			$item->setPricecode($this->configs->inv->default_pricegroup);
+		if ($configIn->use_pricegroup()) {
+			$item->setPricecode($configIn->default_pricegroup);
 		}
 
-		if ($this->configs->inv->use_commgroup()) {
-			$item->setCommissiongroup($this->configs->inv->default_commgroup);
+		if ($configIn->use_commgroup()) {
+			$item->setCommissiongroup($configIn->default_commgroup);
 		}
 
-		$item->setItemtype($this->configs->inv->default_itemtype);
+		$item->setItemtype($configIn->default_itemtype);
 
 		$item->setTaxable('Y');
 		$item->setAllow_backorder('Y');
@@ -143,12 +146,12 @@ class Itm extends WireData implements Module {
 		$item->setCore('N');
 		$item->setSplitorder('Y');
 
-		$item->setUom_sale($this->configs->inv->default_uom_sale);
-		$item->setUom_purchase($this->configs->inv->default_uom_purchase);
-		$item->setPreference($this->configs->inv->default_nafta_pref_code);
-		$item->setProducer($this->configs->inv->default_nafta_producer);
-		$item->setDocumentation($this->configs->inv->default_nafta_documentation);
-		$item->setBasestandardcost($this->configs->inv->default_base_standard_cost);
+		$item->setUom_sale($configIn->default_uom_sale);
+		$item->setUom_purchase($configIn->default_uom_purchase);
+		$item->setPreference($configIn->default_nafta_pref_code);
+		$item->setProducer($configIn->default_nafta_producer);
+		$item->setDocumentation($configIn->default_nafta_documentation);
+		$item->setBasestandardcost($configIn->default_base_standard_cost);
 
 		if ($this->wire('modules')->get('DplusCustomer')->get_custID() == 'LINDST') {
 			$item->setStockcode('MM');
@@ -238,6 +241,7 @@ class Itm extends WireData implements Module {
 	 * @param WireInput      $input  Input Data
 	 */
 	protected function set_item_fields(ItemMasterItem $record, WireInput $input) {
+		$configIn = $this->configIn();
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = array();
@@ -264,6 +268,7 @@ class Itm extends WireData implements Module {
 	 * @return array                  Invalid Input fields, empty if none
 	 */
 	protected function set_validated_fields(ItemMasterItem $record, WireInput $input) {
+		$configIn = $this->configIn();
 		$invalid = array();
 		$fields = array(
 			'custid' => array(
@@ -293,14 +298,14 @@ class Itm extends WireData implements Module {
 			),
 		);
 
-		if ($this->configs->inv->use_pricegroup()) {
+		if ($configIn->use_pricegroup()) {
 			$fields['pricecode'] = array(
 				'description' => 'Price Code',
 				'input'       => 'pricecode',
 				'allow_blank' => true
 			);
 		}
-		if ($this->configs->inv->use_commgroup()) {
+		if ($configIn->use_commgroup()) {
 			$fields['commissiongroup'] = array(
 				'description' => 'Comission Group',
 				'input'       => 'commissiongroup',
@@ -448,8 +453,8 @@ class Itm extends WireData implements Module {
 	 * Returns IN config
 	 * @return ConfigIn
 	 */
-	public function get_config_in() {
-		return ConfigInQuery::create()->findOne();
+	public function configIn() {
+		return Configs\In::config();
 	}
 
 	/**
@@ -595,5 +600,6 @@ class Itm extends WireData implements Module {
 		$this->recordlocker = new FunctionLocker();
 		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
 		$this->recordlocker->setUser($this->wire('user'));
+		$this->initConfigs();
 	}
 }
