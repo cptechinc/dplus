@@ -601,6 +601,5 @@ class Itm extends WireData implements Module {
 		$this->recordlocker = new FunctionLocker();
 		$this->recordlocker->setFunction(self::RECORDLOCKER_FUNCTION);
 		$this->recordlocker->setUser($this->wire('user'));
-		$this->initConfigs();
 	}
 }
