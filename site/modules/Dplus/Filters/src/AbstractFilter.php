@@ -188,8 +188,12 @@ abstract class AbstractFilter extends WireData {
 		$this->query->count();
 		$con = Propel::getWriteConnection($this->query->getDbName());
 		$sql = $con->getLastExecutedQuery();
-		$parts = explode(' WHERE ', $sql);
-		return $parts[1];
+
+		if (strpos($sql, 'WHERE') !== false) {
+			$parts = explode(' WHERE ', $sql);
+			return $parts[1];
+		}
+		return '';
 	}
 
 	/**
