@@ -29,10 +29,10 @@ class Documents extends Base {
 			$docm->moveDocument($data->folder, $data->document);
 			self::pw('session')->redirect(self::pw('config')->url_webdocs.$data->document, $http301 = false);
 		}
-		return self::so($data);
+		return self::po($data);
 	}
 
-	public static function so($data) {
+	public static function po($data) {
 		self::sanitizeParametersShort($data, ['ponbr|ponbr']);
 		/** @var MpoValidator **/
 		$validate = self::validator();
