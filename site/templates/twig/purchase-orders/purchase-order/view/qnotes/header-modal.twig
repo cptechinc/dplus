@@ -2,9 +2,7 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
-	po                     EditPoHead
-	po_readonly            PurchaseOrder
-	epo                    PurchaseOrderEdit
+	ponbr                  Purchase Order Number
 	qnotes                 QnotesPo
 #}
 <div class="modal fade show" id="header-notes-modal" tabindex="-1" role="dialog" aria-labelledby="header-notes-modal-label" aria-hidden="true" data-input="">
@@ -17,7 +15,7 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				{% include 'purchase-orders/purchase-order/qnotes/line.twig' with {'qnotes': qnotes, 'purchaseorder': purchaseorder, 'linenbr': 0, 'show_edit': true} %}
+				{% include 'purchase-orders/purchase-order/qnotes/line.twig' with {'qnotes': qnotes, 'ponbr': ponbr, 'linenbr': 0, 'show_edit': true} %}
 			</div>
 		</div>
 	</div>

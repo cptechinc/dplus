@@ -9,14 +9,8 @@
 	qnotes.intl            module QnotesPoIntl
 	qnotes.irev            module QnotesItemRevision
 #}
-<div class="mb-3">
-	<a href="{{ page.view_purchaseorderURL(ponbr) }}" class="btn btn-sm btn-primary">
-		<i class="fa fa-arrow-left" aria-hidden="true"></i> Go back to Purchase Order
-	</a>
-</div>
-
 <h3>Header Notes</h3>
-{% include 'purchase-orders/purchase-order/qnotes/line.twig' with {'qnotes': qnotes, 'linenbr': 0, 'show_edit': true} %}
+{% include 'purchase-orders/purchase-order/qnotes/line.twig' with {'qnotes': qnotes, 'ponbr': ponbr, 'linenbr': 0, 'show_edit': true} %}
 
 <h3>Item Notes</h3>
 {% for item in purchaseorder.getPurchaseOrderDetails() %}
