@@ -110,12 +110,13 @@ class Itm extends WireData implements Module {
 	 */
 	public function get_create_item($itemID) {
 		if ($this->item_exists($itemID)) {
-			$record = $this->get_item($itemID);
-		} else {
-			$itemID = substr($itemID, 0, ItemMasterItem::LENGTH_ITEMID);
-			$record = $this->get_new_item();
-			$record->setItemid($itemID);
+			return $this->get_item($itemID);
 		}
+		$configIn = $this->configIn();
+		$itemID = substr($itemID, 0, ItemMasterItem::LENGTH_ITEMID);
+		$itemID = $configIn->useUppercaseItemid() ? strtoupper($itemID) : $itemID;
+		$record = $this->newItem();
+		$record->setItemid($itemID);
 		return $record;
 	}
 
@@ -245,8 +246,8 @@ class Itm extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = array();
-		$record->setDescription($values->text('description'));
-		$record->setDescription2($values->text('description2'));
+		$record->setDescription($configIn->useUppercaseItemDesc() ? strtoupper($values->text('description')) : $values->text('description'));
+		$record->setDescription2($configIn->useUppercaseItemDesc() ? strtoupper($values->text('description2')) : $values->text('description2'));
 		$record->setRevision($values->text('revision'));
 		$record->setTimefence($values->text('itemfence'));
 		$record->setQtypercase($values->int('qtypercase'));

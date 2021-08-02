@@ -18,7 +18,7 @@
 		<label for="itemID">Item ID</label>
 	</div>
 	<div class="col-sm-8">
-		<input type="text" class="{{ item.isNew() ? 'form-control' : 'form-control-plaintext' }} form-control-sm" name="itemID" id="itemID" value="{{ item.itemid }}" {{ item.isNew() ? '' : 'readonly' }}>
+		<input type="text" class="{{ item.isNew() ? 'form-control' : 'form-control-plaintext' }} form-control-sm" name="itemID" id="itemID" value="{{ configIn.useUppercaseItemid() ? item.itemid|upper : item.itemid }}" {{ item.isNew() ? '' : 'readonly' }}>
 	</div>
 </div>
 
@@ -30,10 +30,15 @@
 		<label for="inspection">Inspection</label>
 	</div>
 	<div class="col-sm-6">
-		<div class="custom-control custom-checkbox">
-			<input type="checkbox" class="custom-control-input" name="inspection" id="inspection" value="Y" {{ item.is_inspection() ? 'checked' : ''}}>
-			<label class="custom-control-label" for="inspection">&nbsp;</label>
-		</div>
+		{% include 'util/bootstrap/form/select-simple.twig' with {
+				'select': {
+					'name': 'inspection',
+					'value' : item.is_inspection() ? 'Y' : 'N',
+					'haskeys': true,
+					'options': {'Y': 'Yes', 'N': 'No'}
+				}
+			}
+		%}
 	</div>
 </div>
 <div class="form-group row">
@@ -50,7 +55,7 @@
 	</div>
 	<div class="col-sm-6">
 		<select name="stockcode" class="custom-select custom-select-sm {{ itm.field_has_error('stockcode') ? 'is-invalid' : ''}}" id="stockcode">
-			<option value="">-- Choose --</option>
+			<option value=""></option>
 			{% for stockcode in itm.get_stockcodes() %}
 				<option value="{{ stockcode.code }}" {{ stockcode.code == item.stockcode ? 'selected' : ''}}>{{ stockcode.code }} - {{ stockcode.description }}</option>
 			{% endfor %}
@@ -62,10 +67,15 @@
 		<label for="splitorder">Split Order</label>
 	</div>
 	<div class="col-sm-6">
-		<div class="custom-control custom-checkbox">
-			<input type="checkbox" class="custom-control-input" name="splitorder" id="splitorder" value="Y" {{ item.is_splitorder() ? 'checked' : ''}}>
-			<label class="custom-control-label" for="splitorder">&nbsp;</label>
-		</div>
+		{% include 'util/bootstrap/form/select-simple.twig' with {
+				'select': {
+					'name': 'splitorder',
+					'value' : item.is_splitorder() ? 'Y' : 'N',
+					'haskeys': true,
+					'options': {'Y': 'Yes', 'N': 'No'}
+				}
+			}
+		%}
 	</div>
 </div>
 <div class="form-group row">
@@ -74,7 +84,7 @@
 	</div>
 	<div class="col-sm-6">
 		<select name="specialitemcode" class="custom-select custom-select-sm {{ itm.field_has_error('specialitemcode') ? 'is-invalid' : ''}}" id="stockcode">
-			<option value="">-- Choose --</option>
+			<option value=""></option>
 			{% for code in itm.get_speicialitemcodes() %}
 				<option value="{{ code.code }}" {{ code.code == item.specialitemcode ? 'selected' : ''}}>{{ code.code }} - {{ code.description }}</option>
 			{% endfor %}
