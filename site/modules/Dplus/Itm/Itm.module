@@ -186,61 +186,83 @@ class Itm extends WireData implements Module {
 				$qnotes = $this->wire('modules')->get('QnotesItem');
 				$qnotes->process_input($input);
 				break;
+			case 'delete-itm':
+				$this->inputDelete($input);
+				break;
+			case 'update-itm':
+				$this->inputUpdate($input);
+				break;
 			default:
-				$this->process_input_itm($input);
+				$itemID = $values->text('itemID');
+				$message = self::DESCRIPTION_RECORD . " ($itemID) was not saved, no action was specified";
+				$response = ItmResponse::response_error($itemID, $message);
+				$this->wire('session')->setFor('response', 'itm', $response);
 				break;
 		}
 	}
 
 	/**
-	 * Takes Input, validates it's for an Item
-	 * Updates Item
-	 * Processes it, and if updated sends request to dplus
-	 *
-	 * @param  WireInput $input Input
-	 * @return void
+	 * Delete Item
+	 * @param  WireInput $input Input Data
+	 * @return bool
 	 */
-	public function process_input_itm(WireInput $input) {
-		$this->init_configs();
+	private function inputDelete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID = $values->text('itemID');
+
+		if ($this->exists($itemID) === false) {
+			return true;
+		}
+		$this->lockrecord($itemID);
+
+		if ($this->recordlocker->userHasLocked($itemID) === false) {
+			$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($itemID);
+			$response = ItmResponse::response_error($itemID, $message);
+			$this->wire('session')->setFor('response', 'itm', $response);
+			return false;
+		}
+		$record = $this->item($itemID);
+		$record->delete();
+		$response = $this->save_and_respond($record, []);
+		$response->set_saved_itm($response->success);
+		$response = $this->verify_delete($itemID);
+		return $response->has_success();
+	}
+
+	/**
+	 * Update Item from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itemID = strtoupper($values->text('itemID'));
-		$record = $this->get_create_item($itemID);
+		$record = $this->getCreateItem($itemID);
 		$invalidfields = array();
 
 		$this->lockrecord($itemID);
 
-		if ($record->isNew() || $this->recordlocker->userHasLocked($itemID)) {
-			if ($values->text('action') == 'delete-itm') {
-				$record->delete();
-			} elseif ($values->text('action') == 'update-itm') {
-				$invalidfields = $this->set_item_fields($record, $input);
-			}
-
-			if ($values->action) {
-				$response = $this->save_and_respond($record, $invalidfields);
-
-				if ($invalidfields) {
-					$response->set_error(true);
-					$response->set_success(false);
-					$response->set_saved_itm(false);
-					$response->set_message("$itemID was not saved to Dplus");
-				} else {
-					$response->set_saved_itm($response->success);
-				}
-
-				if ($values->text('action') == 'delete-itm-item') {
-					$response = $this->verify_delete($itemID);
-				}
-			} else {
-				$message = self::DESCRIPTION_RECORD . " ($record->itemid) was not saved, no action was specified";
-				$response = ItmResponse::response_error($record->itemid, $message);
-			}
-		} else {
-			$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($itemID);
-			$response = ItmResponse::response_error($record->itemid, $message);
+		if ($record->isNew() === false && $this->recordlocker->userHasLocked($itemID) === false) {
+			$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($itemID);
+			$response = ItmResponse::response_error($itemID, $message);
 		}
+
+		$invalidfields = $this->set_item_fields($record, $input);
+		$response = $this->save_and_respond($record, $invalidfields);
+
+		if ($invalidfields) {
+			$response->set_error(true);
+			$response->set_success(false);
+			$response->set_saved_itm(false);
+			$response->set_message("$itemID was not saved to Dplus");
+		} else {
+			$response->set_saved_itm($response->success);
+		}
+
 		$this->wire('session')->setFor('response', 'itm', $response);
+		return $response->has_success();
 	}
 
 	/**
