@@ -42,7 +42,23 @@ class Itm extends WireData implements Module {
 	 * @return ItemMasterItemQuery
 	 */
 	public function get_query() {
+	public function query() {
 		return ItemMasterItemQuery::create();
+	}
+
+	/**
+	 * Return Query Filtered by Item ID
+	 * @param  string $itemID Item ID
+	 * @return ItemMasterItemQuery
+	 */
+	public function queryItemid($itemID) {
+		$configIn = $this->configIn();
+		if ($configIn->useUppercaseItemid()) {
+			$itemID = strtoupper($itemID);
+		}
+		$q = $this->query();
+		$q->filterByitemid($itemID);
+		return $q;
 	}
 
 /* =============================================================
@@ -53,7 +69,7 @@ class Itm extends WireData implements Module {
 	 * @return ItemMasterItem[]|ObjectCollection
 	 */
 	public function get_items() {
-		$q = $this->get_query();
+		$q = $this->query();
 		return $q->find();
 	}
 
@@ -72,8 +88,7 @@ class Itm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function exists($itemID) {
-		$q = $this->get_query();
-		$q->filterByItemid($itemID);
+		$q = $this->queryItemid($itemID);
 		return boolval($q->count());
 	}
 
@@ -92,8 +107,7 @@ class Itm extends WireData implements Module {
 	 * @return ItemMasterItem
 	 */
 	public function item($itemID) {
-		$q = $this->get_query();
-		$q->filterByItemid($itemID);
+		$q = $this->queryItemid($itemID);
 		return $q->findOne();
 	}
 
@@ -511,7 +525,7 @@ class Itm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function is_item_normal($itemID) {
-		$q = $this->get_query();
+		$q = $this->query();
 		return $q->is_item_normal($itemID);
 	}
 
@@ -521,7 +535,7 @@ class Itm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function is_item_lotted($itemID) {
-		$q = $this->get_query();
+		$q = $this->query();
 		return $q->is_item_lotted($itemID);
 	}
 
@@ -531,7 +545,7 @@ class Itm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function is_item_serialized($itemID) {
-		$q = $this->get_query();
+		$q = $this->query();
 		return $q->is_item_serialized($itemID);
 	}
 
@@ -541,7 +555,7 @@ class Itm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function is_item_lotserialized($itemID) {
-		$q = $this->get_query();
+		$q = $this->query();
 		return ($q->is_item_serialized($itemID) || $this->is_item_lotted($itemID));
 	}
 
@@ -551,7 +565,7 @@ class Itm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function is_item_priceonly($itemID) {
-		$q = $this->get_query();
+		$q = $this->query();
 		return $q->is_item_priceonly($itemID);
 	}
 
