@@ -240,12 +240,11 @@ class Itm extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = array();
-		$record->setDescription($configIn->useUppercaseItemDesc() ? strtoupper($values->text('description')) : $values->text('description'));
-		$record->setDescription2($configIn->useUppercaseItemDesc() ? strtoupper($values->text('description2')) : $values->text('description2'));
+		$record->setDescription($configIn->useUppercaseItemDescription() ? strtoupper($values->text('description')) : $values->text('description'));
+		$record->setDescription2($configIn->useUppercaseItemDescription() ? strtoupper($values->text('description2')) : $values->text('description2'));
 		$record->setRevision($values->text('revision'));
 		$record->setTimefence($values->text('itemfence'));
 		$record->setQtypercase($values->int('qtypercase'));
-
 		$record->setAllow_backorder($values->yn('allow_backorder'));
 		$record->setSplitorder($values->yn('splitorder'));
 		$record->setInspection($values->yn('inspection'));
