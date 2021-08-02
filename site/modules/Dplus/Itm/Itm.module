@@ -35,12 +35,6 @@ class Itm extends WireData implements Module {
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
-		$this->configs = new WireData();
-		$this->configs->inv = false;
-	}
-
-	public function initConfigs() {
-		$this->configs->inv = $this->configIn();
 	}
 
 	/**
