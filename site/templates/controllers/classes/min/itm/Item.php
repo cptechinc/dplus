@@ -1,6 +1,8 @@
 <?php namespace Controllers\Min\Itm;
-// External Libraries, classes
+// Purl URI Library
 Use Purl\Url as Purl;
+// Propel ORM Ljbrary
+use Propel\Runtime\Util\PropelModelPager;
 // ProcessWire classes, modules
 use ProcessWire\Page, ProcessWire\Itm as ItmModel;
 // Validators
@@ -11,13 +13,9 @@ use Mvc\Controllers\AbstractController;
 
 class Item extends ItmFunction {
 
-	protected static function validateUserPermission() {
-		$wire = self::pw();
-		$user = $wire->wire('user');
-		$page = $wire->wire('page');
-		return $user->has_function('itm');
-	}
-
+/* =============================================================
+	CRUD Index Functions
+============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -108,7 +106,43 @@ class Item extends ItmFunction {
 		return $html;
 	}
 
-	public static function qnotes($data) {
+
+	public static function list($data) {
+		$fields = ['itemID|text', 'q|text'];
+		$data   = self::sanitizeParametersShort($data, $fields);
+		$page     = self::pw('page');
+		$validate = new MinValidator();
+
+		if ($validate->itemid($data->q)) {
+			self::pw('session')->redirect(self::itmUrl($data->q), $http301 = false);
+		}
+
+		$filter = new ItemMasterFilter();
+		if (empty($data->q) === false) {
+			$filter->search($data->q);
+			self::pw('page')->headline = "ITM: Searching for '$data->q'";
+		}
+
+		$filter->sortby($page);
+		$items = $filter->query->paginate($input->pageNum, 10);
+
+		$page->js = self::pw('config')->twig->render('items/item-list.js.twig');
+		return self::listDisplay($data, $items);
+	}
+
+/* =============================================================
+	Display Functions
+============================================================= */
+	public static function listDisplay($data, PropelModelPager $items) {
+		$config = self::pw('config');
+
+		$html  = $config->twig->render('items/itm/bread-crumbs.twig');
+		$html  .= $config->twig->render('items/itm/itm/search.twig', ['items' => $items, 'itm' => self::getItm()]);
+		$html  .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
+		return $html;
+	}
+
+	private static function qnotes($data) {
 		$fields = ['itemID|text'];
 		$data   = self::sanitizeParametersShort($data, $fields);
 		$qnotes = self::pw('modules')->get('QnotesItem');
@@ -121,31 +155,6 @@ class Item extends ItmFunction {
 		return $html;
 	}
 
-	public static function list($data) {
-		$fields = ['itemID|text', 'q|text'];
-		$data   = self::sanitizeParametersShort($data, $fields);
-		$input    = self::pw('input');
-		$page     = self::pw('page');
-		$config   = self::pw('config');
-		$validate = new MinValidator();
-
-		if ($validate->itemid($data->q)) {
-			self::pw('session')->redirect(self::itmUrl($data->q), $http301 = false);
-		}
-
-		$filter = new ItemMasterFilter();
-		$filter->search($data->q);
-		$filter->sortby($page);
-		$items = $filter->query->paginate($input->pageNum, 10);
-
-		$page->searchURL = $page->url;
-		$html  = $config->twig->render('items/itm/bread-crumbs.twig');
-		$html  .= $config->twig->render('items/itm/itm/search.twig', ['items' => $items, 'itm' => self::getItm()]);
-		$html  .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
-		$page->js = $config->twig->render('items/item-list.js.twig');
-		return $html;
-	}
-
 /* =============================================================
 	URLs
 ============================================================= */
@@ -155,6 +164,9 @@ class Item extends ItmFunction {
 		return $url->getUrl();
 	}
 
+/* =============================================================
+	Supplemental
+============================================================= */
 	public static function initHooks() {
 		parent::initHooks();
 		$m = self::pw('modules')->get('Itm');
@@ -163,5 +175,12 @@ class Item extends ItmFunction {
 		$m->addHook('Page(pw_template=itm)::itmDeleteUrl', function($event) {
 			$event->return = self::itmUrl($event->arguments(0));
 		});
+	}
+
+	protected static function validateUserPermission() {
+		$wire = self::pw();
+		$user = $wire->wire('user');
+		$page = $wire->wire('page');
+		return $user->has_function('itm');
 	}
 }
