@@ -100,10 +100,10 @@ $(function() {
 		ignore: ".validate-ignore",
 		rules: {
 			pricecode: {
-				required: {{ itm.configs.inv.use_pricegroup() ? 'true' : 'false' }}
+				required: {{ itm.configIn().inv.use_pricegroup() ? 'true' : 'false' }}
 			},
 			commissiongroup: {
-				required: {{ itm.configs.inv.use_commgroup() ? 'true' : 'false' }}
+				required: {{ itm.configIn().inv.use_commgroup() ? 'true' : 'false' }}
 			},
 			itemID: {
 				required: true,
@@ -126,7 +126,7 @@ $(function() {
 					data: {
 						jqv: 'true',
 						code: function() {
-							$('#stockcode').val();
+							return $('#stockcode').val();
 						}
 					}
 				}
@@ -138,7 +138,7 @@ $(function() {
 					data: {
 						jqv: 'true',
 						code: function() {
-							$('#specialitemcode').val();
+							return $('#specialitemcode').val();
 						}
 					}
 				}
@@ -150,6 +150,8 @@ $(function() {
 		submitHandler: function(form) {
 			var itemID_input = $(form).find('input[name=itemID]').val();
 			var itemID_form  = $(form).data('itemid');
+
+			console.log($(form).find('input[name=action]').val());
 
 			request_item_json(itemID_input, function(exists) {
 				if (exists) { // Item Exists

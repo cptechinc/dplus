@@ -83,7 +83,7 @@
 		<label for="specialitemcode">Special Item Code</label>
 	</div>
 	<div class="col-sm-6">
-		<select name="specialitemcode" class="custom-select custom-select-sm {{ itm.field_has_error('specialitemcode') ? 'is-invalid' : ''}}" id="stockcode">
+		<select name="specialitemcode" class="custom-select custom-select-sm {{ itm.field_has_error('specialitemcode') ? 'is-invalid' : ''}}" id="specialitemcode">
 			<option value=""></option>
 			{% for code in itm.get_speicialitemcodes() %}
 				<option value="{{ code.code }}" {{ code.code == item.specialitemcode ? 'selected' : ''}}>{{ code.code }} - {{ code.description }}</option>
