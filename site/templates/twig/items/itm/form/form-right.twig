@@ -21,7 +21,7 @@
 </div>
 <div class="form-group row">
 	<div class="col-sm-6">
-		<label for="timefence">Time Fence <abbr title="Days">?</abbr></label>
+		<label for="timefence"><abbr title="Days">Time Fence</abbr></label>
 	</div>
 	<div class="col-sm-6">
 		<input type="number" name="timefence" class="form-control form-control-sm text-right" value="{{ item.timefence }}" id="timefence">
@@ -40,10 +40,15 @@
 		<label for="allow_backorder">Back Order</label>
 	</div>
 	<div class="col-sm-6">
-		<div class="custom-control custom-checkbox">
-			<input type="checkbox" class="custom-control-input" name="allow_backorder" id="allow_backorder" value="Y" {{ item.allow_backorder() ? 'checked' : ''}}>
-			<label class="custom-control-label" for="splitorder">&nbsp;</label>
-		</div>
+		{% include 'util/bootstrap/form/select-simple.twig' with {
+				'select': {
+					'name': 'allow_backorder',
+					'value' : item.allow_backorder() ? 'Y' : 'N',
+					'haskeys': true,
+					'options': {'Y': 'Yes', 'N': 'No'}
+				}
+			}
+		%}
 	</div>
 </div>
 <div class="form-group row">
@@ -51,21 +56,31 @@
 		<label for="taxable">Taxable</label>
 	</div>
 	<div class="col-sm-6">
-		<div class="custom-control custom-checkbox">
-			<input type="checkbox" class="custom-control-input" name="taxable" id="taxable" value="Y" {{ item.taxable() ? 'checked' : ''}}>
-			<label class="custom-control-label" for="taxable">&nbsp;</label>
-		</div>
+		{% include 'util/bootstrap/form/select-simple.twig' with {
+				'select': {
+					'name': 'taxable',
+					'value' : item.taxable() ? 'Y' : 'N',
+					'haskeys': true,
+					'options': {'Y': 'Yes', 'N': 'No'}
+				}
+			}
+		%}
 	</div>
 </div>
 <div class="form-group row">
 	<div class="col-sm-6">
-		<label for="require_freight">Require Freight?</label>
+		<label for="require_freight">Require Freight</label>
 	</div>
 	<div class="col-sm-6">
-		<div class="custom-control custom-checkbox">
-			<input type="checkbox" class="custom-control-input" name="require_freight" id="require_freight" value="Y" {{ item.require_freight() ? 'checked' : ''}}>
-			<label class="custom-control-label" for="require_freight">&nbsp;</label>
-		</div>
+		{% include 'util/bootstrap/form/select-simple.twig' with {
+				'select': {
+					'name': 'require_freight',
+					'value' : item.require_freight() ? 'Y' : 'N',
+					'haskeys': true,
+					'options': {'Y': 'Yes', 'N': 'No'}
+				}
+			}
+		%}
 	</div>
 </div>
 {% include 'items/itm/form/storage.twig' %}
