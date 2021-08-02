@@ -37,11 +37,12 @@ class Item extends ItmFunction {
 
 	public static function handleCRUD($data) {
 		$input = self::pw('input');
+
 		if (self::validateItemidAndPermission($data) === false) {
-			self::pw('session')->redirect($input->url());
+			self::pw('session')->redirect($input->url(), $http301 = false);
 		}
 		$fields = ['itemID|text', 'action|text'];
-		$data  = self::sanitizeParameters($data, $fields);
+		$data  = self::sanitizeParametersShort($data, $fields);
 		$url   = new Purl($input->url($withQueryString = true));
 		$url->query->set('itemID', $data->itemID);
 		$url->query->remove('action');
@@ -95,8 +96,8 @@ class Item extends ItmFunction {
 			$html .= self::list($data);
 			return $html;
 		}
-		$page->customerlookupURL = self::pw('pages')->get('pw_template=mci-lookup')->url;
-		$item = $itm->get_item($data->itemID);
+
+		$item = $itm->getCreateItem($data->itemID);
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
 		$html .= $config->twig->render('items/itm/form/display.twig', ['item' => $item, 'itm' => $itm, 'recordlocker' => $itm->recordlocker]);
