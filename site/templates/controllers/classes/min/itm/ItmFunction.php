@@ -91,9 +91,10 @@ class ItmFunction extends AbstractController {
 			return self::itmUrl();
 		}
 		$page = self::pw('pages')->get("pw_template=itm");
-		$filter = new Filters\Min\ItemMaster();
-		$offset = $filter->positionQuick($itemID);
+		$filter  = new Filters\Min\ItemMaster();
+		$offset  = $filter->positionQuick($itemID);
 		$pagenbr = self::getPagenbrFromOffset($offset);
+
 		$url = self::pw('modules')->get('Dpurl')->paginate(new Purl($page->url), $page->name, $pagenbr);
 		$url->query->set('focus', $itemID);
 		return $url->getUrl();
