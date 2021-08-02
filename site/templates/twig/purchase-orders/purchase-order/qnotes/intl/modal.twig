@@ -5,7 +5,7 @@
 	qnotes                 module QnotesPo
 	qnotes.intl            module QnotesPoPord
 #}
-<div class="modal fade" id="notes-intl-modal" tabindex="-1" role="dialog" aria-labelledby="notes-intl-modal-label" aria-hidden="true">
+<div class="modal fade" id="notes-intl-modal" tabindex="-1" role="dialog" aria-labelledby="notes-intl-modal-label" aria-hidden="true" style="z-index: 1051;">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -15,7 +15,7 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form action="{{ page.url }}" method="post" id="qnote-form">
+				<form action="{{ input.url() }}" method="post" id="qnote-form">
 					<input type="hidden" name="ponbr" value="{{ ponbr }}">
 					<input type="hidden" name="linenbr" value="">
 					<input type="hidden" name="type" value="{{ qnotes.intl.type() }}">

@@ -9,7 +9,7 @@
 	qnotes.intl            module QnotesPoIntl
 	qnotes.irev            module QnotesItemRevision
 #}
-<div class="modal fade" id="notes-revision-modal" tabindex="-1" role="dialog" aria-labelledby="notes-revision-modal-label" aria-hidden="true">
+<div class="modal fade" id="notes-revision-modal" tabindex="-1" role="dialog" aria-labelledby="notes-revision-modal-label" aria-hidden="true" style="z-index: 1051;">
 	<div class="modal-dialog modal-600" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -19,7 +19,7 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form action="{{ page.fullURL.getURL() }}" method="post">
+				<form action="{{ input.url() }}" method="post">
 					<input type="hidden" name="ponbr" value="{{ ponbr }}">
 					<input type="hidden" name="itemID" value="">
 					<input type="hidden" name="type" value="{{ qnotes.irev.get_type() }}">
