@@ -86,8 +86,8 @@ class PurchaseOrder extends Base {
 /* =============================================================
 	Supplemental
 ============================================================= */
-	public static function initHooks() { // TODO HOOKS for CI
-		$m = self::pw('modules')->get('DpagesMso');
+	public static function initHooks() {
+		$m = self::pw('modules')->get('DpagesMpo');
 
 		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::poUrl', function($event) {
 			$event->return = self::poUrl($event->arguments(0));
@@ -109,9 +109,6 @@ class PurchaseOrder extends Base {
 			$event->return = self::documentUrl($event->arguments(0), $event->arguments(1), $event->arguments(2));
 		});
 
-
-
-
 		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::poEditUrl', function($event) {
 			$event->return = self::poEditUrl($event->arguments(0));
 		});
@@ -123,8 +120,6 @@ class PurchaseOrder extends Base {
 		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::orderNotesUrl', function($event) {
 			$event->return = self::orderNotesUrl($event->arguments(0), $event->arguments(1));
 		});
-
-
 
 		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::iiUrl', function($event) {
 			$event->return = Ii::iiUrl($event->arguments(0));
