@@ -1,7 +1,5 @@
 <div class="mb-4 row">
-	<div class="col-sm-6">
-		<a href="{{ page.parent.url }}" class="btn btn-primary"><i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i>&ensp;Back to Purchase Orders Menu</a>
-	</div>
+	<div class="col-sm-6"></div>
 	<div class="col-sm-6">
 		<button class="btn btn-info toggle-po-search pull-right" type="button" data-toggle="collapse" data-target="#purchase-orders-search-div" aria-expanded="false" aria-controls="purchase-orders-search-div">
 			<i class="fa fa-filter" aria-hidden="true"></i> Toggle Filter
@@ -36,7 +34,7 @@
 									'modaldescription': 'Search for / Choose Vendor',
 									'attributes_button': {
 										'data-search': 'vendor',
-										'data-lookupurl': page.search_vendorsURL,
+										'data-lookupurl': page.search_lookupURL('vendors'),
 										'data-input': '#vendorid1'
 									}
 								}
@@ -52,7 +50,7 @@
 									'modaldescription': 'Search for / Choose Vendor',
 									'attributes_button': {
 										'data-search': 'vendor',
-										'data-lookupurl': page.search_vendorsURL,
+										'data-lookupurl': page.search_lookupURL('vendors'),
 										'data-input': '#vendorid2'
 									}
 								}
@@ -90,13 +88,13 @@
 				<br>
 				<div class="row mt-3">
 					<div class="col-sm-12 form-group">
-						<button class="btn btn-success btn-block" type="submit">Search <i class="fa fa-search" aria-hidden="true"></i></button>
+						<button class="btn btn-success btn-block" type="submit">Apply Filter <i class="fa fa-search" aria-hidden="true"></i></button>
 					</div>
 					{% if input.get.text('filter') %}
 						<div class="col-sm-12 form-group">
 							<div>
 								<a href="{{ page.url }}" class="btn btn-warning btn-block">
-									Clear Search <i class="fa fa-search-minus" aria-hidden="true"></i>
+									Clear Filter <i class="fa fa-search-minus" aria-hidden="true"></i>
 								</a>
 							</div>
 						</div>

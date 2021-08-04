@@ -1,12 +1,17 @@
 <?php
-	$config->po = ConfigPoQuery::create()->findOne();
-	$html = $modules->get('HtmlWriter');
-	$filter = $modules->get('FilterPurchaseOrders');
-	$filter->init_query($user);
-	$filter->filter_input($input);
-	$filter->apply_sortby($page);
-	$query = $filter->get_query();
-	$orders = $query->paginate($input->pageNum, 10);
+	use Controllers\Mpo\PurchaseOrder\Lists;
 
-	$page->body = $config->twig->render('purchase-orders/page.twig', ['page' => $page, 'input' => $input, 'config' => $config, 'orders' => $orders, 'orderpage' => $pages->get('pw_template=purchase-order-view')->url]);
-	include __DIR__ . "/basic-page.php";
+	$routes = [
+		['GET', '', Lists\PurchaseOrder::class, 'index'],
+		['GET', 'page{d:\d+}', Lists\PurchaseOrder::class, 'list'],
+	];
+	$router = new Mvc\Router();
+	$router->setRoutes($routes);
+	$router->setRoutePrefix($page->url);
+	$page->body = $router->route();
+
+	if ($config->ajax) {
+		echo $page->body;
+	} else {
+		include __DIR__ . "/basic-page.php";
+	}
