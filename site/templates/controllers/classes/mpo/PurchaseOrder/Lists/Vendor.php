@@ -53,8 +53,7 @@ class Vendor extends PoList {
 ============================================================= */
 	private static function listDisplay($data, VendorModel $vendor, ModelPager $orders) {
 		self::initHooks();
-		$configPo = Configs\Po::config();
-		return self::pw('config')->twig->render('purchase-orders/vendor/page.twig', ['configPo' => $configPo, 'vendor' => $vendor, 'orders' => $orders]);
+		return self::pw('config')->twig->render('purchase-orders/vendor/page.twig', ['configPo' => self::configPo(), 'vendor' => $vendor, 'orders' => $orders]);
 	}
 
 	private static function vendorForm($data) {

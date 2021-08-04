@@ -37,8 +37,7 @@ class PurchaseOrder extends Base {
 ============================================================= */
 	private static function listDisplay($data, ModelPager $orders) {
 		self::initHooks();
-		$configPo = Configs\Po::config();
-		return self::pw('config')->twig->render('purchase-orders/page.twig', ['configPo' => $configPo, 'orders' => $orders]);
+		return self::pw('config')->twig->render('purchase-orders/page.twig', ['configPo' => self::configPo(), 'orders' => $orders]);
 	}
 
 /* =============================================================

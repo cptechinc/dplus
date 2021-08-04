@@ -141,7 +141,7 @@ class PurchaseOrder extends Base {
 	public static function getConfigs() {
 		$configs = new WireData();
 		$configs->so = Configs\So::config();
-		$configs->po = Configs\Po::config();
+		$configs->po = self::configPo();
 		return $configs;
 	}
 }

@@ -7,6 +7,8 @@ use PurchaseOrder;
 use ProcessWire\Page;
 // Dplus Document Management
 use Dplus\DocManagement\Finders as DocFinders;
+// Dplus Configs
+use Dplus\Configs;
 // Dplus Validators
 use Dplus\CodeValidators\Mpo as MpoValidator;
 // Mvc Controllers
@@ -111,6 +113,14 @@ abstract class Base extends AbstractController {
 			self::$docm = new DocFinders\PurchaseOrder();
 		}
 		return self::$docm;
+	}
+
+	/**
+	 * Return PO config
+	 * @return ConfigPo
+	 */
+	public static function configPo() {
+		return Configs\Po::config();
 	}
 
 	public static function qnotes() {
