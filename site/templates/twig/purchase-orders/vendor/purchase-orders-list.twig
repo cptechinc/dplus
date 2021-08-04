@@ -3,8 +3,7 @@
 	-------------------------------------------------
 	page                   ProcessWire\Page
 	config                 ProcessWire\Config
-	config.po              ConfigPo
-	orderpage              URL to View PurchaseOrder
+	configPo              ConfigPo
 #}
 <div class="list-group-item bg-light font-weight-bold">
 	{% block header %}
@@ -19,14 +18,14 @@
 		</div>
 	{% endblock %}
 </div>
-{% if purchaseorders.count > 0 %}
-	{% for order in purchaseorders %}
-		<a href="{{ orderpage ~ '?ponbr=' ~ order.ordernumber }}" class="list-group-item list-group-item-action">
+{% if orders.count > 0 %}
+	{% for order in orders %}
+		<a href="{{ page.poUrl(order.ponbr) }}" class="list-group-item list-group-item-action">
 			<div class="row">
 				<div class="col">{{ order.ponbr }}</div>
 				<div class="col">{{ order.poref }}</div>
 				<div class="col">{{ order.shipfromid }}</div>
-				<div class="col text-right">$ {{ order.get_total()|number_format(config.po.decimal_places_cost) }}</div>
+				<div class="col text-right">$ {{ order.get_total()|number_format(configPo.decimal_places_cost) }}</div>
 				<div class="col text-right">{{ order.date_ordered|convertdate }}</div>
 				<div class="col text-right">{{ order.date_expected|convertdate }}</div>
 				<div class="col">{{ order.status()|capitalize }}</div>

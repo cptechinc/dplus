@@ -1,0 +1,25 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	item                   ItemMasterItem
+	page                   ProcessWire\Page Current Page
+	input                  ProcessWire\WireInput
+	config                 ProcessWire\Config
+	configPo               ConfigPo
+	orders                 PurchaseOrder[]|ObjectCollection
+#}
+{% include 'purchase-orders/vendor/search-form.twig' %}
+<div class="row">
+	<div class="col-sm-6">
+		<h3>{{ orders.getNbResults() }} Purchase Orders</h3>
+	</div>
+	<div class="col-sm-6 text-right">
+		<a href="{{ page.po_createURL() }}" class="btn btn-secondary">
+			<i class="fa fa-plus" aria-hidden="true"></i> Create PO
+		</a>
+	</div>
+</div>
+<div class="mb-3">
+	{% include 'purchase-orders/vendor/purchase-orders-list-links.twig' %}
+</div>
+{% include 'util/paginator/propel.twig' with {'pager': orders} %}
