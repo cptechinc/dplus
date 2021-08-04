@@ -4,6 +4,10 @@
 	$routes = [
 		['GET', '', Lists\PurchaseOrder::class, 'index'],
 		['GET', 'page{d:\d+}', Lists\PurchaseOrder::class, 'list'],
+		'vendor' => [
+			['GET', '', Lists\Vendor::class, 'index'],
+			['GET', 'page{d:\d+}', Lists\Vendor::class, 'index'],
+		]
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
