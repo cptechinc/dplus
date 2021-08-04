@@ -1,8 +1,10 @@
 <?php namespace Controllers\Min\Itm;
 // Purl URI Library
 Use Purl\Url as Purl;
-// Propel ORM Ljbrary
+// Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
+// Dplus Models
+use ItemMasterItem;
 // ProcessWire classes, modules
 use ProcessWire\Page, ProcessWire\Itm as ItmModel;
 // Validators
@@ -61,25 +63,9 @@ class Item extends ItmFunction {
 		}
 		$fields = ['itemID|text'];
 		$data   = self::sanitizeParametersShort($data, $fields);
-		$page    = self::pw('page');
-		$config  = self::pw('config');
-		$session = self::pw('session');
-		$itm     = self::getItm();
+		$page   = self::pw('page');
 		$validate = new MinValidator();
-		$htmlwriter   = self::pw('modules')->get('HtmlWriter');
-		$html = '';
-
-		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
-
-		if ($session->getFor('response', 'itm')) {
-			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
-		}
-
-		if ($session->response_qnote) {
-			$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
-			$session->remove('response_qnote');
-		}
-
+		
 		if ($data->itemID === 'new') {
 			$page->headline = 'ITM: Creating new Item';
 		}
@@ -89,21 +75,20 @@ class Item extends ItmFunction {
 		}
 
 		if ($validate->itemid($data->itemID) === false && $data->itemID != 'new') {
+			$htmlwriter   = self::pw('modules')->get('HtmlWriter');
+			$config  = self::pw('config');
+
+			$html = '';
+			$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 			$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID '$data->itemID' not found in the Item Master"]);
 			$html .= $htmlwriter->div('class=mb-3');
 			$html .= self::list($data);
 			return $html;
 		}
+		$item = self::getItm()->getCreateItem($data->itemID);
+		$page->js .= $config->twig->render("items/itm/js.twig", ['item' => $item, 'itm' => $itm]);
 
-		$item = $itm->getCreateItem($data->itemID);
-		$html .= self::lockItem($data->itemID);
-		$html .= $config->twig->render('items/itm/itm-links.twig');
-		$html .= $config->twig->render('items/itm/form/display.twig', ['item' => $item, 'itm' => $itm, 'recordlocker' => $itm->recordlocker]);
-		$page->js   .= $config->twig->render("items/itm/js.twig", ['item' => $item, 'itm' => $itm]);
-		if ($item->isNew() === false) {
-			$html .= self::qnotes($data);
-		}
-		return $html;
+		return self::itemDisplay($data, $item);
 	}
 
 
@@ -133,12 +118,36 @@ class Item extends ItmFunction {
 /* =============================================================
 	Display Functions
 ============================================================= */
-	public static function listDisplay($data, PropelModelPager $items) {
+	private static function listDisplay($data, PropelModelPager $items) {
 		$config = self::pw('config');
 
-		$html  = $config->twig->render('items/itm/bread-crumbs.twig');
+		$html   = $config->twig->render('items/itm/bread-crumbs.twig');
 		$html  .= $config->twig->render('items/itm/itm/search.twig', ['items' => $items, 'itm' => self::getItm()]);
 		$html  .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
+		return $html;
+	}
+
+	private static function itemDisplay($data, ItemMasterItem $item) {
+		$session = self::pw('session');
+		$itm     = self::getItm();
+		$html =  '';
+		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
+
+		if ($session->getFor('response', 'itm')) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
+		}
+
+		if ($session->response_qnote) {
+			$html .= $config->twig->render('code-tables/code-table-response.twig', ['response' => $session->response_qnote]);
+			$session->remove('response_qnote');
+		}
+
+		$html .= self::lockItem($data->itemID);
+		$html .= $config->twig->render('items/itm/itm-links.twig');
+		$html .= $config->twig->render('items/itm/form/display.twig', ['item' => $item, 'itm' => $itm, 'recordlocker' => $itm->recordlocker]);
+		if ($item->isNew() === false) {
+			$html .= self::qnotes($data);
+		}
 		return $html;
 	}
 
