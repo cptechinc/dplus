@@ -188,7 +188,7 @@ class ApInvoice extends AbstractFilter {
 				$this->query->sortBy($tablecolumn, $sort);
 			}
 		} else {
-			$this->query->orderByDate_ordered('DESC');
+			$this->query->orderByDate_invoiced('DESC');
 		}
 	}
 }
