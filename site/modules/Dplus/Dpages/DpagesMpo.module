@@ -130,26 +130,6 @@ class DpagesMpo extends Dpages implements Module {
 			'dplus_permission' => 'epo',
 			'pw_template'      => 'purchase-order-epo'
 		),
-		'po-documents' => array(
-			'template'         => 'dplus-function',
-			'name'             => 'documents',
-			'title'            => 'Purchase Order Documents',
-			'summary'          => 'View Purchase Order Documents',
-			'parent'           => '/mpo/purchase-order/',
-			'dplus_function'   => '',
-			'dplus_permission' => 'mpo',
-			'pw_template'      => 'purchase-order-documents'
-		),
-		'po-notes' => array(
-			'template'         => 'dplus-function',
-			'name'             => 'notes',
-			'title'            => 'Purchase Order Notes',
-			'summary'          => 'View Purchase Order Notes',
-			'parent'           => '/mpo/purchase-order/',
-			'dplus_function'   => '',
-			'dplus_permission' => 'mpo',
-			'pw_template'      => 'purchase-order-notes'
-		),
 		'purchase-history-list' => array(
 			'template'         => 'dplus-function',
 			'name'             => 'purchase-history',
