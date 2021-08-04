@@ -74,6 +74,8 @@ return array(
     'Controllers\\Min\\Itm\\Xrefs\\XrefFunction' => $baseDir . '/classes/min/itm/xrefs/XrefFunction.php',
     'Controllers\\Min\\Upcx' => $baseDir . '/classes/min/Upcx.php',
     'Controllers\\Mki\\Kim' => $baseDir . '/classes/mki/Kim.php',
+    'Controllers\\Mpo\\ApInvoice\\Base' => $baseDir . '/classes/mpo/ApInvoice/Base.php',
+    'Controllers\\Mpo\\ApInvoice\\Lists\\ApInvoice' => $baseDir . '/classes/mpo/ApInvoice/Lists/ApInvoice.php',
     'Controllers\\Mpo\\Epo' => $baseDir . '/classes/mpo/Epo.php',
     'Controllers\\Mpo\\EpoCreate' => $baseDir . '/classes/mpo/EpoCreate.php',
     'Controllers\\Mpo\\PurchaseOrder\\ApInvoice' => $baseDir . '/classes/mpo/PurchaseOrder/ApInvoice.php',
