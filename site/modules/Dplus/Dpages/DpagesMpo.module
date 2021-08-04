@@ -17,11 +17,6 @@ class DpagesMpo extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
-		'purchase-orders-vendor' => array(
-			'name'   => 'purchase-orders-vendor',
-			'fields' => array(),
-			'paginated' => true
-		),
 		'purchase-history-orders' => array(
 			'name'   => 'purchase-orders-history',
 			'fields' => array(),
@@ -88,22 +83,12 @@ class DpagesMpo extends Dpages implements Module {
 		'po-list' => array(
 			'template'         => 'dplus-function',
 			'name'             => 'purchase-orders',
-			'title'            => 'Purchase Order List',
+			'title'            => 'Purchase Orders',
 			'summary'          => 'View Purchase Order List',
 			'parent'           => '/mpo/',
 			'dplus_function'   => '',
 			'dplus_permission' => 'mpo',
 			'pw_template'      => 'purchase-orders'
-		),
-		'po-list-vendor' => array(
-			'template'         => 'dplus-function',
-			'name'             => 'vendor',
-			'title'            => 'Vendor Purchase Orders',
-			'summary'          => 'View Vendor Purchase Orders',
-			'parent'           => '/mpo/purchase-orders/',
-			'dplus_function'   => '',
-			'dplus_permission' => 'mpo',
-			'pw_template'      => 'purchase-orders-vendor'
 		),
 		'po-view' => array(
 			'template'         => 'dplus-function',
