@@ -11,7 +11,7 @@ use Dplus\Configs;
 use Dplus\Filters;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
-use Controllers\Mpo\PurchaseOrder\Base;
+use Controllers\Mpo\ApInvoice\Base;
 
 class ApInvoice extends Base {
 /* =============================================================
@@ -24,21 +24,20 @@ class ApInvoice extends Base {
 	}
 
 	public static function list($data) {
-		$filter = new Filters\Mpo\PurchaseOrder();
+		$filter = new Filters\Mpo\ApInvoice();
 		$filter->filterInput(self::pw('input'));
 		$filter->sortby(self::pw('page'));
-		$orders = $filter->query->paginate(self::pw('input')->pageNum, 10);
-		self::pw('page')->js .= self::pw('config')->twig->render('purchase-orders/list.js.twig', []);
-		return self::listDisplay($data, $orders);
+		$invoices = $filter->query->paginate(self::pw('input')->pageNum, 10);
+		// self::pw('page')->js .= self::pw('config')->twig->render('purchase-orders/list.js.twig', []);
+		return self::listDisplay($data, $invoices);
 	}
 
 /* =============================================================
 	Displays
 ============================================================= */
-	private static function listDisplay($data, ModelPager $orders) {
+	private static function listDisplay($data, ModelPager $invoices) {
 		self::initHooks();
-		$configPo = Configs\Po::config();
-		return self::pw('config')->twig->render('purchase-orders/page.twig', ['configPo' => $configPo, 'orders' => $orders]);
+		return self::pw('config')->twig->render('purchase-orders/invoices/display.twig', ['configPo' => self::configPo(), 'invoices' => $invoices]);
 	}
 
 /* =============================================================
@@ -47,9 +46,8 @@ class ApInvoice extends Base {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMpo');
 
-		$m->addHook('Page(pw_template=purchase-orders)::poUrl', function($event) {
-			$event->return = self::poUrl($event->arguments(0));
+		$m->addHook('Page(pw_template=purchase-orders-invoices)::apInvoiceUrl', function($event) {
+			$event->return = self::apInvoiceUrl($event->arguments(0));
 		});
-
 	}
 }
