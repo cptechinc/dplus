@@ -80,6 +80,7 @@ return array(
     'Controllers\\Mpo\\PurchaseOrder\\Base' => $baseDir . '/classes/mpo/PurchaseOrder/Base.php',
     'Controllers\\Mpo\\PurchaseOrder\\Documents' => $baseDir . '/classes/mpo/PurchaseOrder/Documents.php',
     'Controllers\\Mpo\\PurchaseOrder\\Lists\\PurchaseOrder' => $baseDir . '/classes/mpo/PurchaseOrder/Lists/PurchaseOrder.php',
+    'Controllers\\Mpo\\PurchaseOrder\\Lists\\Vendor' => $baseDir . '/classes/mpo/PurchaseOrder/Lists/Vendor.php',
     'Controllers\\Mpo\\PurchaseOrder\\Notes' => $baseDir . '/classes/mpo/PurchaseOrder/Notes.php',
     'Controllers\\Mpo\\PurchaseOrder\\PurchaseOrder' => $baseDir . '/classes/mpo/PurchaseOrder/PurchaseOrder.php',
     'Controllers\\Mpo\\PurchaseOrder\\Received' => $baseDir . '/classes/mpo/PurchaseOrder/Received.php',
