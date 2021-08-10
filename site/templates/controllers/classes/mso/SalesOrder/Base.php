@@ -127,8 +127,7 @@ abstract class Base extends AbstractController {
 	}
 
 	public static function documentUrl($ordn, $folder, $doc) {
-		$url = new Purl(self::orderUrl($ordn));
-		$url->path->add('documents');
+		$url = new Purl(self::orderDocumentsUrl($ordn));
 		$url->query->set('folder', $folder);
 		$url->query->set('document', $doc);
 		return $url->getUrl();

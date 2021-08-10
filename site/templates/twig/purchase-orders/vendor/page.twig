@@ -1,12 +1,14 @@
 {#
 	var                    Description / Instance of
 	-------------------------------------------------
+	item                   ItemMasterItem
 	page                   ProcessWire\Page Current Page
 	input                  ProcessWire\WireInput
+	config                 ProcessWire\Config
 	configPo               ConfigPo
 	orders                 PurchaseOrder[]|ObjectCollection
 #}
-{% include 'purchase-orders/search-form.twig' %}
+{% include 'purchase-orders/vendor/search-form.twig' %}
 <div class="row">
 	<div class="col-sm-6">
 		<h3>{{ orders.getNbResults() }} Purchase Orders</h3>
@@ -18,6 +20,6 @@
 	</div>
 </div>
 <div class="mb-3">
-	{% include 'purchase-orders/purchase-orders-list-links.twig' %}
+	{% include 'purchase-orders/vendor/purchase-orders-list-links.twig' %}
 </div>
 {% include 'util/paginator/propel.twig' with {'pager': orders} %}

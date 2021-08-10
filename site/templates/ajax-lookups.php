@@ -50,6 +50,10 @@
 		// Country Codes
 		['GET', 'country-codes/', AjaxLookup::class, 'countryCodes'],
 		['GET', 'country-codes/page{d:\d+}/', AjaxLookup::class, 'countryCodes'],
+		'mpo' => [
+			['GET', 'ap-invoices/', AjaxLookup::class, 'purchaseOrders'],
+			['GET', 'ap-invoices/page{nbr:\d+}/', AjaxLookup::class, 'purchaseOrders'],
+		]
 	];
 
 	$router = new Mvc\Router();

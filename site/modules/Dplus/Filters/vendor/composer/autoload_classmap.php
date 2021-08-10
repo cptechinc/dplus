@@ -22,6 +22,7 @@ return array(
     'Dplus\\Filters\\Misc\\CountryCode' => $baseDir . '/src/Misc/CountryCode.php',
     'Dplus\\Filters\\Misc\\PhoneBook' => $baseDir . '/src/Misc/PhoneBook.php',
     'Dplus\\Filters\\Mki\\Kim' => $baseDir . '/src/Mki/Kim.php',
+    'Dplus\\Filters\\Mpo\\ApInvoice' => $baseDir . '/src/Mpo/ApInvoice.php',
     'Dplus\\Filters\\Mpo\\PurchaseOrder' => $baseDir . '/src/Mpo/PurchaseOrder.php',
     'Dplus\\Filters\\Mqo\\Quote' => $baseDir . '/src/Mqo/Quote.php',
     'Dplus\\Filters\\Mso\\Cxm' => $baseDir . '/src/Mso/Cxm.php',

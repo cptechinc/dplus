@@ -14,8 +14,7 @@
 			<div class="col">Author</div>
 			<div class="col">Revision</div>
 			<div class="col">
-				Note &nbsp;
-				<button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#notes-revision-modal" data-date="{{ "now"|convertdate("m/d/Y") }}" data-time="{{ "now"|convertdate("H:i") }}" data-itemid="{{ item.itemid }}">
+				<button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#notes-revision-modal" data-date="{{ "now"|convertdate("m/d/Y") }}" data-time="{{ "now"|convertdate("H:i") }}" data-itemid="{{ item.itemid }}">
 					<i class="fa fa-plus" aria-hidden="true"></i> Add
 				</button>
 			</div>
@@ -29,11 +28,11 @@
 				<div class="col">{{ note.user }}</div>
 				<div class="col">{{ note.revision }}</div>
 				<div class="col">
-					<button type="button" class="btn btn-light" data-toggle="collapse" data-target="#notes-revision-{{ item.linenbr }}-{{ note.notedate|convertdate('Ymd') }}-{{ note.notetime|convertdate('Hi') }}" aria-controls="notes-revision-{{ note.notedate|convertdate('Ymd') }}-{{ note.notetime|convertdate('Hi') }}">
+					<button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#notes-revision-{{ item.linenbr }}-{{ note.notedate|convertdate('Ymd') }}-{{ note.notetime|convertdate('Hi') }}" aria-controls="notes-revision-{{ note.notedate|convertdate('Ymd') }}-{{ note.notetime|convertdate('Hi') }}">
 						<i class="fa fa-eye" aria-hidden="true"></i> Show
 					</button>
 					{% if note.user == qnotes.irev.user.loginid %}
-						<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#notes-revision-modal" data-date="{{ note.notedate|convertdate("m/d/Y") }}" data-time="{{ (note.notedate ~ note.notetime)|convertdate("H:i") }}" data-revision="{{ note.revision }}" data-itemid="{{ item.itemid }}">
+						<button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#notes-revision-modal" data-date="{{ note.notedate|convertdate("m/d/Y") }}" data-time="{{ (note.notedate ~ note.notetime)|convertdate("H:i") }}" data-revision="{{ note.revision }}" data-itemid="{{ item.itemid }}">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</button>
 					{% endif %}

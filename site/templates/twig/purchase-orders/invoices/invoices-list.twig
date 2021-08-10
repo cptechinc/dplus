@@ -2,9 +2,7 @@
 	var                    Description / Instance of
 	-------------------------------------------------
 	page                   ProcessWire\Page
-	config                 ProcessWire\Config
-	config.po              ConfigPo
-	orderpage              URL to View ApInvoice
+	configPo              ConfigPo
 #}
 
 <div class="list-group-item bg-light font-weight-bold">
@@ -22,13 +20,13 @@
 </div>
 {% if invoices.count > 0 %}
 	{% for invoice in invoices %}
-		<a href="{{ invpage ~ '?invnbr=' ~ invoice.invoicenumber }}" class="list-group-item list-group-item-action">
+		<a href="{{ page.apInvoiceUrl(invoice.invoicenumber) }}" class="list-group-item list-group-item-action">
 			<div class="form-row">
 				<div class="col">{{ invoice.invoicenumber }}</div>
 				<div class="col">{{ invoice.getpurchaseOrder() ? invoice.getpurchaseOrder().ponbr : 'N/A' }}</div>
 				<div class="col-3">{{ invoice.vendor.name }}</div>
 				<div class="col text-center">{{ invoice.count_details() }}</div>
-				<div class="col text-right">$ {{ invoice.total|number_format(config.po.decimal_places_cost) }}</div>
+				<div class="col text-right">$ {{ invoice.total|number_format(configPo.decimal_places_cost) }}</div>
 				<div class="col text-right">{{ invoice.date_invoiced|convertdate }}</div>
 				<div class="col text-right">{{ invoice.getpurchaseOrder() ? invoice.getpurchaseOrder().date_ordered|convertdate : 'N/A' }}</div>
 			</div>

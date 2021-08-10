@@ -1,27 +1,27 @@
 <form action="{{ input.url() }}" class="allow-enterkey-submit">
-	<label for="ponbr"><strong>Purchase Order Number</strong></label> &nbsp; &nbsp;
+	<label for="invnbr"><strong>AP Invoice Number</strong></label> &nbsp; &nbsp;
 
 	<div class="form-inline form-group">
 		{% include 'util/bootstrap/form/input-group.twig' with {
 				'inputgroup': {
 					'type': 'prepend',
 					'input': {
-						'name': 'ponbr',
+						'name': 'invnbr',
 						'value': '',
 						'attributes': {
 							'placeholder': '',
-							'aria-label':  'Purchase Order Number'
+							'aria-label':  'AP Invoice Number'
 						}
 					},
 					'button': {
 						'colorclass': 'btn-secondary',
 						'text': 'fa fa-search'|icon,
 						'attributes': {
-							'title': 'Search for / Choose Purchase Order',
+							'title': 'Search for / Choose AP Invoice',
 							'data-toggle': 'modal',
 							'data-target': '#ajax-modal',
 							'data-lookupurl': page.search_lookupURL('purchase-orders'),
-							'data-input': '#ponbr'
+							'data-input': '#invnbr'
 						}
 					}
 				}

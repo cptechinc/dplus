@@ -310,7 +310,7 @@ class QnotesPoPord extends WireData implements Module {
 	 * @return bool
 	 */
 	public function allow_edit($ponbr, $linenbr = 0) {
-		if ($linenbr = 0) {
+		if ($linenbr == 0) {
 			return true;
 		}
 
