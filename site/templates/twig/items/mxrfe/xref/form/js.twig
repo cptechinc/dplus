@@ -157,7 +157,9 @@ $(function() {
 				remote: {
 					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
 					type: "get",
-					data: {}
+					data: {
+						jqv: 'true'
+					}
 				}
 			},
 			unitofm: {

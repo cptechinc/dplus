@@ -73,7 +73,7 @@ abstract class AbstractController extends WireData {
 
 		$pagenbr = ceil($offset / $showOnPage);
 		if (($offset % $showOnPage) == 0) {
-			$pagenbr++;
+		//	$pagenbr++;
 		}
 
 		return $pagenbr;

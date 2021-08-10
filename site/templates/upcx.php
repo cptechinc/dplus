@@ -1,6 +1,6 @@
 <?php
 	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
-	
+
 	use Controllers\Min\Upcx;
 	Upcx::init();
 

@@ -7,7 +7,7 @@
 	recordlocker           module RecordLockerUser
 #}
 
-<form action="{{ page.fullURL.getURL() }}" method="POST" id="itm-form" data-itemID="{{ item.itemid }}">
+<form action="{{ input.url() }}" method="POST" id="itm-form" data-itemID="{{ item.itemid }}">
 	<input type="hidden" name="action" value="update-itm">
 	<div class="row">
 		<div class="col-sm-8">
@@ -26,7 +26,7 @@
 			NOTE: Only show delete if item already exists.
 		#}
 		{% if itm.recordlocker.userHasLocked(item.itemid) or item.isNew() %}
-			<button type="submit" class="btn btn-success" name="action" value="update-itm">
+			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 			{% if item.isNew() == false %}

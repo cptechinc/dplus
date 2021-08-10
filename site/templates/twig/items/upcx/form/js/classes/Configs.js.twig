@@ -1,0 +1,14 @@
+class UpcxConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new UpcxConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.allowDuplicateUpcs = {{ configs.in.allowDuplicateUpcs() ? 'true' : 'false' }};
+	}
+}

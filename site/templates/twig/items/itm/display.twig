@@ -1,3 +1,5 @@
+{% set configIn = itm.configIn() %}
+
 <div class="card mb-5">
 	{% block header %}
 		<div class="card-header">
@@ -6,7 +8,9 @@
 					<strong>Item ID:</strong>
 				</div>
 				<div class="col-sm-6">
-					{{ item.itemid }} - {{ item.description }} - {{ item.description2 }}
+					{{ configIn.useUppercaseItemid() ? item.itemid|upper : item.itemid  }} -
+					{{ configIn.useUppercaseItemDesc() ? item.description|upper : item.description }} -
+					{{ configIn.useUppercaseItemDesc() ? item.description2|upper : item.description2 }}
 				</div>
 			</div>
 		</div>

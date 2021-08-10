@@ -6,7 +6,9 @@ use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use ItemXrefUpcQuery, ItemXrefUpc;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\XrefUpc as UpcCRUD;
+use ProcessWire\WireData, ProcessWire\Page, ProcessWire\XrefUpc as UpcCRUD;
+// Dplus Configs
+use Dplus\Configs;
 // Dplus Filters
 use Dplus\Filters\Min\Upcx as UpcxFilter;
 // Mvc Controllers
@@ -78,8 +80,8 @@ class Upcx extends XrefFunction {
 		}
 		self::initHooks();
 		$upcx = UpcxController::getUpcx();
-		$xref = $upcx->get_create_xref($data->upc);
-		$page   = self::pw('page');
+		$xref = $upcx->getCreateXref($data->upc, $data->itemID);
+		$page = self::pw('page');
 
 		if ($xref->isNew()) {
 			$page->headline = "ITM: $data->itemID UPCX: Create X-ref";
@@ -89,7 +91,9 @@ class Upcx extends XrefFunction {
 			$page->headline = "ITM: $data->itemID UPCX: $xref->upc";
 		}
 
-		$page->js .= self::pw('config')->twig->render('items/upcx/form/js.twig', ['upc' => $xref]);
+		$configs = new WireData();
+		$configs->in = Configs\In::config();
+		$page->js   .= self::pw('config')->twig->render('items/upcx/form/js.twig', ['configs' => $configs]);
 		$html = self::xrefDisplay($data, $xref);
 		self::pw('session')->removeFor('response', 'upcx');
 		return $html;

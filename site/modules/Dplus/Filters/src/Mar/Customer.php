@@ -1,4 +1,7 @@
 <?php namespace Dplus\Filters\Mar;
+use PDO;
+// Propel
+use Propel\Runtime\Propel;
 // Dplus Model
 use CustomerQuery, Customer as Model;
 // ProcessWire Classes
@@ -93,10 +96,36 @@ class Customer extends AbstractFilter {
 	 * @return int
 	 */
 	public function positionById($custID) {
-		if ($this->exists($custID) === false) {
-			return 0;
+		return $this->positionQuick($custID);
+	}
+
+	/**
+	 * Return Position of Cust ID in result set
+	 * @param  string $custID  Customer ID
+	 * @return int
+	 */
+	public function positionQuick($custID) {
+		$q = $this->getQueryClass()->executeQuery('SET @rownum = 0');
+		$table = $this->getPositionSubSql();
+
+		$sql = "SELECT x.position FROM ($table) x WHERE arcucustid = :custid";
+		$stmt = $this->getPreparedStatementWrapper($sql);
+		$stmt->bindValue(':custid', $custID, PDO::PARAM_STR);
+		$stmt->execute();
+		return $stmt->fetchColumn();
+	}
+
+	/**
+	 * Return Sub Query for getting result set with custid and position
+	 * @return string
+	 */
+	private function getPositionSubSql() {
+		$table = $this->query->getTableMap()::TABLE_NAME;
+		$sql = "SELECT Arcucustid, @rownum := @rownum + 1 AS position FROM $table";
+		$whereClause = $this->getWhereClauseString();
+		if (empty($whereClause) === false) {
+			$sql .= ' WHERE ' . $whereClause;
 		}
-		$v = $this->getCustomer($custID);
-		return $this->position($v);
+		return $sql;
 	}
 }

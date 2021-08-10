@@ -4,9 +4,9 @@ $(function() {
 		var query = uri.search(true);
 		var focus = query.focus;
 
-		if ($('tr[data-upc="'+focus+'"]').length) {
-			$('tr[data-upc="'+focus+'"]').addClass('highlight');
-			$('html, body').animate({scrollTop: $('[data-upc="'+focus+'"]').offset().top,},700,'linear');
+		if ($('tr[data-key="'+focus+'"]').length) {
+			$('tr[data-key="'+focus+'"]').addClass('highlight');
+			$('html, body').animate({scrollTop: $('[data-key="'+focus+'"]').offset().top,},700,'linear');
 		}
 	}
 });

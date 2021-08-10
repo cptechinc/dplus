@@ -251,6 +251,7 @@ class XrefCxm extends WireData implements Module {
 	public function custids() {
 		$q = $this->query();
 		$q->select(ItemXrefCustomer::get_aliasproperty('custid'));
+		$q->distinct();
 		return $q->find()->toArray();
 	}
 

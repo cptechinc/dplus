@@ -17,6 +17,9 @@ use InvCommissionCodeQuery, InvCommissionCode;
 use InvStockCodeQuery, InvStockCode;
 use InvSpecialCodeQuery, InvSpecialCode;
 
+// Dplus Configs
+use Dplus\Configs;
+
 // Dplus Record Locker
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 
@@ -32,20 +35,29 @@ class Itm extends WireData implements Module {
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
-		$this->configs = new WireData();
-		$this->configs->inv = false;
-	}
-
-	public function init_configs() {
-		$this->configs->inv = $this->get_config_in();
 	}
 
 	/**
 	 * Returns ItemMasterItemQuery
 	 * @return ItemMasterItemQuery
 	 */
-	public function get_query() {
+	public function query() {
 		return ItemMasterItemQuery::create();
+	}
+
+	/**
+	 * Return Query Filtered by Item ID
+	 * @param  string $itemID Item ID
+	 * @return ItemMasterItemQuery
+	 */
+	public function queryItemid($itemID) {
+		$configIn = $this->configIn();
+		if ($configIn->useUppercaseItemid()) {
+			$itemID = strtoupper($itemID);
+		}
+		$q = $this->query();
+		$q->filterByitemid($itemID);
+		return $q;
 	}
 
 /* =============================================================
@@ -56,7 +68,7 @@ class Itm extends WireData implements Module {
 	 * @return ItemMasterItem[]|ObjectCollection
 	 */
 	public function get_items() {
-		$q = $this->get_query();
+		$q = $this->query();
 		return $q->find();
 	}
 
@@ -75,8 +87,7 @@ class Itm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function exists($itemID) {
-		$q = $this->get_query();
-		$q->filterByItemid($itemID);
+		$q = $this->queryItemid($itemID);
 		return boolval($q->count());
 	}
 
@@ -95,8 +106,7 @@ class Itm extends WireData implements Module {
 	 * @return ItemMasterItem
 	 */
 	public function item($itemID) {
-		$q = $this->get_query();
-		$q->filterByItemid($itemID);
+		$q = $this->queryItemid($itemID);
 		return $q->findOne();
 	}
 
@@ -105,14 +115,15 @@ class Itm extends WireData implements Module {
 	 * @param  string $itemID Item ID
 	 * @return ItemMasterItem
 	 */
-	public function get_create_item($itemID) {
-		if ($this->item_exists($itemID)) {
-			$record = $this->get_item($itemID);
-		} else {
-			$itemID = substr($itemID, 0, ItemMasterItem::LENGTH_ITEMID);
-			$record = $this->get_new_item();
-			$record->setItemid($itemID);
+	public function getCreateItem($itemID) {
+		if ($this->exists($itemID)) {
+			return $this->item($itemID);
 		}
+		$configIn = $this->configIn();
+		$itemID = substr($itemID, 0, ItemMasterItem::LENGTH_ITEMID);
+		$itemID = $configIn->useUppercaseItemid() ? strtoupper($itemID) : $itemID;
+		$record = $this->newItem();
+		$record->setItemid($itemID);
 		return $record;
 	}
 
@@ -120,21 +131,21 @@ class Itm extends WireData implements Module {
 	 * Returns Item with Defaults Set
 	 * @return ItemMasterItem
 	 */
-	public function get_new_item() {
+	public function newItem() {
+		$configIn = $this->configIn();
 		$item = new ItemMasterItem();
-		$this->init_configs();
 
-		$item->setItemgroup($this->configs->inv->default_itemgroup);
+		$item->setItemgroup($configIn->default_itemgroup);
 
-		if ($this->configs->inv->use_pricegroup()) {
-			$item->setPricecode($this->configs->inv->default_pricegroup);
+		if ($configIn->use_pricegroup()) {
+			$item->setPricecode($configIn->default_pricegroup);
 		}
 
-		if ($this->configs->inv->use_commgroup()) {
-			$item->setCommissiongroup($this->configs->inv->default_commgroup);
+		if ($configIn->use_commgroup()) {
+			$item->setCommissiongroup($configIn->default_commgroup);
 		}
 
-		$item->setItemtype($this->configs->inv->default_itemtype);
+		$item->setItemtype($configIn->default_itemtype);
 
 		$item->setTaxable('Y');
 		$item->setAllow_backorder('Y');
@@ -143,12 +154,12 @@ class Itm extends WireData implements Module {
 		$item->setCore('N');
 		$item->setSplitorder('Y');
 
-		$item->setUom_sale($this->configs->inv->default_uom_sale);
-		$item->setUom_purchase($this->configs->inv->default_uom_purchase);
-		$item->setPreference($this->configs->inv->default_nafta_pref_code);
-		$item->setProducer($this->configs->inv->default_nafta_producer);
-		$item->setDocumentation($this->configs->inv->default_nafta_documentation);
-		$item->setBasestandardcost($this->configs->inv->default_base_standard_cost);
+		$item->setUom_sale($configIn->default_uom_sale);
+		$item->setUom_purchase($configIn->default_uom_purchase);
+		$item->setPreference($configIn->default_nafta_pref_code);
+		$item->setProducer($configIn->default_nafta_producer);
+		$item->setDocumentation($configIn->default_nafta_documentation);
+		$item->setBasestandardcost($configIn->default_base_standard_cost);
 
 		if ($this->wire('modules')->get('DplusCustomer')->get_custID() == 'LINDST') {
 			$item->setStockcode('MM');
@@ -175,61 +186,83 @@ class Itm extends WireData implements Module {
 				$qnotes = $this->wire('modules')->get('QnotesItem');
 				$qnotes->process_input($input);
 				break;
+			case 'delete-itm':
+				$this->inputDelete($input);
+				break;
+			case 'update-itm':
+				$this->inputUpdate($input);
+				break;
 			default:
-				$this->process_input_itm($input);
+				$itemID = $values->text('itemID');
+				$message = self::DESCRIPTION_RECORD . " ($itemID) was not saved, no action was specified";
+				$response = ItmResponse::response_error($itemID, $message);
+				$this->wire('session')->setFor('response', 'itm', $response);
 				break;
 		}
 	}
 
 	/**
-	 * Takes Input, validates it's for an Item
-	 * Updates Item
-	 * Processes it, and if updated sends request to dplus
-	 *
-	 * @param  WireInput $input Input
-	 * @return void
+	 * Delete Item
+	 * @param  WireInput $input Input Data
+	 * @return bool
 	 */
-	public function process_input_itm(WireInput $input) {
-		$this->init_configs();
+	private function inputDelete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID = $values->text('itemID');
+
+		if ($this->exists($itemID) === false) {
+			return true;
+		}
+		$this->lockrecord($itemID);
+
+		if ($this->recordlocker->userHasLocked($itemID) === false) {
+			$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($itemID);
+			$response = ItmResponse::response_error($itemID, $message);
+			$this->wire('session')->setFor('response', 'itm', $response);
+			return false;
+		}
+		$record = $this->item($itemID);
+		$record->delete();
+		$response = $this->save_and_respond($record, []);
+		$response->set_saved_itm($response->success);
+		$response = $this->verify_delete($itemID);
+		return $response->has_success();
+	}
+
+	/**
+	 * Update Item from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itemID = strtoupper($values->text('itemID'));
-		$record = $this->get_create_item($itemID);
+		$record = $this->getCreateItem($itemID);
 		$invalidfields = array();
 
 		$this->lockrecord($itemID);
 
-		if ($record->isNew() || $this->recordlocker->userHasLocked($itemID)) {
-			if ($values->text('action') == 'delete-itm') {
-				$record->delete();
-			} elseif ($values->text('action') == 'update-itm') {
-				$invalidfields = $this->set_item_fields($record, $input);
-			}
-
-			if ($values->action) {
-				$response = $this->save_and_respond($record, $invalidfields);
-
-				if ($invalidfields) {
-					$response->set_error(true);
-					$response->set_success(false);
-					$response->set_saved_itm(false);
-					$response->set_message("$itemID was not saved to Dplus");
-				} else {
-					$response->set_saved_itm($response->success);
-				}
-
-				if ($values->text('action') == 'delete-itm-item') {
-					$response = $this->verify_delete($itemID);
-				}
-			} else {
-				$message = self::DESCRIPTION_RECORD . " ($record->itemid) was not saved, no action was specified";
-				$response = ItmResponse::response_error($record->itemid, $message);
-			}
-		} else {
-			$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($itemID);
-			$response = ItmResponse::response_error($record->itemid, $message);
+		if ($record->isNew() === false && $this->recordlocker->userHasLocked($itemID) === false) {
+			$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($itemID);
+			$response = ItmResponse::response_error($itemID, $message);
 		}
+
+		$invalidfields = $this->set_item_fields($record, $input);
+		$response = $this->save_and_respond($record, $invalidfields);
+
+		if ($invalidfields) {
+			$response->set_error(true);
+			$response->set_success(false);
+			$response->set_saved_itm(false);
+			$response->set_message("$itemID was not saved to Dplus");
+		} else {
+			$response->set_saved_itm($response->success);
+		}
+
 		$this->wire('session')->setFor('response', 'itm', $response);
+		return $response->has_success();
 	}
 
 	/**
@@ -238,15 +271,15 @@ class Itm extends WireData implements Module {
 	 * @param WireInput      $input  Input Data
 	 */
 	protected function set_item_fields(ItemMasterItem $record, WireInput $input) {
+		$configIn = $this->configIn();
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = array();
-		$record->setDescription($values->text('description'));
-		$record->setDescription2($values->text('description2'));
+		$record->setDescription($configIn->useUppercaseItemDescription() ? strtoupper($values->text('description')) : $values->text('description'));
+		$record->setDescription2($configIn->useUppercaseItemDescription() ? strtoupper($values->text('description2')) : $values->text('description2'));
 		$record->setRevision($values->text('revision'));
 		$record->setTimefence($values->text('itemfence'));
 		$record->setQtypercase($values->int('qtypercase'));
-
 		$record->setAllow_backorder($values->yn('allow_backorder'));
 		$record->setSplitorder($values->yn('splitorder'));
 		$record->setInspection($values->yn('inspection'));
@@ -264,6 +297,7 @@ class Itm extends WireData implements Module {
 	 * @return array                  Invalid Input fields, empty if none
 	 */
 	protected function set_validated_fields(ItemMasterItem $record, WireInput $input) {
+		$configIn = $this->configIn();
 		$invalid = array();
 		$fields = array(
 			'custid' => array(
@@ -293,14 +327,14 @@ class Itm extends WireData implements Module {
 			),
 		);
 
-		if ($this->configs->inv->use_pricegroup()) {
+		if ($configIn->use_pricegroup()) {
 			$fields['pricecode'] = array(
 				'description' => 'Price Code',
 				'input'       => 'pricecode',
 				'allow_blank' => true
 			);
 		}
-		if ($this->configs->inv->use_commgroup()) {
+		if ($configIn->use_commgroup()) {
 			$fields['commissiongroup'] = array(
 				'description' => 'Comission Group',
 				'input'       => 'commissiongroup',
@@ -448,8 +482,8 @@ class Itm extends WireData implements Module {
 	 * Returns IN config
 	 * @return ConfigIn
 	 */
-	public function get_config_in() {
-		return ConfigInQuery::create()->findOne();
+	public function configIn() {
+		return Configs\In::config();
 	}
 
 	/**
@@ -512,7 +546,7 @@ class Itm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function is_item_normal($itemID) {
-		$q = $this->get_query();
+		$q = $this->query();
 		return $q->is_item_normal($itemID);
 	}
 
@@ -522,7 +556,7 @@ class Itm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function is_item_lotted($itemID) {
-		$q = $this->get_query();
+		$q = $this->query();
 		return $q->is_item_lotted($itemID);
 	}
 
@@ -532,7 +566,7 @@ class Itm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function is_item_serialized($itemID) {
-		$q = $this->get_query();
+		$q = $this->query();
 		return $q->is_item_serialized($itemID);
 	}
 
@@ -542,7 +576,7 @@ class Itm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function is_item_lotserialized($itemID) {
-		$q = $this->get_query();
+		$q = $this->query();
 		return ($q->is_item_serialized($itemID) || $this->is_item_lotted($itemID));
 	}
 
@@ -552,7 +586,7 @@ class Itm extends WireData implements Module {
 	 * @return bool
 	 */
 	public function is_item_priceonly($itemID) {
-		$q = $this->get_query();
+		$q = $this->query();
 		return $q->is_item_priceonly($itemID);
 	}
 

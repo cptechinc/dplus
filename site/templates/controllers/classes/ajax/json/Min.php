@@ -119,14 +119,14 @@ class Min extends AbstractController {
 	}
 
 	public static function validateItemid($data) {
-		$fields = ['itemID|text'];
+		$fields = ['itemID|text', 'jqv|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
-		if ($validate->itemid($data->itemID) === false) {
-			return "$data->itemID not found";
+		if ($validate->itemid($data->itemID)) {
+			return true;
 		}
-		return true;
+		return $data->jqv ? "$data->itemID not found" : false;
 	}
 
 	public static function getItm($data) {
@@ -214,12 +214,12 @@ class Min extends AbstractController {
 
 	public static function validateUpc($data) {
 		$fields = ['upc|text', 'jqv|bool', 'new|bool'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		$validate = new UpcxValidator();
 
 		$exists = $validate->exists($data->upc);
 
-		if ($data->jqv === false) {
+		if (boolval($data->jqv) === false) {
 			return $exists;
 		}
 
@@ -229,6 +229,25 @@ class Min extends AbstractController {
 		}
 
 		return $exists ? true : "UPC $data->upc not found";
+	}
+
+	public static function validateUpcXref($data) {
+		$fields = ['upc|text', 'itemID|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$validate = new UpcxValidator();
+
+		$exists = $validate->exists($data->upc, $data->itemID);
+
+		if (boolval($data->jqv) === false) {
+			return $exists;
+		}
+
+		// JQuery Validate
+		if ($data->new) { // If new, check that upc doesn't already exist.
+			return $exists ? "UPC X-Ref Already Exists" : true;
+		}
+
+		return $exists ? true : "UPC X-Ref not found";
 	}
 
 	public static function validateUpcPrimary($data) {
@@ -255,6 +274,21 @@ class Min extends AbstractController {
 
 			return $matches;
 		}
+	}
+
+	public static function getPrimaryUpc($data) {
+		$fields = ['itemID|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$upcx = self::pw('modules')->get('XrefUpc');
+
+		if ($upcx->xref_primary_by_itemid_exists($data->itemID) === false) {
+			return false;
+		}
+		$xref = $upcx->xref_primary_by_itemid($data->itemID);
+		return [
+			'upc'    => $xref->upc,
+			'itemid' => $xref->itemid
+		];
 	}
 
 

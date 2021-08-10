@@ -10,20 +10,28 @@
 	<thead>
 		<tr class="bg-dark text-white p-3">
 			<th class="pt-3 pb-3 align-middle">
-				<a href="{{ page.get_sortURL('custitemid') }}" class="link">Their Item ID</a>
+				<a href="{{ page.get_sortURL('custitemid') }}" class="link">Their Item ID
+					{% if page.orderby_column == 'custitemid' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
 			</th>
 			<th class="pt-3 pb-3 align-middle">Description</th>
 			<th class="pt-3 pb-3 align-middle">
-				<a href="{{ page.get_sortURL('itemid') }}" class="link">Our Item ID</a>
+				<a href="{{ page.get_sortURL('itemid') }}" class="link">Our Item ID
+					{% if page.orderby_column == 'itemid' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
 			</th>
 			<th class="pt-3 pb-3 align-middle">Description</th>
 			<th class="pt-3 pb-3 text-center">
 				{% if input.get.offsetExists('custID') %}
-					<a href="{{ page.xrefNewUrl(input.get.text('custID')) }}" class="btn btn-light">
+					<a href="{{ page.xrefNewUrl(input.get.text('custID')) }}" class="btn btn-sm btn-light">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add Item
 					</a>
 				{% else %}
-					<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#ajax-modal" title="Choose Customer to Add CXM" aria-label="Choose Customer to Add CXM" data-custid="{{ page.has('custID') ? page.custID : '' }}" data-search="customers">
+					<button type="button" class="btn btn-sm btn-light" data-toggle="modal" data-target="#ajax-modal" title="Choose Customer to Add CXM" aria-label="Choose Customer to Add CXM" data-custid="{{ page.has('custID') ? page.custID : '' }}" data-search="customers">
 						<i class="fa fa-plus" aria-hidden="true"></i> Add Item
 					</button>
 				{% endif %}

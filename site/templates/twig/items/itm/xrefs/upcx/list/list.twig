@@ -1,11 +1,76 @@
-{% extends 'items/upcx/list/list.twig' %}
+<div class="row">
+	<div class="col-sm-6">
+		<h3>
+			{{ upcs.getNbResults() }} UPCs for {{ itemID }}
+		</h3>
+	</div>
+	<div class="col-sm-6 text-right">
+		<a href="{{ page.upcCreateUrl() }}" class="btn btn-secondary btn-sm">
+			<i class="fa fa-plus" aria-hidden="true"></i> Add UPC
+		</a>
+	</div>
+</div>
 
-{% block header %}
-
-{% endblock %}
-
-{% block add_upc_link %}
-	<a href="{{ page.upcCreateUrl() }}" class="btn btn-secondary btn-sm">
-		<i class="fa fa-plus" aria-hidden="true"></i> Add UPC
-	</a>
-{% endblock %}
+<table class="table table-sm">
+	<thead>
+		<tr class="bg-dark text-white">
+			<th class="pt-3 pb-3">
+				<a href="{{ page.get_sortURL('upc') }}" class="link">UPC
+					{% if page.orderby_column == 'upc' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
+			</th>
+			<th class="pt-3 pb-3">Qty Per UPC</th>
+			<th class="pt-3 pb-3">
+				<a href="{{ page.get_sortURL('primary') }}" class="link">Primary
+					{% if page.orderby_column == 'primary' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
+			</th>
+			<th class="pt-3 pb-3">
+				<a href="{{ page.get_sortURL('mastercase') }}" class="link">Master Case
+					{% if page.orderby_column == 'mastercase' %}
+						<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+					{% endif %}
+				</a>
+			</th>
+			<th class="pt-3 pb-3">Label</th>
+			<th class="pt-3 pb-3 text-center"></th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if upcs.count() == 0 %}
+			<tr>
+				<td colspan="8" class="text-center bg-light">
+					<strong>No UPCs Found</strong>
+				</td>
+			</tr>
+		{% endif %}
+		{% for upc in upcs %}
+			<tr class="{{ upc.is_primary() and upc.itemid == itemID ? 'bg-info text-white'  : '' }}" data-upc="{{ upc.upc }}" data-key="{{ upcx.getRecordlockerKey(upc) }}">
+				<td>{{ upc.upc }}</td>
+				<td>{{ upc.qty }}</td>
+				<td>{{ upc.primary|yesorno|capitalize }}</td>
+				<td>{{ upc.is_mastercase()|yesorno|capitalize }}</td>
+				<td>{{ upc.needslabel|yesorno|capitalize }}</td>
+				<td class="text-center">
+					{% if upcx.recordlocker.isLocked(upcx.getRecordlockerKey(upc)) == false or upcx.recordlocker.userHasLocked(upcx.getRecordlockerKey(upc)) %}
+						<a href="{{ page.upcUrl(upc.upc, upc.itemid) }}" class="btn btn-warning btn-sm">
+							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
+						</a>
+						&nbsp; &nbsp;
+						<a href="{{ page.upcDeleteUrl(upc.upc, upc.itemid)}}" class="btn btn-danger btn-sm delete_button" data-delete="UPC {{ upc.upc }}">
+							<i class="fa fa-trash" aria-hidden="true"></i> Delete
+						</a>
+					{% else %}
+						<span class="badge badge-secondary">
+							<i class="fa fa-lock" aria-hidden="true"></i> Locked By {{ upcx.recordlocker.getLockingUser(upcx.getRecordlockerKey(upc)) }}
+						</span>
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

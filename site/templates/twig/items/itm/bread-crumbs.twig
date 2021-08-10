@@ -26,7 +26,7 @@
 		</li>
 	{% endif %}
 
-	{% if segments|length == 0 %}
+	{% if segments|length == 0 and values.offsetExists('itemID') %}
 		<li class="breadcrumb-item active">
 			<i class="fa fa-cubes" aria-hidden="true"></i> {{ values.text('itemID') }}
 		</li>

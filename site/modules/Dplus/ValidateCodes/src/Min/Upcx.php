@@ -10,18 +10,21 @@ use ItemXrefUpcQuery, ItemXrefUpc;
 
 /**
  * Upcx
- *
  * Class for Validating Upcx
  */
 class Upcx extends Min {
 	/**
 	 * Return if UPC exists
-	 * @param  string $upc UPC Code
+	 * @param  string $upc    UPC Code
+	 * @param  string $itemID Item ID
 	 * @return bool
 	 */
-	public function exists($upc) {
+	public function exists($upc, $itemID = '') {
 		$q = $this->query();
 		$q->filterByUpc($upc);
+		if (empty($itemID) === false) {
+			$q->filterByItemid($itemID);
+		}
 		return boolval($q->count());
 	}
 
@@ -37,8 +40,11 @@ class Upcx extends Min {
 		return boolval($q->count());
 	}
 
+	/**
+	 * Return Query
+	 * @return ItemXrefUpcQuery
+	 */
 	public function query() {
 		return ItemXrefUpcQuery::create();
 	}
-
 }

@@ -1,6 +1,10 @@
 <?php namespace Controllers\Min\Itm;
-// External Libraries, classes
+// Purl URI Library
 Use Purl\Url as Purl;
+// Propel ORM Library
+use Propel\Runtime\Util\PropelModelPager;
+// Dplus Models
+use ItemMasterItem;
 // ProcessWire classes, modules
 use ProcessWire\Page, ProcessWire\Itm as ItmModel;
 // Validators
@@ -11,13 +15,9 @@ use Mvc\Controllers\AbstractController;
 
 class Item extends ItmFunction {
 
-	protected static function validateUserPermission() {
-		$wire = self::pw();
-		$user = $wire->wire('user');
-		$page = $wire->wire('page');
-		return $user->has_function('itm');
-	}
-
+/* =============================================================
+	CRUD Index Functions
+============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -37,11 +37,12 @@ class Item extends ItmFunction {
 
 	public static function handleCRUD($data) {
 		$input = self::pw('input');
+
 		if (self::validateItemidAndPermission($data) === false) {
-			self::pw('session')->redirect($input->url());
+			self::pw('session')->redirect($input->url(), $http301 = false);
 		}
 		$fields = ['itemID|text', 'action|text'];
-		$data  = self::sanitizeParameters($data, $fields);
+		$data  = self::sanitizeParametersShort($data, $fields);
 		$url   = new Purl($input->url($withQueryString = true));
 		$url->query->set('itemID', $data->itemID);
 		$url->query->remove('action');
@@ -62,14 +63,74 @@ class Item extends ItmFunction {
 		}
 		$fields = ['itemID|text'];
 		$data   = self::sanitizeParametersShort($data, $fields);
-		$page    = self::pw('page');
-		$config  = self::pw('config');
+		$page   = self::pw('page');
+		$validate = new MinValidator();
+		
+		if ($data->itemID === 'new') {
+			$page->headline = 'ITM: Creating new Item';
+		}
+
+		if ($validate->itemid($data->itemID)) {
+			$page->headline = "ITM: $data->itemID";
+		}
+
+		if ($validate->itemid($data->itemID) === false && $data->itemID != 'new') {
+			$htmlwriter   = self::pw('modules')->get('HtmlWriter');
+			$config  = self::pw('config');
+
+			$html = '';
+			$html .= $config->twig->render('items/itm/bread-crumbs.twig');
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID '$data->itemID' not found in the Item Master"]);
+			$html .= $htmlwriter->div('class=mb-3');
+			$html .= self::list($data);
+			return $html;
+		}
+		$item = self::getItm()->getCreateItem($data->itemID);
+		$page->js .= $config->twig->render("items/itm/js.twig", ['item' => $item, 'itm' => $itm]);
+
+		return self::itemDisplay($data, $item);
+	}
+
+
+	public static function list($data) {
+		$fields = ['itemID|text', 'q|text'];
+		$data   = self::sanitizeParametersShort($data, $fields);
+		$page     = self::pw('page');
+		$validate = new MinValidator();
+
+		if ($validate->itemid($data->q)) {
+			self::pw('session')->redirect(self::itmUrl($data->q), $http301 = false);
+		}
+
+		$filter = new ItemMasterFilter();
+		if (empty($data->q) === false) {
+			$filter->search($data->q);
+			self::pw('page')->headline = "ITM: Searching for '$data->q'";
+		}
+
+		$filter->sortby($page);
+		$items = $filter->query->paginate($input->pageNum, 10);
+
+		$page->js = self::pw('config')->twig->render('items/item-list.js.twig');
+		return self::listDisplay($data, $items);
+	}
+
+/* =============================================================
+	Display Functions
+============================================================= */
+	private static function listDisplay($data, PropelModelPager $items) {
+		$config = self::pw('config');
+
+		$html   = $config->twig->render('items/itm/bread-crumbs.twig');
+		$html  .= $config->twig->render('items/itm/itm/search.twig', ['items' => $items, 'itm' => self::getItm()]);
+		$html  .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
+		return $html;
+	}
+
+	private static function itemDisplay($data, ItemMasterItem $item) {
 		$session = self::pw('session');
 		$itm     = self::getItm();
-		$validate = new MinValidator();
-		$htmlwriter   = self::pw('modules')->get('HtmlWriter');
-		$html = '';
-
+		$html =  '';
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 
 		if ($session->getFor('response', 'itm')) {
@@ -81,33 +142,16 @@ class Item extends ItmFunction {
 			$session->remove('response_qnote');
 		}
 
-		if ($data->itemID === 'new') {
-			$page->headline = 'ITM: Creating new Item';
-		}
-
-		if ($validate->itemid($data->itemID)) {
-			$page->headline = "ITM: $data->itemID";
-		}
-
-		if ($validate->itemid($data->itemID) === false && $data->itemID != 'new') {
-			$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID '$data->itemID' not found in the Item Master"]);
-			$html .= $htmlwriter->div('class=mb-3');
-			$html .= self::list($data);
-			return $html;
-		}
-		$page->customerlookupURL = self::pw('pages')->get('pw_template=mci-lookup')->url;
-		$item = $itm->get_item($data->itemID);
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
 		$html .= $config->twig->render('items/itm/form/display.twig', ['item' => $item, 'itm' => $itm, 'recordlocker' => $itm->recordlocker]);
-		$page->js   .= $config->twig->render("items/itm/js.twig", ['item' => $item, 'itm' => $itm]);
 		if ($item->isNew() === false) {
 			$html .= self::qnotes($data);
 		}
 		return $html;
 	}
 
-	public static function qnotes($data) {
+	private static function qnotes($data) {
 		$fields = ['itemID|text'];
 		$data   = self::sanitizeParametersShort($data, $fields);
 		$qnotes = self::pw('modules')->get('QnotesItem');
@@ -120,31 +164,6 @@ class Item extends ItmFunction {
 		return $html;
 	}
 
-	public static function list($data) {
-		$fields = ['itemID|text', 'q|text'];
-		$data   = self::sanitizeParametersShort($data, $fields);
-		$input    = self::pw('input');
-		$page     = self::pw('page');
-		$config   = self::pw('config');
-		$validate = new MinValidator();
-
-		if ($validate->itemid($data->q)) {
-			self::pw('session')->redirect(self::itmUrl($data->q), $http301 = false);
-		}
-
-		$filter = new ItemMasterFilter();
-		$filter->search($data->q);
-		$filter->sortby($page);
-		$items = $filter->query->paginate($input->pageNum, 10);
-
-		$page->searchURL = $page->url;
-		$html  = $config->twig->render('items/itm/bread-crumbs.twig');
-		$html  .= $config->twig->render('items/itm/itm/search.twig', ['items' => $items, 'itm' => self::getItm()]);
-		$html  .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
-		$page->js = $config->twig->render('items/item-list.js.twig');
-		return $html;
-	}
-
 /* =============================================================
 	URLs
 ============================================================= */
@@ -154,6 +173,9 @@ class Item extends ItmFunction {
 		return $url->getUrl();
 	}
 
+/* =============================================================
+	Supplemental
+============================================================= */
 	public static function initHooks() {
 		parent::initHooks();
 		$m = self::pw('modules')->get('Itm');
@@ -162,5 +184,12 @@ class Item extends ItmFunction {
 		$m->addHook('Page(pw_template=itm)::itmDeleteUrl', function($event) {
 			$event->return = self::itmUrl($event->arguments(0));
 		});
+	}
+
+	protected static function validateUserPermission() {
+		$wire = self::pw();
+		$user = $wire->wire('user');
+		$page = $wire->wire('page');
+		return $user->has_function('itm');
 	}
 }

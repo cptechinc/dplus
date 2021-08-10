@@ -6,8 +6,13 @@ use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use ItemXrefUpcQuery, ItemXrefUpc;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\XrefUpc as UpcCRUD;
+use ProcessWire\WireData, ProcessWire\Page, ProcessWire\XrefUpc as UpcCRUD;
+// Dplus Record Locker
+use Dplus\RecordLocker\UserFunction as Locker;
+// Dplus Configs
+use Dplus\Configs;
 // Dplus Filters
+use Dplus\Filters;
 use Dplus\Filters\Min\Upcx as UpcxFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
@@ -16,8 +21,8 @@ class Upcx extends AbstractController {
 	private static $upcx;
 
 	public static function index($data) {
-		$fields = ['upc|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		$fields = ['upc|text', 'itemID|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 		$page->show_breadcrumbs = false;
 
@@ -32,7 +37,7 @@ class Upcx extends AbstractController {
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['action|text', 'upc|text'];
+		$fields = ['action|text', 'upc|text', 'itemID|text',];
 		$data  = self::sanitizeParameters($data, $fields);
 		$input = self::pw('input');
 
@@ -44,39 +49,42 @@ class Upcx extends AbstractController {
 				case 'delete-upcx':
 					self::pw('session')->redirect(self::upcListUrl(), $http301 = false);
 					break;
+				case 'update-upcx':
+					self::pw('session')->redirect(self::upcListUrl(implode(Locker::glue(), [$data->upc, $data->itemID])), $http301 = false);
+					break;
 				default:
-					self::pw('session')->redirect(self::upcUrl($data->upc), $http301 = false);
+					self::pw('session')->redirect(self::upcUrl($data->upc, $data->itemID), $http301 = false);
 					break;
 			}
 		}
-		self::pw('session')->redirect(self::upcUrl($data->upc), $http301 = false);
+		self::pw('session')->redirect(self::upcUrl($data->upc, $data->itemID), $http301 = false);
 	}
 
 	public static function upc($data) {
-		$data = self::sanitizeParametersShort($data, ['upc|text', 'action|text']);
+		self::sanitizeParametersShort($data, ['upc|text', 'itemID|text', 'action|text']);
 
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
 
 		$upcx = self::getUpcx();
-		$xref = $upcx->get_create_xref($data->upc);
+		$xref = $upcx->getCreateXref($data->upc, $data->itemID);
 		$page = self::pw('page');
-		$page->headline = "UPCX: $xref->upc";
+		$page->headline = "UPCX: $xref->upc - $xref->itemid";
 
 		if ($xref->isNew()) {
 			$page->headline = "UPCX: Create X-Ref";
 		}
-
-		$page->js   .= self::pw('config')->twig->render('items/upcx/form/js.twig', ['upc' => $xref]);
+		$configs = new WireData();
+		$configs->in = Configs\In::config();
+		$page->js   .= self::pw('config')->twig->render('items/upcx/form/js.twig', ['configs' => $configs]);
 		$html = self::upcDisplay($data, $xref);
 		return $html;
 	}
 
 	private static function upcDisplay($data, ItemXrefUpc $xref) {
-		$config = self::pw('config');
-
 		$html = '';
+		$html .= self::pw('config')->twig->render('items/upcx/bread-crumbs.twig', ['upcx' => self::getUpcx(), 'upc' => $xref]);
 		$html .= self::lockXref($xref);
 		$html .= self::pw('config')->twig->render('items/upcx/form/page.twig', ['upcx' => self::getUpcx(), 'upc' => $xref]);
 		return $html;
@@ -87,11 +95,13 @@ class Upcx extends AbstractController {
 		$upcx = self::getUpcx();
 		$html = '';
 
-		if ($upcx->recordlocker->isLocked($xref->upc) && !$upcx->recordlocker->userHasLocked($xref->upc)) {
-			$msg = "UPC $code is being locked by " . $upcx->recordlocker->getLockingUser($xref->upc);
-			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "UPC $xref->upc is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
-		} elseif ($upcx->recordlocker->isLocked($xref->upc) === false) {
-			$upcx->recordlocker->lock($xref->upc);
+		$key = $upcx->getRecordlockerKey($xref);
+
+		if ($upcx->recordlocker->isLocked($key) && $upcx->recordlocker->userHasLocked($key) === false) {
+			$msg = "UPC $xref->upc - $xref->itemid is being locked by " . $upcx->recordlocker->getLockingUser($key);
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "UPC $xref->upc - $xref->itemid is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		} elseif ($upcx->recordlocker->isLocked($key) === false) {
+			$upcx->recordlocker->lock($key);
 		}
 
 		if ($xref->isNew()) {
@@ -104,21 +114,28 @@ class Upcx extends AbstractController {
 	}
 
 	public static function list($data) {
-		$data = self::sanitizeParametersShort($data, ['q|text']);
-		$page = self::pw('page');
+		self::sanitizeParametersShort($data, ['q|text', 'orderby|text']);
+		self::pw('session')->removeFor('upcx', 'sortfilter');
+
 		$upcx = self::getUpcx();
 		$upcx->recordlocker->deleteLock();
 		$filter = new UpcxFilter();
 
 		if ($data->q) {
-			$page->headline = "UPCX: Searching for '$data->q'";
+			self::pw('page')->headline = "UPCX: Searching for '$data->q'";
 			$filter->search(strtoupper($data->q));
 		}
-		$filter->sortby($page);
+		$filter->sortby(self::pw('page'));
+
+		if (empty($data->q) === false || empty($data->orderby) === false) {
+			$sortFilter = Filters\SortFilter::fromArray(['q' => $data->q, 'orderby' => $data->orderby]);
+			$sortFilter->saveToSession('upcx');
+		}
+
 		$filter->query->orderBy(ItemXrefUpc::aliasproperty('upc'), 'ASC');
 		$upcs = $filter->query->paginate(self::pw('input')->pageNum, 10);
 
-		$page->js   .= self::pw('config')->twig->render('items/upcx/list/.js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('items/upcx/list/.js.twig');
 		$html = self::listDisplay($data, $upcs);
 		return $html;
 	}
@@ -139,7 +156,7 @@ class Upcx extends AbstractController {
 	/**
 	 * Return URL to view / edit UPC
 	 * @param  string $upc    UPC Code
-	 * @param  string $itemID ** Optional
+	 * @param  string $itemID Item ID
 	 * @return string
 	 */
 	public static function upcUrl($upc, $itemID = '') {
@@ -173,28 +190,50 @@ class Upcx extends AbstractController {
 		$upcx = self::getUpcx();
 		$page = self::pw('pages')->get("pw_template=upcx");
 
-		if ($focus == '' || $upcx->xref_exists($focus) === false) {
+		if ($focus == '' || $upcx->xrefExistsByKey($focus) === false) {
 			return $page->url;
 		}
 
-		$xref   = $upcx->xref($focus);
+		$sortFilter = Filters\SortFilter::getFromSession('upcx');
+		$xref   = $upcx->xrefByKey($focus);
 		$filter = new UpcxFilter();
+
+		if ($sortFilter) {
+			$filter->applySortFilter($sortFilter);
+		}
+
+		$filter->query->orderBy(ItemXrefUpc::aliasproperty('upc'), 'ASC');
 		$offset = $filter->position($xref);
 		$pagenbr = self::getPagenbrFromOffset($offset);
+
 		$url = new Purl($page->url);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, $page->name, $pagenbr);
 		$url->query->set('focus', $focus);
+
+		if ($sortFilter) {
+			if ($sortFilter->q) {
+				$url->query->set('q', $sortFilter->q);
+			}
+			if ($sortFilter->orderby) {
+				$url->query->set('orderby', $sortFilter->orderby);
+			}
+		}
 		return $url->getUrl();
 	}
 
 	/**
 	 * Return URL to delete UPC
+	 * @param  string $upc    UPC Code
+	 * @param  string $itemID Item ID
 	 * @return string
 	 */
-	public static function upcDeleteUrl($upc) {
+	public static function upcDeleteUrl($upc, $itemID) {
 		$url = new Purl(self::pw('pages')->get("pw_template=upcx")->url);
 		$url->query->set('action', 'delete-upcx');
 		$url->query->set('upc', $upc);
+		if ($itemID) {
+			$url->query->set('itemID', $itemID);
+		}
 		return $url->getUrl();
 	}
 
@@ -204,7 +243,7 @@ class Upcx extends AbstractController {
 	 * @return string
 	 */
 	public static function itemUpcsUrl($itemID) {
-		$url = new Url(self::pw('pages')->get("pw_template=upcx")->url);
+		$url = new Purl(self::pw('pages')->get("pw_template=upcx")->url);
 		$url->query->set('itemID', $itemID);
 		return $url->getUrl();
 	}
@@ -220,13 +259,11 @@ class Upcx extends AbstractController {
 		$m = self::pw('modules')->get('XrefUpc');
 
 		$m->addHook('Page(pw_template=upcx)::upcUrl', function($event) {
-			$upc = $event->arguments(0);
-			$event->return = self::upcUrl($upc);
+			$event->return = self::upcUrl($event->arguments(0), $event->arguments(1));
 		});
 
 		$m->addHook('Page(pw_template=upcx)::upcListUrl', function($event) {
-			$focus = $event->arguments(0);
-			$event->return = self::upcListUrl($focus);
+			$event->return = self::upcListUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=upcx)::itemUpcsUrl', function($event) {
@@ -239,13 +276,11 @@ class Upcx extends AbstractController {
 		});
 
 		$m->addHook('Page(pw_template=upcx)::upcDeleteUrl', function($event) {
-			$upc = $event->arguments(0);
-			$event->return = self::upcDeleteUrl($upc);
+			$event->return = self::upcDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
 
 		$m->addHook('Page(pw_template=upcx)::upcCreateItemidUrl', function($event) {
-			$itemID = $event->arguments(0);
-			$event->return = self::upcUrl('new', $itemID);
+			$event->return = self::upcUrl('new', $event->arguments(0));
 		});
 	}
 }

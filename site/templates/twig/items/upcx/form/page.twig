@@ -1,14 +1,10 @@
-{% block breadcrumbs %}
-	{% include 'items/upcx/bread-crumbs.twig' %}
-{% endblock %}
-
 {% if session.getFor('response', 'upcx') %}
 	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'upcx')} %}
 {% endif %}
 
 {% block return_links %}
 	<div class="mb-3">
-		<a href="{{ page.upcListUrl() }}" class="btn btn-primary">
+		<a href="{{ page.upcListUrl(upcx.getRecordlockerKey(upc)) }}" class="btn btn-primary">
 			<i class="fa fa-undo" aria-hidden="true"></i> &nbsp;
 			Back to List
 		</a>

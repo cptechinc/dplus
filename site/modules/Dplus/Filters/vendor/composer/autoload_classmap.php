@@ -30,4 +30,5 @@ return array(
     'Dplus\\Filters\\Mso\\SalesHistory\\Detail' => $baseDir . '/src/Mso/SalesHistory/SalesHistoryDetail.php',
     'Dplus\\Filters\\Mso\\SalesOrder' => $baseDir . '/src/Mso/SalesOrder.php',
     'Dplus\\Filters\\Mso\\SalesOrder\\SalesOrderDetail' => $baseDir . '/src/Mso/SalesOrder/SalesOrderDetail.php',
+    'Dplus\\Filters\\SortFilter' => $baseDir . '/src/SortFilter.php',
 );
