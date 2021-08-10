@@ -1,0 +1,22 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page Current Page
+	input                  ProcessWire\WireInput
+	configPo               ConfigPo
+	orderpage              Purchase Order Page View URL
+	invoices               ApInvoice[]|ObjectCollection
+#}
+{% include 'purchase-orders/invoices/search-form.twig' %}
+
+<div class="row">
+	<div class="col-sm-6">
+		<h3>{{ invoices.getNbResults() }} Invoices</h3>
+	</div>
+	<div class="col-sm-6 text-right">
+	</div>
+</div>
+<div class="mb-3">
+	{% include 'purchase-orders/invoices/invoices-list-links.twig' %}
+</div>
+{% include 'util/paginator/propel.twig' with {'pager': invoices} %}

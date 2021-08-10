@@ -15,7 +15,7 @@
 	{% include 'purchase-orders/purchase-order/items.twig' %}
 
 	{% if user.permitted_edit_po and user.can_edit_po(purchaseorder.ponbr) %}
-		<a href="{{ page.po_editURL(purchaseorder.ponbr) }}" class="btn btn-block btn-warning">
+		<a href="{{ page.poEditUrl(purchaseorder.ponbr) }}" class="btn btn-block btn-warning">
 			<i class="fa fa-pencil" aria-hidden="true"></i> Edit Purchase Order
 		</a>
 	{% endif %}

@@ -1,20 +1,8 @@
 <div class="mb-3">
 	<div class="row">
 		<div class="col-sm-9">
-			<a href="#" class="btn btn-light" aria-label="Return to last page" onclick="window.history.back();">
-				<i class="fa fa-undo" aria-hidden="true"></i> back
-			</a>
-			&nbsp;
-			<a href="{{ page.get_purchaseordersURL() }}" class="btn btn-light">
+			<a href="{{ page.poListUrl() }}" class="btn btn-primary">
 				<i class="fa fa-list" aria-hidden="true"></i> Purchase Orders List
-			</a>
-			&nbsp;
-			<a href="{{ page.get_purchaseorders_vendorURL(purchaseorder.vendorid) }}" class="btn btn-light">
-				<i class="fa fa-list" aria-hidden="true"></i> {{ purchaseorder.vendorid }} Purchase Orders List
-			</a>
-			&nbsp;
-			<a href="{{ page.get_printURL() }}" class="btn btn-primary" target="_blank" aria-label="View Printable" title="View Printable">
-				<i class="fa fa-print" aria-hidden="true"></i> View Print
 			</a>
 			&nbsp;
 			<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#header-notes-modal">
@@ -22,7 +10,7 @@
 			</button>
 		</div>
 		<div class="col text-right">
-			{% if document_management.count_documents_po(purchaseorder.ponbr) %}
+			{% if docm.countDocumentsPo(purchaseorder.ponbr) %}
 				<a href="#documents" title="View Documents" aria-label="View Documents">
 					<i class="fa fa-file-text fa-2x" aria-hidden="true"></i>
 				</a>

@@ -1,9 +1,10 @@
 <?php
-	use Controllers\Mpo\PurchaseOrder\Lists;
+	use Controllers\Mpo\ApInvoice\Lists;
+
 
 	$routes = [
-		['GET', '', Lists\PurchaseOrder::class, 'index'],
-		['GET', 'page{d:\d+}', Lists\PurchaseOrder::class, 'list'],
+		['GET', '', Lists\ApInvoice::class, 'index'],
+		['GET', 'page{d:\d+}', Lists\ApInvoice::class, 'list'],
 		'vendor' => [
 			['GET', '', Lists\Vendor::class, 'index'],
 			['GET', 'page{d:\d+}', Lists\Vendor::class, 'index'],
