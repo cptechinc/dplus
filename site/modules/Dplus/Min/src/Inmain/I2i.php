@@ -14,8 +14,23 @@ class I2i extends WireData {
 	const RESPONSE_TEMPLATE  = 'Item {key} {not} {crud}';
 	const RECORDLOCKER_FUNCTION = 'i2i';
 
+	private static $instance;
+
 	public function __construct() {
 		$this->sessionID = session_id();
+	}
+
+	/**
+	 * Return Instance of I2i
+	 * @return I2i
+	 */
+	public static function getInstance() {
+		if (empty(self::$instance)) {
+			$i2i = new I2i();
+			$i2i->init();
+			self::$instance = $i2i;
+		}
+		return self::$instance;
 	}
 
 	/**
@@ -26,6 +41,12 @@ class I2i extends WireData {
 		return InvItem2ItemQuery::create();
 	}
 
+	/**
+	 * Return Filtered Query
+	 * @param  string $parentID  Parent Item ID
+	 * @param  string $childID   Child Item ID
+	 * @return InvItem2ItemQuery
+	 */
 	public function queryI2i($parentID, $childID) {
 		$q = $this->query();
 		$q->filterByParentitemid($parentID);
