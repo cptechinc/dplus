@@ -71,6 +71,27 @@ class I2i extends AbstractController {
 		return $html;
 	}
 
+	public static function xref($data) {
+		$fields = ['parentID|text', 'childID|text', 'action|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$i2i = self::geti2i();
+
+		$xref = $i2i->getOrCreate($data->parentID, $data->childID);
+
+		if ($i2i->exists($data->parentID, $data->childID)) {
+			self::pw('page')->headline = "I2I: $data->parentID-$data->childID";
+		}
+
+		if ($i2i->exists($data->parentID, $data->childID) === false) {
+			self::pw('page')->headline = "I2I: Creating New X-Ref";
+		}
+
+		if ($xref->isNew() === false) {
+			$i2i->recordlocker->lock($i2i->getRecordlockerKey($xref));
+		}
+		return self::xrefDisplay($data, $xref);
+	}
+
 /* =============================================================
 	Display Functions
 ============================================================= */
@@ -82,6 +103,29 @@ class I2i extends AbstractController {
 		$html .= $config->twig->render('min/i2i/list/display.twig', ['i2i' => $i2i, 'xrefs' => $xrefs]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $xrefs]);
 		return $html;
+	}
+
+	private static function lockXrefDisplay(InvItem2Item $xref) {
+		$config = self::pw('config');
+		$i2i = self::geti2i();
+		$html = '';
+
+		$key = $i2i->getRecordlockerKey($xref);
+
+		if ($i2i->recordlocker->isLocked($key) === false && $i2i->recordlocker->userHasLocked($key) === false) {
+			$i2i->recordlocker->lock($key);
+		}
+
+		if ($i2i->recordlocker->isLocked($key) && $i2i->recordlocker->userHasLocked($key) === false) {
+			$msg = "Item To Item $xref->parentitemid - $xref->childitemid is being locked by " . $i2i->recordlocker->getLockingUser($key);
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "UPC $xref->parentitemid - $xref->childitemid is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		}
+		$html .= '<div class="mb-3"></div>';
+		return $html;
+	}
+
+	private static function xrefDisplay($data, InvItem2Item $xref) {
+		$html = self::lockXrefDisplay($xref);
 	}
 
 /* =============================================================
@@ -113,9 +157,7 @@ class I2i extends AbstractController {
 	 */
 	public static function getI2i() {
 		if (empty(self::$i2i)) {
-			$m = new CRUDManager();
-			$m->init();
-			self::$i2i = $m;
+			self::$i2i = CRUDManager::getInstance();
 		}
 		return self::$i2i;
 	}
