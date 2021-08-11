@@ -1,0 +1,8 @@
+{# include 'items/upcx/bread-crumbs.twig' #}
+
+{% if session.getFor('response', 'i2i') %}
+	{% include 'items/itm/response-alert.twig' with {'response': session.getFor('response', 'i2i')} %}
+{% endif %}
+
+{# include 'items/upcx/search.twig' with {'q' : page.input.get.text('q')} #}
+{% include 'min/i2i/list/list.twig' %}

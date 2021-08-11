@@ -1,0 +1,48 @@
+<div class="table-responsive">
+	<table class="table table-sm">
+		<thead>
+			<tr class="bg-dark text-white">
+				<th class="py-2">
+					<a href="{{ page.get_sortURL('parentitemid') }}" class="link">Parent Item
+						{% if page.orderby_column == 'parentitemid' %}
+							<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+						{% endif %}
+					</a>
+				</th>
+				<th class="py-2">
+					<a href="{{ page.get_sortURL('whseid') }}" class="link">Whse
+						{% if page.orderby_column == 'whseitemid' %}
+							<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+						{% endif %}
+					</a>
+				</th>
+				<th class="py-2">
+					<a href="{{ page.get_sortURL('childitemid') }}" class="link">Child Item
+						{% if page.orderby_column == 'childitemid' %}
+							<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+						{% endif %}
+					</a>
+				</th>
+				<th class="py-2"></th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for xref in xrefs %}
+				<tr>
+					<td>
+						{{ xref.parentitemid }} <br>
+						<small>{{ xref.parentItem().description }}</small>
+					</td>
+					<td>
+						{{ xref.whseid }}
+					</td>
+					<td>
+						{{ xref.childitemid }} <br>
+						<small>{{ xref.childItem().description }}</small>
+					</td>
+					<td></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
