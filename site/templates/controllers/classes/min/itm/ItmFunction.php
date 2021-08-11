@@ -144,12 +144,13 @@ class ItmFunction extends AbstractController {
 			$config = self::pw('config');
 			$msg = "ITM Item $itemID is being locked by " . $itm->recordlocker->getLockingUser($itemID);
 			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "ITM Item $itemID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
-			$html .= $html->div('class=mb-3');
+			$html .= '<div class="mb-3"></div>';
 		} elseif ($itm->recordlocker->isLocked($itemID) === false) {
 			$itm->recordlocker->lock($itemID);
 		}
 		return $html;
 	}
+	
 	/**
 	 * Return Itm
 	 * @return ItmModel
