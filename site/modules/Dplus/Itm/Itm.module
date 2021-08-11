@@ -123,7 +123,9 @@ class Itm extends WireData implements Module {
 		$itemID = substr($itemID, 0, ItemMasterItem::LENGTH_ITEMID);
 		$itemID = $configIn->useUppercaseItemid() ? strtoupper($itemID) : $itemID;
 		$record = $this->newItem();
-		$record->setItemid($itemID);
+		if (strtolower($itemID) != 'new') {
+			$record->setItemid($itemID);
+		}
 		return $record;
 	}
 

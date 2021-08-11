@@ -62,10 +62,12 @@ class Item extends ItmFunction {
 			self::pw('session')->redirect($input->url());
 		}
 		$fields = ['itemID|text'];
-		$data   = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		$page   = self::pw('page');
+		$config = self::pw('config');
 		$validate = new MinValidator();
-		
+
+
 		if ($data->itemID === 'new') {
 			$page->headline = 'ITM: Creating new Item';
 		}
@@ -86,7 +88,7 @@ class Item extends ItmFunction {
 			return $html;
 		}
 		$item = self::getItm()->getCreateItem($data->itemID);
-		$page->js .= $config->twig->render("items/itm/js.twig", ['item' => $item, 'itm' => $itm]);
+		$page->js .= $config->twig->render("items/itm/js.twig", ['item' => $item, 'itm' => self::getItm()]);
 
 		return self::itemDisplay($data, $item);
 	}
@@ -109,7 +111,7 @@ class Item extends ItmFunction {
 		}
 
 		$filter->sortby($page);
-		$items = $filter->query->paginate($input->pageNum, 10);
+		$items = $filter->query->paginate(self::pw('input')->pageNum, 10);
 
 		$page->js = self::pw('config')->twig->render('items/item-list.js.twig');
 		return self::listDisplay($data, $items);
@@ -129,6 +131,7 @@ class Item extends ItmFunction {
 
 	private static function itemDisplay($data, ItemMasterItem $item) {
 		$session = self::pw('session');
+		$config  = self::pw('config');
 		$itm     = self::getItm();
 		$html =  '';
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
