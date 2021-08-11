@@ -52,6 +52,10 @@ class DpagesMin extends Dpages implements Module {
 			'name'   => 'itm-itmp',
 			'fields' => array()
 		),
+		'i2i' => array(
+			'name'   => 'i2i',
+			'fields' => array()
+		)
 	);
 
 	const PAGES = array(
@@ -214,6 +218,15 @@ class DpagesMin extends Dpages implements Module {
 			'summary'        => 'View / Edit User Item Maintenance Permissions',
 			'parent'         => '/min/inmain/',
 			'dplus_function' => 'itmp'
+		),
+		'min-i2i' => array(
+			'template'       => 'dplus-function',
+			'pw_template'    => 'i2i',
+			'name'           => 'i2i',
+			'title'          => 'Item to Item',
+			'summary'        => 'View / Edit Item to Item Relationships',
+			'parent'         => '/min/inmain/',
+			'dplus_function' => 'i2i'
 		),
 		'itm' => array(
 			'template'       => 'dplus-function',
