@@ -288,6 +288,8 @@ class Itm extends WireData implements Module {
 		$record->setTaxable($values->yn('taxable'));
 		$record->setWeight($values->float('weight'));
 		$record->setCubes($values->float('cubes'));
+		$record->setDate(date('Ymd'));
+		$record->setTime(date('his'));
 		$invalidfields = $this->set_validated_fields($record, $input);
 		return $invalidfields;
 	}
@@ -304,7 +306,7 @@ class Itm extends WireData implements Module {
 		$fields = array(
 			'custid' => array(
 				'description' => 'Cust ID',
-				'input'       => 'custid',
+				'input'       => 'custID',
 				'allow_blank' => true
 			),
 			'itemtype' => array(
