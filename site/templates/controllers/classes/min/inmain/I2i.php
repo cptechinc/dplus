@@ -4,7 +4,7 @@ use Purl\Url as Purl;
 // Propel ORM Ljbrary
 use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
-use Item2ItemQuery, Item2Item;
+use InvItem2ItemQuery, InvItem2Item;
 // ProcessWire Classes, Modules
 use ProcessWire\WireData, ProcessWire\Page;
 // Dplus Record Locker
@@ -87,7 +87,9 @@ class I2i extends AbstractController {
 		}
 
 		if ($xref->isNew() === false) {
-			$i2i->recordlocker->lock($i2i->getRecordlockerKey($xref));
+			if ($i2i->recordlocker->isLocked($i2i->getRecordlockerKey($xref)) === false) {
+				$i2i->recordlocker->lock($i2i->getRecordlockerKey($xref));
+			}
 		}
 		return self::xrefDisplay($data, $xref);
 	}
