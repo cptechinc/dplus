@@ -80,6 +80,16 @@ class I2i extends WireData {
 	}
 
 	/**
+	 * Return InvItem2Item from Recordlocker Key
+	 * @param  string $key Record Key in Record Locker Format
+	 * @return InvItem2Item
+	 */
+	public function xrefFromRecordlockerKey($key) {
+		$keys = explode(FunctionLocker::glue(), $key);
+		return $this->xref($keys[0], $keys[1]);
+	}
+
+	/**
 	 * Return new InvItem2Item
 	 * @param  string $parentID  Parent Item ID
 	 * @param  string $childID   Child Item ID
