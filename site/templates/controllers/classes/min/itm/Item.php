@@ -20,7 +20,7 @@ class Item extends ItmFunction {
 ============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 
 		$page->show_breadcrumbs = false;

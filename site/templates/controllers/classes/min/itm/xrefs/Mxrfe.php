@@ -18,7 +18,7 @@ class Mxrfe extends XrefFunction {
 
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 
 		if (self::validateItemidAndPermission($data) === false) {
@@ -123,7 +123,7 @@ class Mxrfe extends XrefFunction {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		$data = self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
+		self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
 		self::initHooks();
 
 		$mxrfe = BaseMxrfe::mxrfeMaster();

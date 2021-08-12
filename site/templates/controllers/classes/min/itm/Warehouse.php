@@ -13,7 +13,7 @@ class Warehouse extends ItmFunction {
 
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 
 		if (self::validateItemidAndPermission($data) === false) {
@@ -64,7 +64,7 @@ class Warehouse extends ItmFunction {
 		}
 
 		$fields = ['itemID|text', 'whseID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
@@ -141,7 +141,7 @@ class Warehouse extends ItmFunction {
 		}
 
 		$fields = ['itemID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}

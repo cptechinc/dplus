@@ -20,7 +20,7 @@ class Upcx extends XrefFunction {
 
 	public static function index($data) {
 		$fields = ['itemID|text', 'upc|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 
 		if (self::validateItemidAndPermission($data) === false) {
@@ -74,7 +74,7 @@ class Upcx extends XrefFunction {
 			return self::displayAlertUserPermission($data);
 		}
 
-		$data = self::sanitizeParametersShort($data, ['itemID|text', 'upc|text', 'action|text']);
+		self::sanitizeParametersShort($data, ['itemID|text', 'upc|text', 'action|text']);
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
@@ -115,7 +115,7 @@ class Upcx extends XrefFunction {
 			return self::displayAlertUserPermission($data);
 		}
 		self::initHooks();
-		$data = self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
+		self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
 		$upcx = UpcxController::getUpcx();
 		$upcx->recordlocker->deleteLock();
 		$page   = self::pw('page');

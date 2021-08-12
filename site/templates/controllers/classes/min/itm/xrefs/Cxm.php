@@ -19,7 +19,7 @@ class Cxm extends XrefFunction {
 
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		$page = self::pw('page');
 
 		if (self::validateItemidAndPermission($data) === false) {
@@ -72,7 +72,7 @@ class Cxm extends XrefFunction {
 			return self::displayAlertUserPermission($data);
 		}
 		$fields = ['itemID|text', 'custID|text', 'custitemID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
@@ -132,7 +132,7 @@ class Cxm extends XrefFunction {
 			return self::displayAlertUserPermission($data);
 		}
 		$fields = ['itemID|text', 'q|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		self::initHooks();
 		$input   = self::pw('input');
 		$page    = self::pw('page');

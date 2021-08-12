@@ -13,7 +13,7 @@ class Misc extends ItmFunction {
 
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
@@ -56,7 +56,7 @@ class Misc extends ItmFunction {
 		}
 
 		$fields = ['itemID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
