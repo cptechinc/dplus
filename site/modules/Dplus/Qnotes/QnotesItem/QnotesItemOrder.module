@@ -42,6 +42,12 @@ class QnotesItemOrder extends WireData implements Module {
 		return ItemOrderNoteQuery::create();
 	}
 
+	public function anyNotesExist($itemID) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		return boolval($q->count());
+	}
+
 	/**
 	 * Returns if Notes Exist
 	 * @param  string $itemID  Item ID
