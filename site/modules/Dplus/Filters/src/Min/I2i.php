@@ -49,20 +49,23 @@ class I2i extends AbstractFilter {
 
 	/**
 	 * Return Position of Item in results
-	 * @param  Model|string $item InvItem2Item|Item ID
+	 * @param  Model|string $parentID InvItem2Item|Parent Item ID
+	 * @param  string       $childID  Child Item ID
 	 * @return int
 	 */
-	public function positionQuick($item) {
-		$itemID = $item;
-		if (is_object($item)) {
-			$itemID = $item->itemid;
+	public function positionQuick($parentID, $childID = '') {
+		$xref = $parentID;
+		if (is_object($xref)) {
+			$parentID = $xref->parentitemid;
+			$childID = $xref->childitemid;
 		}
 		$q = $this->getQueryClass()->executeQuery('SET @rownum = 0');
 		$table = $this->getPositionSubSql();
 
-		$sql = "SELECT x.position FROM ($table) x WHERE InitItemNbr = :itemid";
+		$sql = "SELECT x.position FROM ($table) x WHERE I2iMstrItemId = :parentid AND I2iChildItemId = :childid";
 		$stmt = $this->getPreparedStatementWrapper($sql);
-		$stmt->bindValue(':itemid', $itemID, PDO::PARAM_STR);
+		$stmt->bindValue(':parentid', $parentID, PDO::PARAM_STR);
+		$stmt->bindValue(':childid', $childID, PDO::PARAM_STR);
 		$stmt->execute();
 		return $stmt->fetchColumn();
 	}
@@ -73,7 +76,7 @@ class I2i extends AbstractFilter {
 	 */
 	private function getPositionSubSql() {
 		$table = $this->query->getTableMap()::TABLE_NAME;
-		$sql = "SELECT InitItemNbr, @rownum := @rownum + 1 AS position FROM $table";
+		$sql = "SELECT I2iMstrItemId, I2iChildItemId, @rownum := @rownum + 1 AS position FROM $table";
 		$whereClause = $this->getWhereClauseString();
 		if (empty($whereClause) === false) {
 			$sql .= ' WHERE ' . $whereClause;
