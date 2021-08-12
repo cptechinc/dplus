@@ -23,7 +23,7 @@ class Cxm extends XrefFunction {
 		$page = self::pw('page');
 
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 
 		$page->show_breadcrumbs = false;
@@ -41,7 +41,7 @@ class Cxm extends XrefFunction {
 	public static function handleCRUD($data) {
 		$page    = self::pw('page');
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 		$fields = ['itemID|text', 'custID|text', 'custitemID|text', 'action|text'];
 		$data  = self::sanitizeParameters($data, $fields);
@@ -69,7 +69,7 @@ class Cxm extends XrefFunction {
 
 	public static function xref($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 		$fields = ['itemID|text', 'custID|text', 'custitemID|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -129,7 +129,7 @@ class Cxm extends XrefFunction {
 
 	public static function list($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 		$fields = ['itemID|text', 'q|text'];
 		$data = self::sanitizeParametersShort($data, $fields);

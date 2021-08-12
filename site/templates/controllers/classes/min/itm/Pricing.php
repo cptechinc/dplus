@@ -16,7 +16,7 @@ class Pricing extends ItmFunction {
 		$page = self::pw('page');
 
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 
 		self::getItmPricing()->init_configs();
@@ -30,13 +30,12 @@ class Pricing extends ItmFunction {
 		if (empty($data->itemID) === false) {
 			return self::pricing($data);
 		}
-
 	}
 
 	public static function handleCRUD($data) {
 		$page = self::pw('page');
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 
 		$fields = ['itemID|text', 'action|text'];
@@ -54,7 +53,7 @@ class Pricing extends ItmFunction {
 
 	public static function pricing($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 
 		$fields = ['itemID|text', 'action|text'];

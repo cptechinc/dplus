@@ -15,7 +15,7 @@ class Xrefs extends XrefFunction {
 		$page = self::pw('page');
 
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 
 		$page->show_breadcrumbs = false;
@@ -30,7 +30,7 @@ class Xrefs extends XrefFunction {
 	public static function handleCRUD($data) {
 		$page    = self::pw('page');
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParameters($data, $fields);
@@ -45,7 +45,7 @@ class Xrefs extends XrefFunction {
 
 	public static function itmXrefs($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 		self::initHooks();
 		$fields = ['itemID|text', 'action|text'];

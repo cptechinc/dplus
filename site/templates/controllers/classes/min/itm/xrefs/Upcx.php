@@ -24,7 +24,7 @@ class Upcx extends XrefFunction {
 		$page = self::pw('page');
 
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 
 		$page->show_breadcrumbs = false;
@@ -42,7 +42,7 @@ class Upcx extends XrefFunction {
 	public static function handleCRUD($data) {
 		$page    = self::pw('page');
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 		$fields = ['itemID|text', 'upc|text', 'action|text'];
 		$data = self::sanitizeParameters($data, $fields);
@@ -71,7 +71,7 @@ class Upcx extends XrefFunction {
 
 	public static function xref($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 
 		$data = self::sanitizeParametersShort($data, ['itemID|text', 'upc|text', 'action|text']);
@@ -112,7 +112,7 @@ class Upcx extends XrefFunction {
 
 	public static function list($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 		self::initHooks();
 		$data = self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);

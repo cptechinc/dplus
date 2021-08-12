@@ -18,7 +18,7 @@ class Kim extends ItmFunction {
 		$page = self::pw('page');
 
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 
 		KimController::getKim()->init_configs();
@@ -37,7 +37,7 @@ class Kim extends ItmFunction {
 
 	public static function handleCRUD($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return self::pw('page')->body;
+			return self::displayAlertUserPermission($data);
 		}
 		self::sanitizeParametersShort($data, ['itemID|text', 'action|text']);
 		$kim = KimController::getKim();
@@ -51,7 +51,7 @@ class Kim extends ItmFunction {
 
 	public static function kit($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return self::pw('page')->body;
+			return self::displayAlertUserPermission($data);
 		}
 		self::sanitizeParametersShort($data, ['itemID|text', 'action|text']);
 
@@ -82,7 +82,7 @@ class Kim extends ItmFunction {
 
 	public static function kitComponent($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return self::pw('page')->body;
+			return self::displayAlertUserPermission($data);
 		}
 
 		$fields = ['itemID|text', 'component|text', 'action|text'];

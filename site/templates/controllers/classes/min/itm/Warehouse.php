@@ -17,7 +17,7 @@ class Warehouse extends ItmFunction {
 		$page = self::pw('page');
 
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 
 		if (empty($data->action) === false) {
@@ -35,7 +35,7 @@ class Warehouse extends ItmFunction {
 	public static function handleCRUD($data) {
 		$page = self::pw('page');
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 
 		$fields = ['itemID|text', 'whseID|text', 'action|text'];
@@ -60,7 +60,7 @@ class Warehouse extends ItmFunction {
 
 	public static function warehouse($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 
 		$fields = ['itemID|text', 'whseID|text', 'action|text'];

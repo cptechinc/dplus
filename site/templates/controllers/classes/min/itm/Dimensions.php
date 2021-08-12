@@ -17,7 +17,7 @@ class Dimensions extends ItmFunction {
 		$data = self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidAndPermission($data) === false) {
-			return self::pw('page')->body;
+			return self::displayAlertUserPermission($data);
 		}
 
 		if (empty($data->action) === false) {
@@ -33,7 +33,7 @@ class Dimensions extends ItmFunction {
 
 	public static function handleCRUD($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return self::pw('page')->body;
+			return self::displayAlertUserPermission($data);
 		}
 
 		$fields   = ['itemID|text', 'action|text'];
@@ -49,7 +49,7 @@ class Dimensions extends ItmFunction {
 
 	public static function dim($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return self::pw('page')->body;
+			return self::displayAlertUserPermission($data);
 		}
 
 		$fields = ['itemID|text', 'action|text'];
