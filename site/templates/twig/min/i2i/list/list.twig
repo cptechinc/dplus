@@ -28,7 +28,7 @@
 		</thead>
 		<tbody>
 			{% for xref in xrefs %}
-				<tr>
+				<tr data-key="{{ i2i.getRecordlockerKey(xref) }}">
 					<td>
 						{{ xref.parentitemid }} <br>
 						<small>{{ xref.parentItem().description }}</small>

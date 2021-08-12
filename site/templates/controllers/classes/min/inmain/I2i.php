@@ -63,10 +63,11 @@ class I2i extends AbstractController {
 			$sortFilter = Filters\SortFilter::fromArray(['q' => $data->q, 'orderby' => $data->orderby]);
 			$sortFilter->saveToSession('i2i');
 		}
+		$filter->query->orderBy(InvItem2Item::aliasproperty('parentitemid'), 'ASC');
 
 		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 10);
 
-		// self::pw('page')->js .= self::pw('config')->twig->render('items/upcx/list/.js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('min/i2i/list/.js.twig');
 		$html = self::listDisplay($data, $xrefs);
 		return $html;
 	}
@@ -140,6 +141,43 @@ class I2i extends AbstractController {
 		return self::pw('pages')->get('pw_template=i2i')->url;
 	}
 
+	public static function xrefListUrl($focus = '') {
+		if (empty($focus)) {
+			return self::i2iUrl();
+		}
+		return self::xrefListFocusUrl($focus);
+	}
+
+	public static function xrefListFocusUrl($focus) {
+		$i2i = self::getI2i();
+		$xref = $i2i->xrefFromRecordlockerKey($focus);
+		if (empty($xref)) {
+			return self::i2iUrl();
+		}
+		$sortFilter = Filters\SortFilter::getFromSession('i2i');
+		$filter = new I2iFilter();
+
+		if ($sortFilter) {
+			$filter->applySortFilter($sortFilter);
+		}
+		$filter->query->orderBy(InvItem2Item::aliasproperty('parentitemid'), 'ASC');
+		$offset = $filter->position($xref);
+		$pagenbr = self::getPagenbrFromOffset($offset);
+
+		$url = new Purl(self::i2iUrl());
+		$url->query->set('focus', $focus);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get(self::i2iUrl())->name, $pagenbr);
+		if ($sortFilter) {
+			if ($sortFilter->q) {
+				$url->query->set('q', $sortFilter->q);
+			}
+			if ($sortFilter->orderby) {
+				$url->query->set('orderby', $sortFilter->orderby);
+			}
+		}
+		return $url->getUrl();
+	}
+
 	public static function xrefUrl($parentID, $childID) {
 		$url = new Purl(self::i2iUrl());
 		$url->query->set('parentID', $parentID);
@@ -177,5 +215,10 @@ class I2i extends AbstractController {
 		$m->addHook('Page(pw_template=i2i)::xrefDeleteUrl', function($event) {
 			$event->return = self::xrefDeleteUrl($event->arguments(0), $event->arguments(1));
 		});
+
+		$m->addHook('Page(pw_template=i2i)::xrefListUrl', function($event) {
+			$event->return = self::xrefListUrl($event->arguments(0));
+		});
+
 	}
 }
