@@ -15,7 +15,6 @@ class Kim extends ItmFunction {
 
 	public static function index($data) {
 		self::sanitizeParametersShort($data, ['itemID|text', 'action|text']);
-		$page = self::pw('page');
 
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);

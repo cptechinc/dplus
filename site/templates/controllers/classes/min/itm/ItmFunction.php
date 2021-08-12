@@ -34,7 +34,6 @@ class ItmFunction extends AbstractController {
 	protected static function validateUserPermission() {
 		$user = self::pw('user');
 		$itmp = self::pw('modules')->get('Itmp');
-		$page = self::pw('page');
 
 		if ($user->has_function('itm') === false) {
 			return false;

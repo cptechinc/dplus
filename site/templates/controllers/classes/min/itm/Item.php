@@ -21,9 +21,7 @@ class Item extends ItmFunction {
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$page = self::pw('page');
-
-		$page->show_breadcrumbs = false;
+		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -190,9 +188,6 @@ class Item extends ItmFunction {
 	}
 
 	protected static function validateUserPermission() {
-		$wire = self::pw();
-		$user = $wire->wire('user');
-		$page = $wire->wire('page');
-		return $user->has_function('itm');
+		return self::pw('user')->has_function('itm');
 	}
 }
