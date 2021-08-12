@@ -81,6 +81,11 @@ table.table-md td, table.table-md th {
 	background-color: #e9ecef;
 }
 
+.nav-pills .nav-item:hover {
+	color: #212529;
+	background-color: rgba(0, 0, 0, 0.075)
+}
+
 /*==============================================================
 	FUELUX Styles
 ==============================================================*/
