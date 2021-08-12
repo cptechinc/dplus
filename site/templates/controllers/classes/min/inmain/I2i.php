@@ -127,7 +127,10 @@ class I2i extends AbstractController {
 	}
 
 	private static function xrefDisplay($data, InvItem2Item $xref) {
-		$html = self::lockXrefDisplay($xref);
+		$i2i = self::geti2i();
+		$html  = self::lockXrefDisplay($xref);
+		$html .= self::pw('config')->twig->render('min/i2i/xref/display.twig', ['xref' => $xref, 'i2i' => $i2i]);
+		return $html;
 	}
 
 /* =============================================================
