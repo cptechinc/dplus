@@ -13,4 +13,15 @@ class I2iForm {
 		this.inputs = I2iInputs.getInstance();
 	}
 
+	redirectExisting(goEdit) {
+		if (goEdit === true) {
+			var uri = URI();
+			uri.setQuery('parentID', this.inputs.parentid.val());
+			uri.setQuery('childtID', this.inputs.childid.val());
+			window.location.href = uri.toString();
+		} else {
+			location.reload();
+		}
+	}
+
 }
