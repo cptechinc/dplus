@@ -92,6 +92,7 @@ class I2i extends AbstractController {
 				$i2i->recordlocker->lock($i2i->getRecordlockerKey($xref));
 			}
 		}
+		self::pw('page')->js .= self::pw('config')->twig->render('min/i2i/xref/form/.js.twig');
 		return self::xrefDisplay($data, $xref);
 	}
 
