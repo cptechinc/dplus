@@ -211,6 +211,12 @@ class I2i extends AbstractController {
 		return $url->getUrl();
 	}
 
+	public static function xrefNewUrl() {
+		$url = new Purl(self::i2iUrl());
+		$url->query->set('parentID', 'new');
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
@@ -234,6 +240,10 @@ class I2i extends AbstractController {
 
 		$m->addHook('Page(pw_template=i2i)::xrefDeleteUrl', function($event) {
 			$event->return = self::xrefDeleteUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=i2i)::xrefNewUrl', function($event) {
+			$event->return = self::xrefNewUrl();
 		});
 
 		$m->addHook('Page(pw_template=i2i)::xrefListUrl', function($event) {
