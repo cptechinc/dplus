@@ -6,5 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Dplus\\Min\\Inmain\\I2i\\I2i' => $baseDir . '/src/Inmain/I2i.php',
+    'Dplus\\Min\\Inmain\\I2i\\I2i' => $baseDir . '/src/Inmain/I2i/I2i.php',
+    'Dplus\\Min\\Inmain\\I2i\\Response' => $baseDir . '/src/Inmain/I2i/Response.php',
 );
