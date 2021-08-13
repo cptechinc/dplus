@@ -71,6 +71,16 @@ class I2i extends WireData {
 	}
 
 	/**
+	 * Return If InvItem2Item exists
+	 * @param  string $key Record Key in Record Locker Format
+	 * @return bool
+	 */
+	public function existsFromRecordlockerKey($key) {
+		$keys = explode(FunctionLocker::glue(), $key);
+		return $this->exists($keys[0], $keys[1]);
+	}
+
+	/**
 	 * Return InvItem2Item from Database
 	 * @param  string $parentID  Parent Item ID
 	 * @param  string $childID   Child Item ID
@@ -330,6 +340,22 @@ class I2i extends WireData {
 	 */
 	public function getRecordlockerKey(InvItem2Item $xref) {
 		return implode(FunctionLocker::glue(), [$xref->parentitemid, $xref->childitemid]);
+	}
+
+	/**
+	 * Return Recordlocker Key for InvItem2Item
+	 * @param  InvItem2Item $xref X-Ref
+	 * @return string
+	 */
+
+	/**
+	 * Return Recordlocker Key for InvItem2Item
+	 * @param  string $parentID  Parent Item ID
+	 * @param  string $childID   Child Item ID
+	 * @return string
+	 */
+	public function getRecordlockerKeyFromKeys($parentID, $childID) {
+		return implode(FunctionLocker::glue(), [$parentID, $childID]);
 	}
 
 	/**
