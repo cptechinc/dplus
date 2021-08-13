@@ -230,4 +230,15 @@ class Min extends WireData {
 		}
 		return true;
 	}
+
+	/**
+	 * Return if Item 2 Item Record Exists
+	 * @param  string $parentID  Parent Item ID
+	 * @param  string $childID   Child Item ID
+	 * @return bool
+	 */
+	public function i2i($parentID, $childID) {
+		$i2i = Inmain\I2i\I2i::getInstance();
+		return $i2i->exists($parentID, $childID);
+	}
 }
