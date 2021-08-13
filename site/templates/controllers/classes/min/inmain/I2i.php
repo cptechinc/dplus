@@ -32,7 +32,7 @@ class I2i extends AbstractController {
 			return self::handleCRUD($data);
 		}
 
-		if (empty($data->parentID) === false && empty($data->childID) === false) {
+		if (empty($data->parentID) === false) {
 			return self::xref($data);
 		}
 		return self::list($data);
