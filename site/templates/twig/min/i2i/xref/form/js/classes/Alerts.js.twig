@@ -1,0 +1,43 @@
+class I2iAlerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new I2iAlerts();
+		}
+		return this.instance;
+	}
+
+	xrefExists(parentID, childID, callback) {
+		swal2.fire({
+			title: 'Item to Item Exists',
+			text: 'Edit UPC ' + parentID + ' - '+ childID +'?',
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: 'Yes'
+		}).then(function (result) {
+			if (result.value) {
+				callback(true);
+			}
+			callback(false);
+		});
+	}
+
+	unsavedChanges(callback) {
+		swal2.fire({
+			title: 'Changes have occurred!',
+			text: 'Do you want to save?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+			cancelButtonText: 'No',
+		}).then((result) => { // Return True for save, false for dismiss
+			if (result.value) {
+				callback(true)
+			} else if (result.dismiss === Swal.DismissReason.cancel) {
+				callback(false);
+			}
+		});
+	}
+
+}
