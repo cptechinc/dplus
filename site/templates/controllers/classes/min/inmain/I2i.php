@@ -25,8 +25,7 @@ class I2i extends AbstractController {
 	public static function index($data) {
 		$fields = ['parentID|text', 'childID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
-		$page = self::pw('page');
-		$page->show_breadcrumbs = false;
+		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -39,9 +38,21 @@ class I2i extends AbstractController {
 	}
 
 	public static function handleCRUD($data) {
-		$fields = ['action|text', 'upc|text', 'itemID|text',];
-		$data  = self::sanitizeParameters($data, $fields);
-		$input = self::pw('input');
+		$fields = ['parentID|text', 'childID|text', 'action|text'];
+		self::sanitizeParameters($data, $fields);
+		$i2i = self::getI2i();
+		$i2i->processInput(self::pw('input'));
+		$url = self::xrefListUrl();
+
+		switch ($data->action) {
+			case 'update-i2i':
+				if ($i2i->exists($data->parentID, $data->childID)) {
+					$xref = $i2i->xref($data->parentID, $data->childID);
+					$url = self::xrefListFocusUrl($i2i->getRecordlockerKey($xref));
+				}
+				break;
+		}
+		self::pw('session')->redirect($url, $http301 = false);
 	}
 
 	public static function list($data) {
@@ -129,10 +140,18 @@ class I2i extends AbstractController {
 	}
 
 	private static function xrefDisplay($data, InvItem2Item $xref) {
-		$i2i = self::geti2i();
+		$i2i   = self::geti2i();
 		$html  = self::lockXrefDisplay($xref);
 		$html .= self::pw('config')->twig->render('min/i2i/xref/display.twig', ['xref' => $xref, 'i2i' => $i2i]);
 		return $html;
+	}
+
+	private static function responseDisplay($data) {
+		$response = self::pw('session')->getFor('response', 'i2i');
+		if ($response) {
+			return self::pw('config')->twig->render('items/itm/response-alert.twig', ['response' => $response]);
+		}
+		return '';
 	}
 
 /* =============================================================
