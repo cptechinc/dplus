@@ -1,4 +1,4 @@
-<form action="{{ input.url() }}" method="POST" id="i2i-form">
+<form action="{{ input.url() }}" method="POST" id="i2i-form" data-new="{{ xref.isNew() ? 'true' : 'false' }}">
 	<input type="hidden" name="action" value="update-i2i">
 
 	<div class="mb-4">
