@@ -1,17 +1,19 @@
 <?php namespace Dplus\CodeValidators;
-
-use ProcessWire\WireData;
-
+// Propel ORM Library
 use Propel\Runtime\ActiveQuery\Criteria;
-
-use Dplus\CodeValidators\Map as MapValidator;
-
+// Dplus Models
 use ItemMasterItemQuery, ItemMasterItem;
 use InvAssortmentCodeQuery, InvAssortmentCode;
 use UnitofMeasureSaleQuery, UnitofMeasureSale;
+// ProcessWire
+use ProcessWire\WireData;
+// Dplus CRUD
+use Dplus\Min\Inmain;
+// Dplus Code Validators
+use Dplus\CodeValidators\Map as MapValidator;
 
 /**
- * In
+ * Min
  *
  * Class for Validating Inventory (IN) table codes, IDs
  */
