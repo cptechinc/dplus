@@ -97,7 +97,7 @@ class I2i extends WireData {
 	 */
 	public function new($parentID = '', $childID = '') {
 		$r = new InvItem2Item();
-		if ($parentID) {
+		if ($parentID && strtolower($parentID) != 'new') {
 			$r->setParentitemid($parentID);
 		}
 		if ($childID) {
