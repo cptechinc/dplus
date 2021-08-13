@@ -75,6 +75,15 @@ $(function() {
 		modal.modal('hide');
 	});
 
+	$("body").on('click', '.whse-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var whseID = button.data('whseid');
+		var modal  = button.closest('.modal');
+		$(modal.attr('data-input')).val(whseID).change();
+		modal.modal('hide');
+	});
+
 	$("body").on('submit', '#ajax-modal form', function(e) {
 		e.preventDefault();
 		var form = $(this);
@@ -159,7 +168,7 @@ $(function() {
 					}
 				});
 			} else {
-				// form.submit();
+				form.submit();
 			}
 		}
 	});
