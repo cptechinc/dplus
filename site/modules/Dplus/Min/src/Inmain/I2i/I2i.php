@@ -226,6 +226,34 @@ class I2i extends WireData {
 		return $this->wire('session')->getFor('response', 'i2i')->has_success();
 	}
 
+	/**
+	 * Delete I2i from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	protected function inputDelete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$parentID = $values->text('parentID');
+		$childID  = $values->text('childID');
+
+		if ($this->exists($parentID, $childID)) {
+			$xref = $this->xref($parentID, $childID);
+
+			if ($this->lockrecord($xref) === false) {
+				$key = $this->getRecordlockerKey($xref);
+				$message = self::DESCRIPTION_RECORD . " ($key)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($xref);
+				$this->wire('session')->setFor('response', 'i2i', Response::response_error($key, $message));
+				return false;
+			}
+			$xref->delete();
+			$response = $this->saveAndRespond($xref);
+			$this->wire('session')->setFor('response', 'i2i', $response);
+			return $response->has_success();
+		}
+		return true;
+	}
+
 /* =============================================================
 	CRUD Response Functions
 ============================================================= */

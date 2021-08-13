@@ -207,7 +207,7 @@ class I2i extends AbstractController {
 
 	public static function xrefDeleteUrl($parentID, $childID) {
 		$url = new Purl(self::xrefUrl($parentID, $childID));
-		$url->query->set('action', 'delete-xref');
+		$url->query->set('action', 'delete-i2i');
 		return $url->getUrl();
 	}
 
