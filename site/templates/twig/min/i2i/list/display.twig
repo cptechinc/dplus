@@ -1,4 +1,6 @@
-
-
-{# include 'items/upcx/search.twig' with {'q' : page.input.get.text('q')} #}
-{% include 'min/i2i/list/list.twig' %}
+<div class="card">
+	<div class="card-body">
+		{% include 'min/i2i/list/search.twig' with {'q' : input.get.text('q')} %}
+	</div>
+	{% include 'min/i2i/list/list.twig' %}
+</div>
