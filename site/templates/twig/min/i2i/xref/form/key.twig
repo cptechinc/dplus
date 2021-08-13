@@ -2,7 +2,7 @@
 	<div class="col-sm-4">
 		<label for="parentID">Parent Item ID</label>
 	</div>
-	<div class="col-sm-8">
+	<div class="col-sm-8 itemid-parent">
 		{% include 'util/bootstrap/form/input-group.twig' with {
 				'inputgroup': {
 					'type': 'prepend',
@@ -18,6 +18,7 @@
 							'aria-label':  'Item ID',
 							'tabindex': xref.parentitemid ? '-1' : '',
 							'data-itemid': xref.parentitemid,
+							'data-updates': 'description,description2'
 						}
 					},
 					'button': {
@@ -42,7 +43,7 @@
 	<div class="col-sm-4">
 		<label for="childID">Child Item ID</label>
 	</div>
-	<div class="col-sm-8">
+	<div class="col-sm-8 itemid-parent">
 		{% include 'util/bootstrap/form/input-group.twig' with {
 				'inputgroup': {
 					'type': 'prepend',
@@ -58,6 +59,7 @@
 							'aria-label':  'Item ID',
 							'tabindex': xref.childitemid ? '-1' : '',
 							'data-itemid': xref.childitemid,
+							'data-updates': 'description,description2'
 						}
 					},
 					'button': {

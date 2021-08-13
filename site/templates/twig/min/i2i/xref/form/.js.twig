@@ -11,12 +11,21 @@ $(function() {
 	Event
 ============================================================= */
 	$("body").on("change", "input[name=parentID], input[name=childID]", function(e) {
+		var input = $(this);
+
 		server.validateXref(formI2i.inputs.parentid.val(), formI2i.inputs.childid.val(), function(exists) {
 			if (exists === true) {
 				alert.xrefExists(formI2i.inputs.parentid.val(), formI2i.inputs.childid.val(), function(goEdit) {
 					I2iForm.getInstance().redirectExisting(goEdit);
 				});
 			}
+			I2iRequests.getInstance().getItm(input.val(),['description', 'description2'], function(item) {
+				if (item) {
+					var parent = input.closest('.itemid-parent');
+					parent.find('.description').text(item.description);
+					parent.find('.description2').text(item.description2);
+				}
+			});
 		});
 	});
 
