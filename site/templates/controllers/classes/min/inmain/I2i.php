@@ -114,7 +114,9 @@ class I2i extends AbstractController {
 		$i2i = self::geti2i();
 		$config = self::pw('config');
 
-		$html = '';
+		$html  = '';
+		$html .= self::breadCrumbsDisplay($data);
+		$html .= self::responseDisplay($data);
 		$html .= $config->twig->render('min/i2i/list/display.twig', ['i2i' => $i2i, 'xrefs' => $xrefs]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $xrefs]);
 		return $html;
@@ -140,9 +142,10 @@ class I2i extends AbstractController {
 	}
 
 	private static function xrefDisplay($data, InvItem2Item $xref) {
-		$i2i   = self::geti2i();
-		$html  = self::lockXrefDisplay($xref);
-		$html .= self::pw('config')->twig->render('min/i2i/xref/display.twig', ['xref' => $xref, 'i2i' => $i2i]);
+		$html  = self::breadCrumbsDisplay($data);
+		$html .= self::responseDisplay($xref);
+		$html .= self::lockXrefDisplay($xref);
+		$html .= self::pw('config')->twig->render('min/i2i/xref/display.twig', ['xref' => $xref, 'i2i' => self::geti2i()]);
 		return $html;
 	}
 
@@ -152,6 +155,10 @@ class I2i extends AbstractController {
 			return self::pw('config')->twig->render('items/itm/response-alert.twig', ['response' => $response]);
 		}
 		return '';
+	}
+
+	private static function breadCrumbsDisplay($data) {
+		return self::pw('config')->twig->render('min/i2i/bread-crumbs.twig');
 	}
 
 /* =============================================================
@@ -168,12 +175,19 @@ class I2i extends AbstractController {
 		return self::xrefListFocusUrl($focus);
 	}
 
-	public static function xrefListFocusUrl($focus) {
+	public static function xrefListFocusUrl($key, $childID = '') {
 		$i2i = self::getI2i();
-		$xref = $i2i->xrefFromRecordlockerKey($focus);
-		if (empty($xref)) {
+
+		if (empty($childID) === false) {
+			$key = $i2i->getRecordlockerKeyFromKeys($key, $childID);
+		}
+		$i2i->existsFromRecordlockerKey($key);
+
+
+		if ($i2i->existsFromRecordlockerKey($key) === false) {
 			return self::i2iUrl();
 		}
+		$xref = $i2i->xrefFromRecordlockerKey($key);
 		$sortFilter = Filters\SortFilter::getFromSession('i2i');
 		$filter = new I2iFilter();
 
@@ -185,7 +199,7 @@ class I2i extends AbstractController {
 		$pagenbr = self::getPagenbrFromOffset($offset);
 
 		$url = new Purl(self::i2iUrl());
-		$url->query->set('focus', $focus);
+		$url->query->set('focus', $key);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get(self::i2iUrl())->name, $pagenbr);
 		if ($sortFilter) {
 			if ($sortFilter->q) {
@@ -250,5 +264,8 @@ class I2i extends AbstractController {
 			$event->return = self::xrefListUrl($event->arguments(0));
 		});
 
+		$m->addHook('Page(pw_template=i2i)::xrefListFocusUrl', function($event) {
+			$event->return = self::xrefListFocusUrl($event->arguments(0), $event->arguments(1));
+		});
 	}
 }
