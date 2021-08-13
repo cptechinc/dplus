@@ -42,7 +42,7 @@ $(function() {
 
 			alert.unsavedChanges(function(save) {
 				if (save === true) {
-					// formI2i.inputs.form.find('button[type=submit]').click();
+					formI2i.inputs.form.find('button[type=submit]').click();
 				} else {
 					$.get('{{ page.url }}', function() {
 						window.location.href = href;
@@ -152,6 +152,7 @@ $(function() {
 		submitHandler: function(form) {
 			$('#loading-modal').modal('show');
 
+
 			if ($(form).data('new') === true) {
 				var data = $(form).serializeArray().reduce(function(obj, item) {
 					obj[item.name] = item.value;
@@ -165,6 +166,9 @@ $(function() {
 						alert.xrefExists(data['parentID'], data['childID'], function(goEdit) {
 							I2iForm.getInstance().redirectExisting(goEdit);
 						});
+					}
+					if (exists === false) {
+						form.submit();
 					}
 				});
 			} else {
