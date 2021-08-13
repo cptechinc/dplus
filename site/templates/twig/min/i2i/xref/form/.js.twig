@@ -8,6 +8,19 @@ $(function() {
 	var formI2i  = I2iForm.getInstance();
 
 /* =============================================================
+	Event
+============================================================= */
+	$("body").on("change", "input[name=parentID], input[name=childID]", function(e) {
+		server.validateXref(formI2i.inputs.parentid.val(), formI2i.inputs.childid.val(), function(exists) {
+			if (exists === true) {
+				alert.xrefExists(formI2i.inputs.parentid.val(), formI2i.inputs.childid.val(), function(goEdit) {
+					I2iForm.getInstance().redirectExisting(goEdit);
+				});
+			}
+		});
+	});
+
+/* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
 	origForm = formI2i.inputs.form.serialize();
@@ -130,16 +143,9 @@ $(function() {
 				var server = I2iRequests.getInstance();
 				server.validateXref(data['parentID'], data['childID'], function(exists) {
 					if (exists === true) {
-						var alerts = I2iAlerts.getInstance();
-						alerts.xrefExists(data['parentID'], data['childID'], function(goEdit) {
-							if (goEdit === true) {
-								var uri = URI();
-								uri.setQuery('parentID', data['parentID']);
-								uri.setQuery('childtID', data['childID']);
-								window.location.href = uri.toString();
-							} else {
-								location.reload();
-							}
+						var alert = I2iAlerts.getInstance();
+						alert.xrefExists(data['parentID'], data['childID'], function(goEdit) {
+							I2iForm.getInstance().redirectExisting(goEdit);
 						});
 					}
 				});
