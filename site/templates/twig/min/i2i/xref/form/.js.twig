@@ -70,4 +70,82 @@ $(function() {
 		modal_ajax.find('.modal-body').load(href);
 	});
 
+/* =============================================================
+	Validation Functions
+============================================================= */
+	formI2i.inputs.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		rules: {
+			parentID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						itemID: function() {
+							return $('#parentID').val();
+						}
+					}
+				}
+			},
+			childID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						itemID: function() {
+							return $('#childID').val();
+						}
+					}
+				}
+			},
+			whseID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/warehouse/') }}',
+					type: "get",
+					data: {
+						jqv: 'true'
+					}
+				}
+			},
+		},
+		messages: {},
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		submitHandler: function(form) {
+			$('#loading-modal').modal('show');
+
+			if ($(form).data('new') === true) {
+				var data = $(form).serializeArray().reduce(function(obj, item) {
+					obj[item.name] = item.value;
+					return obj;
+				}, {});
+
+				var server = I2iRequests.getInstance();
+				server.validateXref(data['parentID'], data['childID'], function(exists) {
+					if (exists === true) {
+						var alerts = I2iAlerts.getInstance();
+						alerts.xrefExists(data['parentID'], data['childID'], function(goEdit) {
+							if (goEdit === true) {
+								var uri = URI();
+								uri.setQuery('parentID', data['parentID']);
+								uri.setQuery('childtID', data['childID']);
+								window.location.href = uri.toString();
+							} else {
+								location.reload();
+							}
+						});
+					}
+				});
+			} else {
+				// form.submit();
+			}
+		}
+	});
 });
