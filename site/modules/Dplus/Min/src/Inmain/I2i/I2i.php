@@ -188,15 +188,17 @@ class I2i extends WireData {
 		$values = $input->$rm;
 
 		switch ($values->text('action')) {
-			case 'delete-xref':
-				$this->inputDelete($input);
+			case 'delete-i2i':
+				return $this->inputDelete($input);
 				break;
-			case 'update-xref':
-				$this->inputUpdate($input);
+			case 'update-i2i':
+				return $this->inputUpdate($input);
 				break;
 			default:
-				$message = self::DESCRIPTION_RECORD . " ($upc) was not saved, no action was specified";
-				$this->wire('session')->setFor('response', 'upcx', XrefResponse::response_error($upc, $message));
+				$key = implode('-', [$values->text('parentID'), $values->text('childID')]);
+				$message = self::DESCRIPTION_RECORD . " ($key) was not saved, no action was specified";
+				$this->wire('session')->setFor('response', 'i2i', Response::response_error($key, $message));
+				return false;
 				break;
 		}
 	}
@@ -220,10 +222,6 @@ class I2i extends WireData {
 		}
 		$invalidFields = $this->updateXrefInput($xref, $input);
 		$response = $this->saveAndRespond($xref, $invalidFields);
-
-		if ($response->has_success()) {
-
-		}
 		$this->wire('session')->setFor('response', 'i2i', $response);
 		return $this->wire('session')->getFor('response', 'i2i')->has_success();
 	}
@@ -261,7 +259,7 @@ class I2i extends WireData {
 		$response->build_message(self::RESPONSE_TEMPLATE);
 
 		if ($response->has_success() && empty($invalidfields)) {
-			// $this->updateDplusServer($xref);
+			$this->updateDplusServer($xref);
 		}
 		return $response;
 	}
@@ -274,14 +272,14 @@ class I2i extends WireData {
 	 * @param  InvItem2Item $item
 	 * @return void
 	 */
-	public function updateDplusServer(InvItem2Item $item) {
+	public function updateDplusServer(InvItem2Item $xref) {
 		$config = $this->wire('config');
 		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
 		$data = ["DBNAME=$dplusdb", 'UPDATEI2I', "MSTRITEM=$xref->parentitemid", "CHILDITEM=$xref->childitemid"];
 
 		$requestor = $this->wire('modules')->get('DplusRequest');
-		$requestor->write_dplusfile($data, session_id());
-		$requestor->cgi_request($config->cgis['database'], session_id());
+		$requestor->write_dplusfile($data, $this->sessionID);
+		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
 	}
 
 /* =============================================================
@@ -318,5 +316,4 @@ class I2i extends WireData {
 		}
 		return $this->recordlocker->userHasLocked($key);
 	}
-
 }
