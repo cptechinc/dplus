@@ -30,6 +30,17 @@ class Map extends AbstractController {
 		return true;
 	}
 
+	public static function validateVendorShipfromid($data) {
+		$fields = ['vendorID|text', 'shipfromID|text', 'jqv|bool'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$validate = new MapValidator();
+
+		if ($validate->vendorShipfromid($data->vendorID, $data->shipfromID) === false) {
+			return $data->jqv ? "Ship-From $data->shipfromID for Vendor $data->vendorID not found" : false;
+		}
+		return true;
+	}
+
 	public static function validateVxm($data) {
 		$exists = false;
 		$fields = ['vendorID|text', 'vendoritemID|text', 'itemID|text', 'jqv|bool', 'new|bool'];

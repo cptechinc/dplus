@@ -38,6 +38,9 @@
 		'map' => [
 			'validate' => [
 				['GET', 'vendorid/', Json\Map::class, 'validateVendorid'],
+				'vendor' => [
+					['GET', 'shipfromid/', Json\Map::class, 'validateVendorShipfromid'],
+				],
 				'vxm' => [
 					['GET', '', Json\Map::class, 'validateVxm'],
 					['GET', 'itemid/', Json\Map::class, 'validateVxmExistsForItemid'],
