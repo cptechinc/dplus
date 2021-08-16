@@ -20,13 +20,30 @@
 	<div class="col-sm-6">
 		<div class="form-group">
 			<label for="vendorID">Vendor ID</label>
-			{% include 'util/form/input-with-modal-lookup.twig' with {
-					'name': 'vendorID',
-					'value': po.vendorid,
-					'modaltarget': '#ajax-modal',
-					'modaldescription': 'Search / Select Vendor',
-					'attributes_button': {'data-search': 'vendor'},
-					'class_add':  epo.field_has_error_header('vendorID') ? 'is-invalid' : ''
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'size': 'sm',
+						'input': {
+							'name': 'vendorID',
+							'value': po.vendorid,
+							'attributes': {
+								'placeholder': 'Vendor ID',
+								'aria-label':  'Vendor ID',
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search Vendors',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.search_lookupURL('vendors/'),
+								'data-search': 'vendors'
+							}
+						}
+					}
 				}
 			%}
 			<address class="small mt-1 vendor-address">
@@ -41,7 +58,32 @@
 	<div class="col-sm-6">
 		<div class="form-group">
 			<label for="shipfromID">Ship-From</label>
-			{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'shipfromID', value: po.shipfromid, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search / Select Vendor Ship-From', attributes_button: {'data-search': 'shipfrom'}, class_add: epo.field_has_error_header('shipfromID') ? 'is-invalid' : ''} %}
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'attributes': {},
+						'input': {
+							'name': 'shipfromID',
+							'value': po.shipfromid,
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Ship-from ID'
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search / Select Vendor Ship-From',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.searchLookupUrl('vendor/ship-from/', {'vendorID': po.vendorid}),
+								'data-input': '#vendorID'
+							}
+						}
+					}
+				}
+			%}
 		</div>
 	</div>
 </div>
