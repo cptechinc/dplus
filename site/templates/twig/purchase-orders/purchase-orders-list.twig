@@ -20,7 +20,7 @@
 </div>
 {% if orders.count > 0 %}
 	{% for order in orders %}
-		<a href="{{ page.poUrl(order.ponbr) }}" class="list-group-item list-group-item-action po-link">
+		<a href="{{ page.isHooked('poUrl()') ? page.poUrl(order.ponbr) : '#' }}" class="list-group-item list-group-item-action po-link">
 			<div class="form-row">
 				<div class="col-sm-2">{{ order.ponbr }}</div>
 				<div class="col-sm-2">{{ order.poref }}</div>
