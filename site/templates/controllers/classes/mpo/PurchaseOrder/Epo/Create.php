@@ -1,4 +1,6 @@
 <?php namespace Controllers\Mpo\PurchaseOrder\Epo;
+// Purl URI Library
+use Purl\Url as Purl;
 // Dplus Model
 use PurchaseOrder;
 // ProcessWire Classes, Modules
@@ -36,8 +38,20 @@ class Create extends Base {
 
 		if ($data->action) {
 			$epo = self::pw('modules')->get('PurchaseOrderEdit');
-			$epo->process_input(self::pw('input'));
-			self::pw('session')->redirect(self::pw('page')->fullURL->getUrl(), $http301 = false);
+			$url = self::pw('input')->url();
+
+			switch ($data->action) {
+				case 'create-po':
+					$epo->process_input(self::pw('input'));
+					$url = self::verifyCreatedVendorPoUrl($data->vendorID);
+					break;
+				case 'verify-po-created':
+					if ($epo->verifyCreatedPo($data->vendorID)) {
+						$url = self::poEditUrl(self::pw('user')->get_lockedID());
+					}
+					break;
+			}
+			self::pw('session')->redirect($url, $http301 = false);
 		}
 	}
 
@@ -59,7 +73,17 @@ class Create extends Base {
 	}
 
 /* =============================================================
-	Indexes
+	URLs
+============================================================= */
+	public static function verifyCreatedVendorPoUrl($vendorID) {
+		$url = new Purl(self::epoUrl());
+		$url->query->set('action', 'verify-po-created');
+		$url->query->set('vendorID', $vendorID);
+		return $url->getUrl();
+	}
+
+/* =============================================================
+	Displays
 ============================================================= */
 	private static function epoForms($data) {
 		return self::pw('config')->twig->render('purchase-orders/epo/form.twig');
