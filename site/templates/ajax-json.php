@@ -56,8 +56,10 @@
 				['GET', 'itemid/', Json\Map::class, 'getVxmByItemid'],
 				['GET', 'primary/', Json\Map::class, 'getVxmPrimary'],
 			],
-			['GET', 'vendor/', Json\Map::class, 'getVendor'],
-			['GET', 'vendor/contact/', Json\Map::class, 'getVendorContact'],
+			'vendor' => [
+				['GET', '', Json\Map::class, 'getVendor'],
+				['GET', 'contact/', Json\Map::class, 'getVendorContact'],
+			],
 		],
 		'mar' => [
 			'validate' => [
