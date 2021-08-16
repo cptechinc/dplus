@@ -89,7 +89,7 @@ class PurchaseOrder extends Base {
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMpo');
 
-		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::poUrl', function($event) {
+		$m->addHook('Page(pw_template=purchase-order-view)::poUrl', function($event) {
 			$event->return = self::poUrl($event->arguments(0));
 		});
 
@@ -109,19 +109,19 @@ class PurchaseOrder extends Base {
 			$event->return = self::documentUrl($event->arguments(0), $event->arguments(1), $event->arguments(2));
 		});
 
-		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::poEditUrl', function($event) {
+		$m->addHook('Page(pw_template=purchase-order-view)::poEditUrl', function($event) {
 			$event->return = self::poEditUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::orderEditUnlockUrl', function($event) {
+		$m->addHook('Page(pw_template=purchase-order-view)::orderEditUnlockUrl', function($event) {
 			$event->return = self::orderEditUnlockUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::orderNotesUrl', function($event) {
+		$m->addHook('Page(pw_template=purchase-order-view)::orderNotesUrl', function($event) {
 			$event->return = self::orderNotesUrl($event->arguments(0), $event->arguments(1));
 		});
 
-		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::iiUrl', function($event) {
+		$m->addHook('Page(pw_template=purchase-order-view)::iiUrl', function($event) {
 			$event->return = Ii::iiUrl($event->arguments(0));
 		});
 
@@ -129,11 +129,11 @@ class PurchaseOrder extends Base {
 			$event->return = self::orderPrintInvoiceUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::ciUrl', function($event) {
+		$m->addHook('Page(pw_template=purchase-order-view)::ciUrl', function($event) {
 			$event->return = Ci::ciUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=purchase-order-view|sales-order-edit)::ciShiptoUrl', function($event) {
+		$m->addHook('Page(pw_template=purchase-order-view)::ciShiptoUrl', function($event) {
 			$event->return = Ci::ciShiptoUrl($event->arguments(0), $event->arguments(1));
 		});
 	}
