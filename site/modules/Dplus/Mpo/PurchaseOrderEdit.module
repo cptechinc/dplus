@@ -120,9 +120,6 @@ class PurchaseOrderEdit extends WireData implements Module {
 			case 'create-po':
 				$this->input_create_po($input);
 				break;
-			case 'verify-po-created':
-				$this->input_verify_created_po($input);
-				break;
 			case 'add-item':
 			case 'update-item':
 			case 'delete-item':
@@ -179,11 +176,10 @@ class PurchaseOrderEdit extends WireData implements Module {
 
 		if ($vendorID == '' || $validate->vendorid($vendorID)) {
 			$this->request_create_po($vendorID);
-			$this->wire('session')->redirect($this->get_po_createdURL($vendorID), $http301 = false);
 		} else {
 			$response = MpoResponse::response_error('NEW', "Vendor $vendorID not found");
+			$this->wire('session')->setFor('response', 'epo', $response);
 		}
-		$this->wire('session')->setFor('response', 'epo', $response);
 	}
 
 	/**
@@ -199,9 +195,24 @@ class PurchaseOrderEdit extends WireData implements Module {
 
 		if (strlen($logperm->ordernbr) != PurchaseOrder::LENGTH) {
 			$response = MpoResponse::response_error('NEW', "Purchase Order for $vendorID not created");
-		} else {
-			$this->wire('session')->redirect($this->get_po_editURL($logperm->ordernbr), $http301 = false);
+			$this->wire('session')->setFor('response', 'epo', $response);
 		}
+	}
+
+	/**
+	 * Verify That a Po Was Created
+	 * @param  string $vendorID Vendor ID
+	 * @return bool
+	 */
+	public function verifyCreatedPo($vendorID) {
+		$logperm = $this->get_logperm();
+
+		if (strlen($logperm->ordernbr) != PurchaseOrder::LENGTH) {
+			$response = MpoResponse::response_error('NEW', "Purchase Order for $vendorID not created");
+			$this->wire('session')->setFor('response', 'epo', $response);
+			return false;
+		}
+		return true;
 	}
 
 	/**
