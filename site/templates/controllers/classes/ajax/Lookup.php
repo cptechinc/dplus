@@ -154,6 +154,22 @@ class Lookup extends AbstractController {
 	}
 
 	/**
+	 * Search Vendor Ship-Froms
+	 * @param  object $data
+	 *                     vendorID  Vendor ID
+	 *                     q         Search Term
+	 * @return void
+	 */
+	public static function vendorShipfroms($data) {
+		self::sanitizeParametersShort($data, self::FIELDS_LOOKUP);
+		self::sanitizeParametersShort($data, ['vendorID|text']);
+		self::pw('page')->headline = "Vendor Ship-Froms";
+		$filter = new Filters\Map\VendorShipfrom();
+		$filter->init();
+		return self::filterResults($filter, $data);
+	}
+
+	/**
 	 * Search Item Groups
 	 * @param  object $data
 	 *                     q   Search Term
