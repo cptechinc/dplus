@@ -81,7 +81,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Mpo\\PurchaseOrder\\Base' => __DIR__ . '/../..' . '/classes/mpo/PurchaseOrder/Base.php',
         'Controllers\\Mpo\\PurchaseOrder\\Documents' => __DIR__ . '/../..' . '/classes/mpo/PurchaseOrder/Documents.php',
         'Controllers\\Mpo\\PurchaseOrder\\Epo\\Create' => __DIR__ . '/../..' . '/classes/mpo/PurchaseOrder/Epo/Create.php',
-        'Controllers\\Mpo\\PurchaseOrder\\Epo\\Epo' => __DIR__ . '/../..' . '/classes/mpo/PurchaseOrder/Epo/Epo.php',
+        'Controllers\\Mpo\\PurchaseOrder\\Epo\\Edit' => __DIR__ . '/../..' . '/classes/mpo/PurchaseOrder/Epo/Edit.php',
         'Controllers\\Mpo\\PurchaseOrder\\Lists\\PurchaseOrder' => __DIR__ . '/../..' . '/classes/mpo/PurchaseOrder/Lists/PurchaseOrder.php',
         'Controllers\\Mpo\\PurchaseOrder\\Lists\\Vendor' => __DIR__ . '/../..' . '/classes/mpo/PurchaseOrder/Lists/Vendor.php',
         'Controllers\\Mpo\\PurchaseOrder\\Notes' => __DIR__ . '/../..' . '/classes/mpo/PurchaseOrder/Notes.php',

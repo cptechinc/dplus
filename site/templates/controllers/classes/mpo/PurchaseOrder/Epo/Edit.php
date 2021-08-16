@@ -1,4 +1,6 @@
 <?php namespace Controllers\Mpo\PurchaseOrder\Epo;
+// Purl URI Library
+use Purl\Url as Purl;
 // Dplus Model
 use PurchaseOrder;
 // ProcessWire Classes, Modules
@@ -7,8 +9,12 @@ use ProcessWire\Page, ProcessWire\PurchaseOrderEdit as EpoModel;
 use Dplus\CodeValidators\Mpo as MpoValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+use Controllers\Mpo\PurchaseOrder\Base;
 
-class Epo extends AbstractController {
+class Edit extends Base {
+/* =============================================================
+	Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['ponbr|text', 'action|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -40,7 +46,7 @@ class Epo extends AbstractController {
 		}
 	}
 
-	public static function po($data) {
+	private static function po($data) {
 		$data = self::sanitizeParametersShort($data, ['ponbr|text', 'load|int']);
 		$data->ponbr = PurchaseOrder::get_paddedponumber($data->ponbr);
 		$page = self::pw('page');
@@ -61,9 +67,13 @@ class Epo extends AbstractController {
 			$page->fullURL->query->set('load', 1);
 			self::pw('session')->redirect($page->fullURL->getUrl(), $http301 = false);
 		}
+		self::initHooks();
 		return self::poEditForm($data, $epo, $page, $config);
 	}
 
+/* =============================================================
+	Displays
+============================================================= */
 	private static function poEditForm($data, EpoModel $epo) {
 		$epo->init_configs();
 		$qnotes = self::pw('modules')->get('QnotesPo');
@@ -81,19 +91,23 @@ class Epo extends AbstractController {
 		return $page->body;
 	}
 
-	private static function invalidPo($data) {
-		$page = self::pw('page');
-		$config = self::pw('config');
-		$page->headline = "Purchase Order #$data->ponbr could not be found";
-		$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Purchase Order Not Found', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "PO # $data->ponbr can not be found"]);
-		$page->body .= '<div class="mb-3"></div>';
-		return self::lookupForm();
+/* =============================================================
+	URLs
+============================================================= */
+	public static function poExitUrl($ponbr) {
+		$url = new Purl(self::poEditUrl($ponbr));
+		$url->query->set('action', 'exit');
+		return $url->getUrl();
 	}
 
-	private static function lookupForm() {
-		$page = self::pw('page');
-		$config = self::pw('config');
-		$page->body .= $config->twig->render('purchase-orders/purchase-order/lookup-form.twig');
-		return $page->body;
+/* =============================================================
+	Hooks
+============================================================= */
+	public static function initHooks() {
+		$m = self::pw('modules')->get('DpagesMpo');
+
+		$m->addHook('Page(pw_template=purchase-order-view)::poExitUrl', function($event) {
+			$event->return = self::poExitUrl($event->arguments(0));
+		});
 	}
 }

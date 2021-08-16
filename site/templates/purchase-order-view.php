@@ -2,6 +2,7 @@
 	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Mpo\PurchaseOrder as App;
 	use Controllers\Mpo\PurchaseOrder\PurchaseOrder as Main;
+	use Controllers\Mpo\PurchaseOrder\Epo;
 
 	Main::initHooks();
 
@@ -11,6 +12,10 @@
 		'notes' => [
 			['GET',   '', App\Notes::class, 'index'],
 			['POST',  '', App\Notes::class, 'handleCRUD'],
+		],
+		'edit' => [
+			['GET',   '', Epo\Edit::class, 'index'],
+			['POST',  '', Epo\Edit::class, 'handleCRUD'],
 		],
 	];
 	$router = new Mvc\Router();

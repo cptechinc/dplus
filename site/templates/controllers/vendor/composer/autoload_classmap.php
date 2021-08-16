@@ -80,7 +80,7 @@ return array(
     'Controllers\\Mpo\\PurchaseOrder\\Base' => $baseDir . '/classes/mpo/PurchaseOrder/Base.php',
     'Controllers\\Mpo\\PurchaseOrder\\Documents' => $baseDir . '/classes/mpo/PurchaseOrder/Documents.php',
     'Controllers\\Mpo\\PurchaseOrder\\Epo\\Create' => $baseDir . '/classes/mpo/PurchaseOrder/Epo/Create.php',
-    'Controllers\\Mpo\\PurchaseOrder\\Epo\\Epo' => $baseDir . '/classes/mpo/PurchaseOrder/Epo/Epo.php',
+    'Controllers\\Mpo\\PurchaseOrder\\Epo\\Edit' => $baseDir . '/classes/mpo/PurchaseOrder/Epo/Edit.php',
     'Controllers\\Mpo\\PurchaseOrder\\Lists\\PurchaseOrder' => $baseDir . '/classes/mpo/PurchaseOrder/Lists/PurchaseOrder.php',
     'Controllers\\Mpo\\PurchaseOrder\\Lists\\Vendor' => $baseDir . '/classes/mpo/PurchaseOrder/Lists/Vendor.php',
     'Controllers\\Mpo\\PurchaseOrder\\Notes' => $baseDir . '/classes/mpo/PurchaseOrder/Notes.php',
