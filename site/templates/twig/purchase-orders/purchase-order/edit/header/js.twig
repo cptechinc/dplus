@@ -78,19 +78,7 @@ $(function () {
 		var button = $(this);
 		var vendorID = button.data('vendorid');
 
-		get_vendor_address(vendorID, function(vendor) {
-			if (vendor) {
-				form_header.find('input[name=vendorID]').val(vendorID);
-				var address = form_header.find('address.vendor-address');
-				address.find('.name').text(vendor.name);
-				address.find('.address').text(vendor.address);
-				address.find('.address2').text(vendor.address2);
-				address.find('.city').text(vendor.city);
-				address.find('.state').text(vendor.state);
-				address.find('.zip').text(vendor.zip);
-				modal_ajax.modal('hide');
-			}
-		});
+		form_header.find('input[name=vendorID]').val(vendorID).change();
 	});
 
 	$("body").on('click', '#ajax-modal .shipfrom-link', function(e) {
@@ -122,16 +110,7 @@ $(function () {
 	});
 
 	function get_vendor(vendorID, callback) {
-		var url = URI('{{ page.jsonapiURL('map/vendor/') }}');
-		url.setQuery('vendorID', vendorID);
-		$.getJSON(url.toString(), function(vendor) {
-			callback(vendor);
-		});
-	}
-
-	function get_vendor_address(vendorID, callback) {
-		var url = URI('{{ page.vi_jsonURL() }}');
-		url.setQuery('action', 'get-vendor-address');
+		var url = URI('{{ page.jsonApiUrl('map/vendor/') }}');
 		url.setQuery('vendorID', vendorID);
 		$.getJSON(url.toString(), function(vendor) {
 			callback(vendor);
@@ -161,21 +140,22 @@ $(function () {
 			vendorID: {
 				required: true,
 				remote: {
-					url: '{{ page.po_validateURL(page.ponbr) }}',
+					url: '{{ page.jsonApiUrl('map/validate/vendorid/') }}',
 					type: "get",
 					data: {
-						action: 'validate-vendorid'
+						jqv: true
 					}
 				}
 			},
 			shipfromID: {
 				required: false,
 				remote: {
-					url: '{{ page.po_validateURL(page.ponbr) }}',
+					url: '{{ page.jsonApiUrl('map/validate/vendor/shipfromid/') }}',
 					type: "get",
 					data: {
-						action: 'validate-shipfromid',
-						vendorID: $('#vendorID').val()
+						vendorID: function() {
+							return $('#vendorID').val();
+						}
 					}
 				}
 			},
