@@ -1,0 +1,27 @@
+class I2iForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new I2iForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'i2i-form';
+		this.inputs = I2iInputs.getInstance();
+	}
+
+	redirectExisting(goEdit) {
+		if (goEdit === true) {
+			var uri = URI();
+			uri.setQuery('parentID', this.inputs.parentid.val());
+			uri.setQuery('childtID', this.inputs.childid.val());
+			window.location.href = uri.toString();
+		} else {
+			location.reload();
+		}
+	}
+
+}

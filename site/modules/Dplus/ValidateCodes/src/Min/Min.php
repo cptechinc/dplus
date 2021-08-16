@@ -1,17 +1,19 @@
 <?php namespace Dplus\CodeValidators;
-
-use ProcessWire\WireData;
-
+// Propel ORM Library
 use Propel\Runtime\ActiveQuery\Criteria;
-
-use Dplus\CodeValidators\Map as MapValidator;
-
+// Dplus Models
 use ItemMasterItemQuery, ItemMasterItem;
 use InvAssortmentCodeQuery, InvAssortmentCode;
 use UnitofMeasureSaleQuery, UnitofMeasureSale;
+// ProcessWire
+use ProcessWire\WireData;
+// Dplus CRUD
+use Dplus\Min\Inmain;
+// Dplus Code Validators
+use Dplus\CodeValidators\Map as MapValidator;
 
 /**
- * In
+ * Min
  *
  * Class for Validating Inventory (IN) table codes, IDs
  */
@@ -227,5 +229,16 @@ class Min extends WireData {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Return if Item 2 Item Record Exists
+	 * @param  string $parentID  Parent Item ID
+	 * @param  string $childID   Child Item ID
+	 * @return bool
+	 */
+	public function i2i($parentID, $childID) {
+		$i2i = Inmain\I2i\I2i::getInstance();
+		return $i2i->exists($parentID, $childID);
 	}
 }

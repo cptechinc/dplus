@@ -1,0 +1,39 @@
+class I2iRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new I2iRequests();
+		}
+		return this.instance;
+	}
+
+	getItm(itemID, itmfields, callback) {
+		var fields = Array.isArray(itmfields) ? itmfields.join(',') : itmfields;
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('inv/item') }}');
+
+		ajax.setData({itemID: itemID, fields: fields});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	validateItemid(itemID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('inv/validate/itemid/') }}');
+
+		ajax.setData({itemID: itemID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+
+	validateXref(parentID, childID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('inv/validate/i2i/xref/') }}');
+
+		ajax.setData({parentID: parentID, childID: childID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+}

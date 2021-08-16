@@ -56,6 +56,7 @@ return array(
     'Controllers\\Mii\\Loti\\Activity' => $baseDir . '/classes/mii/Loti/Activity.php',
     'Controllers\\Mii\\Loti\\Base' => $baseDir . '/classes/mii/Loti/Base.php',
     'Controllers\\Mii\\Loti\\Loti' => $baseDir . '/classes/mii/Loti/Loti.php',
+    'Controllers\\Min\\Inmain\\I2i' => $baseDir . '/classes/min/inmain/I2i.php',
     'Controllers\\Min\\Itm\\Costing' => $baseDir . '/classes/min/itm/Costing.php',
     'Controllers\\Min\\Itm\\Dimensions' => $baseDir . '/classes/min/itm/Dimensions.php',
     'Controllers\\Min\\Itm\\Item' => $baseDir . '/classes/min/itm/Item.php',

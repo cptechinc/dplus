@@ -22,7 +22,10 @@
 				'code' => [
 					['GET', 'stock/', Json\Min::class, 'validateStockCode'],
 					['GET', 'special-item/', Json\Min::class, 'validateSpecialItemCode'],
-				]
+				],
+				'i2i' => [
+					['GET', 'xref/', Json\Min::class, 'validateI2iExists'],
+				],
 			],
 			['GET', 'tariff-code/', Json\Min::class, 'getTariffCode'],
 			['GET', 'country-code/', Json\Min::class, 'getCountryCode'],

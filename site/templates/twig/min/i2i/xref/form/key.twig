@@ -1,0 +1,82 @@
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="parentID">Parent Item ID</label>
+	</div>
+	<div class="col-sm-8 itemid-parent">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'attributes': {
+						'readonly': xref.parentitemid ? true : false,
+						'tabindex': xref.parentitemid ? '-1' : '',
+					},
+					'input': {
+						'name': 'parentID',
+						'value': xref.parentitemid,
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Item ID',
+							'tabindex': xref.parentitemid ? '-1' : '',
+							'data-itemid': xref.parentitemid,
+							'data-updates': 'description,description2'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Items',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('items'),
+							'data-input': '#parentID'
+						}
+					}
+				}
+			}
+		%}
+		<small class="form-text text-muted description">{{ xref.parentItem().description }}</small>
+		<small class="form-text text-muted description2">{{ xref.parentItem().description2 }}</small>
+	</div>
+</div>
+<div class="row form-group">
+	<div class="col-sm-4">
+		<label for="childID">Child Item ID</label>
+	</div>
+	<div class="col-sm-8 itemid-parent">
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'attributes': {
+						'readonly': xref.childitemid ? true : false,
+						'tabindex': xref.childitemid ? '-1' : '',
+					},
+					'input': {
+						'name': 'childID',
+						'value': xref.childitemid,
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Item ID',
+							'tabindex': xref.childitemid ? '-1' : '',
+							'data-itemid': xref.childitemid,
+							'data-updates': 'description,description2'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Items',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.search_lookupURL('items'),
+							'data-input': '#childID'
+						}
+					}
+				}
+			}
+		%}
+		<small class="form-text text-muted description">{{ xref.parentItem().description }}</small>
+		<small class="form-text text-muted description2">{{ xref.parentItem().description2 }}</small>
+	</div>
+</div>
