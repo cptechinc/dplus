@@ -1,7 +1,7 @@
 <?php
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Mpo\EpoCreate as Epo;
-	
+
 	$routes = [
 		['GET',  '', Epo::class, 'index'],
 		['POST', '', Epo::class, 'handleCRUD'],
