@@ -1,5 +1,6 @@
 <?php
 	use Controllers\Mpo\PurchaseOrder\Lists;
+	use Controllers\Mpo\PurchaseOrder\Epo;
 
 	$routes = [
 		['GET', '', Lists\PurchaseOrder::class, 'index'],
@@ -7,7 +8,11 @@
 		'vendor' => [
 			['GET', '', Lists\Vendor::class, 'index'],
 			['GET', 'page{d:\d+}', Lists\Vendor::class, 'index'],
-		]
+		],
+		'epo' => [
+			['GET', '', Epo\Create::class, 'index'],
+			['POST', '', Epo\Create::class, 'handleCRUD'],
+		],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
