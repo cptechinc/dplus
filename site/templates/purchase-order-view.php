@@ -3,9 +3,6 @@
 	use Controllers\Mpo\PurchaseOrder as App;
 	use Controllers\Mpo\PurchaseOrder\PurchaseOrder as Main;
 
-
-//	use Controllers\Mpo\PurchaseOrder\Notes;
-
 	Main::initHooks();
 
 	$routes = [
