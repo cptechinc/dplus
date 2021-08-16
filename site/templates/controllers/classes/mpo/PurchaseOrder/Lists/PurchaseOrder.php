@@ -41,7 +41,7 @@ class PurchaseOrder extends Base {
 	}
 
 /* =============================================================
-	Supplemental
+	Hooks
 ============================================================= */
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMpo');
@@ -50,5 +50,12 @@ class PurchaseOrder extends Base {
 			$event->return = self::poUrl($event->arguments(0));
 		});
 
+		$m->addHook('Page(pw_template=purchase-orders)::poListUrl', function($event) {
+			$event->return = self::poListUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=purchase-orders)::poEditUrl', function($event) {
+			$event->return = self::poEditUrl($event->arguments(0));
+		});
 	}
 }

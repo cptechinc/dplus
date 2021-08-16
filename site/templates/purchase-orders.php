@@ -2,6 +2,8 @@
 	use Controllers\Mpo\PurchaseOrder\Lists;
 	use Controllers\Mpo\PurchaseOrder\Epo;
 
+	Lists\PurchaseOrder::initHooks();
+
 	$routes = [
 		['GET', '', Lists\PurchaseOrder::class, 'index'],
 		['GET', 'page{d:\d+}', Lists\PurchaseOrder::class, 'list'],
