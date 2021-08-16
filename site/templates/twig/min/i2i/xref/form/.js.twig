@@ -1,0 +1,179 @@
+{% include 'min/i2i/xref/form/js/classes.js.twig' %}
+
+$(function() {
+	var modal_ajax = $('#ajax-modal');
+
+	var alert    = I2iAlerts.getInstance();
+	var server   = I2iRequests.getInstance();
+	var formI2i  = I2iForm.getInstance();
+
+/* =============================================================
+	Event
+============================================================= */
+	$("body").on("change", "input[name=parentID], input[name=childID]", function(e) {
+		var input = $(this);
+
+		server.validateXref(formI2i.inputs.parentid.val(), formI2i.inputs.childid.val(), function(exists) {
+			if (exists === true) {
+				alert.xrefExists(formI2i.inputs.parentid.val(), formI2i.inputs.childid.val(), function(goEdit) {
+					I2iForm.getInstance().redirectExisting(goEdit);
+				});
+			}
+			I2iRequests.getInstance().getItm(input.val(),['description', 'description2'], function(item) {
+				if (item) {
+					var parent = input.closest('.itemid-parent');
+					parent.find('.description').text(item.description);
+					parent.find('.description2').text(item.description2);
+				}
+			});
+		});
+	});
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = formI2i.inputs.form.serialize();
+
+	$("body").on("click", "a:not(#xref-form.form_button, #ajax-modal a)", function(e) {
+		if (formI2i.inputs.form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			alert.unsavedChanges(function(save) {
+				if (save === true) {
+					formI2i.inputs.form.find('button[type=submit]').click();
+				} else {
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
+/* =============================================================
+	AJAX Lookup Modal Functions
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = button.data('lookupurl');
+
+		modal.attr('data-input', button.data('input'));
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		var modal  = button.closest('.modal');
+		$(modal.attr('data-input')).val(itemID).change();
+		modal.modal('hide');
+	});
+
+	$("body").on('click', '.whse-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var whseID = button.data('whseid');
+		var modal  = button.closest('.modal');
+		$(modal.attr('data-input')).val(whseID).change();
+		modal.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	formI2i.inputs.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		rules: {
+			parentID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						itemID: function() {
+							return $('#parentID').val();
+						}
+					}
+				}
+			},
+			childID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						itemID: function() {
+							return $('#childID').val();
+						}
+					}
+				}
+			},
+			whseID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/warehouse/') }}',
+					type: "get",
+					data: {
+						jqv: 'true'
+					}
+				}
+			},
+		},
+		messages: {},
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		submitHandler: function(form) {
+			$('#loading-modal').modal('show');
+
+
+			if ($(form).data('new') === true) {
+				var data = $(form).serializeArray().reduce(function(obj, item) {
+					obj[item.name] = item.value;
+					return obj;
+				}, {});
+
+				var server = I2iRequests.getInstance();
+				server.validateXref(data['parentID'], data['childID'], function(exists) {
+					if (exists === true) {
+						var alert = I2iAlerts.getInstance();
+						alert.xrefExists(data['parentID'], data['childID'], function(goEdit) {
+							I2iForm.getInstance().redirectExisting(goEdit);
+						});
+					}
+					if (exists === false) {
+						form.submit();
+					}
+				});
+			} else {
+				form.submit();
+			}
+		}
+	});
+});

@@ -14,6 +14,7 @@ return array(
     'Dplus\\Filters\\Mar\\Customer' => $baseDir . '/src/Mar/Customer.php',
     'Dplus\\Filters\\Mar\\SalesPerson' => $baseDir . '/src/Mar/SalesPerson.php',
     'Dplus\\Filters\\Mgl\\GlCode' => $baseDir . '/src/Mgl/GlCode.php',
+    'Dplus\\Filters\\Min\\I2i' => $baseDir . '/src/Min/I2i.php',
     'Dplus\\Filters\\Min\\ItemGroup' => $baseDir . '/src/Min/ItemGroup.php',
     'Dplus\\Filters\\Min\\ItemMaster' => $baseDir . '/src/Min/ItemMaster.php',
     'Dplus\\Filters\\Min\\LotMaster' => $baseDir . '/src/Min/LotMaster.php',

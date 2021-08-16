@@ -19,7 +19,7 @@ class Itm extends AbstractController {
 
 	const SUBFUNCTIONS = [
 		'costing'      => ['title' => 'Costing', 'permission' => 'costing'],
-		'pricing'      => ['title' => 'Pricing', 'permission' => 'costing'],
+		'pricing'      => ['title' => 'Pricing', 'permission' => 'pricing'],
 		'warehouses'   => ['title' => 'Warehouses', 'permission' => 'whse'],
 		'misc'         => ['title' => 'Misc', 'permission' => 'misc'],
 		'xrefs'        => ['title' => 'X-Refs', 'permission' => 'xrefs'],

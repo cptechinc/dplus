@@ -1,0 +1,18 @@
+class I2iInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new I2iInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'i2i-form',
+		this.form = $('#' + this.id),
+		this.parentid  = this.form.find('input[name=parentID]');
+		this.childid   = this.form.find('input[name=childID]');
+		this.whseid    = this.form.find('input[name=whseID]');
+	}
+}

@@ -204,7 +204,6 @@ class Min extends AbstractController {
 		$fields = ['loginID|text', 'userID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$itmp = self::pw('modules')->get('Itmp');
-		$validate = self::validator();
 
 		if ($itmp->exists($loginID) === false) {
 			return "ITMP for $loginID not found";
@@ -289,6 +288,25 @@ class Min extends AbstractController {
 			'upc'    => $xref->upc,
 			'itemid' => $xref->itemid
 		];
+	}
+
+	public static function validateI2iExists($data) {
+		$fields = ['parentID|text', 'childID|text', 'jqv|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$validate = self::validator();
+
+		$exists = $validate->i2i($data->parentID, $data->childID);
+
+		if (boolval($data->jqv) === false) {
+			return $exists;
+		}
+
+		// JQuery Validate
+		if ($data->new) { // If new, check that upc doesn't already exist.
+			return $exists ? "Item to Item Already Exists" : true;
+		}
+
+		return $exists ? true : "Item to Item X-Ref not found";
 	}
 
 
