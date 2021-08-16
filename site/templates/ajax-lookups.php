@@ -29,12 +29,18 @@
 		// User
 		['GET', 'users/', AjaxLookup::class, 'users'],
 		['GET', 'users/page{nbr:\d+}/', AjaxLookup::class, 'users'],
-		// Vendor
+		// Vendors
 		['GET', 'vendors/', AjaxLookup::class, 'vendors'],
 		['GET', 'vendors/page{nbr:\d+}/', AjaxLookup::class, 'vendors'],
 		// Vendor Contacts
-		['GET', 'vendor/contacts/', AjaxLookup::class, 'vendorContacts'],
-		['GET', 'vendor/contacts/page{nbr:\d+}/', AjaxLookup::class, 'vendorContacts'],
+		'vendor' => [
+			['GET', 'contacts/', AjaxLookup::class, 'vendorContacts'],
+			['GET', 'contacts/page{nbr:\d+}/', AjaxLookup::class, 'vendorContacts'],
+			'ship-froms' => [
+				['GET', '', AjaxLookup::class, 'vendorShipfroms'],
+				['GET', 'page{nbr:\d+}/', AjaxLookup::class, 'vendorShipfroms'],
+			]
+		],
 		// Purchase Orders
 		['GET', 'purchase-orders/', AjaxLookup::class, 'purchaseOrders'],
 		['GET', 'purchase-orders/page{nbr:\d+}/', AjaxLookup::class, 'purchaseOrders'],
