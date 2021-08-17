@@ -33,7 +33,7 @@
 	if ($config->ajax) {
 		echo $page->body;
 	} else {
-		if ($page->print) {
+		if ($input->lastSegment() == 'print' || $input->get->offsetExists('print')) {
 			$page->show_title = true;
 
 			if ($page->is_pdf()) {
