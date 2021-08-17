@@ -57,5 +57,9 @@ class PurchaseOrder extends Base {
 		$m->addHook('Page(pw_template=purchase-orders)::poEditUrl', function($event) {
 			$event->return = self::poEditUrl($event->arguments(0));
 		});
+
+		$m->addHook('Page(pw_template=purchase-orders)::poCreateUrl', function($event) {
+			$event->return = self::poCreateUrl($event->arguments(0));
+		});
 	}
 }
