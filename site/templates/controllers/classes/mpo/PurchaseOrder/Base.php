@@ -37,7 +37,7 @@ abstract class Base extends AbstractController {
 		return $url->getUrl();
 	}
 
-	public static function receivedUrl($ponbr) {
+	public static function poReceivedUrl($ponbr) {
 		$url = new Purl(self::poUrl($ponbr));
 		$url->path->add('received');
 		return $url->getUrl();

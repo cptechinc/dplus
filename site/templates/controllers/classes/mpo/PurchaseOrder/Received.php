@@ -89,7 +89,7 @@ class Received extends Base {
 			return false;
 		}
 		$session->setFor(self::JSONCODE, $data->ponbr, ($session->getFor(self::JSONCODE, $data->ponbr) + 1));
-		$session->redirect(self::receivedUrl($data->ponbr), $http301 = false);
+		$session->redirect(self::poReceivedUrl($data->ponbr), $http301 = false);
 	}
 
 /* =============================================================
@@ -162,7 +162,7 @@ class Received extends Base {
 		});
 
 		$m->addHook('Page(pw_template=purchase-order-received)::receivedUrl', function($event) {
-			$event->return = self::receivedUrl($event->arguments(0));
+			$event->return = self::poReceivedUrl($event->arguments(0));
 		});
 	}
 
