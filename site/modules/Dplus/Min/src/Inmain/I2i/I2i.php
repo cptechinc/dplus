@@ -146,6 +146,8 @@ class I2i extends WireData {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidFields = $this->updateXrefValidated($xref, $input);
+		$xref->setDate(date('Ymd'));
+		$xref->setTime(date('His'));
 		return $invalidFields;
 	}
 
