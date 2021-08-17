@@ -258,7 +258,7 @@ class Itm extends WireData implements Module {
 			$response = ItmResponse::response_error($itemID, $message);
 		}
 
-		$invalidfields = $this->set_item_fields($record, $input);
+		$invalidfields = $this->setItemFields($record, $input);
 		$response = $this->save_and_respond($record, $invalidfields);
 
 		if ($invalidfields) {
@@ -279,7 +279,7 @@ class Itm extends WireData implements Module {
 	 * @param ItemMasterItem $record Item Master Item
 	 * @param WireInput      $input  Input Data
 	 */
-	protected function set_item_fields(ItemMasterItem $record, WireInput $input) {
+	protected function setItemFields(ItemMasterItem $record, WireInput $input) {
 		$configIn = $this->configIn();
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
@@ -288,16 +288,20 @@ class Itm extends WireData implements Module {
 		$record->setDescription2($configIn->useUppercaseItemDescription() ? strtoupper($values->text('description2')) : $values->text('description2'));
 		$record->setRevision($values->text('revision'));
 		$record->setTimefence($values->text('itemfence'));
-		$record->setQtypercase($values->int('qtypercase'));
 		$record->setAllow_backorder($values->yn('allow_backorder'));
 		$record->setSplitorder($values->yn('splitorder'));
 		$record->setInspection($values->yn('inspection'));
 		$record->setTaxable($values->yn('taxable'));
 		$record->setWeight($values->float('weight'));
 		$record->setCubes($values->float('cubes'));
+		// Set Packaging Fields
+		$record->setQty_pack_inner($values->float('innerpack'));
+		$record->setQty_pack_outer($values->float('outerpack'));
+		$record->setQty_tare($values->float('qtytare'));
+		$record->setQtypercase($values->float('qtypercase'));
 		$record->setDate(date('Ymd'));
 		$record->setTime(date('his'));
-		$invalidfields = $this->set_validated_fields($record, $input);
+		$invalidfields = $this->setValidatedFields($record, $input);
 		return $invalidfields;
 	}
 
@@ -307,7 +311,7 @@ class Itm extends WireData implements Module {
 	 * @param  WireInput      $input  Input Values
 	 * @return array                  Invalid Input fields, empty if none
 	 */
-	protected function set_validated_fields(ItemMasterItem $record, WireInput $input) {
+	protected function setValidatedFields(ItemMasterItem $record, WireInput $input) {
 		$configIn = $this->configIn();
 		$invalid = array();
 		$fields = array(

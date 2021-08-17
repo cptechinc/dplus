@@ -1,0 +1,50 @@
+<legend class="text-center">Standard Packaging</legend>
+
+<div class="row mb-3">
+	<div class="col-sm-6">
+		<label for="innerpack">Items Per Inner Pack</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'type': 'number',
+					'name': 'innerpack', 'value': item.qty_pack_inner,
+					'size': 'sm',
+					'addclasses': ['text-right']
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row mb-3">
+	<div class="col-sm-6">
+		<label for="outerpack">Items Per Outer Pack</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'type': 'number',
+					'name': 'outerpack', 'value': item.qty_pack_outer,
+					'size': 'sm',
+					'addclasses': ['text-right']
+				}
+			}
+		%}
+	</div>
+</div>
+<div class="row mb-3">
+	<div class="col-sm-6">
+		<label for="qtytare">Items Per Ship Tare</label>
+	</div>
+	<div class="col-sm-6">
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'type': 'number',
+					'name': 'qtytare', 'value': item.qty_tare,
+					'size': 'sm',
+					'addclasses': ['text-right']
+				}
+			}
+		%}
+	</div>
+</div>
