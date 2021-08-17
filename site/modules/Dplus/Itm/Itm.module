@@ -168,7 +168,6 @@ class Itm extends WireData implements Module {
 		$item->setDocumentation($configIn->default_nafta_documentation);
 		$item->setBasestandardcost($configIn->default_base_standard_cost);
 
-
 		if ($this->wire('modules')->get('DplusCustomer')->get_custID() == 'LINDST') {
 			$item->setStockcode('MM');
 		}
