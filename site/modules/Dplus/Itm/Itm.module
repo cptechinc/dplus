@@ -130,7 +130,8 @@ class Itm extends WireData implements Module {
 	}
 
 	/**
-	 * Returns Item with Defaults Set
+	 * Return Item
+	 * NOTE: uses default values from IN config
 	 * @return ItemMasterItem
 	 */
 	public function newItem() {
@@ -146,6 +147,7 @@ class Itm extends WireData implements Module {
 		$item->setMinmarginbase('%');
 		$item->setInspection('N');
 		$item->setQtypercase(1);
+		$item->setDummy('P');
 
 		// CONFIG IN DEFAULTS
 		$item->setItemgroup($configIn->default_itemgroup);
