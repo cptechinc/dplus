@@ -118,6 +118,7 @@ class I2i extends AbstractController {
 		$html .= self::breadCrumbsDisplay($data);
 		$html .= self::responseDisplay($data);
 		$html .= $config->twig->render('min/i2i/list/display.twig', ['i2i' => $i2i, 'xrefs' => $xrefs]);
+		$html .= '<div class="mb-3"></div>';
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $xrefs]);
 		return $html;
 	}
