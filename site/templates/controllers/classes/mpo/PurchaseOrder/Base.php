@@ -71,6 +71,16 @@ abstract class Base extends AbstractController {
 		return $url->getUrl();
 	}
 
+	public static function epoUrl() {
+		$url = new Purl(self::poListUrl());
+		$url->path->add('epo');
+		return $url->getUrl();
+	}
+
+	public static function poCreateUrl() {
+		return self::epoUrl();
+	}
+
 /* =============================================================
 	Displays
 ============================================================= */

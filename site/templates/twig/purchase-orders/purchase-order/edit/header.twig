@@ -6,7 +6,7 @@
 	po_readonly            PurchaseOrder
 	epo                    PurchaseOrderEdit
 #}
-<form action="{{ page.url }}" method="POST" class="mb-3" id="header-form">
+<form action="{{ input.url() }}" method="POST" class="mb-3" id="header-form">
 	<input type="hidden" name="action" value="update-header">
 	<input type="hidden" name="ponbr" value="{{ po.ponbr }}">
 	<div class="row">
@@ -21,7 +21,7 @@
 		<button class="btn btn-success">
 			<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 		</button>
-		<a href="{{ page.po_exitURL(po.ponbr) }}" class="btn btn-danger">
+		<a href="{{ page.poExitUrl(po.ponbr) }}" class="btn btn-danger">
 			<i class="fa fa-times" aria-hidden="true"></i> Exit
 		</a>
 	</div>

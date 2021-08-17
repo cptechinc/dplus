@@ -3,12 +3,13 @@ $(function() {
 
 	$('body').on('change', 'input[name=vendorID]', function() {
 		var input = $(this);
-
-		get_vendor(input.val(), function(vendor) {
-			if (vendor) {
-				$('#vendorname').text(vendor.name);
-			}
-		});
+		if (input.val() != '') {
+			get_vendor(input.val(), function(vendor) {
+				if (vendor) {
+					$('#vendorname').text(vendor.name);
+				}
+			});
+		}
 	});
 
 	$('body').on('change', 'input[name=ponbr]', function() {
@@ -16,7 +17,7 @@ $(function() {
 
 		validate_ponbr(input.val(), function(valid) {
 			if (valid) {
-				var url = URI('{{ pages.get('pw_template=purchase-order-edit').url }}');
+				var url = URI('{{ page.poEditUrl('0') }}');
 				url.addQuery('ponbr', input.val());
 				window.location.href = url.toString();
 			}
@@ -37,7 +38,7 @@ $(function() {
 		modal.find('.modal-body').loadin(url, function() {});
 	});
 
-	$("body").on('click', '.ponbr-link', function(e) {
+	$("body").on('click', '.po-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
 		var ponbr = button.data('ponbr');
@@ -52,17 +53,8 @@ $(function() {
 		var vendorID = button.data('vendorid');
 		var name = button.data('name');
 		var modal = button.closest('.modal');
-		$(modal.attr('data-input')).val(vendorID);
+		$(modal.attr('data-input')).val(vendorID).change();
 		modal.modal('hide');
-	});
-
-	$("body").on('click', '.item-link', function(e) {
-		e.preventDefault();
-		var button = $(this);
-		var itemID = button.data('itemid');
-		var description = button.data('description');
-		input_itemID.val(itemID).change();
-		modal_ajax.modal('hide');
 	});
 
 	$("body").on('submit', '#ajax-modal form', function(e) {
@@ -109,6 +101,7 @@ $(function() {
 	});
 
 	function get_vendor(vendorID, callback) {
+		console.log(vendorID);
 		var url = URI('{{ page.jsonapiURL('map/vendor/') }}');
 		url.addQuery('vendorID', vendorID);
 

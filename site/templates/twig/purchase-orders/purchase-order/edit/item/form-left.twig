@@ -50,7 +50,8 @@
 				'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Vendor Item',
 				'attributes_button': {
 					'data-search': 'vendoritem',
-					'data-input': '#vendoritemID'
+					'data-input': '#vendoritemID',
+					'data-lookupurl': page.searchLookupUrl('vxm', {'vendorID': po.vendorID})
 				}
 			}
 		%}

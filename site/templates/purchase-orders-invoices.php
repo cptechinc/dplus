@@ -1,7 +1,6 @@
 <?php
 	use Controllers\Mpo\ApInvoice\Lists;
 
-
 	$routes = [
 		['GET', '', Lists\ApInvoice::class, 'index'],
 		['GET', 'page{d:\d+}', Lists\ApInvoice::class, 'list'],

@@ -38,6 +38,18 @@ class Map extends WireData {
 	}
 
 	/**
+	 * Return if Vendor ID exists
+	 * @param  string $vendorID  Vendor ID
+	 * @return bool
+	 */
+	public function vendorShipfromid($vendorID, $shipfromID) {
+		$q = VendorShipfromQuery::create();
+		$q->filterByVendorid($vendorID);
+		$q->filterByShipfromid($shipfromID);
+		return boolval($q->count());
+	}
+
+	/**
 	 * Return if AP Terms Code Exists
 	 * @param  string $code AP Terms Code
 	 * @return bool
