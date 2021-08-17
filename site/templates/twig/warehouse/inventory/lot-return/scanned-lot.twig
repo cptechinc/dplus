@@ -12,6 +12,9 @@
 			<div class="col-sm-3">
 				<strong>Qty:</strong> {{ json['item']['qty'] }}
 			</div>
+			<div class="col-sm-3">
+				<strong>Production Date:</strong> {{ json['item']['proddate']|convertdate }}
+			</div>
 		</div>
 	</div>
 
@@ -46,14 +49,13 @@
 			</div>
 		</div>
 		<div>
-			<h4>Return to Stock?</h4>
 			<div class="d-flex justify-content-between align-items-center">
-				<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#restock-modal">
-					<i class="fa fa-check" aria-hidden="true"></i> Yes
+				<button type="button" class="btn btn-success" data-toggle="modal" data-target="#restock-modal">
+					Restock
 				</button>
-				<a href="{{ page.url }}" class="btn btn-warning btn-sm">
-					<i class="fa fa-times" aria-hidden="true"></i> No
-				</a>
+				{% include 'warehouse/inventory/lot-return/scanned-lot/skip-restock-form.twig' %}
+				<div></div>
+				<div></div>
 			</div>
 		</div>
 	</div>

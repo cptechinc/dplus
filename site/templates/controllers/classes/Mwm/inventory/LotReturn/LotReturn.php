@@ -39,7 +39,8 @@ class LotReturn extends Base {
 		if (empty($data->scan) === false) {
 			return self::scan($data);
 		}
-		return self::scanForm($data);
+
+		return self::initScreen($data);
 	}
 
 	static public function handleCRUD($data) {
@@ -77,7 +78,11 @@ class LotReturn extends Base {
 	static private function scanResult($data) {
 		$json = self::getJsonModule()->getFile(self::JSONCODE);
 		if ($json['error']) {
-			return self::pw('config')->twig->render('util/bootstrap/alert.twig', ['type' => 'danger', 'headerclass' => 'text-white', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['message']]);
+			$html = '';
+			$html .= self::pw('config')->twig->render('util/bootstrap/alert.twig', ['type' => 'danger', 'headerclass' => 'text-white', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $json['message']]);
+			$html .= '<div class="mb-3"></div>';
+			$html .= self::scanForm($data);
+			return $html;
 		}
 		self::pw('page')->headline = "Lot Return: " . $json['item']['lotref'];
 		self::pw('page')->js .= self::pw('config')->twig->render('warehouse/inventory/lot-return/scanned-lot/js.twig');
@@ -94,7 +99,7 @@ class LotReturn extends Base {
 	}
 
 	static private function returnLot($data) {
-		self::sanitizeParametersShort($data, ['lotnbr|text', 'ordn|text', 'ponbr|text', 'whseID|text', 'binID|text', 'restock|bool']);
+		self::sanitizeParametersShort($data, ['itemID|text', 'qty|float', 'lotnbr|text', 'lotref|text', 'productiondate|text', 'ordn|text', 'ponbr|text', 'whseID|text', 'binID|text', 'restock|bool']);
 		if (empty($data->lotnbr)) {
 			return false;
 		}
@@ -104,7 +109,9 @@ class LotReturn extends Base {
 			if ($filter->exists($data->whseID, $data->binID) === false) {
 				return false;
 			}
+			self::pw('session')->set('lotreturn-binid', $data->binID);
 		}
+
 		self::requestLotReturn($data);
 		return true;
 	}
@@ -143,8 +150,6 @@ class LotReturn extends Base {
 		$session->redirect(self::scanUrl($data->scan, $refresh = true), $http301 = false);
 	}
 
-
-
 /* =============================================================
 	URLs
 ============================================================= */
@@ -161,6 +166,20 @@ class LotReturn extends Base {
 ============================================================= */
 	static private function scanForm($data) {
 		return self::pw('config')->twig->render('mii/loti/forms/scan.twig');
+	}
+
+	static private function initScreen($data) {
+		$html = '';
+		$binID = self::pw('session')->get('lotreturn-binid');
+		if (empty($binID) === false) {
+			$s = self::getWhseSession();
+			if ($s->hasError()) {
+				$html .= self::pw('config')->twig->render('util/bootstrap/alert.twig', ['type' => 'danger', 'headerclass' => 'text-white', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => $s->status]);
+				$html .= '<div class="mb-3"></div>';
+			}
+		}
+		$html .= self::scanForm($data);
+		return $html;
 	}
 
 	static private function scannedLotDisplay($data, array $json) {
@@ -180,10 +199,13 @@ class LotReturn extends Base {
 
 	static private function requestLotReturn($data) {
 		$restock = $data->restock ? 'Y' : 'N';
-		$vars = ['LOTRETACTION', "RESTOCK=$restock"];
-		$vars[] = "SALESORDER=$data->ordn";
-		$vars[] = "PURCHORDER=$data->ordn";
-
+		$date = $data->productiondate ? date('Ymd', strtotime($data->productiondate)) : '';
+		$vars = [
+			'LOTRETACTION',
+			"ITEMID=$data->itemID", "LOTNBR=$data->lotnbr", "LOTREF=$data->lotref", "QTY=$data->qty",
+			"PRODDATE=$date", "RESTOCK=$restock",
+			"SALESORDER=$data->ordn", "PURCHORDER=$data->ponbr"
+		];
 		if ($data->restock === true) {
 			$vars[] = "BINID=$data->binID";
 		}
