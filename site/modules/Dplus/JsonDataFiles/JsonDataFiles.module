@@ -80,6 +80,8 @@ class JsonDataFiles extends WireData implements Module {
 			'sales' => array(
 				'orders' => 'soopenorder'
 			)
+			'lotreturn' => 'lotreturn',
+			'printgs1labelscan' => 'printgs1labelscan',
 		),
 		'eso' => array(
 			'pricing'      => 'price',
