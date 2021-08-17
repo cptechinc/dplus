@@ -32,17 +32,6 @@ include_once(__DIR__.'/MpoResponse.php');
 class PurchaseOrderEdit extends WireData implements Module {
 	const PERMISSION_DPLUS = 'epo';
 
-
-	const HOOK_FUNCTIONS_LOOKUPS = array(
-		// Hook     =>  PW Template
-		'itm_json'  => 'itm-json',
-		'vi_json'   => 'vi-json',
-		'search_items'     => 'itm-search',
-		'search_vendors'   => 'vi-search',
-		'search_countries' => 'lookup-country-codes',
-		'search_shipfrom'  => 'vi-shipfrom'
-	);
-
 	/**
 	 * Returns Query for Purchase Order Header Edit
 	 * @param  string $ponbr Purchase Order Number
@@ -120,9 +109,6 @@ class PurchaseOrderEdit extends WireData implements Module {
 			case 'create-po':
 				$this->input_create_po($input);
 				break;
-			case 'verify-po-created':
-				$this->input_verify_created_po($input);
-				break;
 			case 'add-item':
 			case 'update-item':
 			case 'delete-item':
@@ -179,11 +165,10 @@ class PurchaseOrderEdit extends WireData implements Module {
 
 		if ($vendorID == '' || $validate->vendorid($vendorID)) {
 			$this->request_create_po($vendorID);
-			$this->wire('session')->redirect($this->get_po_createdURL($vendorID), $http301 = false);
 		} else {
 			$response = MpoResponse::response_error('NEW', "Vendor $vendorID not found");
+			$this->wire('session')->setFor('response', 'epo', $response);
 		}
-		$this->wire('session')->setFor('response', 'epo', $response);
 	}
 
 	/**
@@ -199,9 +184,24 @@ class PurchaseOrderEdit extends WireData implements Module {
 
 		if (strlen($logperm->ordernbr) != PurchaseOrder::LENGTH) {
 			$response = MpoResponse::response_error('NEW', "Purchase Order for $vendorID not created");
-		} else {
-			$this->wire('session')->redirect($this->get_po_editURL($logperm->ordernbr), $http301 = false);
+			$this->wire('session')->setFor('response', 'epo', $response);
 		}
+	}
+
+	/**
+	 * Verify That a Po Was Created
+	 * @param  string $vendorID Vendor ID
+	 * @return bool
+	 */
+	public function verifyCreatedPo($vendorID) {
+		$logperm = $this->get_logperm();
+
+		if (strlen($logperm->ordernbr) != PurchaseOrder::LENGTH) {
+			$response = MpoResponse::response_error('NEW', "Purchase Order for $vendorID not created");
+			$this->wire('session')->setFor('response', 'epo', $response);
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -497,108 +497,6 @@ class PurchaseOrderEdit extends WireData implements Module {
 	}
 
 /* =============================================================
-	URL Functions
-============================================================= */
-	/**
-	 * Return Edit PO URL
-	 * @param  string $ponbr Purchase Order Number
-	 * @return string
-	 */
-	public function get_po_editURL($ponbr) {
-		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-edit')->url);
-		$url->query->set('ponbr', $ponbr);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return Exit PO URL
-	 * @param  string $ponbr Purchase Order Number
-	 * @return string
-	 */
-	public function get_po_exitURL($ponbr) {
-		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-edit')->url);
-		$url->query->set('action', 'exit');
-		$url->query->set('ponbr', $ponbr);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return View PO URL
-	 * @param  string $ponbr Purchase Order Number
-	 * @return string
-	 */
-	public function get_po_viewURL($ponbr) {
-		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-view')->url);
-		$url->query->set('ponbr', $ponbr);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return Validate PO URL
-	 * @param  string $ponbr  Purchase Order Number
-	 * @return string
-	 */
-	public function get_po_validateURL($ponbr = '') {
-		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-validate')->url);
-		if ($ponbr) {
-			$url->query->set('ponbr', $ponbr);
-		}
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return PO Documents URL
-	 * @param  string $ponbr  Purchase Order Number
-	 * @return string
-	 */
-	public function get_po_documentsURL($ponbr = '') {
-		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-documents')->url);
-		if ($ponbr) {
-			$url->query->set('ponbr', $ponbr);
-		}
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return PO Documents URL
-	 * @param  string $ponbr  Purchase Order Number
-	 * @return string
-	 */
-	public function get_po_delete_itemURL($ponbr, $linenbr = 0) {
-		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-edit')->url);
-		$url->query->set('action', 'delete-item');
-		$url->query->set('ponbr', $ponbr);
-		$url->query->set('linenbr', $linenbr);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to Create PO for Vendor
-	 * @param  string $vendorID Vendor ID
-	 * @return string
-	 */
-	public function get_po_createURL($vendorID = '') {
-		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-epo')->url);
-		if ($vendorID) {
-			$url->query->set('action', 'create-po');
-			$url->query->set('vendorID', $vendorID);
-		}
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to Create PO for Vendor
-	 * @param  string $vendorID Vendor ID
-	 * @return string
-	 */
-	public function get_po_createdURL($vendorID) {
-		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-epo')->url);
-		$url->query->set('action', 'verify-po-created');
-		$url->query->set('vendorID', $vendorID);
-		return $url->getUrl();
-	}
-
-/* =============================================================
 	Supplemental Functions
 ============================================================= */
 	/**
@@ -737,68 +635,6 @@ class PurchaseOrderEdit extends WireData implements Module {
 		$this->sessionID = session_id();
 		$this->items = $this->wire('modules')->get('PurchaseOrderEditItems');
 		$this->configs = $this->wire('modules')->get('PurchaseOrderEditConfigs');
-
-		foreach (self::HOOK_FUNCTIONS_LOOKUPS as $hook => $pwtemplate) {
-			$this->addHook("Page(pw_template=purchase-order-edit)::{$hook}URL", function($event) {
-				$hook = rtrim($event->method, 'URL');
-				$pwtemplate = self::HOOK_FUNCTIONS_LOOKUPS[$hook];
-				$event->return = $this->wire('pages')->get("pw_template=$pwtemplate")->url;
-			});
-		}
-
-		$this->addHookProperty('Page(pw_template=purchase-order-edit)::ponbr', function($event) {
-			$p = $event->object;
-			$event->return = $this->get_po_editURL($p->fullURL->query->get('ponbr'));
-		});
-
-		$this->addHook('Page(pw_template=purchase-order-edit|purchase-order-epo)::po_editURL', function($event) {
-			$ponbr = $event->arguments(0);
-			$event->return = $this->get_po_editURL($ponbr);
-		});
-
-		$this->addHook('Page(pw_template=purchase-order-edit)::po_exitURL', function($event) {
-			$ponbr = $event->arguments(0);
-			$event->return = $this->get_po_exitURL($ponbr);
-		});
-
-		$this->addHook('Page(pw_template=purchase-order-edit)::po_viewURL', function($event) {
-			$ponbr = $event->arguments(0);
-			$event->return = $this->get_po_viewURL($ponbr);
-		});
-
-		$this->addHook('Page(pw_template=purchase-order-edit)::po_validateURL', function($event) {
-			$ponbr = $event->arguments(0);
-			$event->return = $this->get_po_validateURL($ponbr);
-		});
-
-		$this->addHook('Page(pw_template=purchase-order-edit)::po_documentsURL', function($event) {
-			$ponbr = $event->arguments(0);
-			$event->return = $this->get_po_documentsURL($ponbr);
-		});
-
-		$this->addHook("Page(pw_template=purchase-order-edit)::search_vxmURL", function($event) {
-			$event->return = $this->wire('modules')->get('DpagesApi')->lookupURL('vxm');;
-		});
-
-		$this->addHook('Page(pw_template=purchase-order-edit)::delete_itemURL', function($event) {
-			$ponbr    = $event->arguments(0);
-			$linenbr  = $event->arguments(1);
-			$event->return = $this->get_po_delete_itemURL($ponbr, $linenbr);
-		});
-
-		$this->addHook('Page(pw_template=purchase-order-epo)::choose_vendorURL', function($event) {
-			$p = $event->object;
-			$vendorID = $event->arguments(0);
-			$url = new Url($p->fullURL->getUrl());
-			$url->query->set('ponbr', 'new');
-			$url->query->set('vendorID', $vendorID);
-			$event->return = $url->getUrl();
-		});
-
-		$this->addHook('Page(pw_template=vi-vendor|purchase-orders)::po_createURL', function($event) {
-			$vendorID = $event->arguments(0);
-			$event->return = $this->get_po_createURL($vendorID);
-		});
 	}
 
 	public static function getModuleInfo() {

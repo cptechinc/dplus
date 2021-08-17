@@ -1,6 +1,6 @@
 <?php namespace ProcessWire;
 
-use Purl\Url;
+use Purl\Url as Purl;
 
 /**
  * class DpagesApi
@@ -41,10 +41,13 @@ class DpagesApi extends Dpages implements Module {
 		),
 	);
 
-	public function lookupURL($code) {
-		$url = $this->wire('pages')->get("template=ajax-lookups")->httpUrl;
-		$url .= "$code/";
-		return $url;
+	public function lookupUrl($code, $query = []) {
+		$url = new Purl($this->wire('pages')->get("template=ajax-lookups")->httpUrl);
+		$url->path->add($code);
+		if ($query) {
+			$url->query->setData($query);
+		}
+		return $url->getUrl();
 	}
 
 	public function jsonapiURL($api) {
@@ -78,8 +81,7 @@ class DpagesApi extends Dpages implements Module {
 		});
 
 		$this->addHook("Page::searchLookupUrl", function($event) {
-			$ajaxcode = $event->arguments(0);
-			$event->return = $this->lookupURL($ajaxcode);
+			$event->return = $this->lookupUrl($event->arguments(0), $event->arguments(1));
 		});
 
 		$this->addHook("Page::jsonApiUrl", function($event) {

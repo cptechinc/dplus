@@ -152,7 +152,35 @@
 	<div class="col-sm-8">
 		<div class="form-row">
 			<div class="col-sm-6">
-				{% include 'util/form/input-with-modal-lookup.twig' with {'name': 'exchange_country', 'value': po.exchange_country, 'modaltarget': '#ajax-modal', 'modaldescription': 'Search / Select Country Currency', attributes_button: {'data-search': 'country'}, class_add: epo.field_has_error_header('exchange_country') ? 'is-invalid' : '' } %}
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'prepend',
+							'attributes': {},
+							'input': {
+								'name': 'exchange_country',
+								'value': po.exchange_country,
+								'attributes': {
+									'placeholder': '',
+									'aria-label':  'Search / Select Country Currency'
+								},
+								'addclasses': [
+									epo.field_has_error_header('exchange_country') ? 'is-invalid' : ''
+								]
+							},
+							'button': {
+								'colorclass': 'btn-secondary',
+								'text': 'fa fa-search'|icon,
+								'attributes': {
+									'title': 'Search / Select Vendor Ship-From',
+									'data-toggle': 'modal',
+									'data-target': '#ajax-modal',
+									'data-lookupurl': page.searchLookupUrl('country-codes'),
+									'data-input': '#vendorID'
+								}
+							}
+						}
+					}
+				%}
 			</div>
 			<div class="col-sm-6">
 				<div class="form-row">

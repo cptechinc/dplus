@@ -48,7 +48,7 @@ class PhoneBook extends AbstractFilter {
 			$this->query->filterByType([Model::TYPE_VENDOR, Model::TYPE_VENDORCONTACT]);
 			$this->query->filterByVendorid($vendorID);
 		}
-		return $this
+		return $this;
 	}
 
 	/**

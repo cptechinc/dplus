@@ -75,16 +75,6 @@ class QnotesPo extends WireData implements Module {
 		$this->intl = $this->wire('modules')->get('QnotesPoIntl');
 		$this->vend = $this->wire('modules')->get('QnotesVendorVend');
 		$this->irev = $this->wire('modules')->get('QnotesItemRevision');
-
-		$this->addHook('Page(pw_template=purchase-order-notes)::view_notesURL', function($event) {
-			$p = $event->object;
-			$ponbr = $event->arguments(0);
-			$linenbr = $event->arguments(1);
-			$url = new Url($this->wire('pages')->get('pw_template=purchase-order-notes')->url);
-			$url->query->set('ponbr', $ponbr);
-			$hash = $linenbr > 0 ? "#line-$linenbr" : '';
-			$event->return = $url->getUrl()."$hash";
-		});
 	}
 
 	public function update() {

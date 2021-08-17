@@ -16,7 +16,7 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form action="{{ page.url }}" method="post" id="edit-item-form">
+				<form action="{{ input.url() }}" method="post" id="edit-item-form">
 					<input type="hidden" name="action" value="update-header-phone">
 					<input type="hidden" name="ponbr" value="{{ po.ponbr }}">
 					{% include 'purchase-orders/purchase-order/edit/header/phone/fields.twig' %}

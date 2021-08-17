@@ -166,39 +166,6 @@ class DocumentManagementPo extends DocumentManagement implements Module {
 	}
 
 /* =============================================================
-	URL Functions
-============================================================= */
-	/**
-	 * Return URL to Purchase Order Documents Page
-	 * @param  string $ponbr    Purchase Order Number
-	 * @param  string $folder   Folder Tag to Look for Document (default: PO)
-	 * @param  string $document Document Name
-	 * @return string
-	 */
-	public function get_purchaseorder_docsURL($ponbr, $folder, $document) {
-		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-documents')->url);
-		$url->query->set('ponbr', $ponbr);
-		$url->query->set('folder', $folder ? $folder : self::TAG_VENDORPO);
-		$url->query->set('document', $document);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to AP Invoice Documents Page
-	 * @param  string $invnbr    AP Invoice Number
-	 * @param  string $folder    Folder Tag to Look for Document (default: self::TAG_APINVOICE)
-	 * @param  string $document  Document Name
-	 * @return string
-	 */
-	public function get_apinvoice_docsURL($invnbr, $folder, $document) {
-		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-documents')->url);
-		$url->query->set('invnbr', $invnbr);
-		$url->query->set('folder', $folder ? $folder : self::TAG_APINVOICE);
-		$url->query->set('document', $document);
-		return $url->getUrl();
-	}
-
-/* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
 	public static function getModuleInfo() {
@@ -210,33 +177,5 @@ class DocumentManagementPo extends DocumentManagement implements Module {
 			'autoload' => true,
 			'requires' => 'DocumentManagement'
 		);
-	}
-
-	public function init() {
-		$this->addHook('Page(pw_template=purchase-order-view)::documentload', function($event) {
-			$page = $event->object;
-			$folder   = $event->arguments(0);
-			$document = $event->arguments(1);
-			$ponbr    = $event->arguments(2);
-
-			if (PurchaseOrderQuery::create()->filterByPonbr($ponbr)->count()) {
-				$event->return = $this->get_purchaseorder_docsURL($ponbr, $folder, $document);
-			} elseif (ApInvoiceQuery::create()->filterByInvoicenumber($ponbr)->count()) {
-				$event->return = $this->get_apinvoice_docsURL($ponbr, $folder, $document);
-			}
-		});
-
-		$this->addHook('Page(pw_template=purchase-order-documents)::documentload', function($event) {
-			$page = $event->object;
-			$folder   = $event->arguments(0);
-			$document = $event->arguments(1);
-			$ponbr    = $event->arguments(2);
-
-			if (PurchaseOrderQuery::create()->filterByPonbr($ponbr)->count()) {
-				$event->return = $this->get_purchaseorder_docsURL($ponbr, $folder, $document);
-			} elseif (ApInvoiceQuery::create()->filterByInvoicenumber($ponbr)->count()) {
-				$event->return = $this->get_apinvoice_docsURL($ponbr, $folder, $document);
-			}
-		});
 	}
 }

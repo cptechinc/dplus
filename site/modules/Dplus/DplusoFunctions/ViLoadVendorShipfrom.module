@@ -266,7 +266,8 @@
 		 * @return string
 		 */
 		public function get_purchaseordersURL() {
-			$url = new Url($this->wire('pages')->get('pw_template=purchase-orders-vendor')->url);
+			$url = new Url($this->wire('pages')->get('pw_template=purchase-orders')->url);
+			$url->path->add('vendor');
 			$url->query->set('vendorID', $this->vendorID);
 
 			if ($this->shipfromID) {
@@ -281,7 +282,8 @@
 		 * @return string
 		 */
 		public function get_invoicesURL() {
-			$url = new Url($this->wire('pages')->get('pw_template=purchase-history-orders-vendor')->url);
+			$url = new Url($this->wire('pages')->get('pw_template=purchase-history-invoices')->url);
+			$url->path->add('vendor');
 			$url->query->set('vendorID', $this->vendorID);
 
 			if ($this->shipfromID) {

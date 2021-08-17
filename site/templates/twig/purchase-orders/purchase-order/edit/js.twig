@@ -20,42 +20,9 @@ $(function() {
 	modal_ajax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
-		var url = '';
+		var url = button.data('lookupurl');
 
 		modal.attr('data-input', button.data('input'));
-
-		switch (button.data('search')) {
-			case 'item':
-				url = '{{ page.search_itemsURL() }}';
-				break;
-			case 'vendoritem':
-				uri = URI('{{ page.search_vxmURL() }}');
-				uri.setQuery('vendorID', $('input#vendorID').val());
-				url = uri.toString();
-				break;
-			case 'shipfrom':
-				uri = URI('{{ page.search_shipfromURL() }}');
-				uri.setQuery('vendorID', $('input#vendorID').val());
-				url = uri.toString();
-				break;
-			case 'country':
-				url = '{{ page.search_countriesURL() }}';
-				break;
-			case 'vendor':
-				url = '{{ page.search_lookupURL('vendors') }}';
-				break;
-			case 'documents':
-				url = '{{ page.po_documentsURL(page.ponbr) }}';
-				break;
-			case 'vendor-contacts':
-				uri = URI(button.data('lookupurl'));
-				uri.setQuery('vendorID', $('input#vendorID').val());
-				url = uri.toString();
-				break;
-			default:
-				url = button.data('lookupurl');
-				break;
-		}
 
 		modal.find('.modal-title').text(button.attr('title'));
 		modal.resizeModal('xl');

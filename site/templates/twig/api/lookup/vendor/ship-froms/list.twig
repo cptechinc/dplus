@@ -1,0 +1,40 @@
+<table id="vendor-contact-index" class="table table-bordered table-smd">
+	<thead>
+		<tr>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('shipfromID') }}" class="link">Ship-from ID</a>
+			</th>
+			<th scope="col">
+				<a href="{{ page.get_sortURL('name') }}" class="link">Name</a>
+			</th>
+			<th scope="col">Contact</th>
+			<th scope="col">Address</th>
+			<th scope="col">City</th>
+			<th scope="col">State</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if results.count() %}
+			{% for shipfrom in results %}
+				<tr>
+					<td>
+						<a href="#" class="link vendor-shipfrom-link" data-vendorid="{{ shipfrom.vendorid }}" data-shipfromid="{{ shipfrom.shipfromidid }}">
+							<strong>{{ shipfrom.shipfromid }}</strong>
+						</a>
+					</td>
+					<td>{{ shipfrom.name }}</td>
+					<td>{{ shipfrom.contact }}</td>
+					<td>{{ shipfrom.address }}</td>
+					<td>{{ shipfrom.city }}</td>
+					<td>{{ shipfrom.state }}</td>
+				</tr>
+			{% endfor %}
+		{% else %}
+			<tr>
+				<td colspan="6" class="bg-secondary text-white text-center">
+					No Results found
+				</td>
+			</tr>
+		{% endif %}
+	</tbody>
+</table>
