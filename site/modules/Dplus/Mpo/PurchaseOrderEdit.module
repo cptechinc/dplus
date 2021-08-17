@@ -537,32 +537,6 @@ class PurchaseOrderEdit extends WireData implements Module {
 		return $url->getUrl();
 	}
 
-	/**
-	 * Return URL to Create PO for Vendor
-	 * @param  string $vendorID Vendor ID
-	 * @return string
-	 */
-	public function get_po_createURL($vendorID = '') {
-		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-epo')->url);
-		if ($vendorID) {
-			$url->query->set('action', 'create-po');
-			$url->query->set('vendorID', $vendorID);
-		}
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return URL to Create PO for Vendor
-	 * @param  string $vendorID Vendor ID
-	 * @return string
-	 */
-	public function get_po_createdURL($vendorID) {
-		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-epo')->url);
-		$url->query->set('action', 'verify-po-created');
-		$url->query->set('vendorID', $vendorID);
-		return $url->getUrl();
-	}
-
 /* =============================================================
 	Supplemental Functions
 ============================================================= */

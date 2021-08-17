@@ -37,11 +37,6 @@ class DpagesMpo extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
-		'purchase-order-epo' => array(
-			'name'   => 'purchase-order-epo',
-			'fields' => array(),
-			'paginated' => true
-		),
 		'purchase-order-documents' => array(
 			'name'   => 'purchase-order-documents',
 			'fields' => array(),
@@ -106,14 +101,15 @@ class DpagesMpo extends Dpages implements Module {
 			'pw_template'      => 'purchase-order-validate'
 		),
 		'po-epo' => array(
-			'template'         => 'dplus-function',
+			'template'         => 'dplus-function-link',
 			'name'             => 'epo',
 			'title'            => 'Purchase Order Entry',
 			'summary'          => 'Edit / Create Purchase Order',
 			'parent'           => '/mpo/',
 			'dplus_function'   => 'epo',
 			'dplus_permission' => 'epo',
-			'pw_template'      => 'purchase-order-epo'
+			'pw_template'      => '',
+			'function_url'     => '/mpo/purchase-orders/epo/'
 		),
 		'purchase-history-list' => array(
 			'template'         => 'dplus-function',
