@@ -1,0 +1,46 @@
+<table class="table table-sm">
+	<tr>
+		<th>Line #</th>
+		<th>Item</th>
+		<th>Receipt Date</th>
+		<th>Ordered</th>
+		<th>Received</th>
+		<th>Weight Received</th>
+	</tr>
+	<tbody>
+		{% for line in json['lines'] %}
+			<tr>
+				<td>
+					<button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target=".lot-{{ line['linenbr'] }}" aria-expanded="false" aria-controls="lot-{{ line['linenbr'] }}">
+						{{ line['linenbr'] }}
+					</button>
+				</td>
+				<td>
+					{{ line['itemid'] }} <br> <small>{{ line['description'] }}</small>
+				</td>
+				<td>{{ line['receiptdate']|convertdate }}</td>
+				<td>{{ line['orderqty'] }}</td>
+				<td>{{ line['currqty'] }}</td>
+				<td>{{ line['currlbs'] }}</td>
+			</tr>
+			{% for lot in line['lotdetail'] %}
+				<tr class="collapse lot-{{ line['linenbr'] }}">
+					<th></th>
+					<th>Lot Reference</th>
+					<th>Lot #</th>
+					<th>Production Date</th>
+					<th>Qty</th>
+					<th></th>
+				</tr>
+				<tr class="collapse lot-{{ line['linenbr'] }}">
+					<td></td>
+					<td>{{ lot['lotref'] }}</td>
+					<td>{{ lot['lotnbr'] }}</td>
+					<td>{{ lot['productiondate']|convertdate }}</td>
+					<td>{{ lot['qty'] }}</td>
+					<td></td>
+				</tr>
+			{% endfor %}
+		{% endfor %}
+	</tbody>
+</table>

@@ -17,6 +17,7 @@
 			['GET',   '', Epo\Edit::class, 'index'],
 			['POST',  '', Epo\Edit::class, 'handleCRUD'],
 		],
+		['GET',  'received/', App\Received::class, 'index'],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);

@@ -83,6 +83,9 @@ class JsonDataFiles extends WireData implements Module {
 			'lotreturn' => 'lotreturn',
 			'printgs1labelscan' => 'printgs1labelscan',
 		),
+		'po' => [
+			'received' => 'rcptconfirm'
+		],
 		'eso' => array(
 			'pricing'      => 'price',
 			'pricehistory' => 'prichist',
