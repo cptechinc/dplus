@@ -79,12 +79,24 @@ class ItmPricing extends WireData implements Module {
 		$itemID = $input->$rm->text('itemID');
 
 		if ($this->wire('modules')->get('Itm')->exists($itemID)) {
-			$record = $this->get_pricing($itemID);
-		} else {
-			$record = new ItemPricing();
-			$record->setItemid($itemID);
+			return $this->get_pricing($itemID);
 		}
-		return $record;
+		return $this->newPricing($itemID);
+	}
+
+	/**
+	 * Return new ItemPricing with defaults
+	 * @param  string $itemID  Item ID
+	 * @return ItemPricing
+	 */
+	public function newPricing($itemID = '') {
+		$r = ItemPricing::new();
+		if (strtolower($itemID) != 'new') {
+			$r->setItemid($itemID);
+		}
+		$r->setUpdated(date('Ymd'));
+		$r->setDummy('P');
+		return $r;
 	}
 
 /* =============================================================
