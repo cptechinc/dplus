@@ -10,6 +10,16 @@ if ($values->action) {
 	$session->redirect($page->redirectURL(), $http301 = false);
 }
 
+if ($input->get->custID) {
+	$custID = $input->get->text('custID');
+	$cart->set_custid($custID);
+	if ($input->get->shiptoID) {
+		$shiptoID = $input->get->text('shiptoID');
+		$cart->set_shiptoID($shiptoID);
+	}
+	$session->redirect($page->url);
+}
+
 if ($cart->has_custid()) {
 	$custID = $cart->get_custid();
 	$customer = CustomerQuery::create()->findOneByCustid($custID);

@@ -17,6 +17,7 @@
 			['GET',   '', Epo\Edit::class, 'index'],
 			['POST',  '', Epo\Edit::class, 'handleCRUD'],
 		],
+		['GET',  'received/', App\Received::class, 'index'],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
@@ -32,7 +33,7 @@
 	if ($config->ajax) {
 		echo $page->body;
 	} else {
-		if ($page->print) {
+		if ($input->lastSegment() == 'print' || $input->get->offsetExists('print')) {
 			$page->show_title = true;
 
 			if ($page->is_pdf()) {

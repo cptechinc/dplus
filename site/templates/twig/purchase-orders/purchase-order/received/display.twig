@@ -1,0 +1,54 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	json                   JSON array
+#}
+
+<div class="form-group">
+	{% if page.is_print() == false %}
+		<a href="{{ page.get_printURL() }}" class="btn btn-primary">
+			<i class="fa fa-print" aria-hidden="true"></i> Printable
+		</a>
+		&nbsp; &nbsp;
+	{% endif %}
+	{% if page.is_print() %}
+		<a href="{{ page.receivedUrl(input.get.text('ponbr')) }}" class="btn btn-primary d-print-none">
+			<i class="fa fa-undo" aria-hidden="true"></i> Back
+		</a>
+		&nbsp; &nbsp;
+		<button type="button" class="btn btn-primary d-print-none" onclick="window.print()">
+			<i class="fa fa-print" aria-hidden="true"></i> Print
+		</button>
+		&nbsp; &nbsp;
+	{% endif %}
+	<button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".lot" aria-expanded="false" aria-controls="lot">
+		Show / Hide Lots
+	</button>
+</div>
+
+<div class="card">
+	<div class="card-header">
+		<div class="row">
+			<div class="col-sm-6">
+				<strong>PO #:</strong> {{ input.get.text('ponbr') }}
+			</div>
+		</div>
+	</div>
+
+	{% if config.company == 'provalley' %}
+		{% include 'purchase-orders/purchase-order/received/report/provalley.twig' %}
+	{% else %}
+		{% include 'purchase-orders/purchase-order/received/report/default.twig' %}
+	{% endif %}
+
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<div>
+				<a href="{{ page.poUrl(input.get.text('ponbr')) }}" class="btn btn-warning btn-sm d-print-none">
+					<i class="fa fa-times" aria-hidden="true"></i> Close
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

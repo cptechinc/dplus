@@ -2,7 +2,9 @@
 // Dplus Model
 use PurchaseOrder;
 // ProcessWire Classes, Modules
-use ProcessWire\Page;
+use ProcessWire\Page, ProcessWire\PurchaseOrderEdit as EpoModel;
+// Dplus Validators
+use Dplus\CodeValidators\Mpo as MpoValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 use Controllers\Mpo\PurchaseOrder\Base;
@@ -16,7 +18,7 @@ class Received extends Base {
 /* =============================================================
 	Indexes
 ============================================================= */
-	static public function index($data) {
+	public static function index($data) {
 		$fields = ['ponbr|text'];
 		self::sanitizeParametersShort($data, $fields);
 
@@ -26,7 +28,7 @@ class Received extends Base {
 		return self::initScreen($data);
 	}
 
-	static public function po($data) {
+	public static function po($data) {
 		$fields = ['ponbr|ponbr'];
 		self::sanitizeParametersShort($data, $fields);
 
@@ -36,7 +38,7 @@ class Received extends Base {
 		return self::received($data);
 	}
 
-	static private function received($data) {
+	private static function received($data) {
 		self::requestJson($data);
 		$verified = self::verifyData($data);
 		if ($verified === true) {
@@ -55,7 +57,7 @@ class Received extends Base {
 /* =============================================================
 	Data Processing
 ============================================================= */
-	static private function verifyData($data) {
+	private static function verifyData($data) {
 		self::sanitizeParametersShort($data, ['scan|text']);
 
 		$jsonm = self::getJsonModule();
@@ -87,13 +89,13 @@ class Received extends Base {
 			return false;
 		}
 		$session->setFor(self::JSONCODE, $data->ponbr, ($session->getFor(self::JSONCODE, $data->ponbr) + 1));
-		$session->redirect(self::receivedUrl($data->ponbr), $http301 = false);
+		$session->redirect(self::poReceivedUrl($data->ponbr), $http301 = false);
 	}
 
 /* =============================================================
 	Displays
 ============================================================= */
-	static private function initScreen($data) {
+	private static function initScreen($data) {
 		return self::lookupForm($data);
 	}
 
@@ -119,11 +121,11 @@ class Received extends Base {
 /* =============================================================
 	Requests
 ============================================================= */
-	static private function requestData($data) {
+	private static function requestData($data) {
 		self::sendRequest(['RCPTCONFIRM', "PONBR=$data->ponbr"]);
 	}
 
-	static private function sendRequest(array $data, $sessionID = '') {
+	private static function sendRequest(array $data, $sessionID = '') {
 		$sessionID = $sessionID ? $sessionID : session_id();
 		$db = self::pw('modules')->get('DplusOnlineDatabase')->db_name;
 		$data = array_merge(["DBNAME=$db"], $data);
@@ -135,7 +137,7 @@ class Received extends Base {
 /* =============================================================
 	Validator, Module Getters
 ============================================================= */
-	static public function validateUserPermission(User $user = null) {
+	public static function validateUserPermission(User $user = null) {
 		if (empty($user)) {
 			$user = self::pw('user');
 		}
@@ -156,7 +158,11 @@ class Received extends Base {
 		$m = self::pw('modules')->get('DpagesMpo');
 
 		$m->addHook('Page(pw_template=purchase-order-received)::poUrl', function($event) {
-			$event->return = self::scanChooseItemUrl($event->arguments(0));
+			$event->return = self::poUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=purchase-order-received)::receivedUrl', function($event) {
+			$event->return = self::poReceivedUrl($event->arguments(0));
 		});
 	}
 

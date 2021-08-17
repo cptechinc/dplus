@@ -1,0 +1,29 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	json                   JSON array
+	itm                    module Itm
+#}
+
+{% extends 'warehouse/inventory/provalley/print-gs1/scan-results.twig' %}
+
+{% block body %}
+	<div class="card-body">
+		<h3>Select Item: </h3>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="list-group">
+					{% for item in json['items'] %}
+						<a href="{{ page.scanChooseItemUrl(json['scan'], item['itemid'], item['vendorid'])}}" class="list-group-item list-group-item-action">
+							<div class="d-flex w-100 justify-content-between">
+								<h5 class="mb-1">{{ item['itemid'] }}</h5>
+								<small>{{ item['vendorid'] }}</small>
+							</div>
+							<small>{{ itm.description(item['itemid']) }}</small>
+						</a>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

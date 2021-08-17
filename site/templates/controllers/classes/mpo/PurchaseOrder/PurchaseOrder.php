@@ -93,6 +93,10 @@ class PurchaseOrder extends Base {
 			$event->return = self::poUrl($event->arguments(0));
 		});
 
+		$m->addHook('Page(pw_template=purchase-order-view)::poReceivedUrl', function($event) {
+			$event->return = self::poReceived($event->arguments(0));
+		});
+
 		$m->addHook('Page(pw_template=purchase-order-view)::poListUrl', function($event) {
 			$event->return = self::poListUrl($event->arguments(0));
 		});

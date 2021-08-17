@@ -8,6 +8,10 @@
 			<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#header-notes-modal">
 				<i class="fa fa-sticky-note-o" aria-hidden="true"></i> Notes
 			</button>
+			&nbsp;
+			<a href="{{ page.poReceivedUrl(purchaseorder.ponbr) }}" class="btn btn-primary">
+				<i class="fa fa-list-ol" aria-hidden="true"></i> View Receipts
+			</a>
 		</div>
 		<div class="col text-right">
 			{% if docm.countDocumentsPo(purchaseorder.ponbr) %}

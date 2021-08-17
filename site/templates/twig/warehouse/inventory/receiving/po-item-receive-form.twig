@@ -75,7 +75,7 @@
 	<div class="row">
 		<div class="col-sm-6">
 			<div class="form-group">
-				<label for="productiondate">Expire Date</label>
+				<label for="productiondate">Production Date</label>
 				{% include 'util/date-picker.twig' with {'name': 'productiondate', 'id': 'productiondate', 'value': item.productiondate ? item.productiondate|convertdate('m/d/Y') : '', 'disabled': item.items.isItemNormal()} %}
 			</div>
 		</div>
