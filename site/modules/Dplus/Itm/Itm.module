@@ -137,31 +137,37 @@ class Itm extends WireData implements Module {
 		$configIn = $this->configIn();
 		$item = new ItemMasterItem();
 
-		$item->setItemgroup($configIn->default_itemgroup);
-
-		if ($configIn->use_pricegroup()) {
-			$item->setPricecode($configIn->default_pricegroup);
-		}
-
-		if ($configIn->use_commgroup()) {
-			$item->setCommissiongroup($configIn->default_commgroup);
-		}
-
-		$item->setItemtype($configIn->default_itemtype);
-
 		$item->setTaxable('Y');
 		$item->setAllow_backorder('Y');
 		$item->setAllow_discount('Y');
 		$item->setRequire_freight('N');
 		$item->setCore('N');
 		$item->setSplitorder('Y');
+		$item->setMinmarginbase('%');
+		$item->setInspection('N');
+		$item->setQtypercase(1);
 
+		// CONFIG IN DEFAULTS
+		$item->setItemgroup($configIn->default_itemgroup);
+
+		if ($configIn->use_pricegroup()) {
+			$pricegroup = $configIn->use_itemgroup_as_pricegroup() ? $item->itemgroup : $configIn->default_pricegroup;
+			$item->setPricecode($pricegroup);
+		}
+
+		if ($configIn->use_commgroup()) {
+			$commgroup = $configIn->use_itemgroup_as_commgroup() ? $item->itemgroup : $configIn->default_commgroup;
+			$item->setCommissiongroup($commgroup);
+		}
+
+		$item->setItemtype($configIn->default_itemtype);
 		$item->setUom_sale($configIn->default_uom_sale);
 		$item->setUom_purchase($configIn->default_uom_purchase);
 		$item->setPreference($configIn->default_nafta_pref_code);
 		$item->setProducer($configIn->default_nafta_producer);
 		$item->setDocumentation($configIn->default_nafta_documentation);
 		$item->setBasestandardcost($configIn->default_base_standard_cost);
+
 
 		if ($this->wire('modules')->get('DplusCustomer')->get_custID() == 'LINDST') {
 			$item->setStockcode('MM');
