@@ -91,11 +91,11 @@ class I2i extends AbstractController {
 		$xref = $i2i->getOrCreate($data->parentID, $data->childID);
 
 		if ($i2i->exists($data->parentID, $data->childID)) {
-			self::pw('page')->headline = "I2I: $data->parentID-$data->childID";
+			self::pw('page')->headline = "Item to Item: $data->parentID-$data->childID";
 		}
 
 		if ($i2i->exists($data->parentID, $data->childID) === false) {
-			self::pw('page')->headline = "I2I: Creating New X-Ref";
+			self::pw('page')->headline = "Item to Item: Creating New X-Ref";
 		}
 
 		if ($xref->isNew() === false) {
