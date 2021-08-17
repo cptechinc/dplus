@@ -40,8 +40,7 @@ class Edit extends Base {
 		if ($data->action) {
 			$epo = self::pw('modules')->get('PurchaseOrderEdit');
 			$epo->process_input(self::pw('input'));
-			$page = self::pw('page');
-			$url = $data->action == 'exit' ? $page->po_viewURL($data->ponbr) : $page->po_editURL($data->ponbr);
+			$url = $data->action == 'exit' ? self::poUrl($data->ponbr) : self::poEditUrl($data->ponbr);
 			self::pw('session')->redirect($url, $http301 = false);
 		}
 	}
