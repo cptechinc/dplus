@@ -22,10 +22,6 @@ class DpagesMpo extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
-		'purchase-order-validate' => array(
-			'name'   => 'purchase-order-validate',
-			'fields' => array(),
-			'paginated' => true
 		),
 		'purchase-order-documents' => array(
 			'name'   => 'purchase-order-documents',
@@ -79,16 +75,6 @@ class DpagesMpo extends Dpages implements Module {
 			'dplus_function'   => '',
 			'dplus_permission' => 'mpo',
 			'pw_template'      => 'purchase-order-view'
-		),
-		'po-edit-validate' => array(
-			'template'         => 'dplus-json',
-			'name'             => 'validate',
-			'title'            => 'Purchase Order Validate JSON',
-			'summary'          => 'Provides JSON API to validate Purchase Order Fields',
-			'parent'           => '/mpo/purchase-order/edit/',
-			'dplus_function'   => '',
-			'dplus_permission' => '',
-			'pw_template'      => 'purchase-order-validate'
 		),
 		'po-epo' => array(
 			'template'         => 'dplus-function-link',

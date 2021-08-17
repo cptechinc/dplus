@@ -501,30 +501,6 @@ class PurchaseOrderEdit extends WireData implements Module {
 ============================================================= */
 
 	/**
-	 * Return View PO URL
-	 * @param  string $ponbr Purchase Order Number
-	 * @return string
-	 */
-	public function get_po_viewURL($ponbr) {
-		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-view')->url);
-		$url->query->set('ponbr', $ponbr);
-		return $url->getUrl();
-	}
-
-	/**
-	 * Return Validate PO URL
-	 * @param  string $ponbr  Purchase Order Number
-	 * @return string
-	 */
-	public function get_po_validateURL($ponbr = '') {
-		$url = new Url($this->wire('pages')->get('pw_template=purchase-order-validate')->url);
-		if ($ponbr) {
-			$url->query->set('ponbr', $ponbr);
-		}
-		return $url->getUrl();
-	}
-
-	/**
 	 * Return PO Documents URL
 	 * @param  string $ponbr  Purchase Order Number
 	 * @return string
