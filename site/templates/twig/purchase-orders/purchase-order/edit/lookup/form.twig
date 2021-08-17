@@ -4,7 +4,7 @@
 	page                   ProcessWire\Page
 	po                     EditPoHead
 #}
-<form action="{{ page.url }}" class="allow-enterkey-submit" method="post" id="add-item-form">
+<form action="{{ input.url() }}" class="allow-enterkey-submit" method="post" id="add-item-form">
 	<input type="hidden" name="action" value="add-item">
 	<input type="hidden" name="ponbr" value="{{ po.ponbr }}">
 	<div class="row">

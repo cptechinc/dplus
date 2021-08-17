@@ -6,7 +6,7 @@
 	po_readonly            PurchaseOrder
 	epo                    PurchaseOrderEdit
 #}
-<form action="{{ page.url }}" method="POST" class="mb-3" id="header-form">
+<form action="{{ input.url() }}" method="POST" class="mb-3" id="header-form">
 	<input type="hidden" name="action" value="update-header">
 	<input type="hidden" name="ponbr" value="{{ po.ponbr }}">
 	<div class="row">

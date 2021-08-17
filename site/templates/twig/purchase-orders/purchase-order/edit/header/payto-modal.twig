@@ -16,7 +16,7 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form action="{{ page.url }}" method="post" id="edit-item-form">
+				<form action="{{ input.url() }}" method="post" id="edit-item-form">
 					<input type="hidden" name="action" value="update-header-payto">
 					<input type="hidden" name="ponbr" value="{{ po.ponbr }}">
 					{% set fields = ['payto_name', 'payto_address', 'payto_address2', 'payto_address3'] %}
