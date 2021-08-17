@@ -16,12 +16,12 @@
 		<label for="itemtype">Item Type</label>
 	</div>
 	<div class="col-sm-6">
-		{% include 'util/select.twig' with {'name': 'itemtype', 'id': 'itemtype', 'selectedvalue': item.itemtype, 'options': item.get_itemtypedescriptions(), 'capitalize_labels': true } %}
+		{% include 'util/select.twig' with {'name': 'itemtype', 'id': 'itemtype', 'selectedvalue': item.itemtype, 'options': item.get_itemtypedescriptions(), 'capitalize_labels': true, 'hideblankoption': true } %}
 	</div>
 </div>
 <div class="form-group row">
 	<div class="col-sm-6">
-		<label for="timefence"><abbr title="Days">Time Fence</abbr></label>
+		<label for="timefence">Time Fence</label>
 	</div>
 	<div class="col-sm-6">
 		<input type="number" name="timefence" class="form-control form-control-sm text-right" value="{{ item.timefence }}" id="timefence">

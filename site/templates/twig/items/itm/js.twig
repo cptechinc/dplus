@@ -88,6 +88,12 @@ $(function() {
 		form.closest('.modal').find('.modal-body').loadin(url, function() {});
 	});
 
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
 /* =============================================================
 	Validation Functions
 ============================================================= */

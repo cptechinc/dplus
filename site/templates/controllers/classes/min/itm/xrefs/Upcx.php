@@ -20,14 +20,13 @@ class Upcx extends XrefFunction {
 
 	public static function index($data) {
 		$fields = ['itemID|text', 'upc|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$page = self::pw('page');
+		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 
-		$page->show_breadcrumbs = false;
+		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -42,7 +41,7 @@ class Upcx extends XrefFunction {
 	public static function handleCRUD($data) {
 		$page    = self::pw('page');
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 		$fields = ['itemID|text', 'upc|text', 'action|text'];
 		$data = self::sanitizeParameters($data, $fields);
@@ -71,10 +70,10 @@ class Upcx extends XrefFunction {
 
 	public static function xref($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 
-		$data = self::sanitizeParametersShort($data, ['itemID|text', 'upc|text', 'action|text']);
+		self::sanitizeParametersShort($data, ['itemID|text', 'upc|text', 'action|text']);
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
@@ -112,10 +111,10 @@ class Upcx extends XrefFunction {
 
 	public static function list($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 		self::initHooks();
-		$data = self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
+		self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
 		$upcx = UpcxController::getUpcx();
 		$upcx->recordlocker->deleteLock();
 		$page   = self::pw('page');

@@ -18,14 +18,13 @@ class Mxrfe extends XrefFunction {
 
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$page = self::pw('page');
+		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 
-		$page->show_breadcrumbs = false;
+		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -40,7 +39,7 @@ class Mxrfe extends XrefFunction {
 	public static function handleCRUD($data) {
 		$page    = self::pw('page');
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 		$fields = ['itemID|text', 'mnfrID|text', 'mnfritemID|text', 'action|text'];
 		$data  = self::sanitizeParameters($data, $fields);
@@ -62,7 +61,7 @@ class Mxrfe extends XrefFunction {
 
 	public static function xref($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
 		$fields = ['itemID|text', 'mnfrID|text', 'mnfritemID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
@@ -121,9 +120,9 @@ class Mxrfe extends XrefFunction {
 
 	public static function list($data) {
 		if (self::validateItemidAndPermission($data) === false) {
-			return $page->body;
+			return self::displayAlertUserPermission($data);
 		}
-		$data = self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
+		self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
 		self::initHooks();
 
 		$mxrfe = BaseMxrfe::mxrfeMaster();

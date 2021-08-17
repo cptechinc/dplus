@@ -123,29 +123,20 @@ class Itm extends WireData implements Module {
 		$itemID = substr($itemID, 0, ItemMasterItem::LENGTH_ITEMID);
 		$itemID = $configIn->useUppercaseItemid() ? strtoupper($itemID) : $itemID;
 		$record = $this->newItem();
-		$record->setItemid($itemID);
+		if (strtolower($itemID) != 'new') {
+			$record->setItemid($itemID);
+		}
 		return $record;
 	}
 
 	/**
-	 * Returns Item with Defaults Set
+	 * Return Item
+	 * NOTE: uses default values from IN config
 	 * @return ItemMasterItem
 	 */
 	public function newItem() {
 		$configIn = $this->configIn();
 		$item = new ItemMasterItem();
-
-		$item->setItemgroup($configIn->default_itemgroup);
-
-		if ($configIn->use_pricegroup()) {
-			$item->setPricecode($configIn->default_pricegroup);
-		}
-
-		if ($configIn->use_commgroup()) {
-			$item->setCommissiongroup($configIn->default_commgroup);
-		}
-
-		$item->setItemtype($configIn->default_itemtype);
 
 		$item->setTaxable('Y');
 		$item->setAllow_backorder('Y');
@@ -153,7 +144,25 @@ class Itm extends WireData implements Module {
 		$item->setRequire_freight('N');
 		$item->setCore('N');
 		$item->setSplitorder('Y');
+		$item->setMinmarginbase('%');
+		$item->setInspection('N');
+		$item->setQtypercase(1);
+		$item->setDummy('P');
 
+		// CONFIG IN DEFAULTS
+		$item->setItemgroup($configIn->default_itemgroup);
+
+		if ($configIn->use_pricegroup()) {
+			$pricegroup = $configIn->use_itemgroup_as_pricegroup() ? $item->itemgroup : $configIn->default_pricegroup;
+			$item->setPricecode($pricegroup);
+		}
+
+		if ($configIn->use_commgroup()) {
+			$commgroup = $configIn->use_itemgroup_as_commgroup() ? $item->itemgroup : $configIn->default_commgroup;
+			$item->setCommissiongroup($commgroup);
+		}
+
+		$item->setItemtype($configIn->default_itemtype);
 		$item->setUom_sale($configIn->default_uom_sale);
 		$item->setUom_purchase($configIn->default_uom_purchase);
 		$item->setPreference($configIn->default_nafta_pref_code);
@@ -286,6 +295,8 @@ class Itm extends WireData implements Module {
 		$record->setTaxable($values->yn('taxable'));
 		$record->setWeight($values->float('weight'));
 		$record->setCubes($values->float('cubes'));
+		$record->setDate(date('Ymd'));
+		$record->setTime(date('his'));
 		$invalidfields = $this->set_validated_fields($record, $input);
 		return $invalidfields;
 	}
@@ -302,7 +313,7 @@ class Itm extends WireData implements Module {
 		$fields = array(
 			'custid' => array(
 				'description' => 'Cust ID',
-				'input'       => 'custid',
+				'input'       => 'custID',
 				'allow_blank' => true
 			),
 			'itemtype' => array(

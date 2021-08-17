@@ -91,11 +91,11 @@ class I2i extends AbstractController {
 		$xref = $i2i->getOrCreate($data->parentID, $data->childID);
 
 		if ($i2i->exists($data->parentID, $data->childID)) {
-			self::pw('page')->headline = "I2I: $data->parentID-$data->childID";
+			self::pw('page')->headline = "Item to Item: $data->parentID-$data->childID";
 		}
 
 		if ($i2i->exists($data->parentID, $data->childID) === false) {
-			self::pw('page')->headline = "I2I: Creating New X-Ref";
+			self::pw('page')->headline = "Item to Item: Creating New X-Ref";
 		}
 
 		if ($xref->isNew() === false) {
@@ -118,6 +118,7 @@ class I2i extends AbstractController {
 		$html .= self::breadCrumbsDisplay($data);
 		$html .= self::responseDisplay($data);
 		$html .= $config->twig->render('min/i2i/list/display.twig', ['i2i' => $i2i, 'xrefs' => $xrefs]);
+		$html .= '<div class="mb-3"></div>';
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $xrefs]);
 		return $html;
 	}

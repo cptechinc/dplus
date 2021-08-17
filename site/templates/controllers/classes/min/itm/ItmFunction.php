@@ -34,7 +34,6 @@ class ItmFunction extends AbstractController {
 	protected static function validateUserPermission() {
 		$user = self::pw('user');
 		$itmp = self::pw('modules')->get('Itmp');
-		$page = self::pw('page');
 
 		if ($user->has_function('itm') === false) {
 			return false;
@@ -49,11 +48,6 @@ class ItmFunction extends AbstractController {
 		self::validateItemid($data);
 
 		if (static::validateUserPermission() === false) {
-			$page   = self::pw('page');
-			$config = self::pw('config');
-			if (isset($data->action) === false) {
-				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: ITM $page->name"]);
-			}
 			return false;
 		}
 		return true;
@@ -64,6 +58,16 @@ class ItmFunction extends AbstractController {
 ============================================================= */
 	protected static function breadCrumbs() {
 		return self::pw('config')->twig->render('items/itm/bread-crumbs.twig');
+	}
+
+	protected static function displayAlertUserPermission($data) {
+		if (static::validateUserPermission() === false) {
+			$writer = self::pw('modules')->get('HtmlWriter');
+			$html   = self::pw('config')->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Access Denied", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You don't have access to this function: ITM - " . static::PERMISSION_ITMP]);
+			$html .= $writer->div('class=mt-3', $writer->a('class=btn btn-primary|href='.self::itmUrl($data->itemID), 'ITM'));
+			return $html;
+		}
+		return '';
 	}
 
 /* =============================================================
@@ -144,12 +148,13 @@ class ItmFunction extends AbstractController {
 			$config = self::pw('config');
 			$msg = "ITM Item $itemID is being locked by " . $itm->recordlocker->getLockingUser($itemID);
 			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "ITM Item $itemID is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
-			$html .= $html->div('class=mb-3');
+			$html .= '<div class="mb-3"></div>';
 		} elseif ($itm->recordlocker->isLocked($itemID) === false) {
 			$itm->recordlocker->lock($itemID);
 		}
 		return $html;
 	}
+
 	/**
 	 * Return Itm
 	 * @return ItmModel

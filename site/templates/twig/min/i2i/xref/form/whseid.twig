@@ -3,30 +3,12 @@
 		<label for="whseID">Supplying Warehouse</label>
 	</div>
 	<div class="col-sm-8">
-		{% include 'util/bootstrap/form/input-group.twig' with {
-				'inputgroup': {
-					'type': 'prepend',
-					'input': {
-						'name': 'whseID', 'id': 'whseID',
-						'value': xref.whseid,
-						'attributes': {
-							'placeholder': '',
-							'aria-label':  'Warehouse ID'
-						},
-					},
-					'button': {
-						'colorclass': 'btn-secondary',
-						'text': 'fa fa-search'|icon,
-						'attributes': {
-							'title': 'Search Warehouse IDs',
-							'data-toggle': 'modal',
-							'data-target': '#ajax-modal',
-							'data-lookupurl': page.search_lookupURL('warehouses'),
-							'data-input': '#whseID'
-						}
-					}
-				}
-			}
-		%}
+		<select name="whseID" class="form-control" id="whseID">
+			{% for whse in i2i.getWarehouses() %}
+				<option value="{{ whse.id }}" {{ whse.id == xref.whseid ? 'selected' : ''}}>
+					{{ whse.id }} - {{ whse.name }}
+				</option>
+			{% endfor %}
+		</select>
 	</div>
 </div>

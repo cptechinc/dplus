@@ -224,7 +224,7 @@ class DpagesMin extends Dpages implements Module {
 			'pw_template'    => 'i2i',
 			'name'           => 'i2i',
 			'title'          => 'Item to Item',
-			'summary'        => 'View / Edit Item to Item Relationships',
+			'summary'        => 'View / Edit Item to Item Items',
 			'parent'         => '/min/inmain/',
 			'dplus_function' => 'i2i'
 		),

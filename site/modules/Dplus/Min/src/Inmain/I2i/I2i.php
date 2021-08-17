@@ -1,6 +1,7 @@
 <?php namespace Dplus\Min\Inmain\I2i;
 // Dplus Models
 use InvItem2ItemQuery, InvItem2Item;
+use WarehouseQuery, Warehouse;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Record Locker
@@ -145,6 +146,8 @@ class I2i extends WireData {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidFields = $this->updateXrefValidated($xref, $input);
+		$xref->setDate(date('Ymd'));
+		$xref->setTime(date('His'));
 		return $invalidFields;
 	}
 
@@ -318,6 +321,17 @@ class I2i extends WireData {
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $this->sessionID);
 		$requestor->cgi_request($config->cgis['database'], $this->sessionID);
+	}
+
+/* =============================================================
+	Supplemental Functions
+============================================================= */
+	/**
+	 * Return Warehouses to Select from
+	 * @return Warehouse[]|ObjectCollection
+	 */
+	public function getWarehouses() {
+		return WarehouseQuery::create()->find();
 	}
 
 /* =============================================================

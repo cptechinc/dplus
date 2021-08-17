@@ -20,10 +20,8 @@ class Item extends ItmFunction {
 ============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$page = self::pw('page');
-
-		$page->show_breadcrumbs = false;
+		self::sanitizeParametersShort($data, $fields);
+		self::pw('page')->show_breadcrumbs = false;
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -62,10 +60,12 @@ class Item extends ItmFunction {
 			self::pw('session')->redirect($input->url());
 		}
 		$fields = ['itemID|text'];
-		$data   = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		$page   = self::pw('page');
+		$config = self::pw('config');
 		$validate = new MinValidator();
-		
+
+
 		if ($data->itemID === 'new') {
 			$page->headline = 'ITM: Creating new Item';
 		}
@@ -86,7 +86,7 @@ class Item extends ItmFunction {
 			return $html;
 		}
 		$item = self::getItm()->getCreateItem($data->itemID);
-		$page->js .= $config->twig->render("items/itm/js.twig", ['item' => $item, 'itm' => $itm]);
+		$page->js .= $config->twig->render("items/itm/js.twig", ['item' => $item, 'itm' => self::getItm()]);
 
 		return self::itemDisplay($data, $item);
 	}
@@ -109,7 +109,7 @@ class Item extends ItmFunction {
 		}
 
 		$filter->sortby($page);
-		$items = $filter->query->paginate($input->pageNum, 10);
+		$items = $filter->query->paginate(self::pw('input')->pageNum, 10);
 
 		$page->js = self::pw('config')->twig->render('items/item-list.js.twig');
 		return self::listDisplay($data, $items);
@@ -129,6 +129,7 @@ class Item extends ItmFunction {
 
 	private static function itemDisplay($data, ItemMasterItem $item) {
 		$session = self::pw('session');
+		$config  = self::pw('config');
 		$itm     = self::getItm();
 		$html =  '';
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
@@ -144,7 +145,7 @@ class Item extends ItmFunction {
 
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
-		$html .= $config->twig->render('items/itm/form/display.twig', ['item' => $item, 'itm' => $itm, 'recordlocker' => $itm->recordlocker]);
+		$html .= $config->twig->render('items/itm/form/display.twig', ['item' => $item, 'itm' => $itm, 'qnotes' => self::pw('modules')->get('QnotesItem')]);
 		if ($item->isNew() === false) {
 			$html .= self::qnotes($data);
 		}
@@ -187,9 +188,6 @@ class Item extends ItmFunction {
 	}
 
 	protected static function validateUserPermission() {
-		$wire = self::pw();
-		$user = $wire->wire('user');
-		$page = $wire->wire('page');
-		return $user->has_function('itm');
+		return self::pw('user')->has_function('itm');
 	}
 }
