@@ -32,11 +32,6 @@ class DpagesMpo extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
-		'purchase-order-edit' => array(
-			'name'   => 'purchase-order-edit',
-			'fields' => array(),
-			'paginated' => true
-		),
 		'purchase-order-validate' => array(
 			'name'   => 'purchase-order-validate',
 			'fields' => array(),
@@ -99,16 +94,6 @@ class DpagesMpo extends Dpages implements Module {
 			'dplus_function'   => '',
 			'dplus_permission' => 'mpo',
 			'pw_template'      => 'purchase-order-view'
-		),
-		'po-edit' => array(
-			'template'         => 'dplus-function',
-			'name'             => 'edit',
-			'title'            => 'Edit Purchase Order',
-			'summary'          => 'Edit a Purchase Order',
-			'parent'           => '/mpo/purchase-order/',
-			'dplus_function'   => '',
-			'dplus_permission' => 'epo',
-			'pw_template'      => 'purchase-order-edit'
 		),
 		'po-edit-validate' => array(
 			'template'         => 'dplus-json',
@@ -268,11 +253,6 @@ class DpagesMpo extends Dpages implements Module {
 			$user  = $event->object;
 			$ponbr = $event->arguments(0);
 			$event->return = $this->wire('modules')->get('PurchaseOrderEdit')->is_po_editable($ponbr);
-		});
-
-		$this->addHook('Page(pw_template=purchase-order-view)::po_editURL', function($event) {
-			$ponbr = $event->arguments(0);
-			$event->return = $this->get_po_editURL($ponbr);
 		});
 
 		$this->addHook('Page(pw_template=purchase-orders)::search_vendorsURL', function($event) {
