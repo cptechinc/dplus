@@ -22,11 +22,6 @@ class DpagesMpo extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
-		'purchase-order-notes' => array(
-			'name'   => 'purchase-order-notes',
-			'fields' => array(),
-			'paginated' => true
-		),
 		'po-code-table' => array(
 			'name'   => 'po-code-table',
 			'fields' => array()
