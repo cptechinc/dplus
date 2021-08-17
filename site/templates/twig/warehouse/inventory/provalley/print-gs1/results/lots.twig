@@ -1,0 +1,18 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	json                   JSON array
+	itm                    module Itm
+#}
+
+{% extends 'warehouse/inventory/provalley/print-gs1/scan-results.twig' %}
+
+{% block body %}
+	<div class="card-body">
+		<div class="row">
+			<div class="col-sm-6">
+				{% include 'warehouse/inventory/provalley/print-gs1/forms/lots.twig' %}
+			</div>
+		</div>
+	</div>
+{% endblock %}

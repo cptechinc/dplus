@@ -1,0 +1,150 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	json                   JSON array
+	itm                    module Itm
+#}
+
+<form action="{{ input.url() }}" id="print-label-form" method="post">
+	<input type="hidden" name="action" value="print-labels">
+	<input type="hidden" name="scan" value="{{ json['scan'] }}">
+	<input type="hidden" name="vendorID" value="{{ json['lots']['vendorid'] }}">
+
+	<div class="form-row form-group">
+		<div class="col-sm-6">
+			<label for="itemID">Item ID</label>
+		</div>
+		<div class="col-sm-6">
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'attributes': {
+							'readonly': json['lots']['itemid'] ? true : false,
+							'tabindex': json['lots']['itemid'] ? '-1' : ''
+						},
+						'input': {
+							'name': 'itemID',
+							'value': json['lots']['itemid'],
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Item ID'
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search Items',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.searchLookupUrl('items'),
+								'data-input': '#itemID'
+							}
+						}
+					}
+				}
+			%}
+			<small class="form-text text-muted item-description">{{ itm.description(json['lots']['itemid']) }}</small>
+		</div>
+	</div>
+	<div class="form-row form-group">
+		<div class="col-sm-6">
+			<label for="lotserial">Lot / Serial #</label>
+		</div>
+		<div class="col-sm-6">
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'lotserial',
+						'value': json['lots']['lotnbr'],
+						'size': 'sm',
+						'attributes': {
+							'readonly': true,
+							'tabindex': true
+						}
+					}
+				}
+			%}
+		</div>
+	</div>
+	<div class="form-row form-group">
+		<div class="col-sm-6">
+			<label for="lotref">Lot Reference</label>
+		</div>
+		<div class="col-sm-6">
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'lotref',
+						'value': json['lots']['lotref'],
+						'size': 'sm',
+						'attributes': {
+							'readonly': json['lots']['lotref'] ? true : false,
+							'tabindex': json['lots']['lotref'] ? true : false
+						}
+					}
+				}
+			%}
+		</div>
+	</div>
+	<div class="form-row form-group">
+		<div class="col-sm-6">
+			<label for="date">Production Date</label>
+		</div>
+		<div class="col-sm-6">
+			{% include 'util/bootstrap/form/date-picker.twig' with {
+					'inputgroup': {
+						'input': {
+							'name': 'date',
+							'value': json['lots']['productiondate'] ? json['lots']['productiondate']|convertdate('m/d/Y') : '',
+						},
+						'attributes': {
+							'readonly': json['lots']['productiondate'] ? true : false,
+							'tabindex': json['lots']['productiondate'] ? true : false
+						}
+					}
+				}
+			%}
+		</div>
+	</div>
+	<div class="form-row form-group">
+		<div class="col-sm-6">
+			<label class="control-label" for="weight">Weight</label>
+		</div>
+		<div class="col-sm-6">
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'qty', 'type': 'number',
+						'value': json['lots']['qty'],
+						'size': 'sm',
+						'attributes': {
+							'readonly': json['lots']['qty'] ? true : false,
+							'tabindex': json['lots']['qty'] ? true : false
+						}
+					}
+				}
+			%}
+		</div>
+	</div>
+	<div class="form-row form-group mb-3">
+		<div class="col-sm-6">
+			<label class="control-label" for="labelcount">Nbr of Labels</label>
+		</div>
+		<div class="col-sm-6">
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'name': 'labels', 'type': 'number',
+						'value': 1,
+						'size': 'sm',
+						'attributes': {
+							'min': 1,
+							'readonly': json['lots']['lotnbr'] ? true : false,
+							'tabindex': json['lots']['lotnbr'] ? true : false
+						}
+					}
+				}
+			%}
+		</div>
+	</div>
+	<button type="submit" class="btn btn-lg btn-success">
+		<i class="fa fa-print" aria-hidden="true"></i> Print Labels
+	</button>
+</form>
