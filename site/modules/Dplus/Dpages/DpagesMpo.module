@@ -17,16 +17,6 @@ class DpagesMpo extends Dpages implements Module {
 			'fields' => array(),
 			'paginated' => true
 		),
-		'purchase-history-orders' => array(
-			'name'   => 'purchase-orders-history',
-			'fields' => array(),
-			'paginated' => true
-		),
-		'purchase-history-orders-vendor' => array(
-			'name'   => 'purchase-orders-history-vendor',
-			'fields' => array(),
-			'paginated' => true
-		),
 		'purchase-order-view' => array(
 			'name'   => 'purchase-order-view',
 			'fields' => array(),
@@ -110,26 +100,6 @@ class DpagesMpo extends Dpages implements Module {
 			'dplus_permission' => 'epo',
 			'pw_template'      => '',
 			'function_url'     => '/mpo/purchase-orders/epo/'
-		),
-		'purchase-history-list' => array(
-			'template'         => 'dplus-function',
-			'name'             => 'purchase-history',
-			'title'            => 'Purchase History',
-			'summary'          => 'View Purchase Order History',
-			'parent'           => '/mpo/',
-			'dplus_function'   => '',
-			'dplus_permission' => 'mpo',
-			'pw_template'      => 'purchase-history-orders'
-		),
-		'purchase-history-list-vendor' => array(
-			'template'         => 'dplus-function',
-			'name'             => 'vendor',
-			'title'            => 'Vendor Purchase History',
-			'summary'          => 'View Vendor Purchase Order History',
-			'parent'           => '/mpo/purchase-history/',
-			'dplus_function'   => '',
-			'dplus_permission' => 'mpo',
-			'pw_template'      => 'purchase-history-orders-vendor'
 		),
 		'po-cnfm' => array(
 			'template'       => 'dplus-function',
