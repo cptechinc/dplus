@@ -19,9 +19,15 @@
 			</button>
 
 			{% if reason.isNew() == false %}
-				<a href="{{ page.codeDeleteUrl(reason.id) }}" class="btn btn-danger delete_button">
-					<i class="fa fa-trash" aria-hidden="true"></i> Delete
-				</a>
+				{% if reason.isSysDefined() %}
+					<button type="button" class="btn btn-danger" disabled>
+						<i class="fa fa-trash" aria-hidden="true"></i> Delete
+					</button>
+				{% else %}
+					<a href="{{ page.codeDeleteUrl(reason.id) }}" class="btn btn-danger delete_button">
+						<i class="fa fa-trash" aria-hidden="true"></i> Delete
+					</a>
+				{% endif %}
 			{% endif %}
 		{% endif %}
 		<a href="{{ page.codeListUrl(reason.id) }}" class="btn btn-warning">
