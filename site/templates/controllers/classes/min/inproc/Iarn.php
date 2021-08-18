@@ -56,7 +56,7 @@ class Iarn extends Base {
 			$sortFilter->saveToSession('iarn');
 		}
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, 10);
-		// self::pw('page')->js .= self::pw('config')->twig->render('items/iarn/list/.js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('min/inproc/iarn/list/.js.twig');
 		self::initHooks();
 		return self::displayList($data, $codes);
 	}
@@ -79,7 +79,7 @@ class Iarn extends Base {
 				$iarn->recordlocker->lock($reason->id);
 			}
 		}
-		// self::pw('page')->js .= self::pw('config')->twig->render('min/i2i/xref/form/.js.twig');
+		//self::pw('page')->js .= self::pw('config')->twig->render('min/inproc/iarn/form/.js.twig');
 		self::initHooks();
 		return self::displayCode($data, $reason);
 	}

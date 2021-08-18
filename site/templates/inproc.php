@@ -9,6 +9,7 @@
 		['GET',  '', Inproc\Menu::class, 'index'],
 		'iarn' => [
 			['GET',  '', Inproc\Iarn::class, 'index'],
+			['GET',  'page{d:\d+}', Inproc\Iarn::class, 'index'],
 		],
 	];
 	$router = new Mvc\Router();
