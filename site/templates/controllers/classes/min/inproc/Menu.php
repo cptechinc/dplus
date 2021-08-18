@@ -50,20 +50,6 @@ class Menu extends Base {
 	}
 
 /* =============================================================
-	Requests
-============================================================= */
-
-/* =============================================================
-	Validator, Module Getters
-============================================================= */
-	public static function validateUserPermission(User $user = null) {
-		if (empty($user)) {
-			$user = self::pw('user');
-		}
-		return $user->has_function(self::DPLUSPERMISSION);
-	}
-
-/* =============================================================
 	Init
 ============================================================= */
 	public static function initHooks() {

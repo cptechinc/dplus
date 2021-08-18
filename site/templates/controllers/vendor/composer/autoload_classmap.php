@@ -58,6 +58,7 @@ return array(
     'Controllers\\Mii\\Loti\\Loti' => $baseDir . '/classes/mii/Loti/Loti.php',
     'Controllers\\Min\\Inmain\\I2i' => $baseDir . '/classes/min/inmain/I2i.php',
     'Controllers\\Min\\Inproc\\Base' => $baseDir . '/classes/min/inproc/Base.php',
+    'Controllers\\Min\\Inproc\\Iarn' => $baseDir . '/classes/min/inproc/Iarn.php',
     'Controllers\\Min\\Inproc\\Menu' => $baseDir . '/classes/min/inproc/Menu.php',
     'Controllers\\Min\\Itm\\Costing' => $baseDir . '/classes/min/itm/Costing.php',
     'Controllers\\Min\\Itm\\Dimensions' => $baseDir . '/classes/min/itm/Dimensions.php',
