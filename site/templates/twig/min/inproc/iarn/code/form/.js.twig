@@ -60,7 +60,9 @@ $(function() {
 					type: "get",
 					data: {
 						jqv: 'true',
-						new: 'true',
+						new: function() {
+							return formIarn.inputs.form.data('new') ? 'true' : 'false';
+						},
 					}
 				}
 			},
@@ -91,11 +93,11 @@ $(function() {
 						});
 					}
 					if (exists === false) {
-						// form.submit();
+						form.submit();
 					}
 				});
 			} else {
-				// form.submit();
+				form.submit();
 			}
 		}
 	});
