@@ -79,7 +79,7 @@ class Iarn extends Base {
 				$iarn->recordlocker->lock($reason->id);
 			}
 		}
-		//self::pw('page')->js .= self::pw('config')->twig->render('min/inproc/iarn/form/.js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('min/inproc/iarn/code/form/.js.twig');
 		self::initHooks();
 		return self::displayCode($data, $reason);
 	}

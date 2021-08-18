@@ -1,0 +1,98 @@
+{% include 'min/inproc/iarn/code/form/js/classes.js.twig' %}
+
+$(function() {
+	var modal_ajax = $('#ajax-modal');
+
+	var alert     = IarnAlerts.getInstance();
+	var server    = IarnRequests.getInstance();
+	var formIarn  = IarnForm.getInstance();
+
+/* =============================================================
+	Event
+============================================================= */
+	$("body").on("change", "input[name=id]", function(e) {
+		var input = $(this);
+
+		server.validateCode(formIarn.inputs.code.val(), function(exists) {
+			if (exists === true) {
+				alert.codeExists(formIarn.inputs.code.val(), function(goEdit) {
+					IarnForm.getInstance().redirectExisting(goEdit);
+				});
+			}
+		});
+	});
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = formIarn.inputs.form.serialize();
+
+	$("body").on("click", "a:not(#iarn-form.form_button, #ajax-modal a)", function(e) {
+		if (formIarn.inputs.form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			alert.unsavedChanges(function(save) {
+				if (save === true) {
+					formIarn.inputs.form.find('button[type=submit]').click();
+				} else {
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	formIarn.inputs.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		rules: {
+			id: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/iarn/code/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						new: 'true',
+					}
+				}
+			},
+		},
+		messages: {},
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		submitHandler: function(form) {
+			$('#loading-modal').modal('show');
+
+
+			if ($(form).data('new') === true) {
+				var data = $(form).serializeArray().reduce(function(obj, item) {
+					obj[item.name] = item.value;
+					return obj;
+				}, {});
+
+				var server = IarnRequests.getInstance();
+				server.validateCode(data['id'], function(exists) {
+					if (exists === true) {
+						var alert = IarnAlerts.getInstance();
+						alert.codeExists(data['id'], function(goEdit) {
+							IarnForm.getInstance().redirectExisting(goEdit);
+						});
+					}
+					if (exists === false) {
+						// form.submit();
+					}
+				});
+			} else {
+				// form.submit();
+			}
+		}
+	});
+});
