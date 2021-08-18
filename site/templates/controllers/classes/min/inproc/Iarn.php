@@ -9,6 +9,8 @@ use Propel\Runtime\Util\PropelModelPager;
 use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
 // Dplus Filters
 use Dplus\Filters;
+// Iarn
+use Dplus\Min\Inproc\Iarn\Iarn as CRUDManager;
 // Mvc Controllers
 use Controllers\Min\Inproc\Base;
 
@@ -17,6 +19,8 @@ use Controllers\Min\Inproc\Base;
  */
 class Iarn extends Base {
 	const DPLUSPERMISSION = 'iarn';
+
+	private static $iarn;
 
 /* =============================================================
 	Indexes
@@ -33,9 +37,8 @@ class Iarn extends Base {
 		self::sanitizeParametersShort($data, ['q|text', 'orderby|text']);
 		$filter = new Filters\Min\InvAdjustmentReason();
 
-		// TODO remove locks
-		// $iarn = self::getIarn();
-		// $iarn->recordlocker->deleteLock();
+		$iarn = self::getIarn();
+		$iarn->recordlocker->deleteLock();
 
 		if ($data->q) {
 			self::pw('page')->headline = "UPCX: Searching for '$data->q'";
@@ -62,18 +65,29 @@ class Iarn extends Base {
 	Displays
 ============================================================= */
 	private static function displayList($data, PropelModelPager $codes) {
-		// $iarn = self::getIarn();
+		$iarn = self::getIarn();
 		$config = self::pw('config');
 
 		$html = '';
-		$html .= $config->twig->render('min/inproc/iarn/list/display.twig', ['reasons' => $codes]);
+		$html .= $config->twig->render('min/inproc/iarn/list/display.twig', ['iarn' => $iarn, 'reasons' => $codes]);
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $codes]);
 		return $html;
 	}
 
 /* =============================================================
-	Requests
+	Supplemental Functions
 ============================================================= */
+	/**
+	 * Return Iarn CRUD Manager
+	 * @return CRUDManager
+	 */
+	public static function getIarn() {
+		if (empty(self::$iarn)) {
+			self::$iarn = CRUDManager::getInstance();
+		}
+		return self::$iarn;
+	}
+
 
 /* =============================================================
 	Validator, Module Getters
