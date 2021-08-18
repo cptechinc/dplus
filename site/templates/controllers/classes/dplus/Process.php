@@ -19,16 +19,14 @@ class Process extends AbstractController {
 		if (empty($page->pw_template) || $templateExists === false) {
 			$page->headline = $page->title = "Cannot Render Page";
 			$msg = empty($page->pw_template) ? 'Template is not defined' : 'Template can not be found';
-			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => $msg]);
-			return $page->body;
+			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->title, 'iconclass' => 'fa fa-warning fa-2x', 'message' => $msg]);
 		}
 
 		$permission = empty($page->dplus_function) ? $page->dplus_permission : $page->dplus_function;
 		$hasPermission = $user->has_function($permission) || empty($permission);
 
 		if ($hasPermission === false) {
-			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: $permission"]);
-			return $page->body;
+			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "You don't have access to this function", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Permission: $permission"]);
 		}
 		self::$permitted = true;
 		self::$templateExists = true;
