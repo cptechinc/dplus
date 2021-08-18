@@ -56,7 +56,7 @@ class Menu extends Base {
 		$m = self::pw('modules')->get('DpagesMin');
 
 		$m->addHook('Page(pw_template=inproc)::subfunctionUrl', function($event) {
-			$event->return = self::SubfunctionUrl($event->arguments(0));
+			$event->return = self::subfunctionUrl($event->arguments(0));
 		});
 
 	}
