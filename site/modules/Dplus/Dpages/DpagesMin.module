@@ -55,7 +55,11 @@ class DpagesMin extends Dpages implements Module {
 		'i2i' => array(
 			'name'   => 'i2i',
 			'fields' => array()
-		)
+		),
+		'inproc' => array(
+			'name'   => 'inproc',
+			'fields' => array()
+		),
 	);
 
 	const PAGES = array(
@@ -254,6 +258,15 @@ class DpagesMin extends Dpages implements Module {
 			'summary'        => 'Search ITM Items',
 			'parent'         => '/min/inmain/itm/',
 			'dplus_function' => ''
+		),
+		'inproc' => array(
+			'template'       => 'dplus-menu',
+			'pw_template'    => 'inproc',
+			'name'           => 'inproc',
+			'title'          => 'Processing',
+			'summary'        => 'Processing',
+			'parent'         => '/min/',
+			'dplus_function' => '' // TODO
 		),
 	);
 
