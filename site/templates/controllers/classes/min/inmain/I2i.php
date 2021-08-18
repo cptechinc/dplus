@@ -182,8 +182,6 @@ class I2i extends AbstractController {
 		if (empty($childID) === false) {
 			$key = $i2i->getRecordlockerKeyFromKeys($key, $childID);
 		}
-		$i2i->existsFromRecordlockerKey($key);
-
 
 		if ($i2i->existsFromRecordlockerKey($key) === false) {
 			return self::i2iUrl();
