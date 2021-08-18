@@ -79,7 +79,7 @@ class Iarn extends Base {
 				$iarn->recordlocker->lock($reason->id);
 			}
 		}
-		self::pw('page')->js .= self::pw('config')->twig->render('min/inproc/iarn/code/form/.js.twig');
+		self::pw('page')->js .= self::pw('config')->twig->render('min/inproc/iarn/code/form/.js.twig', ['iarn' => $iarn]);
 		self::initHooks();
 		return self::displayCode($data, $reason);
 	}
@@ -236,6 +236,8 @@ class Iarn extends Base {
 		$m->addHook('Page(pw_template=inproc)::codeListUrl', function($event) {
 			$event->return = self::codeListUrl($event->arguments(0));
 		});
-
+		$m->addHook('Page(pw_template=inproc)::codeNewUrl', function($event) {
+			$event->return = self::codeNewUrl($event->arguments(0));
+		});
 	}
 }
