@@ -26,6 +26,9 @@
 				'i2i' => [
 					['GET', 'xref/', Json\Min::class, 'validateI2iExists'],
 				],
+				'iarn' => [
+					['GET', 'code/', Json\Min::class, 'validateIarnExists'],
+				],
 			],
 			['GET', 'tariff-code/', Json\Min::class, 'getTariffCode'],
 			['GET', 'country-code/', Json\Min::class, 'getCountryCode'],

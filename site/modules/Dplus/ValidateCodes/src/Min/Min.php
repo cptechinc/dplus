@@ -9,6 +9,7 @@ use UnitofMeasureSaleQuery, UnitofMeasureSale;
 use ProcessWire\WireData;
 // Dplus CRUD
 use Dplus\Min\Inmain;
+use Dplus\Min\Inproc;
 // Dplus Code Validators
 use Dplus\CodeValidators\Map as MapValidator;
 
@@ -240,5 +241,15 @@ class Min extends WireData {
 	public function i2i($parentID, $childID) {
 		$i2i = Inmain\I2i\I2i::getInstance();
 		return $i2i->exists($parentID, $childID);
+	}
+
+	/**
+	 * Return if Iarn Code Exists
+	 * @param  string $id  Inv Adjustment Code
+	 * @return bool
+	 */
+	public function iarn($id) {
+		$iarn = Inproc\Iarn\Iarn::getInstance();
+		return $iarn->exists($id);
 	}
 }

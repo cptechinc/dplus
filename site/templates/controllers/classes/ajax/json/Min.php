@@ -309,6 +309,27 @@ class Min extends AbstractController {
 		return $exists ? true : "Item to Item X-Ref not found";
 	}
 
+	public static function validateIarnExists($data) {
+		$fields = ['id|text', 'new|bool', 'jqv|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$validate = self::validator();
+		$exists = $validate->iarn($data->id);
+
+		if (boolval($data->jqv) === false) {
+			if ($data->new) {
+				return $exists === false;
+			}
+			return $exists;
+		}
+
+		// JQuery Validate
+		if ($data->new) { // If new, check that upc doesn't already exist.
+			return $exists ? "Inv Adjustment Code Already Exists" : true;
+		}
+
+		return $exists ? true : "Inv Adjustment Code not found";
+	}
+
 
 	private static function validator() {
 		return new MinValidator();
