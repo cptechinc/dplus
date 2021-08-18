@@ -212,7 +212,7 @@ class Iarn extends WireData {
 		if ($this->exists($id)) {
 			$reason = $this->code($id);
 
-			if ($this->lockrecord($idf) === false) {
+			if ($this->lockrecord($id) === false) {
 				$message = self::DESCRIPTION_RECORD . " ($id)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($id);
 				$this->wire('session')->setFor('response', 'iarn', Response::response_error($id, $message));
 				return false;
