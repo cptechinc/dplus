@@ -11,7 +11,7 @@
 				</th>
 				<th class="py-2">
 					<a href="{{ page.get_sortURL('description') }}" class="link">Description
-						{% if page.orderby_column == 'whseitemid' %}
+						{% if page.orderby_column == 'description' %}
 							<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
 						{% endif %}
 					</a>
@@ -30,6 +30,7 @@
 					<td>{{ reason.code }}</td>
 					<td>{{ reason.description }}</td>
 					<td>{{ reason.sys_defined|yesorno|capitalize }}</td>
+					<td></td>
 				</tr>
 			{% endfor %}
 		</tbody>
