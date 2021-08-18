@@ -46,7 +46,7 @@ class Iarn extends Base {
 		$iarn->recordlocker->deleteLock();
 
 		if ($data->q) {
-			self::pw('page')->headline = "UPCX: Searching for '$data->q'";
+			self::pw('page')->headline = "IARN: Searching for '$data->q'";
 			$filter->search(strtoupper($data->q));
 		}
 		$filter->sortby(self::pw('page'));
