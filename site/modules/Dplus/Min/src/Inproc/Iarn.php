@@ -8,6 +8,8 @@ use ProcessWire\WireData, ProcessWire\WireInput;
 use Dplus\RecordLocker\UserFunction as FunctionLocker;
 // Dplus Validators
 use Dplus\CodeValidators as Validators;
+// Dplus Response
+use Dplus\Min\Response;
 
 class Iarn extends WireData {
 	const MODEL              = 'InvAdjustmentReason';
@@ -136,17 +138,31 @@ class Iarn extends WireData {
 ============================================================= */
 	/**
 	 * Updates Record
-	 * @param  InvAdjustmentReason  $xref   Inv Adjustment Reason Record
+	 * @param  InvAdjustmentReason  $reason Inv Adjustment Reason Record
 	 * @param  WireInput            $input  Input Data
 	 * @return void
 	 */
-	public function updateXrefInput(InvAdjustmentReason $xref, WireInput $input) {
+	public function updateReasonInput(InvAdjustmentReason $reason, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$invalidFields = $this->updateXrefValidated($xref, $input);
-		$xref->setDate(date('Ymd'));
-		$xref->setTime(date('His'));
+		$invalidFields = $this->updateReasonValidated($reason, $input);
+		$reason->setDate(date('Ymd'));
+		$reason->setTime(date('His'));
 		return $invalidFields;
+	}
+
+	/**
+	 * Updates fields on record that are valid
+	 * @param  InvAdjustmentReason  $reason Inv Adjustment Reason Record
+	 * @param  WireInput            $input  Input Data
+	 * @return void
+	 */
+	public function updateReasonValidated(InvAdjustmentReason $reason, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$reason->setDescription($values->text('description', ['maxLength' => $this->fieldAttribute('description', 'maxlength')]));
+		return [];
 	}
 
 /* =============================================================
@@ -193,7 +209,7 @@ class Iarn extends WireData {
 			$this->wire('session')->setFor('response', 'iarn', Response::response_error($id, $message));
 			return false;
 		}
-		$invalidFields = $this->updateXrefInput($reason, $input);
+		$invalidFields = $this->updateReasonInput($reason, $input);
 		$response = $this->saveAndRespond($reason, $invalidFields);
 		$this->wire('session')->setFor('response', 'iarn', $response);
 		return $this->wire('session')->getFor('response', 'iarn')->has_success();
@@ -249,7 +265,7 @@ class Iarn extends WireData {
 
 		if ($is_new) {
 			$response->set_action(Response::CRUD_CREATE);
-		} elseif ($xref->isDeleted()) {
+		} elseif ($reason->isDeleted()) {
 			$response->set_action(Response::CRUD_DELETE);
 		} else {
 			$response->set_action(Response::CRUD_UPDATE);
