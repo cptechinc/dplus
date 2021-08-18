@@ -19,7 +19,11 @@ abstract class Base extends AbstractController {
 /* =============================================================
 	URLs
 ============================================================= */
-
+	public static function iarnUrl() {
+		$url = new Purl(self::pw('pages')->get('pw_template=inproc')->url);
+		$url->path->add('iarn');
+		return $url->getUrl();
+	}
 
 /* =============================================================
 	Displays

@@ -52,6 +52,7 @@ class Iarn extends Base {
 		}
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, 10);
 		// self::pw('page')->js .= self::pw('config')->twig->render('items/iarn/list/.js.twig');
+		self::initHooks();
 		return self::displayList($data, $codes);
 	}
 
@@ -59,7 +60,59 @@ class Iarn extends Base {
 /* =============================================================
 	URLs
 ============================================================= */
+	public static function codeListUrl($focus = '') {
+		if (empty($focus)) {
+			return self::iarnUrl();
+		}
+		return self::codeListFocusUrl($focus);
+	}
 
+	public static function codeListFocusUrl($id) {
+		$iarn = self::getIarn();
+
+		if ($iarn->exists($id) === false) {
+			return self::iarnUrl();
+		}
+		$reason = $iarn->code($id);
+		$sortFilter = Filters\SortFilter::getFromSession('iarn');
+		$filter = new Filters\Min\InvAdjustmentReason();
+
+		if ($sortFilter) {
+			$filter->applySortFilter($sortFilter);
+		}
+		$offset = $filter->position($xref);
+		$pagenbr = self::getPagenbrFromOffset($offset);
+
+		$url = new Purl(self::iarnUrl());
+		$url->query->set('focus', $key);
+		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'iarn', $pagenbr);
+		if ($sortFilter) {
+			if ($sortFilter->q) {
+				$url->query->set('q', $sortFilter->q);
+			}
+			if ($sortFilter->orderby) {
+				$url->query->set('orderby', $sortFilter->orderby);
+			}
+		}
+		return $url->getUrl();
+	}
+
+	public static function codeUrl($id) {
+		$url = new Purl(self::iarnUrl());
+		$url->query->set('id', $id);
+		return $url->getUrl();
+	}
+
+	public static function codeDeleteUrl($id) {
+		$url = new Purl(self::codeUrl($id));
+		$url->query->set('action', 'delete-iarn');
+		return $url->getUrl();
+	}
+
+	public static function codeNewUrl() {
+		$url = new Purl(self::codeUrl('new'));
+		return $url->getUrl();
+	}
 
 /* =============================================================
 	Displays
@@ -97,11 +150,17 @@ class Iarn extends Base {
 	Init
 ============================================================= */
 	public static function initHooks() {
-		// $m = self::pw('modules')->get('DpagesMin');
-		//
-		// $m->addHook('Page(pw_template=inproc)::subfunctionUrl', function($event) {
-		// 	$event->return = self::SubfunctionUrl($event->arguments(0));
-		// });
+		$m = self::pw('modules')->get('DpagesMin');
+
+		$m->addHook('Page(pw_template=inproc)::codeUrl', function($event) {
+			$event->return = self::codeUrl($event->arguments(0));
+		});
+		$m->addHook('Page(pw_template=inproc)::codeDeleteUrl', function($event) {
+			$event->return = self::codeDeleteUrl($event->arguments(0));
+		});
+		$m->addHook('Page(pw_template=inproc)::codeListUrl', function($event) {
+			$event->return = self::codeListUrl($event->arguments(0));
+		});
 
 	}
 }
