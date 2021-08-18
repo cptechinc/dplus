@@ -37,7 +37,7 @@ $(function() {
 				if (save === true) {
 					formIarn.inputs.form.find('button[type=submit]').click();
 				} else {
-					$.get('{{ page.url }}', function() {
+					$.get('{{ input.url() }}', function() {
 						window.location.href = href;
 					});
 				}
@@ -54,6 +54,7 @@ $(function() {
 		rules: {
 			id: {
 				required: true,
+				maxlength: formIarn.config.inputs.id.maxlength,
 				remote: {
 					url: '{{ page.jsonapiURL('inv/validate/iarn/code/') }}',
 					type: "get",
@@ -63,6 +64,10 @@ $(function() {
 					}
 				}
 			},
+			description: {
+				required: false,
+				maxlength: formIarn.config.inputs.description.maxlength,
+			},
 		},
 		messages: {},
 		errorPlacement: function(error, element) {
@@ -70,7 +75,6 @@ $(function() {
 		},
 		submitHandler: function(form) {
 			$('#loading-modal').modal('show');
-
 
 			if ($(form).data('new') === true) {
 				var data = $(form).serializeArray().reduce(function(obj, item) {

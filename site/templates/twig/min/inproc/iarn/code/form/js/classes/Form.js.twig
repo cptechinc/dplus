@@ -11,6 +11,7 @@ class IarnForm {
 	constructor() {
 		this.id = 'iarn-form';
 		this.inputs = IarnInputs.getInstance();
+		this.config = IarnConfig.getInstance();
 	}
 
 	redirectExisting(goEdit) {
@@ -19,7 +20,7 @@ class IarnForm {
 			uri.setQuery('id', this.inputs.code.val());
 			window.location.href = uri.toString();
 		} else {
-			location.reload();
+			//location.reload();
 		}
 	}
 
