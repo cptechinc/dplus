@@ -118,13 +118,33 @@ class Iarn extends Base {
 	Displays
 ============================================================= */
 	private static function displayList($data, PropelModelPager $codes) {
-		$iarn = self::getIarn();
+		$iarn   = self::getIarn();
 		$config = self::pw('config');
 
 		$html = '';
+		$html .= self::breadCrumbsDisplay($data);
+		$html .= self::responseDisplay($data);
 		$html .= $config->twig->render('min/inproc/iarn/list/display.twig', ['iarn' => $iarn, 'reasons' => $codes]);
+		$html .= '<div class="mb-3"></div>';
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $codes]);
 		return $html;
+	}
+
+	private static function displayCode($data, InvAdjustmentReason $reason) {
+		$iarn = self::getIarn();
+		$config = self::pw('config');
+	}
+
+	private static function responseDisplay($data) {
+		$response = self::pw('session')->getFor('response', 'i2i');
+		if (empty($response)) {
+			return '';
+		}
+		return self::pw('config')->twig->render('items/itm/response-alert.twig', ['response' => $response]);
+	}
+
+	private static function breadCrumbsDisplay($data) {
+		return self::pw('config')->twig->render('min/inproc/iarn/bread-crumbs.twig');
 	}
 
 /* =============================================================
