@@ -18,8 +18,10 @@ class IarnAlerts {
 		}).then(function (result) {
 			if (result.value) {
 				callback(true);
+				return true;
 			}
 			callback(false);
+			return false;
 		});
 	}
 
