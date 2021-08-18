@@ -1,12 +1,15 @@
 <?php
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 
-	use Controllers\Min\Inproc\Menu;
+	use Controllers\Min\Inproc;
 
-	Menu::initHooks();
+	Inproc\Menu::initHooks();
 
 	$routes = [
-		['GET',  '', Menu::class, 'index'],
+		['GET',  '', Inproc\Menu::class, 'index'],
+		'iarn' => [
+			['GET',  '', Inproc\Iarn::class, 'index'],
+		],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
