@@ -37,7 +37,7 @@
 							</a>
 							{% if reason.isSysDefined() == false %}
 								&nbsp; &nbsp;
-								<a href="{{ page.codeDeleteUrl(xref.parentitemid, xref.childitemid) }}" class="btn btn-danger btn-sm delete_button" data-delete="Reason Code {{ reason.id }}">
+								<a href="{{ page.codeDeleteUrl(reason.id) }}" class="btn btn-danger btn-sm delete_button" data-delete="Reason Code {{ reason.id }}">
 									<i class="fa fa-trash" aria-hidden="true"></i> Delete
 								</a>
 							{% endif %}
