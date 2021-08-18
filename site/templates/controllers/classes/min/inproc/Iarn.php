@@ -170,7 +170,7 @@ class Iarn extends Base {
 	}
 
 	private static function responseDisplay($data) {
-		$response = self::pw('session')->getFor('response', 'i2i');
+		$response = self::pw('session')->getFor('response', 'iarn');
 		if (empty($response)) {
 			return '';
 		}
