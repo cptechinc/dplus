@@ -10,6 +10,7 @@
 		'iarn' => [
 			['GET',  '', Inproc\Iarn::class, 'index'],
 			['GET',  'page{d:\d+}', Inproc\Iarn::class, 'index'],
+			['POST',  '', Inproc\Iarn::class, 'handleCRUD'],
 		],
 	];
 	$router = new Mvc\Router();

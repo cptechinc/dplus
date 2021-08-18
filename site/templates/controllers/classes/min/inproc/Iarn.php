@@ -28,14 +28,31 @@ class Iarn extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		self::sanitizeParametersShort($data, ['id|text']);
+		self::sanitizeParametersShort($data, ['id|text', 'action|text']);
 		if (self::validateUserPermission() === false) {
 			return self::displayUserNotPermitted();
+		}
+		if (empty($data->action) === false) {
+			return self::handleCRUD($data);
 		}
 		if ($data->id) {
 			return self::code($data);
 		}
 		return self::list($data);
+	}
+
+	public static function handleCRUD($data) {
+		self::sanitizeParametersShort($data, ['id|text', 'action|text']);
+		$iarn = self::getIarn();
+		$iarn->processInput(self::pw('input'));
+		$url = self::codeListUrl($data->id);
+
+		switch ($data->action) {
+			case 'delete-iarn':
+				$url = self::codeListUrl();
+				break;
+		}
+		self::pw('session')->redirect($url, $http301 = false);
 	}
 
 	private static function list($data) {
@@ -58,7 +75,9 @@ class Iarn extends Base {
 		$codes = $filter->query->paginate(self::pw('input')->pageNum, 10);
 		self::pw('page')->js .= self::pw('config')->twig->render('min/inproc/iarn/list/.js.twig');
 		self::initHooks();
-		return self::displayList($data, $codes);
+		$html = self::displayList($data, $codes);
+		self::pw('session')->removeFor('response', 'iarn');
+		return $html;
 	}
 
 	private static function code($data) {
@@ -83,7 +102,6 @@ class Iarn extends Base {
 		self::initHooks();
 		return self::displayCode($data, $reason);
 	}
-
 
 /* =============================================================
 	URLs
