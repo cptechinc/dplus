@@ -1,0 +1,37 @@
+<div class="table-responsive">
+	<table class="table table-sm">
+		<thead>
+			<tr class="bg-dark text-white">
+				<th class="py-2">
+					<a href="{{ page.get_sortURL('code') }}" class="link">Code
+						{% if page.orderby_column == 'code' %}
+							<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+						{% endif %}
+					</a>
+				</th>
+				<th class="py-2">
+					<a href="{{ page.get_sortURL('description') }}" class="link">Description
+						{% if page.orderby_column == 'whseitemid' %}
+							<i class="fa fa-sort-alpha-{{ page.orderby_sort|lower }}" aria-hidden="true"></i>
+						{% endif %}
+					</a>
+				</th>
+				<th class="py-2">Sys</th>
+				<th class="py-2">
+					<a href="{# page.xrefNewUrl() #}" class="btn btn-light btn-sm">
+						<i class="fa fa-plus" aria-hidden="true"></i> Add
+					</a>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for reason in reasons %}
+				<tr data-code="{{ reason.code }}">
+					<td>{{ reason.code }}</td>
+					<td>{{ reason.description }}</td>
+					<td>{{ reason.sys_defined|yesorno|capitalize }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
