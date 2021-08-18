@@ -186,6 +186,10 @@ class Iarn extends Base {
 		$iarn   = self::getIarn();
 		$html = '';
 
+		if ($reason->isNew()) {
+			return '';
+		}
+
 		if ($iarn->recordlocker->isLocked($reason->id) === false && $iarn->recordlocker->userHasLocked($reason->id) === false) {
 			$iarn->recordlocker->lock($reason->id);
 		}
