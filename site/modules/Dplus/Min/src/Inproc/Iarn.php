@@ -56,6 +56,33 @@ class Iarn extends WireData {
 	}
 
 /* =============================================================
+	Const, Config Functions
+============================================================= */
+	const FIELD_ATTRIBUTES = [
+		'id'          => ['type' => 'text', 'maxlength' => 8],
+		'description' => ['type' => 'text', 'maxlength' => 30],
+	];
+
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function fieldAttribute($field = '', $attr = '') {
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		if (array_key_exists($field, self::FIELD_ATTRIBUTES) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, self::FIELD_ATTRIBUTES[$field]) === false) {
+			return false;
+		}
+		return self::FIELD_ATTRIBUTES[$field][$attr];
+	}
+
+/* =============================================================
 	CRUD Read, Validate Functions
 ============================================================= */
 	/**
