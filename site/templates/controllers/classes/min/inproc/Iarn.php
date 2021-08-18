@@ -5,6 +5,8 @@ use stdClass;
 use Purl\Url as Purl;
 // Propel ORM Ljbrary
 use Propel\Runtime\Util\PropelModelPager;
+// Dplus Model
+use InvAdjustmentReasonQuery, InvAdjustmentReason;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module, ProcessWire\WireData;
 // Dplus Filters
@@ -26,9 +28,12 @@ class Iarn extends Base {
 	Indexes
 ============================================================= */
 	public static function index($data) {
-		self::sanitizeParametersShort($data, []);
+		self::sanitizeParametersShort($data, ['id|text']);
 		if (self::validateUserPermission() === false) {
 			return self::displayUserNotPermitted();
+		}
+		if ($data->id) {
+			return self::code($data);
 		}
 		return self::list($data);
 	}
@@ -56,6 +61,29 @@ class Iarn extends Base {
 		return self::displayList($data, $codes);
 	}
 
+	private static function code($data) {
+		self::sanitizeParametersShort($data, ['id|text']);
+		$iarn = self::getIarn();
+
+		if ($iarn->exists($data->id)) {
+			self::pw('page')->headline = "Inventory Adjustment Reason: $data->id";
+		}
+
+		if ($iarn->exists($data->id) === false) {
+			self::pw('page')->headline = "Inventory Adjustment Reason: Creating New Reason";
+		}
+		$reason = $iarn->getOrCreate($data->id);
+
+		if ($reason->isNew() === false) {
+			if ($iarn->recordlocker->isLocked($reason->id) === false) {
+				$iarn->recordlocker->lock($reason->id);
+			}
+		}
+		// self::pw('page')->js .= self::pw('config')->twig->render('min/i2i/xref/form/.js.twig');
+		self::initHooks();
+		return self::displayCode($data, $reason);
+	}
+
 
 /* =============================================================
 	URLs
@@ -80,11 +108,11 @@ class Iarn extends Base {
 		if ($sortFilter) {
 			$filter->applySortFilter($sortFilter);
 		}
-		$offset = $filter->position($xref);
+		$offset = $filter->position($reason);
 		$pagenbr = self::getPagenbrFromOffset($offset);
 
 		$url = new Purl(self::iarnUrl());
-		$url->query->set('focus', $key);
+		$url->query->set('focus', $id);
 		$url = self::pw('modules')->get('Dpurl')->paginate($url, 'iarn', $pagenbr);
 		if ($sortFilter) {
 			if ($sortFilter->q) {
@@ -131,8 +159,14 @@ class Iarn extends Base {
 	}
 
 	private static function displayCode($data, InvAdjustmentReason $reason) {
-		$iarn = self::getIarn();
 		$config = self::pw('config');
+
+		$html = '';
+		$html .= self::breadCrumbsDisplay($data);
+		$html .= self::responseDisplay($data);
+		$html .= self::lockReasonDisplay($reason);
+		$html .= self::pw('config')->twig->render('min/inproc/iarn/code/display.twig', ['reason' => $reason, 'iarn' => self::getIarn()]);
+		return $html;
 	}
 
 	private static function responseDisplay($data) {
@@ -145,6 +179,23 @@ class Iarn extends Base {
 
 	private static function breadCrumbsDisplay($data) {
 		return self::pw('config')->twig->render('min/inproc/iarn/bread-crumbs.twig');
+	}
+
+	private static function lockReasonDisplay(InvAdjustmentReason $reason) {
+		$config = self::pw('config');
+		$iarn   = self::getIarn();
+		$html = '';
+
+		if ($iarn->recordlocker->isLocked($reason->id) === false && $iarn->recordlocker->userHasLocked($reason->id) === false) {
+			$iarn->recordlocker->lock($reason->id);
+		}
+
+		if ($iarn->recordlocker->isLocked($reason->id) && $iarn->recordlocker->userHasLocked($reason->id) === false) {
+			$msg = "Inventory Adjustment Reason $reason->id is being locked by " . $iarn->recordlocker->getLockingUser($reason->id);
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Reason Code $reason->id is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		}
+		$html .= '<div class="mb-3"></div>';
+		return $html;
 	}
 
 /* =============================================================
