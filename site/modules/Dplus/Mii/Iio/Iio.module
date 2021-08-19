@@ -14,29 +14,6 @@ class Iio extends WireData implements Module {
 	const RESPONSE_TEMPLATE  = 'User {key} permissions were {not} {crud}';
 	const RECORDLOCKER_FUNCTION  = 'iio';
 
-	const TEMPLATES_PERMISSIONS = [
-		'ii-pricing'          => 'pricing',
-		'ii-activity'         => 'activity',
-		'ii-bom'              => 'kit',
-		'ii-kit'              => 'kit',
-		'ii-components'       => 'kit',
-		'ii-costing'          => 'costing',
-		'ii-documents'        => '',
-		'ii-general'          => 'general',
-		'ii-lotserial'        => 'lotserial',
-		'ii-pricing'          => 'pricing',
-		'ii-purchase-history' => 'purchasehistory',
-		'ii-purchase-orders'  => 'purchaseorders',
-		'ii-quotes'           => 'lostsales',
-		'ii-requirements'     => 'requirements',
-		'ii-sales-history'    => 'saleshistory',
-		'ii-sales-orders'     => 'salesorders',
-		'ii-stock'            => 'stock',
-		'ii-substitutes'      => 'substitutes',
-		'ii-usage'            => '',
-		'ii-where-used'       => '',
-	];
-
 	const II_SCREENS = [
 		'activity',
 		'cost',
