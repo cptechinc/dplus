@@ -82,6 +82,16 @@ abstract class Base extends AbstractController {
 		return $url->getUrl();
 	}
 
+	public static function orderListCustomerUrl($custID, $ordn = '') {
+		$url = new Purl(self::pw('pages')->get('pw_template=sales-orders')->url);
+		$url->path->add('customer');
+		$url->query->set('custID', $custID);
+		if ($ordn) {
+			$url->query->set('focus', $ordn);
+		}
+		return $url->getUrl();
+	}
+
 	public static function orderPrintUrl($ordn) {
 		$url = new Purl(self::orderUrl($ordn));
 		$url->path->add('print');

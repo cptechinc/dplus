@@ -16,6 +16,7 @@ use Dplus\Filters\Mso\SalesHistory as SalesHistoryFilter;
 use Dplus\Filters\Mqo\Quote        as QuoteFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+use Controllers\Mso\SalesOrder as ControllersSalesOrder;
 
 class Ci extends Base {
 	const SUBFUNCTIONS = [
@@ -88,8 +89,6 @@ class Ci extends Base {
 		$modules->get('DpagesMci')->init_customer_hooks();
 		$modules->get('DpagesMci')->init_cipage();
 		$customer = CustomerQuery::create()->findOneById($data->custID);
-		$loader = $modules->get('CiLoadCustomerShipto');
-		$loader->set_custID($data->custID);
 		$page->show_breadcrumbs = false;
 
 		$page->headline = "CI: $customer->name";
@@ -153,7 +152,7 @@ class Ci extends Base {
 		$filter->custid($customer->id);
 		$filter->query->limit(10);
 		$orders = $filter->query->paginate(1, 10);
-		return $config->twig->render('customers/ci/customer/sales-orders-panel.twig', ['customer' => $customer, 'orders' => $orders, 'resultscount'=> $orders->getNbResults(), 'orderpage' => self::pw('pages')->get('pw_template=sales-order-view')->url, 'sales_orders_list' => $page->cust_salesordersURL($customer->id)]);
+		return $config->twig->render('customers/ci/customer/sales-orders-panel.twig', ['customer' => $customer, 'orders' => $orders, 'resultscount'=> $orders->getNbResults()]);
 	}
 
 	private static function customerSalesHistory(Customer $customer) {
@@ -211,6 +210,14 @@ class Ci extends Base {
 			}
 
 			$event->return = self::ciSubfunctionUrl($custID, $path);
+		});
+
+		$m->addHook('Page(pw_template=ci)::salesorderUrl', function($event) {
+			$event->return = ControllersSalesOrder\SalesOrder::orderUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=ci)::salesorderListUrl', function($event) {
+			$event->return = ControllersSalesOrder\SalesOrder::orderListCustomerUrl($event->arguments(0));
 		});
 	}
 }

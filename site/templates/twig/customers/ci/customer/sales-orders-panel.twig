@@ -9,7 +9,7 @@
 		{% include 'sales-orders/customer/sales-order-list.twig' %}
 
 		<div class="card-footer bg-secondary">
-			<a href="{{ sales_orders_list }}" class="text-white">View More {{ page.has('shiptoID') ? 'Ship-to' : 'Customer' }} Sales Orders <i class="fa fa-sign-in" aria-hidden="true"></i></a>
+			<a href="{{ page.salesorderListUrl(input.get.text('custID')) }}" class="text-white">View More Sales Orders <i class="fa fa-sign-in" aria-hidden="true"></i></a>
 		</div>
 	</div>
 </div>

@@ -12,7 +12,7 @@
 </div>
 {% if orders.count > 0 %}
 	{% for order in orders %}
-		<a href="{{ orderpage ~ '?ordn=' ~ order.ordernumber }}" class="list-group-item list-group-item-action">
+		<a href="{{ page.salesorderUrl(order.ordernumber) }}" class="list-group-item list-group-item-action">
 			<div class="row">
 				<div class="col">{{ order.ordernumber }}</div>
 				<div class="col">{{ order.custpo }}</div>
