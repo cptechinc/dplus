@@ -490,7 +490,7 @@ class Cio extends WireData implements Module {
 		if (empty($permitted)) {
 			return new PageArray();
 		}
-		$p = $this->wire('pages')->get('pw_template=ci-customer');
+		$p = $this->wire('pages')->get('pw_template=ci');
 		$templates = implode('|', $this->permissions_to_templates($permitted));
 		return $p->children("pw_template=$templates");
 	}
@@ -579,7 +579,13 @@ class Cio extends WireData implements Module {
 			$event->return = $options->permitted();
 		});
 
-		$this->addHook("Page(pw_template=ci-customer)::subfunctions", function($event) {
+		$this->addHook("User::ciPermittedSubfunctions", function($event) {
+			$user = $event->object;
+			$options = $this->usercio($user->loginid);
+			$event->return = $options->permitted();
+		});
+
+		$this->addHook("Page(pw_template=ci)::subfunctions", function($event) {
 			$user = $this->wire('user');
 			$event->return = $this->ci_subfunctions($user);
 		});
