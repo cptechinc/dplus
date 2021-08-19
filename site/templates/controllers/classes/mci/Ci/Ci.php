@@ -77,20 +77,13 @@ class Ci extends Base {
 	public static function customer($data) {
 		$page   = self::pw('page');
 		$config = self::pw('config');
-		$user = self::pw('user');
 		$fields = ['custID|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = new MarValidator();
 
-		if ($validate->custid($data->custID) === false) {
-			return self::displayInvalidCustid($data);
+		if (self::validateCustidPermission($data) === false) {
+			self::displayInvalidCustomerOrPermissions($data);
 		}
 
-		if ($user->has_customer($data->custID) === false) {
-			return self::displayUserNotAllowedCustomer($data);
-		}
-
-		$pages = self::pw('pages');
 		$modules = self::pw('modules');
 		$modules->get('DpagesMci')->init_customer_hooks();
 		$modules->get('DpagesMci')->init_cipage();
