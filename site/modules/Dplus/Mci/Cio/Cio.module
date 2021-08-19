@@ -73,6 +73,22 @@ class Cio extends WireData implements Module {
 		'saleshistory',
 	];
 
+	const PERMISSIONS_DEFAULT = [
+		'notes'          => 'N',
+		'contacts'       => 'N',
+		'payments'       => 'N',
+		'corebank'       => 'N',
+		'credit'         => 'N',
+		'stock'          => 'N',
+		'pricing'        => 'N',
+		'standingorders' => 'N',
+		'salesorders'    => 'N',
+		'quotes'         => 'N',
+		'openinvoices'   => 'N',
+		'customerpo'     => 'N',
+		'saleshistory'   => 'N',
+	];
+
 	public function Ciscreens() {
 		return self::CI_SCREENS;
 	}
@@ -236,6 +252,8 @@ class Cio extends WireData implements Module {
 		}
 		return $this->new($loginID);
 	}
+
+
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
@@ -524,6 +542,19 @@ class Cio extends WireData implements Module {
 	}
 
 	/**
+	 * Return if User is allowed to II subfunction
+	 * @param  User   $user
+	 * @param  string $option II subfunction
+	 * @return bool
+	 */
+	public function allowUser(User $user, $option = '') {
+		$userID = $this->exists($user->loginid) ? $user->loginid : self::USER_DEFAULT;
+		$permissions = $this->user($userID);
+		$exists = array_key_exists($option, self::PERMISSIONS_DEFAULT);
+		return $exists ? $permissions->is_true($option) : true;
+	}
+
+	/**
 	 * Lock Record, validate User is locking Record
 	 * @param  string $userID
 	 * @return bool
@@ -574,12 +605,6 @@ class Cio extends WireData implements Module {
 		$this->recordlocker->set_function(self::RECORDLOCKER_FUNCTION);
 
 		$this->addHook("User::permitted_ci", function($event) {
-			$user = $event->object;
-			$options = $this->usercio($user->loginid);
-			$event->return = $options->permitted();
-		});
-
-		$this->addHook("User::ciPermittedSubfunctions", function($event) {
 			$user = $event->object;
 			$options = $this->usercio($user->loginid);
 			$event->return = $options->permitted();
