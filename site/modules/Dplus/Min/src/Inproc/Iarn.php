@@ -115,7 +115,7 @@ class Iarn extends WireData {
 	public function new($id) {
 		$r = new InvAdjustmentReason();
 		if ($id && strtolower($id) != 'new') {
-			$r->setId($code);
+			$r->setId($id);
 		}
 		$r->setDummy('P');
 		return $r;
