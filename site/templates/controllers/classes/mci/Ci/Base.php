@@ -25,6 +25,13 @@ abstract class Base extends AbstractController {
 		return $url->getUrl();
 	}
 
+	public static function ciSubfunctionUrl($custID, $sub) {
+		$url = new Purl(self::pw('pages')->get('pw_template=ci')->url);
+		$url->path->add($sub);
+		$url->query->set('custID', $custID);
+		return $url->getUrl();
+	}
+
 /* =============================================================
 	Displays
 ============================================================= */
@@ -38,5 +45,12 @@ abstract class Base extends AbstractController {
 		$html .= '<div class="mb-3"></div>';
 		$html .= $config->twig->render('customers/search-form.twig');
 		return $html;
+	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	public static function getCio() {
+		return self::pw('modules')->get('Cio');
 	}
 }
