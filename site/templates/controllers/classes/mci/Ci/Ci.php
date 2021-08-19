@@ -103,24 +103,7 @@ class Ci extends Base {
 
 		$html = '';
 		$html .= $config->twig->render('customers/ci/bread-crumbs.twig', ['customer' => $customer]);
-		if (!$customer->is_active()) {
-			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => 'Inactive Customer', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $data->custID is not active"]);
-			$html .= $writer->div('class=mb-3');
-		}
-
-		if ($customer->has_credithold()) {
-			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => 'Credit Hold', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $data->custID has a credit hold"]);
-			$html .= $writer->div('class=mb-3');
-		}
-
-		$toolbar = $config->twig->render('customers/ci/customer/toolbar.twig', ['custID' => $customer->id]);
-		$header  = $config->twig->render('customers/ci/customer/header.twig', ['customer' => $customer]);
-
-		$html .= "<div class='row'>";
-			$html .= $writer->div('class=col-sm-2 pl-0', $toolbar);
-			$html .= $writer->div('class=col-sm-10', $header);
-		$html .= "</div>";
-
+		$html .= $config->twig->render('customers/ci/customer/main.twig', ['customer' => $customer]);
 		$html .= self::customerUserActions($customer);
 		$html .= self::customerContacts($customer);
 		$html .= self::customerSalesOrders($customer);
