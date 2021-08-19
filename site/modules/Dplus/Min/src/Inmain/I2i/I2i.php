@@ -230,7 +230,7 @@ class I2i extends WireData {
 
 		if ($this->lockrecord($xref) === false && $xref->isNew() === false) {
 			$message = self::DESCRIPTION_RECORD . " ($xref->parentID-$xref->childID)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($this->getRecordlockerKey($xref));
-			$this->wire('session')->setFor('response', 'i2i', XrefResponse::response_error($this->getRecordlockerKey($xref), $message));
+			$this->wire('session')->setFor('response', 'i2i', Response::response_error($this->getRecordlockerKey($xref), $message));
 			return false;
 		}
 		$invalidFields = $this->updateXrefInput($xref, $input);
@@ -271,10 +271,10 @@ class I2i extends WireData {
 	CRUD Response Functions
 ============================================================= */
 	/**
-	 * Returns XrefResponse based on the outcome of the database save
+	 * Returns Response based on the outcome of the database save
 	 * @param  InvItem2Item $xref           Record to record response of database save
 	 * @param  array        $invalidfields
-	 * @return XrefResponse
+	 * @return Response
 	 */
 	protected function saveAndRespond(InvItem2Item $xref, array $invalidfields = null) {
 		$is_new = $xref->isDeleted() ? false : $xref->isNew();
@@ -355,12 +355,6 @@ class I2i extends WireData {
 	public function getRecordlockerKey(InvItem2Item $xref) {
 		return implode(FunctionLocker::glue(), [$xref->parentitemid, $xref->childitemid]);
 	}
-
-	/**
-	 * Return Recordlocker Key for InvItem2Item
-	 * @param  InvItem2Item $xref X-Ref
-	 * @return string
-	 */
 
 	/**
 	 * Return Recordlocker Key for InvItem2Item

@@ -125,7 +125,7 @@ class I2i extends AbstractController {
 
 	private static function lockXrefDisplay(InvItem2Item $xref) {
 		$config = self::pw('config');
-		$i2i = self::geti2i();
+		$i2i = self::getI2i();
 		$html = '';
 
 		$key = $i2i->getRecordlockerKey($xref);
@@ -136,7 +136,7 @@ class I2i extends AbstractController {
 
 		if ($i2i->recordlocker->isLocked($key) && $i2i->recordlocker->userHasLocked($key) === false) {
 			$msg = "Item To Item $xref->parentitemid - $xref->childitemid is being locked by " . $i2i->recordlocker->getLockingUser($key);
-			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "UPC $xref->parentitemid - $xref->childitemid is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "Reason Code $xref->parentitemid - $xref->childitemid is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 		}
 		$html .= '<div class="mb-3"></div>';
 		return $html;
@@ -182,8 +182,6 @@ class I2i extends AbstractController {
 		if (empty($childID) === false) {
 			$key = $i2i->getRecordlockerKeyFromKeys($key, $childID);
 		}
-		$i2i->existsFromRecordlockerKey($key);
-
 
 		if ($i2i->existsFromRecordlockerKey($key) === false) {
 			return self::i2iUrl();

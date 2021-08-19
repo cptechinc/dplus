@@ -1,17 +1,17 @@
-class I2iAlerts {
+class IarnAlerts {
 	static instance = null;
 
 	static getInstance() {
 		if (this.instance === null) {
-			this.instance = new I2iAlerts();
+			this.instance = new IarnAlerts();
 		}
 		return this.instance;
 	}
 
-	xrefExists(parentID, childID, callback) {
+	codeExists(id, callback) {
 		swal2.fire({
 			title: 'Item to Item Exists',
-			text: 'Edit Item to Item ' + parentID + ' - '+ childID +'?',
+			text: 'Edit Inv Adjustment Code ' + id + '?',
 			icon: 'question',
 			showCancelButton: true,
 			confirmButtonText: 'Yes'
@@ -21,7 +21,7 @@ class I2iAlerts {
 				return true;
 			}
 			callback(false);
-			return false
+			return false;
 		});
 	}
 

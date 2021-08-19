@@ -1,0 +1,20 @@
+class IarnRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new IarnRequests();
+		}
+		return this.instance;
+	}
+
+	validateCode(id, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonApiUrl('inv/validate/iarn/code/') }}');
+
+		ajax.setData({id: id});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+}
