@@ -63,22 +63,15 @@ class Ci extends Base {
 		$validate = new MarValidator();
 
 		if ($validate->custid($data->custID) === false) {
-			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $data->custID not found"]);
+			return self::displayInvalidCustid($data);
 		}
 
 		if ($user->has_customer($data->custID) === false) {
-			$page->searchURL = $page->url;
-			$page->headline = "User $user->name Does Not Have Access to $data->custID";
-			$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->headline, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You do not have permission to access this customer"]);
-			$page->body .= $html->div('class=mb-3');
-			$page->body .= $config->twig->render('customers/search-form.twig', ['page' => $page]);
-			return $page->body;
+			return self::displayUserNotAllowedCustomer($data);
 		}
 
 		$pages = self::pw('pages');
 		$modules = self::pw('modules');
-		$html = $modules->get('HtmlWriter');
-
 		$modules->get('DpagesMci')->init_customer_hooks();
 		$modules->get('DpagesMci')->init_cipage();
 		$customer = CustomerQuery::create()->findOneById($data->custID);
@@ -86,33 +79,9 @@ class Ci extends Base {
 		$loader->set_custID($data->custID);
 		$page->show_breadcrumbs = false;
 
-		$page->body .= $config->twig->render('customers/ci/bread-crumbs.twig', ['customer' => $customer]);
 		$page->headline = "CI: $customer->name";
-
-		if (!$customer->is_active()) {
-			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => 'Inactive Customer', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $data->custID is not active"]);
-			$page->body .= $html->div('class=mb-3');
-		}
-
-		if ($customer->has_credithold()) {
-			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => 'Credit Hold', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $data->custID has a credit hold"]);
-			$page->body .= $html->div('class=mb-3');
-		}
-
-		$toolbar = $config->twig->render('customers/ci/customer/toolbar.twig', ['custID' => $customer->id]);
-		$header  = $config->twig->render('customers/ci/customer/header.twig', ['customer' => $customer]);
-
-		$page->body .= "<div class='row'>";
-			$page->body .= $html->div('class=col-sm-2 pl-0', $toolbar);
-			$page->body .= $html->div('class=col-sm-10', $header);
-		$page->body .= "</div>";
-
-		$page->body .= self::customerUserActions($customer);
-		$page->body .= self::customerContacts($customer);
-		$page->body .= self::customerSalesOrders($customer);
-		$page->body .= self::customerSalesHistory($customer);
-		$page->body .= self::customerQuotes($customer);
-		$config->scripts->append(hash_templatefile('scripts/customer/ci-customer.js'));
+		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/customer/ci-customer.js'));
+		return self::displayCustomer($data, $customer);
 	}
 
 /* =============================================================
@@ -125,6 +94,38 @@ class Ci extends Base {
 		$html .= $config->twig->render('customers/customer-search.twig', ['customers' => $customers, 'datamatcher' => self::pw('modules')->get('RegexData'), 'q' => $data->q]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $customers]);
+		return $html;
+	}
+
+	private static function displayCustomer($data, Customer $customer) {
+		$config = self::pw('config');
+		$writer = self::pw('modules')->get('HtmlWriter');
+
+		$html = '';
+		$html .= $config->twig->render('customers/ci/bread-crumbs.twig', ['customer' => $customer]);
+		if (!$customer->is_active()) {
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => 'Inactive Customer', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $data->custID is not active"]);
+			$html .= $writer->div('class=mb-3');
+		}
+
+		if ($customer->has_credithold()) {
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => 'Credit Hold', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $data->custID has a credit hold"]);
+			$html .= $writer->div('class=mb-3');
+		}
+
+		$toolbar = $config->twig->render('customers/ci/customer/toolbar.twig', ['custID' => $customer->id]);
+		$header  = $config->twig->render('customers/ci/customer/header.twig', ['customer' => $customer]);
+
+		$html .= "<div class='row'>";
+			$html .= $writer->div('class=col-sm-2 pl-0', $toolbar);
+			$html .= $writer->div('class=col-sm-10', $header);
+		$html .= "</div>";
+
+		$html .= self::customerUserActions($customer);
+		$html .= self::customerContacts($customer);
+		$html .= self::customerSalesOrders($customer);
+		$html .= self::customerSalesHistory($customer);
+		$html .= self::customerQuotes($customer);
 		return $html;
 	}
 
