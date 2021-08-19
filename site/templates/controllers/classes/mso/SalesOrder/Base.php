@@ -67,7 +67,7 @@ abstract class Base extends AbstractController {
 	}
 
 	public static function orderHistoryListUrl($ordn = '') {
-		$url = new Purl(self::pw('pages')->get('pw_template=sales-history-orders')->url);
+		$url = new Purl(self::pw('pages')->get('pw_template=sales-orders-invoices')->url);
 		if ($ordn) {
 			$url->query->set('focus', $ordn);
 		}

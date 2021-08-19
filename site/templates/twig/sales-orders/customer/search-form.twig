@@ -1,8 +1,7 @@
 <div class="mb-4 row">
 	<div class="col-sm-6">
-		<a href="{{ page.customer_or_shiptoURL() }}" class="btn btn-info">
-			<i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i>
-			Back to {{ page.has('shiptoID') ? 'Ship-to' : 'Customer' }} Page
+		<a href="{{ page.ciUrl(input.get.text('custID')) }}" class="btn btn-info">
+			CI: {{ input.get.text('custID') }}
 		</a>
 	</div>
 	<div class="col-sm-6">

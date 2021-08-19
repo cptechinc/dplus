@@ -9,7 +9,7 @@
 	</div>
 </div>
 
-<div id="orders-search-div" class="collapse {{ input.get.offsetExists('filter') == false ? 'show' : ''}}">
+<div id="orders-search-div" class="collapse {{ input.get.offsetExists('filter') ? 'show' : ''}}">
 	<div class="card mb-3">
 		<div class="card-body">
 			<form action="" method="get" class="allow-enterkey-submit" submit-empty="false">

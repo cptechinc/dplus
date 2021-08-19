@@ -1,20 +1,18 @@
-<?php namespace Controllers\Mso\SalesOrder\Lists;
+<?php namespace Controllers\Mso\SalesOrder\Lists\Invoices;
 
 use stdClass;
 // Purl URI Library
 use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager as ModelPager;
-// Dplus Model
-use SalesOrderQuery, SalesOrder as SoModel;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Module;
 // Dplus Filters
-use Dplus\Filters\Mso\SalesOrder as FilterSalesOrders;
+use Dplus\Filters\Mso\SalesHistory as FilterInvoices;
 // Mvc Controllers
 use Controllers\Mso\SalesOrder\Base;
 
-class SalesOrder extends Base {
+class Invoice extends Base {
 
 /* =============================================================
 	Indexes
@@ -22,15 +20,17 @@ class SalesOrder extends Base {
 	public static function index($data) {
 		$fields = [];
 		self::sanitizeParametersShort($data, $fields);
-
-		return self::listOrders($data);
+		return self::listInvoices($data);
 	}
 
-	public static function listOrders($data) {
-		$filter = new FilterSalesOrders();
+	private static function listInvoices($data) {
+		$filter = new FilterInvoices();
 		$filter->user(self::pw('user'));
 		$filter->filterInput(self::pw('input'));
 		$filter->sortby(self::pw('page'));
+		if (self::pw('input')->get->offsetExists('orderby') === false) {
+			$filter->query->orderByDate_ordered('DESC');
+		}
 		$orders = $filter->query->paginate(self::pw('input')->pageNum, 10);
 		return self::displayList($orders);
 	}
@@ -38,11 +38,12 @@ class SalesOrder extends Base {
 /* =============================================================
 	Displays
 ============================================================= */
-	public static function displayList(ModelPager $orders) {
+	private static function displayList(ModelPager $orders) {
 		$config = self::pw('config');
+
 		$html = '';
-		$html .= $config->twig->render('sales-orders/search-form.twig', ['input' => self::pw('input')]);
-		$html .= $config->twig->render('sales-orders/sales-orders-list-links.twig', ['orders' => $orders, 'orderpage' => self::pw('pages')->get('pw_template=sales-order-view')->url]);
+		$html .= $config->twig->render('sales-orders/sales-history/search-form.twig');
+		$html .= $config->twig->render('sales-orders/sales-history/sales-history-list-links.twig', ['orders' => $orders]);
 		$html .= '<div class="mb-3"></div>';
 		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $orders]);
 		return $html;
@@ -55,29 +56,29 @@ class SalesOrder extends Base {
 		if (empty($ordn)) {
 			return self::_listUrl();
 		}
-		$url = new Purl(self::pw('pages')->get('pw_template=sales-orders')->url);
-		$filter = new FilterSalesOrders();
+		$url = new Purl(self::_listUrl());
+		$filter = new FilterInvoices();
 
 		if ($filter->exists($ordn)) {
 			$url->query->set('focus', $ordn);
 			$offset = $filter->positionQuick($ordn);
 			$pagenbr = self::getPagenbrFromOffset($offset);
-			$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get('pw_template=sales-orders')->name, $pagenbr);
+			$url = self::pw('modules')->get('Dpurl')->paginate($url, self::pw('pages')->get('pw_template=sales-orders-invoices')->name, $pagenbr);
 		}
 		return $url->getUrl();
 	}
 
 	public static function _listUrl() {
-		return self::pw('pages')->get('pw_template=sales-orders')->url;
+		return self::pw('pages')->get('pw_template=sales-orders-invoices')->url;
 	}
 
 /* =============================================================
 	Supplemental
 ============================================================= */
-	public static function initHooks() { // TODO HOOKS for CI
+	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesMso');
 
-		$m->addHook('Page(pw_template=sales-orders)::orderUrl', function($event) {
+		$m->addHook('Page(pw_template=sales-orders-invoices)::orderUrl', function($event) {
 			$event->return = self::orderUrl($event->arguments(0));
 		});
 	}

@@ -22,18 +22,6 @@ class DpagesMso extends Dpages implements Module {
 			'name'   => 'sales-orders',
 			'fields' => array()
 		),
-		'sales-history-orders' => array(
-			'name'   => 'sales-history-orders',
-			'fields' => array()
-		),
-		'sales-orders-customer' => array(
-			'name'   => 'sales-orders-customer',
-			'fields' => array()
-		),
-		'sales-history-orders-customer' => array(
-			'name'   => 'sales-history-orders-customer',
-			'fields' => array()
-		),
 		'sales-order-view' => array(
 			'name'   => 'sales-order-view',
 			'fields' => array()
@@ -141,16 +129,6 @@ class DpagesMso extends Dpages implements Module {
 			'dplus_permission' => 'mso',
 			'pw_template'      => 'sales-orders'
 		),
-		'sales-orders-customer' => array(
-			'template'         => 'dplus-function',
-			'name'             => 'customer',
-			'title'            => 'Customer Sales Orders',
-			'summary'          => 'View / Search through Open Orders for a Customer',
-			'parent'           => '/mso/sales-orders/',
-			'dplus_function'   => '',
-			'dplus_permission' => 'mso',
-			'pw_template'      => 'sales-orders-customer'
-		),
 		'sales-order' => array(
 			'template'         => 'dplus-function',
 			'name'             => 'sales-order',
@@ -161,30 +139,10 @@ class DpagesMso extends Dpages implements Module {
 			'dplus_permission' => 'mso',
 			'pw_template'      => 'sales-order-view'
 		),
-		'sales-history' => array(
-			'template'         => 'dplus-function',
-			'name'             => 'sales-history',
-			'title'            => 'Sales History',
-			'summary'          => 'View Sales History Orders',
-			'parent'           => '/mso/',
-			'dplus_function'   => '',
-			'dplus_permission' => 'mso',
-			'pw_template'      => 'sales-history-orders'
-		),
-		'sales-history-customer' => array(
-			'template'         => 'dplus-function',
-			'name'             => 'customer',
-			'title'            => 'Customer Sales History',
-			'summary'          => 'View Sales History Orders for a Customer',
-			'parent'           => '/mso/sales-history/',
-			'dplus_function'   => '',
-			'dplus_permission' => 'mso',
-			'pw_template'      => 'sales-history-orders-customer'
-		),
 	);
 
 	public function init_salesorder_hooks() {
-		
+
 	}
 
 /* =============================================================
