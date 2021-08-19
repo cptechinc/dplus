@@ -14,44 +14,6 @@ class Cio extends WireData implements Module {
 	const RESPONSE_TEMPLATE  = 'User {key} permissions were {not} {crud}';
 	const RECORDLOCKER_FUNCTION  = 'cio';
 
-	const TEMPLATES_CI = [
-		'ci-pricing',
-		'ci-shipto',
-		'ci-contacts',
-		'ci-sales-orders',
-		'ci-sales-history',
-		'ci-customer-po',
-		'ci-quotes',
-		'ci-open-invoices',
-		'ci-payments',
-		'ci-credit',
-		'ci-standing-orders',
-		'ci-stock',
-		'ci-notes',
-		'ci-documents',
-		'ci-customer-phonebook',
-		'ci-activity'
-	];
-
-	const TEMPLATES_PERMISSIONS = [
-		'ci-pricing'       => 'pricing',
-		'ci-shipto'        => '',
-		'ci-contacts'      => 'contacts',
-		'ci-sales-orders'  => 'salesorders',
-		'ci-sales-history' => 'saleshistory',
-		'ci-customer-po'   => 'customerpo',
-		'ci-quotes'        => 'quotes',
-		'ci-open-invoices' => 'openinvoices',
-		'ci-payments'      => 'payments',
-		'ci-credit'        => 'credit',
-		'ci-standing-orders' => 'standingorders',
-		'ci-stock'           => '',
-		'ci-notes'           => 'notes',
-		'ci-documents'       => '',
-		'ci-customer-phonebook' => '',
-		'ci-activity'         => ''
-	];
-
 /* =============================================================
 	Const, Config Functions
 ============================================================= */
@@ -514,37 +476,9 @@ class Cio extends WireData implements Module {
 	}
 
 	/**
-	 * Return Templates that the user has permissions to
-	 * @param  array  $permitted e.g ['pricing', 'xrefs']
-	 * @return array
-	 */
-	public function permissions_to_templates(array $permitted) {
-		$templates = [];
-		foreach (self::TEMPLATES_PERMISSIONS as $template => $permission) {
-			if (empty($permission) || in_array($permission, $permitted)) {
-				$templates[] = $template;
-			}
-		}
-		return $templates;
-	}
-
-	/**
-	 * Return if User is allowed to view Template
-	 * @param  User   $user     Dplus User
-	 * @param  string $template Template name
-	 * @return bool
-	 */
-	public function is_user_allowed_template(User $user, $template) {
-		$loginID = $this->exists($user->loginid) ? $user->loginid : self::USER_DEFAULT;
-		$permissions = $this->user($loginID);
-		$needed = self::TEMPLATES_PERMISSIONS[$template];
-		return $needed ? $permissions->is_true($needed) : true;
-	}
-
-	/**
-	 * Return if User is allowed to II subfunction
+	 * Return if User is allowed to CI subfunction
 	 * @param  User   $user
-	 * @param  string $option II subfunction
+	 * @param  string $option CI subfunction
 	 * @return bool
 	 */
 	public function allowUser(User $user, $option = '') {

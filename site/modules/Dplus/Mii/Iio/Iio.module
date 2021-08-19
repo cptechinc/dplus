@@ -61,6 +61,23 @@ class Iio extends WireData implements Module {
 		'dayssaleshistory'    => ['max' => 9999],
 	];
 
+	const PERMISSIONS_DEFAULT = [
+		'activity'          => 'N',
+		'cost'              => 'N',
+		'general'           => 'N',
+		'kit'               => 'N',
+		'pricing'           => 'N',
+		'purchasehistory'   => 'N',
+		'purchaseorders'    => 'N',
+		'requirements'      => 'N',
+		'saleshistory'      => 'N',
+		'salesorders'       => 'N',
+		'lotserial'         => 'N',
+		'stock'             => 'N',
+		'substitutes'       => 'N',
+		'lostsales'         => 'N',
+	];
+
 	/**
 	 * Return Field Attribute value
 	 * @param  string $field Field Name
@@ -119,23 +136,6 @@ class Iio extends WireData implements Module {
 	public function screens_with_warehouses() {
 		return $this->screens_with_x('whse');
 	}
-
-	const PERMISSIONS_DEFAULT = [
-		'activity'          => 'N',
-		'cost'              => 'N',
-		'general'           => 'N',
-		'kit'               => 'N',
-		'pricing'           => 'N',
-		'purchasehistory'   => 'N',
-		'purchaseorders'    => 'N',
-		'requirements'      => 'N',
-		'saleshistory'      => 'N',
-		'salesorders'       => 'N',
-		'lotserial'         => 'N',
-		'stock'             => 'N',
-		'substitutes'       => 'N',
-		'lostsales'         => 'N',
-	];
 
 	/**
 	 * Returns OptionsIiQuery
@@ -524,7 +524,7 @@ class Iio extends WireData implements Module {
 	}
 
 	/**
-	 * Return Itm Subfunctions that the user has permissions to
+	 * Return Ii Subfunctions that the user has permissions to
 	 * @param  User   $user
 	 * @return PageArray
 	 */
@@ -534,34 +534,6 @@ class Iio extends WireData implements Module {
 			return [];
 		}
 		return $user->permitted_ii();
-	}
-
-	/**
-	 * Return Templates that the user has permissions to
-	 * @param  array  $permitted e.g ['pricing', 'xrefs']
-	 * @return array
-	 */
-	public function permissions_to_templates(array $permitted) {
-		$templates = [];
-		foreach (self::TEMPLATES_PERMISSIONS as $template => $permission) {
-			if (empty($permission) || in_array($permission, $permitted)) {
-				$templates[] = $template;
-			}
-		}
-		return $templates;
-	}
-
-	/**
-	 * Return if User is allowed to view Template
-	 * @param  User   $user     Dplus User
-	 * @param  string $template Template name
-	 * @return bool
-	 */
-	public function is_user_allowed_template(User $user, $template) {
-		$userID = $this->exists($user->loginid) ? $user->loginid : self::USER_DEFAULT;
-		$permissions = $this->user($userID);
-		$needed = self::TEMPLATES_PERMISSIONS[$template];
-		return $needed ? $permissions->is_true($needed) : true;
 	}
 
 	/**
