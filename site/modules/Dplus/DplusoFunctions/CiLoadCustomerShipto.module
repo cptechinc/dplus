@@ -307,7 +307,8 @@
 		 * @return string
 		 */
 		public function get_salesordersURL() {
-			$url = new Url($this->wire('pages')->get('pw_template=sales-orders-customer')->url);
+			$url = new Url($this->wire('pages')->get('pw_template=sales-orders')->url);
+			$url->path->add('customer');
 			$url->query->set('custID', $this->custID);
 
 			if ($this->shiptoID) {
@@ -321,7 +322,8 @@
 		 * @return string
 		 */
 		public function get_saleshistoryURL() {
-			$url = new Url($this->wire('pages')->get('pw_template=sales-history-orders-customer')->url);
+			$url = new Url($this->wire('pages')->get('pw_template=sales-orders-invoices')->url);
+			$url->path->add('customer');
 			$url->query->set('custID', $this->custID);
 
 			if ($this->shiptoID) {

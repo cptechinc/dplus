@@ -634,7 +634,8 @@ class DpagesMci extends Dpages implements Module {
 		 */
 		$this->addHook('Page::cust_salesordersURL', function($event) {
 			$custID = $event->arguments(0);
-			$url = new Url($this->wire('pages')->get('pw_template=sales-orders-customer')->url);
+			$url = new Url($this->wire('pages')->get('pw_template=sales-orders')->url);
+			$url->path->add('customer');
 			$url->query->set('custID', $custID);
 			$event->return = $url->getUrl();
 		});
@@ -644,7 +645,8 @@ class DpagesMci extends Dpages implements Module {
 		 */
 		$this->addHook('Page::cust_saleshistoryURL', function($event) {
 			$custID = $event->arguments(0);
-			$url = new Url($this->wire('pages')->get('pw_template=sales-history-orders-customer')->url);
+			$url = new Url($this->wire('pages')->get('pw_template=sales-history-invoices')->url);
+			$url->path->add('customer');
 			$url->query->set('custID', $custID);
 			$event->return = $url->getUrl();
 		});

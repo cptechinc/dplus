@@ -66,7 +66,7 @@ class Common extends AbstractController {
 			'invoices'       => $orders,
 			'count'          => $orders->getNbResults(),
 			'url_invoice'      => $pages->get('pw_template=sales-order-view')->url,
-			'url_invoice_list' => $pages->get('pw_template=sales-history-orders')->url
+			'url_invoice_list' => $pages->get('pw_template=sales-orders-invoice')->url
 		];
 		$html = '';
 		$html .= $config->twig->render("dashboard/components/sales-history.twig", $params);
