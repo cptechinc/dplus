@@ -1,4 +1,6 @@
 <?php namespace Controllers\Mci\Ci;
+// Propel ORM Ljbrary
+use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use CustomerQuery, Customer;
 // Dpluso Model
@@ -16,6 +18,9 @@ use Dplus\Filters\Mqo\Quote        as QuoteFilter;
 use Mvc\Controllers\AbstractController;
 
 class Ci extends Base {
+/* =============================================================
+	Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['custID|text', 'q|text'];
 		$data = self::sanitizeParametersShort($data, $fields);
@@ -27,6 +32,28 @@ class Ci extends Base {
 		return self::list($data);
 	}
 
+	public static function list($data) {
+		$fields = ['q|text'];
+		$data = self::sanitizeParametersShort($data, $fields);
+		$page = self::pw('page');
+		$filter = new CustomerFilter();
+		$filter->user(self::pw('user'));
+		$filter->sortby($page);
+
+		if ($data->q) {
+			$data->q = strtoupper($data->q);
+
+			if ($filter->exists($data->q)) {
+				self::pw('session')->redirect(self::ciUrl($data->q), $http301 = false);
+			}
+
+			$filter->search($data->q);
+			$page->headline = "CI: Searching for '$data->q'";
+		}
+		$customers = $filter->query->paginate(self::pw('input')->pageNum, 10);
+		return self::displayList($data, $customers);
+	}
+
 	public static function customer($data) {
 		$page   = self::pw('page');
 		$config = self::pw('config');
@@ -36,8 +63,7 @@ class Ci extends Base {
 		$validate = new MarValidator();
 
 		if ($validate->custid($data->custID) === false) {
-			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $data->custID not found"]);
-			return $page->body;
+			return $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $data->custID not found"]);
 		}
 
 		if ($user->has_customer($data->custID) === false) {
@@ -87,6 +113,19 @@ class Ci extends Base {
 		$page->body .= self::customerSalesHistory($customer);
 		$page->body .= self::customerQuotes($customer);
 		$config->scripts->append(hash_templatefile('scripts/customer/ci-customer.js'));
+	}
+
+/* =============================================================
+	Displays
+============================================================= */
+	private static function displayList($data, PropelModelPager $customers) {
+		$config = self::pw('config');
+
+		$html = '';
+		$html .= $config->twig->render('customers/customer-search.twig', ['customers' => $customers, 'datamatcher' => self::pw('modules')->get('RegexData'), 'q' => $data->q]);
+		$html .= '<div class="mb-3"></div>';
+		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $customers]);
+		return $html;
 	}
 
 	private static function customerUserActions(Customer $customer) {
@@ -143,30 +182,5 @@ class Ci extends Base {
 		$filter->query->limit(10);
 		$quotes = $filter->query->paginate(1, 10);
 		return $config->twig->render('customers/ci/customer/quotes-panel.twig', ['customer' => $customer, 'quotes' => $quotes, 'resultscount'=> $quotes->getNbResults(), 'quotepage' => self::pw('pages')->get('pw_template=quote-view')->url, 'quotes_list' => $page->cust_quotesURL($customer->id)]);
-	}
-
-	public static function list($data) {
-		$fields = ['q|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$page = self::pw('page');
-		$filter = new CustomerFilter();
-		$filter->user(self::pw('user'));
-		$filter->sortby($page);
-
-		if ($data->q) {
-			$data->q = strtoupper($data->q);
-
-			if ($filter->exists($data->q)) {
-				self::pw('session')->redirect($page->url."?custID=$data->q", $http301 = false);
-			}
-
-			$filter->search($data->q);
-			$page->headline = "CI: Searching for '$data->q'";
-		}
-		$customers = $filter->query->paginate(self::pw('input')->pageNum, 10);
-		$config = self::pw('config');
-		$page->searchURL = $page->url;
-		$page->body = $config->twig->render('customers/customer-search.twig', ['customers' => $customers, 'datamatcher' => self::pw('modules')->get('RegexData'), 'q' => $data->q]);
-		$page->body .= $config->twig->render('util/paginator.twig', ['resultscount'=> $customers->getNbResults()]);
 	}
 }
