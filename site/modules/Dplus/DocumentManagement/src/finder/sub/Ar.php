@@ -11,6 +11,8 @@ use SalesOrderQuery, SalesOrder;
 use ProcessWire\WireData;
 // Dplus Validators
 use Dplus\CodeValidators\Mpo as MpoValidator;
+// Dplus Document Management Finders
+use Dplus\DocManagement\Finders;
 
 /**
  * Accounts Receivable Document Finder
@@ -87,7 +89,7 @@ class Ar extends Finder {
 		$this->initColumns();
 		$conditions = array();
 
-		$finderSo = new DocFinders\SalesOrder();
+		$finderSo = new Finders\SalesOrder();
 		$finderSo->initColumns();
 
 		if (empty($checknbr)) {
@@ -98,8 +100,8 @@ class Ar extends Finder {
 		// Create Invoice Filter
 		$conditions[] = $this->addConditionInvoices($q, $invnbr);
 		// Create Vendor PO Filter
-		if ($finderSo->doesOrderHavePos($ordn)) {
-			$cond = $finderSo->filterSalesVendorpo($q, $ordn);
+		if ($finderSo->doesOrderHavePos($invnbr)) {
+			$cond = $finderSo->filterSalesVendorpo($q, $invnbr);
 
 			if ($cond) {
 				$conditions[] = $cond;
@@ -171,11 +173,8 @@ class Ar extends Finder {
 	 * @var string
 	 */
 	protected function getInvoiceCustid($ordn) {
-		$ordn = SalesOrder::get_paddedordernumber($ordn);
-		$q = SalesHistoryQuery::create();
-		$q->select(SalesHistory::aliasproperty('custid'));
-		$q->filterByOrdernumber($ordn);
-		return $q->findOne();
+		$finderSo = new Finders\SalesOrder();
+		return $finderSo->getInvoiceCustid($ordn);
 	}
 
 	/**
@@ -184,10 +183,7 @@ class Ar extends Finder {
 	 * @return boolval
 	 */
 	public function invoiceHasCustid($ordn) {
-		$ordn = SalesOrder::get_paddedordernumber($ordn);
-		$q = SalesHistoryQuery::create();
-		$q->select(SalesHistory::aliasproperty('custid'));
-		$q->filterByOrdernumber($ordn);
-		return boolval($q->findOne());
+		$finderSo = new Finders\SalesOrder();
+		return $finderSo->invoiceHasCustid($ordn);
 	}
 }

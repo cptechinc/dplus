@@ -1,0 +1,31 @@
+{% extends 'customers/ci/display.twig' %}
+
+{% block body %}
+	{% include 'customers/ci/pricing/customer-item.twig' %}
+
+	<div class="card-body">
+		<div class="row">
+			<div class="col-sm-4 form-group">
+				{% include 'items/ii/pricing/standard-pricing.twig' %}
+			</div>
+			<div class="col-sm-4 form-group">
+				{% include 'items/ii/pricing/customer-pricing.twig' %}
+			</div>
+			<div class="col-sm-4 form-group">
+				{% include 'items/ii/pricing/derived-pricing.twig' %}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block footer %}
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<div></div>
+			<a href="{{ page.ciUrl(customer.id) }}" class="btn btn-warning btn-sm">
+				<i class="fa fa-times" aria-hidden="true"></i> Close
+			</a>
+		</div>
+	</div>
+{% endblock %}

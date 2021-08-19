@@ -17,6 +17,8 @@ use Dplus\Filters\Mqo\Quote        as QuoteFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 use Controllers\Mso\SalesOrder as ControllersSalesOrder;
+use Controllers\Mqo\Quote      as ControllersQuote;
+use Controllers\Misc\Cart\Cart;
 
 class Ci extends Base {
 	const SUBFUNCTIONS = [
@@ -25,17 +27,17 @@ class Ci extends Base {
 		'contacts'       => [],
 		'salesorders'    => ['path' => 'sales-orders', 'title' => 'Sales Orders'],
 		'saleshistory'   => ['path' => 'sales-history', 'title' => 'Sales History'],
-		'customerpo'     => ['path' => 'cust-po', 'title' => 'Cust POs'],
+		'customerpo'     => ['path' => 'purchase-orders', 'title' => 'Cust POs'],
 		'quotes'         => [],
 		'openinvoices'   => ['path' => 'open-invoices', 'title' => 'Open Invoices'],
 		'payments'       => [],
 		'credit'         => [],
 		'standingorders' => ['path' => 'standing-orders', 'title' => 'Standing Orders'],
-		'stock'          => [],
-		'notes'          => [],
+		// 'stock'          => [],
+		// 'notes'          => [],
 		'documents'      => [],
 		'phonebook'      => [],
-		'activity'       => [],
+		// 'activity'       => [],
 		'corebank'       => ['title' => 'Core'],
 	];
 
@@ -44,8 +46,7 @@ class Ci extends Base {
 ============================================================= */
 	public static function index($data) {
 		$fields = ['custID|text', 'q|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$page = self::pw('page');
+		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->custID) === false) {
 			return self::customer($data);
@@ -53,13 +54,12 @@ class Ci extends Base {
 		return self::list($data);
 	}
 
-	public static function list($data) {
+	private static function list($data) {
 		$fields = ['q|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$page = self::pw('page');
+		self::sanitizeParametersShort($data, $fields);
 		$filter = new CustomerFilter();
 		$filter->user(self::pw('user'));
-		$filter->sortby($page);
+		$filter->sortby(self::pw('page'));
 
 		if ($data->q) {
 			$data->q = strtoupper($data->q);
@@ -69,30 +69,26 @@ class Ci extends Base {
 			}
 
 			$filter->search($data->q);
-			$page->headline = "CI: Searching for '$data->q'";
+			self::pw('page')->headline = "CI: Searching for '$data->q'";
 		}
 		$customers = $filter->query->paginate(self::pw('input')->pageNum, 10);
 		return self::displayList($data, $customers);
 	}
 
-	public static function customer($data) {
-		$page   = self::pw('page');
-		$config = self::pw('config');
+	private static function customer($data) {
 		$fields = ['custID|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateCustidPermission($data) === false) {
-			self::displayInvalidCustomerOrPermissions($data);
+			return self::displayInvalidCustomerOrPermissions($data);
 		}
 
-		$modules = self::pw('modules');
-		$modules->get('DpagesMci')->init_customer_hooks();
-		$modules->get('DpagesMci')->init_cipage();
 		$customer = CustomerQuery::create()->findOneById($data->custID);
+		$page   = self::pw('page');
 		$page->show_breadcrumbs = false;
 
 		$page->headline = "CI: $customer->name";
-		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/customer/ci-customer.js'));
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/customer/ci-customer.js'));
 		return self::displayCustomer($data, $customer);
 	}
 
@@ -111,80 +107,93 @@ class Ci extends Base {
 
 	private static function displayCustomer($data, Customer $customer) {
 		$config = self::pw('config');
-		$writer = self::pw('modules')->get('HtmlWriter');
 
 		$html = '';
-		$html .= $config->twig->render('customers/ci/bread-crumbs.twig', ['customer' => $customer]);
+		$html .= self::displayBreadCrumbs($data);
 		$html .= $config->twig->render('customers/ci/customer/main.twig', ['customer' => $customer]);
-		$html .= self::customerUserActions($customer);
-		$html .= self::customerContacts($customer);
-		$html .= self::customerSalesOrders($customer);
-		$html .= self::customerSalesHistory($customer);
-		$html .= self::customerQuotes($customer);
+		$html .= self::displayUserActions($customer);
+		$html .= self::displayContacts($customer);
+		$html .= self::displaySalesOrders($customer);
+		$html .= self::displayInvoices($customer);
+		$html .= self::displayQuotes($customer);
 		return $html;
 	}
 
-	private static function customerUserActions(Customer $customer) {
-		$modules = self::pw('modules');
-		$config  = self::pw('config');
-		$filter = $modules->get('FilterUserActions');
-		$module_useractions = $modules->get('FilterUserActions');
+	private static function displayUserActions(Customer $customer) {
+		$filter = self::pw('modules')->get('FilterUserActions');
 		$query = $filter->get_actionsquery(self::pw('input'));
 		$query->filterByStatusIncomplete();
 		$query->filterByCustomerlink($customer->id);
 		$actions = $query->paginate(1, 10);
-		return $config->twig->render('customers/ci/customer/actions-panel.twig', ['module_useractions' => $module_useractions, 'actions' => $actions, 'resultscount'=> $actions->getNbResults()]);
+		return self::pw('config')->twig->render('customers/ci/customer/panels/actions.twig', ['module_useractions' => $filter, 'actions' => $actions]);
 	}
 
-	private static function customerContacts(Customer $customer) {
+	private static function displayContacts(Customer $customer) {
 		$config  = self::pw('config');
 		$q = CustindexQuery::create();
 		$q->filterByCustid($customer->id);
 		$contacts = $q->paginate(1, 10);
-		return $config->twig->render('customers/ci/customer/contacts-panel.twig', ['customer' => $customer, 'contacts' => $contacts, 'resultscount'=> $contacts->getNbResults()]);
+		return $config->twig->render('customers/ci/customer/panels/contacts.twig', ['contacts' => $contacts]);
 	}
 
-	private static function customerSalesOrders(Customer $customer) {
+	private static function displaySalesOrders(Customer $customer) {
 		$config  = self::pw('config');
-		$page    = self::pw('page');
 		$filter = new SalesOrderFilter();
 		$filter->user(self::pw('user'));
 		$filter->custid($customer->id);
 		$filter->query->limit(10);
 		$orders = $filter->query->paginate(1, 10);
-		return $config->twig->render('customers/ci/customer/sales-orders-panel.twig', ['customer' => $customer, 'orders' => $orders, 'resultscount'=> $orders->getNbResults()]);
+		return $config->twig->render('customers/ci/customer/panels/sales-orders.twig', ['orders' => $orders]);
 	}
 
-	private static function customerSalesHistory(Customer $customer) {
+	private static function displayInvoices(Customer $customer) {
 		$config  = self::pw('config');
-		$page    = self::pw('page');
 		$filter = new SalesHistoryFilter();
 		$filter->user(self::pw('user'));
 		$filter->custid($customer->id);
 		$filter->query->limit(10);
 		$orders = $filter->query->paginate(1, 10);
-		return $config->twig->render('customers/ci/customer/sales-history-panel.twig', ['customer' => $customer, 'orders' => $orders, 'resultscount'=> $orders->getNbResults(), 'orderpage' => self::pw('pages')->get('pw_template=sales-order-view')->url, 'shipped_orders_list' => $page->cust_saleshistoryURL($customer->id)]);
+		return $config->twig->render('customers/ci/customer/panels/invoices.twig', ['orders' => $orders]);
 	}
 
-	private static function customerQuotes(Customer $customer) {
+	private static function displayQuotes(Customer $customer) {
 		if (self::pw('user')->has_function('mqo')  === false) {
 			return '';
 		}
 		$config  = self::pw('config');
-		$page    = self::pw('page');
 		$filter = new QuoteFilter();
 		$filter->user(self::pw('user'));
 		$filter->custid($customer->id);
 		$filter->query->limit(10);
 		$quotes = $filter->query->paginate(1, 10);
-		return $config->twig->render('customers/ci/customer/quotes-panel.twig', ['customer' => $customer, 'quotes' => $quotes, 'resultscount'=> $quotes->getNbResults(), 'quotepage' => self::pw('pages')->get('pw_template=quote-view')->url, 'quotes_list' => $page->cust_quotesURL($customer->id)]);
+		return $config->twig->render('customers/ci/customer/panels/quotes.twig', ['quotes' => $quotes]);
 	}
 
 /* =============================================================
 	Hooks
 ============================================================= */
 	public static function initHooks() {
-		$m = self::pw('modules')->get('DpagesMii');
+		$m = self::pw('modules')->get('DpagesMci');
+
+		$m->addHook('Page(pw_template=ci)::ciUrl', function($event) {
+			$event->return = self::ciUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=ci)::ciShiptoUrl', function($event) {
+			$event->return = self::ciShiptoUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=ci)::ciContactsUrl', function($event) {
+			$event->return = self::ciContactsUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=ci)::ciContactUrl', function($event) {
+			$event->return = self::ciContactUrl($event->arguments(0), $event->arguments(1), $event->arguments(2));
+		});
+
+		$m->addHook('Page(pw_template=ci)::ciContactEditUrl', function($event) {
+			$event->return = self::ciContactEditUrl($event->arguments(0), $event->arguments(1), $event->arguments(2));
+		});
 
 		$m->addHook('Page(pw_template=ci)::ciPermittedSubfunctions', function($event) {
 			$user = self::pw('user');
@@ -212,12 +221,28 @@ class Ci extends Base {
 			$event->return = self::ciSubfunctionUrl($custID, $path);
 		});
 
-		$m->addHook('Page(pw_template=ci)::salesorderUrl', function($event) {
+		$m->addHook('Page(pw_template=ci)::orderUrl', function($event) {
 			$event->return = ControllersSalesOrder\SalesOrder::orderUrl($event->arguments(0));
 		});
 
-		$m->addHook('Page(pw_template=ci)::salesorderListUrl', function($event) {
+		$m->addHook('Page(pw_template=ci)::orderListUrl', function($event) {
 			$event->return = ControllersSalesOrder\SalesOrder::orderListCustomerUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=ci)::invoiceListUrl', function($event) {
+			$event->return = ControllersSalesOrder\Lists\Invoices\Customer::listUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=ci)::cartCustomerUrl', function($event) {
+			$event->return = Cart::setCustomerUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=ci)::quoteUrl', function($event) {
+			$event->return = ControllersQuote\Quote::quoteUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=ci)::quoteListUrl', function($event) {
+			$event->return = ControllersQuote\Lists\Customer::listUrl($event->arguments(0), $event->arguments(1));
 		});
 	}
 }

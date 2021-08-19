@@ -38,12 +38,11 @@
 
 		$gl_accounts = GlCodeQuery::create()->find();
 
-		$page->customerlookupURL = $pages->get('pw_template=mci-lookup')->url;
+		$page->customerlookupURL = $page->searchLookupUrl('customers');
 		$page->body .= $config->twig->render("code-tables/mar/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'code' => $creditcode, 'gl_accounts' => $gl_accounts, 'recordlocker' => $recordlocker]);
 		$page->body .= $config->twig->render("util/ajax-modal.twig", []);
 		$urls = new ProcessWire\WireData();
 		$urls->validate = $page->child('pw_template=ar-code-table-crcd-validate')->url;
-		$urls->json_ci  = $pages->get('pw_template=ci-json')->url;
 		$page->js   .= $config->twig->render("code-tables/mar/$page->codetable/js.twig", ['page' => $page, 'creditcode' => $creditcode, 'url_validate' => $urls->validate, 'url_json_ci' => $urls->json_ci, 'm_crcd' => $module_codetable ]);
 	} else {
 		$page->title = "Customer Credit Card Code";

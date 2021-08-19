@@ -18,7 +18,7 @@ use Dplus\CodeValidators\Mqo as MqoValidator;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 use Controllers\Mii\Ii;
-use Controllers\Mqo\Quote\Lists\Customer as CustomerQuotes;
+use Controllers\Mci\Ci\Ci;
 
 class Quote extends Base {
 
@@ -84,15 +84,11 @@ class Quote extends Base {
 		$m = self::pw('modules')->get('DpagesMqo');
 
 		$m->addHook('Page(pw_template=quote-view)::ciUrl', function($event) {
-			$event->return = CustomerQuotes::ciUrl($event->arguments(0));
+			$event->return = Ci::ciUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=quote-view)::ciShiptoUrl', function($event) {
-			$event->return = CustomerQuotes::ciShiptoUrl($event->arguments(0), $event->arguments(1));
-		});
-
-		$m->addHook('Page(pw_template=quote-view)::iiUrl', function($event) {
-			$event->return = CustomerQuotes::ciUrl($event->arguments(0));
+			$event->return = Ci::ciShiptoUrl($event->arguments(0), $event->arguments(1));
 		});
 
 		$m->addHook('Page(pw_template=quote-view)::iiUrl', function($event) {

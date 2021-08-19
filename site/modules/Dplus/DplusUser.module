@@ -327,6 +327,26 @@ class DplusUser extends WireData implements Module {
 			$event->return = $access;
 		});
 
+		$this->addHook('User::hasCustomer', function($event) {
+			$user = $event->object;
+			$custID = $event->arguments(0);
+			$shiptoID = $event->arguments(1);
+			$access = false;
+
+			if ($user->is_salesrep()) {
+				$q = CustpermQuery::create();
+				$q->filterByCustid($custID);
+				if ($shiptoID) {
+					$q->filterByShiptoid($shiptoID);
+				}
+				$q->filterByLoginid($user->loginid);
+				$access = boolval($q->count());
+			} else {
+				$access = true;
+			}
+			$event->return = $access;
+		});
+
 		$this->addHook('User::get_customers', function($event) {
 			$user = $event->object;
 			$q = CustpermQuery::create();

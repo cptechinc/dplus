@@ -133,17 +133,6 @@ class DpagesScreenFormatter extends Dpages implements Module {
 			'twig_include'   => 'customers/ci/sales-orders/sales-orders.twig',
 			'dplus_function' => 'ciof'
 		),
-		'ci-sales-history' => array(
-			'template'       => 'dplus-screen-formatter',
-			'name'           => 'sales-history',
-			'title'          => 'CI Sales History',
-			'summary'        => 'CI Sales History Formatter',
-			'parent'         => '/mci/admin/',
-			'formatter'      => 'ci:sales-history',
-			'jsoncode'       => 'ci-sales-history',
-			'twig_include'   => 'customers/ci/sales-history/sales-history.twig',
-			'dplus_function' => 'cihf'
-		),
 		'ci-quotes' => array(
 			'template'       => 'dplus-screen-formatter',
 			'name'           => 'quotes',

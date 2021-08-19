@@ -125,7 +125,6 @@ class DocumentManagement extends WireData implements Module {
 				'DocumentManagementSo',
 				'DocumentManagementQt',
 				'DocumentManagementPo',
-				'DocumentManagementCi',
 				'DocumentManagementVi',
 			)
 		);

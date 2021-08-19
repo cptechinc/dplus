@@ -15,6 +15,7 @@ use Dplus\CodeValidators\Mar as MarValidator;
 use Dplus\Filters\Mqo\Quote as FilterQuotes;
 // Mvc Controllers
 use Controllers\Mqo\Quote\Base;
+use Controllers\Mci\Ci\Ci;
 
 class Customer extends Base {
 
@@ -98,22 +99,6 @@ class Customer extends Base {
 		return $url->getUrl();
 	}
 
-	public static function ciUrl($custID) {
-		$url = new Purl(self::pw('pages')->get('pw_template=ci-customer')->url);
-		$url->query->set('custID', $custID);
-		return $url->getUrl();
-	}
-
-	public static function ciShiptoUrl($custID, $shiptoID = '') {
-		if (empty($shiptoID)) {
-			return self::ciUrl($custID);
-		}
-		$url = new Purl(self::pw('pages')->get('pw_template=ci-shipto')->url);
-		$url->query->set('custID', $custID);
-		$url->query->set('shiptoID', $shiptoID);
-		return $url->getUrl();
-	}
-
 /* =============================================================
 	Supplemental
 ============================================================= */
@@ -121,15 +106,19 @@ class Customer extends Base {
 		$m = self::pw('modules')->get('DpagesMqo');
 
 		$m->addHook('Page(pw_template=quotes)::ciUrl', function($event) {
-			$event->return = self::ciUrl($event->arguments(0));
+			$event->return = Ci::ciUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=quotes)::ciShiptoUrl', function($event) {
-			$event->return = self::ciShiptoUrl($event->arguments(0), $event->arguments(1));
+			$event->return = Ci::ciShiptoUrl($event->arguments(0), $event->arguments(1));
 		});
 
 		$m->addHook('Page(pw_template=quotes)::custQuotesUrl', function($event) {
 			$event->return = self::listUrl($event->arguments(0), $event->arguments(1), $event->arguments(2));
+		});
+
+		$m->addHook('Page(pw_template=quotes)::quoteUrl', function($event) {
+			$event->return = self::quoteUrl($event->arguments(0));
 		});
 	}
 }

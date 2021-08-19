@@ -1,0 +1,32 @@
+{% extends 'customers/ci/display.twig' %}
+
+{% block links %}
+	<div class="p-2 px-3 card-toolbar">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<div></div>
+			<a href="{{ page.ciUrl(customer.id) }}" class="btn btn-primary {{ page.is_print() ? 'd-print-none' : ''}}">
+				<i class="fa fa-undo" aria-hidden="true"></i> {{ customer.id }}
+			</a>
+		</div>
+	</div>
+{% endblock %}
+
+{% block body %}
+	<div class="card-body text-center">
+		<h2>Contact: {{ contact.contact }}</h2>
+	</div>
+	{% include 'customers/ci/contact/contact.twig' %}
+{% endblock %}
+
+{% block footer %}
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<div></div>
+			<a href="{{ page.ciUrl(customer.id) }}" class="btn btn-warning btn-sm">
+				<i class="fa fa-times" aria-hidden="true"></i> Close
+			</a>
+		</div>
+	</div>
+{% endblock %}

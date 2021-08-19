@@ -43,14 +43,12 @@ $(function () {
 		var custID = $(this).val();
 		custID = custID.toUpperCase();
 		$(this).val(custID);
-		var apiurl = new URI("{{ url_json_ci }}");
-		apiurl.addQuery('action', 'get-customer-name');
+		var apiurl = new URI("{{ pages.jsonApiUrl('mar/customer/') }}");
 		apiurl.addQuery('custID', custID);
-		console.log(apiurl.toString());
 
-		$.getJSON(apiurl.toString(), function( name ) {
-			if (name.length) {
-				credit_cust_name.val(name);
+		$.getJSON(apiurl.toString(), function(customer) {
+			if (customer) {
+				credit_cust_name.val(customer.name);
 			} else {
 				credit_cust_name.val('');
 			}
@@ -102,7 +100,7 @@ $(function () {
 		});
 	});
 
-	$("body").on('click', '.ci-customer', function(e) {
+	$("body").on('click', '.customer-link', function(e) {
 		e.preventDefault();
 		var custID = $(this).data('custid');
 		var cust_name = $(this).data('cust_name');

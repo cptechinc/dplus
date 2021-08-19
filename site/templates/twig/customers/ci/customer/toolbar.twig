@@ -2,7 +2,7 @@
 	<ul class="nav">
 		{% for key, data in page.ciPermittedSubfunctions() %}
 			<li>
-				<a href="{{ child.ciSubfunctionUrl(custID, key) }}">
+				<a href="{{ page.ciSubfunctionUrl(custID, key) }}">
 					{{ data.title ? data.title : key|capitalize }}
 				</a>
 			</li>

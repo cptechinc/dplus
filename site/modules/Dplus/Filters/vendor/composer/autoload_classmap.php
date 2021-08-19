@@ -14,6 +14,7 @@ return array(
     'Dplus\\Filters\\Map\\Vxm' => $baseDir . '/src/Map/Vxm.php',
     'Dplus\\Filters\\Mar\\Customer' => $baseDir . '/src/Mar/Customer.php',
     'Dplus\\Filters\\Mar\\SalesPerson' => $baseDir . '/src/Mar/SalesPerson.php',
+    'Dplus\\Filters\\Mar\\Shipto' => $baseDir . '/src/Mar/Shipto.php',
     'Dplus\\Filters\\Mgl\\GlCode' => $baseDir . '/src/Mgl/GlCode.php',
     'Dplus\\Filters\\Min\\I2i' => $baseDir . '/src/Min/I2i.php',
     'Dplus\\Filters\\Min\\InvAdjustmentReason' => $baseDir . '/src/Min/InvAdjustmentReason.php',

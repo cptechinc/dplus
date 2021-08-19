@@ -5,13 +5,13 @@
 	if ($input->get->code) {
 		$code = $whseID = $input->get->text('code');
 
-		if ($module_codetable->code_exists($code)) {
+		$iwhm = $module_codetable;
+		$warehouse = $iwhm->getCreate($code);
+
+		if ($warehouse->isNew() === false) {
 			$page->title = $page->headline = "Warehouse: $code";
-			$warehouse = $module_codetable->get_code($code);
 		} else {
 			$page->title = $page->headline = "Create new Warehouse";
-			$warehouse = new Warehouse();
-
 			if ($code != 'new') {
 				$warehouse->setId($code);
 				$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Warehouse $code could not be found, use the form to create it"]);
@@ -19,8 +19,7 @@
 			}
 		}
 
-
-		if (!$warehouse->isNew()) {
+		if ($warehouse->isNew() === false) {
 			/**
 			 * Show alert that warehouse is locked if
 			 *  1. Warehouse Isn't new
@@ -40,10 +39,7 @@
 		$page->customerlookupURL = $pages->get('pw_template=mci-lookup')->url;
 		$page->body .= $config->twig->render("code-tables/min/$page->codetable/form.twig", ['page' => $page, 'table' => $page->codetable, 'warehouse' => $warehouse, 'm_iwhm' => $module_codetable, 'recordlocker' => $recordlocker]);
 		$page->body .= $config->twig->render("util/ajax-modal.twig", []);
-
-		$urls = new ProcessWire\WireData();
-		$urls->json_ci  = $pages->get('pw_template=ci-json')->url;
-		$page->js   .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'warehouse' => $warehouse, 'url_json_ci' => $urls->json_ci, 'm_iwhm' => $module_codetable]);
+		$page->js   .= $config->twig->render("code-tables/min/$page->codetable/js.twig", ['page' => $page, 'warehouse' => $warehouse, 'm_iwhm' => $module_codetable]);
 
 		// SHOW NOTES IF TABLE ALREADY EXISTS
 		if ($module_codetable->code_exists($code) || $warehouse->isNew()) {
