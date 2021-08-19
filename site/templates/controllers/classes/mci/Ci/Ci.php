@@ -18,6 +18,26 @@ use Dplus\Filters\Mqo\Quote        as QuoteFilter;
 use Mvc\Controllers\AbstractController;
 
 class Ci extends Base {
+	const SUBFUNCTIONS = [
+		'pricing'        => [],
+		'shiptos'        => ['title' => 'Ship-tos', 'path' => 'ship-tos'],
+		'contacts'       => [],
+		'salesorders'    => ['path' => 'sales-orders', 'title' => 'Sales Orders'],
+		'saleshistory'   => ['path' => 'sales-history', 'title' => 'Sales History'],
+		'customerpo'     => ['path' => 'cust-po', 'title' => 'Cust POs'],
+		'quotes'         => [],
+		'openinvoices'   => ['path' => 'open-invoices', 'title' => 'Open Invoices'],
+		'payments'       => [],
+		'credit'         => [],
+		'standingorders' => ['path' => 'standing-orders', 'title' => 'Standing Orders'],
+		'stock'          => [],
+		'notes'          => [],
+		'documents'      => [],
+		'phonebook'      => [],
+		'activity'       => [],
+		'corebank'       => ['title' => 'Core'],
+	];
+
 /* =============================================================
 	Indexes
 ============================================================= */
@@ -166,5 +186,38 @@ class Ci extends Base {
 		$filter->query->limit(10);
 		$quotes = $filter->query->paginate(1, 10);
 		return $config->twig->render('customers/ci/customer/quotes-panel.twig', ['customer' => $customer, 'quotes' => $quotes, 'resultscount'=> $quotes->getNbResults(), 'quotepage' => self::pw('pages')->get('pw_template=quote-view')->url, 'quotes_list' => $page->cust_quotesURL($customer->id)]);
+	}
+
+/* =============================================================
+	Hooks
+============================================================= */
+	public static function initHooks() {
+		$m = self::pw('modules')->get('DpagesMii');
+
+		$m->addHook('Page(pw_template=ci)::ciPermittedSubfunctions', function($event) {
+			$user = self::pw('user');
+			$allowed = [];
+			$iio = self::getCio();
+			foreach (self::SUBFUNCTIONS as $option => $data) {
+				if ($iio->allowUser($user, $option)) {
+					$allowed[$option] = $data;
+				}
+			}
+			$event->return = $allowed;
+		});
+
+		$m->addHook('Page(pw_template=ci)::ciSubfunctionUrl', function($event) {
+			$custID = $event->arguments(0);
+			$key    = $event->arguments(1);
+			$path   = $key;
+
+			if (array_key_exists($key, self::SUBFUNCTIONS)) {
+				if (array_key_exists('path', self::SUBFUNCTIONS[$key])) {
+					$path = self::SUBFUNCTIONS[$key]['path'];
+				}
+			}
+
+			$event->return = self::ciSubfunctionUrl($custID, $path);
+		});
 	}
 }

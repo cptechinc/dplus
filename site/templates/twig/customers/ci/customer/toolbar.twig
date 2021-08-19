@@ -1,9 +1,9 @@
 <nav class="toolbar-sidebar">
 	<ul class="nav">
-		{% for child in page.subfunctions() %}
+		{% for key, data in page.ciPermittedSubfunctions() %}
 			<li>
-				<a href="{{ child.url_custID(custID) }}">
-					{{ child.title }}
+				<a href="{{ child.ciSubfunctionUrl(custID, key) }}">
+					{{ data.title ? data.title : key|capitalize }}
 				</a>
 			</li>
 		{% endfor %}
