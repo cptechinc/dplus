@@ -27,13 +27,10 @@ class Msa extends AbstractController {
 			return $exists;
 		}
 
-		if ($validate->userid($userID) === false) {
-			if ($data->new) {
-				return "User $userID not found";
-			}
-			return "User $userID Already Exists";
+		if ($data->new) {
+			return $exists === false ? true : "User $userID Exists";
 		}
-		return true;
+		return $exists ? true : "User $userID Not Found";
 	}
 
 	public static function getUserid($data) {
