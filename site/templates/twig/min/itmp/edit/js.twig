@@ -72,8 +72,18 @@ $(function() {
 		rules: {
 			loginID: {
 				required: true,
-				remote: function() {
-					return object_validate_remote_code('msa', 'loginID', 'userid');
+				remote: {
+					url: '{{ page.jsonApiUrl('msa/validate/loginid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						loginID: function() {
+							return $('#loginID').val();
+						},
+						new: function() {
+							return form.attr('data-crud') == 'create' ? 'true' : 'false';
+						}
+					}
 				}
 			},
 		},
@@ -123,11 +133,9 @@ $(function() {
 		if (validator.element('#'+input.attr('id'))) {
 			if (form.attr('data-crud') == 'create') {
 
-				var url = new URI('{{ page.jsonapiURL() }}');
-				url.path(url.path()+'inv/');
-				url.addQuery('action', 'validate-itmp-exists').addQuery('loginID', input.val());
+				var url = new URI('{{ page.jsonApiUrl('inv/itmp/exists') }}').addQuery('loginID', input.val());
 
-				$.getJSON(url.toString(), function( exists ) {
+				$.getJSON(url.toString(), function(exists) {
 					if (exists === true) {
 						swal_loginid_exists(input.val())
 					}
