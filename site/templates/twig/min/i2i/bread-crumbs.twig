@@ -6,7 +6,7 @@
 	{% if values.offsetExists('parentID') and values.text('parentID') != 'new' %}
 		<li class="breadcrumb-item">
 			<a href="{{ page.xrefListFocusUrl(values.text('parentID'), values.text('childID')) }}">
-				<i class="fa fa-arrows" aria-hidden="true"></i> {{ page.has('dplus_function') ? page.dplus_function|upper : page.title }}
+				{{ page.has('dplus_function') ? page.dplus_function|upper : page.title }}
 			</a>
 		</li>
 		<li class="breadcrumb-item active" aria-current="page">{{ [values.text('parentID'), values.text('childID')]|join('-') }}</li>
