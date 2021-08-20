@@ -201,12 +201,24 @@ class Min extends AbstractController {
 	}
 
 	public static function validateItmpExists($data) {
-		$fields = ['loginID|text', 'userID|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		$fields = ['loginID|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
 		$itmp = self::pw('modules')->get('Itmp');
 
-		if ($itmp->exists($loginID) === false) {
-			return "ITMP for $loginID not found";
+		$exists = $itmp->exists($data->loginID);
+
+		if ($data->jqv === false) {
+			if ($data->new) {
+				return $exists === false;
+			}
+			return $exists;
+		}
+
+		if ($exists === false) {
+			if ($data->new) {
+				return "$data->loginID already exists";
+			}
+			return "$data->loginID not found";
 		}
 		return true;
 	}
