@@ -11,13 +11,21 @@ $(function() {
 ============================================================= */
 	$("body").on("change", "input[name=custID]", function(e) {
 		var input = $(this);
-		customerJson(input.val(), function(customer) {
-			$('.customer-name').text('');
+		var custID = input.val();
+		$('.customer-name').text('');
 
-			if (customer) {
-				$('.customer-name').text(customer.name);
-			}
-		});
+		if (custID.trim() == '') {
+			input.val('');
+		}
+
+		if (input.val() != '') {
+			customerJson(input.val(), function(customer) {
+				if (customer) {
+					input.val(customer.id);
+					$('.customer-name').text(customer.name);
+				}
+			});
+		}
 	});
 
 /* =============================================================
@@ -73,7 +81,7 @@ $(function() {
 		var modal  = $(this).closest('.modal');
 		var input  = $(modal.attr('data-input'));
 
-		input.val(custid);
+		input.val(custid).change();
 		modal_ajax.modal('hide');
 	});
 
