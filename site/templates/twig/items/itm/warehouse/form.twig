@@ -93,7 +93,7 @@
 					<label for="orderpoint">Order Point</label>
 				</div>
 				<div class="col-sm-8">
-					<input type="number" name="orderpoint" id="orderpoint" class="form-control form-control-sm form-control-sm text-right w-auto" value="{{ warehouse.orderpoint }}">
+					<input type="number" name="orderpoint" id="orderpoint" class="form-control form-control-sm form-control-sm text-right w-auto" value="{{ warehouse.orderpoint|number_format(0) }}">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -101,7 +101,7 @@
 					<label for="orderqty">Order Qty</label>
 				</div>
 				<div class="col-sm-8">
-					<input type="number" name="orderqty" id="orderqty" class="form-control form-control-sm form-control-sm text-right w-auto" value="{{ warehouse.orderqty }}">
+					<input type="number" name="orderqty" id="orderqty" class="form-control form-control-sm form-control-sm text-right w-auto" value="{{ warehouse.orderqty|number_format(0) }}">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -109,7 +109,7 @@
 					<label for="maxqty">Max Qty</label>
 				</div>
 				<div class="col-sm-8">
-					<input type="number" name="maxqty" id="maxqty" class="form-control form-control-sm form-control-sm text-right w-auto" value="{{ warehouse.maxqty }}">
+					<input type="number" name="maxqty" id="maxqty" class="form-control form-control-sm form-control-sm text-right w-auto" value="{{ warehouse.maxqty|number_format(0) }}">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -117,7 +117,7 @@
 					<label for="maxorderqty">Max Per Order</label>
 				</div>
 				<div class="col-sm-8">
-					<input type="number" name="maxorderqty" id="maxorderqty" class="form-control form-control-sm form-control-sm text-right w-auto" value="{{ warehouse.maxorderqty }}">
+					<input type="number" name="maxorderqty" id="maxorderqty" class="form-control form-control-sm form-control-sm text-right w-auto" value="{{ warehouse.maxorderqty|number_format(0) }}">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -125,7 +125,7 @@
 					<label for="maxorderqty">Max Per Order</label>
 				</div>
 				<div class="col-sm-8">
-					<input type="number" name="maxorderqty" id="maxorderqty" class="form-control form-control-sm form-control-sm text-right w-auto" value="{{ warehouse.maxorderqty }}">
+					<input type="number" name="maxorderqty" id="maxorderqty" class="form-control form-control-sm form-control-sm text-right w-auto" value="{{ warehouse.maxorderqty|number_format(0) }}">
 				</div>
 			</div>
 			<div class="form-group row">
