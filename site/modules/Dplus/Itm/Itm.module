@@ -33,6 +33,36 @@ class Itm extends WireData implements Module {
 	const DESCRIPTION_RECORD = 'Item Master Item';
 	const RECORDLOCKER_FUNCTION  = 'itm';
 
+
+	const FIELD_ATTRIBUTES = [
+		'description1'     => ['type' => 'text', 'maxlength' => 35],
+		'description2'     => ['type' => 'text', 'maxlength' => 35],
+		'revision'         => ['type' => 'text', 'maxlength' => 10],
+		'custID'           => ['type' => 'text', 'maxlength' => 6],
+		'weight'           => ['type' => 'number', 'precision' => 5, 'max'  => 9999999.99999],
+		'cubes'            => ['type' => 'number', 'precision' => 4, 'max'  => 9999999.9999],
+		'grams'            => ['type' => 'number', 'precision' => 5, 'conversion' => 453.6]
+	];
+
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function fieldAttribute($field = '', $attr = '') {
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		if (array_key_exists($field, self::FIELD_ATTRIBUTES) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, self::FIELD_ATTRIBUTES[$field]) === false) {
+			return false;
+		}
+		return self::FIELD_ATTRIBUTES[$field][$attr];
+	}
+
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
 	}
@@ -284,16 +314,20 @@ class Itm extends WireData implements Module {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = array();
-		$record->setDescription($configIn->useUppercaseItemDescription() ? strtoupper($values->text('description')) : $values->text('description'));
-		$record->setDescription2($configIn->useUppercaseItemDescription() ? strtoupper($values->text('description2')) : $values->text('description2'));
-		$record->setRevision($values->text('revision'));
+
+		$record->setRevision($values->text('revision', ['maxLength' => $this->fieldAttribute('revision', 'maxlength')]));
 		$record->setTimefence($values->text('itemfence'));
 		$record->setAllow_backorder($values->yn('allow_backorder'));
 		$record->setSplitorder($values->yn('splitorder'));
 		$record->setInspection($values->yn('inspection'));
 		$record->setTaxable($values->yn('taxable'));
-		$record->setCubes($values->float('cubes'));
-		$record->setWeight($values->float('weight'));
+		$record->setCubes($values->float('cubes', ['precision' => $this->fieldAttribute('cubes', 'maxlength')]));
+		$record->setWeight($values->float('weight', ['precision' => $this->fieldAttribute('weight', 'maxlength')]));
+
+		$description1 = $values->text('description', ['maxLength' => $this->fieldAttribute('description1', 'maxlength')]);
+		$description2 = $values->text('description2', ['maxLength' => $this->fieldAttribute('description2', 'maxlength')]);
+		$record->setDescription($configIn->useUppercaseItemDescription() ? strtoupper($description1) : $description1);
+		$record->setDescription2($configIn->useUppercaseItemDescription() ? strtoupper($description2) : $description2);
 
 		if ($this->configIn()->useLiters()) {
 			$record->setLiters($values->float('liters'));
