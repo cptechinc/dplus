@@ -10,7 +10,7 @@
 	itm                    module Itm
 	recordlocker           module RecordLockerUser
 #}
-{% if itm.configIn().use_liters() %}
+{% if itm.configIn().useLiters() %}
 	<div class="form-group row">
 		<div class="col-sm-6">
 			<label for="liters">Liters</label>
@@ -34,7 +34,7 @@
 		<small class="form-text text-muted text-right">{{ item.weight * 453.6}}g</small>
 	</div>
 </div>
-{% if itm.configIn().inv.use_grams() %}
+{% if itm.configIn().inv.useGrams() %}
 	<div class="form-group row">
 		<div class="col-sm-6">
 
