@@ -292,8 +292,12 @@ class Itm extends WireData implements Module {
 		$record->setSplitorder($values->yn('splitorder'));
 		$record->setInspection($values->yn('inspection'));
 		$record->setTaxable($values->yn('taxable'));
-		$record->setWeight($values->float('weight'));
 		$record->setCubes($values->float('cubes'));
+		$record->setWeight($values->float('weight'));
+
+		if ($this->configIn()->useLiters()) {
+			$record->setLiters($values->float('liters'));
+		}
 		// Set Packaging Fields
 		$record->setQty_pack_inner($values->float('innerpack'));
 		$record->setQty_pack_outer($values->float('outerpack'));
