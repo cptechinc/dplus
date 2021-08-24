@@ -1,3 +1,4 @@
+{% include 'items/itm/form/js/classes.js.twig' %}
 
 $(function() {
 	var modal_ajax = $('#ajax-modal');
@@ -5,6 +6,8 @@ $(function() {
 	var form = $('#itm-form');
 	var input_customer  = form.find('input[name=custid]');
 	var input_custname  = form.find('input[name=cust_name]');
+
+	var formItm = ItmForm.getInstance();
 
 /* =============================================================
 	Unsaved Fields Alert
@@ -27,6 +30,29 @@ $(function() {
 			});
 		}
 	});
+
+	$("body").on("change", "input[name=qtypercase]", function(e) {
+		var input = $(this);
+		if (parseInt(input.val()) < 1) {
+			input.val(1);
+		}
+	});
+
+	$("body").on("change", "input[name=grams]", function(e) {
+		var input = $(this);
+		var grams = parseFloat(input.val());
+		var weight = grams / formItm.config.fields.grams.conversion;
+		weight = weight.toFixed(formItm.config.fields.weight.precision);
+		formItm.inputs.weight.val(weight);
+	});
+
+	$("body").on("change", "input[name=weight]", function(e) {
+		var input = $(this);
+		var weight = parseFloat(input.val());
+		var grams = weight * formItm.config.fields.grams.conversion;
+		formItm.inputs.grams.val(grams);
+	});
+
 
 /* =============================================================
 	Unsaved Fields Alert
@@ -113,6 +139,9 @@ $(function() {
 		},
 		ignore: ".validate-ignore",
 		rules: {
+			qtypercase: {
+				min: 1,
+			},
 			pricecode: {
 				required: {{ itm.configIn().inv.use_pricegroup() ? 'true' : 'false' }}
 			},
@@ -125,6 +154,7 @@ $(function() {
 				maxlength: {{ item.get_length_itemid() }},
 			},
 			custID: {
+				maxlength: {{ itm.fieldAttribute('custID', 'maxlength') }},
 				remote: {
 					url: '{{ page.jsonapiURL('mar/validate/custid/') }}',
 					type: "get",
@@ -157,6 +187,15 @@ $(function() {
 					}
 				}
 			},
+			description: {
+				maxlength: {{ itm.fieldAttribute('description1', 'maxlength') }},
+			},
+			description2: {
+				maxlength: {{ itm.fieldAttribute('description2', 'maxlength') }},
+			},
+			revision: {
+				maxlength: {{ itm.fieldAttribute('revision', 'maxlength') }},
+			}
 		},
 		messages: {
 			itemID: "Please review itemID, must not be more than {{ item.get_length_itemid() }} characters",

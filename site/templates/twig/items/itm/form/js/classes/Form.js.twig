@@ -1,0 +1,16 @@
+class ItmForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new ItmForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'itm-form';
+		this.inputs = ItmInputs.getInstance();
+		this.config = ItmConfigs.getInstance();
+	}
+}
