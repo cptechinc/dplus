@@ -26,21 +26,27 @@
 	</div>
 	<div class="col-sm-6">
 		<div class="input-group input-group-sm">
-			<input type="number" name="weight" class="form-control text-right" value="{{ item.weight }}" id="weight">
+			<input type="number" name="weight" class="form-control text-right" value="{{ item.weight|number_format(itm.fieldAttribute('weight', 'precision')) }}" id="weight">
 			<span class="input-group-append">
-				<span class="input-group-text" id="basic-addon2">{{ item.unitofmsale.id }}</span>
+				<span class="input-group-text">{{ item.unitofmsale.id }}</span>
 			</span>
 		</div>
 		<small class="form-text text-muted text-right">{{ item.weight * 453.6}}g</small>
 	</div>
 </div>
-{% if itm.configIn().inv.useGrams() %}
+{% if itm.configIn().useGrams() %}
 	<div class="form-group row">
 		<div class="col-sm-6">
-
+			<label for="grams">Grams</label>
 		</div>
-		<div class="col-sm-6 text-right">
-			{{ item.calculate_grams()|number_format }}g
+		<div class="col-sm-6">
+			<div class="input-group input-group-sm">
+				<input type="number" name="grams" class="form-control text-right" value="{{ item.weight * itm.fieldAttribute('grams', 'conversion') }}" id="grams">
+				<span class="input-group-append">
+					<span class="input-group-text">grams</span>
+				</span>
+			</div>
+			<small class="form-text text-muted text-right">{{ item.weight * 453.6}}g</small>
 		</div>
 	</div>
 {% endif %}
@@ -49,6 +55,6 @@
 		<label for="cubes">Cubes</label>
 	</div>
 	<div class="col-sm-6">
-		<input type="number" name="cubes" class="form-control form-control-sm text-right" value="{{ item.cubes }}" id="cubes">
+		<input type="number" name="cubes" class="form-control form-control-sm text-right" value="{{ item.cubes|number_format(itm.fieldAttribute('cubes', 'precision')) }}" id="cubes">
 	</div>
 </div>
