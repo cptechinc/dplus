@@ -13,11 +13,6 @@ $(function() {
 	var form = $('#code-edit-form');
 	var modal_ajax = $('#ajax-modal');
 
-	if ($('#whseID').val() == '') {
-		$('#pickdetail').val('N');
-		$('#C').val('N');
-	}
-
 	var server = IwhmRequests.getInstance();
 	var alert  = IwhmAlerts.getInstance();
 	var inputs = IwhmInputs.getInstance();
@@ -80,6 +75,15 @@ $(function() {
 			option_whse_asset.text(inputs.whseid.val() + ' - ' + inputs.name.val());
 		});
 	{% endif %}
+
+	$("body").on("focusin", "#code-edit-form input:not(#whseID),#code-edit-form select", function(e) {
+		if (inputs.whseid.val() == '') {
+			validator.element( "#whseID" );
+			inputs.whseid.focus();
+		} else {
+			$('.notes_button').prop('disabled', false);
+		}
+	});
 
 /* =============================================================
 	Unsaved Fields Alert
@@ -202,15 +206,6 @@ $(function() {
 					form.submit();
 				}
 			});
-	});
-
-	$("body").on("focusin", "#code-edit-form input:not(#whseID),#code-edit-form select", function(e) {
-		if (inputs.whseid.val() == '') {
-			validator.element( "#whseID" );
-			inputs.whseid.focus();
-		} else {
-			$('#code-edit-form .customer_button').prop('disabled', false);
-			$('.notes_button').prop('disabled', false);
 		}
 	});
 });
