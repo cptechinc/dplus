@@ -146,7 +146,7 @@ class Item extends ItmFunction {
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
 		$html .= $config->twig->render('items/itm/form/display.twig', ['item' => $item, 'itm' => $itm, 'qnotes' => self::pw('modules')->get('QnotesItem')]);
-		if ($item->isNew() === false) {
+		if ($item->isNew() === false && $itm->recordlocker->userHasLocked($data->itemID)) {
 			$html .= self::qnotes($data);
 		}
 		return $html;
