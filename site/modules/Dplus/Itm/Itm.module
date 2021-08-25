@@ -321,8 +321,8 @@ class Itm extends WireData implements Module {
 		$record->setSplitorder($values->yn('splitorder'));
 		$record->setInspection($values->yn('inspection'));
 		$record->setTaxable($values->yn('taxable'));
-		$record->setCubes($values->float('cubes', ['precision' => $this->fieldAttribute('cubes', 'maxlength')]));
-		$record->setWeight($values->float('weight', ['precision' => $this->fieldAttribute('weight', 'maxlength')]));
+		$record->setCubes($values->float('cubes', ['precision' => $this->fieldAttribute('cubes', 'precision')]));
+		$record->setWeight($values->float('weight', ['precision' => $this->fieldAttribute('weight', 'precision')]));
 
 		$description1 = $values->text('description', ['maxLength' => $this->fieldAttribute('description1', 'maxlength')]);
 		$description2 = $values->text('description2', ['maxLength' => $this->fieldAttribute('description2', 'maxlength')]);
