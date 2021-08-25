@@ -32,8 +32,7 @@ class QnotesItemRevision extends WireData implements Module {
 	 * @return int
 	 */
 	public function get_column_count() {
-		$configIN = ConfigInQuery::create()->findOne();
-		return $configIN->columns_notes_internal;
+		return 52;
 	}
 
 	/**
@@ -253,12 +252,12 @@ class QnotesItemRevision extends WireData implements Module {
 	public function update_notes_input(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID    = $values->text('itemID');
-		$date      = date(ItemRevisionNote::FORMAT_NOTEDATE, strtotime($values->text('notedate')));
-		$time      = date(ItemRevisionNote::FORMAT_NOTETIME, strtotime($notedate.$values->text('notetime')));
-		$revision  = $values->text('revision');
-		$userID    = $values->text('user');
-		$note      = $values->textarea('note');
+		$itemID     = $values->text('itemID');
+		$date       = date(ItemRevisionNote::FORMAT_NOTEDATE, strtotime($values->text('notedate')));
+		$time       = date(ItemRevisionNote::FORMAT_NOTETIME, strtotime($date.$values->text('notetime')));
+		$revision   = $values->text('revision');
+		$userID     = $values->text('user');
+		$note       = $values->textarea('note');
 		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
 		$lines_saved = array();
 
