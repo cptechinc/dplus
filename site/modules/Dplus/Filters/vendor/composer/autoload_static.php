@@ -15,6 +15,7 @@ class ComposerStaticInit2c03c3e02253fee3b0cbe74a13d2080d
         'Dplus\\Filters\\Map\\Vxm' => __DIR__ . '/../..' . '/src/Map/Vxm.php',
         'Dplus\\Filters\\Mar\\Customer' => __DIR__ . '/../..' . '/src/Mar/Customer.php',
         'Dplus\\Filters\\Mar\\SalesPerson' => __DIR__ . '/../..' . '/src/Mar/SalesPerson.php',
+        'Dplus\\Filters\\Mar\\Shipto' => __DIR__ . '/../..' . '/src/Mar/Shipto.php',
         'Dplus\\Filters\\Mgl\\GlCode' => __DIR__ . '/../..' . '/src/Mgl/GlCode.php',
         'Dplus\\Filters\\Min\\I2i' => __DIR__ . '/../..' . '/src/Min/I2i.php',
         'Dplus\\Filters\\Min\\InvAdjustmentReason' => __DIR__ . '/../..' . '/src/Min/InvAdjustmentReason.php',

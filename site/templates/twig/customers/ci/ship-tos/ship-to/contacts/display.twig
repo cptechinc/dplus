@@ -1,0 +1,32 @@
+{% extends 'customers/ci/contacts/display.twig' %}
+
+{% block header %}
+	<div class="card-header bg-light">
+		<div class="row">
+			<div class="col-sm-3 col-md-1">
+				<strong>Cust ID:</strong>
+			</div>
+			<div class="col-sm-3">
+				{{ customer.id }} - {{ customer.name }}
+			</div>
+			<div class="col-sm-3 col-md-2">
+				<strong>Ship-to ID:</strong>
+			</div>
+			<div class="col-sm-3">
+				{{ shipto.id }} - {{ shipto.name }}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block footer %}
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<div></div>
+			<a href="{{ page.ciShiptoUrl(shipto.custid, shipto.id)}}" class="btn btn-warning btn-sm">
+				<i class="fa fa-times" aria-hidden="true"></i> Close
+			</a>
+		</div>
+	</div>
+{% endblock %}

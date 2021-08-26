@@ -1,4 +1,6 @@
 <?php namespace Controllers\Mci\Ci;
+// Propel ORM Ljbrary
+use Propel\Runtime\Util\PropelModelPager;
 // Dplus Model
 use CustomerQuery, Customer;
 // Dpluso Model
@@ -14,12 +16,37 @@ use Dplus\Filters\Mso\SalesHistory as SalesHistoryFilter;
 use Dplus\Filters\Mqo\Quote        as QuoteFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+use Controllers\Mso\SalesOrder as ControllersSalesOrder;
+use Controllers\Mqo\Quote      as ControllersQuote;
+use Controllers\Misc\Cart\Cart;
 
 class Ci extends Base {
+	const SUBFUNCTIONS = [
+		'pricing'        => [],
+		'shiptos'        => ['title' => 'Ship-tos', 'path' => 'ship-tos'],
+		'contacts'       => [],
+		'salesorders'    => ['path' => 'sales-orders', 'title' => 'Sales Orders'],
+		'saleshistory'   => ['path' => 'sales-history', 'title' => 'Sales History'],
+		'customerpo'     => ['path' => 'purchase-orders', 'title' => 'Cust POs'],
+		'quotes'         => [],
+		'openinvoices'   => ['path' => 'open-invoices', 'title' => 'Open Invoices'],
+		'payments'       => [],
+		'credit'         => [],
+		'standingorders' => ['path' => 'standing-orders', 'title' => 'Standing Orders'],
+		// 'stock'          => [],
+		// 'notes'          => [],
+		'documents'      => [],
+		'phonebook'      => [],
+		// 'activity'       => [],
+		'corebank'       => ['title' => 'Core'],
+	];
+
+/* =============================================================
+	Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['custID|text', 'q|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$page = self::pw('page');
+		self::sanitizeParametersShort($data, $fields);
 
 		if (empty($data->custID) === false) {
 			return self::customer($data);
@@ -27,146 +54,195 @@ class Ci extends Base {
 		return self::list($data);
 	}
 
-	public static function customer($data) {
-		$page   = self::pw('page');
-		$config = self::pw('config');
-		$user = self::pw('user');
-		$fields = ['custID|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$validate = new MarValidator();
-
-		if ($validate->custid($data->custID) === false) {
-			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => 'Error!', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $data->custID not found"]);
-			return $page->body;
-		}
-
-		if ($user->has_customer($data->custID) === false) {
-			$page->searchURL = $page->url;
-			$page->headline = "User $user->name Does Not Have Access to $data->custID";
-			$page->body = $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => $page->headline, 'iconclass' => 'fa fa-warning fa-2x', 'message' => "You do not have permission to access this customer"]);
-			$page->body .= $html->div('class=mb-3');
-			$page->body .= $config->twig->render('customers/search-form.twig', ['page' => $page]);
-			return $page->body;
-		}
-
-		$pages = self::pw('pages');
-		$modules = self::pw('modules');
-		$html = $modules->get('HtmlWriter');
-
-		$modules->get('DpagesMci')->init_customer_hooks();
-		$modules->get('DpagesMci')->init_cipage();
-		$customer = CustomerQuery::create()->findOneById($data->custID);
-		$loader = $modules->get('CiLoadCustomerShipto');
-		$loader->set_custID($data->custID);
-		$page->show_breadcrumbs = false;
-
-		$page->body .= $config->twig->render('customers/ci/bread-crumbs.twig', ['customer' => $customer]);
-		$page->headline = "CI: $customer->name";
-
-		if (!$customer->is_active()) {
-			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => 'Inactive Customer', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $data->custID is not active"]);
-			$page->body .= $html->div('class=mb-3');
-		}
-
-		if ($customer->has_credithold()) {
-			$page->body .= $config->twig->render('util/alert.twig', ['type' => 'warning', 'title' => 'Credit Hold', 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Customer $data->custID has a credit hold"]);
-			$page->body .= $html->div('class=mb-3');
-		}
-
-		$toolbar = $config->twig->render('customers/ci/customer/toolbar.twig', ['custID' => $customer->id]);
-		$header  = $config->twig->render('customers/ci/customer/header.twig', ['customer' => $customer]);
-
-		$page->body .= "<div class='row'>";
-			$page->body .= $html->div('class=col-sm-2 pl-0', $toolbar);
-			$page->body .= $html->div('class=col-sm-10', $header);
-		$page->body .= "</div>";
-
-		$page->body .= self::customerUserActions($customer);
-		$page->body .= self::customerContacts($customer);
-		$page->body .= self::customerSalesOrders($customer);
-		$page->body .= self::customerSalesHistory($customer);
-		$page->body .= self::customerQuotes($customer);
-		$config->scripts->append(hash_templatefile('scripts/customer/ci-customer.js'));
-	}
-
-	private static function customerUserActions(Customer $customer) {
-		$modules = self::pw('modules');
-		$config  = self::pw('config');
-		$filter = $modules->get('FilterUserActions');
-		$module_useractions = $modules->get('FilterUserActions');
-		$query = $filter->get_actionsquery(self::pw('input'));
-		$query->filterByStatusIncomplete();
-		$query->filterByCustomerlink($customer->id);
-		$actions = $query->paginate(1, 10);
-		return $config->twig->render('customers/ci/customer/actions-panel.twig', ['module_useractions' => $module_useractions, 'actions' => $actions, 'resultscount'=> $actions->getNbResults()]);
-	}
-
-	private static function customerContacts(Customer $customer) {
-		$config  = self::pw('config');
-		$q = CustindexQuery::create();
-		$q->filterByCustid($customer->id);
-		$contacts = $q->paginate(1, 10);
-		return $config->twig->render('customers/ci/customer/contacts-panel.twig', ['customer' => $customer, 'contacts' => $contacts, 'resultscount'=> $contacts->getNbResults()]);
-	}
-
-	private static function customerSalesOrders(Customer $customer) {
-		$config  = self::pw('config');
-		$page    = self::pw('page');
-		$filter = new SalesOrderFilter();
-		$filter->user(self::pw('user'));
-		$filter->custid($customer->id);
-		$filter->query->limit(10);
-		$orders = $filter->query->paginate(1, 10);
-		return $config->twig->render('customers/ci/customer/sales-orders-panel.twig', ['customer' => $customer, 'orders' => $orders, 'resultscount'=> $orders->getNbResults(), 'orderpage' => self::pw('pages')->get('pw_template=sales-order-view')->url, 'sales_orders_list' => $page->cust_salesordersURL($customer->id)]);
-	}
-
-	private static function customerSalesHistory(Customer $customer) {
-		$config  = self::pw('config');
-		$page    = self::pw('page');
-		$filter = new SalesHistoryFilter();
-		$filter->user(self::pw('user'));
-		$filter->custid($customer->id);
-		$filter->query->limit(10);
-		$orders = $filter->query->paginate(1, 10);
-		return $config->twig->render('customers/ci/customer/sales-history-panel.twig', ['customer' => $customer, 'orders' => $orders, 'resultscount'=> $orders->getNbResults(), 'orderpage' => self::pw('pages')->get('pw_template=sales-order-view')->url, 'shipped_orders_list' => $page->cust_saleshistoryURL($customer->id)]);
-	}
-
-	private static function customerQuotes(Customer $customer) {
-		if (self::pw('user')->has_function('mqo')  === false) {
-			return '';
-		}
-		$config  = self::pw('config');
-		$page    = self::pw('page');
-		$filter = new QuoteFilter();
-		$filter->user(self::pw('user'));
-		$filter->custid($customer->id);
-		$filter->query->limit(10);
-		$quotes = $filter->query->paginate(1, 10);
-		return $config->twig->render('customers/ci/customer/quotes-panel.twig', ['customer' => $customer, 'quotes' => $quotes, 'resultscount'=> $quotes->getNbResults(), 'quotepage' => self::pw('pages')->get('pw_template=quote-view')->url, 'quotes_list' => $page->cust_quotesURL($customer->id)]);
-	}
-
-	public static function list($data) {
+	private static function list($data) {
 		$fields = ['q|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
-		$page = self::pw('page');
+		self::sanitizeParametersShort($data, $fields);
 		$filter = new CustomerFilter();
 		$filter->user(self::pw('user'));
-		$filter->sortby($page);
+		$filter->sortby(self::pw('page'));
 
 		if ($data->q) {
 			$data->q = strtoupper($data->q);
 
 			if ($filter->exists($data->q)) {
-				self::pw('session')->redirect($page->url."?custID=$data->q", $http301 = false);
+				self::pw('session')->redirect(self::ciUrl($data->q), $http301 = false);
 			}
 
 			$filter->search($data->q);
-			$page->headline = "CI: Searching for '$data->q'";
+			self::pw('page')->headline = "CI: Searching for '$data->q'";
 		}
 		$customers = $filter->query->paginate(self::pw('input')->pageNum, 10);
+		return self::displayList($data, $customers);
+	}
+
+	private static function customer($data) {
+		$fields = ['custID|text'];
+		self::sanitizeParametersShort($data, $fields);
+
+		if (self::validateCustidPermission($data) === false) {
+			return self::displayInvalidCustomerOrPermissions($data);
+		}
+
+		$customer = CustomerQuery::create()->findOneById($data->custID);
+		$page   = self::pw('page');
+		$page->show_breadcrumbs = false;
+
+		$page->headline = "CI: $customer->name";
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/customer/ci-customer.js'));
+		return self::displayCustomer($data, $customer);
+	}
+
+/* =============================================================
+	Displays
+============================================================= */
+	private static function displayList($data, PropelModelPager $customers) {
 		$config = self::pw('config');
-		$page->searchURL = $page->url;
-		$page->body = $config->twig->render('customers/customer-search.twig', ['customers' => $customers, 'datamatcher' => self::pw('modules')->get('RegexData'), 'q' => $data->q]);
-		$page->body .= $config->twig->render('util/paginator.twig', ['resultscount'=> $customers->getNbResults()]);
+
+		$html = '';
+		$html .= $config->twig->render('customers/customer-search.twig', ['customers' => $customers, 'datamatcher' => self::pw('modules')->get('RegexData'), 'q' => $data->q]);
+		$html .= '<div class="mb-3"></div>';
+		$html .= $config->twig->render('util/paginator/propel.twig', ['pager' => $customers]);
+		return $html;
+	}
+
+	private static function displayCustomer($data, Customer $customer) {
+		$config = self::pw('config');
+
+		$html = '';
+		$html .= self::displayBreadCrumbs($data);
+		$html .= $config->twig->render('customers/ci/customer/main.twig', ['customer' => $customer]);
+		$html .= self::displayUserActions($customer);
+		$html .= self::displayContacts($customer);
+		$html .= self::displaySalesOrders($customer);
+		$html .= self::displayInvoices($customer);
+		$html .= self::displayQuotes($customer);
+		return $html;
+	}
+
+	private static function displayUserActions(Customer $customer) {
+		$filter = self::pw('modules')->get('FilterUserActions');
+		$query = $filter->get_actionsquery(self::pw('input'));
+		$query->filterByStatusIncomplete();
+		$query->filterByCustomerlink($customer->id);
+		$actions = $query->paginate(1, 10);
+		return self::pw('config')->twig->render('customers/ci/customer/panels/actions.twig', ['module_useractions' => $filter, 'actions' => $actions]);
+	}
+
+	private static function displayContacts(Customer $customer) {
+		$config  = self::pw('config');
+		$q = CustindexQuery::create();
+		$q->filterByCustid($customer->id);
+		$contacts = $q->paginate(1, 10);
+		return $config->twig->render('customers/ci/customer/panels/contacts.twig', ['contacts' => $contacts]);
+	}
+
+	private static function displaySalesOrders(Customer $customer) {
+		$config  = self::pw('config');
+		$filter = new SalesOrderFilter();
+		$filter->user(self::pw('user'));
+		$filter->custid($customer->id);
+		$filter->query->limit(10);
+		$orders = $filter->query->paginate(1, 10);
+		return $config->twig->render('customers/ci/customer/panels/sales-orders.twig', ['orders' => $orders]);
+	}
+
+	private static function displayInvoices(Customer $customer) {
+		$config  = self::pw('config');
+		$filter = new SalesHistoryFilter();
+		$filter->user(self::pw('user'));
+		$filter->custid($customer->id);
+		$filter->query->limit(10);
+		$orders = $filter->query->paginate(1, 10);
+		return $config->twig->render('customers/ci/customer/panels/invoices.twig', ['orders' => $orders]);
+	}
+
+	private static function displayQuotes(Customer $customer) {
+		if (self::pw('user')->has_function('mqo')  === false) {
+			return '';
+		}
+		$config  = self::pw('config');
+		$filter = new QuoteFilter();
+		$filter->user(self::pw('user'));
+		$filter->custid($customer->id);
+		$filter->query->limit(10);
+		$quotes = $filter->query->paginate(1, 10);
+		return $config->twig->render('customers/ci/customer/panels/quotes.twig', ['quotes' => $quotes]);
+	}
+
+/* =============================================================
+	Hooks
+============================================================= */
+	public static function initHooks() {
+		$m = self::pw('modules')->get('DpagesMci');
+
+		$m->addHook('Page(pw_template=ci)::ciUrl', function($event) {
+			$event->return = self::ciUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=ci)::ciShiptoUrl', function($event) {
+			$event->return = self::ciShiptoUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=ci)::ciContactsUrl', function($event) {
+			$event->return = self::ciContactsUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=ci)::ciContactUrl', function($event) {
+			$event->return = self::ciContactUrl($event->arguments(0), $event->arguments(1), $event->arguments(2));
+		});
+
+		$m->addHook('Page(pw_template=ci)::ciContactEditUrl', function($event) {
+			$event->return = self::ciContactEditUrl($event->arguments(0), $event->arguments(1), $event->arguments(2));
+		});
+
+		$m->addHook('Page(pw_template=ci)::ciPermittedSubfunctions', function($event) {
+			$user = self::pw('user');
+			$allowed = [];
+			$iio = self::getCio();
+			foreach (self::SUBFUNCTIONS as $option => $data) {
+				if ($iio->allowUser($user, $option)) {
+					$allowed[$option] = $data;
+				}
+			}
+			$event->return = $allowed;
+		});
+
+		$m->addHook('Page(pw_template=ci)::ciSubfunctionUrl', function($event) {
+			$custID = $event->arguments(0);
+			$key    = $event->arguments(1);
+			$path   = $key;
+
+			if (array_key_exists($key, self::SUBFUNCTIONS)) {
+				if (array_key_exists('path', self::SUBFUNCTIONS[$key])) {
+					$path = self::SUBFUNCTIONS[$key]['path'];
+				}
+			}
+
+			$event->return = self::ciSubfunctionUrl($custID, $path);
+		});
+
+		$m->addHook('Page(pw_template=ci)::orderUrl', function($event) {
+			$event->return = ControllersSalesOrder\SalesOrder::orderUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=ci)::orderListUrl', function($event) {
+			$event->return = ControllersSalesOrder\SalesOrder::orderListCustomerUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=ci)::invoiceListUrl', function($event) {
+			$event->return = ControllersSalesOrder\Lists\Invoices\Customer::listUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=ci)::cartCustomerUrl', function($event) {
+			$event->return = Cart::setCustomerUrl($event->arguments(0), $event->arguments(1));
+		});
+
+		$m->addHook('Page(pw_template=ci)::quoteUrl', function($event) {
+			$event->return = ControllersQuote\Quote::quoteUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=ci)::quoteListUrl', function($event) {
+			$event->return = ControllersQuote\Lists\Customer::listUrl($event->arguments(0), $event->arguments(1));
+		});
 	}
 }

@@ -4,20 +4,22 @@
 
 
 {% for index, whse in json['data'] %}
-	<div class="row">
-		<div class="col-sm-6 form-group">
-			<h4>
-				<a data-toggle="collapse" href="#{{ index|attrJS }}" class="link" role="button" aria-expanded="false" aria-controls="{{ index|attrJS }}">{{ whse['Whse Name'] }}</a>
-			</h4>
-		</div>
-		<div class="col-sm-6 form-group">
-			<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#{{ index|attrJS }} .lotserial" aria-expanded="false" aria-controls="#{{ index|attrJS }} .lotserial">
-				Show / Hide Lot/Serials
-			</button>
+	<div class="card-body">
+		<div class="row">
+			<div class="col-sm-6">
+				<h4>
+					<a data-toggle="collapse" href="#invoices-{{ index|attrJS }}" class="link" role="button" aria-expanded="false" aria-controls="{{ index|attrJS }}">{{ whse['Whse Name'] }}</a>
+				</h4>
+			</div>
+			<div class="col-sm-6">
+				<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#{{ index|attrJS }} .lotserial" aria-expanded="false" aria-controls="#{{ index|attrJS }} .lotserial">
+					Show / Hide Lot/Serials
+				</button>
+			</div>
 		</div>
 	</div>
 
-	<div class="collapse show" id="{{ index|attrJS }}">
+	<div class="collapse show" id="invoices-{{ index|attrJS }}">
 		<table class="table table-striped table-bordered table-sm table-excel">
 			<tbody>
 				{% for invoice in whse['orders'] %}
@@ -34,9 +36,8 @@
 										<span class="font-weight-bold">{{ column['label'] }}</span> {{ module_formatter.format_celldata(invoice, column) }}
 										{% if column['id'] == 'Invoice Number' %}
 											{% set ordn = invoice['Ordn'] %}
-											{% set custID = json['custid'] %}
-											{% if docm.count_documents(ordn) %}
-												<a href="{{ page.documentsview_salesorder(custID, ordn)}}" class="text-success" title="View Documents for Invoice # {{ invoice['Invoice Number'] }}">
+											{% if docm.countDocuments(ordn) %}
+												<a href="{{ page.documentListUrl(json['custid'], ordn)}}" class="text-success" title="View Documents for Invoice # {{ invoice['Invoice Number'] }}">
 													<i class="fa fa-file-text" aria-hidden="true"></i> <span class="sr-only">View Documents for Invoice # {{ invoice['Invoice Number'] }}</span>
 												</a>
 											{% endif %}

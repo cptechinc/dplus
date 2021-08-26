@@ -1,0 +1,42 @@
+{% extends 'customers/ci/display.twig' %}
+
+{% block body %}
+	<div class="mb-3">
+		<div class="card-body border-bottom border-primary">
+			<div class="d-flex justify-content-between align-items-center">
+				<h2>Sales Orders</h2>
+				<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#sales-orders" aria-expanded="true" aria-controls="#sales-orders">
+					Show / Hide
+				</button>
+			</div>
+		</div>
+		<div id="sales-orders" class="collapse show">
+			{{ html.orders|raw }}
+		</div>
+	</div>
+	<div class="mb-3">
+		<div class="card-body border-bottom border-primary">
+			<div class="d-flex justify-content-between align-items-center">
+				<h2>Sales History</h2>
+				<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#sales-history" aria-expanded="true" aria-controls="#sales-history">
+					Show / Hide
+				</button>
+			</div>
+		</div>
+		<div id="sales-history" class="collapse show">
+			{{ html.history|raw }}
+		</div>
+	</div>
+{% endblock %}
+
+{% block footer %}
+	<div class="card-footer">
+		<div class="d-flex justify-content-between align-items-center">
+			<div></div>
+			<div></div>
+			<a href="{{ page.ciUrl(customer.id) }}" class="btn btn-warning btn-sm">
+				<i class="fa fa-times" aria-hidden="true"></i> Close
+			</a>
+		</div>
+	</div>
+{% endblock %}

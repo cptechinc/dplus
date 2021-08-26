@@ -78,7 +78,7 @@ class Cxm extends AbstractController {
 			$page->headline = "CXM: $xref->custid $xref->custitemid";
 		}
 		$pages = self::pw('pages');
-		$page->searchcustomersURL = $pages->get('pw_template=mci-lookup')->url;
+		$page->searchcustomersURL = $page->searchLookupUrl('customers');
 		$page->searchitemsURL     = $pages->get('pw_template=itm-search')->url;
 		$page->js .= $config->twig->render('items/cxm/xref/form/js.twig', ['cxm' => $cxm, 'xref' => $xref]);
 

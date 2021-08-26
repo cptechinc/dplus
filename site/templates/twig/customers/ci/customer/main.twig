@@ -1,0 +1,20 @@
+{% if customer.is_active() == false %}
+	<div class="mb-3">
+		{% include 'util/alert.twig' with {'type': 'warning', 'title': 'Inactive Customer', 'iconclass': 'fa fa-warning fa-2x', 'message': "Customer " ~ customer.id ~ " is not active"} %}
+	</div>
+{% endif %}
+
+{% if customer.has_credithold() %}
+	<div class="mb-3">
+		{% include 'util/alert.twig' with {'type': 'warning', 'title': 'Credit Hold', 'iconclass': 'fa fa-warning fa-2x', 'message': "Customer " ~ customer.id ~ " has a credit hold"} %}
+	</div>
+{% endif %}
+
+<div class="row">
+	<div class="col-sm-2 pl-0">
+		{% include 'customers/ci/customer/toolbar.twig' with {'custID': customer.id} %}
+	</div>
+	<div class="col-sm-10">
+		{% include 'customers/ci/customer/header.twig' with {'customer': customer} %}
+	</div>
+</div>

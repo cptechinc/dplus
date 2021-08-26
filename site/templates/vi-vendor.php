@@ -20,7 +20,7 @@
 				$page->body .= $html->div('class=col-sm-2', $toolbar);
 				$page->body .= $html->div('class=col-sm-10', $header);
 			$page->body .= "</div>";
-
+			$config->po = Dplus\Configs\Po::config();
 			$page->body .= $config->twig->render('vendors/vi/vendor/purchase-orders-panel.twig', ['page' => $page, 'resultscount' => $vendor->countPurchaseOrders(), 'purchaseorders' => $load_vendor->get_purchaseorders(), 'purchase_orders_list' => $load_vendor->get_purchaseordersURL()]);
 			$page->body .= $config->twig->render('vendors/vi/vendor/invoices-panel.twig', ['page' => $page, 'resultscount' => $vendor->countApInvoices(), 'invoices' => $load_vendor->get_invoices(), 'purchase_history_list' => $load_vendor->get_invoicesURL()]);
 		} else {

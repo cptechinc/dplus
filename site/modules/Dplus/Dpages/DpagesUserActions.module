@@ -75,7 +75,7 @@ class DpagesUserActions extends Dpages implements Module {
 			$url = new Url($this->wire('pages')->get('pw_template=user-actions-create')->url);
 
 			switch ($p->pw_template) {
-				case 'ci-customer':
+				case 'ci':
 					$url->query->set('custID', $p->fullURL->query->get('custID'));
 					$url->query->set('shiptoID', $p->fullURL->query->get('shiptoID'));
 					break;
@@ -94,7 +94,7 @@ class DpagesUserActions extends Dpages implements Module {
 			$url = new Url($this->wire('pages')->get('pw_template=user-actions')->url);
 
 			switch ($p->pw_template) {
-				case 'ci-customer':
+				case 'ci':
 					$url->path = $this->wire('pages')->get('pw_template=user-actions-customer')->url;
 					$url->query->set('custID', $p->fullURL->query->get('custID'));
 					$url->query->set('shiptoID', $p->fullURL->query->get('shiptoID'));

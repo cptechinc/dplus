@@ -38,7 +38,7 @@ class DocumentManagementVi extends DocumentManagement implements Module {
 	 * @return string
 	 */
 	public function get_vi_documentURL($vendorID, $folder, $document) {
-		$url = new Url($this->wire('pages')->get('pw_template=ci-documents')->url);
+		$url = new Url($this->wire('pages')->get('pw_template=vi-documents')->url);
 		$url->query->set('vendorID', $vendorID);
 		$url->query->set('folder', $folder);
 		$url->query->set('document', $document);

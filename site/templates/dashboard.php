@@ -2,6 +2,8 @@
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Dplus\Dashboard as DashboardController;
 
+	DashboardController::initHooks();
+
 	$routes = [
 		['GET',  '', DashboardController::class, 'dashboard'],
 	];

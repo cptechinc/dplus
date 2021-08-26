@@ -45,6 +45,9 @@ class JsonDataFiles extends WireData implements Module {
 				'orders'  => 'cisalesordr',
 				'history' => 'cisaleshist'
 			),
+			'purchase' => array(
+				'orders'  => 'cipurchordr',
+			),
 			'purchaseorders' => 'cipurchordr',
 			'quotes'         => 'ciquote',
 			'openinvoices'   => 'ciopeninv',

@@ -550,7 +550,7 @@ class Cart extends WireData implements Module {
 		$this->addHook('Page(pw_template=cart)::ci_customerURL', function($event) {
 			$page = $event->object;
 			$custID = $event->arguments(0);
-			$event->return = $this->wire('pages')->get('pw_template=ci-customer')->url.'?custID='.urlencode($custID);
+			$event->return = $this->wire('pages')->get('pw_template=ci')->url.'?custID='.urlencode($custID);
 		});
 
 		$this->addHook('Page(pw_template=cart)::ci_customershiptoURL', function($event) {

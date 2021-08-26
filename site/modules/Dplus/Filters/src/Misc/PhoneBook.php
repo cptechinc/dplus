@@ -51,12 +51,29 @@ class PhoneBook extends AbstractFilter {
 		return $this;
 	}
 
+	public function custid($custID) {
+		if ($custID) {
+			$this->query->filterByType([Model::TYPE_CUSTOMER, Model::TYPE_CUSTOMERCONTACT, Model::TYPE_CUSTOMERSHIPTO]);
+			$this->query->filterByKey1($custID);
+		}
+		return $this;
+	}
+
+	public function custidShiptoid($custID, $shiptoID) {
+		if ($custID && $shiptoID) {
+			$this->query->filterByType([Model::TYPE_CUSTOMERSHIPTO]);
+			$this->query->filterByKey1($custID);
+			$this->query->filterByKey2($shiptoID);
+		}
+		return $this;
+	}
+
 	/**
 	 * Filter Query By Type
 	 * @param  string $type Type e.g  VC | CC
 	 * @return self
 	 */
-	public function type($type = '') {
+	public function type($type = null) {
 		if ($type) {
 			$this->query->filterByType($type);
 		}
