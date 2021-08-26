@@ -21,12 +21,14 @@ $(function() {
 			modal.find('input[name=notetime]').val(button.data('time')).attr('readonly', '');
 			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
 			modal.find('input[name=revision]').val(note_row.data('revision'));
+			modal.find('input[name=revision]').attr('readonly', 'true');
 		} else {
 			modal.find('.action-desc').text('Adding');
 			modal.find('input[name=notedate]').val(button.data('date')).removeAttr('readonly');
 			modal.find('input[name=notetime]').val(button.data('time')).removeAttr('readonly');
 			modal.find('textarea[name=note]').val('');
 			modal.find('input[name=revision]').val('');
+			modal.find('input[name=revision]').removeAttr('readonly');
 		}
 	});
 
