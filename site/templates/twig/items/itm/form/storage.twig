@@ -31,7 +31,6 @@
 				<span class="input-group-text">{{ item.unitofmsale.id }}</span>
 			</span>
 		</div>
-		<small class="form-text text-muted text-right">{{ item.weight * 453.6}}g</small>
 	</div>
 </div>
 {% if itm.configIn().useGrams() %}
@@ -46,7 +45,6 @@
 					<span class="input-group-text">grams</span>
 				</span>
 			</div>
-			<small class="form-text text-muted text-right">{{ item.weight * 453.6}}g</small>
 		</div>
 	</div>
 {% endif %}
