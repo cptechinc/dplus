@@ -77,7 +77,7 @@ class Twig extends WireData implements Module {
 		$twig->addFilter($yesno);
 
 		$bool = new TwigFilter('bool', function ($val) {
-			return $val === true;
+			return boolval($val);
 		});
 		$twig->addFilter($bool);
 
