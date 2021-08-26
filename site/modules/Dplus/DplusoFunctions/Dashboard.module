@@ -25,7 +25,7 @@ class Dashboard extends WireData implements Module {
 		 */
 		$this->addHook('Page::ci_customerURL', function($event) {
 			$custID = $event->arguments(0);
-			$url = new Url($this->wire('pages')->get('pw_template=ci-customer')->url);
+			$url = new Url($this->wire('pages')->get('pw_template=ci')->url);
 			$url->query->set('custID', $custID);
 			$event->return = $url->getUrl();
 		});

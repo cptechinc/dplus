@@ -33,22 +33,8 @@ class DpagesCart extends Dpages implements Module {
 		),
 	);
 
-	const HOOK_FUNCTIONS_LOOKUPS = array(
-		// Hook     =>  PW Template
-		'itm_json'    => 'itm-json',
-		'itm_lookup'  => 'itm-lookup',
-		'search_items'     => 'itm-search',
-		'search_customers' => 'mci-lookup',
-	);
-
 	public function init() {
-		foreach (self::HOOK_FUNCTIONS_LOOKUPS as $hook => $pwtemplate) {
-			$this->addHook("Page(pw_template=cart)::{$hook}URL", function($event) {
-				$hook = rtrim($event->method, 'URL');
-				$pwtemplate = self::HOOK_FUNCTIONS_LOOKUPS[$hook];
-				$event->return = $this->wire('pages')->get("pw_template=$pwtemplate")->url;
-			});
-		}
+
 	}
 
 	/**

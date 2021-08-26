@@ -1,39 +1,57 @@
-<nav aria-label="breadcrumb rounded-0">
-	<ol class="breadcrumb">
-		{% for parent in page.parents() %}
-			{% if parent.pw_template == 'ci-customer' %}
+{% extends 'util/bread-crumbs.twig' %}
+
+{% set values = page.wire('input').get %}
+
+{% block current_page %}
+	{% if values.offsetExists('custID') %}
+		<li class="breadcrumb-item">
+			<a href="{{ page.ciUrl() }}">
+				{{ page.has('dplus_function') ? page.dplus_function|upper : page.title }}
+			</a>
+		</li>
+
+		{% if input.countSegments() %}
+			<li class="breadcrumb-item">
+				<a href="{{ page.ciUrl(values.text('custID')) }}">
+					{{ values.text('custID') }}
+				</a>
+			</li>
+			{% if values.offsetExists('shiptoID') and values.text('shiptoID') != '' %}
 				<li class="breadcrumb-item">
-					<i class="fa fa-list" aria-hidden="true"></i>
-					<a href="{{ parent.url }}">{{ parent.title }}</a>
+					<a href="{{ page.ciShiptoUrl(values.text('custID')) }}">
+						Ship-tos
+					</a>
 				</li>
+				{% if input.lastSegment() != 'ship-tos' %}
+					<li class="breadcrumb-item">
+						<a href="{{ page.ciShiptoUrl(values.text('custID'), values.text('shiptoID')) }}">
+							{{ values.text('shiptoID') }}
+						</a>
+					</li>
+					<li class="breadcrumb-item active" aria-current="page">
+						{{ input.lastSegment() == 'ship-tos' ? 'Ship-tos' : input.lastSegment()|replace({'-':' '})|title }}
+					</li>
+				{% else %}
+					<li class="breadcrumb-item active" aria-current="page">{{ values.text('shiptoID') }}</li>
+				{% endif %}
+			{% elseif (input.lastSegment == 'contact') %}
 				<li class="breadcrumb-item">
-					<i class="fa fa-user-circle" aria-hidden="true"></i>
-					<a href="{{ parent.url ~ '?custID=' ~ customer.id }}">{{ customer.name }}</a>
+					<a href="{{ page.ciContactsUrl(values.text('custID')) }}">
+						Contacts
+					</a>
+				</li>
+				<li class="breadcrumb-item active" aria-current="page">
+					{{ values.text('contactID') }}
 				</li>
 			{% else %}
-				<li class="breadcrumb-item">
-					<i class="fa fa-list" aria-hidden="true"></i>
-					<a href="{{ parent.url }}">{{ parent.title }}</a>
+				<li class="breadcrumb-item active" aria-current="page">
+					{{ input.lastSegment() == 'ship-tos' ? 'Ship-tos' : input.lastSegment()|replace({'-':' '})|title }}
 				</li>
 			{% endif %}
-		{% endfor %}
-		{% if (page.pw_template == 'ci-shipto' and page.has('shiptoID')) %}
-			<li class="breadcrumb-item">
-				<a href="{{ page.url ~ '?custID=' ~ customer.id }}">Ship-tos</a>
-			</li>
-		{% endif %}
-		{% if (page.parent.pw_template != 'ci-shipto' and page.pw_template != 'ci-shipto' and page.has('shiptoID')) %}
-			<li class="breadcrumb-item">
-				<a href="{{ page.customer_shiptoURL() }}">{{ page.shipto.name }}</a>
-			</li>
-		{% endif %}
-		{% if (page.pw_template == 'ci-customer' and page.has('custID')) %}
-			<li class="breadcrumb-item">
-				<a href="{{ page.url }}">CI</a>
-			</li>
-			<li class="breadcrumb-item active" aria-current="page">{{ customer.name }}</li>
 		{% else %}
-			<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+			<li class="breadcrumb-item active" aria-current="page">{{ values.text('custID') }}</li>
 		{% endif %}
-	</ol>
-</nav>
+	{% else %}
+		<li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+	{% endif %}
+{% endblock %}

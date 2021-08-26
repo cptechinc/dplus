@@ -230,7 +230,7 @@
 		 * @return string          URL to the Customer's Page
 		 */
 		public function get_customerURL($custID) {
-			return $this->wire('pages')->get('pw_template=ci-customer')->url."?custID=$custID";
+			return $this->wire('pages')->get('pw_template=ci')->url."?custID=$custID";
 		}
 
 		/**
@@ -323,7 +323,7 @@
 			$f->description = __($traits['description']);
 			$f->notes = _($traits['notes']);
 			$fields->add($f);
-			
+
 			return $fields;
 		}
 	}

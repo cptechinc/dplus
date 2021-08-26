@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Dplus\\DocManagement\\Finders\\ApInvoice' => $baseDir . '/src/finder/sub/Mpo/ApInvoice.php',
     'Dplus\\DocManagement\\Finders\\Ar' => $baseDir . '/src/finder/sub/Ar.php',
+    'Dplus\\DocManagement\\Finders\\Cu' => $baseDir . '/src/finder/sub/Cu.php',
     'Dplus\\DocManagement\\Finders\\Finder' => $baseDir . '/src/finder/Finder.php',
     'Dplus\\DocManagement\\Finders\\Ii' => $baseDir . '/src/finder/sub/Ii.php',
     'Dplus\\DocManagement\\Finders\\PurchaseOrder' => $baseDir . '/src/finder/sub/Mpo/PurchaseOrder.php',

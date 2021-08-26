@@ -89,14 +89,6 @@ class DpagesRedir extends DplusPwPages implements Module {
 			'parent'     => '/mii/',
 			'redir_file' => 'ii'
 		),
-		'ci-redir' => array(
-			'template'   => 'redir',
-			'name'       => 'redir',
-			'title'      => 'redir',
-			'summary'    => 'Customer Information Redirects',
-			'parent'     => '/mci/',
-			'redir_file' => 'ci'
-		),
 		'cart-redir' => array(
 			'template'   => 'redir',
 			'name'       => 'redir',

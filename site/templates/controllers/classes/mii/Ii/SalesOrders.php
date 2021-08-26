@@ -121,7 +121,7 @@ class SalesOrders extends IiFunction {
 		$page->lastmodified = $jsonm->lastModified(self::JSONCODE);
 		$formatter = new Formatter();
 		$formatter->init_formatter();
-		$docm = new DocFinders\SalesOrder;
+		$docm = new DocFinders\SalesOrder();
 		return $config->twig->render('items/ii/sales-orders/display.twig', ['item' => self::getItmItem($data->itemID), 'json' => $json, 'formatter' => $formatter, 'blueprint' => $formatter->get_tableblueprint(), 'module_json' => $jsonm->jsonm, 'docm' => $docm]);
 	}
 

@@ -1,0 +1,87 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+#}
+$(function() {
+	var form_pricing = $('#pricing-itemid-form');
+	var modal_ajax = $('#ajax-modal');
+
+/* =============================================================
+	Event Functions
+============================================================= */
+
+
+/* =============================================================
+	Lookup Modal Functions
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal = $(this);
+		var url = button.data('lookupurl');
+		modal.attr('data-input', button.data('input'));
+
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.item-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var itemID = button.data('itemid');
+		var description = button.data('description');
+		var description2 = button.data('description2');
+		var modal = button.closest('.modal');
+		var input = $(modal.attr('data-input'));
+		input.val(itemID);
+		modal.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var href = $(this).attr('href');
+		modal_ajax.find('.modal-body').load(href);
+	});
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator = form_pricing.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		rules: {
+			itemID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/itemid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true'
+					}
+				}
+			},
+		},
+		messages: {},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+
+
+
+});

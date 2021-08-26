@@ -71,7 +71,6 @@ class SalesOrder extends Finder {
 			$this->filterSalesInvoices($q, $ordn)
 		];
 
-
 		if ($this->doesOrderHavePos($ordn)) {
 			$cond = $this->filterSalesVendorpo($q, $ordn);
 
@@ -113,11 +112,12 @@ class SalesOrder extends Finder {
 
 	/**
 	 * Filter the Query for Vendor Purchase Order Documents
+	 * NOTE: Keep public for AR
 	 * @param  DocumentQuery $q     Query
 	 * @param  string        $ordn  Sales Order #
 	 * @return mixed
 	 */
-	private function filterSalesVendorpo(DocumentQuery $q, $ordn) {
+	public function filterSalesVendorpo(DocumentQuery $q, $ordn) {
 		$name = 'cond_vendorpo';
 		$validate = new MsoValidator();
 
@@ -140,14 +140,14 @@ class SalesOrder extends Finder {
 ============================================================= */
 	/**
 	 * Returns if Sales Order has Purchase Orders related to it
+	 * NOTE: keep public for AR
 	 * @param  string $ordn Sales Order #
 	 * @return bool
 	 */
-	private function doesOrderHavePos($ordn) {
+	public function doesOrderHavePos($ordn) {
 		$q = $this->getSoDetailVendorPoQuery($ordn);
 		return boolval($q->count());
 	}
-
 
 	/**
 	 * Return Detail Query
@@ -165,5 +165,32 @@ class SalesOrder extends Finder {
 		}
 		$q->filterByOrdernumber($ordn);
 		return $q;
+	}
+
+
+	/**
+	 * Return Cust ID for Invoice #
+	 * @param  string $ordn Sales Order Number
+	 * @var string
+	 */
+	public function getInvoiceCustid($ordn) {
+		$ordn = SoModel::get_paddedordernumber($ordn);
+		$q = SalesHistoryQuery::create();
+		$q->select(SalesHistory::aliasproperty('custid'));
+		$q->filterByOrdernumber($ordn);
+		return $q->findOne();
+	}
+
+	/**
+	 * Return if Invoice has Customer ID
+	 * @param  string $ordn Sales Order Number
+	 * @return boolval
+	 */
+	public function invoiceHasCustid($ordn) {
+		$ordn = SoModel::get_paddedordernumber($ordn);
+		$q = SalesHistoryQuery::create();
+		$q->select(SalesHistory::aliasproperty('custid'));
+		$q->filterByOrdernumber($ordn);
+		return boolval($q->findOne());
 	}
 }

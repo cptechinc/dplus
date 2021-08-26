@@ -2,8 +2,10 @@
 use PDO;
 // Propel
 use Propel\Runtime\Propel;
-// Dplus Model
+// Dplus Models
 use CustomerQuery, Customer as Model;
+// Dpluso Models
+use CustpermQuery, Custperm;
 // ProcessWire Classes
 use ProcessWire\WireData, ProcessWire\WireInput, ProcessWire\Page, ProcessWire\User;
 // Dplus Filters
@@ -55,12 +57,15 @@ class Customer extends AbstractFilter {
 
 	/**
 	 * Filter User's Customer if Sales Rep
-	 * @param  User   $user [description]
-	 * @return self;
+	 * @param  User   $user
+	 * @return self
 	 */
 	public function user(User $user) {
 		if ($user->is_salesrep()) {
-			$this->query->filterByCustid($user->get_customers(), Criteria::IN);
+			$q = CustpermQuery::create();
+			$q->withColumn('DISTINCT(custid)', 'custid');
+			$q->select('custid');
+			$this->query->filterByCustid($q->find()->toArray(), Criteria::IN);
 		}
 		return $this;
 	}
@@ -84,10 +89,10 @@ class Customer extends AbstractFilter {
 	/**
 	 * Return Customer
 	 * @param  string $custID Customer ID
-	 * @return Customer
+	 * @return Model
 	 */
 	public function getCustomer($custID) {
-		return CustomerQuery::create()->findOneByCustid($custID);
+		return $this->getQueryClass()->findOneByCustid($custID);
 	}
 
 	/**

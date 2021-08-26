@@ -14,7 +14,7 @@
 	</div>
 	{% if quotes.count > 0 %}
 		{% for quote in quotes %}
-			<a href="{{ quotepage ~ '?qnbr=' ~ quote.quotenumber }}" class="list-group-item list-group-item-action">
+			<a href="{{ page.quoteUrl(quote.quotenumber) }}" class="list-group-item list-group-item-action">
 				<div class="row">
 					<div class="col">{{ quote.quotenumber }}</div>
 					<div class="col">{{ quote.shiptoid }}</div>
