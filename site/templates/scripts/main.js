@@ -303,7 +303,6 @@ $.fn.extend({
 });
 
 
-
 function toggle_nav() {
 	$(nav).toggle();
 	$(nav).find('input[name=q]').focus();
