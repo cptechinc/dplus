@@ -189,7 +189,7 @@ $("body").on("change", "input[name=code]", function(e) {
 		// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
 		var modal = $(this);
 		modal.find('.desc').text(description.capitalize());
-		modal.find('textarea[name=note]').val(ele_notes.text()).attr('cols', ele_notes.attr('cols') - 1);
+		modal.find('textarea[name=note]').val(ele_notes.text()).attr('cols', ele_notes.attr('cols'));
 		modal.find('input[name=notes-type]').val(notetype);
 	});
 

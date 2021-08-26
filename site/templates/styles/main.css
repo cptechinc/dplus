@@ -294,6 +294,8 @@ input.form-control[type=number] {
 
 textarea.qnotes {
 	font-family: monospace;
+	word-break: keep-all;
+	overflow-y: scroll;
 }
 
 .input-group > .input-group-append.w25 {

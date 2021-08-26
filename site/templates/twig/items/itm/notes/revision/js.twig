@@ -27,7 +27,7 @@ $(function() {
 			modal.find('input[name=notedate]').val(button.data('date')).removeAttr('readonly');
 			modal.find('input[name=notetime]').val(button.data('time')).removeAttr('readonly');
 			modal.find('textarea[name=note]').val('');
-			modal.find('input[name=revision]').val('');
+			modal.find('input[name=revision]').val($('#itm-form').find('input[name=revision]').val());
 			modal.find('input[name=revision]').removeAttr('readonly');
 		}
 	});
