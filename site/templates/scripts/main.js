@@ -197,6 +197,15 @@ $(function() {
 		var modal = $(this);
 		modal.find('[role=status]').removeClass('spinner-border');
 	});
+
+	$("body").on('keypress', 'qnotes', function(e) {
+		var input = $(this);
+		var notes = input.val();
+		input.addClass('bg-success');
+		var wrap = (notes, w = parseInt(input.attr(cols))) => notes.replace(new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g'), '$1\n');
+		input.val(wrap);
+	});
+
 });
 
 $.fn.extend({
