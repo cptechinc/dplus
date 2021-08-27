@@ -18,7 +18,7 @@
 						<label for="note">Notes</label>
 						{% include 'util/qnotes-textarea.twig' with {'id': 'internal-notes', 'cols': qnotes.notes.internal.get_column_count(), 'val': qnotes.notes.internal.get_notes_form_array(item.itemid)|join('\r') } %}
 					</div>
-					<textarea name="original" id="original" class="collapse" cols="{{qnotes.notes.internal.get_column_count()}}">{{qnotes.notes.internal.get_notes_form_array(item.itemid)|join('\r')}}</textarea>
+					<textarea name="original" id="original" class="collapse" cols="{{ qnotes.notes.internal.get_column_count()}}">{{qnotes.notes.internal.get_notes_form_array(item.itemid)|join('\r')}}</textarea>
 					<div class="d-flex justify-content-between align-items-center">
 						<button type="submit" name="action" value="update-notes" class="btn btn-success">
 							<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
