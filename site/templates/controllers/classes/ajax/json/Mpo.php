@@ -16,7 +16,7 @@ class Mpo extends AbstractController {
 
 	public static function validatePonbr($data) {
 		$fields = ['ponbr|ponbr'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		return $data->ponbr;
 		$validate = new MpoValidator();
 
@@ -28,7 +28,7 @@ class Mpo extends AbstractController {
 
 	public static function getPoItem($data) {
 		$fields = ['ponbr|text', 'linenbr|int'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		self::sanitizeParametersShort($data, $fields);
 		$data->ponbr = PurchaseOrder::get_paddedponumber($data->ponbr);
 		$q = PurchaseOrderDetailQuery::create()->filterByPonbr($data->ponbr)->filterByLinenbr($data->linenbr);
 
