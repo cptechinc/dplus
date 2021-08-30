@@ -1,50 +1,52 @@
+{% include 'code-tables/mpo/cnfm/js/classes.js.twig' %}
+
 $(function() {
 	var codeIDs = {{ m_po.get_codes_ids()|json_encode()|raw }};
 	var input_codeID = $('#code');
 	var form = $("#code-edit-form");
 
+	var server   = CnfmRequests.getInstance();
+	var alert    = CnfmAlerts.getInstance();
+	var formCode = CnfmForm.getInstance();
+
 /* =============================================================
 	Event Functions
 ============================================================= */
-	$('#edit-code-modal').on('shown.bs.modal', function (event) {
+	$('#edit-code-modal').on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
-		populate_edit_from_button(button, modal);
+		formCode.updateInputsFromJson(button.data('json'));
 	});
 
-	$("body").on("click", ".swal-edit-code", function(e) {
-		var button = $(this);
-		var code = button.data('code');
-		var edit_button = $('button[data-code='+code+']');
-		var modal = $('#edit-code-modal');
-		populate_edit_from_button(edit_button, modal);
-		swal2.close();
-	});
+	// $("body").on("click", ".swal-edit-code", function(e) {
+	// 	var button = $(this);
+	// 	var code = button.data('code');
+	// 	var edit_button = $('button[data-code='+code+']');
+	// 	var modal = $('#edit-code-modal');
+	// 	populate_edit_from_button(edit_button, modal);
+	// 	swal2.close();
+	// });
 
 	$("body").on("change", "input[name=code]", function(e) {
 		var input = $(this);
-		var codeID = input.val();
-		 console.log(codeID);
+		var code = input.val();
 
-		if (validate_codeID(form) === false) {
-			swal2.fire({
-				title: 'Confirmation Code ' + codeID + ' Exists',
-				text: 'Edit that code?',
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonText: 'Yes',
-				cancelButtonText: 'No',
-			}).then((result) => {
-				var modal = $('#edit-code-modal');
+		server.validateCode(code, function(exists) {
+			if (exists === true) {
+				alert.codeExists(code, function(editCode) {
+					if (editCode) {
+						var modal = input.closest('.modal');
 
-				if (result.value) {
-					var button = $('button[data-code="'+codeID+'"]');
-					populate_edit_from_button(button, modal);
-				} else if (result.dismiss === Swal.DismissReason.cancel) {
-					modal.modal('hide');
-				}
-			});
-		}
+						if (editCode) {
+							var button = $('button[data-code="'+code+'"]');
+							formCode.updateInputsFromJson(button.data('json'));
+						} else {
+							modal.modal('hide');
+						}
+					}
+				});
+			}
+		});
 	});
 
 /* =============================================================
@@ -59,7 +61,19 @@ $(function() {
 		rules: {
 			code: {
 				required: true,
-				maxlength: {{ max_length_code }}
+				maxlength: {{ cnfm.codeMaxLength() }},
+				remote: {
+					url: function() {
+						return server.validateCodeUrl();
+					},
+					type: "get",
+					data: {
+						jqv: 'true',
+						new: function() {
+							return formCode.inputs.form.attr('data-code') ? 'false' : 'true';
+						},
+					}
+				}
 			},
 		},
 		messages: {
