@@ -33,6 +33,15 @@ abstract class Base extends WireData {
 		$this->recordlocker->setUser($this->wire('user'));
 	}
 
+	/**
+	 * Return Array ready for JSON
+	 * @param  Model  $code Code
+	 * @return array
+	 */
+	public function codeJson(Model $code) {
+		return ['code' => $code->code, 'description' => $code->description];
+	}
+
 /* =============================================================
 	Query Functions
 ============================================================= */
