@@ -18,7 +18,7 @@ abstract class Base extends WireData {
 	const TABLE              = '';
 	const RECORDLOCKER_FUNCTION = 'cxm';
 
-	private static $instance;
+	protected static $instance;
 
 	public static function getInstance() {
 		if (empty(static::$instance)) {

@@ -22,7 +22,7 @@ class Cnfm extends Base {
 	const TABLE              = 'po_confirm_code';
 	const RECORDLOCKER_FUNCTION = 'cxm';
 
-	private static $instance;
+	protected static $instance;
 
 	/**
 	 * Return the Max Length of characters for the code
