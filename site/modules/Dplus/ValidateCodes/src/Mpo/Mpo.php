@@ -1,9 +1,10 @@
 <?php namespace Dplus\CodeValidators;
-
-use ProcessWire\WireData;
-
+// Dplus Models
 use PurchaseOrderQuery, PurchaseOrder;
 use ApInvoiceQuery, ApInvoice;
+use PoConfirmCodeQuery, PoConfirmCode;
+// ProcessWire
+use ProcessWire\WireData;
 
 /**
  * Po
@@ -29,6 +30,17 @@ class Mpo extends WireData {
 	public function invoice($ponbr) {
 		$q = ApInvoiceQuery::create();
 		$q->filterByInvnbr($ponbr);
+		return boolval(($q->count()));
+	}
+
+	/**
+	 * Returns if Cnfm Code Exists
+	 * @param  string $code Cnfm Code
+	 * @return bool
+	 */
+	public function cnfm($code) {
+		$q = PoConfirmCodeQuery::create();
+		$q->filterById($code);
 		return boolval(($q->count()));
 	}
 }

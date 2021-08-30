@@ -17,7 +17,6 @@ class Mpo extends AbstractController {
 	public static function validatePonbr($data) {
 		$fields = ['ponbr|ponbr'];
 		self::sanitizeParametersShort($data, $fields);
-		return $data->ponbr;
 		$validate = new MpoValidator();
 
 		if ($validate->po($data->ponbr) === false) {
@@ -65,5 +64,24 @@ class Mpo extends AbstractController {
 			'ordn' => $line->ordn,
 		];
 		return $response;
+	}
+
+	public static function validateCnfmCode($data) {
+		$fields = ['code|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$validate = new MpoValidator();
+		$exists = $validate->cnfm($data->code);
+
+		if (empty($data->jqv)) {
+			if ($data->new) {
+				return $exists === false;
+			}
+			return $exists;
+		}
+
+		if ($data->new) {
+			return $exists === true ? "Code $data->code already exists" : true;
+		}
+		return $exists === true ? "Code $data->code not found" : true;
 	}
 }
