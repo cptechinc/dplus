@@ -47,9 +47,9 @@ class Menu extends Base {
 ============================================================= */
 	private static function menu($data) {
 		$functions = [];
-		foreach (self::SUBFUNCTIONS as $function) {
+		foreach (self::SUBFUNCTIONS as $key => $function) {
 			if (empty($function['permission']) || self::pw('user')->hasPermission($function['permission'])) {
-				$functions[] = $function;
+				$functions[$key] = $function;
 			}
 		}
 		return self::pw('config')->twig->render('min/inproc/menu.twig', ['functions' => $functions]);
