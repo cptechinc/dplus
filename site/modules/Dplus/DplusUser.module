@@ -282,6 +282,13 @@ class DplusUser extends WireData implements Module {
 			$event->return = $permissions_master->does_user_have_permission($user->loginid, $function);
 		});
 
+		$this->addHook('User::hasPermission', function($event) {
+			$permissions_master = FuncpermQuery::create();
+			$user = $event->object;
+			$function = $event->arguments(0);
+			$event->return = $permissions_master->does_user_have_permission($user->loginid, $function);
+		});
+
 		$this->addHook('User::get_functions', function($event) {
 			$permissions_master = FuncpermQuery::create();
 			$user = $event->object;
