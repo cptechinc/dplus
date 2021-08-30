@@ -47,9 +47,9 @@ class Menu extends Base {
 ============================================================= */
 	private static function menu($data) {
 		$functions = [];
-		foreach (self::SUBFUNCTIONS as $function) {
+		foreach (self::SUBFUNCTIONS as $key => $function) {
 			if (empty($function['permission']) || self::pw('user')->hasPermission($function['permission'])) {
-				$functions[] = $function;
+				$functions[$key] = $function;
 			}
 		}
 		return self::pw('config')->twig->render('min/inproc/menu.twig', ['functions' => $functions]);
@@ -59,7 +59,7 @@ class Menu extends Base {
 	Init
 ============================================================= */
 	public static function initHooks() {
-		$m = self::pw('modules')->get('DpagesMin');
+		$m = self::pw('modules')->get('DpagesMpo');
 
 		$m->addHook('Page(pw_template=poadmn)::subfunctionUrl', function($event) {
 			$event->return = self::subfunctionUrl($event->arguments(0));
