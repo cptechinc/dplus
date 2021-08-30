@@ -7,11 +7,11 @@
 
 	$routes = [
 		['GET',  '', Poadmn\Menu::class, 'index'],
-		// 'cnfm' => [
-		// 	// ['GET',  '', Inproc\Iarn::class, 'index'],
-		// 	// ['GET',  'page{d:\d+}', Inproc\Iarn::class, 'index'],
-		// 	// ['POST',  '', Inproc\Iarn::class, 'handleCRUD'],
-		// ],
+		'cnfm' => [
+			['GET',  '', Poadmn\Cnfm::class, 'index'],
+			['GET',  'page{d:\d+}', Poadmn\Cnfm::class, 'index'],
+			['POST',  '', Poadmn\Cnfm::class, 'handleCRUD'],
+		],
 	];
 	$router = new Mvc\Router();
 	$router->setRoutes($routes);
