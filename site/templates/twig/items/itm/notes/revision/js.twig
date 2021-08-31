@@ -24,12 +24,14 @@ $(function() {
 			modal.find('input[name=revision]').attr('readonly', 'true');
 		} else {
 			modal.find('.action-desc').text('Adding');
-			modal.find('input[name=notedate]').val(button.data('date')).removeAttr('readonly');
-			modal.find('input[name=notetime]').val(button.data('time')).removeAttr('readonly');
-			modal.find('input[name=notetime]').val(moment().format('HH:mm')).removeAttr('readonly');
 			modal.find('textarea[name=note]').val('');
 			modal.find('input[name=revision]').val($('#itm-form').find('input[name=revision]').val());
 			modal.find('input[name=revision]').removeAttr('readonly');
+
+			$.getJSON('{{ page.jsonApiUrl('misc/date-time/') }}', function(datetime) {
+				modal.find('input[name=notetime]').val(datetime.time).removeAttr('readonly');
+				modal.find('input[name=notedate]').val(datetime.date).removeAttr('readonly');
+			});
 		}
 	});
 

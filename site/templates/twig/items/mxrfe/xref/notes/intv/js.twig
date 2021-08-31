@@ -15,10 +15,13 @@ $(function () {
 			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
 		} else {
 			modal.find('.action-desc').text('Adding');
-			modal.find('input[name=notedate]').val(button.data('date')).removeAttr('readonly');
-			modal.find('input[name=notetime]').val(button.data('time')).removeAttr('readonly');
 			modal.find('input[name=rawnotetime]').val('');
 			modal.find('textarea[name=note]').val('');
+
+			$.getJSON('{{ page.jsonApiUrl('misc/date-time/') }}', function(datetime) {
+				modal.find('input[name=notetime]').val(datetime.time).removeAttr('readonly');
+				modal.find('input[name=notedate]').val(datetime.date).removeAttr('readonly');
+			});
 		}
 	});
 
