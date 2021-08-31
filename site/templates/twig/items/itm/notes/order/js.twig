@@ -106,16 +106,23 @@ $(function() {
 
 		if (note_row.length) {
 			modal.find('.action-desc').text('Editing');
-			{% for form, label in qnotes.notes.order.get_forms_shortlabels() %}
-				modal.find('input[name={{ form }}]').prop('checked', button.data('{{ form }}') == 'Y');
-			{% endfor %}
+			modal.find('.order-form').each(function() {
+				var input = $(this);
+				var name  = input.attr('name');
+				var checked = button.data(name) === 'Y';
+				input.prop('checked', checked);
+			});
 			modal.addClass('is-invalid');
 			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
 		} else {
 			modal.find('.action-desc').text('Adding');
-			{% for form, label in qnotes.notes.order.get_forms_shortlabels() %}
-				modal.find('input[name={{ form }}]').prop('checked', false);
-			{% endfor %}
+			var defaults = {{ qnotes.notes.order.getDefaultFormValues()|json_encode|raw }};
+			modal.find('.order-form').each(function() {
+				var input = $(this);
+				var name  = input.attr('name');
+				var checked = defaults[name] === 'Y';
+				input.prop('checked', checked);
+			});
 			modal.find('textarea[name=note]').val('');
 		}
 		modal.find('input[name=form]').val(button.data('form'));
