@@ -199,12 +199,23 @@ $(function() {
 		modal.find('[role=status]').removeClass('spinner-border');
 	});
 
-	$("body").on('keypress', 'qnotes', function(e) {
+
+	$("body").on('focusin', '.qnotes', function(e) {
+		var input = $(this);
+		if (agent.browser == 'chrome') {
+			var cols = parseInt(input.attr('cols'));
+			input.attr('cols', cols - 1);
+		}
+	});
+
+	$("body").on('keydown', '.qnotes', function(e) {
 		var input = $(this);
 		var notes = input.val();
-		input.addClass('bg-success');
-		var wrap = (notes, w = parseInt(input.attr(cols))) => notes.replace(new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g'), '$1\n');
-		input.val(wrap);
+
+		if (notes.length) {
+			var wrap = wordWrap(notes, parseInt(input.attr('data-cols')));
+			input.val(wrap);
+		}
 	});
 
 });
@@ -392,6 +403,11 @@ function format_phone(input) {
 		input = input.substring(0,3)+'-'+input.substring(3,6)+'-'+input.substring(6,10);
 	}
 	return input;
+}
+
+function wordWrap(notes, w = 30) {
+	var regex = new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g');
+	return notes.replace(regex, '\n');
 }
 
 /*==============================================================

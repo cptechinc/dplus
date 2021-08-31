@@ -1,0 +1,3 @@
+{% for variable, value in variables %}
+	var {{ variable }} = {{ value|json_encode()|raw }};
+{% endfor %}
