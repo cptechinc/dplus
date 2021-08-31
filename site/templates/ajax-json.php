@@ -96,6 +96,7 @@
 		'mpo' => [
 			'validate' => [
 				['GET', 'po/ponbr/', Json\Mpo::class, 'validatePonbr'],
+				['GET', 'cnfm/', Json\Mpo::class, 'validateCnfmCode'],
 			],
 			['GET', 'po/item/', Json\Mpo::class, 'getPoItem'],
 		],
