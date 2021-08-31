@@ -130,6 +130,8 @@ return array(
     'Controllers\\Mso\\SalesOrder\\PrintSo' => $baseDir . '/classes/mso/SalesOrder/PrintSo.php',
     'Controllers\\Mso\\SalesOrder\\SalesOrder' => $baseDir . '/classes/mso/SalesOrder/SalesOrder.php',
     'Controllers\\Mwm\\Menu' => $baseDir . '/classes/Mwm/Menu.php',
+    'Controllers\\Routers\\Base' => $baseDir . '/classes/routers/Base.php',
+    'Controllers\\Routers\\Factory' => $baseDir . '/classes/routers/Factory.php',
     'Controllers\\Wm\\Base' => $baseDir . '/classes/Mwm/Base.php',
     'Controllers\\Wm\\Binr' => $baseDir . '/classes/Mwm/binr/Binr.php',
     'Controllers\\Wm\\Inventory\\LotReturn' => $baseDir . '/classes/Mwm/inventory/LotReturn/LotReturn.php',
