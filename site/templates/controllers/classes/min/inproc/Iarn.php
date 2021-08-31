@@ -62,6 +62,8 @@ class Iarn extends Base {
 		$iarn = self::getIarn();
 		$iarn->recordlocker->deleteLock();
 
+		self::pw('page')->headline = "Inventory Adjustment Reason";
+
 		if ($data->q) {
 			self::pw('page')->headline = "IARN: Searching for '$data->q'";
 			$filter->search(strtoupper($data->q));
