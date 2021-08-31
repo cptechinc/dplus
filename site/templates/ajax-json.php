@@ -4,6 +4,11 @@
 
 	$routes  = [
 		['GET', 'item-lookup/', Json\ItemLookup::class, 'lookup'],
+		'misc' => [
+			['GET', 'time/', Json\Misc::class, 'time'],
+			['GET', 'date/', Json\Misc::class, 'date'],
+			['GET', 'date-time/', Json\Misc::class, 'dateTime'],
+		],
 		'inv' => [
 			'validate' => [
 				['GET', 'tariff-code/', Json\Min::class, 'validateTariffCode'],
