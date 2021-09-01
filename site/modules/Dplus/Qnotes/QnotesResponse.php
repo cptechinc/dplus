@@ -12,6 +12,7 @@ class QnotesResponse extends WireData {
 		$this->message = '';
 		$this->key = '';
 		$this->action = 0;
+		$this->type   = '';
 	}
 
 	public function set_action(int $action = 0) {
@@ -40,6 +41,10 @@ class QnotesResponse extends WireData {
 
 	public function set_key($key) {
 		$this->key = $key;
+	}
+
+	public function set_type($type) {
+		$this->type = $type;
 	}
 
 	/**

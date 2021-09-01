@@ -15,8 +15,13 @@ class QnotesMmsc extends WireData implements Module {
 	const DESCRIPTION        = 'Manufacturer Misc Notes';
 	const DESCRIPTION_RECORD = 'Manufacturer Misc Notes';
 	const DESCRIPTION_RESPONSE = 'Item ';
+	const TYPE                 = 'MMSC';
 
 	const MAXLENGTH_NOTE = 35;
+
+	public function type() {
+		return self::TYPE;
+	}
 
 
 	/**
@@ -194,6 +199,7 @@ class QnotesMmsc extends WireData implements Module {
 
 		$response = new QnotesResponse();
 		$response->set_key("$itemID-{$note->key2}");
+		$response->set_type(self::TYPE);
 
 		if (in_array(false, $lines_saved)) {
 			$lines_error =

@@ -14,9 +14,14 @@ class QnotesMnfr extends WireData implements Module {
 	const MODEL_KEY          = 'itemid sequence';
 	const DESCRIPTION        = 'Manufacturer Notes';
 	const DESCRIPTION_RECORD = 'Manufacturer Notes';
-	const DESCRIPTION_RESPONSE = 'Item ';
+	const DESCRIPTION_RESPONSE = 'Item Manufacturer';
+	const TYPE                 = 'MNFR';
 
 	const MAXLENGTH_NOTE = 35;
+
+	public function type() {
+		return self::TYPE;
+	}
 
 
 	/**
@@ -161,6 +166,7 @@ class QnotesMnfr extends WireData implements Module {
 		$values = $input->$rm;
 		$mnfrID = $values->text('mnfrID');
 		$mnfritemID = $values->text('mnfritemID');
+		$itemID = $values->text('itemID');
 		$note = $values->textarea('note');
 		$note_lines = $this->wire('modules')->get('Qnotes')->note_lines($note, $this->get_column_count());
 		$lines_saved = array();
@@ -191,10 +197,11 @@ class QnotesMnfr extends WireData implements Module {
 	 * @return CodeTableResponse
 	 */
 	protected function process_responses(NoteMnfr $note, $itemID, array $lines_saved) {
-		$message = self::DESCRIPTION_RESPONSE . " ($itemID) Note Lines";
+		$message = self::DESCRIPTION_RESPONSE . " ($note->mnfrid-$note->mnfritemid-$itemID) Note Lines";
 
 		$response = new QnotesResponse();
 		$response->set_key("$itemID-{$note->key2}");
+		$response->set_type(self::TYPE);
 
 		if (in_array(false, $lines_saved)) {
 			$lines_error =
