@@ -87,12 +87,14 @@ class Cxm extends AbstractController {
 	}
 
 	private static function xrefDisplay($data, ItemXrefCustomer $xref) {
-		$config  = self::pw('config');
+		$config = self::pw('config');
+		$cxm    = self::getCxm();
+
 		$html = '';
 		$html .= self::cxmHeaders();
 		$html .= self::lockXref($xref);
-		$html .= $config->twig->render('items/cxm/xref/form/display.twig', ['item' => $xref, 'cxm' => self::getCxm(), 'qnotes' => self::pw('modules')->get('QnotesItemCxm')]);
-		if (!$xref->isNew()) {
+		$html .= $config->twig->render('items/cxm/xref/form/display.twig', ['item' => $xref, 'cxm' => $cxm, 'qnotes' => self::pw('modules')->get('QnotesItemCxm')]);
+		if ($xref->isNew() === false && $cxm->recordlocker->userHasLocked($cxm->get_recordlocker_key($xref))) {
 			$html .= self::qnotesDisplay($xref);
 		}
 		return $html;
