@@ -112,7 +112,6 @@ $(function() {
 				var name  = input.attr('name');
 				var checked = button.data(name) === 'Y';
 				input.prop('checked', checked);
-				input.attr('disabled', true);
 			});
 			modal.addClass('is-invalid');
 			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
