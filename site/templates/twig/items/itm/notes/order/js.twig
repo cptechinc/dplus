@@ -28,6 +28,7 @@ $(function() {
 	$("#order-notes-form").validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
+		ignore: ".validate-ignore",
 		errorPlacement: function(error, element) {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},
@@ -111,6 +112,7 @@ $(function() {
 				var name  = input.attr('name');
 				var checked = button.data(name) === 'Y';
 				input.prop('checked', checked);
+				input.attr('disabled', true);
 			});
 			modal.addClass('is-invalid');
 			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
@@ -122,6 +124,7 @@ $(function() {
 				var name  = input.attr('name');
 				var checked = defaults[name] === 'Y';
 				input.prop('checked', checked);
+				input.removeAttr('disabled');
 			});
 			modal.find('textarea[name=note]').val('');
 		}

@@ -20,6 +20,7 @@ $(function() {
 	var validator = form_notes.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
+		ignore: ".validate-ignore",
 		errorPlacement: function(error, element) {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},

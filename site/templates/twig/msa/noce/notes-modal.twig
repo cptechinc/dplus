@@ -22,7 +22,12 @@
 					<div class="form-group">
 						<label for="note">Note</label>
 						<div class="form-group d-flex justify-content-between align-items-center">
-							<textarea name="note" id="note" class="form-control w-auto qnotes" rows="10" cols="{{ qnotes.get_column_count() }}"></textarea>
+							{% include 'util/qnotes-textarea.twig' with {
+									'id': 'note',
+									'rows': 15, 'cols': qnotes.get_column_count(),
+									'val': ''
+								}
+							%}
 						</div>
 					</div>
 					<div class="d-flex justify-content-between align-items-center">
