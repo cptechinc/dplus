@@ -240,6 +240,7 @@ class QnotesItemVxmInternal extends WireData implements Module {
 
 		$response = new QnotesResponse();
 		$response->set_key("$itemID-$vendorID-{$note->key2}");
+		$response->set_type(self::TYPE);
 
 		if (in_array(false, $lines_saved)) {
 			$lines_error =
