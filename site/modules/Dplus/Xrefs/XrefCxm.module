@@ -335,7 +335,7 @@ class XrefCxm extends WireData implements Module {
 			$record = $this->xref($custID, $custitemID);
 
 			if (!$this->lockrecord($record)) {
-				$message = self::DESCRIPTION_RECORD . " ($custID-$custitemID)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($record);
+				$message = self::DESCRIPTION_RECORD . " ($custID-$custitemID)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($this->get_recordlocker_key($record));
 				$this->wire('session')->setFor('response', 'cxm', XrefResponse::response_error("$custID-$custitemID", $message));
 				return false;
 			}
