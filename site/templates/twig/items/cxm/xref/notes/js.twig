@@ -86,7 +86,7 @@ $(function() {
 
 	function has_document_selected() {
 		{% for form, label in qnotes.get_forms_shortlabels() %}
-			if ($("#order-notes-form").find('input[name={{ form }}]').prop('checked')) {
+			if ($("#order-notes-form").find('input.order-form').prop('checked')) {
 				return true;
 			}
 		{% endfor %}
@@ -97,7 +97,7 @@ $(function() {
 		var formcode = '';
 
 		{% for form, label in qnotes.get_forms_shortlabels() %}
-			formcode += $("#order-notes-form").find('input[name={{ form }}]').prop('checked') ? 'Y' : 'N';
+			formcode += $("#order-notes-form").find('input.order-form').prop('checked') ? 'Y' : 'N';
 		{% endfor %}
 		return formcode;
 	}
@@ -116,18 +116,18 @@ $(function() {
 
 		if (note_row.length) {
 			modal.find('.action-desc').text('Editing');
-			{% for form, label in qnotes.get_forms_shortlabels() %}
-				modal.find('input[name={{ form }}]').prop('checked', button.data('{{ form }}') == 'Y');
-			{% endfor %}
-			modal.addClass('is-invalid');
+			modal.find('input.order-form').each(function(index) {
+				var input = $(this);
+				input.prop('checked', button.data(input.attr('name')) == 'Y');
+			});
 			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
 		} else {
 			modal.find('.action-desc').text('Adding');
 
-			{% for form, label in qnotes.get_forms_shortlabels() %}
-				var value = formdefaults['{{ form }}'] == 'Y';
-				modal.find('input[name={{ form }}]').prop('checked', value);
-			{% endfor %}
+			modal.find('input.order-form').each(function(index) {
+				var input = $(this);
+				input.prop('checked', formdefaults[input.attr('name')] == 'Y');
+			});
 			modal.find('textarea[name=note]').val('');
 		}
 		modal.find('input[name=form]').val(button.data('form'));
