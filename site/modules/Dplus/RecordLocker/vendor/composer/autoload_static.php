@@ -8,6 +8,7 @@ class ComposerStaticInit0770d248017a957d845202828f84dfb1
 {
     public static $classMap = array (
         'Dplus\\RecordLocker\\Locker' => __DIR__ . '/../..' . '/src/Locker.php',
+        'Dplus\\RecordLocker\\User' => __DIR__ . '/../..' . '/src/User.php',
         'Dplus\\RecordLocker\\UserFunction' => __DIR__ . '/../..' . '/src/UserFunction.php',
     );
 
