@@ -26,6 +26,7 @@ return array(
     'Controllers\\Dplus\\Dashboard\\Slsrep' => $baseDir . '/classes/dplus/Dashboard/Slsrep.php',
     'Controllers\\Dplus\\Dashboard\\Whse' => $baseDir . '/classes/dplus/Dashboard/Whse.php',
     'Controllers\\Dplus\\Dashboard\\Whsmgr' => $baseDir . '/classes/dplus/Dashboard/Whsmgr.php',
+    'Controllers\\Dplus\\MainMenu' => $baseDir . '/classes/dplus/MainMenu.php',
     'Controllers\\Dplus\\Menu' => $baseDir . '/classes/dplus/Menu.php',
     'Controllers\\Dplus\\Process' => $baseDir . '/classes/dplus/Process.php',
     'Controllers\\Map\\Mxrfe' => $baseDir . '/classes/map/Mxrfe.php',

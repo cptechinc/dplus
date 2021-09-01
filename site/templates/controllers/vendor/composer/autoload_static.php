@@ -27,6 +27,7 @@ class ComposerStaticInit0137f8e60248be1bc1b37e9c1c6812dd
         'Controllers\\Dplus\\Dashboard\\Slsrep' => __DIR__ . '/../..' . '/classes/dplus/Dashboard/Slsrep.php',
         'Controllers\\Dplus\\Dashboard\\Whse' => __DIR__ . '/../..' . '/classes/dplus/Dashboard/Whse.php',
         'Controllers\\Dplus\\Dashboard\\Whsmgr' => __DIR__ . '/../..' . '/classes/dplus/Dashboard/Whsmgr.php',
+        'Controllers\\Dplus\\MainMenu' => __DIR__ . '/../..' . '/classes/dplus/MainMenu.php',
         'Controllers\\Dplus\\Menu' => __DIR__ . '/../..' . '/classes/dplus/Menu.php',
         'Controllers\\Dplus\\Process' => __DIR__ . '/../..' . '/classes/dplus/Process.php',
         'Controllers\\Map\\Mxrfe' => __DIR__ . '/../..' . '/classes/map/Mxrfe.php',
