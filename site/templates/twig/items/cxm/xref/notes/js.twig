@@ -84,20 +84,16 @@ $(function() {
 		}
 	});
 
-	function has_document_selected() {
-		{% for form, label in qnotes.get_forms_shortlabels() %}
-			if ($("#order-notes-form").find('input.order-form').prop('checked')) {
-				return true;
-			}
-		{% endfor %}
-		return false;
+	function has_document_selected(callback) {
+		var modal = $('#notes-order-modal');
+		return modal.find('input.order-form:checked').length > 0
 	}
 
 	function get_notes_formscode() {
 		var formcode = '';
 
 		{% for form, label in qnotes.get_forms_shortlabels() %}
-			formcode += $("#order-notes-form").find('input.order-form').prop('checked') ? 'Y' : 'N';
+			formcode += $("#order-notes-form").find('input.order-form[name={{form}}]').prop('checked') ? 'Y' : 'N';
 		{% endfor %}
 		return formcode;
 	}
