@@ -79,7 +79,7 @@ class CodeTablesIwhm extends WireData implements Module {
 	 * @param  string $whseID WarehouseID
 	 * @return ObjectCollection
 	 */
-	public function get_code($whseID) {
+	public function get_code($id) {
 		return $this->whse($id);
 	}
 
