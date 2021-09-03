@@ -111,18 +111,27 @@ $(function() {
 	function populate_notes_form(button, modal) {
 		var note_row = button.closest('.qnote-order-row');
 
+
 		if (note_row.length) {
 			modal.find('.action-desc').text('Editing');
-			{% for form, label in qnotes.get_forms_shortlabels() %}
-				modal.find('input[name={{ form }}]').prop('checked', button.data('{{ form }}') == 'Y');
-			{% endfor %}
+			modal.find('.order-form').each(function() {
+				var input = $(this);
+				var name  = input.attr('name');
+				var checked = button.data(name) === 'Y';
+				input.prop('checked', checked);
+			});
 			modal.addClass('is-invalid');
 			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
 		} else {
+			var defaults = {{ qnotes.getDefaultFormValues()|json_encode|raw }};
 			modal.find('.action-desc').text('Adding');
-			{% for form, label in qnotes.get_forms_shortlabels() %}
-				modal.find('input[name={{ form }}]').prop('checked', false);
-			{% endfor %}
+			modal.find('.order-form').each(function() {
+				var input = $(this);
+				var name  = input.attr('name');
+				var checked = defaults[name] === 'Y';
+				input.prop('checked', checked);
+				input.removeAttr('disabled');
+			});
 			modal.find('textarea[name=note]').val('');
 		}
 		modal.find('input[name=form]').val(button.data('form'));
