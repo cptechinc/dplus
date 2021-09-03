@@ -15,9 +15,10 @@
 				<div class="col-sm-8">
 					{% if warehouse.isNew() %}
 						<select name="whseID" class="custom-select custom-select-sm" id="whseID">
-							<option value="">-- Choose --</option>
 							{% for whse in m_whse.get_warehouses() %}
-								<option value="{{ whse.id }}" {{ whse.id == warehouse.warehouseid ? 'selected' : ''}}>{{ whse.id }} - {{ whse.name }}</option>
+								<option value="{{ whse.id }}" {{ whse.id == warehouse.whseid ? 'selected' : ''}}>
+									{{ whse.id }} - {{ whse.name }}
+								</option>
 							{% endfor %}
 						</select>
 					{% else %}
@@ -48,7 +49,7 @@
 					<label for="status">Status</label>
 				</div>
 				<div class="col-sm-8">
-					{% include 'util/select.twig' with {'name': 'status', 'id': 'status', 'selectedvalue': warehouse.status, 'options': m_whse.get_itemstatus_options(), 'capitalize_labels': true } %}
+					{% include 'util/select.twig' with {'name': 'status', 'id': 'status', 'selectedvalue': warehouse.status, 'options': m_whse.get_itemstatus_options(), 'capitalize_labels': true, 'hideblankoption': true } %}
 				</div>
 			</div>
 			<div class="form-group row">
@@ -56,7 +57,7 @@
 					<label for="specialorder">Special Order</label>
 				</div>
 				<div class="col-sm-8">
-					{% include 'util/select.twig' with {'name': 'specialorder', 'id': 'specialorder', 'selectedvalue': warehouse.specialorder, 'options': m_whse.get_specialorder_options(), 'capitalize_labels': true } %}
+					{% include 'util/select.twig' with {'name': 'specialorder', 'id': 'specialorder', 'selectedvalue': warehouse.specialorder, 'options': m_whse.get_specialorder_options(), 'capitalize_labels': true, 'hideblankoption': true } %}
 				</div>
 			</div>
 			<div class="form-group row">
@@ -65,9 +66,10 @@
 				</div>
 				<div class="col-sm-8">
 					<select name="whsesupply" class="custom-select custom-select-sm" id="whsesupply">
-						<option value="">-- Choose --</option>
 						{% for whse in m_whse.get_warehouses() %}
-							<option value="{{ whse.id }}" {{ whse.id == warehouse.whsesupply ? 'selected' : ''}}>{{ whse.id }} - {{ whse.name }}</option>
+							<option value="{{ whse.id }}" {{ whse.whseid == warehouse.whsesupply ? 'selected' : ''}}>
+								{{ whse.id }} - {{ whse.name }}
+							</option>
 						{% endfor %}
 					</select>
 				</div>
