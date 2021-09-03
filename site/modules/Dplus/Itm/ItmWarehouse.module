@@ -177,9 +177,9 @@ class ItmWarehouse extends WireData implements Module {
 		$whse->setCyclecode($configIn->default_cycle);
 		$whse->setWhsesupply($configIn->default_whseid);
 		$whse->setCodeabc($configIn->default_abccode);
-		$record->setOrderqty($configIn->default_orderqty);
-		$record->setMaxqty($configIn->default_maxqty);
-		$record->setOrderpoint($configIn->default_orderpoint);
+		$whse->setOrderqty($configIn->default_orderqty);
+		$whse->setMaxqty($configIn->default_maxqty);
+		$whse->setOrderpoint($configIn->default_orderpoint);
 		return $whse;
 	}
 
@@ -232,8 +232,11 @@ class ItmWarehouse extends WireData implements Module {
 			return false;
 		}
 
-		$record->delete();
-		$response = $this->save_and_respond($record, []);
+		$this->request_whse_delete($itemID, $whseID);
+		$response = $this->verify_delete($itemID, $whseID);
+		if ($response->has_success()) {
+			$record->delete();
+		}
 		$this->wire('session')->setFor('response', 'itm', $response);
 		return $response->has_success();
 	}
@@ -387,6 +390,52 @@ class ItmWarehouse extends WireData implements Module {
 		$requestor = $this->wire('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, session_id());
 		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+	public function request_whse_delete($itemID, $whseID) {
+		$config = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$data = array("DBNAME=$dplusdb", 'DELETEITMWHSE', "ITEMID=$itemID", "WHSE=$whseID");
+
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
+	}
+
+	/**
+	 * Return if Item was able to be deleted
+	 * @param  string $itemID Item ID
+	 * @return bool
+	 */
+	private function verify_delete($itemID, $whseID) {
+		$m_json = $this->wire('modules')->get('JsonDataFiles');
+		$json = $m_json->get_file(session_id(), 'itm-whse-delete');
+		$response = new ItmResponse();
+		$response->set_itemID($itemID);
+		$response->set_action(ItmResponse::CRUD_DELETE);
+		$message = self::DESCRIPTION . " ($itemID-$whseID) was ";
+
+		if ($m_json->had_succeeded()) {
+			if ($json['itemid'] != $itemID) {
+				$response->set_error(true);
+				$message .= "not deleted";
+			} elseif ($json['error'] === true) {
+				$response->set_error(true);
+				$message .= "not deleted";
+			} else {
+				$response->set_success(true);
+				$message .= "deleted";
+			}
+		} else {
+			$response->set_error(true);
+			$message .= "not deleted";
+		}
+
+		if ($json['error']) {
+			$message .= " Error: " . $json['errormsg'];
+		}
+		$response->set_message($message);
+		return $response;
 	}
 
 /* =============================================================

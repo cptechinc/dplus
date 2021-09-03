@@ -266,6 +266,7 @@ class Itm extends WireData implements Module {
 		$response = $this->save_and_respond($record, []);
 		$response->set_saved_itm($response->success);
 		$response = $this->verify_delete($itemID);
+		$this->wire('session')->setFor('response', 'itm', $response);
 		return $response->has_success();
 	}
 

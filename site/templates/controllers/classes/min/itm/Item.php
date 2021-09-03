@@ -185,6 +185,10 @@ class Item extends ItmFunction {
 		$m->addHook('Page(pw_template=itm)::itmDeleteUrl', function($event) {
 			$event->return = self::itmUrl($event->arguments(0));
 		});
+
+		$m->addHook('Page(pw_template=itm)::itmAddUrl', function($event) {
+			$event->return = self::itmUrl('new');
+		});
 	}
 
 	protected static function validateUserPermission() {

@@ -173,6 +173,9 @@ class Warehouse extends ItmFunction {
 		$html = '';
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 		$html .= $config->twig->render('items/itm/itm-links.twig');
+		if (self::pw('session')->getFor('response', 'itm')) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => self::pw('session')->getFor('response', 'itm')]);
+		}
 		$html .= $config->twig->render('items/itm/warehouse/list-display.twig', ['itmw' => $itmw, 'itemID' => $data->itemID, 'item' => $item, 'warehouses' => $itmw->get_itemwarehouses($data->itemID), 'qnotes' => $qnotes]);
 		return $html;
 	}

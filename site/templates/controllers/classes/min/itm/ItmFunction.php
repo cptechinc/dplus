@@ -144,6 +144,9 @@ class ItmFunction extends AbstractController {
 	public static function lockItem($itemID) {
 		$itm  = self::getItm();
 		$html = '';
+		if ($itm->exists($itemID) === false || strtolower($itemID) === 'new') {
+			return '';
+		}
 		if ($itm->recordlocker->isLocked($itemID) && $itm->recordlocker->userHasLocked($itemID) === false) {
 			$config = self::pw('config');
 			$msg = "ITM Item $itemID is being locked by " . $itm->recordlocker->getLockingUser($itemID);

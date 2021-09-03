@@ -60,6 +60,9 @@ class QnotesItemRevision extends WireData implements Module {
 	 * @return bool
 	 */
 	public function notes_exist($itemID) {
+		if (empty($itemID)) {
+			return false;
+		}
 		$q = $this->get_query();
 		$q->filterByItemid($itemID);
 		return boolval($q->count());
