@@ -4,7 +4,7 @@ include_once(__DIR__.'/ItmResponse.php');
 
 // Purl URI
 use Purl\Url;
-// Dplus Mdoels
+// Dplus Models
 use WarehouseInventoryQuery, WarehouseInventory;
 use WarehouseQuery, Warehouse;
 use WarehouseBinQuery, WarehouseBin;
@@ -167,14 +167,21 @@ class ItmWarehouse extends WireData implements Module {
 	 * @return WarehouseInventory
 	 */
 	public function new() {
+		$configIn = Configs\In::config();
+
 		$whse = new WarehouseInventory();
-		$whse->setBin_default($this->configs->inventory->default_bin);
-		$whse->setStatus(WarehouseInventory::STATUS_ACTIVE);
-		$whse->setSpecialorder(WarehouseInventory::SPECIALORDER_NORMAL);
+		$whse->setWhseid($configIn->default_whseid);
+		$whse->setBin_default($configIn->default_bin);
+		$whse->setStatus($configIn->default_status);
+		$whse->setSpecialorder($configIn->default_specialorder);
+		$whse->setCyclecode($configIn->default_cycle);
+		$whse->setWhsesupply($configIn->default_whseid);
+		$whse->setCodeabc($configIn->default_abccode);
+		$record->setOrderqty($configIn->default_orderqty);
+		$record->setMaxqty($configIn->default_maxqty);
+		$record->setOrderpoint($configIn->default_orderpoint);
 		return $whse;
 	}
-
-
 
 	/**
 	 * Takes Input, calls the function / module that will handle the action
