@@ -3,6 +3,8 @@
 use ItemWhseOrderNoteQuery, ItemWhseOrderNote;
 use ConfigArQuery, ConfigAr;
 
+use Dplus\Configs;
+
 include_once(__DIR__.'/../QnotesResponse.php');
 
 /**
@@ -26,6 +28,13 @@ class QnotesItemWhseOrder extends WireData implements Module {
 	 */
 	public function get_query() {
 		return ItemWhseOrderNoteQuery::create();
+	}
+
+	public function anyNotesExist($itemID, $whseID) {
+		$q = $this->get_query();
+		$q->filterByItemid($itemID);
+		$q->filterByWarehouseid($whseID);
+		return boolval($q->count());
 	}
 
 	/**
@@ -71,6 +80,24 @@ class QnotesItemWhseOrder extends WireData implements Module {
 		$q->filterByWarehouseid($whseID);
 		$q->filterByForm($form);
 		return $q->find()->toArray();
+	}
+
+	/**
+	 * Return Default Form values
+	 * @return array
+	 */
+	public function getDefaultFormValues() {
+		$configIn = Configs\In::config();
+		$defaults = [
+			'pickticket'      => $configIn->default_notes_pick,
+			'packticket'      => $configIn->default_notes_pack,
+			'invoice'         => $configIn->default_notes_invoice,
+			'acknowledgement' => $configIn->default_notes_acknowledgement,
+			'quote'           => $configIn->default_notes_quote,
+			'purchaseorder'   => $configIn->default_notes_po,
+			'ordertransfer'   => $configIn->default_notes_transfer,
+		];
+		return $defaults;
 	}
 
 /* =============================================================
@@ -311,6 +338,8 @@ class QnotesItemWhseOrder extends WireData implements Module {
 	 * @return int
 	 */
 	public function get_column_count() {
+		$config = Configs\Ar::config();
+		return $config->columns_notes_invoice;
 		return 35;
 	}
 
