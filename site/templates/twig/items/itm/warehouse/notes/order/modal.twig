@@ -24,8 +24,8 @@
 							{% for form, label in qnotes.get_forms_shortlabels() %}
 								<div class="col">
 									<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" name={{ form }} id="order-{{form}}" value="Y">
-										<label class="custom-control-label" for="order-{{form}}">{{ label }}</label>
+										<input type="checkbox" class="custom-control-input order-form" name="{{ form }}" id="order-{{form}}" value="Y">
+										<label class="custom-control-label" for="order-{{form}}">{{ label|capitalize }}</label>
 									</div>
 								</div>
 							{% endfor %}
