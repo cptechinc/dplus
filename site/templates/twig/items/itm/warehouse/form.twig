@@ -15,6 +15,7 @@
 				<div class="col-sm-8">
 					{% if warehouse.isNew() %}
 						<select name="whseID" class="custom-select custom-select-sm" id="whseID">
+							<option value=""></option>
 							{% for whse in m_whse.get_warehouses() %}
 								<option value="{{ whse.id }}" {{ whse.id == warehouse.whseid ? 'selected' : ''}}>
 									{{ whse.id }} - {{ whse.name }}
@@ -23,7 +24,7 @@
 						</select>
 					{% else %}
 						<p class="form-control-plaintext">
-							<input type="hidden" name="whseID" value="{{ warehouse.warehouseid }}">
+							<input type="hidden" name="whseID" value="{{ warehouse.warehouseid }}" id="whseID">
 							{{ warehouse.warehouseid }} - {{ m_whse.get_warehouse(warehouse.warehouseid).name }}
 						</p>
 					{% endif %}
