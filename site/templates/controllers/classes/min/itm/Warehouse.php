@@ -67,7 +67,6 @@ class Warehouse extends ItmFunction {
 			return self::handleCRUD($data);
 		}
 		self::initHooks();
-		$config  = self::pw('config');
 		$page    = self::pw('page');
 		$page->headline = "ITM: $data->itemID Warehouse $data->whseID";
 		$validate = self::getMinValidator();
@@ -79,6 +78,7 @@ class Warehouse extends ItmFunction {
 		if (self::getItmWarehouse()->exists($data->itemID, $data->whseID) === false) {
 			$page->headline = "ITM: $data->itemID Warehouse Add";
 		}
+		$page->js .= self::pw('config')->twig->render('items/itm/warehouse/js.twig');
 		return self::whseDisplay($data);
 	}
 
