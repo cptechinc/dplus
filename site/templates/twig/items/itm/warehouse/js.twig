@@ -9,6 +9,7 @@ $(function() {
 	origForm = form_whse.serialize();
 
 	$("body").on("click", "a:not(#item-whse-form .form_button, #ajax-modal a, [data-toggle])", function(e) {
+		console.log(origForm);
 		if (form_whse.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);
@@ -60,6 +61,21 @@ $(function() {
 		}
 	});
 
+	$("body").on('focusin', 'input:not(#whseID)', function(e) {
+		// var inputWhseid = $('#whseID');
+		// var input = $(this);
+		// if (inputWhseid.val() === '') {
+		// 	swal2.fire({
+		// 		title: 'Warehouse cannot be empty',
+		// 		text: '',
+		// 		icon: 'error',
+		// 		confirmButtonText: 'Ok',
+		// 	}).then((result) => {
+		// 		inputWhseid.focus();
+		// 	});
+		// }
+	});
+
 /* =============================================================
 	Valdation Methods
 ============================================================= */
@@ -75,27 +91,37 @@ $(function() {
 		},
 		ignore: ".validate-ignore",
 		rules: {
-			whseID: { required: true },
+			whseID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/warehouse/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+					}
+				}
+			},
+			bin_default: {
+				remote: {
+					required: true,
+					url: '{{ page.jsonapiURL('inv/validate/warehouse/bin/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						whseID: function() {
+							return $('#whseID').val();
+						},
+						binID: function() {
+							return $('#bin_default').val();
+						}
+					}
+				}
+			},
 			codeabc: { codeabc: true },
 			whsesupply: { required: true }
 		},
 		submitHandler : function(form) {
-			var valid_bin      = validate_bin();
-			var valid_form     = new SwalError(false, '', '', false);
-
-			if (valid_bin.error) {
-				valid_form = valid_bin;
-			}
-			if (valid_form.error) {
-				swal2.fire({
-					icon: 'error',
-					title: valid_form.title,
-					text: valid_form.msg,
-					html: valid_form.html
-				});
-			} else {
-				form.submit();
-			}
+			form.submit();
 		}
 	});
 
@@ -116,69 +142,6 @@ $(function() {
 			}
 			return new SwalError(error, title, msg, html);
 		}
-	}
-
-	function validate_bin() {
-		var error = false;
-		var title = '';
-		var msg = '';
-		var html = false;
-		var lowercase_bin = input_bin.val();
-		input_bin.val(lowercase_bin.toUpperCase());
-		var whseID = '';
-
-		if (form_whse.find('select[name=whseID]').length) {
-			whseID = form_whse.find('select[name=whseID]').val();
-		} else {
-			whseID = form_whse.find('input[name=whseID]').val();
-		}
-
-		var warehouse = warehouses[whseID];
-
-		if (input_bin.val() == '') {
-			error = true;
-			title = 'Error';
-			msg   = 'Please Fill in the Bin';
-		} else if (warehouse.binarrangement == 'list' && (input_bin.val() != in_defaultbin && !warehouse.bins.contains(input_bin.val()))) {
-			alert('doe snot ');
-			error = true;
-			title = 'Invalid Bin ID';
-			msg   = 'Please use a valid bin';
-		} else if (warehouse.binarrangement == 'range') {
-			error = true;
-
-			warehouse.bins.forEach(function(bin) {
-				if (input_bin.val() >= bin.from && input_bin.val() <= bin.through) {
-					error = false;
-				}
-			});
-
-			if (error) {
-				title = 'Invalid Bin ID';
-				msg = 'Your Bin ID must between these ranges';
-				html = "<h4>Valid Bin Ranges<h4>" + create_binrangetable();
-			}
-		}
-		return new SwalError(error, title, msg, html);
-	}
-
-	function create_binrangetable() {
-		if (form_whse.find('select[name=whseID]').length) {
-			whseID = form_whse.find('select[name=whseID]').val();
-		} else {
-			whseID = form_whse.find('input[name=whseID]').val();
-		}
-		var warehouse = warehouses[whseID];
-		var bootstrap = new JsContento();
-		var table = bootstrap.open('table', 'class=table table-striped table-condensed');
-			warehouse.bins.forEach(function(bin) {
-				table += bootstrap.open('tr', '');
-					table += bootstrap.openandclose('td', '', bin.from);
-					table += bootstrap.openandclose('td', '', bin.through);
-				table += bootstrap.close('tr');
-			});
-		table += bootstrap.close('table');
-		return table;
 	}
 
 /* =============================================================
