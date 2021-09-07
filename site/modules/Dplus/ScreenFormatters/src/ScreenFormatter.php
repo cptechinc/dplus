@@ -1,6 +1,6 @@
 <?php namespace Dplus\ScreenFormatters;
 
-use ProcessWire\WireData;
+use ProcessWire\WireData, ProcessWire\WireInput;
 
 use TableformatterQuery, Tableformatter;
 
