@@ -170,7 +170,6 @@ class ItmWarehouse extends WireData implements Module {
 		$configIn = Configs\In::config();
 
 		$whse = new WarehouseInventory();
-		$whse->setWhseid($configIn->default_whseid);
 		$whse->setBin_default($configIn->default_bin);
 		$whse->setStatus($configIn->default_status);
 		$whse->setSpecialorder($configIn->default_specialorder);
