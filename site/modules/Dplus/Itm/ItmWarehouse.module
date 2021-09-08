@@ -179,6 +179,7 @@ class ItmWarehouse extends WireData implements Module {
 		$whse->setOrderqty($configIn->default_orderqty);
 		$whse->setMaxqty($configIn->default_maxqty);
 		$whse->setOrderpoint($configIn->default_orderpoint);
+		$whse->setFreightin(0);
 		return $whse;
 	}
 
