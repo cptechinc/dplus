@@ -130,7 +130,7 @@ $(function() {
 
 	$("body").on("focusin", "#code-edit-form input:not(#code),#code-edit-form select", function(e) {
 		if (input_codeID.val() == '') {
-			validator.element( "#code" );
+			validator.element("#code");
 			input_codeID.focus();
 		}
 	});
