@@ -346,6 +346,27 @@ class Min extends AbstractController {
 		return $exists ? true : "Inv Adjustment Code not found";
 	}
 
+	public static function validateItmWhse($data) {
+		$fields = ['itemID|text', 'whseID|text', 'new|bool', 'jqv|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$validate = self::validator();
+		$exists = $validate->itmWhse($data->itemID, $data->whseID);
+
+		if (boolval($data->jqv) === false) {
+			if ($data->new) {
+				return $exists === false;
+			}
+			return $exists;
+		}
+
+		// JQuery Validate
+		if ($data->new) { // If new, check that upc doesn't already exist.
+			return $exists ? "ITM Warehouse Already Exists" : true;
+		}
+
+		return $exists ? true : "ITM Warehouse not found";
+	}
+
 
 	private static function validator() {
 		return new MinValidator();

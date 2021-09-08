@@ -34,6 +34,9 @@
 				'iarn' => [
 					['GET', 'code/', Json\Min::class, 'validateIarnExists'],
 				],
+				'itm' => [
+					['GET', 'warehouse/', Json\Min::class, 'validateItmWhse'],
+				]
 			],
 			['GET', 'tariff-code/', Json\Min::class, 'getTariffCode'],
 			['GET', 'country-code/', Json\Min::class, 'getCountryCode'],

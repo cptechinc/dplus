@@ -252,4 +252,15 @@ class Min extends WireData {
 		$iarn = Inproc\Iarn\Iarn::getInstance();
 		return $iarn->exists($id);
 	}
+
+	/**
+	 * Return if ITM Warehouse Exists
+	 * @param  string $itemID Item ID
+	 * @param  string $whseID Warehouse ID
+	 * @return bool
+	 */
+	public function itmWhse($itemID, $whseID) {
+		$itmw = $this->wire('modules')->get('ItmWarehouse');
+		return $itmw->exists($itemID, $whseID);
+	}
 }
