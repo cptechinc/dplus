@@ -50,7 +50,7 @@
 					<label for="status">Status</label>
 				</div>
 				<div class="col-sm-8">
-					{% include 'util/select.twig' with {'name': 'status', 'id': 'status', 'selectedvalue': warehouse.status, 'options': m_whse.get_itemstatus_options(), 'capitalize_labels': true, 'hideblankoption': true } %}
+					{% include 'util/select.twig' with {'name': 'status', 'id': 'status', 'selectedvalue': warehouse.status, 'options': m_whse.get_itemstatus_options(), 'capitalize_labels': true, 'hideblankoption': true, 'show_value': true } %}
 				</div>
 			</div>
 			<div class="form-group row">
@@ -58,7 +58,7 @@
 					<label for="specialorder">Special Order</label>
 				</div>
 				<div class="col-sm-8">
-					{% include 'util/select.twig' with {'name': 'specialorder', 'id': 'specialorder', 'selectedvalue': warehouse.specialorder, 'options': m_whse.get_specialorder_options(), 'capitalize_labels': true, 'hideblankoption': true } %}
+					{% include 'util/select.twig' with {'name': 'specialorder', 'id': 'specialorder', 'selectedvalue': warehouse.specialorder, 'options': m_whse.get_specialorder_options(), 'capitalize_labels': true, 'hideblankoption': true, 'show_value': true } %}
 				</div>
 			</div>
 			<div class="form-group row">
