@@ -1,32 +1,27 @@
+{% include 'items/itm/warehouse/js/classes.js.twig' %}
+
 $(function() {
 	var form_whse      = $('#item-whse-form');
-	var input_bin      = form_whse.find('input[name=bin_default]');
-	var input_codeabc  = form_whse.find('input[name=codeabc]');
+
+	var alert    = WhseAlerts.getInstance();
+	var formWhse = WhseForm.getInstance();
+	var server   = WhseRequests.getInstance();
 
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
-	origForm = form_whse.serialize();
+	origForm = formWhse.form.serialize();
 
-	$("body").on("click", "a:not(#item-whse-form .form_button, #ajax-modal a, [data-toggle])", function(e) {
-		console.log(origForm);
-		if (form_whse.serialize() !== origForm) {
+	$("body").on("click", "a:not(#item-whse-form .form_button, .modal a, [data-toggle])", function(e) {
+		if (formWhse.form.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);
 			var href = a.attr('href');
 
-			swal2.fire({
-				title: 'Changes have occurred!',
-				text: 'Do you want to save?',
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
-				cancelButtonText: 'No',
-			}).then((result) => {
-				if (result.value) {
-					form.find('button[type=submit][name=update-whse]').click();
-				} else if (result.dismiss === Swal.DismissReason.cancel) {
-					// Send HTTP GET Request to remove Record Lock
+			alert.unsavedChanges(function(saveForm) {
+				if (saveForm) {
+					formWhse.form.find('button[type=submit][name=update-whse]').click();
+				} else {
 					$.get('{{ page.url }}', function() {
 						window.location.href = href;
 					});
@@ -39,41 +34,34 @@ $(function() {
 	Changing WarehouseID for new Warehouses
 ============================================================= */
 	$("body").on('change', 'select[name=whseID]', function(e) {
-		var select = $(this);
+		var input = $(this);
 
-		if (warehouses[select.val()] !== undefined) {
-			swal2.fire({
-				title: 'Warehouse ' + select.val() + ' exists',
-				text: 'Would you like to change to this Warehouse?',
-				icon: 'error',
-				showCancelButton: true,
-				confirmButtonText: 'Yes',
-				cancelButtonText: 'No',
-			}).then((result) => {
-				if (result.value) {
-					var uri = new URI();
-					uri.setQuery('whseID', select.val());
-					window.location.href = uri.toString();
-				}
-			});
-		} else {
-			form_whse.find('select[name=whsesupply]').val(select.val());
-		}
+		server.validateItmWhse(formWhse.inputs.itemid.val(), input.val(), function(exists) {
+			if (exists === true) {
+				alert.exists(formWhse.inputs.itemid.val(), input.val(), function(goEdit) {
+					if (goEdit === true) {
+						var uri = new URI();
+						uri.setQuery('whseID', select.val());
+						window.location.href = uri.toString();
+					} else {
+						location.reload();
+					}
+				});
+			} else {
+				formWhse.inputs.whsesupply.val(input.val());
+			}
+		});
 	});
 
-	$("body").on('focusin', 'input:not(#whseID)', function(e) {
-		// var inputWhseid = $('#whseID');
-		// var input = $(this);
-		// if (inputWhseid.val() === '') {
-		// 	swal2.fire({
-		// 		title: 'Warehouse cannot be empty',
-		// 		text: '',
-		// 		icon: 'error',
-		// 		confirmButtonText: 'Ok',
-		// 	}).then((result) => {
-		// 		inputWhseid.focus();
-		// 	});
-		// }
+	$("body").on('focusin', 'input[name!=whseID], select[name!=whseID]', function(e) {
+		var input = $(this);
+
+		if (formWhse.inputs.whseid.val() == '') {
+			formWhse.inputs.whseid.focus();
+			alert.whseidRequired(function(confirmed) {
+				formWhse.inputs.whseid.focus();
+			});
+		}
 	});
 
 /* =============================================================
@@ -83,7 +71,7 @@ $(function() {
 		return this.optional(element) || /^[A-J]+$/i.test(value);
 	}, "Valid Entries for ABC Class are A through J");
 
-	form_whse.validate({
+	formWhse.form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -125,25 +113,6 @@ $(function() {
 		}
 	});
 
-	function validate_codeabc() {
-		var error = false;
-		var title = '';
-		var msg = '';
-		var html = false;
-
-		if (input_codeabc.val().length) {
-			var lowercase_codeabc = input_codeabc.val();
-			input_codeabc.val(lowercase_codeabc.toUpperCase());
-
-			if (/^[A-J]+$/i.test(input_codeabc.val()) == false) {
-				error = true;
-				title = 'ABC class Error';
-				msg = 'Valid Entries for ABC Class are A through J';
-			}
-			return new SwalError(error, title, msg, html);
-		}
-	}
-
 /* =============================================================
 	Bins Modal Methods
 ============================================================= */
@@ -152,11 +121,7 @@ $(function() {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		modal.attr('data-input', button.data('input'));
 
-		if (form_whse.find('select[name=whseID]').length) {
-			whseID = form_whse.find('select[name=whseID]').val();
-		} else {
-			whseID = form_whse.find('input[name=whseID]').val();
-		}
+		var whseID = formWhse.inputs.whseid.val();
 		modal.find('.modal-title').find('.whse-title').text(whseID);
 		modal.find('#whse-'+ whseID +'-tab').click();
 	});
@@ -165,7 +130,7 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var binID = button.data('bin');
-		input_bin.val(binID);
+		formWhse.inputs.bin.val(binID);
 		button.closest('.modal').modal('hide');
 	});
 });
