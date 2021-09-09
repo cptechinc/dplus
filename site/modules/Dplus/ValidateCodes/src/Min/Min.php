@@ -10,6 +10,8 @@ use ProcessWire\WireData;
 // Dplus CRUD
 use Dplus\Min\Inmain;
 use Dplus\Min\Inproc;
+// Dplus Configs
+use Dplus\Configs;
 // Dplus Code Validators
 use Dplus\CodeValidators\Map as MapValidator;
 
@@ -220,11 +222,14 @@ class Min extends WireData {
 			return false;
 		}
 
-		$whse = $this->modules->get('CodeTablesIwhm')->get_code($whseID);
+		$whse = $this->modules->get('CodeTablesIwhm')->whse($whseID);
 
 		if ($whse->validate_bin($binID) === false) {
-			$config = $this->modules->get('ConfigureIn')->config();
+			if ($whse->are_binsranged() && $binID == '') {
+				return true;
+			}
 
+			$config = Configs\In::config();
 			if ($binID != $config->default_bin) {
 				return false;
 			}
