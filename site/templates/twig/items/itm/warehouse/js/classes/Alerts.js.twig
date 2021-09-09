@@ -18,9 +18,11 @@ class WhseAlerts {
 			cancelButtonText: 'No',
 		}).then((result) => { // Return True for save, false for dismiss
 			if (result.value) {
-				callback(true)
+				callback(true);
+				return true;
 			} else if (result.dismiss === Swal.DismissReason.cancel) {
 				callback(false);
+				return false;
 			}
 		});
 	}
@@ -36,8 +38,10 @@ class WhseAlerts {
 		}).then((result) => { // Return True for save, false for dismiss
 			if (result.value) {
 				callback(true);
+				return true;
 			} else if (result.dismiss === Swal.DismissReason.cancel) {
 				callback(false);
+				return false;
 			}
 		});
 	}
