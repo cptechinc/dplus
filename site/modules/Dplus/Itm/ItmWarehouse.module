@@ -283,6 +283,8 @@ class ItmWarehouse extends WireData implements Module {
 		$record->setMaxqty($values->text('maxqty'));
 		$record->setMaxorderqty($values->text('maxorderqty'));
 		$record->setFreightin($values->text('freightin'));
+		$record->setDateupdtd(date('Ymd'));
+		$record->setTimeupdtd(date('His'));
 		return $invalidfields;
 	}
 
