@@ -12,13 +12,27 @@
 	item                   ItemMasterItem
 	itm                    module Itm
 	recordlocker           module RecordLockerUser
+	this.value = this.value.toUpperCase()
 #}
 <div class="form-group row">
 	<div class="col-sm-3">
 		<label for="itemID">Item ID</label>
 	</div>
 	<div class="col-sm-8">
-		<input type="text" class="{{ item.isNew() ? 'form-control' : 'form-control-plaintext' }} form-control-sm" name="itemID" id="itemID" value="{{ configIn.useUppercaseItemid() ? item.itemid|upper : item.itemid }}" {{ item.isNew() ? '' : 'readonly' }}>
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'itemID',
+					'value': configIn.useUppercaseItemid() ? item.itemid|upper : item.itemid,
+					'size': 'sm',
+					'attributes': {
+						'placeholder': '',
+						'aria-label':  'Item ID',
+						'readonly': item.isNew() == false,
+						'oninput': configIn.useUppercaseItemid() ? 'this.value = this.value.toUpperCase()' : ''
+					}
+				}
+			}
+		%}
 	</div>
 </div>
 
