@@ -10,6 +10,7 @@ class ItmForm {
 
 	constructor() {
 		this.id = 'itm-form';
+		this.form = $('#' + this.id);
 		this.inputs = ItmInputs.getInstance();
 		this.config = ItmConfigs.getInstance();
 	}
