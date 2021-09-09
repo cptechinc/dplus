@@ -20,7 +20,7 @@ $(function() {
 
 			alert.unsavedChanges(function(saveForm) {
 				if (saveForm) {
-					formWhse.form.find('button[type=submit][name=update-whse]').click();
+					formWhse.form.find('button[type=submit]').click();
 				} else {
 					$.get('{{ page.url }}', function() {
 						window.location.href = href;
@@ -31,7 +31,7 @@ $(function() {
 	});
 
 /* =============================================================
-	Changing WarehouseID for new Warehouses
+	Events
 ============================================================= */
 	$("body").on('change', 'select[name=whseID]', function(e) {
 		var input = $(this);
