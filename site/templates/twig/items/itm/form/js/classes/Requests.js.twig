@@ -1,0 +1,19 @@
+class ItmRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new ItmRequests();
+		}
+		return this.instance;
+	}
+
+	validateItemid(itemID,  callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('inv/validate/itemid/') }}');
+
+		ajax.setData({itemID: itemID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+}

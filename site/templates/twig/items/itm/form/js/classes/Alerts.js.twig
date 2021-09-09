@@ -1,0 +1,23 @@
+class ItmAlerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new ItmAlerts();
+		}
+		return this.instance;
+	}
+
+	itemExists(itemID, callback) {
+		swal2.fire({
+			title: "Item " + itemID + " exists",
+			text: 'Would you like to go edit this item?',
+			icon: 'error',
+			showCancelButton: true,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			callback(result.value ? result.value : false);
+		});
+	}
+}
