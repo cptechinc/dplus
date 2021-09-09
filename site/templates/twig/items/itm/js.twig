@@ -8,10 +8,30 @@ $(function() {
 	var input_custname  = form.find('input[name=cust_name]');
 
 	var formItm = ItmForm.getInstance();
+	var server  = ItmRequests.getInstance();
+	var alert   = ItmAlerts.getInstance();
 
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
+	$("body").on("change", "input[name=itemID]", function(e) {
+		var input = $(this);
+
+		server.validateItemid(input.val(),  function(exists) {
+			if (exists) {
+				alert.itemExists(input.val(), function(goEdit) {
+					if (goEdit) {
+						var uri = URI();
+						uri.setQuery('itemID', input.val());
+						window.location.href = uri.toString();
+					} else {
+						location.reload();
+					}
+				});
+			}
+		});
+	});
+
 	$("body").on("change", "input[name=custID]", function(e) {
 		var input = $(this);
 		var custID = input.val();
@@ -201,21 +221,27 @@ $(function() {
 			itemID: "Please review itemID, must not be more than {{ item.get_length_itemid() }} characters",
 		},
 		submitHandler: function(form) {
-			var itemID_input = $(form).find('input[name=itemID]').val();
-			var itemID_form  = $(form).data('itemid');
+			var formItm = ItmForm.getInstance();
+			var server = ItmRequests.getInstance();
 
-			console.log($(form).find('input[name=action]').val());
+			server.validateItemid(formItm.inputs.itemid.val(), function(exists) {
+				if (exists === false && formItm.form.data('itemid') == '') {
+					form.submit();
+				}
 
-			request_item_json(itemID_input, function(exists) {
-				if (exists) { // Item Exists
-					if (itemID_input == itemID_form) { // Item input == Form's item ID, allow save
+				if (exists === true) {
+					if (formItm.form.data('itemid') == formItm.inputs.itemid.val()) {
 						form.submit();
 					} else {
-						alert_item_exists(itemID_input);
-					}
-				} else { // ITEM does not exist yet, allow save
-					if (itemID_form == '') {
-						form.submit();
+						alert.itemExists(formItm.inputs.itemid.val(), function(goEdit) {
+							if (goEdit) {
+								var uri = URI();
+								uri.setQuery('itemID', formItm.inputs.itemid.val());
+								window.location.href = uri.toString();
+							} else {
+								location.reload();
+							}
+						});
 					}
 				}
 			});
