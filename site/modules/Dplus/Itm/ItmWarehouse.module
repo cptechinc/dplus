@@ -336,6 +336,7 @@ class ItmWarehouse extends WireData implements Module {
 		} else {
 			$record->setBin_default($values->text('bin_default'));
 		}
+		$record->setCodeabc(strtoupper($record->codeabc));
 		return $invalid;
 	}
 
