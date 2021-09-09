@@ -306,6 +306,13 @@ textarea.qnotes {
 	width: 100%;
 }
 
+.was-validated .form-control.form-control-sm:valid,
+.was-validated .form-control.form-control-sm:invalid,
+.form-control.form-control-sm.is-valid,
+.form-control.form-control-sm.is-invalid {
+	padding-right: .5rem;
+}
+
 .screen-overlay {
 	height: 100%;
 	z-index: 30;
