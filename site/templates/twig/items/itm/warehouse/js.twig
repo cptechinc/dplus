@@ -90,18 +90,24 @@ $(function() {
 				}
 			},
 			bin_default: {
-				remote: {
-					required: true,
-					url: '{{ page.jsonapiURL('inv/validate/warehouse/bin/') }}',
-					type: "get",
-					data: {
-						jqv: 'true',
-						whseID: function() {
-							return $('#whseID').val();
-						},
-						binID: function() {
-							return $('#bin_default').val();
+				remote: function () {
+					if ($('#whseID').val() != '') {
+						return {
+							required: true,
+							url: '{{ page.jsonapiURL('inv/validate/warehouse/bin/') }}',
+							type: "get",
+							data: {
+								jqv: 'true',
+								whseID: function() {
+									return $('#whseID').val();
+								},
+								binID: function() {
+									return $('#bin_default').val();
+								}
+							}
 						}
+					} else {
+						return {};
 					}
 				}
 			},
