@@ -16,4 +16,13 @@ class ItmRequests {
 			callback(response)
 		});
 	}
+
+	getCustomer(custID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('mar/customer/') }}');
+
+		ajax.setData({custID: custID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
 }

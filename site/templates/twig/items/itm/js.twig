@@ -42,7 +42,7 @@ $(function() {
 		}
 
 		if (input.val() != '') {
-			customerJson(input.val(), function(customer) {
+			server.getCustomer(custID, function(customer) {
 				if (customer) {
 					input.val(customer.id);
 					$('.customer-name').text(customer.name);
@@ -247,40 +247,4 @@ $(function() {
 			});
 		}
 	});
-
-	function request_item_json(itemID, callback) {
-		var url = URI('{{ page.jsonapiURL('inv/validate/itemid/') }}');
-		url.addQuery('itemID', itemID);
-
-		$.getJSON(url.toString(), function(exists) {
-			callback(exists);
-		});
-	}
-
-	function customerJson(custID, callback) {
-		var url = URI('{{ page.jsonapiURL('mar/customer/') }}');
-		url.addQuery('custID', custID);
-
-		$.getJSON(url.toString(), function(customer) {
-			callback(customer);
-		});
-	}
-
-	function alert_item_exists(itemID) {
-		var itemurl = new URI('{{ page.url }}');
-		itemurl.addQuery('itemID', itemID);
-
-		swal2.fire({
-			title: 'Item ID ' + itemID + ' exists',
-			text: "Do you want to edit " + itemID + '?',
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonText: '<i class="fa fa-pencil" aria-hidden="true"></i> Yes',
-			cancelButtonText: 'No',
-		}).then((result) => {
-			if (result.value) {
-				window.location.href = itemurl.toString();
-			}
-		});
-	}
 });
