@@ -15,7 +15,9 @@
 		<div class="col-sm-8">
 			<select name="uom_purchase" class="custom-select custom-select-sm" id="uom_purchase">
 				{% for uom in m_costing.get_uom_purchases() %}
-					<option value="{{ uom.code }}" {{ uom.code == item.unitofmpurchase.code ? 'selected' : '' }}>{{ uom.description }}</option>
+					<option value="{{ uom.code }}" {{ uom.code == item.unitofmpurchase.code ? 'selected' : '' }}>
+						{{ uom.code }} - {{ uom.description }}
+					</option>
 				{% endfor %}
 			</select>
 		</div>
@@ -63,7 +65,7 @@
 			<div class="row">
 				<div class="col-sm-8">
 					<div class="input-group input-group-sm">
-						<input type="text" class="form-control text-right" name="lastcost" id="lastcost" value="{{ item.lastcost|number_format(m_costing.configs.po.decimal_places_cost) }}">
+						<input type="text" class="form-control text-right" name="lastcost" id="lastcost" value="{{ item.lastcost|number_format(m_costing.configs.po.decimal_places_cost) }}" readonly>
 						<div class="input-group-append">
 							<span class="input-group-text uom-purchase-display">{{ item.unitofmpurchase.code }}</span>
 						</div>
@@ -85,7 +87,7 @@
 					<option value=""></option>
 					{% for buyer in m_costing.get_ap_buyers() %}
 						<option value="{{ buyer.code }}" {{ buyer.code == item.buyer ? 'selected' : ''}}>
-							{{ buyer.description }}
+							{{ buyer.code }} - {{ buyer.description }}
 						</option>
 					{% endfor %}
 				</select>
