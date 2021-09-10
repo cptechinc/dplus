@@ -2,6 +2,15 @@ $(function() {
 	var form  = $('#item-costing-form');
 
 /* =============================================================
+	Event Changes
+============================================================= */
+
+	$("body").on("change", "select[name=uom_purchase]", function(e) {
+		var input = $(this);
+		$('.uom-purchase-display').text(input.val());
+	});
+
+/* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
 	origForm = form.serialize();
