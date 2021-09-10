@@ -41,6 +41,14 @@ class ItmCosting extends WireData implements Module {
 		$this->appcustID    = $this->wire('modules')->get('DplusCustomer')->get_custID();
 	}
 
+	/**
+	 * Min Margin Based On Options
+	 * @return array
+	 */
+	public function getMinMarginBasedOnOptions() {
+		return ItemMasterItem::MIN_MARGIN_BASE_OPTIONS;
+	}
+
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
@@ -104,6 +112,15 @@ class ItmCosting extends WireData implements Module {
 		$item->setStandardcost($values->text('standardcost'));
 		$item->setLastcost($values->text('lastcost'));
 		$item->setMinmargin($values->text('minmargin'));
+
+
+		if ($values->offsetExists('minmarginbase') && array_key_exists($values->text('minmarginbase'), ItemMasterItem::MIN_MARGIN_BASE_OPTIONS)) {
+			$item->setMinmarginbase($values->text('minmarginbase'));
+		} else {
+			$item->setMinmarginbase('%');
+		}
+
+
 		$item->setStandardcostbasedon($values->text('standardcostbasedon'));
 
 		if ($this->is_buyercontrol_item()) {
@@ -115,6 +132,8 @@ class ItmCosting extends WireData implements Module {
 		if ($this->appcustID == 'LINDST') {
 			$item->Qty_purchase_carton($values->int('qty_purchase_carton'));
 		}
+		$item->setDateUpdtd(date('Ymd'));
+		$item->setTimeUpdtd(date('His'));
 
 		return $this->save_and_process_response($item);
 	}

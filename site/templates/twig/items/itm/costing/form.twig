@@ -97,10 +97,25 @@
 			<label for="minmargin">Min Margin</label>
 		</div>
 		<div class="col-sm-8">
-			<div class="input-group input-group-sm">
-				<input type="text" class="form-control text-right" name="minmargin" id="minmargin" value="{{ item.minmargin|number_format(4) }}">
-				<div class="input-group-append">
-					<span class="input-group-text uom-purchase-display">%</span>
+			<div class="row">
+				<div class="col-sm-5">
+					<input type="text" class="form-control form-control-sm text-right" name="minmargin" id="minmargin" value="{{ item.minmargin|number_format(4) }}">
+				</div>
+				<div class="col-sm-7">
+					<div class="row">
+						<div class="col-sm-5">
+							<label for="minmarginbase">Based On</label>
+						</div>
+						<div class="col-sm-7">
+							<select name="minmarginbase" id="minmarginbase" class="form-control form-control-sm">
+								{% for code, label in m_costing.getMinMarginBasedOnOptions() %}
+									<option value="{{ code }}" {{ code == item.minmarginbase ? 'selected' : ''}}>
+										{{ code }} - {{ label|capitalize }}
+									</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
