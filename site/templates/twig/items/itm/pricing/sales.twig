@@ -15,7 +15,9 @@
 		<select name="uom_sale" class="custom-select custom-select-sm" id="uom_sale">
 			<option value="">-- Choose --</option>
 			{% for uom in pricingm.get_unitsofm_sale() %}
-				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_sale ? 'selected' : ''}}>{{ uom.description }}</option>
+				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_sale ? 'selected' : ''}}>
+					{{ uom.code }} - {{ uom.description }}
+				</option>
 			{% endfor %}
 		</select>
 	</div>
