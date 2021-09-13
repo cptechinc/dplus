@@ -21,7 +21,7 @@
 	</div>
 	<div class="col-sm-8">
 		<div class="input-group input-group-sm">
-			<input type="text" class="form-control-plaintext text-right pr-2" value="{{ item_pricing.item.standardcost|number_format(4) }}" readonly>
+			<input type="text" class="form-control-plaintext text-right pr-2" name="standardcost" value="{{ item_pricing.item.standardcost|number_format(4) }}" readonly>
 			<div class="input-group-append">
 				<div class="input-group-text">{{ item_pricing.item.unitofmpurchase.code }}</div>
 			</div>
