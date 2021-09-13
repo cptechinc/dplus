@@ -10,8 +10,8 @@
 <table class="table table-striped table-sm">
 	<thead>
 		<tr>
-			<th class="col-3">Unit</th>
-			<th class="col-3 text-right">Unit Cost</th>
+			<th class="col-3">Qty</th>
+			<th class="col-3 text-right">Price</th>
 			<th class="col-3 text-right">Margin %</th>
 		</tr>
 	</thead>
@@ -19,6 +19,7 @@
 		<tr class="unit-row">
 			<td>
 				<b>Base</b>
+				<input type="hidden" class="pricebreak-qty" value="1">
 			</td>
 			<td>
 				<input type="text" class="form-control form-control-sm text-right pricebreak-price" name="baseprice" value="{{ item_pricing.baseprice|currency }}">
