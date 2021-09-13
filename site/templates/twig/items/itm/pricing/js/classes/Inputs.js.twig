@@ -1,0 +1,35 @@
+class PricingInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new PricingInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'itm-pricing-form';
+		this.form = $('#' + this.id);
+		this.uom = this.form.find('select[name=uom_sale]');
+		this.baseprice  = this.form.find('input[name=baseprice]');
+		this.itemid = this.form.find('input[name=itemID]');
+		this.standardcost = this.form.find('input[name=standardcost]');
+	}
+
+	updateUnitRow(unitrow) {
+		var inputQty   = unitrow.find('.unit-qty');
+		var inputPrice = unitrow.find('.pricebreak-price');
+		var textMargin = unitrow.find('.unit-margin');
+		var calculator = PricingCalculator.getInstance();
+		var margin = calculator.margin(inputPrice.val(), this.uom.find('option:selected').data('conversion'), this.standardcost.val())
+		textMargin.text(margin);
+	}
+
+	updateUnitRows() {
+		var inputs = this;
+		$(".unit-row").each(function(index) {
+			inputs.updateUnitRow($(this));
+		});
+	}
+}

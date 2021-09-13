@@ -1,0 +1,16 @@
+class PricingForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new PricingForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'itm-pricing-form';
+		this.form = $('#' + this.id);
+		this.inputs = PricingInputs.getInstance();
+	}
+}

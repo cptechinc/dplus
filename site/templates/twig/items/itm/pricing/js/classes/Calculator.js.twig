@@ -1,0 +1,23 @@
+class PricingCalculator {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new PricingCalculator();
+		}
+		return this.instance;
+	}
+
+	margin(baseprice, uomconversion, standardcost) {
+		baseprice     = parseFloat(baseprice);
+		uomconversion = parseFloat(uomconversion);
+		standardcost  = parseFloat(standardcost);
+
+		var pricePerUom = baseprice / uomconversion;
+		if (pricePerUom == 0) {
+			return 0;
+		}
+		var margin = ((pricePerUom - standardcost) / pricePerUom) * 100;
+		return margin;
+	}
+}
