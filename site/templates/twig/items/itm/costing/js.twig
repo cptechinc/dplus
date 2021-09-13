@@ -4,7 +4,6 @@ $(function() {
 /* =============================================================
 	Event Changes
 ============================================================= */
-
 	$("body").on("change", "select[name=uom_purchase]", function(e) {
 		var input = $(this);
 		$('.uom-purchase-display').text(input.val());
@@ -30,7 +29,7 @@ $(function() {
 				cancelButtonText: 'No',
 			}).then((result) => {
 				if (result.value) {
-					form.find('button[type=submit][name=update-itm-costing]').click();
+					form.find('button[type=submit][value="update-itm-costing"]').click();
 				} else if (result.dismiss === Swal.DismissReason.cancel) {
 					// Send HTTP GET Request to remove Record Lock
 					$.get('{{ page.url }}', function() {
