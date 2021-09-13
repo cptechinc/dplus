@@ -8,10 +8,10 @@
 	pricingm.configs       WireData
 	pricingm.configs.so    ConfigSalesOrder
 #}
-<form action="{{ page.wire('input').url() }}" method="POST">
+<form action="{{ input.url() }}" method="POST" id="itm-pricing-form">
 	<input type="hidden" name="action" value="update-itm-pricing">
 	<input type="hidden" name="itemID" value="{{ item_pricing.itemid }}">
-	<input type="hidden" name="itemID" value="{{ item_pricing.item.standardcost }}">
+	<input type="hidden" name="baseprice" value="{{ item_pricing.baseprice }}">
 
 	<div class="row mb-3">
 		<div class="col-sm-6">
