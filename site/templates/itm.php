@@ -18,7 +18,7 @@
 		],
 		'pricing' => [
 			['GET',  '', ItmController::class, 'pricing'],
-			['POST', '', ItmController::class, 'priciingHandleCRUD'],
+			['POST', '', ItmController::class, 'pricingHandleCRUD'],
 		],
 		'warehouses' => [
 			['GET',  '', ItmController::class, 'warehouse'],
