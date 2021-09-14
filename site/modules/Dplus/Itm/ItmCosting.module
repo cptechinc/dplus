@@ -6,8 +6,10 @@ use Purl\Url;
 
 use Dplus\CodeValidators\Min\Itm as ItmValidator;
 
-use ConfigInQuery, ConfigIn;
-use ConfigPoQuery, ConfigPo;
+// Dplus Configs
+use Dplus\Configs;
+
+use ConfigIn, ConfigPo;
 use ItemMasterItemQuery, ItemMasterItem;
 use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
 use ApBuyerQuery, ApBuyer;
@@ -36,8 +38,8 @@ class ItmCosting extends WireData implements Module {
 	}
 
 	public function init_configs() {
-		$this->configs->inv = $this->get_config_in();
-		$this->configs->po  = $this->get_config_po();
+		$this->configs->inv = Configs\In::config();
+		$this->configs->po  = Configs\Po::config();
 		$this->appcustID    = $this->wire('modules')->get('DplusCustomer')->get_custID();
 	}
 
@@ -109,10 +111,12 @@ class ItmCosting extends WireData implements Module {
 
 		$item = $itm->get_item($itemID);
 		$item->setUom_purchase($values->text('uom_purchase'));
-		$item->setStandardcost($values->text('standardcost'));
+		if ($values->text('standardcost') != $item->standardcost) {
+			$item->setStandardcost($values->text('standardcost'));
+			$item->setDate_laststandardcost(date('Ymd'));
+		}
 		$item->setLastcost($values->text('lastcost'));
 		$item->setMinmargin($values->text('minmargin'));
-
 
 		if ($values->offsetExists('minmarginbase') && array_key_exists($values->text('minmarginbase'), ItemMasterItem::MIN_MARGIN_BASE_OPTIONS)) {
 			$item->setMinmarginbase($values->text('minmarginbase'));
@@ -120,12 +124,13 @@ class ItmCosting extends WireData implements Module {
 			$item->setMinmarginbase('%');
 		}
 
-
 		$item->setStandardcostbasedon($values->text('standardcostbasedon'));
 
 		if ($this->is_buyercontrol_item()) {
 			if (strlen($values->text('buyer')) && $validate->buyercode($values->text('buyer'))) {
 				$item->setBuyer($values->text('buyer'));
+			} else {
+				$item->setBuyer('');
 			}
 		}
 
@@ -241,30 +246,12 @@ class ItmCosting extends WireData implements Module {
 	}
 
 	/**
-	 * Returns IN config
-	 * @return ConfigIn
-	 */
-	public function get_config_in() {
-		return ConfigInQuery::create()->findOne();
-	}
-
-	/**
-	 * Returns PO config
-	 * @return ConfigPo
-	 */
-	public function get_config_po() {
-		return ConfigPoQuery::create()->findOne();
-	}
-
-	/**
 	 * Return if ConfigPo's Buyer Control is Item
 	 * @return bool
 	 */
 	public function is_buyercontrol_item() {
-		if (empty($this->configs->po)) {
-			$this->init_configs();
-		}
-		return $this->configs->po->controlbuyer == ConfigPo::CONTROL_BUYER_ITEM;
+		$configPo = Configs\Po::config();
+		return $configPo->controlbuyer == $configPo::CONTROL_BUYER_ITEM;
 	}
 
 /* =============================================================
