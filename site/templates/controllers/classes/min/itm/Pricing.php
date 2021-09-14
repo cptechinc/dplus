@@ -38,12 +38,11 @@ class Pricing extends ItmFunction {
 
 		$fields = ['itemID|text', 'action|text'];
 		$data = self::sanitizeParameters($data, $fields);
-		$input = self::pw('input');
 		$itmPricing = self::getItmPricing();
 		$itmPricing->init_configs();
 
 		if ($data->action) {
-			$itmPricing->process_input($input);
+			$itmPricing->process_input(self::pw('input'));
 		}
 
 		self::pw('session')->redirect(self::itmUrlPricing($data->itemID), $http301 = false);
@@ -61,7 +60,7 @@ class Pricing extends ItmFunction {
 		}
 		$page    = self::pw('page');
 		$page->headline = "ITM: $data->itemID Pricing";
-		$page->js .= self::pw('config')->twig->render('items/itm/pricing/js.twig');
+		$page->js .= self::pw('config')->twig->render('items/itm/pricing/js.twig', ['itmPricing' => self::getItmPricing()]);
 		return self::pricingDisplay($data);
 	}
 
