@@ -21,7 +21,7 @@
 	</div>
 	<div class="col-sm-8">
 		<select name="assortmentcode" class="custom-select custom-select-sm" id="assortmentcode">
-			<option value="">-- None --</option>
+			<option value=""></option>
 			{% for assortment in pricingm.get_assortmentcodes() %}
 				<option value="{{ assortment.code }}" {{ assortment.code == item_pricing.item.assortmentcode ? 'selected' : ''}}>{{ assortment.description }}</option>
 			{% endfor %}
