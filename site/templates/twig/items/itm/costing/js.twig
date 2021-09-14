@@ -29,7 +29,14 @@ $(function() {
 				cancelButtonText: 'No',
 			}).then((result) => {
 				if (result.value) {
-					form.find('button[type=submit][value="update-itm-costing"]').click();
+					var values = form.formValues();
+					values.action = 'update-itm-costing';
+					var ajax = new AjaxRequest(form.attr('action'));
+					ajax.setMethod('POST');
+					ajax.setData(values);
+					ajax.request(function() {
+						window.location.href = href;
+					});
 				} else if (result.dismiss === Swal.DismissReason.cancel) {
 					// Send HTTP GET Request to remove Record Lock
 					$.get('{{ page.url }}', function() {
