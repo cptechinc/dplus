@@ -6,6 +6,9 @@ use Purl\Url;
 
 use Dplus\CodeValidators\Min\Itm as ItmValidator;
 
+// Dplus Configs
+use Dplus\Configs;
+
 use ConfigInQuery, ConfigIn;
 use ConfigPoQuery, ConfigPo;
 use ConfigSalesOrderQuery, ConfigSalesOrder;
@@ -28,6 +31,56 @@ class ItmPricing extends WireData implements Module {
 		$this->configs->inv = false;
 		$this->configs->po  = false;
 		$this->configs->so  = false;
+		$this->fieldAttributes = false;
+	}
+
+/* =============================================================
+	Field Attributes, Functions
+============================================================= */
+	const PRECISION_MARGIN = 4;
+
+	const FIELD_ATTRIBUTES = [
+		'qty_percase' => ['type' => 'number', 'precision' => 2, 'max' => 999999.99],
+		'minbuyqty'   => ['type' => 'number', 'precision' => 0, 'max' => 99999999],
+		'listprice'   => ['type' => 'number', 'precision' => 2, 'max'  => 999999999.000],
+	];
+
+	/**
+	 * Initialize field attributes
+	 * @return void
+	 */
+	public function initFieldAttributes() {
+		$configSo = Configs\So::config();
+		$configPo = Configs\Po::config();
+		$attributes = self::FIELD_ATTRIBUTES;
+		$attributes['price']  = ['type' => 'number', 'precision' => $configSo->decimal_places_price, 'max' => 99999999.9999];
+		$attributes['cost']   = ['type' => 'number', 'precision' => $configPo->decimal_places_cost, 'max' => 99999999.9999];
+		$attributes['qty']    = ['type' => 'number', 'precision' => 0, 'max' => 9999999];
+		$attributes['margin'] = ['type' => 'number', 'precision' => self::PRECISION_MARGIN , 'max' => 99.9999];
+		$this->fieldAttributes = $attributes;
+	}
+
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function fieldAttribute($field = '', $attr = '') {
+		if (empty($this->fieldAttributes)) {
+			$this->initFieldAttributes();
+		}
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		$this->init_field_attributes_config();
+		if (array_key_exists($field, $this->field_attributes) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, $this->field_attributes[$field]) === false) {
+			return false;
+		}
+		return $this->field_attributes[$field][$attr];
 	}
 
 	/**
@@ -39,9 +92,9 @@ class ItmPricing extends WireData implements Module {
 	}
 
 	public function init_configs() {
-		$this->configs->inv = $this->get_config_in();
-		$this->configs->po  = $this->get_config_po();
-		$this->configs->so  = $this->get_config_so();
+		$this->configs->inv = Configs\In::config();
+		$this->configs->po  = Configs\Po::config();
+		$this->configs->so  = Configs\So::config();
 	}
 
 /* =============================================================
@@ -122,7 +175,7 @@ class ItmPricing extends WireData implements Module {
 				$record = $this->get_create_itempricing($input);
 				$itm->lockrecord($itemID);
 
-				if ($itm->recordlocker->function_locked_by_user($itemID)) {
+				if ($itm->recordlocker->userHasLocked($itemID)) {
 					if ($values->text('action') == 'update-itm-pricing') {
 						$response = $this->update_itm_pricing($input, $record);
 						$saved_itm = $response->has_success() ? $this->update_itm($input) : false;
@@ -265,30 +318,6 @@ class ItmPricing extends WireData implements Module {
 /* =============================================================
 	Supplemental Functions
 ============================================================= */
-	/**
-	 * Returns IN config
-	 * @return ConfigIn
-	 */
-	public function get_config_in() {
-		return ConfigInQuery::create()->findOne();
-	}
-
-	/**
-	 * Returns PO config
-	 * @return ConfigPo
-	 */
-	public function get_config_po() {
-		return ConfigPoQuery::create()->findOne();
-	}
-
-	/**
-	 * Returns SO config
-	 * @return ConfigSo
-	 */
-	public function get_config_so() {
-		return ConfigSalesOrderQuery::create()->findOne();
-	}
-
 	public function get_unitsofm_sale() {
 		return UnitofMeasureSaleQuery::create()->find();
 	}

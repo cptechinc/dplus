@@ -1,0 +1,24 @@
+class PricingConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new PricingConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			price: {
+				precision: {{ vxm.field_attribute('unit_cost', 'precision') }}
+			},
+			unit_margin: {
+				precision: {{ vxm.field_attribute('unit_margin', 'precision') }}
+			},
+			listprice: {
+				precision: {{ vxm.field_attribute('listprice', 'precision') }}
+			}
+		};
+	}
+}
