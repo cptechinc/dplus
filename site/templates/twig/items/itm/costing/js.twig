@@ -12,7 +12,16 @@ $(function() {
 	});
 
 	$("body").on("change", "input[name=standardcost]", function(e) {
+		var input = $(this);
+		var cost = parseFloat(input.val());
+		input.val(cost.toFixed(formCosting.config.fields.cost.precision));
 		formCosting.updateStandardCostEach();
+	});
+
+	$("body").on("change", "input[name=minmargin]", function(e) {
+		var input = $(this);
+		var cost = parseFloat(input.val());
+		input.val(cost.toFixed(formCosting.config.fields.margin.precision));
 	});
 
 /* =============================================================

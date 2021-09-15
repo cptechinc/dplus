@@ -1,0 +1,24 @@
+class CostingConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CostingConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			uom: {
+				maxlength: {{ costing.getUomCodeLength() }}
+			},
+			cost: {
+				precision: {{ costing.getConfigPo().decimal_places_cost }}
+			},
+			margin: {
+				precision: 4
+			},
+		};
+	}
+}
