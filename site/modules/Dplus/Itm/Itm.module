@@ -33,7 +33,6 @@ class Itm extends WireData implements Module {
 	const DESCRIPTION_RECORD = 'Item Master Item';
 	const RECORDLOCKER_FUNCTION  = 'itm';
 
-
 	const FIELD_ATTRIBUTES = [
 		'description1'     => ['type' => 'text', 'maxlength' => 35],
 		'description2'     => ['type' => 'text', 'maxlength' => 35],
@@ -278,7 +277,9 @@ class Itm extends WireData implements Module {
 	private function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = strtoupper($values->text('itemID'));
+		$configIn = $this->configIn();
+
+		$itemID = $configIn->useUppercaseItemid() ? strtoupper($values->text('itemID')) : $values->text('itemID');
 		$record = $this->getCreateItem($itemID);
 		$invalidfields = array();
 
