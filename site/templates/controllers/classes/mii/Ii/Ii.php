@@ -23,24 +23,24 @@ use Controllers\Mii\Ii\SalesHistory;
 
 class Ii extends AbstractController {
 	const SUBFUNCTIONS = [
-		'stock'        => 'Stock',
-		'requirements' => 'Requirements',
-		'costing'      => 'Costing',
-		'pricing'      => 'Pricing',
-		'usage'        => 'Usage',
-		'activity'     => 'Activity',
-		'kit'          => 'Kit',
-		'bom'          => 'BoM',
-		'where-used'   => 'Where Used',
-		'lotserial'    => 'Lot / Serial',
-		'general'      => 'General',
-		'substitutes'  => 'Substitutes',
-		'documents'    => 'Documents',
-		'sales-orders' => 'Sales Orders',
-		'sales-history' => 'Sales History',
-		'quotes'        => 'Quotes',
-		'purchase-orders' => 'Purchase Orders',
-		'purchase-history' => 'Purchase History',
+		'stock'            => ['title' => 'Stock', 'permission' => 'stock'],
+		'requirements'     => ['title' => 'Requirements', 'permission' => 'requirements'],
+		'costing'          => ['title' => 'Costing', 'permission' => 'cost'],
+		'pricing'          => ['title' => 'Pricing', 'permission' => 'pricing'],
+		'usage'            => ['title' => 'Usage', 'permission' => 'general'],
+		'activity'         => ['title' => 'Activity', 'permission' => 'activity'],
+		'kit'              => ['title' => 'Kit', 'permission' => 'kit'],
+		'bom'              => ['title' => 'BoM', 'permission' => 'kit'],
+		'where-used'       => ['title' => 'Where Used', 'permission' => 'where'],
+		'lotserial'        => ['title' => 'Lot / Serial', 'permission' => 'lotserial'],
+		'general'          => ['title' => 'General', 'permission' => 'general'],
+		'substitutes'      => ['title' => 'Substitutes', 'permission' => 'substitutes'],
+		'documents'        => ['title' => 'Documents', 'permission' => 'documents'],
+		'sales-orders'     => ['title' => 'Sales Orders', 'permission' => 'salesorders'],
+		'sales-history'    => ['title' => 'Sales History', 'permission' => 'saleshistory'],
+		'quotes'           => ['title' => 'Quotes', 'permission' => 'quotes'],
+		'purchase-orders'  => ['title' => 'Purchase Orders', 'permission' => 'purchaseorders'],
+		'purchase-history' => ['title' => 'Purchase History', 'permission' => 'purchasehistory'],
 	];
 
 	public static function item($data) {
@@ -135,9 +135,9 @@ class Ii extends AbstractController {
 			$user = self::pw('user');
 			$allowed = [];
 			$iio = Item::getIio();
-			foreach (self::SUBFUNCTIONS as $option => $title) {
-				if ($iio->allowUser($user, $option)) {
-					$allowed[$option] = $title;
+			foreach (self::SUBFUNCTIONS as $path => $data) {
+				if ($iio->allowUser($user, $data['permission'])) {
+					$allowed[$path] = $data;
 				}
 			}
 			$event->return = $allowed;
