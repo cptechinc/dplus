@@ -29,7 +29,7 @@
 				<div class="input-group input-group-sm">
 					<input type="text" class="form-control text-right" value="{{ item.primaryvxm.get_unitcost(0)|number_format(4) }}" readonly>
 					<div class="input-group-append">
-						<div class="input-group-text">{{ item.primaryvxm.uom_purchase }}</div>
+						<div class="input-group-text text-monospace">{{ item.primaryvxm.uom_purchase|spacepad(m_costing.getUomCodeLength())|raw }}</div>
 					</div>
 				</div>
 			</div>

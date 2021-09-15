@@ -6,7 +6,7 @@
 	m_costing              module ItmCosting
 	itm                    module Itm
 #}
-<form action="{{ page.wire('input').url() }}" class="mb-3" id="item-costing-form" method="post">
+<form action="{{ input.url() }}" class="mb-3" id="item-costing-form" method="post">
 	<input type="hidden" name="itemID" value="{{ item.itemid }}">
 	<div class="form-group row">
 		<div class="col-sm-4">
@@ -27,17 +27,27 @@
 			<label for="standardcost">Standard Cost</label>
 		</div>
 		<div class="col-sm-8">
-			<div class="row">
+			<div class="row mb-2">
 				<div class="col-sm-8">
 					<div class="input-group input-group-sm">
 						<input type="text" class="form-control text-right" name="standardcost" id="standardcost" value="{{ item.standardcost|number_format(m_costing.configs.po.decimal_places_cost) }}">
 						<div class="input-group-append">
-							<span class="input-group-text uom-purchase-display">{{ item.unitofmpurchase.code }}</span>
+							<span class="input-group-text uom-purchase-display text-monospace">{{ item.unitofmpurchase.code|spacepad(m_costing.getUomCodeLength())|raw }}</span>
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-4">
 					<p class="form-control-plaintext">{{ item.date_laststandardcost ? item.date_laststandardcost|convertdate : '' }}</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-8">
+					<div class="input-group input-group-sm">
+						<input type="text" class="form-control text-right" value="{{ item.standardcost|number_format(m_costing.configs.po.decimal_places_cost) }}" readonly>
+						<div class="input-group-append">
+							<span class="input-group-text text-monospace">EACH</span>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -67,7 +77,7 @@
 					<div class="input-group input-group-sm">
 						<input type="text" class="form-control text-right" name="lastcost" id="lastcost" value="{{ item.lastcost|number_format(m_costing.configs.po.decimal_places_cost) }}" readonly>
 						<div class="input-group-append">
-							<span class="input-group-text uom-purchase-display">{{ item.unitofmpurchase.code }}</span>
+							<span class="input-group-text uom-purchase-display text-monospace">{{ item.unitofmpurchase.code|spacepad(m_costing.getUomCodeLength())|raw }}</span>
 						</div>
 					</div>
 				</div>
