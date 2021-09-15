@@ -126,6 +126,9 @@ class Item extends ItmFunction {
 		$config = self::pw('config');
 
 		$html   = $config->twig->render('items/itm/bread-crumbs.twig');
+		if (self::pw('session')->getFor('response', 'itm')) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => self::pw('session')->getFor('response', 'itm')]);
+		}
 		$html  .= $config->twig->render('items/itm/itm/search.twig', ['items' => $items, 'itm' => self::getItm()]);
 		$html  .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
 		return $html;
