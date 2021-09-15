@@ -6,7 +6,7 @@
 {% set pricing = item.pricing %}
 <div class="form-group row">
 	<div class="col-sm-6">
-		<strong>Sales UoM:</strong> {{ item.uom_sale }}
+		<strong>Sales UoM:</strong> {{ item.unitofmsale.code }} - {{ item.unitofmsale.description }}
 	</div>
 	<div class="col-sm-6">
 		<strong>Date:</strong> {{ pricing.updated ? pricing.updated|convertdate : 'N/A' }}
