@@ -263,7 +263,7 @@ class Itm extends WireData implements Module {
 		$record = $this->item($itemID);
 		$this->request_item_delete($record->itemid);
 		$response = $this->verify_delete($itemID);
-		
+
 		if ($response->has_success()) {
 			$record->delete();
 		}
@@ -326,6 +326,7 @@ class Itm extends WireData implements Module {
 		$record->setSplitorder($values->yn('splitorder'));
 		$record->setInspection($values->yn('inspection'));
 		$record->setTaxable($values->yn('taxable'));
+		$record->setRequire_freight($values->yn('require_freight'));
 		$record->setCubes($values->float('cubes', ['precision' => $this->fieldAttribute('cubes', 'precision')]));
 		$record->setWeight($values->float('weight', ['precision' => $this->fieldAttribute('weight', 'precision')]));
 
