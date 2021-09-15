@@ -22,7 +22,7 @@
 					'size': 'sm',
 					'attributes': {
 						'placeholder': '',
-						'aria-label':  'Item ID',
+						'aria-label':  'Description 1',
 						'oninput': configIn.useUppercaseItemDescription() ? 'this.value = this.value.toUpperCase()' : '',
 						'maxlength': itm.fieldAttribute('description1', 'maxlength')
 					}
@@ -38,12 +38,12 @@
 	<div class="col-sm-8">
 		{% include 'util/bootstrap/form/input.twig' with {
 				'input': {
-					'name': 'description',
+					'name': 'description2',
 					'value': configIn.useUppercaseItemDescription() ? item.description2|upper : item.description2,
 					'size': 'sm',
 					'attributes': {
 						'placeholder': '',
-						'aria-label':  'Item ID',
+						'aria-label':  'Description 2',
 						'oninput': configIn.useUppercaseItemDescription() ? 'this.value = this.value.toUpperCase()' : '',
 						'maxlength': itm.fieldAttribute('description2', 'maxlength')
 					}
