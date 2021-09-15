@@ -49,7 +49,7 @@ class Item extends ItmFunction {
 		if ($data->action) {
 			$itm  = self::getItm();
 			$itm->process_input($input);
-			if ($data->action == 'delete-itm-item') {
+			if ($data->action == 'delete-itm') {
 				$url->query->remove('itemID');
 			}
 		}
@@ -188,9 +188,8 @@ class Item extends ItmFunction {
 		parent::initHooks();
 		$m = self::pw('modules')->get('Itm');
 
-
 		$m->addHook('Page(pw_template=itm)::itmDeleteUrl', function($event) {
-			$event->return = self::itmUrl($event->arguments(0));
+			$event->return = self::itmDeleteUrl($event->arguments(0));
 		});
 
 		$m->addHook('Page(pw_template=itm)::itmAddUrl', function($event) {
