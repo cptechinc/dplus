@@ -1,0 +1,15 @@
+class CostingInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CostingInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'item-costing-form';
+		this.form = $('#' + this.id);
+	}
+}

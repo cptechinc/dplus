@@ -1,5 +1,8 @@
+{% include 'items/itm/costing/js/classes.js.twig' %}
+
 $(function() {
-	var form  = $('#item-costing-form');
+	var formCosting = CostingForm.getInstance();
+	var alert       = CostingAlerts.getInstance();
 
 /* =============================================================
 	Event Changes
@@ -12,23 +15,16 @@ $(function() {
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
-	origForm = form.serialize();
+	origForm = formCosting.form.serialize();
 
 	$("body").on("click", "a:not(#item-costing-form .form_button)", function(e) {
-		if (form.serialize() !== origForm) {
+		if (formCosting.form.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);
 			var href = a.attr('href');
 
-			swal2.fire({
-				title: 'Changes have occurred!',
-				text: 'Do you want to save?',
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
-				cancelButtonText: 'No',
-			}).then((result) => {
-				if (result.value) {
+			alert.unsavedChanges(function(saveChanges) {
+				if (saveChanges) {
 					var values = form.formValues();
 					values.action = 'update-itm-costing';
 					var ajax = new AjaxRequest(form.attr('action'));
@@ -37,8 +33,7 @@ $(function() {
 					ajax.request(function() {
 						window.location.href = href;
 					});
-				} else if (result.dismiss === Swal.DismissReason.cancel) {
-					// Send HTTP GET Request to remove Record Lock
+				} else {
 					$.get('{{ page.url }}', function() {
 						window.location.href = href;
 					});
@@ -50,7 +45,7 @@ $(function() {
 /* =============================================================
 	Validation Methods
 ============================================================= */
-	form.validate({
+	formCosting.form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
