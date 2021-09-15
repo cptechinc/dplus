@@ -262,6 +262,10 @@ class ItmCosting extends WireData implements Module {
 		return $this->wire('modules')->get('CodeTablesUmm')->getCodeMaxlength();
 	}
 
+	public function getConfigPo() {
+		return Configs\Po::config();
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
