@@ -60,7 +60,7 @@ class Costing extends ItmFunction {
 		}
 		$page = self::pw('page');
 		$page->headline = "ITM: $data->itemID Costing";
-		$page->js .= self::pw('config')->twig->render('items/itm/costing/js.twig');
+		$page->js .= self::pw('config')->twig->render('items/itm/costing/js.twig', ['costing' => self::getItmCosting(), 'itm' => self::getItm()]);
 		return self::costingDisplay($data);
 	}
 
