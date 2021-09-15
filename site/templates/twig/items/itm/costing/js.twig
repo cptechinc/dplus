@@ -8,8 +8,11 @@ $(function() {
 	Event Changes
 ============================================================= */
 	$("body").on("change", "select[name=uom_purchase]", function(e) {
-		var input = $(this);
-		$('.uom-purchase-display').text(input.val());
+		formCosting.updateUomPurchase();
+	});
+
+	$("body").on("change", "input[name=standardcost]", function(e) {
+		formCosting.updateStandardCostEach();
 	});
 
 /* =============================================================

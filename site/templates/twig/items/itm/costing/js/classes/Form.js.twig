@@ -13,4 +13,17 @@ class CostingForm {
 		this.form = $('#' + this.id);
 		this.inputs = CostingInputs.getInstance();
 	}
+
+	updateUomPurchase() {
+		this.form.find('.uom-purchase-display').text(this.inputs.uom.val());
+		this.updateStandardCostEach();
+	}
+
+	updateStandardCostEach() {
+		var conversion = parseFloat(this.inputs.uom.find('option:selected').data('conversion'));
+		var standardcostUom = parseFloat(this.inputs.standardcost.val());
+		var costEach = standardcostUom / conversion;
+		var div = this.form.find('#standardcost-each');
+		div.find('input').val(costEach);
+	}
 }

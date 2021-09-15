@@ -11,5 +11,7 @@ class CostingInputs {
 	constructor() {
 		this.id = 'item-costing-form';
 		this.form = $('#' + this.id);
+		this.standardcost = this.form.find('input[name=standardcost]');
+		this.uom          = this.form.find('select[name=uom_purchase]');
 	}
 }
