@@ -254,6 +254,14 @@ class ItmCosting extends WireData implements Module {
 		return $configPo->controlbuyer == $configPo::CONTROL_BUYER_ITEM;
 	}
 
+	/**
+	 * Return Uom Code Length
+	 * @return int
+	 */
+	public function getUomCodeLength() {
+		return $this->wire('modules')->get('CodeTablesUmm')->getCodeMaxlength();
+	}
+
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
