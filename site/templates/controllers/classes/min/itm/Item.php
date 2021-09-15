@@ -49,8 +49,12 @@ class Item extends ItmFunction {
 		if ($data->action) {
 			$itm  = self::getItm();
 			$itm->process_input($input);
+
 			if ($data->action == 'delete-itm') {
-				$url->query->remove('itemID');
+				$response = self::pw('session')->getFor('response', 'itm');
+				if ($response->has_success()) {
+					$url->query->remove('itemID');
+				}
 			}
 		}
 		self::pw('session')->redirect($url->getUrl(), $http301 = false);
