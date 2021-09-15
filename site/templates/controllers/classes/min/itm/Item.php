@@ -36,9 +36,10 @@ class Item extends ItmFunction {
 	public static function handleCRUD($data) {
 		$input = self::pw('input');
 
-		if (self::validateItemidAndPermission($data) === false) {
+		if (self::validateUserPermission() === false) {
 			self::pw('session')->redirect($input->url(), $http301 = false);
 		}
+
 		$fields = ['itemID|text', 'action|text'];
 		$data  = self::sanitizeParametersShort($data, $fields);
 		$url   = new Purl($input->url($withQueryString = true));
@@ -57,7 +58,7 @@ class Item extends ItmFunction {
 
 	public static function itm($data) {
 		if (self::validateUserPermission() === false) {
-			self::pw('session')->redirect($input->url());
+			self::pw('session')->redirect(self::pw('input')->url());
 		}
 		$fields = ['itemID|text'];
 		self::sanitizeParametersShort($data, $fields);
@@ -93,6 +94,9 @@ class Item extends ItmFunction {
 
 
 	public static function list($data) {
+		if (self::validateUserPermission() === false) {
+			self::pw('session')->redirect(self::pw('input')->url());
+		}
 		$fields = ['itemID|text', 'q|text'];
 		$data   = self::sanitizeParametersShort($data, $fields);
 		$page     = self::pw('page');
