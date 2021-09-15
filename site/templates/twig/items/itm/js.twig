@@ -79,7 +79,7 @@ $(function() {
 ============================================================= */
 	origForm = form.serialize();
 
-	$("body").on("click", "a:not(#ajax-modal a)", function(e) {
+	$("body").on("click", "a:not(#ajax-modal a, .form-actions .delete-itm)", function(e) {
 		if (form.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);
