@@ -261,9 +261,9 @@ class Itm extends WireData implements Module {
 			return false;
 		}
 		$record = $this->item($itemID);
-		$response = $this->save_and_respond($record, []);
-		$response->set_saved_itm($response->success);
+		$this->request_item_delete($record->itemid);
 		$response = $this->verify_delete($itemID);
+		
 		if ($response->has_success()) {
 			$record->delete();
 		}
