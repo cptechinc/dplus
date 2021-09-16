@@ -1,0 +1,44 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemMasterItem
+	item_pricing           ItemMasterItem
+	pricingm               module ItmPricing
+	pricingm.configs       WireData
+#}
+<tr class="unit-row">
+	<td>
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'pricebreak_qty' ~ i,
+					'value': item_pricing.get_pricebreak_qty(i),
+					'size': 'sm',
+					'attributes': {
+						'placeholder': '',
+						'aria-label':  'price break qty ' ~ i,
+					},
+					'addclasses': ['text-right', 'unit-qty']
+				}
+			}
+		%}
+	</td>
+	<td>
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'pricebreak_price' ~ i,
+					'value': item_pricing.get_pricebreak_price(i),
+					'size': 'sm',
+					'attributes': {
+						'placeholder': '',
+						'aria-label':  'price break price ' ~ i,
+					},
+					'addclasses': ['text-right', 'unit-price']
+				}
+			}
+		%}
+	</td>
+	<td class="text-right">
+		<span class="unit-margin text-right">{{ item_pricing.get_pricebreak_margin(i)|number_format(4) }}</span> %
+	</td>
+</tr>

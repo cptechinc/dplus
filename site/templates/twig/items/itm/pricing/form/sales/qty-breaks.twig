@@ -29,17 +29,7 @@
 			</td>
 		</tr>
 		{% for i in 1..item_pricing.count_qtybreaks() %}
-			<tr class="pricebreak-row">
-				<td>
-					<input type="text" class="form-control form-control-sm text-right pricebreak-qty" name="pricebreak_qty{{ i }}" value="{{ item_pricing.get_pricebreak_qty(i) }}">
-				</td>
-				<td>
-					<input type="text" class="form-control form-control-sm text-right pricebreak-price" name="pricebreak_price{{ i }}" value="{{ item_pricing.get_pricebreak_price(i)|currency }}">
-				</td>
-				<td class="text-right">
-					<span class="unit-margin text-right">{{ item_pricing.get_pricebreak_margin(i)|number_format(4) }}</span> %
-				</td>
-			</tr>
+			{% include 'items/itm/pricing/form/sales/qty-breaks/tr.twig' %}
 		{% endfor %}
 	</tbody>
 </table>
