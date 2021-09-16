@@ -111,8 +111,14 @@ class ItmCosting extends WireData implements Module {
 
 		$item = $itm->get_item($itemID);
 		$item->setUom_purchase($values->text('uom_purchase'));
+
 		if ($values->text('standardcost') != $item->standardcost) {
-			$item->setStandardcost($values->text('standardcost'));
+			// SAVE STANDARD COST AS COST / EACH, display cost * UOM CONVERSION
+			$configPo = Configs\Po::config();
+			$uom = $this->wire('modules')->get('CodeTablesUmm')->get_code($values->text('uom_purchase'));
+			$costUom = $values->float('standardcost', ['precision' => $configPo->decimal_places_cost]);
+			$costEach = $costUom / $uom->conversion;
+			$item->setStandardcost($costEach);
 			$item->setDate_laststandardcost(date('Ymd'));
 		}
 		$item->setLastcost($values->text('lastcost'));
