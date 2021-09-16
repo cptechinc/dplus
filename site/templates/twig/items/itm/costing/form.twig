@@ -30,7 +30,16 @@
 			<div class="row mb-2">
 				<div class="col-sm-8">
 					<div class="input-group input-group-sm">
-						<input type="text" class="form-control text-right" name="standardcost" id="standardcost" value="{{ item.standardcost|number_format(m_costing.configs.po.decimal_places_cost) }}">
+						{% include 'util/bootstrap/form/input.twig' with {
+								'input': {
+									'type': 'number',
+									'name': 'standardcost',
+									'value': (item.standardcost * item.unitofmpurchase.conversion)|number_format(m_costing.getConfigPo().decimal_places_cost),
+									'size': 'sm',
+									'addclasses': ['text-right']
+								}
+							}
+						%}
 						<div class="input-group-append">
 							<span class="input-group-text uom-purchase-display text-monospace">{{ item.unitofmpurchase.code|spacepad(m_costing.getUomCodeLength())|raw }}</span>
 						</div>
