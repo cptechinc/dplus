@@ -14,4 +14,72 @@ class PricingForm {
 		this.inputs = PricingInputs.getInstance();
 		this.config = PricingConfigs.getInstance();
 	}
+
+	updateUnitRow(unitrow) {
+		this.updatePricePrecision(unitrow);
+		this.updateMargin(unitrow);
+		this.updateUnitRowReadonly(unitrow.data('break'));
+	}
+
+	updatePricePrecision(unitrow) {
+		var inputPrice = unitrow.find(this.inputs.classes.price);
+		var price = parseFloat(inputPrice.val());
+		if (price > 0) {
+			inputPrice.val(price.toFixed(this.config.fields.price.precision));
+		} else {
+			inputPrice.val('');
+		}
+	}
+
+	updateMargin(unitrow) {
+		var inputPrice = unitrow.find(this.inputs.classes.price);
+		var textMargin = unitrow.find(this.inputs.classes.margin);
+
+		if (parseFloat(inputPrice.val()) > 0) {
+			var calculator = PricingCalculator.getInstance();
+			var margin = calculator.margin(inputPrice.val(), this.inputs.uom.find('option:selected').data('conversion'), this.inputs.standardcost.val())
+			textMargin.text(margin.toFixed(this.config.fields.margin.precision));
+		} else {
+			textMargin.text('');
+		}
+	}
+
+	updateUnitRows() {
+		var form = this;
+		$(".unit-row").each(function(index) {
+			form.updateUnitRow($(this));
+		});
+	}
+
+	updateUnitRowReadonly(step) {
+		var unitrow = $('.unit-row[data-break="'+step+'"]');
+		var inputQty   = unitrow.find(this.inputs.classes.qty);
+		var inputPrice = unitrow.find(this.inputs.classes.price);
+
+		if (parseFloat(inputQty.val()) > 0) {
+			inputPrice.removeAttr('readonly');
+		} else {
+			inputPrice.val('');
+			inputPrice.attr('readonly', 'true');
+		}
+
+		this.updateNextUnitRow(step);
+	}
+
+	updateNextUnitRow(step) {
+		var unitrow = $('.unit-row[data-break="'+step+'"]');
+		var inputQty   = unitrow.find(this.inputs.classes.qty);
+		var inputPrice = unitrow.find(this.inputs.classes.price);
+
+		var nextstep  = parseInt(step) + 1;
+		var nextrow   = $('.unit-row[data-break="'+nextstep+'"]');
+		
+		if (nextrow.length) {
+			if (parseFloat(inputQty.val()) > 0) {
+				nextrow.find(this.inputs.classes.qty).removeAttr('readonly');
+			} else {
+				nextrow.find(this.inputs.classes.qty).attr('readonly', 'true');
+			}
+		}
+	}
 }
