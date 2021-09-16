@@ -8,7 +8,7 @@
 $(function() {
 	var formPricing = PricingForm.getInstance();
 
-	$("body").on("change", ".pricebreak-price, .pricebreak-qty", function(e) {
+	$("body").on("change", ".unit-price, .unit-qty", function(e) {
 		var unitrow = $(this).closest('.unit-row');
 		formPricing.inputs.updateUnitRow(unitrow);
 	});

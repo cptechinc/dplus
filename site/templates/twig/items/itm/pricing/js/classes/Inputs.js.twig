@@ -19,8 +19,10 @@ class PricingInputs {
 
 	updateUnitRow(unitrow) {
 		var inputQty   = unitrow.find('.unit-qty');
-		var inputPrice = unitrow.find('.pricebreak-price');
+		var inputPrice = unitrow.find('.unit-price');
+
 		var textMargin = unitrow.find('.unit-margin');
+
 		var calculator = PricingCalculator.getInstance();
 		var margin = calculator.margin(inputPrice.val(), this.uom.find('option:selected').data('conversion'), this.standardcost.val())
 		textMargin.text(margin);
