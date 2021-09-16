@@ -11,10 +11,10 @@ class PricingConfigs {
 	constructor() {
 		this.fields = {
 			price: {
-				precision: 2
+				precision: {{ itmPricing.fieldAttribute('price', 'precision') }}
 			},
 			margin: {
-				precision: 4
+				precision: {{ itmPricing.fieldAttribute('margin', 'precision') }}
 			},
 		};
 	}
