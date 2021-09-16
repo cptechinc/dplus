@@ -36,7 +36,7 @@ class Pricing extends ItmFunction {
 			return self::displayAlertUserPermission($data);
 		}
 
-		$fields = ['itemID|text', 'action|text'];
+		$fields = ['itemID|text', 'action|text', 'redirect|text'];
 		$data = self::sanitizeParameters($data, $fields);
 		$itmPricing = self::getItmPricing();
 		$itmPricing->init_configs();
@@ -45,7 +45,10 @@ class Pricing extends ItmFunction {
 			$itmPricing->process_input(self::pw('input'));
 		}
 
-		self::pw('session')->redirect(self::itmUrlPricing($data->itemID), $http301 = false);
+		if (self::pw('config')->ajax === false) {
+			$url = empty($data->redirect) === false ? $data->redirect : self::itmUrlPricing($data->itemID);
+			self::pw('session')->redirect($url, $http301 = false);
+		}
 	}
 
 	public static function pricing($data) {
