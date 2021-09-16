@@ -11,14 +11,11 @@ class PricingConfigs {
 	constructor() {
 		this.fields = {
 			price: {
-				precision: {{ vxm.field_attribute('unit_cost', 'precision') }}
+				precision: 2
 			},
-			unit_margin: {
-				precision: {{ vxm.field_attribute('unit_margin', 'precision') }}
+			margin: {
+				precision: 4
 			},
-			listprice: {
-				precision: {{ vxm.field_attribute('listprice', 'precision') }}
-			}
 		};
 	}
 }
