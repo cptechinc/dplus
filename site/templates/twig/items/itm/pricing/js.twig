@@ -10,7 +10,7 @@ $(function() {
 
 	$("body").on("change", ".unit-price, .unit-qty", function(e) {
 		var unitrow = $(this).closest('.unit-row');
-		formPricing.inputs.updateUnitRow(unitrow);
+		formPricing.updateUnitRow(unitrow);
 	});
 
 	/**
@@ -21,6 +21,6 @@ $(function() {
 		var conversion = inputs.uom.find('option:selected').data('conversion');
 		var conversionText = inputs.uom.siblings('p').find('.conversion-description');
 		conversionText.text(conversion);
-		formPricing.inputs.updateUnitRows();
+		formPricing.updateUnitRows();
 	});
 });
