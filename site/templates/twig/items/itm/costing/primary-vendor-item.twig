@@ -3,14 +3,14 @@
 	-------------------------------------------------
 	item                   ItemMasterItem
 #}
-{% set xref = xref %}
+{% set xref = item.primaryvxm %}
 
 <div class="form-group row">
 	<div class="col-sm-4">
 		<strong>Primary Vendor </strong>
 	</div>
 	<div class="col-sm-8">
-		{{ xref.vendorid }}
+		{{ xref.vendorid }} - {{ xref.vendor.name }}
 	</div>
 </div>
 <div class="form-group row">
@@ -34,7 +34,7 @@
 							'size': 'sm',
 							'attributes': {'readonly': true},
 							'input': {
-								'value': xref.get_unitcost(0)|number_format(m_costing.getConfigPo().decimal_places_cost),
+								'value': xref.getUnitCostUom(0)|number_format(m_costing.getConfigPo().decimal_places_cost),
 								'addclasses': ['text-right']
 							},
 							'span': {
