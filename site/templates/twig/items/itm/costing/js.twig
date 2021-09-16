@@ -37,14 +37,9 @@ $(function() {
 
 			alert.unsavedChanges(function(saveChanges) {
 				if (saveChanges) {
-					var values = form.formValues();
-					values.action = 'update-itm-costing';
-					var ajax = new AjaxRequest(form.attr('action'));
-					ajax.setMethod('POST');
-					ajax.setData(values);
-					ajax.request(function() {
-						window.location.href = href;
-					});
+					$('#loading-modal').modal('show');
+					formCosting.form.append('<input type="hidden" name="redirect" value="'+href+'">');
+					formCosting.form.submit();
 				} else {
 					$.get('{{ page.url }}', function() {
 						window.location.href = href;
