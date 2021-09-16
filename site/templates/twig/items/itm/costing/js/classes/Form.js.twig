@@ -18,7 +18,15 @@ class CostingForm {
 	updateUomPurchase() {
 		this.updateUomPurchaseDisplay();
 		this.showHideStandardCostEach();
-		this.updateStandardCostEach();
+		this.updateStandardCostUom();
+	}
+
+	updateStandardCostUom() {
+		var conversion = parseFloat(this.inputs.uom.find('option:selected').data('conversion'));
+		console.log(conversion);
+		var div = this.form.find('#standardcost-each');
+		var input = div.find('input');
+		this.inputs.standardcost.val(parseFloat(input.val()) * conversion);
 	}
 
 	updateUomPurchaseDisplay() {
