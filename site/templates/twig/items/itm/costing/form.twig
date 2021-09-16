@@ -29,21 +29,23 @@
 		<div class="col-sm-8">
 			<div class="row mb-2">
 				<div class="col-sm-8">
-					<div class="input-group input-group-sm">
-						{% include 'util/bootstrap/form/input.twig' with {
+					{% include 'util/bootstrap/form/input-group.twig' with {
+							'inputgroup': {
+								'type': 'append',
+								'size': 'sm',
 								'input': {
 									'type': 'number',
 									'name': 'standardcost',
 									'value': (item.standardcost * item.unitofmpurchase.conversion)|number_format(m_costing.getConfigPo().decimal_places_cost),
-									'size': 'sm',
 									'addclasses': ['text-right']
+								},
+								'span': {
+									'text': item.unitofmpurchase.code|spacepad(m_costing.getUomCodeLength())|raw,
+									'addclasses': ['text-monospace', 'uom-purchase-display']
 								}
 							}
-						%}
-						<div class="input-group-append">
-							<span class="input-group-text uom-purchase-display text-monospace">{{ item.unitofmpurchase.code|spacepad(m_costing.getUomCodeLength())|raw }}</span>
-						</div>
-					</div>
+						}
+					%}
 				</div>
 				<div class="col-sm-4">
 					<p class="form-control-plaintext form-control-sm">{{ item.date_laststandardcost ? item.date_laststandardcost|convertdate : '' }}</p>
@@ -51,12 +53,29 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-8">
-					<div class="input-group input-group-sm collapse {{ item.unitofmpurchase.code != 'EACH' ? 'show' : '' }}" id="standardcost-each">
-						<input type="text" class="form-control text-right" value="{{ item.standardcost|number_format(m_costing.configs.po.decimal_places_cost) }}" readonly>
-						<div class="input-group-append">
-							<span class="input-group-text text-monospace">EACH</span>
-						</div>
-					</div>
+					{% include 'util/bootstrap/form/input-group.twig' with {
+							'inputgroup': {
+								'type': 'append',
+								'size': 'sm',
+								'addclasses': [
+									'collapse',
+									item.unitofmpurchase.code != 'EACH' ? 'show' : ''
+								],
+								'attributes': {
+									'id': 'standardcost-each',
+									'readonly': true
+								},
+								'input': {
+									'value': item.standardcost|number_format(m_costing.configs.po.decimal_places_cost),
+									'addclasses': ['text-right']
+								},
+								'span': {
+									'text': 'EACH',
+									'addclasses': ['text-monospace']
+								}
+							}
+						}
+					%}
 				</div>
 			</div>
 		</div>
@@ -66,14 +85,19 @@
 			<label for="standardcostbasedon">Based On</label>
 		</div>
 		<div class="col-sm-8">
-			{% include 'util/form/select.twig' with {
-					'name':          'standardcostbasedon',
-					'id':            'standardcostbasedon',
-					'selected_value': item.standardcostbasedon,
-					'options':       m_costing.get_standardcost_basedon_options(),
-					'show_value': true,
-				}
-			%}
+			<div class="row">
+				<div class="col-sm-8">
+					{% include 'util/form/select.twig' with {
+							'name':          'standardcostbasedon',
+							'id':            'standardcostbasedon',
+							'selected_value': item.standardcostbasedon,
+							'options':       m_costing.get_standardcost_basedon_options(),
+							'show_value': true,
+						}
+					%}
+				</div>
+			</div>
+
 		</div>
 	</div>
 	<div class="form-group row">
@@ -83,12 +107,23 @@
 		<div class="col-sm-8">
 			<div class="row mb-2">
 				<div class="col-sm-8">
-					<div class="input-group input-group-sm">
-						<input type="text" class="form-control text-right" name="lastcost" id="lastcost" value="{{ item.lastcost|number_format(m_costing.configs.po.decimal_places_cost) }}" readonly>
-						<div class="input-group-append">
-							<span class="input-group-text uom-purchase-display text-monospace">{{ item.unitofmpurchase.code|spacepad(m_costing.getUomCodeLength())|raw }}</span>
-						</div>
-					</div>
+					{% include 'util/bootstrap/form/input-group.twig' with {
+							'inputgroup': {
+								'type': 'append',
+								'size': 'sm',
+								'attributes': {'readonly': true},
+								'input': {
+									'name': 'lastcost',
+									'value': item.lastcost|number_format(m_costing.configs.po.decimal_places_cost),
+									'addclasses': ['text-right']
+								},
+								'span': {
+									'text': item.unitofmpurchase.code|spacepad(m_costing.getUomCodeLength())|raw,
+									'addclasses': ['text-monospace', 'uom-purchase-display']
+								}
+							}
+						}
+					%}
 				</div>
 				<div class="col-sm-4">
 					<p class="form-control-plaintext">{{ item.date_lastcost ? item.date_lastcost|convertdate : '' }}</p>
@@ -97,12 +132,23 @@
 			{% if item.unitofmpurchase.code != 'EACH' %}
 				<div class="row">
 					<div class="col-sm-8">
-						<div class="input-group input-group-sm">
-							<input type="text" class="form-control text-right" value="{{ (item.lastcost / item.unitofmpurchase.conversion)|number_format(m_costing.configs.po.decimal_places_cost) }}" readonly>
-							<div class="input-group-append">
-								<span class="input-group-text text-monospace">EACH</span>
-							</div>
-						</div>
+						{% include 'util/bootstrap/form/input-group.twig' with {
+								'inputgroup': {
+									'type': 'append',
+									'size': 'sm',
+									'attributes': {'readonly': true},
+									'input': {
+										'name': 'lastcosteach',
+										'value': (item.lastcost / item.unitofmpurchase.conversion)|number_format(m_costing.configs.po.decimal_places_cost),
+										'addclasses': ['text-right']
+									},
+									'span': {
+										'text': 'EACH',
+										'addclasses': ['text-monospace']
+									}
+								}
+							}
+						%}
 					</div>
 				</div>
 			{% endif %}
