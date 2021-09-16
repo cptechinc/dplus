@@ -15,23 +15,11 @@ class PricingInputs {
 		this.baseprice  = this.form.find('input[name=baseprice]');
 		this.itemid = this.form.find('input[name=itemID]');
 		this.standardcost = this.form.find('input[name=standardcost]');
-	}
-
-	updateUnitRow(unitrow) {
-		var inputQty   = unitrow.find('.unit-qty');
-		var inputPrice = unitrow.find('.unit-price');
-
-		var textMargin = unitrow.find('.unit-margin');
-
-		var calculator = PricingCalculator.getInstance();
-		var margin = calculator.margin(inputPrice.val(), this.uom.find('option:selected').data('conversion'), this.standardcost.val())
-		textMargin.text(margin);
-	}
-
-	updateUnitRows() {
-		var inputs = this;
-		$(".unit-row").each(function(index) {
-			inputs.updateUnitRow($(this));
-		});
+		this.classes = {
+			row: '.unit-row',
+			qty: '.unit-qty',
+			price: '.unit-price',
+			margin: '.unit-margin',
+		};
 	}
 }
