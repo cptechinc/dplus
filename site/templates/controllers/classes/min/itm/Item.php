@@ -80,15 +80,7 @@ class Item extends ItmFunction {
 		}
 
 		if ($validate->itemid($data->itemID) === false && $data->itemID != 'new') {
-			$htmlwriter   = self::pw('modules')->get('HtmlWriter');
-			$config  = self::pw('config');
-
-			$html = '';
-			$html .= $config->twig->render('items/itm/bread-crumbs.twig');
-			$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID '$data->itemID' not found in the Item Master"]);
-			$html .= $htmlwriter->div('class=mb-3');
-			$html .= self::list($data);
-			return $html;
+			return self::list($data);
 		}
 		$item = self::getItm()->getCreateItem($data->itemID);
 		$page->js .= $config->twig->render("items/itm/js.twig", ['item' => $item, 'itm' => self::getItm()]);
@@ -127,11 +119,17 @@ class Item extends ItmFunction {
 	Display Functions
 ============================================================= */
 	private static function listDisplay($data, PropelModelPager $items) {
-		$config = self::pw('config');
-
+		$config     = self::pw('config');
+		$validate   = new MinValidator();
+		$htmlwriter = self::pw('modules')->get('HtmlWriter');
 		$html   = $config->twig->render('items/itm/bread-crumbs.twig');
+
 		if (self::pw('session')->getFor('response', 'itm')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => self::pw('session')->getFor('response', 'itm')]);
+		}
+		if (empty($data->itemID) === false && $validate->itemid($data->itemID) === false) {
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID '$data->itemID' not found in the Item Master"]);
+			$html .= $htmlwriter->div('class=mb-3');
 		}
 		$html  .= $config->twig->render('items/itm/itm/search.twig', ['items' => $items, 'itm' => self::getItm()]);
 		$html  .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
