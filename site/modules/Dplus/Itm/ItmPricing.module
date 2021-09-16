@@ -43,6 +43,7 @@ class ItmPricing extends WireData implements Module {
 		'qty_percase' => ['type' => 'number', 'precision' => 2, 'max' => 999999.99],
 		'minbuyqty'   => ['type' => 'number', 'precision' => 0, 'max' => 99999999],
 		'listprice'   => ['type' => 'number', 'precision' => 2, 'max'  => 999999999.000],
+		'price'       => ['type' => 'number', 'precision' => 3, 'max'  => 999999999.000],
 	];
 
 	/**
@@ -50,10 +51,10 @@ class ItmPricing extends WireData implements Module {
 	 * @return void
 	 */
 	public function initFieldAttributes() {
-		$configSo = Configs\So::config();
+		// $configSo = Configs\So::config();
 		$configPo = Configs\Po::config();
 		$attributes = self::FIELD_ATTRIBUTES;
-		$attributes['price']  = ['type' => 'number', 'precision' => $configSo->decimal_places_price, 'max' => 99999999.9999];
+		// $attributes['price']  = ['type' => 'number', 'precision' => $configSo->decimal_places_price, 'max' => 99999999.9999];
 		$attributes['cost']   = ['type' => 'number', 'precision' => $configPo->decimal_places_cost, 'max' => 99999999.9999];
 		$attributes['qty']    = ['type' => 'number', 'precision' => 0, 'max' => 9999999];
 		$attributes['margin'] = ['type' => 'number', 'precision' => self::PRECISION_MARGIN , 'max' => 99.9999];
@@ -73,14 +74,13 @@ class ItmPricing extends WireData implements Module {
 		if (empty($field) || empty($attr)) {
 			return false;
 		}
-		$this->init_field_attributes_config();
-		if (array_key_exists($field, $this->field_attributes) === false) {
+		if (array_key_exists($field, $this->fieldAttributes) === false) {
 			return false;
 		}
-		if (array_key_exists($attr, $this->field_attributes[$field]) === false) {
+		if (array_key_exists($attr, $this->fieldAttributes[$field]) === false) {
 			return false;
 		}
-		return $this->field_attributes[$field][$attr];
+		return $this->fieldAttributes[$field][$attr];
 	}
 
 	/**
