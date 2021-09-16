@@ -58,7 +58,7 @@
 								'size': 'sm',
 								'attributes': {'readonly': true},
 								'input': {
-									'value': xref.uompurchase ? (xref.get_unitcost(0) / xref.uompurchase.conversion)|number_format(m_costing.getConfigPo().decimal_places_cost) : (xref.get_unitcost(0))|number_format(m_costing.getConfigPo().decimal_places_cost),
+									'value': xref.get_unitcost(0)|number_format(m_costing.getConfigPo().decimal_places_cost),
 									'addclasses': ['text-right']
 								},
 								'span': {
