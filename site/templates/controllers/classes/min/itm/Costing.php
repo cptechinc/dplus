@@ -35,7 +35,7 @@ class Costing extends ItmFunction {
 			return self::displayAlertUserPermission($data);
 		}
 
-		$fields     = ['itemID|text', 'action|text'];
+		$fields     = ['itemID|text', 'action|text', 'redirect|text'];
 		$data       = self::sanitizeParameters($data, $fields);
 		$input      = self::pw('input');
 		$itmCosting = self::getItmCosting();
@@ -45,7 +45,10 @@ class Costing extends ItmFunction {
 			$itmCosting->process_input($input);
 		}
 
-		self::pw('session')->redirect(self::itmUrlCosting($data->itemID), $http301 = false);
+		if (self::pw('config')->ajax === false) {
+			$url = empty($data->redirect) === false ? $data->redirect : self::itmUrlCosting($data->itemID);
+			self::pw('session')->redirect($url, $http301 = false);
+		}
 	}
 
 	public static function costing($data) {
