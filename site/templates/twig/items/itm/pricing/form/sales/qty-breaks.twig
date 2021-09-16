@@ -19,13 +19,13 @@
 		<tr class="unit-row">
 			<td>
 				<b>Base</b>
-				<input type="hidden" class="pricebreak-qty" value="1">
+				<input type="hidden" class="unit-qty" value="1">
 			</td>
 			<td>
-				<input type="text" class="form-control form-control-sm text-right pricebreak-price" name="baseprice" value="{{ item_pricing.baseprice|currency }}">
+				<input type="text" class="form-control form-control-sm text-right unit-price" name="baseprice" value="{{ item_pricing.baseprice|number_format(pricingm.fieldAttribute('price', 'precision')) }}">
 			</td>
 			<td class="text-right">
-				<span class="unit-margin text-right">{{ item_pricing.get_pricebreak_margin(0)|number_format(4) }}</span> %
+				<span class="unit-margin text-right">{{ item_pricing.get_pricebreak_margin(0)|number_format(pricingm.fieldAttribute('margin', 'precision')) }}</span> %
 			</td>
 		</tr>
 		{% for i in 1..item_pricing.count_qtybreaks() %}
