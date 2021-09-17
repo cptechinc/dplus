@@ -12,7 +12,13 @@
 		</span>
 	{% endif %}
 
-	{% include 'util/bootstrap/form/input.twig' with {'input': group.input} %}
+	{% if group.input %}
+		{% include 'util/bootstrap/form/input.twig' with {'input': group.input} %}
+	{% endif %}
+
+	{% if group.p %}
+		{% include 'util/bootstrap/form/p.twig' with {'p': group.p} %}
+	{% endif %}
 
 	{% if group.type == 'append' %}
 		<span class="input-group-append">
