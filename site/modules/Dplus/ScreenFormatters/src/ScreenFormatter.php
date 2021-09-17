@@ -277,21 +277,21 @@ class ScreenFormatter extends WireData {
 
 			foreach (array_keys($this->fields[$tablesection]) as $column) {
 				$postcolumn = str_replace(' ', '', $column);
-				$linenumber = $input->post->int($postcolumn.'-line');
-				$length = $input->post->int($postcolumn.'-length');
-				$colnumber = $input->post->int($postcolumn.'-column');
-				$label = $input->post->text($postcolumn.'-label');
+				$linenumber = $input->post->int($postcolumn.'-line-'.$tablesection);
+				$length = $input->post->int($postcolumn.'-length-'.$tablesection);
+				$colnumber = $input->post->int($postcolumn.'-column-'.$tablesection);
+				$label = $input->post->text($postcolumn.'-label-'.$tablesection);
 				$dateformat = $beforedecimal = $afterdecimal = false;
-				$justify_data = $input->post->text($postcolumn.'-data-justify');
-				$justify_label = $input->post->text($postcolumn.'-label-justify');
-				$is_input = $input->post->text($postcolumn.'-is-input');
-				$is_percent = $input->post->text($postcolumn.'-is-percent');
+				$justify_data = $input->post->text($postcolumn.'-data-justify-'.$tablesection);
+				$justify_label = $input->post->text($postcolumn.'-label-justify-'.$tablesection);
+				$is_input = $input->post->text($postcolumn.'-is-input-'.$tablesection);
+				$is_percent = $input->post->text($postcolumn.'-is-percent-'.$tablesection);
 
 				if ($this->fields[$tablesection][$column]['type'] == 'D') {
-					$dateformat = $input->post->text($postcolumn.'-date-format');
+					$dateformat = $input->post->text($postcolumn.'-date-format-'.$tablesection);
 				} elseif ($this->fields[$tablesection][$column]['type'] == 'N') {
 					$beforedecimal = $input->post->int($postcolumn.'-before-decimal');
-					$afterdecimal = $input->post->int($postcolumn.'-after-decimal');
+					$afterdecimal = $input->post->int($postcolumn.'-after-decimal-'.$tablesection);
 				}
 
 				$postarray[$tablesection]['columns'][$column] = array(
@@ -340,6 +340,8 @@ class ScreenFormatter extends WireData {
 		$this->formatter = $postarray;
 		$this->source = 'input';
 		$this->generate_tableblueprint();
+
+
 	}
 
 	/**
