@@ -18,9 +18,9 @@ $(function() {
 	 */
 	$("body").on("change", "#uom_sale", function(e) {
 		var inputs = formPricing.inputs;
-		var conversion = inputs.uom.find('option:selected').data('conversion');
-		var conversionText = inputs.uom.siblings('p').find('.conversion-description');
-		conversionText.text(conversion);
+		var conversion = floatParse(inputs.uom.find('option:selected').data('conversion'));
+		var conversionText = inputs.uom.siblings('small').find('.conversion-description');
+		conversionText.text(conversion.toFixed(formPricing.config.fields.qty.precision));
 		formPricing.updateUnitRows();
 	});
 });

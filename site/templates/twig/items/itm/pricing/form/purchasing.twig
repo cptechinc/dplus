@@ -12,7 +12,12 @@
 		<label>Purchase UoM</label>
 	</div>
 	<div class="col-sm-8">
-		<p class="form-control-plaintext">{{ item_pricing.item.unitofmpurchase.code }} - {{ item_pricing.item.unitofmpurchase.description }}</p>
+		<p class="form-control-plaintext form-control-sm">
+			{{ item_pricing.item.unitofmpurchase.code }} - {{ item_pricing.item.unitofmpurchase.description }}
+		</p>
+		<small class="form-text text-muted">
+			Conversion: {{ item_pricing.item.unitofmpurchase.conversion|number_format(pricingm.fieldAttribute('qty', 'precision')) }}
+		</small>
 	</div>
 </div>
 <div class="form-group row">
