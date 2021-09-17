@@ -50,14 +50,37 @@ class UnitRow {
 		return UnitRow.fromStep(step);
 	}
 
-	updateInputsFromNextRow() {
-		var nextRow = UnitRow.fromStep(parseInt(this.row.data('break')) + 1);
-		this.inputs.qty.val(nextRow.inputs.qty.val());
-		this.inputs.price.val(nextRow.inputs.price.val()).change();
+	clearInputs() {
+		this.inputs.qty.val('');
+		this.inputs.price.val('');
+		this.inputs.margin.text('');
 	}
 
-	clearInputs() {
-		this.inputs.qty.val(0).change();
+	setReadonly() {
+		this.inputs.qty.attr('readonly', 'true');
+		this.inputs.price.attr('readonly', 'true');
+	}
+
+	setPriceReadonly() {
+		this.inputs.price.attr('readonly', 'true');
+	}
+
+	setQtyReadonly() {
+		this.inputs.qty.attr('readonly', 'true');
+	}
+
+	removePriceReadonly() {
+		this.inputs.price.removeAttr('readonly');
+	}
+
+	removeQtyReadonly() {
+		this.inputs.qty.removeAttr('readonly');
+	}
+
+	copyValues(unitRow) {
+		this.inputs.qty.val(unitRow.inputs.qty.val());
+		this.inputs.price.val(unitRow.inputs.price.val());
+		this.inputs.margin.text(unitRow.inputs.margin.text());
 	}
 
 

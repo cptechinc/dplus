@@ -20,10 +20,13 @@ class PricingForm {
 		this.updatePricePrecision(unitRow);
 		this.updateMargin(unitRow);
 		this.updateUnitRowReadonly(unitRow);
+		this.shiftUnitRowsValues(unitRow.row.data('break'));
+
 	}
 
 	updatePricePrecision(unitRow) {
 		var price = parseFloat(unitRow.inputs.price.val());
+
 		if (price > 0) {
 			unitRow.inputs.price.val(price.toFixed(this.config.fields.price.precision));
 		} else {
@@ -43,41 +46,47 @@ class PricingForm {
 
 	updateUnitRows() {
 		var form = this;
+
 		$(".unit-row").each(function(index) {
 			form.updateUnitRow($(this));
 		});
 	}
 
 	updateUnitRowReadonly(unitRow) {
-		console.log(unitRow);
-		var qty = parseFloat(unitRow.inputs.qty.val());
+		var qty = floatParse(unitRow.inputs.qty.val());
 
 		if (qty == 0) {
-			unitRow.inputs.price.val('');
-			unitRow.inputs.price.attr('readonly', 'true');
-			unitRow.updateInputsFromNextRow();
-			if (unitRow.hasNextRow()) {
-				var nextRow = unitRow.getNextRow();
-				// nextRow.clearInputs();
-				this.updateUnitRowReadonly(nextRow);
-				this.updateNextUnitRow(unitRow);
-			}
-			return true;
+			unitRow.clearInputs();
+			unitRow.setPriceReadonly();
 		}
 
-		unitRow.inputs.price.removeAttr('readonly');
-		this.updateNextUnitRow(unitRow);
+		if (qty > 0) {
+			unitRow.removePriceReadonly();
+		}
 	}
 
-	updateNextUnitRow(unitRow) {
-		var nextRow = UnitRow.fromStep(parseInt(unitRow.row.data('step')) + 1);
+	shiftUnitRowsValues(step = 1) {
+		var unitRow = null;
+		var nextRow = null;
 
-		if (nextRow.row.length) {
-			if (parseFloat(unitRow.inputs.qty.val()) > 0) {
-				nextRow.inputs.qty.removeAttr('readonly');
-			} else {
-				nextRow.inputs.qty.attr('readonly', 'true');
+		for (var i = step; i <= this.config.qtyBreaks; i++) {
+			unitRow = UnitRow.fromStep(i);
+
+			if (unitRow.hasNextRow()) {
+				nextRow = unitRow.getNextRow();
+
+				if (floatParse(unitRow.inputs.qty.val()) == 0) {
+					unitRow.copyValues(nextRow);
+					nextRow.clearInputs();
+					nextRow.setReadonly();
+					if (floatParse(unitRow.inputs.qty.val()) > 0) {
+						nextRow.removeQtyReadonly();
+					}
+				} else {
+					nextRow.removeQtyReadonly();
+				}
 			}
+			this.updateUnitRowReadonly(unitRow);
 		}
 	}
 }
