@@ -7,6 +7,7 @@
 #}
 $(function() {
 	var formPricing = PricingForm.getInstance();
+	var alert       = PricingAlerts.getInstance();
 
 	$("body").on("change", ".unit-price, .unit-qty", function(e) {
 		var unitrow = $(this).closest('.unit-row');
@@ -22,5 +23,30 @@ $(function() {
 		var conversionText = inputs.uom.siblings('small').find('.conversion-description');
 		conversionText.text(conversion.toFixed(formPricing.config.fields.qty.precision));
 		formPricing.updateUnitRows();
+	});
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	origForm = formPricing.form.serialize();
+
+	$("body").on("click", "a:not(#item-costing-form .form_button)", function(e) {
+		if (formPricing.form.serialize() !== origForm) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			alert.unsavedChanges(function(saveChanges) {
+				if (saveChanges) {
+					$('#loading-modal').modal('show');
+					formPricing.form.append('<input type="hidden" name="redirect" value="'+href+'">');
+					formPricing.form.submit();
+				} else {
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
 	});
 });
