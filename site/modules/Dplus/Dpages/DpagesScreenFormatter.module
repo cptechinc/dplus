@@ -45,6 +45,17 @@ class DpagesScreenFormatter extends Dpages implements Module {
 	);
 
 	const PAGES = array(
+		'ii-item' => array(
+			'template'       => 'dplus-screen-formatter',
+			'name'           => 'item',
+			'title'          => 'II Header',
+			'summary'        => 'II Header Formatter',
+			'parent'         => '/mii/admin/',
+			'formatter'      => 'ii:item',
+			'jsoncode'       => 'ii-item',
+			'twig_include'   => 'items/ii/item/item.twig',
+			'dplus_function' => 'iihf'
+		),
 		'ii-sales-orders' => array(
 			'template'       => 'dplus-screen-formatter',
 			'name'           => 'sales-orders',
