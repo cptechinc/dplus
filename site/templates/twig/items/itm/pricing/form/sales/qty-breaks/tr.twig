@@ -15,7 +15,7 @@
 %}
 {% set formatted = {
 		'qty': unit.qty|number_format(pricingm.fieldAttribute('qty', 'precision')),
-		'price': unit.price|number_format(pricingm.fieldAttribute('margin', 'precision')),
+		'price': unit.price|number_format(pricingm.fieldAttribute('price', 'precision')),
 		'margin': unit.margin|number_format(pricingm.fieldAttribute('margin', 'precision')),
 	}
 %}
