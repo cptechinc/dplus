@@ -235,6 +235,13 @@ class Twig extends WireData implements Module {
 		});
 		$twig->addFunction($function);
 
+		$function = new TwigFunction('twigp', function (array $array) {
+			$input = new \Twig\Html\TwigP();
+			$input->setFromArray($array);
+			return $input;
+		});
+		$twig->addFunction($function);
+
 		$function = new TwigFunction('twiginputgroup', function (array $array) {
 			$input = new \Twig\Html\TwigInputGroup();
 			$input->setFromArray($array);
