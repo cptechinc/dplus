@@ -16,10 +16,10 @@
 	{% include 'util/screen-formatter/tr-section-rows.twig' with {'section': 'detail', 'record': detail} %}
 
 	{% if detail['lotserial']|length > 0 %}
-		{% include 'util/screen-formatter/tr-labels.twig' with {'section': 'lotserial', 'trclass': 'lotserial collapse show'} %}
+		{% include 'util/screen-formatter/tr-labels.twig' with {'section': 'lotserial', 'trclass': 'lotserial collapse'} %}
 
 		{% for lot in detail['lotserial'] %}
-			{% include 'util/screen-formatter/tr-section-rows.twig' with {'section': 'lotserial', 'record': lot, 'trclass': 'lotserial collapse show'} %}
+			{% include 'util/screen-formatter/tr-section-rows.twig' with {'section': 'lotserial', 'record': lot, 'trclass': 'lotserial collapse'} %}
 		{% endfor %}
 	{% endif %}
 
