@@ -205,6 +205,8 @@ class ItmPricing extends WireData implements Module {
 		$values = $input->$rm;
 		$record->setBaseprice($input->$rm->text('baseprice'));
 		$record->setUpdated(date('Ymd'));
+		$record->setDateUpdtd(date('Ymd'));
+		$record->setTimeUpdtd(date('His'));
 
 		for ($i = 1; $i < ItemPricing::QTY_BREAKS; $i++) {
 			$col_qty = ucfirst(ItemPricing::get_pricebreak_qty_column($i));
