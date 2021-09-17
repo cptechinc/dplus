@@ -22,6 +22,12 @@
 					</option>
 				{% endfor %}
 			</select>
+			<small class="form-text text-muted">
+				Conversion: &nbsp;
+				<span class="conversion-description">
+					{{ item.unitofmpurchase.conversion|number_format(m_costing.fieldAttribute('qty', 'precision')) }}
+				</span>
+			</small>
 		</div>
 	</div>
 

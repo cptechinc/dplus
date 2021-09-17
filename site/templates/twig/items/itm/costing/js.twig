@@ -9,6 +9,11 @@ $(function() {
 ============================================================= */
 	$("body").on("change", "select[name=uom_purchase]", function(e) {
 		formCosting.updateUomPurchase();
+
+		var inputs = formCosting.inputs;
+		var conversion = floatParse(inputs.uom.find('option:selected').data('conversion'));
+		var conversionText = inputs.uom.siblings('small').find('.conversion-description');
+		conversionText.text(conversion.toFixed(formCosting.config.fields.qty.precision));
 	});
 
 	$("body").on("change", "input[name=standardcost]", function(e) {
