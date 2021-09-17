@@ -39,11 +39,10 @@
 							],
 							'attributes': {
 								'id': 'standardcost-each',
-								'readonly': true
 							},
-							'input': {
+							'p': {
 								'value': item.standardcost|number_format(m_costing.configs.po.decimal_places_cost),
-								'addclasses': ['text-right']
+								'addclasses': ['text-right', 'border-0']
 							},
 							'span': {
 								'text': 'EACH',
@@ -87,11 +86,10 @@
 						'inputgroup': {
 							'type': 'append',
 							'size': 'sm',
-							'attributes': {'readonly': true},
-							'input': {
+							'p': {
 								'name': 'lastcost',
 								'value': item.lastcost|number_format(m_costing.configs.po.decimal_places_cost),
-								'addclasses': ['text-right']
+								'addclasses': ['text-right', 'border-0']
 							},
 							'span': {
 								'text': item.unitofmpurchase.code|spacepad(m_costing.getUomCodeLength())|raw,
@@ -112,11 +110,10 @@
 							'inputgroup': {
 								'type': 'append',
 								'size': 'sm',
-								'attributes': {'readonly': true},
 								'input': {
 									'name': 'lastcosteach',
 									'value': (item.lastcost / item.unitofmpurchase.conversion)|number_format(m_costing.configs.po.decimal_places_cost),
-									'addclasses': ['text-right']
+									'addclasses': ['text-right', 'border-0']
 								},
 								'span': {
 									'text': 'EACH',
