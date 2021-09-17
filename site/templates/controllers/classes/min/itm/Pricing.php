@@ -72,6 +72,7 @@ class Pricing extends ItmFunction {
 		$session = self::pw('session');
 		$itm     = self::getItm();
 		$itmPricing = self::getItmPricing();
+		$itmCosting = Costing::getItmCosting();
 		$item = $itm->get_item($data->itemID);
 		$pricing = $itmPricing->get_pricing($data->itemID);
 
@@ -82,7 +83,7 @@ class Pricing extends ItmFunction {
 		}
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
-		$html .= $config->twig->render('items/itm/pricing/display.twig', ['item' => $item, 'pricingm' => $itmPricing, 'item_pricing' => $pricing, 'itm' => $itm]);
+		$html .= $config->twig->render('items/itm/pricing/display.twig', ['item' => $item, 'pricingm' => $itmPricing, 'costingm' => $itmCosting, 'item_pricing' => $pricing, 'itm' => $itm]);
 		return $html;
 	}
 
