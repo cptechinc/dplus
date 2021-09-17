@@ -52,6 +52,51 @@ class ItmCosting extends WireData implements Module {
 	}
 
 /* =============================================================
+	Field Attributes, Functions
+============================================================= */
+	const PRECISION_MARGIN = 4;
+
+	const FIELD_ATTRIBUTES = [
+		'qty'         => ['type' => 'number', 'precision' => 0, 'max' => 99999999],
+		'price'       => ['type' => 'number', 'precision' => 3, 'max'  => 999999999.000],
+		'margin'      => ['type' => 'number', 'precision' => 4, 'max'  => 999999999.000],
+	];
+
+	/**
+	 * Initialize field attributes
+	 * @return void
+	 */
+	public function initFieldAttributes() {
+		// $configSo = Configs\So::config();
+		$configPo = Configs\Po::config();
+		$attributes = self::FIELD_ATTRIBUTES;
+		$attributes['cost']   = ['type' => 'number', 'precision' => $configPo->decimal_places_cost, 'max' => 99999999.9999];
+		$this->fieldAttributes = $attributes;
+	}
+
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function fieldAttribute($field = '', $attr = '') {
+		if (empty($this->fieldAttributes)) {
+			$this->initFieldAttributes();
+		}
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		if (array_key_exists($field, $this->fieldAttributes) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, $this->fieldAttributes[$field]) === false) {
+			return false;
+		}
+		return $this->fieldAttributes[$field][$attr];
+	}
+
+/* =============================================================
 	CRUD Processing Functions
 ============================================================= */
 
