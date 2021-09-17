@@ -1,0 +1,64 @@
+class UnitRow {
+	static fromStep(step = 1) {
+		var unitrow = $('.unit-row[data-break="'+ step +'"]')
+		var row = new UnitRow();
+		row.setRow(unitrow);
+		return row;
+	}
+
+	static fromHtml(unitrow) {
+		var row = new UnitRow();
+		row.setRow(unitrow);
+		return row;
+	}
+
+	constructor() {
+		this.row = null;
+		this.classes = {
+			row: '.unit-row',
+			qty: '.unit-qty',
+			price: '.unit-price',
+			margin: '.unit-margin',
+		};
+		this.inputs = {
+			qty: null,
+			price: null,
+			margin: null,
+		};
+	}
+
+	setRow(unitrow) {
+		this.row = unitrow;
+		this.initInputs();
+	}
+
+	initInputs() {
+		if (this.row.length) {
+			this.inputs.qty = this.row.find(this.classes.qty);
+			this.inputs.price = this.row.find(this.classes.price);
+			this.inputs.margin = this.row.find(this.classes.margin);
+		}
+	}
+
+	hasNextRow() {
+		var step = parseInt(this.row.data('break')) + 1;
+		return $('.unit-row[data-break="'+ step +'"]').length > 0;
+	}
+
+	getNextRow() {
+		var step = parseInt(this.row.data('break')) + 1;
+		return UnitRow.fromStep(step);
+	}
+
+	updateInputsFromNextRow() {
+		var nextRow = UnitRow.fromStep(parseInt(this.row.data('break')) + 1);
+		this.inputs.qty.val(nextRow.inputs.qty.val());
+		this.inputs.price.val(nextRow.inputs.price.val()).change();
+	}
+
+	clearInputs() {
+		this.inputs.qty.val(0).change();
+	}
+
+
+}

@@ -16,31 +16,28 @@ class PricingForm {
 	}
 
 	updateUnitRow(unitrow) {
-		this.updatePricePrecision(unitrow);
-		this.updateMargin(unitrow);
-		this.updateUnitRowReadonly(unitrow.data('break'));
+		var unitRow = UnitRow.fromHtml(unitrow);
+		this.updatePricePrecision(unitRow);
+		this.updateMargin(unitRow);
+		this.updateUnitRowReadonly(unitRow);
 	}
 
-	updatePricePrecision(unitrow) {
-		var inputPrice = unitrow.find(this.inputs.classes.price);
-		var price = parseFloat(inputPrice.val());
+	updatePricePrecision(unitRow) {
+		var price = parseFloat(unitRow.inputs.price.val());
 		if (price > 0) {
-			inputPrice.val(price.toFixed(this.config.fields.price.precision));
+			unitRow.inputs.price.val(price.toFixed(this.config.fields.price.precision));
 		} else {
-			inputPrice.val('');
+			unitRow.inputs.price.val('');
 		}
 	}
 
-	updateMargin(unitrow) {
-		var inputPrice = unitrow.find(this.inputs.classes.price);
-		var textMargin = unitrow.find(this.inputs.classes.margin);
-
-		if (parseFloat(inputPrice.val()) > 0) {
+	updateMargin(unitRow) {
+		if (parseFloat(unitRow.inputs.price.val()) > 0) {
 			var calculator = PricingCalculator.getInstance();
-			var margin = calculator.margin(inputPrice.val(), this.inputs.uom.find('option:selected').data('conversion'), this.inputs.standardcost.val())
-			textMargin.text(margin.toFixed(this.config.fields.margin.precision));
+			var margin = calculator.margin(unitRow.inputs.price.val(), this.inputs.uom.find('option:selected').data('conversion'), this.inputs.standardcost.val())
+			unitRow.inputs.margin.text(margin.toFixed(this.config.fields.margin.precision));
 		} else {
-			textMargin.text('');
+			unitRow.inputs.margin.text('');
 		}
 	}
 
@@ -51,34 +48,35 @@ class PricingForm {
 		});
 	}
 
-	updateUnitRowReadonly(step) {
-		var unitrow = $('.unit-row[data-break="'+step+'"]');
-		var inputQty   = unitrow.find(this.inputs.classes.qty);
-		var inputPrice = unitrow.find(this.inputs.classes.price);
+	updateUnitRowReadonly(unitRow) {
+		console.log(unitRow);
+		var qty = parseFloat(unitRow.inputs.qty.val());
 
-		if (parseFloat(inputQty.val()) > 0) {
-			inputPrice.removeAttr('readonly');
-		} else {
-			inputPrice.val('');
-			inputPrice.attr('readonly', 'true');
+		if (qty == 0) {
+			unitRow.inputs.price.val('');
+			unitRow.inputs.price.attr('readonly', 'true');
+			unitRow.updateInputsFromNextRow();
+			if (unitRow.hasNextRow()) {
+				var nextRow = unitRow.getNextRow();
+				// nextRow.clearInputs();
+				this.updateUnitRowReadonly(nextRow);
+				this.updateNextUnitRow(unitRow);
+			}
+			return true;
 		}
 
-		this.updateNextUnitRow(step);
+		unitRow.inputs.price.removeAttr('readonly');
+		this.updateNextUnitRow(unitRow);
 	}
 
-	updateNextUnitRow(step) {
-		var unitrow = $('.unit-row[data-break="'+step+'"]');
-		var inputQty   = unitrow.find(this.inputs.classes.qty);
-		var inputPrice = unitrow.find(this.inputs.classes.price);
+	updateNextUnitRow(unitRow) {
+		var nextRow = UnitRow.fromStep(parseInt(unitRow.row.data('step')) + 1);
 
-		var nextstep  = parseInt(step) + 1;
-		var nextrow   = $('.unit-row[data-break="'+nextstep+'"]');
-		
-		if (nextrow.length) {
-			if (parseFloat(inputQty.val()) > 0) {
-				nextrow.find(this.inputs.classes.qty).removeAttr('readonly');
+		if (nextRow.row.length) {
+			if (parseFloat(unitRow.inputs.qty.val()) > 0) {
+				nextRow.inputs.qty.removeAttr('readonly');
 			} else {
-				nextrow.find(this.inputs.classes.qty).attr('readonly', 'true');
+				nextRow.inputs.qty.attr('readonly', 'true');
 			}
 		}
 	}
