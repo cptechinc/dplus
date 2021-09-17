@@ -24,8 +24,8 @@ class CostingForm {
 	updateStandardCostUom() {
 		var conversion = parseFloat(this.inputs.uom.find('option:selected').data('conversion'));
 		var div = this.form.find('#standardcost-each');
-		var input = div.find('input');
-		var cost = parseFloat(input.val()) * conversion;
+		var input = div.find('p');
+		var cost = parseFloat(p.text()) * conversion;
 		this.inputs.standardcost.val(cost.toFixed(this.config.fields.cost.precision));
 	}
 
