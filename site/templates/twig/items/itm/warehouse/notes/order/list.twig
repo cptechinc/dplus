@@ -25,10 +25,11 @@
 					<div class="col">{{ note|dynamicproperty(form) }}</div>
 				{% endfor %}
 				<div class="col-sm-2">
-					<button type="button" class="btn btn-light" data-toggle="collapse" data-target="#notes-order-{{ note.form }}" aria-controls="notes-order-{{ note.form }}">
+					<button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#notes-order-{{ note.form }}" aria-controls="notes-order-{{ note.form }}">
 						<i class="fa fa-eye" aria-hidden="true"></i> Show
 					</button>
-					<button type="button" class="btn btn-secondary edit" data-toggle="modal" data-target="#notes-order-modal" data-form="{{ note.form }}" {% for form, label in qnotes.get_forms_shortlabels() %} data-{{form}}="{{ note|dynamicproperty(form) }}" {% endfor %}>
+					&nbsp;
+					<button type="button" class="btn btn-secondary btn-sm edit" data-toggle="modal" data-target="#notes-order-modal" data-form="{{ note.form }}" {% for form, label in qnotes.get_forms_shortlabels() %} data-{{form}}="{{ note|dynamicproperty(form) }}" {% endfor %}>
 						<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 					</button>
 				</div>

@@ -2,8 +2,8 @@
 
 class TwigInputGroupSpan extends TwigBaseHtml {
 	const DEFAULTS = [
-		'baseclass'  => 'btn input-group-text',
-		'colorclass'  => 'btn-outline-secondary',
+		'baseclass'  => 'input-group-text',
+		'colorclass'  => '',
 		'size'       => '',
 		'addclasses' => [],
 		'attributes' => []

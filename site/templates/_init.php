@@ -150,4 +150,11 @@ if (!$values->action || $page->template == 'dplus-screen-formatter') {
 	}
 
 	$page->show_breadcrumbs = true;
+
+	$agent = new Jenssegers\Agent\Agent();
+	$config->js('agent', [
+		'browser' => strtolower($agent->browser())
+	]);
+
+	$page->js .= $config->twig->render('util/js/variables.js.twig', ['variables' => ['agent' => $config->js('agent')]]);
 }

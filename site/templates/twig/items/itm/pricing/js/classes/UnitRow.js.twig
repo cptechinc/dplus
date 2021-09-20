@@ -1,0 +1,87 @@
+class UnitRow {
+	static fromStep(step = 1) {
+		var unitrow = $('.unit-row[data-break="'+ step +'"]')
+		var row = new UnitRow();
+		row.setRow(unitrow);
+		return row;
+	}
+
+	static fromHtml(unitrow) {
+		var row = new UnitRow();
+		row.setRow(unitrow);
+		return row;
+	}
+
+	constructor() {
+		this.row = null;
+		this.classes = {
+			row: '.unit-row',
+			qty: '.unit-qty',
+			price: '.unit-price',
+			margin: '.unit-margin',
+		};
+		this.inputs = {
+			qty: null,
+			price: null,
+			margin: null,
+		};
+	}
+
+	setRow(unitrow) {
+		this.row = unitrow;
+		this.initInputs();
+	}
+
+	initInputs() {
+		if (this.row.length) {
+			this.inputs.qty = this.row.find(this.classes.qty);
+			this.inputs.price = this.row.find(this.classes.price);
+			this.inputs.margin = this.row.find(this.classes.margin);
+		}
+	}
+
+	hasNextRow() {
+		var step = parseInt(this.row.data('break')) + 1;
+		return $('.unit-row[data-break="'+ step +'"]').length > 0;
+	}
+
+	getNextRow() {
+		var step = parseInt(this.row.data('break')) + 1;
+		return UnitRow.fromStep(step);
+	}
+
+	clearInputs() {
+		this.inputs.qty.val('');
+		this.inputs.price.val('');
+		this.inputs.margin.text('');
+	}
+
+	setReadonly() {
+		this.inputs.qty.attr('readonly', 'true');
+		this.inputs.price.attr('readonly', 'true');
+	}
+
+	setPriceReadonly() {
+		this.inputs.price.attr('readonly', 'true');
+	}
+
+	setQtyReadonly() {
+		this.inputs.qty.attr('readonly', 'true');
+	}
+
+	removePriceReadonly() {
+		this.inputs.price.removeAttr('readonly');
+	}
+
+	removeQtyReadonly() {
+		this.inputs.qty.removeAttr('readonly');
+	}
+
+	copyValues(unitRow) {
+		this.inputs.qty.val(unitRow.inputs.qty.val());
+		this.inputs.price.val(unitRow.inputs.price.val());
+		this.inputs.margin.text(unitRow.inputs.margin.text());
+	}
+
+
+}

@@ -1,0 +1,35 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemMasterItem
+	item_pricing           ItemMasterItem
+	pricingm               module ItmPricing
+	pricingm.configs       WireData
+#}
+<table class="table table-striped table-sm">
+	<thead>
+		<tr>
+			<th class="col-3">Qty</th>
+			<th class="col-3 text-right">Price</th>
+			<th class="col-3 text-right">Margin %</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="unit-row">
+			<td>
+				<b>Base</b>
+				<input type="hidden" class="unit-qty" value="1">
+			</td>
+			<td>
+				<input type="text" class="form-control form-control-sm text-right unit-price" name="baseprice" value="{{ item_pricing.baseprice|number_format(pricingm.fieldAttribute('price', 'precision')) }}">
+			</td>
+			<td class="text-right">
+				<span class="unit-margin text-right">{{ item_pricing.get_pricebreak_margin(0)|number_format(pricingm.fieldAttribute('margin', 'precision')) }}</span> %
+			</td>
+		</tr>
+		{% for i in 1..item_pricing.count_qtybreaks() %}
+			{% include 'items/itm/pricing/form/sales/qty-breaks/tr.twig' %}
+		{% endfor %}
+	</tbody>
+</table>

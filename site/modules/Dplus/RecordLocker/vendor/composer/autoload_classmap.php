@@ -7,5 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Dplus\\RecordLocker\\Locker' => $baseDir . '/src/Locker.php',
+    'Dplus\\RecordLocker\\User' => $baseDir . '/src/User.php',
     'Dplus\\RecordLocker\\UserFunction' => $baseDir . '/src/UserFunction.php',
 );

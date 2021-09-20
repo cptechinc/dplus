@@ -4,6 +4,11 @@
 
 	$routes  = [
 		['GET', 'item-lookup/', Json\ItemLookup::class, 'lookup'],
+		'misc' => [
+			['GET', 'time/', Json\Misc::class, 'time'],
+			['GET', 'date/', Json\Misc::class, 'date'],
+			['GET', 'date-time/', Json\Misc::class, 'dateTime'],
+		],
 		'inv' => [
 			'validate' => [
 				['GET', 'tariff-code/', Json\Min::class, 'validateTariffCode'],
@@ -29,6 +34,9 @@
 				'iarn' => [
 					['GET', 'code/', Json\Min::class, 'validateIarnExists'],
 				],
+				'itm' => [
+					['GET', 'warehouse/', Json\Min::class, 'validateItmWhse'],
+				]
 			],
 			['GET', 'tariff-code/', Json\Min::class, 'getTariffCode'],
 			['GET', 'country-code/', Json\Min::class, 'getCountryCode'],
@@ -96,6 +104,7 @@
 		'mpo' => [
 			'validate' => [
 				['GET', 'po/ponbr/', Json\Mpo::class, 'validatePonbr'],
+				['GET', 'cnfm/', Json\Mpo::class, 'validateCnfmCode'],
 			],
 			['GET', 'po/item/', Json\Mpo::class, 'getPoItem'],
 		],

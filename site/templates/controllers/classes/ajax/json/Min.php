@@ -175,12 +175,16 @@ class Min extends AbstractController {
 	}
 
 	public static function validateWarehouseid($data) {
-		$fields = ['whseID|text'];
+		$fields = ['whseID|text', 'jqv|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 
-		if ($validate->whseid($data->whseID) === false && $data->whseID != '**') {
-			return "Warehouse ID $data->whseID not found";
+		if ($data->whseID == '**') {
+			return true;
+		}
+
+		if ($validate->whseid($data->whseID) === false) {
+			return $data->jqv ? "Warehouse ID $data->whseID not found" : false;
 		}
 		return true;
 	}
@@ -201,12 +205,24 @@ class Min extends AbstractController {
 	}
 
 	public static function validateItmpExists($data) {
-		$fields = ['loginID|text', 'userID|text'];
-		$data = self::sanitizeParametersShort($data, $fields);
+		$fields = ['loginID|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
 		$itmp = self::pw('modules')->get('Itmp');
 
-		if ($itmp->exists($loginID) === false) {
-			return "ITMP for $loginID not found";
+		$exists = $itmp->exists($data->loginID);
+
+		if ($data->jqv === false) {
+			if ($data->new) {
+				return $exists === false;
+			}
+			return $exists;
+		}
+
+		if ($exists === false) {
+			if ($data->new) {
+				return "$data->loginID already exists";
+			}
+			return "$data->loginID not found";
 		}
 		return true;
 	}
@@ -328,6 +344,27 @@ class Min extends AbstractController {
 		}
 
 		return $exists ? true : "Inv Adjustment Code not found";
+	}
+
+	public static function validateItmWhse($data) {
+		$fields = ['itemID|text', 'whseID|text', 'new|bool', 'jqv|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$validate = self::validator();
+		$exists = $validate->itmWhse($data->itemID, $data->whseID);
+
+		if (boolval($data->jqv) === false) {
+			if ($data->new) {
+				return $exists === false;
+			}
+			return $exists;
+		}
+
+		// JQuery Validate
+		if ($data->new) { // If new, check that upc doesn't already exist.
+			return $exists ? "ITM Warehouse Already Exists" : true;
+		}
+
+		return $exists ? true : "ITM Warehouse not found";
 	}
 
 

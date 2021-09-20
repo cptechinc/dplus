@@ -96,7 +96,7 @@ class Vxm extends AbstractController {
 		$html .= self::lockXref($xref);
 		$html .= $config->twig->render('items/vxm/xref/form/display.twig', ['vendor' => $vendor, 'item' => $xref, 'vxm' => $vxm, 'qnotes' => $qnotes]);
 
-		if (!$xref->isNew()) {
+		if ($xref->isNew() === false && $vxm->recordlocker->userHasLocked($vxm->get_recordlocker_key($xref))) {
 			$html .= self::qnotesDisplay($xref);
 		}
 		return $html;

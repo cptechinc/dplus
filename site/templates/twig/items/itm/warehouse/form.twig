@@ -4,7 +4,7 @@
 	warehouse              WarehouseInventory
 	m_whse                 module ItmWarehouse
 #}
-<form action="{{ page.wire('input').url() }}" method="post" id="item-whse-form">
+<form action="{{ input.url() }}" method="post" id="item-whse-form">
 	<input type="hidden" name="itemID" value="{{ warehouse.itemid }}">
 	<div class="row mb-3">
 		<div class="col-sm-8">
@@ -15,14 +15,16 @@
 				<div class="col-sm-8">
 					{% if warehouse.isNew() %}
 						<select name="whseID" class="custom-select custom-select-sm" id="whseID">
-							<option value="">-- Choose --</option>
+							<option value=""></option>
 							{% for whse in m_whse.get_warehouses() %}
-								<option value="{{ whse.id }}" {{ whse.id == warehouse.warehouseid ? 'selected' : ''}}>{{ whse.id }} - {{ whse.name }}</option>
+								<option value="{{ whse.id }}" {{ whse.id == warehouse.whseid ? 'selected' : ''}}>
+									{{ whse.id }} - {{ whse.name }}
+								</option>
 							{% endfor %}
 						</select>
 					{% else %}
 						<p class="form-control-plaintext">
-							<input type="hidden" name="whseID" value="{{ warehouse.warehouseid }}">
+							<input type="hidden" name="whseID" value="{{ warehouse.warehouseid }}" id="whseID">
 							{{ warehouse.warehouseid }} - {{ m_whse.get_warehouse(warehouse.warehouseid).name }}
 						</p>
 					{% endif %}
@@ -48,7 +50,7 @@
 					<label for="status">Status</label>
 				</div>
 				<div class="col-sm-8">
-					{% include 'util/select.twig' with {'name': 'status', 'id': 'status', 'selectedvalue': warehouse.status, 'options': m_whse.get_itemstatus_options(), 'capitalize_labels': true } %}
+					{% include 'util/select.twig' with {'name': 'status', 'id': 'status', 'selectedvalue': warehouse.status, 'options': m_whse.get_itemstatus_options(), 'capitalize_labels': true, 'hideblankoption': true, 'show_value': true } %}
 				</div>
 			</div>
 			<div class="form-group row">
@@ -56,7 +58,7 @@
 					<label for="specialorder">Special Order</label>
 				</div>
 				<div class="col-sm-8">
-					{% include 'util/select.twig' with {'name': 'specialorder', 'id': 'specialorder', 'selectedvalue': warehouse.specialorder, 'options': m_whse.get_specialorder_options(), 'capitalize_labels': true } %}
+					{% include 'util/select.twig' with {'name': 'specialorder', 'id': 'specialorder', 'selectedvalue': warehouse.specialorder, 'options': m_whse.get_specialorder_options(), 'capitalize_labels': true, 'hideblankoption': true, 'show_value': true } %}
 				</div>
 			</div>
 			<div class="form-group row">
@@ -65,9 +67,10 @@
 				</div>
 				<div class="col-sm-8">
 					<select name="whsesupply" class="custom-select custom-select-sm" id="whsesupply">
-						<option value="">-- Choose --</option>
 						{% for whse in m_whse.get_warehouses() %}
-							<option value="{{ whse.id }}" {{ whse.id == warehouse.whsesupply ? 'selected' : ''}}>{{ whse.id }} - {{ whse.name }}</option>
+							<option value="{{ whse.id }}" {{ whse.whseid == warehouse.whsesupply ? 'selected' : ''}}>
+								{{ whse.id }} - {{ whse.name }}
+							</option>
 						{% endfor %}
 					</select>
 				</div>
@@ -77,7 +80,7 @@
 					<label for="cyclecode">Cycle Code</label>
 				</div>
 				<div class="col-sm-8">
-					<input type="text" name="cyclecode" id="cyclecode" class="form-control form-control-sm form-control-sm w-auto" value="{{ warehouse.cyclecode }}">
+					<input type="text" name="cyclecode" id="cyclecode" class="form-control form-control-sm w-auto" value="{{ warehouse.cyclecode }}">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -85,7 +88,7 @@
 					<label for="codeabc">ABC Code</label>
 				</div>
 				<div class="col-sm-8">
-					<input type="text" name="codeabc" id="codeabc" class="form-control form-control-sm form-control-sm w-auto" value="{{ warehouse.codeabc }}">
+					<input type="text" name="codeabc" id="codeabc" class="form-control form-control-sm w-auto" value="{{ warehouse.codeabc }}" oninput="this.value = this.value.toUpperCase()">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -93,7 +96,7 @@
 					<label for="orderpoint">Order Point</label>
 				</div>
 				<div class="col-sm-8">
-					<input type="number" name="orderpoint" id="orderpoint" class="form-control form-control-sm form-control-sm text-right w-auto" value="{{ warehouse.orderpoint }}">
+					<input type="number" name="orderpoint" id="orderpoint" class="form-control form-control-sm text-right w-auto" value="{{ warehouse.orderpoint|number_format(0) }}">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -101,7 +104,7 @@
 					<label for="orderqty">Order Qty</label>
 				</div>
 				<div class="col-sm-8">
-					<input type="number" name="orderqty" id="orderqty" class="form-control form-control-sm form-control-sm text-right w-auto" value="{{ warehouse.orderqty }}">
+					<input type="number" name="orderqty" id="orderqty" class="form-control form-control-sm text-right w-auto" value="{{ warehouse.orderqty|number_format(0) }}">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -109,7 +112,7 @@
 					<label for="maxqty">Max Qty</label>
 				</div>
 				<div class="col-sm-8">
-					<input type="number" name="maxqty" id="maxqty" class="form-control form-control-sm form-control-sm text-right w-auto" value="{{ warehouse.maxqty }}">
+					<input type="number" name="maxqty" id="maxqty" class="form-control form-control-sm text-right w-auto" value="{{ warehouse.maxqty|number_format(0) }}">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -117,15 +120,7 @@
 					<label for="maxorderqty">Max Per Order</label>
 				</div>
 				<div class="col-sm-8">
-					<input type="number" name="maxorderqty" id="maxorderqty" class="form-control form-control-sm form-control-sm text-right w-auto" value="{{ warehouse.maxorderqty }}">
-				</div>
-			</div>
-			<div class="form-group row">
-				<div class="col-sm-4">
-					<label for="maxorderqty">Max Per Order</label>
-				</div>
-				<div class="col-sm-8">
-					<input type="number" name="maxorderqty" id="maxorderqty" class="form-control form-control-sm form-control-sm text-right w-auto" value="{{ warehouse.maxorderqty }}">
+					<input type="number" name="maxorderqty" id="maxorderqty" class="form-control form-control-sm text-right w-auto" value="{{ warehouse.maxorderqty|number_format(0) }}">
 				</div>
 			</div>
 			<div class="form-group row">
@@ -133,7 +128,7 @@
 					<label for="freightin">Freight In</label>
 				</div>
 				<div class="col-sm-8">
-					<input type="{{ m_whse.configs.salesorder.is_freightin() ? 'number' : 'text' }}" name="freightin" id="freightin" class="{{ m_whse.configs.salesorder.is_freightin() ? 'form-control' : 'form-control-plaintext' }} text-right w-auto" value="{{ warehouse.freightin }}" {{ m_whse.configs.salesorder.is_freightin() ? '' : 'readonly' }}>
+					<input type="{{ m_whse.configs.salesorder.is_freightin() ? 'number' : 'text' }}" name="freightin" id="freightin" class="form-control form-control-sm text-right w-auto" value="{{ warehouse.freightin }}" {{ m_whse.configs.salesorder.is_freightin() ? '' : 'readonly' }}>
 				</div>
 			</div>
 			<div class="form-group row">

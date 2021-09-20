@@ -6,8 +6,10 @@
 	m_costing              module ItmCosting
 	itm                    module Itm
 #}
-<form action="{{ page.wire('input').url() }}" class="mb-3" id="item-costing-form" method="post">
+<form action="{{ input.url() }}" class="mb-3" id="item-costing-form" method="POST">
+	<input type="hidden" name="action" value="update-itm-costing">
 	<input type="hidden" name="itemID" value="{{ item.itemid }}">
+
 	<div class="form-group row">
 		<div class="col-sm-4">
 			<label for="uom_purchase">Purchase UoM</label>
@@ -15,66 +17,22 @@
 		<div class="col-sm-8">
 			<select name="uom_purchase" class="custom-select custom-select-sm" id="uom_purchase">
 				{% for uom in m_costing.get_uom_purchases() %}
-					<option value="{{ uom.code }}" {{ uom.code == item.unitofmpurchase.code ? 'selected' : '' }}>{{ uom.description }}</option>
+					<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.unitofmpurchase.code ? 'selected' : '' }}>
+						{{ uom.code }} - {{ uom.description }}
+					</option>
 				{% endfor %}
 			</select>
+			<small class="form-text text-muted">
+				Conversion: &nbsp;
+				<span class="conversion-description">
+					{{ item.unitofmpurchase.conversion|number_format(m_costing.fieldAttribute('qty', 'precision')) }}
+				</span>
+			</small>
 		</div>
 	</div>
-	<div class="form-group row">
-		<div class="col-sm-4">
-			<label for="standardcost">Standard Cost</label>
-		</div>
-		<div class="col-sm-8">
-			<div class="row">
-				<div class="col-sm-8">
-					<div class="input-group input-group-sm">
-						<input type="text" class="form-control text-right" name="standardcost" id="standardcost" value="{{ item.standardcost|number_format(m_costing.configs.po.decimal_places_cost) }}">
-						<div class="input-group-append">
-							<span class="input-group-text uom-purchase-display">{{ item.unitofmpurchase.code }}</span>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<p class="form-control-plaintext">{{ item.date_laststandardcost ? item.date_laststandardcost|convertdate : '' }}</p>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="form-group row">
-		<div class="col-sm-4">
-			<label for="standardcostbasedon">Based On</label>
-		</div>
-		<div class="col-sm-8">
-			{% include 'util/form/select.twig' with {
-					'name':          'standardcostbasedon',
-					'id':            'standardcostbasedon',
-					'selected_value': item.standardcostbasedon,
-					'options':       m_costing.get_standardcost_basedon_options(),
-					'show_value': true,
-				}
-			%}
-		</div>
-	</div>
-	<div class="form-group row">
-		<div class="col-sm-4">
-			<label for="lastcost">Last Cost</label>
-		</div>
-		<div class="col-sm-8">
-			<div class="row">
-				<div class="col-sm-8">
-					<div class="input-group input-group-sm">
-						<input type="text" class="form-control text-right" name="lastcost" id="lastcost" value="{{ item.lastcost|number_format(m_costing.configs.po.decimal_places_cost) }}">
-						<div class="input-group-append">
-							<span class="input-group-text uom-purchase-display">{{ item.unitofmpurchase.code }}</span>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<p class="form-control-plaintext">{{ item.date_lastcost ? item.date_lastcost|convertdate : '' }}</p>
-				</div>
-			</div>
-		</div>
-	</div>
+
+	{% include 'items/itm/costing/form/cost-fields.twig' %}
+
 	<div class="form-group row">
 		<div class="col-sm-4">
 			<label for="buyer">{{ m_costing.is_buyercontrol_item() ? 'Buyer' : 'N/A'}}</label>
@@ -85,7 +43,7 @@
 					<option value=""></option>
 					{% for buyer in m_costing.get_ap_buyers() %}
 						<option value="{{ buyer.code }}" {{ buyer.code == item.buyer ? 'selected' : ''}}>
-							{{ buyer.description }}
+							{{ buyer.code }} - {{ buyer.description }}
 						</option>
 					{% endfor %}
 				</select>
@@ -97,10 +55,25 @@
 			<label for="minmargin">Min Margin</label>
 		</div>
 		<div class="col-sm-8">
-			<div class="input-group input-group-sm">
-				<input type="text" class="form-control text-right" name="minmargin" id="minmargin" value="{{ item.minmargin|number_format(4) }}">
-				<div class="input-group-append">
-					<span class="input-group-text uom-purchase-display">%</span>
+			<div class="row">
+				<div class="col-sm-5">
+					<input type="text" class="form-control form-control-sm text-right" name="minmargin" id="minmargin" value="{{ item.minmargin|number_format(4) }}">
+				</div>
+				<div class="col-sm-7">
+					<div class="row">
+						<div class="col-sm-5">
+							<label for="minmarginbase">Based On</label>
+						</div>
+						<div class="col-sm-7">
+							<select name="minmarginbase" id="minmarginbase" class="form-control form-control-sm">
+								{% for code, label in m_costing.getMinMarginBasedOnOptions() %}
+									<option value="{{ code }}" {{ code == item.minmarginbase ? 'selected' : ''}}>
+										{{ code }} - {{ label|capitalize }}
+									</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -121,7 +94,7 @@
 			1. Locked for editing by the User
 		#}
 		{% if itm.recordlocker.userHasLocked(item.itemid) %}
-			<button type="submit" class="btn btn-success" name="action" value="update-itm-costing">
+			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 		{% endif %}

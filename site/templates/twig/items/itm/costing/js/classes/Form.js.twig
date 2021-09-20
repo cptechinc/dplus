@@ -1,0 +1,66 @@
+class CostingForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new CostingForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'item-costing-form';
+		this.form = $('#' + this.id);
+		this.inputs  = CostingInputs.getInstance();
+		this.config  = CostingConfigs.getInstance();
+	}
+
+	updateUomPurchase() {
+		this.updateUomPurchaseDisplay();
+		this.showHideStandardCostEach();
+		this.updateStandardCostUom();
+	}
+
+	updateStandardCostUom() {
+		var conversion = parseFloat(this.inputs.uom.find('option:selected').data('conversion'));
+		var div = this.form.find('#standardcost-each');
+		var input = div.find('p');
+		var cost = parseFloat(p.text()) * conversion;
+		this.inputs.standardcost.val(cost.toFixed(this.config.fields.cost.precision));
+	}
+
+	updateUomPurchaseDisplay() {
+		var uom    = this.inputs.uom.val();
+		var length = this.config.fields.uom.maxlength;
+		var nbrOfSpaces = length - uom.length;
+
+		if (nbrOfSpaces < 1) {
+			this.form.find('.uom-purchase-display').text(this.inputs.uom.val());
+			return true;
+		}
+		var spaces = '';
+		for (var i = 1; i < nbrOfSpaces + 1; i++) {
+			spaces += '&nbsp;';
+		}
+		this.form.find('.uom-purchase-display').html(uom + spaces);
+	}
+
+	showHideStandardCostEach() {
+		var display = this.form.find('#standardcost-each');
+
+		if (this.inputs.uom.val() != 'EACH') {
+			display.addClass('show');
+		}
+		if (this.inputs.uom.val() == 'EACH') {
+			display.removeClass('show');
+		}
+	}
+
+	updateStandardCostEach() {
+		var conversion = parseFloat(this.inputs.uom.find('option:selected').data('conversion'));
+		var standardcostUom = parseFloat(this.inputs.standardcost.val());
+		var costEach = standardcostUom / conversion;
+		var div = this.form.find('#standardcost-each');
+		div.find('input').val(costEach.toFixed(this.config.fields.cost.precision));
+	}
+}

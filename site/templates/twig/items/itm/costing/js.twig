@@ -1,29 +1,51 @@
+{% include 'items/itm/costing/js/classes.js.twig' %}
+
 $(function() {
-	var form  = $('#item-costing-form');
+	var formCosting = CostingForm.getInstance();
+	var alert       = CostingAlerts.getInstance();
+
+/* =============================================================
+	Event Changes
+============================================================= */
+	$("body").on("change", "select[name=uom_purchase]", function(e) {
+		formCosting.updateUomPurchase();
+
+		var inputs = formCosting.inputs;
+		var conversion = floatParse(inputs.uom.find('option:selected').data('conversion'));
+		var conversionText = inputs.uom.siblings('small').find('.conversion-description');
+		conversionText.text(conversion.toFixed(formCosting.config.fields.qty.precision));
+	});
+
+	$("body").on("change", "input[name=standardcost]", function(e) {
+		var input = $(this);
+		var cost = parseFloat(input.val());
+		input.val(cost.toFixed(formCosting.config.fields.cost.precision));
+		formCosting.updateStandardCostEach();
+	});
+
+	$("body").on("change", "input[name=minmargin]", function(e) {
+		var input = $(this);
+		var cost = parseFloat(input.val());
+		input.val(cost.toFixed(formCosting.config.fields.margin.precision));
+	});
 
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
-	origForm = form.serialize();
+	origForm = formCosting.form.serialize();
 
 	$("body").on("click", "a:not(#item-costing-form .form_button)", function(e) {
-		if (form.serialize() !== origForm) {
+		if (formCosting.form.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);
 			var href = a.attr('href');
 
-			swal2.fire({
-				title: 'Changes have occurred!',
-				text: 'Do you want to save?',
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
-				cancelButtonText: 'No',
-			}).then((result) => {
-				if (result.value) {
-					form.find('button[type=submit][name=update-itm-costing]').click();
-				} else if (result.dismiss === Swal.DismissReason.cancel) {
-					// Send HTTP GET Request to remove Record Lock
+			alert.unsavedChanges(function(saveChanges) {
+				if (saveChanges) {
+					$('#loading-modal').modal('show');
+					formCosting.form.append('<input type="hidden" name="redirect" value="'+href+'">');
+					formCosting.form.submit();
+				} else {
 					$.get('{{ page.url }}', function() {
 						window.location.href = href;
 					});
@@ -35,7 +57,7 @@ $(function() {
 /* =============================================================
 	Validation Methods
 ============================================================= */
-	form.validate({
+	formCosting.form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {

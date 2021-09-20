@@ -4,5 +4,9 @@
 	item                 WarehouseInventory
 	qnotes              module QnotesItemWhseOrder
 #}
+{% set response = session.get('response_qnote') %}
+{% if response %}
+	{% include 'code-tables/code-table-response.twig' with {'response': response} %}
+{% endif %}
 {% include 'items/itm/warehouse/notes/order/list.twig' %}
 {% include 'items/itm/warehouse/notes/order/modal.twig' %}

@@ -14,15 +14,23 @@ class Msa extends AbstractController {
 	}
 
 	public static function validateUserid($data) {
-		$fields = ['userID|text', 'loginID|text'];
+		$fields = ['userID|text', 'loginID|text', 'jqv|bool', 'new|bool'];
 		$data = self::sanitizeParametersShort($data, $fields);
 		$validate = self::validator();
 		$userID = $data->loginID ? $data->loginID : $data->userID;
+		$exists = $validate->userid($userID);
 
-		if ($validate->userid($userID) === false) {
-			return "User $userID not found";
+		if ($data->jqv === false) {
+			if ($data->new) {
+				return $exists === false;
+			}
+			return $exists;
 		}
-		return true;
+
+		if ($data->new) {
+			return $exists === false ? true : "User $userID Exists";
+		}
+		return $exists ? true : "User $userID Not Found";
 	}
 
 	public static function getUserid($data) {

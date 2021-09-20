@@ -16,6 +16,11 @@ class QnotesItemInternal extends WireData implements Module {
 	const DESCRIPTION        = 'Item Internal Notes';
 	const DESCRIPTION_RECORD = 'Item Internal Notes';
 	const DESCRIPTION_RESPONSE = 'Item ';
+	const TYPE                 = 'ITEM';
+
+	public function type() {
+		return self::TYPE;
+	}
 
 
 	/**
@@ -172,6 +177,7 @@ class QnotesItemInternal extends WireData implements Module {
 
 		$response = new QnotesResponse();
 		$response->set_key("$itemID-{$note->key2}");
+		$response->set_type(self::TYPE);
 
 		if (in_array(false, $lines_saved)) {
 			$lines_error =

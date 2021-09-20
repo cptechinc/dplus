@@ -1,0 +1,20 @@
+class WhseInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new WhseInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'item-whse-form';
+		this.form = $('#' + this.id);
+		this.bin         = this.form.find('input[name=bin_default]');
+		this.codeabc     = this.form.find('input[name=codeabc]');
+		this.whsesupply  = this.form.find('select[name=whsesupply]');
+		this.itemid      = this.form.find('input[name=itemID]');
+		this.whseid      = this.form.find('[name=whseID]');
+	}
+}

@@ -1,0 +1,17 @@
+class WhseForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new WhseForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = '#item-whse-form';
+		this.form = $(this.id);
+		this.inputs = WhseInputs.getInstance();
+		this.config = WhseConfigs.getInstance();
+	}
+}

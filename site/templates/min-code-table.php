@@ -11,6 +11,8 @@
 		$code  = $input->requestMethod('GET') ? $input->$rm->text('code') : false;
 		$code = $action == 'update-notes' || $action == 'delete-notes' ? $code : '';
 		$code = $page->codetable == 'ioptm' ? $input->$rm->text('sysop') : $code;
+		$code = $page->codetable == 'iwhm' ? $input->$rm->text('code') : $code;
+
 		if ( $page->codetable != 'ioptm') {
 			$code = $action == 'remove-code' ? '' : $code;
 		}

@@ -34,8 +34,12 @@ class CodeTablesIwhm extends WireData implements Module {
 	 * @param  string $table Table Code
 	 * @return mixed
 	 */
-	public function get_query() {
+	public function query() {
 		return WarehouseQuery::create();
+	}
+
+	public function get_query() {
+		return $this->query();
 	}
 
 /* =============================================================
@@ -66,9 +70,26 @@ class CodeTablesIwhm extends WireData implements Module {
 	 * @param  string $whseID WarehouseID
 	 * @return ObjectCollection
 	 */
-	public function get_code($whseID) {
-		$q = $this->get_query();
-		return $q->findOneById($whseID);
+	public function whse($id) {
+		return $this->query()->findOneById($id);
+	}
+
+	/**
+	 * Return the Code records from Database filtered by Warehouse ID
+	 * @param  string $whseID WarehouseID
+	 * @return ObjectCollection
+	 */
+	public function get_code($id) {
+		return $this->whse($id);
+	}
+
+	/**
+	 * Returns if Codes Exists
+	 * @param  string $whseID WarehouseID
+	 * @return bool
+	 */
+	public function exists($id) {
+		return boolval($this->query()->filterById($id)->count());
 	}
 
 	/**
@@ -79,6 +100,27 @@ class CodeTablesIwhm extends WireData implements Module {
 	public function code_exists($whseID) {
 		$q = $this->get_query();
 		return boolval($q->filterById($whseID)->count());
+	}
+
+	/**
+	 * Return new Record with defaults
+	 * @return Warehouse
+	 */
+	public function new($id = '') {
+		$whse = new Warehouse();
+		$whse->setPickdetail('N');
+		$whse->setConsignment('N');
+		if (strtolower($id) != 'new') {
+			$whse->setWhseid($id);
+		}
+		return $whse;
+	}
+
+	public function getCreate($id) {
+		if ($this->exists($id)) {
+			return $this->whse($id);
+		}
+		return $this->new($id);
 	}
 
 /* =============================================================

@@ -14,4 +14,5 @@
 	$page->body .= $config->twig->render('min/itmp/page.twig', ['page' => $page, 'itmp' => $itmp]);
 	$page->js   .= $config->twig->render('min/itmp/js.twig', ['page' => $page, 'itmp' => $itmp]);
 	$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
+	$session->remove('response_itmp');
 	include __DIR__ . "/basic-page.php";

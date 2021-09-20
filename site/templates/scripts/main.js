@@ -1,6 +1,7 @@
 // Well hello there. Looks like we don't have any Javascript.
 // Maybe you could help a friend out and put some in here?
 // Or at least, when ready, this might be a good place for it.
+moment().format();
 
 var nav = '#yt-menu';
 
@@ -198,10 +199,29 @@ $(function() {
 		modal.find('[role=status]').removeClass('spinner-border');
 	});
 
+
+	$("body").on('focusin', '.qnotes', function(e) {
+		var input = $(this);
+		if (agent.browser == 'chrome') {
+			var cols = parseInt(input.attr('cols'));
+			input.attr('cols', cols - 1);
+		}
+	});
+
+	$("body").on('keydown', '.qnotes', function(e) {
+		var input = $(this);
+		var notes = input.val();
+
+		if (notes.length) {
+			var wrap = wordWrap(notes, parseInt(input.attr('data-cols')));
+			input.val(wrap);
+		}
+	});
+
 	$("body").on('click', '.toggle-collapse', function(e) {
 		var button = $(this);
 		var target = button.data('target');
-		
+
 		$(target).toggleClass('show');
 		if ($(target).hasClass('show')) {
 			button.data('expanded', 'true');
@@ -315,7 +335,6 @@ $.fn.extend({
 });
 
 
-
 function toggle_nav() {
 	$(nav).toggle();
 	$(nav).find('input[name=q]').focus();
@@ -395,6 +414,11 @@ function format_phone(input) {
 		input = input.substring(0,3)+'-'+input.substring(3,6)+'-'+input.substring(6,10);
 	}
 	return input;
+}
+
+function wordWrap(notes, w = 30) {
+	var regex = new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g');
+	return notes.replace(regex, '\n');
 }
 
 /*==============================================================

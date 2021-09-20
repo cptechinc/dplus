@@ -1,0 +1,22 @@
+class ItmConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new ItmConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			grams: {
+				conversion: {{ itm.fieldAttribute('grams', 'conversion') }},
+				precision: {{ itm.fieldAttribute('grams', 'precision') }},
+			},
+			weight: {
+				precision: {{ itm.fieldAttribute('weight', 'precision') }},
+			},
+		};
+	}
+}

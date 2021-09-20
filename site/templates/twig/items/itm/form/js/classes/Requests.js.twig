@@ -1,0 +1,28 @@
+class ItmRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new ItmRequests();
+		}
+		return this.instance;
+	}
+
+	validateItemid(itemID,  callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('inv/validate/itemid/') }}');
+
+		ajax.setData({itemID: itemID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getCustomer(custID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('mar/customer/') }}');
+
+		ajax.setData({custID: custID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+}

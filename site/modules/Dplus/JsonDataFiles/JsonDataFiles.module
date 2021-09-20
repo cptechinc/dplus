@@ -74,7 +74,10 @@ class JsonDataFiles extends WireData implements Module {
 			'notes'         => 'vinotes'
 		),
 		'itm' => array(
-			'delete' => 'deleteitm'
+			'delete' => 'deleteitm',
+			'whse' => [
+				'delete' => 'deleteitmwhse'
+			]
 		),
 		'whse' => array(
 			'stock' => array(

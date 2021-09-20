@@ -1,0 +1,34 @@
+class WhseRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new WhseRequests();
+		}
+		return this.instance;
+	}
+
+	validateWhseid(whseID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('inv/validate/warehouse/') }}');
+		ajax.setData({whseID: whseID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	validateWhseBinid(whseID, binID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('inv/validate/warehouse/bin/') }}');
+		ajax.setData({whseID: whseID, binID: binID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	validateItmWhse(itemID, whseID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('inv/validate/itm/warehouse/') }}');
+		ajax.setData({itemID: itemID, whseID: whseID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+}

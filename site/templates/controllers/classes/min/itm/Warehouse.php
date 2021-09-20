@@ -67,7 +67,6 @@ class Warehouse extends ItmFunction {
 			return self::handleCRUD($data);
 		}
 		self::initHooks();
-		$config  = self::pw('config');
 		$page    = self::pw('page');
 		$page->headline = "ITM: $data->itemID Warehouse $data->whseID";
 		$validate = self::getMinValidator();
@@ -76,9 +75,10 @@ class Warehouse extends ItmFunction {
 			return self::invalidWhse($data);
 		}
 
-		if (self::getItmWarehouse()->exists($data->itemID, $data->whseID)) {
+		if (self::getItmWarehouse()->exists($data->itemID, $data->whseID) === false) {
 			$page->headline = "ITM: $data->itemID Warehouse Add";
 		}
+		$page->js .= self::pw('config')->twig->render('items/itm/warehouse/js.twig');
 		return self::whseDisplay($data);
 	}
 
@@ -104,7 +104,19 @@ class Warehouse extends ItmFunction {
 		}
 
 		$html .= $config->twig->render('items/itm/warehouse/display.twig', ['item' => $item, 'warehouse' => $whse, 'm_whse' => $itmW, 'recordlocker' => $itmW->recordlocker]);
+		if ($whse->isNew() === false) {
+			$html .= self::displayQnotes($data, $whse);
+		}
 		$html .= $config->twig->render('items/itm/warehouse/bins-modal.twig', ['itemID' => $data->itemID, 'm_whse' => $itmW]);
+		return $html;
+	}
+
+	private static function displayQnotes($data, $item) {
+		$qnotes = self::getQnotes();
+		$html = '';
+		self::pw('page')->js .= self::pw('config')->twig->render('items/itm/warehouse/notes/order/js.twig', ['item' => $item, 'qnotes' => $qnotes]);
+		$html .= self::pw('config')->twig->render('items/itm/warehouse/notes/notes.twig', ['item' => $item, 'qnotes' => $qnotes]);
+		self::pw('session')->remove('response_qnote');
 		return $html;
 	}
 
@@ -156,16 +168,24 @@ class Warehouse extends ItmFunction {
 		$config  = self::pw('config');
 		$item    = self::getItm()->item($data->itemID);
 		$itmw    = self::getItmWarehouse();
+		$qnotes  = self::getQnotes();
 
 		$html = '';
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 		$html .= $config->twig->render('items/itm/itm-links.twig');
-		$html .= $config->twig->render('items/itm/warehouse/list-display.twig', ['itmw' => $itmw, 'itemID' => $data->itemID, 'item' => $item, 'warehouses' => $itmw->get_itemwarehouses($data->itemID)]);
+		if (self::pw('session')->getFor('response', 'itm')) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => self::pw('session')->getFor('response', 'itm')]);
+		}
+		$html .= $config->twig->render('items/itm/warehouse/list-display.twig', ['itmw' => $itmw, 'itemID' => $data->itemID, 'item' => $item, 'warehouses' => $itmw->get_itemwarehouses($data->itemID), 'qnotes' => $qnotes]);
 		return $html;
 	}
 
 	public static function getItmWarehouse() {
 		return self::pw('modules')->get('ItmWarehouse');
+	}
+
+	public static function getQnotes() {
+		return self::pw('modules')->get('QnotesItemWhseOrder');
 	}
 
 	public static function itmUrlWhseDelete($itemID, $whseID) {

@@ -1,0 +1,58 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemMasterItem
+	item_pricing           ItemMasterItem
+	pricingm               module ItmPricing
+	pricingm.configs       WireData
+#}
+{% set unit = {
+		'qty': item_pricing.get_pricebreak_qty(i),
+		'price': item_pricing.get_pricebreak_price(i),
+		'margin': item_pricing.get_pricebreak_margin(i),
+	}
+%}
+{% set formatted = {
+		'qty': unit.qty|number_format(pricingm.fieldAttribute('qty', 'precision')),
+		'price': unit.price|number_format(pricingm.fieldAttribute('price', 'precision')),
+		'margin': unit.margin|number_format(pricingm.fieldAttribute('margin', 'precision')),
+	}
+%}
+<tr class="unit-row" data-break="{{ i }}">
+	<td>
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'pricebreak_qty' ~ i,
+					'value': unit.qty != 0 ? formatted.qty : '',
+					'size': 'sm',
+					'attributes': {
+						'placeholder': '',
+						'aria-label':  'price break qty ' ~ i,
+						'readonly': item_pricing.get_pricebreak_qty(i - 1) == 0 and i > 1 ? true : false
+					},
+					'addclasses': ['text-right', 'unit-qty']
+				}
+			}
+		%}
+	</td>
+	<td>
+		{% include 'util/bootstrap/form/input.twig' with {
+				'input': {
+					'name': 'pricebreak_price' ~ i,
+					'value': unit.qty != 0 ? formatted.price : '',
+					'size': 'sm',
+					'attributes': {
+						'placeholder': '',
+						'aria-label':  'price break price ' ~ i,
+						'readonly': unit.qty == 0 ? true : false
+					},
+					'addclasses': ['text-right', 'unit-price']
+				}
+			}
+		%}
+	</td>
+	<td class="text-right">
+		<span class="unit-margin text-right">{{ unit.qty != 0 ? formatted.margin : '' }}</span> %
+	</td>
+</tr>

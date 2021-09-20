@@ -10,14 +10,35 @@
 <div class="form-row form-group">
 	<div class="col-sm-4"><label for="custID">Cash Customer</label></div>
 	<div class="col-sm-8">
-		<div class="input-group">
-			<span class="input-group-prepend">
-				<button type="button" class="btn btn-secondary form_button customer_button" data-toggle="modal" data-target="#ajax-modal" {{ warehouse.whseid ? '' : 'disabled' }}>
-					<i class="fa fa-search" aria-hidden="true"></i> <span class="sr-only">Search Customers</span>
-				</button>
-			</span>
-			<input type="text" name="custID" class="form-control" maxlength="6" value="{{ warehouse.cash_customer }}" id="custID">
-		</div>
+		{% include 'util/bootstrap/form/input-group.twig' with {
+				'inputgroup': {
+					'type': 'prepend',
+					'attributes': {
+						'readonly': warehouse.whseid == '' ? true : false
+					},
+					'input': {
+						'name': 'custID',
+						'id': 'custID',
+						'value': warehouse.cash_customer,
+						'attributes': {
+							'placeholder': '',
+							'aria-label':  'Customer ID'
+						}
+					},
+					'button': {
+						'colorclass': 'btn-secondary',
+						'text': 'fa fa-search'|icon,
+						'attributes': {
+							'title': 'Search Customers',
+							'data-toggle': 'modal',
+							'data-target': '#ajax-modal',
+							'data-lookupurl': page.searchLookupUrl('customers'),
+							'data-input': '#custID'
+						}
+					}
+				}
+			}
+		%}
 		<input type="text" name="cash_name" class="form-control-plaintext" value="{{ warehouse.cashCustomer.name }}" id="cash_name" disabled>
 	</div>
 </div>

@@ -104,7 +104,7 @@ class CodeTablesUmm extends WireData implements Module {
 			$conversion = $input->$rm->text('conversion');
 			$pricebyweight = $input->$rm->text('pricebyweight');
 			$stockbycase = $input->$rm->yn('stockbycase');
-			
+
 			$record->setDescription($description);
 			$record->setConversion($conversion);
 			$record->setPricebyweight($pricebyweight);
@@ -194,6 +194,14 @@ class CodeTablesUmm extends WireData implements Module {
 	 * @return int
 	 */
 	public function get_max_length_code() {
+		return UnitofMeasureSale::MAX_LENGTH_CODE;
+	}
+
+	/**
+	 * Return the MaxLength for the UMM code
+	 * @return int
+	 */
+	public function getCodeMaxlength() {
 		return UnitofMeasureSale::MAX_LENGTH_CODE;
 	}
 

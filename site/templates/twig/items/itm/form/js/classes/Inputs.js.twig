@@ -1,0 +1,18 @@
+class ItmInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new ItmInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'itm-form';
+		this.form = $('#' + this.id);
+		this.weight = this.form.find('input[name=weight]');
+		this.grams  = this.form.find('input[name=grams]');
+		this.itemid = this.form.find('input[name=itemID]');
+	}
+}

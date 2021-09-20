@@ -6,21 +6,12 @@
 #}
 {% set response = itmp.response() %}
 <div class="list-group">
-	<div class="list-group-item pb-0 border-0">
-		<div class="row align-items-center">
-			<div class="col-sm-2"></div>
-			<div class="col-sm-7">
-				<div class="bg-secondary text-white p-1 mb-0 text-center align-middle">
-					<h4>Screens</h4>
-				</div>
-			</div>
-		</div>
-	</div>
 	<div class="list-group-item bg-dark text-white">
 		<div class="row align-items-center">
 			<div class="col-sm-2">
 				Login ID
 			</div>
+			<div class="col-sm-1">Screens:</div>
 			{% for field, label in itmp.permissions_labels() %}
 				<div class="col-sm-1">
 					{{ label|title }}
@@ -41,6 +32,7 @@
 				<div class="col-sm-2" data-loginid="{{ user.userid }}">
 					{{ user.userid }}
 				</div>
+				<div class="col-sm-1"></div>
 				<div class="col-sm-1" data-whse="{{ user.whse() ? 'Y' : 'N' }}">
 					{{ user.whse()|yesorno|capitalize }}
 				</div>
@@ -55,9 +47,6 @@
 				</div>
 				<div class="col-sm-1" data-misc="{{ user.misc() ? 'Y' : 'N' }}">
 					{{ user.misc()|yesorno|capitalize }}
-				</div>
-				<div class="col-sm-1" data-packaging="{{ user.packaging() ? 'Y' : 'N' }}">
-					{{ user.packaging()|yesorno|capitalize }}
 				</div>
 				<div class="col-sm-1" data-options="{{ user.options() ? 'Y' : 'N' }}">
 					{{ user.options()|yesorno|capitalize }}

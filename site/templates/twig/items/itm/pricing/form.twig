@@ -8,23 +8,24 @@
 	pricingm.configs       WireData
 	pricingm.configs.so    ConfigSalesOrder
 #}
-<form action="{{ page.wire('input').url() }}" method="POST">
+<form action="{{ input.url() }}" method="POST" id="itm-pricing-form">
 	<input type="hidden" name="action" value="update-itm-pricing">
 	<input type="hidden" name="itemID" value="{{ item_pricing.itemid }}">
-	<input type="hidden" name="itemID" value="{{ item_pricing.item.standardcost }}">
+	<input type="hidden" name="baseprice" value="{{ item_pricing.baseprice }}">
+	<input type="hidden" name="standardcost" value="{{ item.standardcost }}">
 
 	<div class="row mb-3">
 		<div class="col-sm-6">
-			{% include 'items/itm/pricing/sales.twig' %}
+			{% include 'items/itm/pricing/form/sales.twig' %}
 		</div>
 		<div class="col-sm-6">
-			{% include 'items/itm/pricing/purchasing.twig' %}
+			{% include 'items/itm/pricing/form/purchasing.twig' %}
 		</div>
 	</div>
 
 	<div class="row mb-3">
 		<div class="col-sm-6">
-			{% include 'items/itm/pricing/discount-assortment.twig' %}
+			{% include 'items/itm/pricing/form/discount-assortment.twig' %}
 		</div>
 	</div>
 	<div class="d-flex justify-content-between align-items-center">

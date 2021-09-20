@@ -17,9 +17,12 @@ $(function() {
 			modal.find('textarea[name=note]').val(note_row.find('textarea').text());
 		} else {
 			modal.find('.action-desc').text('Adding');
-			modal.find('input[name=notedate]').val(button.data('date')).removeAttr('readonly');
-			modal.find('input[name=notetime]').val(button.data('time')).removeAttr('readonly');
 			modal.find('textarea[name=note]').val('');
+
+			$.getJSON('{{ page.jsonApiUrl('misc/date-time/') }}', function(datetime) {
+				modal.find('input[name=notetime]').val(date.time).removeAttr('readonly');
+				modal.find('input[name=notedate]').val(date.time).removeAttr('readonly');
+			});
 		}
 
 		modal.find('input[name=revision]').val(button.data('revision'));
@@ -33,6 +36,7 @@ $(function() {
 	var validator = form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
+		ignore: ".validate-ignore",
 		errorPlacement: function(error, element) {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},

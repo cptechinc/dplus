@@ -9,7 +9,7 @@
 
 	{% if values.offsetExists('upc') %}
 		<li class="breadcrumb-item">
-			<a href="{{ page.upcListUrl(upcx.getRecordlockerKey(upc)) }}">UPCX</a>
+			<i class="fa fa-arrows" aria-hidden="true"></i>  <a href="{{ page.upcListUrl(upcx.getRecordlockerKey(upc)) }}">UPCX</a>
 		</li>
 		<li class="breadcrumb-item active" aria-current="page">{{ values.text('upc') }} - {{ values.text('itemID') }}</li>
 	{% endif %}

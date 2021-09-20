@@ -294,6 +294,8 @@ input.form-control[type=number] {
 
 textarea.qnotes {
 	font-family: monospace;
+	word-break: keep-all;
+	overflow-y: scroll;
 }
 
 .input-group > .input-group-append.w25 {
@@ -302,6 +304,13 @@ textarea.qnotes {
 
 .input-group .input-group-text {
 	width: 100%;
+}
+
+.was-validated .form-control.form-control-sm:valid,
+.was-validated .form-control.form-control-sm:invalid,
+.form-control.form-control-sm.is-valid,
+.form-control.form-control-sm.is-invalid {
+	padding-right: .5rem;
 }
 
 .screen-overlay {

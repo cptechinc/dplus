@@ -36,17 +36,19 @@ class Pricing extends ItmFunction {
 			return self::displayAlertUserPermission($data);
 		}
 
-		$fields = ['itemID|text', 'action|text'];
+		$fields = ['itemID|text', 'action|text', 'redirect|text'];
 		$data = self::sanitizeParameters($data, $fields);
-		$input = self::pw('input');
 		$itmPricing = self::getItmPricing();
 		$itmPricing->init_configs();
 
 		if ($data->action) {
-			$itmPricing->process_input($input);
+			$itmPricing->process_input(self::pw('input'));
 		}
 
-		self::pw('session')->redirect(self::itmUrlPricing($data->itemID), $http301 = false);
+		if (self::pw('config')->ajax === false) {
+			$url = empty($data->redirect) === false ? $data->redirect : self::itmUrlPricing($data->itemID);
+			self::pw('session')->redirect($url, $http301 = false);
+		}
 	}
 
 	public static function pricing($data) {
@@ -61,7 +63,7 @@ class Pricing extends ItmFunction {
 		}
 		$page    = self::pw('page');
 		$page->headline = "ITM: $data->itemID Pricing";
-		$page->js .= self::pw('config')->twig->render('items/itm/pricing/js.twig');
+		$page->js .= self::pw('config')->twig->render('items/itm/pricing/js.twig', ['itmPricing' => self::getItmPricing()]);
 		return self::pricingDisplay($data);
 	}
 
@@ -70,6 +72,7 @@ class Pricing extends ItmFunction {
 		$session = self::pw('session');
 		$itm     = self::getItm();
 		$itmPricing = self::getItmPricing();
+		$itmCosting = Costing::getItmCosting();
 		$item = $itm->get_item($data->itemID);
 		$pricing = $itmPricing->get_pricing($data->itemID);
 
@@ -80,7 +83,7 @@ class Pricing extends ItmFunction {
 		}
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
-		$html .= $config->twig->render('items/itm/pricing/display.twig', ['item' => $item, 'pricingm' => $itmPricing, 'item_pricing' => $pricing, 'itm' => $itm]);
+		$html .= $config->twig->render('items/itm/pricing/display.twig', ['item' => $item, 'pricingm' => $itmPricing, 'costingm' => $itmCosting, 'item_pricing' => $pricing, 'itm' => $itm]);
 		return $html;
 	}
 

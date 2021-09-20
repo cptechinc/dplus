@@ -15,13 +15,21 @@
 		<select name="uom_sale" class="custom-select custom-select-sm" id="uom_sale">
 			<option value="">-- Choose --</option>
 			{% for uom in pricingm.get_unitsofm_sale() %}
-				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_sale ? 'selected' : ''}}>{{ uom.description }}</option>
+				<option value="{{ uom.code }}" data-conversion="{{ uom.conversion }}" {{ uom.code == item.uom_sale ? 'selected' : ''}}>
+					{{ uom.code }} - {{ uom.description }}
+				</option>
 			{% endfor %}
 		</select>
+		<small class="form-text text-muted">
+			Conversion: &nbsp;
+			<span class="conversion-description">
+				{{ item_pricing.item.unitofmsale.conversion|number_format(pricingm.fieldAttribute('qty', 'precision')) }}
+			</span>
+		</small>
 	</div>
 </div>
 
-{% include 'items/itm/pricing/qty-breaks.twig' %}
+{% include 'items/itm/pricing/form/sales/qty-breaks.twig' %}
 
 <div class="form-group row">
 	<div class="col-sm-6">

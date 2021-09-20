@@ -12,6 +12,11 @@ $(function() {
 		$('#{{ session.get('qnotes_itm') }}-tab').click();
 	{% endif %}
 
+	$('#notes-internal-modal').on('show.bs.modal', function (e) {
+		var modal = $(this);
+		modal.find('textarea[name=note]').val(modal.find('textarea[name=original]').val());
+	});
+
 	$('#notes-internal-modal').on('shown.bs.modal', function (e) {
 		var modal = $(this);
 		modal.find('textarea[name=note]').focus();
