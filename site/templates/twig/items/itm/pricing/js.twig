@@ -25,6 +25,12 @@ $(function() {
 		formPricing.updateUnitRows();
 	});
 
+	$("body").on("change", "input[name=assortmentqty]", function(e) {
+		var input = $(this);
+		var qty   = floatParse(input.val());
+		input.val(qty.toFixed(formPricing.config.fields.assortmentqty.precision));
+	});
+
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
