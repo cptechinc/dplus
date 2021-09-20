@@ -1,21 +1,17 @@
 <?php namespace Controllers\Mii\Ii;
-// Purl\Url
+// Purl URI Manipulation Library
 use Purl\Url as Purl;
-// Dplus Validators
-use Dplus\CodeValidators\Min as MinValidator;
 // Dplus Screen Formatters
 use Dplus\ScreenFormatters\Ii\SalesOrders as Formatter;
 // Alias Document Finders
 use Dplus\DocManagement\Finders as DocFinders;
-// Mvc Controllers
-use Controllers\Mii\IiFunction;
 
-class SalesOrders extends IiFunction {
+class SalesOrders extends Base {
 	const JSONCODE          = 'ii-sales-orders';
 	const PERMISSION_IIO    = 'salesorders';
 
 /* =============================================================
-	1. Indexes
+	Indexes
 ============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool'];
@@ -32,25 +28,16 @@ class SalesOrders extends IiFunction {
 		return self::orders($data);
 	}
 
-	public static function orders($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		self::sanitizeParametersShort($data, ['itemID|text']);
+	private static function orders($data) {
 		self::getData($data);
-
-		$page    = self::pw('page');
-		$page->headline = "II: $data->itemID Sales Orders";
-		$html = '';
-		$html .= self::breadCrumbs();;
-		$html .= self::display($data);
-		return $html;
+		self::pw('page')->headline = "II: $data->itemID Sales Orders";
+		return self::displayOrders($data);
 	}
 
 /* =============================================================
-	2. Data Requests
+	Data Requests
 ============================================================= */
-	public static function requestJson($vars) {
+	private static function requestJson($vars) {
 		$fields = ['itemID|text', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
@@ -59,7 +46,7 @@ class SalesOrders extends IiFunction {
 	}
 
 /* =============================================================
-	3. URLs
+	URLs
 ============================================================= */
 	public static function ordersUrl($itemID, $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
@@ -73,16 +60,13 @@ class SalesOrders extends IiFunction {
 	}
 
 /* =============================================================
-	4. Data Retrieval
+	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text']);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
-		$page    = self::pw('page');
-		$config  = self::pw('config');
 		$session = self::pw('session');
-		$html = '';
 
 		if ($jsonm->exists(self::JSONCODE)) {
 			if (self::jsonItemidMatches($json['itemid'], $data->itemID) === false) {
@@ -101,9 +85,16 @@ class SalesOrders extends IiFunction {
 	}
 
 /* =============================================================
-	5. Displays
+	Displays
 ============================================================= */
-	private static function display($data) {
+	private static function displayOrders($data) {
+		$html = '';
+		$html .= self::breadCrumbs();;
+		$html .= self::displayData($data);
+		return $html;
+	}
+
+	private static function displayData($data) {
 		self::init();
 		$jsonm  = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
@@ -126,9 +117,9 @@ class SalesOrders extends IiFunction {
 	}
 
 /* =============================================================
-	6. Supplements
+	Hooks
 ============================================================= */
-	public static function init() {
+	private static function init() {
 		$m = self::pw('modules')->get('DpagesMii');
 
 		$m->addHook('Page(pw_template=ii-item)::documentListUrl', function($event) {

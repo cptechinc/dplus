@@ -1,29 +1,29 @@
 <?php
 	include_once($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
 	use Controllers\Mii\Ii;
-	Ii::init();
+	Ii\Ii::init();
 
 	$routes = [
-		['GET',  '', Ii::class, 'item'],
-		['GET',  'page{nbr:\d+}/', Ii::class, 'item'],
-		['GET',  'stock', Ii::class, 'stock'],
-		['GET',  'requirements', Ii::class, 'requirements'],
-		['GET',  'pricing', Ii::class, 'pricing'],
-		['GET',  'usage', Ii::class, 'usage'],
-		['GET',  'costing', Ii::class, 'costing'],
-		['GET',  'activity', Ii::class, 'activity'],
-		['GET',  'kit', Ii::class, 'kit'],
-		['GET',  'bom', Ii::class, 'bom'],
-		['GET',  'where-used', Ii::class, 'whereUsed'],
-		['GET',  'lotserial', Ii::class, 'lotserial'],
-		['GET',  'general', Ii::class, 'general'],
-		['GET',  'substitutes', Ii::class, 'substitutes'],
-		['GET',  'documents', Ii::class, 'documents'],
-		['GET',  'sales-orders', Ii::class, 'salesOrders'],
-		['GET',  'sales-history', Ii::class, 'salesHistory'],
-		['GET',  'quotes', Ii::class, 'quotes'],
-		['GET',  'purchase-orders', Ii::class, 'purchaseOrders'],
-		['GET',  'purchase-history', Ii::class, 'purchaseHistory'],
+		['GET', '', Ii\Ii::class, 'index'],
+		['GET', 'page{nbr:\d+}/', Ii\Ii::class, 'index'],
+		['GET', 'stock', Ii\Stock::class, 'index'],
+		['GET', 'requirements', Ii\Requirements::class, 'index'],
+		['GET', 'pricing', Ii\Pricing::class, 'index'],
+		['GET', 'usage', Ii\Usage::class, 'index'],
+		['GET', 'costing', Ii\Costing::class, 'index'],
+		['GET', 'activity', Ii\Activity::class, 'index'],
+		['GET', 'kit', Ii\Kit::class, 'index'],
+		['GET', 'bom', Ii\Bom::class, 'index'],
+		['GET', 'where-used', Ii\WhereUsed::class, 'index'],
+		['GET', 'lotserial', Ii\Lotserial::class, 'index'],
+		['GET', 'general', Ii\General::class, 'index'],
+		['GET', 'substitutes', Ii\Substitutes::class, 'index'],
+		['GET', 'documents', Ii\Documents::class, 'index'],
+		['GET', 'sales-orders', Ii\SalesOrders::class, 'index'],
+		['GET', 'sales-history', Ii\SalesHistory::class, 'index'],
+		['GET', 'quotes', Ii\Quotes::class, 'index'],
+		['GET', 'purchase-orders', Ii\PurchaseOrders::class, 'index'],
+		['GET', 'purchase-history', Ii\PurchaseHistory::class, 'index'],
 	];
 
 	$router = new Mvc\Router();

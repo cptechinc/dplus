@@ -1,17 +1,13 @@
 <?php namespace Controllers\Mii\Ii;
-// Purl\Url
+// Purl URI Manipulation Library
 use Purl\Url as Purl;
-// Dplus Validators
-use Dplus\CodeValidators\Min as MinValidator;
-// Mvc Controllers
-use Controllers\Mii\IiFunction;
 
-class Substitutes extends IiFunction {
+class Substitutes extends Base {
 	const JSONCODE       = 'ii-substitutes';
 	const PERMISSION_IIO = 'substitutes';
 
 /* =============================================================
-	1. Indexes
+	Indexes
 ============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool'];
@@ -28,25 +24,16 @@ class Substitutes extends IiFunction {
 		return self::substitutes($data);
 	}
 
-	public static function substitutes($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		$data = self::sanitizeParametersShort($data, ['itemID|text']);
-
+	private static function substitutes($data) {
 		self::getData($data);
-		$page    = self::pw('page');
-		$page->headline = "$data->itemID Costing";
-		$html = '';
-		$html .= self::breadCrumbs();
-		$html .= self::display($data);
-		return $html;
+		self::pw('page')->headline = "$data->itemID Costing";
+		return self::displaySubtitutes($data);
 	}
 
 /* =============================================================
-	2. Data Requests
+	Data Requests
 ============================================================= */
-	public static function requestJson($vars) {
+	private static function requestJson($vars) {
 		self::sanitizeParametersShort($vars, ['itemID|text', 'sessionID|text']);
 		$vars->sessionID = $vars->sessionID ? $vars->sessionID : session_id();
 		$data = array('IISUB', "ITEMID=$vars->itemID");
@@ -54,7 +41,7 @@ class Substitutes extends IiFunction {
 	}
 
 /* =============================================================
-	3. URLs
+	URLs
 ============================================================= */
 	public static function substitutesUrl($itemID = '', $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
@@ -70,7 +57,7 @@ class Substitutes extends IiFunction {
 	}
 
 /* =============================================================
-	4. Data Retrieval
+	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text']);
@@ -95,9 +82,16 @@ class Substitutes extends IiFunction {
 	}
 
 /* =============================================================
-	5. Displays
+	Displays
 ============================================================= */
-	protected static function display($data) {
+	private static function displaySubtitutes($data) {
+		$html = '';
+		$html .= self::breadCrumbs();
+		$html .= self::displayData($data);
+		return $html;
+	}
+
+	protected static function displayData($data) {
 		$config = self::pw('config');
 		$jsonm  = self::getJsonModule();
 		$json   = $jsonm->getFile(self::JSONCODE);
