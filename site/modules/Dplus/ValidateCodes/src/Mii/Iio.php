@@ -1,10 +1,11 @@
 <?php namespace Dplus\CodeValidators\Mii;
 
+use Dplus\CodeValidators as Validators;
 use Dplus\CodeValidators\Mii;
 use Dplus\CodeValidators\Min;
 
 /**
- * Mii
+ * IIo
  */
 class Iio extends Mii {
 	/**
@@ -13,7 +14,7 @@ class Iio extends Mii {
 	 * @return bool
 	 */
 	public function userid($userID) {
-		$validate = new MsaValidator();
+		$validate = new Validators\Msa();
 		return $validate->userid($userID);
 	}
 
@@ -26,7 +27,7 @@ class Iio extends Mii {
 		if ($whseID == '**') {
 			return true;
 		}
-		$validate = new MinValidator();
+		$validate = new Validators\Min();
 		return $validate->whseid($whseID);
 	}
 }

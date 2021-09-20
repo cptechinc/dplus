@@ -218,6 +218,17 @@ $(function() {
 		}
 	});
 
+	$("body").on('click', '.toggle-collapse', function(e) {
+		var button = $(this);
+		var target = button.data('target');
+
+		$(target).toggleClass('show');
+		if ($(target).hasClass('show')) {
+			button.data('expanded', 'true');
+		} else {
+			button.data('expanded', 'false');
+		}
+	});
 });
 
 $.fn.extend({

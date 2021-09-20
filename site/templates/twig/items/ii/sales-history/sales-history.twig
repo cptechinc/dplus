@@ -12,7 +12,7 @@
 				</button>
 			</div>
 		</div>
-		<div class="collapse show" id="{{ id|attrJS }}">
+		<div class="collapse" id="{{ id|attrJS }}">
 			<table class="table table-striped table-sm">
 				<thead>
 					{% for x in 0..blueprint['detail']['rowcount']  %}
@@ -70,7 +70,7 @@
 
 						{% if invoice['lots']|length > 0 %}
 							{% for x in 1..blueprint['lotserial']['rowcount']  %}
-								<tr class="lotserial lotserial-{{ invoice['Invoice Number'] }} collapse show">
+								<tr class="lotserial lotserial-{{ invoice['Invoice Number'] }} collapse">
 									{% set columncount = 0 %}
 									{% for i in 1..blueprint['cols'] + 1 %}
 										{% set colspan = 0 %}
@@ -93,7 +93,7 @@
 
 							{% for key, lot in invoice['lots'] %}
 								{% for x in 1..blueprint['lotserial']['rowcount']  %}
-									<tr class="lotserial lotserial-{{ invoice['Invoice Number'] }} {{ id == 'TOTAL' ? 'bg-secondary text-white' : '' }} collapse show">
+									<tr class="lotserial lotserial-{{ invoice['Invoice Number'] }} {{ id == 'TOTAL' ? 'bg-secondary text-white' : '' }} collapse">
 										{% set columncount = 0 %}
 										{% for i in 1..blueprint['cols'] + 1 %}
 											{% set colspan = 0 %}
