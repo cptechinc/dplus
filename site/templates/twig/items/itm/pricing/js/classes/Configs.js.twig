@@ -19,6 +19,9 @@ class PricingConfigs {
 			qty: {
 				precision: {{ itmPricing.fieldAttribute('qty', 'precision') }}
 			},
+			assortmentqty: {
+				precision: {{ itmPricing.fieldAttribute('assortmentqty', 'precision') }}
+			},
 		};
 		this.qtyBreaks = 10;
 	}
