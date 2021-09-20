@@ -1,14 +1,10 @@
 <?php namespace Controllers\Mii\Ii;
-// Purl\Url
+// Purl URI Manipulation Library
 use Purl\Url as Purl;
 // ProcessWire Classes
 use ProcessWire\WireData;
-// Dplus Validators
-use Dplus\CodeValidators\Min as MinValidator;
-// Mvc Controllers
-use Controllers\Mii\IiFunction;
 
-class General extends IiFunction {
+class General extends Base {
 	const JSONCODE          = '';
 	const JSONCODE_MISC     = 'ii-misc';
 	const JSONCODE_NOTES    = 'ii-notes';
@@ -16,7 +12,7 @@ class General extends IiFunction {
 	const PERMISSION_IIO    = '';
 
 /* =============================================================
-	1. Indexes
+	Indexes
 ============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool'];
@@ -33,22 +29,14 @@ class General extends IiFunction {
 		return self::general($data);
 	}
 
-	public static function general($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		self::sanitizeParametersShort($data, ['itemID|text']);
+	private static function general($data) {
 		self::getData($data);
-		$page = self::pw('page');
-		$page->headline = "II: $data->itemID General";
-		$html = '';
-		$html .= self::breadCrumbs();
-		$html .= self::display($data);
-		return $html;
+		self::pw('page')->headline = "II: $data->itemID General";
+		return self::displayGeneral($data);
 	}
 
 /* =============================================================
-	2. Data Requests
+	Data Requests
 ============================================================= */
 	public static function requestJson($vars) {
 		$fields = ['itemID|text', 'sessionID|text'];
@@ -59,7 +47,7 @@ class General extends IiFunction {
 	}
 
 /* =============================================================
-	3. URLs
+	URLs
 ============================================================= */
 	public static function generalUrl($itemID, $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
@@ -73,7 +61,7 @@ class General extends IiFunction {
 	}
 
 /* =============================================================
-	4. Data Retrieval
+	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
 		self::sanitizeParametersShort($data, ['itemID|text']);
@@ -105,18 +93,25 @@ class General extends IiFunction {
 	}
 
 /* =============================================================
-	5. Displays
+	Displays
 ============================================================= */
-	private static function display($data) {
+	private static function displayGeneral($data) {
+		$html = '';
+		$html .= self::breadCrumbs();
+		$html .= self::displayData($data);
+		return $html;
+	}
+
+	private static function displayData($data) {
 		self::sanitizeParametersShort($data, ['itemID|text']);
 		$html = new WireData();
 		$html->misc  = self::displaySection($data, self::JSONCODE_MISC);
 		$html->notes = self::displaySection($data, self::JSONCODE_NOTES);
-		$html->usage = self::usageDisplay($data);
+		$html->usage = self::displayUsage($data);
 		return self::pw('config')->twig->render('items/ii/general/display.twig', ['item' => self::getItmItem($data->itemID), 'html' => $html]);
 	}
 
-	protected static function displaySection($data, $jsoncode) {
+	private static function displaySection($data, $jsoncode) {
 		$code    = str_replace('ii-', '', $jsoncode);
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile($jsoncode);
@@ -135,7 +130,7 @@ class General extends IiFunction {
 		return $config->twig->render("items/ii/general/$code.twig", ['json' => $json, 'module_json' => $jsonm->jsonm]);
 	}
 
-	protected static function usageDisplay($data) {
+	private static function displayUsage($data) {
 		$jsonm   = self::getJsonModule();
 		$json    = $jsonm->getFile(Usage::JSONCODE);
 		$config  = self::pw('config');

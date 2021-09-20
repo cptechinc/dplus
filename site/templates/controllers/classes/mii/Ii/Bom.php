@@ -1,19 +1,15 @@
 <?php namespace Controllers\Mii\Ii;
-// Purl\Url
+// Purl URI Manipulation Library
 use Purl\Url as Purl;
-// Dplus Validators
-use Dplus\CodeValidators\Min as MinValidator;
-// Mvc Controllers
-use Controllers\Mii\IiFunction;
 
-class Bom extends IiFunction {
+class Bom extends Base {
 	const JSONCODE          = 'ii-components-bom';
 	const PERMISSION_IIO    = 'bom';
 	const DATE_FORMAT       = 'm/d/Y';
 	const DATE_FORMAT_DPLUS = 'Ymd';
 
 /* =============================================================
-	1. Indexes
+	Indexes
 ============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool', 'qty|int', 'type|text'];
@@ -34,25 +30,16 @@ class Bom extends IiFunction {
 		return self::qtyForm($data);
 	}
 
-	public static function bom($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		$data = self::sanitizeParametersShort($data, ['itemID|text', 'qty|int', 'type|text']);
-
+	private static function bom($data) {
 		self::getData($data);
-		$page    = self::pw('page');
-		$page->headline = "II: $data->itemID BoM";
-		$html = '';
-		$html .= self::breadCrumbs();;
-		$html .= self::display($data);
-		return $html;
+		self::pw('page')->headline = "II: $data->itemID BoM";
+		return self::displayBom($data);
 	}
 
 /* =============================================================
-	2. Data Requests
+	Data Requests
 ============================================================= */
-	public static function requestJson($vars) {
+	private static function requestJson($vars) {
 		$fields = ['itemID|text', 'qty|int', 'sessionID|text', 'type|text'];
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
@@ -62,7 +49,7 @@ class Bom extends IiFunction {
 	}
 
 /* =============================================================
-	3. URLs
+	URLs
 ============================================================= */
 	public static function bomUrl($itemID, $qty = 0, $type = '', $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
@@ -84,7 +71,7 @@ class Bom extends IiFunction {
 	}
 
 /* =============================================================
-	4. Data Retrieval
+	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
 		self::sanitizeParametersShort($data, ['itemID|text', 'qty|int', 'type|text']);
@@ -109,7 +96,17 @@ class Bom extends IiFunction {
 		$session->redirect(self::bomUrl($data->itemID, $data->qty, $data->type, $refresh = true), $http301 = false);
 	}
 
-	protected static function display($data) {
+/* =============================================================
+	Displays
+============================================================= */
+	private static function displayBom($data) {
+		$html = '';
+		$html .= self::breadCrumbs();;
+		$html .= self::displayData($data);
+		return $html;
+	}
+
+	private static function displayData($data) {
 		$jsonm    = self::getJsonModule();
 		$config   = self::pw('config');
 		$jsoncode = self::JSONCODE . "-$data->type";

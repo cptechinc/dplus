@@ -1,23 +1,19 @@
 <?php namespace Controllers\Mii\Ii;
-// Purl\Url
+// Purl URI Manipulation Library
 use Purl\Url as Purl;
-// Dplus Validators
-use Dplus\CodeValidators\Min as MinValidator;
 // Dplus Screen Formatters
 use Dplus\ScreenFormatters\Ii\SalesHistory as Formatter;
 // Alias Document Finders
 use Dplus\DocManagement\Finders as DocFinders;
-// Mvc Controllers
-use Controllers\Mii\IiFunction;
 
-class SalesHistory extends IiFunction {
+class SalesHistory extends Base {
 	const JSONCODE          = 'ii-sales-history';
 	const PERMISSION_IIO    = 'saleshistory';
 	const DATE_FORMAT       = 'm/d/Y';
 	const DATE_FORMAT_DPLUS = 'Ymd';
 
 /* =============================================================
-	1. Indexes
+	Indexes
 ============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool', 'date|date'];
@@ -41,25 +37,16 @@ class SalesHistory extends IiFunction {
 		return self::dateForm($data);
 	}
 
-	public static function history($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		self::sanitizeParametersShort($data, ['itemID|text', 'date|text']);
+	private static function history($data) {
 		self::getData($data);
-
-		$page    = self::pw('page');
-		$page->headline = "II: $data->itemID Sales History";
-		$html = '';
-		$html .= self::breadCrumbs();;
-		$html .= self::display($data);
-		return $html;
+		self::pw('page')->headline = "II: $data->itemID Sales History";
+		return self::displayHistory($data);
 	}
 
 /* =============================================================
-	2. Data Requests
+	Data Requests
 ============================================================= */
-	public static function requestJson($vars) {
+	private static function requestJson($vars) {
 		$fields = ['itemID|text', 'sessionID|text', 'date|date'];
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
@@ -72,7 +59,7 @@ class SalesHistory extends IiFunction {
 	}
 
 /* =============================================================
-	3. URLs
+	URLs
 ============================================================= */
 	public static function historyUrl($itemID, $date, $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
@@ -90,7 +77,7 @@ class SalesHistory extends IiFunction {
 	}
 
 /* =============================================================
-	4. Data Retrieval
+	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
 		self::sanitizeParametersShort($data, ['itemID|text', 'date|date']);
@@ -122,9 +109,16 @@ class SalesHistory extends IiFunction {
 	}
 
 /* =============================================================
-	5. Displays
+	Displays
 ============================================================= */
-	protected static function display($data) {
+	private static function displayHistory($data) {
+		$html = '';
+		$html .= self::breadCrumbs();;
+		$html .= self::displayData($data);
+		return $html;
+	}
+
+	private static function displayData($data) {
 		self::init();
 		$jsonm  = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
@@ -172,9 +166,9 @@ class SalesHistory extends IiFunction {
 	}
 
 /* =============================================================
-	6. Supplements
+	Hooks
 ============================================================= */
-	public static function init() {
+	private static function init() {
 		$m = self::pw('modules')->get('DpagesMii');
 
 		$m->addHook('Page(pw_template=ii-item)::documentListUrl', function($event) {

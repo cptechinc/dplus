@@ -1,19 +1,15 @@
 <?php namespace Controllers\Mii\Ii;
-// Purl\Url
+// Purl URI Manipulation Library
 use Purl\Url as Purl;
-// Dplus Model
+// Dplus Models
 use WarehouseQuery, Warehouse;
-// Dplus Validators
-use Dplus\CodeValidators\Min as MinValidator;
-// Mvc Controllers
-use Controllers\Mii\IiFunction;
 
-class Requirements extends IiFunction {
+class Requirements extends Base {
 	const JSONCODE       = 'ii-requirements';
 	const PERMISSION_IIO = 'requirements';
 
 /* =============================================================
-	1. Indexes
+	Indexes
 ============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool'];
@@ -30,25 +26,16 @@ class Requirements extends IiFunction {
 		return self::requirements($data);
 	}
 
-	public static function requirements($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		self::sanitizeParametersShort($data, ['itemID|text']);
-
+	private static function requirements($data) {
 		self::getData($data);
-		$page    = self::pw('page');
-		$page->headline = "$data->itemID Requirements";
-		$html = '';
-		$html .= self::breadCrumbs();
-		$html .= self::display($data);
-		return $html;
+		self::pw('page')->headline = "$data->itemID Requirements";
+		return self::displayRequirements($data);
 	}
 
 /* =============================================================
-	2. Data Requests
+	Data Requests
 ============================================================= */
-	public static function requestJson($vars) {
+	private static function requestJson($vars) {
 		$fields = ['itemID|text', 'whseID|text', 'view|text', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
@@ -65,7 +52,7 @@ class Requirements extends IiFunction {
 	}
 
 /* =============================================================
-	3. URLs
+	URLs
 ============================================================= */
 	public static function requirementsUrl($itemID = '', $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
@@ -79,7 +66,7 @@ class Requirements extends IiFunction {
 	}
 
 /* =============================================================
-	4. Data Retrieval
+	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text']);
@@ -105,7 +92,17 @@ class Requirements extends IiFunction {
 		$session->redirect(self::requirementsUrl($data->itemID, $refresh= true), $http301 = false);
 	}
 
-	protected static function display($data) {
+/* =============================================================
+	Displays
+============================================================= */
+	private static function displayRequirements($data) {
+		$html = '';
+		$html .= self::breadCrumbs();
+		$html .= self::displayData($data);
+		return $html;
+	}
+
+	protected static function displayData($data) {
 		$jsonm  = self::getJsonModule();
 		$json   = $jsonm->getFile(self::JSONCODE);
 		$config = self::pw('config');
