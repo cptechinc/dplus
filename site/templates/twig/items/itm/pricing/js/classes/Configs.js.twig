@@ -1,0 +1,25 @@
+class PricingConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new PricingConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			price: {
+				precision: {{ itmPricing.fieldAttribute('price', 'precision') }}
+			},
+			margin: {
+				precision: {{ itmPricing.fieldAttribute('margin', 'precision') }}
+			},
+			qty: {
+				precision: {{ itmPricing.fieldAttribute('qty', 'precision') }}
+			},
+		};
+		this.qtyBreaks = 10;
+	}
+}

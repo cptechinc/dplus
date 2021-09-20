@@ -6,8 +6,10 @@ use Purl\Url;
 
 use Dplus\CodeValidators\Min\Itm as ItmValidator;
 
-use ConfigInQuery, ConfigIn;
-use ConfigPoQuery, ConfigPo;
+// Dplus Configs
+use Dplus\Configs;
+
+use ConfigIn, ConfigPo;
 use ItemMasterItemQuery, ItemMasterItem;
 use UnitofMeasurePurchaseQuery, UnitofMeasurePurchase;
 use ApBuyerQuery, ApBuyer;
@@ -36,9 +38,62 @@ class ItmCosting extends WireData implements Module {
 	}
 
 	public function init_configs() {
-		$this->configs->inv = $this->get_config_in();
-		$this->configs->po  = $this->get_config_po();
+		$this->configs->inv = Configs\In::config();
+		$this->configs->po  = Configs\Po::config();
 		$this->appcustID    = $this->wire('modules')->get('DplusCustomer')->get_custID();
+	}
+
+	/**
+	 * Min Margin Based On Options
+	 * @return array
+	 */
+	public function getMinMarginBasedOnOptions() {
+		return ItemMasterItem::MIN_MARGIN_BASE_OPTIONS;
+	}
+
+/* =============================================================
+	Field Attributes, Functions
+============================================================= */
+	const PRECISION_MARGIN = 4;
+
+	const FIELD_ATTRIBUTES = [
+		'qty'         => ['type' => 'number', 'precision' => 0, 'max' => 99999999],
+		'price'       => ['type' => 'number', 'precision' => 3, 'max'  => 999999999.000],
+		'margin'      => ['type' => 'number', 'precision' => 4, 'max'  => 999999999.000],
+	];
+
+	/**
+	 * Initialize field attributes
+	 * @return void
+	 */
+	public function initFieldAttributes() {
+		// $configSo = Configs\So::config();
+		$configPo = Configs\Po::config();
+		$attributes = self::FIELD_ATTRIBUTES;
+		$attributes['cost']   = ['type' => 'number', 'precision' => $configPo->decimal_places_cost, 'max' => 99999999.9999];
+		$this->fieldAttributes = $attributes;
+	}
+
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function fieldAttribute($field = '', $attr = '') {
+		if (empty($this->fieldAttributes)) {
+			$this->initFieldAttributes();
+		}
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		if (array_key_exists($field, $this->fieldAttributes) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, $this->fieldAttributes[$field]) === false) {
+			return false;
+		}
+		return $this->fieldAttributes[$field][$attr];
 	}
 
 /* =============================================================
@@ -101,20 +156,40 @@ class ItmCosting extends WireData implements Module {
 
 		$item = $itm->get_item($itemID);
 		$item->setUom_purchase($values->text('uom_purchase'));
-		$item->setStandardcost($values->text('standardcost'));
+
+		if ($values->text('standardcost') != $item->standardcost) {
+			// SAVE STANDARD COST AS COST / EACH, display cost * UOM CONVERSION
+			$configPo = Configs\Po::config();
+			$uom = $this->wire('modules')->get('CodeTablesUmm')->get_code($values->text('uom_purchase'));
+			$costUom = $values->float('standardcost', ['precision' => $configPo->decimal_places_cost]);
+			$costEach = $costUom / $uom->conversion;
+			$item->setStandardcost($costEach);
+			$item->setDate_laststandardcost(date('Ymd'));
+		}
 		$item->setLastcost($values->text('lastcost'));
 		$item->setMinmargin($values->text('minmargin'));
+
+		if ($values->offsetExists('minmarginbase') && array_key_exists($values->text('minmarginbase'), ItemMasterItem::MIN_MARGIN_BASE_OPTIONS)) {
+			$item->setMinmarginbase($values->text('minmarginbase'));
+		} else {
+			$item->setMinmarginbase('%');
+		}
+
 		$item->setStandardcostbasedon($values->text('standardcostbasedon'));
 
 		if ($this->is_buyercontrol_item()) {
 			if (strlen($values->text('buyer')) && $validate->buyercode($values->text('buyer'))) {
 				$item->setBuyer($values->text('buyer'));
+			} else {
+				$item->setBuyer('');
 			}
 		}
 
 		if ($this->appcustID == 'LINDST') {
 			$item->Qty_purchase_carton($values->int('qty_purchase_carton'));
 		}
+		$item->setDateUpdtd(date('Ymd'));
+		$item->setTimeUpdtd(date('His'));
 
 		return $this->save_and_process_response($item);
 	}
@@ -222,30 +297,24 @@ class ItmCosting extends WireData implements Module {
 	}
 
 	/**
-	 * Returns IN config
-	 * @return ConfigIn
-	 */
-	public function get_config_in() {
-		return ConfigInQuery::create()->findOne();
-	}
-
-	/**
-	 * Returns PO config
-	 * @return ConfigPo
-	 */
-	public function get_config_po() {
-		return ConfigPoQuery::create()->findOne();
-	}
-
-	/**
 	 * Return if ConfigPo's Buyer Control is Item
 	 * @return bool
 	 */
 	public function is_buyercontrol_item() {
-		if (empty($this->configs->po)) {
-			$this->init_configs();
-		}
-		return $this->configs->po->controlbuyer == ConfigPo::CONTROL_BUYER_ITEM;
+		$configPo = Configs\Po::config();
+		return $configPo->controlbuyer == $configPo::CONTROL_BUYER_ITEM;
+	}
+
+	/**
+	 * Return Uom Code Length
+	 * @return int
+	 */
+	public function getUomCodeLength() {
+		return $this->wire('modules')->get('CodeTablesUmm')->getCodeMaxlength();
+	}
+
+	public function getConfigPo() {
+		return Configs\Po::config();
 	}
 
 /* =============================================================

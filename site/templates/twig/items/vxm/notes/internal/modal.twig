@@ -46,7 +46,12 @@
 					<div class="form-group">
 						<label for="internal-notes">Notes</label>
 						<div class="d-flex justify-content-between align-items-center">
-							<textarea class="form-control w-auto qnotes" name="note" id="internal-notes" rows="10" cols="{{ qnotes.notes.internal.get_column_count() }}" wrap="hard"></textarea>
+							{% include 'util/qnotes-textarea.twig' with {
+									'id': 'intv-notes',
+									'rows': 15, 'cols': qnotes.notes.internal.get_column_count(),
+									'val': ''
+								}
+							%}
 						</div>
 					</div>
 

@@ -1,31 +1,27 @@
+{% include 'items/itm/warehouse/js/classes.js.twig' %}
+
 $(function() {
 	var form_whse      = $('#item-whse-form');
-	var input_bin      = form_whse.find('input[name=bin_default]');
-	var input_codeabc  = form_whse.find('input[name=codeabc]');
+
+	var alert    = WhseAlerts.getInstance();
+	var formWhse = WhseForm.getInstance();
+	var server   = WhseRequests.getInstance();
 
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
-	origForm = form_whse.serialize();
+	origForm = formWhse.form.serialize();
 
-	$("body").on("click", "a:not(#item-whse-form .form_button, #ajax-modal a, [data-toggle])", function(e) {
-		if (form_whse.serialize() !== origForm) {
+	$("body").on("click", "a:not(#item-whse-form .form_button, .modal a, [data-toggle])", function(e) {
+		if (formWhse.form.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);
 			var href = a.attr('href');
 
-			swal2.fire({
-				title: 'Changes have occurred!',
-				text: 'Do you want to save?',
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
-				cancelButtonText: 'No',
-			}).then((result) => {
-				if (result.value) {
-					form.find('button[type=submit][name=update-whse]').click();
-				} else if (result.dismiss === Swal.DismissReason.cancel) {
-					// Send HTTP GET Request to remove Record Lock
+			alert.unsavedChanges(function(saveForm) {
+				if (saveForm) {
+					formWhse.form.find('button[type=submit]').click();
+				} else {
 					$.get('{{ page.url }}', function() {
 						window.location.href = href;
 					});
@@ -35,28 +31,36 @@ $(function() {
 	});
 
 /* =============================================================
-	Changing WarehouseID for new Warehouses
+	Events
 ============================================================= */
 	$("body").on('change', 'select[name=whseID]', function(e) {
-		var select = $(this);
+		var input = $(this);
 
-		if (warehouses[select.val()] !== undefined) {
-			swal2.fire({
-				title: 'Warehouse ' + select.val() + ' exists',
-				text: 'Would you like to change to this Warehouse?',
-				icon: 'error',
-				showCancelButton: true,
-				confirmButtonText: 'Yes',
-				cancelButtonText: 'No',
-			}).then((result) => {
-				if (result.value) {
-					var uri = new URI();
-					uri.setQuery('whseID', select.val());
-					window.location.href = uri.toString();
-				}
+		server.validateItmWhse(formWhse.inputs.itemid.val(), input.val(), function(exists) {
+			if (exists === true) {
+				alert.exists(formWhse.inputs.itemid.val(), input.val(), function(goEdit) {
+					if (goEdit === true) {
+						var uri = new URI();
+						uri.setQuery('whseID', select.val());
+						window.location.href = uri.toString();
+					} else {
+						location.reload();
+					}
+				});
+			} else {
+				formWhse.inputs.whsesupply.val(input.val());
+			}
+		});
+	});
+
+	$("body").on('focusin', 'input[name!=whseID], select[name!=whseID]', function(e) {
+		var input = $(this);
+
+		if (formWhse.inputs.whseid.val() == '') {
+			formWhse.inputs.whseid.focus();
+			alert.whseidRequired(function(confirmed) {
+				formWhse.inputs.whseid.focus();
 			});
-		} else {
-			form_whse.find('select[name=whsesupply]').val(select.val());
 		}
 	});
 
@@ -67,7 +71,7 @@ $(function() {
 		return this.optional(element) || /^[A-J]+$/i.test(value);
 	}, "Valid Entries for ABC Class are A through J");
 
-	form_whse.validate({
+	formWhse.form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -75,111 +79,45 @@ $(function() {
 		},
 		ignore: ".validate-ignore",
 		rules: {
-			whseID: { required: true },
+			whseID: {
+				required: true,
+				remote: {
+					url: '{{ page.jsonapiURL('inv/validate/warehouse/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+					}
+				}
+			},
+			bin_default: {
+				remote: function () {
+					if ($('#whseID').val() != '') {
+						return {
+							required: true,
+							url: '{{ page.jsonapiURL('inv/validate/warehouse/bin/') }}',
+							type: "get",
+							data: {
+								jqv: 'true',
+								whseID: function() {
+									return $('#whseID').val();
+								},
+								binID: function() {
+									return $('#bin_default').val();
+								}
+							}
+						}
+					} else {
+						return {};
+					}
+				}
+			},
 			codeabc: { codeabc: true },
 			whsesupply: { required: true }
 		},
 		submitHandler : function(form) {
-			var valid_bin      = validate_bin();
-			var valid_form     = new SwalError(false, '', '', false);
-
-			if (valid_bin.error) {
-				valid_form = valid_bin;
-			}
-			if (valid_form.error) {
-				swal2.fire({
-					icon: 'error',
-					title: valid_form.title,
-					text: valid_form.msg,
-					html: valid_form.html
-				});
-			} else {
-				form.submit();
-			}
+			form.submit();
 		}
 	});
-
-	function validate_codeabc() {
-		var error = false;
-		var title = '';
-		var msg = '';
-		var html = false;
-
-		if (input_codeabc.val().length) {
-			var lowercase_codeabc = input_codeabc.val();
-			input_codeabc.val(lowercase_codeabc.toUpperCase());
-
-			if (/^[A-J]+$/i.test(input_codeabc.val()) == false) {
-				error = true;
-				title = 'ABC class Error';
-				msg = 'Valid Entries for ABC Class are A through J';
-			}
-			return new SwalError(error, title, msg, html);
-		}
-	}
-
-	function validate_bin() {
-		var error = false;
-		var title = '';
-		var msg = '';
-		var html = false;
-		var lowercase_bin = input_bin.val();
-		input_bin.val(lowercase_bin.toUpperCase());
-		var whseID = '';
-
-		if (form_whse.find('select[name=whseID]').length) {
-			whseID = form_whse.find('select[name=whseID]').val();
-		} else {
-			whseID = form_whse.find('input[name=whseID]').val();
-		}
-
-		var warehouse = warehouses[whseID];
-
-		if (input_bin.val() == '') {
-			error = true;
-			title = 'Error';
-			msg   = 'Please Fill in the Bin';
-		} else if (warehouse.binarrangement == 'list' && (input_bin.val() != in_defaultbin && !warehouse.bins.contains(input_bin.val()))) {
-			alert('doe snot ');
-			error = true;
-			title = 'Invalid Bin ID';
-			msg   = 'Please use a valid bin';
-		} else if (warehouse.binarrangement == 'range') {
-			error = true;
-
-			warehouse.bins.forEach(function(bin) {
-				if (input_bin.val() >= bin.from && input_bin.val() <= bin.through) {
-					error = false;
-				}
-			});
-
-			if (error) {
-				title = 'Invalid Bin ID';
-				msg = 'Your Bin ID must between these ranges';
-				html = "<h4>Valid Bin Ranges<h4>" + create_binrangetable();
-			}
-		}
-		return new SwalError(error, title, msg, html);
-	}
-
-	function create_binrangetable() {
-		if (form_whse.find('select[name=whseID]').length) {
-			whseID = form_whse.find('select[name=whseID]').val();
-		} else {
-			whseID = form_whse.find('input[name=whseID]').val();
-		}
-		var warehouse = warehouses[whseID];
-		var bootstrap = new JsContento();
-		var table = bootstrap.open('table', 'class=table table-striped table-condensed');
-			warehouse.bins.forEach(function(bin) {
-				table += bootstrap.open('tr', '');
-					table += bootstrap.openandclose('td', '', bin.from);
-					table += bootstrap.openandclose('td', '', bin.through);
-				table += bootstrap.close('tr');
-			});
-		table += bootstrap.close('table');
-		return table;
-	}
 
 /* =============================================================
 	Bins Modal Methods
@@ -189,11 +127,7 @@ $(function() {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		modal.attr('data-input', button.data('input'));
 
-		if (form_whse.find('select[name=whseID]').length) {
-			whseID = form_whse.find('select[name=whseID]').val();
-		} else {
-			whseID = form_whse.find('input[name=whseID]').val();
-		}
+		var whseID = formWhse.inputs.whseid.val();
 		modal.find('.modal-title').find('.whse-title').text(whseID);
 		modal.find('#whse-'+ whseID +'-tab').click();
 	});
@@ -202,7 +136,7 @@ $(function() {
 		e.preventDefault();
 		var button = $(this);
 		var binID = button.data('bin');
-		input_bin.val(binID);
+		formWhse.inputs.bin.val(binID);
 		button.closest('.modal').modal('hide');
 	});
 });

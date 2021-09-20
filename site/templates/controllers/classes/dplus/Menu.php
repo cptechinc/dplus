@@ -3,6 +3,8 @@
 use ProcessWire\Page;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
+// Dplus RecordLocker
+use Dplus\RecordLocker;
 
 class Menu extends AbstractController {
 /* =============================================================
@@ -14,6 +16,8 @@ class Menu extends AbstractController {
 		if (self::validateUserPermission() === false) {
 			return self::notPermittedDisplay();
 		}
+
+		self::deleteRecordLocks();
 
 		$permission_list = implode("|", self::pw('user')->get_functions());
 		$page->pagetitle = "Menu: $page->title";
@@ -58,5 +62,10 @@ class Menu extends AbstractController {
 
 	public static function templateFileName(Page $page) {
 		return str_replace('.php', '', $page->pw_template) . '.php';
+	}
+
+	private static function deleteRecordLocks() {
+		$locker = new RecordLocker\User();
+		$locker->deleteLocks();
 	}
 }

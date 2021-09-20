@@ -1,0 +1,92 @@
+class PricingForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new PricingForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'itm-pricing-form';
+		this.form = $('#' + this.id);
+		this.inputs = PricingInputs.getInstance();
+		this.config = PricingConfigs.getInstance();
+	}
+
+	updateUnitRow(unitrow) {
+		var unitRow = UnitRow.fromHtml(unitrow);
+		this.updatePricePrecision(unitRow);
+		this.updateMargin(unitRow);
+		this.updateUnitRowReadonly(unitRow);
+		this.shiftUnitRowsValues(unitRow.row.data('break'));
+
+	}
+
+	updatePricePrecision(unitRow) {
+		var price = parseFloat(unitRow.inputs.price.val());
+
+		if (price > 0) {
+			unitRow.inputs.price.val(price.toFixed(this.config.fields.price.precision));
+		} else {
+			unitRow.inputs.price.val('');
+		}
+	}
+
+	updateMargin(unitRow) {
+		if (parseFloat(unitRow.inputs.price.val()) > 0) {
+			var calculator = PricingCalculator.getInstance();
+			var margin = calculator.margin(unitRow.inputs.price.val(), this.inputs.uom.find('option:selected').data('conversion'), this.inputs.standardcost.val())
+			unitRow.inputs.margin.text(margin.toFixed(this.config.fields.margin.precision));
+		} else {
+			unitRow.inputs.margin.text('');
+		}
+	}
+
+	updateUnitRows() {
+		var form = this;
+
+		$(".unit-row").each(function(index) {
+			form.updateUnitRow($(this));
+		});
+	}
+
+	updateUnitRowReadonly(unitRow) {
+		var qty = floatParse(unitRow.inputs.qty.val());
+
+		if (qty == 0) {
+			unitRow.clearInputs();
+			unitRow.setPriceReadonly();
+		}
+
+		if (qty > 0) {
+			unitRow.removePriceReadonly();
+		}
+	}
+
+	shiftUnitRowsValues(step = 1) {
+		var unitRow = null;
+		var nextRow = null;
+
+		for (var i = step; i <= this.config.qtyBreaks; i++) {
+			unitRow = UnitRow.fromStep(i);
+
+			if (unitRow.hasNextRow()) {
+				nextRow = unitRow.getNextRow();
+
+				if (floatParse(unitRow.inputs.qty.val()) == 0) {
+					unitRow.copyValues(nextRow);
+					nextRow.clearInputs();
+					nextRow.setReadonly();
+					if (floatParse(unitRow.inputs.qty.val()) > 0) {
+						nextRow.removeQtyReadonly();
+					}
+				} else {
+					nextRow.removeQtyReadonly();
+				}
+			}
+			this.updateUnitRowReadonly(unitRow);
+		}
+	}
+}

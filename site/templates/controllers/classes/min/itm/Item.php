@@ -36,9 +36,10 @@ class Item extends ItmFunction {
 	public static function handleCRUD($data) {
 		$input = self::pw('input');
 
-		if (self::validateItemidAndPermission($data) === false) {
+		if (self::validateUserPermission() === false) {
 			self::pw('session')->redirect($input->url(), $http301 = false);
 		}
+
 		$fields = ['itemID|text', 'action|text'];
 		$data  = self::sanitizeParametersShort($data, $fields);
 		$url   = new Purl($input->url($withQueryString = true));
@@ -48,8 +49,12 @@ class Item extends ItmFunction {
 		if ($data->action) {
 			$itm  = self::getItm();
 			$itm->process_input($input);
-			if ($data->action == 'delete-itm-item') {
-				$url->query->remove('itemID');
+
+			if ($data->action == 'delete-itm') {
+				$response = self::pw('session')->getFor('response', 'itm');
+				if ($response->has_success()) {
+					$url->query->remove('itemID');
+				}
 			}
 		}
 		self::pw('session')->redirect($url->getUrl(), $http301 = false);
@@ -57,7 +62,7 @@ class Item extends ItmFunction {
 
 	public static function itm($data) {
 		if (self::validateUserPermission() === false) {
-			self::pw('session')->redirect($input->url());
+			self::pw('session')->redirect(self::pw('input')->url());
 		}
 		$fields = ['itemID|text'];
 		self::sanitizeParametersShort($data, $fields);
@@ -75,15 +80,7 @@ class Item extends ItmFunction {
 		}
 
 		if ($validate->itemid($data->itemID) === false && $data->itemID != 'new') {
-			$htmlwriter   = self::pw('modules')->get('HtmlWriter');
-			$config  = self::pw('config');
-
-			$html = '';
-			$html .= $config->twig->render('items/itm/bread-crumbs.twig');
-			$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID '$data->itemID' not found in the Item Master"]);
-			$html .= $htmlwriter->div('class=mb-3');
-			$html .= self::list($data);
-			return $html;
+			return self::list($data);
 		}
 		$item = self::getItm()->getCreateItem($data->itemID);
 		$page->js .= $config->twig->render("items/itm/js.twig", ['item' => $item, 'itm' => self::getItm()]);
@@ -93,6 +90,9 @@ class Item extends ItmFunction {
 
 
 	public static function list($data) {
+		if (self::validateUserPermission() === false) {
+			self::pw('session')->redirect(self::pw('input')->url());
+		}
 		$fields = ['itemID|text', 'q|text'];
 		$data   = self::sanitizeParametersShort($data, $fields);
 		$page     = self::pw('page');
@@ -119,9 +119,18 @@ class Item extends ItmFunction {
 	Display Functions
 ============================================================= */
 	private static function listDisplay($data, PropelModelPager $items) {
-		$config = self::pw('config');
-
+		$config     = self::pw('config');
+		$validate   = new MinValidator();
+		$htmlwriter = self::pw('modules')->get('HtmlWriter');
 		$html   = $config->twig->render('items/itm/bread-crumbs.twig');
+
+		if (self::pw('session')->getFor('response', 'itm')) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => self::pw('session')->getFor('response', 'itm')]);
+		}
+		if (empty($data->itemID) === false && $validate->itemid($data->itemID) === false) {
+			$html .= $config->twig->render('util/alert.twig', ['type' => 'danger', 'title' => "Error!", 'iconclass' => 'fa fa-warning fa-2x', 'message' => "Item ID '$data->itemID' not found in the Item Master"]);
+			$html .= $htmlwriter->div('class=mb-3');
+		}
 		$html  .= $config->twig->render('items/itm/itm/search.twig', ['items' => $items, 'itm' => self::getItm()]);
 		$html  .= $config->twig->render('util/paginator/propel.twig', ['pager'=> $items]);
 		return $html;
@@ -146,7 +155,7 @@ class Item extends ItmFunction {
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
 		$html .= $config->twig->render('items/itm/form/display.twig', ['item' => $item, 'itm' => $itm, 'qnotes' => self::pw('modules')->get('QnotesItem')]);
-		if ($item->isNew() === false) {
+		if ($item->isNew() === false && $itm->recordlocker->userHasLocked($data->itemID)) {
 			$html .= self::qnotes($data);
 		}
 		return $html;
@@ -181,9 +190,12 @@ class Item extends ItmFunction {
 		parent::initHooks();
 		$m = self::pw('modules')->get('Itm');
 
-
 		$m->addHook('Page(pw_template=itm)::itmDeleteUrl', function($event) {
-			$event->return = self::itmUrl($event->arguments(0));
+			$event->return = self::itmDeleteUrl($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=itm)::itmAddUrl', function($event) {
+			$event->return = self::itmUrl('new');
 		});
 	}
 

@@ -2,6 +2,7 @@
 
 use ItemOrderNoteQuery, ItemOrderNote;
 use ConfigArQuery, ConfigAr;
+use Dplus\Configs;
 
 include_once(__DIR__.'/../QnotesResponse.php');
 
@@ -23,6 +24,25 @@ class QnotesItemOrder extends WireData implements Module {
 
 	public function get_forms_shortlabels() {
 		return ItemOrderNote::FORMS_LABELS_SHORT;
+	}
+
+	/**
+	 * Return Default Form values
+	 * @return array
+	 */
+	public function getDefaultFormValues() {
+		$configIn = Configs\In::config();
+		$defaults = [
+			'pickticket'      => $configIn->default_notes_pick,
+			'packticket'      => $configIn->default_notes_pack,
+			'invoice'         => $configIn->default_notes_invoice,
+			'acknowledgement' => $configIn->default_notes_acknowledgement,
+			'quote'           => $configIn->default_notes_quote,
+			'purchaseorder'   => $configIn->default_notes_po,
+			'ordertransfer'   => $configIn->default_notes_transfer,
+			'fabpo'           => 'N'
+		];
+		return $defaults;
 	}
 
 	/**

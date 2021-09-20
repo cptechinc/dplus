@@ -82,7 +82,7 @@ class Mxrfe extends AbstractController {
 		$html .= self::lockXref($xref);
 		$html .= $config->twig->render('items/mxrfe/xref/form/display.twig', ['mxrfe' => $mxrfe, 'vendor' => $vendor, 'xref' => $xref, 'qnotes' => $qnotes]);
 
-		if (!$xref->isNew()) {
+		if ($xref->isNew() === false && $mxrfe->recordlocker->userHasLocked($mxrfe->get_recordlocker_key($xref))) {
 			$html .= self::qnotesDisplay($xref);
 		}
 		return $html;

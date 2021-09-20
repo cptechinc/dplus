@@ -16,6 +16,11 @@ class QnotesItemVxmInternal extends WireData implements Module {
 	const DESCRIPTION          = 'VXM Item Notes';
 	const DESCRIPTION_RECORD   = 'VXM Item Notes';
 	const DESCRIPTION_RESPONSE = 'Internal VXM Notes';
+	const TYPE                 = 'INTV';
+
+	public function type() {
+		return self::TYPE;
+	}
 
 	/**
 	 * Return the Max Number of columns for Note Type
@@ -235,6 +240,7 @@ class QnotesItemVxmInternal extends WireData implements Module {
 
 		$response = new QnotesResponse();
 		$response->set_key("$itemID-$vendorID-{$note->key2}");
+		$response->set_type(self::TYPE);
 
 		if (in_array(false, $lines_saved)) {
 			$lines_error =
@@ -275,6 +281,7 @@ class QnotesItemVxmInternal extends WireData implements Module {
 
 		$response = new QnotesResponse();
 		$response->set_key("$itemID-$vendorID-{$note->key2}");
+		$response->set_type(self::TYPE);
 
 		if ($success) {
 			$response->set_success(true);

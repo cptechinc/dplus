@@ -19,7 +19,7 @@ class Misc extends ItmFunction {
 			return self::displayAlertUserPermission($data);
 		}
 
-		self::getItmMisc()->init_configs();
+		self::getItmMisc();
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -41,7 +41,6 @@ class Misc extends ItmFunction {
 		$data    = self::sanitizeParameters($data, $fields);
 		$input   = self::pw('input');
 		$itmMiscisc = self::getItmMisc();
-		$itmMiscisc->init_configs();
 
 		if ($data->action) {
 			$itmMiscisc->process_input($input);

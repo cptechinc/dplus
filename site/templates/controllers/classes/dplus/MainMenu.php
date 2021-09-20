@@ -1,6 +1,8 @@
 <?php namespace Controllers\Dplus;
 // ProcessWire Classes, Modules
 use ProcessWire\Page;
+// Dplus RecordLocker
+use Dplus\RecordLocker;
 // Dplus Function Routers
 use Controllers\Routers;
 // Mvc Controllers
@@ -13,6 +15,7 @@ class MainMenu extends AbstractController {
 	public static function index($data) {
 		$fields = ['q|text'];
 		self::sanitizeParametersShort($data, $fields);
+		self::deleteRecordLocks();
 		if ($data->q) {
 			self::redirectIfExists($data);
 		}
@@ -50,5 +53,13 @@ class MainMenu extends AbstractController {
 			$results->filter("dplus_function=$permitted");
 		}
 		return self::pw('config')->twig->render('dplus-menu/menu-search-page.twig', ['page' => $menu, 'items' => $results]);
+	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	private static function deleteRecordLocks() {
+		$locker = new RecordLocker\User();
+		$locker->deleteLocks();
 	}
 }

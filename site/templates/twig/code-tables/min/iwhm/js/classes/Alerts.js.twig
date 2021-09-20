@@ -1,0 +1,51 @@
+class IwhmAlerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new IwhmAlerts();
+		}
+		return this.instance;
+	}
+
+
+	whseExists(whseID, callback) {
+		swal2.fire({
+			title: 'Warehouse ' + whseID + ' Exists',
+			text: 'Edit that warehouse?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
+		}).then((result) => { // Return True for save, false for dismiss
+			if (result.value) {
+				callback(true);
+				return true;
+			} else if (result.dismiss === Swal.DismissReason.cancel) {
+				callback(false);
+				return false;
+			}
+			callback(false);
+			return false;
+		});
+	}
+
+	unsavedChanges(callback) {
+		swal2.fire({
+			title: 'Changes have occurred!',
+			text: 'Do you want to save?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
+			cancelButtonText: 'No',
+		}).then((result) => { // Return True for save, false for dismiss
+			if (result.value) {
+				callback(true);
+				return true;
+			} else if (result.dismiss === Swal.DismissReason.cancel) {
+				callback(false);
+				return false;
+			}
+		});
+	}
+}

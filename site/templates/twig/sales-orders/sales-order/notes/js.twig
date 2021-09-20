@@ -17,7 +17,7 @@ $(function() {
 
 	var ele_feedback = form.find('.feedback');
 
-	var defaults = {{ qnotes.get_default_forms()|json_encode()| raw }};
+	var defaults = {{ qnotes.get_default_forms()|json_encode()|raw }};
 
 /* =============================================================
 	Event Functions
@@ -131,6 +131,7 @@ $(function() {
 	form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
+		ignore: ".validate-ignore",
 		errorPlacement: function(error, element) {
 			error.insertAfter(element).addClass('invalid-feedback');
 		},

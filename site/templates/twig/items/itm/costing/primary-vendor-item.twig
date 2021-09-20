@@ -3,20 +3,23 @@
 	-------------------------------------------------
 	item                   ItemMasterItem
 #}
+{% set xref = item.primaryvxm %}
+
 <div class="form-group row">
 	<div class="col-sm-4">
-		<strong>Primary Vendor </strong> &nbsp;
+		<strong>Primary Vendor </strong>
 	</div>
 	<div class="col-sm-8">
-		{{ item.primaryvxm.vendorid }}
+		{{ xref.vendorid }} <br>
+		{{ xref.vendor.name }}
 	</div>
 </div>
 <div class="form-group row">
 	<div class="col-sm-4">
-		<strong>Item ID </strong> &nbsp;
+		<strong>Vendor Item</strong>
 	</div>
 	<div class="col-sm-8">
-		{{ item.primaryvxm.vendoritemid }}
+		{{ xref.vendoritemid }}
 	</div>
 </div>
 <div class="form-group row">
@@ -24,18 +27,48 @@
 		<strong>Unit Cost </strong> &nbsp;
 	</div>
 	<div class="col-sm-8">
-		<div class="row">
+		<div class="row mb-2">
 			<div class="col-sm-8">
-				<div class="input-group input-group-sm">
-					<input type="text" class="form-control text-right" value="{{ item.primaryvxm.get_unitcost(0)|number_format(4) }}">
-					<div class="input-group-append">
-						<div class="input-group-text">{{ item.primaryvxm.uom_purchase }}</div>
-					</div>
-				</div>
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'append',
+							'size': 'sm',
+							'p': {
+								'value': xref.getUnitCostUom(0)|number_format(m_costing.getConfigPo().decimal_places_cost),
+								'addclasses': ['text-right', 'border-0']
+							},
+							'span': {
+								'text': xref.uom_purchase|spacepad(m_costing.getUomCodeLength())|raw,
+								'addclasses': ['text-monospace']
+							}
+						}
+					}
+				%}
 			</div>
 			<div class="col-sm-4">
-				<p class="form-control-plaintext">{{ item.primaryvxm.date_changed ? item.primaryvxm.date_changed|convertdate : 'N/A' }}</p>
+				<p class="form-control-plaintext form-control-sm">{{ xref.date_changed ? xref.date_changed|convertdate : 'N/A' }}</p>
 			</div>
 		</div>
+		{% if xref.uom_purchase != 'EACH' %}
+			<div class="row">
+				<div class="col-sm-8">
+					{% include 'util/bootstrap/form/input-group.twig' with {
+							'inputgroup': {
+								'type': 'append',
+								'size': 'sm',
+								'p': {
+									'value': xref.get_unitcost(0)|number_format(m_costing.getConfigPo().decimal_places_cost),
+									'addclasses': ['text-right', 'border-0']
+								},
+								'span': {
+									'text': 'EACH',
+									'addclasses': ['text-monospace']
+								}
+							}
+						}
+					%}
+				</div>
+			</div>
+		{% endif %}
 	</div>
 </div>

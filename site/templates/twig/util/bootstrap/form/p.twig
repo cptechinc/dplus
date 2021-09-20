@@ -1,0 +1,5 @@
+{% set twigparagraph = twiginput(p) %}
+
+<p id="{{ twigparagraph.id() }}" class="{{ twigparagraph.class() }}" {{ twigparagraph.attributes()|raw }}>
+	{{ twigparagraph.value }}
+</p>

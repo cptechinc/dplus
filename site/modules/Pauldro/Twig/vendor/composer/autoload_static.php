@@ -7,7 +7,6 @@ namespace Composer\Autoload;
 class ComposerStaticInit3c446a491c1fc53e73d17de9066cbfc2
 {
     public static $classMap = array (
-        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Twig\\Html\\TwigBaseHtml' => __DIR__ . '/../..' . '/classes/BaseHtml.php',
         'Twig\\Html\\TwigButton' => __DIR__ . '/../..' . '/classes/Button.twig.php',
         'Twig\\Html\\TwigDatePicker' => __DIR__ . '/../..' . '/classes/DatePicker.twig.php',
@@ -15,6 +14,7 @@ class ComposerStaticInit3c446a491c1fc53e73d17de9066cbfc2
         'Twig\\Html\\TwigInputGroup' => __DIR__ . '/../..' . '/classes/InputGroup.twig.php',
         'Twig\\Html\\TwigInputGroupSpan' => __DIR__ . '/../..' . '/classes/InputGroupSpan.twig.php',
         'Twig\\Html\\TwigLink' => __DIR__ . '/../..' . '/classes/Link.twig.php',
+        'Twig\\Html\\TwigP' => __DIR__ . '/../..' . '/classes/P.twig.php',
         'Twig\\Html\\TwigSelectSimple' => __DIR__ . '/../..' . '/classes/SelectSimple.twig.php',
         'Twig\\Html\\TwigTextarea' => __DIR__ . '/../..' . '/classes/Textarea.twig.php',
     );

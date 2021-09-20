@@ -39,6 +39,8 @@ $(function() {
 		var title = "Add User Permissions";
 		form.attr('data-crud', 'create');
 		input_loginID.attr('data-loginid', '');
+		input_loginID.removeAttr('readonly');
+		input_loginID.closest('.input-group').find('button').removeAttr('disabled');
 
 		fields_permissions.forEach((field, i) => {
 			var val = default_permissions[field];
@@ -51,6 +53,8 @@ $(function() {
 		var loginID = row.find('[data-loginid]').data('loginid');
 		title = "Editing Permissions for " + loginID;
 		input_loginID.val(loginID).attr('data-loginid', loginID);
+		input_loginID.attr('readonly', 'true');
+		input_loginID.closest('.input-group').find('button').attr('disabled', 'true');
 
 		fields_permissions.forEach((field, i) => {
 			var val = row.find('[data-'+field+']').data(field);
@@ -72,8 +76,15 @@ $(function() {
 		rules: {
 			loginID: {
 				required: true,
-				remote: function() {
-					return object_validate_remote_code('msa', 'loginID', 'userid');
+				remote: {
+					url: '{{ page.jsonApiUrl('msa/validate/loginid/') }}',
+					type: "get",
+					data: {
+						jqv: 'true',
+						loginID: function() {
+							return $('#loginID').val();
+						},
+					}
 				}
 			},
 		},
@@ -84,21 +95,6 @@ $(function() {
 			form.submit();
 		}
 	});
-
-	function object_validate_remote_code(api, inputid, validating) {
-		var url = URI('{{ page.jsonapiURL() }}');
-		url.path(url.path()+api+'/validate/'+validating+'/');
-
-		return {
-			url: url.toString(),
-			type: "get",
-			data: {
-				code: function() {
-					return $('#'+inputid).val();
-				}
-			}
-		}
-	}
 
 /* =============================================================
 	Event Functions
@@ -123,11 +119,9 @@ $(function() {
 		if (validator.element('#'+input.attr('id'))) {
 			if (form.attr('data-crud') == 'create') {
 
-				var url = new URI('{{ page.jsonapiURL() }}');
-				url.path(url.path()+'inv/');
-				url.addQuery('action', 'validate-itmp-exists').addQuery('loginID', input.val());
+				var url = new URI('{{ page.jsonApiUrl('inv/validate/itmp/exists') }}').addQuery('loginID', input.val());
 
-				$.getJSON(url.toString(), function( exists ) {
+				$.getJSON(url.toString(), function(exists) {
 					if (exists === true) {
 						swal_loginid_exists(input.val())
 					}
@@ -158,6 +152,7 @@ $(function() {
 		var button = $(event.relatedTarget); // Button that triggered the modal
 		var modal = $(this);
 		var url = button.data('lookupurl');
+		modal.attr('data-input', button.data('input'));
 
 		modal.find('.modal-title').text(button.attr('title'));
 		modal.resizeModal('xl');
@@ -167,9 +162,10 @@ $(function() {
 	$("body").on('click', '.user-link', function(e) {
 		e.preventDefault();
 		var button = $(this);
-		var loginID = button.data('loginid');
-		input_loginID.val(loginID).change();
-		modal_ajax.modal('hide');
+		var userID = button.data('userid');
+		var modal = button.closest('.modal');
+		$(modal.attr('data-input')).val(userID).change();
+		modal.modal('hide');
 	});
 
 	$("body").on('submit', '#ajax-modal form', function(e) {

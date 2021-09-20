@@ -6,7 +6,20 @@
 {% set pricing = item.pricing %}
 <div class="form-group row">
 	<div class="col-sm-6">
-		<strong>Sales UoM:</strong> {{ item.uom_sale }}
+		<div class="row">
+			<div class="col-sm-5">
+				<strong>Sales UoM:</strong>
+			</div>
+			<div class="col">
+				{{ item.unitofmsale.code }} - {{ item.unitofmsale.description }} <br>
+				<small class="form-text text-muted">
+					Conversion: &nbsp;
+					<span>
+						{{ item.unitofmpurchase.conversion|number_format(m_costing.fieldAttribute('qty', 'precision')) }}
+					</span>
+				</small>
+			</div>
+		</div>
 	</div>
 	<div class="col-sm-6">
 		<strong>Date:</strong> {{ pricing.updated ? pricing.updated|convertdate : 'N/A' }}
@@ -29,19 +42,19 @@
 				{{ pricing.baseprice|currency }}
 			</td>
 			<td class="text-right">
-				<span class="unit-margin">{{ pricing.get_pricebreak_margin(0)|number_format(4) }}</span> %
+				<span class="unit-margin">{{ pricing.get_pricebreak_margin(0)|number_format(m_costing.fieldAttribute('margin', 'precision')) }}</span> %
 			</td>
 		</tr>
 		{% for i in 1..pricing.count_qtybreaks() if pricing.get_pricebreak_qty(i) != 0 %}
-			<tr class="pricebreak-row">
+			<tr class="unit-row">
 				<td>
 					{{ pricing.get_pricebreak_qty(i) }}
 				</td>
 				<td class="text-right">
-					{{ pricing.get_pricebreak_price(i)|currency }}
+					{{ pricing.get_pricebreak_price(i)|number_format(m_costing.fieldAttribute('price', 'precision')) }}
 				</td>
 				<td class="text-right">
-					<span class="unit-margin">{{ pricing.get_pricebreak_margin(i)|number_format(4) }}</span> %
+					<span class="unit-margin">{{ pricing.get_pricebreak_margin(i)|number_format(m_costing.fieldAttribute('margin', 'precision')) }}</span> %
 				</td>
 			</tr>
 		{% endfor %}

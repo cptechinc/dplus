@@ -34,6 +34,7 @@
 						<i class="fa fa-eye" aria-hidden="true"></i> Show
 					</button>
 					{% if note.userid == page.user.loginid %}
+						&nbsp;
 						<button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#notes-intv-modal" data-date="{{ note.notedate|convertdate("m/d/Y") }}" data-time="{{ (note.notedate ~ note.notetime())|convertdate("H:i") }}" data-rawnotetime="{{ note.notetime }}">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</button>
