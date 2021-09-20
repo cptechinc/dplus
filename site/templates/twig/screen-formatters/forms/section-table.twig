@@ -21,7 +21,7 @@
 			<tr>
 				<td class="field">
 					<b>{{ column }}</b> <br>
-					<input type="text" class="form-control form-control-sm col-label" name="{{ name ~ '-label' }}" value="{{ columndefinition['label'] }}">
+					<input type="text" class="form-control form-control-sm col-label" name="{{ name ~ '-label-' ~ section  }}" value="{{ columndefinition['label'] }}">
 				</td>
 				<td>
 					<small>
@@ -31,7 +31,7 @@
 									Date:
 								</div>
 								<div class="col-auto">
-									<select class="form-control form-control-sm" name="{{ name ~ '-date-format' }}">
+									<select class="form-control form-control-sm" name="{{ name ~ '-date-format-' ~ section  }}">
 										{% for key, value in module_formatter.get_datetypes() %}
 											<option value="{{ key }}" {{ key == formatter[section]['columns'][column]['date-format'] ? 'selected' : ''}}>
 												{{ value ~ ' - ' ~ 'now'|date(key) }}
@@ -51,30 +51,30 @@
 								</div>
 								<div class="col">
 									Before &nbsp;
-									<input type="text" class="form-control form-control-sm text-right before-decimal" name="{{ name ~ '-before-decimal' }}" value="{{ columndefinition['before-decimal'] }}">
+									<input type="text" class="form-control form-control-sm text-right before-decimal" name="{{ name ~ '-before-decimal-' ~ section  }}" value="{{ columndefinition['before-decimal'] }}">
 								</div>
 								<div class="col">
 									After &nbsp;
-									<input type="text" class="form-control form-control-sm text-right after-decimal" name="{{ name ~ '-after-decimal' }}" value="{{ columndefinition['after-decimal'] }}">
+									<input type="text" class="form-control form-control-sm text-right after-decimal" name="{{ name ~ '-after-decimal-' ~ section  }}" value="{{ columndefinition['after-decimal'] }}">
 								</div>
 							</div>
 						{% endif %}
 					</small>
 				</td>
 				<td>
-					<input type="text" class="form-control form-control-sm text-right qty-sm {{ section }}-line" name="{{ name ~ '-line' }}" value="{{ columndefinition['line'] }}">
+					<input type="text" class="form-control form-control-sm text-right qty-sm {{ section }}-line" name="{{ name ~ '-line-' ~ section }}" value="{{ columndefinition['line'] }}">
 				</td>
 				<td>
-					<input type="text" class="form-control form-control-sm text-right column" name="{{ name ~ '-column' }}" value="{{ columndefinition['column'] }}">
+					<input type="text" class="form-control form-control-sm text-right column" name="{{ name ~ '-column-' ~ section }}" value="{{ columndefinition['column'] }}">
 				</td>
 				<td>
-					<input type="text" class="form-control form-control-sm text-right column-length" name="{{ name ~ '-length' }}" value="{{ columndefinition['col-length'] }}">
+					<input type="text" class="form-control form-control-sm text-right column-length" name="{{ name ~ '-length-' ~ section }}" value="{{ columndefinition['col-length'] }}">
 				</td>
 				<td>
-					{% include 'util/select.twig' with {'name': name ~ '-label-justify', 'id': name ~ '-label-justify', 'selectedvalue': columndefinition['label-justify'] ? columndefinition['label-justify'] : 'l', 'options': module_formatter.get_justifyclasses() } %}
+					{% include 'util/select.twig' with {'name': name ~ '-label-justify-' ~ section, 'id': name ~ '-label-justify', 'selectedvalue': columndefinition['label-justify'] ? columndefinition['label-justify'] : 'l', 'options': module_formatter.get_justifyclasses() } %}
 				</td>
 				<td>
-					{% include 'util/select.twig' with {'name': name ~ '-data-justify', 'id': name ~ '-data-justify', 'selectedvalue': columndefinition['data-justify'] ? columndefinition['data-justify'] : 'l', 'options': module_formatter.get_justifyclasses() } %}
+					{% include 'util/select.twig' with {'name': name ~ '-data-justify-' ~ section, 'id': name ~ '-data-justify', 'selectedvalue': columndefinition['data-justify'] ? columndefinition['data-justify'] : 'l', 'options': module_formatter.get_justifyclasses() } %}
 				</td>
 			</tr>
 		{% endfor %}

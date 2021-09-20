@@ -234,7 +234,7 @@ class Iio extends WireData implements Module {
 	 * @param  OptionsIi $to   Record to copy to
 	 * @return OptionsIi
 	 */
-	public function copyoptions($from = '', OptionsCi $to) {
+	public function copyoptions($from = '', OptionsIi $to) {
 		if ($this->exists($from) == false) {
 			return $to;
 		}
