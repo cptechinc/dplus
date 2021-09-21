@@ -13,10 +13,11 @@ use Dplus\RecordLocker\UserFunction as FunctionLocker;
 abstract class Base extends WireData {
 	const MODEL              = '';
 	const MODEL_KEY          = '';
+	const MODEL_TABLE        = '';
 	const DESCRIPTION        = '';
 	const DESCRIPTION_RECORD = '';
-	const TABLE              = '';
 	const RECORDLOCKER_FUNCTION = 'cxm';
+	const DPLUS_TABLE           = '';
 
 	protected static $instance;
 
@@ -68,5 +69,24 @@ abstract class Base extends WireData {
 	 */
 	public function query() {
 		return $this->getQueryClass();
+	}
+
+/* =============================================================
+	Query Functions
+============================================================= */
+	/**
+	 * Sends Dplus Cobol that Code Table has been Update
+	 * @param  string $table Code Table
+	 * @param  string $code  Code
+	 * @return void
+	 */
+	protected function updateDplus($code) {
+		$config  = $this->wire('config');
+		$dplusdb = $this->wire('modules')->get('DplusDatabase')->db_name;
+		$table = static::DPLUS_TABLE;
+		$data = ["DBNAME=$dplusdb", 'UPDATECODETABLE', "TABLE=$table", "CODE=$code"];
+		$requestor = $this->wire('modules')->get('DplusRequest');
+		$requestor->write_dplusfile($data, session_id());
+		$requestor->cgi_request($config->cgis['database'], session_id());
 	}
 }
