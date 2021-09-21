@@ -58,7 +58,9 @@
 		</td>
 	</tr>
 	<tr>
-		<td>Subtitute Items</td>
+		<td>
+			<a href="{{ page.xrefUrlSubstitutes(item.itemid) }}" class="link">Substitute Items</a>
+		</td>
 		<td>
 			<div class="custom-control custom-checkbox">
 				<input type="checkbox" class="custom-control-input" id="substitutes" {{ item.has_substitutes() ? 'checked' : '' }}>
