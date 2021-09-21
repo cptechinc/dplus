@@ -72,16 +72,16 @@ class Mpo extends AbstractController {
 		$validate = new MpoValidator();
 		$exists = $validate->cnfm($data->code);
 
-		if (boolval($data->jqv) === true) {
-			if ($data->new) {
+		if (boolval($data->jqv) === false) {
+			if (boolval($data->new)) {
 				return $exists === false;
 			}
 			return $exists;
 		}
 
-		if ($data->new) {
+		if (boolval($data->new) === true) {
 			return $exists === true ? "Code $data->code already exists" : true;
 		}
-		return $exists === true ? "Code $data->code not found" : true;
+		return $exists === false ? "Code $data->code not found" : true;
 	}
 }
