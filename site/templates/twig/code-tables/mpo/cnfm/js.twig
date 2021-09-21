@@ -1,10 +1,6 @@
 {% include 'code-tables/mpo/cnfm/js/classes.js.twig' %}
 
 $(function() {
-	var codeIDs = {{ m_po.get_codes_ids()|json_encode()|raw }};
-	var input_codeID = $('#code');
-	var form = $("#code-edit-form");
-
 	var server   = CnfmRequests.getInstance();
 	var alert    = CnfmAlerts.getInstance();
 	var formCode = CnfmForm.getInstance();
@@ -14,7 +10,13 @@ $(function() {
 ============================================================= */
 	$('#edit-code-modal').on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
-		var modal = $(this);
+		var modal  = $(this);
+		var code   = button.data('code');
+		if (code) {
+			modal.find('.modal-title').text('Edit Code ' + code);
+		} else {
+			modal.find('.modal-title').text('Add Code');
+		}
 		formCode.updateInputsFromJson(button.data('json'));
 	});
 
@@ -49,7 +51,7 @@ $(function() {
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	var validator = form.validate({
+	var validator = formCode.form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -60,9 +62,7 @@ $(function() {
 				required: true,
 				maxlength: {{ cnfm.codeMaxLength() }},
 				remote: {
-					url: function() {
-						return server.validateCodeUrl();
-					},
+					url: '{{ page.jsonApiUrl('mpo/validate/cnfm/') }}',
 					type: "get",
 					data: {
 						jqv: 'true',
@@ -86,6 +86,7 @@ $(function() {
 			} else {
 				server.validateCode(code, function(exists) {
 					var alert = CnfmAlerts.getInstance();
+					console.log(exists);
 
 					alert.codeExists(code, function(editCode) {
 						if (editCode) {
@@ -97,6 +98,8 @@ $(function() {
 							} else {
 								modal.modal('hide');
 							}
+						} else {
+							form.submit();
 						}
 					});
 				});
