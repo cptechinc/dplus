@@ -4,6 +4,7 @@
 	use Controllers\Min\Itm\Itm as ItmController;
 	use Controllers\Min\Itm\Item;
 	use Controllers\Min\Itm\Xrefs\Controller as XrefsController;
+	use Controllers\Min\Itm\Xrefs as ItmXrefs;
 
 	ItmController::init();
 	Item::initHooks();
@@ -55,6 +56,10 @@
 			'kim' => [
 				['GET',  '', XrefsController::class, 'kim'],
 				['POST', '', XrefsController::class, 'kimHandleCRUD'],
+			],
+			'substitutes' => [
+				['GET',  '', ItmXrefs\Substitutes::class, 'index'],
+				['POST', '', ItmXrefs\Substitutesr::class, 'handleCRUD'],
 			],
 		],
 	];
