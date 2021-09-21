@@ -103,7 +103,7 @@
 					{% include 'util/form/select.twig' with {
 							'name': 'packgroup', 'selected_value': hazmat.packgroup,
 							'options_has_keys': false,
-							'use_blank_option': true,
+							'use_blank_option': false,
 							'options': itm.hazmat.options_packgroup(),
 							'class_add': [
 								'hazmat-step',
@@ -145,7 +145,7 @@
 				<div class="col-sm-3">
 					{% include 'util/form/select.twig' with {
 							'name': 'allowair', 'selected_value': hazmat.allowair,
-							'use_blank_option': true,
+							'use_blank_option': false,
 							'options': {'Y': 'Yes', 'N': 'No'},
 							'class_add': [
 								'hazmat-step',
