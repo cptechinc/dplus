@@ -125,6 +125,7 @@
 			'sales-order' => [
 				['GET', 'line/', Json\Mso::class, 'getSalesOrderDetail'],
 			],
+			['GET', 'freight-code/', Json\Mso::class, 'getFreightCode'],
 		],
 		'mqo' => [
 			'quote' => [
