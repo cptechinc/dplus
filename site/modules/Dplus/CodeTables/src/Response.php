@@ -1,8 +1,10 @@
 <?php namespace Dplus\Codes;
 
+use ProcessWire\WireData;
+
 /**
- * ItmResponse
- * Handles Response Data for Itm functions
+ * Response
+ * Handles Response Data for Code Tables
  *
  * @author Paul Gomez
  *
@@ -75,7 +77,7 @@ class Response extends WireData {
 
 	public function buildMessage($template) {
 		$crud = self::CRUD_DESCRIPTION[$this->action];
-		$replace = ['{code}' => $this->code, '{key}' => $this->key, '{not}' => $this->has_success() ? '' : 'not', '{crud}' => $crud];
+		$replace = ['{code}' => $this->code, '{key}' => $this->key, '{not}' => $this->hasSuccess() ? '' : 'not', '{crud}' => $crud];
 		$msg = str_replace(array_keys($replace), array_values($replace), $template);
 		$this->message = $msg;
 	}
