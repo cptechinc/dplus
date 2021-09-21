@@ -59,6 +59,11 @@ $(function() {
 				},
 				maxlength: {{ itm.hazmat.maxlength_label() }}
 			},
+			allowair: {
+				required: function() {
+					return $('#label').val() != '';
+				},
+			},
 		},
 		messages: {
 			dot1: "Enter a DOT Ship Name"
