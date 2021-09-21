@@ -37,11 +37,10 @@ class Cnfm extends Base {
 
 		$cnfm = self::getCnfm();
 		$cnfm->recordlocker->deleteLock();
-
-		$codes = $cnfm->codes();
+		self::pw('page')->headline = Menu::SUBFUNCTIONS['cnfm']['title'];
 		self::pw('page')->js .= self::pw('config')->twig->render('code-tables/mpo/cnfm/js.twig', ['cnfm' => $cnfm]);
 		self::initHooks();
-		$html = self::displayList($data, $codes);
+		$html = self::displayList($data, $cnfm->codes());
 		self::pw('session')->removeFor('response', 'cnfm');
 		return $html;
 	}
@@ -53,7 +52,7 @@ class Cnfm extends Base {
 		if ($data->action) {
 			$cnfm->processInput(self::pw('input'));
 		}
-		
+
 		$url = self::codeFocusUrl($data->code);
 		switch ($data->action) {
 			case 'delete-code':
@@ -93,11 +92,19 @@ class Cnfm extends Base {
 
 		$html = '';
 		// $html .= self::breadCrumbsDisplay($data);
-		// $html .= self::responseDisplay($data);
+		$html .= '<div class="mb-3">' . self::displayResponse($data) . '</div>';
 		$html .= $config->twig->render('code-tables/list.twig', ['manager' => $cnfm , 'codes' => $codes]);
 		$html .= $config->twig->render('code-tables/mpo/cnfm/edit-modal.twig', ['cnfm' => $cnfm]);
 		$html .= '<div class="mb-3"></div>';
 		return $html;
+	}
+
+	private static function displayResponse($data) {
+		$response = self::pw('session')->getFor('response', 'cnfm');
+		if (empty($response)) {
+			return '';
+		}
+		return self::pw('config')->twig->render('code-tables/response.twig', ['response' => $response]);
 	}
 
 /* =============================================================
