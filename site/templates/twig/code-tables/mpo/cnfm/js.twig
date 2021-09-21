@@ -20,6 +20,18 @@ $(function() {
 		formCode.updateInputsFromJson(button.data('json'));
 	});
 
+	$('#edit-code-modal').on('shown.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var code   = button.data('code');
+
+		if (code) {
+			formCode.inputs.description.focus();
+		} else {
+			formCode.inputs.code.focus();
+		}
+	});
+
 	$("body").on("change", "input[name=code]", function(e) {
 		var input = $(this);
 		var code = input.val();
@@ -60,7 +72,7 @@ $(function() {
 		rules: {
 			code: {
 				required: true,
-				maxlength: {{ cnfm.codeMaxLength() }},
+				maxlength: formCode.config.fields.code.maxlength,
 				remote: {
 					url: '{{ page.jsonApiUrl('mpo/validate/cnfm/') }}',
 					type: "get",
@@ -72,6 +84,9 @@ $(function() {
 					}
 				}
 			},
+			description: {
+				maxlength: formCode.config.fields.description.maxlength,
+			}
 		},
 		messages: {
 			code: "Please check the Code value (Max Length: {{ max_length_code }})",
@@ -86,8 +101,10 @@ $(function() {
 			} else {
 				server.validateCode(code, function(exists) {
 					var alert = CnfmAlerts.getInstance();
-					console.log(exists);
-
+					if (exists === false) {
+						form.submit();
+						return true;
+					}
 					alert.codeExists(code, function(editCode) {
 						if (editCode) {
 							var modal = formCode.form.closest('.modal');
