@@ -8,4 +8,5 @@ $baseDir = dirname($vendorDir);
 return array(
     'Dplus\\Codes\\Base' => $baseDir . '/src/Base.php',
     'Dplus\\Codes\\Po\\Cnfm' => $baseDir . '/src/po/Cnfm.php',
+    'Dplus\\Codes\\Response' => $baseDir . '/src/Response.php',
 );
