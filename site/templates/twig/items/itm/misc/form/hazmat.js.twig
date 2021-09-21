@@ -78,21 +78,6 @@ $(function() {
 		return options.contains(group);
 	}
 
-	function object_validate_remote_code(api, inputid, validating) {
-		var url = URI('{{ page.jsonapiURL() }}');
-		url.path(url.path()+api+'/validate/'+validating+'/');
-
-		return {
-			url: url.toString(),
-			type: "get",
-			data: {
-				code: function() {
-					return $('#'+inputid).val();
-				}
-			}
-		}
-	}
-
 /* =============================================================
 	Event Functions
 ============================================================= */

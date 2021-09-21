@@ -1,0 +1,19 @@
+class MiscInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new MiscInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id   = 'itm-costing-form';
+		this.form = $('#' + this.id);
+		this.country  = this.form.find('input[origincountry]');
+		this.tariff   = this.form.find('input[name=tariffcode]');
+		this.msds     = this.form.find('input[name=msdscode]');
+		this.freight  = this.form.find('input[name=freightcode]');
+	}
+}

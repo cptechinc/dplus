@@ -1,0 +1,29 @@
+class MiscRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new MiscRequests();
+		}
+		return this.instance;
+	}
+
+	validateItemid(itemID,  callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('inv/validate/itemid/') }}');
+
+		ajax.setData({itemID: itemID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	getJsonApiCode(api, fetching, code, callback) {
+		var url = new URI('{{ page.jsonapiURL() }}');
+		url.path(url.path() + api + "/" + fetching + "/");
+		var ajax = new AjaxRequest(url.toString());
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+}

@@ -61,7 +61,7 @@ class Misc extends ItmFunction {
 
 		$page = self::pw('page');
 		$page->headline = "ITM: $data->itemID Misc";
-		$page->js .= self::pw('config')->twig->render('items/itm/misc/js.twig', ['itm' => self::getItmMisc()]);
+		$page->js .= self::pw('config')->twig->render('items/itm/misc/form/misc/js.twig', ['itm' => self::getItmMisc()]);
 		return self::miscDisplay($data);
 	}
 

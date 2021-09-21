@@ -1,0 +1,146 @@
+{% include 'items/itm/misc/form/misc/js/classes.js.twig' %}
+
+$(function() {
+	var modal_ajax = $('#ajax-modal');
+
+	var formMisc = MiscForm.getInstance();
+	var server   = MiscRequests.getInstance();
+
+/* =============================================================
+	Validation Functions
+============================================================= */
+	var validator_misc = formMisc.form.validate({
+			errorClass: "is-invalid",
+			validClass: "is-valid",
+			errorPlacement: function(error, element) {
+				error.insertAfter(element).addClass('invalid-feedback');
+			},
+			rules: {
+				tariffcode: {
+					required: false,
+					remote: function() {
+						return object_validate_remote_code('inv', 'tariffcode', 'tariff-code');
+					}
+				},
+				origincountry: {
+					required: false,
+					remote: function() {
+						return object_validate_remote_code('inv', 'origincountry', 'country-code');
+					}
+				},
+				freightcode: {
+					required: false,
+					remote: function() {
+						return object_validate_remote_code('mso', 'freightcode', 'freight-code');
+					}
+				}
+			},
+			messages: {
+
+			},
+			submitHandler: function(form) {
+				form.submit();
+			}
+		});
+
+		function object_validate_remote_code(api, inputid, validating) {
+			var url = URI('{{ page.jsonapiURL() }}');
+			url.path(url.path()+api+'/validate/'+validating+'/');
+
+			return {
+				url: url.toString(),
+				type: "get",
+				data: {
+					code: function() {
+						return $('#'+inputid).val();
+					}
+				}
+			}
+		}
+
+/* =============================================================
+	Event Functions
+============================================================= */
+	$("body").on('change', 'input.ajax-lookup', function(e) {
+		var input = $(this);
+		server.getJsonApiCode(input.data('api'), input.data('validate'), $(this).val(), function(obj) {
+			if (obj) {
+				var ajaxfields_str = input.data('ajaxfields');
+				var ajaxfields = ajaxfields_str.split(',');
+				ajaxfields.forEach((field , i) => {
+					$('.'+input.attr('name')+'-'+field).text(obj[field]);
+				});
+			}
+		});
+	});
+
+
+/* =============================================================
+	AJAX Lookup Modal Functions
+============================================================= */
+	modal_ajax.on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var modal  = $(this);
+		var url    = button.data('lookupurl');
+		modal.attr('data-input', button.data('input'));
+
+		modal.find('.modal-title').text(button.attr('title'));
+		modal.resizeModal('xl');
+		modal.find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '.country-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var code   = button.data('code');
+		var modal  = button.closest('.modal');
+		$(modal.attr('data-input')).val(code).change();
+		modal.modal('hide');
+	});
+
+	$("body").on('click', '.tariff-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var code   = button.data('code');
+		var modal  = button.closest('.modal');
+		$(modal.attr('data-input')).val(code).change();
+		modal.modal('hide');
+	});
+
+	$("body").on('click', '.msds-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var code   = button.data('code');
+		var modal  = button.closest('.modal');
+		$(modal.attr('data-input')).val(code).change();
+		modal.modal('hide');
+	});
+
+	$("body").on('click', '.freight-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var code   = button.data('code');
+		var modal  = button.closest('.modal');
+		$(modal.attr('data-input')).val(code).change();
+		modal.modal('hide');
+	});
+
+	$("body").on('submit', '#ajax-modal form', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var query = form.serialize();
+		var action = form.attr('action');
+		var search = form.find('input[name=q]').val();
+		var url = action + '?' + query;
+		form.closest('.modal').find('.modal-title').text('Searching for ' + search);
+		form.closest('.modal').find('.modal-body').loadin(url, function() {});
+	});
+
+	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
+		e.preventDefault();
+		var button = $(this);
+		var href = button.attr('href');
+		var modal = button.closest('.modal');
+		modal.find('.modal-body').load(href);
+	});
+});
