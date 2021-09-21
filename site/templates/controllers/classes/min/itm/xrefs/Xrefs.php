@@ -59,19 +59,20 @@ class Xrefs extends XrefFunction {
 		$session = self::pw('session');
 		$item = $itm->get_item($data->itemID);
 		$html = '';
-		if ($session->response_xref) {
-			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->response_xref]);
-			$session->remove('response_xref');
-		}
-		$page->headline = "ITM: $data->itemID X-refs";
+
+		$page->headline = "ITM: $data->itemID X-Refs";
 		$html .= self::breadCrumbs();
+		if ($session->getFor('response', 'cxm')) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'cxm')]);
+			$session->removeFor('response', 'cxm');
+		}
 		if ($session->getFor('response', 'itm')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
 		}
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
 		$html .= $config->twig->render('items/itm/xrefs/page.twig', ['itm' => $itm, 'item' => $item, 'xrefs' => $xrefs]);
-		$page->js   .= $config->twig->render('items/itm/xrefs/js.twig');
+		$page->js .= $config->twig->render('items/itm/xrefs/js.twig');
 		return $html;
 	}
 

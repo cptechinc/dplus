@@ -1,11 +1,15 @@
 <?php namespace ProcessWire;
 // Purl
 use Purl\Url;
+// Dplus Model
+use ItemMasterItem;
 // Dplus Filters
 use Dplus\Filters\Mso\Cxm   as CxmFilter;
 use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
 use Dplus\Filters\Map\Vxm   as VxmFilter;
 use Dplus\Filters\Min\Upcx  as UpcxFilter;
+// Dplus Configs
+use Dplus\Configs;
 
 /**
  * Module that handles the editing of the ITM item X-refs
@@ -44,9 +48,9 @@ class ItmXrefs extends WireData implements Module {
 		$itemID = $values->text('itemID');
 
 		if ($values->action) {
-			if ($itm->item_exists($itemID)) {
+			if ($itm->exists($itemID)) {
 				if ($values->text('action') == 'update-itm-xrefs') {
-					$response = $this->process_input_xref($input);
+					return $this->processInputXref($input);
 				}
 			} else {
 				$response = ItmResponse::response_error($itemID, "Item $itemID does not exist");
@@ -57,47 +61,45 @@ class ItmXrefs extends WireData implements Module {
 		$this->wire('session')->setFor('response', 'itm', $response);
 	}
 
-	/**
-	 * Takes Input, validates it's for an Item
-	 * Updates Item
-	 * Processes it, and if updated sends request to dplus
-	 *
-	 * @param  WireInput $input Input
-	 * @return void
-	 */
-	public function process_input_xref(WireInput $input) {
+	private function processInputXref(WireInput $input) {
 		$itm = $this('modules')->get('Itm');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = strtoupper($values->text('itemID'));
-		$record = $itm->get_item($itemID);
+		$item = $itm->item($values->text('itemID'));
 
-		if ($record->isNew() === false) {
-			$itm->lockrecord($itemID);
+		if ($item->isNew() === false) {
+			$itm->lockrecord($item->itemid);
 		}
 
-		if ($record->isNew() || $itm->recordlocker->function_locked_by_user($itemID)) {
-			if ($values->text('action') == 'update-itm-xrefs') {
-				$record->setSupercededby(strtoupper($values->text('supercededby')));
-
-				if (strlen($values->text('supercededby'))) {
-					if ($itm->item_exists($values->text('supercededby'))) {
-						$response_itm = $itm->save_and_respond($record);
-					} else {
-						$response_itm = ItmResponse::response_error($record->itemid, "Supercede Item $record->supercededby does not exist");
-					}
-				}
-
-				$this->send_cxm_update($input);
-			} else {
-				$message = self::DESCRIPTION_RECORD . " ($record->itemid) was not saved, no action was specified";
-				$response_itm = ItmResponse::response_error($record->itemid, $message);
-			}
-		} else {
-			$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $itm->recordlocker->get_locked_user($itemID);
-			$response_itm = ItmResponse::response_error($record->itemid, $message);
+		if ($itm->recordlocker->userHasLocked($item->itemid) === false) {
+			$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $itm->recordlocker->getLockingUser($itemID);
+			$response = ItmResponse::response_error($record->itemid, $message);
+			return false;
 		}
-		return $response_itm;
+
+		return $this->inputUpdate($input, $item);
+	}
+
+	private function inputUpdate(WireInput $input, ItemMasterItem $item) {
+		$itm = $this('modules')->get('Itm');
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$configIn  = Configs\In::config();
+		$supercede = $configIn->useUppercaseItemid() ? strtoupper($values->text('supercededby')) : $values->text('supercededby');
+		$item->setSupercededby($supercede);
+		$item->setDate(date('Ymd'));
+		$item->setTime(date('His'));
+
+		$response = ItmResponse::response_error($item->itemid, "Supercede Item $item->supercededby does not exist");
+
+		if ($itm->exists($values->text('supercededby')) || $this->supercededby == '') {
+			$response = $itm->save_and_respond($item);
+		}
+
+		$this->wire('session')->setFor('response', 'itm', $response);
+		$this->send_cxm_update($input);
+		return $response->has_success();
 	}
 
 /* =============================================================

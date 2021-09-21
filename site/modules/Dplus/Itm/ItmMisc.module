@@ -69,19 +69,19 @@ class ItmMisc extends Itm implements Module {
 	public function process_input_misc(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = strtoupper($values->text('itemID'));
+		$itemID = $values->text('itemID');
 
-		if ($this->item_exists($itemID)) {
+		if ($this->exists($itemID)) {
 			$invalidfields = array();
 			/**
 			 * Create lock for ITM item ID if not already locked.
 			 */
-			if (!$this->recordlocker->function_locked($itemID)) {
-				$this->recordlocker->create_lock($itemID);
+			if ($this->recordlocker->isLocked($itemID) === false) {
+				$this->recordlocker->lock($itemID);
 			}
 
-			if ($this->recordlocker->function_locked_by_user($itemID)) {
-				$record = $this->get_item($itemID);
+			if ($this->recordlocker->userHasLocked($itemID)) {
+				$record = $this->item($itemID);
 				$invalidfields = $this->set_item_fields_misc($record, $input);
 
 				if ($values->action) {
@@ -100,7 +100,7 @@ class ItmMisc extends Itm implements Module {
 					$response = ItmResponse::response_error($record->itemid, $message);
 				}
 			} else {
-				$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $recordlocker->get_locked_user($this->item::RECORDLOCKER_KEY, $itemID);
+				$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $this->recordlocker->getLockingUser($this->item::RECORDLOCKER_KEY, $itemID);
 				$response = ItmResponse::response_error($record->itemid, $message);
 			}
 		} else {
@@ -154,6 +154,8 @@ class ItmMisc extends Itm implements Module {
 				'allow_blank' => false
 			),
 		);
+		$record->setDate(date('Ymd'));
+		$record->setTime(date('His'));
 		$validator = $this->wire('modules')->get('InputValidator');
 		$validator->set_validator((new ItmValidator()))->set_input($input)->set_record($record)->set_validatefields($fields);
 		$invalid = $validator->validate();

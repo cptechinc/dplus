@@ -5,6 +5,7 @@ use ProcessWire\WireData;
 use Propel\Runtime\ActiveQuery\Criteria;
 
 use ItemMasterItemQuery, ItemMasterItem;
+use InvHazmatItemQuery, InvHazmatItem;
 
 use Dplus\CodeValidators\Min;
 use Dplus\CodeValidators\Map as MapValidator;

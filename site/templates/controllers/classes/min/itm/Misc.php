@@ -36,14 +36,13 @@ class Misc extends ItmFunction {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);;
 		}
-
 		$fields   = ['itemID|text', 'action|text'];
-		$data    = self::sanitizeParameters($data, $fields);
+		self::sanitizeParameters($data, $fields);
 		$input   = self::pw('input');
-		$itmMiscisc = self::getItmMisc();
+		$itmMisc = self::getItmMisc();
 
 		if ($data->action) {
-			$itmMiscisc->process_input($input);
+			$itmMisc->process_input($input);
 		}
 
 		self::pw('session')->redirect(self::itmUrlMisc($data->itemID), $http301 = false);
