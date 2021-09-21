@@ -7,9 +7,10 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface as Model;
 // Dplus Models
 use PoConfirmCodeQuery, PoConfirmCode;
 // ProcessWire
-use ProcessWire\WireData;
+use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Codes
 use Dplus\Codes\Base;
+use Dplus\Codes\Response;
 
 /**
  * Class that handles the CRUD of the CNFM code table
@@ -17,10 +18,12 @@ use Dplus\Codes\Base;
 class Cnfm extends Base {
 	const MODEL              = 'PoConfirmCode';
 	const MODEL_KEY          = 'id';
+	const MODEL_TABLE        = 'po_confirm_code';
 	const DESCRIPTION        = 'PO Confirmation Code';
 	const DESCRIPTION_RECORD = 'PO Confirmation Code';
-	const TABLE              = 'po_confirm_code';
-	const RECORDLOCKER_FUNCTION = 'cxm';
+	const RESPONSE_TEMPLATE  = 'PO Confirmation Code {code} {not} {crud}';
+	const RECORDLOCKER_FUNCTION = 'cnfm';
+	const DPLUS_TABLE           = 'CNFM';
 
 	protected static $instance;
 
@@ -31,6 +34,30 @@ class Cnfm extends Base {
 	 */
 	public function codeMaxLength() {
 		return PoConfirmCode::MAX_LENGTH_CODE;
+	}
+
+	const FIELD_ATTRIBUTES = [
+		'code'        => ['type' => 'text', 'maxlength' => 4],
+		'description' => ['type' => 'text', 'maxlength' => 20],
+	];
+
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function fieldAttribute($field = '', $attr = '') {
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		if (array_key_exists($field, self::FIELD_ATTRIBUTES) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, self::FIELD_ATTRIBUTES[$field]) === false) {
+			return false;
+		}
+		return self::FIELD_ATTRIBUTES[$field][$attr];
 	}
 
 /* =============================================================
@@ -58,7 +85,7 @@ class Cnfm extends Base {
 	/**
 	 * Return the Code records from Database filtered by ProductLne ID
 	 * @param  string $id
-	 * @return ObjectCollection
+	 * @return PoConfirmCode
 	 */
 	public function code($id) {
 		$q = $this->query();
@@ -70,96 +97,95 @@ class Cnfm extends Base {
 	 * @param  string $id
 	 * @return bool
 	 */
-	public function exists($stock) {
+	public function exists($id) {
 		$q = $this->query();
-		return boolval($q->filterById($stock)->count());
+		return boolval($q->filterById($id)->count());
+	}
+
+	/**
+	 * Return New or Existing PO Confirm Code
+	 * @param  string $id  Code ID
+	 * @return PoConfirmCode
+	 */
+	public function getOrCreate($id = '') {
+		if ($this->exists($id)) {
+			return $this->code($id);
+		}
+		$code = new PoConfirmCode();
+		if (strtolower($id) != 'new') {
+			$id = $this->wire('sanitizer')->text($id, ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+			$code->setId($id);
+		}
+		return $code;
 	}
 
 /* =============================================================
 	CRUD Processing
 ============================================================= */
-	// /**
-	//  * Takes Input, validates it's for one of the code tables
-	//  * Processes it, and if updated sends request to dplus
-	//  *
-	//  * NOTE: If an existing code is more than PoConfirmCode::MAX_LENGTH_CODE, we will allow editing
-	//  * but we won't allow creation of a code with more than allowed characters we will trim it.
-	//  *
-	//  * @param  WireInput $input Input
-	//  * @return void
-	//  */
-	// public function process_input(WireInput $input) {
-	// 	$rm = strtolower($input->requestMethod());
-	//
-	// 	$table = $input->$rm->text('table');
-	// 	$code  = $input->$rm->text('code');
-	//
-	// 	$q = $this->get_query();
-	// 	$q->filterByCode($code);
-	//
-	// 	if ($q->count()) {
-	// 		$record = $q->findOne();
-	// 	} else {
-	// 		$code  = $input->$rm->text('code', array('maxLength' => PoConfirmCode::MAX_LENGTH_CODE));
-	// 		$record = new PoConfirmCode();
-	// 		$record->setCode($code);
-	// 	}
-	//
-	// 	if ($input->$rm->text('action') == 'remove-code') {
-	// 		$record->delete();
-	// 	} else {
-	// 		$description = $input->$rm->text('description');
-	// 		$record->setDescription($description);
-	// 		$record->setDate(date('Ymd'));
-	// 		$record->setTime(date('His'));
-	// 		$record->setDummy('P');
-	// 	}
-	//
-	// 	$this->wire('session')->response_codetable = $this->save_and_process_response($table, $code, $record);
-	// }
-	//
-	// /**
-	//  * Returns CodeTablesResponse based on the outcome of the database save
-	//  *
-	//  * @param  string $table  Table Code
-	//  * @param  string $code   Code being added
-	//  * @param  bool   $is_new Was the Record in the database before Save?
-	//  * @param  bool   $saved  Was the Record Saved?
-	//  * @return CodeTablesResponse
-	//  */
-	// protected function save_and_process_response($table, $code, PoConfirmCode $record) {
-	// 	$is_new = $record->isDeleted() ? false : $record->isNew();
-	// 	$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
-	//
-	// 	$response = new CodeTablesResponse();
-	// 	$response->set_key($code);
-	// 	$message = self::DESCRIPTION_RECORD . " ($code) was ";
-	//
-	// 	if ($saved) {
-	// 		$response->set_success(true);
-	// 	} else {
-	// 		$response->set_error(true);
-	// 		$message .= "not ";
-	// 	}
-	//
-	// 	if ($is_new) {
-	// 		$message .= 'added';
-	// 		$response->set_action(CodeTablesResponse::CRUD_CREATE);
-	// 	} elseif ($record->isDeleted()) {
-	// 		$message .= 'deleted';
-	// 		$response->set_action(CodeTablesResponse::CRUD_DELETE);
-	// 	} else {
-	// 		$message .= 'updated';
-	// 		$response->set_action(CodeTablesResponse::CRUD_UPDATE);
-	// 	}
-	//
-	// 	$response->set_message($message);
-	//
-	// 	if ($response->has_success()) {
-	// 		$this->wire('modules')->get('CodeTables')->update_dplus_cobol($table, $code);
-	// 	}
-	// 	return $response;
-	// }
+	public function processInput(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		switch ($values->text('action')) {
+			case 'delete-code':
+				$this->inputDelete($input);
+				break;
+			case 'edit-code':
+				$this->inputUpdate($input);
+				break;
+		}
+	}
+
+	/**
+	 * Update CNFM Code from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function inputUpdate(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+
+		$code = $this->getOrCreate($id);
+		$code->setDescription($values->text('description'));
+		$code->setDate(date('Ymd'));
+		$code->setTime(date('His'));
+		$response = $this->saveAndRespond($code);
+		$this->wire('session')->setFor('codetable', 'cnfm', $response);
+		return $response->hasSuccess();
+	}
 
 
+	/**
+	 * Return Response based on the outcome of the database save
+	 * @param  PoConfirmCode $code  PO Confirmation Code
+	 * @return Response
+	 */
+	protected function saveAndRespond(PoConfirmCode $code) {
+		$is_new = $code->isDeleted() ? false : $code->isNew();
+		$saved  = $code->isDeleted() ? $code->isDeleted() : $code->save();
+
+		$response = new Response();
+		$response->setCode($code->id);
+
+		if ($saved) {
+			$response->setSuccess(true);
+		} else {
+			$response->setError(true);
+		}
+
+		if ($is_new) {
+			$response->setAction(Response::CRUD_CREATE);
+		} elseif ($code->isDeleted()) {
+			$response->setAction(Response::CRUD_DELETE);
+		} else {
+			$response->setAction(Response::CRUD_UPDATE);
+		}
+
+		$response->buildMessage(self::RESPONSE_TEMPLATE);
+		if ($response->hasSuccess()) {
+			$this->updateDplus($code->id);
+		}
+		return $response;
+	}
 }
