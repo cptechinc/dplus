@@ -72,7 +72,7 @@ class Mpo extends AbstractController {
 		$validate = new MpoValidator();
 		$exists = $validate->cnfm($data->code);
 
-		if (empty($data->jqv)) {
+		if (boolval($data->jqv) === true) {
 			if ($data->new) {
 				return $exists === false;
 			}
