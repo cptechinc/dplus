@@ -151,7 +151,7 @@ class Cnfm extends Base {
 		$code->setDate(date('Ymd'));
 		$code->setTime(date('His'));
 		$response = $this->saveAndRespond($code);
-		$this->wire('session')->setFor('codetable', 'cnfm', $response);
+		$this->wire('session')->setFor('response', 'cnfm', $response);
 		return $response->hasSuccess();
 	}
 
