@@ -8,11 +8,12 @@ use Propel\Runtime\Util\PropelModelPager;
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemPricingQuery, ItemPricing;
 // ProcessWire Classes, Modules
-use ProcessWire\Page, ProcessWire\WireData, ProcessWire\CiLoadCustomerShipto;
+use ProcessWire\Page, ProcessWire\WireData, ProcessWire\User;
+use ProcessWire\CiLoadCustomerShipto;
 // Dplus Filters
 use Dplus\Filters\Min\ItemMaster  as ItemMasterFilter;
-// Mvc Controllers
-use Mvc\Controllers\AbstractController;
+// Dplus Configs
+use Dplus\Configs;
 
 class Ii extends Base {
 	const SECTIONS = [
@@ -204,6 +205,61 @@ class Ii extends Base {
 	}
 
 /* =============================================================
+	Supplemental
+============================================================= */
+	/**
+	 * Return II Subfunctions that are configured by II config
+	 * @return array
+	 */
+	public static function getSubfunctions() {
+		$functions = self::SUBFUNCTIONS;
+		$configIi = Configs\Ii::config();
+
+		if (array_key_exists('kit', $functions)) {
+			if ($configIi->allowBreakdownKit() === false) {
+				unset($functions['kit']);
+			}
+		}
+
+		if (array_key_exists('bom', $functions)) {
+			if ($configIi->allowBreakdownBom() === false) {
+				unset($functions['bom']);
+			}
+		}
+
+		if (array_key_exists('quotes', $functions)) {
+			if ($configIi->allowQuotes() === false) {
+				unset($functions['quotes']);
+			}
+		}
+
+		if (array_key_exists('lost-sales', $functions)) {
+			if ($configIi->allowLostSales() === false) {
+				unset($functions['lost-sales']);
+			}
+		}
+		return $functions;
+	}
+
+	/**
+	 * Return II Subfunctions that the User has Access to
+	 * @param  User $user
+	 * @return array
+	 */
+	private static function getUserAllowedSubfunctions(User $user = null) {
+		$user = $user ? $user : self::pw('user');
+		$iio  = self::getIio();
+		$allowed = [];
+
+		foreach (self::getSubfunctions() as $path => $data) {
+			if ($iio->allowUser($user, $data['permission'])) {
+				$allowed[$path] = $data;
+			}
+		}
+		return $allowed;
+	}
+
+/* =============================================================
 	Hooks
 ============================================================= */
 	public static function init() {
@@ -211,15 +267,7 @@ class Ii extends Base {
 
 		$m = self::pw('modules')->get('DpagesMii');
 		$m->addHook('Page(pw_template=ii-item)::subfunctions', function($event) {
-			$user = self::pw('user');
-			$allowed = [];
-			$iio = self::getIio();
-			foreach (self::SUBFUNCTIONS as $path => $data) {
-				if ($iio->allowUser($user, $data['permission'])) {
-					$allowed[$path] = $data;
-				}
-			}
-			$event->return = $allowed;
+			$event->return = self::getUserAllowedSubfunctions(self::pw('user'));
 		});
 
 		$m->addHook('Page(pw_template=ii-item)::subfunctionURL', function($event) {
