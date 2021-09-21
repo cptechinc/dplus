@@ -12,7 +12,7 @@ class CnfmForm {
 		this.id = 'code-form';
 		this.form = $('#' + this.id);
 		this.inputs = CnfmInputs.getInstance();
-		// this.config = CnfmConfig.getInstance();
+		this.config = CnfmConfigs.getInstance();
 	}
 
 	updateInputsFromJson(json = null) {
