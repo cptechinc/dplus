@@ -8,13 +8,28 @@ class MiscRequests {
 		return this.instance;
 	}
 
-	validateItemid(itemID,  callback) {
-		var ajax = new AjaxRequest('{{ page.jsonapiURL('inv/validate/itemid/') }}');
+	validateOriginCountryUrl(code = '') {
+		var uri = URI('{{ page.jsonapiURL('inv/validate/country-code/') }}');
+		if (code) {
+			uri.setQuery('code', code);
+		}
+		return uri.toString();
+	}
 
-		ajax.setData({itemID: itemID});
-		ajax.request(function(response) {
-			callback(response)
-		});
+	validateTariffCodeUrl(code = '') {
+		var uri = URI('{{ page.jsonapiURL('inv/validate/tariff-code/') }}');
+		if (code) {
+			uri.setQuery('code', code);
+		}
+		return uri.toString();
+	}
+
+	validateFreightCodeUrl(code = '') {
+		var uri = URI('{{ page.jsonapiURL('mso/validate/freight-code/') }}');
+		if (code) {
+			uri.setQuery('code', code);
+		}
+		return uri.toString();
 	}
 
 	getJsonApiCode(api, fetching, code, callback) {
