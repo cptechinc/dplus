@@ -147,9 +147,31 @@ class Cnfm extends Base {
 		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
 
 		$code = $this->getOrCreate($id);
-		$code->setDescription($values->text('description'));
+		$code->setDescription($values->text('description', ['maxLength' => $this->fieldAttribute('description', 'maxlength')]));
 		$code->setDate(date('Ymd'));
 		$code->setTime(date('His'));
+		$response = $this->saveAndRespond($code);
+		$this->wire('session')->setFor('response', 'cnfm', $response);
+		return $response->hasSuccess();
+	}
+
+	/**
+	 * Delete CNFM Code
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function inputDelete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$id     = $values->text('code', ['maxLength' => $this->fieldAttribute('code', 'maxlength')]);
+
+		if ($this->exists($id) === false) {
+			$response = Response::responseSuccess("PO Confirmation Code $id was deleted");
+			$response->setCode($id);
+			return true;
+		}
+		$code = $this->code($id);
+		$code->delete();
 		$response = $this->saveAndRespond($code);
 		$this->wire('session')->setFor('response', 'cnfm', $response);
 		return $response->hasSuccess();
