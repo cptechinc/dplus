@@ -9,6 +9,16 @@ $(function() {
 	var formPricing = PricingForm.getInstance();
 	var alert       = PricingAlerts.getInstance();
 
+
+/* =============================================================
+	Events
+============================================================= */
+	$('body').on('keyup change paste', '#' + formPricing.id +' input, select, textarea', function(){
+		if ($('#response-alert').length) {
+			$('#response-alert').remove();
+		}
+	});
+
 	$("body").on("change", ".unit-price, .unit-qty", function(e) {
 		var unitrow = $(this).closest('.unit-row');
 		formPricing.updateUnitRow(unitrow);

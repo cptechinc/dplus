@@ -7,6 +7,12 @@ $(function() {
 /* =============================================================
 	Event Changes
 ============================================================= */
+	$('body').on('keyup change paste', '#' + formCosting.id +' input, select, textarea', function(){
+		if ($('#response-alert').length) {
+			$('#response-alert').remove();
+		}
+	});
+	
 	$("body").on("change", "select[name=uom_purchase]", function(e) {
 		formCosting.updateUomPurchase();
 
