@@ -11,10 +11,9 @@ use ProcessWire\Page, ProcessWire\XrefVxm as VxmCRUD;
 use Dplus\Filters\Map\Vxm as VxmFilter;
 // Mvc Controllers
 use Controllers\Min\Itm\Xrefs;
-use Controllers\Min\Itm\Xrefs\XrefFunction;
 use Controllers\Map\Vxm as VxmController;
 
-class Vxm extends XrefFunction {
+class Vxm extends Base {
 	const PERMISSION_ITMP = 'xrefs';
 
 	public static function index($data) {

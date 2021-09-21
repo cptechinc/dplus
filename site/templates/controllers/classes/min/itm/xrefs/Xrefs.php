@@ -4,9 +4,9 @@ use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\WireData, ProcessWire\Page;
 // Mvc Controllers
-use Controllers\Min\Itm\Xrefs\XrefFunction;
+use Controllers\Min\Itm\Xrefs\Base;
 
-class Xrefs extends XrefFunction {
+class Xrefs extends Base {
 	const PERMISSION_ITMP = 'xrefs';
 
 	public static function index($data) {
@@ -83,6 +83,7 @@ class Xrefs extends XrefFunction {
 		$xrefs->upcx = $modules->get('XrefUpc');
 		return $xrefs;
 	}
+
 /* =============================================================
 	URLs
 ============================================================= */
@@ -118,6 +119,10 @@ class Xrefs extends XrefFunction {
 		return self::xrefUrlFunction($itemID, 'mxrfe');
 	}
 
+	public static function xrefUrlSubstitutes($itemID) {
+		return self::xrefUrlFunction($itemID, 'substitutes');
+	}
+
 /* =============================================================
 	Hooks
 ============================================================= */
@@ -142,6 +147,10 @@ class Xrefs extends XrefFunction {
 
 		$m->addHook('Page(pw_template=itm)::xrefUrlMxrfe', function($event) {
 			$event->return = self::xrefUrlMxrfe($event->arguments(0));
+		});
+
+		$m->addHook('Page(pw_template=itm)::xrefUrlSubstitutes', function($event) {
+			$event->return = self::xrefUrlSubstitutes($event->arguments(0));
 		});
 	}
 }

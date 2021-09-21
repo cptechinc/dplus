@@ -14,7 +14,7 @@ use Controllers\Min\Itm\Xrefs;
 use Controllers\Min\Itm\Xrefs\XrefFunction;
 use Controllers\Mso\Cxm as CxmController;
 
-class Cxm extends XrefFunction {
+class Cxm extends Base {
 	const PERMISSION_ITMP = 'xrefs';
 
 	public static function index($data) {

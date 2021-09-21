@@ -11,10 +11,9 @@ use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeCRUD;
 use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
 // Mvc Controllers
 use Controllers\Min\Itm\Xrefs;
-use Controllers\Min\Itm\Xrefs\XrefFunction;
 use Controllers\Map\Mxrfe as BaseMxrfe;
 
-class Mxrfe extends XrefFunction {
+class Mxrfe extends Base {
 
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];

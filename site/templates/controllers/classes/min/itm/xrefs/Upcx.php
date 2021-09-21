@@ -13,10 +13,9 @@ use Dplus\Configs;
 use Dplus\Filters\Min\Upcx as UpcxFilter;
 // Mvc Controllers
 use Controllers\Min\Itm\Xrefs;
-use Controllers\Min\Itm\Xrefs\XrefFunction;
 use Controllers\Min\Upcx as UpcxController;
 
-class Upcx extends XrefFunction {
+class Upcx extends Base {
 
 	public static function index($data) {
 		$fields = ['itemID|text', 'upc|text', 'action|text'];

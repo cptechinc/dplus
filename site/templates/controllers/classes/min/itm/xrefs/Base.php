@@ -3,6 +3,6 @@
 // Mvc Controllers
 use Controllers\Min\Itm\ItmFunction;
 
-class XrefFunction extends ItmFunction {
+class Base extends ItmFunction {
 	const PERMISSION_ITMP = 'xrefs';
 }

@@ -10,7 +10,7 @@ use Controllers\Min\Itm\ItmFunction;
 use Controllers\Mki\Kim as KimController;
 use Controllers\Min\Itm\Xrefs as Xrefs;
 
-class Kim extends ItmFunction {
+class Kim extends Base {
 	const PERMISSION_ITMP = 'xrefs';
 
 	public static function index($data) {
