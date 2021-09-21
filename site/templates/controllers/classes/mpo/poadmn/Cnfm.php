@@ -46,12 +46,35 @@ class Cnfm extends Base {
 		return $html;
 	}
 
+	public static function handleCRUD($data) {
+		self::sanitizeParametersShort($data, ['code|text', 'action|text']);
+		$cnfm = self::getCnfm();
+
+		if ($data->action) {
+			$cnfm->processInput(self::pw('input'));
+		}
+		
+		$url = self::codeFocusUrl($data->code);
+		switch ($data->action) {
+			case 'delete-code':
+				$url = self::cnfmUrl();
+				break;
+		}
+		self::pw('session')->redirect($url, $http301 = false);
+	}
+
 /* =============================================================
 	URLs
 ============================================================= */
 	public static function codeUrl($code) {
 		$url = new Purl(self::cnfmUrl());
 		$url->query->set('code', $code);
+		return $url->getUrl();
+	}
+
+	public static function codeFocusUrl($code) {
+		$url = new Purl(self::cnfmUrl());
+		$url->query->set('focus', $code);
 		return $url->getUrl();
 	}
 
