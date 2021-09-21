@@ -1,19 +1,15 @@
 <?php namespace Controllers\Mii\Ii;
-// Purl\Url
+// Purl URI Manipulation Library
 use Purl\Url as Purl;
 // Dplus Model
 use CustomerQuery, Customer;
-// Dplus Validators
-use Dplus\CodeValidators\Min as MinValidator;
-// Mvc Controllers
-use Controllers\Mii\IiFunction;
 
-class Pricing extends IiFunction {
+class Pricing extends Base {
 	const JSONCODE       = 'ii-pricing';
 	const PERMISSION_IIO = 'pricing';
 
 /* =============================================================
-	1. Indexes
+	Indexes
 ============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool', 'custID|text'];
@@ -31,28 +27,29 @@ class Pricing extends IiFunction {
 		if (empty($data->custID) === false) {
 			return self::pricing($data);
 		}
-		return self::customerForm($data);
+		return self::initScreen($data);
 	}
 
-	public static function pricing($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		self::sanitizeParametersShort($data, ['itemID|text']);
-
+	private static function pricing($data) {
 		self::getData($data);
-		$page    = self::pw('page');
-		$page->headline = "$data->itemID Pricing";
-		$html = '';
-		$html .= self::breadCrumbs();;
-		$html .= self::display($data);
-		return $html;
+		self::pw('page')->headline = "$data->itemID Pricing";
+		return self::displayPricing($data);
+	}
+
+	private static function initScreen($data) {
+		$config = self::pw('config');
+		$page = self::pw('page');
+
+		$page->headline = "II: $data->itemID Pricing";
+		$page->js = $config->twig->render('items/ii/pricing/customer/form.js.twig');
+		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
+		return self::displayInitScreen($data);
 	}
 
 /* =============================================================
-	2. Data Requests
+	Data Requests
 ============================================================= */
-	public static function requestJson($vars) {
+	private static function requestJson($vars) {
 		$fields = ['itemID|text', 'custID|text', 'sessionID|text'];
 		$vars = self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
@@ -64,7 +61,7 @@ class Pricing extends IiFunction {
 	}
 
 /* =============================================================
-	3. URLs
+	URLs
 ============================================================= */
 	public static function pricingUrl($itemID, $custID = '', $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
@@ -82,7 +79,7 @@ class Pricing extends IiFunction {
 	}
 
 /* =============================================================
-	4. Data Retrieval
+	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text', 'custID|text']);
@@ -106,9 +103,16 @@ class Pricing extends IiFunction {
 	}
 
 /* =============================================================
-	5. Displays
+	Displays
 ============================================================= */
-	protected static function display($data) {
+	private static function displayPricing($data) {
+		$html = '';
+		$html .= self::breadCrumbs();;
+		$html .= self::displayData($data);
+		return $html;
+	}
+
+	private static function displayData($data) {
 		$jsonm  = self::getJsonModule();
 		$json   = $jsonm->getFile(self::JSONCODE);
 		$config = self::pw('config');
@@ -128,16 +132,9 @@ class Pricing extends IiFunction {
 		return $config->twig->render('items/ii/pricing/display.twig', ['item' => self::getItmItem($data->itemID), 'customer' => $customer, 'json' => $json]);
 	}
 
-	private static function customerForm($data) {
-		self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
-		$config = self::pw('config');
-		$page = self::pw('page');
-
-		$page->headline = "II: $data->itemID Pricing";
-		$page->js = $config->twig->render('items/ii/pricing/customer/form.js.twig');
+	private static function displayInitScreen($data) {
 		$html = self::breadCrumbs();
-		$html .= $config->twig->render('items/ii/pricing/customer/form.twig', ['itemID' => $data->itemID]);
-		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
+		$html .= self::pw('config')->twig->render('items/ii/pricing/customer/form.twig', ['itemID' => $data->itemID]);
 		return $html;
 	}
 }

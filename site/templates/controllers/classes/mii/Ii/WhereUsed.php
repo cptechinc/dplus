@@ -1,17 +1,13 @@
 <?php namespace Controllers\Mii\Ii;
-// Purl\Url
+// Purl URI Manipulation Library
 use Purl\Url as Purl;
-// Dplus Validators
-use Dplus\CodeValidators\Min as MinValidator;
-// Mvc Controllers
-use Controllers\Mii\IiFunction;
 
-class WhereUsed extends IiFunction {
+class WhereUsed extends Base {
 	const JSONCODE          = 'ii-whereused';
 	const PERMISSION_IIO    = '';
 
 /* =============================================================
-	1. Indexes
+	Indexes
 ============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool'];
@@ -28,25 +24,16 @@ class WhereUsed extends IiFunction {
 		return self::whereUsed($data);
 	}
 
-	public static function whereUsed($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		self::sanitizeParametersShort($data, ['itemID|text']);
-
+	private static function whereUsed($data) {
 		self::getData($data);
-		$page = self::pw('page');
-		$page->headline = "II: $data->itemID Where Used";
-		$html = '';
-		$html .= self::breadCrumbs();;
-		$html .= self::display($data);
-		return $html;
+		self::pw('page')->headline = "II: $data->itemID Where Used";
+		return self::displayWhereUsed($data);
 	}
 
 /* =============================================================
-	2. Data Requests
+	Data Requests
 ============================================================= */
-	public static function requestJson($vars) {
+	private static function requestJson($vars) {
 		$fields = ['itemID|text', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
@@ -55,7 +42,7 @@ class WhereUsed extends IiFunction {
 	}
 
 /* =============================================================
-	3. URLs
+	URLs
 ============================================================= */
 	public static function whereUsedUrl($itemID, $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
@@ -69,7 +56,7 @@ class WhereUsed extends IiFunction {
 	}
 
 /* =============================================================
-	4. Data Retrieval
+	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text']);
@@ -94,9 +81,16 @@ class WhereUsed extends IiFunction {
 	}
 
 /* =============================================================
-	5. Displays
+	Displays
 ============================================================= */
-	private static function display($data) {
+	private static function displayWhereUsed($data) {
+		$html = '';
+		$html .= self::breadCrumbs();;
+		$html .= self::displayData($data);
+		return $html;
+	}
+
+	private static function displayData($data) {
 		$jsonm  = self::getJsonModule();
 		$json   = $jsonm->getFile(self::JSONCODE);
 		$config = self::pw('config');

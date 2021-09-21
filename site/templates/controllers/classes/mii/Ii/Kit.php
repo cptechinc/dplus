@@ -1,22 +1,18 @@
 <?php namespace Controllers\Mii\Ii;
-// Purl\Url
+// Purl URI Manipulation Library
 use Purl\Url as Purl;
-// Dplus Model
+// Dplus Models
 use InvKitQuery, InvKit;
 use InvKitComponentQuery, InvKitComponent;
-// Dplus Validators
-use Dplus\CodeValidators\Min as MinValidator;
-// Mvc Controllers
-use Controllers\Mii\IiFunction;
 
-class Kit extends IiFunction {
+class Kit extends Base {
 	const JSONCODE          = 'ii-components-kit';
 	const PERMISSION_IIO    = 'kit';
 	const DATE_FORMAT       = 'm/d/Y';
 	const DATE_FORMAT_DPLUS = 'Ymd';
 
 /* =============================================================
-	1. Indexes
+	Indexes
 ============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool', 'qty|int'];
@@ -34,28 +30,25 @@ class Kit extends IiFunction {
 		if (empty($data->qty) === false) {
 			return self::kit($data);
 		}
-		return self::qtyForm($data);
+		return self::initScreen($data);
 	}
 
-	public static function kit($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		self::sanitizeParametersShort($data, ['itemID|text']);
-
+	private static function kit($data) {
 		self::getData($data);
-		$page    = self::pw('page');
-		$page->headline = "II: $data->itemID Kit";
-		$html = '';
-		$html .= self::breadCrumbs();;
-		$html .= self::display($data);
-		return $html;
+		self::pw('page')->headline = "II: $data->itemID Kit";
+		return self::displayKit($data);
+	}
+
+	private static function initScreen($data) {
+		self::pw('page')->headline = "II: $data->itemID Kit";
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
+		return self::displayQtyform($data);
 	}
 
 /* =============================================================
-	2. Data Requests
+	Data Requests
 ============================================================= */
-	public static function requestJson($vars) {
+	private static function requestJson($vars) {
 		$fields = ['itemID|text', 'qty|int', 'sessionID|text'];
 		$vars   = self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
@@ -64,7 +57,7 @@ class Kit extends IiFunction {
 	}
 
 /* =============================================================
-	3. URLs
+	URLs
 ============================================================= */
 	public static function kitUrl($itemID, $qty = 0, $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
@@ -82,7 +75,7 @@ class Kit extends IiFunction {
 	}
 
 /* =============================================================
-	4. Data Retrieval
+	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text', 'qty|int']);
@@ -105,10 +98,18 @@ class Kit extends IiFunction {
 		$session->setFor('ii', 'kit', ($session->getFor('ii', 'kit') + 1));
 		$session->redirect(self::kitUrl($data->itemID, $data->qty, $refresh = true), $http301 = false);
 	}
+
 /* =============================================================
-	5. Displays
+	Displays
 ============================================================= */
-	protected static function display($data) {
+	private static function displayKit($data) {
+		$html = '';
+		$html .= self::breadCrumbs();;
+		$html .= self::displayData($data);
+		return $html;
+	}
+
+	protected static function displayData($data) {
 		$jsonm  = self::getJsonModule();
 		$json   = $jsonm->getFile(self::JSONCODE);
 		$config = self::pw('config');
@@ -129,15 +130,9 @@ class Kit extends IiFunction {
 		return $html;
 	}
 
-	private static function qtyForm($data) {
-		self::sanitizeParametersShort($data, ['itemID|text']);
-		$config = self::pw('config');
-		$page   = self::pw('page');
-
-		$page->headline = "II: $data->itemID Kit";
-		$config->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
+	private static function displayQtyform($data) {
 		$html = self::breadCrumbs();
-		$html .= $config->twig->render('items/ii/components/kit/qty-form.twig', ['itemID' => $data->itemID]);
+		$html .= self::pw('config')->twig->render('items/ii/components/kit/qty-form.twig', ['itemID' => $data->itemID]);
 		return $html;
 	}
 }

@@ -1,5 +1,6 @@
-<?php namespace Controllers\Mii;
-
+<?php namespace Controllers\Mii\Ii;
+// Purl URI Manipulation Library
+use Purl\Url as Purl;
 // Dplus Model
 use ItemMasterItemQuery, ItemMasterItem;
 use ItemPricingQuery, ItemPricing;
@@ -12,7 +13,7 @@ use Dplus\Filters\Min\ItemMaster  as ItemMasterFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
-abstract class IiFunction extends AbstractController {
+abstract class Base extends AbstractController {
 	const PERMISSION     = 'ii';
 	const PERMISSION_IIO = '';
 
@@ -20,7 +21,6 @@ abstract class IiFunction extends AbstractController {
 	private static $iio;
 	private static $jsonm;
 	private static $filehasher;
-
 
 /* =============================================================
 	Validations
@@ -78,6 +78,17 @@ abstract class IiFunction extends AbstractController {
 		$requestor = self::pw('modules')->get('DplusRequest');
 		$requestor->write_dplusfile($data, $sessionID);
 		$requestor->cgi_request(self::pw('config')->cgis['default'], $sessionID);
+	}
+
+/* =============================================================
+	URLs
+============================================================= */
+	public static function iiUrl($itemID = '') {
+		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
+		if ($itemID) {
+			$url->query->set('itemID', $itemID);
+		}
+		return $url->getUrl();
 	}
 
 /* =============================================================

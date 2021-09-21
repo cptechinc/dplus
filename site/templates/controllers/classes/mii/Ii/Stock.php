@@ -1,17 +1,13 @@
 <?php namespace Controllers\Mii\Ii;
-// Purl\Url
+// Purl URI Manipulation Library
 use Purl\Url as Purl;
-// Dplus Validators
-use Dplus\CodeValidators\Min as MinValidator;
-// Mvc Controllers
-use Controllers\Mii\IiFunction;
 
-class Stock extends IiFunction {
+class Stock extends Base {
 	const JSONCODE       = 'ii-stock_whse';
 	const PERMISSION_IIO = 'stock';
 
 /* =============================================================
-	1. Indexes
+	Indexes
 ============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool'];
@@ -28,32 +24,23 @@ class Stock extends IiFunction {
 		return self::stock($data);
 	}
 
-	public static function stock($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		self::sanitizeParametersShort($data, ['itemID|text']);
-
+	private static function stock($data) {
 		self::getData($data);
-		$page    = self::pw('page');
-		$page->headline = "$data->itemID Stock";
-		$html = '';
-		$html .= self::breadCrumbs();
-		$html .= self::display($data);
-		return $html;
+		self::pw('page')->headline = "$data->itemID Stock";
+		return self::displayStock($data);
 	}
 
 /* =============================================================
-	2. Data Requests
+	Data Requests
 ============================================================= */
-	public static function requestJson($vars) {
+	private static function requestJson($vars) {
 		self::sanitizeParametersShort($vars, ['itemID|text','sessionID|text']);
 		$data = ['IISTKBYWHSE', "ITEMID=$vars->itemID"];
 		self::sendRequest($data);
 	}
 
 /* =============================================================
-	3. URLs
+	URLs
 ============================================================= */
 	public static function stockUrl($itemID = '', $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
@@ -69,7 +56,7 @@ class Stock extends IiFunction {
 	}
 
 /* =============================================================
-	4. Data Retrieval
+	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text']);
@@ -93,9 +80,16 @@ class Stock extends IiFunction {
 	}
 
 /* =============================================================
-	5. Displays
+	Displays
 ============================================================= */
-	protected static function display($data) {
+	private static function displayStock($data) {
+		$html = '';
+		$html .= self::breadCrumbs();
+		$html .= self::displayData($data);
+		return $html;
+	}
+
+	protected static function displayData($data) {
 		$jsonm  = self::getJsonModule();
 		$json   = $jsonm->getFile(self::JSONCODE);
 		$config = self::pw('config');
