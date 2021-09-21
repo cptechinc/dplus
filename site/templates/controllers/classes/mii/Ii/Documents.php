@@ -1,25 +1,21 @@
 <?php namespace Controllers\Mii\Ii;
-// Purl\Url
+// Purl URI Manipulation Library
 use Purl\Url as Purl;
 // ProcessWire
 use ProcessWire\WireData;
 // Dplus Validators
-use Dplus\CodeValidators\Min as MinValidator;
 use Dplus\CodeValidators\Mso as MsoValidator;
 // Alias Document Finders
 use Dplus\DocManagement\Finders as DocFinders;
-// Mvc Controllers
-use Controllers\Mii\IiFunction;
 
-
-class Documents extends IiFunction {
+class Documents extends Base {
 	const JSONCODE       = '';
 	const PERMISSION_IIO = '';
 
 	private static $docfinder;
 
 /* =============================================================
-	1. Indexes
+	Indexes
 ============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'folder|text', 'document|text'];
@@ -40,28 +36,18 @@ class Documents extends IiFunction {
 		return self::documents($data);
 	}
 
-	public static function documents($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		$fields = ['itemID|text'];
-		self::sanitizeParametersShort($data, $fields);
-
-		$page    = self::pw('page');
-		$page->headline = "II: $data->itemID Documents";
-		$html = '';
-		$html .= self::breadCrumbs();
-		$html .= self::display($data);
-		return $html;
+	private static function documents($data) {
+		self::pw('page')->headline = "II: $data->itemID Documents";
+		return self::display($data);
 	}
 
 /* =============================================================
-	2. Data Requests
+	Data Requests
 ============================================================= */
 	# NONE
 
 /* =============================================================
-	3. URLs
+	URLs
 ============================================================= */
 	public static function documentsUrl($itemID, $folder = '', $document = '') {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
@@ -121,13 +107,20 @@ class Documents extends IiFunction {
 
 
 /* =============================================================
-	4. Data Retrieval
+	Data Retrieval
 ============================================================= */
 	# NONE
 /* =============================================================
-	5. Displays
+	Displays
 ============================================================= */
 	private static function display($data) {
+		$html = '';
+		$html .= self::breadCrumbs();
+		$html .= self::displayDocuments($data);
+		return $html;
+	}
+
+	private static function displayDocuments($data) {
 		self::init();
 		self::sanitizeParametersShort($data, ['itemID|text', 'folder|text']);
 		$list = self::createList($data->itemID);
@@ -195,7 +188,27 @@ class Documents extends IiFunction {
 	}
 
 /* =============================================================
-	6. Supplements
+	Supplemental
+============================================================= */
+	public static function getDocFinderIi() {
+		if (empty(self::$docfinder)) {
+			self::$docfinder = new DocFinders\Ii();
+		}
+		return self::$docfinder;
+	}
+
+	private static function createList($itemID) {
+		$list = new WireData();
+		$list->itemid = $itemID;
+		$list->title = '';
+		$list->documents = [];
+		$list->returnUrl = '';
+		$list->returnTitle = '';
+		return $list;
+	}
+
+/* =============================================================
+	Hooks
 ============================================================= */
 	public static function init() {
 		$m = self::pw('modules')->get('DpagesMii');
@@ -220,22 +233,5 @@ class Documents extends IiFunction {
 			$itemID   = $event->arguments(0);
 			$event->return = self::itemImageUrl($itemID);
 		});
-	}
-
-	public static function getDocFinderIi() {
-		if (empty(self::$docfinder)) {
-			self::$docfinder = new DocFinders\Ii();
-		}
-		return self::$docfinder;
-	}
-
-	private static function createList($itemID) {
-		$list = new WireData();
-		$list->itemid = $itemID;
-		$list->title = '';
-		$list->documents = [];
-		$list->returnUrl = '';
-		$list->returnTitle = '';
-		return $list;
 	}
 }

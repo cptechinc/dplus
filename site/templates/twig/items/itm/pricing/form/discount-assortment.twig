@@ -35,6 +35,6 @@
 		<label for="assortmentqty">Assortment Qty</label>
 	</div>
 	<div class="col-sm-8">
-		<input type="text" class="form-control form-control-sm text-right" name="assortmentqty" id="assortmentqty" value="{{ item_pricing.item.assortmentqty}}">
+		<input type="text" class="form-control form-control-sm text-right" name="assortmentqty" id="assortmentqty" value="{{ item_pricing.item.assortmentqty|number_format(pricingm.fieldAttribute('assortmentqty', 'precision')) }}">
 	</div>
 </div>

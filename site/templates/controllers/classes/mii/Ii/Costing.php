@@ -1,17 +1,13 @@
 <?php namespace Controllers\Mii\Ii;
-// Purl\Url
+// Purl URI Manipulation Library
 use Purl\Url as Purl;
-// Dplus Validators
-use Dplus\CodeValidators\Min as MinValidator;
-// Mvc Controllers
-use Controllers\Mii\IiFunction;
 
-class Costing extends IiFunction {
+class Costing extends Base {
 	const JSONCODE       = 'ii-costing';
 	const PERMISSION_IIO = 'costing';
 
 /* =============================================================
-	1. Indexes
+	Indexes
 ============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool'];
@@ -28,23 +24,14 @@ class Costing extends IiFunction {
 		return self::costing($data);
 	}
 
-	public static function costing($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		$data = self::sanitizeParametersShort($data, ['itemID|text']);
-
+	private static function costing($data) {
 		self::getData($data);
-		$page    = self::pw('page');
-		$page->headline = "II: $data->itemID Costing";
-		$html = '';
-		$html .= self::breadCrumbs();
-		$html .= self::display($data);
-		return $html;
+		self::pw('page')->headline = "II: $data->itemID Costing";
+		return self::displayCosting($data);
 	}
 
 /* =============================================================
-	2. Data Requests
+	Data Requests
 ============================================================= */
 	public static function requestJson($itemID, $sessionID) {
 		$sessionID = $sessionID ? $sessionID : session_id();
@@ -53,7 +40,7 @@ class Costing extends IiFunction {
 	}
 
 /* =============================================================
-	3. URLs
+	URLs
 ============================================================= */
 	public static function costingUrl($itemID = '', $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
@@ -69,7 +56,7 @@ class Costing extends IiFunction {
 	}
 
 /* =============================================================
-	4. Data Retrieval
+	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text']);
@@ -94,9 +81,16 @@ class Costing extends IiFunction {
 	}
 
 /* =============================================================
-	5. Displays
+	Displays
 ============================================================= */
-	protected static function display($data) {
+	private static function displayCosting($data) {
+		$html = '';
+		$html .= self::breadCrumbs();
+		$html .= self::displayData($data);
+		return $html;
+	}
+
+	private static function displayData($data) {
 		$config = self::pw('config');
 		$jsonm  = self::getJsonModule();
 		$json   = $jsonm->getFile(self::JSONCODE);

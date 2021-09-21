@@ -1,19 +1,15 @@
 <?php namespace Controllers\Mii\Ii;
-// Purl\Url
+// Purl URI Manipulation Library
 use Purl\Url as Purl;
-// Dplus Validators
-use Dplus\CodeValidators\Min as MinValidator;
 // Dplus Screen Formatters
 use Dplus\ScreenFormatters\Ii\Quotes as Formatter;
-// Mvc Controllers
-use Controllers\Mii\IiFunction;
 
-class Quotes extends IiFunction {
+class Quotes extends Base {
 	const JSONCODE          = 'ii-quotes';
 	const PERMISSION_IIO    = 'quotes';
 
 /* =============================================================
-	1. Indexes
+	Indexes
 ============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'refresh|bool'];
@@ -30,25 +26,16 @@ class Quotes extends IiFunction {
 		return self::quotes($data);
 	}
 
-	public static function quotes($data) {
-		if (self::validateItemidPermission($data) === false) {
-			return self::alertInvalidItemPermissions($data);
-		}
-		self::sanitizeParametersShort($data, ['itemID|text']);
+	private static function quotes($data) {
 		self::getData($data);
-
-		$page    = self::pw('page');
-		$page->headline = "II: $data->itemID Quotes";
-		$html = '';
-		$html .= self::breadCrumbs();;
-		$html .= self::display($data);
-		return $html;
+		self::pw('page')->headline = "II: $data->itemID Quotes";
+		return self::displayQuotes($data);
 	}
 
 /* =============================================================
-	2. Data Requests
+	Data Requests
 ============================================================= */
-	public static function requestJson($vars) {
+	private static function requestJson($vars) {
 		$fields = ['itemID|text', 'sessionID|text'];
 		self::sanitizeParametersShort($vars, $fields);
 		$vars->sessionID = empty($vars->sessionID) === false ? $vars->sessionID : session_id();
@@ -57,7 +44,7 @@ class Quotes extends IiFunction {
 	}
 
 /* =============================================================
-	3. URLs
+	URLs
 ============================================================= */
 	public static function quotesUrl($itemID, $refreshdata = false) {
 		$url = new Purl(self::pw('pages')->get('pw_template=ii-item')->url);
@@ -71,7 +58,7 @@ class Quotes extends IiFunction {
 	}
 
 /* =============================================================
-	4. Data Retrieval
+	Data Retrieval
 ============================================================= */
 	private static function getData($data) {
 		$data    = self::sanitizeParametersShort($data, ['itemID|text']);
@@ -99,9 +86,16 @@ class Quotes extends IiFunction {
 	}
 
 /* =============================================================
-	5. Displays
+	Displays
 ============================================================= */
-	private static function display($data) {
+	private static function displayQuotes($data) {
+		$html = '';
+		$html .= self::breadCrumbs();;
+		$html .= self::displayData($data);
+		return $html;
+	}
+
+	private static function displayData($data) {
 		self::init();
 		$jsonm  = self::getJsonModule();
 		$json    = $jsonm->getFile(self::JSONCODE);
@@ -124,9 +118,9 @@ class Quotes extends IiFunction {
 	}
 
 /* =============================================================
-	6. Supplements
+	Hooks
 ============================================================= */
-	public static function init() {
+	private static function init() {
 		$m = self::pw('modules')->get('DpagesMii');
 
 		$m->addHook('Page(pw_template=ii-item)::documentListUrl', function($event) {

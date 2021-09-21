@@ -7,6 +7,13 @@
 			<th>Date</th>
 			<th>Time</th>
 		</tr>
+		{% if list.documents.count() == 0 %}
+			<tr>
+				<td colspan="5" class="bg-warning text-white text-center">
+					No Documents Found
+				</td>
+			</tr>
+		{% endif %}
 		{% for document in list.documents %}
 			<tr id="doc-{{ document.filename }}">
 				<td>{{ document.title }}</td>
