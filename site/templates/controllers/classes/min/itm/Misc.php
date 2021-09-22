@@ -61,7 +61,7 @@ class Misc extends ItmFunction {
 
 		$page = self::pw('page');
 		$page->headline = "ITM: $data->itemID Misc";
-		$page->js .= self::pw('config')->twig->render('items/itm/misc/form/misc/js.twig', ['itm' => self::getItmMisc()]);
+		$page->js .= self::pw('config')->twig->render('items/itm/misc/js.twig', ['itm' => self::getItmMisc()]);
 		return self::miscDisplay($data);
 	}
 
@@ -75,6 +75,9 @@ class Misc extends ItmFunction {
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 		if ($session->getFor('response', 'itm')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
+		}
+		if ($session->getFor('response', 'itm-hazmat')) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm-hazmat')]);
 		}
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
