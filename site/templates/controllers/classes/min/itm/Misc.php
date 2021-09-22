@@ -78,6 +78,7 @@ class Misc extends ItmFunction {
 		}
 		if ($session->getFor('response', 'itm-hazmat')) {
 			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm-hazmat')]);
+			$session->removeFor('response', 'itm-hazmat');
 		}
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
