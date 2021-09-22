@@ -39,7 +39,7 @@ class Costing extends ItmFunction {
 		$data       = self::sanitizeParameters($data, $fields);
 		$input      = self::pw('input');
 		$itmCosting = self::getItmCosting();
-		$itmCosting->init_configs();
+		$itmCosting->initConfigs();
 
 		if ($data->action) {
 			$itmCosting->processInput($input);
