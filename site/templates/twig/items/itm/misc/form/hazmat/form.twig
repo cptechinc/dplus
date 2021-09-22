@@ -22,7 +22,8 @@
 					],
 					'attributes': {
 						'maxlength': itm.hazmat.maxlength_dot(),
-						'data-step': 1
+						'data-step': 1,
+						'autocomplete': 'off',
 					}
 				}
 			%}
@@ -40,7 +41,8 @@
 					'attributes': {
 						'maxlength': itm.hazmat.maxlength_dot(),
 						'data-step': 2,
-						'readonly': hazmat.dot1 == ''
+						'readonly': hazmat.dot1 == '',
+						'autocomplete': 'off',
 					}
 				}
 			%}
@@ -61,7 +63,8 @@
 					'attributes': {
 						'maxlength': itm.hazmat.maxlength_class(),
 						'data-step': 2,
-						'readonly': hazmat.dot1 == ''
+						'readonly': hazmat.dot1 == '',
+						'autocomplete': 'off',
 					}
 				}
 			%}
@@ -82,7 +85,8 @@
 					'attributes': {
 						'maxlength': itm.hazmat.maxlength_unnbr(),
 						'data-step': 3,
-						'readonly': hazmat.class == ''
+						'readonly': hazmat.class == '',
+						'autocomplete': 'off',
 					}
 				}
 			%}
@@ -126,7 +130,8 @@
 					'attributes': {
 						'maxlength': itm.hazmat.maxlength_label(),
 						'data-step': 5,
-						'readonly': hazmat.packgroup == ''
+						'readonly': hazmat.packgroup == '',
+						'autocomplete': 'off',
 					}
 				}
 			%}
