@@ -40,7 +40,7 @@ $(function() {
 ============================================================= */
 	origForm = formCosting.form.serialize();
 
-	$("body").on("click", "a:not(#item-costing-form .form_button)", function(e) {
+	$("body").on("click", "a:not(#ajax-modal a, #item-costing-form .form_button)", function(e) {
 		if (formCosting.form.serialize() !== origForm) {
 			e.preventDefault();
 			var a = $(this);
