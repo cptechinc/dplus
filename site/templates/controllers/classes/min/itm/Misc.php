@@ -42,7 +42,7 @@ class Misc extends ItmFunction {
 		$itmMisc = self::getItmMisc();
 
 		if ($data->action) {
-			$itmMisc->process_input($input);
+			$itmMisc->processInput($input);
 		}
 
 		self::pw('session')->redirect(self::itmUrlMisc($data->itemID), $http301 = false);
