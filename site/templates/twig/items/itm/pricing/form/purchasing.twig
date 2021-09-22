@@ -17,7 +17,7 @@
 			{{ item.unitofmpurchase.code }} - {{ item.unitofmpurchase.description }}
 		</p>
 		<small class="form-text text-muted">
-			Conversion: {{ item.unitofmpurchase.conversion|number_format(pricingm.fieldAttribute('qty', 'precision')) }}
+			Conversion: {{ item.unitofmpurchase.conversion|number_format(pricingm.fieldAttribute('margin', 'precision')) }}
 		</small>
 	</div>
 </div>

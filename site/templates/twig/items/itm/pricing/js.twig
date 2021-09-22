@@ -31,7 +31,7 @@ $(function() {
 		var inputs = formPricing.inputs;
 		var conversion = floatParse(inputs.uom.find('option:selected').data('conversion'));
 		var conversionText = inputs.uom.siblings('small').find('.conversion-description');
-		conversionText.text(conversion.toFixed(formPricing.config.fields.qty.precision));
+		conversionText.text(conversion.toFixed(formPricing.config.fields.margin.precision));
 		formPricing.updateUnitRows();
 	});
 
