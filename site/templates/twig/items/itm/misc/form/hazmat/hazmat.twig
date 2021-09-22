@@ -5,7 +5,7 @@
 	item                   ItemMasterItem
 	itm                    module ItmMisc
 #}
-{% set hazmat = itm.hazmat.get_hazmat(item.itemid) %}
+{% set hazmat = itm.hazmat.hazmat(item.itemid) %}
 <div>
 	<h3 class="text-center">Hazardous Materials</h3>
 </div>
