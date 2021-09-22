@@ -7,6 +7,6 @@
 
 {% set title = response.hasError() ? 'Error!' : 'Success!' %}
 
-<div id="response-alert" class="mb-3">
+<div class="mb-3 response-alert">
 	{% include 'util/form/alert.twig' with {'type': type, 'iconclass': iconclass, 'title': title, 'message': response.getMessage(), 'fields': response.fields } %}
 </div>
