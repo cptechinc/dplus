@@ -40,7 +40,8 @@ class Itm extends WireData implements Module {
 		'custID'           => ['type' => 'text', 'maxlength' => 6],
 		'weight'           => ['type' => 'number', 'precision' => 5, 'max'  => 9999999.99999],
 		'cubes'            => ['type' => 'number', 'precision' => 4, 'max'  => 9999999.9999],
-		'grams'            => ['type' => 'number', 'precision' => 5, 'conversion' => 453.6]
+		'grams'            => ['type' => 'number', 'precision' => 5, 'conversion' => 453.6],
+		'minmarginbase'    => ['type' => 'text', 'default' => '%']
 	];
 
 	/**
@@ -173,7 +174,7 @@ class Itm extends WireData implements Module {
 		$item->setRequire_freight('N');
 		$item->setCore('N');
 		$item->setSplitorder('Y');
-		$item->setMinmarginbase('%');
+		$item->setMinmarginbase($this->fieldAttribute('minmarginbase', 'default'));
 		$item->setInspection('N');
 		$item->setQtypercase(1);
 		$item->setDummy('P');
@@ -453,6 +454,22 @@ class Itm extends WireData implements Module {
 		}
 		$response->set_fields($invalidfields);
 		return $response;
+	}
+
+	/**
+	 * Set Session Response
+	 * @param ItmResponse $response
+	 */
+	protected function setResponse(ItmResponse $response) {
+		$this->wire('session')->setFor('response', 'itm', $response);
+	}
+
+	/**
+	 * Get Session Response
+	 * @return ItmResponse|null
+	 */
+	protected function getResponse() {
+		$this->wire('session')->getFor('response', 'itm');
 	}
 
 /* =============================================================
