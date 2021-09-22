@@ -5,7 +5,7 @@
 	item                   ItemMasterItem
 	itm                    module ItmMisc
 #}
-<form action="{{ input.url() }}" class="mb-3" id="itm-hazmat-form" method="post">
+<form action="{{ input.url() }}" class="mb-3" id="itm-hazmat-form" method="POST">
 	<input type="hidden" name="action" value="update-itm-hazmat">
 	<input type="hidden" name="itemID" value="{{ item.itemid }}">
 
@@ -152,20 +152,5 @@
 				}
 			%}
 		</div>
-	</div>
-
-	<div class="d-flex justify-content-between align-items-center">
-		{#
-			Only show Edit Actions if the Item is
-			1. Locked for editing by the User
-		#}
-		{% if itm.recordlocker.userHasLocked(item.itemid) %}
-			<button type="submit" class="btn btn-success" name="action" value="update-itm-hazmat">
-				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-			</button>
-		{% endif %}
-		<a href="{{ page.itmUrl(item.itemid) }}" class="btn btn-warning">
-			<i class="fa fa-times" aria-hidden="true"></i> Close
-		</a>
 	</div>
 </form>
