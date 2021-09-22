@@ -28,6 +28,7 @@ class ItmCosting extends WireData implements Module {
 	const MODEL_KEY          = 'code';
 	const DESCRIPTION        = 'ITM Costing';
 	const DESCRIPTION_RECORD = 'ITM Costing';
+	const RESPONSE_TEMPLATE  = 'ITM Item {itemid} Costing was {not} {crud}';
 
 	public function __construct() {
 		$this->description = self::DESCRIPTION;
@@ -37,10 +38,8 @@ class ItmCosting extends WireData implements Module {
 		$this->appcustID    = '';
 	}
 
-	public function init_configs() {
-		$this->configs->inv = Configs\In::config();
-		$this->configs->po  = Configs\Po::config();
-		$this->appcustID    = $this->wire('modules')->get('DplusCustomer')->get_custID();
+	public function initConfigs() {
+		$this->appcustID = Configs\Sys::custid();
 	}
 
 	/**
@@ -99,99 +98,136 @@ class ItmCosting extends WireData implements Module {
 /* =============================================================
 	CRUD Processing Functions
 ============================================================= */
-
 	/**
-	 * Takes Input, validates Item Updates the pricing record for it, sends update to DPlus
-	 * NOTE: Updates ITM record with changes to the uom_sale, allow_discount, assortmentcode, assortmentqty fields
-	 *
-	 * @param  WireInput $input Input
+	 * Process CRUD Request
+	 * @param  WireInput $input Input Data
 	 * @return void
 	 */
-	public function process_input(WireInput $input) {
-		$itm = $this->wire('modules')->get('Itm');
+	public function processInput(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itemID = $values->text('itemID');
-		$recordlocker = $this('modules')->get('RecordLockerUser');
 
-		if ($values->action) {
-			if ($itm->item_exists($itemID)) {
-				/**
-				 * Create lock for ITM code if not already locked.
-				 */
-				if (!$recordlocker->function_locked('itm', $itemID)) {
-					$recordlocker->create_lock('itm', $itemID);
-				}
-
-				if ($recordlocker->function_locked_by_user('itm', $itemID)) {
-					if ($values->text('action') == 'update-itm-costing') {
-						$response = $this->update_itm_input($input);
-					}
-				} else {
-					$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $recordlocker->get_locked_user('itm', $itemID);
-					$response = ItmResponse::response_error($itemID, $message, ItmResponse::CRUD_UPDATE);
-				}
-			} else {
-				$response = ItmResponse::response_error($itemID, "Item $itemID does not exist");
-			}
-		} else {
-			$response = ItmResponse::response_error($itemID, "No Action was specified");
+		switch ($values->action) {
+			case 'update-itm-costing':
+				$this->inputUpdate($input);
+				break;
+			default:
+				$response = ItmResponse::response_error($itemID, "No Action was specified");
+				$this->setResponse($response);
+				break;
 		}
-		$this->wire('session')->setFor('response', 'itm', $response);
 	}
 
 	/**
-	 * Updates ITM Item Record and updates DPLUS
-	 * Records values for uom_sale, allow_discount, assortmentcode, assortmentqty
-	 * @param  WireInput $input
-	 * @return ItmResponse
+	 * Process Update Request
+	 * @param  WireInput $input Input
+	 * @return bool
 	 */
-	private function update_itm_input(WireInput $input) {
-		$this->init_configs();
-		$itm = $this->wire('modules')->get('Itm');
-		$validate = new ItmValidator();
+	private function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itemID = $values->text('itemID');
+		$itm = $this->wire('modules')->get('Itm');
 
-		$item = $itm->get_item($itemID);
-		$item->setUom_purchase($values->text('uom_purchase'));
-
-		if ($values->text('standardcost') != $item->standardcost) {
-			// SAVE STANDARD COST AS COST / EACH, display cost * UOM CONVERSION
-			$configPo = Configs\Po::config();
-			$uom = $this->wire('modules')->get('CodeTablesUmm')->get_code($values->text('uom_purchase'));
-			$costUom = $values->float('standardcost', ['precision' => $configPo->decimal_places_cost]);
-			$costEach = $costUom / $uom->conversion;
-			$item->setStandardcost($costEach);
-			$item->setDate_laststandardcost(date('Ymd'));
-		}
-		$item->setLastcost($values->text('lastcost'));
-		$item->setMinmargin($values->text('minmargin'));
-
-		if ($values->offsetExists('minmarginbase') && array_key_exists($values->text('minmarginbase'), ItemMasterItem::MIN_MARGIN_BASE_OPTIONS)) {
-			$item->setMinmarginbase($values->text('minmarginbase'));
-		} else {
-			$item->setMinmarginbase('%');
+		if ($itm->exists($itemID) === false) {
+			$this->setResponse(ItmResponse::response_error($itemID, "Item $itemID does not exist"));
+			return false;
 		}
 
+		$itm->lockrecord($itemID);
+		if ($itm->recordlocker->userHasLocked($itemID) === false) {
+			$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $itm->recordlocker->getLockingUser($itemID);
+			$this->setResponse(ItmResponse::response_error($itemID, $message, ItmResponse::CRUD_UPDATE));
+			return false;
+		}
+		$item = $itm->item($itemID);
+		return $this->inputUpdateItem($item, $input);
+	}
+
+	/**
+	 * Update Itm Item Costing Fields
+	 * @param  ItemMasterItem $item
+	 * @param  WireInput      $input Input Data
+	 * @return bool
+	 */
+	private function inputUpdateItem(ItemMasterItem $item, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itm = $this->wire('modules')->get('Itm');
+
+		$item->setUom_purchase($values->text('uom_purchase'));  // TODO use Precision
+		$this->setItemStandardcost($item, $input);
+
+		// $item->setLastcost($values->text('lastcost'));
+		$item->setMinmargin($values->float('minmargin', ['precision' => $this->fieldAttribute('margin', 'precision')]));
+		$this->setItemMinmarginbase($item, $input);
 		$item->setStandardcostbasedon($values->text('standardcostbasedon'));
-
-		if ($this->is_buyercontrol_item()) {
-			if (strlen($values->text('buyer')) && $validate->buyercode($values->text('buyer'))) {
-				$item->setBuyer($values->text('buyer'));
-			} else {
-				$item->setBuyer('');
-			}
-		}
+		$this->setItemBuyercode($item, $input);
 
 		if ($this->appcustID == 'LINDST') {
 			$item->Qty_purchase_carton($values->int('qty_purchase_carton'));
 		}
 		$item->setDateUpdtd(date('Ymd'));
 		$item->setTimeUpdtd(date('His'));
+		$response = $this->saveAndRespond($item);
+		$this->setResponse($response);
+		return $response->has_success();
+	}
 
-		return $this->save_and_process_response($item);
+	/**
+	 * Set Item's Standardcost field
+	 * @param ItemMasterItem $item
+	 * @param WireInput      $input  Input Data
+	 */
+	private function setItemStandardcost(ItemMasterItem $item, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if ($values->text('standardcost') != $item->standardcost) {
+			// SAVE STANDARD COST AS COST / EACH, display cost * UOM CONVERSION
+			$uom = $this->wire('modules')->get('CodeTablesUmm')->get_code($values->text('uom_purchase'));
+			$costUom = $values->float('standardcost', ['precision' => $this->fieldAttribute('cost', 'precision')]);
+			$costEach = $costUom / $uom->conversion;
+			$item->setStandardcost($costEach);
+			$item->setDate_laststandardcost(date('Ymd'));
+		}
+	}
+
+	/**
+	 * Set Item's Buyercode field
+	 * NOTE: uses PO config to determine if field can be updated
+	 * @param ItemMasterItem $item
+	 * @param WireInput      $input Input Data
+	 */
+	private function setItemBuyercode(ItemMasterItem $item, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$validate = new ItmValidator();
+
+		if ($this->doesItemControlBuyer()) {
+			if (strlen($values->text('buyer')) && $validate->buyercode($values->text('buyer'))) {
+				$item->setBuyer($values->text('buyer'));
+			} else {
+				$item->setBuyer('');
+			}
+		}
+	}
+
+	/**
+	 * Update Minmarginbase field
+	 * @param ItemMasterItem $item
+	 * @param WireInput      $input Input Data
+	 */
+	private function setItemMinmarginbase(ItemMasterItem $item, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		if ($values->offsetExists('minmarginbase') && array_key_exists($values->text('minmarginbase'), ItemMasterItem::MIN_MARGIN_BASE_OPTIONS)) {
+			$item->setMinmarginbase($values->text('minmarginbase'));
+		} else {
+			$item->setMinmarginbase($itm->fieldAttribute('minmarginbase', 'default'));
+		}
 	}
 
 	/**
@@ -204,8 +240,7 @@ class ItmCosting extends WireData implements Module {
 		$vxm = $this->wire('modules')->get('XrefVxm');
 		$vxm->init_configs();
 
-
-		if ($itm->item_exists($xref->itemid) === false) {
+		if ($itm->exists($xref->itemid) === false) {
 			return false;
 		}
 
@@ -215,13 +250,14 @@ class ItmCosting extends WireData implements Module {
 
 		$item = $xref->imitem;
 		$allowed = [ItemMasterItem::STANDARDCOST_BASE_REPLACEMENT, ItemMasterItem::STANDARDCOST_BASE_MANUAL];
+		$configAp = Configs\Ap::config();
 
-		if ($vxm->configs->ap->update_itm_cost($item->standardcostbasedon) == false) {
+		if ($configAp->update_itm_cost($item->standardcostbasedon) == false) {
 			return false;
 		}
 		$item->setStandardcost($xref->unitcost_base);
 		$item->setDate_laststandardcost(date('Ymd'));
-		$response = $this->save_and_process_response($item);
+		$response = $this->saveAndRespond($item);
 		return $response->has_success();
 	}
 
@@ -229,42 +265,53 @@ class ItmCosting extends WireData implements Module {
 	CRUD Response Functions
 ============================================================= */
 	/**
-	 * Returns XrefResponse based on the outcome of the database save
-	 * @param  ItemMasterItem $record Record to record response of database save
+	 * Set Session Response
+	 * @param ItmResponse $response
+	 */
+	protected function setResponse(ItmResponse $response) {
+		$this->wire('session')->setFor('response', 'itm', $response);
+	}
+
+	/**
+	 * Get Session Response
+	 * @return ItmResponse|null
+	 */
+	protected function getResponse() {
+		$this->wire('session')->getFor('response', 'itm');
+	}
+
+	/**
+	 * Returns ItmResponse based on the outcome of the database save
+	 * @param  ItemMasterItem $item Record to record response of database save
 	 * @return ItmResponse
 	 */
-	private function save_and_process_response(ItemMasterItem $record) {
-		$is_new = $record->isDeleted() ? false : $record->isNew();
-		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+	private function saveAndRespond(ItemMasterItem $item) {
+		$is_new = $item->isDeleted() ? false : $item->isNew();
+		$saved  = $item->isDeleted() ? $item->isDeleted() : $item->save();
 
 		$response = new ItmResponse();
-		$response->set_itemID($record->itemid);
-		$message = self::DESCRIPTION_RECORD . " ($record->itemid) was ";
+		$response->set_itemID($item->itemid);
 
 		if ($saved) {
 			$response->set_success(true);
 		} else {
 			$response->set_error(true);
-			$message .= "not ";
 		}
 
 		if ($is_new) {
-			$message .= 'added';
 			$response->set_action(ItmResponse::CRUD_CREATE);
-		} elseif ($record->isDeleted()) {
-			$message .= 'deleted';
+		} elseif ($item->isDeleted()) {
 			$response->set_action(ItmResponse::CRUD_DELETE);
 		} else {
-			$message .= 'updated';
 			$response->set_action(ItmResponse::CRUD_UPDATE);
 		}
 
-		$response->set_message($message);
+		$response->build_message(self::RESPONSE_TEMPLATE);
 		$response->set_saved_itm_costing($response->has_success());
 
 		if ($response->has_success()) {
-			$module_itm = $this->wire('modules')->get('Itm');
-			$module_itm->request_item_update($record->itemid);
+			$itm = $this->wire('modules')->get('Itm');
+			$itm->request_item_update($item->itemid);
 		}
 		return $response;
 	}
@@ -292,15 +339,15 @@ class ItmCosting extends WireData implements Module {
 	 * Return ApBuyers
 	 * @return ApBuyer[]|ObjectCollection
 	 */
-	public function get_ap_buyers() {
+	public function getApBuyers() {
 		return ApBuyerQuery::create()->find();
 	}
 
 	/**
-	 * Return if ConfigPo's Buyer Control is Item
+	 * Return if Itm is in charge of controlling buyer code
 	 * @return bool
 	 */
-	public function is_buyercontrol_item() {
+	public function doesItemControlBuyer() {
 		$configPo = Configs\Po::config();
 		return $configPo->controlbuyer == $configPo::CONTROL_BUYER_ITEM;
 	}
@@ -313,13 +360,10 @@ class ItmCosting extends WireData implements Module {
 		return $this->wire('modules')->get('CodeTablesUmm')->getCodeMaxlength();
 	}
 
-	public function getConfigPo() {
-		return Configs\Po::config();
-	}
-
 /* =============================================================
 	ProcessWire Module Functions
 ============================================================= */
+
 	public static function getModuleInfo() {
 		return array(
 			'title' => 'Dplus ITM Costing CRUD Manager',
