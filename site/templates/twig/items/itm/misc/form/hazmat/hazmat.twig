@@ -1,0 +1,16 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemMasterItem
+	itm                    module ItmMisc
+#}
+{% set hazmat = itm.hazmat.get_hazmat(item.itemid) %}
+<div>
+	<h3 class="text-center">Hazardous Materials</h3>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		{% include 'items/itm/misc/form/hazmat/form.twig' %}
+	</div>
+</div>
