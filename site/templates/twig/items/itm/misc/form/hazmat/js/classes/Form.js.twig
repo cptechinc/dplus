@@ -17,6 +17,6 @@ class HazmatForm {
 	}
 
 	hasChanges() {
-		return this.formSerialized == this.form.serialize();
+		return this.formSerialized != this.form.serialize();
 	}
 }

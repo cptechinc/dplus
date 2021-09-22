@@ -16,6 +16,6 @@ class MiscForm {
 	}
 
 	hasChanges() {
-		return this.formSerialized == this.form.serialize();
+		return this.formSerialized != this.form.serialize();
 	}
 }
