@@ -12,5 +12,10 @@ class MiscForm {
 		this.id = 'itm-misc-form';
 		this.form = $('#' + this.id);
 		this.inputs = MiscInputs.getInstance();
+		this.formSerialized = this.form.serialize();
+	}
+
+	hasChanges() {
+		return this.formSerialized == this.form.serialize();
 	}
 }

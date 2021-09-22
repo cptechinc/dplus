@@ -1,8 +1,10 @@
 {% include 'items/itm/misc/form/misc/js.twig' %}
 {% include 'items/itm/misc/form/hazmat/js.twig' %}
+{% include 'items/itm/misc/js/classes.js.twig' %}
 
 $(function() {
 	var modalAjax = $('#ajax-modal');
+	var formsSubmitter = FormsSubmitter.getInstance();
 
 /* =============================================================
 	Event Changes
@@ -12,6 +14,34 @@ $(function() {
 			$('.response-alert').remove();
 		}
 	});
+
+	$('body').on('click', '.save-itm-misc', function() {
+		formsSubmitter.submit();
+	});
+
+/* =============================================================
+	Unsaved Fields Alert
+============================================================= */
+	$("body").on("click", "a:not(#ajax-modal a)", function(e) {
+
+		if (HazmatForm.getInstance().hasChanges() || MiscForm.getInstance().hasChanges()) {
+			e.preventDefault();
+			var a = $(this);
+			var href = a.attr('href');
+
+			Alerts.getInstance().unsavedChanges(function(saveChanges) {
+				if (saveChanges) {
+					$('#loading-modal').modal('show');
+					$('.save-itm-misc').click();
+				} else {
+					$.get('{{ page.url }}', function() {
+						window.location.href = href;
+					});
+				}
+			});
+		}
+	});
+
 
 /* =============================================================
 	AJAX Lookup Modal Functions
@@ -26,7 +56,6 @@ $(function() {
 		modal.resizeModal('xl');
 		modal.find('.modal-body').loadin(url, function() {});
 	});
-
 
 	$("body").on('submit', '#ajax-modal form', function(e) {
 		e.preventDefault();

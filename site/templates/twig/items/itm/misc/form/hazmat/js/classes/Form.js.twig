@@ -13,5 +13,10 @@ class HazmatForm {
 		this.form = $('#' + this.id);
 		this.inputs = HazmatInputs.getInstance();
 		this.config = HazmatConfigs.getInstance();
+		this.formSerialized = this.form.serialize();
+	}
+
+	hasChanges() {
+		return this.formSerialized == this.form.serialize();
 	}
 }
