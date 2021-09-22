@@ -1,12 +1,14 @@
+{% include 'items/itm/misc/form/hazmat/js/classes.js.twig' %}
+
 $(function() {
-	var form_hazmat = $('#item-hazmat-form');
-	var input_dot1  = form_hazmat.find('input[name=dot1]');
-	var modal_ajax = $('#ajax-modal');
+	var form_hazmat = $('#itm-hazmat-form');
+	var modal_ajax  = $('#ajax-modal');
+	var formHazmat  = HazmatForm.getInstance();
 
 /* =============================================================
 	Event Functions
 ============================================================= */
-	$("body").on('change', '.hazmat-step', function(e) {
+	$("body").on('change focus', '.hazmat-step', function(e) {
 		var input = $(this);
 
 		if (input.val() != '') {
@@ -14,14 +16,11 @@ $(function() {
 			$('[data-step="'+nextstep+'"]').removeAttr('readonly');
 		}
 	});
+
 /* =============================================================
 	Validation Functions
 ============================================================= */
-	jQuery.validator.addMethod("packgroup", function(value, element) {
-		return this.optional(element) || validate_packgroup(value);
-	}, "Please select a valid packgroup");
-
-	var validator_hazmat = form_hazmat.validate({
+	var validatorHazmat = formHazmat.form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
 		errorPlacement: function(error, element) {
@@ -30,23 +29,23 @@ $(function() {
 		rules: {
 			dot1: {
 				required: true,
-				maxlength: {{ itm.hazmat.maxlength_dot() }}
+				maxlength: formHazmat.config.fields.dot1.maxlength
 			},
 			dot2: {
 				required: false,
-				maxlength: {{ itm.hazmat.maxlength_dot() }}
+				maxlength: formHazmat.config.fields.dot2.maxlength
 			},
 			class: {
 				required: function() {
 					return $('#dot1').val() != '';
 				},
-				maxlength: {{ itm.hazmat.maxlength_class() }}
+				maxlength: formHazmat.config.fields.class.maxlength
 			},
 			unnbr: {
 				required: function() {
 					return $('#class').val() != '';
 				},
-				maxlength: {{ itm.hazmat.maxlength_unnbr() }}
+				maxlength: formHazmat.config.fields.unnbr.maxlength
 			},
 			packgroup: {
 				required: function() {
@@ -57,7 +56,7 @@ $(function() {
 				required: function() {
 					return $('#packgroup').val() != '';
 				},
-				maxlength: {{ itm.hazmat.maxlength_label() }}
+				maxlength: formHazmat.config.fields.label.maxlength
 			},
 			allowair: {
 				required: function() {
@@ -72,11 +71,6 @@ $(function() {
 			form.submit();
 		}
 	});
-
-	function validate_packgroup(group) {
-		var options = {{ itm.hazmat.options_packgroup()|json_encode()|raw }};
-		return options.contains(group);
-	}
 
 /* =============================================================
 	Event Functions
