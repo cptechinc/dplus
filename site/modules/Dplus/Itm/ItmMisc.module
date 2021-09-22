@@ -38,9 +38,8 @@ class ItmMisc extends Itm implements Module {
 
 		switch ($values->text('action')) {
 			// TODO MOVE
-			case 'delete-itm-hazmat':
 			case 'update-itm-hazmat':
-				$this->hazmat->process_input($input);
+				$this->hazmat->processInput($input);
 				break;
 			case 'update-itm-misc':
 				$this->inputUpdate($input);
