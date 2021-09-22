@@ -45,7 +45,9 @@ class Misc extends ItmFunction {
 			$itmMisc->processInput($input);
 		}
 
-		self::pw('session')->redirect(self::itmUrlMisc($data->itemID), $http301 = false);
+		if (self::pw('config')->ajax === false) {
+			self::pw('session')->redirect(self::itmUrlMisc($data->itemID), $http301 = false);
+		}
 	}
 
 	public static function misc($data) {

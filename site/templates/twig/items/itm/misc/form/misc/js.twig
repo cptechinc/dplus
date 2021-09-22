@@ -96,7 +96,7 @@ $(function() {
 		var button = $(this);
 		var code   = button.data('code');
 		var modal  = button.closest('.modal');
-		$(modal.attr('data-input')).val(code).change();
+		$(modal.attr('data-input')).val(code).change().keyup();
 		modal.modal('hide');
 	});
 

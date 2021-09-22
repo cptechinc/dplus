@@ -31,7 +31,7 @@ $(function() {
 
 			Alerts.getInstance().unsavedChanges(function(saveChanges) {
 				if (saveChanges) {
-					$('#loading-modal').modal('show');
+					formsSubmitter.setRedirectUrl(href);
 					$('.save-itm-misc').click();
 				} else {
 					$.get('{{ page.url }}', function() {
