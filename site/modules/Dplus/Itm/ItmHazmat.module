@@ -165,6 +165,11 @@ class ItmHazmat extends WireData implements Module {
 		}
 	}
 
+	/**
+	 * Update ITM Hazmat from Input Data
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
 	private function inputUpdate(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
@@ -199,6 +204,11 @@ class ItmHazmat extends WireData implements Module {
 		return $response->has_success();
 	}
 
+	/**
+	 * Set Hazmat Fields
+	 * @param InvHazmatItem $hazmat
+	 * @param WireInput     $input   Input Data
+	 */
 	private function setHazmatFields(InvHazmatItem $hazmat, WireInput $input) {
 		$invalidfields = [];
 		$invalidfields = $this->setHazmatFieldsValidated($hazmat, $input);
@@ -207,6 +217,11 @@ class ItmHazmat extends WireData implements Module {
 		return $invalidfields;
 	}
 
+	/**
+	 * Set Hazmat Fields that need validation
+	 * @param InvHazmatItem $hazmat
+	 * @param WireInput     $input   Input Data
+	 */
 	private function setHazmatFieldsValidated(InvHazmatItem $hazmat, WireInput $input) {
 		$invalidfields = [];
 		$fields = array(
@@ -277,7 +292,7 @@ class ItmHazmat extends WireData implements Module {
 ============================================================= */
 	/**
 	 * Returns ItmResponse based on the outcome of the database save
-	 * @param  InvHazmatItem $hazmat        Record to record response of database save
+	 * @param  InvHazmatItem  $hazmat        Record to record response of database save
 	 * @param  array          $invalidfields Input fields that require attention
 	 * @return ItmResponse
 	 */
