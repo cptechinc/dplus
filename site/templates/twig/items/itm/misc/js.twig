@@ -7,9 +7,7 @@ $(function() {
 	Event Changes
 ============================================================= */
 	$('body').on('keyup change paste', 'input, select, textarea', function() {
-		console.log('yes');
 		if ($('.response-alert').length) {
-			console.log('yes');
 			$('.response-alert').remove();
 		}
 	});
