@@ -17,7 +17,7 @@ class Costing extends ItmFunction {
 			return self::displayAlertUserPermission($data);
 		}
 
-		self::getItmCosting()->init_configs();
+		self::getItmCosting()->initConfigs();
 
 		if (empty($data->action) === false) {
 			return self::handleCRUD($data);
@@ -42,7 +42,7 @@ class Costing extends ItmFunction {
 		$itmCosting->init_configs();
 
 		if ($data->action) {
-			$itmCosting->process_input($input);
+			$itmCosting->processInput($input);
 		}
 
 		if (self::pw('config')->ajax === false) {
