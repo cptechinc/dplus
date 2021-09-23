@@ -12,6 +12,8 @@ use ProcessWire\Page;
 use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Min\Inmain\Itm\Substitutes as CRUDManager;
+// Controllers
+use Controllers\Min\Itm\Xrefs as XRefsController;
 
 class Substitutes extends Base {
 	private static $crud;
@@ -60,6 +62,7 @@ class Substitutes extends Base {
 		$item   = $itmSub->getItm()->item($data->itemID);
 		$sub    = $itmSub->getOrCreateSubstitute($data->itemID, $data->subitemID);
 
+		self::pw('page')->js .= self::pw('config')->twig->render('items/itm/xrefs/substitutes/sub/js.twig');
 		return self::displaySub($data, $item, $sub);
 	}
 
@@ -109,6 +112,8 @@ class Substitutes extends Base {
 	Hook Functions
 ============================================================= */
 	public static function initHooks() {
+		XRefsController::initHooks();
+
 		$m = self::pw('modules')->get('DpagesMin');
 
 		$m->addHook('Page(pw_template=itm)::subListUrl', function($event) {
