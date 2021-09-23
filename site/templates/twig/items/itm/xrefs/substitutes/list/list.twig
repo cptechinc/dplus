@@ -40,7 +40,7 @@
 				</td>
 				<td class="text-center">
 					{% if itmSub.recordlocker.isLocked(itmSub.getrecordlockerkey(sub)) == false or itmSub.recordlocker.userHasLocked(itmSub.getrecordlockerkey(sub)) %}
-						<a href="{# page.xrefUrl(item.custid, item.custitemid, item.itemid) #}" class="btn btn-warning btn-sm">
+						<a href="{{ page.subUrl(sub.itemid, sub.subitemid) }}" class="btn btn-warning btn-sm">
 							<i class="fa fa-pencil" aria-hidden="true"></i> Edit
 						</a>
 						&nbsp; &nbsp;
