@@ -80,7 +80,7 @@ class Substitutes extends WireData {
 		if ($q->count()) {
 			return $q->findOne();
 		}
-		return $this->newSubstitute($itemID);
+		return $this->newSubstitute($itemID, $subitemID);
 	}
 
 	/**
@@ -100,12 +100,12 @@ class Substitutes extends WireData {
 	 * @param  string $subitemID Substitute Item ID
 	 * @return ItemSubstitute
 	 */
-	public function newSubtitute($itemID, $subitemID) {
+	public function newSubstitute($itemID, $subitemID) {
 		$subitemID = $subitemID == 'new' ? '' : $subitemID;
 		$itm = $this->getItm();
 		$sub = new ItemSubstitute();
 		$sub->setItemid($itm->itemid($itemID));
-		$sub->setSubtemid($itm->exists($subitemID) ? $itm->itemid($subitemID) : '');
+		$sub->setSubitemid($itm->exists($subitemID) ? $itm->itemid($subitemID) : '');
 		$sub->setSameOrLike($this->fieldAttribute('sameOrLike', 'default'));
 		return $sub;
 	}
