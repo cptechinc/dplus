@@ -6,6 +6,7 @@
 	itmSub                 Dplus\Min\Inmain\Itm\Substitutes
 #}
 {% set configIn = itmSub.getItm().configIn() %}
+
 <form action="{{ input.url() }}" class="mb-3" id="itm-substitute-form" method="POST">
 	<input type="hidden" name="action" value="update">
 	<input type="hidden" name="itemID" value="{{ sub.subitemid }}">
