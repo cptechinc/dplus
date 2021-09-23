@@ -119,6 +119,10 @@ class Substitutes extends Base {
 			$event->return = self::subUrl($event->arguments(0), $event->arguments(1));
 		});
 
+		$m->addHook('Page(pw_template=itm)::subNewUrl', function($event) {
+			$event->return = self::subUrl($event->arguments(0), 'new');
+		});
+
 		$m->addHook('Page(pw_template=itm)::subDeleteUrl', function($event) {
 			$event->return = self::subDeleteUrl($event->arguments(0), $event->arguments(1));
 		});

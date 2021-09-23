@@ -13,9 +13,9 @@
 			<th class="pt-3 pb-3 align-middle">Description</th>
 			<th class="pt-3 pb-3 align-middle">Same / Like</th>
 			<th class="pt-3 pb-3 align-middle text-center">
-				<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#ajax-modal" title="Choose Vendor to Add VXM" aria-label="Choose Vendor to Add VXM" data-vendorid="{{ page.has('vendorID') ? page.vendorID : '' }}" data-lookupurl="{{ page.search_lookupURL('vendors') }}">
+				<a href="{{ page.subNewUrl(item.itemid) }}" class="btn btn-light btn-sm" >
 					<i class="fa fa-plus" aria-hidden="true"></i> Add Substitute
-				</button>
+				</a>
 			</th>
 		</tr>
 	</thead>
