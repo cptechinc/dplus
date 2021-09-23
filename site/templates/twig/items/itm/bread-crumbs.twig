@@ -64,8 +64,17 @@
 				<i class="fa fa-arrows" aria-hidden="true"></i> {{ 'X-Refs'|title }}
 			</a>
 		</li>
-		<li class="breadcrumb-item active" aria-current="page">
-			{{ lastsegment|upper }}
-		</li>
+
+		{% if lastsegment == 'substitutes' %}
+			<li class="breadcrumb-item">
+				<a href="{{ page.itmUrlFunction(values.text('itemID'), 'substitutes') }}">
+					{{ lastsegment|capitalize }}
+				</a>
+			</li>
+		{% else %}
+			<li class="breadcrumb-item active" aria-current="page">
+				{{ lastsegment|upper }}
+			</li>
+		{% endif %}
 	{% endif %}
 {% endblock %}
