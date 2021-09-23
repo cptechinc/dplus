@@ -1,0 +1,17 @@
+class SubInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new SubInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id   = 'itm-substitute-form';
+		this.form = $('#' + this.id);
+		this.itemid     = this.form.find('input[name=itemID]');
+		this.subitemid  = this.form.find('input[name=subitemID]');
+	}
+}

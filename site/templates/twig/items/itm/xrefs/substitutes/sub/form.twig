@@ -78,7 +78,7 @@
 			Only show Edit Actions if the Item is
 			1. Locked for editing by the User
 		#}
-		{% if itmSub.recordlocker.userHasLocked(itmSub.getrecordlockerkey(sub)) %}
+		{% if sub.isNew() or itmSub.recordlocker.userHasLocked(itmSub.getrecordlockerkey(sub)) %}
 			<button type="submit" class="btn btn-success">
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>

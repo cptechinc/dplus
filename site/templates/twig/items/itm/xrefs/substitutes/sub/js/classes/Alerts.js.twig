@@ -1,0 +1,46 @@
+class SubAlerts extends Alerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new SubAlerts();
+		}
+		return this.instance;
+	}
+
+	exists(itemID, subitemID, callback) {
+		swal2.fire({
+			title: 'Substitute ' + subitemID + ' exists',
+			text: 'Do you want to edit?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: '<i class="fa fa-pencil" aria-hidden="true"></i> Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			if (result.value) {
+				callback(true);
+				return true;
+			} else if (result.dismiss === Swal.DismissReason.cancel) {
+				callback(false);
+				return false;
+			}
+		});
+	}
+
+	sameItemid(itemID, subitemID, callback) {
+		swal2.fire({
+			title: 'Same Item ID',
+			text: 'Cannot substitute an item with the same itemID',
+			icon: 'warning',
+			confirmButtonText: 'Ok',
+		}).then((result) => {
+			if (result.value) {
+				callback(true);
+				return true;
+			} else if (result.dismiss === Swal.DismissReason.cancel) {
+				callback(false);
+				return false;
+			}
+		});
+	}
+}
