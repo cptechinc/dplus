@@ -1,0 +1,93 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	item                   ItemMasterItem
+	substitute             ItemSubstitute[]
+	itmSub                 Dplus\Min\Inmain\Itm\Substitutes
+#}
+{% set configIn = itmSub.getItm().configIn() %}
+<form action="{{ input.url() }}" class="mb-3" id="itm-substitute-form" method="POST">
+	<input type="hidden" name="action" value="update">
+	<input type="hidden" name="itemID" value="{{ sub.subitemid }}">
+
+	<div class="row mb-3">
+		<div class="col-sm-3">
+			<label for="subitemID">Substitute Item ID</label>
+		</div>
+		<div class="col-sm-8">
+			{% include 'util/bootstrap/form/input-group.twig' with {
+					'inputgroup': {
+						'type': 'prepend',
+						'size': 'sm',
+						'attributes': {
+							'readonly': sub.isNew() == false,
+						},
+						'input': {
+							'name': 'subitemID',
+							'value': configIn.useUppercaseItemid() ? sub.subitemid|upper : sub.subitemid,
+							'attributes': {
+								'placeholder': '',
+								'aria-label':  'Substitute Item ID',
+								'readonly': sub.isNew() == false,
+								'oninput': configIn.useUppercaseItemid() ? 'this.value = this.value.toUpperCase()' : ''
+							}
+						},
+						'button': {
+							'colorclass': 'btn-secondary',
+							'text': 'fa fa-search'|icon,
+							'attributes': {
+								'title': 'Search Items',
+								'data-toggle': 'modal',
+								'data-target': '#ajax-modal',
+								'data-lookupurl': page.search_lookupURL('items'),
+								'data-input': '#subitemID'
+							}
+						}
+					}
+				}
+			%}
+			<div class="text-muted pt-2">
+				<small class="description1 form-text">{{ sub.getSubstitute().description }}</small>
+				<small class="description2 form-text">{{ sub.getSubstitute().description2 }}</small>
+			</div>
+		</div>
+	</div>
+
+	<div class="row mb-3">
+		<div class="col-sm-3">
+			<label for="sameOrLike">Same / Like</label>
+		</div>
+		<div class="col-sm-3">
+			{% include 'util/bootstrap/form/select-simple.twig' with {
+					'select': {
+						'name': 'sameOrLike', 'value': sub.sameOrLike,
+						'size': 'sm',
+						'haskeys': true,
+						'options': itmSub.getSameOrLikeOptions(),
+						'capitalizelabels': true,
+						'showvalue': true,
+					}
+				}
+			%}
+		</div>
+	</div>
+	<div class="d-flex justify-content-between align-items-center">
+		{#
+			Only show Edit Actions if the Item is
+			1. Locked for editing by the User
+		#}
+		{% if itmSub.recordlocker.userHasLocked(itmSub.getrecordlockerkey(sub)) %}
+			<button type="submit" class="btn btn-success">
+				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+			</button>
+			{% if sub.isNew() == false %}
+				<a href="{{ page.subDeleteUrl(item.itemid) }}" class="btn btn-danger delete-itm delete_button">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			{% endif %}
+		{% endif %}
+		<a href="{{ page.subListUrl(item.itemid) }}" class="btn btn-warning">
+			<i class="fa fa-times" aria-hidden="true"></i> Close
+		</a>
+	</div>
+</form>
