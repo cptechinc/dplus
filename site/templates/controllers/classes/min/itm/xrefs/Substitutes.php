@@ -68,6 +68,10 @@ class Substitutes extends Base {
 		$item   = $itmSub->getItm()->item($data->itemID);
 		$sub    = $itmSub->getOrCreate($data->itemID, $data->subitemID);
 
+		if ($sub->isNew()) {
+			self::pw('page')->headline = "ITM: $data->itemID Substitute Add";
+		}
+
 		if ($sub->isNew() === false) {
 			$itmSub->lockrecord($sub);
 		}
