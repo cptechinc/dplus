@@ -36,6 +36,7 @@
 				],
 				'itm' => [
 					['GET', 'warehouse/', Json\Min::class, 'validateItmWhse'],
+					['GET', 'substitute/', Json\Min::class, 'validateItmSub'],
 				]
 			],
 			['GET', 'tariff-code/', Json\Min::class, 'getTariffCode'],
