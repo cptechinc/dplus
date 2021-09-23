@@ -320,9 +320,14 @@ class Substitutes extends WireData {
 		if ($sub->isNew()) {
 			return false;
 		}
-		if ($this->recordlocker->userhasLocked($this->getRecordlockerKey($sub))) {
+		$key = $this->getRecordlockerKey($sub);
+		if ($this->recordlocker->isLocked($key) && $this->recordlocker->userHasLocked($key) === false) {
 			return true;
 		}
-		return $this->recordlocker->lock($this->getRecordlockerKey($sub));
+		if ($this->recordlocker->userhasLocked($key)) {
+			return true;
+		}
+		return $this->recordlocker->lock($key);
 	}
+
 }

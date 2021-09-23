@@ -60,7 +60,11 @@ class Substitutes extends Base {
 
 		$itmSub = self::getItmSubstitutes();
 		$item   = $itmSub->getItm()->item($data->itemID);
-		$sub    = $itmSub->getOrCreateSubstitute($data->itemID, $data->subitemID);
+		$sub    = $itmSub->getOrCreate($data->itemID, $data->subitemID);
+
+		if ($sub->isNew() === false) {
+			$itmSub->lockrecord($sub);
+		}
 
 		self::pw('page')->js .= self::pw('config')->twig->render('items/itm/xrefs/substitutes/sub/js.twig');
 		return self::displaySub($data, $item, $sub);
@@ -87,7 +91,10 @@ class Substitutes extends Base {
 ============================================================= */
 	private static function displayList($data, PropelModelPager $xrefs) {
 		self::initHooks();
-		$itm  = self::pw('modules')->get('Itm');
+		$itm    = self::pw('modules')->get('Itm');
+		$itmSub = self::getItmSubstitutes();
+		$itmSub->recordlocker->deleteLock();
+
 		$item = $itm->item($data->itemID);
 		$html  = self::breadCrumbs();
 		$html .= self::displaySubstitutes($data, $item, $xrefs);
@@ -104,9 +111,24 @@ class Substitutes extends Base {
 		$itmSub = self::getItmSubstitutes();
 
 		$html   = self::breadCrumbs();
+		$html  .= '<div class="mb-3">' . self::displayLock($data, $sub) . '</div>';
 		$html  .= self::pw('config')->twig->render('items/itm/xrefs/substitutes/sub/display.twig', ['item' => $item, 'sub' => $sub, 'itmSub' => $itmSub]);
 		return $html;
 	}
+
+	private static function displayLock($data, ItemSubstitute $sub) {
+		$itmSub = self::getItmSubstitutes();
+
+		if ($sub->isNew()) {
+			return '';
+		}
+		$itmSub->lockrecord($sub);
+		if ($itmSub->recordlocker->isLocked($itmSub->getRecordlockerKey($sub)) && $itmSub->recordlocker->userHasLocked($itmSub->getRecordlockerKey($sub)) === false) {
+			$msg = "ITM Item $sub->itemid Substitute $sub->subitemid is being locked by " . $itmSub->recordlocker->getLockingUser($itmSub->getRecordlockerKey($sub));
+			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "ITM Substitute is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
+		}
+	}
+
 
 /* =============================================================
 	Hook Functions
