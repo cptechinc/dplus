@@ -117,7 +117,9 @@ class Substitutes extends Base {
 
 		$html   = self::breadCrumbs();
 		$html  .= '<div class="mb-3">' . self::displayLock($data, $sub) . '</div>';
+		$html  .= '<div class="mb-3">' . self::displayResponse() . '</div>';
 		$html  .= self::pw('config')->twig->render('items/itm/xrefs/substitutes/sub/display.twig', ['item' => $item, 'sub' => $sub, 'itmSub' => $itmSub]);
+		$itmSub->deleteResponse();
 		return $html;
 	}
 
@@ -132,6 +134,16 @@ class Substitutes extends Base {
 			$msg = "ITM Item $sub->itemid Substitute $sub->subitemid is being locked by " . $itmSub->recordlocker->getLockingUser($itmSub->getRecordlockerKey($sub));
 			return self::pw('config')->twig->render('util/alert.twig', ['type' => 'warning', 'title' => "ITM Substitute is locked", 'iconclass' => 'fa fa-lock fa-2x', 'message' => $msg]);
 		}
+	}
+
+	private static function displayResponse() {
+		$itmSub = self::getItmSubstitutes();
+
+		$response = $itmSub->getResponse();
+		if (empty($response)) {
+			return '';
+		}
+		return self::pw('config')->twig->render('items/itm/response-alert-new.twig', ['response' => $response]);
 	}
 
 

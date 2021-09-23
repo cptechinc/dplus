@@ -200,7 +200,7 @@ class Substitutes extends WireData {
 		$invalid = $this->setSubFields($sub, $input);
 		$response = $this->saveAndRespond($sub, $invalid);
 		$this->setResponse($response);
-		exit;
+		return $response->hasSuccess();
 	}
 
 	private function setSubFields(ItemSubstitute $sub, WireInput $input) {
@@ -298,9 +298,19 @@ class Substitutes extends WireData {
 	 * Get Session Response
 	 * @return Response|null
 	 */
-	protected function getResponse() {
-		$this->wire('session')->getFor('response', 'itm-sub');
+	public function getResponse() {
+		return $this->wire('session')->getFor('response', 'itm-sub');
 	}
+
+	/**
+	 * Delete Response
+	 * @return void
+	 */
+	public function deleteResponse() {
+		return $this->wire('session')->removeFor('response', 'itm-sub');
+	}
+
+
 
 	/**
 	 * Return if Field has Error
