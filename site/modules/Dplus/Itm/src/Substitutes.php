@@ -101,6 +101,7 @@ class Substitutes extends WireData {
 	 * @return ItemSubstitute
 	 */
 	public function newSubtitute($itemID, $subitemID) {
+		$subitemID = $subitemID == 'new' ? '' : $subitemID;
 		$itm = $this->getItm();
 		$sub = new ItemSubstitute();
 		$sub->setItemid($itm->itemid($itemID));
