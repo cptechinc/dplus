@@ -72,9 +72,15 @@
 						{{ lastsegment|capitalize }}
 					</a>
 				</li>
-				<li class="breadcrumb-item active" aria-current="page">
-					{{ values.text('subitemID')}}
-				</li>
+				{% if values.text('subitemID') == 'new' %}
+					<li class="breadcrumb-item active" aria-current="page">
+						Add
+					</li>
+				{% else %}
+					<li class="breadcrumb-item active" aria-current="page">
+						{{ values.text('subitemID')}}
+					</li>
+				{% endif %}
 			{% else %}
 				<li class="breadcrumb-item active" aria-current="page">
 					{{ lastsegment|capitalize }}
