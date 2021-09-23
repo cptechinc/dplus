@@ -12,10 +12,18 @@ class Substitutes extends WireData {
 	const DESCRIPTION        = 'Item Substitute';
 	const DESCRIPTION_RECORD = 'Item Substitute';
 	const RESPONSE_TEMPLATE  = 'Item {itemid} Substitute {subitemid} {not} {crud}';
-	const RECORDLOCKER_FUNCTION = 'itm';
+	const RECORDLOCKER_FUNCTION = 'itm-sub';
 
 	public function __construct() {
 		$this->sessionID = session_id();
+	}
+
+	/**
+	 * Return Options for the Same OR Like field
+	 * @return array [key =>  value]
+	 */
+	public function getSameOrLikeOptions() {
+		return ItemSubstitute::OPTIONS_SAMEORLIKE;
 	}
 
 /* =============================================================
@@ -68,6 +76,12 @@ class Substitutes extends WireData {
 		return ItemSubstituteQuery::create();
 	}
 
+	/**
+	 * Return Query filtered by Item ID and Substitute Item ID
+	 * @param  string $itemID     Item ID
+	 * @param  string $subitemID  Substitute Item ID
+	 * @return ItemSubstituteQuery
+	 */
 	public function querySubstitute($itemID, $subitemID) {
 		$itm = $this->getItm();
 		$q = $this->query();
@@ -253,5 +267,20 @@ class Substitutes extends WireData {
 	 */
 	public function getRecordlockerKey(ItemSubstitute $item) {
 		return implode(FunctionLocker::glue(), [$item->itemid, $item->subitemid]);
+	}
+
+	/**
+	 * Lock the Substitute Record
+	 * @param  ItemSubstitute $sub
+	 * @return bool
+	 */
+	public function lockrecord(ItemSubstitute $sub) {
+		if ($sub->isNew()) {
+			return false;
+		}
+		if ($this->recordlocker->userhasLocked($this->getRecordlockerKey($sub))) {
+			return true;
+		}
+		return $this->recordlocker->lock($this->getRecordlockerKey($sub));
 	}
 }
