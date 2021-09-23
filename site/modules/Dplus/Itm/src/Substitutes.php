@@ -16,6 +16,7 @@ class Substitutes extends WireData {
 
 	public function __construct() {
 		$this->sessionID = session_id();
+		$this->fieldAttributes = [];
 	}
 
 	/**
@@ -25,6 +26,45 @@ class Substitutes extends WireData {
 	public function getSameOrLikeOptions() {
 		return ItemSubstitute::OPTIONS_SAMEORLIKE;
 	}
+
+/* =============================================================
+	Field Attributes, Functions
+============================================================= */
+	const FIELD_ATTRIBUTES = [
+		'sameOrLike' => ['default' => 'L'],
+	];
+
+	/**
+	 * Initialize field attributes
+	 * @return void
+	 */
+	public function initFieldAttributes() {
+		$attributes = self::FIELD_ATTRIBUTES;
+		$this->fieldAttributes = $attributes;
+	}
+
+	/**
+	 * Return Field Attribute value
+	 * @param  string $field Field Name
+	 * @param  string $attr  Attribute Name
+	 * @return mixed|bool
+	 */
+	public function fieldAttribute($field = '', $attr = '') {
+		if (empty($this->fieldAttributes)) {
+			$this->initFieldAttributes();
+		}
+		if (empty($field) || empty($attr)) {
+			return false;
+		}
+		if (array_key_exists($field, $this->fieldAttributes) === false) {
+			return false;
+		}
+		if (array_key_exists($attr, $this->fieldAttributes[$field]) === false) {
+			return false;
+		}
+		return $this->fieldAttributes[$field][$attr];
+	}
+
 
 /* =============================================================
 	Create, Read Functions
@@ -64,7 +104,8 @@ class Substitutes extends WireData {
 		$itm = $this->getItm();
 		$sub = new ItemSubstitute();
 		$sub->setItemid($itm->itemid($itemID));
-		$sub->setSubtemid($itm->itemid($subitemID));
+		$sub->setSubtemid($itm->exists($subitemID) ? $itm->itemid($subitemID) : '');
+		$sub->setSameOrLike($this->fieldAttribute('sameOrLike', 'default'));
 		return $sub;
 	}
 
