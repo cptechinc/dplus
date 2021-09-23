@@ -45,9 +45,8 @@ class Response extends WireData {
 		$this->savedItmWhse = false;
 		$this->savedItmCosting = false;
 		$this->fields = array();
+		$this->msgReplacements = [];
 	}
-
-
 
 	public function setAction(int $action = 0) {
 		$this->action = $action;
@@ -109,12 +108,24 @@ class Response extends WireData {
 		return array_key_exists($field, $this->fields);
 	}
 
-	public function buildMessage($template) {
+	public function addMsgReplacement($replace, $with) {
+		$replacements = $this->msgReplacements;
+		$replacements[$replace] = $with;
+		$this->msgReplacements = $replacements;
+	}
+
+	protected function getPlaceholderReplaces() {
 		$crud = self::CRUD_DESCRIPTION[$this->action];
 		$replace = ['{itemid}' => $this->itemID, '{not}' => $this->hasSuccess() ? '' : 'not', '{crud}' => $crud];
 		if ($this->whseID) {
 			$replace['{whseid}'] = $this->whseID;
 		}
+		$replace = array_merge($replace, $this->msgReplacements);
+		return $replace;
+	}
+
+	public function buildMessage($template) {
+		$replace = $this->getPlaceholderReplaces();
 		$msg = str_replace(array_keys($replace), array_values($replace), $template);
 		$this->message = $msg;
 	}

@@ -276,7 +276,7 @@ class Substitutes extends WireData {
 		} else {
 			$response->setAction(Response::CRUD_UPDATE);
 		}
-
+		$response->addMsgReplacement('{subitemid}', $sub->subitemid);
 		$response->buildMessage(self::RESPONSE_TEMPLATE);
 
 		if ($response->hasSuccess() && empty($invalidfields)) {
