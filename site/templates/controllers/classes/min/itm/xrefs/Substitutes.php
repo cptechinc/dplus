@@ -56,7 +56,8 @@ class Substitutes extends Base {
 
 		$filter = new Filters\Min\ItemSubstitute();
 		$filter->itemid($data->itemID);
-		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 10);
+		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 0);
+		self::pw('page')->js .= self::pw('config')->twig->render('items/itm/xrefs/substitutes/list/js.twig');
 		return self::displayList($data, $xrefs);
 	}
 
@@ -79,6 +80,14 @@ class Substitutes extends Base {
 /* =============================================================
 	Url Functions
 ============================================================= */
+	public static function subListUrl($itemID, $subitemID = '') {
+		$url = new Purl(self::xrefUrlSubstitutes($itemID));
+		if ($subitemID) {
+			$url->query->set('focus', $subitemID);
+		}
+		return $url->getUrl();
+	}
+
 	public static function subUrl($itemID, $subitemID) {
 		$url = new Purl(self::xrefUrlSubstitutes($itemID));
 		$url->query->set('subitemID', $subitemID);
@@ -156,7 +165,7 @@ class Substitutes extends Base {
 		$m = self::pw('modules')->get('DpagesMin');
 
 		$m->addHook('Page(pw_template=itm)::subListUrl', function($event) {
-			$event->return = self::xrefUrlSubstitutes($event->arguments(0));
+			$event->return = self::subListUrl($event->arguments(0), $event->arguments(1));
 		});
 
 		$m->addHook('Page(pw_template=itm)::subUrl', function($event) {

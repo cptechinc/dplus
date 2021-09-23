@@ -29,8 +29,8 @@
 		{% endif %}
 
 		{% for sub in substitutes %}
-			<tr>
-				<td>{{ sub.itemid }}</td>
+			<tr data-subitemid="{{ sub.subitemid }}">
+				<td>{{ sub.subitemid }}</td>
 				<td>
 					{{ sub.getSubstitute().description }} <br>
 					{{ sub.getSubstitute().description2 }}

@@ -1,0 +1,8 @@
+$(function() {
+	var uri = URI();
+	var queryMap = uri.query(true);
+	if (queryMap.focus) {
+		$('tr[data-subitemid="' + queryMap.focus + '"]').addClass('highlight');
+		$('html, body').animate({scrollTop: $('[data-vxm="' + queryMap.focus + '"]').offset().top,},700,'linear');
+	}
+});
