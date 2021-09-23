@@ -184,6 +184,11 @@ class Substitutes extends WireData {
 		$this->inputUpdateSub($input);
 	}
 
+	/**
+	 * Update Sustitute Item
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
 	private function inputUpdateSub(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
@@ -203,6 +208,11 @@ class Substitutes extends WireData {
 		return $response->hasSuccess();
 	}
 
+	/**
+	 * Update ItemSubstitute Fields
+	 * @param ItemSubstitute $sub    Substitute Item
+	 * @param WireInput      $input  Input Data
+	 */
 	private function setSubFields(ItemSubstitute $sub, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
@@ -214,6 +224,11 @@ class Substitutes extends WireData {
 		return $invalid;
 	}
 
+	/**
+	 * Update ItemSubstitute Fields that are validated
+	 * @param ItemSubstitute $sub    Substitute Item
+	 * @param WireInput      $input  Input Data
+	 */
 	private function setSubFieldsValidated(ItemSubstitute $sub, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
