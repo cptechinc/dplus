@@ -66,11 +66,20 @@
 		</li>
 
 		{% if lastsegment == 'substitutes' %}
-			<li class="breadcrumb-item">
-				<a href="{{ page.itmUrlFunction(values.text('itemID'), 'substitutes') }}">
+			{% if values.offsetExists('subitemID') %}
+				<li class="breadcrumb-item">
+					<a href="{{ page.xrefUrlSubstitutes(values.text('itemID')) }}">
+						{{ lastsegment|capitalize }}
+					</a>
+				</li>
+				<li class="breadcrumb-item active" aria-current="page">
+					{{ values.text('subitemID')}}
+				</li>
+			{% else %}
+				<li class="breadcrumb-item active" aria-current="page">
 					{{ lastsegment|capitalize }}
-				</a>
-			</li>
+				</li>
+			{% endif %}
 		{% else %}
 			<li class="breadcrumb-item active" aria-current="page">
 				{{ lastsegment|upper }}
