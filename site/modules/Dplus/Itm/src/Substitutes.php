@@ -75,7 +75,7 @@ class Substitutes extends WireData {
 	 * @param  string $subitemID Substitute Item ID
 	 * @return ItemSubstitute
 	 */
-	public function getOrCreateSubstitute($itemID, $subitemID) {
+	public function getOrCreate($itemID, $subitemID) {
 		$q = $this->querySubstitute($itemID, $subitemID);
 		if ($q->count()) {
 			return $q->findOne();
@@ -145,101 +145,123 @@ class Substitutes extends WireData {
 /* =============================================================
 	Input Functions
 ============================================================= */
-	// /**
-	//  * Process Input Data and update ITM Dimensions
-	//  * @param  WireInput $input Input Data
-	//  * @return void
-	//  */
-	// public function processInput(WireInput $input) {
-	// 	$rm = strtolower($input->requestMethod());
-	// 	$values = $input->$rm;
-	//
-	// 	switch ($values->text('action')) {
-	// 		case 'update':
-	// 			$this->updateInput($input);
-	// 			break;
-	// 	}
-	// }
+	/**
+	 * Process Input Data and update ITM Dimensions
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	public function processInput(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
 
-	// /**
-	//  * Update Itm Dimension, Itm Data
-	//  * @param  WireInput $input Input Data
-	//  * @return void
-	//  */
-	// private function updateInput(WireInput $input) {
-	// 	$rm = strtolower($input->requestMethod());
-	// 	$values = $input->$rm;
-	//
-	// 	$itm = $this->wire('modules')->get('Itm');
-	// 	$itemID = $values->text('itemID');
-	//
-	// 	if ($itm->exists($itemID) === false) {
-	// 		return false;
-	// 	}
-	// 	if ($itm->lockrecord($itemID) === false) {
-	// 		return false;
-	// 	}
-	// 	// $this->updateInputItm($input);
-	// 	$this->updateInputDimension($input);
-	// }
-	//
-	// /**
-	//  * Validate Item ID, Validate Item is locked for editing
-	//  * @param  string $itemID Item ID
-	//  * @return void
-	//  */
-	// private function validateAndLockItemid($itemID) {
-	// 	$itm = $this->wire('modules')->get('Itm');
-	// 	if ($itm->exists($itemID) === false) {
-	// 		return false;
-	// 	}
-	// 	if ($itm->lockrecord($itemID) === false) {
-	// 		return false;
-	// 	}
-	// 	return true;
-	// }
+		switch ($values->text('action')) {
+			case 'update':
+				$this->inputUpdate($input);
+				break;
+		}
+	}
 
-	// /**
-	//  * Update Itm
-	//  * @param  WireInput $input Input Data
-	//  * @return bool
-	//  */
-	// private function updateInputItm(WireInput $input) {
-	// 	$rm = strtolower($input->requestMethod());
-	// 	$values = $input->$rm;
-	//
-	// 	if ($this->validateAndLockItemid($values->text('itemID')) === false) {
-	// 		return false;
-	// 	}
-	// 	$itm = $this->wire('modules')->get('Itm');
-	// 	$item = $itm->item($values->text('itemID'));
-	// 	$item->setQty_pack_inner($values->float('innerpack'));
-	// 	$item->setQty_pack_outer($values->float('outerpack'));
-	// 	$item->setQty_tare($values->float('qtytare'));
-	// 	$item->setQtypercase($values->float('qtypercase'));
-	// 	$item->setLiters($values->float('liters'));
-	// 	$item->setWeight($values->float('weight'));
-	// 	$item->setCubes($values->float('cubes'));
-	// 	$response = $itm->save_and_respond($item);
-	// 	$this->wire('session')->setFor('response', 'itm', $response);
-	// 	return $response->has_success();
-	// }
+	/**
+	 * Update Itm Dimension, Itm Data
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	private function inputUpdate(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$itm = $this->getItm();
+		$itm->init();
+		$itemID = $itm->itemid($values->text('itemID'));
+
+		if ($itm->exists($itemID) === false) {
+			return false;
+		}
+
+		if ($itm->lockrecord($itemID) === false) {
+			return false;
+		}
+		$this->inputUpdateSub($input);
+	}
+
+	private function inputUpdateSub(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$itemID    = $values->text('itemID');
+		$subitemID = $values->text('subitemID');
+		$sub = $this->getOrCreate($itemID, $subitemID);
+
+		if ($sub->isNew() === false) {
+			if ($this->lockrecord($sub) === false) {
+				return false;
+			}
+		}
+		$invalid = $this->setSubFields($sub, $input);
+		$response = $this->saveAndRespond($sub, $invalid);
+		$this->setResponse($response);
+		exit;
+	}
+
+	private function setSubFields(ItemSubstitute $sub, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$invalid = [];
+
+		$sub->setDate(date('Ymd'));
+		$sub->setTime(date('His'));
+		$invalid = $this->setSubFieldsValidated($sub, $input);
+		return $invalid;
+	}
+
+	private function setSubFieldsValidated(ItemSubstitute $sub, WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$invalid = [];
+		$itm = $this->getItm();
+
+		if ($sub->isNew()) {
+			if ($itm->exists($values->text('itemID')) === false) {
+				$invalid['itemID'] = 'Item ID';
+			}
+
+			if ($itm->exists($values->text('itemID'))) {
+				$sub->setItemid($values->text('itemID'));
+			}
+		}
+
+		if ($itm->exists($values->text('subitemID')) === false) {
+			$invalid['subitemID'] = 'Substitute Item ID';
+		}
+
+		if ($itm->exists($values->text('subitemID'))) {
+			$sub->setSubitemid($itm->itemid($values->text('subitemID')));
+		}
+
+		$sameOrLike = $this->fieldAttribute('sameOrLike', 'default');
+		if (array_key_exists($values->text('sameOrLike'), ItemSubstitute::OPTIONS_SAMEORLIKE)) {
+			$sameOrLike = $values->text('sameOrLike');
+		}
+		$sub->setSameOrLike($sameOrLike);
+		return $invalid;
+	}
+
 
 /* =============================================================
 	CRUD Response Functions
 ============================================================= */
 	/**
 	 * Returns ItmResponse based on the outcome of the database save
-	 * @param  ItemSubstitute $record        Record to record response of database save
+	 * @param  ItemSubstitute $sub        Record to record response of database save
 	 * @param  array          $invalidfields Input fields that require attention
 	 * @return Response
 	 */
-	public function saveAndRespond(ItemSubstitute $record, array $invalidfields = []) {
-		$is_new = $record->isDeleted() ? false : $record->isNew();
-		$saved  = $record->isDeleted() ? $record->isDeleted() : $record->save();
+	private function saveAndRespond(ItemSubstitute $sub, array $invalidfields = []) {
+		$is_new = $sub->isDeleted() ? false : $sub->isNew();
+		$saved  = $sub->isDeleted() ? $sub->isDeleted() : $sub->save();
 
 		$response = new Response();
-		$response->setItemID($record->itemid);
+		$response->setItemID($sub->itemid);
 
 		if ($saved) {
 			$response->setSuccess(true);
@@ -249,7 +271,7 @@ class Substitutes extends WireData {
 
 		if ($is_new) {
 			$response->setAction(Response::CRUD_CREATE);
-		} elseif ($record->isDeleted()) {
+		} elseif ($sub->isDeleted()) {
 			$response->setAction(Response::CRUD_DELETE);
 		} else {
 			$response->setAction(Response::CRUD_UPDATE);
@@ -258,27 +280,55 @@ class Substitutes extends WireData {
 		$response->buildMessage(self::RESPONSE_TEMPLATE);
 
 		if ($response->hasSuccess() && empty($invalidfields)) {
-			$this->requestUpdate($record->itemid);
+			$this->requestUpdate($sub->itemid, $sub->subitemid);
 		}
 		$response->setFields($invalidfields);
 		return $response;
+	}
+
+	/**
+	 * Set Session Response
+	 * @param Response $response
+	 */
+	protected function setResponse(Response $response) {
+		$this->wire('session')->setFor('response', 'itm-sub', $response);
+	}
+
+	/**
+	 * Get Session Response
+	 * @return Response|null
+	 */
+	protected function getResponse() {
+		$this->wire('session')->getFor('response', 'itm-sub');
+	}
+
+	/**
+	 * Return if Field has Error
+	 * NOTE: Uses $session->response_itm->fields to derive this
+	 * @param  string $inputname Input name e.g. commissiongroup
+	 * @return bool
+	 */
+	public function fieldHasError($inputname) {
+		$response = $this->getResponse();
+		return ($response) ? array_key_exists($inputname, $response->fields) : false;
 	}
 
 /* =============================================================
 	Dplus Cobol Request Functions
 ============================================================= */
 	/**
-	 * Request Update for ITM Dimension Records
-	 * @param  string $itemID Item ID
+	 * Request Update for ITM Substitute Record
+	 * @param  string $itemID     Item ID
+	 * @param  string $subitemID Substitute Item ID
 	 * @return void
 	 */
-	private function requestUpdate($itemID) {
-		$data = ['UPDATEITMDIMEN', "ITEMID=$itemID"];
+	private function requestUpdate($itemID, $subitemID) {
+		$data = ['UPDATESUB', "ITEMID=$itemID", "SUBITEM=$subitemID"];
 		$this->requestDplus($data);
 	}
 
 	/**
-	 * [requestDplus description]
+	 * Send Request
 	 * @param  array  $data Data
 	 * @return void
 	 */

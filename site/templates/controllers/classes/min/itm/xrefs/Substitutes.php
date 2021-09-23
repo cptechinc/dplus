@@ -42,8 +42,13 @@ class Substitutes extends Base {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
-		$fields = ['itemID|text', 'action|text'];
+		$fields = ['itemID|text', 'subitemID|text', 'action|text'];
 		self::sanitizeParameters($data, $fields);
+		$itmSub = self::getItmSubstitutes();
+		$itmSub->processInput(self::pw('input'));
+
+		$url = self::subUrl($data->itemID, $data->subitemID);
+		self::pw('session')->redirect($url, $http301 = false);
 	}
 
 	private static function list($data) {

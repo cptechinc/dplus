@@ -59,7 +59,7 @@
 			],
 			'substitutes' => [
 				['GET',  '', ItmXrefs\Substitutes::class, 'index'],
-				['POST', '', ItmXrefs\Substitutesr::class, 'handleCRUD'],
+				['POST', '', ItmXrefs\Substitutes::class, 'handleCRUD'],
 			],
 		],
 	];
