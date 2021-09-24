@@ -89,8 +89,6 @@ class Kim extends Base {
 		return $html;
 	}
 
-
-
 	private static function displayKitComponent($data, $component) {
 		$kim  = KimController::getKim();
 		$itm  = self::getItm();
