@@ -26,6 +26,20 @@ $(function() {
 		});
 	});
 
+	$("body").on("change", "input[name=supercede]", function(e) {
+		var input  = $(this);
+		var inputs = formXrefs.inputs;
+		inputs.overwriteshort.val('false');
+
+		if (inputs.itemid.val() == inputs.supercede.val()) {
+			alert.supercedeIsSameItemid(inputs.itemid.val(), inputs.supercede.val(), function(isConfirmed) {
+				inputs.supercede.val('');
+				var validator = formXrefs.form.validate();
+				validator.element('#' + inputs.supercede.attr('id'));
+			});
+		}
+	});
+
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
@@ -95,6 +109,12 @@ $(function() {
 /* =============================================================
 	Validation Methods
 ============================================================= */
+	jQuery.validator.addMethod("supercedematches", function(value, element) {
+			return this.optional(element) || value != formXrefs.inputs.itemid.val();
+		},
+		"Cannot supercede an item back to the same Item ID"
+	);
+
 	formXrefs.form.validate({
 		errorClass: "is-invalid",
 		validClass: "is-valid",
@@ -105,6 +125,10 @@ $(function() {
 		rules: {
 			shortitemID: {
 				required: false,
+			},
+			supercede: {
+				required: false,
+				supercedematches: true,
 			},
 		},
 		submitHandler: function(form) {

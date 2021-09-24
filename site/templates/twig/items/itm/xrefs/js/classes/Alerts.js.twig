@@ -30,7 +30,7 @@ class XrefsAlerts extends Alerts {
 	supercedeIsSameItemid(itemID, supitemID, callback) {
 		swal2.fire({
 			title: 'Same Item ID',
-			text: 'Supercede Item cannot be the same as the Master Item',
+			text: 'Cannot Supercede an item back to the same Item ID',
 			icon: 'warning',
 			confirmButtonText: 'Ok',
 		}).then((result) => {
