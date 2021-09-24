@@ -59,7 +59,7 @@ class Itm extends AbstractController {
 	}
 
 	public static function warehouseList($data) {
-		return Warehouse::list($data);
+		return Warehouse::index($data);
 	}
 
 	public static function warehouseHandleCRUD($data) {

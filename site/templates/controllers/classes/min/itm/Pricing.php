@@ -1,15 +1,16 @@
 <?php namespace Controllers\Min\Itm;
-
 // Dplus Model
 use ItemPricingQuery, ItemPricing;
 // ProcessWire classes, modules
 use ProcessWire\Page, ProcessWire\ItmPricing as PricingCRUD;
-// Mvc Controllers
-use Controllers\Min\Itm\ItmFunction;
 
-class Pricing extends ItmFunction {
+
+class Pricing extends Base {
 	const PERMISSION_ITMP = 'pricing';
 
+/* =============================================================
+	Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
@@ -51,7 +52,7 @@ class Pricing extends ItmFunction {
 		}
 	}
 
-	public static function pricing($data) {
+	private static function pricing($data) {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
@@ -67,6 +68,9 @@ class Pricing extends ItmFunction {
 		return self::pricingDisplay($data);
 	}
 
+/* =============================================================
+	Display
+============================================================= */
 	private static function pricingDisplay($data) {
 		$config  = self::pw('config');
 		$session = self::pw('session');
@@ -87,6 +91,9 @@ class Pricing extends ItmFunction {
 		return $html;
 	}
 
+/* =============================================================
+	Supplemental
+============================================================= */
 	public static function getItmPricing() {
 		return self::pw('modules')->get('ItmPricing');
 	}
