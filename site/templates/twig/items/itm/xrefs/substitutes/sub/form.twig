@@ -83,7 +83,7 @@
 				<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
 			</button>
 			{% if sub.isNew() == false %}
-				<a href="{{ page.subDeleteUrl(item.itemid) }}" class="btn btn-danger delete-itm delete_button">
+				<a href="{{ page.subDeleteUrl(sub.itemid, sub.subitemid) }}" class="btn btn-danger delete_button">
 					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 				</a>
 			{% endif %}

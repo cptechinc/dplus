@@ -146,7 +146,7 @@ class Substitutes extends WireData {
 	Input Functions
 ============================================================= */
 	/**
-	 * Process Input Data and update ITM Dimensions
+	 * Process Input Data and update ITM Substitute
 	 * @param  WireInput $input Input Data
 	 * @return void
 	 */
@@ -158,11 +158,72 @@ class Substitutes extends WireData {
 			case 'update':
 				$this->inputUpdate($input);
 				break;
+			case 'delete':
+				$this->inputDelete($input);
+				break;
 		}
 	}
 
 	/**
-	 * Update Itm Dimension, Itm Data
+	 * Delete Itm Substitute
+	 * @param  WireInput $input Input Data
+	 * @return void
+	 */
+	private function inputDelete(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$itm = $this->getItm();
+		$itm->init();
+		$itemID = $itm->itemid($values->text('itemID'));
+
+		if ($itm->exists($itemID) === false) {
+			return false;
+		}
+
+		if ($itm->lockrecord($itemID) === false) {
+			return false;
+		}
+		$this->inputDeleteSub($input);
+	}
+
+	/**
+	 * Delete Sustitute Item
+	 * @param  WireInput $input Input Data
+	 * @return bool
+	 */
+	private function inputDeleteSub(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+
+		$itemID    = $values->text('itemID');
+		$subitemID = $values->text('subitemID');
+		$sub = $this->getOrCreate($itemID, $subitemID);
+
+		if ($sub->isNew()) {
+			return true;
+		}
+
+		if ($this->lockrecord($sub) === false) {
+			$locker = $this->recordlocker;
+			$key = $this->getRecordlockerKey($sub);
+			$msg = "Cannot lock Record";
+			if ($locker->isLocked($key) && $locker->userHasLocked($key) === false) {
+				$msg = "Cannot Delete $sub->itemid Substitute $sub->subitemid, it is locked by " . $locker->getLockingUser($key);
+			}
+			$response = Response::responseError($sub->itemid, $msg);
+			$this->setResponse($response);
+			return false;
+		}
+		$sub->delete();
+		$response = $this->saveAndRespond($sub);
+		$this->setResponse($response);
+		return $response->hasSuccess();
+	}
+
+
+	/**
+	 * Update Itm Substitute
 	 * @param  WireInput $input Input Data
 	 * @return void
 	 */
@@ -199,6 +260,14 @@ class Substitutes extends WireData {
 
 		if ($sub->isNew() === false) {
 			if ($this->lockrecord($sub) === false) {
+				$locker = $this->recordlocker;
+				$key = $this->getRecordlockerKey($sub);
+				$msg = "Cannot lock Record";
+				if ($locker->isLocked($key) && $locker->userHasLocked($key) === false) {
+					$msg = "Cannot Update $sub->itemid Substitute $sub->subitemid, it is locked by " . $locker->getLockingUser($key);
+				}
+				$response = Response::responseError($sub->itemid, $msg);
+				$this->setResponse($response);
 				return false;
 			}
 		}
