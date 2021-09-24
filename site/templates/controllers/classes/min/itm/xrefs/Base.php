@@ -2,9 +2,9 @@
 // Purl URI Library
 use Purl\Url as Purl;
 // Mvc Controllers
-use Controllers\Min\Itm\Base;
+use Controllers\Min\Itm\Base as ItmBase;
 
-class Base extends Base {
+class Base extends ItmBase {
 	const PERMISSION_ITMP = 'xrefs';
 
 /* =============================================================

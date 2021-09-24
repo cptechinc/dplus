@@ -15,7 +15,7 @@ use Controllers\Min\Itm\Misc;
 use Controllers\Min\Itm\Xrefs;
 use Controllers\Min\Itm\Dimensions;
 
-class Itm extends AbstractController {
+class Itm extends Base {
 
 	const SUBFUNCTIONS = [
 		'costing'      => ['title' => 'Costing', 'permission' => 'costing'],
