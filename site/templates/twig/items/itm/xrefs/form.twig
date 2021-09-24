@@ -14,10 +14,21 @@
 	<input type="hidden" name="itemID" value="{{ item.itemid }}">
 	<div class="form-group row">
 		<div class="col-sm-4">
-			<label for="cxm_custitemid">Short Item ID</label>
+			<label for="shortitemID">Short Item ID</label>
 		</div>
 		<div class="col-sm-8">
-			<input type="text" class="form-control" name="cxm_custitemid" id="cxm_custitemid" value="{{ xrefs.cxm.xref_shortitem_exists(item.itemid) ? xrefs.cxm.xref_shortitem(item.itemid).custitemid : '' }}">
+			{% include 'util/bootstrap/form/input.twig' with {
+					'input': {
+						'size': 'sm',
+						'name': 'shortitemID',
+						'value': xrefs.cxm.xref_shortitem_exists(item.itemid) ? xrefs.cxm.xref_shortitem(item.itemid).custitemid : '',
+						'attributes': {
+							'placeholder': 'Short Item ID',
+							'aria-label':  'Short Item ID'
+						}
+					}
+				}
+			%}
 		</div>
 	</div>
 	<div class="form-group row">
@@ -27,7 +38,9 @@
 		<div class="col-sm-8">
 			<div class="row">
 				<div class="col-sm-8">
-					<input type="text" class="form-control" value="{{ xrefs.upcx.xref_primary_exists_for_itemid(item.itemid) ? xrefs.upcx.xref_primary_by_itemid(item.itemid).upc : '' }}" readonly>
+					<p class="form-control-plaintext form-control-sm">
+						{{ xrefs.upcx.xref_primary_exists_for_itemid(item.itemid) ? xrefs.upcx.xref_primary_by_itemid(item.itemid).upc : '' }}
+					</p>
 				</div>
 				<div class="col-sm-4">
 					<p class="form-control-plaintext">{{ item.countItemXrefUpcs() }} Records</p>
@@ -48,7 +61,7 @@
 							'name': 'supercede',
 							'value': item.supercede,
 							'attributes': {
-								'placeholder': '',
+								'placeholder': 'Supercede Item ID',
 								'aria-label':  'Supercede Item ID',
 								'oninput': configIn.useUppercaseItemid() ? 'this.value = this.value.toUpperCase()' : ''
 							}
