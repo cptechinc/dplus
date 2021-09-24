@@ -76,13 +76,9 @@ class Xrefs extends Base {
 		return $html;
 	}
 
-	private static function xrefs() {
-		$modules = self::pw('modules');
-		$xrefs   = new WireData();
-		$xrefs->cxm  = $modules->get('XrefCxm');
-		$xrefs->upcx = $modules->get('XrefUpc');
-		return $xrefs;
-	}
+/* =============================================================
+	Displays
+============================================================= */
 
 /* =============================================================
 	Hooks
@@ -113,5 +109,16 @@ class Xrefs extends Base {
 		$m->addHook('Page(pw_template=itm)::xrefUrlSubstitutes', function($event) {
 			$event->return = self::xrefUrlSubstitutes($event->arguments(0));
 		});
+	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	private static function xrefs() {
+		$modules = self::pw('modules');
+		$xrefs   = new WireData();
+		$xrefs->cxm  = $modules->get('XrefCxm');
+		$xrefs->upcx = $modules->get('XrefUpc');
+		return $xrefs;
 	}
 }
