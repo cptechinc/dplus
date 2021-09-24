@@ -44,10 +44,18 @@ class Substitutes extends Base {
 		}
 		$fields = ['itemID|text', 'subitemID|text', 'action|text'];
 		self::sanitizeParameters($data, $fields);
+		if (empty($data->action)) {
+			self::pw('session')->redirect(self::subListUrl($data->itemID), $http301 = false);
+		}
 		$itmSub = self::getItmSubstitutes();
 		$itmSub->processInput(self::pw('input'));
 
 		$url = self::subUrl($data->itemID, $data->subitemID);
+		switch ($data->action) {
+			case 'delete':
+				$url = self::subListUrl($data->itemID);
+				break;
+		}
 		self::pw('session')->redirect($url, $http301 = false);
 	}
 
@@ -56,7 +64,7 @@ class Substitutes extends Base {
 
 		$filter = new Filters\Min\ItemSubstitute();
 		$filter->itemid($data->itemID);
-		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 0);
+		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 1);
 		self::pw('page')->js .= self::pw('config')->twig->render('items/itm/xrefs/substitutes/list/js.twig');
 		return self::displayList($data, $xrefs);
 	}
@@ -115,7 +123,9 @@ class Substitutes extends Base {
 
 		$item = $itm->item($data->itemID);
 		$html  = self::breadCrumbs();
+		$html  = self::displayResponse();
 		$html .= self::displaySubstitutes($data, $item, $xrefs);
+		$itmSub->deleteResponse();
 		return $html;
 	}
 
