@@ -3,12 +3,13 @@
 use ItemMasterItemQuery, ItemMasterItem;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\ItmCosting as CostingCRUD;
-// Mvc Controllers
-use Controllers\Min\Itm\ItmFunction;
 
-class Costing extends ItmFunction {
+class Costing extends Base {
 	const PERMISSION_ITMP = 'costing';
 
+/* =============================================================
+	Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
@@ -51,7 +52,7 @@ class Costing extends ItmFunction {
 		}
 	}
 
-	public static function costing($data) {
+	private static function costing($data) {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
@@ -67,24 +68,29 @@ class Costing extends ItmFunction {
 		return self::costingDisplay($data);
 	}
 
+/* =============================================================
+	Displays
+============================================================= */
 	private static function costingDisplay($data) {
-		$session = self::pw('session');
 		$config  = self::pw('config');
 		$itm     = self::getItm();
 		$itmC    = self::getItmCosting();
-		$item = $itm->get_item($data->itemID);
+		$item = $itm->item($data->itemID);
 		$html = '';
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 
-		if ($session->getFor('response', 'itm')) {
-			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
+		if ($itm->getResponse()) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $itm->getResponse()]);
 		}
 		$html .= self::lockItem($data->itemID);
 		$html .= $config->twig->render('items/itm/itm-links.twig');
-		$html .= $config->twig->render('items/itm/costing/page.twig', ['itm' => $itm, 'item' => $item, 'm_costing' => $itmC, 'recordlocker' => $itm->recordlocker]);
+		$html .= $config->twig->render('items/itm/costing/page.twig', ['itm' => $itm, 'item' => $item, 'm_costing' => $itmC]);
 		return $html;
 	}
 
+/* =============================================================
+	Supplemental
+============================================================= */
 	public static function getItmCosting() {
 		return self::pw('modules')->get('ItmCosting');
 	}
