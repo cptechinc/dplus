@@ -10,14 +10,14 @@ use ProcessWire\Page, ProcessWire\XrefMxrfe as MxrfeCRUD;
 // Dplus Filters
 use Dplus\Filters\Map\Mxrfe as MxrfeFilter;
 // Mvc Controllers
-use Controllers\Min\Itm\Xrefs;
-use Controllers\Min\Itm\Xrefs\XrefFunction;
 use Controllers\Map\Mxrfe as BaseMxrfe;
 
-class Mxrfe extends XrefFunction {
-
+class Mxrfe extends Base {
+/* =============================================================
+	Indexes
+============================================================= */
 	public static function index($data) {
-		$fields = ['itemID|text', 'action|text'];
+		$fields = ['itemID|text', 'mnfrID|text', 'mnfritemID|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
 
 		if (self::validateItemidAndPermission($data) === false) {
@@ -37,7 +37,6 @@ class Mxrfe extends XrefFunction {
 	}
 
 	public static function handleCRUD($data) {
-		$page    = self::pw('page');
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
@@ -59,16 +58,7 @@ class Mxrfe extends XrefFunction {
 		self::pw('session')->redirect($url, $http301 = false);
 	}
 
-	public static function xref($data) {
-		if (self::validateItemidAndPermission($data) === false) {
-			return self::displayAlertUserPermission($data);
-		}
-		$fields = ['itemID|text', 'mnfrID|text', 'mnfritemID|text', 'action|text'];
-		self::sanitizeParametersShort($data, $fields);
-
-		if ($data->action) {
-			return self::handleCRUD($data);
-		}
+	private static function xref($data) {
 		self::initHooks();
 
 		$mxrfe  = BaseMxrfe::mxrfeMaster();
@@ -82,13 +72,35 @@ class Mxrfe extends XrefFunction {
 		}
 		$page->js .= self::pw('config')->twig->render('items/mxrfe/xref/form/js.twig', ['mxrfe' => $mxrfe, 'xref' => $xref]);
 		self::pw('session')->removeFor('response', 'mxrfe');
-		return self::xrefDisplay($data, $xref);
+		return self::displayXref($data, $xref);
+	}
+
+	private static function list($data) {
+		if (self::validateItemidAndPermission($data) === false) {
+			return self::displayAlertUserPermission($data);
+		}
+		self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
+		self::initHooks();
+
+		$mxrfe = BaseMxrfe::mxrfeMaster();
+		$mxrfe->recordlocker->deleteLock();
+
+		$page  = self::pw('page');
+		$page->title = "MXRFE";
+		$page->headline = "ITM: $data->itemID MXRFE";
+
+		$filter = new MxrfeFilter();
+		$filter->itemid($data->itemID);
+		$filter->sortby($page);
+		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 10);
+		self::pw('session')->removeFor('response', 'mxrfe');
+		return self::displayList($data, $xrefs);
 	}
 
 /* =============================================================
 	Display Functions
 ============================================================= */
-	private static function xrefDisplay($data, ItemXrefManufacturer $xref) {
+	private static function displayXref($data, ItemXrefManufacturer $xref) {
 		$mxrfe  = BaseMxrfe::mxrfeMaster();
 		$qnotes = self::pw('modules')->get('QnotesItemMxrfe');
 		$item   = self::getItm()->get_item($data->itemID);
@@ -118,29 +130,7 @@ class Mxrfe extends XrefFunction {
 		return $html;
 	}
 
-	public static function list($data) {
-		if (self::validateItemidAndPermission($data) === false) {
-			return self::displayAlertUserPermission($data);
-		}
-		self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
-		self::initHooks();
-
-		$mxrfe = BaseMxrfe::mxrfeMaster();
-		$mxrfe->recordlocker->deleteLock();
-
-		$page  = self::pw('page');
-		$page->title = "MXRFE";
-		$page->headline = "ITM: $data->itemID MXRFE";
-
-		$filter = new MxrfeFilter();
-		$filter->itemid($data->itemID);
-		$filter->sortby($page);
-		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 10);
-		self::pw('session')->removeFor('response', 'mxrfe');
-		return self::listDisplay($data, $xrefs);
-	}
-
-	private static function listDisplay($data, PropelModelPager $xrefs) {
+	private static function displayList($data, PropelModelPager $xrefs) {
 		$item = self::getItm()->get_item($data->itemID);
 		$html = '';
 		$html .= self::mxrfeHeaders();

@@ -34,13 +34,15 @@ class Itm extends WireData implements Module {
 	const RECORDLOCKER_FUNCTION  = 'itm';
 
 	const FIELD_ATTRIBUTES = [
+		'itemID'           => ['type' => 'text', 'maxlength' => 30],
 		'description1'     => ['type' => 'text', 'maxlength' => 35],
 		'description2'     => ['type' => 'text', 'maxlength' => 35],
 		'revision'         => ['type' => 'text', 'maxlength' => 10],
 		'custID'           => ['type' => 'text', 'maxlength' => 6],
 		'weight'           => ['type' => 'number', 'precision' => 5, 'max'  => 9999999.99999],
 		'cubes'            => ['type' => 'number', 'precision' => 4, 'max'  => 9999999.9999],
-		'grams'            => ['type' => 'number', 'precision' => 5, 'conversion' => 453.6]
+		'grams'            => ['type' => 'number', 'precision' => 5, 'conversion' => 453.6],
+		'minmarginbase'    => ['type' => 'text', 'default' => '%']
 	];
 
 	/**
@@ -87,6 +89,19 @@ class Itm extends WireData implements Module {
 		$q = $this->query();
 		$q->filterByitemid($itemID);
 		return $q;
+	}
+
+	/**
+	 * Return Item ID as configured
+	 * @param  string $itemID
+	 * @return string
+	 */
+	public function itemid($itemID) {
+		$configIn = Configs\In::config();
+		if ($configIn->useUppercaseItemid() === false) {
+			return $itemID;
+		}
+		return strtoupper($itemID);
 	}
 
 /* =============================================================
@@ -173,7 +188,7 @@ class Itm extends WireData implements Module {
 		$item->setRequire_freight('N');
 		$item->setCore('N');
 		$item->setSplitorder('Y');
-		$item->setMinmarginbase('%');
+		$item->setMinmarginbase($this->fieldAttribute('minmarginbase', 'default'));
 		$item->setInspection('N');
 		$item->setQtypercase(1);
 		$item->setDummy('P');
@@ -453,6 +468,29 @@ class Itm extends WireData implements Module {
 		}
 		$response->set_fields($invalidfields);
 		return $response;
+	}
+
+	/**
+	 * Set Session Response
+	 * @param ItmResponse $response
+	 */
+	public function setResponse(ItmResponse $response) {
+		$this->wire('session')->setFor('response', 'itm', $response);
+	}
+
+	/**
+	 * Get Session Response
+	 * @return ItmResponse|null
+	 */
+	public function getResponse() {
+		return $this->wire('session')->getFor('response', 'itm');
+	}
+
+	/**
+	 * Delete Session Response
+	 */
+	public function deleteResponse() {
+		$this->wire('session')->removeFor('response', 'itm');
 	}
 
 /* =============================================================

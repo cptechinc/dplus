@@ -414,6 +414,10 @@ class ScreenFormatter extends WireData {
 		$qtyregex = "/(quantity)/i";
 		$type = !empty($type) ? $type : $column['type'];
 
+		if (array_key_exists($column['id'], $parent) === false) {
+			return '';
+		}
+
 		// Format data
 		if ($type == 'D') {
 			$celldata = (strlen($parent[$column['id']]) > 0) ? date($column['date-format'], strtotime($parent[$column['id']])) : $parent[$column['id']];

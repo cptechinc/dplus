@@ -12,7 +12,7 @@
 							'input': {
 								'type': 'number',
 								'name': 'standardcost',
-								'value': (item.standardcost * item.unitofmpurchase.conversion)|number_format(m_costing.getConfigPo().decimal_places_cost),
+								'value': (item.standardcost * item.unitofmpurchase.conversion)|number_format(m_costing.fieldAttribute('cost', 'precision')),
 								'addclasses': ['text-right']
 							},
 							'span': {
@@ -41,7 +41,7 @@
 								'id': 'standardcost-each',
 							},
 							'p': {
-								'value': item.standardcost|number_format(m_costing.configs.po.decimal_places_cost),
+								'value': item.standardcost|number_format(m_costing.fieldAttribute('cost', 'precision')),
 								'addclasses': ['text-right', 'border-0']
 							},
 							'span': {
@@ -88,7 +88,7 @@
 							'size': 'sm',
 							'p': {
 								'name': 'lastcost',
-								'value': item.lastcost|number_format(m_costing.configs.po.decimal_places_cost),
+								'value': item.lastcost|number_format(m_costing.fieldAttribute('cost', 'precision')),
 								'addclasses': ['text-right', 'border-0']
 							},
 							'span': {
@@ -112,7 +112,7 @@
 								'size': 'sm',
 								'input': {
 									'name': 'lastcosteach',
-									'value': (item.lastcost / item.unitofmpurchase.conversion)|number_format(m_costing.configs.po.decimal_places_cost),
+									'value': (item.lastcost / item.unitofmpurchase.conversion)|number_format(m_costing.fieldAttribute('cost', 'precision')),
 									'addclasses': ['text-right', 'border-0']
 								},
 								'span': {

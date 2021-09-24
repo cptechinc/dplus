@@ -44,7 +44,7 @@
 						<p class="form-control-plaintext form-control-sm tariffcode-number">{{ tariffcode.number }}</p>
 					</div>
 					<div class="col-sm-6">
-						<p class="form-control-plaintext form-control-sm tariffcode-rate">{{ tariffcode.duty_rate }}</p>
+						<p class="form-control-plaintext form-control-sm tariffcode-rate">{{ tariffcode.duty_rate }} %</p>
 					</div>
 				</div>
 			</div>
@@ -150,7 +150,7 @@
 	</div>
 	<div class="col-sm-9">
 		<div class="row">
-			<div class="col-sm-3">
+			<div class="col-sm-5">
 				{% include 'util/bootstrap/form/input-group.twig' with {
 						'inputgroup': {
 							'type': 'prepend',
@@ -183,7 +183,7 @@
 					}
 				%}
 			</div>
-			<div class="col-sm-9">
+			<div class="col-sm-7">
 				{% set freight = item.getCodeFreight() %}
 				<p class="form-control-plaintext form-control-sm freightcode-description">{{ freight.description }}</p>
 			</div>

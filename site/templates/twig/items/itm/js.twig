@@ -14,6 +14,12 @@ $(function() {
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
+	$('body').on('keyup change paste', '#' + formItm.id +' input, select, textarea', function(){
+		if ($('#response-alert').length) {
+			$('#response-alert').remove();
+		}
+	});
+
 	$("body").on("change", "input[name=itemID]", function(e) {
 		var input = $(this);
 

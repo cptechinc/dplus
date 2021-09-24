@@ -13,11 +13,12 @@ use Dplus\Configs;
 use Dplus\Filters\Min\Upcx as UpcxFilter;
 // Mvc Controllers
 use Controllers\Min\Itm\Xrefs;
-use Controllers\Min\Itm\Xrefs\XrefFunction;
 use Controllers\Min\Upcx as UpcxController;
 
-class Upcx extends XrefFunction {
-
+class Upcx extends Base {
+/* =============================================================
+	Indexes
+============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'upc|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
@@ -55,28 +56,7 @@ class Upcx extends XrefFunction {
 		self::pw('session')->redirect(self::xrefUrl($data->itemID, $upc), $http301 = false);
 	}
 
-	private static function upcxHeaders() {
-		$html = '';
-		$session = self::pw('session');
-		$config  = self::pw('config');
-
-		$html .= self::breadCrumbs();
-
-		if ($session->getFor('response','upcx')) {
-			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response','upcx')]);
-		}
-		return $html;
-	}
-
-	public static function xref($data) {
-		if (self::validateItemidAndPermission($data) === false) {
-			return self::displayAlertUserPermission($data);
-		}
-
-		self::sanitizeParametersShort($data, ['itemID|text', 'upc|text', 'action|text']);
-		if ($data->action) {
-			return self::handleCRUD($data);
-		}
+	private static function xref($data) {
 		self::initHooks();
 		$upcx = UpcxController::getUpcx();
 		$xref = $upcx->getCreateXref($data->upc, $data->itemID);
@@ -93,26 +73,12 @@ class Upcx extends XrefFunction {
 		$configs = new WireData();
 		$configs->in = Configs\In::config();
 		$page->js   .= self::pw('config')->twig->render('items/upcx/form/js.twig', ['configs' => $configs]);
-		$html = self::xrefDisplay($data, $xref);
+		$html = self::displayXref($data, $xref);
 		self::pw('session')->removeFor('response', 'upcx');
 		return $html;
 	}
 
-	private static function xrefDisplay($data, ItemXrefUpc $xref)  {
-		$itm    = self::getItm();
-		$item = $itm->get_item($data->itemID);
-
-		$html = '';
-		$html .= self::upcxHeaders();
-		$html .= UpcxController::lockXref($xref);
-		$html .= self::pw('config')->twig->render('items/itm/xrefs/upcx/form/display.twig', ['upcx' => UpcxController::getUpcx(), 'upc' => $xref, 'item' => $item]);
-		return $html;
-	}
-
-	public static function list($data) {
-		if (self::validateItemidAndPermission($data) === false) {
-			return self::displayAlertUserPermission($data);
-		}
+	private static function list($data) {
 		self::initHooks();
 		self::sanitizeParametersShort($data, ['itemID|text', 'q|text']);
 		$upcx = UpcxController::getUpcx();
@@ -127,12 +93,39 @@ class Upcx extends XrefFunction {
 		$filter->sortby($page);
 		$upcs = $filter->query->paginate(self::pw('input')->pageNum, 10);
 
-		$html = self::listDisplay($data, $upcs);
+		$html = self::displayList($data, $upcs);
 		self::pw('session')->removeFor('response', 'upcx');
 		return $html;
 	}
 
-	private static function listDisplay($data, $xrefs) {
+/* =============================================================
+	Displays
+============================================================= */
+	private static function displayXref($data, ItemXrefUpc $xref)  {
+		$itm    = self::getItm();
+		$item = $itm->get_item($data->itemID);
+
+		$html = '';
+		$html .= self::upcxHeaders();
+		$html .= UpcxController::lockXref($xref);
+		$html .= self::pw('config')->twig->render('items/itm/xrefs/upcx/form/display.twig', ['upcx' => UpcxController::getUpcx(), 'upc' => $xref, 'item' => $item]);
+		return $html;
+	}
+
+	private static function upcxHeaders() {
+		$html = '';
+		$session = self::pw('session');
+		$config  = self::pw('config');
+
+		$html .= self::breadCrumbs();
+
+		if ($session->getFor('response','upcx')) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response','upcx')]);
+		}
+		return $html;
+	}
+
+	private static function displayList($data, $xrefs) {
 		$itm     = self::getItm();
 		$item = $itm->get_item($data->itemID);
 

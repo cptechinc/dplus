@@ -1,0 +1,44 @@
+class MiscRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new MiscRequests();
+		}
+		return this.instance;
+	}
+
+	validateOriginCountryUrl(code = '') {
+		var uri = URI('{{ page.jsonapiURL('inv/validate/country-code/') }}');
+		if (code) {
+			uri.setQuery('code', code);
+		}
+		return uri.toString();
+	}
+
+	validateTariffCodeUrl(code = '') {
+		var uri = URI('{{ page.jsonapiURL('inv/validate/tariff-code/') }}');
+		if (code) {
+			uri.setQuery('code', code);
+		}
+		return uri.toString();
+	}
+
+	validateFreightCodeUrl(code = '') {
+		var uri = URI('{{ page.jsonapiURL('mso/validate/freight-code/') }}');
+		if (code) {
+			uri.setQuery('code', code);
+		}
+		return uri.toString();
+	}
+
+	getJsonApiCode(api, fetching, code, callback) {
+		var url = new URI('{{ page.jsonapiURL() }}');
+		url.path(url.path() + api + "/" + fetching + "/");
+		var ajax = new AjaxRequest(url.toString());
+		ajax.setData({code: code});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+}

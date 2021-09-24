@@ -132,7 +132,7 @@ class KimComponent extends WireData implements Module {
 		$kitID = $values->text('kitID');
 		$kim = $this->wire('modules')->get('Kim');
 
-		if (!$kim->kit_exists($kitID)) {
+		if ($kim->kit_exists($kitID) === false) {
 			$created = $this->create_kit($kitID);
 
 			if (!$created) {
@@ -143,13 +143,13 @@ class KimComponent extends WireData implements Module {
 
 		switch ($values->text('action')) {
 			case 'create-component':
-				$this->input_create($input);
+				$this->inputCreate($input);
 				break;
 			case 'update-component':
-				$this->input_update($input);
+				$this->inputUpdate($input);
 				break;
 			case 'delete-component':
-				$this->input_delete($input);
+				$this->inputDelete($input);
 				break;
 			default:
 				$this->wire('session')->setFor('response', 'kim', KimResponse::response_error($kitID, "No Action Provided"));
@@ -162,7 +162,7 @@ class KimComponent extends WireData implements Module {
 	 * @param  WireInput $input Input Data
 	 * @return bool
 	 */
-	public function input_delete(WireInput $input) {
+	public function inputDelete(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$kitID = $input->get->text('kitID');
@@ -171,7 +171,7 @@ class KimComponent extends WireData implements Module {
 		if ($this->exists($kitID, $itemID)) {
 			$component = $this->component($kitID, $itemID);
 			$component->delete();
-			$this->wire('session')->setFor('response', 'kim', $this->save_and_respond($component, null));
+			$this->wire('session')->setFor('response', 'kim', $this->save_and_respond($component));
 			return $this->wire('session')->getFor('response', 'kim')->has_success();
 		}
 		return true;
@@ -182,7 +182,7 @@ class KimComponent extends WireData implements Module {
 	 * @param  WireInput $input Input Data
 	 * @return void
 	 */
-	public function input_update(WireInput $input) {
+	public function inputUpdate(WireInput $input) {
 		$this->init_configs();
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
@@ -191,9 +191,10 @@ class KimComponent extends WireData implements Module {
 		$invalidfields = [];
 
 		$component = $this->getCreateComponent($kitID, $itemID);
-		$invalidfields = $this->update_record_input($component, $input);
-		$this->wire('session')->setFor('response', 'kim', $this->save_and_respond($component, $invalidfields));
-		return $this->wire('session')->getFor('response', 'kim')->has_success();
+		$invalidfields = $this->updateComponentFields($component, $input);
+		$response = $this->save_and_respond($component, $invalidfields);
+		$this->wire('session')->setFor('response', 'kim', $response);
+		return $response->has_success();
 	}
 
 	/**
@@ -202,12 +203,14 @@ class KimComponent extends WireData implements Module {
 	 * @param  WireInput       $input     Input Data
 	 * @return array
 	 */
-	public function update_record_input(InvKitComponent $component, WireInput $input) {
+	public function updateComponentFields(InvKitComponent $component, WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$invalidfields = [];
 		$component->setUsage($values->text('usage')); // TODO GET Precision
-		$invalidfields = $this->update_record_input_validated($component, $input);
+		$component->setDate(date('Ymd'));
+		$component->setTime(date('His'));
+		$invalidfields = $this->updateComponentFieldsValidated($component, $input);
 		return $invalidfields;
 	}
 
@@ -217,7 +220,7 @@ class KimComponent extends WireData implements Module {
 	 * @param  WireInput       $input  Input Data
 	 * @return array
 	 */
-	public function update_record_input_validated(InvKitComponent $record, WireInput $input) {
+	public function updateComponentFieldsValidated(InvKitComponent $record, WireInput $input) {
 		$modules = $this->wire('modules');
 		$validate = new KimValidator();
 		$invalid = array();

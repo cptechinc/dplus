@@ -20,13 +20,22 @@ class Cxm extends WireData {
 	}
 
 	/**
-	 * Validate if VXM X-ref exists
+	 * Validate if CXM X-ref exists
 	 * @param  string $custID     Customer ID
 	 * @param  string $custitemID Customer Item ID
 	 * @return bool
 	 */
 	public function exists($custID, $custitemID) {
 		return $this->modules->get('XrefCxm')->xref_exists($custID, $custitemID);
+	}
+
+	/**
+	 * Return if Short Item ID exists
+	 * @param  string $shortitemID
+	 * @return bool
+	 */
+	public function shortItemExists($shortitemID) {
+		return $this->modules->get('XrefCxm')->xref_shortitem_exists_by_custitemid($shortitemID);
 	}
 
 /* =============================================================

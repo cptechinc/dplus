@@ -1,20 +1,17 @@
 <?php namespace ProcessWire;
 
 include_once(__DIR__.'/ItmResponse.php');
-
+// Purl URI Manipulation Library
 use Purl\Url;
-
-use Dplus\CodeValidators\Min\Itm as ItmValidator;
-
-// Dplus Configs
-use Dplus\Configs;
-
-use ConfigInQuery, ConfigIn;
-use ConfigPoQuery, ConfigPo;
-use ConfigSalesOrderQuery, ConfigSalesOrder;
+// Dplus Models
+use ItemMasterItemQuery, ItemMasterItem;
 use ItemPricingQuery, ItemPricing;
 use InvAssortmentCodeQuery, InvAssortmentCode;
 use UnitofMeasureSaleQuery, UnitofMeasureSale;
+// Dplus Code Validators
+use Dplus\CodeValidators\Min\Itm as ItmValidator;
+// Dplus Configs
+use Dplus\Configs;
 
 /**
  * Module that handles the editing of the UPC item Xref
@@ -44,6 +41,7 @@ class ItmPricing extends WireData implements Module {
 		'minbuyqty'   => ['type' => 'number', 'precision' => 0, 'max' => 99999999],
 		'listprice'   => ['type' => 'number', 'precision' => 2, 'max'  => 999999999.000],
 		'price'       => ['type' => 'number', 'precision' => 3, 'max'  => 999999999.000],
+		'assortmentqty' => ['type' => 'number', 'precision' => 3, 'max'  => 999999999.000],
 	];
 
 	/**
@@ -169,29 +167,50 @@ class ItmPricing extends WireData implements Module {
 		$values = $input->$rm;
 		$itemID = $values->text('itemID');
 
-
-		if ($values->action) {
-			if ($itm->exists($itemID)) {
-				$record = $this->get_create_itempricing($input);
-				$itm->lockrecord($itemID);
-
-				if ($itm->recordlocker->userHasLocked($itemID)) {
-					if ($values->text('action') == 'update-itm-pricing') {
-						$response = $this->update_itm_pricing($input, $record);
-						$saved_itm = $response->has_success() ? $this->update_itm($input) : false;
-						$response->set_saved_itm($saved_itm);
-					}
-				} else {
-					$message = self::DESCRIPTION_RECORD . " ($record->itemid)  was not saved, it is locked by " . $recordlocker->get_locked_user('itm', $itemID);
-					$response = ItmResponse::response_error($record->itemid, $message);
-				}
-			} else {
-				$response = ItmResponse::response_error($itemID, "No Item with ItemID $itemID exists");
-			}
-		} else {
-			$response = ItmResponse::response_error($itemID, "($itemID) was not saved, no action was specified");
+		switch ($values->text('action')) {
+			case 'update-itm-pricing':
+				return $this->inputUpdate($input);
+				break;
+			default:
+				$response = ItmResponse::response_error($itemID, "($itemID) was not saved, no action was specified");
+				$this->wire('session')->setFor('response', 'itm', $response);
+				break;
 		}
+
+	}
+
+	/**
+	 * Update Itm Pricing Using Input Data
+	 * @param  WireInput $input  Input Data
+	 * @return bool
+	 */
+	public function inputUpdate(WireInput $input) {
+		$itm = $this->wire('modules')->get('Itm');
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$itemID = $values->text('itemID');
+
+		if ($itm->exists($itemID) === false) {
+			$response = ItmResponse::response_error($itemID, "No Item with ItemID $itemID exists");
+			$this->wire('session')->setFor('response', 'itm', $response);
+			return false;
+		}
+
+		$itm->lockrecord($itemID);
+
+		if ($itm->recordlocker->userHasLocked($itemID) === false) {
+			$message = self::DESCRIPTION_RECORD . " ($itemID)  was not saved, it is locked by " . $recordlocker->get_locked_user('itm', $itemID);
+			$response = ItmResponse::response_error($itemID, $message);
+			$this->wire('session')->setFor('response', 'itm', $response);
+			return false;
+		}
+
+		$itemPricing = $this->get_create_itempricing($input);
+		$response = $this->updateItmPricing($input, $itemPricing);
+		$saved_itm = $response->has_success() ? $this->updateItm($input) : false;
+		$response->set_saved_itm($saved_itm);
 		$this->wire('session')->setFor('response', 'itm', $response);
+		return true;
 	}
 
 	/**
@@ -200,7 +219,7 @@ class ItmPricing extends WireData implements Module {
 	 * @param  WireInput $input
 	 * @return ItmResponse
 	 */
-	public function update_itm_pricing(WireInput $input, ItemPricing $record) {
+	private function updateItmPricing(WireInput $input, ItemPricing $record) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$record->setBaseprice($input->$rm->text('baseprice'));
@@ -225,15 +244,27 @@ class ItmPricing extends WireData implements Module {
 	 * @param  WireInput $input
 	 * @return bool was it able to be saved?
 	 */
-	public function update_itm(WireInput $input) {
+	private function updateItm(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$this->errorfields = array();
 		$itm = $this->wire('modules')->get('Itm');
-		$validate = new ItmValidator();
-		$itemID = $values->text('itemID');
 
-		$item = $itm->get_item($itemID);
+		$itemID = $values->text('itemID');
+		$item = $itm->item($itemID);
+		return $this->updateItmItem($item, $input);
+	}
+
+	/**
+	 * Updates Itm Item Fields
+	 * @param  ItemMasterItem $item
+	 * @param  WireInput      $input
+	 * @return bool
+	 */
+	private function updateItmItem(ItemMasterItem $item, WireInput $input) {
+		$itm = $this->wire('modules')->get('Itm');
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$validate = new ItmValidator();
 
 		if ($validate->unitofm_sale($values->text('uom_sale'))) {
 			$item->setUom_sale($values->text('uom_sale'));
@@ -241,21 +272,23 @@ class ItmPricing extends WireData implements Module {
 			$this->invalidfields['uom_sale'] = "UoM Sale";
 		}
 
-		if ($validate->assortmentcode($values->text('assortmentcode'))) {
+		if ($validate->assortmentcode($values->text('assortmentcode')) || $values->text('assortmentcode') == '') {
 			$item->setAssortmentcode($values->text('assortmentcode'));
 		} else {
 			$this->invalidfields['assortmentcode'] = "Assortment Code";
 		}
 
-		$item->setAssortmentqty($values->float('assortmentqty'));
+		$item->setAssortmentqty($values->float('assortmentqty', ['precision' => $this->fieldAttribute('assortmentqty', 'precision')]));
 		$item->setAllow_discount($values->text('allow_discount'));
 		$saved = $item->save();
 
-		if ($saved && empty($this->errorfields)) {
-			$itm->request_item_update($itemID);
+		if ($saved && empty($this->invalidfields)) {
+			$itm->request_item_update($item->itemid);
 		}
 		return $saved;
 	}
+
+
 
 /* =============================================================
 	CRUD Response Functions

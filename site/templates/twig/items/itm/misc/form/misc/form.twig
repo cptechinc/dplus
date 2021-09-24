@@ -1,0 +1,20 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+	item                   ItemMasterItem
+	itm                    module ItmMisc
+#}
+<form action="{{ page.wire('input').url() }}" class="mb-3" id="itm-misc-form" method="POST">
+	<input type="hidden" name="action" value="update-itm-misc">
+	<input type="hidden" name="itemID" value="{{ item.itemid }}">
+
+	<div class="row">
+		<div class="col-sm-8">
+			{% include 'items/itm/misc/form/misc/left.twig' %}
+		</div>
+		<div class="col-sm-4">
+			{% include 'items/itm/misc/form/misc/right.twig' %}
+		</div>
+	</div>
+</form>

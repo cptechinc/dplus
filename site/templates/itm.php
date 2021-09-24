@@ -1,60 +1,63 @@
 <?php
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
+	
+	use Controllers\Min\Itm as Mitm;
+	use Controllers\Min\Itm\Xrefs as ItmXrefs;
 
-	use Controllers\Min\Itm\Itm as ItmController;
-	use Controllers\Min\Itm\Item;
-	use Controllers\Min\Itm\Xrefs\Controller as XrefsController;
-
-	ItmController::init();
-	Item::initHooks();
+	Mitm\Itm::initHooks();
 
 	$routes = [
-		['GET',  '', ItmController::class, 'item'],
-		['GET',  'page{d:\d+}', ItmController::class, 'itemList'],
-		['POST', '', ItmController::class, 'itemHandleCRUD'],
+		['GET',  '', Mitm\Itm::class, 'index'],
+		['GET',  'page{d:\d+}', Mitm\Itm::class, 'index'],
+		['POST', '', Mitm\Itm::class, 'handleCRUD'],
 		'costing' => [
-			['GET',  '', ItmController::class, 'costing'],
-			['POST', '', ItmController::class, 'CostingHandleCRUD'],
+			['GET',  '', Mitm\Costing::class, 'index'],
+			['POST', '', Mitm\Costing::class, 'handleCRUD'],
 		],
 		'pricing' => [
-			['GET',  '', ItmController::class, 'pricing'],
-			['POST', '', ItmController::class, 'pricingHandleCRUD'],
+			['GET',  '', Mitm\Pricing::class, 'index'],
+			['POST', '', Mitm\Pricing::class, 'handleCRUD'],
 		],
 		'warehouses' => [
-			['GET',  '', ItmController::class, 'warehouse'],
-			['GET',  'page{d:\d+}', ItmController::class, 'warehouseList'],
-			['POST', '', ItmController::class, 'warehouseHandleCRUD'],
+			['GET',  '', Mitm\Warehouse::class, 'index'],
+			['GET',  'page{d:\d+}', Mitm\Warehouse::class, 'index'],
+			['POST', '', Mitm\Warehouse::class, 'handleCRUD'],
 		],
 		'misc' => [
-			['GET',  '', ItmController::class, 'misc'],
-			['POST', '', ItmController::class, 'miscHandleCRUD'],
+			['GET',  '', Mitm\Misc::class, 'index'],
+			['POST', '', Mitm\Misc::class, 'handleCRUD'],
 		],
 		// 'dimensions' => [
-		// 	['GET',  '', ItmController::class, 'dimensions'],
-		// 	['POST', '', ItmController::class, 'dimensionsHandleCRUD'],
+		// 	['GET',  '', Mitm\Dimensions::class, 'index'],
+		// 	['POST', '', Mitm\Dimensions::class, 'handleCRUD'],
 		// ],
 		'xrefs' => [
-			['GET',  '', XrefsController::class, 'xrefs'],
-			['POST', '', XrefsController::class, 'xrefsHandleCRUD'],
+			['GET',  '', ItmXrefs\Xrefs::class, 'index'],
+			['POST', '', ItmXrefs\Xrefs::class, 'handleCRUD'],
 			'cxm' => [
-				['GET',  '', XrefsController::class, 'cxm'],
-				['POST', '', XrefsController::class, 'cxmHandleCRUD'],
+				['GET',  '', ItmXrefs\Cxm::class, 'index'],
+				['POST', '', ItmXrefs\Cxm::class, 'handleCRUD'],
 			],
 			'vxm' => [
-				['GET',  '', XrefsController::class, 'vxm'],
-				['POST', '', XrefsController::class, 'vxmHandleCRUD'],
+				['GET',  '', ItmXrefs\Vxm::class, 'index'],
+				['POST', '', ItmXrefs\Vxm::class, 'handleCRUD'],
 			],
 			'mxrfe' => [
-				['GET',  '', XrefsController::class, 'mxrfe'],
-				['POST', '', XrefsController::class, 'mxrfeHandleCRUD'],
+				['GET',  '', ItmXrefs\Mxrfe::class, 'index'],
+				['POST', '', ItmXrefs\Mxrfe::class, 'handleCRUD'],
 			],
 			'upcx' => [
-				['GET',  '', XrefsController::class, 'upcx'],
-				['POST', '', XrefsController::class, 'upcxHandleCRUD'],
+				['GET',  '', ItmXrefs\Upcx::class, 'index'],
+				['POST', '', ItmXrefs\Upcx::class, 'hndleCRUD'],
 			],
 			'kim' => [
-				['GET',  '', XrefsController::class, 'kim'],
-				['POST', '', XrefsController::class, 'kimHandleCRUD'],
+				['GET',  '', ItmXrefs\Kim::class, 'index'],
+				['POST', '', ItmXrefs\Kim::class, 'kimhandleCRUD'],
+			],
+			'substitutes' => [
+				['GET',  '', ItmXrefs\Substitutes::class, 'index'],
+				['GET',  'page{d:\d+}', ItmXrefs\Substitutes::class, 'index'],
+				['POST', '', ItmXrefs\Substitutes::class, 'handleCRUD'],
 			],
 		],
 	];
@@ -65,7 +68,9 @@
 
 	if ($router->hasError() === false) {
 		$config->scripts->append(hash_templatefile('scripts/lib/jquery-validate.js'));
-		$session->removeFor('response', 'itm');
+		if ($config->ajax === false) {
+			$session->removeFor('response', 'itm');
+		}
 		$page->show_breadcrumbs = false;
 	}
 	include __DIR__ . "/basic-page.php";

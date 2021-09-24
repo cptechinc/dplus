@@ -4,8 +4,15 @@
 			<div class="col-sm-2">
 				<strong>Item ID:</strong>
 			</div>
+			<div class="col-sm-4">
+				{{ configIn.useUppercaseItemid() ? item.itemid|upper : item.itemid  }}
+			</div>
 			<div class="col-sm-6">
-				{{ item.itemid }} - {{ item.description }}
+				{{ configIn.useUppercaseItemDesc() ? item.description|upper : item.description }}
+				{% if item.description2 %}
+					<br>
+					{{ configIn.useUppercaseItemDesc() ? item.description2|upper : item.description2 }}
+				{% endif %}
 			</div>
 		</div>
 	</div>

@@ -1,0 +1,40 @@
+class SubForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new SubForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'itm-substitute-form';
+		this.form = $('#' + this.id);
+		this.inputs  = SubInputs.getInstance();
+		this.fields  = {
+			description1: this.form.find('.description1'),
+			description2: this.form.find('.description2'),
+		};
+		this.formSerialized = this.form.serialize();
+	}
+	
+	hasChanges() {
+		return this.formSerialized != this.form.serialize();
+	}
+
+	showDescriptions() {
+		var server = SubRequests.getInstance();
+		var form = this;
+
+		server.getItm(this.inputs.subitemid.val(), [], function(item) {
+			if (item) {
+				form.fields.description1.text(item.description);
+				form.fields.description2.text(item.description2);
+			} else {
+				form.fields.description1.text('');
+				form.fields.description2.text('');
+			}
+		});
+	}
+}

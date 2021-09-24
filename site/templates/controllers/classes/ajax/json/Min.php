@@ -5,7 +5,10 @@ use CountryCodeQuery, CountryCode;
 use WarehouseBinQuery, WarehouseBin;
 // ProcessWire Classes, Modules
 use ProcessWire\Module, ProcessWire\ProcessWire;
+// Dplus CRUD
+use Dplus\Min\Inmain\Itm\Substitutes as ItmSub;
 // Dplus Validators
+use Dplus\CodeValidators as  Validators;
 use Dplus\CodeValidators\Min as MinValidator;
 use Dplus\CodeValidators\Min\Upcx as UpcxValidator;
 // Mvc Controllers
@@ -365,6 +368,70 @@ class Min extends AbstractController {
 		}
 
 		return $exists ? true : "ITM Warehouse not found";
+	}
+
+	public static function validateItmSub($data) {
+		$fields = ['itemID|text', 'subitemID|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$itmSub = new ItmSub();
+		$itmSub->init();
+
+		$exists = $itmSub->exists($data->itemID, $data->subitemID);
+
+		if (boolval($data->jqv) === false) {
+			if (boolval($data->new) === false) { // CHECK against existing Items
+				return $exists;
+			}
+			// CHECK if Sub could exist
+			return $exists === false;
+		}
+
+		// JQV
+		if (boolval($data->new) === false) { // CHECK against existing Items
+			return $exists ? true : "$data->itemID Substitute $data->subitemID not found";
+		}
+
+		$exists === false ? true : "$data->itemID Substitute $data->subitemID already exists";
+	}
+
+
+	public static function validateItmShortitemid($data) {
+		$fields = ['itemID|text', 'shortitemID|text', 'jqv|bool', 'new|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$validate = new Validator\Mso\Cxm();
+		$exists = $validate->shortitemExists($data->shortitemID);
+
+		if (boolval($data->jqv) === false) {
+			if (boolval($data->new) === false) { // CHECK against existing Items
+				return $exists;
+			}
+			// CHECK if Sub could exist
+			return $exists === false;
+		}
+
+		// JQV
+		if (boolval($data->new) === false) { // CHECK against existing Items
+			return $exists ? true : "Short Item $data->shortitemID Item not found";
+		}
+
+		$exists === false ? true : "Short Item $data->shortitemID already exists";
+	}
+
+	public static function validateItmShortitemidAvailable($data) {
+		$fields = ['itemID|text', 'shortitemID|text', 'jqv|bool'];
+		self::sanitizeParametersShort($data, $fields);
+		$validate = new Validators\Mso\Cxm();
+		$exists = $validate->shortitemExists($data->shortitemID);
+		if ($exists === false) {
+			return true;
+		}
+		$cxm = self::pw('modules')->get('XrefCxm');
+		$xref = $cxm->xref_shortitem_by_custitemid($data->shortitemID);
+		$available = $xref->itemid == $data->itemID;
+		if (boolval($data->jqv) === false) {
+			return $available;
+		}
+		return $available === false ? "Short Item $data->shortitemID already exists" : 'true';
 	}
 
 

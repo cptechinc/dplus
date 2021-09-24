@@ -5,7 +5,9 @@ use ProcessWire\WireData;
 use Propel\Runtime\ActiveQuery\Criteria;
 
 use ItemMasterItemQuery, ItemMasterItem;
+use InvHazmatItemQuery, InvHazmatItem;
 
+use Dplus\CodeValidators as Validators;
 use Dplus\CodeValidators\Min;
 use Dplus\CodeValidators\Map as MapValidator;
 use Dplus\CodeValidators\Mar as MarValidator;
@@ -121,7 +123,7 @@ class Itm extends Min {
 	 * @return bool
 	 */
 	public function custid($custID) {
-		$validate = new MarValidator();
+		$validate = new Validators\Mar();
 		return $validate->custid($custID);
 	}
 
@@ -134,7 +136,7 @@ class Itm extends Min {
 	 * @return bool
 	 */
 	public function buyercode($code) {
-		$validate = new MapValidator();
+		$validate = new Validators\Map();
 		return $validate->buyercode($code);
 	}
 
@@ -147,7 +149,7 @@ class Itm extends Min {
 	 * @return bool
 	 */
 	public function freightcode($code) {
-		$validate = new MsoValidator();
+		$validate = new Validators\Mso();
 		return $validate->freightcode($code);
 	}
 }

@@ -1,0 +1,99 @@
+class FormsSubmitter {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new FormsSubmitter();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.redirectUrl = '';
+		this.forms = {
+			misc: MiscForm.getInstance(),
+			hazmat: HazmatForm.getInstance()
+		}
+	}
+
+	setRedirectUrl(url = '') {
+		this.redirectUrl = url;
+	}
+
+	submit() {
+		var submitter = this;
+		$('#loading-modal').modal('show');
+		this.submitMisc(function(successMisc) {
+			if (successMisc) {
+				setTimeout(() => {
+					submitter.submitHazmat(function(successHazmat) {
+						if (successHazmat === true) {
+
+							if (submitter.redirectUrl) {
+								window.location.href = submitter.redirectUrl
+							} else {
+								location.reload();
+							}
+						} else {
+							$('#loading-modal').modal('hide');
+						}
+					});
+				},
+				1000);
+
+			} else {
+				$('#loading-modal').modal('hide');
+			}
+		});
+	}
+
+	submitMisc(callback) {
+		var form = this.forms.misc;
+		console.log('Form: Misc');
+		console.log('Has changes: ' + form.hasChanges());
+		// if (form.hasChanges() === false) {
+		// 	callback(true);
+		// 	return true;
+		// }
+
+		var validator = form.form.validate();
+		console.log('Is Valid: ' + validator.form());
+		if (validator.form() === false) {
+			callback(false);
+			return false;
+		}
+
+		var ajax = new AjaxRequest(form.form.attr('action'));
+		ajax.setMethod(form.form.attr('method'));
+		ajax.setData(form.form.formValues());
+		ajax.request(function() {
+			console.log('Submitted: true');
+			callback(true);
+		});
+	}
+
+	submitHazmat(callback) {
+		var form = this.forms.hazmat;
+		console.log('Form: Hazmat');
+		console.log('Has changes: ' + form.hasChanges());
+		// if (form.hasChanges() === false) {
+		// 	callback(true);
+		// 	return true;
+		// }
+
+		var validator = form.form.validate();
+		console.log('Is Valid: ' + validator.form());
+		if (validator.form() === false) {
+			callback(false);
+			return false;
+		}
+
+		var ajax = new AjaxRequest(form.form.attr('action'));
+		ajax.setMethod(form.form.attr('method'));
+		ajax.setData(form.form.formValues());
+		ajax.request(function() {
+			console.log('Submitted: true');
+			callback(true);
+		});
+	}
+}
