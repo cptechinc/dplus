@@ -86,19 +86,19 @@ class ItmXrefs extends WireData implements Module {
 		$values = $input->$rm;
 
 		$configIn  = Configs\In::config();
-		$supercede = $configIn->useUppercaseItemid() ? strtoupper($values->text('supercededby')) : $values->text('supercededby');
+		$supercede = $configIn->useUppercaseItemid() ? strtoupper($values->text('supercede')) : $values->text('supercede');
 		$item->setSupercededby($supercede);
 		$item->setDate(date('Ymd'));
 		$item->setTime(date('His'));
 
-		$response = ItmResponse::response_error($item->itemid, "Supercede Item $item->supercededby does not exist");
+		$response = ItmResponse::response_error($item->itemid, "Supercede Item $item->supercede does not exist");
 
-		if ($itm->exists($values->text('supercededby')) || $this->supercededby == '') {
+		if ($itm->exists($values->text('supercede')) || $this->supercede == '') {
 			$response = $itm->save_and_respond($item);
 		}
 
 		$this->wire('session')->setFor('response', 'itm', $response);
-		$this->send_cxm_update($input);
+		$this->updateCxm($input);
 		return $response->has_success();
 	}
 
@@ -106,22 +106,44 @@ class ItmXrefs extends WireData implements Module {
 	Request Functions
 ============================================================= */
 	/**
-	 * Send Request to Update the Short Item ID using the XrefCxm module
-	 * @param  WireInput $input
-	 * @return void
+	 * Update CXM for short itemid if needed
+	 * @param  WireInput $input Input Data
+	 * @return bool
 	 */
-	protected function send_cxm_update(WireInput $input)  {
-		$cxm = $this('modules')->get('XrefCxm');
+	private function updateCxm(WireInput $input) {
+		$cxm = $this->wire('modules')->get('XrefCxm');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
-		$itemID = strtoupper($values->text('itemID'));
+		$itemID = $values->text('itemID');
 
-		if (!$cxm->xref_shortitem_exists($itemID) || $cxm->xref_shortitem($itemID)->custitemid != $values->text('cxm_custitemid')) {
-			$data = array('action' => 'update-cxm-shortitem', 'itemID' => $itemID, 'custitemid' => $values->text('cxm_custitemid'));
-			$input_cxm = new WireInput();
-			$input_cxm->$rm->setArray($data);
-			$cxm->process_input($input_cxm);
+		if ($cxm->xref_shortitem_exists_by_custitemid($values->text('shortitemID'))) {
+			$overwrite = $values->bool('overwriteshort');
+			if ($overwrite === false) {
+				return false;
+			}
+			$this->sendCxmRequest($input);
+			return true;
 		}
+
+		if ($cxm->xref_shortitem_exists($itemID) === false || $cxm->xref_shortitem($itemID)->custitemid != $values->text('shortitemID')) {
+			$this->sendCxmRequest($input);
+			return true;
+		}
+	}
+
+	/**
+	 * Send Request To CXM for updating short itemid
+	 * @param  WireInput $input
+	 * @return bool
+	 */
+	private function sendCxmRequest(WireInput $input) {
+		$rm = strtolower($input->requestMethod());
+		$values = $input->$rm;
+		$data = ['action' => 'update-cxm-shortitem', 'itemID' => $values->text('itemID'), 'custitemid' => $values->text('shortitemID'), 'overwrite' => $values->bool('overwriteshort')];
+		$input_cxm = new WireInput();
+		$input_cxm->$rm->setArray($data);
+		$cxm = $this->wire('modules')->get('XrefCxm');
+		$cxm->process_input($input_cxm);
 	}
 
 /* =============================================================

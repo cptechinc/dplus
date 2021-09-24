@@ -18,9 +18,9 @@ class XrefsRequests {
 		});
 	}
 
-	validateExists(itemID, subitemID, callback) {
-		var ajax = new AjaxRequest('{{ page.jsonapiURL('inv/validate/itm/substitute') }}');
-		ajax.setData({itemID: itemID, subitemID: subitemID});
+	validateShortItemAvailable(itemID, shortitemID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('inv/validate/itm/xrefs/shortitemid/available/') }}');
+		ajax.setData({itemID: itemID, shortitemID: shortitemID});
 		ajax.request(function(response) {
 			callback(response)
 		});

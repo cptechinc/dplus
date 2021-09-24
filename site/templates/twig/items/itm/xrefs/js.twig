@@ -6,7 +6,25 @@ $(function() {
 	var input_supercededby = form.find('input[name=supercededby]');
 
 	var formXrefs = XrefsForm.getInstance();
-	var alerts    = XrefsAlerts.getInstance();
+	var alert     = XrefsAlerts.getInstance();
+	var server    = XrefsRequests.getInstance();
+
+/* =============================================================
+	Events
+============================================================= */
+	$("body").on("change", "input[name=shortitemID]", function(e) {
+		var input  = $(this);
+		var inputs = formXrefs.inputs;
+		inputs.overwriteshort.val('false');
+
+		server.validateShortItemAvailable(formXrefs.inputs.itemid.val(), input.val(), function(isAvailable) {
+			if (isAvailable === false) {
+				alert.shortItemidExists(inputs.itemid.val(), inputs.shortitemid.val(), function(overwrite) {
+					inputs.overwriteshort.val(overwrite ? 'true' : 'false');
+				});
+			}
+		});
+	});
 
 /* =============================================================
 	Unsaved Fields Alert
@@ -28,6 +46,7 @@ $(function() {
 			});
 		}
 	});
+
 
 /* =============================================================
 	Item Lookup Modal Methods
@@ -71,5 +90,39 @@ $(function() {
 		var href   = button.attr('href');
 		var modal  = button.closest('.modal');
 		modal.find('.modal-body').load(href);
+	});
+
+/* =============================================================
+	Validation Methods
+============================================================= */
+	formXrefs.form.validate({
+		errorClass: "is-invalid",
+		validClass: "is-valid",
+		errorPlacement: function(error, element) {
+			error.insertAfter(element).addClass('invalid-feedback');
+		},
+		ignore: ".validate-ignore",
+		rules: {
+			shortitemID: {
+				required: false,
+			},
+		},
+		submitHandler: function(form) {
+			var inputs = formXrefs.inputs;
+			if (inputs.overwriteshort.val() == 'false') {
+				server.validateShortItemAvailable(inputs.itemid.val(), inputs.shortitemid.val(), function(isAvailable) {
+					if (isAvailable === false) {
+						alert.shortItemidExists(inputs.itemid.val(), inputs.shortitemid.val(), function(overwrite) {
+							inputs.overwriteshort.val(overwrite ? 'true' : 'false');
+							form.submit();
+						});
+					} else {
+						form.submit();
+					}
+				});
+			} else {
+				form.submit();
+			}
+		}
 	});
 });
