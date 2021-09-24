@@ -76,6 +76,7 @@ return array(
     'Controllers\\Min\\Inproc\\Base' => $baseDir . '/classes/min/inproc/Base.php',
     'Controllers\\Min\\Inproc\\Iarn' => $baseDir . '/classes/min/inproc/Iarn.php',
     'Controllers\\Min\\Inproc\\Menu' => $baseDir . '/classes/min/inproc/Menu.php',
+    'Controllers\\Min\\Itm\\Base' => $baseDir . '/classes/min/itm/Base.php',
     'Controllers\\Min\\Itm\\Costing' => $baseDir . '/classes/min/itm/Costing.php',
     'Controllers\\Min\\Itm\\Dimensions' => $baseDir . '/classes/min/itm/Dimensions.php',
     'Controllers\\Min\\Itm\\Item' => $baseDir . '/classes/min/itm/Item.php',
