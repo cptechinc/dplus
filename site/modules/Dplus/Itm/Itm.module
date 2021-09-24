@@ -474,7 +474,7 @@ class Itm extends WireData implements Module {
 	 * Set Session Response
 	 * @param ItmResponse $response
 	 */
-	protected function setResponse(ItmResponse $response) {
+	public function setResponse(ItmResponse $response) {
 		$this->wire('session')->setFor('response', 'itm', $response);
 	}
 
@@ -482,8 +482,15 @@ class Itm extends WireData implements Module {
 	 * Get Session Response
 	 * @return ItmResponse|null
 	 */
-	protected function getResponse() {
-		$this->wire('session')->getFor('response', 'itm');
+	public function getResponse() {
+		return $this->wire('session')->getFor('response', 'itm');
+	}
+
+	/**
+	 * Delete Session Response
+	 */
+	public function deleteResponse() {
+		$this->wire('session')->removeFor('response', 'itm');
 	}
 
 /* =============================================================

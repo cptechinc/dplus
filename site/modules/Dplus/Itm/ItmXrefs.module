@@ -34,31 +34,33 @@ class ItmXrefs extends WireData implements Module {
 /* =============================================================
 	CRUD Proccessing Functions
 ============================================================= */
+
 	/**
-	 * Takes Input, validates it's for one of the code tables
-	 * Processes it, and if updated sends request to dplus
-	 *
-	 * @param  WireInput $input Input
-	 * @return void
+	 * Process CRUD Request call necessary methos
+	 * @param  WireInput $input Input Data
+	 * @return bool
 	 */
-	public function process_input(WireInput $input) {
-		$itm = $this->wire('modules')->get('Itm');
+	public function processInput(WireInput $input) {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$itemID = $values->text('itemID');
+		$itm = $this->wire('modules')->get('Itm');
 
-		if ($values->action) {
-			if ($itm->exists($itemID)) {
-				if ($values->text('action') == 'update-itm-xrefs') {
-					return $this->processInputXref($input);
-				}
-			} else {
-				$response = ItmResponse::response_error($itemID, "Item $itemID does not exist");
-			}
-		} else {
-			$response = ItmResponse::response_error($itemID, "No Action was specified");
+		if ($itm->exists($itemID) === false) {
+			$itm->setResponse(ItmResponse::response_error($itemID, "Item $itemID does not exist"));
+			return false;
 		}
-		$this->wire('session')->setFor('response', 'itm', $response);
+
+		switch ($values->text('action')) {
+			case 'update-itm-xrefs':
+				return $this->processInputXref($input);
+				break;
+			default:
+				$itm->setResponse(ItmResponse::response_error($itemID, "No Action was specified"));
+				return false;
+				break;
+		}
+
 	}
 
 	private function processInputXref(WireInput $input) {
@@ -80,7 +82,26 @@ class ItmXrefs extends WireData implements Module {
 		return $this->inputUpdate($input, $item);
 	}
 
+	/**
+	 * Update Itm Supercede, then CXM if needed
+	 * @param  WireInput      $input Input Data
+	 * @param  ItemMasterItem $item  Item Master Item
+	 * @return bool
+	 */
 	private function inputUpdate(WireInput $input, ItemMasterItem $item) {
+		$response = $this->inputUpdateSupercede($input, $item);
+		$this->wire('session')->setFor('response', 'itm', $response);
+		$this->updateCxm($input);
+		return $response->has_success();
+	}
+
+	/**
+	 * Update Itm Supercede
+	 * @param  WireInput      $input Input Data
+	 * @param  ItemMasterItem $item  Item Master Item
+	 * @return ItmResponse
+	 */
+	private function inputUpdateSupercede(WireInput $input, ItemMasterItem $item) {
 		$itm = $this('modules')->get('Itm');
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
@@ -91,15 +112,13 @@ class ItmXrefs extends WireData implements Module {
 		$item->setDate(date('Ymd'));
 		$item->setTime(date('His'));
 
-		$response = ItmResponse::response_error($item->itemid, "Supercede Item $item->supercede does not exist");
-
 		if ($itm->exists($values->text('supercede')) || $this->supercede == '') {
-			$response = $itm->save_and_respond($item);
+			if ($values->text('supercede') == $item->itemid) {
+				return ItmResponse::response_error($item->itemid, "Cannot supercede an item back to the same Item ID");
+			}
+			return $itm->save_and_respond($item);
 		}
-
-		$this->wire('session')->setFor('response', 'itm', $response);
-		$this->updateCxm($input);
-		return $response->has_success();
+		return ItmResponse::response_error($item->itemid, "Supercede Item $item->supercede does not exist");
 	}
 
 /* =============================================================

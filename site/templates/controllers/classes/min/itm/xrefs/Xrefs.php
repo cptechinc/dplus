@@ -37,7 +37,7 @@ class Xrefs extends Base {
 
 		if ($data->action) {
 			$itmXrefs = self::pw('modules')->get('ItmXrefs');
-			$itmXrefs->process_input($input);
+			$itmXrefs->processInput($input);
 		}
 		self::pw('session')->redirect(self::itmUrlXrefs($data->itemID), $http301 = false);
 	}
