@@ -13,7 +13,7 @@ use Dplus\Filters\Min\ItemMaster as ItemMasterFilter;
 // Mvc Controllers
 use Mvc\Controllers\AbstractController;
 
-class Item extends ItmFunction {
+class Item extends Base {
 
 /* =============================================================
 	CRUD Index Functions

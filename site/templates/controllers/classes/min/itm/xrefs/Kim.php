@@ -6,7 +6,6 @@ use ItemMasterItemQuery, ItemMasterItem;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Kim as KimCRUD;
 // Mvc Controllers
-use Controllers\Min\Itm\ItmFunction;
 use Controllers\Mki\Kim as KimController;
 use Controllers\Min\Itm\Xrefs as Xrefs;
 

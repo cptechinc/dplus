@@ -104,7 +104,7 @@ class Itm extends AbstractController {
 		$m->addHook('Page(pw_template=itm)::subfunctions', function($event) {
 			$user = self::pw('user');
 			$allowed = [];
-			$itmp = ItmFunction::getItmp();
+			$itmp = self::getItmp();
 
 			foreach (self::SUBFUNCTIONS as $option => $function) {
 				if ($itmp->allowUser($user, $function['permission'])) {

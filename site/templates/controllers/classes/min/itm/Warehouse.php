@@ -5,10 +5,8 @@ use Purl\Url as Purl;
 use WarehouseInventoryQuery, WarehouseInventory;
 // ProcessWire classes, modules
 use ProcessWire\Page, ProcessWire\ItmWarehouse as WarehouseCRUD;
-// Mvc Controllers
-use Controllers\Min\Itm\ItmFunction;
 
-class Warehouse extends ItmFunction {
+class Warehouse extends Base {
 	const PERMISSION_ITMP = 'whse';
 
 /* =============================================================
