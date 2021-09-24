@@ -1,0 +1,18 @@
+class XrefsInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new XrefsInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id   = 'itm-xrefs-form';
+		this.form = $('#' + this.id);
+		this.itemid       = this.form.find('input[name=itemID]');
+		this.supercede    = this.form.find('input[name=supercede]');
+		this.shortitemid  = this.form.find('input[name=cxm_custitemid]');
+	}
+}

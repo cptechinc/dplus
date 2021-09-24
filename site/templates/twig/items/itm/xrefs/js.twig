@@ -1,31 +1,26 @@
+{% include 'items/itm/xrefs/js/classes.js.twig' %}
+
 $(function() {
-	var modal_ajax = $('#ajax-modal');
+	var modalAjax = $('#ajax-modal');
 	var form = $('#itm-xrefs-form');
 	var input_supercededby = form.find('input[name=supercededby]');
+
+	var formXrefs = XrefsForm.getInstance();
+	var alerts    = XrefsAlerts.getInstance();
 
 /* =============================================================
 	Unsaved Fields Alert
 ============================================================= */
-	origForm = form.serialize();
-
 	$("body").on("click", "a:not(#itm-xrefs-form.form_button, #ajax-modal a)", function(e) {
-		if (form.serialize() !== origForm) {
+		if (formXrefs.hasChanges()) {
 			e.preventDefault();
 			var a = $(this);
 			var href = a.attr('href');
 
-			swal2.fire({
-				title: 'Changes have occurred!',
-				text: 'Do you want to save?',
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonText: '<i class="fa fa-floppy-o" aria-hidden="true"></i> Yes',
-				cancelButtonText: 'No',
-			}).then((result) => {
-				if (result.value) {
-					form.find('button[type=submit]').click();
-				} else if (result.dismiss === Swal.DismissReason.cancel) {
-					// Send HTTP GET Request to remove Record Lock
+			alert.unsavedChanges(function(saveChanges) {
+				if (saveChanges) {
+					formXrefs.form.find('button[type=submit]').click();
+				} else {
 					$.get('{{ page.url }}', function() {
 						window.location.href = href;
 					});
@@ -37,10 +32,11 @@ $(function() {
 /* =============================================================
 	Item Lookup Modal Methods
 ============================================================= */
-	modal_ajax.on('show.bs.modal', function (event) {
+	modalAjax.on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
-		var modal = $(this);
-		var url = '{{ page.search_lookupURL('items') }}';
+		var modal  = $(this);
+		var url    = button.data('lookupurl');
+		modal.attr('data-input', button.data('input'));
 		modal.find('.modal-title').text('Search for an Item');
 		modal.resizeModal('xl');
 		modal.find('.modal-body').loadin(url, function() {
@@ -64,13 +60,16 @@ $(function() {
 	$("body").on("click", "#ajax-modal .item-link", function(e) {
 		e.preventDefault();
 		var button = $(this);
-		input_supercededby.val(button.data('itemid'));
-		$('#ajax-modal').modal('hide');
+		var modal  = button.closest('.modal');
+		$(modal.attr('data-input')).val(button.data('itemid'));
+		modal.modal('hide');
 	});
 
 	$("body").on('click', '#ajax-modal .paginator-link', function(e) {
 		e.preventDefault();
-		var href = $(this).attr('href');
-		modal_ajax.find('.modal-body').load(href);
+		var button = $(this);
+		var href   = button.attr('href');
+		var modal  = button.closest('.modal');
+		modal.find('.modal-body').load(href);
 	});
 });
