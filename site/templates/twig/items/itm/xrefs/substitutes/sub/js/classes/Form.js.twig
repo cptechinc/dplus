@@ -15,7 +15,12 @@ class SubForm {
 		this.fields  = {
 			description1: this.form.find('.description1'),
 			description2: this.form.find('.description2'),
-		}
+		};
+		this.formSerialized = this.form.serialize();
+	}
+	
+	hasChanges() {
+		return this.formSerialized != this.form.serialize();
 	}
 
 	showDescriptions() {
