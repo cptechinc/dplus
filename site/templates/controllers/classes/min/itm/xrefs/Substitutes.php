@@ -12,8 +12,6 @@ use ProcessWire\Page;
 use Dplus\Filters;
 // Dplus CRUD
 use Dplus\Min\Inmain\Itm\Substitutes as CRUDManager;
-// Controllers
-use Controllers\Min\Itm\Xrefs as XRefsController;
 
 class Substitutes extends Base {
 	private static $crud;
@@ -174,7 +172,7 @@ class Substitutes extends Base {
 	Hook Functions
 ============================================================= */
 	public static function initHooks() {
-		XRefsController::initHooks();
+		Xrefs::initHooks();
 
 		$m = self::pw('modules')->get('DpagesMin');
 

@@ -12,7 +12,6 @@ use Dplus\Configs;
 // Dplus Filters
 use Dplus\Filters\Min\Upcx as UpcxFilter;
 // Mvc Controllers
-use Controllers\Min\Itm\Xrefs;
 use Controllers\Min\Upcx as UpcxController;
 
 class Upcx extends Base {
