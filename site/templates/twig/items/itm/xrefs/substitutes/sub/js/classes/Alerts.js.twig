@@ -30,7 +30,7 @@ class SubAlerts extends Alerts {
 	sameItemid(itemID, subitemID, callback) {
 		swal2.fire({
 			title: 'Same Item ID',
-			text: 'Cannot substitute an item with the same itemID',
+			text: 'Substitute Item cannot be the same as the Master Item',
 			icon: 'warning',
 			confirmButtonText: 'Ok',
 		}).then((result) => {
