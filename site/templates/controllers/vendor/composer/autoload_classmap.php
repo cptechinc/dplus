@@ -79,7 +79,6 @@ return array(
     'Controllers\\Min\\Itm\\Base' => $baseDir . '/classes/min/itm/Base.php',
     'Controllers\\Min\\Itm\\Costing' => $baseDir . '/classes/min/itm/Costing.php',
     'Controllers\\Min\\Itm\\Dimensions' => $baseDir . '/classes/min/itm/Dimensions.php',
-    'Controllers\\Min\\Itm\\Item' => $baseDir . '/classes/min/itm/Item.php',
     'Controllers\\Min\\Itm\\Itm' => $baseDir . '/classes/min/itm/Itm.php',
     'Controllers\\Min\\Itm\\Misc' => $baseDir . '/classes/min/itm/Misc.php',
     'Controllers\\Min\\Itm\\Pricing' => $baseDir . '/classes/min/itm/Pricing.php',

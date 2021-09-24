@@ -1,20 +1,15 @@
 <?php
 	include($modules->get('Mvc')->controllersPath().'vendor/autoload.php');
-
-	use Controllers\Min\Itm\Itm as ItmController;
-	use Controllers\Min\Itm\Item;
-	use Controllers\Min\Itm\Xrefs\Controller as XrefsController;
+	
+	use Controllers\Min\Itm as Mitm;
 	use Controllers\Min\Itm\Xrefs as ItmXrefs;
 
-	use Controllers\Min\Itm as Mitm;
-
-	ItmController::init();
-	Item::initHooks();
+	Mitm\Itm::initHooks();
 
 	$routes = [
-		['GET',  '', Mitm\Item::class, 'index'],
-		['GET',  'page{d:\d+}', Mitm\Item::class, 'index'],
-		['POST', '', Mitm\Item::class, 'handleCRUD'],
+		['GET',  '', Mitm\Itm::class, 'index'],
+		['GET',  'page{d:\d+}', Mitm\Itm::class, 'index'],
+		['POST', '', Mitm\Itm::class, 'handleCRUD'],
 		'costing' => [
 			['GET',  '', Mitm\Costing::class, 'index'],
 			['POST', '', Mitm\Costing::class, 'handleCRUD'],
