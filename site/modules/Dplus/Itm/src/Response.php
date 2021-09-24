@@ -131,7 +131,7 @@ class Response extends WireData {
 	}
 
 	public static function responseError($itemID, $message) {
-		$response = new ItmResponse();
+		$response = new Response();
 		$response->itemID = $itemID;
 		$response->message = $message;
 		$response->setError(true);
@@ -140,7 +140,7 @@ class Response extends WireData {
 	}
 
 	public static function responseSuccess($itemID, $message) {
-		$response = new ItmResponse();
+		$response = new Response();
 		$response->itemID = $itemID;
 		$response->message = $message;
 		$response->setError(false);
