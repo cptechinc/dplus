@@ -38,7 +38,7 @@ class Pricing extends Base {
 		}
 
 		$fields = ['itemID|text', 'action|text', 'redirect|text'];
-		$data = self::sanitizeParameters($data, $fields);
+		self::sanitizeParameters($data, $fields);
 		$itmPricing = self::getItmPricing();
 		$itmPricing->init_configs();
 

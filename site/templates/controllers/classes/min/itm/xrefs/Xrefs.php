@@ -33,12 +33,11 @@ class Xrefs extends Base {
 			return self::displayAlertUserPermission($data);
 		}
 		$fields = ['itemID|text', 'action|text'];
-		$data = self::sanitizeParameters($data, $fields);
-		$input = self::pw('input');
+		self::sanitizeParameters($data, $fields);
 
 		if ($data->action) {
 			$itmXrefs = self::pw('modules')->get('ItmXrefs');
-			$itmXrefs->processInput($input);
+			$itmXrefs->processInput(self::pw('input'));
 		}
 		self::pw('session')->redirect(self::itmUrlXrefs($data->itemID), $http301 = false);
 	}
