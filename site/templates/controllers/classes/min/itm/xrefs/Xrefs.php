@@ -1,10 +1,11 @@
-<?php namespace Controllers\Min\Itm;
+<?php namespace Controllers\Min\Itm\Xrefs;
+// Purl URI Manipulation Library
 use Purl\Url as Purl;
-
+// Dplus Models
+use ItemMasterItem;
 // ProcessWire Classes, Modules
 use ProcessWire\WireData, ProcessWire\Page;
-// Mvc Controllers
-use Controllers\Min\Itm\Xrefs\Base;
+
 
 class Xrefs extends Base {
 	const PERMISSION_ITMP = 'xrefs';
@@ -42,7 +43,7 @@ class Xrefs extends Base {
 		self::pw('session')->redirect(self::itmUrlXrefs($data->itemID), $http301 = false);
 	}
 
-	public static function itmXrefs($data) {
+	private static function itmXrefs($data) {
 		if (self::validateItemidAndPermission($data) === false) {
 			return self::displayAlertUserPermission($data);
 		}
@@ -52,33 +53,39 @@ class Xrefs extends Base {
 		if ($data->action) {
 			return self::handleCRUD($data);
 		}
-		$config  = self::pw('config');
 		$page    = self::pw('page');
 		$itm     = self::getItm();
-		$xrefs   = self::xrefs();
-		$session = self::pw('session');
-		$item = $itm->get_item($data->itemID);
+		$item = $itm->item($data->itemID);
 		$html = '';
 
 		$page->headline = "ITM: $data->itemID X-Refs";
-		$html .= self::breadCrumbs();
-		if ($session->getFor('response', 'cxm')) {
-			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'cxm')]);
-			$session->removeFor('response', 'cxm');
-		}
-		if ($session->getFor('response', 'itm')) {
-			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
-		}
-		$html .= self::lockItem($data->itemID);
-		$html .= $config->twig->render('items/itm/itm-links.twig');
-		$html .= $config->twig->render('items/itm/xrefs/page.twig', ['itm' => $itm, 'item' => $item, 'xrefs' => $xrefs]);
-		$page->js .= $config->twig->render('items/itm/xrefs/js.twig');
-		return $html;
+		$page->js .= self::pw('config')->twig->render('items/itm/xrefs/js.twig');
+		return self::display($data, $item);
 	}
 
 /* =============================================================
 	Displays
 ============================================================= */
+	private static function display($data, ItemMasterItem $item) {
+		$itm     = self::getItm();
+		$xrefs   = self::xrefs();
+		$session = self::pw('session');
+		$config  = self::pw('config');
+
+		$html = '';
+		$html .= self::breadCrumbs();
+		if ($session->getFor('response', 'cxm')) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'cxm')]);
+			$session->removeFor('response', 'cxm');
+		}
+		if ($itm->getResponse()) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $itm->getResponse()]);
+		}
+		$html .= self::lockItem($data->itemID);
+		$html .= $config->twig->render('items/itm/itm-links.twig');
+		$html .= $config->twig->render('items/itm/xrefs/page.twig', ['itm' => $itm, 'item' => $item, 'xrefs' => $xrefs]);
+		return $html;
+	}
 
 /* =============================================================
 	Hooks
