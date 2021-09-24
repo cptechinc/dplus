@@ -1,0 +1,46 @@
+class XrefsAlerts extends Alerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new XrefsAlerts();
+		}
+		return this.instance;
+	}
+
+	shortItemidExists(itemID, shortID, callback) {
+		swal2.fire({
+			title: 'Short Item ID ' + shortID + ' exists',
+			text: 'Do you want to overwrite?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: '<i class="fa fa-pencil" aria-hidden="true"></i> Yes',
+			cancelButtonText: 'No',
+		}).then((result) => {
+			if (result.value) {
+				callback(true);
+				return true;
+			} else if (result.dismiss === Swal.DismissReason.cancel) {
+				callback(false);
+				return false;
+			}
+		});
+	}
+
+	supercedeIsSameItemid(itemID, supitemID, callback) {
+		swal2.fire({
+			title: 'Same Item ID',
+			text: 'Cannot Supercede an item back to the same Item ID',
+			icon: 'warning',
+			confirmButtonText: 'Ok',
+		}).then((result) => {
+			if (result.value) {
+				callback(true);
+				return true;
+			} else if (result.dismiss === Swal.DismissReason.cancel) {
+				callback(false);
+				return false;
+			}
+		});
+	}
+}

@@ -25,7 +25,7 @@
 			<small class="form-text text-muted">
 				Conversion: &nbsp;
 				<span class="conversion-description">
-					{{ item.unitofmpurchase.conversion|number_format(m_costing.fieldAttribute('qty', 'precision')) }}
+					{{ item.unitofmpurchase.conversion|number_format(m_costing.fieldAttribute('margin', 'precision')) }}
 				</span>
 			</small>
 		</div>
@@ -35,13 +35,13 @@
 
 	<div class="form-group row">
 		<div class="col-sm-4">
-			<label for="buyer">{{ m_costing.is_buyercontrol_item() ? 'Buyer' : 'N/A'}}</label>
+			<label for="buyer">{{ m_costing.doesItemControlBuyer() ? 'Buyer' : 'N/A'}}</label>
 		</div>
 		<div class="col-sm-8">
-			{% if m_costing.is_buyercontrol_item() %}
+			{% if m_costing.doesItemControlBuyer() %}
 				<select name="buyer" id="buyer" class="custom-select custom-select-sm">
 					<option value=""></option>
-					{% for buyer in m_costing.get_ap_buyers() %}
+					{% for buyer in m_costing.getApBuyers() %}
 						<option value="{{ buyer.code }}" {{ buyer.code == item.buyer ? 'selected' : ''}}>
 							{{ buyer.code }} - {{ buyer.description }}
 						</option>

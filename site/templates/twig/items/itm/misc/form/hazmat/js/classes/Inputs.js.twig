@@ -1,0 +1,16 @@
+class HazmatInputs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new HazmatInputs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id   = 'itm-hazmat-form';
+		this.form = $('#' + this.id);
+		this.dot1  = this.form.find('input[dot2]');
+	}
+}

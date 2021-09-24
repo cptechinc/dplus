@@ -1,5 +1,5 @@
 <?php namespace Controllers\Min\Itm;
-// Purl URI Library
+// Purl URI Manipulation Library
 use Purl\Url as Purl;
 // ProcessWire Classes, Modules
 use ProcessWire\Page, ProcessWire\Itm as ItmModel;
@@ -11,7 +11,7 @@ use Dplus\CodeValidators\Min as MinValidator;
 use Mvc\Controllers\AbstractController;
 
 
-class ItmFunction extends AbstractController {
+abstract class Base extends AbstractController {
 	const PERMISSION_ITMP = '';
 
 	private static $minvalidator;

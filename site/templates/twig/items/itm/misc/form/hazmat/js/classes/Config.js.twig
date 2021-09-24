@@ -1,0 +1,30 @@
+class HazmatConfigs {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new HazmatConfigs();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.fields = {
+			dot1: {
+				maxlength: {{ itm.hazmat.fieldAttribute('dot', 'maxlength') }}
+			},
+			dot2: {
+				maxlength: {{ itm.hazmat.fieldAttribute('dot', 'maxlength') }}
+			},
+			class: {
+				maxlength: {{ itm.hazmat.fieldAttribute('class', 'maxlength') }}
+			},
+			unnbr: {
+				maxlength: {{ itm.hazmat.fieldAttribute('unnbr', 'maxlength') }}
+			},
+			label: {
+				maxlength: {{ itm.hazmat.fieldAttribute('label', 'maxlength') }}
+			}
+		};
+	}
+}

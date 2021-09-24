@@ -14,7 +14,7 @@ class CostingConfigs {
 				maxlength: {{ costing.getUomCodeLength() }}
 			},
 			cost: {
-				precision: {{ costing.getConfigPo().decimal_places_cost }}
+				precision: {{ costing.fieldAttribute('cost', 'precision')  }}
 			},
 			margin: {
 				precision: {{ costing.fieldAttribute('margin', 'precision') }}

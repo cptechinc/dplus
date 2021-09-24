@@ -46,7 +46,7 @@ class Kim extends AbstractController {
 			$kim = self::pw('modules')->get('Kim');
 			$kim->process_input(self::pw('input'));
 		}
-		self::pw('session')->redirect(self::pw('page')->kitURL($data->kitID), $http301);
+		self::pw('session')->redirect(self::kitUrl($data->kitID, $data->component), $http301);
 	}
 
 	public static function kit($data) {

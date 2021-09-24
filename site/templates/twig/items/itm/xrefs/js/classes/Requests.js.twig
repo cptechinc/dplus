@@ -1,0 +1,28 @@
+class XrefsRequests {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new XrefsRequests();
+		}
+		return this.instance;
+	}
+
+	getItm(itemID, itmfields, callback) {
+		var fields = Array.isArray(itmfields) ? itmfields.join(',') : itmfields;
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('inv/item') }}');
+
+		ajax.setData({itemID: itemID, fields: fields});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+
+	validateShortItemAvailable(itemID, shortitemID, callback) {
+		var ajax = new AjaxRequest('{{ page.jsonapiURL('inv/validate/itm/xrefs/shortitemid/available/') }}');
+		ajax.setData({itemID: itemID, shortitemID: shortitemID});
+		ajax.request(function(response) {
+			callback(response)
+		});
+	}
+}

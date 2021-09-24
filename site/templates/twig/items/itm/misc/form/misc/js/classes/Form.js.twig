@@ -1,0 +1,21 @@
+class MiscForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new MiscForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'itm-misc-form';
+		this.form = $('#' + this.id);
+		this.inputs = MiscInputs.getInstance();
+		this.formSerialized = this.form.serialize();
+	}
+
+	hasChanges() {
+		return this.formSerialized != this.form.serialize();
+	}
+}

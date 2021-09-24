@@ -25,7 +25,7 @@ class CostingForm {
 		var conversion = parseFloat(this.inputs.uom.find('option:selected').data('conversion'));
 		var div = this.form.find('#standardcost-each');
 		var input = div.find('p');
-		var cost = parseFloat(p.text()) * conversion;
+		var cost = parseFloat(input.text()) * conversion;
 		this.inputs.standardcost.val(cost.toFixed(this.config.fields.cost.precision));
 	}
 
@@ -61,6 +61,7 @@ class CostingForm {
 		var standardcostUom = parseFloat(this.inputs.standardcost.val());
 		var costEach = standardcostUom / conversion;
 		var div = this.form.find('#standardcost-each');
-		div.find('input').val(costEach.toFixed(this.config.fields.cost.precision));
+
+		div.find('p').text(costEach.toFixed(this.config.fields.cost.precision));
 	}
 }

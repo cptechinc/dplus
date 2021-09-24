@@ -34,7 +34,7 @@
 							'type': 'append',
 							'size': 'sm',
 							'p': {
-								'value': xref.getUnitCostUom(0)|number_format(m_costing.getConfigPo().decimal_places_cost),
+								'value': xref.getUnitCostUom(0)|number_format(m_costing.fieldAttribute('cost', 'precision')),
 								'addclasses': ['text-right', 'border-0']
 							},
 							'span': {
@@ -57,7 +57,7 @@
 								'type': 'append',
 								'size': 'sm',
 								'p': {
-									'value': xref.get_unitcost(0)|number_format(m_costing.getConfigPo().decimal_places_cost),
+									'value': xref.get_unitcost(0)|number_format(m_costing.fieldAttribute('cost', 'precision')),
 									'addclasses': ['text-right', 'border-0']
 								},
 								'span': {
