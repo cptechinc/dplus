@@ -44,15 +44,7 @@ class Xrefs extends Base {
 	}
 
 	private static function itmXrefs($data) {
-		if (self::validateItemidAndPermission($data) === false) {
-			return self::displayAlertUserPermission($data);
-		}
 		self::initHooks();
-		$fields = ['itemID|text', 'action|text'];
-		self::sanitizeParametersShort($data, $fields);
-		if ($data->action) {
-			return self::handleCRUD($data);
-		}
 		$page    = self::pw('page');
 		$itm     = self::getItm();
 		$item = $itm->item($data->itemID);
