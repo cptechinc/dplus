@@ -1,5 +1,5 @@
 <?php namespace Controllers\Min\Itm;
-// Purl URI Library
+// Purl URI Manipulation Library
 Use Purl\Url as Purl;
 // Propel ORM Library
 use Propel\Runtime\Util\PropelModelPager;
@@ -9,14 +9,14 @@ use ItemMasterItem;
 use ProcessWire\Page, ProcessWire\Itm as ItmModel;
 // Validators
 use Dplus\CodeValidators\Min as MinValidator;
+// Dplus Filters
 use Dplus\Filters\Min\ItemMaster as ItemMasterFilter;
-// Mvc Controllers
-use Mvc\Controllers\AbstractController;
+
 
 class Item extends Base {
 
 /* =============================================================
-	CRUD Index Functions
+	Indexes
 ============================================================= */
 	public static function index($data) {
 		$fields = ['itemID|text', 'action|text'];
@@ -60,16 +60,9 @@ class Item extends Base {
 		self::pw('session')->redirect($url->getUrl(), $http301 = false);
 	}
 
-	public static function itm($data) {
-		if (self::validateUserPermission() === false) {
-			self::pw('session')->redirect(self::pw('input')->url());
-		}
-		$fields = ['itemID|text'];
-		self::sanitizeParametersShort($data, $fields);
+	private static function itm($data) {
 		$page   = self::pw('page');
-		$config = self::pw('config');
 		$validate = new MinValidator();
-
 
 		if ($data->itemID === 'new') {
 			$page->headline = 'ITM: Creating new Item';
@@ -85,14 +78,10 @@ class Item extends Base {
 		$item = self::getItm()->getCreateItem($data->itemID);
 		$page->js .= $config->twig->render("items/itm/js.twig", ['item' => $item, 'itm' => self::getItm()]);
 
-		return self::itemDisplay($data, $item);
+		return self::displayItem($data, $item);
 	}
 
-
-	public static function list($data) {
-		if (self::validateUserPermission() === false) {
-			self::pw('session')->redirect(self::pw('input')->url());
-		}
+	private static function list($data) {
 		$fields = ['itemID|text', 'q|text'];
 		$data   = self::sanitizeParametersShort($data, $fields);
 		$page     = self::pw('page');
@@ -112,13 +101,13 @@ class Item extends Base {
 		$items = $filter->query->paginate(self::pw('input')->pageNum, 10);
 
 		$page->js = self::pw('config')->twig->render('items/item-list.js.twig');
-		return self::listDisplay($data, $items);
+		return self::displayList($data, $items);
 	}
 
 /* =============================================================
-	Display Functions
+	Displays
 ============================================================= */
-	private static function listDisplay($data, PropelModelPager $items) {
+	private static function displayList($data, PropelModelPager $items) {
 		$config     = self::pw('config');
 		$validate   = new MinValidator();
 		$htmlwriter = self::pw('modules')->get('HtmlWriter');
@@ -136,15 +125,15 @@ class Item extends Base {
 		return $html;
 	}
 
-	private static function itemDisplay($data, ItemMasterItem $item) {
+	private static function displayItem($data, ItemMasterItem $item) {
 		$session = self::pw('session');
 		$config  = self::pw('config');
 		$itm     = self::getItm();
 		$html =  '';
 		$html .= $config->twig->render('items/itm/bread-crumbs.twig');
 
-		if ($session->getFor('response', 'itm')) {
-			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $session->getFor('response', 'itm')]);
+		if ($itm->getResponse()) {
+			$html .= $config->twig->render('items/itm/response-alert.twig', ['response' => $itm->getResponse()]);
 		}
 
 		if ($session->response_qnote) {
@@ -156,18 +145,17 @@ class Item extends Base {
 		$html .= $config->twig->render('items/itm/itm-links.twig');
 		$html .= $config->twig->render('items/itm/form/display.twig', ['item' => $item, 'itm' => $itm, 'qnotes' => self::pw('modules')->get('QnotesItem')]);
 		if ($item->isNew() === false && $itm->recordlocker->userHasLocked($data->itemID)) {
-			$html .= self::qnotes($data);
+			$html .= self::displayQnotes($data);
 		}
 		return $html;
 	}
 
-	private static function qnotes($data) {
+	private static function displayQnotes($data) {
 		$fields = ['itemID|text'];
 		$data   = self::sanitizeParametersShort($data, $fields);
 		$qnotes = self::pw('modules')->get('QnotesItem');
 		$config = self::pw('config');
-		$user   = self::pw('user');
-		$item   = self::getItm()->get_item($data->itemID);
+		$item   = self::getItm()->item($data->itemID);
 		$html   = $config->twig->render('items/itm/notes/notes.twig', ['item' => $item, 'qnotes' => $qnotes]);
 		self::pw('page')->js .= $config->twig->render("items/itm/notes/js.twig", ['item' => $item, 'qnotes' => $qnotes]);
 		self::pw('session')->remove('qnotes_itm');
@@ -184,7 +172,7 @@ class Item extends Base {
 	}
 
 /* =============================================================
-	Supplemental
+	Hooks
 ============================================================= */
 	public static function initHooks() {
 		parent::initHooks();
@@ -199,6 +187,9 @@ class Item extends Base {
 		});
 	}
 
+/* =============================================================
+	Supplemental
+============================================================= */
 	protected static function validateUserPermission() {
 		return self::pw('user')->has_function('itm');
 	}
