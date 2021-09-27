@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+include_once(__DIR__ . '/vendor/autoload.php');
+
 use Purl\Url;
 use Propel\Runtime\ActiveQuery\Criteria;
 
