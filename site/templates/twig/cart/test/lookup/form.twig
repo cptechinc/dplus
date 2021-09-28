@@ -1,0 +1,64 @@
+{#
+	var                    Description / Instance of
+	-------------------------------------------------
+	page                   ProcessWire\Page
+#}
+
+<form action="{{ page.url }}" class="pt-3 px-3 allow-enterkey-submit" id="add-item-form">
+	<input type="hidden" name="action" value="add-item">
+
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="form-group">
+				{% include 'util/form/input-with-modal-lookup.twig' with {
+						'name': 'itemID', 'id': 'additemID', 'value': '', 'placeholder': 'Item ID',
+						'small': false,
+						'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Item',
+						'attributes_button': {
+							'data-search': 'item',
+							'data-input': '#additemID',
+							'data-lookupurl': page.searchLookupUrl('items')
+						}
+					}
+				%}
+			</div>
+			<div class="mt-2">
+				<ul class="list-unstyled">
+					<li>
+						<small class="desc1"></small>
+					</li>
+					<li>
+						<small class="desc2"></small>
+					</li>
+					{% if page.config.company == 'provalley' %}
+						<li>
+							<small class="weight-desc collapse">Weight: <span class="item-weight"></span></small>
+						</li>
+					{% endif %}
+				</ul>
+			</div>
+		</div>
+		<div class="col-sm-1 text-right">
+			<div class="form-group">
+				{% include 'util/form/input.twig' with {
+						'type': 'number',
+						'name': 'qty', 'id': 'qty', 'value': '',
+						'class_input': 'form-control',
+						'class_add': [
+							'text-right',
+							'qty-input'
+						],
+					}
+				%}
+			</div>
+		</div>
+		<div class="col-sm-2 text-right">
+			<div class="input-group">
+				<button type="submit" class="btn btn-primary">
+					<i class="fa fa-plus" aria-hidden="true"></i> Add
+				</button>
+			</div>
+		</div>
+		<div class="col-sm-5"></div>
+	</div>
+</form>

@@ -28,26 +28,64 @@ class Cart extends AbstractController {
 		if ($cart->hasCustid() === false) {
 			return self::selectCustomer($data);
 		}
-		self::cart($data);
+		return self::cart($data);
+	}
+
+	public static function handleCRUD($data) {
+		$fields = ['action|text', 'custID|text'];
+		self::sanitizeParametersShort($data, $fields);
+		$cart = self::getCart();
+		$cart->processInput(self::pw('input'));
+		self::pw('session')->redirect(self::cartUrl(), $http301 = false);
 	}
 
 	private static function selectCustomer($data) {
 		$fields = ['q|text', 'action|text'];
 		self::sanitizeParametersShort($data, $fields);
+		self::pw('page')->headline = "Select a Customer";
 		self::pw('page')->js .= self::pw('config')->twig->render('cart/form/js.twig');
 		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
 		return self::displayCustomerForm($data);
+	}
+
+	private static function cart($data) {
+		$cart     = self::getCart();
+		$page     = self::pw('page');
+		$config   = self::pw('config');
+		$modules  = self::pw('modules');
+		$customer = $cart->getCustomer($cart->getCustid());
+		$page->headline = "Cart for $customer->name";
+
+		if ($modules->get('ConfigsCi')->option_lastsold  == 'cstk') {
+			$lastsold = $modules->get('LastSoldItemsCustomerCstk');
+			$lastsold->custID   = $cart->getCustid();
+			$lastsold->shiptoID = $cart->getShiptoid();
+			$lastsold->function = 'cart';
+			$lastsold->request_pricing();
+		} else {
+			$lastsold = false;
+		}
+		self::pw('config')->scripts->append(self::getFileHasher()->getHashUrl('scripts/lib/jquery-validate.js'));
+		$page->js .= self::pw('config')->twig->render('cart/test/js.twig', ['cart' => $cart]);
+
+		if ($config->twigloader->exists("cart/test/lookup/$config->company/form.twig")) {
+			$page->js .= $config->twig->render("cart/test/lookup/$config->company/js.twig", ['cart' => $cart]);
+		} else {
+			$page->js .= $config->twig->render('cart/test/lookup/js.twig', ['cart' => $cart]);
+		}
+		return self::displayCart($data);
 	}
 
 /* =============================================================
 	Urls
 ============================================================= */
 	public static function cartUrl() {
-		return self::pw('pages')->get('pw_template=cart')->url;
+		return self::pw('pages')->get('template=test')->url;
+		return self::pw('pages')->get('template=test')->url;
 	}
 
 	public static function setCustomerUrl($custID, $shiptoID = '') {
-		$url = new Purl(self::cartUrl());
+		$url = new Purl(self::pw('pages')->get('pw_template=cart')->url);
 		$url->query->set('custID', $custID);
 		if ($shiptoID) {
 			$url->query->set('shiptoID', $shiptoID);
@@ -103,28 +141,52 @@ class Cart extends AbstractController {
 	private static function displayCustomerForm($data) {
 		return self::pw('config')->twig->render('cart/form/customer-form.twig');
 	}
+
+	private static function displayCart($data) {
+		$html   = '';
+		$config = self::pw('config');
+		$cart   = self::getCart();
+		$customer = $cart->getCustomer();
+		$shipto   = $cart->getCustomerShipto();
+
+		$html .= $config->twig->render('cart/test/cart-links.twig', ['customer' => $customer, 'shipto' => $shipto, 'cart' => $cart]);
+
+		if ($config->twigloader->exists("cart/test/$config->company/cart-items.twig")) {
+			$html .= $config->twig->render("cart/test/$config->company/cart-items.twig", ['cart' => $cart]);
+		} else {
+			$html .= $config->twig->render('cart/test/cart-items.twig', ['cart' => $cart]);
+		}
+
+		if ($config->twigloader->exists("cart/test/lookup/$config->company/form.twig")) {
+			$html .= $config->twig->render("cart/test/lookup/$config->company/form.twig", ['cart' => $cart]);
+		} else {
+			$html .= $config->twig->render('cart/test/lookup/form.twig', ['cart' => $cart]);
+		}
+		return $html;
+	}
+
 /* =============================================================
 	Hooks
 ============================================================= */
 	public static function initHooks() {
 		$m = self::pw('modules')->get('DpagesCart');
 
-		$m->addHook('Page(pw_template=cart)::deleteItemUrl', function($event) {
+		$m->addHook('Page(template=test)::deleteItemUrl', function($event) {
 			$linenbr = $event->arguments(0);
 			$event->return = self::deleteItemUrl($linenbr);
 		});
 
-		$m->addHook('Page(pw_template=cart)::emptyCartUrl', function($event) {
+		$m->addHook('Page(template=test)::emptyCartUrl', function($event) {
 			$event->return = self::emptyCartUrl();
 		});
 
-		$m->addHook('Page(pw_template=cart)::ciUrl', function($event) {
+		$m->addHook('Page(template=test)::ciUrl', function($event) {
 			$page = $event->object;
 			$custID = $event->arguments(0);
 			$event->return = Ci::ciUrl($custID);
 		});
 
-		$m->addHook('Page(pw_template=cart)::ciShiptoUrl', function($event) {
+		$m->addHook('Page(template=test)::ciShiptoUrl', function($event) {
 			$page = $event->object;
 			$custID   = $event->arguments(0);
 			$shiptoID = $event->arguments(1);
@@ -136,17 +198,17 @@ class Cart extends AbstractController {
 			}
 		});
 
-		$m->addHook('Page(pw_template=cart)::createQuoteUrl', function($event) {
+		$m->addHook('Page(template=test)::createQuoteUrl', function($event) {
 			$event->return = self::createQuoteUrl();
 		});
 
-		$m->addHook('Page(pw_template=cart)::createOrderUrl', function($event) {
+		$m->addHook('Page(template=test)::createOrderUrl', function($event) {
 			$event->return = self::createOrderUrl();
 		});
 
 		// TODO: handle redirect on createX action
 
-		// $m->addHook('Page(pw_template=cart)::redirectUrl', function($event) {
+		// $m->addHook('Page(template=test)::redirectUrl', function($event) {
 		// 	$p = $event->object;
 		// 	$action = $p->fullUrl->query->get('action');
 		// 	$url = $this->cartUrl();

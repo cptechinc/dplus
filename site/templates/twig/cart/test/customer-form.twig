@@ -1,0 +1,15 @@
+<form action="{{ page.searchURL }}" method="get" class="allow-enterkey-submit" id="customer-search-form">
+	<div class="form-group">
+		{% include 'util/form/input-with-modal-lookup.twig' with {
+				'name': 'q', 'id': 'q', 'value': '', 'placeholder': 'Customer ID, Name',
+				'small': false,
+				'modaltarget': '#ajax-modal', 'modaldescription': 'Search for / Choose Customer',
+				'attributes_button': {
+					'data-search': 'item',
+					'data-input': '#additemID',
+					'data-lookupurl': page.search_customersURL()
+				}
+			}
+		%}
+	</div>
+</form>

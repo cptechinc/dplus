@@ -1,6 +1,7 @@
 <?php namespace Dplus\Cart;
 // Dplus Models
 use CustomerQuery, Customer;
+use CustomerShiptoQuery, CustomerShipto;
 // ProcessWire
 use ProcessWire\WireData, ProcessWire\WireInput;
 // Dplus Configs
@@ -59,6 +60,14 @@ class Cart extends WireData {
 	 */
 	public function getCustid() {
 		return $this->header->getCustid();
+	}
+
+	/**
+	 * Return if Ship-to ID has been set
+	 * @return bool
+	 */
+	public function hasShiptoid() {
+		return $this->header->hasShiptoid();
 	}
 
 	/**
@@ -134,14 +143,15 @@ class Cart extends WireData {
 		$rm = strtolower($input->requestMethod());
 		$values = $input->$rm;
 		$custID = $values->text('custID');
-		$isSet = $this->header->setCustid($custID);
+		$isSet  = $this->header->setCustid($custID);
+
 		if ($isSet === false) {
 			return false;
 		}
-		if ($values->offsetExists('shiptoID')) {
-			return $this->inputUpdateShipto($input);
+		if ($values->offsetExists('shiptoID') === false) {
+			return $isSet;
 		}
-		return true;
+		return $this->inputUpdateShipto($input);
 	}
 
 	/**
@@ -297,12 +307,22 @@ class Cart extends WireData {
 
 	/**
 	 * Return Customer
-	 * @param  string $custID  Customer ID
 	 * @return Customer
 	 */
-	public function getCustomer($custID) {
+	public function getCustomer() {
 		$q = CustomerQuery::create();
-		$q->filterByCustid($custID);
+		$q->filterByCustid($this->getCustid());
+		return $q->findOne();
+	}
+
+	/**
+	 * Return Customer Ship-to
+	 * @return CustomerShipto
+	 */
+	public function getCustomerShipto() {
+		$q = CustomerShiptoQuery::create();
+		$q->filterByCustid($this->getCustid());
+		$q->filterByShiptoid($this->getShiptoid());
 		return $q->findOne();
 	}
 

@@ -1,0 +1,87 @@
+<div class="row">
+	<div class="col-6">
+		<h3 class="font-weight-bold text-secondary mt-4">Cart Items</h3>
+	</div>
+	<div class="col-6">
+		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#last-sales-modal">
+			View Customer's Popular Items
+		</button>
+	</div>
+</div>
+<div class="bg-dark text-white font-weight-bold pt-3 px-3 pb-1">
+	<div class="row">
+		<div class="col-sm-3">Item</div>
+		<div class="col-sm-1 text-right">Cases</div>
+		<div class="col-sm-1 text-right">Weight</div>
+		<div class="col-sm-2 text-right">Price</div>
+		<div class="col-sm-2 text-right">Amount</div>
+		<div class="col-sm-3 "></div>
+	</div>
+</div>
+<div class="pb-3"></div>
+{% for detail in cart.get_items() %}
+	{% set item = cart.get_im_item(detail.itemid) %}
+
+	<form action="{{ page.url }}" class="allow-enterkey-submit">
+		<input type="hidden" name="action" value="update-item-quick">
+		<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
+
+		<div class="form-row px-3 cart-item">
+			<div class="col-sm-3">
+				{{ detail.itemid }}
+				<br>
+				<small>{{ detail.desc1 }}</small>
+				<br>
+				<small>Avg Wgt: {{ item.weight|number_format(cart.decimal_places_qty) }}</small>
+			</div>
+			<div class="col-sm-1 text-right">
+				{% include 'util/form/input.twig' with {
+						'name': 'qty', 'value': detail.qty|number_format(cart.decimal_places_qty),
+						'class_add': [
+							'text-right',
+							'qty-input',
+						],
+						'attributes': {
+							'data-avgweight': item.weight|number_format(cart.decimal_places_qty)
+						}
+					}
+				%}
+			</div>
+			<div class="col-sm-1 text-right">
+				<span class="total-weight">{{ (item.weight * detail.qty)|number_format(cart.decimal_places_qty) }}</span>
+			</div>
+			<div class="col-sm-2 text-right">
+				<div class="input-group input-group-sm">
+					<div class="input-group-prepend">
+						<span class="input-group-text">$</span>
+					</div>
+					{% include 'util/form/input.twig' with {
+							'name': 'price', 'value': detail.price|number_format(cart.decimal_places_price),
+							'class_add': [
+								'text-right',
+								'qty-input'
+							],
+							'attributes': {
+								'data-allowdiscount': item.allow_discount() ? 'Y' : 'N',
+								'data-itemid': detail.itemid,
+							}
+						}
+					%}
+				</div>
+			</div>
+			<div class="col-sm-2 text-right">
+				$ <span class="total-price">{{ (item.weight * detail.qty * detail.price)|number_format(cart.decimal_places_price) }}</span>
+			</div>
+			<div class="col-sm-3 text-right">
+				<button type="submit" class="btn btn-sm btn-success">
+					<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+				</button>
+				&nbsp;
+				<a href="{{ page.delete_itemURL(detail.linenbr) }}" class="btn btn-sm btn-danger exclude">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			</div>
+		</div>
+	</form>
+	<hr>
+{% endfor %}

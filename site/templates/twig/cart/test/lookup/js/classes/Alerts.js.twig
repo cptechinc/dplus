@@ -1,0 +1,11 @@
+class LookupAlerts extends Alerts {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new LookupAlerts();
+		}
+		return this.instance;
+	}
+
+}

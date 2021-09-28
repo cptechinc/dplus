@@ -1,0 +1,17 @@
+class EditInputs {
+	constructor() {
+		this.form = null;
+	}
+
+	setForm(form) {
+		this.form = form;
+		this.init();
+	}
+
+	init() {
+		this.itemid  = this.form.find('input[name=itemID]');
+		this.linenbr = this.form.find('input[name=linenbr]');
+		this.qty = this.form.find('input[name=qty]');
+		this.price = this.form.find('input[name=price]');
+	}
+}

@@ -1,0 +1,47 @@
+{% include 'cart/test/js/classes.js.twig' %}
+
+$(function() {
+	var serverCart = CartRequests.getInstance();
+	var alertCart  = CartAlerts.getInstance();
+
+/* =============================================================
+	Header Functions
+============================================================= */
+	$("body").on('change', '#select_shipto', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var form = input.closest('form');
+		form.submit();
+	});
+
+/* =============================================================
+	Cart items Functions
+============================================================= */
+	$("body").on('change', 'input[name=price]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var price = parseFloat(input.val());
+		var form = new EditForm();
+		form.setForm(input.closest('form'));
+		input.val(price.toFixed(form.config.fields.price.precision));
+		form.updateTotals();
+
+		serverCart.validatePriceMargin(input.data('itemid'), price, function(isValid) {
+			if (isValid === false) {
+				alertCart.minMarginRequirements(input.closest('form').find('input[name=linenbr]').val(), function() {
+
+				});
+			}
+		});
+	});
+
+	$("body").on('change', '.cart-item input[name=qty]', function(e) {
+		e.preventDefault();
+		var input = $(this);
+		var qty = parseFloat($(this).val());
+		var form = new EditForm();
+		form.setForm(input.closest('form'));
+		input.val(qty.toFixed(form.config.fields.qty.precision));
+		form.updateTotals();
+	});
+});

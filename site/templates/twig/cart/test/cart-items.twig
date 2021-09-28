@@ -1,0 +1,89 @@
+<div class="row">
+	<div class="col-6">
+		<h3 class="font-weight-bold text-secondary mt-4">Cart Items</h3>
+	</div>
+	<div class="col-6">
+		<button type="button" class="btn btn-primary collapse" data-toggle="modal" data-target="#last-sales-modal">
+			View Customer's Popular Items
+		</button>
+	</div>
+</div>
+<div class="bg-dark text-white font-weight-bold pt-3 px-3 pb-1">
+	<div class="row">
+		<div class="col-sm-3">Item ID</div>
+		<div class="col-sm-2 text-right">Qty</div>
+		<div class="col-sm-2 text-right">Price</div>
+		<div class="col-sm-2 text-right">Amount</div>
+		<div class="col-sm-3 "></div>
+	</div>
+</div>
+<div class="pb-3"></div>
+{% for detail in cart.getItems() %}
+	{% set item = cart.getItmItem(detail.itemid) %}
+
+	<form action="{{ input.url() }}" class="allow-enterkey-submit">
+		<input type="hidden" name="action" value="update-item-quick">
+		<input type="hidden" name="custID" value="{{ cart.getCustid() }}">
+		<input type="hidden" name="shiptoID" value="{{ cart.getShiptoid() }}">
+		<input type="hidden" name="linenbr" value="{{ detail.linenbr }}">
+		<input type="hidden" name="itemID" value="{{ detail.itemid }}">
+
+		<div class="form-row px-3 cart-item">
+			<div class="col-sm-4">
+				{{ detail.itemid }} <br>
+				<small>{{ detail.desc1 }}</small> <br>
+				<small>Avg Wgt: {{ item.weight }}</small>
+			</div>
+			<div class="col-sm-1 text-right">
+				{% include 'util/bootstrap/form/input.twig' with {
+						'input': {
+							'name': 'qty', 'value': detail.qty|number_format(cart.decimalPlacesQty()),
+							'size': 'sm',
+							'addclasses': [
+								'text-right',
+								'qty-input'
+							]
+						}
+					}
+				%}
+			</div>
+			<div class="col-sm-2 text-right">
+				{% include 'util/bootstrap/form/input-group.twig' with {
+						'inputgroup': {
+							'type': 'prepend',
+							'size': 'sm',
+							'input': {
+								'name': 'price', 'value': detail.price|number_format(cart.decimalPlacesPrice()),
+								'addclasses': [
+									'text-right',
+									'qty-input'
+								],
+								'attributes': {
+									'data-allowdiscount': item.allow_discount() ? 'Y' : 'N',
+									'data-itemid': detail.itemid,
+								}
+							},
+							'button': {
+								'colorclass': 'btn-light',
+								'text': '$'
+							}
+						}
+					}
+				%}
+			</div>
+			<div class="col-sm-2 text-right">
+				$ <span class="total-price">{{ detail.totalprice|currency }}</span>
+			</div>
+			<div class="col-sm-3 text-right">
+				<button type="submit" class="btn btn-sm btn-success">
+					<i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+				</button>
+				&nbsp;
+				<a href="{{ page.deleteItemUrl(detail.linenbr) }}" class="btn btn-sm btn-danger delete_button">
+					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+				</a>
+			</div>
+		</div>
+	</form>
+	<hr>
+{% endfor %}

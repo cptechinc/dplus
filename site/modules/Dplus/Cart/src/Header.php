@@ -14,7 +14,7 @@ class Header extends WireData {
 /* =============================================================
 	Constructor
 ============================================================= */
-	public function __constructor() {
+	public function __construct() {
 		$this->sessionID = session_id();
 	}
 
@@ -68,7 +68,7 @@ class Header extends WireData {
 ============================================================= */
 	public function exists() {
 		$q = $this->querySessionid();
-		return boolval($q->count);
+		return boolval($q->count());
 	}
 
 	public function header() {
@@ -126,7 +126,7 @@ class Header extends WireData {
 	 */
 	public function setCustid($custID) {
 		$cart = $this->new();
-
+		$this->exists();
 		if ($this->exists()) {
 			$cart = $this->header();
 		}

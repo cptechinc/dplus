@@ -1,0 +1,17 @@
+class LookupForm {
+	static instance = null;
+
+	static getInstance() {
+		if (this.instance === null) {
+			this.instance = new LookupForm();
+		}
+		return this.instance;
+	}
+
+	constructor() {
+		this.id = 'add-item-form';
+		this.form = $('#' + this.id);
+		this.inputs = LookupInputs.getInstance();
+		this.config = LookupConfig.getInstance();
+	}
+}
