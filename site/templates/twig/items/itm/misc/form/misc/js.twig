@@ -68,11 +68,16 @@ $(function() {
 	$("body").on('change', 'input.ajax-lookup', function(e) {
 		var input = $(this);
 		server.getJsonApiCode(input.data('api'), input.data('validate'), $(this).val(), function(obj) {
+			var ajaxfields_str = input.data('ajaxfields');
+			var ajaxfields = ajaxfields_str.split(',');
+
 			if (obj) {
-				var ajaxfields_str = input.data('ajaxfields');
-				var ajaxfields = ajaxfields_str.split(',');
 				ajaxfields.forEach((field , i) => {
 					$('.'+input.attr('name')+'-'+field).text(obj[field]);
+				});
+			} else {
+				ajaxfields.forEach((field , i) => {
+					$('.'+input.attr('name')+'-'+field).text('');
 				});
 			}
 		});
