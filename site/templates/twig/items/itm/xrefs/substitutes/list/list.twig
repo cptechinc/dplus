@@ -5,6 +5,7 @@
 	substitutes            Propel\Runtime\Util\PropelModelPager | ItemSubstitute[]
 	itmSub                 Dplus\Min\Inmain\Itm\Substitutes
 #}
+{% set response = itmSub.getResponse() %}
 
 <table class="table table-sm">
 	<thead>
@@ -29,7 +30,7 @@
 		{% endif %}
 
 		{% for sub in substitutes %}
-			<tr data-subitemid="{{ sub.subitemid }}">
+			<tr data-subitemid="{{ sub.subitemid }}" class="{{ response.hasSuccess() and response.key ==  itmSub.getRecordlockerKey(sub) ? 'bg-success text-white' : ''}}">
 				<td>{{ sub.subitemid }}</td>
 				<td>
 					{{ sub.getSubstitute().description }} <br>

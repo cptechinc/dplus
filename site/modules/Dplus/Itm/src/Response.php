@@ -46,6 +46,7 @@ class Response extends WireData {
 		$this->savedItmCosting = false;
 		$this->fields = array();
 		$this->msgReplacements = [];
+		$this->key = '';
 	}
 
 	public function setAction(int $action = 0) {
@@ -106,6 +107,10 @@ class Response extends WireData {
 
 	public function hasField($field) {
 		return array_key_exists($field, $this->fields);
+	}
+
+	public function setKey($key) {
+		$this->key = $key;
 	}
 
 	public function addMsgReplacement($replace, $with) {

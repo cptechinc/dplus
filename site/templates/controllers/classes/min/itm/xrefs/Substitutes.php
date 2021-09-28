@@ -53,6 +53,9 @@ class Substitutes extends Base {
 			case 'delete':
 				$url = self::subListUrl($data->itemID);
 				break;
+			case 'update':
+				$url = self::subListUrl($data->itemID, $data->subitemID);
+				break;
 		}
 		self::pw('session')->redirect($url, $http301 = false);
 	}
@@ -62,7 +65,7 @@ class Substitutes extends Base {
 
 		$filter = new Filters\Min\ItemSubstitute();
 		$filter->itemid($data->itemID);
-		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 1);
+		$xrefs = $filter->query->paginate(self::pw('input')->pageNum, 10);
 		self::pw('page')->js .= self::pw('config')->twig->render('items/itm/xrefs/substitutes/list/js.twig');
 		return self::displayList($data, $xrefs);
 	}
@@ -123,7 +126,6 @@ class Substitutes extends Base {
 		$html  = self::breadCrumbs();
 		$html  = self::displayResponse();
 		$html .= self::displaySubstitutes($data, $item, $xrefs);
-		$itmSub->deleteResponse();
 		return $html;
 	}
 
