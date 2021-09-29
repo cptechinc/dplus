@@ -12,6 +12,11 @@ $(function() {
 /* =============================================================
 	Events
 ============================================================= */
+	$('body').on('keyup change paste', '#' + formXrefs.id +' input, select, textarea', function(){
+		if ($('.response-alert').length) {
+			$('.response-alert').remove();
+		}
+	});
 	$("body").on("change", "input[name=shortitemID]", function(e) {
 		var input  = $(this);
 		var inputs = formXrefs.inputs;
